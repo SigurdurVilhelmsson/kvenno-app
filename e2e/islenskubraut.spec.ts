@@ -52,3 +52,61 @@ test.describe('Islenskubraut — Category grid', () => {
     ).toBeVisible();
   });
 });
+
+test.describe('Islenskubraut — Teaching card page navigation', () => {
+  test('category grid shows exactly 6 category cards', async ({ page }) => {
+    await page.goto('/islenskubraut/');
+    await page.waitForLoadState('networkidle');
+
+    // Each category is rendered as an <a> card linking to /islenskubraut/spjald/:id
+    const categoryLinks = page.locator('a[href*="/islenskubraut/spjald/"]');
+    await expect(categoryLinks).toHaveCount(6);
+  });
+
+  test('clicking Matur og drykkur navigates to teaching card page with correct URL', async ({ page }) => {
+    await page.goto('/islenskubraut/');
+    await page.waitForLoadState('networkidle');
+
+    const maturCard = page.locator('a', { hasText: 'Matur og drykkur' }).first();
+    await maturCard.click();
+
+    // URL should match /islenskubraut/spjald/matur
+    await page.waitForURL('**/islenskubraut/spjald/matur');
+
+    // Category name should be visible on the page
+    await expect(page.locator('text=Matur og drykkur').first()).toBeVisible();
+  });
+
+  test('teaching card page shows level selector and download button', async ({ page }) => {
+    await page.goto('/islenskubraut/spjald/dyr');
+    await page.waitForLoadState('networkidle');
+
+    // Level selector heading
+    await expect(page.locator('text=Veldu erfiðleikastig').first()).toBeVisible();
+
+    // Category name should be displayed
+    await expect(page.locator('text=Dýr').first()).toBeVisible();
+
+    // "Allir flokkar" back link should be present
+    const backLink = page.locator('a', { hasText: 'Allir flokkar' });
+    await expect(backLink).toBeVisible();
+  });
+
+  test('can navigate between categories via back link', async ({ page }) => {
+    // Start at Farartaeki category
+    await page.goto('/islenskubraut/spjald/farartaeki');
+    await page.waitForLoadState('networkidle');
+    await expect(page.locator('text=Farartæki').first()).toBeVisible();
+
+    // Click "Allir flokkar" to go back to grid
+    const backLink = page.locator('a', { hasText: 'Allir flokkar' });
+    await backLink.click();
+    await page.waitForURL('**/islenskubraut');
+
+    // Now navigate to a different category
+    const manneskjaCard = page.locator('a', { hasText: 'Manneskja' }).first();
+    await manneskjaCard.click();
+    await page.waitForURL('**/islenskubraut/spjald/manneskja');
+    await expect(page.locator('text=Manneskja').first()).toBeVisible();
+  });
+});

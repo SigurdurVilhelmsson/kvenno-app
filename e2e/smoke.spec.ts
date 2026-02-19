@@ -146,3 +146,94 @@ test.describe('Smoke tests — Mobile viewport', () => {
     await expect(page.locator('body')).toBeVisible();
   });
 });
+
+test.describe('Performance smoke tests — Load times', () => {
+  test('landing page loads within 5 seconds', async ({ page }) => {
+    const startTime = Date.now();
+    await page.goto('/', { timeout: 5000 });
+    await page.waitForLoadState('domcontentloaded');
+    const loadTime = Date.now() - startTime;
+
+    // Verify the page actually rendered
+    await expect(page.locator('h1').first()).toBeVisible();
+
+    // Load time should be under 5 seconds
+    expect(loadTime).toBeLessThan(5000);
+  });
+
+  test('game HTML files respond within 5 seconds', async ({ page }) => {
+    const gameUrls = [
+      '/efnafraedi/1-ar/games/molmassi.html',
+      '/efnafraedi/2-ar/games/lewis-structures.html',
+      '/efnafraedi/3-ar/games/ph-titration.html',
+    ];
+
+    for (const url of gameUrls) {
+      const startTime = Date.now();
+      const response = await page.goto(url, { timeout: 5000 });
+      const loadTime = Date.now() - startTime;
+
+      expect(response).not.toBeNull();
+      expect(response!.status()).toBe(200);
+      expect(loadTime, `${url} took ${loadTime}ms to load`).toBeLessThan(5000);
+    }
+  });
+
+  test('no JavaScript errors in console on main pages', async ({ page }) => {
+    const pages = [
+      '/',
+      '/efnafraedi',
+      '/efnafraedi/1-ar',
+      '/islenskubraut/',
+    ];
+
+    for (const url of pages) {
+      const consoleErrors: string[] = [];
+      page.on('console', (msg) => {
+        if (msg.type() === 'error') {
+          consoleErrors.push(msg.text());
+        }
+      });
+
+      await page.goto(url);
+      await page.waitForLoadState('networkidle');
+
+      expect(
+        consoleErrors,
+        `JavaScript errors on ${url}: ${consoleErrors.join('; ')}`
+      ).toHaveLength(0);
+
+      // Remove the listener for the next iteration
+      page.removeAllListeners('console');
+    }
+  });
+
+  test('all critical CSS and JS assets return 200', async ({ page }) => {
+    const assetStatuses: { url: string; status: number }[] = [];
+
+    page.on('response', (response) => {
+      const url = response.url();
+      if (url.endsWith('.js') || url.endsWith('.css')) {
+        assetStatuses.push({ url, status: response.status() });
+      }
+    });
+
+    // Load the landing page and islenskubraut (two separate SPAs)
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    await page.goto('/islenskubraut/');
+    await page.waitForLoadState('networkidle');
+
+    // All captured asset responses should be 200
+    for (const asset of assetStatuses) {
+      expect(
+        asset.status,
+        `Asset ${asset.url} returned ${asset.status}`
+      ).toBe(200);
+    }
+
+    // We should have captured at least some assets
+    expect(assetStatuses.length).toBeGreaterThan(0);
+  });
+});

@@ -85,3 +85,75 @@ test.describe('Year hub — Tool cards', () => {
     await expect(page.locator('h1')).toContainText('Efnafræði');
   });
 });
+
+test.describe('Navigation flow — Full path: track selector to game and back', () => {
+  test('chemistry hub shows all year tiles', async ({ page }) => {
+    await page.goto('/efnafraedi');
+    await expect(page.locator('h1')).toContainText('Efnafræði');
+
+    // All 5 navigation tiles should be visible
+    await expect(page.locator('text=1. ár').first()).toBeVisible();
+    await expect(page.locator('text=2. ár').first()).toBeVisible();
+    await expect(page.locator('text=3. ár').first()).toBeVisible();
+    await expect(page.locator('text=Valgreinar').first()).toBeVisible();
+    await expect(page.locator('text=F-bekkir').first()).toBeVisible();
+  });
+
+  test('clicking year tile navigates to year hub with game cards', async ({ page }) => {
+    await page.goto('/efnafraedi');
+
+    const yearLink = page.locator('a', { hasText: '2. ár' }).first();
+    await yearLink.click();
+    await page.waitForURL('**/efnafraedi/2-ar');
+
+    // Year hub should show its title and tool cards
+    await expect(page.locator('h1')).toContainText('2. árs efnafræði');
+    await expect(page.locator('text=Tilraunaskýrslur').first()).toBeVisible();
+  });
+
+  test('breadcrumbs show correct hierarchy and Heim is clickable', async ({ page }) => {
+    await page.goto('/efnafraedi/2-ar');
+
+    // Breadcrumbs should show Heim link
+    const heimLink = page.locator('a', { hasText: 'Heim' }).first();
+    await expect(heimLink).toBeVisible();
+
+    // Click Heim should navigate to landing page
+    await heimLink.click();
+    await page.waitForURL(/\/$/);
+    await expect(page.locator('h1')).toContainText('Námsvef');
+  });
+
+  test('full navigation flow: landing → chemistry hub → year hub → back to hub', async ({ page }) => {
+    // Start at landing
+    await page.goto('/');
+    await expect(page.locator('h1')).toContainText('Námsvef');
+
+    // Navigate to chemistry track
+    const efnafraediLink = page.locator('a', { hasText: 'Efnafræði' }).first();
+    await efnafraediLink.click();
+    await page.waitForURL('**/efnafraedi');
+    await expect(page.locator('h1')).toContainText('Efnafræði');
+
+    // Navigate to 1. ar year hub
+    const yearLink = page.locator('a', { hasText: '1. ár' }).first();
+    await yearLink.click();
+    await page.waitForURL('**/efnafraedi/1-ar');
+    await expect(page.locator('h1')).toContainText('1. árs efnafræði');
+
+    // Navigate back to chemistry hub via back button
+    const backButton = page.locator('a', { hasText: 'Til baka' });
+    await backButton.click();
+    await page.waitForURL('**/efnafraedi');
+    await expect(page.locator('h1')).toContainText('Efnafræði');
+  });
+
+  test('clicking 3. ar tile navigates to 3. ar year hub', async ({ page }) => {
+    await page.goto('/efnafraedi');
+
+    const yearLink = page.locator('a', { hasText: '3. ár' }).first();
+    await yearLink.click();
+    await page.waitForURL('**/efnafraedi/3-ar');
+    await expect(page.locator('h1')).toContainText('3. árs efnafræði');
+  });
+});
