@@ -1,14 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-import { ErrorBoundary } from '@shared/components';
+import { LanguageSwitcher, ErrorBoundary } from '@shared/components';
 import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
 import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
+import { useGameI18n } from '@shared/hooks/useGameI18n';
+import { useGameProgress } from '@shared/hooks/useGameProgress';
 import { useAchievements } from '@shared/hooks/useAchievements';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
 import { NameBuilder } from './components/NameBuilder';
+import { gameTranslations } from './i18n';
 
 type Screen = 'menu' | 'level1' | 'level2' | 'level3' | 'namebuilder';
 
@@ -21,38 +24,19 @@ interface Progress {
   totalGamesPlayed: number;
 }
 
-const STORAGE_KEY = 'nafnakerfidProgress';
-
-function loadProgress(): Progress {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    try {
-      return JSON.parse(saved);
-    } catch {
-      return getDefaultProgress();
-    }
-  }
-  return getDefaultProgress();
-}
-
-function getDefaultProgress(): Progress {
-  return {
-    level1Completed: false,
-    level1Score: 0,
-    level2Completed: false,
-    level2Score: 0,
-    level3BestMoves: {},
-    totalGamesPlayed: 0,
-  };
-}
-
-function saveProgress(progress: Progress): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-}
+const DEFAULT_PROGRESS: Progress = {
+  level1Completed: false,
+  level1Score: 0,
+  level2Completed: false,
+  level2Score: 0,
+  level3BestMoves: {},
+  totalGamesPlayed: 0,
+};
 
 function App() {
   const [screen, setScreen] = useState<Screen>('menu');
-  const [progress, setProgress] = useState<Progress>(loadProgress());
+  const { t, language, setLanguage } = useGameI18n({ gameTranslations });
+  const { progress, updateProgress, resetProgress } = useGameProgress<Progress>('nafnakerfidProgress', DEFAULT_PROGRESS);
   const [showAchievements, setShowAchievements] = useState(false);
 
   const {
@@ -67,18 +51,13 @@ function App() {
     resetAll: resetAchievementsData,
   } = useAchievements({ gameId: 'nafnakerfid' });
 
-  useEffect(() => {
-    saveProgress(progress);
-  }, [progress]);
-
   const handleLevel1Complete = (score: number, maxScore: number, hintsUsed: number) => {
     const wasLevel1Complete = progress.level1Completed;
-    setProgress(prev => ({
-      ...prev,
+    updateProgress({
       level1Completed: true,
-      level1Score: Math.max(prev.level1Score, score),
-      totalGamesPlayed: prev.totalGamesPlayed + 1,
-    }));
+      level1Score: Math.max(progress.level1Score, score),
+      totalGamesPlayed: progress.totalGamesPlayed + 1,
+    });
     trackLevelComplete(1, score, maxScore, { hintsUsed });
 
     // Check if all levels are now complete
@@ -90,12 +69,11 @@ function App() {
 
   const handleLevel2Complete = (score: number, maxScore: number, hintsUsed: number) => {
     const wasLevel2Complete = progress.level2Completed;
-    setProgress(prev => ({
-      ...prev,
+    updateProgress({
       level2Completed: true,
-      level2Score: Math.max(prev.level2Score, score),
-      totalGamesPlayed: prev.totalGamesPlayed + 1,
-    }));
+      level2Score: Math.max(progress.level2Score, score),
+      totalGamesPlayed: progress.totalGamesPlayed + 1,
+    });
     trackLevelComplete(2, score, maxScore, { hintsUsed });
 
     // Check if all levels are now complete
@@ -108,14 +86,13 @@ function App() {
   const handleLevel3Complete = (moves: number, difficulty: string, pairs: number, maxScore: number, hintsUsed: number) => {
     const key = `${difficulty}-${pairs}`;
     const wasLevel3Complete = Object.keys(progress.level3BestMoves).length > 0;
-    setProgress(prev => ({
-      ...prev,
+    updateProgress({
       level3BestMoves: {
-        ...prev.level3BestMoves,
-        [key]: Math.min(prev.level3BestMoves[key] || Infinity, moves),
+        ...progress.level3BestMoves,
+        [key]: Math.min(progress.level3BestMoves[key] || Infinity, moves),
       },
-      totalGamesPlayed: prev.totalGamesPlayed + 1,
-    }));
+      totalGamesPlayed: progress.totalGamesPlayed + 1,
+    });
     // For Level3, score is based on pairs matched - we treat pairs as score
     trackLevelComplete(3, pairs, maxScore, { hintsUsed });
 
@@ -124,12 +101,6 @@ function App() {
       trackGameComplete();
     }
     setScreen('menu');
-  };
-
-  const resetProgress = () => {
-    const newProgress = getDefaultProgress();
-    setProgress(newProgress);
-    saveProgress(newProgress);
   };
 
   // Level screens
@@ -189,10 +160,9 @@ function App() {
       <>
         <NameBuilder
           onComplete={() => {
-            setProgress(prev => ({
-              ...prev,
-              totalGamesPlayed: prev.totalGamesPlayed + 1,
-            }));
+            updateProgress({
+              totalGamesPlayed: progress.totalGamesPlayed + 1,
+            });
             setScreen('menu');
           }}
           onBack={() => setScreen('menu')}
@@ -214,13 +184,20 @@ function App() {
         <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
           <div className="flex justify-between items-start mb-4">
             <div className="flex-1">
-              <h1 className="text-4xl font-bold text-center mb-2 text-gray-800">Nafnakerfið</h1>
-              <p className="text-center text-gray-600">Læra að nefna efnasambönd</p>
+              <h1 className="text-4xl font-bold text-center mb-2 text-gray-800">{t('game.title')}</h1>
+              <p className="text-center text-gray-600">{t('game.subtitle')}</p>
             </div>
-            <AchievementsButton
-              achievements={achievements}
-              onClick={() => setShowAchievements(true)}
-            />
+            <div className="flex items-center gap-2">
+              <LanguageSwitcher
+                language={language}
+                onLanguageChange={setLanguage}
+                variant="compact"
+              />
+              <AchievementsButton
+                achievements={achievements}
+                onClick={() => setShowAchievements(true)}
+              />
+            </div>
           </div>
 
           <div className="space-y-4">
@@ -233,22 +210,22 @@ function App() {
                 <div>
                   <div className="flex items-center gap-3 mb-2">
                     <span className="bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full">
-                      Stig 1
+                      {t('levels.level1.name')}
                     </span>
-                    <h3 className="text-xl font-bold text-gray-800">Grunnreglur</h3>
+                    <h3 className="text-xl font-bold text-gray-800">{t('levels.level1.title')}</h3>
                   </div>
                   <p className="text-gray-600 text-sm">
-                    Læra reglurnar um nafngiftir efnasambanda
+                    {t('levels.level1.description')}
                   </p>
                 </div>
                 <div className="text-right">
                   {progress.level1Completed ? (
                     <div className="text-green-600">
                       <div className="text-2xl font-bold">{progress.level1Score}/10</div>
-                      <div className="text-xs">Lokið</div>
+                      <div className="text-xs">{t('menu.completed')}</div>
                     </div>
                   ) : (
-                    <div className="text-gray-400 text-3xl">→</div>
+                    <div className="text-gray-400 text-3xl">&rarr;</div>
                   )}
                 </div>
               </div>
@@ -269,25 +246,25 @@ function App() {
                     <span className={`text-white text-sm font-bold px-3 py-1 rounded-full ${
                       progress.level1Completed ? 'bg-yellow-500' : 'bg-gray-400'
                     }`}>
-                      Stig 2
+                      {t('levels.level2.name')}
                     </span>
-                    <h3 className="text-xl font-bold text-gray-800">Æfing með leiðsögn</h3>
+                    <h3 className="text-xl font-bold text-gray-800">{t('levels.level2.title')}</h3>
                     {!progress.level1Completed && (
-                      <span className="text-xs text-gray-500">(Ljúktu stigi 1 fyrst)</span>
+                      <span className="text-xs text-gray-500">({t('menu.completeLevel1First')})</span>
                     )}
                   </div>
                   <p className="text-gray-600 text-sm">
-                    Æfðu þig í að nefna efnasambönd skref fyrir skref
+                    {t('levels.level2.description')}
                   </p>
                 </div>
                 <div className="text-right">
                   {progress.level2Completed ? (
                     <div className="text-green-600">
                       <div className="text-2xl font-bold">{progress.level2Score}/12</div>
-                      <div className="text-xs">Lokið</div>
+                      <div className="text-xs">{t('menu.completed')}</div>
                     </div>
                   ) : (
-                    <div className="text-gray-400 text-3xl">→</div>
+                    <div className="text-gray-400 text-3xl">&rarr;</div>
                   )}
                 </div>
               </div>
@@ -308,27 +285,27 @@ function App() {
                     <span className={`text-white text-sm font-bold px-3 py-1 rounded-full ${
                       progress.level2Completed ? 'bg-red-500' : 'bg-gray-400'
                     }`}>
-                      Stig 3
+                      {t('levels.level3.name')}
                     </span>
-                    <h3 className="text-xl font-bold text-gray-800">Minnisleikur</h3>
+                    <h3 className="text-xl font-bold text-gray-800">{t('levels.level3.title')}</h3>
                     {!progress.level2Completed && (
-                      <span className="text-xs text-gray-500">(Ljúktu stigi 2 fyrst)</span>
+                      <span className="text-xs text-gray-500">({t('menu.completeLevel2First')})</span>
                     )}
                   </div>
                   <p className="text-gray-600 text-sm">
-                    Paraðu saman formúlur og nöfn í minnisleik
+                    {t('levels.level3.description')}
                   </p>
                 </div>
                 <div className="text-right">
                   {Object.keys(progress.level3BestMoves).length > 0 ? (
                     <div className="text-green-600">
-                      <div className="text-xs">Besta:</div>
+                      <div className="text-xs">{t('menu.best')}:</div>
                       <div className="text-lg font-bold">
-                        {Math.min(...Object.values(progress.level3BestMoves))} leikir
+                        {Math.min(...Object.values(progress.level3BestMoves))} {t('menu.moves')}
                       </div>
                     </div>
                   ) : (
-                    <div className="text-gray-400 text-3xl">→</div>
+                    <div className="text-gray-400 text-3xl">&rarr;</div>
                   )}
                 </div>
               </div>
@@ -343,16 +320,16 @@ function App() {
                 <div>
                   <div className="flex items-center gap-3 mb-2">
                     <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold px-3 py-1 rounded-full">
-                      Bónus
+                      {t('bonus.label')}
                     </span>
-                    <h3 className="text-xl font-bold text-gray-800">Nafnasmiðja</h3>
-                    <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">Nýtt!</span>
+                    <h3 className="text-xl font-bold text-gray-800">{t('bonus.title')}</h3>
+                    <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">{t('bonus.newBadge')}</span>
                   </div>
                   <p className="text-gray-600 text-sm">
-                    Byggðu efnanöfn úr pörtum - læra nafnareglurnar!
+                    {t('bonus.description')}
                   </p>
                 </div>
-                <div className="text-purple-500 text-3xl">🔧</div>
+                <div className="text-purple-500 text-3xl">&#x1f527;</div>
               </div>
             </button>
           </div>
@@ -362,12 +339,12 @@ function App() {
         {progress.totalGamesPlayed > 0 && (
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold text-gray-700">Framvinda</h3>
+              <h3 className="font-semibold text-gray-700">{t('menu.progress')}</h3>
               <button
                 onClick={resetProgress}
                 className="text-sm text-gray-500 hover:text-red-500 transition-colors"
               >
-                Endurstilla
+                {t('menu.reset')}
               </button>
             </div>
             <div className="grid grid-cols-3 gap-4 text-center">
@@ -375,19 +352,19 @@ function App() {
                 <div className="text-2xl font-bold text-blue-600">
                   {[progress.level1Completed, progress.level2Completed].filter(Boolean).length}/2
                 </div>
-                <div className="text-xs text-gray-600">Stig lokið</div>
+                <div className="text-xs text-gray-600">{t('menu.levelsCompleted')}</div>
               </div>
               <div className="bg-green-50 rounded-lg p-3">
                 <div className="text-2xl font-bold text-green-600">
                   {progress.level1Score + progress.level2Score}
                 </div>
-                <div className="text-xs text-gray-600">Heildar stig</div>
+                <div className="text-xs text-gray-600">{t('menu.totalPoints')}</div>
               </div>
               <div className="bg-purple-50 rounded-lg p-3">
                 <div className="text-2xl font-bold text-purple-600">
                   {progress.totalGamesPlayed}
                 </div>
-                <div className="text-xs text-gray-600">Leikir spilaðir</div>
+                <div className="text-xs text-gray-600">{t('menu.gamesPlayed')}</div>
               </div>
             </div>
           </div>
@@ -399,7 +376,7 @@ function App() {
             href="/games/1-ar/"
             className="text-gray-500 hover:text-gray-700 text-sm transition-colors"
           >
-            ← Til baka í leikjayfirlit
+            &larr; {t('menu.backToGames')}
           </a>
         </div>
       </div>

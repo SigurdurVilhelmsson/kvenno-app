@@ -40,6 +40,12 @@ export const gameTranslations = createGameTranslations({
         description: 'Paraðu saman formúlur og nöfn í minnisleik',
       },
     },
+    bonus: {
+      label: 'Bónus',
+      title: 'Nafnasmiðja',
+      newBadge: 'Nýtt!',
+      description: 'Byggðu efnanöfn úr pörtum - læra nafnareglurnar!',
+    },
   },
   en: {
     game: {
@@ -76,6 +82,12 @@ export const gameTranslations = createGameTranslations({
         description: 'Match formulas and names in a memory game',
       },
     },
+    bonus: {
+      label: 'Bonus',
+      title: 'Name Builder',
+      newBadge: 'New!',
+      description: 'Build chemical names from parts - learn the naming rules!',
+    },
   },
   pl: {
     game: {
@@ -111,6 +123,12 @@ export const gameTranslations = createGameTranslations({
         title: 'Gra pamieci',
         description: 'Dopasuj wzory i nazwy w grze pamieci',
       },
+    },
+    bonus: {
+      label: 'Bonus',
+      title: 'Kreator nazw',
+      newBadge: 'Nowe!',
+      description: 'Buduj nazwy chemiczne z czesci - poznaj zasady nazewnictwa!',
     },
   },
 });
