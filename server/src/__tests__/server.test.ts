@@ -6,6 +6,7 @@
 
 import { describe, it, expect, afterAll } from 'vitest';
 import request from 'supertest';
+import type { HealthResponse, ErrorResponse } from '../types/index.js';
 
 // Capture original env so we can restore after tests
 const ORIGINAL_CLAUDE_API_KEY = process.env.CLAUDE_API_KEY;
@@ -35,17 +36,18 @@ describe('GET /health', () => {
     const res = await request(app).get('/health');
 
     expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty('status', 'ok');
-    expect(res.body).toHaveProperty('timestamp');
+    const body = res.body as HealthResponse;
+    expect(body).toHaveProperty('status', 'ok');
+    expect(body).toHaveProperty('timestamp');
     // Verify timestamp is a valid ISO string
-    expect(new Date(res.body.timestamp).toISOString()).toBe(res.body.timestamp);
+    expect(new Date(body.timestamp).toISOString()).toBe(body.timestamp);
   });
 });
 
 // ---------------------------------------------------------------------------
-// Input validation — POST /api/analyze
+// Input validation -- POST /api/analyze
 // ---------------------------------------------------------------------------
-describe('POST /api/analyze — input validation', () => {
+describe('POST /api/analyze -- input validation', () => {
   it('returns 400 when required fields are missing', async () => {
     const res = await request(app)
       .post('/api/analyze')
@@ -61,11 +63,12 @@ describe('POST /api/analyze — input validation', () => {
       .send({
         content: 'test content',
         systemPrompt: 'test prompt',
-        mode: 'hacker', // invalid — must be "teacher" or "student"
+        mode: 'hacker', // invalid -- must be "teacher" or "student"
       });
 
     expect(res.status).toBe(400);
-    expect(res.body.error).toMatch(/[Ii]nvalid mode/);
+    const body = res.body as ErrorResponse;
+    expect(body.error).toMatch(/[Ii]nvalid mode/);
   });
 
   it('returns 400 when systemPrompt exceeds 30000 characters', async () => {
@@ -78,21 +81,23 @@ describe('POST /api/analyze — input validation', () => {
       });
 
     expect(res.status).toBe(400);
-    expect(res.body.error).toMatch(/systemPrompt/i);
+    const body = res.body as ErrorResponse;
+    expect(body.error).toMatch(/systemPrompt/i);
   });
 });
 
 // ---------------------------------------------------------------------------
-// Input validation — POST /api/analyze-2ar
+// Input validation -- POST /api/analyze-2ar
 // ---------------------------------------------------------------------------
-describe('POST /api/analyze-2ar — input validation', () => {
+describe('POST /api/analyze-2ar -- input validation', () => {
   it('returns 400 when required fields are missing', async () => {
     const res = await request(app)
       .post('/api/analyze-2ar')
       .send({ systemPrompt: 'hello' }); // missing userPrompt
 
     expect(res.status).toBe(400);
-    expect(res.body.error).toMatch(/[Mm]issing required fields/);
+    const body = res.body as ErrorResponse;
+    expect(body.error).toMatch(/[Mm]issing required fields/);
   });
 
   it('returns 400 when systemPrompt exceeds 30000 characters', async () => {
@@ -104,7 +109,8 @@ describe('POST /api/analyze-2ar — input validation', () => {
       });
 
     expect(res.status).toBe(400);
-    expect(res.body.error).toMatch(/systemPrompt/i);
+    const body = res.body as ErrorResponse;
+    expect(body.error).toMatch(/systemPrompt/i);
   });
 
   it('returns 400 when userPrompt exceeds 100000 characters', async () => {
@@ -116,14 +122,15 @@ describe('POST /api/analyze-2ar — input validation', () => {
       });
 
     expect(res.status).toBe(400);
-    expect(res.body.error).toMatch(/userPrompt/i);
+    const body = res.body as ErrorResponse;
+    expect(body.error).toMatch(/userPrompt/i);
   });
 });
 
 // ---------------------------------------------------------------------------
-// Input validation — GET /api/islenskubraut/pdf
+// Input validation -- GET /api/islenskubraut/pdf
 // ---------------------------------------------------------------------------
-describe('GET /api/islenskubraut/pdf — input validation', () => {
+describe('GET /api/islenskubraut/pdf -- input validation', () => {
   it('returns 400 when query params are missing', async () => {
     const res = await request(app).get('/api/islenskubraut/pdf');
 
@@ -141,7 +148,8 @@ describe('GET /api/islenskubraut/pdf — input validation', () => {
     const res = await request(app).get('/api/islenskubraut/pdf?flokkur=dyr&stig=C1');
 
     expect(res.status).toBe(400);
-    expect(res.body.error).toMatch(/stig/i);
+    const body = res.body as ErrorResponse;
+    expect(body.error).toMatch(/stig/i);
   });
 
   it('returns 404 when category does not exist', async () => {
@@ -150,14 +158,15 @@ describe('GET /api/islenskubraut/pdf — input validation', () => {
     );
 
     expect(res.status).toBe(404);
-    expect(res.body.error).toMatch(/[Ff]lokkur/);
+    const body = res.body as ErrorResponse;
+    expect(body.error).toMatch(/[Ff]lokkur/);
   });
 });
 
 // ---------------------------------------------------------------------------
-// Input validation — POST /api/process-document
+// Input validation -- POST /api/process-document
 // ---------------------------------------------------------------------------
-describe('POST /api/process-document — input validation', () => {
+describe('POST /api/process-document -- input validation', () => {
   it('returns 400 or 500 when no file is uploaded', async () => {
     const res = await request(app)
       .post('/api/process-document')
