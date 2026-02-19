@@ -32,8 +32,8 @@ interface AuthGuardProps {
  * ```
  */
 export const AuthGuard = ({ children }: AuthGuardProps) => {
-  // ⚠️ TEMPORARY: Bypass authentication for testing
-  const BYPASS_AUTH = true; // Set to false to re-enable auth
+  // Auth bypass only works in dev mode with explicit env var
+  const BYPASS_AUTH = import.meta.env.DEV && import.meta.env.VITE_BYPASS_AUTH === 'true';
 
   // Hooks must be called before any conditional returns
   const { instance, inProgress } = useMsal();
@@ -61,7 +61,7 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
 
   // Bypass auth if flag is set (for testing only)
   if (BYPASS_AUTH) {
-    console.warn('⚠️ AUTHENTICATION BYPASSED - FOR TESTING ONLY');
+    console.warn('⚠️ AUTHENTICATION BYPASSED — VITE_BYPASS_AUTH=true in development mode');
     return <>{children}</>;
   }
 
