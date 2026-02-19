@@ -45,8 +45,14 @@ const filteredOrigins = allowedOrigins.filter(Boolean);
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl)
-    if (!origin) return callback(null, true);
+    // In production, reject requests without Origin header to prevent
+    // abuse from curl, extensions, and non-browser clients
+    if (!origin) {
+      if (process.env.NODE_ENV !== 'production') {
+        return callback(null, true);
+      }
+      return callback(new Error('Origin header required'));
+    }
 
     if (filteredOrigins.includes(origin)) {
       callback(null, true);
