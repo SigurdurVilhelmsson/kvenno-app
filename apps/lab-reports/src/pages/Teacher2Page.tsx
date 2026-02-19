@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import { Home, Upload, CheckCircle, RotateCcw, Download } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
+import { ChecklistResults } from '@/components/ChecklistResults';
+import { Toast } from '@/components/Toast';
+import { experimentConfigs2, getExperiments2 } from '@/config/experiments';
 import {
   Analysis2Result,
   Toast as ToastType,
   ExperimentConfig2,
 } from '@/types';
-import { experimentConfigs2, getExperiments2 } from '@/config/experiments';
-import { extractTextFromFile } from '@/utils/fileProcessing';
 import { processFile2 } from '@/utils/api2';
 import { exportChecklist2ToCSV } from '@/utils/export2';
-import { Toast } from '@/components/Toast';
-import { ChecklistResults } from '@/components/ChecklistResults';
+import { extractTextFromFile } from '@/utils/fileProcessing';
 
 interface FileWithResult {
   file: File;

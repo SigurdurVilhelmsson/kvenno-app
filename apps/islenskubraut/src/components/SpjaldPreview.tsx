@@ -6,7 +6,7 @@ interface SpjaldPreviewProps {
   view?: 'front' | 'back' | 'both';
 }
 
-export default function SpjaldPreview({ category, level, view = 'both' }: SpjaldPreviewProps) {
+export function SpjaldPreview({ category, level, view = 'both' }: SpjaldPreviewProps) {
   const sentenceFrame = category.sentenceFrames.find((sf) => sf.level === level);
 
   return (

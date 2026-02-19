@@ -8,7 +8,7 @@ export const exportProgressAsJSON = (
   gameName: string,
   gameVersion: string,
   progress: GameProgress,
-  summary: Record<string, any>
+  summary: Record<string, string | number | boolean>
 ): void => {
   const exportData: ExportData = {
     exportTimestamp: new Date().toISOString(),

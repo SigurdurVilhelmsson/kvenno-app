@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react';
+
 import { AnimatedMolecule, DragDropBuilder, FeedbackPanel } from '@shared/components';
 import type { DraggableItemData, DropZoneData, DropResult, ZoneState } from '@shared/components';
-import { organicToMolecule } from '../utils/organicConverter';
+
 import { StructureFromNameChallenge } from './StructureFromNameChallenge';
+import { organicToMolecule } from '../utils/organicConverter';
 
 // Misconceptions for organic nomenclature
 const NOMENCLATURE_MISCONCEPTIONS: Record<string, string> = {

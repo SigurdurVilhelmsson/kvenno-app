@@ -1,5 +1,5 @@
-import { FileContent, Analysis2Result, ExperimentConfig2 } from '@/types';
 import { build2ndYearSystemPrompt, build2ndYearUserPrompt } from '@/config/prompts2';
+import { FileContent, Analysis2Result, ExperimentConfig2 } from '@/types';
 
 const API_TIMEOUT = 90000; // 90 seconds
 

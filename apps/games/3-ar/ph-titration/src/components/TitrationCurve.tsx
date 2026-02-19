@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
+
 import { InteractiveGraph } from '@shared/components';
 import type { DataPoint, DataSeries, MarkerConfig, RegionConfig, HorizontalLineConfig } from '@shared/components';
+
 import { Titration } from '../types';
 
 interface TitrationCurveProps {

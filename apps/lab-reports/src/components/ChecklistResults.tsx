@@ -1,5 +1,7 @@
 import React from 'react';
+
 import { CheckCircle, XCircle, AlertCircle, HelpCircle } from 'lucide-react';
+
 import { Analysis2Result, ChecklistResult } from '@/types';
 
 interface Props {

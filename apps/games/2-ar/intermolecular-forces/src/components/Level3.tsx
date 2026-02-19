@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+
 import { shuffleArray } from '@shared/utils';
 
 interface Level3Props {

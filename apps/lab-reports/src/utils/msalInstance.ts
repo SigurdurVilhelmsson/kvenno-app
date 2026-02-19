@@ -9,8 +9,9 @@
  */
 
 import { PublicClientApplication } from '@azure/msal-browser';
-import { msalConfig } from '../config/authConfig';
+
 import { getRedirectUrl } from './authHelpers';
+import { msalConfig } from '../config/authConfig';
 
 /**
  * Initialize MSAL instance

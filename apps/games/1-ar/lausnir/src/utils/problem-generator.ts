@@ -1,5 +1,5 @@
-import { Problem, Difficulty, ProblemType, Chemical } from '../types';
 import { CHEMICALS } from '../data';
+import { Problem, Difficulty, ProblemType, Chemical } from '../types';
 
 export function generateProblem(difficulty: Difficulty): Problem {
   const problemTypes: ProblemType[] = [

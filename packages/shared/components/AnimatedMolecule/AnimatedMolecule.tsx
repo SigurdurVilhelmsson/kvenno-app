@@ -10,11 +10,10 @@
  */
 
 import { useMemo } from 'react';
+
 import type { AnimatedMoleculeProps } from '@shared/types';
-import { MoleculeAtom, MoleculeAtomDefs } from './MoleculeAtom';
-import { MoleculeBond, MoleculeBondDefs } from './MoleculeBond';
-import { MoleculeLonePair, MoleculeLonePairDefs, calculateLonePairAngles } from './MoleculeLonePair';
-import { MoleculeDipole, MoleculeDipoleDefs, calculateDipoleDirection, calculateDipoleLength } from './MoleculeDipole';
+
+import { GEOMETRY_COORDS } from './molecule.constants';
 import {
   calculateAtomPositions,
   calculateOrganicChainPositions,
@@ -25,7 +24,10 @@ import {
   ensureAtomIds,
   getDepthStyle,
 } from './molecule.utils';
-import { GEOMETRY_COORDS } from './molecule.constants';
+import { MoleculeAtom, MoleculeAtomDefs } from './MoleculeAtom';
+import { MoleculeBond, MoleculeBondDefs } from './MoleculeBond';
+import { MoleculeDipole, MoleculeDipoleDefs, calculateDipoleDirection, calculateDipoleLength } from './MoleculeDipole';
+import { MoleculeLonePair, MoleculeLonePairDefs, calculateLonePairAngles } from './MoleculeLonePair';
 import { useMoleculeAnimation, MOLECULE_KEYFRAMES } from './useMoleculeAnimation';
 
 export function AnimatedMolecule({

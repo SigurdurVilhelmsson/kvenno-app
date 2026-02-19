@@ -15,8 +15,10 @@
  */
 
 import { useEffect, useState } from 'react';
+
 import { useMsal } from '@azure/msal-react';
 import { useNavigate } from 'react-router-dom';
+
 import { getRedirectUrl } from '../utils/authHelpers';
 
 export const AuthCallback = () => {

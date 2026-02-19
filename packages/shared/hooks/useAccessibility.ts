@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+
 import { AccessibilitySettings } from '@shared/types';
 
 const DEFAULT_SETTINGS: AccessibilitySettings = {

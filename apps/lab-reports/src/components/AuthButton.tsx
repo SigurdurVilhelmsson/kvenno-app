@@ -21,6 +21,7 @@
 
 import { useMsal, useIsAuthenticated } from '@azure/msal-react';
 import { LogIn, LogOut, User } from 'lucide-react';
+
 import { loginRequest } from '../config/authConfig';
 
 export const AuthButton = () => {

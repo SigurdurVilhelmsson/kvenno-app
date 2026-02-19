@@ -1,9 +1,10 @@
 import * as pdfjsLib from 'pdfjs-dist';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
+
 import { FileContent } from '@/types';
 
 // Configure PDF.js worker with smart path resolution and CDN fallback
 // Import the worker URL from Vite
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 /**
  * Get the correct worker URL based on deployment context

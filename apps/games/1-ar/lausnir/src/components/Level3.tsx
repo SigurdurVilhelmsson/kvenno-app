@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Problem, Difficulty, GameMode } from '../types';
+
 import { CHEMISTRY_FACTS } from '../data';
+import { Problem, Difficulty, GameMode } from '../types';
+import { BeakerVisualization } from './BeakerVisualization';
+import { FormulaCard } from './FormulaCard';
+import { StepBySolution } from './StepBySolution';
 import { generateProblem } from '../utils/problem-generator';
-import {
-  validateInput,
-  checkAnswer,
-  getContextualFeedback
-} from '../utils/validation';
 import {
   getPointValue,
   getHintPenalty,
@@ -16,9 +15,11 @@ import {
   getProblemCount,
   getAchievement
 } from '../utils/scoring';
-import { BeakerVisualization } from './BeakerVisualization';
-import { StepBySolution } from './StepBySolution';
-import { FormulaCard } from './FormulaCard';
+import {
+  validateInput,
+  checkAnswer,
+  getContextualFeedback
+} from '../utils/validation';
 
 interface Level3Props {
   onComplete: (score: number, maxScore: number, hintsUsed: number) => void;

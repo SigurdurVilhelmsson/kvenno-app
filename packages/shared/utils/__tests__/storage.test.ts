@@ -1,4 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
+import type { GameProgress } from '@shared/types';
+
 import {
   saveProgress,
   loadProgress,
@@ -7,7 +10,6 @@ import {
   clearAllProgress,
   exportAllProgress,
 } from '../storage';
-import type { GameProgress } from '@shared/types';
 
 // Mock localStorage
 const createMockLocalStorage = () => {

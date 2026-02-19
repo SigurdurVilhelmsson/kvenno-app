@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Reaction, Difficulty } from '../types';
-import { REACTIONS } from '../data/reactions';
+
 import { getMolarMass, roundMass } from '../data/molar-masses';
-import { calculateCorrectAnswer, generateReactantCounts, calculatePoints } from '../utils/calculations';
+import { REACTIONS } from '../data/reactions';
+import { Reaction, Difficulty } from '../types';
 import { Molecule } from './Molecule';
+import { calculateCorrectAnswer, generateReactantCounts, calculatePoints } from '../utils/calculations';
 
 type UnitMode = 'molecules' | 'grams';
 

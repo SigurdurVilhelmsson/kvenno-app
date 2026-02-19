@@ -482,7 +482,7 @@ export function LewisGuidedMode({
                       2 (tengi) + {getAtomLonePairs(atom.symbol) * 2} (pör) = {' '}
                       <span className={`font-bold ${
                         atom.symbol === 'H'
-                          ? 2 === 2 ? 'text-green-600' : 'text-orange-600'
+                          ? 'text-green-600'
                           : 2 + getAtomLonePairs(atom.symbol) * 2 === 8
                           ? 'text-green-600'
                           : 'text-orange-600'

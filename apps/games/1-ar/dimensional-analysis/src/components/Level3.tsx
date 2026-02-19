@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react';
+
 import { level3Challenges } from '../data/challenges';
 import { scoreExplanation, calculateCompositeScore, countSignificantFigures } from '../utils/scoring';
+
+interface ScoreResult {
+  answer: number;
+  method: number;
+  explanation: number;
+  efficiency: number;
+  composite: number;
+  sigFig: number | null;
+  userSigFigs: number | null;
+  hintPenalty: number;
+}
 
 interface Level3Progress {
   problemsCompleted: number;
@@ -44,7 +56,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
   const [selectedPath, setSelectedPath] = useState<number | null>(null);
   const [explanation, setExplanation] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
-  const [scores, setScores] = useState<any>(null);
+  const [scores, setScores] = useState<ScoreResult | null>(null);
   const [hintUsed, setHintUsed] = useState(false);
   const [showHint, setShowHint] = useState(false);
 

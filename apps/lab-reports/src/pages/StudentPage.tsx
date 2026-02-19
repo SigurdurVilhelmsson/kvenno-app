@@ -1,25 +1,27 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import { Home } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
+import { FileUpload } from '@/components/FileUpload';
+import { StudentFeedback as StudentFeedbackComponent } from '@/components/StudentFeedback';
+import { StudentHome } from '@/components/StudentHome';
+import { Toast } from '@/components/Toast';
+import { WorksheetView } from '@/components/WorksheetView';
+import { experimentConfigs, getExperiments } from '@/config/experiments';
 import {
   StudentFeedback,
   ProcessingStatus,
   Toast as ToastType,
   GradingSession,
 } from '@/types';
-import { experimentConfigs, getExperiments } from '@/config/experiments';
-import { extractTextFromFile } from '@/utils/fileProcessing';
 import { processFile } from '@/utils/api';
+import { extractTextFromFile } from '@/utils/fileProcessing';
 import {
   loadSavedSessions,
   saveSession,
   generateSessionId,
 } from '@/utils/storage';
-import { Toast } from '@/components/Toast';
-import { FileUpload } from '@/components/FileUpload';
-import { StudentFeedback as StudentFeedbackComponent } from '@/components/StudentFeedback';
-import { StudentHome } from '@/components/StudentHome';
-import { WorksheetView } from '@/components/WorksheetView';
 
 type View = 'home' | 'experiments' | 'worksheet' | 'upload' | 'history';
 

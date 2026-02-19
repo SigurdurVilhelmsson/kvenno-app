@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+
 import { FeedbackPanel } from '@shared/components';
 import type { DetailedFeedback } from '@shared/types';
+
 import { level1Questions, QuestionType } from '../data/questions';
 import { scoreExplanation } from '../utils/scoring';
 
@@ -225,7 +227,7 @@ export function Level1({ onComplete, onBack, initialProgress }: Level1Props) {
               // Regular options
               question.options?.map((option, idx) => {
                 const isObject = typeof option === 'object' && option !== null;
-                const optionText = isObject ? (option as any).text : option as string;
+                const optionText = isObject ? (option as { text: string }).text : option as string;
 
                 return (
                   <button

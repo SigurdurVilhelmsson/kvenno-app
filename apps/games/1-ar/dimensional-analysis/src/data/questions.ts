@@ -13,7 +13,7 @@ export interface Level1Question {
   id: string;
   type: QuestionType;
   prompt: string;
-  options?: any[];
+  options?: (string | { text: string; correct: boolean })[];
   factors?: { text: string; correct: boolean }[];
   correct?: number;
   correctText?: string;

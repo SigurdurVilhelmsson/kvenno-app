@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef } from 'react';
+
 import { ParticleSimulation, PHYSICS_PRESETS, useResponsiveSize } from '@shared/components';
 import type { ParticleType, ReactionConfig } from '@shared/components';
 

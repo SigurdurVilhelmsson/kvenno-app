@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+
 import { LEVEL3_CHALLENGES } from '../data/level3-challenges';
 
 interface Level3Props {

@@ -1,8 +1,9 @@
 /**
  * @vitest-environment jsdom
  */
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
 import { useI18n } from '../useI18n';
 
 // Mock localStorage

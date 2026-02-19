@@ -1,5 +1,8 @@
 /** @type {import('tailwindcss').Config} */
+import sharedPreset from '../../../../packages/shared/styles/tailwind-preset.ts';
+
 export default {
+  presets: [sharedPreset],
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -8,4 +11,4 @@ export default {
     extend: {},
   },
   plugins: [],
-}
+};

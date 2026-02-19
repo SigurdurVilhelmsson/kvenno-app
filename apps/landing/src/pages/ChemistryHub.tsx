@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+
 import { Breadcrumbs } from '@kvenno/shared/components';
 import type { BreadcrumbItem } from '@kvenno/shared/components';
 
@@ -41,7 +42,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
   { label: 'Efnafræði' },
 ];
 
-function ChemistryHub() {
+export function ChemistryHub() {
   return (
     <>
       {/* Breadcrumbs */}
@@ -90,4 +91,3 @@ function ChemistryHub() {
   );
 }
 
-export default ChemistryHub;

@@ -1,19 +1,14 @@
 /** @type {import('tailwindcss').Config} */
+import sharedPreset from '../../../../packages/shared/styles/tailwind-preset.ts';
+
 export default {
+  presets: [sharedPreset],
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {
-      colors: {
-        'kvenno-orange': {
-          DEFAULT: '#f36b22',
-          dark: '#d95a1a',
-          light: '#ff8c4d',
-        },
-      },
-    },
+    extend: {},
   },
   plugins: [],
-}
+};

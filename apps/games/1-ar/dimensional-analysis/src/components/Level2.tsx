@@ -1,9 +1,11 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { level2Problems } from '../data/problems';
-import { UnitCancellationVisualizer } from './UnitCancellationVisualizer';
-import { UnitBlock, ConversionFactorBlock } from './UnitBlock';
+
 import { DragDropBuilder, FeedbackPanel } from '@shared/components';
 import type { DraggableItemData, DropZoneData, DropResult, ZoneState, DetailedFeedback } from '@shared/components';
+
+import { UnitBlock, ConversionFactorBlock } from './UnitBlock';
+import { UnitCancellationVisualizer } from './UnitCancellationVisualizer';
+import { level2Problems } from '../data/problems';
 
 // Misconceptions for common errors
 const MISCONCEPTIONS: Record<string, string> = {

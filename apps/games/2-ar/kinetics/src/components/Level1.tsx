@@ -1,10 +1,12 @@
 import { useState, useMemo } from 'react';
+
 import { FeedbackPanel } from '@shared/components';
 import type { TieredHints } from '@shared/types';
+import { shuffleArray } from '@shared/utils';
+
+import { CatalystEffectDemo } from './CatalystEffectDemo';
 import { CollisionDemo } from './CollisionDemo';
 import { MaxwellBoltzmann } from './MaxwellBoltzmann';
-import { CatalystEffectDemo } from './CatalystEffectDemo';
-import { shuffleArray } from '@shared/utils';
 
 // Misconceptions for kinetics concepts
 const MISCONCEPTIONS: Record<number, string> = {

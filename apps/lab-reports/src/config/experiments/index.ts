@@ -1,7 +1,8 @@
-import { ExperimentConfigs, ExperimentConfig2 } from '@/types';
-import { jafnvaegi } from './jafnvaegi';
 import { hlutleysing_syru } from './hlutleysing_syru';
+import { jafnvaegi } from './jafnvaegi';
 import { orka_2ar } from './orka_2ar';
+
+import { ExperimentConfigs, ExperimentConfig2 } from '@/types';
 
 /**
  * Experiment Configurations

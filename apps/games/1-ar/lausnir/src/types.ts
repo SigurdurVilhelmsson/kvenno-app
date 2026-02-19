@@ -20,7 +20,7 @@ export interface Problem {
   type: ProblemType;
   chemical?: Chemical;
   description: string;
-  given: Record<string, any>;
+  given: Record<string, number>;
   question: string;
   answer: number;
   unit: string;
@@ -50,7 +50,7 @@ export interface GameState {
   gameMode: GameMode;
   showFormulaCard: boolean;
   showWorkspace: boolean;
-  workspaceValues: Record<string, any>;
+  workspaceValues: Record<string, string | number>;
   timerMode: boolean;
   timeRemaining: number;
   soundEnabled: boolean;

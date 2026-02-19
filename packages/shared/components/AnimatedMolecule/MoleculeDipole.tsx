@@ -6,6 +6,7 @@
  */
 
 import type { Position2D, DipoleMoment } from '@shared/types';
+
 import { MOLECULE_COLORS } from './molecule.constants';
 
 export interface MoleculeDipoleProps {

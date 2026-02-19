@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { Reaction } from '../types';
-import { REACTIONS } from '../data/reactions';
-import { Molecule } from './Molecule';
-import { ReactionAnimation } from './ReactionAnimation';
+
 import { HintSystem, FeedbackPanel } from '@shared/components';
 import type { TieredHints } from '@shared/types';
 import { shuffleArray } from '@shared/utils';
+
+import { Molecule } from './Molecule';
+import { ReactionAnimation } from './ReactionAnimation';
+import { REACTIONS } from '../data/reactions';
+import { Reaction } from '../types';
 
 // Misconceptions for each challenge type
 const MISCONCEPTIONS: Record<ChallengeType, string> = {

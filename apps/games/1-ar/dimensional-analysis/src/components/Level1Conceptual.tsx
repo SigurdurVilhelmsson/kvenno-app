@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
-import { UnitBlock, ConversionFactorBlock, EquivalenceDisplay } from './UnitBlock';
+
 import type { TieredHints } from '@shared/types';
+
+import { UnitBlock, ConversionFactorBlock, EquivalenceDisplay } from './UnitBlock';
 
 interface Level1Progress {
   questionsAnswered: number;

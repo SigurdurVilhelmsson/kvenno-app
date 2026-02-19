@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
-import { LEVEL1_CHALLENGES } from '../data/level1-challenges';
-import { generateTitrationCurve } from '../utils/ph-calculations';
-import { titrations } from '../data/titrations';
-import type { MonoproticTitration } from '../types';
+
 import { HintSystem, InteractiveGraph, FeedbackPanel } from '@shared/components';
 import type { DataPoint, DataSeries, MarkerConfig } from '@shared/components';
 import { shuffleArray } from '@shared/utils';
+
+import { LEVEL1_CHALLENGES } from '../data/level1-challenges';
+import { titrations } from '../data/titrations';
+import type { MonoproticTitration } from '../types';
+import { generateTitrationCurve } from '../utils/ph-calculations';
 
 // Misconceptions for titration concepts
 const TITRATION_MISCONCEPTIONS: Record<string, string> = {

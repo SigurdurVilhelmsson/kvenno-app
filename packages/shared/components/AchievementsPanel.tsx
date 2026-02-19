@@ -1,4 +1,6 @@
 import { useState } from 'react';
+
+import { AchievementBadge } from './AchievementBadge';
 import {
   Achievement,
   AchievementCategory,
@@ -6,7 +8,6 @@ import {
   RARITY_COLORS,
 } from '../types/achievement.types';
 import { getAchievementProgress } from '../utils/achievements';
-import { AchievementBadge } from './AchievementBadge';
 
 interface AchievementsPanelProps {
   achievements: PlayerAchievements;

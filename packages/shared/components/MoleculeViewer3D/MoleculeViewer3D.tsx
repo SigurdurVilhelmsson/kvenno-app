@@ -6,9 +6,11 @@
  */
 
 import { Suspense, useMemo, useCallback, useRef } from 'react';
-import { Canvas } from '@react-three/fiber';
+
 import { OrbitControls, Text, Html } from '@react-three/drei';
+import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
+
 import type { MoleculeViewer3DProps, Atom3DProps, Bond3DProps } from './types';
 import type { MoleculeAtom, MoleculeBond } from '../../types/molecule.types';
 import { ELEMENT_VISUALS, DEFAULT_ELEMENT_VISUAL } from '../AnimatedMolecule/molecule.constants';

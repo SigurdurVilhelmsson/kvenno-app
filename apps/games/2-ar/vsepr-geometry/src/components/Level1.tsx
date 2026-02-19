@@ -1,11 +1,13 @@
 import { useState, useMemo } from 'react';
+
 import { AnimatedMolecule, FeedbackPanel, MoleculeViewer3DLazy } from '@shared/components';
 import type { TieredHints } from '@shared/types';
-import { geometryToMolecule } from '../utils/vseprConverter';
 import { shuffleArray } from '@shared/utils';
+
 import { BondAngleMeasurement } from './BondAngleMeasurement';
 import { ElectronRepulsionAnimation } from './ElectronRepulsionAnimation';
 import { ShapeTransitionAnimation } from './ShapeTransitionAnimation';
+import { geometryToMolecule } from '../utils/vseprConverter';
 
 // Misconceptions for VSEPR geometry
 const VSEPR_MISCONCEPTIONS: Record<string, string> = {

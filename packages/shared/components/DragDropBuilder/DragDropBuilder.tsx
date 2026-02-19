@@ -1,12 +1,13 @@
 import { useState, useCallback, useMemo } from 'react';
+
+import { DraggableItem } from './DraggableItem';
+import { DropZone } from './DropZone';
 import {
   DragDropBuilderProps,
   DraggableItemData,
   ZoneState,
   DropResult,
 } from './types';
-import { DraggableItem } from './DraggableItem';
-import { DropZone } from './DropZone';
 
 /**
  * DragDropBuilder Component

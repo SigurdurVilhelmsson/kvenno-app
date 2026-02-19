@@ -1,14 +1,16 @@
 import { useState, useEffect, useMemo } from 'react';
-import { PROBLEMS } from './data';
-import { EntropyVisualization } from './components/EntropyVisualization';
-import { useAchievements } from '@shared/hooks/useAchievements';
-import { useGameI18n } from '@shared/hooks';
-import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
-import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
-import { InteractiveGraph, LanguageSwitcher } from '@shared/components';
+
+import { InteractiveGraph, LanguageSwitcher, ErrorBoundary } from '@shared/components';
 import type { DataPoint, DataSeries, MarkerConfig, RegionConfig, VerticalLineConfig } from '@shared/components';
-import type { Difficulty, GameMode, Spontaneity, Problem } from './types';
+import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
+import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
+import { useGameI18n } from '@shared/hooks';
+import { useAchievements } from '@shared/hooks/useAchievements';
+
+import { EntropyVisualization } from './components/EntropyVisualization';
+import { PROBLEMS } from './data';
 import { gameTranslations } from './i18n';
+import type { Difficulty, GameMode, Spontaneity, Problem } from './types';
 
 interface ThermoProgress {
   score: number;
@@ -46,7 +48,7 @@ function saveProgress(progress: ThermoProgress): void {
 
 function App() {
   const [mode, setMode] = useState<GameMode>('menu');
-  const { t, language, setLanguage } = useGameI18n({ gameTranslations });
+  const { language, setLanguage } = useGameI18n({ gameTranslations });
   const [difficulty, setDifficulty] = useState<Difficulty>('beginner');
   const [currentProblem, setCurrentProblem] = useState<Problem | null>(null);
   const [temperature, setTemperature] = useState(298);
@@ -883,4 +885,12 @@ function App() {
   );
 }
 
-export default App;
+function AppWithErrorBoundary() {
+  return (
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
+  );
+}
+
+export default AppWithErrorBoundary;

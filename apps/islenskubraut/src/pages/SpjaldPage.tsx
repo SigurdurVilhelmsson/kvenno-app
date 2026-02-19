@@ -1,11 +1,13 @@
 import { useState } from 'react';
+
 import { useParams, Link } from 'react-router-dom';
+
+import { DownloadButton } from '../components/DownloadButton';
+import { LevelSelector } from '../components/LevelSelector';
+import { SpjaldPreview } from '../components/SpjaldPreview';
+import { SpurningaSpjald } from '../components/SpurningaSpjald';
 import { getCategoryById } from '../data';
 import { Level } from '../data/types';
-import LevelSelector from '../components/LevelSelector';
-import SpjaldPreview from '../components/SpjaldPreview';
-import SpurningaSpjald from '../components/SpurningaSpjald';
-import DownloadButton from '../components/DownloadButton';
 
 type ViewTab = 'spurningaspjald' | 'ordafordi' | 'setningarammar';
 
@@ -15,7 +17,7 @@ const TABS: { id: ViewTab; label: string }[] = [
   { id: 'setningarammar', label: 'Setningarammar' },
 ];
 
-export default function SpjaldPage() {
+export function SpjaldPage() {
   const { flokkur } = useParams<{ flokkur: string }>();
   const category = getCategoryById(flokkur || '');
   const [level, setLevel] = useState<Level>('A1');

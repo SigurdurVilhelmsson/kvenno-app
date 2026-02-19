@@ -1,10 +1,11 @@
 /**
  * @vitest-environment jsdom
  */
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
-import { useProgress } from '../useProgress';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
 import type { GameProgress } from '../../types';
+import { useProgress } from '../useProgress';
 
 // Mock localStorage
 const createMockLocalStorage = () => {

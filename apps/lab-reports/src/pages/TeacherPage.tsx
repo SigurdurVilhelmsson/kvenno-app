@@ -1,15 +1,23 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import { History, Home } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
+import { FileUpload } from '@/components/FileUpload';
+import { SaveDialog, ConfirmDialog } from '@/components/Modal';
+import { SessionHistory } from '@/components/SessionHistory';
+import { TeacherResults } from '@/components/TeacherResults';
+import { Toast } from '@/components/Toast';
+import { experimentConfigs, getExperiments } from '@/config/experiments';
 import {
   AnalysisResult,
   ProcessingStatus,
   Toast as ToastType,
   GradingSession,
 } from '@/types';
-import { experimentConfigs, getExperiments } from '@/config/experiments';
-import { extractTextFromFile } from '@/utils/fileProcessing';
 import { processFile } from '@/utils/api';
+import { exportResultsToCSV } from '@/utils/export';
+import { extractTextFromFile } from '@/utils/fileProcessing';
 import {
   loadSavedSessions,
   saveSession,
@@ -17,12 +25,6 @@ import {
   deleteSession as deleteStoredSession,
   generateSessionId,
 } from '@/utils/storage';
-import { exportResultsToCSV } from '@/utils/export';
-import { Toast } from '@/components/Toast';
-import { SaveDialog, ConfirmDialog } from '@/components/Modal';
-import { FileUpload } from '@/components/FileUpload';
-import { TeacherResults } from '@/components/TeacherResults';
-import { SessionHistory } from '@/components/SessionHistory';
 
 type View = 'grader' | 'history';
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import { Level } from '../data/types';
 
 interface DownloadButtonProps {
@@ -9,7 +10,7 @@ interface DownloadButtonProps {
 
 const API_URL = import.meta.env.VITE_API_URL || '';
 
-export default function DownloadButton({
+export function DownloadButton({
   categoryId,
   level,
   color,

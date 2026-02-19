@@ -8,7 +8,7 @@ export const storage = {
       return defaultValue;
     }
   },
-  set: (key: string, value: any): void => {
+  set: (key: string, value: unknown): void => {
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch (e) {

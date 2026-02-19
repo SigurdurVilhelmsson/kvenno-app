@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+
 import { ParticleSimulation, PHYSICS_PRESETS } from '@shared/components';
 import type { ParticleType, PhysicsConfig } from '@shared/components';
 

@@ -3,8 +3,9 @@
  */
 
 import type { MoleculeAtom as MoleculeAtomType, Position2D, MoleculeRenderMode } from '@shared/types';
-import { getElementVisual, getContrastTextColor } from './molecule.utils';
+
 import { MOLECULE_COLORS } from './molecule.constants';
+import { getElementVisual, getContrastTextColor } from './molecule.utils';
 
 export interface MoleculeAtomProps {
   /** Atom data */

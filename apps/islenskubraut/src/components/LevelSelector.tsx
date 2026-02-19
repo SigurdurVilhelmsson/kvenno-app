@@ -12,7 +12,7 @@ const levels: { value: Level; label: string; description: string }[] = [
   { value: 'B1', label: 'B1', description: 'Miðstig' },
 ];
 
-export default function LevelSelector({
+export function LevelSelector({
   selected,
   onChange,
   color,

@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
+
 import { Category } from '../data/types';
 
 interface CategoryCardProps {
   category: Category;
 }
 
-export default function CategoryCard({ category }: CategoryCardProps) {
+export function CategoryCard({ category }: CategoryCardProps) {
   return (
     <Link to={`/spjald/${category.id}`}>
       <div

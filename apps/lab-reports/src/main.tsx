@@ -1,15 +1,17 @@
-/* eslint-disable react-refresh/only-export-components */
 import React from 'react';
+
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+
 import { MsalProvider } from '@azure/msal-react';
-import { msalInstance, initializeMsal } from './utils/msalInstance';
-import { AuthGuard } from './components/AuthGuard';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+
 import { AuthCallback } from './components/AuthCallback';
+import { AuthGuard } from './components/AuthGuard';
 import { Landing } from './components/Landing';
-import { TeacherPage } from './pages/TeacherPage';
-import { Teacher2Page } from './pages/Teacher2Page';
 import { StudentPage } from './pages/StudentPage';
+import { Teacher2Page } from './pages/Teacher2Page';
+import { TeacherPage } from './pages/TeacherPage';
+import { msalInstance, initializeMsal } from './utils/msalInstance';
 import './index.css';
 
 // Check environment variable for mode locking

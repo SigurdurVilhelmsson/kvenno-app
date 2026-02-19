@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import { PeriodicTable } from './PeriodicTable';
 
 // Fisher-Yates shuffle for reliable randomization

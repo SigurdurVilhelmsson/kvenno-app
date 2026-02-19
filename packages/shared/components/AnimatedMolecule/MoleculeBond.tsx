@@ -3,6 +3,7 @@
  */
 
 import type { MoleculeBond as MoleculeBondType, Position2D, MoleculeRenderMode } from '@shared/types';
+
 import { MOLECULE_COLORS, BOND_STYLES } from './molecule.constants';
 import { getOrganicBondColor, getOrganicBondGlow } from './molecule.utils';
 

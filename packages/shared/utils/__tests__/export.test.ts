@@ -2,13 +2,14 @@
  * @vitest-environment jsdom
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
+import type { GameProgress } from '../../types';
 import {
   exportProgressAsJSON,
   exportProgressAsCSV,
   formatTimeSpent,
   calculatePercentage,
 } from '../export';
-import type { GameProgress } from '../../types';
 
 describe('export', () => {
   describe('formatTimeSpent', () => {

@@ -1,4 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
+import type { PlayerAchievements, Achievement, AchievementEvent } from '../../types/achievement.types';
 import {
   ACHIEVEMENTS,
   getDefaultPlayerAchievements,
@@ -15,7 +17,6 @@ import {
   getLockedAchievements,
   resetAchievements,
 } from '../achievements';
-import type { PlayerAchievements, Achievement, AchievementEvent } from '../../types/achievement.types';
 
 // Mock localStorage
 const createMockLocalStorage = () => {
@@ -608,7 +609,7 @@ describe('achievements', () => {
 
     describe('total_problems achievements', () => {
       it('should unlock problem-solver-10 after 10 correct answers', () => {
-        let achievements = createPlayerAchievements({
+        const achievements = createPlayerAchievements({
           totalProblemsSolved: 9,
         });
         mockStorage._setStore({
@@ -781,7 +782,7 @@ describe('achievements', () => {
       });
 
       it('should return notification with isNew flag', () => {
-        let achievements = createPlayerAchievements();
+        const achievements = createPlayerAchievements();
         mockStorage._setStore({
           'kvenno-chemistry-achievements': JSON.stringify(achievements),
         });

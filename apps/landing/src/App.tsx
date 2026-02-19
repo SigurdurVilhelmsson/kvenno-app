@@ -1,10 +1,12 @@
 import { Routes, Route } from 'react-router-dom';
-import { Header, Footer } from '@kvenno/shared/components';
-import Home from './pages/Home';
-import ChemistryHub from './pages/ChemistryHub';
-import YearHub from './pages/YearHub';
 
-function App() {
+import { Header, Footer } from '@kvenno/shared/components';
+
+import { ChemistryHub } from './pages/ChemistryHub';
+import { Home } from './pages/Home';
+import { YearHub } from './pages/YearHub';
+
+export function App() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <a
@@ -30,4 +32,3 @@ function App() {
   );
 }
 
-export default App;

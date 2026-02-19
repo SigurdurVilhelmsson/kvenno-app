@@ -1,6 +1,9 @@
 import type { Config } from 'tailwindcss';
 
+import sharedPreset from '../../packages/shared/styles/tailwind-preset.ts';
+
 const config: Config = {
+  presets: [sharedPreset],
   content: [
     './index.html',
     './src/**/*.{js,ts,jsx,tsx}',
@@ -10,11 +13,6 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'kvenno-orange': {
-          DEFAULT: '#f36b22',
-          dark: '#d95a1a',
-          light: '#ff8c4d',
-        },
         dyr: '#2D6A4F',
         matur: '#E76F51',
         farartaeki: '#264653',

@@ -52,7 +52,7 @@ export interface ExportData {
   gameName: string;
   gameVersion: string;
   studentProgress: GameProgress;
-  summary: Record<string, any>;
+  summary: Record<string, string | number | boolean>;
 }
 
 export interface AccessibilitySettings {

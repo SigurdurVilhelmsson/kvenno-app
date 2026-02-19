@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getCompoundsByDifficulty, type Compound } from '../data/compounds';
+
 import { CompoundVisualization } from './MolecularStructure';
+import { getCompoundsByDifficulty, type Compound } from '../data/compounds';
 
 interface Level3Props {
   onComplete: (moves: number, difficulty: string, pairs: number, maxScore: number, hintsUsed: number) => void;

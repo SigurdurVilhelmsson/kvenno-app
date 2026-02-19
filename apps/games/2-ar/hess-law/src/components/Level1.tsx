@@ -1,7 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
+
 import { FeedbackPanel } from '@shared/components';
 import type { TieredHints } from '@shared/types';
 import { shuffleArray } from '@shared/utils';
+
 import { StatePathComparison } from './StatePathComparison';
 
 // Misconceptions for Hess's Law concepts

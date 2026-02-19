@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+
 import { FeedbackPanel, MoleculeViewer3DLazy } from '@shared/components';
 import type { DetailedFeedback } from '@shared/types';
-import { elementsToMolecule } from '../utils/moleculeConverter';
+
 import { PeriodicTable } from './PeriodicTable';
+import { elementsToMolecule } from '../utils/moleculeConverter';
 
 // Atomic masses for calculations
 const ATOMIC_MASSES: Record<string, number> = {
@@ -285,21 +287,23 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         correct = answer === challenge.correctCount;
         break;
 
-      case 'compare_mass':
+      case 'compare_mass': {
         const isHeavier = challenge.compound.molarMass > (challenge.compareCompound?.molarMass || 0);
         correct = (answer === 'first' && isHeavier) || (answer === 'second' && !isHeavier);
         break;
+      }
 
       case 'estimate_range':
         correct = answer === challenge.correctRangeIndex;
         break;
 
-      case 'build_molecule':
+      case 'build_molecule': {
         // Check if built atoms match the compound
         const targetElements = [...challenge.compound.elements].sort((a, b) => a.symbol.localeCompare(b.symbol));
         const builtElements = [...builtAtoms].sort((a, b) => a.symbol.localeCompare(b.symbol));
         correct = JSON.stringify(targetElements) === JSON.stringify(builtElements);
         break;
+      }
     }
 
     setIsCorrect(correct);
@@ -627,7 +631,7 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
           </div>
         );
 
-      case 'build_molecule':
+      case 'build_molecule': {
         // Get available elements from the compound
         const availableElements = [...new Set(challenge.compound.elements.map(e => e.symbol))];
 
@@ -708,6 +712,7 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
             )}
           </div>
         );
+      }
 
       case 'estimate_range':
         return (

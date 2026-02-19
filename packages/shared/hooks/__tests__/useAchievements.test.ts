@@ -1,10 +1,11 @@
 /**
  * @vitest-environment jsdom
  */
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useAchievements } from '../useAchievements';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+
 import type { PlayerAchievements } from '../../types/achievement.types';
+import { useAchievements } from '../useAchievements';
 
 // Mock localStorage
 const createMockLocalStorage = () => {

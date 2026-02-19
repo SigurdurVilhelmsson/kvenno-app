@@ -15,6 +15,7 @@
  */
 
 import { lazy, Suspense, useState, useEffect } from 'react';
+
 import type { MoleculeViewer3DProps } from './types';
 
 // Lazy load the actual 3D viewer component

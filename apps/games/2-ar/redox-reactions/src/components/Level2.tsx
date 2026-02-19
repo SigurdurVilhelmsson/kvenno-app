@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { OxidationStateDisplay } from './OxidationStateDisplay';
-import { HalfReactionBalancer } from './HalfReactionBalancer';
+
 import { ElectrochemicalCell } from './ElectrochemicalCell';
+import { HalfReactionBalancer } from './HalfReactionBalancer';
+import { OxidationStateDisplay } from './OxidationStateDisplay';
 
 interface Level2Props {
   onComplete: (score: number, maxScore: number, hintsUsed: number) => void;

@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
+
+import { HintSystem } from '@shared/components';
+
 import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
-import { HintSystem } from '@shared/components';
 
 interface Level2Props {
   onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
@@ -64,6 +66,14 @@ export default function Level2({
   const problem = BUFFER_PROBLEMS.find(p => p.id === puzzle.problemId);
   const maxScore = LEVEL2_PUZZLES.length * 100;
 
+  // Check completion - must be before conditional returns to satisfy rules-of-hooks
+  useEffect(() => {
+    if (completed >= LEVEL2_PUZZLES.length && !levelCompleteReported.current) {
+      levelCompleteReported.current = true;
+      onComplete(score, maxScore, hintsUsedTotal);
+    }
+  }, [completed, score, maxScore, hintsUsedTotal, onComplete]);
+
   // Safety check - should never happen with valid data
   if (!problem) {
     return (
@@ -82,14 +92,6 @@ export default function Level2({
     if (Math.abs(diff) < 0.01) return 'equal';
     return diff > 0 ? 'higher' : 'lower';
   };
-
-  // Check completion
-  useEffect(() => {
-    if (completed >= LEVEL2_PUZZLES.length && !levelCompleteReported.current) {
-      levelCompleteReported.current = true;
-      onComplete(score, maxScore, hintsUsedTotal);
-    }
-  }, [completed, score, maxScore, hintsUsedTotal, onComplete]);
 
   // Handle hint usage
   const handleHintUsed = () => {

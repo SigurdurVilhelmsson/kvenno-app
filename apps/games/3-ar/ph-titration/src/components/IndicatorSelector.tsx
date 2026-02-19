@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { indicators } from '../data/indicators';
 import { IndicatorType } from '../types';
 

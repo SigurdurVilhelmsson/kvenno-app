@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
+
+import { HintSystem } from '@shared/components';
+
 import { LEVEL3_PUZZLES } from '../data/level3-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
-import { HintSystem } from '@shared/components';
 
 interface Level3Props {
   onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
@@ -64,6 +66,14 @@ export default function Level3({
   const problem = BUFFER_PROBLEMS.find(p => p.id === puzzle.problemId);
   const maxScore = LEVEL3_PUZZLES.length * 100;
 
+  // Check completion - must be before conditional returns to satisfy rules-of-hooks
+  useEffect(() => {
+    if (completed >= LEVEL3_PUZZLES.length && !levelCompleteReported.current) {
+      levelCompleteReported.current = true;
+      onComplete(score, maxScore, hintsUsedTotal);
+    }
+  }, [completed, score, maxScore, hintsUsedTotal, onComplete]);
+
   // Safety check
   if (!problem) {
     return (
@@ -81,14 +91,6 @@ export default function Level3({
   const correctRatio = Math.pow(10, problem.targetPH - problem.pKa);
   const correctBaseMoles = targetMoles * correctRatio / (1 + correctRatio);
   const correctAcidMoles = targetMoles - correctBaseMoles;
-
-  // Check completion
-  useEffect(() => {
-    if (completed >= LEVEL3_PUZZLES.length && !levelCompleteReported.current) {
-      levelCompleteReported.current = true;
-      onComplete(score, maxScore, hintsUsedTotal);
-    }
-  }, [completed, score, maxScore, hintsUsedTotal, onComplete]);
 
   // Handle hint usage
   const handleHintUsed = () => {

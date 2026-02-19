@@ -1,7 +1,9 @@
 // IMPORTS MUST BE FIRST
 import { ReactNode, useEffect } from 'react';
-import { useMsal, useIsAuthenticated } from '@azure/msal-react';
+
 import { InteractionStatus } from '@azure/msal-browser';
+import { useMsal, useIsAuthenticated } from '@azure/msal-react';
+
 import { loginRequest } from '../config/authConfig';
 import { saveReturnUrl } from '../utils/authHelpers';
 

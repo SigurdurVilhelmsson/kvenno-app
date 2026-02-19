@@ -1,5 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
+
 import { shuffleArray } from '@shared/utils';
+
 import { ConcentrationComparison } from './StoichiometryVisualization';
 import { TemperatureComparison, TemperatureSolubilityCurve, SOLUBILITY_DATA, SolubilityData } from './TemperatureSolubility';
 

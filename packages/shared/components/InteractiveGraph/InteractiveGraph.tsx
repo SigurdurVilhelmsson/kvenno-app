@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
+
 import type {
   InteractiveGraphProps,
   DataPoint,

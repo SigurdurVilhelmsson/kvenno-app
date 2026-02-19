@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+
 import { Breadcrumbs } from '@kvenno/shared/components';
 import type { BreadcrumbItem } from '@kvenno/shared/components';
 
@@ -210,7 +211,7 @@ function ToolCardComponent({ tool }: { tool: ToolCard }) {
   );
 }
 
-function YearHub({ year }: YearHubProps) {
+export function YearHub({ year }: YearHubProps) {
   const config = yearConfigs[year];
 
   const breadcrumbItems: BreadcrumbItem[] = [
@@ -262,4 +263,3 @@ function YearHub({ year }: YearHubProps) {
   );
 }
 
-export default YearHub;

@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
+
+import { LanguageSwitcher, ErrorBoundary } from '@shared/components';
+import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
+import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
+import { useGameI18n } from '@shared/hooks';
+import { useAchievements } from '@shared/hooks/useAchievements';
+
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
-import { useAchievements } from '@shared/hooks/useAchievements';
-import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
-import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
-import { useGameI18n } from '@shared/hooks';
-import { LanguageSwitcher } from '@shared/components';
 import { gameTranslations } from './i18n';
 
 type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'complete';
@@ -457,4 +459,12 @@ function App() {
   );
 }
 
-export default App;
+function AppWithErrorBoundary() {
+  return (
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
+  );
+}
+
+export default AppWithErrorBoundary;

@@ -6,7 +6,9 @@
  */
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
+
 import type { MoleculeAnimationType } from '@shared/types';
+
 import { ANIMATION_DURATIONS } from './molecule.constants';
 
 export type AnimationState = 'idle' | 'running' | 'complete';
@@ -103,7 +105,7 @@ export function useMoleculeAnimation({
     }
 
     switch (animation) {
-      case 'build':
+      case 'build': {
         // Staggered build: atoms first, then bonds, then lone pairs
         const atomStagger = Math.max(50, duration / Math.max(atomCount, 1));
         const bondStagger = Math.max(30, (duration * 0.5) / Math.max(bondCount, 1));
@@ -117,6 +119,7 @@ export function useMoleculeAnimation({
           lonePairDelay: 50,
           lonePairDuration: 200,
         };
+      }
 
       case 'scale-in':
         // All elements scale in together with slight stagger

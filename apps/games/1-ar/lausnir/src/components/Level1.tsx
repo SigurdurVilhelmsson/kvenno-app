@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
+
 import { FeedbackPanel } from '@shared/components';
 import type { TieredHints } from '@shared/types';
+
 import { ParticleBeaker } from './ParticleBeaker';
 
 // Challenge types for categorizing feedback

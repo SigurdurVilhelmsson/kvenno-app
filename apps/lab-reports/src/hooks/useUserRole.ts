@@ -15,7 +15,9 @@
  */
 
 import { useState, useEffect } from 'react';
+
 import { useMsal } from '@azure/msal-react';
+
 import { getUserRole } from '../utils/roles';
 
 export interface UserRole {

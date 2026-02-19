@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
+
 import { tracks } from '../config/tracks';
 
-function Home() {
+export function Home() {
   return (
     <>
       {/* Intro Section */}
@@ -45,4 +46,3 @@ function Home() {
   );
 }
 
-export default Home;

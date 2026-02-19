@@ -287,8 +287,10 @@ export function calculatePH(titration: Titration, volumeAdded: number): number {
         titration.titrant.molarity
       );
 
-    default:
-      throw new Error(`Unknown titration type: ${(titration as any).type}`);
+    default: {
+      const _exhaustiveCheck: never = titration;
+      throw new Error(`Unknown titration type: ${(_exhaustiveCheck as Titration).type}`);
+    }
   }
 }
 
@@ -301,10 +303,10 @@ export function generateTitrationCurve(
 ): Array<{ volume: number; pH: number }> {
   // Determine equivalence volume based on titration type
   let eqVol: number;
-  if (titration.type === 'polyprotic-diprotic' || titration.type === 'polyprotic-triprotic') {
-    eqVol = Math.max(...(titration as any).equivalenceVolumes);
+  if ('equivalenceVolumes' in titration) {
+    eqVol = Math.max(...titration.equivalenceVolumes);
   } else {
-    eqVol = (titration as any).equivalenceVolume;
+    eqVol = titration.equivalenceVolume;
   }
 
   const max = maxVolume || eqVol * 2;

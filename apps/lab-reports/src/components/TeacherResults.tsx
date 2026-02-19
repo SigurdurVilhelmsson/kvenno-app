@@ -1,8 +1,11 @@
 import React from 'react';
+
 import { CheckCircle, XCircle, AlertTriangle, Download, Save } from 'lucide-react';
-import { AnalysisResult, ExperimentSection } from '@/types';
+
 import { ExtractionDebug } from './ExtractionDebug';
 import { isExtractionDebugEnabled } from '../utils/extractionDebug';
+
+import { AnalysisResult, ExperimentSection } from '@/types';
 
 interface TeacherResultsProps {
   results: AnalysisResult[];

@@ -10,8 +10,9 @@
  * ```
  */
 
-import { AnimatedMolecule } from '../AnimatedMolecule';
 import type { AnimatedMoleculeProps } from '@shared/types';
+
+import { AnimatedMolecule } from '../AnimatedMolecule';
 
 export interface MoleculeViewerProps extends Omit<AnimatedMoleculeProps, 'className'> {
   /** Additional CSS class for outer container */

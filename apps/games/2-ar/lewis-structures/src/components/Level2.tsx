@@ -1,9 +1,11 @@
 import { useState, useMemo } from 'react';
+
 import { AnimatedMolecule, DragDropBuilder, FeedbackPanel, MoleculeViewer3DLazy } from '@shared/components';
 import type { DraggableItemData, DropZoneData, DropResult, ZoneState } from '@shared/components';
-import { lewisToMolecule } from '../utils/lewisConverter';
 import { shuffleArray } from '@shared/utils';
+
 import { LewisGuidedMode } from './LewisGuidedMode';
+import { lewisToMolecule } from '../utils/lewisConverter';
 
 // Misconceptions for Lewis structure building
 const LEWIS_MISCONCEPTIONS: Record<string, string> = {

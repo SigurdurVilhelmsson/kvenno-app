@@ -1,7 +1,9 @@
 import { useState } from 'react';
+
 import { AnimatedMolecule, FeedbackPanel, MoleculeViewer3DLazy } from '@shared/components';
-import { imfToMolecule } from '../utils/imfConverter';
+
 import { ForceStrengthAnimation } from './ForceStrengthAnimation';
+import { imfToMolecule } from '../utils/imfConverter';
 
 // Misconceptions for IMF types
 const MISCONCEPTIONS = {
@@ -367,7 +369,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     const correctSet = new Set(molecule.correctIMFs);
     const isCorrect =
       selectedIMFs.size === correctSet.size &&
-      [...selectedIMFs].every(imf => correctSet.has(imf as any));
+      [...selectedIMFs].every(imf => correctSet.has(imf as 'london' | 'dipole' | 'hydrogen'));
 
     if (isCorrect) {
       if (!showHint) {
@@ -510,7 +512,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   // Quiz phase
   const isCorrect = showResult &&
     selectedIMFs.size === molecule.correctIMFs.length &&
-    [...selectedIMFs].every(imf => molecule.correctIMFs.includes(imf as any));
+    [...selectedIMFs].every(imf => molecule.correctIMFs.includes(imf as 'london' | 'dipole' | 'hydrogen'));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">

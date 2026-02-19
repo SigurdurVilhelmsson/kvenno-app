@@ -1,13 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
+
+import { HintSystem, LanguageSwitcher, ErrorBoundary } from '@shared/components';
+import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
+import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
 import { useProgress, useAccessibility, useI18n, useGameI18n } from '@shared/hooks';
 import { useAchievements } from '@shared/hooks/useAchievements';
-import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
-import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
-import { HintSystem, LanguageSwitcher } from '@shared/components';
-import { gameTranslations } from './i18n';
 import type { TieredHints } from '@shared/types';
+
 import { ParticleEquilibrium } from './components/ParticleEquilibrium';
 import { QKComparison } from './components/QKComparison';
+import { getRandomEquilibrium } from './data';
+import { gameTranslations } from './i18n';
 import {
   Equilibrium,
   Stress,
@@ -17,7 +20,6 @@ import {
   ShiftResult,
   DifficultyLevel
 } from './types';
-import { getRandomEquilibrium } from './data';
 import { calculateShift, getStressDescriptionIs } from './utils/le-chatelier';
 import './styles.css';
 
@@ -840,7 +842,7 @@ function App() {
               <span className="text-sm">{t('accessibility.textSize', 'Leturstærð')}:</span>
               <select
                 value={settings.textSize}
-                onChange={(e) => setTextSize(e.target.value as any)}
+                onChange={(e) => setTextSize(e.target.value as 'small' | 'medium' | 'large')}
                 className="text-sm border rounded px-2 py-1"
               >
                 <option value="small">{t('accessibility.textSizeSmall', 'Lítil')}</option>
@@ -853,7 +855,7 @@ function App() {
               <span className="text-sm">Tungumál:</span>
               <select
                 value={language}
-                onChange={(e) => setLanguage(e.target.value as any)}
+                onChange={(e) => setLanguage(e.target.value as 'is' | 'en' | 'pl')}
                 className="text-sm border rounded px-2 py-1"
               >
                 <option value="is">Íslenska</option>
@@ -894,4 +896,12 @@ function App() {
   );
 }
 
-export default App;
+function AppWithErrorBoundary() {
+  return (
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
+  );
+}
+
+export default AppWithErrorBoundary;

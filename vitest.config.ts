@@ -38,6 +38,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@kvenno/shared': path.resolve(__dirname, './packages/shared'),
+      '@shared': path.resolve(__dirname, './packages/shared'),
     },
   },
 });

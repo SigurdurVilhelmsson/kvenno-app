@@ -4,7 +4,7 @@ export function playSound(soundEnabled: boolean, type: SoundType): void {
   if (!soundEnabled) return;
 
   try {
-    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    const AudioContext = window.AudioContext || (window as unknown as { webkitAudioContext: typeof window.AudioContext }).webkitAudioContext;
     const audioContext = new AudioContext();
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();

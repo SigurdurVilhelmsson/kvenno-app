@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+
 import { GameProgress } from '@shared/types';
 import { saveProgress, loadProgress } from '@shared/utils/storage';
 

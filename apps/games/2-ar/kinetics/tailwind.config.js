@@ -1,16 +1,14 @@
 /** @type {import('tailwindcss').Config} */
+import sharedPreset from '../../../../packages/shared/styles/tailwind-preset.ts';
+
 export default {
+  presets: [sharedPreset],
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {
-      colors: {
-        'primary-orange': '#f36b22',
-        'dark-orange': '#d95a1a',
-      },
-    },
+    extend: {},
   },
   plugins: [],
-}
+};

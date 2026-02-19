@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+
 import type { ShiftDirection, Stress } from '../types';
 
 interface QKComparisonProps {

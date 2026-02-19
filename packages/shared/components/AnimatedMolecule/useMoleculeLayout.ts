@@ -9,6 +9,7 @@
  */
 
 import { useMemo } from 'react';
+
 import type {
   Molecule,
   MoleculeAtom,
@@ -17,6 +18,7 @@ import type {
   MoleculeRenderMode,
   DipoleMoment,
 } from '@shared/types';
+
 import { GEOMETRY_COORDS } from './molecule.constants';
 import {
   project3Dto2D,

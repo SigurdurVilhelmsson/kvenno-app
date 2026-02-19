@@ -1,8 +1,9 @@
 import { Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import SpjaldPage from './pages/SpjaldPage';
 
-function App() {
+import { Home } from './pages/Home';
+import { SpjaldPage } from './pages/SpjaldPage';
+
+export function App() {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 antialiased">
       <header className="bg-white border-b border-gray-200">
@@ -58,4 +59,3 @@ function App() {
   );
 }
 
-export default App;

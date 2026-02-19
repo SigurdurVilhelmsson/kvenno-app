@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useCallback, useState, useMemo } from 'react';
+
 import type {
   ParticleSimulationProps,
   Particle,

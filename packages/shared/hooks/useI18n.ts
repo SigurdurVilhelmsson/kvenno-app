@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 type Language = 'is' | 'en' | 'pl';
 
 interface TranslationDictionary {
-  [key: string]: any;
+  [key: string]: string | TranslationDictionary;
 }
 
 const translations: Record<Language, TranslationDictionary> = {
@@ -61,7 +61,7 @@ export const useI18n = () => {
   const t = useCallback(
     (key: string, fallback?: string): string => {
       const keys = key.split('.');
-      let value: any = currentTranslations;
+      let value: string | TranslationDictionary = currentTranslations;
 
       for (const k of keys) {
         if (value && typeof value === 'object' && k in value) {

@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+
 import { GraduationCap, BookOpen, ArrowLeft, ClipboardCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Header } from '@kvenno/shared/components/Header';
+
 import { Breadcrumbs } from '@kvenno/shared/components/Breadcrumbs';
+import { Header } from '@kvenno/shared/components/Header';
+
 import { AuthButton } from './AuthButton';
 import { getBreadcrumbsForPath } from '../utils/breadcrumbs';
 

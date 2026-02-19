@@ -6,6 +6,7 @@
  */
 
 import type { Position2D } from '@shared/types';
+
 import { MOLECULE_COLORS } from './molecule.constants';
 import { positionAtAngle } from './molecule.utils';
 

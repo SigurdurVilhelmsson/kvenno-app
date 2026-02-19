@@ -14,7 +14,7 @@ const CONTEXT_COLORS: Record<string, { bg: string; text: string }> = {
 
 const CONTEXT_ICONS = new Set(['📍', '🕐', '👤', '🎯']);
 
-export default function SpurningaSpjald({ category, level }: SpurningaSpjaldProps) {
+export function SpurningaSpjald({ category, level }: SpurningaSpjaldProps) {
   const mainQuestions = category.guidingQuestions.filter(
     (q) => !CONTEXT_ICONS.has(q.icon)
   );

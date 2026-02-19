@@ -1,14 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+
 import { History, GraduationCap, BookOpen, ArrowLeft } from 'lucide-react';
-import {
-  AppMode,
-  AnalysisResult,
-  StudentFeedback,
-  ProcessingStatus,
-  Toast as ToastType,
-  GradingSession,
-} from './types';
+
+import { Breadcrumbs } from '@kvenno/shared/components/Breadcrumbs';
+import { Header } from '@kvenno/shared/components/Header';
+
+import { AuthButton } from './components/AuthButton';
+import { FileUpload } from './components/FileUpload';
+import { SaveDialog, ConfirmDialog } from './components/Modal';
+import { SessionHistory } from './components/SessionHistory';
+import { StudentFeedback as StudentFeedbackComponent } from './components/StudentFeedback';
+import { TeacherResults } from './components/TeacherResults';
+import { Toast } from './components/Toast';
 import { experimentConfigs, getExperiments } from './config/experiments';
+import { AnalysisResult, StudentFeedback, GradingSession } from './types';
 import { extractTextFromFile } from './utils/fileProcessing';
 import { processFile } from './utils/api';
 import {
@@ -19,126 +24,58 @@ import {
   generateSessionId,
 } from './utils/storage';
 import { exportResultsToCSV } from './utils/export';
-import { Toast } from './components/Toast';
-import { SaveDialog, ConfirmDialog } from './components/Modal';
-import { FileUpload } from './components/FileUpload';
-import { TeacherResults } from './components/TeacherResults';
-import { StudentFeedback as StudentFeedbackComponent } from './components/StudentFeedback';
-import { SessionHistory } from './components/SessionHistory';
-import { Header } from '@kvenno/shared/components/Header';
-import { Breadcrumbs } from '@kvenno/shared/components/Breadcrumbs';
-import { AuthButton } from './components/AuthButton';
 import { getBreadcrumbsForPath } from './utils/breadcrumbs';
-
-type View = 'grader' | 'history';
+import { useAppReducer } from './hooks/useAppReducer';
 
 function App() {
-  // Mode selection
+  const { state, dispatch, showToast } = useAppReducer();
+
   const appModeConfig = import.meta.env.VITE_APP_MODE || 'dual';
   const basePath = import.meta.env.VITE_BASE_PATH || '/lab-reports';
-  const [mode, setMode] = useState<AppMode>('teacher');
-  const [view, setView] = useState<View>('grader');
-  const [showInfo, setShowInfo] = useState(false);
-
-  // Extract year from base path for back navigation
   const yearMatch = basePath.match(/\/(\d)-ar\//);
   const backPath = yearMatch ? `/${yearMatch[1]}-ar/` : '/';
   const breadcrumbs = getBreadcrumbsForPath(basePath);
 
-  // Experiment selection
-  const [selectedExperiment, setSelectedExperiment] = useState('jafnvaegi');
-  const currentExperiment = experimentConfigs[selectedExperiment];
-
-  // File handling
-  const [files, setFiles] = useState<File[]>([]);
-  const [processing, setProcessing] = useState(false);
-  const [processingStatus, setProcessingStatus] = useState<ProcessingStatus>({
-    current: 0,
-    total: 0,
-    currentFile: '',
-  });
-
-  // Results
-  const [results, setResults] = useState<AnalysisResult[]>([]);
-  const [studentFeedback, setStudentFeedback] = useState<StudentFeedback[]>([]);
-
-  // Session management
-  const [savedSessions, setSavedSessions] = useState<GradingSession[]>([]);
-  const [currentSessionName, setCurrentSessionName] = useState('');
-  const [currentSessionId, setCurrentSessionId] = useState('');
-  const [isSaved, setIsSaved] = useState(false);
-
-  // UI state
-  const [toast, setToast] = useState<ToastType>({ show: false, message: '', type: 'success' });
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [saveDialogName, setSaveDialogName] = useState('');
-  const [showConfirmNew, setShowConfirmNew] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [sessionToDelete, setSessionToDelete] = useState<string | null>(null);
-
+  const currentExperiment = experimentConfigs[state.selectedExperiment];
   const experiments = getExperiments();
   const sections = currentExperiment.sections;
 
   // Load saved sessions on mount
   useEffect(() => {
-    loadSessions();
-  }, []);
+    loadSavedSessions().then((sessions) => {
+      dispatch({ type: 'SET_SAVED_SESSIONS', sessions });
+    });
+  }, [dispatch]);
 
-  const loadSessions = async () => {
-    const sessions = await loadSavedSessions();
-    setSavedSessions(sessions);
-  };
-
-  // Auto-hide toast after 3 seconds with proper cleanup
+  // Auto-hide toast after 3 seconds
   useEffect(() => {
-    if (toast.show) {
-      const timer = setTimeout(() => {
-        setToast({ show: false, message: '', type: 'success' });
-      }, 3000);
-
-      // Cleanup timer on unmount or when toast changes
+    if (state.ui.toast.show) {
+      const timer = setTimeout(() => dispatch({ type: 'HIDE_TOAST' }), 3000);
       return () => clearTimeout(timer);
     }
-  }, [toast.show]);
-
-  const showToast = (message: string, type: ToastType['type'] = 'success') => {
-    setToast({ show: true, message, type });
-  };
+  }, [state.ui.toast.show, dispatch]);
 
   const handleFilesSelected = (selectedFiles: File[]) => {
-    setFiles(selectedFiles);
-    setResults([]);
-    setStudentFeedback([]);
-    setIsSaved(false);
+    dispatch({ type: 'SET_FILES', files: selectedFiles });
   };
 
   const processReports = async () => {
-    if (files.length === 0) return;
+    if (state.files.list.length === 0) return;
 
-    setProcessing(true);
-    setProcessingStatus({ current: 0, total: files.length, currentFile: '' });
+    dispatch({ type: 'START_PROCESSING', total: state.files.list.length });
     const newResults: (AnalysisResult | StudentFeedback)[] = [];
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-
-      setProcessingStatus({
-        current: i + 1,
-        total: files.length,
-        currentFile: file.name,
-      });
+    for (let i = 0; i < state.files.list.length; i++) {
+      const file = state.files.list[i];
+      dispatch({ type: 'UPDATE_PROCESSING_STATUS', current: i + 1, currentFile: file.name });
 
       try {
         const content = await extractTextFromFile(file);
         if (!content) {
-          newResults.push({
-            filename: file.name,
-            error: 'Gat ekki lesið skrá',
-          } as AnalysisResult);
+          newResults.push({ filename: file.name, error: 'Gat ekki lesið skrá' } as AnalysisResult);
           continue;
         }
-
-        const result = await processFile(file, content, currentExperiment, mode);
+        const result = await processFile(file, content, currentExperiment, state.mode);
         newResults.push(result);
       } catch (error) {
         console.error(`Error processing ${file.name}:`, error);
@@ -149,53 +86,49 @@ function App() {
       }
     }
 
-    if (mode === 'teacher') {
-      setResults(newResults as AnalysisResult[]);
+    if (state.mode === 'teacher') {
+      dispatch({ type: 'FINISH_PROCESSING', results: newResults as AnalysisResult[], mode: 'teacher' });
     } else {
-      setStudentFeedback(newResults as StudentFeedback[]);
+      dispatch({ type: 'FINISH_PROCESSING', results: newResults as StudentFeedback[], mode: 'student' });
     }
-
-    setProcessing(false);
-    setIsSaved(false);
-    setProcessingStatus({ current: 0, total: 0, currentFile: '' });
   };
 
   const handleSaveSession = async () => {
-    const resultsToSave = mode === 'teacher' ? results : studentFeedback;
+    const resultsToSave = state.mode === 'teacher' ? state.results.analyses : state.results.studentFeedback;
     if (resultsToSave.length === 0) {
       showToast('Engar niðurstöður til að vista', 'error');
       return;
     }
 
-    if (!currentSessionName) {
-      setSaveDialogName(`Greining ${new Date().toLocaleDateString('is-IS')}`);
-      setShowSaveDialog(true);
+    if (!state.session.currentName) {
+      dispatch({
+        type: 'SHOW_SAVE_DIALOG',
+        defaultName: `Greining ${new Date().toLocaleDateString('is-IS')}`,
+      });
       return;
     }
 
-    await performSave(currentSessionName);
+    await performSave(state.session.currentName);
   };
 
   const performSave = async (name: string) => {
     try {
-      const sessionId = currentSessionId || generateSessionId();
+      const sessionId = state.session.currentId || generateSessionId();
       const session: GradingSession = {
         id: sessionId,
-        name: name,
-        experiment: selectedExperiment,
+        name,
+        experiment: state.selectedExperiment,
         timestamp: new Date().toISOString(),
-        results: mode === 'teacher' ? results : studentFeedback,
-        fileCount: mode === 'teacher' ? results.length : studentFeedback.length,
-        mode,
+        results: state.mode === 'teacher' ? state.results.analyses : state.results.studentFeedback,
+        fileCount: state.mode === 'teacher' ? state.results.analyses.length : state.results.studentFeedback.length,
+        mode: state.mode,
       };
 
       await saveSession(session);
-      setCurrentSessionName(name);
-      setCurrentSessionId(sessionId);
-      setIsSaved(true);
-      await loadSessions();
+      dispatch({ type: 'SESSION_SAVED', name, id: sessionId });
+      const sessions = await loadSavedSessions();
+      dispatch({ type: 'SET_SAVED_SESSIONS', sessions });
       showToast('✓ Greining vistuð!', 'success');
-      setShowSaveDialog(false);
     } catch (error) {
       console.error('Error saving session:', error);
       showToast('Villa við að vista', 'error');
@@ -203,39 +136,20 @@ function App() {
   };
 
   const startNewAnalysis = () => {
-    const hasResults = mode === 'teacher' ? results.length > 0 : studentFeedback.length > 0;
-    if (hasResults && !isSaved) {
-      setShowConfirmNew(true);
+    const hasResults = state.mode === 'teacher'
+      ? state.results.analyses.length > 0
+      : state.results.studentFeedback.length > 0;
+    if (hasResults && !state.session.isSaved) {
+      dispatch({ type: 'SHOW_CONFIRM_NEW' });
     } else {
-      clearAnalysis();
+      dispatch({ type: 'CLEAR_ANALYSIS' });
     }
-  };
-
-  const clearAnalysis = () => {
-    setFiles([]);
-    setResults([]);
-    setStudentFeedback([]);
-    setCurrentSessionName('');
-    setCurrentSessionId('');
-    setIsSaved(false);
-    setProcessingStatus({ current: 0, total: 0, currentFile: '' });
-    setShowConfirmNew(false);
   };
 
   const handleLoadSession = async (sessionId: string) => {
     const session = await loadStoredSession(sessionId);
     if (session) {
-      setMode(session.mode);
-      if (session.mode === 'teacher') {
-        setResults(session.results as AnalysisResult[]);
-      } else {
-        setStudentFeedback(session.results as StudentFeedback[]);
-      }
-      setSelectedExperiment(session.experiment);
-      setCurrentSessionName(session.name);
-      setCurrentSessionId(session.id);
-      setIsSaved(true);
-      setView('grader');
+      dispatch({ type: 'SESSION_LOADED', session });
       showToast('Greining hlaðin', 'success');
     } else {
       showToast('Villa við að hlaða greiningu', 'error');
@@ -243,18 +157,17 @@ function App() {
   };
 
   const handleDeleteSession = (sessionId: string) => {
-    setSessionToDelete(sessionId);
-    setShowDeleteDialog(true);
+    dispatch({ type: 'SHOW_DELETE_DIALOG', sessionId });
   };
 
   const confirmDelete = async () => {
-    if (!sessionToDelete) return;
+    if (!state.session.toDelete) return;
 
     try {
-      await deleteStoredSession(sessionToDelete);
-      await loadSessions();
-      setShowDeleteDialog(false);
-      setSessionToDelete(null);
+      await deleteStoredSession(state.session.toDelete);
+      dispatch({ type: 'SESSION_DELETED' });
+      const sessions = await loadSavedSessions();
+      dispatch({ type: 'SET_SAVED_SESSIONS', sessions });
       showToast('Greiningu eytt', 'success');
     } catch (error) {
       console.error('Error deleting session:', error);
@@ -264,7 +177,7 @@ function App() {
 
   const handleExport = () => {
     try {
-      exportResultsToCSV(results, sections);
+      exportResultsToCSV(state.results.analyses, sections);
       showToast('CSV skrá niðurhalað', 'success');
     } catch (_error) {
       showToast('Villa við að búa til CSV skrá', 'error');
@@ -275,7 +188,7 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
       <Header
         authSlot={<AuthButton />}
-        onInfoClick={() => setShowInfo(!showInfo)}
+        onInfoClick={() => dispatch({ type: 'TOGGLE_INFO' })}
       />
 
       <div className="max-w-7xl mx-auto p-6">
@@ -292,7 +205,7 @@ function App() {
 
         <div className="bg-white rounded-lg shadow-xl p-8 mb-6">
           {/* Info panel */}
-          {showInfo && (
+          {state.ui.showInfo && (
             <div className="mb-6 p-4 bg-orange-50 border border-kvenno-orange rounded-lg">
               <h3 className="font-bold text-slate-900 mb-2">Um verkfærið</h3>
               <p className="text-sm text-slate-700 mb-2">
@@ -314,7 +227,7 @@ function App() {
                 <span className="text-sm text-kvenno-orange ml-3 font-normal">(v3.0.0)</span>
               </h1>
               <p className="text-slate-600">
-                {mode === 'teacher'
+                {state.mode === 'teacher'
                   ? 'Hraðmat á skýrslum nemenda'
                   : 'Hjálp við að skrifa rannsóknaskýrslur'}
               </p>
@@ -323,10 +236,10 @@ function App() {
               <button
                 onClick={() => {
                   startNewAnalysis();
-                  setView('grader');
+                  dispatch({ type: 'SET_VIEW', view: 'grader' });
                 }}
                 className={`px-4 py-2 rounded-lg transition ${
-                  view === 'grader'
+                  state.view === 'grader'
                     ? 'bg-kvenno-orange text-white'
                     : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
                 }`}
@@ -334,26 +247,26 @@ function App() {
                 Ný greining
               </button>
               <button
-                onClick={() => setView('history')}
+                onClick={() => dispatch({ type: 'SET_VIEW', view: 'history' })}
                 className={`px-4 py-2 rounded-lg transition flex items-center gap-2 ${
-                  view === 'history'
+                  state.view === 'history'
                     ? 'bg-kvenno-orange text-white'
                     : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
                 }`}
               >
                 <History size={18} />
-                Saga ({savedSessions.length})
+                Saga ({state.session.saved.length})
               </button>
             </div>
           </div>
 
           {/* Mode selector (if dual mode enabled) */}
-          {appModeConfig === 'dual' && view === 'grader' && (
+          {appModeConfig === 'dual' && state.view === 'grader' && (
             <div className="mb-6 flex gap-2">
               <button
-                onClick={() => setMode('teacher')}
+                onClick={() => dispatch({ type: 'SET_MODE', mode: 'teacher' })}
                 className={`flex-1 px-4 py-3 rounded-lg transition flex items-center justify-center gap-2 ${
-                  mode === 'teacher'
+                  state.mode === 'teacher'
                     ? 'bg-kvenno-orange text-white'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
@@ -362,9 +275,9 @@ function App() {
                 <span className="font-semibold">Kennari</span>
               </button>
               <button
-                onClick={() => setMode('student')}
+                onClick={() => dispatch({ type: 'SET_MODE', mode: 'student' })}
                 className={`flex-1 px-4 py-3 rounded-lg transition flex items-center justify-center gap-2 ${
-                  mode === 'student'
+                  state.mode === 'student'
                     ? 'bg-green-600 text-white'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
@@ -375,9 +288,9 @@ function App() {
             </div>
           )}
 
-          {view === 'history' ? (
+          {state.view === 'history' ? (
             <SessionHistory
-              sessions={savedSessions}
+              sessions={state.session.saved}
               onLoadSession={handleLoadSession}
               onDeleteSession={handleDeleteSession}
             />
@@ -389,8 +302,8 @@ function App() {
                   Veldu tilraun:
                 </label>
                 <select
-                  value={selectedExperiment}
-                  onChange={(e) => setSelectedExperiment(e.target.value)}
+                  value={state.selectedExperiment}
+                  onChange={(e) => dispatch({ type: 'SET_EXPERIMENT', experiment: e.target.value })}
                   className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-kvenno-orange"
                 >
                   {experiments.map((exp) => (
@@ -403,44 +316,44 @@ function App() {
 
               {/* File upload */}
               <FileUpload
-                files={files}
+                files={state.files.list}
                 onFilesSelected={handleFilesSelected}
                 onProcess={processReports}
-                processing={processing}
-                processingStatus={processingStatus}
+                processing={state.files.processing}
+                processingStatus={state.files.status}
               />
             </>
           )}
         </div>
 
         {/* Results display */}
-        {view === 'grader' && mode === 'teacher' && (
+        {state.view === 'grader' && state.mode === 'teacher' && (
           <TeacherResults
-            results={results}
+            results={state.results.analyses}
             sections={sections}
-            sessionName={currentSessionName}
+            sessionName={state.session.currentName}
             onSave={handleSaveSession}
             onExport={handleExport}
           />
         )}
 
-        {view === 'grader' && mode === 'student' && (
-          <StudentFeedbackComponent feedback={studentFeedback} sections={sections} />
+        {state.view === 'grader' && state.mode === 'student' && (
+          <StudentFeedbackComponent feedback={state.results.studentFeedback} sections={sections} />
         )}
       </div>
 
       {/* Modals and Toast */}
       <SaveDialog
-        isOpen={showSaveDialog}
-        onClose={() => setShowSaveDialog(false)}
+        isOpen={state.ui.showSaveDialog}
+        onClose={() => dispatch({ type: 'HIDE_SAVE_DIALOG' })}
         onSave={performSave}
-        defaultName={saveDialogName}
+        defaultName={state.ui.saveDialogName}
       />
 
       <ConfirmDialog
-        isOpen={showConfirmNew}
-        onClose={() => setShowConfirmNew(false)}
-        onConfirm={clearAnalysis}
+        isOpen={state.ui.showConfirmNew}
+        onClose={() => dispatch({ type: 'HIDE_CONFIRM_NEW' })}
+        onConfirm={() => dispatch({ type: 'CLEAR_ANALYSIS' })}
         title="Byrja nýja greiningu?"
         message="Þú ert með óvistaðar niðurstöður. Viltu vista áður en þú byrjar nýja greiningu?"
         confirmText="Eyða án þess að vista"
@@ -448,11 +361,8 @@ function App() {
       />
 
       <ConfirmDialog
-        isOpen={showDeleteDialog}
-        onClose={() => {
-          setShowDeleteDialog(false);
-          setSessionToDelete(null);
-        }}
+        isOpen={state.ui.showDeleteDialog}
+        onClose={() => dispatch({ type: 'HIDE_DELETE_DIALOG' })}
         onConfirm={confirmDelete}
         title="Eyða greiningu?"
         message="Ertu viss um að þú viljir eyða þessari greiningu? Þetta er ekki hægt að afturkalla."
@@ -460,9 +370,9 @@ function App() {
         confirmVariant="danger"
       />
 
-      <Toast toast={toast} />
+      <Toast toast={state.ui.toast} />
     </div>
   );
 }
 
-export default App;
+export { App };

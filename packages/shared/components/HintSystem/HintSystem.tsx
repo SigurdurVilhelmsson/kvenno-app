@@ -1,4 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
+
+import { HintTier } from './HintTier';
 import {
   TieredHints,
   HintTierKey,
@@ -6,7 +8,6 @@ import {
   HINT_TIER_LABELS,
   HINT_MULTIPLIERS,
 } from '../../types/hint.types';
-import { HintTier } from './HintTier';
 
 interface HintSystemProps {
   /** The 4-tier hints object */

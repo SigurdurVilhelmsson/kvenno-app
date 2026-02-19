@@ -1,15 +1,17 @@
 import { useState } from 'react';
+
+import { LanguageSwitcher, ErrorBoundary } from '@shared/components';
+import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
+import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
 import { useProgress, useAccessibility, useGameI18n } from '@shared/hooks';
 import { useAchievements } from '@shared/hooks/useAchievements';
-import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
-import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
-import { LanguageSwitcher } from '@shared/components';
-import { gameTranslations } from './i18n';
+
 
 // Import Level components
 import { Level1Conceptual } from './components/Level1Conceptual';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
+import { gameTranslations } from './i18n';
 
 /**
  * Main application component for Dimensional Analysis Game
@@ -119,7 +121,7 @@ function App() {
               <span className="text-sm">{t('accessibility.textSize', 'Leturstærð')}:</span>
               <select
                 value={settings.textSize}
-                onChange={(e) => setTextSize(e.target.value as any)}
+                onChange={(e) => setTextSize(e.target.value as 'small' | 'medium' | 'large')}
                 className="text-sm border rounded px-2 py-1"
               >
                 <option value="small">{t('accessibility.textSizeSmall', 'Lítil')}</option>
@@ -407,4 +409,12 @@ function App() {
   );
 }
 
-export default App;
+function AppWithErrorBoundary() {
+  return (
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
+  );
+}
+
+export default AppWithErrorBoundary;

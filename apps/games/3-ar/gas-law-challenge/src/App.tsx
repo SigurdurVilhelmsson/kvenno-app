@@ -1,13 +1,17 @@
 import { useState, useEffect, useMemo } from 'react';
-import { GasLawQuestion, GameMode, GameStats, QuestionFeedback, GasLaw, GAS_LAW_INFO } from './types';
-import { questions, getRandomQuestion } from './data';
-import { checkAnswer, calculateError, getUnit, getVariableName } from './utils/gas-calculations';
-import { useAchievements } from '@shared/hooks/useAchievements';
-import { useGameI18n } from '@shared/hooks';
-import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
+
+import { ParticleSimulation, PARTICLE_TYPES, PHYSICS_PRESETS, LanguageSwitcher, ErrorBoundary } from '@shared/components';
 import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
-import { ParticleSimulation, PARTICLE_TYPES, PHYSICS_PRESETS, LanguageSwitcher } from '@shared/components';
+import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
+import { useGameI18n } from '@shared/hooks';
+import { useAchievements } from '@shared/hooks/useAchievements';
+
+import { questions, getRandomQuestion } from './data';
 import { gameTranslations } from './i18n';
+import { GasLawQuestion, GameMode, GameStats, QuestionFeedback, GasLaw, GAS_LAW_INFO } from './types';
+import { checkAnswer, calculateError, getUnit, getVariableName } from './utils/gas-calculations';
+
+
 
 const STORAGE_KEY = 'gas-law-challenge-progress';
 
@@ -896,4 +900,12 @@ function App() {
   return null;
 }
 
-export default App;
+function AppWithErrorBoundary() {
+  return (
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
+  );
+}
+
+export default AppWithErrorBoundary;

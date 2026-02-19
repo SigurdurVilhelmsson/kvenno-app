@@ -1,7 +1,9 @@
 import React from 'react';
+
 import { Trash2, GraduationCap, BookOpen } from 'lucide-react';
-import { GradingSession } from '@/types';
+
 import { experimentConfigs } from '@/config/experiments';
+import { GradingSession } from '@/types';
 
 interface SessionHistoryProps {
   sessions: GradingSession[];

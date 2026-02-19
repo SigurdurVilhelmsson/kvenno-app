@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+
 import { UnitBlock } from './UnitBlock';
 
 interface UnitCancellationVisualizerProps {

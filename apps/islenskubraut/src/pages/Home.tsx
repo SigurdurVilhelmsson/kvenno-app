@@ -1,7 +1,7 @@
-import CategoryCard from '../components/CategoryCard';
+import { CategoryCard } from '../components/CategoryCard';
 import { categories } from '../data';
 
-export default function Home() {
+export function Home() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
       {/* Hero section */}

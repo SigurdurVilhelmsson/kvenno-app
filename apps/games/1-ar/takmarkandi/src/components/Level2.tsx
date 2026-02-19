@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Reaction } from '../types';
-import { REACTIONS } from '../data/reactions';
-import { getMolarMass, roundMass } from '../data/molar-masses';
+
 import { Molecule } from './Molecule';
 import { ReactionAnimation } from './ReactionAnimation';
+import { getMolarMass, roundMass } from '../data/molar-masses';
+import { REACTIONS } from '../data/reactions';
+import { Reaction } from '../types';
 
 interface Level2Props {
   onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
@@ -567,7 +568,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             correctAnswer: problem.limitingReactant,
             unit: ''
           };
-        case 'products':
+        case 'products': {
           const productMoles = roundMass(timesRun * problem.reaction.products[0].coeff);
           return {
             stepNumber: 6,
@@ -578,7 +579,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             correctAnswer: problem.productGrams,
             unit: 'g'
           };
-        case 'excess':
+        }
+        case 'excess': {
           const excessMolarMass = problem.limitingReactant === problem.reaction.reactant1.formula
             ? problem.r2MolarMass
             : problem.r1MolarMass;
@@ -591,6 +593,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             correctAnswer: problem.excessGrams,
             unit: 'g'
           };
+        }
         default:
           return { stepNumber: 0, totalSteps, title: '', instruction: '', formula: '', correctAnswer: 0, unit: '' };
       }
@@ -637,7 +640,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             correctAnswer: problem.productsFormed,
             unit: 'sameindir'
           };
-        case 'excess':
+        case 'excess': {
           const excessStartCount = problem.limitingReactant === problem.reaction.reactant1.formula
             ? problem.r2Count
             : problem.r1Count;
@@ -651,6 +654,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             correctAnswer: problem.excessRemaining,
             unit: 'sameindir'
           };
+        }
         default:
           return { stepNumber: 0, totalSteps, title: '', instruction: '', formula: '', correctAnswer: 0, unit: '' };
       }

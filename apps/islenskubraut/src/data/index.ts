@@ -1,10 +1,10 @@
-import { Category } from './types';
 import { dyr } from './categories/dyr';
-import { matur } from './categories/matur';
 import { farartaeki } from './categories/farartaeki';
-import { manneskja } from './categories/manneskja';
-import { stadir } from './categories/stadir';
 import { klaednadur } from './categories/klaednadur';
+import { manneskja } from './categories/manneskja';
+import { matur } from './categories/matur';
+import { stadir } from './categories/stadir';
+import { Category } from './types';
 
 export const categories: Category[] = [
   dyr,

@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { LEVEL1_CHALLENGES, type Level1Challenge } from '../data';
+
 import { HintSystem, FeedbackPanel } from '@shared/components';
+
+import { LEVEL1_CHALLENGES, type Level1Challenge } from '../data';
 import { BufferCapacityVisualization } from './BufferCapacityVisualization';
 
 // Misconceptions for buffer concepts

@@ -1,7 +1,9 @@
 import { useState, useMemo } from 'react';
+
 import { AnimatedMolecule, MoleculeViewer3DLazy } from '@shared/components';
-import { vseprToMolecule } from '../utils/vseprConverter';
 import { shuffleArray } from '@shared/utils';
+
+import { vseprToMolecule } from '../utils/vseprConverter';
 
 interface Level2Props {
   onComplete: (score: number, maxScore: number, hintsUsed: number) => void;

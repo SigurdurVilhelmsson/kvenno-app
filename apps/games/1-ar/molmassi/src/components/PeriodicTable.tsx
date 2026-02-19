@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+
 import { ELEMENTS, CATEGORY_COLORS, APPROX_MASSES, type Element, type ElementCategory } from '../data/elements';
 
 interface PeriodicTableProps {

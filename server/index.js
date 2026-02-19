@@ -7,33 +7,48 @@
 import express from 'express';
 import cors from 'cors';
 import { IncomingForm } from 'formidable';
-import { exec } from 'child_process';
+import { execFile } from 'child_process';
 import { promisify } from 'util';
 import { unlink, readFile } from 'fs/promises';
 import path from 'path';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import { generatePdf } from './lib/islenskubraut-pdf.mjs';
 import { getCategoryById } from './lib/islenskubraut-data.mjs';
 
-const execAsync = promisify(exec);
+const execFileAsync = promisify(execFile);
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-// CORS configuration
+// Security headers
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'"],
+      connectSrc: ["'self'", 'https://api.anthropic.com'],
+    },
+  },
+}));
+
+// CORS configuration - localhost origins only in development
 const allowedOrigins = [
   'https://kvenno.app',
   'https://www.kvenno.app',
-  'http://localhost:5173',
-  'http://localhost:5174',
-  'http://localhost:4173',
   process.env.FRONTEND_URL,
-].filter(Boolean);
+];
+if (process.env.NODE_ENV !== 'production') {
+  allowedOrigins.push('http://localhost:5173', 'http://localhost:5174', 'http://localhost:4173');
+}
+const filteredOrigins = allowedOrigins.filter(Boolean);
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) {
+    if (filteredOrigins.includes(origin)) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
@@ -41,6 +56,31 @@ app.use(cors({
   },
   credentials: true,
 }));
+
+// Rate limiters
+const analyzeLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Of margar beiðnir - reyndu aftur eftir smástund' },
+});
+
+const documentLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Of margar beiðnir - reyndu aftur eftir smástund' },
+});
+
+const pdfLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Of margar beiðnir - reyndu aftur eftir smástund' },
+});
 
 // Increased limit to 50mb to handle multi-page PDFs with images
 // Each page image (JPEG compressed) is ~200-500KB, so 50mb supports ~10-15 page documents
@@ -57,7 +97,7 @@ app.get('/health', (req, res) => {
  */
 async function isPandocAvailable() {
   try {
-    await execAsync('pandoc --version');
+    await execFileAsync('pandoc', ['--version']);
     return true;
   } catch {
     return false;
@@ -69,7 +109,7 @@ async function isPandocAvailable() {
  */
 async function isLibreOfficeAvailable() {
   try {
-    await execAsync('libreoffice --version');
+    await execFileAsync('libreoffice', ['--version']);
     return true;
   } catch {
     return false;
@@ -93,10 +133,12 @@ async function convertDocxToPdf(docxPath) {
     baseName,
   });
 
-  const command = `libreoffice --headless --convert-to pdf --outdir "${outputDir}" "${docxPath}"`;
-
   try {
-    const { stdout, stderr } = await execAsync(command, { timeout: 30000 });
+    const { stdout, stderr } = await execFileAsync(
+      'libreoffice',
+      ['--headless', '--convert-to', 'pdf', '--outdir', outputDir, docxPath],
+      { timeout: 30000 }
+    );
 
     if (stderr && !stderr.includes('Warning')) {
       console.error('LibreOffice stderr:', stderr);
@@ -149,10 +191,11 @@ async function convertDocxToPdf(docxPath) {
  * Process .docx file using pandoc (for equation extraction)
  */
 async function processDocxWithPandoc(filePath) {
-  const command = `pandoc "${filePath}" --from=docx --to=markdown --wrap=none`;
-
   try {
-    const { stdout, stderr } = await execAsync(command);
+    const { stdout, stderr } = await execFileAsync(
+      'pandoc',
+      [filePath, '--from=docx', '--to=markdown', '--wrap=none']
+    );
 
     if (stderr && !stderr.includes('Warning')) {
       console.error('Pandoc stderr:', stderr);
@@ -211,7 +254,7 @@ function parseForm(req) {
  * API endpoint: Process .docx documents
  * Converts DOCX to PDF for consistent processing across all file types
  */
-app.post('/api/process-document', async (req, res) => {
+app.post('/api/process-document', documentLimiter, async (req, res) => {
   let docxPath = null;
   let pdfPath = null;
 
@@ -239,10 +282,19 @@ app.post('/api/process-document', async (req, res) => {
     }
 
     docxPath = file.filepath;
-    const fileName = file.originalFilename || '';
+    // Sanitize filename: strip path traversal chars and null bytes
+    const fileName = (file.originalFilename || '')
+      .replace(/\0/g, '')
+      .replace(/[/\\]/g, '')
+      .replace(/\.\./g, '');
 
     if (!fileName.toLowerCase().endsWith('.docx')) {
       return res.status(400).json({ error: 'Only .docx files are supported' });
+    }
+
+    // Validate file size (10MB max, matching formidable config)
+    if (file.size > 10 * 1024 * 1024) {
+      return res.status(400).json({ error: 'File too large (max 10MB)' });
     }
 
     // Formidable may save file without .docx extension (e.g., with .25 from filename)
@@ -323,7 +375,7 @@ app.post('/api/process-document', async (req, res) => {
 /**
  * API endpoint: Analyze with Claude
  */
-app.post('/api/analyze', async (req, res) => {
+app.post('/api/analyze', analyzeLimiter, async (req, res) => {
   try {
     const { content, systemPrompt, mode } = req.body;
 
@@ -338,6 +390,12 @@ app.post('/api/analyze', async (req, res) => {
 
     if (typeof systemPrompt !== 'string' || systemPrompt.length > 50000) {
       return res.status(400).json({ error: 'Invalid systemPrompt' });
+    }
+
+    // Validate content field length (max ~10MB as JSON string)
+    const contentStr = typeof content === 'string' ? content : JSON.stringify(content);
+    if (contentStr.length > 10 * 1024 * 1024) {
+      return res.status(400).json({ error: 'Content too large' });
     }
 
     // Get API key
@@ -435,7 +493,7 @@ app.post('/api/analyze', async (req, res) => {
  * Receives system prompt and user prompt (with optional draft comparison),
  * sends to Claude, and returns checklist results.
  */
-app.post('/api/analyze-2ar', async (req, res) => {
+app.post('/api/analyze-2ar', analyzeLimiter, async (req, res) => {
   try {
     const { systemPrompt, userPrompt } = req.body;
 
@@ -529,7 +587,7 @@ app.post('/api/analyze-2ar', async (req, res) => {
  * API endpoint: Generate Íslenskubraut teaching card PDF
  * GET /api/islenskubraut/pdf?flokkur={categoryId}&stig={level}
  */
-app.get('/api/islenskubraut/pdf', async (req, res) => {
+app.get('/api/islenskubraut/pdf', pdfLimiter, async (req, res) => {
   try {
     const { flokkur, stig } = req.query;
 

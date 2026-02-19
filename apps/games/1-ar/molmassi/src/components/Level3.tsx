@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { Compound, Difficulty, getRandomCompound, COMPOUNDS } from '../data/compounds';
-import { PeriodicTable } from './PeriodicTable';
+
 import { CalculationBreakdown } from './CalculationBreakdown';
-import { validateInput } from '../utils/validation';
+import { PeriodicTable } from './PeriodicTable';
+import { Compound, Difficulty, getRandomCompound, COMPOUNDS } from '../data/compounds';
 import { validateAnswer, generateContextualFeedback, calculatePoints } from '../utils/calculations';
+import { validateInput } from '../utils/validation';
 
 type PlayMode = 'practice' | 'competition' | 'mystery';
 

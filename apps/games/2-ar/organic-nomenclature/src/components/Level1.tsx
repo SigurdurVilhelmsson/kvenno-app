@@ -1,7 +1,9 @@
 import { useState, useMemo } from 'react';
+
 import { FeedbackPanel } from '@shared/components';
 import type { TieredHints } from '@shared/types';
 import { shuffleArray } from '@shared/utils';
+
 import { MoleculeBuilder } from './MoleculeBuilder';
 
 // Misconceptions for organic nomenclature
@@ -139,6 +141,13 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       onComplete(score, maxScore, totalHintsUsed);
     }
   };
+
+  // Must call hooks unconditionally - memoize quiz options before conditional returns
+  const question = quizQuestions[currentQuestion];
+  const shuffledQuizOptions = useMemo(() => {
+    if (!question) return [];
+    return shuffleArray(question.options);
+  }, [currentQuestion, question]);
 
   if (phase === 'prefixes') {
     const prefix = prefixes[currentItem];
@@ -373,13 +382,6 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   }
 
   // Quiz phase
-  const question = quizQuestions[currentQuestion];
-
-  // Shuffle options for current question - memoize to keep stable during question
-  const shuffledQuizOptions = useMemo(() => {
-    return shuffleArray(question.options);
-  }, [currentQuestion, question.options]);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
