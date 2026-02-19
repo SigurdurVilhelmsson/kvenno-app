@@ -635,9 +635,15 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// Start server
-app.listen(PORT, '127.0.0.1', () => {
-  console.log(`Backend API running on http://127.0.0.1:${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`Allowed origins: ${allowedOrigins.join(', ')}`);
-});
+// Export app for testing
+export { app };
+
+// Only start server when run directly (not when imported for testing)
+const isDirectRun = process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, '/'));
+if (isDirectRun) {
+  app.listen(PORT, '127.0.0.1', () => {
+    console.log(`Backend API running on http://127.0.0.1:${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`Allowed origins: ${allowedOrigins.join(', ')}`);
+  });
+}

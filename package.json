@@ -26,6 +26,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "check-all": "pnpm type-check && pnpm lint && pnpm format:check",
     "clean": "pnpm --recursive run clean && rm -rf node_modules dist",
     "prepare": "husky install"
@@ -55,7 +57,8 @@
     "typescript": "^5.3.3",
     "vite": "^6.4.1",
     "vite-plugin-singlefile": "^2.0.1",
-    "vitest": "^2.1.0"
+    "vitest": "^2.1.0",
+    "@playwright/test": "^1.50.0"
   },
   "dependencies": {
     "react": "^18.2.0",

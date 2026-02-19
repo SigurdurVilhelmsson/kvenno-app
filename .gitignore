@@ -30,5 +30,9 @@ pnpm-debug.log*
 *.tmp
 *.temp
 
+# Playwright
+playwright-report/
+test-results/
+
 # Worktrees
 .worktrees/

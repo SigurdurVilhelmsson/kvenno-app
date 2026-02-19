@@ -35,3 +35,8 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: E2E Tests
+        run: |
+          pnpm exec playwright install chromium --with-deps
+          pnpm test:e2e
