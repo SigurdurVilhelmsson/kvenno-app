@@ -9,7 +9,7 @@ import cors from 'cors';
 import { IncomingForm } from 'formidable';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
-import { unlink, readFile } from 'fs/promises';
+import { unlink, readFile, rename } from 'fs/promises';
 import path from 'path';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
@@ -288,13 +288,10 @@ app.post('/api/process-document', documentLimiter, async (req, res) => {
     }
 
     docxPath = file.filepath;
-    // Sanitize filename: strip path traversal chars and null bytes
-    const fileName = (file.originalFilename || '')
-      .replace(/\0/g, '')
-      .replace(/[/\\]/g, '')
-      .replace(/\.\./g, '');
 
-    if (!fileName.toLowerCase().endsWith('.docx')) {
+    // Validate file extension from original filename
+    const originalName = (file.originalFilename || '').toLowerCase();
+    if (!originalName.endsWith('.docx')) {
       return res.status(400).json({ error: 'Only .docx files are supported' });
     }
 
@@ -303,17 +300,14 @@ app.post('/api/process-document', documentLimiter, async (req, res) => {
       return res.status(400).json({ error: 'File too large (max 10MB)' });
     }
 
-    // Formidable may save file without .docx extension (e.g., with .25 from filename)
-    // Rename to ensure proper .docx extension for LibreOffice
-    if (!docxPath.endsWith('.docx')) {
-      const { rename } = await import('fs/promises');
-      const newDocxPath = `${docxPath}.docx`;
-      await rename(docxPath, newDocxPath);
-      docxPath = newDocxPath;
-      console.log('[Document Processing] Renamed uploaded file to:', docxPath);
-    }
+    // Use random filename to prevent path traversal and injection
+    const { randomBytes } = await import('crypto');
+    const safeName = randomBytes(16).toString('hex');
+    const safeDocxPath = path.join(path.dirname(docxPath), `${safeName}.docx`);
+    await rename(docxPath, safeDocxPath);
+    docxPath = safeDocxPath;
 
-    console.log('[Document Processing] Starting DOCX → PDF conversion:', fileName);
+    console.log('[Document Processing] Starting DOCX → PDF conversion (safe name):', safeName);
 
     // Extract equations from original DOCX using pandoc (best accuracy)
     let equations = [];
