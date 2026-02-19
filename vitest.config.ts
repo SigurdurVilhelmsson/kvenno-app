@@ -15,7 +15,11 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html', 'json-summary'],
       reportsDirectory: './coverage',
-      include: ['packages/shared/**/*.{ts,tsx}'],
+      include: [
+        'packages/shared/**/*.{ts,tsx}',
+        'apps/lab-reports/src/utils/**/*.ts',
+        'apps/lab-reports/src/config/**/*.ts',
+      ],
       exclude: [
         '**/node_modules/**',
         '**/dist/**',
