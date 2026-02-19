@@ -367,7 +367,7 @@ app.post('/api/process-document', documentLimiter, async (req, res) => {
     }
 
     return res.status(500).json({
-      error: error.message || 'Failed to process document',
+      error: 'Gat ekki unnið úr skjalinu. Vinsamlegast reyndu aftur.',
     });
   }
 });
@@ -401,8 +401,8 @@ app.post('/api/analyze', analyzeLimiter, async (req, res) => {
     // Get API key
     const apiKey = process.env.CLAUDE_API_KEY || process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
-      console.error('CLAUDE_API_KEY not configured');
-      return res.status(500).json({ error: 'API key not configured' });
+      console.error('API credentials not configured');
+      return res.status(500).json({ error: 'Internal server error' });
     }
 
     // Call Anthropic API with timeout (85s, leaving 5s buffer for 90s limit)
@@ -511,8 +511,8 @@ app.post('/api/analyze-2ar', analyzeLimiter, async (req, res) => {
 
     const apiKey = process.env.CLAUDE_API_KEY || process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
-      console.error('CLAUDE_API_KEY not configured');
-      return res.status(500).json({ error: 'API key not configured' });
+      console.error('API credentials not configured');
+      return res.status(500).json({ error: 'Internal server error' });
     }
 
     const controller = new AbortController();
