@@ -1,241 +1,15 @@
 import { useState, useEffect } from 'react';
 
 import { FeedbackPanel, MoleculeViewer3DLazy } from '@shared/components';
-import type { DetailedFeedback } from '@shared/types';
 
-import { PeriodicTable } from './PeriodicTable';
 import { elementsToMolecule } from '../utils/moleculeConverter';
+import type { Challenge } from '../utils/challengeGenerator';
+import { generateChallenge } from '../utils/challengeGenerator';
+import { getDetailedFeedback } from '../utils/feedbackGenerator';
 
-// Atomic masses for calculations
-const ATOMIC_MASSES: Record<string, number> = {
-  H: 1.008,
-  C: 12.011,
-  N: 14.007,
-  O: 15.999,
-  S: 32.065,
-  Cl: 35.453,
-  Na: 22.990,
-  Ca: 40.078,
-  Fe: 55.845,
-  K: 39.098,
-  Mg: 24.305,
-  P: 30.974,
-  Al: 26.982,
-  Cu: 63.546,
-};
-
-// Visual properties for atoms (used in UI)
-const ATOM_VISUALS: Record<string, { color: string; size: number; name: string; mass: number }> = {
-  H: { color: '#F3F4F6', size: 24, name: 'Vetni', mass: 1.008 },
-  C: { color: '#4B5563', size: 30, name: 'Kolefni', mass: 12.011 },
-  N: { color: '#3B82F6', size: 28, name: 'Köfnunarefni', mass: 14.007 },
-  O: { color: '#EF4444', size: 28, name: 'Súrefni', mass: 15.999 },
-  S: { color: '#EAB308', size: 32, name: 'Brennisteinn', mass: 32.065 },
-  Cl: { color: '#22C55E', size: 32, name: 'Klór', mass: 35.453 },
-  Na: { color: '#8B5CF6', size: 34, name: 'Natríum', mass: 22.990 },
-  Ca: { color: '#F97316', size: 36, name: 'Kalsíum', mass: 40.078 },
-  Fe: { color: '#78716C', size: 34, name: 'Járn', mass: 55.845 },
-  K: { color: '#EC4899', size: 38, name: 'Kalíum', mass: 39.098 },
-  Mg: { color: '#14B8A6', size: 34, name: 'Magnesíum', mass: 24.305 },
-  P: { color: '#F59E0B', size: 30, name: 'Fosfór', mass: 30.974 },
-  Al: { color: '#A1A1AA', size: 32, name: 'Ál', mass: 26.982 },
-  Cu: { color: '#B45309', size: 32, name: 'Kopar', mass: 63.546 },
-};
-
-// Challenge types for Level 1
-type ChallengeType = 'count_atoms' | 'compare_mass' | 'build_molecule' | 'estimate_range';
-
-interface Challenge {
-  type: ChallengeType;
-  compound: {
-    formula: string;
-    name: string;
-    elements: { symbol: string; count: number }[];
-    molarMass: number;
-  };
-  // For count_atoms
-  targetElement?: string;
-  correctCount?: number;
-  // For compare_mass
-  compareCompound?: {
-    formula: string;
-    name: string;
-    elements: { symbol: string; count: number }[];
-    molarMass: number;
-  };
-  // For estimate_range
-  ranges?: { min: number; max: number; label: string }[];
-  correctRangeIndex?: number;
-}
-
-// Simple compounds for Level 1
-const LEVEL1_COMPOUNDS = [
-  { formula: 'H₂O', name: 'Vatn', elements: [{ symbol: 'H', count: 2 }, { symbol: 'O', count: 1 }], molarMass: 18.015 },
-  { formula: 'CO₂', name: 'Koltvísýringur', elements: [{ symbol: 'C', count: 1 }, { symbol: 'O', count: 2 }], molarMass: 44.009 },
-  { formula: 'NaCl', name: 'Borðsalt', elements: [{ symbol: 'Na', count: 1 }, { symbol: 'Cl', count: 1 }], molarMass: 58.44 },
-  { formula: 'CH₄', name: 'Metan', elements: [{ symbol: 'C', count: 1 }, { symbol: 'H', count: 4 }], molarMass: 16.043 },
-  { formula: 'NH₃', name: 'Ammóníak', elements: [{ symbol: 'N', count: 1 }, { symbol: 'H', count: 3 }], molarMass: 17.031 },
-  { formula: 'O₂', name: 'Súrefni', elements: [{ symbol: 'O', count: 2 }], molarMass: 31.998 },
-  { formula: 'N₂', name: 'Köfnunarefni', elements: [{ symbol: 'N', count: 2 }], molarMass: 28.014 },
-  { formula: 'HCl', name: 'Saltsýra', elements: [{ symbol: 'H', count: 1 }, { symbol: 'Cl', count: 1 }], molarMass: 36.458 },
-  { formula: 'CaO', name: 'Kalsíumoxíð', elements: [{ symbol: 'Ca', count: 1 }, { symbol: 'O', count: 1 }], molarMass: 56.077 },
-  { formula: 'MgO', name: 'Magnesíumoxíð', elements: [{ symbol: 'Mg', count: 1 }, { symbol: 'O', count: 1 }], molarMass: 40.304 },
-];
-
-// Generate a random challenge
-function generateChallenge(challengeNumber: number): Challenge {
-  const compound = LEVEL1_COMPOUNDS[Math.floor(Math.random() * LEVEL1_COMPOUNDS.length)];
-
-  // Cycle through challenge types
-  const types: ChallengeType[] = ['count_atoms', 'compare_mass', 'build_molecule', 'estimate_range'];
-  const type = types[challengeNumber % types.length];
-
-  switch (type) {
-    case 'count_atoms': {
-      const element = compound.elements[Math.floor(Math.random() * compound.elements.length)];
-      return {
-        type: 'count_atoms',
-        compound,
-        targetElement: element.symbol,
-        correctCount: element.count,
-      };
-    }
-
-    case 'compare_mass': {
-      let other = LEVEL1_COMPOUNDS[Math.floor(Math.random() * LEVEL1_COMPOUNDS.length)];
-      while (other.formula === compound.formula) {
-        other = LEVEL1_COMPOUNDS[Math.floor(Math.random() * LEVEL1_COMPOUNDS.length)];
-      }
-      return {
-        type: 'compare_mass',
-        compound,
-        compareCompound: other,
-      };
-    }
-
-    case 'build_molecule': {
-      return {
-        type: 'build_molecule',
-        compound,
-      };
-    }
-
-    case 'estimate_range': {
-      const ranges = [
-        { min: 0, max: 25, label: '0-25 g/mol' },
-        { min: 25, max: 50, label: '25-50 g/mol' },
-        { min: 50, max: 100, label: '50-100 g/mol' },
-      ];
-      const correctIndex = ranges.findIndex(r => compound.molarMass >= r.min && compound.molarMass < r.max);
-      return {
-        type: 'estimate_range',
-        compound,
-        ranges,
-        correctRangeIndex: correctIndex >= 0 ? correctIndex : 2,
-      };
-    }
-
-    default:
-      return { type: 'count_atoms', compound };
-  }
-}
-
-// Atom circle component with animations
-function AtomCircle({ symbol, showLabel = true, onClick, isSelected = false, animateIn = false, delay = 0 }: {
-  symbol: string;
-  showLabel?: boolean;
-  onClick?: () => void;
-  isSelected?: boolean;
-  animateIn?: boolean;
-  delay?: number;
-}) {
-  const visual = ATOM_VISUALS[symbol] || { color: '#888', size: 30, name: symbol, mass: 0 };
-
-  return (
-    <div
-      className={`relative inline-flex flex-col items-center ${onClick ? 'cursor-pointer' : ''}`}
-      onClick={onClick}
-    >
-      <div
-        className={`atom-circle rounded-full border-2 flex items-center justify-center font-bold text-xs ${animateIn ? 'animate-bounce-in' : ''} ${isSelected ? 'ring-4 ring-primary/50 animate-pulse-soft' : ''}`}
-        style={{
-          width: visual.size,
-          height: visual.size,
-          backgroundColor: visual.color,
-          borderColor: visual.color === '#FFFFFF' ? '#CBD5E1' : 'transparent',
-          color: visual.color === '#FFFFFF' || visual.color === '#EAB308' ? '#1F2937' : '#FFFFFF',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          animationDelay: animateIn ? `${delay}ms` : '0ms',
-          animationFillMode: 'backwards',
-        }}
-      >
-        {symbol}
-      </div>
-      {showLabel && (
-        <span className="text-xs text-gray-600 mt-1">{visual.name}</span>
-      )}
-    </div>
-  );
-}
-
-// Molecule visualization component with animations
-function MoleculeVisual({ elements, showMassBar = false, animateAtoms = true }: {
-  elements: { symbol: string; count: number }[];
-  showMassBar?: boolean;
-  animateAtoms?: boolean;
-}) {
-  const totalMass = elements.reduce((sum, el) => {
-    const visual = ATOM_VISUALS[el.symbol];
-    return sum + (visual ? visual.mass * el.count : 0);
-  }, 0);
-
-  // Calculate max possible mass for the bar (roughly 100 g/mol for simple molecules)
-  const maxMass = 100;
-  const massPercent = Math.min((totalMass / maxMass) * 100, 100);
-
-  // Count total atoms for staggered animation
-  let atomCounter = 0;
-
-  return (
-    <div className="flex flex-col items-center gap-4">
-      <div className="flex flex-wrap items-center justify-center gap-2 p-4 bg-gray-100 rounded-xl min-h-[80px]">
-        {elements.map((el, elIndex) => (
-          <div key={elIndex} className="flex items-center gap-1">
-            {Array.from({ length: el.count }).map((_, atomIndex) => {
-              const delay = atomCounter * 50; // 50ms stagger
-              atomCounter++;
-              return (
-                <AtomCircle
-                  key={`${elIndex}-${atomIndex}`}
-                  symbol={el.symbol}
-                  showLabel={false}
-                  animateIn={animateAtoms}
-                  delay={delay}
-                />
-              );
-            })}
-          </div>
-        ))}
-      </div>
-
-      {showMassBar && (
-        <div className="w-full max-w-xs animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-          <div className="text-xs text-gray-600 text-center mb-1">Heildarmassi</div>
-          <div className="h-4 bg-gray-200 rounded-full overflow-hidden shadow-inner">
-            <div
-              className="h-full mass-bar-fill bg-gradient-to-r from-green-400 via-yellow-400 to-red-400"
-              style={{ width: `${massPercent}%` }}
-            />
-          </div>
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
-            <span>Létt</span>
-            <span>Þungt</span>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+import { ATOM_VISUALS, AtomCircle, MoleculeVisual } from './AtomVisuals';
+import { GameComplete } from './GameComplete';
+import { PeriodicTable } from './PeriodicTable';
 
 interface Level1Props {
   onBack: () => void;
@@ -351,125 +125,32 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
     checkAnswer('build');
   };
 
+  const resetGame = () => {
+    setChallengeNumber(0);
+    setScore(0);
+    setCorrectCount(0);
+    setChallenge(generateChallenge(0));
+    setHintMultiplier(1.0);
+    setHintsUsedTier(0);
+  };
+
   // Game complete screen with celebration
   if (isComplete) {
     const questionsAnswered = challengeNumber + (showFeedback ? 1 : 0);
-    const accuracy = questionsAnswered > 0 ? Math.round((correctCount / questionsAnswered) * 100) : 0;
-    const passedLevel = hasMastery;
 
     return (
-      <div className={`min-h-screen bg-gradient-to-b ${passedLevel ? 'from-green-50' : 'from-yellow-50'} to-white flex items-center justify-center p-4`}>
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center animate-fade-in-up">
-          <div className="text-6xl mb-4 animate-bounce-in">{passedLevel ? '🎉' : '💪'}</div>
-          <h2 className="text-3xl font-bold text-gray-800 mb-2 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
-            {passedLevel ? 'Frábært!' : 'Góð tilraun!'}
-          </h2>
-          <p className="text-gray-600 mb-6 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-            {passedLevel
-              ? `Þú náðir ${masteryThreshold}+ réttum svörum og hefur lokið Stigi 1!`
-              : `Þú þarft ${masteryThreshold} rétt svör til að opna Stig 2. Reyndu aftur!`}
-          </p>
-
-          <div className="grid grid-cols-3 gap-3 mb-6">
-            <div className="bg-green-50 rounded-xl p-4 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-              <div className="text-2xl font-bold text-green-600">{correctCount}/{questionsAnswered}</div>
-              <div className="text-xs text-gray-600">Rétt svör</div>
-            </div>
-            <div className="bg-blue-50 rounded-xl p-4 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
-              <div className="text-2xl font-bold text-blue-600">{accuracy}%</div>
-              <div className="text-xs text-gray-600">Nákvæmni</div>
-            </div>
-            <div className="bg-purple-50 rounded-xl p-4 animate-fade-in-up" style={{ animationDelay: '500ms' }}>
-              <div className="text-2xl font-bold text-purple-600">{score}</div>
-              <div className="text-xs text-gray-600">Stig</div>
-            </div>
-          </div>
-
-          {/* Mastery progress */}
-          <div className="bg-gray-50 rounded-xl p-4 mb-6 animate-fade-in-up" style={{ animationDelay: '450ms' }}>
-            <div className="flex justify-between text-sm text-gray-600 mb-2">
-              <span>Framvinda í lærdómi</span>
-              <span>{correctCount}/{masteryThreshold} rétt svör</span>
-            </div>
-            <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
-              <div
-                className={`h-full transition-all duration-500 ${passedLevel ? 'bg-green-500' : 'bg-yellow-500'}`}
-                style={{ width: `${Math.min((correctCount / masteryThreshold) * 100, 100)}%` }}
-              />
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6 text-left animate-fade-in-up" style={{ animationDelay: '500ms' }}>
-            <h3 className="font-bold text-blue-800 mb-3 flex items-center gap-2">
-              <span className="text-lg">📚</span> Hvað lærðir þú?
-            </h3>
-            <ul className="text-sm text-gray-700 space-y-2">
-              <li className="flex items-start gap-2">
-                <span className="text-green-500 mt-0.5">✓</span>
-                <span>Sameindir eru byggðar úr frumeindum</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-500 mt-0.5">✓</span>
-                <span>Mismunandi frumeindir hafa mismunandi massa</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-500 mt-0.5">✓</span>
-                <span>Formúlan sýnir hversu margar frumeindir eru</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-500 mt-0.5">✓</span>
-                <span>Fleiri/þyngri frumeindir = meiri massi</span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="space-y-3 animate-fade-in-up" style={{ animationDelay: '600ms' }}>
-            {passedLevel ? (
-              <button
-                onClick={() => onComplete(score, totalChallenges * 10, hintsUsedTier)}
-                className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-xl transition-colors btn-press"
-              >
-                Halda áfram í Stig 2 →
-              </button>
-            ) : (
-              <button
-                onClick={() => {
-                  setChallengeNumber(0);
-                  setScore(0);
-                  setCorrectCount(0);
-                  setChallenge(generateChallenge(0));
-                  setHintMultiplier(1.0);
-                  setHintsUsedTier(0);
-                }}
-                className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-xl transition-colors btn-press"
-              >
-                Reyna aftur
-              </button>
-            )}
-            {passedLevel && (
-              <button
-                onClick={() => {
-                  setChallengeNumber(0);
-                  setScore(0);
-                  setCorrectCount(0);
-                  setChallenge(generateChallenge(0));
-                  setHintMultiplier(1.0);
-                  setHintsUsedTier(0);
-                }}
-                className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-xl transition-colors"
-              >
-                Spila Aftur
-              </button>
-            )}
-            <button
-              onClick={onBack}
-              className="w-full text-gray-500 hover:text-gray-700 font-semibold py-2"
-            >
-              Til baka í valmynd
-            </button>
-          </div>
-        </div>
-      </div>
+      <GameComplete
+        passedLevel={hasMastery}
+        correctCount={correctCount}
+        questionsAnswered={questionsAnswered}
+        score={score}
+        masteryThreshold={masteryThreshold}
+        hintsUsedTier={hintsUsedTier}
+        totalChallenges={totalChallenges}
+        onComplete={onComplete}
+        onReplay={resetGame}
+        onBack={onBack}
+      />
     );
   }
 
@@ -793,108 +474,6 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
   // Note: TieredHints available via HintSystem component for future integration
   // getChallengeHints() can be implemented when HintSystem is added to this game
 
-  // Generate detailed feedback for FeedbackPanel
-  const getDetailedFeedback = (): DetailedFeedback => {
-    const elementName = ATOM_VISUALS[challenge.targetElement!]?.name || challenge.targetElement;
-
-    switch (challenge.type) {
-      case 'count_atoms': {
-        if (isCorrect) {
-          return {
-            isCorrect: true,
-            explanation: `Rétt! Í ${challenge.compound.formula} eru ${challenge.correctCount} ${elementName} frumeindir. Þú fannst rétt tölu með því að lesa formúluna.`,
-            relatedConcepts: ['Efnaformúlur', 'Subscripts', 'Frumeindir'],
-            nextSteps: 'Reyndu næst að bera saman massa sameinda.',
-          };
-        }
-        return {
-          isCorrect: false,
-          explanation: `Í ${challenge.compound.formula} eru ${challenge.correctCount} ${elementName} (${challenge.targetElement}) frumeindir. Líttu á töluna við hliðina á ${challenge.targetElement} í formúlunni.`,
-          misconception: 'Mundu: Ef engin tala er við hliðina á frumefninu, þá er 1 frumeind. Talan (subscript) á aðeins við það frumefni sem hún er við.',
-          relatedConcepts: ['Efnaformúlur', 'Subscripts'],
-          nextSteps: 'Æfðu þig í að lesa subscripts í mismunandi formúlum.',
-        };
-      }
-
-      case 'compare_mass': {
-        const heavier = challenge.compound.molarMass > (challenge.compareCompound?.molarMass || 0)
-          ? challenge.compound
-          : challenge.compareCompound;
-        const lighter = challenge.compound.molarMass <= (challenge.compareCompound?.molarMass || 0)
-          ? challenge.compound
-          : challenge.compareCompound;
-
-        if (isCorrect) {
-          return {
-            isCorrect: true,
-            explanation: `Rétt! ${heavier?.name} (${heavier?.molarMass.toFixed(1)} g/mol) er þyngri en ${lighter?.name} (${lighter?.molarMass.toFixed(1)} g/mol).`,
-            relatedConcepts: ['Mólmassi', 'Atómmassi', 'Samanburður'],
-            nextSteps: 'Reyndu að áætla í hvaða massabil sameind fellur.',
-          };
-        }
-        return {
-          isCorrect: false,
-          explanation: `${heavier?.name} er í raun þyngri (${heavier?.molarMass.toFixed(1)} g/mol) en ${lighter?.name} (${lighter?.molarMass.toFixed(1)} g/mol).`,
-          misconception: 'Stærri frumeindir (eins og O, Cl, Na) hafa meiri massa en litlar (eins og H). Fleiri frumeindir þýðir líka meiri massa.',
-          relatedConcepts: ['Mólmassi', 'Atómmassi'],
-          nextSteps: 'Hugsaðu um bæði stærð og fjölda frumefna þegar þú berð saman.',
-        };
-      }
-
-      case 'build_molecule': {
-        const targetFormula = challenge.compound.elements.map(e =>
-          `${e.count}× ${ATOM_VISUALS[e.symbol]?.name || e.symbol}`
-        ).join(' + ');
-
-        if (isCorrect) {
-          return {
-            isCorrect: true,
-            explanation: `Frábært! Þú byggðir ${challenge.compound.name} (${challenge.compound.formula}) rétt: ${targetFormula}.`,
-            relatedConcepts: ['Efnaformúlur', 'Sameindir', 'Frumeindir'],
-            nextSteps: 'Reyndu nú að áætla mólmassa þessarar sameindar.',
-          };
-        }
-        return {
-          isCorrect: false,
-          explanation: `${challenge.compound.name} (${challenge.compound.formula}) inniheldur: ${targetFormula}. Berðu saman við það sem þú byggðir.`,
-          misconception: 'Lestu formúluna vandlega - hver tala (subscript) segir þér nákvæmlega hversu margar af hverri frumeind þarf.',
-          relatedConcepts: ['Efnaformúlur', 'Sameindir'],
-          nextSteps: 'Byrjaðu á fyrsta frumefninu og farðu kerfisbundið í gegnum formúluna.',
-        };
-      }
-
-      case 'estimate_range': {
-        const mass = challenge.compound.molarMass;
-        const correctRange = challenge.ranges?.[challenge.correctRangeIndex!];
-        const calculation = challenge.compound.elements.map(e =>
-          `${e.count}×${ATOMIC_MASSES[e.symbol]?.toFixed(0) || '?'}`
-        ).join(' + ');
-
-        if (isCorrect) {
-          return {
-            isCorrect: true,
-            explanation: `Rétt! ${challenge.compound.name} = ${mass.toFixed(1)} g/mol (${calculation}), sem fellur í bilið ${correctRange?.label}.`,
-            relatedConcepts: ['Mólmassi', 'Atómmassi', 'Útreikningar'],
-            nextSteps: 'Þú ert tilbúin/n að reikna nákvæman mólmassa!',
-          };
-        }
-        return {
-          isCorrect: false,
-          explanation: `${challenge.compound.name} = ${calculation} = ${mass.toFixed(1)} g/mol, sem fellur í bilið ${correctRange?.label}.`,
-          misconception: 'Mundu atómmassamina: H≈1, C≈12, N≈14, O≈16 g/mol. Margfaldaðu með fjöldanum og leggðu saman.',
-          relatedConcepts: ['Mólmassi', 'Atómmassi'],
-          nextSteps: 'Æfðu þig í að leggja saman atómmassa - það er grunnurinn að mólmassaútreikningum.',
-        };
-      }
-
-      default:
-        return {
-          isCorrect,
-          explanation: isCorrect ? 'Rétt svar!' : 'Rangt svar.',
-        };
-    }
-  };
-
   // Hints available via getChallengeHints() for future HintSystem integration
 
   return (
@@ -971,7 +550,7 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         {showFeedback && (
           <div className="mb-4 animate-fade-in-up">
             <FeedbackPanel
-              feedback={getDetailedFeedback()}
+              feedback={getDetailedFeedback(challenge, isCorrect)}
               config={{
                 showExplanation: true,
                 showMisconceptions: true,
