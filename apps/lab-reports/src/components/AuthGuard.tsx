@@ -30,7 +30,7 @@ interface AuthGuardProps {
  * ```
  */
 export const AuthGuard = ({ children }: AuthGuardProps) => {
-  // TEMPORARY: Bypass authentication for testing
+  // ⚠️ TEMPORARY: Bypass authentication for testing
   const BYPASS_AUTH = true; // Set to false to re-enable auth
 
   // Hooks must be called before any conditional returns
@@ -59,7 +59,7 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
 
   // Bypass auth if flag is set (for testing only)
   if (BYPASS_AUTH) {
-    console.warn('AUTHENTICATION BYPASSED - FOR TESTING ONLY');
+    console.warn('⚠️ AUTHENTICATION BYPASSED - FOR TESTING ONLY');
     return <>{children}</>;
   }
 
