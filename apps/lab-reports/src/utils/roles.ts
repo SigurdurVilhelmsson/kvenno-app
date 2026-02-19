@@ -13,24 +13,17 @@ import { AccountInfo } from '@azure/msal-browser';
 /**
  * Teacher Email List
  *
- * This array contains email addresses of all teachers who should have
- * access to teacher features (grading interface, CSV export, etc.)
+ * Populated from the VITE_TEACHER_EMAILS environment variable at build time.
+ * Set a comma-separated list of teacher email addresses in your .env file:
  *
- * To add a new teacher:
- * 1. Add their @kvenno.is email to this array
- * 2. Commit and redeploy the app
- * 3. Test that they can access teacher features
+ *   VITE_TEACHER_EMAILS=jon.jonsson@kvenno.is,gudrun.gudmundsdottir@kvenno.is
  *
- * Example:
- * const TEACHER_EMAILS = [
- *   'jon.jonsson@kvenno.is',
- *   'gudrun.gudmundsdottir@kvenno.is',
- * ];
+ * See .env.example for reference.
  */
-export const TEACHER_EMAILS: string[] = [
-  // Add teacher emails here
-  // Example: 'teacher@kvenno.is',
-];
+export const TEACHER_EMAILS: string[] = (import.meta.env.VITE_TEACHER_EMAILS || '')
+  .split(',')
+  .map((e: string) => e.trim())
+  .filter(Boolean);
 
 /**
  * Check if an email belongs to a teacher

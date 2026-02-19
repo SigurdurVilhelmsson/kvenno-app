@@ -1,25 +1,35 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { AccountInfo } from '@azure/msal-browser';
 
-// We need to dynamically modify TEACHER_EMAILS for testing, so we import
-// the module and manipulate the exported array.
-import { TEACHER_EMAILS, isTeacher, getUserRole } from '../utils/roles';
+/**
+ * Tests for roles.ts
+ *
+ * TEACHER_EMAILS is now derived from import.meta.env.VITE_TEACHER_EMAILS at
+ * module load time. We use vi.stubEnv() + dynamic import to control the value
+ * seen by each test group.
+ */
 
 describe('roles - isTeacher', () => {
-  const originalEmails: string[] = [];
+  let isTeacher: (email: string) => boolean;
+  let TEACHER_EMAILS: string[];
 
-  beforeEach(() => {
-    // Save original state and populate with test data
-    originalEmails.length = 0;
-    originalEmails.push(...TEACHER_EMAILS);
-    TEACHER_EMAILS.length = 0;
-    TEACHER_EMAILS.push('anna.sigurdsdottir@kvenno.is', 'jon.jonsson@kvenno.is');
+  beforeEach(async () => {
+    vi.stubEnv('VITE_TEACHER_EMAILS', 'anna.sigurdsdottir@kvenno.is,jon.jonsson@kvenno.is');
+    vi.resetModules();
+    const mod = await import('../utils/roles');
+    isTeacher = mod.isTeacher;
+    TEACHER_EMAILS = mod.TEACHER_EMAILS;
   });
 
   afterEach(() => {
-    // Restore original state
-    TEACHER_EMAILS.length = 0;
-    TEACHER_EMAILS.push(...originalEmails);
+    vi.unstubAllEnvs();
+  });
+
+  it('populates TEACHER_EMAILS from env var', () => {
+    expect(TEACHER_EMAILS).toEqual([
+      'anna.sigurdsdottir@kvenno.is',
+      'jon.jonsson@kvenno.is',
+    ]);
   });
 
   it('returns true for an email in the TEACHER_EMAILS list', () => {
@@ -41,26 +51,45 @@ describe('roles - isTeacher', () => {
   it('returns false for an empty string', () => {
     expect(isTeacher('')).toBe(false);
   });
+});
+
+describe('roles - isTeacher with empty env var', () => {
+  let isTeacher: (email: string) => boolean;
+  let TEACHER_EMAILS: string[];
+
+  beforeEach(async () => {
+    vi.stubEnv('VITE_TEACHER_EMAILS', '');
+    vi.resetModules();
+    const mod = await import('../utils/roles');
+    isTeacher = mod.isTeacher;
+    TEACHER_EMAILS = mod.TEACHER_EMAILS;
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it('returns empty array when env var is empty', () => {
+    expect(TEACHER_EMAILS).toEqual([]);
+  });
 
   it('returns false when TEACHER_EMAILS is empty', () => {
-    TEACHER_EMAILS.length = 0;
     expect(isTeacher('anna.sigurdsdottir@kvenno.is')).toBe(false);
   });
 });
 
 describe('roles - getUserRole', () => {
-  const originalEmails: string[] = [];
+  let getUserRole: (account: AccountInfo | null) => 'teacher' | 'student';
 
-  beforeEach(() => {
-    originalEmails.length = 0;
-    originalEmails.push(...TEACHER_EMAILS);
-    TEACHER_EMAILS.length = 0;
-    TEACHER_EMAILS.push('kennari@kvenno.is');
+  beforeEach(async () => {
+    vi.stubEnv('VITE_TEACHER_EMAILS', 'kennari@kvenno.is');
+    vi.resetModules();
+    const mod = await import('../utils/roles');
+    getUserRole = mod.getUserRole;
   });
 
   afterEach(() => {
-    TEACHER_EMAILS.length = 0;
-    TEACHER_EMAILS.push(...originalEmails);
+    vi.unstubAllEnvs();
   });
 
   it('returns "teacher" when account email is in TEACHER_EMAILS', () => {
