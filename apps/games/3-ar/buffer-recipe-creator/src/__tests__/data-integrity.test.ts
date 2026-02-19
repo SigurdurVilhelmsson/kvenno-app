@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
 import type { Difficulty } from '../types';

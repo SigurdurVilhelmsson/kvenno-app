@@ -87,6 +87,7 @@ export function EnergyPathwayDiagram({
     });
 
     return points.join(' ');
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: energyToY and steps.length are derived from existing deps
   }, [energySteps, stepWidth, height]);
 
   // Target line position

@@ -3,11 +3,11 @@ import { useState, useMemo } from 'react';
 import { FeedbackPanel } from '@shared/components';
 import { shuffleArray } from '@shared/utils';
 
-import { challenges, MAX_SCORE } from '../data/level1-questions';
-import { calculateScore } from '../utils/kinetics-scoring';
 import { CatalystEffectDemo } from './CatalystEffectDemo';
 import { CollisionDemo } from './CollisionDemo';
 import { MaxwellBoltzmann } from './MaxwellBoltzmann';
+import { challenges, MAX_SCORE } from '../data/level1-questions';
+import { calculateScore } from '../utils/kinetics-scoring';
 
 // Misconceptions for kinetics concepts
 const MISCONCEPTIONS: Record<number, string> = {
@@ -59,6 +59,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       ...opt,
       id: String.fromCharCode(97 + idx) // 'a', 'b', 'c', 'd'
     }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when challenge index changes
   }, [currentChallenge, challenge.options]);
 
   const handleAnswerSelect = (optionId: string) => {

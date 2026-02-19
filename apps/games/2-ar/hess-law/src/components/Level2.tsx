@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 
-import { calculateSum } from '../utils/hess-calculations';
 import { EnergyPathwayDiagram } from './EnergyPathwayDiagram';
+import { calculateSum } from '../utils/hess-calculations';
 
 interface Equation {
   id: string;

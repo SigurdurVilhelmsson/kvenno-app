@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
 import { axe, toHaveNoViolations } from 'jest-axe';
+import { MemoryRouter } from 'react-router-dom';
+import { describe, it, expect, vi } from 'vitest';
 
 expect.extend(toHaveNoViolations);
 
@@ -41,8 +41,8 @@ vi.mock('@kvenno/shared/components', () => ({
 // Imports
 // ---------------------------------------------------------------------------
 import { App } from '../App';
-import { Home } from '../pages/Home';
 import { ChemistryHub } from '../pages/ChemistryHub';
+import { Home } from '../pages/Home';
 import { YearHub } from '../pages/YearHub';
 
 function renderWithRouter(ui: React.ReactElement, initialEntries: string[] = ['/']) {

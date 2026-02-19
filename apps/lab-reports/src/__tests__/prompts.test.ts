@@ -4,6 +4,7 @@
  * and Icelandic formatting instructions.
  */
 import { describe, it, expect } from 'vitest';
+
 import {
   buildTeacherSystemPrompt,
   buildStudentSystemPrompt,

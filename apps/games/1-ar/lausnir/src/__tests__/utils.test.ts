@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { validateInput, checkAnswer, getContextualFeedback } from '../utils/validation';
+
+import { generateProblem } from '../utils/problem-generator';
 import {
   getPointValue,
   getHintPenalty,
@@ -8,7 +9,7 @@ import {
   getAchievement,
   getProblemCount,
 } from '../utils/scoring';
-import { generateProblem } from '../utils/problem-generator';
+import { validateInput, checkAnswer, getContextualFeedback } from '../utils/validation';
 
 // ---------------------------------------------------------------------------
 // utils/validation.ts

@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { AccountInfo } from '@azure/msal-browser';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 /**
  * Tests for roles.ts

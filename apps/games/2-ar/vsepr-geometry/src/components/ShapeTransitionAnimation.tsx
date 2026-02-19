@@ -129,6 +129,7 @@ export function ShapeTransitionAnimation({
       opacity: 1,
     }));
     setDomains(initial);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only initialize positions once on mount
   }, []);
 
   // Animation loop

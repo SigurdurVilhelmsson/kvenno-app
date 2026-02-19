@@ -13,7 +13,7 @@ export function validateInput(value: string): ValidationResult {
   let numValue: number;
   try {
     numValue = parseFloat(value);
-  } catch (e) {
+  } catch {
     return { valid: false, error: 'Ógilt snið' };
   }
 

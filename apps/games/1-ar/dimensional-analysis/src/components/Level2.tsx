@@ -136,6 +136,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
     ];
 
     return { draggableItems: items, dropZones: zones, availableFactors: shuffled };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: reset memoized items when problem index changes
   }, [currentProblemIndex, problem]);
 
   useEffect(() => {
@@ -219,6 +220,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
     if (selectedFactors.length > 0) {
       triggerCancellationAnimation();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only re-run animation when factor count changes
   }, [selectedFactors.length]);
 
   // Generate feedback for FeedbackPanel

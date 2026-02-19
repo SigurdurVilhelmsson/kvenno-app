@@ -147,6 +147,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const shuffledQuizOptions = useMemo(() => {
     if (!question) return [];
     return shuffleArray(question.options);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when question index changes
   }, [currentQuestion, question]);
 
   if (phase === 'prefixes') {

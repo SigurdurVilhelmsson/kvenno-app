@@ -64,7 +64,7 @@ export function playSound(soundEnabled: boolean, type: SoundType): void {
         oscillator.stop(audioContext.currentTime + 0.1);
         break;
     }
-  } catch (e) {
+  } catch {
     // Silently fail if audio context not available
   }
 }

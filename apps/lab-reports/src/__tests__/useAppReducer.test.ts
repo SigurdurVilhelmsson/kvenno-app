@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
-import { describe, it, expect } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
 
 import { useAppReducer, initialState } from '../hooks/useAppReducer';
 import type { AnalysisResult, StudentFeedback, GradingSession } from '../types';

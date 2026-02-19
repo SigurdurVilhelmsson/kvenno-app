@@ -653,6 +653,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   // Shuffle options for current step - memoize to keep stable during step
   const shuffledStepOptions = useMemo(() => {
     return shuffleArray(step.options);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when challenge or step index changes
   }, [currentChallenge, currentStep, step.options]);
 
   // Convert Lewis structure to Molecule format for AnimatedMolecule

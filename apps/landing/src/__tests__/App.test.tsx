@@ -1,13 +1,13 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { describe, it, expect, vi } from 'vitest';
 
 import { App } from '../App';
-import { Home } from '../pages/Home';
-import { ChemistryHub } from '../pages/ChemistryHub';
-import { YearHub } from '../pages/YearHub';
 import { tracks } from '../config/tracks';
+import { ChemistryHub } from '../pages/ChemistryHub';
+import { Home } from '../pages/Home';
+import { YearHub } from '../pages/YearHub';
 
 // Mock the shared components to avoid complex dependency chains
 vi.mock('@kvenno/shared/components', () => ({

@@ -228,7 +228,7 @@ export function TeacherPage() {
     try {
       exportResultsToCSV(results, sections);
       showToast('CSV skrá niðurhalað', 'success');
-    } catch (_error) {
+    } catch {
       showToast('Villa við að búa til CSV skrá', 'error');
     }
   };

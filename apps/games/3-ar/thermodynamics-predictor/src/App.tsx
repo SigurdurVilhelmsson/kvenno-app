@@ -258,6 +258,7 @@ function App() {
     }
 
     return { series, regions, markers, verticalLines };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: calcDeltaGForProblem is derived from currentProblem
   }, [currentProblem, temperature]);
 
   // Timer for challenge mode

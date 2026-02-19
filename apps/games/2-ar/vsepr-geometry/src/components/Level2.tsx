@@ -248,6 +248,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   // Shuffle geometry options for current molecule - memoize to keep stable during molecule
   const shuffledGeometryOptions = useMemo(() => {
     return shuffleArray(GEOMETRY_OPTIONS);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when molecule index changes
   }, [currentMolecule]);
 
   const checkStep = () => {

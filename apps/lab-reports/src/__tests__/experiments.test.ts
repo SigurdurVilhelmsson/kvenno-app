@@ -4,6 +4,7 @@
  * consistent point totals, and that lookup helpers work correctly.
  */
 import { describe, it, expect } from 'vitest';
+
 import {
   experimentConfigs,
   experimentConfigs2,

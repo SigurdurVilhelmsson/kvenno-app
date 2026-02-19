@@ -120,6 +120,7 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
 
     particlesRef.current = newParticles;
     updateParticleCounts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: updateParticleCounts is called at init, not a reactive dep
   }, [initialParticles, typeMap, temperature, width, height, getSpeedFromTemperature]);
 
   // Update particle counts

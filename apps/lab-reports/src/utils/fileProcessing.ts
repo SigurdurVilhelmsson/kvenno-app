@@ -1,3 +1,4 @@
+/* eslint-disable no-console -- File processing utility with intentional debug logging */
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 

@@ -3,10 +3,10 @@ import { useState, useEffect, useMemo } from 'react';
 import { FeedbackPanel } from '@shared/components';
 import { shuffleArray } from '@shared/utils';
 
+import { StatePathComparison } from './StatePathComparison';
 import { CHALLENGES } from '../data/challenges';
 import type { Equation } from '../data/challenges';
 import { multiplyEquationCoefficients } from '../utils/equation-math';
-import { StatePathComparison } from './StatePathComparison';
 
 // Misconceptions for Hess's Law concepts
 const MISCONCEPTIONS: Record<number, string> = {
@@ -214,6 +214,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   // Shuffle options for current challenge - memoize to keep stable during challenge
   const shuffledOptions = useMemo(() => {
     return shuffleArray(challenge.options);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when challenge index changes
   }, [currentChallenge, challenge.options]);
 
   // Reset equation when challenge changes

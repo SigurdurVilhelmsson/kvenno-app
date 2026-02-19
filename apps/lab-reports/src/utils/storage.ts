@@ -44,8 +44,8 @@ export const loadSavedSessions = async (): Promise<GradingSession[]> => {
           if (value) {
             sessions.push(JSON.parse(value));
           }
-        } catch (_e) {
-          console.log('Failed to load session:', key);
+        } catch {
+          console.warn('Failed to load session:', key);
         }
       }
     }

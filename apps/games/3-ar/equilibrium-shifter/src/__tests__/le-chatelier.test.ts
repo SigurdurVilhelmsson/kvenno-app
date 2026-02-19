@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest';
+
+import { Equilibrium, Stress } from '../types';
 import {
   calculateShift,
   getStressDescriptionIs,
@@ -6,7 +8,6 @@ import {
   isReactant,
   isProduct,
 } from '../utils/le-chatelier';
-import { Equilibrium, Stress } from '../types';
 
 // ---------------------------------------------------------------------------
 // Mock Equilibrium helpers

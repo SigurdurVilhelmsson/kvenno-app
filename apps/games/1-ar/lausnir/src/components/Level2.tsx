@@ -350,6 +350,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       ...opt,
       id: String.fromCharCode(97 + idx) // 'a', 'b', 'c', 'd'
     }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when scenario index changes
   }, [currentScenario, scenario.options]);
 
   const selectedOption = shuffledOptions.find(o => o.id === selectedAnswer);

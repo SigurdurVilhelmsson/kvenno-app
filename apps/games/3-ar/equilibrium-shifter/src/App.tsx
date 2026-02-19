@@ -113,6 +113,7 @@ function App() {
         handleNextQuestion();
       }, 3000);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only trigger on screen/mode/timer state changes
   }, [screen, gameMode, timeRemaining]);
 
   // Start game flow

@@ -177,6 +177,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     });
 
     return { nameItems: items, nameZones: zones };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: regenerate items when molecule index changes
   }, [currentMolecule, molecule]);
 
   // Handle drag-drop events

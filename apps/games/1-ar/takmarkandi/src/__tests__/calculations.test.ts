@@ -1,11 +1,12 @@
 import { describe, it, expect } from 'vitest';
+
+import type { Reaction } from '../types';
 import {
   calculateCorrectAnswer,
   generateReactantCounts,
   calculatePoints,
 } from '../utils/calculations';
 import { isValidInteger, validateAnswer } from '../utils/validation';
-import type { Reaction } from '../types';
 
 // --- Test data ---
 

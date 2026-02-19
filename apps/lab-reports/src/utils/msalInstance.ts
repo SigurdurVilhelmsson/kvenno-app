@@ -42,7 +42,7 @@ export const initializeMsal = async () => {
 
     // If we're on the callback route and have a response, redirect back
     if (window.location.pathname === '/auth/callback' && response) {
-      console.log('✅ Authentication successful, redirecting...');
+      console.warn('Authentication successful, redirecting...');
 
       // Get the return URL (where the user was before login)
       const basePath = import.meta.env.VITE_BASE_PATH || '/lab-reports';

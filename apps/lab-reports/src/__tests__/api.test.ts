@@ -6,6 +6,7 @@
  * parsing logic that can be tested independently.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import type { FileContent } from '@/types';
 
 describe('API module - buildMessageContent behavior', () => {

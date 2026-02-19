@@ -322,6 +322,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       options: shuffledIndices.map(i => question.options[i]),
       correctShuffledIndex: shuffledIndices.indexOf(question.correctIndex)
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when question index changes
   }, [currentQuestion, question.options, question.correctIndex]);
 
   const handleNextRule = () => {

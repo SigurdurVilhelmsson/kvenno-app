@@ -1,11 +1,11 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { describe, it, expect, vi } from 'vitest';
 
 import { App } from '../App';
-import { Home } from '../pages/Home';
 import { categories, getCategoryById } from '../data';
+import { Home } from '../pages/Home';
 
 // Mock the DownloadButton to avoid fetch calls in tests
 vi.mock('../components/DownloadButton', () => ({

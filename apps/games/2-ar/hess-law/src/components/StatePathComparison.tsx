@@ -203,6 +203,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
 
       return { path, points, d };
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: energyToY is derived from existing deps
   }, [selectedExample, width, height, showOverlay]);
 
   const handleExampleChange = (example: PathExample) => {

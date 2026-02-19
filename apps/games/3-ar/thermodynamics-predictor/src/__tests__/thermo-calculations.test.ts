@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { calculateDeltaG, getSpontaneity } from '../utils/thermo-calculations';
 
 describe('calculateDeltaG', () => {

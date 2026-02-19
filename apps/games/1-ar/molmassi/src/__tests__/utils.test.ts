@@ -1,29 +1,22 @@
 import { describe, it, expect } from 'vitest';
 
-// calculations.ts
+import type { Compound } from '../data/compounds';
 import {
   generateCalculationBreakdown,
   validateAnswer,
   calculatePoints,
 } from '../utils/calculations';
-import type { Compound } from '../data/compounds';
-
-// validation.ts
-import { validateInput } from '../utils/validation';
-
-// challengeGenerator.ts
 import {
   ATOMIC_MASSES,
   generateChallenge,
   LEVEL1_COMPOUNDS,
 } from '../utils/challengeGenerator';
-
-// moleculeConverter.ts
 import {
   elementsToMolecule,
   elementsToAtomCluster,
   calculateMolarMass,
 } from '../utils/moleculeConverter';
+import { validateInput } from '../utils/validation';
 
 // ---------------------------------------------------------------------------
 // utils/calculations.ts

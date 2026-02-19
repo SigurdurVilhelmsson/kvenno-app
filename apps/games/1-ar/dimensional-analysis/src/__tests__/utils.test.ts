@@ -1,17 +1,17 @@
 import { describe, it, expect } from 'vitest';
 
-import { parseUnit, predictResultingUnit } from '../utils/unitConversion';
-import {
-  countSignificantFigures,
-  scoreExplanation,
-  calculateCompositeScore,
-} from '../utils/scoring';
 import {
   checkLevel1Mastery,
   checkLevel2Mastery,
   checkLevel3Mastery,
   checkAchievements,
 } from '../utils/mastery';
+import {
+  countSignificantFigures,
+  scoreExplanation,
+  calculateCompositeScore,
+} from '../utils/scoring';
+import { parseUnit, predictResultingUnit } from '../utils/unitConversion';
 
 // ---------------------------------------------------------------------------
 // unitConversion.ts

@@ -1,10 +1,10 @@
 // @vitest-environment jsdom
-import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi } from 'vitest';
 
 import { Modal, SaveDialog, ConfirmDialog } from '../components/Modal';
-import { Toast } from '../components/Toast';
 import { SessionHistory } from '../components/SessionHistory';
+import { Toast } from '../components/Toast';
 import { GradingSession } from '../types';
 
 // Mock lucide-react icons to avoid SVG rendering issues in jsdom

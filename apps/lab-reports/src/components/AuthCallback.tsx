@@ -29,14 +29,10 @@ export const AuthCallback = () => {
   useEffect(() => {
     const handleRedirect = async () => {
       try {
-        console.log('🔐 Processing authentication callback...');
-
         // Handle the redirect response from Azure AD
         const response = await instance.handleRedirectPromise();
 
         if (response) {
-          console.log('✅ Authentication successful!', response.account?.username);
-
           // Get the original URL the user was trying to access
           const basePath = import.meta.env.VITE_BASE_PATH || '/lab-reports';
           const redirectUrl = getRedirectUrl(basePath);
@@ -45,13 +41,10 @@ export const AuthCallback = () => {
           const urlObj = new URL(redirectUrl);
           const pathToNavigate = urlObj.pathname + urlObj.search + urlObj.hash;
 
-          console.log('🔐 Redirecting to:', pathToNavigate);
-
           // Navigate back to the original page
           // Use replace to avoid adding to history
           navigate(pathToNavigate, { replace: true });
         } else {
-          console.log('⚠️ No authentication response found');
           // If no response, just redirect to home
           const basePath = import.meta.env.VITE_BASE_PATH || '/lab-reports';
           navigate(basePath, { replace: true });

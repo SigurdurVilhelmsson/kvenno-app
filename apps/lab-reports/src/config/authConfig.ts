@@ -65,10 +65,10 @@ export const msalConfig: Configuration = {
             console.error(message);
             return;
           case LogLevel.Info:
-            console.info(message);
+            console.info(message); // eslint-disable-line no-console
             return;
           case LogLevel.Verbose:
-            console.debug(message);
+            console.debug(message); // eslint-disable-line no-console
             return;
           case LogLevel.Warning:
             console.warn(message);

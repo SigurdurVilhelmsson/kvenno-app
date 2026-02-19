@@ -15,7 +15,6 @@ export const saveReturnUrl = (): void => {
   try {
     const currentUrl = window.location.href;
     sessionStorage.setItem(RETURN_URL_KEY, currentUrl);
-    console.log('🔐 Saved return URL:', currentUrl);
   } catch (error) {
     console.error('Failed to save return URL:', error);
     // Gracefully handle storage unavailability (e.g., private browsing)
@@ -43,7 +42,6 @@ export const getReturnUrl = (): string | null => {
 export const clearReturnUrl = (): void => {
   try {
     sessionStorage.removeItem(RETURN_URL_KEY);
-    console.log('🔐 Cleared return URL');
   } catch (error) {
     console.error('Failed to clear return URL:', error);
   }

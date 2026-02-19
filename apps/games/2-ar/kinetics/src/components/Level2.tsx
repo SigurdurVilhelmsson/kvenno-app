@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { challenges, MAX_SCORE } from '../data/level2-questions';
 import { ConcentrationTimeGraph } from './ConcentrationTimeGraph';
+import { challenges, MAX_SCORE } from '../data/level2-questions';
 
 interface Level2Props {
   onComplete: (score: number, maxScore: number, hintsUsed: number) => void;

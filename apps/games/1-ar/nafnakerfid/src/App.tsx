@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { LanguageSwitcher, ErrorBoundary } from '@shared/components';
 import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
 import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
+import { useAchievements } from '@shared/hooks/useAchievements';
 import { useGameI18n } from '@shared/hooks/useGameI18n';
 import { useGameProgress } from '@shared/hooks/useGameProgress';
-import { useAchievements } from '@shared/hooks/useAchievements';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';

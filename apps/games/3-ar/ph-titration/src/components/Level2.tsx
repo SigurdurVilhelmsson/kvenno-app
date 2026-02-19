@@ -51,6 +51,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       const fullCurve = generateTitrationCurve(titration, 60);
       setCurveData(fullCurve);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only regenerate curve when titration ID changes
   }, [titration?.id]);
 
   // Reset state when changing puzzles

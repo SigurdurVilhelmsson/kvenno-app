@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { PROBLEMS } from '../data/problems';
 import type { Problem } from '../types';
 

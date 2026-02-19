@@ -153,7 +153,7 @@ export function Teacher2Page() {
         .map(fr => fr.file.name);
       exportChecklist2ToCSV(completedResults, filenames, currentExperiment);
       showToast('CSV skrá niðurhalað', 'success');
-    } catch (_error) {
+    } catch {
       showToast('Villa við að búa til CSV skrá', 'error');
     }
   };

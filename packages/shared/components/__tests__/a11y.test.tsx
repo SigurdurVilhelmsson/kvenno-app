@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-import { Header } from '../Header';
-import { Footer } from '../Footer';
 import { Breadcrumbs, type BreadcrumbItem } from '../Breadcrumbs';
 import { ErrorBoundary } from '../ErrorBoundary';
+import { Footer } from '../Footer';
+import { Header } from '../Header';
 
 expect.extend(toHaveNoViolations);
 

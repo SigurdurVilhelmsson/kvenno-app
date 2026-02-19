@@ -147,6 +147,7 @@ function App() {
     } else if (timeRemaining === 0) {
       checkUserAnswer();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only trigger on screen/mode/timer state changes
   }, [screen, gameMode, timeRemaining]);
 
   // Calculate particle configuration based on current question
@@ -279,6 +280,7 @@ function App() {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: keyboard handler uses current closure values
   }, [screen, userAnswer, showSolution]);
 
   // ==================== RENDER ====================

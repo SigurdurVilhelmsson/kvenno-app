@@ -9,6 +9,14 @@ import { AuthButton } from './components/AuthButton';
 import { FileUpload } from './components/FileUpload';
 import { SaveDialog, ConfirmDialog } from './components/Modal';
 import { Toast } from './components/Toast';
+import { experimentConfigs, getExperiments } from './config/experiments';
+import { useAppReducer } from './hooks/useAppReducer';
+import { AnalysisResult, StudentFeedback, GradingSession } from './types';
+import { processFile } from './utils/api';
+import { getBreadcrumbsForPath } from './utils/breadcrumbs';
+import { exportResultsToCSV } from './utils/export';
+// eslint-disable-next-line import/order
+import { extractTextFromFile } from './utils/fileProcessing';
 
 const SessionHistory = React.lazy(() =>
   import('./components/SessionHistory').then((m) => ({ default: m.SessionHistory }))
@@ -19,10 +27,6 @@ const StudentFeedbackComponent = React.lazy(() =>
 const TeacherResults = React.lazy(() =>
   import('./components/TeacherResults').then((m) => ({ default: m.TeacherResults }))
 );
-import { experimentConfigs, getExperiments } from './config/experiments';
-import { AnalysisResult, StudentFeedback, GradingSession } from './types';
-import { extractTextFromFile } from './utils/fileProcessing';
-import { processFile } from './utils/api';
 import {
   loadSavedSessions,
   saveSession,
@@ -30,9 +34,6 @@ import {
   deleteSession as deleteStoredSession,
   generateSessionId,
 } from './utils/storage';
-import { exportResultsToCSV } from './utils/export';
-import { getBreadcrumbsForPath } from './utils/breadcrumbs';
-import { useAppReducer } from './hooks/useAppReducer';
 
 function App() {
   const { state, dispatch, showToast } = useAppReducer();
@@ -186,7 +187,7 @@ function App() {
     try {
       exportResultsToCSV(state.results.analyses, sections);
       showToast('CSV skrá niðurhalað', 'success');
-    } catch (_error) {
+    } catch {
       showToast('Villa við að búa til CSV skrá', 'error');
     }
   };

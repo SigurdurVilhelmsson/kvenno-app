@@ -1,4 +1,7 @@
 import { describe, it, expect } from 'vitest';
+
+import { R } from '../types';
+import type { GasValue } from '../types';
 import {
   solveGasLaw,
   checkAnswer,
@@ -7,8 +10,6 @@ import {
   getUnit,
   getVariableName,
 } from '../utils/gas-calculations';
-import { R } from '../types';
-import type { GasValue } from '../types';
 
 // Helper to create a GasValue
 function gv(value: number, unit = ''): GasValue {

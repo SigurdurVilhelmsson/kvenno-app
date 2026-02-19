@@ -125,7 +125,9 @@ export function MaxwellBoltzmann({
 
   // Scale functions
   const maxE = 120;
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: scaleX is an inline helper, useMemo deps are controlled
   const scaleX = (x: number) => margin.left + (x / maxE) * plotWidth;
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: scaleY is an inline helper, useMemo deps are controlled
   const scaleY = (y: number) => margin.top + plotHeight - (y / maxY) * plotHeight;
 
   // Generate SVG path for curve

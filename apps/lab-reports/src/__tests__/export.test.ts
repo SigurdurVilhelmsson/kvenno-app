@@ -3,6 +3,7 @@
  * Mocks DOM APIs (createElement, URL.createObjectURL) to verify CSV generation.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import type { AnalysisResult, ExperimentSection, Analysis2Result, ExperimentConfig2 } from '@/types';
 
 // Mock DOM APIs for CSV download

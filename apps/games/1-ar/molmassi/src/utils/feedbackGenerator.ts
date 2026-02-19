@@ -6,10 +6,10 @@
 
 import type { DetailedFeedback } from '@shared/types';
 
-import { ATOM_VISUALS } from '../components/AtomVisuals';
 
 import type { Challenge } from './challengeGenerator';
 import { ATOMIC_MASSES } from './challengeGenerator';
+import { ATOM_VISUALS } from '../components/AtomVisuals';
 
 /**
  * Generate detailed feedback for the FeedbackPanel based on the

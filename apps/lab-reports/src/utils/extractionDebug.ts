@@ -1,3 +1,5 @@
+/* eslint-disable no-console -- Debug utility with intentional console usage */
+
 /**
  * Check if extraction debugging is enabled
  */

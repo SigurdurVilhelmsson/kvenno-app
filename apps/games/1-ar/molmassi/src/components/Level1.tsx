@@ -2,14 +2,13 @@ import { useState, useEffect } from 'react';
 
 import { FeedbackPanel, MoleculeViewer3DLazy } from '@shared/components';
 
-import { elementsToMolecule } from '../utils/moleculeConverter';
-import type { Challenge } from '../utils/challengeGenerator';
-import { generateChallenge } from '../utils/challengeGenerator';
-import { getDetailedFeedback } from '../utils/feedbackGenerator';
-
 import { ATOM_VISUALS, AtomCircle, MoleculeVisual } from './AtomVisuals';
 import { GameComplete } from './GameComplete';
 import { PeriodicTable } from './PeriodicTable';
+import type { Challenge } from '../utils/challengeGenerator';
+import { generateChallenge } from '../utils/challengeGenerator';
+import { getDetailedFeedback } from '../utils/feedbackGenerator';
+import { elementsToMolecule } from '../utils/moleculeConverter';
 
 interface Level1Props {
   onBack: () => void;
