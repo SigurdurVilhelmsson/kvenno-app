@@ -6,130 +6,54 @@ This document defines the complete structure, design system, and navigation patt
 
 ```
 kvenno.app/
-├── /                           (Landing page - repo: ChemistryTools-Landing)
+├── /                                      (Track selector landing page - apps/landing)
 │
-├── /1-ar/                      (1st year hub - repo: ChemistryTools-Landing)
-│   ├── /1-ar/ai-tutor/         (AI Chemistry Tutor - repo: icelandic-chemistry-ai-tutor)
-│   ├── /1-ar/games/            (Chemistry Games 1st yr - repo: ChemistryGames)
-│   └── /1-ar/[future-tools]/   (Future expansion)
+├── /efnafraedi/                           (Chemistry track hub - apps/landing)
+│   ├── /efnafraedi/1-ar/                  (1st year hub - apps/landing)
+│   │   └── /efnafraedi/1-ar/games/        (Chemistry Games 1st yr - apps/games/1-ar/)
+│   │
+│   ├── /efnafraedi/2-ar/                  (2nd year hub - apps/landing)
+│   │   ├── /efnafraedi/2-ar/games/        (Chemistry Games 2nd yr - apps/games/2-ar/)
+│   │   └── /efnafraedi/2-ar/lab-reports/  (Lab Reports App - apps/lab-reports)
+│   │
+│   ├── /efnafraedi/3-ar/                  (3rd year hub - apps/landing)
+│   │   ├── /efnafraedi/3-ar/games/        (Chemistry Games 3rd yr - apps/games/3-ar/)
+│   │   └── /efnafraedi/3-ar/lab-reports/  (Lab Reports App - apps/lab-reports)
+│   │
+│   ├── /efnafraedi/val/                   (Elective courses hub - apps/landing)
+│   └── /efnafraedi/f-bekkir/              (Social sciences track - apps/landing)
 │
-├── /2-ar/                      (2nd year hub - repo: ChemistryTools-Landing)
-│   ├── /2-ar/lab-reports/      (Lab Reports App - repo: LabReports)
-│   ├── /2-ar/ai-tutor/         (AI Chemistry Tutor - repo: icelandic-chemistry-ai-tutor)
-│   ├── /2-ar/games/            (Chemistry Games 2nd yr - repo: ChemistryGames)
-│   └── /2-ar/[future-tools]/   (Future expansion)
-│
-├── /3-ar/                      (3rd year hub - repo: ChemistryTools-Landing)
-│   ├── /3-ar/lab-reports/      (Lab Reports App - repo: LabReports)
-│   ├── /3-ar/ai-tutor/         (AI Chemistry Tutor - repo: icelandic-chemistry-ai-tutor)
-│   ├── /3-ar/games/            (Chemistry Games 3rd yr - repo: ChemistryGames)
-│   └── /3-ar/[future-tools]/   (Future expansion)
-│
-├── /val/                       (Elective courses hub - repo: ChemistryTools-Landing)
-│   └── /val/[tools]/           (Elective tools TBD)
-│
-└── /f-bekkir/                  (Social sciences track - repo: ChemistryTools-Landing)
-    └── /f-bekkir/[tools]/      (Social sciences tools TBD)
+└── /islenskubraut/                        (Icelandic language cards - apps/islenskubraut)
 ```
 
-### Shared vs Year-Specific Apps
+Note: Legacy URLs (`/1-ar/`, `/2-ar/`, `/3-ar/`) redirect to `/efnafraedi/...` via nginx.
 
-**Shared Across Years** (same repo, deployed to multiple paths):
-- AI Chemistry Tutor (`icelandic-chemistry-ai-tutor`) - Used in 1st, 2nd, and 3rd year
-- Lab Reports (`LabReports`) - Used in 2nd and 3rd year
+### Monorepo Apps
 
-**Year-Specific** (separate repos):
-- Chemistry Games (`ChemistryGames`) - Different content/difficulty per year:
-  - Games for 1st year → /1-ar/games/
-  - Games for 2nd year → /2-ar/games/
-  - Games for 3rd year → /3-ar/games/
-- Landing/Hub Pages (`ChemistryTools-Landing`) - Static HTML hub pages
+All code lives in a single pnpm monorepo (`kvenno-app/`):
 
-**Future Tools**:
-- Can be either shared or year-specific depending on content
-- Document in this file which approach is used for each new tool
+- **Landing + Year Hubs** (`apps/landing`) - React SPA serving the track selector and all chemistry year hub pages
+- **Lab Reports** (`apps/lab-reports`) - React SPA, deployed to 2 paths (2-ar, 3-ar) with separate builds
+- **Chemistry Games** (`apps/games/`) - 17 single-file HTML games organized by year:
+  - `apps/games/1-ar/` - 5 games for year 1
+  - `apps/games/2-ar/` - 7 games for year 2
+  - `apps/games/3-ar/` - 5 games for year 3
+- **Islenskubraut** (`apps/islenskubraut`) - Icelandic language teaching cards SPA
+- **Shared Library** (`packages/shared/`) - Components, hooks, utils, types, i18n
 
-### Deployment Strategy for Shared Apps
+### Deployment Strategy
 
-**CRITICAL**: Shared apps (AI Tutor, Lab Reports) require **separate builds** for each deployment path.
-
-#### Why Multiple Builds Are Required
-
-React apps need to know their deployment path for:
-- Asset loading (JS, CSS files)
-- Internal routing (React Router)
-- API endpoints (relative paths)
-
-Building once and copying to multiple locations will break routing and asset loading.
-
-#### Building for Multiple Paths
-
-**Lab Reports** (2 builds required):
-```bash
-# Build 1: For 2nd year
-export VITE_BASE_PATH=/2-ar/lab-reports/
-npm run build
-# Deploy dist/* to /var/www/kvenno.app/2-ar/lab-reports/
-
-# Build 2: For 3rd year
-export VITE_BASE_PATH=/3-ar/lab-reports/
-npm run build
-# Deploy dist/* to /var/www/kvenno.app/3-ar/lab-reports/
-```
-
-**AI Tutor** (3 builds required):
-```bash
-# Build 1: For 1st year
-export VITE_BASE_PATH=/1-ar/ai-tutor/
-npm run build
-# Deploy dist/* to /var/www/kvenno.app/1-ar/ai-tutor/
-
-# Build 2: For 2nd year
-export VITE_BASE_PATH=/2-ar/ai-tutor/
-npm run build
-# Deploy dist/* to /var/www/kvenno.app/2-ar/ai-tutor/
-
-# Build 3: For 3rd year
-export VITE_BASE_PATH=/3-ar/ai-tutor/
-npm run build
-# Deploy dist/* to /var/www/kvenno.app/3-ar/ai-tutor/
-```
-
-#### Automated Deployment Script
-
-Each shared app repo should include a deployment script:
+Deployment is handled by the unified monorepo build system:
 
 ```bash
-#!/bin/bash
-# deploy-all-paths.sh
-
-set -e
-
-APP_NAME="app-name"  # e.g., "lab-reports" or "ai-tutor"
-PATHS=("2-ar" "3-ar")  # Adjust for each app
-
-for PATH in "${PATHS[@]}"; do
-  echo "Building for /${PATH}/${APP_NAME}/"
-  
-  export VITE_BASE_PATH=/${PATH}/${APP_NAME}/
-  npm run build
-  
-  # Copy to server (adjust as needed)
-  scp -r dist/* user@server:/var/www/kvenno.app/${PATH}/${APP_NAME}/
-  
-  echo "✓ Deployed to /${PATH}/${APP_NAME}/"
-done
+pnpm build          # Build everything to dist/
+./scripts/deploy.sh # rsync to server + restart backend
 ```
 
-#### Deployment Checklist for Shared Apps
-
-Before deploying:
-- [ ] Update `VITE_BASE_PATH` for each build
-- [ ] Clean `dist/` directory between builds
-- [ ] Verify each deployment path exists on server
-- [ ] Test routing works at each deployed URL
-- [ ] Check breadcrumbs show correct year
-- [ ] Verify "Til baka" button links to correct hub
+The build script (`scripts/build-all.mjs`) handles multi-path builds automatically:
+- Lab Reports is built twice (for `/efnafraedi/2-ar/lab-reports/` and `/efnafraedi/3-ar/lab-reports/`)
+- Games are built as self-contained single HTML files via `vite-plugin-singlefile`
+- Landing page serves all hub routes via React Router
 
 ## 2. Authentication & Access Control
 
@@ -148,14 +72,15 @@ The kvenno.app site uses a mixed access model:
 
 ### Which Apps Require Authentication
 
-**🔒 Protected Apps:**
-- Lab Reports (`/2-ar/lab-reports/`, `/3-ar/lab-reports/`)
-- AI Chemistry Tutor (`/1-ar/ai-tutor/`, `/2-ar/ai-tutor/`, `/3-ar/ai-tutor/`)
+**Protected Apps:**
+- Lab Reports (`/efnafraedi/2-ar/lab-reports/`, `/efnafraedi/3-ar/lab-reports/`)
 
-**🌐 Open Access:**
+**Open Access:**
 - Landing page (`/`)
-- All hub pages (`/1-ar/`, `/2-ar/`, `/3-ar/`, `/val/`, `/f-bekkir/`)
-- All games (`/1-ar/games/`, `/2-ar/games/`, `/3-ar/games/`)
+- Chemistry track hub (`/efnafraedi/`)
+- All year hub pages (`/efnafraedi/1-ar/`, `/efnafraedi/2-ar/`, `/efnafraedi/3-ar/`, `/efnafraedi/val/`, `/efnafraedi/f-bekkir/`)
+- All games (`/efnafraedi/1-ar/games/`, `/efnafraedi/2-ar/games/`, `/efnafraedi/3-ar/games/`)
+- Islenskubraut (`/islenskubraut/`)
 
 ### Role-Based Access Control
 
@@ -172,10 +97,7 @@ The kvenno.app site uses a mixed access model:
 ### Authentication Implementation Details
 
 **For detailed implementation instructions**, see:
-- `AZURE-AD-README.md` - Start here for overview
-- `AZURE-AD-IMPLEMENTATION-GUIDE.md` - Step-by-step implementation
-- `AZURE-AD-CHECKLIST.md` - Track your progress
-- `AZURE-AD-QUICK-REFERENCE.md` - Quick lookups while coding
+- `docs/azure-ad-setup.md` - Azure AD setup, auth flow, components, and troubleshooting
 
 **Key Technologies:**
 - `@azure/msal-browser` - Core authentication library
@@ -189,6 +111,7 @@ The kvenno.app site uses a mixed access model:
 // Environment variables required (.env)
 VITE_AZURE_CLIENT_ID=your-client-id
 VITE_AZURE_TENANT_ID=your-tenant-id
+VITE_TEACHER_EMAILS=teacher1@kvenno.is,teacher2@kvenno.is
 ```
 
 **Deployment Considerations:**
@@ -223,17 +146,14 @@ VITE_AZURE_TENANT_ID=your-tenant-id
 
 ### Adding New Teachers
 
-To add a new teacher:
-1. Open `src/utils/roles.ts` in LabReports or AI Tutor
-2. Add email to `TEACHER_EMAILS` array:
-   ```typescript
-   const TEACHER_EMAILS = [
-     'existing.teacher@kvenno.is',
-     'new.teacher@kvenno.is',  // Add here
-   ];
-   ```
-3. Commit and redeploy the app
-4. Test that new teacher can access teacher features
+Teacher emails are managed via the `VITE_TEACHER_EMAILS` environment variable (comma-separated):
+
+```bash
+# In .env file for lab-reports
+VITE_TEACHER_EMAILS=existing.teacher@kvenno.is,new.teacher@kvenno.is
+```
+
+After updating, rebuild and redeploy the lab-reports app. See `apps/lab-reports/src/utils/roles.ts` for implementation details.
 
 ### Future Authentication Enhancements
 
@@ -725,14 +645,12 @@ Each app should also include a clear "Til baka" (Back) button that goes to its p
 
 ## 5. Landing Page (/)
 
-The root landing page contains:
+The root landing page is a track selector containing:
 1. **Header** (as defined above)
-2. **Intro section**: Brief welcome text about Kvennaskólinn chemistry tools
-3. **Main navigation tiles**: Four large buttons/cards:
-   - **1. ár** → `/1-ar/`
-   - **2. ár** → `/2-ar/`
-   - **3. ár** → `/3-ar/`
-   - **Val** → `/val/`
+2. **Intro section**: Brief welcome text about Kvennaskólinn tools
+3. **Main navigation tiles**: Track cards defined in `apps/landing/src/config/tracks.ts`:
+   - **Efnafraedi** → `/efnafraedi/` (Chemistry track)
+   - **Islenskubraut** → `/islenskubraut/` (Icelandic language track)
 
 ### Landing Page Layout:
 ```
@@ -785,277 +703,130 @@ Each app (Lab Reports, AI Tutor, etc.) must include:
 - Uses `basename` in React Router if needed
 - Must handle its own routing within its path
 
-## 8. This App's Details
+## 8. Monorepo Details
 
-> **NOTE**: Update this section for each repo
-
-- **Repo Name**: ChemistryTools-Landing
+- **Repo Name**: kvenno-app
 - **Deployed To**: `/var/www/kvenno.app/` (root level)
-- **Purpose**: Main landing page and navigation hub for kvenno.app. Provides year-based navigation to all chemistry tools and maintains consistent header/design system across the site.
+- **Purpose**: Unified monorepo containing all kvenno.app applications, shared components, server backend, and build infrastructure.
 - **Current Status**: Deployed and in production
-- **Technology**: Static HTML + CSS (no build process required)
+- **Technology**: pnpm monorepo, Vite + React + TypeScript + Tailwind CSS
 - **Contains**:
-  - Landing page (`/`)
-  - Year hub pages (`/1-ar/`, `/2-ar/`, `/3-ar/`)
-  - Track hub pages (`/val/`, `/f-bekkir/`)
-  - Global stylesheet (`styles.css`)
-  - Brand assets (`media/` folder)
+  - Track selector landing page (`/`) and chemistry year hubs (`/efnafraedi/*`)
+  - Lab reports SPA (`/efnafraedi/2-ar/lab-reports/`, `/efnafraedi/3-ar/lab-reports/`)
+  - 17 chemistry games as single-file HTML builds
+  - Islenskubraut teaching cards SPA (`/islenskubraut/`)
+  - Express backend (`server/`) for Claude API proxy and PDF generation
+  - Shared component library (`packages/shared/`)
 
 ## 9. Deployment Notes
 
-### Repository Structure on GitHub
+### Monorepo Structure
 
-**ChemistryTools-Landing** (Static HTML):
 ```
-ChemistryTools-Landing/
-├── index.html              # Landing page
-├── styles.css              # Landing page styles
-├── KVENNO-STRUCTURE.md
-├── README.md
-├── 1-ar/
-│   └── index.html         # 1st year hub page
-├── 2-ar/
-│   └── index.html         # 2nd year hub page
-├── 3-ar/
-│   └── index.html         # 3rd year hub page
-├── val/
-│   └── index.html         # Electives hub page
-├── f-bekkir/
-│   └── index.html         # Social sciences hub page
-└── media/                  # Favicon, images, etc.
-```
-
-**ChemistryGames** (Static HTML):
-```
-ChemistryGames/
-├── KVENNO-STRUCTURE.md
-├── README.md
-├── 1-ar/
-│   ├── index.html         # Games hub for 1st year
-│   └── einingagreining.html  # Individual game files
-├── 2-ar/
-│   └── index.html
-└── 3-ar/
-    └── index.html
-```
-
-**LabReports** (React/Vite):
-```
-LabReports/
-├── src/                    # React source code
-├── api/                    # Serverless functions
-├── KVENNO-STRUCTURE.md
-├── DEPLOYMENT.md
-├── package.json
-├── vite.config.ts
-└── ... (standard Vite structure)
-```
-
-**icelandic-chemistry-ai-tutor** (React/Vite):
-```
-icelandic-chemistry-ai-tutor/
-├── src/                    # React source code
-├── KVENNO-STRUCTURE.md
-├── DEPLOYMENT.md
-├── package.json
-├── vite.config.ts
-└── ... (standard Vite structure)
+kvenno-app/
+├── apps/
+│   ├── landing/          # Track selector + chemistry year hubs (React SPA)
+│   ├── islenskubraut/    # Icelandic language teaching cards (React SPA)
+│   ├── lab-reports/      # AI-powered lab report grading (React SPA)
+│   └── games/            # 17 chemistry games (single-file HTML builds)
+│       ├── 1-ar/         # 5 games for year 1
+│       ├── 2-ar/         # 7 games for year 2
+│       └── 3-ar/         # 5 games for year 3
+├── packages/
+│   └── shared/           # Shared components, hooks, utils, types, i18n
+├── server/               # Express backend (Claude AI proxy + PDF generation)
+├── scripts/              # Build and deploy scripts
+├── docs/                 # Documentation
+├── media/                # Favicons and brand assets
+└── dist/                 # Build output (gitignored)
 ```
 
 ### Deployment Workflow
 
-**Step 1: Deploy ChemistryTools-Landing**
 ```bash
-# On local machine with WSL
-cd ChemistryTools-Landing
+# Build everything
+pnpm build
 
-# Copy entire structure to server
-scp -r * siggi@server:/tmp/landing-deploy/
-
-# SSH to server
-ssh siggi@server
-
-# Copy to production
-sudo cp -r /tmp/landing-deploy/* /var/www/kvenno.app/
-sudo chown -R www-data:www-data /var/www/kvenno.app/
-sudo chmod -R 755 /var/www/kvenno.app/
-
-# Clean up
-rm -rf /tmp/landing-deploy/
+# Deploy to production (rsync + restart backend)
+./scripts/deploy.sh
 ```
 
-**Step 2: Deploy ChemistryGames**
-```bash
-# On local machine
-cd ChemistryGames
+The build script (`scripts/build-all.mjs`) orchestrates all builds:
+1. Builds the landing page SPA
+2. Builds all 17 games as self-contained HTML files
+3. Builds lab-reports twice (for 2-ar and 3-ar paths)
+4. Builds islenskubraut SPA
+5. Copies media assets
 
-# Copy each year's games
-scp -r 1-ar/* siggi@server:/tmp/games-1ar/
-scp -r 2-ar/* siggi@server:/tmp/games-2ar/
-scp -r 3-ar/* siggi@server:/tmp/games-3ar/
+### Server Directory Structure (dist/)
 
-# SSH to server
-ssh siggi@server
-
-# Copy to production
-sudo cp -r /tmp/games-1ar/* /var/www/kvenno.app/1-ar/games/
-sudo cp -r /tmp/games-2ar/* /var/www/kvenno.app/2-ar/games/
-sudo cp -r /tmp/games-3ar/* /var/www/kvenno.app/3-ar/games/
-
-sudo chown -R www-data:www-data /var/www/kvenno.app/*/games/
-sudo chmod -R 755 /var/www/kvenno.app/*/games/
-
-# Clean up
-rm -rf /tmp/games-*
 ```
-
-**Step 3: Deploy LabReports** (2 builds)
-```bash
-# On local machine
-cd LabReports
-
-# Build for 2nd year
-export VITE_BASE_PATH=/2-ar/lab-reports/
-npm run build
-
-# Copy to server
-scp -r dist/* siggi@server:/tmp/lab-reports-2ar/
-
-# Build for 3rd year
-export VITE_BASE_PATH=/3-ar/lab-reports/
-npm run build
-
-# Copy to server
-scp -r dist/* siggi@server:/tmp/lab-reports-3ar/
-
-# SSH to server
-ssh siggi@server
-
-# Deploy to production
-sudo mkdir -p /var/www/kvenno.app/2-ar/lab-reports
-sudo mkdir -p /var/www/kvenno.app/3-ar/lab-reports
-
-sudo cp -r /tmp/lab-reports-2ar/* /var/www/kvenno.app/2-ar/lab-reports/
-sudo cp -r /tmp/lab-reports-3ar/* /var/www/kvenno.app/3-ar/lab-reports/
-
-sudo chown -R www-data:www-data /var/www/kvenno.app/*/lab-reports/
-sudo chmod -R 755 /var/www/kvenno.app/*/lab-reports/
-
-# Clean up
-rm -rf /tmp/lab-reports-*
-```
-
-**Step 4: Deploy AI Tutor** (3 builds)
-```bash
-# On local machine
-cd icelandic-chemistry-ai-tutor
-
-# Build for 1st year
-export VITE_BASE_PATH=/1-ar/ai-tutor/
-npm run build
-scp -r dist/* siggi@server:/tmp/ai-tutor-1ar/
-
-# Build for 2nd year
-export VITE_BASE_PATH=/2-ar/ai-tutor/
-npm run build
-scp -r dist/* siggi@server:/tmp/ai-tutor-2ar/
-
-# Build for 3rd year
-export VITE_BASE_PATH=/3-ar/ai-tutor/
-npm run build
-scp -r dist/* siggi@server:/tmp/ai-tutor-3ar/
-
-# SSH to server
-ssh siggi@server
-
-# Deploy to production
-sudo mkdir -p /var/www/kvenno.app/1-ar/ai-tutor
-sudo mkdir -p /var/www/kvenno.app/2-ar/ai-tutor
-sudo mkdir -p /var/www/kvenno.app/3-ar/ai-tutor
-
-sudo cp -r /tmp/ai-tutor-1ar/* /var/www/kvenno.app/1-ar/ai-tutor/
-sudo cp -r /tmp/ai-tutor-2ar/* /var/www/kvenno.app/2-ar/ai-tutor/
-sudo cp -r /tmp/ai-tutor-3ar/* /var/www/kvenno.app/3-ar/ai-tutor/
-
-sudo chown -R www-data:www-data /var/www/kvenno.app/*/ai-tutor/
-sudo chmod -R 755 /var/www/kvenno.app/*/ai-tutor/
-
-# Clean up
-rm -rf /tmp/ai-tutor-*
-```
-
-### Final Server Directory Structure
-
-After all deployments:
-```
-/var/www/kvenno.app/
-├── index.html                      # Landing page
-├── styles.css
-├── media/
-│
-├── 1-ar/
-│   ├── index.html                  # Hub page (static)
-│   ├── games/
-│   │   ├── index.html              # Games hub (static)
-│   │   └── *.html                  # Game files (static)
-│   └── ai-tutor/
-│       └── [React build]           # AI Tutor (build 1)
-│
-├── 2-ar/
-│   ├── index.html                  # Hub page (static)
-│   ├── games/
-│   │   ├── index.html              # Games hub (static)
-│   │   └── *.html                  # Game files (static)
-│   ├── lab-reports/
-│   │   └── [React build]           # Lab Reports (build 1)
-│   └── ai-tutor/
-│       └── [React build]           # AI Tutor (build 2)
-│
-└── 3-ar/
-    ├── index.html                  # Hub page (static)
-    ├── games/
-    │   ├── index.html              # Games hub (static)
-    │   └── *.html                  # Game files (static)
-    ├── lab-reports/
-    │   └── [React build]           # Lab Reports (build 2)
-    └── ai-tutor/
-        └── [React build]           # AI Tutor (build 3)
+dist/
+├── index.html                         # Track selector SPA
+├── assets/                            # Landing JS/CSS
+├── media/                             # Favicons
+├── efnafraedi/
+│   ├── index.html                     # Chemistry hub (SPA fallback)
+│   ├── 1-ar/
+│   │   ├── index.html                 # Year 1 hub (SPA fallback)
+│   │   └── games/*.html               # Self-contained games
+│   ├── 2-ar/
+│   │   ├── index.html
+│   │   ├── games/...
+│   │   └── lab-reports/               # SPA with assets/
+│   ├── 3-ar/
+│   │   ├── index.html
+│   │   ├── games/...
+│   │   └── lab-reports/
+│   ├── val/index.html
+│   └── f-bekkir/index.html
+└── islenskubraut/
+    ├── index.html                     # Islenskubraut SPA
+    └── assets/
 ```
 
 ### Server Setup (nginx)
-- All apps served from `/var/www/kvenno.app/`
-- nginx configuration handles routing to correct directories
-- Each React app built with `npm run build`
-- Build outputs copied to appropriate subdirectories
-
-### Build Commands:
-```bash
-npm run build
-# Then copy build/* to /var/www/kvenno.app/[app-path]/
-```
+- All static files served from `/var/www/kvenno.app/`
+- Express backend proxied at `/api/` (port 8000)
+- SPA fallback routes configured per app
+- HTTPS enforced via nginx
+- Legacy URLs (`/1-ar/`, `/2-ar/`, etc.) redirect to `/efnafraedi/...`
 
 ### Environment Variables:
-Each app may need:
-- `PUBLIC_URL` or `basename` for correct routing
-- API endpoints if calling backend services
-- Authentication tokens
+```bash
+# Frontend (.env in repo root)
+VITE_AZURE_CLIENT_ID=your-client-id
+VITE_AZURE_TENANT_ID=your-tenant-id
+VITE_TEACHER_EMAILS=teacher1@kvenno.is,teacher2@kvenno.is
 
-## 10. Development Workflow with Claude Code
+# Backend (server/.env on server only)
+CLAUDE_API_KEY=sk-ant-api-key-here
+PORT=8000
+NODE_ENV=production
+```
 
-When working on any repo with Claude Code:
+## 10. Development Workflow
 
-1. **Always start with**: "Read KVENNO-STRUCTURE.md first"
-2. **Reference design system**: Use #f36b22, consistent button styles
-3. **Include header**: Copy header component into your app
-4. **Test navigation**: Make sure links work correctly
-5. **Breadcrumbs**: Add appropriate breadcrumb trail
-6. **Responsive**: Test on mobile sizes
+All development happens in the unified `kvenno-app` monorepo:
 
-### Updating This File:
-When you make design decisions or structural changes:
-1. Update KVENNO-STRUCTURE.md in one repo
-2. Copy the updated file to all other repos
-3. Ask Claude Code in each repo: "Review KVENNO-STRUCTURE.md and update this app to match current standards"
+```bash
+pnpm install              # Install all dependencies
+pnpm dev:landing          # Dev server for landing page
+pnpm dev:lab-reports      # Dev server for lab reports
+pnpm dev:islenskubraut    # Dev server for islenskubraut
+pnpm dev:games            # Dev servers for all games
+pnpm type-check           # TypeScript check across all packages
+pnpm lint                 # ESLint check
+pnpm test                 # Run unit tests (vitest)
+pnpm test:e2e             # Run E2E tests (Playwright)
+```
+
+### Development Guidelines:
+1. **Reference design system**: Use #f36b22, consistent button styles from Tailwind preset
+2. **Use shared components**: Import Header, Breadcrumbs, Footer from `packages/shared/`
+3. **Test navigation**: Make sure links and breadcrumbs work correctly
+4. **Responsive**: Test on mobile sizes
+5. **i18n**: Use `useGameI18n` hook for game translations (all 17 games support IS/EN/PL)
 
 ## 11. Icelandic Language
 
@@ -1067,15 +838,75 @@ All user-facing text must be in Icelandic:
 
 ## 12. Authentication & Access Control
 
-Some apps require teacher authentication:
-- Lab Reports app: Teacher grading interface
-- Future admin features
+Authentication is handled by Azure AD (Microsoft Entra ID) via MSAL.js. See Section 2 above for full details and `docs/azure-ad-setup.md` for implementation guide.
 
-**Consistent login approach**:
-- School Google account SSO (preferred)
-- Backend handles authentication
-- JWT tokens for session management
-- Clear visual indication of login status
+**Protected apps**: Lab Reports (teacher grading interface)
+**Authentication method**: Azure AD redirect flow with @kvenno.is school accounts
+**Role system**: Teacher emails configured via `VITE_TEACHER_EMAILS` environment variable
+
+## 13. Shared Hooks
+
+The `packages/shared/hooks/` directory provides reusable hooks used across all games and apps:
+
+- **`useGameProgress`** - Tracks game state (score, attempts, current question) with localStorage persistence
+- **`useGameI18n`** - Internationalization for games; supports IS/EN/PL via `createGameTranslations()`
+- **`useI18n`** - General-purpose i18n hook for non-game apps
+- **`useAchievements`** - Achievement/badge system for games (unlock conditions, persistent state)
+- **`useAccessibility`** - Accessibility features (reduced motion, font size, high contrast preferences)
+- **`useProgress`** - Generic progress tracking hook
+
+All hooks have unit tests in `packages/shared/hooks/__tests__/`.
+
+## 14. Game Architecture (Refactored)
+
+Games in `apps/games/` that have been refactored follow this structure:
+
+```
+apps/games/{year}/{game-name}/src/
+├── App.tsx              # Main game component
+├── main.tsx             # Entry point
+├── i18n.ts              # Game-specific translations (IS/EN/PL)
+├── components/          # UI components
+├── data/                # Game data (questions, reactions, etc.)
+├── utils/               # Game logic and helpers
+└── __tests__/           # Unit tests
+```
+
+Refactored games include: `hess-law`, `kinetics`, `redox-reactions`, and others. Data and utility logic are extracted from monolithic components into separate `data/` and `utils/` directories for testability.
+
+## 15. CI/CD Pipeline
+
+### Continuous Integration (`.github/workflows/ci.yml`)
+
+5 parallel jobs on every push/PR to `main`:
+
+1. **Lint & Type Check** - ESLint + TypeScript `tsc --noEmit`
+2. **Unit Tests** - Vitest with coverage reporting (~1022 tests)
+3. **Server Tests** - Vitest for Express backend (~40 tests)
+4. **Build** - Full production build to `dist/`
+5. **E2E Tests** - Playwright (chromium + firefox), runs after build
+
+### Deployment (`.github/workflows/deploy.yml`)
+
+Manual or automated deployment via `./scripts/deploy.sh` (rsync to server + backend restart).
+
+## 16. i18n System
+
+All 17 chemistry games support internationalization via the `useGameI18n` hook:
+
+- **Languages**: Icelandic (IS, default), English (EN), Polish (PL)
+- **Implementation**: Each game has an `i18n.ts` file with `createGameTranslations()` calls
+- **Coverage tracking**: See `docs/i18n-coverage.md` for per-game status
+
+The shared i18n files live in `packages/shared/i18n/` (`is.json`, `en.json`, `pl.json`).
+
+## 17. Testing Strategy
+
+- **Unit tests**: Vitest for all packages and apps
+- **E2E tests**: Playwright for integration testing (chromium + firefox)
+- **Server tests**: Vitest + supertest for Express API testing
+- **Coverage**: ~1062 total tests (1022 unit + 40 server)
+- **Bundle analysis**: See `docs/bundle-sizes.md` for per-game bundle size tracking
 
 ---
 
@@ -1088,12 +919,14 @@ Some apps require teacher authentication:
 
 **Key Links**:
 - Home: `/`
-- 1st Year: `/1-ar/`
-- 2nd Year: `/2-ar/`
-- 3rd Year: `/3-ar/`
-- Electives: `/val/`
+- Chemistry Track: `/efnafraedi/`
+- 1st Year: `/efnafraedi/1-ar/`
+- 2nd Year: `/efnafraedi/2-ar/`
+- 3rd Year: `/efnafraedi/3-ar/`
+- Electives: `/efnafraedi/val/`
+- Islenskubraut: `/islenskubraut/`
 
 ---
 
-*Last updated: 2025-11-22*  
+*Last updated: 2026-02-19*
 *Maintainer: Sigurður E. Vilhelmsson, Kvennaskólinn í Reykjavík*
