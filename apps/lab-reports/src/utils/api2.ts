@@ -21,63 +21,35 @@ const analyzeWithClaude2 = async (
 ): Promise<AnthropicResponse> => {
   const backendEndpoint = import.meta.env.VITE_API_ENDPOINT;
 
-  if (backendEndpoint) {
-    const response = await fetch(`${backendEndpoint}/analyze-2ar`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ systemPrompt, userPrompt }),
-    });
-
-    if (!response.ok) {
-      let errorMessage = 'API request failed';
-      try {
-        const errorBody = await response.json();
-        errorMessage = errorBody.error || errorMessage;
-      } catch {
-        try {
-          const errorText = await response.text();
-          if (errorText) errorMessage = errorText;
-        } catch {
-          // Use default message
-        }
-      }
-      throw new Error(`API villa (${response.status}): ${errorMessage}`);
-    }
-
-    return await response.json();
-  } else {
-    // Direct API mode (development only)
-    const key = import.meta.env.VITE_ANTHROPIC_API_KEY;
-    if (!key) {
-      throw new Error(
-        'API lykill ekki stilltur. Settu VITE_API_ENDPOINT fyrir bakenda eða VITE_ANTHROPIC_API_KEY fyrir þróun.'
-      );
-    }
-
-    console.warn('⚠️ Using direct API mode - development only!');
-
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': key,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-opus-4-6',
-        max_tokens: 8192,
-        system: [{ type: 'text', text: systemPrompt, cache_control: { type: 'ephemeral' } }],
-        messages: [{ role: 'user', content: userPrompt }],
-      }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`API villa (${response.status}): ${error.error?.message || 'Óþekkt villa'}`);
-    }
-
-    return await response.json();
+  if (!backendEndpoint) {
+    throw new Error(
+      'VITE_API_ENDPOINT er ekki stillt. Settu VITE_API_ENDPOINT í .env til að vísa á bakenda.'
+    );
   }
+
+  const response = await fetch(`${backendEndpoint}/analyze-2ar`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ systemPrompt, userPrompt }),
+  });
+
+  if (!response.ok) {
+    let errorMessage = 'API request failed';
+    try {
+      const errorBody = await response.json();
+      errorMessage = errorBody.error || errorMessage;
+    } catch {
+      try {
+        const errorText = await response.text();
+        if (errorText) errorMessage = errorText;
+      } catch {
+        // Use default message
+      }
+    }
+    throw new Error(`API villa (${response.status}): ${errorMessage}`);
+  }
+
+  return await response.json();
 };
 
 /**
