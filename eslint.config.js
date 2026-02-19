@@ -7,8 +7,10 @@ import globals from 'globals';
 export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  // TypeScript + React files (frontend apps and shared package)
   {
     files: ['**/*.{ts,tsx}'],
+    ignores: ['server/**'],
     plugins: {
       'react-hooks': reactHooks,
       'import': importPlugin,
@@ -30,27 +32,17 @@ export default tseslint.config(
       },
     },
     rules: {
-      // TypeScript
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       '@typescript-eslint/no-unused-vars': [
         'warn',
-        {
-          argsIgnorePattern: '^_',
-          varsIgnorePattern: '^_',
-        },
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
-
-      // General
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       'prefer-const': 'warn',
       'no-var': 'error',
-
-      // React
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
-
-      // Import ordering
       'import/order': [
         'warn',
         {
@@ -73,14 +65,41 @@ export default tseslint.config(
       ],
     },
   },
+  // Server TypeScript files (Node.js, no React hooks)
+  {
+    files: ['server/src/**/*.{ts,tsx}'],
+    plugins: {
+      'import': importPlugin,
+    },
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...globals.es2021,
+      },
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
+    },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
+      'no-console': 'off',
+      'prefer-const': 'warn',
+      'no-var': 'error',
+    },
+  },
   {
     ignores: [
       'dist/**',
       'node_modules/**',
       '**/*.html',
+      '.worktrees/**',
       '**/vite.config.ts',
       'vitest.config.ts',
-      'server/**',
+      'server/vitest.config.ts',
       'scripts/**',
       '**/*.mjs',
       '**/*.js',
