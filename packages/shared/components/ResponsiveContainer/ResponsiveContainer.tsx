@@ -47,7 +47,7 @@ export function ResponsiveContainer({
 }: ResponsiveContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
-  const timeoutRef = useRef<number>();
+  const timeoutRef = useRef<number>(undefined);
 
   const updateDimensions = useCallback(() => {
     if (!containerRef.current) return;
@@ -132,7 +132,7 @@ export function ResponsiveContainer({
  * Hook for responsive sizing in components
  */
 export function useResponsiveSize(
-  ref: React.RefObject<HTMLElement>,
+  ref: React.RefObject<HTMLElement | null>,
   options: {
     aspectRatio?: number;
     maxWidth?: number;
@@ -155,7 +155,7 @@ export function useResponsiveSize(
     width: minWidth,
     height: minHeight,
   });
-  const timeoutRef = useRef<number>();
+  const timeoutRef = useRef<number>(undefined);
 
   useEffect(() => {
     const element = ref.current;

@@ -35,10 +35,11 @@
   "devDependencies": {
     "@commitlint/cli": "^18.4.3",
     "@commitlint/config-conventional": "^18.4.3",
-    "@testing-library/react": "^14.1.2",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/react": "^16.0.0",
     "@types/node": "^20.10.0",
-    "@types/react": "^18.2.45",
-    "@types/react-dom": "^18.2.18",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "@eslint/js": "^9.20.0",
     "@vitejs/plugin-react": "^4.2.1",
     "@vitest/coverage-v8": "^2.1.0",
@@ -61,12 +62,28 @@
     "@playwright/test": "^1.50.0"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=9.0.0"
   },
-  "packageManager": "pnpm@9.15.0"
+  "packageManager": "pnpm@9.15.0",
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "@react-three/fiber>react": "^19.0.0",
+        "@react-three/fiber>react-dom": "^19.0.0",
+        "@react-three/drei>react": "^19.0.0",
+        "@react-three/drei>react-dom": "^19.0.0",
+        "react-reconciler>react": "^19.0.0",
+        "@react-spring/core>react": "^19.0.0",
+        "@react-spring/animated>react": "^19.0.0",
+        "@react-spring/shared>react": "^19.0.0",
+        "@react-spring/three>react": "^19.0.0",
+        "react-composer>react": "^19.0.0"
+      }
+    }
+  }
 }

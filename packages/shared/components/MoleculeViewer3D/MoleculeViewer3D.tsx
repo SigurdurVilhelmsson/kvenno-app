@@ -8,7 +8,16 @@
 import { Suspense, useMemo, useCallback, useRef } from 'react';
 
 import { OrbitControls, Text, Html } from '@react-three/drei';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, type ThreeElements } from '@react-three/fiber';
+
+// React 19 moved JSX types to React.JSX namespace. R3F v8 augments global JSX,
+// so we bridge here for compatibility.
+declare module 'react' {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace JSX {
+    interface IntrinsicElements extends ThreeElements {}
+  }
+}
 import * as THREE from 'three';
 
 import type { MoleculeViewer3DProps, Atom3DProps, Bond3DProps } from './types';

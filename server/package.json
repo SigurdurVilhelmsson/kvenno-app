@@ -16,7 +16,7 @@
     "express-rate-limit": "^7.5.0",
     "formidable": "^3.5.1",
     "helmet": "^8.1.0",
-    "react": "^18.2.0"
+    "react": "^19.0.0"
   },
   "devDependencies": {
     "supertest": "^7.0.0",

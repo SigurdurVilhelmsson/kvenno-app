@@ -56,7 +56,7 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number>(undefined);
   const [particleCounts, setParticleCounts] = useState<Record<string, number>>({});
 
   const { width, height } = container;

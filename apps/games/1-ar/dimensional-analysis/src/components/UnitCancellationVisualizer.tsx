@@ -181,7 +181,7 @@ export function UnitCancellationVisualizer({
             numeratorUnits.map((unit, idx) => {
               const status = getUnitStatus(unit, 'numerator');
               return (
-                <div key={`num-${idx}`} ref={el => numRefs.current[idx] = el}>
+                <div key={`num-${idx}`} ref={el => { numRefs.current[idx] = el; }}>
                   <UnitBlock
                     value={1}
                     unit={unit}
@@ -224,7 +224,7 @@ export function UnitCancellationVisualizer({
             denominatorUnits.map((unit, idx) => {
               const status = getUnitStatus(unit, 'denominator');
               return (
-                <div key={`denom-${idx}`} ref={el => denRefs.current[idx] = el}>
+                <div key={`denom-${idx}`} ref={el => { denRefs.current[idx] = el; }}>
                   <UnitBlock
                     value={1}
                     unit={unit}

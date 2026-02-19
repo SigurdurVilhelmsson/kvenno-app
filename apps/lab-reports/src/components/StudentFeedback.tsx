@@ -15,7 +15,7 @@ interface StudentFeedbackProps {
 }
 
 // Helper function to parse comments with numbered lists
-const parseCommentWithList = (text: string | undefined): JSX.Element => {
+const parseCommentWithList = (text: string | undefined): React.JSX.Element => {
   if (!text) return <span>{text}</span>;
 
   const hasNumberedList = /\d+[).]\s/.test(text);
