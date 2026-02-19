@@ -23,7 +23,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"**/*.{ts,tsx,json}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,json}\"",
-    "test": "vitest run",
+    "test": "vitest run && pnpm --filter labreports-server test",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
