@@ -40,14 +40,14 @@ const yearConfigs: Record<YearKey, YearConfig> = {
         title: 'AI Efnafræðikennari',
         description:
           'Spurðu spurninga og fáðu skýringar á efnafræðihugtökum með hjálp gervigreindar. Kennarinn útskýrir hugtök og hjálpar þér að skilja efnið betur.',
-        href: '/1-ar/ai-tutor/',
+        href: '/efnafraedi/1-ar/ai-tutor/',
         status: 'Í þróun - Ræsing í janúar 2026',
       },
       {
         title: 'Leikir og æfingar',
         description:
           'Skemmtilegar æfingar og leikir til að þjálfa þekkingu þína á atómum, efnatengjum og efnahvörfum.',
-        href: '/1-ar/games/',
+        href: '/efnafraedi/1-ar/games/',
         status: 'Væntanlegt',
       },
       {
@@ -75,7 +75,7 @@ const yearConfigs: Record<YearKey, YearConfig> = {
         title: 'Tilraunaskýrslur',
         description:
           'Forrit fyrir nemendur til að skrifa og skila inn tilraunaskýrslum. Fáðu endurgjöf frá gervigreind og sendu til kennarans þegar tilbúið.',
-        href: '/2-ar/lab-reports/',
+        href: '/efnafraedi/2-ar/lab-reports/',
         status: '\u2713 Í notkun',
         active: true,
       },
@@ -83,14 +83,14 @@ const yearConfigs: Record<YearKey, YearConfig> = {
         title: 'AI Efnafræðikennari',
         description:
           'Spurðu spurninga og fáðu skýringar á efnafræðihugtökum með hjálp gervigreindar. Kennarinn útskýrir hugtök og hjálpar þér að skilja efnið betur.',
-        href: '/2-ar/ai-tutor/',
+        href: '/efnafraedi/2-ar/ai-tutor/',
         status: 'Í þróun - Ræsing í janúar 2026',
       },
       {
         title: 'Leikir og æfingar',
         description:
           'Skemmtilegar æfingar og leikir til að þjálfa þekkingu þína á efnajafnvægi, sýrum og bösum, og hraðafræði.',
-        href: '/2-ar/games/',
+        href: '/efnafraedi/2-ar/games/',
         status: 'Væntanlegt',
       },
       {
@@ -118,7 +118,7 @@ const yearConfigs: Record<YearKey, YearConfig> = {
         title: 'Tilraunaskýrslur',
         description:
           'Forrit fyrir nemendur til að skrifa og skila inn tilraunaskýrslum. Fáðu endurgjöf frá gervigreind og sendu til kennarans þegar tilbúið.',
-        href: '/3-ar/lab-reports/',
+        href: '/efnafraedi/3-ar/lab-reports/',
         status: '\u2713 Í notkun',
         active: true,
       },
@@ -126,14 +126,14 @@ const yearConfigs: Record<YearKey, YearConfig> = {
         title: 'AI Efnafræðikennari',
         description:
           'Spurðu spurninga og fáðu skýringar á efnafræðihugtökum með hjálp gervigreindar. Kennarinn útskýrir hugtök og hjálpar þér að skilja efnið betur.',
-        href: '/3-ar/ai-tutor/',
+        href: '/efnafraedi/3-ar/ai-tutor/',
         status: 'Í þróun - Ræsing í janúar 2026',
       },
       {
         title: 'Leikir og æfingar',
         description:
           'Skemmtilegar æfingar og leikir til að þjálfa þekkingu þína á lífræna efnafræði, rafsegulfræði og hvarfafræði.',
-        href: '/3-ar/games/',
+        href: '/efnafraedi/3-ar/games/',
         status: 'Væntanlegt',
       },
       {
@@ -215,6 +215,7 @@ function YearHub({ year }: YearHubProps) {
 
   const breadcrumbItems: BreadcrumbItem[] = [
     { label: 'Heim', href: '/' },
+    { label: 'Efnafræði', href: '/efnafraedi' },
     { label: config.breadcrumbLabel },
   ];
 
@@ -227,9 +228,9 @@ function YearHub({ year }: YearHubProps) {
 
       {/* Back Button */}
       <Link
-        to="/"
+        to="/efnafraedi"
         className="inline-block mb-8 py-3 px-6 bg-white border-2 border-kvenno-orange text-kvenno-orange no-underline rounded-lg transition-all duration-300 hover:bg-kvenno-orange hover:text-white"
-        aria-label="Fara til baka á heimasíðu"
+        aria-label="Fara til baka í efnafræði"
       >
         &larr; Til baka
       </Link>

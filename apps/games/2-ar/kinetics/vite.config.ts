@@ -14,7 +14,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: '../../../../dist/2-ar/games',
+    outDir: '../../../../dist/efnafraedi/2-ar/games',
     emptyOutDir: false,
     rollupOptions: {
       input: {

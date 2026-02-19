@@ -2,5 +2,6 @@ packages:
   - 'packages/*'
   - 'apps/landing'
   - 'apps/lab-reports'
+  - 'apps/islenskubraut'
   - 'apps/games/**'
   - 'server'

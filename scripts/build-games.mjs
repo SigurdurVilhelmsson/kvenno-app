@@ -58,7 +58,7 @@ for (const [year, folder, outputName] of games) {
   if (targetGame && folder !== targetGame) continue;
 
   const gameDir = join(gamesDir, year, folder);
-  const outputDir = join(distDir, year, 'games');
+  const outputDir = join(distDir, 'efnafraedi', year, 'games');
   const tempOutput = join(outputDir, 'index.html');
   const finalOutput = join(outputDir, `${outputName}.html`);
 
@@ -84,7 +84,7 @@ for (const [year, folder, outputName] of games) {
       }
 
       renameSync(tempOutput, finalOutput);
-      console.log(`   ✅ Created ${year}/games/${outputName}.html`);
+      console.log(`   ✅ Created efnafraedi/${year}/games/${outputName}.html`);
       successCount++;
     } else {
       console.log(`   ⚠️  Build completed but no index.html found`);

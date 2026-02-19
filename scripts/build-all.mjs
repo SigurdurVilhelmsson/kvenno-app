@@ -4,24 +4,27 @@
  *
  * Builds all apps into dist/ with the correct directory structure:
  *   dist/
- *   ├── index.html                  # Landing page
- *   ├── assets/                     # Landing JS/CSS chunks
- *   ├── media/                      # Favicons
- *   ├── 1-ar/
- *   │   ├── index.html             # Year 1 hub (SPA route)
- *   │   └── games/
- *   │       ├── molmassi.html
- *   │       └── ...
- *   ├── 2-ar/
- *   │   ├── index.html
- *   │   ├── games/...
- *   │   └── lab-reports/
- *   ├── 3-ar/
- *   │   ├── index.html
- *   │   ├── games/...
- *   │   └── lab-reports/
- *   ├── val/index.html
- *   └── f-bekkir/index.html
+ *   ├── index.html                           # Track selector
+ *   ├── assets/                              # Landing JS/CSS
+ *   ├── media/                               # Favicons
+ *   ├── efnafraedi/
+ *   │   ├── index.html                       # Chemistry hub (SPA fallback)
+ *   │   ├── 1-ar/
+ *   │   │   ├── index.html
+ *   │   │   └── games/*.html
+ *   │   ├── 2-ar/
+ *   │   │   ├── index.html
+ *   │   │   ├── games/*.html
+ *   │   │   └── lab-reports/
+ *   │   ├── 3-ar/
+ *   │   │   ├── index.html
+ *   │   │   ├── games/*.html
+ *   │   │   └── lab-reports/
+ *   │   ├── val/index.html
+ *   │   └── f-bekkir/index.html
+ *   └── islenskubraut/
+ *       ├── index.html
+ *       └── assets/
  */
 
 import { execSync } from 'child_process';
@@ -38,6 +41,7 @@ const verbose = args.includes('--verbose') || args.includes('-v');
 const skipGames = args.includes('--skip-games');
 const skipLabReports = args.includes('--skip-lab-reports');
 const skipLanding = args.includes('--skip-landing');
+const skipIslenskubraut = args.includes('--skip-islenskubraut');
 
 const stdio = verbose ? 'inherit' : 'pipe';
 
@@ -64,13 +68,17 @@ if (!skipLanding) {
 
 // Step 1b: Copy landing SPA index.html to sub-routes for direct URL access
 if (!skipLanding) {
-  const spaRoutes = ['1-ar', '2-ar', '3-ar', 'val', 'f-bekkir'];
+  const spaRoutes = [
+    'efnafraedi',
+    'efnafraedi/1-ar', 'efnafraedi/2-ar', 'efnafraedi/3-ar',
+    'efnafraedi/val', 'efnafraedi/f-bekkir',
+  ];
   for (const route of spaRoutes) {
     const routeDir = join(distDir, route);
     mkdirSync(routeDir, { recursive: true });
     copyFileSync(join(distDir, 'index.html'), join(routeDir, 'index.html'));
   }
-  console.log('   ✅ SPA routes created for year hubs');
+  console.log('   ✅ SPA routes created for chemistry hubs');
 }
 
 // Step 2: Build games
@@ -90,8 +98,8 @@ if (!skipLabReports) {
   const labReportsDir = join(rootDir, 'apps', 'lab-reports');
 
   for (const year of ['2-ar', '3-ar']) {
-    const basePath = `/${year}/lab-reports/`;
-    const outputDir = join(distDir, year, 'lab-reports');
+    const basePath = `/efnafraedi/${year}/lab-reports/`;
+    const outputDir = join(distDir, 'efnafraedi', year, 'lab-reports');
 
     console.log(`\n📝 Building lab-reports for ${basePath}...`);
     mkdirSync(outputDir, { recursive: true });
@@ -110,7 +118,19 @@ if (!skipLabReports) {
   }
 }
 
-// Step 4: Copy media assets
+// Step 4: Build íslenskubraut
+if (!skipIslenskubraut) {
+  console.log('\n📚 Building íslenskubraut...');
+  try {
+    execSync('pnpm --filter @kvenno/islenskubraut build', { cwd: rootDir, stdio });
+    console.log('   ✅ Íslenskubraut built');
+  } catch (error) {
+    console.error('   ❌ Íslenskubraut build failed:', error.message);
+    process.exit(1);
+  }
+}
+
+// Step 5: Copy media assets
 console.log('\n🖼️  Copying media assets...');
 const mediaSource = join(rootDir, 'media');
 const mediaDest = join(distDir, 'media');

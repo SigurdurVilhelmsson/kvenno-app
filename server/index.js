@@ -11,6 +11,8 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import { unlink, readFile } from 'fs/promises';
 import path from 'path';
+import { generatePdf } from './lib/islenskubraut-pdf.mjs';
+import { getCategoryById } from './lib/islenskubraut-data.mjs';
 
 const execAsync = promisify(exec);
 const app = express();
@@ -21,6 +23,7 @@ const allowedOrigins = [
   'https://kvenno.app',
   'https://www.kvenno.app',
   'http://localhost:5173',
+  'http://localhost:5174',
   'http://localhost:4173',
   process.env.FRONTEND_URL,
 ].filter(Boolean);
@@ -519,6 +522,52 @@ app.post('/api/analyze-2ar', async (req, res) => {
   } catch (error) {
     console.error('Server error (2ar):', error);
     return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+/**
+ * API endpoint: Generate Íslenskubraut teaching card PDF
+ * GET /api/islenskubraut/pdf?flokkur={categoryId}&stig={level}
+ */
+app.get('/api/islenskubraut/pdf', async (req, res) => {
+  try {
+    const { flokkur, stig } = req.query;
+
+    if (!flokkur || !stig) {
+      return res.status(400).json({
+        error: 'Vantar færibreytur: flokkur og stig',
+      });
+    }
+
+    const validLevels = ['A1', 'A2', 'B1'];
+    if (!validLevels.includes(stig)) {
+      return res.status(400).json({
+        error: `Ógilt stig: ${stig}. Leyfileg gildi: ${validLevels.join(', ')}`,
+      });
+    }
+
+    const category = getCategoryById(flokkur);
+    if (!category) {
+      return res.status(404).json({
+        error: `Flokkur ekki fundinn: ${flokkur}`,
+      });
+    }
+
+    console.log(`[Íslenskubraut PDF] Generating: flokkur=${flokkur}, stig=${stig}`);
+
+    const pdfBuffer = await generatePdf(category, stig);
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="spjald-${flokkur}-${stig}.pdf"`
+    );
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error('[Íslenskubraut PDF] Error:', error);
+    return res.status(500).json({
+      error: 'Villa við að búa til PDF',
+    });
   }
 });
 
