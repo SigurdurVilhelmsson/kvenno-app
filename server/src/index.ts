@@ -27,8 +27,8 @@ import type {
 } from './types/index.js';
 
 const execFileAsync = promisify(execFile);
-const app = express();
-const PORT = process.env.PORT || 8000;
+const app: ReturnType<typeof express> = express();
+const PORT = Number(process.env.PORT) || 8000;
 
 // Security headers
 app.use(helmet({

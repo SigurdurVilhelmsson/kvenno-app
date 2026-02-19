@@ -1,0 +1,963 @@
+// Auto-generated from apps/islenskubraut/src/data/ — keep in sync
+
+import type { Category } from '../types/index.js';
+
+export const dyr: Category = {
+  id: 'dyr',
+  name: 'Dyr',
+  icon: '\u{1F43E}',
+  description: 'Ordafordi um dyr \u2014 gaeludyr, villt dyr og husdyr',
+  color: '#2D6A4F',
+  subCategories: [
+    {
+      name: 'Tegund',
+      options: ['gaeludyr', 'villt dyr', 'husdyr (bufenaður)'],
+    },
+    {
+      name: 'Liffraedilegur flokkur',
+      options: ['spendyr', 'fugl', 'fiskur', 'skriddyr', 'froskdyr', 'skordyr'],
+    },
+    {
+      name: 'Busvaedi',
+      options: ['a landi', 'i vatni', 'i lofti', 'a landi og i vatni'],
+    },
+    {
+      name: 'Utlit',
+      options: [
+        'hefur feld',
+        'hefur fjadrir',
+        'hefur hreistur',
+        'hefur hala',
+        'hefur gogg',
+        'hefur horn',
+        'hefur fjora faetur',
+        'hefur tvo faetur',
+        'flygur',
+        'syndir',
+        'hleypur',
+      ],
+    },
+    {
+      name: 'Staerd',
+      options: ['litid', 'medalstort', 'stort', 'mjog stort'],
+    },
+    {
+      name: 'Faeda',
+      options: ['etur plontur (grasaeta)', 'etur kjot (kjotaeta)', 'etur baedi (alaeta)'],
+    },
+  ],
+  sentenceFrames: [
+    {
+      level: 'A1',
+      frames: [
+        '\u00deetta er d\u00fdr.',
+        '\u00dea\u00f0 er ___.',
+        '\u00dea\u00f0 hefur ___.',
+        '\u00dea\u00f0 er ___.',
+        '\u00dea\u00f0 hlj\u00f3mar ___.',
+        'Ma\u00f0ur notar \u00fea\u00f0 til a\u00f0 ___.',
+      ],
+    },
+    {
+      level: 'A2',
+      frames: [
+        '\u00deetta er ___ sem b\u00fdr ___.',
+        '\u00dea\u00f0 hefur ___ og ___.',
+        '\u00dea\u00f0 \u00e9tur ___.',
+        '\u00dea\u00f0 finnst ___ vi\u00f0 snertingu.',
+        'Ma\u00f0ur finnur \u00fea\u00f0 ___.',
+        'Ma\u00f0ur notar \u00fea\u00f0 ___.',
+      ],
+    },
+    {
+      level: 'B1',
+      frames: [
+        '\u00c9g held a\u00f0 \u00feetta s\u00e9 ___ vegna \u00feess a\u00f0 ___.',
+        '\u00deetta d\u00fdr er ___ og ___.',
+        '\u00dea\u00f0 er l\u00edkt ___ en \u00f3l\u00edkt ___.',
+        '\u00dea\u00f0 er ___ a\u00f0 snerta vegna \u00feess a\u00f0 ___.',
+        '\u00dea\u00f0 er oftast nota\u00f0 af ___ til a\u00f0 ___.',
+      ],
+    },
+  ],
+  guidingQuestions: [
+    {
+      question: 'Hvers konar d\u00fdr er \u00feetta?',
+      icon: '\u{1F4DA}',
+      answers: [
+        { level: 'A1', options: ['g\u00e6lud\u00fdr', 'villt d\u00fdr', 'h\u00fasd\u00fdr'] },
+        { level: 'A2', options: ['g\u00e6lud\u00fdr', 'villt d\u00fdr', 'h\u00fasd\u00fdr', 'spend\u00fdr', 'fugl', 'fiskur'] },
+        { level: 'B1', options: ['g\u00e6lud\u00fdr', 'villt d\u00fdr', 'h\u00fasd\u00fdr', 'spend\u00fdr', 'fugl', 'fiskur', 'skri\u00f0d\u00fdr', 'froskd\u00fdr', 'skord\u00fdr'] },
+      ],
+    },
+    {
+      question: 'Hvernig l\u00edtur \u00fea\u00f0 \u00fat?',
+      icon: '\u{1F441}\u{FE0F}',
+      answers: [
+        { level: 'A1', options: ['feldur', 'fja\u00f0rir', 'hreistur', 'hali'] },
+        { level: 'A2', options: ['feldur', 'fja\u00f0rir', 'hreistur', 'hali', 'goggur', 'horn', 'fj\u00f3rir f\u00e6tur', 'tveir f\u00e6tur'] },
+        { level: 'B1', options: ['feldur', 'fja\u00f0rir', 'hreistur', 'hali', 'goggur', 'horn', 'fj\u00f3rir f\u00e6tur', 'tveir f\u00e6tur', 'fl\u00fdgur', 'syndir', 'hleypur'] },
+      ],
+    },
+    {
+      question: 'Hvernig finnst \u00fea\u00f0 vi\u00f0 snertingu?',
+      icon: '\u270B',
+      answers: [
+        { level: 'A1', options: ['mj\u00fakt', 'hart', 'sl\u00e9tt', 'gr\u00f3ft'] },
+        { level: 'A2', options: ['mj\u00fakt', 'hart', 'sl\u00e9tt', 'gr\u00f3ft', '\u00feungt', 'l\u00e9tt', 'blautt', '\u00feurrt'] },
+        { level: 'B1', options: ['mj\u00fakt', 'hart', 'sl\u00e9tt', 'gr\u00f3ft', '\u00feungt', 'l\u00e9tt', 'blautt', '\u00feurrt', 'lo\u00f0i\u00f0', 'h\u00e1lt', 'stinnt', 'sveigjanlegt'] },
+      ],
+    },
+    {
+      question: 'Hva\u00f0a hlj\u00f3\u00f0 gefur \u00fea\u00f0 fr\u00e1 s\u00e9r?',
+      icon: '\u{1F50A}',
+      answers: [
+        { level: 'A1', options: ['h\u00e1tt', 'l\u00e1gt', '\u00fe\u00f6gult'] },
+        { level: 'A2', options: ['h\u00e1tt', 'l\u00e1gt', '\u00fe\u00f6gult', 'gelur', 'mjallar', '\u00f6skrar', 's\u00fa\u00f0ar', 'hringir'] },
+        { level: 'B1', options: ['h\u00e1tt', 'l\u00e1gt', '\u00fe\u00f6gult', 'gelur', 'mjallar', '\u00f6skrar', 's\u00fa\u00f0ar', 'hringir', 'hv\u00e6sir', 'umar', 'd\u00fanar', '\u00ferymir'] },
+      ],
+    },
+    {
+      question: 'Hva\u00f0a l\u00f6gun hefur \u00fea\u00f0?',
+      icon: '\u{1F537}',
+      answers: [
+        { level: 'A1', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'kringl\u00f3tt', 'fernt'] },
+        { level: 'A2', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'kringl\u00f3tt', 'fernt', 'langt', 'stutt', 'h\u00e1tt', 'l\u00e1gt', 'flatt', '\u00feykkt'] },
+        { level: 'B1', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'kringl\u00f3tt', 'fernt', 'langt', 'stutt', 'h\u00e1tt', 'l\u00e1gt', 'flatt', '\u00feykkt', 'spor\u00f6skjulaga', '\u00fer\u00edhyrningslaga', 's\u00edvalningslaga', '\u00f3reglulegt'] },
+      ],
+    },
+    {
+      question: 'Til hvers er \u00fea\u00f0 nota\u00f0?',
+      icon: '\u{1F3AF}',
+      answers: [
+        { level: 'A1', options: ['til a\u00f0 g\u00e6ta', 'til a\u00f0 klappa', 'til a\u00f0 bor\u00f0a'] },
+        { level: 'A2', options: ['til a\u00f0 g\u00e6ta', 'til a\u00f0 klappa', 'til a\u00f0 bor\u00f0a', 'til a\u00f0 hj\u00e1lpa', 'til a\u00f0 vinna', 'til a\u00f0 leika s\u00e9r'] },
+        { level: 'B1', options: ['til a\u00f0 g\u00e6ta', 'til a\u00f0 klappa', 'til a\u00f0 bor\u00f0a', 'til a\u00f0 hj\u00e1lpa', 'til a\u00f0 vinna', 'til a\u00f0 leika s\u00e9r', 'til a\u00f0 verja', 'til a\u00f0 ranns\u00f3ka'] },
+      ],
+    },
+    {
+      question: 'Hver notar \u00feetta?',
+      icon: '\u{1F464}',
+      answers: [
+        { level: 'A1', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir'] },
+        { level: 'A2', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir', 'b\u00e6ndur', 'd\u00fdral\u00e6knar', 'vei\u00f0imenn'] },
+        { level: 'B1', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir', 'b\u00e6ndur', 'd\u00fdral\u00e6knar', 'vei\u00f0imenn', 's\u00e9rfr\u00e6\u00f0ingar', 'fer\u00f0amenn'] },
+      ],
+    },
+    {
+      question: 'Hvar er h\u00e6gt a\u00f0 finna \u00feetta?',
+      icon: '\u{1F4CD}',
+      answers: [
+        { level: 'A1', options: ['heima', '\u00fati', '\u00e1 b\u00e6'] },
+        { level: 'A2', options: ['heima', '\u00fati', '\u00e1 b\u00e6', '\u00ed d\u00fdragar\u00f0inum', '\u00ed n\u00e1tt\u00farunni', '\u00ed sj\u00f3num'] },
+        { level: 'B1', options: ['heima', '\u00fati', '\u00e1 b\u00e6', '\u00ed d\u00fdragar\u00f0inum', '\u00ed n\u00e1tt\u00farunni', '\u00ed sj\u00f3num', '\u00e1 h\u00e1lendinu', '\u00ed sk\u00f3ginum'] },
+      ],
+    },
+    {
+      question: 'Hven\u00e6r er \u00feetta s\u00e9st?',
+      icon: '\u{1F550}',
+      answers: [
+        { level: 'A1', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf'] },
+        { level: 'A2', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf', '\u00e1 veturna', '\u00e1 sumrin', 'um helgar'] },
+        { level: 'B1', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf', '\u00e1 veturna', '\u00e1 sumrin', 'um helgar', '\u00ed s\u00e9rst\u00f6kum tilvikum', 'daglega', 'sjaldan', 'oft'] },
+      ],
+    },
+  ],
+};
+
+export const matur: Category = {
+  id: 'matur',
+  name: 'Matur og drykkur',
+  icon: '\u{1F37D}\u{FE0F}',
+  description: 'Orda\u00adfordi um mat og drykk \u2014 tegundir, bragd og undirbunning',
+  color: '#E76F51',
+  subCategories: [
+    {
+      name: 'Tegund',
+      options: ['\u00e1v\u00f6xtur', 'gr\u00e6nmeti', 'kj\u00f6t', 'fiskur', 'mj\u00f3lkurvara', 's\u00e6lg\u00e6ti', 'brau\u00f0/korn', 'drykkur'],
+    },
+    {
+      name: 'Bragd',
+      options: ['s\u00e6tt', 'salt', 's\u00fart', 'beiskt', 'krydda\u00f0/sterkt'],
+    },
+    {
+      name: '\u00c1ferd/form',
+      options: ['mj\u00fakt', 'hart', 'flj\u00f3tandi', '\u00feurrt'],
+    },
+    {
+      name: 'Undirbun\u00edngur',
+      options: ['hr\u00e1tt', 'so\u00f0i\u00f0', 'steikt', 'baka\u00f0', 'heitt', 'kalt', 'frosi\u00f0'],
+    },
+    {
+      name: 'Hvar',
+      options: ['\u00ed eldh\u00fasinu', '\u00ed \u00edssk\u00e1pnum', '\u00ed b\u00fa\u00f0inni', '\u00e1 veitingasta\u00f0'],
+    },
+    {
+      name: 'Hven\u00e6r',
+      options: ['\u00ed morgunmat', '\u00ed h\u00e1degismat', '\u00ed kv\u00f6ldmat', 'sem millim\u00e1l', 'alltaf/hven\u00e6r sem er'],
+    },
+  ],
+  sentenceFrames: [
+    {
+      level: 'A1',
+      frames: [
+        '\u00deetta er ___.',
+        '\u00dea\u00f0 er ___.',
+        'Ma\u00f0ur bor\u00f0ar \u00fea\u00f0 ___.',
+        '\u00dea\u00f0 er ___.',
+        'Ma\u00f0ur notar \u00fea\u00f0 til a\u00f0 ___.',
+      ],
+    },
+    {
+      level: 'A2',
+      frames: [
+        '\u00deetta er ___ sem er ___.',
+        'Ma\u00f0ur bor\u00f0ar/drekkur \u00fea\u00f0 ___.',
+        '\u00dea\u00f0 er ___.',
+        '\u00dea\u00f0 finnst ___ vi\u00f0 snertingu.',
+        '\u00dea\u00f0 er gert \u00far ___.',
+        'Ma\u00f0ur finnur \u00fea\u00f0 ___.',
+        'Ma\u00f0ur notar \u00fea\u00f0 ___.',
+      ],
+    },
+    {
+      level: 'B1',
+      frames: [
+        '\u00deetta er ___ sem brag\u00f0ast ___.',
+        '\u00dea\u00f0 er oft bor\u00f0a\u00f0/drukki\u00f0 ___.',
+        'M\u00e9r finnst ___.',
+        '\u00dea\u00f0 er ___ a\u00f0 snerta vegna \u00feess a\u00f0 ___.',
+        '\u00dea\u00f0 er gert \u00far ___ sem er ___.',
+        '\u00dea\u00f0 er oftast nota\u00f0 af ___ til a\u00f0 ___.',
+      ],
+    },
+  ],
+  guidingQuestions: [
+    {
+      question: 'Hvers konar matur er \u00feetta?',
+      icon: '\u{1F4DA}',
+      answers: [
+        { level: 'A1', options: ['\u00e1v\u00f6xtur', 'gr\u00e6nmeti', 'kj\u00f6t', 'drykkur'] },
+        { level: 'A2', options: ['\u00e1v\u00f6xtur', 'gr\u00e6nmeti', 'kj\u00f6t', 'fiskur', 'mj\u00f3lkurvara', 's\u00e6lg\u00e6ti', 'brau\u00f0/korn', 'drykkur'] },
+        { level: 'B1', options: ['\u00e1v\u00f6xtur', 'gr\u00e6nmeti', 'kj\u00f6t', 'fiskur', 'mj\u00f3lkurvara', 's\u00e6lg\u00e6ti', 'brau\u00f0/korn', 'drykkur', 'krydd', 's\u00f3sa'] },
+      ],
+    },
+    {
+      question: 'Hvernig l\u00edtur \u00fea\u00f0 \u00fat?',
+      icon: '\u{1F441}\u{FE0F}',
+      answers: [
+        { level: 'A1', options: ['rautt', 'gr\u00e6nt', 'gult', 'hv\u00edtt'] },
+        { level: 'A2', options: ['rautt', 'gr\u00e6nt', 'gult', 'hv\u00edtt', 'br\u00fant', 'appels\u00ednugult', 'st\u00f3rt', 'l\u00edti\u00f0'] },
+        { level: 'B1', options: ['rautt', 'gr\u00e6nt', 'gult', 'hv\u00edtt', 'br\u00fant', 'appels\u00ednugult', 'st\u00f3rt', 'l\u00edti\u00f0', 'kringl\u00f3tt', 'langt', 'flatt'] },
+      ],
+    },
+    {
+      question: 'Hvernig brag\u00f0ast \u00fea\u00f0?',
+      icon: '\u{1F445}',
+      answers: [
+        { level: 'A1', options: ['s\u00e6tt', 'salt', 's\u00fart', 'beiskt'] },
+        { level: 'A2', options: ['s\u00e6tt', 'salt', 's\u00fart', 'beiskt', 'krydda\u00f0', 'sterkt', 'milt', 'ferskt'] },
+        { level: 'B1', options: ['s\u00e6tt', 'salt', 's\u00fart', 'beiskt', 'krydda\u00f0', 'sterkt', 'milt', 'ferskt', 'brag\u00f0miki\u00f0', 'brag\u00f0laust', 's\u00e6lg\u00e6ti-s\u00e6tt', 'n\u00e1tt\u00farulega s\u00e6tt'] },
+      ],
+    },
+    {
+      question: 'Hvernig finnst \u00fea\u00f0 vi\u00f0 snertingu?',
+      icon: '\u270B',
+      answers: [
+        { level: 'A1', options: ['mj\u00fakt', 'hart', 'sl\u00e9ttt', 'gr\u00f3ft'] },
+        { level: 'A2', options: ['mj\u00fakt', 'hart', 'sl\u00e9ttt', 'gr\u00f3ft', '\u00feungt', 'l\u00e9tt', 'heitt', 'kalt', 'blautt', '\u00feurrt'] },
+        { level: 'B1', options: ['mj\u00fakt', 'hart', 'sl\u00e9ttt', 'gr\u00f3ft', '\u00feungt', 'l\u00e9tt', 'heitt', 'kalt', 'blautt', '\u00feurrt', 'lo\u00f0i\u00f0', 'h\u00e1lkt', 'stinnt', 'sveigjanlegt'] },
+      ],
+    },
+    {
+      question: 'Hvernig lyktar af \u00fev\u00ed?',
+      icon: '\u{1F443}',
+      answers: [
+        { level: 'A1', options: ['gott', 'vont', 'ekkert'] },
+        { level: 'A2', options: ['gott', 'vont', 'ekkert', 'ferskt', 'sterkt', 'milt'] },
+        { level: 'B1', options: ['gott', 'vont', 'ekkert', 'ferskt', 'sterkt', 'milt', 'ilmandi', 'stingandi', 's\u00e6tt', 'beiskt'] },
+      ],
+    },
+    {
+      question: 'Hva\u00f0a l\u00f6gun hefur \u00fea\u00f0?',
+      icon: '\u{1F537}',
+      answers: [
+        { level: 'A1', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'kringl\u00f3tt', 'fernt'] },
+        { level: 'A2', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'kringl\u00f3tt', 'fernt', 'langt', 'stutt', 'h\u00e1tt', 'l\u00e1gt', 'flatt', '\u00feykkt'] },
+        { level: 'B1', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'kringl\u00f3tt', 'fernt', 'langt', 'stutt', 'h\u00e1tt', 'l\u00e1gt', 'flatt', '\u00feykkt', 'spor\u00f6skjulaga', '\u00fer\u00edhyrningslaga', 's\u00edvalningslaga', '\u00f3reglulegt'] },
+      ],
+    },
+    {
+      question: 'Til hvers er \u00fea\u00f0 nota\u00f0?',
+      icon: '\u{1F3AF}',
+      answers: [
+        { level: 'A1', options: ['til a\u00f0 bor\u00f0a', 'til a\u00f0 drekka'] },
+        { level: 'A2', options: ['til a\u00f0 bor\u00f0a', 'til a\u00f0 drekka', 'til a\u00f0 elda me\u00f0', 'til a\u00f0 baka me\u00f0'] },
+        { level: 'B1', options: ['til a\u00f0 bor\u00f0a', 'til a\u00f0 drekka', 'til a\u00f0 elda me\u00f0', 'til a\u00f0 baka me\u00f0', 'til a\u00f0 n\u00e6ra sig', 'til a\u00f0 nj\u00f3ta'] },
+      ],
+    },
+    {
+      question: 'Hver notar \u00feetta?',
+      icon: '\u{1F464}',
+      answers: [
+        { level: 'A1', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir'] },
+        { level: 'A2', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir', 'kokkar', 'bakarar'] },
+        { level: 'B1', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir', 'kokkar', 'bakarar', 's\u00e9rfr\u00e6\u00f0ingar', 'fer\u00f0amenn'] },
+      ],
+    },
+    {
+      question: 'Hvar er h\u00e6gt a\u00f0 finna \u00feetta?',
+      icon: '\u{1F4CD}',
+      answers: [
+        { level: 'A1', options: ['heima', '\u00ed b\u00fa\u00f0', '\u00e1 veitingasta\u00f0'] },
+        { level: 'A2', options: ['heima', '\u00ed b\u00fa\u00f0', '\u00e1 veitingasta\u00f0', '\u00ed sk\u00f3lanum', '\u00fati'] },
+        { level: 'B1', options: ['heima', '\u00ed b\u00fa\u00f0', '\u00e1 veitingasta\u00f0', '\u00ed sk\u00f3lanum', '\u00fati', '\u00e1 marka\u00f0i', '\u00ed gar\u00f0inum'] },
+      ],
+    },
+    {
+      question: 'Hven\u00e6r er \u00feetta nota\u00f0?',
+      icon: '\u{1F550}',
+      answers: [
+        { level: 'A1', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf'] },
+        { level: 'A2', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf', '\u00e1 veturna', '\u00e1 sumrin', 'um helgar', '\u00e1 virkum d\u00f6gum'] },
+        { level: 'B1', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf', '\u00e1 veturna', '\u00e1 sumrin', 'um helgar', '\u00e1 virkum d\u00f6gum', '\u00ed s\u00e9rst\u00f6kum tilvikum', '\u00ed h\u00e1t\u00ed\u00f0um', 'daglega', 'sjaldan', 'oft'] },
+      ],
+    },
+  ],
+};
+
+export const farartaeki: Category = {
+  id: 'farartaeki',
+  name: 'Farart\u00e6ki',
+  icon: '\u{1F697}',
+  description: 'Orda\u00adfordi um farart\u00e6ki \u2014 \u00e1 landi, sj\u00f3 og \u00ed lofti',
+  color: '#264653',
+  subCategories: [
+    {
+      name: 'Tegund',
+      options: ['b\u00edll', 'r\u00fata', 'hj\u00f3l/rei\u00f0hj\u00f3l', 'm\u00f3torhj\u00f3l', 'lest', 'flugv\u00e9l', 'skip/b\u00e1tur', 'sle\u00f0i', 'hlaupahjol'],
+    },
+    {
+      name: 'Hvar fer \u00fea\u00f0',
+      options: ['\u00e1 landi', '\u00e1 sj\u00f3/vatni', '\u00ed lofti', '\u00e1 snj\u00f3'],
+    },
+    {
+      name: 'St\u00e6r\u00f0',
+      options: ['l\u00edti\u00f0', 'me\u00f0alst\u00f3rt', 'st\u00f3rt', 'risast\u00f3rt'],
+    },
+    {
+      name: 'Eiginleikar',
+      options: ['hefur hj\u00f3l', 'hefur ekki hj\u00f3l', 'me\u00f0 v\u00e9l', '\u00e1n v\u00e9lar', 'hra\u00f0virkt', 'h\u00e6gvirkt'],
+    },
+    {
+      name: 'Hven\u00e6r nota\u00f0',
+      options: ['\u00e1 veturna', '\u00e1 sumrin', 'allt \u00e1ri\u00f0', '\u00ed s\u00e9rst\u00f6kum tilfellum'],
+    },
+    {
+      name: 'Fj\u00f6ldi far\u00feega',
+      options: ['einn', 'f\u00e1ir', 'margir'],
+    },
+  ],
+  sentenceFrames: [
+    {
+      level: 'A1',
+      frames: [
+        '\u00deetta er ___.',
+        '\u00dea\u00f0 fer ___.',
+        '\u00dea\u00f0 er ___.',
+        '\u00dea\u00f0 hlj\u00f3mar ___.',
+        'Ma\u00f0ur notar \u00fea\u00f0 til a\u00f0 ___.',
+      ],
+    },
+    {
+      level: 'A2',
+      frames: [
+        '\u00deetta er ___ sem fer ___.',
+        '\u00dea\u00f0 hefur ___ og er ___.',
+        '\u00dea\u00f0 finnst ___ vi\u00f0 snertingu.',
+        '\u00dea\u00f0 er gert \u00far ___.',
+        'Ma\u00f0ur finnur \u00fea\u00f0 ___.',
+        'Ma\u00f0ur notar \u00fea\u00f0 ___.',
+      ],
+    },
+    {
+      level: 'B1',
+      frames: [
+        '\u00deetta farart\u00e6ki er ___ sem er nota\u00f0 til a\u00f0 ___.',
+        '\u00dea\u00f0 getur flutt ___ og fer ___.',
+        '\u00dea\u00f0 er ___ a\u00f0 snerta vegna \u00feess a\u00f0 ___.',
+        '\u00dea\u00f0 er gert \u00far ___ sem er ___.',
+        '\u00dea\u00f0 er oftast nota\u00f0 af ___ til a\u00f0 ___.',
+      ],
+    },
+  ],
+  guidingQuestions: [
+    {
+      question: 'Hvers konar farart\u00e6ki er \u00feetta?',
+      icon: '\u{1F4DA}',
+      answers: [
+        { level: 'A1', options: ['b\u00edll', 'r\u00fata', 'hj\u00f3l', 'flugv\u00e9l', 'skip'] },
+        { level: 'A2', options: ['b\u00edll', 'r\u00fata', 'hj\u00f3l', 'm\u00f3torhj\u00f3l', 'lest', 'flugv\u00e9l', 'skip/b\u00e1tur', 'sle\u00f0i'] },
+        { level: 'B1', options: ['b\u00edll', 'r\u00fata', 'hj\u00f3l', 'm\u00f3torhj\u00f3l', 'lest', 'flugv\u00e9l', 'skip/b\u00e1tur', 'sle\u00f0i', 'hlaupahjol', 'sportvagn', '\u00feyrla'] },
+      ],
+    },
+    {
+      question: 'Hvernig l\u00edtur \u00fea\u00f0 \u00fat?',
+      icon: '\u{1F441}\u{FE0F}',
+      answers: [
+        { level: 'A1', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'me\u00f0 hj\u00f3lum', '\u00e1n hj\u00f3la'] },
+        { level: 'A2', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'me\u00f0 hj\u00f3lum', '\u00e1n hj\u00f3la', 'langt', 'stutt', 'h\u00e1tt', 'l\u00e1gt'] },
+        { level: 'B1', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'me\u00f0 hj\u00f3lum', '\u00e1n hj\u00f3la', 'langt', 'stutt', 'h\u00e1tt', 'l\u00e1gt', 'strauml\u00ednulaga', 'fernt', 'hra\u00f0virkt'] },
+      ],
+    },
+    {
+      question: 'Hva\u00f0a hlj\u00f3\u00f0 gefur \u00fea\u00f0 fr\u00e1 s\u00e9r?',
+      icon: '\u{1F50A}',
+      answers: [
+        { level: 'A1', options: ['h\u00e1tt', 'l\u00e1gt', '\u00fe\u00f6gult'] },
+        { level: 'A2', options: ['h\u00e1tt', 'l\u00e1gt', '\u00fe\u00f6gult', 's\u00fa\u00f0ar', 'hringir', '\u00f6skrar'] },
+        { level: 'B1', options: ['h\u00e1tt', 'l\u00e1gt', '\u00fe\u00f6gult', 's\u00fa\u00f0ar', 'hringir', '\u00f6skrar', 'hv\u00e6sir', 'umar', 'd\u00fanar', '\u00ferymir'] },
+      ],
+    },
+    {
+      question: '\u00dar hverju er \u00fea\u00f0 gert?',
+      icon: '\u{1F9F1}',
+      answers: [
+        { level: 'A1', options: ['\u00far m\u00e1lmi', '\u00far plasti', '\u00far tr\u00e9'] },
+        { level: 'A2', options: ['\u00far m\u00e1lmi', '\u00far plasti', '\u00far tr\u00e9', '\u00far steini', '\u00far gleri'] },
+        { level: 'B1', options: ['\u00far m\u00e1lmi', '\u00far plasti', '\u00far tr\u00e9', '\u00far steini', '\u00far gleri', '\u00far endurunnru efni', '\u00far n\u00e1tt\u00farulegum efnum', '\u00far gerviefnum'] },
+      ],
+    },
+    {
+      question: 'Hva\u00f0a l\u00f6gun hefur \u00fea\u00f0?',
+      icon: '\u{1F537}',
+      answers: [
+        { level: 'A1', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'kringl\u00f3tt', 'fernt'] },
+        { level: 'A2', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'kringl\u00f3tt', 'fernt', 'langt', 'stutt', 'h\u00e1tt', 'l\u00e1gt', 'flatt', '\u00feykkt'] },
+        { level: 'B1', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'kringl\u00f3tt', 'fernt', 'langt', 'stutt', 'h\u00e1tt', 'l\u00e1gt', 'flatt', '\u00feykkt', 'spor\u00f6skjulaga', '\u00fer\u00edhyrningslaga', 's\u00edvalningslaga', '\u00f3reglulegt'] },
+      ],
+    },
+    {
+      question: 'Til hvers er \u00fea\u00f0 nota\u00f0?',
+      icon: '\u{1F3AF}',
+      answers: [
+        { level: 'A1', options: ['til a\u00f0 fer\u00f0ast', 'til a\u00f0 flytja', 'til a\u00f0 leika s\u00e9r'] },
+        { level: 'A2', options: ['til a\u00f0 fer\u00f0ast', 'til a\u00f0 flytja', 'til a\u00f0 leika s\u00e9r', 'til a\u00f0 vinna'] },
+        { level: 'B1', options: ['til a\u00f0 fer\u00f0ast', 'til a\u00f0 flytja', 'til a\u00f0 leika s\u00e9r', 'til a\u00f0 vinna', 'til a\u00f0 keppa', 'til a\u00f0 bjarga'] },
+      ],
+    },
+    {
+      question: 'Hver notar \u00feetta?',
+      icon: '\u{1F464}',
+      answers: [
+        { level: 'A1', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir'] },
+        { level: 'A2', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir', 'b\u00edlstj\u00f3rar', 'flugmenn', 'sj\u00f3menn'] },
+        { level: 'B1', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir', 'b\u00edlstj\u00f3rar', 'flugmenn', 'sj\u00f3menn', 's\u00e9rfr\u00e6\u00f0ingar', 'fer\u00f0amenn', 'i\u00f0na\u00f0armenn'] },
+      ],
+    },
+    {
+      question: 'Hvar er h\u00e6gt a\u00f0 nota/finna \u00feetta?',
+      icon: '\u{1F4CD}',
+      answers: [
+        { level: 'A1', options: ['\u00e1 g\u00f6tunni', '\u00e1 sj\u00f3num', '\u00ed loftinu'] },
+        { level: 'A2', options: ['\u00e1 g\u00f6tunni', '\u00e1 sj\u00f3num', '\u00ed loftinu', '\u00e1 \u00fej\u00f3\u00f0veginum', '\u00e1 flugvellinum'] },
+        { level: 'B1', options: ['\u00e1 g\u00f6tunni', '\u00e1 sj\u00f3num', '\u00ed loftinu', '\u00e1 \u00fej\u00f3\u00f0veginum', '\u00e1 flugvellinum', '\u00ed h\u00f6fninni', '\u00e1 lestarbraut'] },
+      ],
+    },
+    {
+      question: 'Hven\u00e6r er \u00feetta nota\u00f0?',
+      icon: '\u{1F550}',
+      answers: [
+        { level: 'A1', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf'] },
+        { level: 'A2', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf', '\u00e1 veturna', '\u00e1 sumrin', 'um helgar', '\u00e1 virkum d\u00f6gum'] },
+        { level: 'B1', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf', '\u00e1 veturna', '\u00e1 sumrin', 'um helgar', '\u00e1 virkum d\u00f6gum', '\u00ed s\u00e9rst\u00f6kum tilvikum', '\u00ed h\u00e1t\u00ed\u00f0um', 'daglega', 'sjaldan', 'oft'] },
+      ],
+    },
+  ],
+};
+
+export const manneskja: Category = {
+  id: 'manneskja',
+  name: 'Manneskja',
+  icon: '\u{1F464}',
+  description: 'Orda\u00adfordi um f\u00f3lk \u2014 \u00fatlit, starf og athafnir',
+  color: '#7B2CBF',
+  subCategories: [
+    {
+      name: 'Sta\u00f0a',
+      options: ['\u00e1 l\u00edfi', 'l\u00e1tin', 'sk\u00e1ldu\u00f0 pers\u00f3na'],
+    },
+    {
+      name: 'Fr\u00e6g\u00f0',
+      options: ['fr\u00e6g', 'ekki fr\u00e6g'],
+    },
+    {
+      name: 'Starf/hlutverk',
+      options: [
+        'leikari',
+        '\u00ed\u00fer\u00f3ttama\u00f0ur',
+        's\u00f6ngvari',
+        'stj\u00f3rnm\u00e1lama\u00f0ur',
+        'nemandi',
+        'kennari',
+        'l\u00e6knir',
+        'l\u00f6gregluma\u00f0ur',
+        'kokkur',
+        'listama\u00f0ur',
+      ],
+    },
+    {
+      name: 'Aldur',
+      options: ['barn', 'unglingur', 'fullor\u00f0inn', 'aldra\u00f0ur/\u00f6ldru\u00f0'],
+    },
+    {
+      name: '\u00datlit',
+      options: [
+        'h\u00e1/h\u00e1r',
+        'l\u00e1g/l\u00e1gur',
+        'ung/ungur',
+        'g\u00f6mul/gamall',
+        'me\u00f0 s\u00edtt h\u00e1r',
+        'me\u00f0 stutt h\u00e1r',
+        'sk\u00f6ll\u00f3tt',
+        'me\u00f0 gleraugu',
+        '\u00e1n gleraugna',
+        'me\u00f0 skegg',
+        '\u00e1n skeggs',
+      ],
+    },
+    {
+      name: 'Athafnir',
+      options: ['vinnur', 'l\u00e6rir', 'syngur', 'spilar', 'fer\u00f0ast', 'eldar', 'les', 'teiknar'],
+    },
+  ],
+  sentenceFrames: [
+    {
+      level: 'A1',
+      frames: [
+        '\u00deetta er ___.',
+        'H\u00fan/Hann er ___.',
+        'H\u00fan/Hann ___.',
+        'Ma\u00f0ur notar \u00fea\u00f0 til a\u00f0 ___.',
+      ],
+    },
+    {
+      level: 'A2',
+      frames: [
+        '\u00deetta er ___ sem er ___.',
+        'H\u00fan/Hann er ___ og ___.',
+        'H\u00fan/Hann vinnur sem ___.',
+        'Ma\u00f0ur finnur \u00fea\u00f0 ___.',
+        'Ma\u00f0ur notar \u00fea\u00f0 ___.',
+      ],
+    },
+    {
+      level: 'B1',
+      frames: [
+        '\u00c9g held a\u00f0 \u00feetta s\u00e9 ___ vegna \u00feess a\u00f0 ___.',
+        '\u00dessi manneskja er ___ og er \u00feekkt/\u00f3\u00feekkt fyrir ___.',
+        '\u00dea\u00f0 er oftast nota\u00f0 af ___ til a\u00f0 ___.',
+      ],
+    },
+  ],
+  guidingQuestions: [
+    {
+      question: 'Hvers konar manneskja er \u00feetta?',
+      icon: '\u{1F4DA}',
+      answers: [
+        { level: 'A1', options: ['barn', 'fullor\u00f0inn', 'gamall/g\u00f6mul'] },
+        { level: 'A2', options: ['barn', 'unglingur', 'fullor\u00f0inn', 'aldra\u00f0ur/\u00f6ldru\u00f0', 'fr\u00e6g', 'ekki fr\u00e6g'] },
+        { level: 'B1', options: ['barn', 'unglingur', 'fullor\u00f0inn', 'aldra\u00f0ur/\u00f6ldru\u00f0', 'fr\u00e6g', 'ekki fr\u00e6g', '\u00e1 l\u00edfi', 'l\u00e1tin', 'sk\u00e1ldu\u00f0 pers\u00f3na'] },
+      ],
+    },
+    {
+      question: 'Hvernig l\u00edtur h\u00fan/hann \u00fat?',
+      icon: '\u{1F441}\u{FE0F}',
+      answers: [
+        { level: 'A1', options: ['h\u00e1/h\u00e1r', 'l\u00e1g/l\u00e1gur', 'ung/ungur', 'g\u00f6mul/gamall'] },
+        { level: 'A2', options: ['h\u00e1/h\u00e1r', 'l\u00e1g/l\u00e1gur', 'ung/ungur', 'g\u00f6mul/gamall', 'me\u00f0 s\u00edtt h\u00e1r', 'me\u00f0 stutt h\u00e1r', 'me\u00f0 gleraugu'] },
+        { level: 'B1', options: ['h\u00e1/h\u00e1r', 'l\u00e1g/l\u00e1gur', 'ung/ungur', 'g\u00f6mul/gamall', 'me\u00f0 s\u00edtt h\u00e1r', 'me\u00f0 stutt h\u00e1r', 'sk\u00f6ll\u00f3tt', 'me\u00f0 gleraugu', 'me\u00f0 skegg', '\u00e1n skeggs'] },
+      ],
+    },
+    {
+      question: 'Hva\u00f0a l\u00f6gun hefur \u00fea\u00f0?',
+      icon: '\u{1F537}',
+      answers: [
+        { level: 'A1', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'h\u00e1tt', 'l\u00e1gt'] },
+        { level: 'A2', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'h\u00e1tt', 'l\u00e1gt', 'langt', 'stutt', '\u00feykkt', 'mj\u00f3tt'] },
+        { level: 'B1', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'h\u00e1tt', 'l\u00e1gt', 'langt', 'stutt', '\u00feykkt', 'mj\u00f3tt', 'spor\u00f6skjulaga', 'kringl\u00f3tt'] },
+      ],
+    },
+    {
+      question: 'Til hvers er h\u00fan/hann \u00feekkt/ur?',
+      icon: '\u{1F3AF}',
+      answers: [
+        { level: 'A1', options: ['til a\u00f0 vinna', 'til a\u00f0 l\u00e6ra', 'til a\u00f0 leika s\u00e9r'] },
+        { level: 'A2', options: ['til a\u00f0 vinna', 'til a\u00f0 l\u00e6ra', 'til a\u00f0 leika s\u00e9r', 'til a\u00f0 syngja', 'til a\u00f0 l\u00e6kna', 'til a\u00f0 kenna'] },
+        { level: 'B1', options: ['til a\u00f0 vinna', 'til a\u00f0 l\u00e6ra', 'til a\u00f0 leika s\u00e9r', 'til a\u00f0 syngja', 'til a\u00f0 l\u00e6kna', 'til a\u00f0 kenna', 'til a\u00f0 stj\u00f3rna', 'til a\u00f0 skapa'] },
+      ],
+    },
+    {
+      question: 'Hver notar \u00feetta?',
+      icon: '\u{1F464}',
+      answers: [
+        { level: 'A1', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir'] },
+        { level: 'A2', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir', 'nemendur', 'kennarar', 'l\u00e6knar', '\u00ed\u00fer\u00f3ttamenn'] },
+        { level: 'B1', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir', 'nemendur', 'kennarar', 'l\u00e6knar', '\u00ed\u00fer\u00f3ttamenn', 's\u00e9rfr\u00e6\u00f0ingar', 'listamenn', 'fer\u00f0amenn', 'i\u00f0na\u00f0armenn'] },
+      ],
+    },
+    {
+      question: 'Hvar er h\u00e6gt a\u00f0 finna \u00feessa manneskju?',
+      icon: '\u{1F4CD}',
+      answers: [
+        { level: 'A1', options: ['heima', '\u00ed vinnunni', '\u00ed sk\u00f3lanum'] },
+        { level: 'A2', options: ['heima', '\u00ed vinnunni', '\u00ed sk\u00f3lanum', '\u00e1 sj\u00fakrah\u00fasi', '\u00e1 leikvelli'] },
+        { level: 'B1', options: ['heima', '\u00ed vinnunni', '\u00ed sk\u00f3lanum', '\u00e1 sj\u00fakrah\u00fasi', '\u00e1 leikvelli', '\u00e1 svi\u00f0i', '\u00ed sj\u00f3nvarpi', '\u00e1 fer\u00f0alagi'] },
+      ],
+    },
+    {
+      question: 'Hven\u00e6r er h\u00fan/hann virk/virkur?',
+      icon: '\u{1F550}',
+      answers: [
+        { level: 'A1', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf'] },
+        { level: 'A2', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf', '\u00e1 veturna', '\u00e1 sumrin', 'um helgar', '\u00e1 virkum d\u00f6gum'] },
+        { level: 'B1', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf', '\u00e1 veturna', '\u00e1 sumrin', 'um helgar', '\u00e1 virkum d\u00f6gum', '\u00ed s\u00e9rst\u00f6kum tilvikum', '\u00ed h\u00e1t\u00ed\u00f0um', 'daglega', 'sjaldan', 'oft'] },
+      ],
+    },
+  ],
+};
+
+export const stadir: Category = {
+  id: 'stadir',
+  name: 'Sta\u00f0ir og byggingar',
+  icon: '\u{1F3E0}',
+  description: 'Orda\u00adfordi um sta\u00f0i \u2014 tegundir bygginga og hva\u00f0 ma\u00f0ur gerir \u00fear',
+  color: '#C1121F',
+  subCategories: [
+    {
+      name: 'Tegund',
+      options: [
+        'h\u00fas',
+        '\u00edb\u00fa\u00f0',
+        'sk\u00f3li',
+        'sj\u00fakrah\u00fas',
+        'b\u00fa\u00f0/verslun',
+        'veitingasta\u00f0ur',
+        'safn',
+        'kirkja',
+        'sundlaug',
+        'leikv\u00f6llur',
+      ],
+    },
+    {
+      name: 'Sta\u00f0setning',
+      options: ['\u00ed b\u00e6num/borginni', '\u00ed \u00fathverfi', '\u00e1 landi/sveitinni', 'vi\u00f0 sj\u00f3inn', '\u00ed fj\u00f6llunum'],
+    },
+    {
+      name: 'St\u00e6r\u00f0',
+      options: ['l\u00edtill/l\u00edti\u00f0', 'me\u00f0alst\u00f3r/me\u00f0alst\u00f3rt', 'st\u00f3r/st\u00f3rt'],
+    },
+    {
+      name: 'Hva\u00f0 gerir ma\u00f0ur \u00fear',
+      options: ['bor\u00f0ar', 'verslar', 'syndir', 'l\u00e6rir', 'vinnur', 'sefur', 'leikur s\u00e9r'],
+    },
+  ],
+  sentenceFrames: [
+    {
+      level: 'A1',
+      frames: [
+        '\u00deetta er ___.',
+        'Ma\u00f0ur ___ \u00fear.',
+        '\u00dea\u00f0 er ___.',
+        'Ma\u00f0ur notar \u00fea\u00f0 til a\u00f0 ___.',
+      ],
+    },
+    {
+      level: 'A2',
+      frames: [
+        '\u00deetta er ___ sem er ___.',
+        'Ma\u00f0ur fer \u00feanga\u00f0 til a\u00f0 ___.',
+        '\u00dea\u00f0 er gert \u00far ___.',
+        'Ma\u00f0ur finnur \u00fea\u00f0 ___.',
+        'Ma\u00f0ur notar \u00fea\u00f0 ___.',
+      ],
+    },
+    {
+      level: 'B1',
+      frames: [
+        '\u00deetta er ___ sem er sta\u00f0sett ___.',
+        'F\u00f3lk fer \u00feanga\u00f0 til a\u00f0 ___ og ___.',
+        '\u00dea\u00f0 er ___ a\u00f0 snerta vegna \u00feess a\u00f0 ___.',
+        '\u00dea\u00f0 er gert \u00far ___ sem er ___.',
+        '\u00dea\u00f0 er oftast nota\u00f0 af ___ til a\u00f0 ___.',
+      ],
+    },
+  ],
+  guidingQuestions: [
+    {
+      question: 'Hvers konar sta\u00f0ur er \u00feetta?',
+      icon: '\u{1F4DA}',
+      answers: [
+        { level: 'A1', options: ['h\u00fas', 'sk\u00f3li', 'b\u00fa\u00f0', 'sundlaug'] },
+        { level: 'A2', options: ['h\u00fas', '\u00edb\u00fa\u00f0', 'sk\u00f3li', 'sj\u00fakrah\u00fas', 'b\u00fa\u00f0/verslun', 'veitingasta\u00f0ur', 'safn', 'kirkja', 'sundlaug', 'leikv\u00f6llur'] },
+        { level: 'B1', options: ['h\u00fas', '\u00edb\u00fa\u00f0', 'sk\u00f3li', 'sj\u00fakrah\u00fas', 'b\u00fa\u00f0/verslun', 'veitingasta\u00f0ur', 'safn', 'kirkja', 'sundlaug', 'leikv\u00f6llur', 'b\u00f3kasafn', '\u00ed\u00fer\u00f3ttah\u00fas'] },
+      ],
+    },
+    {
+      question: 'Hvernig l\u00edtur \u00feetta \u00fat?',
+      icon: '\u{1F441}\u{FE0F}',
+      answers: [
+        { level: 'A1', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'h\u00e1tt', 'l\u00e1gt'] },
+        { level: 'A2', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'h\u00e1tt', 'l\u00e1gt', 'gamalt', 'n\u00fdtt', 'fallegt', 'lj\u00f3tt'] },
+        { level: 'B1', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'h\u00e1tt', 'l\u00e1gt', 'gamalt', 'n\u00fdtt', 'fallegt', 'lj\u00f3tt', 'n\u00fat\u00edmalegt', 's\u00f6gulegt'] },
+      ],
+    },
+    {
+      question: 'Hvernig lyktar \u00fear?',
+      icon: '\u{1F443}',
+      answers: [
+        { level: 'A1', options: ['gott', 'vont', 'ekkert'] },
+        { level: 'A2', options: ['gott', 'vont', 'ekkert', 'ferskt', 'sterkt', 'milt'] },
+        { level: 'B1', options: ['gott', 'vont', 'ekkert', 'ferskt', 'sterkt', 'milt', 'ilmandi', 'stingandi', 's\u00e6tt', 'beiskt'] },
+      ],
+    },
+    {
+      question: '\u00dar hverju er \u00fea\u00f0 gert?',
+      icon: '\u{1F9F1}',
+      answers: [
+        { level: 'A1', options: ['\u00far tr\u00e9', '\u00far steini', '\u00far m\u00e1lmi'] },
+        { level: 'A2', options: ['\u00far tr\u00e9', '\u00far steini', '\u00far m\u00e1lmi', '\u00far gleri', '\u00far plasti'] },
+        { level: 'B1', options: ['\u00far tr\u00e9', '\u00far steini', '\u00far m\u00e1lmi', '\u00far gleri', '\u00far plasti', '\u00far endurunnru efni', '\u00far n\u00e1tt\u00farulegum efnum', '\u00far gerviefnum'] },
+      ],
+    },
+    {
+      question: 'Hva\u00f0a l\u00f6gun hefur \u00fea\u00f0?',
+      icon: '\u{1F537}',
+      answers: [
+        { level: 'A1', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'kringl\u00f3tt', 'fernt'] },
+        { level: 'A2', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'kringl\u00f3tt', 'fernt', 'langt', 'stutt', 'h\u00e1tt', 'l\u00e1gt', 'flatt', '\u00feykkt'] },
+        { level: 'B1', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'kringl\u00f3tt', 'fernt', 'langt', 'stutt', 'h\u00e1tt', 'l\u00e1gt', 'flatt', '\u00feykkt', 'spor\u00f6skjulaga', '\u00fer\u00edhyrningslaga', 's\u00edvalningslaga', '\u00f3reglulegt'] },
+      ],
+    },
+    {
+      question: 'Til hvers er \u00feetta nota\u00f0?',
+      icon: '\u{1F3AF}',
+      answers: [
+        { level: 'A1', options: ['til a\u00f0 b\u00faa', 'til a\u00f0 l\u00e6ra', 'til a\u00f0 versla'] },
+        { level: 'A2', options: ['til a\u00f0 b\u00faa', 'til a\u00f0 l\u00e6ra', 'til a\u00f0 versla', 'til a\u00f0 vinna', 'til a\u00f0 hv\u00edlast'] },
+        { level: 'B1', options: ['til a\u00f0 b\u00faa', 'til a\u00f0 l\u00e6ra', 'til a\u00f0 versla', 'til a\u00f0 vinna', 'til a\u00f0 hv\u00edlast', 'til a\u00f0 stunda \u00ed\u00fer\u00f3ttir', 'til a\u00f0 skemmta s\u00e9r'] },
+      ],
+    },
+    {
+      question: 'Hver notar \u00feetta?',
+      icon: '\u{1F464}',
+      answers: [
+        { level: 'A1', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir'] },
+        { level: 'A2', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir', 'nemendur', 'kennarar', 'l\u00e6knar'] },
+        { level: 'B1', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir', 'nemendur', 'kennarar', 'l\u00e6knar', 's\u00e9rfr\u00e6\u00f0ingar', 'listamenn', 'fer\u00f0amenn', 'i\u00f0na\u00f0armenn'] },
+      ],
+    },
+    {
+      question: 'Hvar er \u00feetta?',
+      icon: '\u{1F4CD}',
+      answers: [
+        { level: 'A1', options: ['\u00ed b\u00e6num', '\u00fati \u00e1 landi', 'vi\u00f0 sj\u00f3inn'] },
+        { level: 'A2', options: ['\u00ed b\u00e6num', '\u00fati \u00e1 landi', 'vi\u00f0 sj\u00f3inn', '\u00ed \u00fathverfi', '\u00ed fj\u00f6llunum'] },
+        { level: 'B1', options: ['\u00ed b\u00e6num', '\u00fati \u00e1 landi', 'vi\u00f0 sj\u00f3inn', '\u00ed \u00fathverfi', '\u00ed fj\u00f6llunum', '\u00ed mi\u00f0borginni', '\u00e1 h\u00e1lendinu'] },
+      ],
+    },
+    {
+      question: 'Hven\u00e6r er \u00feetta nota\u00f0?',
+      icon: '\u{1F550}',
+      answers: [
+        { level: 'A1', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf'] },
+        { level: 'A2', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf', '\u00e1 veturna', '\u00e1 sumrin', 'um helgar', '\u00e1 virkum d\u00f6gum'] },
+        { level: 'B1', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf', '\u00e1 veturna', '\u00e1 sumrin', 'um helgar', '\u00e1 virkum d\u00f6gum', '\u00ed s\u00e9rst\u00f6kum tilvikum', '\u00ed h\u00e1t\u00ed\u00f0um', 'daglega', 'sjaldan', 'oft'] },
+      ],
+    },
+  ],
+};
+
+export const klaednadur: Category = {
+  id: 'klaednadur',
+  name: 'F\u00f6t og kl\u00e6\u00f0na\u00f0ur',
+  icon: '\u{1F455}',
+  description: 'Orda\u00adfordi um f\u00f6t \u2014 tegundir, litir, efni og hven\u00e6r \u00feau eru notuð',
+  color: '#F4A261',
+  subCategories: [
+    {
+      name: 'Tegund',
+      options: [
+        'bolur/stuttermabolur',
+        'peysa',
+        'skyrta',
+        'buxur',
+        'pilsi\u00f0/pils',
+        'jakki',
+        '\u00falpa',
+        'sokkar',
+        'sk\u00f3r',
+        'h\u00fafa',
+        'hanskar',
+        'trefill',
+      ],
+    },
+    {
+      name: 'Litur',
+      options: [
+        'rau\u00f0ur/rautt',
+        'bl\u00e1r/bl\u00e1tt',
+        'gr\u00e6nn/gr\u00e6nt',
+        'gulur/gult',
+        'svartur/svart',
+        'hv\u00edtur/hv\u00edtt',
+        'bleikur/bleikt',
+        'br\u00fann/br\u00fant',
+      ],
+    },
+    {
+      name: 'Efni',
+      options: ['\u00far ull', '\u00far b\u00f3mull', '\u00far le\u00f0ri', '\u00far plasti'],
+    },
+    {
+      name: 'Hven\u00e6r',
+      options: ['\u00e1 veturna', '\u00e1 sumrin', 'allt \u00e1ri\u00f0', '\u00feegar rignir', '\u00ed s\u00e9rstakar tilefni'],
+    },
+    {
+      name: '\u00c1 hva\u00f0a l\u00edkamshluta',
+      options: [
+        '\u00e1 h\u00f6f\u00f0inu',
+        '\u00e1 efri hluta l\u00edkamans',
+        '\u00e1 ne\u00f0ri hluta l\u00edkamans',
+        '\u00e1 f\u00f3tunum',
+        '\u00e1 h\u00f6ndunum',
+      ],
+    },
+  ],
+  sentenceFrames: [
+    {
+      level: 'A1',
+      frames: [
+        '\u00deetta er ___.',
+        '\u00dea\u00f0 er ___.',
+        '\u00dea\u00f0 er ___.',
+        'Ma\u00f0ur notar \u00fea\u00f0 til a\u00f0 ___.',
+      ],
+    },
+    {
+      level: 'A2',
+      frames: [
+        '\u00deetta er ___ sem er ___.',
+        'Ma\u00f0ur kl\u00e6\u00f0ist \u00fev\u00ed ___.',
+        '\u00dea\u00f0 finnst ___ vi\u00f0 snertingu.',
+        '\u00dea\u00f0 er gert \u00far ___.',
+        'Ma\u00f0ur finnur \u00fea\u00f0 ___.',
+        'Ma\u00f0ur notar \u00fea\u00f0 ___.',
+      ],
+    },
+    {
+      level: 'B1',
+      frames: [
+        '\u00deetta er ___ \u00far ___ sem ma\u00f0ur notar ___.',
+        '\u00dea\u00f0 er ___ og hentar vel ___.',
+        '\u00dea\u00f0 er ___ a\u00f0 snerta vegna \u00feess a\u00f0 ___.',
+        '\u00dea\u00f0 er gert \u00far ___ sem er ___.',
+        '\u00dea\u00f0 er oftast nota\u00f0 af ___ til a\u00f0 ___.',
+      ],
+    },
+  ],
+  guidingQuestions: [
+    {
+      question: 'Hvers konar kl\u00e6\u00f0na\u00f0ur er \u00feetta?',
+      icon: '\u{1F4DA}',
+      answers: [
+        { level: 'A1', options: ['bolur', 'buxur', 'jakki', 'sk\u00f3r'] },
+        { level: 'A2', options: ['bolur', 'peysa', 'skyrta', 'buxur', 'pilsi\u00f0', 'jakki', '\u00falpa', 'sokkar', 'sk\u00f3r', 'h\u00fafa'] },
+        { level: 'B1', options: ['bolur', 'peysa', 'skyrta', 'buxur', 'pilsi\u00f0', 'jakki', '\u00falpa', 'sokkar', 'sk\u00f3r', 'h\u00fafa', 'hanskar', 'trefill'] },
+      ],
+    },
+    {
+      question: 'Hvernig l\u00edtur \u00fea\u00f0 \u00fat?',
+      icon: '\u{1F441}\u{FE0F}',
+      answers: [
+        { level: 'A1', options: ['rautt', 'bl\u00e1tt', 'gr\u00e6nt', 'svart', 'hv\u00edtt'] },
+        { level: 'A2', options: ['rautt', 'bl\u00e1tt', 'gr\u00e6nt', 'svart', 'hv\u00edtt', 'gult', 'bleikt', 'br\u00fant', 'st\u00f3rt', 'l\u00edti\u00f0'] },
+        { level: 'B1', options: ['rautt', 'bl\u00e1tt', 'gr\u00e6nt', 'svart', 'hv\u00edtt', 'gult', 'bleikt', 'br\u00fant', 'st\u00f3rt', 'l\u00edti\u00f0', 'mynstur', 'einlitt'] },
+      ],
+    },
+    {
+      question: 'Hvernig finnst \u00fea\u00f0 vi\u00f0 snertingu?',
+      icon: '\u270B',
+      answers: [
+        { level: 'A1', options: ['mj\u00fakt', 'hart', 'sl\u00e9ttt', 'gr\u00f3ft'] },
+        { level: 'A2', options: ['mj\u00fakt', 'hart', 'sl\u00e9ttt', 'gr\u00f3ft', '\u00feungt', 'l\u00e9tt', 'heitt', 'kalt', 'blautt', '\u00feurrt'] },
+        { level: 'B1', options: ['mj\u00fakt', 'hart', 'sl\u00e9ttt', 'gr\u00f3ft', '\u00feungt', 'l\u00e9tt', 'heitt', 'kalt', 'blautt', '\u00feurrt', 'lo\u00f0i\u00f0', 'h\u00e1lkt', 'stinnt', 'sveigjanlegt'] },
+      ],
+    },
+    {
+      question: '\u00dar hverju er \u00fea\u00f0 gert?',
+      icon: '\u{1F9F1}',
+      answers: [
+        { level: 'A1', options: ['\u00far ull', '\u00far b\u00f3mull', '\u00far le\u00f0ri', '\u00far plasti'] },
+        { level: 'A2', options: ['\u00far ull', '\u00far b\u00f3mull', '\u00far le\u00f0ri', '\u00far plasti', '\u00far tr\u00e9', '\u00far m\u00e1lmi', '\u00far steini', '\u00far gleri'] },
+        { level: 'B1', options: ['\u00far ull', '\u00far b\u00f3mull', '\u00far le\u00f0ri', '\u00far plasti', '\u00far tr\u00e9', '\u00far m\u00e1lmi', '\u00far steini', '\u00far gleri', '\u00far endurunnru efni', '\u00far n\u00e1tt\u00farulegum efnum', '\u00far gerviefnum'] },
+      ],
+    },
+    {
+      question: 'Hva\u00f0a l\u00f6gun hefur \u00fea\u00f0?',
+      icon: '\u{1F537}',
+      answers: [
+        { level: 'A1', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'kringl\u00f3tt', 'fernt'] },
+        { level: 'A2', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'kringl\u00f3tt', 'fernt', 'langt', 'stutt', 'h\u00e1tt', 'l\u00e1gt', 'flatt', '\u00feykkt'] },
+        { level: 'B1', options: ['st\u00f3rt', 'l\u00edti\u00f0', 'kringl\u00f3tt', 'fernt', 'langt', 'stutt', 'h\u00e1tt', 'l\u00e1gt', 'flatt', '\u00feykkt', 'spor\u00f6skjulaga', '\u00fer\u00edhyrningslaga', 's\u00edvalningslaga', '\u00f3reglulegt'] },
+      ],
+    },
+    {
+      question: 'Til hvers er \u00fea\u00f0 nota\u00f0?',
+      icon: '\u{1F3AF}',
+      answers: [
+        { level: 'A1', options: ['til a\u00f0 hlyja s\u00e9r', 'til a\u00f0 verja sig', 'til a\u00f0 l\u00edta vel \u00fat'] },
+        { level: 'A2', options: ['til a\u00f0 hlyja s\u00e9r', 'til a\u00f0 verja sig', 'til a\u00f0 l\u00edta vel \u00fat', 'til a\u00f0 stunda \u00ed\u00fer\u00f3ttir'] },
+        { level: 'B1', options: ['til a\u00f0 hlyja s\u00e9r', 'til a\u00f0 verja sig', 'til a\u00f0 l\u00edta vel \u00fat', 'til a\u00f0 stunda \u00ed\u00fer\u00f3ttir', 'til a\u00f0 vinna', 'til a\u00f0 vera \u00fe\u00e6gilegur'] },
+      ],
+    },
+    {
+      question: 'Hver notar \u00feetta?',
+      icon: '\u{1F464}',
+      answers: [
+        { level: 'A1', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir'] },
+        { level: 'A2', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir', 'nemendur', '\u00ed\u00fer\u00f3ttamenn'] },
+        { level: 'B1', options: ['allir', 'b\u00f6rn', 'fullor\u00f0nir', 'nemendur', '\u00ed\u00fer\u00f3ttamenn', 's\u00e9rfr\u00e6\u00f0ingar', 'listamenn', 'fer\u00f0amenn', 'i\u00f0na\u00f0armenn'] },
+      ],
+    },
+    {
+      question: 'Hvar er h\u00e6gt a\u00f0 nota \u00feetta?',
+      icon: '\u{1F4CD}',
+      answers: [
+        { level: 'A1', options: ['inni', '\u00fati', '\u00ed sk\u00f3lanum'] },
+        { level: 'A2', options: ['inni', '\u00fati', '\u00ed sk\u00f3lanum', '\u00ed vinnunni', '\u00ed \u00ed\u00fer\u00f3ttum'] },
+        { level: 'B1', options: ['inni', '\u00fati', '\u00ed sk\u00f3lanum', '\u00ed vinnunni', '\u00ed \u00ed\u00fer\u00f3ttum', '\u00e1 h\u00e1t\u00ed\u00f0', '\u00e1 fer\u00f0alagi'] },
+      ],
+    },
+    {
+      question: 'Hven\u00e6r er \u00feetta nota\u00f0?',
+      icon: '\u{1F550}',
+      answers: [
+        { level: 'A1', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf'] },
+        { level: 'A2', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf', '\u00e1 veturna', '\u00e1 sumrin', 'um helgar', '\u00e1 virkum d\u00f6gum'] },
+        { level: 'B1', options: ['\u00e1 morgnana', '\u00e1 daginn', '\u00e1 kv\u00f6ldin', 'alltaf', '\u00e1 veturna', '\u00e1 sumrin', 'um helgar', '\u00e1 virkum d\u00f6gum', '\u00ed s\u00e9rst\u00f6kum tilvikum', '\u00ed h\u00e1t\u00ed\u00f0um', 'daglega', 'sjaldan', 'oft'] },
+      ],
+    },
+  ],
+};
+
+export const categories: Category[] = [dyr, matur, farartaeki, manneskja, stadir, klaednadur];
+
+/**
+ * Look up a category by its id string.
+ * @param id - The category id (e.g. 'dyr', 'matur', 'farartaeki', 'manneskja', 'stadir', 'klaednadur')
+ * @returns The category object, or undefined if not found.
+ */
+export function getCategoryById(id: string): Category | undefined {
+  return categories.find((c) => c.id === id);
+}
