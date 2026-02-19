@@ -104,3 +104,45 @@ test.describe('Smoke tests — No console errors on critical pages', () => {
     expect(consoleErrors).toHaveLength(0);
   });
 });
+
+test.describe('Smoke tests — Mobile viewport', () => {
+  test.use({ viewport: { width: 375, height: 667 } });
+
+  test('landing page works on mobile', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    // Main heading should be visible
+    await expect(page.locator('h1').first()).toBeVisible();
+  });
+
+  test('landing page has no console errors on mobile', async ({ page }) => {
+    const consoleErrors: string[] = [];
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') {
+        consoleErrors.push(msg.text());
+      }
+    });
+
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+
+    expect(consoleErrors).toHaveLength(0);
+  });
+
+  test('chemistry hub works on mobile', async ({ page }) => {
+    await page.goto('/efnafraedi/');
+    await page.waitForLoadState('networkidle');
+
+    // Page body should be visible
+    await expect(page.locator('body')).toBeVisible();
+  });
+
+  test('islenskubraut works on mobile', async ({ page }) => {
+    await page.goto('/islenskubraut/');
+    await page.waitForLoadState('networkidle');
+
+    // Page body should be visible
+    await expect(page.locator('body')).toBeVisible();
+  });
+});
