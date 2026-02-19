@@ -22,6 +22,7 @@ export default defineConfig({
         'apps/lab-reports/src/hooks/**/*.ts',
         'apps/games/**/utils/**/*.ts',
         'apps/games/**/data/**/*.ts',
+        'apps/lab-reports/src/components/Auth*.tsx',
       ],
       exclude: [
         '**/node_modules/**',

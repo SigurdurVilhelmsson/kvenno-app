@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import React, { Suspense, useEffect } from 'react';
 
 import { History, GraduationCap, BookOpen, ArrowLeft } from 'lucide-react';
 
@@ -8,10 +8,17 @@ import { Header } from '@kvenno/shared/components/Header';
 import { AuthButton } from './components/AuthButton';
 import { FileUpload } from './components/FileUpload';
 import { SaveDialog, ConfirmDialog } from './components/Modal';
-import { SessionHistory } from './components/SessionHistory';
-import { StudentFeedback as StudentFeedbackComponent } from './components/StudentFeedback';
-import { TeacherResults } from './components/TeacherResults';
 import { Toast } from './components/Toast';
+
+const SessionHistory = React.lazy(() =>
+  import('./components/SessionHistory').then((m) => ({ default: m.SessionHistory }))
+);
+const StudentFeedbackComponent = React.lazy(() =>
+  import('./components/StudentFeedback').then((m) => ({ default: m.StudentFeedback }))
+);
+const TeacherResults = React.lazy(() =>
+  import('./components/TeacherResults').then((m) => ({ default: m.TeacherResults }))
+);
 import { experimentConfigs, getExperiments } from './config/experiments';
 import { AnalysisResult, StudentFeedback, GradingSession } from './types';
 import { extractTextFromFile } from './utils/fileProcessing';
@@ -289,11 +296,13 @@ function App() {
           )}
 
           {state.view === 'history' ? (
-            <SessionHistory
-              sessions={state.session.saved}
-              onLoadSession={handleLoadSession}
-              onDeleteSession={handleDeleteSession}
-            />
+            <Suspense fallback={<div className="text-center py-8 text-slate-500">Hleð...</div>}>
+              <SessionHistory
+                sessions={state.session.saved}
+                onLoadSession={handleLoadSession}
+                onDeleteSession={handleDeleteSession}
+              />
+            </Suspense>
           ) : (
             <>
               {/* Experiment selector */}
@@ -328,17 +337,21 @@ function App() {
 
         {/* Results display */}
         {state.view === 'grader' && state.mode === 'teacher' && (
-          <TeacherResults
-            results={state.results.analyses}
-            sections={sections}
-            sessionName={state.session.currentName}
-            onSave={handleSaveSession}
-            onExport={handleExport}
-          />
+          <Suspense fallback={<div className="text-center py-8 text-slate-500">Hleð...</div>}>
+            <TeacherResults
+              results={state.results.analyses}
+              sections={sections}
+              sessionName={state.session.currentName}
+              onSave={handleSaveSession}
+              onExport={handleExport}
+            />
+          </Suspense>
         )}
 
         {state.view === 'grader' && state.mode === 'student' && (
-          <StudentFeedbackComponent feedback={state.results.studentFeedback} sections={sections} />
+          <Suspense fallback={<div className="text-center py-8 text-slate-500">Hleð...</div>}>
+            <StudentFeedbackComponent feedback={state.results.studentFeedback} sections={sections} />
+          </Suspense>
         )}
       </div>
 

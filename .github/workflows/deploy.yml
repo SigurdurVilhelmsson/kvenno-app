@@ -1,0 +1,107 @@
+name: Deploy
+
+on:
+  # Deploy after CI passes on main
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+# Prevent parallel deploys
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+# Required GitHub secrets:
+#   SSH_PRIVATE_KEY  — SSH private key for the deploy user
+#   DEPLOY_HOST      — Server hostname (e.g., kvenno.app)
+#   DEPLOY_USER      — SSH username (e.g., siggi)
+#   DEPLOY_PATH      — Web root on server (e.g., /var/www/kvenno.app)
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: pnpm-store-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-store-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy frontend
+        run: |
+          rsync -avz --delete \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            -e "ssh -i ~/.ssh/deploy_key" \
+            dist/ ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/
+
+      - name: Deploy backend
+        run: |
+          rsync -avz \
+            --exclude='node_modules' \
+            --exclude='.env' \
+            -e "ssh -i ~/.ssh/deploy_key" \
+            server/ ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/opt/kvenno-server/
+
+      - name: Install backend dependencies and restart
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "\
+            cd /opt/kvenno-server && \
+            npm ci --omit=dev && \
+            sudo systemctl restart kvenno-server"
+
+      - name: Set permissions
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "\
+            sudo chown -R www-data:www-data ${{ secrets.DEPLOY_PATH }} && \
+            sudo chmod -R 755 ${{ secrets.DEPLOY_PATH }}"
+
+      - name: Health check
+        run: |
+          echo "Waiting for server to start..."
+          sleep 5
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://${{ secrets.DEPLOY_HOST }}/health || true)
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "Health check passed (HTTP $HTTP_STATUS)" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::Health check returned HTTP $HTTP_STATUS"
+            echo "Health check warning: HTTP $HTTP_STATUS" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Cleanup SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key

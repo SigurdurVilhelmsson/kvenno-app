@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { LanguageSwitcher, ErrorBoundary } from '@shared/components';
 import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
 import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
 import { useGameI18n } from '@shared/hooks';
+import { useGameProgress } from '@shared/hooks';
 import { useAchievements } from '@shared/hooks/useAchievements';
 
 import { Level1 } from './components/Level1';
@@ -23,40 +24,20 @@ interface Progress {
   totalGamesPlayed: number;
 }
 
-const STORAGE_KEY = 'redox-reactions-progress';
-
-function loadProgress(): Progress {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    try {
-      return JSON.parse(saved);
-    } catch {
-      return getDefaultProgress();
-    }
-  }
-  return getDefaultProgress();
-}
-
-function getDefaultProgress(): Progress {
-  return {
-    level1Completed: false,
-    level1Score: 0,
-    level2Completed: false,
-    level2Score: 0,
-    level3Completed: false,
-    level3Score: 0,
-    totalGamesPlayed: 0
-  };
-}
-
-function saveProgress(progress: Progress): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-}
+const DEFAULT_PROGRESS: Progress = {
+  level1Completed: false,
+  level1Score: 0,
+  level2Completed: false,
+  level2Score: 0,
+  level3Completed: false,
+  level3Score: 0,
+  totalGamesPlayed: 0
+};
 
 function App() {
   const [activeLevel, setActiveLevel] = useState<ActiveLevel>('menu');
   const { language, setLanguage } = useGameI18n({ gameTranslations });
-  const [progress, setProgress] = useState<Progress>(loadProgress);
+  const { progress, updateProgress, resetProgress } = useGameProgress<Progress>('redox-reactions-progress', DEFAULT_PROGRESS);
   const [showAchievements, setShowAchievements] = useState(false);
 
   const {
@@ -71,48 +52,35 @@ function App() {
     resetAll: resetAchievements,
   } = useAchievements({ gameId: 'redox-reactions' });
 
-  useEffect(() => {
-    saveProgress(progress);
-  }, [progress]);
-
   const handleLevel1Complete = (score: number, maxScore: number, hintsUsed: number) => {
-    setProgress(prev => ({
-      ...prev,
+    updateProgress({
       level1Completed: true,
-      level1Score: Math.max(prev.level1Score, score),
-      totalGamesPlayed: prev.totalGamesPlayed + 1
-    }));
+      level1Score: Math.max(progress.level1Score, score),
+      totalGamesPlayed: progress.totalGamesPlayed + 1
+    });
     trackLevelComplete(1, score, maxScore, { hintsUsed });
     setActiveLevel('menu');
   };
 
   const handleLevel2Complete = (score: number, maxScore: number, hintsUsed: number) => {
-    setProgress(prev => ({
-      ...prev,
+    updateProgress({
       level2Completed: true,
-      level2Score: Math.max(prev.level2Score, score),
-      totalGamesPlayed: prev.totalGamesPlayed + 1
-    }));
+      level2Score: Math.max(progress.level2Score, score),
+      totalGamesPlayed: progress.totalGamesPlayed + 1
+    });
     trackLevelComplete(2, score, maxScore, { hintsUsed });
     setActiveLevel('menu');
   };
 
   const handleLevel3Complete = (score: number, maxScore: number, hintsUsed: number) => {
-    setProgress(prev => ({
-      ...prev,
+    updateProgress({
       level3Completed: true,
-      level3Score: Math.max(prev.level3Score, score),
-      totalGamesPlayed: prev.totalGamesPlayed + 1
-    }));
+      level3Score: Math.max(progress.level3Score, score),
+      totalGamesPlayed: progress.totalGamesPlayed + 1
+    });
     trackLevelComplete(3, score, maxScore, { hintsUsed });
     trackGameComplete();
     setActiveLevel('complete');
-  };
-
-  const resetProgress = () => {
-    const newProgress = getDefaultProgress();
-    setProgress(newProgress);
-    saveProgress(newProgress);
   };
 
   if (activeLevel === 'level1') {

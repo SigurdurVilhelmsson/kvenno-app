@@ -30,6 +30,9 @@ pnpm-debug.log*
 *.tmp
 *.temp
 
+# Bundle analysis
+stats.html
+
 # Playwright
 playwright-report/
 test-results/

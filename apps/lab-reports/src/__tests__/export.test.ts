@@ -5,9 +5,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { AnalysisResult, ExperimentSection, Analysis2Result, ExperimentConfig2 } from '@/types';
 
-// Track what was downloaded
-let downloadedFilename = '';
-
 // Mock DOM APIs for CSV download
 const mockAnchor = {
   href: '',
@@ -16,7 +13,6 @@ const mockAnchor = {
 };
 
 beforeEach(() => {
-  downloadedFilename = '';
   mockAnchor.href = '';
   mockAnchor.download = '';
   mockAnchor.click.mockReset();

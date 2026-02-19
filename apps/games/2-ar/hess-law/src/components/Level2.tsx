@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 
+import { calculateSum } from '../utils/hess-calculations';
 import { EnergyPathwayDiagram } from './EnergyPathwayDiagram';
 
 interface Equation {
@@ -252,12 +253,10 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const puzzle = PUZZLES[currentPuzzle];
 
   // Calculate current sum of selected equations
-  const calculateSum = useCallback(() => {
-    return equations
-      .filter(eq => selectedEquations.includes(eq.id))
-      .reduce((sum, eq) => {
-        return sum + (eq.deltaH * eq.multiplier * (eq.isReversed ? -1 : 1));
-      }, 0);
+  const calculateSelectedSum = useCallback(() => {
+    return calculateSum(
+      equations.filter(eq => selectedEquations.includes(eq.id))
+    );
   }, [equations, selectedEquations]);
 
   // Reset puzzle
@@ -290,7 +289,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   // Check solution
   const checkSolution = () => {
-    const sum = calculateSum();
+    const sum = calculateSelectedSum();
     const correct = Math.abs(sum - puzzle.targetDeltaH) < 0.5;
 
     setShowResult(true);
@@ -326,7 +325,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     }
   };
 
-  const currentSum = calculateSum();
+  const currentSum = calculateSelectedSum();
   const isCorrect = Math.abs(currentSum - puzzle.targetDeltaH) < 0.5;
 
   // Calculate energy pathway steps for the diagram

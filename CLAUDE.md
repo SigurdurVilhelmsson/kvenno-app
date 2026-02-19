@@ -168,7 +168,7 @@ pnpm build                 # Build everything
 
 - **Icelandic UI:** All user-facing text must be in Icelandic
 - **KVENNO-STRUCTURE.md:** The master design document lives at `docs/KVENNO-STRUCTURE.md`
-- **Games build to single HTML files** via `vite-plugin-singlefile` (~200KB each)
+- **Games build to single HTML files** via `vite-plugin-singlefile` (1.2-2.9 MB each; see `docs/bundle-sizes.md`)
 - **Lab reports need 2 builds:** One for `/efnafraedi/2-ar/lab-reports/` and one for `/efnafraedi/3-ar/lab-reports/`
 - **Server needs system deps:** `pandoc` and `libreoffice` for .docx processing
 - **API key security:** Claude API key lives in `server/.env` (never committed), proxied through Express backend

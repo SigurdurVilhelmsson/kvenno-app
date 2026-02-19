@@ -14,3 +14,4 @@ export {
 export * from './useProgress';
 export * from './useAccessibility';
 export * from './useAchievements';
+export { useGameProgress } from './useGameProgress';
