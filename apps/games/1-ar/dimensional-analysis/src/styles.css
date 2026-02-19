@@ -1,0 +1,449 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Accessibility Features */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #f36b22;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Focus visible for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid #f36b22;
+  outline-offset: 2px;
+}
+
+/* Text Size Options */
+.text-small {
+  font-size: 14px;
+}
+
+.text-medium {
+  font-size: 16px;
+}
+
+.text-large {
+  font-size: 18px;
+}
+
+/* High Contrast Mode */
+.high-contrast {
+  --bg-primary: #000000;
+  --bg-secondary: #ffffff;
+  --text-primary: #ffffff;
+  --text-secondary: #000000;
+  --border-color: #ffff00;
+  --focus-color: #ffff00;
+}
+
+.high-contrast body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.high-contrast .bg-white {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+.high-contrast .bg-gray-50,
+.high-contrast .bg-gray-100 {
+  background-color: #2a2a2a !important;
+  color: #ffffff !important;
+}
+
+.high-contrast .text-gray-600,
+.high-contrast .text-gray-700,
+.high-contrast .text-gray-800 {
+  color: #e0e0e0 !important;
+}
+
+.high-contrast .border-gray-300 {
+  border-color: var(--border-color) !important;
+}
+
+.high-contrast button:focus,
+.high-contrast input:focus,
+.high-contrast select:focus {
+  outline: 3px solid var(--focus-color) !important;
+}
+
+/* Reduced Motion */
+.reduced-motion * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* Kvennaskólinn Brand Colors */
+.bg-primary-orange {
+  background-color: #f36b22;
+}
+
+.bg-dark-orange {
+  background-color: #d95a1a;
+}
+
+.border-primary-orange {
+  border-color: #f36b22;
+}
+
+.text-primary-orange {
+  color: #f36b22;
+}
+
+.hover-orange:hover {
+  background-color: #f36b22;
+}
+
+/* ==================== Unit Block Animations ==================== */
+
+/* Shrink animation for unit cancellation */
+@keyframes shrink-out {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+.animate-shrink {
+  animation: shrink-out 0.6s ease-in-out forwards;
+}
+
+/* Pulse animation for highlighting */
+@keyframes pulse-highlight {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(243, 107, 34, 0.7);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(243, 107, 34, 0);
+  }
+}
+
+.animate-pulse-highlight {
+  animation: pulse-highlight 1s ease-in-out infinite;
+}
+
+/* Success glow animation */
+@keyframes success-glow {
+  0% {
+    box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
+  }
+}
+
+.animate-success-glow {
+  animation: success-glow 1.5s ease-in-out infinite;
+}
+
+/* Error shake animation */
+@keyframes error-shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+.animate-error-shake {
+  animation: error-shake 0.5s ease-in-out;
+}
+
+/* Slide in from bottom */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out forwards;
+}
+
+/* Balance scale tilt animation */
+@keyframes balance-tilt {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.animate-balance {
+  animation: balance-tilt 2s ease-in-out infinite;
+}
+
+/* Unit connection animation */
+@keyframes connect-units {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+  100% {
+    transform: translateX(0) scale(0);
+    opacity: 0;
+  }
+}
+
+.animate-connect {
+  animation: connect-units 0.8s ease-in-out forwards;
+}
+
+/* Number transform animation */
+@keyframes number-morph {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  51% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-number-morph {
+  animation: number-morph 0.6s ease-in-out;
+}
+
+/* Confetti animation */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.animate-confetti {
+  animation: confetti-fall 1.5s ease-out forwards;
+}
+
+/* ==================== Unit Cancellation Animations ==================== */
+
+/* Strikethrough line animation - draws a diagonal line across */
+@keyframes strikethrough-draw {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    width: 140%;
+    opacity: 1;
+  }
+}
+
+/* Unit fade out after strikethrough */
+@keyframes cancel-fade {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.3;
+    transform: scale(0.9);
+    filter: grayscale(100%);
+  }
+}
+
+/* Strikethrough container */
+.unit-cancel-container {
+  position: relative;
+  display: inline-flex;
+}
+
+/* The strikethrough line */
+.unit-cancel-line {
+  position: absolute;
+  top: 50%;
+  left: -10%;
+  height: 4px;
+  width: 0;
+  background: linear-gradient(90deg, transparent, #ef4444, #ef4444, transparent);
+  transform: translateY(-50%) rotate(-15deg);
+  transform-origin: left center;
+  border-radius: 2px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.unit-cancel-line.animate {
+  animation: strikethrough-draw 0.4s ease-out forwards;
+}
+
+/* Cancelled unit styling */
+.unit-cancelled {
+  animation: cancel-fade 0.3s ease-out 0.3s forwards;
+}
+
+/* Glow effect on matching units before cancel */
+@keyframes match-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
+  }
+  50% {
+    box-shadow: 0 0 20px 5px rgba(249, 115, 22, 0.6);
+  }
+}
+
+.unit-match-glow {
+  animation: match-glow 1s ease-in-out infinite;
+}
+
+/* Connecting line between matching units */
+@keyframes connect-line-draw {
+  0% {
+    stroke-dashoffset: 100;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes connect-line-fade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.connect-line {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+
+.connect-line.animate-draw {
+  animation: connect-line-draw 0.5s ease-out forwards;
+}
+
+.connect-line.animate-fade {
+  animation: connect-line-fade 0.3s ease-out 0.5s forwards;
+}
+
+/* Cancel burst effect */
+@keyframes cancel-burst {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.cancel-burst {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.8) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+  z-index: 15;
+}
+
+.cancel-burst.animate {
+  animation: cancel-burst 0.5s ease-out forwards;
+}
+
+/* Touch-friendly styles */
+@media (pointer: coarse) {
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 12px;
+  }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 640px) {
+  .value-adjuster {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .value-adjuster button {
+    min-width: 50px;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}

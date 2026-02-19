@@ -1,0 +1,108 @@
+{
+  "common": {
+    "start": "Start",
+    "continue": "Continue",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "close": "Close",
+    "reset": "Reset",
+    "save": "Save",
+    "back": "Back",
+    "hint": "Hint",
+    "skip": "Skip",
+    "retry": "Retry",
+    "correct": "Correct!",
+    "incorrect": "Incorrect",
+    "excellent": "Excellent!",
+    "good": "Good!",
+    "tryAgain": "Try again"
+  },
+  "mainMenu": {
+    "title": "Chemistry Games",
+    "subtitle": "Kvennaskólinn",
+    "selectLevel": "Select Level",
+    "continueGame": "Continue",
+    "newGame": "New Game",
+    "statistics": "Statistics",
+    "settings": "Settings",
+    "help": "Help"
+  },
+  "levels": {
+    "level0": {
+      "name": "Free Practice",
+      "description": "Practice without limits"
+    },
+    "level1": {
+      "name": "Advanced",
+      "description": "Full independence in solving"
+    },
+    "level2": {
+      "name": "Intermediate",
+      "description": "Predict the next step"
+    },
+    "level3": {
+      "name": "Beginner",
+      "description": "With guidance and support"
+    }
+  },
+  "progress": {
+    "problemsCompleted": "Problems Completed",
+    "accuracy": "Accuracy",
+    "timeSpent": "Time Spent",
+    "mastered": "Mastered",
+    "notMastered": "Not Mastered",
+    "questionsAnswered": "Questions Answered",
+    "questionsCorrect": "Correct Questions",
+    "explanationAverage": "Explanation Average",
+    "predictionAccuracy": "Prediction Accuracy",
+    "answerAccuracy": "Answer Accuracy",
+    "compositeScore": "Composite Score"
+  },
+  "feedback": {
+    "success": "Well done!",
+    "error": "An error occurred",
+    "warning": "Please review",
+    "info": "Tip",
+    "progressSaved": "Progress saved",
+    "levelCompleted": "You have completed this level!",
+    "gameCompleted": "Congratulations! You have completed the game!"
+  },
+  "accessibility": {
+    "menuTitle": "Accessibility Options",
+    "highContrast": "High Contrast",
+    "textSize": "Text Size",
+    "textSizeSmall": "Small",
+    "textSizeMedium": "Medium",
+    "textSizeLarge": "Large",
+    "reducedMotion": "Reduce Motion",
+    "keyboardShortcuts": "Keyboard Shortcuts",
+    "skipToContent": "Skip to content",
+    "screenReaderAnnouncement": "Screen reader announcement"
+  },
+  "stats": {
+    "title": "Statistics",
+    "overall": "Overall",
+    "byLevel": "By Level",
+    "exportData": "Export Data",
+    "exportSuccess": "Data exported",
+    "resetProgress": "Reset Progress",
+    "resetConfirm": "Are you sure you want to reset all progress?",
+    "resetSuccess": "Progress reset"
+  },
+  "errors": {
+    "invalidInput": "Invalid input",
+    "requiredField": "This field is required",
+    "saveFailed": "Save failed",
+    "loadFailed": "Load failed",
+    "tryAgainLater": "Try again later"
+  },
+  "keyboard": {
+    "shortcuts": "Keyboard Shortcuts",
+    "number": "1-9: Select factor",
+    "enter": "Enter: Submit",
+    "escape": "Esc: Cancel",
+    "h": "H: Hint"
+  }
+}

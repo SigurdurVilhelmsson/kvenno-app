@@ -1,0 +1,108 @@
+{
+  "common": {
+    "start": "Rozpocznij",
+    "continue": "Kontynuuj",
+    "next": "Następny",
+    "previous": "Poprzedni",
+    "submit": "Zatwierdź",
+    "cancel": "Anuluj",
+    "close": "Zamknij",
+    "reset": "Resetuj",
+    "save": "Zapisz",
+    "back": "Wstecz",
+    "hint": "Wskazówka",
+    "skip": "Pomiń",
+    "retry": "Spróbuj ponownie",
+    "correct": "Prawidłowo!",
+    "incorrect": "Nieprawidłowo",
+    "excellent": "Doskonale!",
+    "good": "Dobrze!",
+    "tryAgain": "Spróbuj ponownie"
+  },
+  "mainMenu": {
+    "title": "Gry Chemiczne",
+    "subtitle": "Kvennaskólinn",
+    "selectLevel": "Wybierz poziom",
+    "continueGame": "Kontynuuj",
+    "newGame": "Nowa gra",
+    "statistics": "Statystyki",
+    "settings": "Ustawienia",
+    "help": "Pomoc"
+  },
+  "levels": {
+    "level0": {
+      "name": "Swobodna praktyka",
+      "description": "Ćwicz bez ograniczeń"
+    },
+    "level1": {
+      "name": "Zaawansowany",
+      "description": "Pełna samodzielność w rozwiązywaniu"
+    },
+    "level2": {
+      "name": "Średniozaawansowany",
+      "description": "Przewiduj następny krok"
+    },
+    "level3": {
+      "name": "Początkujący",
+      "description": "Z przewodnikiem i wsparciem"
+    }
+  },
+  "progress": {
+    "problemsCompleted": "Ukończone zadania",
+    "accuracy": "Dokładność",
+    "timeSpent": "Czas spędzony",
+    "mastered": "Opanowano",
+    "notMastered": "Nie opanowano",
+    "questionsAnswered": "Odpowiedziane pytania",
+    "questionsCorrect": "Prawidłowe pytania",
+    "explanationAverage": "Średnia wyjaśnień",
+    "predictionAccuracy": "Dokładność przewidywania",
+    "answerAccuracy": "Dokładność odpowiedzi",
+    "compositeScore": "Wynik złożony"
+  },
+  "feedback": {
+    "success": "Dobrze wykonane!",
+    "error": "Wystąpił błąd",
+    "warning": "Proszę przejrzeć",
+    "info": "Wskazówka",
+    "progressSaved": "Postęp zapisany",
+    "levelCompleted": "Ukończyłeś ten poziom!",
+    "gameCompleted": "Gratulacje! Ukończyłeś grę!"
+  },
+  "accessibility": {
+    "menuTitle": "Opcje dostępności",
+    "highContrast": "Wysoki kontrast",
+    "textSize": "Rozmiar tekstu",
+    "textSizeSmall": "Mały",
+    "textSizeMedium": "Średni",
+    "textSizeLarge": "Duży",
+    "reducedMotion": "Zmniejsz ruch",
+    "keyboardShortcuts": "Skróty klawiszowe",
+    "skipToContent": "Przejdź do treści",
+    "screenReaderAnnouncement": "Ogłoszenie czytnika ekranu"
+  },
+  "stats": {
+    "title": "Statystyki",
+    "overall": "Ogólne",
+    "byLevel": "Według poziomu",
+    "exportData": "Eksportuj dane",
+    "exportSuccess": "Dane wyeksportowane",
+    "resetProgress": "Resetuj postęp",
+    "resetConfirm": "Czy na pewno chcesz zresetować cały postęp?",
+    "resetSuccess": "Postęp zresetowany"
+  },
+  "errors": {
+    "invalidInput": "Nieprawidłowe dane wejściowe",
+    "requiredField": "To pole jest wymagane",
+    "saveFailed": "Zapis nie powiódł się",
+    "loadFailed": "Ładowanie nie powiodło się",
+    "tryAgainLater": "Spróbuj ponownie później"
+  },
+  "keyboard": {
+    "shortcuts": "Skróty klawiszowe",
+    "number": "1-9: Wybierz współczynnik",
+    "enter": "Enter: Zatwierdź",
+    "escape": "Esc: Anuluj",
+    "h": "H: Wskazówka"
+  }
+}

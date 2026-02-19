@@ -1,0 +1,30 @@
+{
+  "name": "@kvenno/dimensional-analysis",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dimensional Analysis Game - Level 1 Chemistry (1-ár)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && mv ../../../../dist/1-ar/games/index.html ../../../../dist/1-ar/games/dimensional-analysis.html",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@kvenno/shared": "workspace:*",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.3.3",
+    "vite": "^6.4.1",
+    "vite-plugin-singlefile": "^2.0.1"
+  }
+}

@@ -1,0 +1,278 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Accessibility Features */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #f36b22;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Focus visible for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid #f36b22;
+  outline-offset: 2px;
+}
+
+/* Text Size Options */
+.text-small {
+  font-size: 14px;
+}
+
+.text-medium {
+  font-size: 16px;
+}
+
+.text-large {
+  font-size: 18px;
+}
+
+/* High Contrast Mode */
+.high-contrast {
+  --bg-primary: #000000;
+  --bg-secondary: #ffffff;
+  --text-primary: #ffffff;
+  --text-secondary: #000000;
+  --border-color: #ffff00;
+  --focus-color: #ffff00;
+}
+
+.high-contrast body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.high-contrast .bg-white {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+.high-contrast .bg-gray-50,
+.high-contrast .bg-gray-100 {
+  background-color: #2a2a2a !important;
+  color: #ffffff !important;
+}
+
+.high-contrast .text-gray-600,
+.high-contrast .text-gray-700,
+.high-contrast .text-gray-800 {
+  color: #e0e0e0 !important;
+}
+
+.high-contrast .border-gray-300 {
+  border-color: var(--border-color) !important;
+}
+
+.high-contrast button:focus,
+.high-contrast input:focus,
+.high-contrast select:focus {
+  outline: 3px solid var(--focus-color) !important;
+}
+
+/* Reduced Motion */
+.reduced-motion * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* Kvennaskólinn Brand Colors */
+.bg-primary-orange {
+  background-color: #f36b22;
+}
+
+.bg-dark-orange {
+  background-color: #d95a1a;
+}
+
+.border-primary-orange {
+  border-color: #f36b22;
+}
+
+.text-primary-orange {
+  color: #f36b22;
+}
+
+.hover-orange:hover {
+  background-color: #f36b22;
+}
+
+/* Beaker Visualizations */
+.beaker-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.beaker {
+  position: relative;
+  display: inline-block;
+}
+
+/* Beaker Animations */
+@keyframes pour {
+  0% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes mix {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes dissolve {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.pour-animation {
+  animation: pour 2s ease-in-out;
+}
+
+.mix-animation {
+  animation: mix 2s ease-in-out;
+}
+
+.dissolve-animation {
+  animation: dissolve 2s ease-in-out;
+}
+
+/* Streak flame animation */
+.streak-flame {
+  display: inline-block;
+  animation: flicker 1s ease-in-out infinite;
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.9;
+  }
+}
+
+/* Timer warning pulse */
+.timer-warning {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Input validation styles */
+.input-error {
+  border-color: #ef4444 !important;
+  background-color: #fee2e2;
+}
+
+.error-message {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+/* Step-by-step solution styles */
+.solution-step {
+  background: #f3f4f6;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border-left: 4px solid #f36b22;
+  border-radius: 0.5rem;
+}
+
+.solution-step h4 {
+  color: #f36b22;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+/* Formula reference card */
+.formula-card {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background: white;
+  border: 2px solid #f36b22;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-width: 300px;
+}
+
+@media (max-width: 768px) {
+  .formula-card {
+    position: relative;
+    top: 0;
+    right: 0;
+    margin: 1rem auto;
+  }
+}
+
+/* Remove spinner from number inputs */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}

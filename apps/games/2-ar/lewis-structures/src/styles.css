@@ -1,0 +1,214 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Accessibility */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #f36b22;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+*:focus-visible {
+  outline: 2px solid #f36b22;
+  outline-offset: 2px;
+}
+
+/* Atom styles for Lewis structures */
+.atom {
+  @apply relative inline-flex items-center justify-center;
+  @apply w-16 h-16 rounded-full border-4 font-bold text-xl;
+}
+
+.atom.central {
+  @apply border-blue-500 bg-blue-100 text-blue-800;
+}
+
+.atom.surrounding {
+  @apply border-green-500 bg-green-100 text-green-800;
+}
+
+.atom.hydrogen {
+  @apply w-10 h-10 border-gray-400 bg-gray-100 text-gray-700 text-sm;
+}
+
+/* Electron dot positions */
+.electron-dot {
+  @apply absolute w-2 h-2 rounded-full bg-current;
+}
+
+.electron-dot.top { @apply -top-1 left-1/2 -translate-x-1/2; }
+.electron-dot.bottom { @apply -bottom-1 left-1/2 -translate-x-1/2; }
+.electron-dot.left { @apply top-1/2 -left-1 -translate-y-1/2; }
+.electron-dot.right { @apply top-1/2 -right-1 -translate-y-1/2; }
+
+.electron-dot.top-left { @apply -top-0.5 -left-0.5; }
+.electron-dot.top-right { @apply -top-0.5 -right-0.5; }
+.electron-dot.bottom-left { @apply -bottom-0.5 -left-0.5; }
+.electron-dot.bottom-right { @apply -bottom-0.5 -right-0.5; }
+
+/* Electron pair (lone pair) */
+.lone-pair {
+  @apply absolute flex gap-0.5;
+}
+
+.lone-pair.horizontal {
+  @apply flex-row;
+}
+
+.lone-pair.vertical {
+  @apply flex-col;
+}
+
+/* Bond line styles */
+.bond-line {
+  @apply absolute bg-gray-800;
+}
+
+.bond-line.single {
+  height: 3px;
+}
+
+.bond-line.double {
+  height: 8px;
+  background: linear-gradient(to bottom,
+    #1f2937 0%, #1f2937 30%,
+    transparent 30%, transparent 70%,
+    #1f2937 70%, #1f2937 100%);
+}
+
+.bond-line.triple {
+  height: 12px;
+  background: linear-gradient(to bottom,
+    #1f2937 0%, #1f2937 20%,
+    transparent 20%, transparent 40%,
+    #1f2937 40%, #1f2937 60%,
+    transparent 60%, transparent 80%,
+    #1f2937 80%, #1f2937 100%);
+}
+
+/* Lewis structure container */
+.lewis-container {
+  @apply relative bg-white rounded-xl p-8 border-2 border-gray-200;
+  min-height: 300px;
+}
+
+/* Valence electron counter */
+.valence-counter {
+  @apply flex items-center gap-2 p-3 rounded-lg bg-gray-50 border border-gray-200;
+}
+
+.valence-dot {
+  @apply w-3 h-3 rounded-full bg-blue-500;
+}
+
+.valence-dot.used {
+  @apply bg-gray-300;
+}
+
+/* Periodic table mini */
+.periodic-mini {
+  @apply grid gap-1 text-xs;
+  grid-template-columns: repeat(18, 1fr);
+}
+
+.element-cell {
+  @apply p-1 text-center rounded border cursor-pointer transition-all;
+}
+
+.element-cell:hover {
+  @apply border-orange-400 bg-orange-50;
+}
+
+.element-cell.selected {
+  @apply border-orange-500 bg-orange-100 ring-2 ring-orange-200;
+}
+
+.element-cell.group-1 { @apply bg-red-50 border-red-200; }
+.element-cell.group-2 { @apply bg-orange-50 border-orange-200; }
+.element-cell.group-13 { @apply bg-yellow-50 border-yellow-200; }
+.element-cell.group-14 { @apply bg-green-50 border-green-200; }
+.element-cell.group-15 { @apply bg-teal-50 border-teal-200; }
+.element-cell.group-16 { @apply bg-blue-50 border-blue-200; }
+.element-cell.group-17 { @apply bg-purple-50 border-purple-200; }
+.element-cell.group-18 { @apply bg-gray-50 border-gray-200; }
+
+/* Formal charge badge */
+.formal-charge {
+  @apply absolute -top-2 -right-2 w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center;
+}
+
+.formal-charge.positive {
+  @apply bg-red-500 text-white;
+}
+
+.formal-charge.negative {
+  @apply bg-blue-500 text-white;
+}
+
+/* Interactive structure builder */
+.structure-builder {
+  @apply relative bg-gray-50 rounded-xl p-4 min-h-64;
+}
+
+.drop-zone {
+  @apply border-2 border-dashed border-gray-300 rounded-lg p-4 text-center text-gray-500;
+}
+
+.drop-zone.active {
+  @apply border-orange-400 bg-orange-50;
+}
+
+/* Animations */
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.7; }
+}
+
+@keyframes draw-bond {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 1s ease-in-out infinite;
+}
+
+.animate-draw-bond {
+  animation: draw-bond 0.3s ease-out forwards;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Number input styling */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}

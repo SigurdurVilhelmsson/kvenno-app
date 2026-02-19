@@ -1,0 +1,507 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Accessibility Features */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #f36b22;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Focus visible for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid #f36b22;
+  outline-offset: 2px;
+}
+
+/* Text Size Options */
+.text-small {
+  font-size: 14px;
+}
+
+.text-medium {
+  font-size: 16px;
+}
+
+.text-large {
+  font-size: 18px;
+}
+
+/* High Contrast Mode */
+.high-contrast {
+  --bg-primary: #000000;
+  --bg-secondary: #ffffff;
+  --text-primary: #ffffff;
+  --text-secondary: #000000;
+  --border-color: #ffff00;
+  --focus-color: #ffff00;
+}
+
+.high-contrast body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.high-contrast .bg-white {
+  background-color: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+.high-contrast .bg-gray-50,
+.high-contrast .bg-gray-100 {
+  background-color: #2a2a2a !important;
+  color: #ffffff !important;
+}
+
+.high-contrast .text-gray-600,
+.high-contrast .text-gray-700,
+.high-contrast .text-gray-800 {
+  color: #e0e0e0 !important;
+}
+
+.high-contrast .border-gray-300 {
+  border-color: var(--border-color) !important;
+}
+
+.high-contrast button:focus,
+.high-contrast input:focus,
+.high-contrast select:focus {
+  outline: 3px solid var(--focus-color) !important;
+}
+
+/* Reduced Motion */
+.reduced-motion * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* Kvennaskólinn Brand Colors */
+.bg-primary-orange {
+  background-color: #f36b22;
+}
+
+.bg-dark-orange {
+  background-color: #d95a1a;
+}
+
+.border-primary-orange {
+  border-color: #f36b22;
+}
+
+.text-primary-orange {
+  color: #f36b22;
+}
+
+.hover-orange:hover {
+  background-color: #f36b22;
+}
+
+/* ==================== EQUILIBRIUM SHIFTER STYLES ==================== */
+
+/* Kvenno Brand Colors */
+:root {
+  --kvenno-orange: #f36b22;
+  --kvenno-orange-dark: #d95a1a;
+}
+
+/* Equilibrium Arrow Styles */
+.equilibrium-arrows {
+  font-size: 3rem;
+  transition: all 0.5s ease;
+  display: inline-block;
+}
+
+.equilibrium-arrows.shift-right {
+  color: #22c55e;
+  transform: scale(1.2);
+  animation: pulse-right 0.6s ease-in-out;
+}
+
+.equilibrium-arrows.shift-left {
+  color: #22c55e;
+  transform: scale(1.2) scaleX(-1);
+  animation: pulse-left 0.6s ease-in-out;
+}
+
+.equilibrium-arrows.no-shift {
+  color: #eab308;
+  animation: shake 0.5s ease;
+}
+
+/* Molecule Container */
+.molecule-container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  padding: 20px;
+  border-radius: 12px;
+  transition: all 0.5s ease;
+}
+
+.molecule {
+  font-size: 2rem;
+  transition: all 0.3s ease;
+  animation: float 2s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.reactants-side {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+}
+
+.products-side {
+  background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+}
+
+.reactants-side.glowing {
+  background: linear-gradient(135deg, #86efac 0%, #4ade80 100%);
+  box-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
+  animation: glow-pulse 1s ease-in-out;
+}
+
+.products-side.glowing {
+  background: linear-gradient(135deg, #86efac 0%, #4ade80 100%);
+  box-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
+  animation: glow-pulse 1s ease-in-out;
+}
+
+/* Thermodynamics Indicator */
+.thermo-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.thermo-indicator.exothermic {
+  background: linear-gradient(135deg, #fca5a5 0%, #f87171 100%);
+  color: #7f1d1d;
+}
+
+.thermo-indicator.endothermic {
+  background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%);
+  color: #1e3a8a;
+}
+
+/* Stress Buttons */
+.stress-btn {
+  background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+}
+
+.stress-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+.stress-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stress-btn.selected {
+  background: linear-gradient(135deg, #eab308 0%, #f59e0b 100%);
+  box-shadow: 0 0 20px rgba(234, 179, 8, 0.5);
+  animation: stress-pulse 1.5s ease-in-out infinite;
+}
+
+/* Prediction Buttons */
+.predict-btn {
+  flex: 1;
+  padding: 20px;
+  border-radius: 16px;
+  font-size: 1.25rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 3px solid transparent;
+}
+
+.predict-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+
+.predict-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.predict-btn.left {
+  background: linear-gradient(135deg, #93c5fd 0%, #60a5fa 100%);
+  color: #1e3a8a;
+}
+
+.predict-btn.none {
+  background: linear-gradient(135deg, #fde68a 0%, #fbbf24 100%);
+  color: #78350f;
+}
+
+.predict-btn.right {
+  background: linear-gradient(135deg, #86efac 0%, #4ade80 100%);
+  color: #14532d;
+}
+
+.predict-btn.correct {
+  border-color: #22c55e;
+  animation: pulse-success 0.6s ease-in-out;
+}
+
+.predict-btn.incorrect {
+  border-color: #ef4444;
+  animation: shake 0.4s ease-in-out;
+}
+
+/* Explanation Box */
+.explanation-box {
+  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+  border-left: 4px solid #6366f1;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+.explanation-box.correct {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  border-left-color: #22c55e;
+}
+
+.explanation-box.incorrect {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  border-left-color: #ef4444;
+}
+
+/* Animations */
+@keyframes pulse-success {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes pulse-right {
+  0%, 100% { transform: scale(1.2); }
+  50% { transform: scale(1.3); }
+}
+
+@keyframes pulse-left {
+  0%, 100% { transform: scale(1.2) scaleX(-1); }
+  50% { transform: scale(1.3) scaleX(-1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(-10px) rotate(-2deg); }
+  75% { transform: translateX(10px) rotate(2deg); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(74, 222, 128, 0.5); }
+  50% { box-shadow: 0 0 30px rgba(74, 222, 128, 0.8); }
+}
+
+@keyframes stress-pulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slide-in-right {
+  animation: slideInRight 0.5s ease-out;
+}
+
+/* Enhanced Molecule Animations */
+@keyframes molecule-increase {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes molecule-decrease {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.7); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.molecule-increasing {
+  animation: molecule-increase 1s ease-in-out;
+}
+
+.molecule-decreasing {
+  animation: molecule-decrease 1s ease-in-out;
+}
+
+/* Stressed Component Highlighting */
+.stressed-component {
+  position: relative;
+  animation: stress-pulse 1.5s ease-in-out infinite;
+}
+
+/* Celebration Effect */
+@keyframes celebrate {
+  0% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.1) rotate(-5deg); }
+  50% { transform: scale(1.2) rotate(5deg); }
+  75% { transform: scale(1.1) rotate(-5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.celebrate {
+  animation: celebrate 0.6s ease-in-out;
+}
+
+/* Mode selection cards */
+.mode-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.mode-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.mode-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s;
+}
+
+.mode-card:hover::before {
+  left: 100%;
+}
+
+/* Timer display */
+.timer-display {
+  font-size: 2rem;
+  font-weight: bold;
+  padding: 12px 24px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #92400e;
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+}
+
+.timer-display.warning {
+  background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+  color: #7f1d1d;
+  animation: timer-pulse 1s ease-in-out infinite;
+}
+
+@keyframes timer-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Score display */
+.score-display {
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);
+  color: #5b21b6;
+}
+
+/* Streak indicator */
+.streak-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #92400e;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.streak-indicator.active {
+  animation: celebrate 0.6s ease-in-out;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .equilibrium-arrows {
+    font-size: 2rem;
+  }
+
+  .molecule {
+    font-size: 1.5rem;
+  }
+
+  .molecule-container {
+    min-height: 80px;
+    padding: 15px;
+  }
+
+  .predict-btn {
+    padding: 15px;
+    font-size: 1rem;
+  }
+
+  .timer-display {
+    font-size: 1.5rem;
+    padding: 8px 16px;
+  }
+
+  .score-display {
+    font-size: 1.25rem;
+    padding: 6px 12px;
+  }
+}

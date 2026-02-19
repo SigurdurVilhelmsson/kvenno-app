@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+*:focus-visible {
+  outline: 2px solid #f36b22;
+  outline-offset: 2px;
+}
+
+/* Oxidation number color scale */
+.ox-neg-4 { @apply bg-blue-800 text-white; }
+.ox-neg-3 { @apply bg-blue-700 text-white; }
+.ox-neg-2 { @apply bg-blue-600 text-white; }
+.ox-neg-1 { @apply bg-blue-500 text-white; }
+.ox-zero { @apply bg-gray-200 text-gray-800; }
+.ox-pos-1 { @apply bg-red-400 text-white; }
+.ox-pos-2 { @apply bg-red-500 text-white; }
+.ox-pos-3 { @apply bg-red-600 text-white; }
+.ox-pos-4 { @apply bg-red-700 text-white; }
+.ox-pos-5 { @apply bg-red-800 text-white; }
+.ox-pos-6 { @apply bg-red-900 text-white; }
+.ox-pos-7 { @apply bg-purple-900 text-white; }
+
+/* Oxidation state badge */
+.ox-badge {
+  @apply inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm;
+}
+
+/* Electron flow arrows */
+.electron-arrow {
+  @apply text-yellow-500;
+}
+
+.electron-flow {
+  @apply border-2 border-dashed border-yellow-400 rounded-lg;
+}
+
+/* Half-reaction styling */
+.half-reaction {
+  @apply bg-gray-50 p-4 rounded-xl border-2;
+}
+
+.half-reaction.oxidation {
+  @apply border-blue-400 bg-blue-50;
+}
+
+.half-reaction.reduction {
+  @apply border-red-400 bg-red-50;
+}
+
+/* Chemical equation styling */
+.chemical-formula {
+  @apply font-mono text-lg;
+}
+
+.subscript {
+  @apply text-xs align-sub;
+}
+
+.superscript {
+  @apply text-xs align-super;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes electronMove {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(20px); }
+  100% { transform: translateX(40px); opacity: 0; }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-electron-move {
+  animation: electronMove 1s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}

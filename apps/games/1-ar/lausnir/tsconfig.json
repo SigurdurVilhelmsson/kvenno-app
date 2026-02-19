@@ -1,0 +1,9 @@
+{
+  "extends": "../../../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist"
+  },
+  "include": ["src", "../../../../packages/shared/**/*"],
+  "exclude": ["src/archive", "../../../../packages/shared/**/__tests__/**/*", "../../../../packages/shared/**/*.test.ts"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

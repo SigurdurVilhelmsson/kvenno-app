@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+*:focus-visible {
+  outline: 2px solid #f36b22;
+  outline-offset: 2px;
+}
+
+/* Carbon chain visualization */
+.carbon-chain {
+  @apply flex items-center gap-1;
+}
+
+.carbon-atom {
+  @apply w-8 h-8 rounded-full bg-gray-800 text-white font-bold text-sm flex items-center justify-center;
+}
+
+.hydrogen-atom {
+  @apply w-5 h-5 rounded-full bg-white border-2 border-gray-400 text-gray-600 font-bold text-xs flex items-center justify-center;
+}
+
+.carbon-bond {
+  @apply w-4 h-1 bg-gray-600;
+}
+
+.double-bond {
+  @apply relative;
+}
+
+.double-bond::before,
+.double-bond::after {
+  content: '';
+  @apply absolute w-4 h-0.5 bg-gray-600;
+}
+
+.double-bond::before {
+  top: -2px;
+}
+
+.double-bond::after {
+  bottom: -2px;
+}
+
+.triple-bond {
+  @apply relative;
+}
+
+.triple-bond::before,
+.triple-bond::after {
+  content: '';
+  @apply absolute w-4 h-0.5 bg-gray-600;
+}
+
+.triple-bond::before {
+  top: -3px;
+}
+
+.triple-bond::after {
+  bottom: -3px;
+}
+
+/* Functional group colors */
+.alkane { @apply bg-gray-200 text-gray-800; }
+.alkene { @apply bg-green-200 text-green-800; }
+.alkyne { @apply bg-purple-200 text-purple-800; }
+.alcohol { @apply bg-blue-200 text-blue-800; }
+.aldehyde { @apply bg-amber-200 text-amber-800; }
+.ketone { @apply bg-orange-200 text-orange-800; }
+.carboxylic { @apply bg-red-200 text-red-800; }
+
+/* Animations */
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-pulse-subtle {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Chemical formula styling */
+.chemical-name {
+  @apply font-mono text-lg tracking-wide;
+}
+
+.prefix {
+  @apply text-blue-600 font-bold;
+}
+
+.root {
+  @apply text-gray-800 font-bold;
+}
+
+.suffix {
+  @apply text-green-600 font-bold;
+}
+
+.locant {
+  @apply text-red-600 font-bold;
+}

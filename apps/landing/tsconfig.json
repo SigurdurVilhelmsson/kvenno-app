@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@kvenno/shared": ["../../packages/shared/index.ts"],
+      "@kvenno/shared/*": ["../../packages/shared/*"],
+      "@shared/*": ["../../packages/shared/*"]
+    }
+  },
+  "include": ["src", "../../packages/shared/**/*"],
+  "exclude": ["../../packages/shared/**/__tests__/**/*"]
+}

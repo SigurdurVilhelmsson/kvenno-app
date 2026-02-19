@@ -1,0 +1,187 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Accessibility */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #f36b22;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+*:focus-visible {
+  outline: 2px solid #f36b22;
+  outline-offset: 2px;
+}
+
+/* Rate graph styles */
+.rate-graph {
+  @apply relative bg-white rounded-xl p-4 border-2 border-gray-200;
+}
+
+.graph-axis {
+  @apply absolute bg-gray-800;
+}
+
+.graph-line {
+  @apply stroke-2 fill-none;
+}
+
+.graph-line.concentration {
+  @apply stroke-blue-500;
+}
+
+.graph-line.rate {
+  @apply stroke-orange-500;
+}
+
+/* Energy diagram for activation energy */
+.energy-profile {
+  @apply relative bg-gradient-to-b from-red-50 to-blue-50 rounded-xl p-4;
+}
+
+.energy-curve {
+  @apply stroke-2 fill-none stroke-gray-700;
+}
+
+.activation-energy {
+  @apply stroke-red-500;
+  stroke-dasharray: 5, 5;
+}
+
+/* Molecule visualization */
+.molecule {
+  @apply inline-flex items-center gap-1 font-mono;
+}
+
+.molecule-count {
+  @apply text-orange-600 font-bold;
+}
+
+.molecule-formula {
+  @apply text-gray-800;
+}
+
+/* Rate law builder */
+.rate-law-builder {
+  @apply bg-gray-50 p-4 rounded-xl border-2 border-gray-200;
+}
+
+.rate-term {
+  @apply inline-flex items-center bg-white px-3 py-2 rounded-lg border-2 border-gray-300 cursor-pointer transition-all;
+}
+
+.rate-term:hover {
+  @apply border-orange-400 shadow-md;
+}
+
+.rate-term.selected {
+  @apply border-orange-500 bg-orange-50 ring-2 ring-orange-200;
+}
+
+/* Order selector */
+.order-selector {
+  @apply flex gap-2;
+}
+
+.order-button {
+  @apply w-10 h-10 rounded-full border-2 border-gray-300 flex items-center justify-center font-bold transition-all;
+}
+
+.order-button:hover {
+  @apply border-orange-400 bg-orange-50;
+}
+
+.order-button.selected {
+  @apply border-orange-500 bg-orange-500 text-white;
+}
+
+/* Mechanism steps */
+.mechanism-step {
+  @apply bg-white p-4 rounded-xl border-2 border-gray-200 transition-all;
+}
+
+.mechanism-step:hover {
+  @apply border-orange-400 shadow-md;
+}
+
+.mechanism-step.elementary {
+  @apply border-blue-400 bg-blue-50;
+}
+
+.mechanism-step.rate-determining {
+  @apply border-red-400 bg-red-50;
+}
+
+/* Catalyst indicator */
+.catalyst {
+  @apply text-green-600 font-bold;
+}
+
+.intermediate {
+  @apply text-purple-600 italic;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes drawLine {
+  from { stroke-dashoffset: 1000; }
+  to { stroke-dashoffset: 0; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 1s infinite;
+}
+
+.animate-draw {
+  stroke-dasharray: 1000;
+  animation: drawLine 2s ease-out forwards;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Number input styling */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}

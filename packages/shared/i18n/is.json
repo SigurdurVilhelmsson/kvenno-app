@@ -1,0 +1,108 @@
+{
+  "common": {
+    "start": "Byrja",
+    "continue": "Halda áfram",
+    "next": "Næsta",
+    "previous": "Fyrri",
+    "submit": "Staðfesta",
+    "cancel": "Hætta við",
+    "close": "Loka",
+    "reset": "Endurstilla",
+    "save": "Vista",
+    "back": "Til baka",
+    "hint": "Vísbending",
+    "skip": "Sleppa",
+    "retry": "Reyna aftur",
+    "correct": "Rétt!",
+    "incorrect": "Rangt",
+    "excellent": "Frábært!",
+    "good": "Gott!",
+    "tryAgain": "Reyndu aftur"
+  },
+  "mainMenu": {
+    "title": "Efnafræðileikir",
+    "subtitle": "Kvennaskólinn",
+    "selectLevel": "Veldu stig",
+    "continueGame": "Halda áfram",
+    "newGame": "Nýr leikur",
+    "statistics": "Tölfræði",
+    "settings": "Stillingar",
+    "help": "Hjálp"
+  },
+  "levels": {
+    "level0": {
+      "name": "Frjáls æfing",
+      "description": "Æfðu án takmarkana"
+    },
+    "level1": {
+      "name": "Framhaldsstig",
+      "description": "Fullkomin sjálfstæði í úrlausnum"
+    },
+    "level2": {
+      "name": "Millistig",
+      "description": "Spá fyrir um næsta skref"
+    },
+    "level3": {
+      "name": "Byrjendur",
+      "description": "Með leiðsögn og stuðningi"
+    }
+  },
+  "progress": {
+    "problemsCompleted": "Verkefni kláruð",
+    "accuracy": "Nákvæmni",
+    "timeSpent": "Tími",
+    "mastered": "Náð tökum á",
+    "notMastered": "Ekki náð tökum á",
+    "questionsAnswered": "Spurningar svaraðar",
+    "questionsCorrect": "Réttar spurningar",
+    "explanationAverage": "Skýringar meðaltal",
+    "predictionAccuracy": "Spárnákvæmni",
+    "answerAccuracy": "Svararnákvæmni",
+    "compositeScore": "Heildarskor"
+  },
+  "feedback": {
+    "success": "Vel gert!",
+    "error": "Villa kom upp",
+    "warning": "Athugaðu betur",
+    "info": "Ábending",
+    "progressSaved": "Framvinda vistuð",
+    "levelCompleted": "Þú hefur lokið þessu stigi!",
+    "gameCompleted": "Til hamingju! Þú hefur lokið leiknum!"
+  },
+  "accessibility": {
+    "menuTitle": "Aðgengisval",
+    "highContrast": "Há birtuskil",
+    "textSize": "Leturstærð",
+    "textSizeSmall": "Lítil",
+    "textSizeMedium": "Miðlungs",
+    "textSizeLarge": "Stór",
+    "reducedMotion": "Minnka hreyfingu",
+    "keyboardShortcuts": "Flýtilyklar",
+    "skipToContent": "Fara beint í efni",
+    "screenReaderAnnouncement": "Tilkynning fyrir skjálesara"
+  },
+  "stats": {
+    "title": "Tölfræði",
+    "overall": "Heildar",
+    "byLevel": "Eftir stigum",
+    "exportData": "Sækja gögn",
+    "exportSuccess": "Gögn sótt",
+    "resetProgress": "Endurstilla framvindu",
+    "resetConfirm": "Ertu viss um að þú viljir endurstilla alla framvindu?",
+    "resetSuccess": "Framvinda endurstillt"
+  },
+  "errors": {
+    "invalidInput": "Ógilt inntak",
+    "requiredField": "Þessi reitur er nauðsynlegur",
+    "saveFailed": "Vistun mistókst",
+    "loadFailed": "Hleðsla mistókst",
+    "tryAgainLater": "Reyndu aftur síðar"
+  },
+  "keyboard": {
+    "shortcuts": "Flýtilyklar",
+    "number": "1-9: Velja stuðul",
+    "enter": "Enter: Staðfesta",
+    "escape": "Esc: Hætta við",
+    "h": "H: Vísbending"
+  }
+}

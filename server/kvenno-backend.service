@@ -1,0 +1,20 @@
+[Unit]
+Description=Kvenno Backend API Server
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/home/siggi/repos/LabReports/server
+Environment="NODE_ENV=production"
+Environment="HOME=/var/www"
+ EnvironmentFile=/home/siggi/repos/LabReports/server/.env
+ExecStart=/usr/bin/node index.js
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=kvenno-backend
+
+[Install]
+WantedBy=multi-user.target

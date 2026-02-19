@@ -1,0 +1,6 @@
+packages:
+  - 'packages/*'
+  - 'apps/landing'
+  - 'apps/lab-reports'
+  - 'apps/games/**'
+  - 'server'

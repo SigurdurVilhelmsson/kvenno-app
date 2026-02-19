@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Accessibility Features */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #f36b22;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+*:focus-visible {
+  outline: 2px solid #f36b22;
+  outline-offset: 2px;
+}
+
+/* IMF Type Badges */
+.imf-london {
+  @apply bg-purple-100 text-purple-800 border-purple-300;
+}
+
+.imf-dipole {
+  @apply bg-blue-100 text-blue-800 border-blue-300;
+}
+
+.imf-hydrogen {
+  @apply bg-red-100 text-red-800 border-red-300;
+}
+
+.imf-ion-dipole {
+  @apply bg-orange-100 text-orange-800 border-orange-300;
+}
+
+/* Molecule Cards */
+.molecule-card {
+  @apply bg-white border-2 rounded-xl p-4 transition-all duration-200;
+}
+
+.molecule-card:hover {
+  @apply shadow-lg;
+}
+
+.molecule-card.selected {
+  @apply ring-4 ring-indigo-400 ring-opacity-50;
+}
+
+/* Partial Charge Indicators */
+.delta-positive {
+  @apply text-blue-600 font-bold text-xs;
+}
+
+.delta-negative {
+  @apply text-red-600 font-bold text-xs;
+}
+
+/* H-bond Visualization */
+.h-bond-donor {
+  @apply bg-red-200 border-red-400;
+}
+
+.h-bond-acceptor {
+  @apply bg-blue-200 border-blue-400;
+}
+
+.h-bond-line {
+  @apply border-dashed border-2 border-red-400;
+}
+
+/* Ranking Area */
+.ranking-slot {
+  @apply border-2 border-dashed border-gray-300 rounded-xl p-3 min-h-16 transition-all;
+}
+
+.ranking-slot.active {
+  @apply border-indigo-400 bg-indigo-50;
+}
+
+.ranking-slot.filled {
+  @apply border-solid border-gray-400 bg-white;
+}
+
+/* Property Bars */
+.property-bar {
+  @apply h-4 rounded-full bg-gradient-to-r;
+}
+
+.property-bar.bp {
+  @apply from-blue-300 to-red-400;
+}
+
+.property-bar.viscosity {
+  @apply from-green-300 to-purple-400;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 5px currentColor; }
+  50% { box-shadow: 0 0 20px currentColor; }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-bounce-slow {
+  animation: bounce 2s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Comparison Table */
+.comparison-table {
+  @apply w-full text-sm;
+}
+
+.comparison-table th {
+  @apply bg-gray-100 p-2 text-left font-semibold;
+}
+
+.comparison-table td {
+  @apply border-t p-2;
+}
+
+/* Strength Indicator */
+.strength-weak {
+  @apply text-yellow-600;
+}
+
+.strength-medium {
+  @apply text-orange-600;
+}
+
+.strength-strong {
+  @apply text-red-600;
+}

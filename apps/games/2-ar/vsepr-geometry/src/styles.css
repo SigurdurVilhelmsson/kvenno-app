@@ -1,0 +1,249 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Accessibility Features */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #f36b22;
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Focus visible for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid #f36b22;
+  outline-offset: 2px;
+}
+
+/* Kvennaskólinn Brand Colors */
+.bg-primary-orange {
+  background-color: #f36b22;
+}
+
+.bg-dark-orange {
+  background-color: #d95a1a;
+}
+
+.border-primary-orange {
+  border-color: #f36b22;
+}
+
+.text-primary-orange {
+  color: #f36b22;
+}
+
+/* 3D Molecule Viewer */
+.molecule-3d-container {
+  @apply relative bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl overflow-hidden;
+  perspective: 1000px;
+}
+
+.molecule-3d {
+  @apply relative w-full h-64 md:h-80;
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease-out;
+}
+
+.atom-sphere {
+  @apply absolute rounded-full shadow-lg;
+  transform-style: preserve-3d;
+}
+
+.bond-cylinder {
+  @apply absolute bg-gradient-to-r from-gray-400 to-gray-500;
+  transform-origin: left center;
+}
+
+.lone-pair {
+  @apply absolute;
+}
+
+.lone-pair-dot {
+  @apply w-2 h-2 bg-yellow-400 rounded-full shadow-md;
+}
+
+/* Geometry Cards */
+.geometry-card {
+  @apply bg-white border-2 border-gray-200 rounded-xl p-4 cursor-pointer transition-all duration-200;
+}
+
+.geometry-card:hover {
+  @apply shadow-lg border-teal-400 scale-105;
+}
+
+.geometry-card.selected {
+  @apply ring-4 ring-teal-400 ring-opacity-50 border-teal-500;
+}
+
+.geometry-card.correct {
+  @apply bg-green-50 border-green-500;
+}
+
+.geometry-card.incorrect {
+  @apply bg-red-50 border-red-500;
+}
+
+/* Bond Angle Display */
+.bond-angle {
+  @apply absolute text-xs font-mono font-bold bg-white/90 px-1 rounded;
+}
+
+/* Electron Domain Visualization */
+.electron-domain {
+  @apply absolute flex items-center justify-center;
+}
+
+.bonding-pair {
+  @apply w-8 h-3 bg-blue-500 rounded-full;
+}
+
+.lone-pair-domain {
+  @apply w-6 h-6 bg-yellow-400 rounded-full opacity-60;
+}
+
+/* Dipole Arrows */
+.dipole-arrow {
+  @apply absolute;
+}
+
+.dipole-arrow::after {
+  content: '';
+  @apply absolute w-0 h-0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 8px solid currentColor;
+}
+
+/* Polarity Indicators */
+.delta-plus {
+  @apply text-blue-600 font-bold text-xs;
+}
+
+.delta-minus {
+  @apply text-red-600 font-bold text-xs;
+}
+
+/* Animations */
+@keyframes rotate3d {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 20px currentColor;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGreen {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.animate-rotate-slow {
+  animation: rotate3d 20s linear infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-pulse-green {
+  animation: pulseGreen 1s infinite;
+}
+
+.animate-shake {
+  animation: shake 0.3s ease-in-out;
+}
+
+/* Hybridization Labels */
+.hybridization-badge {
+  @apply inline-block px-2 py-1 rounded-full text-xs font-bold;
+}
+
+.hybridization-sp {
+  @apply bg-purple-100 text-purple-800;
+}
+
+.hybridization-sp2 {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.hybridization-sp3 {
+  @apply bg-green-100 text-green-800;
+}
+
+.hybridization-sp3d {
+  @apply bg-orange-100 text-orange-800;
+}
+
+.hybridization-sp3d2 {
+  @apply bg-red-100 text-red-800;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Remove spinner from number inputs */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
