@@ -374,7 +374,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         {/* Interactive Visualizations */}
-        <div className="mt-6 bg-white rounded-xl p-4 shadow">
+        <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
           <h3 className="font-bold text-gray-700 mb-4">Gagnvirk hermun</h3>
 
           {/* Shared Controls */}
@@ -454,7 +454,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         {/* Visual concept helper */}
-        <div className="mt-6 bg-white rounded-xl p-4 shadow">
+        <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
           <h3 className="font-bold text-gray-700 mb-3">Þættir sem hafa áhrif á hvarfhraða</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
             <div className="bg-blue-50 p-3 rounded-lg text-center">

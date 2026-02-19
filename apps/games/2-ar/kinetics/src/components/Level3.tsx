@@ -375,7 +375,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         {/* Legend */}
-        <div className="mt-6 bg-white rounded-xl p-4 shadow">
+        <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
           <h3 className="font-bold text-gray-700 mb-3">Lykilhugtök</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
             <div className="flex items-center gap-2">

@@ -700,7 +700,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                             }))
                           }
                           placeholder="0.000"
-                          className={`w-full p-3 text-xl border-2 rounded-lg focus:outline-none text-center font-bold ${
+                          className={`w-full p-3 text-xl border-2 rounded-lg focus:outline-hidden text-center font-bold ${
                             gameState.inputError ? 'border-red-500' : ''
                           }`}
                           style={{

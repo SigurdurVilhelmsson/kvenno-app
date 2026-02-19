@@ -713,7 +713,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         {/* Reference table */}
-        <div className="mt-6 bg-white rounded-xl p-4 shadow">
+        <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
           <h3 className="font-bold text-gray-700 mb-3">Lögunartafla</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">

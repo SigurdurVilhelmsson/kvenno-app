@@ -201,7 +201,7 @@ export function LewisGuidedMode({
       </div>
 
       {/* Electron tracker */}
-      <div className="bg-white rounded-lg p-4 mb-4 shadow-sm">
+      <div className="bg-white rounded-lg p-4 mb-4 shadow-xs">
         <div className="flex justify-between items-center">
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-600">{totalElectrons}</div>
@@ -223,7 +223,7 @@ export function LewisGuidedMode({
       </div>
 
       {/* Step content */}
-      <div className="bg-white rounded-lg p-5 mb-4 shadow-sm">
+      <div className="bg-white rounded-lg p-5 mb-4 shadow-xs">
         <div className="flex items-center gap-2 mb-3">
           <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold ${
             showFeedback && isCorrect ? 'bg-green-500' : 'bg-blue-500'
@@ -264,7 +264,7 @@ export function LewisGuidedMode({
                 type="number"
                 value={userValue ?? ''}
                 onChange={(e) => setUserValue(parseInt(e.target.value) || null)}
-                className="flex-1 p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-xl font-mono text-center"
+                className="flex-1 p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-hidden text-xl font-mono text-center"
                 placeholder="?"
               />
               <span className="text-gray-600">rafeindir</span>
@@ -361,7 +361,7 @@ export function LewisGuidedMode({
                 type="number"
                 value={userValue ?? ''}
                 onChange={(e) => setUserValue(parseInt(e.target.value) || null)}
-                className="flex-1 p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-xl font-mono text-center max-w-24"
+                className="flex-1 p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-hidden text-xl font-mono text-center max-w-24"
                 placeholder="?"
                 min="0"
                 max="6"

@@ -823,7 +823,7 @@ function App() {
         </header>
 
         {/* Accessibility Menu */}
-        <div className="bg-white rounded-lg shadow-sm p-4 mb-6 max-w-4xl mx-auto">
+        <div className="bg-white rounded-lg shadow-xs p-4 mb-6 max-w-4xl mx-auto">
           <h2 className="text-sm font-semibold text-gray-700 mb-3">
             {t('accessibility.menuTitle', 'Aðgengisval')}
           </h2>

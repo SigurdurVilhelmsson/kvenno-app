@@ -363,7 +363,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   step="0.1"
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
-                  className="flex-1 p-3 border-2 border-gray-300 rounded-xl focus:border-purple-500 focus:outline-none text-lg font-mono"
+                  className="flex-1 p-3 border-2 border-gray-300 rounded-xl focus:border-purple-500 focus:outline-hidden text-lg font-mono"
                   placeholder="Sláðu inn svar..."
                   disabled={isCorrect !== null}
                 />
@@ -435,7 +435,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         {/* Key concepts reminder */}
-        <div className="mt-6 bg-white rounded-xl p-4 shadow">
+        <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
           <h3 className="font-bold text-gray-700 mb-2">Lykilatriði</h3>
           <ul className="text-sm text-gray-600 space-y-1">
             <li>• Frumefni í stöðluðu ástandi hafa ΔH°f = 0</li>

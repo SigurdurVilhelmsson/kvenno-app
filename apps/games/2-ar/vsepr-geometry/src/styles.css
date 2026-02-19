@@ -1,8 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "../../../../../packages/shared/styles/theme.css";
 
 * {
   font-family: 'Inter', sans-serif;
@@ -87,7 +86,7 @@
 }
 
 .geometry-card.selected {
-  @apply ring-4 ring-teal-400 ring-opacity-50 border-teal-500;
+  @apply ring-4 ring-teal-400/50 border-teal-500;
 }
 
 .geometry-card.correct {

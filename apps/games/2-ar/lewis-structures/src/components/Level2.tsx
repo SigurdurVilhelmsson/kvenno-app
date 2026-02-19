@@ -1109,7 +1109,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         )}
 
         {/* Quick reference */}
-        <div className="mt-6 bg-white rounded-xl p-4 shadow">
+        <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
           <h3 className="font-bold text-gray-700 mb-2">Skref til að teikna Lewis-formúlu:</h3>
           <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
             <li className={currentStep >= 0 ? 'text-green-600 font-medium' : ''}>Veldu miðatóm (oftast það sem hefur flest tengsl)</li>
@@ -1121,7 +1121,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Octet exceptions reference - show when relevant */}
         {challenge.correctStructure.octetException && challenge.correctStructure.octetException !== 'none' && (
-          <div className="mt-4 bg-gradient-to-r from-orange-50 to-purple-50 rounded-xl p-4 shadow border border-orange-200">
+          <div className="mt-4 bg-gradient-to-r from-orange-50 to-purple-50 rounded-xl p-4 shadow-sm border border-orange-200">
             <h3 className="font-bold text-gray-700 mb-3 flex items-center gap-2">
               <span className="text-xl">⚠️</span>
               Undantekningar frá áttureglunni

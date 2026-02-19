@@ -768,7 +768,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         {/* Quick reference with IMF strength scale */}
-        <div className="mt-6 bg-white rounded-xl p-4 shadow">
+        <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
           <h3 className="font-bold text-gray-700 mb-2">Flýtileiðbeiningar</h3>
           <div className="grid grid-cols-3 gap-2 text-xs mb-3">
             <div className="bg-purple-50 p-2 rounded text-center">

@@ -659,7 +659,7 @@ function App() {
                       value={userAnswer}
                       onChange={(e) => setUserAnswer(e.target.value)}
                       placeholder={gameMode === 'practice' && gameStep === 'select-law' ? 'Veldu lögmál fyrst...' : 'Sláðu inn svar...'}
-                      className="flex-1 px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-orange-500 focus:outline-none text-lg disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      className="flex-1 px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-orange-500 focus:outline-hidden text-lg disabled:bg-gray-100 disabled:cursor-not-allowed"
                       onKeyPress={(e) => e.key === 'Enter' && gameStep === 'solve' && checkUserAnswer()}
                       disabled={gameMode === 'practice' && gameStep === 'select-law'}
                     />

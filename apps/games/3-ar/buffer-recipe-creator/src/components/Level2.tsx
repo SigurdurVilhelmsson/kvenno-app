@@ -444,7 +444,7 @@ export default function Level2({
                   value={ratioInput}
                   onChange={(e) => setRatioInput(e.target.value)}
                   placeholder="t.d. 1.58"
-                  className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none"
+                  className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-hidden"
                 />
               </div>
 
@@ -494,7 +494,7 @@ export default function Level2({
                     value={acidMassInput}
                     onChange={(e) => setAcidMassInput(e.target.value)}
                     placeholder={`${problem.acidName}`}
-                    className="w-full p-3 border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-none"
+                    className="w-full p-3 border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-hidden"
                   />
                 </div>
                 <div>
@@ -507,7 +507,7 @@ export default function Level2({
                     value={baseMassInput}
                     onChange={(e) => setBaseMassInput(e.target.value)}
                     placeholder={`${problem.baseName}`}
-                    className="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                    className="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-hidden"
                   />
                 </div>
               </div>

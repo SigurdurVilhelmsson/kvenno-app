@@ -567,7 +567,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                     value={userAnswer}
                     onChange={(e) => setUserAnswer(e.target.value)}
                     placeholder="Sláðu inn svar"
-                    className="flex-1 p-4 border-2 border-gray-300 rounded-xl font-mono text-xl focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-none transition-all"
+                    className="flex-1 p-4 border-2 border-gray-300 rounded-xl font-mono text-xl focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-hidden transition-all"
                   />
                   <div className="px-4 py-3 bg-green-100 text-green-800 rounded-xl font-bold text-lg">
                     {problem.targetUnit}
@@ -650,7 +650,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
 
       {/* Prediction modal */}
       {showPredictionPrompt && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full animate-slide-up">
             {/* Phase indicator */}
             <div className="flex justify-center gap-2 mb-4">
@@ -699,7 +699,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                     value={predictedUnit}
                     onChange={(e) => setPredictedUnit(e.target.value)}
                     placeholder="t.d. kg, m/s, osfrv."
-                    className="w-full p-4 border-2 border-gray-300 rounded-xl text-lg focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
+                    className="w-full p-4 border-2 border-gray-300 rounded-xl text-lg focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-hidden transition-all"
                     autoFocus
                   />
                 </div>

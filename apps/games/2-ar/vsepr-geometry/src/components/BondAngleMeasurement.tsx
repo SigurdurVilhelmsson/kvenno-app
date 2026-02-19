@@ -536,7 +536,7 @@ export function BondAngleMeasurement({
           <span className="text-gray-400">Einstætt par</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-4 h-4 rounded-sm bg-teal-400/30 border border-teal-400" />
+          <div className="w-4 h-4 rounded-xs bg-teal-400/30 border border-teal-400" />
           <span className="text-gray-400">Tengihorn</span>
         </div>
       </div>

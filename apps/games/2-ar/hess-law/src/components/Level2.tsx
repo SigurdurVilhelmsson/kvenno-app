@@ -172,7 +172,7 @@ function EquationBlock({
     <div
       onClick={onSelect}
       className={`p-4 rounded-xl border-3 cursor-pointer transition-all ${
-        isSelected ? 'ring-4 ring-orange-400 ring-opacity-50' : ''
+        isSelected ? 'ring-4 ring-orange-400/50' : ''
       } ${
         equation.isReversed ? 'bg-red-50 border-red-300' :
         equation.multiplier !== 1 ? 'bg-blue-50 border-blue-300' :

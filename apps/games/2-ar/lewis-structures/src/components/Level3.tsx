@@ -253,7 +253,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     const bgColor = charge > 0 ? 'bg-red-500' : 'bg-blue-500';
 
     return (
-      <div className={`absolute -top-2 -right-2 ${bgColor} text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-sm`}>
+      <div className={`absolute -top-2 -right-2 ${bgColor} text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-xs`}>
         {chargeText}
       </div>
     );
@@ -591,7 +591,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         {/* Reference card */}
-        <div className="mt-6 bg-white rounded-xl p-4 shadow">
+        <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
           <h3 className="font-bold text-gray-700 mb-3">Formhleðsluformúlan</h3>
           <div className="bg-purple-50 p-3 rounded-lg text-center font-mono mb-3">
             <strong>FC = V - (L + ½B)</strong>

@@ -421,7 +421,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                     value={userAnswer}
                     onChange={(e) => setUserAnswer(e.target.value)}
                     placeholder={(problem.type === 'derivation' && problem.scientificNotation) ? 't.d. 1.08e12' : 'Sláðu inn svar'}
-                    className="flex-1 p-4 border-2 border-gray-300 rounded-xl font-mono text-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-none transition-all"
+                    className="flex-1 p-4 border-2 border-gray-300 rounded-xl font-mono text-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden transition-all"
                   />
                   {problem.type !== 'reverse' && problem.type !== 'error_analysis' && 'targetUnit' in problem && problem.targetUnit && (
                     <div className="px-4 py-3 bg-green-100 text-green-800 rounded-xl font-bold text-lg">
@@ -440,7 +440,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                   value={explanation}
                   onChange={(e) => setExplanation(e.target.value)}
                   placeholder="T.d. 'Fyrst breytti ég X í Y með stuðlinum Z...'"
-                  className="w-full p-4 border-2 border-gray-300 rounded-xl h-28 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-none transition-all resize-none"
+                  className="w-full p-4 border-2 border-gray-300 rounded-xl h-28 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden transition-all resize-none"
                 />
                 <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
                   <span className="text-base">💡</span> Notaðu orð eins og "umbreyti", "stuðull", "eining" fyrir betri einkunn

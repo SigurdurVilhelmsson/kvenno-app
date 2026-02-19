@@ -361,7 +361,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
                   disabled={showResult}
-                  className="flex-1 p-4 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-none text-2xl font-mono text-center"
+                  className="flex-1 p-4 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-hidden text-2xl font-mono text-center"
                   placeholder="?"
                 />
                 <span className="text-gray-600 font-medium">rafeindir</span>
@@ -429,7 +429,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         {/* Valence electron reference */}
-        <div className="mt-6 bg-white rounded-xl p-4 shadow">
+        <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
           <h3 className="font-bold text-gray-700 mb-3">Gildisrafeindatafla</h3>
           <div className="grid grid-cols-4 md:grid-cols-8 gap-2 text-sm">
             {Object.entries(VALENCE_ELECTRONS).slice(0, 16).map(([symbol, valence]) => (

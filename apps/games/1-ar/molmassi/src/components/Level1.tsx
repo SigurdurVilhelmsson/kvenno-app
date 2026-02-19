@@ -157,7 +157,7 @@ function AtomCircle({ symbol, showLabel = true, onClick, isSelected = false, ani
       onClick={onClick}
     >
       <div
-        className={`atom-circle rounded-full border-2 flex items-center justify-center font-bold text-xs ${animateIn ? 'animate-bounce-in' : ''} ${isSelected ? 'ring-4 ring-primary ring-opacity-50 animate-pulse-soft' : ''}`}
+        className={`atom-circle rounded-full border-2 flex items-center justify-center font-bold text-xs ${animateIn ? 'animate-bounce-in' : ''} ${isSelected ? 'ring-4 ring-primary/50 animate-pulse-soft' : ''}`}
         style={{
           width: visual.size,
           height: visual.size,

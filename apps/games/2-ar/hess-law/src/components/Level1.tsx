@@ -334,7 +334,7 @@ function EnergyDiagram({
         )}
 
         {/* ΔH label */}
-        <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-white px-3 py-1 rounded-lg border-2 border-gray-300 shadow">
+        <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-white px-3 py-1 rounded-lg border-2 border-gray-300 shadow-sm">
           <span className={`font-bold text-lg ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}>
             ΔH = {effectiveDeltaH > 0 ? '+' : ''}{effectiveDeltaH} kJ
           </span>

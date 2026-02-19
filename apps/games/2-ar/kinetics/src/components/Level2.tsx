@@ -381,7 +381,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         {/* Method reminder */}
-        <div className="mt-6 bg-white rounded-xl p-4 shadow">
+        <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
           <h3 className="font-bold text-gray-700 mb-2">Aðferð til að finna röð:</h3>
           <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
             <li>Finndu tvær tilraunir þar sem aðeins EINN styrkur breytist</li>

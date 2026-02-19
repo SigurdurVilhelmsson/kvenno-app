@@ -449,7 +449,7 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-6">
       <div className="max-w-6xl mx-auto px-4">
         {/* Header */}
-        <div className="bg-white rounded-lg shadow p-4 mb-4">
+        <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
           <div className="flex justify-between items-center flex-wrap gap-4">
             <button
               onClick={() => setMode('menu')}
@@ -638,7 +638,7 @@ function App() {
                     step="0.1"
                     value={userDeltaG}
                     onChange={(e) => setUserDeltaG(e.target.value)}
-                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none"
+                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-hidden"
                     placeholder="t.d. -33.5"
                   />
                 </div>

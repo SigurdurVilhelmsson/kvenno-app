@@ -274,7 +274,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
             onClick={() => togglePath(path.id)}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all border-2 ${
               visiblePaths.includes(path.id)
-                ? 'bg-white shadow-sm'
+                ? 'bg-white shadow-xs'
                 : 'bg-gray-100 opacity-50'
             }`}
             style={{

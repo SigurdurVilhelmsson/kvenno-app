@@ -118,7 +118,7 @@ export function PeriodicTable({
   ];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 md:p-4">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 md:p-4">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[95vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="bg-primary text-white p-3 md:p-4 flex justify-between items-center shrink-0">
@@ -143,7 +143,7 @@ export function PeriodicTable({
               placeholder="Leita (nafn, tákn, atómnúmer)..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 min-w-[150px] px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-primary focus:outline-none text-sm"
+              className="flex-1 min-w-[150px] px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-primary focus:outline-hidden text-sm"
             />
 
             {/* View toggle */}

@@ -140,7 +140,7 @@ export function OxidationStateDisplay({
               <div
                 className={`${classes.badge} ${getOxidationColor(change.after)} ${getTextColor(change.after)}
                   rounded-full flex items-center justify-center font-bold shadow-lg
-                  ${animationPhase === 'complete' ? 'ring-2 ring-white ring-opacity-50' : ''}`}
+                  ${animationPhase === 'complete' ? 'ring-2 ring-white/50' : ''}`}
               >
                 {change.after > 0 ? `+${change.after}` : change.after}
               </div>

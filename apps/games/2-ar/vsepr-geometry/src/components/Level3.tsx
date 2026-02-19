@@ -417,7 +417,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Reference tables */}
         <div className="mt-6 grid md:grid-cols-2 gap-4">
-          <div className="bg-white rounded-xl p-4 shadow">
+          <div className="bg-white rounded-xl p-4 shadow-sm">
             <h3 className="font-bold text-gray-700 mb-3">🧬 Blendnitafla</h3>
             <table className="w-full text-sm">
               <thead>
@@ -437,7 +437,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </table>
           </div>
 
-          <div className="bg-white rounded-xl p-4 shadow">
+          <div className="bg-white rounded-xl p-4 shadow-sm">
             <h3 className="font-bold text-gray-700 mb-3">⚡ Skautun</h3>
             <div className="space-y-2 text-sm">
               <div className="bg-green-50 p-2 rounded">

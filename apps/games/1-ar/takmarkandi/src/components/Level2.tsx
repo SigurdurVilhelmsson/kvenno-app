@@ -868,7 +868,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       ? 'border-green-500 bg-green-50'
                       : 'border-red-500 bg-red-50'
                     : 'border-gray-300 focus:border-orange-500'
-                } outline-none`}
+                } outline-hidden`}
                 placeholder="Sláðu inn svar..."
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && input && !showFeedback) {

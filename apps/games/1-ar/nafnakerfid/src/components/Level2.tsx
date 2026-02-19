@@ -500,7 +500,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               value={userAnswer}
               onChange={(e) => setUserAnswer(e.target.value)}
               placeholder="Skrifaðu nafnið hér..."
-              className="w-full text-center text-2xl font-bold p-4 border-2 border-teal-300 rounded-xl focus:border-teal-500 focus:outline-none"
+              className="w-full text-center text-2xl font-bold p-4 border-2 border-teal-300 rounded-xl focus:border-teal-500 focus:outline-hidden"
               onKeyPress={(e) => e.key === 'Enter' && userAnswer && handleSubmitAnswer()}
               autoFocus
             />

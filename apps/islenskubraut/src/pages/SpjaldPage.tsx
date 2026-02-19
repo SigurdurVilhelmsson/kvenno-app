@@ -98,7 +98,7 @@ export function SpjaldPage() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 px-3 py-2 text-sm font-semibold rounded-lg transition-all ${
                 activeTab === tab.id
-                  ? 'bg-white text-gray-900 shadow-sm'
+                  ? 'bg-white text-gray-900 shadow-xs'
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
