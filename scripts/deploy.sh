@@ -36,7 +36,7 @@ echo "🚀 Deploying kvenno.app..."
 # Step 1: Deploy frontend
 echo ""
 echo "📄 Deploying frontend to $WEB_ROOT..."
-rsync -avz --delete $DRY_RUN \
+rsync -avz --delete ${DRY_RUN:+"$DRY_RUN"} \
   --exclude='.git' \
   --exclude='node_modules' \
   "$DIST_DIR/" "$SERVER:$WEB_ROOT/"
@@ -44,7 +44,7 @@ rsync -avz --delete $DRY_RUN \
 # Step 2: Deploy backend
 echo ""
 echo "⚙️  Deploying backend to $BACKEND_DIR..."
-rsync -avz $DRY_RUN \
+rsync -avz ${DRY_RUN:+"$DRY_RUN"} \
   --exclude='node_modules' \
   --exclude='.env' \
   "$SERVER_DIR/" "$SERVER:$BACKEND_DIR/"
@@ -53,7 +53,7 @@ rsync -avz $DRY_RUN \
 if [ -z "$DRY_RUN" ]; then
   echo ""
   echo "📦 Installing backend dependencies and restarting..."
-  ssh "$SERVER" "cd $BACKEND_DIR && npm install --production && sudo systemctl restart kvenno-server"
+  ssh "$SERVER" "cd $BACKEND_DIR && npm ci --omit=dev && sudo systemctl restart kvenno-server"
 
   echo ""
   echo "🔍 Setting permissions..."
