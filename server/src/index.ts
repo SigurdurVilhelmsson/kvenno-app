@@ -4,17 +4,27 @@
  * Compatible with Ubuntu 24.04 + nginx
  */
 
-import express from 'express';
+import express, { type Request, type Response, type NextFunction } from 'express';
 import cors from 'cors';
-import { IncomingForm } from 'formidable';
+import { IncomingForm, type File } from 'formidable';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 import { unlink, readFile, rename } from 'fs/promises';
 import path from 'path';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import { generatePdf } from './lib/islenskubraut-pdf.mjs';
-import { getCategoryById } from './lib/islenskubraut-data.mjs';
+import { generatePdf } from './lib/islenskubraut-pdf.js';
+import { getCategoryById } from './lib/islenskubraut-data.js';
+import type {
+  AnalyzeRequestBody,
+  Analyze2arRequestBody,
+  PdfQueryParams,
+  AnthropicResponse,
+  HealthResponse,
+  ErrorResponse,
+  PandocResult,
+  ProcessDocumentResponse,
+} from './types/index.js';
 
 const execFileAsync = promisify(execFile);
 const app = express();
@@ -33,7 +43,7 @@ app.use(helmet({
 }));
 
 // CORS configuration - localhost origins only in development
-const allowedOrigins = [
+const allowedOrigins: (string | undefined)[] = [
   'https://kvenno.app',
   'https://www.kvenno.app',
   process.env.FRONTEND_URL,
@@ -41,10 +51,10 @@ const allowedOrigins = [
 if (process.env.NODE_ENV !== 'production') {
   allowedOrigins.push('http://localhost:5173', 'http://localhost:5174', 'http://localhost:4173');
 }
-const filteredOrigins = allowedOrigins.filter(Boolean);
+const filteredOrigins = allowedOrigins.filter((o): o is string => Boolean(o));
 
 app.use(cors({
-  origin: (origin, callback) => {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
     // In production, reject requests without Origin header to prevent
     // abuse from curl, extensions, and non-browser clients
     if (!origin) {
@@ -93,14 +103,14 @@ app.use(express.json({ limit: '15mb' }));
 app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/health', (_req: Request, res: Response<HealthResponse>) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 /**
  * Check if pandoc is available
  */
-async function isPandocAvailable() {
+async function isPandocAvailable(): Promise<boolean> {
   try {
     await execFileAsync('pandoc', ['--version']);
     return true;
@@ -112,7 +122,7 @@ async function isPandocAvailable() {
 /**
  * Check if LibreOffice is available
  */
-async function isLibreOfficeAvailable() {
+async function isLibreOfficeAvailable(): Promise<boolean> {
   try {
     await execFileAsync('libreoffice', ['--version']);
     return true;
@@ -124,7 +134,7 @@ async function isLibreOfficeAvailable() {
 /**
  * Convert .docx to PDF using LibreOffice (headless mode)
  */
-async function convertDocxToPdf(docxPath) {
+async function convertDocxToPdf(docxPath: string): Promise<string> {
   const outputDir = path.dirname(docxPath);
   const baseName = path.basename(docxPath, '.docx');
 
@@ -139,7 +149,7 @@ async function convertDocxToPdf(docxPath) {
   });
 
   try {
-    const { stdout, stderr } = await execFileAsync(
+    const { stderr } = await execFileAsync(
       'libreoffice',
       ['--headless', '--convert-to', 'pdf', '--outdir', outputDir, docxPath],
       { timeout: 30000 }
@@ -174,7 +184,7 @@ async function convertDocxToPdf(docxPath) {
 
       console.log('[LibreOffice] Searching for PDF in:', outputDir);
       console.log('[LibreOffice] Possible names:', possibleNames);
-      console.log('[LibreOffice] Found files:', files.filter(f => f.endsWith('.pdf')));
+      console.log('[LibreOffice] Found files:', files.filter((f: string) => f.endsWith('.pdf')));
 
       for (const possibleName of possibleNames) {
         if (files.includes(possibleName)) {
@@ -186,16 +196,17 @@ async function convertDocxToPdf(docxPath) {
 
       throw new Error(`PDF not found after conversion. Expected one of: ${possibleNames.join(', ')}`);
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('LibreOffice conversion error:', error);
-    throw new Error(`Failed to convert DOCX to PDF: ${error.message}`);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    throw new Error(`Failed to convert DOCX to PDF: ${message}`);
   }
 }
 
 /**
  * Process .docx file using pandoc (for equation extraction)
  */
-async function processDocxWithPandoc(filePath) {
+async function processDocxWithPandoc(filePath: string): Promise<PandocResult> {
   try {
     const { stdout, stderr } = await execFileAsync(
       'pandoc',
@@ -209,11 +220,11 @@ async function processDocxWithPandoc(filePath) {
     const content = stdout;
 
     // Extract equations
-    const equations = [];
+    const equations: string[] = [];
     const inlineEquationPattern = /\$([^$]+)\$/g;
     const displayEquationPattern = /\$\$([^$]+)\$\$/g;
 
-    let match;
+    let match: RegExpExecArray | null;
     while ((match = displayEquationPattern.exec(content)) !== null) {
       equations.push(match[1].trim());
     }
@@ -228,16 +239,17 @@ async function processDocxWithPandoc(filePath) {
       format: 'markdown',
       equations,
     };
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Pandoc processing error:', error);
-    throw new Error(`Failed to process document: ${error.message}`);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    throw new Error(`Failed to process document: ${message}`);
   }
 }
 
 /**
  * Parse multipart form data
  */
-function parseForm(req) {
+function parseForm(req: Request): Promise<{ fields: Record<string, unknown>; files: Record<string, File | File[]> }> {
   return new Promise((resolve, reject) => {
     const form = new IncomingForm({
       maxFileSize: 10 * 1024 * 1024, // 10MB
@@ -250,7 +262,7 @@ function parseForm(req) {
         reject(err);
         return;
       }
-      resolve({ fields, files });
+      resolve({ fields: fields as Record<string, unknown>, files: files as Record<string, File | File[]> });
     });
   });
 }
@@ -259,9 +271,9 @@ function parseForm(req) {
  * API endpoint: Process .docx documents
  * Converts DOCX to PDF for consistent processing across all file types
  */
-app.post('/api/process-document', documentLimiter, async (req, res) => {
-  let docxPath = null;
-  let pdfPath = null;
+app.post('/api/process-document', documentLimiter, async (req: Request, res: Response<ProcessDocumentResponse | ErrorResponse>) => {
+  let docxPath: string | null = null;
+  let pdfPath: string | null = null;
 
   try {
     // Check if LibreOffice is available
@@ -280,7 +292,8 @@ app.post('/api/process-document', documentLimiter, async (req, res) => {
 
     // Parse form data
     const { files } = await parseForm(req);
-    const file = Array.isArray(files.file) ? files.file[0] : files.file;
+    const fileEntry = files.file;
+    const file: File | undefined = Array.isArray(fileEntry) ? fileEntry[0] : fileEntry;
 
     if (!file) {
       return res.status(400).json({ error: 'No file uploaded' });
@@ -306,17 +319,18 @@ app.post('/api/process-document', documentLimiter, async (req, res) => {
     await rename(docxPath, safeDocxPath);
     docxPath = safeDocxPath;
 
-    console.log('[Document Processing] Starting DOCX → PDF conversion (safe name):', safeName);
+    console.log('[Document Processing] Starting DOCX -> PDF conversion (safe name):', safeName);
 
     // Extract equations from original DOCX using pandoc (best accuracy)
-    let equations = [];
+    let equations: string[] = [];
     if (pandocAvailable) {
       try {
         const pandocResult = await processDocxWithPandoc(docxPath);
         equations = pandocResult.equations;
         console.log('[Document Processing] Extracted equations:', equations.length);
-      } catch (error) {
-        console.error('[Document Processing] Equation extraction failed:', error.message);
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        console.error('[Document Processing] Equation extraction failed:', message);
         // Continue without equations - not critical
       }
     }
@@ -346,7 +360,7 @@ app.post('/api/process-document', documentLimiter, async (req, res) => {
       type: 'converted-pdf',
       format: 'pdf',
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Document processing error:', error);
 
     // Clean up files if they exist
@@ -374,7 +388,7 @@ app.post('/api/process-document', documentLimiter, async (req, res) => {
 /**
  * API endpoint: Analyze with Claude
  */
-app.post('/api/analyze', analyzeLimiter, async (req, res) => {
+app.post('/api/analyze', analyzeLimiter, async (req: Request<unknown, unknown, AnalyzeRequestBody>, res: Response<AnthropicResponse | ErrorResponse>) => {
   try {
     const { content, systemPrompt, mode } = req.body;
 
@@ -418,7 +432,7 @@ app.post('/api/analyze', analyzeLimiter, async (req, res) => {
         },
         body: JSON.stringify({
           model: 'claude-opus-4-6',
-          // Increased from 2000 → 8192 to prevent response truncation (Nov 2025)
+          // Increased from 2000 -> 8192 to prevent response truncation (Nov 2025)
           // Complex reports (8+ pages) with detailed feedback require more output tokens
           // Applies to both teacher and student modes
           max_tokens: 8192,
@@ -445,20 +459,20 @@ app.post('/api/analyze', analyzeLimiter, async (req, res) => {
       clearTimeout(timeoutId);
 
       if (!response.ok) {
-        const error = await response.json();
-        console.error('Anthropic API error:', error);
+        const errorData = await response.json() as { error?: { message?: string } };
+        console.error('Anthropic API error:', errorData);
         return res.status(response.status).json({
-          error: error.error?.message || 'API request failed',
+          error: errorData.error?.message || 'API request failed',
         });
       }
 
-      const data = await response.json();
+      const data = await response.json() as AnthropicResponse;
 
       // Enhanced debug logging for troubleshooting response issues
       // Helps identify: truncation, timeout problems, token usage patterns
       // To view logs: sudo journalctl -u kvenno-backend -n 100
       // To filter: sudo journalctl -u kvenno-backend | grep "\[Analysis\]"
-      const textContent = data.content?.find(c => c.type === 'text')?.text || '';
+      const textContent = data.content?.find((c) => c.type === 'text')?.text || '';
       console.log('[Analysis] Response received:', {
         stopReason: data.stop_reason,      // Why generation stopped ("end_turn" = complete, "max_tokens" = hit limit)
         textLength: textContent.length,    // Total response length in characters
@@ -470,18 +484,18 @@ app.post('/api/analyze', analyzeLimiter, async (req, res) => {
       });
 
       return res.json(data);
-    } catch (fetchError) {
+    } catch (fetchError: unknown) {
       clearTimeout(timeoutId);
 
-      if (fetchError.name === 'AbortError') {
+      if (fetchError instanceof Error && fetchError.name === 'AbortError') {
         console.error('Request timeout');
         return res.status(504).json({
-          error: 'Request timeout - greining tók of langan tíma',
+          error: 'Request timeout - greining tok of langan tima',
         });
       }
       throw fetchError;
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Server error:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
@@ -492,7 +506,7 @@ app.post('/api/analyze', analyzeLimiter, async (req, res) => {
  * Receives system prompt and user prompt (with optional draft comparison),
  * sends to Claude, and returns checklist results.
  */
-app.post('/api/analyze-2ar', analyzeLimiter, async (req, res) => {
+app.post('/api/analyze-2ar', analyzeLimiter, async (req: Request<unknown, unknown, Analyze2arRequestBody>, res: Response<AnthropicResponse | ErrorResponse>) => {
   try {
     const { systemPrompt, userPrompt } = req.body;
 
@@ -548,16 +562,16 @@ app.post('/api/analyze-2ar', analyzeLimiter, async (req, res) => {
       clearTimeout(timeoutId);
 
       if (!response.ok) {
-        const error = await response.json();
-        console.error('Anthropic API error (2ar):', error);
+        const errorData = await response.json() as { error?: { message?: string } };
+        console.error('Anthropic API error (2ar):', errorData);
         return res.status(response.status).json({
-          error: error.error?.message || 'API request failed',
+          error: errorData.error?.message || 'API request failed',
         });
       }
 
-      const data = await response.json();
+      const data = await response.json() as AnthropicResponse;
 
-      const textContent = data.content?.find(c => c.type === 'text')?.text || '';
+      const textContent = data.content?.find((c) => c.type === 'text')?.text || '';
       console.log('[Analysis-2ar] Response received:', {
         stopReason: data.stop_reason,
         textLength: textContent.length,
@@ -565,41 +579,41 @@ app.post('/api/analyze-2ar', analyzeLimiter, async (req, res) => {
       });
 
       return res.json(data);
-    } catch (fetchError) {
+    } catch (fetchError: unknown) {
       clearTimeout(timeoutId);
 
-      if (fetchError.name === 'AbortError') {
+      if (fetchError instanceof Error && fetchError.name === 'AbortError') {
         console.error('Request timeout (2ar)');
         return res.status(504).json({
-          error: 'Request timeout - greining tók of langan tíma',
+          error: 'Request timeout - greining tok of langan tima',
         });
       }
       throw fetchError;
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Server error (2ar):', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 /**
- * API endpoint: Generate Íslenskubraut teaching card PDF
+ * API endpoint: Generate Islenskubraut teaching card PDF
  * GET /api/islenskubraut/pdf?flokkur={categoryId}&stig={level}
  */
-app.get('/api/islenskubraut/pdf', pdfLimiter, async (req, res) => {
+app.get('/api/islenskubraut/pdf', pdfLimiter, async (req: Request<unknown, unknown, unknown, PdfQueryParams>, res: Response) => {
   try {
     const { flokkur, stig } = req.query;
 
     if (!flokkur || !stig) {
       return res.status(400).json({
-        error: 'Vantar færibreytur: flokkur og stig',
+        error: 'Vantar faeribreytur: flokkur og stig',
       });
     }
 
     const validLevels = ['A1', 'A2', 'B1'];
     if (!validLevels.includes(stig)) {
       return res.status(400).json({
-        error: `Ógilt stig: ${stig}. Leyfileg gildi: ${validLevels.join(', ')}`,
+        error: `Ogilt stig: ${stig}. Leyfileg gildi: ${validLevels.join(', ')}`,
       });
     }
 
@@ -610,7 +624,7 @@ app.get('/api/islenskubraut/pdf', pdfLimiter, async (req, res) => {
       });
     }
 
-    console.log(`[Íslenskubraut PDF] Generating: flokkur=${flokkur}, stig=${stig}`);
+    console.log(`[Islenskubraut PDF] Generating: flokkur=${flokkur}, stig=${stig}`);
 
     const pdfBuffer = await generatePdf(category, stig);
 
@@ -620,16 +634,16 @@ app.get('/api/islenskubraut/pdf', pdfLimiter, async (req, res) => {
       `attachment; filename="spjald-${flokkur}-${stig}.pdf"`
     );
     res.send(pdfBuffer);
-  } catch (error) {
-    console.error('[Íslenskubraut PDF] Error:', error);
+  } catch (error: unknown) {
+    console.error('[Islenskubraut PDF] Error:', error);
     return res.status(500).json({
-      error: 'Villa við að búa til PDF',
+      error: 'Villa vid ad bua til PDF',
     });
   }
 });
 
 // Error handler
-app.use((err, req, res, next) => {
+app.use((err: Error, _req: Request, res: Response<ErrorResponse>, _next: NextFunction) => {
   console.error('Server error:', err);
   res.status(500).json({ error: 'Internal server error' });
 });
@@ -643,6 +657,6 @@ if (isDirectRun) {
   app.listen(PORT, '127.0.0.1', () => {
     console.log(`Backend API running on http://127.0.0.1:${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`Allowed origins: ${allowedOrigins.join(', ')}`);
+    console.log(`Allowed origins: ${filteredOrigins.join(', ')}`);
   });
 }
