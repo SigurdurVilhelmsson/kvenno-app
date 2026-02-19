@@ -29,3 +29,6 @@ pnpm-debug.log*
 # Temp
 *.tmp
 *.temp
+
+# Worktrees
+.worktrees/
