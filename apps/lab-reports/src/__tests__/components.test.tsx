@@ -4,6 +4,8 @@ import { render, screen, fireEvent } from '@testing-library/react';
 
 import { Modal, SaveDialog, ConfirmDialog } from '../components/Modal';
 import { Toast } from '../components/Toast';
+import { SessionHistory } from '../components/SessionHistory';
+import { GradingSession } from '../types';
 
 // Mock lucide-react icons to avoid SVG rendering issues in jsdom
 vi.mock('lucide-react', () => ({
@@ -13,6 +15,17 @@ vi.mock('lucide-react', () => ({
   XCircle: (props: Record<string, unknown>) => <div data-testid="x-circle-icon" {...props} />,
   AlertTriangle: (props: Record<string, unknown>) => <div data-testid="alert-icon" {...props} />,
   Info: (props: Record<string, unknown>) => <div data-testid="info-icon" {...props} />,
+  Trash2: (props: Record<string, unknown>) => <div data-testid="trash-icon" {...props} />,
+  GraduationCap: (props: Record<string, unknown>) => <div data-testid="graduation-icon" {...props} />,
+  BookOpen: (props: Record<string, unknown>) => <div data-testid="book-icon" {...props} />,
+}));
+
+// Mock experiment configs used by SessionHistory
+vi.mock('@/config/experiments', () => ({
+  experimentConfigs: {
+    jafnvaegi: { title: 'Jafnvægi' },
+    hlutleysing_syru: { title: 'Hlutleysing sýru' },
+  },
 }));
 
 // Mock file processing utils used by FileUpload
@@ -635,5 +648,283 @@ describe('FileUpload component', () => {
     fireEvent.click(screen.getByText('Greina skýrslur'));
 
     expect(onProcess).toHaveBeenCalledTimes(1);
+  });
+
+  it('accepts .docx files via drag and drop', async () => {
+    const FileUpload = await getFileUpload();
+    const onFilesSelected = vi.fn();
+    const docxFile = new File(['content'], 'report.docx', {
+      type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    });
+
+    const { container } = render(
+      <FileUpload
+        files={[]}
+        onFilesSelected={onFilesSelected}
+        onProcess={() => {}}
+        processing={false}
+        processingStatus={{ current: 0, total: 0, currentFile: '' }}
+        mode="teacher"
+      />
+    );
+
+    const dropZone = container.querySelector('.border-dashed')!;
+    expect(dropZone).not.toBeNull();
+
+    const dataTransfer = {
+      files: [docxFile],
+      types: ['Files'],
+    };
+
+    fireEvent.drop(dropZone, { dataTransfer });
+
+    expect(onFilesSelected).toHaveBeenCalledTimes(1);
+    expect(onFilesSelected).toHaveBeenCalledWith([docxFile]);
+  });
+
+  it('shows processing state with status message', async () => {
+    const FileUpload = await getFileUpload();
+    const mockFiles = [
+      new File(['content'], 'skyrsla1.docx', {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      }),
+      new File(['content'], 'skyrsla2.docx', {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      }),
+    ];
+
+    render(
+      <FileUpload
+        files={mockFiles}
+        onFilesSelected={() => {}}
+        onProcess={() => {}}
+        processing={true}
+        processingStatus={{ current: 2, total: 5, currentFile: 'skyrsla2.docx' }}
+        mode="teacher"
+      />
+    );
+
+    expect(screen.getByText('Vinn úr skýrslum... (2/5)')).toBeDefined();
+    // The current file name should appear in the processing status
+    const matches = screen.getAllByText('skyrsla2.docx');
+    expect(matches.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('handles empty file list gracefully', async () => {
+    const FileUpload = await getFileUpload();
+    const onProcess = vi.fn();
+
+    const { container } = render(
+      <FileUpload
+        files={[]}
+        onFilesSelected={() => {}}
+        onProcess={onProcess}
+        processing={false}
+        processingStatus={{ current: 0, total: 0, currentFile: '' }}
+        mode="teacher"
+      />
+    );
+
+    // Upload area should render
+    expect(screen.getByText('Hladdu upp skýrslum')).toBeDefined();
+    // No file list or process button should be present
+    expect(screen.queryByText('Greina skýrslur')).toBeNull();
+    // No file count displayed
+    expect(container.querySelectorAll('.space-y-2').length).toBe(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Toast additional tests
+// ---------------------------------------------------------------------------
+describe('Toast component - styles', () => {
+  it('renders warning toast with correct background color class', () => {
+    const { container } = render(
+      <Toast
+        toast={{
+          show: true,
+          message: 'Varúð!',
+          type: 'warning',
+        }}
+      />
+    );
+
+    const toastEl = container.querySelector('.bg-yellow-600');
+    expect(toastEl).not.toBeNull();
+  });
+
+  it('renders info toast with kvenno-orange background class', () => {
+    const { container } = render(
+      <Toast
+        toast={{
+          show: true,
+          message: 'Upplýsingar hér',
+          type: 'info',
+        }}
+      />
+    );
+
+    const toastEl = container.querySelector('.bg-kvenno-orange');
+    expect(toastEl).not.toBeNull();
+  });
+
+  it('renders success toast with green background class', () => {
+    const { container } = render(
+      <Toast
+        toast={{
+          show: true,
+          message: 'Tókst!',
+          type: 'success',
+        }}
+      />
+    );
+
+    const toastEl = container.querySelector('.bg-green-600');
+    expect(toastEl).not.toBeNull();
+  });
+
+  it('renders error toast with red background class', () => {
+    const { container } = render(
+      <Toast
+        toast={{
+          show: true,
+          message: 'Villa!',
+          type: 'error',
+        }}
+      />
+    );
+
+    const toastEl = container.querySelector('.bg-red-600');
+    expect(toastEl).not.toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// SessionHistory tests
+// ---------------------------------------------------------------------------
+describe('SessionHistory component', () => {
+  const mockSessions: GradingSession[] = [
+    {
+      id: 'session-1',
+      name: 'Tilraun A',
+      experiment: 'jafnvaegi',
+      timestamp: '2025-06-15T10:30:00Z',
+      results: [],
+      fileCount: 3,
+      mode: 'teacher',
+    },
+    {
+      id: 'session-2',
+      name: 'Tilraun B',
+      experiment: 'hlutleysing_syru',
+      timestamp: '2025-06-16T14:00:00Z',
+      results: [],
+      fileCount: 1,
+      mode: 'student',
+    },
+  ];
+
+  it('renders list of saved sessions', () => {
+    render(
+      <SessionHistory
+        sessions={mockSessions}
+        onLoadSession={() => {}}
+        onDeleteSession={() => {}}
+      />
+    );
+
+    expect(screen.getByText('Eldri greiningar')).toBeDefined();
+    expect(screen.getByText('Tilraun A')).toBeDefined();
+    expect(screen.getByText('Tilraun B')).toBeDefined();
+  });
+
+  it('fires load callback when session open button is clicked', () => {
+    const onLoadSession = vi.fn();
+    render(
+      <SessionHistory
+        sessions={mockSessions}
+        onLoadSession={onLoadSession}
+        onDeleteSession={() => {}}
+      />
+    );
+
+    const openButtons = screen.getAllByText('Opna');
+    fireEvent.click(openButtons[0]);
+
+    expect(onLoadSession).toHaveBeenCalledTimes(1);
+    expect(onLoadSession).toHaveBeenCalledWith('session-1');
+  });
+
+  it('fires delete callback when delete button is clicked', () => {
+    const onDeleteSession = vi.fn();
+    render(
+      <SessionHistory
+        sessions={mockSessions}
+        onLoadSession={() => {}}
+        onDeleteSession={onDeleteSession}
+      />
+    );
+
+    // Delete buttons contain the Trash2 icon
+    const trashIcons = screen.getAllByTestId('trash-icon');
+    // Click the parent button of the first trash icon
+    const deleteButton = trashIcons[0].closest('button')!;
+    fireEvent.click(deleteButton);
+
+    expect(onDeleteSession).toHaveBeenCalledTimes(1);
+    expect(onDeleteSession).toHaveBeenCalledWith('session-1');
+  });
+
+  it('shows empty state when no sessions', () => {
+    render(
+      <SessionHistory
+        sessions={[]}
+        onLoadSession={() => {}}
+        onDeleteSession={() => {}}
+      />
+    );
+
+    expect(screen.getByText('Engar vistaðar greiningar')).toBeDefined();
+    expect(screen.queryByText('Opna')).toBeNull();
+  });
+
+  it('displays experiment title from config', () => {
+    render(
+      <SessionHistory
+        sessions={mockSessions}
+        onLoadSession={() => {}}
+        onDeleteSession={() => {}}
+      />
+    );
+
+    // Should use the config title, not the raw experiment key
+    expect(screen.getByText(/Jafnvægi/)).toBeDefined();
+    expect(screen.getByText(/Hlutleysing sýru/)).toBeDefined();
+  });
+
+  it('shows teacher mode badge for teacher sessions', () => {
+    render(
+      <SessionHistory
+        sessions={[mockSessions[0]]}
+        onLoadSession={() => {}}
+        onDeleteSession={() => {}}
+      />
+    );
+
+    expect(screen.getByText('Kennari')).toBeDefined();
+    expect(screen.getByTestId('graduation-icon')).toBeDefined();
+  });
+
+  it('shows student mode badge for student sessions', () => {
+    render(
+      <SessionHistory
+        sessions={[mockSessions[1]]}
+        onLoadSession={() => {}}
+        onDeleteSession={() => {}}
+      />
+    );
+
+    expect(screen.getByText('Nemandi')).toBeDefined();
+    expect(screen.getByTestId('book-icon')).toBeDefined();
   });
 });

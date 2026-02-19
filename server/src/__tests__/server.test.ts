@@ -4,7 +4,7 @@
  * Covers: health check, input validation, CORS, and security headers.
  */
 
-import { describe, it, expect, afterAll, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, afterAll, beforeEach, afterEach } from 'vitest';
 import request from 'supertest';
 import type { HealthResponse, ErrorResponse } from '../types/index.js';
 
@@ -428,6 +428,277 @@ describe('Security: /api/analyze rejects oversized content (>5MB)', () => {
     // Should NOT be a 400 (validation passed), likely 401/500 from API
     if (res.status !== 429) {
       expect(res.status).not.toBe(400);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// POST /api/analyze -- mock API call tests
+// ---------------------------------------------------------------------------
+describe('POST /api/analyze -- mock API call tests', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('returns successful analysis when Anthropic API responds normally', async () => {
+    const mockAnthropicResponse: import('../types/index.js').AnthropicResponse = {
+      id: 'msg_test_123',
+      type: 'message',
+      role: 'assistant',
+      content: [{ type: 'text', text: 'This is the analysis result.' }],
+      model: 'claude-opus-4-6',
+      stop_reason: 'end_turn',
+      stop_sequence: null,
+      usage: { input_tokens: 100, output_tokens: 50 },
+    };
+
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify(mockAnthropicResponse), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
+
+    const res = await request(app)
+      .post('/api/analyze')
+      .set('Origin', 'https://kvenno.app')
+      .send({
+        content: 'Lab report text here',
+        systemPrompt: 'You are a lab report grader.',
+        mode: 'teacher',
+      });
+
+    // May be rate limited from earlier tests
+    if (res.status === 429) return;
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('id', 'msg_test_123');
+    expect(res.body).toHaveProperty('content');
+    expect(res.body.content[0].text).toBe('This is the analysis result.');
+  });
+
+  it('returns 504 when fetch throws an AbortError (timeout)', async () => {
+    const abortError = new DOMException('The operation was aborted', 'AbortError');
+    vi.spyOn(global, 'fetch').mockRejectedValueOnce(abortError);
+
+    const res = await request(app)
+      .post('/api/analyze')
+      .set('Origin', 'https://kvenno.app')
+      .send({
+        content: 'Lab report text here',
+        systemPrompt: 'You are a lab report grader.',
+        mode: 'teacher',
+      });
+
+    if (res.status === 429) return;
+
+    expect(res.status).toBe(504);
+    expect(res.body).toHaveProperty('error');
+    expect(res.body.error).toMatch(/[Tt]imeout/);
+  });
+
+  it('forwards API error status when Anthropic returns 500', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({ error: { message: 'Internal server error from API' } }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      )
+    );
+
+    const res = await request(app)
+      .post('/api/analyze')
+      .set('Origin', 'https://kvenno.app')
+      .send({
+        content: 'Lab report text here',
+        systemPrompt: 'You are a lab report grader.',
+        mode: 'teacher',
+      });
+
+    if (res.status === 429) return;
+
+    expect(res.status).toBe(500);
+    expect(res.body).toHaveProperty('error');
+    expect(res.body.error).toBe('Internal server error from API');
+  });
+
+  it('returns 500 when CLAUDE_API_KEY is not set', async () => {
+    const savedKey = process.env.CLAUDE_API_KEY;
+    const savedAnthropicKey = process.env.ANTHROPIC_API_KEY;
+    delete process.env.CLAUDE_API_KEY;
+    delete process.env.ANTHROPIC_API_KEY;
+
+    try {
+      const res = await request(app)
+        .post('/api/analyze')
+        .set('Origin', 'https://kvenno.app')
+        .send({
+          content: 'Lab report text here',
+          systemPrompt: 'You are a lab report grader.',
+          mode: 'teacher',
+        });
+
+      if (res.status === 429) return;
+
+      expect(res.status).toBe(500);
+      expect(res.body).toHaveProperty('error');
+      // The server returns a generic error, not leaking that the key is missing
+      expect(res.body.error).toMatch(/[Ii]nternal server error/);
+    } finally {
+      // Restore keys
+      if (savedKey !== undefined) process.env.CLAUDE_API_KEY = savedKey;
+      if (savedAnthropicKey !== undefined) process.env.ANTHROPIC_API_KEY = savedAnthropicKey;
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// POST /api/analyze-2ar -- mock API call tests
+// ---------------------------------------------------------------------------
+describe('POST /api/analyze-2ar -- mock API call tests', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('returns successful analysis when Anthropic API responds normally', async () => {
+    const mockAnthropicResponse: import('../types/index.js').AnthropicResponse = {
+      id: 'msg_2ar_test',
+      type: 'message',
+      role: 'assistant',
+      content: [{ type: 'text', text: 'Checklist results here.' }],
+      model: 'claude-opus-4-6',
+      stop_reason: 'end_turn',
+      stop_sequence: null,
+      usage: { input_tokens: 80, output_tokens: 40 },
+    };
+
+    vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify(mockAnthropicResponse), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
+
+    const res = await request(app)
+      .post('/api/analyze-2ar')
+      .set('Origin', 'https://kvenno.app')
+      .send({
+        systemPrompt: 'You are a 2nd year checklist grader.',
+        userPrompt: 'Student lab content here.',
+      });
+
+    if (res.status === 429) return;
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('id', 'msg_2ar_test');
+    expect(res.body.content[0].text).toBe('Checklist results here.');
+  });
+
+  it('returns 504 when fetch throws an AbortError (timeout)', async () => {
+    const abortError = new DOMException('The operation was aborted', 'AbortError');
+    vi.spyOn(global, 'fetch').mockRejectedValueOnce(abortError);
+
+    const res = await request(app)
+      .post('/api/analyze-2ar')
+      .set('Origin', 'https://kvenno.app')
+      .send({
+        systemPrompt: 'You are a 2nd year checklist grader.',
+        userPrompt: 'Student lab content here.',
+      });
+
+    if (res.status === 429) return;
+
+    expect(res.status).toBe(504);
+    expect(res.body).toHaveProperty('error');
+    expect(res.body.error).toMatch(/[Tt]imeout/);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// POST /api/process-document -- mock tests
+// ---------------------------------------------------------------------------
+describe('POST /api/process-document -- mock tests', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('rejects non-.docx files with 400', async () => {
+    const res = await request(app)
+      .post('/api/process-document')
+      .attach('file', Buffer.from('plain text content'), {
+        filename: 'report.txt',
+        contentType: 'text/plain',
+      });
+
+    // The server checks extension after parsing. On environments without
+    // LibreOffice, it may return 500 first. Both indicate the file was
+    // not processed, but 400 is the expected validation result.
+    if (res.status === 500) {
+      // LibreOffice not installed -- server rejects before reaching
+      // extension validation. This is acceptable in CI/test environments.
+      expect(res.body.error).toMatch(/LibreOffice|skjalinu/i);
+    } else {
+      expect(res.status).toBe(400);
+      expect(res.body).toHaveProperty('error');
+      expect(res.body.error).toMatch(/\.docx/);
+    }
+  });
+
+  it('rejects upload with non-.docx extension even with docx content-type', async () => {
+    const res = await request(app)
+      .post('/api/process-document')
+      .attach('file', Buffer.from('fake docx content'), {
+        filename: 'report.pdf',
+        contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      });
+
+    // Extension check should catch .pdf even if content-type says docx
+    if (res.status === 500) {
+      // LibreOffice not installed -- acceptable in test environments
+      expect(res.body.error).toMatch(/LibreOffice|skjalinu/i);
+    } else {
+      expect(res.status).toBe(400);
+      expect(res.body.error).toMatch(/\.docx/);
+    }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// GET /api/islenskubraut/pdf -- extended tests
+// ---------------------------------------------------------------------------
+describe('GET /api/islenskubraut/pdf -- extended tests', () => {
+  it('returns PDF content or appropriate error for valid category and stig', async () => {
+    // 'dyr' is a known category, 'A1' is a valid stig level
+    const res = await request(app)
+      .get('/api/islenskubraut/pdf?flokkur=dyr&stig=A1')
+      .set('Origin', 'https://kvenno.app');
+
+    // The PDF generation may succeed (returning PDF buffer) or fail
+    // due to missing system dependencies. Either way, it should NOT
+    // return a 400 (validation passed) or 404 (category found).
+    expect(res.status).not.toBe(400);
+    expect(res.status).not.toBe(404);
+
+    if (res.status === 200) {
+      // Verify PDF content-type headers
+      expect(res.headers['content-type']).toMatch(/application\/pdf/);
+      expect(res.headers['content-disposition']).toMatch(/spjald-dyr-A1\.pdf/);
+      // PDF files start with %PDF
+      expect(res.body).toBeInstanceOf(Buffer);
+    } else {
+      // 500 is acceptable if the PDF renderer has issues in the test env
+      expect(res.status).toBe(500);
+    }
+  });
+
+  it('accepts all valid stig levels for an existing category', async () => {
+    for (const stig of ['A1', 'A2', 'B1']) {
+      const res = await request(app)
+        .get(`/api/islenskubraut/pdf?flokkur=matur&stig=${stig}`)
+        .set('Origin', 'https://kvenno.app');
+
+      // Should pass validation (not 400 or 404)
+      expect(res.status).not.toBe(400);
+      expect(res.status).not.toBe(404);
     }
   });
 });

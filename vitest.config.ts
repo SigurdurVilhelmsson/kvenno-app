@@ -19,6 +19,9 @@ export default defineConfig({
         'packages/shared/**/*.{ts,tsx}',
         'apps/lab-reports/src/utils/**/*.ts',
         'apps/lab-reports/src/config/**/*.ts',
+        'apps/lab-reports/src/hooks/**/*.ts',
+        'apps/games/**/utils/**/*.ts',
+        'apps/games/**/data/**/*.ts',
       ],
       exclude: [
         '**/node_modules/**',

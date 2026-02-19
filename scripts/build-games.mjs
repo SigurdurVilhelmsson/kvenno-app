@@ -4,13 +4,18 @@
  * Builds each game and renames output from index.html to [game-name].html
  * to avoid overwriting the year index pages.
  *
+ * Builds run in parallel with a configurable concurrency limit.
+ *
  * Adapted from namsbokasafn-leikir build script for the kvenno-app monorepo.
  */
 
-import { execSync } from 'child_process';
+import { execFile } from 'child_process';
 import { existsSync, renameSync, unlinkSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { promisify } from 'util';
+
+const execFileAsync = promisify(execFile);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = join(__dirname, '..');
@@ -50,13 +55,13 @@ const verbose = args.includes('--verbose') || args.includes('-v');
 
 console.log('🧪 Chemistry Games Build Script (monorepo)\n');
 
-let successCount = 0;
-let failCount = 0;
+const filteredGames = games.filter(([year, folder]) => {
+  if (targetYear && year !== targetYear) return false;
+  if (targetGame && folder !== targetGame) return false;
+  return true;
+});
 
-for (const [year, folder, outputName] of games) {
-  if (targetYear && year !== targetYear) continue;
-  if (targetGame && folder !== targetGame) continue;
-
+async function buildGame(year, folder, outputName) {
   const gameDir = join(gamesDir, year, folder);
   const outputDir = join(distDir, 'efnafraedi', year, 'games');
   const tempOutput = join(outputDir, 'index.html');
@@ -64,16 +69,15 @@ for (const [year, folder, outputName] of games) {
 
   if (!existsSync(gameDir)) {
     console.log(`⚠️  Skipping ${year}/${folder} - directory not found`);
-    continue;
+    return false;
   }
 
-  // Ensure output directory exists
   mkdirSync(outputDir, { recursive: true });
 
   console.log(`📦 Building ${year}/${folder}...`);
 
   try {
-    execSync('npx vite build', {
+    await execFileAsync('npx', ['vite', 'build'], {
       cwd: gameDir,
       stdio: verbose ? 'inherit' : 'pipe',
     });
@@ -82,19 +86,49 @@ for (const [year, folder, outputName] of games) {
       if (existsSync(finalOutput)) {
         unlinkSync(finalOutput);
       }
-
       renameSync(tempOutput, finalOutput);
       console.log(`   ✅ Created efnafraedi/${year}/games/${outputName}.html`);
-      successCount++;
+      return true;
     } else {
       console.log(`   ⚠️  Build completed but no index.html found`);
-      failCount++;
+      return false;
     }
   } catch (error) {
     console.log(`   ❌ Build failed: ${error.message}`);
-    failCount++;
+    return false;
   }
 }
+
+// Group games by year to avoid index.html write collisions within the same output directory.
+// Games from different years build in parallel; games within the same year build sequentially.
+async function buildByYear(gamesToBuild) {
+  const byYear = new Map();
+  for (const game of gamesToBuild) {
+    const year = game[0];
+    if (!byYear.has(year)) byYear.set(year, []);
+    byYear.get(year).push(game);
+  }
+
+  let successCount = 0;
+  let failCount = 0;
+
+  async function buildYearSequentially(yearGames) {
+    for (const [year, folder, outputName] of yearGames) {
+      const result = await buildGame(year, folder, outputName);
+      if (result) successCount++;
+      else failCount++;
+    }
+  }
+
+  // Run all years in parallel, each year's games sequentially
+  await Promise.all(
+    Array.from(byYear.values()).map((yearGames) => buildYearSequentially(yearGames))
+  );
+
+  return { successCount, failCount };
+}
+
+const { successCount, failCount } = await buildByYear(filteredGames);
 
 console.log(`\n📊 Build Summary: ${successCount} succeeded, ${failCount} failed`);
 

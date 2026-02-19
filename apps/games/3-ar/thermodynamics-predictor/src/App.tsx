@@ -11,6 +11,7 @@ import { EntropyVisualization } from './components/EntropyVisualization';
 import { PROBLEMS } from './data';
 import { gameTranslations } from './i18n';
 import type { Difficulty, GameMode, Spontaneity, Problem } from './types';
+import { calculateDeltaG, getSpontaneity } from './utils/thermo-calculations';
 
 interface ThermoProgress {
   score: number;
@@ -110,18 +111,10 @@ function App() {
     }
   };
 
-  // Calculate ΔG
-  const calculateDeltaG = (temp: number): number => {
+  // Calculate ΔG for the current problem at a given temperature
+  const calcDeltaGForProblem = (temp: number): number => {
     if (!currentProblem) return 0;
-    const deltaH = currentProblem.deltaH;
-    const deltaS = currentProblem.deltaS / 1000; // Convert J to kJ
-    return deltaH - (temp * deltaS);
-  };
-
-  // Get spontaneity
-  const getSpontaneity = (deltaG: number): Spontaneity => {
-    if (Math.abs(deltaG) < 1) return 'equilibrium';
-    return deltaG < 0 ? 'spontaneous' : 'non-spontaneous';
+    return calculateDeltaG(currentProblem.deltaH, currentProblem.deltaS, temp);
   };
 
   // Get scenario description
@@ -137,7 +130,7 @@ function App() {
 
   // Check answer
   const checkAnswer = () => {
-    const calculatedDeltaG = calculateDeltaG(temperature);
+    const calculatedDeltaG = calcDeltaGForProblem(temperature);
     const correctSpontaneity = getSpontaneity(calculatedDeltaG);
 
     const deltaGDiff = Math.abs(parseFloat(userDeltaG) - calculatedDeltaG);
@@ -232,7 +225,7 @@ function App() {
     ];
 
     // Current temperature marker
-    const currentDeltaG = calculateDeltaG(temperature);
+    const currentDeltaG = calcDeltaGForProblem(temperature);
     const markers: MarkerConfig[] = [{
       x: temperature,
       y: currentDeltaG,
@@ -439,7 +432,7 @@ function App() {
   // Game Screen
   if (!currentProblem) return null;
 
-  const currentDeltaG = calculateDeltaG(temperature);
+  const currentDeltaG = calcDeltaGForProblem(temperature);
   const currentSpontaneity = getSpontaneity(currentDeltaG);
   const crossoverTemp = currentProblem.deltaS !== 0
     ? Math.abs(currentProblem.deltaH / (currentProblem.deltaS / 1000))
