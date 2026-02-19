@@ -11,8 +11,8 @@ import {
   Toast as ToastType,
   ExperimentConfig2,
 } from '@/types';
-import { processFile2 } from '@/utils/api2';
-import { exportChecklist2ToCSV } from '@/utils/export2';
+import { processFile2ar } from '@/utils/api';
+import { exportChecklist2ToCSV } from '@/utils/export';
 import { extractTextFromFile } from '@/utils/fileProcessing';
 
 interface FileWithResult {
@@ -108,7 +108,7 @@ export function Teacher2Page() {
           continue;
         }
 
-        const result = await processFile2(
+        const result = await processFile2ar(
           content,
           draftContent,
           currentExperiment
