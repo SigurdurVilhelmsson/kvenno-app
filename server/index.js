@@ -88,10 +88,9 @@ const pdfLimiter = rateLimit({
   message: { error: 'Of margar beiðnir - reyndu aftur eftir smástund' },
 });
 
-// Increased limit to 50mb to handle multi-page PDFs with images
-// Each page image (JPEG compressed) is ~200-500KB, so 50mb supports ~10-15 page documents
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+// 15MB limit covers multi-page PDFs with images while preventing abuse
+app.use(express.json({ limit: '15mb' }));
+app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -388,13 +387,13 @@ app.post('/api/analyze', analyzeLimiter, async (req, res) => {
       return res.status(400).json({ error: 'Invalid mode' });
     }
 
-    if (typeof systemPrompt !== 'string' || systemPrompt.length > 50000) {
+    if (typeof systemPrompt !== 'string' || systemPrompt.length > 30000) {
       return res.status(400).json({ error: 'Invalid systemPrompt' });
     }
 
-    // Validate content field length (max ~10MB as JSON string)
+    // Validate content field length (max ~5MB as JSON string)
     const contentStr = typeof content === 'string' ? content : JSON.stringify(content);
-    if (contentStr.length > 10 * 1024 * 1024) {
+    if (contentStr.length > 5 * 1024 * 1024) {
       return res.status(400).json({ error: 'Content too large' });
     }
 
@@ -501,11 +500,11 @@ app.post('/api/analyze-2ar', analyzeLimiter, async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields: systemPrompt, userPrompt' });
     }
 
-    if (typeof systemPrompt !== 'string' || systemPrompt.length > 50000) {
+    if (typeof systemPrompt !== 'string' || systemPrompt.length > 30000) {
       return res.status(400).json({ error: 'Invalid systemPrompt' });
     }
 
-    if (typeof userPrompt !== 'string' || userPrompt.length > 200000) {
+    if (typeof userPrompt !== 'string' || userPrompt.length > 100000) {
       return res.status(400).json({ error: 'Invalid userPrompt' });
     }
 

@@ -68,12 +68,12 @@ describe('POST /api/analyze — input validation', () => {
     expect(res.body.error).toMatch(/[Ii]nvalid mode/);
   });
 
-  it('returns 400 when systemPrompt exceeds 50000 characters', async () => {
+  it('returns 400 when systemPrompt exceeds 30000 characters', async () => {
     const res = await request(app)
       .post('/api/analyze')
       .send({
         content: 'test',
-        systemPrompt: 'x'.repeat(50001),
+        systemPrompt: 'x'.repeat(30001),
         mode: 'teacher',
       });
 
@@ -95,11 +95,11 @@ describe('POST /api/analyze-2ar — input validation', () => {
     expect(res.body.error).toMatch(/[Mm]issing required fields/);
   });
 
-  it('returns 400 when systemPrompt exceeds 50000 characters', async () => {
+  it('returns 400 when systemPrompt exceeds 30000 characters', async () => {
     const res = await request(app)
       .post('/api/analyze-2ar')
       .send({
-        systemPrompt: 'x'.repeat(50001),
+        systemPrompt: 'x'.repeat(30001),
         userPrompt: 'valid prompt',
       });
 
@@ -107,12 +107,12 @@ describe('POST /api/analyze-2ar — input validation', () => {
     expect(res.body.error).toMatch(/systemPrompt/i);
   });
 
-  it('returns 400 when userPrompt exceeds 200000 characters', async () => {
+  it('returns 400 when userPrompt exceeds 100000 characters', async () => {
     const res = await request(app)
       .post('/api/analyze-2ar')
       .send({
         systemPrompt: 'valid prompt',
-        userPrompt: 'x'.repeat(200001),
+        userPrompt: 'x'.repeat(100001),
       });
 
     expect(res.status).toBe(400);
