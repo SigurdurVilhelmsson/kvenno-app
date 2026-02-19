@@ -118,8 +118,9 @@ function App() {
             </label>
 
             <div className="flex items-center gap-2">
-              <span className="text-sm">{t('accessibility.textSize', 'Leturstærð')}:</span>
+              <label htmlFor="text-size-select" className="text-sm">{t('accessibility.textSize', 'Leturstærð')}:</label>
               <select
+                id="text-size-select"
                 value={settings.textSize}
                 onChange={(e) => setTextSize(e.target.value as 'small' | 'medium' | 'large')}
                 className="text-sm border rounded px-2 py-1"

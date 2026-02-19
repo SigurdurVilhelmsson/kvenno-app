@@ -21,21 +21,21 @@ export function Home() {
           <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900 text-white text-sm font-bold mb-3">
             1
           </div>
-          <h3 className="font-semibold text-gray-900 mb-1">Veldu flokk</h3>
+          <p className="font-semibold text-gray-900 mb-1">Veldu flokk</p>
           <p className="text-sm text-gray-500">Dýr, matur, farartæki og fleira</p>
         </div>
         <div className="text-center p-4">
           <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900 text-white text-sm font-bold mb-3">
             2
           </div>
-          <h3 className="font-semibold text-gray-900 mb-1">Veldu stig</h3>
+          <p className="font-semibold text-gray-900 mb-1">Veldu stig</p>
           <p className="text-sm text-gray-500">A1 byrjandi, A2 grunnþekking, B1 miðstig</p>
         </div>
         <div className="text-center p-4">
           <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900 text-white text-sm font-bold mb-3">
             3
           </div>
-          <h3 className="font-semibold text-gray-900 mb-1">Hladdu niður</h3>
+          <p className="font-semibold text-gray-900 mb-1">Hladdu niður</p>
           <p className="text-sm text-gray-500">Fáðu PDF til að prenta og plasta</p>
         </div>
       </div>

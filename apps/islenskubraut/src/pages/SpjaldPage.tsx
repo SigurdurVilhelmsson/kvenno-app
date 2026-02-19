@@ -48,7 +48,7 @@ export function SpjaldPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       {/* Breadcrumb */}
-      <nav className="mb-6">
+      <nav aria-label="Brauðmolar" className="mb-6">
         <Link
           to="/"
           className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors"

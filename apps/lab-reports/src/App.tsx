@@ -307,10 +307,11 @@ function App() {
             <>
               {/* Experiment selector */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label htmlFor="experiment-select" className="block text-sm font-medium text-slate-700 mb-2">
                   Veldu tilraun:
                 </label>
                 <select
+                  id="experiment-select"
                   value={state.selectedExperiment}
                   onChange={(e) => dispatch({ type: 'SET_EXPERIMENT', experiment: e.target.value })}
                   className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-kvenno-orange"

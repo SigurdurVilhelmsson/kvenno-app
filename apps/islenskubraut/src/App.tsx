@@ -20,7 +20,7 @@ export function App() {
                 </p>
               </div>
             </a>
-            <nav className="flex items-center gap-4">
+            <nav aria-label="Fletting" className="flex items-center gap-4">
               <a
                 href="/islenskubraut/"
                 className="text-sm text-gray-600 hover:text-gray-900 transition-colors"

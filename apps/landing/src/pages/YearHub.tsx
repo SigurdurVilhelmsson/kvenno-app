@@ -186,7 +186,7 @@ function ToolCardComponent({ tool }: { tool: ToolCard }) {
         role="article"
         aria-disabled="true"
       >
-        <h3 className="text-kvenno-orange text-2xl font-bold mb-4">{tool.title}</h3>
+        <h2 className="text-kvenno-orange text-2xl font-bold mb-4">{tool.title}</h2>
         <p className="text-gray-500 flex-grow">{tool.description}</p>
         <span className="mt-4 text-sm text-gray-400 italic">{tool.status}</span>
       </div>
@@ -198,7 +198,7 @@ function ToolCardComponent({ tool }: { tool: ToolCard }) {
       href={tool.href}
       className={`${baseClasses} hover:-translate-y-[5px] hover:shadow-[0_4px_12px_rgba(243,107,34,0.3)]`}
     >
-      <h3 className="text-kvenno-orange text-2xl font-bold mb-4">{tool.title}</h3>
+      <h2 className="text-kvenno-orange text-2xl font-bold mb-4">{tool.title}</h2>
       <p className="text-gray-500 flex-grow">{tool.description}</p>
       <span
         className={`mt-4 text-sm ${

@@ -101,9 +101,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           className={`mx-auto mb-4 ${isDragging ? 'text-kvenno-orange' : 'text-slate-600'}`}
           size={48}
         />
-        <h3 className="text-lg font-semibold text-slate-800 mb-2">
+        <p className="text-lg font-semibold text-slate-800 mb-2">
           {isDragging ? 'Slepptu skrá' + (isStudentMode ? '' : 'm') + ' hér' : title}
-        </h3>
+        </p>
         <p className="text-sm text-slate-600 mb-4">{description}</p>
         <input
           type="file"
@@ -123,9 +123,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
       {files.length > 0 && (
         <div className="mb-6">
-          <h3 className="font-semibold text-slate-800 mb-3">
+          <p className="font-semibold text-slate-800 mb-3">
             {files.length} skrá{files.length !== 1 ? 'r' : ''} valin{files.length !== 1 ? 'ar' : ''}
-          </h3>
+          </p>
           <div className="space-y-2 mb-4">
             {files.map((file, i) => (
               <div key={i} className="bg-slate-50 p-3 rounded flex items-center gap-3">
