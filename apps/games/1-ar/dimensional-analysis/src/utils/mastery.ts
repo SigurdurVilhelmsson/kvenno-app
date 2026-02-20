@@ -2,17 +2,14 @@ import { Level1Progress, Level2Progress, Level3Progress } from '@shared/types';
 
 /**
  * Check if Level 1 has been mastered
- * Requires: 10+ questions answered, 8+ correct, 0.7+ average explanation score
+ * Requires: 6 questions answered, 5+ correct
+ * (Level 1 is conceptual with exactly 6 challenges and no explanation scoring)
  */
 export const checkLevel1Mastery = (level1Data: Level1Progress): boolean => {
-  const { questionsCorrect, questionsAnswered, explanationScores } = level1Data;
-  if (questionsAnswered < 10) return false;
+  const { questionsCorrect, questionsAnswered } = level1Data;
+  if (questionsAnswered < 6) return false;
 
-  const avgExplanation = explanationScores.length > 0
-    ? explanationScores.reduce((a, b) => a + b, 0) / explanationScores.length
-    : 1;
-
-  return questionsCorrect >= 8 && avgExplanation >= 0.7;
+  return questionsCorrect >= 5;
 };
 
 /**

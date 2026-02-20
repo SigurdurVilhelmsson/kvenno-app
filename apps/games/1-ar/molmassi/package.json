@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && mv ../../../../dist/1-ar/games/index.html ../../../../dist/1-ar/games/molmassi.html",
+    "build": "tsc && vite build && mv ../../../../dist/efnafraedi/1-ar/games/index.html ../../../../dist/efnafraedi/1-ar/games/molmassi.html",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist"

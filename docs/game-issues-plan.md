@@ -24,8 +24,8 @@
 ## Game 01: Molmassi (4.6/5)
 
 ### Critical
-- [ ] **1-01a. React 19 + @react-three/fiber incompatibility** — MoleculeViewer3DLazy crashes with `ReactCurrentBatchConfig` undefined. Fix: upgrade @react-three/fiber to v9+ or gate the 3D viewer behind a lazy boundary that catches errors. *(Note: commit `5fdfe5a` may have addressed this — verify)*
-- [ ] **1-01b. Build script path mismatch** — `package.json` mv command uses `dist/1-ar/` but output goes to `dist/efnafraedi/1-ar/`. *(Cross-cutting: affects all 17 games — fix in `scripts/build-games.mjs` centrally)*
+- [x] **1-01a. React 19 + @react-three/fiber incompatibility** — Verified fixed in commit `5fdfe5a` (fiber v9.5.0, drei v10.7.7, triple error-boundary).
+- [x] **1-01b. Build script path mismatch** — Fixed all 17 package.json `mv` paths: `dist/X-ar/` → `dist/efnafraedi/X-ar/`. *(Session A)*
 
 ### Major
 - [ ] **1-02. i18n uses ASCII approximations** — i18n.ts: "Molmassi" → "Mólmassi", "Laerdu" → "Lærðu", "Surefni" → "Súrefni" etc. Replace all ~200 strings with proper Icelandic characters.
@@ -43,7 +43,7 @@
 ## Game 02: Nafnakerfid (4.3/5)
 
 ### Critical
-- [ ] **2-01. Build script path mismatch** — Same as 1-01b.
+- [x] **2-01. Build script path mismatch** — Fixed in 1-01b (all 17 games). *(Session A)*
 
 ### Major
 - [ ] **2-02. Level 3 match modal lacks accessibility** — Missing `role="dialog"`, `aria-modal`, focus trap, Escape handler. File: Level3.tsx
@@ -63,9 +63,9 @@
 ## Game 03: Dimensional Analysis (4.0/5)
 
 ### Critical
-- [ ] **3-01. Level 1 mastery logic bug** — mastery.ts requires 8 correct but L1 only has 6 challenges. Fix threshold.
-- [ ] **3-02. Level 2 unit prediction broken for compound units** — Always assumes numerator survives. Fix unit cancellation tracking.
-- [ ] **3-03. No progress persistence** — All state in React; no localStorage. Integrate useGameProgress. **(Most impactful fix for this game)**
+- [x] **3-01. Level 1 mastery logic bug** — Fixed mastery.ts thresholds to 5/6 matching actual game structure. *(Session A)*
+- [x] **3-02. Level 2 unit prediction broken for compound units** — Rewrote unitConversion.ts compound section with proper pair-wise cancellation. *(Session A)*
+- [—] **3-03. No progress persistence** — False positive: `useProgress` hook already persists to localStorage via `saveProgress()`/`loadProgress()`. *(Session A)*
 
 ### Major
 - [ ] **3-04. No hints in Level 2** — L1 and L3 have hints but L2 doesn't. Use shared HintSystem.
@@ -83,7 +83,7 @@
 ## Game 04: Lausnir (4.4/5)
 
 ### Critical
-- [ ] **4-01. Wrong concept message in L1 Challenge 1** — Shows Henderson-Hasselbalch message for a dilution challenge. Replace with "Styrkur = sameindir / rummal".
+- [x] **4-01. Wrong concept message in L1 Challenge 1** — Changed to "Styrkur = sameindir / rúmmál" in Level1.tsx:77. *(Session A)*
 
 ### Major
 - [ ] **4-02. L2 mastery threshold too low (35%)** — Students advance with minimal accuracy. Increase to 60-70%.
@@ -101,7 +101,7 @@
 ## Game 05: Takmarkandi (4.1/5)
 
 ### Critical
-- [ ] **5-01. Multi-product reactions broken in L2 & L3** — Reactions with 2 products (e.g., CH4+2O2 → CO2+2H2O) only calculate first product. Second gives undefined. Either filter out multi-product reactions or extend UI. **(Most impactful fix)**
+- [x] **5-01. Multi-product reactions broken in L2** — Added `r.products.length === 1` filter to Level2.tsx (L3 already handles multi-product). *(Session A)*
 
 ### Major
 - [ ] **5-02. Difficulty gap L2→L3 too abrupt** — L2 provides step-by-step; L3 demands all answers simultaneously.
@@ -194,7 +194,7 @@
 ## Game 12: Redox Reactions (4.1/5)
 
 ### Critical
-- [ ] **12-01. i18n translations defined but never used** — Complete 3-language translations exist in i18n.ts but all UI text is hardcoded Icelandic. LanguageSwitcher has no effect. Connect with `t()` calls. **(Most impactful fix)**
+- [ ] **12-01. i18n translations defined but never used** — Complete 3-language translations exist in i18n.ts but all UI text is hardcoded Icelandic. LanguageSwitcher has no effect. Connect with `t()` calls. **(Deferred to Session D — ~205 strings across 7 files)**
 
 ### Major
 - [ ] **12-02. Missing ARIA labels on inputs** — Level1.tsx:289, Level2.tsx:279, Level3.tsx:118.
@@ -282,7 +282,8 @@
 
 | Priority | Count | Description |
 |----------|-------|-------------|
-| Critical (remaining) | 8 | Game-breaking bugs, broken functionality |
+| Critical (remaining) | 1 | 12-01 deferred to Session D |
+| Critical (fixed) | 6 + 1 false positive | 1-01a, 1-01b/2-01, 3-01, 3-02, 4-01, 5-01; 3-03 was false positive |
 | Major (remaining) | 48 | Significant UX, accessibility, pedagogical problems |
 | Minor (remaining) | 52 | Polish, consistency, nice-to-haves |
 
@@ -318,7 +319,7 @@
 | Session | Date | Issues Fixed | Commit(s) | Notes |
 |---------|------|-------------|-----------|-------|
 | Pre-work | 2026-02-20 | Cross-cutting: -tranwarm-, focus:outline-hidden | `9060395` | 26 files, 12+15 games |
-| A | | | | |
+| A | 2026-02-20 | 3-01, 3-02, 3-03(FP), 4-01, 5-01, 1-01a(verified), 1-01b(×17) | `fix/session-a-critical-bugs` | 6 critical fixed, 1 false positive, 12-01 deferred to D |
 | B | | | | |
 | C | | | | |
 | D | | | | |

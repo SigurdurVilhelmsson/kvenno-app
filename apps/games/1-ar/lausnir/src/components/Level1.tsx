@@ -74,7 +74,7 @@ const CHALLENGES: Challenge[] = [
       method: 'Styrkur = sameindir / rúmmál. Finndu rúmmálið sem gefur 2.0 M.',
       solution: '50 sameindir × 0.01 = 0.5 mól. 0.5 mól / 2.0 M = 0.25 L = 250 mL'
     },
-    conceptMessage: 'pH = pKa þegar [Base] = [Acid]'
+    conceptMessage: 'Styrkur = sameindir / rúmmál'
   },
   // Challenge 2: Build concentration from scratch
   {

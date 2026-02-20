@@ -40,8 +40,11 @@ interface Problem {
   excessGrams: number;
 }
 
-// Use easy and medium reactions for Level 2
-const LEVEL2_REACTIONS = REACTIONS.filter(r => r.difficulty === 'easy' || r.difficulty === 'medium');
+// Use easy and medium single-product reactions for Level 2
+// (multi-product reactions like CH₄+2O₂→CO₂+2H₂O are handled in Level 3)
+const LEVEL2_REACTIONS = REACTIONS.filter(r =>
+  (r.difficulty === 'easy' || r.difficulty === 'medium') && r.products.length === 1
+);
 
 function generateProblem(mode: ProblemMode): Problem {
   const reaction = LEVEL2_REACTIONS[Math.floor(Math.random() * LEVEL2_REACTIONS.length)];

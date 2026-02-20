@@ -49,18 +49,15 @@ describe('predictResultingUnit', () => {
   });
 
   it('should cancel numerator in compound unit and replace with factor numerator', () => {
-    // km/klst * (1000 m / 1 km): factor denominator 'km' cancels current numerator 'km',
-    // but factor denominator also appends to current denominator in the else branch
+    // km/klst * (1000 m / 1 km): km cancels with km, leaving m/klst
     const result = predictResultingUnit('km/klst', { num: '1000 m', den: '1 km', units: ['m', 'km'] });
-    expect(result).toBe('m/klst·km');
+    expect(result).toBe('m/klst');
   });
 
   it('should cancel denominator in compound unit when factor numerator matches', () => {
-    // m/s * (3600 s / 1 klst): factor numerator 's' cancels current denominator 's',
-    // but current numerator 'm' does not cancel factor denominator 'klst',
-    // so numerators compound to 'm·s' and new denominator is 'klst'
+    // m/s * (3600 s / 1 klst): s cancels with s, leaving m/klst
     const result = predictResultingUnit('m/s', { num: '3600 s', den: '1 klst', units: ['s', 'klst'] });
-    expect(result).toBe('m·s/klst');
+    expect(result).toBe('m/klst');
   });
 
   it('should create compound denominators when no cancellation in denominator', () => {
@@ -69,10 +66,10 @@ describe('predictResultingUnit', () => {
     expect(result).toBe('m·klst/s·mín');
   });
 
-  it('should handle both denominators being the same (cancel out)', () => {
-    // m/km * (1000 m / 1 km) => denominator km cancels, numerator becomes m·m
+  it('should cancel matching units across numerator and denominator', () => {
+    // m/km * (1000 m / 1 km): no cross-cancellation (m≠km), so result is m·m/km·km
     const result = predictResultingUnit('m/km', { num: '1000 m', den: '1 km', units: ['m', 'km'] });
-    expect(result).toBe('m·m');
+    expect(result).toBe('m·m/km·km');
   });
 });
 
@@ -205,51 +202,41 @@ describe('calculateCompositeScore', () => {
 // ---------------------------------------------------------------------------
 
 describe('checkLevel1Mastery', () => {
-  it('should return false when fewer than 10 questions answered', () => {
+  it('should return false when fewer than 6 questions answered', () => {
     expect(checkLevel1Mastery({
-      questionsAnswered: 9,
-      questionsCorrect: 9,
-      explanationsProvided: 9,
-      explanationScores: [1, 1, 1, 1, 1, 1, 1, 1, 1],
+      questionsAnswered: 5,
+      questionsCorrect: 5,
+      explanationsProvided: 5,
+      explanationScores: [],
       mastered: false,
     })).toBe(false);
   });
 
-  it('should return false when fewer than 8 correct answers', () => {
+  it('should return false when fewer than 5 correct answers', () => {
     expect(checkLevel1Mastery({
-      questionsAnswered: 10,
-      questionsCorrect: 7,
-      explanationsProvided: 10,
-      explanationScores: [0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8],
+      questionsAnswered: 6,
+      questionsCorrect: 4,
+      explanationsProvided: 6,
+      explanationScores: [],
       mastered: false,
     })).toBe(false);
   });
 
-  it('should return false when average explanation score is below 0.7', () => {
+  it('should return true when 5 of 6 are correct', () => {
     expect(checkLevel1Mastery({
-      questionsAnswered: 10,
-      questionsCorrect: 10,
-      explanationsProvided: 10,
-      explanationScores: [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
-      mastered: false,
-    })).toBe(false);
-  });
-
-  it('should return true when all thresholds are met', () => {
-    expect(checkLevel1Mastery({
-      questionsAnswered: 10,
-      questionsCorrect: 8,
-      explanationsProvided: 10,
-      explanationScores: [0.8, 0.7, 0.8, 0.7, 0.8, 0.7, 0.8, 0.7, 0.8, 0.7],
+      questionsAnswered: 6,
+      questionsCorrect: 5,
+      explanationsProvided: 6,
+      explanationScores: [],
       mastered: false,
     })).toBe(true);
   });
 
-  it('should default to 1 when no explanation scores are provided', () => {
+  it('should return true when all 6 are correct', () => {
     expect(checkLevel1Mastery({
-      questionsAnswered: 10,
-      questionsCorrect: 8,
-      explanationsProvided: 0,
+      questionsAnswered: 6,
+      questionsCorrect: 6,
+      explanationsProvided: 6,
       explanationScores: [],
       mastered: false,
     })).toBe(true);

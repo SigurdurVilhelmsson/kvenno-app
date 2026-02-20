@@ -51,39 +51,40 @@ export const predictResultingUnit = (currentUnit: string, factor: ConversionFact
       return `${current.numerator}·${factorParsed.numerator}/${factorParsed.denominator}`;
     }
   } else {
-    // Compound unit: current has both numerator and denominator
-    let newNum = current.numerator;
-    let newDen = current.denominator;
+    // Compound unit: (current_num / current_den) × (factor_num / factor_den)
+    // Collect all units, then cancel matching pairs between numerator and denominator
+    const numUnits = [current.numerator, factorParsed.numerator];
+    const denUnits = [current.denominator, factorParsed.denominator];
 
-    // Check if factor denominator cancels with current numerator
-    if (current.numerator === factorParsed.denominator) {
-      newNum = factorParsed.numerator;
-    } else {
-      // No cancellation in numerator - they multiply
-      newNum = `${current.numerator}·${factorParsed.numerator}`;
-    }
+    const cancelledNum = new Set<number>();
+    const cancelledDen = new Set<number>();
 
-    // Check if factor numerator cancels with current denominator
-    if (current.denominator === factorParsed.numerator) {
-      // Factor numerator cancels with current denominator
-      // Check if we just have numerator left
-      if (factorParsed.denominator === '1' || !factorParsed.denominator) {
-        return newNum; // Simple unit result
+    for (let i = 0; i < numUnits.length; i++) {
+      if (cancelledNum.has(i)) continue;
+      for (let j = 0; j < denUnits.length; j++) {
+        if (cancelledDen.has(j)) continue;
+        if (numUnits[i] === denUnits[j]) {
+          cancelledNum.add(i);
+          cancelledDen.add(j);
+          break;
+        }
       }
-      newDen = factorParsed.denominator;
-    } else if (current.denominator === factorParsed.denominator) {
-      // Both denominators are the same - they cancel out
-      return newNum;
-    } else {
-      // No cancellation in denominator - they multiply
-      newDen = `${current.denominator}·${factorParsed.denominator}`;
     }
 
-    // Simplify if numerator is just 1
-    if (newNum === '1') {
-      return `1/${newDen}`;
+    const remainingNum = numUnits.filter((_, i) => !cancelledNum.has(i));
+    const remainingDen = denUnits.filter((_, i) => !cancelledDen.has(i));
+
+    const numStr = remainingNum.length > 0 ? remainingNum.join('·') : '1';
+    const denStr = remainingDen.length > 0 ? remainingDen.join('·') : null;
+
+    if (!denStr) {
+      return numStr;
     }
 
-    return `${newNum}/${newDen}`;
+    if (numStr === '1') {
+      return `1/${denStr}`;
+    }
+
+    return `${numStr}/${denStr}`;
   }
 };
