@@ -5,6 +5,9 @@ import { HintSystem, FeedbackPanel } from '@shared/components';
 import { LEVEL1_CHALLENGES, type Level1Challenge } from '../data';
 import { BufferCapacityVisualization } from './BufferCapacityVisualization';
 
+/** Maximum molecules per species in the interactive mixer */
+const MAX_MOLECULES = 30;
+
 // Misconceptions for buffer concepts
 const BUFFER_MISCONCEPTIONS = {
   ratio_low: 'Ef hlutfallið [Basi]/[Sýra] er of lágt, þá er of mikið af sýru og pH verður lægra en markmiðið.',
@@ -79,7 +82,7 @@ export default function Level1({
 
   // Handle molecule addition
   const addAcid = () => {
-    if (acidCount < 20) setAcidCount(acidCount + 1);
+    if (acidCount < MAX_MOLECULES) setAcidCount(acidCount + 1);
     setFeedback(null);
     setShowExplanation(false);
   };
@@ -91,7 +94,7 @@ export default function Level1({
   };
 
   const addBase = () => {
-    if (baseCount < 20) setBaseCount(baseCount + 1);
+    if (baseCount < MAX_MOLECULES) setBaseCount(baseCount + 1);
     setFeedback(null);
     setShowExplanation(false);
   };
@@ -369,7 +372,7 @@ export default function Level1({
                   </button>
                   <button
                     onClick={addAcid}
-                    disabled={acidCount >= 20}
+                    disabled={acidCount >= MAX_MOLECULES}
                     aria-label="Bæta við sýrusameind"
                     className="flex-1 py-3 bg-red-500 hover:bg-red-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors"
                   >
@@ -391,7 +394,7 @@ export default function Level1({
                   </button>
                   <button
                     onClick={addBase}
-                    disabled={baseCount >= 20}
+                    disabled={baseCount >= MAX_MOLECULES}
                     aria-label="Bæta við basasameind"
                     className="flex-1 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors"
                   >

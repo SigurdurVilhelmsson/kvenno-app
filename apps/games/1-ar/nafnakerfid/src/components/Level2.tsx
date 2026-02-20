@@ -263,7 +263,6 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
       .replace(/á/g, 'a')
       .replace(/é/g, 'e')
       .replace(/ð/g, 'd')
-      .replace(/þ/g, 'th')
       .replace(/æ/g, 'ae')
       .replace(/ö/g, 'o')
       .replace(/\s+/g, '')

@@ -256,7 +256,7 @@ function App() {
         <div className="bg-emerald-50 p-6 rounded-xl mb-8">
           <h2 className="font-bold text-emerald-800 mb-3">Hvað er IUPAC nafnakerfið?</h2>
           <p className="text-emerald-900 text-sm mb-4">
-            <strong>IUPAC</strong> (International Union of Pure and Applied Chemistry) setti reglur til að nefna efnasameindir á samræmdan hátt.
+            <strong>IUPAC</strong> (International Union of Pure and Applied Chemistry) setti reglur til að nefna sameindir á samræmdan hátt.
             Nafn lífræns efnis segir okkur um byggingu þess.
           </p>
           <div className="grid grid-cols-3 gap-3 text-sm">

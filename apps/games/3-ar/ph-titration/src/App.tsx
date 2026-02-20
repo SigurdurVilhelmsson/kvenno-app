@@ -159,6 +159,7 @@ function App() {
           onBack={() => setActiveLevel('menu')}
           onCorrectAnswer={() => trackCorrectAnswer()}
           onIncorrectAnswer={() => trackIncorrectAnswer()}
+          t={t}
         />
         <AchievementNotificationsContainer
           notifications={notifications}

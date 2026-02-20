@@ -49,7 +49,7 @@ function generateDilutionProblem(difficulty: Difficulty, chemical: Chemical): Pr
     const M2 = parseFloat(((M1 * V1) / V2).toFixed(3));
 
     return {
-      id: Math.random().toString(),
+      id: crypto.randomUUID(),
       type: 'dilution',
       chemical,
       description: 'Útþynning',
@@ -71,7 +71,7 @@ function generateDilutionProblem(difficulty: Difficulty, chemical: Chemical): Pr
     const M2 = parseFloat(((M1 * V1) / V2).toFixed(4));
 
     return {
-      id: Math.random().toString(),
+      id: crypto.randomUUID(),
       type: 'dilution',
       chemical,
       description: 'Nákvæm útþynning',
@@ -95,7 +95,7 @@ function generateMolarityProblem(difficulty: Difficulty, chemical: Chemical): Pr
   const molarity = parseFloat((moles / volume).toFixed(3));
 
   return {
-    id: Math.random().toString(),
+    id: crypto.randomUUID(),
     type: 'molarity',
     chemical,
     description: 'Reikna mólstyrk',
@@ -120,7 +120,7 @@ function generateMolarityFromMassProblem(difficulty: Difficulty, chemical: Chemi
   const molarity = parseFloat((moles / volumeInL).toFixed(3));
 
   return {
-    id: Math.random().toString(),
+    id: crypto.randomUUID(),
     type: 'molarityFromMass',
     chemical,
     description: 'Reikna mólstyrk út frá massa',
@@ -145,7 +145,7 @@ function generateMassFromMolarityProblem(difficulty: Difficulty, chemical: Chemi
   const mass = parseFloat((moles * chemical.molarMass).toFixed(1));
 
   return {
-    id: Math.random().toString(),
+    id: crypto.randomUUID(),
     type: 'massFromMolarity',
     chemical,
     description: 'Reikna massa út frá mólstyrk',
@@ -173,7 +173,7 @@ function generateMixingProblem(difficulty: Difficulty, chemical: Chemical): Prob
   const finalMolarity = parseFloat((totalMoles / totalVolume).toFixed(3));
 
   return {
-    id: Math.random().toString(),
+    id: crypto.randomUUID(),
     type: 'mixing',
     chemical,
     description: 'Blanda tvær lausnir',

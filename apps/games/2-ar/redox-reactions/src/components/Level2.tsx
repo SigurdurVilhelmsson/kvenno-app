@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ElectrochemicalCell } from './ElectrochemicalCell';
 import { HalfReactionBalancer } from './HalfReactionBalancer';
 import { OxidationStateDisplay } from './OxidationStateDisplay';
+import { L2_SCORING } from '../config/scoring';
 
 interface Level2Props {
   onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
@@ -164,8 +165,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
   const [showExplanation, setShowExplanation] = useState(false);
   const [totalHintsUsed, setTotalHintsUsed] = useState(0);
 
-  // Maximum possible score: 8 reactions * 4 questions * 10 points = 320
-  const maxScore = reactions.length * questionTypes.length * 10;
+  const maxScore = reactions.length * questionTypes.length * L2_SCORING.POINTS_PER_QUESTION;
 
   const reaction = reactions[currentReaction];
   const question = questionTypes[currentQuestion];
@@ -193,7 +193,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
     setShowFeedback(true);
 
     if (correct) {
-      setScore(prev => prev + 10);
+      setScore(prev => prev + L2_SCORING.POINTS_PER_QUESTION);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();

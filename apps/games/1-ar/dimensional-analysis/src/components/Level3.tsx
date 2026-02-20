@@ -506,25 +506,25 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
               {/* Score grid */}
               <div className="grid grid-cols-2 gap-3 mb-6">
                 <div className="bg-white p-4 rounded-xl text-center">
-                  <p className="text-xs text-warm-500 mb-1">Svar</p>
+                  <p className="text-xs text-warm-500 mb-1">Svar <span className="text-warm-400">(40% vægi)</span></p>
                   <p className={`text-3xl font-bold ${scores.answer >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}>
                     {Math.round(scores.answer * 100)}%
                   </p>
                 </div>
                 <div className="bg-white p-4 rounded-xl text-center">
-                  <p className="text-xs text-warm-500 mb-1">Aðferð</p>
+                  <p className="text-xs text-warm-500 mb-1">Aðferð <span className="text-warm-400">(30% vægi)</span></p>
                   <p className={`text-3xl font-bold ${scores.method >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}>
                     {Math.round(scores.method * 100)}%
                   </p>
                 </div>
                 <div className="bg-white p-4 rounded-xl text-center">
-                  <p className="text-xs text-warm-500 mb-1">Útskýring</p>
+                  <p className="text-xs text-warm-500 mb-1">Útskýring <span className="text-warm-400">(20% vægi)</span></p>
                   <p className={`text-3xl font-bold ${scores.explanation >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}>
                     {Math.round(scores.explanation * 100)}%
                   </p>
                 </div>
                 <div className="bg-white p-4 rounded-xl text-center">
-                  <p className="text-xs text-warm-500 mb-1">Skilvirkni</p>
+                  <p className="text-xs text-warm-500 mb-1">Skilvirkni <span className="text-warm-400">(10% vægi)</span></p>
                   <p className={`text-3xl font-bold ${scores.efficiency >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}>
                     {Math.round(scores.efficiency * 100)}%
                   </p>

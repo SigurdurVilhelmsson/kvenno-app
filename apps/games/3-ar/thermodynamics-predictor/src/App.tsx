@@ -134,7 +134,7 @@ function App() {
     const correctSpontaneity = getSpontaneity(calculatedDeltaG);
 
     const deltaGDiff = Math.abs(parseFloat(userDeltaG) - calculatedDeltaG);
-    const deltaGCorrect = deltaGDiff <= 5;
+    const deltaGCorrect = deltaGDiff <= 3;
     const spontaneityCorrect = userSpontaneity === correctSpontaneity;
 
     if (deltaGCorrect && spontaneityCorrect) {

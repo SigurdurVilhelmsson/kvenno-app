@@ -142,12 +142,23 @@ export function ForceStrengthAnimation({
 
       {/* Force selector buttons */}
       {interactive && !showComparison && (
-        <div className="flex gap-2 mb-4">
-          {FORCES.map(force => (
+        <div className="flex gap-2 mb-4" role="group" aria-label="Veldu krafttegund">
+          {FORCES.map((force, idx) => (
             <button
               key={force.id}
               onClick={() => setSelectedForce(selectedForce === force.id ? null : force.id)}
-              className={`flex-1 px-2 py-2 rounded-lg text-xs font-medium transition-all ${
+              onKeyDown={(e) => {
+                if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                  e.preventDefault();
+                  const nextIdx = e.key === 'ArrowLeft'
+                    ? (idx - 1 + FORCES.length) % FORCES.length
+                    : (idx + 1) % FORCES.length;
+                  setSelectedForce(FORCES[nextIdx].id);
+                  (e.currentTarget.parentElement?.children[nextIdx] as HTMLElement)?.focus();
+                }
+              }}
+              aria-pressed={selectedForce === force.id}
+              className={`flex-1 px-2 py-2 rounded-lg text-xs font-medium transition-all focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-400 ${
                 selectedForce === force.id
                   ? 'text-white ring-2 ring-white/50'
                   : 'bg-warm-700 text-warm-300 hover:bg-warm-600'

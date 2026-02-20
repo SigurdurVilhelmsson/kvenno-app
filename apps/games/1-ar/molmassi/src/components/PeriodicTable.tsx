@@ -183,7 +183,7 @@ export function PeriodicTable({
         {/* Content */}
         <div className="flex-1 overflow-auto p-2 md:p-4">
           {viewMode === 'grid' ? (
-            <div className="min-w-[700px]">
+            <div>
               {/* Periodic Table Grid */}
               <div className="grid gap-0.5" style={{ gridTemplateColumns: 'repeat(18, minmax(0, 1fr))' }}>
                 {/* Group numbers header */}

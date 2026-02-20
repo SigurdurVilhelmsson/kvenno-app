@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
+import { L1_SCORING } from '../config/scoring';
 
 // Misconceptions for oxidation states
 const OXIDATION_MISCONCEPTIONS: Record<string, string> = {
@@ -102,8 +103,7 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   const [attempts, setAttempts] = useState(0);
   const [totalHintsUsed, setTotalHintsUsed] = useState(0);
 
-  // Maximum possible score: 10 problems * 10 points each = 100
-  const maxScore = problems.length * 10;
+  const maxScore = problems.length * L1_SCORING.MAX_PER_PROBLEM;
 
   const handleNextRule = () => {
     if (currentRule < oxidationRules.length - 1) {
@@ -126,7 +126,7 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     setShowFeedback(true);
 
     if (correct) {
-      const points = attempts === 0 ? 10 : attempts === 1 ? 5 : 2;
+      const points = attempts === 0 ? L1_SCORING.FIRST_TRY : attempts === 1 ? L1_SCORING.SECOND_TRY : L1_SCORING.THIRD_PLUS_TRY;
       setScore(prev => prev + points);
       onCorrectAnswer?.();
     } else {

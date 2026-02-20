@@ -67,6 +67,13 @@ export const gameTranslations = createGameTranslations({
       neutralization: 'M₁V₁ = M₂V₂ (fyrir einprótóna)',
       henderson: 'pH = pKa + log([A⁻]/[HA])',
     },
+    challengeTypes: {
+      findConcentration: 'Styrkur',
+      findVolume: 'Rúmmál',
+      polyprotic: 'Fjölprótón',
+      hendersonHasselbalch: 'H-H jafna',
+      combined: 'Samansett',
+    },
     progress: {
       title: 'Framvinda',
       levelsCompleted: 'Stig lokið',
@@ -138,6 +145,13 @@ export const gameTranslations = createGameTranslations({
       neutralization: 'M₁V₁ = M₂V₂ (for monoprotic)',
       henderson: 'pH = pKa + log([A⁻]/[HA])',
     },
+    challengeTypes: {
+      findConcentration: 'Concentration',
+      findVolume: 'Volume',
+      polyprotic: 'Polyprotic',
+      hendersonHasselbalch: 'H-H equation',
+      combined: 'Combined',
+    },
     progress: {
       title: 'Progress',
       levelsCompleted: 'Levels completed',
@@ -208,6 +222,13 @@ export const gameTranslations = createGameTranslations({
       title: 'Kluczowe wzory',
       neutralization: 'M₁V₁ = M₂V₂ (dla jednoprotonowych)',
       henderson: 'pH = pKa + log([A⁻]/[HA])',
+    },
+    challengeTypes: {
+      findConcentration: 'Stezenie',
+      findVolume: 'Objetosc',
+      polyprotic: 'Wieloprotonowy',
+      hendersonHasselbalch: 'Rownanie H-H',
+      combined: 'Zlozony',
     },
     progress: {
       title: 'Postep',

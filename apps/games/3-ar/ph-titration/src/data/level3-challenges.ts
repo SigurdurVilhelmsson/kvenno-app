@@ -254,7 +254,7 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
     },
     correctAnswer: 1.74,
     unit: '',
-    tolerance: 0.05,
+    tolerance: 0.02,
     hintIs: 'Endurraðaðu Henderson-Hasselbalch: log(hlutfall) = pH - pKₐ, svo hlutfall = 10^(pH - pKₐ)',
     hint: 'Rearrange Henderson-Hasselbalch: log(ratio) = pH - pKₐ, so ratio = 10^(pH - pKₐ)',
     explanationIs: 'Leystu fyrir hlutfallið með því að nota 10^ á báðar hliðar.',

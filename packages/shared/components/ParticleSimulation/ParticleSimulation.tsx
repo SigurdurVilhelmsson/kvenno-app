@@ -113,7 +113,8 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
           color: type.color,
           strokeColor: type.strokeColor,
           mass: type.mass || 1,
-          energy: 0.5 * (type.mass || 1) * speed * speed
+          energy: 0.5 * (type.mass || 1) * speed * speed,
+          shape: type.shape
         });
       }
     });
@@ -341,16 +342,53 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
           ctx.stroke();
         }
 
-        // Particle body
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        // Particle body (shape-aware for color-blind accessibility)
         ctx.fillStyle = particle.color;
-        ctx.fill();
+        const r = particle.radius;
+        const shape = particle.shape || 'circle';
 
-        if (particle.strokeColor) {
-          ctx.strokeStyle = particle.strokeColor;
-          ctx.lineWidth = 1;
-          ctx.stroke();
+        if (shape === 'square') {
+          const s = r * 1.3;
+          ctx.fillRect(particle.x - s, particle.y - s, s * 2, s * 2);
+          if (particle.strokeColor) {
+            ctx.strokeStyle = particle.strokeColor;
+            ctx.lineWidth = 1;
+            ctx.strokeRect(particle.x - s, particle.y - s, s * 2, s * 2);
+          }
+        } else if (shape === 'triangle') {
+          ctx.beginPath();
+          ctx.moveTo(particle.x, particle.y - r * 1.3);
+          ctx.lineTo(particle.x + r * 1.2, particle.y + r * 0.7);
+          ctx.lineTo(particle.x - r * 1.2, particle.y + r * 0.7);
+          ctx.closePath();
+          ctx.fill();
+          if (particle.strokeColor) {
+            ctx.strokeStyle = particle.strokeColor;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        } else if (shape === 'diamond') {
+          ctx.beginPath();
+          ctx.moveTo(particle.x, particle.y - r * 1.3);
+          ctx.lineTo(particle.x + r * 1.3, particle.y);
+          ctx.lineTo(particle.x, particle.y + r * 1.3);
+          ctx.lineTo(particle.x - r * 1.3, particle.y);
+          ctx.closePath();
+          ctx.fill();
+          if (particle.strokeColor) {
+            ctx.strokeStyle = particle.strokeColor;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        } else {
+          ctx.beginPath();
+          ctx.arc(particle.x, particle.y, r, 0, Math.PI * 2);
+          ctx.fill();
+          if (particle.strokeColor) {
+            ctx.strokeStyle = particle.strokeColor;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
         }
 
         // Label

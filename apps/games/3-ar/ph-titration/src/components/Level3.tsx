@@ -7,9 +7,10 @@ interface Level3Props {
   onBack: () => void;
   onCorrectAnswer?: () => void;
   onIncorrectAnswer?: () => void;
+  t?: (key: string, fallback?: string) => string;
 }
 
-export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
+export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer, t }: Level3Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [hintsUsed, setHintsUsed] = useState(0);
@@ -85,15 +86,26 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     }
   };
 
+  const challengeTypeKeys: Record<string, string> = {
+    'find-concentration': 'findConcentration',
+    'find-volume': 'findVolume',
+    'polyprotic': 'polyprotic',
+    'henderson-hasselbalch': 'hendersonHasselbalch',
+    'combined': 'combined',
+  };
+
+  const challengeTypeFallbacks: Record<string, string> = {
+    'find-concentration': 'Styrkur',
+    'find-volume': 'Rúmmál',
+    'polyprotic': 'Fjölprótón',
+    'henderson-hasselbalch': 'H-H jafna',
+    'combined': 'Samansett',
+  };
+
   const getChallengeTypeLabel = (type: string): string => {
-    switch (type) {
-      case 'find-concentration': return 'Styrkur';
-      case 'find-volume': return 'Rúmmál';
-      case 'polyprotic': return 'Fjölprótón';
-      case 'henderson-hasselbalch': return 'H-H jafna';
-      case 'combined': return 'Samansett';
-      default: return type;
-    }
+    const key = challengeTypeKeys[type];
+    if (key && t) return t(`challengeTypes.${key}`, challengeTypeFallbacks[type]);
+    return challengeTypeFallbacks[type] || type;
   };
 
   const getChallengeTypeColor = (type: string): string => {

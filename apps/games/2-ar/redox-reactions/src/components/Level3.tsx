@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { L3_SCORING } from '../config/scoring';
 import { problems } from '../data/half-reactions';
 
 interface Level3Props {
@@ -32,8 +33,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   });
   const [totalHintsUsed, setTotalHintsUsed] = useState(0);
 
-  // Maximum possible score: 6 problems * (15 identify + 10 ox + 10 red + 20 balance) = 6 * 55 = 330
-  const maxScore = problems.length * 55;
+  const maxScore = problems.length * L3_SCORING.MAX_PER_PROBLEM;
 
   const problem = problems[currentProblem];
 
@@ -42,7 +42,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     const redCorrect = answers.reduced.toLowerCase() === problem.reductionHalf.species.toLowerCase().replace(/[⁺⁻²³⁴₂]/g, '');
 
     if (oxCorrect && redCorrect) {
-      setScore(prev => prev + 15);
+      setScore(prev => prev + L3_SCORING.IDENTIFY);
       setFeedback({ show: true, correct: true, message: t('level3.identifyCorrect', 'Rétt! Þú greindir hvað oxast og afoxast.') });
       onCorrectAnswer?.();
     } else {
@@ -60,7 +60,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     const redM = parseInt(answers.redMultiplier);
 
     if (oxM === problem.multiplierOx && redM === problem.multiplierRed) {
-      setScore(prev => prev + 20);
+      setScore(prev => prev + L3_SCORING.BALANCE);
       setFeedback({ show: true, correct: true, message: t('level3.balanceCorrect', 'Frábært! Þú jafnaðir rafeindirnar rétt.') });
       onCorrectAnswer?.();
     } else {
@@ -182,7 +182,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                 onClick={() => {
                   const correct = parseInt(answers.oxElectrons) === problem.oxidationHalf.electrons;
                   if (correct) {
-                    setScore(prev => prev + 10);
+                    setScore(prev => prev + L3_SCORING.OXIDATION_HALF);
                     setFeedback({ show: true, correct: true, message: t('common.correct', 'Rétt!') });
                     onCorrectAnswer?.();
                   } else {
@@ -235,7 +235,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                 onClick={() => {
                   const correct = parseInt(answers.redElectrons) === problem.reductionHalf.electrons;
                   if (correct) {
-                    setScore(prev => prev + 10);
+                    setScore(prev => prev + L3_SCORING.REDUCTION_HALF);
                     setFeedback({ show: true, correct: true, message: t('common.correct', 'Rétt!') });
                     onCorrectAnswer?.();
                   } else {

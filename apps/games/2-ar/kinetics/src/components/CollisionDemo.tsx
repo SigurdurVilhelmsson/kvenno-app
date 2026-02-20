@@ -56,7 +56,8 @@ export function CollisionDemo({
       radius: 6,
       label: 'A',
       strokeColor: '#c2410c',
-      mass: 1
+      mass: 1,
+      shape: 'circle' as const
     },
     {
       id: 'B',
@@ -64,7 +65,8 @@ export function CollisionDemo({
       radius: 6,
       label: 'B',
       strokeColor: '#1d4ed8',
-      mass: 1
+      mass: 1,
+      shape: 'square' as const
     },
     {
       id: 'AB',
@@ -72,7 +74,8 @@ export function CollisionDemo({
       radius: 8,
       label: 'AB',
       strokeColor: '#15803d',
-      mass: 2
+      mass: 2,
+      shape: 'diamond' as const
     }
   ], []);
 
@@ -151,15 +154,15 @@ export function CollisionDemo({
       <div className="mt-3 flex flex-wrap gap-3 text-xs">
         <div className="flex items-center gap-1.5">
           <div className="w-3 h-3 rounded-full bg-orange-500 border border-white/20" />
-          <span className="text-warm-200 font-medium">Hvarfefni A</span>
+          <span className="text-warm-200 font-medium">● Hvarfefni A</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-full bg-blue-500 border border-white/20" />
-          <span className="text-warm-200 font-medium">Hvarfefni B</span>
+          <div className="w-3 h-3 bg-blue-500 border border-white/20" />
+          <span className="text-warm-200 font-medium">■ Hvarfefni B</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 rounded-full bg-green-500 border border-white/20" />
-          <span className="text-warm-200 font-medium">Afurð AB</span>
+          <div className="w-3 h-3 bg-green-500 border border-white/20" style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }} />
+          <span className="text-warm-200 font-medium">◆ Afurð AB</span>
         </div>
       </div>
 

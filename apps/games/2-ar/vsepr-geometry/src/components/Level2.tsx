@@ -261,12 +261,30 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     } else if (step.id === 'geometry') {
       correct = selectedGeometry === molecule.correctGeometryId;
     } else if (step.id === 'angle') {
-      // Accept approximate answers
+      // Accept approximate answers — parse numeric values with ±2° tolerance
       const normalizedAnswer = selectedAngle.replace(/\s/g, '').toLowerCase();
       const normalizedCorrect = molecule.bondAngle.replace(/\s/g, '').toLowerCase();
-      correct = normalizedAnswer === normalizedCorrect ||
-                normalizedAnswer.includes(normalizedCorrect.replace('°', '')) ||
-                (molecule.correctGeometryId === 'bent' && (normalizedAnswer.includes('104') || normalizedAnswer.includes('105')));
+
+      // Extract numeric values from the correct answer (e.g. "109.5°" → [109.5], "90° og 120°" → [90, 120])
+      const correctNums = normalizedCorrect.match(/[\d.]+/g)?.map(Number) || [];
+      const answerNums = normalizedAnswer.match(/[\d.]+/g)?.map(Number) || [];
+
+      if (correctNums.length === 1 && answerNums.length >= 1) {
+        // Single-angle geometry: accept if any entered number is within ±2°
+        correct = answerNums.some(a => Math.abs(a - correctNums[0]) <= 2);
+      } else if (correctNums.length >= 2 && answerNums.length >= 2) {
+        // Multi-angle geometry (e.g. "90° og 120°"): all correct angles must be matched within ±2°
+        correct = correctNums.every(c => answerNums.some(a => Math.abs(a - c) <= 2));
+      } else {
+        // Fallback to string matching
+        correct = normalizedAnswer === normalizedCorrect ||
+                  normalizedAnswer.includes(normalizedCorrect.replace('°', ''));
+      }
+
+      // Special case: bent geometry accepts ~104-105°
+      if (!correct && molecule.correctGeometryId === 'bent') {
+        correct = answerNums.some(a => a >= 103 && a <= 106);
+      }
     } else if (step.id === 'explanation') {
       // Always correct for explanation step - it's about learning
       correct = explanation.length > 20;
@@ -599,12 +617,29 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                             </>
                           )}
 
-                          {(molecule.correctGeometryId === 'octahedral' || molecule.correctGeometryId === 'square-planar') && (
+                          {molecule.correctGeometryId === 'octahedral' && (
                             <>
                               <line x1="90" y1="62" x2="90" y2="20" stroke="#374151" strokeWidth="3" />
                               <line x1="72" y1="80" x2="30" y2="80" stroke="#374151" strokeWidth="3" />
                               <line x1="108" y1="80" x2="150" y2="80" stroke="#374151" strokeWidth="3" />
                               <line x1="90" y1="98" x2="90" y2="115" stroke="#374151" strokeWidth="3" />
+                              <path d="M 90 50 A 30 30 0 0 1 120 80" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeDasharray="4 2" />
+                              <text x="115" y="60" textAnchor="middle" fill="#8b5cf6" fontWeight="bold" fontSize="11">90°</text>
+                            </>
+                          )}
+
+                          {molecule.correctGeometryId === 'square-planar' && (
+                            <>
+                              {/* 4 bonds in the square plane (left, right, top, bottom) */}
+                              <line x1="90" y1="62" x2="90" y2="20" stroke="#374151" strokeWidth="3" />
+                              <line x1="72" y1="80" x2="30" y2="80" stroke="#374151" strokeWidth="3" />
+                              <line x1="108" y1="80" x2="150" y2="80" stroke="#374151" strokeWidth="3" />
+                              <line x1="90" y1="98" x2="90" y2="115" stroke="#374151" strokeWidth="3" />
+                              {/* 2 lone pairs (axial, perpendicular to plane) */}
+                              <ellipse cx="65" cy="55" rx="7" ry="5" fill="none" stroke="#ec4899" strokeWidth="2" strokeDasharray="3 2" />
+                              <text x="55" y="48" fontSize="8" fill="#ec4899" fontWeight="bold">LP</text>
+                              <ellipse cx="115" cy="105" rx="7" ry="5" fill="none" stroke="#ec4899" strokeWidth="2" strokeDasharray="3 2" />
+                              <text x="125" y="108" fontSize="8" fill="#ec4899" fontWeight="bold">LP</text>
                               <path d="M 90 50 A 30 30 0 0 1 120 80" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeDasharray="4 2" />
                               <text x="115" y="60" textAnchor="middle" fill="#8b5cf6" fontWeight="bold" fontSize="11">90°</text>
                             </>

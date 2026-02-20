@@ -23,6 +23,9 @@ import {
 import { calculateShift, getStressDescriptionIs } from './utils/le-chatelier';
 import './styles.css';
 
+/** Time limit per question in challenge mode */
+const CHALLENGE_SECONDS = 20;
+
 function App() {
   const { progress, updateProgress } = useProgress({
     gameId: 'equilibrium-shifter',
@@ -151,7 +154,7 @@ function App() {
       setAppliedStress(randomStress);
       const shift = calculateShift(eq, randomStress);
       setCorrectShift(shift);
-      setTimeRemaining(20); // 20 seconds per question
+      setTimeRemaining(CHALLENGE_SECONDS);
     } else {
       // In learning mode, let user select stress
       setAppliedStress(null);

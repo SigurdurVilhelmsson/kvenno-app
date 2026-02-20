@@ -56,6 +56,7 @@ function App() {
   const [showAchievements, setShowAchievements] = useState(false);
   const [sessionHintsUsed, setSessionHintsUsed] = useState(0);
   const [sessionQuestionsAnswered, setSessionQuestionsAnswered] = useState(0);
+  const [sessionCompleted, setSessionCompleted] = useState(false);
 
   // Law selection step state (practice mode only)
   const [gameStep, setGameStep] = useState<'select-law' | 'solve'>('select-law');
@@ -242,6 +243,7 @@ function App() {
       const levelScore = stats.correctAnswers + (isCorrect ? 1 : 0);
       trackLevelComplete(3, levelScore, 15, { hintsUsed: sessionHintsUsed });
       trackGameComplete();
+      setSessionCompleted(true);
     }
 
     const newStats = {
@@ -807,6 +809,15 @@ function App() {
                 </div>
               )}
             </div>
+
+            {/* Session completion banner */}
+            {sessionCompleted && sessionQuestionsAnswered === 15 && (
+              <div className="bg-gradient-to-r from-yellow-100 to-amber-100 border-2 border-yellow-400 rounded-xl p-4 mb-6 text-center">
+                <div className="text-3xl mb-1">🎉⭐</div>
+                <p className="font-bold text-yellow-800 text-lg">Þú hefur lokið Gas Law Challenge!</p>
+                <p className="text-yellow-700 text-sm">15 spurningar svaraðar — þú getur haldið áfram til að bæta stigin þín.</p>
+              </div>
+            )}
 
             {/* Answer Comparison */}
             <div className="grid md:grid-cols-2 gap-4 mb-6">

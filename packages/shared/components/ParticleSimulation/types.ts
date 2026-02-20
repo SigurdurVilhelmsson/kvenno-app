@@ -7,6 +7,9 @@
  * - Solutions (dissolution, Brownian motion)
  */
 
+/** Particle shape for color-blind accessibility */
+export type ParticleShape = 'circle' | 'square' | 'triangle' | 'diamond';
+
 /** Configuration for a particle type */
 export interface ParticleType {
   /** Unique identifier */
@@ -21,6 +24,8 @@ export interface ParticleType {
   strokeColor?: string;
   /** Mass (affects collision behavior) */
   mass?: number;
+  /** Shape for color-blind accessibility (default: circle) */
+  shape?: ParticleShape;
 }
 
 /** Individual particle state */
@@ -39,6 +44,8 @@ export interface Particle {
   reacted?: boolean;
   /** Energy level (for activation energy visualization) */
   energy?: number;
+  /** Shape for color-blind accessibility */
+  shape?: ParticleShape;
 }
 
 /** Container configuration */
