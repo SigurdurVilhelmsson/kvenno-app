@@ -120,6 +120,11 @@
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
 }
 
+.stress-btn:focus-visible {
+  outline: 3px solid #6366f1;
+  outline-offset: 2px;
+}
+
 .stress-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -147,6 +152,11 @@
   transform: scale(1.05);
 }
 
+.predict-btn:focus-visible {
+  outline: 3px solid #1e293b;
+  outline-offset: 2px;
+}
+
 .predict-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
@@ -172,9 +182,17 @@
   animation: pulse-success 0.6s ease-in-out;
 }
 
+.predict-btn.correct::after {
+  content: ' ✓';
+}
+
 .predict-btn.incorrect {
   border-color: #ef4444;
   animation: shake 0.4s ease-in-out;
+}
+
+.predict-btn.incorrect::after {
+  content: ' ✗';
 }
 
 /* Explanation Box */
@@ -299,6 +317,11 @@
 .mode-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.mode-card:focus-visible {
+  outline: 3px solid #f36b22;
+  outline-offset: 2px;
 }
 
 .mode-card::before {

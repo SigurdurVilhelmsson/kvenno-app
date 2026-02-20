@@ -114,8 +114,9 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-warm-700 mb-1">Hvað oxast?</label>
+                <label className="block text-sm font-medium text-warm-700 mb-1" htmlFor="oxidized-input">Hvað oxast?</label>
                 <input
+                  id="oxidized-input"
                   type="text"
                   value={answers.oxidized}
                   onChange={(e) => setAnswers(prev => ({ ...prev, oxidized: e.target.value }))}
@@ -124,8 +125,9 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-warm-700 mb-1">Hvað afoxast?</label>
+                <label className="block text-sm font-medium text-warm-700 mb-1" htmlFor="reduced-input">Hvað afoxast?</label>
                 <input
+                  id="reduced-input"
                   type="text"
                   value={answers.reduced}
                   onChange={(e) => setAnswers(prev => ({ ...prev, reduced: e.target.value }))}

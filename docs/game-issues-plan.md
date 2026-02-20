@@ -106,7 +106,7 @@
 ### Major
 - [ ] **5-02. Difficulty gap L2→L3 too abrupt** — L2 provides step-by-step; L3 demands all answers simultaneously.
 - [ ] **5-03. L3 gram mode fixed 0.5x multiplier** — All problems use same multiplier, enabling pattern matching. Randomize 0.3–2.0.
-- [ ] **5-04. No ARIA labels on interactive elements** — Molecules, animations, clickable cards lack accessible names.
+- [x] **5-04. No ARIA labels on interactive elements** — Added `role="img"` + `aria-label` to Molecule.tsx, `aria-label` to ReactionAnimation reset button, keyboard-accessible divs (`role="button"`, `tabIndex`, `onKeyDown`, `aria-pressed`) in Level3.tsx, `aria-label` on product inputs. *(Session B)*
 
 ### Minor
 - [ ] **5-05. L1/L2 mastery paradigm mismatch** (75% overall vs 100% per-problem)
@@ -130,7 +130,7 @@
 ## Game 07: VSEPR Geometry (4.9/5)
 
 ### Major
-- [ ] **7-01. SVG animations lack screen reader descriptions** — BondAngleMeasurement, ElectronRepulsionAnimation, ShapeTransitionAnimation: no `<title>`/`<desc>` in SVGs.
+- [x] **7-01. SVG animations lack screen reader descriptions** — Added `role="img"`, `aria-label`, `<title>` to BondAngleMeasurement (compact + full), ElectronRepulsionAnimation, and ShapeTransitionAnimation SVGs. *(Session B)*
 
 ### Minor
 - [ ] **7-02. Menu title missing diacritics** — "VSEPR Rumfraedi" → "VSEPR Rumfraedi" (App.tsx:251)
@@ -156,7 +156,7 @@
 
 ### Major
 - [ ] **9-01. L3 challenge content not internationalized** — Titles, descriptions, step-by-step all hardcoded Icelandic. Move to i18n.ts.
-- [ ] **9-02. Energy diagrams lack accessibility** — SVGs missing role/aria-label. Color-only exo/endo distinction.
+- [x] **9-02. Energy diagrams lack accessibility** — Added `role="img"`, `aria-label`, `<title>` to EnergyPathwayDiagram and StatePathComparison SVGs. Added `▼`/`▲` text indicators to legend for color-blind distinction. *(Session B)*
 - [ ] **9-03. L2 equation blocks lack keyboard navigation** — Click-only handlers, no Enter/Space/arrow key support.
 
 ### Minor
@@ -197,8 +197,8 @@
 - [ ] **12-01. i18n translations defined but never used** — Complete 3-language translations exist in i18n.ts but all UI text is hardcoded Icelandic. LanguageSwitcher has no effect. Connect with `t()` calls. **(Deferred to Session D — ~205 strings across 7 files)**
 
 ### Major
-- [ ] **12-02. Missing ARIA labels on inputs** — Level1.tsx:289, Level2.tsx:279, Level3.tsx:118.
-- [ ] **12-03. SVG ElectrochemicalCell lacks accessibility** — No `<title>`, no `role="img"`.
+- [x] **12-02. Missing ARIA labels on inputs** — Added `aria-label="Oxunartala"` to Level1.tsx number input, `htmlFor`/`id` pairs to Level3.tsx label/input elements. *(Session B)*
+- [x] **12-03. SVG ElectrochemicalCell lacks accessibility** — Added `role="img"`, `aria-label`, `<title>` to ElectrochemicalCell.tsx SVG. *(Session B)*
 - [ ] **12-04. Color-only indicators in OxidationStateDisplay** — Add icon supplements for color-blind users.
 
 ### Minor
@@ -211,7 +211,7 @@
 
 ### Major
 - [ ] **13-01. Problem contexts not internationalized** — level1-challenges.ts, level2-puzzles.ts, level3-puzzles.ts: all Icelandic-only.
-- [ ] **13-02. No ARIA labels on interactive elements** — Buttons, inputs, BufferCapacityVisualization SVG.
+- [x] **13-02. No ARIA labels on interactive elements** — Added `role="img"`, `aria-label`, `<title>` to BufferCapacityVisualization SVG. Added `aria-label` to acid/base add/remove buttons in Level1.tsx and concentration buttons. *(Session B)*
 - [ ] **13-03. Input fields and molecule circles below mobile minimum** — Inputs py-2 (~40px), circles w-8 h-8 (32px).
 
 ### Minor
@@ -227,7 +227,7 @@
 ### Major
 - [ ] **14-01. Both sides glow identically** — styles.css:70-80: reactants and products both use same green glow. Differentiate colors.
 - [ ] **14-02. Challenge timer doesn't pause during explanation** — App.tsx:94-117: add `&& !showExplanation` to timer condition.
-- [ ] **14-03. Prediction buttons lack focus styles & color-blind support** — Missing `:focus` outlines, color-only differentiation, contrast ratio 3.8:1 < 4.5:1 WCAG AA.
+- [x] **14-03. Prediction buttons lack focus styles & color-blind support** — Added `:focus-visible` outlines to `.predict-btn`, `.stress-btn`, `.mode-card` in styles.css. Added `::after` content (`✓`/`✗`) for correct/incorrect states. Added `focus-visible:outline` classes to Tailwind-styled buttons in App.tsx. *(Session B)*
 
 ### Minor
 - [ ] **14-04. HTML lang not updated on language change**
@@ -253,8 +253,8 @@
 ## Game 16: pH Titration (4.6/5)
 
 ### Major
-- [ ] **16-01. Missing ARIA labels on lab equipment** — Burette, Flask, PHMeter: no aria-label/aria-valuenow/aria-valuemin/aria-valuemax.
-- [ ] **16-02. No keyboard navigation in Level 2** — Burette controls click-only.
+- [x] **16-01. Missing ARIA labels on lab equipment** — Added `role="meter"`, `aria-label`, `aria-valuenow/min/max` to Burette.tsx and PHMeter.tsx. Added `role="img"`, `aria-label` to Flask.tsx body. *(Session B)*
+- [x] **16-02. No keyboard navigation in Level 2** — Added `onKeyDown`/`onKeyUp`/`onBlur` handlers to hold-to-pour button for Space/Enter keyboard operation. Added `aria-label` to increment buttons (+0.05, +1, +5 mL). Added `focus-visible:outline` classes to all controls. *(Session B)*
 - [ ] **16-03. Flask fixed size overflows mobile** — Flask.tsx:34: `w-60 h-70` too wide for <320px. Use `w-48 md:w-60`.
 
 ### Minor
@@ -284,7 +284,8 @@
 |----------|-------|-------------|
 | Critical (remaining) | 1 | 12-01 deferred to Session D |
 | Critical (fixed) | 6 + 1 false positive | 1-01a, 1-01b/2-01, 3-01, 3-02, 4-01, 5-01; 3-03 was false positive |
-| Major (remaining) | 48 | Significant UX, accessibility, pedagogical problems |
+| Major (fixed) | 9 | 14-03, 16-01, 16-02, 13-02, 12-02, 12-03, 5-04, 9-02, 7-01 (Session B) |
+| Major (remaining) | 39 | Significant UX, accessibility, pedagogical problems |
 | Minor (remaining) | 52 | Polish, consistency, nice-to-haves |
 
 ### Suggested Session Order
@@ -320,7 +321,7 @@
 |---------|------|-------------|-----------|-------|
 | Pre-work | 2026-02-20 | Cross-cutting: -tranwarm-, focus:outline-hidden | `9060395` | 26 files, 12+15 games |
 | A | 2026-02-20 | 3-01, 3-02, 3-03(FP), 4-01, 5-01, 1-01a(verified), 1-01b(×17) | `fix/session-a-critical-bugs` | 6 critical fixed, 1 false positive, 12-01 deferred to D |
-| B | | | | |
+| B | 2026-02-20 | 14-03, 16-01, 16-02, 13-02, 12-02, 12-03, 5-04, 9-02, 7-01 | `fix/session-b-accessibility` | 9 major accessibility fixes across 7 games: ARIA labels, keyboard nav, screen reader SVGs, focus styles, color-blind support |
 | C | | | | |
 | D | | | | |
 | E | | | | |

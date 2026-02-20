@@ -43,6 +43,8 @@ export const Flask: React.FC<FlaskProps> = ({
 
         {/* Flask body */}
         <div
+          role="img"
+          aria-label={`Erlenmeyerkolbi: pH ${pH.toFixed(2)}, ${(volumeAnalyte + volumeTitrant).toFixed(1)} mL lausn — ${pH < 7 ? 'súr' : pH > 7 ? 'basísk' : 'hlutlaus'}`}
           className={`relative w-60 h-52 border-4 border-indigo-500 overflow-hidden ${isSwirling ? 'animate-pulse' : ''}`}
           style={{
             background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0.75) 100%)',

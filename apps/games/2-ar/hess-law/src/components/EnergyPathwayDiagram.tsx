@@ -105,7 +105,10 @@ export function EnergyPathwayDiagram({
         width="100%"
         viewBox={`0 0 ${width} ${height}`}
         className="overflow-visible"
+        role="img"
+        aria-label="Orkuferill sem sýnir orkubreytingar í hvörfum"
       >
+        <title>Orkuferill</title>
         {/* Background grid */}
         <defs>
           <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -273,12 +276,12 @@ export function EnergyPathwayDiagram({
       {/* Legend */}
       <div className="flex justify-center gap-4 mt-3 text-xs">
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 rounded-full bg-red-500" />
-          <span className="text-warm-400">Exóþermt (−ΔH)</span>
+          <div className="w-3 h-3 rounded-full bg-red-500" aria-hidden="true" />
+          <span className="text-warm-400">▼ Exóþermt (−ΔH)</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 rounded-full bg-blue-500" />
-          <span className="text-warm-400">Endóþermt (+ΔH)</span>
+          <div className="w-3 h-3 rounded-full bg-blue-500" aria-hidden="true" />
+          <span className="text-warm-400">▲ Endóþermt (+ΔH)</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-0.5 bg-yellow-500" style={{ width: '12px' }} />

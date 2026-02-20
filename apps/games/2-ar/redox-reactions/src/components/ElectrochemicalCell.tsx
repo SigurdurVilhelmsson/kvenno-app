@@ -350,7 +350,10 @@ export function ElectrochemicalCell({
           height={height}
           viewBox={`0 0 ${width} ${height}`}
           className="bg-warm-100 rounded-xl border border-warm-200"
+          role="img"
+          aria-label={`Galvanísk klefi: ${pair.anode.metal} anoða og ${pair.cathode.metal} katoða með rafeinda- og jónaflæði`}
         >
+          <title>Rafefnaklefi með {pair.anode.metal}/{pair.cathode.metal}</title>
           <defs>
             {/* Gradients for electrodes */}
             <linearGradient id="anodeGrad" x1="0%" y1="0%" x2="100%" y2="100%">

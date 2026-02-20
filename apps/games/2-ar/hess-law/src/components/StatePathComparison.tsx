@@ -298,7 +298,10 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
           width="100%"
           viewBox={`0 0 ${width} ${height}`}
           className="overflow-visible"
+          role="img"
+          aria-label="Samanburður á orkuleiðum: bein leið og óbein leið gefa sömu orkubreytingu"
         >
+          <title>Orkuleið samanburður (Lögmál Hess)</title>
           {/* Grid */}
           <defs>
             <pattern id="state-grid" width="30" height="30" patternUnits="userSpaceOnUse">

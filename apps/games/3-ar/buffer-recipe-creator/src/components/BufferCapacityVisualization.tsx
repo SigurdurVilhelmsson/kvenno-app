@@ -199,7 +199,8 @@ export function BufferCapacityVisualization({
         <div className="text-xs text-warm-400 mb-2 text-center">
           β (stuðpúðageta) vs pH
         </div>
-        <svg width="100%" viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="overflow-visible">
+        <svg width="100%" viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="overflow-visible" role="img" aria-label={`Stuðpúðageta graf: pH ${adjustedState.pH.toFixed(2)}, pKa ${pKa.toFixed(1)}. Besta stuðpúðasvæði er pH ${(pKa - 1).toFixed(1)} til ${(pKa + 1).toFixed(1)}.`}>
+          <title>Stuðpúðageta (β) sem fall af pH</title>
           {/* Grid lines */}
           <defs>
             <pattern id="grid-capacity" width="20" height="20" patternUnits="userSpaceOnUse">
@@ -368,12 +369,14 @@ export function BufferCapacityVisualization({
               <div className="flex gap-1">
                 <button
                   onClick={() => handleAddAcid(0.01)}
+                  aria-label="Bæta við 0,01 M sterkri sýru"
                   className="flex-1 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition-colors"
                 >
                   +0.01 M
                 </button>
                 <button
                   onClick={() => handleAddAcid(0.05)}
+                  aria-label="Bæta við 0,05 M sterkri sýru"
                   className="flex-1 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition-colors"
                 >
                   +0.05 M
@@ -391,12 +394,14 @@ export function BufferCapacityVisualization({
               <div className="flex gap-1">
                 <button
                   onClick={() => handleAddBase(0.01)}
+                  aria-label="Bæta við 0,01 M sterkum basa"
                   className="flex-1 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
                 >
                   +0.01 M
                 </button>
                 <button
                   onClick={() => handleAddBase(0.05)}
+                  aria-label="Bæta við 0,05 M sterkum basa"
                   className="flex-1 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
                 >
                   +0.05 M

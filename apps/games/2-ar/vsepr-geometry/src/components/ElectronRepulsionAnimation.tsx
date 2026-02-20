@@ -300,7 +300,10 @@ export function ElectronRepulsionAnimation({
           viewBox="0 0 1 1"
           className="mx-auto"
           style={{ overflow: 'visible' }}
+          role="img"
+          aria-label="Hreyfimynd sem sýnir fráhrindingu rafeindapara og VSEPR lögun sameindar"
         >
+          <title>Rafeindafráhrinding og VSEPR lögun</title>
           {/* Central atom */}
           <circle
             cx={centerX}

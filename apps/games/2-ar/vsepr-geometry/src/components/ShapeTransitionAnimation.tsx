@@ -299,7 +299,10 @@ export function ShapeTransitionAnimation({
           height={size}
           viewBox={`0 0 ${size} ${size}`}
           className="bg-warm-900 rounded-xl"
+          role="img"
+          aria-label="Hreyfimynd sem sýnir umbreytingu milli VSEPR löguna"
         >
+          <title>VSEPR lögunarumbreyting</title>
           <defs>
             {/* Glow filter for domains */}
             <filter id="domainGlow" x="-50%" y="-50%" width="200%" height="200%">

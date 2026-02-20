@@ -66,6 +66,11 @@ export const Burette: React.FC<BuretteProps> = ({
         {/* Burette container */}
         <div
           className={`relative ${widthClass} ${heightClass} rounded-t-lg rounded-b-sm border-4 border-indigo-700`}
+          role="meter"
+          aria-label={`Büretta: ${volumeAdded.toFixed(2)} mL af ${maxVolume} mL bætt við`}
+          aria-valuenow={volumeAdded}
+          aria-valuemin={0}
+          aria-valuemax={maxVolume}
           style={{
             background: 'linear-gradient(to bottom, #e0e7ff 0%, #c7d2fe 100%)',
             boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.1)'

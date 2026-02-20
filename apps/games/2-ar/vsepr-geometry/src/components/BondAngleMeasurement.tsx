@@ -182,7 +182,8 @@ export function BondAngleMeasurement({
     return (
       <div className="bg-warm-800 rounded-lg p-3">
         <div className="flex items-center gap-3">
-          <svg width={svgSize} height={svgSize} className="flex-shrink-0">
+          <svg width={svgSize} height={svgSize} className="flex-shrink-0" role="img" aria-label={`Tengihorn: ${angleData.actualAngle}°`}>
+            <title>Mæling á tengihorni</title>
             {/* Angle arc */}
             <path
               d={createArcPath(angleData.actualAngle, radius * 0.6)}
@@ -273,7 +274,8 @@ export function BondAngleMeasurement({
       <div className="flex flex-col md:flex-row gap-4">
         {/* Angle diagram */}
         <div className="flex-1 flex justify-center">
-          <svg width={svgSize} height={svgSize}>
+          <svg width={svgSize} height={svgSize} role="img" aria-label={`Tengihornarit: ${angleData.actualAngle}° horn milli tengja`}>
+            <title>Tengihornarit</title>
             {/* Background circle for reference */}
             <circle
               cx={centerX}

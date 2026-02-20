@@ -362,6 +362,7 @@ export default function Level1({
                   <button
                     onClick={removeAcid}
                     disabled={acidCount === 0}
+                    aria-label="Fjarlægja sýrusameind"
                     className="flex-1 py-2 bg-red-100 hover:bg-red-200 disabled:bg-warm-100 disabled:text-warm-400 rounded-lg font-bold transition-colors"
                   >
                     − Fjarlægja
@@ -369,6 +370,7 @@ export default function Level1({
                   <button
                     onClick={addAcid}
                     disabled={acidCount >= 20}
+                    aria-label="Bæta við sýrusameind"
                     className="flex-1 py-2 bg-red-500 hover:bg-red-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors"
                   >
                     + Bæta við
@@ -382,6 +384,7 @@ export default function Level1({
                   <button
                     onClick={removeBase}
                     disabled={baseCount === 0}
+                    aria-label="Fjarlægja basasameind"
                     className="flex-1 py-2 bg-blue-100 hover:bg-blue-200 disabled:bg-warm-100 disabled:text-warm-400 rounded-lg font-bold transition-colors"
                   >
                     − Fjarlægja
@@ -389,6 +392,7 @@ export default function Level1({
                   <button
                     onClick={addBase}
                     disabled={baseCount >= 20}
+                    aria-label="Bæta við basasameind"
                     className="flex-1 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors"
                   >
                     + Bæta við

@@ -15,7 +15,7 @@ export const PHMeter: React.FC<PHMeterProps> = ({ pH, isActive = true }) => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="bg-warm-800 rounded-lg p-4 shadow-xl border-4 border-warm-700">
+      <div className="bg-warm-800 rounded-lg p-4 shadow-xl border-4 border-warm-700" role="meter" aria-label={isActive ? `pH mælir: ${pH.toFixed(2)}` : 'pH mælir: í biðstöðu'} aria-valuenow={isActive ? pH : undefined} aria-valuemin={0} aria-valuemax={14}>
         {/* Brand label */}
         <div className="text-center mb-2">
           <p className="text-xs text-warm-400 font-bold">DIGITAL pH METER</p>

@@ -424,7 +424,12 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             {/* Reactants */}
             <div className="grid md:grid-cols-2 gap-4">
               <div
+                role="button"
+                tabIndex={0}
+                aria-label={`Velja ${gameState.currentReaction.reactant1.formula} sem takmarkandi hvarfefni`}
+                aria-pressed={gameState.userLimiting === gameState.currentReaction.reactant1.formula}
                 onClick={() => !gameState.isAnswered && setGameState(prev => ({ ...prev, userLimiting: prev.currentReaction!.reactant1.formula }))}
+                onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && !gameState.isAnswered) { e.preventDefault(); setGameState(prev => ({ ...prev, userLimiting: prev.currentReaction!.reactant1.formula })); } }}
                 className={`bg-white rounded-xl shadow-md p-6 cursor-pointer border-4 transition-all ${
                   gameState.userLimiting === gameState.currentReaction.reactant1.formula
                     ? 'border-orange-500 bg-orange-50'
@@ -466,7 +471,12 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               </div>
 
               <div
+                role="button"
+                tabIndex={0}
+                aria-label={`Velja ${gameState.currentReaction.reactant2.formula} sem takmarkandi hvarfefni`}
+                aria-pressed={gameState.userLimiting === gameState.currentReaction.reactant2.formula}
                 onClick={() => !gameState.isAnswered && setGameState(prev => ({ ...prev, userLimiting: prev.currentReaction!.reactant2.formula }))}
+                onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && !gameState.isAnswered) { e.preventDefault(); setGameState(prev => ({ ...prev, userLimiting: prev.currentReaction!.reactant2.formula })); } }}
                 className={`bg-white rounded-xl shadow-md p-6 cursor-pointer border-4 transition-all ${
                   gameState.userLimiting === gameState.currentReaction.reactant2.formula
                     ? 'border-orange-500 bg-orange-50'
@@ -545,6 +555,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                           userProducts: { ...prev.userProducts, [product.formula]: e.target.value }
                         }))}
                         disabled={gameState.isAnswered}
+                        aria-label={`Magn ${product.formula} afurðar${isGramMode ? ' í grömmum' : ''}`}
                         className={`w-24 px-3 py-2 border-2 rounded-lg text-lg ${
                           gameState.isAnswered
                             ? isCorrectAnswer

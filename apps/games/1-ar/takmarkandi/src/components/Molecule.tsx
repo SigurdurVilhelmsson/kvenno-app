@@ -9,6 +9,8 @@ export function Molecule({ formula, color, size = 50, className = '' }: Molecule
   return (
     <div
       className={`molecule flex items-center justify-center rounded-full font-bold text-white shadow-lg ${className}`}
+      role="img"
+      aria-label={`${formula} sameind`}
       style={{
         width: size,
         height: size,

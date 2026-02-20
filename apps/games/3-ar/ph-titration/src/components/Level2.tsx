@@ -256,19 +256,22 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     <div className="flex gap-2">
                       <button
                         onClick={handleAddDrop}
-                        className="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-lg text-sm font-semibold"
+                        aria-label="Bæta við 0,05 mL títrant"
+                        className="px-3 py-2 bg-blue-100 hover:bg-blue-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
                       >
                         +0.05 mL
                       </button>
                       <button
                         onClick={handleAdd1mL}
-                        className="px-3 py-2 bg-blue-200 hover:bg-blue-300 text-blue-800 rounded-lg text-sm font-semibold"
+                        aria-label="Bæta við 1 mL títrant"
+                        className="px-3 py-2 bg-blue-200 hover:bg-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
                       >
                         +1 mL
                       </button>
                       <button
                         onClick={handleAdd5mL}
-                        className="px-3 py-2 bg-blue-300 hover:bg-blue-400 text-blue-800 rounded-lg text-sm font-semibold"
+                        aria-label="Bæta við 5 mL títrant"
+                        className="px-3 py-2 bg-blue-300 hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
                       >
                         +5 mL
                       </button>
@@ -279,7 +282,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       onMouseLeave={() => setIsPouring(false)}
                       onTouchStart={() => setIsPouring(true)}
                       onTouchEnd={() => setIsPouring(false)}
-                      className="w-full px-4 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-bold"
+                      onKeyDown={(e) => { if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); setIsPouring(true); } }}
+                      onKeyUp={(e) => { if (e.code === 'Space' || e.code === 'Enter') { setIsPouring(false); } }}
+                      onBlur={() => setIsPouring(false)}
+                      aria-label="Halda inni til að hella títrant samfellt"
+                      className="w-full px-4 py-3 bg-indigo-500 hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-700 text-white rounded-lg font-bold"
                     >
                       Halda inni til að hella
                     </button>

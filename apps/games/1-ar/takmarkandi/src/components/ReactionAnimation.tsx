@@ -287,6 +287,7 @@ export function ReactionAnimation({
         </button>
         <button
           onClick={initializeMolecules}
+          aria-label="Endurstilla hreyfimynd"
           className="py-2 px-4 rounded-lg font-medium bg-warm-200 hover:bg-warm-300 text-warm-700 transition-colors"
         >
           🔄

@@ -437,7 +437,7 @@ function App() {
           <div className="flex justify-between items-center flex-wrap gap-4">
             <button
               onClick={() => setScreen('menu')}
-              className="bg-warm-500 hover:bg-warm-600 text-white rounded-lg px-4 py-2 transition-colors"
+              className="bg-warm-500 hover:bg-warm-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warm-700 text-white rounded-lg px-4 py-2 transition-colors"
             >
               ← Til baka
             </button>
@@ -689,13 +689,13 @@ function App() {
                           setShowExplanation(false);
                           setIsCorrect(null);
                         }}
-                        className="flex-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-6 py-3 transition-colors"
+                        className="flex-1 bg-blue-500 hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 text-white rounded-lg px-6 py-3 transition-colors"
                       >
                         Prófa annað álag
                       </button>
                       <button
                         onClick={handleNextQuestion}
-                        className="flex-1 bg-green-500 hover:bg-green-600 text-white rounded-lg px-6 py-3 transition-colors"
+                        className="flex-1 bg-green-500 hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700 text-white rounded-lg px-6 py-3 transition-colors"
                       >
                         Næsta jafnvægi →
                       </button>
@@ -776,13 +776,13 @@ function App() {
         <div className="flex gap-4">
           <button
             onClick={() => startGame(gameMode)}
-            className="flex-1 bg-primary-orange hover:bg-dark-orange text-white rounded-lg px-6 py-3 transition-colors"
+            className="flex-1 bg-primary-orange hover:bg-dark-orange focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700 text-white rounded-lg px-6 py-3 transition-colors"
           >
             🔄 Spila aftur
           </button>
           <button
             onClick={() => setScreen('menu')}
-            className="flex-1 bg-warm-500 hover:bg-warm-600 text-white rounded-lg px-6 py-3 transition-colors"
+            className="flex-1 bg-warm-500 hover:bg-warm-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warm-700 text-white rounded-lg px-6 py-3 transition-colors"
           >
             📋 Aðalvalmynd
           </button>
