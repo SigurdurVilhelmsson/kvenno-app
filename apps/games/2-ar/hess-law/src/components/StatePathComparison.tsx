@@ -233,7 +233,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
             onClick={() => setShowOverlay(!showOverlay)}
             className={`w-10 h-5 rounded-full transition-colors ${showOverlay ? 'bg-indigo-500' : 'bg-warm-300'}`}
           >
-            <div className={`w-4 h-4 rounded-full bg-white transform transition-transform ${showOverlay ? 'tranwarm-x-5' : 'tranwarm-x-0.5'}`} />
+            <div className={`w-4 h-4 rounded-full bg-white transform transition-transform ${showOverlay ? 'translate-x-5' : 'translate-x-0.5'}`} />
           </button>
         </div>
       </div>

@@ -266,10 +266,10 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     if (pairs === 0) return null;
 
     const positionClasses: Record<string, string> = {
-      'top': 'absolute -top-4 left-1/2 -tranwarm-x-1/2',
-      'bottom': 'absolute -bottom-4 left-1/2 -tranwarm-x-1/2',
-      'left': 'absolute top-1/2 -left-4 -tranwarm-y-1/2',
-      'right': 'absolute top-1/2 -right-4 -tranwarm-y-1/2',
+      'top': 'absolute -top-4 left-1/2 -translate-x-1/2',
+      'bottom': 'absolute -bottom-4 left-1/2 -translate-x-1/2',
+      'left': 'absolute top-1/2 -left-4 -translate-y-1/2',
+      'right': 'absolute top-1/2 -right-4 -translate-y-1/2',
     };
 
     return (
@@ -356,7 +356,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   )}
                   {/* Bond between atoms */}
                   {idx < struct.formalCharges.length - 1 && (
-                    <div className="absolute top-1/2 -right-3 transform -tranwarm-y-1/2">
+                    <div className="absolute top-1/2 -right-3 transform -translate-y-1/2">
                       {struct.id === 'triple' ? (
                         <div className="flex flex-col gap-0.5">
                           <div className="w-4 h-0.5 bg-warm-700" />

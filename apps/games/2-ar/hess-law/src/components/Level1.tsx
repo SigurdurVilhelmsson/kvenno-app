@@ -58,7 +58,7 @@ function EnergyDiagram({
   return (
     <div className="relative bg-gradient-to-b from-red-50 via-white to-blue-50 rounded-xl p-6 h-64 border-2 border-warm-200">
       {/* Y-axis label */}
-      <div className="absolute left-2 top-1/2 -tranwarm-y-1/2 -rotate-90 text-xs text-warm-500 font-semibold">
+      <div className="absolute left-2 top-1/2 -translate-y-1/2 -rotate-90 text-xs text-warm-500 font-semibold">
         Orka
       </div>
 
@@ -86,7 +86,7 @@ function EnergyDiagram({
 
         {/* Arrow showing energy change */}
         {showPath && (
-          <div className="absolute left-1/2 -tranwarm-x-1/2 flex flex-col items-center"
+          <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center"
             style={{
               top: `${Math.min(reactantLevel, productLevel) + 5}%`,
               height: `${Math.abs(productLevel - reactantLevel) - 10}%`
@@ -100,7 +100,7 @@ function EnergyDiagram({
         )}
 
         {/* ΔH label */}
-        <div className="absolute left-1/2 -tranwarm-x-1/2 top-1/2 -tranwarm-y-1/2 bg-white px-3 py-1 rounded-lg border-2 border-warm-300 shadow-sm">
+        <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-white px-3 py-1 rounded-lg border-2 border-warm-300 shadow-sm">
           <span className={`font-bold text-lg ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}>
             ΔH = {effectiveDeltaH > 0 ? '+' : ''}{effectiveDeltaH} kJ
           </span>

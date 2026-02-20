@@ -19,7 +19,7 @@ export function BalanceScale({ leftValue, leftUnit, rightValue, rightUnit, balan
           balanced ? '' : 'rotate-2'
         }`}>
           {/* Fulcrum */}
-          <div className="absolute left-1/2 -tranwarm-x-1/2 top-full">
+          <div className="absolute left-1/2 -translate-x-1/2 top-full">
             <div className="w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-warm-800"></div>
           </div>
         </div>
@@ -28,7 +28,7 @@ export function BalanceScale({ leftValue, leftUnit, rightValue, rightUnit, balan
           {/* Left side */}
           <div className="flex flex-col items-center">
             <div className={`bg-blue-500 text-white rounded-lg px-6 py-4 shadow-lg transition-transform duration-500 ${
-              balanced ? 'tranwarm-y-0' : '-tranwarm-y-2'
+              balanced ? 'translate-y-0' : '-translate-y-2'
             }`}>
               <p className="text-2xl font-bold">{leftValue} {leftUnit}</p>
             </div>
@@ -37,7 +37,7 @@ export function BalanceScale({ leftValue, leftUnit, rightValue, rightUnit, balan
           {/* Right side */}
           <div className="flex flex-col items-center">
             <div className={`bg-green-500 text-white rounded-lg px-6 py-4 shadow-lg transition-transform duration-500 ${
-              balanced ? 'tranwarm-y-0' : '-tranwarm-y-2'
+              balanced ? 'translate-y-0' : '-translate-y-2'
             }`}>
               <p className="text-2xl font-bold">{rightValue} {rightUnit}</p>
             </div>

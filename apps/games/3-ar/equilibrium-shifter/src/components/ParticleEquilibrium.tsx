@@ -70,7 +70,7 @@ export function ParticleEquilibrium({
   return (
     <div className={`relative ${className}`}>
       {/* Direction indicators */}
-      <div className="absolute -left-8 top-1/2 -tranwarm-y-1/2 z-10">
+      <div className="absolute -left-8 top-1/2 -translate-y-1/2 z-10">
         <div className={`text-2xl transition-all duration-300 ${
           shiftDirection === 'left' ? 'text-red-500 scale-150' : 'text-warm-400'
         }`}>
@@ -78,7 +78,7 @@ export function ParticleEquilibrium({
         </div>
       </div>
 
-      <div className="absolute -right-8 top-1/2 -tranwarm-y-1/2 z-10">
+      <div className="absolute -right-8 top-1/2 -translate-y-1/2 z-10">
         <div className={`text-2xl transition-all duration-300 ${
           shiftDirection === 'right' ? 'text-green-500 scale-150' : 'text-warm-400'
         }`}>

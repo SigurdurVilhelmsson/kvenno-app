@@ -632,7 +632,7 @@ function App() {
                     step="0.1"
                     value={userDeltaG}
                     onChange={(e) => setUserDeltaG(e.target.value)}
-                    className="w-full px-4 py-2 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-hidden"
+                    className="w-full px-4 py-2 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-none"
                     placeholder="t.d. -33.5"
                   />
                 </div>

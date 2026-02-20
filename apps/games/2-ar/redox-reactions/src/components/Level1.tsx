@@ -290,7 +290,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 value={userAnswer}
                 onChange={(e) => setUserAnswer(e.target.value)}
                 placeholder="Sláðu inn tölu..."
-                className="text-center text-2xl font-bold w-32 p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-hidden"
+                className="text-center text-2xl font-bold w-32 p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-none"
               />
             </div>
             <p className="text-center text-sm text-warm-500">

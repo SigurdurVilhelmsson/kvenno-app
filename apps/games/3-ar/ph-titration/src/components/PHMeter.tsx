@@ -70,7 +70,7 @@ export const PHMeter: React.FC<PHMeterProps> = ({ pH, isActive = true }) => {
                 boxShadow: '0 0 4px rgba(255, 255, 255, 0.8)'
               }}
             >
-              <div className="absolute -top-1 left-1/2 transform -tranwarm-x-1/2">
+              <div className="absolute -top-1 left-1/2 transform -translate-x-1/2">
                 <div className="w-0 h-0 border-l-2 border-r-2 border-t-3 border-transparent border-t-white" />
               </div>
             </div>

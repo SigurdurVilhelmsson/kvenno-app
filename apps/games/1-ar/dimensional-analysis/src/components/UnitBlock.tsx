@@ -245,15 +245,15 @@ export function EquivalenceDisplay({
   // Pan positions based on tilt
   const getLeftPanClass = () => {
     if (isEqual) return '';
-    if (comparison > 0) return '-tranwarm-y-3'; // Right heavier - left goes up
-    if (comparison < 0) return 'tranwarm-y-3';  // Left heavier - left goes down
+    if (comparison > 0) return '-translate-y-3'; // Right heavier - left goes up
+    if (comparison < 0) return 'translate-y-3';  // Left heavier - left goes down
     return '';
   };
 
   const getRightPanClass = () => {
     if (isEqual) return '';
-    if (comparison > 0) return 'tranwarm-y-3';  // Right heavier - right goes down
-    if (comparison < 0) return '-tranwarm-y-3'; // Left heavier - right goes up
+    if (comparison > 0) return 'translate-y-3';  // Right heavier - right goes down
+    if (comparison < 0) return '-translate-y-3'; // Left heavier - right goes up
     return '';
   };
 
@@ -266,7 +266,7 @@ export function EquivalenceDisplay({
         ${getTiltClass()}
       `}>
         {/* Fulcrum */}
-        <div className="absolute left-1/2 -tranwarm-x-1/2 top-full">
+        <div className="absolute left-1/2 -translate-x-1/2 top-full">
           <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-t-[16px] border-l-transparent border-r-transparent border-t-warm-800" />
         </div>
       </div>

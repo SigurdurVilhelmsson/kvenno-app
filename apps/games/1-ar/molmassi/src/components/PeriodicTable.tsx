@@ -143,7 +143,7 @@ export function PeriodicTable({
               placeholder="Leita (nafn, tákn, atómnúmer)..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 min-w-[150px] px-3 py-2 border-2 border-warm-300 rounded-lg focus:border-primary focus:outline-hidden text-sm"
+              className="flex-1 min-w-[150px] px-3 py-2 border-2 border-warm-300 rounded-lg focus:border-primary focus:outline-none text-sm"
             />
 
             {/* View toggle */}

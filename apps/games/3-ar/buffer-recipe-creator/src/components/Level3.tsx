@@ -374,7 +374,7 @@ export default function Level3({
                   value={ratioInput}
                   onChange={(e) => setRatioInput(e.target.value)}
                   placeholder="t.d. 1.58"
-                  className="w-full p-3 border-2 border-warm-300 rounded-lg focus:border-green-500 focus:outline-hidden"
+                  className="w-full p-3 border-2 border-warm-300 rounded-lg focus:border-green-500 focus:outline-none"
                 />
               </div>
 
@@ -422,7 +422,7 @@ export default function Level3({
                     value={acidMolesInput}
                     onChange={(e) => setAcidMolesInput(e.target.value)}
                     placeholder="t.d. 0.0039"
-                    className="w-full p-3 border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-hidden"
+                    className="w-full p-3 border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -435,7 +435,7 @@ export default function Level3({
                     value={baseMolesInput}
                     onChange={(e) => setBaseMolesInput(e.target.value)}
                     placeholder="t.d. 0.0061"
-                    className="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-hidden"
+                    className="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none"
                   />
                 </div>
               </div>
@@ -484,7 +484,7 @@ export default function Level3({
                     value={acidVolumeInput}
                     onChange={(e) => setAcidVolumeInput(e.target.value)}
                     placeholder="t.d. 7.76"
-                    className="w-full p-3 border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-hidden"
+                    className="w-full p-3 border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-none"
                   />
                 </div>
                 <div>
@@ -497,7 +497,7 @@ export default function Level3({
                     value={baseVolumeInput}
                     onChange={(e) => setBaseVolumeInput(e.target.value)}
                     placeholder="t.d. 12.24"
-                    className="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-hidden"
+                    className="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none"
                   />
                 </div>
               </div>

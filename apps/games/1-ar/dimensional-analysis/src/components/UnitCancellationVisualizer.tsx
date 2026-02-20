@@ -204,7 +204,7 @@ export function UnitCancellationVisualizer({
       <div className="relative my-4">
         <div className="h-1 bg-warm-800 rounded-full" />
         {hasMatchingUnits && (
-          <div className="absolute -top-1 left-1/2 transform -tranwarm-x-1/2">
+          <div className="absolute -top-1 left-1/2 transform -translate-x-1/2">
             <div className={`w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center ${cancellingUnit ? 'animate-ping' : 'animate-pulse'}`}>
               <span className="text-white text-lg">×</span>
             </div>

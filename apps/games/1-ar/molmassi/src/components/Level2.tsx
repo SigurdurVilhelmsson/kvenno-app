@@ -662,7 +662,7 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                 onChange={(e) => setUserInput(e.target.value)}
                 disabled={showFeedback}
                 placeholder="Sláðu inn áætlaðan mólmassa..."
-                className="flex-1 px-4 py-3 text-lg border-2 border-warm-300 rounded-xl focus:outline-hidden focus:border-primary"
+                className="flex-1 px-4 py-3 text-lg border-2 border-warm-300 rounded-xl focus:outline-none focus:border-primary"
               />
               {!showFeedback && (
                 <button

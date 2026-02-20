@@ -264,7 +264,7 @@ export function LewisGuidedMode({
                 type="number"
                 value={userValue ?? ''}
                 onChange={(e) => setUserValue(parseInt(e.target.value) || null)}
-                className="flex-1 p-3 border-2 border-warm-300 rounded-lg focus:border-blue-500 focus:outline-hidden text-xl font-mono text-center"
+                className="flex-1 p-3 border-2 border-warm-300 rounded-lg focus:border-blue-500 focus:outline-none text-xl font-mono text-center"
                 placeholder="?"
               />
               <span className="text-warm-600">rafeindir</span>
@@ -288,7 +288,7 @@ export function LewisGuidedMode({
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
                   <span className="text-2xl font-bold text-white">{centralAtom?.symbol}</span>
                 </div>
-                <div className="absolute -bottom-6 left-1/2 transform -tranwarm-x-1/2 text-xs text-warm-500">
+                <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-warm-500">
                   Miðatóm
                 </div>
               </div>
@@ -361,7 +361,7 @@ export function LewisGuidedMode({
                 type="number"
                 value={userValue ?? ''}
                 onChange={(e) => setUserValue(parseInt(e.target.value) || null)}
-                className="flex-1 p-3 border-2 border-warm-300 rounded-lg focus:border-blue-500 focus:outline-hidden text-xl font-mono text-center max-w-24"
+                className="flex-1 p-3 border-2 border-warm-300 rounded-lg focus:border-blue-500 focus:outline-none text-xl font-mono text-center max-w-24"
                 placeholder="?"
                 min="0"
                 max="6"

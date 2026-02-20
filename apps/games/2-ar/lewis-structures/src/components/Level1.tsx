@@ -362,7 +362,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
                   disabled={showResult}
-                  className="flex-1 p-4 border-2 border-warm-300 rounded-xl focus:border-blue-500 focus:outline-hidden text-2xl font-mono text-center"
+                  className="flex-1 p-4 border-2 border-warm-300 rounded-xl focus:border-blue-500 focus:outline-none text-2xl font-mono text-center"
                   placeholder="?"
                 />
                 <span className="text-warm-600 font-medium">rafeindir</span>

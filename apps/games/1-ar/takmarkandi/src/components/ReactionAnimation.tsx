@@ -249,7 +249,7 @@ export function ReactionAnimation({
         <div className="absolute top-1 right-2 text-xs text-warm-500 font-medium">
           {reactant2.formula}
         </div>
-        <div className="absolute bottom-1 left-1/2 -tranwarm-x-1/2 text-xs text-warm-500 font-medium">
+        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-xs text-warm-500 font-medium">
           Afurðir
         </div>
       </div>

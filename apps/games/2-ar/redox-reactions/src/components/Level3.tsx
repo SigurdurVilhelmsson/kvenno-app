@@ -120,7 +120,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   value={answers.oxidized}
                   onChange={(e) => setAnswers(prev => ({ ...prev, oxidized: e.target.value }))}
                   placeholder="t.d. Zn"
-                  className="w-full p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-hidden"
+                  className="w-full p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -130,7 +130,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   value={answers.reduced}
                   onChange={(e) => setAnswers(prev => ({ ...prev, reduced: e.target.value }))}
                   placeholder="t.d. Cu"
-                  className="w-full p-3 border-2 border-red-300 rounded-xl focus:border-red-500 focus:outline-hidden"
+                  className="w-full p-3 border-2 border-red-300 rounded-xl focus:border-red-500 focus:outline-none"
                 />
               </div>
             </div>
@@ -170,7 +170,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 value={answers.oxElectrons}
                 onChange={(e) => setAnswers(prev => ({ ...prev, oxElectrons: e.target.value }))}
                 placeholder="Fjöldi rafeinda"
-                className="w-full p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-hidden"
+                className="w-full p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-none"
               />
             </div>
 
@@ -223,7 +223,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 value={answers.redElectrons}
                 onChange={(e) => setAnswers(prev => ({ ...prev, redElectrons: e.target.value }))}
                 placeholder="Fjöldi rafeinda"
-                className="w-full p-3 border-2 border-red-300 rounded-xl focus:border-red-500 focus:outline-hidden"
+                className="w-full p-3 border-2 border-red-300 rounded-xl focus:border-red-500 focus:outline-none"
               />
             </div>
 
@@ -285,7 +285,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   value={answers.oxMultiplier}
                   onChange={(e) => setAnswers(prev => ({ ...prev, oxMultiplier: e.target.value }))}
                   placeholder="×?"
-                  className="w-full p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-hidden"
+                  className="w-full p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -297,7 +297,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   value={answers.redMultiplier}
                   onChange={(e) => setAnswers(prev => ({ ...prev, redMultiplier: e.target.value }))}
                   placeholder="×?"
-                  className="w-full p-3 border-2 border-red-300 rounded-xl focus:border-red-500 focus:outline-hidden"
+                  className="w-full p-3 border-2 border-red-300 rounded-xl focus:border-red-500 focus:outline-none"
                 />
               </div>
             </div>

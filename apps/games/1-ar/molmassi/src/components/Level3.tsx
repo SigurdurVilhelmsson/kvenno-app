@@ -618,7 +618,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                     }
                   }}
                   disabled={showFeedback}
-                  className={`flex-1 px-4 py-3 text-lg border-2 rounded-xl focus:outline-hidden ${
+                  className={`flex-1 px-4 py-3 text-lg border-2 rounded-xl focus:outline-none ${
                     inputError ? 'border-red-500' : 'border-warm-300 focus:border-primary'
                   }`}
                   placeholder="Sláðu inn mólmassa..."
