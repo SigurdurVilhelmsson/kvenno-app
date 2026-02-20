@@ -167,7 +167,7 @@ export default function Level1({
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-2" style={{ color: '#f36b22' }}>
+        <h1 className="text-4xl font-bold mb-2 text-kvenno-orange">
           Stuðpúðasmíði - Stig 1
         </h1>
         <p className="text-lg text-warm-600">
@@ -218,7 +218,7 @@ export default function Level1({
               </div>
               <div className="bg-warm-50 p-3 rounded-lg">
                 <div className="text-sm text-warm-600">Markmið pH</div>
-                <div className="text-xl font-bold" style={{ color: '#f36b22' }}>
+                <div className="text-xl font-bold text-kvenno-orange">
                   {currentChallenge.targetPH}
                 </div>
               </div>
@@ -296,12 +296,7 @@ export default function Level1({
             </div>
 
             {/* Molecule Display */}
-            <div className="border-4 rounded-lg p-6 mb-6 transition-colors duration-300"
-                 style={{
-                   borderColor: isCorrect ? '#22c55e' : '#cbd5e1',
-                   backgroundColor: '#f8fafc',
-                   minHeight: '280px'
-                 }}>
+            <div className={`border-4 rounded-lg p-6 mb-6 transition-colors duration-300 bg-slate-50 min-h-[280px] ${isCorrect ? 'border-green-500' : 'border-warm-300'}`}>
 
               {/* Acid Molecules */}
               <div className="mb-6">
@@ -348,7 +343,7 @@ export default function Level1({
               {/* Ratio Display */}
               <div className="mt-4 bg-warm-100 rounded-lg p-3 text-center">
                 <div className="text-sm text-warm-600 mb-1">Hlutfall [Basi]/[Sýra]</div>
-                <div className="text-3xl font-bold transition-colors duration-300" style={{ color: isCorrect ? '#22c55e' : '#f36b22' }}>
+                <div className={`text-3xl font-bold transition-colors duration-300 ${isCorrect ? 'text-green-500' : 'text-kvenno-orange'}`}>
                   {acidCount > 0 ? currentRatio.toFixed(2) : '-'}
                 </div>
                 <div className="text-xs text-warm-500 mt-1">
@@ -407,8 +402,7 @@ export default function Level1({
             {/* Check Button */}
             <button
               onClick={checkBuffer}
-              className="w-full py-3 px-6 text-white font-bold text-lg rounded-lg transition-colors mb-3 hover:opacity-90"
-              style={{ backgroundColor: '#f36b22' }}
+              className="w-full py-3 px-6 text-white font-bold text-lg rounded-lg transition-colors mb-3 hover:opacity-90 bg-kvenno-orange"
             >
               Athuga stuðpúða
             </button>

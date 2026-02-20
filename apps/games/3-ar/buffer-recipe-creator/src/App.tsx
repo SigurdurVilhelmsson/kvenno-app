@@ -239,7 +239,7 @@ function App() {
         {/* Header with achievements button */}
         <div className="flex justify-between items-start mb-4">
           <div className="flex-1">
-            <h1 className="text-3xl md:text-4xl font-bold font-heading" style={{ color: '#f36b22' }}>
+            <h1 className="text-3xl md:text-4xl font-bold font-heading text-kvenno-orange">
               🧪 Stuðpúðasmíði
             </h1>
             <p className="text-warm-600">
@@ -260,15 +260,15 @@ function App() {
         </div>
 
         {/* Pedagogical explanation */}
-        <div className="p-6 rounded-xl mb-8" style={{ backgroundColor: 'rgba(243, 107, 34, 0.1)' }}>
-          <h2 className="font-bold mb-3" style={{ color: '#f36b22' }}>Hvað er stuðpúði?</h2>
+        <div className="p-6 rounded-xl mb-8 bg-kvenno-orange/10">
+          <h2 className="font-bold mb-3 text-kvenno-orange">Hvað er stuðpúði?</h2>
           <p className="text-warm-800 text-sm mb-4">
             <strong>Stuðpúði</strong> er lausn sem getur viðhaldið stöðugu pH þegar litlu magni af sýru
             eða basa er bætt við. Hann samanstendur af veikri sýru og samoka basa hennar (eða veikum
             basa og samoka sýru hans).
           </p>
-          <div className="bg-white p-3 rounded-lg border" style={{ borderColor: '#f36b22' }}>
-            <p className="text-sm font-mono text-center" style={{ color: '#f36b22' }}>
+          <div className="bg-white p-3 rounded-lg border border-kvenno-orange">
+            <p className="text-sm font-mono text-center text-kvenno-orange">
               pH = pK<sub>a</sub> + log([A⁻]/[HA])
             </p>
             <p className="text-xs text-warm-600 text-center mt-1">
@@ -282,14 +282,13 @@ function App() {
           {/* Level 1 */}
           <button
             onClick={() => setActiveLevel('level1')}
-            className="w-full p-6 rounded-xl border-4 transition-all text-left hover:shadow-lg"
-            style={{ borderColor: '#f36b22', backgroundColor: 'rgba(243, 107, 34, 0.05)' }}
+            className="w-full p-6 rounded-xl border-4 transition-all text-left hover:shadow-lg border-kvenno-orange bg-kvenno-orange/5"
           >
             <div className="flex items-center gap-4">
               <div className="text-4xl">🔬</div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold" style={{ color: '#f36b22' }}>
+                  <span className="text-xl font-bold text-kvenno-orange">
                     Stig 1: Hugmyndafræði
                   </span>
                   {progress.level1Completed && (
@@ -298,7 +297,7 @@ function App() {
                     </span>
                   )}
                 </div>
-                <div className="text-sm mt-1" style={{ color: '#d45a1a' }}>
+                <div className="text-sm mt-1 text-kvenno-orange-600">
                   Sjónræn sameindameðferð - engar tölur!
                 </div>
                 <div className="text-xs text-warm-600 mt-2">
@@ -411,8 +410,8 @@ function App() {
               </button>
             </div>
             <div className="grid grid-cols-3 gap-4 text-center">
-              <div className="rounded-lg p-3" style={{ backgroundColor: 'rgba(243, 107, 34, 0.1)' }}>
-                <div className="text-2xl font-bold" style={{ color: '#f36b22' }}>{levelsCompleted}/3</div>
+              <div className="rounded-lg p-3 bg-kvenno-orange/10">
+                <div className="text-2xl font-bold text-kvenno-orange">{levelsCompleted}/3</div>
                 <div className="text-xs text-warm-600">Stig lokið</div>
               </div>
               <div className="bg-green-50 rounded-lg p-3">

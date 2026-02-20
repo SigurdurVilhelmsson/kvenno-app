@@ -223,13 +223,13 @@ export default function Level2({
               <div className="text-sm text-warm-500">
                 {completed + 1} / {LEVEL2_PUZZLES.length}
               </div>
-              <div className="text-lg font-bold" style={{ color: '#f36b22' }}>
+              <div className="text-lg font-bold text-kvenno-orange">
                 Stig: {score}
               </div>
             </div>
           </div>
 
-          <h1 className="text-xl md:text-2xl font-bold mt-2" style={{ color: '#f36b22' }}>
+          <h1 className="text-xl md:text-2xl font-bold mt-2 text-kvenno-orange">
             Stuðpúðasmíði - Stig 2
           </h1>
           <p className="text-warm-600 text-sm">Henderson-Hasselbalch útreikningar</p>
@@ -237,21 +237,17 @@ export default function Level2({
           {/* Progress bar */}
           <div className="w-full bg-warm-200 rounded-full h-2 mt-3">
             <div
-              className="h-2 rounded-full transition-all duration-300"
-              style={{
-                width: `${(completed / LEVEL2_PUZZLES.length) * 100}%`,
-                backgroundColor: '#f36b22'
-              }}
+              className="h-2 rounded-full transition-all duration-300 bg-kvenno-orange"
+              style={{ width: `${(completed / LEVEL2_PUZZLES.length) * 100}%` }}
             />
           </div>
         </div>
 
         {/* Task Card */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-4" style={{ borderTop: '4px solid #f36b22' }}>
+        <div className="bg-white rounded-xl shadow-lg p-6 mb-4 border-t-4 border-kvenno-orange">
           <div className="flex items-start gap-3 mb-4">
             <span
-              className="text-white text-sm font-bold px-3 py-1 rounded-full"
-              style={{ backgroundColor: '#f36b22' }}
+              className="text-white text-sm font-bold px-3 py-1 rounded-full bg-kvenno-orange"
             >
               #{puzzle.id}
             </span>
@@ -269,7 +265,7 @@ export default function Level2({
             </div>
             <div className="bg-warm-50 p-3 rounded-lg text-center">
               <div className="text-xs text-warm-500">Markmið pH</div>
-              <div className="text-lg font-bold" style={{ color: '#f36b22' }}>{problem.targetPH}</div>
+              <div className="text-lg font-bold text-kvenno-orange">{problem.targetPH}</div>
             </div>
             <div className="bg-warm-50 p-3 rounded-lg text-center">
               <div className="text-xs text-warm-500">Rúmmál</div>
@@ -411,8 +407,7 @@ export default function Level2({
               <button
                 onClick={checkDirection}
                 disabled={!selectedDirection}
-                className="w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed"
-                style={{ backgroundColor: selectedDirection ? '#f36b22' : undefined }}
+                className={`w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed ${selectedDirection ? 'bg-kvenno-orange' : ''}`}
               >
                 Athuga svar
               </button>
@@ -459,8 +454,7 @@ export default function Level2({
               <button
                 onClick={checkRatio}
                 disabled={!ratioInput}
-                className="w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed"
-                style={{ backgroundColor: ratioInput ? '#f36b22' : undefined }}
+                className={`w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed ${ratioInput ? 'bg-kvenno-orange' : ''}`}
               >
                 Athuga svar
               </button>
@@ -523,8 +517,7 @@ export default function Level2({
               <button
                 onClick={checkMass}
                 disabled={!acidMassInput || !baseMassInput}
-                className="w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed"
-                style={{ backgroundColor: (acidMassInput && baseMassInput) ? '#f36b22' : undefined }}
+                className={`w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed ${(acidMassInput && baseMassInput) ? 'bg-kvenno-orange' : ''}`}
               >
                 Athuga svar
               </button>

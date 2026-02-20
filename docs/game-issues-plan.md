@@ -218,7 +218,7 @@
 - [x] **13-04. Dead flask animation CSS** — Removed 61 lines of unused CSS. *(Session F)*
 - [x] **13-05. Molecule counter cap at 20 arbitrary** — Extracted to `MAX_MOLECULES = 30` constant; raised cap from 20 to 30 for more interactive range. *(Session H)*
 - [x] **13-06. No confirmation before progress reset** — Added `window.confirm()` dialog. *(Session F)*
-- [ ] **13-07. Hardcoded inline color styles** (should use Tailwind)
+- [x] **13-07. Hardcoded inline color styles** (should use Tailwind) — Replaced 18 hardcoded `#f36b22`/`#d45a1a`/`rgba(243,107,34,…)` inline styles with Tailwind `text-kvenno-orange`, `bg-kvenno-orange`, `border-kvenno-orange`, `bg-kvenno-orange/10` etc. across App.tsx, Level1.tsx, Level2.tsx. Remaining inline styles are dynamic (getPhColor, computed widths, animation delays). *(Session I)*
 
 ---
 
@@ -286,8 +286,8 @@
 | Critical (fixed) | 7 + 1 false positive | 1-01a, 1-01b/2-01, 3-01, 3-02, 4-01, 5-01, 12-01; 3-03 was false positive |
 | Major (fixed) | 48 | Session B(9) + C(9) + D(6) + E(9) + G(15) |
 | Major (remaining) | 0 | All major issues resolved |
-| Minor (fixed) | 46 | Session F(22+1FP) + H(19+1FP) + I(3) |
-| Minor (remaining) | 5 | Architecture decisions, verification |
+| Minor (fixed) | 47 | Session F(22+1FP) + H(19+1FP) + I(4) |
+| Minor (remaining) | 4 | Architecture decisions, verification |
 
 ### Suggested Session Order
 
@@ -329,4 +329,4 @@
 | F | 2026-02-20 | 1-05, 1-08(FP), 2-08, 3-08, 3-09, 4-07, 5-06, 6-03, 6-04, 7-02, 8-02, 8-04, 9-04, 10-04, 11-05, 12-05, 13-04, 13-06, 14-04, 15-05, 16-05, 16-06, 17-05 | `fix/session-f-polish` | 22 minor fixes + 1 false positive across 14 games: dead code removal (OctetViolationChecker, flask CSS, totalTime), a11y (ARIA labels, skip links, focus styles, screen reader formulas), i18n (VSEPR title, lock messages, HTML lang), UX (reset confirmations, distractor range, mobile grids, hint penalty, opacity), validation (zero-guard, input trim) |
 | G | 2026-02-20 | 1-03, 1-04, 2-02, 2-04, 2-05, 3-06, 3-07, 4-04, 5-02, 5-03, 6-02, 9-03, 12-04, 15-02 | `fix/session-g-majors` | 15 major fixes across 10 games: hints extended (molmassi all 4 types), hydrate pedagogy (explainer tooltip), a11y (modal dialog, emoji aria-hidden, keyboard nav, color-blind labels), i18n (achievement keys), scoring (gram mode bonus, hint deduction feedback), validation (gas-law bounds), dead code (DA questions.ts + Level1.tsx), off-topic content removed, difficulty gap addressed |
 | H | 2026-02-20 | 1-07, 2-09, 3-10, 4-08, 5-07(FP), 7-03, 7-04, 8-03, 10-03, 11-06, 12-06, 13-05, 14-05, 15-06, 16-04, 16-07, 17-03 | `fix/session-h-minors` | 19 minor fixes + 1 false positive across 14 games: mobile (PeriodicTable min-w removed), validation (angle ±2° tolerance, þ→th normalization), a11y (color-blind particle shapes, arrow key nav, focus-visible), i18n (challenge type labels), scoring (redox constants extracted, weight labels shown), UX (completion banner, tolerance standardized), code quality (crypto.randomUUID, named constants), SVG (square-planar lone pairs) |
-| I | 2026-02-20 | 1-06, 4-05, 4-06 | `fix/session-i-remaining` | 3 minor fixes: tests (21 feedbackGenerator tests), content (chemicals 9→21, facts 7→18) |
+| I | 2026-02-20 | 1-06, 4-05, 4-06, 13-07 | `fix/session-i-remaining` + `fix/buffer-inline-styles` | 4 minor fixes: tests (21 feedbackGenerator tests), content (chemicals 9→21, facts 7→18), refactor (18 inline color styles → Tailwind classes) |
