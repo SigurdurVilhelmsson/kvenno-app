@@ -36,7 +36,7 @@ const DEFAULT_PROGRESS: Progress = {
 
 function App() {
   const [activeLevel, setActiveLevel] = useState<ActiveLevel>('menu');
-  const { language, setLanguage } = useGameI18n({ gameTranslations });
+  const { t, language, setLanguage } = useGameI18n({ gameTranslations });
   const { progress, updateProgress, resetProgress } = useGameProgress<Progress>('hess-law-progress', DEFAULT_PROGRESS);
   const [showAchievements, setShowAchievements] = useState(false);
 
@@ -123,6 +123,7 @@ function App() {
     return (
       <>
         <Level3
+          t={t}
           onComplete={handleLevel3Complete}
           onBack={() => setActiveLevel('menu')}
           onCorrectAnswer={() => trackCorrectAnswer()}

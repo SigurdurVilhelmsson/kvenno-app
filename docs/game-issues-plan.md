@@ -28,7 +28,7 @@
 - [x] **1-01b. Build script path mismatch** — Fixed all 17 package.json `mv` paths: `dist/X-ar/` → `dist/efnafraedi/X-ar/`. *(Session A)*
 
 ### Major
-- [ ] **1-02. i18n uses ASCII approximations** — i18n.ts: "Molmassi" → "Mólmassi", "Laerdu" → "Lærðu", "Surefni" → "Súrefni" etc. Replace all ~200 strings with proper Icelandic characters.
+- [x] **1-02. i18n uses ASCII approximations** — Replaced all ~70 strings with proper Icelandic diacritics (á, é, í, ó, ú, ý, ð, þ, æ, ö). *(Session D)*
 - [ ] **1-03. Level 2 hints only for one challenge type** — Hint button only appears during `calculate_simple`. Extend HintSystem to `estimate_mass`, `order_molecules`, `find_heaviest_atom`.
 - [ ] **1-04. Hydrate pedagogy gap** — CuSO4·5H2O appears in L3 with no explanation of hydrate notation. Add explainer tooltip.
 
@@ -47,7 +47,7 @@
 
 ### Major
 - [ ] **2-02. Level 3 match modal lacks accessibility** — Missing `role="dialog"`, `aria-modal`, focus trap, Escape handler. File: Level3.tsx
-- [ ] **2-03. Hardcoded Icelandic UI text** — Level1.tsx, Level2.tsx, Level3.tsx, NameBuilder.tsx: all labels hardcoded. Move to i18n.ts.
+- [x] **2-03. Hardcoded Icelandic UI text** — Added ~77 i18n keys (level1.ui, level2.ui, level3.ui, nameBuilder.ui) in is/en/pl. Passed `t` prop to all 4 components, replaced all UI chrome strings. Fixed Polish diacritics. *(Session D)*
 - [ ] **2-04. NameBuilder doesn't trigger achievements** — Connect to trackGameComplete/trackLevelComplete.
 - [ ] **2-05. Warmup emojis without text fallback** — Metal/nonmetal ⚙️/💨 lack aria-labels. File: Level1.tsx
 
@@ -155,7 +155,7 @@
 ## Game 09: Hess Law (4.3/5)
 
 ### Major
-- [ ] **9-01. L3 challenge content not internationalized** — Titles, descriptions, step-by-step all hardcoded Icelandic. Move to i18n.ts.
+- [x] **9-01. L3 challenge content not internationalized** — Added `level3` section to i18n.ts with ~40 keys (6 challenges × 4 fields + UI strings) in is/en/pl. Rewrote Level3.tsx to use `t()` with key references. Fixed Polish diacritics. *(Session D)*
 - [x] **9-02. Energy diagrams lack accessibility** — Added `role="img"`, `aria-label`, `<title>` to EnergyPathwayDiagram and StatePathComparison SVGs. Added `▼`/`▲` text indicators to legend for color-blind distinction. *(Session B)*
 - [ ] **9-03. L2 equation blocks lack keyboard navigation** — Click-only handlers, no Enter/Space/arrow key support.
 
@@ -169,7 +169,7 @@
 
 ### Major
 - [ ] **10-01. Missing orderB validation in Level 2** — L2.tsx:220: disabled check only validates orderA, not orderB. Multi-reactant challenges can be submitted incomplete.
-- [ ] **10-02. Polish diacritics missing** — i18n.ts:119-171: "Szybkosc" → "Szybkość" etc.
+- [x] **10-02. Polish diacritics missing** — Fixed all Polish diacritics (ś, ć, ź, ż, ń, ó, ł, ą, ę) throughout i18n.ts `pl` section. *(Session D)*
 
 ### Minor
 - [ ] **10-03. Particle colors not shape-differentiated** (color-blind accessibility)
@@ -194,7 +194,7 @@
 ## Game 12: Redox Reactions (4.1/5)
 
 ### Critical
-- [ ] **12-01. i18n translations defined but never used** — Complete 3-language translations exist in i18n.ts but all UI text is hardcoded Icelandic. LanguageSwitcher has no effect. Connect with `t()` calls. **(Deferred to Session D — ~205 strings across 7 files)**
+- [x] **12-01. i18n translations defined but never used** — Extracted `t` from `useGameI18n` in App.tsx, passed to all 3 Level components. Replaced ~60 hardcoded strings with `t()` calls across App.tsx, Level1.tsx, Level2.tsx, Level3.tsx. Added `menu`/`complete` sections to i18n.ts. Fixed Polish diacritics. *(Session D)*
 
 ### Major
 - [x] **12-02. Missing ARIA labels on inputs** — Added `aria-label="Oxunartala"` to Level1.tsx number input, `htmlFor`/`id` pairs to Level3.tsx label/input elements. *(Session B)*
@@ -210,7 +210,7 @@
 ## Game 13: Buffer Recipe Creator (4.3/5)
 
 ### Major
-- [ ] **13-01. Problem contexts not internationalized** — level1-challenges.ts, level2-puzzles.ts, level3-puzzles.ts: all Icelandic-only.
+- [x] **13-01. Problem contexts not internationalized** — Added optional `*En`/`*Pl` fields to all data interfaces. Translated all 6 level1 challenges, 6 level2 puzzles, 6 level3 puzzles, and 30 buffer problems into English and Polish. *(Session D)*
 - [x] **13-02. No ARIA labels on interactive elements** — Added `role="img"`, `aria-label`, `<title>` to BufferCapacityVisualization SVG. Added `aria-label` to acid/base add/remove buttons in Level1.tsx and concentration buttons. *(Session B)*
 - [x] **13-03. Input fields and molecule circles below mobile minimum** — Changed buttons `py-2` to `py-3` (44px+) in Level1.tsx and BufferCapacityVisualization.tsx. Changed molecule circles `w-8 h-8` to `w-10 h-10` (40px) in Level1.tsx. *(Session C)*
 
@@ -243,7 +243,7 @@
 - [x] **15-03. Deprecated onKeyPress** — Replaced `onKeyPress` with `onKeyDown` in App.tsx. *(Session C)*
 
 ### Minor
-- [ ] **15-04. Polish translations have encoding issues** — i18n.ts: missing diacritics.
+- [x] **15-04. Polish translations have encoding issues** — Fixed all Polish diacritics throughout i18n.ts `pl` section. *(Session D)*
 - [ ] **15-05. GameStats totalTime field unused**
 - [ ] **15-06. No game completion indicator**
 - [ ] **15-07. Particle simulation not physics-accurate for extreme values**
@@ -282,11 +282,11 @@
 
 | Priority | Count | Description |
 |----------|-------|-------------|
-| Critical (remaining) | 1 | 12-01 deferred to Session D |
-| Critical (fixed) | 6 + 1 false positive | 1-01a, 1-01b/2-01, 3-01, 3-02, 4-01, 5-01; 3-03 was false positive |
-| Major (fixed) | 18 | Session B: 14-03, 16-01, 16-02, 13-02, 12-02, 12-03, 5-04, 9-02, 7-01; Session C: 17-01, 17-02, 13-03, 11-01, 11-02, 16-03, 14-01, 14-02, 15-01, 15-03 |
-| Major (remaining) | 30 | Significant UX, accessibility, pedagogical problems |
-| Minor (remaining) | 52 | Polish, consistency, nice-to-haves |
+| Critical (remaining) | 0 | All critical issues resolved |
+| Critical (fixed) | 7 + 1 false positive | 1-01a, 1-01b/2-01, 3-01, 3-02, 4-01, 5-01, 12-01; 3-03 was false positive |
+| Major (fixed) | 24 | Session B(9) + Session C(9) + Session D(6): 1-02, 2-03, 9-01, 10-02, 13-01, 15-04 |
+| Major (remaining) | 24 | Significant UX, accessibility, pedagogical problems |
+| Minor (remaining) | 51 | Polish, consistency, nice-to-haves |
 
 ### Suggested Session Order
 
@@ -302,8 +302,8 @@
 **Session C — Major UX/mobile fixes**
 - 17-01, 13-03, 11-01, 11-02, 16-03, 14-01, 14-02, 15-01, 15-03
 
-**Session D — Major i18n fixes**
-- 1-02, 2-03, 9-01, 13-01, 10-02, 15-04 (hardcoded text, missing translations, encoding)
+**Session D — Major i18n fixes** *(completed)*
+- 1-02, 2-03, 9-01, 10-02, 12-01, 13-01, 15-04 (hardcoded text, missing translations, encoding, unused i18n)
 
 **Session E — Major pedagogical fixes**
 - 3-04, 3-05, 4-02, 4-03, 6-01, 8-01, 10-01, 11-03, 11-04
@@ -323,6 +323,6 @@
 | A | 2026-02-20 | 3-01, 3-02, 3-03(FP), 4-01, 5-01, 1-01a(verified), 1-01b(×17) | `fix/session-a-critical-bugs` | 6 critical fixed, 1 false positive, 12-01 deferred to D |
 | B | 2026-02-20 | 14-03, 16-01, 16-02, 13-02, 12-02, 12-03, 5-04, 9-02, 7-01 | `fix/session-b-accessibility` | 9 major accessibility fixes across 7 games: ARIA labels, keyboard nav, screen reader SVGs, focus styles, color-blind support |
 | C | 2026-02-20 | 17-01, 17-02, 13-03, 11-01, 11-02, 16-03, 14-01, 14-02, 15-01, 15-03 | `fix/session-c-ux-mobile` | 9 major UX/mobile fixes across 6 games: responsive grids, touch targets, CSS fallbacks, timer pause, inline validation, deprecated API |
-| D | | | | |
+| D | 2026-02-20 | 1-02, 2-03, 9-01, 10-02, 12-01, 13-01, 15-04 | `fix/session-d-i18n` | 7 major i18n fixes across 6 games: Icelandic diacritics (molmassi), Polish diacritics (kinetics, gas-law, +4 others), hardcoded UI→i18n (nafnakerfid ~77 keys, redox ~60 strings), L3 content i18n (hess-law ~40 keys), data i18n (buffer ~48 translations) |
 | E | | | | |
 | F | | | | |

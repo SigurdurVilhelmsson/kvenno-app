@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { problems } from '../data/half-reactions';
 
 interface Level3Props {
+  t: (key: string, fallback?: string) => string;
   onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
   onBack: () => void;
   onCorrectAnswer?: () => void;
@@ -11,7 +12,7 @@ interface Level3Props {
 
 type Step = 'identify' | 'write-ox' | 'write-red' | 'balance' | 'complete';
 
-export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
+export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
   const [currentProblem, setCurrentProblem] = useState(0);
   const [step, setStep] = useState<Step>('identify');
   const [score, setScore] = useState(0);
@@ -42,13 +43,13 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
     if (oxCorrect && redCorrect) {
       setScore(prev => prev + 15);
-      setFeedback({ show: true, correct: true, message: 'Rétt! Þú greindir hvað oxast og afoxast.' });
+      setFeedback({ show: true, correct: true, message: t('level3.identifyCorrect', 'Rétt! Þú greindir hvað oxast og afoxast.') });
       onCorrectAnswer?.();
     } else {
       setFeedback({
         show: true,
         correct: false,
-        message: `${problem.oxidationHalf.speciesDisplay} oxast (gefur e⁻), ${problem.reductionHalf.speciesDisplay} afoxast (tekur e⁻).`
+        message: `${problem.oxidationHalf.speciesDisplay} ${t('level3.oxidizes', 'oxast')} (${t('level3.losesElectrons', 'gefur e⁻')}), ${problem.reductionHalf.speciesDisplay} ${t('level3.reduces', 'afoxast')} (${t('level3.gainsElectrons', 'tekur e⁻')}).`
       });
       onIncorrectAnswer?.();
     }
@@ -60,13 +61,13 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
     if (oxM === problem.multiplierOx && redM === problem.multiplierRed) {
       setScore(prev => prev + 20);
-      setFeedback({ show: true, correct: true, message: 'Frábært! Þú jafnaðir rafeindirnar rétt.' });
+      setFeedback({ show: true, correct: true, message: t('level3.balanceCorrect', 'Frábært! Þú jafnaðir rafeindirnar rétt.') });
       onCorrectAnswer?.();
     } else {
       setFeedback({
         show: true,
         correct: false,
-        message: `Til að jafna ${problem.oxidationHalf.electrons}e⁻ og ${problem.reductionHalf.electrons}e⁻, þarftu margfaldara ${problem.multiplierOx} og ${problem.multiplierRed}.`
+        message: `${t('level3.toBalance', 'Til að jafna')} ${problem.oxidationHalf.electrons}e⁻ ${t('level3.and', 'og')} ${problem.reductionHalf.electrons}e⁻, ${t('level3.needMultipliers', 'þarftu margfaldara')} ${problem.multiplierOx} ${t('level3.and', 'og')} ${problem.multiplierRed}.`
       });
       onIncorrectAnswer?.();
     }
@@ -108,30 +109,30 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         return (
           <div className="space-y-4">
             <div className="bg-purple-50 p-4 rounded-xl">
-              <h3 className="font-bold text-purple-800 mb-2">Skref 1: Greindu hvað oxast og afoxast</h3>
-              <p className="text-purple-600 text-sm">Mundu: Oxun = tapar e⁻, Afoxun = öðlast e⁻</p>
+              <h3 className="font-bold text-purple-800 mb-2">{t('level3.step1Title', 'Skref 1: Greindu hvað oxast og afoxast')}</h3>
+              <p className="text-purple-600 text-sm">{t('level3.step1Hint', 'Mundu: Oxun = tapar e⁻, Afoxun = öðlast e⁻')}</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-warm-700 mb-1" htmlFor="oxidized-input">Hvað oxast?</label>
+                <label className="block text-sm font-medium text-warm-700 mb-1" htmlFor="oxidized-input">{t('level3.whatOxidizes', 'Hvað oxast?')}</label>
                 <input
                   id="oxidized-input"
                   type="text"
                   value={answers.oxidized}
                   onChange={(e) => setAnswers(prev => ({ ...prev, oxidized: e.target.value }))}
-                  placeholder="t.d. Zn"
+                  placeholder={t('level3.examplePlaceholder', 't.d. Zn')}
                   className="w-full p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-warm-700 mb-1" htmlFor="reduced-input">Hvað afoxast?</label>
+                <label className="block text-sm font-medium text-warm-700 mb-1" htmlFor="reduced-input">{t('level3.whatReduces', 'Hvað afoxast?')}</label>
                 <input
                   id="reduced-input"
                   type="text"
                   value={answers.reduced}
                   onChange={(e) => setAnswers(prev => ({ ...prev, reduced: e.target.value }))}
-                  placeholder="t.d. Cu"
+                  placeholder={t('level3.examplePlaceholder', 't.d. Zn')}
                   className="w-full p-3 border-2 border-red-300 rounded-xl focus:border-red-500 focus:outline-none"
                 />
               </div>
@@ -147,7 +148,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     : 'bg-purple-500 hover:bg-purple-600 text-white'
                 }`}
               >
-                Athuga svar
+                {t('common.submit', 'Athuga svar')}
               </button>
             )}
           </div>
@@ -157,7 +158,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         return (
           <div className="space-y-4">
             <div className="bg-blue-50 p-4 rounded-xl">
-              <h3 className="font-bold text-blue-800 mb-2">Skref 2: Oxunar hálf-hvarf</h3>
+              <h3 className="font-bold text-blue-800 mb-2">{t('level3.step2Title', 'Skref 2: Oxunar hálf-hvarf')}</h3>
               <div className="text-blue-600">
                 {problem.oxidationHalf.speciesDisplay} → {problem.oxidationHalf.productDisplay} + ?e⁻
               </div>
@@ -165,13 +166,13 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             <div>
               <label className="block text-sm font-medium text-warm-700 mb-1">
-                Hversu margar rafeindir tapar {problem.oxidationHalf.speciesDisplay}?
+                {t('level3.howManyElectronsLost', 'Hversu margar rafeindir tapar')} {problem.oxidationHalf.speciesDisplay}?
               </label>
               <input
                 type="number"
                 value={answers.oxElectrons}
                 onChange={(e) => setAnswers(prev => ({ ...prev, oxElectrons: e.target.value }))}
-                placeholder="Fjöldi rafeinda"
+                placeholder={t('level3.electronCount', 'Fjöldi rafeinda')}
                 className="w-full p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-none"
               />
             </div>
@@ -182,7 +183,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   const correct = parseInt(answers.oxElectrons) === problem.oxidationHalf.electrons;
                   if (correct) {
                     setScore(prev => prev + 10);
-                    setFeedback({ show: true, correct: true, message: 'Rétt!' });
+                    setFeedback({ show: true, correct: true, message: t('common.correct', 'Rétt!') });
                     onCorrectAnswer?.();
                   } else {
                     setFeedback({
@@ -200,7 +201,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     : 'bg-blue-500 hover:bg-blue-600 text-white'
                 }`}
               >
-                Athuga
+                {t('common.submit', 'Athuga')}
               </button>
             )}
           </div>
@@ -210,7 +211,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         return (
           <div className="space-y-4">
             <div className="bg-red-50 p-4 rounded-xl">
-              <h3 className="font-bold text-red-800 mb-2">Skref 3: Afoxunar hálf-hvarf</h3>
+              <h3 className="font-bold text-red-800 mb-2">{t('level3.step3Title', 'Skref 3: Afoxunar hálf-hvarf')}</h3>
               <div className="text-red-600">
                 {problem.reductionHalf.speciesDisplay} + ?e⁻ → {problem.reductionHalf.productDisplay}
               </div>
@@ -218,13 +219,13 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             <div>
               <label className="block text-sm font-medium text-warm-700 mb-1">
-                Hversu margar rafeindir öðlast {problem.reductionHalf.speciesDisplay}?
+                {t('level3.howManyElectronsGained', 'Hversu margar rafeindir öðlast')} {problem.reductionHalf.speciesDisplay}?
               </label>
               <input
                 type="number"
                 value={answers.redElectrons}
                 onChange={(e) => setAnswers(prev => ({ ...prev, redElectrons: e.target.value }))}
-                placeholder="Fjöldi rafeinda"
+                placeholder={t('level3.electronCount', 'Fjöldi rafeinda')}
                 className="w-full p-3 border-2 border-red-300 rounded-xl focus:border-red-500 focus:outline-none"
               />
             </div>
@@ -235,7 +236,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   const correct = parseInt(answers.redElectrons) === problem.reductionHalf.electrons;
                   if (correct) {
                     setScore(prev => prev + 10);
-                    setFeedback({ show: true, correct: true, message: 'Rétt!' });
+                    setFeedback({ show: true, correct: true, message: t('common.correct', 'Rétt!') });
                     onCorrectAnswer?.();
                   } else {
                     setFeedback({
@@ -253,7 +254,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     : 'bg-red-500 hover:bg-red-600 text-white'
                 }`}
               >
-                Athuga
+                {t('common.submit', 'Athuga')}
               </button>
             )}
           </div>
@@ -263,16 +264,16 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         return (
           <div className="space-y-4">
             <div className="bg-amber-50 p-4 rounded-xl">
-              <h3 className="font-bold text-amber-800 mb-2">Skref 4: Jafna rafeindirnar</h3>
+              <h3 className="font-bold text-amber-800 mb-2">{t('level3.step4Title', 'Skref 4: Jafna rafeindirnar')}</h3>
               <p className="text-amber-600 text-sm mb-3">
-                Margfaldaðu hálf-hvörfin svo rafeindir sem tapast = rafeindir sem öðlast
+                {t('level3.step4Hint', 'Margfaldaðu hálf-hvörfin svo rafeindir sem tapast = rafeindir sem öðlast')}
               </p>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="bg-blue-100 p-2 rounded">
-                  Oxun: {problem.oxidationHalf.electrons}e⁻
+                  {t('level3.oxidationLabel', 'Oxun')}: {problem.oxidationHalf.electrons}e⁻
                 </div>
                 <div className="bg-red-100 p-2 rounded">
-                  Afoxun: {problem.reductionHalf.electrons}e⁻
+                  {t('level3.reductionLabel', 'Afoxun')}: {problem.reductionHalf.electrons}e⁻
                 </div>
               </div>
             </div>
@@ -280,25 +281,25 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-warm-700 mb-1">
-                  Margfaldari fyrir oxun:
+                  {t('level3.multiplierForOxidation', 'Margfaldari fyrir oxun:')}
                 </label>
                 <input
                   type="number"
                   value={answers.oxMultiplier}
                   onChange={(e) => setAnswers(prev => ({ ...prev, oxMultiplier: e.target.value }))}
-                  placeholder="×?"
+                  placeholder="x?"
                   className="w-full p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-none"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-warm-700 mb-1">
-                  Margfaldari fyrir afoxun:
+                  {t('level3.multiplierForReduction', 'Margfaldari fyrir afoxun:')}
                 </label>
                 <input
                   type="number"
                   value={answers.redMultiplier}
                   onChange={(e) => setAnswers(prev => ({ ...prev, redMultiplier: e.target.value }))}
-                  placeholder="×?"
+                  placeholder="x?"
                   className="w-full p-3 border-2 border-red-300 rounded-xl focus:border-red-500 focus:outline-none"
                 />
               </div>
@@ -314,7 +315,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     : 'bg-amber-500 hover:bg-amber-600 text-white'
                 }`}
               >
-                Athuga margfaldara
+                {t('level3.checkMultipliers', 'Athuga margfaldara')}
               </button>
             )}
           </div>
@@ -325,18 +326,18 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="space-y-4">
             <div className="bg-green-50 p-6 rounded-xl border-2 border-green-400 text-center">
               <div className="text-4xl mb-2">✓</div>
-              <h3 className="font-bold text-green-800 text-xl mb-2">Jöfnuð jafna!</h3>
+              <h3 className="font-bold text-green-800 text-xl mb-2">{t('level3.equationBalanced', 'Jöfnuð jafna!')}</h3>
               <div className="text-2xl font-mono text-green-700 mb-4">
                 {problem.finalDisplay}
               </div>
 
               <div className="bg-white p-4 rounded-lg text-left text-sm">
-                <div className="font-bold text-warm-700 mb-2">Samantekt:</div>
+                <div className="font-bold text-warm-700 mb-2">{t('level3.summary', 'Samantekt:')}</div>
                 <div className="space-y-1 text-warm-600">
-                  <div>• Oxun: {problem.multiplierOx}×({problem.oxidationHalf.speciesDisplay} → {problem.oxidationHalf.productDisplay} + {problem.oxidationHalf.electrons}e⁻)</div>
-                  <div>• Afoxun: {problem.multiplierRed}×({problem.reductionHalf.speciesDisplay} + {problem.reductionHalf.electrons}e⁻ → {problem.reductionHalf.productDisplay})</div>
+                  <div>• {t('level3.oxidationLabel', 'Oxun')}: {problem.multiplierOx}x({problem.oxidationHalf.speciesDisplay} → {problem.oxidationHalf.productDisplay} + {problem.oxidationHalf.electrons}e⁻)</div>
+                  <div>• {t('level3.reductionLabel', 'Afoxun')}: {problem.multiplierRed}x({problem.reductionHalf.speciesDisplay} + {problem.reductionHalf.electrons}e⁻ → {problem.reductionHalf.productDisplay})</div>
                   <div className="font-bold text-green-700 pt-2">
-                    Rafeindir: {problem.multiplierOx * problem.oxidationHalf.electrons} tapað = {problem.multiplierRed * problem.reductionHalf.electrons} öðlast ✓
+                    {t('level3.electrons', 'Rafeindir')}: {problem.multiplierOx * problem.oxidationHalf.electrons} {t('level3.lost', 'tapað')} = {problem.multiplierRed * problem.reductionHalf.electrons} {t('level3.gained', 'öðlast')} ✓
                   </div>
                 </div>
               </div>
@@ -351,23 +352,23 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
         <div className="flex justify-between items-center mb-6">
           <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
-            ← Til baka
+            <span>&larr;</span> {t('common.back', 'Til baka')}
           </button>
           <div className="flex items-center gap-4">
             <div className="text-sm text-warm-500">
-              Dæmi {currentProblem + 1} af {problems.length}
+              {t('level3.problem', 'Daemi')} {currentProblem + 1} {t('level3.of', 'af')} {problems.length}
             </div>
             <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold">
-              Stig: {score}
+              {t('level3.score', 'Stig')}: {score}
             </div>
           </div>
         </div>
 
         <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-purple-600">
-          ⚖️ Jafna redox-jöfnur
+          {t('levels.level3.name', 'Jafna redox-jofnur')}
         </h1>
         <p className="text-center text-warm-600 mb-4">
-          Hálf-hvörf aðferðin
+          {t('level3.subtitle', 'Half-hvorf adferdin')}
         </p>
 
         <div className="bg-warm-50 p-4 rounded-xl mb-6 text-center">
@@ -398,7 +399,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             feedback.correct ? 'bg-green-100 border-2 border-green-400' : 'bg-amber-100 border-2 border-amber-400'
           }`}>
             <div className={`font-bold ${feedback.correct ? 'text-green-800' : 'text-amber-800'}`}>
-              {feedback.correct ? '✓ ' : '💡 '}{feedback.message}
+              {feedback.correct ? '✓ ' : ''}{feedback.message}
             </div>
           </div>
         )}
@@ -409,8 +410,8 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             className="w-full mt-4 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl"
           >
             {step === 'complete'
-              ? (currentProblem < problems.length - 1 ? 'Næsta dæmi →' : 'Ljúka stigi →')
-              : 'Halda áfram →'}
+              ? (currentProblem < problems.length - 1 ? t('level3.nextProblem', 'Naesta daemi') + ' →' : t('level3.completeLevel', 'Ljuka stigi') + ' →')
+              : t('common.next', 'Halda afram') + ' →'}
           </button>
         )}
 
@@ -431,7 +432,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             }}
             className="w-full mt-4 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-2 px-4 rounded-xl text-sm"
           >
-            💡 Sýna vísbendingu
+            {t('common.hint', 'Syna visbendingu')}
           </button>
         )}
 

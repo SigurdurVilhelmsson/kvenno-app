@@ -15,6 +15,7 @@ const OXIDATION_MISCONCEPTIONS: Record<string, string> = {
 const OXIDATION_RELATED: string[] = ['Oxunartölur', 'Redox hvörf', 'Rafeindasameignir'];
 
 interface Level1Props {
+  t: (key: string, fallback?: string) => string;
   onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
   onBack: () => void;
   onCorrectAnswer?: () => void;
@@ -89,7 +90,7 @@ const problems: OxidationProblem[] = [
   { id: 10, compound: "Cr2O7_2-", compoundDisplay: "Cr₂O₇²⁻", targetElement: "Cr", correctAnswer: 6, hint: "7O (-14) + heildarhleðsla (-2), 2 Cr þarf að gefa +12" }
 ];
 
-export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
+export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
   const [phase, setPhase] = useState<'learn' | 'practice'>('learn');
   const [currentRule, setCurrentRule] = useState(0);
   const [currentProblem, setCurrentProblem] = useState(0);
@@ -160,18 +161,18 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
           <div className="flex justify-between items-center mb-6">
             <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
-              ← Til baka
+              &larr; {t('common.back', 'Til baka')}
             </button>
             <div className="text-sm text-warm-500">
-              Regla {currentRule + 1} af {oxidationRules.length}
+              {t('level1.ruleProgress', 'Regla')} {currentRule + 1} {t('level1.of', 'af')} {oxidationRules.length}
             </div>
           </div>
 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-blue-600">
-            📚 Reglur um oxunartölur
+            {t('rules.title', 'Reglur um oxunartölur')}
           </h1>
           <p className="text-center text-warm-600 mb-8">
-            Lærðu grunnreglurnar
+            {t('level1.learnBasics', 'Lærðu grunnreglurnar')}
           </p>
 
           <div className="mb-8">
@@ -195,14 +196,14 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               </div>
 
               <div className="bg-white p-4 rounded-xl mb-4">
-                <div className="text-sm text-warm-500 mb-1">Dæmi:</div>
+                <div className="text-sm text-warm-500 mb-1">{t('level1.example', 'Dæmi:')}</div>
                 <div className="text-xl font-mono text-center text-warm-800">
                   {rule.example}
                 </div>
               </div>
 
               <div className="bg-blue-100 p-4 rounded-xl">
-                <div className="text-sm text-blue-600 mb-1">Útskýring:</div>
+                <div className="text-sm text-blue-600 mb-1">{t('level1.explanation', 'Útskýring:')}</div>
                 <div className="text-blue-800">
                   {rule.explanation}
                 </div>
@@ -220,13 +221,13 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   : 'bg-warm-500 hover:bg-warm-600 text-white'
               }`}
             >
-              ← Fyrri
+              &larr; {t('level1.previous', 'Fyrri')}
             </button>
             <button
               onClick={handleNextRule}
               className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-xl"
             >
-              {currentRule === oxidationRules.length - 1 ? 'Byrja æfingar →' : 'Næsta →'}
+              {currentRule === oxidationRules.length - 1 ? t('level1.startPractice', 'Byrja æfingar') : t('common.next', 'Næsta')} &rarr;
             </button>
           </div>
         </div>
@@ -242,25 +243,25 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
         <div className="flex justify-between items-center mb-6">
           <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
-            ← Til baka
+            &larr; {t('common.back', 'Til baka')}
           </button>
           <div className="flex items-center gap-4">
             <div className="text-sm text-warm-500">
-              Spurning {currentProblem + 1} af {problems.length}
+              {t('level1.questionProgress', 'Spurning')} {currentProblem + 1} {t('level1.of', 'af')} {problems.length}
             </div>
             <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-bold">
-              Stig: {score}
+              {t('level1.score', 'Stig')}: {score}
             </div>
           </div>
         </div>
 
         <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-blue-600">
-          🔢 Finndu oxunartöluna
+          {t('level1.findOxNumber', 'Finndu oxunartöluna')}
         </h1>
 
         <div className="bg-warm-50 p-6 rounded-xl mb-6">
           <div className="text-center">
-            <div className="text-lg text-warm-600 mb-2">Hvað er oxunartala</div>
+            <div className="text-lg text-warm-600 mb-2">{t('level1.whatIsOxNumber', 'Hvað er oxunartala')}</div>
             <div className="flex items-center justify-center gap-2 mb-4">
               <span className="text-4xl font-mono font-bold text-warm-800">
                 {problem.compoundDisplay}
@@ -268,7 +269,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
             <div className="inline-block bg-amber-100 px-4 py-2 rounded-full">
               <span className="text-amber-800 font-bold text-xl">{problem.targetElement}</span>
-              <span className="text-amber-600"> í þessari sameind?</span>
+              <span className="text-amber-600"> {t('level1.inThisCompound', 'í þessari sameind?')}</span>
             </div>
           </div>
         </div>
@@ -289,13 +290,13 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 type="number"
                 value={userAnswer}
                 onChange={(e) => setUserAnswer(e.target.value)}
-                placeholder="Sláðu inn tölu..."
-                aria-label="Oxunartala"
+                placeholder={t('level1.enterNumber', 'Sláðu inn tölu...')}
+                aria-label={t('concepts.oxidationNumber', 'Oxunartala')}
                 className="text-center text-2xl font-bold w-32 p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-none"
               />
             </div>
             <p className="text-center text-sm text-warm-500">
-              Notaðu neikvæðar tölur fyrir neikvæðar oxunartölur (t.d. -2)
+              {t('level1.useNegative', 'Notaðu neikvæðar tölur fyrir neikvæðar oxunartölur (t.d. -2)')}
             </p>
             <div className="flex gap-4">
               {!showHint && (
@@ -306,7 +307,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   }}
                   className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-3 px-6 rounded-xl"
                 >
-                  💡 Vísbending
+                  {t('common.hint', 'Vísbending')}
                 </button>
               )}
               <button
@@ -318,7 +319,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     : 'bg-blue-500 hover:bg-blue-600 text-white'
                 }`}
               >
-                Athuga svar
+                {t('level1.checkAnswer', 'Athuga svar')}
               </button>
             </div>
           </div>
@@ -349,7 +350,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 onClick={handleNext}
                 className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl"
               >
-                {currentProblem < problems.length - 1 ? 'Næsta spurning →' : 'Ljúka stigi →'}
+                {currentProblem < problems.length - 1 ? t('common.next', 'Næsta spurning') + ' →' : t('level1.completeLevel', 'Ljúka stigi') + ' →'}
               </button>
             ) : (
               <div className="flex gap-4">
@@ -357,13 +358,13 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   onClick={handleTryAgain}
                   className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-xl"
                 >
-                  Reyna aftur
+                  {t('common.retry', 'Reyna aftur')}
                 </button>
                 <button
                   onClick={handleNext}
                   className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-6 rounded-xl"
                 >
-                  Halda áfram →
+                  {t('level1.continue', 'Halda áfram')} &rarr;
                 </button>
               </div>
             )}
@@ -371,14 +372,14 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         )}
 
         <div className="mt-6 bg-warm-50 p-4 rounded-xl">
-          <h3 className="font-semibold text-warm-700 mb-2">📋 Muna reglurnar:</h3>
+          <h3 className="font-semibold text-warm-700 mb-2">{t('level1.rememberRules', 'Muna reglurnar:')}</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
-            <div className="bg-white p-2 rounded border">Frumefni = 0</div>
-            <div className="bg-white p-2 rounded border">Jón = hleðsla</div>
-            <div className="bg-white p-2 rounded border">H = +1</div>
-            <div className="bg-white p-2 rounded border">O = -2</div>
-            <div className="bg-white p-2 rounded border">Halógen = -1</div>
-            <div className="bg-white p-2 rounded border">Summa = hleðsla</div>
+            <div className="bg-white p-2 rounded border">{t('rules.rule1', 'Frumefni = 0')}</div>
+            <div className="bg-white p-2 rounded border">{t('rules.rule2', 'Jón = hleðsla')}</div>
+            <div className="bg-white p-2 rounded border">{t('rules.rule4', 'H = +1')}</div>
+            <div className="bg-white p-2 rounded border">{t('rules.rule3', 'O = -2')}</div>
+            <div className="bg-white p-2 rounded border">{t('level1.halogenRule', 'Halógen = -1')}</div>
+            <div className="bg-white p-2 rounded border">{t('rules.rule5', 'Summa = hleðsla')}</div>
           </div>
         </div>
 

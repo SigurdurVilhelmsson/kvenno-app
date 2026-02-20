@@ -68,6 +68,7 @@ interface NamePart {
 }
 
 interface NameBuilderProps {
+  t: (key: string, fallback?: string) => string;
   onComplete?: (score: number, maxScore: number) => void;
   onBack?: () => void;
   onCorrectAnswer?: () => void;
@@ -145,7 +146,7 @@ function generateParts(compound: Compound): NamePart[] {
   return parts;
 }
 
-export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: NameBuilderProps) {
+export function NameBuilder({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: NameBuilderProps) {
   const compounds = useMemo(() => getNameBuildingCompounds(), []);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedParts, setSelectedParts] = useState<NamePart[]>([]);
@@ -235,22 +236,22 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
         <div className="max-w-lg mx-auto">
           <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
             <div className="text-6xl mb-4">🏆</div>
-            <h2 className="text-3xl font-bold text-warm-800 mb-2">Frábært!</h2>
-            <p className="text-warm-600 mb-6">Þú hefur lokið nafnasmiðju!</p>
+            <h2 className="text-3xl font-bold text-warm-800 mb-2">{t('nameBuilder.ui.excellent', 'Frábært!')}</h2>
+            <p className="text-warm-600 mb-6">{t('nameBuilder.ui.completedBuilder', 'Þú hefur lokið nafnasmiðju!')}</p>
 
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="bg-purple-50 rounded-xl p-4">
                 <div className="text-3xl font-bold text-purple-600">{score}</div>
-                <div className="text-sm text-warm-600">Stig</div>
+                <div className="text-sm text-warm-600">{t('common.score', 'Stig')}</div>
               </div>
               <div className="bg-green-50 rounded-xl p-4">
                 <div className="text-3xl font-bold text-green-600">{accuracy}%</div>
-                <div className="text-sm text-warm-600">Nákvæmni</div>
+                <div className="text-sm text-warm-600">{t('nameBuilder.ui.accuracy', 'Nákvæmni')}</div>
               </div>
             </div>
 
             <div className="bg-blue-50 rounded-xl p-4 mb-6 text-left">
-              <h3 className="font-bold text-blue-800 mb-2">Hvað lærðir þú?</h3>
+              <h3 className="font-bold text-blue-800 mb-2">{t('nameBuilder.ui.whatYouLearned', 'Hvað lærðir þú?')}</h3>
               <ul className="text-sm text-warm-700 space-y-1">
                 <li>• Grísk forskeyti: dí-, trí-, tetra-, penta-...</li>
                 <li>• Endi -íð fyrir tvíefni (oxíð, klóríð, flúoríð)</li>
@@ -262,7 +263,7 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
               onClick={onBack}
               className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 rounded-xl transition-colors"
             >
-              Til baka í valmynd
+              {t('nameBuilder.ui.backToMenu', 'Til baka í valmynd')}
             </button>
           </div>
         </div>
@@ -277,17 +278,17 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-xl font-bold text-warm-800">Nafnasmiðja</h1>
-              <p className="text-sm text-warm-600">Byggðu nafnið úr pörtum</p>
+              <h1 className="text-xl font-bold text-warm-800">{t('nameBuilder.ui.title', 'Nafnasmiðja')}</h1>
+              <p className="text-sm text-warm-600">{t('nameBuilder.ui.buildName', 'Byggðu nafnið úr pörtum')}</p>
             </div>
             <div className="flex gap-4 items-center">
               <div className="text-center">
                 <div className="text-xl font-bold text-purple-600">{score}</div>
-                <div className="text-xs text-warm-600">Stig</div>
+                <div className="text-xs text-warm-600">{t('common.score', 'Stig')}</div>
               </div>
               <div className="text-center">
                 <div className="text-xl font-bold text-blue-600">{currentIndex + 1}/{totalCompounds}</div>
-                <div className="text-xs text-warm-600">Efni</div>
+                <div className="text-xs text-warm-600">{t('nameBuilder.ui.compounds', 'Efni')}</div>
               </div>
             </div>
           </div>
@@ -304,21 +305,21 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
         {/* Formula display */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
           <div className="text-center mb-6">
-            <div className="text-sm text-warm-500 mb-2">Efnaformúla:</div>
+            <div className="text-sm text-warm-500 mb-2">{t('nameBuilder.ui.formulaLabel', 'Efnaformúla:')}</div>
             <div className="text-5xl font-mono font-bold text-warm-800">{compound.formula}</div>
             <div className="text-sm text-warm-500 mt-2">{compound.info}</div>
           </div>
 
           {/* Building area */}
           <div className="mb-6">
-            <div className="text-sm text-warm-600 mb-2">Þitt nafn:</div>
+            <div className="text-sm text-warm-600 mb-2">{t('nameBuilder.ui.yourName', 'Þitt nafn:')}</div>
             <div className={`min-h-16 p-4 rounded-xl border-2 border-dashed flex flex-wrap gap-2 items-center justify-center ${
               showFeedback
                 ? isCorrect ? 'border-green-400 bg-green-50' : 'border-red-400 bg-red-50'
                 : 'border-purple-300 bg-purple-50'
             }`}>
               {selectedParts.length === 0 ? (
-                <span className="text-warm-400 text-sm">Veldu parta hér að neðan...</span>
+                <span className="text-warm-400 text-sm">{t('nameBuilder.ui.selectParts', 'Veldu parta hér að neðan...')}</span>
               ) : (
                 selectedParts.sort((a, b) => a.order - b.order).map(part => (
                   <button
@@ -347,10 +348,10 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
                 <span className="text-3xl">{isCorrect ? '🎉' : '💡'}</span>
                 <div>
                   <div className="font-bold text-warm-800">
-                    {isCorrect ? 'Rétt!' : 'Ekki alveg...'}
+                    {isCorrect ? t('common.correct', 'Rétt!') : t('nameBuilder.ui.notQuite', 'Ekki alveg...')}
                   </div>
                   <div className="text-sm text-warm-700">
-                    Rétt nafn: <strong>{compound.name}</strong>
+                    {t('nameBuilder.ui.correctName', 'Rétt nafn:')} <strong>{compound.name}</strong>
                   </div>
                 </div>
               </div>
@@ -359,7 +360,7 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
 
           {/* Available parts */}
           <div>
-            <div className="text-sm text-warm-600 mb-2">Tiltækir partar:</div>
+            <div className="text-sm text-warm-600 mb-2">{t('nameBuilder.ui.availableParts', 'Tiltækir partar:')}</div>
             <div className="flex flex-wrap gap-2">
               {availableParts.map(part => (
                 <button
@@ -389,14 +390,14 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
                 onClick={resetCurrent}
                 className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-700 font-bold py-3 rounded-xl transition-colors"
               >
-                🔄 Hreinsa
+                🔄 {t('nameBuilder.ui.clear', 'Hreinsa')}
               </button>
               <button
                 onClick={checkAnswer}
                 disabled={selectedParts.length === 0}
                 className="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                ✓ Athuga
+                ✓ {t('nameBuilder.ui.check', 'Athuga')}
               </button>
             </>
           ) : (
@@ -406,14 +407,14 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
                   onClick={resetCurrent}
                   className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 rounded-xl transition-colors"
                 >
-                  Reyna aftur
+                  {t('common.retry', 'Reyna aftur')}
                 </button>
               )}
               <button
                 onClick={nextCompound}
                 className="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 rounded-xl transition-colors"
               >
-                {currentIndex + 1 < totalCompounds ? 'Næsta efni →' : 'Sjá niðurstöður'}
+                {currentIndex + 1 < totalCompounds ? t('nameBuilder.ui.nextCompound', 'Næsta efni') + ' →' : t('nameBuilder.ui.seeResults', 'Sjá niðurstöður')}
               </button>
             </>
           )}
@@ -421,7 +422,7 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
 
         {/* Naming rules hint */}
         <div className="mt-4 bg-blue-50 rounded-xl p-4">
-          <h3 className="font-bold text-blue-800 mb-2">Nafnareglur:</h3>
+          <h3 className="font-bold text-blue-800 mb-2">{t('nameBuilder.ui.namingRules', 'Nafnareglur:')}</h3>
           <ul className="text-sm text-warm-700 space-y-1">
             <li>• <strong>Jónefni:</strong> Málmur + málmleysingi → málmur + endi -íð</li>
             <li>• <strong>Sameindaefni:</strong> Notaðu forskeyti (dí-, trí-, tetra-...)</li>
@@ -434,7 +435,7 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
           onClick={onBack}
           className="mt-4 w-full text-warm-500 hover:text-warm-700 font-semibold py-2"
         >
-          ← Til baka í valmynd
+          ← {t('nameBuilder.ui.backToMenu', 'Til baka í valmynd')}
         </button>
       </div>
     </div>

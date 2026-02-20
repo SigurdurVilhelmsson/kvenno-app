@@ -108,6 +108,7 @@ function App() {
     return (
       <>
         <Level1
+          t={t}
           onComplete={handleLevel1Complete}
           onBack={() => setScreen('menu')}
           onCorrectAnswer={trackCorrectAnswer}
@@ -125,6 +126,7 @@ function App() {
     return (
       <>
         <Level2
+          t={t}
           onComplete={handleLevel2Complete}
           onBack={() => setScreen('menu')}
           onCorrectAnswer={trackCorrectAnswer}
@@ -142,6 +144,7 @@ function App() {
     return (
       <>
         <Level3
+          t={t}
           onComplete={handleLevel3Complete}
           onBack={() => setScreen('menu')}
           onCorrectAnswer={trackCorrectAnswer}
@@ -159,6 +162,7 @@ function App() {
     return (
       <>
         <NameBuilder
+          t={t}
           onComplete={() => {
             updateProgress({
               totalGamesPlayed: progress.totalGamesPlayed + 1,

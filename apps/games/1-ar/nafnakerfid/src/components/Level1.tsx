@@ -24,6 +24,7 @@ const RELATED_CONCEPTS: Record<RuleId, string[]> = {
 };
 
 interface Level1Props {
+  t: (key: string, fallback?: string) => string;
   onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
   onBack: () => void;
   onCorrectAnswer?: () => void;
@@ -294,7 +295,7 @@ const quizQuestions: QuizQuestion[] = [
   }
 ];
 
-export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
+export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
   const [phase, setPhase] = useState<'learn' | 'warmup' | 'quiz'>('learn');
   const [currentRule, setCurrentRule] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -408,18 +409,18 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
           <div className="flex justify-between items-center mb-6">
             <button onClick={onBack} className="text-warm-500 hover:text-warm-700 flex items-center gap-2">
-              <span>←</span> Til baka
+              <span>←</span> {t('common.back', 'Til baka')}
             </button>
             <div className="text-sm text-warm-500">
-              Regla {currentRule + 1} af {namingRules.length}
+              {t('level1.ui.ruleNOfM', 'Regla {n} af {m}').replace('{n}', String(currentRule + 1)).replace('{m}', String(namingRules.length))}
             </div>
           </div>
 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-indigo-600">
-            Reglur um nafnagift
+            {t('level1.ui.rulesTitle', 'Reglur um nafnagift')}
           </h1>
           <p className="text-center text-warm-600 mb-6">
-            Lærðu hvernig efnasambönd eru nefnd
+            {t('level1.ui.rulesSubtitle', 'Lærðu hvernig efnasambönd eru nefnd')}
           </p>
 
           {/* Progress dots */}
@@ -454,7 +455,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             {/* Rules list */}
             <div className="bg-white rounded-xl p-4 mb-4">
-              <h3 className="font-semibold text-warm-700 mb-2">Reglur:</h3>
+              <h3 className="font-semibold text-warm-700 mb-2">{t('level1.ui.rulesLabel', 'Reglur:')}</h3>
               <ul className="space-y-2">
                 {rule.rules.map((r, idx) => (
                   <li key={idx} className="flex items-start gap-2 text-warm-700">
@@ -467,7 +468,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             {/* Examples */}
             <div className="bg-white rounded-xl p-4">
-              <h3 className="font-semibold text-warm-700 mb-3">Dæmi:</h3>
+              <h3 className="font-semibold text-warm-700 mb-3">{t('level1.ui.examplesLabel', 'Dæmi:')}</h3>
               <div className="grid gap-3">
                 {rule.examples.map((ex, idx) => (
                   <div key={idx} className="flex items-center gap-4 p-3 bg-warm-50 rounded-lg">
@@ -496,19 +497,19 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   : 'bg-warm-500 hover:bg-warm-600 text-white'
               }`}
             >
-              ← Fyrri regla
+              ← {t('level1.ui.prevRule', 'Fyrri regla')}
             </button>
             <button
               onClick={handleNextRule}
               className={`flex-1 ${colors.bg} hover:opacity-90 text-white font-bold py-3 px-6 rounded-xl transition-all`}
             >
-              {currentRule === namingRules.length - 1 ? 'Hefja próf →' : 'Næsta regla →'}
+              {currentRule === namingRules.length - 1 ? t('level1.ui.startQuiz', 'Hefja próf') + ' →' : t('level1.ui.nextRule', 'Næsta regla') + ' →'}
             </button>
           </div>
 
           {/* Quick reference */}
           <div className="mt-6 bg-warm-50 rounded-xl p-4">
-            <h3 className="font-semibold text-warm-700 mb-2">Yfirlit yfir reglur:</h3>
+            <h3 className="font-semibold text-warm-700 mb-2">{t('level1.ui.ruleOverview', 'Yfirlit yfir reglur:')}</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
               {namingRules.map((r, idx) => (
                 <div
@@ -532,7 +533,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
           <div className="flex justify-between items-center mb-6">
             <button onClick={() => setPhase('learn')} className="text-warm-500 hover:text-warm-700 flex items-center gap-2">
-              <span>←</span> Til baka í reglur
+              <span>←</span> {t('level1.ui.backToRules', 'Til baka í reglur')}
             </button>
             <div className="text-sm text-warm-500">
               {currentWarmup + 1} af {warmupQuestions.length}
@@ -542,10 +543,10 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="text-center mb-6">
             <div className="text-4xl mb-2">🔬</div>
             <h1 className="text-2xl md:text-3xl font-bold text-indigo-600 mb-2">
-              Upphitun: Málmur eða málmleysingi?
+              {t('level1.ui.warmupTitle', 'Upphitun: Málmur eða málmleysingi?')}
             </h1>
             <p className="text-warm-600">
-              Þetta er mikilvægt til að velja rétta nafnareglu!
+              {t('level1.ui.warmupSubtitle', 'Þetta er mikilvægt til að velja rétta nafnareglu!')}
             </p>
           </div>
 
@@ -583,8 +584,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               }`}
             >
               <div className="text-3xl mb-2">⚙️</div>
-              <div className="font-bold text-lg">Málmur</div>
-              <div className="text-xs text-warm-500">(gefur rafeindir)</div>
+              <div className="font-bold text-lg">{t('level1.ui.metal', 'Málmur')}</div>
+              <div className="text-xs text-warm-500">{t('level1.ui.metalHint', '(gefur rafeindir)')}</div>
             </button>
             <button
               onClick={() => handleWarmupAnswer(false)}
@@ -600,8 +601,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               }`}
             >
               <div className="text-3xl mb-2">💨</div>
-              <div className="font-bold text-lg">Málmleysingi</div>
-              <div className="text-xs text-warm-500">(tekur rafeindir)</div>
+              <div className="font-bold text-lg">{t('level1.ui.nonmetal', 'Málmleysingi')}</div>
+              <div className="text-xs text-warm-500">{t('level1.ui.nonmetalHint', '(tekur rafeindir)')}</div>
             </button>
           </div>
 
@@ -622,24 +623,24 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               onClick={handleNextWarmup}
               className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl transition-all"
             >
-              {currentWarmup < warmupQuestions.length - 1 ? 'Næsta frumefni →' : 'Hefja próf →'}
+              {currentWarmup < warmupQuestions.length - 1 ? t('level1.ui.nextElement', 'Næsta frumefni') + ' →' : t('level1.ui.startQuiz', 'Hefja próf') + ' →'}
             </button>
           )}
 
           {/* Score summary */}
           <div className="mt-6 text-center text-sm text-warm-500">
-            Rétt: {warmupCorrect} / {currentWarmup + (warmupFeedback ? 1 : 0)}
+            {t('level1.ui.correctCount', 'Rétt:')} {warmupCorrect} / {currentWarmup + (warmupFeedback ? 1 : 0)}
           </div>
 
           {/* Key reminder */}
           <div className="mt-4 bg-warm-50 rounded-xl p-4">
-            <h3 className="font-semibold text-warm-700 mb-2 text-sm">Mundu:</h3>
+            <h3 className="font-semibold text-warm-700 mb-2 text-sm">{t('level1.ui.remember', 'Mundu:')}</h3>
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="bg-blue-50 p-2 rounded">
-                <span className="font-bold text-blue-700">Málmar:</span> hópar 1, 2, 3-12
+                <span className="font-bold text-blue-700">{t('level1.ui.metalsGroups', 'Málmar:')}</span> hópar 1, 2, 3-12
               </div>
               <div className="bg-orange-50 p-2 rounded">
-                <span className="font-bold text-orange-700">Málmleysingjar:</span> hópar 15-18
+                <span className="font-bold text-orange-700">{t('level1.ui.nonmetalsGroups', 'Málmleysingjar:')}</span> hópar 15-18
               </div>
             </div>
           </div>
@@ -657,20 +658,20 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
         <div className="flex justify-between items-center mb-6">
           <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
-            ← Til baka
+            ← {t('common.back', 'Til baka')}
           </button>
           <div className="flex items-center gap-4">
             <div className="text-sm text-warm-500">
-              Spurning {currentQuestion + 1} af {quizQuestions.length}
+              {t('level1.ui.questionNOfM', 'Spurning {n} af {m}').replace('{n}', String(currentQuestion + 1)).replace('{m}', String(quizQuestions.length))}
             </div>
             <div className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-bold">
-              Stig: {score}
+              {t('common.score', 'Stig')}: {score}
             </div>
           </div>
         </div>
 
         <h1 className="text-2xl md:text-3xl font-bold text-center mb-6 text-indigo-600">
-          Próf: Nafnareglur
+          {t('level1.ui.quizTitle', 'Próf: Nafnareglur')}
         </h1>
 
         {/* Question */}
@@ -750,7 +751,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             onClick={handleNextQuestion}
             className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl transition-all"
           >
-            {currentQuestion < quizQuestions.length - 1 ? 'Næsta spurning →' : 'Ljúka stigi →'}
+            {currentQuestion < quizQuestions.length - 1 ? t('level1.ui.nextQuestion', 'Næsta spurning') + ' →' : t('level1.ui.finishLevel', 'Ljúka stigi') + ' →'}
           </button>
         )}
 
@@ -764,19 +765,19 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Quick reference */}
         <div className="mt-6 bg-warm-50 rounded-xl p-4">
-          <h3 className="font-semibold text-warm-700 mb-2 text-sm">Minnisblað:</h3>
+          <h3 className="font-semibold text-warm-700 mb-2 text-sm">{t('level1.ui.cheatSheet', 'Minnisblað:')}</h3>
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="bg-blue-50 p-2 rounded">
-              <span className="font-bold text-blue-700">Jónefni:</span> málmur + -íð
+              <span className="font-bold text-blue-700">{t('level1.ui.refIonic', 'Jónefni:')}</span> málmur + -íð
             </div>
             <div className="bg-purple-50 p-2 rounded">
-              <span className="font-bold text-purple-700">Breytileg:</span> rómverskar tölur
+              <span className="font-bold text-purple-700">{t('level1.ui.refVariable', 'Breytileg:')}</span> rómverskar tölur
             </div>
             <div className="bg-green-50 p-2 rounded">
-              <span className="font-bold text-green-700">Fjölatóma:</span> sérstök nöfn
+              <span className="font-bold text-green-700">{t('level1.ui.refPolyatomic', 'Fjölatóma:')}</span> sérstök nöfn
             </div>
             <div className="bg-orange-50 p-2 rounded">
-              <span className="font-bold text-orange-700">Sameindir:</span> grísk forskeyti
+              <span className="font-bold text-orange-700">{t('level1.ui.refMolecular', 'Sameindir:')}</span> grísk forskeyti
             </div>
           </div>
         </div>

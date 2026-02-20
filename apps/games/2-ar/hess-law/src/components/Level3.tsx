@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { FORMATION_ENTHALPIES, checkAnswer as checkAnswerTolerance } from '../utils/hess-calculations';
 
 interface Level3Props {
+  t: (key: string, fallback?: string) => string;
   onComplete: (score: number, maxScore?: number, hintsUsed?: number) => void;
   onBack: () => void;
   onCorrectAnswer?: () => void;
@@ -11,17 +12,16 @@ interface Level3Props {
 
 interface Challenge {
   id: number;
-  title: string;
-  description: string;
+  titleKey: string;
+  descKey: string;
   type: 'calculate' | 'reverse' | 'compare';
   equation: string;
   reactants: { formula: string; coefficient: number; deltaHf: number }[];
   products: { formula: string; coefficient: number; deltaHf: number }[];
   correctAnswer: number;
   unit: string;
-  hint: string;
-  explanation: string;
-  // For reverse problems
+  hintKey: string;
+  explanationKey: string;
   unknownCompound?: string;
   givenDeltaHrxn?: number;
 }
@@ -29,8 +29,8 @@ interface Challenge {
 const challenges: Challenge[] = [
   {
     id: 1,
-    title: 'Brennsla metans',
-    description: 'Reiknaðu ΔH°rxn fyrir brennslu metans með ΔH°f gildum.',
+    titleKey: 'level3.c1title',
+    descKey: 'level3.c1desc',
     type: 'calculate',
     equation: 'CH₄(g) + 2O₂(g) → CO₂(g) + 2H₂O(l)',
     reactants: [
@@ -43,13 +43,13 @@ const challenges: Challenge[] = [
     ],
     correctAnswer: -890.3,
     unit: 'kJ/mol',
-    hint: 'ΔH°rxn = Σ(n × ΔH°f afurðir) - Σ(n × ΔH°f hvarfefni)',
-    explanation: 'ΔH°rxn = [1(-393.5) + 2(-285.8)] - [1(-74.8) + 2(0)] = -890.3 kJ/mol'
+    hintKey: 'level3.c1hint',
+    explanationKey: 'level3.c1explanation',
   },
   {
     id: 2,
-    title: 'Myndun ammóníaks',
-    description: 'Finndu ΔH°rxn fyrir Haber-ferlið.',
+    titleKey: 'level3.c2title',
+    descKey: 'level3.c2desc',
     type: 'calculate',
     equation: 'N₂(g) + 3H₂(g) → 2NH₃(g)',
     reactants: [
@@ -61,13 +61,13 @@ const challenges: Challenge[] = [
     ],
     correctAnswer: -92.2,
     unit: 'kJ/mol',
-    hint: 'Frumefni í stöðluðu ástandi hafa ΔH°f = 0',
-    explanation: 'ΔH°rxn = [2(-46.1)] - [1(0) + 3(0)] = -92.2 kJ/mol'
+    hintKey: 'level3.c2hint',
+    explanationKey: 'level3.c2explanation',
   },
   {
     id: 3,
-    title: 'Kalsíumkarbónat sundrun',
-    description: 'Reiknaðu ΔH° fyrir niðurbrot kalsíumkarbónats.',
+    titleKey: 'level3.c3title',
+    descKey: 'level3.c3desc',
     type: 'calculate',
     equation: 'CaCO₃(s) → CaO(s) + CO₂(g)',
     reactants: [
@@ -79,13 +79,13 @@ const challenges: Challenge[] = [
     ],
     correctAnswer: 178.3,
     unit: 'kJ/mol',
-    hint: 'Jákvæð ΔH þýðir innhitað hvarf (varmagleypandi)',
-    explanation: 'ΔH°rxn = [(-635.1) + (-393.5)] - [(-1206.9)] = +178.3 kJ/mol (innhitað)'
+    hintKey: 'level3.c3hint',
+    explanationKey: 'level3.c3explanation',
   },
   {
     id: 4,
-    title: 'Óþekkt myndunarvarminn',
-    description: 'Gefið er ΔH°rxn = -296.8 kJ/mol. Finndu ΔH°f fyrir SO₂(g).',
+    titleKey: 'level3.c4title',
+    descKey: 'level3.c4desc',
     type: 'reverse',
     equation: 'S(s) + O₂(g) → SO₂(g)',
     reactants: [
@@ -99,13 +99,13 @@ const challenges: Challenge[] = [
     givenDeltaHrxn: -296.8,
     correctAnswer: -296.8,
     unit: 'kJ/mol',
-    hint: 'Þetta er myndunarhvarf! ΔH°rxn = ΔH°f fyrir afurðina.',
-    explanation: 'Þar sem hvarfefnin eru frumefni í stöðluðu ástandi: ΔH°rxn = ΔH°f(SO₂) = -296.8 kJ/mol'
+    hintKey: 'level3.c4hint',
+    explanationKey: 'level3.c4explanation',
   },
   {
     id: 5,
-    title: 'Brennsla etanóls',
-    description: 'Reiknaðu varmamyndun við brennslu etanóls.',
+    titleKey: 'level3.c5title',
+    descKey: 'level3.c5desc',
     type: 'calculate',
     equation: 'C₂H₅OH(l) + 3O₂(g) → 2CO₂(g) + 3H₂O(l)',
     reactants: [
@@ -118,13 +118,13 @@ const challenges: Challenge[] = [
     ],
     correctAnswer: -1366.7,
     unit: 'kJ/mol',
-    hint: 'Mundu að margfalda ΔH°f með stuðlinum!',
-    explanation: 'ΔH°rxn = [2(-393.5) + 3(-285.8)] - [1(-277.7) + 3(0)] = -1366.7 kJ/mol'
+    hintKey: 'level3.c5hint',
+    explanationKey: 'level3.c5explanation',
   },
   {
     id: 6,
-    title: 'Þermít hvarfið',
-    description: 'Reiknaðu orkuna í þermít hvarfinu.',
+    titleKey: 'level3.c6title',
+    descKey: 'level3.c6desc',
     type: 'calculate',
     equation: '2Al(s) + Fe₂O₃(s) → Al₂O₃(s) + 2Fe(s)',
     reactants: [
@@ -137,12 +137,12 @@ const challenges: Challenge[] = [
     ],
     correctAnswer: -851.5,
     unit: 'kJ/mol',
-    hint: 'Þetta hvarf er mjög varmagjafandi - notað til að suða járnbrautir.',
-    explanation: 'ΔH°rxn = [1(-1675.7) + 2(0)] - [2(0) + 1(-824.2)] = -851.5 kJ/mol'
+    hintKey: 'level3.c6hint',
+    explanationKey: 'level3.c6explanation',
   }
 ];
 
-export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
+export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
   const [showHint, setShowHint] = useState(false);
@@ -211,11 +211,11 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             onClick={onBack}
             className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
           >
-            <span>&larr;</span> Til baka
+            <span>&larr;</span> {t('common.back')}
           </button>
           <div className="text-right">
-            <div className="text-sm text-warm-600">Stig 3 / Þraut {currentChallenge + 1} af {challenges.length}</div>
-            <div className="text-lg font-bold text-purple-600">{score} stig</div>
+            <div className="text-sm text-warm-600">{t('levels.level3.name')} / {currentChallenge + 1} / {challenges.length}</div>
+            <div className="text-lg font-bold text-purple-600">{score} {t('progress.points')}</div>
           </div>
         </div>
 
@@ -230,9 +230,9 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {/* Main content */}
         <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
           <h2 className="text-2xl font-bold text-purple-800 mb-2">
-            {challenge.title}
+            {t(challenge.titleKey)}
           </h2>
-          <p className="text-warm-600 mb-6">{challenge.description}</p>
+          <p className="text-warm-600 mb-6">{t(challenge.descKey)}</p>
 
           {/* Chemical equation display */}
           <div className="bg-purple-50 p-4 rounded-xl mb-6">
@@ -246,13 +246,13 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             onClick={() => setShowTable(!showTable)}
             className="mb-4 text-purple-600 hover:text-purple-800 underline text-sm"
           >
-            {showTable ? 'Fela ΔH°f töflu' : 'Sýna ΔH°f töflu'}
+            {showTable ? t('level3.hideTable') : t('level3.showTable')}
           </button>
 
           {/* Formation enthalpy table */}
           {showTable && (
             <div className="bg-warm-50 p-4 rounded-xl mb-6 max-h-64 overflow-y-auto">
-              <h3 className="font-bold text-warm-700 mb-3">Myndunarvarminn (ΔH°f) í kJ/mol</h3>
+              <h3 className="font-bold text-warm-700 mb-3">{t('level3.tableTitle')}</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
                 {Object.entries(FORMATION_ENTHALPIES)
                   .filter(([formula]) =>
@@ -274,18 +274,18 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           {/* Calculation workspace */}
           <div className="bg-warm-50 p-4 rounded-xl mb-6">
-            <h3 className="font-bold text-warm-700 mb-3">Útreikningur</h3>
+            <h3 className="font-bold text-warm-700 mb-3">{t('level3.calculation')}</h3>
 
             {/* Formula reminder */}
             <div className="bg-white p-3 rounded-lg border border-purple-200 mb-4">
               <p className="font-mono text-sm text-center text-purple-800">
-                ΔH°<sub>rxn</sub> = Σ(n × ΔH°<sub>f</sub> afurðir) - Σ(n × ΔH°<sub>f</sub> hvarfefni)
+                ΔH°<sub>rxn</sub> = Σ(n × ΔH°<sub>f</sub> {t('level3.products').replace(':', '')}) - Σ(n × ΔH°<sub>f</sub> {t('level3.reactants').replace(':', '')})
               </p>
             </div>
 
             {/* Products calculation */}
             <div className="mb-4">
-              <div className="font-semibold text-green-700 mb-2">Afurðir:</div>
+              <div className="font-semibold text-green-700 mb-2">{t('level3.products')}</div>
               <div className="space-y-1 text-sm font-mono">
                 {challenge.products.map((p, i) => (
                   <div key={i} className="flex items-center gap-2">
@@ -294,14 +294,14 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   </div>
                 ))}
                 <div className="border-t pt-1 font-bold">
-                  Samtals afurðir: {productsSum.toFixed(1)} kJ
+                  {t('level3.totalProducts')} {productsSum.toFixed(1)} kJ
                 </div>
               </div>
             </div>
 
             {/* Reactants calculation */}
             <div className="mb-4">
-              <div className="font-semibold text-blue-700 mb-2">Hvarfefni:</div>
+              <div className="font-semibold text-blue-700 mb-2">{t('level3.reactants')}</div>
               <div className="space-y-1 text-sm font-mono">
                 {challenge.reactants.map((r, i) => (
                   <div key={i} className="flex items-center gap-2">
@@ -310,7 +310,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   </div>
                 ))}
                 <div className="border-t pt-1 font-bold">
-                  Samtals hvarfefni: {reactantsSum.toFixed(1)} kJ
+                  {t('level3.totalReactants')} {reactantsSum.toFixed(1)} kJ
                 </div>
               </div>
             </div>
@@ -331,7 +331,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
                   className="flex-1 p-3 border-2 border-warm-300 rounded-xl focus:border-purple-500 focus:outline-none text-lg font-mono"
-                  placeholder="Sláðu inn svar..."
+                  placeholder={t('level3.placeholder')}
                   disabled={isCorrect !== null}
                 />
                 <span className="flex items-center text-warm-600 font-mono">
@@ -346,7 +346,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 disabled={!userAnswer}
                 className="bg-purple-500 hover:bg-purple-600 disabled:bg-warm-300 text-white font-bold py-3 px-8 rounded-xl transition-colors"
               >
-                Athuga
+                {t('level3.check')}
               </button>
             )}
           </div>
@@ -357,14 +357,14 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               onClick={handleShowHint}
               className="text-purple-600 hover:text-purple-800 text-sm underline mb-4"
             >
-              Sýna vísbendingu (-10 stig)
+              {t('level3.showHint')}
             </button>
           )}
 
           {showHint && !showExplanation && (
             <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4">
-              <span className="font-bold text-yellow-800">Vísbending: </span>
-              <span className="text-yellow-900">{challenge.hint}</span>
+              <span className="font-bold text-yellow-800">{t('level3.hintLabel')} </span>
+              <span className="text-yellow-900">{t(challenge.hintKey)}</span>
             </div>
           )}
 
@@ -372,10 +372,10 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           {isCorrect !== null && (
             <div className={`p-4 rounded-xl mb-4 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
               <div className={`font-bold text-lg mb-2 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
-                {isCorrect ? 'Rétt!' : 'Rangt'}
+                {isCorrect ? t('common.correct') : t('common.incorrect')}
               </div>
               <div className={`font-mono ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
-                Rétt svar: {challenge.correctAnswer} {challenge.unit}
+                {t('level3.correctAnswer')} {challenge.correctAnswer} {challenge.unit}
               </div>
             </div>
           )}
@@ -383,9 +383,9 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           {/* Explanation */}
           {showExplanation && (
             <div className="bg-purple-50 p-4 rounded-xl mb-6">
-              <div className="font-bold text-purple-800 mb-2">Útskýring:</div>
+              <div className="font-bold text-purple-800 mb-2">{t('level3.explanationLabel')}</div>
               <div className="text-purple-900 font-mono text-sm">
-                {challenge.explanation}
+                {t(challenge.explanationKey)}
               </div>
             </div>
           )}
@@ -396,18 +396,18 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               onClick={nextChallenge}
               className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
             >
-              {currentChallenge < challenges.length - 1 ? 'Næsta þraut' : 'Ljúka stigi 3'}
+              {currentChallenge < challenges.length - 1 ? t('level3.nextChallenge') : t('level3.completeLevel')}
             </button>
           )}
         </div>
 
         {/* Key concepts reminder */}
         <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="font-bold text-warm-700 mb-2">Lykilatriði</h3>
+          <h3 className="font-bold text-warm-700 mb-2">{t('level3.keyPoints')}</h3>
           <ul className="text-sm text-warm-600 space-y-1">
-            <li>• Frumefni í stöðluðu ástandi hafa ΔH°f = 0</li>
-            <li>• Neikvætt ΔH°f = stöðugt efnasamband</li>
-            <li>• Mundu að nota stuðla (coefficients) í útreikningi</li>
+            <li>• {t('level3.keyPoint1')}</li>
+            <li>• {t('level3.keyPoint2')}</li>
+            <li>• {t('level3.keyPoint3')}</li>
           </ul>
         </div>
       </div>

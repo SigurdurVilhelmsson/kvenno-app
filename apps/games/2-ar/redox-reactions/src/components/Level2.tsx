@@ -9,6 +9,7 @@ interface Level2Props {
   onBack: () => void;
   onCorrectAnswer?: () => void;
   onIncorrectAnswer?: () => void;
+  t: (key: string, fallback?: string) => string;
 }
 
 interface RedoxReaction {
@@ -153,7 +154,7 @@ const questionTypes: Question[] = [
   { type: 'reducing-agent', label: 'Hvað er afoxunarefnið?', hint: 'Efnið sem veldur afoxun (gefur rafeindir)' }
 ];
 
-export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level2Props) {
+export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer, t }: Level2Props) {
   const [currentReaction, setCurrentReaction] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
@@ -222,25 +223,25 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
         <div className="flex justify-between items-center mb-6">
           <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
-            ← Til baka
+            {t('common.back', '← Til baka')}
           </button>
           <div className="flex items-center gap-4">
             <div className="text-sm text-warm-500">
-              {currentProgress} af {totalQuestions}
+              {currentProgress} {t('level2.progressOf', 'af')} {totalQuestions}
             </div>
             <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-bold">
-              Stig: {score}
+              {t('level2.score', 'Stig')}: {score}
             </div>
           </div>
         </div>
 
         <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-green-600">
-          🔄 Greina redox-hvörf
+          🔄 {t('levels.level2.name', 'Greina redox-hvörf')}
         </h1>
 
         <div className="bg-warm-50 p-6 rounded-xl mb-6">
           <div className="text-center mb-4">
-            <div className="text-sm text-warm-500 mb-2">Efnahvarf {currentReaction + 1}:</div>
+            <div className="text-sm text-warm-500 mb-2">{t('level2.reaction', 'Efnahvarf')} {currentReaction + 1}:</div>
             <div className="text-2xl md:text-3xl font-mono font-bold text-warm-800">
               {reaction.equationDisplay}
             </div>
@@ -293,7 +294,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 }}
                 className="w-full bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-2 px-4 rounded-xl text-sm"
               >
-                💡 Sýna vísbendingu
+                💡 {t('common.hint', 'Sýna vísbendingu')}
               </button>
             )}
           </div>
@@ -304,11 +305,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             }`}>
               <div className="text-4xl mb-2">{isCorrect ? '✓' : '✗'}</div>
               <div className={`text-xl font-bold ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
-                {isCorrect ? 'Rétt!' : 'Rangt'}
+                {isCorrect ? t('common.correct', 'Rétt!') : t('common.incorrect', 'Rangt')}
               </div>
               {!isCorrect && (
                 <div className="text-red-700 mt-2">
-                  Rétt svar: <strong>{getCorrectAnswer()}</strong>
+                  {t('level2.correctAnswer', 'Rétt svar')}: <strong>{getCorrectAnswer()}</strong>
                 </div>
               )}
             </div>
@@ -318,7 +319,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 onClick={() => setShowExplanation(prev => !prev)}
                 className="w-full bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold py-2 px-4 rounded-xl"
               >
-                {showExplanation ? '🔼 Fela útskýringu' : '🔽 Sýna útskýringu'}
+                {showExplanation
+                  ? `🔼 ${t('level2.hideExplanation', 'Fela útskýringu')}`
+                  : `🔽 ${t('level2.showExplanation', 'Sýna útskýringu')}`}
               </button>
             )}
 
@@ -333,32 +336,32 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl"
             >
               {currentQuestion < questionTypes.length - 1
-                ? 'Næsta spurning →'
+                ? `${t('level2.nextQuestion', 'Næsta spurning')} →`
                 : currentReaction < reactions.length - 1
-                  ? 'Næsta hvarf →'
-                  : 'Ljúka stigi →'}
+                  ? `${t('level2.nextReaction', 'Næsta hvarf')} →`
+                  : `${t('level2.finishLevel', 'Ljúka stigi')} →`}
             </button>
           </div>
         )}
 
         <div className="mt-6 bg-warm-50 p-4 rounded-xl">
-          <h3 className="font-semibold text-warm-700 mb-2">📚 Lykilhugtök:</h3>
+          <h3 className="font-semibold text-warm-700 mb-2">📚 {t('level2.keyConcepts', 'Lykilhugtök')}:</h3>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="bg-blue-50 p-3 rounded-lg">
-              <div className="font-bold text-blue-800">Oxun</div>
-              <div className="text-blue-600">Tapa e⁻ • ox# ↑</div>
+              <div className="font-bold text-blue-800">{t('concepts.oxidation', 'Oxun')}</div>
+              <div className="text-blue-600">{t('concepts.oxidationDesc', 'Tapa e⁻ • ox# ↑')}</div>
             </div>
             <div className="bg-red-50 p-3 rounded-lg">
-              <div className="font-bold text-red-800">Afoxun</div>
-              <div className="text-red-600">Öðlast e⁻ • ox# ↓</div>
+              <div className="font-bold text-red-800">{t('concepts.reduction', 'Afoxun')}</div>
+              <div className="text-red-600">{t('concepts.reductionDesc', 'Öðlast e⁻ • ox# ↓')}</div>
             </div>
             <div className="bg-purple-50 p-3 rounded-lg">
-              <div className="font-bold text-purple-800">Oxunarefni</div>
-              <div className="text-purple-600">Veldur oxun • Afoxast sjálft</div>
+              <div className="font-bold text-purple-800">{t('concepts.oxidizingAgent', 'Oxunarefni')}</div>
+              <div className="text-purple-600">{t('concepts.oxidizingAgentDesc', 'Veldur oxun • Afoxast sjálft')}</div>
             </div>
             <div className="bg-green-50 p-3 rounded-lg">
-              <div className="font-bold text-green-800">Afoxunarefni</div>
-              <div className="text-green-600">Veldur afoxun • Oxast sjálft</div>
+              <div className="font-bold text-green-800">{t('concepts.reducingAgent', 'Afoxunarefni')}</div>
+              <div className="text-green-600">{t('concepts.reducingAgentDesc', 'Veldur afoxun • Oxast sjálft')}</div>
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { CompoundVisualization } from './MolecularStructure';
 
 interface Level2Props {
+  t: (key: string, fallback?: string) => string;
   onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
   onBack: () => void;
   onCorrectAnswer?: () => void;
@@ -240,7 +241,7 @@ const greekPrefixes = [
 
 type Step = 'identify' | 'build' | 'answer' | 'feedback';
 
-export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level2Props) {
+export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level2Props) {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [step, setStep] = useState<Step>('identify');
   const [selectedType, setSelectedType] = useState<CompoundType | null>(null);
@@ -329,23 +330,23 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
         <div className="flex justify-between items-center mb-6">
           <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
-            ← Til baka
+            ← {t('common.back', 'Til baka')}
           </button>
           <div className="flex items-center gap-4">
             <div className="text-sm text-warm-500">
-              Efnasamband {currentChallenge + 1} af {challenges.length}
+              {t('level2.ui.compoundNOfM', 'Efnasamband {n} af {m}').replace('{n}', String(currentChallenge + 1)).replace('{m}', String(challenges.length))}
             </div>
             <div className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full font-bold">
-              Stig: {score}
+              {t('common.score', 'Stig')}: {score}
             </div>
           </div>
         </div>
 
         <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-teal-600">
-          Nefndu efnasambandið
+          {t('level2.ui.nameCompound', 'Nefndu efnasambandið')}
         </h1>
         <p className="text-center text-warm-600 mb-6">
-          Fylgdu skrefunum til að nefna efnasambandið rétt
+          {t('level2.ui.followSteps', 'Fylgdu skrefunum til að nefna efnasambandið rétt')}
         </p>
 
         {/* Formula display with molecular structure */}
@@ -395,7 +396,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {step === 'identify' && (
           <div className="space-y-4">
             <h2 className="text-lg font-bold text-warm-700 text-center mb-4">
-              Skref 1: Hvaða tegund efnasambands er þetta?
+              {t('level2.ui.step1Title', 'Skref 1: Hvaða tegund efnasambands er þetta?')}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {(Object.entries(typeNames) as [CompoundType, typeof typeNames[CompoundType]][]).map(([type, info]) => {
@@ -426,7 +427,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div className={`p-4 rounded-xl text-center ${
                 typeCorrect ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
               }`}>
-                {typeCorrect ? '✓ Rétt!' : `Þetta er ${typeInfo.name.toLowerCase()}`}
+                {typeCorrect ? `✓ ${t('common.correct', 'Rétt!')}` : `Þetta er ${typeInfo.name.toLowerCase()}`}
               </div>
             )}
           </div>
@@ -436,7 +437,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {step === 'build' && (
           <div className="space-y-4">
             <h2 className="text-lg font-bold text-warm-700 text-center mb-4">
-              Skref 2: Hvernig er nafnið byggt upp?
+              {t('level2.ui.step2Title', 'Skref 2: Hvernig er nafnið byggt upp?')}
             </h2>
 
             <div className={`${getColorClasses(typeInfo.color).light} border-2 ${getColorClasses(typeInfo.color).border} rounded-xl p-4`}>
@@ -463,7 +464,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             {/* Greek prefixes reference for molecular compounds */}
             {challenge.type === 'molecular' && (
               <div className="bg-orange-50 rounded-xl p-4">
-                <div className="font-bold text-orange-800 mb-2">Grísk forskeyti:</div>
+                <div className="font-bold text-orange-800 mb-2">{t('level2.ui.greekPrefixes', 'Grísk forskeyti:')}</div>
                 <div className="grid grid-cols-4 gap-2 text-sm">
                   {greekPrefixes.slice(0, 8).map(p => (
                     <div key={p.count} className="bg-white p-2 rounded text-center">
@@ -478,7 +479,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               onClick={() => setStep('answer')}
               className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-xl"
             >
-              Ég skil - skrifa nafnið →
+              {t('level2.ui.understood', 'Ég skil - skrifa nafnið')} →
             </button>
           </div>
         )}
@@ -487,11 +488,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {step === 'answer' && (
           <div className="space-y-4">
             <h2 className="text-lg font-bold text-warm-700 text-center mb-4">
-              Skref 3: Skrifaðu nafnið
+              {t('level2.ui.step3Title', 'Skref 3: Skrifaðu nafnið')}
             </h2>
 
             <div className="bg-warm-50 rounded-xl p-4 mb-4">
-              <div className="text-sm text-warm-600 mb-2">Mundu:</div>
+              <div className="text-sm text-warm-600 mb-2">{t('level2.ui.remember', 'Mundu:')}</div>
               <div className="text-warm-700">{challenge.steps.finalName}</div>
             </div>
 
@@ -499,7 +500,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               type="text"
               value={userAnswer}
               onChange={(e) => setUserAnswer(e.target.value)}
-              placeholder="Skrifaðu nafnið hér..."
+              placeholder={t('level2.ui.typeHere', 'Skrifaðu nafnið hér...')}
               className="w-full text-center text-2xl font-bold p-4 border-2 border-teal-300 rounded-xl focus:border-teal-500 focus:outline-none"
               onKeyPress={(e) => e.key === 'Enter' && userAnswer && handleSubmitAnswer()}
               autoFocus
@@ -523,7 +524,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   }}
                   className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-3 px-6 rounded-xl"
                 >
-                  💡 Vísbending
+                  💡 {t('common.hint', 'Vísbending')}
                 </button>
               )}
               <button
@@ -535,7 +536,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     : 'bg-teal-500 hover:bg-teal-600 text-white'
                 }`}
               >
-                Athuga svar
+                {t('level2.ui.checkAnswer', 'Athuga svar')}
               </button>
             </div>
           </div>
@@ -549,12 +550,12 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             }`}>
               <div className="text-4xl mb-2">{isAnswerCorrect ? '✓' : '✗'}</div>
               <div className={`text-xl font-bold ${isAnswerCorrect ? 'text-green-800' : 'text-red-800'}`}>
-                {isAnswerCorrect ? 'Rétt!' : 'Ekki alveg'}
+                {isAnswerCorrect ? t('common.correct', 'Rétt!') : t('level2.ui.notQuite', 'Ekki alveg')}
               </div>
               {!isAnswerCorrect && (
                 <div className="mt-2 text-red-700">
-                  <div>Þú skrifaðir: <strong>{userAnswer}</strong></div>
-                  <div>Rétt svar: <strong>{challenge.correctName}</strong></div>
+                  <div>{t('level2.ui.youWrote', 'Þú skrifaðir:')} <strong>{userAnswer}</strong></div>
+                  <div>{t('level2.ui.correctAnswer', 'Rétt svar:')} <strong>{challenge.correctName}</strong></div>
                 </div>
               )}
               {isAnswerCorrect && (
@@ -567,7 +568,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             {/* Summary */}
             <div className={`${getColorClasses(typeInfo.color).light} rounded-xl p-4`}>
               <div className={`font-bold ${getColorClasses(typeInfo.color).text} mb-2`}>
-                Samantekt: {typeInfo.name}
+                {t('level2.ui.summary', 'Samantekt:')} {typeInfo.name}
               </div>
               <div className="bg-white rounded-lg p-3">
                 <div className="text-warm-700">{challenge.steps.finalName}</div>
@@ -578,7 +579,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               onClick={handleNext}
               className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-xl"
             >
-              {currentChallenge < challenges.length - 1 ? 'Næsta efnasamband →' : 'Ljúka stigi →'}
+              {currentChallenge < challenges.length - 1 ? t('level2.ui.nextCompound', 'Næsta efnasamband') + ' →' : t('level2.ui.finishLevel', 'Ljúka stigi') + ' →'}
             </button>
           </div>
         )}
@@ -593,7 +594,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Quick reference */}
         <div className="mt-6 bg-warm-50 rounded-xl p-4">
-          <h3 className="font-semibold text-warm-700 mb-2 text-sm">Flýtileiðbeiningar:</h3>
+          <h3 className="font-semibold text-warm-700 mb-2 text-sm">{t('level2.ui.quickRef', 'Flýtileiðbeiningar:')}</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
             <div className="bg-blue-50 p-2 rounded border border-blue-200">
               <div className="font-bold text-blue-700">Jónefni</div>

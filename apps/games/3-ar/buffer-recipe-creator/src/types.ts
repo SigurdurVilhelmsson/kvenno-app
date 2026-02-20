@@ -15,6 +15,8 @@ export interface BufferProblem {
   acidMolarMass: number;
   baseMolarMass: number;
   context: string;
+  contextEn?: string;
+  contextPl?: string;
   correctAcidMass: number;
   correctBaseMass: number;
   correctAcidMoles: number;

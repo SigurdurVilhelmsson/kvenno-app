@@ -4,6 +4,7 @@ import { CompoundVisualization } from './MolecularStructure';
 import { getCompoundsByDifficulty, type Compound } from '../data/compounds';
 
 interface Level3Props {
+  t: (key: string, fallback?: string) => string;
   onComplete: (moves: number, difficulty: string, pairs: number, maxScore: number, hintsUsed: number) => void;
   onBack: () => void;
   onCorrectAnswer?: () => void;
@@ -49,7 +50,7 @@ const typeColors: Record<string, { bg: string; text: string; label: string }> = 
   'málmar-breytilega-hleðsla': { bg: 'bg-purple-100', text: 'text-purple-700', label: 'Breytileg hleðsla' }
 };
 
-export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
+export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
   const [gameState, setGameState] = useState<'setup' | 'playing' | 'complete'>('setup');
   const [difficulty, setDifficulty] = useState<Difficulty>('easy');
   const [cards, setCards] = useState<GameCard[]>([]);
@@ -188,19 +189,19 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
           <div className="flex justify-between items-center mb-6">
             <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
-              ← Til baka
+              ← {t('common.back', 'Til baka')}
             </button>
           </div>
 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-purple-600">
-            Minnisleikur: Nafnagift
+            {t('level3.ui.memoryGame', 'Minnisleikur: Nafnagift')}
           </h1>
           <p className="text-center text-warm-600 mb-8">
-            Paraðu saman efnaformúlur og nöfn þeirra
+            {t('level3.ui.matchFormulas', 'Paraðu saman efnaformúlur og nöfn þeirra')}
           </p>
 
           <div className="bg-purple-50 rounded-xl p-6 mb-6">
-            <h2 className="font-bold text-purple-800 mb-4">Veldu erfiðleikastig:</h2>
+            <h2 className="font-bold text-purple-800 mb-4">{t('level3.ui.chooseDifficulty', 'Veldu erfiðleikastig:')}</h2>
             <div className="grid gap-4">
               {(Object.entries(difficultyConfig) as [Difficulty, typeof difficultyConfig.easy][]).map(([diff, config]) => (
                 <button
@@ -219,7 +220,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     </div>
                     <div className="text-right">
                       <div className="text-2xl font-bold text-purple-600">{config.pairs}</div>
-                      <div className="text-xs text-warm-500">pör</div>
+                      <div className="text-xs text-warm-500">{t('level3.ui.pairs', 'pör')}</div>
                     </div>
                   </div>
                 </button>
@@ -228,12 +229,12 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
 
           <div className="bg-warm-50 rounded-xl p-4 mb-6">
-            <h3 className="font-semibold text-warm-700 mb-2">Hvernig á að spila:</h3>
+            <h3 className="font-semibold text-warm-700 mb-2">{t('level3.ui.howToPlay', 'Hvernig á að spila:')}</h3>
             <ul className="text-sm text-warm-600 space-y-1">
-              <li>• Snúðu við tveimur kortum í einu</li>
-              <li>• Paraðu saman efnaformúlu og nafn</li>
-              <li>• Þegar þú finnur par sérðu námsupplýsingar</li>
-              <li>• Reyndu að klára með sem fæstum tilraunum</li>
+              <li>• {t('level3.ui.howToPlayItem1', 'Snúðu við tveimur kortum í einu')}</li>
+              <li>• {t('level3.ui.howToPlayItem2', 'Paraðu saman efnaformúlu og nafn')}</li>
+              <li>• {t('level3.ui.howToPlayItem3', 'Þegar þú finnur par sérðu námsupplýsingar')}</li>
+              <li>• {t('level3.ui.howToPlayItem4', 'Reyndu að klára með sem fæstum tilraunum')}</li>
             </ul>
           </div>
 
@@ -241,7 +242,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             onClick={() => initializeGame(difficulty)}
             className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-4 px-6 rounded-xl text-lg"
           >
-            Byrja leik →
+            {t('level3.ui.startGame', 'Byrja leik')} →
           </button>
         </div>
       </div>
@@ -260,31 +261,31 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
           <div className="text-center mb-8">
             <div className="text-6xl mb-4">🎉</div>
-            <h1 className="text-3xl font-bold text-purple-600 mb-2">Til hamingju!</h1>
-            <p className="text-warm-600">Þú kláraðir minnisleikinn</p>
+            <h1 className="text-3xl font-bold text-purple-600 mb-2">{t('level3.ui.congratulations', 'Til hamingju!')}</h1>
+            <p className="text-warm-600">{t('level3.ui.completedMemory', 'Þú kláraðir minnisleikinn')}</p>
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-8">
             <div className="bg-purple-50 rounded-xl p-4 text-center">
               <div className="text-3xl font-bold text-purple-600">{moves}</div>
-              <div className="text-sm text-warm-600">Tilraunir</div>
+              <div className="text-sm text-warm-600">{t('level3.ui.attempts', 'Tilraunir')}</div>
             </div>
             <div className="bg-green-50 rounded-xl p-4 text-center">
               <div className="text-3xl font-bold text-green-600">{totalPairs}</div>
-              <div className="text-sm text-warm-600">Pör fundin</div>
+              <div className="text-sm text-warm-600">{t('level3.ui.pairsFound', 'Pör fundin')}</div>
             </div>
             <div className="bg-blue-50 rounded-xl p-4 text-center">
               <div className="text-3xl font-bold text-blue-600">{efficiency}%</div>
-              <div className="text-sm text-warm-600">Skilvirkni</div>
+              <div className="text-sm text-warm-600">{t('level3.ui.efficiency', 'Skilvirkni')}</div>
             </div>
             <div className="bg-amber-50 rounded-xl p-4 text-center">
               <div className="text-3xl font-bold text-amber-600">{finalScore}</div>
-              <div className="text-sm text-warm-600">Heildarstig</div>
+              <div className="text-sm text-warm-600">{t('level3.ui.totalScore', 'Heildarstig')}</div>
             </div>
           </div>
 
           <div className="bg-warm-50 rounded-xl p-4 mb-6">
-            <h3 className="font-semibold text-warm-700 mb-3">Efnasambönd sem þú lærðir:</h3>
+            <h3 className="font-semibold text-warm-700 mb-3">{t('level3.ui.compoundsLearned', 'Efnasambönd sem þú lærðir:')}</h3>
             <div className="grid gap-2 max-h-48 overflow-y-auto">
               {matchedPairs.map((pair, idx) => {
                 const typeInfo = typeColors[pair.compound.category] || typeColors['jónefni'];
@@ -309,13 +310,13 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               onClick={() => setGameState('setup')}
               className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-6 rounded-xl"
             >
-              Spila aftur
+              {t('level3.ui.playAgain', 'Spila aftur')}
             </button>
             <button
               onClick={() => onComplete(moves, difficulty, difficultyConfig[difficulty].pairs, difficultyConfig[difficulty].pairs, totalHintsUsed)}
               className="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl"
             >
-              Ljúka stigi →
+              {t('level3.ui.finishLevel', 'Ljúka stigi')} →
             </button>
           </div>
         </div>
@@ -334,20 +335,20 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="bg-white rounded-2xl shadow-lg p-4 mb-4">
           <div className="flex justify-between items-center">
             <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
-              ← Til baka
+              ← {t('common.back', 'Til baka')}
             </button>
             <div className="flex items-center gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-warm-800">{moves}</div>
-                <div className="text-xs text-warm-500">Tilraunir</div>
+                <div className="text-xs text-warm-500">{t('level3.ui.attempts', 'Tilraunir')}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-purple-600">{matchedPairs.length}/{difficultyConfig[difficulty].pairs}</div>
-                <div className="text-xs text-warm-500">Pör</div>
+                <div className="text-xs text-warm-500">{t('level3.ui.pairsLabel', 'Pör')}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">{score}</div>
-                <div className="text-xs text-warm-500">Stig</div>
+                <div className="text-xs text-warm-500">{t('common.score', 'Stig')}</div>
               </div>
             </div>
           </div>
@@ -380,7 +381,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         </div>
                         <CompoundVisualization compound={card.compound} size="small" showLabels={true} />
                         <div className={`${typeInfo.bg} ${typeInfo.text} text-[10px] px-2 py-0.5 rounded-full`}>
-                          Formúla
+                          {t('level3.ui.formula', 'Formúla')}
                         </div>
                       </>
                     ) : (
@@ -390,7 +391,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         </div>
                         <CompoundVisualization compound={card.compound} size="small" showLabels={false} />
                         <div className={`${typeInfo.bg} ${typeInfo.text} text-[10px] px-2 py-0.5 rounded-full`}>
-                          Nafn
+                          {t('level3.ui.name', 'Nafn')}
                         </div>
                       </>
                     )}
@@ -411,7 +412,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full" onClick={e => e.stopPropagation()}>
               <div className="text-center mb-4">
                 <div className="text-4xl mb-2">✓</div>
-                <div className="text-xl font-bold text-green-600">Par fundið!</div>
+                <div className="text-xl font-bold text-green-600">{t('level3.ui.pairFound', 'Par fundið!')}</div>
               </div>
 
               <div className="bg-warm-50 rounded-xl p-4 mb-4">
@@ -437,7 +438,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 </div>
 
                 <div className="bg-white rounded-lg p-3 border border-warm-200">
-                  <div className="text-sm text-warm-600 mb-1">Námsupplýsingar:</div>
+                  <div className="text-sm text-warm-600 mb-1">{t('level3.ui.learningInfo', 'Námsupplýsingar:')}</div>
                   <div className="text-warm-800">{showMatchInfo.info}</div>
                 </div>
               </div>
@@ -446,7 +447,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 onClick={dismissMatchInfo}
                 className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl"
               >
-                Halda áfram
+                {t('common.continue', 'Halda áfram')}
               </button>
             </div>
           </div>
