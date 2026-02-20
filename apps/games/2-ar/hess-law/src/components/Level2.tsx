@@ -177,7 +177,7 @@ function EquationBlock({
       } ${
         equation.isReversed ? 'bg-red-50 border-red-300' :
         equation.multiplier !== 1 ? 'bg-blue-50 border-blue-300' :
-        'bg-white border-gray-300 hover:border-orange-300'
+        'bg-white border-warm-300 hover:border-orange-300'
       }`}
     >
       {/* Equation display */}
@@ -204,7 +204,7 @@ function EquationBlock({
           className={`px-3 py-1 rounded-lg text-sm font-semibold transition-colors ${
             equation.isReversed
               ? 'bg-red-500 text-white'
-              : 'bg-gray-200 hover:bg-red-100'
+              : 'bg-warm-200 hover:bg-red-100'
           }`}
         >
           🔄 Snúa
@@ -218,7 +218,7 @@ function EquationBlock({
               className={`w-8 h-8 rounded-lg text-sm font-bold transition-colors ${
                 equation.multiplier === n
                   ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 hover:bg-blue-100'
+                  : 'bg-warm-200 hover:bg-blue-100'
               }`}
             >
               ×{n}
@@ -348,31 +348,31 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <h1 className="text-2xl md:text-3xl font-bold text-green-600">
                 Lögmál Hess - Stig 2
               </h1>
-              <p className="text-sm text-gray-600">Þrautir - sameinaðu jöfnur</p>
+              <p className="text-sm text-warm-600">Þrautir - sameinaðu jöfnur</p>
             </div>
 
             <div className="flex gap-4 items-center">
               <button
                 onClick={onBack}
-                className="text-gray-600 hover:text-gray-800 text-sm"
+                className="text-warm-600 hover:text-warm-800 text-sm"
               >
                 ← Til baka
               </button>
               <div className="text-center">
                 <div className="text-xl font-bold text-green-600">{score}</div>
-                <div className="text-xs text-gray-600">Stig</div>
+                <div className="text-xs text-warm-600">Stig</div>
               </div>
               <div className="text-center">
                 <div className="text-xl font-bold text-blue-600">
                   {completed.length}/{PUZZLES.length}
                 </div>
-                <div className="text-xs text-gray-600">Lokið</div>
+                <div className="text-xs text-warm-600">Lokið</div>
               </div>
             </div>
           </div>
 
           {/* Progress bar */}
-          <div className="mt-4 bg-gray-200 rounded-full h-2">
+          <div className="mt-4 bg-warm-200 rounded-full h-2">
             <div
               className="bg-green-500 h-2 rounded-full transition-all duration-500"
               style={{ width: `${(completed.length / PUZZLES.length) * 100}%` }}
@@ -387,7 +387,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="inline-block bg-green-100 px-4 py-2 rounded-full text-sm font-semibold text-green-800 mb-2">
               Þraut {currentPuzzle + 1}: {puzzle.title}
             </div>
-            <p className="text-gray-700">{puzzle.description}</p>
+            <p className="text-warm-700">{puzzle.description}</p>
           </div>
 
           {/* Target equation */}
@@ -407,7 +407,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           {/* Available equations */}
           <div className="mb-6">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3">📦 Tiltækar jöfnur (smelltu til að velja):</h3>
+            <h3 className="text-sm font-semibold text-warm-700 mb-3">📦 Tiltækar jöfnur (smelltu til að velja):</h3>
             <div className="grid md:grid-cols-2 gap-4">
               {equations.map(eq => (
                 <EquationBlock
@@ -438,9 +438,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className={`mb-6 p-4 rounded-xl border-2 ${
               showResult
                 ? isCorrect ? 'bg-green-100 border-green-400' : 'bg-red-100 border-red-400'
-                : 'bg-gray-100 border-gray-300'
+                : 'bg-warm-100 border-warm-300'
             }`}>
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">📊 Heildar ΔH:</h3>
+              <h3 className="text-sm font-semibold text-warm-700 mb-2">📊 Heildar ΔH:</h3>
               <div className="text-center">
                 <span className={`text-2xl font-bold ${currentSum < 0 ? 'text-red-600' : 'text-blue-600'}`}>
                   ΔH = {currentSum > 0 ? '+' : ''}{currentSum.toFixed(1)} kJ
@@ -477,7 +477,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="flex gap-4">
             <button
               onClick={() => resetPuzzle(currentPuzzle)}
-              className="px-6 py-3 bg-gray-200 hover:bg-gray-300 rounded-xl font-semibold transition-colors"
+              className="px-6 py-3 bg-warm-200 hover:bg-warm-300 rounded-xl font-semibold transition-colors"
             >
               🔄 Byrja aftur
             </button>
@@ -489,7 +489,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 className={`flex-1 py-3 px-6 rounded-xl font-bold transition-colors ${
                   selectedEquations.length > 0
                     ? 'bg-green-500 hover:bg-green-600 text-white'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-warm-300 text-warm-500 cursor-not-allowed'
                 }`}
               >
                 Athuga lausn
@@ -519,7 +519,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   ? 'bg-green-500 text-white'
                   : i === currentPuzzle
                   ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                  : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
               }`}
             >
               {completed.includes(p.id) ? '✓' : i + 1}

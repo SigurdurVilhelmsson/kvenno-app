@@ -118,7 +118,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
         content: (
           <div className="flex flex-col items-center p-2 min-w-[100px]">
             <div className="font-bold text-blue-600 text-sm">{numPart}</div>
-            <div className="w-full h-0.5 bg-gray-800 my-1" />
+            <div className="w-full h-0.5 bg-warm-800 my-1" />
             <div className="font-bold text-green-600 text-sm">{denPart}</div>
           </div>
         ),
@@ -416,11 +416,11 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
         <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
           <button
             onClick={onBack}
-            className="text-gray-600 hover:text-gray-800 flex items-center gap-2 text-lg"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 text-lg"
           >
             ← Til baka
           </button>
-          <div className="text-sm text-gray-600 flex items-center gap-2 sm:gap-4 flex-wrap">
+          <div className="text-sm text-warm-600 flex items-center gap-2 sm:gap-4 flex-wrap">
             <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-semibold">
               Stig 2: Beiting
             </span>
@@ -432,7 +432,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-blue-500 h-2 rounded-full transition-all duration-500"
             style={{ width: `${((progress.problemsCompleted) / 15) * 100}%` }}
@@ -441,12 +441,12 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
 
         <div className="bg-white rounded-2xl shadow-lg p-6">
           <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-            <p className="text-sm text-gray-600 mb-1">Samhengi:</p>
+            <p className="text-sm text-warm-600 mb-1">Samhengi:</p>
             <p className="font-semibold">{problem.context}</p>
           </div>
 
-          <div className="mb-6 p-6 bg-gradient-to-b from-gray-50 to-gray-100 rounded-xl text-center">
-            <p className="text-sm text-gray-600 mb-3">Byrja með:</p>
+          <div className="mb-6 p-6 bg-gradient-to-b from-warm-50 to-warm-100 rounded-xl text-center">
+            <p className="text-sm text-warm-600 mb-3">Byrja með:</p>
             <div className="flex justify-center mb-4">
               <UnitBlock
                 value={problem.startValue}
@@ -455,7 +455,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                 size="large"
               />
             </div>
-            <div className="flex items-center justify-center gap-2 text-gray-600">
+            <div className="flex items-center justify-center gap-2 text-warm-600">
               <span className="text-2xl">→</span>
               <span className="px-4 py-2 bg-green-100 text-green-800 rounded-lg font-bold">
                 {problem.targetUnit}
@@ -476,8 +476,8 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
           </div>
 
           {selectedFactors.length > 0 && (
-            <div className="mb-6 p-4 bg-gray-50 rounded-xl">
-              <p className="text-sm font-semibold mb-3 text-gray-700">Stuðlar notaðir:</p>
+            <div className="mb-6 p-4 bg-warm-50 rounded-xl">
+              <p className="text-sm font-semibold mb-3 text-warm-700">Stuðlar notaðir:</p>
               <div className="flex flex-wrap justify-center gap-3">
                 {selectedFactors.map((factor, idx) => {
                   const [numPart, denPart] = factor.split(' / ');
@@ -488,7 +488,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
 
                   return (
                     <div key={idx} className="flex items-center gap-2">
-                      {idx > 0 && <span className="text-xl text-gray-400">×</span>}
+                      {idx > 0 && <span className="text-xl text-warm-400">×</span>}
                       <ConversionFactorBlock
                         numeratorValue={numValue}
                         numeratorUnit={numUnit}
@@ -510,7 +510,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
               <div className="mb-4 flex justify-end">
                 <button
                   onClick={() => setUseDragDrop(!useDragDrop)}
-                  className="text-xs px-3 py-1 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600"
+                  className="text-xs px-3 py-1 rounded-full bg-warm-100 hover:bg-warm-200 text-warm-600"
                 >
                   {useDragDrop ? '🖱️ Skipta í smella-ham' : '✋ Skipta í draga-ham'}
                 </button>
@@ -562,14 +562,14 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
 
               {/* Answer input */}
               <div className="mb-6 p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl border-2 border-orange-200">
-                <label className="block font-semibold mb-3 text-gray-800">Hvað er lokagildið?</label>
+                <label className="block font-semibold mb-3 text-warm-800">Hvað er lokagildið?</label>
                 <div className="flex items-center gap-3">
                   <input
                     type="text"
                     value={userAnswer}
                     onChange={(e) => setUserAnswer(e.target.value)}
                     placeholder="Sláðu inn svar"
-                    className="flex-1 p-4 border-2 border-gray-300 rounded-xl font-mono text-xl focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-hidden transition-all"
+                    className="flex-1 p-4 border-2 border-warm-300 rounded-xl font-mono text-xl focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-hidden transition-all"
                   />
                   <div className="px-4 py-3 bg-green-100 text-green-800 rounded-xl font-bold text-lg">
                     {problem.targetUnit}
@@ -580,7 +580,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
               <button
                 onClick={handleSubmit}
                 disabled={selectedFactors.length === 0 || !userAnswer.trim()}
-                className="w-full py-4 rounded-xl font-bold text-lg transition-all disabled:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-500 bg-blue-600 hover:bg-blue-700 text-white"
+                className="w-full py-4 rounded-xl font-bold text-lg transition-all disabled:bg-warm-300 disabled:cursor-not-allowed disabled:text-warm-500 bg-blue-600 hover:bg-blue-700 text-white"
               >
                 Athuga svar →
               </button>
@@ -599,8 +599,8 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                 }}
               />
 
-              <div className="p-4 bg-white rounded-lg border border-gray-200">
-                <p className="text-sm text-gray-600 mb-2">Rétt umbreytingarleið:</p>
+              <div className="p-4 bg-white rounded-lg border border-warm-200">
+                <p className="text-sm text-warm-600 mb-2">Rétt umbreytingarleið:</p>
                 <div className="flex flex-wrap justify-center gap-2">
                   {problem.correctPath.map((factor, idx) => {
                     const [numPart, denPart] = factor.split(' / ');
@@ -611,7 +611,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
 
                     return (
                       <div key={idx} className="flex items-center gap-1">
-                        {idx > 0 && <span className="text-gray-400 mx-1">×</span>}
+                        {idx > 0 && <span className="text-warm-400 mx-1">×</span>}
                         <ConversionFactorBlock
                           numeratorValue={numValue}
                           numeratorUnit={numUnit}
@@ -628,7 +628,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
 
               <div className="flex items-center justify-center gap-4">
                 <div className="text-center">
-                  <p className="text-xs text-gray-600">Spánákvæmni</p>
+                  <p className="text-xs text-warm-600">Spánákvæmni</p>
                   <p className={`text-2xl font-bold ${predictionAccuracy >= 70 ? 'text-green-600' : 'text-yellow-600'}`}>
                     {predictionAccuracy}%
                   </p>
@@ -657,18 +657,18 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
             {/* Phase indicator */}
             <div className="flex justify-center gap-2 mb-4">
               <div className={`w-3 h-3 rounded-full ${predictionPhase === 'unit' ? 'bg-blue-500' : 'bg-green-500'}`} />
-              <div className={`w-3 h-3 rounded-full ${predictionPhase === 'rationale' ? 'bg-blue-500' : 'bg-gray-300'}`} />
+              <div className={`w-3 h-3 rounded-full ${predictionPhase === 'rationale' ? 'bg-blue-500' : 'bg-warm-300'}`} />
             </div>
 
             <div className="text-center mb-6">
               <div className="text-4xl mb-2">{predictionPhase === 'unit' ? '🔮' : '🧠'}</div>
-              <h3 className="text-2xl font-bold text-gray-800">
+              <h3 className="text-2xl font-bold text-warm-800">
                 {predictionPhase === 'unit' ? 'Spáðu fyrir um útkomunna!' : 'Af hverju?'}
               </h3>
             </div>
 
             <div className="mb-6 p-4 bg-blue-50 rounded-xl">
-              <p className="text-sm text-gray-600 mb-3">Þú ætlar að nota þennan stuðul:</p>
+              <p className="text-sm text-warm-600 mb-3">Þú ætlar að nota þennan stuðul:</p>
               <div className="flex justify-center">
                 {(() => {
                   const [numPart, denPart] = pendingFactor.split(' / ');
@@ -693,7 +693,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
             {predictionPhase === 'unit' && (
               <>
                 <div className="mb-6">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-warm-700 mb-2">
                     Hvaða eining verður útkoman?
                   </label>
                   <input
@@ -701,7 +701,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                     value={predictedUnit}
                     onChange={(e) => setPredictedUnit(e.target.value)}
                     placeholder="t.d. kg, m/s, osfrv."
-                    className="w-full p-4 border-2 border-gray-300 rounded-xl text-lg focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-hidden transition-all"
+                    className="w-full p-4 border-2 border-warm-300 rounded-xl text-lg focus:border-blue-400 focus:ring-2 focus:ring-blue-200 outline-hidden transition-all"
                     autoFocus
                   />
                 </div>
@@ -713,14 +713,14 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                       setPredictedUnit('');
                       setPredictionPhase('unit');
                     }}
-                    className="flex-1 border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-colors"
+                    className="flex-1 border-2 border-warm-300 text-warm-700 py-3 rounded-xl font-semibold hover:bg-warm-50 transition-colors"
                   >
                     Hætta við
                   </button>
                   <button
                     onClick={handleUnitPredictionSubmit}
                     disabled={!predictedUnit.trim()}
-                    className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                    className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 disabled:bg-warm-300 disabled:cursor-not-allowed transition-colors"
                   >
                     Áfram →
                   </button>
@@ -732,14 +732,14 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
             {predictionPhase === 'rationale' && (
               <>
                 <div className="mb-4">
-                  <p className="text-sm text-gray-600 mb-2">Þú spáðir:</p>
+                  <p className="text-sm text-warm-600 mb-2">Þú spáðir:</p>
                   <div className="bg-green-100 text-green-800 px-4 py-2 rounded-lg font-bold text-center">
                     {predictedUnit}
                   </div>
                 </div>
 
                 <div className="mb-6">
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  <label className="block text-sm font-semibold text-warm-700 mb-3">
                     Hvaða einingar styttast út?
                   </label>
                   <div className="space-y-2">
@@ -750,7 +750,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                         className={`w-full p-3 rounded-xl text-left transition-all border-2 ${
                           selectedRationale === option.text
                             ? 'border-blue-500 bg-blue-50 text-blue-800'
-                            : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                            : 'border-warm-200 hover:border-warm-300 text-warm-700'
                         }`}
                       >
                         {option.text}
@@ -762,14 +762,14 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                 <div className="flex gap-3">
                   <button
                     onClick={() => setPredictionPhase('unit')}
-                    className="flex-1 border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-colors"
+                    className="flex-1 border-2 border-warm-300 text-warm-700 py-3 rounded-xl font-semibold hover:bg-warm-50 transition-colors"
                   >
                     ← Til baka
                   </button>
                   <button
                     onClick={handleRationaleSubmit}
                     disabled={!selectedRationale}
-                    className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                    className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 disabled:bg-warm-300 disabled:cursor-not-allowed transition-colors"
                   >
                     Staðfesta →
                   </button>

@@ -248,7 +248,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       case 'real_world': return { bg: 'bg-green-100', text: 'text-green-800', label: 'Raunheimur' };
       case 'anomaly': return { bg: 'bg-purple-100', text: 'text-purple-800', label: 'Óvenjulegur eiginleiki' };
       case 'multi_factor': return { bg: 'bg-orange-100', text: 'text-orange-800', label: 'Margir þættir' };
-      default: return { bg: 'bg-gray-100', text: 'text-gray-800', label: type };
+      default: return { bg: 'bg-warm-100', text: 'text-warm-800', label: type };
     }
   };
 
@@ -258,18 +258,18 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <button onClick={onBack} className="text-gray-600 hover:text-gray-800">
+          <button onClick={onBack} className="text-warm-600 hover:text-warm-800">
             ← Til baka
           </button>
           <div className="text-right">
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-warm-600">
               Spurning {currentChallenge + 1} af {challenges.length}
             </div>
             <div className="text-lg font-bold text-indigo-600">{score} stig</div>
           </div>
         </div>
 
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-indigo-500 h-2 rounded-full transition-all"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
@@ -284,20 +284,20 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </span>
           </div>
 
-          <h2 className="text-xl font-bold text-gray-800 mb-4">{challenge.title}</h2>
+          <h2 className="text-xl font-bold text-warm-800 mb-4">{challenge.title}</h2>
 
           {/* Scenario */}
-          <div className="bg-gray-50 p-4 rounded-xl mb-4">
-            <p className="text-gray-700">{challenge.scenario}</p>
+          <div className="bg-warm-50 p-4 rounded-xl mb-4">
+            <p className="text-warm-700">{challenge.scenario}</p>
           </div>
 
           {/* Compounds comparison if available */}
           {challenge.compounds && (
             <div className="grid grid-cols-2 gap-4 mb-4">
               {challenge.compounds.map(compound => (
-                <div key={compound.formula} className="bg-gray-900 p-4 rounded-xl text-center">
+                <div key={compound.formula} className="bg-warm-900 p-4 rounded-xl text-center">
                   <div className="text-xl font-bold text-white">{compound.formula}</div>
-                  <div className="text-gray-400 text-sm">{compound.name}</div>
+                  <div className="text-warm-400 text-sm">{compound.name}</div>
                   <div className="text-indigo-400 text-sm mt-1">{compound.info}</div>
                 </div>
               ))}
@@ -305,7 +305,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           )}
 
           {/* Question */}
-          <p className="text-gray-800 text-lg font-medium mb-6">{challenge.question}</p>
+          <p className="text-warm-800 text-lg font-medium mb-6">{challenge.question}</p>
 
           {/* Options */}
           <div className="space-y-3 mb-6">
@@ -320,14 +320,14 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       ? 'border-green-500 bg-green-50'
                       : selectedOption === option.id
                       ? 'border-red-500 bg-red-50'
-                      : 'border-gray-200 opacity-50'
+                      : 'border-warm-200 opacity-50'
                     : selectedOption === option.id
                     ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-200'
-                    : 'border-gray-300 hover:border-indigo-300'
+                    : 'border-warm-300 hover:border-indigo-300'
                 }`}
               >
                 <div className="flex items-start gap-3">
-                  <span className="font-bold text-gray-500">{option.id}.</span>
+                  <span className="font-bold text-warm-500">{option.id}.</span>
                   <span className="flex-1">{option.text}</span>
                 </div>
                 {showResult && selectedOption === option.id && (
@@ -361,7 +361,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <button
               onClick={checkAnswer}
               disabled={!selectedOption}
-              className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-300 text-white font-bold py-4 px-6 rounded-xl"
+              className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl"
             >
               Athuga svar
             </button>

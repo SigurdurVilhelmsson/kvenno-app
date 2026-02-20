@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
-import { AnimatedMolecule, FeedbackPanel, MoleculeViewer3DLazy } from '@shared/components';
+import { AnimatedMolecule, FeedbackPanel } from '@shared/components';
+import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
 
 import { ForceStrengthAnimation } from './ForceStrengthAnimation';
 import { imfToMolecule } from '../utils/imfConverter';
@@ -403,8 +404,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   // IMF strength scale visualization
   const renderIMFStrengthScale = () => {
     return (
-      <div className="mt-4 p-3 bg-gray-100 rounded-lg">
-        <div className="text-xs text-gray-600 mb-2 text-center font-medium">Styrkur IMF</div>
+      <div className="mt-4 p-3 bg-warm-100 rounded-lg">
+        <div className="text-xs text-warm-600 mb-2 text-center font-medium">Styrkur IMF</div>
         <div className="flex items-center gap-1">
           <div className="flex-1 h-3 bg-purple-400 rounded-l-full" />
           <div className="flex-1 h-3 bg-blue-400" />
@@ -415,7 +416,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <span className="text-blue-700">Tvípól</span>
           <span className="text-red-700">H-tengi</span>
         </div>
-        <div className="flex justify-between text-xs text-gray-500">
+        <div className="flex justify-between text-xs text-warm-500">
           <span>Veikastur</span>
           <span></span>
           <span>Sterkastur</span>
@@ -430,10 +431,10 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <button onClick={onBack} className="text-gray-600 hover:text-gray-800">
+            <button onClick={onBack} className="text-warm-600 hover:text-warm-800">
               ← Til baka
             </button>
-            <div className="text-sm text-gray-600">Stig 1: Kynning</div>
+            <div className="text-sm text-warm-600">Stig 1: Kynning</div>
           </div>
 
           <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 mb-6">
@@ -457,9 +458,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       {imf.id === 'london' ? '🌫️' : imf.id === 'dipole' ? '⚡' : '🔗'}
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-gray-800">{imf.name}</h3>
-                      <div className="text-sm text-gray-500 mb-2">{imf.nameEn}</div>
-                      <p className="text-gray-700 mb-3">{imf.description}</p>
+                      <h3 className="text-xl font-bold text-warm-800">{imf.name}</h3>
+                      <div className="text-sm text-warm-500 mb-2">{imf.nameEn}</div>
+                      <p className="text-warm-700 mb-3">{imf.description}</p>
                       <div className="flex items-center gap-4">
                         <span className={`px-3 py-1 rounded-full text-sm font-medium ${
                           imf.id === 'london' ? 'bg-purple-200 text-purple-800' :
@@ -468,7 +469,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         }`}>
                           {imf.strength}
                         </span>
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-warm-500">
                           Dæmi: {imf.examples.join(', ')}
                         </span>
                       </div>
@@ -518,18 +519,18 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <button onClick={() => setPhase('learn')} className="text-gray-600 hover:text-gray-800">
+          <button onClick={() => setPhase('learn')} className="text-warm-600 hover:text-warm-800">
             ← Skoða kennslu
           </button>
           <div className="text-right">
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-warm-600">
               Sameind {currentMolecule + 1} af {molecules.length}
             </div>
             <div className="text-lg font-bold text-indigo-600">{score} stig</div>
           </div>
         </div>
 
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-indigo-500 h-2 rounded-full transition-all"
             style={{ width: `${((currentMolecule + 1) / molecules.length) * 100}%` }}
@@ -538,10 +539,10 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
           {/* Molecule display with visualization */}
-          <div className="bg-gray-900 rounded-xl p-6 mb-6">
+          <div className="bg-warm-900 rounded-xl p-6 mb-6">
             <div className="text-center mb-4">
               <div className="text-4xl font-bold text-white mb-1">{molecule.formula}</div>
-              <div className="text-gray-400">{molecule.name}</div>
+              <div className="text-warm-400">{molecule.name}</div>
             </div>
 
             {/* 2D/3D Toggle */}
@@ -551,7 +552,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   viewMode === '2d'
                     ? 'bg-indigo-600 text-white'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                    : 'bg-warm-700 text-warm-300 hover:bg-warm-600'
                 }`}
               >
                 2D
@@ -561,7 +562,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   viewMode === '3d'
                     ? 'bg-indigo-600 text-white'
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                    : 'bg-warm-700 text-warm-300 hover:bg-warm-600'
                 }`}
               >
                 3D
@@ -570,7 +571,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             {/* Molecular structure visualization */}
             {molecule.visualization && (
-              <div className="bg-gray-800 rounded-lg p-4 mb-4">
+              <div className="bg-warm-800 rounded-lg p-4 mb-4">
                 <div className="flex justify-center py-2">
                   {viewMode === '2d' ? (
                     <AnimatedMolecule
@@ -615,7 +616,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   </div>
                 )}
                 {viewMode === '3d' && (
-                  <div className="text-xs text-gray-400 text-center mt-2">
+                  <div className="text-xs text-warm-400 text-center mt-2">
                     Dragðu til að snúa, skrollaðu til að stækka
                   </div>
                 )}
@@ -625,7 +626,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             {/* Molecule properties badges */}
             <div className="flex justify-center gap-3 flex-wrap">
               <span className={`px-3 py-1.5 rounded-full text-xs font-medium ${
-                molecule.isPolar ? 'bg-blue-500 text-white' : 'bg-gray-600 text-gray-300'
+                molecule.isPolar ? 'bg-blue-500 text-white' : 'bg-warm-600 text-warm-300'
               }`}>
                 {molecule.isPolar ? '⚡ Skautuð' : '○ Óskautuð'}
               </span>
@@ -640,7 +641,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
           </div>
 
-          <p className="text-gray-700 text-lg mb-6">
+          <p className="text-warm-700 text-lg mb-6">
             Hvaða millisameindakraftar eru til staðar í {molecule.formula}? (Veldu allt sem á við)
           </p>
 
@@ -661,25 +662,25 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         ? 'border-green-500 bg-green-50'
                         : isSelected
                         ? 'border-red-500 bg-red-50'
-                        : 'border-gray-200 opacity-50'
+                        : 'border-warm-200 opacity-50'
                       : isSelected
                       ? `border-2 ring-2 ${
                           imf.id === 'london' ? 'border-purple-500 ring-purple-200 bg-purple-50' :
                           imf.id === 'dipole' ? 'border-blue-500 ring-blue-200 bg-blue-50' :
                           'border-red-500 ring-red-200 bg-red-50'
                         }`
-                      : 'border-gray-300 hover:border-gray-400'
+                      : 'border-warm-300 hover:border-warm-400'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-6 h-6 rounded border-2 flex items-center justify-center ${
-                      isSelected ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-gray-400'
+                      isSelected ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-warm-400'
                     }`}>
                       {isSelected && '✓'}
                     </div>
                     <div className="flex-1">
                       <div className="font-bold">{imf.name}</div>
-                      <div className="text-xs text-gray-500">{imf.nameEn}</div>
+                      <div className="text-xs text-warm-500">{imf.nameEn}</div>
                     </div>
                     <span className={`px-2 py-1 rounded text-xs ${
                       imf.id === 'london' ? 'bg-purple-100 text-purple-700' :
@@ -720,7 +721,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <button
               onClick={checkAnswer}
               disabled={selectedIMFs.size === 0}
-              className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-300 text-white font-bold py-4 px-6 rounded-xl"
+              className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl"
             >
               Athuga svar
             </button>
@@ -769,7 +770,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Quick reference with IMF strength scale */}
         <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="font-bold text-gray-700 mb-2">Flýtileiðbeiningar</h3>
+          <h3 className="font-bold text-warm-700 mb-2">Flýtileiðbeiningar</h3>
           <div className="grid grid-cols-3 gap-2 text-xs mb-3">
             <div className="bg-purple-50 p-2 rounded text-center">
               <div className="font-bold text-purple-700">London</div>

@@ -146,7 +146,7 @@ function AtomCircle({ symbol, showMass = false }: { symbol: string; showMass?: b
         {symbol}
       </div>
       {showMass && (
-        <span className="text-xs text-gray-600 mt-1">≈{atom.approxMass}</span>
+        <span className="text-xs text-warm-600 mt-1">≈{atom.approxMass}</span>
       )}
     </div>
   );
@@ -155,7 +155,7 @@ function AtomCircle({ symbol, showMass = false }: { symbol: string; showMass?: b
 // Molecule with calculation breakdown
 function MoleculeWithBreakdown({ elements }: { elements: { symbol: string; count: number }[] }) {
   return (
-    <div className="bg-gray-50 rounded-xl p-4">
+    <div className="bg-warm-50 rounded-xl p-4">
       <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
         {elements.map((el, i) => (
           <div key={i} className="flex items-center gap-1">
@@ -167,7 +167,7 @@ function MoleculeWithBreakdown({ elements }: { elements: { symbol: string; count
       </div>
 
       <div className="border-t pt-3 mt-3">
-        <div className="text-sm text-gray-600 mb-2 text-center">Útreikningur:</div>
+        <div className="text-sm text-warm-600 mb-2 text-center">Útreikningur:</div>
         <div className="space-y-1">
           {elements.map((el, i) => {
             const atom = ATOM_DATA[el.symbol];
@@ -392,17 +392,17 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
       <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center animate-fade-in-up">
           <div className="text-6xl mb-4 animate-bounce-in">🎓</div>
-          <h2 className="text-3xl font-bold text-gray-800 mb-2">Stig 2 Lokið!</h2>
-          <p className="text-gray-600 mb-6">Þú getur nú áætlað mólmassa!</p>
+          <h2 className="text-3xl font-bold text-warm-800 mb-2">Stig 2 Lokið!</h2>
+          <p className="text-warm-600 mb-6">Þú getur nú áætlað mólmassa!</p>
 
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div className="bg-purple-50 rounded-xl p-4">
               <div className="text-3xl font-bold text-purple-600">{score}</div>
-              <div className="text-sm text-gray-600">Stig</div>
+              <div className="text-sm text-warm-600">Stig</div>
             </div>
             <div className="bg-green-50 rounded-xl p-4">
               <div className="text-3xl font-bold text-green-600">{accuracy}%</div>
-              <div className="text-sm text-gray-600">Nákvæmni</div>
+              <div className="text-sm text-warm-600">Nákvæmni</div>
             </div>
           </div>
 
@@ -410,7 +410,7 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
             <h3 className="font-bold text-purple-800 mb-3 flex items-center gap-2">
               <span className="text-lg">📚</span> Hvað lærðir þú?
             </h3>
-            <ul className="text-sm text-gray-700 space-y-2">
+            <ul className="text-sm text-warm-700 space-y-2">
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-0.5">✓</span>
                 <span>Áætla mólmassa með námundun</span>
@@ -443,13 +443,13 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                 setScore(0);
                 setChallenge(generateChallenge(0));
               }}
-              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-xl transition-colors"
+              className="w-full bg-warm-100 hover:bg-warm-200 text-warm-700 font-bold py-3 px-6 rounded-xl transition-colors"
             >
               Spila Aftur
             </button>
             <button
               onClick={onBack}
-              className="w-full text-gray-500 hover:text-gray-700 font-semibold py-2"
+              className="w-full text-warm-500 hover:text-warm-700 font-semibold py-2"
             >
               Til baka í valmynd
             </button>
@@ -469,10 +469,10 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <p className="text-lg text-gray-700 mb-2">
+              <p className="text-lg text-warm-700 mb-2">
                 Áætlaðu mólmassa <span className="font-bold">{challenge.compound.name}</span>
               </p>
-              <div className="text-4xl font-bold text-gray-800 mb-4">
+              <div className="text-4xl font-bold text-warm-800 mb-4">
                 {challenge.compound.formula}
               </div>
             </div>
@@ -494,7 +494,7 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                           : 'bg-red-500 text-white'
                         : showFeedback && opt === approxMass
                           ? 'bg-green-500 text-white'
-                          : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                          : 'bg-warm-100 hover:bg-warm-200 text-warm-800'
                     }`}
                   >
                     ≈ {opt} g/mol
@@ -520,7 +520,7 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                       className={`w-full p-3 rounded-lg text-left transition-all border-2 ${
                         selectedReasoning === option.text
                           ? 'border-blue-500 bg-blue-100 text-blue-800'
-                          : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-white'
+                          : 'border-warm-200 hover:border-warm-300 text-warm-700 bg-white'
                       }`}
                     >
                       {option.text}
@@ -540,7 +540,7 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                   <button
                     onClick={handleReasoningSubmit}
                     disabled={!selectedReasoning}
-                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-bold py-3 px-6 rounded-xl transition-colors"
+                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-warm-300 text-white font-bold py-3 px-6 rounded-xl transition-colors"
                   >
                     Staðfesta skýringu
                   </button>
@@ -555,7 +555,7 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <p className="text-lg text-gray-700 mb-4">
+              <p className="text-lg text-warm-700 mb-4">
                 Raðaðu sameindunum frá <span className="font-bold">léttust</span> til <span className="font-bold">þyngst</span>
               </p>
             </div>
@@ -569,14 +569,14 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                       ? [...orderedCompounds].sort((a, b) => a.molarMass - b.molarMass)[index].formula === comp.formula
                         ? 'border-green-500 bg-green-50'
                         : 'border-red-500 bg-red-50'
-                      : 'border-gray-200'
+                      : 'border-warm-200'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl font-bold text-gray-400">{index + 1}.</span>
+                    <span className="text-2xl font-bold text-warm-400">{index + 1}.</span>
                     <div>
-                      <div className="font-bold text-gray-800">{comp.formula}</div>
-                      <div className="text-sm text-gray-600">{comp.name}</div>
+                      <div className="font-bold text-warm-800">{comp.formula}</div>
+                      <div className="text-sm text-warm-600">{comp.name}</div>
                     </div>
                   </div>
                   {!showFeedback && (
@@ -590,7 +590,7 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                           }
                         }}
                         disabled={index === 0}
-                        className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-30 flex items-center justify-center"
+                        className="w-8 h-8 rounded-full bg-warm-100 hover:bg-warm-200 disabled:opacity-30 flex items-center justify-center"
                       >
                         ↑
                       </button>
@@ -603,14 +603,14 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                           }
                         }}
                         disabled={index === orderedCompounds.length - 1}
-                        className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-30 flex items-center justify-center"
+                        className="w-8 h-8 rounded-full bg-warm-100 hover:bg-warm-200 disabled:opacity-30 flex items-center justify-center"
                       >
                         ↓
                       </button>
                     </div>
                   )}
                   {showFeedback && (
-                    <span className="text-sm text-gray-500">≈ {calculateApproxMass(comp.elements)} g/mol</span>
+                    <span className="text-sm text-warm-500">≈ {calculateApproxMass(comp.elements)} g/mol</span>
                   )}
                 </div>
               ))}
@@ -632,18 +632,18 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <p className="text-lg text-gray-700 mb-2">
+              <p className="text-lg text-warm-700 mb-2">
                 Reiknaðu áætlaðan mólmassa <span className="font-bold">{challenge.compound.name}</span>
               </p>
-              <p className="text-sm text-gray-500 mb-4">
+              <p className="text-sm text-warm-500 mb-4">
                 Notaðu heiltölur: H≈1, C≈12, N≈14, O≈16, S≈32, Cl≈35, Na≈23
               </p>
-              <div className="text-4xl font-bold text-gray-800 mb-4">
+              <div className="text-4xl font-bold text-warm-800 mb-4">
                 {challenge.compound.formula}
               </div>
             </div>
 
-            <div className="bg-gray-50 rounded-xl p-4">
+            <div className="bg-warm-50 rounded-xl p-4">
               <div className="flex flex-wrap items-center justify-center gap-3">
                 {challenge.compound.elements.map((el, i) => (
                   <div key={i} className="flex items-center gap-1">
@@ -662,13 +662,13 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                 onChange={(e) => setUserInput(e.target.value)}
                 disabled={showFeedback}
                 placeholder="Sláðu inn áætlaðan mólmassa..."
-                className="flex-1 px-4 py-3 text-lg border-2 border-gray-300 rounded-xl focus:outline-hidden focus:border-primary"
+                className="flex-1 px-4 py-3 text-lg border-2 border-warm-300 rounded-xl focus:outline-hidden focus:border-primary"
               />
               {!showFeedback && (
                 <button
                   onClick={() => checkAnswer(parseFloat(userInput))}
                   disabled={!userInput}
-                  className="bg-primary hover:bg-primary-dark disabled:bg-gray-300 text-white font-bold px-6 py-3 rounded-xl transition-colors"
+                  className="bg-primary hover:bg-primary-dark disabled:bg-warm-300 text-white font-bold px-6 py-3 rounded-xl transition-colors"
                 >
                   Athuga
                 </button>
@@ -680,10 +680,10 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                 <p className={`font-bold ${isCorrect ? 'text-green-800' : 'text-yellow-800'}`}>
                   {isCorrect ? '✓ Rétt!' : 'Nálægt!'}
                 </p>
-                <p className="text-gray-700 mt-1">
+                <p className="text-warm-700 mt-1">
                   Áætlað: ≈ {calculateApproxMass(challenge.compound.elements)} g/mol
                 </p>
-                <p className="text-gray-500 text-sm">
+                <p className="text-warm-500 text-sm">
                   Nákvæmt: {challenge.compound.molarMass.toFixed(3)} g/mol
                 </p>
               </div>
@@ -709,13 +709,13 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <p className="text-lg text-gray-700 mb-2">
+              <p className="text-lg text-warm-700 mb-2">
                 Hvaða frumefni er <span className="font-bold">þyngst</span> í þessari sameind?
               </p>
-              <div className="text-4xl font-bold text-gray-800 mb-4">
+              <div className="text-4xl font-bold text-warm-800 mb-4">
                 {challenge.compound.formula}
               </div>
-              <div className="text-gray-600">{challenge.compound.name}</div>
+              <div className="text-warm-600">{challenge.compound.name}</div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -733,14 +733,14 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                           : 'border-red-500 bg-red-50'
                         : showFeedback && symbol === heaviest.symbol
                           ? 'border-green-500 bg-green-50'
-                          : 'border-gray-200 hover:border-primary hover:bg-orange-50'
+                          : 'border-warm-200 hover:border-primary hover:bg-orange-50'
                     }`}
                   >
                     <AtomCircle symbol={symbol} />
                     <div className="text-center">
-                      <div className="font-bold text-gray-800">{atom?.name}</div>
+                      <div className="font-bold text-warm-800">{atom?.name}</div>
                       {showFeedback && (
-                        <div className="text-sm text-gray-600">≈ {atom?.approxMass} g/mol</div>
+                        <div className="text-sm text-warm-600">≈ {atom?.approxMass} g/mol</div>
                       )}
                     </div>
                   </button>
@@ -770,22 +770,22 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-xl font-bold text-gray-800">Mólmassi - Stig 2</h1>
-              <p className="text-sm text-gray-600">Áætla og reikna með námundun</p>
+              <h1 className="text-xl font-bold text-warm-800">Mólmassi - Stig 2</h1>
+              <p className="text-sm text-warm-600">Áætla og reikna með námundun</p>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-purple-600">{score}</div>
-              <div className="text-xs text-gray-600">Stig</div>
+              <div className="text-xs text-warm-600">Stig</div>
             </div>
           </div>
 
           {/* Progress bar */}
           <div className="mt-3">
-            <div className="flex justify-between text-xs text-gray-500 mb-1">
+            <div className="flex justify-between text-xs text-warm-500 mb-1">
               <span>Áskorun {challengeNumber + 1}/{totalChallenges}</span>
               <span>{getChallengeTitle()}</span>
             </div>
-            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-2 bg-warm-200 rounded-full overflow-hidden">
               <div
                 className="h-full bg-purple-500 progress-fill"
                 style={{ width: `${((challengeNumber + 1) / totalChallenges) * 100}%` }}
@@ -849,7 +849,7 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
             {['H', 'C', 'N', 'O', 'S', 'Cl', 'Na', 'Ca'].map(symbol => (
               <div key={symbol} className="bg-white rounded p-1">
                 <div className="font-bold">{symbol}</div>
-                <div className="text-gray-600">≈{ATOM_DATA[symbol]?.approxMass}</div>
+                <div className="text-warm-600">≈{ATOM_DATA[symbol]?.approxMass}</div>
               </div>
             ))}
           </div>
@@ -866,7 +866,7 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         {/* Back button */}
         <button
           onClick={onBack}
-          className="mt-4 w-full text-gray-500 hover:text-gray-700 font-semibold py-2"
+          className="mt-4 w-full text-warm-500 hover:text-warm-700 font-semibold py-2"
         >
           ← Til baka í valmynd
         </button>

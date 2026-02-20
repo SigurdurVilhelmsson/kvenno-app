@@ -83,7 +83,7 @@ export const Burette: React.FC<BuretteProps> = ({
           {/* Dripping animation */}
           {isAnimating && (
             <div
-              className="absolute bottom-[-20px] left-1/2 transform -translate-x-1/2 w-2 h-2 rounded-full bg-blue-500 animate-drip"
+              className="absolute bottom-[-20px] left-1/2 transform -tranwarm-x-1/2 w-2 h-2 rounded-full bg-blue-500 animate-drip"
             />
           )}
 
@@ -100,7 +100,7 @@ export const Burette: React.FC<BuretteProps> = ({
 
         {/* Burette tip */}
         <div
-          className="absolute bottom-[-15px] left-1/2 transform -translate-x-1/2"
+          className="absolute bottom-[-15px] left-1/2 transform -tranwarm-x-1/2"
           style={{
             width: 0,
             height: 0,

@@ -53,7 +53,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     if (!showResult) {
       return selectedAnswer === option.id
         ? 'border-purple-500 bg-purple-50 ring-2 ring-purple-200'
-        : 'border-gray-300 hover:border-purple-400 hover:bg-purple-50';
+        : 'border-warm-300 hover:border-purple-400 hover:bg-purple-50';
     }
 
     if (option.correct) {
@@ -64,7 +64,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       return 'border-red-500 bg-red-50';
     }
 
-    return 'border-gray-200 bg-gray-50 opacity-50';
+    return 'border-warm-200 bg-warm-50 opacity-50';
   };
 
   const getStepStyle = (type: MechanismStep['type']) => {
@@ -76,7 +76,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       case 'equilibrium':
         return 'border-blue-400 bg-blue-50';
       default:
-        return 'border-gray-300 bg-white';
+        return 'border-warm-300 bg-white';
     }
   };
 
@@ -87,18 +87,18 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
           >
             <span>&larr;</span> Til baka
           </button>
           <div className="text-right">
-            <div className="text-sm text-gray-600">Stig 3 / Þraut {currentChallenge + 1} af {challenges.length}</div>
+            <div className="text-sm text-warm-600">Stig 3 / Þraut {currentChallenge + 1} af {challenges.length}</div>
             <div className="text-lg font-bold text-purple-600">{score} stig</div>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-purple-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
@@ -110,7 +110,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <h2 className="text-2xl font-bold text-purple-800 mb-2">
             {challenge.title}
           </h2>
-          <p className="text-gray-600 mb-4">{challenge.description}</p>
+          <p className="text-warm-600 mb-4">{challenge.description}</p>
 
           {/* Overall reaction */}
           <div className="bg-purple-50 p-4 rounded-xl mb-6">
@@ -122,7 +122,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           {/* Mechanism steps */}
           <div className="mb-6">
-            <h3 className="font-bold text-gray-700 mb-3">Hvarfgangsháttur:</h3>
+            <h3 className="font-bold text-warm-700 mb-3">Hvarfgangsháttur:</h3>
             <div className="space-y-3">
               {challenge.mechanism.map((step, idx) => (
                 <div
@@ -147,8 +147,8 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
 
           {/* Question */}
-          <div className="bg-gray-50 p-4 rounded-xl mb-6">
-            <div className="font-bold text-gray-800">{challenge.question}</div>
+          <div className="bg-warm-50 p-4 rounded-xl mb-6">
+            <div className="font-bold text-warm-800">{challenge.question}</div>
           </div>
 
           {/* Options */}
@@ -161,7 +161,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 className={`w-full p-4 rounded-xl border-2 text-left transition-all ${getOptionStyle(option)}`}
               >
                 <div className="flex items-start gap-3">
-                  <span className="font-bold text-gray-500 uppercase">{option.id}.</span>
+                  <span className="font-bold text-warm-500 uppercase">{option.id}.</span>
                   <span className="flex-1">{option.text}</span>
                   {showResult && option.correct && (
                     <span className="text-green-600 font-bold">✓</span>
@@ -204,7 +204,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <button
               onClick={checkAnswer}
               disabled={!selectedAnswer}
-              className="w-full bg-purple-500 hover:bg-purple-600 disabled:bg-gray-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+              className="w-full bg-purple-500 hover:bg-purple-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
             >
               Athuga svar
             </button>
@@ -233,7 +233,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Legend */}
         <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="font-bold text-gray-700 mb-3">Lykilhugtök</h3>
+          <h3 className="font-bold text-warm-700 mb-3">Lykilhugtök</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
             <div className="flex items-center gap-2">
               <span className="w-4 h-4 rounded bg-red-400"></span>

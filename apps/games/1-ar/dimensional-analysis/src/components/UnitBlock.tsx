@@ -20,7 +20,7 @@ const colorClasses = {
   green: 'bg-green-500 text-white border-green-600',
   orange: 'bg-orange-500 text-white border-orange-600',
   red: 'bg-red-500 text-white border-red-600',
-  gray: 'bg-gray-400 text-gray-200 border-gray-500'
+  gray: 'bg-warm-400 text-warm-200 border-warm-500'
 };
 
 const sizeClasses = {
@@ -178,7 +178,7 @@ export function ConversionFactorBlock({
     ? 'border-red-500 bg-red-50'
     : isSelected
     ? 'border-orange-500 bg-orange-50'
-    : 'border-gray-300 bg-white';
+    : 'border-warm-300 bg-white';
 
   const sizeStyles = {
     small: { container: 'p-2 min-w-[80px]', text: 'text-sm' },
@@ -202,7 +202,7 @@ export function ConversionFactorBlock({
       <div className={`font-bold text-blue-600 ${sizeStyles[size].text}`}>
         {numeratorValue} {numeratorUnit}
       </div>
-      <div className="w-full h-0.5 bg-gray-800 my-1" />
+      <div className="w-full h-0.5 bg-warm-800 my-1" />
       <div className={`font-bold text-green-600 ${sizeStyles[size].text}`}>
         {denominatorValue} {denominatorUnit}
       </div>
@@ -245,29 +245,29 @@ export function EquivalenceDisplay({
   // Pan positions based on tilt
   const getLeftPanClass = () => {
     if (isEqual) return '';
-    if (comparison > 0) return '-translate-y-3'; // Right heavier - left goes up
-    if (comparison < 0) return 'translate-y-3';  // Left heavier - left goes down
+    if (comparison > 0) return '-tranwarm-y-3'; // Right heavier - left goes up
+    if (comparison < 0) return 'tranwarm-y-3';  // Left heavier - left goes down
     return '';
   };
 
   const getRightPanClass = () => {
     if (isEqual) return '';
-    if (comparison > 0) return 'translate-y-3';  // Right heavier - right goes down
-    if (comparison < 0) return '-translate-y-3'; // Left heavier - right goes up
+    if (comparison > 0) return 'tranwarm-y-3';  // Right heavier - right goes down
+    if (comparison < 0) return '-tranwarm-y-3'; // Left heavier - right goes up
     return '';
   };
 
   return (
-    <div className="flex flex-col items-center p-6 bg-gradient-to-b from-gray-50 to-gray-100 rounded-xl">
+    <div className="flex flex-col items-center p-6 bg-gradient-to-b from-warm-50 to-warm-100 rounded-xl">
       {/* Scale beam */}
       <div className={`
-        relative w-full max-w-md h-2 bg-gray-800 rounded-full
+        relative w-full max-w-md h-2 bg-warm-800 rounded-full
         transition-transform duration-500 origin-center
         ${getTiltClass()}
       `}>
         {/* Fulcrum */}
-        <div className="absolute left-1/2 -translate-x-1/2 top-full">
-          <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-t-[16px] border-l-transparent border-r-transparent border-t-gray-800" />
+        <div className="absolute left-1/2 -tranwarm-x-1/2 top-full">
+          <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-t-[16px] border-l-transparent border-r-transparent border-t-warm-800" />
         </div>
       </div>
 
@@ -287,7 +287,7 @@ export function EquivalenceDisplay({
 
         <div className={`
           flex items-center text-3xl font-bold
-          ${isEqual ? 'text-green-600' : 'text-gray-400'}
+          ${isEqual ? 'text-green-600' : 'text-warm-400'}
         `}>
           {isEqual ? '=' : '?'}
         </div>

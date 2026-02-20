@@ -29,7 +29,7 @@ export function SpjaldPreview({ category, level, view = 'both' }: SpjaldPreviewP
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">{category.icon}</span>
-                  <h2 className="text-2xl font-bold uppercase tracking-wide">
+                  <h2 className="font-heading text-2xl font-bold uppercase tracking-wide">
                     {category.name}
                   </h2>
                 </div>
@@ -89,7 +89,7 @@ export function SpjaldPreview({ category, level, view = 'both' }: SpjaldPreviewP
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">{category.icon}</span>
-                  <h2 className="text-2xl font-bold uppercase tracking-wide">
+                  <h2 className="font-heading text-2xl font-bold uppercase tracking-wide">
                     {category.name}
                   </h2>
                 </div>

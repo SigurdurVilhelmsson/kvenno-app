@@ -1,31 +1,60 @@
 /**
- * Kvennaskólinn brand colors and theme configuration
+ * kvenno.app design system tokens — TypeScript exports
+ *
+ * See DESIGN_SYSTEM.md for full specification.
  */
 
 export const colors = {
-  // Primary brand colors
-  primary: '#f36b22',
-  primaryDark: '#c55113',
-  primaryLight: '#ff8c4d',
+  // Brand orange scale
+  orange: {
+    50: '#fff7f0',
+    100: '#ffead8',
+    200: '#ffd4b0',
+    300: '#ffb678',
+    400: '#ff9545',
+    500: '#f36b22', // THE brand color
+    600: '#d35a15',
+    700: '#b04510', // WCAG AA compliant for text on white
+    800: '#8c370d',
+    900: '#6a2a0a',
+  },
+
+  // Warm neutrals (replaces cold slate)
+  warm: {
+    50: '#faf9f7',
+    100: '#f5f3f0',
+    200: '#e8e4df',
+    300: '#d4cec7',
+    400: '#a69d93',
+    500: '#7a7168',
+    600: '#5c534a',
+    700: '#443d36',
+    800: '#2e2823',
+    900: '#1c1813',
+  },
 
   // Semantic colors
-  success: '#10b981',
-  warning: '#f59e0b',
-  error: '#ef4444',
-  info: '#3b82f6',
+  success: '#16a34a',
+  successLight: '#dcfce7',
+  warning: '#d97706',
+  warningLight: '#fef3c7',
+  error: '#dc2626',
+  errorLight: '#fee2e2',
+  info: '#2563eb',
+  infoLight: '#dbeafe',
 
-  // Neutral colors
+  // Surfaces
+  surface: {
+    page: '#faf9f7',
+    raised: '#ffffff',
+    sunken: '#f5f3f0',
+  },
+
+  // Legacy aliases
+  primary: '#f36b22',
+  primaryDark: '#d35a15',
+  primaryLight: '#ff8c4d',
   white: '#ffffff',
-  gray50: '#f9fafb',
-  gray100: '#f3f4f6',
-  gray200: '#e5e7eb',
-  gray300: '#d1d5db',
-  gray400: '#9ca3af',
-  gray500: '#6b7280',
-  gray600: '#4b5563',
-  gray700: '#374151',
-  gray800: '#1f2937',
-  gray900: '#111827',
   black: '#000000',
 
   // High contrast mode
@@ -36,6 +65,18 @@ export const colors = {
     focus: '#ffff00',
   },
 };
+
+/** Íslenskubraut category colors */
+export const categoryColors = {
+  dyr: '#2d6a4f',
+  matur: '#92400e',
+  fartaeki: '#1e40af',
+  manneskja: '#9a3412',
+  stadir: '#5b21b6',
+  klaednadur: '#0e7490',
+} as const;
+
+export type CategoryId = keyof typeof categoryColors;
 
 export const spacing = {
   xs: '0.25rem', // 4px
@@ -49,170 +90,122 @@ export const spacing = {
 
 export const borderRadius = {
   none: '0',
-  sm: '0.125rem', // 2px
-  md: '0.375rem', // 6px
-  lg: '0.5rem', // 8px
-  xl: '0.75rem', // 12px
-  full: '9999px',
+  sm: '6px',
+  md: '10px', // buttons, inputs
+  lg: '14px', // cards, modals
+  xl: '20px', // large feature cards
+  full: '9999px', // pills, avatars
 };
 
 export const fontSize = {
   small: {
-    xs: '0.625rem', // 10px
-    sm: '0.75rem', // 12px
-    base: '0.875rem', // 14px
-    lg: '1rem', // 16px
-    xl: '1.125rem', // 18px
-    '2xl': '1.25rem', // 20px
+    xs: '0.625rem',
+    sm: '0.75rem',
+    base: '0.875rem',
+    lg: '1rem',
+    xl: '1.125rem',
+    '2xl': '1.25rem',
   },
   medium: {
-    xs: '0.75rem', // 12px
-    sm: '0.875rem', // 14px
-    base: '1rem', // 16px
-    lg: '1.125rem', // 18px
-    xl: '1.25rem', // 20px
-    '2xl': '1.5rem', // 24px
+    xs: '0.75rem',
+    sm: '0.875rem',
+    base: '1rem',
+    lg: '1.125rem',
+    xl: '1.25rem',
+    '2xl': '1.5rem',
   },
   large: {
-    xs: '0.875rem', // 14px
-    sm: '1rem', // 16px
-    base: '1.125rem', // 18px
-    lg: '1.25rem', // 20px
-    xl: '1.5rem', // 24px
-    '2xl': '1.875rem', // 30px
+    xs: '0.875rem',
+    sm: '1rem',
+    base: '1.125rem',
+    lg: '1.25rem',
+    xl: '1.5rem',
+    '2xl': '1.875rem',
   },
 };
 
 export const shadows = {
-  sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-  md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-  lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-  xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+  sm: '0 1px 2px rgba(28, 24, 19, 0.06)',
+  md: '0 2px 8px rgba(28, 24, 19, 0.08)',
+  lg: '0 4px 16px rgba(28, 24, 19, 0.10)',
+  xl: '0 8px 24px rgba(28, 24, 19, 0.12)',
+  orange: '0 4px 14px rgba(243, 107, 34, 0.20)',
+  inner: 'inset 0 2px 4px rgba(28, 24, 19, 0.06)',
 };
 
 export const transitions = {
-  fast: '150ms ease-in-out',
-  normal: '300ms ease-in-out',
-  slow: '500ms ease-in-out',
+  fast: '100ms ease-out',
+  normal: '200ms ease-out',
+  slow: '300ms ease-out',
 };
 
 /**
- * Generate CSS variables for theme
- */
-export const generateCSSVariables = (): string => {
-  return `
-    :root {
-      --color-primary: ${colors.primary};
-      --color-primary-dark: ${colors.primaryDark};
-      --color-primary-light: ${colors.primaryLight};
-
-      --color-success: ${colors.success};
-      --color-warning: ${colors.warning};
-      --color-error: ${colors.error};
-      --color-info: ${colors.info};
-
-      --spacing-xs: ${spacing.xs};
-      --spacing-sm: ${spacing.sm};
-      --spacing-md: ${spacing.md};
-      --spacing-lg: ${spacing.lg};
-      --spacing-xl: ${spacing.xl};
-
-      --radius-sm: ${borderRadius.sm};
-      --radius-md: ${borderRadius.md};
-      --radius-lg: ${borderRadius.lg};
-
-      --transition-fast: ${transitions.fast};
-      --transition-normal: ${transitions.normal};
-      --transition-slow: ${transitions.slow};
-    }
-
-    .high-contrast {
-      --bg-primary: ${colors.highContrast.bg};
-      --bg-secondary: ${colors.white};
-      --text-primary: ${colors.highContrast.text};
-      --text-secondary: ${colors.black};
-      --border-color: ${colors.highContrast.border};
-      --focus-color: ${colors.highContrast.focus};
-    }
-
-    .reduced-motion * {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
-  `;
-};
-
-/**
- * Year-based color themes for consistent styling across games
+ * Year-based accent color themes
  *
- * Year 1 (1-ar): Orange/Amber - Kvennaskólinn brand identity
- * Year 2 (2-ar): Teal/Cyan - Distinct from Year 1, fresh and engaging
- * Year 3 (3-ar): Purple/Indigo - Advanced, sophisticated appearance
+ * Year 1 (1-ar): Orange — Kvennaskólinn brand identity
+ * Year 2 (2-ar): Teal — Fresh, progressing
+ * Year 3 (3-ar): Violet — Advanced, sophisticated
  */
 export const yearThemes = {
   '1-ar': {
-    // Background gradient: from-orange-50 to-amber-100
-    gradient: 'bg-gradient-to-br from-orange-50 to-amber-100',
-    gradientFrom: 'from-orange-50',
-    gradientTo: 'to-amber-100',
-    // Primary accent color
+    gradient: 'bg-gradient-to-br from-kvenno-orange-50 to-kvenno-orange-100',
+    gradientFrom: 'from-kvenno-orange-50',
+    gradientTo: 'to-kvenno-orange-100',
     primary: 'orange',
-    primaryBg: 'bg-orange-500',
-    primaryBgHover: 'hover:bg-orange-600',
-    primaryText: 'text-orange-600',
-    primaryTextDark: 'text-orange-800',
-    primaryBorder: 'border-orange-400',
-    primaryBorderHover: 'hover:border-orange-500',
-    primaryLight: 'bg-orange-50',
-    primaryLightHover: 'hover:bg-orange-100',
-    // Pedagogical section
-    pedagogicalBg: 'bg-orange-50',
-    pedagogicalBorder: 'border-orange-200',
-    pedagogicalText: 'text-orange-900',
-    pedagogicalTitle: 'text-orange-800',
+    accent: '#f36b22',
+    accentLight: '#fff7f0',
+    primaryBg: 'bg-kvenno-orange',
+    primaryBgHover: 'hover:bg-kvenno-orange-600',
+    primaryText: 'text-kvenno-orange',
+    primaryTextDark: 'text-kvenno-orange-700',
+    primaryBorder: 'border-kvenno-orange-400',
+    primaryBorderHover: 'hover:border-kvenno-orange',
+    primaryLight: 'bg-kvenno-orange-50',
+    primaryLightHover: 'hover:bg-kvenno-orange-100',
+    pedagogicalBg: 'bg-kvenno-orange-50',
+    pedagogicalBorder: 'border-kvenno-orange-200',
+    pedagogicalText: 'text-kvenno-orange-900',
+    pedagogicalTitle: 'text-kvenno-orange-800',
   },
   '2-ar': {
-    // Background gradient: from-teal-50 to-cyan-100
     gradient: 'bg-gradient-to-br from-teal-50 to-cyan-100',
     gradientFrom: 'from-teal-50',
     gradientTo: 'to-cyan-100',
-    // Primary accent color
     primary: 'teal',
-    primaryBg: 'bg-teal-500',
-    primaryBgHover: 'hover:bg-teal-600',
+    accent: '#0d9488',
+    accentLight: '#f0fdfa',
+    primaryBg: 'bg-teal-600',
+    primaryBgHover: 'hover:bg-teal-700',
     primaryText: 'text-teal-600',
     primaryTextDark: 'text-teal-800',
     primaryBorder: 'border-teal-400',
     primaryBorderHover: 'hover:border-teal-500',
     primaryLight: 'bg-teal-50',
     primaryLightHover: 'hover:bg-teal-100',
-    // Pedagogical section
     pedagogicalBg: 'bg-teal-50',
     pedagogicalBorder: 'border-teal-200',
     pedagogicalText: 'text-teal-900',
     pedagogicalTitle: 'text-teal-800',
   },
   '3-ar': {
-    // Background gradient: from-purple-50 to-indigo-100
-    gradient: 'bg-gradient-to-br from-purple-50 to-indigo-100',
-    gradientFrom: 'from-purple-50',
+    gradient: 'bg-gradient-to-br from-violet-50 to-indigo-100',
+    gradientFrom: 'from-violet-50',
     gradientTo: 'to-indigo-100',
-    // Primary accent color
-    primary: 'purple',
-    primaryBg: 'bg-purple-500',
-    primaryBgHover: 'hover:bg-purple-600',
-    primaryText: 'text-purple-600',
-    primaryTextDark: 'text-purple-800',
-    primaryBorder: 'border-purple-400',
-    primaryBorderHover: 'hover:border-purple-500',
-    primaryLight: 'bg-purple-50',
-    primaryLightHover: 'hover:bg-purple-100',
-    // Pedagogical section
-    pedagogicalBg: 'bg-purple-50',
-    pedagogicalBorder: 'border-purple-200',
-    pedagogicalText: 'text-purple-900',
-    pedagogicalTitle: 'text-purple-800',
+    primary: 'violet',
+    accent: '#7c3aed',
+    accentLight: '#f5f3ff',
+    primaryBg: 'bg-violet-600',
+    primaryBgHover: 'hover:bg-violet-700',
+    primaryText: 'text-violet-600',
+    primaryTextDark: 'text-violet-800',
+    primaryBorder: 'border-violet-400',
+    primaryBorderHover: 'hover:border-violet-500',
+    primaryLight: 'bg-violet-50',
+    primaryLightHover: 'hover:bg-violet-100',
+    pedagogicalBg: 'bg-violet-50',
+    pedagogicalBorder: 'border-violet-200',
+    pedagogicalText: 'text-violet-900',
+    pedagogicalTitle: 'text-violet-800',
   },
 } as const;
 
@@ -220,7 +213,6 @@ export type YearTheme = keyof typeof yearThemes;
 
 /**
  * Level colors for consistent level distinction within games
- * These are used across all years for level 1, 2, 3 buttons
  */
 export const levelColors = {
   level1: {
@@ -254,6 +246,7 @@ export const levelColors = {
 
 export const theme = {
   colors,
+  categoryColors,
   spacing,
   borderRadius,
   fontSize,

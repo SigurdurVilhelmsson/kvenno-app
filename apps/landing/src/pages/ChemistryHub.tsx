@@ -57,10 +57,10 @@ export function ChemistryHub() {
 
       {/* Intro Section */}
       <Card variant="elevated" padding="lg" className="text-center mb-12">
-        <h1 className="text-kvenno-orange text-4xl md:text-[2.5rem] font-bold mb-4">
+        <h1 className="font-heading text-kvenno-orange text-4xl md:text-[2.5rem] font-bold mb-4">
           Efnafræði
         </h1>
-        <p className="text-lg text-slate-500 max-w-[800px] mx-auto">
+        <p className="text-lg text-warm-500 max-w-[800px] mx-auto">
           Safn af gagnvirkum verkfærum fyrir efnafræðikennslu við Kvennaskólann í Reykjavík.
           Veldu áfanga hér að neðan til að skoða tiltæk verkfæri.
         </p>
@@ -72,9 +72,9 @@ export function ChemistryHub() {
           <Link
             key={tile.to}
             to={tile.to}
-            className="bg-white border-2 border-kvenno-orange rounded-xl py-12 px-8 text-center no-underline text-slate-800 shadow-card cursor-pointer transition-all duration-300 hover:bg-kvenno-orange hover:text-white hover:-translate-y-1 hover:shadow-card-hover group"
+            className="bg-surface-raised border-2 border-kvenno-orange rounded-card py-12 px-8 text-center no-underline text-warm-800 shadow-md cursor-pointer transition-all duration-200 ease-out hover:bg-kvenno-orange hover:text-white hover:-translate-y-0.5 hover:shadow-orange group"
           >
-            <h2 className="text-[2rem] font-bold mb-2">
+            <h2 className="font-heading text-[2rem] font-bold mb-2">
               {tile.title}
             </h2>
             <p className="text-base opacity-80">

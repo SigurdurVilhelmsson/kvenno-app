@@ -203,15 +203,15 @@ export function ReactionAnimation({
   const visibleProducts = molecules.filter(m => m.isProduct && m.opacity > 0).length;
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200">
+    <div className="bg-gradient-to-br from-warm-50 to-warm-100 rounded-xl p-4 border border-warm-200">
       {/* Animation area */}
-      <div className="relative w-full h-48 bg-white rounded-lg border border-gray-200 overflow-hidden mb-4">
+      <div className="relative w-full h-48 bg-white rounded-lg border border-warm-200 overflow-hidden mb-4">
         {/* Reaction zone indicator */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className={`w-24 h-24 rounded-full border-4 border-dashed transition-all duration-500 ${
             animationStep === 'combining' || animationStep === 'reacting'
               ? 'border-orange-400 bg-orange-50/50 scale-110'
-              : 'border-gray-200 bg-gray-50/30'
+              : 'border-warm-200 bg-warm-50/30'
           }`}>
             {animationStep === 'reacting' && (
               <div className="absolute inset-0 flex items-center justify-center">
@@ -243,13 +243,13 @@ export function ReactionAnimation({
         ))}
 
         {/* Labels */}
-        <div className="absolute top-1 left-2 text-xs text-gray-500 font-medium">
+        <div className="absolute top-1 left-2 text-xs text-warm-500 font-medium">
           {reactant1.formula}
         </div>
-        <div className="absolute top-1 right-2 text-xs text-gray-500 font-medium">
+        <div className="absolute top-1 right-2 text-xs text-warm-500 font-medium">
           {reactant2.formula}
         </div>
-        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-xs text-gray-500 font-medium">
+        <div className="absolute bottom-1 left-1/2 -tranwarm-x-1/2 text-xs text-warm-500 font-medium">
           Afurðir
         </div>
       </div>
@@ -258,17 +258,17 @@ export function ReactionAnimation({
       <div className="grid grid-cols-3 gap-2 text-center text-sm mb-3">
         <div className={`p-2 rounded-lg ${limitingIsR1 && showResult ? 'bg-red-100 border border-red-300' : 'bg-blue-50'}`}>
           <div className="font-bold text-blue-700">{visibleR1}</div>
-          <div className="text-xs text-gray-600">{reactant1.formula}</div>
+          <div className="text-xs text-warm-600">{reactant1.formula}</div>
           {limitingIsR1 && showResult && <div className="text-xs text-red-600 font-bold">Takmarkandi!</div>}
         </div>
         <div className={`p-2 rounded-lg ${!limitingIsR1 && showResult ? 'bg-red-100 border border-red-300' : 'bg-red-50'}`}>
           <div className="font-bold text-red-700">{visibleR2}</div>
-          <div className="text-xs text-gray-600">{reactant2.formula}</div>
+          <div className="text-xs text-warm-600">{reactant2.formula}</div>
           {!limitingIsR1 && showResult && <div className="text-xs text-red-600 font-bold">Takmarkandi!</div>}
         </div>
         <div className="bg-green-50 p-2 rounded-lg">
           <div className="font-bold text-green-700">{visibleProducts}</div>
-          <div className="text-xs text-gray-600">Afurðir</div>
+          <div className="text-xs text-warm-600">Afurðir</div>
         </div>
       </div>
 
@@ -279,7 +279,7 @@ export function ReactionAnimation({
           disabled={animationStep === 'combining' || animationStep === 'reacting' || currentReaction >= timesReactionRuns}
           className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
             currentReaction >= timesReactionRuns
-              ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+              ? 'bg-warm-200 text-warm-500 cursor-not-allowed'
               : 'bg-orange-500 hover:bg-orange-600 text-white'
           }`}
         >
@@ -287,7 +287,7 @@ export function ReactionAnimation({
         </button>
         <button
           onClick={initializeMolecules}
-          className="py-2 px-4 rounded-lg font-medium bg-gray-200 hover:bg-gray-300 text-gray-700 transition-colors"
+          className="py-2 px-4 rounded-lg font-medium bg-warm-200 hover:bg-warm-300 text-warm-700 transition-colors"
         >
           🔄
         </button>
@@ -297,7 +297,7 @@ export function ReactionAnimation({
       {showResult && animationStep === 'complete' && (
         <div className="mt-3 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
           <div className="text-sm font-bold text-yellow-800 mb-1">Niðurstaða:</div>
-          <div className="text-xs text-gray-700 space-y-1">
+          <div className="text-xs text-warm-700 space-y-1">
             <div>Hvörfin gátu gerst <strong>{timesReactionRuns}</strong> sinnum</div>
             <div>
               Afgangur: <strong>{limitingIsR1 ? excessR2 : excessR1}</strong>{' '}

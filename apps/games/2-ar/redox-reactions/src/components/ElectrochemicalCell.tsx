@@ -309,12 +309,12 @@ export function ElectrochemicalCell({
           Galvanísk klefi
         </h3>
         <div className="flex items-center gap-2">
-          <label className="flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer">
+          <label className="flex items-center gap-1.5 text-xs text-warm-600 cursor-pointer">
             <input
               type="checkbox"
               checked={showLabels}
               onChange={e => setShowLabels(e.target.checked)}
-              className="rounded border-gray-300"
+              className="rounded border-warm-300"
             />
             Merki
           </label>
@@ -334,7 +334,7 @@ export function ElectrochemicalCell({
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                 selectedPair === p.id
                   ? 'bg-amber-500 text-white'
-                  : 'bg-white text-gray-600 hover:bg-amber-100'
+                  : 'bg-white text-warm-600 hover:bg-amber-100'
               }`}
             >
               {p.anode.metalSymbol}-{p.cathode.metalSymbol}
@@ -349,7 +349,7 @@ export function ElectrochemicalCell({
           width={width}
           height={height}
           viewBox={`0 0 ${width} ${height}`}
-          className="bg-slate-100 rounded-xl border border-slate-200"
+          className="bg-warm-100 rounded-xl border border-warm-200"
         >
           <defs>
             {/* Gradients for electrodes */}
@@ -511,14 +511,14 @@ export function ElectrochemicalCell({
             <div className="text-xs text-red-600">
               {pair.anode.metalSymbol} → {pair.anode.ion} + 2e⁻
             </div>
-            <div className="text-xs text-gray-500">E° = {pair.anode.standardPotential.toFixed(2)} V</div>
+            <div className="text-xs text-warm-500">E° = {pair.anode.standardPotential.toFixed(2)} V</div>
           </div>
           <div className="bg-blue-50 p-2 rounded border border-blue-200">
             <div className="font-medium text-blue-700">Kaþóða (afoxun)</div>
             <div className="text-xs text-blue-600">
               {pair.cathode.ion} + 2e⁻ → {pair.cathode.metalSymbol}
             </div>
-            <div className="text-xs text-gray-500">E° = {pair.cathode.standardPotential.toFixed(2)} V</div>
+            <div className="text-xs text-warm-500">E° = {pair.cathode.standardPotential.toFixed(2)} V</div>
           </div>
         </div>
 
@@ -528,13 +528,13 @@ export function ElectrochemicalCell({
           </div>
         </div>
 
-        <p className={`mt-2 text-center ${compact ? 'text-xs' : 'text-sm'} text-gray-600`}>
+        <p className={`mt-2 text-center ${compact ? 'text-xs' : 'text-sm'} text-warm-600`}>
           {pair.description}
         </p>
       </div>
 
       {/* Educational note */}
-      <div className={`mt-3 text-center ${compact ? 'text-xs' : 'text-sm'} text-gray-600`}>
+      <div className={`mt-3 text-center ${compact ? 'text-xs' : 'text-sm'} text-warm-600`}>
         <p>
           <strong>Galvanísk klefi</strong> breytir efnaorku í raforku. Rafeindir flæða frá anóðu til kaþóðu.
         </p>

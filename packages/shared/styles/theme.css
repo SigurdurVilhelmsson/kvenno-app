@@ -2,54 +2,146 @@
  * Shared Tailwind CSS theme for the kvenno.app design system.
  * Import this in each app's CSS entry point after @import "tailwindcss".
  *
- * Replaces the TW3 JS preset (tailwind-preset.ts) with TW4 CSS-first config.
+ * Design system: DESIGN_SYSTEM.md at repo root.
  */
 
 @theme {
-  /* Brand colors */
+  /* ===== Brand Orange Scale ===== */
+  --color-kvenno-orange-50: #fff7f0;
+  --color-kvenno-orange-100: #ffead8;
+  --color-kvenno-orange-200: #ffd4b0;
+  --color-kvenno-orange-300: #ffb678;
+  --color-kvenno-orange-400: #ff9545;
   --color-kvenno-orange: #f36b22;
-  --color-kvenno-orange-dark: #c55113;
-  --color-kvenno-orange-light: #ff8c4d;
+  --color-kvenno-orange-600: #d35a15;
+  --color-kvenno-orange-700: #b04510;
+  --color-kvenno-orange-800: #8c370d;
+  --color-kvenno-orange-900: #6a2a0a;
 
-  /* Semantic colors */
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-  --color-info: #3b82f6;
+  /* ===== Warm Neutrals ===== */
+  --color-warm-50: #faf9f7;
+  --color-warm-100: #f5f3f0;
+  --color-warm-200: #e8e4df;
+  --color-warm-300: #d4cec7;
+  --color-warm-400: #a69d93;
+  --color-warm-500: #7a7168;
+  --color-warm-600: #5c534a;
+  --color-warm-700: #443d36;
+  --color-warm-800: #2e2823;
+  --color-warm-900: #1c1813;
 
-  /* Font stack — Inter self-hosted, system fallbacks */
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  /* ===== Semantic Colors ===== */
+  --color-success: #16a34a;
+  --color-success-light: #dcfce7;
+  --color-warning: #d97706;
+  --color-warning-light: #fef3c7;
+  --color-error: #dc2626;
+  --color-error-light: #fee2e2;
+  --color-info: #2563eb;
+  --color-info-light: #dbeafe;
 
-  /* Container max-width */
-  --container-6xl: 1152px;
+  /* ===== Surface Colors ===== */
+  --color-surface-page: #faf9f7;
+  --color-surface-raised: #ffffff;
+  --color-surface-sunken: #f5f3f0;
 
-  /* Border radius tokens */
-  --radius-btn: 8px;
-  --radius-card: 12px;
+  /* ===== Íslenskubraut Category Colors ===== */
+  --color-category-dyr: #2d6a4f;
+  --color-category-matur: #92400e;
+  --color-category-fartaeki: #1e40af;
+  --color-category-manneskja: #9a3412;
+  --color-category-stadir: #5b21b6;
+  --color-category-klaednadur: #0e7490;
 
-  /* Box shadow tokens */
-  --shadow-card: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --shadow-card-hover: 0 4px 12px rgba(243, 107, 34, 0.3);
-  --shadow-elevated: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  /* ===== Typography ===== */
+  --font-heading: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-sans: "DM Sans", system-ui, sans-serif;
 
-  /* Transition tokens */
-  --transition-fast: 150ms;
-  --transition-normal: 300ms;
-  --transition-slow: 500ms;
+  /* ===== Container ===== */
+  --container-6xl: 1200px;
 
-  /* Animation tokens */
-  --animate-slide-up: slide-up 0.3s ease-out;
+  /* ===== Border Radius ===== */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  /* Legacy aliases (for gradual migration) */
+  --radius-btn: 10px;
+  --radius-card: 14px;
+
+  /* ===== Box Shadows (warm-tinted) ===== */
+  --shadow-sm: 0 1px 2px rgba(28, 24, 19, 0.06);
+  --shadow-md: 0 2px 8px rgba(28, 24, 19, 0.08);
+  --shadow-lg: 0 4px 16px rgba(28, 24, 19, 0.10);
+  --shadow-xl: 0 8px 24px rgba(28, 24, 19, 0.12);
+  --shadow-orange: 0 4px 14px rgba(243, 107, 34, 0.20);
+  --shadow-inner: inset 0 2px 4px rgba(28, 24, 19, 0.06);
+
+  /* Legacy aliases */
+  --shadow-card: 0 2px 8px rgba(28, 24, 19, 0.08);
+  --shadow-card-hover: 0 4px 14px rgba(243, 107, 34, 0.20);
+  --shadow-elevated: 0 4px 16px rgba(28, 24, 19, 0.10);
+
+  /* ===== Transitions ===== */
+  --transition-fast: 100ms;
+  --transition-normal: 200ms;
+  --transition-slow: 300ms;
+
+  /* ===== Animations ===== */
+  --animate-fade-in: fade-in 0.2s ease-out;
+  --animate-slide-up: slide-up 0.2s ease-out;
+  --animate-scale-in: scale-in 0.2s ease-out;
+  --animate-pop: pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --animate-shake: shake 0.3s ease-out;
+}
+
+/* ===== Keyframes ===== */
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes slide-up {
-  0% {
-    transform: translateY(100%);
+  from {
+    transform: translateY(8px);
     opacity: 0;
   }
-  100% {
+  to {
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+@keyframes scale-in {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pop {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+@keyframes slide-in-bottom {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }
 
 /* ====================================================================
@@ -61,37 +153,40 @@
   position: absolute;
   top: -40px;
   left: 0;
-  background: #f36b22;
+  background: var(--color-kvenno-orange, #f36b22);
   color: white;
-  padding: 8px;
+  padding: 8px 16px;
   text-decoration: none;
   z-index: 100;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--radius-md, 10px);
 }
 
 .skip-link:focus {
-  top: 0;
+  top: 8px;
+  left: 8px;
 }
 
 /* Focus visible for keyboard navigation */
 *:focus-visible {
-  outline: 2px solid #f36b22;
+  outline: 2px solid var(--color-kvenno-orange, #f36b22);
   outline-offset: 2px;
 }
 
-/* Text Size Options */
-.text-small {
-  font-size: 14px;
+/* ===== Text Size Options ===== */
+.text-small { font-size: 14px; }
+.text-medium { font-size: 16px; }
+.text-large { font-size: 18px; }
+
+/* ===== Icelandic hyphenation ===== */
+[lang="is"] {
+  hyphens: auto;
+  -webkit-hyphens: auto;
 }
 
-.text-medium {
-  font-size: 16px;
-}
-
-.text-large {
-  font-size: 18px;
-}
-
-/* High Contrast Mode */
+/* ===== High Contrast Mode ===== */
 .high-contrast {
   --bg-primary: #000000;
   --bg-secondary: #ffffff;
@@ -106,11 +201,39 @@
   color: var(--text-primary);
 }
 
-.high-contrast .bg-white {
+.high-contrast .bg-white,
+.high-contrast .bg-surface-raised {
   background-color: #1a1a1a !important;
   color: #ffffff !important;
 }
 
+.high-contrast .bg-warm-50,
+.high-contrast .bg-warm-100,
+.high-contrast .bg-surface-page,
+.high-contrast .bg-surface-sunken {
+  background-color: #2a2a2a !important;
+  color: #ffffff !important;
+}
+
+.high-contrast .text-warm-500,
+.high-contrast .text-warm-600,
+.high-contrast .text-warm-700,
+.high-contrast .text-warm-800 {
+  color: #e0e0e0 !important;
+}
+
+.high-contrast .border-warm-200,
+.high-contrast .border-warm-300 {
+  border-color: var(--border-color) !important;
+}
+
+.high-contrast button:focus,
+.high-contrast input:focus,
+.high-contrast select:focus {
+  outline: 3px solid var(--focus-color) !important;
+}
+
+/* Legacy slate selectors (for gradual migration) */
 .high-contrast .bg-gray-50,
 .high-contrast .bg-gray-100,
 .high-contrast .bg-slate-50,
@@ -133,15 +256,21 @@
   border-color: var(--border-color) !important;
 }
 
-.high-contrast button:focus,
-.high-contrast input:focus,
-.high-contrast select:focus {
-  outline: 3px solid var(--focus-color) !important;
-}
-
-/* Reduced Motion */
-.reduced-motion * {
+/* ===== Reduced Motion ===== */
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
   animation-duration: 0.01ms !important;
   animation-iteration-count: 1 !important;
   transition-duration: 0.01ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

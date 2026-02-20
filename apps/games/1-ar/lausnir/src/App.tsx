@@ -207,7 +207,7 @@ function App() {
 
           <div className="text-center mb-8">
             <div className="text-6xl mb-4">🎉</div>
-            <div className="text-2xl font-bold text-gray-800 mb-2">
+            <div className="text-2xl font-bold text-warm-800 mb-2">
               {t('completion.completedAll')}
             </div>
           </div>
@@ -255,7 +255,7 @@ function App() {
           <div className="flex gap-4">
             <button
               onClick={() => setActiveLevel('menu')}
-              className="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+              className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
             >
               {t('completion.back')}
             </button>
@@ -283,10 +283,10 @@ function App() {
             variant="compact"
           />
           <div className="flex-1">
-            <h1 className="text-3xl md:text-4xl font-bold text-center text-orange-600">
+            <h1 className="text-3xl md:text-4xl font-bold font-heading text-center text-orange-600">
               {t('game.title')}
             </h1>
-            <p className="text-center text-gray-600">
+            <p className="text-center text-warm-600">
               {t('game.subtitle')}
             </p>
           </div>
@@ -333,7 +333,7 @@ function App() {
                 <div className="text-sm text-blue-600 mt-1">
                   {t('levels.level1.description')}
                 </div>
-                <div className="text-xs text-gray-600 mt-2">
+                <div className="text-xs text-warm-600 mt-2">
                   {t('levels.level1.details')}
                 </div>
                 {!progress.level1Completed && progress.level1Score !== null && (
@@ -352,14 +352,14 @@ function App() {
             className={`w-full p-6 rounded-xl border-4 transition-all text-left ${
               isLevel2Unlocked
                 ? 'border-green-400 bg-green-50 hover:bg-green-100 cursor-pointer'
-                : 'border-gray-300 bg-gray-100 cursor-not-allowed opacity-70'
+                : 'border-warm-300 bg-warm-100 cursor-not-allowed opacity-70'
             }`}
           >
             <div className="flex items-center gap-4">
               <div className="text-4xl">{isLevel2Unlocked ? '🤔' : '🔒'}</div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className={`text-xl font-bold ${isLevel2Unlocked ? 'text-green-800' : 'text-gray-500'}`}>
+                  <span className={`text-xl font-bold ${isLevel2Unlocked ? 'text-green-800' : 'text-warm-500'}`}>
                     {t('levels.level2.name')}
                   </span>
                   {progress.level2Completed && (
@@ -373,10 +373,10 @@ function App() {
                     </span>
                   )}
                 </div>
-                <div className={`text-sm mt-1 ${isLevel2Unlocked ? 'text-green-600' : 'text-gray-500'}`}>
+                <div className={`text-sm mt-1 ${isLevel2Unlocked ? 'text-green-600' : 'text-warm-500'}`}>
                   {t('levels.level2.description')}
                 </div>
-                <div className="text-xs text-gray-600 mt-2">
+                <div className="text-xs text-warm-600 mt-2">
                   {isLevel2Unlocked
                     ? t('levels.level2.details')
                     : t('levels.level2.locked')}
@@ -397,14 +397,14 @@ function App() {
             className={`w-full p-6 rounded-xl border-4 transition-all text-left ${
               isLevel3Unlocked
                 ? 'border-purple-400 bg-purple-50 hover:bg-purple-100 cursor-pointer'
-                : 'border-gray-300 bg-gray-100 cursor-not-allowed opacity-70'
+                : 'border-warm-300 bg-warm-100 cursor-not-allowed opacity-70'
             }`}
           >
             <div className="flex items-center gap-4">
               <div className="text-4xl">{isLevel3Unlocked ? '📐' : '🔒'}</div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className={`text-xl font-bold ${isLevel3Unlocked ? 'text-purple-800' : 'text-gray-500'}`}>
+                  <span className={`text-xl font-bold ${isLevel3Unlocked ? 'text-purple-800' : 'text-warm-500'}`}>
                     {t('levels.level3.name')}
                   </span>
                   {progress.level3Completed && (
@@ -418,10 +418,10 @@ function App() {
                     </span>
                   )}
                 </div>
-                <div className={`text-sm mt-1 ${isLevel3Unlocked ? 'text-purple-600' : 'text-gray-500'}`}>
+                <div className={`text-sm mt-1 ${isLevel3Unlocked ? 'text-purple-600' : 'text-warm-500'}`}>
                   {t('levels.level3.description')}
                 </div>
-                <div className="text-xs text-gray-600 mt-2">
+                <div className="text-xs text-warm-600 mt-2">
                   {isLevel3Unlocked
                     ? t('levels.level3.details')
                     : t('levels.level3.locked')}
@@ -433,12 +433,12 @@ function App() {
 
         {/* Progress summary */}
         {progress.totalGamesPlayed > 0 && (
-          <div className="mt-8 bg-gray-50 p-4 rounded-xl">
+          <div className="mt-8 bg-warm-50 p-4 rounded-xl">
             <div className="flex justify-between items-center mb-3">
-              <h3 className="font-semibold text-gray-700">{t('menu.progress')}</h3>
+              <h3 className="font-semibold text-warm-700">{t('menu.progress')}</h3>
               <button
                 onClick={resetProgress}
-                className="text-xs text-gray-500 hover:text-red-500 transition-colors"
+                className="text-xs text-warm-500 hover:text-red-500 transition-colors"
               >
                 {t('menu.reset')}
               </button>
@@ -448,28 +448,28 @@ function App() {
                 <div className="text-lg font-bold text-blue-600">
                   {[progress.level1Completed, progress.level2Completed, progress.level3Completed].filter(Boolean).length}/3
                 </div>
-                <div className="text-xs text-gray-600">{t('menu.levelsCompleted')}</div>
+                <div className="text-xs text-warm-600">{t('menu.levelsCompleted')}</div>
               </div>
               <div className="bg-green-50 rounded-lg p-2">
                 <div className="text-lg font-bold text-green-600">
                   {(progress.level1Score || 0) + (progress.level2Score || 0) + (progress.level3Score || 0)}
                 </div>
-                <div className="text-xs text-gray-600">{t('menu.totalPoints')}</div>
+                <div className="text-xs text-warm-600">{t('menu.totalPoints')}</div>
               </div>
               <div className="bg-purple-50 rounded-lg p-2">
                 <div className="text-lg font-bold text-purple-600">
                   {progress.totalGamesPlayed}
                 </div>
-                <div className="text-xs text-gray-600">{t('menu.games')}</div>
+                <div className="text-xs text-warm-600">{t('menu.games')}</div>
               </div>
             </div>
           </div>
         )}
 
         {/* Formula reference */}
-        <div className="mt-6 bg-gray-50 p-4 rounded-xl">
-          <h3 className="font-semibold text-gray-700 mb-2">{t('menu.formulas')}</h3>
-          <div className="font-mono text-sm space-y-1 text-gray-600">
+        <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+          <h3 className="font-semibold text-warm-700 mb-2">{t('menu.formulas')}</h3>
+          <div className="font-mono text-sm space-y-1 text-warm-600">
             <p>{t('formulas.molarity')}</p>
             <p>{t('formulas.dilution')}</p>
             <p>{t('formulas.moles')}</p>
@@ -481,7 +481,7 @@ function App() {
         <div className="text-center mt-6">
           <a
             href="/games/1-ar/"
-            className="text-gray-500 hover:text-gray-700 text-sm transition-colors"
+            className="text-warm-500 hover:text-warm-700 text-sm transition-colors"
           >
             ← {t('menu.backToGames')}
           </a>

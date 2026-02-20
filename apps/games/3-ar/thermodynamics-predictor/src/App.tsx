@@ -283,10 +283,10 @@ function App() {
             {/* Header with achievements button */}
             <div className="flex justify-between items-start mb-4">
               <div className="flex-1">
-                <h1 className="text-4xl font-bold" style={{color: '#f36b22'}}>
+                <h1 className="text-4xl font-bold font-heading" style={{color: '#f36b22'}}>
                   🌡️ Varmafræði Spámaður
                 </h1>
-                <p className="text-gray-600 mt-2">
+                <p className="text-warm-600 mt-2">
                   Lærðu um Gibbs frjálsa orku og sjálfviljugheit efnahvarfa
                 </p>
               </div>
@@ -305,12 +305,12 @@ function App() {
 
             {/* Progress Stats */}
             {(progress.highScore > 0 || progress.problemsCompleted > 0) && (
-              <div className="mb-8 bg-gray-50 p-4 rounded-lg">
+              <div className="mb-8 bg-warm-50 p-4 rounded-lg">
                 <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-semibold text-gray-700">Framvinda</h3>
+                  <h3 className="font-semibold text-warm-700">Framvinda</h3>
                   <button
                     onClick={resetProgress}
-                    className="text-sm text-gray-500 hover:text-red-500 transition-colors"
+                    className="text-sm text-warm-500 hover:text-red-500 transition-colors"
                   >
                     Endurstilla
                   </button>
@@ -318,15 +318,15 @@ function App() {
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div className="bg-yellow-50 rounded-lg p-3">
                     <div className="text-2xl font-bold text-yellow-600">{progress.highScore}</div>
-                    <div className="text-xs text-gray-600">Hæsta stig</div>
+                    <div className="text-xs text-warm-600">Hæsta stig</div>
                   </div>
                   <div className="bg-green-50 rounded-lg p-3">
                     <div className="text-2xl font-bold text-green-600">{progress.problemsCompleted}</div>
-                    <div className="text-xs text-gray-600">Spurningar</div>
+                    <div className="text-xs text-warm-600">Spurningar</div>
                   </div>
                   <div className="bg-orange-50 rounded-lg p-3">
                     <div className="text-2xl font-bold text-orange-600">{progress.bestStreak}</div>
-                    <div className="text-xs text-gray-600">Besta röð</div>
+                    <div className="text-xs text-warm-600">Besta röð</div>
                   </div>
                 </div>
               </div>
@@ -335,7 +335,7 @@ function App() {
             <div className="mb-8 p-6 bg-blue-50 rounded-lg">
               <h2 className="text-xl font-bold mb-4">📚 Um leikinn</h2>
               <p className="mb-4">Þessi leikur kennir þér að:</p>
-              <ul className="list-disc list-inside space-y-2 text-gray-700">
+              <ul className="list-disc list-inside space-y-2 text-warm-700">
                 <li>Reikna Gibbs frjálsa orku: <strong>ΔG = ΔH - TΔS</strong></li>
                 <li>Spá fyrir um sjálfviljugheit hvarfa</li>
                 <li>Skilja áhrif hitastigs á hvarfefni</li>
@@ -352,33 +352,33 @@ function App() {
                   className={`p-4 rounded-lg border-2 transition ${
                     difficulty === 'beginner'
                       ? 'border-orange-500 bg-orange-50'
-                      : 'border-gray-300 hover:border-orange-300'
+                      : 'border-warm-300 hover:border-orange-300'
                   }`}
                 >
                   <div className="text-lg font-bold">🟢 Auðvelt</div>
-                  <div className="text-sm text-gray-600">Einföld hvarfefni</div>
+                  <div className="text-sm text-warm-600">Einföld hvarfefni</div>
                 </button>
                 <button
                   onClick={() => setDifficulty('intermediate')}
                   className={`p-4 rounded-lg border-2 transition ${
                     difficulty === 'intermediate'
                       ? 'border-orange-500 bg-orange-50'
-                      : 'border-gray-300 hover:border-orange-300'
+                      : 'border-warm-300 hover:border-orange-300'
                   }`}
                 >
                   <div className="text-lg font-bold">🟡 Miðlungs</div>
-                  <div className="text-sm text-gray-600">Iðnaðarhvarfefni</div>
+                  <div className="text-sm text-warm-600">Iðnaðarhvarfefni</div>
                 </button>
                 <button
                   onClick={() => setDifficulty('advanced')}
                   className={`p-4 rounded-lg border-2 transition ${
                     difficulty === 'advanced'
                       ? 'border-orange-500 bg-orange-50'
-                      : 'border-gray-300 hover:border-orange-300'
+                      : 'border-warm-300 hover:border-orange-300'
                   }`}
                 >
                   <div className="text-lg font-bold">🔴 Erfitt</div>
-                  <div className="text-sm text-gray-600">Háþróaðir útreikningar</div>
+                  <div className="text-sm text-warm-600">Háþróaðir útreikningar</div>
                 </button>
               </div>
             </div>
@@ -457,15 +457,15 @@ function App() {
               {mode === 'challenge' && (
                 <>
                   <div className="text-center">
-                    <div className="text-sm text-gray-600">Stig</div>
+                    <div className="text-sm text-warm-600">Stig</div>
                     <div className="text-xl font-bold">{progress.score}</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-sm text-gray-600">Runa</div>
+                    <div className="text-sm text-warm-600">Runa</div>
                     <div className="text-xl font-bold">{streak}🔥</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-sm text-gray-600">Tími</div>
+                    <div className="text-sm text-warm-600">Tími</div>
                     <div className={`text-xl font-bold ${timeLeft < 20 ? 'text-red-500' : ''}`}>
                       {timeLeft}s
                     </div>
@@ -476,7 +476,7 @@ function App() {
 
             <div className="flex gap-4 items-center">
               <div className="text-center">
-                <div className="text-sm text-gray-600">Spurning</div>
+                <div className="text-sm text-warm-600">Spurning</div>
                 <div className="text-xl font-bold">{progress.problemsCompleted + 1}</div>
               </div>
               <AchievementsButton
@@ -496,17 +496,17 @@ function App() {
                 <span className={`inline-block px-3 py-1 rounded-full text-white text-sm scenario-${currentProblem.scenario}`}>
                   Atburðarás {currentProblem.scenario}
                 </span>
-                <span className="ml-2 text-sm text-gray-600">{currentProblem.difficulty}</span>
+                <span className="ml-2 text-sm text-warm-600">{currentProblem.difficulty}</span>
               </div>
 
               <h2 className="text-xl font-bold mb-2">{currentProblem.name}</h2>
-              <div className="text-lg mb-4 font-mono bg-gray-50 p-3 rounded">
+              <div className="text-lg mb-4 font-mono bg-warm-50 p-3 rounded">
                 {currentProblem.reaction}
               </div>
 
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="bg-red-50 p-3 rounded-lg">
-                  <div className="text-sm text-gray-600">Entalpía (ΔH°)</div>
+                  <div className="text-sm text-warm-600">Entalpía (ΔH°)</div>
                   <div className="text-xl font-bold" style={{color: currentProblem.deltaH < 0 ? 'var(--exothermic)' : 'var(--endothermic)'}}>
                     {currentProblem.deltaH > 0 ? '+' : ''}{currentProblem.deltaH} kJ/mol
                   </div>
@@ -516,7 +516,7 @@ function App() {
                 </div>
 
                 <div className="bg-purple-50 p-3 rounded-lg">
-                  <div className="text-sm text-gray-600">Óreiða (ΔS°)</div>
+                  <div className="text-sm text-warm-600">Óreiða (ΔS°)</div>
                   <div className="text-xl font-bold" style={{color: currentProblem.deltaS > 0 ? 'var(--entropy-increase)' : 'var(--entropy-decrease)'}}>
                     {currentProblem.deltaS > 0 ? '+' : ''}{currentProblem.deltaS} J/(mol·K)
                   </div>
@@ -546,7 +546,7 @@ function App() {
                   onChange={(e) => setTemperature(parseInt(e.target.value))}
                   className="w-full"
                 />
-                <div className="flex justify-between text-sm text-gray-600 mt-2">
+                <div className="flex justify-between text-sm text-warm-600 mt-2">
                   <span>200 K</span>
                   <span className="text-xl font-bold" style={{color: '#f36b22'}}>
                     {temperature} K ({(temperature - 273).toFixed(0)}°C)
@@ -557,7 +557,7 @@ function App() {
 
               {/* Real-time ΔG calculation */}
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg">
-                <div className="text-sm text-gray-600 mb-2">Við núverandi hitastig:</div>
+                <div className="text-sm text-warm-600 mb-2">Við núverandi hitastig:</div>
                 <div className="font-mono text-sm mb-2">
                   ΔG° = ΔH° - TΔS°<br/>
                   ΔG° = ({currentProblem.deltaH}) - ({temperature})({(currentProblem.deltaS/1000).toFixed(3)})<br/>
@@ -574,14 +574,14 @@ function App() {
                 <div className={`mt-3 text-sm p-3 rounded border-l-4 ${
                   (currentProblem.scenario === 3 || currentProblem.scenario === 4)
                     ? 'bg-purple-50 border-purple-500'
-                    : 'bg-gray-50 border-gray-300'
+                    : 'bg-warm-50 border-warm-300'
                 }`}>
                   <div className="flex items-center gap-2">
                     <span className="text-lg">🎯</span>
                     <div>
                       <strong className="text-purple-700">Umbreytingarhitastig (T<sub>cross</sub>):</strong>
                       <span className="ml-2 font-mono font-bold">{crossoverTemp.toFixed(0)} K</span>
-                      <span className="text-gray-500 ml-1">({(crossoverTemp - 273).toFixed(0)}°C)</span>
+                      <span className="text-warm-500 ml-1">({(crossoverTemp - 273).toFixed(0)}°C)</span>
                     </div>
                   </div>
                   {(currentProblem.scenario === 3 || currentProblem.scenario === 4) && (
@@ -632,7 +632,7 @@ function App() {
                     step="0.1"
                     value={userDeltaG}
                     onChange={(e) => setUserDeltaG(e.target.value)}
-                    className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-hidden"
+                    className="w-full px-4 py-2 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-hidden"
                     placeholder="t.d. -33.5"
                   />
                 </div>
@@ -647,7 +647,7 @@ function App() {
                       className={`px-4 py-2 rounded-lg border-2 transition ${
                         userSpontaneity === 'spontaneous'
                           ? 'border-green-500 bg-green-50 font-bold'
-                          : 'border-gray-300 hover:border-green-300'
+                          : 'border-warm-300 hover:border-green-300'
                       }`}
                     >
                       ✓ Sjálfviljugt
@@ -657,7 +657,7 @@ function App() {
                       className={`px-4 py-2 rounded-lg border-2 transition ${
                         userSpontaneity === 'equilibrium'
                           ? 'border-yellow-500 bg-yellow-50 font-bold'
-                          : 'border-gray-300 hover:border-yellow-300'
+                          : 'border-warm-300 hover:border-yellow-300'
                       }`}
                     >
                       ⚖️ Jafnvægi
@@ -667,7 +667,7 @@ function App() {
                       className={`px-4 py-2 rounded-lg border-2 transition ${
                         userSpontaneity === 'non-spontaneous'
                           ? 'border-red-500 bg-red-50 font-bold'
-                          : 'border-gray-300 hover:border-red-300'
+                          : 'border-warm-300 hover:border-red-300'
                       }`}
                     >
                       ✗ Ekki sjálfviljugt
@@ -781,7 +781,7 @@ function App() {
                   ariaLabel="ΔG vs Hitastig graf"
                 />
               )}
-              <div className="mt-3 text-xs text-gray-600 grid grid-cols-2 gap-2">
+              <div className="mt-3 text-xs text-warm-600 grid grid-cols-2 gap-2">
                 <div>🟠 Línuhalli: -ΔS°</div>
                 <div>🟢 Sjálfviljugt: ΔG° &lt; 0</div>
                 <div>🔵 Y-skurður: ΔH°</div>
@@ -851,7 +851,7 @@ function App() {
                 <div className="bg-white p-2 rounded">ΔG° = -RT ln K</div>
                 <div className="bg-white p-2 rounded">T<sub>cross</sub> = ΔH° / ΔS°</div>
               </div>
-              <div className="mt-3 text-xs text-gray-600">
+              <div className="mt-3 text-xs text-warm-600">
                 R = 8.314 J/(mol·K)<br/>
                 T í Kelvin (K = °C + 273)
               </div>

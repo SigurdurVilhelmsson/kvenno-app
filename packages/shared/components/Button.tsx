@@ -12,21 +12,21 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-kvenno-orange text-white hover:bg-kvenno-orange-dark',
+    'bg-kvenno-orange text-white hover:bg-kvenno-orange-600 active:bg-kvenno-orange-700',
   secondary:
-    'border-2 border-kvenno-orange text-kvenno-orange hover:bg-kvenno-orange hover:text-white',
+    'border-[1.5px] border-kvenno-orange text-kvenno-orange-700 hover:bg-kvenno-orange-50 active:bg-kvenno-orange-100',
   ghost:
-    'text-slate-700 hover:bg-slate-100',
+    'text-warm-700 hover:bg-warm-100 active:bg-warm-200',
   outline:
-    'border-2 border-slate-300 text-slate-700 hover:border-slate-400 hover:bg-slate-50',
+    'border-[1.5px] border-warm-300 text-warm-700 hover:bg-warm-50 hover:border-warm-400 active:bg-warm-100',
   danger:
-    'bg-red-600 text-white hover:bg-red-700',
+    'bg-error text-white hover:bg-red-700 active:bg-red-800',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'px-3 py-1.5 text-sm',
-  md: 'px-4 py-2 text-base',
-  lg: 'px-6 py-3 text-lg',
+  sm: 'px-3 py-1.5 text-sm min-h-[36px]',
+  md: 'px-4 py-2.5 text-base min-h-[44px]',
+  lg: 'px-6 py-3.5 text-lg min-h-[52px]',
 };
 
 export function Button({
@@ -40,10 +40,10 @@ export function Button({
   ...props
 }: ButtonProps) {
   const classes = [
-    'inline-flex items-center justify-center gap-2 font-medium rounded-btn transition-all duration-300',
+    'inline-flex items-center justify-center gap-2 font-medium rounded-btn transition-all duration-200 ease-out',
     variantClasses[variant],
     sizeClasses[size],
-    disabled ? 'opacity-50 cursor-not-allowed' : '',
+    disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : '',
     className,
   ]
     .filter(Boolean)

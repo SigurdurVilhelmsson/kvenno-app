@@ -70,17 +70,17 @@ export function ParticleEquilibrium({
   return (
     <div className={`relative ${className}`}>
       {/* Direction indicators */}
-      <div className="absolute -left-8 top-1/2 -translate-y-1/2 z-10">
+      <div className="absolute -left-8 top-1/2 -tranwarm-y-1/2 z-10">
         <div className={`text-2xl transition-all duration-300 ${
-          shiftDirection === 'left' ? 'text-red-500 scale-150' : 'text-gray-400'
+          shiftDirection === 'left' ? 'text-red-500 scale-150' : 'text-warm-400'
         }`}>
           ←
         </div>
       </div>
 
-      <div className="absolute -right-8 top-1/2 -translate-y-1/2 z-10">
+      <div className="absolute -right-8 top-1/2 -tranwarm-y-1/2 z-10">
         <div className={`text-2xl transition-all duration-300 ${
-          shiftDirection === 'right' ? 'text-green-500 scale-150' : 'text-gray-400'
+          shiftDirection === 'right' ? 'text-green-500 scale-150' : 'text-warm-400'
         }`}>
           →
         </div>
@@ -124,11 +124,11 @@ export function ParticleEquilibrium({
       <div className="mt-2 flex justify-center gap-6 text-xs">
         <div className="flex items-center gap-1.5">
           <div className="w-3 h-3 rounded-full bg-orange-500" />
-          <span className="text-gray-600">Hvarfefni ({adjustedReactants})</span>
+          <span className="text-warm-600">Hvarfefni ({adjustedReactants})</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-3 h-3 rounded-full bg-purple-500" />
-          <span className="text-gray-600">Afurðir ({adjustedProducts})</span>
+          <span className="text-warm-600">Afurðir ({adjustedProducts})</span>
         </div>
       </div>
 
@@ -137,7 +137,7 @@ export function ParticleEquilibrium({
         <div className={`mt-2 text-center text-sm font-semibold ${
           shiftDirection === 'right' ? 'text-green-600' :
           shiftDirection === 'left' ? 'text-red-600' :
-          'text-gray-600'
+          'text-warm-600'
         }`}>
           {shiftDirection === 'right' && '→ Hliðrun til hægri'}
           {shiftDirection === 'left' && '← Hliðrun til vinstri'}

@@ -235,23 +235,23 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
         <div className="max-w-lg mx-auto">
           <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
             <div className="text-6xl mb-4">🏆</div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">Frábært!</h2>
-            <p className="text-gray-600 mb-6">Þú hefur lokið nafnasmiðju!</p>
+            <h2 className="text-3xl font-bold text-warm-800 mb-2">Frábært!</h2>
+            <p className="text-warm-600 mb-6">Þú hefur lokið nafnasmiðju!</p>
 
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="bg-purple-50 rounded-xl p-4">
                 <div className="text-3xl font-bold text-purple-600">{score}</div>
-                <div className="text-sm text-gray-600">Stig</div>
+                <div className="text-sm text-warm-600">Stig</div>
               </div>
               <div className="bg-green-50 rounded-xl p-4">
                 <div className="text-3xl font-bold text-green-600">{accuracy}%</div>
-                <div className="text-sm text-gray-600">Nákvæmni</div>
+                <div className="text-sm text-warm-600">Nákvæmni</div>
               </div>
             </div>
 
             <div className="bg-blue-50 rounded-xl p-4 mb-6 text-left">
               <h3 className="font-bold text-blue-800 mb-2">Hvað lærðir þú?</h3>
-              <ul className="text-sm text-gray-700 space-y-1">
+              <ul className="text-sm text-warm-700 space-y-1">
                 <li>• Grísk forskeyti: dí-, trí-, tetra-, penta-...</li>
                 <li>• Endi -íð fyrir tvíefni (oxíð, klóríð, flúoríð)</li>
                 <li>• Málmurinn kemur fyrst í jónefnum</li>
@@ -277,23 +277,23 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-xl font-bold text-gray-800">Nafnasmiðja</h1>
-              <p className="text-sm text-gray-600">Byggðu nafnið úr pörtum</p>
+              <h1 className="text-xl font-bold text-warm-800">Nafnasmiðja</h1>
+              <p className="text-sm text-warm-600">Byggðu nafnið úr pörtum</p>
             </div>
             <div className="flex gap-4 items-center">
               <div className="text-center">
                 <div className="text-xl font-bold text-purple-600">{score}</div>
-                <div className="text-xs text-gray-600">Stig</div>
+                <div className="text-xs text-warm-600">Stig</div>
               </div>
               <div className="text-center">
                 <div className="text-xl font-bold text-blue-600">{currentIndex + 1}/{totalCompounds}</div>
-                <div className="text-xs text-gray-600">Efni</div>
+                <div className="text-xs text-warm-600">Efni</div>
               </div>
             </div>
           </div>
 
           {/* Progress bar */}
-          <div className="mt-3 h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div className="mt-3 h-2 bg-warm-200 rounded-full overflow-hidden">
             <div
               className="h-full bg-purple-500 transition-all duration-500"
               style={{ width: `${((currentIndex + (showFeedback ? 1 : 0)) / totalCompounds) * 100}%` }}
@@ -304,21 +304,21 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
         {/* Formula display */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
           <div className="text-center mb-6">
-            <div className="text-sm text-gray-500 mb-2">Efnaformúla:</div>
-            <div className="text-5xl font-mono font-bold text-gray-800">{compound.formula}</div>
-            <div className="text-sm text-gray-500 mt-2">{compound.info}</div>
+            <div className="text-sm text-warm-500 mb-2">Efnaformúla:</div>
+            <div className="text-5xl font-mono font-bold text-warm-800">{compound.formula}</div>
+            <div className="text-sm text-warm-500 mt-2">{compound.info}</div>
           </div>
 
           {/* Building area */}
           <div className="mb-6">
-            <div className="text-sm text-gray-600 mb-2">Þitt nafn:</div>
+            <div className="text-sm text-warm-600 mb-2">Þitt nafn:</div>
             <div className={`min-h-16 p-4 rounded-xl border-2 border-dashed flex flex-wrap gap-2 items-center justify-center ${
               showFeedback
                 ? isCorrect ? 'border-green-400 bg-green-50' : 'border-red-400 bg-red-50'
                 : 'border-purple-300 bg-purple-50'
             }`}>
               {selectedParts.length === 0 ? (
-                <span className="text-gray-400 text-sm">Veldu parta hér að neðan...</span>
+                <span className="text-warm-400 text-sm">Veldu parta hér að neðan...</span>
               ) : (
                 selectedParts.sort((a, b) => a.order - b.order).map(part => (
                   <button
@@ -334,7 +334,7 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
               )}
             </div>
             <div className="text-center mt-2">
-              <span className="text-2xl font-bold text-gray-800">
+              <span className="text-2xl font-bold text-warm-800">
                 {displayName || '???'}
               </span>
             </div>
@@ -346,10 +346,10 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
               <div className="flex items-center gap-3">
                 <span className="text-3xl">{isCorrect ? '🎉' : '💡'}</span>
                 <div>
-                  <div className="font-bold text-gray-800">
+                  <div className="font-bold text-warm-800">
                     {isCorrect ? 'Rétt!' : 'Ekki alveg...'}
                   </div>
-                  <div className="text-sm text-gray-700">
+                  <div className="text-sm text-warm-700">
                     Rétt nafn: <strong>{compound.name}</strong>
                   </div>
                 </div>
@@ -359,7 +359,7 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
 
           {/* Available parts */}
           <div>
-            <div className="text-sm text-gray-600 mb-2">Tiltækir partar:</div>
+            <div className="text-sm text-warm-600 mb-2">Tiltækir partar:</div>
             <div className="flex flex-wrap gap-2">
               {availableParts.map(part => (
                 <button
@@ -371,7 +371,7 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
                       ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
                       : part.type === 'suffix'
                         ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        : 'bg-warm-100 text-warm-700 hover:bg-warm-200'
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                 >
                   {part.text}
@@ -387,7 +387,7 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
             <>
               <button
                 onClick={resetCurrent}
-                className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 rounded-xl transition-colors"
+                className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-700 font-bold py-3 rounded-xl transition-colors"
               >
                 🔄 Hreinsa
               </button>
@@ -422,7 +422,7 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
         {/* Naming rules hint */}
         <div className="mt-4 bg-blue-50 rounded-xl p-4">
           <h3 className="font-bold text-blue-800 mb-2">Nafnareglur:</h3>
-          <ul className="text-sm text-gray-700 space-y-1">
+          <ul className="text-sm text-warm-700 space-y-1">
             <li>• <strong>Jónefni:</strong> Málmur + málmleysingi → málmur + endi -íð</li>
             <li>• <strong>Sameindaefni:</strong> Notaðu forskeyti (dí-, trí-, tetra-...)</li>
             <li>• <strong>-íð:</strong> Endinn fyrir neikvæða jón (oxíð, klóríð, flúoríð)</li>
@@ -432,7 +432,7 @@ export function NameBuilder({ onComplete, onBack, onCorrectAnswer, onIncorrectAn
         {/* Back button */}
         <button
           onClick={onBack}
-          className="mt-4 w-full text-gray-500 hover:text-gray-700 font-semibold py-2"
+          className="mt-4 w-full text-warm-500 hover:text-warm-700 font-semibold py-2"
         >
           ← Til baka í valmynd
         </button>

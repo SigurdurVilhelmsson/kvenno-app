@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 
-import { AnimatedMolecule, MoleculeViewer3DLazy } from '@shared/components';
+import { AnimatedMolecule } from '@shared/components';
+import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
 import { shuffleArray } from '@shared/utils';
 
 import { vseprToMolecule } from '../utils/vseprConverter';
@@ -330,12 +331,12 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
           >
             <span>&larr;</span> Til baka
           </button>
           <div className="text-right">
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-warm-600">
               Sameind {currentMolecule + 1} af {molecules.length}
             </div>
             <div className="text-lg font-bold text-teal-600">{score} stig</div>
@@ -343,7 +344,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-teal-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentMolecule * STEPS.length + currentStep + 1) / (molecules.length * STEPS.length)) * 100}%` }}
@@ -360,7 +361,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   ? 'bg-teal-500 text-white'
                   : idx < currentStep
                   ? 'bg-green-100 text-green-700'
-                  : 'bg-gray-100 text-gray-500'
+                  : 'bg-warm-100 text-warm-500'
               }`}
             >
               {s.label}
@@ -379,7 +380,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     viewMode === '2d'
                       ? 'bg-teal-600 text-white'
-                      : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                      : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
                   }`}
                 >
                   2D
@@ -389,17 +390,17 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     viewMode === '3d'
                       ? 'bg-teal-600 text-white'
-                      : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                      : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
                   }`}
                 >
                   3D
                 </button>
               </div>
 
-              <div className="bg-gray-900 rounded-xl p-6">
+              <div className="bg-warm-900 rounded-xl p-6">
                 <div className="text-center">
                   <div className="text-3xl font-bold text-white mb-2">{molecule.formula}</div>
-                  <div className="text-gray-400 mb-4">{molecule.name}</div>
+                  <div className="text-warm-400 mb-4">{molecule.name}</div>
                   <div className="flex justify-center py-4">
                     {viewMode === '2d' ? (
                       <AnimatedMolecule
@@ -442,7 +443,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     )}
                   </div>
                   {viewMode === '3d' && (
-                    <div className="text-xs text-gray-500 mt-2">
+                    <div className="text-xs text-warm-500 mt-2">
                       Dragðu til að snúa, skrollaðu til að stækka
                     </div>
                   )}
@@ -450,16 +451,16 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               </div>
             </div>
 
-            <div className="flex-1 bg-gray-50 rounded-xl p-6">
-              <h3 className="font-bold text-gray-700 mb-4">Miðatóm: {molecule.centralAtom}</h3>
+            <div className="flex-1 bg-warm-50 rounded-xl p-6">
+              <h3 className="font-bold text-warm-700 mb-4">Miðatóm: {molecule.centralAtom}</h3>
 
               {/* Step content */}
               {step.id === 'count' && (
                 <div className="space-y-4">
-                  <p className="text-gray-600">Teldu rafeinasvið í kringum miðatómið:</p>
+                  <p className="text-warm-600">Teldu rafeinasvið í kringum miðatómið:</p>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                      <label className="block text-sm font-medium text-warm-600 mb-1">
                         Bindandi pör
                       </label>
                       <input
@@ -467,13 +468,13 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         value={bondingPairsAnswer}
                         onChange={(e) => setBondingPairsAnswer(e.target.value)}
                         disabled={stepResult !== null}
-                        className="w-full p-3 border-2 border-gray-300 rounded-xl text-center text-xl"
+                        className="w-full p-3 border-2 border-warm-300 rounded-xl text-center text-xl"
                         min="0"
                         max="6"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 mb-1">
+                      <label className="block text-sm font-medium text-warm-600 mb-1">
                         Einstæð pör
                       </label>
                       <input
@@ -481,7 +482,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         value={lonePairsAnswer}
                         onChange={(e) => setLonePairsAnswer(e.target.value)}
                         disabled={stepResult !== null}
-                        className="w-full p-3 border-2 border-gray-300 rounded-xl text-center text-xl"
+                        className="w-full p-3 border-2 border-warm-300 rounded-xl text-center text-xl"
                         min="0"
                         max="3"
                       />
@@ -498,7 +499,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
               {step.id === 'geometry' && (
                 <div className="space-y-4">
-                  <p className="text-gray-600">
+                  <p className="text-warm-600">
                     Með {molecule.bondingPairs} bindandi pör og {molecule.lonePairs} einstæð pör,
                     hvaða <strong>sameindarlögun</strong> hefur þessi sameind?
                   </p>
@@ -514,14 +515,14 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                               ? 'border-green-500 bg-green-50'
                               : selectedGeometry === geo.id
                               ? 'border-red-500 bg-red-50'
-                              : 'border-gray-200 opacity-50'
+                              : 'border-warm-200 opacity-50'
                             : selectedGeometry === geo.id
                             ? 'border-teal-500 bg-teal-50'
-                            : 'border-gray-200 hover:border-teal-300'
+                            : 'border-warm-200 hover:border-teal-300'
                         }`}
                       >
                         <div className="font-bold text-sm">{geo.name}</div>
-                        <div className="text-xs text-gray-500">{geo.bondAngle}</div>
+                        <div className="text-xs text-warm-500">{geo.bondAngle}</div>
                       </button>
                     ))}
                   </div>
@@ -530,7 +531,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
               {step.id === 'angle' && (
                 <div className="space-y-4">
-                  <p className="text-gray-600">
+                  <p className="text-warm-600">
                     Hvert er (eru) tengihornið/-in í {molecule.formula}?
                   </p>
                   <input
@@ -539,7 +540,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     onChange={(e) => setSelectedAngle(e.target.value)}
                     disabled={stepResult !== null}
                     placeholder="t.d. 109.5° eða 90° og 120°"
-                    className="w-full p-3 border-2 border-gray-300 rounded-xl"
+                    className="w-full p-3 border-2 border-warm-300 rounded-xl"
                   />
                   {stepResult === 'correct' && (
                     <div className="bg-green-50 p-3 rounded-lg text-green-700">
@@ -634,7 +635,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
               {step.id === 'explanation' && (
                 <div className="space-y-4">
-                  <p className="text-gray-600">
+                  <p className="text-warm-600">
                     Útskýrðu af hverju {molecule.formula} hefur {molecule.molecularGeometry.toLowerCase()} lögun:
                   </p>
                   <textarea
@@ -643,7 +644,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     disabled={stepResult !== null}
                     placeholder="Skrifaðu útskýringu..."
                     rows={4}
-                    className="w-full p-3 border-2 border-gray-300 rounded-xl resize-none"
+                    className="w-full p-3 border-2 border-warm-300 rounded-xl resize-none"
                   />
                   {stepResult !== null && (
                     <div className="bg-teal-50 p-4 rounded-lg">
@@ -695,7 +696,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 (step.id === 'angle' && !selectedAngle) ||
                 (step.id === 'explanation' && explanation.length < 10)
               }
-              className="w-full bg-teal-500 hover:bg-teal-600 disabled:bg-gray-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+              className="w-full bg-teal-500 hover:bg-teal-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
             >
               Athuga svar
             </button>
@@ -715,11 +716,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Reference table */}
         <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="font-bold text-gray-700 mb-3">Lögunartafla</h3>
+          <h3 className="font-bold text-warm-700 mb-3">Lögunartafla</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-gray-50">
+                <tr className="bg-warm-50">
                   <th className="p-2 text-left">Rafeinasvið</th>
                   <th className="p-2 text-left">BP</th>
                   <th className="p-2 text-left">LP</th>

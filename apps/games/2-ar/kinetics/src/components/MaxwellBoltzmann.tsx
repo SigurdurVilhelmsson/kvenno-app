@@ -175,10 +175,10 @@ export function MaxwellBoltzmann({
   const curveColor = getTemperatureColor(temperature);
 
   return (
-    <div className={`bg-gray-900 rounded-xl p-4 ${className}`}>
+    <div className={`bg-warm-900 rounded-xl p-4 ${className}`}>
       <div className="mb-2 flex justify-between items-center">
         <h3 className="text-white font-semibold text-sm">Orkudreifing Maxwell-Boltzmann</h3>
-        <div className="text-xs text-gray-400">
+        <div className="text-xs text-warm-400">
           {temperature} K
         </div>
       </div>
@@ -188,13 +188,13 @@ export function MaxwellBoltzmann({
         height={responsive ? 'auto' : height}
         viewBox={`0 0 ${width} ${height}`}
         preserveAspectRatio="xMidYMid meet"
-        className="bg-slate-950 rounded-lg w-full"
+        className="bg-warm-950 rounded-lg w-full"
         style={responsive ? { aspectRatio: `${width}/${height}` } : undefined}
         role="img"
         aria-label={`Maxwell-Boltzmann dreifing við ${temperature} K. ${percentAboveEa}% sameinda hafa orku yfir virkjunarorku.`}
       >
         {/* Grid lines */}
-        <g className="text-gray-700">
+        <g className="text-warm-700">
           {[0, 30, 60, 90, 120].map(x => (
             <line
               key={`grid-x-${x}`}
@@ -244,7 +244,7 @@ export function MaxwellBoltzmann({
           x={width / 2}
           y={height - 8}
           textAnchor="middle"
-          className="fill-gray-400 text-xs"
+          className="fill-warm-400 text-xs"
           style={{ fontSize: '11px' }}
         >
           Orka (kJ/mol)
@@ -256,7 +256,7 @@ export function MaxwellBoltzmann({
           y={height / 2}
           textAnchor="middle"
           transform={`rotate(-90, 12, ${height / 2})`}
-          className="fill-gray-400 text-xs"
+          className="fill-warm-400 text-xs"
           style={{ fontSize: '10px' }}
         >
           Fjöldi sameinda
@@ -277,7 +277,7 @@ export function MaxwellBoltzmann({
               x={scaleX(x)}
               y={height - margin.bottom + 16}
               textAnchor="middle"
-              className="fill-gray-500"
+              className="fill-warm-500"
               style={{ fontSize: '10px' }}
             >
               {x}
@@ -346,13 +346,13 @@ export function MaxwellBoltzmann({
             {percentAboveEa}% sameinda með E ≥ Ea
           </span>
         </div>
-        <div className="text-xs text-gray-400">
+        <div className="text-xs text-warm-400">
           Ea = {activationEnergy} kJ/mol
         </div>
       </div>
 
       {/* Educational note */}
-      <div className="mt-2 text-xs text-gray-400 text-center">
+      <div className="mt-2 text-xs text-warm-400 text-center">
         Hærra hitastig → fleiri sameidir með nóga orku
       </div>
     </div>

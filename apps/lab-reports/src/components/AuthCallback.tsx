@@ -65,14 +65,14 @@ export const AuthCallback = () => {
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-        <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4">
+      <div className="min-h-screen bg-gradient-to-br from-warm-50 to-warm-100 flex items-center justify-center">
+        <div className="bg-surface-raised rounded-lg shadow-lg p-8 max-w-md w-full mx-4">
           <div className="text-center">
             <div className="text-red-600 text-5xl mb-4">❌</div>
-            <h2 className="text-xl font-bold text-slate-900 mb-2">
+            <h2 className="text-xl font-bold font-heading text-warm-900 mb-2">
               Innskráningarvilla
             </h2>
-            <p className="text-slate-600 mb-4">{error}</p>
+            <p className="text-warm-600 mb-4">{error}</p>
             <button
               onClick={() => {
                 const basePath = import.meta.env.VITE_BASE_PATH || '/lab-reports';
@@ -90,14 +90,14 @@ export const AuthCallback = () => {
 
   // Loading state
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-      <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4">
+    <div className="min-h-screen bg-gradient-to-br from-warm-50 to-warm-100 flex items-center justify-center">
+      <div className="bg-surface-raised rounded-lg shadow-lg p-8 max-w-md w-full mx-4">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-kvenno-orange border-t-transparent mb-4"></div>
-          <h2 className="text-xl font-bold text-slate-900 mb-2">
+          <h2 className="text-xl font-bold font-heading text-warm-900 mb-2">
             Vinn úr innskráningu...
           </h2>
-          <p className="text-slate-600">
+          <p className="text-warm-600">
             Vinsamlegast bíðið...
           </p>
         </div>

@@ -368,10 +368,10 @@ function App() {
   const renderMenu = () => (
     <div className="max-w-4xl mx-auto">
       <div className="bg-white rounded-lg shadow-md p-8">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+        <h2 className="text-3xl font-bold text-warm-800 mb-6 text-center">
           Jafnvægisstjóri
         </h2>
-        <p className="text-lg text-gray-600 mb-8 text-center">
+        <p className="text-lg text-warm-600 mb-8 text-center">
           Lærðu Le Chatelier meginregluna í gegnum gagnvirkar æfingar
         </p>
 
@@ -382,13 +382,13 @@ function App() {
             className="mode-card bg-white border-2 border-blue-200 hover:border-blue-400 rounded-lg p-6 text-left transition-all"
           >
             <div className="text-3xl mb-3">📚</div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">
+            <h3 className="text-xl font-bold text-warm-800 mb-2">
               Lærdómshamur
             </h3>
-            <p className="text-gray-600 text-sm mb-3">
+            <p className="text-warm-600 text-sm mb-3">
               Taktu þér tíma, notaðu vísbendingar og lærðu á þínum hraða
             </p>
-            <ul className="text-sm text-gray-500 space-y-1">
+            <ul className="text-sm text-warm-500 space-y-1">
               <li>✓ Enginn tímatakmörkun</li>
               <li>✓ Ítarlegar útskýringar</li>
               <li>✓ Vísbendingakerfi</li>
@@ -401,13 +401,13 @@ function App() {
             className="mode-card bg-white border-2 border-orange-200 hover:border-orange-400 rounded-lg p-6 text-left transition-all"
           >
             <div className="text-3xl mb-3">🏆</div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">
+            <h3 className="text-xl font-bold text-warm-800 mb-2">
               Keppnishamur
             </h3>
-            <p className="text-gray-600 text-sm mb-3">
+            <p className="text-warm-600 text-sm mb-3">
               Prófaðu kunnáttu þína með tímasettum spurningum
             </p>
-            <ul className="text-sm text-gray-500 space-y-1">
+            <ul className="text-sm text-warm-500 space-y-1">
               <li>✓ 20 sekúndur á spurningu</li>
               <li>✓ 10 spurningar</li>
               <li>✓ Stigagjöf og raðir</li>
@@ -417,9 +417,9 @@ function App() {
         </div>
 
         {/* Progress Summary */}
-        <div className="bg-gray-50 rounded-lg p-4">
-          <h3 className="font-semibold text-gray-700 mb-2">Framvinda þín</h3>
-          <p className="text-sm text-gray-600">
+        <div className="bg-warm-50 rounded-lg p-4">
+          <h3 className="font-semibold text-warm-700 mb-2">Framvinda þín</h3>
+          <p className="text-sm text-warm-600">
             Verkefni kláruð: {progress.problemsCompleted}
           </p>
         </div>
@@ -437,7 +437,7 @@ function App() {
           <div className="flex justify-between items-center flex-wrap gap-4">
             <button
               onClick={() => setScreen('menu')}
-              className="bg-gray-500 hover:bg-gray-600 text-white rounded-lg px-4 py-2 transition-colors"
+              className="bg-warm-500 hover:bg-warm-600 text-white rounded-lg px-4 py-2 transition-colors"
             >
               ← Til baka
             </button>
@@ -445,7 +445,7 @@ function App() {
             <div className="flex items-center gap-4">
               {gameMode === 'challenge' && (
                 <>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-warm-600">
                     Spurning {questionNumber} / {totalQuestions}
                   </div>
                   <div className={`timer-display ${timeRemaining && timeRemaining <= 5 ? 'warning' : ''}`}>
@@ -469,10 +469,10 @@ function App() {
         <div className="bg-white rounded-lg shadow-md p-6 mb-4">
           {/* Chemical Equation */}
           <div className="text-center mb-6">
-            <div className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
+            <div className="text-3xl md:text-4xl font-bold text-warm-800 mb-3">
               {currentEquilibrium.equation}
             </div>
-            <div className="text-lg text-gray-600 mb-2">
+            <div className="text-lg text-warm-600 mb-2">
               {language === 'is' ? currentEquilibrium.nameIs : currentEquilibrium.name}
             </div>
             <div className={`thermo-indicator ${currentEquilibrium.thermodynamics.type}`}>
@@ -487,7 +487,7 @@ function App() {
             {/* Reactants */}
             <div className={`molecule-container reactants-side ${isCorrect !== null && correctShift?.direction === 'left' ? 'glowing' : ''}`}>
               <div className="text-center">
-                <div className="text-sm text-gray-600 mb-2 font-semibold">Hvarfefni</div>
+                <div className="text-sm text-warm-600 mb-2 font-semibold">Hvarfefni</div>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {currentEquilibrium.reactants.map((r, idx) => (
                     <div key={idx} className="molecule">
@@ -510,7 +510,7 @@ function App() {
             {/* Products */}
             <div className={`molecule-container products-side ${isCorrect !== null && correctShift?.direction === 'right' ? 'glowing' : ''}`}>
               <div className="text-center">
-                <div className="text-sm text-gray-600 mb-2 font-semibold">Afurðir</div>
+                <div className="text-sm text-warm-600 mb-2 font-semibold">Afurðir</div>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {currentEquilibrium.products.map((p, idx) => (
                     <div key={idx} className="molecule">
@@ -536,8 +536,8 @@ function App() {
           </div>
 
           {/* Context/Description */}
-          <div className="bg-gray-50 rounded-lg p-4 mb-6">
-            <p className="text-sm text-gray-700 text-center">
+          <div className="bg-warm-50 rounded-lg p-4 mb-6">
+            <p className="text-sm text-warm-700 text-center">
               {language === 'is' ? currentEquilibrium.descriptionIs : currentEquilibrium.description}
             </p>
           </div>
@@ -545,7 +545,7 @@ function App() {
           {/* Learning Mode: Stress Selection */}
           {gameMode === 'learning' && !appliedStress && (
             <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">Veldu álag sem þú vilt beita:</h3>
+              <h3 className="text-lg font-semibold text-warm-800 mb-3">Veldu álag sem þú vilt beita:</h3>
               <div className="grid md:grid-cols-3 gap-3">
                 {currentEquilibrium.possibleStresses.map((stress, idx) => (
                   <button
@@ -564,8 +564,8 @@ function App() {
           {appliedStress && correctShift && (
             <div>
               <div className={`bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4 mb-4 ${appliedStress ? 'selected' : ''}`}>
-                <div className="font-semibold text-gray-800 mb-1">Álag sem beitt er:</div>
-                <div className="text-lg text-gray-700">
+                <div className="font-semibold text-warm-800 mb-1">Álag sem beitt er:</div>
+                <div className="text-lg text-warm-700">
                   {getStressDescriptionIs(appliedStress)}
                 </div>
               </div>
@@ -573,7 +573,7 @@ function App() {
               {/* Prediction Buttons */}
               {!showExplanation && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                  <h3 className="text-lg font-semibold text-warm-800 mb-3">
                     Hvert mun jafnvægið hliðrast?
                   </h3>
                   <div className="grid grid-cols-3 gap-4 mb-4">
@@ -636,7 +636,7 @@ function App() {
 
                   <div className="mb-4">
                     <div className="font-semibold mb-2">Útskýring:</div>
-                    <p className="text-gray-700">
+                    <p className="text-warm-700">
                       {language === 'is' ? correctShift.explanationIs : correctShift.explanation}
                     </p>
                   </div>
@@ -656,7 +656,7 @@ function App() {
                   {gameMode === 'learning' && (
                     <div className="mb-4">
                       <div className="font-semibold mb-2">Rökstuðningur:</div>
-                      <ul className="list-disc list-inside space-y-1 text-sm text-gray-700">
+                      <ul className="list-disc list-inside space-y-1 text-sm text-warm-700">
                         {correctShift.reasoning.map((r, idx) => (
                           <li key={idx}>{r}</li>
                         ))}
@@ -666,7 +666,7 @@ function App() {
 
                   <div className="mb-4">
                     <div className="font-semibold mb-2">Sameinda sjónarhorn:</div>
-                    <p className="text-sm text-gray-700 italic">
+                    <p className="text-sm text-warm-700 italic">
                       {correctShift.molecularView}
                     </p>
                   </div>
@@ -704,7 +704,7 @@ function App() {
 
                   {/* Challenge Mode - Auto advance message */}
                   {gameMode === 'challenge' && (
-                    <div className="mt-4 text-center text-sm text-gray-600">
+                    <div className="mt-4 text-center text-sm text-warm-600">
                       Næsta spurning birtist sjálfkrafa...
                     </div>
                   )}
@@ -720,7 +720,7 @@ function App() {
   const renderResults = () => (
     <div className="max-w-4xl mx-auto">
       <div className="bg-white rounded-lg shadow-md p-8">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+        <h2 className="text-3xl font-bold text-warm-800 mb-6 text-center">
           🏆 Niðurstöður
         </h2>
 
@@ -755,20 +755,20 @@ function App() {
         </div>
 
         {/* Difficulty Breakdown */}
-        <div className="bg-gray-50 rounded-lg p-6 mb-6">
-          <h3 className="font-semibold text-gray-800 mb-4">Niðurstöður eftir erfiðleikastigi:</h3>
+        <div className="bg-warm-50 rounded-lg p-6 mb-6">
+          <h3 className="font-semibold text-warm-800 mb-4">Niðurstöður eftir erfiðleikastigi:</h3>
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-gray-700">Byrjandi:</span>
-              <span className="font-semibold text-gray-800">{stats.correctByDifficulty.beginner}</span>
+              <span className="text-warm-700">Byrjandi:</span>
+              <span className="font-semibold text-warm-800">{stats.correctByDifficulty.beginner}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-gray-700">Miðlungs:</span>
-              <span className="font-semibold text-gray-800">{stats.correctByDifficulty.intermediate}</span>
+              <span className="text-warm-700">Miðlungs:</span>
+              <span className="font-semibold text-warm-800">{stats.correctByDifficulty.intermediate}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-gray-700">Erfitt:</span>
-              <span className="font-semibold text-gray-800">{stats.correctByDifficulty.advanced}</span>
+              <span className="text-warm-700">Erfitt:</span>
+              <span className="font-semibold text-warm-800">{stats.correctByDifficulty.advanced}</span>
             </div>
           </div>
         </div>
@@ -782,7 +782,7 @@ function App() {
           </button>
           <button
             onClick={() => setScreen('menu')}
-            className="flex-1 bg-gray-500 hover:bg-gray-600 text-white rounded-lg px-6 py-3 transition-colors"
+            className="flex-1 bg-warm-500 hover:bg-warm-600 text-white rounded-lg px-6 py-3 transition-colors"
           >
             📋 Aðalvalmynd
           </button>
@@ -814,10 +814,10 @@ function App() {
             />
           </div>
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-2" style={{ color: '#f36b22' }}>
+            <h1 className="text-4xl md:text-5xl font-bold font-heading mb-2" style={{ color: '#f36b22' }}>
               Jafnvægisstjóri
             </h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-warm-600">
               Le Chatelier Meginreglan
             </p>
           </div>
@@ -825,7 +825,7 @@ function App() {
 
         {/* Accessibility Menu */}
         <div className="bg-white rounded-lg shadow-xs p-4 mb-6 max-w-4xl mx-auto">
-          <h2 className="text-sm font-semibold text-gray-700 mb-3">
+          <h2 className="text-sm font-semibold text-warm-700 mb-3">
             {t('accessibility.menuTitle', 'Aðgengisval')}
           </h2>
           <div className="flex flex-wrap gap-4">
@@ -874,7 +874,7 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="text-center text-sm text-gray-500 py-4">
+      <footer className="text-center text-sm text-warm-500 py-4">
         <p>© 2024 Kvennaskólinn - Efnafræðileikir</p>
       </footer>
 

@@ -156,7 +156,7 @@ export function OctetViolationChecker({
   }
 
   return (
-    <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-4 shadow-lg">
+    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-4 shadow-lg">
       <h3 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
         <span className="text-lg">🔍</span>
         Áttureglugreining (Octet Rule Check)
@@ -184,7 +184,7 @@ export function OctetViolationChecker({
                   ? 'Áttureglan brotin'
                   : 'Leyfilegar undantekningar fundnar'}
             </div>
-            <div className="text-xs text-gray-400">
+            <div className="text-xs text-warm-400">
               {violations.length === 0
                 ? 'Öll atóm hafa réttan fjölda rafeinda.'
                 : `${violations.length} ${violations.length === 1 ? 'undantekning' : 'undantekningar'} fundnar.`}
@@ -195,7 +195,7 @@ export function OctetViolationChecker({
 
       {/* Atom electron counts */}
       <div className="mb-4">
-        <div className="text-xs text-gray-400 mb-2">Rafeindafjöldi hvers atóms:</div>
+        <div className="text-xs text-warm-400 mb-2">Rafeindafjöldi hvers atóms:</div>
         <div className="flex flex-wrap gap-2">
           {atoms.map((atom, i) => {
             const expected = EXPECTED_ELECTRONS[atom.symbol] ?? EXPECTED_ELECTRONS.default;
@@ -227,7 +227,7 @@ export function OctetViolationChecker({
                   }`}>
                     {atom.totalElectrons}
                   </div>
-                  <div className="text-xs text-gray-400">
+                  <div className="text-xs text-warm-400">
                     af {expected}
                   </div>
                 </div>
@@ -240,7 +240,7 @@ export function OctetViolationChecker({
       {/* Violation details */}
       {violations.length > 0 && showExplanations && (
         <div className="space-y-2">
-          <div className="text-xs text-gray-400 mb-1">Nánari greining:</div>
+          <div className="text-xs text-warm-400 mb-1">Nánari greining:</div>
           {violations.map((v, i) => (
             <div
               key={i}
@@ -259,7 +259,7 @@ export function OctetViolationChecker({
                     <span className={`font-bold ${v.isAllowed ? 'text-yellow-400' : 'text-red-400'}`}>
                       {v.atom}
                     </span>
-                    <span className="text-gray-400">—</span>
+                    <span className="text-warm-400">—</span>
                     <span className={`text-xs px-2 py-0.5 rounded ${
                       v.type === 'expanded'
                         ? 'bg-purple-500/30 text-purple-300'
@@ -274,11 +274,11 @@ export function OctetViolationChecker({
                           : 'Radíkal'}
                     </span>
                   </div>
-                  <div className="text-sm text-gray-300 mt-1">
+                  <div className="text-sm text-warm-300 mt-1">
                     {v.explanation}
                   </div>
                   {v.reason && (
-                    <div className="text-xs text-gray-500 mt-1 flex items-center gap-1">
+                    <div className="text-xs text-warm-500 mt-1 flex items-center gap-1">
                       <span>💡</span> {v.reason}
                     </div>
                   )}
@@ -290,27 +290,27 @@ export function OctetViolationChecker({
       )}
 
       {/* Legend */}
-      <div className="mt-4 pt-3 border-t border-gray-700">
-        <div className="text-xs text-gray-500 mb-2">Litakóðar:</div>
+      <div className="mt-4 pt-3 border-t border-warm-700">
+        <div className="text-xs text-warm-500 mb-2">Litakóðar:</div>
         <div className="flex flex-wrap gap-3 text-xs">
           <div className="flex items-center gap-1">
             <div className="w-3 h-3 rounded bg-green-500/50" />
-            <span className="text-gray-400">Átturegla uppfyllt</span>
+            <span className="text-warm-400">Átturegla uppfyllt</span>
           </div>
           <div className="flex items-center gap-1">
             <div className="w-3 h-3 rounded bg-purple-500/50" />
-            <span className="text-gray-400">Útvíkkað áttund</span>
+            <span className="text-warm-400">Útvíkkað áttund</span>
           </div>
           <div className="flex items-center gap-1">
             <div className="w-3 h-3 rounded bg-orange-500/50" />
-            <span className="text-gray-400">Ófullnægjandi</span>
+            <span className="text-warm-400">Ófullnægjandi</span>
           </div>
         </div>
       </div>
 
       {/* Examples info */}
       {hasAllowedExceptions && (
-        <div className="mt-3 bg-slate-700/50 rounded-lg p-3 text-xs text-gray-400">
+        <div className="mt-3 bg-warm-700/50 rounded-lg p-3 text-xs text-warm-400">
           <strong className="text-yellow-400">Góð dæmi um undantekningar:</strong>
           <ul className="mt-1 space-y-1 ml-4 list-disc">
             <li><span className="text-white">BF₃, BH₃</span> — Bór með 6 rafeindir (ófullnægjandi)</li>

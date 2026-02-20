@@ -5,35 +5,44 @@
  *   @import "tailwindcss";
  *   @import "../../../../../packages/shared/styles/theme.css";
  *   @import "../../../../../packages/shared/styles/game-base.css";
- *
- * This replaces the ~115 lines of duplicated CSS that was previously
- * copy-pasted into every game's styles.css.
  */
 
-/* Inter font — loaded via Google Fonts for games (inlined by vite-plugin-singlefile) */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Fonts — loaded via Google Fonts (inlined by vite-plugin-singlefile) */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 
+/* Base font for all game content */
 * {
-  font-family: 'Inter', sans-serif;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+/* Heading font utility */
+.font-heading,
+h1, h2, h3 {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
 }
 
 /* Kvennaskólinn Brand Color Utilities */
 .bg-primary-orange {
-  background-color: #f36b22;
+  background-color: var(--color-kvenno-orange, #f36b22);
 }
 
 .bg-dark-orange {
-  background-color: #c55113;
+  background-color: var(--color-kvenno-orange-600, #d35a15);
 }
 
 .border-primary-orange {
-  border-color: #f36b22;
+  border-color: var(--color-kvenno-orange, #f36b22);
 }
 
 .text-primary-orange {
-  color: #f36b22;
+  color: var(--color-kvenno-orange, #f36b22);
 }
 
 .hover-orange:hover {
-  background-color: #f36b22;
+  background-color: var(--color-kvenno-orange, #f36b22);
+}
+
+/* Text contrast-safe orange (for body text on white) */
+.text-orange-accessible {
+  color: var(--color-kvenno-orange-700, #b04510);
 }

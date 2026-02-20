@@ -90,7 +90,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         className={`border-2 border-dashed rounded-lg p-8 text-center mb-6 transition-colors ${
           isDragging
             ? 'border-kvenno-orange bg-orange-50'
-            : 'border-slate-300 bg-white'
+            : 'border-warm-300 bg-white'
         }`}
         onDragEnter={handleDragEnter}
         onDragOver={handleDragOver}
@@ -98,13 +98,13 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         onDrop={handleDrop}
       >
         <Upload
-          className={`mx-auto mb-4 ${isDragging ? 'text-kvenno-orange' : 'text-slate-600'}`}
+          className={`mx-auto mb-4 ${isDragging ? 'text-kvenno-orange' : 'text-warm-600'}`}
           size={48}
         />
-        <p className="text-lg font-semibold text-slate-800 mb-2">
+        <p className="text-lg font-semibold text-warm-800 mb-2">
           {isDragging ? 'Slepptu skrá' + (isStudentMode ? '' : 'm') + ' hér' : title}
         </p>
-        <p className="text-sm text-slate-600 mb-4">{description}</p>
+        <p className="text-sm text-warm-600 mb-4">{description}</p>
         <input
           type="file"
           accept={acceptedFileTypes}
@@ -123,16 +123,16 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
       {files.length > 0 && (
         <div className="mb-6">
-          <p className="font-semibold text-slate-800 mb-3">
+          <p className="font-semibold text-warm-800 mb-3">
             {files.length} skrá{files.length !== 1 ? 'r' : ''} valin{files.length !== 1 ? 'ar' : ''}
           </p>
           <div className="space-y-2 mb-4">
             {files.map((file, i) => (
-              <div key={i} className="bg-slate-50 p-3 rounded flex items-center gap-3">
+              <div key={i} className="bg-warm-50 p-3 rounded flex items-center gap-3">
                 <CheckCircle className="text-green-600 flex-shrink-0" size={20} />
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm text-slate-700 truncate">{file.name}</div>
-                  <div className="text-xs text-slate-500">{getFileTypeDescription(file)}</div>
+                  <div className="text-sm text-warm-700 truncate">{file.name}</div>
+                  <div className="text-xs text-warm-500">{getFileTypeDescription(file)}</div>
                 </div>
               </div>
             ))}
@@ -140,7 +140,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           <button
             onClick={onProcess}
             disabled={processing}
-            className="w-full bg-green-600 text-white px-6 py-4 rounded-lg hover:bg-green-700 transition disabled:bg-slate-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-lg font-semibold"
+            className="w-full bg-green-600 text-white px-6 py-4 rounded-lg hover:bg-green-700 transition disabled:bg-warm-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-lg font-semibold"
           >
             {processing ? (
               <>

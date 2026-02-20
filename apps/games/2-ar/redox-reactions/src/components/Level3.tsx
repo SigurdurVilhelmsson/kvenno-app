@@ -114,7 +114,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Hvað oxast?</label>
+                <label className="block text-sm font-medium text-warm-700 mb-1">Hvað oxast?</label>
                 <input
                   type="text"
                   value={answers.oxidized}
@@ -124,7 +124,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Hvað afoxast?</label>
+                <label className="block text-sm font-medium text-warm-700 mb-1">Hvað afoxast?</label>
                 <input
                   type="text"
                   value={answers.reduced}
@@ -141,7 +141,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 disabled={!answers.oxidized || !answers.reduced}
                 className={`w-full font-bold py-3 px-6 rounded-xl ${
                   !answers.oxidized || !answers.reduced
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
                     : 'bg-purple-500 hover:bg-purple-600 text-white'
                 }`}
               >
@@ -162,7 +162,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-warm-700 mb-1">
                 Hversu margar rafeindir tapar {problem.oxidationHalf.speciesDisplay}?
               </label>
               <input
@@ -194,7 +194,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 disabled={!answers.oxElectrons}
                 className={`w-full font-bold py-3 px-6 rounded-xl ${
                   !answers.oxElectrons
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
                     : 'bg-blue-500 hover:bg-blue-600 text-white'
                 }`}
               >
@@ -215,7 +215,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-warm-700 mb-1">
                 Hversu margar rafeindir öðlast {problem.reductionHalf.speciesDisplay}?
               </label>
               <input
@@ -247,7 +247,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 disabled={!answers.redElectrons}
                 className={`w-full font-bold py-3 px-6 rounded-xl ${
                   !answers.redElectrons
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
                     : 'bg-red-500 hover:bg-red-600 text-white'
                 }`}
               >
@@ -277,7 +277,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-warm-700 mb-1">
                   Margfaldari fyrir oxun:
                 </label>
                 <input
@@ -289,7 +289,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-warm-700 mb-1">
                   Margfaldari fyrir afoxun:
                 </label>
                 <input
@@ -308,7 +308,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 disabled={!answers.oxMultiplier || !answers.redMultiplier}
                 className={`w-full font-bold py-3 px-6 rounded-xl ${
                   !answers.oxMultiplier || !answers.redMultiplier
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
                     : 'bg-amber-500 hover:bg-amber-600 text-white'
                 }`}
               >
@@ -329,8 +329,8 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               </div>
 
               <div className="bg-white p-4 rounded-lg text-left text-sm">
-                <div className="font-bold text-gray-700 mb-2">Samantekt:</div>
-                <div className="space-y-1 text-gray-600">
+                <div className="font-bold text-warm-700 mb-2">Samantekt:</div>
+                <div className="space-y-1 text-warm-600">
                   <div>• Oxun: {problem.multiplierOx}×({problem.oxidationHalf.speciesDisplay} → {problem.oxidationHalf.productDisplay} + {problem.oxidationHalf.electrons}e⁻)</div>
                   <div>• Afoxun: {problem.multiplierRed}×({problem.reductionHalf.speciesDisplay} + {problem.reductionHalf.electrons}e⁻ → {problem.reductionHalf.productDisplay})</div>
                   <div className="font-bold text-green-700 pt-2">
@@ -348,11 +348,11 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
         <div className="flex justify-between items-center mb-6">
-          <button onClick={onBack} className="text-gray-500 hover:text-gray-700">
+          <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
             ← Til baka
           </button>
           <div className="flex items-center gap-4">
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-warm-500">
               Dæmi {currentProblem + 1} af {problems.length}
             </div>
             <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold">
@@ -364,13 +364,13 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-purple-600">
           ⚖️ Jafna redox-jöfnur
         </h1>
-        <p className="text-center text-gray-600 mb-4">
+        <p className="text-center text-warm-600 mb-4">
           Hálf-hvörf aðferðin
         </p>
 
-        <div className="bg-gray-50 p-4 rounded-xl mb-6 text-center">
-          <div className="text-sm text-gray-500 mb-1">{problem.description}</div>
-          <div className="text-xl md:text-2xl font-mono font-bold text-gray-800">
+        <div className="bg-warm-50 p-4 rounded-xl mb-6 text-center">
+          <div className="text-sm text-warm-500 mb-1">{problem.description}</div>
+          <div className="text-xl md:text-2xl font-mono font-bold text-warm-800">
             {problem.overallDisplay}
           </div>
         </div>
@@ -383,7 +383,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 s === step ? 'bg-purple-500' :
                 ['identify', 'write-ox', 'write-red', 'balance', 'complete'].indexOf(step) > idx
                   ? 'bg-green-500'
-                  : 'bg-gray-300'
+                  : 'bg-warm-300'
               }`}
             />
           ))}
@@ -433,7 +433,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </button>
         )}
 
-        <div className="mt-6 w-full bg-gray-200 rounded-full h-2">
+        <div className="mt-6 w-full bg-warm-200 rounded-full h-2">
           <div
             className="bg-purple-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentProblem + 1) / problems.length) * 100}%` }}

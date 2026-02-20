@@ -187,16 +187,16 @@ export function Level1({ onComplete, onBack, initialProgress }: Level1Props) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-warm-50 p-4">
       <div className="max-w-4xl mx-auto">
         <div className="mb-4 flex items-center justify-between">
           <button
             onClick={onBack}
-            className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
           >
             ← Til baka
           </button>
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-warm-600">
             <span>Spurning {progress.questionsAnswered + 1} / 10</span>
             <span className="ml-4">Nákvæmni: {accuracy}%</span>
           </div>
@@ -216,7 +216,7 @@ export function Level1({ onComplete, onBack, initialProgress }: Level1Props) {
                   className={`w-full p-4 rounded-lg border-2 text-left transition-all ${
                     selectedOptions.includes(idx)
                       ? 'border-orange-500 bg-orange-50'
-                      : 'border-gray-300 hover:border-gray-400'
+                      : 'border-warm-300 hover:border-warm-400'
                   }`}
                   disabled={showFeedback}
                 >
@@ -236,7 +236,7 @@ export function Level1({ onComplete, onBack, initialProgress }: Level1Props) {
                     className={`w-full p-4 rounded-lg border-2 text-left transition-all ${
                       selectedOptions.includes(idx)
                         ? 'border-orange-500 bg-orange-50'
-                        : 'border-gray-300 hover:border-gray-400'
+                        : 'border-warm-300 hover:border-warm-400'
                     }`}
                     disabled={showFeedback}
                   >
@@ -270,7 +270,7 @@ export function Level1({ onComplete, onBack, initialProgress }: Level1Props) {
                       className={`w-full p-3 rounded-lg border-2 text-left text-sm transition-all ${
                         selectedExplanation === idx
                           ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-300 hover:border-gray-400'
+                          : 'border-warm-300 hover:border-warm-400'
                       }`}
                     >
                       {exp.text}
@@ -283,7 +283,7 @@ export function Level1({ onComplete, onBack, initialProgress }: Level1Props) {
                   value={explanation}
                   onChange={(e) => setExplanation(e.target.value)}
                   placeholder="Útskýrðu af hverju þú valdir þetta svar..."
-                  className="w-full p-3 border-2 border-gray-300 rounded-lg h-24"
+                  className="w-full p-3 border-2 border-warm-300 rounded-lg h-24"
                 />
               )}
             </div>
@@ -293,7 +293,7 @@ export function Level1({ onComplete, onBack, initialProgress }: Level1Props) {
             <button
               onClick={handleSubmit}
               disabled={selectedOptions.length === 0 || (question.explanationRequired && !selectedExplanation && !explanation.trim())}
-              className="w-full bg-orange-500 text-white py-3 rounded-lg font-bold hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="w-full bg-orange-500 text-white py-3 rounded-lg font-bold hover:bg-orange-600 disabled:bg-warm-300 disabled:cursor-not-allowed"
               style={{ backgroundColor: (selectedOptions.length === 0 || (question.explanationRequired && selectedExplanation === null && !explanation.trim())) ? undefined : '#f36b22' }}
             >
               Athuga svar
@@ -314,20 +314,20 @@ export function Level1({ onComplete, onBack, initialProgress }: Level1Props) {
 
               {question.explanationRequired && (
                 <div className="bg-blue-50 rounded-lg p-4">
-                  <p className="text-sm font-semibold text-gray-700 mb-1">Útskýringareinkunn:</p>
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
+                  <p className="text-sm font-semibold text-warm-700 mb-1">Útskýringareinkunn:</p>
+                  <div className="w-full bg-warm-200 rounded-full h-2.5">
                     <div
                       className="bg-blue-600 h-2.5 rounded-full transition-all duration-500"
                       style={{ width: `${explanationScore * 100}%` }}
                     ></div>
                   </div>
-                  <p className="text-xs text-gray-600 mt-1">{Math.round(explanationScore * 100)}%</p>
+                  <p className="text-xs text-warm-600 mt-1">{Math.round(explanationScore * 100)}%</p>
                 </div>
               )}
 
               {question.visualization && (
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <p className="text-sm text-gray-600 italic">
+                <div className="bg-warm-50 rounded-lg p-4">
+                  <p className="text-sm text-warm-600 italic">
                     <strong>Sjónrænt:</strong> {question.visualization}
                   </p>
                 </div>

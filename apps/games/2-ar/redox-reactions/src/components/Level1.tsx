@@ -159,10 +159,10 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
           <div className="flex justify-between items-center mb-6">
-            <button onClick={onBack} className="text-gray-500 hover:text-gray-700">
+            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
               ← Til baka
             </button>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-warm-500">
               Regla {currentRule + 1} af {oxidationRules.length}
             </div>
           </div>
@@ -170,7 +170,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-blue-600">
             📚 Reglur um oxunartölur
           </h1>
-          <p className="text-center text-gray-600 mb-8">
+          <p className="text-center text-warm-600 mb-8">
             Lærðu grunnreglurnar
           </p>
 
@@ -180,7 +180,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 <div
                   key={idx}
                   className={`w-3 h-3 rounded-full ${
-                    idx === currentRule ? 'bg-blue-500' : idx < currentRule ? 'bg-green-500' : 'bg-gray-300'
+                    idx === currentRule ? 'bg-blue-500' : idx < currentRule ? 'bg-green-500' : 'bg-warm-300'
                   }`}
                 />
               ))}
@@ -195,8 +195,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               </div>
 
               <div className="bg-white p-4 rounded-xl mb-4">
-                <div className="text-sm text-gray-500 mb-1">Dæmi:</div>
-                <div className="text-xl font-mono text-center text-gray-800">
+                <div className="text-sm text-warm-500 mb-1">Dæmi:</div>
+                <div className="text-xl font-mono text-center text-warm-800">
                   {rule.example}
                 </div>
               </div>
@@ -216,8 +216,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               disabled={currentRule === 0}
               className={`flex-1 py-3 px-6 rounded-xl font-bold ${
                 currentRule === 0
-                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  : 'bg-gray-500 hover:bg-gray-600 text-white'
+                  ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
+                  : 'bg-warm-500 hover:bg-warm-600 text-white'
               }`}
             >
               ← Fyrri
@@ -241,11 +241,11 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
         <div className="flex justify-between items-center mb-6">
-          <button onClick={onBack} className="text-gray-500 hover:text-gray-700">
+          <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
             ← Til baka
           </button>
           <div className="flex items-center gap-4">
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-warm-500">
               Spurning {currentProblem + 1} af {problems.length}
             </div>
             <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-bold">
@@ -258,11 +258,11 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           🔢 Finndu oxunartöluna
         </h1>
 
-        <div className="bg-gray-50 p-6 rounded-xl mb-6">
+        <div className="bg-warm-50 p-6 rounded-xl mb-6">
           <div className="text-center">
-            <div className="text-lg text-gray-600 mb-2">Hvað er oxunartala</div>
+            <div className="text-lg text-warm-600 mb-2">Hvað er oxunartala</div>
             <div className="flex items-center justify-center gap-2 mb-4">
-              <span className="text-4xl font-mono font-bold text-gray-800">
+              <span className="text-4xl font-mono font-bold text-warm-800">
                 {problem.compoundDisplay}
               </span>
             </div>
@@ -293,7 +293,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 className="text-center text-2xl font-bold w-32 p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-hidden"
               />
             </div>
-            <p className="text-center text-sm text-gray-500">
+            <p className="text-center text-sm text-warm-500">
               Notaðu neikvæðar tölur fyrir neikvæðar oxunartölur (t.d. -2)
             </p>
             <div className="flex gap-4">
@@ -313,7 +313,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 disabled={userAnswer === ''}
                 className={`flex-1 font-bold py-3 px-6 rounded-xl ${
                   userAnswer === ''
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
                     : 'bg-blue-500 hover:bg-blue-600 text-white'
                 }`}
               >
@@ -360,7 +360,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 </button>
                 <button
                   onClick={handleNext}
-                  className="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl"
+                  className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-6 rounded-xl"
                 >
                   Halda áfram →
                 </button>
@@ -369,8 +369,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
         )}
 
-        <div className="mt-6 bg-gray-50 p-4 rounded-xl">
-          <h3 className="font-semibold text-gray-700 mb-2">📋 Muna reglurnar:</h3>
+        <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+          <h3 className="font-semibold text-warm-700 mb-2">📋 Muna reglurnar:</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
             <div className="bg-white p-2 rounded border">Frumefni = 0</div>
             <div className="bg-white p-2 rounded border">Jón = hleðsla</div>
@@ -381,7 +381,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
         </div>
 
-        <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
+        <div className="mt-4 w-full bg-warm-200 rounded-full h-2">
           <div
             className="bg-blue-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentProblem + 1) / problems.length) * 100}%` }}

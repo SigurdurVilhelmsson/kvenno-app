@@ -193,19 +193,19 @@ export function MoleculeBuilder({
         <h3 className={`font-bold text-emerald-800 ${compact ? 'text-sm' : 'text-base'}`}>
           Sameindasmiður
         </h3>
-        <label className="flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer">
+        <label className="flex items-center gap-1.5 text-xs text-warm-600 cursor-pointer">
           <input
             type="checkbox"
             checked={showFormula}
             onChange={e => setShowFormula(e.target.checked)}
-            className="rounded border-gray-300"
+            className="rounded border-warm-300"
           />
           Sýna formúlu
         </label>
       </div>
 
       {/* Carbon chain visualization */}
-      <div className="bg-slate-900 rounded-xl p-4 mb-4 overflow-x-auto">
+      <div className="bg-warm-900 rounded-xl p-4 mb-4 overflow-x-auto">
         <div
           className="flex items-center justify-center min-w-fit"
           style={{ gap: 0 }}
@@ -214,7 +214,7 @@ export function MoleculeBuilder({
             <div key={i} className="flex items-center">
               {/* Carbon atom */}
               <div
-                className="flex items-center justify-center rounded-full bg-gray-700 border-2 border-gray-500 text-white font-bold select-none"
+                className="flex items-center justify-center rounded-full bg-warm-700 border-2 border-warm-500 text-white font-bold select-none"
                 style={{ width: atomSize, height: atomSize, fontSize: atomSize * 0.4 }}
               >
                 C{i + 1}
@@ -236,7 +236,7 @@ export function MoleculeBuilder({
                     if (bondType === 'single') {
                       return (
                         <div
-                          className="bg-gray-400 group-hover:bg-gray-300 rounded-full"
+                          className="bg-warm-400 group-hover:bg-warm-300 rounded-full"
                           style={{ width: '100%', height: bondHeight }}
                         />
                       );
@@ -277,7 +277,7 @@ export function MoleculeBuilder({
                   })()}
 
                   {/* Bond type indicator */}
-                  <div className="absolute -bottom-5 text-[10px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute -bottom-5 text-[10px] text-warm-400 opacity-0 group-hover:opacity-100 transition-opacity">
                     {bonds.find(b => b.position === i + 1)?.type === 'single' ? 'ein' :
                      bonds.find(b => b.position === i + 1)?.type === 'double' ? 'tví' : 'þrí'}
                   </div>
@@ -288,9 +288,9 @@ export function MoleculeBuilder({
         </div>
 
         {/* Legend */}
-        <div className="mt-4 flex justify-center gap-4 text-xs text-gray-400">
+        <div className="mt-4 flex justify-center gap-4 text-xs text-warm-400">
           <span className="flex items-center gap-1">
-            <span className="w-4 h-1 bg-gray-400 rounded" /> ein
+            <span className="w-4 h-1 bg-warm-400 rounded" /> ein
           </span>
           <span className="flex items-center gap-1">
             <span className="flex flex-col gap-0.5">
@@ -318,15 +318,15 @@ export function MoleculeBuilder({
           className={`w-10 h-10 rounded-full font-bold text-xl transition-all ${
             carbonCount > 2
               ? 'bg-red-500 hover:bg-red-600 text-white'
-              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              : 'bg-warm-200 text-warm-400 cursor-not-allowed'
           }`}
         >
           -
         </button>
 
         <div className="text-center px-4">
-          <div className="text-xl font-bold text-gray-800">{carbonCount}</div>
-          <div className="text-xs text-gray-500">kolefni</div>
+          <div className="text-xl font-bold text-warm-800">{carbonCount}</div>
+          <div className="text-xs text-warm-500">kolefni</div>
         </div>
 
         <button
@@ -335,7 +335,7 @@ export function MoleculeBuilder({
           className={`w-10 h-10 rounded-full font-bold text-xl transition-all ${
             carbonCount < maxCarbons
               ? 'bg-green-500 hover:bg-green-600 text-white'
-              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              : 'bg-warm-200 text-warm-400 cursor-not-allowed'
           }`}
         >
           +
@@ -346,30 +346,30 @@ export function MoleculeBuilder({
       <div className={`bg-white rounded-xl p-4 border-2 ${
         compound.color === 'green' ? 'border-green-300' :
         compound.color === 'purple' ? 'border-purple-300' :
-        'border-gray-300'
+        'border-warm-300'
       }`}>
         <div className="flex justify-between items-center mb-2">
           <span className={`text-sm font-medium px-2 py-0.5 rounded ${
             compound.color === 'green' ? 'bg-green-100 text-green-700' :
             compound.color === 'purple' ? 'bg-purple-100 text-purple-700' :
-            'bg-gray-100 text-gray-700'
+            'bg-warm-100 text-warm-700'
           }`}>
             {compound.label}
           </span>
           {showFormula && (
-            <span className="font-mono text-gray-600">{formula}</span>
+            <span className="font-mono text-warm-600">{formula}</span>
           )}
         </div>
 
         <div className={`text-center text-2xl font-bold ${
           compound.color === 'green' ? 'text-green-600' :
           compound.color === 'purple' ? 'text-purple-600' :
-          'text-gray-700'
+          'text-warm-700'
         }`}>
           {name}
         </div>
 
-        <div className="mt-2 text-center text-xs text-gray-500">
+        <div className="mt-2 text-center text-xs text-warm-500">
           {bonds.some(b => b.type === 'double')
             ? `Tvítengi á stað ${bonds.find(b => b.type === 'double')?.position}`
             : bonds.some(b => b.type === 'triple')
@@ -379,7 +379,7 @@ export function MoleculeBuilder({
       </div>
 
       {/* Instructions */}
-      <div className={`mt-3 text-center ${compact ? 'text-xs' : 'text-sm'} text-gray-600`}>
+      <div className={`mt-3 text-center ${compact ? 'text-xs' : 'text-sm'} text-warm-600`}>
         <p>
           <strong>+/-</strong> bætir við/fjarlægir kolefni • <strong>Smelltu á tengingu</strong> til að breyta
         </p>

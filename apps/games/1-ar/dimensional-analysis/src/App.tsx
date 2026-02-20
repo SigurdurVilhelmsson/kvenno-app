@@ -70,7 +70,7 @@ function App() {
   } = useAchievements({ gameId: 'dimensional-analysis' });
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-warm-50">
       {/* Accessibility Skip Link */}
       <a href="#main-content" className="skip-link">
         {t('accessibility.skipToContent', 'Fara beint í efni')}
@@ -87,10 +87,10 @@ function App() {
               variant="compact"
             />
             <div className="flex-1 text-center">
-              <h1 className="text-4xl font-bold text-gray-800 mb-2">
+              <h1 className="text-4xl font-bold font-heading text-warm-800 mb-2">
                 {t('game.title')}
               </h1>
-              <p className="text-lg text-gray-600">
+              <p className="text-lg text-warm-600">
                 {t('game.subtitle')}
               </p>
             </div>
@@ -103,7 +103,7 @@ function App() {
 
         {/* Accessibility Menu */}
         <div className="bg-white rounded-lg shadow-xs p-4 mb-6">
-          <h2 className="text-sm font-semibold text-gray-700 mb-3">
+          <h2 className="text-sm font-semibold text-warm-700 mb-3">
             {t('accessibility.menuTitle', 'Aðgengisval')}
           </h2>
           <div className="flex flex-wrap gap-4">
@@ -138,13 +138,13 @@ function App() {
         {screen === 'menu' && (
           <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-lg shadow-md p-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">
+              <h2 className="text-2xl font-bold text-warm-800 mb-6">
                 {t('mainMenu.selectLevel', 'Veldu stig')}
               </h2>
 
               {/* Progress Summary */}
-              <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <p className="text-sm text-gray-600">
+              <div className="bg-warm-50 rounded-lg p-4 mb-6">
+                <p className="text-sm text-warm-600">
                   {t('progress.problemsCompleted', 'Verkefni kláruð')}: {progress.problemsCompleted}
                 </p>
               </div>
@@ -219,7 +219,7 @@ function App() {
               {/* Stats Button */}
               <button
                 onClick={() => setScreen('stats')}
-                className="mt-6 w-full bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg p-4 transition-colors"
+                className="mt-6 w-full bg-warm-200 hover:bg-warm-300 text-warm-800 rounded-lg p-4 transition-colors"
               >
                 {t('mainMenu.statistics', 'Tölfræði')}
               </button>
@@ -323,27 +323,27 @@ function App() {
         {screen === 'stats' && (
           <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-lg shadow-md p-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">
+              <h2 className="text-2xl font-bold text-warm-800 mb-6">
                 {t('stats.title', 'Tölfræði')}
               </h2>
 
               <div className="space-y-4">
                 <div className="border-b pb-4">
-                  <h3 className="font-semibold text-gray-700 mb-2">{t('stats.overallProgress')}</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-semibold text-warm-700 mb-2">{t('stats.overallProgress')}</h3>
+                  <p className="text-sm text-warm-600">
                     {t('stats.problemsCompleted')}: {progress.problemsCompleted}
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-warm-600">
                     {t('stats.currentLevel')}: {progress.currentLevel}
                   </p>
                 </div>
 
                 <div className="border-b pb-4">
-                  <h3 className="font-semibold text-gray-700 mb-2">{t('stats.level1Stats')}</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-semibold text-warm-700 mb-2">{t('stats.level1Stats')}</h3>
+                  <p className="text-sm text-warm-600">
                     {t('menu.challenges')}: {progress.levelProgress?.level1?.questionsAnswered || 0}/6
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-warm-600">
                     {t('stats.accuracy')}: {progress.levelProgress?.level1?.questionsAnswered
                       ? Math.round((progress.levelProgress.level1.questionsCorrect / progress.levelProgress.level1.questionsAnswered) * 100)
                       : 0}%
@@ -351,11 +351,11 @@ function App() {
                 </div>
 
                 <div className="border-b pb-4">
-                  <h3 className="font-semibold text-gray-700 mb-2">{t('stats.level2Stats')}</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-semibold text-warm-700 mb-2">{t('stats.level2Stats')}</h3>
+                  <p className="text-sm text-warm-600">
                     {t('menu.problems')}: {progress.levelProgress?.level2?.problemsCompleted || 0}/15
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-warm-600">
                     {t('stats.predictionAccuracy')}: {progress.levelProgress?.level2?.predictionsMade
                       ? Math.round((progress.levelProgress.level2.predictionsCorrect / progress.levelProgress.level2.predictionsMade) * 100)
                       : 0}%
@@ -363,11 +363,11 @@ function App() {
                 </div>
 
                 <div className="pb-4">
-                  <h3 className="font-semibold text-gray-700 mb-2">{t('stats.level3Stats')}</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-semibold text-warm-700 mb-2">{t('stats.level3Stats')}</h3>
+                  <p className="text-sm text-warm-600">
                     {t('menu.problems')}: {progress.levelProgress?.level3?.problemsCompleted || 0}/10
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-warm-600">
                     {t('stats.averageScore')}: {progress.levelProgress?.level3?.compositeScores?.length
                       ? Math.round((progress.levelProgress.level3.compositeScores.reduce((a, b) => a + b, 0) / progress.levelProgress.level3.compositeScores.length) * 100)
                       : 0}%
@@ -377,7 +377,7 @@ function App() {
 
               <button
                 onClick={() => setScreen('menu')}
-                className="mt-6 bg-gray-500 hover:bg-gray-600 text-white rounded-lg px-6 py-2 transition-colors"
+                className="mt-6 bg-warm-500 hover:bg-warm-600 text-white rounded-lg px-6 py-2 transition-colors"
               >
                 {t('common.back', 'Til baka')}
               </button>
@@ -387,7 +387,7 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="text-center text-sm text-gray-500 py-4">
+      <footer className="text-center text-sm text-warm-500 py-4">
         <p>© 2024 Kvennaskólinn - Efnafræðileikir</p>
       </footer>
 

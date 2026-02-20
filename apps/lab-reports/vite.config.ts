@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
-import { visualizer } from 'rollup-plugin-visualizer';
 import path from 'path';
 
 // https://vitejs.dev/config/
@@ -10,15 +9,6 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
     react(),
-    ...(process.env.ANALYZE === 'true'
-      ? [
-          visualizer({
-            filename: 'stats.html',
-            gzipSize: true,
-            brotliSize: true,
-          }),
-        ]
-      : []),
   ],
   resolve: {
     alias: {

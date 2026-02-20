@@ -183,8 +183,8 @@ function App() {
               variant="compact"
             />
             <div className="flex-1">
-              <h1 className="text-4xl font-bold text-center mb-2 text-gray-800">{t('game.title', 'Takmarkandi Hvarfefni')}</h1>
-              <p className="text-center text-gray-600">{t('game.description', 'Lærðu að finna takmarkandi hvarfefni og reikna heimtir')}</p>
+              <h1 className="text-4xl font-bold font-heading text-center mb-2 text-warm-800">{t('game.title', 'Takmarkandi Hvarfefni')}</h1>
+              <p className="text-center text-warm-600">{t('game.description', 'Lærðu að finna takmarkandi hvarfefni og reikna heimtir')}</p>
             </div>
             <AchievementsButton
               achievements={achievements}
@@ -204,9 +204,9 @@ function App() {
                     <span className="bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full">
                       Stig 1
                     </span>
-                    <h3 className="text-xl font-bold text-gray-800">Grunnhugtök</h3>
+                    <h3 className="text-xl font-bold text-warm-800">Grunnhugtök</h3>
                   </div>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-warm-600 text-sm">
                     Skildu hugtökin sjónrænt - hvað eyðist fyrst?
                   </p>
                 </div>
@@ -217,7 +217,7 @@ function App() {
                       <div className="text-xs">stig - Lokið</div>
                     </div>
                   ) : (
-                    <div className="text-gray-400 text-3xl">→</div>
+                    <div className="text-warm-400 text-3xl">→</div>
                   )}
                 </div>
               </div>
@@ -229,23 +229,23 @@ function App() {
               className={`w-full bg-white border-2 rounded-xl p-6 text-left transition-all ${
                 progress.level1Completed
                   ? 'border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50'
-                  : 'border-gray-200 opacity-60 cursor-not-allowed'
+                  : 'border-warm-200 opacity-60 cursor-not-allowed'
               }`}
             >
               <div className="flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-3 mb-2">
                     <span className={`text-white text-sm font-bold px-3 py-1 rounded-full ${
-                      progress.level1Completed ? 'bg-yellow-500' : 'bg-gray-400'
+                      progress.level1Completed ? 'bg-yellow-500' : 'bg-warm-400'
                     }`}>
                       Stig 2
                     </span>
-                    <h3 className="text-xl font-bold text-gray-800">Leiðbeind æfing</h3>
+                    <h3 className="text-xl font-bold text-warm-800">Leiðbeind æfing</h3>
                     {!progress.level1Completed && (
-                      <span className="text-xs text-gray-500">(Ljúktu stigi 1 fyrst)</span>
+                      <span className="text-xs text-warm-500">(Ljúktu stigi 1 fyrst)</span>
                     )}
                   </div>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-warm-600 text-sm">
                     Leystu verkefni skref fyrir skref með leiðsögn
                   </p>
                 </div>
@@ -256,7 +256,7 @@ function App() {
                       <div className="text-xs">stig - Lokið</div>
                     </div>
                   ) : (
-                    <div className="text-gray-400 text-3xl">→</div>
+                    <div className="text-warm-400 text-3xl">→</div>
                   )}
                 </div>
               </div>
@@ -268,23 +268,23 @@ function App() {
               className={`w-full bg-white border-2 rounded-xl p-6 text-left transition-all ${
                 progress.level2Completed
                   ? 'border-red-200 hover:border-red-400 hover:bg-red-50'
-                  : 'border-gray-200 opacity-60 cursor-not-allowed'
+                  : 'border-warm-200 opacity-60 cursor-not-allowed'
               }`}
             >
               <div className="flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-3 mb-2">
                     <span className={`text-white text-sm font-bold px-3 py-1 rounded-full ${
-                      progress.level2Completed ? 'bg-red-500' : 'bg-gray-400'
+                      progress.level2Completed ? 'bg-red-500' : 'bg-warm-400'
                     }`}>
                       Stig 3
                     </span>
-                    <h3 className="text-xl font-bold text-gray-800">Meistarapróf</h3>
+                    <h3 className="text-xl font-bold text-warm-800">Meistarapróf</h3>
                     {!progress.level2Completed && (
-                      <span className="text-xs text-gray-500">(Ljúktu stigi 2 fyrst)</span>
+                      <span className="text-xs text-warm-500">(Ljúktu stigi 2 fyrst)</span>
                     )}
                   </div>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-warm-600 text-sm">
                     Veldu erfiðleikastig og kepptu við tímann!
                   </p>
                 </div>
@@ -295,7 +295,7 @@ function App() {
                       <div className="text-xs">{progress.level3BestAccuracy}% nákvæmni</div>
                     </div>
                   ) : (
-                    <div className="text-gray-400 text-3xl">→</div>
+                    <div className="text-warm-400 text-3xl">→</div>
                   )}
                 </div>
               </div>
@@ -307,10 +307,10 @@ function App() {
         {progress.totalGamesPlayed > 0 && (
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold text-gray-700">Framvinda</h3>
+              <h3 className="font-semibold text-warm-700">Framvinda</h3>
               <button
                 onClick={resetProgress}
-                className="text-sm text-gray-500 hover:text-red-500 transition-colors"
+                className="text-sm text-warm-500 hover:text-red-500 transition-colors"
               >
                 Endurstilla
               </button>
@@ -320,19 +320,19 @@ function App() {
                 <div className="text-2xl font-bold text-blue-600">
                   {[progress.level1Completed, progress.level2Completed].filter(Boolean).length}/2
                 </div>
-                <div className="text-xs text-gray-600">Stig lokið</div>
+                <div className="text-xs text-warm-600">Stig lokið</div>
               </div>
               <div className="bg-green-50 rounded-lg p-3">
                 <div className="text-2xl font-bold text-green-600">
                   {progress.level1Score + progress.level2Score + progress.level3BestScore}
                 </div>
-                <div className="text-xs text-gray-600">Heildar stig</div>
+                <div className="text-xs text-warm-600">Heildar stig</div>
               </div>
               <div className="bg-purple-50 rounded-lg p-3">
                 <div className="text-2xl font-bold text-purple-600">
                   {progress.totalGamesPlayed}
                 </div>
-                <div className="text-xs text-gray-600">Leikir spilaðir</div>
+                <div className="text-xs text-warm-600">Leikir spilaðir</div>
               </div>
             </div>
           </div>
@@ -341,7 +341,7 @@ function App() {
         {/* What you'll learn */}
         <div className="bg-orange-50 rounded-xl p-6 mt-6">
           <h3 className="font-bold text-orange-800 mb-3">Hvað lærir þú?</h3>
-          <ul className="text-sm text-gray-700 space-y-2">
+          <ul className="text-sm text-warm-700 space-y-2">
             <li className="flex items-start gap-2">
               <span className="text-orange-500 mt-0.5">✓</span>
               <span>Hvað er takmarkandi hvarfefni og hvers vegna það skiptir máli</span>
@@ -365,7 +365,7 @@ function App() {
         <div className="text-center mt-6">
           <a
             href="/games/1-ar/"
-            className="text-gray-500 hover:text-gray-700 text-sm transition-colors"
+            className="text-warm-500 hover:text-warm-700 text-sm transition-colors"
           >
             ← Til baka í leikjayfirlit
           </a>

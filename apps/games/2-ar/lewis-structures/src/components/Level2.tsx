@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 
-import { AnimatedMolecule, DragDropBuilder, FeedbackPanel, MoleculeViewer3DLazy } from '@shared/components';
+import { AnimatedMolecule, DragDropBuilder, FeedbackPanel } from '@shared/components';
 import type { DraggableItemData, DropZoneData, DropResult, ZoneState } from '@shared/components';
+import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
 import { shuffleArray } from '@shared/utils';
 
 import { LewisGuidedMode } from './LewisGuidedMode';
@@ -726,12 +727,12 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
           >
             <span>&larr;</span> Til baka
           </button>
           <div className="text-right">
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-warm-600">
               Stig 2 / Sameind {currentChallenge + 1} af {challenges.length}
             </div>
             <div className="text-lg font-bold text-green-600">{score} stig</div>
@@ -739,7 +740,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-green-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + (currentStep + 1) / challenge.steps.length) / challenges.length) * 100}%` }}
@@ -753,8 +754,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div className="flex items-center gap-3">
                 <span className="text-2xl">📝</span>
                 <div>
-                  <div className="font-bold text-gray-800">Nýr í Lewis-formúlum?</div>
-                  <div className="text-sm text-gray-600">Byrjaðu með leiðsögnina til að læra skref fyrir skref</div>
+                  <div className="font-bold text-warm-800">Nýr í Lewis-formúlum?</div>
+                  <div className="text-sm text-warm-600">Byrjaðu með leiðsögnina til að læra skref fyrir skref</div>
                 </div>
               </div>
               <button
@@ -785,7 +786,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             />
             <button
               onClick={() => setShowTutorial(false)}
-              className="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg transition-all"
+              className="mt-4 w-full bg-warm-200 hover:bg-warm-300 text-warm-700 font-medium py-2 px-4 rounded-lg transition-all"
             >
               Sleppa leiðsögn
             </button>
@@ -800,11 +801,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </h2>
           <div className="flex items-center gap-4 mb-4">
             <span className="font-mono text-3xl font-bold text-indigo-600">{challenge.molecule}</span>
-            <span className="text-sm text-gray-600">({challenge.totalElectrons} gildisrafeindir)</span>
+            <span className="text-sm text-warm-600">({challenge.totalElectrons} gildisrafeindir)</span>
           </div>
 
           {/* Lewis structure visualization */}
-          <div className="bg-gray-50 rounded-xl p-4 mb-6">
+          <div className="bg-warm-50 rounded-xl p-4 mb-6">
             {/* 2D/3D Toggle - only show when structure is complete */}
             {isLastStep && showStepResult && (
               <div className="flex justify-center gap-2 mb-3">
@@ -813,7 +814,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     viewMode === '2d'
                       ? 'bg-green-600 text-white'
-                      : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                      : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
                   }`}
                 >
                   2D Lewis
@@ -823,7 +824,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     viewMode === '3d'
                       ? 'bg-green-600 text-white'
-                      : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                      : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
                   }`}
                 >
                   3D lögun
@@ -854,7 +855,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     width="100%"
                     backgroundColor="#f9fafb"
                   />
-                  <div className="text-xs text-gray-500 text-center mt-2">
+                  <div className="text-xs text-warm-500 text-center mt-2">
                     Dragðu til að snúa, skrollaðu til að stækka
                   </div>
                 </div>
@@ -863,8 +864,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             {/* Legend - shown when structure is complete */}
             {isLastStep && showStepResult && (
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <div className="text-xs text-gray-500 mb-2 font-medium">Skýringar:</div>
+              <div className="mt-4 pt-4 border-t border-warm-200">
+                <div className="text-xs text-warm-500 mb-2 font-medium">Skýringar:</div>
                 <div className="flex flex-wrap gap-4 text-xs">
                   <div className="flex items-center gap-1.5">
                     <div className="w-4 h-4 rounded-full border-2 border-blue-500 bg-blue-100" />
@@ -882,13 +883,13 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     <span>Einstætt par</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <div className="w-6 h-0.5 bg-gray-800" />
+                    <div className="w-6 h-0.5 bg-warm-800" />
                     <span>Einfalt tengi</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <div className="flex flex-col gap-0.5">
-                      <div className="w-6 h-0.5 bg-gray-800" />
-                      <div className="w-6 h-0.5 bg-gray-800" />
+                      <div className="w-6 h-0.5 bg-warm-800" />
+                      <div className="w-6 h-0.5 bg-warm-800" />
                     </div>
                     <span>Tvöfalt tengi</span>
                   </div>
@@ -936,7 +937,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       : 'bg-red-400'
                     : idx === currentStep
                     ? 'bg-blue-500'
-                    : 'bg-gray-200'
+                    : 'bg-warm-200'
                 }`}
               />
             ))}
@@ -944,7 +945,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           {/* Current step question */}
           <div className="mb-6">
-            <p className="text-lg font-medium text-gray-800 mb-4">
+            <p className="text-lg font-medium text-warm-800 mb-4">
               Skref {currentStep + 1}: {step.question}
             </p>
 
@@ -960,10 +961,10 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         ? 'border-green-500 bg-green-50'
                         : selectedAnswer === option.id
                         ? 'border-red-500 bg-red-50'
-                        : 'border-gray-200 bg-gray-50 opacity-50'
+                        : 'border-warm-200 bg-warm-50 opacity-50'
                       : selectedAnswer === option.id
                       ? 'border-green-500 bg-green-50 ring-2 ring-green-200'
-                      : 'border-gray-300 hover:border-green-400 hover:bg-green-50'
+                      : 'border-warm-300 hover:border-green-400 hover:bg-green-50'
                   }`}
                 >
                   {option.text}
@@ -979,7 +980,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 ? 'bg-green-50 border border-green-200'
                 : 'bg-red-50 border border-red-200'
             }`}>
-              <p className="text-sm text-gray-700">{step.explanation}</p>
+              <p className="text-sm text-warm-700">{step.explanation}</p>
             </div>
           )}
 
@@ -1074,7 +1075,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 <button
                   onClick={checkStep}
                   disabled={!selectedAnswer}
-                  className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+                  className="w-full bg-green-500 hover:bg-green-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
                 >
                   Athuga
                 </button>
@@ -1111,8 +1112,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Quick reference */}
         <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="font-bold text-gray-700 mb-2">Skref til að teikna Lewis-formúlu:</h3>
-          <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+          <h3 className="font-bold text-warm-700 mb-2">Skref til að teikna Lewis-formúlu:</h3>
+          <ol className="text-sm text-warm-600 space-y-1 list-decimal list-inside">
             <li className={currentStep >= 0 ? 'text-green-600 font-medium' : ''}>Veldu miðatóm (oftast það sem hefur flest tengsl)</li>
             <li className={currentStep >= 1 ? 'text-green-600 font-medium' : ''}>Teiknaðu einföld tengsl til allra ytri atóma</li>
             <li className={currentStep >= 2 ? 'text-green-600 font-medium' : ''}>Dreifðu eftirstandandi rafeindum sem einstæð pör</li>
@@ -1123,25 +1124,25 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {/* Octet exceptions reference - show when relevant */}
         {challenge.correctStructure.octetException && challenge.correctStructure.octetException !== 'none' && (
           <div className="mt-4 bg-gradient-to-r from-orange-50 to-purple-50 rounded-xl p-4 shadow-sm border border-orange-200">
-            <h3 className="font-bold text-gray-700 mb-3 flex items-center gap-2">
+            <h3 className="font-bold text-warm-700 mb-3 flex items-center gap-2">
               <span className="text-xl">⚠️</span>
               Undantekningar frá áttureglunni
             </h3>
             <div className="grid gap-3 text-sm">
               <div className={`p-3 rounded-lg ${challenge.correctStructure.octetException === 'electron-deficient' ? 'bg-orange-100 border-2 border-orange-300' : 'bg-white'}`}>
                 <div className="font-bold text-orange-700">Rafeindaskort (Electron Deficient)</div>
-                <div className="text-gray-600">Atóm eins og B og Al hafa færri en 8 rafeindir</div>
-                <div className="text-xs text-gray-500 mt-1">Dæmi: BF₃ (6 rafeindir), AlCl₃ (6 rafeindir)</div>
+                <div className="text-warm-600">Atóm eins og B og Al hafa færri en 8 rafeindir</div>
+                <div className="text-xs text-warm-500 mt-1">Dæmi: BF₃ (6 rafeindir), AlCl₃ (6 rafeindir)</div>
               </div>
               <div className={`p-3 rounded-lg ${challenge.correctStructure.octetException === 'expanded-octet' ? 'bg-purple-100 border-2 border-purple-300' : 'bg-white'}`}>
                 <div className="font-bold text-purple-700">Stækkuð átta (Expanded Octet)</div>
-                <div className="text-gray-600">Atóm á 3. lotu+ geta haft fleiri en 8 rafeindir (nota d-undirskeljum)</div>
-                <div className="text-xs text-gray-500 mt-1">Dæmi: PCl₅ (10 rafeindir), SF₆ (12 rafeindir)</div>
+                <div className="text-warm-600">Atóm á 3. lotu+ geta haft fleiri en 8 rafeindir (nota d-undirskeljum)</div>
+                <div className="text-xs text-warm-500 mt-1">Dæmi: PCl₅ (10 rafeindir), SF₆ (12 rafeindir)</div>
               </div>
               <div className="p-3 rounded-lg bg-white">
                 <div className="font-bold text-red-700">Oddatala rafeinda (Radicals)</div>
-                <div className="text-gray-600">Sameindir með oddatölu rafeinda hafa óparaða rafeind</div>
-                <div className="text-xs text-gray-500 mt-1">Dæmi: NO (11 rafeindir), NO₂ (17 rafeindir)</div>
+                <div className="text-warm-600">Sameindir með oddatölu rafeinda hafa óparaða rafeind</div>
+                <div className="text-xs text-warm-500 mt-1">Dæmi: NO (11 rafeindir), NO₂ (17 rafeindir)</div>
               </div>
             </div>
           </div>

@@ -187,7 +187,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-4 md:p-8">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
           <div className="flex justify-between items-center mb-6">
-            <button onClick={onBack} className="text-gray-500 hover:text-gray-700">
+            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
               ← Til baka
             </button>
           </div>
@@ -195,7 +195,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-purple-600">
             Minnisleikur: Nafnagift
           </h1>
-          <p className="text-center text-gray-600 mb-8">
+          <p className="text-center text-warm-600 mb-8">
             Paraðu saman efnaformúlur og nöfn þeirra
           </p>
 
@@ -209,17 +209,17 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   className={`p-4 rounded-xl border-2 text-left transition-all ${
                     difficulty === diff
                       ? 'border-purple-500 bg-purple-100'
-                      : 'border-gray-200 bg-white hover:border-purple-300'
+                      : 'border-warm-200 bg-white hover:border-purple-300'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="font-bold text-gray-800">{config.label}</div>
-                      <div className="text-sm text-gray-600">{config.description}</div>
+                      <div className="font-bold text-warm-800">{config.label}</div>
+                      <div className="text-sm text-warm-600">{config.description}</div>
                     </div>
                     <div className="text-right">
                       <div className="text-2xl font-bold text-purple-600">{config.pairs}</div>
-                      <div className="text-xs text-gray-500">pör</div>
+                      <div className="text-xs text-warm-500">pör</div>
                     </div>
                   </div>
                 </button>
@@ -227,9 +227,9 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
           </div>
 
-          <div className="bg-gray-50 rounded-xl p-4 mb-6">
-            <h3 className="font-semibold text-gray-700 mb-2">Hvernig á að spila:</h3>
-            <ul className="text-sm text-gray-600 space-y-1">
+          <div className="bg-warm-50 rounded-xl p-4 mb-6">
+            <h3 className="font-semibold text-warm-700 mb-2">Hvernig á að spila:</h3>
+            <ul className="text-sm text-warm-600 space-y-1">
               <li>• Snúðu við tveimur kortum í einu</li>
               <li>• Paraðu saman efnaformúlu og nafn</li>
               <li>• Þegar þú finnur par sérðu námsupplýsingar</li>
@@ -261,30 +261,30 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="text-center mb-8">
             <div className="text-6xl mb-4">🎉</div>
             <h1 className="text-3xl font-bold text-purple-600 mb-2">Til hamingju!</h1>
-            <p className="text-gray-600">Þú kláraðir minnisleikinn</p>
+            <p className="text-warm-600">Þú kláraðir minnisleikinn</p>
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-8">
             <div className="bg-purple-50 rounded-xl p-4 text-center">
               <div className="text-3xl font-bold text-purple-600">{moves}</div>
-              <div className="text-sm text-gray-600">Tilraunir</div>
+              <div className="text-sm text-warm-600">Tilraunir</div>
             </div>
             <div className="bg-green-50 rounded-xl p-4 text-center">
               <div className="text-3xl font-bold text-green-600">{totalPairs}</div>
-              <div className="text-sm text-gray-600">Pör fundin</div>
+              <div className="text-sm text-warm-600">Pör fundin</div>
             </div>
             <div className="bg-blue-50 rounded-xl p-4 text-center">
               <div className="text-3xl font-bold text-blue-600">{efficiency}%</div>
-              <div className="text-sm text-gray-600">Skilvirkni</div>
+              <div className="text-sm text-warm-600">Skilvirkni</div>
             </div>
             <div className="bg-amber-50 rounded-xl p-4 text-center">
               <div className="text-3xl font-bold text-amber-600">{finalScore}</div>
-              <div className="text-sm text-gray-600">Heildarstig</div>
+              <div className="text-sm text-warm-600">Heildarstig</div>
             </div>
           </div>
 
-          <div className="bg-gray-50 rounded-xl p-4 mb-6">
-            <h3 className="font-semibold text-gray-700 mb-3">Efnasambönd sem þú lærðir:</h3>
+          <div className="bg-warm-50 rounded-xl p-4 mb-6">
+            <h3 className="font-semibold text-warm-700 mb-3">Efnasambönd sem þú lærðir:</h3>
             <div className="grid gap-2 max-h-48 overflow-y-auto">
               {matchedPairs.map((pair, idx) => {
                 const typeInfo = typeColors[pair.compound.category] || typeColors['jónefni'];
@@ -292,7 +292,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   <div key={idx} className="flex items-center justify-between bg-white rounded-lg p-2 text-sm">
                     <div className="flex items-center gap-2">
                       <span className="font-mono font-bold">{pair.compound.formula}</span>
-                      <span className="text-gray-400">→</span>
+                      <span className="text-warm-400">→</span>
                       <span className="font-medium">{pair.compound.name}</span>
                     </div>
                     <span className={`${typeInfo.bg} ${typeInfo.text} text-xs px-2 py-1 rounded-full`}>
@@ -307,7 +307,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="flex gap-4">
             <button
               onClick={() => setGameState('setup')}
-              className="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl"
+              className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-6 rounded-xl"
             >
               Spila aftur
             </button>
@@ -333,21 +333,21 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {/* Header */}
         <div className="bg-white rounded-2xl shadow-lg p-4 mb-4">
           <div className="flex justify-between items-center">
-            <button onClick={onBack} className="text-gray-500 hover:text-gray-700">
+            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
               ← Til baka
             </button>
             <div className="flex items-center gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-gray-800">{moves}</div>
-                <div className="text-xs text-gray-500">Tilraunir</div>
+                <div className="text-2xl font-bold text-warm-800">{moves}</div>
+                <div className="text-xs text-warm-500">Tilraunir</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-purple-600">{matchedPairs.length}/{difficultyConfig[difficulty].pairs}</div>
-                <div className="text-xs text-gray-500">Pör</div>
+                <div className="text-xs text-warm-500">Pör</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">{score}</div>
-                <div className="text-xs text-gray-500">Stig</div>
+                <div className="text-xs text-warm-500">Stig</div>
               </div>
             </div>
           </div>
@@ -375,7 +375,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   <div className="h-full flex flex-col items-center justify-center p-2 gap-1">
                     {card.type === 'formula' ? (
                       <>
-                        <div className="text-base md:text-xl font-mono font-bold text-gray-800">
+                        <div className="text-base md:text-xl font-mono font-bold text-warm-800">
                           {card.compound.formula}
                         </div>
                         <CompoundVisualization compound={card.compound} size="small" showLabels={true} />
@@ -385,7 +385,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       </>
                     ) : (
                       <>
-                        <div className="text-xs md:text-sm font-bold text-gray-800 text-center leading-tight">
+                        <div className="text-xs md:text-sm font-bold text-warm-800 text-center leading-tight">
                           {card.compound.name}
                         </div>
                         <CompoundVisualization compound={card.compound} size="small" showLabels={false} />
@@ -414,13 +414,13 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 <div className="text-xl font-bold text-green-600">Par fundið!</div>
               </div>
 
-              <div className="bg-gray-50 rounded-xl p-4 mb-4">
+              <div className="bg-warm-50 rounded-xl p-4 mb-4">
                 <div className="flex items-center justify-center gap-4 mb-3">
-                  <div className="text-2xl font-mono font-bold text-gray-800">
+                  <div className="text-2xl font-mono font-bold text-warm-800">
                     {showMatchInfo.formula}
                   </div>
-                  <div className="text-2xl text-gray-400">=</div>
-                  <div className="text-xl font-bold text-gray-800">
+                  <div className="text-2xl text-warm-400">=</div>
+                  <div className="text-xl font-bold text-warm-800">
                     {showMatchInfo.name}
                   </div>
                 </div>
@@ -431,14 +431,14 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 </div>
 
                 <div className="flex justify-center mb-3">
-                  <span className={`${typeColors[showMatchInfo.category]?.bg || 'bg-gray-100'} ${typeColors[showMatchInfo.category]?.text || 'text-gray-700'} px-3 py-1 rounded-full text-sm font-medium`}>
+                  <span className={`${typeColors[showMatchInfo.category]?.bg || 'bg-warm-100'} ${typeColors[showMatchInfo.category]?.text || 'text-warm-700'} px-3 py-1 rounded-full text-sm font-medium`}>
                     {typeColors[showMatchInfo.category]?.label || showMatchInfo.category}
                   </span>
                 </div>
 
-                <div className="bg-white rounded-lg p-3 border border-gray-200">
-                  <div className="text-sm text-gray-600 mb-1">Námsupplýsingar:</div>
-                  <div className="text-gray-800">{showMatchInfo.info}</div>
+                <div className="bg-white rounded-lg p-3 border border-warm-200">
+                  <div className="text-sm text-warm-600 mb-1">Námsupplýsingar:</div>
+                  <div className="text-warm-800">{showMatchInfo.info}</div>
                 </div>
               </div>
 

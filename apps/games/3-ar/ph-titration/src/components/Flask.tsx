@@ -64,7 +64,7 @@ export const Flask: React.FC<FlaskProps> = ({
             {/* Stirring bar */}
             {isSwirling && (
               <div
-                className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1.5 bg-white rounded-full animate-spin"
+                className="absolute bottom-2 left-1/2 transform -tranwarm-x-1/2 w-16 h-1.5 bg-white rounded-full animate-spin"
                 style={{ animationDuration: '1s' }}
               />
             )}
@@ -93,8 +93,8 @@ export const Flask: React.FC<FlaskProps> = ({
             borderColor: solutionColor !== 'transparent' ? solutionColor : '#cbd5e1'
           }}
         >
-          <p className="text-xs text-gray-700 font-semibold">pH</p>
-          <p className="text-sm font-bold text-gray-900">{pH.toFixed(2)}</p>
+          <p className="text-xs text-warm-700 font-semibold">pH</p>
+          <p className="text-sm font-bold text-warm-900">{pH.toFixed(2)}</p>
         </div>
       </div>
     </div>

@@ -221,11 +221,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
         <div className="flex justify-between items-center mb-6">
-          <button onClick={onBack} className="text-gray-500 hover:text-gray-700">
+          <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
             ← Til baka
           </button>
           <div className="flex items-center gap-4">
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-warm-500">
               {currentProgress} af {totalQuestions}
             </div>
             <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-bold">
@@ -238,10 +238,10 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           🔄 Greina redox-hvörf
         </h1>
 
-        <div className="bg-gray-50 p-6 rounded-xl mb-6">
+        <div className="bg-warm-50 p-6 rounded-xl mb-6">
           <div className="text-center mb-4">
-            <div className="text-sm text-gray-500 mb-2">Efnahvarf {currentReaction + 1}:</div>
-            <div className="text-2xl md:text-3xl font-mono font-bold text-gray-800">
+            <div className="text-sm text-warm-500 mb-2">Efnahvarf {currentReaction + 1}:</div>
+            <div className="text-2xl md:text-3xl font-mono font-bold text-warm-800">
               {reaction.equationDisplay}
             </div>
           </div>
@@ -279,7 +279,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 <button
                   key={idx}
                   onClick={() => handleAnswer(option)}
-                  className="p-4 rounded-xl border-2 border-green-300 bg-white hover:bg-green-50 hover:border-green-400 text-lg font-bold text-gray-800 transition-all"
+                  className="p-4 rounded-xl border-2 border-green-300 bg-white hover:bg-green-50 hover:border-green-400 text-lg font-bold text-warm-800 transition-all"
                 >
                   {option}
                 </button>
@@ -341,8 +341,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
         )}
 
-        <div className="mt-6 bg-gray-50 p-4 rounded-xl">
-          <h3 className="font-semibold text-gray-700 mb-2">📚 Lykilhugtök:</h3>
+        <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+          <h3 className="font-semibold text-warm-700 mb-2">📚 Lykilhugtök:</h3>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="bg-blue-50 p-3 rounded-lg">
               <div className="font-bold text-blue-800">Oxun</div>
@@ -363,7 +363,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
         </div>
 
-        <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
+        <div className="mt-4 w-full bg-warm-200 rounded-full h-2">
           <div
             className="bg-green-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${(currentProgress / totalQuestions) * 100}%` }}

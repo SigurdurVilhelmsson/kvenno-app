@@ -97,7 +97,7 @@ export function CollisionDemo({
 
 
   return (
-    <div ref={containerRef} className={`bg-gray-900 rounded-xl p-4 ${className}`}>
+    <div ref={containerRef} className={`bg-warm-900 rounded-xl p-4 ${className}`}>
       <div className="mb-3 flex justify-between items-center">
         <h3 className="text-white font-semibold text-sm">Árekstrarhermun</h3>
         <div className="flex gap-4 text-xs">
@@ -151,20 +151,20 @@ export function CollisionDemo({
       <div className="mt-3 flex flex-wrap gap-3 text-xs">
         <div className="flex items-center gap-1.5">
           <div className="w-3 h-3 rounded-full bg-orange-500 border border-white/20" />
-          <span className="text-gray-200 font-medium">Hvarfefni A</span>
+          <span className="text-warm-200 font-medium">Hvarfefni A</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-3 h-3 rounded-full bg-blue-500 border border-white/20" />
-          <span className="text-gray-200 font-medium">Hvarfefni B</span>
+          <span className="text-warm-200 font-medium">Hvarfefni B</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-3 h-3 rounded-full bg-green-500 border border-white/20" />
-          <span className="text-gray-200 font-medium">Afurð AB</span>
+          <span className="text-warm-200 font-medium">Afurð AB</span>
         </div>
       </div>
 
       {/* Info text */}
-      <div className="mt-2 text-xs text-gray-400 text-center">
+      <div className="mt-2 text-xs text-warm-400 text-center">
         Agnir þurfa næga orku (E ≥ Ea) og rétta stefnu til að hvarfast
       </div>
     </div>

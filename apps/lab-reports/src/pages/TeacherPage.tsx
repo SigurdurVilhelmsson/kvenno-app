@@ -234,20 +234,20 @@ export function TeacherPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-warm-50 to-warm-100 p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="bg-white rounded-lg shadow-xl p-8 mb-6">
+        <div className="bg-surface-raised rounded-lg shadow-lg p-8 mb-6">
           <div className="flex justify-between items-start mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900 mb-2">
+              <h1 className="text-3xl font-heading font-bold text-warm-900 mb-2">
                 Kennslutól - Kennaraviðmót
               </h1>
-              <p className="text-slate-600">Hraðmat á skýrslum nemenda</p>
+              <p className="text-warm-600">Hraðmat á skýrslum nemenda</p>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => navigate('/')}
-                className="px-4 py-2 rounded-lg transition bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center gap-2"
+                className="px-4 py-2 rounded-lg transition bg-warm-200 text-warm-700 hover:bg-warm-300 flex items-center gap-2"
               >
                 <Home size={18} />
                 Heim
@@ -260,7 +260,7 @@ export function TeacherPage() {
                 className={`px-4 py-2 rounded-lg transition ${
                   view === 'grader'
                     ? 'bg-kvenno-orange text-white'
-                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                    : 'bg-warm-200 text-warm-700 hover:bg-warm-300'
                 }`}
               >
                 Ný greining
@@ -270,7 +270,7 @@ export function TeacherPage() {
                 className={`px-4 py-2 rounded-lg transition flex items-center gap-2 ${
                   view === 'history'
                     ? 'bg-kvenno-orange text-white'
-                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                    : 'bg-warm-200 text-warm-700 hover:bg-warm-300'
                 }`}
               >
                 <History size={18} />
@@ -289,13 +289,13 @@ export function TeacherPage() {
             <>
               {/* Experiment selector */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-warm-700 mb-2">
                   Veldu tilraun:
                 </label>
                 <select
                   value={selectedExperiment}
                   onChange={(e) => setSelectedExperiment(e.target.value)}
-                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-kvenno-orange"
+                  className="w-full p-3 border border-warm-300 rounded-lg focus:ring-2 focus:ring-kvenno-orange"
                 >
                   {experiments.map((exp) => (
                     <option key={exp.id} value={exp.id}>

@@ -135,7 +135,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         id: s.id,
         content: (
           <div className={`px-3 py-2 rounded-lg border-2 font-bold ${
-            s.type === 'alkane' ? 'bg-gray-100 border-gray-300 text-gray-700' :
+            s.type === 'alkane' ? 'bg-warm-100 border-warm-300 text-warm-700' :
             s.type === 'alkene' ? 'bg-green-100 border-green-300 text-green-700' :
             'bg-purple-100 border-purple-300 text-purple-700'
           }`}>
@@ -340,7 +340,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const getTypeColor = () => {
     switch (molecule.type) {
-      case 'alkane': return 'from-gray-50 to-slate-100 border-gray-300';
+      case 'alkane': return 'from-warm-50 to-warm-100 border-warm-300';
       case 'alkene': return 'from-green-50 to-emerald-100 border-green-300';
       case 'alkyne': return 'from-purple-50 to-violet-100 border-purple-300';
     }
@@ -360,7 +360,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
           <div className="flex justify-between items-center mb-6">
-            <button onClick={onBack} className="text-gray-500 hover:text-gray-700">
+            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
               ← Til baka
             </button>
           </div>
@@ -368,7 +368,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-green-600">
             🏷️ Stig 2: Nafna og byggja
           </h1>
-          <p className="text-center text-gray-600 mb-8">
+          <p className="text-center text-warm-600 mb-8">
             Veldu hvernig þú vilt æfa þig
           </p>
 
@@ -404,9 +404,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </button>
           </div>
 
-          <div className="mt-8 bg-gray-50 p-4 rounded-xl">
-            <h3 className="font-semibold text-gray-700 mb-2">💡 Mismunandi æfingar</h3>
-            <p className="text-sm text-gray-600">
+          <div className="mt-8 bg-warm-50 p-4 rounded-xl">
+            <h3 className="font-semibold text-warm-700 mb-2">💡 Mismunandi æfingar</h3>
+            <p className="text-sm text-warm-600">
               <strong>Nefna sameindir</strong> æfir þig í að þekkja byggingu og skrifa nafn.
               <br />
               <strong>Byggja sameindir</strong> æfir öfuga leið: lesa nafn og búa til rétta byggingu.
@@ -434,11 +434,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
         <div className="flex justify-between items-center mb-6">
-          <button onClick={() => setMode('select')} className="text-gray-500 hover:text-gray-700">
+          <button onClick={() => setMode('select')} className="text-warm-500 hover:text-warm-700">
             ← Til baka
           </button>
           <div className="flex items-center gap-4">
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-warm-500">
               Sameind {currentMolecule + 1} af {molecules.length}
             </div>
             <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-bold">
@@ -450,7 +450,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-green-600">
           🏷️ Nefndu sameindina
         </h1>
-        <p className="text-center text-gray-600 mb-6">
+        <p className="text-center text-warm-600 mb-6">
           Notaðu IUPAC reglurnar til að nefna þessa sameind
         </p>
 
@@ -473,7 +473,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
 
           <div className="text-center">
-            <span className="text-2xl font-mono font-bold text-gray-800">
+            <span className="text-2xl font-mono font-bold text-warm-800">
               {molecule.formula}
             </span>
           </div>
@@ -491,11 +491,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 }`}>
                   {molecule.type === 'alkene' ? '🟢 Tvítengi (C=C)' : '🟣 Þrítengi (C≡C)'}
                 </span>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-warm-600">
                   á stað {molecule.doublePosition || molecule.triplePosition}
                 </span>
               </div>
-              <p className="text-xs text-center mt-1 text-gray-500">
+              <p className="text-xs text-center mt-1 text-warm-500">
                 {molecule.type === 'alkene'
                   ? 'Viðskeytið -en gefur til kynna tvítengi (ómettað)'
                   : 'Viðskeytið -yn gefur til kynna þrítengi (ómettað)'}
@@ -519,7 +519,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="flex justify-end">
               <button
                 onClick={() => setUseDragDrop(!useDragDrop)}
-                className="text-xs px-3 py-1 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600"
+                className="text-xs px-3 py-1 rounded-full bg-warm-100 hover:bg-warm-200 text-warm-600"
               >
                 {useDragDrop ? '⌨️ Skipta í skrifa-ham' : '✋ Skipta í draga-ham'}
               </button>
@@ -528,7 +528,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             {useDragDrop ? (
               /* Drag-and-drop name builder */
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-warm-700 mb-2">
                   Dragðu hluta til að byggja nafnið:
                 </label>
 
@@ -542,7 +542,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
                 {/* Preview of built name */}
                 <div className="mt-4 p-4 bg-emerald-50 rounded-xl border-2 border-emerald-200 text-center">
-                  <div className="text-sm text-gray-500 mb-1">Nafnið sem þú byggir:</div>
+                  <div className="text-sm text-warm-500 mb-1">Nafnið sem þú byggir:</div>
                   <div className="text-2xl font-bold text-emerald-700">
                     {getBuiltName() || '—'}
                   </div>
@@ -551,7 +551,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             ) : (
               /* Text input mode */
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-warm-700 mb-2">
                   Hvert er nafn þessarar sameindar?
                 </label>
                 <input
@@ -582,7 +582,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 disabled={useDragDrop ? !getBuiltName() : !userAnswer.trim()}
                 className={`flex-1 font-bold py-3 px-6 rounded-xl ${
                   (useDragDrop ? !getBuiltName() : !userAnswer.trim())
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
                     : 'bg-green-500 hover:bg-green-600 text-white'
                 }`}
               >
@@ -622,9 +622,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               </div>
             )}
 
-            <div className="bg-gray-50 p-4 rounded-xl">
-              <div className="font-bold text-gray-700 mb-2">Útskýring:</div>
-              <div className="text-sm text-gray-600">
+            <div className="bg-warm-50 p-4 rounded-xl">
+              <div className="font-bold text-warm-700 mb-2">Útskýring:</div>
+              <div className="text-sm text-warm-600">
                 <span className="text-blue-600 font-bold">
                   {molecule.carbons === 1 ? 'meth' :
                    molecule.carbons === 2 ? 'eth' :
@@ -635,13 +635,13 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                    molecule.carbons === 7 ? 'hept' :
                    molecule.carbons === 8 ? 'oct' : 'non'}
                 </span>
-                <span className="text-gray-500"> ({molecule.carbons} kolefni) + </span>
+                <span className="text-warm-500"> ({molecule.carbons} kolefni) + </span>
                 <span className="text-green-600 font-bold">
                   {molecule.type === 'alkane' ? 'an' : molecule.type === 'alkene' ? 'en' : 'yn'}
                 </span>
-                <span className="text-gray-500"> ({molecule.type === 'alkane' ? 'eintengi' : molecule.type === 'alkene' ? 'tvítengi' : 'þrítengi'})</span>
+                <span className="text-warm-500"> ({molecule.type === 'alkane' ? 'eintengi' : molecule.type === 'alkene' ? 'tvítengi' : 'þrítengi'})</span>
                 {(molecule.doublePosition || molecule.triplePosition) && molecule.carbons >= 4 && (
-                  <span className="text-gray-500">
+                  <span className="text-warm-500">
                     {' '}+ staðsetningartala <span className="text-red-600 font-bold">{molecule.doublePosition || molecule.triplePosition}</span>
                   </span>
                 )}
@@ -665,7 +665,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 </button>
                 <button
                   onClick={handleNext}
-                  className="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl"
+                  className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-6 rounded-xl"
                 >
                   Halda áfram →
                 </button>
@@ -674,16 +674,16 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
         )}
 
-        <div className="mt-6 bg-gray-50 p-4 rounded-xl">
-          <h3 className="font-semibold text-gray-700 mb-2">📋 Nafnareglur:</h3>
-          <div className="text-xs space-y-1 text-gray-600">
+        <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+          <h3 className="font-semibold text-warm-700 mb-2">📋 Nafnareglur:</h3>
+          <div className="text-xs space-y-1 text-warm-600">
             <div>• Forskeyti (kolefnisfjöldi) + viðskeyti (tengjategund)</div>
             <div>• Fyrir 4+ kolefni með tvítengi/þrítengi, bættu við staðsetningartölu</div>
             <div>• Númeraðu keðjuna svo tvítengi/þrítengi fái lægstu tölu</div>
           </div>
         </div>
 
-        <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
+        <div className="mt-4 w-full bg-warm-200 rounded-full h-2">
           <div
             className="bg-green-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentMolecule + 1) / molecules.length) * 100}%` }}

@@ -43,7 +43,7 @@ function ElementCell({
         ${isSelected ? 'ring-4 ring-blue-500 ring-offset-2 scale-110 z-10' : ''}
       `}
     >
-      <span className="text-[8px] md:text-[10px] text-gray-500">{element.atomicNumber}</span>
+      <span className="text-[8px] md:text-[10px] text-warm-500">{element.atomicNumber}</span>
       <span className="text-sm md:text-lg font-bold leading-tight">{element.symbol}</span>
       <span className="text-[8px] md:text-[10px] font-mono leading-tight">
         {showApproximate ? `≈${mass}` : mass}
@@ -128,7 +128,7 @@ export function PeriodicTable({
           </div>
           <button
             onClick={onClose}
-            className="text-white hover:text-gray-200 text-2xl font-bold w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/20 transition-colors"
+            className="text-white hover:text-warm-200 text-2xl font-bold w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/20 transition-colors"
             aria-label="Loka"
           >
             ×
@@ -136,22 +136,22 @@ export function PeriodicTable({
         </div>
 
         {/* Controls */}
-        <div className="p-3 md:p-4 border-b bg-gray-50 shrink-0">
+        <div className="p-3 md:p-4 border-b bg-warm-50 shrink-0">
           <div className="flex flex-wrap gap-2 md:gap-4 items-center">
             <input
               type="text"
               placeholder="Leita (nafn, tákn, atómnúmer)..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 min-w-[150px] px-3 py-2 border-2 border-gray-300 rounded-lg focus:border-primary focus:outline-hidden text-sm"
+              className="flex-1 min-w-[150px] px-3 py-2 border-2 border-warm-300 rounded-lg focus:border-primary focus:outline-hidden text-sm"
             />
 
             {/* View toggle */}
-            <div className="flex rounded-lg overflow-hidden border-2 border-gray-300">
+            <div className="flex rounded-lg overflow-hidden border-2 border-warm-300">
               <button
                 onClick={() => setViewMode('grid')}
                 className={`px-3 py-2 text-sm font-semibold transition-colors ${
-                  viewMode === 'grid' ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
+                  viewMode === 'grid' ? 'bg-primary text-white' : 'bg-white text-warm-700 hover:bg-warm-100'
                 }`}
               >
                 📊 Tafla
@@ -159,7 +159,7 @@ export function PeriodicTable({
               <button
                 onClick={() => setViewMode('list')}
                 className={`px-3 py-2 text-sm font-semibold transition-colors ${
-                  viewMode === 'list' ? 'bg-primary text-white' : 'bg-white text-gray-700 hover:bg-gray-100'
+                  viewMode === 'list' ? 'bg-primary text-white' : 'bg-white text-warm-700 hover:bg-warm-100'
                 }`}
               >
                 📋 Listi
@@ -188,7 +188,7 @@ export function PeriodicTable({
               <div className="grid gap-0.5" style={{ gridTemplateColumns: 'repeat(18, minmax(0, 1fr))' }}>
                 {/* Group numbers header */}
                 {Array.from({ length: 18 }, (_, i) => (
-                  <div key={`group-${i + 1}`} className="text-center text-xs text-gray-400 font-semibold py-1">
+                  <div key={`group-${i + 1}`} className="text-center text-xs text-warm-400 font-semibold py-1">
                     {i + 1}
                   </div>
                 ))}
@@ -215,7 +215,7 @@ export function PeriodicTable({
 
               {/* Category Legend */}
               <div className="mt-4 pt-4 border-t">
-                <h3 className="text-sm font-bold text-gray-700 mb-2">Flokkar frumefna:</h3>
+                <h3 className="text-sm font-bold text-warm-700 mb-2">Flokkar frumefna:</h3>
                 <div className="flex flex-wrap gap-2">
                   {categories.map(cat => {
                     const colors = CATEGORY_COLORS[cat.key];
@@ -249,10 +249,10 @@ export function PeriodicTable({
                 >
                   <div className="flex items-center gap-2">
                     <span className="text-2xl font-bold text-primary">{element.symbol}</span>
-                    <span className="text-xs text-gray-500">#{element.atomicNumber}</span>
+                    <span className="text-xs text-warm-500">#{element.atomicNumber}</span>
                   </div>
-                  <div className="text-sm text-gray-700">{element.name}</div>
-                  <div className="text-sm font-mono text-gray-600 mt-1">
+                  <div className="text-sm text-warm-700">{element.name}</div>
+                  <div className="text-sm font-mono text-warm-600 mt-1">
                     {showApprox
                       ? `≈ ${APPROX_MASSES[element.symbol] || Math.round(element.atomicMass)} g/mol`
                       : `${element.atomicMass.toFixed(3)} g/mol`}
@@ -265,7 +265,7 @@ export function PeriodicTable({
 
         {/* Selected Element Detail Panel */}
         {selectedElement && (
-          <div className="border-t bg-gray-50 p-4 shrink-0">
+          <div className="border-t bg-warm-50 p-4 shrink-0">
             <div className="flex items-start gap-4">
               <div className={`
                 w-20 h-20 rounded-xl flex flex-col items-center justify-center
@@ -273,33 +273,33 @@ export function PeriodicTable({
                 ${CATEGORY_COLORS[selectedElement.category].border}
                 border-2
               `}>
-                <span className="text-xs text-gray-500">{selectedElement.atomicNumber}</span>
+                <span className="text-xs text-warm-500">{selectedElement.atomicNumber}</span>
                 <span className="text-3xl font-bold">{selectedElement.symbol}</span>
               </div>
               <div className="flex-1">
-                <h3 className="text-xl font-bold text-gray-800">{selectedElement.name}</h3>
+                <h3 className="text-xl font-bold text-warm-800">{selectedElement.name}</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2 text-sm">
                   <div className="bg-white rounded-lg p-2 border">
-                    <div className="text-gray-500 text-xs">Atómnúmer</div>
+                    <div className="text-warm-500 text-xs">Atómnúmer</div>
                     <div className="font-bold">{selectedElement.atomicNumber}</div>
                   </div>
                   <div className="bg-white rounded-lg p-2 border">
-                    <div className="text-gray-500 text-xs">Atómmassi (nákvæmt)</div>
+                    <div className="text-warm-500 text-xs">Atómmassi (nákvæmt)</div>
                     <div className="font-bold font-mono">{selectedElement.atomicMass.toFixed(3)} g/mol</div>
                   </div>
                   <div className="bg-white rounded-lg p-2 border">
-                    <div className="text-gray-500 text-xs">Atómmassi (námundað)</div>
+                    <div className="text-warm-500 text-xs">Atómmassi (námundað)</div>
                     <div className="font-bold font-mono">≈ {APPROX_MASSES[selectedElement.symbol] || Math.round(selectedElement.atomicMass)} g/mol</div>
                   </div>
                   <div className="bg-white rounded-lg p-2 border">
-                    <div className="text-gray-500 text-xs">Staðsetning</div>
+                    <div className="text-warm-500 text-xs">Staðsetning</div>
                     <div className="font-bold">Lota {selectedElement.period}, Flokkur {selectedElement.group}</div>
                   </div>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedElement(null)}
-                className="text-gray-400 hover:text-gray-600 text-xl"
+                className="text-warm-400 hover:text-warm-600 text-xl"
               >
                 ×
               </button>
@@ -308,7 +308,7 @@ export function PeriodicTable({
         )}
 
         {/* Footer */}
-        <div className="bg-gray-100 p-3 text-center text-sm text-gray-600 shrink-0">
+        <div className="bg-warm-100 p-3 text-center text-sm text-warm-600 shrink-0">
           <p>
             {showApprox
               ? 'Sýnir námundaðan atómmassa (heil tölu) fyrir einfalda útreikninga'

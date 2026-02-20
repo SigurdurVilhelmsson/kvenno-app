@@ -15,15 +15,15 @@ export const PHMeter: React.FC<PHMeterProps> = ({ pH, isActive = true }) => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="bg-gray-800 rounded-lg p-4 shadow-xl border-4 border-gray-700">
+      <div className="bg-warm-800 rounded-lg p-4 shadow-xl border-4 border-warm-700">
         {/* Brand label */}
         <div className="text-center mb-2">
-          <p className="text-xs text-gray-400 font-bold">DIGITAL pH METER</p>
+          <p className="text-xs text-warm-400 font-bold">DIGITAL pH METER</p>
         </div>
 
         {/* Display screen */}
         <div
-          className="bg-gray-900 rounded px-6 py-4 mb-3 border-2 border-gray-600"
+          className="bg-warm-900 rounded px-6 py-4 mb-3 border-2 border-warm-600"
           style={{
             fontFamily: '"Courier New", monospace',
             boxShadow: 'inset 0 2px 6px rgba(0, 0, 0, 0.5)'
@@ -44,8 +44,8 @@ export const PHMeter: React.FC<PHMeterProps> = ({ pH, isActive = true }) => {
             </div>
           ) : (
             <div className="text-center">
-              <div className="text-4xl font-bold text-gray-600">---</div>
-              <div className="text-xs text-gray-600 mt-1">STANDBY</div>
+              <div className="text-4xl font-bold text-warm-600">---</div>
+              <div className="text-xs text-warm-600 mt-1">STANDBY</div>
             </div>
           )}
         </div>
@@ -70,7 +70,7 @@ export const PHMeter: React.FC<PHMeterProps> = ({ pH, isActive = true }) => {
                 boxShadow: '0 0 4px rgba(255, 255, 255, 0.8)'
               }}
             >
-              <div className="absolute -top-1 left-1/2 transform -translate-x-1/2">
+              <div className="absolute -top-1 left-1/2 transform -tranwarm-x-1/2">
                 <div className="w-0 h-0 border-l-2 border-r-2 border-t-3 border-transparent border-t-white" />
               </div>
             </div>
@@ -78,7 +78,7 @@ export const PHMeter: React.FC<PHMeterProps> = ({ pH, isActive = true }) => {
         </div>
 
         {/* Scale numbers */}
-        <div className="flex justify-between mt-1 text-xs text-gray-400">
+        <div className="flex justify-between mt-1 text-xs text-warm-400">
           <span>0</span>
           <span>7</span>
           <span>14</span>
@@ -87,7 +87,7 @@ export const PHMeter: React.FC<PHMeterProps> = ({ pH, isActive = true }) => {
 
       {/* Labels */}
       <div className="mt-2 text-center">
-        <p className="text-xs text-gray-600 font-semibold">
+        <p className="text-xs text-warm-600 font-semibold">
           {pH < 7 ? '🔴 Súr lausn' : pH > 7 ? '🔵 Basísk lausn' : '🟢 Hlutlaus'}
         </p>
       </div>

@@ -266,18 +266,18 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
           >
             <span>&larr;</span> Til baka
           </button>
           <div className="text-right">
-            <div className="text-sm text-gray-600">Stig 1 / Þraut {currentChallenge + 1} af {challenges.length}</div>
+            <div className="text-sm text-warm-600">Stig 1 / Þraut {currentChallenge + 1} af {challenges.length}</div>
             <div className="text-lg font-bold text-blue-600">{score} stig</div>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-blue-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
@@ -301,7 +301,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   {challenge.elements.map((el, idx) => (
                     <div key={idx} className="text-center">
                       <div className="font-bold text-indigo-600">{el.symbol}</div>
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-warm-600">
                         {el.count} × {el.valence} = {el.count * el.valence}
                       </div>
                     </div>
@@ -309,7 +309,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   {challenge.charge && (
                     <div className="text-center">
                       <div className="font-bold text-red-600">Hleðsla</div>
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-warm-600">
                         {challenge.charge > 0 ? `-${challenge.charge}` : `+${Math.abs(challenge.charge)}`}
                       </div>
                     </div>
@@ -319,7 +319,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
           )}
 
-          <p className="text-gray-700 text-lg mb-6">{challenge.question}</p>
+          <p className="text-warm-700 text-lg mb-6">{challenge.question}</p>
 
           {/* Multiple choice options */}
           {shuffledOptions.length > 0 ? (
@@ -335,14 +335,14 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         ? 'border-green-500 bg-green-50'
                         : selectedOption === option.id
                         ? 'border-red-500 bg-red-50'
-                        : 'border-gray-200 bg-gray-50 opacity-50'
+                        : 'border-warm-200 bg-warm-50 opacity-50'
                       : selectedOption === option.id
                       ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-                      : 'border-gray-300 hover:border-blue-400 hover:bg-blue-50'
+                      : 'border-warm-300 hover:border-blue-400 hover:bg-blue-50'
                   }`}
                 >
                   <div className="flex items-start gap-3">
-                    <span className="font-bold text-gray-500 uppercase">{option.id}.</span>
+                    <span className="font-bold text-warm-500 uppercase">{option.id}.</span>
                     <span className="flex-1">{option.text}</span>
                   </div>
                   {showResult && selectedOption === option.id && (
@@ -362,10 +362,10 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
                   disabled={showResult}
-                  className="flex-1 p-4 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:outline-hidden text-2xl font-mono text-center"
+                  className="flex-1 p-4 border-2 border-warm-300 rounded-xl focus:border-blue-500 focus:outline-hidden text-2xl font-mono text-center"
                   placeholder="?"
                 />
-                <span className="text-gray-600 font-medium">rafeindir</span>
+                <span className="text-warm-600 font-medium">rafeindir</span>
               </div>
             </div>
           )}
@@ -387,7 +387,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <button
               onClick={checkAnswer}
               disabled={shuffledOptions.length > 0 ? !selectedOption : !userAnswer}
-              className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+              className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
             >
               Athuga svar
             </button>
@@ -431,11 +431,11 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Valence electron reference */}
         <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="font-bold text-gray-700 mb-3">Gildisrafeindatafla</h3>
+          <h3 className="font-bold text-warm-700 mb-3">Gildisrafeindatafla</h3>
           <div className="grid grid-cols-4 md:grid-cols-8 gap-2 text-sm">
             {Object.entries(VALENCE_ELECTRONS).slice(0, 16).map(([symbol, valence]) => (
-              <div key={symbol} className="bg-gray-50 p-2 rounded text-center border">
-                <div className="font-bold text-gray-800">{symbol}</div>
+              <div key={symbol} className="bg-warm-50 p-2 rounded text-center border">
+                <div className="font-bold text-warm-800">{symbol}</div>
                 <div className="text-blue-600">{valence}</div>
               </div>
             ))}

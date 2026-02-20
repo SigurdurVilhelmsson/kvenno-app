@@ -20,7 +20,7 @@ export const Landing: React.FC = () => {
   const backPath = yearMatch ? `/${yearMatch[1]}-ar/` : '/';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-warm-50 to-warm-100">
       <Header
         authSlot={<AuthButton />}
         onInfoClick={() => setShowInfo(!showInfo)}
@@ -32,28 +32,28 @@ export const Landing: React.FC = () => {
         {/* Back button */}
         <a
           href={backPath}
-          className="inline-flex items-center gap-2 mb-6 text-slate-700 hover:text-kvenno-orange transition"
+          className="inline-flex items-center gap-2 mb-6 text-warm-700 hover:text-kvenno-orange transition"
         >
           <ArrowLeft size={20} />
           <span className="font-medium">Til baka</span>
         </a>
 
-        <div className="bg-white rounded-lg shadow-xl p-8 mb-6">
-          <h1 className="text-4xl font-bold text-slate-900 mb-2 text-center">
+        <div className="bg-surface-raised rounded-lg shadow-lg p-8 mb-6">
+          <h1 className="text-4xl font-bold font-heading text-warm-900 mb-2 text-center">
             Tilraunarskýrslur
           </h1>
-          <p className="text-slate-600 text-center mb-8">
+          <p className="text-warm-600 text-center mb-8">
             AI-aðstoð við mat og skrif efnafræðiskýrslna
           </p>
 
           {/* Info panel */}
           {showInfo && (
             <div className="mb-6 p-4 bg-orange-50 border border-kvenno-orange rounded-lg">
-              <h3 className="font-bold text-slate-900 mb-2">Um verkfærið</h3>
-              <p className="text-sm text-slate-700 mb-2">
+              <h3 className="font-bold text-warm-900 mb-2">Um verkfærið</h3>
+              <p className="text-sm text-warm-700 mb-2">
                 Þetta verkfæri notar gervigreind (Claude AI) til að meta tilraunarskýrslur í efnafræði og veita ítarlega endurgjöf.
               </p>
-              <ul className="text-sm text-slate-700 space-y-1 list-disc list-inside">
+              <ul className="text-sm text-warm-700 space-y-1 list-disc list-inside">
                 <li><strong>Kennarar:</strong> Geta metið margar skýrslur í einu og flutt út niðurstöður</li>
                 <li><strong>Nemendur:</strong> Fá ítarlega endurgjöf með tillögum til úrbóta</li>
                 <li>Styður Word (.docx), PDF og myndir</li>
@@ -72,11 +72,11 @@ export const Landing: React.FC = () => {
                 <div className="bg-kvenno-orange text-white p-4 rounded-full mb-4 group-hover:scale-110 transition-transform">
                   <GraduationCap size={48} />
                 </div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Kennari</h2>
-                <p className="text-slate-700 mb-4">
+                <h2 className="text-2xl font-bold font-heading text-warm-900 mb-2">Kennari</h2>
+                <p className="text-warm-700 mb-4">
                   Hraðmat á mörgum skýrslum samtímis
                 </p>
-                <ul className="text-sm text-slate-600 space-y-1 text-left">
+                <ul className="text-sm text-warm-600 space-y-1 text-left">
                   <li>• Greiningar á mörgum skýrslum í einu</li>
                   <li>• Flytja út niðurstöður í CSV</li>
                   <li>• Vista greiningarlotur</li>
@@ -94,11 +94,11 @@ export const Landing: React.FC = () => {
                 <div className="bg-blue-500 text-white p-4 rounded-full mb-4 group-hover:scale-110 transition-transform">
                   <ClipboardCheck size={48} />
                 </div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">2. ár - Gátlisti</h2>
-                <p className="text-slate-700 mb-4">
+                <h2 className="text-2xl font-bold font-heading text-warm-900 mb-2">2. ár - Gátlisti</h2>
+                <p className="text-warm-700 mb-4">
                   Einfaldað gátlistamat fyrir 2. ár
                 </p>
-                <ul className="text-sm text-slate-600 space-y-1 text-left">
+                <ul className="text-sm text-warm-600 space-y-1 text-left">
                   <li>• Til staðar / vantar athugun</li>
                   <li>• Samanburður við drög</li>
                   <li>• Kennari gefur stig handvirkt</li>
@@ -116,11 +116,11 @@ export const Landing: React.FC = () => {
                 <div className="bg-kvenno-orange text-white p-4 rounded-full mb-4 group-hover:scale-110 transition-transform">
                   <BookOpen size={48} />
                 </div>
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">Nemandi</h2>
-                <p className="text-slate-700 mb-4">
+                <h2 className="text-2xl font-bold font-heading text-warm-900 mb-2">Nemandi</h2>
+                <p className="text-warm-700 mb-4">
                   Fáðu ítarlega endurgjöf á skýrsluna þína
                 </p>
-                <ul className="text-sm text-slate-600 space-y-1 text-left">
+                <ul className="text-sm text-warm-600 space-y-1 text-left">
                   <li>• Skoða vinnuseðil fyrir tilraunina</li>
                   <li>• Fá ítarlega endurgjöf með stigum</li>
                   <li>• Læra af tillögum og athugasemdum</li>
@@ -130,7 +130,7 @@ export const Landing: React.FC = () => {
             </button>
           </div>
 
-          <div className="mt-8 text-center text-sm text-slate-500">
+          <div className="mt-8 text-center text-sm text-warm-500">
             <p>Veldu hlutverk til að halda áfram</p>
           </div>
         </div>

@@ -1,8 +1,11 @@
 // Site-wide components
 export { Header } from './Header';
+export type { HeaderVariant } from './Header';
 export { Breadcrumbs } from './Breadcrumbs';
 export type { BreadcrumbItem } from './Breadcrumbs';
 export { Footer } from './Footer';
+export { BottomNav } from './BottomNav';
+export type { BottomNavProps } from './BottomNav';
 
 // Design system primitives
 export { Card } from './Card';
@@ -100,12 +103,9 @@ export type {
 } from './DragDropBuilder';
 
 // MoleculeViewer3D - 3D molecule visualization (lazy-loaded)
-export { MoleculeViewer3D, MoleculeViewer3DLazy, MoleculeViewer3DDirect } from './MoleculeViewer3D';
-export type {
-  MoleculeViewer3DProps,
-  MoleculeViewer3DStyle,
-  CameraPreset,
-} from './MoleculeViewer3D';
+// NOTE: Exported from '@shared/components/MoleculeViewer3D' (not the barrel)
+// to avoid pulling @react-three into every app's bundle.
+// import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
 
 // LanguageSwitcher - language selection UI
 export { LanguageSwitcher } from './LanguageSwitcher';

@@ -280,12 +280,12 @@ export function ShapeTransitionAnimation({
           Lögunarbreyting
         </h3>
         <div className="flex items-center gap-2">
-          <label className="flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer">
+          <label className="flex items-center gap-1.5 text-xs text-warm-600 cursor-pointer">
             <input
               type="checkbox"
               checked={showTrail}
               onChange={(e) => setShowTrail(e.target.checked)}
-              className="rounded border-gray-300"
+              className="rounded border-warm-300"
             />
             Sýna slóð
           </label>
@@ -298,7 +298,7 @@ export function ShapeTransitionAnimation({
           width={size}
           height={size}
           viewBox={`0 0 ${size} ${size}`}
-          className="bg-slate-900 rounded-xl"
+          className="bg-warm-900 rounded-xl"
         >
           <defs>
             {/* Glow filter for domains */}
@@ -423,15 +423,15 @@ export function ShapeTransitionAnimation({
       {/* Info panel */}
       <div className="bg-white rounded-lg p-3 mb-4 text-center">
         <div className="text-lg font-bold text-indigo-700">{config.name}</div>
-        <div className="text-sm text-gray-500">{config.nameEn}</div>
+        <div className="text-sm text-warm-500">{config.nameEn}</div>
         <div className="flex justify-center gap-6 mt-2 text-sm">
           <div>
-            <span className="text-gray-500">Horn:</span>{' '}
+            <span className="text-warm-500">Horn:</span>{' '}
             <span className="font-medium text-indigo-600">{config.bondAngle}</span>
           </div>
           {config.example && (
             <div>
-              <span className="text-gray-500">Dæmi:</span>{' '}
+              <span className="text-warm-500">Dæmi:</span>{' '}
               <span className="font-medium text-cyan-600">{config.example}</span>
             </div>
           )}
@@ -447,7 +447,7 @@ export function ShapeTransitionAnimation({
             className={`w-12 h-12 rounded-full font-bold text-2xl transition-all ${
               domainCount > 2 && !isAnimating
                 ? 'bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-xl'
-                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                : 'bg-warm-200 text-warm-400 cursor-not-allowed'
             }`}
             aria-label="Fjarlægja rafeinasvið"
           >
@@ -456,7 +456,7 @@ export function ShapeTransitionAnimation({
 
           <div className="text-center px-4">
             <div className="text-2xl font-bold text-indigo-700">{domainCount}</div>
-            <div className="text-xs text-gray-500">rafeinasvið</div>
+            <div className="text-xs text-warm-500">rafeinasvið</div>
           </div>
 
           <button
@@ -465,7 +465,7 @@ export function ShapeTransitionAnimation({
             className={`w-12 h-12 rounded-full font-bold text-2xl transition-all ${
               domainCount < 6 && !isAnimating
                 ? 'bg-green-500 hover:bg-green-600 text-white shadow-lg hover:shadow-xl'
-                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                : 'bg-warm-200 text-warm-400 cursor-not-allowed'
             }`}
             aria-label="Bæta við rafeinasviði"
           >
@@ -484,7 +484,7 @@ export function ShapeTransitionAnimation({
             className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${
               n === domainCount
                 ? 'bg-indigo-500 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-indigo-100'
+                : 'bg-warm-100 text-warm-600 hover:bg-indigo-100'
             }`}
           >
             {n}
@@ -493,11 +493,11 @@ export function ShapeTransitionAnimation({
       </div>
 
       {/* Educational note */}
-      <div className={`mt-4 text-center ${compact ? 'text-xs' : 'text-sm'} text-gray-600`}>
+      <div className={`mt-4 text-center ${compact ? 'text-xs' : 'text-sm'} text-warm-600`}>
         <p>
           <strong>VSEPR:</strong> Rafeinasvið hrinda hvort öðru frá og finna jafnvægisstöðu.
         </p>
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-warm-500 mt-1">
           Smelltu á + eða - til að sjá hvernig lögunin breytist.
         </p>
       </div>

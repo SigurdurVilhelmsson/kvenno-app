@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 
-import { Header, Footer, SkipLink, Container, PageBackground } from '@kvenno/shared/components';
+import { Header, Footer, SkipLink, Container, PageBackground, BottomNav } from '@kvenno/shared/components';
 
 import { ChemistryHub } from './pages/ChemistryHub';
 import { Home } from './pages/Home';
@@ -10,8 +10,8 @@ export function App() {
   return (
     <PageBackground variant="default" className="flex flex-col">
       <SkipLink />
-      <Header />
-      <main id="main-content" className="flex-1 py-0">
+      <Header activeTrack="efnafraedi" />
+      <main id="main-content" className="flex-1 py-0 pb-[72px] md:pb-0">
         <Container>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -24,7 +24,8 @@ export function App() {
           </Routes>
         </Container>
       </main>
-      <Footer />
+      <Footer department="Efnafræðideild" />
+      <BottomNav activeTab="efnafraedi" />
     </PageBackground>
   );
 }

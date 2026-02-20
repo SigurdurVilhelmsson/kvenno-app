@@ -186,8 +186,8 @@ function ToolCardComponent({ tool }: { tool: ToolCard }) {
         aria-disabled="true"
       >
         <h2 className="text-kvenno-orange text-2xl font-bold mb-4">{tool.title}</h2>
-        <p className="text-slate-500 flex-grow">{tool.description}</p>
-        <span className="mt-4 text-sm text-slate-400 italic">{tool.status}</span>
+        <p className="text-warm-500 flex-grow">{tool.description}</p>
+        <span className="mt-4 text-sm text-warm-400 italic">{tool.status}</span>
       </Card>
     );
   }
@@ -195,14 +195,14 @@ function ToolCardComponent({ tool }: { tool: ToolCard }) {
   return (
     <a
       href={tool.href}
-      className="bg-white border-2 border-kvenno-orange rounded-xl p-8 no-underline text-slate-800 shadow-card flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
+      className="bg-surface-raised border-2 border-kvenno-orange rounded-card p-8 no-underline text-warm-800 shadow-md flex flex-col transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-orange"
     >
-      <h2 className="text-kvenno-orange text-2xl font-bold mb-4">{tool.title}</h2>
-      <p className="text-slate-500 flex-grow">{tool.description}</p>
+      <h2 className="font-heading text-kvenno-orange text-2xl font-bold mb-4">{tool.title}</h2>
+      <p className="text-warm-500 flex-grow">{tool.description}</p>
       {tool.active ? (
         <Badge variant="success" className="mt-4 self-start">{tool.status}</Badge>
       ) : (
-        <span className="mt-4 text-sm text-slate-400 italic">{tool.status}</span>
+        <span className="mt-4 text-sm text-warm-400 italic">{tool.status}</span>
       )}
     </a>
   );
@@ -227,7 +227,7 @@ export function YearHub({ year }: YearHubProps) {
       {/* Back Button */}
       <Link
         to="/efnafraedi"
-        className="inline-flex items-center gap-2 mb-8 px-4 py-2 border-2 border-kvenno-orange text-kvenno-orange no-underline rounded-btn font-medium transition-all duration-300 hover:bg-kvenno-orange hover:text-white"
+        className="inline-flex items-center gap-2 mb-8 px-4 py-2 min-h-[44px] border-2 border-kvenno-orange text-kvenno-orange no-underline rounded-btn font-medium transition-all duration-200 ease-out hover:bg-kvenno-orange hover:text-white"
         aria-label="Fara til baka í efnafræði"
       >
         &larr; Til baka
@@ -235,17 +235,17 @@ export function YearHub({ year }: YearHubProps) {
 
       {/* Page Title */}
       <Card variant="elevated" padding="lg" className="text-center mb-12">
-        <h1 className="text-kvenno-orange text-4xl md:text-[2.5rem] font-bold mb-2">
+        <h1 className="font-heading text-kvenno-orange text-4xl md:text-[2.5rem] font-bold mb-2">
           {config.pageTitle}
         </h1>
-        <p className="text-lg text-slate-500">{config.pageDescription}</p>
+        <p className="text-lg text-warm-500">{config.pageDescription}</p>
       </Card>
 
       {/* Tools Grid or Empty State */}
       {config.isEmpty ? (
         <Card variant="elevated" padding="lg" className="text-center">
-          <h2 className="text-kvenno-orange text-3xl font-bold mb-4">{config.emptyTitle}</h2>
-          <p className="text-slate-500 text-lg max-w-[600px] mx-auto">
+          <h2 className="font-heading text-kvenno-orange text-3xl font-bold mb-4">{config.emptyTitle}</h2>
+          <p className="text-warm-500 text-lg max-w-[600px] mx-auto">
             {config.emptyDescription}
           </p>
         </Card>

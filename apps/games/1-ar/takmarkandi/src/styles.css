@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../../../../../packages/shared/styles/theme.css";
+@source "../../../../../packages/shared";
 @import "../../../../../packages/shared/styles/game-base.css";
 
 /* Molecule Animations */

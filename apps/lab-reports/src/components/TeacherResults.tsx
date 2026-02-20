@@ -44,11 +44,11 @@ export const TeacherResults: React.FC<TeacherResultsProps> = ({
   if (results.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-lg shadow-xl p-8">
+    <div className="bg-surface-raised rounded-lg shadow-lg p-8">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-slate-900">
+        <h2 className="text-2xl font-bold font-heading text-warm-900">
           Niðurstöður
-          {sessionName && <span className="text-lg text-slate-600 ml-3">- {sessionName}</span>}
+          {sessionName && <span className="text-lg text-warm-600 ml-3">- {sessionName}</span>}
         </h2>
         <div className="flex gap-2">
           <button
@@ -72,15 +72,15 @@ export const TeacherResults: React.FC<TeacherResultsProps> = ({
         {results.map((result, idx) => (
           <div key={idx} className="border rounded-lg p-6">
             <div className="flex justify-between items-start mb-4">
-              <h3 className="text-lg font-semibold text-slate-800">{result.filename}</h3>
+              <h3 className="text-lg font-semibold text-warm-800">{result.filename}</h3>
               {(result.suggestedGrade || (result.totalPoints !== undefined && result.maxTotalPoints !== undefined)) && (
                 <div className="text-right">
-                  <div className="text-sm text-slate-600">Tillaga að einkunn:</div>
-                  <div className="text-2xl font-bold text-slate-900">
+                  <div className="text-sm text-warm-600">Tillaga að einkunn:</div>
+                  <div className="text-2xl font-bold text-warm-900">
                     {result.suggestedGrade || `${result.totalPoints}/${result.maxTotalPoints}`}
                   </div>
                   {result.totalPoints !== undefined && result.maxTotalPoints !== undefined && (
-                    <div className="text-xs text-slate-500 mt-1">
+                    <div className="text-xs text-warm-500 mt-1">
                       ({result.totalPoints} af {result.maxTotalPoints} stigum)
                     </div>
                   )}
@@ -102,20 +102,20 @@ export const TeacherResults: React.FC<TeacherResultsProps> = ({
                     <div
                       key={section.id}
                       className={`border rounded-lg p-4 ${
-                        data.present ? getQualityColor(data.quality) : 'bg-slate-50 border-slate-300'
+                        data.present ? getQualityColor(data.quality) : 'bg-warm-50 border-warm-300'
                       }`}
                     >
                       <div className="flex items-start gap-3 mb-2">
                         {data.present ? (
                           getQualityIcon(data.quality)
                         ) : (
-                          <XCircle className="text-slate-400" size={20} />
+                          <XCircle className="text-warm-400" size={20} />
                         )}
                         <div className="flex-1">
                           <div className="flex justify-between items-start mb-1">
-                            <h4 className="font-semibold text-slate-800">{section.name}</h4>
+                            <h4 className="font-semibold text-warm-800">{section.name}</h4>
                             {data.points !== undefined && data.maxPoints !== undefined && (
-                              <span className="text-sm font-bold text-slate-700 bg-white/50 px-2 py-0.5 rounded">
+                              <span className="text-sm font-bold text-warm-700 bg-white/50 px-2 py-0.5 rounded">
                                 {data.points}/{data.maxPoints} stig
                               </span>
                             )}
@@ -124,16 +124,16 @@ export const TeacherResults: React.FC<TeacherResultsProps> = ({
                             {data.present ? (
                               <>
                                 <span className="font-medium">{getQualityLabel(data.quality)}</span>
-                                {data.note && <div className="text-slate-600 mt-1">{data.note}</div>}
+                                {data.note && <div className="text-warm-600 mt-1">{data.note}</div>}
                                 {data.reasoning && (
-                                  <div className="mt-2 pt-2 border-t border-slate-300">
-                                    <span className="font-semibold text-slate-700">Rökstuðningur: </span>
-                                    <span className="text-slate-700">{data.reasoning}</span>
+                                  <div className="mt-2 pt-2 border-t border-warm-300">
+                                    <span className="font-semibold text-warm-700">Rökstuðningur: </span>
+                                    <span className="text-warm-700">{data.reasoning}</span>
                                   </div>
                                 )}
                               </>
                             ) : (
-                              <span className="text-slate-600">Vantar</span>
+                              <span className="text-warm-600">Vantar</span>
                             )}
                           </div>
                         </div>

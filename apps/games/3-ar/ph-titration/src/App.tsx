@@ -181,7 +181,7 @@ function App() {
 
           <div className="text-center mb-8">
             <div className="text-6xl mb-4">🏆</div>
-            <div className="text-2xl font-bold text-gray-800 mb-2">
+            <div className="text-2xl font-bold text-warm-800 mb-2">
               Þú hefur lokið öllum stigum!
             </div>
           </div>
@@ -250,10 +250,10 @@ function App() {
         {/* Header with achievements button */}
         <div className="flex justify-between items-start mb-4">
           <div className="flex-1">
-            <h1 className="text-3xl md:text-4xl font-bold text-purple-600">
+            <h1 className="text-3xl md:text-4xl font-bold font-heading text-purple-600">
               🧪 pH Títrun
             </h1>
-            <p className="text-gray-600">
+            <p className="text-warm-600">
               Lærðu um sýru-basa títranir, títrunarkúrfur og vísa
             </p>
           </div>
@@ -306,7 +306,7 @@ function App() {
                 <div className="text-sm text-blue-600 mt-1">
                   Títrunarkúrfur og vísar
                 </div>
-                <div className="text-xs text-gray-600 mt-2">
+                <div className="text-xs text-warm-600 mt-2">
                   Skildu hvernig títrunarkúrfur líta út fyrir mismunandi sýru-basa samsetningar.
                   Lærðu um vísa og litabreytingar.
                 </div>
@@ -320,14 +320,14 @@ function App() {
             className={`w-full p-6 rounded-xl border-4 transition-all text-left ${
               progress.level1Completed
                 ? 'border-green-400 bg-green-50 hover:bg-green-100 cursor-pointer'
-                : 'border-gray-200 bg-gray-50 opacity-60 cursor-not-allowed'
+                : 'border-warm-200 bg-warm-50 opacity-60 cursor-not-allowed'
             }`}
           >
             <div className="flex items-center gap-4">
               <div className="text-4xl">🧪</div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className={`text-xl font-bold ${progress.level1Completed ? 'text-green-800' : 'text-gray-600'}`}>
+                  <span className={`text-xl font-bold ${progress.level1Completed ? 'text-green-800' : 'text-warm-600'}`}>
                     Stig 2: Framkvæmd
                   </span>
                   {progress.level2Completed && (
@@ -336,13 +336,13 @@ function App() {
                     </span>
                   )}
                   {!progress.level1Completed && (
-                    <span className="text-xs text-gray-500">(Ljúktu stigi 1 fyrst)</span>
+                    <span className="text-xs text-warm-500">(Ljúktu stigi 1 fyrst)</span>
                   )}
                 </div>
-                <div className={`text-sm mt-1 ${progress.level1Completed ? 'text-green-600' : 'text-gray-500'}`}>
+                <div className={`text-sm mt-1 ${progress.level1Completed ? 'text-green-600' : 'text-warm-500'}`}>
                   Gagnvirk títrun í rannsóknarstofu
                 </div>
-                <div className="text-xs text-gray-600 mt-2">
+                <div className="text-xs text-warm-600 mt-2">
                   Framkvæmdu títrun, veldu réttan vísi og finndu jafngildispunkt.
                   Byggðu upp færni í rannsóknarstofuvinnu.
                 </div>
@@ -356,14 +356,14 @@ function App() {
             className={`w-full p-6 rounded-xl border-4 transition-all text-left ${
               progress.level2Completed
                 ? 'border-purple-400 bg-purple-50 hover:bg-purple-100 cursor-pointer'
-                : 'border-gray-200 bg-gray-50 opacity-60 cursor-not-allowed'
+                : 'border-warm-200 bg-warm-50 opacity-60 cursor-not-allowed'
             }`}
           >
             <div className="flex items-center gap-4">
               <div className="text-4xl">📐</div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className={`text-xl font-bold ${progress.level2Completed ? 'text-purple-800' : 'text-gray-600'}`}>
+                  <span className={`text-xl font-bold ${progress.level2Completed ? 'text-purple-800' : 'text-warm-600'}`}>
                     Stig 3: Útreikningar
                   </span>
                   {progress.level3Completed && (
@@ -372,13 +372,13 @@ function App() {
                     </span>
                   )}
                   {!progress.level2Completed && (
-                    <span className="text-xs text-gray-500">(Ljúktu stigi 2 fyrst)</span>
+                    <span className="text-xs text-warm-500">(Ljúktu stigi 2 fyrst)</span>
                   )}
                 </div>
-                <div className={`text-sm mt-1 ${progress.level2Completed ? 'text-purple-600' : 'text-gray-500'}`}>
+                <div className={`text-sm mt-1 ${progress.level2Completed ? 'text-purple-600' : 'text-warm-500'}`}>
                   Styrkreikningar og fjölprótón sýrur
                 </div>
-                <div className="text-xs text-gray-600 mt-2">
+                <div className="text-xs text-warm-600 mt-2">
                   Reiknaðu styrk, pH og rúmmál. Leystu fjölprótón sýruverkefni
                   og notaðu Henderson-Hasselbalch jöfnuna.
                 </div>
@@ -389,12 +389,12 @@ function App() {
 
         {/* Progress Summary */}
         {progress.totalGamesPlayed > 0 && (
-          <div className="mt-8 bg-gray-50 p-4 rounded-xl">
+          <div className="mt-8 bg-warm-50 p-4 rounded-xl">
             <div className="flex justify-between items-center mb-3">
-              <h3 className="font-semibold text-gray-700">Framvinda</h3>
+              <h3 className="font-semibold text-warm-700">Framvinda</h3>
               <button
                 onClick={resetProgress}
-                className="text-sm text-gray-500 hover:text-red-500 transition-colors"
+                className="text-sm text-warm-500 hover:text-red-500 transition-colors"
               >
                 Endurstilla
               </button>
@@ -402,24 +402,24 @@ function App() {
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="bg-blue-50 rounded-lg p-3">
                 <div className="text-2xl font-bold text-blue-600">{levelsCompleted}/3</div>
-                <div className="text-xs text-gray-600">Stig lokið</div>
+                <div className="text-xs text-warm-600">Stig lokið</div>
               </div>
               <div className="bg-green-50 rounded-lg p-3">
                 <div className="text-2xl font-bold text-green-600">{totalScore}</div>
-                <div className="text-xs text-gray-600">Heildar stig</div>
+                <div className="text-xs text-warm-600">Heildar stig</div>
               </div>
               <div className="bg-purple-50 rounded-lg p-3">
                 <div className="text-2xl font-bold text-purple-600">{progress.totalGamesPlayed}</div>
-                <div className="text-xs text-gray-600">Leikir spilaðir</div>
+                <div className="text-xs text-warm-600">Leikir spilaðir</div>
               </div>
             </div>
           </div>
         )}
 
         {/* Formula reference */}
-        <div className="mt-6 bg-gray-50 p-4 rounded-xl">
-          <h3 className="font-semibold text-gray-700 mb-2">📐 Lykilformúlur</h3>
-          <div className="font-mono text-sm space-y-2 text-gray-600">
+        <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+          <h3 className="font-semibold text-warm-700 mb-2">📐 Lykilformúlur</h3>
+          <div className="font-mono text-sm space-y-2 text-warm-600">
             <p><strong>Títrunarjafna:</strong> V<sub>sýra</sub> × M<sub>sýra</sub> = V<sub>basa</sub> × M<sub>basa</sub></p>
             <p><strong>Henderson-Hasselbalch:</strong> pH = pK<sub>a</sub> + log([A⁻]/[HA])</p>
             <p><strong>Púffur svæði:</strong> pH = pK<sub>a</sub> ± 1</p>
@@ -428,7 +428,7 @@ function App() {
         </div>
 
         {/* Credits */}
-        <div className="mt-6 text-center text-xs text-gray-500">
+        <div className="mt-6 text-center text-xs text-warm-500">
           Kafli 17 — Chemistry: The Central Science (Brown et al.)
         </div>
       </div>

@@ -11,8 +11,8 @@ export interface PageBackgroundProps {
 }
 
 const staticVariants: Record<string, string> = {
-  default: 'bg-slate-50',
-  subtle: 'bg-gradient-to-br from-slate-50 to-slate-100',
+  default: 'bg-surface-page',
+  subtle: 'bg-gradient-to-br from-warm-50 to-warm-100',
 };
 
 export function PageBackground({

@@ -247,8 +247,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="bg-white rounded-2xl shadow-xl p-8">
             <div className="text-center mb-8">
               <div className="text-5xl mb-4">⚗️</div>
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">Stig 2: Leiðbeind æfing</h1>
-              <p className="text-gray-600">Veldu hvernig þú vilt æfa</p>
+              <h1 className="text-3xl font-bold text-warm-800 mb-2">Stig 2: Leiðbeind æfing</h1>
+              <p className="text-warm-600">Veldu hvernig þú vilt æfa</p>
             </div>
 
             <div className="space-y-4 mb-8">
@@ -259,8 +259,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 <div className="flex items-center gap-4">
                   <span className="text-4xl">🔵</span>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-800 mb-1">Sameindir</h3>
-                    <p className="text-gray-600 text-sm">
+                    <h3 className="text-xl font-bold text-warm-800 mb-1">Sameindir</h3>
+                    <p className="text-warm-600 text-sm">
                       Byrjaðu með að telja sameindir - einfaldara og sjónrænna
                     </p>
                   </div>
@@ -274,8 +274,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 <div className="flex items-center gap-4">
                   <span className="text-4xl">⚖️</span>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-800 mb-1">Grömm og mól</h3>
-                    <p className="text-gray-600 text-sm">
+                    <h3 className="text-xl font-bold text-warm-800 mb-1">Grömm og mól</h3>
+                    <p className="text-warm-600 text-sm">
                       Æfðu að breyta grömmum í mól - eins og í raunverulegri tilraun
                     </p>
                     <p className="text-xs text-yellow-600 mt-1">
@@ -288,7 +288,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             <div className="bg-blue-50 rounded-xl p-4 mb-6">
               <h4 className="font-bold text-blue-800 mb-2">Munurinn:</h4>
-              <ul className="text-sm text-gray-700 space-y-1">
+              <ul className="text-sm text-warm-700 space-y-1">
                 <li><strong>Sameindir:</strong> Þú vinnur með fjölda sameinda (t.d. 6 sameindir)</li>
                 <li><strong>Grömm:</strong> Þú byrjar með massa og breytir í mól með mólmassa</li>
               </ul>
@@ -296,7 +296,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             <button
               onClick={onBack}
-              className="w-full text-gray-500 hover:text-gray-700 font-semibold py-2"
+              className="w-full text-warm-500 hover:text-warm-700 font-semibold py-2"
             >
               ← Til baka í valmynd
             </button>
@@ -315,10 +315,10 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="max-w-lg mx-auto">
           <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
             <div className="text-6xl mb-4">{passedLevel ? '🎓' : '📚'}</div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+            <h2 className="text-3xl font-bold text-warm-800 mb-2">
               {passedLevel ? 'Vel gert!' : 'Góð æfing!'}
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-warm-600 mb-6">
               {passedLevel
                 ? `Þú náðir ${correctProblems}+ fullkomnum verkefnum og hefur lokið Stigi 2!`
                 : `Þú þarft ${masteryThreshold} fullkomin verkefni til að opna Stig 3. Reyndu aftur!`}
@@ -327,21 +327,21 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="grid grid-cols-2 gap-3 mb-6">
               <div className="bg-green-50 rounded-xl p-4">
                 <div className="text-2xl font-bold text-green-600">{correctProblems}/{problemIndex + 1}</div>
-                <div className="text-xs text-gray-600">Fullkomin</div>
+                <div className="text-xs text-warm-600">Fullkomin</div>
               </div>
               <div className="bg-purple-50 rounded-xl p-4">
                 <div className="text-2xl font-bold text-purple-600">{score}</div>
-                <div className="text-xs text-gray-600">Stig</div>
+                <div className="text-xs text-warm-600">Stig</div>
               </div>
             </div>
 
             {/* Mastery progress */}
-            <div className="bg-gray-50 rounded-xl p-4 mb-6">
-              <div className="flex justify-between text-sm text-gray-600 mb-2">
+            <div className="bg-warm-50 rounded-xl p-4 mb-6">
+              <div className="flex justify-between text-sm text-warm-600 mb-2">
                 <span>Framvinda í lærdómi</span>
                 <span>{correctProblems}/{masteryThreshold} fullkomin</span>
               </div>
-              <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+              <div className="h-3 bg-warm-200 rounded-full overflow-hidden">
                 <div
                   className={`h-full transition-all duration-500 ${passedLevel ? 'bg-green-500' : 'bg-yellow-500'}`}
                   style={{ width: `${Math.min((correctProblems / masteryThreshold) * 100, 100)}%` }}
@@ -354,7 +354,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <h3 className="font-bold text-blue-800 mb-3">
                 Aðferðin {problemMode === 'grams' ? '(með grömmum)' : '(með sameindum)'}:
               </h3>
-              <ol className="text-sm text-gray-700 space-y-2 list-decimal list-inside">
+              <ol className="text-sm text-warm-700 space-y-2 list-decimal list-inside">
                 {problemMode === 'grams' ? (
                   <>
                     <li>Breyta grömmum í mól: mól = grömm ÷ mólmassi</li>
@@ -405,7 +405,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               )}
               <button
                 onClick={onBack}
-                className="w-full text-gray-500 hover:text-gray-700 font-semibold py-2"
+                className="w-full text-warm-500 hover:text-warm-700 font-semibold py-2"
               >
                 Til baka í valmynd
               </button>
@@ -425,12 +425,12 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="bg-white rounded-xl shadow-md p-4 mb-4">
             <div className="flex justify-between items-center">
               <div>
-                <h1 className="text-xl font-bold text-gray-800">Takmarkandi - Stig 2</h1>
-                <p className="text-sm text-gray-600">Verkefni {problemIndex + 1}/{totalProblems}</p>
+                <h1 className="text-xl font-bold text-warm-800">Takmarkandi - Stig 2</h1>
+                <p className="text-sm text-warm-600">Verkefni {problemIndex + 1}/{totalProblems}</p>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-orange-600">{score}</div>
-                <div className="text-xs text-gray-600">Stig</div>
+                <div className="text-xs text-warm-600">Stig</div>
               </div>
             </div>
           </div>
@@ -438,10 +438,10 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="text-center mb-6">
               <div className="text-5xl mb-4">{problemCorrectSoFar ? '✅' : '📝'}</div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">
+              <h2 className="text-2xl font-bold text-warm-800 mb-2">
                 {problemCorrectSoFar ? 'Fullkomið!' : 'Verkefni lokið'}
               </h2>
-              <p className="text-gray-600">
+              <p className="text-warm-600">
                 {problemCorrectSoFar
                   ? 'Þú svaraðir öllum skrefum rétt!'
                   : 'Þú lærðir af mistökunum. Haltu áfram að æfa!'}
@@ -449,8 +449,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
 
             {/* Summary */}
-            <div className="bg-gray-50 rounded-xl p-4 mb-6">
-              <h3 className="font-bold text-gray-800 mb-3">Samantekt:</h3>
+            <div className="bg-warm-50 rounded-xl p-4 mb-6">
+              <h3 className="font-bold text-warm-800 mb-3">Samantekt:</h3>
               <div className="text-sm space-y-2">
                 <div className="flex justify-between">
                   <span>Hvörf:</span>
@@ -481,7 +481,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             {/* Animated reaction visualization */}
             <div className="mb-6">
-              <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+              <h3 className="font-bold text-warm-800 mb-3 flex items-center gap-2">
                 <span className="text-xl">🔬</span> Sjáðu hvörfin gerast!
               </h3>
               <ReactionAnimation
@@ -670,24 +670,24 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-xl font-bold text-gray-800">Takmarkandi - Stig 2</h1>
-              <p className="text-sm text-gray-600">
+              <h1 className="text-xl font-bold text-warm-800">Takmarkandi - Stig 2</h1>
+              <p className="text-sm text-warm-600">
                 {isGramMode ? '⚖️ Grömm og mól' : '🔵 Sameindir'}
               </p>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-orange-600">{score}</div>
-              <div className="text-xs text-gray-600">Stig</div>
+              <div className="text-xs text-warm-600">Stig</div>
             </div>
           </div>
 
           {/* Progress bar */}
           <div className="mt-3">
-            <div className="flex justify-between text-xs text-gray-500 mb-1">
+            <div className="flex justify-between text-xs text-warm-500 mb-1">
               <span>Verkefni {problemIndex + 1}/{totalProblems}</span>
               <span>{correctProblems}/{masteryThreshold} fullkomin</span>
             </div>
-            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-2 bg-warm-200 rounded-full overflow-hidden">
               <div
                 className="h-full bg-orange-500 transition-all duration-500"
                 style={{ width: `${((problemIndex + 1) / totalProblems) * 100}%` }}
@@ -698,7 +698,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Equation display */}
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-          <div className="text-center text-xl font-mono bg-gray-50 p-3 rounded-lg">
+          <div className="text-center text-xl font-mono bg-warm-50 p-3 rounded-lg">
             {problem.reaction.equation}
           </div>
         </div>
@@ -709,19 +709,19 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className={`p-4 rounded-xl ${
               currentStep === 'moles_r1' || currentStep === 'times_r1' ? 'bg-orange-50 border-2 border-orange-300' :
               currentStep === 'limiting' && selectedLimiting === problem.reaction.reactant1.formula ? 'bg-orange-100 border-2 border-orange-500' :
-              'bg-gray-50'
+              'bg-warm-50'
             }`}>
               <div className="text-center mb-2">
                 <div className="text-lg font-bold">{problem.reaction.reactant1.formula}</div>
                 {isGramMode ? (
                   <>
-                    <div className="text-sm text-gray-600 font-semibold">{problem.r1Grams} g</div>
-                    <div className="text-xs text-gray-500">M = {problem.r1MolarMass} g/mol</div>
+                    <div className="text-sm text-warm-600 font-semibold">{problem.r1Grams} g</div>
+                    <div className="text-xs text-warm-500">M = {problem.r1MolarMass} g/mol</div>
                   </>
                 ) : (
-                  <div className="text-sm text-gray-600">{problem.r1Count} sameindur</div>
+                  <div className="text-sm text-warm-600">{problem.r1Count} sameindur</div>
                 )}
-                <div className="text-xs text-gray-500">Stuðull: {problem.reaction.reactant1.coeff}</div>
+                <div className="text-xs text-warm-500">Stuðull: {problem.reaction.reactant1.coeff}</div>
               </div>
               {!isGramMode && (
                 <div className="flex flex-wrap justify-center gap-1">
@@ -733,14 +733,14 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       size={25}
                     />
                   ))}
-                  {problem.r1Count > 8 && <span className="text-gray-500 text-sm">+{problem.r1Count - 8}</span>}
+                  {problem.r1Count > 8 && <span className="text-warm-500 text-sm">+{problem.r1Count - 8}</span>}
                 </div>
               )}
               {isGramMode && (
                 <div className="flex justify-center">
                   <div className="bg-yellow-100 rounded-lg p-3">
                     <span className="text-2xl">⚖️</span>
-                    <div className="text-xs text-gray-600 mt-1">{problem.r1Grams} grömm</div>
+                    <div className="text-xs text-warm-600 mt-1">{problem.r1Grams} grömm</div>
                   </div>
                 </div>
               )}
@@ -749,19 +749,19 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className={`p-4 rounded-xl ${
               currentStep === 'moles_r2' || currentStep === 'times_r2' ? 'bg-orange-50 border-2 border-orange-300' :
               currentStep === 'limiting' && selectedLimiting === problem.reaction.reactant2.formula ? 'bg-orange-100 border-2 border-orange-500' :
-              'bg-gray-50'
+              'bg-warm-50'
             }`}>
               <div className="text-center mb-2">
                 <div className="text-lg font-bold">{problem.reaction.reactant2.formula}</div>
                 {isGramMode ? (
                   <>
-                    <div className="text-sm text-gray-600 font-semibold">{problem.r2Grams} g</div>
-                    <div className="text-xs text-gray-500">M = {problem.r2MolarMass} g/mol</div>
+                    <div className="text-sm text-warm-600 font-semibold">{problem.r2Grams} g</div>
+                    <div className="text-xs text-warm-500">M = {problem.r2MolarMass} g/mol</div>
                   </>
                 ) : (
-                  <div className="text-sm text-gray-600">{problem.r2Count} sameindur</div>
+                  <div className="text-sm text-warm-600">{problem.r2Count} sameindur</div>
                 )}
-                <div className="text-xs text-gray-500">Stuðull: {problem.reaction.reactant2.coeff}</div>
+                <div className="text-xs text-warm-500">Stuðull: {problem.reaction.reactant2.coeff}</div>
               </div>
               {!isGramMode && (
                 <div className="flex flex-wrap justify-center gap-1">
@@ -773,14 +773,14 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       size={25}
                     />
                   ))}
-                  {problem.r2Count > 8 && <span className="text-gray-500 text-sm">+{problem.r2Count - 8}</span>}
+                  {problem.r2Count > 8 && <span className="text-warm-500 text-sm">+{problem.r2Count - 8}</span>}
                 </div>
               )}
               {isGramMode && (
                 <div className="flex justify-center">
                   <div className="bg-yellow-100 rounded-lg p-3">
                     <span className="text-2xl">⚖️</span>
-                    <div className="text-xs text-gray-600 mt-1">{problem.r2Grams} grömm</div>
+                    <div className="text-xs text-warm-600 mt-1">{problem.r2Grams} grömm</div>
                   </div>
                 </div>
               )}
@@ -799,7 +799,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     ? 'bg-green-500 text-white'
                     : step === stepInfo.stepNumber
                     ? 'bg-orange-500 text-white'
-                    : 'bg-gray-200 text-gray-500'
+                    : 'bg-warm-200 text-warm-500'
                 }`}
               >
                 {step < stepInfo.stepNumber ? '✓' : step}
@@ -810,12 +810,12 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Current step */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
-          <h2 className="text-lg font-bold text-gray-800 mb-2">{stepInfo.title}</h2>
-          <p className="text-gray-600 mb-4">{stepInfo.instruction}</p>
+          <h2 className="text-lg font-bold text-warm-800 mb-2">{stepInfo.title}</h2>
+          <p className="text-warm-600 mb-4">{stepInfo.instruction}</p>
 
           {/* Formula hint */}
           <div className="bg-blue-50 border-l-4 border-blue-500 p-3 mb-4">
-            <p className="font-mono text-sm text-gray-700">{stepInfo.formula}</p>
+            <p className="font-mono text-sm text-warm-700">{stepInfo.formula}</p>
           </div>
 
           {/* Input or selection */}
@@ -831,11 +831,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       ? 'border-green-500 bg-green-50 text-green-700'
                       : selectedLimiting === problem.reaction.reactant1.formula
                         ? 'border-orange-500 bg-orange-50'
-                        : 'border-gray-200 hover:border-orange-300 hover:bg-orange-50'
+                        : 'border-warm-200 hover:border-orange-300 hover:bg-orange-50'
                 }`}
               >
                 {problem.reaction.reactant1.formula}
-                <div className="text-sm font-normal text-gray-600">{roundMass(problem.timesR1)} skipti</div>
+                <div className="text-sm font-normal text-warm-600">{roundMass(problem.timesR1)} skipti</div>
               </button>
 
               <button
@@ -848,11 +848,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       ? 'border-green-500 bg-green-50 text-green-700'
                       : selectedLimiting === problem.reaction.reactant2.formula
                         ? 'border-orange-500 bg-orange-50'
-                        : 'border-gray-200 hover:border-orange-300 hover:bg-orange-50'
+                        : 'border-warm-200 hover:border-orange-300 hover:bg-orange-50'
                 }`}
               >
                 {problem.reaction.reactant2.formula}
-                <div className="text-sm font-normal text-gray-600">{roundMass(problem.timesR2)} skipti</div>
+                <div className="text-sm font-normal text-warm-600">{roundMass(problem.timesR2)} skipti</div>
               </button>
             </div>
           ) : (
@@ -867,7 +867,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     ? isStepCorrect
                       ? 'border-green-500 bg-green-50'
                       : 'border-red-500 bg-red-50'
-                    : 'border-gray-300 focus:border-orange-500'
+                    : 'border-warm-300 focus:border-orange-500'
                 } outline-hidden`}
                 placeholder="Sláðu inn svar..."
                 onKeyDown={(e) => {
@@ -890,7 +890,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             {isStepCorrect ? (
               <p className="text-green-700 text-sm">+5 stig!</p>
             ) : (
-              <p className="text-gray-700 text-sm">
+              <p className="text-warm-700 text-sm">
                 Rétt svar: <span className="font-bold">{stepInfo.correctAnswer}{stepInfo.unit ? ` ${stepInfo.unit}` : ''}</span>
               </p>
             )}
@@ -911,7 +911,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             className={`w-full font-bold py-3 px-6 rounded-xl transition-colors ${
               (currentStep === 'limiting' ? selectedLimiting : input)
                 ? 'bg-orange-500 hover:bg-orange-600 text-white'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-warm-300 text-warm-500 cursor-not-allowed'
             }`}
           >
             Athuga svar
@@ -921,7 +921,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {/* Back button */}
         <button
           onClick={onBack}
-          className="w-full text-gray-500 hover:text-gray-700 font-semibold py-3 mt-4"
+          className="w-full text-warm-500 hover:text-warm-700 font-semibold py-3 mt-4"
         >
           ← Til baka í valmynd
         </button>

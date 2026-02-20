@@ -407,10 +407,10 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-4 md:p-8">
         <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
           <div className="flex justify-between items-center mb-6">
-            <button onClick={onBack} className="text-gray-500 hover:text-gray-700 flex items-center gap-2">
+            <button onClick={onBack} className="text-warm-500 hover:text-warm-700 flex items-center gap-2">
               <span>←</span> Til baka
             </button>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-warm-500">
               Regla {currentRule + 1} af {namingRules.length}
             </div>
           </div>
@@ -418,7 +418,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-indigo-600">
             Reglur um nafnagift
           </h1>
-          <p className="text-center text-gray-600 mb-6">
+          <p className="text-center text-warm-600 mb-6">
             Lærðu hvernig efnasambönd eru nefnd
           </p>
 
@@ -433,7 +433,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     ? `${getColorClasses(r.color).bg} scale-125`
                     : idx < currentRule
                       ? 'bg-green-500'
-                      : 'bg-gray-300 hover:bg-gray-400'
+                      : 'bg-warm-300 hover:bg-warm-400'
                 }`}
                 aria-label={`Regla ${idx + 1}: ${r.title}`}
               />
@@ -448,16 +448,16 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               </div>
               <div>
                 <h2 className={`text-xl font-bold ${colors.text}`}>{rule.title}</h2>
-                <p className="text-gray-600 text-sm">{rule.description}</p>
+                <p className="text-warm-600 text-sm">{rule.description}</p>
               </div>
             </div>
 
             {/* Rules list */}
             <div className="bg-white rounded-xl p-4 mb-4">
-              <h3 className="font-semibold text-gray-700 mb-2">Reglur:</h3>
+              <h3 className="font-semibold text-warm-700 mb-2">Reglur:</h3>
               <ul className="space-y-2">
                 {rule.rules.map((r, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-gray-700">
+                  <li key={idx} className="flex items-start gap-2 text-warm-700">
                     <span className={`${colors.text} font-bold mt-0.5`}>•</span>
                     <span>{r}</span>
                   </li>
@@ -467,17 +467,17 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             {/* Examples */}
             <div className="bg-white rounded-xl p-4">
-              <h3 className="font-semibold text-gray-700 mb-3">Dæmi:</h3>
+              <h3 className="font-semibold text-warm-700 mb-3">Dæmi:</h3>
               <div className="grid gap-3">
                 {rule.examples.map((ex, idx) => (
-                  <div key={idx} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-                    <div className="text-2xl font-mono font-bold text-gray-800 min-w-[80px]">
+                  <div key={idx} className="flex items-center gap-4 p-3 bg-warm-50 rounded-lg">
+                    <div className="text-2xl font-mono font-bold text-warm-800 min-w-[80px]">
                       {ex.formula}
                     </div>
-                    <div className="text-2xl text-gray-400">→</div>
+                    <div className="text-2xl text-warm-400">→</div>
                     <div className="flex-1">
                       <div className={`font-bold ${colors.text}`}>{ex.name}</div>
-                      <div className="text-sm text-gray-600">{ex.explanation}</div>
+                      <div className="text-sm text-warm-600">{ex.explanation}</div>
                     </div>
                   </div>
                 ))}
@@ -492,8 +492,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               disabled={currentRule === 0}
               className={`flex-1 py-3 px-6 rounded-xl font-bold transition-all ${
                 currentRule === 0
-                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  : 'bg-gray-500 hover:bg-gray-600 text-white'
+                  ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
+                  : 'bg-warm-500 hover:bg-warm-600 text-white'
               }`}
             >
               ← Fyrri regla
@@ -507,8 +507,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
 
           {/* Quick reference */}
-          <div className="mt-6 bg-gray-50 rounded-xl p-4">
-            <h3 className="font-semibold text-gray-700 mb-2">Yfirlit yfir reglur:</h3>
+          <div className="mt-6 bg-warm-50 rounded-xl p-4">
+            <h3 className="font-semibold text-warm-700 mb-2">Yfirlit yfir reglur:</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
               {namingRules.map((r, idx) => (
                 <div
@@ -531,10 +531,10 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-4 md:p-8">
         <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
           <div className="flex justify-between items-center mb-6">
-            <button onClick={() => setPhase('learn')} className="text-gray-500 hover:text-gray-700 flex items-center gap-2">
+            <button onClick={() => setPhase('learn')} className="text-warm-500 hover:text-warm-700 flex items-center gap-2">
               <span>←</span> Til baka í reglur
             </button>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-warm-500">
               {currentWarmup + 1} af {warmupQuestions.length}
             </div>
           </div>
@@ -544,13 +544,13 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <h1 className="text-2xl md:text-3xl font-bold text-indigo-600 mb-2">
               Upphitun: Málmur eða málmleysingi?
             </h1>
-            <p className="text-gray-600">
+            <p className="text-warm-600">
               Þetta er mikilvægt til að velja rétta nafnareglu!
             </p>
           </div>
 
           {/* Progress bar */}
-          <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+          <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
             <div
               className="bg-indigo-500 h-2 rounded-full transition-all"
               style={{ width: `${((currentWarmup + 1) / warmupQuestions.length) * 100}%` }}
@@ -559,10 +559,10 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           {/* Question card */}
           <div className="bg-indigo-50 border-2 border-indigo-200 rounded-xl p-6 mb-6 text-center">
-            <div className="text-6xl font-mono font-bold text-gray-800 mb-2">
+            <div className="text-6xl font-mono font-bold text-warm-800 mb-2">
               {warmupQ.symbol}
             </div>
-            <div className="text-xl text-gray-600">
+            <div className="text-xl text-warm-600">
               {warmupQ.name}
             </div>
           </div>
@@ -584,7 +584,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             >
               <div className="text-3xl mb-2">⚙️</div>
               <div className="font-bold text-lg">Málmur</div>
-              <div className="text-xs text-gray-500">(gefur rafeindir)</div>
+              <div className="text-xs text-warm-500">(gefur rafeindir)</div>
             </button>
             <button
               onClick={() => handleWarmupAnswer(false)}
@@ -601,7 +601,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             >
               <div className="text-3xl mb-2">💨</div>
               <div className="font-bold text-lg">Málmleysingi</div>
-              <div className="text-xs text-gray-500">(tekur rafeindir)</div>
+              <div className="text-xs text-warm-500">(tekur rafeindir)</div>
             </button>
           </div>
 
@@ -627,13 +627,13 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           )}
 
           {/* Score summary */}
-          <div className="mt-6 text-center text-sm text-gray-500">
+          <div className="mt-6 text-center text-sm text-warm-500">
             Rétt: {warmupCorrect} / {currentWarmup + (warmupFeedback ? 1 : 0)}
           </div>
 
           {/* Key reminder */}
-          <div className="mt-4 bg-gray-50 rounded-xl p-4">
-            <h3 className="font-semibold text-gray-700 mb-2 text-sm">Mundu:</h3>
+          <div className="mt-4 bg-warm-50 rounded-xl p-4">
+            <h3 className="font-semibold text-warm-700 mb-2 text-sm">Mundu:</h3>
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="bg-blue-50 p-2 rounded">
                 <span className="font-bold text-blue-700">Málmar:</span> hópar 1, 2, 3-12
@@ -656,11 +656,11 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
         <div className="flex justify-between items-center mb-6">
-          <button onClick={onBack} className="text-gray-500 hover:text-gray-700">
+          <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
             ← Til baka
           </button>
           <div className="flex items-center gap-4">
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-warm-500">
               Spurning {currentQuestion + 1} af {quizQuestions.length}
             </div>
             <div className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-bold">
@@ -675,14 +675,14 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Question */}
         <div className={`${questionColors.light} border-2 ${questionColors.border} rounded-xl p-6 mb-6`}>
-          <div className="text-sm font-medium text-gray-500 mb-2">
+          <div className="text-sm font-medium text-warm-500 mb-2">
             {ruleForQuestion?.title}
           </div>
-          <div className="text-xl font-bold text-gray-800 mb-4">
+          <div className="text-xl font-bold text-warm-800 mb-4">
             {question.question}
           </div>
           {question.formula && (
-            <div className="text-3xl font-mono font-bold text-center text-gray-800 bg-white rounded-lg py-4">
+            <div className="text-3xl font-mono font-bold text-center text-warm-800 bg-white rounded-lg py-4">
               {question.formula}
             </div>
           )}
@@ -691,7 +691,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {/* Options */}
         <div className="grid gap-3 mb-6">
           {shuffledOptions.options.map((option, idx) => {
-            let buttonClass = 'bg-white border-2 border-gray-200 hover:border-indigo-400 hover:bg-indigo-50';
+            let buttonClass = 'bg-white border-2 border-warm-200 hover:border-indigo-400 hover:bg-indigo-50';
 
             if (showFeedback) {
               if (idx === shuffledOptions.correctShuffledIndex) {
@@ -699,7 +699,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               } else if (idx === selectedAnswer && idx !== shuffledOptions.correctShuffledIndex) {
                 buttonClass = 'bg-red-100 border-2 border-red-500 text-red-800';
               } else {
-                buttonClass = 'bg-gray-100 border-2 border-gray-200 text-gray-500';
+                buttonClass = 'bg-warm-100 border-2 border-warm-200 text-warm-500';
               }
             }
 
@@ -755,7 +755,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         )}
 
         {/* Progress bar */}
-        <div className="mt-6 w-full bg-gray-200 rounded-full h-2">
+        <div className="mt-6 w-full bg-warm-200 rounded-full h-2">
           <div
             className="bg-indigo-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentQuestion + 1) / quizQuestions.length) * 100}%` }}
@@ -763,8 +763,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         {/* Quick reference */}
-        <div className="mt-6 bg-gray-50 rounded-xl p-4">
-          <h3 className="font-semibold text-gray-700 mb-2 text-sm">Minnisblað:</h3>
+        <div className="mt-6 bg-warm-50 rounded-xl p-4">
+          <h3 className="font-semibold text-warm-700 mb-2 text-sm">Minnisblað:</h3>
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="bg-blue-50 p-2 rounded">
               <span className="font-bold text-blue-700">Jónefni:</span> málmur + -íð

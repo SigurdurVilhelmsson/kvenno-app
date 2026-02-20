@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 
-import { AnimatedMolecule, FeedbackPanel, MoleculeViewer3DLazy } from '@shared/components';
+import { AnimatedMolecule, FeedbackPanel } from '@shared/components';
+import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
 import type { TieredHints } from '@shared/types';
 import { shuffleArray } from '@shared/utils';
 
@@ -392,18 +393,18 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="flex items-center justify-between mb-6">
             <button
               onClick={onBack}
-              className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+              className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
             >
               <span>&larr;</span> Til baka
             </button>
-            <div className="text-sm text-gray-600">Stig 1: Könnun</div>
+            <div className="text-sm text-warm-600">Stig 1: Könnun</div>
           </div>
 
           <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 mb-6">
             <h2 className="text-2xl font-bold text-teal-800 mb-4">
               Kannaðu mismunandi sameindarlögun
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-warm-600 mb-6">
               Smelltu á lögun til að sjá dæmi og útskýringu. Þegar þú ert tilbúinn, haltu áfram í spurningar.
             </p>
 
@@ -432,11 +433,11 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   className={`p-4 rounded-xl border-2 transition-all text-center ${
                     selectedGeometry?.id === geo.id
                       ? 'border-teal-500 bg-teal-50 shadow-lg'
-                      : 'border-gray-200 hover:border-teal-300 hover:bg-teal-50/50'
+                      : 'border-warm-200 hover:border-teal-300 hover:bg-teal-50/50'
                   }`}
                 >
-                  <div className="text-lg font-bold text-gray-800">{geo.name}</div>
-                  <div className="text-xs text-gray-500">{geo.nameEn}</div>
+                  <div className="text-lg font-bold text-warm-800">{geo.name}</div>
+                  <div className="text-xs text-warm-500">{geo.nameEn}</div>
                   <div className="text-sm text-teal-600 mt-1">{geo.example}</div>
                 </button>
               ))}
@@ -454,7 +455,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                           viewMode === '2d'
                             ? 'bg-teal-600 text-white'
-                            : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                            : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
                         }`}
                       >
                         2D
@@ -464,14 +465,14 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                           viewMode === '3d'
                             ? 'bg-teal-600 text-white'
-                            : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                            : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
                         }`}
                       >
                         3D
                       </button>
                     </div>
 
-                    <div className="bg-gray-900 rounded-xl p-6 flex items-center justify-center min-h-48">
+                    <div className="bg-warm-900 rounded-xl p-6 flex items-center justify-center min-h-48">
                       <div className="text-center w-full">
                         {viewMode === '2d' ? (
                           <AnimatedMolecule
@@ -506,9 +507,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                           />
                         )}
                         <div className="text-2xl font-bold text-teal-400 mt-4">{selectedGeometry.example}</div>
-                        <div className="text-gray-400">{selectedGeometry.exampleName}</div>
+                        <div className="text-warm-400">{selectedGeometry.exampleName}</div>
                         {viewMode === '3d' && (
-                          <div className="text-xs text-gray-500 mt-2">
+                          <div className="text-xs text-warm-500 mt-2">
                             Dragðu til að snúa, skrollaðu til að stækka
                           </div>
                         )}
@@ -519,33 +520,33 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   {/* Details */}
                   <div className="flex-1 space-y-4">
                     <h3 className="text-xl font-bold text-teal-800">{selectedGeometry.name}</h3>
-                    <p className="text-gray-700">{selectedGeometry.description}</p>
+                    <p className="text-warm-700">{selectedGeometry.description}</p>
 
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div className="bg-white p-3 rounded-lg">
-                        <div className="text-gray-500">Rafeinasvið</div>
-                        <div className="font-bold text-gray-800">{selectedGeometry.electronDomains}</div>
+                        <div className="text-warm-500">Rafeinasvið</div>
+                        <div className="font-bold text-warm-800">{selectedGeometry.electronDomains}</div>
                       </div>
                       <div className="bg-white p-3 rounded-lg">
-                        <div className="text-gray-500">Bindandi pör</div>
+                        <div className="text-warm-500">Bindandi pör</div>
                         <div className="font-bold text-blue-600">{selectedGeometry.bondingPairs}</div>
                       </div>
                       <div className="bg-white p-3 rounded-lg">
-                        <div className="text-gray-500">Einstæð pör</div>
+                        <div className="text-warm-500">Einstæð pör</div>
                         <div className="font-bold text-yellow-600">{selectedGeometry.lonePairs}</div>
                       </div>
                       <div className="bg-white p-3 rounded-lg">
-                        <div className="text-gray-500">Tengihorn</div>
+                        <div className="text-warm-500">Tengihorn</div>
                         <div className="font-bold text-teal-600">{selectedGeometry.bondAngle}</div>
                       </div>
                     </div>
 
                     <div className="bg-white p-3 rounded-lg">
-                      <div className="text-gray-500 text-sm">Rafeinalögun</div>
+                      <div className="text-warm-500 text-sm">Rafeinalögun</div>
                       <div className="font-bold text-purple-600">{selectedGeometry.electronGeometry}</div>
                     </div>
                     <div className="bg-white p-3 rounded-lg">
-                      <div className="text-gray-500 text-sm">Sameindarlögun</div>
+                      <div className="text-warm-500 text-sm">Sameindarlögun</div>
                       <div className="font-bold text-teal-600">{selectedGeometry.molecularGeometry}</div>
                     </div>
                   </div>
@@ -580,17 +581,17 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => setPhase('explore')}
-            className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
           >
             <span>&larr;</span> Til baka
           </button>
           <div className="text-right">
-            <div className="text-sm text-gray-600">Spurning {currentChallenge + 1} af {challenges.length}</div>
+            <div className="text-sm text-warm-600">Spurning {currentChallenge + 1} af {challenges.length}</div>
             <div className="text-lg font-bold text-teal-600">{score} stig</div>
           </div>
         </div>
 
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-teal-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
@@ -598,14 +599,14 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <p className="text-gray-700 text-lg mb-6">{challenge.question}</p>
+          <p className="text-warm-700 text-lg mb-6">{challenge.question}</p>
 
           {/* Show relevant geometry visual if available */}
           {challenge.geometryId && (() => {
             const geo = GEOMETRIES.find(g => g.id === challenge.geometryId);
             if (!geo) return null;
             return (
-              <div className="bg-slate-900 p-4 rounded-xl mb-6 flex flex-col items-center">
+              <div className="bg-warm-900 p-4 rounded-xl mb-6 flex flex-col items-center">
                 <AnimatedMolecule
                   molecule={geometryToMolecule({
                     id: geo.id,
@@ -620,7 +621,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   showLonePairs={true}
                   ariaLabel={`${geo.name} lögun`}
                 />
-                <div className="text-slate-300 text-sm mt-2 font-medium">{geo.example}</div>
+                <div className="text-warm-300 text-sm mt-2 font-medium">{geo.example}</div>
               </div>
             );
           })()}
@@ -637,14 +638,14 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       ? 'border-green-500 bg-green-50'
                       : selectedOption === option.id
                       ? 'border-red-500 bg-red-50'
-                      : 'border-gray-200 bg-gray-50 opacity-50'
+                      : 'border-warm-200 bg-warm-50 opacity-50'
                     : selectedOption === option.id
                     ? 'border-teal-500 bg-teal-50 ring-2 ring-teal-200'
-                    : 'border-gray-300 hover:border-teal-400 hover:bg-teal-50'
+                    : 'border-warm-300 hover:border-teal-400 hover:bg-teal-50'
                 }`}
               >
                 <div className="flex items-start gap-3">
-                  <span className="font-bold text-gray-500 uppercase">{option.id}.</span>
+                  <span className="font-bold text-warm-500 uppercase">{option.id}.</span>
                   <span className="flex-1">{option.text}</span>
                 </div>
                 {showResult && selectedOption === option.id && (
@@ -679,7 +680,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <button
               onClick={checkAnswer}
               disabled={!selectedOption}
-              className="w-full bg-teal-500 hover:bg-teal-600 disabled:bg-gray-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+              className="w-full bg-teal-500 hover:bg-teal-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
             >
               Athuga svar
             </button>

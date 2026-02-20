@@ -223,12 +223,12 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="bg-white rounded-2xl shadow-xl p-8">
             <div className="text-center mb-8">
               <div className="text-5xl mb-4">🏆</div>
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">Stig 3: Meistarapróf</h1>
-              <p className="text-gray-600">Prófaðu kunnáttu þína á tímamörkum!</p>
+              <h1 className="text-3xl font-bold text-warm-800 mb-2">Stig 3: Meistarapróf</h1>
+              <p className="text-warm-600">Prófaðu kunnáttu þína á tímamörkum!</p>
             </div>
 
             <div className="space-y-4 mb-8">
-              <h3 className="font-bold text-gray-700">Erfiðleikastig:</h3>
+              <h3 className="font-bold text-warm-700">Erfiðleikastig:</h3>
               {(['easy', 'medium', 'hard'] as const).map((diff) => (
                 <button
                   key={diff}
@@ -238,13 +238,13 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       ? diff === 'easy' ? 'border-green-500 bg-green-50' :
                         diff === 'medium' ? 'border-yellow-500 bg-yellow-50' :
                         'border-red-500 bg-red-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      : 'border-warm-200 hover:border-warm-300'
                   }`}
                 >
                   <div className="font-bold">
                     {diff === 'easy' ? 'Auðvelt' : diff === 'medium' ? 'Miðlungs' : 'Erfitt'}
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-sm text-warm-600">
                     {diff === 'easy' ? 'Einföld hlutföll (1:1, 2:1)' :
                      diff === 'medium' ? 'Flóknari hlutföll (3:1, 2:3)' :
                      'Stór stuðlar og margar afurðir'}
@@ -255,36 +255,36 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             {/* Unit mode selection */}
             <div className="space-y-3 mb-6">
-              <h3 className="font-bold text-gray-700">Einingar:</h3>
+              <h3 className="font-bold text-warm-700">Einingar:</h3>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => setUnitMode('molecules')}
                   className={`p-3 rounded-xl border-2 text-left transition-all ${
                     unitMode === 'molecules'
                       ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      : 'border-warm-200 hover:border-warm-300'
                   }`}
                 >
                   <div className="text-2xl mb-1">🔵</div>
                   <div className="font-bold text-sm">Sameindir</div>
-                  <div className="text-xs text-gray-500">Telja sameindir</div>
+                  <div className="text-xs text-warm-500">Telja sameindir</div>
                 </button>
                 <button
                   onClick={() => setUnitMode('grams')}
                   className={`p-3 rounded-xl border-2 text-left transition-all ${
                     unitMode === 'grams'
                       ? 'border-yellow-500 bg-yellow-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      : 'border-warm-200 hover:border-warm-300'
                   }`}
                 >
                   <div className="text-2xl mb-1">⚖️</div>
                   <div className="font-bold text-sm">Grömm</div>
-                  <div className="text-xs text-gray-500">Vinna með massa</div>
+                  <div className="text-xs text-warm-500">Vinna með massa</div>
                 </button>
               </div>
             </div>
 
-            <div className="bg-gray-50 rounded-xl p-4 mb-8">
+            <div className="bg-warm-50 rounded-xl p-4 mb-8">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input
                   type="checkbox"
@@ -293,8 +293,8 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   className="w-5 h-5 accent-orange-500"
                 />
                 <div>
-                  <span className="font-semibold text-gray-700">Tímamörk</span>
-                  <p className="text-sm text-gray-500">120 sekúndur á hvert dæmi</p>
+                  <span className="font-semibold text-warm-700">Tímamörk</span>
+                  <p className="text-sm text-warm-500">120 sekúndur á hvert dæmi</p>
                 </div>
               </label>
             </div>
@@ -308,7 +308,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             <button
               onClick={onBack}
-              className="w-full text-gray-500 hover:text-gray-700 font-semibold py-2"
+              className="w-full text-warm-500 hover:text-warm-700 font-semibold py-2"
             >
               ← Til baka í valmynd
             </button>
@@ -329,27 +329,27 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="text-6xl mb-4">
               {accuracy >= 80 ? '🏆' : accuracy >= 60 ? '🥈' : '📈'}
             </div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+            <h2 className="text-3xl font-bold text-warm-800 mb-2">
               {accuracy >= 80 ? 'Meistari!' : accuracy >= 60 ? 'Vel gert!' : 'Góð æfing!'}
             </h2>
 
             <div className="bg-orange-50 rounded-xl p-6 mb-6">
               <div className="text-4xl font-bold text-orange-600 mb-1">{score}</div>
-              <div className="text-sm text-gray-600">Heildarfjöldi stiga</div>
+              <div className="text-sm text-warm-600">Heildarfjöldi stiga</div>
             </div>
 
             <div className="grid grid-cols-3 gap-3 mb-6">
               <div className="bg-green-50 rounded-xl p-4">
                 <div className="text-2xl font-bold text-green-600">{correctAnswers}/{questionsAnswered}</div>
-                <div className="text-xs text-gray-600">Rétt</div>
+                <div className="text-xs text-warm-600">Rétt</div>
               </div>
               <div className="bg-blue-50 rounded-xl p-4">
                 <div className="text-2xl font-bold text-blue-600">{accuracy}%</div>
-                <div className="text-xs text-gray-600">Nákvæmni</div>
+                <div className="text-xs text-warm-600">Nákvæmni</div>
               </div>
               <div className="bg-purple-50 rounded-xl p-4">
                 <div className="text-2xl font-bold text-purple-600">{streak}</div>
-                <div className="text-xs text-gray-600">Besta röð</div>
+                <div className="text-xs text-warm-600">Besta röð</div>
               </div>
             </div>
 
@@ -365,7 +365,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               </button>
               <button
                 onClick={() => onComplete(score, correctAnswers, questionsAnswered, bestScore, totalHintsUsed)}
-                className="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-xl transition-colors"
+                className="w-full bg-warm-200 hover:bg-warm-300 text-warm-800 font-bold py-3 px-6 rounded-xl transition-colors"
               >
                 Til baka í valmynd
               </button>
@@ -385,17 +385,17 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div className="flex gap-6">
               <div>
-                <p className="text-sm text-gray-600">Stig</p>
+                <p className="text-sm text-warm-600">Stig</p>
                 <p className="text-2xl font-bold text-orange-600">{score}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Röð</p>
+                <p className="text-sm text-warm-600">Röð</p>
                 <p className="text-2xl font-bold text-purple-600">
                   {streak > 0 && '🔥'} {streak}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Rétt</p>
+                <p className="text-sm text-warm-600">Rétt</p>
                 <p className="text-2xl font-bold text-green-600">
                   {correctAnswers}/{questionsAnswered}
                 </p>
@@ -403,7 +403,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
             {timerMode && (
               <div>
-                <p className="text-sm text-gray-600">Tími</p>
+                <p className="text-sm text-warm-600">Tími</p>
                 <p className={`text-2xl font-bold ${timeRemaining < 30 ? 'text-red-600' : 'text-blue-600'}`}>
                   {timeRemaining}s
                 </p>
@@ -416,7 +416,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="space-y-4">
             {/* Equation */}
             <div className="bg-white rounded-xl shadow-md p-4">
-              <div className="text-center text-2xl font-mono bg-gray-50 p-4 rounded-lg">
+              <div className="text-center text-2xl font-mono bg-warm-50 p-4 rounded-lg">
                 {gameState.currentReaction.equation}
               </div>
             </div>
@@ -428,14 +428,14 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 className={`bg-white rounded-xl shadow-md p-6 cursor-pointer border-4 transition-all ${
                   gameState.userLimiting === gameState.currentReaction.reactant1.formula
                     ? 'border-orange-500 bg-orange-50'
-                    : 'border-transparent hover:border-gray-200'
+                    : 'border-transparent hover:border-warm-200'
                 } ${gameState.isAnswered && correctAnswer?.limitingReactant === gameState.currentReaction.reactant1.formula ? 'ring-4 ring-green-400' : ''}`}
               >
                 <div className="text-center mb-4">
-                  <p className="text-sm text-gray-600">Hvarfefni 1</p>
+                  <p className="text-sm text-warm-600">Hvarfefni 1</p>
                   <p className="text-xl font-bold">{gameState.currentReaction.reactant1.formula}</p>
                   {isGramMode && (
-                    <p className="text-xs text-gray-500">M = {gameState.reactant1MolarMass} g/mol</p>
+                    <p className="text-xs text-warm-500">M = {gameState.reactant1MolarMass} g/mol</p>
                   )}
                 </div>
                 {isGramMode ? (
@@ -454,7 +454,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         size={35}
                       />
                     ))}
-                    {gameState.reactant1Count > 12 && <span className="text-gray-500">+{gameState.reactant1Count - 12}</span>}
+                    {gameState.reactant1Count > 12 && <span className="text-warm-500">+{gameState.reactant1Count - 12}</span>}
                   </div>
                 )}
                 <p className="text-center text-xl font-bold">
@@ -470,14 +470,14 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 className={`bg-white rounded-xl shadow-md p-6 cursor-pointer border-4 transition-all ${
                   gameState.userLimiting === gameState.currentReaction.reactant2.formula
                     ? 'border-orange-500 bg-orange-50'
-                    : 'border-transparent hover:border-gray-200'
+                    : 'border-transparent hover:border-warm-200'
                 } ${gameState.isAnswered && correctAnswer?.limitingReactant === gameState.currentReaction.reactant2.formula ? 'ring-4 ring-green-400' : ''}`}
               >
                 <div className="text-center mb-4">
-                  <p className="text-sm text-gray-600">Hvarfefni 2</p>
+                  <p className="text-sm text-warm-600">Hvarfefni 2</p>
                   <p className="text-xl font-bold">{gameState.currentReaction.reactant2.formula}</p>
                   {isGramMode && (
-                    <p className="text-xs text-gray-500">M = {gameState.reactant2MolarMass} g/mol</p>
+                    <p className="text-xs text-warm-500">M = {gameState.reactant2MolarMass} g/mol</p>
                   )}
                 </div>
                 {isGramMode ? (
@@ -496,7 +496,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         size={35}
                       />
                     ))}
-                    {gameState.reactant2Count > 12 && <span className="text-gray-500">+{gameState.reactant2Count - 12}</span>}
+                    {gameState.reactant2Count > 12 && <span className="text-warm-500">+{gameState.reactant2Count - 12}</span>}
                   </div>
                 )}
                 <p className="text-center text-xl font-bold">
@@ -510,7 +510,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             {/* Products input */}
             <div className="bg-white rounded-xl shadow-md p-6">
-              <h3 className="font-bold text-gray-800 mb-4">
+              <h3 className="font-bold text-warm-800 mb-4">
                 {isGramMode ? 'Hversu mörg grömm af afurðum myndast?' : 'Hversu margar afurðir myndast?'}
               </h3>
               <div className="space-y-4">
@@ -534,7 +534,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       <div className="w-28">
                         <span className="text-lg font-semibold">{product.formula}:</span>
                         {isGramMode && (
-                          <div className="text-xs text-gray-500">M = {productMolarMass} g/mol</div>
+                          <div className="text-xs text-warm-500">M = {productMolarMass} g/mol</div>
                         )}
                       </div>
                       <input
@@ -550,13 +550,13 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                             ? isCorrectAnswer
                               ? 'border-green-500 bg-green-50'
                               : 'border-red-500 bg-red-50'
-                            : 'border-gray-300'
+                            : 'border-warm-300'
                         }`}
                         placeholder="0"
                       />
-                      <span className="text-gray-600 text-sm">{isGramMode ? 'g' : ''}</span>
+                      <span className="text-warm-600 text-sm">{isGramMode ? 'g' : ''}</span>
                       {gameState.isAnswered && (
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-warm-600">
                           (Rétt: {isGramMode ? `${expectedGrams} g` : correctAnswer?.productsFormed[product.formula]})
                         </span>
                       )}
@@ -568,7 +568,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             {/* Excess input */}
             <div className="bg-white rounded-xl shadow-md p-6">
-              <h3 className="font-bold text-gray-800 mb-4">
+              <h3 className="font-bold text-warm-800 mb-4">
                 {isGramMode ? 'Afgangur í grömmum:' : 'Afgangur af hinu hvarfefninu:'}
               </h3>
               {(() => {
@@ -595,15 +595,15 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                           ? isCorrectExcess
                             ? 'border-green-500 bg-green-50'
                             : 'border-red-500 bg-red-50'
-                          : 'border-gray-300'
+                          : 'border-warm-300'
                       }`}
                       placeholder="0"
                     />
-                    <span className="text-gray-600">
+                    <span className="text-warm-600">
                       {isGramMode ? 'g' : `sameind${parseInt(gameState.userExcess) !== 1 ? 'ir' : ''}`}
                     </span>
                     {gameState.isAnswered && (
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm text-warm-600">
                         (Rétt: {isGramMode ? `${expectedExcessGrams} g` : correctAnswer?.excessRemaining})
                       </span>
                     )}
@@ -615,7 +615,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             {/* Solution (after answering) */}
             {gameState.showingSolution && correctAnswer && (
               <div className="bg-green-50 border-l-4 border-green-500 p-6 rounded-lg">
-                <h4 className="font-bold text-gray-800 mb-4">Lausn:</h4>
+                <h4 className="font-bold text-warm-800 mb-4">Lausn:</h4>
                 <div className="space-y-2 text-sm">
                   <p>
                     <strong>1.</strong> {gameState.currentReaction.reactant1.formula}: {gameState.reactant1Count} / {gameState.currentReaction.reactant1.coeff} = {correctAnswer.timesFromR1.toFixed(2)} skipti
@@ -661,7 +661,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   className={`flex-1 font-bold py-4 px-6 rounded-xl transition-colors ${
                     canSubmit
                       ? 'bg-orange-500 hover:bg-orange-600 text-white'
-                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-warm-300 text-warm-500 cursor-not-allowed'
                   }`}
                 >
                   Athuga svar
@@ -689,7 +689,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               )}
               <button
                 onClick={handleQuit}
-                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+                className="bg-warm-500 hover:bg-warm-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
               >
                 Hætta
               </button>

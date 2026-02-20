@@ -25,10 +25,10 @@ export function Card({ card, onClick, disabled, showStructure = true }: CardProp
         </div>
 
         {/* Back (front of card - shows when flipped) */}
-        <div className="card-face card-back absolute inset-0 bg-white border-2 border-gray-200 rounded-xl shadow-lg flex flex-col items-center justify-center p-3 gap-2">
+        <div className="card-face card-back absolute inset-0 bg-white border-2 border-warm-200 rounded-xl shadow-lg flex flex-col items-center justify-center p-3 gap-2">
           {card.type === 'formula' ? (
             <>
-              <div className="text-2xl font-bold text-gray-800 font-mono">
+              <div className="text-2xl font-bold text-warm-800 font-mono">
                 {card.compound.formula}
               </div>
               {showStructure && (
@@ -37,7 +37,7 @@ export function Card({ card, onClick, disabled, showStructure = true }: CardProp
             </>
           ) : (
             <>
-              <div className="text-base font-semibold text-gray-800 leading-tight text-center">
+              <div className="text-base font-semibold text-warm-800 leading-tight text-center">
                 {card.compound.name}
               </div>
               {showStructure && (

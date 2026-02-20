@@ -172,10 +172,10 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="max-w-lg mx-auto">
           <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
             <div className="text-6xl mb-4">{passedLevel ? '🎉' : '💪'}</div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+            <h2 className="text-3xl font-bold text-warm-800 mb-2">
               {passedLevel ? 'Frábært!' : 'Góð tilraun!'}
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-warm-600 mb-6">
               {passedLevel
                 ? `Þú náðir ${masteryThreshold}+ réttum svörum og hefur lokið Stigi 1!`
                 : `Þú þarft ${masteryThreshold} rétt svör til að opna Stig 2. Reyndu aftur!`}
@@ -184,25 +184,25 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="grid grid-cols-3 gap-3 mb-6">
               <div className="bg-green-50 rounded-xl p-4">
                 <div className="text-2xl font-bold text-green-600">{correctCount}/{questionsAnswered}</div>
-                <div className="text-xs text-gray-600">Rétt svör</div>
+                <div className="text-xs text-warm-600">Rétt svör</div>
               </div>
               <div className="bg-blue-50 rounded-xl p-4">
                 <div className="text-2xl font-bold text-blue-600">{accuracy}%</div>
-                <div className="text-xs text-gray-600">Nákvæmni</div>
+                <div className="text-xs text-warm-600">Nákvæmni</div>
               </div>
               <div className="bg-purple-50 rounded-xl p-4">
                 <div className="text-2xl font-bold text-purple-600">{score}</div>
-                <div className="text-xs text-gray-600">Stig</div>
+                <div className="text-xs text-warm-600">Stig</div>
               </div>
             </div>
 
             {/* Mastery progress */}
-            <div className="bg-gray-50 rounded-xl p-4 mb-6">
-              <div className="flex justify-between text-sm text-gray-600 mb-2">
+            <div className="bg-warm-50 rounded-xl p-4 mb-6">
+              <div className="flex justify-between text-sm text-warm-600 mb-2">
                 <span>Framvinda í lærdómi</span>
                 <span>{correctCount}/{masteryThreshold} rétt svör</span>
               </div>
-              <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+              <div className="h-3 bg-warm-200 rounded-full overflow-hidden">
                 <div
                   className={`h-full transition-all duration-500 ${passedLevel ? 'bg-green-500' : 'bg-yellow-500'}`}
                   style={{ width: `${Math.min((correctCount / masteryThreshold) * 100, 100)}%` }}
@@ -213,7 +213,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             {/* What you learned */}
             <div className="bg-blue-50 rounded-xl p-4 mb-6 text-left">
               <h3 className="font-bold text-blue-800 mb-3">Hvað lærðir þú?</h3>
-              <ul className="text-sm text-gray-700 space-y-2">
+              <ul className="text-sm text-warm-700 space-y-2">
                 <li className="flex items-start gap-2">
                   <span className="text-green-500 mt-0.5">✓</span>
                   <span>Takmarkandi hvarfefni er það sem eyðist fyrst</span>
@@ -260,7 +260,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               )}
               <button
                 onClick={onBack}
-                className="w-full text-gray-500 hover:text-gray-700 font-semibold py-2"
+                className="w-full text-warm-500 hover:text-warm-700 font-semibold py-2"
               >
                 Til baka í valmynd
               </button>
@@ -362,13 +362,13 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   ? isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'
                   : showFeedback && limitingReactant === challenge.reaction.reactant1.formula
                     ? 'border-green-500 bg-green-50'
-                    : 'border-gray-200 hover:border-orange-300 hover:bg-orange-50'
+                    : 'border-warm-200 hover:border-orange-300 hover:bg-orange-50'
               }`}
             >
               <div className="text-center mb-4">
                 <div className="text-2xl font-bold">{challenge.reaction.reactant1.formula}</div>
-                <div className="text-sm text-gray-600">{challenge.r1Count} sameindur</div>
-                <div className="text-xs text-gray-500">Stuðull: {challenge.reaction.reactant1.coeff}</div>
+                <div className="text-sm text-warm-600">{challenge.r1Count} sameindur</div>
+                <div className="text-xs text-warm-500">Stuðull: {challenge.reaction.reactant1.coeff}</div>
               </div>
               <div className="flex flex-wrap justify-center gap-1">
                 {Array.from({ length: Math.min(challenge.r1Count, 8) }).map((_, i) => (
@@ -379,7 +379,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     size={30}
                   />
                 ))}
-                {challenge.r1Count > 8 && <span className="text-gray-500">+{challenge.r1Count - 8}</span>}
+                {challenge.r1Count > 8 && <span className="text-warm-500">+{challenge.r1Count - 8}</span>}
               </div>
             </button>
 
@@ -391,13 +391,13 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   ? isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'
                   : showFeedback && limitingReactant === challenge.reaction.reactant2.formula
                     ? 'border-green-500 bg-green-50'
-                    : 'border-gray-200 hover:border-orange-300 hover:bg-orange-50'
+                    : 'border-warm-200 hover:border-orange-300 hover:bg-orange-50'
               }`}
             >
               <div className="text-center mb-4">
                 <div className="text-2xl font-bold">{challenge.reaction.reactant2.formula}</div>
-                <div className="text-sm text-gray-600">{challenge.r2Count} sameindur</div>
-                <div className="text-xs text-gray-500">Stuðull: {challenge.reaction.reactant2.coeff}</div>
+                <div className="text-sm text-warm-600">{challenge.r2Count} sameindur</div>
+                <div className="text-xs text-warm-500">Stuðull: {challenge.reaction.reactant2.coeff}</div>
               </div>
               <div className="flex flex-wrap justify-center gap-1">
                 {Array.from({ length: Math.min(challenge.r2Count, 8) }).map((_, i) => (
@@ -408,7 +408,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     size={30}
                   />
                 ))}
-                {challenge.r2Count > 8 && <span className="text-gray-500">+{challenge.r2Count - 8}</span>}
+                {challenge.r2Count > 8 && <span className="text-warm-500">+{challenge.r2Count - 8}</span>}
               </div>
             </button>
           </div>
@@ -445,7 +445,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     ? isCorrect ? 'border-green-500 bg-green-50 text-green-700' : 'border-red-500 bg-red-50 text-red-700'
                     : showFeedback && num === correctAnswer
                       ? 'border-green-500 bg-green-50 text-green-700'
-                      : 'border-gray-200 hover:border-orange-300 hover:bg-orange-50'
+                      : 'border-warm-200 hover:border-orange-300 hover:bg-orange-50'
                 }`}
               >
                 {num}
@@ -467,22 +467,22 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-xl font-bold text-gray-800">Takmarkandi - Stig 1</h1>
-              <p className="text-sm text-gray-600">Skildu hugtökin sjónrænt</p>
+              <h1 className="text-xl font-bold text-warm-800">Takmarkandi - Stig 1</h1>
+              <p className="text-sm text-warm-600">Skildu hugtökin sjónrænt</p>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-orange-600">{score}</div>
-              <div className="text-xs text-gray-600">Stig</div>
+              <div className="text-xs text-warm-600">Stig</div>
             </div>
           </div>
 
           {/* Progress bar */}
           <div className="mt-3">
-            <div className="flex justify-between text-xs text-gray-500 mb-1">
+            <div className="flex justify-between text-xs text-warm-500 mb-1">
               <span>Áskorun {challengeIndex + 1}/{totalChallenges}</span>
               <span>{correctCount}/{masteryThreshold} rétt</span>
             </div>
-            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-2 bg-warm-200 rounded-full overflow-hidden">
               <div
                 className="h-full bg-orange-500 transition-all duration-500"
                 style={{ width: `${((challengeIndex + 1) / totalChallenges) * 100}%` }}
@@ -493,15 +493,15 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Equation display */}
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-          <div className="text-center text-xl font-mono bg-gray-50 p-3 rounded-lg">
+          <div className="text-center text-xl font-mono bg-warm-50 p-3 rounded-lg">
             {challenge.reaction.equation}
           </div>
         </div>
 
         {/* Challenge */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
-          <h2 className="text-xl font-bold text-gray-800 mb-2">{info.title}</h2>
-          <p className="text-gray-600 mb-6">{info.instruction}</p>
+          <h2 className="text-xl font-bold text-warm-800 mb-2">{info.title}</h2>
+          <p className="text-warm-600 mb-6">{info.instruction}</p>
 
           {renderOptions()}
         </div>
@@ -588,7 +588,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {/* Educational note */}
         <div className="bg-blue-50 rounded-xl p-4 mb-4">
           <h3 className="font-bold text-blue-800 mb-2">Lykilhugmynd:</h3>
-          <p className="text-sm text-gray-700">
+          <p className="text-sm text-warm-700">
             {challenge.type === 'which_runs_out' && 'Takmarkandi hvarfefni er það sem eyðist fyrst. Það ákvarðar hversu mikið af afurðum getur myndast.'}
             {challenge.type === 'count_times_r1' && 'Til að finna hversu oft hvarf getur gerst, deilir þú fjölda sameinda með stuðli úr jöfnunni.'}
             {challenge.type === 'count_times_r2' && 'Fjöldi skipta = fjöldi sameinda ÷ stuðull. Þetta segir þér hversu oft hvörfin geta gerst.'}
@@ -601,7 +601,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {/* Back button */}
         <button
           onClick={onBack}
-          className="w-full text-gray-500 hover:text-gray-700 font-semibold py-2"
+          className="w-full text-warm-500 hover:text-warm-700 font-semibold py-2"
         >
           ← Til baka í valmynd
         </button>

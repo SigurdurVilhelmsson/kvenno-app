@@ -76,7 +76,7 @@ export function Beaker({
         )}
       </svg>
       {label && (
-        <div className="text-sm mt-2 font-semibold text-gray-700 whitespace-pre-line">
+        <div className="text-sm mt-2 font-semibold text-warm-700 whitespace-pre-line">
           {label}
         </div>
       )}

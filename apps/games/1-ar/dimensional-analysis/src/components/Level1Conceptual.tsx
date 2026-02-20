@@ -251,8 +251,8 @@ export function Level1Conceptual({ onComplete, onBack, initialProgress, onCorrec
           <div className="bg-white rounded-2xl shadow-lg p-8 mt-8">
             <div className="text-center mb-8">
               <div className="text-6xl mb-4">🔬</div>
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">Velkomin í Einingagreiningu!</h1>
-              <p className="text-lg text-gray-600">Stig 1: Hugtök</p>
+              <h1 className="text-3xl font-bold text-warm-800 mb-2">Velkomin í Einingagreiningu!</h1>
+              <p className="text-lg text-warm-600">Stig 1: Hugtök</p>
             </div>
 
             <div className="space-y-4 mb-8">
@@ -302,16 +302,16 @@ export function Level1Conceptual({ onComplete, onBack, initialProgress, onCorrec
           <div className="bg-white rounded-2xl shadow-lg p-8 mt-8">
             <div className="text-center mb-8">
               <div className="text-6xl mb-4">{mastered ? '🎉' : '📚'}</div>
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">
+              <h1 className="text-3xl font-bold text-warm-800 mb-2">
                 {mastered ? 'Frábært!' : 'Vel gert!'}
               </h1>
-              <p className="text-lg text-gray-600">
+              <p className="text-lg text-warm-600">
                 Þú svaraðir {progress.questionsCorrect} af {challenges.length} rétt
               </p>
             </div>
 
             <div className="mb-8">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Hvað þú lærðir:</h2>
+              <h2 className="text-xl font-bold text-warm-800 mb-4">Hvað þú lærðir:</h2>
               <div className="space-y-3">
                 <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
                   <span className="text-green-600 text-xl">✓</span>
@@ -369,7 +369,7 @@ export function Level1Conceptual({ onComplete, onBack, initialProgress, onCorrec
                 </button>
                 <button
                   onClick={handleCompleteSummary}
-                  className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 rounded-xl font-semibold transition-colors"
+                  className="w-full bg-warm-200 hover:bg-warm-300 text-warm-700 py-3 rounded-xl font-semibold transition-colors"
                 >
                   Til baka í valmynd
                 </button>
@@ -400,11 +400,11 @@ export function Level1Conceptual({ onComplete, onBack, initialProgress, onCorrec
         <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
           <button
             onClick={onBack}
-            className="text-gray-600 hover:text-gray-800 flex items-center gap-2 text-lg"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 text-lg"
           >
             ← Til baka
           </button>
-          <div className="text-sm text-gray-600 flex items-center gap-2 sm:gap-4 flex-wrap">
+          <div className="text-sm text-warm-600 flex items-center gap-2 sm:gap-4 flex-wrap">
             <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-semibold">
               Stig 1: Hugtök
             </span>
@@ -413,7 +413,7 @@ export function Level1Conceptual({ onComplete, onBack, initialProgress, onCorrec
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-green-500 h-2 rounded-full transition-all duration-500"
             style={{ width: `${((currentChallengeIndex) / challenges.length) * 100}%` }}
@@ -422,8 +422,8 @@ export function Level1Conceptual({ onComplete, onBack, initialProgress, onCorrec
 
         {/* Main challenge card */}
         <div className="bg-white rounded-2xl shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">{challenge.title}</h2>
-          <p className="text-lg text-gray-600 mb-6">{challenge.instruction}</p>
+          <h2 className="text-2xl font-bold text-warm-800 mb-2">{challenge.title}</h2>
+          <p className="text-lg text-warm-600 mb-6">{challenge.instruction}</p>
 
           {/* Challenge content - rendered based on type */}
           <div className="mb-6">
@@ -492,7 +492,7 @@ export function Level1Conceptual({ onComplete, onBack, initialProgress, onCorrec
         </div>
 
         {/* Conceptual reminder */}
-        <div className="mt-6 text-center text-gray-500 text-sm">
+        <div className="mt-6 text-center text-warm-500 text-sm">
           Stig 1 snýst um að <strong>skilja hugtökin</strong> - engar útreikninga!
         </div>
       </div>
@@ -554,8 +554,8 @@ function EquivalenceChallenge1({ onSuccess, onAttempt }: ChallengeComponentProps
       />
 
       {!isCorrect && (
-        <div className="flex flex-col items-center gap-4 p-6 bg-gray-50 rounded-xl">
-          <p className="text-gray-700 font-semibold">Hversu margir lítrar jafngilda 1000 mL?</p>
+        <div className="flex flex-col items-center gap-4 p-6 bg-warm-50 rounded-xl">
+          <p className="text-warm-700 font-semibold">Hversu margir lítrar jafngilda 1000 mL?</p>
 
           {/* Current value display */}
           <div className="flex items-center gap-3">
@@ -567,7 +567,7 @@ function EquivalenceChallenge1({ onSuccess, onAttempt }: ChallengeComponentProps
 
           {/* Hint about direction */}
           {hasAttempted && !isCorrect && (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-warm-500">
               {comparison < 0 ? '↑ Þú þarft meira' : comparison > 0 ? '↓ Þú þarft minna' : ''}
             </p>
           )}
@@ -679,24 +679,24 @@ function FactorBuildingChallenge({ onSuccess, onAttempt }: ChallengeComponentPro
   return (
     <div className="space-y-6">
       {/* Fraction display */}
-      <div className="flex flex-col items-center p-6 sm:p-8 bg-gray-50 rounded-xl">
+      <div className="flex flex-col items-center p-6 sm:p-8 bg-warm-50 rounded-xl">
         {/* Numerator slot */}
         <div className={`
           min-w-[120px] sm:min-w-[150px] min-h-[50px] sm:min-h-[60px] p-3 sm:p-4 rounded-lg border-2 border-dashed
           flex items-center justify-center text-base sm:text-lg font-bold
-          ${numerator ? 'bg-blue-100 border-blue-400 text-blue-700' : 'bg-gray-100 border-gray-300 text-gray-400'}
+          ${numerator ? 'bg-blue-100 border-blue-400 text-blue-700' : 'bg-warm-100 border-warm-300 text-warm-400'}
         `}>
           {numerator ? `${numerator.value} ${numerator.unit}` : 'Teljari'}
         </div>
 
         {/* Fraction bar */}
-        <div className="w-36 sm:w-48 h-1 bg-gray-800 my-2 sm:my-3" />
+        <div className="w-36 sm:w-48 h-1 bg-warm-800 my-2 sm:my-3" />
 
         {/* Denominator slot */}
         <div className={`
           min-w-[120px] sm:min-w-[150px] min-h-[50px] sm:min-h-[60px] p-3 sm:p-4 rounded-lg border-2 border-dashed
           flex items-center justify-center text-base sm:text-lg font-bold
-          ${denominator ? 'bg-green-100 border-green-400 text-green-700' : 'bg-gray-100 border-gray-300 text-gray-400'}
+          ${denominator ? 'bg-green-100 border-green-400 text-green-700' : 'bg-warm-100 border-warm-300 text-warm-400'}
         `}>
           {denominator ? `${denominator.value} ${denominator.unit}` : 'Nefnari'}
         </div>
@@ -736,8 +736,8 @@ function FactorBuildingChallenge({ onSuccess, onAttempt }: ChallengeComponentPro
 
       {/* Available blocks */}
       {!isCorrect && (
-        <div className="p-4 bg-white rounded-xl border-2 border-gray-200">
-          <p className="text-sm text-gray-600 mb-3 text-center">Veldu tvær einingar sem tákna <strong>sama rúmmál</strong>:</p>
+        <div className="p-4 bg-white rounded-xl border-2 border-warm-200">
+          <p className="text-sm text-warm-600 mb-3 text-center">Veldu tvær einingar sem tákna <strong>sama rúmmál</strong>:</p>
           <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
             {availableBlocks.map((block, idx) => (
               <button
@@ -757,7 +757,7 @@ function FactorBuildingChallenge({ onSuccess, onAttempt }: ChallengeComponentPro
           {(numerator || denominator) && (
             <button
               onClick={() => { setNumerator(null); setDenominator(null); setIsCorrect(false); setErrorType('none'); }}
-              className="mt-4 w-full text-sm text-gray-500 hover:text-gray-700"
+              className="mt-4 w-full text-sm text-warm-500 hover:text-warm-700"
             >
               Byrja upp á nýtt
             </button>
@@ -824,9 +824,9 @@ function CancellationChallenge1({ onSuccess, onAttempt }: ChallengeComponentProp
   return (
     <div className="space-y-6">
       {/* Starting value */}
-      <div className="flex items-center justify-center gap-3 sm:gap-4 p-4 sm:p-6 bg-gray-50 rounded-xl flex-wrap">
+      <div className="flex items-center justify-center gap-3 sm:gap-4 p-4 sm:p-6 bg-warm-50 rounded-xl flex-wrap">
         <div className="text-center">
-          <p className="text-sm text-gray-600 mb-2">Byrjunargildi:</p>
+          <p className="text-sm text-warm-600 mb-2">Byrjunargildi:</p>
           <div className="flex items-center gap-1">
             <span className="text-2xl sm:text-3xl font-bold text-blue-600">{startValue}</span>
             {/* Starting mL - gets strikethrough when correct factor selected */}
@@ -840,7 +840,7 @@ function CancellationChallenge1({ onSuccess, onAttempt }: ChallengeComponentProp
           </div>
         </div>
 
-        <div className="text-2xl sm:text-3xl text-gray-400">×</div>
+        <div className="text-2xl sm:text-3xl text-warm-400">×</div>
 
         {/* Factor slot */}
         <div className={`
@@ -848,7 +848,7 @@ function CancellationChallenge1({ onSuccess, onAttempt }: ChallengeComponentProp
           flex items-center justify-center transition-all duration-300
           ${selectedFactor !== null
             ? (isCorrect ? 'border-green-500 bg-green-50' : (showAnimation && !isCorrect ? 'border-red-500 bg-red-50' : 'border-orange-500 bg-orange-50'))
-            : 'border-dashed border-gray-300 bg-gray-50'
+            : 'border-dashed border-warm-300 bg-warm-50'
           }
         `}>
           {selectedFactorData ? (
@@ -863,7 +863,7 @@ function CancellationChallenge1({ onSuccess, onAttempt }: ChallengeComponentProp
               }`}>
                 {selectedFactorData.num} {selectedFactorData.numUnit}
               </div>
-              <div className="w-full h-0.5 bg-gray-800 my-1" />
+              <div className="w-full h-0.5 bg-warm-800 my-1" />
               {/* Denominator - mL gets strikethrough when correct */}
               <div className={`font-bold text-sm sm:text-base transition-all duration-500 ${
                 isCancellingPhase && isCorrect && selectedFactorData.denUnit === 'mL'
@@ -876,15 +876,15 @@ function CancellationChallenge1({ onSuccess, onAttempt }: ChallengeComponentProp
               </div>
             </div>
           ) : (
-            <span className="text-gray-400 text-sm">Veldu stuðul</span>
+            <span className="text-warm-400 text-sm">Veldu stuðul</span>
           )}
         </div>
 
-        <div className="text-2xl sm:text-3xl text-gray-400">=</div>
+        <div className="text-2xl sm:text-3xl text-warm-400">=</div>
 
         {/* Result */}
         <div className="text-center min-w-[80px]">
-          <p className="text-sm text-gray-600 mb-2">Útkoma:</p>
+          <p className="text-sm text-warm-600 mb-2">Útkoma:</p>
           {showAnimation && animationPhase === 'done' && (
             <div className={`px-3 sm:px-4 py-2 rounded-lg font-bold text-lg sm:text-xl ${
               isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
@@ -905,11 +905,11 @@ function CancellationChallenge1({ onSuccess, onAttempt }: ChallengeComponentProp
         <div className="p-4 bg-green-50 rounded-lg border border-green-200">
           <div className="flex items-center justify-center gap-2 mb-3">
             <span className="text-red-400 line-through">mL</span>
-            <span className="text-gray-600">og</span>
+            <span className="text-warm-600">og</span>
             <span className="text-red-400 line-through">mL</span>
-            <span className="text-gray-600">strikast út →</span>
+            <span className="text-warm-600">strikast út →</span>
             <span className="text-green-600 font-bold text-lg">L</span>
-            <span className="text-gray-600">verður eftir!</span>
+            <span className="text-warm-600">verður eftir!</span>
           </div>
           <p className="text-green-700 text-center text-sm">
             {startValue} <span className="line-through text-red-400">mL</span> × (1 <span className="text-green-600 font-bold">L</span> / 1000 <span className="line-through text-red-400">mL</span>) = {startValue / 1000} L
@@ -987,21 +987,21 @@ function OrientationChallenge({ onSuccess, onAttempt }: ChallengeComponentProps)
   return (
     <div className="space-y-6">
       {/* Starting value with visual */}
-      <div className="text-center p-4 bg-gray-50 rounded-lg">
-        <p className="text-sm text-gray-600 mb-2">Við viljum breyta:</p>
+      <div className="text-center p-4 bg-warm-50 rounded-lg">
+        <p className="text-sm text-warm-600 mb-2">Við viljum breyta:</p>
         <div className="flex items-center justify-center gap-3">
           <span className="text-2xl font-bold text-blue-600">5 km</span>
-          <span className="text-2xl text-gray-400">→</span>
+          <span className="text-2xl text-warm-400">→</span>
           <span className="text-2xl font-bold text-green-600">? m</span>
         </div>
       </div>
 
-      <p className="text-center text-gray-700">Prófaðu báða stuðla og sjáðu hvað gerist:</p>
+      <p className="text-center text-warm-700">Prófaðu báða stuðla og sjáðu hvað gerist:</p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         {/* Wrong factor */}
         <div className={`p-4 sm:p-6 rounded-xl border-2 transition-all ${
-          selectedFactor === 'wrong' ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-white hover:border-gray-300'
+          selectedFactor === 'wrong' ? 'border-red-500 bg-red-50' : 'border-warm-200 bg-white hover:border-warm-300'
         }`}>
           <div className="flex justify-center mb-4">
             <ConversionFactorBlock
@@ -1039,7 +1039,7 @@ function OrientationChallenge({ onSuccess, onAttempt }: ChallengeComponentProps)
 
         {/* Correct factor */}
         <div className={`p-4 sm:p-6 rounded-xl border-2 transition-all ${
-          selectedFactor === 'correct' ? 'border-green-500 bg-green-50' : 'border-gray-200 bg-white hover:border-gray-300'
+          selectedFactor === 'correct' ? 'border-green-500 bg-green-50' : 'border-warm-200 bg-white hover:border-warm-300'
         }`}>
           <div className="flex justify-center mb-4">
             <ConversionFactorBlock
@@ -1127,17 +1127,17 @@ function ChainConversionChallenge({ onSuccess, onAttempt }: ChallengeComponentPr
   return (
     <div className="space-y-6">
       {/* Chain display */}
-      <div className="flex items-center justify-center gap-3 p-6 bg-gray-50 rounded-xl flex-wrap">
+      <div className="flex items-center justify-center gap-3 p-6 bg-warm-50 rounded-xl flex-wrap">
         <UnitBlock value={5000} unit="mg" color="blue" size="medium" />
-        <span className="text-2xl text-gray-400">→</span>
+        <span className="text-2xl text-warm-400">→</span>
 
-        <div className={`px-4 py-2 rounded-lg border-2 ${step1Done ? 'bg-green-100 border-green-400' : 'bg-white border-gray-300'}`}>
+        <div className={`px-4 py-2 rounded-lg border-2 ${step1Done ? 'bg-green-100 border-green-400' : 'bg-white border-warm-300'}`}>
           {step1Done ? '5 g' : '?'}
         </div>
 
-        <span className="text-2xl text-gray-400">→</span>
+        <span className="text-2xl text-warm-400">→</span>
 
-        <div className={`px-4 py-2 rounded-lg border-2 ${step2Done ? 'bg-green-100 border-green-400' : 'bg-white border-gray-300'}`}>
+        <div className={`px-4 py-2 rounded-lg border-2 ${step2Done ? 'bg-green-100 border-green-400' : 'bg-white border-warm-300'}`}>
           {step2Done ? '0.005 kg' : '?'}
         </div>
       </div>
@@ -1255,20 +1255,20 @@ function TimeEquivalenceChallenge({ onSuccess, onAttempt }: ChallengeComponentPr
   return (
     <div className="space-y-6">
       {/* Visual chain display */}
-      <div className="flex items-center justify-center gap-2 sm:gap-3 p-4 sm:p-6 bg-gray-50 rounded-xl flex-wrap">
+      <div className="flex items-center justify-center gap-2 sm:gap-3 p-4 sm:p-6 bg-warm-50 rounded-xl flex-wrap">
         <UnitBlock value={1} unit="klst" color="blue" size="medium" />
-        <span className="text-xl sm:text-2xl text-gray-400">→</span>
+        <span className="text-xl sm:text-2xl text-warm-400">→</span>
 
         <div className={`px-3 sm:px-4 py-2 rounded-lg border-2 min-w-[60px] text-center transition-all duration-300 ${
-          step1Done ? 'bg-green-100 border-green-400' : 'bg-white border-gray-300'
+          step1Done ? 'bg-green-100 border-green-400' : 'bg-white border-warm-300'
         } ${showStep1Animation && selectedStep1 !== null && step1Factors[selectedStep1].correct ? 'animate-pulse ring-2 ring-green-400' : ''}`}>
           <span className="font-bold text-sm sm:text-base">{step1Done ? '60 mín' : '?'}</span>
         </div>
 
-        <span className="text-xl sm:text-2xl text-gray-400">→</span>
+        <span className="text-xl sm:text-2xl text-warm-400">→</span>
 
         <div className={`px-3 sm:px-4 py-2 rounded-lg border-2 min-w-[70px] text-center transition-all duration-300 ${
-          step2Done ? 'bg-green-100 border-green-400' : 'bg-white border-gray-300'
+          step2Done ? 'bg-green-100 border-green-400' : 'bg-white border-warm-300'
         } ${showStep2Animation && selectedStep2 !== null && step2Factors[selectedStep2].correct ? 'animate-pulse ring-2 ring-green-400' : ''}`}>
           <span className="font-bold text-sm sm:text-base">{step2Done ? '3600 s' : '?'}</span>
         </div>

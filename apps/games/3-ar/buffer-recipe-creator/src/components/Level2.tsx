@@ -215,12 +215,12 @@ export default function Level2({
           <div className="flex justify-between items-center">
             <button
               onClick={onBack}
-              className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+              className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
             >
               ← Til baka
             </button>
             <div className="flex items-center gap-4">
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-warm-500">
                 {completed + 1} / {LEVEL2_PUZZLES.length}
               </div>
               <div className="text-lg font-bold" style={{ color: '#f36b22' }}>
@@ -232,10 +232,10 @@ export default function Level2({
           <h1 className="text-xl md:text-2xl font-bold mt-2" style={{ color: '#f36b22' }}>
             Stuðpúðasmíði - Stig 2
           </h1>
-          <p className="text-gray-600 text-sm">Henderson-Hasselbalch útreikningar</p>
+          <p className="text-warm-600 text-sm">Henderson-Hasselbalch útreikningar</p>
 
           {/* Progress bar */}
-          <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
+          <div className="w-full bg-warm-200 rounded-full h-2 mt-3">
             <div
               className="h-2 rounded-full transition-all duration-300"
               style={{
@@ -256,28 +256,28 @@ export default function Level2({
               #{puzzle.id}
             </span>
             <div className="flex-1">
-              <h2 className="text-lg font-bold text-gray-800">{problem.system}</h2>
-              <p className="text-gray-700 mt-1">{puzzle.taskIs}</p>
+              <h2 className="text-lg font-bold text-warm-800">{problem.system}</h2>
+              <p className="text-warm-700 mt-1">{puzzle.taskIs}</p>
             </div>
           </div>
 
           {/* Problem Details */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-            <div className="bg-gray-50 p-3 rounded-lg text-center">
-              <div className="text-xs text-gray-500">pKa</div>
-              <div className="text-lg font-bold text-gray-800">{problem.pKa}</div>
+            <div className="bg-warm-50 p-3 rounded-lg text-center">
+              <div className="text-xs text-warm-500">pKa</div>
+              <div className="text-lg font-bold text-warm-800">{problem.pKa}</div>
             </div>
-            <div className="bg-gray-50 p-3 rounded-lg text-center">
-              <div className="text-xs text-gray-500">Markmið pH</div>
+            <div className="bg-warm-50 p-3 rounded-lg text-center">
+              <div className="text-xs text-warm-500">Markmið pH</div>
               <div className="text-lg font-bold" style={{ color: '#f36b22' }}>{problem.targetPH}</div>
             </div>
-            <div className="bg-gray-50 p-3 rounded-lg text-center">
-              <div className="text-xs text-gray-500">Rúmmál</div>
-              <div className="text-lg font-bold text-gray-800">{problem.volume} L</div>
+            <div className="bg-warm-50 p-3 rounded-lg text-center">
+              <div className="text-xs text-warm-500">Rúmmál</div>
+              <div className="text-lg font-bold text-warm-800">{problem.volume} L</div>
             </div>
-            <div className="bg-gray-50 p-3 rounded-lg text-center">
-              <div className="text-xs text-gray-500">Heildarstyrkur</div>
-              <div className="text-lg font-bold text-gray-800">{problem.totalConcentration} M</div>
+            <div className="bg-warm-50 p-3 rounded-lg text-center">
+              <div className="text-xs text-warm-500">Heildarstyrkur</div>
+              <div className="text-lg font-bold text-warm-800">{problem.totalConcentration} M</div>
             </div>
           </div>
 
@@ -320,29 +320,29 @@ export default function Level2({
           <div className="flex items-center justify-between">
             <div className={`flex-1 text-center ${step === 'direction' ? 'font-bold' : ''}`}>
               <div className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-1 ${
-                directionCorrect ? 'bg-green-500 text-white' : step === 'direction' ? 'bg-orange-500 text-white' : 'bg-gray-200'
+                directionCorrect ? 'bg-green-500 text-white' : step === 'direction' ? 'bg-orange-500 text-white' : 'bg-warm-200'
               }`}>
                 {directionCorrect ? '✓' : '1'}
               </div>
-              <div className="text-xs text-gray-600">Stefna</div>
+              <div className="text-xs text-warm-600">Stefna</div>
             </div>
-            <div className="flex-shrink-0 w-12 h-0.5 bg-gray-200" />
+            <div className="flex-shrink-0 w-12 h-0.5 bg-warm-200" />
             <div className={`flex-1 text-center ${step === 'ratio' ? 'font-bold' : ''}`}>
               <div className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-1 ${
-                ratioCorrect ? 'bg-green-500 text-white' : step === 'ratio' ? 'bg-orange-500 text-white' : 'bg-gray-200'
+                ratioCorrect ? 'bg-green-500 text-white' : step === 'ratio' ? 'bg-orange-500 text-white' : 'bg-warm-200'
               }`}>
                 {ratioCorrect ? '✓' : '2'}
               </div>
-              <div className="text-xs text-gray-600">Hlutfall</div>
+              <div className="text-xs text-warm-600">Hlutfall</div>
             </div>
-            <div className="flex-shrink-0 w-12 h-0.5 bg-gray-200" />
+            <div className="flex-shrink-0 w-12 h-0.5 bg-warm-200" />
             <div className={`flex-1 text-center ${step === 'mass' || step === 'complete' ? 'font-bold' : ''}`}>
               <div className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-1 ${
-                massCorrect ? 'bg-green-500 text-white' : step === 'mass' ? 'bg-orange-500 text-white' : 'bg-gray-200'
+                massCorrect ? 'bg-green-500 text-white' : step === 'mass' ? 'bg-orange-500 text-white' : 'bg-warm-200'
               }`}>
                 {massCorrect ? '✓' : '3'}
               </div>
-              <div className="text-xs text-gray-600">Massi</div>
+              <div className="text-xs text-warm-600">Massi</div>
             </div>
           </div>
         </div>
@@ -352,7 +352,7 @@ export default function Level2({
           {/* Step 1: Direction */}
           {step === 'direction' && (
             <div>
-              <h3 className="text-lg font-bold text-gray-800 mb-4">
+              <h3 className="text-lg font-bold text-warm-800 mb-4">
                 Skref 1: Er markmiðs-pH hærra, jafnt eða lægra en pKa?
               </h3>
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
@@ -367,36 +367,36 @@ export default function Level2({
                   className={`p-4 rounded-lg border-2 transition-all ${
                     selectedDirection === 'higher'
                       ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      : 'border-warm-200 hover:border-warm-300'
                   }`}
                 >
                   <div className="text-2xl mb-1">📈</div>
                   <div className="font-semibold">Hærra</div>
-                  <div className="text-xs text-gray-500">pH {'>'} pKa</div>
+                  <div className="text-xs text-warm-500">pH {'>'} pKa</div>
                 </button>
                 <button
                   onClick={() => setSelectedDirection('equal')}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     selectedDirection === 'equal'
                       ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      : 'border-warm-200 hover:border-warm-300'
                   }`}
                 >
                   <div className="text-2xl mb-1">⚖️</div>
                   <div className="font-semibold">Jafnt</div>
-                  <div className="text-xs text-gray-500">pH = pKa</div>
+                  <div className="text-xs text-warm-500">pH = pKa</div>
                 </button>
                 <button
                   onClick={() => setSelectedDirection('lower')}
                   className={`p-4 rounded-lg border-2 transition-all ${
                     selectedDirection === 'lower'
                       ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      : 'border-warm-200 hover:border-warm-300'
                   }`}
                 >
                   <div className="text-2xl mb-1">📉</div>
                   <div className="font-semibold">Lægra</div>
-                  <div className="text-xs text-gray-500">pH {'<'} pKa</div>
+                  <div className="text-xs text-warm-500">pH {'<'} pKa</div>
                 </button>
               </div>
 
@@ -411,7 +411,7 @@ export default function Level2({
               <button
                 onClick={checkDirection}
                 disabled={!selectedDirection}
-                className="w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed"
                 style={{ backgroundColor: selectedDirection ? '#f36b22' : undefined }}
               >
                 Athuga svar
@@ -422,7 +422,7 @@ export default function Level2({
           {/* Step 2: Ratio */}
           {step === 'ratio' && (
             <div>
-              <h3 className="text-lg font-bold text-gray-800 mb-4">
+              <h3 className="text-lg font-bold text-warm-800 mb-4">
                 Skref 2: Reiknaðu [Basi]/[Sýra] hlutfallið
               </h3>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
@@ -435,7 +435,7 @@ export default function Level2({
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-warm-700 mb-1">
                   Hlutfall [Basi]/[Sýra]:
                 </label>
                 <input
@@ -444,7 +444,7 @@ export default function Level2({
                   value={ratioInput}
                   onChange={(e) => setRatioInput(e.target.value)}
                   placeholder="t.d. 1.58"
-                  className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-orange-500 focus:outline-hidden"
+                  className="w-full p-3 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-hidden"
                 />
               </div>
 
@@ -459,7 +459,7 @@ export default function Level2({
               <button
                 onClick={checkRatio}
                 disabled={!ratioInput}
-                className="w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed"
                 style={{ backgroundColor: ratioInput ? '#f36b22' : undefined }}
               >
                 Athuga svar
@@ -470,7 +470,7 @@ export default function Level2({
           {/* Step 3: Mass */}
           {step === 'mass' && (
             <div>
-              <h3 className="text-lg font-bold text-gray-800 mb-4">
+              <h3 className="text-lg font-bold text-warm-800 mb-4">
                 Skref 3: Reiknaðu massa sýru og basa (í grömmum)
               </h3>
               <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
@@ -523,7 +523,7 @@ export default function Level2({
               <button
                 onClick={checkMass}
                 disabled={!acidMassInput || !baseMassInput}
-                className="w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                className="w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed"
                 style={{ backgroundColor: (acidMassInput && baseMassInput) ? '#f36b22' : undefined }}
               >
                 Athuga svar
@@ -539,8 +539,8 @@ export default function Level2({
                 <p className="text-green-700 mb-3">{puzzle.explanationIs}</p>
 
                 <div className="bg-white rounded-lg p-3 border border-green-200">
-                  <h4 className="font-semibold text-gray-700 mb-2">Útreikningur:</h4>
-                  <ul className="text-sm text-gray-600 space-y-1">
+                  <h4 className="font-semibold text-warm-700 mb-2">Útreikningur:</h4>
+                  <ul className="text-sm text-warm-600 space-y-1">
                     <li>• pH - pKa = {problem.targetPH} - {problem.pKa} = {(problem.targetPH - problem.pKa).toFixed(2)}</li>
                     <li>• Hlutfall = 10^{(problem.targetPH - problem.pKa).toFixed(2)} = {problem.ratio.toFixed(2)}</li>
                     <li>• Heildar mól = {problem.totalConcentration} M × {problem.volume} L = {(problem.totalConcentration * problem.volume).toFixed(4)} mol</li>
@@ -562,12 +562,12 @@ export default function Level2({
 
         {/* Formula Reference */}
         <div className="mt-6 bg-white rounded-xl shadow-lg p-4">
-          <h3 className="font-semibold text-gray-700 mb-2">📐 Henderson-Hasselbalch</h3>
-          <div className="bg-gray-50 rounded-lg p-3 text-center">
+          <h3 className="font-semibold text-warm-700 mb-2">📐 Henderson-Hasselbalch</h3>
+          <div className="bg-warm-50 rounded-lg p-3 text-center">
             <p className="text-lg font-mono">
               pH = pK<sub>a</sub> + log([A⁻]/[HA])
             </p>
-            <p className="text-sm text-gray-600 mt-2">
+            <p className="text-sm text-warm-600 mt-2">
               Þar sem [A⁻] = styrkur basa og [HA] = styrkur sýru
             </p>
           </div>

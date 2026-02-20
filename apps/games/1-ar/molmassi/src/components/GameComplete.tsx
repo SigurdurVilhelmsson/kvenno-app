@@ -45,10 +45,10 @@ export function GameComplete({
     <div className={`min-h-screen bg-gradient-to-b ${passedLevel ? 'from-green-50' : 'from-yellow-50'} to-white flex items-center justify-center p-4`}>
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center animate-fade-in-up">
         <div className="text-6xl mb-4 animate-bounce-in">{passedLevel ? '\uD83C\uDF89' : '\uD83D\uDCAA'}</div>
-        <h2 className="text-3xl font-bold text-gray-800 mb-2 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+        <h2 className="text-3xl font-bold text-warm-800 mb-2 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
           {passedLevel ? 'Frábært!' : 'Góð tilraun!'}
         </h2>
-        <p className="text-gray-600 mb-6 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+        <p className="text-warm-600 mb-6 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
           {passedLevel
             ? `Þú náðir ${masteryThreshold}+ réttum svörum og hefur lokið Stigi 1!`
             : `Þú þarft ${masteryThreshold} rétt svör til að opna Stig 2. Reyndu aftur!`}
@@ -57,25 +57,25 @@ export function GameComplete({
         <div className="grid grid-cols-3 gap-3 mb-6">
           <div className="bg-green-50 rounded-xl p-4 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
             <div className="text-2xl font-bold text-green-600">{correctCount}/{questionsAnswered}</div>
-            <div className="text-xs text-gray-600">Rétt svör</div>
+            <div className="text-xs text-warm-600">Rétt svör</div>
           </div>
           <div className="bg-blue-50 rounded-xl p-4 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
             <div className="text-2xl font-bold text-blue-600">{accuracy}%</div>
-            <div className="text-xs text-gray-600">Nákvæmni</div>
+            <div className="text-xs text-warm-600">Nákvæmni</div>
           </div>
           <div className="bg-purple-50 rounded-xl p-4 animate-fade-in-up" style={{ animationDelay: '500ms' }}>
             <div className="text-2xl font-bold text-purple-600">{score}</div>
-            <div className="text-xs text-gray-600">Stig</div>
+            <div className="text-xs text-warm-600">Stig</div>
           </div>
         </div>
 
         {/* Mastery progress */}
-        <div className="bg-gray-50 rounded-xl p-4 mb-6 animate-fade-in-up" style={{ animationDelay: '450ms' }}>
-          <div className="flex justify-between text-sm text-gray-600 mb-2">
+        <div className="bg-warm-50 rounded-xl p-4 mb-6 animate-fade-in-up" style={{ animationDelay: '450ms' }}>
+          <div className="flex justify-between text-sm text-warm-600 mb-2">
             <span>Framvinda í lærdómi</span>
             <span>{correctCount}/{masteryThreshold} rétt svör</span>
           </div>
-          <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
+          <div className="h-3 bg-warm-200 rounded-full overflow-hidden">
             <div
               className={`h-full transition-all duration-500 ${passedLevel ? 'bg-green-500' : 'bg-yellow-500'}`}
               style={{ width: `${Math.min((correctCount / masteryThreshold) * 100, 100)}%` }}
@@ -87,7 +87,7 @@ export function GameComplete({
           <h3 className="font-bold text-blue-800 mb-3 flex items-center gap-2">
             <span className="text-lg">{'\uD83D\uDCDA'}</span> Hvað lærðir þú?
           </h3>
-          <ul className="text-sm text-gray-700 space-y-2">
+          <ul className="text-sm text-warm-700 space-y-2">
             <li className="flex items-start gap-2">
               <span className="text-green-500 mt-0.5">{'\u2713'}</span>
               <span>Sameindir eru byggðar úr frumeindum</span>
@@ -126,14 +126,14 @@ export function GameComplete({
           {passedLevel && (
             <button
               onClick={onReplay}
-              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-xl transition-colors"
+              className="w-full bg-warm-100 hover:bg-warm-200 text-warm-700 font-bold py-3 px-6 rounded-xl transition-colors"
             >
               Spila Aftur
             </button>
           )}
           <button
             onClick={onBack}
-            className="w-full text-gray-500 hover:text-gray-700 font-semibold py-2"
+            className="w-full text-warm-500 hover:text-warm-700 font-semibold py-2"
           >
             Til baka í valmynd
           </button>

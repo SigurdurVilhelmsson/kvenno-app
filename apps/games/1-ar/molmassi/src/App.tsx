@@ -150,8 +150,8 @@ function App() {
         {/* Title */}
         <div className="text-center mb-8 animate-fade-in-up">
           <div className="text-6xl mb-4">⚗️</div>
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">{t('game.title')}</h1>
-          <p className="text-gray-600">{t('game.subtitle')}</p>
+          <h1 className="text-4xl font-bold font-heading text-warm-800 mb-2">{t('game.title')}</h1>
+          <p className="text-warm-600">{t('game.subtitle')}</p>
         </div>
 
         {/* Level Cards */}
@@ -169,15 +169,15 @@ function App() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-xl font-bold text-gray-800">{t('menu.level1.title')}</h2>
+                    <h2 className="text-xl font-bold text-warm-800">{t('menu.level1.title')}</h2>
                     {progress.level1Completed && (
                       <span className="text-green-500 text-lg">✓</span>
                     )}
                   </div>
-                  <p className="text-gray-600 text-sm">{t('menu.level1.description')}</p>
+                  <p className="text-warm-600 text-sm">{t('menu.level1.description')}</p>
                 </div>
               </div>
-              <span className="text-gray-400 text-2xl">→</span>
+              <span className="text-warm-400 text-2xl">→</span>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
               <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">{t('menu.level1.tags.countAtoms')}</span>
@@ -204,18 +204,18 @@ function App() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-xl font-bold text-gray-800">{t('menu.level2.title')}</h2>
+                    <h2 className="text-xl font-bold text-warm-800">{t('menu.level2.title')}</h2>
                     {progress.level2Completed && (
                       <span className="text-green-500 text-lg">✓</span>
                     )}
                     {!progress.level1Completed && (
-                      <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">🔒 {t('menu.level2.locked')}</span>
+                      <span className="text-xs text-warm-400 bg-warm-100 px-2 py-0.5 rounded-full">🔒 {t('menu.level2.locked')}</span>
                     )}
                   </div>
-                  <p className="text-gray-600 text-sm">{t('menu.level2.description')}</p>
+                  <p className="text-warm-600 text-sm">{t('menu.level2.description')}</p>
                 </div>
               </div>
-              <span className="text-gray-400 text-2xl">→</span>
+              <span className="text-warm-400 text-2xl">→</span>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
               <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">{t('menu.level2.tags.estimateMass')}</span>
@@ -242,15 +242,15 @@ function App() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-xl font-bold text-gray-800">{t('menu.level3.title')}</h2>
+                    <h2 className="text-xl font-bold text-warm-800">{t('menu.level3.title')}</h2>
                     {!progress.level2Completed && (
-                      <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">🔒 {t('menu.level2.locked')}</span>
+                      <span className="text-xs text-warm-400 bg-warm-100 px-2 py-0.5 rounded-full">🔒 {t('menu.level2.locked')}</span>
                     )}
                   </div>
-                  <p className="text-gray-600 text-sm">{t('menu.level3.description')}</p>
+                  <p className="text-warm-600 text-sm">{t('menu.level3.description')}</p>
                 </div>
               </div>
-              <span className="text-gray-400 text-2xl">→</span>
+              <span className="text-warm-400 text-2xl">→</span>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
               <span className="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">{t('menu.level3.tags.periodicTable')}</span>
@@ -262,26 +262,26 @@ function App() {
 
         {/* Learning Path Description */}
         <div className="mt-8 bg-white rounded-2xl shadow-lg p-6 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
-          <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+          <h3 className="font-bold text-warm-800 mb-3 flex items-center gap-2">
             <span>📚</span> {t('menu.learningPath.title')}
           </h3>
-          <div className="space-y-3 text-sm text-gray-600">
+          <div className="space-y-3 text-sm text-warm-600">
             <div className="flex items-start gap-3">
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${progress.level1Completed ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'}`}>1</div>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${progress.level1Completed ? 'bg-green-500 text-white' : 'bg-warm-200 text-warm-600'}`}>1</div>
               <div>
-                <span className="font-medium text-gray-800">{t('menu.learningPath.step1.title')}</span> - {t('menu.learningPath.step1.description')}
+                <span className="font-medium text-warm-800">{t('menu.learningPath.step1.title')}</span> - {t('menu.learningPath.step1.description')}
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${progress.level2Completed ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'}`}>2</div>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${progress.level2Completed ? 'bg-green-500 text-white' : 'bg-warm-200 text-warm-600'}`}>2</div>
               <div>
-                <span className="font-medium text-gray-800">{t('menu.learningPath.step2.title')}</span> - {t('menu.learningPath.step2.description')}
+                <span className="font-medium text-warm-800">{t('menu.learningPath.step2.title')}</span> - {t('menu.learningPath.step2.description')}
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-gray-200 text-gray-600">3</div>
+              <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-warm-200 text-warm-600">3</div>
               <div>
-                <span className="font-medium text-gray-800">{t('menu.learningPath.step3.title')}</span> - {t('menu.learningPath.step3.description')}
+                <span className="font-medium text-warm-800">{t('menu.learningPath.step3.title')}</span> - {t('menu.learningPath.step3.description')}
               </div>
             </div>
           </div>
@@ -298,7 +298,7 @@ function App() {
                   saveProgress(reset);
                 }
               }}
-              className="text-xs text-gray-400 hover:text-gray-600 underline"
+              className="text-xs text-warm-400 hover:text-warm-600 underline"
             >
               {t('menu.resetProgress')}
             </button>

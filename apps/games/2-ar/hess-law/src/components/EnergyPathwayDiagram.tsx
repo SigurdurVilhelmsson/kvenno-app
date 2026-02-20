@@ -95,7 +95,7 @@ export function EnergyPathwayDiagram({
   const finalY = energySteps.length > 0 ? energyToY(energySteps[energySteps.length - 1].cumulativeH) : energyToY(0);
 
   return (
-    <div className="bg-gradient-to-b from-slate-800 to-slate-900 rounded-xl p-4 shadow-lg">
+    <div className="bg-gradient-to-b from-warm-800 to-warm-900 rounded-xl p-4 shadow-lg">
       <h3 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
         <span className="text-lg">📊</span>
         Orkuferillinn
@@ -274,21 +274,21 @@ export function EnergyPathwayDiagram({
       <div className="flex justify-center gap-4 mt-3 text-xs">
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 rounded-full bg-red-500" />
-          <span className="text-gray-400">Exóþermt (−ΔH)</span>
+          <span className="text-warm-400">Exóþermt (−ΔH)</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 rounded-full bg-blue-500" />
-          <span className="text-gray-400">Endóþermt (+ΔH)</span>
+          <span className="text-warm-400">Endóþermt (+ΔH)</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-0.5 bg-yellow-500" style={{ width: '12px' }} />
-          <span className="text-gray-400">Markmið</span>
+          <span className="text-warm-400">Markmið</span>
         </div>
       </div>
 
       {/* Hess's Law reminder */}
       {steps.length > 0 && (
-        <div className="mt-3 text-center text-xs text-gray-400">
+        <div className="mt-3 text-center text-xs text-warm-400">
           💡 Lögmál Hess: Heildarorkubreytingin er sú sama óháð leiðinni
         </div>
       )}

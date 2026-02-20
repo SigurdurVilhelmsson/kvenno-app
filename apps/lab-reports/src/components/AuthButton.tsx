@@ -59,13 +59,13 @@ export const AuthButton = () => {
 
   return (
     <div className="flex items-center gap-3">
-      <div className="flex items-center gap-2 text-slate-700">
+      <div className="flex items-center gap-2 text-warm-700">
         <User size={18} />
         <span className="text-sm font-medium">{userName}</span>
       </div>
       <button
         onClick={handleLogout}
-        className="flex items-center gap-2 px-4 py-2 border-2 border-slate-300 text-slate-700 rounded-lg hover:border-kvenno-orange hover:text-kvenno-orange transition font-medium"
+        className="flex items-center gap-2 px-4 py-2 border-2 border-warm-300 text-warm-700 rounded-lg hover:border-kvenno-orange hover:text-kvenno-orange transition font-medium"
       >
         <LogOut size={18} />
         Skrá út

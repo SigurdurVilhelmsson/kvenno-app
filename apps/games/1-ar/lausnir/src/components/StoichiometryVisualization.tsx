@@ -44,7 +44,7 @@ function QuantityDots({
         />
       ))}
       {hasMore && (
-        <span className="text-xs text-gray-500 ml-1">+{count - maxDisplay}</span>
+        <span className="text-xs text-warm-500 ml-1">+{count - maxDisplay}</span>
       )}
     </div>
   );
@@ -101,9 +101,9 @@ export function StoichiometryVisualization({
   }, [quantities, showRatio]);
 
   return (
-    <div className="bg-gray-50 rounded-xl p-4">
+    <div className="bg-warm-50 rounded-xl p-4">
       {label && (
-        <div className="text-sm font-semibold text-gray-700 text-center mb-3">
+        <div className="text-sm font-semibold text-warm-700 text-center mb-3">
           {label}
         </div>
       )}
@@ -128,13 +128,13 @@ export function StoichiometryVisualization({
             />
 
             {/* Moles value */}
-            <div className="text-xs text-gray-600 mt-2">
+            <div className="text-xs text-warm-600 mt-2">
               {q.moles.toFixed(2)} mól
             </div>
 
             {/* Ratio number */}
             {ratio && (
-              <div className="text-lg font-bold text-gray-800 mt-1">
+              <div className="text-lg font-bold text-warm-800 mt-1">
                 {ratio[i]}
               </div>
             )}
@@ -144,7 +144,7 @@ export function StoichiometryVisualization({
 
       {/* Ratio display */}
       {ratio && ratio.length > 1 && (
-        <div className="text-center mt-3 text-sm text-gray-600">
+        <div className="text-center mt-3 text-sm text-warm-600">
           <span className="font-semibold">Hlutfall: </span>
           {ratio.join(' : ')}
         </div>
@@ -182,7 +182,7 @@ export function ConcentrationComparison({
     <div className="flex items-center justify-center gap-6">
       {/* Before state */}
       <div className="text-center">
-        <div className="text-sm font-semibold text-gray-600 mb-2">Fyrir</div>
+        <div className="text-sm font-semibold text-warm-600 mb-2">Fyrir</div>
         <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 min-w-[120px]">
           {showParticles && (
             <div className="mb-2">
@@ -194,8 +194,8 @@ export function ConcentrationComparison({
               />
             </div>
           )}
-          <div className="text-xs text-gray-500">{before.molecules} agnir</div>
-          <div className="text-xs text-gray-500">{before.volumeML} mL</div>
+          <div className="text-xs text-warm-500">{before.molecules} agnir</div>
+          <div className="text-xs text-warm-500">{before.volumeML} mL</div>
           <div className="text-lg font-bold text-blue-600 mt-1">
             {beforeConc.toFixed(2)} M
           </div>
@@ -203,13 +203,13 @@ export function ConcentrationComparison({
       </div>
 
       {/* Arrow */}
-      <div className={`text-3xl text-gray-400 ${animate ? 'animate-pulse' : ''}`}>
+      <div className={`text-3xl text-warm-400 ${animate ? 'animate-pulse' : ''}`}>
         →
       </div>
 
       {/* After state */}
       <div className="text-center">
-        <div className="text-sm font-semibold text-gray-600 mb-2">Eftir</div>
+        <div className="text-sm font-semibold text-warm-600 mb-2">Eftir</div>
         <div className={`bg-green-50 border-2 border-green-200 rounded-xl p-4 min-w-[120px] ${
           animate ? 'animate-fade-in' : ''
         }`}>
@@ -223,8 +223,8 @@ export function ConcentrationComparison({
               />
             </div>
           )}
-          <div className="text-xs text-gray-500">{after.molecules} agnir</div>
-          <div className="text-xs text-gray-500">{after.volumeML} mL</div>
+          <div className="text-xs text-warm-500">{after.molecules} agnir</div>
+          <div className="text-xs text-warm-500">{after.volumeML} mL</div>
           <div className="text-lg font-bold text-green-600 mt-1">
             {afterConc.toFixed(2)} M
           </div>
@@ -265,7 +265,7 @@ export function MixingVisualization({
     <div className="flex items-center justify-center gap-4 flex-wrap">
       {/* Solution 1 */}
       <div className="text-center">
-        <div className="text-sm font-semibold text-gray-600 mb-2">
+        <div className="text-sm font-semibold text-warm-600 mb-2">
           {solution1.label || 'Lausn 1'}
         </div>
         <div
@@ -281,7 +281,7 @@ export function MixingVisualization({
             color={solution1.color}
             size="small"
           />
-          <div className="text-xs text-gray-500 mt-2">{solution1.volumeML} mL</div>
+          <div className="text-xs text-warm-500 mt-2">{solution1.volumeML} mL</div>
           <div className="text-sm font-bold" style={{ color: solution1.color }}>
             {calcConcentration(solution1.molecules, solution1.volumeML).toFixed(2)} M
           </div>
@@ -289,11 +289,11 @@ export function MixingVisualization({
       </div>
 
       {/* Plus sign */}
-      <div className="text-2xl text-gray-400 font-bold">+</div>
+      <div className="text-2xl text-warm-400 font-bold">+</div>
 
       {/* Solution 2 */}
       <div className="text-center">
-        <div className="text-sm font-semibold text-gray-600 mb-2">
+        <div className="text-sm font-semibold text-warm-600 mb-2">
           {solution2.label || 'Lausn 2'}
         </div>
         <div
@@ -309,7 +309,7 @@ export function MixingVisualization({
             color={solution2.color}
             size="small"
           />
-          <div className="text-xs text-gray-500 mt-2">{solution2.volumeML} mL</div>
+          <div className="text-xs text-warm-500 mt-2">{solution2.volumeML} mL</div>
           <div className="text-sm font-bold" style={{ color: solution2.color }}>
             {calcConcentration(solution2.molecules, solution2.volumeML).toFixed(2)} M
           </div>
@@ -317,13 +317,13 @@ export function MixingVisualization({
       </div>
 
       {/* Arrow */}
-      <div className={`text-3xl text-gray-400 ${showAnimation ? 'animate-pulse' : ''}`}>
+      <div className={`text-3xl text-warm-400 ${showAnimation ? 'animate-pulse' : ''}`}>
         →
       </div>
 
       {/* Result */}
       <div className="text-center">
-        <div className="text-sm font-semibold text-gray-600 mb-2">Blanda</div>
+        <div className="text-sm font-semibold text-warm-600 mb-2">Blanda</div>
         <div
           className={`rounded-xl p-3 min-w-[100px] border-2 ${
             showAnimation ? 'animate-fade-in' : ''
@@ -339,7 +339,7 @@ export function MixingVisualization({
             color={resultState.color}
             size="small"
           />
-          <div className="text-xs text-gray-500 mt-2">{resultState.volumeML} mL</div>
+          <div className="text-xs text-warm-500 mt-2">{resultState.volumeML} mL</div>
           <div className="text-sm font-bold" style={{ color: resultState.color }}>
             {calcConcentration(resultState.molecules, resultState.volumeML).toFixed(2)} M
           </div>
@@ -382,7 +382,7 @@ export function DilutionVisualization({
       <div className="flex items-center justify-center gap-4 flex-wrap">
         {/* Initial state */}
         <div className="text-center">
-          <div className="text-sm font-semibold text-gray-600 mb-2">Upphafleg lausn</div>
+          <div className="text-sm font-semibold text-warm-600 mb-2">Upphafleg lausn</div>
           <div className="bg-orange-50 border-2 border-orange-200 rounded-xl p-4 min-w-[120px]">
             <QuantityDots
               count={initial.molecules}
@@ -390,7 +390,7 @@ export function DilutionVisualization({
               color={particleColor}
               size="medium"
             />
-            <div className="text-xs text-gray-500 mt-2">{initial.volumeML} mL</div>
+            <div className="text-xs text-warm-500 mt-2">{initial.volumeML} mL</div>
             <div className="text-lg font-bold text-orange-600">
               {initialConc.toFixed(2)} M
             </div>
@@ -399,26 +399,26 @@ export function DilutionVisualization({
 
         {/* Plus water */}
         <div className="text-center">
-          <div className="text-2xl text-gray-400 font-bold">+</div>
+          <div className="text-2xl text-warm-400 font-bold">+</div>
         </div>
 
         {/* Water added */}
         <div className="text-center">
-          <div className="text-sm font-semibold text-gray-600 mb-2">Vatn bætt við</div>
+          <div className="text-sm font-semibold text-warm-600 mb-2">Vatn bætt við</div>
           <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 min-w-[100px]">
             <div className="text-3xl">💧</div>
-            <div className="text-xs text-gray-500 mt-2">{waterAdded} mL</div>
+            <div className="text-xs text-warm-500 mt-2">{waterAdded} mL</div>
           </div>
         </div>
 
         {/* Arrow */}
-        <div className={`text-3xl text-gray-400 ${animate ? 'animate-pulse' : ''}`}>
+        <div className={`text-3xl text-warm-400 ${animate ? 'animate-pulse' : ''}`}>
           →
         </div>
 
         {/* Final state */}
         <div className="text-center">
-          <div className="text-sm font-semibold text-gray-600 mb-2">Þynnt lausn</div>
+          <div className="text-sm font-semibold text-warm-600 mb-2">Þynnt lausn</div>
           <div className={`bg-green-50 border-2 border-green-200 rounded-xl p-4 min-w-[140px] ${
             animate ? 'animate-fade-in' : ''
           }`}>
@@ -428,7 +428,7 @@ export function DilutionVisualization({
               color={particleColor}
               size="medium"
             />
-            <div className="text-xs text-gray-500 mt-2">{finalVolumeML} mL</div>
+            <div className="text-xs text-warm-500 mt-2">{finalVolumeML} mL</div>
             <div className="text-lg font-bold text-green-600">
               {finalConc.toFixed(3)} M
             </div>
@@ -437,7 +437,7 @@ export function DilutionVisualization({
       </div>
 
       {/* Explanation */}
-      <div className="text-center text-sm text-gray-600 bg-gray-100 rounded-lg p-3">
+      <div className="text-center text-sm text-warm-600 bg-warm-100 rounded-lg p-3">
         <span className="font-semibold">Sama fjöldi agna</span> ({initial.molecules}) í{' '}
         <span className="font-semibold">stærra rúmmáli</span> = lægri styrkur
       </div>

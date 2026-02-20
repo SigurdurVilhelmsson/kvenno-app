@@ -120,7 +120,7 @@ export function ForceStrengthAnimation({
   const selectedData = selectedForce ? FORCES.find(f => f.id === selectedForce) : null;
 
   return (
-    <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-4 shadow-lg">
+    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-4 shadow-lg">
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-white font-bold text-sm flex items-center gap-2">
           <span className="text-lg">💪</span>
@@ -132,7 +132,7 @@ export function ForceStrengthAnimation({
             className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
               showComparison
                 ? 'bg-yellow-500 text-white'
-                : 'bg-gray-600 text-gray-200 hover:bg-gray-500'
+                : 'bg-warm-600 text-warm-200 hover:bg-warm-500'
             }`}
           >
             {showComparison ? 'Sýna val' : 'Bera saman'}
@@ -150,7 +150,7 @@ export function ForceStrengthAnimation({
               className={`flex-1 px-2 py-2 rounded-lg text-xs font-medium transition-all ${
                 selectedForce === force.id
                   ? 'text-white ring-2 ring-white/50'
-                  : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                  : 'bg-warm-700 text-warm-300 hover:bg-warm-600'
               }`}
               style={{
                 backgroundColor: selectedForce === force.id ? force.color : undefined,
@@ -169,7 +169,7 @@ export function ForceStrengthAnimation({
         height={height}
         viewBox={`0 0 ${width} ${height}`}
         preserveAspectRatio="xMidYMid meet"
-        className="bg-slate-950 rounded-lg"
+        className="bg-warm-950 rounded-lg"
         role="img"
         aria-label="Styrkur millisameindakrafta samanburður"
       >
@@ -212,7 +212,7 @@ export function ForceStrengthAnimation({
                   x={centerX}
                   y={30}
                   textAnchor="middle"
-                  className="fill-gray-400"
+                  className="fill-warm-400"
                   style={{ fontSize: '10px' }}
                 >
                   {force.name.split(' ')[0]}
@@ -272,7 +272,7 @@ export function ForceStrengthAnimation({
                   x={centerX}
                   y={height - 30}
                   textAnchor="middle"
-                  className="fill-gray-400"
+                  className="fill-warm-400"
                   style={{ fontSize: '9px' }}
                 >
                   {force.energyRange} kJ/mol
@@ -392,7 +392,7 @@ export function ForceStrengthAnimation({
                   x={centerX}
                   y={height - 35}
                   textAnchor="middle"
-                  className="fill-gray-300"
+                  className="fill-warm-300"
                   style={{ fontSize: '11px' }}
                 >
                   {force.energyRange} kJ/mol
@@ -407,7 +407,7 @@ export function ForceStrengthAnimation({
               x={width / 2}
               y={height / 2}
               textAnchor="middle"
-              className="fill-gray-400"
+              className="fill-warm-400"
               style={{ fontSize: '12px' }}
             >
               Veldu kraft til að sjá hermun
@@ -424,7 +424,7 @@ export function ForceStrengthAnimation({
                     <text
                       x={0}
                       y={y + 12}
-                      className="fill-gray-400"
+                      className="fill-warm-400"
                       style={{ fontSize: '9px' }}
                     >
                       {force.icon}
@@ -464,17 +464,17 @@ export function ForceStrengthAnimation({
             <span className="text-2xl">{selectedData.icon}</span>
             <div>
               <div className="text-white font-bold text-sm">{selectedData.name}</div>
-              <div className="text-gray-400 text-xs">{selectedData.nameEn}</div>
+              <div className="text-warm-400 text-xs">{selectedData.nameEn}</div>
             </div>
           </div>
-          <div className="text-gray-300 text-sm mb-2">{selectedData.description}</div>
+          <div className="text-warm-300 text-sm mb-2">{selectedData.description}</div>
           <div className="flex gap-4 text-xs">
             <div>
-              <span className="text-gray-400">Styrkssvið:</span>
+              <span className="text-warm-400">Styrkssvið:</span>
               <span className="text-white ml-1">{selectedData.energyRange} kJ/mol</span>
             </div>
             <div>
-              <span className="text-gray-400">Dæmi:</span>
+              <span className="text-warm-400">Dæmi:</span>
               <span className="text-white ml-1 font-mono">{selectedData.example}</span>
             </div>
           </div>
@@ -485,7 +485,7 @@ export function ForceStrengthAnimation({
       {!compact && (
         <div className="mt-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
           <div className="text-yellow-400 text-xs font-medium mb-1">Mundu:</div>
-          <ul className="text-gray-300 text-xs space-y-1">
+          <ul className="text-warm-300 text-xs space-y-1">
             <li className="flex items-start gap-2">
               <span className="text-purple-400">●</span>
               <span><strong>London</strong> er alltaf til staðar, sterkari með auknum mólmassa</span>

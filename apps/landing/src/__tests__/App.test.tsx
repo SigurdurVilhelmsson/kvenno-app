@@ -35,6 +35,7 @@ vi.mock('@kvenno/shared/components', () => ({
     <div data-testid="page-background" className={className}>{children}</div>
   ),
   SkipLink: () => <a href="#main-content" className="skip-link">Fara beint í efni</a>,
+  BottomNav: () => <nav data-testid="bottom-nav" />,
 }));
 
 /**

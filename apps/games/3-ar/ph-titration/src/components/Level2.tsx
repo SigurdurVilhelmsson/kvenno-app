@@ -190,12 +190,12 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="flex justify-between items-center">
             <button
               onClick={onBack}
-              className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+              className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
             >
               ← Til baka
             </button>
             <div className="flex items-center gap-4">
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-warm-500">
                 {completed + 1} / {LEVEL2_PUZZLES.length}
               </div>
               <div className="text-lg font-bold text-green-600">
@@ -209,7 +209,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </h1>
 
           {/* Progress bar */}
-          <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
+          <div className="w-full bg-warm-200 rounded-full h-2 mt-3">
             <div
               className="bg-green-500 h-2 rounded-full transition-all duration-300"
               style={{ width: `${(completed / LEVEL2_PUZZLES.length) * 100}%` }}
@@ -403,7 +403,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 <div className="mt-4 flex gap-2">
                   <button
                     onClick={handleReset}
-                    className="flex-1 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-semibold"
+                    className="flex-1 px-4 py-2 bg-warm-200 hover:bg-warm-300 text-warm-800 rounded-lg font-semibold"
                   >
                     Reyna aftur
                   </button>
@@ -418,14 +418,14 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             )}
 
             {/* Phase indicator */}
-            <div className="bg-gray-100 rounded-xl p-3">
-              <div className="text-xs text-gray-500 mb-2">Framvinda:</div>
+            <div className="bg-warm-100 rounded-xl p-3">
+              <div className="text-xs text-warm-500 mb-2">Framvinda:</div>
               <div className="flex gap-2">
                 <div className={`flex-1 h-2 rounded ${phase === 'titrating' ? 'bg-blue-500' : 'bg-blue-200'}`} />
-                <div className={`flex-1 h-2 rounded ${phase === 'select-indicator' ? 'bg-orange-500' : phase === 'result' ? 'bg-orange-200' : 'bg-gray-300'}`} />
-                <div className={`flex-1 h-2 rounded ${phase === 'result' ? 'bg-green-500' : 'bg-gray-300'}`} />
+                <div className={`flex-1 h-2 rounded ${phase === 'select-indicator' ? 'bg-orange-500' : phase === 'result' ? 'bg-orange-200' : 'bg-warm-300'}`} />
+                <div className={`flex-1 h-2 rounded ${phase === 'result' ? 'bg-green-500' : 'bg-warm-300'}`} />
               </div>
-              <div className="flex justify-between text-xs text-gray-600 mt-1">
+              <div className="flex justify-between text-xs text-warm-600 mt-1">
                 <span>Títra</span>
                 <span>Vísi</span>
                 <span>Niðurstaða</span>

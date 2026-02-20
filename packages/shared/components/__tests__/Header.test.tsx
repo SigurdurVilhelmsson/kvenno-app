@@ -13,9 +13,20 @@ describe('Header', () => {
   });
 
   it('renders with custom title', () => {
-    render(<Header title="Efnafræði" />);
+    render(<Header title="Test Title" />);
 
-    expect(screen.getByText('Efnafræði')).toBeDefined();
+    const link = screen.getByRole('link', { name: /Test Title/i });
+    expect(link).toBeDefined();
+    expect(link.getAttribute('href')).toBe('/');
+  });
+
+  it('renders track navigation tabs', () => {
+    render(<Header />);
+
+    const nav = screen.getByRole('navigation', { name: /Svið/i });
+    expect(nav).toBeDefined();
+    expect(screen.getByRole('link', { name: /Efnafræði/i })).toBeDefined();
+    expect(screen.getByRole('link', { name: /Íslenskubraut/i })).toBeDefined();
   });
 
   it('renders Kennarar link', () => {
@@ -55,5 +66,16 @@ describe('Header', () => {
 
     const header = container.querySelector('header');
     expect(header).not.toBeNull();
+  });
+
+  it('renders game variant with back link', () => {
+    render(
+      <Header variant="game" backHref="/efnafraedi/1-ar" gameTitle="Molmassi" />
+    );
+
+    const backLink = screen.getByRole('link', { name: /Til baka/i });
+    expect(backLink).toBeDefined();
+    expect(backLink.getAttribute('href')).toBe('/efnafraedi/1-ar');
+    expect(screen.getByText('Molmassi')).toBeDefined();
   });
 });

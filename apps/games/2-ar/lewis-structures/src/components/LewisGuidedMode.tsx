@@ -193,7 +193,7 @@ export function LewisGuidedMode({
       </div>
 
       {/* Progress bar */}
-      <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+      <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
         <div
           className="bg-green-500 h-2 rounded-full transition-all duration-300"
           style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
@@ -205,19 +205,19 @@ export function LewisGuidedMode({
         <div className="flex justify-between items-center">
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-600">{totalElectrons}</div>
-            <div className="text-xs text-gray-500">Heildar</div>
+            <div className="text-xs text-warm-500">Heildar</div>
           </div>
-          <div className="text-gray-400">−</div>
+          <div className="text-warm-400">−</div>
           <div className="text-center">
             <div className="text-2xl font-bold text-green-600">{electronsUsed}</div>
-            <div className="text-xs text-gray-500">Notaðar</div>
+            <div className="text-xs text-warm-500">Notaðar</div>
           </div>
-          <div className="text-gray-400">=</div>
+          <div className="text-warm-400">=</div>
           <div className="text-center">
             <div className={`text-2xl font-bold ${electronsRemaining === 0 ? 'text-green-600' : 'text-orange-600'}`}>
               {electronsRemaining}
             </div>
-            <div className="text-xs text-gray-500">Eftir</div>
+            <div className="text-xs text-warm-500">Eftir</div>
           </div>
         </div>
       </div>
@@ -230,32 +230,32 @@ export function LewisGuidedMode({
           }`}>
             {currentStep + 1}
           </div>
-          <h4 className="font-bold text-gray-800">{step.title}</h4>
+          <h4 className="font-bold text-warm-800">{step.title}</h4>
         </div>
 
-        <p className="text-gray-700 mb-4">{step.instruction}</p>
+        <p className="text-warm-700 mb-4">{step.instruction}</p>
 
         {/* Step-specific UI */}
         {step.action === 'count' && !showFeedback && (
           <div className="space-y-4">
             {/* Show atom breakdown */}
-            <div className="bg-gray-50 p-3 rounded-lg">
-              <div className="text-sm font-medium text-gray-600 mb-2">Útreikningur:</div>
+            <div className="bg-warm-50 p-3 rounded-lg">
+              <div className="text-sm font-medium text-warm-600 mb-2">Útreikningur:</div>
               <div className="flex flex-wrap gap-3 items-center">
                 {atoms.map((atom, idx) => {
                   const count = atoms.filter(a => a.symbol === atom.symbol).length;
                   if (idx !== atoms.findIndex(a => a.symbol === atom.symbol)) return null;
                   return (
                     <div key={atom.symbol} className="flex items-center gap-1">
-                      {idx > 0 && <span className="text-gray-400">+</span>}
+                      {idx > 0 && <span className="text-warm-400">+</span>}
                       <span className="bg-blue-100 px-2 py-1 rounded text-blue-800 font-mono">
                         {count} × {atom.symbol}({atom.valenceElectrons})
                       </span>
                     </div>
                   );
                 })}
-                <span className="text-gray-400">=</span>
-                <span className="text-gray-400">?</span>
+                <span className="text-warm-400">=</span>
+                <span className="text-warm-400">?</span>
               </div>
             </div>
 
@@ -264,16 +264,16 @@ export function LewisGuidedMode({
                 type="number"
                 value={userValue ?? ''}
                 onChange={(e) => setUserValue(parseInt(e.target.value) || null)}
-                className="flex-1 p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-hidden text-xl font-mono text-center"
+                className="flex-1 p-3 border-2 border-warm-300 rounded-lg focus:border-blue-500 focus:outline-hidden text-xl font-mono text-center"
                 placeholder="?"
               />
-              <span className="text-gray-600">rafeindir</span>
+              <span className="text-warm-600">rafeindir</span>
             </div>
 
             <button
               onClick={handleCheckValue}
               disabled={userValue === null}
-              className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white font-bold py-3 px-4 rounded-lg transition-all"
+              className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white font-bold py-3 px-4 rounded-lg transition-all"
             >
               Athuga
             </button>
@@ -288,7 +288,7 @@ export function LewisGuidedMode({
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
                   <span className="text-2xl font-bold text-white">{centralAtom?.symbol}</span>
                 </div>
-                <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-gray-500">
+                <div className="absolute -bottom-6 left-1/2 transform -tranwarm-x-1/2 text-xs text-warm-500">
                   Miðatóm
                 </div>
               </div>
@@ -351,17 +351,17 @@ export function LewisGuidedMode({
               </svg>
             </div>
 
-            <div className="text-center text-sm text-gray-600 mb-4">
+            <div className="text-center text-sm text-warm-600 mb-4">
               Hvert einföld tengi notar 2 rafeindir (ein frá hvoru atómi)
             </div>
 
             <div className="flex gap-3 items-center">
-              <label className="text-gray-700">Fjöldi tengja:</label>
+              <label className="text-warm-700">Fjöldi tengja:</label>
               <input
                 type="number"
                 value={userValue ?? ''}
                 onChange={(e) => setUserValue(parseInt(e.target.value) || null)}
-                className="flex-1 p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-hidden text-xl font-mono text-center max-w-24"
+                className="flex-1 p-3 border-2 border-warm-300 rounded-lg focus:border-blue-500 focus:outline-hidden text-xl font-mono text-center max-w-24"
                 placeholder="?"
                 min="0"
                 max="6"
@@ -371,7 +371,7 @@ export function LewisGuidedMode({
             <button
               onClick={handleCheckValue}
               disabled={userValue === null}
-              className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white font-bold py-3 px-4 rounded-lg transition-all"
+              className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white font-bold py-3 px-4 rounded-lg transition-all"
             >
               Athuga
             </button>
@@ -398,14 +398,14 @@ export function LewisGuidedMode({
                   <button
                     onClick={() => handleAddLonePair(centralAtom?.symbol || '')}
                     disabled={electronsRemaining < 2}
-                    className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white py-2 rounded"
+                    className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white py-2 rounded"
                   >
                     + Par
                   </button>
                   <button
                     onClick={() => handleRemoveLonePair(centralAtom?.symbol || '')}
                     disabled={getAtomLonePairs(centralAtom?.symbol || '') === 0}
-                    className="flex-1 bg-gray-300 hover:bg-gray-400 disabled:bg-gray-200 text-gray-700 py-2 rounded"
+                    className="flex-1 bg-warm-300 hover:bg-warm-400 disabled:bg-warm-200 text-warm-700 py-2 rounded"
                   >
                     − Par
                   </button>
@@ -425,14 +425,14 @@ export function LewisGuidedMode({
                     <button
                       onClick={() => handleAddLonePair(atom.symbol)}
                       disabled={electronsRemaining < 2}
-                      className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white py-2 rounded"
+                      className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-warm-300 text-white py-2 rounded"
                     >
                       + Par
                     </button>
                     <button
                       onClick={() => handleRemoveLonePair(atom.symbol)}
                       disabled={getAtomLonePairs(atom.symbol) === 0}
-                      className="flex-1 bg-gray-300 hover:bg-gray-400 disabled:bg-gray-200 text-gray-700 py-2 rounded"
+                      className="flex-1 bg-warm-300 hover:bg-warm-400 disabled:bg-warm-200 text-warm-700 py-2 rounded"
                     >
                       − Par
                     </button>
@@ -444,7 +444,7 @@ export function LewisGuidedMode({
             <button
               onClick={checkDistribution}
               disabled={electronsRemaining !== 0}
-              className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white font-bold py-3 px-4 rounded-lg transition-all"
+              className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white font-bold py-3 px-4 rounded-lg transition-all"
             >
               Athuga dreifingu
             </button>
@@ -454,7 +454,7 @@ export function LewisGuidedMode({
         {step.action === 'check-octet' && !showFeedback && (
           <div className="space-y-4">
             <div className="bg-white p-4 rounded-lg border">
-              <div className="text-sm font-medium text-gray-600 mb-3">Athugun á áttureglunni:</div>
+              <div className="text-sm font-medium text-warm-600 mb-3">Athugun á áttureglunni:</div>
 
               {/* Central atom */}
               <div className="mb-3 p-3 bg-blue-50 rounded">
@@ -529,7 +529,7 @@ export function LewisGuidedMode({
               {isCorrect ? '✓ Rétt!' : '✗ Ekki rétt'}
             </div>
             {!isCorrect && step.targetValue !== undefined && (
-              <p className="text-sm text-gray-700 mt-1">
+              <p className="text-sm text-warm-700 mt-1">
                 Rétt svar: {step.targetValue}
               </p>
             )}

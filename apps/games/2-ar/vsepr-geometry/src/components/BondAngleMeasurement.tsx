@@ -180,7 +180,7 @@ export function BondAngleMeasurement({
 
   if (compact) {
     return (
-      <div className="bg-slate-800 rounded-lg p-3">
+      <div className="bg-warm-800 rounded-lg p-3">
         <div className="flex items-center gap-3">
           <svg width={svgSize} height={svgSize} className="flex-shrink-0">
             {/* Angle arc */}
@@ -233,7 +233,7 @@ export function BondAngleMeasurement({
 
           <div>
             <div className="font-bold text-white">{angleData.geometryName}</div>
-            <div className="text-sm text-gray-400">{angleData.example}</div>
+            <div className="text-sm text-warm-400">{angleData.example}</div>
             {angleData.lonePairs > 0 && (
               <div className="text-xs text-yellow-400 mt-1">
                 {angleData.lonePairs} einstæð pör → -{angleDifference}°
@@ -246,7 +246,7 @@ export function BondAngleMeasurement({
   }
 
   return (
-    <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-5 shadow-lg">
+    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-5 shadow-lg">
       <h3 className="text-white font-bold text-sm mb-4 flex items-center gap-2">
         <span className="text-lg">📐</span>
         Tengjahornamælir (Bond Angle Tool)
@@ -261,7 +261,7 @@ export function BondAngleMeasurement({
             className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               selectedGeometry === id
                 ? 'bg-teal-500 text-white'
-                : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                : 'bg-warm-700 text-warm-300 hover:bg-warm-600'
             }`}
           >
             {data.example}
@@ -442,30 +442,30 @@ export function BondAngleMeasurement({
 
         {/* Info panel */}
         <div className="flex-1 space-y-3">
-          <div className="bg-slate-700/50 rounded-lg p-3">
-            <div className="text-xs text-gray-400 mb-1">Lögun</div>
+          <div className="bg-warm-700/50 rounded-lg p-3">
+            <div className="text-xs text-warm-400 mb-1">Lögun</div>
             <div className="font-bold text-white text-lg">{angleData.geometryName}</div>
             <div className="text-sm text-teal-400">{angleData.example}</div>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
-            <div className="bg-slate-700/50 rounded-lg p-3 text-center">
-              <div className="text-xs text-gray-400">Bindandi pör</div>
+            <div className="bg-warm-700/50 rounded-lg p-3 text-center">
+              <div className="text-xs text-warm-400">Bindandi pör</div>
               <div className="text-xl font-bold text-blue-400">{angleData.bondingPairs}</div>
             </div>
-            <div className="bg-slate-700/50 rounded-lg p-3 text-center">
-              <div className="text-xs text-gray-400">Einstæð pör</div>
+            <div className="bg-warm-700/50 rounded-lg p-3 text-center">
+              <div className="text-xs text-warm-400">Einstæð pör</div>
               <div className="text-xl font-bold text-yellow-400">{angleData.lonePairs}</div>
             </div>
           </div>
 
           {/* Angle breakdown */}
-          <div className="bg-slate-700/50 rounded-lg p-3">
-            <div className="text-xs text-gray-400 mb-2">Horngreining</div>
+          <div className="bg-warm-700/50 rounded-lg p-3">
+            <div className="text-xs text-warm-400 mb-2">Horngreining</div>
             <div className="space-y-1 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-400">Kjörhorn:</span>
-                <span className="text-gray-300">{angleData.idealAngle}°</span>
+                <span className="text-warm-400">Kjörhorn:</span>
+                <span className="text-warm-300">{angleData.idealAngle}°</span>
               </div>
               {angleDifference > 0 && (
                 <div className="flex justify-between">
@@ -473,7 +473,7 @@ export function BondAngleMeasurement({
                   <span className="text-yellow-300">-{angleDifference}°</span>
                 </div>
               )}
-              <div className="flex justify-between border-t border-slate-600 pt-1 mt-1">
+              <div className="flex justify-between border-t border-warm-600 pt-1 mt-1">
                 <span className="text-teal-400 font-bold">Raunhorn:</span>
                 <span className="text-teal-300 font-bold">{angleData.actualAngle}°</span>
               </div>
@@ -490,12 +490,12 @@ export function BondAngleMeasurement({
 
       {/* Comparison section */}
       {showComparison && (
-        <div className="mt-4 pt-4 border-t border-slate-700">
-          <div className="text-xs text-gray-400 mb-3">Samanburður: Áhrif einstæðra para</div>
+        <div className="mt-4 pt-4 border-t border-warm-700">
+          <div className="text-xs text-warm-400 mb-3">Samanburður: Áhrif einstæðra para</div>
           <div className="space-y-3">
             {Object.entries(comparisonGroups).map(([groupName, geometries]) => (
               <div key={groupName}>
-                <div className="text-xs text-gray-500 mb-1">{groupName}</div>
+                <div className="text-xs text-warm-500 mb-1">{groupName}</div>
                 <div className="flex gap-2 flex-wrap">
                   {geometries.map((geoId) => {
                     const data = BOND_ANGLES[geoId];
@@ -507,7 +507,7 @@ export function BondAngleMeasurement({
                         className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-colors ${
                           selectedGeometry === geoId
                             ? 'bg-teal-500/30 border border-teal-500'
-                            : 'bg-slate-700/50 hover:bg-slate-600/50'
+                            : 'bg-warm-700/50 hover:bg-warm-600/50'
                         }`}
                       >
                         <span className="text-white font-medium">{data.example}</span>
@@ -529,15 +529,15 @@ export function BondAngleMeasurement({
       <div className="mt-4 flex flex-wrap gap-4 text-xs">
         <div className="flex items-center gap-1">
           <div className="w-4 h-1 bg-blue-400 rounded" />
-          <span className="text-gray-400">Efnatengi</span>
+          <span className="text-warm-400">Efnatengi</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-4 h-4 rounded-full bg-yellow-400/50 border border-yellow-400" />
-          <span className="text-gray-400">Einstætt par</span>
+          <span className="text-warm-400">Einstætt par</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-4 h-4 rounded-xs bg-teal-400/30 border border-teal-400" />
-          <span className="text-gray-400">Tengihorn</span>
+          <span className="text-warm-400">Tengihorn</span>
         </div>
       </div>
     </div>

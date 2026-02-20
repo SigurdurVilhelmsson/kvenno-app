@@ -299,7 +299,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="flex justify-between items-center mb-6">
             <button
               onClick={onBack}
-              className="text-gray-600 hover:text-gray-800"
+              className="text-warm-600 hover:text-warm-800"
             >
               ← Til baka
             </button>
@@ -311,7 +311,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           >
             Lausnir - Stigur 3
           </h1>
-          <p className="text-center text-gray-600 mb-6">Útreikningar - Notaðu formúlurnar!</p>
+          <p className="text-center text-warm-600 mb-6">Útreikningar - Notaðu formúlurnar!</p>
 
           <div className="bg-purple-50 p-4 rounded-xl mb-6">
             <h3 className="font-semibold text-purple-800 mb-2">Nú ertu tilbúin(n) að reikna!</h3>
@@ -324,19 +324,19 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="space-y-6">
             {/* Game mode selection */}
             <div className="text-center">
-              <p className="text-lg text-gray-700 mb-4">Veldu leikstillingu:</p>
+              <p className="text-lg text-warm-700 mb-4">Veldu leikstillingu:</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <button
                   onClick={() => setGameState((prev) => ({ ...prev, gameMode: 'competition' }))}
                   className={`p-6 rounded-xl border-4 transition-all ${
                     gameState.gameMode === 'competition'
                       ? 'border-purple-500 bg-purple-50'
-                      : 'border-gray-200 bg-white hover:border-purple-200'
+                      : 'border-warm-200 bg-white hover:border-purple-200'
                   }`}
                 >
                   <div className="text-3xl mb-2">🏆</div>
                   <div className="text-xl font-bold">Keppnisstilling</div>
-                  <div className="text-sm mt-2 text-gray-600">
+                  <div className="text-sm mt-2 text-warm-600">
                     Stigagjöf, tímamót, ábendingar kosta stig
                   </div>
                 </button>
@@ -345,12 +345,12 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   className={`p-6 rounded-xl border-4 transition-all ${
                     gameState.gameMode === 'practice'
                       ? 'border-green-500 bg-green-50'
-                      : 'border-gray-200 bg-white hover:border-green-200'
+                      : 'border-warm-200 bg-white hover:border-green-200'
                   }`}
                 >
                   <div className="text-3xl mb-2">📚</div>
                   <div className="text-xl font-bold">Æfingastilling</div>
-                  <div className="text-sm mt-2 text-gray-600">
+                  <div className="text-sm mt-2 text-warm-600">
                     Engin stig, ókeypis ábendingar
                   </div>
                 </button>
@@ -358,7 +358,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
 
             <div className="text-center">
-              <p className="text-lg text-gray-700 mb-4">Veldu erfiðleikastig:</p>
+              <p className="text-lg text-warm-700 mb-4">Veldu erfiðleikastig:</p>
             </div>
 
             <div className="grid gap-4">
@@ -397,7 +397,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
 
             {/* Optional settings */}
-            <div className="bg-gray-50 p-4 rounded-xl">
+            <div className="bg-warm-50 p-4 rounded-xl">
               <h3 className="font-semibold mb-3">Valfrjálsar stillingar:</h3>
               <div className="space-y-2">
                 <label className="flex items-center gap-3 cursor-pointer">
@@ -460,7 +460,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   <div className="text-4xl md:text-6xl font-bold mb-2" style={{ color: themeColor }}>
                     {gameState.score}
                   </div>
-                  <div className="text-lg md:text-xl text-gray-700">
+                  <div className="text-lg md:text-xl text-warm-700">
                     af {maxScore} stigum mögulegum
                   </div>
                   <div className="text-2xl md:text-3xl font-bold text-blue-600 mt-2">
@@ -475,32 +475,32 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 <div className="text-2xl md:text-3xl font-bold text-blue-600">
                   {gameState.totalProblems}
                 </div>
-                <div className="text-sm text-gray-700">Spurningar</div>
+                <div className="text-sm text-warm-700">Spurningar</div>
               </div>
               <div className="bg-green-50 p-4 rounded-xl text-center">
                 <div className="text-2xl md:text-3xl font-bold text-green-600">
                   {gameState.correctAnswers}
                 </div>
-                <div className="text-sm text-gray-700">Rétt</div>
+                <div className="text-sm text-warm-700">Rétt</div>
               </div>
               <div className="bg-yellow-50 p-4 rounded-xl text-center">
                 <div className="text-2xl md:text-3xl font-bold text-yellow-600">
                   {accuracy}%
                 </div>
-                <div className="text-sm text-gray-700">Nákvæmni</div>
+                <div className="text-sm text-warm-700">Nákvæmni</div>
               </div>
               <div className="bg-red-50 p-4 rounded-xl text-center">
                 <div className="text-2xl md:text-3xl font-bold text-red-600">
                   {gameState.bestStreak}
                 </div>
-                <div className="text-sm text-gray-700">Lengsta röð</div>
+                <div className="text-sm text-warm-700">Lengsta röð</div>
               </div>
             </div>
 
             <div className="flex flex-col md:flex-row gap-4">
               <button
                 onClick={onBack}
-                className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+                className="flex-1 bg-warm-600 hover:bg-warm-700 text-white font-bold py-4 px-6 rounded-xl transition-colors"
               >
                 ← Til baka í aðalvalmynd
               </button>
@@ -529,13 +529,13 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <h1 className="text-xl md:text-3xl font-bold" style={{ color: themeColor }}>
                 Lausnir - Stigur 3
               </h1>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-warm-600">
                 {gameState.gameMode === 'practice' ? 'Æfing' : 'Keppni'}
               </p>
             </div>
 
             <div className="flex gap-2 md:gap-4 items-center flex-wrap">
-              <button onClick={onBack} className="text-sm text-gray-600 hover:text-gray-800">
+              <button onClick={onBack} className="text-sm text-warm-600 hover:text-warm-800">
                 ← Til baka
               </button>
 
@@ -544,7 +544,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   <div className="text-xl md:text-2xl font-bold" style={{ color: themeColor }}>
                     🏆 {gameState.score}
                   </div>
-                  <div className="text-xs text-gray-600">Stig</div>
+                  <div className="text-xs text-warm-600">Stig</div>
                 </div>
               )}
 
@@ -553,7 +553,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   <div className="text-xl md:text-2xl font-bold text-red-600">
                     🔥 {gameState.streak}
                   </div>
-                  <div className="text-xs text-gray-600">Röð</div>
+                  <div className="text-xs text-warm-600">Röð</div>
                 </div>
               )}
 
@@ -561,7 +561,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 <div className="text-xl md:text-2xl font-bold text-blue-600">
                   {gameState.problemsCompleted}/{gameState.totalProblems}
                 </div>
-                <div className="text-xs text-gray-600">Framvinda</div>
+                <div className="text-xs text-warm-600">Framvinda</div>
               </div>
 
               {gameState.timerMode && gameState.timeRemaining > 0 && (
@@ -582,7 +582,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
           </div>
 
-          <div className="mt-4 bg-gray-200 rounded-full h-2 md:h-3">
+          <div className="mt-4 bg-warm-200 rounded-full h-2 md:h-3">
             <div
               className="h-2 md:h-3 rounded-full transition-all duration-500"
               style={{
@@ -625,7 +625,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   {gameState.currentProblem.description}
                 </div>
 
-                <div className="text-lg md:text-xl text-gray-800 leading-relaxed">
+                <div className="text-lg md:text-xl text-warm-800 leading-relaxed">
                   {gameState.currentProblem.question}
                 </div>
               </div>
@@ -639,7 +639,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         setAnimateBeakers(true);
                         setTimeout(() => setAnimateBeakers(false), 2000);
                       }}
-                      className="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded"
+                      className="text-sm bg-warm-100 hover:bg-warm-200 px-3 py-1 rounded"
                     >
                       🔄 Endurtaka hreyfingu
                     </button>
@@ -684,7 +684,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   <div className="space-y-4">
                     <div className="flex gap-2 items-end">
                       <div className="flex-1">
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        <label className="block text-sm font-semibold text-warm-700 mb-2">
                           Svar:
                         </label>
                         <input
@@ -714,7 +714,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                           </div>
                         )}
                       </div>
-                      <div className="text-xl font-bold text-gray-600 pb-3">
+                      <div className="text-xl font-bold text-warm-600 pb-3">
                         {gameState.currentProblem.unit}
                       </div>
                     </div>
@@ -741,7 +741,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       <button
                         onClick={checkAnswerHandler}
                         disabled={!gameState.userAnswer.trim() || !!gameState.inputError}
-                        className="flex-1 text-white font-bold py-3 px-4 rounded-lg transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                        className="flex-1 text-white font-bold py-3 px-4 rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed"
                         style={{
                           backgroundColor:
                             gameState.userAnswer.trim() && !gameState.inputError
@@ -769,7 +769,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         <div className="text-2xl font-bold mb-2">
                           {gameState.lastAnswerCorrect ? 'Rétt!' : 'Rangt'}
                         </div>
-                        <div className="text-lg text-gray-700">
+                        <div className="text-lg text-warm-700">
                           Rétt svar:{' '}
                           <span className="font-bold">
                             {gameState.currentProblem.answer.toFixed(3)}{' '}
@@ -778,7 +778,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         </div>
                         {!gameState.lastAnswerCorrect && (
                           <>
-                            <div className="text-sm text-gray-600 mt-2">
+                            <div className="text-sm text-warm-600 mt-2">
                               Þitt svar: {gameState.userAnswer} {gameState.currentProblem.unit}
                             </div>
                             <div className="text-sm text-red-700 mt-2 font-semibold">
@@ -801,7 +801,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         {/* Keyboard shortcuts */}
-        <div className="mt-4 text-center text-sm text-gray-600">
+        <div className="mt-4 text-center text-sm text-warm-600">
           <p>
             ⌨️ Flýtilyklar: <strong>Enter</strong>=athuga, <strong>H</strong>=ábending,{' '}
             <strong>S</strong>=sýna lausn, <strong>F</strong>=formúlur, <strong>R</strong>=endurtaka

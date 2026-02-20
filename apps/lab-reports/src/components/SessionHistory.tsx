@@ -19,15 +19,15 @@ export const SessionHistory: React.FC<SessionHistoryProps> = ({
   if (sessions.length === 0) {
     return (
       <div>
-        <h2 className="text-xl font-bold text-slate-900 mb-4">Eldri greiningar</h2>
-        <p className="text-slate-600 text-center py-8">Engar vistaðar greiningar</p>
+        <h2 className="text-xl font-bold font-heading text-warm-900 mb-4">Eldri greiningar</h2>
+        <p className="text-warm-600 text-center py-8">Engar vistaðar greiningar</p>
       </div>
     );
   }
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-slate-900 mb-4">Eldri greiningar</h2>
+      <h2 className="text-xl font-bold font-heading text-warm-900 mb-4">Eldri greiningar</h2>
       <div className="space-y-3">
         {sessions.map((session) => (
           <div
@@ -43,13 +43,13 @@ export const SessionHistory: React.FC<SessionHistoryProps> = ({
                 )}
               </div>
               <div>
-                <h3 className="font-semibold text-slate-800">{session.name}</h3>
-                <p className="text-sm text-slate-600">
+                <h3 className="font-semibold text-warm-800">{session.name}</h3>
+                <p className="text-sm text-warm-600">
                   {experimentConfigs[session.experiment]?.title || session.experiment} -{' '}
                   {session.fileCount} skýrslur
                 </p>
                 <div className="flex items-center gap-3 mt-1">
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-warm-500">
                     {new Date(session.timestamp).toLocaleString('is-IS')}
                   </p>
                   <span

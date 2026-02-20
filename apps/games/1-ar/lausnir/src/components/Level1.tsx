@@ -218,8 +218,8 @@ function ConcentrationIndicator({
   const isCorrect = percentOff <= tolerance;
   const isClose = percentOff <= tolerance * 2;
 
-  let bgColor = 'bg-gray-100';
-  let textColor = 'text-gray-700';
+  let bgColor = 'bg-warm-100';
+  let textColor = 'text-warm-700';
   let indicator = '';
 
   if (isCorrect) {
@@ -239,19 +239,19 @@ function ConcentrationIndicator({
   return (
     <div className={`p-4 rounded-xl border-2 ${bgColor} transition-all duration-300`}>
       <div className="text-center">
-        <div className="text-sm text-gray-600 mb-1">Núverandi styrkur</div>
+        <div className="text-sm text-warm-600 mb-1">Núverandi styrkur</div>
         <div className={`text-3xl font-bold ${textColor}`}>
           {current.toFixed(2)} M {indicator}
         </div>
-        <div className="text-sm text-gray-500 mt-1">
+        <div className="text-sm text-warm-500 mt-1">
           Markmið: {target.toFixed(2)} M (±{tolerance}%)
         </div>
       </div>
 
       {/* Visual bar comparison */}
-      <div className="mt-3 relative h-4 bg-gray-200 rounded-full overflow-hidden">
+      <div className="mt-3 relative h-4 bg-warm-200 rounded-full overflow-hidden">
         <div
-          className="absolute h-full bg-gray-400 opacity-50"
+          className="absolute h-full bg-warm-400 opacity-50"
           style={{
             left: `${Math.max(0, (target / (target * 2)) * 100 - 5)}%`,
             width: '10%'
@@ -425,10 +425,10 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           <div className="text-center mb-8">
             <div className="text-6xl mb-4">🎉</div>
-            <div className="text-2xl font-bold text-gray-800 mb-2">
+            <div className="text-2xl font-bold text-warm-800 mb-2">
               Þú hefur lokið Stigi 1!
             </div>
-            <div className="text-lg text-gray-600">
+            <div className="text-lg text-warm-600">
               Stig: {score} / {CHALLENGES.length * 100}
             </div>
           </div>
@@ -451,7 +451,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 setScore(0);
                 setCompleted([]);
               }}
-              className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-xl transition-colors"
+              className="flex-1 bg-warm-600 hover:bg-warm-700 text-white font-bold py-3 px-8 rounded-xl transition-colors"
             >
               Spila aftur
             </button>
@@ -477,31 +477,31 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <h1 className="text-2xl md:text-3xl font-bold text-blue-600">
                 Lausnir - Stigur 1
               </h1>
-              <p className="text-sm text-gray-600">Skildu hugtökin - ENGIN útreikningar!</p>
+              <p className="text-sm text-warm-600">Skildu hugtökin - ENGIN útreikningar!</p>
             </div>
 
             <div className="flex gap-4 items-center">
               <button
                 onClick={onBack}
-                className="text-gray-600 hover:text-gray-800 text-sm"
+                className="text-warm-600 hover:text-warm-800 text-sm"
               >
                 ← Til baka
               </button>
               <div className="text-center">
                 <div className="text-xl font-bold text-blue-600">{score}</div>
-                <div className="text-xs text-gray-600">Stig</div>
+                <div className="text-xs text-warm-600">Stig</div>
               </div>
               <div className="text-center">
                 <div className="text-xl font-bold text-green-600">
                   {completed.length}/{CHALLENGES.length}
                 </div>
-                <div className="text-xs text-gray-600">Lokið</div>
+                <div className="text-xs text-warm-600">Lokið</div>
               </div>
             </div>
           </div>
 
           {/* Progress bar */}
-          <div className="mt-4 bg-gray-200 rounded-full h-2">
+          <div className="mt-4 bg-warm-200 rounded-full h-2">
             <div
               className="bg-blue-500 h-2 rounded-full transition-all duration-500"
               style={{ width: `${(completed.length / CHALLENGES.length) * 100}%` }}
@@ -515,16 +515,16 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="text-center mb-6">
               <div className="text-4xl mb-2">🤔</div>
               <h2 className="text-2xl font-bold text-blue-800">Hugsaðu fyrst!</h2>
-              <p className="text-gray-600 mt-2">Áður en þú byrjar, spáðu fyrir um útkomunna</p>
+              <p className="text-warm-600 mt-2">Áður en þú byrjar, spáðu fyrir um útkomunna</p>
             </div>
 
             <div className="bg-blue-50 p-4 rounded-xl mb-6">
-              <div className="text-sm text-gray-600 mb-2">Verkefni {currentChallenge + 1}: {challenge.title}</div>
-              <p className="font-semibold text-gray-800">{challenge.description}</p>
+              <div className="text-sm text-warm-600 mb-2">Verkefni {currentChallenge + 1}: {challenge.title}</div>
+              <p className="font-semibold text-warm-800">{challenge.description}</p>
             </div>
 
             <div className="mb-6">
-              <p className="font-semibold text-gray-700 mb-4 text-center text-lg">
+              <p className="font-semibold text-warm-700 mb-4 text-center text-lg">
                 {predictionQuestion.question}
               </p>
 
@@ -534,7 +534,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   className={`p-4 rounded-xl border-2 transition-all ${
                     predictionAnswer === 'increase'
                       ? 'border-blue-500 bg-blue-50 text-blue-800'
-                      : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                      : 'border-warm-200 hover:border-warm-300 text-warm-700'
                   }`}
                 >
                   <div className="text-2xl mb-1">📈</div>
@@ -545,7 +545,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   className={`p-4 rounded-xl border-2 transition-all ${
                     predictionAnswer === 'decrease'
                       ? 'border-blue-500 bg-blue-50 text-blue-800'
-                      : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                      : 'border-warm-200 hover:border-warm-300 text-warm-700'
                   }`}
                 >
                   <div className="text-2xl mb-1">📉</div>
@@ -556,7 +556,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   className={`p-4 rounded-xl border-2 transition-all ${
                     predictionAnswer === 'unchanged'
                       ? 'border-blue-500 bg-blue-50 text-blue-800'
-                      : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                      : 'border-warm-200 hover:border-warm-300 text-warm-700'
                   }`}
                 >
                   <div className="text-2xl mb-1">➡️</div>
@@ -592,7 +592,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 <button
                   onClick={handlePredictionSubmit}
                   disabled={!predictionAnswer}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl transition-colors"
+                  className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-warm-300 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl transition-colors"
                 >
                   Athuga spá
                 </button>
@@ -616,7 +616,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="inline-block bg-blue-100 px-4 py-2 rounded-full text-sm font-semibold text-blue-800 mb-2">
               Verkefni {currentChallenge + 1}: {challenge.title}
             </div>
-            <p className="text-lg text-gray-700">{challenge.description}</p>
+            <p className="text-lg text-warm-700">{challenge.description}</p>
           </div>
 
           {/* Main interaction area */}
@@ -633,8 +633,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               />
 
               <div className="mt-8 text-center">
-                <div className="text-sm text-gray-600">
-                  Sameindir: <span className="font-bold text-gray-800">{molecules}</span>
+                <div className="text-sm text-warm-600">
+                  Sameindir: <span className="font-bold text-warm-800">{molecules}</span>
                 </div>
               </div>
             </div>
@@ -650,7 +650,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               {/* Molecule controls */}
               {challenge.constraints.canChangeMolecules && (
                 <div className="bg-orange-50 p-4 rounded-xl">
-                  <div className="text-sm font-semibold text-gray-700 mb-2">
+                  <div className="text-sm font-semibold text-warm-700 mb-2">
                     Sameindir
                   </div>
                   <div className="flex items-center justify-center gap-4">
@@ -690,7 +690,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               {/* Volume controls */}
               {challenge.constraints.canChangeVolume && (
                 <div className="bg-blue-50 p-4 rounded-xl">
-                  <div className="text-sm font-semibold text-gray-700 mb-2">
+                  <div className="text-sm font-semibold text-warm-700 mb-2">
                     Rúmmál (mL)
                   </div>
                   <input
@@ -701,7 +701,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     onChange={(e) => changeVolume(parseInt(e.target.value))}
                     className="w-full h-3 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
                   />
-                  <div className="flex justify-between text-sm text-gray-600 mt-1">
+                  <div className="flex justify-between text-sm text-warm-600 mt-1">
                     <span>{challenge.constraints.minVolume} mL</span>
                     <span className="font-bold text-blue-600">{volumeML} mL</span>
                     <span>{challenge.constraints.maxVolume} mL</span>
@@ -711,12 +711,12 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
               {/* Fixed parameter notice */}
               {!challenge.constraints.canChangeMolecules && (
-                <div className="bg-gray-100 p-3 rounded-lg text-center text-sm text-gray-600">
+                <div className="bg-warm-100 p-3 rounded-lg text-center text-sm text-warm-600">
                   Sameindir eru fastar við {molecules} (þetta er útþynning!)
                 </div>
               )}
               {!challenge.constraints.canChangeVolume && (
-                <div className="bg-gray-100 p-3 rounded-lg text-center text-sm text-gray-600">
+                <div className="bg-warm-100 p-3 rounded-lg text-center text-sm text-warm-600">
                   Rúmmál er fast við {volumeML} mL
                 </div>
               )}
@@ -776,7 +776,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 isCorrect && !showConcept
                   ? 'bg-green-500 hover:bg-green-600 text-white'
                   : showConcept
-                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  ? 'bg-warm-300 text-warm-500 cursor-not-allowed'
                   : 'bg-blue-500 hover:bg-blue-600 text-white'
               }`}
             >
@@ -785,9 +785,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
 
           {/* Key concept reminder */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-xl">
-            <h4 className="font-semibold text-gray-700 mb-2">🔑 Lykilhugmynd:</h4>
-            <p className="text-gray-600">
+          <div className="mt-6 p-4 bg-warm-50 rounded-xl">
+            <h4 className="font-semibold text-warm-700 mb-2">🔑 Lykilhugmynd:</h4>
+            <p className="text-warm-600">
               <strong>Styrkur</strong> segir til um hversu margar sameindir eru í hverju rúmmáli.
               <br />
               Meiri sameindir EÐA minna rúmmál = hærri styrkur.
@@ -807,7 +807,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   ? 'bg-green-500 text-white'
                   : i === currentChallenge
                   ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                  : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
               }`}
               disabled={completed.includes(c.id)}
             >

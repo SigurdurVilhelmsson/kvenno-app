@@ -267,7 +267,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       case 'polarity': return 'bg-blue-100 text-blue-800';
       case 'multi_center': return 'bg-green-100 text-green-800';
       case 'dipole': return 'bg-orange-100 text-orange-800';
-      default: return 'bg-gray-100 text-gray-800';
+      default: return 'bg-warm-100 text-warm-800';
     }
   };
 
@@ -278,18 +278,18 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
           >
             <span>&larr;</span> Til baka
           </button>
           <div className="text-right">
-            <div className="text-sm text-gray-600">Spurning {currentChallenge + 1} af {challenges.length}</div>
+            <div className="text-sm text-warm-600">Spurning {currentChallenge + 1} af {challenges.length}</div>
             <div className="text-lg font-bold text-teal-600">{score} stig</div>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-teal-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
@@ -305,16 +305,16 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
 
           {/* Molecule info */}
-          <div className="bg-gray-900 rounded-xl p-4 mb-6 text-center">
+          <div className="bg-warm-900 rounded-xl p-4 mb-6 text-center">
             <div className="text-3xl font-bold text-white">{challenge.formula}</div>
-            <div className="text-gray-400">{challenge.name}</div>
+            <div className="text-warm-400">{challenge.name}</div>
             {challenge.lewisStructure && (
               <div className="font-mono text-teal-400 mt-2 whitespace-pre">{challenge.lewisStructure}</div>
             )}
           </div>
 
           {/* Question */}
-          <p className="text-gray-700 text-lg mb-6">{challenge.question}</p>
+          <p className="text-warm-700 text-lg mb-6">{challenge.question}</p>
 
           {/* Options */}
           <div className="space-y-3 mb-6">
@@ -329,14 +329,14 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       ? 'border-green-500 bg-green-50'
                       : selectedOption === option.id
                       ? 'border-red-500 bg-red-50'
-                      : 'border-gray-200 bg-gray-50 opacity-50'
+                      : 'border-warm-200 bg-warm-50 opacity-50'
                     : selectedOption === option.id
                     ? 'border-teal-500 bg-teal-50 ring-2 ring-teal-200'
-                    : 'border-gray-300 hover:border-teal-400 hover:bg-teal-50'
+                    : 'border-warm-300 hover:border-teal-400 hover:bg-teal-50'
                 }`}
               >
                 <div className="flex items-start gap-3">
-                  <span className="font-bold text-gray-500 uppercase">{option.id}.</span>
+                  <span className="font-bold text-warm-500 uppercase">{option.id}.</span>
                   <span className="flex-1">{option.text}</span>
                 </div>
                 {showResult && selectedOption === option.id && (
@@ -373,7 +373,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <button
               onClick={checkAnswer}
               disabled={!selectedOption}
-              className="w-full bg-teal-500 hover:bg-teal-600 disabled:bg-gray-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+              className="w-full bg-teal-500 hover:bg-teal-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
             >
               Athuga svar
             </button>
@@ -418,10 +418,10 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {/* Reference tables */}
         <div className="mt-6 grid md:grid-cols-2 gap-4">
           <div className="bg-white rounded-xl p-4 shadow-sm">
-            <h3 className="font-bold text-gray-700 mb-3">🧬 Blendnitafla</h3>
+            <h3 className="font-bold text-warm-700 mb-3">🧬 Blendnitafla</h3>
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-gray-50">
+                <tr className="bg-warm-50">
                   <th className="p-2 text-left">Svið</th>
                   <th className="p-2 text-left">Blendni</th>
                   <th className="p-2 text-left">Lögun</th>
@@ -438,7 +438,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
 
           <div className="bg-white rounded-xl p-4 shadow-sm">
-            <h3 className="font-bold text-gray-700 mb-3">⚡ Skautun</h3>
+            <h3 className="font-bold text-warm-700 mb-3">⚡ Skautun</h3>
             <div className="space-y-2 text-sm">
               <div className="bg-green-50 p-2 rounded">
                 <strong>Óskautuð:</strong> Samhverf lögun → tvískautsvægi jafnast út
@@ -446,7 +446,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div className="bg-blue-50 p-2 rounded">
                 <strong>Skautuð:</strong> Ósamhverf → nettó tvískautsvægi ≠ 0
               </div>
-              <div className="text-gray-600 mt-2">
+              <div className="text-warm-600 mt-2">
                 <strong>Dæmi:</strong><br/>
                 CO₂ (línuleg) → óskautuð<br/>
                 H₂O (beygð) → skautuð<br/>

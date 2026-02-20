@@ -328,11 +328,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
         <div className="flex justify-between items-center mb-6">
-          <button onClick={onBack} className="text-gray-500 hover:text-gray-700">
+          <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
             ← Til baka
           </button>
           <div className="flex items-center gap-4">
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-warm-500">
               Efnasamband {currentChallenge + 1} af {challenges.length}
             </div>
             <div className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full font-bold">
@@ -344,13 +344,13 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-teal-600">
           Nefndu efnasambandið
         </h1>
-        <p className="text-center text-gray-600 mb-6">
+        <p className="text-center text-warm-600 mb-6">
           Fylgdu skrefunum til að nefna efnasambandið rétt
         </p>
 
         {/* Formula display with molecular structure */}
-        <div className="bg-gray-100 rounded-2xl p-6 md:p-8 mb-6 text-center">
-          <div className="text-4xl md:text-6xl font-mono font-bold text-gray-800 mb-4">
+        <div className="bg-warm-100 rounded-2xl p-6 md:p-8 mb-6 text-center">
+          <div className="text-4xl md:text-6xl font-mono font-bold text-warm-800 mb-4">
             {challenge.formula}
           </div>
           <CompoundVisualization
@@ -381,12 +381,12 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     ? 'bg-teal-500 text-white'
                     : ['identify', 'build', 'answer', 'feedback'].indexOf(step) > idx
                       ? 'bg-green-500 text-white'
-                      : 'bg-gray-200 text-gray-500'
+                      : 'bg-warm-200 text-warm-500'
                 }`}
               >
                 {idx + 1}
               </div>
-              {idx < 3 && <div className="w-8 h-0.5 bg-gray-300" />}
+              {idx < 3 && <div className="w-8 h-0.5 bg-warm-300" />}
             </div>
           ))}
         </div>
@@ -394,7 +394,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {/* Step 1: Identify type */}
         {step === 'identify' && (
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-gray-700 text-center mb-4">
+            <h2 className="text-lg font-bold text-warm-700 text-center mb-4">
               Skref 1: Hvaða tegund efnasambands er þetta?
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -416,7 +416,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     }`}
                   >
                     <div className={`font-bold ${colors.text}`}>{info.name}</div>
-                    <div className="text-sm text-gray-600">{info.description}</div>
+                    <div className="text-sm text-warm-600">{info.description}</div>
                   </button>
                 );
               })}
@@ -435,7 +435,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {/* Step 2: Build the name */}
         {step === 'build' && (
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-gray-700 text-center mb-4">
+            <h2 className="text-lg font-bold text-warm-700 text-center mb-4">
               Skref 2: Hvernig er nafnið byggt upp?
             </h2>
 
@@ -443,19 +443,19 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div className={`font-bold ${getColorClasses(typeInfo.color).text} mb-2`}>
                 {typeInfo.name}
               </div>
-              <div className="text-gray-700 mb-4">{challenge.steps.identifyType}</div>
+              <div className="text-warm-700 mb-4">{challenge.steps.identifyType}</div>
 
               <div className="bg-white rounded-lg p-4 space-y-2">
                 {challenge.steps.nameParts.map((part, idx) => (
                   <div key={idx} className="flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-sm font-bold">
+                    <span className="w-6 h-6 rounded-full bg-warm-200 flex items-center justify-center text-sm font-bold">
                       {idx + 1}
                     </span>
                     <span>{part}</span>
                   </div>
                 ))}
                 <div className="pt-2 border-t mt-2">
-                  <span className="font-bold text-gray-700">→ {challenge.steps.finalName}</span>
+                  <span className="font-bold text-warm-700">→ {challenge.steps.finalName}</span>
                 </div>
               </div>
             </div>
@@ -486,13 +486,13 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {/* Step 3: Enter answer */}
         {step === 'answer' && (
           <div className="space-y-4">
-            <h2 className="text-lg font-bold text-gray-700 text-center mb-4">
+            <h2 className="text-lg font-bold text-warm-700 text-center mb-4">
               Skref 3: Skrifaðu nafnið
             </h2>
 
-            <div className="bg-gray-50 rounded-xl p-4 mb-4">
-              <div className="text-sm text-gray-600 mb-2">Mundu:</div>
-              <div className="text-gray-700">{challenge.steps.finalName}</div>
+            <div className="bg-warm-50 rounded-xl p-4 mb-4">
+              <div className="text-sm text-warm-600 mb-2">Mundu:</div>
+              <div className="text-warm-700">{challenge.steps.finalName}</div>
             </div>
 
             <input
@@ -531,7 +531,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 disabled={!userAnswer.trim()}
                 className={`flex-1 font-bold py-3 px-6 rounded-xl ${
                   !userAnswer.trim()
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
                     : 'bg-teal-500 hover:bg-teal-600 text-white'
                 }`}
               >
@@ -570,7 +570,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 Samantekt: {typeInfo.name}
               </div>
               <div className="bg-white rounded-lg p-3">
-                <div className="text-gray-700">{challenge.steps.finalName}</div>
+                <div className="text-warm-700">{challenge.steps.finalName}</div>
               </div>
             </div>
 
@@ -584,7 +584,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         )}
 
         {/* Progress bar */}
-        <div className="mt-6 w-full bg-gray-200 rounded-full h-2">
+        <div className="mt-6 w-full bg-warm-200 rounded-full h-2">
           <div
             className="bg-teal-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
@@ -592,8 +592,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         {/* Quick reference */}
-        <div className="mt-6 bg-gray-50 rounded-xl p-4">
-          <h3 className="font-semibold text-gray-700 mb-2 text-sm">Flýtileiðbeiningar:</h3>
+        <div className="mt-6 bg-warm-50 rounded-xl p-4">
+          <h3 className="font-semibold text-warm-700 mb-2 text-sm">Flýtileiðbeiningar:</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
             <div className="bg-blue-50 p-2 rounded border border-blue-200">
               <div className="font-bold text-blue-700">Jónefni</div>

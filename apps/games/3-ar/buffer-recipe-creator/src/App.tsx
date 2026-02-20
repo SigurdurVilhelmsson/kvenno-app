@@ -134,7 +134,7 @@ function App() {
           <div className="fixed top-4 left-4 z-40">
             <button
               onClick={() => setActiveLevel('menu')}
-              className="bg-white px-4 py-2 rounded-lg shadow-md text-gray-600 hover:text-gray-800 flex items-center gap-2"
+              className="bg-white px-4 py-2 rounded-lg shadow-md text-warm-600 hover:text-warm-800 flex items-center gap-2"
             >
               ← Til baka
             </button>
@@ -238,10 +238,10 @@ function App() {
         {/* Header with achievements button */}
         <div className="flex justify-between items-start mb-4">
           <div className="flex-1">
-            <h1 className="text-3xl md:text-4xl font-bold" style={{ color: '#f36b22' }}>
+            <h1 className="text-3xl md:text-4xl font-bold font-heading" style={{ color: '#f36b22' }}>
               🧪 Stuðpúðasmíði
             </h1>
-            <p className="text-gray-600">
+            <p className="text-warm-600">
               Lærðu að búa til stuðpúða með Henderson-Hasselbalch jöfnunni
             </p>
           </div>
@@ -261,7 +261,7 @@ function App() {
         {/* Pedagogical explanation */}
         <div className="p-6 rounded-xl mb-8" style={{ backgroundColor: 'rgba(243, 107, 34, 0.1)' }}>
           <h2 className="font-bold mb-3" style={{ color: '#f36b22' }}>Hvað er stuðpúði?</h2>
-          <p className="text-gray-800 text-sm mb-4">
+          <p className="text-warm-800 text-sm mb-4">
             <strong>Stuðpúði</strong> er lausn sem getur viðhaldið stöðugu pH þegar litlu magni af sýru
             eða basa er bætt við. Hann samanstendur af veikri sýru og samoka basa hennar (eða veikum
             basa og samoka sýru hans).
@@ -270,7 +270,7 @@ function App() {
             <p className="text-sm font-mono text-center" style={{ color: '#f36b22' }}>
               pH = pK<sub>a</sub> + log([A⁻]/[HA])
             </p>
-            <p className="text-xs text-gray-600 text-center mt-1">
+            <p className="text-xs text-warm-600 text-center mt-1">
               Henderson-Hasselbalch jafnan
             </p>
           </div>
@@ -300,7 +300,7 @@ function App() {
                 <div className="text-sm mt-1" style={{ color: '#d45a1a' }}>
                   Sjónræn sameindameðferð - engar tölur!
                 </div>
-                <div className="text-xs text-gray-600 mt-2">
+                <div className="text-xs text-warm-600 mt-2">
                   Skildu hvernig hlutfall sýru/basa hefur áhrif á pH.
                   Lærðu að pH = pKa þegar jafnt er af hvoru tveggja.
                 </div>
@@ -326,7 +326,7 @@ function App() {
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <span className={`text-xl font-bold ${
-                    progress.level1Completed ? 'text-green-700' : 'text-gray-500'
+                    progress.level1Completed ? 'text-green-700' : 'text-warm-500'
                   }`}>
                     Stig 2: Útreikningar
                   </span>
@@ -336,15 +336,15 @@ function App() {
                     </span>
                   )}
                   {!progress.level1Completed && (
-                    <span className="text-xs text-gray-500">(Ljúktu stigi 1 fyrst)</span>
+                    <span className="text-xs text-warm-500">(Ljúktu stigi 1 fyrst)</span>
                   )}
                 </div>
                 <div className={`text-sm mt-1 ${
-                  progress.level1Completed ? 'text-green-600' : 'text-gray-500'
+                  progress.level1Completed ? 'text-green-600' : 'text-warm-500'
                 }`}>
                   Henderson-Hasselbalch útreikningar
                 </div>
-                <div className="text-xs text-gray-600 mt-2">
+                <div className="text-xs text-warm-600 mt-2">
                   Reiknaðu hlutfall [Basi]/[Sýra] og massa hvers efnis.
                   3-skrefa ferli: stefna → hlutfall → massi.
                 </div>
@@ -370,7 +370,7 @@ function App() {
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <span className={`text-xl font-bold ${
-                    progress.level2Completed ? 'text-emerald-700' : 'text-gray-500'
+                    progress.level2Completed ? 'text-emerald-700' : 'text-warm-500'
                   }`}>
                     Stig 3: Hönnun
                   </span>
@@ -380,15 +380,15 @@ function App() {
                     </span>
                   )}
                   {!progress.level2Completed && (
-                    <span className="text-xs text-gray-500">(Ljúktu stigi 2 fyrst)</span>
+                    <span className="text-xs text-warm-500">(Ljúktu stigi 2 fyrst)</span>
                   )}
                 </div>
                 <div className={`text-sm mt-1 ${
-                  progress.level2Completed ? 'text-emerald-600' : 'text-gray-500'
+                  progress.level2Completed ? 'text-emerald-600' : 'text-warm-500'
                 }`}>
                   Birgðalausnir og rúmmálsútreikningar
                 </div>
-                <div className="text-xs text-gray-600 mt-2">
+                <div className="text-xs text-warm-600 mt-2">
                   Notaðu tilbúnar birgðalausnir til að búa til stuðpúða.
                   Reiknaðu rúmmál til að taka úr hverri birgðalausn.
                 </div>
@@ -399,12 +399,12 @@ function App() {
 
         {/* Progress Summary */}
         {progress.totalGamesPlayed > 0 && (
-          <div className="mt-8 bg-gray-50 p-4 rounded-xl">
+          <div className="mt-8 bg-warm-50 p-4 rounded-xl">
             <div className="flex justify-between items-center mb-3">
-              <h3 className="font-semibold text-gray-700">Framvinda</h3>
+              <h3 className="font-semibold text-warm-700">Framvinda</h3>
               <button
                 onClick={resetProgress}
-                className="text-sm text-gray-500 hover:text-red-500 transition-colors"
+                className="text-sm text-warm-500 hover:text-red-500 transition-colors"
               >
                 Endurstilla
               </button>
@@ -412,24 +412,24 @@ function App() {
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="rounded-lg p-3" style={{ backgroundColor: 'rgba(243, 107, 34, 0.1)' }}>
                 <div className="text-2xl font-bold" style={{ color: '#f36b22' }}>{levelsCompleted}/3</div>
-                <div className="text-xs text-gray-600">Stig lokið</div>
+                <div className="text-xs text-warm-600">Stig lokið</div>
               </div>
               <div className="bg-green-50 rounded-lg p-3">
                 <div className="text-2xl font-bold text-green-600">{totalScore}</div>
-                <div className="text-xs text-gray-600">Heildar stig</div>
+                <div className="text-xs text-warm-600">Heildar stig</div>
               </div>
               <div className="bg-purple-50 rounded-lg p-3">
                 <div className="text-2xl font-bold text-purple-600">{progress.totalGamesPlayed}</div>
-                <div className="text-xs text-gray-600">Leikir spilaðir</div>
+                <div className="text-xs text-warm-600">Leikir spilaðir</div>
               </div>
             </div>
           </div>
         )}
 
         {/* Formula reference */}
-        <div className="mt-6 bg-gray-50 p-4 rounded-xl">
-          <h3 className="font-semibold text-gray-700 mb-2">📐 Lykilformúlur</h3>
-          <div className="font-mono text-sm space-y-2 text-gray-600">
+        <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+          <h3 className="font-semibold text-warm-700 mb-2">📐 Lykilformúlur</h3>
+          <div className="font-mono text-sm space-y-2 text-warm-600">
             <p><strong>Henderson-Hasselbalch:</strong> pH = pK<sub>a</sub> + log([A⁻]/[HA])</p>
             <p><strong>Hlutfall:</strong> [A⁻]/[HA] = 10<sup>(pH - pK<sub>a</sub>)</sup></p>
             <p><strong>Púffursvæði:</strong> pH = pK<sub>a</sub> ± 1</p>
@@ -438,7 +438,7 @@ function App() {
         </div>
 
         {/* Credits */}
-        <div className="mt-6 text-center text-xs text-gray-500">
+        <div className="mt-6 text-center text-xs text-warm-500">
           Kafli 16 — Chemistry: The Central Science (Brown et al.)
         </div>
       </div>

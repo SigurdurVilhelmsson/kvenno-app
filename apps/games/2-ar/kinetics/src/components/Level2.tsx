@@ -64,18 +64,18 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
           >
             <span>&larr;</span> Til baka
           </button>
           <div className="text-right">
-            <div className="text-sm text-gray-600">Stig 2 / Þraut {currentChallenge + 1} af {challenges.length}</div>
+            <div className="text-sm text-warm-600">Stig 2 / Þraut {currentChallenge + 1} af {challenges.length}</div>
             <div className="text-lg font-bold text-green-600">{score} stig</div>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-green-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
@@ -87,7 +87,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <h2 className="text-2xl font-bold text-green-800 mb-2">
             {challenge.title}
           </h2>
-          <p className="text-gray-600 mb-4">{challenge.description}</p>
+          <p className="text-warm-600 mb-4">{challenge.description}</p>
 
           {/* Chemical equation */}
           <div className="bg-green-50 p-4 rounded-xl mb-6">
@@ -100,7 +100,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="overflow-x-auto mb-6">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-gray-100">
+                <tr className="bg-warm-100">
                   <th className="p-3 text-left">Tilraun</th>
                   <th className="p-3 text-center">[A] (M)</th>
                   {hasSecondReactant && <th className="p-3 text-center">[B] (M)</th>}
@@ -109,7 +109,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               </thead>
               <tbody>
                 {challenge.data.map((row, idx) => (
-                  <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                  <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-warm-50'}>
                     <td className="p-3 font-bold">{row.experiment}</td>
                     <td className="p-3 text-center font-mono">{row.concentrationA.toFixed(2)}</td>
                     {hasSecondReactant && (
@@ -123,8 +123,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
 
           {/* Order selection */}
-          <div className="bg-gray-50 p-4 rounded-xl mb-6">
-            <h3 className="font-bold text-gray-700 mb-4">Veldu röð hvörfunar:</h3>
+          <div className="bg-warm-50 p-4 rounded-xl mb-6">
+            <h3 className="font-bold text-warm-700 mb-4">Veldu röð hvörfunar:</h3>
 
             <div className="space-y-4">
               {/* Order for A */}
@@ -139,7 +139,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       className={`w-12 h-12 rounded-full border-2 font-bold transition-all ${
                         orderA === order
                           ? 'border-green-500 bg-green-500 text-white'
-                          : 'border-gray-300 hover:border-green-400 hover:bg-green-50'
+                          : 'border-warm-300 hover:border-green-400 hover:bg-green-50'
                       } ${showResult ? 'cursor-not-allowed' : ''}`}
                     >
                       {order}
@@ -166,7 +166,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         className={`w-12 h-12 rounded-full border-2 font-bold transition-all ${
                           orderB === order
                             ? 'border-green-500 bg-green-500 text-white'
-                            : 'border-gray-300 hover:border-green-400 hover:bg-green-50'
+                            : 'border-warm-300 hover:border-green-400 hover:bg-green-50'
                         } ${showResult ? 'cursor-not-allowed' : ''}`}
                       >
                         {order}
@@ -218,7 +218,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <button
               onClick={checkAnswer}
               disabled={orderA === null}
-              className="w-full bg-green-500 hover:bg-green-600 disabled:bg-gray-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+              className="w-full bg-green-500 hover:bg-green-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
             >
               Athuga svar
             </button>
@@ -230,7 +230,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div className={`font-bold text-lg mb-2 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
                 {isCorrect ? 'Rétt!' : 'Rangt'}
               </div>
-              <div className="text-sm text-gray-700 mb-2">
+              <div className="text-sm text-warm-700 mb-2">
                 {challenge.explanation}
               </div>
               <div className="font-mono text-sm bg-white p-2 rounded border">
@@ -255,8 +255,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Method reminder */}
         <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="font-bold text-gray-700 mb-2">Aðferð til að finna röð:</h3>
-          <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+          <h3 className="font-bold text-warm-700 mb-2">Aðferð til að finna röð:</h3>
+          <ol className="text-sm text-warm-600 space-y-1 list-decimal list-inside">
             <li>Finndu tvær tilraunir þar sem aðeins EINN styrkur breytist</li>
             <li>Reiknaðu hlutfallið: (Rate₂/Rate₁) = ([A]₂/[A]₁)<sup>m</sup></li>
             <li>Ef styrkur tvöfaldast og Rate tvöfaldast → m = 1</li>

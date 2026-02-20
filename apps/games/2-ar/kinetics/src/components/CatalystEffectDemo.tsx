@@ -121,7 +121,7 @@ export function CatalystEffectDemo({
   const peakX = scaleX(0.5);
 
   return (
-    <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-4 shadow-lg">
+    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-4 shadow-lg">
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-white font-bold text-sm flex items-center gap-2">
           <span className="text-lg">⚗️</span>
@@ -133,7 +133,7 @@ export function CatalystEffectDemo({
             className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
               showAnimation
                 ? 'bg-green-500 text-white'
-                : 'bg-gray-600 text-gray-200 hover:bg-gray-500'
+                : 'bg-warm-600 text-warm-200 hover:bg-warm-500'
             }`}
           >
             {showAnimation ? 'Sýna hreyfingu' : 'Kyrrt'}
@@ -143,9 +143,9 @@ export function CatalystEffectDemo({
 
       {/* Interactive controls */}
       {interactive && !compact && (
-        <div className="grid grid-cols-3 gap-3 mb-4 p-3 bg-slate-700/50 rounded-lg">
+        <div className="grid grid-cols-3 gap-3 mb-4 p-3 bg-warm-700/50 rounded-lg">
           <div>
-            <label className="text-xs text-gray-400 block mb-1">Hitastig</label>
+            <label className="text-xs text-warm-400 block mb-1">Hitastig</label>
             <div className="flex items-center gap-2">
               <input
                 type="range"
@@ -154,13 +154,13 @@ export function CatalystEffectDemo({
                 step="10"
                 value={temp}
                 onChange={(e) => setTemp(Number(e.target.value))}
-                className="flex-1 h-1.5 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-blue-500"
               />
               <span className="text-xs font-mono text-blue-400 w-12">{temp} K</span>
             </div>
           </div>
           <div>
-            <label className="text-xs text-gray-400 block mb-1">Ea (án hvata)</label>
+            <label className="text-xs text-warm-400 block mb-1">Ea (án hvata)</label>
             <div className="flex items-center gap-2">
               <input
                 type="range"
@@ -169,13 +169,13 @@ export function CatalystEffectDemo({
                 step="5"
                 value={baseEa}
                 onChange={(e) => setBaseEa(Number(e.target.value))}
-                className="flex-1 h-1.5 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-red-500"
+                className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-red-500"
               />
               <span className="text-xs font-mono text-red-400 w-12">{baseEa}</span>
             </div>
           </div>
           <div>
-            <label className="text-xs text-gray-400 block mb-1">Ea (með hvata)</label>
+            <label className="text-xs text-warm-400 block mb-1">Ea (með hvata)</label>
             <div className="flex items-center gap-2">
               <input
                 type="range"
@@ -184,7 +184,7 @@ export function CatalystEffectDemo({
                 step="5"
                 value={Math.min(catEa, baseEa - 5)}
                 onChange={(e) => setCatEa(Number(e.target.value))}
-                className="flex-1 h-1.5 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-green-500"
+                className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-green-500"
               />
               <span className="text-xs font-mono text-green-400 w-12">{catEa}</span>
             </div>
@@ -198,7 +198,7 @@ export function CatalystEffectDemo({
         height={height}
         viewBox={`0 0 ${width} ${height}`}
         preserveAspectRatio="xMidYMid meet"
-        className="bg-slate-950 rounded-lg"
+        className="bg-warm-950 rounded-lg"
         role="img"
         aria-label={`Orkurit: Án hvata Ea=${baseEa} kJ/mol, Með hvata Ea=${catEa} kJ/mol`}
       >
@@ -251,7 +251,7 @@ export function CatalystEffectDemo({
           y={height / 2}
           textAnchor="middle"
           transform={`rotate(-90, 15, ${height / 2})`}
-          className="fill-gray-400"
+          className="fill-warm-400"
           style={{ fontSize: '10px' }}
         >
           Orka (kJ/mol)
@@ -262,7 +262,7 @@ export function CatalystEffectDemo({
           x={width / 2}
           y={height - 8}
           textAnchor="middle"
-          className="fill-gray-400"
+          className="fill-warm-400"
           style={{ fontSize: '10px' }}
         >
           Hvarfgangur
@@ -419,10 +419,10 @@ export function CatalystEffectDemo({
         {/* Legend */}
         <g transform={`translate(${margin.left + 10}, ${margin.top + 5})`}>
           <line x1="0" y1="0" x2="20" y2="0" stroke="#ef4444" strokeWidth="3" />
-          <text x="25" y="4" className="fill-gray-300" style={{ fontSize: '9px' }}>Án hvata</text>
+          <text x="25" y="4" className="fill-warm-300" style={{ fontSize: '9px' }}>Án hvata</text>
 
           <line x1="0" y1="15" x2="20" y2="15" stroke="#22c55e" strokeWidth="3" />
-          <text x="25" y="19" className="fill-gray-300" style={{ fontSize: '9px' }}>Með hvata</text>
+          <text x="25" y="19" className="fill-warm-300" style={{ fontSize: '9px' }}>Með hvata</text>
         </g>
       </svg>
 
@@ -431,7 +431,7 @@ export function CatalystEffectDemo({
         <div className="bg-red-500/20 border border-red-500/40 rounded-lg p-3">
           <div className="text-red-400 text-xs font-medium mb-1">Án hvata</div>
           <div className="text-white text-lg font-bold">Ea = {baseEa} kJ/mol</div>
-          <div className="text-gray-400 text-xs mt-1">
+          <div className="text-warm-400 text-xs mt-1">
             {(rates.withoutCatalyst * 100).toExponential(1)}% sameinda geta hvarfast
           </div>
         </div>
@@ -439,19 +439,19 @@ export function CatalystEffectDemo({
         <div className="bg-green-500/20 border border-green-500/40 rounded-lg p-3">
           <div className="text-green-400 text-xs font-medium mb-1">Með hvata</div>
           <div className="text-white text-lg font-bold">Ea' = {catEa} kJ/mol</div>
-          <div className="text-gray-400 text-xs mt-1">
+          <div className="text-warm-400 text-xs mt-1">
             {(rates.withCatalyst * 100).toExponential(1)}% sameinda geta hvarfast
           </div>
         </div>
       </div>
 
       {/* Speedup indicator */}
-      <div className="mt-3 bg-slate-700/50 rounded-lg p-3 text-center">
-        <div className="text-gray-400 text-xs mb-1">Hvörf hraðar um</div>
+      <div className="mt-3 bg-warm-700/50 rounded-lg p-3 text-center">
+        <div className="text-warm-400 text-xs mb-1">Hvörf hraðar um</div>
         <div className="text-2xl font-bold text-yellow-400">
           {rates.speedup.toExponential(1)}×
         </div>
-        <div className="text-gray-500 text-xs mt-1">
+        <div className="text-warm-500 text-xs mt-1">
           Hvati lækkar Ea um {baseEa - catEa} kJ/mol
         </div>
       </div>
@@ -460,7 +460,7 @@ export function CatalystEffectDemo({
       {!compact && (
         <div className="mt-3 bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
           <div className="text-blue-400 text-xs font-medium mb-2">Mikilvægt að vita:</div>
-          <ul className="text-gray-300 text-xs space-y-1">
+          <ul className="text-warm-300 text-xs space-y-1">
             <li className="flex items-start gap-2">
               <span className="text-green-400">✓</span>
               <span>Hvati lækkar virkjunarorku (Ea) með öðrum hvarfgangshátt</span>

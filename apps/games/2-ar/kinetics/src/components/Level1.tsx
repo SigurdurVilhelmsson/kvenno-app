@@ -97,7 +97,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     if (!showResult) {
       return selectedAnswer === option.id
         ? 'border-orange-500 bg-orange-50 ring-2 ring-orange-200'
-        : 'border-gray-300 hover:border-orange-400 hover:bg-orange-50';
+        : 'border-warm-300 hover:border-orange-400 hover:bg-orange-50';
     }
 
     if (option.correct) {
@@ -108,7 +108,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       return 'border-red-500 bg-red-50';
     }
 
-    return 'border-gray-200 bg-gray-50 opacity-50';
+    return 'border-warm-200 bg-warm-50 opacity-50';
   };
 
   return (
@@ -118,18 +118,18 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
           >
             <span>&larr;</span> Til baka
           </button>
           <div className="text-right">
-            <div className="text-sm text-gray-600">Stig 1 / Þraut {currentChallenge + 1} af {challenges.length}</div>
+            <div className="text-sm text-warm-600">Stig 1 / Þraut {currentChallenge + 1} af {challenges.length}</div>
             <div className="text-lg font-bold text-blue-600">{score} stig</div>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-blue-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
@@ -141,7 +141,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <h2 className="text-2xl font-bold text-blue-800 mb-2">
             {challenge.title}
           </h2>
-          <p className="text-gray-700 text-lg mb-6">{challenge.question}</p>
+          <p className="text-warm-700 text-lg mb-6">{challenge.question}</p>
 
           {/* Multiple choice options */}
           {challenge.type === 'multiple_choice' && shuffledOptions.length > 0 && (
@@ -154,7 +154,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   className={`w-full p-4 rounded-xl border-2 text-left transition-all ${getOptionStyle(option)}`}
                 >
                   <div className="flex items-start gap-3">
-                    <span className="font-bold text-gray-500 uppercase">{option.id}.</span>
+                    <span className="font-bold text-warm-500 uppercase">{option.id}.</span>
                     <span className="flex-1">{option.text}</span>
                     {showResult && option.correct && (
                       <span className="text-green-600 font-bold">✓</span>
@@ -198,7 +198,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <button
               onClick={checkAnswer}
               disabled={!selectedAnswer}
-              className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+              className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
             >
               Athuga svar
             </button>
@@ -242,12 +242,12 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Interactive Visualizations */}
         <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="font-bold text-gray-700 mb-4">Gagnvirk hermun</h3>
+          <h3 className="font-bold text-warm-700 mb-4">Gagnvirk hermun</h3>
 
           {/* Shared Controls */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-3 bg-gray-50 rounded-lg">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-3 bg-warm-50 rounded-lg">
             <div>
-              <label className="flex items-center justify-between text-sm text-gray-600 mb-1">
+              <label className="flex items-center justify-between text-sm text-warm-600 mb-1">
                 <span className="flex items-center gap-1">
                   <span>🌡️</span> Hitastig
                 </span>
@@ -260,16 +260,16 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 step="10"
                 value={temperature}
                 onChange={(e) => setTemperature(Number(e.target.value))}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                className="w-full h-2 bg-warm-200 rounded-lg appearance-none cursor-pointer accent-blue-500"
               />
-              <div className="flex justify-between text-xs text-gray-400 mt-1">
+              <div className="flex justify-between text-xs text-warm-400 mt-1">
                 <span>250 K</span>
                 <span>500 K</span>
               </div>
             </div>
 
             <div>
-              <label className="flex items-center justify-between text-sm text-gray-600 mb-1">
+              <label className="flex items-center justify-between text-sm text-warm-600 mb-1">
                 <span className="flex items-center gap-1">
                   <span>⚡</span> Virkjunarorka (Ea)
                 </span>
@@ -282,9 +282,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 step="5"
                 value={activationEnergy}
                 onChange={(e) => setActivationEnergy(Number(e.target.value))}
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-red-500"
+                className="w-full h-2 bg-warm-200 rounded-lg appearance-none cursor-pointer accent-red-500"
               />
-              <div className="flex justify-between text-xs text-gray-400 mt-1">
+              <div className="flex justify-between text-xs text-warm-400 mt-1">
                 <span>20 kJ/mol</span>
                 <span>80 kJ/mol</span>
               </div>
@@ -305,7 +305,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
 
           {/* Connection explanation */}
-          <div className="mt-3 text-center text-xs text-gray-500 bg-blue-50 p-2 rounded">
+          <div className="mt-3 text-center text-xs text-warm-500 bg-blue-50 p-2 rounded">
             Prófaðu að breyta hitastigi og sjáðu hvernig bæði orkudreifingin og árekstrartíðnin breytast!
           </div>
 
@@ -322,7 +322,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Visual concept helper */}
         <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="font-bold text-gray-700 mb-3">Þættir sem hafa áhrif á hvarfhraða</h3>
+          <h3 className="font-bold text-warm-700 mb-3">Þættir sem hafa áhrif á hvarfhraða</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
             <div className="bg-blue-50 p-3 rounded-lg text-center">
               <div className="text-2xl mb-1">🧪</div>

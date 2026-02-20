@@ -231,7 +231,7 @@ export function HalfReactionBalancer({
   };
 
   return (
-    <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-4 shadow-lg">
+    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-4 shadow-lg">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-white font-bold text-sm flex items-center gap-2">
           <span className="text-lg">⚖️</span>
@@ -256,7 +256,7 @@ export function HalfReactionBalancer({
               className={`p-2 rounded-lg text-xs font-mono transition-colors ${
                 selectedReaction === i
                   ? 'bg-purple-500 text-white'
-                  : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                  : 'bg-warm-700 text-warm-300 hover:bg-warm-600'
               }`}
             >
               {r.reactant} → {r.product}
@@ -275,7 +275,7 @@ export function HalfReactionBalancer({
                 ? 'bg-green-500'
                 : i === currentStep
                   ? 'bg-purple-500'
-                  : 'bg-slate-700'
+                  : 'bg-warm-700'
             }`}
             title={rule.title}
           />
@@ -283,7 +283,7 @@ export function HalfReactionBalancer({
       </div>
 
       {/* Current step display */}
-      <div className="bg-slate-700/50 rounded-lg p-4 mb-4">
+      <div className="bg-warm-700/50 rounded-lg p-4 mb-4">
         <div className="flex items-center gap-2 mb-2">
           <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold text-sm">
             {currentStep + 1}
@@ -296,7 +296,7 @@ export function HalfReactionBalancer({
         <div className="text-white mb-3">{step.instruction}</div>
 
         {/* Current equation state */}
-        <div className="bg-slate-900 p-4 rounded-lg mb-3">
+        <div className="bg-warm-900 p-4 rounded-lg mb-3">
           <div className="text-center">
             <div className="text-xl font-mono text-white mb-2">
               {step.result}
@@ -335,7 +335,7 @@ export function HalfReactionBalancer({
           <button
             onClick={handlePrevStep}
             disabled={currentStep === 0}
-            className="flex-1 px-4 py-2 rounded-lg bg-slate-700 text-gray-300 hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex-1 px-4 py-2 rounded-lg bg-warm-700 text-warm-300 hover:bg-warm-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             ← Fyrra skref
           </button>
@@ -359,12 +359,12 @@ export function HalfReactionBalancer({
             <span>✓</span>
             Jafnað helmingshvarf!
           </div>
-          <div className="text-center bg-slate-900 p-3 rounded-lg mb-2">
+          <div className="text-center bg-warm-900 p-3 rounded-lg mb-2">
             <div className="text-xl font-mono text-white">
               {reaction.steps[reaction.steps.length - 1].result}
             </div>
           </div>
-          <div className="text-gray-300 text-sm">
+          <div className="text-warm-300 text-sm">
             {reaction.explanation}
           </div>
         </div>
@@ -376,7 +376,7 @@ export function HalfReactionBalancer({
           <div className="text-blue-400 text-xs font-medium mb-2">
             5-skrefa aðferð (súrt umhverfi):
           </div>
-          <ol className="text-gray-300 text-xs space-y-1 list-decimal list-inside">
+          <ol className="text-warm-300 text-xs space-y-1 list-decimal list-inside">
             {BALANCING_RULES.map((rule, i) => (
               <li key={i} className={completedSteps.includes(i) ? 'text-green-400' : ''}>
                 <span className="font-medium">{rule.title}:</span> {rule.description}
@@ -391,13 +391,13 @@ export function HalfReactionBalancer({
         <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
           <div className="bg-red-500/20 border border-red-500/40 rounded-lg p-2">
             <div className="text-red-400 font-medium mb-1">Oxun</div>
-            <div className="text-gray-300">
+            <div className="text-warm-300">
               Tapar e⁻ → e⁻ birtist <strong>hægra</strong> megin
             </div>
           </div>
           <div className="bg-blue-500/20 border border-blue-500/40 rounded-lg p-2">
             <div className="text-blue-400 font-medium mb-1">Afoxun</div>
-            <div className="text-gray-300">
+            <div className="text-warm-300">
               Öðlast e⁻ → e⁻ birtist <strong>vinstra</strong> megin
             </div>
           </div>

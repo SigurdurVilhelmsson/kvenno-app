@@ -80,7 +80,7 @@ export const ChecklistResults: React.FC<Props> = ({ result }) => {
             </div>
           </div>
           {result.baselineComparison.notes && (
-            <p className="mt-2 text-sm text-slate-700">{result.baselineComparison.notes}</p>
+            <p className="mt-2 text-sm text-warm-700">{result.baselineComparison.notes}</p>
           )}
           {result.baselineComparison.conceptsMissing && result.baselineComparison.conceptsMissing.length > 0 && (
             <p className="mt-1 text-sm text-red-700">
@@ -100,10 +100,10 @@ export const ChecklistResults: React.FC<Props> = ({ result }) => {
         const counts = countByStatus(items);
         return (
         <div key={sectionKey} className="border rounded-lg p-4">
-          <h3 className="font-bold mb-1 text-slate-800">
+          <h3 className="font-bold mb-1 text-warm-800">
             {getSectionName(sectionKey)}
           </h3>
-          <p className="text-xs text-slate-500 mb-3">
+          <p className="text-xs text-warm-500 mb-3">
             {counts.present} til staðar, {counts.missing} vantar
             {counts.manual > 0 && `, ${counts.manual} þarf yfirferð`}
           </p>
@@ -112,11 +112,11 @@ export const ChecklistResults: React.FC<Props> = ({ result }) => {
               <div key={item.id} className="flex items-start gap-2">
                 <StatusIcon status={item.present} />
                 <div className="flex-1">
-                  <span className={item.present === false ? 'text-red-700' : 'text-slate-700'}>
+                  <span className={item.present === false ? 'text-red-700' : 'text-warm-700'}>
                     {item.label}
                   </span>
                   {item.note && (
-                    <p className="text-sm text-slate-500 mt-0.5">{item.note}</p>
+                    <p className="text-sm text-warm-500 mt-0.5">{item.note}</p>
                   )}
                 </div>
               </div>
@@ -142,9 +142,9 @@ export const ChecklistResults: React.FC<Props> = ({ result }) => {
       )}
 
       {/* Summary */}
-      <div className="bg-slate-100 rounded-lg p-4">
+      <div className="bg-warm-100 rounded-lg p-4">
         <h3 className="font-bold mb-2">Samantekt</h3>
-        <p className="text-slate-700">{result.summaryIcelandic}</p>
+        <p className="text-warm-700">{result.summaryIcelandic}</p>
       </div>
     </div>
   );

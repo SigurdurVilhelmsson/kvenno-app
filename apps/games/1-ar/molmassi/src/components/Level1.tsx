@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
-import { FeedbackPanel, MoleculeViewer3DLazy } from '@shared/components';
+import { FeedbackPanel } from '@shared/components';
+import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
 
 import { ATOM_VISUALS, AtomCircle, MoleculeVisual } from './AtomVisuals';
 import { GameComplete } from './GameComplete';
@@ -160,19 +161,19 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <p className="text-lg text-gray-700 mb-4">
+              <p className="text-lg text-warm-700 mb-4">
                 Hversu margar <span className="font-bold">{ATOM_VISUALS[challenge.targetElement!]?.name || challenge.targetElement}</span> frumeindir
                 ({challenge.targetElement}) eru í <span className="font-bold">{challenge.compound.name}</span>?
               </p>
 
-              <div className="text-4xl font-bold text-gray-800 mb-4">
+              <div className="text-4xl font-bold text-warm-800 mb-4">
                 {challenge.compound.formula}
               </div>
 
               {viewMode === '2d' ? (
                 <MoleculeVisual elements={challenge.compound.elements} />
               ) : (
-                <div className="bg-gray-900 rounded-xl p-4">
+                <div className="bg-warm-900 rounded-xl p-4">
                   <MoleculeViewer3DLazy
                     molecule={elementsToMolecule(challenge.compound.elements, challenge.compound.formula, challenge.compound.name)}
                     style="ball-stick"
@@ -182,7 +183,7 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                     height={180}
                     backgroundColor="transparent"
                   />
-                  <div className="text-xs text-gray-400 mt-2">
+                  <div className="text-xs text-warm-400 mt-2">
                     Dragðu til að snúa, skrollaðu til að stækka
                   </div>
                 </div>
@@ -202,7 +203,7 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                         : 'bg-red-500 text-white'
                       : showFeedback && num === challenge.correctCount
                         ? 'bg-green-500 text-white'
-                        : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                        : 'bg-warm-100 hover:bg-warm-200 text-warm-800'
                   }`}
                 >
                   {num}
@@ -225,7 +226,7 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <p className="text-lg text-gray-700 mb-4">
+              <p className="text-lg text-warm-700 mb-4">
                 Hvort efnið er <span className="font-bold">þyngra</span>?
               </p>
             </div>
@@ -241,17 +242,17 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                       : 'border-red-500 bg-red-50'
                     : showFeedback && challenge.compound.molarMass > (challenge.compareCompound?.molarMass || 0)
                       ? 'border-green-500 bg-green-50'
-                      : 'border-gray-200 hover:border-primary hover:bg-orange-50'
+                      : 'border-warm-200 hover:border-primary hover:bg-orange-50'
                 }`}
               >
-                <div className="text-2xl font-bold text-gray-800 mb-2">
+                <div className="text-2xl font-bold text-warm-800 mb-2">
                   {challenge.compound.formula}
                 </div>
-                <div className="text-sm text-gray-600 mb-3">{challenge.compound.name}</div>
+                <div className="text-sm text-warm-600 mb-3">{challenge.compound.name}</div>
                 {viewMode === '2d' ? (
                   <MoleculeVisual elements={challenge.compound.elements} />
                 ) : (
-                  <div className="bg-gray-900 rounded-lg p-2">
+                  <div className="bg-warm-900 rounded-lg p-2">
                     <MoleculeViewer3DLazy
                       molecule={elementsToMolecule(challenge.compound.elements, challenge.compound.formula, challenge.compound.name)}
                       style="ball-stick"
@@ -275,17 +276,17 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                       : 'border-red-500 bg-red-50'
                     : showFeedback && (challenge.compareCompound?.molarMass || 0) > challenge.compound.molarMass
                       ? 'border-green-500 bg-green-50'
-                      : 'border-gray-200 hover:border-primary hover:bg-orange-50'
+                      : 'border-warm-200 hover:border-primary hover:bg-orange-50'
                 }`}
               >
-                <div className="text-2xl font-bold text-gray-800 mb-2">
+                <div className="text-2xl font-bold text-warm-800 mb-2">
                   {challenge.compareCompound?.formula}
                 </div>
-                <div className="text-sm text-gray-600 mb-3">{challenge.compareCompound?.name}</div>
+                <div className="text-sm text-warm-600 mb-3">{challenge.compareCompound?.name}</div>
                 {viewMode === '2d' ? (
                   <MoleculeVisual elements={challenge.compareCompound?.elements || []} />
                 ) : (
-                  <div className="bg-gray-900 rounded-lg p-2">
+                  <div className="bg-warm-900 rounded-lg p-2">
                     <MoleculeViewer3DLazy
                       molecule={elementsToMolecule(challenge.compareCompound?.elements || [], challenge.compareCompound?.formula || '', challenge.compareCompound?.name)}
                       style="ball-stick"
@@ -318,29 +319,29 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <p className="text-lg text-gray-700 mb-2">
+              <p className="text-lg text-warm-700 mb-2">
                 Byggðu sameindina <span className="font-bold">{challenge.compound.name}</span>
               </p>
-              <div className="text-4xl font-bold text-gray-800 mb-4">
+              <div className="text-4xl font-bold text-warm-800 mb-4">
                 {challenge.compound.formula}
               </div>
             </div>
 
             {/* Built molecule display */}
-            <div className="bg-gray-100 rounded-xl p-4 min-h-[100px]">
-              <div className="text-xs text-gray-500 mb-2 text-center">Þín sameind:</div>
+            <div className="bg-warm-100 rounded-xl p-4 min-h-[100px]">
+              <div className="text-xs text-warm-500 mb-2 text-center">Þín sameind:</div>
               {builtAtoms.length > 0 ? (
                 <MoleculeVisual elements={builtAtoms} showMassBar={true} />
               ) : (
-                <div className="text-center text-gray-400 py-4">
+                <div className="text-center text-warm-400 py-4">
                   Smelltu á frumeindir til að bæta þeim við
                 </div>
               )}
             </div>
 
             {/* Atom palette */}
-            <div className="bg-white border-2 border-gray-200 rounded-xl p-4">
-              <div className="text-xs text-gray-500 mb-3 text-center">Veldu frumeindir:</div>
+            <div className="bg-white border-2 border-warm-200 rounded-xl p-4">
+              <div className="text-xs text-warm-500 mb-3 text-center">Veldu frumeindir:</div>
               <div className="flex flex-wrap justify-center gap-4">
                 {availableElements.map(symbol => {
                   const count = builtAtoms.find(a => a.symbol === symbol)?.count || 0;
@@ -354,7 +355,7 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                         <button
                           onClick={() => !showFeedback && removeAtom(symbol)}
                           disabled={showFeedback || count === 0}
-                          className="w-6 h-6 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50 text-sm font-bold"
+                          className="w-6 h-6 rounded bg-warm-200 hover:bg-warm-300 disabled:opacity-50 text-sm font-bold"
                         >
                           −
                         </button>
@@ -362,7 +363,7 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                         <button
                           onClick={() => !showFeedback && addAtom(symbol)}
                           disabled={showFeedback}
-                          className="w-6 h-6 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50 text-sm font-bold"
+                          className="w-6 h-6 rounded bg-warm-200 hover:bg-warm-300 disabled:opacity-50 text-sm font-bold"
                         >
                           +
                         </button>
@@ -398,18 +399,18 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         return (
           <div className="space-y-6">
             <div className="text-center">
-              <p className="text-lg text-gray-700 mb-4">
+              <p className="text-lg text-warm-700 mb-4">
                 Í hvaða massabil fellur <span className="font-bold">{challenge.compound.name}</span>?
               </p>
 
-              <div className="text-4xl font-bold text-gray-800 mb-4">
+              <div className="text-4xl font-bold text-warm-800 mb-4">
                 {challenge.compound.formula}
               </div>
 
               {viewMode === '2d' ? (
                 <MoleculeVisual elements={challenge.compound.elements} showMassBar={true} />
               ) : (
-                <div className="bg-gray-900 rounded-xl p-4 mb-4">
+                <div className="bg-warm-900 rounded-xl p-4 mb-4">
                   <MoleculeViewer3DLazy
                     molecule={elementsToMolecule(challenge.compound.elements, challenge.compound.formula, challenge.compound.name)}
                     style="ball-stick"
@@ -419,7 +420,7 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                     height={180}
                     backgroundColor="transparent"
                   />
-                  <div className="text-xs text-gray-400 mt-2">
+                  <div className="text-xs text-warm-400 mt-2">
                     Dragðu til að snúa, skrollaðu til að stækka
                   </div>
                 </div>
@@ -439,7 +440,7 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                         : 'bg-red-500 text-white'
                       : showFeedback && index === challenge.correctRangeIndex
                         ? 'bg-green-500 text-white'
-                        : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                        : 'bg-warm-100 hover:bg-warm-200 text-warm-800'
                   }`}
                 >
                   {range.label}
@@ -482,22 +483,22 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-xl font-bold text-gray-800">Mólmassi - Stig 1</h1>
-              <p className="text-sm text-gray-600">Skildu sameindir án útreikninga</p>
+              <h1 className="text-xl font-bold text-warm-800">Mólmassi - Stig 1</h1>
+              <p className="text-sm text-warm-600">Skildu sameindir án útreikninga</p>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-primary">{score}</div>
-              <div className="text-xs text-gray-600">Stig</div>
+              <div className="text-xs text-warm-600">Stig</div>
             </div>
           </div>
 
           {/* Progress bar */}
           <div className="mt-3">
-            <div className="flex justify-between text-xs text-gray-500 mb-1">
+            <div className="flex justify-between text-xs text-warm-500 mb-1">
               <span>Áskorun {challengeNumber + 1}/{totalChallenges}</span>
               <span>{getChallengeTitle()}</span>
             </div>
-            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div className="h-2 bg-warm-200 rounded-full overflow-hidden">
               <div
                 className="h-full bg-primary transition-all duration-500"
                 style={{ width: `${((challengeNumber + 1) / totalChallenges) * 100}%` }}
@@ -514,7 +515,7 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
               className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 viewMode === '2d'
                   ? 'bg-primary text-white'
-                  : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                  : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
               }`}
             >
               2D
@@ -524,7 +525,7 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
               className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 viewMode === '3d'
                   ? 'bg-primary text-white'
-                  : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                  : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
               }`}
             >
               3D
@@ -588,7 +589,7 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         {/* Educational note */}
         <div className="mt-6 bg-blue-50 rounded-xl p-4">
           <h3 className="font-bold text-blue-800 mb-2">Lykilhugmynd:</h3>
-          <p className="text-sm text-gray-700">
+          <p className="text-sm text-warm-700">
             {challenge.type === 'count_atoms' && 'Formúlan segir þér hversu margar frumeindir eru í sameind. Lítlu tölurnar (subscripts) sýna fjöldann.'}
             {challenge.type === 'compare_mass' && 'Stærri frumeindir eru þyngri. Súrefni (O) er ~16× þyngri en vetni (H).'}
             {challenge.type === 'build_molecule' && 'Sameindir eru byggðar úr frumeindum. Hver frumeind hefur sinn eigin massa.'}
@@ -599,7 +600,7 @@ export function Level1({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         {/* Back button */}
         <button
           onClick={onBack}
-          className="mt-4 w-full text-gray-500 hover:text-gray-700 font-semibold py-2"
+          className="mt-4 w-full text-warm-500 hover:text-warm-700 font-semibold py-2"
         >
           ← Til baka í valmynd
         </button>

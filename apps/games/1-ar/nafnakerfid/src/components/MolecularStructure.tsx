@@ -173,7 +173,7 @@ export function MolecularStructure({
           <Atom key={idx} symbol={symbol} size={config.atomSize} showLabel={showLabels} />
         ))}
         {hasMore && (
-          <span className="text-gray-400 text-[8px] ml-1">+{totalParsed - atoms.length}</span>
+          <span className="text-warm-400 text-[8px] ml-1">+{totalParsed - atoms.length}</span>
         )}
       </div>
     );
@@ -199,8 +199,8 @@ export function MolecularStructure({
         {/* Separator for ionic */}
         {metals.length > 0 && nonmetals.length > 0 && (
           <div className="flex flex-col items-center">
-            <div className="text-gray-400 text-xs">⁺</div>
-            <div className="text-gray-400 text-xs">⁻</div>
+            <div className="text-warm-400 text-xs">⁺</div>
+            <div className="text-warm-400 text-xs">⁻</div>
           </div>
         )}
 
@@ -214,7 +214,7 @@ export function MolecularStructure({
         )}
 
         {hasMore && (
-          <span className="text-gray-400 text-xs">+{totalParsed - atoms.length}</span>
+          <span className="text-warm-400 text-xs">+{totalParsed - atoms.length}</span>
         )}
       </div>
     );
@@ -227,7 +227,7 @@ export function MolecularStructure({
         <Atom key={idx} symbol={symbol} size={config.atomSize} showLabel={showLabels} />
       ))}
       {hasMore && (
-        <span className="text-gray-400 text-xs ml-1">+{totalParsed - atoms.length}</span>
+        <span className="text-warm-400 text-xs ml-1">+{totalParsed - atoms.length}</span>
       )}
     </div>
   );

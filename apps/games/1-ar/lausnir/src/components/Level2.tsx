@@ -259,7 +259,7 @@ function BeforeAfterVisual({
 
     return (
       <div className="text-center" style={{ opacity }}>
-        <div className="text-sm font-semibold mb-2 text-gray-700">{label}</div>
+        <div className="text-sm font-semibold mb-2 text-warm-700">{label}</div>
         <svg viewBox="0 0 80 120" className="w-24 h-32 mx-auto">
           {/* Beaker */}
           <path
@@ -306,7 +306,7 @@ function BeforeAfterVisual({
             );
           })}
         </svg>
-        <div className="text-xs text-gray-600 mt-1">
+        <div className="text-xs text-warm-600 mt-1">
           <div>{data.volumeML} mL</div>
           <div className="font-bold text-blue-600">{data.concentration.toFixed(1)} M</div>
         </div>
@@ -317,7 +317,7 @@ function BeforeAfterVisual({
   return (
     <div className="flex items-center justify-center gap-4 my-4">
       {renderBeaker(before, 'Fyrir', 1)}
-      <div className="text-2xl text-gray-400">→</div>
+      <div className="text-2xl text-warm-400">→</div>
       {renderBeaker(after, 'Eftir', showAfter ? 1 : 0.3)}
     </div>
   );
@@ -393,13 +393,13 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <h1 className="text-2xl md:text-3xl font-bold text-green-600">
                 Lausnir - Stigur 2
               </h1>
-              <p className="text-sm text-gray-600">Spáðu fyrir um breytingar - ENGIN útreikningar!</p>
+              <p className="text-sm text-warm-600">Spáðu fyrir um breytingar - ENGIN útreikningar!</p>
             </div>
 
             <div className="flex gap-4 items-center">
               <button
                 onClick={onBack}
-                className="text-gray-600 hover:text-gray-800 text-sm"
+                className="text-warm-600 hover:text-warm-800 text-sm"
               >
                 ← Til baka
               </button>
@@ -412,19 +412,19 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               </button>
               <div className="text-center">
                 <div className="text-xl font-bold text-green-600">{score}</div>
-                <div className="text-xs text-gray-600">Stig</div>
+                <div className="text-xs text-warm-600">Stig</div>
               </div>
               <div className="text-center">
                 <div className="text-xl font-bold text-blue-600">
                   {completed.length}/{SCENARIOS.length}
                 </div>
-                <div className="text-xs text-gray-600">Rétt</div>
+                <div className="text-xs text-warm-600">Rétt</div>
               </div>
             </div>
           </div>
 
           {/* Progress bar */}
-          <div className="mt-4 bg-gray-200 rounded-full h-2">
+          <div className="mt-4 bg-warm-200 rounded-full h-2">
             <div
               className="bg-green-500 h-2 rounded-full transition-all duration-500"
               style={{ width: `${((currentScenario + (showResult ? 1 : 0)) / SCENARIOS.length) * 100}%` }}
@@ -440,8 +440,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
 
             {/* Setup */}
-            <div className="bg-gray-50 p-4 rounded-xl mb-4">
-              <p className="text-lg text-gray-800">{scenario.setup}</p>
+            <div className="bg-warm-50 p-4 rounded-xl mb-4">
+              <p className="text-lg text-warm-800">{scenario.setup}</p>
             </div>
 
             {/* Visual representation - depends on scenario type */}
@@ -461,7 +461,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             )}
 
             {/* Question */}
-            <div className="text-xl font-semibold text-gray-800 mb-4">
+            <div className="text-xl font-semibold text-warm-800 mb-4">
               {scenario.question}
             </div>
           </div>
@@ -469,9 +469,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           {/* Options */}
           <div className="space-y-3 mb-6">
             {shuffledOptions.map((option) => {
-              let bgColor = 'bg-white hover:bg-gray-50';
-              let borderColor = 'border-gray-200';
-              let textColor = 'text-gray-800';
+              let bgColor = 'bg-white hover:bg-warm-50';
+              let borderColor = 'border-warm-200';
+              let textColor = 'text-warm-800';
 
               if (selectedAnswer === option.id && !showResult) {
                 bgColor = 'bg-green-50';
@@ -502,7 +502,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     <span className="flex-1">{option.text}</span>
                   </div>
                   {showResult && (
-                    <div className={`mt-2 text-sm ${option.isCorrect ? 'text-green-700' : 'text-gray-600'}`}>
+                    <div className={`mt-2 text-sm ${option.isCorrect ? 'text-green-700' : 'text-warm-600'}`}>
                       {option.explanation}
                     </div>
                   )}
@@ -517,13 +517,13 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div className="text-xl font-bold mb-2">
                 {isCorrect ? '✓ Rétt!' : '✗ Ekki alveg rétt'}
               </div>
-              <div className="text-gray-700 mb-4">
+              <div className="text-warm-700 mb-4">
                 <strong>Lykilhugtak:</strong> {scenario.concept}
               </div>
 
               {/* Visual comparison - depends on scenario type */}
               <div className="mt-4 p-4 bg-white rounded-xl">
-                <div className="text-sm font-semibold text-gray-600 text-center mb-3">
+                <div className="text-sm font-semibold text-warm-600 text-center mb-3">
                   Samantekt á breytingum:
                 </div>
                 {scenario.type === 'concentration' ? (
@@ -539,12 +539,12 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       <span className="font-mono bg-blue-100 px-3 py-1 rounded">
                         {scenario.tempBefore}°C
                       </span>
-                      <span className="text-gray-400">→</span>
+                      <span className="text-warm-400">→</span>
                       <span className="font-mono bg-red-100 px-3 py-1 rounded">
                         {scenario.tempAfter}°C
                       </span>
                     </div>
-                    <div className="mt-3 text-sm text-gray-700">
+                    <div className="mt-3 text-sm text-warm-700">
                       {scenario.compound.type === 'gas' ? (
                         <span>
                           Lofttegundir leysast {scenario.tempAfter < scenario.tempBefore ? 'betur' : 'verr'} við{' '}
@@ -572,7 +572,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 className={`px-8 py-3 rounded-xl font-bold transition-colors ${
                   selectedAnswer
                     ? 'bg-green-500 hover:bg-green-600 text-white'
-                    : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                    : 'bg-warm-200 text-warm-500 cursor-not-allowed'
                 }`}
               >
                 Staðfesta svar
@@ -600,7 +600,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   ? 'bg-green-200 text-green-800 border-2 border-green-500'
                   : i < currentScenario
                   ? 'bg-red-200 text-red-800'
-                  : 'bg-gray-200 text-gray-600'
+                  : 'bg-warm-200 text-warm-600'
               }`}
             >
               {completed.includes(s.id) ? '✓' : i + 1}
@@ -618,20 +618,20 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 <h2 className="text-2xl font-bold text-purple-700">🔬 Könnun á leysigetu</h2>
                 <button
                   onClick={() => setShowExplorer(false)}
-                  className="text-gray-500 hover:text-gray-700 text-2xl"
+                  className="text-warm-500 hover:text-warm-700 text-2xl"
                 >
                   ×
                 </button>
               </div>
 
-              <p className="text-gray-600 mb-4">
+              <p className="text-warm-600 mb-4">
                 Dragðu sleðann til að sjá hvernig hitastig hefur áhrif á leysigetu mismunandi efna.
                 Taktu eftir muninum á föstum efnum og lofttegundum!
               </p>
 
               {/* Compound selection */}
               <div className="mb-4">
-                <div className="text-sm font-semibold text-gray-700 mb-2">Veldu efni til að skoða:</div>
+                <div className="text-sm font-semibold text-warm-700 mb-2">Veldu efni til að skoða:</div>
                 <div className="flex flex-wrap gap-2">
                   {SOLUBILITY_DATA.map(compound => (
                     <button
@@ -646,7 +646,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                         selectedCompounds.includes(compound.formula)
                           ? 'text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          : 'bg-warm-100 text-warm-700 hover:bg-warm-200'
                       }`}
                       style={{
                         backgroundColor: selectedCompounds.includes(compound.formula)

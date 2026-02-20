@@ -16,7 +16,7 @@ vi.mock('@kvenno/shared/components', () => ({
     <header data-testid="header">
       <span>Íslenskubraut</span>
       {subtitle && <span>{subtitle}</span>}
-      <nav><a href="/">Allir flokkar</a><a href="/">Námsvefur Kvennó</a></nav>
+      <nav aria-label="Aðalvalmynd"><a href="/">Allir flokkar</a><a href="/">Námsvefur Kvennó</a></nav>
     </header>
   ),
   Footer: ({ subtitle }: { variant?: string; subtitle?: string }) => (
@@ -28,6 +28,7 @@ vi.mock('@kvenno/shared/components', () => ({
   Container: ({ children, className }: { children: React.ReactNode; className?: string }) => (
     <div data-testid="container" className={className}>{children}</div>
   ),
+  BottomNav: () => <nav data-testid="bottom-nav" aria-label="Neðri valmynd" />,
 }));
 
 vi.mock('../components/DownloadButton', () => ({

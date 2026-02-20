@@ -220,10 +220,10 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
           <div className="flex justify-between items-center mb-6">
-            <button onClick={onBack} className="text-gray-500 hover:text-gray-700">
+            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
               ← Til baka
             </button>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-warm-500">
               Hóptengi {currentGroup + 1} af {functionalGroups.length}
             </div>
           </div>
@@ -231,7 +231,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-purple-600">
             🔬 Hóptengi (Functional Groups)
           </h1>
-          <p className="text-center text-gray-600 mb-8">
+          <p className="text-center text-warm-600 mb-8">
             Hóptengi ákvarða eiginleika og nafn sameindar
           </p>
 
@@ -240,7 +240,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div
                 key={idx}
                 className={`w-3 h-3 rounded-full ${
-                  idx === currentGroup ? 'bg-purple-500' : idx < currentGroup ? 'bg-green-500' : 'bg-gray-300'
+                  idx === currentGroup ? 'bg-purple-500' : idx < currentGroup ? 'bg-green-500' : 'bg-warm-300'
                 }`}
               />
             ))}
@@ -249,27 +249,27 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className={`${group.color} p-8 rounded-2xl border-2 animate-slide-in`}>
             <div className="text-center mb-6">
               <div className="text-4xl font-bold mb-2">{group.nameIcelandic}</div>
-              <div className="text-lg text-gray-600">({group.name})</div>
+              <div className="text-lg text-warm-600">({group.name})</div>
             </div>
 
             <div className="bg-white p-6 rounded-xl mb-6">
               <div className="grid grid-cols-2 gap-6 text-center">
                 <div>
-                  <div className="text-sm text-gray-500 mb-1">Hóptengi</div>
+                  <div className="text-sm text-warm-500 mb-1">Hóptengi</div>
                   <div className="text-3xl font-mono font-bold">{group.formula}</div>
                 </div>
                 <div>
-                  <div className="text-sm text-gray-500 mb-1">Viðskeyti</div>
+                  <div className="text-sm text-warm-500 mb-1">Viðskeyti</div>
                   <div className="text-3xl font-bold text-green-600">{group.suffix}</div>
                 </div>
               </div>
             </div>
 
             <div className="bg-white p-4 rounded-xl mb-4">
-              <div className="text-sm text-gray-500 mb-1">Dæmi:</div>
+              <div className="text-sm text-warm-500 mb-1">Dæmi:</div>
               <div className="flex items-center justify-center gap-4">
                 <span className="text-2xl font-mono">{group.example}</span>
-                <span className="text-2xl text-gray-400">→</span>
+                <span className="text-2xl text-warm-400">→</span>
                 <span className="text-2xl font-bold">{group.exampleName}</span>
               </div>
             </div>
@@ -285,8 +285,8 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               disabled={currentGroup === 0}
               className={`flex-1 py-3 px-6 rounded-xl font-bold ${
                 currentGroup === 0
-                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  : 'bg-gray-500 hover:bg-gray-600 text-white'
+                  ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
+                  : 'bg-warm-500 hover:bg-warm-600 text-white'
               }`}
             >
               ← Fyrri
@@ -299,8 +299,8 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </button>
           </div>
 
-          <div className="mt-6 bg-gray-50 p-4 rounded-xl">
-            <h3 className="font-semibold text-gray-700 mb-2">📋 Öll hóptengi:</h3>
+          <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+            <h3 className="font-semibold text-warm-700 mb-2">📋 Öll hóptengi:</h3>
             <div className="grid grid-cols-2 gap-2 text-sm">
               {functionalGroups.map((fg, idx) => (
                 <div
@@ -310,7 +310,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   }`}
                 >
                   <span className="font-bold">{fg.formula}</span>
-                  <span className="text-gray-500"> → </span>
+                  <span className="text-warm-500"> → </span>
                   <span className="text-green-600">{fg.suffix}</span>
                 </div>
               ))}
@@ -336,11 +336,11 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
         <div className="flex justify-between items-center mb-6">
-          <button onClick={onBack} className="text-gray-500 hover:text-gray-700">
+          <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
             ← Til baka
           </button>
           <div className="flex items-center gap-4">
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-warm-500">
               Áskorun {currentChallenge + 1} af {challenges.length}
             </div>
             <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold">
@@ -354,7 +354,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </h1>
 
         <div className="bg-purple-50 p-6 rounded-xl mb-6 text-center border-2 border-purple-200">
-          <div className="text-xl md:text-2xl font-bold text-gray-800 mb-2">
+          <div className="text-xl md:text-2xl font-bold text-warm-800 mb-2">
             {challenge.question}
           </div>
           {challenge.formula && (
@@ -370,7 +370,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <button
                 key={idx}
                 onClick={() => handleAnswer(option)}
-                className="p-4 rounded-xl border-2 border-purple-300 bg-white hover:bg-purple-50 hover:border-purple-400 text-lg font-bold text-gray-800 transition-all"
+                className="p-4 rounded-xl border-2 border-purple-300 bg-white hover:bg-purple-50 hover:border-purple-400 text-lg font-bold text-warm-800 transition-all"
               >
                 {option}
               </button>
@@ -406,8 +406,8 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
         )}
 
-        <div className="mt-6 bg-gray-50 p-4 rounded-xl">
-          <h3 className="font-semibold text-gray-700 mb-2">📋 Hóptengi og viðskeytir:</h3>
+        <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+          <h3 className="font-semibold text-warm-700 mb-2">📋 Hóptengi og viðskeytir:</h3>
           <div className="grid grid-cols-4 gap-2 text-xs text-center">
             <div className="bg-blue-50 p-2 rounded border border-blue-200">
               <div className="font-bold">-OH</div>
@@ -428,7 +428,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
         </div>
 
-        <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
+        <div className="mt-4 w-full bg-warm-200 rounded-full h-2">
           <div
             className="bg-purple-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}

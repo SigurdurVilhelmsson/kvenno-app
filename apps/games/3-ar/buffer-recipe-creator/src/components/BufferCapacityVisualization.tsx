@@ -188,15 +188,15 @@ export function BufferCapacityVisualization({
   };
 
   return (
-    <div className="bg-gradient-to-b from-slate-800 to-slate-900 rounded-xl p-4 shadow-lg">
+    <div className="bg-gradient-to-b from-warm-800 to-warm-900 rounded-xl p-4 shadow-lg">
       <h3 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
         <span className="text-lg">🛡️</span>
         Stuðpúðageta (Buffer Capacity)
       </h3>
 
       {/* Buffer Capacity Curve */}
-      <div className="bg-slate-700/50 rounded-lg p-3 mb-4">
-        <div className="text-xs text-gray-400 mb-2 text-center">
+      <div className="bg-warm-700/50 rounded-lg p-3 mb-4">
+        <div className="text-xs text-warm-400 mb-2 text-center">
           β (stuðpúðageta) vs pH
         </div>
         <svg width="100%" viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="overflow-visible">
@@ -309,20 +309,20 @@ export function BufferCapacityVisualization({
 
       {/* Current State Display */}
       <div className="grid grid-cols-3 gap-2 mb-4">
-        <div className="bg-slate-700 rounded-lg p-2 text-center">
-          <div className="text-xs text-gray-400">Núverandi pH</div>
+        <div className="bg-warm-700 rounded-lg p-2 text-center">
+          <div className="text-xs text-warm-400">Núverandi pH</div>
           <div className="text-xl font-bold" style={{ color: getPhColor(adjustedState.pH) }}>
             {adjustedState.pH.toFixed(2)}
           </div>
         </div>
-        <div className="bg-slate-700 rounded-lg p-2 text-center">
-          <div className="text-xs text-gray-400">Upphafs pH</div>
-          <div className="text-lg font-semibold text-gray-300">
+        <div className="bg-warm-700 rounded-lg p-2 text-center">
+          <div className="text-xs text-warm-400">Upphafs pH</div>
+          <div className="text-lg font-semibold text-warm-300">
             {initialPH.toFixed(2)}
           </div>
         </div>
-        <div className="bg-slate-700 rounded-lg p-2 text-center">
-          <div className="text-xs text-gray-400">ΔpH</div>
+        <div className="bg-warm-700 rounded-lg p-2 text-center">
+          <div className="text-xs text-warm-400">ΔpH</div>
           <div className={`text-lg font-semibold ${
             Math.abs(adjustedState.pH - initialPH) < 0.5 ? 'text-green-400' : 'text-orange-400'
           }`}>
@@ -333,8 +333,8 @@ export function BufferCapacityVisualization({
 
       {/* Acid/Base Addition Simulator */}
       {showAdditionSim && (
-        <div className="bg-slate-700/50 rounded-lg p-3 mb-4">
-          <div className="text-xs text-gray-400 mb-2 text-center font-semibold">
+        <div className="bg-warm-700/50 rounded-lg p-3 mb-4">
+          <div className="text-xs text-warm-400 mb-2 text-center font-semibold">
             Bæta við sýru eða basa
           </div>
 
@@ -344,16 +344,16 @@ export function BufferCapacityVisualization({
               <div className="w-12 h-12 rounded-full bg-red-500 flex items-center justify-center text-white text-xs font-bold mx-auto">
                 {acidName}
               </div>
-              <div className="text-xs text-gray-400 mt-1">
+              <div className="text-xs text-warm-400 mt-1">
                 {adjustedState.acidConc.toFixed(3)} M
               </div>
             </div>
-            <div className="text-gray-400 text-2xl">⇌</div>
+            <div className="text-warm-400 text-2xl">⇌</div>
             <div className="text-center">
               <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold mx-auto">
                 {baseName}
               </div>
-              <div className="text-xs text-gray-400 mt-1">
+              <div className="text-xs text-warm-400 mt-1">
                 {adjustedState.baseConc.toFixed(3)} M
               </div>
             </div>
@@ -379,7 +379,7 @@ export function BufferCapacityVisualization({
                   +0.05 M
                 </button>
               </div>
-              <div className="text-xs text-gray-500 mt-1 text-center">
+              <div className="text-xs text-warm-500 mt-1 text-center">
                 Bætt við: {acidAdded.toFixed(3)} M
               </div>
             </div>
@@ -402,7 +402,7 @@ export function BufferCapacityVisualization({
                   +0.05 M
                 </button>
               </div>
-              <div className="text-xs text-gray-500 mt-1 text-center">
+              <div className="text-xs text-warm-500 mt-1 text-center">
                 Bætt við: {baseAdded.toFixed(3)} M
               </div>
             </div>
@@ -411,7 +411,7 @@ export function BufferCapacityVisualization({
           {/* Reset button */}
           <button
             onClick={handleReset}
-            className="w-full mt-3 py-2 bg-slate-600 hover:bg-slate-500 text-white text-sm rounded transition-colors"
+            className="w-full mt-3 py-2 bg-warm-600 hover:bg-warm-500 text-white text-sm rounded transition-colors"
           >
             ↺ Endurstilla
           </button>
@@ -428,8 +428,8 @@ export function BufferCapacityVisualization({
 
       {/* Comparison: Buffer vs Water */}
       {showComparison && (acidAdded > 0 || baseAdded > 0) && (
-        <div className="bg-slate-700/50 rounded-lg p-3">
-          <div className="text-xs text-gray-400 mb-2 text-center font-semibold">
+        <div className="bg-warm-700/50 rounded-lg p-3">
+          <div className="text-xs text-warm-400 mb-2 text-center font-semibold">
             Samanburður: Stuðpúði vs Hreint vatn
           </div>
 
@@ -445,7 +445,7 @@ export function BufferCapacityVisualization({
               >
                 pH {adjustedState.pH.toFixed(2)}
               </div>
-              <div className="text-xs text-gray-400 mt-1">
+              <div className="text-xs text-warm-400 mt-1">
                 ΔpH = {Math.abs(adjustedState.pH - 7).toFixed(2)}
               </div>
             </div>
@@ -461,13 +461,13 @@ export function BufferCapacityVisualization({
               >
                 pH {unbufferedPH.toFixed(2)}
               </div>
-              <div className="text-xs text-gray-400 mt-1">
+              <div className="text-xs text-warm-400 mt-1">
                 ΔpH = {Math.abs(unbufferedPH - 7).toFixed(2)}
               </div>
             </div>
           </div>
 
-          <div className="mt-3 text-xs text-center text-gray-400">
+          <div className="mt-3 text-xs text-center text-warm-400">
             💡 Stuðpúðinn verndar pH - minni breyting en í vatni!
           </div>
         </div>
@@ -478,10 +478,10 @@ export function BufferCapacityVisualization({
         <div className="text-xs text-yellow-400 font-semibold mb-1">
           Hvernig stuðpúðinn virkar:
         </div>
-        <div className="text-xs text-gray-300 space-y-1">
+        <div className="text-xs text-warm-300 space-y-1">
           <div>• <span className="text-red-400">Við sýrubótun:</span> {baseName} + H⁺ → {acidName}</div>
           <div>• <span className="text-blue-400">Við basabótun:</span> {acidName} + OH⁻ → {baseName} + H₂O</div>
-          <div className="text-gray-400 mt-2">
+          <div className="text-warm-400 mt-2">
             Stuðpúðagetan er mest þegar pH = pKa (hlutfall {baseName}/{acidName} ≈ 1)
           </div>
         </div>
@@ -491,11 +491,11 @@ export function BufferCapacityVisualization({
       <div className="flex justify-center gap-4 mt-3 text-xs">
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 rounded-full bg-green-500/30 border border-green-500" />
-          <span className="text-gray-400">Besta svæði (pKa ± 1)</span>
+          <span className="text-warm-400">Besta svæði (pKa ± 1)</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-0.5 bg-yellow-500" />
-          <span className="text-gray-400">pKa</span>
+          <span className="text-warm-400">pKa</span>
         </div>
       </div>
     </div>

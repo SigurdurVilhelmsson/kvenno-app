@@ -156,7 +156,7 @@ export function ConcentrationTimeGraph({
   const info = ORDER_INFO[selectedOrder];
 
   return (
-    <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-4 shadow-lg">
+    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-4 shadow-lg">
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-white font-bold text-sm flex items-center gap-2">
           <span className="text-lg">📈</span>
@@ -171,7 +171,7 @@ export function ConcentrationTimeGraph({
                 className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
                   selectedOrder === ord
                     ? `text-white`
-                    : 'bg-gray-600 text-gray-300 hover:bg-gray-500'
+                    : 'bg-warm-600 text-warm-300 hover:bg-warm-500'
                 }`}
                 style={{
                   backgroundColor: selectedOrder === ord ? ORDER_INFO[ord].color : undefined,
@@ -186,9 +186,9 @@ export function ConcentrationTimeGraph({
 
       {/* Interactive controls */}
       {interactive && !compact && (
-        <div className="grid grid-cols-2 gap-3 mb-4 p-3 bg-slate-700/50 rounded-lg">
+        <div className="grid grid-cols-2 gap-3 mb-4 p-3 bg-warm-700/50 rounded-lg">
           <div>
-            <label className="text-xs text-gray-400 block mb-1">[A]₀ (M)</label>
+            <label className="text-xs text-warm-400 block mb-1">[A]₀ (M)</label>
             <div className="flex items-center gap-2">
               <input
                 type="range"
@@ -197,13 +197,13 @@ export function ConcentrationTimeGraph({
                 step="0.1"
                 value={A0}
                 onChange={(e) => setA0(Number(e.target.value))}
-                className="flex-1 h-1.5 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-purple-500"
               />
               <span className="text-xs font-mono text-purple-400 w-10">{A0.toFixed(1)}</span>
             </div>
           </div>
           <div>
-            <label className="text-xs text-gray-400 block mb-1">k (hraðafasti)</label>
+            <label className="text-xs text-warm-400 block mb-1">k (hraðafasti)</label>
             <div className="flex items-center gap-2">
               <input
                 type="range"
@@ -212,7 +212,7 @@ export function ConcentrationTimeGraph({
                 step="0.01"
                 value={k}
                 onChange={(e) => setK(Number(e.target.value))}
-                className="flex-1 h-1.5 bg-gray-600 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-orange-500"
               />
               <span className="text-xs font-mono text-orange-400 w-12">{k.toFixed(2)}</span>
             </div>
@@ -226,7 +226,7 @@ export function ConcentrationTimeGraph({
         height={height}
         viewBox={`0 0 ${width} ${height}`}
         preserveAspectRatio="xMidYMid meet"
-        className="bg-slate-950 rounded-lg"
+        className="bg-warm-950 rounded-lg"
         role="img"
         aria-label={`Styrkur vs tími graf fyrir ${info.name}`}
       >
@@ -269,7 +269,7 @@ export function ConcentrationTimeGraph({
           y={height / 2}
           textAnchor="middle"
           transform={`rotate(-90, 15, ${height / 2})`}
-          className="fill-gray-400"
+          className="fill-warm-400"
           style={{ fontSize: '11px' }}
         >
           [A] (M)
@@ -278,7 +278,7 @@ export function ConcentrationTimeGraph({
           x={width / 2}
           y={height - 8}
           textAnchor="middle"
-          className="fill-gray-400"
+          className="fill-warm-400"
           style={{ fontSize: '11px' }}
         >
           Tími (s)
@@ -301,7 +301,7 @@ export function ConcentrationTimeGraph({
                 x={margin.left - 8}
                 y={y + 4}
                 textAnchor="end"
-                className="fill-gray-500"
+                className="fill-warm-500"
                 style={{ fontSize: '9px' }}
               >
                 {label}
@@ -327,7 +327,7 @@ export function ConcentrationTimeGraph({
                 x={x}
                 y={height - margin.bottom + 16}
                 textAnchor="middle"
-                className="fill-gray-500"
+                className="fill-warm-500"
                 style={{ fontSize: '9px' }}
               >
                 {label}
@@ -414,7 +414,7 @@ export function ConcentrationTimeGraph({
         <text
           x={scaleX(0) + 8}
           y={scaleY(A0) + 4}
-          className="fill-gray-300"
+          className="fill-warm-300"
           style={{ fontSize: '9px' }}
         >
           [A]₀
@@ -436,7 +436,7 @@ export function ConcentrationTimeGraph({
                 <text
                   x="20"
                   y="4"
-                  className="fill-gray-300"
+                  className="fill-warm-300"
                   style={{ fontSize: '9px' }}
                 >
                   {ord}. stig
@@ -453,14 +453,14 @@ export function ConcentrationTimeGraph({
           <div className="w-3 h-3 rounded" style={{ backgroundColor: info.color }} />
           <span className="text-white font-bold text-sm">{info.name}</span>
         </div>
-        <div className="text-gray-300 text-xs mb-2">{info.description}</div>
+        <div className="text-warm-300 text-xs mb-2">{info.description}</div>
         <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="bg-slate-800/50 p-2 rounded">
-            <div className="text-gray-400">Jafna:</div>
+          <div className="bg-warm-800/50 p-2 rounded">
+            <div className="text-warm-400">Jafna:</div>
             <div className="font-mono text-white">{info.equation}</div>
           </div>
-          <div className="bg-slate-800/50 p-2 rounded">
-            <div className="text-gray-400">Helmingunartími:</div>
+          <div className="bg-warm-800/50 p-2 rounded">
+            <div className="text-warm-400">Helmingunartími:</div>
             <div className="font-mono text-yellow-400">{info.halfLifeEq}</div>
           </div>
         </div>
@@ -474,13 +474,13 @@ export function ConcentrationTimeGraph({
             className={`px-3 py-1 rounded text-xs transition-colors ${
               showHalfLife
                 ? 'bg-yellow-500/30 text-yellow-400 border border-yellow-500/50'
-                : 'bg-gray-600 text-gray-300'
+                : 'bg-warm-600 text-warm-300'
             }`}
           >
             {showHalfLife ? '✓ Sýna t₁/₂' : 'Sýna t₁/₂'}
           </button>
 
-          <div className="text-xs text-gray-400">
+          <div className="text-xs text-warm-400">
             t₁/₂ = <span className="font-mono text-yellow-400">{halfLife.toFixed(2)} s</span>
           </div>
         </div>
@@ -490,7 +490,7 @@ export function ConcentrationTimeGraph({
       {!compact && (
         <div className="mt-3 bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
           <div className="text-blue-400 text-xs font-medium mb-1">Lykilatriði:</div>
-          <ul className="text-gray-300 text-xs space-y-1">
+          <ul className="text-warm-300 text-xs space-y-1">
             <li className="flex items-start gap-2">
               <span style={{ color: ORDER_INFO[0].color }}>●</span>
               <span>0. stig: t₁/₂ fer eftir [A]₀ - lengist þegar styrkur minnkar</span>

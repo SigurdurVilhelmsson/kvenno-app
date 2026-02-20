@@ -131,7 +131,7 @@ export function QKComparison({
   }, [shiftDirection]);
 
   const getBarColor = (type: 'q' | 'k') => {
-    if (shiftDirection === 'none') return 'bg-gray-500';
+    if (shiftDirection === 'none') return 'bg-warm-500';
     if (type === 'q') {
       return shiftDirection === 'right' ? 'bg-blue-500' : 'bg-blue-700';
     }
@@ -150,7 +150,7 @@ export function QKComparison({
           {/* Q bar */}
           <div className="flex items-center gap-3">
             <div className="w-8 text-right font-mono font-bold text-blue-600">Q</div>
-            <div className="flex-1 bg-gray-200 rounded-full h-6 overflow-hidden">
+            <div className="flex-1 bg-warm-200 rounded-full h-6 overflow-hidden">
               <div
                 className={`h-full ${getBarColor('q')} rounded-full transition-all duration-700 flex items-center justify-end pr-2`}
                 style={{ width: `${qWidth}%` }}
@@ -165,7 +165,7 @@ export function QKComparison({
           {/* K bar */}
           <div className="flex items-center gap-3">
             <div className="w-8 text-right font-mono font-bold text-purple-600">K</div>
-            <div className="flex-1 bg-gray-200 rounded-full h-6 overflow-hidden">
+            <div className="flex-1 bg-warm-200 rounded-full h-6 overflow-hidden">
               <div
                 className={`h-full ${getBarColor('k')} rounded-full transition-all duration-700 flex items-center justify-end pr-2`}
                 style={{ width: `${kWidth}%` }}
@@ -182,7 +182,7 @@ export function QKComparison({
         <div className={`text-center mt-4 text-2xl font-bold ${animate ? 'animate-pulse' : ''} ${
           shiftDirection === 'right' ? 'text-green-600' :
           shiftDirection === 'left' ? 'text-red-600' :
-          'text-gray-600'
+          'text-warm-600'
         }`}>
           {qkRelation}
         </div>
@@ -203,22 +203,22 @@ export function QKComparison({
         </div>
 
         {/* Why */}
-        <div className="bg-gray-50 rounded-lg p-2 border border-gray-200">
-          <div className="font-semibold text-gray-800 text-xs mb-1">Ástæða</div>
-          <div className="text-gray-700">{explanation.reason}</div>
+        <div className="bg-warm-50 rounded-lg p-2 border border-warm-200">
+          <div className="font-semibold text-warm-800 text-xs mb-1">Ástæða</div>
+          <div className="text-warm-700">{explanation.reason}</div>
         </div>
 
         {/* Result */}
         <div className={`rounded-lg p-3 border-2 ${
           shiftDirection === 'right' ? 'bg-green-50 border-green-300' :
           shiftDirection === 'left' ? 'bg-red-50 border-red-300' :
-          'bg-gray-50 border-gray-300'
+          'bg-warm-50 border-warm-300'
         }`}>
-          <div className="font-semibold text-gray-800 text-xs mb-1">Niðurstaða</div>
+          <div className="font-semibold text-warm-800 text-xs mb-1">Niðurstaða</div>
           <div className={`font-medium ${
             shiftDirection === 'right' ? 'text-green-700' :
             shiftDirection === 'left' ? 'text-red-700' :
-            'text-gray-700'
+            'text-warm-700'
           }`}>
             {shiftExplanation}
           </div>
@@ -226,7 +226,7 @@ export function QKComparison({
       </div>
 
       {/* Formula reminder */}
-      <div className="mt-4 text-center text-xs text-gray-500 bg-white rounded p-2">
+      <div className="mt-4 text-center text-xs text-warm-500 bg-white rounded p-2">
         <span className="font-mono">Q = [afurðir]ⁿ / [hvarfefni]ᵐ</span>
         <span className="mx-2">•</span>
         <span>Q leitar alltaf í átt að K</span>

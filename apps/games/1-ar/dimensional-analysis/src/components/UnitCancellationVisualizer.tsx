@@ -135,7 +135,7 @@ export function UnitCancellationVisualizer({
   };
 
   return (
-    <div ref={containerRef} className="bg-gradient-to-b from-gray-50 to-white p-6 rounded-2xl shadow-lg border-2 border-gray-200 relative">
+    <div ref={containerRef} className="bg-gradient-to-b from-warm-50 to-white p-6 rounded-2xl shadow-lg border-2 border-warm-200 relative">
       {/* SVG overlay for connecting lines */}
       {enhancedAnimation && connectingLines.length > 0 && (
         <svg
@@ -165,8 +165,8 @@ export function UnitCancellationVisualizer({
 
       {/* Header */}
       <div className="text-center mb-4">
-        <h3 className="text-sm font-bold text-gray-700 uppercase tracking-wide">Einingagreining</h3>
-        <p className="text-xs text-gray-500">Eins einingar strikast út</p>
+        <h3 className="text-sm font-bold text-warm-700 uppercase tracking-wide">Einingagreining</h3>
+        <p className="text-xs text-warm-500">Eins einingar strikast út</p>
       </div>
 
       {/* Numerator */}
@@ -176,7 +176,7 @@ export function UnitCancellationVisualizer({
         </div>
         <div className="min-h-[60px] border-2 border-dashed border-blue-300 rounded-xl p-3 bg-blue-50 flex flex-wrap items-center justify-center gap-3">
           {numeratorUnits.length === 0 ? (
-            <span className="text-gray-400 text-sm italic">Engar einingar</span>
+            <span className="text-warm-400 text-sm italic">Engar einingar</span>
           ) : (
             numeratorUnits.map((unit, idx) => {
               const status = getUnitStatus(unit, 'numerator');
@@ -202,9 +202,9 @@ export function UnitCancellationVisualizer({
 
       {/* Fraction bar */}
       <div className="relative my-4">
-        <div className="h-1 bg-gray-800 rounded-full" />
+        <div className="h-1 bg-warm-800 rounded-full" />
         {hasMatchingUnits && (
-          <div className="absolute -top-1 left-1/2 transform -translate-x-1/2">
+          <div className="absolute -top-1 left-1/2 transform -tranwarm-x-1/2">
             <div className={`w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center ${cancellingUnit ? 'animate-ping' : 'animate-pulse'}`}>
               <span className="text-white text-lg">×</span>
             </div>
@@ -219,7 +219,7 @@ export function UnitCancellationVisualizer({
         </div>
         <div className="min-h-[60px] border-2 border-dashed border-green-300 rounded-xl p-3 bg-green-50 flex flex-wrap items-center justify-center gap-3">
           {denominatorUnits.length === 0 ? (
-            <span className="text-gray-400 text-sm italic">Engar einingar</span>
+            <span className="text-warm-400 text-sm italic">Engar einingar</span>
           ) : (
             denominatorUnits.map((unit, idx) => {
               const status = getUnitStatus(unit, 'denominator');

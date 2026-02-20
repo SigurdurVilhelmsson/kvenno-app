@@ -167,7 +167,7 @@ export default function Level1({
         <h1 className="text-4xl font-bold mb-2" style={{ color: '#f36b22' }}>
           Stuðpúðasmíði - Stig 1
         </h1>
-        <p className="text-lg text-gray-600">
+        <p className="text-lg text-warm-600">
           Skildu hvernig hlutfall sýru/basa hefur áhrif á pH
         </p>
       </div>
@@ -176,17 +176,17 @@ export default function Level1({
       <div className="grid grid-cols-3 gap-4 mb-6">
         <div className="bg-white rounded-lg shadow-sm p-4 text-center">
           <div className="text-2xl font-bold text-orange-600">{score}</div>
-          <div className="text-sm text-gray-600">Stig</div>
+          <div className="text-sm text-warm-600">Stig</div>
         </div>
         <div className="bg-white rounded-lg shadow-sm p-4 text-center">
           <div className="text-2xl font-bold text-green-600">{challengesCompleted}</div>
-          <div className="text-sm text-gray-600">Kláruð</div>
+          <div className="text-sm text-warm-600">Kláruð</div>
         </div>
         <div className="bg-white rounded-lg shadow-sm p-4 text-center">
           <div className="text-2xl font-bold text-blue-600">
             {LEVEL1_CHALLENGES.length}
           </div>
-          <div className="text-sm text-gray-600">Samtals</div>
+          <div className="text-sm text-warm-600">Samtals</div>
         </div>
       </div>
 
@@ -205,16 +205,16 @@ export default function Level1({
             <h2 className="text-2xl font-bold mb-3">{currentChallenge.system}</h2>
 
             <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
-              <p className="text-gray-700">{currentChallenge.context}</p>
+              <p className="text-warm-700">{currentChallenge.context}</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <div className="text-sm text-gray-600">pKa</div>
+              <div className="bg-warm-50 p-3 rounded-lg">
+                <div className="text-sm text-warm-600">pKa</div>
                 <div className="text-xl font-bold">{currentChallenge.pKa}</div>
               </div>
-              <div className="bg-gray-50 p-3 rounded-lg">
-                <div className="text-sm text-gray-600">Markmið pH</div>
+              <div className="bg-warm-50 p-3 rounded-lg">
+                <div className="text-sm text-warm-600">Markmið pH</div>
                 <div className="text-xl font-bold" style={{ color: '#f36b22' }}>
                   {currentChallenge.targetPH}
                 </div>
@@ -254,7 +254,7 @@ export default function Level1({
             {/* pH Indicator */}
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-gray-600">Núverandi pH:</span>
+                <span className="text-sm text-warm-600">Núverandi pH:</span>
                 <span className="text-2xl font-bold" style={{ color: getPhColor(estimatedPH) }}>
                   {estimatedPH.toFixed(2)}
                 </span>
@@ -271,8 +271,8 @@ export default function Level1({
 
             {/* Visual Ratio Bar */}
             <div className="mb-6">
-              <div className="text-sm text-gray-600 mb-2 text-center">Hlutfall sýru/basa</div>
-              <div className="flex h-8 rounded-lg overflow-hidden border-2 border-gray-300">
+              <div className="text-sm text-warm-600 mb-2 text-center">Hlutfall sýru/basa</div>
+              <div className="flex h-8 rounded-lg overflow-hidden border-2 border-warm-300">
                 <div
                   className="bg-red-500 flex items-center justify-center text-white text-xs font-bold transition-all duration-300"
                   style={{ width: `${acidPercent}%` }}
@@ -286,7 +286,7 @@ export default function Level1({
                   {basePercent > 15 && `${baseCount}`}
                 </div>
               </div>
-              <div className="flex justify-between text-xs text-gray-500 mt-1">
+              <div className="flex justify-between text-xs text-warm-500 mt-1">
                 <span>Sýra (HA)</span>
                 <span>Basi (A⁻)</span>
               </div>
@@ -343,12 +343,12 @@ export default function Level1({
               </div>
 
               {/* Ratio Display */}
-              <div className="mt-4 bg-gray-100 rounded-lg p-3 text-center">
-                <div className="text-sm text-gray-600 mb-1">Hlutfall [Basi]/[Sýra]</div>
+              <div className="mt-4 bg-warm-100 rounded-lg p-3 text-center">
+                <div className="text-sm text-warm-600 mb-1">Hlutfall [Basi]/[Sýra]</div>
                 <div className="text-3xl font-bold transition-colors duration-300" style={{ color: isCorrect ? '#22c55e' : '#f36b22' }}>
                   {acidCount > 0 ? currentRatio.toFixed(2) : '-'}
                 </div>
-                <div className="text-xs text-gray-500 mt-1">
+                <div className="text-xs text-warm-500 mt-1">
                   Markmið: {currentChallenge.targetRatioMin.toFixed(1)} - {currentChallenge.targetRatioMax.toFixed(1)}
                 </div>
               </div>
@@ -362,14 +362,14 @@ export default function Level1({
                   <button
                     onClick={removeAcid}
                     disabled={acidCount === 0}
-                    className="flex-1 py-2 bg-red-100 hover:bg-red-200 disabled:bg-gray-100 disabled:text-gray-400 rounded-lg font-bold transition-colors"
+                    className="flex-1 py-2 bg-red-100 hover:bg-red-200 disabled:bg-warm-100 disabled:text-warm-400 rounded-lg font-bold transition-colors"
                   >
                     − Fjarlægja
                   </button>
                   <button
                     onClick={addAcid}
                     disabled={acidCount >= 20}
-                    className="flex-1 py-2 bg-red-500 hover:bg-red-600 disabled:bg-gray-300 text-white rounded-lg font-bold transition-colors"
+                    className="flex-1 py-2 bg-red-500 hover:bg-red-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors"
                   >
                     + Bæta við
                   </button>
@@ -382,14 +382,14 @@ export default function Level1({
                   <button
                     onClick={removeBase}
                     disabled={baseCount === 0}
-                    className="flex-1 py-2 bg-blue-100 hover:bg-blue-200 disabled:bg-gray-100 disabled:text-gray-400 rounded-lg font-bold transition-colors"
+                    className="flex-1 py-2 bg-blue-100 hover:bg-blue-200 disabled:bg-warm-100 disabled:text-warm-400 rounded-lg font-bold transition-colors"
                   >
                     − Fjarlægja
                   </button>
                   <button
                     onClick={addBase}
                     disabled={baseCount >= 20}
-                    className="flex-1 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white rounded-lg font-bold transition-colors"
+                    className="flex-1 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors"
                   >
                     + Bæta við
                   </button>
@@ -462,20 +462,20 @@ export default function Level1({
       </div>
 
       {/* Educational Footer */}
-      <div className="mt-8 bg-gray-100 rounded-lg p-6">
+      <div className="mt-8 bg-warm-100 rounded-lg p-6">
         <h3 className="font-bold text-lg mb-3">Hvað ertu að læra?</h3>
         <div className="grid md:grid-cols-3 gap-4 text-sm">
           <div className="bg-white rounded p-3">
             <div className="font-bold mb-1">1. Samsetning stuðpúða</div>
-            <p className="text-gray-600">Stuðpúði þarf BÆÐI veika sýru og samoka basa hennar</p>
+            <p className="text-warm-600">Stuðpúði þarf BÆÐI veika sýru og samoka basa hennar</p>
           </div>
           <div className="bg-white rounded p-3">
             <div className="font-bold mb-1">2. Hlutfall skiptir máli</div>
-            <p className="text-gray-600">Hlutfall [Basi]/[Sýra] ákvarðar pH stuðpúðans</p>
+            <p className="text-warm-600">Hlutfall [Basi]/[Sýra] ákvarðar pH stuðpúðans</p>
           </div>
           <div className="bg-white rounded p-3">
             <div className="font-bold mb-1">3. pKa er miðpunktur</div>
-            <p className="text-gray-600">Þegar pH = pKa, þá er jafnt af sýru og basa</p>
+            <p className="text-warm-600">Þegar pH = pKa, þá er jafnt af sýru og basa</p>
           </div>
         </div>
       </div>

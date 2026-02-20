@@ -17,11 +17,11 @@ export const WorksheetView: React.FC<WorksheetViewProps> = ({
 }) => {
   if (!experiment.worksheet) {
     return (
-      <div className="bg-white rounded-lg shadow-xl p-8">
-        <p className="text-slate-600">Enginn vinnuseðill tiltækur fyrir þessa tilraun.</p>
+      <div className="bg-surface-raised rounded-lg shadow-lg p-8">
+        <p className="text-warm-600">Enginn vinnuseðill tiltækur fyrir þessa tilraun.</p>
         <button
           onClick={onBack}
-          className="mt-4 px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-700 transition"
+          className="mt-4 px-4 py-2 bg-warm-600 text-white rounded-lg hover:bg-warm-700 transition"
         >
           Til baka
         </button>
@@ -32,26 +32,26 @@ export const WorksheetView: React.FC<WorksheetViewProps> = ({
   const { worksheet } = experiment;
 
   return (
-    <div className="bg-white rounded-lg shadow-xl p-8 mb-6">
+    <div className="bg-surface-raised rounded-lg shadow-lg p-8 mb-6">
       <div className="flex items-center gap-3 mb-6">
         <BookOpen className="text-kvenno-orange" size={32} />
         <div>
-          <h2 className="text-2xl font-bold text-slate-900">{experiment.title}</h2>
-          <p className="text-slate-600">Vinnuseðill</p>
+          <h2 className="text-2xl font-bold font-heading text-warm-900">{experiment.title}</h2>
+          <p className="text-warm-600">Vinnuseðill</p>
         </div>
       </div>
 
       <div className="space-y-6">
         {/* Reaction */}
         <div>
-          <h3 className="font-bold text-slate-800 mb-2">Efnahvarf:</h3>
-          <p className="bg-slate-50 p-3 rounded font-mono text-lg">{worksheet.reaction}</p>
+          <h3 className="font-bold text-warm-800 mb-2">Efnahvarf:</h3>
+          <p className="bg-warm-50 p-3 rounded font-mono text-lg">{worksheet.reaction}</p>
         </div>
 
         {/* Materials */}
         <div>
-          <h3 className="font-bold text-slate-800 mb-2">Efni:</h3>
-          <ul className="list-disc list-inside space-y-1 text-slate-700">
+          <h3 className="font-bold text-warm-800 mb-2">Efni:</h3>
+          <ul className="list-disc list-inside space-y-1 text-warm-700">
             {worksheet.materials.map((item, i) => (
               <li key={i}>{item}</li>
             ))}
@@ -60,8 +60,8 @@ export const WorksheetView: React.FC<WorksheetViewProps> = ({
 
         {/* Equipment */}
         <div>
-          <h3 className="font-bold text-slate-800 mb-2">Áhöld:</h3>
-          <ul className="list-disc list-inside space-y-1 text-slate-700">
+          <h3 className="font-bold text-warm-800 mb-2">Áhöld:</h3>
+          <ul className="list-disc list-inside space-y-1 text-warm-700">
             {worksheet.equipment.map((item, i) => (
               <li key={i}>{item}</li>
             ))}
@@ -70,8 +70,8 @@ export const WorksheetView: React.FC<WorksheetViewProps> = ({
 
         {/* Procedure */}
         <div>
-          <h3 className="font-bold text-slate-800 mb-2">Framkvæmd:</h3>
-          <ul className="space-y-1 text-slate-700">
+          <h3 className="font-bold text-warm-800 mb-2">Framkvæmd:</h3>
+          <ul className="space-y-1 text-warm-700">
             {worksheet.steps.map((step, i) => (
               <li key={i} className={step.startsWith('  ') ? 'ml-8' : ''}>
                 {step}
@@ -84,7 +84,7 @@ export const WorksheetView: React.FC<WorksheetViewProps> = ({
       <div className="flex gap-4 mt-8">
         <button
           onClick={onBack}
-          className="flex-1 bg-slate-200 text-slate-700 px-6 py-4 rounded-lg hover:bg-slate-300 transition font-semibold"
+          className="flex-1 bg-warm-200 text-warm-700 px-6 py-4 rounded-lg hover:bg-warm-300 transition font-semibold"
         >
           ← Til baka
         </button>

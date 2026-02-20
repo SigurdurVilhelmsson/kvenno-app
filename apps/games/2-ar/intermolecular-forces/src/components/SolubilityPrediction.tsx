@@ -158,13 +158,13 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
         )}
       </div>
 
-      <div className="text-sm text-gray-600 mb-4">
+      <div className="text-sm text-warm-600 mb-4">
         Skautuð efni leysast í skautuðum leysum. Óskautuð efni leysast í óskautuðum leysum.
       </div>
 
       {/* Solute Selection */}
       <div className="mb-4">
-        <div className="text-sm font-medium text-gray-700 mb-2">1. Veldu efni til að leysa:</div>
+        <div className="text-sm font-medium text-warm-700 mb-2">1. Veldu efni til að leysa:</div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
           {solutes.map(solute => (
             <button
@@ -174,11 +174,11 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
               className={`p-3 rounded-lg border-2 transition-all text-left ${
                 selectedSolute?.id === solute.id
                   ? 'border-cyan-500 bg-cyan-50'
-                  : 'border-gray-200 hover:border-cyan-300 bg-white'
+                  : 'border-warm-200 hover:border-cyan-300 bg-white'
               }`}
             >
-              <div className="font-bold text-gray-800">{solute.formula}</div>
-              <div className="text-xs text-gray-500">{solute.name}</div>
+              <div className="font-bold text-warm-800">{solute.formula}</div>
+              <div className="text-xs text-warm-500">{solute.name}</div>
               <div className={`text-xs mt-1 px-1.5 py-0.5 rounded inline-block ${
                 solute.polarity === 'polar' ? 'bg-blue-100 text-blue-700' :
                 solute.polarity === 'ionic' ? 'bg-purple-100 text-purple-700' :
@@ -195,7 +195,7 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
       {/* Solvent Selection */}
       {selectedSolute && (
         <div className="mb-4">
-          <div className="text-sm font-medium text-gray-700 mb-2">2. Veldu leysi:</div>
+          <div className="text-sm font-medium text-warm-700 mb-2">2. Veldu leysi:</div>
           <div className="grid grid-cols-2 gap-3">
             {solvents.map(solvent => (
               <button
@@ -205,15 +205,15 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
                 className={`p-4 rounded-lg border-2 transition-all ${
                   selectedSolvent?.id === solvent.id
                     ? 'border-cyan-500 bg-white'
-                    : 'border-gray-200 hover:border-cyan-300 bg-white'
+                    : 'border-warm-200 hover:border-cyan-300 bg-white'
                 }`}
               >
                 <div
                   className="w-12 h-12 rounded-lg mx-auto mb-2 opacity-60"
                   style={{ backgroundColor: solvent.color }}
                 />
-                <div className="font-bold text-gray-800">{solvent.formula}</div>
-                <div className="text-sm text-gray-600">{solvent.name}</div>
+                <div className="font-bold text-warm-800">{solvent.formula}</div>
+                <div className="text-sm text-warm-600">{solvent.name}</div>
                 <div className={`text-xs mt-1 ${
                   solvent.polarity === 'polar' ? 'text-blue-600' : 'text-amber-600'
                 }`}>
@@ -228,7 +228,7 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
       {/* Prediction */}
       {selectedSolute && selectedSolvent && !showResult && animationPhase === 'idle' && (
         <div className="mb-4">
-          <div className="text-sm font-medium text-gray-700 mb-2">
+          <div className="text-sm font-medium text-warm-700 mb-2">
             3. Spáðu: Leysist {selectedSolute.formula} í {selectedSolvent.name.toLowerCase()}?
           </div>
           <div className="flex gap-3">
@@ -286,7 +286,7 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
               ))}
             </svg>
           </div>
-          <div className="text-gray-600 animate-pulse mt-2">Blanda...</div>
+          <div className="text-warm-600 animate-pulse mt-2">Blanda...</div>
         </div>
       )}
 
@@ -367,14 +367,14 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
             <div className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
               {isCorrect ? '✓ Rétt spáð!' : '✗ Ekki rétt'}
             </div>
-            <p className="text-sm text-gray-700 mt-2">
+            <p className="text-sm text-warm-700 mt-2">
               {selectedSolute.explanation}
             </p>
           </div>
 
           {/* Polarity explanation */}
-          <div className="bg-gray-50 p-4 rounded-lg text-sm">
-            <div className="font-medium text-gray-700 mb-2">Af hverju?</div>
+          <div className="bg-warm-50 p-4 rounded-lg text-sm">
+            <div className="font-medium text-warm-700 mb-2">Af hverju?</div>
             <div className="flex items-center gap-2 flex-wrap">
               <span className={`px-2 py-1 rounded ${
                 selectedSolute.polarity === 'polar' ? 'bg-blue-100 text-blue-700' :
@@ -386,13 +386,13 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
                   selectedSolute.polarity === 'ionic' ? 'Jónatengi' : 'Óskautað'
                 }
               </span>
-              <span className="text-gray-500">+</span>
+              <span className="text-warm-500">+</span>
               <span className={`px-2 py-1 rounded ${
                 selectedSolvent.polarity === 'polar' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'
               }`}>
                 {selectedSolvent.formula} = {selectedSolvent.polarity === 'polar' ? 'Skautað' : 'Óskautað'}
               </span>
-              <span className="text-gray-500">=</span>
+              <span className="text-warm-500">=</span>
               <span className={`px-2 py-1 rounded font-bold ${
                 actualResult ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
               }`}>
@@ -412,9 +412,9 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
 
       {/* Reference guide */}
       {!selectedSolute && (
-        <div className="bg-white p-4 rounded-lg border border-gray-200 mt-4">
-          <div className="text-sm font-medium text-gray-700 mb-2">Minnispunktar:</div>
-          <ul className="text-xs text-gray-600 space-y-1">
+        <div className="bg-white p-4 rounded-lg border border-warm-200 mt-4">
+          <div className="text-sm font-medium text-warm-700 mb-2">Minnispunktar:</div>
+          <ul className="text-xs text-warm-600 space-y-1">
             <li>• <span className="text-blue-600 font-medium">Skautað</span> leysist í <span className="text-blue-600 font-medium">skautuðu</span> (vatn, alk., sýrur)</li>
             <li>• <span className="text-amber-600 font-medium">Óskautað</span> leysist í <span className="text-amber-600 font-medium">óskautuðu</span> (olíur, fita, hexan)</li>
             <li>• <span className="text-purple-600 font-medium">Jónatengi</span> leysist í <span className="text-blue-600 font-medium">skautuðu</span> (salt í vatni)</li>

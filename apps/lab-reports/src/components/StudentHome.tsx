@@ -60,9 +60,9 @@ export const StudentHome: React.FC<StudentHomeProps> = ({
   const stats = getStatistics();
 
   return (
-    <div className="bg-white rounded-lg shadow-xl p-8">
-      <h1 className="text-3xl font-bold text-slate-900 mb-2">Efnafræðiskýrslur</h1>
-      <p className="text-slate-600 mb-6">Aðstoð við að skrifa skýrslur úr verklegum æfingum</p>
+    <div className="bg-surface-raised rounded-lg shadow-lg p-8">
+      <h1 className="text-3xl font-bold font-heading text-warm-900 mb-2">Efnafræðiskýrslur</h1>
+      <p className="text-warm-600 mb-6">Aðstoð við að skrifa skýrslur úr verklegum æfingum</p>
 
       <div className="bg-orange-50 border-l-4 border-kvenno-orange p-4 mb-6">
         <p className="text-sm text-orange-900">
@@ -74,16 +74,16 @@ export const StudentHome: React.FC<StudentHomeProps> = ({
       {stats.totalSubmissions > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-orange-50 p-4 rounded-lg">
-            <div className="text-2xl font-bold text-slate-900">{stats.totalReports}</div>
-            <div className="text-sm text-slate-700">Skýrslur</div>
+            <div className="text-2xl font-bold text-warm-900">{stats.totalReports}</div>
+            <div className="text-sm text-warm-700">Skýrslur</div>
           </div>
           <div className="bg-green-50 p-4 rounded-lg">
             <div className="text-2xl font-bold text-green-900">{stats.totalSubmissions}</div>
             <div className="text-sm text-green-700">Innsendingar</div>
           </div>
-          <div className="bg-slate-50 p-4 rounded-lg">
-            <div className="text-2xl font-bold text-slate-900">{stats.avgSubmissionsPerReport}</div>
-            <div className="text-sm text-slate-700">Meðaltal/skýrsla</div>
+          <div className="bg-warm-50 p-4 rounded-lg">
+            <div className="text-2xl font-bold text-warm-900">{stats.avgSubmissionsPerReport}</div>
+            <div className="text-sm text-warm-700">Meðaltal/skýrsla</div>
           </div>
           <div className="bg-orange-50 p-4 rounded-lg">
             <div className="text-2xl font-bold text-orange-900">{stats.avgGrade}/30</div>
@@ -104,7 +104,7 @@ export const StudentHome: React.FC<StudentHomeProps> = ({
         {sessions.length > 0 && (
           <button
             onClick={onViewHistory}
-            className="bg-slate-600 text-white px-6 py-4 rounded-lg hover:bg-slate-700 transition flex items-center justify-center gap-2 text-lg font-semibold"
+            className="bg-warm-600 text-white px-6 py-4 rounded-lg hover:bg-warm-700 transition flex items-center justify-center gap-2 text-lg font-semibold"
           >
             <History size={24} />
             Skoða sögu ({sessions.length} innsendingar)
@@ -113,8 +113,8 @@ export const StudentHome: React.FC<StudentHomeProps> = ({
       </div>
 
       <div className="border-t pt-6">
-        <h2 className="text-xl font-bold text-slate-800 mb-3">Hvernig virkar þetta?</h2>
-        <ol className="space-y-2 text-slate-700">
+        <h2 className="text-xl font-bold font-heading text-warm-800 mb-3">Hvernig virkar þetta?</h2>
+        <ol className="space-y-2 text-warm-700">
           <li className="flex gap-2">
             <span className="font-bold">1.</span> Veldu tilraun
           </li>

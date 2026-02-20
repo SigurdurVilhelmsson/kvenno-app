@@ -184,8 +184,8 @@ function App() {
         <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
           <div className="flex justify-between items-start mb-4">
             <div className="flex-1">
-              <h1 className="text-4xl font-bold text-center mb-2 text-gray-800">{t('game.title')}</h1>
-              <p className="text-center text-gray-600">{t('game.subtitle')}</p>
+              <h1 className="text-4xl font-bold font-heading text-center mb-2 text-warm-800">{t('game.title')}</h1>
+              <p className="text-center text-warm-600">{t('game.subtitle')}</p>
             </div>
             <div className="flex items-center gap-2">
               <LanguageSwitcher
@@ -212,9 +212,9 @@ function App() {
                     <span className="bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full">
                       {t('levels.level1.name')}
                     </span>
-                    <h3 className="text-xl font-bold text-gray-800">{t('levels.level1.title')}</h3>
+                    <h3 className="text-xl font-bold text-warm-800">{t('levels.level1.title')}</h3>
                   </div>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-warm-600 text-sm">
                     {t('levels.level1.description')}
                   </p>
                 </div>
@@ -225,7 +225,7 @@ function App() {
                       <div className="text-xs">{t('menu.completed')}</div>
                     </div>
                   ) : (
-                    <div className="text-gray-400 text-3xl">&rarr;</div>
+                    <div className="text-warm-400 text-3xl">&rarr;</div>
                   )}
                 </div>
               </div>
@@ -237,23 +237,23 @@ function App() {
               className={`w-full bg-white border-2 rounded-xl p-6 text-left transition-all ${
                 progress.level1Completed
                   ? 'border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50'
-                  : 'border-gray-200 opacity-60'
+                  : 'border-warm-200 opacity-60'
               }`}
             >
               <div className="flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-3 mb-2">
                     <span className={`text-white text-sm font-bold px-3 py-1 rounded-full ${
-                      progress.level1Completed ? 'bg-yellow-500' : 'bg-gray-400'
+                      progress.level1Completed ? 'bg-yellow-500' : 'bg-warm-400'
                     }`}>
                       {t('levels.level2.name')}
                     </span>
-                    <h3 className="text-xl font-bold text-gray-800">{t('levels.level2.title')}</h3>
+                    <h3 className="text-xl font-bold text-warm-800">{t('levels.level2.title')}</h3>
                     {!progress.level1Completed && (
-                      <span className="text-xs text-gray-500">({t('menu.completeLevel1First')})</span>
+                      <span className="text-xs text-warm-500">({t('menu.completeLevel1First')})</span>
                     )}
                   </div>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-warm-600 text-sm">
                     {t('levels.level2.description')}
                   </p>
                 </div>
@@ -264,7 +264,7 @@ function App() {
                       <div className="text-xs">{t('menu.completed')}</div>
                     </div>
                   ) : (
-                    <div className="text-gray-400 text-3xl">&rarr;</div>
+                    <div className="text-warm-400 text-3xl">&rarr;</div>
                   )}
                 </div>
               </div>
@@ -276,23 +276,23 @@ function App() {
               className={`w-full bg-white border-2 rounded-xl p-6 text-left transition-all ${
                 progress.level2Completed
                   ? 'border-red-200 hover:border-red-400 hover:bg-red-50'
-                  : 'border-gray-200 opacity-60'
+                  : 'border-warm-200 opacity-60'
               }`}
             >
               <div className="flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-3 mb-2">
                     <span className={`text-white text-sm font-bold px-3 py-1 rounded-full ${
-                      progress.level2Completed ? 'bg-red-500' : 'bg-gray-400'
+                      progress.level2Completed ? 'bg-red-500' : 'bg-warm-400'
                     }`}>
                       {t('levels.level3.name')}
                     </span>
-                    <h3 className="text-xl font-bold text-gray-800">{t('levels.level3.title')}</h3>
+                    <h3 className="text-xl font-bold text-warm-800">{t('levels.level3.title')}</h3>
                     {!progress.level2Completed && (
-                      <span className="text-xs text-gray-500">({t('menu.completeLevel2First')})</span>
+                      <span className="text-xs text-warm-500">({t('menu.completeLevel2First')})</span>
                     )}
                   </div>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-warm-600 text-sm">
                     {t('levels.level3.description')}
                   </p>
                 </div>
@@ -305,7 +305,7 @@ function App() {
                       </div>
                     </div>
                   ) : (
-                    <div className="text-gray-400 text-3xl">&rarr;</div>
+                    <div className="text-warm-400 text-3xl">&rarr;</div>
                   )}
                 </div>
               </div>
@@ -322,10 +322,10 @@ function App() {
                     <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold px-3 py-1 rounded-full">
                       {t('bonus.label')}
                     </span>
-                    <h3 className="text-xl font-bold text-gray-800">{t('bonus.title')}</h3>
+                    <h3 className="text-xl font-bold text-warm-800">{t('bonus.title')}</h3>
                     <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">{t('bonus.newBadge')}</span>
                   </div>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-warm-600 text-sm">
                     {t('bonus.description')}
                   </p>
                 </div>
@@ -339,10 +339,10 @@ function App() {
         {progress.totalGamesPlayed > 0 && (
           <div className="bg-white rounded-xl shadow-lg p-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold text-gray-700">{t('menu.progress')}</h3>
+              <h3 className="font-semibold text-warm-700">{t('menu.progress')}</h3>
               <button
                 onClick={resetProgress}
-                className="text-sm text-gray-500 hover:text-red-500 transition-colors"
+                className="text-sm text-warm-500 hover:text-red-500 transition-colors"
               >
                 {t('menu.reset')}
               </button>
@@ -352,19 +352,19 @@ function App() {
                 <div className="text-2xl font-bold text-blue-600">
                   {[progress.level1Completed, progress.level2Completed].filter(Boolean).length}/2
                 </div>
-                <div className="text-xs text-gray-600">{t('menu.levelsCompleted')}</div>
+                <div className="text-xs text-warm-600">{t('menu.levelsCompleted')}</div>
               </div>
               <div className="bg-green-50 rounded-lg p-3">
                 <div className="text-2xl font-bold text-green-600">
                   {progress.level1Score + progress.level2Score}
                 </div>
-                <div className="text-xs text-gray-600">{t('menu.totalPoints')}</div>
+                <div className="text-xs text-warm-600">{t('menu.totalPoints')}</div>
               </div>
               <div className="bg-purple-50 rounded-lg p-3">
                 <div className="text-2xl font-bold text-purple-600">
                   {progress.totalGamesPlayed}
                 </div>
-                <div className="text-xs text-gray-600">{t('menu.gamesPlayed')}</div>
+                <div className="text-xs text-warm-600">{t('menu.gamesPlayed')}</div>
               </div>
             </div>
           </div>
@@ -374,7 +374,7 @@ function App() {
         <div className="text-center mt-6">
           <a
             href="/games/1-ar/"
-            className="text-gray-500 hover:text-gray-700 text-sm transition-colors"
+            className="text-warm-500 hover:text-warm-700 text-sm transition-colors"
           >
             &larr; {t('menu.backToGames')}
           </a>

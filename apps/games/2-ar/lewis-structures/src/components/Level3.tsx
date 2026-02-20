@@ -266,10 +266,10 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     if (pairs === 0) return null;
 
     const positionClasses: Record<string, string> = {
-      'top': 'absolute -top-4 left-1/2 -translate-x-1/2',
-      'bottom': 'absolute -bottom-4 left-1/2 -translate-x-1/2',
-      'left': 'absolute top-1/2 -left-4 -translate-y-1/2',
-      'right': 'absolute top-1/2 -right-4 -translate-y-1/2',
+      'top': 'absolute -top-4 left-1/2 -tranwarm-x-1/2',
+      'bottom': 'absolute -bottom-4 left-1/2 -tranwarm-x-1/2',
+      'left': 'absolute top-1/2 -left-4 -tranwarm-y-1/2',
+      'right': 'absolute top-1/2 -right-4 -tranwarm-y-1/2',
     };
 
     return (
@@ -290,7 +290,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     return (
       <div className="flex flex-col gap-0.5">
         {Array(Math.min(bondCount, 4)).fill(0).map((_, i) => (
-          <div key={i} className="w-6 h-0.5 bg-gray-600" />
+          <div key={i} className="w-6 h-0.5 bg-warm-600" />
         ))}
       </div>
     );
@@ -304,7 +304,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       <div className="flex items-center justify-center gap-2 py-4">
         {/* Bonding electrons on left */}
         <div className="flex items-center">
-          <div className="text-xs text-gray-500 mr-2">tengsl</div>
+          <div className="text-xs text-warm-500 mr-2">tengsl</div>
           {renderBonds(atom.bondingElectrons)}
         </div>
 
@@ -321,7 +321,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         {/* Electron count summary */}
-        <div className="text-xs text-gray-600 ml-4 text-left">
+        <div className="text-xs text-warm-600 ml-4 text-left">
           <div>V = {atom.valenceElectrons}</div>
           <div>L = {atom.lonePairElectrons}</div>
           <div>B = {atom.bondingElectrons}</div>
@@ -338,7 +338,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div key={struct.id} className={`p-4 rounded-xl border-2 ${
             showResult && struct.isPreferred
               ? 'border-green-500 bg-green-50'
-              : 'border-gray-200 bg-white'
+              : 'border-warm-200 bg-white'
           }`}>
             {/* Structure visualization */}
             <div className="flex items-center justify-center gap-1 mb-3">
@@ -356,17 +356,17 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   )}
                   {/* Bond between atoms */}
                   {idx < struct.formalCharges.length - 1 && (
-                    <div className="absolute top-1/2 -right-3 transform -translate-y-1/2">
+                    <div className="absolute top-1/2 -right-3 transform -tranwarm-y-1/2">
                       {struct.id === 'triple' ? (
                         <div className="flex flex-col gap-0.5">
-                          <div className="w-4 h-0.5 bg-gray-700" />
-                          <div className="w-4 h-0.5 bg-gray-700" />
-                          <div className="w-4 h-0.5 bg-gray-700" />
+                          <div className="w-4 h-0.5 bg-warm-700" />
+                          <div className="w-4 h-0.5 bg-warm-700" />
+                          <div className="w-4 h-0.5 bg-warm-700" />
                         </div>
                       ) : (
                         <div className="flex flex-col gap-0.5">
-                          <div className="w-4 h-0.5 bg-gray-700" />
-                          <div className="w-4 h-0.5 bg-gray-700" />
+                          <div className="w-4 h-0.5 bg-warm-700" />
+                          <div className="w-4 h-0.5 bg-warm-700" />
                         </div>
                       )}
                     </div>
@@ -375,11 +375,11 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               ))}
             </div>
             {/* Structure label */}
-            <div className="text-center text-sm font-mono font-bold text-gray-700">
+            <div className="text-center text-sm font-mono font-bold text-warm-700">
               {struct.description}
             </div>
             {/* Formal charges text */}
-            <div className="text-center text-xs text-gray-500 mt-1">
+            <div className="text-center text-xs text-warm-500 mt-1">
               {struct.formalCharges.map(fc =>
                 `${fc.atom}: ${fc.charge >= 0 ? '+' : ''}${fc.charge}`
               ).join(', ')}
@@ -405,7 +405,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {forms.map((form, idx) => (
           <div key={form.id} className="flex items-center gap-2">
             <div className={`p-3 rounded-lg border-2 ${
-              form.isValid ? 'border-purple-300 bg-purple-50' : 'border-gray-200 bg-gray-50'
+              form.isValid ? 'border-purple-300 bg-purple-50' : 'border-warm-200 bg-warm-50'
             }`}>
               <div className="font-mono text-lg font-bold text-purple-800">
                 {form.structure}
@@ -428,18 +428,18 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
           >
             <span>&larr;</span> Til baka
           </button>
           <div className="text-right">
-            <div className="text-sm text-gray-600">Stig 3 / Þraut {currentChallenge + 1} af {challenges.length}</div>
+            <div className="text-sm text-warm-600">Stig 3 / Þraut {currentChallenge + 1} af {challenges.length}</div>
             <div className="text-lg font-bold text-purple-600">{score} stig</div>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-purple-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
@@ -458,12 +458,12 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
           )}
 
-          <p className="text-gray-600 mb-6">{challenge.description}</p>
+          <p className="text-warm-600 mb-6">{challenge.description}</p>
 
           {/* Atom info for FC calculations - with visual diagram */}
           {challenge.atoms && (
-            <div className="bg-gray-50 p-4 rounded-xl mb-6">
-              <h3 className="font-bold text-gray-700 mb-3">Rafeindasamsetning:</h3>
+            <div className="bg-warm-50 p-4 rounded-xl mb-6">
+              <h3 className="font-bold text-warm-700 mb-3">Rafeindasamsetning:</h3>
               {/* Visual atom diagram */}
               {challenge.atoms.map((atom, idx) => (
                 <div key={idx}>
@@ -474,13 +474,13 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               {showResult && challenge.atoms.map((atom, idx) => (
                 <div key={`calc-${idx}`} className="mt-4 p-3 bg-white rounded-lg border border-purple-200">
                   <div className="text-sm font-mono text-center">
-                    <span className="text-gray-600">FC = </span>
+                    <span className="text-warm-600">FC = </span>
                     <span className="text-purple-600">{atom.valenceElectrons}</span>
-                    <span className="text-gray-600"> - (</span>
+                    <span className="text-warm-600"> - (</span>
                     <span className="text-blue-600">{atom.lonePairElectrons}</span>
-                    <span className="text-gray-600"> + ½×</span>
+                    <span className="text-warm-600"> + ½×</span>
                     <span className="text-green-600">{atom.bondingElectrons}</span>
-                    <span className="text-gray-600">) = </span>
+                    <span className="text-warm-600">) = </span>
                     <span className={`font-bold ${atom.formalCharge === 0 ? 'text-green-600' : atom.formalCharge > 0 ? 'text-red-600' : 'text-blue-600'}`}>
                       {atom.formalCharge >= 0 ? '+' : ''}{atom.formalCharge}
                     </span>
@@ -492,22 +492,22 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           {/* Structure options for best structure challenges - with visual diagram */}
           {challenge.structures && (
-            <div className="bg-gray-50 p-4 rounded-xl mb-6">
-              <h3 className="font-bold text-gray-700 mb-3">Möguleg form:</h3>
+            <div className="bg-warm-50 p-4 rounded-xl mb-6">
+              <h3 className="font-bold text-warm-700 mb-3">Möguleg form:</h3>
               {renderStructureComparison(challenge.structures)}
             </div>
           )}
 
           {/* Resonance structures visualization */}
           {challenge.resonanceForms && (
-            <div className="bg-gray-50 p-4 rounded-xl mb-6">
-              <h3 className="font-bold text-gray-700 mb-3">Samsvörunarformúlur:</h3>
+            <div className="bg-warm-50 p-4 rounded-xl mb-6">
+              <h3 className="font-bold text-warm-700 mb-3">Samsvörunarformúlur:</h3>
               {renderResonanceStructures(challenge.resonanceForms)}
             </div>
           )}
 
           {/* Question */}
-          <p className="text-lg font-medium text-gray-800 mb-4">{challenge.question}</p>
+          <p className="text-lg font-medium text-warm-800 mb-4">{challenge.question}</p>
 
           {/* Options */}
           <div className="space-y-3 mb-6">
@@ -522,10 +522,10 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       ? 'border-green-500 bg-green-50'
                       : selectedAnswer === option.id
                       ? 'border-red-500 bg-red-50'
-                      : 'border-gray-200 bg-gray-50 opacity-50'
+                      : 'border-warm-200 bg-warm-50 opacity-50'
                     : selectedAnswer === option.id
                     ? 'border-purple-500 bg-purple-50 ring-2 ring-purple-200'
-                    : 'border-gray-300 hover:border-purple-400 hover:bg-purple-50'
+                    : 'border-warm-300 hover:border-purple-400 hover:bg-purple-50'
                 }`}
               >
                 <span>{option.text}</span>
@@ -563,7 +563,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <button
               onClick={checkAnswer}
               disabled={!selectedAnswer}
-              className="w-full bg-purple-500 hover:bg-purple-600 disabled:bg-gray-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+              className="w-full bg-purple-500 hover:bg-purple-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
             >
               Athuga svar
             </button>
@@ -575,7 +575,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div className={`font-bold text-lg mb-2 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
                 {isCorrect ? 'Rétt!' : 'Rangt'}
               </div>
-              <div className="text-sm text-gray-700">{challenge.explanation}</div>
+              <div className="text-sm text-warm-700">{challenge.explanation}</div>
             </div>
           )}
 
@@ -592,11 +592,11 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Reference card */}
         <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="font-bold text-gray-700 mb-3">Formhleðsluformúlan</h3>
+          <h3 className="font-bold text-warm-700 mb-3">Formhleðsluformúlan</h3>
           <div className="bg-purple-50 p-3 rounded-lg text-center font-mono mb-3">
             <strong>FC = V - (L + ½B)</strong>
           </div>
-          <ul className="text-sm text-gray-600 space-y-1">
+          <ul className="text-sm text-warm-600 space-y-1">
             <li><strong>V</strong> = Gildisrafeindir (frá lotukerfinu)</li>
             <li><strong>L</strong> = Óbundnar rafeindir (lone pairs)</li>
             <li><strong>B</strong> = Bundnar rafeindir (í tengslum)</li>

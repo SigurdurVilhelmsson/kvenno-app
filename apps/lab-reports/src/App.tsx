@@ -192,8 +192,9 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-warm-50 to-warm-100">
       <Header
+        activeTrack="efnafraedi"
         authSlot={<AuthButton />}
         onInfoClick={() => dispatch({ type: 'TOGGLE_INFO' })}
       />
@@ -204,7 +205,7 @@ function App() {
         {/* Back button */}
         <a
           href={backPath}
-          className="inline-flex items-center gap-2 mb-6 text-slate-700 hover:text-kvenno-orange transition"
+          className="inline-flex items-center gap-2 mb-6 text-warm-700 hover:text-kvenno-orange transition"
         >
           <ArrowLeft size={20} />
           <span className="font-medium">Til baka</span>
@@ -214,11 +215,11 @@ function App() {
           {/* Info panel */}
           {state.ui.showInfo && (
             <div className="mb-6 p-4 bg-orange-50 border border-kvenno-orange rounded-lg">
-              <h3 className="font-bold text-slate-900 mb-2">Um verkfærið</h3>
-              <p className="text-sm text-slate-700 mb-2">
+              <h3 className="font-bold text-warm-900 mb-2">Um verkfærið</h3>
+              <p className="text-sm text-warm-700 mb-2">
                 Þetta verkfæri notar gervigreind (Claude AI) til að meta tilraunarskýrslur í efnafræði og veita ítarlega endurgjöf.
               </p>
-              <ul className="text-sm text-slate-700 space-y-1 list-disc list-inside">
+              <ul className="text-sm text-warm-700 space-y-1 list-disc list-inside">
                 <li><strong>Kennarar:</strong> Geta metið margar skýrslur í einu og flutt út niðurstöður</li>
                 <li><strong>Nemendur:</strong> Fá ítarlega endurgjöf með tillögum til úrbóta</li>
                 <li>Styður Word (.docx), PDF og myndir</li>
@@ -229,11 +230,11 @@ function App() {
 
           <div className="flex justify-between items-start mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900 mb-2">
+              <h1 className="font-heading text-3xl font-bold text-warm-900 mb-2">
                 Tilraunarskýrslur
                 <span className="text-sm text-kvenno-orange ml-3 font-normal">(v3.0.0)</span>
               </h1>
-              <p className="text-slate-600">
+              <p className="text-warm-600">
                 {state.mode === 'teacher'
                   ? 'Hraðmat á skýrslum nemenda'
                   : 'Hjálp við að skrifa rannsóknaskýrslur'}
@@ -248,7 +249,7 @@ function App() {
                 className={`px-4 py-2 rounded-lg transition ${
                   state.view === 'grader'
                     ? 'bg-kvenno-orange text-white'
-                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                    : 'bg-warm-200 text-warm-700 hover:bg-warm-300'
                 }`}
               >
                 Ný greining
@@ -258,7 +259,7 @@ function App() {
                 className={`px-4 py-2 rounded-lg transition flex items-center gap-2 ${
                   state.view === 'history'
                     ? 'bg-kvenno-orange text-white'
-                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                    : 'bg-warm-200 text-warm-700 hover:bg-warm-300'
                 }`}
               >
                 <History size={18} />
@@ -275,7 +276,7 @@ function App() {
                 className={`flex-1 px-4 py-3 rounded-lg transition flex items-center justify-center gap-2 ${
                   state.mode === 'teacher'
                     ? 'bg-kvenno-orange text-white'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    : 'bg-warm-100 text-warm-700 hover:bg-warm-200'
                 }`}
               >
                 <GraduationCap size={20} />
@@ -286,7 +287,7 @@ function App() {
                 className={`flex-1 px-4 py-3 rounded-lg transition flex items-center justify-center gap-2 ${
                   state.mode === 'student'
                     ? 'bg-green-600 text-white'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    : 'bg-warm-100 text-warm-700 hover:bg-warm-200'
                 }`}
               >
                 <BookOpen size={20} />
@@ -296,7 +297,7 @@ function App() {
           )}
 
           {state.view === 'history' ? (
-            <Suspense fallback={<div className="text-center py-8 text-slate-500">Hleð...</div>}>
+            <Suspense fallback={<div className="text-center py-8 text-warm-500">Hleð...</div>}>
               <SessionHistory
                 sessions={state.session.saved}
                 onLoadSession={handleLoadSession}
@@ -307,14 +308,14 @@ function App() {
             <>
               {/* Experiment selector */}
               <div className="mb-6">
-                <label htmlFor="experiment-select" className="block text-sm font-medium text-slate-700 mb-2">
+                <label htmlFor="experiment-select" className="block text-sm font-medium text-warm-700 mb-2">
                   Veldu tilraun:
                 </label>
                 <select
                   id="experiment-select"
                   value={state.selectedExperiment}
                   onChange={(e) => dispatch({ type: 'SET_EXPERIMENT', experiment: e.target.value })}
-                  className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-kvenno-orange"
+                  className="w-full p-3 border border-warm-300 rounded-lg focus:ring-2 focus:ring-kvenno-orange"
                 >
                   {experiments.map((exp) => (
                     <option key={exp.id} value={exp.id}>
@@ -338,7 +339,7 @@ function App() {
 
         {/* Results display */}
         {state.view === 'grader' && state.mode === 'teacher' && (
-          <Suspense fallback={<div className="text-center py-8 text-slate-500">Hleð...</div>}>
+          <Suspense fallback={<div className="text-center py-8 text-warm-500">Hleð...</div>}>
             <TeacherResults
               results={state.results.analyses}
               sections={sections}
@@ -350,7 +351,7 @@ function App() {
         )}
 
         {state.view === 'grader' && state.mode === 'student' && (
-          <Suspense fallback={<div className="text-center py-8 text-slate-500">Hleð...</div>}>
+          <Suspense fallback={<div className="text-center py-8 text-warm-500">Hleð...</div>}>
             <StudentFeedbackComponent feedback={state.results.studentFeedback} sections={sections} />
           </Suspense>
         )}

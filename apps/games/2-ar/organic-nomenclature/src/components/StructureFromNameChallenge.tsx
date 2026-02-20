@@ -293,11 +293,11 @@ export function StructureFromNameChallenge({
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <button onClick={onBack} className="text-gray-500 hover:text-gray-700">
+          <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
             ← Til baka
           </button>
           <div className="flex items-center gap-4">
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-warm-500">
               Áskorun {currentChallenge + 1} af {CHALLENGES.length}
             </div>
             <div className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold">
@@ -309,7 +309,7 @@ export function StructureFromNameChallenge({
         <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-emerald-600">
           🔬 Byggðu sameindina
         </h1>
-        <p className="text-center text-gray-600 mb-6">
+        <p className="text-center text-warm-600 mb-6">
           Lestu nafnið og byggðu rétta byggingu
         </p>
 
@@ -320,11 +320,11 @@ export function StructureFromNameChallenge({
               {challenge.difficulty === 'easy' ? 'Auðvelt' :
                challenge.difficulty === 'medium' ? 'Miðlungs' : 'Erfitt'}
             </span>
-            <span className="text-gray-500 font-mono">{challenge.formula}</span>
+            <span className="text-warm-500 font-mono">{challenge.formula}</span>
           </div>
 
           <div className="text-center">
-            <div className="text-sm text-gray-500 mb-1">Byggðu þessa sameind:</div>
+            <div className="text-sm text-warm-500 mb-1">Byggðu þessa sameind:</div>
             <div className="text-4xl font-bold text-emerald-700">{challenge.name}</div>
           </div>
         </div>
@@ -333,13 +333,13 @@ export function StructureFromNameChallenge({
         {!showFeedback && (
           <div className="mb-6">
             {/* Carbon chain visualization */}
-            <div className="bg-slate-900 rounded-xl p-4 mb-4 overflow-x-auto">
+            <div className="bg-warm-900 rounded-xl p-4 mb-4 overflow-x-auto">
               <div className="flex items-center justify-center min-w-fit">
                 {Array.from({ length: carbonCount }).map((_, i) => (
                   <div key={i} className="flex items-center">
                     {/* Carbon atom */}
                     <div
-                      className="flex items-center justify-center rounded-full bg-gray-700 border-2 border-gray-500 text-white font-bold select-none"
+                      className="flex items-center justify-center rounded-full bg-warm-700 border-2 border-warm-500 text-white font-bold select-none"
                       style={{ width: atomSize, height: atomSize, fontSize: atomSize * 0.35 }}
                     >
                       C{i + 1}
@@ -360,7 +360,7 @@ export function StructureFromNameChallenge({
                           if (bondType === 'single' || !bond) {
                             return (
                               <div
-                                className="bg-gray-400 group-hover:bg-gray-300 rounded-full"
+                                className="bg-warm-400 group-hover:bg-warm-300 rounded-full"
                                 style={{ width: '100%', height: bondHeight }}
                               />
                             );
@@ -405,9 +405,9 @@ export function StructureFromNameChallenge({
               </div>
 
               {/* Legend */}
-              <div className="mt-3 flex justify-center gap-4 text-xs text-gray-400">
+              <div className="mt-3 flex justify-center gap-4 text-xs text-warm-400">
                 <span className="flex items-center gap-1">
-                  <span className="w-4 h-1 bg-gray-400 rounded" /> ein
+                  <span className="w-4 h-1 bg-warm-400 rounded" /> ein
                 </span>
                 <span className="flex items-center gap-1">
                   <span className="flex flex-col gap-0.5">
@@ -435,15 +435,15 @@ export function StructureFromNameChallenge({
                 className={`w-10 h-10 rounded-full font-bold text-xl transition-all ${
                   carbonCount > 2
                     ? 'bg-red-500 hover:bg-red-600 text-white'
-                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-warm-200 text-warm-400 cursor-not-allowed'
                 }`}
               >
                 -
               </button>
 
               <div className="text-center px-4">
-                <div className="text-xl font-bold text-gray-800">{carbonCount}</div>
-                <div className="text-xs text-gray-500">kolefni</div>
+                <div className="text-xl font-bold text-warm-800">{carbonCount}</div>
+                <div className="text-xs text-warm-500">kolefni</div>
               </div>
 
               <button
@@ -452,7 +452,7 @@ export function StructureFromNameChallenge({
                 className={`w-10 h-10 rounded-full font-bold text-xl transition-all ${
                   carbonCount < 8
                     ? 'bg-green-500 hover:bg-green-600 text-white'
-                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-warm-200 text-warm-400 cursor-not-allowed'
                 }`}
               >
                 +
@@ -460,7 +460,7 @@ export function StructureFromNameChallenge({
 
               <button
                 onClick={handleReset}
-                className="ml-4 px-3 py-1.5 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg"
+                className="ml-4 px-3 py-1.5 text-sm bg-warm-200 hover:bg-warm-300 text-warm-700 rounded-lg"
               >
                 Endurstilla
               </button>
@@ -516,11 +516,11 @@ export function StructureFromNameChallenge({
         )}
 
         {/* Reference */}
-        <div className="mt-6 bg-gray-50 p-4 rounded-xl">
-          <h3 className="font-semibold text-gray-700 mb-2">📋 Minnisblað:</h3>
+        <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+          <h3 className="font-semibold text-warm-700 mb-2">📋 Minnisblað:</h3>
           <div className="grid grid-cols-2 gap-4 text-xs">
             <div>
-              <div className="font-bold text-gray-600 mb-1">Forskeytir:</div>
+              <div className="font-bold text-warm-600 mb-1">Forskeytir:</div>
               <div className="grid grid-cols-3 gap-1">
                 {['meth-1', 'eth-2', 'prop-3', 'but-4', 'pent-5', 'hex-6'].map(p => {
                   const [prefix, count] = p.split('-');
@@ -533,7 +533,7 @@ export function StructureFromNameChallenge({
               </div>
             </div>
             <div>
-              <div className="font-bold text-gray-600 mb-1">Viðskeytir:</div>
+              <div className="font-bold text-warm-600 mb-1">Viðskeytir:</div>
               <div className="space-y-1">
                 <div className="bg-white p-1 rounded border text-center">-an = eintengi</div>
                 <div className="bg-green-50 p-1 rounded border border-green-200 text-center">-en = tvítengi</div>
@@ -544,7 +544,7 @@ export function StructureFromNameChallenge({
         </div>
 
         {/* Progress bar */}
-        <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
+        <div className="mt-4 w-full bg-warm-200 rounded-full h-2">
           <div
             className="bg-emerald-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + (showFeedback && isCorrect ? 1 : 0)) / CHALLENGES.length) * 100}%` }}

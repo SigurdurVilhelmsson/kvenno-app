@@ -55,7 +55,7 @@ export function AtomCircle({ symbol, showLabel = true, onClick, isSelected = fal
         {symbol}
       </div>
       {showLabel && (
-        <span className="text-xs text-gray-600 mt-1">{visual.name}</span>
+        <span className="text-xs text-warm-600 mt-1">{visual.name}</span>
       )}
     </div>
   );
@@ -83,7 +83,7 @@ export function MoleculeVisual({ elements, showMassBar = false, animateAtoms = t
 
   return (
     <div className="flex flex-col items-center gap-4">
-      <div className="flex flex-wrap items-center justify-center gap-2 p-4 bg-gray-100 rounded-xl min-h-[80px]">
+      <div className="flex flex-wrap items-center justify-center gap-2 p-4 bg-warm-100 rounded-xl min-h-[80px]">
         {elements.map((el, elIndex) => (
           <div key={elIndex} className="flex items-center gap-1">
             {Array.from({ length: el.count }).map((_, atomIndex) => {
@@ -105,14 +105,14 @@ export function MoleculeVisual({ elements, showMassBar = false, animateAtoms = t
 
       {showMassBar && (
         <div className="w-full max-w-xs animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-          <div className="text-xs text-gray-600 text-center mb-1">Heildarmassi</div>
-          <div className="h-4 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+          <div className="text-xs text-warm-600 text-center mb-1">Heildarmassi</div>
+          <div className="h-4 bg-warm-200 rounded-full overflow-hidden shadow-inner">
             <div
               className="h-full mass-bar-fill bg-gradient-to-r from-green-400 via-yellow-400 to-red-400"
               style={{ width: `${massPercent}%` }}
             />
           </div>
-          <div className="flex justify-between text-xs text-gray-500 mt-1">
+          <div className="flex justify-between text-xs text-warm-500 mt-1">
             <span>Létt</span>
             <span>Þungt</span>
           </div>

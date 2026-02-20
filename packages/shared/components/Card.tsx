@@ -10,11 +10,11 @@ export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const variantClasses: Record<CardVariant, string> = {
-  default: 'bg-white rounded-xl shadow-card',
-  elevated: 'bg-white rounded-xl shadow-elevated',
-  outlined: 'bg-white rounded-xl border-2 border-slate-200',
+  default: 'bg-surface-raised rounded-card shadow-md',
+  elevated: 'bg-surface-raised rounded-card shadow-lg',
+  outlined: 'bg-surface-raised rounded-card border-[1.5px] border-warm-200',
   interactive:
-    'bg-white rounded-xl shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 cursor-pointer',
+    'bg-surface-raised rounded-card shadow-md hover:shadow-orange hover:-translate-y-0.5 transition-all duration-200 ease-out cursor-pointer',
 };
 
 const paddingClasses: Record<CardPadding, string> = {

@@ -56,9 +56,9 @@ function EnergyDiagram({
   const productLevel = isExothermic ? (50 + clampedGap) : (50 - clampedGap);
 
   return (
-    <div className="relative bg-gradient-to-b from-red-50 via-white to-blue-50 rounded-xl p-6 h-64 border-2 border-gray-200">
+    <div className="relative bg-gradient-to-b from-red-50 via-white to-blue-50 rounded-xl p-6 h-64 border-2 border-warm-200">
       {/* Y-axis label */}
-      <div className="absolute left-2 top-1/2 -translate-y-1/2 -rotate-90 text-xs text-gray-500 font-semibold">
+      <div className="absolute left-2 top-1/2 -tranwarm-y-1/2 -rotate-90 text-xs text-warm-500 font-semibold">
         Orka
       </div>
 
@@ -86,7 +86,7 @@ function EnergyDiagram({
 
         {/* Arrow showing energy change */}
         {showPath && (
-          <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center"
+          <div className="absolute left-1/2 -tranwarm-x-1/2 flex flex-col items-center"
             style={{
               top: `${Math.min(reactantLevel, productLevel) + 5}%`,
               height: `${Math.abs(productLevel - reactantLevel) - 10}%`
@@ -100,7 +100,7 @@ function EnergyDiagram({
         )}
 
         {/* ΔH label */}
-        <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-white px-3 py-1 rounded-lg border-2 border-gray-300 shadow-sm">
+        <div className="absolute left-1/2 -tranwarm-x-1/2 top-1/2 -tranwarm-y-1/2 bg-white px-3 py-1 rounded-lg border-2 border-warm-300 shadow-sm">
           <span className={`font-bold text-lg ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}>
             ΔH = {effectiveDeltaH > 0 ? '+' : ''}{effectiveDeltaH} kJ
           </span>
@@ -138,13 +138,13 @@ function EquationDisplay({
     <div className={`p-4 rounded-xl border-2 transition-all ${
       equation.isReversed ? 'bg-red-50 border-red-300' :
       equation.multiplier !== 1 ? 'bg-blue-50 border-blue-300' :
-      'bg-white border-gray-300'
+      'bg-white border-warm-300'
     }`}>
       {/* Equation */}
       <div className="text-center mb-3">
         <span className="font-mono text-lg">
           <span className="text-blue-700">{displayReactants}</span>
-          <span className="mx-2 text-gray-600">→</span>
+          <span className="mx-2 text-warm-600">→</span>
           <span className="text-green-700">{displayProducts}</span>
         </span>
       </div>
@@ -164,14 +164,14 @@ function EquationDisplay({
             className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
               equation.isReversed
                 ? 'bg-red-500 text-white'
-                : 'bg-gray-200 hover:bg-red-100 text-gray-700'
+                : 'bg-warm-200 hover:bg-red-100 text-warm-700'
             }`}
           >
             🔄 Snúa við
           </button>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">×</span>
+            <span className="text-sm text-warm-600">×</span>
             {[1, 2, 3].map(n => (
               <button
                 key={n}
@@ -179,7 +179,7 @@ function EquationDisplay({
                 className={`w-10 h-10 rounded-lg font-bold transition-colors ${
                   equation.multiplier === n
                     ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 hover:bg-blue-100 text-gray-700'
+                    : 'bg-warm-200 hover:bg-blue-100 text-warm-700'
                 }`}
               >
                 {n}
@@ -283,31 +283,31 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <h1 className="text-2xl md:text-3xl font-bold text-blue-600">
                 Lögmál Hess - Stig 1
               </h1>
-              <p className="text-sm text-gray-600">Skildu hugtökin - byggðu innsæi</p>
+              <p className="text-sm text-warm-600">Skildu hugtökin - byggðu innsæi</p>
             </div>
 
             <div className="flex gap-4 items-center">
               <button
                 onClick={onBack}
-                className="text-gray-600 hover:text-gray-800 text-sm"
+                className="text-warm-600 hover:text-warm-800 text-sm"
               >
                 ← Til baka
               </button>
               <div className="text-center">
                 <div className="text-xl font-bold text-blue-600">{score}</div>
-                <div className="text-xs text-gray-600">Stig</div>
+                <div className="text-xs text-warm-600">Stig</div>
               </div>
               <div className="text-center">
                 <div className="text-xl font-bold text-green-600">
                   {completed.length}/{CHALLENGES.length}
                 </div>
-                <div className="text-xs text-gray-600">Lokið</div>
+                <div className="text-xs text-warm-600">Lokið</div>
               </div>
             </div>
           </div>
 
           {/* Progress bar */}
-          <div className="mt-4 bg-gray-200 rounded-full h-2">
+          <div className="mt-4 bg-warm-200 rounded-full h-2">
             <div
               className="bg-blue-500 h-2 rounded-full transition-all duration-500"
               style={{ width: `${(completed.length / CHALLENGES.length) * 100}%` }}
@@ -322,7 +322,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="inline-block bg-blue-100 px-4 py-2 rounded-full text-sm font-semibold text-blue-800 mb-2">
               {currentChallenge + 1}. {challenge.title}
             </div>
-            <p className="text-gray-700 mb-2">{challenge.description}</p>
+            <p className="text-warm-700 mb-2">{challenge.description}</p>
             <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
               <p className="text-sm text-purple-800">
                 <strong>Lykillhugtak:</strong> {challenge.concept}
@@ -347,7 +347,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           {/* Question */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">{challenge.question}</h3>
+            <h3 className="text-lg font-semibold text-warm-800 mb-4">{challenge.question}</h3>
 
             <div className="space-y-3">
               {shuffledOptions.map((option, index) => (
@@ -361,10 +361,10 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         ? 'bg-green-100 border-green-500'
                         : selectedAnswer === index
                         ? 'bg-red-100 border-red-500'
-                        : 'bg-gray-50 border-gray-200'
+                        : 'bg-warm-50 border-warm-200'
                       : selectedAnswer === index
                       ? 'bg-blue-100 border-blue-500'
-                      : 'bg-white border-gray-200 hover:border-blue-300 hover:bg-blue-50'
+                      : 'bg-white border-warm-200 hover:border-blue-300 hover:bg-blue-50'
                   }`}
                 >
                   <div className="font-semibold">{option.text}</div>
@@ -431,7 +431,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 className={`flex-1 py-3 px-6 rounded-xl font-bold transition-colors ${
                   selectedAnswer !== null
                     ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-warm-300 text-warm-500 cursor-not-allowed'
                 }`}
               >
                 Athuga svar
@@ -463,7 +463,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   ? 'bg-green-500 text-white'
                   : i === currentChallenge
                   ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                  : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
               }`}
             >
               {completed.includes(c.id) ? '✓' : i + 1}

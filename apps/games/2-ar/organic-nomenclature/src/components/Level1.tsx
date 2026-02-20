@@ -157,18 +157,18 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
           <div className="flex justify-between items-center mb-6">
-            <button onClick={onBack} className="text-gray-500 hover:text-gray-700">
+            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
               ← Til baka
             </button>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-warm-500">
               Forskeyti {currentItem + 1} af {prefixes.length}
             </div>
           </div>
 
-          <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-gray-700">
+          <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-warm-700">
             📚 Forskeytir (kolefnisfjöldi)
           </h1>
-          <p className="text-center text-gray-600 mb-8">
+          <p className="text-center text-warm-600 mb-8">
             Forskeytið segir hversu mörg kolefni eru í keðjunni
           </p>
 
@@ -177,42 +177,42 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div
                 key={idx}
                 className={`w-2 h-2 rounded-full ${
-                  idx === currentItem ? 'bg-gray-700' : idx < currentItem ? 'bg-green-500' : 'bg-gray-300'
+                  idx === currentItem ? 'bg-warm-700' : idx < currentItem ? 'bg-green-500' : 'bg-warm-300'
                 }`}
               />
             ))}
           </div>
 
-          <div className="bg-gradient-to-br from-gray-100 to-slate-100 p-8 rounded-2xl border-2 border-gray-200 animate-slide-in">
+          <div className="bg-gradient-to-br from-warm-100 to-warm-100 p-8 rounded-2xl border-2 border-warm-200 animate-slide-in">
             <div className="flex justify-center items-center gap-8 mb-6">
               <div className="text-center">
-                <div className="text-6xl font-bold text-gray-800 mb-2">{prefix.carbons}</div>
-                <div className="text-gray-500">kolefni</div>
+                <div className="text-6xl font-bold text-warm-800 mb-2">{prefix.carbons}</div>
+                <div className="text-warm-500">kolefni</div>
               </div>
-              <div className="text-4xl text-gray-400">→</div>
+              <div className="text-4xl text-warm-400">→</div>
               <div className="text-center">
                 <div className="text-4xl font-bold text-blue-600 mb-2">{prefix.prefix}</div>
-                <div className="text-gray-500">forskeyti</div>
+                <div className="text-warm-500">forskeyti</div>
               </div>
             </div>
 
             <div className="bg-white p-4 rounded-xl text-center">
-              <div className="text-sm text-gray-500 mb-1">Dæmi (alkan):</div>
+              <div className="text-sm text-warm-500 mb-1">Dæmi (alkan):</div>
               <div className="flex items-center justify-center gap-4">
-                <span className="text-2xl font-bold text-gray-800">{prefix.example}</span>
-                <span className="text-xl text-gray-400">|</span>
-                <span className="text-2xl font-mono text-gray-600">{prefix.formula}</span>
+                <span className="text-2xl font-bold text-warm-800">{prefix.example}</span>
+                <span className="text-xl text-warm-400">|</span>
+                <span className="text-2xl font-mono text-warm-600">{prefix.formula}</span>
               </div>
             </div>
 
             <div className="mt-4 flex justify-center">
               {Array.from({ length: prefix.carbons }).map((_, idx) => (
                 <div key={idx} className="flex items-center">
-                  <div className="w-8 h-8 rounded-full bg-gray-800 text-white font-bold text-sm flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-warm-800 text-white font-bold text-sm flex items-center justify-center">
                     C
                   </div>
                   {idx < prefix.carbons - 1 && (
-                    <div className="w-4 h-1 bg-gray-600"></div>
+                    <div className="w-4 h-1 bg-warm-600"></div>
                   )}
                 </div>
               ))}
@@ -225,15 +225,15 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               disabled={currentItem === 0}
               className={`flex-1 py-3 px-6 rounded-xl font-bold ${
                 currentItem === 0
-                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  : 'bg-gray-500 hover:bg-gray-600 text-white'
+                  ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
+                  : 'bg-warm-500 hover:bg-warm-600 text-white'
               }`}
             >
               ← Fyrri
             </button>
             <button
               onClick={handleNext}
-              className="flex-1 bg-gray-700 hover:bg-gray-800 text-white font-bold py-3 px-6 rounded-xl"
+              className="flex-1 bg-warm-700 hover:bg-warm-800 text-white font-bold py-3 px-6 rounded-xl"
             >
               {currentItem === prefixes.length - 1 ? 'Viðskeytir →' : 'Næsta →'}
             </button>
@@ -250,10 +250,10 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
           <div className="flex justify-between items-center mb-6">
-            <button onClick={onBack} className="text-gray-500 hover:text-gray-700">
+            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
               ← Til baka
             </button>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-warm-500">
               Viðskeyti {currentItem + 1} af {suffixes.length}
             </div>
           </div>
@@ -261,7 +261,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-green-700">
             🔗 Viðskeytir (tengjategund)
           </h1>
-          <p className="text-center text-gray-600 mb-8">
+          <p className="text-center text-warm-600 mb-8">
             Viðskeytið segir hvaða tegund af tengingu er milli kolefna
           </p>
 
@@ -270,7 +270,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div
                 key={idx}
                 className={`w-3 h-3 rounded-full ${
-                  idx === currentItem ? 'bg-green-700' : idx < currentItem ? 'bg-green-500' : 'bg-gray-300'
+                  idx === currentItem ? 'bg-green-700' : idx < currentItem ? 'bg-green-500' : 'bg-warm-300'
                 }`}
               />
             ))}
@@ -279,28 +279,28 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="bg-gradient-to-br from-green-100 to-emerald-100 p-8 rounded-2xl border-2 border-green-200 animate-slide-in">
             <div className="text-center mb-6">
               <div className="text-4xl font-bold text-green-700 mb-2">{suffix.suffix}</div>
-              <div className="text-2xl text-gray-700">{suffix.bondType}</div>
+              <div className="text-2xl text-warm-700">{suffix.bondType}</div>
             </div>
 
             <div className="bg-white p-6 rounded-xl text-center mb-4">
-              <div className="text-4xl font-mono font-bold text-gray-800 mb-2">
+              <div className="text-4xl font-mono font-bold text-warm-800 mb-2">
                 {suffix.bondSymbol}
               </div>
-              <div className="text-gray-600">{suffix.description}</div>
+              <div className="text-warm-600">{suffix.description}</div>
             </div>
 
             <div className="grid grid-cols-3 gap-4 text-sm">
-              <div className={`p-3 rounded-lg text-center ${currentItem === 0 ? 'bg-gray-200' : 'bg-white'}`}>
+              <div className={`p-3 rounded-lg text-center ${currentItem === 0 ? 'bg-warm-200' : 'bg-white'}`}>
                 <div className="font-bold">-an</div>
-                <div className="text-gray-500">C-C</div>
+                <div className="text-warm-500">C-C</div>
               </div>
               <div className={`p-3 rounded-lg text-center ${currentItem === 1 ? 'bg-green-200' : 'bg-white'}`}>
                 <div className="font-bold">-en</div>
-                <div className="text-gray-500">C=C</div>
+                <div className="text-warm-500">C=C</div>
               </div>
               <div className={`p-3 rounded-lg text-center ${currentItem === 2 ? 'bg-purple-200' : 'bg-white'}`}>
                 <div className="font-bold">-yn</div>
-                <div className="text-gray-500">C≡C</div>
+                <div className="text-warm-500">C≡C</div>
               </div>
             </div>
           </div>
@@ -308,7 +308,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="flex gap-4 mt-8">
             <button
               onClick={handlePrev}
-              className="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl"
+              className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-6 rounded-xl"
             >
               ← Fyrri
             </button>
@@ -330,10 +330,10 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
           <div className="flex justify-between items-center mb-6">
-            <button onClick={onBack} className="text-gray-500 hover:text-gray-700">
+            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
               ← Til baka
             </button>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-warm-500">
               Sameindasmiður
             </div>
           </div>
@@ -341,7 +341,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-emerald-600">
             🔬 Prófaðu sjálf/ur!
           </h1>
-          <p className="text-center text-gray-600 mb-8">
+          <p className="text-center text-warm-600 mb-8">
             Byggðu sameindir og sjáðu hvernig nafnið breytist
           </p>
 
@@ -366,7 +366,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 setPhase('suffixes');
                 setCurrentItem(suffixes.length - 1);
               }}
-              className="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl"
+              className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-6 rounded-xl"
             >
               ← Til baka
             </button>
@@ -387,11 +387,11 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
         <div className="flex justify-between items-center mb-6">
-          <button onClick={onBack} className="text-gray-500 hover:text-gray-700">
+          <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
             ← Til baka
           </button>
           <div className="flex items-center gap-4">
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-warm-500">
               Spurning {currentQuestion + 1} af {quizQuestions.length}
             </div>
             <div className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold">
@@ -405,7 +405,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </h1>
 
         <div className="bg-emerald-50 p-6 rounded-xl mb-6 text-center border-2 border-emerald-200">
-          <div className="text-xl md:text-2xl font-bold text-gray-800">
+          <div className="text-xl md:text-2xl font-bold text-warm-800">
             {question.question}
           </div>
         </div>
@@ -416,7 +416,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <button
                 key={idx}
                 onClick={() => handleAnswer(option)}
-                className="p-4 rounded-xl border-2 border-emerald-300 bg-white hover:bg-emerald-50 hover:border-emerald-400 text-lg font-bold text-gray-800 transition-all"
+                className="p-4 rounded-xl border-2 border-emerald-300 bg-white hover:bg-emerald-50 hover:border-emerald-400 text-lg font-bold text-warm-800 transition-all"
               >
                 {option}
               </button>
@@ -453,11 +453,11 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
         )}
 
-        <div className="mt-6 bg-gray-50 p-4 rounded-xl">
-          <h3 className="font-semibold text-gray-700 mb-2">📋 Minnisblað:</h3>
+        <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+          <h3 className="font-semibold text-warm-700 mb-2">📋 Minnisblað:</h3>
           <div className="grid grid-cols-2 gap-4 text-xs">
             <div>
-              <div className="font-bold text-gray-700 mb-1">Forskeytir:</div>
+              <div className="font-bold text-warm-700 mb-1">Forskeytir:</div>
               <div className="grid grid-cols-2 gap-1">
                 {prefixes.slice(0, 6).map((p, idx) => (
                   <div key={idx} className="bg-white p-1 rounded border text-center">
@@ -467,7 +467,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               </div>
             </div>
             <div>
-              <div className="font-bold text-gray-700 mb-1">Viðskeytir:</div>
+              <div className="font-bold text-warm-700 mb-1">Viðskeytir:</div>
               <div className="space-y-1">
                 {suffixes.map((s, idx) => (
                   <div key={idx} className="bg-white p-1 rounded border text-center">
@@ -479,7 +479,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
         </div>
 
-        <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
+        <div className="mt-4 w-full bg-warm-200 rounded-full h-2">
           <div
             className="bg-emerald-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentQuestion + 1) / quizQuestions.length) * 100}%` }}

@@ -264,7 +264,7 @@ export function ElectronRepulsionAnimation({
           <span>⚡</span> Rafeindahrun
         </h3>
         <div className={`text-xs px-2 py-1 rounded-full ${
-          phase === 'initial' ? 'bg-gray-100 text-gray-600' :
+          phase === 'initial' ? 'bg-warm-100 text-warm-600' :
           phase === 'repelling' ? 'bg-purple-100 text-purple-700 animate-pulse' :
           'bg-green-100 text-green-700'
         }`}>
@@ -283,7 +283,7 @@ export function ElectronRepulsionAnimation({
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
               selectedGeometry.id === geo.id
                 ? 'bg-purple-600 text-white'
-                : 'bg-white text-gray-700 hover:bg-purple-100 border border-gray-200'
+                : 'bg-white text-warm-700 hover:bg-purple-100 border border-warm-200'
             }`}
           >
             {geo.domains} svið
@@ -443,7 +443,7 @@ export function ElectronRepulsionAnimation({
       </div>
 
       {/* Description */}
-      <div className="bg-white rounded-lg p-3 mb-4 text-sm text-gray-700">
+      <div className="bg-white rounded-lg p-3 mb-4 text-sm text-warm-700">
         <div className="font-medium text-purple-800 mb-1">{selectedGeometry.name}</div>
         <div>{selectedGeometry.description}</div>
       </div>
@@ -452,7 +452,7 @@ export function ElectronRepulsionAnimation({
       <div className="flex gap-3">
         <button
           onClick={initializeDomains}
-          className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded-lg transition-all"
+          className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-700 font-medium py-2 px-4 rounded-lg transition-all"
         >
           Endurstilla
         </button>
@@ -466,7 +466,7 @@ export function ElectronRepulsionAnimation({
       </div>
 
       {/* Legend */}
-      <div className="mt-4 flex flex-wrap gap-4 text-xs text-gray-600">
+      <div className="mt-4 flex flex-wrap gap-4 text-xs text-warm-600">
         <div className="flex items-center gap-1.5">
           <div className="w-4 h-4 rounded-full bg-green-500 border-2 border-green-600" />
           <span>Bindandi par</span>

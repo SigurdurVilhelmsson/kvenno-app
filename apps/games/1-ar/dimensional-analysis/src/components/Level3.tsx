@@ -234,11 +234,11 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
         <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
           <button
             onClick={onBack}
-            className="text-gray-600 hover:text-gray-800 flex items-center gap-2 text-lg"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 text-lg"
           >
             ← Til baka
           </button>
-          <div className="text-sm text-gray-600 flex items-center gap-2 sm:gap-4 flex-wrap">
+          <div className="text-sm text-warm-600 flex items-center gap-2 sm:gap-4 flex-wrap">
             <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-semibold">
               Stig 3: Útreikningar
             </span>
@@ -252,7 +252,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-purple-500 h-2 rounded-full transition-all duration-500"
             style={{ width: `${((progress.problemsCompleted) / 10) * 100}%` }}
@@ -275,7 +275,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
             </span>
           </div>
 
-          <h2 className="text-2xl font-bold mb-6 text-gray-800">{problem.prompt}</h2>
+          <h2 className="text-2xl font-bold mb-6 text-warm-800">{problem.prompt}</h2>
 
           {/* Display problem-specific context */}
           {problem.type === 'synthesis' && problem.density && (
@@ -286,25 +286,25 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
               <div className="grid grid-cols-2 gap-3">
                 {problem.startValue && problem.startUnit && (
                   <div className="bg-white p-3 rounded-lg">
-                    <p className="text-xs text-gray-500">Rúmmál</p>
+                    <p className="text-xs text-warm-500">Rúmmál</p>
                     <p className="font-bold text-purple-700">{problem.startValue} {problem.startUnit}</p>
                   </div>
                 )}
                 {problem.density && problem.densityUnit && (
                   <div className="bg-white p-3 rounded-lg">
-                    <p className="text-xs text-gray-500">Eðlismassi</p>
+                    <p className="text-xs text-warm-500">Eðlismassi</p>
                     <p className="font-bold text-purple-700">{problem.density} {problem.densityUnit}</p>
                   </div>
                 )}
                 {problem.targetUnit && (
                   <div className="bg-white p-3 rounded-lg">
-                    <p className="text-xs text-gray-500">Markeining</p>
+                    <p className="text-xs text-warm-500">Markeining</p>
                     <p className="font-bold text-green-700">{problem.targetUnit}</p>
                   </div>
                 )}
                 {problem.significantFigures && (
                   <div className="bg-white p-3 rounded-lg">
-                    <p className="text-xs text-gray-500">Markverðir stafir</p>
+                    <p className="text-xs text-warm-500">Markverðir stafir</p>
                     <p className="font-bold text-blue-700">{problem.significantFigures}</p>
                   </div>
                 )}
@@ -320,13 +320,13 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
               <div className="grid grid-cols-2 gap-3">
                 {problem.startValue && problem.startUnit && (
                   <div className="bg-white p-3 rounded-lg">
-                    <p className="text-xs text-gray-500">Heildarmagn</p>
+                    <p className="text-xs text-warm-500">Heildarmagn</p>
                     <p className="font-bold text-green-700">{problem.startValue} {problem.startUnit}</p>
                   </div>
                 )}
                 {problem.portionSize && problem.portionUnit && (
                   <div className="bg-white p-3 rounded-lg">
-                    <p className="text-xs text-gray-500">Skammtastærð</p>
+                    <p className="text-xs text-warm-500">Skammtastærð</p>
                     <p className="font-bold text-green-700">{problem.portionSize} {problem.portionUnit}</p>
                   </div>
                 )}
@@ -350,7 +350,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
               {/* Reverse problem options */}
               {problem.type === 'reverse' && problem.options && (
                 <div className="space-y-3">
-                  <p className="font-bold text-gray-800">Veldu rétta leið:</p>
+                  <p className="font-bold text-warm-800">Veldu rétta leið:</p>
                   {problem.options.map((option, idx) => (
                     <button
                       key={idx}
@@ -358,13 +358,13 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                       className={`w-full p-5 rounded-xl border-2 text-left transition-all ${
                         selectedOption === idx
                           ? 'border-purple-500 bg-purple-50 shadow-md'
-                          : 'border-gray-200 hover:border-purple-300 hover:bg-gray-50'
+                          : 'border-warm-200 hover:border-purple-300 hover:bg-warm-50'
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-medium">{option.text}</span>
                         <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                          selectedOption === idx ? 'bg-purple-200 text-purple-800' : 'bg-gray-100 text-gray-600'
+                          selectedOption === idx ? 'bg-purple-200 text-purple-800' : 'bg-warm-100 text-warm-600'
                         }`}>
                           {option.steps} skref
                         </span>
@@ -377,7 +377,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
               {/* Efficiency problem paths */}
               {problem.type === 'efficiency' && problem.possiblePaths && (
                 <div className="space-y-3">
-                  <p className="font-bold text-gray-800">Veldu leið:</p>
+                  <p className="font-bold text-warm-800">Veldu leið:</p>
                   {problem.possiblePaths.map((path, idx) => (
                     <button
                       key={idx}
@@ -385,19 +385,19 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                       className={`w-full p-5 rounded-xl border-2 text-left transition-all ${
                         selectedPath === idx
                           ? 'border-purple-500 bg-purple-50 shadow-md'
-                          : 'border-gray-200 hover:border-purple-300 hover:bg-gray-50'
+                          : 'border-warm-200 hover:border-purple-300 hover:bg-warm-50'
                       }`}
                     >
                       <div className="space-y-2 mb-3">
                         {path.steps.map((step, sidx) => (
-                          <div key={sidx} className="font-mono text-sm bg-white px-3 py-2 rounded-lg border border-gray-100">
+                          <div key={sidx} className="font-mono text-sm bg-white px-3 py-2 rounded-lg border border-warm-100">
                             {step}
                           </div>
                         ))}
                       </div>
                       <div className="flex items-center gap-2">
                         <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                          path.efficient ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
+                          path.efficient ? 'bg-green-100 text-green-700' : 'bg-warm-100 text-warm-600'
                         }`}>
                           {path.stepCount} skref
                         </span>
@@ -412,7 +412,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
 
               {/* Answer input */}
               <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl border-2 border-purple-200">
-                <label className="block font-bold mb-3 text-gray-800">
+                <label className="block font-bold mb-3 text-warm-800">
                   {problem.type === 'error_analysis' ? 'Hvað er rétta svarið?' : 'Þitt svar:'}
                 </label>
                 <div className="flex items-center gap-3">
@@ -421,7 +421,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                     value={userAnswer}
                     onChange={(e) => setUserAnswer(e.target.value)}
                     placeholder={(problem.type === 'derivation' && problem.scientificNotation) ? 't.d. 1.08e12' : 'Sláðu inn svar'}
-                    className="flex-1 p-4 border-2 border-gray-300 rounded-xl font-mono text-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden transition-all"
+                    className="flex-1 p-4 border-2 border-warm-300 rounded-xl font-mono text-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden transition-all"
                   />
                   {problem.type !== 'reverse' && problem.type !== 'error_analysis' && 'targetUnit' in problem && problem.targetUnit && (
                     <div className="px-4 py-3 bg-green-100 text-green-800 rounded-xl font-bold text-lg">
@@ -432,17 +432,17 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
               </div>
 
               {/* Explanation */}
-              <div className="p-4 bg-gray-50 rounded-xl border border-gray-200">
-                <label className="block font-bold mb-2 text-gray-800">
+              <div className="p-4 bg-warm-50 rounded-xl border border-warm-200">
+                <label className="block font-bold mb-2 text-warm-800">
                   Útskýring (hvernig leystir þú þetta?):
                 </label>
                 <textarea
                   value={explanation}
                   onChange={(e) => setExplanation(e.target.value)}
                   placeholder="T.d. 'Fyrst breytti ég X í Y með stuðlinum Z...'"
-                  className="w-full p-4 border-2 border-gray-300 rounded-xl h-28 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden transition-all resize-none"
+                  className="w-full p-4 border-2 border-warm-300 rounded-xl h-28 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden transition-all resize-none"
                 />
-                <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                <p className="text-xs text-warm-500 mt-2 flex items-center gap-1">
                   <span className="text-base">💡</span> Notaðu orð eins og "umbreyti", "stuðull", "eining" fyrir betri einkunn
                 </p>
               </div>
@@ -481,7 +481,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                 <button
                   onClick={handleSubmit}
                   disabled={!userAnswer.trim() || !explanation.trim()}
-                  className="w-full py-4 rounded-xl font-bold text-lg transition-all disabled:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-500 bg-purple-600 hover:bg-purple-700 text-white"
+                  className="w-full py-4 rounded-xl font-bold text-lg transition-all disabled:bg-warm-300 disabled:cursor-not-allowed disabled:text-warm-500 bg-purple-600 hover:bg-purple-700 text-white"
                 >
                   Senda inn →
                 </button>
@@ -507,25 +507,25 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
               {/* Score grid */}
               <div className="grid grid-cols-2 gap-3 mb-6">
                 <div className="bg-white p-4 rounded-xl text-center">
-                  <p className="text-xs text-gray-500 mb-1">Svar</p>
+                  <p className="text-xs text-warm-500 mb-1">Svar</p>
                   <p className={`text-3xl font-bold ${scores.answer >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}>
                     {Math.round(scores.answer * 100)}%
                   </p>
                 </div>
                 <div className="bg-white p-4 rounded-xl text-center">
-                  <p className="text-xs text-gray-500 mb-1">Aðferð</p>
+                  <p className="text-xs text-warm-500 mb-1">Aðferð</p>
                   <p className={`text-3xl font-bold ${scores.method >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}>
                     {Math.round(scores.method * 100)}%
                   </p>
                 </div>
                 <div className="bg-white p-4 rounded-xl text-center">
-                  <p className="text-xs text-gray-500 mb-1">Útskýring</p>
+                  <p className="text-xs text-warm-500 mb-1">Útskýring</p>
                   <p className={`text-3xl font-bold ${scores.explanation >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}>
                     {Math.round(scores.explanation * 100)}%
                   </p>
                 </div>
                 <div className="bg-white p-4 rounded-xl text-center">
-                  <p className="text-xs text-gray-500 mb-1">Skilvirkni</p>
+                  <p className="text-xs text-warm-500 mb-1">Skilvirkni</p>
                   <p className={`text-3xl font-bold ${scores.efficiency >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}>
                     {Math.round(scores.efficiency * 100)}%
                   </p>
@@ -534,7 +534,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
 
               {/* Total score */}
               <div className="bg-white p-5 rounded-xl text-center mb-6">
-                <p className="text-sm text-gray-600 mb-1">Heildareinkunn</p>
+                <p className="text-sm text-warm-600 mb-1">Heildareinkunn</p>
                 <p className={`text-4xl font-bold ${scores.composite >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}>
                   {Math.round(scores.composite * 100)}%
                 </p>
@@ -547,11 +547,11 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
 
               {/* Error explanation */}
               {problem.type === 'error_analysis' && problem.errorExplanation && (
-                <div className="mb-6 p-4 bg-white rounded-xl border border-gray-200">
-                  <p className="text-sm font-bold text-gray-800 mb-2 flex items-center gap-2">
+                <div className="mb-6 p-4 bg-white rounded-xl border border-warm-200">
+                  <p className="text-sm font-bold text-warm-800 mb-2 flex items-center gap-2">
                     <span>🔍</span> Útskýring á villunni:
                   </p>
-                  <p className="text-gray-700">{problem.errorExplanation}</p>
+                  <p className="text-warm-700">{problem.errorExplanation}</p>
                 </div>
               )}
 
@@ -574,7 +574,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                     ))}
                   </div>
                   <div className="mt-3 p-3 bg-white rounded-lg border border-blue-100">
-                    <p className="text-xs text-gray-600">
+                    <p className="text-xs text-warm-600">
                       <span className="font-bold text-blue-700">Mundu:</span> Einingin sem á að hverfa fer í nefnara,
                       einingin sem á að koma út fer í teljara. Margfaldaðu gildið með öllum stuðlum.
                     </p>

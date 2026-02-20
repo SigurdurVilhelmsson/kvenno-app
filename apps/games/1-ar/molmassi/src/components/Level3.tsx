@@ -233,8 +233,8 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         <div className="max-w-2xl w-full bg-white rounded-xl shadow-lg p-8 animate-fade-in-up">
           <div className="text-center mb-6">
             <div className="text-4xl mb-2">🧮</div>
-            <h2 className="text-3xl font-bold text-gray-800">Stig 3 - Útreikningar</h2>
-            <p className="text-gray-600 mt-2">Reiknaðu nákvæman mólmassa með lotukerfinu</p>
+            <h2 className="text-3xl font-bold text-warm-800">Stig 3 - Útreikningar</h2>
+            <p className="text-warm-600 mt-2">Reiknaðu nákvæman mólmassa með lotukerfinu</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -277,7 +277,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
 
           <button
             onClick={onBack}
-            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-xl transition-colors"
+            className="w-full bg-warm-100 hover:bg-warm-200 text-warm-700 font-semibold py-3 px-6 rounded-xl transition-colors"
           >
             ← Til baka í valmynd
           </button>
@@ -291,7 +291,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
     return (
       <div className="min-h-screen bg-gradient-to-b from-red-50 to-white flex items-center justify-center p-4">
         <div className="max-w-2xl w-full bg-white rounded-xl shadow-lg p-8 animate-fade-in-up">
-          <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">Veldu erfiðleikastig</h2>
+          <h2 className="text-3xl font-bold text-center mb-6 text-warm-800">Veldu erfiðleikastig</h2>
 
           <div className="space-y-3 mb-6">
             {(['easy', 'medium', 'hard', 'mixed'] as const).map((diff) => (
@@ -315,7 +315,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
 
           <button
             onClick={() => setMode('modeSelection')}
-            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-xl transition-colors"
+            className="w-full bg-warm-100 hover:bg-warm-200 text-warm-700 font-semibold py-3 px-6 rounded-xl transition-colors"
           >
             ← Til baka
           </button>
@@ -333,29 +333,29 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8 animate-fade-in-up">
           <div className="text-center mb-6">
             <div className="text-6xl mb-4">🏆</div>
-            <h2 className="text-4xl font-bold text-gray-800 mb-2">Leik Lokið!</h2>
-            <p className="text-gray-600">Frábært!</p>
+            <h2 className="text-4xl font-bold text-warm-800 mb-2">Leik Lokið!</h2>
+            <p className="text-warm-600">Frábært!</p>
           </div>
 
           <div className="grid grid-cols-2 gap-4 mb-8">
             <div className="bg-blue-50 rounded-xl p-4 text-center">
               <div className="text-3xl font-bold text-blue-600">{score}</div>
-              <div className="text-sm text-gray-600 mt-1">Stig</div>
+              <div className="text-sm text-warm-600 mt-1">Stig</div>
             </div>
 
             <div className="bg-green-50 rounded-xl p-4 text-center">
               <div className="text-3xl font-bold text-green-600">{correctAnswers}/{questionsAnswered}</div>
-              <div className="text-sm text-gray-600 mt-1">Rétt svör</div>
+              <div className="text-sm text-warm-600 mt-1">Rétt svör</div>
             </div>
 
             <div className="bg-purple-50 rounded-xl p-4 text-center">
               <div className="text-3xl font-bold text-purple-600">{accuracy}%</div>
-              <div className="text-sm text-gray-600 mt-1">Nákvæmni</div>
+              <div className="text-sm text-warm-600 mt-1">Nákvæmni</div>
             </div>
 
             <div className="bg-orange-50 rounded-xl p-4 text-center">
               <div className="text-3xl font-bold text-orange-600">{bestStreak}</div>
-              <div className="text-sm text-gray-600 mt-1">Lengsta rað</div>
+              <div className="text-sm text-warm-600 mt-1">Lengsta rað</div>
             </div>
           </div>
 
@@ -369,7 +369,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
 
             <button
               onClick={onBack}
-              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-xl transition-colors"
+              className="w-full bg-warm-100 hover:bg-warm-200 text-warm-700 font-semibold py-3 px-6 rounded-xl transition-colors"
             >
               Til baka í valmynd
             </button>
@@ -390,23 +390,23 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
               <div className="flex items-center gap-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-purple-600">{score}</div>
-                  <div className="text-xs text-gray-600">Stig</div>
+                  <div className="text-xs text-warm-600">Stig</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-green-600">{correctAnswers}/{questionsAnswered}</div>
-                  <div className="text-xs text-gray-600">Rétt</div>
+                  <div className="text-xs text-warm-600">Rétt</div>
                 </div>
                 {streak > 0 && (
                   <div className="text-center">
                     <div className="text-2xl font-bold text-orange-600">{streak} 🔥</div>
-                    <div className="text-xs text-gray-600">Rað</div>
+                    <div className="text-xs text-warm-600">Rað</div>
                   </div>
                 )}
               </div>
 
               <button
                 onClick={endGame}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="bg-warm-200 hover:bg-warm-300 text-warm-800 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Enda leik
               </button>
@@ -416,11 +416,11 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
           {/* Mystery Question Card */}
           <div className="bg-white rounded-xl shadow-lg p-8 mb-4 card-enter">
             <div className="text-center mb-6">
-              <div className="text-lg text-gray-500 mb-2">🔍 Dularfull sameind</div>
+              <div className="text-lg text-warm-500 mb-2">🔍 Dularfull sameind</div>
               <div className="text-5xl font-bold text-purple-600 mb-2">
                 {currentCompound.molarMass.toFixed(2)} g/mol
               </div>
-              <p className="text-gray-600">Hvaða sameind hefur þennan mólmassa?</p>
+              <p className="text-warm-600">Hvaða sameind hefur þennan mólmassa?</p>
               <div className={`mt-2 inline-block px-3 py-1 rounded-full text-sm font-semibold ${
                 currentCompound.difficulty === 'easy' ? 'bg-green-100 text-green-700' :
                 currentCompound.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-700' :
@@ -445,16 +445,16 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                         ? 'bg-green-100 border-green-500'
                         : selectedMysteryOption === index
                           ? 'bg-red-100 border-red-500'
-                          : 'bg-gray-50 border-gray-200'
+                          : 'bg-warm-50 border-warm-200'
                       : selectedMysteryOption === index
                         ? 'bg-purple-100 border-purple-500'
-                        : 'bg-white border-gray-200 hover:border-purple-300'
+                        : 'bg-white border-warm-200 hover:border-purple-300'
                   }`}
                 >
-                  <div className="text-2xl font-bold text-gray-800">{option.formula}</div>
-                  <div className="text-sm text-gray-600">{option.name}</div>
+                  <div className="text-2xl font-bold text-warm-800">{option.formula}</div>
+                  <div className="text-sm text-warm-600">{option.name}</div>
                   {showFeedback && (
-                    <div className="text-xs text-gray-500 mt-1">
+                    <div className="text-xs text-warm-500 mt-1">
                       Mólmassi: {option.molarMass.toFixed(2)} g/mol
                     </div>
                   )}
@@ -467,7 +467,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
               <button
                 onClick={handleMysterySubmit}
                 disabled={selectedMysteryOption === null}
-                className="w-full max-w-md mx-auto block bg-purple-500 hover:bg-purple-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl transition-colors"
+                className="w-full max-w-md mx-auto block bg-purple-500 hover:bg-purple-600 disabled:bg-warm-300 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl transition-colors"
               >
                 Svara
               </button>
@@ -493,7 +493,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                     {lastAnswerCorrect ? 'Rétt svar!' : 'Rangt svar'}
                   </p>
                 </div>
-                <p className="text-gray-700 text-sm">{mysteryFeedback}</p>
+                <p className="text-warm-700 text-sm">{mysteryFeedback}</p>
               </div>
             )}
           </div>
@@ -544,32 +544,32 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
               <div className="flex items-center gap-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary">{score}</div>
-                  <div className="text-xs text-gray-600">Stig</div>
+                  <div className="text-xs text-warm-600">Stig</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-green-600">{correctAnswers}/{questionsAnswered}</div>
-                  <div className="text-xs text-gray-600">Rétt</div>
+                  <div className="text-xs text-warm-600">Rétt</div>
                 </div>
                 {streak > 0 && (
                   <div className="text-center">
                     <div className="text-2xl font-bold text-orange-600">{streak} 🔥</div>
-                    <div className="text-xs text-gray-600">Rað</div>
+                    <div className="text-xs text-warm-600">Rað</div>
                   </div>
                 )}
               </div>
 
               {playMode === 'competition' && (
                 <div className="text-center">
-                  <div className={`text-3xl font-bold ${timeRemaining < 20 ? 'text-red-600 animate-pulse' : 'text-gray-800'}`}>
+                  <div className={`text-3xl font-bold ${timeRemaining < 20 ? 'text-red-600 animate-pulse' : 'text-warm-800'}`}>
                     {Math.floor(timeRemaining / 60)}:{(timeRemaining % 60).toString().padStart(2, '0')}
                   </div>
-                  <div className="text-xs text-gray-600">Tími</div>
+                  <div className="text-xs text-warm-600">Tími</div>
                 </div>
               )}
 
               <button
                 onClick={endGame}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="bg-warm-200 hover:bg-warm-300 text-warm-800 font-semibold py-2 px-4 rounded-lg transition-colors"
               >
                 Enda leik
               </button>
@@ -579,10 +579,10 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
           {/* Question Card */}
           <div className="bg-white rounded-xl shadow-lg p-8 mb-4 card-enter">
             <div className="text-center mb-6">
-              <div className="text-6xl font-bold text-gray-800 mb-2">
+              <div className="text-6xl font-bold text-warm-800 mb-2">
                 {currentCompound.formula}
               </div>
-              <div className="text-xl text-gray-600">
+              <div className="text-xl text-warm-600">
                 {currentCompound.name}
               </div>
               <div className={`mt-2 inline-block px-3 py-1 rounded-full text-sm font-semibold ${
@@ -597,7 +597,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
             </div>
 
             <div className="max-w-md mx-auto">
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-warm-700 mb-2">
                 Hver er mólmassi efnisins? (g/mol)
               </label>
 
@@ -619,7 +619,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                   }}
                   disabled={showFeedback}
                   className={`flex-1 px-4 py-3 text-lg border-2 rounded-xl focus:outline-hidden ${
-                    inputError ? 'border-red-500' : 'border-gray-300 focus:border-primary'
+                    inputError ? 'border-red-500' : 'border-warm-300 focus:border-primary'
                   }`}
                   placeholder="Sláðu inn mólmassa..."
                   step="0.001"
@@ -659,7 +659,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                     </p>
                   </div>
                   {!lastAnswerCorrect && (
-                    <p className="text-gray-700 mt-1">
+                    <p className="text-warm-700 mt-1">
                       Rétt svar: {currentCompound.molarMass.toFixed(3)} g/mol
                     </p>
                   )}

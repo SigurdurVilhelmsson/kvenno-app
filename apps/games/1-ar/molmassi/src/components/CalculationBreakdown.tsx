@@ -15,15 +15,15 @@ export function CalculationBreakdown({ compound }: CalculationBreakdownProps) {
         {breakdown.map((step, index) => (
           <div key={index}>
             {step.type === 'section' ? (
-              <h4 className="font-semibold text-gray-700 mt-3 mb-1">{step.label}</h4>
+              <h4 className="font-semibold text-warm-700 mt-3 mb-1">{step.label}</h4>
             ) : (
               <div className="flex items-center justify-between bg-white rounded px-3 py-2">
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-lg font-bold text-primary">{step.symbol}</span>
-                  <span className="text-gray-600">×</span>
+                  <span className="text-warm-600">×</span>
                   <span className="font-semibold">{step.count}</span>
-                  <span className="text-gray-600">×</span>
-                  <span className="text-sm text-gray-600">{step.atomicMass?.toFixed(3)} g/mol</span>
+                  <span className="text-warm-600">×</span>
+                  <span className="text-sm text-warm-600">{step.atomicMass?.toFixed(3)} g/mol</span>
                 </div>
                 <span className="font-semibold text-green-600">
                   = {step.total?.toFixed(3)} g/mol
@@ -32,9 +32,9 @@ export function CalculationBreakdown({ compound }: CalculationBreakdownProps) {
             )}
           </div>
         ))}
-        <div className="border-t-2 border-gray-300 pt-2 mt-3">
+        <div className="border-t-2 border-warm-300 pt-2 mt-3">
           <div className="flex items-center justify-between bg-green-100 rounded px-3 py-2">
-            <span className="font-bold text-gray-700">Heild mólmassi:</span>
+            <span className="font-bold text-warm-700">Heild mólmassi:</span>
             <span className="text-xl font-bold text-green-600">
               {compound.molarMass.toFixed(3)} g/mol
             </span>

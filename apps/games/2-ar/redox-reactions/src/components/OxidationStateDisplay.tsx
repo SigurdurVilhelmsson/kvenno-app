@@ -83,18 +83,18 @@ export function OxidationStateDisplay({
     if (value <= -3) return 'bg-blue-800';
     if (value === -2) return 'bg-blue-600';
     if (value === -1) return 'bg-blue-400';
-    if (value === 0) return 'bg-gray-400';
+    if (value === 0) return 'bg-warm-400';
     if (value === 1) return 'bg-orange-400';
     if (value === 2) return 'bg-orange-500';
     if (value === 3) return 'bg-red-500';
     if (value === 4) return 'bg-red-600';
     if (value >= 5) return 'bg-red-800';
-    return 'bg-gray-400';
+    return 'bg-warm-400';
   };
 
   // Get text color for contrast
   const getTextColor = (value: number): string => {
-    if (value === 0) return 'text-gray-800';
+    if (value === 0) return 'text-warm-800';
     return 'text-white';
   };
 
@@ -108,7 +108,7 @@ export function OxidationStateDisplay({
   const classes = sizeClasses[size];
 
   return (
-    <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-6 shadow-lg">
+    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-6 shadow-lg">
       <h3 className="text-white font-bold text-sm mb-4 flex items-center gap-2">
         <span className="text-lg">⚡</span>
         Rafeindasamskipti (Electron Transfer)
@@ -134,7 +134,7 @@ export function OxidationStateDisplay({
               </div>
 
               {/* Arrow */}
-              <div className="text-gray-400 text-xl">→</div>
+              <div className="text-warm-400 text-xl">→</div>
 
               {/* After state */}
               <div
@@ -152,14 +152,14 @@ export function OxidationStateDisplay({
                 ? 'bg-orange-500/30 text-orange-300'
                 : change.isReduced
                   ? 'bg-blue-500/30 text-blue-300'
-                  : 'bg-gray-500/30 text-gray-400'
+                  : 'bg-warm-500/30 text-warm-400'
             }`}>
               {change.isOxidized ? '↑ OXAST' : change.isReduced ? '↓ AFOXAST' : 'Óbreytt'}
             </div>
 
             {/* Electron count */}
             {showElectrons && (change.isOxidized || change.isReduced) && (
-              <div className="mt-1 text-xs text-gray-400">
+              <div className="mt-1 text-xs text-warm-400">
                 {change.isOxidized
                   ? `Tapar ${Math.abs(change.electronsDelta)} e⁻`
                   : `Öðlast ${Math.abs(change.electronsDelta)} e⁻`}
@@ -190,15 +190,15 @@ export function OxidationStateDisplay({
 
       {/* Explanation */}
       {animationPhase === 'complete' && (
-        <div className="mt-4 bg-slate-700/50 rounded-lg p-3 text-sm">
+        <div className="mt-4 bg-warm-700/50 rounded-lg p-3 text-sm">
           <div className="grid grid-cols-2 gap-4">
             {oxidizedSpecies && (
               <div className="flex items-start gap-2">
                 <div className="w-2 h-2 rounded-full bg-orange-500 mt-1.5" />
                 <div>
                   <span className="text-orange-300 font-semibold">{oxidizedSpecies.element}</span>
-                  <span className="text-gray-400"> oxast: </span>
-                  <span className="text-gray-300">
+                  <span className="text-warm-400"> oxast: </span>
+                  <span className="text-warm-300">
                     {oxidizedSpecies.before > 0 ? `+${oxidizedSpecies.before}` : oxidizedSpecies.before} →
                     {oxidizedSpecies.after > 0 ? `+${oxidizedSpecies.after}` : oxidizedSpecies.after}
                   </span>
@@ -210,8 +210,8 @@ export function OxidationStateDisplay({
                 <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5" />
                 <div>
                   <span className="text-blue-300 font-semibold">{reducedSpecies.element}</span>
-                  <span className="text-gray-400"> afoxast: </span>
-                  <span className="text-gray-300">
+                  <span className="text-warm-400"> afoxast: </span>
+                  <span className="text-warm-300">
                     {reducedSpecies.before > 0 ? `+${reducedSpecies.before}` : reducedSpecies.before} →
                     {reducedSpecies.after > 0 ? `+${reducedSpecies.after}` : reducedSpecies.after}
                   </span>
@@ -226,15 +226,15 @@ export function OxidationStateDisplay({
       <div className="mt-4 flex justify-center gap-6 text-xs">
         <div className="flex items-center gap-1">
           <div className="w-4 h-4 rounded-full bg-gradient-to-r from-blue-600 to-blue-400" />
-          <span className="text-gray-400">Neikvæð oxunartala</span>
+          <span className="text-warm-400">Neikvæð oxunartala</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-4 h-4 rounded-full bg-gray-400" />
-          <span className="text-gray-400">Núll</span>
+          <div className="w-4 h-4 rounded-full bg-warm-400" />
+          <span className="text-warm-400">Núll</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-4 h-4 rounded-full bg-gradient-to-r from-orange-400 to-red-600" />
-          <span className="text-gray-400">Jákvæð oxunartala</span>
+          <span className="text-warm-400">Jákvæð oxunartala</span>
         </div>
       </div>
 

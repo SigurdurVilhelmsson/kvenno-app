@@ -228,12 +228,12 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
           <span>🔀</span> Ástandsfall: Mismunandi leiðir
         </h3>
         <div className="flex items-center gap-2">
-          <label className="text-xs text-gray-600">Sýna saman:</label>
+          <label className="text-xs text-warm-600">Sýna saman:</label>
           <button
             onClick={() => setShowOverlay(!showOverlay)}
-            className={`w-10 h-5 rounded-full transition-colors ${showOverlay ? 'bg-indigo-500' : 'bg-gray-300'}`}
+            className={`w-10 h-5 rounded-full transition-colors ${showOverlay ? 'bg-indigo-500' : 'bg-warm-300'}`}
           >
-            <div className={`w-4 h-4 rounded-full bg-white transform transition-transform ${showOverlay ? 'translate-x-5' : 'translate-x-0.5'}`} />
+            <div className={`w-4 h-4 rounded-full bg-white transform transition-transform ${showOverlay ? 'tranwarm-x-5' : 'tranwarm-x-0.5'}`} />
           </button>
         </div>
       </div>
@@ -247,7 +247,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
               selectedExample.id === example.id
                 ? 'bg-indigo-600 text-white'
-                : 'bg-white text-gray-700 hover:bg-indigo-100 border border-gray-200'
+                : 'bg-white text-warm-700 hover:bg-indigo-100 border border-warm-200'
             }`}
           >
             {example.title}
@@ -276,7 +276,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
             className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all border-2 ${
               visiblePaths.includes(path.id)
                 ? 'bg-white shadow-xs'
-                : 'bg-gray-100 opacity-50'
+                : 'bg-warm-100 opacity-50'
             }`}
             style={{
               borderColor: visiblePaths.includes(path.id) ? path.color : '#d1d5db'
@@ -287,13 +287,13 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
               style={{ backgroundColor: path.color }}
             />
             <span>{path.name}</span>
-            <span className="text-gray-500">({path.steps.length} skref)</span>
+            <span className="text-warm-500">({path.steps.length} skref)</span>
           </button>
         ))}
       </div>
 
       {/* SVG Diagram */}
-      <div className="bg-slate-900 rounded-xl p-4 mb-4">
+      <div className="bg-warm-900 rounded-xl p-4 mb-4">
         <svg
           width="100%"
           viewBox={`0 0 ${width} ${height}`}
@@ -445,7 +445,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
               />
               <div>
                 <span className="font-medium" style={{ color: path.color }}>{path.name}:</span>
-                <span className="text-gray-700 ml-1">{path.description}</span>
+                <span className="text-warm-700 ml-1">{path.description}</span>
               </div>
             </div>
           )
@@ -459,7 +459,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
       </div>
 
       {/* State function reminder */}
-      <div className="mt-4 text-center text-xs text-gray-500">
+      <div className="mt-4 text-center text-xs text-warm-500">
         Entalpí (H) er <strong>ástandsfall</strong> — gildi þess fer aðeins eftir upphafs- og lokaástandi, ekki leiðinni þar á milli.
       </div>
     </div>

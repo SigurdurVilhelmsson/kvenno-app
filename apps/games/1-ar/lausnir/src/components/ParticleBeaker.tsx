@@ -146,11 +146,11 @@ export function ParticleBeaker({
 
       {/* Volume and concentration labels */}
       <div className="absolute bottom-0 left-0 right-0 text-center">
-        <div className="text-sm font-semibold text-gray-700">
+        <div className="text-sm font-semibold text-warm-700">
           {volume} mL
         </div>
         {concentration !== undefined && (
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-warm-500">
             {concentration.toFixed(2)} M
           </div>
         )}
@@ -158,7 +158,7 @@ export function ParticleBeaker({
 
       {/* Custom label */}
       {label && (
-        <div className="absolute -bottom-8 left-0 right-0 text-center text-sm text-gray-600 whitespace-pre-line">
+        <div className="absolute -bottom-8 left-0 right-0 text-center text-sm text-warm-600 whitespace-pre-line">
           {label}
         </div>
       )}

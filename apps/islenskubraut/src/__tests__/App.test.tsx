@@ -9,22 +9,23 @@ import { Home } from '../pages/Home';
 
 // Mock shared components to avoid pulling in heavy dependency chains (react-three/fiber)
 vi.mock('@kvenno/shared/components', () => ({
-  Header: ({ subtitle }: { variant?: string; title?: string; subtitle?: string }) => (
+  Header: ({ title, activeTrack }: { title?: string; activeTrack?: string }) => (
     <header data-testid="header">
-      <span>Íslenskubraut</span>
-      {subtitle && <span>{subtitle}</span>}
-      <nav><a href="/">Allir flokkar</a><a href="/">Námsvefur Kvennó</a></nav>
+      <a href="/">{title || 'Námsvefur Kvennó'}</a>
+      {activeTrack && <span data-testid="active-track">{activeTrack}</span>}
+      <nav><a href="/islenskubraut/">Allir flokkar</a></nav>
     </header>
   ),
-  Footer: ({ subtitle }: { variant?: string; subtitle?: string }) => (
+  Footer: ({ department, subtitle }: { department?: string; subtitle?: string }) => (
     <footer data-testid="footer">
-      <p>Íslenskubraut — Kvennaskólinn í Reykjavík</p>
+      <p>{department ? `${department} — Kvennaskólinn í Reykjavík` : 'Kvennaskólinn í Reykjavík'}</p>
       {subtitle && <p>{subtitle}</p>}
     </footer>
   ),
   Container: ({ children, className }: { children: React.ReactNode; className?: string }) => (
     <div data-testid="container" className={className}>{children}</div>
   ),
+  BottomNav: () => <nav data-testid="bottom-nav" />,
 }));
 
 // Mock the DownloadButton to avoid fetch calls in tests
@@ -270,8 +271,8 @@ describe('Islenskubraut App routing', () => {
   it('renders the app header with title', () => {
     renderWithRouter(<App />, ['/']);
 
-    expect(screen.getByText('Íslenskubraut')).toBeDefined();
-    expect(screen.getByText('Kennsluspjöld')).toBeDefined();
+    expect(screen.getByText('Námsvefur Kvennó')).toBeDefined();
+    expect(screen.getByTestId('active-track')).toBeDefined();
   });
 
   it('renders the footer', () => {
@@ -286,7 +287,7 @@ describe('Islenskubraut App routing', () => {
     renderWithRouter(<App />, ['/']);
 
     expect(screen.getByText('Allir flokkar')).toBeDefined();
-    expect(screen.getByText('Námsvefur Kvennó')).toBeDefined();
+    expect(screen.getByRole('link', { name: /Námsvefur Kvennó/i })).toBeDefined();
   });
 
   it('renders SpjaldPage for each category', () => {

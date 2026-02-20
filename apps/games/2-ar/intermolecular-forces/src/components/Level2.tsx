@@ -246,18 +246,18 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <button onClick={onBack} className="text-gray-600 hover:text-gray-800">
+          <button onClick={onBack} className="text-warm-600 hover:text-warm-800">
             ← Til baka
           </button>
           <div className="text-right">
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-warm-600">
               Verkefni {currentProblem + 1} af {problems.length}
             </div>
             <div className="text-lg font-bold text-indigo-600">{score} stig</div>
           </div>
         </div>
 
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-indigo-500 h-2 rounded-full transition-all"
             style={{ width: `${((currentProblem + 1) / problems.length) * 100}%` }}
@@ -271,33 +271,33 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </span>
           </div>
 
-          <h2 className="text-xl font-bold text-gray-800 mb-6">{problem.question}</h2>
+          <h2 className="text-xl font-bold text-warm-800 mb-6">{problem.question}</h2>
 
           {/* Available compounds */}
           <div className="mb-6">
-            <div className="text-sm font-medium text-gray-600 mb-2">Tiltæk efni:</div>
+            <div className="text-sm font-medium text-warm-600 mb-2">Tiltæk efni:</div>
             <div className="flex flex-wrap gap-2">
               {unplacedCompounds.map(compound => (
                 <button
                   key={compound.id}
                   onClick={() => addToOrder(compound.id)}
                   disabled={showResult}
-                  className="bg-white border-2 border-gray-300 hover:border-indigo-400 px-4 py-3 rounded-xl transition-all"
+                  className="bg-white border-2 border-warm-300 hover:border-indigo-400 px-4 py-3 rounded-xl transition-all"
                 >
-                  <div className="font-bold text-gray-800">{compound.formula}</div>
-                  <div className="text-xs text-gray-500">{compound.name}</div>
-                  <div className="text-xs text-gray-400">M = {compound.molarMass}</div>
+                  <div className="font-bold text-warm-800">{compound.formula}</div>
+                  <div className="text-xs text-warm-500">{compound.name}</div>
+                  <div className="text-xs text-warm-400">M = {compound.molarMass}</div>
                 </button>
               ))}
               {unplacedCompounds.length === 0 && !showResult && (
-                <div className="text-gray-400 italic">Öll efni hafa verið raðað</div>
+                <div className="text-warm-400 italic">Öll efni hafa verið raðað</div>
               )}
             </div>
           </div>
 
           {/* Ranking slots */}
           <div className="mb-6">
-            <div className="text-sm font-medium text-gray-600 mb-2">
+            <div className="text-sm font-medium text-warm-600 mb-2">
               Röðunin þín ({problem.orderDirection === 'lowestFirst' ? 'lægst → hæst' : 'hæst → lægst'}):
             </div>
             <div className="flex gap-2 items-center">
@@ -308,7 +308,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
                 return (
                   <div key={idx} className="flex items-center gap-2">
-                    {idx > 0 && <span className="text-gray-400">→</span>}
+                    {idx > 0 && <span className="text-warm-400">→</span>}
                     <div
                       className={`min-w-24 p-3 rounded-xl border-2 text-center ${
                         showResult
@@ -317,17 +317,17 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                             : 'border-red-500 bg-red-50'
                           : placedCompound
                           ? 'border-indigo-500 bg-indigo-50 cursor-pointer'
-                          : 'border-dashed border-gray-300'
+                          : 'border-dashed border-warm-300'
                       }`}
                       onClick={() => placedId && removeFromOrder(placedId)}
                     >
                       {placedCompound ? (
                         <>
                           <div className="font-bold">{placedCompound.formula}</div>
-                          <div className="text-xs text-gray-500">{placedCompound.name}</div>
+                          <div className="text-xs text-warm-500">{placedCompound.name}</div>
                         </>
                       ) : (
-                        <div className="text-gray-400 text-sm">{idx + 1}</div>
+                        <div className="text-warm-400 text-sm">{idx + 1}</div>
                       )}
                     </div>
                   </div>
@@ -335,7 +335,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               })}
             </div>
             {!showResult && userOrder.length > 0 && (
-              <div className="text-xs text-gray-500 mt-2">Smelltu á efni til að fjarlægja úr röð</div>
+              <div className="text-xs text-warm-500 mt-2">Smelltu á efni til að fjarlægja úr röð</div>
             )}
           </div>
 
@@ -343,7 +343,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="mb-6 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-gray-100">
+                <tr className="bg-warm-100">
                   <th className="p-2 text-left">Efni</th>
                   <th className="p-2 text-left">Mólmassi</th>
                   <th className="p-2 text-left">IMF</th>
@@ -394,7 +394,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <button
               onClick={checkAnswer}
               disabled={userOrder.length !== problem.compounds.length}
-              className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-300 text-white font-bold py-4 px-6 rounded-xl"
+              className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl"
             >
               Athuga röðun
             </button>
@@ -405,11 +405,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   {isCorrect ? 'Rétt röðun!' : 'Ekki rétt röðun'}
                 </div>
                 {!isCorrect && (
-                  <div className="text-sm text-gray-600 mt-2">
+                  <div className="text-sm text-warm-600 mt-2">
                     Rétt: {problem.correctOrder.map(id => problem.compounds.find(c => c.id === id)?.formula).join(' → ')}
                   </div>
                 )}
-                <p className="text-sm text-gray-700 mt-2">{problem.explanation}</p>
+                <p className="text-sm text-warm-700 mt-2">{problem.explanation}</p>
               </div>
 
               {/* Real boiling point data visualization */}
@@ -429,8 +429,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
                       return (
                         <div key={id} className="flex items-center gap-3">
-                          <div className="w-16 text-sm font-bold text-gray-700">{compound.formula}</div>
-                          <div className="flex-1 bg-gray-200 rounded-full h-6 relative overflow-hidden">
+                          <div className="w-16 text-sm font-bold text-warm-700">{compound.formula}</div>
+                          <div className="flex-1 bg-warm-200 rounded-full h-6 relative overflow-hidden">
                             <div
                               className={`h-full rounded-full transition-all duration-500 flex items-center justify-end pr-2 ${
                                 idx === 0 ? 'bg-blue-400' : idx === problem.correctOrder.length - 1 ? 'bg-red-400' : 'bg-purple-400'
@@ -446,7 +446,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       );
                     })}
                   </div>
-                  <div className="mt-3 text-xs text-gray-500 text-center">
+                  <div className="mt-3 text-xs text-warm-500 text-center">
                     Blár = lægst | Fjólublár = miðja | Rauður = hæst
                   </div>
                 </div>

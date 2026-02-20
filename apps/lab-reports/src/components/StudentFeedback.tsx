@@ -21,7 +21,7 @@ const parseCommentWithList = (text: string | undefined): React.JSX.Element => {
   const hasNumberedList = /\d+[).]\s/.test(text);
 
   if (!hasNumberedList) {
-    return <p className="text-slate-700">{text}</p>;
+    return <p className="text-warm-700">{text}</p>;
   }
 
   const parts = text.split(/(?=\d+[).]\s)/);
@@ -29,7 +29,7 @@ const parseCommentWithList = (text: string | undefined): React.JSX.Element => {
   const listItems = parts.slice(1);
 
   return (
-    <div className="text-slate-700">
+    <div className="text-warm-700">
       {beforeList && <p className="mb-2">{beforeList}</p>}
       {listItems.length > 0 && (
         <ol className="list-decimal list-inside space-y-1">
@@ -52,23 +52,23 @@ export const StudentFeedback: React.FC<StudentFeedbackProps> = ({
   if (feedback.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-lg shadow-xl p-8">
-      <h2 className="text-2xl font-bold text-slate-900 mb-6">Endurgjöf á skýrsluna þína</h2>
+    <div className="bg-surface-raised rounded-lg shadow-lg p-8">
+      <h2 className="text-2xl font-bold font-heading text-warm-900 mb-6">Endurgjöf á skýrsluna þína</h2>
 
       <div className="space-y-8">
         {feedback.map((item, idx) => (
           <div key={idx} className="border rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-slate-800 mb-4">{item.filename}</h3>
+            <h3 className="text-lg font-semibold text-warm-800 mb-4">{item.filename}</h3>
 
             {/* Overall Grade */}
             {(item.heildareinkunn || item.totalPoints !== undefined) && (
               <div className="bg-orange-50 border-l-4 border-kvenno-orange p-4 mb-6">
-                <p className="text-2xl font-bold text-slate-900">
+                <p className="text-2xl font-bold text-warm-900">
                   Áætluð einkunn:{' '}
                   {item.heildareinkunn ||
                     `${item.totalPoints}/${item.maxTotalPoints || 30}`}
                 </p>
-                <p className="text-sm text-slate-700 mt-1">
+                <p className="text-sm text-warm-700 mt-1">
                   Þetta er til leiðbeiningar - raunveruleg einkunn kemur frá kennara
                 </p>
               </div>
@@ -81,7 +81,7 @@ export const StudentFeedback: React.FC<StudentFeedbackProps> = ({
                   <CheckCircle size={20} />
                   Styrkir
                 </h4>
-                <ul className="list-disc list-inside space-y-1 text-slate-700">
+                <ul className="list-disc list-inside space-y-1 text-warm-700">
                   {item.styrkir.map((s, i) => (
                     <li key={i}>{s}</li>
                   ))}
@@ -107,17 +107,17 @@ export const StudentFeedback: React.FC<StudentFeedbackProps> = ({
             {/* Overall Assessment (fallback if using English version) */}
             {item.overallAssessment && !item.almennarAthugasemdir && (
               <div className="bg-orange-50 border border-kvenno-orange rounded-lg p-4 mb-6">
-                <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
+                <h4 className="font-semibold text-warm-900 mb-2 flex items-center gap-2">
                   <Target size={20} />
                   Heildarmat
                 </h4>
-                <p className="text-slate-700">{item.overallAssessment}</p>
+                <p className="text-warm-700">{item.overallAssessment}</p>
               </div>
             )}
 
             {/* Section Feedback */}
             <div className="space-y-4 mb-6">
-              <h4 className="font-bold text-slate-800">Endurgjöf eftir köflum:</h4>
+              <h4 className="font-bold text-warm-800">Endurgjöf eftir köflum:</h4>
               {sections.map((section) => {
                 const sectionData = item.sections[section.id];
                 if (!sectionData) return null;
@@ -127,7 +127,7 @@ export const StudentFeedback: React.FC<StudentFeedbackProps> = ({
                     key={section.id}
                     className={`border rounded-lg p-4 ${
                       sectionData.present
-                        ? 'bg-slate-50 border-slate-300'
+                        ? 'bg-warm-50 border-warm-300'
                         : 'bg-red-50 border-red-300'
                     }`}
                   >
@@ -138,7 +138,7 @@ export const StudentFeedback: React.FC<StudentFeedbackProps> = ({
                         ) : (
                           <XCircle className="text-red-600 flex-shrink-0" size={20} />
                         )}
-                        <h4 className="font-semibold text-slate-800">
+                        <h4 className="font-semibold text-warm-800">
                           {section.name}
                           {section.maxPoints && ` (${section.maxPoints} stig)`}
                         </h4>
@@ -159,7 +159,7 @@ export const StudentFeedback: React.FC<StudentFeedbackProps> = ({
                               <CheckCircle size={16} />
                               Vel gert:
                             </div>
-                            <ul className="list-disc list-inside text-sm text-slate-700 space-y-1">
+                            <ul className="list-disc list-inside text-sm text-warm-700 space-y-1">
                               {sectionData.strengths.map((strength, i) => (
                                 <li key={i}>{strength}</li>
                               ))}
@@ -174,7 +174,7 @@ export const StudentFeedback: React.FC<StudentFeedbackProps> = ({
                               <TrendingUp size={16} />
                               Mætti bæta:
                             </div>
-                            <ul className="list-disc list-inside text-sm text-slate-700 space-y-1">
+                            <ul className="list-disc list-inside text-sm text-warm-700 space-y-1">
                               {sectionData.improvements.map((improvement, i) => (
                                 <li key={i}>{improvement}</li>
                               ))}
@@ -185,11 +185,11 @@ export const StudentFeedback: React.FC<StudentFeedbackProps> = ({
                         {/* Suggestions */}
                         {sectionData.suggestions && sectionData.suggestions.length > 0 && (
                           <div>
-                            <div className="text-sm font-semibold text-slate-700 mb-1 flex items-center gap-1">
+                            <div className="text-sm font-semibold text-warm-700 mb-1 flex items-center gap-1">
                               <Lightbulb size={16} />
                               Tillögur:
                             </div>
-                            <ul className="list-disc list-inside text-sm text-slate-700 space-y-1">
+                            <ul className="list-disc list-inside text-sm text-warm-700 space-y-1">
                               {sectionData.suggestions.map((suggestion, i) => (
                                 <li key={i}>{suggestion}</li>
                               ))}
@@ -200,7 +200,7 @@ export const StudentFeedback: React.FC<StudentFeedbackProps> = ({
                         {/* Icelandic comments (athugasemdir) */}
                         {sectionData.athugasemdir && (
                           <div>
-                            <div className="text-sm font-semibold text-slate-700 mb-1">
+                            <div className="text-sm font-semibold text-warm-700 mb-1">
                               Athugasemdir:
                             </div>
                             {parseCommentWithList(sectionData.athugasemdir)}
@@ -236,7 +236,7 @@ export const StudentFeedback: React.FC<StudentFeedbackProps> = ({
                   <Target size={20} />
                   Næstu skref
                 </h4>
-                <ul className="list-decimal list-inside text-sm text-slate-700 space-y-1">
+                <ul className="list-decimal list-inside text-sm text-warm-700 space-y-1">
                   {item.nextSteps.map((step, i) => (
                     <li key={i}>{step}</li>
                   ))}
@@ -270,7 +270,7 @@ export const StudentFeedback: React.FC<StudentFeedbackProps> = ({
                 {onClose && (
                   <button
                     onClick={onClose}
-                    className="flex-1 bg-slate-600 text-white px-6 py-3 rounded-lg hover:bg-slate-700 transition"
+                    className="flex-1 bg-warm-600 text-white px-6 py-3 rounded-lg hover:bg-warm-700 transition"
                   >
                     Loka
                   </button>

@@ -305,13 +305,13 @@ function App() {
             </div>
 
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold mb-4" style={{ color: '#f36b22' }}>
+              <h1 className="text-4xl font-bold font-heading mb-4" style={{ color: '#f36b22' }}>
                 Gas Law Challenge
               </h1>
-              <p className="text-lg text-gray-600 mb-2">
+              <p className="text-lg text-warm-600 mb-2">
                 Læðu að leysa verkefni um tilvalin lofttegundalögmál: PV = nRT
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-warm-500">
                 {questions.length} spurningar í boði • Auðvelt, Miðlungs, Erfitt
               </p>
 
@@ -331,7 +331,7 @@ function App() {
                   </div>
                   <button
                     onClick={resetStats}
-                    className="mt-3 text-sm text-gray-500 hover:text-red-500 transition-colors"
+                    className="mt-3 text-sm text-warm-500 hover:text-red-500 transition-colors"
                   >
                     Endurstilla framvindu
                   </button>
@@ -343,7 +343,7 @@ function App() {
               {/* Practice Mode */}
               <div className="bg-blue-50 p-6 rounded-lg border-2 border-blue-200">
                 <h2 className="text-2xl font-bold mb-3 text-blue-900">Æfingahamur</h2>
-                <ul className="text-gray-700 mb-4 space-y-2 text-sm">
+                <ul className="text-warm-700 mb-4 space-y-2 text-sm">
                   <li>✓ Engin tímatakmörk</li>
                   <li>✓ Ótakmarkaðar vísbendingar</li>
                   <li>✓ Sjá lausnir skref fyrir skref</li>
@@ -361,7 +361,7 @@ function App() {
               {/* Challenge Mode */}
               <div className="bg-orange-50 p-6 rounded-lg border-2 border-orange-200">
                 <h2 className="text-2xl font-bold mb-3 text-orange-900">Keppnishamur</h2>
-                <ul className="text-gray-700 mb-4 space-y-2 text-sm">
+                <ul className="text-warm-700 mb-4 space-y-2 text-sm">
                   <li>⏱️ 90 sekúndur á spurningu</li>
                   <li>🎯 Tíma bónus fyrir hraða</li>
                   <li>💡 Vísbendingar kosta stig (-10)</li>
@@ -378,9 +378,9 @@ function App() {
             </div>
 
             {/* Instructions */}
-            <div className="mt-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
-              <h3 className="font-bold text-gray-800 mb-2">Leiðbeiningar:</h3>
-              <div className="grid md:grid-cols-2 gap-4 text-sm text-gray-700">
+            <div className="mt-6 bg-warm-50 p-4 rounded-lg border border-warm-200">
+              <h3 className="font-bold text-warm-800 mb-2">Leiðbeiningar:</h3>
+              <div className="grid md:grid-cols-2 gap-4 text-sm text-warm-700">
                 <div>
                   <p className="font-semibold">Tilvalin lofttegundalögmál:</p>
                   <p className="font-mono bg-white px-2 py-1 rounded mt-1">PV = nRT</p>
@@ -388,16 +388,16 @@ function App() {
                 </div>
                 <div>
                   <p className="font-semibold">Lyklaborð:</p>
-                  <p className="text-xs">• <kbd className="px-1 bg-gray-200 rounded">Enter</kbd> Athuga svar</p>
-                  <p className="text-xs">• <kbd className="px-1 bg-gray-200 rounded">H</kbd> Vísbending</p>
-                  <p className="text-xs">• <kbd className="px-1 bg-gray-200 rounded">S</kbd> Sýna lausn</p>
+                  <p className="text-xs">• <kbd className="px-1 bg-warm-200 rounded">Enter</kbd> Athuga svar</p>
+                  <p className="text-xs">• <kbd className="px-1 bg-warm-200 rounded">H</kbd> Vísbending</p>
+                  <p className="text-xs">• <kbd className="px-1 bg-warm-200 rounded">S</kbd> Sýna lausn</p>
                 </div>
               </div>
             </div>
           </div>
         </main>
 
-        <footer className="text-center text-sm text-gray-500 py-4">
+        <footer className="text-center text-sm text-warm-500 py-4">
           <p>© 2024 Kvennaskólinn - Efnafræðileikir</p>
         </footer>
 
@@ -432,7 +432,7 @@ function App() {
                 <h1 className="text-2xl font-bold" style={{ color: '#f36b22' }}>
                   Gas Law Challenge
                 </h1>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-warm-600">
                   {gameMode === 'practice' ? 'Æfingahamur' : 'Keppnishamur'} • Spurning {currentQuestion.id}
                 </p>
               </div>
@@ -448,7 +448,7 @@ function App() {
                 />
                 <button
                   onClick={() => setScreen('menu')}
-                  className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                  className="px-4 py-2 bg-warm-200 rounded-lg hover:bg-warm-300 transition"
                 >
                   ← Valmynd
                 </button>
@@ -484,9 +484,9 @@ function App() {
                   </h3>
 
                   {/* Question context */}
-                  <div className="bg-white p-3 rounded-lg border border-gray-200 mb-4">
-                    <h4 className="font-bold text-gray-800 mb-1">{currentQuestion.emoji} {currentQuestion.scenario_is}</h4>
-                    <p className="text-xs text-gray-500">{currentQuestion.scenario_en}</p>
+                  <div className="bg-white p-3 rounded-lg border border-warm-200 mb-4">
+                    <h4 className="font-bold text-warm-800 mb-1">{currentQuestion.emoji} {currentQuestion.scenario_is}</h4>
+                    <p className="text-xs text-warm-500">{currentQuestion.scenario_en}</p>
                   </div>
 
                   {/* Given values preview */}
@@ -527,12 +527,12 @@ function App() {
                           className={`p-3 rounded-lg border-2 transition-all text-left ${
                             selectedLaw === law
                               ? 'border-indigo-500 bg-indigo-50'
-                              : 'border-gray-200 hover:border-indigo-300 bg-white'
+                              : 'border-warm-200 hover:border-indigo-300 bg-white'
                           }`}
                         >
-                          <div className="font-semibold text-sm text-gray-800">{info.nameIs}</div>
+                          <div className="font-semibold text-sm text-warm-800">{info.nameIs}</div>
                           <div className="font-mono text-xs text-indigo-600">{info.formula}</div>
-                          <div className="text-xs text-gray-500 mt-1">{info.constants}</div>
+                          <div className="text-xs text-warm-500 mt-1">{info.constants}</div>
                         </button>
                       );
                     })}
@@ -555,13 +555,13 @@ function App() {
                     <button
                       onClick={checkSelectedLaw}
                       disabled={!selectedLaw}
-                      className="flex-1 py-2 px-4 rounded-lg font-bold text-white transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed bg-indigo-600 hover:bg-indigo-700"
+                      className="flex-1 py-2 px-4 rounded-lg font-bold text-white transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed bg-indigo-600 hover:bg-indigo-700"
                     >
                       Athuga lögmál
                     </button>
                     <button
                       onClick={skipLawSelection}
-                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition text-sm"
+                      className="px-4 py-2 bg-warm-200 text-warm-700 rounded-lg hover:bg-warm-300 transition text-sm"
                     >
                       Sleppa →
                     </button>
@@ -573,13 +573,13 @@ function App() {
             <div className="grid md:grid-cols-2 gap-6">
               {/* Left: Visualization */}
               <div>
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
-                  <h3 className="font-bold text-gray-800 mb-2">{currentQuestion.emoji} {currentQuestion.scenario_is}</h3>
-                  <p className="text-sm text-gray-600">{currentQuestion.scenario_en}</p>
+                <div className="bg-warm-50 p-4 rounded-lg border border-warm-200 mb-4">
+                  <h3 className="font-bold text-warm-800 mb-2">{currentQuestion.emoji} {currentQuestion.scenario_is}</h3>
+                  <p className="text-sm text-warm-600">{currentQuestion.scenario_en}</p>
                 </div>
 
                 {/* Particle Simulation */}
-                <div className="bg-gray-900 rounded-lg p-4">
+                <div className="bg-warm-900 rounded-lg p-4">
                   {particleConfig && (
                     <ParticleSimulation
                       container={{
@@ -596,7 +596,7 @@ function App() {
                       ariaLabel="Gas particle simulation showing ideal gas behavior"
                     />
                   )}
-                  <p className="text-xs text-gray-400 mt-2 text-center">
+                  <p className="text-xs text-warm-400 mt-2 text-center">
                     Agnir tákna lofttegundir • Rammi: þrýstingur (blátt=lágt, grænt=venjulegt, rautt=hátt)
                   </p>
                 </div>
@@ -642,7 +642,7 @@ function App() {
                       <span className="font-mono bg-white px-2 py-1 rounded text-indigo-800">
                         {GAS_LAW_INFO[currentQuestion.gasLaw].formula}
                       </span>
-                      <span className="text-gray-600">({GAS_LAW_INFO[currentQuestion.gasLaw].nameIs})</span>
+                      <span className="text-warm-600">({GAS_LAW_INFO[currentQuestion.gasLaw].nameIs})</span>
                     </div>
                   </div>
                 )}
@@ -661,18 +661,18 @@ function App() {
                       value={userAnswer}
                       onChange={(e) => setUserAnswer(e.target.value)}
                       placeholder={gameMode === 'practice' && gameStep === 'select-law' ? 'Veldu lögmál fyrst...' : 'Sláðu inn svar...'}
-                      className="flex-1 px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-orange-500 focus:outline-hidden text-lg disabled:bg-gray-100 disabled:cursor-not-allowed"
+                      className="flex-1 px-4 py-3 rounded-lg border-2 border-warm-300 focus:border-orange-500 focus:outline-hidden text-lg disabled:bg-warm-100 disabled:cursor-not-allowed"
                       onKeyPress={(e) => e.key === 'Enter' && gameStep === 'solve' && checkUserAnswer()}
                       disabled={gameMode === 'practice' && gameStep === 'select-law'}
                     />
-                    <div className="bg-white px-4 py-3 rounded-lg border-2 border-gray-300 font-bold text-gray-700">
+                    <div className="bg-white px-4 py-3 rounded-lg border-2 border-warm-300 font-bold text-warm-700">
                       {getUnit(currentQuestion.find)}
                     </div>
                   </div>
                   <button
                     onClick={checkUserAnswer}
                     disabled={gameMode === 'practice' && gameStep === 'select-law'}
-                    className="w-full mt-3 py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                    className="w-full mt-3 py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90 disabled:bg-warm-300 disabled:cursor-not-allowed"
                     style={{ backgroundColor: (gameMode !== 'practice' || gameStep !== 'select-law') ? '#f36b22' : undefined }}
                   >
                     Athuga Svar (Enter)
@@ -680,15 +680,15 @@ function App() {
                 </div>
 
                 {/* Hints */}
-                <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
+                <div className="bg-warm-50 p-4 rounded-lg border border-warm-200 mb-4">
                   <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-bold text-gray-800">Vísbendingar:</h3>
+                    <h3 className="font-bold text-warm-800">Vísbendingar:</h3>
                     <button
                       onClick={getHint}
                       disabled={showHint >= currentQuestion.hints.length}
                       className={`px-3 py-1 rounded-lg text-sm font-bold transition ${
                         showHint >= currentQuestion.hints.length
-                          ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                          ? 'bg-warm-300 text-warm-500 cursor-not-allowed'
                           : 'bg-blue-500 text-white hover:bg-blue-600'
                       }`}
                     >
@@ -704,28 +704,28 @@ function App() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-600">Smelltu á "Vísbending" til að fá hjálp</p>
+                    <p className="text-sm text-warm-600">Smelltu á "Vísbending" til að fá hjálp</p>
                   )}
                 </div>
 
                 {/* Solution Toggle */}
                 {gameMode === 'practice' && (
-                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                  <div className="bg-warm-50 p-4 rounded-lg border border-warm-200">
                     <button
                       onClick={() => setShowSolution(!showSolution)}
-                      className="w-full px-3 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition font-bold text-sm"
+                      className="w-full px-3 py-2 bg-warm-700 text-white rounded-lg hover:bg-warm-800 transition font-bold text-sm"
                     >
                       {showSolution ? '🔒 Fela lausn' : '🔓 Sýna lausn (S)'}
                     </button>
                     {showSolution && (
                       <div className="mt-3 space-y-2 text-sm">
-                        <div className="bg-white px-3 py-2 rounded border border-gray-300">
+                        <div className="bg-white px-3 py-2 rounded border border-warm-300">
                           <span className="font-bold">Formúla:</span> {currentQuestion.solution.formula}
                         </div>
-                        <div className="bg-white px-3 py-2 rounded border border-gray-300">
+                        <div className="bg-white px-3 py-2 rounded border border-warm-300">
                           <span className="font-bold">Innsetning:</span> {currentQuestion.solution.substitution}
                         </div>
-                        <div className="bg-white px-3 py-2 rounded border border-gray-300">
+                        <div className="bg-white px-3 py-2 rounded border border-warm-300">
                           <span className="font-bold">Útreikningur:</span> {currentQuestion.solution.calculation}
                         </div>
                         <div className="bg-green-50 px-3 py-2 rounded border border-green-300 font-bold text-green-800">
@@ -737,9 +737,9 @@ function App() {
                 )}
 
                 {/* Formula Reference */}
-                <div className="mt-4 bg-gray-50 p-3 rounded-lg border border-gray-200 text-xs">
-                  <p className="font-bold text-gray-700 mb-1">Upprifjun:</p>
-                  <p className="text-gray-600">P = nRT/V • V = nRT/P • T = PV/nR • n = PV/RT</p>
+                <div className="mt-4 bg-warm-50 p-3 rounded-lg border border-warm-200 text-xs">
+                  <p className="font-bold text-warm-700 mb-1">Upprifjun:</p>
+                  <p className="text-warm-600">P = nRT/V • V = nRT/P • T = PV/nR • n = PV/RT</p>
                 </div>
               </div>
             </div>
@@ -817,17 +817,17 @@ function App() {
             )}
 
             {/* Explanation */}
-            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mb-6">
-              <h3 className="font-bold text-gray-800 mb-3">Skref fyrir skref lausn:</h3>
+            <div className="bg-warm-50 p-4 rounded-lg border border-warm-200 mb-6">
+              <h3 className="font-bold text-warm-800 mb-3">Skref fyrir skref lausn:</h3>
               <div className="space-y-2 text-sm">
                 {currentQuestion.solution.steps.map((step, idx) => (
                   <div key={idx} className="flex gap-2">
-                    <span className="font-bold text-gray-600">{idx + 1}.</span>
-                    <span className="text-gray-700">{step}</span>
+                    <span className="font-bold text-warm-600">{idx + 1}.</span>
+                    <span className="text-warm-700">{step}</span>
                   </div>
                 ))}
               </div>
-              <div className="mt-4 bg-white p-3 rounded border border-gray-300">
+              <div className="mt-4 bg-white p-3 rounded border border-warm-300">
                 <p className="text-sm"><span className="font-bold">Formúla:</span> {currentQuestion.solution.formula}</p>
                 <p className="text-sm"><span className="font-bold">Innsetning:</span> {currentQuestion.solution.substitution}</p>
                 <p className="text-sm"><span className="font-bold">Útreikningur:</span> {currentQuestion.solution.calculation}</p>
@@ -840,19 +840,19 @@ function App() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center text-sm">
                 <div>
                   <div className="text-2xl font-bold text-yellow-600">{stats.score}</div>
-                  <div className="text-gray-600">Stig</div>
+                  <div className="text-warm-600">Stig</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-green-600">{stats.correctAnswers}/{stats.questionsAnswered}</div>
-                  <div className="text-gray-600">Rétt</div>
+                  <div className="text-warm-600">Rétt</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-blue-600">{stats.streak}</div>
-                  <div className="text-gray-600">Núverandi röð</div>
+                  <div className="text-warm-600">Núverandi röð</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-purple-600">{stats.bestStreak}</div>
-                  <div className="text-gray-600">Besta röð</div>
+                  <div className="text-warm-600">Besta röð</div>
                 </div>
               </div>
             </div>
@@ -872,7 +872,7 @@ function App() {
               />
               <button
                 onClick={() => setScreen('menu')}
-                className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition font-bold"
+                className="px-6 py-3 bg-warm-600 text-white rounded-lg hover:bg-warm-700 transition font-bold"
               >
                 📊 Valmynd
               </button>

@@ -156,12 +156,12 @@ export function StudentPage() {
   // Render different views
   if (view === 'home') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-orange-50 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-warm-50 to-orange-50 p-6">
         <div className="max-w-4xl mx-auto">
           <div className="flex justify-end mb-4">
             <button
               onClick={() => navigate('/')}
-              className="px-4 py-2 rounded-lg transition bg-slate-200 text-slate-700 hover:bg-slate-300 flex items-center gap-2"
+              className="px-4 py-2 rounded-lg transition bg-warm-200 text-warm-700 hover:bg-warm-300 flex items-center gap-2"
             >
               <Home size={18} />
               Til baka
@@ -180,29 +180,29 @@ export function StudentPage() {
 
   if (view === 'experiments') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-orange-50 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-warm-50 to-orange-50 p-6">
         <div className="max-w-4xl mx-auto">
           <button
             onClick={() => setView('home')}
-            className="mb-4 text-kvenno-orange hover:text-slate-800 flex items-center gap-2"
+            className="mb-4 text-kvenno-orange hover:text-warm-800 flex items-center gap-2"
           >
             ← Til baka
           </button>
 
-          <div className="bg-white rounded-lg shadow-xl p-8">
-            <h2 className="text-2xl font-bold text-slate-900 mb-6">Veldu tilraun</h2>
+          <div className="bg-surface-raised rounded-lg shadow-lg p-8">
+            <h2 className="text-2xl font-heading font-bold text-warm-900 mb-6">Veldu tilraun</h2>
 
             <div className="space-y-4">
               {experiments.map((exp) => (
                 <div key={exp.id} className="border rounded-lg p-4 hover:border-kvenno-orange transition">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-semibold text-slate-800">{exp.title}</h3>
+                    <h3 className="text-lg font-semibold text-warm-800">{exp.title}</h3>
                     <span className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">
                       {exp.year}. ár
                     </span>
                   </div>
                   {exp.worksheet && (
-                    <p className="text-sm text-slate-600 mb-3">
+                    <p className="text-sm text-warm-600 mb-3">
                       Efnahvarf: {exp.worksheet.reaction}
                     </p>
                   )}
@@ -224,7 +224,7 @@ export function StudentPage() {
 
   if (view === 'worksheet' && currentExperiment) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-orange-50 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-warm-50 to-orange-50 p-6">
         <div className="max-w-4xl mx-auto">
           <WorksheetView
             experiment={currentExperiment}
@@ -239,23 +239,23 @@ export function StudentPage() {
 
   if (view === 'upload' && currentExperiment) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-orange-50 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-warm-50 to-orange-50 p-6">
         <div className="max-w-4xl mx-auto">
           <div className="flex justify-between items-center mb-4">
             <button
               onClick={() => setView('worksheet')}
-              className="text-kvenno-orange hover:text-slate-800 flex items-center gap-2"
+              className="text-kvenno-orange hover:text-warm-800 flex items-center gap-2"
             >
               ← Skoða vinnuseðil
             </button>
-            <button onClick={handleClose} className="text-slate-600 hover:text-slate-800">
+            <button onClick={handleClose} className="text-warm-600 hover:text-warm-800">
               Hætta við
             </button>
           </div>
 
-          <div className="bg-white rounded-lg shadow-xl p-8 mb-6">
-            <h2 className="text-2xl font-bold text-slate-900 mb-2">{currentExperiment.title}</h2>
-            <p className="text-slate-600 mb-6">Hladdu upp drögunum þínum</p>
+          <div className="bg-surface-raised rounded-lg shadow-lg p-8 mb-6">
+            <h2 className="text-2xl font-heading font-bold text-warm-900 mb-2">{currentExperiment.title}</h2>
+            <p className="text-warm-600 mb-6">Hladdu upp drögunum þínum</p>
 
             <FileUpload
               files={files}
@@ -284,10 +284,10 @@ export function StudentPage() {
 
   // Default fallback
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-orange-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-warm-50 to-orange-50 p-6">
       <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-lg shadow-xl p-8">
-          <p className="text-slate-600">Hleður...</p>
+        <div className="bg-surface-raised rounded-lg shadow-lg p-8">
+          <p className="text-warm-600">Hleður...</p>
         </div>
       </div>
       <Toast toast={toast} />

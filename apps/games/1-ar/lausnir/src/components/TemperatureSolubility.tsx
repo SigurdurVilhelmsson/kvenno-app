@@ -151,7 +151,7 @@ export function TemperatureSolubilityCurve({
   };
 
   return (
-    <div className="bg-white rounded-xl p-4 border border-gray-200">
+    <div className="bg-white rounded-xl p-4 border border-warm-200">
       {/* SVG Chart */}
       <svg viewBox={`0 0 ${width} ${height}`} className="w-full max-w-md mx-auto">
         {/* Grid lines */}
@@ -203,7 +203,7 @@ export function TemperatureSolubilityCurve({
             x={xScale(temp)}
             y={height - padding.bottom + 20}
             textAnchor="middle"
-            className="text-xs fill-gray-600"
+            className="text-xs fill-warm-600"
           >
             {temp}°C
           </text>
@@ -215,7 +215,7 @@ export function TemperatureSolubilityCurve({
           y={height / 2}
           textAnchor="middle"
           transform={`rotate(-90, 10, ${height / 2})`}
-          className="text-xs fill-gray-600"
+          className="text-xs fill-warm-600"
         >
           g/100g H₂O
         </text>
@@ -227,7 +227,7 @@ export function TemperatureSolubilityCurve({
             x={padding.left - 5}
             y={yScale(ratio * maxSolubility) + 4}
             textAnchor="end"
-            className="text-xs fill-gray-600"
+            className="text-xs fill-warm-600"
           >
             {(ratio * maxSolubility).toFixed(0)}
           </text>
@@ -291,7 +291,7 @@ export function TemperatureSolubilityCurve({
             <span className="text-red-500 text-lg">🔥</span>
           </div>
           <div className="text-center mt-2">
-            <span className="text-2xl font-bold text-gray-800">{temperature}°C</span>
+            <span className="text-2xl font-bold text-warm-800">{temperature}°C</span>
           </div>
         </div>
       )}
@@ -303,13 +303,13 @@ export function TemperatureSolubilityCurve({
           return (
             <div
               key={data.formula}
-              className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-full"
+              className="flex items-center gap-2 bg-warm-50 px-3 py-1.5 rounded-full"
             >
               <span>{data.emoji}</span>
               <span className="text-sm font-medium" style={{ color: data.color }}>
                 {data.formula}
               </span>
-              <span className="text-xs text-gray-600">
+              <span className="text-xs text-warm-600">
                 {sol.toFixed(1)} g
               </span>
             </div>
@@ -423,7 +423,7 @@ export function TemperatureBeaker({
 
       <div className="mt-2">
         <div className="text-sm font-medium">{compound.emoji} {compound.formula}</div>
-        <div className="text-xs text-gray-600">{temperature}°C</div>
+        <div className="text-xs text-warm-600">{temperature}°C</div>
         <div className="text-xs font-bold" style={{ color: compound.color }}>
           {solubility.toFixed(1)} g/100g
         </div>
@@ -452,25 +452,25 @@ export function TemperatureComparison({
   return (
     <div className="flex items-center justify-center gap-4 my-4">
       <div className="text-center">
-        <div className="text-sm font-semibold mb-2 text-gray-700">Fyrir</div>
+        <div className="text-sm font-semibold mb-2 text-warm-700">Fyrir</div>
         <TemperatureBeaker compound={compound} temperature={tempBefore} />
       </div>
 
       <div className="flex flex-col items-center">
-        <div className="text-2xl text-gray-400">→</div>
-        <div className="text-xs text-gray-500 mt-1">
+        <div className="text-2xl text-warm-400">→</div>
+        <div className="text-xs text-warm-500 mt-1">
           {tempAfter > tempBefore ? '🔥 Hita' : '❄️ Kæla'}
         </div>
       </div>
 
       <div className={`text-center transition-opacity duration-300 ${showAfter ? 'opacity-100' : 'opacity-30'}`}>
-        <div className="text-sm font-semibold mb-2 text-gray-700">Eftir</div>
+        <div className="text-sm font-semibold mb-2 text-warm-700">Eftir</div>
         <TemperatureBeaker compound={compound} temperature={showAfter ? tempAfter : tempBefore} />
       </div>
 
       {showAfter && (
-        <div className="ml-4 bg-gray-50 p-3 rounded-lg text-sm">
-          <div className="font-semibold text-gray-700 mb-1">Breyting:</div>
+        <div className="ml-4 bg-warm-50 p-3 rounded-lg text-sm">
+          <div className="font-semibold text-warm-700 mb-1">Breyting:</div>
           <div className={solAfter > solBefore ? 'text-green-600' : 'text-red-600'}>
             {solBefore.toFixed(1)} → {solAfter.toFixed(1)} g/100g
             <br />

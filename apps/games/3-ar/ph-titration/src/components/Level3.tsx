@@ -103,7 +103,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       case 'polyprotic': return 'bg-orange-500';
       case 'henderson-hasselbalch': return 'bg-purple-500';
       case 'combined': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      default: return 'bg-warm-500';
     }
   };
 
@@ -115,12 +115,12 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <div className="flex justify-between items-center">
             <button
               onClick={onBack}
-              className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+              className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
             >
               ← Til baka
             </button>
             <div className="flex items-center gap-4">
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-warm-500">
                 {completed + 1} / {LEVEL3_CHALLENGES.length}
               </div>
               <div className="text-lg font-bold text-purple-600">
@@ -134,7 +134,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </h1>
 
           {/* Progress bar */}
-          <div className="w-full bg-gray-200 rounded-full h-2 mt-3">
+          <div className="w-full bg-warm-200 rounded-full h-2 mt-3">
             <div
               className="bg-purple-500 h-2 rounded-full transition-all duration-300"
               style={{ width: `${(completed / LEVEL3_CHALLENGES.length) * 100}%` }}
@@ -148,7 +148,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <span className={`${getChallengeTypeColor(challenge.type)} text-white text-xs font-bold px-3 py-1 rounded-full`}>
               {getChallengeTypeLabel(challenge.type)}
             </span>
-            <h2 className="text-lg font-bold text-gray-800">{challenge.titleIs}</h2>
+            <h2 className="text-lg font-bold text-warm-800">{challenge.titleIs}</h2>
           </div>
 
           <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-4 mb-4">
@@ -156,8 +156,8 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
 
           {/* Given data */}
-          <div className="bg-gray-50 rounded-xl p-4 mb-4">
-            <h3 className="font-bold text-gray-700 mb-2">Gefið:</h3>
+          <div className="bg-warm-50 rounded-xl p-4 mb-4">
+            <h3 className="font-bold text-warm-700 mb-2">Gefið:</h3>
             <div className="grid grid-cols-2 gap-2 text-sm">
               {challenge.givenData.analyteVolume && (
                 <div><span className="font-semibold">Rúmmál sýnis:</span> {challenge.givenData.analyteVolume} mL</div>
@@ -185,8 +185,8 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               )}
             </div>
             {challenge.givenData.formula && (
-              <div className="mt-3 pt-3 border-t border-gray-200">
-                <span className="font-semibold text-gray-700">Jafna:</span>
+              <div className="mt-3 pt-3 border-t border-warm-200">
+                <span className="font-semibold text-warm-700">Jafna:</span>
                 <div className="font-mono text-purple-700 mt-1">{challenge.givenData.formula}</div>
               </div>
             )}
@@ -194,7 +194,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           {/* Answer input */}
           <div className="mb-4">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-warm-700 mb-2">
               Svar {challenge.unit && `(${challenge.unit})`}:
             </label>
             <div className="flex gap-3">
@@ -210,16 +210,16 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     ? isCorrect
                       ? 'border-green-500 bg-green-50'
                       : 'border-red-500 bg-red-50'
-                    : 'border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200'
+                    : 'border-warm-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-200'
                 }`}
               />
               {challenge.unit && (
-                <span className="flex items-center px-4 py-3 bg-gray-100 rounded-xl font-semibold text-gray-700">
+                <span className="flex items-center px-4 py-3 bg-warm-100 rounded-xl font-semibold text-warm-700">
                   {challenge.unit}
                 </span>
               )}
             </div>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-warm-500 mt-1">
               Skekkjumörk: ±{(challenge.tolerance * 100).toFixed(0)}%
             </p>
           </div>
@@ -251,7 +251,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               className={`w-full px-6 py-3 rounded-xl font-bold transition-colors ${
                 userAnswer.trim()
                   ? 'bg-purple-500 hover:bg-purple-600 text-white'
-                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'bg-warm-200 text-warm-400 cursor-not-allowed'
               }`}
             >
               Staðfesta svar
@@ -289,9 +289,9 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
               {/* Solution steps */}
               {showSolution && (
-                <div className="mt-3 bg-white rounded-lg p-3 border border-gray-200">
-                  <h4 className="font-bold text-gray-700 mb-2">Útreikningur:</h4>
-                  <ol className="list-decimal list-inside space-y-1 text-sm font-mono text-gray-800">
+                <div className="mt-3 bg-white rounded-lg p-3 border border-warm-200">
+                  <h4 className="font-bold text-warm-700 mb-2">Útreikningur:</h4>
+                  <ol className="list-decimal list-inside space-y-1 text-sm font-mono text-warm-800">
                     {challenge.solutionStepsIs.map((step, index) => (
                       <li key={index}>{step}</li>
                     ))}
@@ -311,7 +311,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Reference tables */}
         <div className="bg-white rounded-2xl shadow-xl p-4">
-          <h3 className="font-bold text-gray-700 mb-3">📋 Uppflettitöflur</h3>
+          <h3 className="font-bold text-warm-700 mb-3">📋 Uppflettitöflur</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Common pKa values */}
             <div className="bg-blue-50 rounded-xl p-3">

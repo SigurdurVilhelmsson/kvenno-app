@@ -68,14 +68,14 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
   // Show loading state while checking authentication or during login
   if (inProgress !== InteractionStatus.None || !isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-        <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4">
+      <div className="min-h-screen bg-gradient-to-br from-warm-50 to-warm-100 flex items-center justify-center">
+        <div className="bg-surface-raised rounded-lg shadow-lg p-8 max-w-md w-full mx-4">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-kvenno-orange border-t-transparent mb-4"></div>
-            <h2 className="text-xl font-bold text-slate-900 mb-2">
+            <h2 className="text-xl font-bold font-heading text-warm-900 mb-2">
               {isAuthenticated ? 'Hleð...' : 'Skráir inn...'}
             </h2>
-            <p className="text-slate-600">
+            <p className="text-warm-600">
               {isAuthenticated
                 ? 'Vinsamlegast bíðið...'
                 : 'Þú verður vísað á innskráningarsíðu...'}

@@ -28,15 +28,15 @@ export function SpjaldPage() {
   if (!category) {
     return (
       <Container className="py-16 text-center">
-        <h1 className="text-2xl font-bold text-slate-900 mb-4">
+        <h1 className="font-heading text-2xl font-bold text-warm-900 mb-4">
           Flokkur fannst ekki
         </h1>
-        <p className="text-slate-600 mb-8">
+        <p className="text-warm-600 mb-8">
           Þessi flokkur er ekki til. Veldu annan flokk af forsíðunni.
         </p>
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors"
+          className="inline-flex items-center gap-2 text-warm-600 hover:text-warm-900 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -53,7 +53,7 @@ export function SpjaldPage() {
       <nav aria-label="Brauðmolar" className="mb-6">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 transition-colors"
+          className="inline-flex items-center gap-2 text-sm text-warm-500 hover:text-warm-900 transition-colors"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -69,14 +69,14 @@ export function SpjaldPage() {
           style={{ backgroundColor: category.color }}
         >
           <span className="text-3xl">{category.icon}</span>
-          <h1 className="text-2xl font-bold">{category.name}</h1>
+          <h1 className="font-heading text-2xl font-bold">{category.name}</h1>
         </div>
-        <p className="text-slate-600">{category.description}</p>
+        <p className="text-warm-600">{category.description}</p>
       </div>
 
       {/* Level selector */}
       <div className="mb-8">
-        <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">
+        <h2 className="font-heading text-sm font-semibold text-warm-500 uppercase tracking-wider mb-3">
           Veldu erfiðleikastig
         </h2>
         <LevelSelector selected={level} onChange={setLevel} color={category.color} />
@@ -93,15 +93,15 @@ export function SpjaldPage() {
 
       {/* Tab navigation */}
       <div className="mb-6">
-        <div className="flex gap-1 p-1 bg-slate-100 rounded-xl max-w-lg mx-auto">
+        <div className="flex gap-1 p-1 bg-warm-100 rounded-xl max-w-lg mx-auto">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 px-3 py-2 text-sm font-semibold rounded-lg transition-all ${
                 activeTab === tab.id
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-500 hover:text-slate-700'
+                  ? 'bg-surface-raised text-warm-900 shadow-xs'
+                  : 'text-warm-500 hover:text-warm-700'
               }`}
             >
               {tab.label}

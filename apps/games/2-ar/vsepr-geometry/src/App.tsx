@@ -180,7 +180,7 @@ function App() {
 
           <div className="text-center mb-8">
             <div className="text-6xl mb-4">🏆</div>
-            <div className="text-2xl font-bold text-gray-800 mb-2">
+            <div className="text-2xl font-bold text-warm-800 mb-2">
               Þú hefur lokið öllum stigum!
             </div>
           </div>
@@ -247,7 +247,7 @@ function App() {
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
         <div className="flex justify-between items-start mb-4">
           <div className="flex-1" />
-          <h1 className="text-3xl md:text-4xl font-bold text-center text-teal-600 flex-1">
+          <h1 className="text-3xl md:text-4xl font-bold font-heading text-center text-teal-600 flex-1">
             VSEPR Rumfraedi
           </h1>
           <div className="flex-1 flex justify-end items-center gap-2">
@@ -262,7 +262,7 @@ function App() {
             />
           </div>
         </div>
-        <p className="text-center text-gray-600 mb-8">
+        <p className="text-center text-warm-600 mb-8">
           Laerdu ad spa fyrir um logun sameinda
         </p>
 
@@ -302,7 +302,7 @@ function App() {
                 <div className="text-sm text-blue-600 mt-1">
                   Kynntu þér mismunandi sameindarlögun
                 </div>
-                <div className="text-xs text-gray-600 mt-2">
+                <div className="text-xs text-warm-600 mt-2">
                   Sjáðu hvernig rafeinasvið hrinda hvert öðru og mynda mismunandi rúmfræði.
                 </div>
               </div>
@@ -315,14 +315,14 @@ function App() {
             className={`w-full p-6 rounded-xl border-4 transition-all text-left ${
               progress.level1Completed
                 ? 'border-green-400 bg-green-50 hover:bg-green-100 cursor-pointer'
-                : 'border-gray-200 bg-gray-50 opacity-60 cursor-not-allowed'
+                : 'border-warm-200 bg-warm-50 opacity-60 cursor-not-allowed'
             }`}
           >
             <div className="flex items-center gap-4">
               <div className="text-4xl">🧩</div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className={`text-xl font-bold ${progress.level1Completed ? 'text-green-800' : 'text-gray-600'}`}>
+                  <span className={`text-xl font-bold ${progress.level1Completed ? 'text-green-800' : 'text-warm-600'}`}>
                     Stig 2: Spá fyrir um lögun
                   </span>
                   {progress.level2Completed && (
@@ -331,13 +331,13 @@ function App() {
                     </span>
                   )}
                   {!progress.level1Completed && (
-                    <span className="text-xs text-gray-500">(Ljúktu stigi 1 fyrst)</span>
+                    <span className="text-xs text-warm-500">(Ljúktu stigi 1 fyrst)</span>
                   )}
                 </div>
-                <div className={`text-sm mt-1 ${progress.level1Completed ? 'text-green-600' : 'text-gray-500'}`}>
+                <div className={`text-sm mt-1 ${progress.level1Completed ? 'text-green-600' : 'text-warm-500'}`}>
                   Ákvarðaðu lögun út frá Lewis-formúlu
                 </div>
-                <div className="text-xs text-gray-600 mt-2">
+                <div className="text-xs text-warm-600 mt-2">
                   Teldu rafeinasvið og spáðu fyrir um sameindarlögun og tengihorn.
                 </div>
               </div>
@@ -350,14 +350,14 @@ function App() {
             className={`w-full p-6 rounded-xl border-4 transition-all text-left ${
               progress.level2Completed
                 ? 'border-purple-400 bg-purple-50 hover:bg-purple-100 cursor-pointer'
-                : 'border-gray-200 bg-gray-50 opacity-60 cursor-not-allowed'
+                : 'border-warm-200 bg-warm-50 opacity-60 cursor-not-allowed'
             }`}
           >
             <div className="flex items-center gap-4">
               <div className="text-4xl">⚗️</div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className={`text-xl font-bold ${progress.level2Completed ? 'text-purple-800' : 'text-gray-600'}`}>
+                  <span className={`text-xl font-bold ${progress.level2Completed ? 'text-purple-800' : 'text-warm-600'}`}>
                     Stig 3: Blendni og skautun
                   </span>
                   {progress.level3Completed && (
@@ -366,13 +366,13 @@ function App() {
                     </span>
                   )}
                   {!progress.level2Completed && (
-                    <span className="text-xs text-gray-500">(Ljúktu stigi 2 fyrst)</span>
+                    <span className="text-xs text-warm-500">(Ljúktu stigi 2 fyrst)</span>
                   )}
                 </div>
-                <div className={`text-sm mt-1 ${progress.level2Completed ? 'text-purple-600' : 'text-gray-500'}`}>
+                <div className={`text-sm mt-1 ${progress.level2Completed ? 'text-purple-600' : 'text-warm-500'}`}>
                   Ákvarðaðu blendni og hvort sameind sé skautuð
                 </div>
-                <div className="text-xs text-gray-600 mt-2">
+                <div className="text-xs text-warm-600 mt-2">
                   Flóknari sameindir með mörgum miðatómum og tvískautsvægi.
                 </div>
               </div>
@@ -382,12 +382,12 @@ function App() {
 
         {/* Progress Summary */}
         {progress.totalGamesPlayed > 0 && (
-          <div className="mt-8 bg-gray-50 p-4 rounded-xl">
+          <div className="mt-8 bg-warm-50 p-4 rounded-xl">
             <div className="flex justify-between items-center mb-3">
-              <h3 className="font-semibold text-gray-700">Framvinda</h3>
+              <h3 className="font-semibold text-warm-700">Framvinda</h3>
               <button
                 onClick={resetProgress}
-                className="text-sm text-gray-500 hover:text-red-500 transition-colors"
+                className="text-sm text-warm-500 hover:text-red-500 transition-colors"
               >
                 Endurstilla
               </button>
@@ -395,49 +395,49 @@ function App() {
             <div className="grid grid-cols-3 gap-4 text-center">
               <div className="bg-teal-50 rounded-lg p-3">
                 <div className="text-2xl font-bold text-teal-600">{levelsCompleted}/3</div>
-                <div className="text-xs text-gray-600">Stig lokið</div>
+                <div className="text-xs text-warm-600">Stig lokið</div>
               </div>
               <div className="bg-green-50 rounded-lg p-3">
                 <div className="text-2xl font-bold text-green-600">{totalScore}</div>
-                <div className="text-xs text-gray-600">Heildar stig</div>
+                <div className="text-xs text-warm-600">Heildar stig</div>
               </div>
               <div className="bg-blue-50 rounded-lg p-3">
                 <div className="text-2xl font-bold text-blue-600">{progress.totalGamesPlayed}</div>
-                <div className="text-xs text-gray-600">Leikir spilaðir</div>
+                <div className="text-xs text-warm-600">Leikir spilaðir</div>
               </div>
             </div>
           </div>
         )}
 
         {/* Geometry reference */}
-        <div className="mt-6 bg-gray-50 p-4 rounded-xl">
-          <h3 className="font-semibold text-gray-700 mb-3">📐 Algengar sameindarlögun</h3>
+        <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+          <h3 className="font-semibold text-warm-700 mb-3">📐 Algengar sameindarlögun</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
             <div className="bg-white p-2 rounded border text-center">
               <div className="text-lg mb-1">—</div>
-              <div className="font-bold text-gray-800">Línuleg</div>
-              <div className="text-xs text-gray-500">180°</div>
+              <div className="font-bold text-warm-800">Línuleg</div>
+              <div className="text-xs text-warm-500">180°</div>
             </div>
             <div className="bg-white p-2 rounded border text-center">
               <div className="text-lg mb-1">△</div>
-              <div className="font-bold text-gray-800">Þríhyrnd</div>
-              <div className="text-xs text-gray-500">120°</div>
+              <div className="font-bold text-warm-800">Þríhyrnd</div>
+              <div className="text-xs text-warm-500">120°</div>
             </div>
             <div className="bg-white p-2 rounded border text-center">
               <div className="text-lg mb-1">◇</div>
-              <div className="font-bold text-gray-800">Fjórflötungur</div>
-              <div className="text-xs text-gray-500">109.5°</div>
+              <div className="font-bold text-warm-800">Fjórflötungur</div>
+              <div className="text-xs text-warm-500">109.5°</div>
             </div>
             <div className="bg-white p-2 rounded border text-center">
               <div className="text-lg mb-1">∠</div>
-              <div className="font-bold text-gray-800">Beygð</div>
-              <div className="text-xs text-gray-500">&lt;109.5°</div>
+              <div className="font-bold text-warm-800">Beygð</div>
+              <div className="text-xs text-warm-500">&lt;109.5°</div>
             </div>
           </div>
         </div>
 
         {/* Credits */}
-        <div className="mt-6 text-center text-xs text-gray-500">
+        <div className="mt-6 text-center text-xs text-warm-500">
           Kafli 9 — Chemistry: The Central Science (Brown et al.)
         </div>
       </div>

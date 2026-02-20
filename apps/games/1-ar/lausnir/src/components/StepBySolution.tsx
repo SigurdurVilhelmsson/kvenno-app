@@ -10,7 +10,7 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
   if (problem.type === 'dilution') {
     return (
       <div className="mt-4 space-y-2">
-        <h3 className="text-lg font-bold text-gray-800">Lausn með skrefum:</h3>
+        <h3 className="text-lg font-bold text-warm-800">Lausn með skrefum:</h3>
         <div className="solution-step">
           <h4>Gefið:</h4>
           <p>M₁ = {problem.given.M1} M</p>
@@ -45,7 +45,7 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
   } else if (problem.type === 'molarity') {
     return (
       <div className="mt-4 space-y-2">
-        <h3 className="text-lg font-bold text-gray-800">Lausn með skrefum:</h3>
+        <h3 className="text-lg font-bold text-warm-800">Lausn með skrefum:</h3>
         <div className="solution-step">
           <h4>Gefið:</h4>
           <p>mól = {problem.given.moles} mol</p>
@@ -70,7 +70,7 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
   } else if (problem.type === 'molarityFromMass') {
     return (
       <div className="mt-4 space-y-2">
-        <h3 className="text-lg font-bold text-gray-800">Lausn með skrefum:</h3>
+        <h3 className="text-lg font-bold text-warm-800">Lausn með skrefum:</h3>
         <div className="solution-step">
           <h4>Gefið:</h4>
           <p>
@@ -119,7 +119,7 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
 
     return (
       <div className="mt-4 space-y-2">
-        <h3 className="text-lg font-bold text-gray-800">Lausn með skrefum:</h3>
+        <h3 className="text-lg font-bold text-warm-800">Lausn með skrefum:</h3>
         <div className="solution-step">
           <h4>Gefið:</h4>
           <p>
@@ -169,7 +169,7 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
     );
     return (
       <div className="mt-4 space-y-2">
-        <h3 className="text-lg font-bold text-gray-800">Lausn með skrefum:</h3>
+        <h3 className="text-lg font-bold text-warm-800">Lausn með skrefum:</h3>
         <div className="solution-step">
           <h4>Gefið:</h4>
           <p>M = {problem.given.molarity} M</p>

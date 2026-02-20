@@ -117,12 +117,12 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="flex justify-between items-center mb-6">
           <button
             onClick={onBack}
-            className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
           >
             ← Til baka
           </button>
           <div className="flex items-center gap-4">
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-warm-500">
               {completed + 1} / {LEVEL1_CHALLENGES.length}
             </div>
             <div className="text-lg font-bold text-blue-600">
@@ -135,12 +135,12 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <h1 className="text-2xl md:text-3xl font-bold text-blue-600 mb-2">
           📈 Stig 1: Skilningur á títrunarkúrfum
         </h1>
-        <p className="text-gray-600 mb-6">
+        <p className="text-warm-600 mb-6">
           Lærðu að þekkja mismunandi títrunarkúrfur og skilja hvernig pH breytist.
         </p>
 
         {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-blue-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((completed) / LEVEL1_CHALLENGES.length) * 100}%` }}
@@ -181,7 +181,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               const isOptionCorrect = option.isCorrect;
 
               let bgColor = 'bg-white hover:bg-blue-50';
-              let borderColor = 'border-gray-200';
+              let borderColor = 'border-warm-200';
 
               if (showResult) {
                 if (isOptionCorrect) {
@@ -209,7 +209,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     <span className={`font-bold ${showResult && isOptionCorrect ? 'text-green-600' : 'text-blue-600'}`}>
                       {option.id}.
                     </span>
-                    <span className="text-gray-800">{option.labelIs}</span>
+                    <span className="text-warm-800">{option.labelIs}</span>
                   </div>
                 </button>
               );
@@ -256,7 +256,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Action buttons */}
         <div className="flex justify-between">
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-warm-500">
             {hintMultiplier < 1 && '💡 Vísbending notuð'}
           </div>
           <div className="flex gap-3">
@@ -267,7 +267,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 className={`px-6 py-3 rounded-xl font-bold transition-colors ${
                   selectedOption
                     ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-warm-200 text-warm-400 cursor-not-allowed'
                 }`}
               >
                 Staðfesta
@@ -331,7 +331,7 @@ function TitrationCurvePreview({ curveType }: { curveType?: string }) {
   }, [curveType]);
 
   return (
-    <div className="bg-white rounded-lg p-2 border border-gray-200">
+    <div className="bg-white rounded-lg p-2 border border-warm-200">
       <InteractiveGraph
         width={500}
         height={300}

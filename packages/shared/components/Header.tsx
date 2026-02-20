@@ -1,6 +1,20 @@
 import React from 'react';
 
-export type HeaderVariant = 'default' | 'islenskubraut';
+import { FlaskConical, BookOpen, ArrowLeft } from 'lucide-react';
+
+export type HeaderVariant = 'default' | 'game';
+
+interface TrackTab {
+  id: string;
+  label: string;
+  href: string;
+  icon: React.ReactNode;
+}
+
+const TRACKS: TrackTab[] = [
+  { id: 'efnafraedi', label: 'Efnafræði', href: '/efnafraedi', icon: <FlaskConical size={18} /> },
+  { id: 'islenskubraut', label: 'Íslenskubraut', href: '/islenskubraut/', icon: <BookOpen size={18} /> },
+];
 
 interface HeaderProps {
   /** Header title — defaults to "Námsvefur Kvennó" */
@@ -9,59 +23,55 @@ interface HeaderProps {
   authSlot?: React.ReactNode;
   /** Optional callback for info button click */
   onInfoClick?: () => void;
-  /** Visual variant — 'islenskubraut' uses a subtler style */
+  /** Visual variant — 'game' uses a slim header with back link */
   variant?: HeaderVariant;
-  /** Optional subtitle for islenskubraut variant */
-  subtitle?: string;
+  /** Active track ID for highlighting the current tab */
+  activeTrack?: string;
+  /** Back link URL (used in game variant) */
+  backHref?: string;
+  /** Back link label (used in game variant) */
+  backLabel?: string;
+  /** Game title (shown in center for game variant) */
+  gameTitle?: string;
 }
 
 /**
  * Unified site-wide header for kvenno.app
  *
- * Renders logo text with nav buttons.
- * Accepts an optional authSlot prop so apps like LabReports can inject their AuthButton.
- * Use variant="islenskubraut" for the Íslenskubraut app's subtler header style.
+ * Default variant: Logo left, track tabs center, utility links right.
+ * Game variant: Back link left, game title center, tools right.
  */
 export const Header: React.FC<HeaderProps> = ({
   title = 'Námsvefur Kvennó',
   authSlot,
   onInfoClick,
   variant = 'default',
-  subtitle,
+  activeTrack,
+  backHref,
+  backLabel = 'Til baka',
+  gameTitle,
 }) => {
-  if (variant === 'islenskubraut') {
+  if (variant === 'game') {
     return (
-      <header className="bg-white border-b border-slate-200">
+      <header className="sticky top-0 z-50 bg-surface-raised shadow-sm">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <a href="/islenskubraut/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <span className="text-2xl">📚</span>
-              <div>
-                <h1 className="text-lg font-bold text-slate-900 leading-tight">
-                  {title}
-                </h1>
-                {subtitle && (
-                  <p className="text-xs text-slate-500 leading-tight">
-                    {subtitle}
-                  </p>
-                )}
-              </div>
+          <div className="flex items-center justify-between h-14">
+            <a
+              href={backHref ?? '/'}
+              className="flex items-center gap-2 text-sm font-medium text-warm-600 hover:text-kvenno-orange transition-colors min-h-[44px]"
+              aria-label={backLabel}
+            >
+              <ArrowLeft size={18} />
+              <span className="hidden sm:inline">{backLabel}</span>
             </a>
-            <nav aria-label="Fletting" className="flex items-center gap-4">
+            {gameTitle && (
+              <h1 className="font-heading text-lg font-semibold text-warm-800 truncate px-4">
+                {gameTitle}
+              </h1>
+            )}
+            <div className="flex items-center gap-2">
               {authSlot}
-              <a
-                href="/islenskubraut/"
-                className="text-sm text-slate-600 hover:text-slate-900 transition-colors"
-              >
-                Allir flokkar
-              </a>
-              <a
-                href="/"
-                className="text-sm text-kvenno-orange hover:opacity-80 transition-opacity"
-              >
-                Námsvefur Kvennó
-              </a>
-            </nav>
+            </div>
           </div>
         </div>
       </header>
@@ -69,38 +79,68 @@ export const Header: React.FC<HeaderProps> = ({
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b-2 border-kvenno-orange shadow-sm">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-        <a
-          href="/"
-          className="text-2xl font-bold text-kvenno-orange hover:opacity-80 transition-opacity no-underline"
-        >
-          {title}
-        </a>
-
-        <div className="flex items-center gap-3">
-          {authSlot}
+    <header className="sticky top-0 z-50 bg-surface-raised shadow-sm">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo / Home link */}
           <a
-            href="/admin"
-            className="px-4 py-2 border-2 border-kvenno-orange text-kvenno-orange rounded-btn font-medium hover:bg-kvenno-orange hover:text-white transition-all duration-300 no-underline"
+            href="/"
+            className="font-heading text-xl font-bold text-kvenno-orange hover:text-kvenno-orange-600 transition-colors no-underline shrink-0"
           >
-            Kennarar
+            {title}
           </a>
-          {onInfoClick ? (
-            <button
-              onClick={onInfoClick}
-              className="px-4 py-2 border-2 border-kvenno-orange text-kvenno-orange rounded-btn font-medium hover:bg-kvenno-orange hover:text-white transition-all duration-300 cursor-pointer"
-            >
-              Upplýsingar
-            </button>
-          ) : (
+
+          {/* Track tabs (hidden on mobile — BottomNav handles it) */}
+          <nav
+            aria-label="Svið"
+            className="hidden md:flex items-center gap-1"
+          >
+            {TRACKS.map((track) => {
+              const isActive = activeTrack === track.id;
+              return (
+                <a
+                  key={track.id}
+                  href={track.href}
+                  className={[
+                    'flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors no-underline min-h-[44px]',
+                    isActive
+                      ? 'text-kvenno-orange bg-kvenno-orange-50'
+                      : 'text-warm-500 hover:text-warm-700 hover:bg-warm-50',
+                  ].join(' ')}
+                  aria-current={isActive ? 'true' : undefined}
+                >
+                  {track.icon}
+                  {track.label}
+                </a>
+              );
+            })}
+          </nav>
+
+          {/* Utility links */}
+          <div className="flex items-center gap-2">
+            {authSlot}
             <a
-              href="/info"
-              className="px-4 py-2 border-2 border-kvenno-orange text-kvenno-orange rounded-btn font-medium hover:bg-kvenno-orange hover:text-white transition-all duration-300 no-underline"
+              href="/admin"
+              className="hidden sm:inline-flex items-center px-3 py-2 text-sm font-medium text-warm-600 hover:text-warm-800 hover:bg-warm-50 rounded-md transition-colors no-underline min-h-[44px]"
             >
-              Upplýsingar
+              Kennarar
             </a>
-          )}
+            {onInfoClick ? (
+              <button
+                onClick={onInfoClick}
+                className="px-3 py-2 text-sm font-medium text-warm-600 hover:text-warm-800 hover:bg-warm-50 rounded-md transition-colors cursor-pointer min-h-[44px]"
+              >
+                Upplýsingar
+              </button>
+            ) : (
+              <a
+                href="/info"
+                className="hidden sm:inline-flex items-center px-3 py-2 text-sm font-medium text-warm-600 hover:text-warm-800 hover:bg-warm-50 rounded-md transition-colors no-underline min-h-[44px]"
+              >
+                Upplýsingar
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </header>

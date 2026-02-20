@@ -209,18 +209,18 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-gray-600 hover:text-gray-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
           >
             <span>&larr;</span> Til baka
           </button>
           <div className="text-right">
-            <div className="text-sm text-gray-600">Stig 3 / Þraut {currentChallenge + 1} af {challenges.length}</div>
+            <div className="text-sm text-warm-600">Stig 3 / Þraut {currentChallenge + 1} af {challenges.length}</div>
             <div className="text-lg font-bold text-purple-600">{score} stig</div>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-purple-500 h-2 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
@@ -232,7 +232,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <h2 className="text-2xl font-bold text-purple-800 mb-2">
             {challenge.title}
           </h2>
-          <p className="text-gray-600 mb-6">{challenge.description}</p>
+          <p className="text-warm-600 mb-6">{challenge.description}</p>
 
           {/* Chemical equation display */}
           <div className="bg-purple-50 p-4 rounded-xl mb-6">
@@ -251,8 +251,8 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           {/* Formation enthalpy table */}
           {showTable && (
-            <div className="bg-gray-50 p-4 rounded-xl mb-6 max-h-64 overflow-y-auto">
-              <h3 className="font-bold text-gray-700 mb-3">Myndunarvarminn (ΔH°f) í kJ/mol</h3>
+            <div className="bg-warm-50 p-4 rounded-xl mb-6 max-h-64 overflow-y-auto">
+              <h3 className="font-bold text-warm-700 mb-3">Myndunarvarminn (ΔH°f) í kJ/mol</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
                 {Object.entries(FORMATION_ENTHALPIES)
                   .filter(([formula]) =>
@@ -262,8 +262,8 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   .map(([formula, { value, name }]) => (
                     <div key={formula} className="bg-white p-2 rounded border">
                       <div className="font-mono font-bold">{formula}</div>
-                      <div className="text-gray-600 text-xs">{name}</div>
-                      <div className={`font-bold ${value < 0 ? 'text-blue-600' : value > 0 ? 'text-red-600' : 'text-gray-600'}`}>
+                      <div className="text-warm-600 text-xs">{name}</div>
+                      <div className={`font-bold ${value < 0 ? 'text-blue-600' : value > 0 ? 'text-red-600' : 'text-warm-600'}`}>
                         {value} kJ/mol
                       </div>
                     </div>
@@ -273,8 +273,8 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           )}
 
           {/* Calculation workspace */}
-          <div className="bg-gray-50 p-4 rounded-xl mb-6">
-            <h3 className="font-bold text-gray-700 mb-3">Útreikningur</h3>
+          <div className="bg-warm-50 p-4 rounded-xl mb-6">
+            <h3 className="font-bold text-warm-700 mb-3">Útreikningur</h3>
 
             {/* Formula reminder */}
             <div className="bg-white p-3 rounded-lg border border-purple-200 mb-4">
@@ -319,7 +319,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           {/* Answer input */}
           <div className="flex flex-col md:flex-row gap-4 items-center mb-6">
             <div className="flex-1 w-full">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-warm-700 mb-2">
                 {challenge.type === 'reverse'
                   ? `ΔH°f(${challenge.unknownCompound}) = `
                   : 'ΔH°rxn = '}
@@ -330,11 +330,11 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   step="0.1"
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
-                  className="flex-1 p-3 border-2 border-gray-300 rounded-xl focus:border-purple-500 focus:outline-hidden text-lg font-mono"
+                  className="flex-1 p-3 border-2 border-warm-300 rounded-xl focus:border-purple-500 focus:outline-hidden text-lg font-mono"
                   placeholder="Sláðu inn svar..."
                   disabled={isCorrect !== null}
                 />
-                <span className="flex items-center text-gray-600 font-mono">
+                <span className="flex items-center text-warm-600 font-mono">
                   {challenge.unit}
                 </span>
               </div>
@@ -344,7 +344,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <button
                 onClick={checkAnswer}
                 disabled={!userAnswer}
-                className="bg-purple-500 hover:bg-purple-600 disabled:bg-gray-300 text-white font-bold py-3 px-8 rounded-xl transition-colors"
+                className="bg-purple-500 hover:bg-purple-600 disabled:bg-warm-300 text-white font-bold py-3 px-8 rounded-xl transition-colors"
               >
                 Athuga
               </button>
@@ -403,8 +403,8 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Key concepts reminder */}
         <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="font-bold text-gray-700 mb-2">Lykilatriði</h3>
-          <ul className="text-sm text-gray-600 space-y-1">
+          <h3 className="font-bold text-warm-700 mb-2">Lykilatriði</h3>
+          <ul className="text-sm text-warm-600 space-y-1">
             <li>• Frumefni í stöðluðu ástandi hafa ΔH°f = 0</li>
             <li>• Neikvætt ΔH°f = stöðugt efnasamband</li>
             <li>• Mundu að nota stuðla (coefficients) í útreikningi</li>

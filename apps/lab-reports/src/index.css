@@ -1,5 +1,9 @@
 @import "tailwindcss";
 @import "../../../packages/shared/styles/theme.css";
+@source "../../../packages/shared";
+
+/* Font loading for lab-reports SPA */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 
 :root {
   line-height: 1.5;
