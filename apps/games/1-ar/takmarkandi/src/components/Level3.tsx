@@ -212,7 +212,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const canSubmit =
     gameState.userLimiting !== '' &&
-    gameState.userExcess !== '' &&
+    gameState.userExcess.trim() !== '' &&
     gameState.currentReaction?.products.every(p => gameState.userProducts[p.formula]?.trim() !== '');
 
   // Setup screen

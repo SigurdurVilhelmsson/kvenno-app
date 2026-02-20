@@ -546,9 +546,12 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
 
             {/* 2D/3D Toggle */}
-            <div className="flex justify-center gap-2 mb-4">
+            <div className="flex justify-center gap-2 mb-4" role="radiogroup" aria-label="Birtingarmáti">
               <button
                 onClick={() => setViewMode('2d')}
+                role="radio"
+                aria-checked={viewMode === '2d'}
+                aria-label="Tvívíð birting"
                 className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   viewMode === '2d'
                     ? 'bg-indigo-600 text-white'
@@ -559,6 +562,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               </button>
               <button
                 onClick={() => setViewMode('3d')}
+                role="radio"
+                aria-checked={viewMode === '3d'}
+                aria-label="Þrívíð birting"
                 className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   viewMode === '3d'
                     ? 'bg-indigo-600 text-white'

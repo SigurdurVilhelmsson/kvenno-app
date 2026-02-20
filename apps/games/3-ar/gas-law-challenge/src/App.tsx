@@ -34,8 +34,7 @@ function getDefaultStats(): GameStats {
     correctAnswers: 0,
     streak: 0,
     bestStreak: 0,
-    hintsUsed: 0,
-    totalTime: 0
+    hintsUsed: 0
   };
 }
 

@@ -23,10 +23,12 @@ export const gameTranslations = createGameTranslations({
       level2: {
         name: 'Beiting',
         description: 'Spá fyrir og rökstyðja',
+        locked: 'Ljúktu stigi 1 fyrst',
       },
       level3: {
         name: 'Útreikningar',
         description: 'Fullir útreikningar með formúlum',
+        locked: 'Ljúktu stigi 2 fyrst',
       },
     },
     stats: {
@@ -88,10 +90,12 @@ export const gameTranslations = createGameTranslations({
       level2: {
         name: 'Application',
         description: 'Predict and reason',
+        locked: 'Complete level 1 first',
       },
       level3: {
         name: 'Calculations',
         description: 'Full calculations with formulas',
+        locked: 'Complete level 2 first',
       },
     },
     stats: {
@@ -153,10 +157,12 @@ export const gameTranslations = createGameTranslations({
       level2: {
         name: 'Zastosowanie',
         description: 'Przewiduj i rozumuj',
+        locked: 'Najpierw ukończ poziom 1',
       },
       level3: {
         name: 'Obliczenia',
         description: 'Pelne obliczenia z wzorami',
+        locked: 'Najpierw ukończ poziom 2',
       },
     },
     stats: {

@@ -326,7 +326,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
   // Playing screen
   const gridCols = difficulty === 'easy' ? 'grid-cols-3 md:grid-cols-4' :
-                   difficulty === 'medium' ? 'grid-cols-4' : 'grid-cols-4 md:grid-cols-5';
+                   difficulty === 'medium' ? 'grid-cols-3 md:grid-cols-4' : 'grid-cols-3 md:grid-cols-5';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-4 md:p-8">

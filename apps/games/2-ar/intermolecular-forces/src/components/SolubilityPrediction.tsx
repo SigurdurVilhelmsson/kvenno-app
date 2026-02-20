@@ -148,9 +148,12 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
   return (
     <div className={`bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl border border-cyan-200 ${compact ? 'p-4' : 'p-6'}`}>
       <div className="flex items-center justify-between mb-4">
-        <h3 className={`font-bold text-cyan-800 flex items-center gap-2 ${compact ? 'text-base' : 'text-lg'}`}>
-          <span>🧪</span> Leysni: „Líkt leysist í líku"
-        </h3>
+        <div>
+          <h3 className={`font-bold text-cyan-800 flex items-center gap-2 ${compact ? 'text-base' : 'text-lg'}`}>
+            <span>🧪</span> Leysni: „Líkt leysist í líku"
+          </h3>
+          <span className="text-xs text-cyan-600 italic">Aukaverkfæri – telst ekki í stigagjöf</span>
+        </div>
         {stats.total > 0 && (
           <div className="text-sm text-cyan-700 bg-cyan-100 px-3 py-1 rounded-full">
             {stats.correct}/{stats.total} rétt

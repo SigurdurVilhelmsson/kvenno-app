@@ -33,10 +33,10 @@
 - [ ] **1-04. Hydrate pedagogy gap** — CuSO4·5H2O appears in L3 with no explanation of hydrate notation. Add explainer tooltip.
 
 ### Minor
-- [ ] **1-05. Mystery mode distractors too easy** — 30% range too wide
+- [x] **1-05. Mystery mode distractors too easy** — Tightened from 30% to 15% range. *(Session F)*
 - [ ] **1-06. feedbackGenerator.ts untested**
 - [ ] **1-07. PeriodicTable horizontal scroll on mobile**
-- [ ] **1-08. @import CSS warning**
+- [—] **1-08. @import CSS warning** — No `@import url()` found; false positive. *(Session F)*
 
 ---
 
@@ -54,7 +54,7 @@
 ### Minor
 - [ ] **2-06. Hint tracking inconsistency across levels**
 - [ ] **2-07. Score scaling not normalized** (L1: 100, L2: 180, L3: 60–200+)
-- [ ] **2-08. Level 3 card grid layout on mobile**
+- [x] **2-08. Level 3 card grid layout on mobile** — Changed medium/hard to `grid-cols-3` on mobile. *(Session F)*
 - [ ] **2-09. Answer normalization too permissive** (þ→th false positives)
 - [ ] **2-10. Polish translations unverified**
 
@@ -74,8 +74,8 @@
 - [ ] **3-07. L3 challenges outside DA scope** — L3-15 (bacterial growth) and L3-16 (temp conversion) aren't dimensional analysis.
 
 ### Minor
-- [ ] **3-08. Mastery gate messaging missing**
-- [ ] **3-09. Hint penalty harsh (-15%)**
+- [x] **3-08. Mastery gate messaging missing** — Added lock messages with i18n (is/en/pl) for L2 and L3. *(Session F)*
+- [x] **3-09. Hint penalty harsh (-15%)** — Reduced to 10% (0.90 multiplier). *(Session F)*
 - [ ] **3-10. Composite score weightings not shown**
 
 ---
@@ -93,7 +93,7 @@
 ### Minor
 - [ ] **4-05. Limited chemical database** (only 7 chemicals)
 - [ ] **4-06. Chemistry facts pool too small** (only 7 facts)
-- [ ] **4-07. Missing ARIA labels on BeakerVisualization**
+- [x] **4-07. Missing ARIA labels on BeakerVisualization** — Added `role="img"`, `aria-label`, `<title>` to Beaker SVG. *(Session F)*
 - [ ] **4-08. Problem IDs use Math.random()** (should use crypto.randomUUID)
 
 ---
@@ -110,7 +110,7 @@
 
 ### Minor
 - [ ] **5-05. L1/L2 mastery paradigm mismatch** (75% overall vs 100% per-problem)
-- [ ] **5-06. Empty input validation in L3**
+- [x] **5-06. Empty input validation in L3** — Added `.trim()` to userExcess check in canSubmit. *(Session F)*
 - [ ] **5-07. Streak continues across difficulty changes**
 
 ---
@@ -122,8 +122,8 @@
 - [ ] **6-02. L2 hint scoring not transparent** — Score drops 5→2 with hint but deduction isn't shown to student.
 
 ### Minor
-- [ ] **6-03. OctetViolationChecker component unused** (327 lines of dead code)
-- [ ] **6-04. Molecular formula subscripts not screen-reader friendly**
+- [x] **6-03. OctetViolationChecker component unused** — Deleted 327-line unused component. *(Session F)*
+- [x] **6-04. Molecular formula subscripts not screen-reader friendly** — Added `role="img"`, `aria-label` to formula displays in Level1 and Level3. *(Session F)*
 
 ---
 
@@ -133,7 +133,7 @@
 - [x] **7-01. SVG animations lack screen reader descriptions** — Added `role="img"`, `aria-label`, `<title>` to BondAngleMeasurement (compact + full), ElectronRepulsionAnimation, and ShapeTransitionAnimation SVGs. *(Session B)*
 
 ### Minor
-- [ ] **7-02. Menu title missing diacritics** — "VSEPR Rumfraedi" → "VSEPR Rumfraedi" (App.tsx:251)
+- [x] **7-02. Menu title missing diacritics** — Replaced hardcoded strings with `t('game.title')` and `t('game.description')`. *(Session F)*
 - [ ] **7-03. L2 angle validation uses string matching** — Should parse numeric + tolerance ±2°.
 - [ ] **7-04. L2 square-planar SVG incomplete** — XeF4 doesn't show 2 lone pairs.
 
@@ -145,9 +145,9 @@
 - [x] **8-01. No mastery threshold for level progression** — Added 80% mastery check to all 3 handleLevelComplete functions; levelCompleted only set when score/maxScore >= 0.8, preserving previous mastery. *(Session E)*
 
 ### Minor
-- [ ] **8-02. L1 2D/3D toggle buttons lack aria-labels**
+- [x] **8-02. L1 2D/3D toggle buttons lack aria-labels** — Added `role="radiogroup"`, `role="radio"`, `aria-checked`, `aria-label` to 2D/3D toggle. *(Session F)*
 - [ ] **8-03. ForceStrengthAnimation keyboard navigation** (no arrow key support)
-- [ ] **8-04. SolubilityPrediction not scored** (needs "supplementary tool" label)
+- [x] **8-04. SolubilityPrediction not scored** — Added "Aukaverkfæri – telst ekki í stigagjöf" label. *(Session F)*
 - [ ] **8-05. Energy range imprecision** (London forces 0.05-40 kJ/mol too broad)
 
 ---
@@ -160,7 +160,7 @@
 - [ ] **9-03. L2 equation blocks lack keyboard navigation** — Click-only handlers, no Enter/Space/arrow key support.
 
 ### Minor
-- [ ] **9-04. Duplicated Equation interface** (Level2.tsx redefines instead of importing)
+- [x] **9-04. Duplicated Equation interface** — Replaced local definition with `import type { Equation } from '../data/challenges'`. *(Session F)*
 - [ ] **9-05. Scoring scale inconsistent** (L1: 600, L2: 500, L3: 120)
 
 ---
@@ -173,7 +173,7 @@
 
 ### Minor
 - [ ] **10-03. Particle colors not shape-differentiated** (color-blind accessibility)
-- [ ] **10-04. ConcentrationTimeGraph zero-guard missing** on calculateHalfLife()
+- [x] **10-04. ConcentrationTimeGraph zero-guard missing** — Added `if (k <= 0 || A0 <= 0) return 0` guard. *(Session F)*
 
 ---
 
@@ -186,7 +186,7 @@
 - [x] **11-04. AchievementsPanel missing focus trap** — Added `role="dialog"`, `aria-modal`, focus trap (Tab wrapping), Escape key handler, auto-focus close button, and backdrop click-to-close to shared AchievementsPanel. *(Session E)*
 
 ### Minor
-- [ ] **11-05. No confirmation before progress reset**
+- [x] **11-05. No confirmation before progress reset** — Added `window.confirm()` dialog. *(Session F)*
 - [ ] **11-06. Inconsistent chemistry terminology** ("efnasameindir" vs "sameindir")
 
 ---
@@ -202,7 +202,7 @@
 - [ ] **12-04. Color-only indicators in OxidationStateDisplay** — Add icon supplements for color-blind users.
 
 ### Minor
-- [ ] **12-05. electronsDelta calculation** may produce negative animation counts
+- [x] **12-05. electronsDelta calculation** — Fixed misleading comment; Math.abs() already guards animation. *(Session F)*
 - [ ] **12-06. Magic numbers in scoring** (hardcoded point values)
 
 ---
@@ -215,9 +215,9 @@
 - [x] **13-03. Input fields and molecule circles below mobile minimum** — Changed buttons `py-2` to `py-3` (44px+) in Level1.tsx and BufferCapacityVisualization.tsx. Changed molecule circles `w-8 h-8` to `w-10 h-10` (40px) in Level1.tsx. *(Session C)*
 
 ### Minor
-- [ ] **13-04. Dead flask animation CSS** (~60 lines unused)
+- [x] **13-04. Dead flask animation CSS** — Removed 61 lines of unused CSS. *(Session F)*
 - [ ] **13-05. Molecule counter cap at 20 arbitrary**
-- [ ] **13-06. No confirmation before progress reset**
+- [x] **13-06. No confirmation before progress reset** — Added `window.confirm()` dialog. *(Session F)*
 - [ ] **13-07. Hardcoded inline color styles** (should use Tailwind)
 
 ---
@@ -230,7 +230,7 @@
 - [x] **14-03. Prediction buttons lack focus styles & color-blind support** — Added `:focus-visible` outlines to `.predict-btn`, `.stress-btn`, `.mode-card` in styles.css. Added `::after` content (`✓`/`✗`) for correct/incorrect states. Added `focus-visible:outline` classes to Tailwind-styled buttons in App.tsx. *(Session B)*
 
 ### Minor
-- [ ] **14-04. HTML lang not updated on language change**
+- [x] **14-04. HTML lang not updated on language change** — Added `document.documentElement.lang = lang` to shared `useGameI18n` hook (all 17 games). *(Session F)*
 - [ ] **14-05. Hardcoded 20-second timer** (not configurable)
 
 ---
@@ -244,7 +244,7 @@
 
 ### Minor
 - [x] **15-04. Polish translations have encoding issues** — Fixed all Polish diacritics throughout i18n.ts `pl` section. *(Session D)*
-- [ ] **15-05. GameStats totalTime field unused**
+- [x] **15-05. GameStats totalTime field unused** — Removed from interface and default stats. *(Session F)*
 - [ ] **15-06. No game completion indicator**
 - [ ] **15-07. Particle simulation not physics-accurate for extreme values**
 
@@ -259,8 +259,8 @@
 
 ### Minor
 - [ ] **16-04. Challenge type labels hardcoded Icelandic** — Level3.tsx:88-97.
-- [ ] **16-05. Flask indicator opacity too low** (0.1 nearly invisible)
-- [ ] **16-06. Level lock messages not translated**
+- [x] **16-05. Flask indicator opacity too low** — Increased from 0.1 to 0.3. *(Session F)*
+- [x] **16-06. Level lock messages not translated** — Replaced hardcoded text with `t('levels.level2/3.locked')`. *(Session F)*
 - [ ] **16-07. L3 tolerance inconsistency** (most 2%, Challenge 7 is 5%)
 
 ---
@@ -274,7 +274,7 @@
 ### Minor
 - [ ] **17-03. DG tolerance ±5 kJ/mol generous** — Consider ±2-3 for harder levels.
 - [ ] **17-04. No tutorial or onboarding**
-- [ ] **17-05. No skip links**
+- [x] **17-05. No skip links** — Added "Fara í efni" / "Fara í verkefni" skip links to menu and game screens. *(Session F)*
 
 ---
 
@@ -284,9 +284,10 @@
 |----------|-------|-------------|
 | Critical (remaining) | 0 | All critical issues resolved |
 | Critical (fixed) | 7 + 1 false positive | 1-01a, 1-01b/2-01, 3-01, 3-02, 4-01, 5-01, 12-01; 3-03 was false positive |
-| Major (fixed) | 33 | Session B(9) + C(9) + D(6) + E(9): 3-04, 3-05, 4-02, 4-03, 6-01, 8-01, 10-01, 11-03, 11-04 |
+| Major (fixed) | 33 | Session B(9) + C(9) + D(6) + E(9) |
 | Major (remaining) | 15 | UX, accessibility, pedagogical problems |
-| Minor (remaining) | 51 | Polish, consistency, nice-to-haves |
+| Minor (fixed) | 23 | Session F: 22 fixes + 1 false positive |
+| Minor (remaining) | 28 | Polish, consistency, nice-to-haves |
 
 ### Suggested Session Order
 
@@ -308,8 +309,8 @@
 **Session E — Major pedagogical fixes** *(completed)*
 - 3-04, 3-05, 4-02, 4-03, 6-01, 8-01, 10-01, 11-03, 11-04
 
-**Session F — Minor issues (remaining polish)**
-- All remaining minor items, batched by game
+**Session F — Minor issues (remaining polish)** *(completed)*
+- 1-05, 2-08, 3-08, 3-09, 4-07, 5-06, 6-03, 6-04, 7-02, 8-02, 8-04, 9-04, 10-04, 11-05, 12-05, 13-04, 13-06, 14-04, 15-05, 16-05, 16-06, 17-05 (+ 1-08 false positive)
 
 ---
 
@@ -325,4 +326,4 @@
 | C | 2026-02-20 | 17-01, 17-02, 13-03, 11-01, 11-02, 16-03, 14-01, 14-02, 15-01, 15-03 | `fix/session-c-ux-mobile` | 9 major UX/mobile fixes across 6 games: responsive grids, touch targets, CSS fallbacks, timer pause, inline validation, deprecated API |
 | D | 2026-02-20 | 1-02, 2-03, 9-01, 10-02, 12-01, 13-01, 15-04 | `fix/session-d-i18n` | 7 major i18n fixes across 6 games: Icelandic diacritics (molmassi), Polish diacritics (kinetics, gas-law, +4 others), hardcoded UI→i18n (nafnakerfid ~77 keys, redox ~60 strings), L3 content i18n (hess-law ~40 keys), data i18n (buffer ~48 translations) |
 | E | 2026-02-20 | 3-04, 3-05, 4-02, 4-03, 6-01, 8-01, 10-01, 11-03, 11-04 | `fix/session-e-pedagogical` | 9 major pedagogical/a11y fixes across 7 games: hints added (DA L2, lausnir L2), sig fig scoring fixed, mastery thresholds (lausnir 65%, IMF 80%), CO explanation corrected, kinetics validation, bond keyboard a11y, AchievementsPanel focus trap |
-| F | | | | |
+| F | 2026-02-20 | 1-05, 1-08(FP), 2-08, 3-08, 3-09, 4-07, 5-06, 6-03, 6-04, 7-02, 8-02, 8-04, 9-04, 10-04, 11-05, 12-05, 13-04, 13-06, 14-04, 15-05, 16-05, 16-06, 17-05 | `fix/session-f-polish` | 22 minor fixes + 1 false positive across 14 games: dead code removal (OctetViolationChecker, flask CSS, totalTime), a11y (ARIA labels, skip links, focus styles, screen reader formulas), i18n (VSEPR title, lock messages, HTML lang), UX (reset confirmations, distractor range, mobile grids, hint penalty, opacity), validation (zero-guard, input trim) |

@@ -293,7 +293,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           {/* Molecule display if applicable */}
           {challenge.molecule && (
             <div className="bg-indigo-50 p-4 rounded-xl mb-4">
-              <div className="text-center font-mono text-3xl font-bold text-indigo-800">
+              <div className="text-center font-mono text-3xl font-bold text-indigo-800" role="img" aria-label={`Sameind: ${challenge.molecule}`}>
                 {challenge.molecule}
               </div>
               {challenge.elements && (

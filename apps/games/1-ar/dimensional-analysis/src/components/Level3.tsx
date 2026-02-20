@@ -156,7 +156,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
 
     // Hint penalty
     if (hintUsed) {
-      composite = composite * 0.85;
+      composite = composite * 0.9;
     }
 
     setScores({
@@ -167,7 +167,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
       composite: composite,
       sigFig: sigFigScore,
       userSigFigs: userSigFigs,
-      hintPenalty: hintUsed ? 0.15 : 0
+      hintPenalty: hintUsed ? 0.10 : 0
     });
 
     setShowFeedback(true);
@@ -454,7 +454,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                   </p>
                   <p className="text-blue-700 mb-3">{getHint()}</p>
                   <p className="text-xs text-orange-600 bg-orange-50 px-3 py-2 rounded-lg inline-block">
-                    ⚠️ 15% dregið frá heildareinkunn
+                    ⚠️ 10% dregið frá heildareinkunn
                   </p>
                 </div>
               )}
@@ -539,7 +539,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                 </p>
                 {scores.hintPenalty > 0 && (
                   <p className="text-xs text-orange-600 mt-2 bg-orange-50 px-3 py-1 rounded-full inline-block">
-                    -15% vegna vísbendingar
+                    -10% vegna vísbendingar
                   </p>
                 )}
               </div>

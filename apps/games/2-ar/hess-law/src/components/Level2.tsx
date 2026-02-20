@@ -2,15 +2,7 @@ import { useState, useCallback, useMemo } from 'react';
 
 import { EnergyPathwayDiagram } from './EnergyPathwayDiagram';
 import { calculateSum } from '../utils/hess-calculations';
-
-interface Equation {
-  id: string;
-  reactants: string;
-  products: string;
-  deltaH: number;
-  isReversed: boolean;
-  multiplier: number;
-}
+import type { Equation } from '../data/challenges';
 
 interface Puzzle {
   id: number;

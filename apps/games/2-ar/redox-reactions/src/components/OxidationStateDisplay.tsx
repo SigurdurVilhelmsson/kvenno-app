@@ -41,7 +41,7 @@ export function OxidationStateDisplay({
   const electronChanges = useMemo(() => {
     return changes.map(c => ({
       ...c,
-      electronsDelta: c.before - c.after, // Positive = lost electrons (oxidized)
+      electronsDelta: c.before - c.after, // Negative = oxidized (lost e⁻), positive = reduced (gained e⁻)
       isOxidized: c.after > c.before,
       isReduced: c.after < c.before,
     }));

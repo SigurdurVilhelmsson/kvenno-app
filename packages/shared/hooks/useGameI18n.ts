@@ -290,6 +290,7 @@ export function useGameI18n(options: UseGameI18nOptions = {}): UseGameI18nReturn
 
   const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang);
+    document.documentElement.lang = lang;
     try {
       localStorage.setItem(STORAGE_KEY, lang);
     } catch {

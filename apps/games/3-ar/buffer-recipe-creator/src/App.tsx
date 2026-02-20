@@ -120,6 +120,7 @@ function App() {
   };
 
   const resetProgress = () => {
+    if (!window.confirm('Ertu viss um að þú viljir endurstilla alla framvindu?')) return;
     const newProgress = getDefaultProgress();
     setProgress(newProgress);
     saveProgress(newProgress);

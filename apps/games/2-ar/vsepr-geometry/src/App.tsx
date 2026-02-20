@@ -55,7 +55,7 @@ function saveProgress(progress: Progress): void {
 
 function App() {
   const [activeLevel, setActiveLevel] = useState<ActiveLevel>('menu');
-  const { language, setLanguage } = useGameI18n({ gameTranslations });
+  const { language, setLanguage, t } = useGameI18n({ gameTranslations });
   const [progress, setProgress] = useState<Progress>(loadProgress);
   const [showAchievements, setShowAchievements] = useState(false);
 
@@ -248,7 +248,7 @@ function App() {
         <div className="flex justify-between items-start mb-4">
           <div className="flex-1" />
           <h1 className="text-3xl md:text-4xl font-bold font-heading text-center text-teal-600 flex-1">
-            VSEPR Rumfraedi
+            {t('game.title')}
           </h1>
           <div className="flex-1 flex justify-end items-center gap-2">
             <LanguageSwitcher
@@ -263,7 +263,7 @@ function App() {
           </div>
         </div>
         <p className="text-center text-warm-600 mb-8">
-          Laerdu ad spa fyrir um logun sameinda
+          {t('game.description')}
         </p>
 
         {/* Pedagogical explanation */}

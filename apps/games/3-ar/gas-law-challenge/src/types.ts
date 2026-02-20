@@ -117,7 +117,6 @@ export interface GameStats {
   streak: number;
   bestStreak: number;
   hintsUsed: number;
-  totalTime: number; // in seconds
 }
 
 export interface GameState {

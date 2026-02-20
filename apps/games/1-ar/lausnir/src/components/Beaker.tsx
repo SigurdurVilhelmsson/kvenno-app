@@ -34,7 +34,8 @@ export function Beaker({
 
   return (
     <div className="beaker" style={{ textAlign: 'center' }}>
-      <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+      <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`Biker: ${volume} mL${concentration ? `, ${concentration} M` : ''}${label ? `, ${label}` : ''}`}>
+        <title>{`Biker með ${volume} mL lausn${concentration ? ` af styrk ${concentration} M` : ''}`}</title>
         {/* Beaker outline */}
         <path
           d={`M 20 20 L 20 170 L 30 180 L 90 180 L 100 170 L 100 20`}

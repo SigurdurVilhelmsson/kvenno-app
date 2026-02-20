@@ -59,7 +59,7 @@ export const Flask: React.FC<FlaskProps> = ({
             style={{
               height: `${fillPercentage}%`,
               backgroundColor: solutionColor,
-              opacity: solutionColor === 'transparent' ? 0.1 : 0.7,
+              opacity: solutionColor === 'transparent' ? 0.3 : 0.7,
               mixBlendMode: 'multiply'
             }}
           >

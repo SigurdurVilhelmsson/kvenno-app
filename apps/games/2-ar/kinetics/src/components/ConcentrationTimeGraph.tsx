@@ -43,6 +43,7 @@ function calculateConcentration(
  * Calculate half-life for different orders
  */
 function calculateHalfLife(A0: number, k: number, order: 0 | 1 | 2): number {
+  if (k <= 0 || A0 <= 0) return 0;
   switch (order) {
     case 0:
       // t₁/₂ = [A]₀ / (2k)

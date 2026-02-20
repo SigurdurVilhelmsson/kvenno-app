@@ -45,10 +45,10 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
 
   // Generate mystery options (correct answer + 3 distractors)
   const generateMysteryOptions = (correct: Compound): Compound[] => {
-    // Get compounds with similar molar masses (within 30% of correct answer)
+    // Get compounds with similar molar masses (within 15% of correct answer)
     const similarCompounds = COMPOUNDS.filter(c =>
       c.formula !== correct.formula &&
-      Math.abs(c.molarMass - correct.molarMass) / correct.molarMass < 0.3
+      Math.abs(c.molarMass - correct.molarMass) / correct.molarMass < 0.15
     );
 
     // If not enough similar compounds, use random ones

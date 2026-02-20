@@ -55,7 +55,7 @@ function saveProgress(progress: Progress): void {
 
 function App() {
   const [activeLevel, setActiveLevel] = useState<ActiveLevel>('menu');
-  const { language, setLanguage } = useGameI18n({ gameTranslations });
+  const { language, setLanguage, t } = useGameI18n({ gameTranslations });
   const [progress, setProgress] = useState<Progress>(loadProgress);
   const [showAchievements, setShowAchievements] = useState(false);
 
@@ -336,7 +336,7 @@ function App() {
                     </span>
                   )}
                   {!progress.level1Completed && (
-                    <span className="text-xs text-warm-500">(Ljúktu stigi 1 fyrst)</span>
+                    <span className="text-xs text-warm-500">({t('levels.level2.locked')})</span>
                   )}
                 </div>
                 <div className={`text-sm mt-1 ${progress.level1Completed ? 'text-green-600' : 'text-warm-500'}`}>
@@ -372,7 +372,7 @@ function App() {
                     </span>
                   )}
                   {!progress.level2Completed && (
-                    <span className="text-xs text-warm-500">(Ljúktu stigi 2 fyrst)</span>
+                    <span className="text-xs text-warm-500">({t('levels.level3.locked')})</span>
                   )}
                 </div>
                 <div className={`text-sm mt-1 ${progress.level2Completed ? 'text-purple-600' : 'text-warm-500'}`}>

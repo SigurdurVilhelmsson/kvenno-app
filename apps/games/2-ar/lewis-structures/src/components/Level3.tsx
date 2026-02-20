@@ -454,7 +454,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           {challenge.molecule && (
             <div className="inline-block bg-purple-50 px-4 py-2 rounded-lg mb-4">
-              <span className="font-mono text-2xl font-bold text-purple-700">{challenge.molecule}</span>
+              <span className="font-mono text-2xl font-bold text-purple-700" role="img" aria-label={`Sameind: ${challenge.molecule}`}>{challenge.molecule}</span>
             </div>
           )}
 

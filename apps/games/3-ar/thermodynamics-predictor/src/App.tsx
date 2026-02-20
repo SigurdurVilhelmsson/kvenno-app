@@ -278,8 +278,11 @@ function App() {
   if (mode === 'menu') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-8">
+        <a href="#game-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-orange-600 focus:font-bold">
+          Fara í efni
+        </a>
         <div className="max-w-4xl mx-auto px-4">
-          <div className="bg-white rounded-lg shadow-lg p-8">
+          <div className="bg-white rounded-lg shadow-lg p-8" id="game-content">
             {/* Header with achievements button */}
             <div className="flex justify-between items-start mb-4">
               <div className="flex-1">
@@ -441,6 +444,9 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-6">
+      <a href="#problem-display" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-orange-600 focus:font-bold">
+        Fara í verkefni
+      </a>
       <div className="max-w-6xl mx-auto px-4">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
@@ -491,7 +497,7 @@ function App() {
           {/* Left Column - Problem & Controls */}
           <div className="space-y-4">
             {/* Problem Display */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
+            <div className="bg-white rounded-lg shadow-lg p-6" id="problem-display">
               <div className="mb-4">
                 <span className={`inline-block px-3 py-1 rounded-full text-white text-sm scenario-${currentProblem.scenario}`}>
                   Atburðarás {currentProblem.scenario}

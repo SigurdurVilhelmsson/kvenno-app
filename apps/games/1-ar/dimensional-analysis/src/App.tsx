@@ -185,9 +185,13 @@ function App() {
                   <p className="text-blue-100">
                     {t('levels.level2.description', 'Spá fyrir og rökstyðja')}
                   </p>
-                  {progress.levelProgress?.level1?.mastered && (
+                  {progress.levelProgress?.level1?.mastered ? (
                     <p className="text-sm text-blue-200 mt-2">
                       {t('menu.problems')}: {progress.levelProgress?.level2?.problemsCompleted || 0}/15
+                    </p>
+                  ) : (
+                    <p className="text-sm text-blue-200 mt-2 opacity-75">
+                      🔒 {t('levels.level2.locked', 'Ljúktu stigi 1 fyrst')}
                     </p>
                   )}
                 </button>
@@ -208,9 +212,13 @@ function App() {
                   <p className="text-orange-100">
                     {t('levels.level3.description', 'Fullir útreikningar með formúlum')}
                   </p>
-                  {progress.levelProgress?.level2?.mastered && (
+                  {progress.levelProgress?.level2?.mastered ? (
                     <p className="text-sm text-orange-200 mt-2">
                       {t('menu.problems')}: {progress.levelProgress?.level3?.problemsCompleted || 0}/10
+                    </p>
+                  ) : (
+                    <p className="text-sm text-orange-200 mt-2 opacity-75">
+                      🔒 {t('levels.level3.locked', 'Ljúktu stigi 2 fyrst')}
                     </p>
                   )}
                 </button>
