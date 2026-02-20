@@ -217,7 +217,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           {!showResult && (
             <button
               onClick={checkAnswer}
-              disabled={orderA === null}
+              disabled={orderA === null || (hasSecondReactant && orderB === null)}
               className="w-full bg-green-500 hover:bg-green-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
             >
               Athuga svar

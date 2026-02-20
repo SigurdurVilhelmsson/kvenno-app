@@ -93,7 +93,9 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
   const [pendingFactor, setPendingFactor] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [totalHintsUsed] = useState(0); // Level 2 doesn't have hints, but we track for consistency
+  const [hintUsed, setHintUsed] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
   const [, setRationaleCorrectCount] = useState(0);
   const [zoneState, setZoneState] = useState<ZoneState>({});
   const [useDragDrop, setUseDragDrop] = useState(true);
@@ -146,6 +148,8 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
       setPredictedUnit('');
       setShowFeedback(false);
       setZoneState({});
+      setHintUsed(false);
+      setShowHint(false);
     }
   }, [currentProblemIndex, problem]);
 
@@ -445,6 +449,13 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
             <p className="font-semibold">{problem.context}</p>
           </div>
 
+          {showHint && (
+            <div className="mb-4 bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl">
+              <h4 className="font-semibold text-yellow-800 mb-1">💡 Vísbending:</h4>
+              <p className="text-yellow-900">{problem.hint}</p>
+            </div>
+          )}
+
           <div className="mb-6 p-6 bg-gradient-to-b from-warm-50 to-warm-100 rounded-xl text-center">
             <p className="text-sm text-warm-600 mb-3">Byrja með:</p>
             <div className="flex justify-center mb-4">
@@ -506,6 +517,22 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
 
           {!showFeedback && (
             <>
+              {/* Hint button */}
+              {!hintUsed && !showFeedback && (
+                <div className="mb-4 flex justify-start">
+                  <button
+                    onClick={() => {
+                      setShowHint(true);
+                      setHintUsed(true);
+                      setTotalHintsUsed(prev => prev + 1);
+                    }}
+                    className="text-sm px-4 py-2 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-700 font-medium transition-colors"
+                  >
+                    💡 Vísbending
+                  </button>
+                </div>
+              )}
+
               {/* Mode toggle */}
               <div className="mb-4 flex justify-end">
                 <button

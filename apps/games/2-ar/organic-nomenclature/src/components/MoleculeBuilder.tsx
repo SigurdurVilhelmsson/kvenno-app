@@ -224,9 +224,9 @@ export function MoleculeBuilder({
               {i < carbonCount - 1 && (
                 <button
                   onClick={() => cycleBond(i + 1)}
-                  className="relative flex flex-col justify-center items-center hover:scale-110 transition-transform cursor-pointer group"
+                  className="relative flex flex-col justify-center items-center hover:scale-110 focus-visible:scale-110 focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:outline-none rounded transition-transform cursor-pointer group"
                   style={{ width: bondLength, height: atomSize }}
-                  title="Smelltu til að breyta tengingu"
+                  aria-label={`Tenging ${i + 1}–${i + 2}: ${bonds.find(b => b.position === i + 1)?.type === 'single' ? 'einföld' : bonds.find(b => b.position === i + 1)?.type === 'double' ? 'tvöföld' : 'þreföld'}. Smelltu til að breyta.`}
                 >
                   {/* Bond lines */}
                   {(() => {

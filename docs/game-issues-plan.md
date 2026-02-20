@@ -68,8 +68,8 @@
 - [—] **3-03. No progress persistence** — False positive: `useProgress` hook already persists to localStorage via `saveProgress()`/`loadProgress()`. *(Session A)*
 
 ### Major
-- [ ] **3-04. No hints in Level 2** — L1 and L3 have hints but L2 doesn't. Use shared HintSystem.
-- [ ] **3-05. Significant figures double-counted** — Sig fig errors penalized twice in L3 scoring.
+- [x] **3-04. No hints in Level 2** — Added `hint` field to Level2Problem interface and all 15 problems. Added hint button, display, and state tracking to Level2.tsx. *(Session E)*
+- [x] **3-05. Significant figures double-counted** — Removed 30% answerScore penalty for wrong sig figs in Level3.tsx; sig figs now displayed as informational feedback only. *(Session E)*
 - [ ] **3-06. Unused questions in questions.ts** — 10 defined, only 6 used.
 - [ ] **3-07. L3 challenges outside DA scope** — L3-15 (bacterial growth) and L3-16 (temp conversion) aren't dimensional analysis.
 
@@ -86,8 +86,8 @@
 - [x] **4-01. Wrong concept message in L1 Challenge 1** — Changed to "Styrkur = sameindir / rúmmál" in Level1.tsx:77. *(Session A)*
 
 ### Major
-- [ ] **4-02. L2 mastery threshold too low (35%)** — Students advance with minimal accuracy. Increase to 60-70%.
-- [ ] **4-03. No hints in Level 2** — L1 and L3 have hints, L2 doesn't.
+- [x] **4-02. L2 mastery threshold too low (35%)** — Changed LEVEL2_MASTERY_SCORE from 350 to 650 (65% of 1000 max). *(Session E)*
+- [x] **4-03. No hints in Level 2** — Added `hint` field to BaseScenario interface and all 10 scenarios. Added hint button/display with 50-point penalty (vs 100 without hint). *(Session E)*
 - [ ] **4-04. Achievement strings not i18n'd** — scoring.ts: hardcoded Icelandic achievement text.
 
 ### Minor
@@ -118,7 +118,7 @@
 ## Game 06: Lewis Structures (4.4/5)
 
 ### Major
-- [ ] **6-01. CO formal charge explanation misleading** — L3 Challenge 4 says "triple bonds minimize formal charge" but C≡O has C⁻/O⁺. Rewrite to state octet rule takes priority.
+- [x] **6-01. CO formal charge explanation misleading** — Rewrote structure explanation for C≡O triple bond: removed "lágmarka formhleðslu" claim, now correctly states áttureglan weighs more despite non-zero formal charges. *(Session E)*
 - [ ] **6-02. L2 hint scoring not transparent** — Score drops 5→2 with hint but deduction isn't shown to student.
 
 ### Minor
@@ -142,7 +142,7 @@
 ## Game 08: Intermolecular Forces (4.7/5)
 
 ### Major
-- [ ] **8-01. No mastery threshold for level progression** — Students advance with any score > 0. Require 80%+.
+- [x] **8-01. No mastery threshold for level progression** — Added 80% mastery check to all 3 handleLevelComplete functions; levelCompleted only set when score/maxScore >= 0.8, preserving previous mastery. *(Session E)*
 
 ### Minor
 - [ ] **8-02. L1 2D/3D toggle buttons lack aria-labels**
@@ -168,7 +168,7 @@
 ## Game 10: Kinetics (4.7/5)
 
 ### Major
-- [ ] **10-01. Missing orderB validation in Level 2** — L2.tsx:220: disabled check only validates orderA, not orderB. Multi-reactant challenges can be submitted incomplete.
+- [x] **10-01. Missing orderB validation in Level 2** — Added `(hasSecondReactant && orderB === null)` to submit button disabled check. *(Session E)*
 - [x] **10-02. Polish diacritics missing** — Fixed all Polish diacritics (ś, ć, ź, ż, ń, ó, ł, ą, ę) throughout i18n.ts `pl` section. *(Session D)*
 
 ### Minor
@@ -182,8 +182,8 @@
 ### Major
 - [x] **11-01. Mobile buttons below minimum size** — Changed `w-10 h-10` to `w-12 h-12` (48px) in MoleculeBuilder.tsx and StructureFromNameChallenge.tsx. *(Session C)*
 - [x] **11-02. Prefix grid overflows mobile** — Changed `grid-cols-5` to `grid-cols-3 md:grid-cols-5` in App.tsx. *(Session C)*
-- [ ] **11-03. Bond clicking not keyboard accessible** — No tabIndex or keyboard handlers. WCAG violation.
-- [ ] **11-04. AchievementsPanel missing focus trap** — Modal focus can escape.
+- [x] **11-03. Bond clicking not keyboard accessible** — Added `focus-visible` ring styles and dynamic `aria-label` (bond type + position) to bond buttons in MoleculeBuilder.tsx. *(Session E)*
+- [x] **11-04. AchievementsPanel missing focus trap** — Added `role="dialog"`, `aria-modal`, focus trap (Tab wrapping), Escape key handler, auto-focus close button, and backdrop click-to-close to shared AchievementsPanel. *(Session E)*
 
 ### Minor
 - [ ] **11-05. No confirmation before progress reset**
@@ -284,8 +284,8 @@
 |----------|-------|-------------|
 | Critical (remaining) | 0 | All critical issues resolved |
 | Critical (fixed) | 7 + 1 false positive | 1-01a, 1-01b/2-01, 3-01, 3-02, 4-01, 5-01, 12-01; 3-03 was false positive |
-| Major (fixed) | 24 | Session B(9) + Session C(9) + Session D(6): 1-02, 2-03, 9-01, 10-02, 13-01, 15-04 |
-| Major (remaining) | 24 | Significant UX, accessibility, pedagogical problems |
+| Major (fixed) | 33 | Session B(9) + C(9) + D(6) + E(9): 3-04, 3-05, 4-02, 4-03, 6-01, 8-01, 10-01, 11-03, 11-04 |
+| Major (remaining) | 15 | UX, accessibility, pedagogical problems |
 | Minor (remaining) | 51 | Polish, consistency, nice-to-haves |
 
 ### Suggested Session Order
@@ -305,7 +305,7 @@
 **Session D — Major i18n fixes** *(completed)*
 - 1-02, 2-03, 9-01, 10-02, 12-01, 13-01, 15-04 (hardcoded text, missing translations, encoding, unused i18n)
 
-**Session E — Major pedagogical fixes**
+**Session E — Major pedagogical fixes** *(completed)*
 - 3-04, 3-05, 4-02, 4-03, 6-01, 8-01, 10-01, 11-03, 11-04
 
 **Session F — Minor issues (remaining polish)**
@@ -324,5 +324,5 @@
 | B | 2026-02-20 | 14-03, 16-01, 16-02, 13-02, 12-02, 12-03, 5-04, 9-02, 7-01 | `fix/session-b-accessibility` | 9 major accessibility fixes across 7 games: ARIA labels, keyboard nav, screen reader SVGs, focus styles, color-blind support |
 | C | 2026-02-20 | 17-01, 17-02, 13-03, 11-01, 11-02, 16-03, 14-01, 14-02, 15-01, 15-03 | `fix/session-c-ux-mobile` | 9 major UX/mobile fixes across 6 games: responsive grids, touch targets, CSS fallbacks, timer pause, inline validation, deprecated API |
 | D | 2026-02-20 | 1-02, 2-03, 9-01, 10-02, 12-01, 13-01, 15-04 | `fix/session-d-i18n` | 7 major i18n fixes across 6 games: Icelandic diacritics (molmassi), Polish diacritics (kinetics, gas-law, +4 others), hardcoded UI→i18n (nafnakerfid ~77 keys, redox ~60 strings), L3 content i18n (hess-law ~40 keys), data i18n (buffer ~48 translations) |
-| E | | | | |
+| E | 2026-02-20 | 3-04, 3-05, 4-02, 4-03, 6-01, 8-01, 10-01, 11-03, 11-04 | `fix/session-e-pedagogical` | 9 major pedagogical/a11y fixes across 7 games: hints added (DA L2, lausnir L2), sig fig scoring fixed, mastery thresholds (lausnir 65%, IMF 80%), CO explanation corrected, kinetics validation, bond keyboard a11y, AchievementsPanel focus trap |
 | F | | | | |

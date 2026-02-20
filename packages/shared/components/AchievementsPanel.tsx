@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 import { AchievementBadge } from './AchievementBadge';
 import {
@@ -35,6 +35,45 @@ export function AchievementsPanel({
   onReset,
 }: AchievementsPanelProps) {
   const [selectedCategory, setSelectedCategory] = useState<AchievementCategory | 'all'>('all');
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Auto-focus close button on mount
+  useEffect(() => {
+    closeButtonRef.current?.focus();
+  }, []);
+
+  // Escape key closes modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && onClose) {
+        onClose();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
+  // Focus trap
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key !== 'Tab' || !dialogRef.current) return;
+
+    const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length === 0) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }, []);
 
   const filteredAchievements =
     selectedCategory === 'all'
@@ -46,8 +85,19 @@ export function AchievementsPanel({
   const percentage = Math.round((unlockedCount / allAchievements.length) * 100);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+      role="presentation"
+      onClick={(e) => { if (e.target === e.currentTarget && onClose) onClose(); }}
+    >
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Afrek"
+        onKeyDown={handleKeyDown}
+        className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+      >
         {/* Header */}
         <div className="bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-white">
           <div className="flex items-center justify-between">
@@ -61,6 +111,7 @@ export function AchievementsPanel({
             </div>
             {onClose && (
               <button
+                ref={closeButtonRef}
                 onClick={onClose}
                 className="text-white/80 hover:text-white text-2xl transition-colors"
                 aria-label="Loka"

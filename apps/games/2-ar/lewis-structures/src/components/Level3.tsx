@@ -108,7 +108,7 @@ const challenges: Challenge[] = [
         description: 'C≡O (þreföld tengsl)',
         formalCharges: [{ atom: 'C', charge: -1 }, { atom: 'O', charge: +1 }],
         isPreferred: true,
-        explanation: 'Þreföld tengsl uppfylla áttu fyrir bæði atóm og lágmarka formhleðslu.',
+        explanation: 'Þreföld tengsl uppfylla áttu fyrir bæði atóm, þó formhleðslur (C⁻ og O⁺) séu ekki núll — áttureglan vegur þyngra.',
       },
       {
         id: 'double',

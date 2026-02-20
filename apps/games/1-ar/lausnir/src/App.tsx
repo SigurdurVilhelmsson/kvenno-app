@@ -27,7 +27,7 @@ const STORAGE_KEY = 'lausnirProgress';
 
 // Mastery thresholds
 const LEVEL1_MASTERY_SCORE = 300; // 5/6 challenges at 60 points each = 300
-const LEVEL2_MASTERY_SCORE = 350; // 70% accuracy
+const LEVEL2_MASTERY_SCORE = 650; // 65% accuracy (650/1000)
 
 function loadProgress(): Progress {
   const saved = localStorage.getItem(STORAGE_KEY);

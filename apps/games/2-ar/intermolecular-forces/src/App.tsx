@@ -76,9 +76,10 @@ function App() {
   }, [progress]);
 
   const handleLevel1Complete = (score: number, maxScore: number, hintsUsed: number) => {
+    const mastered = maxScore > 0 && (score / maxScore) >= 0.8;
     setProgress(prev => ({
       ...prev,
-      level1Completed: true,
+      level1Completed: mastered || prev.level1Completed,
       level1Score: Math.max(prev.level1Score, score),
       totalGamesPlayed: prev.totalGamesPlayed + 1
     }));
@@ -87,9 +88,10 @@ function App() {
   };
 
   const handleLevel2Complete = (score: number, maxScore: number, hintsUsed: number) => {
+    const mastered = maxScore > 0 && (score / maxScore) >= 0.8;
     setProgress(prev => ({
       ...prev,
-      level2Completed: true,
+      level2Completed: mastered || prev.level2Completed,
       level2Score: Math.max(prev.level2Score, score),
       totalGamesPlayed: prev.totalGamesPlayed + 1
     }));
@@ -98,9 +100,10 @@ function App() {
   };
 
   const handleLevel3Complete = (score: number, maxScore: number, hintsUsed: number) => {
+    const mastered = maxScore > 0 && (score / maxScore) >= 0.8;
     setProgress(prev => ({
       ...prev,
-      level3Completed: true,
+      level3Completed: mastered || prev.level3Completed,
       level3Score: Math.max(prev.level3Score, score),
       totalGamesPlayed: prev.totalGamesPlayed + 1
     }));

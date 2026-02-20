@@ -13,6 +13,7 @@ interface BaseScenario {
   title: string;
   setup: string;
   question: string;
+  hint: string;
   options: {
     id: string;
     text: string;
@@ -57,6 +58,7 @@ const SCENARIOS: Scenario[] = [
     title: 'Útþynning með vatni',
     setup: 'Þú ert með 100 mL af 2.0 M NaCl lausn.',
     question: 'Hvað gerist við styrkinn ef þú bætir við 100 mL af vatni?',
+    hint: 'Fjöldi sameinda breytist ekki, en rúmmálið tvöfaldast.',
     options: [
       { id: 'a', text: 'Styrkurinn tvöfaldast (4.0 M)', isCorrect: false, explanation: 'Nei - að bæta við vatni þynnir lausnina, eykur hana ekki.' },
       { id: 'b', text: 'Styrkurinn helst óbreyttur (2.0 M)', isCorrect: false, explanation: 'Nei - þegar rúmmál eykst en sameindir haldast, lækkar styrkur.' },
@@ -73,6 +75,7 @@ const SCENARIOS: Scenario[] = [
     title: 'Bæta við leysiefni',
     setup: 'Þú ert með 200 mL af 1.5 M glúkósalausn.',
     question: 'Þú leysir upp meira af glúkósu í lausninni (án þess að breyta rúmmáli). Hvað gerist?',
+    hint: 'Rúmmálið helst óbreytt en fjöldi sameinda eykst.',
     options: [
       { id: 'a', text: 'Styrkurinn eykst', isCorrect: true, explanation: 'Rétt! Fleiri sameindir í sama rúmmáli = hærri styrkur.' },
       { id: 'b', text: 'Styrkurinn minnkar', isCorrect: false, explanation: 'Nei - að bæta við sameindum eykur styrk, ekki minnkar.' },
@@ -89,6 +92,7 @@ const SCENARIOS: Scenario[] = [
     title: 'Blanda tveggja lausna',
     setup: 'Þú blandar 100 mL af 3.0 M lausn við 100 mL af 1.0 M lausn (sama efni).',
     question: 'Hver verður endanlegur styrkur blöndunnar?',
+    hint: 'Heildarfjöldi sameinda er summa beggja lausna.',
     options: [
       { id: 'a', text: 'Nákvæmlega 2.0 M (meðaltal)', isCorrect: true, explanation: 'Rétt! Þegar rúmmálin eru jöfn er lokastyrkur meðaltal beggja.' },
       { id: 'b', text: 'Nákvæmlega 4.0 M (summa)', isCorrect: false, explanation: 'Nei - styrkur legst ekki saman svona. Sameindir dreifast á heildarrúmmálið.' },
@@ -106,6 +110,7 @@ const SCENARIOS: Scenario[] = [
     title: 'Hitun á saltlausn',
     setup: 'Þú ert með mettuð NaCl (borðsalt) lausn við 20°C.',
     question: 'Þú hitar lausnina upp í 80°C. Hvað gerist við leysigetu saltsins?',
+    hint: 'NaCl er þekkt sem undantekning — skoðaðu leysigetu feril.',
     options: [
       { id: 'a', text: 'Leysigeta eykst talsvert', isCorrect: false, explanation: 'Nei - NaCl er óvenjulegt. Leysigeta þess breytist mjög lítið með hitastigi.' },
       { id: 'b', text: 'Leysigeta eykst lítillega', isCorrect: true, explanation: 'Rétt! NaCl fer úr 36 g/100g við 20°C í 38 g/100g við 80°C - bara ~6% aukning!' },
@@ -123,6 +128,7 @@ const SCENARIOS: Scenario[] = [
     title: 'Hitun á KNO₃ lausn',
     setup: 'Þú ert með mettuð kalíumnítrat (KNO₃) lausn við 20°C.',
     question: 'Þú hitar lausnina upp í 60°C. Hvað gerist við leysigetu KNO₃?',
+    hint: 'KNO₃ hefur eitt hæsta hitaháðni meðal salta.',
     options: [
       { id: 'a', text: 'Leysigeta eykst mikið (meira en tvöfaldast)', isCorrect: true, explanation: 'Rétt! KNO₃ fer úr 32 g/100g við 20°C í 110 g/100g við 60°C - meira en þrefaldast!' },
       { id: 'b', text: 'Leysigeta eykst lítillega', isCorrect: false, explanation: 'Nei - KNO₃ hefur eina hæstu hitabreytni í leysigetu. Hún eykst gríðarlega.' },
@@ -140,6 +146,7 @@ const SCENARIOS: Scenario[] = [
     title: 'Kæling á gosi',
     setup: 'Þú ert með glas af gosi (kolsýrt vatn, CO₂) við 20°C.',
     question: 'Þú setur gosið í ísskáp (5°C). Hvað gerist við CO₂ innihaldið?',
+    hint: 'Lofttegundir hegða sér öfugt við föst efni.',
     options: [
       { id: 'a', text: 'Meira CO₂ leysist upp', isCorrect: true, explanation: 'Rétt! Lofttegundir leysast betur í köldu vatni. Þess vegna er kalt gos fríðara!' },
       { id: 'b', text: 'Minna CO₂ leysist upp', isCorrect: false, explanation: 'Nei - þetta á við um föst efni, ekki lofttegundir.' },
@@ -158,6 +165,7 @@ const SCENARIOS: Scenario[] = [
     title: 'Uppgufun',
     setup: 'Þú hefur 500 mL af 0.5 M saltlausn í opinni skál. Helmingur vatnsins gufar upp.',
     question: 'Hvað gerist við styrkinn?',
+    hint: 'Sameindir hverfa ekki — rúmmálið minnkar.',
     options: [
       { id: 'a', text: 'Styrkurinn helmingast (0.25 M)', isCorrect: false, explanation: 'Nei - minna rúmmál með sama fjölda sameinda = hærri styrkur.' },
       { id: 'b', text: 'Styrkurinn tvöfaldast (1.0 M)', isCorrect: true, explanation: 'Rétt! Helmingur rúmmáls með sama fjölda sameinda = tvöfaldur styrkur.' },
@@ -174,6 +182,7 @@ const SCENARIOS: Scenario[] = [
     title: 'Súrefni í vatni',
     setup: 'Fiskar þurfa súrefni (O₂) sem leyst er upp í vatni. Vatnið er 20°C.',
     question: 'Ef vatnið hlýnar upp í 30°C á heitu sumri, hvað gerist við súrefnisinnihaldið?',
+    hint: 'Lofttegundir leysast verr í heitu vatni.',
     options: [
       { id: 'a', text: 'Súrefni í vatninu minnkar', isCorrect: true, explanation: 'Rétt! Lofttegundir leysast verr í heitu vatni. Þetta getur skaðað fiska!' },
       { id: 'b', text: 'Súrefni í vatninu eykst', isCorrect: false, explanation: 'Nei - lofttegundir leysast VERR í heitu vatni, ekki betur.' },
@@ -191,6 +200,7 @@ const SCENARIOS: Scenario[] = [
     title: 'Þríföld útþynning',
     setup: 'Þú þarft að þynna 6.0 M sýru niður í 2.0 M.',
     question: 'Hversu mikið þarftu að auka rúmmálið?',
+    hint: 'C₁V₁ = C₂V₂. Hver er nýja rúmmálið?',
     options: [
       { id: 'a', text: 'Tvöfalda rúmmálið', isCorrect: false, explanation: 'Nei - tvöfalt rúmmál gefur 3.0 M (helmingur), ekki 2.0 M.' },
       { id: 'b', text: 'Þrífalda rúmmálið', isCorrect: true, explanation: 'Rétt! 6.0 M ÷ 3 = 2.0 M. Þrefalda rúmmálið = þriðjungur styrks.' },
@@ -207,6 +217,7 @@ const SCENARIOS: Scenario[] = [
     title: 'Sykurlausn',
     setup: 'Þú ert að búa til karamellulausn. Þú hefur mettuð sykurlausn við 20°C.',
     question: 'Þú hitar lausnina upp í 80°C. Getur þú nú bætt við meiri sykri?',
+    hint: 'Sykur er dæmi um efni með mikla hitaháðni í leysigetu.',
     options: [
       { id: 'a', text: 'Já, miklu meira', isCorrect: true, explanation: 'Rétt! Sykur fer úr 204 g/100g við 20°C í 362 g/100g við 80°C - næstum tvöfaldast!' },
       { id: 'b', text: 'Já, aðeins meira', isCorrect: false, explanation: 'Nei - sykur hefur mikla hitabreytni í leysigetu, ekki litla.' },
@@ -336,6 +347,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
   const [completed, setCompleted] = useState<number[]>([]);
+  const [showHint, setShowHint] = useState(false);
+  const [hintsUsed, setHintsUsed] = useState(0);
   const [showExplorer, setShowExplorer] = useState(false);
   const [explorerTemp, setExplorerTemp] = useState(25);
   const [selectedCompounds, setSelectedCompounds] = useState<string[]>(['KNO₃', 'NaCl', 'CO₂']);
@@ -361,25 +374,26 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
     setShowResult(true);
     if (isCorrect) {
-      setScore(prev => prev + 100);
+      setScore(prev => prev + (showHint ? 50 : 100));
       setCompleted(prev => [...prev, scenario.id]);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();
     }
-  }, [selectedAnswer, isCorrect, scenario.id, onCorrectAnswer, onIncorrectAnswer]);
+  }, [selectedAnswer, isCorrect, showHint, scenario.id, onCorrectAnswer, onIncorrectAnswer]);
 
   const handleNext = useCallback(() => {
     if (currentScenario < SCENARIOS.length - 1) {
+      setShowHint(false);
       setCurrentScenario(prev => prev + 1);
       setSelectedAnswer(null);
       setShowResult(false);
     } else {
-      const finalScore = score + (isCorrect ? 100 : 0);
+      const finalScore = score + (isCorrect ? (showHint ? 50 : 100) : 0);
       const maxScore = SCENARIOS.length * 100;
-      onComplete(finalScore, maxScore, 0); // Level 2 has no hints
+      onComplete(finalScore, maxScore, hintsUsed);
     }
-  }, [currentScenario, score, isCorrect, onComplete]);
+  }, [currentScenario, score, isCorrect, showHint, hintsUsed, onComplete]);
 
   const allComplete = currentScenario === SCENARIOS.length - 1 && showResult;
 
@@ -464,6 +478,14 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="text-xl font-semibold text-warm-800 mb-4">
               {scenario.question}
             </div>
+
+            {/* Hint display */}
+            {showHint && (
+              <div className="mb-4 bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl">
+                <h4 className="font-semibold text-yellow-800 mb-1">💡 Vísbending:</h4>
+                <p className="text-yellow-900">{scenario.hint}</p>
+              </div>
+            )}
           </div>
 
           {/* Options */}
@@ -564,19 +586,32 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           )}
 
           {/* Action button */}
-          <div className="flex justify-center">
+          <div className="flex flex-col items-center">
             {!showResult ? (
-              <button
-                onClick={handleSubmit}
-                disabled={!selectedAnswer}
-                className={`px-8 py-3 rounded-xl font-bold transition-colors ${
-                  selectedAnswer
-                    ? 'bg-green-500 hover:bg-green-600 text-white'
-                    : 'bg-warm-200 text-warm-500 cursor-not-allowed'
-                }`}
-              >
-                Staðfesta svar
-              </button>
+              <>
+                {!showHint && (
+                  <button
+                    onClick={() => {
+                      setShowHint(true);
+                      setHintsUsed(prev => prev + 1);
+                    }}
+                    className="mb-3 text-sm px-4 py-2 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-700 font-medium transition-colors"
+                  >
+                    💡 Vísbending
+                  </button>
+                )}
+                <button
+                  onClick={handleSubmit}
+                  disabled={!selectedAnswer}
+                  className={`px-8 py-3 rounded-xl font-bold transition-colors ${
+                    selectedAnswer
+                      ? 'bg-green-500 hover:bg-green-600 text-white'
+                      : 'bg-warm-200 text-warm-500 cursor-not-allowed'
+                  }`}
+                >
+                  Staðfesta svar
+                </button>
+              </>
             ) : (
               <button
                 onClick={handleNext}

@@ -135,11 +135,10 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
       }
 
       // Check significant figures if required (only for synthesis type)
+      // Note: sig figs are tracked and displayed as feedback only — not penalized in answerScore
       if (problem.type === 'synthesis' && problem.significantFigures) {
         userSigFigs = countSignificantFigures(userAnswer);
         sigFigScore = userSigFigs === problem.significantFigures ? 1 : 0;
-        // Weighted: 70% value, 30% sig figs
-        answerScore = answerScore * 0.7 + sigFigScore * 0.3;
       }
 
       if (explanation.length > 20) {
