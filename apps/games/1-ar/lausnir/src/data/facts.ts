@@ -5,5 +5,16 @@ export const CHEMISTRY_FACTS = [
   '1 M glúkósa lausn er sæt - um 180 g glúkósi á lítra!',
   'Vatnssameindir eru pólskar og leysa jónatengi vel',
   'Mólstyrkur segir til um hversu margar mól eru í einum lítra',
-  '1 mól inniheldur 6.022 × 10²³ sameindir (Avogadros tala)'
+  '1 mól inniheldur 6.022 × 10²³ sameindir (Avogadros tala)',
+  'Sjóvatn er u.þ.b. 0.6 M NaCl lausn - fjórum sinnum styrkara en blóð',
+  'Magasafi inniheldur u.þ.b. 0.1 M HCl - nóg til að leysa járn!',
+  'Matarsódi (NaHCO₃) hlutleysir sýru og er notaður í lyfseðlum og bakaðan mat',
+  'Ediksýra í borðediki er venjulega 0.8-1.0 M (ca. 5%)',
+  'Þynning breytir styrk en ekki fjölda móla í lausninni',
+  'pH = -log[H⁺] — hvert pH-stig er tífaldur munur á styrk',
+  'Mettaður NaCl lausn er um 6.1 M við herbergishita',
+  'Við útþynningu gildir M₁V₁ = M₂V₂ — mól haldast',
+  'Jónir í lausn leiða rafstraum — þess vegna leiðir saltvatn straum',
+  'Kalsíumklóríð (CaCl₂) er notað til að bræða ís á götum á vetrum',
+  'Ammóníumklóríð (NH₄Cl) kælir vatn þegar það leysist — endóþerm viðbrögð',
 ];
