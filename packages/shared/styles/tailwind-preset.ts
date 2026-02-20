@@ -8,7 +8,7 @@ export default {
       colors: {
         'kvenno-orange': {
           DEFAULT: '#f36b22',
-          dark: '#d95a1a',
+          dark: '#c55113',
           light: '#ff8c4d',
         },
       },

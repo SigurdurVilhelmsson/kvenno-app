@@ -19,16 +19,16 @@ interface BreadcrumbsProps {
  */
 export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
   return (
-    <nav className="flex items-center gap-2 text-sm text-gray-500 mb-4" aria-label="Brauðmolar">
+    <nav className="flex items-center gap-2 text-sm text-slate-500 mb-4" aria-label="Brauðmolar">
       {items.map((item, index) => (
         <React.Fragment key={index}>
-          {index > 0 && <ChevronRight size={16} className="text-gray-400" />}
+          {index > 0 && <ChevronRight size={16} className="text-slate-400" />}
           {item.href ? (
             <a href={item.href} className="text-kvenno-orange hover:underline no-underline">
               {item.label}
             </a>
           ) : (
-            <span className="text-gray-900 font-medium" aria-current="page">
+            <span className="text-slate-900 font-medium" aria-current="page">
               {item.label}
             </span>
           )}

@@ -35,6 +35,21 @@ vi.mock('@kvenno/shared/components', () => ({
       </ol>
     </nav>
   ),
+  Card: ({ children, className, ...props }: Record<string, unknown>) => (
+    <div data-testid="card" className={className as string} {...props}>{children as React.ReactNode}</div>
+  ),
+  Button: ({ children, href, as, className, ...props }: Record<string, unknown>) => {
+    const Tag = as === 'a' ? 'a' : 'button';
+    return <Tag href={href as string} className={className as string} {...props}>{children as React.ReactNode}</Tag>;
+  },
+  Badge: ({ children }: { children: React.ReactNode }) => <span data-testid="badge">{children}</span>,
+  Container: ({ children, className }: { children: React.ReactNode; className?: string }) => (
+    <div data-testid="container" className={className}>{children}</div>
+  ),
+  PageBackground: ({ children, className }: { children: React.ReactNode; className?: string }) => (
+    <div data-testid="page-background" className={className}>{children}</div>
+  ),
+  SkipLink: () => <a href="#main-content" className="skip-link">Fara beint í efni</a>,
 }));
 
 // ---------------------------------------------------------------------------

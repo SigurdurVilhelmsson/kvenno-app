@@ -5,7 +5,7 @@
 export const colors = {
   // Primary brand colors
   primary: '#f36b22',
-  primaryDark: '#d95a1a',
+  primaryDark: '#c55113',
   primaryLight: '#ff8c4d',
 
   // Semantic colors

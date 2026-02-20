@@ -30,7 +30,7 @@ export function LevelSelector({
               ${
                 isSelected
                   ? 'text-white shadow-lg scale-105'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }
             `}
             style={isSelected ? { backgroundColor: color } : undefined}
@@ -38,7 +38,7 @@ export function LevelSelector({
             <div className="text-lg">{level.label}</div>
             <div
               className={`text-xs mt-0.5 ${
-                isSelected ? 'text-white/80' : 'text-gray-400'
+                isSelected ? 'text-white/80' : 'text-slate-400'
               }`}
             >
               {level.description}

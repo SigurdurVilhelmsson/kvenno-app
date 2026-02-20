@@ -1,16 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 @import "tailwindcss";
 @import "../../../../../packages/shared/styles/theme.css";
-
-* {
-  font-family: 'Inter', sans-serif;
-}
-
-*:focus-visible {
-  outline: 2px solid #f36b22;
-  outline-offset: 2px;
-}
+@import "../../../../../packages/shared/styles/game-base.css";
 
 /* Carbon chain visualization */
 .carbon-chain {

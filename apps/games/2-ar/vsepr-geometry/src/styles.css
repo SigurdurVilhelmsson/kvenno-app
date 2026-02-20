@@ -1,50 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 @import "tailwindcss";
 @import "../../../../../packages/shared/styles/theme.css";
-
-* {
-  font-family: 'Inter', sans-serif;
-}
-
-/* Accessibility Features */
-.skip-link {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  background: #f36b22;
-  color: white;
-  padding: 8px;
-  text-decoration: none;
-  z-index: 100;
-}
-
-.skip-link:focus {
-  top: 0;
-}
-
-/* Focus visible for keyboard navigation */
-*:focus-visible {
-  outline: 2px solid #f36b22;
-  outline-offset: 2px;
-}
-
-/* Kvennaskólinn Brand Colors */
-.bg-primary-orange {
-  background-color: #f36b22;
-}
-
-.bg-dark-orange {
-  background-color: #d95a1a;
-}
-
-.border-primary-orange {
-  border-color: #f36b22;
-}
-
-.text-primary-orange {
-  color: #f36b22;
-}
+@import "../../../../../packages/shared/styles/game-base.css";
 
 /* 3D Molecule Viewer */
 .molecule-3d-container {

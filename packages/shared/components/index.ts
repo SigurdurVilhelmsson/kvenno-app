@@ -4,6 +4,20 @@ export { Breadcrumbs } from './Breadcrumbs';
 export type { BreadcrumbItem } from './Breadcrumbs';
 export { Footer } from './Footer';
 
+// Design system primitives
+export { Card } from './Card';
+export type { CardProps, CardVariant, CardPadding } from './Card';
+export { Button } from './Button';
+export type { ButtonProps, ButtonVariant, ButtonSize } from './Button';
+export { Container } from './Container';
+export type { ContainerProps } from './Container';
+export { PageBackground } from './PageBackground';
+export type { PageBackgroundProps, PageBackgroundVariant } from './PageBackground';
+export { Badge } from './Badge';
+export type { BadgeProps, BadgeVariant } from './Badge';
+export { SkipLink } from './SkipLink';
+export type { SkipLinkProps } from './SkipLink';
+
 export { ErrorBoundary, useErrorHandler } from './ErrorBoundary';
 export { AchievementBadge } from './AchievementBadge';
 export { AchievementNotificationPopup, AchievementNotificationsContainer } from './AchievementNotificationPopup';

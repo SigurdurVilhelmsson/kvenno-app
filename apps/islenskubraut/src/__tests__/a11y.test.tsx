@@ -10,6 +10,26 @@ expect.extend(toHaveNoViolations);
 // Mock heavy sub-components used by SpjaldPage to keep tests focused on
 // the structural a11y of the shell / layout.
 // ---------------------------------------------------------------------------
+// Mock shared components to avoid pulling in heavy dependency chains (react-three/fiber)
+vi.mock('@kvenno/shared/components', () => ({
+  Header: ({ subtitle }: { variant?: string; title?: string; subtitle?: string }) => (
+    <header data-testid="header">
+      <span>Íslenskubraut</span>
+      {subtitle && <span>{subtitle}</span>}
+      <nav><a href="/">Allir flokkar</a><a href="/">Námsvefur Kvennó</a></nav>
+    </header>
+  ),
+  Footer: ({ subtitle }: { variant?: string; subtitle?: string }) => (
+    <footer data-testid="footer">
+      <p>Íslenskubraut — Kvennaskólinn í Reykjavík</p>
+      {subtitle && <p>{subtitle}</p>}
+    </footer>
+  ),
+  Container: ({ children, className }: { children: React.ReactNode; className?: string }) => (
+    <div data-testid="container" className={className}>{children}</div>
+  ),
+}));
+
 vi.mock('../components/DownloadButton', () => ({
   DownloadButton: () => <button>Hala niður PDF</button>,
 }));

@@ -18,9 +18,9 @@ vi.mock('@azure/msal-react', () => ({
 }));
 
 // ---------------------------------------------------------------------------
-// Mock shared components that carry their own dependency trees
+// Mock shared components barrel to avoid pulling in heavy dependency chains (react-three/fiber)
 // ---------------------------------------------------------------------------
-vi.mock('@kvenno/shared/components/Breadcrumbs', () => ({
+vi.mock('@kvenno/shared/components', () => ({
   Breadcrumbs: ({ items }: { items: { label: string; href?: string }[] }) => (
     <nav aria-label="Breadcrumbs" data-testid="breadcrumbs">
       {items.map((item, i) => (
@@ -28,14 +28,17 @@ vi.mock('@kvenno/shared/components/Breadcrumbs', () => ({
       ))}
     </nav>
   ),
-}));
-
-vi.mock('@kvenno/shared/components/Header', () => ({
   Header: ({ authSlot }: { authSlot?: React.ReactNode; onInfoClick?: () => void }) => (
     <header data-testid="header">
       <span>Námsvefur Kvennó</span>
       {authSlot}
     </header>
+  ),
+  Container: ({ children, className }: { children: React.ReactNode; className?: string }) => (
+    <div data-testid="container" className={className}>{children}</div>
+  ),
+  Card: ({ children, className, ...props }: Record<string, unknown>) => (
+    <div data-testid="card" className={className as string} {...props}>{children as React.ReactNode}</div>
   ),
 }));
 

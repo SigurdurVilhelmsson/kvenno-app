@@ -2,8 +2,7 @@ import React, { Suspense, useEffect } from 'react';
 
 import { History, GraduationCap, BookOpen, ArrowLeft } from 'lucide-react';
 
-import { Breadcrumbs } from '@kvenno/shared/components/Breadcrumbs';
-import { Header } from '@kvenno/shared/components/Header';
+import { Breadcrumbs, Header, Container, Card } from '@kvenno/shared/components';
 
 import { AuthButton } from './components/AuthButton';
 import { FileUpload } from './components/FileUpload';
@@ -199,7 +198,7 @@ function App() {
         onInfoClick={() => dispatch({ type: 'TOGGLE_INFO' })}
       />
 
-      <div className="max-w-7xl mx-auto p-6">
+      <Container className="py-6">
         <Breadcrumbs items={breadcrumbs} />
 
         {/* Back button */}
@@ -211,7 +210,7 @@ function App() {
           <span className="font-medium">Til baka</span>
         </a>
 
-        <div className="bg-white rounded-lg shadow-xl p-8 mb-6">
+        <Card variant="elevated" padding="lg" className="mb-6">
           {/* Info panel */}
           {state.ui.showInfo && (
             <div className="mb-6 p-4 bg-orange-50 border border-kvenno-orange rounded-lg">
@@ -335,7 +334,7 @@ function App() {
               />
             </>
           )}
-        </div>
+        </Card>
 
         {/* Results display */}
         {state.view === 'grader' && state.mode === 'teacher' && (
@@ -355,7 +354,7 @@ function App() {
             <StudentFeedbackComponent feedback={state.results.studentFeedback} sections={sections} />
           </Suspense>
         )}
-      </div>
+      </Container>
 
       {/* Modals and Toast */}
       <SaveDialog

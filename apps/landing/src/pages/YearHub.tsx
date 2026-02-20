@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import { Breadcrumbs } from '@kvenno/shared/components';
+import { Breadcrumbs, Card, Badge } from '@kvenno/shared/components';
 import type { BreadcrumbItem } from '@kvenno/shared/components';
 
 type YearKey = '1-ar' | '2-ar' | '3-ar' | 'val' | 'f-bekkir';
@@ -176,37 +176,34 @@ const yearConfigs: Record<YearKey, YearConfig> = {
 };
 
 function ToolCardComponent({ tool }: { tool: ToolCard }) {
-  const baseClasses =
-    'bg-white border-2 border-kvenno-orange rounded-xl p-8 no-underline text-gray-800 shadow-[0_2px_4px_rgba(0,0,0,0.1)] flex flex-col transition-all duration-300';
-
   if (tool.comingSoon) {
     return (
-      <div
-        className={`${baseClasses} opacity-60 border-dashed cursor-not-allowed`}
+      <Card
+        variant="outlined"
+        padding="lg"
+        className="opacity-60 border-dashed cursor-not-allowed flex flex-col"
         role="article"
         aria-disabled="true"
       >
         <h2 className="text-kvenno-orange text-2xl font-bold mb-4">{tool.title}</h2>
-        <p className="text-gray-500 flex-grow">{tool.description}</p>
-        <span className="mt-4 text-sm text-gray-400 italic">{tool.status}</span>
-      </div>
+        <p className="text-slate-500 flex-grow">{tool.description}</p>
+        <span className="mt-4 text-sm text-slate-400 italic">{tool.status}</span>
+      </Card>
     );
   }
 
   return (
     <a
       href={tool.href}
-      className={`${baseClasses} hover:-translate-y-[5px] hover:shadow-[0_4px_12px_rgba(243,107,34,0.3)]`}
+      className="bg-white border-2 border-kvenno-orange rounded-xl p-8 no-underline text-slate-800 shadow-card flex flex-col transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
     >
       <h2 className="text-kvenno-orange text-2xl font-bold mb-4">{tool.title}</h2>
-      <p className="text-gray-500 flex-grow">{tool.description}</p>
-      <span
-        className={`mt-4 text-sm ${
-          tool.active ? 'text-green-600 font-bold not-italic' : 'text-gray-400 italic'
-        }`}
-      >
-        {tool.status}
-      </span>
+      <p className="text-slate-500 flex-grow">{tool.description}</p>
+      {tool.active ? (
+        <Badge variant="success" className="mt-4 self-start">{tool.status}</Badge>
+      ) : (
+        <span className="mt-4 text-sm text-slate-400 italic">{tool.status}</span>
+      )}
     </a>
   );
 }
@@ -230,28 +227,28 @@ export function YearHub({ year }: YearHubProps) {
       {/* Back Button */}
       <Link
         to="/efnafraedi"
-        className="inline-block mb-8 py-3 px-6 bg-white border-2 border-kvenno-orange text-kvenno-orange no-underline rounded-lg transition-all duration-300 hover:bg-kvenno-orange hover:text-white"
+        className="inline-flex items-center gap-2 mb-8 px-4 py-2 border-2 border-kvenno-orange text-kvenno-orange no-underline rounded-btn font-medium transition-all duration-300 hover:bg-kvenno-orange hover:text-white"
         aria-label="Fara til baka í efnafræði"
       >
         &larr; Til baka
       </Link>
 
       {/* Page Title */}
-      <section className="text-center py-8 px-8 bg-white rounded-xl mb-12 shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+      <Card variant="elevated" padding="lg" className="text-center mb-12">
         <h1 className="text-kvenno-orange text-4xl md:text-[2.5rem] font-bold mb-2">
           {config.pageTitle}
         </h1>
-        <p className="text-lg text-gray-500">{config.pageDescription}</p>
-      </section>
+        <p className="text-lg text-slate-500">{config.pageDescription}</p>
+      </Card>
 
       {/* Tools Grid or Empty State */}
       {config.isEmpty ? (
-        <div className="text-center py-16 px-8 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+        <Card variant="elevated" padding="lg" className="text-center">
           <h2 className="text-kvenno-orange text-3xl font-bold mb-4">{config.emptyTitle}</h2>
-          <p className="text-gray-500 text-lg max-w-[600px] mx-auto">
+          <p className="text-slate-500 text-lg max-w-[600px] mx-auto">
             {config.emptyDescription}
           </p>
-        </div>
+        </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8 mb-12">
           {config.tools.map((tool) => (
@@ -262,4 +259,3 @@ export function YearHub({ year }: YearHubProps) {
     </>
   );
 }
-

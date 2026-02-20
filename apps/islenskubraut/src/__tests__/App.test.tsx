@@ -7,6 +7,26 @@ import { App } from '../App';
 import { categories, getCategoryById } from '../data';
 import { Home } from '../pages/Home';
 
+// Mock shared components to avoid pulling in heavy dependency chains (react-three/fiber)
+vi.mock('@kvenno/shared/components', () => ({
+  Header: ({ subtitle }: { variant?: string; title?: string; subtitle?: string }) => (
+    <header data-testid="header">
+      <span>Íslenskubraut</span>
+      {subtitle && <span>{subtitle}</span>}
+      <nav><a href="/">Allir flokkar</a><a href="/">Námsvefur Kvennó</a></nav>
+    </header>
+  ),
+  Footer: ({ subtitle }: { variant?: string; subtitle?: string }) => (
+    <footer data-testid="footer">
+      <p>Íslenskubraut — Kvennaskólinn í Reykjavík</p>
+      {subtitle && <p>{subtitle}</p>}
+    </footer>
+  ),
+  Container: ({ children, className }: { children: React.ReactNode; className?: string }) => (
+    <div data-testid="container" className={className}>{children}</div>
+  ),
+}));
+
 // Mock the DownloadButton to avoid fetch calls in tests
 vi.mock('../components/DownloadButton', () => ({
   DownloadButton: ({ categoryId, level }: { categoryId: string; level: string }) => (

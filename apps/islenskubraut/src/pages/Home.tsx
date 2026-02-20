@@ -1,15 +1,17 @@
+import { Container } from '@kvenno/shared/components';
+
 import { CategoryCard } from '../components/CategoryCard';
 import { categories } from '../data';
 
 export function Home() {
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+    <Container className="py-10 sm:py-16">
       {/* Hero section */}
       <div className="text-center mb-12">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
           Kennsluspjöld fyrir íslenskukennslu
         </h1>
-        <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+        <p className="text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
           Veldu efnisflokk og erfiðleikastig til að búa til prentvæn spjöld sem
           styðja nemendur í að lýsa myndum munnlega á íslensku.
         </p>
@@ -18,25 +20,25 @@ export function Home() {
       {/* How it works */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-14">
         <div className="text-center p-4">
-          <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900 text-white text-sm font-bold mb-3">
+          <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 text-white text-sm font-bold mb-3">
             1
           </div>
-          <p className="font-semibold text-gray-900 mb-1">Veldu flokk</p>
-          <p className="text-sm text-gray-500">Dýr, matur, farartæki og fleira</p>
+          <p className="font-semibold text-slate-900 mb-1">Veldu flokk</p>
+          <p className="text-sm text-slate-500">Dýr, matur, farartæki og fleira</p>
         </div>
         <div className="text-center p-4">
-          <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900 text-white text-sm font-bold mb-3">
+          <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 text-white text-sm font-bold mb-3">
             2
           </div>
-          <p className="font-semibold text-gray-900 mb-1">Veldu stig</p>
-          <p className="text-sm text-gray-500">A1 byrjandi, A2 grunnþekking, B1 miðstig</p>
+          <p className="font-semibold text-slate-900 mb-1">Veldu stig</p>
+          <p className="text-sm text-slate-500">A1 byrjandi, A2 grunnþekking, B1 miðstig</p>
         </div>
         <div className="text-center p-4">
-          <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-900 text-white text-sm font-bold mb-3">
+          <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 text-white text-sm font-bold mb-3">
             3
           </div>
-          <p className="font-semibold text-gray-900 mb-1">Hladdu niður</p>
-          <p className="text-sm text-gray-500">Fáðu PDF til að prenta og plasta</p>
+          <p className="font-semibold text-slate-900 mb-1">Hladdu niður</p>
+          <p className="text-sm text-slate-500">Fáðu PDF til að prenta og plasta</p>
         </div>
       </div>
 
@@ -46,6 +48,6 @@ export function Home() {
           <CategoryCard key={category.id} category={category} />
         ))}
       </div>
-    </div>
+    </Container>
   );
 }
