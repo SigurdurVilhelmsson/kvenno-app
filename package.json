@@ -75,19 +75,5 @@
   },
   "packageManager": "pnpm@9.15.0",
   "pnpm": {
-    "peerDependencyRules": {
-      "allowedVersions": {
-        "@react-three/fiber>react": "^19.0.0",
-        "@react-three/fiber>react-dom": "^19.0.0",
-        "@react-three/drei>react": "^19.0.0",
-        "@react-three/drei>react-dom": "^19.0.0",
-        "react-reconciler>react": "^19.0.0",
-        "@react-spring/core>react": "^19.0.0",
-        "@react-spring/animated>react": "^19.0.0",
-        "@react-spring/shared>react": "^19.0.0",
-        "@react-spring/three>react": "^19.0.0",
-        "react-composer>react": "^19.0.0"
-      }
-    }
   }
 }
