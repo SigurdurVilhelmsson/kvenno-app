@@ -31,7 +31,7 @@ export const Flask: React.FC<FlaskProps> = ({
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative w-60 h-70">
+      <div className="relative w-48 md:w-60 h-70">
         {/* Flask neck */}
         <div
           className="mx-auto w-12 h-18 rounded-t-lg border-4 border-indigo-500 border-b-0 relative"
@@ -45,7 +45,7 @@ export const Flask: React.FC<FlaskProps> = ({
         <div
           role="img"
           aria-label={`Erlenmeyerkolbi: pH ${pH.toFixed(2)}, ${(volumeAnalyte + volumeTitrant).toFixed(1)} mL lausn — ${pH < 7 ? 'súr' : pH > 7 ? 'basísk' : 'hlutlaus'}`}
-          className={`relative w-60 h-52 border-4 border-indigo-500 overflow-hidden ${isSwirling ? 'animate-pulse' : ''}`}
+          className={`relative w-48 md:w-60 h-52 border-4 border-indigo-500 overflow-hidden ${isSwirling ? 'animate-pulse' : ''}`}
           style={{
             background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0.75) 100%)',
             clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)',

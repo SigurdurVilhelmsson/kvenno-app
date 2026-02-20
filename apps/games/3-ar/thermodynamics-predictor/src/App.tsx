@@ -507,7 +507,7 @@ function App() {
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="bg-red-50 p-3 rounded-lg">
                   <div className="text-sm text-warm-600">Entalpía (ΔH°)</div>
-                  <div className="text-xl font-bold" style={{color: currentProblem.deltaH < 0 ? 'var(--exothermic)' : 'var(--endothermic)'}}>
+                  <div className="text-xl font-bold" style={{color: currentProblem.deltaH < 0 ? 'var(--exothermic, #ff6b6b)' : 'var(--endothermic, #4dabf7)'}}>
                     {currentProblem.deltaH > 0 ? '+' : ''}{currentProblem.deltaH} kJ/mol
                   </div>
                   <div className="text-xs mt-1">
@@ -517,7 +517,7 @@ function App() {
 
                 <div className="bg-purple-50 p-3 rounded-lg">
                   <div className="text-sm text-warm-600">Óreiða (ΔS°)</div>
-                  <div className="text-xl font-bold" style={{color: currentProblem.deltaS > 0 ? 'var(--entropy-increase)' : 'var(--entropy-decrease)'}}>
+                  <div className="text-xl font-bold" style={{color: currentProblem.deltaS > 0 ? 'var(--entropy-increase, #22c55e)' : 'var(--entropy-decrease, #a855f7)'}}>
                     {currentProblem.deltaS > 0 ? '+' : ''}{currentProblem.deltaS} J/(mol·K)
                   </div>
                   <div className="text-xs mt-1">
@@ -641,7 +641,7 @@ function App() {
                   <label className="block text-sm font-medium mb-2">
                     Sjálfviljugheit:
                   </label>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
                     <button
                       onClick={() => setUserSpontaneity('spontaneous')}
                       className={`px-4 py-2 rounded-lg border-2 transition ${

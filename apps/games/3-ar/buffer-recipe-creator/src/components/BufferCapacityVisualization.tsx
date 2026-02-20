@@ -416,7 +416,7 @@ export function BufferCapacityVisualization({
           {/* Reset button */}
           <button
             onClick={handleReset}
-            className="w-full mt-3 py-2 bg-warm-600 hover:bg-warm-500 text-white text-sm rounded transition-colors"
+            className="w-full mt-3 py-3 bg-warm-600 hover:bg-warm-500 text-white text-sm rounded transition-colors"
           >
             ↺ Endurstilla
           </button>
@@ -426,7 +426,7 @@ export function BufferCapacityVisualization({
       {/* Comparison toggle */}
       <button
         onClick={() => setShowComparison(!showComparison)}
-        className="w-full py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded transition-colors mb-3"
+        className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded transition-colors mb-3"
       >
         {showComparison ? '▼ Fela samanburð' : '▶ Sýna samanburð við vatn'}
       </button>

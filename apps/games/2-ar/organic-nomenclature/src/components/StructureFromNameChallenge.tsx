@@ -432,7 +432,7 @@ export function StructureFromNameChallenge({
               <button
                 onClick={() => updateCarbonCount(carbonCount - 1)}
                 disabled={carbonCount <= 2}
-                className={`w-10 h-10 rounded-full font-bold text-xl transition-all ${
+                className={`w-12 h-12 rounded-full font-bold text-xl transition-all ${
                   carbonCount > 2
                     ? 'bg-red-500 hover:bg-red-600 text-white'
                     : 'bg-warm-200 text-warm-400 cursor-not-allowed'
@@ -449,7 +449,7 @@ export function StructureFromNameChallenge({
               <button
                 onClick={() => updateCarbonCount(carbonCount + 1)}
                 disabled={carbonCount >= 8}
-                className={`w-10 h-10 rounded-full font-bold text-xl transition-all ${
+                className={`w-12 h-12 rounded-full font-bold text-xl transition-all ${
                   carbonCount < 8
                     ? 'bg-green-500 hover:bg-green-600 text-white'
                     : 'bg-warm-200 text-warm-400 cursor-not-allowed'

@@ -311,7 +311,7 @@ export default function Level1({
                 <div className="flex flex-wrap gap-2 min-h-[60px] bg-red-50 rounded-lg p-3">
                   {Array.from({ length: acidCount }).map((_, i) => (
                     <div key={`acid-${i}`}
-                         className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md transition-all duration-200 hover:scale-110"
+                         className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md transition-all duration-200 hover:scale-110"
                          style={{
                            animation: `fadeIn 0.2s ease-out ${i * 0.02}s both`
                          }}>
@@ -332,7 +332,7 @@ export default function Level1({
                 <div className="flex flex-wrap gap-2 min-h-[60px] bg-blue-50 rounded-lg p-3">
                   {Array.from({ length: baseCount }).map((_, i) => (
                     <div key={`base-${i}`}
-                         className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md transition-all duration-200 hover:scale-110"
+                         className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md transition-all duration-200 hover:scale-110"
                          style={{
                            animation: `fadeIn 0.2s ease-out ${i * 0.02}s both`
                          }}>
@@ -363,7 +363,7 @@ export default function Level1({
                     onClick={removeAcid}
                     disabled={acidCount === 0}
                     aria-label="Fjarlægja sýrusameind"
-                    className="flex-1 py-2 bg-red-100 hover:bg-red-200 disabled:bg-warm-100 disabled:text-warm-400 rounded-lg font-bold transition-colors"
+                    className="flex-1 py-3 bg-red-100 hover:bg-red-200 disabled:bg-warm-100 disabled:text-warm-400 rounded-lg font-bold transition-colors"
                   >
                     − Fjarlægja
                   </button>
@@ -371,7 +371,7 @@ export default function Level1({
                     onClick={addAcid}
                     disabled={acidCount >= 20}
                     aria-label="Bæta við sýrusameind"
-                    className="flex-1 py-2 bg-red-500 hover:bg-red-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors"
+                    className="flex-1 py-3 bg-red-500 hover:bg-red-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors"
                   >
                     + Bæta við
                   </button>
@@ -385,7 +385,7 @@ export default function Level1({
                     onClick={removeBase}
                     disabled={baseCount === 0}
                     aria-label="Fjarlægja basasameind"
-                    className="flex-1 py-2 bg-blue-100 hover:bg-blue-200 disabled:bg-warm-100 disabled:text-warm-400 rounded-lg font-bold transition-colors"
+                    className="flex-1 py-3 bg-blue-100 hover:bg-blue-200 disabled:bg-warm-100 disabled:text-warm-400 rounded-lg font-bold transition-colors"
                   >
                     − Fjarlægja
                   </button>
@@ -393,7 +393,7 @@ export default function Level1({
                     onClick={addBase}
                     disabled={baseCount >= 20}
                     aria-label="Bæta við basasameind"
-                    className="flex-1 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors"
+                    className="flex-1 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors"
                   >
                     + Bæta við
                   </button>

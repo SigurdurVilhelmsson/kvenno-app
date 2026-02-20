@@ -180,8 +180,8 @@
 ## Game 11: Organic Nomenclature (4.4/5)
 
 ### Major
-- [ ] **11-01. Mobile buttons below minimum size** — MoleculeBuilder.tsx, StructureFromNameChallenge.tsx: ±buttons are 40px, should be 44px+. Change `w-10 h-10` to `w-12 h-12`.
-- [ ] **11-02. Prefix grid overflows mobile** — App.tsx:386: `grid-cols-5` needs `grid-cols-3 md:grid-cols-5`.
+- [x] **11-01. Mobile buttons below minimum size** — Changed `w-10 h-10` to `w-12 h-12` (48px) in MoleculeBuilder.tsx and StructureFromNameChallenge.tsx. *(Session C)*
+- [x] **11-02. Prefix grid overflows mobile** — Changed `grid-cols-5` to `grid-cols-3 md:grid-cols-5` in App.tsx. *(Session C)*
 - [ ] **11-03. Bond clicking not keyboard accessible** — No tabIndex or keyboard handlers. WCAG violation.
 - [ ] **11-04. AchievementsPanel missing focus trap** — Modal focus can escape.
 
@@ -212,7 +212,7 @@
 ### Major
 - [ ] **13-01. Problem contexts not internationalized** — level1-challenges.ts, level2-puzzles.ts, level3-puzzles.ts: all Icelandic-only.
 - [x] **13-02. No ARIA labels on interactive elements** — Added `role="img"`, `aria-label`, `<title>` to BufferCapacityVisualization SVG. Added `aria-label` to acid/base add/remove buttons in Level1.tsx and concentration buttons. *(Session B)*
-- [ ] **13-03. Input fields and molecule circles below mobile minimum** — Inputs py-2 (~40px), circles w-8 h-8 (32px).
+- [x] **13-03. Input fields and molecule circles below mobile minimum** — Changed buttons `py-2` to `py-3` (44px+) in Level1.tsx and BufferCapacityVisualization.tsx. Changed molecule circles `w-8 h-8` to `w-10 h-10` (40px) in Level1.tsx. *(Session C)*
 
 ### Minor
 - [ ] **13-04. Dead flask animation CSS** (~60 lines unused)
@@ -225,8 +225,8 @@
 ## Game 14: Equilibrium Shifter (4.4/5)
 
 ### Major
-- [ ] **14-01. Both sides glow identically** — styles.css:70-80: reactants and products both use same green glow. Differentiate colors.
-- [ ] **14-02. Challenge timer doesn't pause during explanation** — App.tsx:94-117: add `&& !showExplanation` to timer condition.
+- [x] **14-01. Both sides glow identically** — Changed reactants glow to blue (`#93c5fd`/`#60a5fa`) while products keep green in styles.css. *(Session C)*
+- [x] **14-02. Challenge timer doesn't pause during explanation** — Added `&& !showExplanation` to timer condition and `showExplanation` to dependency array in App.tsx. *(Session C)*
 - [x] **14-03. Prediction buttons lack focus styles & color-blind support** — Added `:focus-visible` outlines to `.predict-btn`, `.stress-btn`, `.mode-card` in styles.css. Added `::after` content (`✓`/`✗`) for correct/incorrect states. Added `focus-visible:outline` classes to Tailwind-styled buttons in App.tsx. *(Session B)*
 
 ### Minor
@@ -238,9 +238,9 @@
 ## Game 15: Gas Law Challenge (4.3/5)
 
 ### Major
-- [ ] **15-01. Browser alert() for input validation** — App.tsx:186: Replace with inline validation message.
+- [x] **15-01. Browser alert() for input validation** — Replaced `alert()` with inline `validationError` state and `role="alert"` message in App.tsx. *(Session C)*
 - [ ] **15-02. No input bounds validation** — Extreme values accepted with no helpful feedback.
-- [ ] **15-03. Deprecated onKeyPress** — App.tsx:665: Replace with onKeyDown.
+- [x] **15-03. Deprecated onKeyPress** — Replaced `onKeyPress` with `onKeyDown` in App.tsx. *(Session C)*
 
 ### Minor
 - [ ] **15-04. Polish translations have encoding issues** — i18n.ts: missing diacritics.
@@ -255,7 +255,7 @@
 ### Major
 - [x] **16-01. Missing ARIA labels on lab equipment** — Added `role="meter"`, `aria-label`, `aria-valuenow/min/max` to Burette.tsx and PHMeter.tsx. Added `role="img"`, `aria-label` to Flask.tsx body. *(Session B)*
 - [x] **16-02. No keyboard navigation in Level 2** — Added `onKeyDown`/`onKeyUp`/`onBlur` handlers to hold-to-pour button for Space/Enter keyboard operation. Added `aria-label` to increment buttons (+0.05, +1, +5 mL). Added `focus-visible:outline` classes to all controls. *(Session B)*
-- [ ] **16-03. Flask fixed size overflows mobile** — Flask.tsx:34: `w-60 h-70` too wide for <320px. Use `w-48 md:w-60`.
+- [x] **16-03. Flask fixed size overflows mobile** — Changed `w-60` to `w-48 md:w-60` on both outer container and flask body in Flask.tsx. *(Session C)*
 
 ### Minor
 - [ ] **16-04. Challenge type labels hardcoded Icelandic** — Level3.tsx:88-97.
@@ -268,8 +268,8 @@
 ## Game 17: Thermodynamics Predictor (4.4/5)
 
 ### Major
-- [ ] **17-01. Spontaneity buttons too small on mobile** — App.tsx:644-675: grid-cols-3 makes ~28px buttons. Change to `grid-cols-1 lg:grid-cols-3`.
-- [ ] **17-02. CSS variable inline styles without fallback** — App.tsx:510,520: `var(--exothermic)` with no fallback. Add fallback colors.
+- [x] **17-01. Spontaneity buttons too small on mobile** — Changed `grid-cols-3` to `grid-cols-1 lg:grid-cols-3` in App.tsx. *(Session C)*
+- [x] **17-02. CSS variable inline styles without fallback** — Added fallback hex colors to all 4 CSS variable references in App.tsx. *(Session C)*
 
 ### Minor
 - [ ] **17-03. DG tolerance ±5 kJ/mol generous** — Consider ±2-3 for harder levels.
@@ -284,8 +284,8 @@
 |----------|-------|-------------|
 | Critical (remaining) | 1 | 12-01 deferred to Session D |
 | Critical (fixed) | 6 + 1 false positive | 1-01a, 1-01b/2-01, 3-01, 3-02, 4-01, 5-01; 3-03 was false positive |
-| Major (fixed) | 9 | 14-03, 16-01, 16-02, 13-02, 12-02, 12-03, 5-04, 9-02, 7-01 (Session B) |
-| Major (remaining) | 39 | Significant UX, accessibility, pedagogical problems |
+| Major (fixed) | 18 | Session B: 14-03, 16-01, 16-02, 13-02, 12-02, 12-03, 5-04, 9-02, 7-01; Session C: 17-01, 17-02, 13-03, 11-01, 11-02, 16-03, 14-01, 14-02, 15-01, 15-03 |
+| Major (remaining) | 30 | Significant UX, accessibility, pedagogical problems |
 | Minor (remaining) | 52 | Polish, consistency, nice-to-haves |
 
 ### Suggested Session Order
@@ -322,7 +322,7 @@
 | Pre-work | 2026-02-20 | Cross-cutting: -tranwarm-, focus:outline-hidden | `9060395` | 26 files, 12+15 games |
 | A | 2026-02-20 | 3-01, 3-02, 3-03(FP), 4-01, 5-01, 1-01a(verified), 1-01b(×17) | `fix/session-a-critical-bugs` | 6 critical fixed, 1 false positive, 12-01 deferred to D |
 | B | 2026-02-20 | 14-03, 16-01, 16-02, 13-02, 12-02, 12-03, 5-04, 9-02, 7-01 | `fix/session-b-accessibility` | 9 major accessibility fixes across 7 games: ARIA labels, keyboard nav, screen reader SVGs, focus styles, color-blind support |
-| C | | | | |
+| C | 2026-02-20 | 17-01, 17-02, 13-03, 11-01, 11-02, 16-03, 14-01, 14-02, 15-01, 15-03 | `fix/session-c-ux-mobile` | 9 major UX/mobile fixes across 6 games: responsive grids, touch targets, CSS fallbacks, timer pause, inline validation, deprecated API |
 | D | | | | |
 | E | | | | |
 | F | | | | |

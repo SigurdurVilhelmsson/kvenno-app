@@ -62,6 +62,7 @@ function App() {
   const [gameStep, setGameStep] = useState<'select-law' | 'solve'>('select-law');
   const [selectedLaw, setSelectedLaw] = useState<GasLaw | null>(null);
   const [lawFeedback, setLawFeedback] = useState<{ correct: boolean; message: string } | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   // Stats with localStorage persistence
   const [stats, setStats] = useState<GameStats>(loadStats);
@@ -183,9 +184,10 @@ function App() {
 
     const userNum = parseFloat(userAnswer);
     if (isNaN(userNum)) {
-      alert('Vinsamlegast sláðu inn gilt númer');
+      setValidationError('Vinsamlegast sláðu inn gilt númer');
       return;
     }
+    setValidationError(null);
 
     const isCorrect = checkAnswer(userNum, currentQuestion.answer, currentQuestion.tolerance);
     const error = calculateError(userNum, currentQuestion.answer);
@@ -662,13 +664,18 @@ function App() {
                       onChange={(e) => setUserAnswer(e.target.value)}
                       placeholder={gameMode === 'practice' && gameStep === 'select-law' ? 'Veldu lögmál fyrst...' : 'Sláðu inn svar...'}
                       className="flex-1 px-4 py-3 rounded-lg border-2 border-warm-300 focus:border-orange-500 focus:outline-none text-lg disabled:bg-warm-100 disabled:cursor-not-allowed"
-                      onKeyPress={(e) => e.key === 'Enter' && gameStep === 'solve' && checkUserAnswer()}
+                      onKeyDown={(e) => e.key === 'Enter' && gameStep === 'solve' && checkUserAnswer()}
                       disabled={gameMode === 'practice' && gameStep === 'select-law'}
                     />
                     <div className="bg-white px-4 py-3 rounded-lg border-2 border-warm-300 font-bold text-warm-700">
                       {getUnit(currentQuestion.find)}
                     </div>
                   </div>
+                  {validationError && (
+                    <div className="mt-2 text-sm text-red-600 font-medium" role="alert">
+                      {validationError}
+                    </div>
+                  )}
                   <button
                     onClick={checkUserAnswer}
                     disabled={gameMode === 'practice' && gameStep === 'select-law'}

@@ -383,7 +383,7 @@ function App() {
 
         <div className="mt-6 bg-warm-50 p-4 rounded-xl">
           <h3 className="font-semibold text-warm-700 mb-2">📋 Forskeytir (kolefnisfjöldi)</h3>
-          <div className="grid grid-cols-5 gap-2 text-sm text-center">
+          <div className="grid grid-cols-3 md:grid-cols-5 gap-2 text-sm text-center">
             <div className="bg-white p-2 rounded border"><span className="font-bold">1</span> meth-</div>
             <div className="bg-white p-2 rounded border"><span className="font-bold">2</span> eth-</div>
             <div className="bg-white p-2 rounded border"><span className="font-bold">3</span> prop-</div>

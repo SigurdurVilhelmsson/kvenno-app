@@ -92,7 +92,7 @@ function App() {
 
   // Timer for challenge mode
   useEffect(() => {
-    if (screen === 'game' && gameMode === 'challenge' && timeRemaining !== null && timeRemaining > 0) {
+    if (screen === 'game' && gameMode === 'challenge' && timeRemaining !== null && timeRemaining > 0 && !showExplanation) {
       const timer = setTimeout(() => {
         setTimeRemaining(prev => prev !== null ? prev - 1 : null);
       }, 1000);
@@ -113,8 +113,8 @@ function App() {
         handleNextQuestion();
       }, 3000);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only trigger on screen/mode/timer state changes
-  }, [screen, gameMode, timeRemaining]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only trigger on screen/mode/timer/explanation state changes
+  }, [screen, gameMode, timeRemaining, showExplanation]);
 
   // Start game flow
   const startGame = (mode: GameMode) => {
