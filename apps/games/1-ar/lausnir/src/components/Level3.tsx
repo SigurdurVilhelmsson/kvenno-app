@@ -26,6 +26,7 @@ interface Level3Props {
   onBack: () => void;
   onCorrectAnswer?: () => void;
   onIncorrectAnswer?: () => void;
+  t?: (key: string, fallback?: string) => string;
 }
 
 interface Level3State {
@@ -56,7 +57,7 @@ interface Level3State {
   achievementShown: string | null;
 }
 
-export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
+export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer, t }: Level3Props) {
   const [totalHintsUsed, setTotalHintsUsed] = useState(0);
   const [gameState, setGameState] = useState<Level3State>({
     currentProblem: null,
@@ -597,7 +598,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {gameState.achievementShown && (
           <div className="mb-6 bg-gradient-to-r from-yellow-100 to-yellow-200 border-4 border-yellow-400 rounded-xl p-4 text-center animate-pulse">
             <div className="text-2xl md:text-3xl font-bold text-yellow-800">
-              {gameState.achievementShown}
+              {t ? t(gameState.achievementShown!) : gameState.achievementShown}
             </div>
           </div>
         )}

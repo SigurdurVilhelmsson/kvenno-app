@@ -34,7 +34,7 @@ interface GameState {
 
 export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
   const [screen, setScreen] = useState<'setup' | 'game' | 'results'>('setup');
-  const [difficulty, setDifficulty] = useState<Difficulty>('medium');
+  const [difficulty, setDifficulty] = useState<Difficulty>('easy');
   const [unitMode, setUnitMode] = useState<UnitMode>('molecules');
   const [timerMode, setTimerMode] = useState(false);
   const isGramMode = unitMode === 'grams';
@@ -174,7 +174,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     if (allCorrect) {
       const newStreak = streak + 1;
       setStreak(newStreak);
-      const points = calculatePoints(difficulty, newStreak, timeRemaining, timerMode);
+      const points = calculatePoints(difficulty, newStreak, timeRemaining, timerMode, isGramMode);
       setScore(prev => {
         const newScore = prev + points;
         if (newScore > bestScore) {
@@ -225,6 +225,16 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div className="text-5xl mb-4">🏆</div>
               <h1 className="text-3xl font-bold text-warm-800 mb-2">Stig 3: Meistarapróf</h1>
               <p className="text-warm-600">Prófaðu kunnáttu þína á tímamörkum!</p>
+            </div>
+
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm">
+              <p className="font-semibold text-amber-800 mb-2">💡 Upprifjun úr stigi 2:</p>
+              <ol className="list-decimal list-inside space-y-1 text-amber-700">
+                <li>Deildu magni hvarfefnis með stuðli → fáðu <em>hlutfall</em></li>
+                <li>Hvarfefnið með <strong>lægra</strong> hlutfall er takmarkandi</li>
+                <li>Reiknaðu afurðir út frá takmarkandi efni</li>
+                <li>Afgangur = upphafleg — notuð</li>
+              </ol>
             </div>
 
             <div className="space-y-4 mb-8">

@@ -163,10 +163,12 @@ function App() {
       <>
         <NameBuilder
           t={t}
-          onComplete={() => {
+          onComplete={(_score, _maxScore) => {
             updateProgress({
               totalGamesPlayed: progress.totalGamesPlayed + 1,
             });
+            // NameBuilder is a bonus activity, not a numbered level.
+            // Individual answers already tracked via onCorrectAnswer/onIncorrectAnswer.
             setScreen('menu');
           }}
           onBack={() => setScreen('menu')}

@@ -980,6 +980,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 ? 'bg-green-50 border border-green-200'
                 : 'bg-red-50 border border-red-200'
             }`}>
+              {shuffledStepOptions.find(o => o.id === selectedAnswer)?.correct && (
+                <p className="text-xs font-semibold mb-1 text-green-700">
+                  {showHint ? '+2 stig (vísbending notuð, -3 stig)' : '+5 stig'}
+                </p>
+              )}
               <p className="text-sm text-warm-700">{step.explanation}</p>
             </div>
           )}

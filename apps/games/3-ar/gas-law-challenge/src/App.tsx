@@ -186,6 +186,18 @@ function App() {
       setValidationError('Vinsamlegast sláðu inn gilt númer');
       return;
     }
+    if (userNum < 0) {
+      setValidationError('Gildi má ekki vera neikvætt');
+      return;
+    }
+    if (userNum === 0) {
+      setValidationError('Gildi má ekki vera núll');
+      return;
+    }
+    if (userNum > 1_000_000) {
+      setValidationError('Gildi er of hátt — athugaðu einingarnar');
+      return;
+    }
     setValidationError(null);
 
     const isCorrect = checkAnswer(userNum, currentQuestion.answer, currentQuestion.tolerance);

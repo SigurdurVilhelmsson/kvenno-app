@@ -380,29 +380,6 @@ export const level3Challenges: Level3Challenge[] = [
     requiredSteps: ['multiply by density']
   },
   {
-    id: 'L3-15',
-    type: 'real_world',
-    prompt: '🧫 Þú ert að rækta bakteríur sem tvöfaldast á 20 mínútum. Ef þú byrjar með 100 bakteríur, hversu margar verða eftir 2 klukkustundir?',
-    startValue: 2,
-    startUnit: 'klst',
-    portionSize: 20,
-    portionUnit: 'mín',
-    expectedAnswer: 6400,
-    requireInteger: true,
-    explanation: '2 klst = 120 mín ÷ 20 mín = 6 tvöföldunartímabil. 100 × 2⁶ = 100 × 64 = 6400 bakteríur'
-  },
-  {
-    id: 'L3-16',
-    type: 'derivation',
-    prompt: '🌡️ Vatn suðar við 100°C á sjávarmáli. Breyttu þessu í Kelvin (K = °C + 273.15).',
-    startValue: 100,
-    startUnit: '°C',
-    targetUnit: 'K',
-    expectedAnswer: 373.15,
-    scientificNotation: false,
-    correctMethod: ['bæta við 273.15']
-  },
-  {
     id: 'L3-17',
     type: 'error_analysis',
     prompt: '🔴 Nemandi reyndi að reikna massa úr rúmmáli. Hann hafði 50 mL og eðlismassa 2.7 g/mL en fékk 18.5 g. Hvað fór úrskeiðis?',

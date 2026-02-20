@@ -8,9 +8,17 @@ interface CalculationBreakdownProps {
 export function CalculationBreakdown({ compound }: CalculationBreakdownProps) {
   const breakdown = generateCalculationBreakdown(compound);
 
+  const isHydrate = compound.formula.includes('·');
+
   return (
     <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 animate-slide-down">
       <h3 className="text-lg font-bold text-blue-800 mb-3">📋 Útreikningur:</h3>
+      {isHydrate && (
+        <div className="bg-blue-100 rounded-lg p-3 mb-3 text-sm text-blue-800">
+          <span className="font-semibold">💧 Hýdrat:</span> Punkturinn (·) táknar kristalvatn.
+          Reiknaðu mólmassa aðalefnis og vatns sitt í hvoru lagi og leggðu síðan saman.
+        </div>
+      )}
       <div className="space-y-2">
         {breakdown.map((step, index) => (
           <div key={index}>

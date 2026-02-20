@@ -408,11 +408,18 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
         {/* Match info modal */}
         {showMatchInfo && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={dismissMatchInfo}>
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="match-modal-title"
+            className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+            onClick={dismissMatchInfo}
+            onKeyDown={(e) => { if (e.key === 'Escape') dismissMatchInfo(); }}
+          >
             <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full" onClick={e => e.stopPropagation()}>
               <div className="text-center mb-4">
-                <div className="text-4xl mb-2">✓</div>
-                <div className="text-xl font-bold text-green-600">{t('level3.ui.pairFound', 'Par fundið!')}</div>
+                <div className="text-4xl mb-2" aria-hidden="true">✓</div>
+                <div id="match-modal-title" className="text-xl font-bold text-green-600">{t('level3.ui.pairFound', 'Par fundið!')}</div>
               </div>
 
               <div className="bg-warm-50 rounded-xl p-4 mb-4">

@@ -547,6 +547,17 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                 )}
               </div>
             )}
+
+            {showHint && !showFeedback && !showReasoningPrompt && (
+              <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4">
+                <p className="text-sm font-semibold text-yellow-800 mb-2">Ábending: Leggðu saman atómmassa</p>
+                <p className="text-xs text-yellow-700">
+                  {challenge.compound.elements.map(el =>
+                    `${el.symbol}≈${ATOM_DATA[el.symbol]?.approxMass || '?'}`
+                  ).join(', ')}
+                </p>
+              </div>
+            )}
           </div>
         );
       }
@@ -615,6 +626,19 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                 </div>
               ))}
             </div>
+
+            {showHint && !showFeedback && (
+              <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4">
+                <p className="text-sm font-semibold text-yellow-800 mb-2">Ábending: Áætlaðir mólmassar</p>
+                {orderedCompounds.map(comp => (
+                  <p key={comp.formula} className="text-xs text-yellow-700">
+                    {comp.formula}: {comp.elements.map(el =>
+                      `${el.count}×${el.symbol}(${ATOM_DATA[el.symbol]?.approxMass || '?'})`
+                    ).join(' + ')} ≈ {calculateApproxMass(comp.elements)} g/mol
+                  </p>
+                ))}
+              </div>
+            )}
 
             {!showFeedback && (
               <button
@@ -747,6 +771,19 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                 );
               })}
             </div>
+
+            {showHint && !showFeedback && (
+              <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4">
+                <p className="text-sm font-semibold text-yellow-800 mb-2">Ábending: Atómmassa frumefnanna</p>
+                <div className="flex flex-wrap gap-2">
+                  {uniqueElements.map(symbol => (
+                    <span key={symbol} className="text-xs bg-yellow-100 rounded px-2 py-1 text-yellow-800 font-mono">
+                      {symbol} ≈ {ATOM_DATA[symbol]?.approxMass || '?'} g/mol
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         );
       }
@@ -822,7 +859,7 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         )}
 
         {/* Hint button */}
-        {!showFeedback && !showHint && challenge.type === 'calculate_simple' && (
+        {!showFeedback && !showHint && (
           <button
             onClick={() => {
               setShowHint(true);
@@ -830,7 +867,10 @@ export function Level2({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
             }}
             className="w-full bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold py-3 px-4 rounded-xl transition-colors"
           >
-            💡 Sýna útreikning
+            💡 {challenge.type === 'calculate_simple' ? 'Sýna útreikning' :
+                challenge.type === 'order_molecules' ? 'Sýna atómmassa' :
+                challenge.type === 'find_heaviest_atom' ? 'Sýna atómmassa' :
+                'Sýna ábendingu'}
           </button>
         )}
 

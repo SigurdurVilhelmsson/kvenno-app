@@ -163,8 +163,16 @@ function EquationBlock({
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      aria-pressed={isSelected}
+      aria-label={`${equation.isReversed ? equation.products : equation.reactants} → ${equation.isReversed ? equation.reactants : equation.products}, ΔH = ${(equation.deltaH * equation.multiplier * (equation.isReversed ? -1 : 1)).toFixed(1)} kJ`}
       onClick={onSelect}
-      className={`p-4 rounded-xl border-3 cursor-pointer transition-all ${
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onSelect(); }
+        if (e.key === 'r' || e.key === 'R') { e.preventDefault(); onReverse(); }
+      }}
+      className={`p-4 rounded-xl border-3 cursor-pointer transition-all focus:outline-none focus-visible:ring-4 focus-visible:ring-orange-400/50 ${
         isSelected ? 'ring-4 ring-orange-400/50' : ''
       } ${
         equation.isReversed ? 'bg-red-50 border-red-300' :
@@ -193,6 +201,8 @@ function EquationBlock({
       <div className="flex justify-center gap-3">
         <button
           onClick={(e) => { e.stopPropagation(); onReverse(); }}
+          aria-label="Snúa við jöfnu"
+          aria-pressed={equation.isReversed}
           className={`px-3 py-1 rounded-lg text-sm font-semibold transition-colors ${
             equation.isReversed
               ? 'bg-red-500 text-white'
@@ -202,11 +212,13 @@ function EquationBlock({
           🔄 Snúa
         </button>
 
-        <div className="flex gap-1">
+        <div className="flex gap-1" role="group" aria-label="Margfaldari">
           {[1, 2, 3].map(n => (
             <button
               key={n}
               onClick={(e) => { e.stopPropagation(); onMultiply(n); }}
+              aria-label={`Margfalda með ${n}`}
+              aria-pressed={equation.multiplier === n}
               className={`w-8 h-8 rounded-lg text-sm font-bold transition-colors ${
                 equation.multiplier === n
                   ? 'bg-blue-500 text-white'

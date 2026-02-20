@@ -61,9 +61,9 @@ export function getAchievement(
   streak: number,
   problemType: string
 ): string | null {
-  if (streak === 3 && problemType === 'mixing') return 'Fullkomin blöndun! 🧪';
-  if (streak === 3 && problemType === 'dilution') return 'Útþynningar sérfræðingur! 💧';
-  if (streak === 5) return '5 réttar! 🔥🔥';
-  if (streak === 3) return '3 í röð! 🔥';
+  if (streak === 3 && problemType === 'mixing') return 'achievements.perfectMixing';
+  if (streak === 3 && problemType === 'dilution') return 'achievements.dilutionExpert';
+  if (streak === 5) return 'achievements.fiveCorrect';
+  if (streak === 3) return 'achievements.threeInRow';
   return null;
 }

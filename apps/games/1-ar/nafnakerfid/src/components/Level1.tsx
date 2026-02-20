@@ -583,7 +583,7 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                     : 'bg-blue-50 border-blue-300 hover:border-blue-500 hover:bg-blue-100'
               }`}
             >
-              <div className="text-3xl mb-2">⚙️</div>
+              <div className="text-3xl mb-2" aria-hidden="true">⚙️</div>
               <div className="font-bold text-lg">{t('level1.ui.metal', 'Málmur')}</div>
               <div className="text-xs text-warm-500">{t('level1.ui.metalHint', '(gefur rafeindir)')}</div>
             </button>
@@ -600,7 +600,7 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                     : 'bg-orange-50 border-orange-300 hover:border-orange-500 hover:bg-orange-100'
               }`}
             >
-              <div className="text-3xl mb-2">💨</div>
+              <div className="text-3xl mb-2" aria-hidden="true">💨</div>
               <div className="font-bold text-lg">{t('level1.ui.nonmetal', 'Málmleysingi')}</div>
               <div className="text-xs text-warm-500">{t('level1.ui.nonmetalHint', '(tekur rafeindir)')}</div>
             </button>

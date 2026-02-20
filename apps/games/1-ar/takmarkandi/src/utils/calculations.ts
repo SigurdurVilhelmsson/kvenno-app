@@ -71,9 +71,15 @@ export function calculatePoints(
   difficulty: 'easy' | 'medium' | 'hard',
   streak: number,
   timeRemaining: number,
-  timerMode: boolean
+  timerMode: boolean,
+  isGramMode = false
 ): number {
   let points = difficulty === 'easy' ? 10 : difficulty === 'medium' ? 15 : 20;
+
+  // Gram mode bonus (requires unit conversion, harder calculations)
+  if (isGramMode) {
+    points = Math.round(points * 1.5);
+  }
 
   // Speed bonus in timer mode
   if (timerMode) {

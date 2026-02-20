@@ -195,24 +195,24 @@ describe('getStreakBonus', () => {
 });
 
 describe('getAchievement', () => {
-  it('returns mixing achievement for streak 3 with mixing type', () => {
+  it('returns mixing achievement key for streak 3 with mixing type', () => {
     const result = getAchievement(3, 'mixing');
-    expect(result).toBe('Fullkomin blöndun! 🧪');
+    expect(result).toBe('achievements.perfectMixing');
   });
 
-  it('returns dilution achievement for streak 3 with dilution type', () => {
+  it('returns dilution achievement key for streak 3 with dilution type', () => {
     const result = getAchievement(3, 'dilution');
-    expect(result).toBe('Útþynningar sérfræðingur! 💧');
+    expect(result).toBe('achievements.dilutionExpert');
   });
 
-  it('returns generic streak-5 achievement regardless of type', () => {
+  it('returns generic streak-5 achievement key regardless of type', () => {
     const result = getAchievement(5, 'molarity');
-    expect(result).toBe('5 réttar! 🔥🔥');
+    expect(result).toBe('achievements.fiveCorrect');
   });
 
-  it('returns generic streak-3 achievement for non-special types', () => {
+  it('returns generic streak-3 achievement key for non-special types', () => {
     const result = getAchievement(3, 'molarity');
-    expect(result).toBe('3 í röð! 🔥');
+    expect(result).toBe('achievements.threeInRow');
   });
 
   it('returns null for streaks below 3', () => {

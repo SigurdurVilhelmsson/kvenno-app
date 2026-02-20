@@ -127,22 +127,31 @@ export function OxidationStateDisplay({
               {/* Before state */}
               <div
                 className={`${classes.badge} ${getOxidationColor(change.before)} ${getTextColor(change.before)}
-                  rounded-full flex items-center justify-center font-bold shadow-lg
+                  rounded-full flex flex-col items-center justify-center font-bold shadow-lg
                   ${animationPhase === 'electrons' && change.isOxidized ? 'animate-pulse' : ''}`}
+                aria-label={`Oxunartala ${change.element}: ${change.before > 0 ? '+' : ''}${change.before}`}
               >
-                {change.before > 0 ? `+${change.before}` : change.before}
+                <span>{change.before > 0 ? `+${change.before}` : change.before}</span>
               </div>
 
-              {/* Arrow */}
-              <div className="text-warm-400 text-xl">→</div>
+              {/* Arrow with direction label */}
+              <div className="flex flex-col items-center">
+                <div className="text-warm-400 text-xl">→</div>
+                {(change.isOxidized || change.isReduced) && (
+                  <div className="text-[9px] text-warm-500 whitespace-nowrap">
+                    {change.isOxidized ? 'e⁻ →' : '← e⁻'}
+                  </div>
+                )}
+              </div>
 
               {/* After state */}
               <div
                 className={`${classes.badge} ${getOxidationColor(change.after)} ${getTextColor(change.after)}
-                  rounded-full flex items-center justify-center font-bold shadow-lg
+                  rounded-full flex flex-col items-center justify-center font-bold shadow-lg
                   ${animationPhase === 'complete' ? 'ring-2 ring-white/50' : ''}`}
+                aria-label={`Oxunartala ${change.element}: ${change.after > 0 ? '+' : ''}${change.after}`}
               >
-                {change.after > 0 ? `+${change.after}` : change.after}
+                <span>{change.after > 0 ? `+${change.after}` : change.after}</span>
               </div>
             </div>
 
