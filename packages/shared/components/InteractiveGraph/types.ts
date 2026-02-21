@@ -18,6 +18,12 @@ export interface DataSeries {
   showPoints?: boolean;
   pointRadius?: number;
   label?: string;
+  /** Enable smooth cubic spline interpolation instead of straight line segments */
+  smoothCurve?: boolean;
+  /** Show gradient fill under the curve */
+  gradientFill?: boolean;
+  /** Gradient fill opacity (0-1, default 0.15) */
+  gradientFillOpacity?: number;
 }
 
 export interface AxisConfig {

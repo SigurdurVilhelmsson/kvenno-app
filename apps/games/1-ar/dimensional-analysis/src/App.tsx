@@ -5,6 +5,10 @@ import { AchievementNotificationsContainer } from '@shared/components/Achievemen
 import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
 import { useProgress, useAccessibility, useGameI18n } from '@shared/hooks';
 import { useAchievements } from '@shared/hooks/useAchievements';
+import { ParticleCelebration, useParticleCelebration } from '@shared/components/ParticleCelebration';
+import { AnimatedBackground } from '@shared/components/AnimatedBackground';
+import { SoundToggle } from '@shared/components/SoundToggle';
+import { useGameSounds } from '@shared/hooks/useGameSounds';
 
 
 // Import Level components
@@ -69,8 +73,23 @@ function App() {
     resetAll: resetAchievements,
   } = useAchievements({ gameId: 'dimensional-analysis' });
 
+  const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('1-ar');
+  const { playCorrect, playWrong, playLevelComplete, isEnabled: soundEnabled, toggleSound } = useGameSounds();
+
+  const handleCorrectAnswer = (...args: Parameters<typeof trackCorrectAnswer>) => {
+    trackCorrectAnswer(...args);
+    playCorrect();
+    triggerCorrect();
+  };
+
+  const handleIncorrectAnswer = (...args: Parameters<typeof trackIncorrectAnswer>) => {
+    trackIncorrectAnswer(...args);
+    playWrong();
+  };
+
   return (
-    <div className="min-h-screen bg-warm-50">
+    <AnimatedBackground yearTheme="1-ar" variant="menu" showSymbols>
+    <div className="min-h-screen">
       {/* Accessibility Skip Link */}
       <a href="#main-content" className="skip-link">
         {t('accessibility.skipToContent', 'Fara beint í efni')}
@@ -98,6 +117,7 @@ function App() {
               achievements={achievements}
               onClick={() => setShowAchievements(true)}
             />
+            <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
           </div>
         </header>
 
@@ -154,7 +174,7 @@ function App() {
                 {/* Level 1 - Conceptual (Visual Learning) */}
                 <button
                   onClick={() => setScreen('level1')}
-                  className="bg-green-500 hover:bg-green-600 text-white rounded-lg p-6 text-left transition-colors"
+                  className="game-card bg-green-500 hover:bg-green-600 text-white rounded-lg p-6 text-left transition-colors"
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-2xl">1</span>
@@ -173,7 +193,7 @@ function App() {
                 {/* Level 2 - Application (Predict & Reason) */}
                 <button
                   onClick={() => setScreen('level2')}
-                  className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg p-6 text-left transition-colors"
+                  className="game-card bg-blue-500 hover:bg-blue-600 text-white rounded-lg p-6 text-left transition-colors"
                   disabled={!progress.levelProgress?.level1?.mastered}
                 >
                   <div className="flex items-center gap-2 mb-2">
@@ -199,7 +219,7 @@ function App() {
                 {/* Level 3 - Calculation (Full Problems) */}
                 <button
                   onClick={() => setScreen('level3')}
-                  className="bg-orange-500 hover:bg-orange-600 text-white rounded-lg p-6 text-left transition-colors"
+                  className="game-card bg-orange-500 hover:bg-orange-600 text-white rounded-lg p-6 text-left transition-colors"
                   disabled={!progress.levelProgress?.level2?.mastered}
                   style={{ backgroundColor: !progress.levelProgress?.level2?.mastered ? undefined : '#f36b22' }}
                 >
@@ -251,17 +271,20 @@ function App() {
                 // Track achievement
                 const score = levelProgress.questionsCorrect * 100;
                 trackLevelComplete(1, score, maxScore, { hintsUsed });
+                playLevelComplete();
+                triggerLevelComplete();
                 setScreen('menu');
               }}
               onBack={() => setScreen('menu')}
               initialProgress={progress.levelProgress?.level1}
-              onCorrectAnswer={() => trackCorrectAnswer()}
-              onIncorrectAnswer={() => trackIncorrectAnswer()}
+              onCorrectAnswer={() => handleCorrectAnswer()}
+              onIncorrectAnswer={() => handleIncorrectAnswer()}
             />
             <AchievementNotificationsContainer
               notifications={notifications}
               onDismiss={dismissNotification}
             />
+            <ParticleCelebration {...celebrationProps} />
           </>
         )}
 
@@ -280,17 +303,20 @@ function App() {
                 // Track achievement
                 const score = levelProgress.finalAnswersCorrect * 100;
                 trackLevelComplete(2, score, maxScore, { hintsUsed });
+                playLevelComplete();
+                triggerLevelComplete();
                 setScreen('menu');
               }}
               onBack={() => setScreen('menu')}
               initialProgress={progress.levelProgress?.level2}
-              onCorrectAnswer={() => trackCorrectAnswer()}
-              onIncorrectAnswer={() => trackIncorrectAnswer()}
+              onCorrectAnswer={() => handleCorrectAnswer()}
+              onIncorrectAnswer={() => handleIncorrectAnswer()}
             />
             <AchievementNotificationsContainer
               notifications={notifications}
               onDismiss={dismissNotification}
             />
+            <ParticleCelebration {...celebrationProps} />
           </>
         )}
 
@@ -313,17 +339,20 @@ function App() {
                 const score = Math.round(avgScore * 1000);
                 trackLevelComplete(3, score, maxScore, { hintsUsed: hintsUsed || levelProgress.hintsUsed });
                 trackGameComplete();
+                playLevelComplete();
+                triggerLevelComplete();
                 setScreen('menu');
               }}
               onBack={() => setScreen('menu')}
               initialProgress={progress.levelProgress?.level3}
-              onCorrectAnswer={() => trackCorrectAnswer()}
-              onIncorrectAnswer={() => trackIncorrectAnswer()}
+              onCorrectAnswer={() => handleCorrectAnswer()}
+              onIncorrectAnswer={() => handleIncorrectAnswer()}
             />
             <AchievementNotificationsContainer
               notifications={notifications}
               onDismiss={dismissNotification}
             />
+            <ParticleCelebration {...celebrationProps} />
           </>
         )}
 
@@ -414,7 +443,9 @@ function App() {
         notifications={notifications}
         onDismiss={dismissNotification}
       />
+      <ParticleCelebration {...celebrationProps} />
     </div>
+    </AnimatedBackground>
   );
 }
 

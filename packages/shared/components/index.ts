@@ -110,3 +110,40 @@ export type {
 // LanguageSwitcher - language selection UI
 export { LanguageSwitcher } from './LanguageSwitcher';
 export type { LanguageSwitcherProps } from './LanguageSwitcher';
+
+// SoundToggle - game sound enable/disable toggle
+export { SoundToggle } from './SoundToggle';
+export type { SoundToggleProps } from './SoundToggle';
+
+// AnimatedBackground - layered animated gradient background for chemistry games
+export { AnimatedBackground } from './AnimatedBackground';
+export type {
+  AnimatedBackgroundProps,
+  AnimatedBackgroundVariant,
+  AnimatedBackgroundIntensity,
+} from './AnimatedBackground';
+// Note: YearTheme is already exported from '../styles/theme' — import it from there.
+
+// AnimatedCounter - animated score displays, popups, and streak indicators
+export { AnimatedCounter, ScorePopup, StreakCounter, useScorePopups } from './AnimatedCounter';
+export type {
+  AnimatedCounterProps,
+  ScorePopupProps,
+  StreakCounterProps,
+  PopupItem,
+  UseScorePopupsReturn,
+} from './AnimatedCounter';
+
+// ParticleCelebration - canvas-based celebration effects for game feedback
+export { ParticleCelebration, useParticleCelebration } from './ParticleCelebration';
+export type {
+  CelebrationPreset,
+  CelebrationConfig,
+  ParticleShape as CelebrationParticleShape,
+  Particle as CelebrationParticle,
+  ParticleCelebrationProps,
+  UseParticleCelebrationReturn,
+} from './ParticleCelebration';
+// Note: YearTheme for celebrations is re-exported as CelebrationYearTheme
+// to avoid conflict with the YearTheme from '../styles/theme'.
+export type { YearTheme as CelebrationYearTheme } from './ParticleCelebration';

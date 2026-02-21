@@ -5,6 +5,10 @@ import { AchievementNotificationsContainer } from '@shared/components/Achievemen
 import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
 import { useGameI18n } from '@shared/hooks';
 import { useAchievements } from '@shared/hooks/useAchievements';
+import { ParticleCelebration, useParticleCelebration } from '@shared/components/ParticleCelebration';
+import { AnimatedBackground } from '@shared/components/AnimatedBackground';
+import { SoundToggle } from '@shared/components/SoundToggle';
+import { useGameSounds } from '@shared/hooks/useGameSounds';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
@@ -60,6 +64,20 @@ function App() {
     resetAll: resetAchievements,
   } = useAchievements({ gameId: 'takmarkandi' });
 
+  const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('1-ar');
+  const { playCorrect, playWrong, playLevelComplete, isEnabled: soundEnabled, toggleSound } = useGameSounds();
+
+  const handleCorrectAnswer = (...args: Parameters<typeof trackCorrectAnswer>) => {
+    trackCorrectAnswer(...args);
+    playCorrect();
+    triggerCorrect();
+  };
+
+  const handleIncorrectAnswer = (...args: Parameters<typeof trackIncorrectAnswer>) => {
+    trackIncorrectAnswer(...args);
+    playWrong();
+  };
+
   useEffect(() => {
     storage.set(STORAGE_KEY, progress);
   }, [progress]);
@@ -73,6 +91,8 @@ function App() {
       totalGamesPlayed: prev.totalGamesPlayed + 1
     }));
     trackLevelComplete(1, score, maxScore, { hintsUsed });
+    playLevelComplete();
+    triggerLevelComplete();
     // Check if all levels are now complete
     if (!wasLevel1Completed && progress.level2Completed && progress.level3BestScore > 0) {
       trackGameComplete();
@@ -89,6 +109,8 @@ function App() {
       totalGamesPlayed: prev.totalGamesPlayed + 1
     }));
     trackLevelComplete(2, score, maxScore, { hintsUsed });
+    playLevelComplete();
+    triggerLevelComplete();
     // Check if all levels are now complete
     if (progress.level1Completed && !wasLevel2Completed && progress.level3BestScore > 0) {
       trackGameComplete();
@@ -106,6 +128,8 @@ function App() {
       totalGamesPlayed: prev.totalGamesPlayed + 1
     }));
     trackLevelComplete(3, score, maxScore, { hintsUsed });
+    playLevelComplete();
+    triggerLevelComplete();
     // Check if all levels are now complete
     if (progress.level1Completed && progress.level2Completed && !wasLevel3Played) {
       trackGameComplete();
@@ -126,13 +150,14 @@ function App() {
         <Level1
           onComplete={handleLevel1Complete}
           onBack={() => setScreen('menu')}
-          onCorrectAnswer={trackCorrectAnswer}
-          onIncorrectAnswer={trackIncorrectAnswer}
+          onCorrectAnswer={handleCorrectAnswer}
+          onIncorrectAnswer={handleIncorrectAnswer}
         />
         <AchievementNotificationsContainer
           notifications={notifications}
           onDismiss={dismissNotification}
         />
+        <ParticleCelebration {...celebrationProps} />
       </>
     );
   }
@@ -143,13 +168,14 @@ function App() {
         <Level2
           onComplete={handleLevel2Complete}
           onBack={() => setScreen('menu')}
-          onCorrectAnswer={trackCorrectAnswer}
-          onIncorrectAnswer={trackIncorrectAnswer}
+          onCorrectAnswer={handleCorrectAnswer}
+          onIncorrectAnswer={handleIncorrectAnswer}
         />
         <AchievementNotificationsContainer
           notifications={notifications}
           onDismiss={dismissNotification}
         />
+        <ParticleCelebration {...celebrationProps} />
       </>
     );
   }
@@ -160,20 +186,22 @@ function App() {
         <Level3
           onComplete={handleLevel3Complete}
           onBack={() => setScreen('menu')}
-          onCorrectAnswer={trackCorrectAnswer}
-          onIncorrectAnswer={trackIncorrectAnswer}
+          onCorrectAnswer={handleCorrectAnswer}
+          onIncorrectAnswer={handleIncorrectAnswer}
         />
         <AchievementNotificationsContainer
           notifications={notifications}
           onDismiss={dismissNotification}
         />
+        <ParticleCelebration {...celebrationProps} />
       </>
     );
   }
 
   // Main Menu - Year 1: Orange/Amber theme
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 flex items-center justify-center p-4">
+    <AnimatedBackground yearTheme="1-ar" variant="menu" showSymbols>
+    <div className="min-h-screen flex items-center justify-center p-4">
       <div className="max-w-2xl w-full">
         <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
           <div className="flex justify-between items-start mb-4">
@@ -190,13 +218,14 @@ function App() {
               achievements={achievements}
               onClick={() => setShowAchievements(true)}
             />
+            <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
           </div>
 
           <div className="space-y-4">
             {/* Level 1 */}
             <button
               onClick={() => setScreen('level1')}
-              className="w-full bg-white border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-6 text-left transition-all"
+              className="game-card w-full bg-white border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-6 text-left transition-all"
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -226,7 +255,7 @@ function App() {
             {/* Level 2 */}
             <button
               onClick={() => progress.level1Completed && setScreen('level2')}
-              className={`w-full bg-white border-2 rounded-xl p-6 text-left transition-all ${
+              className={`game-card w-full bg-white border-2 rounded-xl p-6 text-left transition-all ${
                 progress.level1Completed
                   ? 'border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50'
                   : 'border-warm-200 opacity-60 cursor-not-allowed'
@@ -265,7 +294,7 @@ function App() {
             {/* Level 3 */}
             <button
               onClick={() => progress.level2Completed && setScreen('level3')}
-              className={`w-full bg-white border-2 rounded-xl p-6 text-left transition-all ${
+              className={`game-card w-full bg-white border-2 rounded-xl p-6 text-left transition-all ${
                 progress.level2Completed
                   ? 'border-red-200 hover:border-red-400 hover:bg-red-50'
                   : 'border-warm-200 opacity-60 cursor-not-allowed'
@@ -387,7 +416,9 @@ function App() {
         notifications={notifications}
         onDismiss={dismissNotification}
       />
+      <ParticleCelebration {...celebrationProps} />
     </div>
+    </AnimatedBackground>
   );
 }
 

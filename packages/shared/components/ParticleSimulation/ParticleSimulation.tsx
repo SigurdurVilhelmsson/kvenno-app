@@ -5,7 +5,9 @@ import type {
   Particle,
   ParticleType,
   PhysicsConfig,
-  ReactionConfig
+  ReactionConfig,
+  CollisionFlash,
+  EnhancedRenderingConfig
 } from './types';
 
 const DEFAULT_PHYSICS: PhysicsConfig = {
@@ -51,13 +53,19 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
   onFrame,
   showLabels = false,
   showVelocityVectors = false,
+  enhancedRendering,
   ariaLabel = 'Particle simulation',
   className = ''
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const animationRef = useRef<number>(undefined);
+  const collisionFlashesRef = useRef<CollisionFlash[]>([]);
   const [particleCounts, setParticleCounts] = useState<Record<string, number>>({});
+
+  // Enhanced rendering defaults
+  const enhanced: EnhancedRenderingConfig = enhancedRendering ?? {};
+  const trailLength = enhanced.trailLength ?? 4;
 
   const { width, height } = container;
   const borderColor = container.borderColor || getBorderColorFromPressure(container.pressure);
@@ -102,11 +110,13 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
         const x = spawnRegion.xMin! + Math.random() * (spawnRegion.xMax! - spawnRegion.xMin!);
         const y = spawnRegion.yMin! + Math.random() * (spawnRegion.yMax! - spawnRegion.yMin!);
 
+        const px = Math.max(radius, Math.min(width - radius, x));
+        const py = Math.max(radius, Math.min(height - radius, y));
         newParticles.push({
           id: `p-${idCounter++}`,
           typeId: group.typeId,
-          x: Math.max(radius, Math.min(width - radius, x)),
-          y: Math.max(radius, Math.min(height - radius, y)),
+          x: px,
+          y: py,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
           radius,
@@ -114,7 +124,8 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
           strokeColor: type.strokeColor,
           mass: type.mass || 1,
           energy: 0.5 * (type.mass || 1) * speed * speed,
-          shape: type.shape
+          shape: type.shape,
+          trail: enhanced.motionTrail ? [] : undefined
         });
       }
     });
@@ -206,6 +217,14 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
 
   // Update particle position
   const updateParticle = useCallback((particle: Particle) => {
+    // Track trail for motion blur
+    if (particle.trail) {
+      particle.trail.unshift({ x: particle.x, y: particle.y });
+      if (particle.trail.length > trailLength) {
+        particle.trail.length = trailLength;
+      }
+    }
+
     // Apply gravity
     if (physics.gravity) {
       particle.vy += physics.gravity;
@@ -291,6 +310,16 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
               if (!reacted) {
                 resolveCollision(p1, p2);
               }
+
+              // Add collision flash effect
+              if (enhanced.collisionFlash) {
+                collisionFlashesRef.current.push({
+                  x: (p1.x + p2.x) / 2,
+                  y: (p1.y + p2.y) / 2,
+                  life: 8,
+                  maxLife: 8
+                });
+              }
             }
           }
         }
@@ -330,8 +359,51 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
       ctx.lineWidth = borderWidth;
       ctx.strokeRect(0, 0, width, height);
 
+      // Collision flashes (draw before particles so they appear behind)
+      if (enhanced.collisionFlash) {
+        const flashes = collisionFlashesRef.current;
+        for (let i = flashes.length - 1; i >= 0; i--) {
+          const flash = flashes[i];
+          const progress = flash.life / flash.maxLife;
+          const flashRadius = 8 * (1 - progress) + 4;
+          const flashGrad = ctx.createRadialGradient(
+            flash.x, flash.y, 0,
+            flash.x, flash.y, flashRadius
+          );
+          flashGrad.addColorStop(0, `rgba(255, 255, 255, ${progress * 0.7})`);
+          flashGrad.addColorStop(1, `rgba(255, 255, 255, 0)`);
+          ctx.fillStyle = flashGrad;
+          ctx.beginPath();
+          ctx.arc(flash.x, flash.y, flashRadius, 0, Math.PI * 2);
+          ctx.fill();
+
+          flash.life--;
+          if (flash.life <= 0) {
+            flashes.splice(i, 1);
+          }
+        }
+      }
+
       // Particles
       particlesRef.current.forEach(particle => {
+        const speed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
+
+        // Motion trail
+        if (enhanced.motionTrail && particle.trail && particle.trail.length > 0) {
+          const trailLen = particle.trail.length;
+          for (let t = trailLen - 1; t >= 0; t--) {
+            const pos = particle.trail[t];
+            const alpha = ((trailLen - t) / (trailLen + 1)) * 0.25;
+            const trailR = particle.radius * (0.4 + 0.6 * ((trailLen - t) / trailLen));
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = particle.color;
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, trailR, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.globalAlpha = 1;
+        }
+
         // Velocity vector
         if (showVelocityVectors) {
           ctx.strokeStyle = particle.color;
@@ -342,10 +414,43 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
           ctx.stroke();
         }
 
+        // Speed glow effect
+        if (enhanced.speedGlow && speed > 3) {
+          const glowIntensity = Math.min((speed - 3) / 5, 1);
+          ctx.save();
+          ctx.shadowColor = particle.color;
+          ctx.shadowBlur = 6 + glowIntensity * 10;
+          ctx.globalAlpha = 0.4 + glowIntensity * 0.3;
+          ctx.fillStyle = particle.color;
+          ctx.beginPath();
+          ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // Energy-based size pulse
+        const baseRadius = particle.radius;
+        const r = enhanced.energyPulse && particle.energy
+          ? baseRadius * (1 + Math.sin(Date.now() * 0.003 + parseInt(particle.id.slice(2), 10)) * 0.08 * Math.min(speed / 4, 1))
+          : baseRadius;
+
         // Particle body (shape-aware for color-blind accessibility)
-        ctx.fillStyle = particle.color;
-        const r = particle.radius;
         const shape = particle.shape || 'circle';
+
+        if (enhanced.gradientShading && shape === 'circle') {
+          // Radial gradient for sphere-like shading
+          const grad = ctx.createRadialGradient(
+            particle.x - r * 0.3, particle.y - r * 0.3, r * 0.1,
+            particle.x, particle.y, r
+          );
+          // Lighten the color for the highlight
+          grad.addColorStop(0, lightenColor(particle.color, 60));
+          grad.addColorStop(0.6, particle.color);
+          grad.addColorStop(1, darkenColor(particle.color, 30));
+          ctx.fillStyle = grad;
+        } else {
+          ctx.fillStyle = particle.color;
+        }
 
         if (shape === 'square') {
           const s = r * 1.3;
@@ -418,7 +523,7 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
     };
   }, [
     running, width, height, backgroundColor, borderColor, borderWidth,
-    physics.enableCollisions, regions, showLabels, showVelocityVectors,
+    physics.enableCollisions, regions, showLabels, showVelocityVectors, enhanced,
     updateParticle, checkCollision, resolveCollision, processReaction,
     reactions, updateParticleCounts, onFrame, typeMap
   ]);
@@ -488,4 +593,22 @@ function getBorderWidthFromPressure(pressure?: 'low' | 'normal' | 'high'): numbe
     case 'high': return 6;
     default: return 4;
   }
+}
+
+/** Lighten a hex color by the given amount (0-255) */
+function lightenColor(hex: string, amount: number): string {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const r = Math.min(255, ((num >> 16) & 0xff) + amount);
+  const g = Math.min(255, ((num >> 8) & 0xff) + amount);
+  const b = Math.min(255, (num & 0xff) + amount);
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+/** Darken a hex color by the given amount (0-255) */
+function darkenColor(hex: string, amount: number): string {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const r = Math.max(0, ((num >> 16) & 0xff) - amount);
+  const g = Math.max(0, ((num >> 8) & 0xff) - amount);
+  const b = Math.max(0, (num & 0xff) - amount);
+  return `rgb(${r}, ${g}, ${b})`;
 }

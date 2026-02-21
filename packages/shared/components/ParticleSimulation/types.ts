@@ -46,6 +46,32 @@ export interface Particle {
   energy?: number;
   /** Shape for color-blind accessibility */
   shape?: ParticleShape;
+  /** Trail positions for motion blur effect (populated when enhancedRendering enabled) */
+  trail?: Array<{ x: number; y: number }>;
+}
+
+/** Collision flash effect (transient visual) */
+export interface CollisionFlash {
+  x: number;
+  y: number;
+  life: number;
+  maxLife: number;
+}
+
+/** Enhanced rendering options for visual polish */
+export interface EnhancedRenderingConfig {
+  /** Enable radial gradient shading on particles (sphere-like) */
+  gradientShading?: boolean;
+  /** Enable motion trail behind fast particles */
+  motionTrail?: boolean;
+  /** Number of trail positions to track (default: 4) */
+  trailLength?: number;
+  /** Enable glow effect on fast-moving particles */
+  speedGlow?: boolean;
+  /** Enable subtle size pulsing based on kinetic energy */
+  energyPulse?: boolean;
+  /** Enable brief white flash at collision points */
+  collisionFlash?: boolean;
 }
 
 /** Container configuration */
@@ -151,6 +177,8 @@ export interface ParticleSimulationProps {
   showLabels?: boolean;
   /** Show velocity vectors */
   showVelocityVectors?: boolean;
+  /** Enhanced visual rendering (gradients, trails, glow, collision flash) */
+  enhancedRendering?: EnhancedRenderingConfig;
   /** Accessibility label */
   ariaLabel?: string;
   /** CSS class name */

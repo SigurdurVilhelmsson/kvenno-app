@@ -269,35 +269,122 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
     series.forEach((s) => {
       if (s.data.length < 2) return;
 
+      const screenPoints = s.data.map(p => ({
+        x: toScreenX(p.x),
+        y: toScreenY(p.y)
+      }));
+
       ctx.strokeStyle = s.color;
       ctx.lineWidth = s.lineWidth || 3;
       if (s.lineDash) {
         ctx.setLineDash(s.lineDash);
       }
 
+      // Build the path (smooth or linear)
       ctx.beginPath();
-      s.data.forEach((point, index) => {
-        const screenX = toScreenX(point.x);
-        const screenY = toScreenY(point.y);
+      if (s.smoothCurve && screenPoints.length >= 3) {
+        // Catmull-Rom to cubic bezier smooth interpolation
+        ctx.moveTo(screenPoints[0].x, screenPoints[0].y);
+        for (let i = 0; i < screenPoints.length - 1; i++) {
+          const p0 = screenPoints[Math.max(0, i - 1)];
+          const p1 = screenPoints[i];
+          const p2 = screenPoints[i + 1];
+          const p3 = screenPoints[Math.min(screenPoints.length - 1, i + 2)];
 
-        if (index === 0) {
-          ctx.moveTo(screenX, screenY);
-        } else {
-          ctx.lineTo(screenX, screenY);
+          // Catmull-Rom control points
+          const tension = 0.3;
+          const cp1x = p1.x + (p2.x - p0.x) * tension;
+          const cp1y = p1.y + (p2.y - p0.y) * tension;
+          const cp2x = p2.x - (p3.x - p1.x) * tension;
+          const cp2y = p2.y - (p3.y - p1.y) * tension;
+
+          ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
         }
-      });
+      } else {
+        screenPoints.forEach((pt, index) => {
+          if (index === 0) ctx.moveTo(pt.x, pt.y);
+          else ctx.lineTo(pt.x, pt.y);
+        });
+      }
       ctx.stroke();
       ctx.setLineDash([]);
+
+      // Gradient fill under curve
+      if (s.gradientFill && screenPoints.length >= 2) {
+        const fillOpacity = s.gradientFillOpacity ?? 0.15;
+        const baseline = height - margin.bottom;
+
+        const gradient = ctx.createLinearGradient(0, margin.top, 0, baseline);
+        gradient.addColorStop(0, s.color.replace(')', `, ${fillOpacity})`).replace('rgb(', 'rgba('));
+        gradient.addColorStop(1, s.color.replace(')', ', 0)').replace('rgb(', 'rgba('));
+
+        // If color is hex, convert for gradient
+        const hexMatch = s.color.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+        if (hexMatch) {
+          const [, rh, gh, bh] = hexMatch;
+          const rc = parseInt(rh, 16), gc = parseInt(gh, 16), bc = parseInt(bh, 16);
+          const gradHex = ctx.createLinearGradient(0, margin.top, 0, baseline);
+          gradHex.addColorStop(0, `rgba(${rc}, ${gc}, ${bc}, ${fillOpacity})`);
+          gradHex.addColorStop(1, `rgba(${rc}, ${gc}, ${bc}, 0)`);
+          ctx.fillStyle = gradHex;
+        } else {
+          ctx.fillStyle = gradient;
+        }
+
+        // Re-trace the path, then close to baseline
+        ctx.beginPath();
+        if (s.smoothCurve && screenPoints.length >= 3) {
+          ctx.moveTo(screenPoints[0].x, screenPoints[0].y);
+          for (let i = 0; i < screenPoints.length - 1; i++) {
+            const p0 = screenPoints[Math.max(0, i - 1)];
+            const p1 = screenPoints[i];
+            const p2 = screenPoints[i + 1];
+            const p3 = screenPoints[Math.min(screenPoints.length - 1, i + 2)];
+            const tension = 0.3;
+            const cp1x = p1.x + (p2.x - p0.x) * tension;
+            const cp1y = p1.y + (p2.y - p0.y) * tension;
+            const cp2x = p2.x - (p3.x - p1.x) * tension;
+            const cp2y = p2.y - (p3.y - p1.y) * tension;
+            ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
+          }
+        } else {
+          screenPoints.forEach((pt, index) => {
+            if (index === 0) ctx.moveTo(pt.x, pt.y);
+            else ctx.lineTo(pt.x, pt.y);
+          });
+        }
+        // Close path to baseline
+        ctx.lineTo(screenPoints[screenPoints.length - 1].x, baseline);
+        ctx.lineTo(screenPoints[0].x, baseline);
+        ctx.closePath();
+        ctx.fill();
+      }
 
       // Draw points if enabled
       if (s.showPoints) {
         s.data.forEach((point) => {
           const screenX = toScreenX(point.x);
           const screenY = toScreenY(point.y);
+          const pr = s.pointRadius || 4;
 
+          // Outer glow
+          ctx.fillStyle = s.color;
+          ctx.globalAlpha = 0.2;
+          ctx.beginPath();
+          ctx.arc(screenX, screenY, pr + 3, 0, 2 * Math.PI);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+
+          // Inner point
           ctx.fillStyle = s.color;
           ctx.beginPath();
-          ctx.arc(screenX, screenY, s.pointRadius || 4, 0, 2 * Math.PI);
+          ctx.arc(screenX, screenY, pr, 0, 2 * Math.PI);
+          ctx.fill();
+
+          // White center highlight
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+          ctx.beginPath();
+          ctx.arc(screenX - pr * 0.2, screenY - pr * 0.2, pr * 0.4, 0, 2 * Math.PI);
           ctx.fill();
         });
       }
@@ -369,6 +456,14 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
     if (hoveredPoint) {
       const { screenX, screenY, point, series: hoveredSeries } = hoveredPoint;
 
+      // Outer glow ring
+      ctx.fillStyle = hoveredSeries.color;
+      ctx.globalAlpha = 0.15;
+      ctx.beginPath();
+      ctx.arc(screenX, screenY, 14, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
       // Highlight circle
       ctx.fillStyle = hoveredSeries.color;
       ctx.beginPath();
@@ -378,21 +473,34 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      // Tooltip
+      // Tooltip with rounded corners and shadow
       const tooltipText = point.label || `(${point.x.toFixed(1)}, ${point.y.toFixed(2)})`;
-      const tooltipWidth = ctx.measureText(tooltipText).width + 16;
-      const tooltipHeight = 24;
-      const tooltipX = Math.min(screenX + 10, width - tooltipWidth - 10);
-      const tooltipY = Math.max(screenY - tooltipHeight - 10, 10);
+      ctx.font = 'bold 12px sans-serif';
+      const tooltipWidth = ctx.measureText(tooltipText).width + 20;
+      const tooltipHeight = 28;
+      const tooltipX = Math.min(screenX + 12, width - tooltipWidth - 10);
+      const tooltipY = Math.max(screenY - tooltipHeight - 12, 10);
 
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+      // Shadow
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
       ctx.beginPath();
-      ctx.roundRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight, 4);
+      ctx.roundRect(tooltipX + 2, tooltipY + 2, tooltipWidth, tooltipHeight, 6);
+      ctx.fill();
+
+      // Background
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+      ctx.beginPath();
+      ctx.roundRect(tooltipX, tooltipY, tooltipWidth, tooltipHeight, 6);
+      ctx.fill();
+
+      // Color accent bar
+      ctx.fillStyle = hoveredSeries.color;
+      ctx.beginPath();
+      ctx.roundRect(tooltipX, tooltipY, 4, tooltipHeight, [6, 0, 0, 6]);
       ctx.fill();
 
       ctx.fillStyle = '#fff';
-      ctx.font = '12px sans-serif';
-      ctx.fillText(tooltipText, tooltipX + 8, tooltipY + 16);
+      ctx.fillText(tooltipText, tooltipX + 10, tooltipY + 18);
     }
   }, [
     width,
