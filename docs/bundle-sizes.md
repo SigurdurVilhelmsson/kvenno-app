@@ -78,6 +78,16 @@ Total: ~300 KB
 
 ~29 MB (dominated by 17 single-file game HTML files)
 
+## Animation & Graphics Components
+
+All graphics and animation features (`ParticleCelebration`, `AnimatedBackground`, `AnimatedCounter`, `ScorePopup`, `StreakCounter`, `SoundToggle`, `useGameSounds`) are implemented with **zero external dependencies**:
+
+- **CSS**: Spring easing curves via `cubic-bezier()`, 17 keyframe animations, utility classes
+- **Canvas 2D**: Particle physics rendered with `requestAnimationFrame`
+- **Web Audio API**: 6 synthesized sound effects via oscillators (no audio files)
+
+Bundle cost: effectively **0 KB** of additional dependencies. The component code itself adds a few KB per game but is negligible relative to the React/Tailwind baseline.
+
 ## Optimization Recommendations
 
 1. **Games are the largest contributor.** The 1.2-2.9 MB per game is due to vite-plugin-singlefile bundling all dependencies (React, Tailwind CSS, Three.js) into each HTML file. This is by design for offline-capable, zero-dependency deployment but means each game re-bundles shared libraries.

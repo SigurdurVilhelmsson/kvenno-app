@@ -8,24 +8,47 @@ This shared library provides common components, hooks, utilities, and types used
 
 ```
 shared/
-├── hooks/              # React hooks
-│   ├── useI18n.ts         # Internationalization
-│   ├── useProgress.ts     # Progress tracking
-│   └── useAccessibility.ts # Accessibility settings
-├── utils/              # Utility functions
-│   ├── storage.ts         # localStorage helpers
-│   ├── scoring.ts         # Scoring algorithms
-│   └── export.ts          # Data export utilities
-├── types/              # TypeScript type definitions
-│   ├── game.types.ts      # Game-related types
-│   └── index.ts           # Type exports
-├── i18n/               # Translation files
-│   ├── is.json            # Icelandic (primary)
-│   ├── en.json            # English
-│   └── pl.json            # Polish
-├── styles/             # Theme configuration
-│   └── theme.ts           # Kvenno brand colors
-└── index.ts            # Main exports
+├── components/                    # Shared React components
+│   ├── Header.tsx                    # Site-wide header
+│   ├── Breadcrumbs.tsx               # Breadcrumb navigation
+│   ├── Footer.tsx                    # Site-wide footer
+│   ├── AchievementsPanel/            # Achievement system UI
+│   ├── HintSystem/                   # Tiered progressive hints
+│   ├── FeedbackPanel/                # Detailed answer feedback
+│   ├── InteractiveGraph/             # Canvas-based graph (spline curves, gradient fills)
+│   ├── ParticleSimulation/           # Physics particle engine (sphere shading, trails, glow)
+│   ├── AnimatedMolecule/             # Ball-and-stick molecule renderer
+│   ├── DragDropBuilder/              # Drag-and-drop interface
+│   ├── ParticleCelebration/          # Canvas confetti/burst effects (6 presets)
+│   ├── AnimatedBackground/           # Gradient blobs + chemistry SVG symbols
+│   ├── AnimatedCounter/              # Rolling numbers, ScorePopup, StreakCounter
+│   ├── SoundToggle/                  # Sound enable/disable toggle button
+│   └── index.ts                      # Barrel exports
+├── hooks/                         # React hooks
+│   ├── useI18n.ts                    # Internationalization
+│   ├── useGameI18n.ts                # Game-specific i18n with custom translations
+│   ├── useProgress.ts                # Progress tracking
+│   ├── useAccessibility.ts           # Accessibility settings
+│   ├── useAchievements.ts            # Achievement tracking
+│   ├── useGameProgress.ts            # Game-specific progress persistence
+│   ├── useGameSounds.ts              # Web Audio API synthesized sounds
+│   └── index.ts                      # Hook exports
+├── utils/                         # Utility functions
+│   ├── storage.ts                    # localStorage helpers
+│   ├── scoring.ts                    # Scoring algorithms
+│   └── export.ts                     # Data export utilities
+├── types/                         # TypeScript type definitions
+│   ├── game.types.ts                 # Game-related types
+│   └── index.ts                      # Type exports
+├── i18n/                          # Translation files
+│   ├── is.json                       # Icelandic (primary)
+│   ├── en.json                       # English
+│   └── pl.json                       # Polish
+├── styles/                        # Theme and animation styles
+│   ├── theme.css                     # Tailwind v4 @theme tokens, spring curves, keyframes
+│   ├── game-base.css                 # Microinteraction utility classes
+│   └── tailwind-preset.ts            # Shared Tailwind preset
+└── index.ts                       # Main exports
 ```
 
 ---
@@ -168,6 +191,56 @@ interface GameProgress {
 
 ---
 
+### `useGameSounds()`
+
+Provides synthesized game sound effects using the Web Audio API. All sounds are generated on-the-fly via oscillators — no audio files required. Sound preference persists in localStorage (`kvenno-sound-enabled`). **Sounds are OFF by default.**
+
+**Features:**
+- 6 distinct sound effects synthesized from oscillators
+- Lazy AudioContext creation (on first play)
+- Master volume: 0.3
+- Graceful degradation if Web Audio unavailable
+- Handles browser autoplay-policy (resumes suspended context)
+
+**Usage:**
+
+```typescript
+import { useGameSounds } from '@shared/hooks';
+import { SoundToggle } from '@shared/components/SoundToggle';
+
+function MyGame() {
+  const { playCorrect, playWrong, playClick, playLevelComplete, isEnabled, toggleSound } = useGameSounds();
+
+  const handleAnswer = (correct: boolean) => {
+    if (correct) playCorrect();
+    else playWrong();
+  };
+
+  return (
+    <div>
+      <SoundToggle isEnabled={isEnabled} onToggle={toggleSound} />
+      <button onClick={() => { playClick(); startLevel(); }}>Start</button>
+    </div>
+  );
+}
+```
+
+**API:**
+
+| Method/Property | Type | Description |
+|----------------|------|-------------|
+| `playClick()` | `() => void` | Short high-pitched tick (triangle 800 Hz, 40 ms) |
+| `playCorrect()` | `() => void` | Ascending two-tone chime (C5→E5, major third) |
+| `playWrong()` | `() => void` | Low dissonant buzz (detuned sawtooth 150/153 Hz) |
+| `playLevelComplete()` | `() => void` | Rising arpeggiated chord (C5→E5→G5 + delay effect) |
+| `playAchievement()` | `() => void` | Celebratory jingle (C5→E5→G5→C6 + sparkle flutter) |
+| `playStreak(count)` | `(count: number) => void` | Escalating tone; pitch rises at 5+ and 10+ streaks |
+| `isEnabled` | `boolean` | Whether sound is currently enabled |
+| `toggleSound()` | `() => void` | Toggle sound on/off |
+| `setEnabled(bool)` | `(enabled: boolean) => void` | Explicitly set enabled state |
+
+---
+
 ### `useAccessibility()`
 
 Manages accessibility settings with automatic DOM manipulation and localStorage persistence.
@@ -246,6 +319,217 @@ function AccessibilityMenu() {
 - `.high-contrast` - Added to `<html>` when high contrast is enabled
 - `.text-small`, `.text-medium`, `.text-large` - Text size variants
 - `.reduced-motion` - Added when reduced motion is enabled
+
+---
+
+## 🎆 Graphics & Animation Components
+
+### `ParticleCelebration` + `useParticleCelebration`
+
+Canvas-based particle celebration overlay with 6 presets and year-theme color palettes. Renders bursts, confetti, streaks, and level-complete effects using physics simulation (gravity, damping, rotation).
+
+**Features:**
+- 6 presets: `burst`, `confetti`, `streak-3`, `streak-5`, `streak-10`, `level-complete`
+- Year-theme palettes: 1-ar (orange), 2-ar (teal), 3-ar (purple)
+- Particle shapes: circle, square, star, triangle with radial gradients
+- Queue up to 3 celebrations with auto-advance
+- Respects `prefers-reduced-motion` (shows color flash instead)
+
+**Usage:**
+
+```typescript
+import { ParticleCelebration, useParticleCelebration } from '@shared/components/ParticleCelebration';
+
+function MyGame() {
+  const { triggerCorrect, triggerStreak, triggerLevelComplete, celebrationProps } =
+    useParticleCelebration('2-ar');
+
+  const handleAnswer = (correct: boolean, streak: number) => {
+    if (correct) {
+      triggerCorrect({ x: 0.5, y: 0.3 });
+      if (streak >= 3) triggerStreak(streak);
+    }
+  };
+
+  return (
+    <div className="relative">
+      <GameBoard onAnswer={handleAnswer} />
+      <ParticleCelebration {...celebrationProps} />
+    </div>
+  );
+}
+```
+
+**Hook API (`useParticleCelebration`):**
+
+| Method | Type | Description |
+|--------|------|-------------|
+| `trigger(config)` | `(config: CelebrationConfig) => void` | Trigger with full config control |
+| `triggerCorrect(origin?)` | `(origin?: {x,y}) => void` | Burst at origin (normalized 0-1, default center) |
+| `triggerWrong()` | `() => void` | No-op placeholder (extensible) |
+| `triggerStreak(count)` | `(count: number) => void` | Auto-selects preset by count (3/5/10) |
+| `triggerLevelComplete()` | `() => void` | Full confetti + starburst |
+| `celebrationProps` | `ParticleCelebrationProps` | Spread onto `<ParticleCelebration>` |
+
+**Presets:**
+
+| Preset | Particles | Duration | Shapes |
+|--------|-----------|----------|--------|
+| `burst` | 25 | 800ms | Circles |
+| `confetti` | 70 | 2000ms | Squares (confetti rain) |
+| `streak-3` | 15 | 800ms | Single-color circles |
+| `streak-5` | 30 | 1000ms | Two-tone circles |
+| `streak-10` | 50 | 1500ms | Circles + stars |
+| `level-complete` | 100 | 3000ms | Stars (center) + confetti (rain) |
+
+---
+
+### `AnimatedBackground`
+
+Layered, subtly animated background with drifting gradient blobs and optional floating chemistry SVG symbols. Replaces flat gradient backgrounds with atmospheric, year-themed visuals.
+
+**Features:**
+- 3 gradient blobs with independent drift cycles (de-synced for organic feel)
+- 6 chemistry SVG symbols: atom, beaker, flask, molecule, hex ring, test tube
+- 4 variants: `default`, `menu`, `gameplay`, `celebration`
+- 3 intensity levels: `low`, `medium`, `high`
+- All decorative layers are `pointer-events: none` and `aria-hidden`
+- Respects `prefers-reduced-motion`
+
+**Usage:**
+
+```typescript
+import { AnimatedBackground } from '@shared/components/AnimatedBackground';
+
+<AnimatedBackground yearTheme="2-ar" variant="gameplay" showSymbols>
+  <GameContent />
+</AnimatedBackground>
+
+// Menu screen with more visible blobs
+<AnimatedBackground yearTheme="1-ar" variant="menu" showSymbols>
+  <MenuScreen />
+</AnimatedBackground>
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `yearTheme` | `'1-ar' \| '2-ar' \| '3-ar'` | required | Color palette (orange/teal/purple) |
+| `variant` | `'default' \| 'menu' \| 'gameplay' \| 'celebration'` | `'default'` | Adjusts blob opacity |
+| `showSymbols` | `boolean` | `false` | Show floating chemistry SVGs |
+| `intensity` | `'low' \| 'medium' \| 'high'` | `'medium'` | Animation speed (40s/25s/15s) |
+| `children` | `ReactNode` | required | Content rendered above layers |
+| `className` | `string` | `''` | Additional wrapper classes |
+
+---
+
+### `AnimatedCounter`
+
+Rolling number counter with easeOutExpo easing. Smoothly animates between numeric values using `requestAnimationFrame`. Uses `tabular-nums` for stable digit width and a brief scale-up spring on change.
+
+**Usage:**
+
+```typescript
+import { AnimatedCounter } from '@shared/components/AnimatedCounter';
+
+<AnimatedCounter value={score} suffix=" stig" />
+<AnimatedCounter value={delta} prefix="+" duration={300} />
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `number` | required | Target value to animate to |
+| `duration` | `number` | `500` | Animation duration in ms |
+| `prefix` | `string` | `''` | Text before number (e.g., "+") |
+| `suffix` | `string` | `''` | Text after number (e.g., " stig") |
+| `className` | `string` | `''` | Additional CSS classes |
+| `formatNumber` | `(n: number) => string` | Icelandic locale | Custom formatter |
+
+---
+
+### `ScorePopup` + `useScorePopups`
+
+Floating "+N" indicators that rise and fade. Absolutely positioned within a parent container. Green for positive, red for negative.
+
+**Usage:**
+
+```typescript
+import { ScorePopup, useScorePopups } from '@shared/components/AnimatedCounter';
+
+function ScoreDisplay() {
+  const { popups, addPopup, removePopup } = useScorePopups();
+
+  const handleCorrectAnswer = (e: React.MouseEvent) => {
+    addPopup(10, { x: e.clientX, y: e.clientY });
+  };
+
+  return (
+    <div className="relative">
+      {popups.map((popup) => (
+        <ScorePopup
+          key={popup.id}
+          points={popup.points}
+          position={popup.position}
+          onComplete={() => removePopup(popup.id)}
+        />
+      ))}
+    </div>
+  );
+}
+```
+
+**Hook API (`useScorePopups`):** `addPopup(points, position)`, `removePopup(id)`, `popups[]`. Max 5 concurrent (oldest evicted).
+
+---
+
+### `StreakCounter`
+
+Escalating fire emoji streak badge. Hidden when streak < 3. Shows progressively more intense fire emojis with a pulse glow at 10+.
+
+**Emoji progression:**
+- 0-2: hidden
+- 3-4: fire + count
+- 5-9: fire fire + count
+- 10+: boom fire fire + count (with glow)
+
+**Usage:**
+
+```typescript
+import { StreakCounter } from '@shared/components/AnimatedCounter';
+
+<StreakCounter count={currentStreak} />
+```
+
+**Props:** `count: number`, `className?: string`
+
+---
+
+### `SoundToggle`
+
+Compact pill-shaped toggle button for enabling/disabling game sounds. Uses inline SVG speaker icons with cross-fade transition. Labels are in Icelandic ("Hljóð á" / "Hljóð af").
+
+**Usage:**
+
+```typescript
+import { SoundToggle } from '@shared/components/SoundToggle';
+import { useGameSounds } from '@shared/hooks';
+
+const { isEnabled, toggleSound } = useGameSounds();
+<SoundToggle isEnabled={isEnabled} onToggle={toggleSound} />
+<SoundToggle isEnabled={isEnabled} onToggle={toggleSound} size="sm" />
+```
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `isEnabled` | `boolean` | required | Current sound state |
+| `onToggle` | `() => void` | required | Toggle callback |
+| `size` | `'sm' \| 'md'` | `'md'` | Button size variant |
+| `className` | `string` | `''` | Additional CSS classes |
 
 ---
 
@@ -720,6 +1004,7 @@ All games use the `@shared` alias configured in `tsconfig.base.json`:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0.0 | 2026-02-20 | Graphics & animation system: ParticleCelebration, AnimatedBackground, AnimatedCounter, ScorePopup, StreakCounter, SoundToggle, useGameSounds, useParticleCelebration. Integrated into all 17 games. |
 | 1.0.0 | 2025-11-29 | Initial shared library with all 12 games migrated |
 
 ---
@@ -747,4 +1032,4 @@ For questions about the shared library:
 
 ---
 
-**Built with ❤️ for all ChemistryGames**
+**Built for kvenno.app — Námsvefur Kvennó**

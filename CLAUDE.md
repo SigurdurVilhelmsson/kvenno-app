@@ -78,7 +78,26 @@ All apps use the shared Tailwind preset from `packages/shared/styles/tailwind-pr
 - **Breadcrumbs** - "Heim > [Track] > [Section] > [Page]" navigation
 - **Footer** - Copyright notice. Accepts optional `department` prop (e.g., "Efnafræðideild").
 
-Plus game-specific shared components (AchievementsPanel, HintSystem, etc.)
+Game-specific shared components:
+- **AchievementsPanel** / **AchievementsButton** - Achievement system UI
+- **HintSystem** - Tiered progressive hints
+- **FeedbackPanel** - Detailed answer feedback
+- **InteractiveGraph** - Canvas-based graph with cubic spline interpolation, gradient fills
+- **ParticleSimulation** - Physics-based particle visualization with sphere shading, motion trails, speed glow, collision flash
+- **AnimatedMolecule** - Ball-and-stick molecular structure renderer
+- **DragDropBuilder** - Flexible drag-and-drop interface
+
+Graphics & animation components (integrated into all 17 games):
+- **ParticleCelebration** + `useParticleCelebration` - Canvas confetti/burst effects with 6 presets (burst, confetti, streak-3/5/10, level-complete) and year-theme color palettes
+- **AnimatedBackground** - Layered gradient blobs + floating chemistry SVG symbols, year-themed (1-ar=orange, 2-ar=teal, 3-ar=purple)
+- **AnimatedCounter** - Rolling number counter with easeOutExpo easing
+- **ScorePopup** - Floating "+N" indicators
+- **StreakCounter** - Escalating fire emoji streak badge
+- **SoundToggle** + `useGameSounds` - Web Audio API synthesized sounds (click, correct, wrong, level-complete, achievement, streak). Sounds default to OFF, persisted in localStorage.
+
+Shared styles (`packages/shared/styles/`):
+- **theme.css** - Tailwind v4 `@theme` tokens: colors, typography, shadows, spring easing curves, glassmorphism tokens, 12 animation keyframes
+- **game-base.css** - Microinteraction utility classes: `game-btn`, `game-card`, `game-glass`, `game-correct`, `game-wrong`, `game-score-popup`, `game-streak-fire`, `game-stagger`
 
 **Note:** Íslenskubraut uses its own header/footer (different design from the shared components).
 

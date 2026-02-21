@@ -511,28 +511,103 @@ Same as hub grid layout but with category-colored cards. Each card uses its cate
 ### 8.1 Principles
 
 1. **Purpose over decoration.** Every animation communicates state change, guides attention, or provides feedback.
-2. **Fast and light.** Nothing longer than 300ms. Most interactions: 150–200ms.
+2. **Fast and light.** Most interactions: 150–300ms. Celebration effects can be longer (800ms–3s).
 3. **Respect preferences.** All motion disabled when `prefers-reduced-motion: reduce`.
+4. **Spring physics over linear easing.** Use spring curves for organic, satisfying motion.
+5. **Zero external dependencies.** All animations are pure CSS keyframes, Canvas 2D, or Web Audio API.
 
-### 8.2 Timing Tokens
+### 8.2 Timing & Easing Tokens
 
 | Token | Duration | Easing | Usage |
 |-------|----------|--------|-------|
 | `duration-fast` | 100ms | ease-out | Opacity, color changes |
 | `duration-normal` | 200ms | ease-out | Most interactions |
 | `duration-slow` | 300ms | ease-out | Page transitions, modals |
-| `duration-emphasis` | 400ms | cubic-bezier(0.34, 1.56, 0.64, 1) | Celebrations (achievements, completion) |
+| `duration-emphasis` | 400ms | `ease-spring` | Celebrations, achievements |
 
-### 8.3 Standard Animations
+| Easing Token | Value | Character |
+|-------------|-------|-----------|
+| `ease-spring` | `cubic-bezier(0.34, 1.56, 0.64, 1)` | Standard spring with overshoot |
+| `ease-spring-gentle` | `cubic-bezier(0.25, 1.2, 0.5, 1)` | Subtle bounce |
+| `ease-spring-bouncy` | `cubic-bezier(0.68, -0.55, 0.27, 1.55)` | Elastic snap |
+| `ease-overshoot` | `cubic-bezier(0.175, 0.885, 0.32, 1.275)` | Scale bounce |
+
+### 8.3 Standard Animations (Keyframes)
 
 | Animation | Description | Usage |
 |-----------|-------------|-------|
 | `fade-in` | opacity 0→1 (200ms) | Page content, card reveal |
-| `slide-up` | translateY(8px) + opacity 0 → 0 + 1 (200ms) | List items, staggered cards (delay: N×50ms) |
-| `scale-in` | scale(0.95) + opacity 0 → 1 + 1 (200ms) | Modals, popovers |
+| `slide-up` | translateY(8px) + opacity 0→1 (200ms) | List items, staggered cards (delay: N×50ms) |
+| `scale-in` | scale(0.95) + opacity 0→1 (200ms) | Modals, popovers |
 | `slide-in-bottom` | translateY(100%) → 0 (250ms) | Bottom sheet, mobile nav |
 | `pop` | scale(0) → 1.1 → 1 (300ms, bounce) | Achievement unlocks, scores |
 | `shake` | translateX(±4px) ×3 (300ms) | Error feedback, wrong answers |
+| `spring-in` | scale(0) → scale(1.15) → scale(1) (400ms, spring) | Element entrance with bounce |
+| `spring-bounce` | scale(1) → scale(1.08) → scale(1) (300ms) | Attention pulse |
+| `elastic-pop` | scale(0.5) → scale(1.1) → scale(0.97) → scale(1) (500ms) | Achievement reveal |
+| `error-shake` | translateX oscillation ±6px (400ms) | Wrong answer, violent shake |
+| `success-flash` | green border flash (400ms) | Correct answer container feedback |
+| `error-vignette` | red radial gradient flash (400ms) | Wrong answer container feedback |
+| `shimmer` | translateX(-100%) → translateX(100%) via pseudo-element | Gold sweep effect on headers |
+| `float-up` | translateY(0) → translateY(-40px) + fade (800ms) | Score popup "+10" indicators |
+| `confetti-fall` | translateY(-100%) → translateY(100vh) + rotate (CSS fallback) | Simple confetti |
+| `pulse-glow` | box-shadow breathing (2s, infinite) | Streak badge at 10+ |
+| `gold-shimmer` | linear-gradient sweep left→right (1.5s) | Perfect round header effect |
+
+### 8.4 Microinteraction Utility Classes
+
+Defined in `packages/shared/styles/game-base.css`:
+
+| Class | Effect | Usage |
+|-------|--------|-------|
+| `game-btn` | Press squish (scale 0.95) → spring back | Primary action buttons |
+| `game-card` | Hover lift (-2px) + shadow growth | Level selection cards |
+| `game-card-tilt` | Perspective tilt toward cursor via CSS vars | Interactive cards (set `--tilt-x`/`--tilt-y`) |
+| `game-correct` | Spring bounce + green border flash | Correct answer element |
+| `game-wrong` | Violent shake + red vignette flash | Wrong answer element |
+| `game-score-popup` | Float up + fade (absolute positioned) | "+N" score indicators |
+| `game-shimmer` | Gold gradient sweep via ::after pseudo | Perfect round header |
+| `game-pulse-glow` | Breathing box-shadow (2s infinite) | Streak indicator at 10+ |
+| `game-glass` | Glassmorphism panel (backdrop-blur, semi-transparent) | Frosted glass overlays |
+| `game-glass-dark` | Dark variant of glassmorphism | Dark theme overlays |
+| `game-streak-fire` | CSS variable-based fire emoji | Streak indicator icon |
+| `game-stagger` | Staggered entrance (nth-child delays 50ms apart) | Card grid entrance |
+
+### 8.5 Canvas-Based Animations
+
+**ParticleCelebration** (`packages/shared/components/ParticleCelebration/`):
+Canvas-based particle effects with physics (gravity, velocity damping). Six presets:
+
+| Preset | Particles | Duration | Trigger |
+|--------|-----------|----------|---------|
+| `burst` | 25, outward from origin | 800ms | Correct answer |
+| `confetti` | 70, rain from top | 2s | General celebration |
+| `streak-3` | 15, single color | 800ms | 3-answer streak |
+| `streak-5` | 30, two-tone | 1s | 5-answer streak |
+| `streak-10` | 50, circles + stars | 1.5s | 10+ answer streak |
+| `level-complete` | 100, starburst + confetti | 3s | Level completion |
+
+Year-theme color palettes: 1-ar warm oranges, 2-ar cool teals, 3-ar rich purples.
+Particles use radial gradient rendering for sphere-like depth. Respects `prefers-reduced-motion`.
+
+**AnimatedBackground** (`packages/shared/components/AnimatedBackground/`):
+Three drifting gradient blobs (CSS radial-gradient + `filter: blur(80px)`) with figure-8, circular, and diagonal drift paths. Optional floating chemistry SVG symbols (atom, beaker, flask, molecule, hexring, test tube) at low opacity. GPU-composited transforms only.
+
+### 8.6 Sound Design
+
+**useGameSounds** (`packages/shared/hooks/useGameSounds.ts`):
+Web Audio API oscillator-based sounds — no audio files needed. Six synthesized effects:
+
+| Sound | Description | Trigger |
+|-------|-------------|---------|
+| `playClick` | Triangle wave 800 Hz, 40ms | Button press |
+| `playCorrect` | Ascending C5→E5 sine two-tone | Correct answer |
+| `playWrong` | Detuned 150/153 Hz sawtooth buzz | Wrong answer |
+| `playLevelComplete` | C5→E5→G5 arpeggio with delay effect | Level complete |
+| `playAchievement` | C5→E5→G5→C6 arpeggio + sparkle flutter | Achievement unlock |
+| `playStreak(count)` | Pitch-shifted two-tone (+200/+400 Hz) | Answer streak |
+
+Master volume: 0.3. Default: OFF. Persisted in localStorage (`kvenno-sound-enabled`). Lazy `AudioContext` creation respects browser autoplay policy.
 
 ---
 

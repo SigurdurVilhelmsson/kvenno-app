@@ -39,7 +39,7 @@ All code lives in a single pnpm monorepo (`kvenno-app/`):
   - `apps/games/2-ar/` - 7 games for year 2
   - `apps/games/3-ar/` - 5 games for year 3
 - **Islenskubraut** (`apps/islenskubraut`) - Icelandic language teaching cards SPA
-- **Shared Library** (`packages/shared/`) - Components, hooks, utils, types, i18n
+- **Shared Library** (`packages/shared/`) - Components, hooks, utils, types, i18n, animations, sounds
 
 ### Deployment Strategy
 
@@ -854,6 +854,12 @@ The `packages/shared/hooks/` directory provides reusable hooks used across all g
 - **`useAchievements`** - Achievement/badge system for games (unlock conditions, persistent state)
 - **`useAccessibility`** - Accessibility features (reduced motion, font size, high contrast preferences)
 - **`useProgress`** - Generic progress tracking hook
+- **`useGameSounds`** - Web Audio API synthesized sounds (click, correct, wrong, level-complete, achievement, streak). Sounds default to OFF, persisted in localStorage (`kvenno-sound-enabled`).
+
+Graphics/animation hooks (in `packages/shared/components/`):
+
+- **`useParticleCelebration`** - Manages particle celebration lifecycle: triggering, queuing (up to 3), auto-advancing. Returns `triggerCorrect`, `triggerStreak`, `triggerLevelComplete`, `celebrationProps`.
+- **`useScorePopups`** - Manages queue of floating "+N" score popups (max 5 concurrent, oldest evicted).
 
 All hooks have unit tests in `packages/shared/hooks/__tests__/`.
 
@@ -873,6 +879,19 @@ apps/games/{year}/{game-name}/src/
 ```
 
 Refactored games include: `hess-law`, `kinetics`, `redox-reactions`, and others. Data and utility logic are extracted from monolithic components into separate `data/` and `utils/` directories for testability.
+
+### Graphics & Animation Integration
+
+All 17 games include the following shared graphics/animation components:
+
+- **`AnimatedBackground`** — Wraps the menu/start screen with year-themed gradient blobs and floating chemistry SVGs
+- **`ParticleCelebration`** + **`useParticleCelebration`** — Canvas particle overlay for correct answers (burst), streaks (escalating), and level completions (confetti + stars)
+- **`SoundToggle`** + **`useGameSounds`** — Sound toggle button in menu header; `playCorrect`/`playWrong`/`playLevelComplete` calls in answer handlers
+- **`game-card`** CSS class — Applied to level selection buttons for spring hover/press microinteractions
+
+Year-theme palettes: 1-ar games use `yearTheme='1-ar'` (orange), 2-ar uses `'2-ar'` (teal), 3-ar uses `'3-ar'` (purple).
+
+Zero external animation/sound libraries — all motion is CSS keyframes, Canvas 2D, and Web Audio API oscillators.
 
 ## 15. CI/CD Pipeline
 
@@ -928,5 +947,5 @@ The shared i18n files live in `packages/shared/i18n/` (`is.json`, `en.json`, `pl
 
 ---
 
-*Last updated: 2026-02-19*
+*Last updated: 2026-02-21*
 *Maintainer: Sigurður E. Vilhelmsson, Kvennaskólinn í Reykjavík*

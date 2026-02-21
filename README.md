@@ -9,8 +9,9 @@ Unified monorepo for [kvenno.app](https://kvenno.app) — a portal of interactiv
 | **Landing** (`apps/landing`) | Landing page and year-based navigation hubs |
 | **Lab Reports** (`apps/lab-reports`) | AI-powered lab report grading using Claude |
 | **Games** (`apps/games`) | 17 interactive chemistry games across 3 school years |
-| **Shared** (`packages/shared`) | Shared component library, hooks, i18n, and design system |
-| **Server** (`server`) | Express backend proxying Claude API for lab report analysis |
+| **Íslenskubraut** (`apps/islenskubraut`) | Icelandic language teaching card generator |
+| **Shared** (`packages/shared`) | Shared component library, hooks, animations, sounds, i18n, and design system |
+| **Server** (`server`) | Express backend proxying Claude API + PDF generation |
 
 ### Games by Year
 
@@ -22,9 +23,10 @@ Unified monorepo for [kvenno.app](https://kvenno.app) — a portal of interactiv
 
 ## Tech Stack
 
-- **Framework:** React 18 + TypeScript
-- **Build:** Vite (games build to self-contained single-file HTML)
-- **Styling:** Tailwind CSS with shared design preset
+- **Framework:** React 19 + TypeScript
+- **Build:** Vite (games build to self-contained single-file HTML via `vite-plugin-singlefile`)
+- **Styling:** Tailwind CSS 4.2 with shared design preset
+- **Animation:** CSS keyframes with spring physics, Canvas 2D particle effects, Web Audio API synthesized sounds — zero external animation libraries
 - **Monorepo:** pnpm workspaces
 - **AI:** Claude API (Anthropic) for lab report grading
 - **Auth:** Azure AD / MSAL (lab reports only)
@@ -54,20 +56,24 @@ npx serve dist/
 
 ```
 dist/
-├── index.html              # Landing page
-├── 1-ar/
-│   ├── index.html          # Year 1 hub
-│   └── games/              # 5 single-file HTML games
-├── 2-ar/
-│   ├── index.html          # Year 2 hub
-│   ├── games/              # 7 single-file HTML games
-│   └── lab-reports/        # Lab reports SPA
-├── 3-ar/
-│   ├── index.html          # Year 3 hub
-│   ├── games/              # 5 single-file HTML games
-│   └── lab-reports/        # Lab reports SPA
-├── val/index.html          # Elective courses hub
-└── f-bekkir/index.html     # Social sciences hub
+├── index.html                  # Track selector landing page
+├── efnafraedi/
+│   ├── index.html              # Chemistry hub
+│   ├── 1-ar/
+│   │   ├── index.html          # Year 1 hub
+│   │   └── games/              # 5 single-file HTML games
+│   ├── 2-ar/
+│   │   ├── index.html          # Year 2 hub
+│   │   ├── games/              # 7 single-file HTML games
+│   │   └── lab-reports/        # Lab reports SPA
+│   ├── 3-ar/
+│   │   ├── index.html          # Year 3 hub
+│   │   ├── games/              # 5 single-file HTML games
+│   │   └── lab-reports/        # Lab reports SPA
+│   ├── val/index.html          # Elective courses hub
+│   └── f-bekkir/index.html     # Social sciences hub
+└── islenskubraut/              # Íslenskubraut SPA
+    └── index.html
 ```
 
 ## Deployment
