@@ -32,16 +32,17 @@ The work is split into **6 phases** with explicit checkpoints where you review a
 
 ### 2.1 Architecture Overview
 
-| App | Routes | Components | Build Output |
-|-----|--------|------------|--------------|
-| **Landing** | `/`, `/efnafraedi`, `/efnafraedi/{year}` | Header, Footer, Container, Card, Breadcrumbs, Badge | SPA → `dist/index.html` |
-| **Lab Reports** | Mounted at `/efnafraedi/{2,3}-ar/lab-reports/` | FileUpload, TeacherResults, StudentFeedback, Modal, Toast | SPA → `dist/efnafraedi/{year}/lab-reports/` |
-| **Islenskubraut** | `/`, `/spjald/:flokkur` | CategoryCard, LevelSelector, SpurningaSpjald, DownloadButton | SPA → `dist/islenskubraut/` |
-| **17 Games** | `/efnafraedi/{year}/games/*.html` | AchievementsPanel, HintSystem, FeedbackPanel, ParticleSimulation, etc. | Single-file HTML (1.2–2.9 MB each) |
+| App               | Routes                                         | Components                                                             | Build Output                                |
+| ----------------- | ---------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------- |
+| **Landing**       | `/`, `/efnafraedi`, `/efnafraedi/{year}`       | Header, Footer, Container, Card, Breadcrumbs, Badge                    | SPA → `dist/index.html`                     |
+| **Lab Reports**   | Mounted at `/efnafraedi/{2,3}-ar/lab-reports/` | FileUpload, TeacherResults, StudentFeedback, Modal, Toast              | SPA → `dist/efnafraedi/{year}/lab-reports/` |
+| **Islenskubraut** | `/`, `/spjald/:flokkur`                        | CategoryCard, LevelSelector, SpurningaSpjald, DownloadButton           | SPA → `dist/islenskubraut/`                 |
+| **17 Games**      | `/efnafraedi/{year}/games/*.html`              | AchievementsPanel, HintSystem, FeedbackPanel, ParticleSimulation, etc. | Single-file HTML (1.2–2.9 MB each)          |
 
 ### 2.2 Inconsistencies Found
 
 #### Typography (HIGH priority)
+
 - **theme.css** declares `"Inter"` as primary font with system fallbacks
 - **tailwind-preset.ts** (legacy) declares system font stack only (no Inter)
 - **game-base.css** imports Inter from Google Fonts (inlined at build)
@@ -49,12 +50,14 @@ The work is split into **6 phases** with explicit checkpoints where you review a
 - **Result:** Font rendering varies across apps. No intentional typographic hierarchy. Inter is a generic choice that doesn't stand out.
 
 #### Color Palette (MEDIUM priority)
+
 - **Brand orange** `#f36b22` is used consistently as primary across all apps — good
 - **Year themes** are defined in `theme.ts` (1-ar: orange/amber, 2-ar: teal/cyan, 3-ar: purple/indigo) but games predominantly use orange regardless of year
 - **Islenskubraut** has its own per-category color palette (6 unique hex values: `#2D6A4F`, `#8B4513`, `#1e3a8a`, `#7c2d12`, `#4c1d95`, `#0369a1`) disconnected from the shared system
 - **Semantic colors** (success `#10b981`, warning `#f59e0b`, error `#ef4444`, info `#3b82f6`) are defined but ad-hoc Tailwind color classes (e.g., `bg-green-600`, `bg-blue-500`) are used inconsistently alongside them
 
 #### Component Patterns (MEDIUM priority)
+
 - **Shared primitives exist** (Card, Button, Badge) with well-defined variants — but not all apps use them consistently
 - **Islenskubraut** uses its own Header/Footer variants (`variant="islenskubraut"`) with different styling
 - **Lab Reports** has custom Modal, Toast, and dialog components not in the shared library
@@ -62,6 +65,7 @@ The work is split into **6 phases** with explicit checkpoints where you review a
 - **Card border-radius** varies: `rounded-lg` (8px), `rounded-xl` (12px), `rounded-2xl` (16px) used interchangeably
 
 #### Navigation (HIGH priority)
+
 - **No global navigation** between tracks — users must go back to the landing page to switch between Chemistry and Islenskubraut
 - **Breadcrumbs** work within each track but don't show cross-track awareness
 - **Islenskubraut** is fully isolated (`isExternal: true`) — full page reload to enter/exit
@@ -69,12 +73,14 @@ The work is split into **6 phases** with explicit checkpoints where you review a
 - **Header** shows "Námsvefur Kvennó" title but no track indicator or switcher
 
 #### Layout & Spacing (LOW priority)
+
 - **Container** max-width is consistent (1152px / max-w-6xl)
 - **Card padding** varies: `p-4`, `p-6`, `p-8` used based on context (mostly appropriate)
 - **Grid gaps** are mostly `gap-6` or `gap-8` — fairly consistent
 - **Page margins** vary: some pages use `py-6`, others `py-10 sm:py-16`
 
 #### Mobile Responsiveness (MEDIUM priority)
+
 - **Grid layouts** are responsive (1 col → 2–3 cols) — generally good
 - **Touch targets** are undersized: buttons at `py-2` (32px total) vs recommended 44px minimum
 - **Game simulations** use ResizeObserver-based responsive sizing — good
@@ -82,6 +88,7 @@ The work is split into **6 phases** with explicit checkpoints where you review a
 - **No mobile navigation** pattern (hamburger menu, bottom nav, etc.)
 
 #### Accessibility (LOW priority — already decent)
+
 - **Skip link** present across all apps
 - **Focus-visible** outlines use brand orange — good
 - **Semantic HTML** (`<main>`, `<nav>`, `<header>`) — good
@@ -122,16 +129,19 @@ COMPONENTS (shared library)
 ## 3. Phased Plan
 
 ### Phase 0: Audit Documentation
+
 **Effort:** Already complete (this document)
 **Checkpoint:** You review this plan and approve before Phase 1 begins.
 
 ---
 
 ### Phase 1: Design System Specification
+
 **Effort:** ~1 session
 **Output:** `DESIGN_SYSTEM.md` at repo root
 
 #### What happens:
+
 1. **Define the full color palette** derived from school brand:
    - Primary: `#f36b22` (from kvenno.is)
    - Secondary accent: derived from `#c55113`
@@ -171,10 +181,12 @@ COMPONENTS (shared library)
 ---
 
 ### Phase 2: Shared Infrastructure
+
 **Effort:** ~2 sessions
 **Dependencies:** Phase 1 approved
 
 #### What happens:
+
 1. **Update `packages/shared/styles/theme.css`:**
    - New color tokens (CSS custom properties)
    - New typography tokens (font imports, scale)
@@ -204,10 +216,12 @@ COMPONENTS (shared library)
 ---
 
 ### Phase 3: Reskin — Landing + Lab Reports
+
 **Effort:** ~2 sessions
 **Dependencies:** Phase 2 approved
 
 #### What happens:
+
 1. **Landing app (`apps/landing/`):**
    - Apply new color palette to Home, ChemistryHub, YearHub pages
    - Apply new typography
@@ -235,10 +249,12 @@ COMPONENTS (shared library)
 ---
 
 ### Phase 4: Reskin — Islenskubraut
+
 **Effort:** ~1 session
 **Dependencies:** Phase 3 approved (shared components proven stable)
 
 #### What happens:
+
 1. **Islenskubraut app (`apps/islenskubraut/`):**
    - Apply new palette and typography
    - Harmonize category colors with the design system (keep distinct but adjust saturation/tone to fit)
@@ -258,10 +274,12 @@ COMPONENTS (shared library)
 ---
 
 ### Phase 5: Reskin — Games (17 games)
+
 **Effort:** ~3–4 sessions (this is the largest phase)
 **Dependencies:** Phase 4 approved
 
 #### What happens:
+
 1. **Update `game-base.css`** — this propagates base styling to all 17 games at once:
    - New font
    - New brand color utilities
@@ -294,10 +312,12 @@ COMPONENTS (shared library)
 ---
 
 ### Phase 6: Final Verification & Cleanup
+
 **Effort:** ~1 session
 **Dependencies:** All previous phases approved
 
 #### What happens:
+
 1. **Full build verification:**
    - `pnpm build` succeeds with no errors
    - `pnpm type-check` passes
@@ -340,32 +360,37 @@ COMPONENTS (shared library)
 Before Phase 1 can produce a complete design system, I need your preferences on:
 
 ### D1: Typography — CONFIRMED: **B — Plus Jakarta Sans + DM Sans**
+
 Friendly, geometric, distinctive. Excellent Icelandic character support. Approachable for teens without being childish.
 
 ### D2: Visual Tone — CONFIRMED: **A — Warm & Energetic**
+
 Orange-forward, warm neutrals (cream/sand instead of slate), playful shadows, rounded elements. Restrained warmth — inviting, not loud.
 
 ### D3: Navigation — CONFIRMED: **C — Top bar + mobile bottom nav**
+
 Top bar with track tabs on desktop, bottom tab bar on mobile. Thumb-reachable, familiar to students, always visible.
 
 ### D4: Islenskubraut Integration — CONFIRMED: **A — Full integration**
+
 Same Header/Footer as all apps. Shared navigation. One unified platform. Category colors kept but harmonized.
 
 ### D5: Game Year Themes — CONFIRMED: **A — Keep year-specific colors**
+
 Year 1 = orange/amber, Year 2 = teal/cyan, Year 3 = purple/indigo. Used as accents within the warm base palette.
 
 ---
 
 ## 5. Risk Mitigation
 
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| Game functionality breaks during reskin | HIGH | Reskin CSS/classes only. Never modify game logic. Test each game after changes. |
-| Font change affects layout (Icelandic words are long) | MEDIUM | Test with longest Icelandic words during Phase 1 font selection. |
-| Single-file HTML bundle sizes increase | MEDIUM | Monitor sizes. New font adds ~50–100KB per game (inlined). |
-| Lab Reports auth flow breaks | HIGH | Don't touch auth components. Only style surrounding UI. |
-| PDF generation breaks (Islenskubraut) | MEDIUM | Server-side code/data unchanged. Only client styling changes. |
-| Regression in existing tests | LOW | Run full test suite at each phase checkpoint. |
+| Risk                                                  | Impact | Mitigation                                                                      |
+| ----------------------------------------------------- | ------ | ------------------------------------------------------------------------------- |
+| Game functionality breaks during reskin               | HIGH   | Reskin CSS/classes only. Never modify game logic. Test each game after changes. |
+| Font change affects layout (Icelandic words are long) | MEDIUM | Test with longest Icelandic words during Phase 1 font selection.                |
+| Single-file HTML bundle sizes increase                | MEDIUM | Monitor sizes. New font adds ~50–100KB per game (inlined).                      |
+| Lab Reports auth flow breaks                          | HIGH   | Don't touch auth components. Only style surrounding UI.                         |
+| PDF generation breaks (Islenskubraut)                 | MEDIUM | Server-side code/data unchanged. Only client styling changes.                   |
+| Regression in existing tests                          | LOW    | Run full test suite at each phase checkpoint.                                   |
 
 ---
 
@@ -374,6 +399,7 @@ Year 1 = orange/amber, Year 2 = teal/cyan, Year 3 = purple/indigo. Used as accen
 ### Files Modified (estimated)
 
 **Phase 2 — Shared Infrastructure:**
+
 ```
 packages/shared/styles/theme.css          — Major rewrite (new tokens)
 packages/shared/styles/game-base.css      — Updated (new font, colors)
@@ -388,6 +414,7 @@ packages/shared/components/index.ts       — Updated (new exports)
 ```
 
 **Phase 3 — Landing + Lab Reports:**
+
 ```
 apps/landing/src/index.css                — Updated imports
 apps/landing/src/pages/Home.tsx           — Tailwind class updates
@@ -400,6 +427,7 @@ apps/lab-reports/src/components/*.tsx      — Tailwind class updates
 ```
 
 **Phase 4 — Islenskubraut:**
+
 ```
 apps/islenskubraut/src/index.css          — Updated imports
 apps/islenskubraut/src/App.tsx            — Header/footer changes
@@ -409,6 +437,7 @@ apps/islenskubraut/src/components/*.tsx    — Styling updates
 ```
 
 **Phase 5 — Games (×17):**
+
 ```
 apps/games/{year}/{game}/src/styles.css   — Updated (×17)
 apps/games/{year}/{game}/src/App.tsx      — Menu styling (×17)

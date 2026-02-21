@@ -30,14 +30,14 @@ This is a real tool in active classroom use, not a demo. If you teach chemistry 
 
 ## What's Inside
 
-| App | Path | Description |
-|-----|------|-------------|
-| **Landing** | `apps/landing` | Track selector and year-based navigation hubs |
-| **Games** | `apps/games` | 17 interactive chemistry games across 3 school years |
-| **Lab Reports** | `apps/lab-reports` | AI-powered lab report grading with Claude |
-| **Íslenskubraut** | `apps/islenskubraut` | Icelandic language teaching cards (A1/A2/B1) |
-| **Shared** | `packages/shared` | Component library, hooks, animations, sounds, i18n, and design system |
-| **Server** | `server` | Express backend (Claude API proxy, PDF generation) |
+| App               | Path                 | Description                                                           |
+| ----------------- | -------------------- | --------------------------------------------------------------------- |
+| **Landing**       | `apps/landing`       | Track selector and year-based navigation hubs                         |
+| **Games**         | `apps/games`         | 17 interactive chemistry games across 3 school years                  |
+| **Lab Reports**   | `apps/lab-reports`   | AI-powered lab report grading with Claude                             |
+| **Íslenskubraut** | `apps/islenskubraut` | Icelandic language teaching cards (A1/A2/B1)                          |
+| **Shared**        | `packages/shared`    | Component library, hooks, animations, sounds, i18n, and design system |
+| **Server**        | `server`             | Express backend (Claude API proxy, PDF generation)                    |
 
 ### Games by Year
 
@@ -79,12 +79,12 @@ cp server/.env.example server/.env
 
 Then edit `server/.env`:
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `CLAUDE_API_KEY` | Yes | Anthropic API key from [console.anthropic.com](https://console.anthropic.com/) |
-| `PORT` | No | Server port (default: `8000`) |
-| `NODE_ENV` | No | `production` or `development` (default: `development`) |
-| `FRONTEND_URL` | No | Allowed CORS origin (default: `https://kvenno.app`) |
+| Variable         | Required | Description                                                                    |
+| ---------------- | -------- | ------------------------------------------------------------------------------ |
+| `CLAUDE_API_KEY` | Yes      | Anthropic API key from [console.anthropic.com](https://console.anthropic.com/) |
+| `PORT`           | No       | Server port (default: `8000`)                                                  |
+| `NODE_ENV`       | No       | `production` or `development` (default: `development`)                         |
+| `FRONTEND_URL`   | No       | Allowed CORS origin (default: `https://kvenno.app`)                            |
 
 **Lab reports** (`apps/lab-reports/.env`):
 
@@ -92,9 +92,9 @@ Then edit `server/.env`:
 cp apps/lab-reports/.env.example apps/lab-reports/.env
 ```
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `VITE_TEACHER_EMAILS` | No | Comma-separated teacher emails for role-based UI |
+| Variable              | Required | Description                                      |
+| --------------------- | -------- | ------------------------------------------------ |
+| `VITE_TEACHER_EMAILS` | No       | Comma-separated teacher emails for role-based UI |
 
 ### 3. Run (development)
 
@@ -132,9 +132,9 @@ npx serve dist/
 
 The production server is a Linode instance running Ubuntu 24.04.
 
-- **Frontend:** `/var/www/kvenno.app/dist` (served by nginx)
+- **Frontend:** `/var/www/kvenno.app` (served by nginx)
 - **Backend:** `/opt/kvenno-server/` (Express on port 8000)
-- **Service:** `kvenno-server.service` (systemd)
+- **Service:** `kvenno-backend.service` (systemd)
 - **Domain:** `kvenno.app` + `www.kvenno.app`
 - **SSL:** Let's Encrypt via certbot (auto-renewal)
 - **Nginx:** `/etc/nginx/sites-available/kvenno` — serves static files, proxies `/api/*` to port 8000
@@ -148,10 +148,11 @@ pnpm build
 ```
 
 The deploy script:
+
 1. Rsyncs `dist/` to `/var/www/kvenno.app/` on the server
 2. Rsyncs `server/` to `/opt/kvenno-server/` (excludes `node_modules` and `.env`)
 3. Runs `npm ci --omit=dev` on the server
-4. Restarts the `kvenno-server` systemd service
+4. Restarts the `kvenno-backend` systemd service
 5. Sets file permissions (`www-data:www-data`, `755`)
 
 ### Systemd service
@@ -165,7 +166,7 @@ After=network.target
 Type=simple
 User=siggi
 WorkingDirectory=/opt/kvenno-server
-ExecStart=/usr/bin/node index.js
+ExecStart=/usr/bin/node dist/index.js
 Restart=on-failure
 EnvironmentFile=/opt/kvenno-server/.env
 
@@ -175,13 +176,13 @@ WantedBy=multi-user.target
 
 ### API endpoints
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/health` | Health check |
-| `POST` | `/api/process-document` | DOCX upload, converts to PDF via LibreOffice |
-| `POST` | `/api/analyze` | Lab report analysis via Claude (teacher + student modes) |
-| `POST` | `/api/analyze-2ar` | 2nd year simplified checklist analysis |
-| `GET` | `/api/islenskubraut/pdf` | Generate teaching card PDF (`?flokkur={id}&stig={level}`) |
+| Method | Path                     | Description                                               |
+| ------ | ------------------------ | --------------------------------------------------------- |
+| `GET`  | `/health`                | Health check                                              |
+| `POST` | `/api/process-document`  | DOCX upload, converts to PDF via LibreOffice              |
+| `POST` | `/api/analyze`           | Lab report analysis via Claude (teacher + student modes)  |
+| `POST` | `/api/analyze-2ar`       | 2nd year simplified checklist analysis                    |
+| `GET`  | `/api/islenskubraut/pdf` | Generate teaching card PDF (`?flokkur={id}&stig={level}`) |
 
 ## Project Structure
 
@@ -242,16 +243,16 @@ dist/
 
 ```bash
 ssh siggi@kvenno.app
-sudo journalctl -u kvenno-server -f          # Follow live logs
-sudo journalctl -u kvenno-server --since "1 hour ago"
+sudo journalctl -u kvenno-backend -f          # Follow live logs
+sudo journalctl -u kvenno-backend --since "1 hour ago"
 ```
 
 ### Restart the backend
 
 ```bash
 ssh siggi@kvenno.app
-sudo systemctl restart kvenno-server
-sudo systemctl status kvenno-server
+sudo systemctl restart kvenno-backend
+sudo systemctl status kvenno-backend
 ```
 
 ### Run tests

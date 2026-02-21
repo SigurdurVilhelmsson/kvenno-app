@@ -1,7 +1,7 @@
 {
-  "name": "labreports-server",
+  "name": "kvenno-server",
   "version": "1.0.0",
-  "description": "Express.js backend server for LabReports",
+  "description": "Express.js backend server for kvenno.app",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
@@ -17,19 +17,19 @@
     "express": "^4.18.2",
     "express-rate-limit": "^7.5.0",
     "formidable": "^3.5.1",
-    "helmet": "^8.1.0"
+    "helmet": "^8.1.0",
+    "react": "^19.0.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.0",
+    "@types/express": "^4.17.0",
     "@types/formidable": "^3.4.5",
-    "@types/node": "^22.0.0",
+    "@types/node": "^20.10.0",
     "@types/react": "^19.0.0",
-    "react": "^19.0.0",
     "supertest": "^7.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0",
-    "vitest": "^2.1.0"
+    "vitest": "^4.0.0"
   },
   "engines": {
     "node": ">=20.0.0"

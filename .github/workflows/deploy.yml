@@ -82,7 +82,7 @@ jobs:
           ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "\
             cd /opt/kvenno-server && \
             npm ci --omit=dev && \
-            sudo systemctl restart kvenno-server"
+            sudo systemctl restart kvenno-backend"
 
       - name: Set permissions
         run: |

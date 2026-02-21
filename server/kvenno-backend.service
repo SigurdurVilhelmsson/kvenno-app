@@ -5,16 +5,28 @@ After=network.target
 [Service]
 Type=simple
 User=www-data
-WorkingDirectory=/home/siggi/repos/LabReports/server
+WorkingDirectory=/opt/kvenno-server
 Environment="NODE_ENV=production"
 Environment="HOME=/var/www"
-EnvironmentFile=/home/siggi/repos/LabReports/server/.env
-ExecStart=/usr/bin/node index.js
+EnvironmentFile=/opt/kvenno-server/.env
+ExecStart=/usr/bin/node dist/index.js
 Restart=always
 RestartSec=10
 StandardOutput=journal
 StandardError=journal
 SyslogIdentifier=kvenno-backend
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+ReadWritePaths=/opt/kvenno-server/uploads /tmp
 
 [Install]
 WantedBy=multi-user.target
