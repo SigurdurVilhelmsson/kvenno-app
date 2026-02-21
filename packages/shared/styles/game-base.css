@@ -46,3 +46,142 @@ h1, h2, h3 {
 .text-orange-accessible {
   color: var(--color-kvenno-orange-700, #b04510);
 }
+
+/* ===================================================================
+ * Game Microinteraction Utilities
+ * =================================================================== */
+
+/* --- Button press feedback (squish → spring back) --- */
+.game-btn {
+  transition: transform 0.15s var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)),
+              box-shadow 0.15s ease-out;
+}
+.game-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-depth-md);
+}
+.game-btn:active {
+  transform: scale(0.95) translateY(0);
+  box-shadow: var(--shadow-sm);
+  transition-duration: 0.08s;
+}
+
+/* --- Card hover lift with shadow growth --- */
+.game-card {
+  transition: transform 0.2s var(--ease-spring-gentle, cubic-bezier(0.22, 1.2, 0.36, 1)),
+              box-shadow 0.2s ease-out;
+}
+.game-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-depth-lg);
+}
+.game-card:active {
+  transform: translateY(-1px) scale(0.99);
+  box-shadow: var(--shadow-depth-sm);
+  transition-duration: 0.1s;
+}
+
+/* --- Interactive card with perspective tilt (set via CSS vars from JS) --- */
+.game-card-tilt {
+  transition: transform 0.2s var(--ease-spring-gentle), box-shadow 0.2s ease-out;
+  transform: perspective(600px)
+    rotateX(var(--tilt-x, 0deg))
+    rotateY(var(--tilt-y, 0deg))
+    translateY(var(--tilt-lift, 0));
+}
+
+/* --- Correct answer feedback --- */
+.game-correct {
+  animation: var(--animate-spring-bounce);
+}
+.game-correct-container {
+  animation: success-flash 0.4s ease-out;
+}
+
+/* --- Wrong answer feedback --- */
+.game-wrong {
+  animation: var(--animate-error-shake);
+}
+.game-wrong-container {
+  animation: error-vignette 0.5s ease-out;
+}
+
+/* --- Score float-up popup --- */
+.game-score-popup {
+  animation: float-up 0.8s var(--ease-spring) forwards;
+  pointer-events: none;
+  position: absolute;
+  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+/* --- Gold shimmer sweep (perfect round) --- */
+.game-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.game-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    transparent 30%,
+    rgba(255, 215, 0, 0.3) 45%,
+    rgba(255, 215, 0, 0.5) 50%,
+    rgba(255, 215, 0, 0.3) 55%,
+    transparent 70%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: gold-shimmer 1.5s ease-in-out;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* --- Pulse glow (attention indicator) --- */
+.game-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* --- Glassmorphism panel --- */
+.game-glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-depth-sm);
+}
+.game-glass-dark {
+  background: var(--glass-bg-dark);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: var(--shadow-depth-sm);
+}
+
+/* --- Streak fire indicator --- */
+.game-streak-fire {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.game-streak-fire::before {
+  content: var(--streak-icon, '🔥');
+  font-size: 1.1em;
+}
+
+/* --- Entrance animation stagger helpers --- */
+.game-stagger > * {
+  animation: slide-up 0.3s var(--ease-spring-gentle) backwards;
+}
+.game-stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.game-stagger > *:nth-child(2) { animation-delay: 0.10s; }
+.game-stagger > *:nth-child(3) { animation-delay: 0.15s; }
+.game-stagger > *:nth-child(4) { animation-delay: 0.20s; }
+.game-stagger > *:nth-child(5) { animation-delay: 0.25s; }
+.game-stagger > *:nth-child(6) { animation-delay: 0.30s; }
+.game-stagger > *:nth-child(7) { animation-delay: 0.35s; }
+.game-stagger > *:nth-child(8) { animation-delay: 0.40s; }

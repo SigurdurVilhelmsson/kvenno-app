@@ -15,3 +15,5 @@ export * from './useProgress';
 export * from './useAccessibility';
 export * from './useAchievements';
 export { useGameProgress } from './useGameProgress';
+export { useGameSounds } from './useGameSounds';
+export type { UseGameSoundsReturn } from './useGameSounds';

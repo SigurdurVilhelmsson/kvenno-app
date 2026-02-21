@@ -5,6 +5,10 @@ import { AchievementNotificationsContainer } from '@shared/components/Achievemen
 import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
 import { useAchievements } from '@shared/hooks/useAchievements';
 import { useGameI18n } from '@shared/hooks/useGameI18n';
+import { ParticleCelebration, useParticleCelebration } from '@shared/components/ParticleCelebration';
+import { AnimatedBackground } from '@shared/components/AnimatedBackground';
+import { SoundToggle } from '@shared/components/SoundToggle';
+import { useGameSounds } from '@shared/hooks/useGameSounds';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
@@ -54,11 +58,27 @@ function App() {
     resetAll,
   } = useAchievements({ gameId: 'molmassi' });
 
+  const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('1-ar');
+  const { playCorrect, playWrong, playLevelComplete, isEnabled: soundEnabled, toggleSound } = useGameSounds();
+
+  const handleCorrectAnswer = (...args: Parameters<typeof trackCorrectAnswer>) => {
+    trackCorrectAnswer(...args);
+    playCorrect();
+    triggerCorrect();
+  };
+
+  const handleIncorrectAnswer = (...args: Parameters<typeof trackIncorrectAnswer>) => {
+    trackIncorrectAnswer(...args);
+    playWrong();
+  };
+
   const completeLevel1 = (score: number, maxScore: number, hintsUsed: number) => {
     const newProgress = { ...progress, level1Completed: true };
     setProgress(newProgress);
     saveProgress(newProgress);
     trackLevelComplete(1, score, maxScore, { hintsUsed });
+    playLevelComplete();
+    triggerLevelComplete();
     setMode('level2');
   };
 
@@ -67,11 +87,15 @@ function App() {
     setProgress(newProgress);
     saveProgress(newProgress);
     trackLevelComplete(2, score, maxScore, { hintsUsed });
+    playLevelComplete();
+    triggerLevelComplete();
     setMode('level3');
   };
 
   const completeLevel3 = (score: number, maxScore: number, hintsUsed: number) => {
     trackLevelComplete(3, score, maxScore, { hintsUsed });
+    playLevelComplete();
+    triggerLevelComplete();
     // Check if all levels are complete to track game completion
     if (progress.level1Completed && progress.level2Completed) {
       trackGameComplete();
@@ -85,13 +109,14 @@ function App() {
         <Level1
           onBack={() => setMode('menu')}
           onComplete={completeLevel1}
-          onCorrectAnswer={trackCorrectAnswer}
-          onIncorrectAnswer={trackIncorrectAnswer}
+          onCorrectAnswer={handleCorrectAnswer}
+          onIncorrectAnswer={handleIncorrectAnswer}
         />
         <AchievementNotificationsContainer
           notifications={notifications}
           onDismiss={dismissNotification}
         />
+        <ParticleCelebration {...celebrationProps} />
       </>
     );
   }
@@ -102,13 +127,14 @@ function App() {
         <Level2
           onBack={() => setMode('menu')}
           onComplete={completeLevel2}
-          onCorrectAnswer={trackCorrectAnswer}
-          onIncorrectAnswer={trackIncorrectAnswer}
+          onCorrectAnswer={handleCorrectAnswer}
+          onIncorrectAnswer={handleIncorrectAnswer}
         />
         <AchievementNotificationsContainer
           notifications={notifications}
           onDismiss={dismissNotification}
         />
+        <ParticleCelebration {...celebrationProps} />
       </>
     );
   }
@@ -119,20 +145,22 @@ function App() {
         <Level3
           onBack={() => setMode('menu')}
           onComplete={completeLevel3}
-          onCorrectAnswer={trackCorrectAnswer}
-          onIncorrectAnswer={trackIncorrectAnswer}
+          onCorrectAnswer={handleCorrectAnswer}
+          onIncorrectAnswer={handleIncorrectAnswer}
         />
         <AchievementNotificationsContainer
           notifications={notifications}
           onDismiss={dismissNotification}
         />
+        <ParticleCelebration {...celebrationProps} />
       </>
     );
   }
 
   // Main Menu with Level Selection
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex items-center justify-center p-4">
+    <AnimatedBackground yearTheme="1-ar" variant="menu" showSymbols>
+    <div className="min-h-screen flex items-center justify-center p-4">
       <div className="max-w-lg w-full">
         {/* Header with Language Switcher and Achievements Button */}
         <div className="flex justify-between items-center mb-4 animate-fade-in-up">
@@ -145,6 +173,7 @@ function App() {
             achievements={achievements}
             onClick={() => setShowAchievements(true)}
           />
+          <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
         </div>
 
         {/* Title */}
@@ -159,7 +188,7 @@ function App() {
           {/* Level 1 */}
           <button
             onClick={() => setMode('level1')}
-            className="w-full bg-white rounded-2xl shadow-lg p-6 text-left hover:shadow-xl transition-all transform hover:scale-[1.02] animate-fade-in-up"
+            className="game-card w-full bg-white rounded-2xl shadow-lg p-6 text-left hover:shadow-xl transition-all transform hover:scale-[1.02] animate-fade-in-up"
             style={{ animationDelay: '100ms' }}
           >
             <div className="flex items-start justify-between">
@@ -189,7 +218,7 @@ function App() {
           {/* Level 2 */}
           <button
             onClick={() => setMode('level2')}
-            className={`w-full bg-white rounded-2xl shadow-lg p-6 text-left transition-all transform animate-fade-in-up ${
+            className={`game-card w-full bg-white rounded-2xl shadow-lg p-6 text-left transition-all transform animate-fade-in-up ${
               !progress.level1Completed
                 ? 'opacity-60 cursor-not-allowed'
                 : 'hover:shadow-xl hover:scale-[1.02]'
@@ -227,7 +256,7 @@ function App() {
           {/* Level 3 */}
           <button
             onClick={() => setMode('level3')}
-            className={`w-full bg-white rounded-2xl shadow-lg p-6 text-left transition-all transform animate-fade-in-up ${
+            className={`game-card w-full bg-white rounded-2xl shadow-lg p-6 text-left transition-all transform animate-fade-in-up ${
               !progress.level2Completed
                 ? 'opacity-60 cursor-not-allowed'
                 : 'hover:shadow-xl hover:scale-[1.02]'
@@ -321,7 +350,9 @@ function App() {
         notifications={notifications}
         onDismiss={dismissNotification}
       />
+      <ParticleCelebration {...celebrationProps} />
     </div>
+    </AnimatedBackground>
   );
 }
 

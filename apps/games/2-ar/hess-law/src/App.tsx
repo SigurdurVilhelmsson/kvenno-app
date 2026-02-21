@@ -6,6 +6,10 @@ import { AchievementsButton, AchievementsPanel } from '@shared/components/Achiev
 import { useGameI18n } from '@shared/hooks';
 import { useGameProgress } from '@shared/hooks';
 import { useAchievements } from '@shared/hooks/useAchievements';
+import { ParticleCelebration, useParticleCelebration } from '@shared/components/ParticleCelebration';
+import { AnimatedBackground } from '@shared/components/AnimatedBackground';
+import { SoundToggle } from '@shared/components/SoundToggle';
+import { useGameSounds } from '@shared/hooks/useGameSounds';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
@@ -53,6 +57,20 @@ function App() {
     resetAll: resetAchievements,
   } = useAchievements({ gameId: 'hess-law' });
 
+  const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('2-ar');
+  const { playCorrect, playWrong, playLevelComplete, isEnabled: soundEnabled, toggleSound } = useGameSounds();
+
+  const handleCorrectAnswer = (...args: Parameters<typeof trackCorrectAnswer>) => {
+    trackCorrectAnswer(...args);
+    playCorrect();
+    triggerCorrect();
+  };
+
+  const handleIncorrectAnswer = (...args: Parameters<typeof trackIncorrectAnswer>) => {
+    trackIncorrectAnswer(...args);
+    playWrong();
+  };
+
   const handleLevel1Complete = (score: number, maxScore: number = 600, hintsUsed: number = 0) => {
     updateProgress({
       level1Completed: true,
@@ -60,6 +78,8 @@ function App() {
       totalGamesPlayed: progress.totalGamesPlayed + 1
     });
     trackLevelComplete(1, score, maxScore, { hintsUsed });
+    playLevelComplete();
+    triggerLevelComplete();
     setActiveLevel('menu');
   };
 
@@ -70,6 +90,8 @@ function App() {
       totalGamesPlayed: progress.totalGamesPlayed + 1
     });
     trackLevelComplete(2, score, maxScore, { hintsUsed });
+    playLevelComplete();
+    triggerLevelComplete();
     setActiveLevel('menu');
   };
 
@@ -81,6 +103,8 @@ function App() {
     });
     trackLevelComplete(3, score, maxScore, { hintsUsed });
     trackGameComplete();
+    playLevelComplete();
+    triggerLevelComplete();
     setActiveLevel('complete');
   };
 
@@ -91,13 +115,14 @@ function App() {
         <Level1
           onComplete={handleLevel1Complete}
           onBack={() => setActiveLevel('menu')}
-          onCorrectAnswer={() => trackCorrectAnswer()}
-          onIncorrectAnswer={() => trackIncorrectAnswer()}
+          onCorrectAnswer={() => handleCorrectAnswer()}
+          onIncorrectAnswer={() => handleIncorrectAnswer()}
         />
         <AchievementNotificationsContainer
           notifications={notifications}
           onDismiss={dismissNotification}
         />
+        <ParticleCelebration {...celebrationProps} />
       </>
     );
   }
@@ -108,13 +133,14 @@ function App() {
         <Level2
           onComplete={handleLevel2Complete}
           onBack={() => setActiveLevel('menu')}
-          onCorrectAnswer={() => trackCorrectAnswer()}
-          onIncorrectAnswer={() => trackIncorrectAnswer()}
+          onCorrectAnswer={() => handleCorrectAnswer()}
+          onIncorrectAnswer={() => handleIncorrectAnswer()}
         />
         <AchievementNotificationsContainer
           notifications={notifications}
           onDismiss={dismissNotification}
         />
+        <ParticleCelebration {...celebrationProps} />
       </>
     );
   }
@@ -126,13 +152,14 @@ function App() {
           t={t}
           onComplete={handleLevel3Complete}
           onBack={() => setActiveLevel('menu')}
-          onCorrectAnswer={() => trackCorrectAnswer()}
-          onIncorrectAnswer={() => trackIncorrectAnswer()}
+          onCorrectAnswer={() => handleCorrectAnswer()}
+          onIncorrectAnswer={() => handleIncorrectAnswer()}
         />
         <AchievementNotificationsContainer
           notifications={notifications}
           onDismiss={dismissNotification}
         />
+        <ParticleCelebration {...celebrationProps} />
       </>
     );
   }
@@ -142,68 +169,71 @@ function App() {
     const totalScore = progress.level1Score + progress.level2Score + progress.level3Score;
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-center mb-6 text-teal-600">
-            Til hamingju!
-          </h1>
+      <>
+        <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
+          <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+            <h1 className="text-3xl md:text-4xl font-bold text-center mb-6 text-teal-600">
+              Til hamingju!
+            </h1>
 
-          <div className="text-center mb-8">
-            <div className="text-6xl mb-4">🏆</div>
-            <div className="text-2xl font-bold text-warm-800 mb-2">
-              Þú hefur lokið öllum stigum!
-            </div>
-          </div>
-
-          <div className="space-y-4 mb-8">
-            <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center">
-              <div>
-                <div className="font-bold text-blue-800">Stig 1: Skilningur</div>
-                <div className="text-sm text-blue-600">Orkubrautir og ΔH</div>
+            <div className="text-center mb-8">
+              <div className="text-6xl mb-4">🏆</div>
+              <div className="text-2xl font-bold text-warm-800 mb-2">
+                Þú hefur lokið öllum stigum!
               </div>
-              <div className="text-2xl font-bold text-blue-600">{progress.level1Score}</div>
             </div>
 
-            <div className="bg-green-50 p-4 rounded-xl flex justify-between items-center">
-              <div>
-                <div className="font-bold text-green-800">Stig 2: Þrautir</div>
-                <div className="text-sm text-green-600">Sameina jöfnur</div>
+            <div className="space-y-4 mb-8">
+              <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center">
+                <div>
+                  <div className="font-bold text-blue-800">Stig 1: Skilningur</div>
+                  <div className="text-sm text-blue-600">Orkubrautir og ΔH</div>
+                </div>
+                <div className="text-2xl font-bold text-blue-600">{progress.level1Score}</div>
               </div>
-              <div className="text-2xl font-bold text-green-600">{progress.level2Score}</div>
-            </div>
 
-            <div className="bg-purple-50 p-4 rounded-xl flex justify-between items-center">
-              <div>
-                <div className="font-bold text-purple-800">Stig 3: Útreikningar</div>
-                <div className="text-sm text-purple-600">Myndunarvarminn</div>
+              <div className="bg-green-50 p-4 rounded-xl flex justify-between items-center">
+                <div>
+                  <div className="font-bold text-green-800">Stig 2: Þrautir</div>
+                  <div className="text-sm text-green-600">Sameina jöfnur</div>
+                </div>
+                <div className="text-2xl font-bold text-green-600">{progress.level2Score}</div>
               </div>
-              <div className="text-2xl font-bold text-purple-600">{progress.level3Score}</div>
+
+              <div className="bg-purple-50 p-4 rounded-xl flex justify-between items-center">
+                <div>
+                  <div className="font-bold text-purple-800">Stig 3: Útreikningar</div>
+                  <div className="text-sm text-purple-600">Myndunarvarminn</div>
+                </div>
+                <div className="text-2xl font-bold text-purple-600">{progress.level3Score}</div>
+              </div>
+
+              <div className="bg-orange-100 p-4 rounded-xl flex justify-between items-center border-2 border-orange-400">
+                <div className="font-bold text-orange-800 text-lg">Heildarstig</div>
+                <div className="text-3xl font-bold text-orange-600">{totalScore}</div>
+              </div>
             </div>
 
-            <div className="bg-orange-100 p-4 rounded-xl flex justify-between items-center border-2 border-orange-400">
-              <div className="font-bold text-orange-800 text-lg">Heildarstig</div>
-              <div className="text-3xl font-bold text-orange-600">{totalScore}</div>
+            <div className="bg-teal-50 p-6 rounded-xl mb-6">
+              <h2 className="font-bold text-teal-800 mb-3">Hvað lærðir þú?</h2>
+              <ul className="space-y-2 text-teal-900 text-sm">
+                <li>✓ <strong>Lögmál Hess:</strong> ΔH fer sama leiðina óháð hvörfunarferlinu</li>
+                <li>✓ <strong>Snúa við:</strong> Ef þú snýrð við hvörfum, snýrðu einnig formerki ΔH</li>
+                <li>✓ <strong>Margfalda:</strong> Ef þú margfaldar jöfnu, margfaldar þú einnig ΔH</li>
+                <li>✓ <strong>Myndunarvarminn:</strong> ΔH°<sub>rxn</sub> = Σ ΔH°<sub>f</sub>(afurðir) - Σ ΔH°<sub>f</sub>(hvarfefni)</li>
+              </ul>
             </div>
-          </div>
 
-          <div className="bg-teal-50 p-6 rounded-xl mb-6">
-            <h2 className="font-bold text-teal-800 mb-3">Hvað lærðir þú?</h2>
-            <ul className="space-y-2 text-teal-900 text-sm">
-              <li>✓ <strong>Lögmál Hess:</strong> ΔH fer sama leiðina óháð hvörfunarferlinu</li>
-              <li>✓ <strong>Snúa við:</strong> Ef þú snýrð við hvörfum, snýrðu einnig formerki ΔH</li>
-              <li>✓ <strong>Margfalda:</strong> Ef þú margfaldar jöfnu, margfaldar þú einnig ΔH</li>
-              <li>✓ <strong>Myndunarvarminn:</strong> ΔH°<sub>rxn</sub> = Σ ΔH°<sub>f</sub>(afurðir) - Σ ΔH°<sub>f</sub>(hvarfefni)</li>
-            </ul>
+            <button
+              onClick={() => setActiveLevel('menu')}
+              className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+            >
+              Til baka í valmynd
+            </button>
           </div>
-
-          <button
-            onClick={() => setActiveLevel('menu')}
-            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
-          >
-            Til baka í valmynd
-          </button>
         </div>
-      </div>
+        <ParticleCelebration {...celebrationProps} />
+      </>
     );
   }
 
@@ -213,8 +243,9 @@ function App() {
 
   // Year 2: Teal/Cyan theme
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+    <AnimatedBackground yearTheme="2-ar" variant="menu" showSymbols>
+      <div className="min-h-screen flex items-center justify-center p-4 md:p-8">
+      <div className="max-w-3xl w-full mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
         {/* Header with achievements button */}
         <div className="flex justify-between items-start mb-4">
           <div className="flex-1">
@@ -226,6 +257,7 @@ function App() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
             <LanguageSwitcher
               language={language}
               onLanguageChange={setLanguage}
@@ -258,7 +290,7 @@ function App() {
           {/* Level 1 */}
           <button
             onClick={() => setActiveLevel('level1')}
-            className="w-full p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
+            className="game-card w-full p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
           >
             <div className="flex items-center gap-4">
               <div className="text-4xl">🔬</div>
@@ -285,7 +317,7 @@ function App() {
           {/* Level 2 */}
           <button
             onClick={() => progress.level1Completed && setActiveLevel('level2')}
-            className={`w-full p-6 rounded-xl border-4 transition-all text-left ${
+            className={`game-card w-full p-6 rounded-xl border-4 transition-all text-left ${
               progress.level1Completed
                 ? 'border-green-400 bg-green-50 hover:bg-green-100 cursor-pointer'
                 : 'border-warm-200 bg-warm-50 opacity-60 cursor-not-allowed'
@@ -320,7 +352,7 @@ function App() {
           {/* Level 3 */}
           <button
             onClick={() => progress.level2Completed && setActiveLevel('level3')}
-            className={`w-full p-6 rounded-xl border-4 transition-all text-left ${
+            className={`game-card w-full p-6 rounded-xl border-4 transition-all text-left ${
               progress.level2Completed
                 ? 'border-purple-400 bg-purple-50 hover:bg-purple-100 cursor-pointer'
                 : 'border-warm-200 bg-warm-50 opacity-60 cursor-not-allowed'
@@ -415,7 +447,9 @@ function App() {
         notifications={notifications}
         onDismiss={dismissNotification}
       />
+      <ParticleCelebration {...celebrationProps} />
     </div>
+    </AnimatedBackground>
   );
 }
 

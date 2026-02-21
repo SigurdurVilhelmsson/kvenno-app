@@ -4,8 +4,12 @@ import { InteractiveGraph, LanguageSwitcher, ErrorBoundary } from '@shared/compo
 import type { DataPoint, DataSeries, MarkerConfig, RegionConfig, VerticalLineConfig } from '@shared/components';
 import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
 import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
+import { ParticleCelebration, useParticleCelebration } from '@shared/components/ParticleCelebration';
+import { AnimatedBackground } from '@shared/components/AnimatedBackground';
+import { SoundToggle } from '@shared/components/SoundToggle';
 import { useGameI18n } from '@shared/hooks';
 import { useAchievements } from '@shared/hooks/useAchievements';
+import { useGameSounds } from '@shared/hooks/useGameSounds';
 
 import { EntropyVisualization } from './components/EntropyVisualization';
 import { PROBLEMS } from './data';
@@ -74,6 +78,9 @@ function App() {
     dismissNotification,
     resetAll: resetAchievements,
   } = useAchievements({ gameId: 'thermodynamics-predictor' });
+
+  const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('3-ar');
+  const { playCorrect, playWrong, playLevelComplete, isEnabled: soundEnabled, toggleSound } = useGameSounds();
 
   // Map difficulty to level number for achievements
   const difficultyToLevel = (diff: Difficulty): 1 | 2 | 3 => {
@@ -150,27 +157,28 @@ function App() {
       }));
       setFeedback(`Rétt! +${points} stig`);
 
-      // Track correct answer for achievements
       trackCorrectAnswer({ firstAttempt: true });
+      playCorrect();
+      triggerCorrect();
 
       // Track level completion every 5 problems completed (milestone-based)
       const newProblemsCompleted = progress.problemsCompleted + 1;
       if (newProblemsCompleted % 5 === 0) {
         const level = difficultyToLevel(difficulty);
-        const maxScore = 100 * 5; // 100 points per problem, 5 problems
+        const maxScore = 100 * 5;
         const scoreForLevel = Math.min(points * 5, maxScore);
-        // This game shows hints automatically (no interactive hint button), so hintsUsed is 0
         trackLevelComplete(level, scoreForLevel, maxScore, { hintsUsed: 0 });
+        playLevelComplete();
+        triggerLevelComplete();
 
-        // Track game complete when player completes 15 problems on advanced difficulty
         if (difficulty === 'advanced' && newProblemsCompleted >= 15) {
           trackGameComplete();
         }
       }
     } else {
       setStreak(0);
-      // Track incorrect answer for achievements
       trackIncorrectAnswer();
+      playWrong();
       if (!deltaGCorrect && !spontaneityCorrect) {
         setFeedback('Rangt. Bæði ΔG útreikningur og sjálfviljugheit eru röng.');
       } else if (!deltaGCorrect) {
@@ -277,7 +285,8 @@ function App() {
   // Menu Screen
   if (mode === 'menu') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-8">
+      <AnimatedBackground yearTheme="3-ar" variant="menu" showSymbols>
+      <div className="min-h-screen py-8">
         <a href="#game-content" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-orange-600 focus:font-bold">
           Fara í efni
         </a>
@@ -294,6 +303,7 @@ function App() {
                 </p>
               </div>
               <div className="flex gap-2">
+                <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
                 <LanguageSwitcher
                   language={language}
                   onLanguageChange={setLanguage}
@@ -392,7 +402,7 @@ function App() {
                   setMode('learning');
                   startNewProblem();
                 }}
-                className="p-6 rounded-lg text-white font-bold text-lg transition"
+                className="game-card p-6 rounded-lg text-white font-bold text-lg transition"
                 style={{background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)'}}
               >
                 📖 Æfingarhamur
@@ -404,7 +414,7 @@ function App() {
                   setStreak(0);
                   startNewProblem();
                 }}
-                className="p-6 rounded-lg text-white font-bold text-lg transition"
+                className="game-card p-6 rounded-lg text-white font-bold text-lg transition"
                 style={{background: 'linear-gradient(135deg, #f36b22 0%, #d95a1a 100%)'}}
               >
                 ⚡ Keppnishamur
@@ -429,7 +439,10 @@ function App() {
           notifications={notifications}
           onDismiss={dismissNotification}
         />
+
+        <ParticleCelebration {...celebrationProps} />
       </div>
+      </AnimatedBackground>
     );
   }
 
@@ -881,6 +894,8 @@ function App() {
         notifications={notifications}
         onDismiss={dismissNotification}
       />
+
+      <ParticleCelebration {...celebrationProps} />
     </div>
   );
 }

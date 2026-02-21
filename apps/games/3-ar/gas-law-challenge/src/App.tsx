@@ -3,8 +3,12 @@ import { useState, useEffect, useMemo } from 'react';
 import { ParticleSimulation, PARTICLE_TYPES, PHYSICS_PRESETS, LanguageSwitcher, ErrorBoundary } from '@shared/components';
 import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
 import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
+import { ParticleCelebration, useParticleCelebration } from '@shared/components/ParticleCelebration';
+import { AnimatedBackground } from '@shared/components/AnimatedBackground';
+import { SoundToggle } from '@shared/components/SoundToggle';
 import { useGameI18n } from '@shared/hooks';
 import { useAchievements } from '@shared/hooks/useAchievements';
+import { useGameSounds } from '@shared/hooks/useGameSounds';
 
 import { questions, getRandomQuestion } from './data';
 import { gameTranslations } from './i18n';
@@ -80,6 +84,9 @@ function App() {
     resetAll: resetAchievements,
   } = useAchievements({ gameId: 'gas-law-challenge' });
 
+  const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('3-ar');
+  const { playCorrect, playWrong, playLevelComplete, isEnabled: soundEnabled, toggleSound } = useGameSounds();
+
   // Save stats whenever they change
   useEffect(() => {
     saveStats(stats);
@@ -130,6 +137,7 @@ function App() {
         message: `Ekki rétt. Þetta verkefni notar ${correctLawInfo.nameIs}: ${correctLawInfo.formula}. ${correctLawInfo.description}.`
       });
       trackIncorrectAnswer();
+      playWrong();
     }
   };
 
@@ -217,15 +225,16 @@ function App() {
         ? 'Fullkomið! Mjög nákvæmt svar! ⭐'
         : 'Rétt! Innan vikmarka ✓';
 
-      // Track correct answer for achievements
       trackCorrectAnswer({ firstAttempt: showHint === 0 });
+      playCorrect();
+      triggerCorrect();
     } else {
       message = error < 5
         ? 'Næstum rétt! Reyndu aftur.'
         : 'Ekki rétt. Athugaðu útreikninga þína.';
 
-      // Track incorrect answer for achievements
       trackIncorrectAnswer();
+      playWrong();
     }
 
     const newQuestionsAnswered = sessionQuestionsAnswered + 1;
@@ -236,13 +245,19 @@ function App() {
     if (newQuestionsAnswered === 5) {
       const levelScore = stats.correctAnswers + (isCorrect ? 1 : 0);
       trackLevelComplete(1, levelScore, 5, { hintsUsed: sessionHintsUsed });
+      playLevelComplete();
+      triggerLevelComplete();
     } else if (newQuestionsAnswered === 10) {
       const levelScore = stats.correctAnswers + (isCorrect ? 1 : 0);
       trackLevelComplete(2, levelScore, 10, { hintsUsed: sessionHintsUsed });
+      playLevelComplete();
+      triggerLevelComplete();
     } else if (newQuestionsAnswered === 15) {
       const levelScore = stats.correctAnswers + (isCorrect ? 1 : 0);
       trackLevelComplete(3, levelScore, 15, { hintsUsed: sessionHintsUsed });
       trackGameComplete();
+      playLevelComplete();
+      triggerLevelComplete();
       setSessionCompleted(true);
     }
 
@@ -303,11 +318,13 @@ function App() {
   // Menu Screen
   if (screen === 'menu') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
+      <AnimatedBackground yearTheme="3-ar" variant="menu" showSymbols>
+        <div className="min-h-screen">
         <main className="max-w-5xl mx-auto px-4 py-8">
           <div className="bg-white rounded-xl shadow-lg p-8">
             {/* Header with achievements button */}
             <div className="flex justify-end gap-2 mb-4">
+              <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
               <LanguageSwitcher
                 language={language}
                 onLanguageChange={setLanguage}
@@ -356,7 +373,7 @@ function App() {
 
             <div className="grid md:grid-cols-2 gap-6">
               {/* Practice Mode */}
-              <div className="bg-blue-50 p-6 rounded-lg border-2 border-blue-200">
+              <div className="game-card bg-blue-50 p-6 rounded-lg border-2 border-blue-200">
                 <h2 className="text-2xl font-bold mb-3 text-blue-900">Æfingahamur</h2>
                 <ul className="text-warm-700 mb-4 space-y-2 text-sm">
                   <li>✓ Engin tímatakmörk</li>
@@ -374,7 +391,7 @@ function App() {
               </div>
 
               {/* Challenge Mode */}
-              <div className="bg-orange-50 p-6 rounded-lg border-2 border-orange-200">
+              <div className="game-card bg-orange-50 p-6 rounded-lg border-2 border-orange-200">
                 <h2 className="text-2xl font-bold mb-3 text-orange-900">Keppnishamur</h2>
                 <ul className="text-warm-700 mb-4 space-y-2 text-sm">
                   <li>⏱️ 90 sekúndur á spurningu</li>
@@ -431,7 +448,10 @@ function App() {
           notifications={notifications}
           onDismiss={dismissNotification}
         />
+
+        <ParticleCelebration {...celebrationProps} />
       </div>
+      </AnimatedBackground>
     );
   }
 
@@ -781,6 +801,8 @@ function App() {
           notifications={notifications}
           onDismiss={dismissNotification}
         />
+
+        <ParticleCelebration {...celebrationProps} />
       </div>
     );
   }
@@ -924,6 +946,8 @@ function App() {
           notifications={notifications}
           onDismiss={dismissNotification}
         />
+
+        <ParticleCelebration {...celebrationProps} />
       </div>
     );
   }

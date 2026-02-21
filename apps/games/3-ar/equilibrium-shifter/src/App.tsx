@@ -3,8 +3,12 @@ import { useState, useEffect, useRef } from 'react';
 import { HintSystem, LanguageSwitcher, ErrorBoundary } from '@shared/components';
 import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
 import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
+import { ParticleCelebration, useParticleCelebration } from '@shared/components/ParticleCelebration';
+import { AnimatedBackground } from '@shared/components/AnimatedBackground';
+import { SoundToggle } from '@shared/components/SoundToggle';
 import { useProgress, useAccessibility, useI18n, useGameI18n } from '@shared/hooks';
 import { useAchievements } from '@shared/hooks/useAchievements';
+import { useGameSounds } from '@shared/hooks/useGameSounds';
 import type { TieredHints } from '@shared/types';
 
 import { ParticleEquilibrium } from './components/ParticleEquilibrium';
@@ -56,6 +60,9 @@ function App() {
     resetAll: resetAchievements,
   } = useAchievements({ gameId: 'equilibrium-shifter' });
 
+  const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('3-ar');
+  const { playCorrect, playWrong, playLevelComplete, isEnabled: soundEnabled, toggleSound } = useGameSounds();
+
   // Game state
   const [screen, setScreen] = useState<'menu' | 'mode-select' | 'game' | 'feedback' | 'results'>('menu');
   const [gameMode, setGameMode] = useState<GameMode>('learning');
@@ -105,7 +112,8 @@ function App() {
       timeoutHandledRef.current = true;
       setIsCorrect(false);
       setShowExplanation(true);
-      trackIncorrectAnswer(); // Track timeout as incorrect answer
+      trackIncorrectAnswer();
+      playWrong();
       setStats(prev => ({
         ...prev,
         questionsAnswered: prev.questionsAnswered + 1,
@@ -289,11 +297,13 @@ function App() {
     setIsCorrect(correct);
     setShowExplanation(true);
 
-    // Track achievements
     if (correct) {
       trackCorrectAnswer({ firstAttempt: hintsUsedTier === 0 });
+      playCorrect();
+      triggerCorrect();
     } else {
       trackIncorrectAnswer();
+      playWrong();
     }
 
     // Update stats - apply hint multiplier to points
@@ -347,6 +357,8 @@ function App() {
         const maxScore = totalQuestions * 35; // Max possible score (30 base + 5 time bonus)
         trackLevelComplete(1, stats.score, maxScore, { hintsUsed: stats.hintsUsed });
         trackGameComplete();
+        playLevelComplete();
+        triggerLevelComplete();
       } else {
         // Next question
         setQuestionNumber(prev => prev + 1);
@@ -371,6 +383,9 @@ function App() {
   const renderMenu = () => (
     <div className="max-w-4xl mx-auto">
       <div className="bg-white rounded-lg shadow-md p-8">
+        <div className="flex justify-end mb-4">
+          <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
+        </div>
         <h2 className="text-3xl font-bold text-warm-800 mb-6 text-center">
           Jafnvægisstjóri
         </h2>
@@ -382,7 +397,7 @@ function App() {
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           <button
             onClick={() => startGame('learning')}
-            className="mode-card bg-white border-2 border-blue-200 hover:border-blue-400 rounded-lg p-6 text-left transition-all"
+            className="game-card mode-card bg-white border-2 border-blue-200 hover:border-blue-400 rounded-lg p-6 text-left transition-all"
           >
             <div className="text-3xl mb-3">📚</div>
             <h3 className="text-xl font-bold text-warm-800 mb-2">
@@ -401,7 +416,7 @@ function App() {
 
           <button
             onClick={() => startGame('challenge')}
-            className="mode-card bg-white border-2 border-orange-200 hover:border-orange-400 rounded-lg p-6 text-left transition-all"
+            className="game-card mode-card bg-white border-2 border-orange-200 hover:border-orange-400 rounded-lg p-6 text-left transition-all"
           >
             <div className="text-3xl mb-3">🏆</div>
             <h3 className="text-xl font-bold text-warm-800 mb-2">
@@ -795,7 +810,8 @@ function App() {
   );
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 ${settings.highContrast ? 'high-contrast' : ''} ${settings.reducedMotion ? 'reduced-motion' : ''}`}>
+    <AnimatedBackground yearTheme="3-ar" variant={screen === 'menu' ? 'menu' : 'gameplay'} showSymbols={screen === 'menu'}>
+    <div className={`min-h-screen ${settings.highContrast ? 'high-contrast' : ''} ${settings.reducedMotion ? 'reduced-motion' : ''}`}>
       {/* Accessibility Skip Link */}
       <a href="#main-content" className="skip-link">
         {t('accessibility.skipToContent', 'Fara beint í efní')}
@@ -896,7 +912,10 @@ function App() {
         notifications={notifications}
         onDismiss={dismissNotification}
       />
+
+      <ParticleCelebration {...celebrationProps} />
     </div>
+    </AnimatedBackground>
   );
 }
 

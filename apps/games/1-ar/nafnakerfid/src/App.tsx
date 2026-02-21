@@ -6,6 +6,10 @@ import { AchievementsButton, AchievementsPanel } from '@shared/components/Achiev
 import { useAchievements } from '@shared/hooks/useAchievements';
 import { useGameI18n } from '@shared/hooks/useGameI18n';
 import { useGameProgress } from '@shared/hooks/useGameProgress';
+import { ParticleCelebration, useParticleCelebration } from '@shared/components/ParticleCelebration';
+import { AnimatedBackground } from '@shared/components/AnimatedBackground';
+import { SoundToggle } from '@shared/components/SoundToggle';
+import { useGameSounds } from '@shared/hooks/useGameSounds';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
@@ -51,6 +55,20 @@ function App() {
     resetAll: resetAchievementsData,
   } = useAchievements({ gameId: 'nafnakerfid' });
 
+  const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('1-ar');
+  const { playCorrect, playWrong, playLevelComplete, isEnabled: soundEnabled, toggleSound } = useGameSounds();
+
+  const handleCorrectAnswer = (...args: Parameters<typeof trackCorrectAnswer>) => {
+    trackCorrectAnswer(...args);
+    playCorrect();
+    triggerCorrect();
+  };
+
+  const handleIncorrectAnswer = (...args: Parameters<typeof trackIncorrectAnswer>) => {
+    trackIncorrectAnswer(...args);
+    playWrong();
+  };
+
   const handleLevel1Complete = (score: number, maxScore: number, hintsUsed: number) => {
     const wasLevel1Complete = progress.level1Completed;
     updateProgress({
@@ -59,6 +77,8 @@ function App() {
       totalGamesPlayed: progress.totalGamesPlayed + 1,
     });
     trackLevelComplete(1, score, maxScore, { hintsUsed });
+    playLevelComplete();
+    triggerLevelComplete();
 
     // Check if all levels are now complete
     if (!wasLevel1Complete && progress.level2Completed && Object.keys(progress.level3BestMoves).length > 0) {
@@ -75,6 +95,8 @@ function App() {
       totalGamesPlayed: progress.totalGamesPlayed + 1,
     });
     trackLevelComplete(2, score, maxScore, { hintsUsed });
+    playLevelComplete();
+    triggerLevelComplete();
 
     // Check if all levels are now complete
     if (progress.level1Completed && !wasLevel2Complete && Object.keys(progress.level3BestMoves).length > 0) {
@@ -95,6 +117,8 @@ function App() {
     });
     // For Level3, score is based on pairs matched - we treat pairs as score
     trackLevelComplete(3, pairs, maxScore, { hintsUsed });
+    playLevelComplete();
+    triggerLevelComplete();
 
     // Check if all levels are now complete
     if (progress.level1Completed && progress.level2Completed && !wasLevel3Complete) {
@@ -111,13 +135,14 @@ function App() {
           t={t}
           onComplete={handleLevel1Complete}
           onBack={() => setScreen('menu')}
-          onCorrectAnswer={trackCorrectAnswer}
-          onIncorrectAnswer={trackIncorrectAnswer}
+          onCorrectAnswer={handleCorrectAnswer}
+          onIncorrectAnswer={handleIncorrectAnswer}
         />
         <AchievementNotificationsContainer
           notifications={notifications}
           onDismiss={dismissNotification}
         />
+        <ParticleCelebration {...celebrationProps} />
       </>
     );
   }
@@ -129,13 +154,14 @@ function App() {
           t={t}
           onComplete={handleLevel2Complete}
           onBack={() => setScreen('menu')}
-          onCorrectAnswer={trackCorrectAnswer}
-          onIncorrectAnswer={trackIncorrectAnswer}
+          onCorrectAnswer={handleCorrectAnswer}
+          onIncorrectAnswer={handleIncorrectAnswer}
         />
         <AchievementNotificationsContainer
           notifications={notifications}
           onDismiss={dismissNotification}
         />
+        <ParticleCelebration {...celebrationProps} />
       </>
     );
   }
@@ -147,13 +173,14 @@ function App() {
           t={t}
           onComplete={handleLevel3Complete}
           onBack={() => setScreen('menu')}
-          onCorrectAnswer={trackCorrectAnswer}
-          onIncorrectAnswer={trackIncorrectAnswer}
+          onCorrectAnswer={handleCorrectAnswer}
+          onIncorrectAnswer={handleIncorrectAnswer}
         />
         <AchievementNotificationsContainer
           notifications={notifications}
           onDismiss={dismissNotification}
         />
+        <ParticleCelebration {...celebrationProps} />
       </>
     );
   }
@@ -172,20 +199,22 @@ function App() {
             setScreen('menu');
           }}
           onBack={() => setScreen('menu')}
-          onCorrectAnswer={trackCorrectAnswer}
-          onIncorrectAnswer={trackIncorrectAnswer}
+          onCorrectAnswer={handleCorrectAnswer}
+          onIncorrectAnswer={handleIncorrectAnswer}
         />
         <AchievementNotificationsContainer
           notifications={notifications}
           onDismiss={dismissNotification}
         />
+        <ParticleCelebration {...celebrationProps} />
       </>
     );
   }
 
   // Main Menu
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center p-4">
+    <AnimatedBackground yearTheme="1-ar" variant="menu" showSymbols>
+    <div className="min-h-screen flex items-center justify-center p-4">
       <div className="max-w-2xl w-full">
         <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
           <div className="flex justify-between items-start mb-4">
@@ -203,6 +232,7 @@ function App() {
                 achievements={achievements}
                 onClick={() => setShowAchievements(true)}
               />
+              <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
             </div>
           </div>
 
@@ -210,7 +240,7 @@ function App() {
             {/* Level 1 */}
             <button
               onClick={() => setScreen('level1')}
-              className="w-full bg-white border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-6 text-left transition-all"
+              className="game-card w-full bg-white border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-6 text-left transition-all"
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -240,7 +270,7 @@ function App() {
             {/* Level 2 */}
             <button
               onClick={() => setScreen('level2')}
-              className={`w-full bg-white border-2 rounded-xl p-6 text-left transition-all ${
+              className={`game-card w-full bg-white border-2 rounded-xl p-6 text-left transition-all ${
                 progress.level1Completed
                   ? 'border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50'
                   : 'border-warm-200 opacity-60'
@@ -279,7 +309,7 @@ function App() {
             {/* Level 3 */}
             <button
               onClick={() => setScreen('level3')}
-              className={`w-full bg-white border-2 rounded-xl p-6 text-left transition-all ${
+              className={`game-card w-full bg-white border-2 rounded-xl p-6 text-left transition-all ${
                 progress.level2Completed
                   ? 'border-red-200 hover:border-red-400 hover:bg-red-50'
                   : 'border-warm-200 opacity-60'
@@ -320,7 +350,7 @@ function App() {
             {/* Name Builder - Bonus Mode */}
             <button
               onClick={() => setScreen('namebuilder')}
-              className="w-full bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 hover:border-purple-400 hover:from-purple-100 hover:to-pink-100 rounded-xl p-6 text-left transition-all"
+              className="game-card w-full bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 hover:border-purple-400 hover:from-purple-100 hover:to-pink-100 rounded-xl p-6 text-left transition-all"
             >
               <div className="flex items-center justify-between">
                 <div>
@@ -402,7 +432,9 @@ function App() {
         notifications={notifications}
         onDismiss={dismissNotification}
       />
+      <ParticleCelebration {...celebrationProps} />
     </div>
+    </AnimatedBackground>
   );
 }
 

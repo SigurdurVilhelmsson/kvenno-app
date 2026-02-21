@@ -19,5 +19,7 @@ export type {
   RegionHighlight,
   ParticleSimulationProps,
   SimulationPreset,
-  SimulationControls
+  SimulationControls,
+  EnhancedRenderingConfig,
+  CollisionFlash
 } from './types';
