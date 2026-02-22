@@ -50,19 +50,31 @@ describe('predictResultingUnit', () => {
 
   it('should cancel numerator in compound unit and replace with factor numerator', () => {
     // km/klst * (1000 m / 1 km): km cancels with km, leaving m/klst
-    const result = predictResultingUnit('km/klst', { num: '1000 m', den: '1 km', units: ['m', 'km'] });
+    const result = predictResultingUnit('km/klst', {
+      num: '1000 m',
+      den: '1 km',
+      units: ['m', 'km'],
+    });
     expect(result).toBe('m/klst');
   });
 
   it('should cancel denominator in compound unit when factor numerator matches', () => {
     // m/s * (3600 s / 1 klst): s cancels with s, leaving m/klst
-    const result = predictResultingUnit('m/s', { num: '3600 s', den: '1 klst', units: ['s', 'klst'] });
+    const result = predictResultingUnit('m/s', {
+      num: '3600 s',
+      den: '1 klst',
+      units: ['s', 'klst'],
+    });
     expect(result).toBe('m/klst');
   });
 
   it('should create compound denominators when no cancellation in denominator', () => {
     // m/s * (1 klst / 60 mín) => m/s·mín (multiply denominators, no numerator cancel)
-    const result = predictResultingUnit('m/s', { num: '1 klst', den: '60 mín', units: ['klst', 'mín'] });
+    const result = predictResultingUnit('m/s', {
+      num: '1 klst',
+      den: '60 mín',
+      units: ['klst', 'mín'],
+    });
     expect(result).toBe('m·klst/s·mín');
   });
 
@@ -90,10 +102,9 @@ describe('countSignificantFigures', () => {
     expect(countSignificantFigures('1.50')).toBe(3);
   });
 
-  it('should not count leading zeros before the decimal point', () => {
-    // Implementation counts all digits after decimal point (whole part 0 contributes 0)
-    // 0.0045 => whole '0' → 0 digits, decimal '0045' → 4 digits => 4
-    expect(countSignificantFigures('0.0045')).toBe(4);
+  it('should not count leading zeros in decimals', () => {
+    // 0.0045 => leading zeros (0.00) are not significant, only 45 count
+    expect(countSignificantFigures('0.0045')).toBe(2);
   });
 
   it('should handle scientific notation by counting only the base', () => {
@@ -114,8 +125,8 @@ describe('countSignificantFigures', () => {
   });
 
   it('should handle a simple integer with trailing zeros (ambiguous case)', () => {
-    // 100 => trimmed from leading zeros gives "100" of length 3
-    expect(countSignificantFigures('100')).toBe(3);
+    // Without decimal point, trailing zeros are not significant: 100 => 1 sig fig
+    expect(countSignificantFigures('100')).toBe(1);
   });
 
   it('should handle single digit', () => {
@@ -157,7 +168,8 @@ describe('scoreExplanation', () => {
 
   it('should normalize score to at most 1', () => {
     // Stuff in every keyword possible
-    const text = 'umbreyti stuðul eining margfalda deila strika afturábak byrja enda leið eðlismassi rúmmál massi';
+    const text =
+      'umbreyti stuðul eining margfalda deila strika afturábak byrja enda leið eðlismassi rúmmál massi';
     const score = scoreExplanation(text, 'synthesis');
     expect(score).toBeLessThanOrEqual(1);
   });
@@ -203,117 +215,139 @@ describe('calculateCompositeScore', () => {
 
 describe('checkLevel1Mastery', () => {
   it('should return false when fewer than 6 questions answered', () => {
-    expect(checkLevel1Mastery({
-      questionsAnswered: 5,
-      questionsCorrect: 5,
-      explanationsProvided: 5,
-      explanationScores: [],
-      mastered: false,
-    })).toBe(false);
+    expect(
+      checkLevel1Mastery({
+        questionsAnswered: 5,
+        questionsCorrect: 5,
+        explanationsProvided: 5,
+        explanationScores: [],
+        mastered: false,
+      })
+    ).toBe(false);
   });
 
   it('should return false when fewer than 5 correct answers', () => {
-    expect(checkLevel1Mastery({
-      questionsAnswered: 6,
-      questionsCorrect: 4,
-      explanationsProvided: 6,
-      explanationScores: [],
-      mastered: false,
-    })).toBe(false);
+    expect(
+      checkLevel1Mastery({
+        questionsAnswered: 6,
+        questionsCorrect: 4,
+        explanationsProvided: 6,
+        explanationScores: [],
+        mastered: false,
+      })
+    ).toBe(false);
   });
 
   it('should return true when 5 of 6 are correct', () => {
-    expect(checkLevel1Mastery({
-      questionsAnswered: 6,
-      questionsCorrect: 5,
-      explanationsProvided: 6,
-      explanationScores: [],
-      mastered: false,
-    })).toBe(true);
+    expect(
+      checkLevel1Mastery({
+        questionsAnswered: 6,
+        questionsCorrect: 5,
+        explanationsProvided: 6,
+        explanationScores: [],
+        mastered: false,
+      })
+    ).toBe(true);
   });
 
   it('should return true when all 6 are correct', () => {
-    expect(checkLevel1Mastery({
-      questionsAnswered: 6,
-      questionsCorrect: 6,
-      explanationsProvided: 6,
-      explanationScores: [],
-      mastered: false,
-    })).toBe(true);
+    expect(
+      checkLevel1Mastery({
+        questionsAnswered: 6,
+        questionsCorrect: 6,
+        explanationsProvided: 6,
+        explanationScores: [],
+        mastered: false,
+      })
+    ).toBe(true);
   });
 });
 
 describe('checkLevel2Mastery', () => {
   it('should return false when fewer than 15 problems completed', () => {
-    expect(checkLevel2Mastery({
-      problemsCompleted: 14,
-      predictionsMade: 14,
-      predictionsCorrect: 14,
-      finalAnswersCorrect: 14,
-      mastered: false,
-    })).toBe(false);
+    expect(
+      checkLevel2Mastery({
+        problemsCompleted: 14,
+        predictionsMade: 14,
+        predictionsCorrect: 14,
+        finalAnswersCorrect: 14,
+        mastered: false,
+      })
+    ).toBe(false);
   });
 
   it('should return false when prediction accuracy is below 0.7', () => {
-    expect(checkLevel2Mastery({
-      problemsCompleted: 15,
-      predictionsMade: 15,
-      predictionsCorrect: 10, // 10/15 = 0.667
-      finalAnswersCorrect: 15,
-      mastered: false,
-    })).toBe(false);
+    expect(
+      checkLevel2Mastery({
+        problemsCompleted: 15,
+        predictionsMade: 15,
+        predictionsCorrect: 10, // 10/15 = 0.667
+        finalAnswersCorrect: 15,
+        mastered: false,
+      })
+    ).toBe(false);
   });
 
   it('should return false when answer accuracy is below 0.8', () => {
-    expect(checkLevel2Mastery({
-      problemsCompleted: 15,
-      predictionsMade: 15,
-      predictionsCorrect: 15,
-      finalAnswersCorrect: 11, // 11/15 = 0.733
-      mastered: false,
-    })).toBe(false);
+    expect(
+      checkLevel2Mastery({
+        problemsCompleted: 15,
+        predictionsMade: 15,
+        predictionsCorrect: 15,
+        finalAnswersCorrect: 11, // 11/15 = 0.733
+        mastered: false,
+      })
+    ).toBe(false);
   });
 
   it('should return true when all thresholds are met', () => {
-    expect(checkLevel2Mastery({
-      problemsCompleted: 15,
-      predictionsMade: 15,
-      predictionsCorrect: 11, // 11/15 = 0.733
-      finalAnswersCorrect: 12, // 12/15 = 0.8
-      mastered: false,
-    })).toBe(true);
+    expect(
+      checkLevel2Mastery({
+        problemsCompleted: 15,
+        predictionsMade: 15,
+        predictionsCorrect: 11, // 11/15 = 0.733
+        finalAnswersCorrect: 12, // 12/15 = 0.8
+        mastered: false,
+      })
+    ).toBe(true);
   });
 });
 
 describe('checkLevel3Mastery', () => {
   it('should return false when fewer than 10 composite scores', () => {
-    expect(checkLevel3Mastery({
-      problemsCompleted: 9,
-      compositeScores: [0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9],
-      achievements: [],
-      mastered: false,
-      hintsUsed: 0,
-    })).toBe(false);
+    expect(
+      checkLevel3Mastery({
+        problemsCompleted: 9,
+        compositeScores: [0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9],
+        achievements: [],
+        mastered: false,
+        hintsUsed: 0,
+      })
+    ).toBe(false);
   });
 
   it('should return false when average composite score is below 0.75', () => {
-    expect(checkLevel3Mastery({
-      problemsCompleted: 10,
-      compositeScores: [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
-      achievements: [],
-      mastered: false,
-      hintsUsed: 0,
-    })).toBe(false);
+    expect(
+      checkLevel3Mastery({
+        problemsCompleted: 10,
+        compositeScores: [0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7],
+        achievements: [],
+        mastered: false,
+        hintsUsed: 0,
+      })
+    ).toBe(false);
   });
 
   it('should return true when 10+ scores and average >= 0.75', () => {
-    expect(checkLevel3Mastery({
-      problemsCompleted: 10,
-      compositeScores: [0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8],
-      achievements: [],
-      mastered: false,
-      hintsUsed: 0,
-    })).toBe(true);
+    expect(
+      checkLevel3Mastery({
+        problemsCompleted: 10,
+        compositeScores: [0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8],
+        achievements: [],
+        mastered: false,
+        hintsUsed: 0,
+      })
+    ).toBe(true);
   });
 });
 
@@ -331,7 +365,7 @@ describe('checkAchievements', () => {
       compositeScores: Array(10).fill(0.96),
       problemsCompleted: 10,
     });
-    const ids = result.map(a => a.id);
+    const ids = result.map((a) => a.id);
     expect(ids).toContain('gold');
     expect(ids).not.toContain('silver');
     expect(ids).not.toContain('bronze');
@@ -339,30 +373,30 @@ describe('checkAchievements', () => {
 
   it('should award Silver for average >= 0.85 but < 0.95', () => {
     const result = checkAchievements({
-      compositeScores: Array(10).fill(0.90),
+      compositeScores: Array(10).fill(0.9),
       problemsCompleted: 10,
     });
-    const ids = result.map(a => a.id);
+    const ids = result.map((a) => a.id);
     expect(ids).toContain('silver');
     expect(ids).not.toContain('gold');
   });
 
   it('should award Bronze for average >= 0.75 but < 0.85', () => {
     const result = checkAchievements({
-      compositeScores: Array(10).fill(0.80),
+      compositeScores: Array(10).fill(0.8),
       problemsCompleted: 10,
     });
-    const ids = result.map(a => a.id);
+    const ids = result.map((a) => a.id);
     expect(ids).toContain('bronze');
     expect(ids).not.toContain('silver');
   });
 
   it('should award no tier achievement for average below 0.75', () => {
     const result = checkAchievements({
-      compositeScores: Array(10).fill(0.60),
+      compositeScores: Array(10).fill(0.6),
       problemsCompleted: 10,
     });
-    const ids = result.map(a => a.id);
+    const ids = result.map((a) => a.id);
     expect(ids).not.toContain('gold');
     expect(ids).not.toContain('silver');
     expect(ids).not.toContain('bronze');
@@ -370,21 +404,21 @@ describe('checkAchievements', () => {
 
   it('should award efficiency achievement when average steps < 3', () => {
     const result = checkAchievements({
-      compositeScores: Array(10).fill(0.80),
+      compositeScores: Array(10).fill(0.8),
       problemsCompleted: 10,
       totalSteps: 20, // 20/10 = 2 avg steps
     });
-    const ids = result.map(a => a.id);
+    const ids = result.map((a) => a.id);
     expect(ids).toContain('efficiency');
   });
 
   it('should not award efficiency when average steps >= 3', () => {
     const result = checkAchievements({
-      compositeScores: Array(10).fill(0.80),
+      compositeScores: Array(10).fill(0.8),
       problemsCompleted: 10,
       totalSteps: 30, // 30/10 = 3 avg steps
     });
-    const ids = result.map(a => a.id);
+    const ids = result.map((a) => a.id);
     expect(ids).not.toContain('efficiency');
   });
 
@@ -393,7 +427,7 @@ describe('checkAchievements', () => {
       compositeScores: Array(10).fill(0.95),
       problemsCompleted: 10,
     });
-    const ids = result.map(a => a.id);
+    const ids = result.map((a) => a.id);
     expect(ids).toContain('explainer');
   });
 
@@ -404,7 +438,7 @@ describe('checkAchievements', () => {
       compositeScores: scores,
       problemsCompleted: 10,
     });
-    const ids = result.map(a => a.id);
+    const ids = result.map((a) => a.id);
     expect(ids).not.toContain('explainer');
   });
 });

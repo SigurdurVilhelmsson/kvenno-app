@@ -69,8 +69,6 @@ const selectWorkerUrl = (): string => {
 
   // For subpath deployments, prefer CDN worker to avoid path resolution issues
   if (isSubpathDeployment && import.meta.env.PROD) {
-    if (import.meta.env.DEV)
-      console.log('[PDF.js] Subpath deployment detected, using CDN worker for reliability');
     return getCdnWorkerUrl();
   }
 

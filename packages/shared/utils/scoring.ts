@@ -66,17 +66,22 @@ export const countSignificantFigures = (numStr: string): number => {
 
   if (!hasDecimal) {
     // No decimal point - trailing zeros may not be significant
-    const trimmed = cleaned.replace(/^0+/, ''); // Remove leading zeros
+    const trimmed = cleaned.replace(/^0+/, '') || '0'; // Remove leading zeros, keep at least '0'
+    if (trimmed === '0') return 1; // Zero has 1 significant figure
     const withoutTrailingZeros = trimmed.replace(/0+$/, '');
 
     // If number ends in zeros, we assume they're not significant unless specified
     return trimmed === withoutTrailingZeros ? trimmed.length : withoutTrailingZeros.length;
   } else {
-    // Has decimal point - all digits count except leading zeros
+    // Has decimal point - leading zeros (both in whole and decimal) are not significant
     const [whole, decimal] = cleaned.split('.');
     const wholeTrimmed = whole.replace(/^0+/, '') || '0';
-    const sigFigs = (wholeTrimmed === '0' ? 0 : wholeTrimmed.length) + (decimal?.length || 0);
-    return sigFigs;
+    if (wholeTrimmed === '0') {
+      // For numbers like 0.00123, strip leading zeros from decimal part
+      const decimalSignificant = decimal?.replace(/^0+/, '') || '';
+      return decimalSignificant.length;
+    }
+    return wholeTrimmed.length + (decimal?.length || 0);
   }
 };
 

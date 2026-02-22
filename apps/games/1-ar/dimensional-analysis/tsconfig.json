@@ -4,6 +4,10 @@
     "outDir": "./dist"
   },
   "include": ["src", "../../../../packages/shared/**/*"],
-  "exclude": ["../../../shared/components/MoleculeViewer3D/**/*", "../../../../packages/shared/**/__tests__/**/*", "../../../../packages/shared/**/*.test.ts"],
+  "exclude": [
+    "../../../../packages/shared/components/MoleculeViewer3D/**/*",
+    "../../../../packages/shared/**/__tests__/**/*",
+    "../../../../packages/shared/**/*.test.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

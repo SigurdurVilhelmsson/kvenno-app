@@ -121,21 +121,18 @@ export function useAchievements({
     }
   }, [gameId]);
 
-  const processEvent = useCallback(
-    (event: AchievementEvent) => {
-      const current = loadAchievements(); // Get fresh state
-      const newNotifications = checkAchievements(current, event);
+  const processEvent = useCallback((event: AchievementEvent) => {
+    const current = loadAchievements(); // Get fresh state
+    const newNotifications = checkAchievements(current, event);
 
-      if (newNotifications.length > 0) {
-        setNotifications((prev) => [...prev, ...newNotifications]);
-        newNotifications.forEach((n) => onAchievementUnlocked?.(n));
-      }
+    if (newNotifications.length > 0) {
+      setNotifications((prev) => [...prev, ...newNotifications]);
+      newNotifications.forEach((n) => onAchievementUnlockedRef.current?.(n));
+    }
 
-      // Reload state after check
-      setAchievements(loadAchievements());
-    },
-    [onAchievementUnlocked]
-  );
+    // Reload state after check
+    setAchievements(loadAchievements());
+  }, []);
 
   const trackCorrectAnswer = useCallback(
     (options?: { firstAttempt?: boolean }) => {

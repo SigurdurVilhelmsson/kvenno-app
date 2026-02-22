@@ -20,14 +20,19 @@ export function countSignificantFigures(numStr: string): number {
 
   if (!hasDecimal) {
     // No decimal: count from first non-zero, trailing zeros might not count
-    const trimmed = cleaned.replace(/^0+/, '');
-    return trimmed.length;
+    const trimmed = cleaned.replace(/^0+/, '') || '0';
+    if (trimmed === '0') return 1;
+    const withoutTrailingZeros = trimmed.replace(/0+$/, '');
+    return trimmed === withoutTrailingZeros ? trimmed.length : withoutTrailingZeros.length;
   } else {
-    // Has decimal: all digits count except leading zeros
+    // Has decimal: leading zeros (both whole and decimal) are not significant
     const [whole, decimal] = cleaned.split('.');
     const wholeTrimmed = whole.replace(/^0+/, '') || '0';
-    const sigFigs = (wholeTrimmed === '0' ? 0 : wholeTrimmed.length) + (decimal?.length || 0);
-    return sigFigs;
+    if (wholeTrimmed === '0') {
+      const decimalSignificant = decimal?.replace(/^0+/, '') || '';
+      return decimalSignificant.length;
+    }
+    return wholeTrimmed.length + (decimal?.length || 0);
   }
 }
 
@@ -44,7 +49,7 @@ export function scoreExplanation(explanationText: string, problemType: string): 
 
   // Common quality indicators (apply to all types)
   const qualityKeywords = ['umbreyti', 'stuðul', 'eining', 'margfalda', 'deila', 'strika'];
-  const qualityCount = qualityKeywords.filter(kw => text.includes(kw)).length;
+  const qualityCount = qualityKeywords.filter((kw) => text.includes(kw)).length;
   score += Math.min(qualityCount * 0.15, 0.3); // Up to 30% for vocabulary
   maxScore += 0.3;
 
@@ -55,12 +60,12 @@ export function scoreExplanation(explanationText: string, problemType: string): 
     efficiency: ['fæst', 'skref', 'skilvirkn', 'bein'],
     synthesis: ['eðlismassi', 'rúmmál', 'massi', 'margfalda'],
     real_world: ['skammta', 'deila', 'fjöldi', 'heiltala'],
-    derivation: ['vísindatölustaf', 'umbreyti', 'hraði']
+    derivation: ['vísindatölustaf', 'umbreyti', 'hraði'],
   };
 
   const keywords = typeKeywords[problemType] || [];
   if (keywords.length > 0) {
-    const found = keywords.filter(kw => text.includes(kw)).length;
+    const found = keywords.filter((kw) => text.includes(kw)).length;
     score += (found / keywords.length) * 0.4;
     maxScore += 0.4;
   }
@@ -88,5 +93,5 @@ export function calculateCompositeScore(
   explanationScore: number,
   efficiencyScore: number = 0
 ): number {
-  return (answerScore * 0.4) + (methodScore * 0.3) + (explanationScore * 0.2) + (efficiencyScore * 0.1);
+  return answerScore * 0.4 + methodScore * 0.3 + explanationScore * 0.2 + efficiencyScore * 0.1;
 }

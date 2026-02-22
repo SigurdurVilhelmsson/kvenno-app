@@ -21,7 +21,11 @@ export const Landing: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-warm-50 to-warm-100">
-      <Header authSlot={<AuthButton />} onInfoClick={() => setShowInfo(!showInfo)} />
+      <Header
+        activeTrack="efnafraedi"
+        authSlot={<AuthButton />}
+        onInfoClick={() => setShowInfo(!showInfo)}
+      />
 
       <div className="max-w-4xl mx-auto p-6">
         <Breadcrumbs items={breadcrumbs} />

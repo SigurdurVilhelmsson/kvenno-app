@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react';
 
-import { Home, Upload, CheckCircle, RotateCcw, Download } from 'lucide-react';
+import { Upload, CheckCircle, RotateCcw, Download, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+import { Breadcrumbs, Header, Container } from '@kvenno/shared/components';
+
+import { AuthButton } from '@/components/AuthButton';
 import { ChecklistResults } from '@/components/ChecklistResults';
 import { Toast } from '@/components/Toast';
 import { experimentConfigs2, getExperiments2 } from '@/config/experiments';
-import {
-  Analysis2Result,
-  Toast as ToastType,
-  ExperimentConfig2,
-} from '@/types';
+import { Analysis2Result, Toast as ToastType, ExperimentConfig2 } from '@/types';
 import { processFile2ar } from '@/utils/api';
 import { exportChecklist2ToCSV } from '@/utils/export';
 import { extractTextFromFile } from '@/utils/fileProcessing';
@@ -28,7 +27,9 @@ export function Teacher2Page() {
 
   // Experiment selection
   const experiments2 = getExperiments2();
-  const [selectedExperiment, setSelectedExperiment] = useState<string>(experiments2[0]?.id || 'orka-2ar');
+  const [selectedExperiment, setSelectedExperiment] = useState<string>(
+    experiments2[0]?.id || 'orka-2ar'
+  );
   const currentExperiment: ExperimentConfig2 = experimentConfigs2[selectedExperiment];
 
   // Files and results
@@ -108,11 +109,7 @@ export function Teacher2Page() {
           continue;
         }
 
-        const result = await processFile2ar(
-          content,
-          draftContent,
-          currentExperiment
-        );
+        const result = await processFile2ar(content, draftContent, currentExperiment);
 
         entry.result = result;
         entry.processing = false;
@@ -148,9 +145,7 @@ export function Teacher2Page() {
       return;
     }
     try {
-      const filenames = fileResults
-        .filter(fr => fr.result)
-        .map(fr => fr.file.name);
+      const filenames = fileResults.filter((fr) => fr.result).map((fr) => fr.file.name);
       exportChecklist2ToCSV(completedResults, filenames, currentExperiment);
       showToast('CSV skrá niðurhalað', 'success');
     } catch {
@@ -158,23 +153,49 @@ export function Teacher2Page() {
     }
   };
 
+  const basePath = import.meta.env.VITE_BASE_PATH || '/lab-reports';
+  const yearMatch = basePath.match(/\/(\d)-ar\//);
+  const backPath = yearMatch ? `/efnafraedi/${yearMatch[1]}-ar/` : '/';
+  const year = yearMatch ? yearMatch[1] : '2';
+
+  const breadcrumbItems = [
+    { label: 'Heim', href: '/' },
+    { label: 'Efnafræði', href: '/efnafraedi/' },
+    { label: `${year}. ár`, href: `/efnafraedi/${year}-ar/` },
+    { label: 'Gátlistamat' },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-warm-50 to-warm-100 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-warm-50 to-warm-100">
+      <Header activeTrack="efnafraedi" authSlot={<AuthButton />} />
+
+      <Container className="py-6">
+        <Breadcrumbs items={breadcrumbItems} />
+
+        {/* Back button */}
+        <a
+          href={backPath}
+          className="inline-flex items-center gap-2 mb-6 text-warm-700 hover:text-kvenno-orange transition"
+        >
+          <ArrowLeft size={20} />
+          <span className="font-medium">Til baka</span>
+        </a>
+
         <div className="bg-surface-raised rounded-lg shadow-lg p-8 mb-6">
           <div className="flex justify-between items-start mb-6">
             <div>
               <h1 className="text-3xl font-heading font-bold text-warm-900 mb-2">
                 2. ár - Gátlistamat
               </h1>
-              <p className="text-warm-600">Einfaldað mat á skýrslum nemenda (til staðar / vantar)</p>
+              <p className="text-warm-600">
+                Einfaldað mat á skýrslum nemenda (til staðar / vantar)
+              </p>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => navigate('/')}
                 className="px-4 py-2 rounded-lg transition bg-warm-200 text-warm-700 hover:bg-warm-300 flex items-center gap-2"
               >
-                <Home size={18} />
                 Heim
               </button>
               <button
@@ -188,9 +209,7 @@ export function Teacher2Page() {
 
           {/* Experiment selector */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-warm-700 mb-2">
-              Veldu tilraun:
-            </label>
+            <label className="block text-sm font-medium text-warm-700 mb-2">Veldu tilraun:</label>
             <select
               value={selectedExperiment}
               onChange={(e) => setSelectedExperiment(e.target.value)}
@@ -206,12 +225,10 @@ export function Teacher2Page() {
 
           {/* Draft upload (optional) */}
           <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <h3 className="font-semibold text-warm-800 mb-2">
-              Drög - Fræðikafli (valfrjálst)
-            </h3>
+            <h3 className="font-semibold text-warm-800 mb-2">Drög - Fræðikafli (valfrjálst)</h3>
             <p className="text-sm text-warm-600 mb-3">
-              Ef nemandi skilaði drögum á Inna, hladdu þeim upp hér til samanburðar.
-              Þetta hjálpar til við að greina hvort lokaskýrslan sé byggð á drögunum.
+              Ef nemandi skilaði drögum á Inna, hladdu þeim upp hér til samanburðar. Þetta hjálpar
+              til við að greina hvort lokaskýrslan sé byggð á drögunum.
             </p>
             <input
               type="file"
@@ -239,9 +256,7 @@ export function Teacher2Page() {
 
           {/* Final report upload */}
           <div className="mb-6">
-            <h3 className="font-semibold text-warm-800 mb-2">
-              Lokaskýrslur nemenda
-            </h3>
+            <h3 className="font-semibold text-warm-800 mb-2">Lokaskýrslur nemenda</h3>
             <div className="border-2 border-dashed border-warm-300 rounded-lg p-8 text-center">
               <Upload className="mx-auto mb-4 text-warm-600" size={48} />
               <p className="text-sm text-warm-600 mb-4">
@@ -268,7 +283,8 @@ export function Teacher2Page() {
           {finalFiles.length > 0 && (
             <div className="mb-6">
               <h3 className="font-semibold text-warm-800 mb-3">
-                {finalFiles.length} skýrsl{finalFiles.length !== 1 ? 'ur' : 'a'} valin{finalFiles.length !== 1 ? 'ar' : ''}
+                {finalFiles.length} skýrsl{finalFiles.length !== 1 ? 'ur' : 'a'} valin
+                {finalFiles.length !== 1 ? 'ar' : ''}
               </h3>
               <div className="space-y-2 mb-4">
                 {finalFiles.map((file, i) => (
@@ -322,13 +338,19 @@ export function Teacher2Page() {
                 <div key={i} className="border rounded-lg overflow-hidden">
                   <button
                     className={`w-full text-left p-4 flex items-center justify-between transition ${
-                      fr.error ? 'bg-red-50' : fr.processing ? 'bg-warm-50' : 'bg-green-50 hover:bg-green-100'
+                      fr.error
+                        ? 'bg-red-50'
+                        : fr.processing
+                          ? 'bg-warm-50'
+                          : 'bg-green-50 hover:bg-green-100'
                     }`}
                     onClick={() => setExpandedResult(expandedResult === i ? null : i)}
                     disabled={fr.processing || !!fr.error}
                   >
                     <div className="flex items-center gap-3">
-                      {fr.processing && <RotateCcw className="animate-spin text-warm-500" size={18} />}
+                      {fr.processing && (
+                        <RotateCcw className="animate-spin text-warm-500" size={18} />
+                      )}
                       {fr.error && <span className="text-red-600 font-bold">!</span>}
                       {fr.result && <CheckCircle className="text-green-600" size={18} />}
                       <span className="font-medium text-warm-800">{fr.file.name}</span>
@@ -356,7 +378,7 @@ export function Teacher2Page() {
             </div>
           </div>
         )}
-      </div>
+      </Container>
 
       <Toast toast={toast} />
     </div>

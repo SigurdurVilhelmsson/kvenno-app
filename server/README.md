@@ -1,6 +1,6 @@
-# LabReports Backend Server
+# kvenno.app Backend Server
 
-This is a Node.js Express server for running LabReports on traditional Linux servers (Ubuntu, Debian, etc.) with nginx. It implements the same API endpoints as the Vercel/Netlify serverless functions.
+Express.js backend for kvenno.app. Handles lab report analysis (Claude API proxy), DOCX-to-PDF conversion, and Íslenskubraut PDF generation. Part of the [kvenno-app monorepo](../README.md).
 
 ## Quick Start
 
@@ -46,7 +46,7 @@ Server runs on http://localhost:3001
 sudo mkdir -p /var/www/labreports
 
 # Copy files (from your local machine or git)
-sudo git clone https://github.com/SigurdurVilhelmsson/LabReports.git /var/www/labreports
+sudo git clone https://github.com/SigurdurVilhelmsson/kvenno-app.git /var/www/labreports
 
 # Set ownership
 sudo chown -R www-data:www-data /var/www/labreports
@@ -74,6 +74,7 @@ sudo nano .env
 ```
 
 Edit `.env`:
+
 ```bash
 ANTHROPIC_API_KEY=sk-ant-your-actual-key
 PORT=3001
@@ -137,18 +138,23 @@ Certbot will automatically update your nginx configuration with SSL.
 ### Verify Deployment
 
 1. **Check backend is running:**
+
    ```bash
    curl http://localhost:3001/health
    ```
+
    Should return: `{"status":"ok","timestamp":"..."}`
 
 2. **Check frontend is accessible:**
+
    ```bash
    curl http://localhost
    ```
+
    Should return HTML content.
 
 3. **Check API endpoint through nginx:**
+
    ```bash
    curl http://localhost/api/health
    ```
@@ -276,6 +282,7 @@ free -h
 ## Security Recommendations
 
 1. **Firewall**: Only allow ports 80, 443, and SSH
+
    ```bash
    sudo ufw allow 80/tcp
    sudo ufw allow 443/tcp
@@ -284,11 +291,13 @@ free -h
    ```
 
 2. **Keep system updated**:
+
    ```bash
    sudo apt update && sudo apt upgrade
    ```
 
 3. **Secure .env file**:
+
    ```bash
    sudo chmod 600 /var/www/labreports/server/.env
    sudo chown www-data:www-data /var/www/labreports/server/.env
@@ -360,6 +369,7 @@ WantedBy=multi-user.target
 ```
 
 After creating or modifying the service file:
+
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable kvenno-backend
@@ -437,6 +447,7 @@ max_tokens: 8192,  // Increased to handle complex reports without truncation
 ```
 
 **Why 8192?**
+
 - Handles detailed feedback for long reports (8+ pages)
 - Prevents JSON truncation mid-response
 - Supports multiple sections with reasoning
@@ -450,6 +461,7 @@ MAX_TOKENS=8192
 ```
 
 Then in code:
+
 ```javascript
 max_tokens: parseInt(process.env.MAX_TOKENS || '8192', 10),
 ```
@@ -466,11 +478,12 @@ console.log('[Analysis] Response received:', {
   textLength: textContent.length,
   textPreview: textContent.substring(0, 200),
   textEnd: textContent.substring(textContent.length - 200),
-  usage: data.usage
+  usage: data.usage,
 });
 ```
 
 **What's Logged**:
+
 - `stopReason`: Why Claude stopped generating (e.g., "end_turn", "max_tokens")
 - `textLength`: Character count of response
 - `textPreview`: First 200 characters
@@ -478,17 +491,20 @@ console.log('[Analysis] Response received:', {
 - `usage`: Token usage statistics (input_tokens, output_tokens)
 
 **When to Check Logs**:
+
 - Responses seem incomplete
 - JSON parsing errors occur
 - Want to monitor token usage
 - Debugging timeout issues
 
 **View Logs**:
+
 ```bash
 sudo journalctl -u kvenno-backend -n 100
 ```
 
 **Filter for Analysis Logs**:
+
 ```bash
 sudo journalctl -u kvenno-backend | grep "\[Analysis\]"
 ```
@@ -496,11 +512,13 @@ sudo journalctl -u kvenno-backend | grep "\[Analysis\]"
 ### Timeouts
 
 **Analyze Endpoint**: 85 seconds (90s limit with 5s buffer)
+
 - Generous timeout for processing 8+ reports simultaneously
 - Anthropic API typically responds in 30-60 seconds per report
 - Adjust if needed in `server/index.js:340`
 
 **Process Document Endpoint**: 30 seconds
+
 - Sufficient for .docx → PDF conversion via LibreOffice
 - Includes pandoc equation extraction
 - Adjust if needed in `server/index.js:218`
@@ -525,8 +543,9 @@ Without proper buffering, responses may be truncated mid-JSON.
 ## Support
 
 For issues, check:
+
 1. System logs: `sudo journalctl -u labreports`
 2. nginx logs: `/var/log/nginx/`
 3. Application logs in stdout/stderr
 
-For more help, open an issue on GitHub: https://github.com/SigurdurVilhelmsson/LabReports/issues
+For more help, open an issue on GitHub: https://github.com/SigurdurVilhelmsson/kvenno-app/issues

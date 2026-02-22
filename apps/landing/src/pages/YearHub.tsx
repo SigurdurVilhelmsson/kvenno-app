@@ -43,6 +43,7 @@ const yearConfigs: Record<YearKey, YearConfig> = {
           'Spurðu spurninga og fáðu skýringar á efnafræðihugtökum með hjálp gervigreindar. Kennarinn útskýrir hugtök og hjálpar þér að skilja efnið betur.',
         href: '/efnafraedi/1-ar/ai-tutor/',
         status: 'Í þróun - Ræsing í janúar 2026',
+        comingSoon: true,
       },
       {
         title: 'Leikir og æfingar',
@@ -86,6 +87,7 @@ const yearConfigs: Record<YearKey, YearConfig> = {
           'Spurðu spurninga og fáðu skýringar á efnafræðihugtökum með hjálp gervigreindar. Kennarinn útskýrir hugtök og hjálpar þér að skilja efnið betur.',
         href: '/efnafraedi/2-ar/ai-tutor/',
         status: 'Í þróun - Ræsing í janúar 2026',
+        comingSoon: true,
       },
       {
         title: 'Leikir og æfingar',
@@ -129,6 +131,7 @@ const yearConfigs: Record<YearKey, YearConfig> = {
           'Spurðu spurninga og fáðu skýringar á efnafræðihugtökum með hjálp gervigreindar. Kennarinn útskýrir hugtök og hjálpar þér að skilja efnið betur.',
         href: '/efnafraedi/3-ar/ai-tutor/',
         status: 'Í þróun - Ræsing í janúar 2026',
+        comingSoon: true,
       },
       {
         title: 'Leikir og æfingar',
@@ -200,7 +203,9 @@ function ToolCardComponent({ tool }: { tool: ToolCard }) {
       <h2 className="font-heading text-kvenno-orange text-2xl font-bold mb-4">{tool.title}</h2>
       <p className="text-warm-500 flex-grow">{tool.description}</p>
       {tool.active ? (
-        <Badge variant="success" className="mt-4 self-start">{tool.status}</Badge>
+        <Badge variant="success" className="mt-4 self-start">
+          {tool.status}
+        </Badge>
       ) : (
         <span className="mt-4 text-sm text-warm-400 italic">{tool.status}</span>
       )}
@@ -244,10 +249,10 @@ export function YearHub({ year }: YearHubProps) {
       {/* Tools Grid or Empty State */}
       {config.isEmpty ? (
         <Card variant="elevated" padding="lg" className="text-center">
-          <h2 className="font-heading text-kvenno-orange text-3xl font-bold mb-4">{config.emptyTitle}</h2>
-          <p className="text-warm-500 text-lg max-w-[600px] mx-auto">
-            {config.emptyDescription}
-          </p>
+          <h2 className="font-heading text-kvenno-orange text-3xl font-bold mb-4">
+            {config.emptyTitle}
+          </h2>
+          <p className="text-warm-500 text-lg max-w-[600px] mx-auto">{config.emptyDescription}</p>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8 mb-12">

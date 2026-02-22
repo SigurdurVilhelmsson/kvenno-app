@@ -81,7 +81,7 @@ jobs:
         run: |
           ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "\
             cd /opt/kvenno-server && \
-            npm ci --omit=dev && \
+            pnpm install --frozen-lockfile --prod && \
             sudo systemctl restart kvenno-backend"
 
       - name: Set permissions

@@ -90,10 +90,15 @@ describe('countSignificantFigures', () => {
     expect(countSignificantFigures('12.345')).toBe(5);
   });
 
-  it('should count decimal places after decimal point for numbers starting with 0', () => {
-    // Current implementation counts all decimal digits
+  it('should count sig figs for decimals starting with 0 (leading zeros not significant)', () => {
     expect(countSignificantFigures('0.123')).toBe(3);
-    expect(countSignificantFigures('0.00123')).toBe(5); // counts all digits after decimal
+    expect(countSignificantFigures('0.00123')).toBe(3); // leading zeros are not significant
+    expect(countSignificantFigures('0.0050')).toBe(2); // trailing zeros after decimal ARE significant
+  });
+
+  it('should return 1 for zero', () => {
+    expect(countSignificantFigures('0')).toBe(1);
+    expect(countSignificantFigures('00')).toBe(1);
   });
 
   it('should handle scientific notation', () => {
@@ -164,7 +169,8 @@ describe('scoreExplanation', () => {
 
   it('should give length bonus for longer explanations', () => {
     const shortExplanation = 'This is about molarity and concentration';
-    const longExplanation = 'This explanation discusses molarity and concentration in great detail, explaining how these concepts relate to solution chemistry and the calculation of amounts.';
+    const longExplanation =
+      'This explanation discusses molarity and concentration in great detail, explaining how these concepts relate to solution chemistry and the calculation of amounts.';
 
     const shortScore = scoreExplanation(shortExplanation, qualityKeywords, typeKeywords);
     const longScore = scoreExplanation(longExplanation, qualityKeywords, typeKeywords);
@@ -173,7 +179,8 @@ describe('scoreExplanation', () => {
   });
 
   it('should cap score at 1.0', () => {
-    const perfectExplanation = 'Because therefore shows molarity concentration solution. This is a very long explanation that includes all the quality keywords and type-specific keywords to maximize the score.';
+    const perfectExplanation =
+      'Because therefore shows molarity concentration solution. This is a very long explanation that includes all the quality keywords and type-specific keywords to maximize the score.';
     const score = scoreExplanation(perfectExplanation, qualityKeywords, typeKeywords);
     expect(score).toBeLessThanOrEqual(1);
   });

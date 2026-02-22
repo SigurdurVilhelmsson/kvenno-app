@@ -9,7 +9,7 @@ export default {
     'scope-enum': [
       1,
       'always',
-      ['shared', 'landing', 'lab-reports', 'games', '1-ar', '2-ar', '3-ar', 'server', 'tools', 'ci', 'deps', 'config'],
+      ['shared', 'landing', 'lab-reports', 'islenskubraut', 'games', '1-ar', '2-ar', '3-ar', 'server', 'tools', 'ci', 'deps', 'config'],
     ],
     'subject-case': [2, 'always', 'lower-case'],
     'header-max-length': [2, 'always', 100],
