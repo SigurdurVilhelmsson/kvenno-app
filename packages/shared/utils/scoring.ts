@@ -70,7 +70,7 @@ export const countSignificantFigures = (numStr: string): number => {
     const withoutTrailingZeros = trimmed.replace(/0+$/, '');
 
     // If number ends in zeros, we assume they're not significant unless specified
-    return trimmed === withoutTrailingZeros ? trimmed.length : trimmed.length;
+    return trimmed === withoutTrailingZeros ? trimmed.length : withoutTrailingZeros.length;
   } else {
     // Has decimal point - all digits count except leading zeros
     const [whole, decimal] = cleaned.split('.');

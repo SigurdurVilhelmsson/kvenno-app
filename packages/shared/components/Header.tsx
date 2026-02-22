@@ -13,13 +13,18 @@ interface TrackTab {
 
 const TRACKS: TrackTab[] = [
   { id: 'efnafraedi', label: 'Efnafræði', href: '/efnafraedi', icon: <FlaskConical size={18} /> },
-  { id: 'islenskubraut', label: 'Íslenskubraut', href: '/islenskubraut/', icon: <BookOpen size={18} /> },
+  {
+    id: 'islenskubraut',
+    label: 'Íslenskubraut',
+    href: '/islenskubraut/',
+    icon: <BookOpen size={18} />,
+  },
 ];
 
 interface HeaderProps {
   /** Header title — defaults to "Námsvefur Kvennó" */
   title?: string;
-  /** Optional slot to render authentication UI (e.g., AuthButton from LabReports) */
+  /** Optional slot to render authentication UI (e.g., AuthButton from lab-reports) */
   authSlot?: React.ReactNode;
   /** Optional callback for info button click */
   onInfoClick?: () => void;
@@ -69,9 +74,7 @@ export const Header: React.FC<HeaderProps> = ({
                 {gameTitle}
               </h1>
             )}
-            <div className="flex items-center gap-2">
-              {authSlot}
-            </div>
+            <div className="flex items-center gap-2">{authSlot}</div>
           </div>
         </div>
       </header>
@@ -91,10 +94,7 @@ export const Header: React.FC<HeaderProps> = ({
           </a>
 
           {/* Track tabs (hidden on mobile — BottomNav handles it) */}
-          <nav
-            aria-label="Svið"
-            className="hidden md:flex items-center gap-1"
-          >
+          <nav aria-label="Svið" className="hidden md:flex items-center gap-1">
             {TRACKS.map((track) => {
               const isActive = activeTrack === track.id;
               return (
@@ -119,26 +119,13 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Utility links */}
           <div className="flex items-center gap-2">
             {authSlot}
-            <a
-              href="/admin"
-              className="hidden sm:inline-flex items-center px-3 py-2 text-sm font-medium text-warm-600 hover:text-warm-800 hover:bg-warm-50 rounded-md transition-colors no-underline min-h-[44px]"
-            >
-              Kennarar
-            </a>
-            {onInfoClick ? (
+            {onInfoClick && (
               <button
                 onClick={onInfoClick}
                 className="px-3 py-2 text-sm font-medium text-warm-600 hover:text-warm-800 hover:bg-warm-50 rounded-md transition-colors cursor-pointer min-h-[44px]"
               >
                 Upplýsingar
               </button>
-            ) : (
-              <a
-                href="/info"
-                className="hidden sm:inline-flex items-center px-3 py-2 text-sm font-medium text-warm-600 hover:text-warm-800 hover:bg-warm-50 rounded-md transition-colors no-underline min-h-[44px]"
-              >
-                Upplýsingar
-              </a>
             )}
           </div>
         </div>

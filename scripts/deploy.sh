@@ -53,7 +53,7 @@ rsync -avz ${DRY_RUN:+"$DRY_RUN"} \
 if [ -z "$DRY_RUN" ]; then
   echo ""
   echo "📦 Installing backend dependencies and restarting..."
-  ssh "$SERVER" "cd $BACKEND_DIR && npm ci --omit=dev && sudo systemctl restart kvenno-backend"
+  ssh "$SERVER" "cd $BACKEND_DIR && pnpm install --frozen-lockfile --prod && sudo systemctl restart kvenno-backend"
 
   echo ""
   echo "🔍 Setting permissions..."

@@ -434,6 +434,24 @@ app.post(
         return res.status(400).json({ error: 'Invalid systemPrompt' });
       }
 
+      // Runtime validation: content must be a string or an array of objects with `type`
+      if (typeof content !== 'string') {
+        if (
+          !Array.isArray(content) ||
+          !content.every(
+            (block: unknown) =>
+              typeof block === 'object' &&
+              block !== null &&
+              'type' in block &&
+              typeof (block as Record<string, unknown>).type === 'string'
+          )
+        ) {
+          return res.status(400).json({
+            error: 'Invalid content: must be a string or an array of objects with a "type" field',
+          });
+        }
+      }
+
       // Validate content field length (max ~5MB as JSON string)
       const contentStr = typeof content === 'string' ? content : JSON.stringify(content);
       if (contentStr.length > 5 * 1024 * 1024) {
@@ -698,12 +716,14 @@ app.use((err: Error, _req: Request, res: Response<ErrorResponse>, _next: NextFun
 export { app };
 
 // Only start server when run directly (not when imported for testing)
-const isDirectRun =
-  process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/\\/g, '/'));
+import { pathToFileURL } from 'node:url';
+const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isDirectRun) {
   app.listen(PORT, '127.0.0.1', () => {
     console.log(`Backend API running on http://127.0.0.1:${PORT}`);
-    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`Allowed origins: ${filteredOrigins.join(', ')}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`Allowed origins: ${filteredOrigins.join(', ')}`);
+    }
   });
 }

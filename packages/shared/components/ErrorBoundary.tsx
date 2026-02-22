@@ -1,5 +1,11 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 
+/** Whether we are running in development mode (Vite compile-time constant) */
+const __DEV__ =
+  typeof import.meta !== 'undefined' &&
+  typeof (import.meta as unknown as Record<string, unknown>).env === 'object' &&
+  (import.meta as unknown as { env: Record<string, boolean> }).env.DEV === true;
+
 interface Props {
   children: ReactNode;
   fallback?: ReactNode;
@@ -112,7 +118,7 @@ export class ErrorBoundary extends Component<Props, State> {
               Something went wrong. Please reload the page.
             </p>
 
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {__DEV__ && this.state.error && (
               <details style={{ marginBottom: '1rem' }}>
                 <summary
                   style={{

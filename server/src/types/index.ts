@@ -9,9 +9,16 @@
 /** Valid modes for the /api/analyze endpoint */
 export type AnalyzeMode = 'teacher' | 'student';
 
+/** A content block in an Anthropic user message (image, text, etc.) */
+export interface AnthropicUserContentBlock {
+  type: string;
+  text?: string;
+  [key: string]: unknown;
+}
+
 /** Request body for POST /api/analyze */
 export interface AnalyzeRequestBody {
-  content: string | unknown;
+  content: string | AnthropicUserContentBlock[];
   systemPrompt: string;
   mode: AnalyzeMode;
 }

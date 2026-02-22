@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 
 import {
   Achievement,
@@ -50,7 +50,12 @@ interface UseAchievementsReturn {
   /** Track an incorrect answer */
   trackIncorrectAnswer: () => void;
   /** Track level completion */
-  trackLevelComplete: (level: 1 | 2 | 3, score: number, maxScore: number, options?: { timeTaken?: number; hintsUsed?: number }) => void;
+  trackLevelComplete: (
+    level: 1 | 2 | 3,
+    score: number,
+    maxScore: number,
+    options?: { timeTaken?: number; hintsUsed?: number }
+  ) => void;
   /** Track game completion */
   trackGameComplete: () => void;
   /** Dismiss a notification */
@@ -87,13 +92,19 @@ export function useAchievements({
   const [achievements, setAchievements] = useState<PlayerAchievements>(loadAchievements);
   const [notifications, setNotifications] = useState<AchievementNotification[]>([]);
 
+  // Use refs for callback props to avoid stale closure issues
+  const onAchievementUnlockedRef = useRef(onAchievementUnlocked);
+  onAchievementUnlockedRef.current = onAchievementUnlocked;
+
   // Update daily play on mount
   useEffect(() => {
+    const current = loadAchievements();
     const today = new Date().toISOString().split('T')[0];
-    if (!achievements.daysPlayed.includes(today)) {
+    const daysPlayedSet = new Set(current.daysPlayed);
+    if (!daysPlayedSet.has(today)) {
       const updated = {
-        ...achievements,
-        daysPlayed: [...achievements.daysPlayed, today],
+        ...current,
+        daysPlayed: [...current.daysPlayed, today],
       };
       setAchievements(updated);
       saveAchievements(updated);
@@ -105,10 +116,10 @@ export function useAchievements({
       });
       if (newNotifications.length > 0) {
         setNotifications((prev) => [...prev, ...newNotifications]);
-        newNotifications.forEach((n) => onAchievementUnlocked?.(n));
+        newNotifications.forEach((n) => onAchievementUnlockedRef.current?.(n));
       }
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [gameId]);
 
   const processEvent = useCallback(
     (event: AchievementEvent) => {

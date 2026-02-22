@@ -64,13 +64,14 @@ export const getRedirectUrl = (basePath: string = '/'): string => {
       if (parsedUrl.origin !== window.location.origin) {
         return '/';
       }
-      return returnUrl;
+      // Always return a path (relative URL), not a full URL
+      return parsedUrl.pathname + parsedUrl.search + parsedUrl.hash;
     } catch {
       // If URL parsing fails, return safe default
       return '/';
     }
   }
 
-  // Fallback to base path
-  return window.location.origin + basePath;
+  // Fallback to base path (always a relative path)
+  return basePath;
 };

@@ -1,5 +1,18 @@
-import { buildTeacherSystemPrompt, buildStudentSystemPrompt, build2ndYearSystemPrompt, build2ndYearUserPrompt } from '@/config/prompts';
-import { FileContent, AnalysisResult, StudentFeedback, ExperimentConfig, AppMode, Analysis2Result, ExperimentConfig2 } from '@/types';
+import {
+  buildTeacherSystemPrompt,
+  buildStudentSystemPrompt,
+  build2ndYearSystemPrompt,
+  build2ndYearUserPrompt,
+} from '@/config/prompts';
+import {
+  FileContent,
+  AnalysisResult,
+  StudentFeedback,
+  ExperimentConfig,
+  AppMode,
+  Analysis2Result,
+  ExperimentConfig2,
+} from '@/types';
 
 const API_TIMEOUT = 90000; // 90 seconds
 
@@ -43,7 +56,11 @@ const buildMessageContent = (content: FileContent) => {
     ];
   }
 
-  if ((content.type === 'pdf' || content.type === 'docx') && content.images && content.images.length > 0) {
+  if (
+    (content.type === 'pdf' || content.type === 'docx') &&
+    content.images &&
+    content.images.length > 0
+  ) {
     // For PDFs and DOCX with images, send both text and images to Claude
     return [
       {
@@ -92,17 +109,31 @@ export const analyzeWithClaude = async (
     );
   }
 
-  const response = await fetch(`${backendEndpoint}/analyze`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      content: messageContent,
-      systemPrompt,
-      mode,
-    }),
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
+
+  let response: Response;
+  try {
+    response = await fetch(`${backendEndpoint}/analyze`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        content: messageContent,
+        systemPrompt,
+        mode,
+      }),
+      signal: controller.signal,
+    });
+  } catch (error: unknown) {
+    clearTimeout(timeoutId);
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error('Timeout - skýrsla tók of langan tíma');
+    }
+    throw error;
+  }
+  clearTimeout(timeoutId);
 
   if (!response.ok) {
     let errorMessage = 'API request failed';
@@ -134,48 +165,27 @@ export const processFile = async (
   experiment: ExperimentConfig,
   mode: AppMode
 ): Promise<AnalysisResult | StudentFeedback> => {
-  const timeoutPromise = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error('Timeout - skýrsla tók of langan tíma')), API_TIMEOUT)
-  );
+  const data = await analyzeWithClaude(content, experiment, mode);
+  const resultText = data.content.find((item) => item.type === 'text')?.text || '';
 
-  const processPromise = async () => {
-    const data = await analyzeWithClaude(content, experiment, mode);
-    const resultText = data.content.find((item) => item.type === 'text')?.text || '';
+  const jsonMatch = resultText.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) {
+    throw new Error('Gat ekki túlkað svar frá AI');
+  }
 
-    const jsonMatch = resultText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error('Gat ekki túlkað svar frá AI');
-    }
+  let jsonText = jsonMatch[0];
 
-    let jsonText = jsonMatch[0];
+  // JSON Repair Logic (Added Nov 2025)
+  // Claude occasionally generates JSON with trailing commas or other quirks
+  // This repair logic handles common issues before parsing
+  try {
+    // Remove trailing commas before closing brackets
+    // Example: {"key": "value",} → {"key": "value"}
+    //          {"array": [1, 2,]} → {"array": [1, 2]}
+    jsonText = jsonText.replace(/,(\s*[}\]])/g, '$1');
 
-    // JSON Repair Logic (Added Nov 2025)
-    // Claude occasionally generates JSON with trailing commas or other quirks
-    // This repair logic handles common issues before parsing
-    try {
-      // Remove trailing commas before closing brackets
-      // Example: {"key": "value",} → {"key": "value"}
-      //          {"array": [1, 2,]} → {"array": [1, 2]}
-      jsonText = jsonText.replace(/,(\s*[}\]])/g, '$1');
-
-      // Parse the repaired JSON
-      const parsed = JSON.parse(jsonText);
-
-      return parsed;
-    } catch (parseError) {
-      // Enhanced error logging for debugging JSON issues
-      // Logs: original response, extracted JSON, and parse error details
-      // Useful for identifying new JSON formatting issues from Claude
-      console.error('JSON parsing failed. Response text:', resultText.substring(0, 500));
-      console.error('Extracted JSON:', jsonText.substring(0, 500));
-      console.error('Parse error:', parseError);
-
-      throw new Error(`Gat ekki túlkað JSON svar: ${parseError instanceof Error ? parseError.message : 'Óþekkt villa'}`);
-    }
-  };
-
-  const processWithResult = async () => {
-    const parsed = await processPromise();
+    // Parse the repaired JSON
+    const parsed = JSON.parse(jsonText);
 
     if (mode === 'teacher') {
       return {
@@ -190,9 +200,18 @@ export const processFile = async (
         extractionDebug: content.debug, // Include debug info for troubleshooting
       } as StudentFeedback;
     }
-  };
+  } catch (parseError) {
+    // Enhanced error logging for debugging JSON issues
+    // Logs: original response, extracted JSON, and parse error details
+    // Useful for identifying new JSON formatting issues from Claude
+    console.error('JSON parsing failed. Response text:', resultText.substring(0, 500));
+    console.error('Extracted JSON:', jsonText.substring(0, 500));
+    console.error('Parse error:', parseError);
 
-  return await Promise.race([processWithResult(), timeoutPromise]) as AnalysisResult | StudentFeedback;
+    throw new Error(
+      `Gat ekki túlkað JSON svar: ${parseError instanceof Error ? parseError.message : 'Óþekkt villa'}`
+    );
+  }
 };
 
 // ─── 2nd Year Checklist API ──────────────────────────────────────────────────
@@ -281,7 +300,7 @@ export const processFile2ar = async (
       for (const [sectionKey, section] of Object.entries(experiment.checklist)) {
         if (result.checklist[sectionKey]) {
           for (const item of result.checklist[sectionKey]) {
-            const configItem = section.items.find(ci => ci.id === item.id);
+            const configItem = section.items.find((ci) => ci.id === item.id);
             if (configItem) {
               item.label = configItem.label;
             }
@@ -297,7 +316,9 @@ export const processFile2ar = async (
     } catch (parseError) {
       console.error('JSON parsing failed. Response text:', resultText.substring(0, 500));
       console.error('Extracted JSON:', jsonText.substring(0, 500));
-      throw new Error(`Gat ekki túlkað JSON svar: ${parseError instanceof Error ? parseError.message : 'Óþekkt villa'}`);
+      throw new Error(
+        `Gat ekki túlkað JSON svar: ${parseError instanceof Error ? parseError.message : 'Óþekkt villa'}`
+      );
     }
   };
 

@@ -22,8 +22,8 @@ const tenantId = import.meta.env.VITE_AZURE_TENANT_ID;
 if (!clientId || !tenantId) {
   console.warn(
     '⚠️ Azure AD credentials not configured. ' +
-    'Set VITE_AZURE_CLIENT_ID and VITE_AZURE_TENANT_ID in .env file. ' +
-    'See KVENNO-STRUCTURE.md Section 2 for setup instructions.'
+      'Set VITE_AZURE_CLIENT_ID and VITE_AZURE_TENANT_ID in .env file. ' +
+      'See KVENNO-STRUCTURE.md Section 2 for setup instructions.'
   );
 }
 
@@ -32,7 +32,7 @@ if (!clientId || !tenantId) {
  */
 const isDevelopment = import.meta.env.DEV;
 const redirectUri = isDevelopment
-  ? 'http://localhost:3000/auth/callback'
+  ? import.meta.env.VITE_REDIRECT_URI || 'http://localhost:5173/auth/callback'
   : 'https://kvenno.app/auth/callback';
 
 /**

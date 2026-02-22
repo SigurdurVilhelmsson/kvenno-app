@@ -13,7 +13,7 @@ export const getBreadcrumbsForPath = (basePath: string): BreadcrumbItem[] => {
     const year = yearMatch[1];
     items.push({
       label: `${year}. ár`,
-      href: `/${year}-ar/`
+      href: `/efnafraedi/${year}-ar/`,
     });
   }
 
