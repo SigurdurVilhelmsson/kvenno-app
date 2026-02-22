@@ -650,6 +650,14 @@ app.get(
         });
       }
 
+      // Validate flokkur against known category IDs
+      const validCategoryIds = ['dyr', 'matur', 'farartaeki', 'manneskja', 'stadir', 'klaednadur'];
+      if (!validCategoryIds.includes(flokkur)) {
+        return res.status(400).json({
+          error: `Ogilt flokkur: ${flokkur}. Leyfileg gildi: ${validCategoryIds.join(', ')}`,
+        });
+      }
+
       const validLevels = ['A1', 'A2', 'B1'];
       if (!validLevels.includes(stig)) {
         return res.status(400).json({

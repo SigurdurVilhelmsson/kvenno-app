@@ -56,7 +56,19 @@ export const getRedirectUrl = (basePath: string = '/'): string => {
 
   if (returnUrl) {
     clearReturnUrl();
-    return returnUrl;
+
+    // Validate that the redirect URL's origin matches the current origin
+    // to prevent open redirect attacks
+    try {
+      const parsedUrl = new URL(returnUrl, window.location.origin);
+      if (parsedUrl.origin !== window.location.origin) {
+        return '/';
+      }
+      return returnUrl;
+    } catch {
+      // If URL parsing fails, return safe default
+      return '/';
+    }
   }
 
   // Fallback to base path

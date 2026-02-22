@@ -40,7 +40,7 @@ function App() {
   const appModeConfig = import.meta.env.VITE_APP_MODE || 'dual';
   const basePath = import.meta.env.VITE_BASE_PATH || '/lab-reports';
   const yearMatch = basePath.match(/\/(\d)-ar\//);
-  const backPath = yearMatch ? `/${yearMatch[1]}-ar/` : '/';
+  const backPath = yearMatch ? `/efnafraedi/${yearMatch[1]}-ar/` : '/';
   const breadcrumbs = getBreadcrumbsForPath(basePath);
 
   const currentExperiment = experimentConfigs[state.selectedExperiment];
@@ -94,14 +94,23 @@ function App() {
     }
 
     if (state.mode === 'teacher') {
-      dispatch({ type: 'FINISH_PROCESSING', results: newResults as AnalysisResult[], mode: 'teacher' });
+      dispatch({
+        type: 'FINISH_PROCESSING',
+        results: newResults as AnalysisResult[],
+        mode: 'teacher',
+      });
     } else {
-      dispatch({ type: 'FINISH_PROCESSING', results: newResults as StudentFeedback[], mode: 'student' });
+      dispatch({
+        type: 'FINISH_PROCESSING',
+        results: newResults as StudentFeedback[],
+        mode: 'student',
+      });
     }
   };
 
   const handleSaveSession = async () => {
-    const resultsToSave = state.mode === 'teacher' ? state.results.analyses : state.results.studentFeedback;
+    const resultsToSave =
+      state.mode === 'teacher' ? state.results.analyses : state.results.studentFeedback;
     if (resultsToSave.length === 0) {
       showToast('Engar niðurstöður til að vista', 'error');
       return;
@@ -127,7 +136,10 @@ function App() {
         experiment: state.selectedExperiment,
         timestamp: new Date().toISOString(),
         results: state.mode === 'teacher' ? state.results.analyses : state.results.studentFeedback,
-        fileCount: state.mode === 'teacher' ? state.results.analyses.length : state.results.studentFeedback.length,
+        fileCount:
+          state.mode === 'teacher'
+            ? state.results.analyses.length
+            : state.results.studentFeedback.length,
         mode: state.mode,
       };
 
@@ -143,9 +155,10 @@ function App() {
   };
 
   const startNewAnalysis = () => {
-    const hasResults = state.mode === 'teacher'
-      ? state.results.analyses.length > 0
-      : state.results.studentFeedback.length > 0;
+    const hasResults =
+      state.mode === 'teacher'
+        ? state.results.analyses.length > 0
+        : state.results.studentFeedback.length > 0;
     if (hasResults && !state.session.isSaved) {
       dispatch({ type: 'SHOW_CONFIRM_NEW' });
     } else {
@@ -217,11 +230,17 @@ function App() {
             <div className="mb-6 p-4 bg-orange-50 border border-kvenno-orange rounded-lg">
               <h3 className="font-bold text-warm-900 mb-2">Um verkfærið</h3>
               <p className="text-sm text-warm-700 mb-2">
-                Þetta verkfæri notar gervigreind (Claude AI) til að meta tilraunarskýrslur í efnafræði og veita ítarlega endurgjöf.
+                Þetta verkfæri notar gervigreind (Claude AI) til að meta tilraunarskýrslur í
+                efnafræði og veita ítarlega endurgjöf.
               </p>
               <ul className="text-sm text-warm-700 space-y-1 list-disc list-inside">
-                <li><strong>Kennarar:</strong> Geta metið margar skýrslur í einu og flutt út niðurstöður</li>
-                <li><strong>Nemendur:</strong> Fá ítarlega endurgjöf með tillögum til úrbóta</li>
+                <li>
+                  <strong>Kennarar:</strong> Geta metið margar skýrslur í einu og flutt út
+                  niðurstöður
+                </li>
+                <li>
+                  <strong>Nemendur:</strong> Fá ítarlega endurgjöf með tillögum til úrbóta
+                </li>
                 <li>Styður Word (.docx), PDF og myndir</li>
                 <li>Öll gögn eru vistuð í vafranum þínum</li>
               </ul>
@@ -308,7 +327,10 @@ function App() {
             <>
               {/* Experiment selector */}
               <div className="mb-6">
-                <label htmlFor="experiment-select" className="block text-sm font-medium text-warm-700 mb-2">
+                <label
+                  htmlFor="experiment-select"
+                  className="block text-sm font-medium text-warm-700 mb-2"
+                >
                   Veldu tilraun:
                 </label>
                 <select
@@ -352,7 +374,10 @@ function App() {
 
         {state.view === 'grader' && state.mode === 'student' && (
           <Suspense fallback={<div className="text-center py-8 text-warm-500">Hleð...</div>}>
-            <StudentFeedbackComponent feedback={state.results.studentFeedback} sections={sections} />
+            <StudentFeedbackComponent
+              feedback={state.results.studentFeedback}
+              sections={sections}
+            />
           </Suspense>
         )}
       </Container>

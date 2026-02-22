@@ -51,7 +51,9 @@ export const loadSavedSessions = async (): Promise<GradingSession[]> => {
     }
 
     // Sort by timestamp, newest first
-    return sessions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    return sessions.sort(
+      (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
   } catch (error) {
     console.error('Error loading sessions:', error);
     return [];
@@ -128,5 +130,5 @@ export const deleteSession = async (sessionId: string): Promise<void> => {
  * Generate a unique session ID
  */
 export const generateSessionId = (): string => {
-  return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  return `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
 };

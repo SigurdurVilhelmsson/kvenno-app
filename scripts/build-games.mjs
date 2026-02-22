@@ -6,7 +6,7 @@
  *
  * Builds run in parallel with a configurable concurrency limit.
  *
- * Adapted from namsbokasafn-leikir build script for the kvenno-app monorepo.
+ * Part of the kvenno-app monorepo build system.
  */
 
 import { execFile } from 'child_process';

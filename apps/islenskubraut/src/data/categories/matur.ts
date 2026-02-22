@@ -9,7 +9,16 @@ export const matur: Category = {
   subCategories: [
     {
       name: 'Tegund',
-      options: ['ávöxtur', 'grænmeti', 'kjöt', 'fiskur', 'mjólkurvara', 'sælgæti', 'brauð/korn', 'drykkur'],
+      options: [
+        'ávöxtur',
+        'grænmeti',
+        'kjöt',
+        'fiskur',
+        'mjólkurvara',
+        'sælgæti',
+        'brauð/korn',
+        'drykkur',
+      ],
     },
     {
       name: 'Bragð',
@@ -29,7 +38,13 @@ export const matur: Category = {
     },
     {
       name: 'Hvenær',
-      options: ['í morgunmat', 'í hádegismat', 'í kvöldmat', 'sem millimál', 'alltaf/hvenær sem er'],
+      options: [
+        'í morgunmat',
+        'í hádegismat',
+        'í kvöldmat',
+        'sem millimál',
+        'alltaf/hvenær sem er',
+      ],
     },
   ],
   sentenceFrames: [
@@ -73,8 +88,34 @@ export const matur: Category = {
       icon: '📚',
       answers: [
         { level: 'A1', options: ['ávöxtur', 'grænmeti', 'kjöt', 'drykkur'] },
-        { level: 'A2', options: ['ávöxtur', 'grænmeti', 'kjöt', 'fiskur', 'mjólkurvara', 'sælgæti', 'brauð/korn', 'drykkur'] },
-        { level: 'B1', options: ['ávöxtur', 'grænmeti', 'kjöt', 'fiskur', 'mjólkurvara', 'sælgæti', 'brauð/korn', 'drykkur', 'krydd', 'sósa'] },
+        {
+          level: 'A2',
+          options: [
+            'ávöxtur',
+            'grænmeti',
+            'kjöt',
+            'fiskur',
+            'mjólkurvara',
+            'sælgæti',
+            'brauð/korn',
+            'drykkur',
+          ],
+        },
+        {
+          level: 'B1',
+          options: [
+            'ávöxtur',
+            'grænmeti',
+            'kjöt',
+            'fiskur',
+            'mjólkurvara',
+            'sælgæti',
+            'brauð/korn',
+            'drykkur',
+            'krydd',
+            'sósa',
+          ],
+        },
       ],
     },
     {
@@ -82,8 +123,26 @@ export const matur: Category = {
       icon: '👁️',
       answers: [
         { level: 'A1', options: ['rautt', 'grænt', 'gult', 'hvítt'] },
-        { level: 'A2', options: ['rautt', 'grænt', 'gult', 'hvítt', 'brúnt', 'appelsínugult', 'stórt', 'lítið'] },
-        { level: 'B1', options: ['rautt', 'grænt', 'gult', 'hvítt', 'brúnt', 'appelsínugult', 'stórt', 'lítið', 'kringlótt', 'langt', 'flatt'] },
+        {
+          level: 'A2',
+          options: ['rautt', 'grænt', 'gult', 'hvítt', 'brúnt', 'appelsínugult', 'stórt', 'lítið'],
+        },
+        {
+          level: 'B1',
+          options: [
+            'rautt',
+            'grænt',
+            'gult',
+            'hvítt',
+            'brúnt',
+            'appelsínugult',
+            'stórt',
+            'lítið',
+            'kringlótt',
+            'langt',
+            'flatt',
+          ],
+        },
       ],
     },
     {
@@ -91,17 +150,68 @@ export const matur: Category = {
       icon: '👅',
       answers: [
         { level: 'A1', options: ['sætt', 'salt', 'súrt', 'beiskt'] },
-        { level: 'A2', options: ['sætt', 'salt', 'súrt', 'beiskt', 'kryddað', 'sterkt', 'milt', 'ferskt'] },
-        { level: 'B1', options: ['sætt', 'salt', 'súrt', 'beiskt', 'kryddað', 'sterkt', 'milt', 'ferskt', 'bragðmikið', 'bragðlaust', 'sælgæti-sætt', 'náttúrulega sætt'] },
+        {
+          level: 'A2',
+          options: ['sætt', 'salt', 'súrt', 'beiskt', 'kryddað', 'sterkt', 'milt', 'ferskt'],
+        },
+        {
+          level: 'B1',
+          options: [
+            'sætt',
+            'salt',
+            'súrt',
+            'beiskt',
+            'kryddað',
+            'sterkt',
+            'milt',
+            'ferskt',
+            'bragðmikið',
+            'bragðlaust',
+            'sælgæti-sætt',
+            'náttúrulega sætt',
+          ],
+        },
       ],
     },
     {
       question: 'Hvernig finnst það við snertingu?',
       icon: '✋',
       answers: [
-        { level: 'A1', options: ['mjúkt', 'hart', 'sléttt', 'gróft'] },
-        { level: 'A2', options: ['mjúkt', 'hart', 'sléttt', 'gróft', 'þungt', 'létt', 'heitt', 'kalt', 'blautt', 'þurrt'] },
-        { level: 'B1', options: ['mjúkt', 'hart', 'sléttt', 'gróft', 'þungt', 'létt', 'heitt', 'kalt', 'blautt', 'þurrt', 'loðið', 'hálkt', 'stinnt', 'sveigjanlegt'] },
+        { level: 'A1', options: ['mjúkt', 'hart', 'slétt', 'gróft'] },
+        {
+          level: 'A2',
+          options: [
+            'mjúkt',
+            'hart',
+            'slétt',
+            'gróft',
+            'þungt',
+            'létt',
+            'heitt',
+            'kalt',
+            'blautt',
+            'þurrt',
+          ],
+        },
+        {
+          level: 'B1',
+          options: [
+            'mjúkt',
+            'hart',
+            'slétt',
+            'gróft',
+            'þungt',
+            'létt',
+            'heitt',
+            'kalt',
+            'blautt',
+            'þurrt',
+            'loðið',
+            'hálkt',
+            'stinnt',
+            'sveigjanlegt',
+          ],
+        },
       ],
     },
     {
@@ -110,7 +220,21 @@ export const matur: Category = {
       answers: [
         { level: 'A1', options: ['gott', 'vont', 'ekkert'] },
         { level: 'A2', options: ['gott', 'vont', 'ekkert', 'ferskt', 'sterkt', 'milt'] },
-        { level: 'B1', options: ['gott', 'vont', 'ekkert', 'ferskt', 'sterkt', 'milt', 'ilmandi', 'stingandi', 'sætt', 'beiskt'] },
+        {
+          level: 'B1',
+          options: [
+            'gott',
+            'vont',
+            'ekkert',
+            'ferskt',
+            'sterkt',
+            'milt',
+            'ilmandi',
+            'stingandi',
+            'sætt',
+            'beiskt',
+          ],
+        },
       ],
     },
     {
@@ -118,8 +242,40 @@ export const matur: Category = {
       icon: '🔷',
       answers: [
         { level: 'A1', options: ['stórt', 'lítið', 'kringlótt', 'fernt'] },
-        { level: 'A2', options: ['stórt', 'lítið', 'kringlótt', 'fernt', 'langt', 'stuttt', 'hátt', 'lágt', 'flatt', 'þykkt'] },
-        { level: 'B1', options: ['stórt', 'lítið', 'kringlótt', 'fernt', 'langt', 'stuttt', 'hátt', 'lágt', 'flatt', 'þykkt', 'sporöskjulaga', 'þríhyrningslaga', 'sívalningslaga', 'óreglulegt'] },
+        {
+          level: 'A2',
+          options: [
+            'stórt',
+            'lítið',
+            'kringlótt',
+            'fernt',
+            'langt',
+            'stuttt',
+            'hátt',
+            'lágt',
+            'flatt',
+            'þykkt',
+          ],
+        },
+        {
+          level: 'B1',
+          options: [
+            'stórt',
+            'lítið',
+            'kringlótt',
+            'fernt',
+            'langt',
+            'stuttt',
+            'hátt',
+            'lágt',
+            'flatt',
+            'þykkt',
+            'sporöskjulaga',
+            'þríhyrningslaga',
+            'sívalningslaga',
+            'óreglulegt',
+          ],
+        },
       ],
     },
     {
@@ -127,8 +283,21 @@ export const matur: Category = {
       icon: '🎯',
       answers: [
         { level: 'A1', options: ['til að borða', 'til að drekka'] },
-        { level: 'A2', options: ['til að borða', 'til að drekka', 'til að elda með', 'til að baka með'] },
-        { level: 'B1', options: ['til að borða', 'til að drekka', 'til að elda með', 'til að baka með', 'til að næra sig', 'til að njóta'] },
+        {
+          level: 'A2',
+          options: ['til að borða', 'til að drekka', 'til að elda með', 'til að baka með'],
+        },
+        {
+          level: 'B1',
+          options: [
+            'til að borða',
+            'til að drekka',
+            'til að elda með',
+            'til að baka með',
+            'til að næra sig',
+            'til að njóta',
+          ],
+        },
       ],
     },
     {
@@ -137,7 +306,18 @@ export const matur: Category = {
       answers: [
         { level: 'A1', options: ['allir', 'börn', 'fullorðnir'] },
         { level: 'A2', options: ['allir', 'börn', 'fullorðnir', 'kokkar', 'bakarar'] },
-        { level: 'B1', options: ['allir', 'börn', 'fullorðnir', 'kokkar', 'bakarar', 'sérfræðingar', 'ferðamenn'] },
+        {
+          level: 'B1',
+          options: [
+            'allir',
+            'börn',
+            'fullorðnir',
+            'kokkar',
+            'bakarar',
+            'sérfræðingar',
+            'ferðamenn',
+          ],
+        },
       ],
     },
     {
@@ -146,7 +326,18 @@ export const matur: Category = {
       answers: [
         { level: 'A1', options: ['heima', 'í búð', 'á veitingastað'] },
         { level: 'A2', options: ['heima', 'í búð', 'á veitingastað', 'í skólanum', 'úti'] },
-        { level: 'B1', options: ['heima', 'í búð', 'á veitingastað', 'í skólanum', 'úti', 'á markaði', 'í garðinum'] },
+        {
+          level: 'B1',
+          options: [
+            'heima',
+            'í búð',
+            'á veitingastað',
+            'í skólanum',
+            'úti',
+            'á markaði',
+            'í garðinum',
+          ],
+        },
       ],
     },
     {
@@ -154,8 +345,37 @@ export const matur: Category = {
       icon: '🕐',
       answers: [
         { level: 'A1', options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'] },
-        { level: 'A2', options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf', 'á veturna', 'á sumrin', 'um helgar', 'á virkum dögum'] },
-        { level: 'B1', options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf', 'á veturna', 'á sumrin', 'um helgar', 'á virkum dögum', 'í sérstökum tilvikum', 'í hátíðum', 'daglega', 'sjaldan', 'oft'] },
+        {
+          level: 'A2',
+          options: [
+            'á morgnana',
+            'á daginn',
+            'á kvöldin',
+            'alltaf',
+            'á veturna',
+            'á sumrin',
+            'um helgar',
+            'á virkum dögum',
+          ],
+        },
+        {
+          level: 'B1',
+          options: [
+            'á morgnana',
+            'á daginn',
+            'á kvöldin',
+            'alltaf',
+            'á veturna',
+            'á sumrin',
+            'um helgar',
+            'á virkum dögum',
+            'í sérstökum tilvikum',
+            'í hátíðum',
+            'daglega',
+            'sjaldan',
+            'oft',
+          ],
+        },
       ],
     },
   ],

@@ -26,7 +26,7 @@ ProtectKernelTunables=true
 ProtectKernelModules=true
 ProtectControlGroups=true
 RestrictSUIDSGID=true
-ReadWritePaths=/opt/kvenno-server/uploads /tmp
+ReadWritePaths=/tmp
 
 [Install]
 WantedBy=multi-user.target

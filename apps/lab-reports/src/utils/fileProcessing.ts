@@ -23,11 +23,13 @@ const getWorkerUrl = (): string => {
     ? `${window.location.origin}${pdfjsWorker}`
     : `${window.location.origin}/${pdfjsWorker}`;
 
-  console.log('[PDF.js] Worker configured (bundled):', {
-    workerUrl: fullUrl,
-    originalPath: pdfjsWorker,
-    origin: window.location.origin,
-  });
+  if (import.meta.env.DEV) {
+    console.log('[PDF.js] Worker configured (bundled):', {
+      workerUrl: fullUrl,
+      originalPath: pdfjsWorker,
+      origin: window.location.origin,
+    });
+  }
 
   return fullUrl;
 };
@@ -40,7 +42,7 @@ const getCdnWorkerUrl = (): string => {
   // Use cdnjs with exact version matching pdfjs-dist (4.10.38)
   const version = '4.10.38';
   const cdnUrl = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${version}/pdf.worker.min.mjs`;
-  console.log('[PDF.js] CDN worker URL prepared:', cdnUrl);
+  if (import.meta.env.DEV) console.log('[PDF.js] CDN worker URL prepared:', cdnUrl);
   return cdnUrl;
 };
 
@@ -49,10 +51,11 @@ const getCdnWorkerUrl = (): string => {
  * Called when bundled worker fails
  */
 const retryWorkerWithCdn = async () => {
-  console.log('[PDF Processing] Worker error detected, retrying with CDN fallback...');
+  if (import.meta.env.DEV)
+    console.log('[PDF Processing] Worker error detected, retrying with CDN fallback...');
   const cdnUrl = getCdnWorkerUrl();
   pdfjsLib.GlobalWorkerOptions.workerSrc = cdnUrl;
-  console.log('[PDF.js] Worker reconfigured to CDN:', cdnUrl);
+  if (import.meta.env.DEV) console.log('[PDF.js] Worker reconfigured to CDN:', cdnUrl);
 };
 
 /**
@@ -66,7 +69,8 @@ const selectWorkerUrl = (): string => {
 
   // For subpath deployments, prefer CDN worker to avoid path resolution issues
   if (isSubpathDeployment && import.meta.env.PROD) {
-    console.log('[PDF.js] Subpath deployment detected, using CDN worker for reliability');
+    if (import.meta.env.DEV)
+      console.log('[PDF.js] Subpath deployment detected, using CDN worker for reliability');
     return getCdnWorkerUrl();
   }
 
@@ -133,17 +137,20 @@ const base64ToBlob = (base64: string, mimeType: string): Blob => {
  * Server converts DOCX → PDF for consistent processing with existing PDF pipeline
  */
 const extractFromDocx = async (file: File): Promise<FileContent> => {
-  console.log('[DOCX Processing] Starting Word document processing:', {
-    fileName: file.name,
-    fileSize: `${(file.size / 1024).toFixed(2)} KB`,
-  });
+  if (import.meta.env.DEV) {
+    console.log('[DOCX Processing] Starting Word document processing:', {
+      fileName: file.name,
+      fileSize: `${(file.size / 1024).toFixed(2)} KB`,
+    });
+  }
 
   // Create FormData to upload the file
   const formData = new FormData();
   formData.append('file', file);
 
   try {
-    console.log('[DOCX Processing] Sending to server for DOCX → PDF conversion...');
+    if (import.meta.env.DEV)
+      console.log('[DOCX Processing] Sending to server for DOCX → PDF conversion...');
 
     // Send to server for processing
     const response = await fetch(`${API_ENDPOINT}/process-document`, {
@@ -163,16 +170,19 @@ const extractFromDocx = async (file: File): Promise<FileContent> => {
 
     const result = await response.json();
 
-    console.log('[DOCX Processing] Document processed successfully:', {
-      type: result.type,
-      format: result.format,
-      equationCount: result.equations?.length || 0,
-      hasPdfData: !!result.pdfData,
-    });
+    if (import.meta.env.DEV) {
+      console.log('[DOCX Processing] Document processed successfully:', {
+        type: result.type,
+        format: result.format,
+        equationCount: result.equations?.length || 0,
+        hasPdfData: !!result.pdfData,
+      });
+    }
 
     // Server now returns PDF bytes for consistent processing
     if (result.pdfData) {
-      console.log('[DOCX Processing] Converting PDF bytes to File object...');
+      if (import.meta.env.DEV)
+        console.log('[DOCX Processing] Converting PDF bytes to File object...');
 
       // Convert base64 PDF to Blob
       const pdfBlob = base64ToBlob(result.pdfData, 'application/pdf');
@@ -180,9 +190,11 @@ const extractFromDocx = async (file: File): Promise<FileContent> => {
         type: 'application/pdf',
       });
 
-      console.log('[DOCX Processing] Processing converted PDF:', {
-        pdfSize: `${(pdfFile.size / 1024).toFixed(2)} KB`,
-      });
+      if (import.meta.env.DEV) {
+        console.log('[DOCX Processing] Processing converted PDF:', {
+          pdfSize: `${(pdfFile.size / 1024).toFixed(2)} KB`,
+        });
+      }
 
       // Process using existing PDF pipeline - ensures consistent results
       // Mark as docx-converted-pdf for debugging
@@ -220,16 +232,19 @@ const extractFromDocx = async (file: File): Promise<FileContent> => {
  */
 const analyzeTextStructure = (text: string) => {
   const lines = text.split('\n');
-  const nonEmptyLines = lines.filter(line => line.trim().length > 0);
-  const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
+  const nonEmptyLines = lines.filter((line) => line.trim().length > 0);
+  const paragraphs = text.split(/\n\s*\n/).filter((p) => p.trim().length > 0);
   const totalChars = text.length;
   const whitespaceChars = (text.match(/\s/g) || []).length;
 
   return {
     paragraphCount: paragraphs.length,
-    averageLineLength: nonEmptyLines.length > 0
-      ? Math.round(nonEmptyLines.reduce((sum, line) => sum + line.length, 0) / nonEmptyLines.length)
-      : 0,
+    averageLineLength:
+      nonEmptyLines.length > 0
+        ? Math.round(
+            nonEmptyLines.reduce((sum, line) => sum + line.length, 0) / nonEmptyLines.length
+          )
+        : 0,
     whitespaceDensity: totalChars > 0 ? Math.round((whitespaceChars / totalChars) * 100) / 100 : 0,
   };
 };
@@ -238,28 +253,37 @@ const analyzeTextStructure = (text: string) => {
  * Extract text and images from a PDF file
  * This function extracts both text content and images (including equations rendered as images)
  */
-const extractFromPdf = async (file: File, extractionMethod: 'direct-pdf' | 'docx-converted-pdf' = 'direct-pdf'): Promise<FileContent> => {
-  console.log('[PDF Processing] Starting PDF extraction:', {
-    fileName: file.name,
-    fileSize: `${(file.size / 1024).toFixed(2)} KB`,
-    mimeType: file.type,
-    extractionMethod,
-  });
+const extractFromPdf = async (
+  file: File,
+  extractionMethod: 'direct-pdf' | 'docx-converted-pdf' = 'direct-pdf'
+): Promise<FileContent> => {
+  if (import.meta.env.DEV) {
+    console.log('[PDF Processing] Starting PDF extraction:', {
+      fileName: file.name,
+      fileSize: `${(file.size / 1024).toFixed(2)} KB`,
+      mimeType: file.type,
+      extractionMethod,
+    });
+  }
 
   try {
     const arrayBuffer = await file.arrayBuffer();
-    console.log('[PDF Processing] File loaded into memory:', {
-      arrayBufferSize: `${(arrayBuffer.byteLength / 1024).toFixed(2)} KB`,
-    });
+    if (import.meta.env.DEV) {
+      console.log('[PDF Processing] File loaded into memory:', {
+        arrayBufferSize: `${(arrayBuffer.byteLength / 1024).toFixed(2)} KB`,
+      });
+    }
 
     // Attempt to load PDF document with automatic retry on worker errors
     let pdf;
     try {
       pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      console.log('[PDF Processing] PDF document loaded successfully:', {
-        numPages: pdf.numPages,
-        fingerprints: pdf.fingerprints,
-      });
+      if (import.meta.env.DEV) {
+        console.log('[PDF Processing] PDF document loaded successfully:', {
+          numPages: pdf.numPages,
+          fingerprints: pdf.fingerprints,
+        });
+      }
     } catch (pdfError: unknown) {
       const errorMsg = pdfError instanceof Error ? pdfError.message : String(pdfError);
       console.error('[PDF Processing] PDF.js document loading failed (attempt 1):', {
@@ -269,16 +293,22 @@ const extractFromPdf = async (file: File, extractionMethod: 'direct-pdf' | 'docx
       });
 
       // Check if it's a worker loading error
-      if (errorMsg.includes('worker') || errorMsg.includes('Worker') || errorMsg.includes('fetch')) {
+      if (
+        errorMsg.includes('worker') ||
+        errorMsg.includes('Worker') ||
+        errorMsg.includes('fetch')
+      ) {
         // Try with CDN fallback
         await retryWorkerWithCdn();
 
         try {
           pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-          console.log('[PDF Processing] Successfully loaded PDF with CDN worker:', {
-            numPages: pdf.numPages,
-            fingerprints: pdf.fingerprints,
-          });
+          if (import.meta.env.DEV) {
+            console.log('[PDF Processing] Successfully loaded PDF with CDN worker:', {
+              numPages: pdf.numPages,
+              fingerprints: pdf.fingerprints,
+            });
+          }
         } catch (retryError: unknown) {
           const retryMsg = retryError instanceof Error ? retryError.message : String(retryError);
           console.error('[PDF Processing] CDN worker retry also failed:', retryMsg);
@@ -288,7 +318,9 @@ const extractFromPdf = async (file: File, extractionMethod: 'direct-pdf' | 'docx
         }
       } else if (errorMsg.includes('Invalid') || errorMsg.includes('corrupted')) {
         // Check if it's a corrupted PDF
-        throw new Error('PDF skjalið virðist vera skemmt. Vinsamlegast reynið að vista það aftur úr upprunaforritinu.');
+        throw new Error(
+          'PDF skjalið virðist vera skemmt. Vinsamlegast reynið að vista það aftur úr upprunaforritinu.'
+        );
       } else {
         // Re-throw other errors with original message
         throw new Error(`Villa við að lesa PDF: ${errorMsg}`);
@@ -298,7 +330,6 @@ const extractFromPdf = async (file: File, extractionMethod: 'direct-pdf' | 'docx
     const images: Array<{ data: string; mediaType: string }> = [];
     let fullText = '';
     let totalTextLength = 0;
-    let totalColumnSeparators = 0;  // Track table structure across all pages
 
     // Process each page
     for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
@@ -313,8 +344,7 @@ const extractFromPdf = async (file: File, extractionMethod: 'direct-pdf' | 'docx
       let lastX = -1;
       let lastWidth = 0;
       let lastHeight = 0;
-      const largeGapsDetected = 0;  // Count table column separators
-      const xGaps: number[] = [];  // Track all X gaps for analysis
+      const xGaps: number[] = []; // Track all X gaps for analysis
 
       for (let i = 0; i < items.length; i++) {
         const item = items[i];
@@ -365,7 +395,6 @@ const extractFromPdf = async (file: File, extractionMethod: 'direct-pdf' | 'docx
 
       fullText += pageText + '\n\n';
       totalTextLength += pageText.length;
-      totalColumnSeparators += largeGapsDetected;
 
       // Analyze X-gaps for diagnostics and adaptive threshold
       const avgXGap = xGaps.length > 0 ? xGaps.reduce((a, b) => a + b, 0) / xGaps.length : 0;
@@ -378,27 +407,23 @@ const extractFromPdf = async (file: File, extractionMethod: 'direct-pdf' | 'docx
       // Adaptive threshold: 3x the median gap (table columns are much wider than normal spacing)
       // But still use minimum of 40 to avoid false positives
       const adaptiveThreshold = Math.max(40, medianXGap * 3);
-      const gapsOverAdaptive = xGaps.filter(g => g > adaptiveThreshold).length;
+      const gapsOverAdaptive = xGaps.filter((g) => g > adaptiveThreshold).length;
 
-      // Current threshold used for this extraction method
-      const currentThreshold = extractionMethod === 'docx-converted-pdf' ? 25 : 40;
-
-      console.log(`[PDF Processing] Page ${pageNum}/${pdf.numPages}:`, {
-        textLength: pageText.length,
-        itemCount: textContent.items.length,
-        extractionMethod,
-        thresholdUsed: currentThreshold,
-        tableColumnsDetected: largeGapsDetected,
-        hasTableStructure: largeGapsDetected > 0,
-        xGapStats: {
-          avgGap: avgXGap.toFixed(1),
-          medianGap: medianXGap.toFixed(1),
-          maxGap: maxXGap.toFixed(1),
-          totalGaps: xGaps.length,
-          adaptiveThreshold: adaptiveThreshold.toFixed(1),
-          gapsOverAdaptive,
-        },
-      });
+      if (import.meta.env.DEV) {
+        console.log(`[PDF Processing] Page ${pageNum}/${pdf.numPages}:`, {
+          textLength: pageText.length,
+          itemCount: textContent.items.length,
+          extractionMethod,
+          xGapStats: {
+            avgGap: avgXGap.toFixed(1),
+            medianGap: medianXGap.toFixed(1),
+            maxGap: maxXGap.toFixed(1),
+            totalGaps: xGaps.length,
+            adaptiveThreshold: adaptiveThreshold.toFixed(1),
+            gapsOverAdaptive,
+          },
+        });
+      }
 
       // Render page to canvas to capture images and equations
       // Reduced scale from 2.0 to 1.2 to prevent 413 errors on multi-page documents
@@ -430,10 +455,12 @@ const extractFromPdf = async (file: File, extractionMethod: 'direct-pdf' | 'docx
         mediaType: 'image/jpeg',
       });
 
-      console.log(`[PDF Processing] Page ${pageNum} rendered:`, {
-        canvasSize: `${canvas.width}x${canvas.height}`,
-        imageSize: `${(base64Data.length / 1024).toFixed(2)} KB`,
-      });
+      if (import.meta.env.DEV) {
+        console.log(`[PDF Processing] Page ${pageNum} rendered:`, {
+          canvasSize: `${canvas.width}x${canvas.height}`,
+          imageSize: `${(base64Data.length / 1024).toFixed(2)} KB`,
+        });
+      }
 
       // Clean up canvas to free memory
       canvas.width = 0;
@@ -447,19 +474,24 @@ const extractFromPdf = async (file: File, extractionMethod: 'direct-pdf' | 'docx
     // Analyze text structure for debugging
     const textStructure = analyzeTextStructure(trimmedText);
 
-    console.log('[PDF Processing] Extraction complete:', {
-      totalTextLength,
-      textLines,
-      numImages: images.length,
-      totalImageSize: `${(totalImageSize / 1024).toFixed(2)} KB`,
-      averageImageSize: images.length > 0 ? `${(totalImageSize / images.length / 1024).toFixed(2)} KB` : '0 KB',
-      extractionMethod,
-      textStructure,
-    });
+    if (import.meta.env.DEV) {
+      console.log('[PDF Processing] Extraction complete:', {
+        totalTextLength,
+        textLines,
+        numImages: images.length,
+        totalImageSize: `${(totalImageSize / 1024).toFixed(2)} KB`,
+        averageImageSize:
+          images.length > 0 ? `${(totalImageSize / images.length / 1024).toFixed(2)} KB` : '0 KB',
+        extractionMethod,
+        textStructure,
+      });
+    }
 
     // Validate extraction results
     if (totalTextLength === 0 && images.length === 0) {
-      console.error('[PDF Processing] No content extracted from PDF - file may be empty or corrupted');
+      console.error(
+        '[PDF Processing] No content extracted from PDF - file may be empty or corrupted'
+      );
       throw new Error('PDF skjalið virðist vera tómt eða skemmt');
     }
 
@@ -481,22 +513,19 @@ const extractFromPdf = async (file: File, extractionMethod: 'direct-pdf' | 'docx
         extractionMethod,
         textSample: trimmedText.substring(0, 500),
         textStructure,
-        tableDetection: {
-          columnSeparatorsDetected: totalColumnSeparators,
-          hasTableStructure: totalColumnSeparators > 0,
-        },
       },
     };
 
     // Log debug summary for easy comparison
-    console.log('[PDF Processing] Debug Summary:', {
-      method: result.debug?.extractionMethod,
-      text: `${result.debug?.textLength} chars, ${result.debug?.textLines} lines`,
-      images: `${result.debug?.imageCount} images, avg ${((result.debug?.averageImageSize ?? 0) / 1024).toFixed(0)} KB`,
-      structure: `${result.debug?.textStructure?.paragraphCount} paragraphs, avg ${result.debug?.textStructure?.averageLineLength} chars/line`,
-      tables: `${result.debug?.tableDetection?.columnSeparatorsDetected} column separators detected`,
-      sample: result.debug?.textSample?.substring(0, 100) + '...',
-    });
+    if (import.meta.env.DEV) {
+      console.log('[PDF Processing] Debug Summary:', {
+        method: result.debug?.extractionMethod,
+        text: `${result.debug?.textLength} chars, ${result.debug?.textLines} lines`,
+        images: `${result.debug?.imageCount} images, avg ${((result.debug?.averageImageSize ?? 0) / 1024).toFixed(0)} KB`,
+        structure: `${result.debug?.textStructure?.paragraphCount} paragraphs, avg ${result.debug?.textStructure?.averageLineLength} chars/line`,
+        sample: result.debug?.textSample?.substring(0, 100) + '...',
+      });
+    }
 
     return result;
   } catch (error) {
@@ -526,7 +555,7 @@ const extractFromImage = async (file: File): Promise<FileContent> => {
  * Checks file size, structure, and basic integrity
  */
 const validatePdf = async (file: File): Promise<{ valid: boolean; error?: string }> => {
-  console.log('[PDF Validation] Starting validation for:', file.name);
+  if (import.meta.env.DEV) console.log('[PDF Validation] Starting validation for:', file.name);
 
   // Check file size (max 50MB)
   const maxSize = 50 * 1024 * 1024; // 50MB
@@ -567,7 +596,7 @@ const validatePdf = async (file: File): Promise<{ valid: boolean; error?: string
         error: 'Skráin er ekki gilt PDF skjal',
       };
     }
-    console.log('[PDF Validation] Valid PDF header detected:', header);
+    if (import.meta.env.DEV) console.log('[PDF Validation] Valid PDF header detected:', header);
   } catch (error) {
     console.error('[PDF Validation] Error reading file header:', error);
     return {
@@ -576,7 +605,7 @@ const validatePdf = async (file: File): Promise<{ valid: boolean; error?: string
     };
   }
 
-  console.log('[PDF Validation] Validation passed for:', file.name);
+  if (import.meta.env.DEV) console.log('[PDF Validation] Validation passed for:', file.name);
   return { valid: true };
 };
 
@@ -585,11 +614,13 @@ const validatePdf = async (file: File): Promise<{ valid: boolean; error?: string
  * Supports: .docx, .pdf, and image files
  */
 export const extractTextFromFile = async (file: File): Promise<FileContent | null> => {
-  console.log('[File Processing] Starting extraction for:', {
-    fileName: file.name,
-    fileSize: `${(file.size / 1024).toFixed(2)} KB`,
-    mimeType: file.type,
-  });
+  if (import.meta.env.DEV) {
+    console.log('[File Processing] Starting extraction for:', {
+      fileName: file.name,
+      fileSize: `${(file.size / 1024).toFixed(2)} KB`,
+      mimeType: file.type,
+    });
+  }
 
   try {
     const fileName = file.name.toLowerCase();
@@ -599,13 +630,13 @@ export const extractTextFromFile = async (file: File): Promise<FileContent | nul
       file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
       fileName.endsWith('.docx')
     ) {
-      console.log('[File Processing] Processing as Word document');
+      if (import.meta.env.DEV) console.log('[File Processing] Processing as Word document');
       return await extractFromDocx(file);
     }
 
     // PDF files
     if (file.type === 'application/pdf' || fileName.endsWith('.pdf')) {
-      console.log('[File Processing] Processing as PDF');
+      if (import.meta.env.DEV) console.log('[File Processing] Processing as PDF');
 
       // Validate PDF before processing
       const validation = await validatePdf(file);
@@ -619,7 +650,7 @@ export const extractTextFromFile = async (file: File): Promise<FileContent | nul
 
     // Image files
     if (file.type.startsWith('image/')) {
-      console.log('[File Processing] Processing as image');
+      if (import.meta.env.DEV) console.log('[File Processing] Processing as image');
       return await extractFromImage(file);
     }
 
@@ -655,7 +686,7 @@ export const isValidFileType = (file: File): boolean => {
   ];
 
   return (
-    validExtensions.some(ext => fileName.endsWith(ext)) ||
+    validExtensions.some((ext) => fileName.endsWith(ext)) ||
     validMimeTypes.includes(file.type) ||
     file.type.startsWith('image/')
   );

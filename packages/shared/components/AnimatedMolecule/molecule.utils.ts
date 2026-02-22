@@ -57,7 +57,7 @@ export function getDepthStyle(z: number): { opacity: number; scale: number } {
   const normalizedZ = (z + 1) / 2; // 0 to 1
   return {
     opacity: 0.6 + normalizedZ * 0.4, // 0.6 to 1.0
-    scale: 0.8 + normalizedZ * 0.2,   // 0.8 to 1.0
+    scale: 0.8 + normalizedZ * 0.2, // 0.8 to 1.0
   };
 }
 
@@ -73,7 +73,7 @@ export function calculateGeometryPositions(
   const coords3D = GEOMETRY_COORDS[geometry];
   if (!coords3D) return [];
 
-  return coords3D.map(point => project3Dto2D(point, scale, centerX, centerY));
+  return coords3D.map((point) => project3Dto2D(point, scale, centerX, centerY));
 }
 
 /**
@@ -91,7 +91,7 @@ export function calculateAtomPositions(
   const centerY = height / 2;
 
   // If atoms have explicit positions, use them (scaled to container)
-  const hasExplicitPositions = molecule.atoms.some(a => a.position);
+  const hasExplicitPositions = molecule.atoms.some((a) => a.position);
   if (hasExplicitPositions) {
     for (const atom of molecule.atoms) {
       if (atom.position) {
@@ -225,9 +225,9 @@ export function getSizeConfig(size: keyof typeof SIZE_CONFIG) {
 export function getContrastTextColor(backgroundColor: string): string {
   // Simple luminance check
   const hex = backgroundColor.replace('#', '');
-  const r = parseInt(hex.substr(0, 2), 16);
-  const g = parseInt(hex.substr(2, 2), 16);
-  const b = parseInt(hex.substr(4, 2), 16);
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
 
   // Relative luminance formula
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
@@ -263,7 +263,7 @@ export function calculateLonePairPositions(
   if (lonePairs === 0) return positions;
 
   // Find available angles (opposite to bonds)
-  const usedAngles = new Set(bondAngles.map(a => Math.round(a / 45) * 45));
+  const usedAngles = new Set(bondAngles.map((a) => Math.round(a / 45) * 45));
   const availableAngles: number[] = [];
 
   for (let angle = 0; angle < 360; angle += 45) {
@@ -322,8 +322,8 @@ export function calculateOrganicChainPositions(
   const centerY = height / 2;
 
   // Find carbon atoms (main chain)
-  const carbons = molecule.atoms.filter(a => a.symbol === 'C');
-  const otherAtoms = molecule.atoms.filter(a => a.symbol !== 'C');
+  const carbons = molecule.atoms.filter((a) => a.symbol === 'C');
+  const otherAtoms = molecule.atoms.filter((a) => a.symbol !== 'C');
 
   if (carbons.length === 0) {
     // Fallback to simple layout
@@ -348,9 +348,7 @@ export function calculateOrganicChainPositions(
   // Position other atoms (hydrogens, etc.) around their bonded carbons
   for (const atom of otherAtoms) {
     // Find which carbon this atom is bonded to
-    const bond = molecule.bonds.find(b =>
-      (b.from === atom.id || b.to === atom.id)
-    );
+    const bond = molecule.bonds.find((b) => b.from === atom.id || b.to === atom.id);
 
     if (bond) {
       const carbonId = bond.from === atom.id ? bond.to : bond.from;
@@ -361,7 +359,7 @@ export function calculateOrganicChainPositions(
         const hydrogenOffset = atomRadius * 1.5;
 
         // Alternate above/below for visual clarity
-        const yOffset = (otherAtoms.indexOf(atom) % 2 === 0) ? -hydrogenOffset : hydrogenOffset;
+        const yOffset = otherAtoms.indexOf(atom) % 2 === 0 ? -hydrogenOffset : hydrogenOffset;
 
         positions.set(atom.id, {
           x: carbonPos.x,
