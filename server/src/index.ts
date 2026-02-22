@@ -506,7 +506,12 @@ app.post(
         clearTimeout(timeoutId);
 
         if (!response.ok) {
-          const errorData = (await response.json()) as { error?: { message?: string } };
+          let errorData: unknown;
+          try {
+            errorData = await response.json();
+          } catch {
+            errorData = null;
+          }
           console.error('Anthropic API error:', errorData);
           // Map upstream status to generic codes — never forward Anthropic's status/message to clients
           const clientStatus = response.status === 429 ? 503 : 502;
@@ -618,7 +623,12 @@ app.post(
         clearTimeout(timeoutId);
 
         if (!response.ok) {
-          const errorData = (await response.json()) as { error?: { message?: string } };
+          let errorData: unknown;
+          try {
+            errorData = await response.json();
+          } catch {
+            errorData = null;
+          }
           console.error('Anthropic API error (2ar):', errorData);
           // Map upstream status to generic codes — never forward Anthropic's status/message to clients
           const clientStatus = response.status === 429 ? 503 : 502;

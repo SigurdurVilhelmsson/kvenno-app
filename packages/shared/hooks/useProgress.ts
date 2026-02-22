@@ -23,7 +23,7 @@ export const useProgress = ({ gameId, initialProgress = {} }: UseProgressOptions
     }
 
     return {
-      currentLevel: 3,
+      currentLevel: 1,
       problemsCompleted: 0,
       lastPlayedDate: new Date().toISOString(),
       totalTimeSpent: 0,
@@ -55,7 +55,7 @@ export const useProgress = ({ gameId, initialProgress = {} }: UseProgressOptions
 
   const resetProgress = useCallback(() => {
     const fresh: GameProgress = {
-      currentLevel: 3,
+      currentLevel: 1,
       problemsCompleted: 0,
       lastPlayedDate: new Date().toISOString(),
       totalTimeSpent: 0,

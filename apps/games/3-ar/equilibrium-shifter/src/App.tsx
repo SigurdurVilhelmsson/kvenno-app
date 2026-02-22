@@ -3,10 +3,13 @@ import { useState, useEffect, useRef } from 'react';
 import { HintSystem, LanguageSwitcher, ErrorBoundary } from '@shared/components';
 import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
 import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
-import { ParticleCelebration, useParticleCelebration } from '@shared/components/ParticleCelebration';
 import { AnimatedBackground } from '@shared/components/AnimatedBackground';
+import {
+  ParticleCelebration,
+  useParticleCelebration,
+} from '@shared/components/ParticleCelebration';
 import { SoundToggle } from '@shared/components/SoundToggle';
-import { useProgress, useAccessibility, useI18n, useGameI18n } from '@shared/hooks';
+import { useProgress, useAccessibility, useGameI18n } from '@shared/hooks';
 import { useAchievements } from '@shared/hooks/useAchievements';
 import { useGameSounds } from '@shared/hooks/useGameSounds';
 import type { TieredHints } from '@shared/types';
@@ -22,7 +25,7 @@ import {
   GameMode,
   GameStats,
   ShiftResult,
-  DifficultyLevel
+  DifficultyLevel,
 } from './types';
 import { calculateShift, getStressDescriptionIs } from './utils/le-chatelier';
 import './styles.css';
@@ -38,13 +41,12 @@ function App() {
       problemsCompleted: 0,
       lastPlayedDate: new Date().toISOString(),
       totalTimeSpent: 0,
-      levelProgress: {}
-    }
+      levelProgress: {},
+    },
   });
 
   const { settings, toggleHighContrast, setTextSize } = useAccessibility();
-  const { t, language, setLanguage } = useI18n();
-  useGameI18n({ gameTranslations }); // Initialize game translations
+  const { t, language, setLanguage } = useGameI18n({ gameTranslations });
 
   // Achievements
   const [showAchievements, setShowAchievements] = useState(false);
@@ -61,10 +63,18 @@ function App() {
   } = useAchievements({ gameId: 'equilibrium-shifter' });
 
   const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('3-ar');
-  const { playCorrect, playWrong, playLevelComplete, isEnabled: soundEnabled, toggleSound } = useGameSounds();
+  const {
+    playCorrect,
+    playWrong,
+    playLevelComplete,
+    isEnabled: soundEnabled,
+    toggleSound,
+  } = useGameSounds();
 
   // Game state
-  const [screen, setScreen] = useState<'menu' | 'mode-select' | 'game' | 'feedback' | 'results'>('menu');
+  const [screen, setScreen] = useState<'menu' | 'mode-select' | 'game' | 'feedback' | 'results'>(
+    'menu'
+  );
   const [gameMode, setGameMode] = useState<GameMode>('learning');
   const [currentEquilibrium, setCurrentEquilibrium] = useState<Equilibrium | null>(null);
   const [appliedStress, setAppliedStress] = useState<Stress | null>(null);
@@ -87,8 +97,8 @@ function App() {
     correctByDifficulty: {
       beginner: 0,
       intermediate: 0,
-      advanced: 0
-    }
+      advanced: 0,
+    },
   });
 
   // Challenge mode state
@@ -102,9 +112,15 @@ function App() {
 
   // Timer for challenge mode
   useEffect(() => {
-    if (screen === 'game' && gameMode === 'challenge' && timeRemaining !== null && timeRemaining > 0 && !showExplanation) {
+    if (
+      screen === 'game' &&
+      gameMode === 'challenge' &&
+      timeRemaining !== null &&
+      timeRemaining > 0 &&
+      !showExplanation
+    ) {
       const timer = setTimeout(() => {
-        setTimeRemaining(prev => prev !== null ? prev - 1 : null);
+        setTimeRemaining((prev) => (prev !== null ? prev - 1 : null));
       }, 1000);
       return () => clearTimeout(timer);
     } else if (timeRemaining === 0 && gameMode === 'challenge' && !timeoutHandledRef.current) {
@@ -114,10 +130,10 @@ function App() {
       setShowExplanation(true);
       trackIncorrectAnswer();
       playWrong();
-      setStats(prev => ({
+      setStats((prev) => ({
         ...prev,
         questionsAnswered: prev.questionsAnswered + 1,
-        streak: 0
+        streak: 0,
       }));
 
       setTimeout(() => {
@@ -142,8 +158,8 @@ function App() {
       correctByDifficulty: {
         beginner: 0,
         intermediate: 0,
-        advanced: 0
-      }
+        advanced: 0,
+      },
     });
     setQuestionNumber(1);
     loadNewQuestion(mode);
@@ -158,7 +174,8 @@ function App() {
 
     // In challenge mode, randomly select a stress
     if (mode === 'challenge') {
-      const randomStress = eq.possibleStresses[Math.floor(Math.random() * eq.possibleStresses.length)];
+      const randomStress =
+        eq.possibleStresses[Math.floor(Math.random() * eq.possibleStresses.length)];
       setAppliedStress(randomStress);
       const shift = calculateShift(eq, randomStress);
       setCorrectShift(shift);
@@ -174,7 +191,7 @@ function App() {
     setShowExplanation(false);
     setHintMultiplier(1.0);
     setHintsUsedTier(0);
-    setHintResetKey(prev => prev + 1);
+    setHintResetKey((prev) => prev + 1);
     setIsCorrect(null);
   };
 
@@ -185,7 +202,7 @@ function App() {
         topic: 'Le Chatelier meginreglan fjallar um hvernig jafnvægi bregst við álagi.',
         strategy: 'Hugsaðu um hvernig kerfið reynir að minnka áhrif álagsins.',
         method: 'Athugaðu hvort álagið eykur eða minnkar magn á hvorri hlið.',
-        solution: 'Veldu álag til að sjá vísbendingu.'
+        solution: 'Veldu álag til að sjá vísbendingu.',
       };
     }
 
@@ -198,7 +215,8 @@ function App() {
     // Topic hint - general concept area
     let topic = 'Þetta snýst um Le Chatelier meginregluna og hvernig jafnvægi bregst við álagi.';
     if (stress.type.includes('temp')) {
-      topic = 'Þetta snýst um áhrif hitastigsbreytinga á jafnvægi og varmalosandi/varmabindandi hvörf.';
+      topic =
+        'Þetta snýst um áhrif hitastigsbreytinga á jafnvægi og varmalosandi/varmabindandi hvörf.';
     } else if (stress.type.includes('pressure')) {
       topic = 'Þetta snýst um áhrif þrýstingsbreytinga á gasjafnvægi og fjölda móla.';
     } else if (stress.type.includes('catalyst')) {
@@ -266,9 +284,12 @@ function App() {
     // Solution hint - full worked answer
     let solution = '';
     if (correctShift) {
-      const directionText = correctShift.direction === 'left' ? 'til vinstri ←'
-        : correctShift.direction === 'right' ? 'til hægri →'
-        : 'engin hliðrun ⇌';
+      const directionText =
+        correctShift.direction === 'left'
+          ? 'til vinstri ←'
+          : correctShift.direction === 'right'
+            ? 'til hægri →'
+            : 'engin hliðrun ⇌';
       solution = `Rétt svar: ${directionText}. ${correctShift.explanationIs || ''}`;
     } else {
       solution = 'Veldu spá til að sjá lausn.';
@@ -310,7 +331,7 @@ function App() {
     const basePoints = calculatePoints(correct, currentEquilibrium.difficulty);
     const points = Math.round(basePoints * hintMultiplier);
 
-    setStats(prev => ({
+    setStats((prev) => ({
       ...prev,
       questionsAnswered: prev.questionsAnswered + 1,
       correctAnswers: correct ? prev.correctAnswers + 1 : prev.correctAnswers,
@@ -321,8 +342,8 @@ function App() {
         ...prev.correctByDifficulty,
         [currentEquilibrium.difficulty]: correct
           ? prev.correctByDifficulty[currentEquilibrium.difficulty] + 1
-          : prev.correctByDifficulty[currentEquilibrium.difficulty]
-      }
+          : prev.correctByDifficulty[currentEquilibrium.difficulty],
+      },
     }));
 
     // In challenge mode, auto-advance after 3 seconds
@@ -338,7 +359,7 @@ function App() {
 
     const basePoints = difficulty === 'beginner' ? 10 : difficulty === 'intermediate' ? 20 : 30;
     const streakBonus = Math.min(stats.streak * 5, 25);
-    const timeBonus = (gameMode === 'challenge' && timeRemaining && timeRemaining > 15) ? 5 : 0;
+    const timeBonus = gameMode === 'challenge' && timeRemaining && timeRemaining > 15 ? 5 : 0;
 
     return basePoints + streakBonus + timeBonus;
   };
@@ -350,7 +371,7 @@ function App() {
         setScreen('results');
         updateProgress({
           problemsCompleted: progress.problemsCompleted + stats.correctAnswers,
-          totalTimeSpent: progress.totalTimeSpent + stats.totalTime
+          totalTimeSpent: progress.totalTimeSpent + stats.totalTime,
         });
 
         // Track challenge completion as level 1, and game complete
@@ -361,7 +382,7 @@ function App() {
         triggerLevelComplete();
       } else {
         // Next question
-        setQuestionNumber(prev => prev + 1);
+        setQuestionNumber((prev) => prev + 1);
         loadNewQuestion(gameMode);
       }
     } else {
@@ -373,9 +394,9 @@ function App() {
   // Handle hint usage from HintSystem
   const handleHintUsed = (tier: 1 | 2 | 3 | 4) => {
     setHintsUsedTier(tier);
-    setStats(prev => ({
+    setStats((prev) => ({
       ...prev,
-      hintsUsed: prev.hintsUsed + 1
+      hintsUsed: prev.hintsUsed + 1,
     }));
   };
 
@@ -386,9 +407,7 @@ function App() {
         <div className="flex justify-end mb-4">
           <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
         </div>
-        <h2 className="text-3xl font-bold text-warm-800 mb-6 text-center">
-          Jafnvægisstjóri
-        </h2>
+        <h2 className="text-3xl font-bold text-warm-800 mb-6 text-center">Jafnvægisstjóri</h2>
         <p className="text-lg text-warm-600 mb-8 text-center">
           Lærðu Le Chatelier meginregluna í gegnum gagnvirkar æfingar
         </p>
@@ -400,9 +419,7 @@ function App() {
             className="game-card mode-card bg-white border-2 border-blue-200 hover:border-blue-400 rounded-lg p-6 text-left transition-all"
           >
             <div className="text-3xl mb-3">📚</div>
-            <h3 className="text-xl font-bold text-warm-800 mb-2">
-              Lærdómshamur
-            </h3>
+            <h3 className="text-xl font-bold text-warm-800 mb-2">Lærdómshamur</h3>
             <p className="text-warm-600 text-sm mb-3">
               Taktu þér tíma, notaðu vísbendingar og lærðu á þínum hraða
             </p>
@@ -419,9 +436,7 @@ function App() {
             className="game-card mode-card bg-white border-2 border-orange-200 hover:border-orange-400 rounded-lg p-6 text-left transition-all"
           >
             <div className="text-3xl mb-3">🏆</div>
-            <h3 className="text-xl font-bold text-warm-800 mb-2">
-              Keppnishamur
-            </h3>
+            <h3 className="text-xl font-bold text-warm-800 mb-2">Keppnishamur</h3>
             <p className="text-warm-600 text-sm mb-3">
               Prófaðu kunnáttu þína með tímasettum spurningum
             </p>
@@ -437,9 +452,7 @@ function App() {
         {/* Progress Summary */}
         <div className="bg-warm-50 rounded-lg p-4">
           <h3 className="font-semibold text-warm-700 mb-2">Framvinda þín</h3>
-          <p className="text-sm text-warm-600">
-            Verkefni kláruð: {progress.problemsCompleted}
-          </p>
+          <p className="text-sm text-warm-600">Verkefni kláruð: {progress.problemsCompleted}</p>
         </div>
       </div>
     </div>
@@ -466,19 +479,15 @@ function App() {
                   <div className="text-sm text-warm-600">
                     Spurning {questionNumber} / {totalQuestions}
                   </div>
-                  <div className={`timer-display ${timeRemaining && timeRemaining <= 5 ? 'warning' : ''}`}>
+                  <div
+                    className={`timer-display ${timeRemaining && timeRemaining <= 5 ? 'warning' : ''}`}
+                  >
                     {timeRemaining}s
                   </div>
                 </>
               )}
-              <div className="score-display">
-                Stig: {stats.score}
-              </div>
-              {stats.streak > 0 && (
-                <div className="streak-indicator">
-                  🔥 {stats.streak} röð
-                </div>
-              )}
+              <div className="score-display">Stig: {stats.score}</div>
+              {stats.streak > 0 && <div className="streak-indicator">🔥 {stats.streak} röð</div>}
             </div>
           </div>
         </div>
@@ -495,15 +504,20 @@ function App() {
             </div>
             <div className={`thermo-indicator ${currentEquilibrium.thermodynamics.type}`}>
               {currentEquilibrium.thermodynamics.type === 'exothermic' ? '🔥' : '❄️'}
-              ΔH = {currentEquilibrium.thermodynamics.deltaH} kJ/mol
-              ({currentEquilibrium.thermodynamics.type === 'exothermic' ? 'Varmalosandi' : 'Varmabindandi'})
+              ΔH = {currentEquilibrium.thermodynamics.deltaH} kJ/mol (
+              {currentEquilibrium.thermodynamics.type === 'exothermic'
+                ? 'Varmalosandi'
+                : 'Varmabindandi'}
+              )
             </div>
           </div>
 
           {/* Visual Equilibrium Display */}
           <div className="grid md:grid-cols-3 gap-4 items-center mb-6">
             {/* Reactants */}
-            <div className={`molecule-container reactants-side ${isCorrect !== null && correctShift?.direction === 'left' ? 'glowing' : ''}`}>
+            <div
+              className={`molecule-container reactants-side ${isCorrect !== null && correctShift?.direction === 'left' ? 'glowing' : ''}`}
+            >
               <div className="text-center">
                 <div className="text-sm text-warm-600 mb-2 font-semibold">Hvarfefni</div>
                 <div className="flex flex-wrap gap-2 justify-center">
@@ -520,13 +534,17 @@ function App() {
 
             {/* Arrows */}
             <div className="text-center">
-              <div className={`equilibrium-arrows ${isCorrect !== null ? (correctShift?.direction === 'right' ? 'shift-right' : correctShift?.direction === 'left' ? 'shift-left' : 'no-shift') : ''}`}>
+              <div
+                className={`equilibrium-arrows ${isCorrect !== null ? (correctShift?.direction === 'right' ? 'shift-right' : correctShift?.direction === 'left' ? 'shift-left' : 'no-shift') : ''}`}
+              >
                 ⇌
               </div>
             </div>
 
             {/* Products */}
-            <div className={`molecule-container products-side ${isCorrect !== null && correctShift?.direction === 'right' ? 'glowing' : ''}`}>
+            <div
+              className={`molecule-container products-side ${isCorrect !== null && correctShift?.direction === 'right' ? 'glowing' : ''}`}
+            >
               <div className="text-center">
                 <div className="text-sm text-warm-600 mb-2 font-semibold">Afurðir</div>
                 <div className="flex flex-wrap gap-2 justify-center">
@@ -556,14 +574,18 @@ function App() {
           {/* Context/Description */}
           <div className="bg-warm-50 rounded-lg p-4 mb-6">
             <p className="text-sm text-warm-700 text-center">
-              {language === 'is' ? currentEquilibrium.descriptionIs : currentEquilibrium.description}
+              {language === 'is'
+                ? currentEquilibrium.descriptionIs
+                : currentEquilibrium.description}
             </p>
           </div>
 
           {/* Learning Mode: Stress Selection */}
           {gameMode === 'learning' && !appliedStress && (
             <div>
-              <h3 className="text-lg font-semibold text-warm-800 mb-3">Veldu álag sem þú vilt beita:</h3>
+              <h3 className="text-lg font-semibold text-warm-800 mb-3">
+                Veldu álag sem þú vilt beita:
+              </h3>
               <div className="grid md:grid-cols-3 gap-3">
                 {currentEquilibrium.possibleStresses.map((stress, idx) => (
                   <button
@@ -581,11 +603,11 @@ function App() {
           {/* Challenge Mode or Stress Applied: Show applied stress */}
           {appliedStress && correctShift && (
             <div>
-              <div className={`bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4 mb-4 ${appliedStress ? 'selected' : ''}`}>
+              <div
+                className={`bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4 mb-4 ${appliedStress ? 'selected' : ''}`}
+              >
                 <div className="font-semibold text-warm-800 mb-1">Álag sem beitt er:</div>
-                <div className="text-lg text-warm-700">
-                  {getStressDescriptionIs(appliedStress)}
-                </div>
+                <div className="text-lg text-warm-700">{getStressDescriptionIs(appliedStress)}</div>
               </div>
 
               {/* Prediction Buttons */}
@@ -636,7 +658,9 @@ function App() {
 
               {/* Explanation */}
               {showExplanation && isCorrect !== null && (
-                <div className={`explanation-box ${isCorrect ? 'correct' : 'incorrect'} slide-in-right`}>
+                <div
+                  className={`explanation-box ${isCorrect ? 'correct' : 'incorrect'} slide-in-right`}
+                >
                   <div className="text-2xl font-bold mb-3">
                     {isCorrect ? '✅ Rétt!' : '❌ Rangt'}
                   </div>
@@ -644,10 +668,13 @@ function App() {
                   <div className="mb-4">
                     <div className="font-semibold mb-2">Rétt svar:</div>
                     <div className="text-lg">
-                      Hliðrun: <strong>
-                        {correctShift.direction === 'left' ? 'Til vinstri ←' :
-                         correctShift.direction === 'right' ? 'Til hægri →' :
-                         'Engin hliðrun ⇌'}
+                      Hliðrun:{' '}
+                      <strong>
+                        {correctShift.direction === 'left'
+                          ? 'Til vinstri ←'
+                          : correctShift.direction === 'right'
+                            ? 'Til hægri →'
+                            : 'Engin hliðrun ⇌'}
                       </strong>
                     </div>
                   </div>
@@ -684,9 +711,7 @@ function App() {
 
                   <div className="mb-4">
                     <div className="font-semibold mb-2">Sameinda sjónarhorn:</div>
-                    <p className="text-sm text-warm-700 italic">
-                      {correctShift.molecularView}
-                    </p>
+                    <p className="text-sm text-warm-700 italic">{correctShift.molecularView}</p>
                   </div>
 
                   {/* Points Earned */}
@@ -738,15 +763,11 @@ function App() {
   const renderResults = () => (
     <div className="max-w-4xl mx-auto">
       <div className="bg-white rounded-lg shadow-md p-8">
-        <h2 className="text-3xl font-bold text-warm-800 mb-6 text-center">
-          🏆 Niðurstöður
-        </h2>
+        <h2 className="text-3xl font-bold text-warm-800 mb-6 text-center">🏆 Niðurstöður</h2>
 
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
-            <div className="text-3xl font-bold text-purple-800 mb-2">
-              {stats.score}
-            </div>
+            <div className="text-3xl font-bold text-purple-800 mb-2">{stats.score}</div>
             <div className="text-sm text-purple-600">Heildar stig</div>
           </div>
 
@@ -758,9 +779,7 @@ function App() {
           </div>
 
           <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-6">
-            <div className="text-3xl font-bold text-orange-800 mb-2">
-              {stats.bestStreak}
-            </div>
+            <div className="text-3xl font-bold text-orange-800 mb-2">{stats.bestStreak}</div>
             <div className="text-sm text-orange-600">Besta röð</div>
           </div>
 
@@ -778,15 +797,21 @@ function App() {
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <span className="text-warm-700">Byrjandi:</span>
-              <span className="font-semibold text-warm-800">{stats.correctByDifficulty.beginner}</span>
+              <span className="font-semibold text-warm-800">
+                {stats.correctByDifficulty.beginner}
+              </span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-warm-700">Miðlungs:</span>
-              <span className="font-semibold text-warm-800">{stats.correctByDifficulty.intermediate}</span>
+              <span className="font-semibold text-warm-800">
+                {stats.correctByDifficulty.intermediate}
+              </span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-warm-700">Erfitt:</span>
-              <span className="font-semibold text-warm-800">{stats.correctByDifficulty.advanced}</span>
+              <span className="font-semibold text-warm-800">
+                {stats.correctByDifficulty.advanced}
+              </span>
             </div>
           </div>
         </div>
@@ -810,111 +835,118 @@ function App() {
   );
 
   return (
-    <AnimatedBackground yearTheme="3-ar" variant={screen === 'menu' ? 'menu' : 'gameplay'} showSymbols={screen === 'menu'}>
-    <div className={`min-h-screen ${settings.highContrast ? 'high-contrast' : ''} ${settings.reducedMotion ? 'reduced-motion' : ''}`}>
-      {/* Accessibility Skip Link */}
-      <a href="#main-content" className="skip-link">
-        {t('accessibility.skipToContent', 'Fara beint í efní')}
-      </a>
+    <AnimatedBackground
+      yearTheme="3-ar"
+      variant={screen === 'menu' ? 'menu' : 'gameplay'}
+      showSymbols={screen === 'menu'}
+    >
+      <div
+        className={`min-h-screen ${settings.highContrast ? 'high-contrast' : ''} ${settings.reducedMotion ? 'reduced-motion' : ''}`}
+      >
+        {/* Accessibility Skip Link */}
+        <a href="#main-content" className="skip-link">
+          {t('accessibility.skipToContent', 'Fara beint í efní')}
+        </a>
 
-      {/* Main Content */}
-      <main id="main-content" className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <header className="mb-8">
-          <div className="flex justify-end gap-2 mb-2">
-            <LanguageSwitcher
-              language={language}
-              onLanguageChange={setLanguage}
-              variant="compact"
-            />
-            <AchievementsButton
-              achievements={achievements}
-              onClick={() => setShowAchievements(true)}
-            />
-          </div>
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold font-heading mb-2" style={{ color: '#f36b22' }}>
-              Jafnvægisstjóri
-            </h1>
-            <p className="text-lg text-warm-600">
-              Le Chatelier Meginreglan
-            </p>
-          </div>
-        </header>
-
-        {/* Accessibility Menu */}
-        <div className="bg-white rounded-lg shadow-xs p-4 mb-6 max-w-4xl mx-auto">
-          <h2 className="text-sm font-semibold text-warm-700 mb-3">
-            {t('accessibility.menuTitle', 'Aðgengisval')}
-          </h2>
-          <div className="flex flex-wrap gap-4">
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={settings.highContrast}
-                onChange={toggleHighContrast}
-                className="rounded"
+        {/* Main Content */}
+        <main id="main-content" className="container mx-auto px-4 py-8">
+          {/* Header */}
+          <header className="mb-8">
+            <div className="flex justify-end gap-2 mb-2">
+              <LanguageSwitcher
+                language={language}
+                onLanguageChange={setLanguage}
+                variant="compact"
               />
-              <span className="text-sm">{t('accessibility.highContrast', 'Há birtuskil')}</span>
-            </label>
-
-            <div className="flex items-center gap-2">
-              <span className="text-sm">{t('accessibility.textSize', 'Leturstærð')}:</span>
-              <select
-                value={settings.textSize}
-                onChange={(e) => setTextSize(e.target.value as 'small' | 'medium' | 'large')}
-                className="text-sm border rounded px-2 py-1"
-              >
-                <option value="small">{t('accessibility.textSizeSmall', 'Lítil')}</option>
-                <option value="medium">{t('accessibility.textSizeMedium', 'Miðlungs')}</option>
-                <option value="large">{t('accessibility.textSizeLarge', 'Stór')}</option>
-              </select>
+              <AchievementsButton
+                achievements={achievements}
+                onClick={() => setShowAchievements(true)}
+              />
             </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-sm">Tungumál:</span>
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value as 'is' | 'en' | 'pl')}
-                className="text-sm border rounded px-2 py-1"
+            <div className="text-center">
+              <h1
+                className="text-4xl md:text-5xl font-bold font-heading mb-2"
+                style={{ color: '#f36b22' }}
               >
-                <option value="is">Íslenska</option>
-                <option value="en">English</option>
-                <option value="pl">Polski</option>
-              </select>
+                Jafnvægisstjóri
+              </h1>
+              <p className="text-lg text-warm-600">Le Chatelier Meginreglan</p>
+            </div>
+          </header>
+
+          {/* Accessibility Menu */}
+          <div className="bg-white rounded-lg shadow-xs p-4 mb-6 max-w-4xl mx-auto">
+            <h2 className="text-sm font-semibold text-warm-700 mb-3">
+              {t('accessibility.menuTitle', 'Aðgengisval')}
+            </h2>
+            <div className="flex flex-wrap gap-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={settings.highContrast}
+                  onChange={toggleHighContrast}
+                  className="rounded"
+                />
+                <span className="text-sm">{t('accessibility.highContrast', 'Há birtuskil')}</span>
+              </label>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm">{t('accessibility.textSize', 'Leturstærð')}:</span>
+                <select
+                  value={settings.textSize}
+                  onChange={(e) => setTextSize(e.target.value as 'small' | 'medium' | 'large')}
+                  className="text-sm border rounded px-2 py-1"
+                >
+                  <option value="small">{t('accessibility.textSizeSmall', 'Lítil')}</option>
+                  <option value="medium">{t('accessibility.textSizeMedium', 'Miðlungs')}</option>
+                  <option value="large">{t('accessibility.textSizeLarge', 'Stór')}</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm">Tungumál:</span>
+                <select
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value as 'is' | 'en' | 'pl')}
+                  className="text-sm border rounded px-2 py-1"
+                >
+                  <option value="is">Íslenska</option>
+                  <option value="en">English</option>
+                  <option value="pl">Polski</option>
+                </select>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Screen Routing */}
-        {screen === 'menu' && renderMenu()}
-        {screen === 'game' && renderGame()}
-        {screen === 'results' && renderResults()}
-      </main>
+          {/* Screen Routing */}
+          {screen === 'menu' && renderMenu()}
+          {screen === 'game' && renderGame()}
+          {screen === 'results' && renderResults()}
+        </main>
 
-      {/* Footer */}
-      <footer className="text-center text-sm text-warm-500 py-4">
-        <p>© 2024 Kvennaskólinn - Efnafræðileikir</p>
-      </footer>
+        {/* Footer */}
+        <footer className="text-center text-sm text-warm-500 py-4">
+          <p>© 2024 Kvennaskólinn - Efnafræðileikir</p>
+        </footer>
 
-      {/* Achievements Panel Modal */}
-      {showAchievements && (
-        <AchievementsPanel
-          achievements={achievements}
-          allAchievements={allAchievements}
-          onClose={() => setShowAchievements(false)}
-          onReset={resetAchievements}
+        {/* Achievements Panel Modal */}
+        {showAchievements && (
+          <AchievementsPanel
+            achievements={achievements}
+            allAchievements={allAchievements}
+            onClose={() => setShowAchievements(false)}
+            onReset={resetAchievements}
+          />
+        )}
+
+        {/* Achievement Notifications */}
+        <AchievementNotificationsContainer
+          notifications={notifications}
+          onDismiss={dismissNotification}
         />
-      )}
 
-      {/* Achievement Notifications */}
-      <AchievementNotificationsContainer
-        notifications={notifications}
-        onDismiss={dismissNotification}
-      />
-
-      <ParticleCelebration {...celebrationProps} />
-    </div>
+        <ParticleCelebration {...celebrationProps} />
+      </div>
     </AnimatedBackground>
   );
 }
