@@ -21,9 +21,12 @@ const tenantId = import.meta.env.VITE_AZURE_TENANT_ID;
 
 if (!clientId || !tenantId) {
   console.warn(
-    '⚠️ Azure AD credentials not configured. ' +
-      'Set VITE_AZURE_CLIENT_ID and VITE_AZURE_TENANT_ID in .env file. ' +
-      'See KVENNO-STRUCTURE.md Section 2 for setup instructions.'
+    '\n========================================\n' +
+      'WARNING: Azure AD credentials not configured!\n' +
+      'Authentication will not work.\n' +
+      'Set VITE_AZURE_CLIENT_ID and VITE_AZURE_TENANT_ID in .env file.\n' +
+      'See KVENNO-STRUCTURE.md Section 2 for setup instructions.\n' +
+      '========================================\n'
   );
 }
 
@@ -47,7 +50,7 @@ export const msalConfig: Configuration = {
     authority: `https://login.microsoftonline.com/${tenantId || 'common'}`,
     // STATIC redirect URI - centralized callback endpoint
     redirectUri: redirectUri,
-    postLogoutRedirectUri: window.location.origin,
+    postLogoutRedirectUri: typeof window !== 'undefined' ? window.location.origin : '',
     navigateToLoginRequestUrl: false, // We handle navigation manually
   },
   cache: {

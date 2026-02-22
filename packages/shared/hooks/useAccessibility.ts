@@ -17,13 +17,13 @@ const DEFAULT_SETTINGS: AccessibilitySettings = {
  */
 export const useAccessibility = () => {
   const [settings, setSettings] = useState<AccessibilitySettings>(() => {
-    const saved = localStorage.getItem('kvenno-accessibility');
-    if (saved) {
-      try {
+    try {
+      const saved = localStorage.getItem('kvenno-accessibility');
+      if (saved) {
         return { ...DEFAULT_SETTINGS, ...JSON.parse(saved) };
-      } catch (e) {
-        console.error('Failed to parse accessibility settings:', e);
       }
+    } catch (e) {
+      console.error('Failed to load accessibility settings:', e);
     }
     return DEFAULT_SETTINGS;
   });
@@ -51,7 +51,11 @@ export const useAccessibility = () => {
     }
 
     // Save to localStorage
-    localStorage.setItem('kvenno-accessibility', JSON.stringify(settings));
+    try {
+      localStorage.setItem('kvenno-accessibility', JSON.stringify(settings));
+    } catch {
+      // localStorage may be unavailable — ignore silently
+    }
   }, [settings]);
 
   const updateSettings = useCallback((updates: Partial<AccessibilitySettings>) => {

@@ -302,7 +302,7 @@ app.post(
       const libreOfficeAvailable = await isLibreOfficeAvailable();
       if (!libreOfficeAvailable) {
         return res.status(500).json({
-          error: 'LibreOffice is not installed on this server. Please install libreoffice.',
+          error: 'Villa vid vinnslu skjals',
         });
       }
 
@@ -508,8 +508,10 @@ app.post(
         if (!response.ok) {
           const errorData = (await response.json()) as { error?: { message?: string } };
           console.error('Anthropic API error:', errorData);
-          return res.status(response.status).json({
-            error: errorData.error?.message || 'API request failed',
+          // Map upstream status to generic codes — never forward Anthropic's status/message to clients
+          const clientStatus = response.status === 429 ? 503 : 502;
+          return res.status(clientStatus).json({
+            error: 'Villa vid greiningu - reyndu aftur sidar',
           });
         }
 
@@ -618,8 +620,10 @@ app.post(
         if (!response.ok) {
           const errorData = (await response.json()) as { error?: { message?: string } };
           console.error('Anthropic API error (2ar):', errorData);
-          return res.status(response.status).json({
-            error: errorData.error?.message || 'API request failed',
+          // Map upstream status to generic codes — never forward Anthropic's status/message to clients
+          const clientStatus = response.status === 429 ? 503 : 502;
+          return res.status(clientStatus).json({
+            error: 'Villa vid greiningu - reyndu aftur sidar',
           });
         }
 

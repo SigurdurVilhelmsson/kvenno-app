@@ -30,7 +30,8 @@ export function countSignificantFigures(numStr: string): number {
     const wholeTrimmed = whole.replace(/^0+/, '') || '0';
     if (wholeTrimmed === '0') {
       const decimalSignificant = decimal?.replace(/^0+/, '') || '';
-      return decimalSignificant.length;
+      // "0.0" and "0.00" have at least 1 significant figure
+      return decimalSignificant.length || 1;
     }
     return wholeTrimmed.length + (decimal?.length || 0);
   }

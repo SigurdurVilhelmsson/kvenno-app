@@ -101,6 +101,12 @@ describe('countSignificantFigures', () => {
     expect(countSignificantFigures('00')).toBe(1);
   });
 
+  it('should handle trailing zeros after decimal with zero whole part', () => {
+    expect(countSignificantFigures('0.0')).toBe(1);
+    expect(countSignificantFigures('0.00')).toBe(1);
+    expect(countSignificantFigures('-0.0')).toBe(1);
+  });
+
   it('should handle scientific notation', () => {
     expect(countSignificantFigures('1.23e5')).toBe(3);
     expect(countSignificantFigures('1.0E-3')).toBe(2);

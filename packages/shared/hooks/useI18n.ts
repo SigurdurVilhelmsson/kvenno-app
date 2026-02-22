@@ -20,6 +20,7 @@ const loadTranslations = async (lang: Language): Promise<TranslationDictionary> 
 
   try {
     const response = await fetch(`/shared/i18n/${lang}.json`);
+    if (!response.ok) throw new Error('HTTP ' + response.status);
     const data = await response.json();
     translations[lang] = data;
     return data;
@@ -38,8 +39,12 @@ const loadTranslations = async (lang: Language): Promise<TranslationDictionary> 
  */
 export const useI18n = () => {
   const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem('kvenno-language');
-    return (saved as Language) || 'is';
+    try {
+      const saved = localStorage.getItem('kvenno-language');
+      return (saved as Language) || 'is';
+    } catch {
+      return 'is';
+    }
   });
 
   const [currentTranslations, setCurrentTranslations] = useState<TranslationDictionary>({});
@@ -50,7 +55,11 @@ export const useI18n = () => {
 
   const setLanguage = useCallback((lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem('kvenno-language', lang);
+    try {
+      localStorage.setItem('kvenno-language', lang);
+    } catch {
+      // localStorage may be unavailable — ignore silently
+    }
   }, []);
 
   /**

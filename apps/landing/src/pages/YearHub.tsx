@@ -42,7 +42,7 @@ const yearConfigs: Record<YearKey, YearConfig> = {
         description:
           'Spurðu spurninga og fáðu skýringar á efnafræðihugtökum með hjálp gervigreindar. Kennarinn útskýrir hugtök og hjálpar þér að skilja efnið betur.',
         href: '/efnafraedi/1-ar/ai-tutor/',
-        status: 'Í þróun - Ræsing í janúar 2026',
+        status: 'Í þróun',
         comingSoon: true,
       },
       {
@@ -50,7 +50,8 @@ const yearConfigs: Record<YearKey, YearConfig> = {
         description:
           'Skemmtilegar æfingar og leikir til að þjálfa þekkingu þína á atómum, efnatengjum og efnahvörfum.',
         href: '/efnafraedi/1-ar/games/',
-        status: 'Væntanlegt',
+        status: '\u2713 Í notkun',
+        active: true,
       },
       {
         title: 'Reiknitæki',
@@ -86,7 +87,7 @@ const yearConfigs: Record<YearKey, YearConfig> = {
         description:
           'Spurðu spurninga og fáðu skýringar á efnafræðihugtökum með hjálp gervigreindar. Kennarinn útskýrir hugtök og hjálpar þér að skilja efnið betur.',
         href: '/efnafraedi/2-ar/ai-tutor/',
-        status: 'Í þróun - Ræsing í janúar 2026',
+        status: 'Í þróun',
         comingSoon: true,
       },
       {
@@ -94,7 +95,8 @@ const yearConfigs: Record<YearKey, YearConfig> = {
         description:
           'Skemmtilegar æfingar og leikir til að þjálfa þekkingu þína á efnajafnvægi, sýrum og bösum, og hraðafræði.',
         href: '/efnafraedi/2-ar/games/',
-        status: 'Væntanlegt',
+        status: '\u2713 Í notkun',
+        active: true,
       },
       {
         title: 'Efnahvörfur',
@@ -130,7 +132,7 @@ const yearConfigs: Record<YearKey, YearConfig> = {
         description:
           'Spurðu spurninga og fáðu skýringar á efnafræðihugtökum með hjálp gervigreindar. Kennarinn útskýrir hugtök og hjálpar þér að skilja efnið betur.',
         href: '/efnafraedi/3-ar/ai-tutor/',
-        status: 'Í þróun - Ræsing í janúar 2026',
+        status: 'Í þróun',
         comingSoon: true,
       },
       {
@@ -138,7 +140,8 @@ const yearConfigs: Record<YearKey, YearConfig> = {
         description:
           'Skemmtilegar æfingar og leikir til að þjálfa þekkingu þína á lífræna efnafræði, rafsegulfræði og hvarfafræði.',
         href: '/efnafraedi/3-ar/games/',
-        status: 'Væntanlegt',
+        status: '\u2713 Í notkun',
+        active: true,
       },
       {
         title: 'Sameindagerð',

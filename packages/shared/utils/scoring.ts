@@ -50,7 +50,16 @@ export const calculateAverage = (scores: number[]): number => {
 };
 
 /**
- * Count significant figures in a numeric string
+ * Count significant figures in a numeric string.
+ *
+ * Trailing zeros in integers without a decimal point (e.g. 1200) are treated
+ * as **not** significant, following the standard convention where ambiguity is
+ * resolved by assuming they are place-holders. To indicate that trailing zeros
+ * are significant, the input should include a decimal point (e.g. "1200.").
+ *
+ * Handles negative numbers, leading zeros, decimal numbers, and scientific
+ * notation. For purely-zero values like "0", "0.0", or "0.00" the function
+ * returns 1 significant figure.
  */
 export const countSignificantFigures = (numStr: string): number => {
   numStr = numStr.trim();
@@ -79,7 +88,8 @@ export const countSignificantFigures = (numStr: string): number => {
     if (wholeTrimmed === '0') {
       // For numbers like 0.00123, strip leading zeros from decimal part
       const decimalSignificant = decimal?.replace(/^0+/, '') || '';
-      return decimalSignificant.length;
+      // "0.0" and "0.00" have at least 1 significant figure
+      return decimalSignificant.length || 1;
     }
     return wholeTrimmed.length + (decimal?.length || 0);
   }

@@ -3,18 +3,16 @@ import { useState, useEffect } from 'react';
 import { History, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+import { Breadcrumbs, Header, Container } from '@kvenno/shared/components';
+
+import { AuthButton } from '@/components/AuthButton';
 import { FileUpload } from '@/components/FileUpload';
 import { SaveDialog, ConfirmDialog } from '@/components/Modal';
 import { SessionHistory } from '@/components/SessionHistory';
 import { TeacherResults } from '@/components/TeacherResults';
 import { Toast } from '@/components/Toast';
 import { experimentConfigs, getExperiments } from '@/config/experiments';
-import {
-  AnalysisResult,
-  ProcessingStatus,
-  Toast as ToastType,
-  GradingSession,
-} from '@/types';
+import { AnalysisResult, ProcessingStatus, Toast as ToastType, GradingSession } from '@/types';
 import { processFile } from '@/utils/api';
 import { exportResultsToCSV } from '@/utils/export';
 import { extractTextFromFile } from '@/utils/fileProcessing';
@@ -64,6 +62,17 @@ export function TeacherPage() {
 
   const experiments = getExperiments();
   const sections = currentExperiment.sections;
+
+  const basePath = import.meta.env.VITE_BASE_PATH || '/lab-reports';
+  const yearMatch = basePath.match(/\/(\d)-ar\//);
+  const year = yearMatch ? yearMatch[1] : '3';
+
+  const breadcrumbItems = [
+    { label: 'Heim', href: '/' },
+    { label: 'Efnafræði', href: '/efnafraedi/' },
+    { label: `${year}. ár`, href: `/efnafraedi/${year}-ar/` },
+    { label: 'Tilraunaskýrslur' },
+  ];
 
   // Load saved sessions on mount
   useEffect(() => {
@@ -234,8 +243,12 @@ export function TeacherPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-warm-50 to-warm-100 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-warm-50 to-warm-100">
+      <Header activeTrack="efnafraedi" authSlot={<AuthButton />} />
+
+      <Container className="py-6">
+        <Breadcrumbs items={breadcrumbItems} />
+
         <div className="bg-surface-raised rounded-lg shadow-lg p-8 mb-6">
           <div className="flex justify-between items-start mb-6">
             <div>
@@ -327,7 +340,7 @@ export function TeacherPage() {
             onExport={handleExport}
           />
         )}
-      </div>
+      </Container>
 
       {/* Modals and Toast */}
       <SaveDialog

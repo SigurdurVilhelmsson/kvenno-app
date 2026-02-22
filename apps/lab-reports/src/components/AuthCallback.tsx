@@ -37,13 +37,10 @@ export const AuthCallback = () => {
           const basePath = import.meta.env.VITE_BASE_PATH || '/lab-reports';
           const redirectUrl = getRedirectUrl(basePath);
 
-          // Extract just the path from the full URL
-          const urlObj = new URL(redirectUrl);
-          const pathToNavigate = urlObj.pathname + urlObj.search + urlObj.hash;
-
           // Navigate back to the original page
+          // redirectUrl is already a validated relative path from getRedirectUrl()
           // Use replace to avoid adding to history
-          navigate(pathToNavigate, { replace: true });
+          navigate(redirectUrl, { replace: true });
         } else {
           // If no response, just redirect to home
           const basePath = import.meta.env.VITE_BASE_PATH || '/lab-reports';
@@ -51,11 +48,7 @@ export const AuthCallback = () => {
         }
       } catch (err) {
         console.error('❌ Authentication error:', err);
-        setError(
-          err instanceof Error
-            ? err.message
-            : 'Villa kom upp við innskráningu'
-        );
+        setError(err instanceof Error ? err.message : 'Villa kom upp við innskráningu');
       }
     };
 
@@ -97,9 +90,7 @@ export const AuthCallback = () => {
           <h2 className="text-xl font-bold font-heading text-warm-900 mb-2">
             Vinn úr innskráningu...
           </h2>
-          <p className="text-warm-600">
-            Vinsamlegast bíðið...
-          </p>
+          <p className="text-warm-600">Vinsamlegast bíðið...</p>
         </div>
       </div>
     </div>

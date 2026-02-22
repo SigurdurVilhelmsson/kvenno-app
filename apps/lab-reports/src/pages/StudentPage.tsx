@@ -3,25 +3,19 @@ import { useState, useEffect } from 'react';
 import { Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+import { Breadcrumbs, Header, Container } from '@kvenno/shared/components';
+
+import { AuthButton } from '@/components/AuthButton';
 import { FileUpload } from '@/components/FileUpload';
 import { StudentFeedback as StudentFeedbackComponent } from '@/components/StudentFeedback';
 import { StudentHome } from '@/components/StudentHome';
 import { Toast } from '@/components/Toast';
 import { WorksheetView } from '@/components/WorksheetView';
 import { experimentConfigs, getExperiments } from '@/config/experiments';
-import {
-  StudentFeedback,
-  ProcessingStatus,
-  Toast as ToastType,
-  GradingSession,
-} from '@/types';
+import { StudentFeedback, ProcessingStatus, Toast as ToastType, GradingSession } from '@/types';
 import { processFile } from '@/utils/api';
 import { extractTextFromFile } from '@/utils/fileProcessing';
-import {
-  loadSavedSessions,
-  saveSession,
-  generateSessionId,
-} from '@/utils/storage';
+import { loadSavedSessions, saveSession, generateSessionId } from '@/utils/storage';
 
 type View = 'home' | 'experiments' | 'worksheet' | 'upload' | 'history';
 
@@ -53,6 +47,17 @@ export function StudentPage() {
   const [toast, setToast] = useState<ToastType>({ show: false, message: '', type: 'success' });
 
   const experiments = getExperiments();
+
+  const basePath = import.meta.env.VITE_BASE_PATH || '/lab-reports';
+  const yearMatch = basePath.match(/\/(\d)-ar\//);
+  const year = yearMatch ? yearMatch[1] : '3';
+
+  const breadcrumbItems = [
+    { label: 'Heim', href: '/' },
+    { label: 'Efnafræði', href: '/efnafraedi/' },
+    { label: `${year}. ár`, href: `/efnafraedi/${year}-ar/` },
+    { label: 'Tilraunaskýrslur' },
+  ];
 
   // Load saved sessions on mount
   useEffect(() => {
@@ -156,8 +161,10 @@ export function StudentPage() {
   // Render different views
   if (view === 'home') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-warm-50 to-orange-50 p-6">
-        <div className="max-w-4xl mx-auto">
+      <div className="min-h-screen bg-gradient-to-br from-warm-50 to-orange-50">
+        <Header activeTrack="efnafraedi" authSlot={<AuthButton />} />
+        <Container className="py-6">
+          <Breadcrumbs items={breadcrumbItems} />
           <div className="flex justify-end mb-4">
             <button
               onClick={() => navigate('/')}
@@ -172,7 +179,7 @@ export function StudentPage() {
             onStartNew={startNewReport}
             onViewHistory={() => setView('history')}
           />
-        </div>
+        </Container>
         <Toast toast={toast} />
       </div>
     );
@@ -180,8 +187,10 @@ export function StudentPage() {
 
   if (view === 'experiments') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-warm-50 to-orange-50 p-6">
-        <div className="max-w-4xl mx-auto">
+      <div className="min-h-screen bg-gradient-to-br from-warm-50 to-orange-50">
+        <Header activeTrack="efnafraedi" authSlot={<AuthButton />} />
+        <Container className="py-6">
+          <Breadcrumbs items={breadcrumbItems} />
           <button
             onClick={() => setView('home')}
             className="mb-4 text-kvenno-orange hover:text-warm-800 flex items-center gap-2"
@@ -194,7 +203,10 @@ export function StudentPage() {
 
             <div className="space-y-4">
               {experiments.map((exp) => (
-                <div key={exp.id} className="border rounded-lg p-4 hover:border-kvenno-orange transition">
+                <div
+                  key={exp.id}
+                  className="border rounded-lg p-4 hover:border-kvenno-orange transition"
+                >
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="text-lg font-semibold text-warm-800">{exp.title}</h3>
                     <span className="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">
@@ -216,7 +228,7 @@ export function StudentPage() {
               ))}
             </div>
           </div>
-        </div>
+        </Container>
         <Toast toast={toast} />
       </div>
     );
@@ -224,14 +236,16 @@ export function StudentPage() {
 
   if (view === 'worksheet' && currentExperiment) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-warm-50 to-orange-50 p-6">
-        <div className="max-w-4xl mx-auto">
+      <div className="min-h-screen bg-gradient-to-br from-warm-50 to-orange-50">
+        <Header activeTrack="efnafraedi" authSlot={<AuthButton />} />
+        <Container className="py-6">
+          <Breadcrumbs items={breadcrumbItems} />
           <WorksheetView
             experiment={currentExperiment}
             onContinue={() => setView('upload')}
             onBack={() => setView('home')}
           />
-        </div>
+        </Container>
         <Toast toast={toast} />
       </div>
     );
@@ -239,8 +253,10 @@ export function StudentPage() {
 
   if (view === 'upload' && currentExperiment) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-warm-50 to-orange-50 p-6">
-        <div className="max-w-4xl mx-auto">
+      <div className="min-h-screen bg-gradient-to-br from-warm-50 to-orange-50">
+        <Header activeTrack="efnafraedi" authSlot={<AuthButton />} />
+        <Container className="py-6">
+          <Breadcrumbs items={breadcrumbItems} />
           <div className="flex justify-between items-center mb-4">
             <button
               onClick={() => setView('worksheet')}
@@ -254,7 +270,9 @@ export function StudentPage() {
           </div>
 
           <div className="bg-surface-raised rounded-lg shadow-lg p-8 mb-6">
-            <h2 className="text-2xl font-heading font-bold text-warm-900 mb-2">{currentExperiment.title}</h2>
+            <h2 className="text-2xl font-heading font-bold text-warm-900 mb-2">
+              {currentExperiment.title}
+            </h2>
             <p className="text-warm-600 mb-6">Hladdu upp drögunum þínum</p>
 
             <FileUpload
@@ -276,7 +294,7 @@ export function StudentPage() {
               onClose={handleClose}
             />
           )}
-        </div>
+        </Container>
         <Toast toast={toast} />
       </div>
     );
@@ -284,12 +302,14 @@ export function StudentPage() {
 
   // Default fallback
   return (
-    <div className="min-h-screen bg-gradient-to-br from-warm-50 to-orange-50 p-6">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-warm-50 to-orange-50">
+      <Header activeTrack="efnafraedi" authSlot={<AuthButton />} />
+      <Container className="py-6">
+        <Breadcrumbs items={breadcrumbItems} />
         <div className="bg-surface-raised rounded-lg shadow-lg p-8">
           <p className="text-warm-600">Hleður...</p>
         </div>
-      </div>
+      </Container>
       <Toast toast={toast} />
     </div>
   );
