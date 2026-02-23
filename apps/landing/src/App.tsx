@@ -1,8 +1,16 @@
 import { Routes, Route } from 'react-router-dom';
 
-import { Header, Footer, SkipLink, Container, PageBackground, BottomNav } from '@kvenno/shared/components';
+import {
+  Header,
+  Footer,
+  SkipLink,
+  Container,
+  PageBackground,
+  BottomNav,
+} from '@kvenno/shared/components';
 
 import { ChemistryHub } from './pages/ChemistryHub';
+import { GamesHub } from './pages/GamesHub';
 import { Home } from './pages/Home';
 import { YearHub } from './pages/YearHub';
 
@@ -21,6 +29,9 @@ export function App() {
             <Route path="/efnafraedi/3-ar" element={<YearHub year="3-ar" />} />
             <Route path="/efnafraedi/val" element={<YearHub year="val" />} />
             <Route path="/efnafraedi/f-bekkir" element={<YearHub year="f-bekkir" />} />
+            <Route path="/efnafraedi/1-ar/games" element={<GamesHub year="1-ar" />} />
+            <Route path="/efnafraedi/2-ar/games" element={<GamesHub year="2-ar" />} />
+            <Route path="/efnafraedi/3-ar/games" element={<GamesHub year="3-ar" />} />
           </Routes>
         </Container>
       </main>
