@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 
-import { LanguageSwitcher, ErrorBoundary } from '@shared/components';
+import { Header, LanguageSwitcher, ErrorBoundary } from '@shared/components';
 import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
 import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
-import { ParticleCelebration, useParticleCelebration } from '@shared/components/ParticleCelebration';
 import { AnimatedBackground } from '@shared/components/AnimatedBackground';
+import {
+  ParticleCelebration,
+  useParticleCelebration,
+} from '@shared/components/ParticleCelebration';
 import { SoundToggle } from '@shared/components/SoundToggle';
 import { useGameI18n } from '@shared/hooks';
 import { useAchievements } from '@shared/hooks/useAchievements';
@@ -49,7 +52,7 @@ function getDefaultProgress(): Progress {
     level2Score: 0,
     level3Completed: false,
     level3Score: 0,
-    totalGamesPlayed: 0
+    totalGamesPlayed: 0,
   };
 }
 
@@ -76,7 +79,13 @@ function App() {
   } = useAchievements({ gameId: 'organic-nomenclature' });
 
   const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('2-ar');
-  const { playCorrect, playWrong, playLevelComplete, isEnabled: soundEnabled, toggleSound } = useGameSounds();
+  const {
+    playCorrect,
+    playWrong,
+    playLevelComplete,
+    isEnabled: soundEnabled,
+    toggleSound,
+  } = useGameSounds();
 
   const handleCorrectAnswer = (...args: Parameters<typeof trackCorrectAnswer>) => {
     trackCorrectAnswer(...args);
@@ -94,11 +103,11 @@ function App() {
   }, [progress]);
 
   const handleLevel1Complete = (score: number, maxScore: number, hintsUsed: number) => {
-    setProgress(prev => ({
+    setProgress((prev) => ({
       ...prev,
       level1Completed: true,
       level1Score: Math.max(prev.level1Score, score),
-      totalGamesPlayed: prev.totalGamesPlayed + 1
+      totalGamesPlayed: prev.totalGamesPlayed + 1,
     }));
     trackLevelComplete(1, score, maxScore, { hintsUsed });
     playLevelComplete();
@@ -107,11 +116,11 @@ function App() {
   };
 
   const handleLevel2Complete = (score: number, maxScore: number, hintsUsed: number) => {
-    setProgress(prev => ({
+    setProgress((prev) => ({
       ...prev,
       level2Completed: true,
       level2Score: Math.max(prev.level2Score, score),
-      totalGamesPlayed: prev.totalGamesPlayed + 1
+      totalGamesPlayed: prev.totalGamesPlayed + 1,
     }));
     trackLevelComplete(2, score, maxScore, { hintsUsed });
     playLevelComplete();
@@ -120,11 +129,11 @@ function App() {
   };
 
   const handleLevel3Complete = (score: number, maxScore: number, hintsUsed: number) => {
-    setProgress(prev => ({
+    setProgress((prev) => ({
       ...prev,
       level3Completed: true,
       level3Score: Math.max(prev.level3Score, score),
-      totalGamesPlayed: prev.totalGamesPlayed + 1
+      totalGamesPlayed: prev.totalGamesPlayed + 1,
     }));
     trackLevelComplete(3, score, maxScore, { hintsUsed });
     trackGameComplete();
@@ -237,10 +246,18 @@ function App() {
           <div className="bg-emerald-50 p-6 rounded-xl mb-6">
             <h2 className="font-bold text-emerald-800 mb-3">Hvað lærðir þú?</h2>
             <ul className="space-y-2 text-emerald-900 text-sm">
-              <li>✓ <strong>Forskeytir:</strong> meth-, eth-, prop-, but-, pent-...</li>
-              <li>✓ <strong>Viðskeytir:</strong> -an (eintengi), -en (tvítengi), -yn (þrítengi)</li>
-              <li>✓ <strong>Staðsetningartölur:</strong> Númer til að tilgreina staðsetningu</li>
-              <li>✓ <strong>Hóptengi:</strong> -OH (alkóhól), -CHO (aldehýð), -COOH (karboxýlsýra)</li>
+              <li>
+                ✓ <strong>Forskeytir:</strong> meth-, eth-, prop-, but-, pent-...
+              </li>
+              <li>
+                ✓ <strong>Viðskeytir:</strong> -an (eintengi), -en (tvítengi), -yn (þrítengi)
+              </li>
+              <li>
+                ✓ <strong>Staðsetningartölur:</strong> Númer til að tilgreina staðsetningu
+              </li>
+              <li>
+                ✓ <strong>Hóptengi:</strong> -OH (alkóhól), -CHO (aldehýð), -COOH (karboxýlsýra)
+              </li>
             </ul>
           </div>
 
@@ -258,191 +275,226 @@ function App() {
 
   // Main menu
   const totalScore = progress.level1Score + progress.level2Score + progress.level3Score;
-  const levelsCompleted = [progress.level1Completed, progress.level2Completed, progress.level3Completed].filter(Boolean).length;
+  const levelsCompleted = [
+    progress.level1Completed,
+    progress.level2Completed,
+    progress.level3Completed,
+  ].filter(Boolean).length;
 
   return (
     <AnimatedBackground yearTheme="2-ar" variant="menu" showSymbols>
-    <div className="min-h-screen p-4 md:p-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-        <div className="flex justify-end mb-4 gap-2">
-          <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
-          <LanguageSwitcher
-            language={language}
-            onLanguageChange={setLanguage}
-            variant="compact"
-          />
-          <AchievementsButton
-            achievements={achievements}
-            onClick={() => setShowAchievements(true)}
-          />
-        </div>
-        <h1 className="text-3xl md:text-4xl font-bold font-heading text-center mb-2 text-emerald-600">
-          🧪 Lífræn Nafnagift
-        </h1>
-        <p className="text-center text-warm-600 mb-8">
-          Lærðu IUPAC nafnakerfið fyrir lífrænar sameindir
-        </p>
-
-        <div className="bg-emerald-50 p-6 rounded-xl mb-8">
-          <h2 className="font-bold text-emerald-800 mb-3">Hvað er IUPAC nafnakerfið?</h2>
-          <p className="text-emerald-900 text-sm mb-4">
-            <strong>IUPAC</strong> (International Union of Pure and Applied Chemistry) setti reglur til að nefna sameindir á samræmdan hátt.
-            Nafn lífræns efnis segir okkur um byggingu þess.
+      <Header
+        variant="game"
+        backHref="/efnafraedi/2-ar/"
+        gameTitle="Lífræn Nafnagift"
+        authSlot={
+          <>
+            <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
+            <LanguageSwitcher
+              language={language}
+              onLanguageChange={setLanguage}
+              variant="compact"
+            />
+            <AchievementsButton
+              achievements={achievements}
+              onClick={() => setShowAchievements(true)}
+            />
+          </>
+        }
+      />
+      <div className="min-h-screen p-4 md:p-8">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+          <p className="text-center text-warm-600 mb-8">
+            Lærðu IUPAC nafnakerfið fyrir lífrænar sameindir
           </p>
-          <div className="grid grid-cols-3 gap-3 text-sm">
-            <div className="bg-white p-3 rounded-lg text-center">
-              <div className="font-bold text-blue-600">Forskeyti</div>
-              <div className="text-warm-600">Fjöldi kolefna</div>
-            </div>
-            <div className="bg-white p-3 rounded-lg text-center">
-              <div className="font-bold text-warm-800">Stofn</div>
-              <div className="text-warm-600">Tegund tengja</div>
-            </div>
-            <div className="bg-white p-3 rounded-lg text-center">
-              <div className="font-bold text-green-600">Viðskeyti</div>
-              <div className="text-warm-600">Hóptengi</div>
-            </div>
-          </div>
-        </div>
 
-        <div className="space-y-4">
-          <button
-            onClick={() => setActiveLevel('level1')}
-            className="game-card w-full p-6 rounded-xl border-4 border-warm-400 bg-warm-50 hover:bg-warm-100 transition-all text-left"
-          >
-            <div className="flex items-center gap-4">
-              <div className="text-4xl">📚</div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold text-warm-800">Stig 1: Grunnreglur</span>
-                  {progress.level1Completed && (
-                    <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">✓ {progress.level1Score} stig</span>
-                  )}
-                </div>
-                <div className="text-sm text-warm-600 mt-1">Lærðu forskeytir og viðskeytir</div>
+          <div className="bg-emerald-50 p-6 rounded-xl mb-8">
+            <h2 className="font-bold text-emerald-800 mb-3">Hvað er IUPAC nafnakerfið?</h2>
+            <p className="text-emerald-900 text-sm mb-4">
+              <strong>IUPAC</strong> (International Union of Pure and Applied Chemistry) setti
+              reglur til að nefna sameindir á samræmdan hátt. Nafn lífræns efnis segir okkur um
+              byggingu þess.
+            </p>
+            <div className="grid grid-cols-3 gap-3 text-sm">
+              <div className="bg-white p-3 rounded-lg text-center">
+                <div className="font-bold text-blue-600">Forskeyti</div>
+                <div className="text-warm-600">Fjöldi kolefna</div>
               </div>
-            </div>
-          </button>
-
-          <button
-            onClick={() => progress.level1Completed && setActiveLevel('level2')}
-            className={`game-card w-full p-6 rounded-xl border-4 transition-all text-left ${
-              progress.level1Completed
-                ? 'border-green-400 bg-green-50 hover:bg-green-100 cursor-pointer'
-                : 'border-warm-200 bg-warm-50 opacity-60 cursor-not-allowed'
-            }`}
-          >
-            <div className="flex items-center gap-4">
-              <div className="text-4xl">🏷️</div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <span className={`text-xl font-bold ${progress.level1Completed ? 'text-green-800' : 'text-warm-600'}`}>
-                    Stig 2: Nefna sameindir
-                  </span>
-                  {progress.level2Completed && (
-                    <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">✓ {progress.level2Score} stig</span>
-                  )}
-                  {!progress.level1Completed && (
-                    <span className="text-xs text-warm-500">(Ljúktu stigi 1 fyrst)</span>
-                  )}
-                </div>
-                <div className={`text-sm mt-1 ${progress.level1Completed ? 'text-green-600' : 'text-warm-500'}`}>
-                  Nefndu alkanar, alkenar og alkynar
-                </div>
+              <div className="bg-white p-3 rounded-lg text-center">
+                <div className="font-bold text-warm-800">Stofn</div>
+                <div className="text-warm-600">Tegund tengja</div>
               </div>
-            </div>
-          </button>
-
-          <button
-            onClick={() => progress.level2Completed && setActiveLevel('level3')}
-            className={`game-card w-full p-6 rounded-xl border-4 transition-all text-left ${
-              progress.level2Completed
-                ? 'border-purple-400 bg-purple-50 hover:bg-purple-100 cursor-pointer'
-                : 'border-warm-200 bg-warm-50 opacity-60 cursor-not-allowed'
-            }`}
-          >
-            <div className="flex items-center gap-4">
-              <div className="text-4xl">🔬</div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <span className={`text-xl font-bold ${progress.level2Completed ? 'text-purple-800' : 'text-warm-600'}`}>
-                    Stig 3: Hagnýtar sameindir
-                  </span>
-                  {progress.level3Completed && (
-                    <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">✓ {progress.level3Score} stig</span>
-                  )}
-                  {!progress.level2Completed && (
-                    <span className="text-xs text-warm-500">(Ljúktu stigi 2 fyrst)</span>
-                  )}
-                </div>
-                <div className={`text-sm mt-1 ${progress.level2Completed ? 'text-purple-600' : 'text-warm-500'}`}>
-                  Hóptengi og flóknari sameindir
-                </div>
-              </div>
-            </div>
-          </button>
-        </div>
-
-        {/* Progress Summary */}
-        {progress.totalGamesPlayed > 0 && (
-          <div className="mt-8 bg-warm-50 p-4 rounded-xl">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="font-semibold text-warm-700">Framvinda</h3>
-              <button
-                onClick={resetProgress}
-                className="text-sm text-warm-500 hover:text-red-500 transition-colors"
-              >
-                Endurstilla
-              </button>
-            </div>
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div className="bg-emerald-50 rounded-lg p-3">
-                <div className="text-2xl font-bold text-emerald-600">{levelsCompleted}/3</div>
-                <div className="text-xs text-warm-600">Stig lokið</div>
-              </div>
-              <div className="bg-green-50 rounded-lg p-3">
-                <div className="text-2xl font-bold text-green-600">{totalScore}</div>
-                <div className="text-xs text-warm-600">Heildar stig</div>
-              </div>
-              <div className="bg-blue-50 rounded-lg p-3">
-                <div className="text-2xl font-bold text-blue-600">{progress.totalGamesPlayed}</div>
-                <div className="text-xs text-warm-600">Leikir spilaðir</div>
+              <div className="bg-white p-3 rounded-lg text-center">
+                <div className="font-bold text-green-600">Viðskeyti</div>
+                <div className="text-warm-600">Hóptengi</div>
               </div>
             </div>
           </div>
+
+          <div className="space-y-4">
+            <button
+              onClick={() => setActiveLevel('level1')}
+              className="game-card w-full p-6 rounded-xl border-4 border-warm-400 bg-warm-50 hover:bg-warm-100 transition-all text-left"
+            >
+              <div className="flex items-center gap-4">
+                <div className="text-4xl">📚</div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl font-bold text-warm-800">Stig 1: Grunnreglur</span>
+                    {progress.level1Completed && (
+                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                        ✓ {progress.level1Score} stig
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-sm text-warm-600 mt-1">Lærðu forskeytir og viðskeytir</div>
+                </div>
+              </div>
+            </button>
+
+            <button
+              onClick={() => progress.level1Completed && setActiveLevel('level2')}
+              className={`game-card w-full p-6 rounded-xl border-4 transition-all text-left ${
+                progress.level1Completed
+                  ? 'border-green-400 bg-green-50 hover:bg-green-100 cursor-pointer'
+                  : 'border-warm-200 bg-warm-50 opacity-60 cursor-not-allowed'
+              }`}
+            >
+              <div className="flex items-center gap-4">
+                <div className="text-4xl">🏷️</div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`text-xl font-bold ${progress.level1Completed ? 'text-green-800' : 'text-warm-600'}`}
+                    >
+                      Stig 2: Nefna sameindir
+                    </span>
+                    {progress.level2Completed && (
+                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                        ✓ {progress.level2Score} stig
+                      </span>
+                    )}
+                    {!progress.level1Completed && (
+                      <span className="text-xs text-warm-500">(Ljúktu stigi 1 fyrst)</span>
+                    )}
+                  </div>
+                  <div
+                    className={`text-sm mt-1 ${progress.level1Completed ? 'text-green-600' : 'text-warm-500'}`}
+                  >
+                    Nefndu alkanar, alkenar og alkynar
+                  </div>
+                </div>
+              </div>
+            </button>
+
+            <button
+              onClick={() => progress.level2Completed && setActiveLevel('level3')}
+              className={`game-card w-full p-6 rounded-xl border-4 transition-all text-left ${
+                progress.level2Completed
+                  ? 'border-purple-400 bg-purple-50 hover:bg-purple-100 cursor-pointer'
+                  : 'border-warm-200 bg-warm-50 opacity-60 cursor-not-allowed'
+              }`}
+            >
+              <div className="flex items-center gap-4">
+                <div className="text-4xl">🔬</div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`text-xl font-bold ${progress.level2Completed ? 'text-purple-800' : 'text-warm-600'}`}
+                    >
+                      Stig 3: Hagnýtar sameindir
+                    </span>
+                    {progress.level3Completed && (
+                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                        ✓ {progress.level3Score} stig
+                      </span>
+                    )}
+                    {!progress.level2Completed && (
+                      <span className="text-xs text-warm-500">(Ljúktu stigi 2 fyrst)</span>
+                    )}
+                  </div>
+                  <div
+                    className={`text-sm mt-1 ${progress.level2Completed ? 'text-purple-600' : 'text-warm-500'}`}
+                  >
+                    Hóptengi og flóknari sameindir
+                  </div>
+                </div>
+              </div>
+            </button>
+          </div>
+
+          {/* Progress Summary */}
+          {progress.totalGamesPlayed > 0 && (
+            <div className="mt-8 bg-warm-50 p-4 rounded-xl">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="font-semibold text-warm-700">Framvinda</h3>
+                <button
+                  onClick={resetProgress}
+                  className="text-sm text-warm-500 hover:text-red-500 transition-colors"
+                >
+                  Endurstilla
+                </button>
+              </div>
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div className="bg-emerald-50 rounded-lg p-3">
+                  <div className="text-2xl font-bold text-emerald-600">{levelsCompleted}/3</div>
+                  <div className="text-xs text-warm-600">Stig lokið</div>
+                </div>
+                <div className="bg-green-50 rounded-lg p-3">
+                  <div className="text-2xl font-bold text-green-600">{totalScore}</div>
+                  <div className="text-xs text-warm-600">Heildar stig</div>
+                </div>
+                <div className="bg-blue-50 rounded-lg p-3">
+                  <div className="text-2xl font-bold text-blue-600">
+                    {progress.totalGamesPlayed}
+                  </div>
+                  <div className="text-xs text-warm-600">Leikir spilaðir</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+            <h3 className="font-semibold text-warm-700 mb-2">📋 Forskeytir (kolefnisfjöldi)</h3>
+            <div className="grid grid-cols-3 md:grid-cols-5 gap-2 text-sm text-center">
+              <div className="bg-white p-2 rounded border">
+                <span className="font-bold">1</span> meth-
+              </div>
+              <div className="bg-white p-2 rounded border">
+                <span className="font-bold">2</span> eth-
+              </div>
+              <div className="bg-white p-2 rounded border">
+                <span className="font-bold">3</span> prop-
+              </div>
+              <div className="bg-white p-2 rounded border">
+                <span className="font-bold">4</span> but-
+              </div>
+              <div className="bg-white p-2 rounded border">
+                <span className="font-bold">5</span> pent-
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 text-center text-xs text-warm-500">
+            Sérsniðið námsefni — Lífræn efnafræði
+          </div>
+        </div>
+
+        {showAchievements && (
+          <AchievementsPanel
+            achievements={achievements}
+            allAchievements={allAchievements}
+            onClose={() => setShowAchievements(false)}
+            onReset={resetAll}
+          />
         )}
 
-        <div className="mt-6 bg-warm-50 p-4 rounded-xl">
-          <h3 className="font-semibold text-warm-700 mb-2">📋 Forskeytir (kolefnisfjöldi)</h3>
-          <div className="grid grid-cols-3 md:grid-cols-5 gap-2 text-sm text-center">
-            <div className="bg-white p-2 rounded border"><span className="font-bold">1</span> meth-</div>
-            <div className="bg-white p-2 rounded border"><span className="font-bold">2</span> eth-</div>
-            <div className="bg-white p-2 rounded border"><span className="font-bold">3</span> prop-</div>
-            <div className="bg-white p-2 rounded border"><span className="font-bold">4</span> but-</div>
-            <div className="bg-white p-2 rounded border"><span className="font-bold">5</span> pent-</div>
-          </div>
-        </div>
-
-        <div className="mt-6 text-center text-xs text-warm-500">
-          Sérsniðið námsefni — Lífræn efnafræði
-        </div>
-      </div>
-
-      {showAchievements && (
-        <AchievementsPanel
-          achievements={achievements}
-          allAchievements={allAchievements}
-          onClose={() => setShowAchievements(false)}
-          onReset={resetAll}
+        <AchievementNotificationsContainer
+          notifications={notifications}
+          onDismiss={dismissNotification}
         />
-      )}
-
-      <AchievementNotificationsContainer
-        notifications={notifications}
-        onDismiss={dismissNotification}
-      />
-      <ParticleCelebration {...celebrationProps} />
-    </div>
+        <ParticleCelebration {...celebrationProps} />
+      </div>
     </AnimatedBackground>
   );
 }

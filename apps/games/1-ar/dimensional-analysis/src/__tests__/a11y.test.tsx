@@ -46,7 +46,12 @@ vi.mock('@shared/hooks', () => ({
     setLevel: vi.fn(),
   }),
   useAccessibility: () => ({
-    settings: { highContrast: false, textSize: 'medium', reducedMotion: false, keyboardShortcutsEnabled: true },
+    settings: {
+      highContrast: false,
+      textSize: 'medium',
+      reducedMotion: false,
+      keyboardShortcutsEnabled: true,
+    },
     toggleHighContrast: vi.fn(),
     setTextSize: vi.fn(),
     toggleReducedMotion: vi.fn(),
@@ -63,7 +68,19 @@ vi.mock('@shared/hooks', () => ({
 
 vi.mock('@shared/hooks/useAchievements', () => ({
   useAchievements: () => ({
-    achievements: { unlockedIds: [], stats: { correctAnswers: 0, incorrectAnswers: 0, currentStreak: 0, bestStreak: 0, gamesPlayed: 0, totalPoints: 0, levelsCompleted: [] }, lastUpdated: '' },
+    achievements: {
+      unlockedIds: [],
+      stats: {
+        correctAnswers: 0,
+        incorrectAnswers: 0,
+        currentStreak: 0,
+        bestStreak: 0,
+        gamesPlayed: 0,
+        totalPoints: 0,
+        levelsCompleted: [],
+      },
+      lastUpdated: '',
+    },
     allAchievements: [],
     unlockedAchievements: [],
     lockedAchievements: [],
@@ -82,6 +99,23 @@ vi.mock('@shared/hooks/useAchievements', () => ({
 }));
 
 vi.mock('@shared/components', () => ({
+  Header: ({
+    backHref,
+    gameTitle,
+    authSlot,
+  }: {
+    variant?: string;
+    backHref?: string;
+    backLabel?: string;
+    gameTitle?: string;
+    authSlot?: React.ReactNode;
+  }) => (
+    <header data-testid="game-header">
+      <a href={backHref}>Til baka</a>
+      <h1>{gameTitle}</h1>
+      <div>{authSlot}</div>
+    </header>
+  ),
   LanguageSwitcher: () => <div data-testid="lang-switcher">IS</div>,
   ErrorBoundary: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
@@ -92,7 +126,9 @@ vi.mock('@shared/components/AchievementNotificationPopup', () => ({
 
 vi.mock('@shared/components/AchievementsPanel', () => ({
   AchievementsButton: ({ onClick }: { onClick: () => void }) => (
-    <button onClick={onClick} aria-label="Achievements">0</button>
+    <button onClick={onClick} aria-label="Achievements">
+      0
+    </button>
   ),
   AchievementsPanel: () => null,
 }));
@@ -136,7 +172,7 @@ describe('Dimensional Analysis game menu - accessibility', () => {
       (btn) =>
         btn.textContent?.includes('Hugtök') ||
         btn.textContent?.includes('Beiting') ||
-        btn.textContent?.includes('Útreikningar'),
+        btn.textContent?.includes('Útreikningar')
     );
 
     expect(levelButtons.length).toBe(3);
@@ -152,7 +188,7 @@ describe('Dimensional Analysis game menu - accessibility', () => {
 
     // Gather all focusable elements in DOM order
     const focusable = container.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'
     );
 
     expect(focusable.length).toBeGreaterThan(0);

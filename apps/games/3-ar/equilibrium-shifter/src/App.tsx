@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-import { HintSystem, LanguageSwitcher, ErrorBoundary } from '@shared/components';
+import { Header, HintSystem, LanguageSwitcher, ErrorBoundary } from '@shared/components';
 import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
 import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
 import { AnimatedBackground } from '@shared/components/AnimatedBackground';
@@ -404,10 +404,6 @@ function App() {
   const renderMenu = () => (
     <div className="max-w-4xl mx-auto">
       <div className="bg-white rounded-lg shadow-md p-8">
-        <div className="flex justify-end mb-4">
-          <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
-        </div>
-        <h2 className="text-3xl font-bold text-warm-800 mb-6 text-center">Jafnvægisstjóri</h2>
         <p className="text-lg text-warm-600 mb-8 text-center">
           Lærðu Le Chatelier meginregluna í gegnum gagnvirkar æfingar
         </p>
@@ -840,6 +836,27 @@ function App() {
       variant={screen === 'menu' ? 'menu' : 'gameplay'}
       showSymbols={screen === 'menu'}
     >
+      {screen === 'menu' && (
+        <Header
+          variant="game"
+          backHref="/efnafraedi/3-ar/"
+          gameTitle="Jafnvægisstjóri"
+          authSlot={
+            <>
+              <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
+              <LanguageSwitcher
+                language={language}
+                onLanguageChange={setLanguage}
+                variant="compact"
+              />
+              <AchievementsButton
+                achievements={achievements}
+                onClick={() => setShowAchievements(true)}
+              />
+            </>
+          }
+        />
+      )}
       <div
         className={`min-h-screen ${settings.highContrast ? 'high-contrast' : ''} ${settings.reducedMotion ? 'reduced-motion' : ''}`}
       >
@@ -850,30 +867,6 @@ function App() {
 
         {/* Main Content */}
         <main id="main-content" className="container mx-auto px-4 py-8">
-          {/* Header */}
-          <header className="mb-8">
-            <div className="flex justify-end gap-2 mb-2">
-              <LanguageSwitcher
-                language={language}
-                onLanguageChange={setLanguage}
-                variant="compact"
-              />
-              <AchievementsButton
-                achievements={achievements}
-                onClick={() => setShowAchievements(true)}
-              />
-            </div>
-            <div className="text-center">
-              <h1
-                className="text-4xl md:text-5xl font-bold font-heading mb-2"
-                style={{ color: '#f36b22' }}
-              >
-                Jafnvægisstjóri
-              </h1>
-              <p className="text-lg text-warm-600">Le Chatelier Meginreglan</p>
-            </div>
-          </header>
-
           {/* Accessibility Menu */}
           <div className="bg-white rounded-lg shadow-xs p-4 mb-6 max-w-4xl mx-auto">
             <h2 className="text-sm font-semibold text-warm-700 mb-3">

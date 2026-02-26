@@ -42,7 +42,13 @@ vi.mock('@shared/hooks/useGameProgress', () => ({
 
 vi.mock('@shared/hooks/useAchievements', () => ({
   useAchievements: () => ({
-    achievements: { unlockedIds: [], currentStreak: 0, bestStreak: 0, totalPoints: 0, daysPlayed: [] },
+    achievements: {
+      unlockedIds: [],
+      currentStreak: 0,
+      bestStreak: 0,
+      totalPoints: 0,
+      daysPlayed: [],
+    },
     allAchievements: [],
     unlockedAchievements: [],
     lockedAchievements: [],
@@ -64,6 +70,25 @@ vi.mock('@shared/hooks/useAchievements', () => ({
 
 // Mock shared components to simple stubs
 vi.mock('@shared/components', () => ({
+  Header: ({
+    backHref,
+    gameTitle,
+    authSlot,
+  }: {
+    variant?: string;
+    backHref?: string;
+    backLabel?: string;
+    gameTitle?: string;
+    authSlot?: React.ReactNode;
+  }) => (
+    <header data-testid="game-header">
+      <a href={backHref} data-testid="back-link">
+        Til baka
+      </a>
+      <h1>{gameTitle}</h1>
+      <div>{authSlot}</div>
+    </header>
+  ),
   LanguageSwitcher: (props: { language: string }) => (
     <div data-testid="language-switcher">Lang: {props.language}</div>
   ),
@@ -376,12 +401,13 @@ describe('Nafnakerfid App', () => {
     expect(movesEl.textContent).toContain('12');
   });
 
-  it('renders the back-to-games link', () => {
+  it('renders the game header with back link to year hub', () => {
     render(<App />);
 
-    // The link text includes an &larr; entity before the translation key
-    const backLink = screen.getByText(/menu\.backToGames/).closest('a');
+    const header = screen.getByTestId('game-header');
+    expect(header).toBeDefined();
+    const backLink = screen.getByTestId('back-link');
     expect(backLink).toBeDefined();
-    expect(backLink!.getAttribute('href')).toBe('/games/1-ar/');
+    expect(backLink.getAttribute('href')).toBe('/efnafraedi/1-ar/');
   });
 });

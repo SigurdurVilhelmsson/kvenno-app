@@ -1,10 +1,20 @@
 import { useState, useEffect, useMemo } from 'react';
 
-import { ParticleSimulation, PARTICLE_TYPES, PHYSICS_PRESETS, LanguageSwitcher, ErrorBoundary } from '@shared/components';
+import {
+  ParticleSimulation,
+  PARTICLE_TYPES,
+  PHYSICS_PRESETS,
+  Header,
+  LanguageSwitcher,
+  ErrorBoundary,
+} from '@shared/components';
 import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
 import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
-import { ParticleCelebration, useParticleCelebration } from '@shared/components/ParticleCelebration';
 import { AnimatedBackground } from '@shared/components/AnimatedBackground';
+import {
+  ParticleCelebration,
+  useParticleCelebration,
+} from '@shared/components/ParticleCelebration';
 import { SoundToggle } from '@shared/components/SoundToggle';
 import { useGameI18n } from '@shared/hooks';
 import { useAchievements } from '@shared/hooks/useAchievements';
@@ -12,10 +22,15 @@ import { useGameSounds } from '@shared/hooks/useGameSounds';
 
 import { questions, getRandomQuestion } from './data';
 import { gameTranslations } from './i18n';
-import { GasLawQuestion, GameMode, GameStats, QuestionFeedback, GasLaw, GAS_LAW_INFO } from './types';
+import {
+  GasLawQuestion,
+  GameMode,
+  GameStats,
+  QuestionFeedback,
+  GasLaw,
+  GAS_LAW_INFO,
+} from './types';
 import { checkAnswer, calculateError, getUnit, getVariableName } from './utils/gas-calculations';
-
-
 
 const STORAGE_KEY = 'gas-law-challenge-progress';
 
@@ -38,7 +53,7 @@ function getDefaultStats(): GameStats {
     correctAnswers: 0,
     streak: 0,
     bestStreak: 0,
-    hintsUsed: 0
+    hintsUsed: 0,
   };
 }
 
@@ -65,7 +80,9 @@ function App() {
   // Law selection step state (practice mode only)
   const [gameStep, setGameStep] = useState<'select-law' | 'solve'>('select-law');
   const [selectedLaw, setSelectedLaw] = useState<GasLaw | null>(null);
-  const [lawFeedback, setLawFeedback] = useState<{ correct: boolean; message: string } | null>(null);
+  const [lawFeedback, setLawFeedback] = useState<{ correct: boolean; message: string } | null>(
+    null
+  );
   const [validationError, setValidationError] = useState<string | null>(null);
 
   // Stats with localStorage persistence
@@ -85,7 +102,13 @@ function App() {
   } = useAchievements({ gameId: 'gas-law-challenge' });
 
   const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('3-ar');
-  const { playCorrect, playWrong, playLevelComplete, isEnabled: soundEnabled, toggleSound } = useGameSounds();
+  const {
+    playCorrect,
+    playWrong,
+    playLevelComplete,
+    isEnabled: soundEnabled,
+    toggleSound,
+  } = useGameSounds();
 
   // Save stats whenever they change
   useEffect(() => {
@@ -125,7 +148,7 @@ function App() {
     if (isCorrect) {
       setLawFeedback({
         correct: true,
-        message: `Rétt! Þetta er ${correctLawInfo.nameIs} (${correctLawInfo.formula})`
+        message: `Rétt! Þetta er ${correctLawInfo.nameIs} (${correctLawInfo.formula})`,
       });
       // Move to solve step after short delay
       setTimeout(() => {
@@ -134,7 +157,7 @@ function App() {
     } else {
       setLawFeedback({
         correct: false,
-        message: `Ekki rétt. Þetta verkefni notar ${correctLawInfo.nameIs}: ${correctLawInfo.formula}. ${correctLawInfo.description}.`
+        message: `Ekki rétt. Þetta verkefni notar ${correctLawInfo.nameIs}: ${correctLawInfo.formula}. ${correctLawInfo.description}.`,
       });
       trackIncorrectAnswer();
       playWrong();
@@ -148,7 +171,12 @@ function App() {
 
   // Timer for challenge mode
   useEffect(() => {
-    if (screen === 'game' && gameMode === 'challenge' && timeRemaining !== null && timeRemaining > 0) {
+    if (
+      screen === 'game' &&
+      gameMode === 'challenge' &&
+      timeRemaining !== null &&
+      timeRemaining > 0
+    ) {
       const timer = setTimeout(() => {
         setTimeRemaining(timeRemaining - 1);
       }, 1000);
@@ -172,9 +200,8 @@ function App() {
     const temperature = currentQuestion.given.T?.value || 300;
 
     // Determine pressure for container styling
-    const pressure = currentQuestion.find === 'P'
-      ? currentQuestion.answer
-      : currentQuestion.given.P?.value || 1;
+    const pressure =
+      currentQuestion.find === 'P' ? currentQuestion.answer : currentQuestion.given.P?.value || 1;
 
     const pressureLevel: 'low' | 'normal' | 'high' =
       pressure < 1 ? 'low' : pressure < 5 ? 'normal' : 'high';
@@ -182,7 +209,7 @@ function App() {
     return {
       numParticles,
       temperature,
-      pressureLevel
+      pressureLevel,
     };
   }, [currentQuestion]);
 
@@ -221,17 +248,13 @@ function App() {
       if (gameMode === 'challenge' && timeRemaining && timeRemaining > 60) points += 50; // Time bonus
       points -= showHint * 10; // Hint penalty
 
-      message = error < 1
-        ? 'Fullkomið! Mjög nákvæmt svar! ⭐'
-        : 'Rétt! Innan vikmarka ✓';
+      message = error < 1 ? 'Fullkomið! Mjög nákvæmt svar! ⭐' : 'Rétt! Innan vikmarka ✓';
 
       trackCorrectAnswer({ firstAttempt: showHint === 0 });
       playCorrect();
       triggerCorrect();
     } else {
-      message = error < 5
-        ? 'Næstum rétt! Reyndu aftur.'
-        : 'Ekki rétt. Athugaðu útreikninga þína.';
+      message = error < 5 ? 'Næstum rétt! Reyndu aftur.' : 'Ekki rétt. Athugaðu útreikninga þína.';
 
       trackIncorrectAnswer();
       playWrong();
@@ -268,7 +291,7 @@ function App() {
       streak: isCorrect ? stats.streak + 1 : 0,
       bestStreak: isCorrect ? Math.max(stats.bestStreak, stats.streak + 1) : stats.bestStreak,
       score: stats.score + points,
-      hintsUsed: stats.hintsUsed + showHint
+      hintsUsed: stats.hintsUsed + showHint,
     };
 
     setStats(newStats);
@@ -279,7 +302,7 @@ function App() {
       userAnswer: userNum,
       correctAnswer: currentQuestion.answer,
       difference: Math.abs(userNum - currentQuestion.answer),
-      explanation: currentQuestion.solution.steps.join(' → ')
+      explanation: currentQuestion.solution.steps.join(' → '),
     });
     setScreen('feedback');
   };
@@ -319,11 +342,12 @@ function App() {
   if (screen === 'menu') {
     return (
       <AnimatedBackground yearTheme="3-ar" variant="menu" showSymbols>
-        <div className="min-h-screen">
-        <main className="max-w-5xl mx-auto px-4 py-8">
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            {/* Header with achievements button */}
-            <div className="flex justify-end gap-2 mb-4">
+        <Header
+          variant="game"
+          backHref="/efnafraedi/3-ar/"
+          gameTitle="Gas Law Challenge"
+          authSlot={
+            <>
               <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
               <LanguageSwitcher
                 language={language}
@@ -334,123 +358,134 @@ function App() {
                 achievements={achievements}
                 onClick={() => setShowAchievements(true)}
               />
-            </div>
+            </>
+          }
+        />
+        <div className="min-h-screen">
+          <main className="max-w-5xl mx-auto px-4 py-8">
+            <div className="bg-white rounded-xl shadow-lg p-8">
+              <div className="text-center mb-8">
+                <p className="text-lg text-warm-600 mb-2">
+                  Læðu að leysa verkefni um tilvalin lofttegundalögmál: PV = nRT
+                </p>
+                <p className="text-sm text-warm-500">
+                  {questions.length} spurningar í boði • Auðvelt, Miðlungs, Erfitt
+                </p>
 
-            <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold font-heading mb-4" style={{ color: '#f36b22' }}>
-                Gas Law Challenge
-              </h1>
-              <p className="text-lg text-warm-600 mb-2">
-                Læðu að leysa verkefni um tilvalin lofttegundalögmál: PV = nRT
-              </p>
-              <p className="text-sm text-warm-500">
-                {questions.length} spurningar í boði • Auðvelt, Miðlungs, Erfitt
-              </p>
-
-              {/* Stats */}
-              {stats.questionsAnswered > 0 && (
-                <div className="mt-4">
-                  <div className="flex justify-center gap-4 text-sm flex-wrap">
-                    <div className="bg-yellow-50 px-3 py-2 rounded-lg border border-yellow-200">
-                      <span className="font-bold text-yellow-800">🏆 Stig: {stats.score}</span>
+                {/* Stats */}
+                {stats.questionsAnswered > 0 && (
+                  <div className="mt-4">
+                    <div className="flex justify-center gap-4 text-sm flex-wrap">
+                      <div className="bg-yellow-50 px-3 py-2 rounded-lg border border-yellow-200">
+                        <span className="font-bold text-yellow-800">🏆 Stig: {stats.score}</span>
+                      </div>
+                      <div className="bg-green-50 px-3 py-2 rounded-lg border border-green-200">
+                        <span className="font-bold text-green-800">
+                          ✓ Rétt: {stats.correctAnswers}/{stats.questionsAnswered}
+                        </span>
+                      </div>
+                      <div className="bg-blue-50 px-3 py-2 rounded-lg border border-blue-200">
+                        <span className="font-bold text-blue-800">
+                          🔥 Besta röð: {stats.bestStreak}
+                        </span>
+                      </div>
                     </div>
-                    <div className="bg-green-50 px-3 py-2 rounded-lg border border-green-200">
-                      <span className="font-bold text-green-800">✓ Rétt: {stats.correctAnswers}/{stats.questionsAnswered}</span>
-                    </div>
-                    <div className="bg-blue-50 px-3 py-2 rounded-lg border border-blue-200">
-                      <span className="font-bold text-blue-800">🔥 Besta röð: {stats.bestStreak}</span>
-                    </div>
+                    <button
+                      onClick={resetStats}
+                      className="mt-3 text-sm text-warm-500 hover:text-red-500 transition-colors"
+                    >
+                      Endurstilla framvindu
+                    </button>
                   </div>
+                )}
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Practice Mode */}
+                <div className="game-card bg-blue-50 p-6 rounded-lg border-2 border-blue-200">
+                  <h2 className="text-2xl font-bold mb-3 text-blue-900">Æfingahamur</h2>
+                  <ul className="text-warm-700 mb-4 space-y-2 text-sm">
+                    <li>✓ Engin tímatakmörk</li>
+                    <li>✓ Ótakmarkaðar vísbendingar</li>
+                    <li>✓ Sjá lausnir skref fyrir skref</li>
+                    <li>✓ Leggja áherslu á nám</li>
+                  </ul>
                   <button
-                    onClick={resetStats}
-                    className="mt-3 text-sm text-warm-500 hover:text-red-500 transition-colors"
+                    onClick={() => startNewQuestion('practice')}
+                    className="w-full py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90"
+                    style={{ backgroundColor: '#3b82f6' }}
                   >
-                    Endurstilla framvindu
+                    Byrja að Æfa
                   </button>
                 </div>
-              )}
-            </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Practice Mode */}
-              <div className="game-card bg-blue-50 p-6 rounded-lg border-2 border-blue-200">
-                <h2 className="text-2xl font-bold mb-3 text-blue-900">Æfingahamur</h2>
-                <ul className="text-warm-700 mb-4 space-y-2 text-sm">
-                  <li>✓ Engin tímatakmörk</li>
-                  <li>✓ Ótakmarkaðar vísbendingar</li>
-                  <li>✓ Sjá lausnir skref fyrir skref</li>
-                  <li>✓ Leggja áherslu á nám</li>
-                </ul>
-                <button
-                  onClick={() => startNewQuestion('practice')}
-                  className="w-full py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90"
-                  style={{ backgroundColor: '#3b82f6' }}
-                >
-                  Byrja að Æfa
-                </button>
-              </div>
-
-              {/* Challenge Mode */}
-              <div className="game-card bg-orange-50 p-6 rounded-lg border-2 border-orange-200">
-                <h2 className="text-2xl font-bold mb-3 text-orange-900">Keppnishamur</h2>
-                <ul className="text-warm-700 mb-4 space-y-2 text-sm">
-                  <li>⏱️ 90 sekúndur á spurningu</li>
-                  <li>🎯 Tíma bónus fyrir hraða</li>
-                  <li>💡 Vísbendingar kosta stig (-10)</li>
-                  <li>📊 Stigatafla og röð</li>
-                </ul>
-                <button
-                  onClick={() => startNewQuestion('challenge')}
-                  className="w-full py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90"
-                  style={{ backgroundColor: '#f36b22' }}
-                >
-                  Byrja Keppni
-                </button>
-              </div>
-            </div>
-
-            {/* Instructions */}
-            <div className="mt-6 bg-warm-50 p-4 rounded-lg border border-warm-200">
-              <h3 className="font-bold text-warm-800 mb-2">Leiðbeiningar:</h3>
-              <div className="grid md:grid-cols-2 gap-4 text-sm text-warm-700">
-                <div>
-                  <p className="font-semibold">Tilvalin lofttegundalögmál:</p>
-                  <p className="font-mono bg-white px-2 py-1 rounded mt-1">PV = nRT</p>
-                  <p className="text-xs mt-1">þar sem R = 0.08206 L·atm/(mol·K)</p>
+                {/* Challenge Mode */}
+                <div className="game-card bg-orange-50 p-6 rounded-lg border-2 border-orange-200">
+                  <h2 className="text-2xl font-bold mb-3 text-orange-900">Keppnishamur</h2>
+                  <ul className="text-warm-700 mb-4 space-y-2 text-sm">
+                    <li>⏱️ 90 sekúndur á spurningu</li>
+                    <li>🎯 Tíma bónus fyrir hraða</li>
+                    <li>💡 Vísbendingar kosta stig (-10)</li>
+                    <li>📊 Stigatafla og röð</li>
+                  </ul>
+                  <button
+                    onClick={() => startNewQuestion('challenge')}
+                    className="w-full py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90"
+                    style={{ backgroundColor: '#f36b22' }}
+                  >
+                    Byrja Keppni
+                  </button>
                 </div>
-                <div>
-                  <p className="font-semibold">Lyklaborð:</p>
-                  <p className="text-xs">• <kbd className="px-1 bg-warm-200 rounded">Enter</kbd> Athuga svar</p>
-                  <p className="text-xs">• <kbd className="px-1 bg-warm-200 rounded">H</kbd> Vísbending</p>
-                  <p className="text-xs">• <kbd className="px-1 bg-warm-200 rounded">S</kbd> Sýna lausn</p>
+              </div>
+
+              {/* Instructions */}
+              <div className="mt-6 bg-warm-50 p-4 rounded-lg border border-warm-200">
+                <h3 className="font-bold text-warm-800 mb-2">Leiðbeiningar:</h3>
+                <div className="grid md:grid-cols-2 gap-4 text-sm text-warm-700">
+                  <div>
+                    <p className="font-semibold">Tilvalin lofttegundalögmál:</p>
+                    <p className="font-mono bg-white px-2 py-1 rounded mt-1">PV = nRT</p>
+                    <p className="text-xs mt-1">þar sem R = 0.08206 L·atm/(mol·K)</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold">Lyklaborð:</p>
+                    <p className="text-xs">
+                      • <kbd className="px-1 bg-warm-200 rounded">Enter</kbd> Athuga svar
+                    </p>
+                    <p className="text-xs">
+                      • <kbd className="px-1 bg-warm-200 rounded">H</kbd> Vísbending
+                    </p>
+                    <p className="text-xs">
+                      • <kbd className="px-1 bg-warm-200 rounded">S</kbd> Sýna lausn
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </main>
+          </main>
 
-        <footer className="text-center text-sm text-warm-500 py-4">
-          <p>© 2024 Kvennaskólinn - Efnafræðileikir</p>
-        </footer>
+          <footer className="text-center text-sm text-warm-500 py-4">
+            <p>© 2024 Kvennaskólinn - Efnafræðileikir</p>
+          </footer>
 
-        {/* Achievements Panel Modal */}
-        {showAchievements && (
-          <AchievementsPanel
-            achievements={achievements}
-            allAchievements={allAchievements}
-            onClose={() => setShowAchievements(false)}
-            onReset={resetAchievements}
+          {/* Achievements Panel Modal */}
+          {showAchievements && (
+            <AchievementsPanel
+              achievements={achievements}
+              allAchievements={allAchievements}
+              onClose={() => setShowAchievements(false)}
+              onReset={resetAchievements}
+            />
+          )}
+
+          {/* Achievement Notifications */}
+          <AchievementNotificationsContainer
+            notifications={notifications}
+            onDismiss={dismissNotification}
           />
-        )}
 
-        {/* Achievement Notifications */}
-        <AchievementNotificationsContainer
-          notifications={notifications}
-          onDismiss={dismissNotification}
-        />
-
-        <ParticleCelebration {...celebrationProps} />
-      </div>
+          <ParticleCelebration {...celebrationProps} />
+        </div>
       </AnimatedBackground>
     );
   }
@@ -468,12 +503,15 @@ function App() {
                   Gas Law Challenge
                 </h1>
                 <p className="text-sm text-warm-600">
-                  {gameMode === 'practice' ? 'Æfingahamur' : 'Keppnishamur'} • Spurning {currentQuestion.id}
+                  {gameMode === 'practice' ? 'Æfingahamur' : 'Keppnishamur'} • Spurning{' '}
+                  {currentQuestion.id}
                 </p>
               </div>
               <div className="flex gap-2">
                 {gameMode === 'challenge' && timeRemaining !== null && (
-                  <div className={`px-4 py-2 rounded-lg font-bold ${timeRemaining < 30 ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}`}>
+                  <div
+                    className={`px-4 py-2 rounded-lg font-bold ${timeRemaining < 30 ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}`}
+                  >
                     ⏱️ {timeRemaining}s
                   </div>
                 )}
@@ -496,16 +534,22 @@ function App() {
                 <span className="font-bold text-yellow-800">🏆 {stats.score}</span>
               </div>
               <div className="bg-green-50 px-3 py-2 rounded-lg border border-green-200">
-                <span className="font-bold text-green-800">✓ {stats.correctAnswers}/{stats.questionsAnswered}</span>
+                <span className="font-bold text-green-800">
+                  ✓ {stats.correctAnswers}/{stats.questionsAnswered}
+                </span>
               </div>
               <div className="bg-blue-50 px-3 py-2 rounded-lg border border-blue-200">
                 <span className="font-bold text-blue-800">🔥 {stats.streak}</span>
               </div>
-              <div className={`px-3 py-2 rounded-lg border ${
-                currentQuestion.difficulty === 'Auðvelt' ? 'bg-green-50 border-green-200 text-green-800' :
-                currentQuestion.difficulty === 'Miðlungs' ? 'bg-yellow-50 border-yellow-200 text-yellow-800' :
-                'bg-red-50 border-red-200 text-red-800'
-              }`}>
+              <div
+                className={`px-3 py-2 rounded-lg border ${
+                  currentQuestion.difficulty === 'Auðvelt'
+                    ? 'bg-green-50 border-green-200 text-green-800'
+                    : currentQuestion.difficulty === 'Miðlungs'
+                      ? 'bg-yellow-50 border-yellow-200 text-yellow-800'
+                      : 'bg-red-50 border-red-200 text-red-800'
+                }`}
+              >
                 <span className="font-bold">{currentQuestion.difficulty}</span>
               </div>
             </div>
@@ -520,7 +564,9 @@ function App() {
 
                   {/* Question context */}
                   <div className="bg-white p-3 rounded-lg border border-warm-200 mb-4">
-                    <h4 className="font-bold text-warm-800 mb-1">{currentQuestion.emoji} {currentQuestion.scenario_is}</h4>
+                    <h4 className="font-bold text-warm-800 mb-1">
+                      {currentQuestion.emoji} {currentQuestion.scenario_is}
+                    </h4>
                     <p className="text-xs text-warm-500">{currentQuestion.scenario_en}</p>
                   </div>
 
@@ -528,26 +574,32 @@ function App() {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4 text-xs">
                     {currentQuestion.given.P && (
                       <div className="bg-blue-50 px-2 py-1 rounded text-center">
-                        <span className="font-semibold">P:</span> {currentQuestion.given.P.value} {currentQuestion.given.P.unit}
+                        <span className="font-semibold">P:</span> {currentQuestion.given.P.value}{' '}
+                        {currentQuestion.given.P.unit}
                       </div>
                     )}
                     {currentQuestion.given.V && (
                       <div className="bg-blue-50 px-2 py-1 rounded text-center">
-                        <span className="font-semibold">V:</span> {currentQuestion.given.V.value} {currentQuestion.given.V.unit}
+                        <span className="font-semibold">V:</span> {currentQuestion.given.V.value}{' '}
+                        {currentQuestion.given.V.unit}
                       </div>
                     )}
                     {currentQuestion.given.T && (
                       <div className="bg-blue-50 px-2 py-1 rounded text-center">
-                        <span className="font-semibold">T:</span> {currentQuestion.given.T.value} {currentQuestion.given.T.unit}
+                        <span className="font-semibold">T:</span> {currentQuestion.given.T.value}{' '}
+                        {currentQuestion.given.T.unit}
                       </div>
                     )}
                     {currentQuestion.given.n && (
                       <div className="bg-blue-50 px-2 py-1 rounded text-center">
-                        <span className="font-semibold">n:</span> {currentQuestion.given.n.value} {currentQuestion.given.n.unit}
+                        <span className="font-semibold">n:</span> {currentQuestion.given.n.value}{' '}
+                        {currentQuestion.given.n.unit}
                       </div>
                     )}
                     <div className="bg-orange-50 px-2 py-1 rounded text-center">
-                      <span className="font-semibold text-orange-700">Finna: {currentQuestion.find}</span>
+                      <span className="font-semibold text-orange-700">
+                        Finna: {currentQuestion.find}
+                      </span>
                     </div>
                   </div>
 
@@ -575,9 +627,13 @@ function App() {
 
                   {/* Feedback */}
                   {lawFeedback && (
-                    <div className={`p-3 rounded-lg mb-4 ${
-                      lawFeedback.correct ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                    }`}>
+                    <div
+                      className={`p-3 rounded-lg mb-4 ${
+                        lawFeedback.correct
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
+                      }`}
+                    >
                       <div className="flex items-center gap-2">
                         <span className="text-xl">{lawFeedback.correct ? '✅' : '❌'}</span>
                         <span>{lawFeedback.message}</span>
@@ -609,7 +665,9 @@ function App() {
               {/* Left: Visualization */}
               <div>
                 <div className="bg-warm-50 p-4 rounded-lg border border-warm-200 mb-4">
-                  <h3 className="font-bold text-warm-800 mb-2">{currentQuestion.emoji} {currentQuestion.scenario_is}</h3>
+                  <h3 className="font-bold text-warm-800 mb-2">
+                    {currentQuestion.emoji} {currentQuestion.scenario_is}
+                  </h3>
                   <p className="text-sm text-warm-600">{currentQuestion.scenario_en}</p>
                 </div>
 
@@ -621,7 +679,7 @@ function App() {
                         width: 400,
                         height: 280,
                         pressure: particleConfig.pressureLevel,
-                        backgroundColor: '#0f172a'
+                        backgroundColor: '#0f172a',
                       }}
                       particleTypes={[PARTICLE_TYPES.reactantA]}
                       particles={[{ typeId: 'A', count: particleConfig.numParticles }]}
@@ -632,7 +690,8 @@ function App() {
                     />
                   )}
                   <p className="text-xs text-warm-400 mt-2 text-center">
-                    Agnir tákna lofttegundir • Rammi: þrýstingur (blátt=lágt, grænt=venjulegt, rautt=hátt)
+                    Agnir tákna lofttegundir • Rammi: þrýstingur (blátt=lágt, grænt=venjulegt,
+                    rautt=hátt)
                   </p>
                 </div>
 
@@ -642,22 +701,26 @@ function App() {
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     {currentQuestion.given.P && (
                       <div className="bg-white px-3 py-2 rounded">
-                        <span className="font-semibold">P:</span> {currentQuestion.given.P.value} {currentQuestion.given.P.unit}
+                        <span className="font-semibold">P:</span> {currentQuestion.given.P.value}{' '}
+                        {currentQuestion.given.P.unit}
                       </div>
                     )}
                     {currentQuestion.given.V && (
                       <div className="bg-white px-3 py-2 rounded">
-                        <span className="font-semibold">V:</span> {currentQuestion.given.V.value} {currentQuestion.given.V.unit}
+                        <span className="font-semibold">V:</span> {currentQuestion.given.V.value}{' '}
+                        {currentQuestion.given.V.unit}
                       </div>
                     )}
                     {currentQuestion.given.T && (
                       <div className="bg-white px-3 py-2 rounded">
-                        <span className="font-semibold">T:</span> {currentQuestion.given.T.value} {currentQuestion.given.T.unit}
+                        <span className="font-semibold">T:</span> {currentQuestion.given.T.value}{' '}
+                        {currentQuestion.given.T.unit}
                       </div>
                     )}
                     {currentQuestion.given.n && (
                       <div className="bg-white px-3 py-2 rounded">
-                        <span className="font-semibold">n:</span> {currentQuestion.given.n.value} {currentQuestion.given.n.unit}
+                        <span className="font-semibold">n:</span> {currentQuestion.given.n.value}{' '}
+                        {currentQuestion.given.n.unit}
                       </div>
                     )}
                   </div>
@@ -677,15 +740,19 @@ function App() {
                       <span className="font-mono bg-white px-2 py-1 rounded text-indigo-800">
                         {GAS_LAW_INFO[currentQuestion.gasLaw].formula}
                       </span>
-                      <span className="text-warm-600">({GAS_LAW_INFO[currentQuestion.gasLaw].nameIs})</span>
+                      <span className="text-warm-600">
+                        ({GAS_LAW_INFO[currentQuestion.gasLaw].nameIs})
+                      </span>
                     </div>
                   </div>
                 )}
 
                 {/* Question */}
-                <div className={`bg-orange-50 p-4 rounded-lg border-2 border-orange-200 mb-4 ${
-                  gameMode === 'practice' && gameStep === 'select-law' ? 'opacity-50' : ''
-                }`}>
+                <div
+                  className={`bg-orange-50 p-4 rounded-lg border-2 border-orange-200 mb-4 ${
+                    gameMode === 'practice' && gameStep === 'select-law' ? 'opacity-50' : ''
+                  }`}
+                >
                   <h3 className="font-bold text-orange-900 mb-2">
                     {gameMode === 'practice' && gameStep === 'select-law' && '(Skref 2) '}
                     Finndu {getVariableName(currentQuestion.find)} ({currentQuestion.find}):
@@ -695,9 +762,15 @@ function App() {
                       type="number"
                       value={userAnswer}
                       onChange={(e) => setUserAnswer(e.target.value)}
-                      placeholder={gameMode === 'practice' && gameStep === 'select-law' ? 'Veldu lögmál fyrst...' : 'Sláðu inn svar...'}
+                      placeholder={
+                        gameMode === 'practice' && gameStep === 'select-law'
+                          ? 'Veldu lögmál fyrst...'
+                          : 'Sláðu inn svar...'
+                      }
                       className="flex-1 px-4 py-3 rounded-lg border-2 border-warm-300 focus:border-orange-500 focus:outline-none text-lg disabled:bg-warm-100 disabled:cursor-not-allowed"
-                      onKeyDown={(e) => e.key === 'Enter' && gameStep === 'solve' && checkUserAnswer()}
+                      onKeyDown={(e) =>
+                        e.key === 'Enter' && gameStep === 'solve' && checkUserAnswer()
+                      }
                       disabled={gameMode === 'practice' && gameStep === 'select-law'}
                     />
                     <div className="bg-white px-4 py-3 rounded-lg border-2 border-warm-300 font-bold text-warm-700">
@@ -713,7 +786,12 @@ function App() {
                     onClick={checkUserAnswer}
                     disabled={gameMode === 'practice' && gameStep === 'select-law'}
                     className="w-full mt-3 py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90 disabled:bg-warm-300 disabled:cursor-not-allowed"
-                    style={{ backgroundColor: (gameMode !== 'practice' || gameStep !== 'select-law') ? '#f36b22' : undefined }}
+                    style={{
+                      backgroundColor:
+                        gameMode !== 'practice' || gameStep !== 'select-law'
+                          ? '#f36b22'
+                          : undefined,
+                    }}
                   >
                     Athuga Svar (Enter)
                   </button>
@@ -738,7 +816,10 @@ function App() {
                   {showHint > 0 ? (
                     <div className="space-y-2">
                       {currentQuestion.hints.slice(0, showHint).map((hint, idx) => (
-                        <div key={idx} className="bg-blue-50 px-3 py-2 rounded border border-blue-200 text-sm">
+                        <div
+                          key={idx}
+                          className="bg-blue-50 px-3 py-2 rounded border border-blue-200 text-sm"
+                        >
                           <span className="font-bold text-blue-800">💡 {idx + 1}:</span> {hint}
                         </div>
                       ))}
@@ -760,13 +841,16 @@ function App() {
                     {showSolution && (
                       <div className="mt-3 space-y-2 text-sm">
                         <div className="bg-white px-3 py-2 rounded border border-warm-300">
-                          <span className="font-bold">Formúla:</span> {currentQuestion.solution.formula}
+                          <span className="font-bold">Formúla:</span>{' '}
+                          {currentQuestion.solution.formula}
                         </div>
                         <div className="bg-white px-3 py-2 rounded border border-warm-300">
-                          <span className="font-bold">Innsetning:</span> {currentQuestion.solution.substitution}
+                          <span className="font-bold">Innsetning:</span>{' '}
+                          {currentQuestion.solution.substitution}
                         </div>
                         <div className="bg-white px-3 py-2 rounded border border-warm-300">
-                          <span className="font-bold">Útreikningur:</span> {currentQuestion.solution.calculation}
+                          <span className="font-bold">Útreikningur:</span>{' '}
+                          {currentQuestion.solution.calculation}
                         </div>
                         <div className="bg-green-50 px-3 py-2 rounded border border-green-300 font-bold text-green-800">
                           Svar: {currentQuestion.answer.toFixed(2)} {getUnit(currentQuestion.find)}
@@ -814,21 +898,23 @@ function App() {
         <main className="max-w-4xl mx-auto px-4 py-8">
           <div className="bg-white rounded-xl shadow-lg p-8">
             {/* Result Header */}
-            <div className={`text-center mb-6 p-6 rounded-xl ${
-              feedback.isCorrect
-                ? 'bg-green-50 border-2 border-green-300'
-                : 'bg-red-50 border-2 border-red-300'
-            }`}>
+            <div
+              className={`text-center mb-6 p-6 rounded-xl ${
+                feedback.isCorrect
+                  ? 'bg-green-50 border-2 border-green-300'
+                  : 'bg-red-50 border-2 border-red-300'
+              }`}
+            >
               <div className="text-6xl mb-2">{feedback.isCorrect ? '✅' : '❌'}</div>
-              <h2 className={`text-3xl font-bold mb-2 ${
-                feedback.isCorrect ? 'text-green-800' : 'text-red-800'
-              }`}>
+              <h2
+                className={`text-3xl font-bold mb-2 ${
+                  feedback.isCorrect ? 'text-green-800' : 'text-red-800'
+                }`}
+              >
                 {feedback.message}
               </h2>
               {feedback.isCorrect && (
-                <div className="text-2xl font-bold text-yellow-600">
-                  +{feedback.points} stig
-                </div>
+                <div className="text-2xl font-bold text-yellow-600">+{feedback.points} stig</div>
               )}
             </div>
 
@@ -836,8 +922,12 @@ function App() {
             {sessionCompleted && sessionQuestionsAnswered === 15 && (
               <div className="bg-gradient-to-r from-yellow-100 to-amber-100 border-2 border-yellow-400 rounded-xl p-4 mb-6 text-center">
                 <div className="text-3xl mb-1">🎉⭐</div>
-                <p className="font-bold text-yellow-800 text-lg">Þú hefur lokið Gas Law Challenge!</p>
-                <p className="text-yellow-700 text-sm">15 spurningar svaraðar — þú getur haldið áfram til að bæta stigin þín.</p>
+                <p className="font-bold text-yellow-800 text-lg">
+                  Þú hefur lokið Gas Law Challenge!
+                </p>
+                <p className="text-yellow-700 text-sm">
+                  15 spurningar svaraðar — þú getur haldið áfram til að bæta stigin þín.
+                </p>
               </div>
             )}
 
@@ -879,9 +969,17 @@ function App() {
                 ))}
               </div>
               <div className="mt-4 bg-white p-3 rounded border border-warm-300">
-                <p className="text-sm"><span className="font-bold">Formúla:</span> {currentQuestion.solution.formula}</p>
-                <p className="text-sm"><span className="font-bold">Innsetning:</span> {currentQuestion.solution.substitution}</p>
-                <p className="text-sm"><span className="font-bold">Útreikningur:</span> {currentQuestion.solution.calculation}</p>
+                <p className="text-sm">
+                  <span className="font-bold">Formúla:</span> {currentQuestion.solution.formula}
+                </p>
+                <p className="text-sm">
+                  <span className="font-bold">Innsetning:</span>{' '}
+                  {currentQuestion.solution.substitution}
+                </p>
+                <p className="text-sm">
+                  <span className="font-bold">Útreikningur:</span>{' '}
+                  {currentQuestion.solution.calculation}
+                </p>
               </div>
             </div>
 
@@ -894,7 +992,9 @@ function App() {
                   <div className="text-warm-600">Stig</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-green-600">{stats.correctAnswers}/{stats.questionsAnswered}</div>
+                  <div className="text-2xl font-bold text-green-600">
+                    {stats.correctAnswers}/{stats.questionsAnswered}
+                  </div>
                   <div className="text-warm-600">Rétt</div>
                 </div>
                 <div>

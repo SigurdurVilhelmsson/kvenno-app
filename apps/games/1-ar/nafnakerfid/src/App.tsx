@@ -1,14 +1,17 @@
 import { useState } from 'react';
 
-import { LanguageSwitcher, ErrorBoundary } from '@shared/components';
+import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
 import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
 import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
+import { AnimatedBackground } from '@shared/components/AnimatedBackground';
+import {
+  ParticleCelebration,
+  useParticleCelebration,
+} from '@shared/components/ParticleCelebration';
+import { SoundToggle } from '@shared/components/SoundToggle';
 import { useAchievements } from '@shared/hooks/useAchievements';
 import { useGameI18n } from '@shared/hooks/useGameI18n';
 import { useGameProgress } from '@shared/hooks/useGameProgress';
-import { ParticleCelebration, useParticleCelebration } from '@shared/components/ParticleCelebration';
-import { AnimatedBackground } from '@shared/components/AnimatedBackground';
-import { SoundToggle } from '@shared/components/SoundToggle';
 import { useGameSounds } from '@shared/hooks/useGameSounds';
 
 import { Level1 } from './components/Level1';
@@ -40,7 +43,10 @@ const DEFAULT_PROGRESS: Progress = {
 function App() {
   const [screen, setScreen] = useState<Screen>('menu');
   const { t, language, setLanguage } = useGameI18n({ gameTranslations });
-  const { progress, updateProgress, resetProgress } = useGameProgress<Progress>('nafnakerfidProgress', DEFAULT_PROGRESS);
+  const { progress, updateProgress, resetProgress } = useGameProgress<Progress>(
+    'nafnakerfidProgress',
+    DEFAULT_PROGRESS
+  );
   const [showAchievements, setShowAchievements] = useState(false);
 
   const {
@@ -56,7 +62,13 @@ function App() {
   } = useAchievements({ gameId: 'nafnakerfid' });
 
   const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('1-ar');
-  const { playCorrect, playWrong, playLevelComplete, isEnabled: soundEnabled, toggleSound } = useGameSounds();
+  const {
+    playCorrect,
+    playWrong,
+    playLevelComplete,
+    isEnabled: soundEnabled,
+    toggleSound,
+  } = useGameSounds();
 
   const handleCorrectAnswer = (...args: Parameters<typeof trackCorrectAnswer>) => {
     trackCorrectAnswer(...args);
@@ -81,7 +93,11 @@ function App() {
     triggerLevelComplete();
 
     // Check if all levels are now complete
-    if (!wasLevel1Complete && progress.level2Completed && Object.keys(progress.level3BestMoves).length > 0) {
+    if (
+      !wasLevel1Complete &&
+      progress.level2Completed &&
+      Object.keys(progress.level3BestMoves).length > 0
+    ) {
       trackGameComplete();
     }
     setScreen('menu');
@@ -99,13 +115,23 @@ function App() {
     triggerLevelComplete();
 
     // Check if all levels are now complete
-    if (progress.level1Completed && !wasLevel2Complete && Object.keys(progress.level3BestMoves).length > 0) {
+    if (
+      progress.level1Completed &&
+      !wasLevel2Complete &&
+      Object.keys(progress.level3BestMoves).length > 0
+    ) {
       trackGameComplete();
     }
     setScreen('menu');
   };
 
-  const handleLevel3Complete = (moves: number, difficulty: string, pairs: number, maxScore: number, hintsUsed: number) => {
+  const handleLevel3Complete = (
+    moves: number,
+    difficulty: string,
+    pairs: number,
+    maxScore: number,
+    hintsUsed: number
+  ) => {
     const key = `${difficulty}-${pairs}`;
     const wasLevel3Complete = Object.keys(progress.level3BestMoves).length > 0;
     updateProgress({
@@ -214,226 +240,226 @@ function App() {
   // Main Menu
   return (
     <AnimatedBackground yearTheme="1-ar" variant="menu" showSymbols>
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="max-w-2xl w-full">
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
-          <div className="flex justify-between items-start mb-4">
-            <div className="flex-1">
-              <h1 className="text-4xl font-bold font-heading text-center mb-2 text-warm-800">{t('game.title')}</h1>
-              <p className="text-center text-warm-600">{t('game.subtitle')}</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <LanguageSwitcher
-                language={language}
-                onLanguageChange={setLanguage}
-                variant="compact"
-              />
-              <AchievementsButton
-                achievements={achievements}
-                onClick={() => setShowAchievements(true)}
-              />
-              <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
-            </div>
-          </div>
+      <Header
+        variant="game"
+        backHref="/efnafraedi/1-ar/"
+        gameTitle={t('game.title')}
+        authSlot={
+          <>
+            <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
+            <LanguageSwitcher
+              language={language}
+              onLanguageChange={setLanguage}
+              variant="compact"
+            />
+            <AchievementsButton
+              achievements={achievements}
+              onClick={() => setShowAchievements(true)}
+            />
+          </>
+        }
+      />
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="max-w-2xl w-full">
+          <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+            <p className="text-center text-warm-600 mb-4">{t('game.subtitle')}</p>
 
-          <div className="space-y-4">
-            {/* Level 1 */}
-            <button
-              onClick={() => setScreen('level1')}
-              className="game-card w-full bg-white border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-6 text-left transition-all"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full">
-                      {t('levels.level1.name')}
-                    </span>
-                    <h3 className="text-xl font-bold text-warm-800">{t('levels.level1.title')}</h3>
-                  </div>
-                  <p className="text-warm-600 text-sm">
-                    {t('levels.level1.description')}
-                  </p>
-                </div>
-                <div className="text-right">
-                  {progress.level1Completed ? (
-                    <div className="text-green-600">
-                      <div className="text-2xl font-bold">{progress.level1Score}/10</div>
-                      <div className="text-xs">{t('menu.completed')}</div>
-                    </div>
-                  ) : (
-                    <div className="text-warm-400 text-3xl">&rarr;</div>
-                  )}
-                </div>
-              </div>
-            </button>
-
-            {/* Level 2 */}
-            <button
-              onClick={() => setScreen('level2')}
-              className={`game-card w-full bg-white border-2 rounded-xl p-6 text-left transition-all ${
-                progress.level1Completed
-                  ? 'border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50'
-                  : 'border-warm-200 opacity-60'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className={`text-white text-sm font-bold px-3 py-1 rounded-full ${
-                      progress.level1Completed ? 'bg-yellow-500' : 'bg-warm-400'
-                    }`}>
-                      {t('levels.level2.name')}
-                    </span>
-                    <h3 className="text-xl font-bold text-warm-800">{t('levels.level2.title')}</h3>
-                    {!progress.level1Completed && (
-                      <span className="text-xs text-warm-500">({t('menu.completeLevel1First')})</span>
-                    )}
-                  </div>
-                  <p className="text-warm-600 text-sm">
-                    {t('levels.level2.description')}
-                  </p>
-                </div>
-                <div className="text-right">
-                  {progress.level2Completed ? (
-                    <div className="text-green-600">
-                      <div className="text-2xl font-bold">{progress.level2Score}/12</div>
-                      <div className="text-xs">{t('menu.completed')}</div>
-                    </div>
-                  ) : (
-                    <div className="text-warm-400 text-3xl">&rarr;</div>
-                  )}
-                </div>
-              </div>
-            </button>
-
-            {/* Level 3 */}
-            <button
-              onClick={() => setScreen('level3')}
-              className={`game-card w-full bg-white border-2 rounded-xl p-6 text-left transition-all ${
-                progress.level2Completed
-                  ? 'border-red-200 hover:border-red-400 hover:bg-red-50'
-                  : 'border-warm-200 opacity-60'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className={`text-white text-sm font-bold px-3 py-1 rounded-full ${
-                      progress.level2Completed ? 'bg-red-500' : 'bg-warm-400'
-                    }`}>
-                      {t('levels.level3.name')}
-                    </span>
-                    <h3 className="text-xl font-bold text-warm-800">{t('levels.level3.title')}</h3>
-                    {!progress.level2Completed && (
-                      <span className="text-xs text-warm-500">({t('menu.completeLevel2First')})</span>
-                    )}
-                  </div>
-                  <p className="text-warm-600 text-sm">
-                    {t('levels.level3.description')}
-                  </p>
-                </div>
-                <div className="text-right">
-                  {Object.keys(progress.level3BestMoves).length > 0 ? (
-                    <div className="text-green-600">
-                      <div className="text-xs">{t('menu.best')}:</div>
-                      <div className="text-lg font-bold">
-                        {Math.min(...Object.values(progress.level3BestMoves))} {t('menu.moves')}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-warm-400 text-3xl">&rarr;</div>
-                  )}
-                </div>
-              </div>
-            </button>
-
-            {/* Name Builder - Bonus Mode */}
-            <button
-              onClick={() => setScreen('namebuilder')}
-              className="game-card w-full bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 hover:border-purple-400 hover:from-purple-100 hover:to-pink-100 rounded-xl p-6 text-left transition-all"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold px-3 py-1 rounded-full">
-                      {t('bonus.label')}
-                    </span>
-                    <h3 className="text-xl font-bold text-warm-800">{t('bonus.title')}</h3>
-                    <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">{t('bonus.newBadge')}</span>
-                  </div>
-                  <p className="text-warm-600 text-sm">
-                    {t('bonus.description')}
-                  </p>
-                </div>
-                <div className="text-purple-500 text-3xl">&#x1f527;</div>
-              </div>
-            </button>
-          </div>
-        </div>
-
-        {/* Progress Summary */}
-        {progress.totalGamesPlayed > 0 && (
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold text-warm-700">{t('menu.progress')}</h3>
+            <div className="space-y-4">
+              {/* Level 1 */}
               <button
-                onClick={resetProgress}
-                className="text-sm text-warm-500 hover:text-red-500 transition-colors"
+                onClick={() => setScreen('level1')}
+                className="game-card w-full bg-white border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-6 text-left transition-all"
               >
-                {t('menu.reset')}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full">
+                        {t('levels.level1.name')}
+                      </span>
+                      <h3 className="text-xl font-bold text-warm-800">
+                        {t('levels.level1.title')}
+                      </h3>
+                    </div>
+                    <p className="text-warm-600 text-sm">{t('levels.level1.description')}</p>
+                  </div>
+                  <div className="text-right">
+                    {progress.level1Completed ? (
+                      <div className="text-green-600">
+                        <div className="text-2xl font-bold">{progress.level1Score}/10</div>
+                        <div className="text-xs">{t('menu.completed')}</div>
+                      </div>
+                    ) : (
+                      <div className="text-warm-400 text-3xl">&rarr;</div>
+                    )}
+                  </div>
+                </div>
+              </button>
+
+              {/* Level 2 */}
+              <button
+                onClick={() => setScreen('level2')}
+                className={`game-card w-full bg-white border-2 rounded-xl p-6 text-left transition-all ${
+                  progress.level1Completed
+                    ? 'border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50'
+                    : 'border-warm-200 opacity-60'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <span
+                        className={`text-white text-sm font-bold px-3 py-1 rounded-full ${
+                          progress.level1Completed ? 'bg-yellow-500' : 'bg-warm-400'
+                        }`}
+                      >
+                        {t('levels.level2.name')}
+                      </span>
+                      <h3 className="text-xl font-bold text-warm-800">
+                        {t('levels.level2.title')}
+                      </h3>
+                      {!progress.level1Completed && (
+                        <span className="text-xs text-warm-500">
+                          ({t('menu.completeLevel1First')})
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-warm-600 text-sm">{t('levels.level2.description')}</p>
+                  </div>
+                  <div className="text-right">
+                    {progress.level2Completed ? (
+                      <div className="text-green-600">
+                        <div className="text-2xl font-bold">{progress.level2Score}/12</div>
+                        <div className="text-xs">{t('menu.completed')}</div>
+                      </div>
+                    ) : (
+                      <div className="text-warm-400 text-3xl">&rarr;</div>
+                    )}
+                  </div>
+                </div>
+              </button>
+
+              {/* Level 3 */}
+              <button
+                onClick={() => setScreen('level3')}
+                className={`game-card w-full bg-white border-2 rounded-xl p-6 text-left transition-all ${
+                  progress.level2Completed
+                    ? 'border-red-200 hover:border-red-400 hover:bg-red-50'
+                    : 'border-warm-200 opacity-60'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <span
+                        className={`text-white text-sm font-bold px-3 py-1 rounded-full ${
+                          progress.level2Completed ? 'bg-red-500' : 'bg-warm-400'
+                        }`}
+                      >
+                        {t('levels.level3.name')}
+                      </span>
+                      <h3 className="text-xl font-bold text-warm-800">
+                        {t('levels.level3.title')}
+                      </h3>
+                      {!progress.level2Completed && (
+                        <span className="text-xs text-warm-500">
+                          ({t('menu.completeLevel2First')})
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-warm-600 text-sm">{t('levels.level3.description')}</p>
+                  </div>
+                  <div className="text-right">
+                    {Object.keys(progress.level3BestMoves).length > 0 ? (
+                      <div className="text-green-600">
+                        <div className="text-xs">{t('menu.best')}:</div>
+                        <div className="text-lg font-bold">
+                          {Math.min(...Object.values(progress.level3BestMoves))} {t('menu.moves')}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-warm-400 text-3xl">&rarr;</div>
+                    )}
+                  </div>
+                </div>
+              </button>
+
+              {/* Name Builder - Bonus Mode */}
+              <button
+                onClick={() => setScreen('namebuilder')}
+                className="game-card w-full bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 hover:border-purple-400 hover:from-purple-100 hover:to-pink-100 rounded-xl p-6 text-left transition-all"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold px-3 py-1 rounded-full">
+                        {t('bonus.label')}
+                      </span>
+                      <h3 className="text-xl font-bold text-warm-800">{t('bonus.title')}</h3>
+                      <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
+                        {t('bonus.newBadge')}
+                      </span>
+                    </div>
+                    <p className="text-warm-600 text-sm">{t('bonus.description')}</p>
+                  </div>
+                  <div className="text-purple-500 text-3xl">&#x1f527;</div>
+                </div>
               </button>
             </div>
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div className="bg-blue-50 rounded-lg p-3">
-                <div className="text-2xl font-bold text-blue-600">
-                  {[progress.level1Completed, progress.level2Completed].filter(Boolean).length}/2
-                </div>
-                <div className="text-xs text-warm-600">{t('menu.levelsCompleted')}</div>
+          </div>
+
+          {/* Progress Summary */}
+          {progress.totalGamesPlayed > 0 && (
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="font-semibold text-warm-700">{t('menu.progress')}</h3>
+                <button
+                  onClick={resetProgress}
+                  className="text-sm text-warm-500 hover:text-red-500 transition-colors"
+                >
+                  {t('menu.reset')}
+                </button>
               </div>
-              <div className="bg-green-50 rounded-lg p-3">
-                <div className="text-2xl font-bold text-green-600">
-                  {progress.level1Score + progress.level2Score}
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div className="bg-blue-50 rounded-lg p-3">
+                  <div className="text-2xl font-bold text-blue-600">
+                    {[progress.level1Completed, progress.level2Completed].filter(Boolean).length}/2
+                  </div>
+                  <div className="text-xs text-warm-600">{t('menu.levelsCompleted')}</div>
                 </div>
-                <div className="text-xs text-warm-600">{t('menu.totalPoints')}</div>
-              </div>
-              <div className="bg-purple-50 rounded-lg p-3">
-                <div className="text-2xl font-bold text-purple-600">
-                  {progress.totalGamesPlayed}
+                <div className="bg-green-50 rounded-lg p-3">
+                  <div className="text-2xl font-bold text-green-600">
+                    {progress.level1Score + progress.level2Score}
+                  </div>
+                  <div className="text-xs text-warm-600">{t('menu.totalPoints')}</div>
                 </div>
-                <div className="text-xs text-warm-600">{t('menu.gamesPlayed')}</div>
+                <div className="bg-purple-50 rounded-lg p-3">
+                  <div className="text-2xl font-bold text-purple-600">
+                    {progress.totalGamesPlayed}
+                  </div>
+                  <div className="text-xs text-warm-600">{t('menu.gamesPlayed')}</div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
+        </div>
+
+        {/* Achievements Panel Modal */}
+        {showAchievements && (
+          <AchievementsPanel
+            achievements={achievements}
+            allAchievements={allAchievements}
+            onClose={() => setShowAchievements(false)}
+            onReset={resetAchievementsData}
+          />
         )}
 
-        {/* Back to games link */}
-        <div className="text-center mt-6">
-          <a
-            href="/games/1-ar/"
-            className="text-warm-500 hover:text-warm-700 text-sm transition-colors"
-          >
-            &larr; {t('menu.backToGames')}
-          </a>
-        </div>
-      </div>
-
-      {/* Achievements Panel Modal */}
-      {showAchievements && (
-        <AchievementsPanel
-          achievements={achievements}
-          allAchievements={allAchievements}
-          onClose={() => setShowAchievements(false)}
-          onReset={resetAchievementsData}
+        {/* Achievement Notifications */}
+        <AchievementNotificationsContainer
+          notifications={notifications}
+          onDismiss={dismissNotification}
         />
-      )}
-
-      {/* Achievement Notifications */}
-      <AchievementNotificationsContainer
-        notifications={notifications}
-        onDismiss={dismissNotification}
-      />
-      <ParticleCelebration {...celebrationProps} />
-    </div>
+        <ParticleCelebration {...celebrationProps} />
+      </div>
     </AnimatedBackground>
   );
 }
