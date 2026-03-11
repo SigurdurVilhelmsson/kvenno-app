@@ -4,12 +4,22 @@ import { getMolarMass, roundMass } from '../data/molar-masses';
 import { REACTIONS } from '../data/reactions';
 import { Reaction, Difficulty } from '../types';
 import { Molecule } from './Molecule';
-import { calculateCorrectAnswer, generateReactantCounts, calculatePoints } from '../utils/calculations';
+import {
+  calculateCorrectAnswer,
+  generateReactantCounts,
+  calculatePoints,
+} from '../utils/calculations';
 
 type UnitMode = 'molecules' | 'grams';
 
 interface Level3Props {
-  onComplete: (score: number, correctAnswers: number, totalQuestions: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (
+    score: number,
+    correctAnswers: number,
+    totalQuestions: number,
+    maxScore: number,
+    hintsUsed: number
+  ) => void;
   onBack: () => void;
   onCorrectAnswer?: () => void;
   onIncorrectAnswer?: () => void;
@@ -59,14 +69,14 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     userExcess: '',
     isAnswered: false,
     isCorrect: null,
-    showingSolution: false
+    showingSolution: false,
   });
 
   // Timer countdown
   useEffect(() => {
     if (screen === 'game' && timerMode && timeRemaining > 0 && !gameState.isAnswered) {
       const timer = setTimeout(() => {
-        setTimeRemaining(prev => prev - 1);
+        setTimeRemaining((prev) => prev - 1);
       }, 1000);
       return () => clearTimeout(timer);
     } else if (timerMode && timeRemaining === 0 && !gameState.isAnswered) {
@@ -85,12 +95,14 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   };
 
   const loadNewQuestion = () => {
-    const availableReactions = REACTIONS.filter(r => r.difficulty === difficulty);
+    const availableReactions = REACTIONS.filter((r) => r.difficulty === difficulty);
     const reaction = availableReactions[Math.floor(Math.random() * availableReactions.length)];
     const { r1Count, r2Count } = generateReactantCounts(difficulty);
 
     const products: Record<string, string> = {};
-    reaction.products.forEach(p => { products[p.formula] = ''; });
+    reaction.products.forEach((p) => {
+      products[p.formula] = '';
+    });
 
     // Calculate gram values if in gram mode
     const r1MolarMass = getMolarMass(reaction.reactant1.formula);
@@ -113,7 +125,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       userExcess: '',
       isAnswered: false,
       isCorrect: null,
-      showingSolution: false
+      showingSolution: false,
     });
 
     if (timerMode) {
@@ -146,14 +158,15 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
     if (isGramMode) {
       // Calculate expected grams for excess
-      const excessMolarMass = correctAnswer.limitingReactant === gameState.currentReaction.reactant1.formula
-        ? gameState.reactant2MolarMass
-        : gameState.reactant1MolarMass;
+      const excessMolarMass =
+        correctAnswer.limitingReactant === gameState.currentReaction.reactant1.formula
+          ? gameState.reactant2MolarMass
+          : gameState.reactant1MolarMass;
       const expectedExcessGrams = roundMass(correctAnswer.excessRemaining * excessMolarMass);
       excessCorrect = isCloseEnough(parseFloat(gameState.userExcess), expectedExcessGrams);
 
       // Calculate expected grams for products
-      gameState.currentReaction.products.forEach(p => {
+      gameState.currentReaction.products.forEach((p) => {
         const productMolarMass = getMolarMass(p.formula);
         const expectedGrams = roundMass(correctAnswer.productsFormed[p.formula] * productMolarMass);
         if (!isCloseEnough(parseFloat(gameState.userProducts[p.formula]), expectedGrams)) {
@@ -162,8 +175,10 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       });
     } else {
       excessCorrect = parseInt(gameState.userExcess) === correctAnswer.excessRemaining;
-      gameState.currentReaction.products.forEach(p => {
-        if (parseInt(gameState.userProducts[p.formula]) !== correctAnswer.productsFormed[p.formula]) {
+      gameState.currentReaction.products.forEach((p) => {
+        if (
+          parseInt(gameState.userProducts[p.formula]) !== correctAnswer.productsFormed[p.formula]
+        ) {
           productsCorrect = false;
         }
       });
@@ -175,27 +190,27 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       const newStreak = streak + 1;
       setStreak(newStreak);
       const points = calculatePoints(difficulty, newStreak, timeRemaining, timerMode, isGramMode);
-      setScore(prev => {
+      setScore((prev) => {
         const newScore = prev + points;
         if (newScore > bestScore) {
           setBestScore(newScore);
         }
         return newScore;
       });
-      setCorrectAnswers(prev => prev + 1);
+      setCorrectAnswers((prev) => prev + 1);
       onCorrectAnswer?.();
     } else {
       setStreak(0);
       onIncorrectAnswer?.();
     }
 
-    setGameState(prev => ({
+    setGameState((prev) => ({
       ...prev,
       isAnswered: true,
-      isCorrect: allCorrect
+      isCorrect: allCorrect,
     }));
 
-    setQuestionsAnswered(prev => prev + 1);
+    setQuestionsAnswered((prev) => prev + 1);
   };
 
   const handleNext = () => {
@@ -207,13 +222,19 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   };
 
   const correctAnswer = gameState.currentReaction
-    ? calculateCorrectAnswer(gameState.currentReaction, gameState.reactant1Count, gameState.reactant2Count)
+    ? calculateCorrectAnswer(
+        gameState.currentReaction,
+        gameState.reactant1Count,
+        gameState.reactant2Count
+      )
     : null;
 
   const canSubmit =
     gameState.userLimiting !== '' &&
     gameState.userExcess.trim() !== '' &&
-    gameState.currentReaction?.products.every(p => gameState.userProducts[p.formula]?.trim() !== '');
+    gameState.currentReaction?.products.every(
+      (p) => gameState.userProducts[p.formula]?.trim() !== ''
+    );
 
   // Setup screen
   if (screen === 'setup') {
@@ -230,8 +251,12 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm">
               <p className="font-semibold text-amber-800 mb-2">💡 Upprifjun úr stigi 2:</p>
               <ol className="list-decimal list-inside space-y-1 text-amber-700">
-                <li>Deildu magni hvarfefnis með stuðli → fáðu <em>hlutfall</em></li>
-                <li>Hvarfefnið með <strong>lægra</strong> hlutfall er takmarkandi</li>
+                <li>
+                  Deildu magni hvarfefnis með stuðli → fáðu <em>hlutfall</em>
+                </li>
+                <li>
+                  Hvarfefnið með <strong>lægra</strong> hlutfall er takmarkandi
+                </li>
                 <li>Reiknaðu afurðir út frá takmarkandi efni</li>
                 <li>Afgangur = upphafleg — notuð</li>
               </ol>
@@ -245,9 +270,11 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   onClick={() => setDifficulty(diff)}
                   className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
                     difficulty === diff
-                      ? diff === 'easy' ? 'border-green-500 bg-green-50' :
-                        diff === 'medium' ? 'border-yellow-500 bg-yellow-50' :
-                        'border-red-500 bg-red-50'
+                      ? diff === 'easy'
+                        ? 'border-green-500 bg-green-50'
+                        : diff === 'medium'
+                          ? 'border-yellow-500 bg-yellow-50'
+                          : 'border-red-500 bg-red-50'
                       : 'border-warm-200 hover:border-warm-300'
                   }`}
                 >
@@ -255,9 +282,11 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     {diff === 'easy' ? 'Auðvelt' : diff === 'medium' ? 'Miðlungs' : 'Erfitt'}
                   </div>
                   <div className="text-sm text-warm-600">
-                    {diff === 'easy' ? 'Einföld hlutföll (1:1, 2:1)' :
-                     diff === 'medium' ? 'Flóknari hlutföll (3:1, 2:3)' :
-                     'Stór stuðlar og margar afurðir'}
+                    {diff === 'easy'
+                      ? 'Einföld hlutföll (1:1, 2:1)'
+                      : diff === 'medium'
+                        ? 'Flóknari hlutföll (3:1, 2:3)'
+                        : 'Stór stuðlar og margar afurðir'}
                   </div>
                 </button>
               ))}
@@ -330,7 +359,8 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   // Results screen
   if (screen === 'results') {
-    const accuracy = questionsAnswered > 0 ? Math.round((correctAnswers / questionsAnswered) * 100) : 0;
+    const accuracy =
+      questionsAnswered > 0 ? Math.round((correctAnswers / questionsAnswered) * 100) : 0;
 
     return (
       <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white p-4">
@@ -350,7 +380,9 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             <div className="grid grid-cols-3 gap-3 mb-6">
               <div className="bg-green-50 rounded-xl p-4">
-                <div className="text-2xl font-bold text-green-600">{correctAnswers}/{questionsAnswered}</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {correctAnswers}/{questionsAnswered}
+                </div>
                 <div className="text-xs text-warm-600">Rétt</div>
               </div>
               <div className="bg-blue-50 rounded-xl p-4">
@@ -374,7 +406,9 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 Spila aftur
               </button>
               <button
-                onClick={() => onComplete(score, correctAnswers, questionsAnswered, bestScore, totalHintsUsed)}
+                onClick={() =>
+                  onComplete(score, correctAnswers, questionsAnswered, bestScore, totalHintsUsed)
+                }
                 className="w-full bg-warm-200 hover:bg-warm-300 text-warm-800 font-bold py-3 px-6 rounded-xl transition-colors"
               >
                 Til baka í valmynd
@@ -414,7 +448,9 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             {timerMode && (
               <div>
                 <p className="text-sm text-warm-600">Tími</p>
-                <p className={`text-2xl font-bold ${timeRemaining < 30 ? 'text-red-600' : 'text-blue-600'}`}>
+                <p
+                  className={`text-2xl font-bold ${timeRemaining < 30 ? 'text-red-600' : 'text-blue-600'}`}
+                >
                   {timeRemaining}s
                 </p>
               </div>
@@ -437,9 +473,25 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 role="button"
                 tabIndex={0}
                 aria-label={`Velja ${gameState.currentReaction.reactant1.formula} sem takmarkandi hvarfefni`}
-                aria-pressed={gameState.userLimiting === gameState.currentReaction.reactant1.formula}
-                onClick={() => !gameState.isAnswered && setGameState(prev => ({ ...prev, userLimiting: prev.currentReaction!.reactant1.formula }))}
-                onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && !gameState.isAnswered) { e.preventDefault(); setGameState(prev => ({ ...prev, userLimiting: prev.currentReaction!.reactant1.formula })); } }}
+                aria-pressed={
+                  gameState.userLimiting === gameState.currentReaction.reactant1.formula
+                }
+                onClick={() =>
+                  !gameState.isAnswered &&
+                  setGameState((prev) => ({
+                    ...prev,
+                    userLimiting: prev.currentReaction!.reactant1.formula,
+                  }))
+                }
+                onKeyDown={(e) => {
+                  if ((e.key === 'Enter' || e.key === ' ') && !gameState.isAnswered) {
+                    e.preventDefault();
+                    setGameState((prev) => ({
+                      ...prev,
+                      userLimiting: prev.currentReaction!.reactant1.formula,
+                    }));
+                  }
+                }}
                 className={`bg-white rounded-xl shadow-md p-6 cursor-pointer border-4 transition-all ${
                   gameState.userLimiting === gameState.currentReaction.reactant1.formula
                     ? 'border-orange-500 bg-orange-50'
@@ -450,7 +502,14 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   <p className="text-sm text-warm-600">Hvarfefni 1</p>
                   <p className="text-xl font-bold">{gameState.currentReaction.reactant1.formula}</p>
                   {isGramMode && (
-                    <p className="text-xs text-warm-500">M = {gameState.reactant1MolarMass} g/mol</p>
+                    <>
+                      <p className="text-xs text-warm-500">
+                        M = {gameState.reactant1MolarMass} g/mol
+                      </p>
+                      <p className="text-xs text-warm-500">
+                        Stuðull: {gameState.currentReaction.reactant1.coeff}
+                      </p>
+                    </>
                   )}
                 </div>
                 {isGramMode ? (
@@ -469,24 +528,58 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         size={35}
                       />
                     ))}
-                    {gameState.reactant1Count > 12 && <span className="text-warm-500">+{gameState.reactant1Count - 12}</span>}
+                    {gameState.reactant1Count > 12 && (
+                      <span className="text-warm-500">+{gameState.reactant1Count - 12}</span>
+                    )}
                   </div>
                 )}
                 <p className="text-center text-xl font-bold">
                   {isGramMode
                     ? `${gameState.reactant1Grams} g`
-                    : `${gameState.reactant1Count} sameind${gameState.reactant1Count !== 1 ? 'ir' : ''}`
-                  }
+                    : `${gameState.reactant1Count} sameind${gameState.reactant1Count !== 1 ? 'ir' : ''}`}
                 </p>
+                {gameState.userLimiting === gameState.currentReaction.reactant1.formula &&
+                  !gameState.isAnswered && (
+                    <div className="mt-2 text-center">
+                      <span className="inline-block bg-orange-100 text-orange-700 text-xs font-bold px-2 py-1 rounded-full">
+                        Takmarkandi ✓
+                      </span>
+                    </div>
+                  )}
+                {gameState.isAnswered &&
+                  correctAnswer?.limitingReactant ===
+                    gameState.currentReaction.reactant1.formula && (
+                    <div className="mt-2 text-center">
+                      <span className="inline-block bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full">
+                        Takmarkandi ✓
+                      </span>
+                    </div>
+                  )}
               </div>
 
               <div
                 role="button"
                 tabIndex={0}
                 aria-label={`Velja ${gameState.currentReaction.reactant2.formula} sem takmarkandi hvarfefni`}
-                aria-pressed={gameState.userLimiting === gameState.currentReaction.reactant2.formula}
-                onClick={() => !gameState.isAnswered && setGameState(prev => ({ ...prev, userLimiting: prev.currentReaction!.reactant2.formula }))}
-                onKeyDown={(e) => { if ((e.key === 'Enter' || e.key === ' ') && !gameState.isAnswered) { e.preventDefault(); setGameState(prev => ({ ...prev, userLimiting: prev.currentReaction!.reactant2.formula })); } }}
+                aria-pressed={
+                  gameState.userLimiting === gameState.currentReaction.reactant2.formula
+                }
+                onClick={() =>
+                  !gameState.isAnswered &&
+                  setGameState((prev) => ({
+                    ...prev,
+                    userLimiting: prev.currentReaction!.reactant2.formula,
+                  }))
+                }
+                onKeyDown={(e) => {
+                  if ((e.key === 'Enter' || e.key === ' ') && !gameState.isAnswered) {
+                    e.preventDefault();
+                    setGameState((prev) => ({
+                      ...prev,
+                      userLimiting: prev.currentReaction!.reactant2.formula,
+                    }));
+                  }
+                }}
                 className={`bg-white rounded-xl shadow-md p-6 cursor-pointer border-4 transition-all ${
                   gameState.userLimiting === gameState.currentReaction.reactant2.formula
                     ? 'border-orange-500 bg-orange-50'
@@ -497,7 +590,14 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   <p className="text-sm text-warm-600">Hvarfefni 2</p>
                   <p className="text-xl font-bold">{gameState.currentReaction.reactant2.formula}</p>
                   {isGramMode && (
-                    <p className="text-xs text-warm-500">M = {gameState.reactant2MolarMass} g/mol</p>
+                    <>
+                      <p className="text-xs text-warm-500">
+                        M = {gameState.reactant2MolarMass} g/mol
+                      </p>
+                      <p className="text-xs text-warm-500">
+                        Stuðull: {gameState.currentReaction.reactant2.coeff}
+                      </p>
+                    </>
                   )}
                 </div>
                 {isGramMode ? (
@@ -516,22 +616,42 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         size={35}
                       />
                     ))}
-                    {gameState.reactant2Count > 12 && <span className="text-warm-500">+{gameState.reactant2Count - 12}</span>}
+                    {gameState.reactant2Count > 12 && (
+                      <span className="text-warm-500">+{gameState.reactant2Count - 12}</span>
+                    )}
                   </div>
                 )}
                 <p className="text-center text-xl font-bold">
                   {isGramMode
                     ? `${gameState.reactant2Grams} g`
-                    : `${gameState.reactant2Count} sameind${gameState.reactant2Count !== 1 ? 'ir' : ''}`
-                  }
+                    : `${gameState.reactant2Count} sameind${gameState.reactant2Count !== 1 ? 'ir' : ''}`}
                 </p>
+                {gameState.userLimiting === gameState.currentReaction.reactant2.formula &&
+                  !gameState.isAnswered && (
+                    <div className="mt-2 text-center">
+                      <span className="inline-block bg-orange-100 text-orange-700 text-xs font-bold px-2 py-1 rounded-full">
+                        Takmarkandi ✓
+                      </span>
+                    </div>
+                  )}
+                {gameState.isAnswered &&
+                  correctAnswer?.limitingReactant ===
+                    gameState.currentReaction.reactant2.formula && (
+                    <div className="mt-2 text-center">
+                      <span className="inline-block bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded-full">
+                        Takmarkandi ✓
+                      </span>
+                    </div>
+                  )}
               </div>
             </div>
 
             {/* Products input */}
             <div className="bg-white rounded-xl shadow-md p-6">
               <h3 className="font-bold text-warm-800 mb-4">
-                {isGramMode ? 'Hversu mörg grömm af afurðum myndast?' : 'Hversu margar afurðir myndast?'}
+                {isGramMode
+                  ? 'Hversu mörg grömm af afurðum myndast?'
+                  : 'Hversu margar afurðir myndast?'}
               </h3>
               <div className="space-y-4">
                 {gameState.currentReaction.products.map((product) => {
@@ -542,15 +662,12 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   const userVal = parseFloat(gameState.userProducts[product.formula]);
                   const isCorrectAnswer = isGramMode
                     ? Math.abs(userVal - expectedGrams) <= Math.max(expectedGrams * 0.05, 0.01)
-                    : parseInt(gameState.userProducts[product.formula]) === correctAnswer?.productsFormed[product.formula];
+                    : parseInt(gameState.userProducts[product.formula]) ===
+                      correctAnswer?.productsFormed[product.formula];
 
                   return (
                     <div key={product.formula} className="flex items-center gap-4">
-                      <Molecule
-                        formula={product.formula}
-                        color={product.color}
-                        size={45}
-                      />
+                      <Molecule formula={product.formula} color={product.color} size={45} />
                       <div className="w-28">
                         <span className="text-lg font-semibold">{product.formula}:</span>
                         {isGramMode && (
@@ -560,10 +677,15 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       <input
                         type="text"
                         value={gameState.userProducts[product.formula] || ''}
-                        onChange={(e) => setGameState(prev => ({
-                          ...prev,
-                          userProducts: { ...prev.userProducts, [product.formula]: e.target.value }
-                        }))}
+                        onChange={(e) =>
+                          setGameState((prev) => ({
+                            ...prev,
+                            userProducts: {
+                              ...prev.userProducts,
+                              [product.formula]: e.target.value,
+                            },
+                          }))
+                        }
                         disabled={gameState.isAnswered}
                         aria-label={`Magn ${product.formula} afurðar${isGramMode ? ' í grömmum' : ''}`}
                         className={`w-24 px-3 py-2 border-2 rounded-lg text-lg ${
@@ -578,7 +700,11 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       <span className="text-warm-600 text-sm">{isGramMode ? 'g' : ''}</span>
                       {gameState.isAnswered && (
                         <span className="text-sm text-warm-600">
-                          (Rétt: {isGramMode ? `${expectedGrams} g` : correctAnswer?.productsFormed[product.formula]})
+                          (Rétt:{' '}
+                          {isGramMode
+                            ? `${expectedGrams} g`
+                            : correctAnswer?.productsFormed[product.formula]}
+                          )
                         </span>
                       )}
                     </div>
@@ -593,15 +719,17 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 {isGramMode ? 'Afgangur í grömmum:' : 'Afgangur af hinu hvarfefninu:'}
               </h3>
               {(() => {
-                const excessMolarMass = correctAnswer?.limitingReactant === gameState.currentReaction.reactant1.formula
-                  ? gameState.reactant2MolarMass
-                  : gameState.reactant1MolarMass;
+                const excessMolarMass =
+                  correctAnswer?.limitingReactant === gameState.currentReaction.reactant1.formula
+                    ? gameState.reactant2MolarMass
+                    : gameState.reactant1MolarMass;
                 const expectedExcessGrams = correctAnswer
                   ? roundMass(correctAnswer.excessRemaining * excessMolarMass)
                   : 0;
                 const userVal = parseFloat(gameState.userExcess);
                 const isCorrectExcess = isGramMode
-                  ? Math.abs(userVal - expectedExcessGrams) <= Math.max(expectedExcessGrams * 0.05, 0.01)
+                  ? Math.abs(userVal - expectedExcessGrams) <=
+                    Math.max(expectedExcessGrams * 0.05, 0.01)
                   : parseInt(gameState.userExcess) === correctAnswer?.excessRemaining;
 
                 return (
@@ -609,7 +737,9 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     <input
                       type="text"
                       value={gameState.userExcess}
-                      onChange={(e) => setGameState(prev => ({ ...prev, userExcess: e.target.value }))}
+                      onChange={(e) =>
+                        setGameState((prev) => ({ ...prev, userExcess: e.target.value }))
+                      }
                       disabled={gameState.isAnswered}
                       className={`w-24 px-3 py-2 border-2 rounded-lg text-lg ${
                         gameState.isAnswered
@@ -621,11 +751,14 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       placeholder="0"
                     />
                     <span className="text-warm-600">
-                      {isGramMode ? 'g' : `sameind${parseInt(gameState.userExcess) !== 1 ? 'ir' : ''}`}
+                      {isGramMode
+                        ? 'g'
+                        : `sameind${parseInt(gameState.userExcess) !== 1 ? 'ir' : ''}`}
                     </span>
                     {gameState.isAnswered && (
                       <span className="text-sm text-warm-600">
-                        (Rétt: {isGramMode ? `${expectedExcessGrams} g` : correctAnswer?.excessRemaining})
+                        (Rétt:{' '}
+                        {isGramMode ? `${expectedExcessGrams} g` : correctAnswer?.excessRemaining})
                       </span>
                     )}
                   </div>
@@ -639,19 +772,31 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 <h4 className="font-bold text-warm-800 mb-4">Lausn:</h4>
                 <div className="space-y-2 text-sm">
                   <p>
-                    <strong>1.</strong> {gameState.currentReaction.reactant1.formula}: {gameState.reactant1Count} / {gameState.currentReaction.reactant1.coeff} = {correctAnswer.timesFromR1.toFixed(2)} skipti
+                    <strong>1.</strong> {gameState.currentReaction.reactant1.formula}:{' '}
+                    {gameState.reactant1Count} / {gameState.currentReaction.reactant1.coeff} ={' '}
+                    {correctAnswer.timesFromR1.toFixed(2)} skipti
                   </p>
                   <p>
-                    <strong>2.</strong> {gameState.currentReaction.reactant2.formula}: {gameState.reactant2Count} / {gameState.currentReaction.reactant2.coeff} = {correctAnswer.timesFromR2.toFixed(2)} skipti
+                    <strong>2.</strong> {gameState.currentReaction.reactant2.formula}:{' '}
+                    {gameState.reactant2Count} / {gameState.currentReaction.reactant2.coeff} ={' '}
+                    {correctAnswer.timesFromR2.toFixed(2)} skipti
                   </p>
                   <p>
-                    <strong>3.</strong> Takmarkandi: <span className="font-bold text-green-700">{correctAnswer.limitingReactant}</span> ({Math.min(correctAnswer.timesFromR1, correctAnswer.timesFromR2)} skipti)
+                    <strong>3.</strong> Takmarkandi:{' '}
+                    <span className="font-bold text-green-700">
+                      {correctAnswer.limitingReactant}
+                    </span>{' '}
+                    ({Math.min(correctAnswer.timesFromR1, correctAnswer.timesFromR2)} skipti)
                   </p>
                   <p>
-                    <strong>4.</strong> Afurðir: {correctAnswer.timesReactionRuns} × stuðull = {Object.entries(correctAnswer.productsFormed).map(([f, n]) => `${n} ${f}`).join(', ')}
+                    <strong>4.</strong> Afurðir: {correctAnswer.timesReactionRuns} × stuðull ={' '}
+                    {Object.entries(correctAnswer.productsFormed)
+                      .map(([f, n]) => `${n} ${f}`)
+                      .join(', ')}
                   </p>
                   <p>
-                    <strong>5.</strong> Afgangur: {correctAnswer.excessRemaining} {correctAnswer.excessReactant}
+                    <strong>5.</strong> Afgangur: {correctAnswer.excessRemaining}{' '}
+                    {correctAnswer.excessReactant}
                   </p>
                 </div>
               </div>
@@ -659,7 +804,9 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             {/* Feedback */}
             {gameState.isAnswered && (
-              <div className={`rounded-xl p-6 ${gameState.isCorrect ? 'bg-green-100 border-2 border-green-500' : 'bg-red-100 border-2 border-red-500'}`}>
+              <div
+                className={`rounded-xl p-6 ${gameState.isCorrect ? 'bg-green-100 border-2 border-green-500' : 'bg-red-100 border-2 border-red-500'}`}
+              >
                 <h3 className="text-2xl font-bold mb-2">
                   {gameState.isCorrect ? '✓ Rétt!' : '✗ Rangt'}
                 </h3>
@@ -698,9 +845,9 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   <button
                     onClick={() => {
                       if (!gameState.showingSolution) {
-                        setTotalHintsUsed(prev => prev + 1);
+                        setTotalHintsUsed((prev) => prev + 1);
                       }
-                      setGameState(prev => ({ ...prev, showingSolution: !prev.showingSolution }));
+                      setGameState((prev) => ({ ...prev, showingSolution: !prev.showingSolution }));
                     }}
                     className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
                   >

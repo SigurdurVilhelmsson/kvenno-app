@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
 import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
@@ -53,6 +53,8 @@ function App() {
     storage.get<Progress>(STORAGE_KEY, getDefaultProgress())
   );
   const [showAchievements, setShowAchievements] = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
+  const confirmTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { t, language, setLanguage } = useGameI18n({ gameTranslations });
 
   const {
@@ -363,16 +365,32 @@ function App() {
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-semibold text-warm-700">Framvinda</h3>
                 <button
-                  onClick={resetProgress}
-                  className="text-sm text-warm-500 hover:text-red-500 transition-colors"
+                  onClick={() => {
+                    if (confirmReset) {
+                      if (confirmTimerRef.current) clearTimeout(confirmTimerRef.current);
+                      setConfirmReset(false);
+                      resetProgress();
+                    } else {
+                      setConfirmReset(true);
+                      confirmTimerRef.current = setTimeout(() => setConfirmReset(false), 3000);
+                    }
+                  }}
+                  className={`text-sm transition-colors ${confirmReset ? 'text-red-600 font-semibold' : 'text-warm-500 hover:text-red-500'}`}
                 >
-                  Endurstilla
+                  {confirmReset ? 'Ertu viss? Smelltu aftur til að staðfesta' : 'Endurstilla'}
                 </button>
               </div>
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div className="bg-blue-50 rounded-lg p-3">
                   <div className="text-2xl font-bold text-blue-600">
-                    {[progress.level1Completed, progress.level2Completed].filter(Boolean).length}/2
+                    {
+                      [
+                        progress.level1Completed,
+                        progress.level2Completed,
+                        progress.level3BestScore > 0,
+                      ].filter(Boolean).length
+                    }
+                    /3
                   </div>
                   <div className="text-xs text-warm-600">Stig lokið</div>
                 </div>
