@@ -11,11 +11,16 @@ import { Reaction } from '../types';
 
 // Misconceptions for each challenge type
 const MISCONCEPTIONS: Record<ChallengeType, string> = {
-  which_runs_out: 'Takmarkandi hvarfefni er ekki alltaf það sem er minna af - það ræðst af stuðlum í jöfnunni og hlutföllum.',
-  count_times_r1: 'Mundu að deila með stuðlinum, ekki margfalda. Fjöldi sameinda ÷ stuðull = fjöldi skipta.',
-  count_times_r2: 'Athugaðu stuðulinn vandlega. Ef þú þarft 2 af hvarfefni fyrir hvert hvarf, þá helmingast fjöldi skipta.',
-  which_is_limiting: 'Berðu saman fjölda skipta, ekki fjölda sameinda. Það hvarfefni sem gefur FÆRRI skipti er takmarkandi.',
-  count_products: 'Margfaldaðu fjölda skipta með stuðli AFURÐAR, ekki hvarfefnis. Athugaðu jöfnuna vandlega.',
+  which_runs_out:
+    'Takmarkandi hvarfefni er ekki alltaf það sem er minna af - það ræðst af stuðlum í jöfnunni og hlutföllum.',
+  count_times_r1:
+    'Mundu að deila með stuðlinum, ekki margfalda. Fjöldi sameinda ÷ stuðull = fjöldi skipta.',
+  count_times_r2:
+    'Athugaðu stuðulinn vandlega. Ef þú þarft 2 af hvarfefni fyrir hvert hvarf, þá helmingast fjöldi skipta.',
+  which_is_limiting:
+    'Berðu saman fjölda skipta, ekki fjölda sameinda. Það hvarfefni sem gefur FÆRRI skipti er takmarkandi.',
+  count_products:
+    'Margfaldaðu fjölda skipta með stuðli AFURÐAR, ekki hvarfefnis. Athugaðu jöfnuna vandlega.',
   count_excess: 'Afgangur = upphaf - notað. Notaðu fjölda skipta × stuðul til að finna notað magn.',
 };
 
@@ -52,7 +57,7 @@ interface Challenge {
 }
 
 // Simple reactions for learning (easy only)
-const LEVEL1_REACTIONS = REACTIONS.filter(r => r.difficulty === 'easy').slice(0, 6);
+const LEVEL1_REACTIONS = REACTIONS.filter((r) => r.difficulty === 'easy').slice(0, 6);
 
 function generateChallenge(challengeIndex: number): Challenge {
   const types: ChallengeType[] = [
@@ -61,7 +66,7 @@ function generateChallenge(challengeIndex: number): Challenge {
     'count_times_r2',
     'which_is_limiting',
     'count_products',
-    'count_excess'
+    'count_excess',
   ];
 
   const type = types[challengeIndex % types.length];
@@ -92,7 +97,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [hintMultiplier, setHintMultiplier] = useState(1.0);
-  const [hintsUsedTier, setHintsUsedTier] = useState(0);
+  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
   const [showAnimation, setShowAnimation] = useState(false);
 
   const totalChallenges = 8;
@@ -103,14 +108,16 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   // Calculate correct answers
   const timesR1 = challenge.r1Count / challenge.reaction.reactant1.coeff;
   const timesR2 = challenge.r2Count / challenge.reaction.reactant2.coeff;
-  const limitingReactant = timesR1 <= timesR2
-    ? challenge.reaction.reactant1.formula
-    : challenge.reaction.reactant2.formula;
+  const limitingReactant =
+    timesR1 <= timesR2
+      ? challenge.reaction.reactant1.formula
+      : challenge.reaction.reactant2.formula;
   const timesReactionRuns = Math.min(timesR1, timesR2);
   const productCount = challenge.reaction.products[0].coeff * timesReactionRuns;
-  const excessCount = timesR1 <= timesR2
-    ? challenge.r2Count - (timesReactionRuns * challenge.reaction.reactant2.coeff)
-    : challenge.r1Count - (timesReactionRuns * challenge.reaction.reactant1.coeff);
+  const excessCount =
+    timesR1 <= timesR2
+      ? challenge.r2Count - timesReactionRuns * challenge.reaction.reactant2.coeff
+      : challenge.r1Count - timesReactionRuns * challenge.reaction.reactant1.coeff;
 
   const checkAnswer = (answer: string | number) => {
     setSelectedAnswer(answer);
@@ -140,8 +147,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
     if (correct) {
       const points = Math.round(10 * hintMultiplier);
-      setScore(prev => prev + points);
-      setCorrectCount(prev => prev + 1);
+      setScore((prev) => prev + points);
+      setCorrectCount((prev) => prev + 1);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();
@@ -156,7 +163,6 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       setSelectedAnswer(null);
       setShowFeedback(false);
       setHintMultiplier(1.0);
-      setHintsUsedTier(0);
       setShowAnimation(false);
     }
   };
@@ -165,10 +171,13 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   if (isComplete) {
     const passedLevel = hasMastery;
     const questionsAnswered = challengeIndex + (showFeedback ? 1 : 0);
-    const accuracy = questionsAnswered > 0 ? Math.round((correctCount / questionsAnswered) * 100) : 0;
+    const accuracy =
+      questionsAnswered > 0 ? Math.round((correctCount / questionsAnswered) * 100) : 0;
 
     return (
-      <div className={`min-h-screen bg-gradient-to-b ${passedLevel ? 'from-green-50' : 'from-yellow-50'} to-white p-4`}>
+      <div
+        className={`min-h-screen bg-gradient-to-b ${passedLevel ? 'from-green-50' : 'from-yellow-50'} to-white p-4`}
+      >
         <div className="max-w-lg mx-auto">
           <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
             <div className="text-6xl mb-4">{passedLevel ? '🎉' : '💪'}</div>
@@ -183,7 +192,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             <div className="grid grid-cols-3 gap-3 mb-6">
               <div className="bg-green-50 rounded-xl p-4">
-                <div className="text-2xl font-bold text-green-600">{correctCount}/{questionsAnswered}</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {correctCount}/{questionsAnswered}
+                </div>
                 <div className="text-xs text-warm-600">Rétt svör</div>
               </div>
               <div className="bg-blue-50 rounded-xl p-4">
@@ -200,7 +211,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="bg-warm-50 rounded-xl p-4 mb-6">
               <div className="flex justify-between text-sm text-warm-600 mb-2">
                 <span>Framvinda í lærdómi</span>
-                <span>{correctCount}/{masteryThreshold} rétt svör</span>
+                <span>
+                  {correctCount}/{masteryThreshold} rétt svör
+                </span>
               </div>
               <div className="h-3 bg-warm-200 rounded-full overflow-hidden">
                 <div
@@ -236,7 +249,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="space-y-3">
               {passedLevel ? (
                 <button
-                  onClick={() => onComplete(score, totalChallenges * 10, hintsUsedTier)}
+                  onClick={() => onComplete(score, totalChallenges * 10, totalHintsUsed)}
                   className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-xl transition-colors"
                 >
                   Halda áfram í Stig 2 →
@@ -251,7 +264,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     setSelectedAnswer(null);
                     setShowFeedback(false);
                     setHintMultiplier(1.0);
-                    setHintsUsedTier(0);
+                    setTotalHintsUsed(0);
                   }}
                   className="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-xl transition-colors"
                 >
@@ -281,9 +294,10 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           hints: {
             topic: 'Þetta snýst um takmarkandi hvarfefni og stökefnafræðileg hlutföll.',
             strategy: 'Berðu saman hversu oft hvert hvarfefni getur brugðist miðað við stuðlana.',
-            method: 'Líttu á stuðlana í jöfnunni. Ef þú þarft 2 af A fyrir hvert 1 af B, þá eyðist A hraðar.',
-            solution: `${challenge.reaction.reactant1.formula}: ${challenge.r1Count}÷${challenge.reaction.reactant1.coeff}=${timesR1} skipti. ${challenge.reaction.reactant2.formula}: ${challenge.r2Count}÷${challenge.reaction.reactant2.coeff}=${timesR2} skipti. ${timesR1 <= timesR2 ? challenge.reaction.reactant1.formula : challenge.reaction.reactant2.formula} eyðist fyrst.`
-          }
+            method:
+              'Líttu á stuðlana í jöfnunni. Ef þú þarft 2 af A fyrir hvert 1 af B, þá eyðist A hraðar.',
+            solution: `${challenge.reaction.reactant1.formula}: ${challenge.r1Count}÷${challenge.reaction.reactant1.coeff}=${timesR1} skipti. ${challenge.reaction.reactant2.formula}: ${challenge.r2Count}÷${challenge.reaction.reactant2.coeff}=${timesR2} skipti. ${timesR1 <= timesR2 ? challenge.reaction.reactant1.formula : challenge.reaction.reactant2.formula} eyðist fyrst.`,
+          },
         };
       case 'count_times_r1':
         return {
@@ -293,8 +307,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             topic: 'Þetta snýst um mólhlutföll og stökefnafræði.',
             strategy: 'Deildu fjölda sameinda með stuðlinum til að finna fjölda skipta.',
             method: `Notaðu: fjöldi sameinda ÷ stuðull = fjöldi skipta`,
-            solution: `${challenge.r1Count} ÷ ${challenge.reaction.reactant1.coeff} = ${timesR1} skipti`
-          }
+            solution: `${challenge.r1Count} ÷ ${challenge.reaction.reactant1.coeff} = ${timesR1} skipti`,
+          },
         };
       case 'count_times_r2':
         return {
@@ -304,8 +318,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             topic: 'Þetta snýst um mólhlutföll og stökefnafræði.',
             strategy: 'Deildu fjölda sameinda með stuðlinum til að finna fjölda skipta.',
             method: `Notaðu: fjöldi sameinda ÷ stuðull = fjöldi skipta`,
-            solution: `${challenge.r2Count} ÷ ${challenge.reaction.reactant2.coeff} = ${timesR2} skipti`
-          }
+            solution: `${challenge.r2Count} ÷ ${challenge.reaction.reactant2.coeff} = ${timesR2} skipti`,
+          },
         };
       case 'which_is_limiting':
         return {
@@ -315,8 +329,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             topic: 'Þetta snýst um að bera kennsl á takmarkandi hvarfefni.',
             strategy: 'Takmarkandi hvarfefnið er það sem gefur FÆRRI hvarfaskipti.',
             method: 'Berðu saman fjölda skipta. Lægri talan ákvarðar takmarkandi hvarfefnið.',
-            solution: `${challenge.reaction.reactant1.formula}: ${timesR1} skipti. ${challenge.reaction.reactant2.formula}: ${timesR2} skipti. ${timesR1 < timesR2 ? timesR1 : timesR2} < ${timesR1 < timesR2 ? timesR2 : timesR1}, svo ${limitingReactant} er takmarkandi.`
-          }
+            solution: `${challenge.reaction.reactant1.formula}: ${timesR1} skipti. ${challenge.reaction.reactant2.formula}: ${timesR2} skipti. ${timesR1 < timesR2 ? timesR1 : timesR2} < ${timesR1 < timesR2 ? timesR2 : timesR1}, svo ${limitingReactant} er takmarkandi.`,
+          },
         };
       case 'count_products':
         return {
@@ -326,8 +340,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             topic: 'Þetta snýst um að reikna afurðir úr stökefnafræði.',
             strategy: 'Margfaldaðu fjölda skipta með stuðli afurðar.',
             method: `Notaðu: afurðir = fjöldi skipta × stuðull afurðar`,
-            solution: `${timesReactionRuns} × ${challenge.reaction.products[0].coeff} = ${productCount} ${challenge.reaction.products[0].formula}`
-          }
+            solution: `${timesReactionRuns} × ${challenge.reaction.products[0].coeff} = ${productCount} ${challenge.reaction.products[0].formula}`,
+          },
         };
       case 'count_excess':
         return {
@@ -337,11 +351,15 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             topic: 'Þetta snýst um að reikna afgang hvarfefnis.',
             strategy: 'Finndu hversu mikið var notað og dragðu frá upphaflegu magni.',
             method: `Afgangur = upphaflegur fjöldi - (fjöldi skipta × stuðull)`,
-            solution: `Afgangshvarfefni: ${timesR1 <= timesR2 ? challenge.reaction.reactant2.formula : challenge.reaction.reactant1.formula}. Afgangur = ${timesR1 <= timesR2 ? challenge.r2Count : challenge.r1Count} - (${timesReactionRuns} × ${timesR1 <= timesR2 ? challenge.reaction.reactant2.coeff : challenge.reaction.reactant1.coeff}) = ${excessCount}`
-          }
+            solution: `Afgangshvarfefni: ${timesR1 <= timesR2 ? challenge.reaction.reactant2.formula : challenge.reaction.reactant1.formula}. Afgangur = ${timesR1 <= timesR2 ? challenge.r2Count : challenge.r1Count} - (${timesReactionRuns} × ${timesR1 <= timesR2 ? challenge.reaction.reactant2.coeff : challenge.reaction.reactant1.coeff}) = ${excessCount}`,
+          },
         };
       default:
-        return { title: '', instruction: '', hints: { topic: '', strategy: '', method: '', solution: '' } };
+        return {
+          title: '',
+          instruction: '',
+          hints: { topic: '', strategy: '', method: '', solution: '' },
+        };
     }
   };
 
@@ -359,7 +377,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               disabled={showFeedback}
               className={`p-6 rounded-xl border-4 transition-all ${
                 showFeedback && selectedAnswer === challenge.reaction.reactant1.formula
-                  ? isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'
+                  ? isCorrect
+                    ? 'border-green-500 bg-green-50'
+                    : 'border-red-500 bg-red-50'
                   : showFeedback && limitingReactant === challenge.reaction.reactant1.formula
                     ? 'border-green-500 bg-green-50'
                     : 'border-warm-200 hover:border-orange-300 hover:bg-orange-50'
@@ -368,7 +388,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div className="text-center mb-4">
                 <div className="text-2xl font-bold">{challenge.reaction.reactant1.formula}</div>
                 <div className="text-sm text-warm-600">{challenge.r1Count} sameindur</div>
-                <div className="text-xs text-warm-500">Stuðull: {challenge.reaction.reactant1.coeff}</div>
+                <div className="text-xs text-warm-500">
+                  Stuðull: {challenge.reaction.reactant1.coeff}
+                </div>
               </div>
               <div className="flex flex-wrap justify-center gap-1">
                 {Array.from({ length: Math.min(challenge.r1Count, 8) }).map((_, i) => (
@@ -379,7 +401,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     size={30}
                   />
                 ))}
-                {challenge.r1Count > 8 && <span className="text-warm-500">+{challenge.r1Count - 8}</span>}
+                {challenge.r1Count > 8 && (
+                  <span className="text-warm-500">+{challenge.r1Count - 8}</span>
+                )}
               </div>
             </button>
 
@@ -388,7 +412,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               disabled={showFeedback}
               className={`p-6 rounded-xl border-4 transition-all ${
                 showFeedback && selectedAnswer === challenge.reaction.reactant2.formula
-                  ? isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'
+                  ? isCorrect
+                    ? 'border-green-500 bg-green-50'
+                    : 'border-red-500 bg-red-50'
                   : showFeedback && limitingReactant === challenge.reaction.reactant2.formula
                     ? 'border-green-500 bg-green-50'
                     : 'border-warm-200 hover:border-orange-300 hover:bg-orange-50'
@@ -397,7 +423,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div className="text-center mb-4">
                 <div className="text-2xl font-bold">{challenge.reaction.reactant2.formula}</div>
                 <div className="text-sm text-warm-600">{challenge.r2Count} sameindur</div>
-                <div className="text-xs text-warm-500">Stuðull: {challenge.reaction.reactant2.coeff}</div>
+                <div className="text-xs text-warm-500">
+                  Stuðull: {challenge.reaction.reactant2.coeff}
+                </div>
               </div>
               <div className="flex flex-wrap justify-center gap-1">
                 {Array.from({ length: Math.min(challenge.r2Count, 8) }).map((_, i) => (
@@ -408,7 +436,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     size={30}
                   />
                 ))}
-                {challenge.r2Count > 8 && <span className="text-warm-500">+{challenge.r2Count - 8}</span>}
+                {challenge.r2Count > 8 && (
+                  <span className="text-warm-500">+{challenge.r2Count - 8}</span>
+                )}
               </div>
             </button>
           </div>
@@ -419,10 +449,13 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       case 'count_products':
       case 'count_excess': {
         const correctAnswer =
-          challenge.type === 'count_times_r1' ? timesR1 :
-          challenge.type === 'count_times_r2' ? timesR2 :
-          challenge.type === 'count_products' ? productCount :
-          excessCount;
+          challenge.type === 'count_times_r1'
+            ? timesR1
+            : challenge.type === 'count_times_r2'
+              ? timesR2
+              : challenge.type === 'count_products'
+                ? productCount
+                : excessCount;
 
         // Generate options including correct answer
         const options = new Set<number>([correctAnswer]);
@@ -435,14 +468,16 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         return (
           <div className="grid grid-cols-4 gap-3">
-            {shuffledNumericOptions.map(num => (
+            {shuffledNumericOptions.map((num) => (
               <button
                 key={num}
                 onClick={() => !showFeedback && checkAnswer(num)}
                 disabled={showFeedback}
                 className={`p-4 rounded-xl border-4 font-bold text-xl transition-all ${
                   showFeedback && selectedAnswer === num
-                    ? isCorrect ? 'border-green-500 bg-green-50 text-green-700' : 'border-red-500 bg-red-50 text-red-700'
+                    ? isCorrect
+                      ? 'border-green-500 bg-green-50 text-green-700'
+                      : 'border-red-500 bg-red-50 text-red-700'
                     : showFeedback && num === correctAnswer
                       ? 'border-green-500 bg-green-50 text-green-700'
                       : 'border-warm-200 hover:border-orange-300 hover:bg-orange-50'
@@ -479,8 +514,12 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           {/* Progress bar */}
           <div className="mt-3">
             <div className="flex justify-between text-xs text-warm-500 mb-1">
-              <span>Áskorun {challengeIndex + 1}/{totalChallenges}</span>
-              <span>{correctCount}/{masteryThreshold} rétt</span>
+              <span>
+                Áskorun {challengeIndex + 1}/{totalChallenges}
+              </span>
+              <span>
+                {correctCount}/{masteryThreshold} rétt
+              </span>
             </div>
             <div className="h-2 bg-warm-200 rounded-full overflow-hidden">
               <div
@@ -514,15 +553,17 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 isCorrect,
                 explanation: isCorrect
                   ? `Rétt! ${info.hints.solution}`
-                  : `${challenge.type === 'which_runs_out' || challenge.type === 'which_is_limiting'
-                      ? `Rétt svar: ${limitingReactant}`
-                      : challenge.type === 'count_times_r1'
-                        ? `Rétt svar: ${timesR1}`
-                        : challenge.type === 'count_times_r2'
-                          ? `Rétt svar: ${timesR2}`
-                          : challenge.type === 'count_products'
-                            ? `Rétt svar: ${productCount}`
-                            : `Rétt svar: ${excessCount}`}. ${info.hints.solution}`,
+                  : `${
+                      challenge.type === 'which_runs_out' || challenge.type === 'which_is_limiting'
+                        ? `Rétt svar: ${limitingReactant}`
+                        : challenge.type === 'count_times_r1'
+                          ? `Rétt svar: ${timesR1}`
+                          : challenge.type === 'count_times_r2'
+                            ? `Rétt svar: ${timesR2}`
+                            : challenge.type === 'count_products'
+                              ? `Rétt svar: ${productCount}`
+                              : `Rétt svar: ${excessCount}`
+                    }. ${info.hints.solution}`,
                 misconception: isCorrect ? undefined : MISCONCEPTIONS[challenge.type],
                 relatedConcepts: RELATED_CONCEPTS[challenge.type],
                 nextSteps: isCorrect
@@ -578,7 +619,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <HintSystem
           hints={info.hints}
           basePoints={10}
-          onHintUsed={(tier) => setHintsUsedTier(tier)}
+          onHintUsed={() => setTotalHintsUsed((prev) => prev + 1)}
           onPointsChange={setHintMultiplier}
           disabled={showFeedback}
           resetKey={challengeIndex}
@@ -589,12 +630,18 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="bg-blue-50 rounded-xl p-4 mb-4">
           <h3 className="font-bold text-blue-800 mb-2">Lykilhugmynd:</h3>
           <p className="text-sm text-warm-700">
-            {challenge.type === 'which_runs_out' && 'Takmarkandi hvarfefni er það sem eyðist fyrst. Það ákvarðar hversu mikið af afurðum getur myndast.'}
-            {challenge.type === 'count_times_r1' && 'Til að finna hversu oft hvarf getur gerst, deilir þú fjölda sameinda með stuðli úr jöfnunni.'}
-            {challenge.type === 'count_times_r2' && 'Fjöldi skipta = fjöldi sameinda ÷ stuðull. Þetta segir þér hversu oft hvörfin geta gerst.'}
-            {challenge.type === 'which_is_limiting' && 'Berðu saman fjölda skipta. Hvarfefnið sem gefur FÆRRI skipti er takmarkandi.'}
-            {challenge.type === 'count_products' && 'Afurðir = fjöldi skipta × stuðull afurðar. Notaðu fjölda skipta frá takmarkandi hvarfefni.'}
-            {challenge.type === 'count_excess' && 'Afgangur = upphafleg - notuð. Notaðu fjölda skipta og stuðul til að finna hversu margar voru notaðar.'}
+            {challenge.type === 'which_runs_out' &&
+              'Takmarkandi hvarfefni er það sem eyðist fyrst. Það ákvarðar hversu mikið af afurðum getur myndast.'}
+            {challenge.type === 'count_times_r1' &&
+              'Til að finna hversu oft hvarf getur gerst, deilir þú fjölda sameinda með stuðli úr jöfnunni.'}
+            {challenge.type === 'count_times_r2' &&
+              'Fjöldi skipta = fjöldi sameinda ÷ stuðull. Þetta segir þér hversu oft hvörfin geta gerst.'}
+            {challenge.type === 'which_is_limiting' &&
+              'Berðu saman fjölda skipta. Hvarfefnið sem gefur FÆRRI skipti er takmarkandi.'}
+            {challenge.type === 'count_products' &&
+              'Afurðir = fjöldi skipta × stuðull afurðar. Notaðu fjölda skipta frá takmarkandi hvarfefni.'}
+            {challenge.type === 'count_excess' &&
+              'Afgangur = upphafleg - notuð. Notaðu fjölda skipta og stuðul til að finna hversu margar voru notaðar.'}
           </p>
         </div>
 

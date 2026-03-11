@@ -14,7 +14,15 @@ interface Level2Props {
 }
 
 type ProblemMode = 'molecules' | 'grams';
-type Step = 'moles_r1' | 'moles_r2' | 'times_r1' | 'times_r2' | 'limiting' | 'products' | 'excess' | 'complete';
+type Step =
+  | 'moles_r1'
+  | 'moles_r2'
+  | 'times_r1'
+  | 'times_r2'
+  | 'limiting'
+  | 'products'
+  | 'excess'
+  | 'complete';
 
 interface Problem {
   reaction: Reaction;
@@ -42,8 +50,8 @@ interface Problem {
 
 // Use easy and medium single-product reactions for Level 2
 // (multi-product reactions like CH₄+2O₂→CO₂+2H₂O are handled in Level 3)
-const LEVEL2_REACTIONS = REACTIONS.filter(r =>
-  (r.difficulty === 'easy' || r.difficulty === 'medium') && r.products.length === 1
+const LEVEL2_REACTIONS = REACTIONS.filter(
+  (r) => (r.difficulty === 'easy' || r.difficulty === 'medium') && r.products.length === 1
 );
 
 function generateProblem(mode: ProblemMode): Problem {
@@ -89,16 +97,19 @@ function generateProblem(mode: ProblemMode): Problem {
   // Calculate correct answers based on moles
   const timesR1 = molesR1 / reaction.reactant1.coeff;
   const timesR2 = molesR2 / reaction.reactant2.coeff;
-  const limitingReactant = timesR1 <= timesR2 ? reaction.reactant1.formula : reaction.reactant2.formula;
+  const limitingReactant =
+    timesR1 <= timesR2 ? reaction.reactant1.formula : reaction.reactant2.formula;
   const timesReactionRuns = Math.min(timesR1, timesR2);
   const productsFormed = reaction.products[0].coeff * timesReactionRuns;
   const productGrams = roundMass(productsFormed * productMolarMass);
 
-  const excessRemaining = limitingReactant === reaction.reactant1.formula
-    ? molesR2 - (timesReactionRuns * reaction.reactant2.coeff)
-    : molesR1 - (timesReactionRuns * reaction.reactant1.coeff);
+  const excessRemaining =
+    limitingReactant === reaction.reactant1.formula
+      ? molesR2 - timesReactionRuns * reaction.reactant2.coeff
+      : molesR1 - timesReactionRuns * reaction.reactant1.coeff;
 
-  const excessMolarMass = limitingReactant === reaction.reactant1.formula ? r2MolarMass : r1MolarMass;
+  const excessMolarMass =
+    limitingReactant === reaction.reactant1.formula ? r2MolarMass : r1MolarMass;
   const excessGrams = roundMass(excessRemaining * excessMolarMass);
 
   return {
@@ -119,7 +130,7 @@ function generateProblem(mode: ProblemMode): Problem {
     productGrams,
     productMolarMass,
     excessRemaining: roundMass(excessRemaining),
-    excessGrams
+    excessGrams,
   };
 }
 
@@ -163,10 +174,14 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         correct = isCloseEnough(numInput, problem.molesR2);
         break;
       case 'times_r1':
-        correct = isGramMode ? isCloseEnough(numInput, problem.timesR1) : numInput === problem.timesR1;
+        correct = isGramMode
+          ? isCloseEnough(numInput, problem.timesR1)
+          : numInput === problem.timesR1;
         break;
       case 'times_r2':
-        correct = isGramMode ? isCloseEnough(numInput, problem.timesR2) : numInput === problem.timesR2;
+        correct = isGramMode
+          ? isCloseEnough(numInput, problem.timesR2)
+          : numInput === problem.timesR2;
         break;
       case 'limiting':
         correct = selectedLimiting === problem.limitingReactant;
@@ -192,11 +207,12 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
     if (!correct) {
       setProblemCorrectSoFar(false);
+      setTotalHintsUsed((prev) => prev + 1);
       onIncorrectAnswer?.();
     }
 
     if (correct) {
-      setScore(prev => prev + 5);
+      setScore((prev) => prev + 5);
       onCorrectAnswer?.();
     }
   };
@@ -208,7 +224,16 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
     // Different step order based on mode
     const stepOrder: Step[] = isGramMode
-      ? ['moles_r1', 'moles_r2', 'times_r1', 'times_r2', 'limiting', 'products', 'excess', 'complete']
+      ? [
+          'moles_r1',
+          'moles_r2',
+          'times_r1',
+          'times_r2',
+          'limiting',
+          'products',
+          'excess',
+          'complete',
+        ]
       : ['times_r1', 'times_r2', 'limiting', 'products', 'excess', 'complete'];
     const currentIndex = stepOrder.indexOf(currentStep);
 
@@ -219,7 +244,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const nextProblem = () => {
     if (problemCorrectSoFar) {
-      setCorrectProblems(prev => prev + 1);
+      setCorrectProblems((prev) => prev + 1);
     }
 
     const next = problemIndex + 1;
@@ -292,8 +317,12 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="bg-blue-50 rounded-xl p-4 mb-6">
               <h4 className="font-bold text-blue-800 mb-2">Munurinn:</h4>
               <ul className="text-sm text-warm-700 space-y-1">
-                <li><strong>Sameindir:</strong> Þú vinnur með fjölda sameinda (t.d. 6 sameindir)</li>
-                <li><strong>Grömm:</strong> Þú byrjar með massa og breytir í mól með mólmassa</li>
+                <li>
+                  <strong>Sameindir:</strong> Þú vinnur með fjölda sameinda (t.d. 6 sameindir)
+                </li>
+                <li>
+                  <strong>Grömm:</strong> Þú byrjar með massa og breytir í mól með mólmassa
+                </li>
               </ul>
             </div>
 
@@ -314,7 +343,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     const passedLevel = hasMastery;
 
     return (
-      <div className={`min-h-screen bg-gradient-to-b ${passedLevel ? 'from-green-50' : 'from-yellow-50'} to-white p-4`}>
+      <div
+        className={`min-h-screen bg-gradient-to-b ${passedLevel ? 'from-green-50' : 'from-yellow-50'} to-white p-4`}
+      >
         <div className="max-w-lg mx-auto">
           <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
             <div className="text-6xl mb-4">{passedLevel ? '🎓' : '📚'}</div>
@@ -329,7 +360,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             <div className="grid grid-cols-2 gap-3 mb-6">
               <div className="bg-green-50 rounded-xl p-4">
-                <div className="text-2xl font-bold text-green-600">{correctProblems}/{problemIndex + 1}</div>
+                <div className="text-2xl font-bold text-green-600">
+                  {correctProblems}/{problemIndex + 1}
+                </div>
                 <div className="text-xs text-warm-600">Fullkomin</div>
               </div>
               <div className="bg-purple-50 rounded-xl p-4">
@@ -342,7 +375,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="bg-warm-50 rounded-xl p-4 mb-6">
               <div className="flex justify-between text-sm text-warm-600 mb-2">
                 <span>Framvinda í lærdómi</span>
-                <span>{correctProblems}/{masteryThreshold} fullkomin</span>
+                <span>
+                  {correctProblems}/{masteryThreshold} fullkomin
+                </span>
               </div>
               <div className="h-3 bg-warm-200 rounded-full overflow-hidden">
                 <div
@@ -429,7 +464,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="flex justify-between items-center">
               <div>
                 <h1 className="text-xl font-bold text-warm-800">Takmarkandi - Stig 2</h1>
-                <p className="text-sm text-warm-600">Verkefni {problemIndex + 1}/{totalProblems}</p>
+                <p className="text-sm text-warm-600">
+                  Verkefni {problemIndex + 1}/{totalProblems}
+                </p>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-orange-600">{score}</div>
@@ -514,9 +551,10 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const getStepInfo = () => {
     const totalSteps = isGramMode ? 7 : 5;
     const timesRun = Math.min(problem.timesR1, problem.timesR2);
-    const excessReactant = problem.limitingReactant === problem.reaction.reactant1.formula
-      ? problem.reaction.reactant2
-      : problem.reaction.reactant1;
+    const excessReactant =
+      problem.limitingReactant === problem.reaction.reactant1.formula
+        ? problem.reaction.reactant2
+        : problem.reaction.reactant1;
 
     if (isGramMode) {
       // Gram mode steps
@@ -529,7 +567,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             instruction: `Þú hefur ${problem.r1Grams} g af ${problem.reaction.reactant1.formula}. Mólmassi ${problem.reaction.reactant1.formula} er ${problem.r1MolarMass} g/mol`,
             formula: `mól = grömm ÷ mólmassi = ${problem.r1Grams} ÷ ${problem.r1MolarMass} = ?`,
             correctAnswer: problem.molesR1,
-            unit: 'mól'
+            unit: 'mól',
           };
         case 'moles_r2':
           return {
@@ -539,7 +577,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             instruction: `Þú hefur ${problem.r2Grams} g af ${problem.reaction.reactant2.formula}. Mólmassi ${problem.reaction.reactant2.formula} er ${problem.r2MolarMass} g/mol`,
             formula: `mól = grömm ÷ mólmassi = ${problem.r2Grams} ÷ ${problem.r2MolarMass} = ?`,
             correctAnswer: problem.molesR2,
-            unit: 'mól'
+            unit: 'mól',
           };
         case 'times_r1':
           return {
@@ -549,7 +587,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             instruction: `Þú hefur ${problem.molesR1} mól af ${problem.reaction.reactant1.formula} og stuðullinn er ${problem.reaction.reactant1.coeff}`,
             formula: `Fjöldi skipta = mól ÷ stuðull = ${problem.molesR1} ÷ ${problem.reaction.reactant1.coeff} = ?`,
             correctAnswer: problem.timesR1,
-            unit: 'skipti'
+            unit: 'skipti',
           };
         case 'times_r2':
           return {
@@ -559,7 +597,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             instruction: `Þú hefur ${problem.molesR2} mól af ${problem.reaction.reactant2.formula} og stuðullinn er ${problem.reaction.reactant2.coeff}`,
             formula: `Fjöldi skipta = mól ÷ stuðull = ${problem.molesR2} ÷ ${problem.reaction.reactant2.coeff} = ?`,
             correctAnswer: problem.timesR2,
-            unit: 'skipti'
+            unit: 'skipti',
           };
         case 'limiting':
           return {
@@ -569,7 +607,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             instruction: `${problem.reaction.reactant1.formula} getur hvarfast ${roundMass(problem.timesR1)} sinnum. ${problem.reaction.reactant2.formula} getur hvarfast ${roundMass(problem.timesR2)} sinnum. Hvort takmarkar hvörfin?`,
             formula: 'Takmarkandi = hvarfefnið með FÆRRI skipti',
             correctAnswer: problem.limitingReactant,
-            unit: ''
+            unit: '',
           };
         case 'products': {
           const productMoles = roundMass(timesRun * problem.reaction.products[0].coeff);
@@ -580,13 +618,14 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             instruction: `Hvörfin geta gerst ${roundMass(timesRun)} sinnum. Stuðull ${problem.reaction.products[0].formula} er ${problem.reaction.products[0].coeff}, þannig ${productMoles} mól myndast. Mólmassi ${problem.reaction.products[0].formula} er ${problem.productMolarMass} g/mol`,
             formula: `Massi = mól × mólmassi = ${productMoles} × ${problem.productMolarMass} = ?`,
             correctAnswer: problem.productGrams,
-            unit: 'g'
+            unit: 'g',
           };
         }
         case 'excess': {
-          const excessMolarMass = problem.limitingReactant === problem.reaction.reactant1.formula
-            ? problem.r2MolarMass
-            : problem.r1MolarMass;
+          const excessMolarMass =
+            problem.limitingReactant === problem.reaction.reactant1.formula
+              ? problem.r2MolarMass
+              : problem.r1MolarMass;
           return {
             stepNumber: 7,
             totalSteps,
@@ -594,11 +633,19 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             instruction: `${roundMass(problem.excessRemaining)} mól af ${excessReactant.formula} verða eftir. Mólmassi ${excessReactant.formula} er ${excessMolarMass} g/mol`,
             formula: `Massi = mól × mólmassi = ${roundMass(problem.excessRemaining)} × ${excessMolarMass} = ?`,
             correctAnswer: problem.excessGrams,
-            unit: 'g'
+            unit: 'g',
           };
         }
         default:
-          return { stepNumber: 0, totalSteps, title: '', instruction: '', formula: '', correctAnswer: 0, unit: '' };
+          return {
+            stepNumber: 0,
+            totalSteps,
+            title: '',
+            instruction: '',
+            formula: '',
+            correctAnswer: 0,
+            unit: '',
+          };
       }
     } else {
       // Molecule mode steps (original)
@@ -611,7 +658,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             instruction: `Þú hefur ${problem.r1Count} ${problem.reaction.reactant1.formula} og stuðullinn er ${problem.reaction.reactant1.coeff}`,
             formula: `Fjöldi skipta = sameindir ÷ stuðull = ${problem.r1Count} ÷ ${problem.reaction.reactant1.coeff} = ?`,
             correctAnswer: problem.timesR1,
-            unit: 'skipti'
+            unit: 'skipti',
           };
         case 'times_r2':
           return {
@@ -621,7 +668,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             instruction: `Þú hefur ${problem.r2Count} ${problem.reaction.reactant2.formula} og stuðullinn er ${problem.reaction.reactant2.coeff}`,
             formula: `Fjöldi skipta = sameindir ÷ stuðull = ${problem.r2Count} ÷ ${problem.reaction.reactant2.coeff} = ?`,
             correctAnswer: problem.timesR2,
-            unit: 'skipti'
+            unit: 'skipti',
           };
         case 'limiting':
           return {
@@ -631,7 +678,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             instruction: `${problem.reaction.reactant1.formula} getur hvarfast ${problem.timesR1} sinnum. ${problem.reaction.reactant2.formula} getur hvarfast ${problem.timesR2} sinnum. Hvort takmarkar hvörfin?`,
             formula: 'Takmarkandi = hvarfefnið með FÆRRI skipti',
             correctAnswer: problem.limitingReactant,
-            unit: ''
+            unit: '',
           };
         case 'products':
           return {
@@ -641,12 +688,13 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             instruction: `Hvörfin geta gerst ${Math.floor(timesRun)} sinnum. Stuðull ${problem.reaction.products[0].formula} er ${problem.reaction.products[0].coeff}`,
             formula: `Afurðir = fjöldi skipta × stuðull = ${Math.floor(timesRun)} × ${problem.reaction.products[0].coeff} = ?`,
             correctAnswer: problem.productsFormed,
-            unit: 'sameindir'
+            unit: 'sameindir',
           };
         case 'excess': {
-          const excessStartCount = problem.limitingReactant === problem.reaction.reactant1.formula
-            ? problem.r2Count
-            : problem.r1Count;
+          const excessStartCount =
+            problem.limitingReactant === problem.reaction.reactant1.formula
+              ? problem.r2Count
+              : problem.r1Count;
           const used = Math.floor(timesRun) * excessReactant.coeff;
           return {
             stepNumber: 5,
@@ -655,11 +703,19 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             instruction: `Þú byrjaðir með ${excessStartCount} ${excessReactant.formula}. Hvörfin notuðu ${Math.floor(timesRun)} × ${excessReactant.coeff} = ${used} sameindir`,
             formula: `Afgangur = upphafs - notuð = ${excessStartCount} - ${used} = ?`,
             correctAnswer: problem.excessRemaining,
-            unit: 'sameindir'
+            unit: 'sameindir',
           };
         }
         default:
-          return { stepNumber: 0, totalSteps, title: '', instruction: '', formula: '', correctAnswer: 0, unit: '' };
+          return {
+            stepNumber: 0,
+            totalSteps,
+            title: '',
+            instruction: '',
+            formula: '',
+            correctAnswer: 0,
+            unit: '',
+          };
       }
     }
   };
@@ -687,8 +743,12 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           {/* Progress bar */}
           <div className="mt-3">
             <div className="flex justify-between text-xs text-warm-500 mb-1">
-              <span>Verkefni {problemIndex + 1}/{totalProblems}</span>
-              <span>{correctProblems}/{masteryThreshold} fullkomin</span>
+              <span>
+                Verkefni {problemIndex + 1}/{totalProblems}
+              </span>
+              <span>
+                {correctProblems}/{masteryThreshold} fullkomin
+              </span>
             </div>
             <div className="h-2 bg-warm-200 rounded-full overflow-hidden">
               <div
@@ -709,11 +769,16 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {/* Reactants visualization */}
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
           <div className="grid grid-cols-2 gap-4">
-            <div className={`p-4 rounded-xl ${
-              currentStep === 'moles_r1' || currentStep === 'times_r1' ? 'bg-orange-50 border-2 border-orange-300' :
-              currentStep === 'limiting' && selectedLimiting === problem.reaction.reactant1.formula ? 'bg-orange-100 border-2 border-orange-500' :
-              'bg-warm-50'
-            }`}>
+            <div
+              className={`p-4 rounded-xl ${
+                currentStep === 'moles_r1' || currentStep === 'times_r1'
+                  ? 'bg-orange-50 border-2 border-orange-300'
+                  : currentStep === 'limiting' &&
+                      selectedLimiting === problem.reaction.reactant1.formula
+                    ? 'bg-orange-100 border-2 border-orange-500'
+                    : 'bg-warm-50'
+              }`}
+            >
               <div className="text-center mb-2">
                 <div className="text-lg font-bold">{problem.reaction.reactant1.formula}</div>
                 {isGramMode ? (
@@ -724,7 +789,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 ) : (
                   <div className="text-sm text-warm-600">{problem.r1Count} sameindur</div>
                 )}
-                <div className="text-xs text-warm-500">Stuðull: {problem.reaction.reactant1.coeff}</div>
+                <div className="text-xs text-warm-500">
+                  Stuðull: {problem.reaction.reactant1.coeff}
+                </div>
               </div>
               {!isGramMode && (
                 <div className="flex flex-wrap justify-center gap-1">
@@ -736,7 +803,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       size={25}
                     />
                   ))}
-                  {problem.r1Count > 8 && <span className="text-warm-500 text-sm">+{problem.r1Count - 8}</span>}
+                  {problem.r1Count > 8 && (
+                    <span className="text-warm-500 text-sm">+{problem.r1Count - 8}</span>
+                  )}
                 </div>
               )}
               {isGramMode && (
@@ -749,11 +818,16 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               )}
             </div>
 
-            <div className={`p-4 rounded-xl ${
-              currentStep === 'moles_r2' || currentStep === 'times_r2' ? 'bg-orange-50 border-2 border-orange-300' :
-              currentStep === 'limiting' && selectedLimiting === problem.reaction.reactant2.formula ? 'bg-orange-100 border-2 border-orange-500' :
-              'bg-warm-50'
-            }`}>
+            <div
+              className={`p-4 rounded-xl ${
+                currentStep === 'moles_r2' || currentStep === 'times_r2'
+                  ? 'bg-orange-50 border-2 border-orange-300'
+                  : currentStep === 'limiting' &&
+                      selectedLimiting === problem.reaction.reactant2.formula
+                    ? 'bg-orange-100 border-2 border-orange-500'
+                    : 'bg-warm-50'
+              }`}
+            >
               <div className="text-center mb-2">
                 <div className="text-lg font-bold">{problem.reaction.reactant2.formula}</div>
                 {isGramMode ? (
@@ -764,7 +838,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 ) : (
                   <div className="text-sm text-warm-600">{problem.r2Count} sameindur</div>
                 )}
-                <div className="text-xs text-warm-500">Stuðull: {problem.reaction.reactant2.coeff}</div>
+                <div className="text-xs text-warm-500">
+                  Stuðull: {problem.reaction.reactant2.coeff}
+                </div>
               </div>
               {!isGramMode && (
                 <div className="flex flex-wrap justify-center gap-1">
@@ -776,7 +852,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       size={25}
                     />
                   ))}
-                  {problem.r2Count > 8 && <span className="text-warm-500 text-sm">+{problem.r2Count - 8}</span>}
+                  {problem.r2Count > 8 && (
+                    <span className="text-warm-500 text-sm">+{problem.r2Count - 8}</span>
+                  )}
                 </div>
               )}
               {isGramMode && (
@@ -801,8 +879,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   step < stepInfo.stepNumber
                     ? 'bg-green-500 text-white'
                     : step === stepInfo.stepNumber
-                    ? 'bg-orange-500 text-white'
-                    : 'bg-warm-200 text-warm-500'
+                      ? 'bg-orange-500 text-white'
+                      : 'bg-warm-200 text-warm-500'
                 }`}
               >
                 {step < stepInfo.stepNumber ? '✓' : step}
@@ -825,12 +903,17 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           {currentStep === 'limiting' ? (
             <div className="grid grid-cols-2 gap-4">
               <button
-                onClick={() => !showFeedback && setSelectedLimiting(problem.reaction.reactant1.formula)}
+                onClick={() =>
+                  !showFeedback && setSelectedLimiting(problem.reaction.reactant1.formula)
+                }
                 disabled={showFeedback}
                 className={`p-4 rounded-xl border-4 font-bold text-lg transition-all ${
                   showFeedback && selectedLimiting === problem.reaction.reactant1.formula
-                    ? isStepCorrect ? 'border-green-500 bg-green-50 text-green-700' : 'border-red-500 bg-red-50 text-red-700'
-                    : showFeedback && problem.limitingReactant === problem.reaction.reactant1.formula
+                    ? isStepCorrect
+                      ? 'border-green-500 bg-green-50 text-green-700'
+                      : 'border-red-500 bg-red-50 text-red-700'
+                    : showFeedback &&
+                        problem.limitingReactant === problem.reaction.reactant1.formula
                       ? 'border-green-500 bg-green-50 text-green-700'
                       : selectedLimiting === problem.reaction.reactant1.formula
                         ? 'border-orange-500 bg-orange-50'
@@ -838,16 +921,23 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 }`}
               >
                 {problem.reaction.reactant1.formula}
-                <div className="text-sm font-normal text-warm-600">{roundMass(problem.timesR1)} skipti</div>
+                <div className="text-sm font-normal text-warm-600">
+                  {roundMass(problem.timesR1)} skipti
+                </div>
               </button>
 
               <button
-                onClick={() => !showFeedback && setSelectedLimiting(problem.reaction.reactant2.formula)}
+                onClick={() =>
+                  !showFeedback && setSelectedLimiting(problem.reaction.reactant2.formula)
+                }
                 disabled={showFeedback}
                 className={`p-4 rounded-xl border-4 font-bold text-lg transition-all ${
                   showFeedback && selectedLimiting === problem.reaction.reactant2.formula
-                    ? isStepCorrect ? 'border-green-500 bg-green-50 text-green-700' : 'border-red-500 bg-red-50 text-red-700'
-                    : showFeedback && problem.limitingReactant === problem.reaction.reactant2.formula
+                    ? isStepCorrect
+                      ? 'border-green-500 bg-green-50 text-green-700'
+                      : 'border-red-500 bg-red-50 text-red-700'
+                    : showFeedback &&
+                        problem.limitingReactant === problem.reaction.reactant2.formula
                       ? 'border-green-500 bg-green-50 text-green-700'
                       : selectedLimiting === problem.reaction.reactant2.formula
                         ? 'border-orange-500 bg-orange-50'
@@ -855,7 +945,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 }`}
               >
                 {problem.reaction.reactant2.formula}
-                <div className="text-sm font-normal text-warm-600">{roundMass(problem.timesR2)} skipti</div>
+                <div className="text-sm font-normal text-warm-600">
+                  {roundMass(problem.timesR2)} skipti
+                </div>
               </button>
             </div>
           ) : (
@@ -885,7 +977,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Feedback */}
         {showFeedback && (
-          <div className={`rounded-xl p-4 mb-4 ${isStepCorrect ? 'bg-green-100 border-2 border-green-500' : 'bg-red-100 border-2 border-red-500'}`}>
+          <div
+            className={`rounded-xl p-4 mb-4 ${isStepCorrect ? 'bg-green-100 border-2 border-green-500' : 'bg-red-100 border-2 border-red-500'}`}
+          >
             <div className="flex items-center gap-2 mb-2">
               <span className="text-2xl">{isStepCorrect ? '✓' : '✗'}</span>
               <p className="text-lg font-bold">{isStepCorrect ? 'Rétt!' : 'Rangt'}</p>
@@ -894,7 +988,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <p className="text-green-700 text-sm">+5 stig!</p>
             ) : (
               <p className="text-warm-700 text-sm">
-                Rétt svar: <span className="font-bold">{stepInfo.correctAnswer}{stepInfo.unit ? ` ${stepInfo.unit}` : ''}</span>
+                Rétt svar:{' '}
+                <span className="font-bold">
+                  {stepInfo.correctAnswer}
+                  {stepInfo.unit ? ` ${stepInfo.unit}` : ''}
+                </span>
               </p>
             )}
             <button
