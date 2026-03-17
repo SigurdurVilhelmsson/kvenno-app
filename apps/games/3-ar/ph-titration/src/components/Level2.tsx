@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { Presence } from '@shared/components';
 
 import { Burette } from './Burette';
 import { Flask } from './Flask';
@@ -247,64 +247,56 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 <Burette volumeAdded={volumeAdded} maxVolume={60} isAnimating={isPouring} />
 
                 {/* Controls */}
-                <AnimatePresence>
-                  {phase === 'titrating' && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -8 }}
-                      transition={{ duration: 0.25 }}
-                      className="mt-4 space-y-2"
-                    >
-                      <div className="flex gap-2">
-                        <button
-                          onClick={handleAddDrop}
-                          aria-label="Bæta við 0,05 mL títrant"
-                          className="px-3 py-2 bg-blue-100 hover:bg-blue-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
-                        >
-                          +0.05 mL
-                        </button>
-                        <button
-                          onClick={handleAdd1mL}
-                          aria-label="Bæta við 1 mL títrant"
-                          className="px-3 py-2 bg-blue-200 hover:bg-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
-                        >
-                          +1 mL
-                        </button>
-                        <button
-                          onClick={handleAdd5mL}
-                          aria-label="Bæta við 5 mL títrant"
-                          className="px-3 py-2 bg-blue-300 hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
-                        >
-                          +5 mL
-                        </button>
-                      </div>
+                <Presence show={phase === 'titrating'} exitDuration={250}>
+                  <div className="mt-4 space-y-2">
+                    <div className="flex gap-2">
                       <button
-                        onMouseDown={() => setIsPouring(true)}
-                        onMouseUp={() => setIsPouring(false)}
-                        onMouseLeave={() => setIsPouring(false)}
-                        onTouchStart={() => setIsPouring(true)}
-                        onTouchEnd={() => setIsPouring(false)}
-                        onKeyDown={(e) => {
-                          if (e.code === 'Space' || e.code === 'Enter') {
-                            e.preventDefault();
-                            setIsPouring(true);
-                          }
-                        }}
-                        onKeyUp={(e) => {
-                          if (e.code === 'Space' || e.code === 'Enter') {
-                            setIsPouring(false);
-                          }
-                        }}
-                        onBlur={() => setIsPouring(false)}
-                        aria-label="Halda inni til að hella títrant samfellt"
-                        className="w-full px-4 py-3 bg-indigo-500 hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-700 text-white rounded-lg font-bold"
+                        onClick={handleAddDrop}
+                        aria-label="Bæta við 0,05 mL títrant"
+                        className="px-3 py-2 bg-blue-100 hover:bg-blue-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
                       >
-                        Halda inni til að hella
+                        +0.05 mL
                       </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      <button
+                        onClick={handleAdd1mL}
+                        aria-label="Bæta við 1 mL títrant"
+                        className="px-3 py-2 bg-blue-200 hover:bg-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
+                      >
+                        +1 mL
+                      </button>
+                      <button
+                        onClick={handleAdd5mL}
+                        aria-label="Bæta við 5 mL títrant"
+                        className="px-3 py-2 bg-blue-300 hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
+                      >
+                        +5 mL
+                      </button>
+                    </div>
+                    <button
+                      onMouseDown={() => setIsPouring(true)}
+                      onMouseUp={() => setIsPouring(false)}
+                      onMouseLeave={() => setIsPouring(false)}
+                      onTouchStart={() => setIsPouring(true)}
+                      onTouchEnd={() => setIsPouring(false)}
+                      onKeyDown={(e) => {
+                        if (e.code === 'Space' || e.code === 'Enter') {
+                          e.preventDefault();
+                          setIsPouring(true);
+                        }
+                      }}
+                      onKeyUp={(e) => {
+                        if (e.code === 'Space' || e.code === 'Enter') {
+                          setIsPouring(false);
+                        }
+                      }}
+                      onBlur={() => setIsPouring(false)}
+                      aria-label="Halda inni til að hella títrant samfellt"
+                      className="w-full px-4 py-3 bg-indigo-500 hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-700 text-white rounded-lg font-bold"
+                    >
+                      Halda inni til að hella
+                    </button>
+                  </div>
+                </Presence>
               </div>
 
               {/* Flask */}
@@ -333,24 +325,16 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
 
             {/* Submit volume button */}
-            <AnimatePresence>
-              {phase === 'titrating' && volumeAdded > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.25 }}
-                  className="mt-4 flex justify-center"
+            <Presence show={phase === 'titrating' && volumeAdded > 0} exitDuration={250}>
+              <div className="mt-4 flex justify-center">
+                <button
+                  onClick={handleSubmitVolume}
+                  className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold"
                 >
-                  <button
-                    onClick={handleSubmitVolume}
-                    className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold"
-                  >
-                    Staðfesta rúmmál ({volumeAdded.toFixed(2)} mL) →
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  Staðfesta rúmmál ({volumeAdded.toFixed(2)} mL) →
+                </button>
+              </div>
+            </Presence>
           </div>
 
           {/* Right: Indicator selector and info */}
@@ -365,124 +349,103 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
 
             {/* Submit indicator button */}
-            <AnimatePresence>
-              {phase === 'select-indicator' && selectedIndicator && (
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  <button
-                    onClick={handleSubmitIndicator}
-                    className="w-full px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold"
-                  >
-                    Staðfesta val →
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <Presence show={phase === 'select-indicator' && !!selectedIndicator} exitDuration={250}>
+              <button
+                onClick={handleSubmitIndicator}
+                className="w-full px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold"
+              >
+                Staðfesta val →
+              </button>
+            </Presence>
 
             {/* Hint */}
-            <AnimatePresence>
-              {phase !== 'result' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.25 }}
+            <Presence show={phase !== 'result'} exitDuration={250}>
+              {showHint ? (
+                <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4">
+                  <div className="font-bold text-yellow-800 mb-1">💡 Vísbending:</div>
+                  <p className="text-yellow-900 text-sm">{puzzle.hintIs}</p>
+                </div>
+              ) : (
+                <button
+                  onClick={handleShowHint}
+                  className="text-yellow-600 hover:text-yellow-800 text-sm flex items-center gap-2"
                 >
-                  {showHint ? (
-                    <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4">
-                      <div className="font-bold text-yellow-800 mb-1">💡 Vísbending:</div>
-                      <p className="text-yellow-900 text-sm">{puzzle.hintIs}</p>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={handleShowHint}
-                      className="text-yellow-600 hover:text-yellow-800 text-sm flex items-center gap-2"
-                    >
-                      💡 Sýna vísbendingu (-50 stig)
-                    </button>
-                  )}
-                </motion.div>
+                  💡 Sýna vísbendingu (-50 stig)
+                </button>
               )}
-            </AnimatePresence>
+            </Presence>
 
             {/* Result feedback */}
-            <AnimatePresence>
-              {phase === 'result' && submittedVolume !== null && (
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.25 }}
-                  className={`p-4 rounded-xl ${isCorrect ? 'bg-green-50 border border-green-300' : 'bg-red-50 border border-red-300'}`}
-                >
-                  <div
-                    className={`font-bold mb-2 ${isCorrect ? 'text-green-800' : 'text-red-800'}`}
-                  >
-                    {isCorrect ? '✓ Rétt!' : '✗ Ekki rétt'}
-                    {isCorrect && showHint && ' (50 stig)'}
-                    {isCorrect && !showHint && ' (+100 stig)'}
-                  </div>
+            <Presence show={phase === 'result' && submittedVolume !== null} exitDuration={250}>
+              <div
+                className={`p-4 rounded-xl ${isCorrect ? 'bg-green-50 border border-green-300' : 'bg-red-50 border border-red-300'}`}
+              >
+                <div className={`font-bold mb-2 ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+                  {isCorrect ? '✓ Rétt!' : '✗ Ekki rétt'}
+                  {isCorrect && showHint && ' (50 stig)'}
+                  {isCorrect && !showHint && ' (+100 stig)'}
+                </div>
 
-                  <div className="text-sm space-y-2">
-                    <div>
-                      <span className="font-semibold">Þitt rúmmál:</span>{' '}
-                      {submittedVolume.toFixed(2)} mL
-                      <br />
-                      <span className="font-semibold">Jafngildisrúmmál:</span>{' '}
-                      {titration.equivalenceVolume.toFixed(2)} mL
-                      <br />
-                      <span
-                        className={
-                          Math.abs(submittedVolume - titration.equivalenceVolume) <=
+                <div className="text-sm space-y-2">
+                  <div>
+                    <span className="font-semibold">Þitt rúmmál:</span>{' '}
+                    {submittedVolume?.toFixed(2)} mL
+                    <br />
+                    <span className="font-semibold">Jafngildisrúmmál:</span>{' '}
+                    {titration.equivalenceVolume.toFixed(2)} mL
+                    <br />
+                    <span
+                      className={
+                        submittedVolume !== null &&
+                        Math.abs(submittedVolume - titration.equivalenceVolume) <=
                           puzzle.volumeTolerance
-                            ? 'text-green-600'
-                            : 'text-red-600'
-                        }
-                      >
-                        Skekkja: ±
-                        {Math.abs(submittedVolume - titration.equivalenceVolume).toFixed(2)} mL
-                        {Math.abs(submittedVolume - titration.equivalenceVolume) <=
+                          ? 'text-green-600'
+                          : 'text-red-600'
+                      }
+                    >
+                      Skekkja: ±
+                      {submittedVolume !== null
+                        ? Math.abs(submittedVolume - titration.equivalenceVolume).toFixed(2)
+                        : '?'}{' '}
+                      mL
+                      {submittedVolume !== null &&
+                      Math.abs(submittedVolume - titration.equivalenceVolume) <=
                         puzzle.volumeTolerance
-                          ? ' ✓'
-                          : ' ✗'}
-                      </span>
-                    </div>
-
-                    <div>
-                      <span className="font-semibold">Þinn vísir:</span>{' '}
-                      {indicators.find((i) => i.id === selectedIndicator)?.name}
-                      <br />
-                      <span className={indicatorCorrect ? 'text-green-600' : 'text-red-600'}>
-                        {indicatorCorrect ? '✓ Góður vísir' : '✗ Ekki besti vísirinn'}
-                      </span>
-                    </div>
+                        ? ' ✓'
+                        : ' ✗'}
+                    </span>
                   </div>
 
-                  <div className={`mt-3 text-sm ${isCorrect ? 'text-green-900' : 'text-red-900'}`}>
-                    {puzzle.explanationIs}
+                  <div>
+                    <span className="font-semibold">Þinn vísir:</span>{' '}
+                    {indicators.find((i) => i.id === selectedIndicator)?.name}
+                    <br />
+                    <span className={indicatorCorrect ? 'text-green-600' : 'text-red-600'}>
+                      {indicatorCorrect ? '✓ Góður vísir' : '✗ Ekki besti vísirinn'}
+                    </span>
                   </div>
+                </div>
 
-                  <div className="mt-4 flex gap-2">
-                    <button
-                      onClick={handleReset}
-                      className="flex-1 px-4 py-2 bg-warm-200 hover:bg-warm-300 text-warm-800 rounded-lg font-semibold"
-                    >
-                      Reyna aftur
-                    </button>
-                    <button
-                      onClick={handleNext}
-                      className="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-bold"
-                    >
-                      {currentIndex < LEVEL2_PUZZLES.length - 1 ? 'Næsta →' : 'Ljúka →'}
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                <div className={`mt-3 text-sm ${isCorrect ? 'text-green-900' : 'text-red-900'}`}>
+                  {puzzle.explanationIs}
+                </div>
+
+                <div className="mt-4 flex gap-2">
+                  <button
+                    onClick={handleReset}
+                    className="flex-1 px-4 py-2 bg-warm-200 hover:bg-warm-300 text-warm-800 rounded-lg font-semibold"
+                  >
+                    Reyna aftur
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    className="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-bold"
+                  >
+                    {currentIndex < LEVEL2_PUZZLES.length - 1 ? 'Næsta →' : 'Ljúka →'}
+                  </button>
+                </div>
+              </div>
+            </Presence>
 
             {/* Phase indicator */}
             <div className="bg-warm-100 rounded-xl p-3">

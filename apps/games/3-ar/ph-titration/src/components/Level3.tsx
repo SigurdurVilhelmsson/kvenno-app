@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { Presence } from '@shared/components';
 
 import { LEVEL3_CHALLENGES } from '../data/level3-challenges';
 
@@ -268,114 +268,91 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
           </div>
 
           {/* Hint */}
-          <AnimatePresence>
-            {!showResult && (
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-                className="mb-4"
-              >
-                {showHint ? (
-                  <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4">
-                    <div className="font-bold text-yellow-800 mb-1">💡 Vísbending:</div>
-                    <p className="text-yellow-900">{challenge.hintIs}</p>
-                  </div>
-                ) : (
-                  <button
-                    onClick={handleShowHint}
-                    className="text-yellow-600 hover:text-yellow-800 text-sm flex items-center gap-2"
-                  >
-                    💡 Sýna vísbendingu (-10 stig)
-                  </button>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <Presence show={!showResult} exitDuration={250}>
+            <div className="mb-4">
+              {showHint ? (
+                <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4">
+                  <div className="font-bold text-yellow-800 mb-1">💡 Vísbending:</div>
+                  <p className="text-yellow-900">{challenge.hintIs}</p>
+                </div>
+              ) : (
+                <button
+                  onClick={handleShowHint}
+                  className="text-yellow-600 hover:text-yellow-800 text-sm flex items-center gap-2"
+                >
+                  💡 Sýna vísbendingu (-10 stig)
+                </button>
+              )}
+            </div>
+          </Presence>
 
           {/* Submit button */}
-          <AnimatePresence>
-            {!showResult && (
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-              >
-                <button
-                  onClick={handleSubmit}
-                  disabled={!userAnswer.trim()}
-                  className={`w-full px-6 py-3 rounded-xl font-bold transition-colors ${
-                    userAnswer.trim()
-                      ? 'bg-purple-500 hover:bg-purple-600 text-white'
-                      : 'bg-warm-200 text-warm-400 cursor-not-allowed'
-                  }`}
-                >
-                  Staðfesta svar
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <Presence show={!showResult} exitDuration={250}>
+            <button
+              onClick={handleSubmit}
+              disabled={!userAnswer.trim()}
+              className={`w-full px-6 py-3 rounded-xl font-bold transition-colors ${
+                userAnswer.trim()
+                  ? 'bg-purple-500 hover:bg-purple-600 text-white'
+                  : 'bg-warm-200 text-warm-400 cursor-not-allowed'
+              }`}
+            >
+              Staðfesta svar
+            </button>
+          </Presence>
 
           {/* Result feedback */}
-          <AnimatePresence>
-            {showResult && (
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-                className={`p-4 rounded-xl ${isCorrect ? 'bg-green-50 border border-green-300' : 'bg-red-50 border border-red-300'}`}
-              >
-                <div className={`font-bold mb-2 ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
-                  {isCorrect ? '✓ Rétt!' : '✗ Rangt'}
-                  {isCorrect && showHint && ' (10 stig)'}
-                  {isCorrect && !showHint && ' (+20 stig)'}
-                </div>
+          <Presence show={showResult} exitDuration={250}>
+            <div
+              className={`p-4 rounded-xl ${isCorrect ? 'bg-green-50 border border-green-300' : 'bg-red-50 border border-red-300'}`}
+            >
+              <div className={`font-bold mb-2 ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+                {isCorrect ? '✓ Rétt!' : '✗ Rangt'}
+                {isCorrect && showHint && ' (10 stig)'}
+                {isCorrect && !showHint && ' (+20 stig)'}
+              </div>
 
-                <div className="text-sm mb-2">
-                  <span className="font-semibold">Þitt svar:</span> {userAnswer} {challenge.unit}
-                  <br />
-                  <span className="font-semibold">Rétt svar:</span> {challenge.correctAnswer}{' '}
-                  {challenge.unit}
-                </div>
+              <div className="text-sm mb-2">
+                <span className="font-semibold">Þitt svar:</span> {userAnswer} {challenge.unit}
+                <br />
+                <span className="font-semibold">Rétt svar:</span> {challenge.correctAnswer}{' '}
+                {challenge.unit}
+              </div>
 
-                <p className={`text-sm ${isCorrect ? 'text-green-900' : 'text-red-900'}`}>
-                  {challenge.explanationIs}
-                </p>
+              <p className={`text-sm ${isCorrect ? 'text-green-900' : 'text-red-900'}`}>
+                {challenge.explanationIs}
+              </p>
 
-                {/* Show solution button */}
-                {!showSolution && (
-                  <button
-                    onClick={() => setShowSolution(true)}
-                    className="mt-3 text-purple-600 hover:text-purple-800 text-sm font-semibold"
-                  >
-                    📝 Sýna útreikningsgang
-                  </button>
-                )}
-
-                {/* Solution steps */}
-                {showSolution && (
-                  <div className="mt-3 bg-white rounded-lg p-3 border border-warm-200">
-                    <h4 className="font-bold text-warm-700 mb-2">Útreikningur:</h4>
-                    <ol className="list-decimal list-inside space-y-1 text-sm font-mono text-warm-800">
-                      {challenge.solutionStepsIs.map((step, index) => (
-                        <li key={index}>{step}</li>
-                      ))}
-                    </ol>
-                  </div>
-                )}
-
+              {/* Show solution button */}
+              {!showSolution && (
                 <button
-                  onClick={handleNext}
-                  className="mt-4 w-full px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-bold"
+                  onClick={() => setShowSolution(true)}
+                  className="mt-3 text-purple-600 hover:text-purple-800 text-sm font-semibold"
                 >
-                  {currentIndex < LEVEL3_CHALLENGES.length - 1 ? 'Næsta →' : 'Ljúka stigi →'}
+                  📝 Sýna útreikningsgang
                 </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              )}
+
+              {/* Solution steps */}
+              {showSolution && (
+                <div className="mt-3 bg-white rounded-lg p-3 border border-warm-200">
+                  <h4 className="font-bold text-warm-700 mb-2">Útreikningur:</h4>
+                  <ol className="list-decimal list-inside space-y-1 text-sm font-mono text-warm-800">
+                    {challenge.solutionStepsIs.map((step, index) => (
+                      <li key={index}>{step}</li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
+              <button
+                onClick={handleNext}
+                className="mt-4 w-full px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-bold"
+              >
+                {currentIndex < LEVEL3_CHALLENGES.length - 1 ? 'Næsta →' : 'Ljúka stigi →'}
+              </button>
+            </div>
+          </Presence>
         </div>
 
         {/* Reference tables */}

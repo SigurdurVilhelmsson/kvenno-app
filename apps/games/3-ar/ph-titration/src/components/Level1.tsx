@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 
-import { motion, AnimatePresence } from 'framer-motion';
-
-import { HintSystem, InteractiveGraph, FeedbackPanel } from '@shared/components';
+import { HintSystem, InteractiveGraph, FeedbackPanel, Presence } from '@shared/components';
 import type { DataPoint, DataSeries, MarkerConfig } from '@shared/components';
 import { shuffleArray } from '@shared/utils';
 
@@ -221,56 +219,40 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         {/* Tiered Hint System / Result feedback (mutually exclusive) */}
-        <AnimatePresence mode="wait">
-          {!showResult && (
-            <motion.div
-              key="hints"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.25 }}
-              className="mb-4"
-            >
-              <HintSystem
-                hints={challenge.hints}
-                basePoints={100}
-                onHintUsed={handleHintUsed}
-                onPointsChange={setHintMultiplier}
-                disabled={showResult}
-                resetKey={hintResetKey}
-              />
-            </motion.div>
-          )}
+        <Presence show={!showResult} exitDuration={250}>
+          <div className="mb-4">
+            <HintSystem
+              hints={challenge.hints}
+              basePoints={100}
+              onHintUsed={handleHintUsed}
+              onPointsChange={setHintMultiplier}
+              disabled={showResult}
+              resetKey={hintResetKey}
+            />
+          </div>
+        </Presence>
 
-          {showResult && (
-            <motion.div
-              key="feedback"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.25 }}
-              className="mb-6"
-            >
-              <FeedbackPanel
-                feedback={{
-                  isCorrect,
-                  explanation: `${isCorrect ? '✓ Rétt!' : '✗ Rangt'}${isCorrect ? ` (+${Math.round(100 * hintMultiplier)} stig)` : ''}\n\n${challenge.explanationIs}`,
-                  misconception: isCorrect ? undefined : TITRATION_MISCONCEPTIONS.equivalence,
-                  relatedConcepts: TITRATION_RELATED,
-                  nextSteps: isCorrect
-                    ? 'Frábært! Þú skilur títrunarkúrfur vel.'
-                    : 'Skoðaðu kúrfuna og athugaðu hvar pH breytist mest.',
-                }}
-                config={{
-                  showExplanation: true,
-                  showMisconceptions: !isCorrect,
-                  showRelatedConcepts: true,
-                  showNextSteps: true,
-                }}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <Presence show={showResult} exitDuration={250}>
+          <div className="mb-6">
+            <FeedbackPanel
+              feedback={{
+                isCorrect,
+                explanation: `${isCorrect ? '✓ Rétt!' : '✗ Rangt'}${isCorrect ? ` (+${Math.round(100 * hintMultiplier)} stig)` : ''}\n\n${challenge.explanationIs}`,
+                misconception: isCorrect ? undefined : TITRATION_MISCONCEPTIONS.equivalence,
+                relatedConcepts: TITRATION_RELATED,
+                nextSteps: isCorrect
+                  ? 'Frábært! Þú skilur títrunarkúrfur vel.'
+                  : 'Skoðaðu kúrfuna og athugaðu hvar pH breytist mest.',
+              }}
+              config={{
+                showExplanation: true,
+                showMisconceptions: !isCorrect,
+                showRelatedConcepts: true,
+                showNextSteps: true,
+              }}
+            />
+          </div>
+        </Presence>
 
         {/* Action buttons */}
         <div className="flex justify-between">

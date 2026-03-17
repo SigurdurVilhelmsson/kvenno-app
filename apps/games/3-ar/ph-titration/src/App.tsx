@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 
-import { motion, AnimatePresence } from 'framer-motion';
-
-import { Header, LanguageSwitcher, ErrorBoundary } from '@shared/components';
+import {
+  Header,
+  LanguageSwitcher,
+  ErrorBoundary,
+  FadePresence,
+  Presence,
+} from '@shared/components';
 import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
 import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
 import { AnimatedBackground } from '@shared/components/AnimatedBackground';
@@ -151,84 +155,47 @@ function App() {
     saveProgress(newProgress);
   };
 
-  const renderScreen = () => {
-    if (activeLevel === 'level1') {
-      return (
-        <motion.div
-          key="level1"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <Level1
-            onComplete={handleLevel1Complete}
-            onBack={() => setActiveLevel('menu')}
-            onCorrectAnswer={() => handleCorrectAnswer()}
-            onIncorrectAnswer={() => handleIncorrectAnswer()}
-          />
-        </motion.div>
-      );
-    }
+  const totalScore = progress.level1Score + progress.level2Score + progress.level3Score;
+  const levelsCompleted = [
+    progress.level1Completed,
+    progress.level2Completed,
+    progress.level3Completed,
+  ].filter(Boolean).length;
 
-    if (activeLevel === 'level2') {
-      return (
-        <motion.div
-          key="level2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <Level2
-            onComplete={handleLevel2Complete}
-            onBack={() => setActiveLevel('menu')}
-            onCorrectAnswer={() => handleCorrectAnswer()}
-            onIncorrectAnswer={() => handleIncorrectAnswer()}
-          />
-        </motion.div>
-      );
-    }
+  return (
+    <>
+      <FadePresence show={activeLevel === 'level1'} exitDuration={200}>
+        <Level1
+          onComplete={handleLevel1Complete}
+          onBack={() => setActiveLevel('menu')}
+          onCorrectAnswer={() => handleCorrectAnswer()}
+          onIncorrectAnswer={() => handleIncorrectAnswer()}
+        />
+      </FadePresence>
 
-    if (activeLevel === 'level3') {
-      return (
-        <motion.div
-          key="level3"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <Level3
-            onComplete={handleLevel3Complete}
-            onBack={() => setActiveLevel('menu')}
-            onCorrectAnswer={() => handleCorrectAnswer()}
-            onIncorrectAnswer={() => handleIncorrectAnswer()}
-            t={t}
-          />
-        </motion.div>
-      );
-    }
+      <FadePresence show={activeLevel === 'level2'} exitDuration={200}>
+        <Level2
+          onComplete={handleLevel2Complete}
+          onBack={() => setActiveLevel('menu')}
+          onCorrectAnswer={() => handleCorrectAnswer()}
+          onIncorrectAnswer={() => handleIncorrectAnswer()}
+        />
+      </FadePresence>
 
-    // Complete screen
-    if (activeLevel === 'complete') {
-      const totalScore = progress.level1Score + progress.level2Score + progress.level3Score;
+      <FadePresence show={activeLevel === 'level3'} exitDuration={200}>
+        <Level3
+          onComplete={handleLevel3Complete}
+          onBack={() => setActiveLevel('menu')}
+          onCorrectAnswer={() => handleCorrectAnswer()}
+          onIncorrectAnswer={() => handleIncorrectAnswer()}
+          t={t}
+        />
+      </FadePresence>
 
-      return (
-        <motion.div
-          key="complete"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8">
-            <motion.div
-              className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-            >
+      <FadePresence show={activeLevel === 'complete'} exitDuration={200}>
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8">
+          <Presence show={activeLevel === 'complete'} exitDuration={300}>
+            <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
               <h1 className="text-3xl md:text-4xl font-bold text-center mb-6 text-purple-600">
                 Til hamingju!
               </h1>
@@ -298,29 +265,12 @@ function App() {
               >
                 Til baka í valmynd
               </button>
-            </motion.div>
-          </div>
-        </motion.div>
-      );
-    }
+            </div>
+          </Presence>
+        </div>
+      </FadePresence>
 
-    // Main menu
-    const totalScore = progress.level1Score + progress.level2Score + progress.level3Score;
-    const levelsCompleted = [
-      progress.level1Completed,
-      progress.level2Completed,
-      progress.level3Completed,
-    ].filter(Boolean).length;
-
-    // Year 3: Purple/Indigo theme
-    return (
-      <motion.div
-        key="menu"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
-      >
+      <FadePresence show={activeLevel === 'menu'} exitDuration={200}>
         <AnimatedBackground yearTheme="3-ar" variant="menu">
           <Header
             variant="game"
@@ -532,13 +482,7 @@ function App() {
             </div>
           </div>
         </AnimatedBackground>
-      </motion.div>
-    );
-  };
-
-  return (
-    <>
-      <AnimatePresence mode="wait">{renderScreen()}</AnimatePresence>
+      </FadePresence>
 
       {/* Achievements Panel Modal */}
       {showAchievements && (
