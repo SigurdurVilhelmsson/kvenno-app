@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { HintSystem } from '@shared/components';
 
+import FlaskComparison from './FlaskComparison';
 import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
 
@@ -311,6 +312,17 @@ export default function Level2({
               resetKey={hintResetKey}
             />
           </div>
+        </div>
+
+        {/* Flask Comparison - static demo with 0.01 mol HCl added */}
+        <div className="mb-4">
+          <FlaskComparison
+            targetPH={problem.targetPH}
+            pKa={problem.pKa}
+            addedAcidMoles={0.01}
+            addedBaseMoles={0}
+            bufferConcentration={problem.totalConcentration}
+          />
         </div>
 
         {/* Step Progress Indicator */}
