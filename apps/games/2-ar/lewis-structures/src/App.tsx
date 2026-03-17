@@ -297,7 +297,7 @@ function App() {
 
   // Year 2: Teal/Cyan theme
   return (
-    <AnimatedBackground yearTheme="2-ar" variant="menu" showSymbols>
+    <AnimatedBackground yearTheme="2-ar" variant="menu">
       <Header
         variant="game"
         backHref="/efnafraedi/2-ar/"

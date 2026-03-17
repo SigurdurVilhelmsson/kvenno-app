@@ -255,7 +255,7 @@ function App() {
   ].filter(Boolean).length;
 
   return (
-    <AnimatedBackground yearTheme="2-ar" variant="menu" showSymbols>
+    <AnimatedBackground yearTheme="2-ar" variant="menu">
       <Header
         variant="game"
         backHref="/efnafraedi/2-ar/"

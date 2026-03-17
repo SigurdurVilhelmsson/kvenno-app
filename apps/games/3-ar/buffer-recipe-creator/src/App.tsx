@@ -254,7 +254,7 @@ function App() {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
       >
-        <AnimatedBackground yearTheme="3-ar" variant="menu" showSymbols>
+        <AnimatedBackground yearTheme="3-ar" variant="menu">
           <Header
             variant="game"
             backHref="/efnafraedi/3-ar/"

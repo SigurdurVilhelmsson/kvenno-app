@@ -872,11 +872,7 @@ function App() {
   );
 
   return (
-    <AnimatedBackground
-      yearTheme="3-ar"
-      variant={screen === 'menu' ? 'menu' : 'gameplay'}
-      showSymbols={screen === 'menu'}
-    >
+    <AnimatedBackground yearTheme="3-ar" variant={screen === 'menu' ? 'menu' : 'gameplay'}>
       {screen === 'menu' && (
         <Header
           variant="game"

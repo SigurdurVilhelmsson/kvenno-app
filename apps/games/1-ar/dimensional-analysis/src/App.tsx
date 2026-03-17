@@ -97,7 +97,7 @@ function App() {
   };
 
   return (
-    <AnimatedBackground yearTheme="1-ar" variant="menu" showSymbols>
+    <AnimatedBackground yearTheme="1-ar" variant="menu">
       <Header
         variant="game"
         backHref="/efnafraedi/1-ar/"
