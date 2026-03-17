@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-import { motion, AnimatePresence } from 'framer-motion';
-
-import { HintSystem } from '@shared/components';
+import { HintSystem, Presence } from '@shared/components';
 
 import { LEVEL3_PUZZLES } from '../data/level3-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
@@ -381,310 +379,264 @@ export default function Level3({
 
         {/* Step Content */}
         <div className="bg-white rounded-xl shadow-lg p-6">
-          <AnimatePresence mode="wait">
-            {/* Step 1: Ratio */}
-            {step === 'ratio' && (
-              <motion.div
-                key="step-ratio"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-              >
-                <h3 className="text-lg font-bold text-warm-800 mb-4">
-                  Skref 1: Reiknaðu [Basi]/[Sýra] hlutfallið
-                </h3>
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
-                  <p className="text-sm text-yellow-800">
-                    <strong>Formúla:</strong> Hlutfall = 10<sup>(pH - pKa)</sup> = 10
-                    <sup>
-                      ({problem.targetPH} - {problem.pKa})
-                    </sup>
-                  </p>
-                </div>
+          {/* Step 1: Ratio */}
+          <Presence show={step === 'ratio'} exitDuration={250}>
+            <div>
+              <h3 className="text-lg font-bold text-warm-800 mb-4">
+                Skref 1: Reiknaðu [Basi]/[Sýra] hlutfallið
+              </h3>
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+                <p className="text-sm text-yellow-800">
+                  <strong>Formúla:</strong> Hlutfall = 10<sup>(pH - pKa)</sup> = 10
+                  <sup>
+                    ({problem.targetPH} - {problem.pKa})
+                  </sup>
+                </p>
+              </div>
 
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-warm-700 mb-1">
-                    Hlutfall [Basi]/[Sýra]:
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-warm-700 mb-1">
+                  Hlutfall [Basi]/[Sýra]:
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={ratioInput}
+                  onChange={(e) => setRatioInput(e.target.value)}
+                  placeholder="t.d. 1.58"
+                  className="w-full p-3 border-2 border-warm-300 rounded-lg focus:border-green-500 focus:outline-none"
+                />
+              </div>
+
+              <Presence show={!!ratioFeedback} exitDuration={250}>
+                <div
+                  className={`p-3 rounded-lg mb-4 ${
+                    ratioFeedback?.includes('Rétt')
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-red-100 text-red-800'
+                  }`}
+                >
+                  {ratioFeedback}
+                </div>
+              </Presence>
+
+              <button
+                onClick={checkRatio}
+                disabled={!ratioInput}
+                className="w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed bg-green-600 hover:bg-green-700"
+              >
+                Athuga svar
+              </button>
+            </div>
+          </Presence>
+
+          {/* Step 2: Moles */}
+          <Presence show={step === 'moles'} exitDuration={250}>
+            <div>
+              <h3 className="text-lg font-bold text-warm-800 mb-4">
+                Skref 2: Reiknaðu mól af sýru og basa
+              </h3>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                <p className="text-sm text-blue-800">
+                  <strong>Heildar mól:</strong> n = C × V = {puzzle.targetConcentration} M ×{' '}
+                  {puzzle.targetVolume / 1000} L = {targetMoles.toFixed(4)} mol
+                </p>
+                <p className="text-sm text-blue-800 mt-1">
+                  <strong>Skipting:</strong> Notaðu hlutfallið {correctRatio.toFixed(2)} til að
+                  skipta mólum.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium text-red-700 mb-1">Mól sýru:</label>
+                  <input
+                    type="number"
+                    step="0.0001"
+                    value={acidMolesInput}
+                    onChange={(e) => setAcidMolesInput(e.target.value)}
+                    placeholder="t.d. 0.0039"
+                    className="w-full p-3 border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-blue-700 mb-1">Mól basa:</label>
+                  <input
+                    type="number"
+                    step="0.0001"
+                    value={baseMolesInput}
+                    onChange={(e) => setBaseMolesInput(e.target.value)}
+                    placeholder="t.d. 0.0061"
+                    className="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <Presence show={!!molesFeedback} exitDuration={250}>
+                <div
+                  className={`p-3 rounded-lg mb-4 ${
+                    molesFeedback?.includes('Rétt')
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-red-100 text-red-800'
+                  }`}
+                >
+                  {molesFeedback}
+                </div>
+              </Presence>
+
+              <button
+                onClick={checkMoles}
+                disabled={!acidMolesInput || !baseMolesInput}
+                className="w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed bg-green-600 hover:bg-green-700"
+              >
+                Athuga svar
+              </button>
+            </div>
+          </Presence>
+
+          {/* Step 3: Volumes */}
+          <Presence show={step === 'volumes'} exitDuration={250}>
+            <div>
+              <h3 className="text-lg font-bold text-warm-800 mb-4">
+                Skref 3: Reiknaðu rúmmál af birgðalausnum (í mL)
+              </h3>
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                <p className="text-sm text-green-800">
+                  <strong>Formúla:</strong> V = n / C (rúmmál = mól / styrkur birgðalausnar)
+                </p>
+                <p className="text-sm text-green-800 mt-1">
+                  Sýrubirgð er {puzzle.stockAcidConc} M, basabirgð er {puzzle.stockBaseConc} M
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium text-red-700 mb-1">
+                    Rúmmál sýru (mL):
                   </label>
                   <input
                     type="number"
-                    step="0.01"
-                    value={ratioInput}
-                    onChange={(e) => setRatioInput(e.target.value)}
-                    placeholder="t.d. 1.58"
-                    className="w-full p-3 border-2 border-warm-300 rounded-lg focus:border-green-500 focus:outline-none"
+                    step="0.1"
+                    value={acidVolumeInput}
+                    onChange={(e) => setAcidVolumeInput(e.target.value)}
+                    placeholder="t.d. 7.76"
+                    className="w-full p-3 border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-none"
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-blue-700 mb-1">
+                    Rúmmál basa (mL):
+                  </label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={baseVolumeInput}
+                    onChange={(e) => setBaseVolumeInput(e.target.value)}
+                    placeholder="t.d. 12.24"
+                    className="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                  />
+                </div>
+              </div>
 
-                <AnimatePresence>
-                  {ratioFeedback && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -8 }}
-                      transition={{ duration: 0.25 }}
-                      className={`p-3 rounded-lg mb-4 ${
-                        ratioFeedback.includes('Rétt')
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}
-                    >
-                      {ratioFeedback}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <button
-                  onClick={checkRatio}
-                  disabled={!ratioInput}
-                  className="w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed bg-green-600 hover:bg-green-700"
+              <Presence show={!!volumeFeedback} exitDuration={250}>
+                <div
+                  className={`p-3 rounded-lg mb-4 ${
+                    volumeFeedback?.includes('Frábært')
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-red-100 text-red-800'
+                  }`}
                 >
-                  Athuga svar
-                </button>
-              </motion.div>
-            )}
+                  {volumeFeedback}
+                </div>
+              </Presence>
 
-            {/* Step 2: Moles */}
-            {step === 'moles' && (
-              <motion.div
-                key="step-moles"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
+              <button
+                onClick={checkVolumes}
+                disabled={!acidVolumeInput || !baseVolumeInput}
+                className="w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed bg-green-600 hover:bg-green-700"
               >
-                <h3 className="text-lg font-bold text-warm-800 mb-4">
-                  Skref 2: Reiknaðu mól af sýru og basa
-                </h3>
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-                  <p className="text-sm text-blue-800">
-                    <strong>Heildar mól:</strong> n = C × V = {puzzle.targetConcentration} M ×{' '}
-                    {puzzle.targetVolume / 1000} L = {targetMoles.toFixed(4)} mol
-                  </p>
-                  <p className="text-sm text-blue-800 mt-1">
-                    <strong>Skipting:</strong> Notaðu hlutfallið {correctRatio.toFixed(2)} til að
-                    skipta mólum.
-                  </p>
+                Athuga svar
+              </button>
+            </div>
+          </Presence>
+
+          {/* Completion & Explanation */}
+          <Presence show={step === 'complete' && showExplanation} exitDuration={250}>
+            <div>
+              <div className="bg-green-50 border-2 border-green-300 rounded-lg p-4 mb-4">
+                <h3 className="font-bold text-green-800 mb-2">Rétt svar!</h3>
+                <p className="text-green-700 mb-3">{puzzle.explanationIs}</p>
+
+                <div className="bg-white rounded-lg p-3 border border-green-200">
+                  <h4 className="font-semibold text-warm-700 mb-2">Útreikningur:</h4>
+                  <ul className="text-sm text-warm-600 space-y-1">
+                    <li>
+                      • Hlutfall = 10^({problem.targetPH} - {problem.pKa}) ={' '}
+                      {correctRatio.toFixed(2)}
+                    </li>
+                    <li>
+                      • Heildar mól = {puzzle.targetConcentration} M × {puzzle.targetVolume / 1000}{' '}
+                      L = {targetMoles.toFixed(4)} mol
+                    </li>
+                    <li>
+                      • Sýra: {correctAcidMoles.toFixed(4)} mol / {puzzle.stockAcidConc} M ={' '}
+                      {puzzle.correctAcidVolume} mL
+                    </li>
+                    <li>
+                      • Basi: {correctBaseMoles.toFixed(4)} mol / {puzzle.stockBaseConc} M ={' '}
+                      {puzzle.correctBaseVolume} mL
+                    </li>
+                    <li>
+                      • Vatn: {puzzle.targetVolume} - {puzzle.correctAcidVolume} -{' '}
+                      {puzzle.correctBaseVolume} ≈ {puzzle.correctWaterVolume} mL
+                    </li>
+                  </ul>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <label className="block text-sm font-medium text-red-700 mb-1">Mól sýru:</label>
-                    <input
-                      type="number"
-                      step="0.0001"
-                      value={acidMolesInput}
-                      onChange={(e) => setAcidMolesInput(e.target.value)}
-                      placeholder="t.d. 0.0039"
-                      className="w-full p-3 border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-blue-700 mb-1">
-                      Mól basa:
-                    </label>
-                    <input
-                      type="number"
-                      step="0.0001"
-                      value={baseMolesInput}
-                      onChange={(e) => setBaseMolesInput(e.target.value)}
-                      placeholder="t.d. 0.0061"
-                      className="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <AnimatePresence>
-                  {molesFeedback && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -8 }}
-                      transition={{ duration: 0.25 }}
-                      className={`p-3 rounded-lg mb-4 ${
-                        molesFeedback.includes('Rétt')
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}
-                    >
-                      {molesFeedback}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <button
-                  onClick={checkMoles}
-                  disabled={!acidMolesInput || !baseMolesInput}
-                  className="w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed bg-green-600 hover:bg-green-700"
-                >
-                  Athuga svar
-                </button>
-              </motion.div>
-            )}
-
-            {/* Step 3: Volumes */}
-            {step === 'volumes' && (
-              <motion.div
-                key="step-volumes"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-              >
-                <h3 className="text-lg font-bold text-warm-800 mb-4">
-                  Skref 3: Reiknaðu rúmmál af birgðalausnum (í mL)
-                </h3>
-                <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
-                  <p className="text-sm text-green-800">
-                    <strong>Formúla:</strong> V = n / C (rúmmál = mól / styrkur birgðalausnar)
-                  </p>
-                  <p className="text-sm text-green-800 mt-1">
-                    Sýrubirgð er {puzzle.stockAcidConc} M, basabirgð er {puzzle.stockBaseConc} M
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <label className="block text-sm font-medium text-red-700 mb-1">
-                      Rúmmál sýru (mL):
-                    </label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      value={acidVolumeInput}
-                      onChange={(e) => setAcidVolumeInput(e.target.value)}
-                      placeholder="t.d. 7.76"
-                      className="w-full p-3 border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-blue-700 mb-1">
-                      Rúmmál basa (mL):
-                    </label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      value={baseVolumeInput}
-                      onChange={(e) => setBaseVolumeInput(e.target.value)}
-                      placeholder="t.d. 12.24"
-                      className="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none"
-                    />
-                  </div>
-                </div>
-
-                <AnimatePresence>
-                  {volumeFeedback && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -8 }}
-                      transition={{ duration: 0.25 }}
-                      className={`p-3 rounded-lg mb-4 ${
-                        volumeFeedback.includes('Frábært')
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}
-                    >
-                      {volumeFeedback}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <button
-                  onClick={checkVolumes}
-                  disabled={!acidVolumeInput || !baseVolumeInput}
-                  className="w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed bg-green-600 hover:bg-green-700"
-                >
-                  Athuga svar
-                </button>
-              </motion.div>
-            )}
-
-            {/* Completion & Explanation */}
-            {step === 'complete' && showExplanation && (
-              <motion.div
-                key="step-complete"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-              >
-                <div className="bg-green-50 border-2 border-green-300 rounded-lg p-4 mb-4">
-                  <h3 className="font-bold text-green-800 mb-2">Rétt svar!</h3>
-                  <p className="text-green-700 mb-3">{puzzle.explanationIs}</p>
-
-                  <div className="bg-white rounded-lg p-3 border border-green-200">
-                    <h4 className="font-semibold text-warm-700 mb-2">Útreikningur:</h4>
-                    <ul className="text-sm text-warm-600 space-y-1">
-                      <li>
-                        • Hlutfall = 10^({problem.targetPH} - {problem.pKa}) ={' '}
-                        {correctRatio.toFixed(2)}
-                      </li>
-                      <li>
-                        • Heildar mól = {puzzle.targetConcentration} M ×{' '}
-                        {puzzle.targetVolume / 1000} L = {targetMoles.toFixed(4)} mol
-                      </li>
-                      <li>
-                        • Sýra: {correctAcidMoles.toFixed(4)} mol / {puzzle.stockAcidConc} M ={' '}
-                        {puzzle.correctAcidVolume} mL
-                      </li>
-                      <li>
-                        • Basi: {correctBaseMoles.toFixed(4)} mol / {puzzle.stockBaseConc} M ={' '}
-                        {puzzle.correctBaseVolume} mL
-                      </li>
-                      <li>
-                        • Vatn: {puzzle.targetVolume} - {puzzle.correctAcidVolume} -{' '}
-                        {puzzle.correctBaseVolume} ≈ {puzzle.correctWaterVolume} mL
-                      </li>
-                    </ul>
-                  </div>
-
-                  {/* Visual Recipe Card */}
-                  <div className="mt-4 bg-gradient-to-r from-green-100 to-teal-100 rounded-lg p-4 border-2 border-green-300">
-                    <h4 className="font-bold text-green-800 mb-2 flex items-center gap-2">
-                      <span className="text-xl">📋</span> Uppskrift
-                    </h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs">
-                          1
-                        </span>
-                        <span>
-                          Bættu <strong>{puzzle.correctAcidVolume} mL</strong> af{' '}
-                          {puzzle.stockAcidConc} M {problem.acidName}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs">
-                          2
-                        </span>
-                        <span>
-                          Bættu <strong>{puzzle.correctBaseVolume} mL</strong> af{' '}
-                          {puzzle.stockBaseConc} M {problem.baseName}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-full bg-warm-500 text-white flex items-center justify-center text-xs">
-                          3
-                        </span>
-                        <span>
-                          Fylltu upp í <strong>{puzzle.targetVolume} mL</strong> með eimuðu vatni
-                        </span>
-                      </div>
+                {/* Visual Recipe Card */}
+                <div className="mt-4 bg-gradient-to-r from-green-100 to-teal-100 rounded-lg p-4 border-2 border-green-300">
+                  <h4 className="font-bold text-green-800 mb-2 flex items-center gap-2">
+                    <span className="text-xl">📋</span> Uppskrift
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs">
+                        1
+                      </span>
+                      <span>
+                        Bættu <strong>{puzzle.correctAcidVolume} mL</strong> af{' '}
+                        {puzzle.stockAcidConc} M {problem.acidName}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs">
+                        2
+                      </span>
+                      <span>
+                        Bættu <strong>{puzzle.correctBaseVolume} mL</strong> af{' '}
+                        {puzzle.stockBaseConc} M {problem.baseName}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-warm-500 text-white flex items-center justify-center text-xs">
+                        3
+                      </span>
+                      <span>
+                        Fylltu upp í <strong>{puzzle.targetVolume} mL</strong> með eimuðu vatni
+                      </span>
                     </div>
                   </div>
                 </div>
+              </div>
 
-                <button
-                  onClick={nextPuzzle}
-                  className="w-full py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition-colors"
-                >
-                  {currentIndex < LEVEL3_PUZZLES.length - 1 ? 'Næsta verkefni →' : 'Ljúka stigi →'}
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              <button
+                onClick={nextPuzzle}
+                className="w-full py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition-colors"
+              >
+                {currentIndex < LEVEL3_PUZZLES.length - 1 ? 'Næsta verkefni →' : 'Ljúka stigi →'}
+              </button>
+            </div>
+          </Presence>
         </div>
 
         {/* Formula Reference */}

@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-import { motion, AnimatePresence } from 'framer-motion';
-
-import { HintSystem, FeedbackPanel } from '@shared/components';
+import { HintSystem, FeedbackPanel, Presence } from '@shared/components';
 
 import { LEVEL1_CHALLENGES, type Level1Challenge } from '../data';
 import { BufferCapacityVisualization } from './BufferCapacityVisualization';
@@ -424,60 +422,43 @@ export default function Level1({
             </button>
 
             {/* Feedback */}
-            <AnimatePresence>
-              {feedback && (
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.25 }}
-                  className="mb-3"
-                >
-                  <FeedbackPanel
-                    feedback={{
-                      isCorrect: feedback.includes('Frábært'),
-                      explanation: showExplanation
-                        ? `${feedback} ${currentChallenge.explanation}`
-                        : feedback,
-                      misconception: feedback.includes('Frábært')
-                        ? undefined
-                        : currentRatio < 1
-                          ? BUFFER_MISCONCEPTIONS.ratio_low
-                          : BUFFER_MISCONCEPTIONS.ratio_high,
-                      relatedConcepts: BUFFER_RELATED,
-                      nextSteps: feedback.includes('Frábært')
-                        ? 'Frábært! Þú skilur hvernig hlutfallið hefur áhrif á pH.'
-                        : 'Stilltu hlutfallið [Basi]/[Sýra] til að ná markmiðs-pH.',
-                    }}
-                    config={{
-                      showExplanation: true,
-                      showMisconceptions: !feedback.includes('Frábært'),
-                      showRelatedConcepts: true,
-                      showNextSteps: true,
-                    }}
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <Presence show={!!feedback} exitDuration={250}>
+              <div className="mb-3">
+                <FeedbackPanel
+                  feedback={{
+                    isCorrect: feedback?.includes('Frábært') ?? false,
+                    explanation: showExplanation
+                      ? `${feedback} ${currentChallenge.explanation}`
+                      : (feedback ?? ''),
+                    misconception: feedback?.includes('Frábært')
+                      ? undefined
+                      : currentRatio < 1
+                        ? BUFFER_MISCONCEPTIONS.ratio_low
+                        : BUFFER_MISCONCEPTIONS.ratio_high,
+                    relatedConcepts: BUFFER_RELATED,
+                    nextSteps: feedback?.includes('Frábært')
+                      ? 'Frábært! Þú skilur hvernig hlutfallið hefur áhrif á pH.'
+                      : 'Stilltu hlutfallið [Basi]/[Sýra] til að ná markmiðs-pH.',
+                  }}
+                  config={{
+                    showExplanation: true,
+                    showMisconceptions: !feedback?.includes('Frábært'),
+                    showRelatedConcepts: true,
+                    showNextSteps: true,
+                  }}
+                />
+              </div>
+            </Presence>
 
             {/* Next Button */}
-            <AnimatePresence>
-              {isCorrect && feedback && (
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  <button
-                    onClick={nextChallenge}
-                    className="w-full py-3 px-6 bg-green-500 hover:bg-green-600 text-white font-bold text-lg rounded-lg transition-colors"
-                  >
-                    Næsta verkefni →
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <Presence show={!!(isCorrect && feedback)} exitDuration={250}>
+              <button
+                onClick={nextChallenge}
+                className="w-full py-3 px-6 bg-green-500 hover:bg-green-600 text-white font-bold text-lg rounded-lg transition-colors"
+              >
+                Næsta verkefni →
+              </button>
+            </Presence>
           </div>
         </div>
       </div>
