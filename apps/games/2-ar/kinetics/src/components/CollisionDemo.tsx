@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useCallback } from 'react';
 
 import { ParticleSimulation, PHYSICS_PRESETS, useResponsiveSize } from '@shared/components';
 import type { ParticleType, ReactionConfig } from '@shared/components';
@@ -26,9 +26,12 @@ export function CollisionDemo({
   activationEnergy = 50,
   showLabels = true,
   className = '',
-  responsive = true
+  responsive = true,
 }: CollisionDemoProps) {
   const [reactionCount, setReactionCount] = useState(0);
+  const [collisionRate, setCollisionRate] = useState(0);
+  const collisionCountRef = useRef(0);
+  const lastRateUpdateRef = useRef(Date.now());
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Base dimensions for the simulation
@@ -49,46 +52,66 @@ export function CollisionDemo({
   const containerHeight = responsive ? Math.round(responsiveWidth / aspectRatio) : baseHeight;
 
   // Particle types for reactants and products
-  const particleTypes: ParticleType[] = useMemo(() => [
-    {
-      id: 'A',
-      color: '#f97316', // Orange - reactant A
-      radius: 6,
-      label: 'A',
-      strokeColor: '#c2410c',
-      mass: 1,
-      shape: 'circle' as const
-    },
-    {
-      id: 'B',
-      color: '#3b82f6', // Blue - reactant B
-      radius: 6,
-      label: 'B',
-      strokeColor: '#1d4ed8',
-      mass: 1,
-      shape: 'square' as const
-    },
-    {
-      id: 'AB',
-      color: '#22c55e', // Green - product
-      radius: 8,
-      label: 'AB',
-      strokeColor: '#15803d',
-      mass: 2,
-      shape: 'diamond' as const
-    }
-  ], []);
+  const particleTypes: ParticleType[] = useMemo(
+    () => [
+      {
+        id: 'A',
+        color: '#f97316', // Orange - reactant A
+        radius: 6,
+        label: 'A',
+        strokeColor: '#c2410c',
+        mass: 1,
+        shape: 'circle' as const,
+      },
+      {
+        id: 'B',
+        color: '#3b82f6', // Blue - reactant B
+        radius: 6,
+        label: 'B',
+        strokeColor: '#1d4ed8',
+        mass: 1,
+        shape: 'square' as const,
+      },
+      {
+        id: 'AB',
+        color: '#22c55e', // Green - product
+        radius: 8,
+        label: 'AB',
+        strokeColor: '#15803d',
+        mass: 2,
+        shape: 'diamond' as const,
+      },
+    ],
+    []
+  );
 
   // Reaction configuration: A + B → AB
-  const reactions: ReactionConfig[] = useMemo(() => [{
-    reactants: ['A', 'B'],
-    products: ['AB'],
-    activationEnergy: activationEnergy,
-    probability: 0.7,
-    onReaction: () => {
-      setReactionCount(prev => prev + 1);
+  const reactions: ReactionConfig[] = useMemo(
+    () => [
+      {
+        reactants: ['A', 'B'],
+        products: ['AB'],
+        activationEnergy: activationEnergy,
+        probability: 0.7,
+        onReaction: () => {
+          setReactionCount((prev) => prev + 1);
+        },
+      },
+    ],
+    [activationEnergy]
+  );
+
+  // Track collision frequency (collisions per second)
+  const handleCollisionCount = useCallback((count: number) => {
+    collisionCountRef.current += count;
+    const now = Date.now();
+    const elapsed = now - lastRateUpdateRef.current;
+    if (elapsed >= 1000) {
+      setCollisionRate(Math.round(collisionCountRef.current * (1000 / elapsed)));
+      collisionCountRef.current = 0;
+      lastRateUpdateRef.current = now;
     }
-  }], [activationEnergy]);
+  }, []);
 
   // Calculate effective activation energy region
   const energyThresholdY = useMemo(() => {
@@ -98,15 +121,13 @@ export function CollisionDemo({
     return threshold;
   }, [activationEnergy]);
 
-
   return (
     <div ref={containerRef} className={`bg-warm-900 rounded-xl p-4 ${className}`}>
       <div className="mb-3 flex justify-between items-center">
         <h3 className="text-white font-semibold text-sm">Árekstrarhermun</h3>
         <div className="flex gap-4 text-xs">
-          <span className="text-green-400">
-            Hvörf: {reactionCount}
-          </span>
+          <span className="text-yellow-400">Árekstrar/sek: {collisionRate}</span>
+          <span className="text-green-400">Hvörf: {reactionCount}</span>
         </div>
       </div>
 
@@ -129,23 +150,24 @@ export function CollisionDemo({
             height: containerHeight,
             backgroundColor: '#0f172a',
             borderColor: '#374151',
-            borderWidth: 2
+            borderWidth: 2,
           }}
           particleTypes={particleTypes}
           particles={[
             { typeId: 'A', count: 15 },
-            { typeId: 'B', count: 15 }
+            { typeId: 'B', count: 15 },
           ]}
           physics={{
             ...PHYSICS_PRESETS.kinetics,
             speedMultiplier: 1.2,
             enableCollisions: true,
-            activationEnergy: activationEnergy
+            activationEnergy: activationEnergy,
           }}
           reactions={reactions}
           temperature={temperature}
           running={true}
           showLabels={showLabels}
+          onCollisionCount={handleCollisionCount}
           ariaLabel="Collision theory simulation showing particles reacting when they have sufficient energy"
         />
       </div>
@@ -161,7 +183,10 @@ export function CollisionDemo({
           <span className="text-warm-200 font-medium">■ Hvarfefni B</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 bg-green-500 border border-white/20" style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }} />
+          <div
+            className="w-3 h-3 bg-green-500 border border-white/20"
+            style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}
+          />
           <span className="text-warm-200 font-medium">◆ Afurð AB</span>
         </div>
       </div>

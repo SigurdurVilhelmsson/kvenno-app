@@ -173,6 +173,8 @@ export interface ParticleSimulationProps {
   onParticleCountChange?: (counts: Record<string, number>) => void;
   /** Callback on each frame (for external state sync) */
   onFrame?: (particles: Particle[]) => void;
+  /** Callback reporting collision count per frame */
+  onCollisionCount?: (count: number) => void;
   /** Show particle labels */
   showLabels?: boolean;
   /** Show velocity vectors */
@@ -187,12 +189,12 @@ export interface ParticleSimulationProps {
 
 /** Preset configurations for common scenarios */
 export type SimulationPreset =
-  | 'gas-simple'      // Basic gas particles
-  | 'gas-mixture'     // Two types of gas
-  | 'kinetics'        // Collision with activation energy
-  | 'equilibrium'     // Forward/reverse reactions
-  | 'dissolution'     // Solute dissolving
-  | 'brownian';       // Brownian motion
+  | 'gas-simple' // Basic gas particles
+  | 'gas-mixture' // Two types of gas
+  | 'kinetics' // Collision with activation energy
+  | 'equilibrium' // Forward/reverse reactions
+  | 'dissolution' // Solute dissolving
+  | 'brownian'; // Brownian motion
 
 /** Hook return type for controlling simulation */
 export interface SimulationControls {

@@ -7,7 +7,7 @@ import type {
   PhysicsConfig,
   ReactionConfig,
   CollisionFlash,
-  EnhancedRenderingConfig
+  EnhancedRenderingConfig,
 } from './types';
 
 const DEFAULT_PHYSICS: PhysicsConfig = {
@@ -15,7 +15,7 @@ const DEFAULT_PHYSICS: PhysicsConfig = {
   enableCollisions: false,
   gravity: 0,
   friction: 0,
-  activationEnergy: 0
+  activationEnergy: 0,
 };
 
 /**
@@ -51,11 +51,12 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
   temperature = 300,
   onParticleCountChange,
   onFrame,
+  onCollisionCount,
   showLabels = false,
   showVelocityVectors = false,
   enhancedRendering,
   ariaLabel = 'Particle simulation',
-  className = ''
+  className = '',
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
@@ -75,23 +76,26 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
   // Create particle type lookup
   const typeMap = useMemo(() => {
     const map = new Map<string, ParticleType>();
-    particleTypes.forEach(type => map.set(type.id, type));
+    particleTypes.forEach((type) => map.set(type.id, type));
     return map;
   }, [particleTypes]);
 
   // Calculate speed from temperature (kinetic theory: KE = 3/2 kT)
-  const getSpeedFromTemperature = useCallback((temp: number, mass: number = 1) => {
-    // Simplified: speed proportional to sqrt(T/m)
-    const baseSpeed = Math.sqrt(temp / 100) * (physics.speedMultiplier || 1);
-    return baseSpeed / Math.sqrt(mass);
-  }, [physics.speedMultiplier]);
+  const getSpeedFromTemperature = useCallback(
+    (temp: number, mass: number = 1) => {
+      // Simplified: speed proportional to sqrt(T/m)
+      const baseSpeed = Math.sqrt(temp / 100) * (physics.speedMultiplier || 1);
+      return baseSpeed / Math.sqrt(mass);
+    },
+    [physics.speedMultiplier]
+  );
 
   // Initialize particles
   const initializeParticles = useCallback(() => {
     const newParticles: Particle[] = [];
     let idCounter = 0;
 
-    initialParticles.forEach(group => {
+    initialParticles.forEach((group) => {
       const type = typeMap.get(group.typeId);
       if (!type) return;
 
@@ -102,7 +106,7 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
         xMin: radius,
         xMax: width - radius,
         yMin: radius,
-        yMax: height - radius
+        yMax: height - radius,
       };
 
       for (let i = 0; i < group.count; i++) {
@@ -125,7 +129,7 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
           mass: type.mass || 1,
           energy: 0.5 * (type.mass || 1) * speed * speed,
           shape: type.shape,
-          trail: enhanced.motionTrail ? [] : undefined
+          trail: enhanced.motionTrail ? [] : undefined,
         });
       }
     });
@@ -138,7 +142,7 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
   // Update particle counts
   const updateParticleCounts = useCallback(() => {
     const counts: Record<string, number> = {};
-    particlesRef.current.forEach(p => {
+    particlesRef.current.forEach((p) => {
       counts[p.typeId] = (counts[p.typeId] || 0) + 1;
     });
     setParticleCounts(counts);
@@ -191,77 +195,85 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
   }, []);
 
   // Check and process reactions
-  const processReaction = useCallback((p1: Particle, p2: Particle, reaction: ReactionConfig): boolean => {
-    // Check if this is the right reaction
-    const [r1, r2] = reaction.reactants;
-    const match = (p1.typeId === r1 && p2.typeId === r2) ||
-                  (p1.typeId === r2 && p2.typeId === r1);
-    if (!match) return false;
+  const processReaction = useCallback(
+    (p1: Particle, p2: Particle, reaction: ReactionConfig): boolean => {
+      // Check if this is the right reaction
+      const [r1, r2] = reaction.reactants;
+      const match =
+        (p1.typeId === r1 && p2.typeId === r2) || (p1.typeId === r2 && p2.typeId === r1);
+      if (!match) return false;
 
-    // Check activation energy
-    const collisionEnergy = 0.5 * p1.mass * (p1.vx * p1.vx + p1.vy * p1.vy) +
-                           0.5 * p2.mass * (p2.vx * p2.vx + p2.vy * p2.vy);
-    if (reaction.activationEnergy && collisionEnergy < reaction.activationEnergy) {
-      return false;
-    }
+      // Check activation energy
+      const collisionEnergy =
+        0.5 * p1.mass * (p1.vx * p1.vx + p1.vy * p1.vy) +
+        0.5 * p2.mass * (p2.vx * p2.vx + p2.vy * p2.vy);
+      if (reaction.activationEnergy && collisionEnergy < reaction.activationEnergy) {
+        return false;
+      }
 
-    // Check probability
-    if (reaction.probability !== undefined && Math.random() > reaction.probability) {
-      return false;
-    }
+      // Check probability
+      if (reaction.probability !== undefined && Math.random() > reaction.probability) {
+        return false;
+      }
 
-    // Reaction occurs!
-    reaction.onReaction?.(p1, p2);
-    return true;
-  }, []);
+      // Reaction occurs!
+      reaction.onReaction?.(p1, p2);
+      return true;
+    },
+    []
+  );
 
   // Update particle position
-  const updateParticle = useCallback((particle: Particle) => {
-    // Track trail for motion blur
-    if (particle.trail) {
-      particle.trail.unshift({ x: particle.x, y: particle.y });
-      if (particle.trail.length > trailLength) {
-        particle.trail.length = trailLength;
+  const updateParticle = useCallback(
+    (particle: Particle) => {
+      // Track trail for motion blur
+      if (particle.trail) {
+        particle.trail.unshift({ x: particle.x, y: particle.y });
+        if (particle.trail.length > trailLength) {
+          particle.trail.length = trailLength;
+        }
       }
-    }
 
-    // Apply gravity
-    if (physics.gravity) {
-      particle.vy += physics.gravity;
-    }
+      // Apply gravity
+      if (physics.gravity) {
+        particle.vy += physics.gravity;
+      }
 
-    // Apply friction
-    if (physics.friction) {
-      particle.vx *= (1 - physics.friction);
-      particle.vy *= (1 - physics.friction);
-    }
+      // Apply friction
+      if (physics.friction) {
+        particle.vx *= 1 - physics.friction;
+        particle.vy *= 1 - physics.friction;
+      }
 
-    // Update position
-    particle.x += particle.vx;
-    particle.y += particle.vy;
+      // Update position
+      particle.x += particle.vx;
+      particle.y += particle.vy;
 
-    // Wall collisions
-    const elasticWalls = container.elasticWalls !== false;
-    if (particle.x - particle.radius < 0) {
-      particle.x = particle.radius;
-      if (elasticWalls) particle.vx *= -1;
-    }
-    if (particle.x + particle.radius > width) {
-      particle.x = width - particle.radius;
-      if (elasticWalls) particle.vx *= -1;
-    }
-    if (particle.y - particle.radius < 0) {
-      particle.y = particle.radius;
-      if (elasticWalls) particle.vy *= -1;
-    }
-    if (particle.y + particle.radius > height) {
-      particle.y = height - particle.radius;
-      if (elasticWalls) particle.vy *= -1;
-    }
+      // Wall collisions
+      const elasticWalls = container.elasticWalls !== false;
+      if (particle.x - particle.radius < 0) {
+        particle.x = particle.radius;
+        if (elasticWalls) particle.vx *= -1;
+      }
+      if (particle.x + particle.radius > width) {
+        particle.x = width - particle.radius;
+        if (elasticWalls) particle.vx *= -1;
+      }
+      if (particle.y - particle.radius < 0) {
+        particle.y = particle.radius;
+        if (elasticWalls) particle.vy *= -1;
+      }
+      if (particle.y + particle.radius > height) {
+        particle.y = height - particle.radius;
+        if (elasticWalls) particle.vy *= -1;
+      }
 
-    // Update energy
-    particle.energy = 0.5 * particle.mass * (particle.vx * particle.vx + particle.vy * particle.vy);
-  }, [physics.gravity, physics.friction, container.elasticWalls, width, height]);
+      // Update energy
+      particle.energy =
+        0.5 * particle.mass * (particle.vx * particle.vx + particle.vy * particle.vy);
+    },
+    [physics.gravity, physics.friction, container.elasticWalls, width, height]
+  );
 
   // Main animation loop
   useEffect(() => {
@@ -286,6 +298,7 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
       // Handle collisions
       if (physics.enableCollisions) {
         const toRemove = new Set<string>();
+        let frameCollisions = 0;
 
         for (let i = 0; i < particles.length; i++) {
           for (let j = i + 1; j < particles.length; j++) {
@@ -295,6 +308,8 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
             if (toRemove.has(p1.id) || toRemove.has(p2.id)) continue;
 
             if (checkCollision(p1, p2)) {
+              frameCollisions++;
+
               // Check for reactions first
               let reacted = false;
               for (const reaction of reactions) {
@@ -317,16 +332,18 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
                   x: (p1.x + p2.x) / 2,
                   y: (p1.y + p2.y) / 2,
                   life: 8,
-                  maxLife: 8
+                  maxLife: 8,
                 });
               }
             }
           }
         }
 
+        onCollisionCount?.(frameCollisions);
+
         // Remove reacted particles
         if (toRemove.size > 0) {
-          particlesRef.current = particles.filter(p => !toRemove.has(p.id));
+          particlesRef.current = particles.filter((p) => !toRemove.has(p.id));
           updateParticleCounts();
         }
       }
@@ -339,7 +356,7 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
       ctx.fillRect(0, 0, width, height);
 
       // Regions
-      regions.forEach(region => {
+      regions.forEach((region) => {
         ctx.fillStyle = region.color;
         const x = region.xMin ?? 0;
         const y = region.yMin ?? 0;
@@ -367,8 +384,12 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
           const progress = flash.life / flash.maxLife;
           const flashRadius = 8 * (1 - progress) + 4;
           const flashGrad = ctx.createRadialGradient(
-            flash.x, flash.y, 0,
-            flash.x, flash.y, flashRadius
+            flash.x,
+            flash.y,
+            0,
+            flash.x,
+            flash.y,
+            flashRadius
           );
           flashGrad.addColorStop(0, `rgba(255, 255, 255, ${progress * 0.7})`);
           flashGrad.addColorStop(1, `rgba(255, 255, 255, 0)`);
@@ -385,7 +406,7 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
       }
 
       // Particles
-      particlesRef.current.forEach(particle => {
+      particlesRef.current.forEach((particle) => {
         const speed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
 
         // Motion trail
@@ -430,9 +451,14 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
 
         // Energy-based size pulse
         const baseRadius = particle.radius;
-        const r = enhanced.energyPulse && particle.energy
-          ? baseRadius * (1 + Math.sin(Date.now() * 0.003 + parseInt(particle.id.slice(2), 10)) * 0.08 * Math.min(speed / 4, 1))
-          : baseRadius;
+        const r =
+          enhanced.energyPulse && particle.energy
+            ? baseRadius *
+              (1 +
+                Math.sin(Date.now() * 0.003 + parseInt(particle.id.slice(2), 10)) *
+                  0.08 *
+                  Math.min(speed / 4, 1))
+            : baseRadius;
 
         // Particle body (shape-aware for color-blind accessibility)
         const shape = particle.shape || 'circle';
@@ -440,8 +466,12 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
         if (enhanced.gradientShading && shape === 'circle') {
           // Radial gradient for sphere-like shading
           const grad = ctx.createRadialGradient(
-            particle.x - r * 0.3, particle.y - r * 0.3, r * 0.1,
-            particle.x, particle.y, r
+            particle.x - r * 0.3,
+            particle.y - r * 0.3,
+            r * 0.1,
+            particle.x,
+            particle.y,
+            r
           );
           // Lighten the color for the highlight
           grad.addColorStop(0, lightenColor(particle.color, 60));
@@ -522,10 +552,26 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
       }
     };
   }, [
-    running, width, height, backgroundColor, borderColor, borderWidth,
-    physics.enableCollisions, regions, showLabels, showVelocityVectors, enhanced,
-    updateParticle, checkCollision, resolveCollision, processReaction,
-    reactions, updateParticleCounts, onFrame, typeMap
+    running,
+    width,
+    height,
+    backgroundColor,
+    borderColor,
+    borderWidth,
+    physics.enableCollisions,
+    regions,
+    showLabels,
+    showVelocityVectors,
+    enhanced,
+    updateParticle,
+    checkCollision,
+    resolveCollision,
+    processReaction,
+    reactions,
+    updateParticleCounts,
+    onFrame,
+    onCollisionCount,
+    typeMap,
   ]);
 
   // Initialize on mount and when config changes
@@ -535,7 +581,7 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
 
   // Update speeds when temperature changes
   useEffect(() => {
-    particlesRef.current.forEach(particle => {
+    particlesRef.current.forEach((particle) => {
       const type = typeMap.get(particle.typeId);
       const currentSpeed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
       const targetSpeed = getSpeedFromTemperature(temperature, type?.mass || 1);
@@ -561,7 +607,7 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
       {/* Legend */}
       {particleTypes.length > 1 && (
         <div className="flex flex-wrap gap-3 mt-2">
-          {particleTypes.map(type => (
+          {particleTypes.map((type) => (
             <div key={type.id} className="flex items-center gap-1.5 text-xs">
               <div
                 className="w-3 h-3 rounded-full border border-white/20"
@@ -581,17 +627,23 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
 // Helper functions
 function getBorderColorFromPressure(pressure?: 'low' | 'normal' | 'high'): string {
   switch (pressure) {
-    case 'low': return '#3b82f6';
-    case 'high': return '#ef4444';
-    default: return '#22c55e';
+    case 'low':
+      return '#3b82f6';
+    case 'high':
+      return '#ef4444';
+    default:
+      return '#22c55e';
   }
 }
 
 function getBorderWidthFromPressure(pressure?: 'low' | 'normal' | 'high'): number {
   switch (pressure) {
-    case 'low': return 2;
-    case 'high': return 6;
-    default: return 4;
+    case 'low':
+      return 2;
+    case 'high':
+      return 6;
+    default:
+      return 4;
   }
 }
 
