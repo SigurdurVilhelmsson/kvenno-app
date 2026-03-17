@@ -1,15 +1,8 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
 import { motion, AnimatePresence } from 'framer-motion';
 
-import {
-  ParticleSimulation,
-  PARTICLE_TYPES,
-  PHYSICS_PRESETS,
-  Header,
-  LanguageSwitcher,
-  ErrorBoundary,
-} from '@shared/components';
+import { Header, LanguageSwitcher, ErrorBoundary } from '@shared/components';
 import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
 import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
 import { AnimatedBackground } from '@shared/components/AnimatedBackground';
@@ -22,6 +15,7 @@ import { useGameI18n } from '@shared/hooks';
 import { useAchievements } from '@shared/hooks/useAchievements';
 import { useGameSounds } from '@shared/hooks/useGameSounds';
 
+import { GasLawSimulator } from './components/GasLawSimulator';
 import { questions, getRandomQuestion } from './data';
 import { gameTranslations } from './i18n';
 import {
@@ -188,32 +182,6 @@ function App() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only trigger on screen/mode/timer state changes
   }, [screen, gameMode, timeRemaining]);
-
-  // Calculate particle configuration based on current question
-  const particleConfig = useMemo(() => {
-    if (!currentQuestion) return null;
-
-    // Determine number of particles based on moles
-    const numParticles = currentQuestion.given.n
-      ? Math.min(Math.max(Math.floor(currentQuestion.given.n.value * 30), 10), 80)
-      : 40;
-
-    // Determine temperature for particle speed
-    const temperature = currentQuestion.given.T?.value || 300;
-
-    // Determine pressure for container styling
-    const pressure =
-      currentQuestion.find === 'P' ? currentQuestion.answer : currentQuestion.given.P?.value || 1;
-
-    const pressureLevel: 'low' | 'normal' | 'high' =
-      pressure < 1 ? 'low' : pressure < 5 ? 'normal' : 'high';
-
-    return {
-      numParticles,
-      temperature,
-      pressureLevel,
-    };
-  }, [currentQuestion]);
 
   // Check user answer
   const checkUserAnswer = () => {
@@ -683,29 +651,13 @@ function App() {
                       <p className="text-sm text-warm-600">{currentQuestion.scenario_en}</p>
                     </div>
 
-                    {/* Particle Simulation */}
-                    <div className="bg-warm-900 rounded-lg p-4">
-                      {particleConfig && (
-                        <ParticleSimulation
-                          container={{
-                            width: 400,
-                            height: 280,
-                            pressure: particleConfig.pressureLevel,
-                            backgroundColor: '#0f172a',
-                          }}
-                          particleTypes={[PARTICLE_TYPES.reactantA]}
-                          particles={[{ typeId: 'A', count: particleConfig.numParticles }]}
-                          physics={PHYSICS_PRESETS.idealGas}
-                          temperature={particleConfig.temperature}
-                          running={screen === 'game'}
-                          ariaLabel="Gas particle simulation showing ideal gas behavior"
-                        />
-                      )}
-                      <p className="text-xs text-warm-400 mt-2 text-center">
-                        Agnir tákna lofttegundir • Rammi: þrýstingur (blátt=lágt, grænt=venjulegt,
-                        rautt=hátt)
-                      </p>
-                    </div>
+                    {/* Gas Law Simulator */}
+                    <GasLawSimulator
+                      question={currentQuestion}
+                      isRunning={screen === 'game'}
+                      showAnswer={feedback?.isCorrect !== undefined}
+                      correctAnswer={currentQuestion.answer}
+                    />
 
                     {/* Given Values */}
                     <div className="mt-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
