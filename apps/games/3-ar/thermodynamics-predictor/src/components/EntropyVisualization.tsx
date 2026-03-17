@@ -51,7 +51,7 @@ export function EntropyVisualization({ deltaS }: EntropyVisualizationProps) {
       ...PHYSICS_PRESETS.brownian,
       speedMultiplier: 0.6,
       enableCollisions: true,
-      friction: 0.02,
+      friction: 0,
     }),
     []
   );
@@ -180,7 +180,7 @@ export function EntropyVisualization({ deltaS }: EntropyVisualizationProps) {
     : undefined;
 
   return (
-    <div className="entropy-viz">
+    <div>
       {/* Formula */}
       <div className="text-center text-xs text-gray-500 mb-2 font-mono">S = k·ln(W)</div>
 
@@ -195,7 +195,7 @@ export function EntropyVisualization({ deltaS }: EntropyVisualizationProps) {
             particles={beforeParticles}
             physics={physics}
             temperature={temperature}
-            running={true}
+            running={isIncreasing ? false : true}
             regions={beforeRegions}
             ariaLabel={
               isIncreasing
@@ -217,7 +217,7 @@ export function EntropyVisualization({ deltaS }: EntropyVisualizationProps) {
             particles={afterParticles}
             physics={physics}
             temperature={temperature}
-            running={true}
+            running={isIncreasing ? true : false}
             regions={afterRegions}
             ariaLabel={
               isIncreasing
