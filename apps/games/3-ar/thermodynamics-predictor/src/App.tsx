@@ -1,8 +1,13 @@
 import { useState, useEffect, useMemo } from 'react';
 
-import { motion, AnimatePresence } from 'framer-motion';
-
-import { Header, InteractiveGraph, LanguageSwitcher, ErrorBoundary } from '@shared/components';
+import {
+  Header,
+  InteractiveGraph,
+  LanguageSwitcher,
+  ErrorBoundary,
+  Presence,
+  FadePresence,
+} from '@shared/components';
 import type {
   DataPoint,
   DataSeries,
@@ -314,13 +319,7 @@ function App() {
   }, [mode, timeLeft, showSolution]);
 
   const renderMenu = () => (
-    <motion.div
-      key="menu"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-    >
+    <div>
       <AnimatedBackground yearTheme="3-ar" variant="menu">
         <Header
           variant="game"
@@ -469,7 +468,7 @@ function App() {
           </div>
         </div>
       </AnimatedBackground>
-    </motion.div>
+    </div>
   );
 
   const renderGame = () => {
@@ -483,14 +482,7 @@ function App() {
         : null;
 
     return (
-      <motion.div
-        key="game"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.2 }}
-        className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-6"
-      >
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-6">
         <a
           href="#problem-display"
           className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-orange-600 focus:font-bold"
@@ -719,194 +711,171 @@ function App() {
               </div>
 
               {/* Answer Input / Solution */}
-              <AnimatePresence mode="wait">
-                {!showSolution && (
-                  <motion.div
-                    key="answer-input"
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.25 }}
-                    className="bg-white rounded-lg shadow-lg p-6"
-                  >
-                    <h3 className="font-bold mb-4">Svarið þitt:</h3>
+              <Presence show={!showSolution} exitDuration={250}>
+                <div className="bg-white rounded-lg shadow-lg p-6">
+                  <h3 className="font-bold mb-4">Svarið þitt:</h3>
 
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-2">
-                        ΔG° við {temperature} K (kJ/mol):
-                      </label>
-                      <input
-                        type="number"
-                        step="0.1"
-                        value={userDeltaG}
-                        onChange={(e) => setUserDeltaG(e.target.value)}
-                        className="w-full px-4 py-2 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-none"
-                        placeholder="t.d. -33.5"
-                      />
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">
+                      ΔG° við {temperature} K (kJ/mol):
+                    </label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      value={userDeltaG}
+                      onChange={(e) => setUserDeltaG(e.target.value)}
+                      className="w-full px-4 py-2 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-none"
+                      placeholder="t.d. -33.5"
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">Sjálfviljugheit:</label>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+                      <button
+                        onClick={() => setUserSpontaneity('spontaneous')}
+                        className={`px-4 py-2 rounded-lg border-2 transition ${
+                          userSpontaneity === 'spontaneous'
+                            ? 'border-green-500 bg-green-50 font-bold'
+                            : 'border-warm-300 hover:border-green-300'
+                        }`}
+                      >
+                        ✓ Sjálfviljugt
+                      </button>
+                      <button
+                        onClick={() => setUserSpontaneity('equilibrium')}
+                        className={`px-4 py-2 rounded-lg border-2 transition ${
+                          userSpontaneity === 'equilibrium'
+                            ? 'border-yellow-500 bg-yellow-50 font-bold'
+                            : 'border-warm-300 hover:border-yellow-300'
+                        }`}
+                      >
+                        ⚖️ Jafnvægi
+                      </button>
+                      <button
+                        onClick={() => setUserSpontaneity('non-spontaneous')}
+                        className={`px-4 py-2 rounded-lg border-2 transition ${
+                          userSpontaneity === 'non-spontaneous'
+                            ? 'border-red-500 bg-red-50 font-bold'
+                            : 'border-warm-300 hover:border-red-300'
+                        }`}
+                      >
+                        ✗ Ekki sjálfviljugt
+                      </button>
                     </div>
+                  </div>
 
-                    <div className="mb-4">
-                      <label className="block text-sm font-medium mb-2">Sjálfviljugheit:</label>
-                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
-                        <button
-                          onClick={() => setUserSpontaneity('spontaneous')}
-                          className={`px-4 py-2 rounded-lg border-2 transition ${
-                            userSpontaneity === 'spontaneous'
-                              ? 'border-green-500 bg-green-50 font-bold'
-                              : 'border-warm-300 hover:border-green-300'
-                          }`}
-                        >
-                          ✓ Sjálfviljugt
-                        </button>
-                        <button
-                          onClick={() => setUserSpontaneity('equilibrium')}
-                          className={`px-4 py-2 rounded-lg border-2 transition ${
-                            userSpontaneity === 'equilibrium'
-                              ? 'border-yellow-500 bg-yellow-50 font-bold'
-                              : 'border-warm-300 hover:border-yellow-300'
-                          }`}
-                        >
-                          ⚖️ Jafnvægi
-                        </button>
-                        <button
-                          onClick={() => setUserSpontaneity('non-spontaneous')}
-                          className={`px-4 py-2 rounded-lg border-2 transition ${
-                            userSpontaneity === 'non-spontaneous'
-                              ? 'border-red-500 bg-red-50 font-bold'
-                              : 'border-warm-300 hover:border-red-300'
-                          }`}
-                        >
-                          ✗ Ekki sjálfviljugt
-                        </button>
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={checkAnswer}
-                      disabled={!userDeltaG || !userSpontaneity}
-                      className="w-full py-3 rounded-lg text-white font-bold text-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
-                      style={{ background: 'linear-gradient(135deg, #f36b22 0%, #d95a1a 100%)' }}
-                    >
-                      Athuga svar
-                    </button>
-                  </motion.div>
-                )}
-
-                {/* Solution */}
-                {showSolution && (
-                  <motion.div
-                    key="solution"
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.25 }}
-                    className="bg-white rounded-lg shadow-lg p-6"
+                  <button
+                    onClick={checkAnswer}
+                    disabled={!userDeltaG || !userSpontaneity}
+                    className="w-full py-3 rounded-lg text-white font-bold text-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ background: 'linear-gradient(135deg, #f36b22 0%, #d95a1a 100%)' }}
                   >
-                    <h3 className="font-bold text-lg mb-4">📝 Lausn:</h3>
-                    <div className="space-y-3 text-sm">
-                      <div>
-                        <strong>Skref 1:</strong> Umbreyta ΔS° í kJ/(mol·K)
-                        <br />
-                        ΔS° = {currentProblem.deltaS} J/(mol·K) × (1 kJ / 1000 J) ={' '}
-                        {(currentProblem.deltaS / 1000).toFixed(3)} kJ/(mol·K)
-                      </div>
-                      <div>
-                        <strong>Skref 2:</strong> Beita Gibbs jöfnunni
-                        <br />
-                        ΔG° = ΔH° - TΔS°
-                        <br />
-                        ΔG° = ({currentProblem.deltaH}) - ({temperature})(
-                        {(currentProblem.deltaS / 1000).toFixed(3)})<br />
-                        ΔG° = {currentProblem.deltaH} -{' '}
-                        {((temperature * currentProblem.deltaS) / 1000).toFixed(1)}
-                        <br />
-                        <strong>ΔG° = {currentDeltaG.toFixed(1)} kJ/mol</strong>
-                      </div>
-                      <div>
-                        <strong>Skref 3:</strong> Túlka niðurstöðu
-                        <br />
-                        {currentDeltaG < -1 && 'ΔG° < 0 → SJÁLFVILJUGT ✓'}
-                        {Math.abs(currentDeltaG) <= 1 && 'ΔG° ≈ 0 → JAFNVÆGI ⚖️'}
-                        {currentDeltaG > 1 && 'ΔG° > 0 → EKKI SJÁLFVILJUGT ✗'}
-                      </div>
-                      {/* Crossover temperature explanation for scenarios 3 & 4 */}
-                      {(currentProblem.scenario === 3 || currentProblem.scenario === 4) &&
-                        crossoverTemp && (
-                          <div className="bg-purple-50 border-l-4 border-purple-500 p-3 rounded">
-                            <strong>Skref 4:</strong> Reikna umbreytingarhitastig (T<sub>cross</sub>
-                            )
+                    Athuga svar
+                  </button>
+                </div>
+              </Presence>
+
+              {/* Solution */}
+              <Presence show={showSolution} exitDuration={250}>
+                <div className="bg-white rounded-lg shadow-lg p-6">
+                  <h3 className="font-bold text-lg mb-4">📝 Lausn:</h3>
+                  <div className="space-y-3 text-sm">
+                    <div>
+                      <strong>Skref 1:</strong> Umbreyta ΔS° í kJ/(mol·K)
+                      <br />
+                      ΔS° = {currentProblem.deltaS} J/(mol·K) × (1 kJ / 1000 J) ={' '}
+                      {(currentProblem.deltaS / 1000).toFixed(3)} kJ/(mol·K)
+                    </div>
+                    <div>
+                      <strong>Skref 2:</strong> Beita Gibbs jöfnunni
+                      <br />
+                      ΔG° = ΔH° - TΔS°
+                      <br />
+                      ΔG° = ({currentProblem.deltaH}) - ({temperature})(
+                      {(currentProblem.deltaS / 1000).toFixed(3)})<br />
+                      ΔG° = {currentProblem.deltaH} -{' '}
+                      {((temperature * currentProblem.deltaS) / 1000).toFixed(1)}
+                      <br />
+                      <strong>ΔG° = {currentDeltaG.toFixed(1)} kJ/mol</strong>
+                    </div>
+                    <div>
+                      <strong>Skref 3:</strong> Túlka niðurstöðu
+                      <br />
+                      {currentDeltaG < -1 && 'ΔG° < 0 → SJÁLFVILJUGT ✓'}
+                      {Math.abs(currentDeltaG) <= 1 && 'ΔG° ≈ 0 → JAFNVÆGI ⚖️'}
+                      {currentDeltaG > 1 && 'ΔG° > 0 → EKKI SJÁLFVILJUGT ✗'}
+                    </div>
+                    {/* Crossover temperature explanation for scenarios 3 & 4 */}
+                    {(currentProblem.scenario === 3 || currentProblem.scenario === 4) &&
+                      crossoverTemp && (
+                        <div className="bg-purple-50 border-l-4 border-purple-500 p-3 rounded">
+                          <strong>Skref 4:</strong> Reikna umbreytingarhitastig (T<sub>cross</sub>
+                          )
+                          <br />
+                          <div className="font-mono mt-1">
+                            Þegar ΔG° = 0: ΔH° = TΔS°
+                            <br />T<sub>cross</sub> = ΔH° / ΔS°
+                            <br />T<sub>cross</sub> = {currentProblem.deltaH} /{' '}
+                            {(currentProblem.deltaS / 1000).toFixed(3)}
                             <br />
-                            <div className="font-mono mt-1">
-                              Þegar ΔG° = 0: ΔH° = TΔS°
-                              <br />T<sub>cross</sub> = ΔH° / ΔS°
-                              <br />T<sub>cross</sub> = {currentProblem.deltaH} /{' '}
-                              {(currentProblem.deltaS / 1000).toFixed(3)}
-                              <br />
-                              <strong>
-                                T<sub>cross</sub> = {crossoverTemp.toFixed(0)} K (
-                                {(crossoverTemp - 273).toFixed(0)}°C)
-                              </strong>
-                            </div>
-                            <div className="mt-2 text-sm">
-                              {currentProblem.scenario === 3 ? (
-                                <>
-                                  🔹 Við T &lt; {crossoverTemp.toFixed(0)} K: ΔG° &lt; 0
-                                  (sjálfviljugt)
-                                  <br />
-                                  🔹 Við T &gt; {crossoverTemp.toFixed(0)} K: ΔG° &gt; 0 (ekki
-                                  sjálfviljugt)
-                                </>
-                              ) : (
-                                <>
-                                  🔹 Við T &lt; {crossoverTemp.toFixed(0)} K: ΔG° &gt; 0 (ekki
-                                  sjálfviljugt)
-                                  <br />
-                                  🔹 Við T &gt; {crossoverTemp.toFixed(0)} K: ΔG° &lt; 0
-                                  (sjálfviljugt)
-                                </>
-                              )}
-                            </div>
+                            <strong>
+                              T<sub>cross</sub> = {crossoverTemp.toFixed(0)} K (
+                              {(crossoverTemp - 273).toFixed(0)}°C)
+                            </strong>
                           </div>
-                        )}
+                          <div className="mt-2 text-sm">
+                            {currentProblem.scenario === 3 ? (
+                              <>
+                                🔹 Við T &lt; {crossoverTemp.toFixed(0)} K: ΔG° &lt; 0
+                                (sjálfviljugt)
+                                <br />
+                                🔹 Við T &gt; {crossoverTemp.toFixed(0)} K: ΔG° &gt; 0 (ekki
+                                sjálfviljugt)
+                              </>
+                            ) : (
+                              <>
+                                🔹 Við T &lt; {crossoverTemp.toFixed(0)} K: ΔG° &gt; 0 (ekki
+                                sjálfviljugt)
+                                <br />
+                                🔹 Við T &gt; {crossoverTemp.toFixed(0)} K: ΔG° &lt; 0
+                                (sjálfviljugt)
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      )}
 
-                      <div className="bg-blue-50 p-3 rounded">
-                        <strong>Atburðarás {currentProblem.scenario}:</strong>
-                        <br />
-                        {getScenarioDescription(currentProblem.scenario)}
-                      </div>
+                    <div className="bg-blue-50 p-3 rounded">
+                      <strong>Atburðarás {currentProblem.scenario}:</strong>
+                      <br />
+                      {getScenarioDescription(currentProblem.scenario)}
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  </div>
+                </div>
+              </Presence>
 
               {/* Feedback */}
-              <AnimatePresence>
-                {feedback && (
-                  <motion.div
-                    key="feedback"
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.25 }}
-                    className={`rounded-lg shadow-lg p-6 ${
-                      feedback.includes('Rétt')
-                        ? 'bg-green-50 border-2 border-green-500'
-                        : 'bg-red-50 border-2 border-red-500'
-                    }`}
-                  >
-                    <div className="text-lg font-bold mb-2">{feedback}</div>
-                    {showSolution && (
-                      <button
-                        onClick={startNewProblem}
-                        className="mt-4 w-full py-2 rounded-lg text-white font-bold"
-                        style={{ background: '#f36b22' }}
-                      >
-                        Næsta spurning →
-                      </button>
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <Presence show={!!feedback} exitDuration={250}>
+                <div
+                  className={`rounded-lg shadow-lg p-6 ${
+                    feedback?.includes('Rétt')
+                      ? 'bg-green-50 border-2 border-green-500'
+                      : 'bg-red-50 border-2 border-red-500'
+                  }`}
+                >
+                  <div className="text-lg font-bold mb-2">{feedback}</div>
+                  {showSolution && (
+                    <button
+                      onClick={startNewProblem}
+                      className="mt-4 w-full py-2 rounded-lg text-white font-bold"
+                      style={{ background: '#f36b22' }}
+                    >
+                      Næsta spurning →
+                    </button>
+                  )}
+                </div>
+              </Presence>
             </div>
 
             {/* Right Column - Visualizations */}
@@ -1017,18 +986,18 @@ function App() {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     );
-  };
-
-  const renderScreen = () => {
-    if (mode === 'menu') return renderMenu();
-    return renderGame();
   };
 
   return (
     <>
-      <AnimatePresence mode="wait">{renderScreen()}</AnimatePresence>
+      <FadePresence show={mode === 'menu'} exitDuration={200}>
+        {renderMenu()}
+      </FadePresence>
+      <FadePresence show={mode !== 'menu'} exitDuration={200}>
+        {renderGame()}
+      </FadePresence>
 
       {/* Achievements Panel Modal */}
       {showAchievements && (
