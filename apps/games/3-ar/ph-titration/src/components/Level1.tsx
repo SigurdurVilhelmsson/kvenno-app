@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 
+import { motion, AnimatePresence } from 'framer-motion';
+
 import { HintSystem, InteractiveGraph, FeedbackPanel } from '@shared/components';
 import type { DataPoint, DataSeries, MarkerConfig } from '@shared/components';
 import { shuffleArray } from '@shared/utils';
@@ -11,9 +13,12 @@ import { generateTitrationCurve } from '../utils/ph-calculations';
 
 // Misconceptions for titration concepts
 const TITRATION_MISCONCEPTIONS: Record<string, string> = {
-  equivalence: 'Jafngildi (equivalence point) er þar sem mól sýru = mól basa. pH fer ekki alltaf í 7!',
-  strong_strong: 'Sterk sýra + sterkur basi gefur pH = 7 við jafngildi vegna þess að salt og vatn myndast.',
-  weak_strong: 'Veik sýra + sterkur basi gefur pH > 7 við jafngildi vegna þess að samoki basinn er eftir.',
+  equivalence:
+    'Jafngildi (equivalence point) er þar sem mól sýru = mól basa. pH fer ekki alltaf í 7!',
+  strong_strong:
+    'Sterk sýra + sterkur basi gefur pH = 7 við jafngildi vegna þess að salt og vatn myndast.',
+  weak_strong:
+    'Veik sýra + sterkur basi gefur pH > 7 við jafngildi vegna þess að samoki basinn er eftir.',
   indicator: 'Veljið vísi sem breytir lit nálægt pH við jafngildi, ekki endilega pH = 7.',
   buffer_region: 'Á milli upphafs og jafngildis er stuðpúðasvæðið þar sem pH breytist hægt.',
 };
@@ -57,7 +62,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     // Assign new sequential IDs (a, b, c, d) after shuffling
     return shuffled.map((opt, idx) => ({
       ...opt,
-      id: String.fromCharCode(97 + idx) // 'a', 'b', 'c', 'd'
+      id: String.fromCharCode(97 + idx), // 'a', 'b', 'c', 'd'
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when challenge index changes
   }, [currentIndex, challenge.options]);
@@ -77,14 +82,14 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const handleCheck = () => {
     if (!selectedOption || showResult) return;
 
-    const selectedOpt = shuffledOptions.find(o => o.id === selectedOption);
+    const selectedOpt = shuffledOptions.find((o) => o.id === selectedOption);
     const isCorrect = selectedOpt?.isCorrect ?? false;
 
     setShowResult(true);
 
     if (isCorrect) {
       const points = Math.round(100 * hintMultiplier);
-      setScore(prev => prev + points);
+      setScore((prev) => prev + points);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();
@@ -92,22 +97,22 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   };
 
   const handleNext = () => {
-    setCompleted(prev => prev + 1);
+    setCompleted((prev) => prev + 1);
 
     if (currentIndex < LEVEL1_CHALLENGES.length - 1) {
-      setCurrentIndex(prev => prev + 1);
+      setCurrentIndex((prev) => prev + 1);
       setSelectedOption(null);
       setShowResult(false);
       setHintMultiplier(1.0);
-      setHintResetKey(prev => prev + 1);
+      setHintResetKey((prev) => prev + 1);
     }
   };
 
   const handleHintUsed = () => {
-    setHintsUsed(prev => prev + 1);
+    setHintsUsed((prev) => prev + 1);
   };
 
-  const selectedOpt = shuffledOptions.find(o => o.id === selectedOption);
+  const selectedOpt = shuffledOptions.find((o) => o.id === selectedOption);
   const isCorrect = selectedOpt?.isCorrect ?? false;
 
   return (
@@ -125,9 +130,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="text-sm text-warm-500">
               {completed + 1} / {LEVEL1_CHALLENGES.length}
             </div>
-            <div className="text-lg font-bold text-blue-600">
-              Stig: {score}
-            </div>
+            <div className="text-lg font-bold text-blue-600">Stig: {score}</div>
           </div>
         </div>
 
@@ -143,7 +146,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-blue-500 h-2 rounded-full transition-all duration-300"
-            style={{ width: `${((completed) / LEVEL1_CHALLENGES.length) * 100}%` }}
+            style={{ width: `${(completed / LEVEL1_CHALLENGES.length) * 100}%` }}
           />
         </div>
 
@@ -163,9 +166,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
           </div>
 
-          <p className="text-blue-900 text-lg mb-6">
-            {challenge.questionIs}
-          </p>
+          <p className="text-blue-900 text-lg mb-6">{challenge.questionIs}</p>
 
           {/* Curve visualization for relevant challenges */}
           {(challenge.type === 'match-curve' || challenge.type === 'curve-feature') && (
@@ -176,7 +177,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           {/* Options */}
           <div className="space-y-3">
-            {shuffledOptions.map(option => {
+            {shuffledOptions.map((option) => {
               const isSelected = selectedOption === option.id;
               const isOptionCorrect = option.isCorrect;
 
@@ -206,7 +207,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   }`}
                 >
                   <div className="flex items-start gap-3">
-                    <span className={`font-bold ${showResult && isOptionCorrect ? 'text-green-600' : 'text-blue-600'}`}>
+                    <span
+                      className={`font-bold ${showResult && isOptionCorrect ? 'text-green-600' : 'text-blue-600'}`}
+                    >
                       {option.id}.
                     </span>
                     <span className="text-warm-800">{option.labelIs}</span>
@@ -217,48 +220,61 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
         </div>
 
-        {/* Tiered Hint System */}
-        {!showResult && (
-          <div className="mb-4">
-            <HintSystem
-              hints={challenge.hints}
-              basePoints={100}
-              onHintUsed={handleHintUsed}
-              onPointsChange={setHintMultiplier}
-              disabled={showResult}
-              resetKey={hintResetKey}
-            />
-          </div>
-        )}
+        {/* Tiered Hint System / Result feedback (mutually exclusive) */}
+        <AnimatePresence mode="wait">
+          {!showResult && (
+            <motion.div
+              key="hints"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25 }}
+              className="mb-4"
+            >
+              <HintSystem
+                hints={challenge.hints}
+                basePoints={100}
+                onHintUsed={handleHintUsed}
+                onPointsChange={setHintMultiplier}
+                disabled={showResult}
+                resetKey={hintResetKey}
+              />
+            </motion.div>
+          )}
 
-        {/* Result feedback */}
-        {showResult && (
-          <div className="mb-6">
-            <FeedbackPanel
-              feedback={{
-                isCorrect,
-                explanation: `${isCorrect ? '✓ Rétt!' : '✗ Rangt'}${isCorrect ? ` (+${Math.round(100 * hintMultiplier)} stig)` : ''}\n\n${challenge.explanationIs}`,
-                misconception: isCorrect ? undefined : TITRATION_MISCONCEPTIONS.equivalence,
-                relatedConcepts: TITRATION_RELATED,
-                nextSteps: isCorrect
-                  ? 'Frábært! Þú skilur títrunarkúrfur vel.'
-                  : 'Skoðaðu kúrfuna og athugaðu hvar pH breytist mest.',
-              }}
-              config={{
-                showExplanation: true,
-                showMisconceptions: !isCorrect,
-                showRelatedConcepts: true,
-                showNextSteps: true,
-              }}
-            />
-          </div>
-        )}
+          {showResult && (
+            <motion.div
+              key="feedback"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25 }}
+              className="mb-6"
+            >
+              <FeedbackPanel
+                feedback={{
+                  isCorrect,
+                  explanation: `${isCorrect ? '✓ Rétt!' : '✗ Rangt'}${isCorrect ? ` (+${Math.round(100 * hintMultiplier)} stig)` : ''}\n\n${challenge.explanationIs}`,
+                  misconception: isCorrect ? undefined : TITRATION_MISCONCEPTIONS.equivalence,
+                  relatedConcepts: TITRATION_RELATED,
+                  nextSteps: isCorrect
+                    ? 'Frábært! Þú skilur títrunarkúrfur vel.'
+                    : 'Skoðaðu kúrfuna og athugaðu hvar pH breytist mest.',
+                }}
+                config={{
+                  showExplanation: true,
+                  showMisconceptions: !isCorrect,
+                  showRelatedConcepts: true,
+                  showNextSteps: true,
+                }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Action buttons */}
         <div className="flex justify-between">
-          <div className="text-sm text-warm-500">
-            {hintMultiplier < 1 && '💡 Vísbending notuð'}
-          </div>
+          <div className="text-sm text-warm-500">{hintMultiplier < 1 && '💡 Vísbending notuð'}</div>
           <div className="flex gap-3">
             {!showResult ? (
               <button
@@ -298,7 +314,10 @@ function TitrationCurvePreview({ curveType }: { curveType?: string }) {
       curveData = generateTitrationCurve(strongStrongTitration, 50);
       equivVolume = strongStrongTitration.equivalenceVolume;
       equivPH = strongStrongTitration.equivalencePH;
-    } else if ((curveType === 'weak-strong' || curveType === 'strong-weak') && weakStrongTitration) {
+    } else if (
+      (curveType === 'weak-strong' || curveType === 'strong-weak') &&
+      weakStrongTitration
+    ) {
       curveData = generateTitrationCurve(weakStrongTitration, 50);
       equivVolume = weakStrongTitration.equivalenceVolume;
       equivPH = weakStrongTitration.equivalencePH;
@@ -306,17 +325,17 @@ function TitrationCurvePreview({ curveType }: { curveType?: string }) {
       // Default strong-strong curve
       curveData = Array.from({ length: 51 }, (_, i) => ({
         volume: i,
-        pH: i < 24 ? 1 + (i / 24) * 2 : i < 26 ? 3 + (i - 24) * 2 : 11 + (i - 26) * 0.1
+        pH: i < 24 ? 1 + (i / 24) * 2 : i < 26 ? 3 + (i - 24) * 2 : 11 + (i - 26) * 0.1,
       }));
     }
 
-    const dataPoints: DataPoint[] = curveData.map(pt => ({ x: pt.volume, y: pt.pH }));
+    const dataPoints: DataPoint[] = curveData.map((pt) => ({ x: pt.volume, y: pt.pH }));
 
     const curveSeries: DataSeries = {
       id: 'titration',
       data: dataPoints,
       color: '#3b82f6',
-      lineWidth: 3
+      lineWidth: 3,
     };
 
     const equivMarker: MarkerConfig = {
@@ -324,7 +343,7 @@ function TitrationCurvePreview({ curveType }: { curveType?: string }) {
       y: equivPH,
       color: '#22c55e',
       radius: 6,
-      label: 'Jafngildispunktur'
+      label: 'Jafngildispunktur',
     };
 
     return { series: [curveSeries], marker: equivMarker };
@@ -339,13 +358,15 @@ function TitrationCurvePreview({ curveType }: { curveType?: string }) {
         xAxis={{ min: 0, max: 50, label: 'Rúmmál (mL)', tickInterval: 10 }}
         yAxis={{ min: 0, max: 14, label: 'pH', tickInterval: 2 }}
         markers={[marker]}
-        horizontalLines={[{
-          y: 7,
-          color: '#94a3b8',
-          lineDash: [5, 5],
-          label: 'pH 7',
-          labelPosition: 'right'
-        }]}
+        horizontalLines={[
+          {
+            y: 7,
+            color: '#94a3b8',
+            lineDash: [5, 5],
+            label: 'pH 7',
+            labelPosition: 'right',
+          },
+        ]}
         ariaLabel="Títrunarkúrfa"
       />
     </div>

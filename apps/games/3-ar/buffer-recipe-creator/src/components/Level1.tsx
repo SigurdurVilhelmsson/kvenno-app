@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
+import { motion, AnimatePresence } from 'framer-motion';
+
 import { HintSystem, FeedbackPanel } from '@shared/components';
 
 import { LEVEL1_CHALLENGES, type Level1Challenge } from '../data';
@@ -10,14 +12,22 @@ const MAX_MOLECULES = 30;
 
 // Misconceptions for buffer concepts
 const BUFFER_MISCONCEPTIONS = {
-  ratio_low: 'Ef hlutfallið [Basi]/[Sýra] er of lágt, þá er of mikið af sýru og pH verður lægra en markmiðið.',
-  ratio_high: 'Ef hlutfallið [Basi]/[Sýra] er of hátt, þá er of mikið af basa og pH verður hærra en markmiðið.',
+  ratio_low:
+    'Ef hlutfallið [Basi]/[Sýra] er of lágt, þá er of mikið af sýru og pH verður lægra en markmiðið.',
+  ratio_high:
+    'Ef hlutfallið [Basi]/[Sýra] er of hátt, þá er of mikið af basa og pH verður hærra en markmiðið.',
   equal: 'Þegar [Basi] = [Sýra], þá er pH = pKa. Þetta er miðpunktur stuðpúðans.',
-  concept: 'Stuðpúðar virka vegna þess að veika sýran og samoki basinn geta tekið við eða gefið frá sér H⁺ jónir.',
+  concept:
+    'Stuðpúðar virka vegna þess að veika sýran og samoki basinn geta tekið við eða gefið frá sér H⁺ jónir.',
 };
 
 // Related concepts for buffers
-const BUFFER_RELATED: string[] = ['Henderson-Hasselbalch', 'pKa', 'Stuðpúðargeta', 'Veik sýru-basa pör'];
+const BUFFER_RELATED: string[] = [
+  'Henderson-Hasselbalch',
+  'pKa',
+  'Stuðpúðargeta',
+  'Veik sýru-basa pör',
+];
 
 interface Level1Props {
   onCorrectAnswer?: () => void;
@@ -58,9 +68,10 @@ export default function Level1({
 
   // Estimate pH using simplified Henderson-Hasselbalch
   // pH = pKa + log([Base]/[Acid])
-  const estimatedPH = acidCount > 0 && baseCount > 0
-    ? currentChallenge.pKa + Math.log10(currentRatio)
-    : currentChallenge.pKa;
+  const estimatedPH =
+    acidCount > 0 && baseCount > 0
+      ? currentChallenge.pKa + Math.log10(currentRatio)
+      : currentChallenge.pKa;
 
   // Get pH color
   const getPhColor = (pH: number): string => {
@@ -72,8 +83,9 @@ export default function Level1({
   };
 
   // Check if ratio is within target range
-  const isCorrect = currentRatio >= currentChallenge.targetRatioMin &&
-                    currentRatio <= currentChallenge.targetRatioMax;
+  const isCorrect =
+    currentRatio >= currentChallenge.targetRatioMin &&
+    currentRatio <= currentChallenge.targetRatioMax;
 
   // Calculate ratio bar percentages
   const totalMolecules = acidCount + baseCount;
@@ -108,7 +120,7 @@ export default function Level1({
   // Handle hint usage from HintSystem
   const handleHintUsed = (tier: 1 | 2 | 3 | 4) => {
     setHintsUsedTier(tier);
-    setHintsUsedTotal(prev => prev + 1);
+    setHintsUsedTotal((prev) => prev + 1);
   };
 
   // Check answer
@@ -142,7 +154,7 @@ export default function Level1({
 
   // Next challenge
   const nextChallenge = () => {
-    const currentIndex = LEVEL1_CHALLENGES.findIndex(c => c.id === currentChallenge.id);
+    const currentIndex = LEVEL1_CHALLENGES.findIndex((c) => c.id === currentChallenge.id);
     const nextIndex = (currentIndex + 1) % LEVEL1_CHALLENGES.length;
     setCurrentChallenge(LEVEL1_CHALLENGES[nextIndex]);
     setAcidCount(5);
@@ -151,7 +163,7 @@ export default function Level1({
     setShowExplanation(false);
     setHintMultiplier(1.0);
     setHintsUsedTier(0);
-    setHintResetKey(prev => prev + 1);
+    setHintResetKey((prev) => prev + 1);
   };
 
   // Track level completion when all challenges are done
@@ -167,12 +179,8 @@ export default function Level1({
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-2 text-kvenno-orange">
-          Stuðpúðasmíði - Stig 1
-        </h1>
-        <p className="text-lg text-warm-600">
-          Skildu hvernig hlutfall sýru/basa hefur áhrif á pH
-        </p>
+        <h1 className="text-4xl font-bold mb-2 text-kvenno-orange">Stuðpúðasmíði - Stig 1</h1>
+        <p className="text-lg text-warm-600">Skildu hvernig hlutfall sýru/basa hefur áhrif á pH</p>
       </div>
 
       {/* Stats */}
@@ -186,9 +194,7 @@ export default function Level1({
           <div className="text-sm text-warm-600">Kláruð</div>
         </div>
         <div className="bg-white rounded-lg shadow-sm p-4 text-center">
-          <div className="text-2xl font-bold text-blue-600">
-            {LEVEL1_CHALLENGES.length}
-          </div>
+          <div className="text-2xl font-bold text-blue-600">{LEVEL1_CHALLENGES.length}</div>
           <div className="text-sm text-warm-600">Samtals</div>
         </div>
       </div>
@@ -262,8 +268,10 @@ export default function Level1({
                   {estimatedPH.toFixed(2)}
                 </span>
               </div>
-              <div className="h-8 rounded-full relative overflow-hidden"
-                   style={{ background: getPhColor(estimatedPH) }}>
+              <div
+                className="h-8 rounded-full relative overflow-hidden"
+                style={{ background: getPhColor(estimatedPH) }}
+              >
                 <div className="absolute inset-0 flex items-center justify-center text-white font-bold">
                   {estimatedPH < currentChallenge.targetPH - 0.1 && 'Of súrt'}
                   {estimatedPH > currentChallenge.targetPH + 0.1 && 'Of basískt'}
@@ -296,8 +304,9 @@ export default function Level1({
             </div>
 
             {/* Molecule Display */}
-            <div className={`border-4 rounded-lg p-6 mb-6 transition-colors duration-300 bg-slate-50 min-h-[280px] ${isCorrect ? 'border-green-500' : 'border-warm-300'}`}>
-
+            <div
+              className={`border-4 rounded-lg p-6 mb-6 transition-colors duration-300 bg-slate-50 min-h-[280px] ${isCorrect ? 'border-green-500' : 'border-warm-300'}`}
+            >
               {/* Acid Molecules */}
               <div className="mb-6">
                 <div className="flex justify-between items-center mb-2">
@@ -308,11 +317,13 @@ export default function Level1({
                 </div>
                 <div className="flex flex-wrap gap-2 min-h-[60px] bg-red-50 rounded-lg p-3">
                   {Array.from({ length: acidCount }).map((_, i) => (
-                    <div key={`acid-${i}`}
-                         className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md transition-all duration-200 hover:scale-110"
-                         style={{
-                           animation: `fadeIn 0.2s ease-out ${i * 0.02}s both`
-                         }}>
+                    <div
+                      key={`acid-${i}`}
+                      className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md transition-all duration-200 hover:scale-110"
+                      style={{
+                        animation: `fadeIn 0.2s ease-out ${i * 0.02}s both`,
+                      }}
+                    >
                       HA
                     </div>
                   ))}
@@ -329,11 +340,13 @@ export default function Level1({
                 </div>
                 <div className="flex flex-wrap gap-2 min-h-[60px] bg-blue-50 rounded-lg p-3">
                   {Array.from({ length: baseCount }).map((_, i) => (
-                    <div key={`base-${i}`}
-                         className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md transition-all duration-200 hover:scale-110"
-                         style={{
-                           animation: `fadeIn 0.2s ease-out ${i * 0.02}s both`
-                         }}>
+                    <div
+                      key={`base-${i}`}
+                      className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md transition-all duration-200 hover:scale-110"
+                      style={{
+                        animation: `fadeIn 0.2s ease-out ${i * 0.02}s both`,
+                      }}
+                    >
                       A⁻
                     </div>
                   ))}
@@ -343,11 +356,14 @@ export default function Level1({
               {/* Ratio Display */}
               <div className="mt-4 bg-warm-100 rounded-lg p-3 text-center">
                 <div className="text-sm text-warm-600 mb-1">Hlutfall [Basi]/[Sýra]</div>
-                <div className={`text-3xl font-bold transition-colors duration-300 ${isCorrect ? 'text-green-500' : 'text-kvenno-orange'}`}>
+                <div
+                  className={`text-3xl font-bold transition-colors duration-300 ${isCorrect ? 'text-green-500' : 'text-kvenno-orange'}`}
+                >
                   {acidCount > 0 ? currentRatio.toFixed(2) : '-'}
                 </div>
                 <div className="text-xs text-warm-500 mt-1">
-                  Markmið: {currentChallenge.targetRatioMin.toFixed(1)} - {currentChallenge.targetRatioMax.toFixed(1)}
+                  Markmið: {currentChallenge.targetRatioMin.toFixed(1)} -{' '}
+                  {currentChallenge.targetRatioMax.toFixed(1)}
                 </div>
               </div>
             </div>
@@ -408,43 +424,60 @@ export default function Level1({
             </button>
 
             {/* Feedback */}
-            {feedback && (
-              <div className="mb-3">
-                <FeedbackPanel
-                  feedback={{
-                    isCorrect: feedback.includes('Frábært'),
-                    explanation: showExplanation
-                      ? `${feedback} ${currentChallenge.explanation}`
-                      : feedback,
-                    misconception: feedback.includes('Frábært')
-                      ? undefined
-                      : currentRatio < 1
-                        ? BUFFER_MISCONCEPTIONS.ratio_low
-                        : BUFFER_MISCONCEPTIONS.ratio_high,
-                    relatedConcepts: BUFFER_RELATED,
-                    nextSteps: feedback.includes('Frábært')
-                      ? 'Frábært! Þú skilur hvernig hlutfallið hefur áhrif á pH.'
-                      : 'Stilltu hlutfallið [Basi]/[Sýra] til að ná markmiðs-pH.',
-                  }}
-                  config={{
-                    showExplanation: true,
-                    showMisconceptions: !feedback.includes('Frábært'),
-                    showRelatedConcepts: true,
-                    showNextSteps: true,
-                  }}
-                />
-              </div>
-            )}
+            <AnimatePresence>
+              {feedback && (
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25 }}
+                  className="mb-3"
+                >
+                  <FeedbackPanel
+                    feedback={{
+                      isCorrect: feedback.includes('Frábært'),
+                      explanation: showExplanation
+                        ? `${feedback} ${currentChallenge.explanation}`
+                        : feedback,
+                      misconception: feedback.includes('Frábært')
+                        ? undefined
+                        : currentRatio < 1
+                          ? BUFFER_MISCONCEPTIONS.ratio_low
+                          : BUFFER_MISCONCEPTIONS.ratio_high,
+                      relatedConcepts: BUFFER_RELATED,
+                      nextSteps: feedback.includes('Frábært')
+                        ? 'Frábært! Þú skilur hvernig hlutfallið hefur áhrif á pH.'
+                        : 'Stilltu hlutfallið [Basi]/[Sýra] til að ná markmiðs-pH.',
+                    }}
+                    config={{
+                      showExplanation: true,
+                      showMisconceptions: !feedback.includes('Frábært'),
+                      showRelatedConcepts: true,
+                      showNextSteps: true,
+                    }}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Next Button */}
-            {isCorrect && feedback && (
-              <button
-                onClick={nextChallenge}
-                className="w-full py-3 px-6 bg-green-500 hover:bg-green-600 text-white font-bold text-lg rounded-lg transition-colors"
-              >
-                Næsta verkefni →
-              </button>
-            )}
+            <AnimatePresence>
+              {isCorrect && feedback && (
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <button
+                    onClick={nextChallenge}
+                    className="w-full py-3 px-6 bg-green-500 hover:bg-green-600 text-white font-bold text-lg rounded-lg transition-colors"
+                  >
+                    Næsta verkefni →
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>

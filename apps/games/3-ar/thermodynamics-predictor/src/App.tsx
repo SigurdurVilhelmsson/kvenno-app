@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 
+import { motion, AnimatePresence } from 'framer-motion';
+
 import { Header, InteractiveGraph, LanguageSwitcher, ErrorBoundary } from '@shared/components';
 import type {
   DataPoint,
@@ -311,9 +313,14 @@ function App() {
     }
   }, [mode, timeLeft, showSolution]);
 
-  // Menu Screen
-  if (mode === 'menu') {
-    return (
+  const renderMenu = () => (
+    <motion.div
+      key="menu"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
       <AnimatedBackground yearTheme="3-ar" variant="menu" showSymbols>
         <Header
           variant="game"
@@ -460,538 +467,568 @@ function App() {
               </div>
             </div>
           </div>
-
-          {/* Achievements Panel Modal */}
-          {showAchievements && (
-            <AchievementsPanel
-              achievements={achievements}
-              allAchievements={allAchievements}
-              onClose={() => setShowAchievements(false)}
-              onReset={resetAchievements}
-            />
-          )}
-
-          {/* Achievement Notifications */}
-          <AchievementNotificationsContainer
-            notifications={notifications}
-            onDismiss={dismissNotification}
-          />
-
-          <ParticleCelebration {...celebrationProps} />
         </div>
       </AnimatedBackground>
-    );
-  }
+    </motion.div>
+  );
 
-  // Game Screen
-  if (!currentProblem) return null;
+  const renderGame = () => {
+    if (!currentProblem) return null;
 
-  const currentDeltaG = calcDeltaGForProblem(temperature);
-  const currentSpontaneity = getSpontaneity(currentDeltaG);
-  const crossoverTemp =
-    currentProblem.deltaS !== 0
-      ? Math.abs(currentProblem.deltaH / (currentProblem.deltaS / 1000))
-      : null;
+    const currentDeltaG = calcDeltaGForProblem(temperature);
+    const currentSpontaneity = getSpontaneity(currentDeltaG);
+    const crossoverTemp =
+      currentProblem.deltaS !== 0
+        ? Math.abs(currentProblem.deltaH / (currentProblem.deltaS / 1000))
+        : null;
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-6">
-      <a
-        href="#problem-display"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-orange-600 focus:font-bold"
+    return (
+      <motion.div
+        key="game"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+        className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-6"
       >
-        Fara í verkefni
-      </a>
-      <div className="max-w-6xl mx-auto px-4">
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
-          <div className="flex justify-between items-center flex-wrap gap-4">
-            <button
-              onClick={() => setMode('menu')}
-              className="px-4 py-2 border-2 rounded-lg font-medium"
-              style={{ borderColor: '#f36b22', color: '#f36b22' }}
-            >
-              ← Til baka
-            </button>
-
-            <div className="flex gap-4 items-center">
-              {mode === 'challenge' && (
-                <>
-                  <div className="text-center">
-                    <div className="text-sm text-warm-600">Stig</div>
-                    <div className="text-xl font-bold">{progress.score}</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-sm text-warm-600">Runa</div>
-                    <div className="text-xl font-bold">{streak}🔥</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-sm text-warm-600">Tími</div>
-                    <div className={`text-xl font-bold ${timeLeft < 20 ? 'text-red-500' : ''}`}>
-                      {timeLeft}s
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-
-            <div className="flex gap-4 items-center">
-              <div className="text-center">
-                <div className="text-sm text-warm-600">Spurning</div>
-                <div className="text-xl font-bold">{progress.problemsCompleted + 1}</div>
-              </div>
-              <AchievementsButton
-                achievements={achievements}
-                onClick={() => setShowAchievements(true)}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left Column - Problem & Controls */}
-          <div className="space-y-4">
-            {/* Problem Display */}
-            <div className="bg-white rounded-lg shadow-lg p-6" id="problem-display">
-              <div className="mb-4">
-                <span
-                  className={`inline-block px-3 py-1 rounded-full text-white text-sm scenario-${currentProblem.scenario}`}
-                >
-                  Atburðarás {currentProblem.scenario}
-                </span>
-                <span className="ml-2 text-sm text-warm-600">{currentProblem.difficulty}</span>
-              </div>
-
-              <h2 className="text-xl font-bold mb-2">{currentProblem.name}</h2>
-              <div className="text-lg mb-4 font-mono bg-warm-50 p-3 rounded">
-                {currentProblem.reaction}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="bg-red-50 p-3 rounded-lg">
-                  <div className="text-sm text-warm-600">Entalpía (ΔH°)</div>
-                  <div
-                    className="text-xl font-bold"
-                    style={{
-                      color:
-                        currentProblem.deltaH < 0
-                          ? 'var(--exothermic, #ff6b6b)'
-                          : 'var(--endothermic, #4dabf7)',
-                    }}
-                  >
-                    {currentProblem.deltaH > 0 ? '+' : ''}
-                    {currentProblem.deltaH} kJ/mol
-                  </div>
-                  <div className="text-xs mt-1">
-                    {currentProblem.deltaH < 0 ? '🔥 Varmalosandi' : '❄️ Varmabindandi'}
-                  </div>
-                </div>
-
-                <div className="bg-purple-50 p-3 rounded-lg">
-                  <div className="text-sm text-warm-600">Óreiða (ΔS°)</div>
-                  <div
-                    className="text-xl font-bold"
-                    style={{
-                      color:
-                        currentProblem.deltaS > 0
-                          ? 'var(--entropy-increase, #22c55e)'
-                          : 'var(--entropy-decrease, #a855f7)',
-                    }}
-                  >
-                    {currentProblem.deltaS > 0 ? '+' : ''}
-                    {currentProblem.deltaS} J/(mol·K)
-                  </div>
-                  <div className="text-xs mt-1">
-                    {currentProblem.deltaS > 0 ? '↑ Óreiða eykst' : '↓ Óreiða minnkar'}
-                  </div>
-                </div>
-              </div>
-
-              {currentProblem.advancedTask && (
-                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 mb-4">
-                  <div className="text-sm font-bold">Áskorun:</div>
-                  <div className="text-sm">{currentProblem.advancedTask}</div>
-                </div>
-              )}
-            </div>
-
-            {/* Temperature Slider */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="font-bold mb-3">🌡️ Hitastig</h3>
-              <div className="mb-4">
-                <input
-                  type="range"
-                  min="200"
-                  max="1200"
-                  value={temperature}
-                  onChange={(e) => setTemperature(parseInt(e.target.value))}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-sm text-warm-600 mt-2">
-                  <span>200 K</span>
-                  <span className="text-xl font-bold" style={{ color: '#f36b22' }}>
-                    {temperature} K ({(temperature - 273).toFixed(0)}°C)
-                  </span>
-                  <span>1200 K</span>
-                </div>
-              </div>
-
-              {/* Real-time ΔG calculation */}
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg">
-                <div className="text-sm text-warm-600 mb-2">Við núverandi hitastig:</div>
-                <div className="font-mono text-sm mb-2">
-                  ΔG° = ΔH° - TΔS°
-                  <br />
-                  ΔG° = ({currentProblem.deltaH}) - ({temperature})(
-                  {(currentProblem.deltaS / 1000).toFixed(3)})<br />
-                  ΔG° = <span className="font-bold text-lg">{currentDeltaG.toFixed(1)} kJ/mol</span>
-                </div>
-                <div
-                  className={`text-lg font-bold ${currentSpontaneity === 'spontaneous' ? 'text-green-600' : currentSpontaneity === 'equilibrium' ? 'text-yellow-600' : 'text-red-600'}`}
-                >
-                  {currentSpontaneity === 'spontaneous' && '✓ Sjálfviljugt'}
-                  {currentSpontaneity === 'equilibrium' && '⚖️ Jafnvægi'}
-                  {currentSpontaneity === 'non-spontaneous' && '✗ Ekki sjálfviljugt'}
-                </div>
-              </div>
-
-              {crossoverTemp && crossoverTemp >= 200 && crossoverTemp <= 1200 && (
-                <div
-                  className={`mt-3 text-sm p-3 rounded border-l-4 ${
-                    currentProblem.scenario === 3 || currentProblem.scenario === 4
-                      ? 'bg-purple-50 border-purple-500'
-                      : 'bg-warm-50 border-warm-300'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">🎯</span>
-                    <div>
-                      <strong className="text-purple-700">
-                        Umbreytingarhitastig (T<sub>cross</sub>):
-                      </strong>
-                      <span className="ml-2 font-mono font-bold">{crossoverTemp.toFixed(0)} K</span>
-                      <span className="text-warm-500 ml-1">
-                        ({(crossoverTemp - 273).toFixed(0)}°C)
-                      </span>
-                    </div>
-                  </div>
-                  {(currentProblem.scenario === 3 || currentProblem.scenario === 4) && (
-                    <div className="mt-2 text-xs">
-                      {currentProblem.scenario === 3 ? (
-                        <span className="text-purple-600">
-                          ⚡ Þetta hvarf er sjálfviljugt <strong>undir</strong> þessu hitastigi
-                        </span>
-                      ) : (
-                        <span className="text-purple-600">
-                          ⚡ Þetta hvarf er sjálfviljugt <strong>yfir</strong> þessu hitastigi
-                        </span>
-                      )}
-                    </div>
-                  )}
-                  {temperature > 0 && (
-                    <div className="mt-2 text-xs">
-                      {temperature < crossoverTemp ? (
-                        <span
-                          className={
-                            currentProblem.scenario === 3 ? 'text-green-600' : 'text-red-600'
-                          }
-                        >
-                          📍 Núverandi hitastig ({temperature} K) er <strong>undir</strong> T
-                          <sub>cross</sub>
-                        </span>
-                      ) : temperature > crossoverTemp ? (
-                        <span
-                          className={
-                            currentProblem.scenario === 4 ? 'text-green-600' : 'text-red-600'
-                          }
-                        >
-                          📍 Núverandi hitastig ({temperature} K) er <strong>yfir</strong> T
-                          <sub>cross</sub>
-                        </span>
-                      ) : (
-                        <span className="text-yellow-600">
-                          📍 Núverandi hitastig ({temperature} K) er <strong>við</strong> T
-                          <sub>cross</sub> (jafnvægi)
-                        </span>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Answer Input */}
-            {!showSolution && (
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <h3 className="font-bold mb-4">Svarið þitt:</h3>
-
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">
-                    ΔG° við {temperature} K (kJ/mol):
-                  </label>
-                  <input
-                    type="number"
-                    step="0.1"
-                    value={userDeltaG}
-                    onChange={(e) => setUserDeltaG(e.target.value)}
-                    className="w-full px-4 py-2 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-none"
-                    placeholder="t.d. -33.5"
-                  />
-                </div>
-
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">Sjálfviljugheit:</label>
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
-                    <button
-                      onClick={() => setUserSpontaneity('spontaneous')}
-                      className={`px-4 py-2 rounded-lg border-2 transition ${
-                        userSpontaneity === 'spontaneous'
-                          ? 'border-green-500 bg-green-50 font-bold'
-                          : 'border-warm-300 hover:border-green-300'
-                      }`}
-                    >
-                      ✓ Sjálfviljugt
-                    </button>
-                    <button
-                      onClick={() => setUserSpontaneity('equilibrium')}
-                      className={`px-4 py-2 rounded-lg border-2 transition ${
-                        userSpontaneity === 'equilibrium'
-                          ? 'border-yellow-500 bg-yellow-50 font-bold'
-                          : 'border-warm-300 hover:border-yellow-300'
-                      }`}
-                    >
-                      ⚖️ Jafnvægi
-                    </button>
-                    <button
-                      onClick={() => setUserSpontaneity('non-spontaneous')}
-                      className={`px-4 py-2 rounded-lg border-2 transition ${
-                        userSpontaneity === 'non-spontaneous'
-                          ? 'border-red-500 bg-red-50 font-bold'
-                          : 'border-warm-300 hover:border-red-300'
-                      }`}
-                    >
-                      ✗ Ekki sjálfviljugt
-                    </button>
-                  </div>
-                </div>
-
-                <button
-                  onClick={checkAnswer}
-                  disabled={!userDeltaG || !userSpontaneity}
-                  className="w-full py-3 rounded-lg text-white font-bold text-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
-                  style={{ background: 'linear-gradient(135deg, #f36b22 0%, #d95a1a 100%)' }}
-                >
-                  Athuga svar
-                </button>
-              </div>
-            )}
-
-            {/* Feedback */}
-            {feedback && (
-              <div
-                className={`rounded-lg shadow-lg p-6 ${
-                  feedback.includes('Rétt')
-                    ? 'bg-green-50 border-2 border-green-500'
-                    : 'bg-red-50 border-2 border-red-500'
-                }`}
+        <a
+          href="#problem-display"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-orange-600 focus:font-bold"
+        >
+          Fara í verkefni
+        </a>
+        <div className="max-w-6xl mx-auto px-4">
+          {/* Header */}
+          <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
+            <div className="flex justify-between items-center flex-wrap gap-4">
+              <button
+                onClick={() => setMode('menu')}
+                className="px-4 py-2 border-2 rounded-lg font-medium"
+                style={{ borderColor: '#f36b22', color: '#f36b22' }}
               >
-                <div className="text-lg font-bold mb-2">{feedback}</div>
-                {showSolution && (
-                  <button
-                    onClick={startNewProblem}
-                    className="mt-4 w-full py-2 rounded-lg text-white font-bold"
-                    style={{ background: '#f36b22' }}
-                  >
-                    Næsta spurning →
-                  </button>
+                ← Til baka
+              </button>
+
+              <div className="flex gap-4 items-center">
+                {mode === 'challenge' && (
+                  <>
+                    <div className="text-center">
+                      <div className="text-sm text-warm-600">Stig</div>
+                      <div className="text-xl font-bold">{progress.score}</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-sm text-warm-600">Runa</div>
+                      <div className="text-xl font-bold">{streak}🔥</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-sm text-warm-600">Tími</div>
+                      <div className={`text-xl font-bold ${timeLeft < 20 ? 'text-red-500' : ''}`}>
+                        {timeLeft}s
+                      </div>
+                    </div>
+                  </>
                 )}
               </div>
-            )}
 
-            {/* Solution */}
-            {showSolution && (
-              <div className="bg-white rounded-lg shadow-lg p-6">
-                <h3 className="font-bold text-lg mb-4">📝 Lausn:</h3>
-                <div className="space-y-3 text-sm">
-                  <div>
-                    <strong>Skref 1:</strong> Umbreyta ΔS° í kJ/(mol·K)
-                    <br />
-                    ΔS° = {currentProblem.deltaS} J/(mol·K) × (1 kJ / 1000 J) ={' '}
-                    {(currentProblem.deltaS / 1000).toFixed(3)} kJ/(mol·K)
+              <div className="flex gap-4 items-center">
+                <div className="text-center">
+                  <div className="text-sm text-warm-600">Spurning</div>
+                  <div className="text-xl font-bold">{progress.problemsCompleted + 1}</div>
+                </div>
+                <AchievementsButton
+                  achievements={achievements}
+                  onClick={() => setShowAchievements(true)}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Left Column - Problem & Controls */}
+            <div className="space-y-4">
+              {/* Problem Display */}
+              <div className="bg-white rounded-lg shadow-lg p-6" id="problem-display">
+                <div className="mb-4">
+                  <span
+                    className={`inline-block px-3 py-1 rounded-full text-white text-sm scenario-${currentProblem.scenario}`}
+                  >
+                    Atburðarás {currentProblem.scenario}
+                  </span>
+                  <span className="ml-2 text-sm text-warm-600">{currentProblem.difficulty}</span>
+                </div>
+
+                <h2 className="text-xl font-bold mb-2">{currentProblem.name}</h2>
+                <div className="text-lg mb-4 font-mono bg-warm-50 p-3 rounded">
+                  {currentProblem.reaction}
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="bg-red-50 p-3 rounded-lg">
+                    <div className="text-sm text-warm-600">Entalpía (ΔH°)</div>
+                    <div
+                      className="text-xl font-bold"
+                      style={{
+                        color:
+                          currentProblem.deltaH < 0
+                            ? 'var(--exothermic, #ff6b6b)'
+                            : 'var(--endothermic, #4dabf7)',
+                      }}
+                    >
+                      {currentProblem.deltaH > 0 ? '+' : ''}
+                      {currentProblem.deltaH} kJ/mol
+                    </div>
+                    <div className="text-xs mt-1">
+                      {currentProblem.deltaH < 0 ? '🔥 Varmalosandi' : '❄️ Varmabindandi'}
+                    </div>
                   </div>
-                  <div>
-                    <strong>Skref 2:</strong> Beita Gibbs jöfnunni
-                    <br />
+
+                  <div className="bg-purple-50 p-3 rounded-lg">
+                    <div className="text-sm text-warm-600">Óreiða (ΔS°)</div>
+                    <div
+                      className="text-xl font-bold"
+                      style={{
+                        color:
+                          currentProblem.deltaS > 0
+                            ? 'var(--entropy-increase, #22c55e)'
+                            : 'var(--entropy-decrease, #a855f7)',
+                      }}
+                    >
+                      {currentProblem.deltaS > 0 ? '+' : ''}
+                      {currentProblem.deltaS} J/(mol·K)
+                    </div>
+                    <div className="text-xs mt-1">
+                      {currentProblem.deltaS > 0 ? '↑ Óreiða eykst' : '↓ Óreiða minnkar'}
+                    </div>
+                  </div>
+                </div>
+
+                {currentProblem.advancedTask && (
+                  <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 mb-4">
+                    <div className="text-sm font-bold">Áskorun:</div>
+                    <div className="text-sm">{currentProblem.advancedTask}</div>
+                  </div>
+                )}
+              </div>
+
+              {/* Temperature Slider */}
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h3 className="font-bold mb-3">🌡️ Hitastig</h3>
+                <div className="mb-4">
+                  <input
+                    type="range"
+                    min="200"
+                    max="1200"
+                    value={temperature}
+                    onChange={(e) => setTemperature(parseInt(e.target.value))}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-sm text-warm-600 mt-2">
+                    <span>200 K</span>
+                    <span className="text-xl font-bold" style={{ color: '#f36b22' }}>
+                      {temperature} K ({(temperature - 273).toFixed(0)}°C)
+                    </span>
+                    <span>1200 K</span>
+                  </div>
+                </div>
+
+                {/* Real-time ΔG calculation */}
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg">
+                  <div className="text-sm text-warm-600 mb-2">Við núverandi hitastig:</div>
+                  <div className="font-mono text-sm mb-2">
                     ΔG° = ΔH° - TΔS°
                     <br />
                     ΔG° = ({currentProblem.deltaH}) - ({temperature})(
                     {(currentProblem.deltaS / 1000).toFixed(3)})<br />
-                    ΔG° = {currentProblem.deltaH} -{' '}
-                    {((temperature * currentProblem.deltaS) / 1000).toFixed(1)}
-                    <br />
-                    <strong>ΔG° = {currentDeltaG.toFixed(1)} kJ/mol</strong>
+                    ΔG° ={' '}
+                    <span className="font-bold text-lg">{currentDeltaG.toFixed(1)} kJ/mol</span>
                   </div>
-                  <div>
-                    <strong>Skref 3:</strong> Túlka niðurstöðu
-                    <br />
-                    {currentDeltaG < -1 && 'ΔG° < 0 → SJÁLFVILJUGT ✓'}
-                    {Math.abs(currentDeltaG) <= 1 && 'ΔG° ≈ 0 → JAFNVÆGI ⚖️'}
-                    {currentDeltaG > 1 && 'ΔG° > 0 → EKKI SJÁLFVILJUGT ✗'}
+                  <div
+                    className={`text-lg font-bold ${currentSpontaneity === 'spontaneous' ? 'text-green-600' : currentSpontaneity === 'equilibrium' ? 'text-yellow-600' : 'text-red-600'}`}
+                  >
+                    {currentSpontaneity === 'spontaneous' && '✓ Sjálfviljugt'}
+                    {currentSpontaneity === 'equilibrium' && '⚖️ Jafnvægi'}
+                    {currentSpontaneity === 'non-spontaneous' && '✗ Ekki sjálfviljugt'}
                   </div>
-                  {/* Crossover temperature explanation for scenarios 3 & 4 */}
-                  {(currentProblem.scenario === 3 || currentProblem.scenario === 4) &&
-                    crossoverTemp && (
-                      <div className="bg-purple-50 border-l-4 border-purple-500 p-3 rounded">
-                        <strong>Skref 4:</strong> Reikna umbreytingarhitastig (T<sub>cross</sub>)
-                        <br />
-                        <div className="font-mono mt-1">
-                          Þegar ΔG° = 0: ΔH° = TΔS°
-                          <br />T<sub>cross</sub> = ΔH° / ΔS°
-                          <br />T<sub>cross</sub> = {currentProblem.deltaH} /{' '}
-                          {(currentProblem.deltaS / 1000).toFixed(3)}
-                          <br />
-                          <strong>
-                            T<sub>cross</sub> = {crossoverTemp.toFixed(0)} K (
-                            {(crossoverTemp - 273).toFixed(0)}°C)
-                          </strong>
-                        </div>
-                        <div className="mt-2 text-sm">
-                          {currentProblem.scenario === 3 ? (
-                            <>
-                              🔹 Við T &lt; {crossoverTemp.toFixed(0)} K: ΔG° &lt; 0 (sjálfviljugt)
-                              <br />
-                              🔹 Við T &gt; {crossoverTemp.toFixed(0)} K: ΔG° &gt; 0 (ekki
-                              sjálfviljugt)
-                            </>
-                          ) : (
-                            <>
-                              🔹 Við T &lt; {crossoverTemp.toFixed(0)} K: ΔG° &gt; 0 (ekki
-                              sjálfviljugt)
-                              <br />
-                              🔹 Við T &gt; {crossoverTemp.toFixed(0)} K: ΔG° &lt; 0 (sjálfviljugt)
-                            </>
-                          )}
-                        </div>
+                </div>
+
+                {crossoverTemp && crossoverTemp >= 200 && crossoverTemp <= 1200 && (
+                  <div
+                    className={`mt-3 text-sm p-3 rounded border-l-4 ${
+                      currentProblem.scenario === 3 || currentProblem.scenario === 4
+                        ? 'bg-purple-50 border-purple-500'
+                        : 'bg-warm-50 border-warm-300'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">🎯</span>
+                      <div>
+                        <strong className="text-purple-700">
+                          Umbreytingarhitastig (T<sub>cross</sub>):
+                        </strong>
+                        <span className="ml-2 font-mono font-bold">
+                          {crossoverTemp.toFixed(0)} K
+                        </span>
+                        <span className="text-warm-500 ml-1">
+                          ({(crossoverTemp - 273).toFixed(0)}°C)
+                        </span>
+                      </div>
+                    </div>
+                    {(currentProblem.scenario === 3 || currentProblem.scenario === 4) && (
+                      <div className="mt-2 text-xs">
+                        {currentProblem.scenario === 3 ? (
+                          <span className="text-purple-600">
+                            ⚡ Þetta hvarf er sjálfviljugt <strong>undir</strong> þessu hitastigi
+                          </span>
+                        ) : (
+                          <span className="text-purple-600">
+                            ⚡ Þetta hvarf er sjálfviljugt <strong>yfir</strong> þessu hitastigi
+                          </span>
+                        )}
                       </div>
                     )}
+                    {temperature > 0 && (
+                      <div className="mt-2 text-xs">
+                        {temperature < crossoverTemp ? (
+                          <span
+                            className={
+                              currentProblem.scenario === 3 ? 'text-green-600' : 'text-red-600'
+                            }
+                          >
+                            📍 Núverandi hitastig ({temperature} K) er <strong>undir</strong> T
+                            <sub>cross</sub>
+                          </span>
+                        ) : temperature > crossoverTemp ? (
+                          <span
+                            className={
+                              currentProblem.scenario === 4 ? 'text-green-600' : 'text-red-600'
+                            }
+                          >
+                            📍 Núverandi hitastig ({temperature} K) er <strong>yfir</strong> T
+                            <sub>cross</sub>
+                          </span>
+                        ) : (
+                          <span className="text-yellow-600">
+                            📍 Núverandi hitastig ({temperature} K) er <strong>við</strong> T
+                            <sub>cross</sub> (jafnvægi)
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
 
-                  <div className="bg-blue-50 p-3 rounded">
-                    <strong>Atburðarás {currentProblem.scenario}:</strong>
-                    <br />
-                    {getScenarioDescription(currentProblem.scenario)}
+              {/* Answer Input / Solution */}
+              <AnimatePresence mode="wait">
+                {!showSolution && (
+                  <motion.div
+                    key="answer-input"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.25 }}
+                    className="bg-white rounded-lg shadow-lg p-6"
+                  >
+                    <h3 className="font-bold mb-4">Svarið þitt:</h3>
+
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium mb-2">
+                        ΔG° við {temperature} K (kJ/mol):
+                      </label>
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={userDeltaG}
+                        onChange={(e) => setUserDeltaG(e.target.value)}
+                        className="w-full px-4 py-2 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-none"
+                        placeholder="t.d. -33.5"
+                      />
+                    </div>
+
+                    <div className="mb-4">
+                      <label className="block text-sm font-medium mb-2">Sjálfviljugheit:</label>
+                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+                        <button
+                          onClick={() => setUserSpontaneity('spontaneous')}
+                          className={`px-4 py-2 rounded-lg border-2 transition ${
+                            userSpontaneity === 'spontaneous'
+                              ? 'border-green-500 bg-green-50 font-bold'
+                              : 'border-warm-300 hover:border-green-300'
+                          }`}
+                        >
+                          ✓ Sjálfviljugt
+                        </button>
+                        <button
+                          onClick={() => setUserSpontaneity('equilibrium')}
+                          className={`px-4 py-2 rounded-lg border-2 transition ${
+                            userSpontaneity === 'equilibrium'
+                              ? 'border-yellow-500 bg-yellow-50 font-bold'
+                              : 'border-warm-300 hover:border-yellow-300'
+                          }`}
+                        >
+                          ⚖️ Jafnvægi
+                        </button>
+                        <button
+                          onClick={() => setUserSpontaneity('non-spontaneous')}
+                          className={`px-4 py-2 rounded-lg border-2 transition ${
+                            userSpontaneity === 'non-spontaneous'
+                              ? 'border-red-500 bg-red-50 font-bold'
+                              : 'border-warm-300 hover:border-red-300'
+                          }`}
+                        >
+                          ✗ Ekki sjálfviljugt
+                        </button>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={checkAnswer}
+                      disabled={!userDeltaG || !userSpontaneity}
+                      className="w-full py-3 rounded-lg text-white font-bold text-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+                      style={{ background: 'linear-gradient(135deg, #f36b22 0%, #d95a1a 100%)' }}
+                    >
+                      Athuga svar
+                    </button>
+                  </motion.div>
+                )}
+
+                {/* Solution */}
+                {showSolution && (
+                  <motion.div
+                    key="solution"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.25 }}
+                    className="bg-white rounded-lg shadow-lg p-6"
+                  >
+                    <h3 className="font-bold text-lg mb-4">📝 Lausn:</h3>
+                    <div className="space-y-3 text-sm">
+                      <div>
+                        <strong>Skref 1:</strong> Umbreyta ΔS° í kJ/(mol·K)
+                        <br />
+                        ΔS° = {currentProblem.deltaS} J/(mol·K) × (1 kJ / 1000 J) ={' '}
+                        {(currentProblem.deltaS / 1000).toFixed(3)} kJ/(mol·K)
+                      </div>
+                      <div>
+                        <strong>Skref 2:</strong> Beita Gibbs jöfnunni
+                        <br />
+                        ΔG° = ΔH° - TΔS°
+                        <br />
+                        ΔG° = ({currentProblem.deltaH}) - ({temperature})(
+                        {(currentProblem.deltaS / 1000).toFixed(3)})<br />
+                        ΔG° = {currentProblem.deltaH} -{' '}
+                        {((temperature * currentProblem.deltaS) / 1000).toFixed(1)}
+                        <br />
+                        <strong>ΔG° = {currentDeltaG.toFixed(1)} kJ/mol</strong>
+                      </div>
+                      <div>
+                        <strong>Skref 3:</strong> Túlka niðurstöðu
+                        <br />
+                        {currentDeltaG < -1 && 'ΔG° < 0 → SJÁLFVILJUGT ✓'}
+                        {Math.abs(currentDeltaG) <= 1 && 'ΔG° ≈ 0 → JAFNVÆGI ⚖️'}
+                        {currentDeltaG > 1 && 'ΔG° > 0 → EKKI SJÁLFVILJUGT ✗'}
+                      </div>
+                      {/* Crossover temperature explanation for scenarios 3 & 4 */}
+                      {(currentProblem.scenario === 3 || currentProblem.scenario === 4) &&
+                        crossoverTemp && (
+                          <div className="bg-purple-50 border-l-4 border-purple-500 p-3 rounded">
+                            <strong>Skref 4:</strong> Reikna umbreytingarhitastig (T<sub>cross</sub>
+                            )
+                            <br />
+                            <div className="font-mono mt-1">
+                              Þegar ΔG° = 0: ΔH° = TΔS°
+                              <br />T<sub>cross</sub> = ΔH° / ΔS°
+                              <br />T<sub>cross</sub> = {currentProblem.deltaH} /{' '}
+                              {(currentProblem.deltaS / 1000).toFixed(3)}
+                              <br />
+                              <strong>
+                                T<sub>cross</sub> = {crossoverTemp.toFixed(0)} K (
+                                {(crossoverTemp - 273).toFixed(0)}°C)
+                              </strong>
+                            </div>
+                            <div className="mt-2 text-sm">
+                              {currentProblem.scenario === 3 ? (
+                                <>
+                                  🔹 Við T &lt; {crossoverTemp.toFixed(0)} K: ΔG° &lt; 0
+                                  (sjálfviljugt)
+                                  <br />
+                                  🔹 Við T &gt; {crossoverTemp.toFixed(0)} K: ΔG° &gt; 0 (ekki
+                                  sjálfviljugt)
+                                </>
+                              ) : (
+                                <>
+                                  🔹 Við T &lt; {crossoverTemp.toFixed(0)} K: ΔG° &gt; 0 (ekki
+                                  sjálfviljugt)
+                                  <br />
+                                  🔹 Við T &gt; {crossoverTemp.toFixed(0)} K: ΔG° &lt; 0
+                                  (sjálfviljugt)
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                      <div className="bg-blue-50 p-3 rounded">
+                        <strong>Atburðarás {currentProblem.scenario}:</strong>
+                        <br />
+                        {getScenarioDescription(currentProblem.scenario)}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Feedback */}
+              <AnimatePresence>
+                {feedback && (
+                  <motion.div
+                    key="feedback"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.25 }}
+                    className={`rounded-lg shadow-lg p-6 ${
+                      feedback.includes('Rétt')
+                        ? 'bg-green-50 border-2 border-green-500'
+                        : 'bg-red-50 border-2 border-red-500'
+                    }`}
+                  >
+                    <div className="text-lg font-bold mb-2">{feedback}</div>
+                    {showSolution && (
+                      <button
+                        onClick={startNewProblem}
+                        className="mt-4 w-full py-2 rounded-lg text-white font-bold"
+                        style={{ background: '#f36b22' }}
+                      >
+                        Næsta spurning →
+                      </button>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Right Column - Visualizations */}
+            <div className="space-y-4">
+              {/* Graph */}
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h3 className="font-bold mb-3">📊 ΔG° vs Hitastig</h3>
+                {graphData && (
+                  <InteractiveGraph
+                    width={500}
+                    height={300}
+                    series={graphData.series}
+                    xAxis={{ min: 200, max: 1200, label: 'T (K)', tickInterval: 200 }}
+                    yAxis={{ min: -500, max: 500, label: 'ΔG (kJ/mol)', tickInterval: 100 }}
+                    regions={graphData.regions}
+                    markers={graphData.markers}
+                    verticalLines={graphData.verticalLines}
+                    horizontalLines={[
+                      {
+                        y: 0,
+                        color: '#374151',
+                        lineWidth: 2,
+                        label: 'ΔG = 0',
+                      },
+                    ]}
+                    ariaLabel="ΔG vs Hitastig graf"
+                  />
+                )}
+                <div className="mt-3 text-xs text-warm-600 grid grid-cols-2 gap-2">
+                  <div>🟠 Línuhalli: -ΔS°</div>
+                  <div>🟢 Sjálfviljugt: ΔG° &lt; 0</div>
+                  <div>🔵 Y-skurður: ΔH°</div>
+                  <div>🔴 Ekki sjálfviljugt: ΔG° &gt; 0</div>
+                  <div className="col-span-2">
+                    <span className="inline-block w-3 h-3 rounded-full bg-purple-500 mr-1"></span>T
+                    <sub>cross</sub>: Umbreytingarhitastig (ΔG° = 0)
                   </div>
                 </div>
               </div>
-            )}
-          </div>
 
-          {/* Right Column - Visualizations */}
-          <div className="space-y-4">
-            {/* Graph */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="font-bold mb-3">📊 ΔG° vs Hitastig</h3>
-              {graphData && (
-                <InteractiveGraph
-                  width={500}
-                  height={300}
-                  series={graphData.series}
-                  xAxis={{ min: 200, max: 1200, label: 'T (K)', tickInterval: 200 }}
-                  yAxis={{ min: -500, max: 500, label: 'ΔG (kJ/mol)', tickInterval: 100 }}
-                  regions={graphData.regions}
-                  markers={graphData.markers}
-                  verticalLines={graphData.verticalLines}
-                  horizontalLines={[
-                    {
-                      y: 0,
-                      color: '#374151',
-                      lineWidth: 2,
-                      label: 'ΔG = 0',
-                    },
-                  ]}
-                  ariaLabel="ΔG vs Hitastig graf"
-                />
-              )}
-              <div className="mt-3 text-xs text-warm-600 grid grid-cols-2 gap-2">
-                <div>🟠 Línuhalli: -ΔS°</div>
-                <div>🟢 Sjálfviljugt: ΔG° &lt; 0</div>
-                <div>🔵 Y-skurður: ΔH°</div>
-                <div>🔴 Ekki sjálfviljugt: ΔG° &gt; 0</div>
-                <div className="col-span-2">
-                  <span className="inline-block w-3 h-3 rounded-full bg-purple-500 mr-1"></span>T
-                  <sub>cross</sub>: Umbreytingarhitastig (ΔG° = 0)
+              {/* Entropy Visualization */}
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h3 className="font-bold mb-3">🎲 Óreiða (Entropy)</h3>
+                <EntropyVisualization deltaS={currentProblem.deltaS} />
+                <div className="mt-4 text-sm">
+                  <div
+                    className={`font-bold ${currentProblem.deltaS > 0 ? 'text-green-600' : 'text-purple-600'}`}
+                  >
+                    {currentProblem.deltaS > 0 ? (
+                      <>
+                        ↑ Óreiða eykst (ΔS° &gt; 0)
+                        <div className="text-xs font-normal mt-1">Eftirfarandi gerist:</div>
+                        <ul className="text-xs font-normal list-disc list-inside mt-1">
+                          <li>Lofttegundir myndast</li>
+                          <li>Fasaskipti: solid → liquid → gas</li>
+                          <li>Uppleysingarferli</li>
+                        </ul>
+                      </>
+                    ) : (
+                      <>
+                        ↓ Óreiða minnkar (ΔS° &lt; 0)
+                        <div className="text-xs font-normal mt-1">Eftirfarandi gerist:</div>
+                        <ul className="text-xs font-normal list-disc list-inside mt-1">
+                          <li>Lofttegundir hvarf</li>
+                          <li>Fasaskipti: gas → liquid → solid</li>
+                          <li>Útfelling</li>
+                        </ul>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Entropy Visualization */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="font-bold mb-3">🎲 Óreiða (Entropy)</h3>
-              <EntropyVisualization deltaS={currentProblem.deltaS} />
-              <div className="mt-4 text-sm">
-                <div
-                  className={`font-bold ${currentProblem.deltaS > 0 ? 'text-green-600' : 'text-purple-600'}`}
-                >
-                  {currentProblem.deltaS > 0 ? (
-                    <>
-                      ↑ Óreiða eykst (ΔS° &gt; 0)
-                      <div className="text-xs font-normal mt-1">Eftirfarandi gerist:</div>
-                      <ul className="text-xs font-normal list-disc list-inside mt-1">
-                        <li>Lofttegundir myndast</li>
-                        <li>Fasaskipti: solid → liquid → gas</li>
-                        <li>Uppleysingarferli</li>
-                      </ul>
-                    </>
-                  ) : (
-                    <>
-                      ↓ Óreiða minnkar (ΔS° &lt; 0)
-                      <div className="text-xs font-normal mt-1">Eftirfarandi gerist:</div>
-                      <ul className="text-xs font-normal list-disc list-inside mt-1">
-                        <li>Lofttegundir hvarf</li>
-                        <li>Fasaskipti: gas → liquid → solid</li>
-                        <li>Útfelling</li>
-                      </ul>
-                    </>
-                  )}
+              {/* Scenario Guide */}
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h3 className="font-bold mb-3">🎯 Fjögur Atburðarás</h3>
+                <div className="space-y-2 text-xs">
+                  <div className="p-2 rounded scenario-1 text-white">
+                    <strong>1: ΔH&lt;0, ΔS&gt;0</strong> → Alltaf sjálfviljugt
+                  </div>
+                  <div className="p-2 rounded scenario-2 text-white">
+                    <strong>2: ΔH&gt;0, ΔS&lt;0</strong> → Aldrei sjálfviljugt
+                  </div>
+                  <div className="p-2 rounded scenario-3 text-white">
+                    <strong>3: ΔH&lt;0, ΔS&lt;0</strong> → Sjálfviljugt við lágt T
+                  </div>
+                  <div className="p-2 rounded scenario-4 text-white">
+                    <strong>4: ΔH&gt;0, ΔS&gt;0</strong> → Sjálfviljugt við hátt T
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Scenario Guide */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h3 className="font-bold mb-3">🎯 Fjögur Atburðarás</h3>
-              <div className="space-y-2 text-xs">
-                <div className="p-2 rounded scenario-1 text-white">
-                  <strong>1: ΔH&lt;0, ΔS&gt;0</strong> → Alltaf sjálfviljugt
+              {/* Formula Reference */}
+              <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-lg shadow-lg p-6">
+                <h3 className="font-bold mb-3">📐 Formúlur</h3>
+                <div className="space-y-2 text-sm font-mono">
+                  <div className="bg-white p-2 rounded">ΔG° = ΔH° - TΔS°</div>
+                  <div className="bg-white p-2 rounded">ΔG° = -RT ln K</div>
+                  <div className="bg-white p-2 rounded">
+                    T<sub>cross</sub> = ΔH° / ΔS°
+                  </div>
                 </div>
-                <div className="p-2 rounded scenario-2 text-white">
-                  <strong>2: ΔH&gt;0, ΔS&lt;0</strong> → Aldrei sjálfviljugt
+                <div className="mt-3 text-xs text-warm-600">
+                  R = 8.314 J/(mol·K)
+                  <br />T í Kelvin (K = °C + 273)
                 </div>
-                <div className="p-2 rounded scenario-3 text-white">
-                  <strong>3: ΔH&lt;0, ΔS&lt;0</strong> → Sjálfviljugt við lágt T
-                </div>
-                <div className="p-2 rounded scenario-4 text-white">
-                  <strong>4: ΔH&gt;0, ΔS&gt;0</strong> → Sjálfviljugt við hátt T
-                </div>
-              </div>
-            </div>
-
-            {/* Formula Reference */}
-            <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-lg shadow-lg p-6">
-              <h3 className="font-bold mb-3">📐 Formúlur</h3>
-              <div className="space-y-2 text-sm font-mono">
-                <div className="bg-white p-2 rounded">ΔG° = ΔH° - TΔS°</div>
-                <div className="bg-white p-2 rounded">ΔG° = -RT ln K</div>
-                <div className="bg-white p-2 rounded">
-                  T<sub>cross</sub> = ΔH° / ΔS°
-                </div>
-              </div>
-              <div className="mt-3 text-xs text-warm-600">
-                R = 8.314 J/(mol·K)
-                <br />T í Kelvin (K = °C + 273)
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
+    );
+  };
+
+  const renderScreen = () => {
+    if (mode === 'menu') return renderMenu();
+    return renderGame();
+  };
+
+  return (
+    <>
+      <AnimatePresence mode="wait">{renderScreen()}</AnimatePresence>
 
       {/* Achievements Panel Modal */}
       {showAchievements && (
@@ -1010,7 +1047,7 @@ function App() {
       />
 
       <ParticleCelebration {...celebrationProps} />
-    </div>
+    </>
   );
 }
 

@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
+import { motion, AnimatePresence } from 'framer-motion';
+
 import { HintSystem } from '@shared/components';
 
 import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
@@ -63,7 +65,7 @@ export default function Level2({
   const [showExplanation, setShowExplanation] = useState(false);
 
   const puzzle = LEVEL2_PUZZLES[currentIndex];
-  const problem = BUFFER_PROBLEMS.find(p => p.id === puzzle.problemId);
+  const problem = BUFFER_PROBLEMS.find((p) => p.id === puzzle.problemId);
   const maxScore = LEVEL2_PUZZLES.length * 100;
 
   // Check completion - must be before conditional returns to satisfy rules-of-hooks
@@ -80,7 +82,9 @@ export default function Level2({
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 flex items-center justify-center">
         <div className="bg-white rounded-xl p-6 shadow-lg text-center">
           <p className="text-red-600 font-bold">Villa: Gat ekki fundið verkefnagögn</p>
-          <button onClick={onBack} className="mt-4 text-blue-600 underline">Til baka</button>
+          <button onClick={onBack} className="mt-4 text-blue-600 underline">
+            Til baka
+          </button>
         </div>
       </div>
     );
@@ -95,7 +99,7 @@ export default function Level2({
 
   // Handle hint usage
   const handleHintUsed = () => {
-    setHintsUsedTotal(prev => prev + 1);
+    setHintsUsedTotal((prev) => prev + 1);
   };
 
   // Step 1: Check direction answer
@@ -111,8 +115,8 @@ export default function Level2({
         selectedDirection === 'higher'
           ? `Ekki rétt. Markmiðs-pH (${problem.targetPH.toFixed(2)}) er ${correctDir === 'lower' ? 'minna' : 'jafnt'} pKa (${problem.pKa.toFixed(2)}), þannig að svarið er ekki "hærra".`
           : selectedDirection === 'lower'
-          ? `Ekki rétt. Markmiðs-pH (${problem.targetPH.toFixed(2)}) er ${correctDir === 'higher' ? 'stærra' : 'jafnt'} pKa (${problem.pKa.toFixed(2)}), þannig að svarið er ekki "lægra".`
-          : `Ekki rétt. Markmiðs-pH (${problem.targetPH.toFixed(2)}) er ${correctDir === 'higher' ? 'stærra en' : correctDir === 'lower' ? 'minna en' : 'jafnt'} pKa (${problem.pKa.toFixed(2)}).`
+            ? `Ekki rétt. Markmiðs-pH (${problem.targetPH.toFixed(2)}) er ${correctDir === 'higher' ? 'stærra' : 'jafnt'} pKa (${problem.pKa.toFixed(2)}), þannig að svarið er ekki "lægra".`
+            : `Ekki rétt. Markmiðs-pH (${problem.targetPH.toFixed(2)}) er ${correctDir === 'higher' ? 'stærra en' : correctDir === 'lower' ? 'minna en' : 'jafnt'} pKa (${problem.pKa.toFixed(2)}).`
       );
       onIncorrectAnswer?.();
     }
@@ -165,15 +169,17 @@ export default function Level2({
     if (acidOk && baseOk) {
       setMassCorrect(true);
       const points = Math.round(100 * hintMultiplier);
-      setScore(prev => prev + points);
+      setScore((prev) => prev + points);
       setMassFeedback(`Frábært! +${points} stig`);
       setShowExplanation(true);
       setStep('complete');
       onCorrectAnswer?.();
     } else {
       let feedback = 'Ekki rétt. ';
-      if (!acidOk) feedback += `Sýrumassi er ${userAcidMass > correctAcidMass ? 'of hár' : 'of lágur'}. `;
-      if (!baseOk) feedback += `Basamassi er ${userBaseMass > correctBaseMass ? 'of hár' : 'of lágur'}.`;
+      if (!acidOk)
+        feedback += `Sýrumassi er ${userAcidMass > correctAcidMass ? 'of hár' : 'of lágur'}. `;
+      if (!baseOk)
+        feedback += `Basamassi er ${userBaseMass > correctBaseMass ? 'of hár' : 'of lágur'}.`;
       setMassFeedback(feedback);
       onIncorrectAnswer?.();
     }
@@ -181,10 +187,10 @@ export default function Level2({
 
   // Next puzzle
   const nextPuzzle = () => {
-    setCompleted(prev => prev + 1);
+    setCompleted((prev) => prev + 1);
 
     if (currentIndex < LEVEL2_PUZZLES.length - 1) {
-      setCurrentIndex(prev => prev + 1);
+      setCurrentIndex((prev) => prev + 1);
       resetPuzzleState();
     }
   };
@@ -204,7 +210,7 @@ export default function Level2({
     setMassCorrect(false);
     setShowExplanation(false);
     setHintMultiplier(1.0);
-    setHintResetKey(prev => prev + 1);
+    setHintResetKey((prev) => prev + 1);
   };
 
   return (
@@ -223,9 +229,7 @@ export default function Level2({
               <div className="text-sm text-warm-500">
                 {completed + 1} / {LEVEL2_PUZZLES.length}
               </div>
-              <div className="text-lg font-bold text-kvenno-orange">
-                Stig: {score}
-              </div>
+              <div className="text-lg font-bold text-kvenno-orange">Stig: {score}</div>
             </div>
           </div>
 
@@ -246,9 +250,7 @@ export default function Level2({
         {/* Task Card */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-4 border-t-4 border-kvenno-orange">
           <div className="flex items-start gap-3 mb-4">
-            <span
-              className="text-white text-sm font-bold px-3 py-1 rounded-full bg-kvenno-orange"
-            >
+            <span className="text-white text-sm font-bold px-3 py-1 rounded-full bg-kvenno-orange">
               #{puzzle.id}
             </span>
             <div className="flex-1">
@@ -315,27 +317,47 @@ export default function Level2({
         <div className="bg-white rounded-xl shadow-lg p-4 mb-4">
           <div className="flex items-center justify-between">
             <div className={`flex-1 text-center ${step === 'direction' ? 'font-bold' : ''}`}>
-              <div className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-1 ${
-                directionCorrect ? 'bg-green-500 text-white' : step === 'direction' ? 'bg-orange-500 text-white' : 'bg-warm-200'
-              }`}>
+              <div
+                className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-1 ${
+                  directionCorrect
+                    ? 'bg-green-500 text-white'
+                    : step === 'direction'
+                      ? 'bg-orange-500 text-white'
+                      : 'bg-warm-200'
+                }`}
+              >
                 {directionCorrect ? '✓' : '1'}
               </div>
               <div className="text-xs text-warm-600">Stefna</div>
             </div>
             <div className="flex-shrink-0 w-12 h-0.5 bg-warm-200" />
             <div className={`flex-1 text-center ${step === 'ratio' ? 'font-bold' : ''}`}>
-              <div className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-1 ${
-                ratioCorrect ? 'bg-green-500 text-white' : step === 'ratio' ? 'bg-orange-500 text-white' : 'bg-warm-200'
-              }`}>
+              <div
+                className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-1 ${
+                  ratioCorrect
+                    ? 'bg-green-500 text-white'
+                    : step === 'ratio'
+                      ? 'bg-orange-500 text-white'
+                      : 'bg-warm-200'
+                }`}
+              >
                 {ratioCorrect ? '✓' : '2'}
               </div>
               <div className="text-xs text-warm-600">Hlutfall</div>
             </div>
             <div className="flex-shrink-0 w-12 h-0.5 bg-warm-200" />
-            <div className={`flex-1 text-center ${step === 'mass' || step === 'complete' ? 'font-bold' : ''}`}>
-              <div className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-1 ${
-                massCorrect ? 'bg-green-500 text-white' : step === 'mass' ? 'bg-orange-500 text-white' : 'bg-warm-200'
-              }`}>
+            <div
+              className={`flex-1 text-center ${step === 'mass' || step === 'complete' ? 'font-bold' : ''}`}
+            >
+              <div
+                className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-1 ${
+                  massCorrect
+                    ? 'bg-green-500 text-white'
+                    : step === 'mass'
+                      ? 'bg-orange-500 text-white'
+                      : 'bg-warm-200'
+                }`}
+              >
                 {massCorrect ? '✓' : '3'}
               </div>
               <div className="text-xs text-warm-600">Massi</div>
@@ -345,212 +367,284 @@ export default function Level2({
 
         {/* Step Content */}
         <div className="bg-white rounded-xl shadow-lg p-6">
-          {/* Step 1: Direction */}
-          {step === 'direction' && (
-            <div>
-              <h3 className="text-lg font-bold text-warm-800 mb-4">
-                Skref 1: Er markmiðs-pH hærra, jafnt eða lægra en pKa?
-              </h3>
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
-                <p className="text-sm text-yellow-800">
-                  <strong>Munið:</strong> pH = pKa + log([Basi]/[Sýra]). Ef pH {'>'} pKa, þá er [Basi] {'>'} [Sýra].
-                </p>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3 mb-4">
-                <button
-                  onClick={() => setSelectedDirection('higher')}
-                  className={`p-4 rounded-lg border-2 transition-all ${
-                    selectedDirection === 'higher'
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-warm-200 hover:border-warm-300'
-                  }`}
-                >
-                  <div className="text-2xl mb-1">📈</div>
-                  <div className="font-semibold">Hærra</div>
-                  <div className="text-xs text-warm-500">pH {'>'} pKa</div>
-                </button>
-                <button
-                  onClick={() => setSelectedDirection('equal')}
-                  className={`p-4 rounded-lg border-2 transition-all ${
-                    selectedDirection === 'equal'
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-warm-200 hover:border-warm-300'
-                  }`}
-                >
-                  <div className="text-2xl mb-1">⚖️</div>
-                  <div className="font-semibold">Jafnt</div>
-                  <div className="text-xs text-warm-500">pH = pKa</div>
-                </button>
-                <button
-                  onClick={() => setSelectedDirection('lower')}
-                  className={`p-4 rounded-lg border-2 transition-all ${
-                    selectedDirection === 'lower'
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-warm-200 hover:border-warm-300'
-                  }`}
-                >
-                  <div className="text-2xl mb-1">📉</div>
-                  <div className="font-semibold">Lægra</div>
-                  <div className="text-xs text-warm-500">pH {'<'} pKa</div>
-                </button>
-              </div>
-
-              {directionFeedback && (
-                <div className={`p-3 rounded-lg mb-4 ${
-                  directionFeedback.includes('Rétt') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                }`}>
-                  {directionFeedback}
-                </div>
-              )}
-
-              <button
-                onClick={checkDirection}
-                disabled={!selectedDirection}
-                className={`w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed ${selectedDirection ? 'bg-kvenno-orange' : ''}`}
+          <AnimatePresence mode="wait">
+            {/* Step 1: Direction */}
+            {step === 'direction' && (
+              <motion.div
+                key="step-direction"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25 }}
               >
-                Athuga svar
-              </button>
-            </div>
-          )}
-
-          {/* Step 2: Ratio */}
-          {step === 'ratio' && (
-            <div>
-              <h3 className="text-lg font-bold text-warm-800 mb-4">
-                Skref 2: Reiknaðu [Basi]/[Sýra] hlutfallið
-              </h3>
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-                <p className="text-sm text-blue-800">
-                  <strong>Formúla:</strong> pH = pKa + log(hlutfall) → hlutfall = 10^(pH - pKa)
-                </p>
-                <p className="text-sm text-blue-800 mt-1">
-                  hlutfall = 10^({problem.targetPH} - {problem.pKa}) = 10^{(problem.targetPH - problem.pKa).toFixed(2)}
-                </p>
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-warm-700 mb-1">
-                  Hlutfall [Basi]/[Sýra]:
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={ratioInput}
-                  onChange={(e) => setRatioInput(e.target.value)}
-                  placeholder="t.d. 1.58"
-                  className="w-full p-3 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-none"
-                />
-              </div>
-
-              {ratioFeedback && (
-                <div className={`p-3 rounded-lg mb-4 ${
-                  ratioFeedback.includes('Rétt') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                }`}>
-                  {ratioFeedback}
+                <h3 className="text-lg font-bold text-warm-800 mb-4">
+                  Skref 1: Er markmiðs-pH hærra, jafnt eða lægra en pKa?
+                </h3>
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+                  <p className="text-sm text-yellow-800">
+                    <strong>Munið:</strong> pH = pKa + log([Basi]/[Sýra]). Ef pH {'>'} pKa, þá er
+                    [Basi] {'>'} [Sýra].
+                  </p>
                 </div>
-              )}
 
-              <button
-                onClick={checkRatio}
-                disabled={!ratioInput}
-                className={`w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed ${ratioInput ? 'bg-kvenno-orange' : ''}`}
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                  <button
+                    onClick={() => setSelectedDirection('higher')}
+                    className={`p-4 rounded-lg border-2 transition-all ${
+                      selectedDirection === 'higher'
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-warm-200 hover:border-warm-300'
+                    }`}
+                  >
+                    <div className="text-2xl mb-1">📈</div>
+                    <div className="font-semibold">Hærra</div>
+                    <div className="text-xs text-warm-500">pH {'>'} pKa</div>
+                  </button>
+                  <button
+                    onClick={() => setSelectedDirection('equal')}
+                    className={`p-4 rounded-lg border-2 transition-all ${
+                      selectedDirection === 'equal'
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-warm-200 hover:border-warm-300'
+                    }`}
+                  >
+                    <div className="text-2xl mb-1">⚖️</div>
+                    <div className="font-semibold">Jafnt</div>
+                    <div className="text-xs text-warm-500">pH = pKa</div>
+                  </button>
+                  <button
+                    onClick={() => setSelectedDirection('lower')}
+                    className={`p-4 rounded-lg border-2 transition-all ${
+                      selectedDirection === 'lower'
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-warm-200 hover:border-warm-300'
+                    }`}
+                  >
+                    <div className="text-2xl mb-1">📉</div>
+                    <div className="font-semibold">Lægra</div>
+                    <div className="text-xs text-warm-500">pH {'<'} pKa</div>
+                  </button>
+                </div>
+
+                <AnimatePresence>
+                  {directionFeedback && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.25 }}
+                      className={`p-3 rounded-lg mb-4 ${
+                        directionFeedback.includes('Rétt')
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
+                      }`}
+                    >
+                      {directionFeedback}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <button
+                  onClick={checkDirection}
+                  disabled={!selectedDirection}
+                  className={`w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed ${selectedDirection ? 'bg-kvenno-orange' : ''}`}
+                >
+                  Athuga svar
+                </button>
+              </motion.div>
+            )}
+
+            {/* Step 2: Ratio */}
+            {step === 'ratio' && (
+              <motion.div
+                key="step-ratio"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25 }}
               >
-                Athuga svar
-              </button>
-            </div>
-          )}
+                <h3 className="text-lg font-bold text-warm-800 mb-4">
+                  Skref 2: Reiknaðu [Basi]/[Sýra] hlutfallið
+                </h3>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                  <p className="text-sm text-blue-800">
+                    <strong>Formúla:</strong> pH = pKa + log(hlutfall) → hlutfall = 10^(pH - pKa)
+                  </p>
+                  <p className="text-sm text-blue-800 mt-1">
+                    hlutfall = 10^({problem.targetPH} - {problem.pKa}) = 10^
+                    {(problem.targetPH - problem.pKa).toFixed(2)}
+                  </p>
+                </div>
 
-          {/* Step 3: Mass */}
-          {step === 'mass' && (
-            <div>
-              <h3 className="text-lg font-bold text-warm-800 mb-4">
-                Skref 3: Reiknaðu massa sýru og basa (í grömmum)
-              </h3>
-              <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
-                <p className="text-sm text-green-800">
-                  <strong>Útreikningur:</strong> Notaðu heildarstyrkinn ({problem.totalConcentration} M) og rúmmálið ({problem.volume} L)
-                  til að finna heildar mól. Skiptu síðan á milli sýru og basa samkvæmt hlutfallinu.
-                </p>
-                <p className="text-sm text-green-800 mt-1">
-                  massi = mól × mólmassi
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="block text-sm font-medium text-red-700 mb-1">
-                    Sýrumassi (g):
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-warm-700 mb-1">
+                    Hlutfall [Basi]/[Sýra]:
                   </label>
                   <input
                     type="number"
                     step="0.01"
-                    value={acidMassInput}
-                    onChange={(e) => setAcidMassInput(e.target.value)}
-                    placeholder={`${problem.acidName}`}
-                    className="w-full p-3 border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-none"
+                    value={ratioInput}
+                    onChange={(e) => setRatioInput(e.target.value)}
+                    placeholder="t.d. 1.58"
+                    className="w-full p-3 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-none"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-blue-700 mb-1">
-                    Basamassi (g):
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={baseMassInput}
-                    onChange={(e) => setBaseMassInput(e.target.value)}
-                    placeholder={`${problem.baseName}`}
-                    className="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none"
-                  />
-                </div>
-              </div>
 
-              {massFeedback && (
-                <div className={`p-3 rounded-lg mb-4 ${
-                  massFeedback.includes('Frábært') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                }`}>
-                  {massFeedback}
-                </div>
-              )}
+                <AnimatePresence>
+                  {ratioFeedback && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.25 }}
+                      className={`p-3 rounded-lg mb-4 ${
+                        ratioFeedback.includes('Rétt')
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
+                      }`}
+                    >
+                      {ratioFeedback}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
-              <button
-                onClick={checkMass}
-                disabled={!acidMassInput || !baseMassInput}
-                className={`w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed ${(acidMassInput && baseMassInput) ? 'bg-kvenno-orange' : ''}`}
+                <button
+                  onClick={checkRatio}
+                  disabled={!ratioInput}
+                  className={`w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed ${ratioInput ? 'bg-kvenno-orange' : ''}`}
+                >
+                  Athuga svar
+                </button>
+              </motion.div>
+            )}
+
+            {/* Step 3: Mass */}
+            {step === 'mass' && (
+              <motion.div
+                key="step-mass"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25 }}
               >
-                Athuga svar
-              </button>
-            </div>
-          )}
-
-          {/* Completion & Explanation */}
-          {step === 'complete' && showExplanation && (
-            <div>
-              <div className="bg-green-50 border-2 border-green-300 rounded-lg p-4 mb-4">
-                <h3 className="font-bold text-green-800 mb-2">Rétt svar!</h3>
-                <p className="text-green-700 mb-3">{puzzle.explanationIs}</p>
-
-                <div className="bg-white rounded-lg p-3 border border-green-200">
-                  <h4 className="font-semibold text-warm-700 mb-2">Útreikningur:</h4>
-                  <ul className="text-sm text-warm-600 space-y-1">
-                    <li>• pH - pKa = {problem.targetPH} - {problem.pKa} = {(problem.targetPH - problem.pKa).toFixed(2)}</li>
-                    <li>• Hlutfall = 10^{(problem.targetPH - problem.pKa).toFixed(2)} = {problem.ratio.toFixed(2)}</li>
-                    <li>• Heildar mól = {problem.totalConcentration} M × {problem.volume} L = {(problem.totalConcentration * problem.volume).toFixed(4)} mol</li>
-                    <li>• Sýra: {problem.correctAcidMoles?.toFixed(4)} mol × {problem.acidMolarMass} g/mol = {problem.correctAcidMass} g</li>
-                    <li>• Basi: {problem.correctBaseMoles?.toFixed(4)} mol × {problem.baseMolarMass} g/mol = {problem.correctBaseMass} g</li>
-                  </ul>
+                <h3 className="text-lg font-bold text-warm-800 mb-4">
+                  Skref 3: Reiknaðu massa sýru og basa (í grömmum)
+                </h3>
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                  <p className="text-sm text-green-800">
+                    <strong>Útreikningur:</strong> Notaðu heildarstyrkinn (
+                    {problem.totalConcentration} M) og rúmmálið ({problem.volume} L) til að finna
+                    heildar mól. Skiptu síðan á milli sýru og basa samkvæmt hlutfallinu.
+                  </p>
+                  <p className="text-sm text-green-800 mt-1">massi = mól × mólmassi</p>
                 </div>
-              </div>
 
-              <button
-                onClick={nextPuzzle}
-                className="w-full py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition-colors"
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium text-red-700 mb-1">
+                      Sýrumassi (g):
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={acidMassInput}
+                      onChange={(e) => setAcidMassInput(e.target.value)}
+                      placeholder={`${problem.acidName}`}
+                      className="w-full p-3 border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-blue-700 mb-1">
+                      Basamassi (g):
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={baseMassInput}
+                      onChange={(e) => setBaseMassInput(e.target.value)}
+                      placeholder={`${problem.baseName}`}
+                      className="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <AnimatePresence>
+                  {massFeedback && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.25 }}
+                      className={`p-3 rounded-lg mb-4 ${
+                        massFeedback.includes('Frábært')
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
+                      }`}
+                    >
+                      {massFeedback}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <button
+                  onClick={checkMass}
+                  disabled={!acidMassInput || !baseMassInput}
+                  className={`w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed ${acidMassInput && baseMassInput ? 'bg-kvenno-orange' : ''}`}
+                >
+                  Athuga svar
+                </button>
+              </motion.div>
+            )}
+
+            {/* Completion & Explanation */}
+            {step === 'complete' && showExplanation && (
+              <motion.div
+                key="step-complete"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25 }}
               >
-                {currentIndex < LEVEL2_PUZZLES.length - 1 ? 'Næsta verkefni →' : 'Ljúka stigi →'}
-              </button>
-            </div>
-          )}
+                <div className="bg-green-50 border-2 border-green-300 rounded-lg p-4 mb-4">
+                  <h3 className="font-bold text-green-800 mb-2">Rétt svar!</h3>
+                  <p className="text-green-700 mb-3">{puzzle.explanationIs}</p>
+
+                  <div className="bg-white rounded-lg p-3 border border-green-200">
+                    <h4 className="font-semibold text-warm-700 mb-2">Útreikningur:</h4>
+                    <ul className="text-sm text-warm-600 space-y-1">
+                      <li>
+                        • pH - pKa = {problem.targetPH} - {problem.pKa} ={' '}
+                        {(problem.targetPH - problem.pKa).toFixed(2)}
+                      </li>
+                      <li>
+                        • Hlutfall = 10^{(problem.targetPH - problem.pKa).toFixed(2)} ={' '}
+                        {problem.ratio.toFixed(2)}
+                      </li>
+                      <li>
+                        • Heildar mól = {problem.totalConcentration} M × {problem.volume} L ={' '}
+                        {(problem.totalConcentration * problem.volume).toFixed(4)} mol
+                      </li>
+                      <li>
+                        • Sýra: {problem.correctAcidMoles?.toFixed(4)} mol × {problem.acidMolarMass}{' '}
+                        g/mol = {problem.correctAcidMass} g
+                      </li>
+                      <li>
+                        • Basi: {problem.correctBaseMoles?.toFixed(4)} mol × {problem.baseMolarMass}{' '}
+                        g/mol = {problem.correctBaseMass} g
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <button
+                  onClick={nextPuzzle}
+                  className="w-full py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition-colors"
+                >
+                  {currentIndex < LEVEL2_PUZZLES.length - 1 ? 'Næsta verkefni →' : 'Ljúka stigi →'}
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Formula Reference */}

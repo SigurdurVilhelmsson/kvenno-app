@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 
+import { motion, AnimatePresence } from 'framer-motion';
+
 import { LEVEL3_CHALLENGES } from '../data/level3-challenges';
 
 interface Level3Props {
@@ -50,7 +52,8 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
     const numericAnswer = parseFloat(userAnswer.replace(',', '.'));
     if (isNaN(numericAnswer)) return;
 
-    const relativeError = Math.abs(numericAnswer - challenge.correctAnswer) / challenge.correctAnswer;
+    const relativeError =
+      Math.abs(numericAnswer - challenge.correctAnswer) / challenge.correctAnswer;
     const correct = relativeError <= challenge.tolerance;
 
     setIsCorrect(correct);
@@ -58,7 +61,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
 
     if (correct) {
       const points = showHint ? 10 : 20;
-      setScore(prev => prev + points);
+      setScore((prev) => prev + points);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();
@@ -68,15 +71,15 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
   const handleShowHint = () => {
     if (!showHint) {
       setShowHint(true);
-      setHintsUsed(prev => prev + 1);
+      setHintsUsed((prev) => prev + 1);
     }
   };
 
   const handleNext = () => {
-    setCompleted(prev => prev + 1);
+    setCompleted((prev) => prev + 1);
 
     if (currentIndex < LEVEL3_CHALLENGES.length - 1) {
-      setCurrentIndex(prev => prev + 1);
+      setCurrentIndex((prev) => prev + 1);
     }
   };
 
@@ -89,17 +92,17 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
   const challengeTypeKeys: Record<string, string> = {
     'find-concentration': 'findConcentration',
     'find-volume': 'findVolume',
-    'polyprotic': 'polyprotic',
+    polyprotic: 'polyprotic',
     'henderson-hasselbalch': 'hendersonHasselbalch',
-    'combined': 'combined',
+    combined: 'combined',
   };
 
   const challengeTypeFallbacks: Record<string, string> = {
     'find-concentration': 'Styrkur',
     'find-volume': 'Rúmmál',
-    'polyprotic': 'Fjölprótón',
+    polyprotic: 'Fjölprótón',
     'henderson-hasselbalch': 'H-H jafna',
-    'combined': 'Samansett',
+    combined: 'Samansett',
   };
 
   const getChallengeTypeLabel = (type: string): string => {
@@ -110,12 +113,18 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
 
   const getChallengeTypeColor = (type: string): string => {
     switch (type) {
-      case 'find-concentration': return 'bg-blue-500';
-      case 'find-volume': return 'bg-green-500';
-      case 'polyprotic': return 'bg-orange-500';
-      case 'henderson-hasselbalch': return 'bg-purple-500';
-      case 'combined': return 'bg-red-500';
-      default: return 'bg-warm-500';
+      case 'find-concentration':
+        return 'bg-blue-500';
+      case 'find-volume':
+        return 'bg-green-500';
+      case 'polyprotic':
+        return 'bg-orange-500';
+      case 'henderson-hasselbalch':
+        return 'bg-purple-500';
+      case 'combined':
+        return 'bg-red-500';
+      default:
+        return 'bg-warm-500';
     }
   };
 
@@ -135,9 +144,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
               <div className="text-sm text-warm-500">
                 {completed + 1} / {LEVEL3_CHALLENGES.length}
               </div>
-              <div className="text-lg font-bold text-purple-600">
-                Stig: {score}
-              </div>
+              <div className="text-lg font-bold text-purple-600">Stig: {score}</div>
             </div>
           </div>
 
@@ -157,7 +164,9 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
         {/* Challenge card */}
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-4">
           <div className="flex items-start gap-3 mb-4">
-            <span className={`${getChallengeTypeColor(challenge.type)} text-white text-xs font-bold px-3 py-1 rounded-full`}>
+            <span
+              className={`${getChallengeTypeColor(challenge.type)} text-white text-xs font-bold px-3 py-1 rounded-full`}
+            >
               {getChallengeTypeLabel(challenge.type)}
             </span>
             <h2 className="text-lg font-bold text-warm-800">{challenge.titleIs}</h2>
@@ -172,28 +181,50 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
             <h3 className="font-bold text-warm-700 mb-2">Gefið:</h3>
             <div className="grid grid-cols-2 gap-2 text-sm">
               {challenge.givenData.analyteVolume && (
-                <div><span className="font-semibold">Rúmmál sýnis:</span> {challenge.givenData.analyteVolume} mL</div>
+                <div>
+                  <span className="font-semibold">Rúmmál sýnis:</span>{' '}
+                  {challenge.givenData.analyteVolume} mL
+                </div>
               )}
               {challenge.givenData.analyteMolarity && (
-                <div><span className="font-semibold">Styrkur sýnis:</span> {challenge.givenData.analyteMolarity} M</div>
+                <div>
+                  <span className="font-semibold">Styrkur sýnis:</span>{' '}
+                  {challenge.givenData.analyteMolarity} M
+                </div>
               )}
               {challenge.givenData.titrantMolarity && (
-                <div><span className="font-semibold">Styrkur títrants:</span> {challenge.givenData.titrantMolarity} M</div>
+                <div>
+                  <span className="font-semibold">Styrkur títrants:</span>{' '}
+                  {challenge.givenData.titrantMolarity} M
+                </div>
               )}
               {challenge.givenData.equivalenceVolume && (
-                <div><span className="font-semibold">Jafngildisrúmmál:</span> {challenge.givenData.equivalenceVolume} mL</div>
+                <div>
+                  <span className="font-semibold">Jafngildisrúmmál:</span>{' '}
+                  {challenge.givenData.equivalenceVolume} mL
+                </div>
               )}
               {challenge.givenData.pKa && (
-                <div><span className="font-semibold">pKₐ:</span> {challenge.givenData.pKa}</div>
+                <div>
+                  <span className="font-semibold">pKₐ:</span> {challenge.givenData.pKa}
+                </div>
               )}
               {challenge.givenData.pH && (
-                <div><span className="font-semibold">pH:</span> {challenge.givenData.pH}</div>
+                <div>
+                  <span className="font-semibold">pH:</span> {challenge.givenData.pH}
+                </div>
               )}
               {challenge.givenData.acidConcentration && (
-                <div><span className="font-semibold">[Sýra]:</span> {challenge.givenData.acidConcentration} M</div>
+                <div>
+                  <span className="font-semibold">[Sýra]:</span>{' '}
+                  {challenge.givenData.acidConcentration} M
+                </div>
               )}
               {challenge.givenData.baseConcentration && (
-                <div><span className="font-semibold">[Basi]:</span> {challenge.givenData.baseConcentration} M</div>
+                <div>
+                  <span className="font-semibold">[Basi]:</span>{' '}
+                  {challenge.givenData.baseConcentration} M
+                </div>
               )}
             </div>
             {challenge.givenData.formula && (
@@ -237,88 +268,114 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
           </div>
 
           {/* Hint */}
-          {!showResult && (
-            <div className="mb-4">
-              {showHint ? (
-                <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4">
-                  <div className="font-bold text-yellow-800 mb-1">💡 Vísbending:</div>
-                  <p className="text-yellow-900">{challenge.hintIs}</p>
-                </div>
-              ) : (
-                <button
-                  onClick={handleShowHint}
-                  className="text-yellow-600 hover:text-yellow-800 text-sm flex items-center gap-2"
-                >
-                  💡 Sýna vísbendingu (-10 stig)
-                </button>
-              )}
-            </div>
-          )}
+          <AnimatePresence>
+            {!showResult && (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25 }}
+                className="mb-4"
+              >
+                {showHint ? (
+                  <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4">
+                    <div className="font-bold text-yellow-800 mb-1">💡 Vísbending:</div>
+                    <p className="text-yellow-900">{challenge.hintIs}</p>
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleShowHint}
+                    className="text-yellow-600 hover:text-yellow-800 text-sm flex items-center gap-2"
+                  >
+                    💡 Sýna vísbendingu (-10 stig)
+                  </button>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Submit button */}
-          {!showResult && (
-            <button
-              onClick={handleSubmit}
-              disabled={!userAnswer.trim()}
-              className={`w-full px-6 py-3 rounded-xl font-bold transition-colors ${
-                userAnswer.trim()
-                  ? 'bg-purple-500 hover:bg-purple-600 text-white'
-                  : 'bg-warm-200 text-warm-400 cursor-not-allowed'
-              }`}
-            >
-              Staðfesta svar
-            </button>
-          )}
+          <AnimatePresence>
+            {!showResult && (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25 }}
+              >
+                <button
+                  onClick={handleSubmit}
+                  disabled={!userAnswer.trim()}
+                  className={`w-full px-6 py-3 rounded-xl font-bold transition-colors ${
+                    userAnswer.trim()
+                      ? 'bg-purple-500 hover:bg-purple-600 text-white'
+                      : 'bg-warm-200 text-warm-400 cursor-not-allowed'
+                  }`}
+                >
+                  Staðfesta svar
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Result feedback */}
-          {showResult && (
-            <div className={`p-4 rounded-xl ${isCorrect ? 'bg-green-50 border border-green-300' : 'bg-red-50 border border-red-300'}`}>
-              <div className={`font-bold mb-2 ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
-                {isCorrect ? '✓ Rétt!' : '✗ Rangt'}
-                {isCorrect && showHint && ' (10 stig)'}
-                {isCorrect && !showHint && ' (+20 stig)'}
-              </div>
-
-              <div className="text-sm mb-2">
-                <span className="font-semibold">Þitt svar:</span> {userAnswer} {challenge.unit}
-                <br />
-                <span className="font-semibold">Rétt svar:</span> {challenge.correctAnswer} {challenge.unit}
-              </div>
-
-              <p className={`text-sm ${isCorrect ? 'text-green-900' : 'text-red-900'}`}>
-                {challenge.explanationIs}
-              </p>
-
-              {/* Show solution button */}
-              {!showSolution && (
-                <button
-                  onClick={() => setShowSolution(true)}
-                  className="mt-3 text-purple-600 hover:text-purple-800 text-sm font-semibold"
-                >
-                  📝 Sýna útreikningsgang
-                </button>
-              )}
-
-              {/* Solution steps */}
-              {showSolution && (
-                <div className="mt-3 bg-white rounded-lg p-3 border border-warm-200">
-                  <h4 className="font-bold text-warm-700 mb-2">Útreikningur:</h4>
-                  <ol className="list-decimal list-inside space-y-1 text-sm font-mono text-warm-800">
-                    {challenge.solutionStepsIs.map((step, index) => (
-                      <li key={index}>{step}</li>
-                    ))}
-                  </ol>
-                </div>
-              )}
-
-              <button
-                onClick={handleNext}
-                className="mt-4 w-full px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-bold"
+          <AnimatePresence>
+            {showResult && (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25 }}
+                className={`p-4 rounded-xl ${isCorrect ? 'bg-green-50 border border-green-300' : 'bg-red-50 border border-red-300'}`}
               >
-                {currentIndex < LEVEL3_CHALLENGES.length - 1 ? 'Næsta →' : 'Ljúka stigi →'}
-              </button>
-            </div>
-          )}
+                <div className={`font-bold mb-2 ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+                  {isCorrect ? '✓ Rétt!' : '✗ Rangt'}
+                  {isCorrect && showHint && ' (10 stig)'}
+                  {isCorrect && !showHint && ' (+20 stig)'}
+                </div>
+
+                <div className="text-sm mb-2">
+                  <span className="font-semibold">Þitt svar:</span> {userAnswer} {challenge.unit}
+                  <br />
+                  <span className="font-semibold">Rétt svar:</span> {challenge.correctAnswer}{' '}
+                  {challenge.unit}
+                </div>
+
+                <p className={`text-sm ${isCorrect ? 'text-green-900' : 'text-red-900'}`}>
+                  {challenge.explanationIs}
+                </p>
+
+                {/* Show solution button */}
+                {!showSolution && (
+                  <button
+                    onClick={() => setShowSolution(true)}
+                    className="mt-3 text-purple-600 hover:text-purple-800 text-sm font-semibold"
+                  >
+                    📝 Sýna útreikningsgang
+                  </button>
+                )}
+
+                {/* Solution steps */}
+                {showSolution && (
+                  <div className="mt-3 bg-white rounded-lg p-3 border border-warm-200">
+                    <h4 className="font-bold text-warm-700 mb-2">Útreikningur:</h4>
+                    <ol className="list-decimal list-inside space-y-1 text-sm font-mono text-warm-800">
+                      {challenge.solutionStepsIs.map((step, index) => (
+                        <li key={index}>{step}</li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
+                <button
+                  onClick={handleNext}
+                  className="mt-4 w-full px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-bold"
+                >
+                  {currentIndex < LEVEL3_CHALLENGES.length - 1 ? 'Næsta →' : 'Ljúka stigi →'}
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Reference tables */}
@@ -336,12 +393,30 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
                   </tr>
                 </thead>
                 <tbody className="text-blue-900">
-                  <tr><td>HF</td><td>3.17</td></tr>
-                  <tr><td>HCOOH</td><td>3.75</td></tr>
-                  <tr><td>CH₃COOH</td><td>4.74</td></tr>
-                  <tr><td>H₂CO₃</td><td>6.35, 10.33</td></tr>
-                  <tr><td>H₃PO₄</td><td>2.15, 7.20, 12.35</td></tr>
-                  <tr><td>NH₄⁺</td><td>9.26</td></tr>
+                  <tr>
+                    <td>HF</td>
+                    <td>3.17</td>
+                  </tr>
+                  <tr>
+                    <td>HCOOH</td>
+                    <td>3.75</td>
+                  </tr>
+                  <tr>
+                    <td>CH₃COOH</td>
+                    <td>4.74</td>
+                  </tr>
+                  <tr>
+                    <td>H₂CO₃</td>
+                    <td>6.35, 10.33</td>
+                  </tr>
+                  <tr>
+                    <td>H₃PO₄</td>
+                    <td>2.15, 7.20, 12.35</td>
+                  </tr>
+                  <tr>
+                    <td>NH₄⁺</td>
+                    <td>9.26</td>
+                  </tr>
                 </tbody>
               </table>
             </div>

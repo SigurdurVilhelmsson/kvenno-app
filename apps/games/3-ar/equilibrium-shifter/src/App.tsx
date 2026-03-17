@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
+import { motion, AnimatePresence } from 'framer-motion';
+
 import { Header, HintSystem, LanguageSwitcher, ErrorBoundary } from '@shared/components';
 import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
 import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
@@ -402,7 +404,14 @@ function App() {
 
   // Render functions
   const renderMenu = () => (
-    <div className="max-w-4xl mx-auto">
+    <motion.div
+      key="menu"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="max-w-4xl mx-auto"
+    >
       <div className="bg-white rounded-lg shadow-md p-8">
         <p className="text-lg text-warm-600 mb-8 text-center">
           Lærðu Le Chatelier meginregluna í gegnum gagnvirkar æfingar
@@ -451,14 +460,21 @@ function App() {
           <p className="text-sm text-warm-600">Verkefni kláruð: {progress.problemsCompleted}</p>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 
   const renderGame = () => {
     if (!currentEquilibrium) return null;
 
     return (
-      <div className="max-w-6xl mx-auto">
+      <motion.div
+        key="game"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+        className="max-w-6xl mx-auto"
+      >
         {/* Header with stats */}
         <div className="bg-white rounded-lg shadow-md p-4 mb-4">
           <div className="flex justify-between items-center flex-wrap gap-4">
@@ -606,159 +622,184 @@ function App() {
                 <div className="text-lg text-warm-700">{getStressDescriptionIs(appliedStress)}</div>
               </div>
 
-              {/* Prediction Buttons */}
-              {!showExplanation && (
-                <div>
-                  <h3 className="text-lg font-semibold text-warm-800 mb-3">
-                    Hvert mun jafnvægið hliðrast?
-                  </h3>
-                  <div className="grid grid-cols-3 gap-4 mb-4">
-                    <button
-                      onClick={() => handlePrediction('left')}
-                      className="predict-btn left"
-                      disabled={userPrediction !== null}
-                    >
-                      ← Til vinstri
-                    </button>
-                    <button
-                      onClick={() => handlePrediction('none')}
-                      className="predict-btn none"
-                      disabled={userPrediction !== null}
-                    >
-                      ⇌ Engin hliðrun
-                    </button>
-                    <button
-                      onClick={() => handlePrediction('right')}
-                      className="predict-btn right"
-                      disabled={userPrediction !== null}
-                    >
-                      Til hægri →
-                    </button>
-                  </div>
-
-                  {/* Tiered Hint System (Learning Mode Only) */}
-                  {gameMode === 'learning' && (
-                    <div className="mt-4">
-                      <HintSystem
-                        hints={generateHints()}
-                        basePoints={calculatePoints(true, currentEquilibrium.difficulty)}
-                        onHintUsed={handleHintUsed}
-                        onPointsChange={setHintMultiplier}
-                        disabled={showExplanation}
-                        resetKey={hintResetKey}
-                      />
+              {/* Prediction Buttons / Explanation */}
+              <AnimatePresence mode="wait">
+                {!showExplanation && (
+                  <motion.div
+                    key="prediction"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    <h3 className="text-lg font-semibold text-warm-800 mb-3">
+                      Hvert mun jafnvægið hliðrast?
+                    </h3>
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                      <button
+                        onClick={() => handlePrediction('left')}
+                        className="predict-btn left"
+                        disabled={userPrediction !== null}
+                      >
+                        ← Til vinstri
+                      </button>
+                      <button
+                        onClick={() => handlePrediction('none')}
+                        className="predict-btn none"
+                        disabled={userPrediction !== null}
+                      >
+                        ⇌ Engin hliðrun
+                      </button>
+                      <button
+                        onClick={() => handlePrediction('right')}
+                        className="predict-btn right"
+                        disabled={userPrediction !== null}
+                      >
+                        Til hægri →
+                      </button>
                     </div>
-                  )}
-                </div>
-              )}
 
-              {/* Explanation */}
-              {showExplanation && isCorrect !== null && (
-                <div
-                  className={`explanation-box ${isCorrect ? 'correct' : 'incorrect'} slide-in-right`}
-                >
-                  <div className="text-2xl font-bold mb-3">
-                    {isCorrect ? '✅ Rétt!' : '❌ Rangt'}
-                  </div>
+                    {/* Tiered Hint System (Learning Mode Only) */}
+                    {gameMode === 'learning' && (
+                      <div className="mt-4">
+                        <HintSystem
+                          hints={generateHints()}
+                          basePoints={calculatePoints(true, currentEquilibrium.difficulty)}
+                          onHintUsed={handleHintUsed}
+                          onPointsChange={setHintMultiplier}
+                          disabled={showExplanation}
+                          resetKey={hintResetKey}
+                        />
+                      </div>
+                    )}
+                  </motion.div>
+                )}
 
-                  <div className="mb-4">
-                    <div className="font-semibold mb-2">Rétt svar:</div>
-                    <div className="text-lg">
-                      Hliðrun:{' '}
-                      <strong>
-                        {correctShift.direction === 'left'
-                          ? 'Til vinstri ←'
-                          : correctShift.direction === 'right'
-                            ? 'Til hægri →'
-                            : 'Engin hliðrun ⇌'}
-                      </strong>
+                {/* Explanation */}
+                {showExplanation && isCorrect !== null && (
+                  <motion.div
+                    key="explanation"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.25 }}
+                    className={`explanation-box ${isCorrect ? 'correct' : 'incorrect'} slide-in-right`}
+                  >
+                    <div className="text-2xl font-bold mb-3">
+                      {isCorrect ? '✅ Rétt!' : '❌ Rangt'}
                     </div>
-                  </div>
 
-                  <div className="mb-4">
-                    <div className="font-semibold mb-2">Útskýring:</div>
-                    <p className="text-warm-700">
-                      {language === 'is' ? correctShift.explanationIs : correctShift.explanation}
-                    </p>
-                  </div>
-
-                  {/* Q vs K Comparison - shows in learning mode or for wrong answers */}
-                  {(gameMode === 'learning' || !isCorrect) && appliedStress && (
                     <div className="mb-4">
-                      <QKComparison
-                        shiftDirection={correctShift.direction}
-                        stress={appliedStress}
-                        isExothermic={currentEquilibrium.thermodynamics.type === 'exothermic'}
-                        animate={true}
-                      />
-                    </div>
-                  )}
-
-                  {gameMode === 'learning' && (
-                    <div className="mb-4">
-                      <div className="font-semibold mb-2">Rökstuðningur:</div>
-                      <ul className="list-disc list-inside space-y-1 text-sm text-warm-700">
-                        {correctShift.reasoning.map((r, idx) => (
-                          <li key={idx}>{r}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  <div className="mb-4">
-                    <div className="font-semibold mb-2">Sameinda sjónarhorn:</div>
-                    <p className="text-sm text-warm-700 italic">{correctShift.molecularView}</p>
-                  </div>
-
-                  {/* Points Earned */}
-                  {isCorrect && (
-                    <div className="bg-green-100 rounded-lg p-3 mt-4">
-                      <div className="font-semibold text-green-800">
-                        +{calculatePoints(true, currentEquilibrium.difficulty)} stig!
+                      <div className="font-semibold mb-2">Rétt svar:</div>
+                      <div className="text-lg">
+                        Hliðrun:{' '}
+                        <strong>
+                          {correctShift.direction === 'left'
+                            ? 'Til vinstri ←'
+                            : correctShift.direction === 'right'
+                              ? 'Til hægri →'
+                              : 'Engin hliðrun ⇌'}
+                        </strong>
                       </div>
                     </div>
-                  )}
 
-                  {/* Next Button (Learning Mode) */}
-                  {gameMode === 'learning' && (
-                    <div className="mt-6 flex gap-3">
-                      <button
-                        onClick={() => {
-                          setAppliedStress(null);
-                          setShowExplanation(false);
-                          setIsCorrect(null);
-                        }}
-                        className="flex-1 bg-blue-500 hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 text-white rounded-lg px-6 py-3 transition-colors"
-                      >
-                        Prófa annað álag
-                      </button>
-                      <button
-                        onClick={handleNextQuestion}
-                        className="flex-1 bg-green-500 hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700 text-white rounded-lg px-6 py-3 transition-colors"
-                      >
-                        Næsta jafnvægi →
-                      </button>
+                    <div className="mb-4">
+                      <div className="font-semibold mb-2">Útskýring:</div>
+                      <p className="text-warm-700">
+                        {language === 'is' ? correctShift.explanationIs : correctShift.explanation}
+                      </p>
                     </div>
-                  )}
 
-                  {/* Challenge Mode - Auto advance message */}
-                  {gameMode === 'challenge' && (
-                    <div className="mt-4 text-center text-sm text-warm-600">
-                      Næsta spurning birtist sjálfkrafa...
+                    {/* Q vs K Comparison - shows in learning mode or for wrong answers */}
+                    {(gameMode === 'learning' || !isCorrect) && appliedStress && (
+                      <div className="mb-4">
+                        <QKComparison
+                          shiftDirection={correctShift.direction}
+                          stress={appliedStress}
+                          isExothermic={currentEquilibrium.thermodynamics.type === 'exothermic'}
+                          animate={true}
+                        />
+                      </div>
+                    )}
+
+                    {gameMode === 'learning' && (
+                      <div className="mb-4">
+                        <div className="font-semibold mb-2">Rökstuðningur:</div>
+                        <ul className="list-disc list-inside space-y-1 text-sm text-warm-700">
+                          {correctShift.reasoning.map((r, idx) => (
+                            <li key={idx}>{r}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    <div className="mb-4">
+                      <div className="font-semibold mb-2">Sameinda sjónarhorn:</div>
+                      <p className="text-sm text-warm-700 italic">{correctShift.molecularView}</p>
                     </div>
-                  )}
-                </div>
-              )}
+
+                    {/* Points Earned */}
+                    {isCorrect && (
+                      <div className="bg-green-100 rounded-lg p-3 mt-4">
+                        <div className="font-semibold text-green-800">
+                          +{calculatePoints(true, currentEquilibrium.difficulty)} stig!
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Next Button (Learning Mode) */}
+                    {gameMode === 'learning' && (
+                      <div className="mt-6 flex gap-3">
+                        <button
+                          onClick={() => {
+                            setAppliedStress(null);
+                            setShowExplanation(false);
+                            setIsCorrect(null);
+                          }}
+                          className="flex-1 bg-blue-500 hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 text-white rounded-lg px-6 py-3 transition-colors"
+                        >
+                          Prófa annað álag
+                        </button>
+                        <button
+                          onClick={handleNextQuestion}
+                          className="flex-1 bg-green-500 hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700 text-white rounded-lg px-6 py-3 transition-colors"
+                        >
+                          Næsta jafnvægi →
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Challenge Mode - Auto advance message */}
+                    {gameMode === 'challenge' && (
+                      <div className="mt-4 text-center text-sm text-warm-600">
+                        Næsta spurning birtist sjálfkrafa...
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
     );
   };
 
   const renderResults = () => (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-white rounded-lg shadow-md p-8">
+    <motion.div
+      key="results"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="max-w-4xl mx-auto"
+    >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+        className="bg-white rounded-lg shadow-md p-8"
+      >
         <h2 className="text-3xl font-bold text-warm-800 mb-6 text-center">🏆 Niðurstöður</h2>
 
         <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -826,8 +867,8 @@ function App() {
             📋 Aðalvalmynd
           </button>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 
   return (
@@ -912,9 +953,11 @@ function App() {
           </div>
 
           {/* Screen Routing */}
-          {screen === 'menu' && renderMenu()}
-          {screen === 'game' && renderGame()}
-          {screen === 'results' && renderResults()}
+          <AnimatePresence mode="wait">
+            {screen === 'menu' && renderMenu()}
+            {screen === 'game' && renderGame()}
+            {screen === 'results' && renderResults()}
+          </AnimatePresence>
         </main>
 
         {/* Footer */}

@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 
+import { motion, AnimatePresence } from 'framer-motion';
+
 import { Burette } from './Burette';
 import { Flask } from './Flask';
 import { IndicatorSelector } from './IndicatorSelector';
@@ -78,7 +80,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     if (!isPouring || !titration) return;
 
     const interval = setInterval(() => {
-      setVolumeAdded(prev => {
+      setVolumeAdded((prev) => {
         const newVolume = Math.min(prev + 0.1, 60);
         return Math.round(newVolume * 100) / 100;
       });
@@ -93,7 +95,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const handleAddDrop = useCallback(() => {
     if (phase !== 'titrating') return;
-    setVolumeAdded(prev => {
+    setVolumeAdded((prev) => {
       const newVolume = Math.min(prev + 0.05, 60);
       return Math.round(newVolume * 1000) / 1000;
     });
@@ -103,7 +105,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const handleAdd1mL = useCallback(() => {
     if (phase !== 'titrating') return;
-    setVolumeAdded(prev => {
+    setVolumeAdded((prev) => {
       const newVolume = Math.min(prev + 1, 60);
       return Math.round(newVolume * 100) / 100;
     });
@@ -113,7 +115,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const handleAdd5mL = useCallback(() => {
     if (phase !== 'titrating') return;
-    setVolumeAdded(prev => {
+    setVolumeAdded((prev) => {
       const newVolume = Math.min(prev + 5, 60);
       return Math.round(newVolume * 100) / 100;
     });
@@ -147,7 +149,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
     if (volumeCorrect && indicatorOk) {
       const points = showHint ? 50 : 100;
-      setScore(prev => prev + points);
+      setScore((prev) => prev + points);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();
@@ -157,15 +159,15 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const handleShowHint = () => {
     if (!showHint) {
       setShowHint(true);
-      setHintsUsed(prev => prev + 1);
+      setHintsUsed((prev) => prev + 1);
     }
   };
 
   const handleNext = () => {
-    setCompleted(prev => prev + 1);
+    setCompleted((prev) => prev + 1);
 
     if (currentIndex < LEVEL2_PUZZLES.length - 1) {
-      setCurrentIndex(prev => prev + 1);
+      setCurrentIndex((prev) => prev + 1);
     }
   };
 
@@ -198,9 +200,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div className="text-sm text-warm-500">
                 {completed + 1} / {LEVEL2_PUZZLES.length}
               </div>
-              <div className="text-lg font-bold text-green-600">
-                Stig: {score}
-              </div>
+              <div className="text-lg font-bold text-green-600">Stig: {score}</div>
             </div>
           </div>
 
@@ -224,14 +224,14 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               {puzzle.id}
             </span>
             <div className="flex-1">
-              <h2 className="text-lg font-bold text-green-800 mb-1">
-                {titration.name}
-              </h2>
+              <h2 className="text-lg font-bold text-green-800 mb-1">{titration.name}</h2>
               <p className="text-green-900">{puzzle.taskIs}</p>
               <p className="text-sm text-green-700 mt-2">
-                <span className="font-semibold">Sýni:</span> {titration.analyte.volume} mL af {titration.analyte.molarity} M {titration.analyte.name}
+                <span className="font-semibold">Sýni:</span> {titration.analyte.volume} mL af{' '}
+                {titration.analyte.molarity} M {titration.analyte.name}
                 <br />
-                <span className="font-semibold">Títrant:</span> {titration.titrant.molarity} M {titration.titrant.name}
+                <span className="font-semibold">Títrant:</span> {titration.titrant.molarity} M{' '}
+                {titration.titrant.name}
               </p>
             </div>
           </div>
@@ -244,54 +244,67 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="flex flex-col md:flex-row items-start justify-center gap-8">
               {/* Burette */}
               <div className="flex flex-col items-center">
-                <Burette
-                  volumeAdded={volumeAdded}
-                  maxVolume={60}
-                  isAnimating={isPouring}
-                />
+                <Burette volumeAdded={volumeAdded} maxVolume={60} isAnimating={isPouring} />
 
                 {/* Controls */}
-                {phase === 'titrating' && (
-                  <div className="mt-4 space-y-2">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={handleAddDrop}
-                        aria-label="Bæta við 0,05 mL títrant"
-                        className="px-3 py-2 bg-blue-100 hover:bg-blue-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
-                      >
-                        +0.05 mL
-                      </button>
-                      <button
-                        onClick={handleAdd1mL}
-                        aria-label="Bæta við 1 mL títrant"
-                        className="px-3 py-2 bg-blue-200 hover:bg-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
-                      >
-                        +1 mL
-                      </button>
-                      <button
-                        onClick={handleAdd5mL}
-                        aria-label="Bæta við 5 mL títrant"
-                        className="px-3 py-2 bg-blue-300 hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
-                      >
-                        +5 mL
-                      </button>
-                    </div>
-                    <button
-                      onMouseDown={() => setIsPouring(true)}
-                      onMouseUp={() => setIsPouring(false)}
-                      onMouseLeave={() => setIsPouring(false)}
-                      onTouchStart={() => setIsPouring(true)}
-                      onTouchEnd={() => setIsPouring(false)}
-                      onKeyDown={(e) => { if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); setIsPouring(true); } }}
-                      onKeyUp={(e) => { if (e.code === 'Space' || e.code === 'Enter') { setIsPouring(false); } }}
-                      onBlur={() => setIsPouring(false)}
-                      aria-label="Halda inni til að hella títrant samfellt"
-                      className="w-full px-4 py-3 bg-indigo-500 hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-700 text-white rounded-lg font-bold"
+                <AnimatePresence>
+                  {phase === 'titrating' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.25 }}
+                      className="mt-4 space-y-2"
                     >
-                      Halda inni til að hella
-                    </button>
-                  </div>
-                )}
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleAddDrop}
+                          aria-label="Bæta við 0,05 mL títrant"
+                          className="px-3 py-2 bg-blue-100 hover:bg-blue-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
+                        >
+                          +0.05 mL
+                        </button>
+                        <button
+                          onClick={handleAdd1mL}
+                          aria-label="Bæta við 1 mL títrant"
+                          className="px-3 py-2 bg-blue-200 hover:bg-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
+                        >
+                          +1 mL
+                        </button>
+                        <button
+                          onClick={handleAdd5mL}
+                          aria-label="Bæta við 5 mL títrant"
+                          className="px-3 py-2 bg-blue-300 hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
+                        >
+                          +5 mL
+                        </button>
+                      </div>
+                      <button
+                        onMouseDown={() => setIsPouring(true)}
+                        onMouseUp={() => setIsPouring(false)}
+                        onMouseLeave={() => setIsPouring(false)}
+                        onTouchStart={() => setIsPouring(true)}
+                        onTouchEnd={() => setIsPouring(false)}
+                        onKeyDown={(e) => {
+                          if (e.code === 'Space' || e.code === 'Enter') {
+                            e.preventDefault();
+                            setIsPouring(true);
+                          }
+                        }}
+                        onKeyUp={(e) => {
+                          if (e.code === 'Space' || e.code === 'Enter') {
+                            setIsPouring(false);
+                          }
+                        }}
+                        onBlur={() => setIsPouring(false)}
+                        aria-label="Halda inni til að hella títrant samfellt"
+                        className="w-full px-4 py-3 bg-indigo-500 hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-700 text-white rounded-lg font-bold"
+                      >
+                        Halda inni til að hella
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
               {/* Flask */}
@@ -309,7 +322,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             {/* Titration Curve */}
             <div className="mt-6">
               <TitrationCurve
-                curveData={curveData.filter(p => p.volume <= volumeAdded)}
+                curveData={curveData.filter((p) => p.volume <= volumeAdded)}
                 currentVolume={volumeAdded}
                 currentPH={currentPH}
                 titration={titration}
@@ -320,16 +333,24 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
 
             {/* Submit volume button */}
-            {phase === 'titrating' && volumeAdded > 0 && (
-              <div className="mt-4 flex justify-center">
-                <button
-                  onClick={handleSubmitVolume}
-                  className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold"
+            <AnimatePresence>
+              {phase === 'titrating' && volumeAdded > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25 }}
+                  className="mt-4 flex justify-center"
                 >
-                  Staðfesta rúmmál ({volumeAdded.toFixed(2)} mL) →
-                </button>
-              </div>
-            )}
+                  <button
+                    onClick={handleSubmitVolume}
+                    className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold"
+                  >
+                    Staðfesta rúmmál ({volumeAdded.toFixed(2)} mL) →
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Right: Indicator selector and info */}
@@ -344,93 +365,138 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
 
             {/* Submit indicator button */}
-            {phase === 'select-indicator' && selectedIndicator && (
-              <button
-                onClick={handleSubmitIndicator}
-                className="w-full px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold"
-              >
-                Staðfesta val →
-              </button>
-            )}
+            <AnimatePresence>
+              {phase === 'select-indicator' && selectedIndicator && (
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <button
+                    onClick={handleSubmitIndicator}
+                    className="w-full px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold"
+                  >
+                    Staðfesta val →
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Hint */}
-            {phase !== 'result' && (
-              <div>
-                {showHint ? (
-                  <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4">
-                    <div className="font-bold text-yellow-800 mb-1">💡 Vísbending:</div>
-                    <p className="text-yellow-900 text-sm">{puzzle.hintIs}</p>
-                  </div>
-                ) : (
-                  <button
-                    onClick={handleShowHint}
-                    className="text-yellow-600 hover:text-yellow-800 text-sm flex items-center gap-2"
-                  >
-                    💡 Sýna vísbendingu (-50 stig)
-                  </button>
-                )}
-              </div>
-            )}
+            <AnimatePresence>
+              {phase !== 'result' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  {showHint ? (
+                    <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4">
+                      <div className="font-bold text-yellow-800 mb-1">💡 Vísbending:</div>
+                      <p className="text-yellow-900 text-sm">{puzzle.hintIs}</p>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleShowHint}
+                      className="text-yellow-600 hover:text-yellow-800 text-sm flex items-center gap-2"
+                    >
+                      💡 Sýna vísbendingu (-50 stig)
+                    </button>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Result feedback */}
-            {phase === 'result' && submittedVolume !== null && (
-              <div className={`p-4 rounded-xl ${isCorrect ? 'bg-green-50 border border-green-300' : 'bg-red-50 border border-red-300'}`}>
-                <div className={`font-bold mb-2 ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
-                  {isCorrect ? '✓ Rétt!' : '✗ Ekki rétt'}
-                  {isCorrect && showHint && ' (50 stig)'}
-                  {isCorrect && !showHint && ' (+100 stig)'}
-                </div>
-
-                <div className="text-sm space-y-2">
-                  <div>
-                    <span className="font-semibold">Þitt rúmmál:</span> {submittedVolume.toFixed(2)} mL
-                    <br />
-                    <span className="font-semibold">Jafngildisrúmmál:</span> {titration.equivalenceVolume.toFixed(2)} mL
-                    <br />
-                    <span className={Math.abs(submittedVolume - titration.equivalenceVolume) <= puzzle.volumeTolerance ? 'text-green-600' : 'text-red-600'}>
-                      Skekkja: ±{Math.abs(submittedVolume - titration.equivalenceVolume).toFixed(2)} mL
-                      {Math.abs(submittedVolume - titration.equivalenceVolume) <= puzzle.volumeTolerance ? ' ✓' : ' ✗'}
-                    </span>
+            <AnimatePresence>
+              {phase === 'result' && submittedVolume !== null && (
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25 }}
+                  className={`p-4 rounded-xl ${isCorrect ? 'bg-green-50 border border-green-300' : 'bg-red-50 border border-red-300'}`}
+                >
+                  <div
+                    className={`font-bold mb-2 ${isCorrect ? 'text-green-800' : 'text-red-800'}`}
+                  >
+                    {isCorrect ? '✓ Rétt!' : '✗ Ekki rétt'}
+                    {isCorrect && showHint && ' (50 stig)'}
+                    {isCorrect && !showHint && ' (+100 stig)'}
                   </div>
 
-                  <div>
-                    <span className="font-semibold">Þinn vísir:</span>{' '}
-                    {indicators.find(i => i.id === selectedIndicator)?.name}
-                    <br />
-                    <span className={indicatorCorrect ? 'text-green-600' : 'text-red-600'}>
-                      {indicatorCorrect ? '✓ Góður vísir' : '✗ Ekki besti vísirinn'}
-                    </span>
+                  <div className="text-sm space-y-2">
+                    <div>
+                      <span className="font-semibold">Þitt rúmmál:</span>{' '}
+                      {submittedVolume.toFixed(2)} mL
+                      <br />
+                      <span className="font-semibold">Jafngildisrúmmál:</span>{' '}
+                      {titration.equivalenceVolume.toFixed(2)} mL
+                      <br />
+                      <span
+                        className={
+                          Math.abs(submittedVolume - titration.equivalenceVolume) <=
+                          puzzle.volumeTolerance
+                            ? 'text-green-600'
+                            : 'text-red-600'
+                        }
+                      >
+                        Skekkja: ±
+                        {Math.abs(submittedVolume - titration.equivalenceVolume).toFixed(2)} mL
+                        {Math.abs(submittedVolume - titration.equivalenceVolume) <=
+                        puzzle.volumeTolerance
+                          ? ' ✓'
+                          : ' ✗'}
+                      </span>
+                    </div>
+
+                    <div>
+                      <span className="font-semibold">Þinn vísir:</span>{' '}
+                      {indicators.find((i) => i.id === selectedIndicator)?.name}
+                      <br />
+                      <span className={indicatorCorrect ? 'text-green-600' : 'text-red-600'}>
+                        {indicatorCorrect ? '✓ Góður vísir' : '✗ Ekki besti vísirinn'}
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <div className={`mt-3 text-sm ${isCorrect ? 'text-green-900' : 'text-red-900'}`}>
-                  {puzzle.explanationIs}
-                </div>
+                  <div className={`mt-3 text-sm ${isCorrect ? 'text-green-900' : 'text-red-900'}`}>
+                    {puzzle.explanationIs}
+                  </div>
 
-                <div className="mt-4 flex gap-2">
-                  <button
-                    onClick={handleReset}
-                    className="flex-1 px-4 py-2 bg-warm-200 hover:bg-warm-300 text-warm-800 rounded-lg font-semibold"
-                  >
-                    Reyna aftur
-                  </button>
-                  <button
-                    onClick={handleNext}
-                    className="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-bold"
-                  >
-                    {currentIndex < LEVEL2_PUZZLES.length - 1 ? 'Næsta →' : 'Ljúka →'}
-                  </button>
-                </div>
-              </div>
-            )}
+                  <div className="mt-4 flex gap-2">
+                    <button
+                      onClick={handleReset}
+                      className="flex-1 px-4 py-2 bg-warm-200 hover:bg-warm-300 text-warm-800 rounded-lg font-semibold"
+                    >
+                      Reyna aftur
+                    </button>
+                    <button
+                      onClick={handleNext}
+                      className="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-bold"
+                    >
+                      {currentIndex < LEVEL2_PUZZLES.length - 1 ? 'Næsta →' : 'Ljúka →'}
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Phase indicator */}
             <div className="bg-warm-100 rounded-xl p-3">
               <div className="text-xs text-warm-500 mb-2">Framvinda:</div>
               <div className="flex gap-2">
-                <div className={`flex-1 h-2 rounded ${phase === 'titrating' ? 'bg-blue-500' : 'bg-blue-200'}`} />
-                <div className={`flex-1 h-2 rounded ${phase === 'select-indicator' ? 'bg-orange-500' : phase === 'result' ? 'bg-orange-200' : 'bg-warm-300'}`} />
-                <div className={`flex-1 h-2 rounded ${phase === 'result' ? 'bg-green-500' : 'bg-warm-300'}`} />
+                <div
+                  className={`flex-1 h-2 rounded ${phase === 'titrating' ? 'bg-blue-500' : 'bg-blue-200'}`}
+                />
+                <div
+                  className={`flex-1 h-2 rounded ${phase === 'select-indicator' ? 'bg-orange-500' : phase === 'result' ? 'bg-orange-200' : 'bg-warm-300'}`}
+                />
+                <div
+                  className={`flex-1 h-2 rounded ${phase === 'result' ? 'bg-green-500' : 'bg-warm-300'}`}
+                />
               </div>
               <div className="flex justify-between text-xs text-warm-600 mt-1">
                 <span>Títra</span>
