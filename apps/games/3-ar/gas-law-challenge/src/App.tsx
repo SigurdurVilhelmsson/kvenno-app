@@ -222,7 +222,7 @@ function App() {
 
       trackCorrectAnswer({ firstAttempt: showHint === 0 });
       playCorrect();
-      triggerCorrect();
+      if (stats.streak + 1 >= 3) triggerCorrect();
     } else {
       message = error < 5 ? 'Næstum rétt! Reyndu aftur.' : 'Ekki rétt. Athugaðu útreikninga þína.';
 

@@ -179,7 +179,7 @@ function App() {
 
       trackCorrectAnswer({ firstAttempt: true });
       playCorrect();
-      triggerCorrect();
+      if (streak + 1 >= 3) triggerCorrect();
 
       // Track level completion every 5 problems completed (milestone-based)
       const newProblemsCompleted = progress.problemsCompleted + 1;

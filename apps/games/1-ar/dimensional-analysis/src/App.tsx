@@ -73,6 +73,7 @@ function App() {
     trackIncorrectAnswer,
     dismissNotification,
     resetAll: resetAchievements,
+    currentStreak,
   } = useAchievements({ gameId: 'dimensional-analysis' });
 
   const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('1-ar');
@@ -87,7 +88,7 @@ function App() {
   const handleCorrectAnswer = (...args: Parameters<typeof trackCorrectAnswer>) => {
     trackCorrectAnswer(...args);
     playCorrect();
-    triggerCorrect();
+    if (currentStreak + 1 >= 3) triggerCorrect();
   };
 
   const handleIncorrectAnswer = (...args: Parameters<typeof trackIncorrectAnswer>) => {
