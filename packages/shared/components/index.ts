@@ -23,7 +23,10 @@ export type { SkipLinkProps } from './SkipLink';
 
 export { ErrorBoundary, useErrorHandler } from './ErrorBoundary';
 export { AchievementBadge } from './AchievementBadge';
-export { AchievementNotificationPopup, AchievementNotificationsContainer } from './AchievementNotificationPopup';
+export {
+  AchievementNotificationPopup,
+  AchievementNotificationsContainer,
+} from './AchievementNotificationPopup';
 export { AchievementsPanel, AchievementsButton } from './AchievementsPanel';
 
 // AnimatedMolecule component - sub-components available via '@shared/components/AnimatedMolecule'
@@ -42,7 +45,7 @@ export type {
   RegionConfig,
   HorizontalLineConfig,
   VerticalLineConfig,
-  InteractiveGraphProps
+  InteractiveGraphProps,
 } from './InteractiveGraph';
 
 // ParticleSimulation component - physics-based particle visualization
@@ -55,7 +58,7 @@ export {
   createGasSimulation,
   createGasMixture,
   createKineticsSimulation,
-  createEquilibriumSimulation
+  createEquilibriumSimulation,
 } from './ParticleSimulation';
 export type {
   ParticleType,
@@ -66,7 +69,7 @@ export type {
   ReactionConfig,
   RegionHighlight as ParticleRegionHighlight,
   ParticleSimulationProps,
-  SimulationControls
+  SimulationControls,
 } from './ParticleSimulation';
 
 // ResponsiveContainer - wrapper for responsive sizing of fixed-dimension components
@@ -87,11 +90,7 @@ export type {
 } from './FeedbackPanel';
 
 // DragDropBuilder - flexible drag-and-drop interface
-export {
-  DragDropBuilder,
-  DraggableItem,
-  DropZone,
-} from './DragDropBuilder';
+export { DragDropBuilder, DraggableItem, DropZone } from './DragDropBuilder';
 export type {
   DraggableItemData,
   DraggableItemProps,
@@ -147,3 +146,6 @@ export type {
 // Note: YearTheme for celebrations is re-exported as CelebrationYearTheme
 // to avoid conflict with the YearTheme from '../styles/theme'.
 export type { YearTheme as CelebrationYearTheme } from './ParticleCelebration';
+
+// Transition - lightweight AnimatePresence replacement
+export { Presence, FadePresence } from './Transition';
