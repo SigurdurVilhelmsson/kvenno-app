@@ -76,11 +76,12 @@ describe('useI18n', () => {
       writable: true,
     });
 
-    // Mock fetch
+    // Mock fetch — must include ok: true so loadTranslations does not throw
     global.fetch = vi.fn().mockImplementation((url: string) => {
       const lang = url.split('/').pop()?.replace('.json', '') as keyof typeof mockTranslations;
       if (mockTranslations[lang]) {
         return Promise.resolve({
+          ok: true,
           json: () => Promise.resolve(mockTranslations[lang]),
         });
       }

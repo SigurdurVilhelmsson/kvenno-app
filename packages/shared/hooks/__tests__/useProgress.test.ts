@@ -77,7 +77,7 @@ describe('useProgress', () => {
     it('should return default progress when no saved progress exists', () => {
       const { result } = renderHook(() => useProgress({ gameId: 'test-game' }));
 
-      expect(result.current.progress.currentLevel).toBe(3);
+      expect(result.current.progress.currentLevel).toBe(1);
       expect(result.current.progress.problemsCompleted).toBe(0);
       expect(result.current.progress.totalTimeSpent).toBe(0);
       expect(result.current.progress.levelProgress).toEqual({});
@@ -231,7 +231,7 @@ describe('useProgress', () => {
         result.current.resetProgress();
       });
 
-      expect(result.current.progress.currentLevel).toBe(3);
+      expect(result.current.progress.currentLevel).toBe(1);
       expect(result.current.progress.problemsCompleted).toBe(0);
       expect(result.current.progress.totalTimeSpent).toBe(0);
       expect(result.current.progress.levelProgress).toEqual({});
@@ -355,7 +355,9 @@ describe('useProgress', () => {
       await waitFor(() => {
         const calls = mockStorage.setItem.mock.calls;
         const hasCorrectCall = calls.some((call) => {
-          return call[0] === 'kvenno-chemistry-test-game' && call[1].includes('"problemsCompleted":5');
+          return (
+            call[0] === 'kvenno-chemistry-test-game' && call[1].includes('"problemsCompleted":5')
+          );
         });
         expect(hasCorrectCall).toBe(true);
       });

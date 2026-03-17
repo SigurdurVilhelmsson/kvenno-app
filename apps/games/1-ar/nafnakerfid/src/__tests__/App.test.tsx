@@ -2,6 +2,18 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
+// Mock framer-motion to bypass animations in tests
+vi.mock('framer-motion', () => ({
+  motion: {
+    div: ({ children, ...props }: { children?: React.ReactNode; [key: string]: unknown }) => {
+      // Filter out framer-motion props before passing to DOM
+      const { initial, animate, exit, transition, ...domProps } = props;
+      return <div {...domProps}>{children}</div>;
+    },
+  },
+  AnimatePresence: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
+}));
+
 // ---------------------------------------------------------------------------
 // Mocks
 // ---------------------------------------------------------------------------
@@ -148,6 +160,36 @@ vi.mock('../components/NameBuilder', () => ({
 
 vi.mock('../i18n', () => ({
   gameTranslations: { is: {}, en: {}, pl: {} },
+}));
+
+// Mock heavy visual components to avoid canvas/animation overhead in tests
+vi.mock('@shared/components/AnimatedBackground', () => ({
+  AnimatedBackground: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="animated-background">{children}</div>
+  ),
+}));
+
+vi.mock('@shared/components/ParticleCelebration', () => ({
+  ParticleCelebration: () => null,
+  useParticleCelebration: () => ({
+    triggerCorrect: vi.fn(),
+    triggerLevelComplete: vi.fn(),
+    celebrationProps: {},
+  }),
+}));
+
+vi.mock('@shared/components/SoundToggle', () => ({
+  SoundToggle: () => <div data-testid="sound-toggle" />,
+}));
+
+vi.mock('@shared/hooks/useGameSounds', () => ({
+  useGameSounds: () => ({
+    playCorrect: vi.fn(),
+    playWrong: vi.fn(),
+    playLevelComplete: vi.fn(),
+    isEnabled: false,
+    toggleSound: vi.fn(),
+  }),
 }));
 
 // Import App AFTER all mocks are in place

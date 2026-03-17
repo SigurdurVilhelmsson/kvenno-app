@@ -46,15 +46,13 @@ describe('AuthCallback component', () => {
   it('navigates to saved return URL after successful authentication', async () => {
     const authResponse = { account: { username: 'user@kvenno.is' } };
     mockHandleRedirectPromise.mockResolvedValue(authResponse);
-    vi.mocked(getRedirectUrl).mockReturnValue('https://kvenno.app/efnafraedi/2-ar/lab-reports/');
+    // getRedirectUrl now returns a relative path (not a full URL)
+    vi.mocked(getRedirectUrl).mockReturnValue('/efnafraedi/2-ar/lab-reports/');
 
     render(<AuthCallback />);
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith(
-        '/efnafraedi/2-ar/lab-reports/',
-        { replace: true }
-      );
+      expect(mockNavigate).toHaveBeenCalledWith('/efnafraedi/2-ar/lab-reports/', { replace: true });
     });
   });
 
@@ -64,22 +62,23 @@ describe('AuthCallback component', () => {
     render(<AuthCallback />);
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith(
-        '/lab-reports',
-        { replace: true }
-      );
+      expect(mockNavigate).toHaveBeenCalledWith('/lab-reports', { replace: true });
     });
   });
 
   it('shows error state when authentication fails', async () => {
-    mockHandleRedirectPromise.mockRejectedValue(new Error('AADSTS50011: The reply URL specified in the request does not match'));
+    mockHandleRedirectPromise.mockRejectedValue(
+      new Error('AADSTS50011: The reply URL specified in the request does not match')
+    );
 
     render(<AuthCallback />);
 
     await waitFor(() => {
       expect(screen.getByText('Innskráningarvilla')).toBeDefined();
     });
-    expect(screen.getByText('AADSTS50011: The reply URL specified in the request does not match')).toBeDefined();
+    expect(
+      screen.getByText('AADSTS50011: The reply URL specified in the request does not match')
+    ).toBeDefined();
     expect(screen.getByText('Til baka')).toBeDefined();
   });
 

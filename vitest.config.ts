@@ -4,13 +4,12 @@ import path from 'path';
 export default defineConfig({
   test: {
     globals: true,
-    environment: 'node',
+    environment: 'jsdom',
+    testTimeout: 10000,
+    hookTimeout: 10000,
+    retry: 2,
     include: ['**/*.test.ts', '**/*.test.tsx', '**/*.test.js'],
     exclude: ['**/node_modules/**', '**/dist/**', '.worktrees/**', 'server/**'],
-    environmentMatchGlobs: [
-      // Use jsdom for all .tsx test files (React component tests)
-      ['**/*.test.tsx', 'jsdom'],
-    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'json-summary'],

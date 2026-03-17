@@ -29,20 +29,18 @@ describe('Header', () => {
     expect(screen.getByRole('link', { name: /Íslenskubraut/i })).toBeDefined();
   });
 
-  it('renders Kennarar link', () => {
+  it('does not render Kennarar link (removed from Header)', () => {
     render(<Header />);
 
-    const kennarar = screen.getByRole('link', { name: /Kennarar/i });
-    expect(kennarar).toBeDefined();
-    expect(kennarar.getAttribute('href')).toBe('/admin');
+    // Kennarar link was removed from the Header component
+    expect(screen.queryByRole('link', { name: /Kennarar/i })).toBeNull();
   });
 
-  it('renders Upplýsingar as link when no onInfoClick provided', () => {
+  it('does not render Upplýsingar when no onInfoClick provided', () => {
     render(<Header />);
 
-    const info = screen.getByRole('link', { name: /Upplýsingar/i });
-    expect(info).toBeDefined();
-    expect(info.getAttribute('href')).toBe('/info');
+    // When onInfoClick is not provided, Upplýsingar is not rendered at all
+    expect(screen.queryByText(/Upplýsingar/i)).toBeNull();
   });
 
   it('renders Upplýsingar as button when onInfoClick is provided', () => {
@@ -54,9 +52,7 @@ describe('Header', () => {
   });
 
   it('renders authSlot when provided', () => {
-    render(
-      <Header authSlot={<button data-testid="auth-btn">Login</button>} />
-    );
+    render(<Header authSlot={<button data-testid="auth-btn">Login</button>} />);
 
     expect(screen.getByTestId('auth-btn')).toBeDefined();
   });
@@ -69,9 +65,7 @@ describe('Header', () => {
   });
 
   it('renders game variant with back link', () => {
-    render(
-      <Header variant="game" backHref="/efnafraedi/1-ar" gameTitle="Molmassi" />
-    );
+    render(<Header variant="game" backHref="/efnafraedi/1-ar" gameTitle="Molmassi" />);
 
     const backLink = screen.getByRole('link', { name: /Til baka/i });
     expect(backLink).toBeDefined();

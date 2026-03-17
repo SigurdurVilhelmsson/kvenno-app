@@ -7,9 +7,15 @@ const mockSessionStorage = (() => {
   let store: Record<string, string> = {};
   return {
     getItem: vi.fn((key: string) => store[key] ?? null),
-    setItem: vi.fn((key: string, value: string) => { store[key] = value; }),
-    removeItem: vi.fn((key: string) => { delete store[key]; }),
-    clear: () => { store = {}; },
+    setItem: vi.fn((key: string, value: string) => {
+      store[key] = value;
+    }),
+    removeItem: vi.fn((key: string) => {
+      delete store[key];
+    }),
+    clear: () => {
+      store = {};
+    },
   };
 })();
 
@@ -109,20 +115,24 @@ describe('authHelpers - getRedirectUrl', () => {
     vi.restoreAllMocks();
   });
 
-  it('returns saved return URL and clears it from storage', () => {
-    mockSessionStorage.setItem('kvenno_auth_return_url', 'https://kvenno.app/efnafraedi/3-ar/lab-reports/');
+  it('returns relative path from saved return URL and clears it from storage', () => {
+    mockSessionStorage.setItem(
+      'kvenno_auth_return_url',
+      'https://kvenno.app/efnafraedi/3-ar/lab-reports/'
+    );
     const result = getRedirectUrl('/lab-reports');
-    expect(result).toBe('https://kvenno.app/efnafraedi/3-ar/lab-reports/');
+    // getRedirectUrl validates the URL and returns a relative path (pathname + search + hash)
+    expect(result).toBe('/efnafraedi/3-ar/lab-reports/');
     expect(mockSessionStorage.removeItem).toHaveBeenCalledWith('kvenno_auth_return_url');
   });
 
-  it('falls back to origin + basePath when no return URL is saved', () => {
+  it('falls back to basePath when no return URL is saved', () => {
     const result = getRedirectUrl('/lab-reports');
-    expect(result).toBe('https://kvenno.app/lab-reports');
+    expect(result).toBe('/lab-reports');
   });
 
-  it('falls back to origin + "/" when no basePath is provided and no return URL', () => {
+  it('falls back to "/" when no basePath is provided and no return URL', () => {
     const result = getRedirectUrl();
-    expect(result).toBe('https://kvenno.app/');
+    expect(result).toBe('/');
   });
 });
