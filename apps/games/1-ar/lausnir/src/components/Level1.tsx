@@ -10,10 +10,13 @@ type ChallengeType = 'dilution' | 'mixing' | 'buildSolution' | 'concentrationMat
 
 // Misconceptions for each challenge type
 const MISCONCEPTIONS: Record<ChallengeType, string> = {
-  dilution: 'Algeng villa er að halda að sameindir hverfi við útþynningu. Sameindir haldast óbreyttar - þær dreifast bara á stærra svæði.',
-  mixing: 'Þegar lausnir blandast, þarf að taka tillit til rúmmáls beggja lausnanna og fjölda sameinda í hvorum.',
+  dilution:
+    'Algeng villa er að halda að sameindir hverfi við útþynningu. Sameindir haldast óbreyttar - þær dreifast bara á stærra svæði.',
+  mixing:
+    'Þegar lausnir blandast, þarf að taka tillit til rúmmáls beggja lausnanna og fjölda sameinda í hvorum.',
   buildSolution: 'Mundu að styrkur = sameindir/rúmmál. Bæði breyturnar hafa áhrif á lokastyrkinn.',
-  concentrationMatch: 'Til að auka styrk með föstu rúmmáli, verður þú að bæta við sameindum. Fleiri sameindir = hærri styrkur.',
+  concentrationMatch:
+    'Til að auka styrk með föstu rúmmáli, verður þú að bæta við sameindum. Fleiri sameindir = hærri styrkur.',
 };
 
 // Related concepts for each challenge type
@@ -66,15 +69,15 @@ const CHALLENGES: Challenge[] = [
       minMolecules: 50,
       maxMolecules: 50, // Can't change molecules in dilution!
       canChangeMolecules: false,
-      canChangeVolume: true
+      canChangeVolume: true,
     },
     hints: {
       topic: 'Þetta snýst um útþynningu og hvernig styrkur breytist með rúmmáli.',
       strategy: 'Þegar þú bætir við vatni, dreifast sameindir á stærra svæði.',
       method: 'Styrkur = sameindir / rúmmál. Finndu rúmmálið sem gefur 2.0 M.',
-      solution: '50 sameindir × 0.01 = 0.5 mól. 0.5 mól / 2.0 M = 0.25 L = 250 mL'
+      solution: '50 sameindir × 0.01 = 0.5 mól. 0.5 mól / 2.0 M = 0.25 L = 250 mL',
     },
-    conceptMessage: 'Styrkur = sameindir / rúmmál'
+    conceptMessage: 'Styrkur = sameindir / rúmmál',
   },
   // Challenge 2: Build concentration from scratch
   {
@@ -91,15 +94,15 @@ const CHALLENGES: Challenge[] = [
       minMolecules: 10,
       maxMolecules: 100,
       canChangeMolecules: true,
-      canChangeVolume: true
+      canChangeVolume: true,
     },
     hints: {
       topic: 'Þetta snýst um að búa til lausn með ákveðnum styrk.',
       strategy: 'Þú getur breytt bæði sameindum og rúmmáli til að ná markmiði.',
       method: 'Styrkur = sameindir × 0.01 / (rúmmál í lítrum). Prófaðu mismunandi samsetningar.',
-      solution: 'Til dæmis: 30 sameindir í 200 mL gefur 0.3 mól / 0.2 L = 1.5 M'
+      solution: 'Til dæmis: 30 sameindir í 200 mL gefur 0.3 mól / 0.2 L = 1.5 M',
     },
-    conceptMessage: 'Meira af sameindum í sama rúmmáli = hærri styrkur'
+    conceptMessage: 'Meira af sameindum í sama rúmmáli = hærri styrkur',
   },
   // Challenge 3: More dilution practice
   {
@@ -116,15 +119,15 @@ const CHALLENGES: Challenge[] = [
       minMolecules: 40,
       maxMolecules: 40,
       canChangeMolecules: false,
-      canChangeVolume: true
+      canChangeVolume: true,
     },
     hints: {
       topic: 'Þetta snýst um útþynningu sterkar lausnar.',
       strategy: 'Sameindir haldast óbreyttar. Aðeins rúmmálið breytist!',
       method: 'Styrkur = (sameindir × 0.01) / rúmmál í lítrum. Leysðu fyrir rúmmál.',
-      solution: '40 × 0.01 = 0.4 mól. 0.4 mól / 0.8 M = 0.5 L = 500 mL'
+      solution: '40 × 0.01 = 0.4 mól. 0.4 mól / 0.8 M = 0.5 L = 500 mL',
     },
-    conceptMessage: 'Við útþynningu: sameindir haldast, styrkur minnkar'
+    conceptMessage: 'Við útþynningu: sameindir haldast, styrkur minnkar',
   },
   // Challenge 4: Concentration matching with molecules
   {
@@ -141,15 +144,15 @@ const CHALLENGES: Challenge[] = [
       minMolecules: 10,
       maxMolecules: 100,
       canChangeMolecules: true,
-      canChangeVolume: false
+      canChangeVolume: false,
     },
     hints: {
       topic: 'Þetta snýst um að stilla fjölda sameinda til að ná ákveðnum styrk.',
       strategy: 'Rúmmálið er fast. Þú þarft að finna réttan fjölda sameinda.',
       method: 'sameindir = Styrkur × rúmmál í lítrum / 0.01',
-      solution: '3.0 M × 0.15 L = 0.45 mól. 0.45 / 0.01 = 45 sameindir'
+      solution: '3.0 M × 0.15 L = 0.45 mól. 0.45 / 0.01 = 45 sameindir',
     },
-    conceptMessage: 'Fleiri sameindir í sama rúmmáli = hærri styrkur'
+    conceptMessage: 'Fleiri sameindir í sama rúmmáli = hærri styrkur',
   },
   // Challenge 5: Advanced dilution
   {
@@ -166,15 +169,15 @@ const CHALLENGES: Challenge[] = [
       minMolecules: 50,
       maxMolecules: 50,
       canChangeMolecules: false,
-      canChangeVolume: true
+      canChangeVolume: true,
     },
     hints: {
       topic: 'Þetta snýst um hlutfallslega útþynningu.',
       strategy: 'Til að þynna í þriðjung þarftu þrefalt meira rúmmál!',
       method: 'Upphaflegt: 5 M í 100 mL. Markmiðsstyrkur er ~1.67 M (þriðjungur).',
-      solution: 'Þrefalda rúmmálið: 100 mL × 3 = 300 mL gefur ~1.67 M'
+      solution: 'Þrefalda rúmmálið: 100 mL × 3 = 300 mL gefur ~1.67 M',
     },
-    conceptMessage: 'Styrkur × rúmmál = fasti (heildarmagn sameinda)'
+    conceptMessage: 'Styrkur × rúmmál = fasti (heildarmagn sameinda)',
   },
   // Challenge 6: Build specific concentration
   {
@@ -191,23 +194,23 @@ const CHALLENGES: Challenge[] = [
       minMolecules: 10,
       maxMolecules: 150,
       canChangeMolecules: true,
-      canChangeVolume: true
+      canChangeVolume: true,
     },
     hints: {
       topic: 'Þetta snýst um að búa til nákvæman styrk með tveimur breytum.',
       strategy: 'Margar samsetningar virka! Finndu eina þar sem niðurstaðan er 2.5 M.',
       method: 'Styrkur = (sameindir × 0.01) / rúmmál í lítrum. Prófaðu auðveldar tölur.',
-      solution: 'Til dæmis: 50 sameindir í 200 mL: 0.5 mól / 0.2 L = 2.5 M'
+      solution: 'Til dæmis: 50 sameindir í 200 mL: 0.5 mól / 0.2 L = 2.5 M',
     },
-    conceptMessage: 'Sama styrkur getur orðið með mismunandi magni'
-  }
+    conceptMessage: 'Sama styrkur getur orðið með mismunandi magni',
+  },
 ];
 
 // Concentration indicator with color feedback
 function ConcentrationIndicator({
   current,
   target,
-  tolerance
+  tolerance,
 }: {
   current: number;
   target: number;
@@ -218,9 +221,9 @@ function ConcentrationIndicator({
   const isCorrect = percentOff <= tolerance;
   const isClose = percentOff <= tolerance * 2;
 
-  let bgColor = 'bg-warm-100';
-  let textColor = 'text-warm-700';
-  let indicator = '';
+  let bgColor: string;
+  let textColor: string;
+  let indicator: string;
 
   if (isCorrect) {
     bgColor = 'bg-green-100 border-green-400';
@@ -254,13 +257,13 @@ function ConcentrationIndicator({
           className="absolute h-full bg-warm-400 opacity-50"
           style={{
             left: `${Math.max(0, (target / (target * 2)) * 100 - 5)}%`,
-            width: '10%'
+            width: '10%',
           }}
         />
         <div
           className={`absolute h-full transition-all duration-300 ${isCorrect ? 'bg-green-500' : isClose ? 'bg-yellow-500' : 'bg-orange-500'}`}
           style={{
-            width: `${Math.min(100, (current / (target * 2)) * 100)}%`
+            width: `${Math.min(100, (current / (target * 2)) * 100)}%`,
           }}
         />
       </div>
@@ -289,20 +292,21 @@ function getPredictionQuestion(challenge: Challenge): PredictionQuestion {
     return {
       question: 'Ef þú bætir við vatni (eykur rúmmál), hvað gerist við styrkinn?',
       correctAnswer: 'decrease',
-      explanation: 'Rétt! Þegar þú bætir við vatni, dreifast sameindir á stærra svæði og styrkur MINNKAR.'
+      explanation:
+        'Rétt! Þegar þú bætir við vatni, dreifast sameindir á stærra svæði og styrkur MINNKAR.',
     };
   } else if (challenge.type === 'concentrationMatch') {
     return {
       question: 'Ef þú bætir við fleiri sameindum í sama rúmmáli, hvað gerist við styrkinn?',
       correctAnswer: 'increase',
-      explanation: 'Rétt! Fleiri sameindir í sama rúmmáli þýðir HÆRRI styrk.'
+      explanation: 'Rétt! Fleiri sameindir í sama rúmmáli þýðir HÆRRI styrk.',
     };
   } else {
     // buildSolution
     return {
       question: 'Til að auka styrk, hvað getur þú gert?',
       correctAnswer: 'increase',
-      explanation: 'Rétt! Þú getur bætt við sameindum EÐA minnkað rúmmálið til að auka styrk.'
+      explanation: 'Rétt! Þú getur bætt við sameindum EÐA minnkað rúmmálið til að auka styrk.',
     };
   }
 }
@@ -334,7 +338,11 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const currentConcentration = (molecules * moleFactor) / (volumeML / 1000);
 
   // Check if answer is within tolerance
-  const isCorrect = Math.abs(currentConcentration - challenge.targetConcentration) / challenge.targetConcentration * 100 <= challenge.tolerance;
+  const isCorrect =
+    (Math.abs(currentConcentration - challenge.targetConcentration) /
+      challenge.targetConcentration) *
+      100 <=
+    challenge.tolerance;
 
   // Reset state when challenge changes
   useEffect(() => {
@@ -360,11 +368,12 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       setPredictionFeedback(predictionQuestion.explanation);
       setPredictionComplete(true);
     } else {
-      const wrongFeedback = predictionAnswer === 'increase'
-        ? 'Ekki rétt. Hugsaðu um hvað gerist þegar rúmmál eykst en sameindir haldast óbreyttar.'
-        : predictionAnswer === 'decrease'
-        ? 'Ekki rétt. Hugsaðu um vensl sameinda og styrks.'
-        : 'Ekki rétt. Breytingar á rúmmáli eða sameindum hafa áhrif á styrk.';
+      const wrongFeedback =
+        predictionAnswer === 'increase'
+          ? 'Ekki rétt. Hugsaðu um hvað gerist þegar rúmmál eykst en sameindir haldast óbreyttar.'
+          : predictionAnswer === 'decrease'
+            ? 'Ekki rétt. Hugsaðu um vensl sameinda og styrks.'
+            : 'Ekki rétt. Breytingar á rúmmáli eða sameindum hafa áhrif á styrk.';
       setPredictionFeedback(wrongFeedback);
     }
   };
@@ -375,36 +384,46 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   };
 
   // Handle molecule change
-  const changeMolecules = useCallback((delta: number) => {
-    if (!challenge.constraints.canChangeMolecules) return;
-    setMolecules(prev => Math.max(
-      challenge.constraints.minMolecules,
-      Math.min(challenge.constraints.maxMolecules, prev + delta)
-    ));
-  }, [challenge]);
+  const changeMolecules = useCallback(
+    (delta: number) => {
+      if (!challenge.constraints.canChangeMolecules) return;
+      setMolecules((prev) =>
+        Math.max(
+          challenge.constraints.minMolecules,
+          Math.min(challenge.constraints.maxMolecules, prev + delta)
+        )
+      );
+    },
+    [challenge]
+  );
 
   // Handle volume change
-  const changeVolume = useCallback((newVolume: number) => {
-    if (!challenge.constraints.canChangeVolume) return;
-    setVolumeML(Math.max(
-      challenge.constraints.minVolume,
-      Math.min(challenge.constraints.maxVolume, newVolume)
-    ));
-  }, [challenge]);
+  const changeVolume = useCallback(
+    (newVolume: number) => {
+      if (!challenge.constraints.canChangeVolume) return;
+      setVolumeML(
+        Math.max(
+          challenge.constraints.minVolume,
+          Math.min(challenge.constraints.maxVolume, newVolume)
+        )
+      );
+    },
+    [challenge]
+  );
 
   // Submit answer
   const checkAnswer = useCallback(() => {
     if (isCorrect) {
       const pointsEarned = showHint ? 50 : 100;
-      setScore(prev => prev + pointsEarned);
-      setCompleted(prev => [...prev, challenge.id]);
+      setScore((prev) => prev + pointsEarned);
+      setCompleted((prev) => [...prev, challenge.id]);
       setShowConcept(true);
       onCorrectAnswer?.();
 
       // Move to next challenge after delay
       setTimeout(() => {
         if (currentChallenge < CHALLENGES.length - 1) {
-          setCurrentChallenge(prev => prev + 1);
+          setCurrentChallenge((prev) => prev + 1);
         } else {
           setGameComplete(true);
         }
@@ -425,9 +444,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           <div className="text-center mb-8">
             <div className="text-6xl mb-4">🎉</div>
-            <div className="text-2xl font-bold text-warm-800 mb-2">
-              Þú hefur lokið Stigi 1!
-            </div>
+            <div className="text-2xl font-bold text-warm-800 mb-2">Þú hefur lokið Stigi 1!</div>
             <div className="text-lg text-warm-600">
               Stig: {score} / {CHALLENGES.length * 100}
             </div>
@@ -474,17 +491,12 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="bg-white rounded-2xl shadow-lg p-4 mb-6">
           <div className="flex justify-between items-center flex-wrap gap-4">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-blue-600">
-                Lausnir - Stigur 1
-              </h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-blue-600">Lausnir - Stigur 1</h1>
               <p className="text-sm text-warm-600">Skildu hugtökin - ENGIN útreikningar!</p>
             </div>
 
             <div className="flex gap-4 items-center">
-              <button
-                onClick={onBack}
-                className="text-warm-600 hover:text-warm-800 text-sm"
-              >
+              <button onClick={onBack} className="text-warm-600 hover:text-warm-800 text-sm">
                 ← Til baka
               </button>
               <div className="text-center">
@@ -519,7 +531,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
 
             <div className="bg-blue-50 p-4 rounded-xl mb-6">
-              <div className="text-sm text-warm-600 mb-2">Verkefni {currentChallenge + 1}: {challenge.title}</div>
+              <div className="text-sm text-warm-600 mb-2">
+                Verkefni {currentChallenge + 1}: {challenge.title}
+              </div>
               <p className="font-semibold text-warm-800">{challenge.description}</p>
             </div>
 
@@ -571,7 +585,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   feedback={{
                     isCorrect: predictionComplete,
                     explanation: predictionFeedback,
-                    misconception: predictionComplete ? undefined : MISCONCEPTIONS[challenge.type as ChallengeType],
+                    misconception: predictionComplete
+                      ? undefined
+                      : MISCONCEPTIONS[challenge.type as ChallengeType],
                     relatedConcepts: RELATED_CONCEPTS[challenge.type as ChallengeType],
                     nextSteps: predictionComplete
                       ? 'Þú skilur venslin! Nú skaltu prófa að ná markmiðsstyrknum.'
@@ -610,190 +626,188 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Challenge area */}
         {!showPrediction && (
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          {/* Challenge header */}
-          <div className="mb-6">
-            <div className="inline-block bg-blue-100 px-4 py-2 rounded-full text-sm font-semibold text-blue-800 mb-2">
-              Verkefni {currentChallenge + 1}: {challenge.title}
+          <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+            {/* Challenge header */}
+            <div className="mb-6">
+              <div className="inline-block bg-blue-100 px-4 py-2 rounded-full text-sm font-semibold text-blue-800 mb-2">
+                Verkefni {currentChallenge + 1}: {challenge.title}
+              </div>
+              <p className="text-lg text-warm-700">{challenge.description}</p>
             </div>
-            <p className="text-lg text-warm-700">{challenge.description}</p>
-          </div>
 
-          {/* Main interaction area */}
-          <div className="grid md:grid-cols-2 gap-8 mb-6">
-            {/* Beaker visualization with animated particles */}
-            <div className="flex flex-col items-center">
-              <ParticleBeaker
-                molecules={molecules}
-                volume={volumeML}
-                maxVolume={challenge.constraints.maxVolume}
-                concentration={currentConcentration}
-                color={challenge.type === 'dilution' ? '#f97316' : '#3b82f6'}
-                running={!showConcept}
-              />
+            {/* Main interaction area */}
+            <div className="grid md:grid-cols-2 gap-8 mb-6">
+              {/* Beaker visualization with animated particles */}
+              <div className="flex flex-col items-center">
+                <ParticleBeaker
+                  molecules={molecules}
+                  volume={volumeML}
+                  maxVolume={challenge.constraints.maxVolume}
+                  concentration={currentConcentration}
+                  color={challenge.type === 'dilution' ? '#f97316' : '#3b82f6'}
+                  running={!showConcept}
+                />
 
-              <div className="mt-8 text-center">
-                <div className="text-sm text-warm-600">
-                  Sameindir: <span className="font-bold text-warm-800">{molecules}</span>
+                <div className="mt-8 text-center">
+                  <div className="text-sm text-warm-600">
+                    Sameindir: <span className="font-bold text-warm-800">{molecules}</span>
+                  </div>
                 </div>
+              </div>
+
+              {/* Controls and feedback */}
+              <div className="space-y-6">
+                <ConcentrationIndicator
+                  current={currentConcentration}
+                  target={challenge.targetConcentration}
+                  tolerance={challenge.tolerance}
+                />
+
+                {/* Molecule controls */}
+                {challenge.constraints.canChangeMolecules && (
+                  <div className="bg-orange-50 p-4 rounded-xl">
+                    <div className="text-sm font-semibold text-warm-700 mb-2">Sameindir</div>
+                    <div className="flex items-center justify-center gap-4">
+                      <button
+                        onClick={() => changeMolecules(-10)}
+                        className="bg-orange-500 hover:bg-orange-600 text-white font-bold w-12 h-12 rounded-lg text-xl transition-colors"
+                        disabled={molecules <= challenge.constraints.minMolecules}
+                      >
+                        -10
+                      </button>
+                      <button
+                        onClick={() => changeMolecules(-1)}
+                        className="bg-orange-400 hover:bg-orange-500 text-white font-bold w-10 h-10 rounded-lg transition-colors"
+                        disabled={molecules <= challenge.constraints.minMolecules}
+                      >
+                        -1
+                      </button>
+                      <span className="text-2xl font-bold w-16 text-center">{molecules}</span>
+                      <button
+                        onClick={() => changeMolecules(1)}
+                        className="bg-orange-400 hover:bg-orange-500 text-white font-bold w-10 h-10 rounded-lg transition-colors"
+                        disabled={molecules >= challenge.constraints.maxMolecules}
+                      >
+                        +1
+                      </button>
+                      <button
+                        onClick={() => changeMolecules(10)}
+                        className="bg-orange-500 hover:bg-orange-600 text-white font-bold w-12 h-12 rounded-lg text-xl transition-colors"
+                        disabled={molecules >= challenge.constraints.maxMolecules}
+                      >
+                        +10
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Volume controls */}
+                {challenge.constraints.canChangeVolume && (
+                  <div className="bg-blue-50 p-4 rounded-xl">
+                    <div className="text-sm font-semibold text-warm-700 mb-2">Rúmmál (mL)</div>
+                    <input
+                      type="range"
+                      min={challenge.constraints.minVolume}
+                      max={challenge.constraints.maxVolume}
+                      value={volumeML}
+                      onChange={(e) => changeVolume(parseInt(e.target.value))}
+                      className="w-full h-3 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                    />
+                    <div className="flex justify-between text-sm text-warm-600 mt-1">
+                      <span>{challenge.constraints.minVolume} mL</span>
+                      <span className="font-bold text-blue-600">{volumeML} mL</span>
+                      <span>{challenge.constraints.maxVolume} mL</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Fixed parameter notice */}
+                {!challenge.constraints.canChangeMolecules && (
+                  <div className="bg-warm-100 p-3 rounded-lg text-center text-sm text-warm-600">
+                    Sameindir eru fastar við {molecules} (þetta er útþynning!)
+                  </div>
+                )}
+                {!challenge.constraints.canChangeVolume && (
+                  <div className="bg-warm-100 p-3 rounded-lg text-center text-sm text-warm-600">
+                    Rúmmál er fast við {volumeML} mL
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Controls and feedback */}
-            <div className="space-y-6">
-              <ConcentrationIndicator
-                current={currentConcentration}
-                target={challenge.targetConcentration}
-                tolerance={challenge.tolerance}
-              />
-
-              {/* Molecule controls */}
-              {challenge.constraints.canChangeMolecules && (
-                <div className="bg-orange-50 p-4 rounded-xl">
-                  <div className="text-sm font-semibold text-warm-700 mb-2">
-                    Sameindir
-                  </div>
-                  <div className="flex items-center justify-center gap-4">
-                    <button
-                      onClick={() => changeMolecules(-10)}
-                      className="bg-orange-500 hover:bg-orange-600 text-white font-bold w-12 h-12 rounded-lg text-xl transition-colors"
-                      disabled={molecules <= challenge.constraints.minMolecules}
-                    >
-                      -10
-                    </button>
-                    <button
-                      onClick={() => changeMolecules(-1)}
-                      className="bg-orange-400 hover:bg-orange-500 text-white font-bold w-10 h-10 rounded-lg transition-colors"
-                      disabled={molecules <= challenge.constraints.minMolecules}
-                    >
-                      -1
-                    </button>
-                    <span className="text-2xl font-bold w-16 text-center">{molecules}</span>
-                    <button
-                      onClick={() => changeMolecules(1)}
-                      className="bg-orange-400 hover:bg-orange-500 text-white font-bold w-10 h-10 rounded-lg transition-colors"
-                      disabled={molecules >= challenge.constraints.maxMolecules}
-                    >
-                      +1
-                    </button>
-                    <button
-                      onClick={() => changeMolecules(10)}
-                      className="bg-orange-500 hover:bg-orange-600 text-white font-bold w-12 h-12 rounded-lg text-xl transition-colors"
-                      disabled={molecules >= challenge.constraints.maxMolecules}
-                    >
-                      +10
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Volume controls */}
-              {challenge.constraints.canChangeVolume && (
-                <div className="bg-blue-50 p-4 rounded-xl">
-                  <div className="text-sm font-semibold text-warm-700 mb-2">
-                    Rúmmál (mL)
-                  </div>
-                  <input
-                    type="range"
-                    min={challenge.constraints.minVolume}
-                    max={challenge.constraints.maxVolume}
-                    value={volumeML}
-                    onChange={(e) => changeVolume(parseInt(e.target.value))}
-                    className="w-full h-3 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-                  />
-                  <div className="flex justify-between text-sm text-warm-600 mt-1">
-                    <span>{challenge.constraints.minVolume} mL</span>
-                    <span className="font-bold text-blue-600">{volumeML} mL</span>
-                    <span>{challenge.constraints.maxVolume} mL</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Fixed parameter notice */}
-              {!challenge.constraints.canChangeMolecules && (
-                <div className="bg-warm-100 p-3 rounded-lg text-center text-sm text-warm-600">
-                  Sameindir eru fastar við {molecules} (þetta er útþynning!)
-                </div>
-              )}
-              {!challenge.constraints.canChangeVolume && (
-                <div className="bg-warm-100 p-3 rounded-lg text-center text-sm text-warm-600">
-                  Rúmmál er fast við {volumeML} mL
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Hint section */}
-          {showHint && (
-            <div className="mb-6 bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl">
-              <h4 className="font-semibold text-yellow-800 mb-2">💡 Vísbending:</h4>
-              <p className="text-yellow-900">{challenge.hints.method}</p>
-            </div>
-          )}
-
-          {/* Concept reveal after correct answer */}
-          {showConcept && isCorrect && (
-            <div className="mb-6">
-              <FeedbackPanel
-                feedback={{
-                  isCorrect: true,
-                  explanation: challenge.type === 'dilution'
-                    ? 'Við útþynningu haldast sameindir óbreyttar. Meira rúmmál = lægri styrkur!'
-                    : 'Styrkur = sameindir / rúmmál. Þú getur breytt hvoru tveggja til að ná markmiði!',
-                  relatedConcepts: RELATED_CONCEPTS[challenge.type as ChallengeType],
-                  nextSteps: currentChallenge < CHALLENGES.length - 1
-                    ? 'Næsta verkefni mun reyna meira á skilning þinn.'
-                    : 'Þú ert að ljúka stiginu! Sjáum hvað þú lærðir.',
-                }}
-                config={{
-                  showExplanation: true,
-                  showMisconceptions: false,
-                  showRelatedConcepts: true,
-                  showNextSteps: true,
-                }}
-              />
-            </div>
-          )}
-
-          {/* Action buttons */}
-          <div className="flex flex-col md:flex-row gap-4">
-            {!showHint && !showConcept && (
-              <button
-                onClick={() => {
-                  setShowHint(true);
-                  setTotalHintsUsed(prev => prev + 1);
-                }}
-                className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
-              >
-                Syna visbendingu (-50 stig)
-              </button>
+            {/* Hint section */}
+            {showHint && (
+              <div className="mb-6 bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl">
+                <h4 className="font-semibold text-yellow-800 mb-2">💡 Vísbending:</h4>
+                <p className="text-yellow-900">{challenge.hints.method}</p>
+              </div>
             )}
 
-            <button
-              onClick={checkAnswer}
-              disabled={showConcept}
-              className={`flex-1 font-bold py-3 px-6 rounded-xl transition-colors ${
-                isCorrect && !showConcept
-                  ? 'bg-green-500 hover:bg-green-600 text-white'
-                  : showConcept
-                  ? 'bg-warm-300 text-warm-500 cursor-not-allowed'
-                  : 'bg-blue-500 hover:bg-blue-600 text-white'
-              }`}
-            >
-              {showConcept ? 'Hleð næsta verkefni...' : 'Athuga lausn ✓'}
-            </button>
-          </div>
+            {/* Concept reveal after correct answer */}
+            {showConcept && isCorrect && (
+              <div className="mb-6">
+                <FeedbackPanel
+                  feedback={{
+                    isCorrect: true,
+                    explanation:
+                      challenge.type === 'dilution'
+                        ? 'Við útþynningu haldast sameindir óbreyttar. Meira rúmmál = lægri styrkur!'
+                        : 'Styrkur = sameindir / rúmmál. Þú getur breytt hvoru tveggja til að ná markmiði!',
+                    relatedConcepts: RELATED_CONCEPTS[challenge.type as ChallengeType],
+                    nextSteps:
+                      currentChallenge < CHALLENGES.length - 1
+                        ? 'Næsta verkefni mun reyna meira á skilning þinn.'
+                        : 'Þú ert að ljúka stiginu! Sjáum hvað þú lærðir.',
+                  }}
+                  config={{
+                    showExplanation: true,
+                    showMisconceptions: false,
+                    showRelatedConcepts: true,
+                    showNextSteps: true,
+                  }}
+                />
+              </div>
+            )}
 
-          {/* Key concept reminder */}
-          <div className="mt-6 p-4 bg-warm-50 rounded-xl">
-            <h4 className="font-semibold text-warm-700 mb-2">🔑 Lykilhugmynd:</h4>
-            <p className="text-warm-600">
-              <strong>Styrkur</strong> segir til um hversu margar sameindir eru í hverju rúmmáli.
-              <br />
-              Meiri sameindir EÐA minna rúmmál = hærri styrkur.
-            </p>
+            {/* Action buttons */}
+            <div className="flex flex-col md:flex-row gap-4">
+              {!showHint && !showConcept && (
+                <button
+                  onClick={() => {
+                    setShowHint(true);
+                    setTotalHintsUsed((prev) => prev + 1);
+                  }}
+                  className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
+                >
+                  Syna visbendingu (-50 stig)
+                </button>
+              )}
+
+              <button
+                onClick={checkAnswer}
+                disabled={showConcept}
+                className={`flex-1 font-bold py-3 px-6 rounded-xl transition-colors ${
+                  isCorrect && !showConcept
+                    ? 'bg-green-500 hover:bg-green-600 text-white'
+                    : showConcept
+                      ? 'bg-warm-300 text-warm-500 cursor-not-allowed'
+                      : 'bg-blue-500 hover:bg-blue-600 text-white'
+                }`}
+              >
+                {showConcept ? 'Hleð næsta verkefni...' : 'Athuga lausn ✓'}
+              </button>
+            </div>
+
+            {/* Key concept reminder */}
+            <div className="mt-6 p-4 bg-warm-50 rounded-xl">
+              <h4 className="font-semibold text-warm-700 mb-2">🔑 Lykilhugmynd:</h4>
+              <p className="text-warm-600">
+                <strong>Styrkur</strong> segir til um hversu margar sameindir eru í hverju rúmmáli.
+                <br />
+                Meiri sameindir EÐA minna rúmmál = hærri styrkur.
+              </p>
+            </div>
           </div>
-        </div>
         )}
 
         {/* Challenge navigation */}
@@ -801,13 +815,22 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           {CHALLENGES.map((c, i) => (
             <button
               key={c.id}
-              onClick={() => !completed.includes(c.id) && i <= Math.max(...completed.map(id => CHALLENGES.findIndex(ch => ch.id === id)), 0) + 1 && setCurrentChallenge(i)}
+              onClick={() =>
+                !completed.includes(c.id) &&
+                i <=
+                  Math.max(
+                    ...completed.map((id) => CHALLENGES.findIndex((ch) => ch.id === id)),
+                    0
+                  ) +
+                    1 &&
+                setCurrentChallenge(i)
+              }
               className={`w-10 h-10 rounded-full font-bold transition-colors ${
                 completed.includes(c.id)
                   ? 'bg-green-500 text-white'
                   : i === currentChallenge
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
               }`}
               disabled={completed.includes(c.id)}
             >

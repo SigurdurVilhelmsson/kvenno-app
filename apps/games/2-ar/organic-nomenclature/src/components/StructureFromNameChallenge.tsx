@@ -121,7 +121,8 @@ const CHALLENGES: Challenge[] = [
 const MISCONCEPTIONS = {
   carbons: 'Forskeytið segir til um fjölda kolefna: meth=1, eth=2, prop=3, but=4, pent=5, hex=6.',
   suffix: 'Viðskeytið segir til um tengjategund: -an (eintengi), -en (tvítengi), -yn (þrítengi).',
-  position: 'Staðsetningartalan segir hvar ómettuð tenging byrjar (t.d. 2-buten = tvítengi milli C2 og C3).',
+  position:
+    'Staðsetningartalan segir hvar ómettuð tenging byrjar (t.d. 2-buten = tvítengi milli C2 og C3).',
 };
 
 interface StructureFromNameChallengeProps {
@@ -154,25 +155,25 @@ export function StructureFromNameChallenge({
     if (newCount < 2 || newCount > 8) return;
     setCarbonCount(newCount);
     // Keep only valid bonds
-    setBonds(prev => prev.filter(b => b.position < newCount));
+    setBonds((prev) => prev.filter((b) => b.position < newCount));
   };
 
   // Cycle bond type at position
   const cycleBond = (position: number) => {
-    setBonds(prev => {
-      const existing = prev.find(b => b.position === position);
+    setBonds((prev) => {
+      const existing = prev.find((b) => b.position === position);
       if (!existing) {
         // Add double bond
         return [...prev, { position, type: 'double' as BondType }];
       }
       if (existing.type === 'double') {
         // Change to triple
-        return prev.map(b =>
+        return prev.map((b) =>
           b.position === position ? { ...b, type: 'triple' as BondType } : b
         );
       }
       // Remove (back to single)
-      return prev.filter(b => b.position !== position);
+      return prev.filter((b) => b.position !== position);
     });
   };
 
@@ -189,7 +190,7 @@ export function StructureFromNameChallenge({
     }
 
     // Check bonds
-    const userUnsaturated = bonds.filter(b => b.type !== 'single');
+    const userUnsaturated = bonds.filter((b) => b.type !== 'single');
     const targetUnsaturated = target.bonds;
 
     // Same number of unsaturated bonds?
@@ -201,8 +202,8 @@ export function StructureFromNameChallenge({
     }
 
     // Check each bond matches
-    const allMatch = targetUnsaturated.every(tb =>
-      userUnsaturated.some(ub => ub.position === tb.position && ub.type === tb.type)
+    const allMatch = targetUnsaturated.every((tb) =>
+      userUnsaturated.some((ub) => ub.position === tb.position && ub.type === tb.type)
     );
 
     setIsCorrect(allMatch);
@@ -210,7 +211,7 @@ export function StructureFromNameChallenge({
 
     if (allMatch) {
       const points = showHint ? 8 : 15;
-      setScore(prev => prev + points);
+      setScore((prev) => prev + points);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();
@@ -235,7 +236,7 @@ export function StructureFromNameChallenge({
     }
 
     // Determine what went wrong
-    let misconception = MISCONCEPTIONS.carbons;
+    let misconception: string;
     if (carbonCount !== target.carbons) {
       misconception = MISCONCEPTIONS.carbons;
     } else if (bonds.length !== target.bonds.length) {
@@ -253,14 +254,15 @@ export function StructureFromNameChallenge({
       }.`,
       misconception,
       relatedConcepts: ['IUPAC nafnakerfi', 'Kolefniskeðjur', 'Vetniskolefni'],
-      nextSteps: 'Skoðaðu nafnið vandlega: forskeyti → fjöldi, viðskeyti → tengi, tala → staðsetning.',
+      nextSteps:
+        'Skoðaðu nafnið vandlega: forskeyti → fjöldi, viðskeyti → tengi, tala → staðsetning.',
     };
   };
 
   // Next challenge
   const handleNext = () => {
     if (currentChallenge < CHALLENGES.length - 1) {
-      setCurrentChallenge(prev => prev + 1);
+      setCurrentChallenge((prev) => prev + 1);
       setCarbonCount(4);
       setBonds([]);
       setShowFeedback(false);
@@ -282,9 +284,12 @@ export function StructureFromNameChallenge({
 
   const getDifficultyColor = () => {
     switch (challenge.difficulty) {
-      case 'easy': return 'bg-green-100 text-green-700 border-green-300';
-      case 'medium': return 'bg-yellow-100 text-yellow-700 border-yellow-300';
-      case 'hard': return 'bg-red-100 text-red-700 border-red-300';
+      case 'easy':
+        return 'bg-green-100 text-green-700 border-green-300';
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-700 border-yellow-300';
+      case 'hard':
+        return 'bg-red-100 text-red-700 border-red-300';
     }
   };
 
@@ -309,16 +314,19 @@ export function StructureFromNameChallenge({
         <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-emerald-600">
           🔬 Byggðu sameindina
         </h1>
-        <p className="text-center text-warm-600 mb-6">
-          Lestu nafnið og byggðu rétta byggingu
-        </p>
+        <p className="text-center text-warm-600 mb-6">Lestu nafnið og byggðu rétta byggingu</p>
 
         {/* Challenge card */}
         <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-6 rounded-xl border-2 border-emerald-200 mb-6">
           <div className="flex items-center justify-between mb-4">
-            <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getDifficultyColor()}`}>
-              {challenge.difficulty === 'easy' ? 'Auðvelt' :
-               challenge.difficulty === 'medium' ? 'Miðlungs' : 'Erfitt'}
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-medium border ${getDifficultyColor()}`}
+            >
+              {challenge.difficulty === 'easy'
+                ? 'Auðvelt'
+                : challenge.difficulty === 'medium'
+                  ? 'Miðlungs'
+                  : 'Erfitt'}
             </span>
             <span className="text-warm-500 font-mono">{challenge.formula}</span>
           </div>
@@ -354,7 +362,7 @@ export function StructureFromNameChallenge({
                         title="Smelltu til að breyta tengingu"
                       >
                         {(() => {
-                          const bond = bonds.find(b => b.position === i + 1);
+                          const bond = bonds.find((b) => b.position === i + 1);
                           const bondType = bond?.type || 'single';
 
                           if (bondType === 'single' || !bond) {
@@ -471,7 +479,7 @@ export function StructureFromNameChallenge({
               <button
                 onClick={() => {
                   setShowHint(true);
-                  setHintsUsed(prev => prev + 1);
+                  setHintsUsed((prev) => prev + 1);
                 }}
                 className="w-full text-yellow-600 hover:text-yellow-700 text-sm mb-4"
               >
@@ -522,7 +530,7 @@ export function StructureFromNameChallenge({
             <div>
               <div className="font-bold text-warm-600 mb-1">Forskeytir:</div>
               <div className="grid grid-cols-3 gap-1">
-                {['meth-1', 'eth-2', 'prop-3', 'but-4', 'pent-5', 'hex-6'].map(p => {
+                {['meth-1', 'eth-2', 'prop-3', 'but-4', 'pent-5', 'hex-6'].map((p) => {
                   const [prefix, count] = p.split('-');
                   return (
                     <div key={p} className="bg-white p-1 rounded border text-center">
@@ -536,8 +544,12 @@ export function StructureFromNameChallenge({
               <div className="font-bold text-warm-600 mb-1">Viðskeytir:</div>
               <div className="space-y-1">
                 <div className="bg-white p-1 rounded border text-center">-an = eintengi</div>
-                <div className="bg-green-50 p-1 rounded border border-green-200 text-center">-en = tvítengi</div>
-                <div className="bg-purple-50 p-1 rounded border border-purple-200 text-center">-yn = þrítengi</div>
+                <div className="bg-green-50 p-1 rounded border border-green-200 text-center">
+                  -en = tvítengi
+                </div>
+                <div className="bg-purple-50 p-1 rounded border border-purple-200 text-center">
+                  -yn = þrítengi
+                </div>
               </div>
             </div>
           </div>
@@ -547,7 +559,9 @@ export function StructureFromNameChallenge({
         <div className="mt-4 w-full bg-warm-200 rounded-full h-2">
           <div
             className="bg-emerald-500 h-2 rounded-full transition-all duration-300"
-            style={{ width: `${((currentChallenge + (showFeedback && isCorrect ? 1 : 0)) / CHALLENGES.length) * 100}%` }}
+            style={{
+              width: `${((currentChallenge + (showFeedback && isCorrect ? 1 : 0)) / CHALLENGES.length) * 100}%`,
+            }}
           />
         </div>
       </div>

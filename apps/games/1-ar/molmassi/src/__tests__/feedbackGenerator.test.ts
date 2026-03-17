@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
-import { getDetailedFeedback } from '../utils/feedbackGenerator';
 import type { Challenge, CompoundData } from '../utils/challengeGenerator';
+import { getDetailedFeedback } from '../utils/feedbackGenerator';
 
 // ---------------------------------------------------------------------------
 // Test helpers
@@ -101,7 +101,7 @@ describe('getDetailedFeedback – count_atoms', () => {
 describe('getDetailedFeedback – compare_mass', () => {
   const challenge: Challenge = {
     type: 'compare_mass',
-    compound: CO2,       // 44.009 g/mol
+    compound: CO2, // 44.009 g/mol
     compareCompound: WATER, // 18.015 g/mol
   };
 

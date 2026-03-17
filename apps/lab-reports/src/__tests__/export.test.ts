@@ -42,8 +42,8 @@ beforeEach(() => {
   // Mock URL static methods without replacing the URL constructor
   createObjectURLSpy = vi.fn(() => 'blob:mock-url');
   revokeObjectURLSpy = vi.fn();
-  URL.createObjectURL = createObjectURLSpy;
-  URL.revokeObjectURL = revokeObjectURLSpy;
+  URL.createObjectURL = createObjectURLSpy as typeof URL.createObjectURL;
+  URL.revokeObjectURL = revokeObjectURLSpy as typeof URL.revokeObjectURL;
 });
 
 afterEach(() => {

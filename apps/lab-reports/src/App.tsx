@@ -14,7 +14,7 @@ import { AnalysisResult, StudentFeedback, GradingSession } from './types';
 import { processFile } from './utils/api';
 import { getBreadcrumbsForPath } from './utils/breadcrumbs';
 import { exportResultsToCSV } from './utils/export';
-// eslint-disable-next-line import/order
+// eslint-disable-next-line import-x/order
 import { extractTextFromFile } from './utils/fileProcessing';
 
 const SessionHistory = React.lazy(() =>

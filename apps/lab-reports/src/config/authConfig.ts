@@ -51,11 +51,9 @@ export const msalConfig: Configuration = {
     // STATIC redirect URI - centralized callback endpoint
     redirectUri: redirectUri,
     postLogoutRedirectUri: typeof window !== 'undefined' ? window.location.origin : '',
-    navigateToLoginRequestUrl: false, // We handle navigation manually
   },
   cache: {
     cacheLocation: 'sessionStorage', // Store tokens in session storage
-    storeAuthStateInCookie: false, // Set to true for IE11/Edge compatibility
   },
   system: {
     loggerOptions: {
@@ -91,4 +89,5 @@ export const msalConfig: Configuration = {
  */
 export const loginRequest = {
   scopes: ['User.Read'],
+  navigateToLoginRequestUrl: false, // We handle navigation manually via authHelpers
 };

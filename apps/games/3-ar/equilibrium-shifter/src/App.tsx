@@ -220,7 +220,7 @@ function App() {
     const moreGasOnLeft = (eq.gasMoles?.reactants || 0) > (eq.gasMoles?.products || 0);
 
     // Topic hint - general concept area
-    let topic = 'Þetta snýst um Le Chatelier meginregluna og hvernig jafnvægi bregst við álagi.';
+    let topic: string;
     if (stress.type.includes('temp')) {
       topic =
         'Þetta snýst um áhrif hitastigsbreytinga á jafnvægi og varmalosandi/varmabindandi hvörf.';
@@ -289,7 +289,7 @@ function App() {
     }
 
     // Solution hint - full worked answer
-    let solution = '';
+    let solution: string;
     if (correctShift) {
       const directionText =
         correctShift.direction === 'left'

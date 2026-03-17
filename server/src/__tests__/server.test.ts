@@ -49,22 +49,18 @@ describe('GET /health', () => {
 // ---------------------------------------------------------------------------
 describe('POST /api/analyze -- input validation', () => {
   it('returns 400 when required fields are missing', async () => {
-    const res = await request(app)
-      .post('/api/analyze')
-      .send({ content: 'hello' }); // missing systemPrompt and mode
+    const res = await request(app).post('/api/analyze').send({ content: 'hello' }); // missing systemPrompt and mode
 
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty('error');
   });
 
   it('returns 400 when mode is invalid', async () => {
-    const res = await request(app)
-      .post('/api/analyze')
-      .send({
-        content: 'test content',
-        systemPrompt: 'test prompt',
-        mode: 'hacker', // invalid -- must be "teacher" or "student"
-      });
+    const res = await request(app).post('/api/analyze').send({
+      content: 'test content',
+      systemPrompt: 'test prompt',
+      mode: 'hacker', // invalid -- must be "teacher" or "student"
+    });
 
     expect(res.status).toBe(400);
     const body = res.body as ErrorResponse;
@@ -91,9 +87,7 @@ describe('POST /api/analyze -- input validation', () => {
 // ---------------------------------------------------------------------------
 describe('POST /api/analyze-2ar -- input validation', () => {
   it('returns 400 when required fields are missing', async () => {
-    const res = await request(app)
-      .post('/api/analyze-2ar')
-      .send({ systemPrompt: 'hello' }); // missing userPrompt
+    const res = await request(app).post('/api/analyze-2ar').send({ systemPrompt: 'hello' }); // missing userPrompt
 
     expect(res.status).toBe(400);
     const body = res.body as ErrorResponse;
@@ -152,12 +146,10 @@ describe('GET /api/islenskubraut/pdf -- input validation', () => {
     expect(body.error).toMatch(/stig/i);
   });
 
-  it('returns 404 when category does not exist', async () => {
-    const res = await request(app).get(
-      '/api/islenskubraut/pdf?flokkur=nonexistent&stig=A1'
-    );
+  it('returns 400 when category is not in allowed list', async () => {
+    const res = await request(app).get('/api/islenskubraut/pdf?flokkur=nonexistent&stig=A1');
 
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(400);
     const body = res.body as ErrorResponse;
     expect(body.error).toMatch(/[Ff]lokkur/);
   });
@@ -168,9 +160,7 @@ describe('GET /api/islenskubraut/pdf -- input validation', () => {
 // ---------------------------------------------------------------------------
 describe('POST /api/process-document -- input validation', () => {
   it('returns 400 or 500 when no file is uploaded', async () => {
-    const res = await request(app)
-      .post('/api/process-document')
-      .send();
+    const res = await request(app).post('/api/process-document').send();
 
     // The server returns 400 for "No file uploaded" after parsing,
     // or 500 if LibreOffice is not installed. Either is acceptable in
@@ -184,17 +174,13 @@ describe('POST /api/process-document -- input validation', () => {
 // ---------------------------------------------------------------------------
 describe('CORS', () => {
   it('allows requests from https://kvenno.app', async () => {
-    const res = await request(app)
-      .get('/health')
-      .set('Origin', 'https://kvenno.app');
+    const res = await request(app).get('/health').set('Origin', 'https://kvenno.app');
 
     expect(res.headers['access-control-allow-origin']).toBe('https://kvenno.app');
   });
 
   it('blocks requests from http://evil.com', async () => {
-    const res = await request(app)
-      .get('/health')
-      .set('Origin', 'http://evil.com');
+    const res = await request(app).get('/health').set('Origin', 'http://evil.com');
 
     // When CORS blocks, the cors middleware passes an error to Express,
     // which triggers the error handler (500) and no CORS header is set.
@@ -205,9 +191,7 @@ describe('CORS', () => {
   it('allows localhost origins in development mode', async () => {
     // The server defaults to non-production (NODE_ENV is not 'production'
     // in the test environment), so localhost:5173 should be allowed.
-    const res = await request(app)
-      .get('/health')
-      .set('Origin', 'http://localhost:5173');
+    const res = await request(app).get('/health').set('Origin', 'http://localhost:5173');
 
     expect(res.headers['access-control-allow-origin']).toBe('http://localhost:5173');
   });
@@ -270,8 +254,7 @@ describe('Security: CORS no-origin rejection in production', () => {
   it('rejects requests without Origin header when NODE_ENV=production', async () => {
     process.env.NODE_ENV = 'production';
 
-    const res = await request(app)
-      .get('/health');
+    const res = await request(app).get('/health');
     // No Origin header set — should be rejected in production
 
     // The CORS middleware calls callback(new Error('Origin header required'))
@@ -283,8 +266,7 @@ describe('Security: CORS no-origin rejection in production', () => {
   it('allows requests without Origin header in development', async () => {
     process.env.NODE_ENV = 'development';
 
-    const res = await request(app)
-      .get('/health');
+    const res = await request(app).get('/health');
     // No Origin header set — should be allowed in non-production
 
     expect(res.status).toBe(200);
@@ -293,13 +275,11 @@ describe('Security: CORS no-origin rejection in production', () => {
 
 describe('Security: /api/analyze mode validation', () => {
   it('rejects mode value "admin"', async () => {
-    const res = await request(app)
-      .post('/api/analyze')
-      .send({
-        content: 'test content',
-        systemPrompt: 'test prompt',
-        mode: 'admin',
-      });
+    const res = await request(app).post('/api/analyze').send({
+      content: 'test content',
+      systemPrompt: 'test prompt',
+      mode: 'admin',
+    });
 
     expect(res.status).toBe(400);
     const body = res.body as ErrorResponse;
@@ -307,13 +287,11 @@ describe('Security: /api/analyze mode validation', () => {
   });
 
   it('rejects mode value "root"', async () => {
-    const res = await request(app)
-      .post('/api/analyze')
-      .send({
-        content: 'test content',
-        systemPrompt: 'test prompt',
-        mode: 'root',
-      });
+    const res = await request(app).post('/api/analyze').send({
+      content: 'test content',
+      systemPrompt: 'test prompt',
+      mode: 'root',
+    });
 
     expect(res.status).toBe(400);
     const body = res.body as ErrorResponse;
@@ -321,38 +299,32 @@ describe('Security: /api/analyze mode validation', () => {
   });
 
   it('rejects empty string mode', async () => {
-    const res = await request(app)
-      .post('/api/analyze')
-      .send({
-        content: 'test content',
-        systemPrompt: 'test prompt',
-        mode: '',
-      });
+    const res = await request(app).post('/api/analyze').send({
+      content: 'test content',
+      systemPrompt: 'test prompt',
+      mode: '',
+    });
 
     expect(res.status).toBe(400);
   });
 
   it('accepts mode "teacher"', async () => {
-    const res = await request(app)
-      .post('/api/analyze')
-      .send({
-        content: 'test content',
-        systemPrompt: 'test prompt',
-        mode: 'teacher',
-      });
+    const res = await request(app).post('/api/analyze').send({
+      content: 'test content',
+      systemPrompt: 'test prompt',
+      mode: 'teacher',
+    });
 
     // Should pass validation (may fail on API call, but not with 400 for mode)
     expect(res.status).not.toBe(400);
   });
 
   it('accepts mode "student"', async () => {
-    const res = await request(app)
-      .post('/api/analyze')
-      .send({
-        content: 'test content',
-        systemPrompt: 'test prompt',
-        mode: 'student',
-      });
+    const res = await request(app).post('/api/analyze').send({
+      content: 'test content',
+      systemPrompt: 'test prompt',
+      mode: 'student',
+    });
 
     // Should pass validation (may fail on API call, but not with 400 for mode)
     expect(res.status).not.toBe(400);
@@ -387,14 +359,11 @@ describe('Security: /api/analyze rejects oversized content (>5MB)', () => {
     // Generate content slightly over 5MB
     const oversizedContent = 'x'.repeat(5 * 1024 * 1024 + 1);
 
-    const res = await request(app)
-      .post('/api/analyze')
-      .set('Origin', 'https://kvenno.app')
-      .send({
-        content: oversizedContent,
-        systemPrompt: 'test prompt',
-        mode: 'teacher',
-      });
+    const res = await request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
+      content: oversizedContent,
+      systemPrompt: 'test prompt',
+      mode: 'teacher',
+    });
 
     // The rate limiter may fire first (429) if many /api/analyze tests
     // have already run. Both 400 (content validation) and 429 (rate limit)
@@ -416,14 +385,11 @@ describe('Security: /api/analyze rejects oversized content (>5MB)', () => {
     // pass, the request proceeds to the API call (which fails with
     // invalid key, returning non-400). This confirms content size
     // checking occurs before the API call.
-    const res = await request(app)
-      .post('/api/analyze')
-      .set('Origin', 'https://kvenno.app')
-      .send({
-        content: 'small content',
-        systemPrompt: 'test prompt',
-        mode: 'teacher',
-      });
+    const res = await request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
+      content: 'small content',
+      systemPrompt: 'test prompt',
+      mode: 'teacher',
+    });
 
     // Should NOT be a 400 (validation passed), likely 401/500 from API
     if (res.status !== 429) {
@@ -459,14 +425,11 @@ describe('POST /api/analyze -- mock API call tests', () => {
       })
     );
 
-    const res = await request(app)
-      .post('/api/analyze')
-      .set('Origin', 'https://kvenno.app')
-      .send({
-        content: 'Lab report text here',
-        systemPrompt: 'You are a lab report grader.',
-        mode: 'teacher',
-      });
+    const res = await request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
+      content: 'Lab report text here',
+      systemPrompt: 'You are a lab report grader.',
+      mode: 'teacher',
+    });
 
     // May be rate limited from earlier tests
     if (res.status === 429) return;
@@ -481,14 +444,11 @@ describe('POST /api/analyze -- mock API call tests', () => {
     const abortError = new DOMException('The operation was aborted', 'AbortError');
     vi.spyOn(global, 'fetch').mockRejectedValueOnce(abortError);
 
-    const res = await request(app)
-      .post('/api/analyze')
-      .set('Origin', 'https://kvenno.app')
-      .send({
-        content: 'Lab report text here',
-        systemPrompt: 'You are a lab report grader.',
-        mode: 'teacher',
-      });
+    const res = await request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
+      content: 'Lab report text here',
+      systemPrompt: 'You are a lab report grader.',
+      mode: 'teacher',
+    });
 
     if (res.status === 429) return;
 
@@ -499,20 +459,17 @@ describe('POST /api/analyze -- mock API call tests', () => {
 
   it('forwards API error status when Anthropic returns 500', async () => {
     vi.spyOn(global, 'fetch').mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({ error: { message: 'Internal server error from API' } }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
-      )
+      new Response(JSON.stringify({ error: { message: 'Internal server error from API' } }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      })
     );
 
-    const res = await request(app)
-      .post('/api/analyze')
-      .set('Origin', 'https://kvenno.app')
-      .send({
-        content: 'Lab report text here',
-        systemPrompt: 'You are a lab report grader.',
-        mode: 'teacher',
-      });
+    const res = await request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
+      content: 'Lab report text here',
+      systemPrompt: 'You are a lab report grader.',
+      mode: 'teacher',
+    });
 
     if (res.status === 429) return;
 
@@ -528,14 +485,11 @@ describe('POST /api/analyze -- mock API call tests', () => {
     delete process.env.ANTHROPIC_API_KEY;
 
     try {
-      const res = await request(app)
-        .post('/api/analyze')
-        .set('Origin', 'https://kvenno.app')
-        .send({
-          content: 'Lab report text here',
-          systemPrompt: 'You are a lab report grader.',
-          mode: 'teacher',
-        });
+      const res = await request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
+        content: 'Lab report text here',
+        systemPrompt: 'You are a lab report grader.',
+        mode: 'teacher',
+      });
 
       if (res.status === 429) return;
 
@@ -635,7 +589,7 @@ describe('POST /api/process-document -- mock tests', () => {
     if (res.status === 500) {
       // LibreOffice not installed -- server rejects before reaching
       // extension validation. This is acceptable in CI/test environments.
-      expect(res.body.error).toMatch(/LibreOffice|skjalinu/i);
+      expect(res.body.error).toMatch(/LibreOffice|skjal/i);
     } else {
       expect(res.status).toBe(400);
       expect(res.body).toHaveProperty('error');
@@ -654,7 +608,7 @@ describe('POST /api/process-document -- mock tests', () => {
     // Extension check should catch .pdf even if content-type says docx
     if (res.status === 500) {
       // LibreOffice not installed -- acceptable in test environments
-      expect(res.body.error).toMatch(/LibreOffice|skjalinu/i);
+      expect(res.body.error).toMatch(/LibreOffice|skjal/i);
     } else {
       expect(res.status).toBe(400);
       expect(res.body.error).toMatch(/\.docx/);

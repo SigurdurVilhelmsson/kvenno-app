@@ -211,7 +211,7 @@ async function convertDocxToPdf(docxPath: string): Promise<string> {
   } catch (error: unknown) {
     console.error('LibreOffice conversion error:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
-    throw new Error(`Failed to convert DOCX to PDF: ${message}`);
+    throw new Error(`Failed to convert DOCX to PDF: ${message}`, { cause: error });
   }
 }
 
@@ -256,7 +256,7 @@ async function processDocxWithPandoc(filePath: string): Promise<PandocResult> {
   } catch (error: unknown) {
     console.error('Pandoc processing error:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
-    throw new Error(`Failed to process document: ${message}`);
+    throw new Error(`Failed to process document: ${message}`, { cause: error });
   }
 }
 

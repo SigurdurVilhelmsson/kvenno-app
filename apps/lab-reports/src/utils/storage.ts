@@ -80,13 +80,15 @@ export const saveSession = async (session: GradingSession): Promise<void> => {
         error.code === 22 || // Old browsers
         error.code === 1014 // Firefox
       ) {
-        throw new Error('Minni fullt - reyndu að eyða gömlum greiningum til að losa pláss');
+        throw new Error('Minni fullt - reyndu að eyða gömlum greiningum til að losa pláss', {
+          cause: error,
+        });
       }
     }
 
     // Re-throw with more context
     const message = error instanceof Error ? error.message : 'Óþekkt villa';
-    throw new Error(`Villa við að vista: ${message}`);
+    throw new Error(`Villa við að vista: ${message}`, { cause: error });
   }
 };
 

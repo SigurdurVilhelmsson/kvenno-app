@@ -39,8 +39,8 @@ const getWorkerUrl = (): string => {
  * Uses exact version match for compatibility
  */
 const getCdnWorkerUrl = (): string => {
-  // Use cdnjs with exact version matching pdfjs-dist (4.10.38)
-  const version = '4.10.38';
+  // Use cdnjs with exact version matching pdfjs-dist (5.5.207)
+  const version = '5.5.207';
   const cdnUrl = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${version}/pdf.worker.min.mjs`;
   if (import.meta.env.DEV) console.log('[PDF.js] CDN worker URL prepared:', cdnUrl);
   return cdnUrl;
@@ -221,7 +221,7 @@ const extractFromDocx = async (file: File): Promise<FileContent> => {
       error: errorMessage,
       stack: error instanceof Error ? error.stack : undefined,
     });
-    throw new Error(`Gat ekki lesið Word skjalið: ${errorMessage}`);
+    throw new Error(`Gat ekki lesið Word skjalið: ${errorMessage}`, { cause: error });
   }
 };
 
@@ -311,17 +311,19 @@ const extractFromPdf = async (
           const retryMsg = retryError instanceof Error ? retryError.message : String(retryError);
           console.error('[PDF Processing] CDN worker retry also failed:', retryMsg);
           throw new Error(
-            'Vandamál við að hlaða PDF vinnsluforritinu. Vinsamlegast reynið aftur eða hafið samband við stjórnanda.'
+            'Vandamál við að hlaða PDF vinnsluforritinu. Vinsamlegast reynið aftur eða hafið samband við stjórnanda.',
+            { cause: retryError }
           );
         }
       } else if (errorMsg.includes('Invalid') || errorMsg.includes('corrupted')) {
         // Check if it's a corrupted PDF
         throw new Error(
-          'PDF skjalið virðist vera skemmt. Vinsamlegast reynið að vista það aftur úr upprunaforritinu.'
+          'PDF skjalið virðist vera skemmt. Vinsamlegast reynið að vista það aftur úr upprunaforritinu.',
+          { cause: pdfError }
         );
       } else {
         // Re-throw other errors with original message
-        throw new Error(`Villa við að lesa PDF: ${errorMsg}`);
+        throw new Error(`Villa við að lesa PDF: ${errorMsg}`, { cause: pdfError });
       }
     }
 
@@ -439,6 +441,7 @@ const extractFromPdf = async (
       canvas.height = viewport.height;
 
       await page.render({
+        canvas: canvas,
         canvasContext: context,
         viewport: viewport,
       }).promise;

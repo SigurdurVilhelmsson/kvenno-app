@@ -1,82 +1,82 @@
 # Bundle Sizes
 
-Measured: 2026-02-19
+Measured: 2026-03-17
 
 ## Chemistry Games (single-file HTML via vite-plugin-singlefile)
 
 Games using Three.js (3D molecule viewers):
 
-| Game | Year | Size |
-|------|------|------|
-| lewis-structures | 2-ar | 2.9 MB |
-| vsepr-geometry | 2-ar | 2.9 MB |
+| Game                  | Year | Size   |
+| --------------------- | ---- | ------ |
+| lewis-structures      | 2-ar | 2.9 MB |
+| vsepr-geometry        | 2-ar | 2.9 MB |
 | intermolecular-forces | 2-ar | 2.9 MB |
-| molmassi | 1-ar | 2.9 MB |
+| molmassi              | 1-ar | 2.9 MB |
 
 Games without Three.js:
 
-| Game | Year | Size |
-|------|------|------|
-| dimensional-analysis | 1-ar | 1.3 MB |
-| lausnir | 1-ar | 1.3 MB |
-| organic-nomenclature | 2-ar | 1.3 MB |
-| buffer-recipe-creator | 3-ar | 1.3 MB |
-| ph-titration | 3-ar | 1.3 MB |
-| kinetics | 2-ar | 1.3 MB |
-| takmarkandi | 1-ar | 1.3 MB |
-| nafnakerfid | 1-ar | 1.3 MB |
-| redox-reactions | 2-ar | 1.3 MB |
-| hess-law | 2-ar | 1.3 MB |
-| equilibrium-shifter | 3-ar | 1.3 MB |
-| gas-law-challenge | 3-ar | 1.2 MB |
-| thermodynamics-predictor | 3-ar | 1.2 MB |
+| Game                     | Year | Size   |
+| ------------------------ | ---- | ------ |
+| buffer-recipe-creator    | 3-ar | 427 KB |
+| dimensional-analysis     | 1-ar | 424 KB |
+| lausnir                  | 1-ar | 419 KB |
+| organic-nomenclature     | 2-ar | 413 KB |
+| nafnakerfid              | 1-ar | 405 KB |
+| ph-titration             | 3-ar | 398 KB |
+| kinetics                 | 2-ar | 395 KB |
+| takmarkandi              | 1-ar | 391 KB |
+| redox-reactions          | 2-ar | 388 KB |
+| hess-law                 | 2-ar | 387 KB |
+| equilibrium-shifter      | 3-ar | 384 KB |
+| gas-law-challenge        | 3-ar | 351 KB |
+| thermodynamics-predictor | 3-ar | 348 KB |
 
-Total: 17 games, ~25 MB combined
+Total: 17 games, ~16.5 MB combined
+
+Note: Non-3D games dropped from ~1.3 MB to ~350-430 KB (~70% reduction) after upgrading to Vite 8 (Rolldown bundler).
 
 ## Lab Reports (multi-chunk SPA, deployed to 2-ar and 3-ar)
 
-| File | Size | Gzip |
-|------|------|------|
-| pdf.worker.min.mjs | 1.4 MB | (not gzipped, loaded as worker) |
-| index.js | 813 KB | 227 KB |
-| react-vendor.js | 194 KB | 61 KB |
-| index.css | 29 KB | 6 KB |
-| ui-vendor.js (lucide-react) | 11 KB | 3 KB |
-| index.html | 0.8 KB | 0.4 KB |
+| File                        | Size   | Gzip   |
+| --------------------------- | ------ | ------ |
+| index.js                    | 812 KB | 227 KB |
+| react-vendor.js             | 194 KB | 61 KB  |
+| index.css                   | 57 KB  | 11 KB  |
+| ui-vendor.js (lucide-react) | 12 KB  | 3 KB   |
+| index.html                  | 0.8 KB | 0.4 KB |
 
-Total per deployment: ~2.4 MB (two deployments: 2-ar and 3-ar)
+Total per deployment: ~1.1 MB (two deployments: 2-ar and 3-ar)
 
 Vendor chunks: react-vendor (react + react-dom), ui-vendor (lucide-react).
 React.lazy() is used for TeacherResults, StudentFeedback, and SessionHistory components, though Rollup currently inlines them due to shared dependencies.
 
 ## Landing Page (SPA with chemistry year hubs)
 
-| File | Size | Gzip |
-|------|------|------|
-| MoleculeViewer3D.js (Three.js lazy chunk) | 948 KB | 269 KB |
-| index.js | 235 KB | 75 KB |
-| react-vendor.js | 12 KB | 4 KB |
-| index.css | 12 KB | 3 KB |
-| index.html | 1 KB | 0.5 KB |
+| File            | Size   | Gzip   |
+| --------------- | ------ | ------ |
+| index.js        | 246 KB | 77 KB  |
+| index.css       | 50 KB  | 10 KB  |
+| react-vendor.js | 12 KB  | 4 KB   |
+| index.html      | 1 KB   | 0.5 KB |
 
-Total: ~1.2 MB
+Total: ~310 KB
 
 Note: MoleculeViewer3D is already code-split (lazy-loaded). Users only download it when viewing a year hub page that includes 3D previews.
 
 ## Islenskubraut (SPA)
 
-| File | Size | Gzip |
-|------|------|------|
-| index.js | 265 KB | 80 KB |
-| index.css | 22 KB | 5 KB |
-| react-vendor.js | 12 KB | 4 KB |
-| index.html | 1 KB | 0.5 KB |
+| File            | Size   | Gzip   |
+| --------------- | ------ | ------ |
+| index.js        | 272 KB | 82 KB  |
+| index.css       | 54 KB  | 10 KB  |
+| react-vendor.js | 12 KB  | 4 KB   |
+| index.html      | 1 KB   | 0.5 KB |
 
-Total: ~300 KB
+Total: ~340 KB
 
 ## Full dist/ Total
 
-~29 MB (dominated by 17 single-file game HTML files)
+~18 MB (dominated by 17 single-file game HTML files)
 
 ## Animation & Graphics Components
 
@@ -90,7 +90,7 @@ Bundle cost: effectively **0 KB** of additional dependencies. The component code
 
 ## Optimization Recommendations
 
-1. **Games are the largest contributor.** The 1.2-2.9 MB per game is due to vite-plugin-singlefile bundling all dependencies (React, Tailwind CSS, Three.js) into each HTML file. This is by design for offline-capable, zero-dependency deployment but means each game re-bundles shared libraries.
+1. **Games are the largest contributor.** The 0.3-2.9 MB per game is due to vite-plugin-singlefile bundling all dependencies (React, Tailwind CSS, Three.js) into each HTML file. This is by design for offline-capable, zero-dependency deployment but means each game re-bundles shared libraries.
 
 2. **Three.js games are ~2x larger** than non-3D games (2.9 MB vs 1.2-1.3 MB). If game load time is a concern, consider lazy-loading Three.js within 3D games.
 

@@ -6,8 +6,10 @@ import { shuffleArray } from '@shared/utils';
 
 // Misconceptions for Lewis structure concepts
 const MISCONCEPTIONS: Record<string, string> = {
-  count_valence: 'Gildisrafeindir eru rafeindir í ystu skel. Hópnúmer (1-8 fyrir aðalflokka) segir beint til um fjöldann.',
-  total_electrons: 'Heildarfjöldi = summa gildisrafeinda allra atóma. Mundu að margfalda með fjölda atóma af hverri tegund.',
+  count_valence:
+    'Gildisrafeindir eru rafeindir í ystu skel. Hópnúmer (1-8 fyrir aðalflokka) segir beint til um fjöldann.',
+  total_electrons:
+    'Heildarfjöldi = summa gildisrafeinda allra atóma. Mundu að margfalda með fjölda atóma af hverri tegund.',
   octet_rule: 'Áttureglan segir að atóm vilja hafa 8 rafeindir í ystu skel (nema H sem vill 2).',
   electron_need: 'Rafeindaþörf = 8 - gildisrafeindir (eða 2 - gildisrafeindir fyrir H).',
 };
@@ -43,14 +45,28 @@ interface Challenge {
 
 // Valence electron data
 const VALENCE_ELECTRONS: Record<string, number> = {
-  'H': 1, 'Li': 1, 'Na': 1, 'K': 1,
-  'Be': 2, 'Mg': 2, 'Ca': 2,
-  'B': 3, 'Al': 3,
-  'C': 4, 'Si': 4,
-  'N': 5, 'P': 5,
-  'O': 6, 'S': 6,
-  'F': 7, 'Cl': 7, 'Br': 7, 'I': 7,
-  'He': 2, 'Ne': 8, 'Ar': 8,
+  H: 1,
+  Li: 1,
+  Na: 1,
+  K: 1,
+  Be: 2,
+  Mg: 2,
+  Ca: 2,
+  B: 3,
+  Al: 3,
+  C: 4,
+  Si: 4,
+  N: 5,
+  P: 5,
+  O: 6,
+  S: 6,
+  F: 7,
+  Cl: 7,
+  Br: 7,
+  I: 7,
+  He: 2,
+  Ne: 8,
+  Ar: 8,
 };
 
 const challenges: Challenge[] = [
@@ -63,10 +79,12 @@ const challenges: Challenge[] = [
     hints: {
       topic: 'Gildisrafeindir tengjast hópnúmeri frumefnisins í lotukerfinu.',
       strategy: 'Finndu kolefni (C) í lotukerfinu og athugaðu hvaða hóp það er í.',
-      method: 'Kolefni er í hópi 14 (IV A). Fyrir aðalflokksfrumefni: gildisrafeindir = hópnúmer - 10.',
+      method:
+        'Kolefni er í hópi 14 (IV A). Fyrir aðalflokksfrumefni: gildisrafeindir = hópnúmer - 10.',
       solution: 'C er í hópi 14: 14 - 10 = 4 gildisrafeindir.',
     },
-    explanation: 'C er í hópi 14, sem þýðir 4 gildisrafeindir. Hópnúmerið (1-8 fyrir aðalflokka) segir beint til um gildisrafeindafjöldann.'
+    explanation:
+      'C er í hópi 14, sem þýðir 4 gildisrafeindir. Hópnúmerið (1-8 fyrir aðalflokka) segir beint til um gildisrafeindafjöldann.',
   },
   {
     id: 2,
@@ -80,7 +98,8 @@ const challenges: Challenge[] = [
       method: 'Klór er halógen í hópi 17 (VII A). Gildisrafeindir = 17 - 10 = 7.',
       solution: 'Cl hefur 7 gildisrafeindir og þarf því 1 rafeind til að ná áttureglunni.',
     },
-    explanation: 'Cl er í hópi 17 (VII A), sem þýðir 7 gildisrafeindir. Halógenar þurfa 1 rafeind til að ná áttureglunni.'
+    explanation:
+      'Cl er í hópi 17 (VII A), sem þýðir 7 gildisrafeindir. Halógenar þurfa 1 rafeind til að ná áttureglunni.',
   },
   {
     id: 3,
@@ -99,7 +118,8 @@ const challenges: Challenge[] = [
       method: 'H₂O: 2×H + 1×O = 2×(1) + 1×(6)',
       solution: '2(1) + 1(6) = 2 + 6 = 8 gildisrafeindir.',
     },
-    explanation: 'H₂O: 2(1) + 1(6) = 2 + 6 = 8 gildisrafeindir. Þetta er lykilskref áður en þú teiknar Lewis-formúlu.'
+    explanation:
+      'H₂O: 2(1) + 1(6) = 2 + 6 = 8 gildisrafeindir. Þetta er lykilskref áður en þú teiknar Lewis-formúlu.',
   },
   {
     id: 4,
@@ -118,7 +138,7 @@ const challenges: Challenge[] = [
       method: 'NH₃: 1×N + 3×H = 1×(5) + 3×(1)',
       solution: '1(5) + 3(1) = 5 + 3 = 8 gildisrafeindir.',
     },
-    explanation: 'NH₃: 1(5) + 3(1) = 5 + 3 = 8 gildisrafeindir. Nitur hefur 5 og hvert vetni 1.'
+    explanation: 'NH₃: 1(5) + 3(1) = 5 + 3 = 8 gildisrafeindir. Nitur hefur 5 og hvert vetni 1.',
   },
   {
     id: 5,
@@ -137,7 +157,8 @@ const challenges: Challenge[] = [
       method: 'CO₂: 1×C + 2×O = 1×(4) + 2×(6)',
       solution: '1(4) + 2(6) = 4 + 12 = 16 gildisrafeindir (8 rafeindarapör).',
     },
-    explanation: 'CO₂: 1(4) + 2(6) = 4 + 12 = 16 gildisrafeindir. Þetta eru 8 rafeindarapör til að skipta á milli atóma.'
+    explanation:
+      'CO₂: 1(4) + 2(6) = 4 + 12 = 16 gildisrafeindir. Þetta eru 8 rafeindarapör til að skipta á milli atóma.',
   },
   {
     id: 6,
@@ -157,7 +178,8 @@ const challenges: Challenge[] = [
       method: 'OH⁻: O + H + hleðsla = 6 + 1 + 1 (vegna -1)',
       solution: '6 + 1 + 1 = 8 gildisrafeindir. Neikvæð hleðsla = fleiri rafeindir.',
     },
-    explanation: 'OH⁻: 6 + 1 + 1 (vegna -1 hleðslu) = 8 gildisrafeindir. Neikvæð hleðsla = fleiri rafeindir.'
+    explanation:
+      'OH⁻: 6 + 1 + 1 (vegna -1 hleðslu) = 8 gildisrafeindir. Neikvæð hleðsla = fleiri rafeindir.',
   },
   {
     id: 7,
@@ -166,10 +188,30 @@ const challenges: Challenge[] = [
     question: 'Hversu margar rafeindir vill súrefni hafa í ystu skel sinni?',
     correctAnswer: 8,
     options: [
-      { id: 'a', text: '2 rafeindir', correct: false, explanation: 'Þetta á við um vetni (H) og helíum (He).' },
-      { id: 'b', text: '6 rafeindir', correct: false, explanation: 'Súrefni HEFUR 6 gildisrafeindir, en það VILL hafa 8.' },
-      { id: 'c', text: '8 rafeindir', correct: true, explanation: 'Rétt! Áttureglan segir að atóm vilja hafa 8 rafeindir í ystu skel.' },
-      { id: 'd', text: '18 rafeindir', correct: false, explanation: '18 er fyrir d-undirskeljar, ekki s og p.' },
+      {
+        id: 'a',
+        text: '2 rafeindir',
+        correct: false,
+        explanation: 'Þetta á við um vetni (H) og helíum (He).',
+      },
+      {
+        id: 'b',
+        text: '6 rafeindir',
+        correct: false,
+        explanation: 'Súrefni HEFUR 6 gildisrafeindir, en það VILL hafa 8.',
+      },
+      {
+        id: 'c',
+        text: '8 rafeindir',
+        correct: true,
+        explanation: 'Rétt! Áttureglan segir að atóm vilja hafa 8 rafeindir í ystu skel.',
+      },
+      {
+        id: 'd',
+        text: '18 rafeindir',
+        correct: false,
+        explanation: '18 er fyrir d-undirskeljar, ekki s og p.',
+      },
     ],
     hints: {
       topic: 'Áttureglan (octet rule) er grundvallarregla í efnafræði.',
@@ -177,13 +219,15 @@ const challenges: Challenge[] = [
       method: 'Flest atóm vilja líkja eftir eðalgastegundum með 8 rafeindir í ystu skel.',
       solution: 'Súrefni vill hafa 8 rafeindir í ystu skel (áttureglan).',
     },
-    explanation: 'Áttureglan: Atóm vilja hafa 8 rafeindir í ystu skel til að vera stöðug (eins og eðalgastegundir).'
+    explanation:
+      'Áttureglan: Atóm vilja hafa 8 rafeindir í ystu skel til að vera stöðug (eins og eðalgastegundir).',
   },
   {
     id: 8,
     title: 'Rafeindir sem vantar',
     type: 'electron_need',
-    question: 'Ef klór hefur 7 gildisrafeindir, hversu margar rafeindir vantar til að uppfylla átturegluna?',
+    question:
+      'Ef klór hefur 7 gildisrafeindir, hversu margar rafeindir vantar til að uppfylla átturegluna?',
     correctAnswer: 1,
     hints: {
       topic: 'Áttureglan segir að atóm vilja hafa 8 rafeindir í ystu skel.',
@@ -191,7 +235,8 @@ const challenges: Challenge[] = [
       method: 'Rafeindir sem vantar = 8 - gildisrafeindir',
       solution: '8 - 7 = 1 rafeind. Þess vegna myndar Cl eitt efnatengi.',
     },
-    explanation: 'Klór þarf 8 - 7 = 1 rafeind til að uppfylla átturegluna. Þess vegna myndar Cl gjarnan eitt efnatengi.'
+    explanation:
+      'Klór þarf 8 - 7 = 1 rafeind til að uppfylla átturegluna. Þess vegna myndar Cl gjarnan eitt efnatengi.',
   },
 ];
 
@@ -218,16 +263,16 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     // Assign new sequential IDs (a, b, c, d) after shuffling
     return shuffled.map((opt, idx) => ({
       ...opt,
-      id: String.fromCharCode(97 + idx) // 'a', 'b', 'c', 'd'
+      id: String.fromCharCode(97 + idx), // 'a', 'b', 'c', 'd'
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when challenge index changes
   }, [currentChallenge, challenge.options]);
 
   const checkAnswer = () => {
-    let correct = false;
+    let correct: boolean;
 
     if (shuffledOptions.length > 0) {
-      const selected = shuffledOptions.find(opt => opt.id === selectedOption);
+      const selected = shuffledOptions.find((opt) => opt.id === selectedOption);
       correct = selected?.correct ?? false;
     } else {
       const numAnswer = parseInt(userAnswer);
@@ -238,7 +283,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     if (correct) {
       onCorrectAnswer?.();
       const earnedPoints = Math.round(basePoints * hintMultiplier);
-      setScore(prev => prev + earnedPoints);
+      setScore((prev) => prev + earnedPoints);
     } else {
       onIncorrectAnswer?.();
     }
@@ -247,7 +292,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const nextChallenge = () => {
     if (currentChallenge < challenges.length - 1) {
-      setCurrentChallenge(prev => prev + 1);
+      setCurrentChallenge((prev) => prev + 1);
       setUserAnswer('');
       setSelectedOption(null);
       setShowResult(false);
@@ -271,7 +316,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <span>&larr;</span> Til baka
           </button>
           <div className="text-right">
-            <div className="text-sm text-warm-600">Stig 1 / Þraut {currentChallenge + 1} af {challenges.length}</div>
+            <div className="text-sm text-warm-600">
+              Stig 1 / Þraut {currentChallenge + 1} af {challenges.length}
+            </div>
             <div className="text-lg font-bold text-blue-600">{score} stig</div>
           </div>
         </div>
@@ -286,14 +333,16 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Main content */}
         <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <h2 className="text-2xl font-bold text-blue-800 mb-4">
-            {challenge.title}
-          </h2>
+          <h2 className="text-2xl font-bold text-blue-800 mb-4">{challenge.title}</h2>
 
           {/* Molecule display if applicable */}
           {challenge.molecule && (
             <div className="bg-indigo-50 p-4 rounded-xl mb-4">
-              <div className="text-center font-mono text-3xl font-bold text-indigo-800" role="img" aria-label={`Sameind: ${challenge.molecule}`}>
+              <div
+                className="text-center font-mono text-3xl font-bold text-indigo-800"
+                role="img"
+                aria-label={`Sameind: ${challenge.molecule}`}
+              >
                 {challenge.molecule}
               </div>
               {challenge.elements && (
@@ -310,7 +359,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     <div className="text-center">
                       <div className="font-bold text-red-600">Hleðsla</div>
                       <div className="text-sm text-warm-600">
-                        {challenge.charge > 0 ? `-${challenge.charge}` : `+${Math.abs(challenge.charge)}`}
+                        {challenge.charge > 0
+                          ? `-${challenge.charge}`
+                          : `+${Math.abs(challenge.charge)}`}
                       </div>
                     </div>
                   )}
@@ -324,7 +375,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           {/* Multiple choice options */}
           {shuffledOptions.length > 0 ? (
             <div className="space-y-3 mb-6">
-              {shuffledOptions.map(option => (
+              {shuffledOptions.map((option) => (
                 <button
                   key={option.id}
                   onClick={() => !showResult && setSelectedOption(option.id)}
@@ -334,11 +385,11 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       ? option.correct
                         ? 'border-green-500 bg-green-50'
                         : selectedOption === option.id
-                        ? 'border-red-500 bg-red-50'
-                        : 'border-warm-200 bg-warm-50 opacity-50'
+                          ? 'border-red-500 bg-red-50'
+                          : 'border-warm-200 bg-warm-50 opacity-50'
                       : selectedOption === option.id
-                      ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-                      : 'border-warm-300 hover:border-blue-400 hover:bg-blue-50'
+                        ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
+                        : 'border-warm-300 hover:border-blue-400 hover:bg-blue-50'
                   }`}
                 >
                   <div className="flex items-start gap-3">
@@ -346,7 +397,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     <span className="flex-1">{option.text}</span>
                   </div>
                   {showResult && selectedOption === option.id && (
-                    <div className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}>
+                    <div
+                      className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}
+                    >
                       {option.explanation}
                     </div>
                   )}
@@ -433,12 +486,14 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
           <h3 className="font-bold text-warm-700 mb-3">Gildisrafeindatafla</h3>
           <div className="grid grid-cols-4 md:grid-cols-8 gap-2 text-sm">
-            {Object.entries(VALENCE_ELECTRONS).slice(0, 16).map(([symbol, valence]) => (
-              <div key={symbol} className="bg-warm-50 p-2 rounded text-center border">
-                <div className="font-bold text-warm-800">{symbol}</div>
-                <div className="text-blue-600">{valence}</div>
-              </div>
-            ))}
+            {Object.entries(VALENCE_ELECTRONS)
+              .slice(0, 16)
+              .map(([symbol, valence]) => (
+                <div key={symbol} className="bg-warm-50 p-2 rounded text-center border">
+                  <div className="font-bold text-warm-800">{symbol}</div>
+                  <div className="text-blue-600">{valence}</div>
+                </div>
+              ))}
           </div>
         </div>
       </div>

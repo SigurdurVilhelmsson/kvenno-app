@@ -129,7 +129,7 @@ export const analyzeWithClaude = async (
   } catch (error: unknown) {
     clearTimeout(timeoutId);
     if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error('Timeout - skýrsla tók of langan tíma');
+      throw new Error('Timeout - skýrsla tók of langan tíma', { cause: error });
     }
     throw error;
   }
@@ -209,7 +209,8 @@ export const processFile = async (
     console.error('Parse error:', parseError);
 
     throw new Error(
-      `Gat ekki túlkað JSON svar: ${parseError instanceof Error ? parseError.message : 'Óþekkt villa'}`
+      `Gat ekki túlkað JSON svar: ${parseError instanceof Error ? parseError.message : 'Óþekkt villa'}`,
+      { cause: parseError }
     );
   }
 };
@@ -245,7 +246,7 @@ const analyzeWithClaude2 = async (
   } catch (error: unknown) {
     clearTimeout(timeoutId);
     if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error('Timeout - skýrsla tók of langan tíma');
+      throw new Error('Timeout - skýrsla tók of langan tíma', { cause: error });
     }
     throw error;
   }
@@ -326,7 +327,8 @@ export const processFile2ar = async (
     console.error('JSON parsing failed. Response text:', resultText.substring(0, 500));
     console.error('Extracted JSON:', jsonText.substring(0, 500));
     throw new Error(
-      `Gat ekki túlkað JSON svar: ${parseError instanceof Error ? parseError.message : 'Óþekkt villa'}`
+      `Gat ekki túlkað JSON svar: ${parseError instanceof Error ? parseError.message : 'Óþekkt villa'}`,
+      { cause: parseError }
     );
   }
 };

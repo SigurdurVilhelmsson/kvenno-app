@@ -288,7 +288,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 // Curve preview using InteractiveGraph
 function TitrationCurvePreview({ curveType }: { curveType?: string }) {
   const { series, marker } = useMemo(() => {
-    let curveData: { volume: number; pH: number }[] = [];
+    let curveData: { volume: number; pH: number }[];
     let equivVolume = 25;
     let equivPH = 7;
 

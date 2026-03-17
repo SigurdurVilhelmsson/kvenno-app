@@ -56,14 +56,12 @@ export const exportResultsToCSV = (
     ]);
 
     // Combine headers and rows with proper CSV escaping
-    const csv = [headers, ...rows]
-      .map((row) => row.map(escapeCSV).join(','))
-      .join('\n');
+    const csv = [headers, ...rows].map((row) => row.map(escapeCSV).join(',')).join('\n');
 
     downloadCSV(csv, filename || `lab_report_grades_${new Date().toISOString().split('T')[0]}.csv`);
   } catch (error) {
     console.error('Error exporting CSV:', error);
-    throw new Error('Villa við að búa til CSV skrá');
+    throw new Error('Villa við að búa til CSV skrá', { cause: error });
   }
 };
 
@@ -99,7 +97,7 @@ export const exportChecklist2ToCSV = (
     for (const key of itemKeys) {
       const sectionItems = result.checklist[key.section];
       if (sectionItems) {
-        const item = sectionItems.find(it => it.id === key.id);
+        const item = sectionItems.find((it) => it.id === key.id);
         if (item) {
           if (item.present === true) row.push('\u2713');
           else if (item.present === false) row.push('\u2717');
@@ -120,9 +118,7 @@ export const exportChecklist2ToCSV = (
     return row;
   });
 
-  const csv = [headers, ...rows]
-    .map((row) => row.map(escapeCSV).join(','))
-    .join('\n');
+  const csv = [headers, ...rows].map((row) => row.map(escapeCSV).join(',')).join('\n');
 
   downloadCSV(csv, outputFilename || `gatlistamat_${new Date().toISOString().split('T')[0]}.csv`);
 };

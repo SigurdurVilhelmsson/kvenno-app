@@ -214,7 +214,7 @@ function App() {
     const error = calculateError(userNum, currentQuestion.answer);
 
     let points = 0;
-    let message = '';
+    let message: string;
 
     if (isCorrect) {
       points = 100;

@@ -1,7 +1,7 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import reactHooks from 'eslint-plugin-react-hooks';
-import importPlugin from 'eslint-plugin-import';
+import importPlugin from 'eslint-plugin-import-x';
 import globals from 'globals';
 
 export default tseslint.config(
@@ -13,7 +13,7 @@ export default tseslint.config(
     ignores: ['server/**'],
     plugins: {
       'react-hooks': reactHooks,
-      'import': importPlugin,
+      'import-x': importPlugin,
     },
     languageOptions: {
       globals: {
@@ -26,7 +26,7 @@ export default tseslint.config(
       },
     },
     settings: {
-      'import/resolver': {
+      'import-x/resolver': {
         typescript: true,
         node: true,
       },
@@ -43,7 +43,7 @@ export default tseslint.config(
       'no-var': 'error',
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
-      'import/order': [
+      'import-x/order': [
         'warn',
         {
           groups: [
@@ -69,7 +69,7 @@ export default tseslint.config(
   {
     files: ['server/src/**/*.{ts,tsx}'],
     plugins: {
-      'import': importPlugin,
+      'import-x': importPlugin,
     },
     languageOptions: {
       globals: {
