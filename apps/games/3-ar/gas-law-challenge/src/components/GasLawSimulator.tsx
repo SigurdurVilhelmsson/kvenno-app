@@ -28,7 +28,7 @@ const LABELS: Record<Variable, string> = {
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 /** Max ranges for scaling the visual elements */
-const V_MAX = 50; // L
+const V_MAX = 100; // L — clamped for visual scaling
 const P_MAX = 10; // atm
 
 /** Map volume to container width (200..400 px) */
@@ -54,7 +54,7 @@ function getEffectiveValues(question: GasLawQuestion, useAnswer: boolean, correc
 
   let P = g.P?.value ?? 0;
   let V = g.V?.value ?? 0;
-  let T = g.T?.value ?? 0;
+  let T = g.T?.value ?? 300;
   let n = g.n?.value ?? 0;
 
   // Fill in the unknown variable
@@ -287,7 +287,7 @@ export function GasLawSimulator({
 
           {/* Particle count overlay */}
           <div className="absolute top-1 left-1 bg-slate-900/70 px-1.5 py-0.5 rounded text-[10px] text-warm-300 font-mono pointer-events-none">
-            n ~ {numParticles} agnir
+            {numParticles} agnir
           </div>
         </div>
 

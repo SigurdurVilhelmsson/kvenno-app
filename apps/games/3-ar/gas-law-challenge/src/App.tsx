@@ -655,7 +655,7 @@ function App() {
                     <GasLawSimulator
                       question={currentQuestion}
                       isRunning={screen === 'game'}
-                      showAnswer={feedback?.isCorrect !== undefined}
+                      showAnswer={feedback?.isCorrect === true}
                       correctAnswer={currentQuestion.answer}
                     />
 
