@@ -7,17 +7,7 @@ import {
   FadePresence,
   Presence,
 } from '@shared/components';
-import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
-import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
-import { AnimatedBackground } from '@shared/components/AnimatedBackground';
-import {
-  ParticleCelebration,
-  useParticleCelebration,
-} from '@shared/components/ParticleCelebration';
-import { SoundToggle } from '@shared/components/SoundToggle';
 import { useGameI18n } from '@shared/hooks';
-import { useAchievements } from '@shared/hooks/useAchievements';
-import { useGameSounds } from '@shared/hooks/useGameSounds';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
@@ -70,82 +60,38 @@ function App() {
   const [activeLevel, setActiveLevel] = useState<ActiveLevel>('menu');
   const { language, setLanguage, t } = useGameI18n({ gameTranslations });
   const [progress, setProgress] = useState<Progress>(loadProgress);
-  const [showAchievements, setShowAchievements] = useState(false);
-
-  // Achievement system
-  const {
-    achievements,
-    allAchievements,
-    notifications,
-    trackLevelComplete,
-    trackGameComplete,
-    trackCorrectAnswer,
-    trackIncorrectAnswer,
-    dismissNotification,
-    resetAll: resetAchievements,
-  } = useAchievements({ gameId: 'ph-titration' });
-
-  const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('3-ar');
-  const {
-    playCorrect,
-    playWrong,
-    playLevelComplete,
-    isEnabled: soundEnabled,
-    toggleSound,
-  } = useGameSounds();
-
-  const handleCorrectAnswer = (...args: Parameters<typeof trackCorrectAnswer>) => {
-    trackCorrectAnswer(...args);
-    playCorrect();
-    triggerCorrect();
-  };
-
-  const handleIncorrectAnswer = (...args: Parameters<typeof trackIncorrectAnswer>) => {
-    trackIncorrectAnswer(...args);
-    playWrong();
-  };
 
   useEffect(() => {
     saveProgress(progress);
   }, [progress]);
 
-  const handleLevel1Complete = (score: number, maxScore: number = 600, hintsUsed: number = 0) => {
+  const handleLevel1Complete = (score: number, _maxScore: number = 600, _hintsUsed: number = 0) => {
     setProgress((prev) => ({
       ...prev,
       level1Completed: true,
       level1Score: Math.max(prev.level1Score, score),
       totalGamesPlayed: prev.totalGamesPlayed + 1,
     }));
-    trackLevelComplete(1, score, maxScore, { hintsUsed });
-    playLevelComplete();
-    triggerLevelComplete();
     setActiveLevel('menu');
   };
 
-  const handleLevel2Complete = (score: number, maxScore: number = 600, hintsUsed: number = 0) => {
+  const handleLevel2Complete = (score: number, _maxScore: number = 600, _hintsUsed: number = 0) => {
     setProgress((prev) => ({
       ...prev,
       level2Completed: true,
       level2Score: Math.max(prev.level2Score, score),
       totalGamesPlayed: prev.totalGamesPlayed + 1,
     }));
-    trackLevelComplete(2, score, maxScore, { hintsUsed });
-    playLevelComplete();
-    triggerLevelComplete();
     setActiveLevel('menu');
   };
 
-  const handleLevel3Complete = (score: number, maxScore: number = 160, hintsUsed: number = 0) => {
+  const handleLevel3Complete = (score: number, _maxScore: number = 160, _hintsUsed: number = 0) => {
     setProgress((prev) => ({
       ...prev,
       level3Completed: true,
       level3Score: Math.max(prev.level3Score, score),
       totalGamesPlayed: prev.totalGamesPlayed + 1,
     }));
-    trackLevelComplete(3, score, maxScore, { hintsUsed });
-    trackGameComplete();
-    playLevelComplete();
-    triggerLevelComplete();
     setActiveLevel('complete');
   };
 
@@ -165,31 +111,15 @@ function App() {
   return (
     <>
       <FadePresence show={activeLevel === 'level1'} exitDuration={200}>
-        <Level1
-          onComplete={handleLevel1Complete}
-          onBack={() => setActiveLevel('menu')}
-          onCorrectAnswer={() => handleCorrectAnswer()}
-          onIncorrectAnswer={() => handleIncorrectAnswer()}
-        />
+        <Level1 onComplete={handleLevel1Complete} onBack={() => setActiveLevel('menu')} />
       </FadePresence>
 
       <FadePresence show={activeLevel === 'level2'} exitDuration={200}>
-        <Level2
-          onComplete={handleLevel2Complete}
-          onBack={() => setActiveLevel('menu')}
-          onCorrectAnswer={() => handleCorrectAnswer()}
-          onIncorrectAnswer={() => handleIncorrectAnswer()}
-        />
+        <Level2 onComplete={handleLevel2Complete} onBack={() => setActiveLevel('menu')} />
       </FadePresence>
 
       <FadePresence show={activeLevel === 'level3'} exitDuration={200}>
-        <Level3
-          onComplete={handleLevel3Complete}
-          onBack={() => setActiveLevel('menu')}
-          onCorrectAnswer={() => handleCorrectAnswer()}
-          onIncorrectAnswer={() => handleIncorrectAnswer()}
-          t={t}
-        />
+        <Level3 onComplete={handleLevel3Complete} onBack={() => setActiveLevel('menu')} t={t} />
       </FadePresence>
 
       <FadePresence show={activeLevel === 'complete'} exitDuration={200}>
@@ -271,24 +201,17 @@ function App() {
       </FadePresence>
 
       <FadePresence show={activeLevel === 'menu'} exitDuration={200}>
-        <AnimatedBackground yearTheme="3-ar" variant="menu">
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
           <Header
             variant="game"
             backHref="/efnafraedi/3-ar/"
             gameTitle="pH Titrun"
             authSlot={
-              <>
-                <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
-                <LanguageSwitcher
-                  language={language}
-                  onLanguageChange={setLanguage}
-                  variant="compact"
-                />
-                <AchievementsButton
-                  achievements={achievements}
-                  onClick={() => setShowAchievements(true)}
-                />
-              </>
+              <LanguageSwitcher
+                language={language}
+                onLanguageChange={setLanguage}
+                variant="compact"
+              />
             }
           />
           <div className="min-h-screen p-4 md:p-8">
@@ -341,36 +264,21 @@ function App() {
 
                 {/* Level 2 */}
                 <button
-                  onClick={() => progress.level1Completed && setActiveLevel('level2')}
-                  className={`game-card w-full p-6 rounded-xl border-4 transition-all text-left ${
-                    progress.level1Completed
-                      ? 'border-green-400 bg-green-50 hover:bg-green-100 cursor-pointer'
-                      : 'border-warm-200 bg-warm-50 opacity-60 cursor-not-allowed'
-                  }`}
+                  onClick={() => setActiveLevel('level2')}
+                  className="game-card w-full p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
                 >
                   <div className="flex items-center gap-4">
                     <div className="text-4xl">🧪</div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <span
-                          className={`text-xl font-bold ${progress.level1Completed ? 'text-green-800' : 'text-warm-600'}`}
-                        >
-                          Stig 2: Framkvæmd
-                        </span>
+                        <span className="text-xl font-bold text-green-800">Stig 2: Framkvæmd</span>
                         {progress.level2Completed && (
                           <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
                             ✓ {progress.level2Score} stig
                           </span>
                         )}
-                        {!progress.level1Completed && (
-                          <span className="text-xs text-warm-500">
-                            ({t('levels.level2.locked')})
-                          </span>
-                        )}
                       </div>
-                      <div
-                        className={`text-sm mt-1 ${progress.level1Completed ? 'text-green-600' : 'text-warm-500'}`}
-                      >
+                      <div className="text-sm text-green-600 mt-1">
                         Gagnvirk títrun í rannsóknarstofu
                       </div>
                       <div className="text-xs text-warm-600 mt-2">
@@ -383,20 +291,14 @@ function App() {
 
                 {/* Level 3 */}
                 <button
-                  onClick={() => progress.level2Completed && setActiveLevel('level3')}
-                  className={`game-card w-full p-6 rounded-xl border-4 transition-all text-left ${
-                    progress.level2Completed
-                      ? 'border-purple-400 bg-purple-50 hover:bg-purple-100 cursor-pointer'
-                      : 'border-warm-200 bg-warm-50 opacity-60 cursor-not-allowed'
-                  }`}
+                  onClick={() => setActiveLevel('level3')}
+                  className="game-card w-full p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
                 >
                   <div className="flex items-center gap-4">
                     <div className="text-4xl">📐</div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <span
-                          className={`text-xl font-bold ${progress.level2Completed ? 'text-purple-800' : 'text-warm-600'}`}
-                        >
+                        <span className="text-xl font-bold text-purple-800">
                           Stig 3: Útreikningar
                         </span>
                         {progress.level3Completed && (
@@ -404,15 +306,8 @@ function App() {
                             ✓ {progress.level3Score} stig
                           </span>
                         )}
-                        {!progress.level2Completed && (
-                          <span className="text-xs text-warm-500">
-                            ({t('levels.level3.locked')})
-                          </span>
-                        )}
                       </div>
-                      <div
-                        className={`text-sm mt-1 ${progress.level2Completed ? 'text-purple-600' : 'text-warm-500'}`}
-                      >
+                      <div className="text-sm text-purple-600 mt-1">
                         Styrkreikningar og fjölprótón sýrur
                       </div>
                       <div className="text-xs text-warm-600 mt-2">
@@ -481,25 +376,8 @@ function App() {
               </div>
             </div>
           </div>
-        </AnimatedBackground>
+        </div>
       </FadePresence>
-
-      {/* Achievements Panel Modal */}
-      {showAchievements && (
-        <AchievementsPanel
-          achievements={achievements}
-          allAchievements={allAchievements}
-          onClose={() => setShowAchievements(false)}
-          onReset={resetAchievements}
-        />
-      )}
-
-      <AchievementNotificationsContainer
-        notifications={notifications}
-        onDismiss={dismissNotification}
-      />
-
-      <ParticleCelebration {...celebrationProps} />
     </>
   );
 }

@@ -1,17 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import { Header, LanguageSwitcher, ErrorBoundary, FadePresence } from '@shared/components';
-import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
-import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
-import { AnimatedBackground } from '@shared/components/AnimatedBackground';
-import {
-  ParticleCelebration,
-  useParticleCelebration,
-} from '@shared/components/ParticleCelebration';
-import { SoundToggle } from '@shared/components/SoundToggle';
 import { useGameI18n } from '@shared/hooks';
-import { useAchievements } from '@shared/hooks/useAchievements';
-import { useGameSounds } from '@shared/hooks/useGameSounds';
 
 import Level1 from './components/Level1';
 import Level2 from './components/Level2';
@@ -72,83 +62,41 @@ function App() {
   const [activeLevel, setActiveLevel] = useState<ActiveLevel>('menu');
   const { language, setLanguage } = useGameI18n({ gameTranslations });
   const [progress, setProgress] = useState<Progress>(loadProgress);
-  const [showAchievements, setShowAchievements] = useState(false);
-
-  // Achievement system
-  const {
-    achievements,
-    allAchievements,
-    notifications,
-    trackCorrectAnswer,
-    trackIncorrectAnswer,
-    trackLevelComplete,
-    dismissNotification,
-    resetAll: resetAchievements,
-  } = useAchievements({ gameId: 'buffer-recipe-creator' });
-
-  const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('3-ar');
-  const {
-    playCorrect,
-    playWrong,
-    playLevelComplete,
-    isEnabled: soundEnabled,
-    toggleSound,
-  } = useGameSounds();
-
-  const handleCorrectAnswer = (...args: Parameters<typeof trackCorrectAnswer>) => {
-    trackCorrectAnswer(...args);
-    playCorrect();
-    triggerCorrect();
-  };
-
-  const handleIncorrectAnswer = (...args: Parameters<typeof trackIncorrectAnswer>) => {
-    trackIncorrectAnswer(...args);
-    playWrong();
-  };
 
   useEffect(() => {
     saveProgress(progress);
   }, [progress]);
 
   // Handle level 1 completion
-  const handleLevel1Complete = (score: number, maxScore: number, hintsUsed: number) => {
+  const handleLevel1Complete = (score: number, _maxScore: number, _hintsUsed: number) => {
     setProgress((prev) => ({
       ...prev,
       level1Completed: true,
       level1Score: Math.max(prev.level1Score, score),
       totalGamesPlayed: prev.totalGamesPlayed + 1,
     }));
-    trackLevelComplete(1, score, maxScore, { hintsUsed });
-    playLevelComplete();
-    triggerLevelComplete();
     setActiveLevel('menu');
   };
 
   // Handle level 2 completion
-  const handleLevel2Complete = (score: number, maxScore: number, hintsUsed: number) => {
+  const handleLevel2Complete = (score: number, _maxScore: number, _hintsUsed: number) => {
     setProgress((prev) => ({
       ...prev,
       level2Completed: true,
       level2Score: Math.max(prev.level2Score, score),
       totalGamesPlayed: prev.totalGamesPlayed + 1,
     }));
-    trackLevelComplete(2, score, maxScore, { hintsUsed });
-    playLevelComplete();
-    triggerLevelComplete();
     setActiveLevel('menu');
   };
 
   // Handle level 3 completion
-  const handleLevel3Complete = (score: number, maxScore: number, hintsUsed: number) => {
+  const handleLevel3Complete = (score: number, _maxScore: number, _hintsUsed: number) => {
     setProgress((prev) => ({
       ...prev,
       level3Completed: true,
       level3Score: Math.max(prev.level3Score, score),
       totalGamesPlayed: prev.totalGamesPlayed + 1,
     }));
-    trackLevelComplete(3, score, maxScore, { hintsUsed });
-    playLevelComplete();
-    triggerLevelComplete();
     setActiveLevel('menu');
   };
 
@@ -181,59 +129,30 @@ function App() {
             </button>
           </div>
 
-          {/* Achievements button */}
-          <div className="fixed top-4 right-4 z-40">
-            <AchievementsButton
-              achievements={achievements}
-              onClick={() => setShowAchievements(true)}
-            />
-          </div>
-
-          <Level1
-            onCorrectAnswer={() => handleCorrectAnswer()}
-            onIncorrectAnswer={() => handleIncorrectAnswer()}
-            onLevelComplete={handleLevel1Complete}
-          />
+          <Level1 onLevelComplete={handleLevel1Complete} />
         </div>
       </FadePresence>
 
       <FadePresence show={activeLevel === 'level2'} exitDuration={200}>
-        <Level2
-          onComplete={handleLevel2Complete}
-          onBack={() => setActiveLevel('menu')}
-          onCorrectAnswer={() => handleCorrectAnswer()}
-          onIncorrectAnswer={() => handleIncorrectAnswer()}
-        />
+        <Level2 onComplete={handleLevel2Complete} onBack={() => setActiveLevel('menu')} />
       </FadePresence>
 
       <FadePresence show={activeLevel === 'level3'} exitDuration={200}>
-        <Level3
-          onComplete={handleLevel3Complete}
-          onBack={() => setActiveLevel('menu')}
-          onCorrectAnswer={() => handleCorrectAnswer()}
-          onIncorrectAnswer={() => handleIncorrectAnswer()}
-        />
+        <Level3 onComplete={handleLevel3Complete} onBack={() => setActiveLevel('menu')} />
       </FadePresence>
 
       <FadePresence show={activeLevel === 'menu'} exitDuration={200}>
-        <AnimatedBackground yearTheme="3-ar" variant="menu">
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
           <Header
             variant="game"
             backHref="/efnafraedi/3-ar/"
             gameTitle="Stuðpúðasmíði"
             authSlot={
-              <>
-                <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
-                <LanguageSwitcher
-                  language={language}
-                  onLanguageChange={setLanguage}
-                  variant="compact"
-                />
-                <AchievementsButton
-                  achievements={achievements}
-                  onClick={() => setShowAchievements(true)}
-                />
-              </>
+              <LanguageSwitcher
+                language={language}
+                onLanguageChange={setLanguage}
+                variant="compact"
+              />
             }
           />
           <div className="min-h-screen p-4 md:p-8">
@@ -293,28 +212,18 @@ function App() {
 
                 {/* Level 2 */}
                 <button
-                  onClick={() => progress.level1Completed && setActiveLevel('level2')}
-                  className={`game-card w-full p-6 rounded-xl border-4 transition-all text-left ${
-                    progress.level1Completed
-                      ? 'hover:shadow-lg cursor-pointer'
-                      : 'opacity-60 cursor-not-allowed'
-                  }`}
+                  onClick={() => setActiveLevel('level2')}
+                  className="game-card w-full p-6 rounded-xl border-4 transition-all text-left hover:shadow-lg cursor-pointer"
                   style={{
-                    borderColor: progress.level1Completed ? '#22c55e' : '#d1d5db',
-                    backgroundColor: progress.level1Completed
-                      ? 'rgba(34, 197, 94, 0.05)'
-                      : '#f9fafb',
+                    borderColor: '#22c55e',
+                    backgroundColor: 'rgba(34, 197, 94, 0.05)',
                   }}
                 >
                   <div className="flex items-center gap-4">
                     <div className="text-4xl">📐</div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <span
-                          className={`text-xl font-bold ${
-                            progress.level1Completed ? 'text-green-700' : 'text-warm-500'
-                          }`}
-                        >
+                        <span className="text-xl font-bold text-green-700">
                           Stig 2: Útreikningar
                         </span>
                         {progress.level2Completed && (
@@ -322,15 +231,8 @@ function App() {
                             ✓ {progress.level2Score} stig
                           </span>
                         )}
-                        {!progress.level1Completed && (
-                          <span className="text-xs text-warm-500">(Ljúktu stigi 1 fyrst)</span>
-                        )}
                       </div>
-                      <div
-                        className={`text-sm mt-1 ${
-                          progress.level1Completed ? 'text-green-600' : 'text-warm-500'
-                        }`}
-                      >
+                      <div className="text-sm mt-1 text-green-600">
                         Henderson-Hasselbalch útreikningar
                       </div>
                       <div className="text-xs text-warm-600 mt-2">
@@ -343,44 +245,25 @@ function App() {
 
                 {/* Level 3 */}
                 <button
-                  onClick={() => progress.level2Completed && setActiveLevel('level3')}
-                  className={`game-card w-full p-6 rounded-xl border-4 transition-all text-left ${
-                    progress.level2Completed
-                      ? 'hover:shadow-lg cursor-pointer'
-                      : 'opacity-60 cursor-not-allowed'
-                  }`}
+                  onClick={() => setActiveLevel('level3')}
+                  className="game-card w-full p-6 rounded-xl border-4 transition-all text-left hover:shadow-lg cursor-pointer"
                   style={{
-                    borderColor: progress.level2Completed ? '#10b981' : '#d1d5db',
-                    backgroundColor: progress.level2Completed
-                      ? 'rgba(16, 185, 129, 0.05)'
-                      : '#f9fafb',
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.05)',
                   }}
                 >
                   <div className="flex items-center gap-4">
                     <div className="text-4xl">🏭</div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <span
-                          className={`text-xl font-bold ${
-                            progress.level2Completed ? 'text-emerald-700' : 'text-warm-500'
-                          }`}
-                        >
-                          Stig 3: Hönnun
-                        </span>
+                        <span className="text-xl font-bold text-emerald-700">Stig 3: Hönnun</span>
                         {progress.level3Completed && (
                           <span className="bg-emerald-500 text-white text-xs px-2 py-1 rounded-full">
                             ✓ {progress.level3Score} stig
                           </span>
                         )}
-                        {!progress.level2Completed && (
-                          <span className="text-xs text-warm-500">(Ljúktu stigi 2 fyrst)</span>
-                        )}
                       </div>
-                      <div
-                        className={`text-sm mt-1 ${
-                          progress.level2Completed ? 'text-emerald-600' : 'text-warm-500'
-                        }`}
-                      >
+                      <div className="text-sm mt-1 text-emerald-600">
                         Birgðalausnir og rúmmálsútreikningar
                       </div>
                       <div className="text-xs text-warm-600 mt-2">
@@ -449,29 +332,12 @@ function App() {
 
               {/* Credits */}
               <div className="mt-6 text-center text-xs text-warm-500">
-                Kafli 16 — Chemistry: The Central Science (Brown et al.)
+                Kafli 17 — Chemistry: The Central Science (Brown et al.)
               </div>
             </div>
           </div>
-        </AnimatedBackground>
+        </div>
       </FadePresence>
-
-      {/* Achievements Panel Modal */}
-      {showAchievements && (
-        <AchievementsPanel
-          achievements={achievements}
-          allAchievements={allAchievements}
-          onClose={() => setShowAchievements(false)}
-          onReset={resetAchievements}
-        />
-      )}
-
-      <AchievementNotificationsContainer
-        notifications={notifications}
-        onDismiss={dismissNotification}
-      />
-
-      <ParticleCelebration {...celebrationProps} />
     </>
   );
 }

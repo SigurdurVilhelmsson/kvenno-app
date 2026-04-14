@@ -39,6 +39,7 @@ const games = [
   ['2-ar', 'intermolecular-forces', 'intermolecular-forces'],
   ['2-ar', 'organic-nomenclature', 'organic-nomenclature'],
   ['2-ar', 'redox-reactions', 'redox-reactions'],
+  ['2-ar', 'rafeindabygging', 'rafeindabygging'],
 
   // Year 3 games
   ['3-ar', 'ph-titration', 'ph-titration'],

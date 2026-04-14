@@ -7,17 +7,7 @@ import {
   Presence,
   FadePresence,
 } from '@shared/components';
-import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
-import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
-import { AnimatedBackground } from '@shared/components/AnimatedBackground';
-import {
-  ParticleCelebration,
-  useParticleCelebration,
-} from '@shared/components/ParticleCelebration';
-import { SoundToggle } from '@shared/components/SoundToggle';
 import { useGameI18n } from '@shared/hooks';
-import { useAchievements } from '@shared/hooks/useAchievements';
-import { useGameSounds } from '@shared/hooks/useGameSounds';
 
 import { GasLawSimulator } from './components/GasLawSimulator';
 import { questions, getRandomQuestion } from './data';
@@ -72,7 +62,6 @@ function App() {
   const [showSolution, setShowSolution] = useState(false);
   const [feedback, setFeedback] = useState<QuestionFeedback | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
-  const [showAchievements, setShowAchievements] = useState(false);
   const [sessionHintsUsed, setSessionHintsUsed] = useState(0);
   const [sessionQuestionsAnswered, setSessionQuestionsAnswered] = useState(0);
   const [sessionCompleted, setSessionCompleted] = useState(false);
@@ -87,28 +76,6 @@ function App() {
 
   // Stats with localStorage persistence
   const [stats, setStats] = useState<GameStats>(loadStats);
-
-  // Achievement system
-  const {
-    achievements,
-    allAchievements,
-    notifications,
-    trackCorrectAnswer,
-    trackIncorrectAnswer,
-    trackLevelComplete,
-    trackGameComplete,
-    dismissNotification,
-    resetAll: resetAchievements,
-  } = useAchievements({ gameId: 'gas-law-challenge' });
-
-  const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('3-ar');
-  const {
-    playCorrect,
-    playWrong,
-    playLevelComplete,
-    isEnabled: soundEnabled,
-    toggleSound,
-  } = useGameSounds();
 
   // Save stats whenever they change
   useEffect(() => {
@@ -159,8 +126,6 @@ function App() {
         correct: false,
         message: `Ekki rétt. Þetta verkefni notar ${correctLawInfo.nameIs}: ${correctLawInfo.formula}. ${correctLawInfo.description}.`,
       });
-      trackIncorrectAnswer();
-      playWrong();
     }
   };
 
@@ -223,38 +188,14 @@ function App() {
       points -= showHint * 10; // Hint penalty
 
       message = error < 1 ? 'Fullkomið! Mjög nákvæmt svar! ⭐' : 'Rétt! Innan vikmarka ✓';
-
-      trackCorrectAnswer({ firstAttempt: showHint === 0 });
-      playCorrect();
-      if (stats.streak + 1 >= 3) triggerCorrect();
     } else {
       message = error < 5 ? 'Næstum rétt! Reyndu aftur.' : 'Ekki rétt. Athugaðu útreikninga þína.';
-
-      trackIncorrectAnswer();
-      playWrong();
     }
 
     const newQuestionsAnswered = sessionQuestionsAnswered + 1;
     setSessionQuestionsAnswered(newQuestionsAnswered);
 
-    // Track level milestones (every 5 questions = a "level" for achievement purposes)
-    // Level 1: 5 questions, Level 2: 10 questions, Level 3: 15 questions
-    if (newQuestionsAnswered === 5) {
-      const levelScore = stats.correctAnswers + (isCorrect ? 1 : 0);
-      trackLevelComplete(1, levelScore, 5, { hintsUsed: sessionHintsUsed });
-      playLevelComplete();
-      triggerLevelComplete();
-    } else if (newQuestionsAnswered === 10) {
-      const levelScore = stats.correctAnswers + (isCorrect ? 1 : 0);
-      trackLevelComplete(2, levelScore, 10, { hintsUsed: sessionHintsUsed });
-      playLevelComplete();
-      triggerLevelComplete();
-    } else if (newQuestionsAnswered === 15) {
-      const levelScore = stats.correctAnswers + (isCorrect ? 1 : 0);
-      trackLevelComplete(3, levelScore, 15, { hintsUsed: sessionHintsUsed });
-      trackGameComplete();
-      playLevelComplete();
-      triggerLevelComplete();
+    if (newQuestionsAnswered === 15) {
       setSessionCompleted(true);
     }
 
@@ -315,24 +256,17 @@ function App() {
   const renderMenu = () => {
     return (
       <div>
-        <AnimatedBackground yearTheme="3-ar" variant="menu">
+        <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
           <Header
             variant="game"
             backHref="/efnafraedi/3-ar/"
             gameTitle="Gas Law Challenge"
             authSlot={
-              <>
-                <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
-                <LanguageSwitcher
-                  language={language}
-                  onLanguageChange={setLanguage}
-                  variant="compact"
-                />
-                <AchievementsButton
-                  achievements={achievements}
-                  onClick={() => setShowAchievements(true)}
-                />
-              </>
+              <LanguageSwitcher
+                language={language}
+                onLanguageChange={setLanguage}
+                variant="compact"
+              />
             }
           />
           <div className="min-h-screen">
@@ -442,7 +376,7 @@ function App() {
               <p>© 2024 Kvennaskólinn - Efnafræðileikir</p>
             </footer>
           </div>
-        </AnimatedBackground>
+        </div>
       </div>
     );
   };
@@ -473,10 +407,6 @@ function App() {
                       ⏱️ {timeRemaining}s
                     </div>
                   )}
-                  <AchievementsButton
-                    achievements={achievements}
-                    onClick={() => setShowAchievements(true)}
-                  />
                   <button
                     onClick={() => setScreen('menu')}
                     className="px-4 py-2 bg-warm-200 rounded-lg hover:bg-warm-300 transition"
@@ -947,10 +877,6 @@ function App() {
                 >
                   ➡️ Næsta spurning
                 </button>
-                <AchievementsButton
-                  achievements={achievements}
-                  onClick={() => setShowAchievements(true)}
-                />
                 <button
                   onClick={() => setScreen('menu')}
                   className="px-6 py-3 bg-warm-600 text-white rounded-lg hover:bg-warm-700 transition font-bold"
@@ -976,24 +902,6 @@ function App() {
       <FadePresence show={screen === 'feedback'} exitDuration={200}>
         {renderFeedback()}
       </FadePresence>
-
-      {/* Achievements Panel Modal */}
-      {showAchievements && (
-        <AchievementsPanel
-          achievements={achievements}
-          allAchievements={allAchievements}
-          onClose={() => setShowAchievements(false)}
-          onReset={resetAchievements}
-        />
-      )}
-
-      {/* Achievement Notifications */}
-      <AchievementNotificationsContainer
-        notifications={notifications}
-        onDismiss={dismissNotification}
-      />
-
-      <ParticleCelebration {...celebrationProps} />
     </>
   );
 }

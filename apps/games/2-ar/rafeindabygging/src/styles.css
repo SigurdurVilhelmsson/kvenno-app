@@ -1,0 +1,92 @@
+@import 'tailwindcss';
+@import '../../../../../packages/shared/styles/theme.css';
+@source "../../../../../packages/shared";
+@import '../../../../../packages/shared/styles/game-base.css';
+
+/* Orbital box diagram styles */
+.orbital-box {
+  @apply inline-flex flex-col items-center border-2 border-gray-400 rounded px-2 py-1 mx-0.5 min-w-8 min-h-10;
+}
+
+.orbital-box.filled {
+  @apply border-teal-500 bg-teal-50;
+}
+
+.orbital-box.half-filled {
+  @apply border-amber-500 bg-amber-50;
+}
+
+.orbital-box.empty {
+  @apply border-gray-300 bg-gray-50;
+}
+
+/* Quantum number card styles */
+.quantum-card {
+  @apply bg-white border-2 border-gray-200 rounded-xl p-4 cursor-pointer transition-all duration-200;
+}
+
+.quantum-card:hover {
+  @apply shadow-lg border-teal-400;
+}
+
+.quantum-card.selected {
+  @apply ring-4 ring-teal-400/50 border-teal-500 bg-teal-50;
+}
+
+.quantum-card.correct {
+  @apply border-green-500 bg-green-50;
+}
+
+.quantum-card.incorrect {
+  @apply border-red-500 bg-red-50;
+}
+
+/* Config input */
+.config-input {
+  @apply font-mono text-lg px-4 py-3 border-2 border-gray-300 rounded-xl w-full focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all;
+}
+
+/* Multiple choice */
+.mc-option {
+  @apply w-full p-4 rounded-xl border-2 border-gray-200 bg-white text-left font-mono transition-all duration-200 cursor-pointer;
+}
+
+.mc-option:hover:not(:disabled) {
+  @apply border-teal-400 shadow-md;
+}
+
+.mc-option.correct {
+  @apply border-green-500 bg-green-50;
+}
+
+.mc-option.incorrect {
+  @apply border-red-500 bg-red-50;
+}
+
+.mc-option:disabled {
+  @apply cursor-not-allowed;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

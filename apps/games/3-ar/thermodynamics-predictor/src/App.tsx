@@ -15,17 +15,7 @@ import type {
   RegionConfig,
   VerticalLineConfig,
 } from '@shared/components';
-import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
-import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
-import { AnimatedBackground } from '@shared/components/AnimatedBackground';
-import {
-  ParticleCelebration,
-  useParticleCelebration,
-} from '@shared/components/ParticleCelebration';
-import { SoundToggle } from '@shared/components/SoundToggle';
 import { useGameI18n } from '@shared/hooks';
-import { useAchievements } from '@shared/hooks/useAchievements';
-import { useGameSounds } from '@shared/hooks/useGameSounds';
 
 import { EntropyVisualization } from './components/EntropyVisualization';
 import { PROBLEMS } from './data';
@@ -80,42 +70,6 @@ function App() {
   const [progress, setProgress] = useState<ThermoProgress>(loadProgress);
   const [streak, setStreak] = useState(0);
   const [timeLeft, setTimeLeft] = useState(90);
-  const [showAchievements, setShowAchievements] = useState(false);
-
-  // Achievement system
-  const {
-    achievements,
-    allAchievements,
-    notifications,
-    trackLevelComplete,
-    trackGameComplete,
-    trackCorrectAnswer,
-    trackIncorrectAnswer,
-    dismissNotification,
-    resetAll: resetAchievements,
-  } = useAchievements({ gameId: 'thermodynamics-predictor' });
-
-  const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('3-ar');
-  const {
-    playCorrect,
-    playWrong,
-    playLevelComplete,
-    isEnabled: soundEnabled,
-    toggleSound,
-  } = useGameSounds();
-
-  // Map difficulty to level number for achievements
-  const difficultyToLevel = (diff: Difficulty): 1 | 2 | 3 => {
-    switch (diff) {
-      case 'beginner':
-        return 1;
-      case 'intermediate':
-        return 2;
-      case 'advanced':
-        return 3;
-    }
-  };
-
   // Save progress whenever it changes
   useEffect(() => {
     saveProgress(progress);
@@ -181,29 +135,8 @@ function App() {
         bestStreak: Math.max(prev.bestStreak, newStreak),
       }));
       setFeedback(`Rétt! +${points} stig`);
-
-      trackCorrectAnswer({ firstAttempt: true });
-      playCorrect();
-      if (streak + 1 >= 3) triggerCorrect();
-
-      // Track level completion every 5 problems completed (milestone-based)
-      const newProblemsCompleted = progress.problemsCompleted + 1;
-      if (newProblemsCompleted % 5 === 0) {
-        const level = difficultyToLevel(difficulty);
-        const maxScore = 100 * 5;
-        const scoreForLevel = Math.min(points * 5, maxScore);
-        trackLevelComplete(level, scoreForLevel, maxScore, { hintsUsed: 0 });
-        playLevelComplete();
-        triggerLevelComplete();
-
-        if (difficulty === 'advanced' && newProblemsCompleted >= 15) {
-          trackGameComplete();
-        }
-      }
     } else {
       setStreak(0);
-      trackIncorrectAnswer();
-      playWrong();
       if (!deltaGCorrect && !spontaneityCorrect) {
         setFeedback('Rangt. Bæði ΔG útreikningur og sjálfviljugheit eru röng.');
       } else if (!deltaGCorrect) {
@@ -320,24 +253,17 @@ function App() {
 
   const renderMenu = () => (
     <div>
-      <AnimatedBackground yearTheme="3-ar" variant="menu">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
         <Header
           variant="game"
           backHref="/efnafraedi/3-ar/"
           gameTitle="Varmafræði Spámaður"
           authSlot={
-            <>
-              <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
-              <LanguageSwitcher
-                language={language}
-                onLanguageChange={setLanguage}
-                variant="compact"
-              />
-              <AchievementsButton
-                achievements={achievements}
-                onClick={() => setShowAchievements(true)}
-              />
-            </>
+            <LanguageSwitcher
+              language={language}
+              onLanguageChange={setLanguage}
+              variant="compact"
+            />
           }
         />
         <div className="min-h-screen py-8">
@@ -467,7 +393,7 @@ function App() {
             </div>
           </div>
         </div>
-      </AnimatedBackground>
+      </div>
     </div>
   );
 
@@ -527,10 +453,6 @@ function App() {
                   <div className="text-sm text-warm-600">Spurning</div>
                   <div className="text-xl font-bold">{progress.problemsCompleted + 1}</div>
                 </div>
-                <AchievementsButton
-                  achievements={achievements}
-                  onClick={() => setShowAchievements(true)}
-                />
               </div>
             </div>
           </div>
@@ -998,24 +920,6 @@ function App() {
       <FadePresence show={mode !== 'menu'} exitDuration={200}>
         {renderGame()}
       </FadePresence>
-
-      {/* Achievements Panel Modal */}
-      {showAchievements && (
-        <AchievementsPanel
-          achievements={achievements}
-          allAchievements={allAchievements}
-          onClose={() => setShowAchievements(false)}
-          onReset={resetAchievements}
-        />
-      )}
-
-      {/* Achievement Notifications */}
-      <AchievementNotificationsContainer
-        notifications={notifications}
-        onDismiss={dismissNotification}
-      />
-
-      <ParticleCelebration {...celebrationProps} />
     </>
   );
 }

@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
 import { Header, LanguageSwitcher, ErrorBoundary } from '@shared/components';
-import { useGameI18n } from '@shared/hooks';
-import { useGameProgress } from '@shared/hooks';
+import { useGameI18n, useGameProgress } from '@shared/hooks';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
@@ -33,13 +32,13 @@ const DEFAULT_PROGRESS: Progress = {
 
 function App() {
   const [activeLevel, setActiveLevel] = useState<ActiveLevel>('menu');
-  const { language, setLanguage } = useGameI18n({ gameTranslations });
+  const { t, language, setLanguage } = useGameI18n({ gameTranslations });
   const { progress, updateProgress, resetProgress } = useGameProgress<Progress>(
-    'kinetics-progress',
+    'rafeindabygging-progress',
     DEFAULT_PROGRESS
   );
 
-  const handleLevel1Complete = (score: number, _maxScore: number, _hintsUsed: number) => {
+  const handleLevel1Complete = (score: number, _maxScore: number) => {
     updateProgress({
       level1Completed: true,
       level1Score: Math.max(progress.level1Score, score),
@@ -48,7 +47,7 @@ function App() {
     setActiveLevel('menu');
   };
 
-  const handleLevel2Complete = (score: number, _maxScore: number, _hintsUsed: number) => {
+  const handleLevel2Complete = (score: number, _maxScore: number) => {
     updateProgress({
       level2Completed: true,
       level2Score: Math.max(progress.level2Score, score),
@@ -57,7 +56,7 @@ function App() {
     setActiveLevel('menu');
   };
 
-  const handleLevel3Complete = (score: number, _maxScore: number, _hintsUsed: number) => {
+  const handleLevel3Complete = (score: number, _maxScore: number) => {
     updateProgress({
       level3Completed: true,
       level3Score: Math.max(progress.level3Score, score),
@@ -66,7 +65,6 @@ function App() {
     setActiveLevel('complete');
   };
 
-  // Render active level
   if (activeLevel === 'level1') {
     return <Level1 onComplete={handleLevel1Complete} onBack={() => setActiveLevel('menu')} />;
   }
@@ -100,24 +98,24 @@ function App() {
           <div className="space-y-4 mb-8">
             <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center">
               <div>
-                <div className="font-bold text-blue-800">Stig 1: Hraðahugtök</div>
-                <div className="text-sm text-blue-600">Hvað hefur áhrif á hraða?</div>
+                <div className="font-bold text-blue-800">Stig 1: Skammtatölur</div>
+                <div className="text-sm text-blue-600">n, l, mₗ, mₛ</div>
               </div>
               <div className="text-2xl font-bold text-blue-600">{progress.level1Score}</div>
             </div>
 
             <div className="bg-green-50 p-4 rounded-xl flex justify-between items-center">
               <div>
-                <div className="font-bold text-green-800">Stig 2: Hraðalögmál</div>
-                <div className="text-sm text-green-600">Byggja hraðajöfnur</div>
+                <div className="font-bold text-green-800">Stig 2: Rafeindasmíð</div>
+                <div className="text-sm text-green-600">Aufbau og Hund</div>
               </div>
               <div className="text-2xl font-bold text-green-600">{progress.level2Score}</div>
             </div>
 
             <div className="bg-purple-50 p-4 rounded-xl flex justify-between items-center">
               <div>
-                <div className="font-bold text-purple-800">Stig 3: Hvarfgangsháttur</div>
-                <div className="text-sm text-purple-600">Frumskref og millistig</div>
+                <div className="font-bold text-purple-800">Stig 3: Eðalgasstytting</div>
+                <div className="text-sm text-purple-600">Lotukerfi og rafeindir</div>
               </div>
               <div className="text-2xl font-bold text-purple-600">{progress.level3Score}</div>
             </div>
@@ -132,20 +130,16 @@ function App() {
             <h2 className="font-bold text-teal-800 mb-3">Hvað lærðir þú?</h2>
             <ul className="space-y-2 text-teal-900 text-sm">
               <li>
-                ✓ <strong>Hraði:</strong> Rate = Δ[efni]/Δt — hversu hratt efnahvörf gerast
+                ✓ <strong>Skammtatölur:</strong> n, l, mₗ og mₛ lýsa hverri rafeind
               </li>
               <li>
-                ✓ <strong>Hraðalögmál:</strong> Rate = k[A]<sup>m</sup>[B]<sup>n</sup> — tengsl við
-                styrk
+                ✓ <strong>Aufbau reglan:</strong> Rafeindir fylla svigrúm í orkuröð
               </li>
               <li>
-                ✓ <strong>Röð hvörfunar:</strong> Veldisvísir segir hversu mikið styrkur hefur áhrif
+                ✓ <strong>Regla Hunds:</strong> Rafeindir dreifastar fyrst einar í svigrúm
               </li>
               <li>
-                ✓ <strong>Hvarfgangsháttur:</strong> Röð frumskref sem mynda heildarhvörf
-              </li>
-              <li>
-                ✓ <strong>Hraðaákvarðandi skref:</strong> Hægasta skrefið ræður heildarhraða
+                ✓ <strong>Undantekningar:</strong> Cr ([Ar] 4s¹3d⁵) og Cu ([Ar] 4s¹3d¹⁰)
               </li>
             </ul>
           </div>
@@ -169,37 +163,33 @@ function App() {
     progress.level3Completed,
   ].filter(Boolean).length;
 
-  // Year 2: Teal/Cyan theme
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">
       <Header
         variant="game"
         backHref="/efnafraedi/2-ar/"
-        gameTitle="Hvarfhraði"
+        gameTitle={t('game.title')}
         authSlot={
           <LanguageSwitcher language={language} onLanguageChange={setLanguage} variant="compact" />
         }
       />
       <div className="min-h-screen flex items-center justify-center p-4 md:p-8">
         <div className="max-w-3xl w-full mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <p className="text-center text-warm-600 mb-8">
-            Lærðu um hraða efnahvarfa, hraðalögmál og hvarfgangshátt
+          <p className="text-warm-600 mb-4">
+            Lærðu um rafeindabyggingu atóma — skammtatölur, svigrúm og rafeindauppsetningu
           </p>
 
           {/* Pedagogical explanation */}
           <div className="bg-teal-50 p-6 rounded-xl mb-8">
-            <h2 className="font-bold text-teal-800 mb-3">Hvað er hvarfhraði?</h2>
+            <h2 className="font-bold text-teal-800 mb-3">Hvað er rafeindabygging?</h2>
             <p className="text-teal-900 text-sm mb-4">
-              <strong>Hvarfhraði (reaction rate)</strong> lýsir því hversu hratt hvarfefni breytast
-              í afurðir. Hraðinn ákvarðast af mörgum þáttum: styrk hvarfefna, hitastigi, hvata og
-              yfirborðsflatarmáli.
+              <strong>Rafeindabygging</strong> lýsir því hvernig rafeindir dreifast í svigrúmum
+              (orbitals) atómsins. Fjórar skammtatölur (n, l, mₗ, mₛ) auðkenna hverja rafeind.
+              Aufbau-reglan segir okkur í hvaða röð svigrúmin fyllast.
             </p>
             <div className="bg-white p-3 rounded-lg border border-teal-200">
               <p className="text-sm text-teal-800 font-mono text-center">
-                Rate = k[A]<sup>m</sup>[B]<sup>n</sup>
-              </p>
-              <p className="text-xs text-warm-600 text-center mt-1">
-                þar sem k = hraðafasti, m og n = veldisvísir (röð hvörfunar)
+                1s → 2s → 2p → 3s → 3p → 4s → 3d → 4p → ...
               </p>
             </div>
           </div>
@@ -212,19 +202,21 @@ function App() {
               className="game-card w-full p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
             >
               <div className="flex items-center gap-4">
-                <div className="text-4xl">🔬</div>
+                <div className="text-4xl">🔢</div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-xl font-bold text-blue-800">Stig 1: Hraðahugtök</span>
+                    <span className="text-xl font-bold text-blue-800">Stig 1: Skammtatölur</span>
                     {progress.level1Completed && (
                       <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
                         ✓ {progress.level1Score} stig
                       </span>
                     )}
                   </div>
-                  <div className="text-sm text-blue-600 mt-1">Hvað hefur áhrif á hvarfhraða?</div>
+                  <div className="text-sm text-blue-600 mt-1">
+                    Lærðu um skammtatölurnar n, l, mₗ og mₛ
+                  </div>
                   <div className="text-xs text-warm-600 mt-2">
-                    Styrk, hitastig, hvatar, yfirborð — sjáðu hvernig þessir þættir breyta hraðanum.
+                    Veldu gildar samsetningar skammtatalna. Skildu reglurnar um hvað er leyfilegt.
                   </div>
                 </div>
               </div>
@@ -236,19 +228,21 @@ function App() {
               className="game-card w-full p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
             >
               <div className="flex items-center gap-4">
-                <div className="text-4xl">📊</div>
+                <div className="text-4xl">⚛️</div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-xl font-bold text-green-800">Stig 2: Hraðalögmál</span>
+                    <span className="text-xl font-bold text-green-800">Stig 2: Rafeindasmíð</span>
                     {progress.level2Completed && (
                       <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
                         ✓ {progress.level2Score} stig
                       </span>
                     )}
                   </div>
-                  <div className="text-sm text-green-600 mt-1">Byggja og túlka hraðalögmál</div>
+                  <div className="text-sm text-green-600 mt-1">
+                    Fylltu í svigrúm samkvæmt Aufbau og Hund
+                  </div>
                   <div className="text-xs text-warm-600 mt-2">
-                    Notaðu gögn til að finna röð hvörfunar og hraðafast.
+                    Skrifaðu rafeindauppsetningu frumefna (t.d. 1s² 2s² 2p⁴ fyrir súrefni).
                   </div>
                 </div>
               </div>
@@ -260,11 +254,11 @@ function App() {
               className="game-card w-full p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
             >
               <div className="flex items-center gap-4">
-                <div className="text-4xl">⚙️</div>
+                <div className="text-4xl">📋</div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <span className="text-xl font-bold text-purple-800">
-                      Stig 3: Hvarfgangsháttur
+                      Stig 3: Lotukerfi og rafeindir
                     </span>
                     {progress.level3Completed && (
                       <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
@@ -273,10 +267,10 @@ function App() {
                     )}
                   </div>
                   <div className="text-sm text-purple-600 mt-1">
-                    Frumskref og hraðaákvarðandi skref
+                    Tengdu sæti í lotukerfinu við rafeindauppsetningu
                   </div>
                   <div className="text-xs text-warm-600 mt-2">
-                    Greindu hvarfgangshætti og finndu millistig.
+                    Þekktu eðalgasstyttinguna og undantekningar Cr og Cu.
                   </div>
                 </div>
               </div>
@@ -316,29 +310,26 @@ function App() {
 
           {/* Formula reference */}
           <div className="mt-6 bg-warm-50 p-4 rounded-xl">
-            <h3 className="font-semibold text-warm-700 mb-2">📐 Lykilformúlur</h3>
-            <div className="font-mono text-sm space-y-2 text-warm-600">
+            <h3 className="font-semibold text-warm-700 mb-2">📐 Skammtatölur</h3>
+            <div className="text-sm space-y-2 text-warm-600">
               <p>
-                <strong>Meðalhraði:</strong> Rate = -Δ[hvarfefni]/Δt = +Δ[afurð]/Δt
+                <strong>n</strong> (aðalskammtatala): 1, 2, 3, ... — ákvarðar skel/orkustig
               </p>
               <p>
-                <strong>Hraðalögmál:</strong> Rate = k[A]<sup>m</sup>[B]<sup>n</sup>
+                <strong>l</strong> (hliðarskammtatala): 0 til n-1 — s(0), p(1), d(2), f(3)
               </p>
               <p>
-                <strong>Röð hvörfunar:</strong> m + n = heildarröð
+                <strong>mₗ</strong> (segulskammtatala): -l til +l — stefna svigrúmsins
               </p>
               <p>
-                <strong>Arrhenius:</strong> k = Ae
-                <sup>
-                  -E<sub>a</sub>/RT
-                </sup>
+                <strong>mₛ</strong> (spunaskammtatala): +½ eða -½ — snúningur rafeindarinnar
               </p>
             </div>
           </div>
 
           {/* Credits */}
           <div className="mt-6 text-center text-xs text-warm-500">
-            Kafli 14 — Chemistry: The Central Science (Brown et al.)
+            Kafli 6 — Chemistry: The Central Science (Brown et al.)
           </div>
         </div>
       </div>

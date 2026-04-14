@@ -93,6 +93,11 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
         description: 'Lærðu um oxunartölur, rafeindiflutning og jafnvægi redox-hvörfum',
         slug: 'redox-reactions',
       },
+      {
+        title: 'Rafeindabygging',
+        description: 'Skammtatölur, svigrúm og rafeindauppsetning (Kafli 6)',
+        slug: 'rafeindabygging',
+      },
     ],
   },
   '3-ar': {
