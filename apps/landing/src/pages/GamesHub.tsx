@@ -28,29 +28,39 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
     yearLabel: '1. árs',
     games: [
       {
-        title: 'Takmarkandi hvarfefni',
-        description: 'Takmarkandi hvarfefni og afurðir',
-        slug: 'takmarkandi',
+        title: 'Einingagreining',
+        description: 'Námsleikur um einingagreiningu í efnafræði',
+        slug: 'dimensional-analysis',
       },
       {
-        title: 'Mólmassi',
-        description: 'Læra um mólmassa efna',
+        title: 'Lotukerfið',
+        description: 'Kynntu þér lotukerfið, frumefni og sameindagerð',
+        slug: 'lotukerfid',
+      },
+      {
+        title: 'Nafnakerfið',
+        description: 'Læra nöfn efnasambanda og nafnareglur',
+        slug: 'nafnakerfid',
+      },
+      {
+        title: 'Mólhugtakið',
+        description: 'Mólmassi, mól-umbreytingar og Avogadro-tala',
         slug: 'molmassi',
       },
       {
-        title: 'Nafnapör – Efnanöfn',
-        description: 'Læra nöfn efnasambanda með minnisleik',
-        slug: 'nafnakerfid',
+        title: 'Jafna Jöfnur',
+        description: 'Lærðu að jafna efnajöfnur',
+        slug: 'jafna-jofnur',
+      },
+      {
+        title: 'Takmarkandi hvarfefni',
+        description: 'Takmarkandi hvarfefni og stökjómetría',
+        slug: 'takmarkandi',
       },
       {
         title: 'Lausnir',
         description: 'Mólstyrkur og útþynning lausna',
         slug: 'lausnir',
-      },
-      {
-        title: 'Einingagreining',
-        description: 'Námsleikur um einingagreiningu í efnafræði',
-        slug: 'dimensional-analysis',
       },
     ],
   },

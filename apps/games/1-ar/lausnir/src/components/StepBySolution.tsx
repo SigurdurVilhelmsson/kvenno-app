@@ -18,8 +18,9 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
           <p>V₂ = {problem.given.V2} mL</p>
         </div>
         <div className="solution-step">
-          <h4>Skref 1: Velja formúlu</h4>
-          <p>M₁V₁ = M₂V₂ (útþynningarformúla)</p>
+          <h4>Skref 1: Varðveisla móla</h4>
+          <p>Við útþynningu breytist fjöldi móla ekki: mól₁ = mól₂</p>
+          <p>Þar sem mól = M × V: M₁ × V₁ = M₂ × V₂</p>
         </div>
         <div className="solution-step">
           <h4>Skref 2: Setja inn gildi</h4>
@@ -52,8 +53,8 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
           <p>rúmmál = {problem.given.volume} L</p>
         </div>
         <div className="solution-step">
-          <h4>Skref 1: Velja formúlu</h4>
-          <p>M = mól ÷ L</p>
+          <h4>Skref 1: Skilgreining mólstyrks</h4>
+          <p>Mólstyrkur = mól efnis ÷ rúmmál lausnar í lítrum</p>
         </div>
         <div className="solution-step">
           <h4>Skref 2: Setja inn gildi</h4>
@@ -92,17 +93,14 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
           <p>
             mól = {problem.given.massInGrams} g ÷ {problem.given.molarMass} g/mol
           </p>
-          <p>
-            mól = {(problem.given.massInGrams / problem.given.molarMass).toFixed(3)}{' '}
-            mol
-          </p>
+          <p>mól = {(problem.given.massInGrams / problem.given.molarMass).toFixed(3)} mol</p>
         </div>
         <div className="solution-step">
           <h4>Skref 3: Reikna mólstyrk</h4>
           <p>M = mól ÷ lítrar</p>
           <p>
-            M = {(problem.given.massInGrams / problem.given.molarMass).toFixed(3)}{' '}
-            mol ÷ {(problem.given.volumeInML / 1000).toFixed(3)} L
+            M = {(problem.given.massInGrams / problem.given.molarMass).toFixed(3)} mol ÷{' '}
+            {(problem.given.volumeInML / 1000).toFixed(3)} L
           </p>
           <p>M = {problem.answer.toFixed(3)} M</p>
         </div>
@@ -132,12 +130,12 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
         <div className="solution-step">
           <h4>Skref 1: Reikna heildarmól</h4>
           <p>
-            mól₁ = M₁ × V₁ = {problem.given.M1} M ×{' '}
-            {(problem.given.V1 / 1000).toFixed(3)} L = {moles1} mol
+            mól₁ = M₁ × V₁ = {problem.given.M1} M × {(problem.given.V1 / 1000).toFixed(3)} L ={' '}
+            {moles1} mol
           </p>
           <p>
-            mól₂ = M₂ × V₂ = {problem.given.M2} M ×{' '}
-            {(problem.given.V2 / 1000).toFixed(3)} L = {moles2} mol
+            mól₂ = M₂ × V₂ = {problem.given.M2} M × {(problem.given.V2 / 1000).toFixed(3)} L ={' '}
+            {moles2} mol
           </p>
           <p>
             mól_alls = {moles1} + {moles2} = {totalMoles} mol
@@ -164,9 +162,7 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
       </div>
     );
   } else if (problem.type === 'massFromMolarity') {
-    const moles = ((problem.given.molarity * problem.given.volumeInML) / 1000).toFixed(
-      3
-    );
+    const moles = ((problem.given.molarity * problem.given.volumeInML) / 1000).toFixed(3);
     return (
       <div className="mt-4 space-y-2">
         <h3 className="text-lg font-bold text-warm-800">Lausn með skrefum:</h3>
@@ -179,16 +175,14 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
         <div className="solution-step">
           <h4>Skref 1: Breyta mL í L</h4>
           <p>
-            {problem.given.volumeInML} mL ={' '}
-            {(problem.given.volumeInML / 1000).toFixed(3)} L
+            {problem.given.volumeInML} mL = {(problem.given.volumeInML / 1000).toFixed(3)} L
           </p>
         </div>
         <div className="solution-step">
           <h4>Skref 2: Reikna mól</h4>
           <p>mól = M × L</p>
           <p>
-            mól = {problem.given.molarity} M ×{' '}
-            {(problem.given.volumeInML / 1000).toFixed(3)} L
+            mól = {problem.given.molarity} M × {(problem.given.volumeInML / 1000).toFixed(3)} L
           </p>
           <p>mól = {moles} mol</p>
         </div>
