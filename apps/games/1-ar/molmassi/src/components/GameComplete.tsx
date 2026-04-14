@@ -42,10 +42,17 @@ export function GameComplete({
   const accuracy = questionsAnswered > 0 ? Math.round((correctCount / questionsAnswered) * 100) : 0;
 
   return (
-    <div className={`min-h-screen bg-gradient-to-b ${passedLevel ? 'from-green-50' : 'from-yellow-50'} to-white flex items-center justify-center p-4`}>
+    <div
+      className={`min-h-screen bg-gradient-to-b ${passedLevel ? 'from-green-50' : 'from-yellow-50'} to-white flex items-center justify-center p-4`}
+    >
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center animate-fade-in-up">
-        <div className="text-6xl mb-4 animate-bounce-in">{passedLevel ? '\uD83C\uDF89' : '\uD83D\uDCAA'}</div>
-        <h2 className="text-3xl font-bold text-warm-800 mb-2 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+        <div className="text-6xl mb-4 animate-bounce-in">
+          {passedLevel ? '\uD83C\uDF89' : '\uD83D\uDCAA'}
+        </div>
+        <h2
+          className="text-3xl font-bold text-warm-800 mb-2 animate-fade-in-up"
+          style={{ animationDelay: '100ms' }}
+        >
           {passedLevel ? 'Frábært!' : 'Góð tilraun!'}
         </h2>
         <p className="text-warm-600 mb-6 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
@@ -55,25 +62,41 @@ export function GameComplete({
         </p>
 
         <div className="grid grid-cols-3 gap-3 mb-6">
-          <div className="bg-green-50 rounded-xl p-4 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-            <div className="text-2xl font-bold text-green-600">{correctCount}/{questionsAnswered}</div>
+          <div
+            className="bg-green-50 rounded-xl p-4 animate-fade-in-up"
+            style={{ animationDelay: '300ms' }}
+          >
+            <div className="text-2xl font-bold text-green-600">
+              {correctCount}/{questionsAnswered}
+            </div>
             <div className="text-xs text-warm-600">Rétt svör</div>
           </div>
-          <div className="bg-blue-50 rounded-xl p-4 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+          <div
+            className="bg-blue-50 rounded-xl p-4 animate-fade-in-up"
+            style={{ animationDelay: '400ms' }}
+          >
             <div className="text-2xl font-bold text-blue-600">{accuracy}%</div>
             <div className="text-xs text-warm-600">Nákvæmni</div>
           </div>
-          <div className="bg-purple-50 rounded-xl p-4 animate-fade-in-up" style={{ animationDelay: '500ms' }}>
+          <div
+            className="bg-purple-50 rounded-xl p-4 animate-fade-in-up"
+            style={{ animationDelay: '500ms' }}
+          >
             <div className="text-2xl font-bold text-purple-600">{score}</div>
             <div className="text-xs text-warm-600">Stig</div>
           </div>
         </div>
 
         {/* Mastery progress */}
-        <div className="bg-warm-50 rounded-xl p-4 mb-6 animate-fade-in-up" style={{ animationDelay: '450ms' }}>
+        <div
+          className="bg-warm-50 rounded-xl p-4 mb-6 animate-fade-in-up"
+          style={{ animationDelay: '450ms' }}
+        >
           <div className="flex justify-between text-sm text-warm-600 mb-2">
             <span>Framvinda í lærdómi</span>
-            <span>{correctCount}/{masteryThreshold} rétt svör</span>
+            <span>
+              {correctCount}/{masteryThreshold} rétt svör
+            </span>
           </div>
           <div className="h-3 bg-warm-200 rounded-full overflow-hidden">
             <div
@@ -83,7 +106,10 @@ export function GameComplete({
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6 text-left animate-fade-in-up" style={{ animationDelay: '500ms' }}>
+        <div
+          className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6 text-left animate-fade-in-up"
+          style={{ animationDelay: '500ms' }}
+        >
           <h3 className="font-bold text-blue-800 mb-3 flex items-center gap-2">
             <span className="text-lg">{'\uD83D\uDCDA'}</span> Hvað lærðir þú?
           </h3>
@@ -111,7 +137,7 @@ export function GameComplete({
           {passedLevel ? (
             <button
               onClick={() => onComplete(score, totalChallenges * 10, hintsUsedTier)}
-              className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-xl transition-colors btn-press"
+              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 px-6 rounded-xl transition-colors btn-press"
             >
               Halda áfram í Stig 2 {'\u2192'}
             </button>

@@ -12,7 +12,8 @@ export const gameTranslations = createGameTranslations({
     },
     menu: {
       howItWorks: 'Hvernig virkar þetta?',
-      howItWorksDesc: 'Þessi leikur notar hugtakamiðaða nálgun sem byggir á rannsóknum í kennslu raunvísinda. Þú byrjar á að skilja hugtökin sjónrænt, síðan spáir þú fyrir um breytingar, og að lokum reiknar þú með formúlum.',
+      howItWorksDesc:
+        'Þessi leikur notar hugtakamiðaða nálgun sem byggir á rannsóknum í kennslu raunvísinda. Þú byrjar á að skilja hugtökin sjónrænt, síðan spáir þú fyrir um breytingar, og að lokum reiknar þú með formúlum.',
       inspiredBy: 'Innblásið af PhET Interactive Simulations (University of Colorado Boulder)',
       progress: 'Framvinda',
       reset: 'Endurstilla',
@@ -26,7 +27,8 @@ export const gameTranslations = createGameTranslations({
       level1: {
         name: 'Stig 1: Hugtök',
         description: 'Sjónræn meðhöndlun - ENGIN útreikningar',
-        details: 'Dragðu, smelltu og sjáðu hvernig styrkur breytist í rauntíma. Byggðu innsæi fyrir M = n/V.',
+        details:
+          'Dragðu, smelltu og sjáðu hvernig styrkur breytist í rauntíma. Byggðu innsæi fyrir M = n/V.',
         needScore: 'Þarft {score} stig til að opna Stig 2. Reyndu aftur!',
       },
       level2: {
@@ -38,8 +40,9 @@ export const gameTranslations = createGameTranslations({
       },
       level3: {
         name: 'Stig 3: Útreikningar',
-        description: 'Notaðu formúlur til að reikna',
-        details: 'M₁V₁ = M₂V₂, mól = massi/mólmassi. Nú skilur þú HVERS VEGNA þær virka!',
+        description: 'Reikna styrk með einingagreiningu',
+        details:
+          'Notaðu umbreytingarstuðla og einingagreiningu til að leysa útþynningar- og styrkreikningsdæmi.',
         locked: 'Ljúktu Stig 2 til að opna þetta stig.',
       },
       completed: 'Lokið',
@@ -50,20 +53,20 @@ export const gameTranslations = createGameTranslations({
       completedAll: 'Þú hefur lokið öllum stigum!',
       level1Summary: 'Styrkur = sameindir / rúmmál (sjónrænt)',
       level2Summary: 'Spá fyrir um hvernig breytingar hafa áhrif á styrk',
-      level3Summary: 'Nota M₁V₁ = M₂V₂ og aðrar formúlur',
+      level3Summary: 'Reikna styrk og útþynningar með einingagreiningu',
       whatYouLearned: 'Hvað lærðir þú?',
       totalScore: 'Heildarstig',
       back: 'Til baka',
       startOver: 'Byrja upp á nýtt',
       visualHandling: 'Sjónræn meðhöndlun',
       predictChanges: 'Spá fyrir um breytingar',
-      useFormulas: 'Nota formúlur',
+      useFormulas: 'Einingagreining',
     },
     formulas: {
-      molarity: 'M = mól / L (mólstyrkur)',
-      dilution: 'M₁V₁ = M₂V₂ (útþynning)',
-      moles: 'mól = massi(g) / mólmassi(g/mol)',
-      mixing: 'M = (M₁V₁ + M₂V₂) / (V₁ + V₂) (blöndun)',
+      molarity: 'Mólstyrkur: mól efnis / rúmmál í lítrum',
+      dilution: 'Útþynning: mól breytast ekki (M₁×V₁ = M₂×V₂)',
+      moles: 'g → mól: g × (1 mól / mólmassi g)',
+      mixing: 'Blöndun: heildarmól / heildarrúmmál',
     },
     achievements: {
       perfectMixing: 'Fullkomin blöndun! 🧪',
@@ -79,7 +82,8 @@ export const gameTranslations = createGameTranslations({
     },
     menu: {
       howItWorks: 'How does this work?',
-      howItWorksDesc: 'This game uses a concept-first approach based on science education research. You start by understanding concepts visually, then predict changes, and finally calculate with formulas.',
+      howItWorksDesc:
+        'This game uses a concept-first approach based on science education research. You start by understanding concepts visually, then predict changes, and finally calculate with formulas.',
       inspiredBy: 'Inspired by PhET Interactive Simulations (University of Colorado Boulder)',
       progress: 'Progress',
       reset: 'Reset',
@@ -93,7 +97,8 @@ export const gameTranslations = createGameTranslations({
       level1: {
         name: 'Level 1: Concepts',
         description: 'Visual manipulation - NO calculations',
-        details: 'Drag, click and see how concentration changes in real time. Build intuition for M = n/V.',
+        details:
+          'Drag, click and see how concentration changes in real time. Build intuition for M = n/V.',
         needScore: 'Need {score} points to unlock Level 2. Try again!',
       },
       level2: {
@@ -146,7 +151,8 @@ export const gameTranslations = createGameTranslations({
     },
     menu: {
       howItWorks: 'Jak to dziala?',
-      howItWorksDesc: 'Ta gra wykorzystuje podejscie oparte na pojreciach, bazujace na badaniach edukacji naukowej. Zaczynasz od wizualnego zrozumienia pojec, potem przewidujesz zmiany, a na koncu obliczasz za pomoca wzorow.',
+      howItWorksDesc:
+        'Ta gra wykorzystuje podejscie oparte na pojreciach, bazujace na badaniach edukacji naukowej. Zaczynasz od wizualnego zrozumienia pojec, potem przewidujesz zmiany, a na koncu obliczasz za pomoca wzorow.',
       inspiredBy: 'Inspirowane przez PhET Interactive Simulations (University of Colorado Boulder)',
       progress: 'Postep',
       reset: 'Resetuj',
@@ -160,7 +166,8 @@ export const gameTranslations = createGameTranslations({
       level1: {
         name: 'Poziom 1: Pojecia',
         description: 'Manipulacja wizualna - BEZ obliczen',
-        details: 'Przeciagaj, klikaj i obserwuj jak stezenie zmienia sie w czasie rzeczywistym. Zbuduj intuicje dla M = n/V.',
+        details:
+          'Przeciagaj, klikaj i obserwuj jak stezenie zmienia sie w czasie rzeczywistym. Zbuduj intuicje dla M = n/V.',
         needScore: 'Potrzebujesz {score} punktow, aby odblokowac Poziom 2. Sprobuj ponownie!',
       },
       level2: {

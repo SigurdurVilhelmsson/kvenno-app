@@ -1,17 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
-import { AchievementNotificationsContainer } from '@shared/components/AchievementNotificationPopup';
-import { AchievementsButton, AchievementsPanel } from '@shared/components/AchievementsPanel';
-import { AnimatedBackground } from '@shared/components/AnimatedBackground';
-import {
-  ParticleCelebration,
-  useParticleCelebration,
-} from '@shared/components/ParticleCelebration';
-import { SoundToggle } from '@shared/components/SoundToggle';
-import { useAchievements } from '@shared/hooks/useAchievements';
 import { useGameI18n } from '@shared/hooks/useGameI18n';
-import { useGameSounds } from '@shared/hooks/useGameSounds';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
@@ -31,10 +21,6 @@ interface Progress {
 }
 
 const STORAGE_KEY = 'lausnirProgress';
-
-// Mastery thresholds
-const LEVEL1_MASTERY_SCORE = 300; // 5/6 challenges at 60 points each = 300
-const LEVEL2_MASTERY_SCORE = 650; // 65% accuracy (650/1000)
 
 function loadProgress(): Progress {
   const saved = localStorage.getItem(STORAGE_KEY);
@@ -67,100 +53,42 @@ function saveProgress(progress: Progress): void {
 function App() {
   const [activeLevel, setActiveLevel] = useState<ActiveLevel>('menu');
   const [progress, setProgress] = useState<Progress>(loadProgress());
-  const [showAchievements, setShowAchievements] = useState(false);
 
   const { t, language, setLanguage } = useGameI18n({ gameTranslations });
-
-  const {
-    achievements,
-    allAchievements,
-    notifications,
-    trackCorrectAnswer,
-    trackIncorrectAnswer,
-    trackLevelComplete,
-    trackGameComplete,
-    dismissNotification,
-    resetAll,
-  } = useAchievements({ gameId: 'lausnir' });
-
-  const { triggerCorrect, triggerLevelComplete, celebrationProps } = useParticleCelebration('1-ar');
-  const {
-    playCorrect,
-    playWrong,
-    playLevelComplete,
-    isEnabled: soundEnabled,
-    toggleSound,
-  } = useGameSounds();
-
-  const handleCorrectAnswer = (...args: Parameters<typeof trackCorrectAnswer>) => {
-    trackCorrectAnswer(...args);
-    playCorrect();
-    triggerCorrect();
-  };
-
-  const handleIncorrectAnswer = (...args: Parameters<typeof trackIncorrectAnswer>) => {
-    trackIncorrectAnswer(...args);
-    playWrong();
-  };
 
   useEffect(() => {
     saveProgress(progress);
   }, [progress]);
 
-  const handleLevel1Complete = (score: number, maxScore: number, hintsUsed: number) => {
-    const completed = score >= LEVEL1_MASTERY_SCORE;
+  const handleLevel1Complete = (score: number) => {
     setProgress((prev) => ({
       ...prev,
       level1Score: Math.max(prev.level1Score || 0, score),
-      level1Completed: completed || prev.level1Completed,
+      level1Completed: true,
       totalGamesPlayed: prev.totalGamesPlayed + 1,
     }));
-
-    // Track achievement
-    trackLevelComplete(1, score, maxScore, { hintsUsed });
-    playLevelComplete();
-    triggerLevelComplete();
-
-    if (completed) {
-      setActiveLevel('menu');
-    } else {
-      // Show message that they need to try again
-      setActiveLevel('menu');
-    }
-  };
-
-  const handleLevel2Complete = (score: number, maxScore: number, hintsUsed: number) => {
-    const completed = score >= LEVEL2_MASTERY_SCORE;
-    setProgress((prev) => ({
-      ...prev,
-      level2Score: Math.max(prev.level2Score || 0, score),
-      level2Completed: completed || prev.level2Completed,
-      totalGamesPlayed: prev.totalGamesPlayed + 1,
-    }));
-
-    // Track achievement
-    trackLevelComplete(2, score, maxScore, { hintsUsed });
-    playLevelComplete();
-    triggerLevelComplete();
 
     setActiveLevel('menu');
   };
 
-  const handleLevel3Complete = (score: number, maxScore: number, hintsUsed: number) => {
+  const handleLevel2Complete = (score: number) => {
+    setProgress((prev) => ({
+      ...prev,
+      level2Score: Math.max(prev.level2Score || 0, score),
+      level2Completed: true,
+      totalGamesPlayed: prev.totalGamesPlayed + 1,
+    }));
+
+    setActiveLevel('menu');
+  };
+
+  const handleLevel3Complete = (score: number, _maxScore?: number, _hintsUsed?: number) => {
     setProgress((prev) => ({
       ...prev,
       level3Score: Math.max(prev.level3Score || 0, score),
       level3Completed: true,
       totalGamesPlayed: prev.totalGamesPlayed + 1,
     }));
-
-    // Track achievement for level 3 completion
-    trackLevelComplete(3, score, maxScore, { hintsUsed });
-    playLevelComplete();
-    triggerLevelComplete();
-
-    // Track game completion since all 3 levels are now complete
-    trackGameComplete();
 
     setActiveLevel('complete');
   };
@@ -171,64 +99,17 @@ function App() {
     saveProgress(newProgress);
   };
 
-  // Check unlock status
-  const isLevel2Unlocked = progress.level1Completed;
-  const isLevel3Unlocked = progress.level2Completed;
-
   // Render active level
   if (activeLevel === 'level1') {
-    return (
-      <>
-        <Level1
-          onComplete={handleLevel1Complete}
-          onBack={() => setActiveLevel('menu')}
-          onCorrectAnswer={handleCorrectAnswer}
-          onIncorrectAnswer={handleIncorrectAnswer}
-        />
-        <AchievementNotificationsContainer
-          notifications={notifications}
-          onDismiss={dismissNotification}
-        />
-        <ParticleCelebration {...celebrationProps} />
-      </>
-    );
+    return <Level1 onComplete={handleLevel1Complete} onBack={() => setActiveLevel('menu')} />;
   }
 
   if (activeLevel === 'level2') {
-    return (
-      <>
-        <Level2
-          onComplete={handleLevel2Complete}
-          onBack={() => setActiveLevel('menu')}
-          onCorrectAnswer={handleCorrectAnswer}
-          onIncorrectAnswer={handleIncorrectAnswer}
-        />
-        <AchievementNotificationsContainer
-          notifications={notifications}
-          onDismiss={dismissNotification}
-        />
-        <ParticleCelebration {...celebrationProps} />
-      </>
-    );
+    return <Level2 onComplete={handleLevel2Complete} onBack={() => setActiveLevel('menu')} />;
   }
 
   if (activeLevel === 'level3') {
-    return (
-      <>
-        <Level3
-          onComplete={handleLevel3Complete}
-          onBack={() => setActiveLevel('menu')}
-          onCorrectAnswer={handleCorrectAnswer}
-          onIncorrectAnswer={handleIncorrectAnswer}
-          t={t}
-        />
-        <AchievementNotificationsContainer
-          notifications={notifications}
-          onDismiss={dismissNotification}
-        />
-        <ParticleCelebration {...celebrationProps} />
-      </>
-    );
+    return <Level3 onComplete={handleLevel3Complete} onBack={() => setActiveLevel('menu')} />;
   }
 
   // Complete screen
@@ -317,24 +198,13 @@ function App() {
 
   // Main menu
   return (
-    <AnimatedBackground yearTheme="1-ar" variant="menu">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
       <Header
         variant="game"
         backHref="/efnafraedi/1-ar/"
         gameTitle={t('game.title')}
         authSlot={
-          <>
-            <SoundToggle isEnabled={soundEnabled} onToggle={toggleSound} size="sm" />
-            <LanguageSwitcher
-              language={language}
-              onLanguageChange={setLanguage}
-              variant="compact"
-            />
-            <AchievementsButton
-              achievements={achievements}
-              onClick={() => setShowAchievements(true)}
-            />
-          </>
+          <LanguageSwitcher language={language} onLanguageChange={setLanguage} variant="compact" />
         }
       />
       <div className="min-h-screen p-4 md:p-8">
@@ -375,35 +245,20 @@ function App() {
                   </div>
                   <div className="text-sm text-blue-600 mt-1">{t('levels.level1.description')}</div>
                   <div className="text-xs text-warm-600 mt-2">{t('levels.level1.details')}</div>
-                  {!progress.level1Completed && progress.level1Score !== null && (
-                    <div className="text-xs text-orange-600 mt-2 font-semibold">
-                      {t('levels.level1.needScore').replace(
-                        '{score}',
-                        String(LEVEL1_MASTERY_SCORE)
-                      )}
-                    </div>
-                  )}
                 </div>
               </div>
             </button>
 
-            {/* Level 2 - Locked until Level 1 completed */}
+            {/* Level 2 */}
             <button
-              onClick={() => isLevel2Unlocked && setActiveLevel('level2')}
-              disabled={!isLevel2Unlocked}
-              className={`game-card w-full p-6 rounded-xl border-4 transition-all text-left ${
-                isLevel2Unlocked
-                  ? 'border-green-400 bg-green-50 hover:bg-green-100 cursor-pointer'
-                  : 'border-warm-300 bg-warm-100 cursor-not-allowed opacity-70'
-              }`}
+              onClick={() => setActiveLevel('level2')}
+              className="game-card w-full p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left"
             >
               <div className="flex items-center gap-4">
-                <div className="text-4xl">{isLevel2Unlocked ? '🤔' : '🔒'}</div>
+                <div className="text-4xl">🤔</div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span
-                      className={`text-xl font-bold ${isLevel2Unlocked ? 'text-green-800' : 'text-warm-500'}`}
-                    >
+                    <span className="text-xl font-bold text-green-800">
                       {t('levels.level2.name')}
                     </span>
                     {progress.level2Completed && (
@@ -417,45 +272,24 @@ function App() {
                       </span>
                     )}
                   </div>
-                  <div
-                    className={`text-sm mt-1 ${isLevel2Unlocked ? 'text-green-600' : 'text-warm-500'}`}
-                  >
+                  <div className="text-sm mt-1 text-green-600">
                     {t('levels.level2.description')}
                   </div>
-                  <div className="text-xs text-warm-600 mt-2">
-                    {isLevel2Unlocked ? t('levels.level2.details') : t('levels.level2.locked')}
-                  </div>
-                  {isLevel2Unlocked &&
-                    !progress.level2Completed &&
-                    progress.level2Score !== null && (
-                      <div className="text-xs text-orange-600 mt-2 font-semibold">
-                        {t('levels.level2.needScore').replace(
-                          '{score}',
-                          String(LEVEL2_MASTERY_SCORE)
-                        )}
-                      </div>
-                    )}
+                  <div className="text-xs text-warm-600 mt-2">{t('levels.level2.details')}</div>
                 </div>
               </div>
             </button>
 
-            {/* Level 3 - Locked until Level 2 completed */}
+            {/* Level 3 */}
             <button
-              onClick={() => isLevel3Unlocked && setActiveLevel('level3')}
-              disabled={!isLevel3Unlocked}
-              className={`game-card w-full p-6 rounded-xl border-4 transition-all text-left ${
-                isLevel3Unlocked
-                  ? 'border-purple-400 bg-purple-50 hover:bg-purple-100 cursor-pointer'
-                  : 'border-warm-300 bg-warm-100 cursor-not-allowed opacity-70'
-              }`}
+              onClick={() => setActiveLevel('level3')}
+              className="game-card w-full p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left"
             >
               <div className="flex items-center gap-4">
-                <div className="text-4xl">{isLevel3Unlocked ? '📐' : '🔒'}</div>
+                <div className="text-4xl">📐</div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span
-                      className={`text-xl font-bold ${isLevel3Unlocked ? 'text-purple-800' : 'text-warm-500'}`}
-                    >
+                    <span className="text-xl font-bold text-purple-800">
                       {t('levels.level3.name')}
                     </span>
                     {progress.level3Completed && (
@@ -469,14 +303,10 @@ function App() {
                       </span>
                     )}
                   </div>
-                  <div
-                    className={`text-sm mt-1 ${isLevel3Unlocked ? 'text-purple-600' : 'text-warm-500'}`}
-                  >
+                  <div className="text-sm mt-1 text-purple-600">
                     {t('levels.level3.description')}
                   </div>
-                  <div className="text-xs text-warm-600 mt-2">
-                    {isLevel3Unlocked ? t('levels.level3.details') : t('levels.level3.locked')}
-                  </div>
+                  <div className="text-xs text-warm-600 mt-2">{t('levels.level3.details')}</div>
                 </div>
               </div>
             </button>
@@ -537,25 +367,8 @@ function App() {
             </div>
           </div>
         </div>
-
-        {/* Achievements Panel Modal */}
-        {showAchievements && (
-          <AchievementsPanel
-            achievements={achievements}
-            allAchievements={allAchievements}
-            onClose={() => setShowAchievements(false)}
-            onReset={resetAll}
-          />
-        )}
-
-        {/* Achievement Notifications */}
-        <AchievementNotificationsContainer
-          notifications={notifications}
-          onDismiss={dismissNotification}
-        />
-        <ParticleCelebration {...celebrationProps} />
       </div>
-    </AnimatedBackground>
+    </div>
   );
 }
 

@@ -1,0 +1,29 @@
+{
+  "name": "@kvenno/lotukerfid",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Kynntu þér lotukerfið og frumefni",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && mv ../../../../dist/efnafraedi/1-ar/games/index.html ../../../../dist/efnafraedi/1-ar/games/lotukerfid.html",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@kvenno/shared": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.2.1",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^6.0.1",
+    "tailwindcss": "^4.2.1",
+    "typescript": "^5.3.3",
+    "vite": "^8.0.0",
+    "vite-plugin-singlefile": "^2.3.2"
+  }
+}

@@ -27,7 +27,9 @@ export function CalculationBreakdown({ compound }: CalculationBreakdownProps) {
             ) : (
               <div className="flex items-center justify-between bg-white rounded px-3 py-2">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-lg font-bold text-primary">{step.symbol}</span>
+                  <span className="font-mono text-lg font-bold text-kvenno-orange">
+                    {step.symbol}
+                  </span>
                   <span className="text-warm-600">×</span>
                   <span className="font-semibold">{step.count}</span>
                   <span className="text-warm-600">×</span>

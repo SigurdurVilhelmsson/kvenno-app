@@ -24,12 +24,14 @@ const gamesDir = join(rootDir, 'apps', 'games');
 
 // Game definitions: [year, folder-name, output-name]
 const games = [
-  // Year 1 games
-  ['1-ar', 'takmarkandi', 'takmarkandi'],
-  ['1-ar', 'molmassi', 'molmassi'],
-  ['1-ar', 'nafnakerfid', 'nafnakerfid'],
-  ['1-ar', 'lausnir', 'lausnir'],
+  // Year 1 games (ordered by curriculum: Ch1 → Ch2 → Ch3 → Ch4)
   ['1-ar', 'dimensional-analysis', 'dimensional-analysis'],
+  ['1-ar', 'lotukerfid', 'lotukerfid'],
+  ['1-ar', 'nafnakerfid', 'nafnakerfid'],
+  ['1-ar', 'molmassi', 'molmassi'],
+  ['1-ar', 'jafna-jofnur', 'jafna-jofnur'],
+  ['1-ar', 'takmarkandi', 'takmarkandi'],
+  ['1-ar', 'lausnir', 'lausnir'],
 
   // Year 2 games
   ['2-ar', 'hess-law', 'hess-law'],

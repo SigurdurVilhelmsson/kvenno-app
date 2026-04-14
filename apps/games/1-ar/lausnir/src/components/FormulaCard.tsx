@@ -6,27 +6,27 @@ export function FormulaCard({ themeColor }: FormulaCardProps) {
   return (
     <div className="formula-card" role="complementary" aria-label="Formúlukort">
       <h3 className="font-bold mb-2 text-lg" style={{ color: themeColor }}>
-        📐 Formúlur
+        📐 Einingagreining — umbreytingarstuðlar
       </h3>
-      <div className="text-sm space-y-1 font-mono">
-        <p>
-          <strong>Útþynning:</strong> M₁V₁ = M₂V₂
-        </p>
-        <p>
-          <strong>Mólstyrkur:</strong> M = mol / L
-        </p>
-        <p>
-          <strong>Mól:</strong> mol = massi(g) / mólmassi(g/mol)
-        </p>
-        <p>
-          <strong>Blöndun:</strong> M = (M₁V₁ + M₂V₂) / (V₁ + V₂)
-        </p>
+      <div className="text-sm space-y-2">
+        <div>
+          <strong>Mólstyrkur:</strong>
+          <div className="font-mono ml-2">M = mól / L (styrkur = magn / rúmmál)</div>
+        </div>
+        <div>
+          <strong>Mól úr massa:</strong>
+          <div className="font-mono ml-2">g × (1 mól / mólmassi g) → mól</div>
+        </div>
+        <div>
+          <strong>Útþynning (varðveisla móla):</strong>
+          <div className="font-mono ml-2">mól fyrir = mól eftir</div>
+          <div className="font-mono ml-2">(M₁ × V₁) = (M₂ × V₂)</div>
+        </div>
         <hr className="my-2" />
-        <p>
-          <strong>Umreikningar:</strong>
-        </p>
-        <p>1 L = 1000 mL</p>
-        <p>1 g = 1000 mg</p>
+        <div>
+          <strong>Umbreytingarstuðlar:</strong>
+          <div className="font-mono ml-2">1 L = 1000 mL &nbsp;|&nbsp; 1 g = 1000 mg</div>
+        </div>
       </div>
     </div>
   );

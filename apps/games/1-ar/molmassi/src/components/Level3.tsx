@@ -1,376 +1,209 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 
-import { CalculationBreakdown } from './CalculationBreakdown';
+import { FeedbackPanel } from '@shared/components';
+
 import { PeriodicTable } from './PeriodicTable';
-import { Compound, Difficulty, getRandomCompound, COMPOUNDS } from '../data/compounds';
-import { validateAnswer, generateContextualFeedback, calculatePoints } from '../utils/calculations';
-import { validateInput } from '../utils/validation';
+import { COMPOUNDS, type Compound } from '../data/compounds';
 
-type PlayMode = 'practice' | 'competition' | 'mystery';
+const AVOGADRO = 6.022e23;
+const TOTAL_QUESTIONS = 8;
 
+type ProblemType = 'mass-to-particles' | 'particles-to-mass' | 'mass-to-moles-of-atom';
+
+interface Problem {
+  type: ProblemType;
+  question: string;
+  answer: number;
+  unit: string;
+  steps: string[];
+}
+
+// --- Compact problem descriptors ---
+type Desc =
+  | { type: 'mass-to-particles'; formula: string; mass: number; massLabel: string; particleWord: string }
+  | { type: 'particles-to-mass'; formula: string; count: number; countLabel: string; particleWord: string }
+  | { type: 'mass-to-moles-of-atom'; formula: string; mass: number; massLabel: string; element: string; elementName: string; atomCount: number };
+
+const DESCRIPTORS: Desc[] = [
+  // mass -> particles (6)
+  { type: 'mass-to-particles', formula: 'H\u2082O', mass: 36, massLabel: '36', particleWord: 'sameindir' },
+  { type: 'mass-to-particles', formula: 'CO\u2082', mass: 88, massLabel: '88', particleWord: 'sameindir' },
+  { type: 'mass-to-particles', formula: 'NaCl', mass: 117, massLabel: '117', particleWord: 'formúlueiningar' },
+  { type: 'mass-to-particles', formula: 'CH\u2084', mass: 8, massLabel: '8,0', particleWord: 'sameindir' },
+  { type: 'mass-to-particles', formula: 'NH\u2083', mass: 34, massLabel: '34', particleWord: 'sameindir' },
+  { type: 'mass-to-particles', formula: 'O\u2082', mass: 64, massLabel: '64', particleWord: 'sameindir' },
+  // particles -> mass (4)
+  { type: 'particles-to-mass', formula: 'CO\u2082', count: 3.011e23, countLabel: '3,011 \u00d7 10\u00b2\u00b3', particleWord: 'sameindir' },
+  { type: 'particles-to-mass', formula: 'H\u2082O', count: 1.2044e24, countLabel: '1,204 \u00d7 10\u00b2\u2074', particleWord: 'sameindir' },
+  { type: 'particles-to-mass', formula: 'HCl', count: 6.022e23, countLabel: '6,022 \u00d7 10\u00b2\u00b3', particleWord: 'sameindir' },
+  { type: 'particles-to-mass', formula: 'NaOH', count: 1.8066e24, countLabel: '1,807 \u00d7 10\u00b2\u2074', particleWord: 'formúlueiningar' },
+  // mass -> moles of atom (5)
+  { type: 'mass-to-moles-of-atom', formula: 'C\u2086H\u2081\u2082O\u2086', mass: 180, massLabel: '180', element: 'O', elementName: 'súrefnisatómum', atomCount: 6 },
+  { type: 'mass-to-moles-of-atom', formula: 'H\u2082O', mass: 90, massLabel: '90', element: 'H', elementName: 'vetni', atomCount: 2 },
+  { type: 'mass-to-moles-of-atom', formula: 'H\u2082SO\u2084', mass: 196, massLabel: '196', element: 'O', elementName: 'súrefnisatómum', atomCount: 4 },
+  { type: 'mass-to-moles-of-atom', formula: 'CaCO\u2083', mass: 200, massLabel: '200', element: 'O', elementName: 'súrefnisatómum', atomCount: 3 },
+  { type: 'mass-to-moles-of-atom', formula: 'C\u2082H\u2085OH', mass: 46, massLabel: '46', element: 'C', elementName: 'kolefnisatómum', atomCount: 2 },
+];
+
+function find(formula: string): Compound {
+  const c = COMPOUNDS.find(c => c.formula === formula);
+  if (!c) throw new Error(`Compound ${formula} not found`);
+  return c;
+}
+
+function fmtSci(n: number): string {
+  if (Math.abs(n) < 1000 && Math.abs(n) >= 0.01) return n.toPrecision(3);
+  const exp = Math.floor(Math.log10(Math.abs(n)));
+  return `${(n / 10 ** exp).toFixed(2)} \u00d7 10^${exp}`;
+}
+
+function buildProblem(d: Desc): Problem {
+  const c = find(d.formula);
+  const M = c.molarMass;
+  if (d.type === 'mass-to-particles') {
+    const n = d.mass / M;
+    const N = n * AVOGADRO;
+    return {
+      type: d.type,
+      question: `Hversu margar ${d.particleWord} eru í ${d.massLabel} g af ${c.name.toLowerCase()} (${c.formula})?`,
+      answer: N,
+      unit: d.particleWord,
+      steps: [
+        `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${M.toFixed(3)} g/mol`,
+        `Skref 2: g → mól (einingagreining)\n  ${d.mass} g × (1 mól / ${M.toFixed(3)} g) = ${n.toFixed(3)} mól\n  Einingin g strikast út.`,
+        `Skref 3: mól → ${d.particleWord} (einingagreining)\n  ${n.toFixed(3)} mól × (6,022 × 10²³ / 1 mól) = ${fmtSci(N)} ${d.particleWord}\n  Einingin mól strikast út.`,
+      ],
+    };
+  }
+  if (d.type === 'particles-to-mass') {
+    const n = d.count / AVOGADRO;
+    const m = n * M;
+    return {
+      type: d.type,
+      question: `Hvað vega ${d.countLabel} ${d.particleWord} af ${c.name.toLowerCase()} (${c.formula}) í grömmum?`,
+      answer: m,
+      unit: 'g',
+      steps: [
+        `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${M.toFixed(3)} g/mol`,
+        `Skref 2: ${d.particleWord} → mól (einingagreining)\n  ${d.countLabel} × (1 mól / 6,022 × 10²³) = ${n.toFixed(3)} mól\n  Einingin ${d.particleWord} strikast út.`,
+        `Skref 3: mól → g (einingagreining)\n  ${n.toFixed(3)} mól × (${M.toFixed(3)} g / 1 mól) = ${m.toFixed(2)} g\n  Einingin mól strikast út.`,
+      ],
+    };
+  }
+  // mass-to-moles-of-atom
+  const n = d.mass / M;
+  const nAtom = n * d.atomCount;
+  return {
+    type: d.type,
+    question: `Hversu mörg mól af ${d.elementName} (${d.element}) eru í ${d.massLabel} g af ${c.name.toLowerCase()} (${c.formula})?`,
+    answer: nAtom,
+    unit: 'mól',
+    steps: [
+      `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${M.toFixed(2)} g/mol`,
+      `Skref 2: g → mól (einingagreining)\n  ${d.mass} g × (1 mól / ${M.toFixed(2)} g) = ${n.toFixed(3)} mól ${c.formula}\n  Einingin g strikast út.`,
+      `Skref 3: Nota hlutfallið úr efnaformúlunni\n  Í hverju móli af ${c.formula} eru ${d.atomCount} mól af ${d.element}\n  ${n.toFixed(3)} mól ${c.formula} × (${d.atomCount} mól ${d.element} / 1 mól ${c.formula}) = ${nAtom.toFixed(2)} mól ${d.element}`,
+    ],
+  };
+}
+
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function parseAnswer(input: string): number | null {
+  const cleaned = input.trim().replace(/,/g, '.').replace(/\s+/g, '');
+  const direct = parseFloat(cleaned);
+  if (!isNaN(direct) && isFinite(direct)) return direct;
+  const m = cleaned.match(/^([+-]?\d+\.?\d*)[x*\u00d7]10\^([+-]?\d+)$/i);
+  if (m) {
+    const val = parseFloat(m[1]) * 10 ** parseInt(m[2]);
+    if (isFinite(val)) return val;
+  }
+  return null;
+}
+
+function withinTolerance(user: number, correct: number): boolean {
+  if (correct === 0) return Math.abs(user) < 1e-10;
+  return Math.abs(user - correct) / Math.abs(correct) <= 0.05;
+}
+
+// --- Props ---
 interface Level3Props {
   onBack: () => void;
-  onComplete?: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
   onCorrectAnswer?: () => void;
   onIncorrectAnswer?: () => void;
 }
 
 export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
-  const [mode, setMode] = useState<'modeSelection' | 'difficultySelection' | 'playing' | 'gameOver'>('modeSelection');
-  const [playMode, setPlayMode] = useState<PlayMode>('practice');
-  const [difficulty, setDifficulty] = useState<Difficulty | 'mixed'>('mixed');
-  const [currentCompound, setCurrentCompound] = useState<Compound | null>(null);
-  const [userAnswer, setUserAnswer] = useState('');
+  const [problems, setProblems] = useState(() => shuffle(DESCRIPTORS.map(buildProblem)).slice(0, TOTAL_QUESTIONS));
+  const [idx, setIdx] = useState(0);
+  const [input, setInput] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [correct, setCorrect] = useState(false);
   const [score, setScore] = useState(0);
-  const [questionsAnswered, setQuestionsAnswered] = useState(0);
-  const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [timeRemaining, setTimeRemaining] = useState(90);
-  const [streak, setStreak] = useState(0);
-  const [bestStreak, setBestStreak] = useState(0);
-  const [hintsUsed, setHintsUsed] = useState(0);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [lastAnswerCorrect, setLastAnswerCorrect] = useState<boolean | null>(null);
-  const [showSolution, setShowSolution] = useState(false);
-  const [showPeriodicTable, setShowPeriodicTable] = useState(false);
-  const [inputError, setInputError] = useState('');
+  const [hintsUsed] = useState(0);
+  const [showPT, setShowPT] = useState(false);
+  const [error, setError] = useState('');
 
-  // Mystery mode state
-  const [mysteryOptions, setMysteryOptions] = useState<Compound[]>([]);
-  const [selectedMysteryOption, setSelectedMysteryOption] = useState<number | null>(null);
-  const [mysteryFeedback, setMysteryFeedback] = useState<string | null>(null);
+  const done = idx >= TOTAL_QUESTIONS;
+  const p = done ? null : problems[idx];
 
-  const inputRef = useRef<HTMLInputElement>(null);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Generate mystery options (correct answer + 3 distractors)
-  const generateMysteryOptions = (correct: Compound): Compound[] => {
-    // Get compounds with similar molar masses (within 15% of correct answer)
-    const similarCompounds = COMPOUNDS.filter(c =>
-      c.formula !== correct.formula &&
-      Math.abs(c.molarMass - correct.molarMass) / correct.molarMass < 0.15
-    );
-
-    // If not enough similar compounds, use random ones
-    const otherCompounds = similarCompounds.length >= 3
-      ? similarCompounds
-      : COMPOUNDS.filter(c => c.formula !== correct.formula);
-
-    // Shuffle and pick 3 distractors
-    const shuffled = [...otherCompounds].sort(() => Math.random() - 0.5);
-    const distractors = shuffled.slice(0, 3);
-
-    // Combine with correct answer and shuffle
-    const options = [correct, ...distractors].sort(() => Math.random() - 0.5);
-    return options;
+  const submit = () => {
+    if (!p || !input.trim()) return;
+    const val = parseAnswer(input);
+    if (val === null) { setError('Ógilt gildi. Notaðu t.d. 1.2e24 eða 1.2x10^24'); return; }
+    const ok = withinTolerance(val, p.answer);
+    setCorrect(ok);
+    setSubmitted(true);
+    setError('');
+    if (ok) { setScore(s => s + 1); onCorrectAnswer?.(); }
+    else { onIncorrectAnswer?.(); }
   };
 
-  // Track if game should end due to timer
-  const [shouldEndGame, setShouldEndGame] = useState(false);
-
-  // Timer effect for competition mode
-  useEffect(() => {
-    if (mode === 'playing' && playMode === 'competition') {
-      timerRef.current = setInterval(() => {
-        setTimeRemaining(prev => {
-          if (prev <= 1) {
-            setShouldEndGame(true);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [mode, playMode]);
-
-  // Handle timer-triggered game end
-  useEffect(() => {
-    if (shouldEndGame && mode === 'playing') {
-      // Calculate max score based on questions answered
-      const maxScore = questionsAnswered * 30;
-      onComplete?.(score, maxScore, totalHintsUsed);
-      setMode('gameOver');
-      setShouldEndGame(false);
-    }
-  }, [shouldEndGame, mode, questionsAnswered, score, totalHintsUsed, onComplete]);
-
-  const startGame = (selectedPlayMode: PlayMode, selectedDifficulty: Difficulty | 'mixed') => {
-    const newCompound = getRandomCompound(selectedDifficulty);
-    setPlayMode(selectedPlayMode);
-    setDifficulty(selectedDifficulty);
-    setCurrentCompound(newCompound);
-    setUserAnswer('');
-    setScore(0);
-    setQuestionsAnswered(0);
-    setCorrectAnswers(0);
-    setTimeRemaining(selectedPlayMode === 'competition' ? 90 : 0);
-    setStreak(0);
-    setBestStreak(0);
-    setHintsUsed(0);
-    setShowFeedback(false);
-    setLastAnswerCorrect(null);
-    setShowSolution(false);
-    setInputError('');
-
-    // Mystery mode setup
-    if (selectedPlayMode === 'mystery') {
-      setMysteryOptions(generateMysteryOptions(newCompound));
-      setSelectedMysteryOption(null);
-      setMysteryFeedback(null);
-    }
-
-    setMode('playing');
-    if (selectedPlayMode !== 'mystery') {
-      setTimeout(() => inputRef.current?.focus(), 100);
-    }
+  const next = () => {
+    const ni = idx + 1;
+    if (ni >= TOTAL_QUESTIONS) { setIdx(ni); onComplete(score, TOTAL_QUESTIONS, hintsUsed); return; }
+    setIdx(ni);
+    setInput('');
+    setSubmitted(false);
+    setCorrect(false);
+    setError('');
   };
 
-  const handleSubmit = () => {
-    if (!currentCompound || !userAnswer) return;
-
-    const validation = validateInput(userAnswer);
-    if (!validation.valid) {
-      setInputError(validation.error);
-      return;
-    }
-
-    const userValue = parseFloat(userAnswer);
-    const isCorrect = validateAnswer(userValue, currentCompound.molarMass);
-
-    if (isCorrect) {
-      const points = calculatePoints(currentCompound.difficulty, timeRemaining, hintsUsed);
-      const newStreak = streak + 1;
-      setScore(prev => prev + points);
-      setQuestionsAnswered(prev => prev + 1);
-      setCorrectAnswers(prev => prev + 1);
-      setStreak(newStreak);
-      setBestStreak(prev => Math.max(prev, newStreak));
-      setShowFeedback(true);
-      setLastAnswerCorrect(true);
-      setInputError('');
-      setHintsUsed(0);
-      onCorrectAnswer?.();
-    } else {
-      setQuestionsAnswered(prev => prev + 1);
-      setStreak(0);
-      setShowFeedback(true);
-      setLastAnswerCorrect(false);
-      setInputError(generateContextualFeedback(userValue, currentCompound.molarMass));
-      onIncorrectAnswer?.();
-    }
+  const retry = () => {
+    setProblems(shuffle(DESCRIPTORS.map(buildProblem)).slice(0, TOTAL_QUESTIONS));
+    setIdx(0); setInput(''); setSubmitted(false); setCorrect(false); setScore(0); setError('');
   };
 
-  const nextQuestion = () => {
-    const newCompound = getRandomCompound(difficulty);
-    setCurrentCompound(newCompound);
-    setUserAnswer('');
-    setShowFeedback(false);
-    setLastAnswerCorrect(null);
-    setShowSolution(false);
-    setInputError('');
-    setHintsUsed(0);
-
-    // Mystery mode setup for next question
-    if (playMode === 'mystery') {
-      setMysteryOptions(generateMysteryOptions(newCompound));
-      setSelectedMysteryOption(null);
-      setMysteryFeedback(null);
-    } else {
-      setTimeout(() => inputRef.current?.focus(), 100);
-    }
-  };
-
-  // Handle mystery mode answer
-  const handleMysterySubmit = () => {
-    if (!currentCompound || selectedMysteryOption === null) return;
-
-    const selectedCompound = mysteryOptions[selectedMysteryOption];
-    const isCorrect = selectedCompound.formula === currentCompound.formula;
-
-    if (isCorrect) {
-      const points = calculatePoints(currentCompound.difficulty, 0, hintsUsed);
-      const newStreak = streak + 1;
-      setScore(prev => prev + points);
-      setQuestionsAnswered(prev => prev + 1);
-      setCorrectAnswers(prev => prev + 1);
-      setStreak(newStreak);
-      setBestStreak(prev => Math.max(prev, newStreak));
-      setShowFeedback(true);
-      setLastAnswerCorrect(true);
-      setMysteryFeedback(`Rétt! ${currentCompound.formula} (${currentCompound.name}) hefur mólmassa ${currentCompound.molarMass.toFixed(2)} g/mol`);
-      onCorrectAnswer?.();
-    } else {
-      setQuestionsAnswered(prev => prev + 1);
-      setStreak(0);
-      setShowFeedback(true);
-      setLastAnswerCorrect(false);
-      setMysteryFeedback(`Rangt. ${selectedCompound.formula} hefur mólmassa ${selectedCompound.molarMass.toFixed(2)} g/mol. Rétt svar var ${currentCompound.formula} (${currentCompound.name}).`);
-      onIncorrectAnswer?.();
-    }
-  };
-
-  const showHint = () => {
-    setShowSolution(true);
-    setHintsUsed(prev => prev + 1);
-    setTotalHintsUsed(prev => prev + 1);
-  };
-
-  const endGame = () => {
-    // Calculate max score based on questions answered (each question worth ~20-50 points depending on difficulty and hints)
-    const maxScore = questionsAnswered * 30; // Average expected score per question
-    onComplete?.(score, maxScore, totalHintsUsed);
-    setMode('gameOver');
-  };
-
-  // Mode Selection
-  if (mode === 'modeSelection') {
+  // --- Summary ---
+  if (done) {
+    const pct = Math.round((score / TOTAL_QUESTIONS) * 100);
     return (
       <div className="min-h-screen bg-gradient-to-b from-red-50 to-white flex items-center justify-center p-4">
-        <div className="max-w-2xl w-full bg-white rounded-xl shadow-lg p-8 animate-fade-in-up">
-          <div className="text-center mb-6">
-            <div className="text-4xl mb-2">🧮</div>
-            <h2 className="text-3xl font-bold text-warm-800">Stig 3 - Útreikningar</h2>
-            <p className="text-warm-600 mt-2">Reiknaðu nákvæman mólmassa með lotukerfinu</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <button
-              onClick={() => {
-                setPlayMode('practice');
-                setMode('difficultySelection');
-              }}
-              className="bg-blue-500 hover:bg-blue-600 text-white rounded-xl p-6 transition-colors"
-            >
-              <div className="text-3xl mb-2">📝</div>
-              <h3 className="text-xl font-bold mb-2">Æfing</h3>
-              <p className="text-sm opacity-90">Reiknaðu mólmassa án tímatakmarka</p>
-            </button>
-
-            <button
-              onClick={() => {
-                setPlayMode('competition');
-                setMode('difficultySelection');
-              }}
-              className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl p-6 transition-colors"
-            >
-              <div className="text-3xl mb-2">⏱️</div>
-              <h3 className="text-xl font-bold mb-2">Keppni</h3>
-              <p className="text-sm opacity-90">90 sekúndur, fáðu sem flest stig!</p>
-            </button>
-
-            <button
-              onClick={() => {
-                setPlayMode('mystery');
-                setMode('difficultySelection');
-              }}
-              className="bg-purple-500 hover:bg-purple-600 text-white rounded-xl p-6 transition-colors"
-            >
-              <div className="text-3xl mb-2">🔍</div>
-              <h3 className="text-xl font-bold mb-2">Dularfull sameind</h3>
-              <p className="text-sm opacity-90">Þekktu sameindina út frá mólmassa!</p>
-            </button>
-          </div>
-
-          <button
-            onClick={onBack}
-            className="w-full bg-warm-100 hover:bg-warm-200 text-warm-700 font-semibold py-3 px-6 rounded-xl transition-colors"
-          >
-            ← Til baka í valmynd
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Difficulty Selection
-  if (mode === 'difficultySelection') {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-red-50 to-white flex items-center justify-center p-4">
-        <div className="max-w-2xl w-full bg-white rounded-xl shadow-lg p-8 animate-fade-in-up">
-          <h2 className="text-3xl font-bold text-center mb-6 text-warm-800">Veldu erfiðleikastig</h2>
-
-          <div className="space-y-3 mb-6">
-            {(['easy', 'medium', 'hard', 'mixed'] as const).map((diff) => (
-              <button
-                key={diff}
-                onClick={() => startGame(playMode, diff)}
-                className={`w-full text-white font-bold py-4 px-6 rounded-xl transition-colors ${
-                  diff === 'easy' ? 'bg-green-500 hover:bg-green-600' :
-                  diff === 'medium' ? 'bg-yellow-500 hover:bg-yellow-600' :
-                  diff === 'hard' ? 'bg-red-500 hover:bg-red-600' :
-                  'bg-purple-500 hover:bg-purple-600'
-                }`}
-              >
-                {diff === 'easy' ? 'Auðvelt - Einfaldar sameindir' :
-                 diff === 'medium' ? 'Miðlungs - Rannsóknarstofuefni' :
-                 diff === 'hard' ? 'Erfitt - Hýdröt og flóknar sameindir' :
-                 'Blandað - Allar tegundir'}
-              </button>
-            ))}
-          </div>
-
-          <button
-            onClick={() => setMode('modeSelection')}
-            className="w-full bg-warm-100 hover:bg-warm-200 text-warm-700 font-semibold py-3 px-6 rounded-xl transition-colors"
-          >
-            ← Til baka
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Game Over Screen
-  if (mode === 'gameOver') {
-    const accuracy = questionsAnswered > 0 ? ((correctAnswers / questionsAnswered) * 100).toFixed(1) : '0';
-
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-red-50 to-white p-4">
-        <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8 animate-fade-in-up">
-          <div className="text-center mb-6">
-            <div className="text-6xl mb-4">🏆</div>
-            <h2 className="text-4xl font-bold text-warm-800 mb-2">Leik Lokið!</h2>
-            <p className="text-warm-600">Frábært!</p>
-          </div>
-
+        <div className="max-w-lg w-full bg-white rounded-xl shadow-lg p-8 animate-fade-in-up text-center">
+          <h2 className="text-3xl font-bold text-warm-800 mb-2">Æfing lokið!</h2>
+          <p className="text-warm-600 mb-6">Samþætt mól-æfing</p>
           <div className="grid grid-cols-2 gap-4 mb-8">
-            <div className="bg-blue-50 rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold text-blue-600">{score}</div>
-              <div className="text-sm text-warm-600 mt-1">Stig</div>
+            <div className="bg-green-50 rounded-xl p-4">
+              <div className="text-3xl font-bold text-green-600">{score}/{TOTAL_QUESTIONS}</div>
+              <div className="text-sm text-warm-600">Rétt svör</div>
             </div>
-
-            <div className="bg-green-50 rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold text-green-600">{correctAnswers}/{questionsAnswered}</div>
-              <div className="text-sm text-warm-600 mt-1">Rétt svör</div>
-            </div>
-
-            <div className="bg-purple-50 rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold text-purple-600">{accuracy}%</div>
-              <div className="text-sm text-warm-600 mt-1">Nákvæmni</div>
-            </div>
-
-            <div className="bg-orange-50 rounded-xl p-4 text-center">
-              <div className="text-3xl font-bold text-orange-600">{bestStreak}</div>
-              <div className="text-sm text-warm-600 mt-1">Lengsta rað</div>
+            <div className="bg-blue-50 rounded-xl p-4">
+              <div className="text-3xl font-bold text-blue-600">{pct}%</div>
+              <div className="text-sm text-warm-600">Árangur</div>
             </div>
           </div>
-
           <div className="space-y-3">
-            <button
-              onClick={() => startGame(playMode, difficulty)}
-              className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-6 rounded-xl transition-colors"
-            >
-              Spila Aftur
+            <button onClick={retry} className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors">
+              Reyna aftur
             </button>
-
-            <button
-              onClick={onBack}
-              className="w-full bg-warm-100 hover:bg-warm-200 text-warm-700 font-semibold py-3 px-6 rounded-xl transition-colors"
-            >
+            <button onClick={onBack} className="w-full bg-warm-100 hover:bg-warm-200 text-warm-700 font-semibold py-3 rounded-xl transition-colors">
               Til baka í valmynd
             </button>
           </div>
@@ -379,331 +212,107 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
     );
   }
 
-  // Playing Screen - Mystery Mode
-  if (mode === 'playing' && currentCompound && playMode === 'mystery') {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white p-4">
-        <div className="max-w-4xl mx-auto">
-          {/* Header with stats */}
-          <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-            <div className="flex flex-wrap justify-between items-center gap-4">
-              <div className="flex items-center gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">{score}</div>
-                  <div className="text-xs text-warm-600">Stig</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">{correctAnswers}/{questionsAnswered}</div>
-                  <div className="text-xs text-warm-600">Rétt</div>
-                </div>
-                {streak > 0 && (
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-orange-600">{streak} 🔥</div>
-                    <div className="text-xs text-warm-600">Rað</div>
-                  </div>
-                )}
-              </div>
-
-              <button
-                onClick={endGame}
-                className="bg-warm-200 hover:bg-warm-300 text-warm-800 font-semibold py-2 px-4 rounded-lg transition-colors"
-              >
-                Enda leik
-              </button>
-            </div>
+  // --- Playing ---
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-red-50 to-white p-4">
+      <div className="max-w-3xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-xl shadow-md p-4 mb-4 flex flex-wrap justify-between items-center gap-3">
+          <div>
+            <h2 className="text-lg font-bold text-warm-800">Samþætt æfing — Stig 3</h2>
+            <p className="text-sm text-warm-500">Spurning {idx + 1} af {TOTAL_QUESTIONS}</p>
           </div>
-
-          {/* Mystery Question Card */}
-          <div className="bg-white rounded-xl shadow-lg p-8 mb-4 card-enter">
-            <div className="text-center mb-6">
-              <div className="text-lg text-warm-500 mb-2">🔍 Dularfull sameind</div>
-              <div className="text-5xl font-bold text-purple-600 mb-2">
-                {currentCompound.molarMass.toFixed(2)} g/mol
-              </div>
-              <p className="text-warm-600">Hvaða sameind hefur þennan mólmassa?</p>
-              <div className={`mt-2 inline-block px-3 py-1 rounded-full text-sm font-semibold ${
-                currentCompound.difficulty === 'easy' ? 'bg-green-100 text-green-700' :
-                currentCompound.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                'bg-red-100 text-red-700'
-              }`}>
-                {currentCompound.difficulty === 'easy' ? 'Auðvelt' :
-                 currentCompound.difficulty === 'medium' ? 'Miðlungs' :
-                 'Erfitt'}
-              </div>
-            </div>
-
-            {/* Options */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto mb-6">
-              {mysteryOptions.map((option, index) => (
-                <button
-                  key={option.formula}
-                  onClick={() => !showFeedback && setSelectedMysteryOption(index)}
-                  disabled={showFeedback}
-                  className={`p-4 rounded-xl border-2 transition-all text-left ${
-                    showFeedback
-                      ? option.formula === currentCompound.formula
-                        ? 'bg-green-100 border-green-500'
-                        : selectedMysteryOption === index
-                          ? 'bg-red-100 border-red-500'
-                          : 'bg-warm-50 border-warm-200'
-                      : selectedMysteryOption === index
-                        ? 'bg-purple-100 border-purple-500'
-                        : 'bg-white border-warm-200 hover:border-purple-300'
-                  }`}
-                >
-                  <div className="text-2xl font-bold text-warm-800">{option.formula}</div>
-                  <div className="text-sm text-warm-600">{option.name}</div>
-                  {showFeedback && (
-                    <div className="text-xs text-warm-500 mt-1">
-                      Mólmassi: {option.molarMass.toFixed(2)} g/mol
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
-
-            {/* Submit / Next button */}
-            {!showFeedback ? (
-              <button
-                onClick={handleMysterySubmit}
-                disabled={selectedMysteryOption === null}
-                className="w-full max-w-md mx-auto block bg-purple-500 hover:bg-purple-600 disabled:bg-warm-300 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl transition-colors"
-              >
-                Svara
-              </button>
-            ) : (
-              <button
-                onClick={nextQuestion}
-                className="w-full max-w-md mx-auto block bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl transition-colors"
-              >
-                Næsta sameind →
-              </button>
-            )}
-
-            {/* Feedback */}
-            {mysteryFeedback && (
-              <div className={`mt-4 p-4 rounded-xl text-center animate-fade-in-up ${
-                lastAnswerCorrect ? 'bg-green-100 border-2 border-green-500' : 'bg-red-100 border-2 border-red-500'
-              }`}>
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <span className="text-2xl">{lastAnswerCorrect ? '🎉' : '😅'}</span>
-                  <p className={`text-lg font-bold ${
-                    lastAnswerCorrect ? 'text-green-800' : 'text-red-800'
-                  }`}>
-                    {lastAnswerCorrect ? 'Rétt svar!' : 'Rangt svar'}
-                  </p>
-                </div>
-                <p className="text-warm-700 text-sm">{mysteryFeedback}</p>
-              </div>
-            )}
-          </div>
-
-          {/* Hint section */}
-          <div className="flex flex-wrap gap-3 mb-4">
-            <button
-              onClick={() => setShowPeriodicTable(true)}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-xl transition-colors btn-press"
-            >
-              📊 Lotukerfið
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-semibold text-green-600">{score} rétt</span>
+            <button onClick={() => setShowPT(true)} className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-2 px-3 rounded-lg transition-colors">
+              Lotukerfið
             </button>
-
-            {!showSolution && !showFeedback && (
-              <button
-                onClick={showHint}
-                className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-xl transition-colors btn-press"
-              >
-                💡 Sýna útreikning (-5 stig)
-              </button>
-            )}
+            <button onClick={onBack} className="bg-warm-200 hover:bg-warm-300 text-warm-700 text-sm font-semibold py-2 px-3 rounded-lg transition-colors">
+              Til baka
+            </button>
           </div>
-
-          {/* Solution (when hint used) */}
-          {showSolution && (
-            <div className="animate-fade-in-up">
-              <CalculationBreakdown compound={currentCompound} />
-            </div>
-          )}
-
-          {/* Periodic Table Modal */}
-          {showPeriodicTable && (
-            <PeriodicTable onClose={() => setShowPeriodicTable(false)} />
-          )}
         </div>
-      </div>
-    );
-  }
 
-  // Playing Screen - Practice/Competition Mode
-  if (mode === 'playing' && currentCompound) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-red-50 to-white p-4">
-        <div className="max-w-4xl mx-auto">
-          {/* Header with stats */}
-          <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-            <div className="flex flex-wrap justify-between items-center gap-4">
-              <div className="flex items-center gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">{score}</div>
-                  <div className="text-xs text-warm-600">Stig</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">{correctAnswers}/{questionsAnswered}</div>
-                  <div className="text-xs text-warm-600">Rétt</div>
-                </div>
-                {streak > 0 && (
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-orange-600">{streak} 🔥</div>
-                    <div className="text-xs text-warm-600">Rað</div>
-                  </div>
-                )}
-              </div>
+        {/* Progress */}
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-4">
+          <div className="bg-kvenno-orange h-2 rounded-full transition-all duration-300" style={{ width: `${(idx / TOTAL_QUESTIONS) * 100}%` }} />
+        </div>
 
-              {playMode === 'competition' && (
-                <div className="text-center">
-                  <div className={`text-3xl font-bold ${timeRemaining < 20 ? 'text-red-600 animate-pulse' : 'text-warm-800'}`}>
-                    {Math.floor(timeRemaining / 60)}:{(timeRemaining % 60).toString().padStart(2, '0')}
-                  </div>
-                  <div className="text-xs text-warm-600">Tími</div>
-                </div>
-              )}
-
-              <button
-                onClick={endGame}
-                className="bg-warm-200 hover:bg-warm-300 text-warm-800 font-semibold py-2 px-4 rounded-lg transition-colors"
-              >
-                Enda leik
-              </button>
-            </div>
-          </div>
-
-          {/* Question Card */}
-          <div className="bg-white rounded-xl shadow-lg p-8 mb-4 card-enter">
-            <div className="text-center mb-6">
-              <div className="text-6xl font-bold text-warm-800 mb-2">
-                {currentCompound.formula}
-              </div>
-              <div className="text-xl text-warm-600">
-                {currentCompound.name}
-              </div>
-              <div className={`mt-2 inline-block px-3 py-1 rounded-full text-sm font-semibold ${
-                currentCompound.difficulty === 'easy' ? 'bg-green-100 text-green-700' :
-                currentCompound.difficulty === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                'bg-red-100 text-red-700'
+        {p && (
+          <div className="bg-white rounded-xl shadow-lg p-6 mb-4 card-enter">
+            {/* Type badge */}
+            <div className="mb-4">
+              <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                p.type === 'mass-to-particles' ? 'bg-blue-100 text-blue-700' :
+                p.type === 'particles-to-mass' ? 'bg-purple-100 text-purple-700' :
+                'bg-teal-100 text-teal-700'
               }`}>
-                {currentCompound.difficulty === 'easy' ? 'Auðvelt' :
-                 currentCompound.difficulty === 'medium' ? 'Miðlungs' :
-                 'Erfitt'}
-              </div>
+                {p.type === 'mass-to-particles' ? 'Massi \u2192 Sameindir' :
+                 p.type === 'particles-to-mass' ? 'Sameindir \u2192 Massi' :
+                 'Massi \u2192 Mól af atómi'}
+              </span>
             </div>
 
-            <div className="max-w-md mx-auto">
-              <label className="block text-sm font-semibold text-warm-700 mb-2">
-                Hver er mólmassi efnisins? (g/mol)
-              </label>
+            <p className="text-lg font-semibold text-warm-800 mb-6">{p.question}</p>
 
+            {/* Input */}
+            <div className="max-w-md">
+              <label className="block text-sm font-medium text-warm-600 mb-1">Svar ({p.unit}):</label>
               <div className="flex gap-2">
                 <input
-                  ref={inputRef}
-                  type="number"
-                  value={userAnswer}
-                  onChange={(e) => {
-                    setUserAnswer(e.target.value);
-                    setInputError('');
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !showFeedback) {
-                      handleSubmit();
-                    } else if (e.key === 'Enter' && showFeedback) {
-                      nextQuestion();
-                    }
-                  }}
-                  disabled={showFeedback}
-                  className={`flex-1 px-4 py-3 text-lg border-2 rounded-xl focus:outline-none ${
-                    inputError ? 'border-red-500' : 'border-warm-300 focus:border-primary'
-                  }`}
-                  placeholder="Sláðu inn mólmassa..."
-                  step="0.001"
+                  type="text"
+                  value={input}
+                  onChange={e => { setInput(e.target.value); setError(''); }}
+                  onKeyDown={e => { if (e.key === 'Enter') { if (submitted) next(); else submit(); } }}
+                  disabled={submitted}
+                  placeholder="t.d. 1.2e24 eða 22.0"
+                  className={`flex-1 px-4 py-3 text-lg border-2 rounded-xl focus:outline-none ${error ? 'border-red-400' : 'border-warm-300 focus:border-kvenno-orange'}`}
                 />
-
-                {!showFeedback ? (
-                  <button
-                    onClick={handleSubmit}
-                    className="bg-primary hover:bg-primary-dark text-white font-bold px-6 py-3 rounded-xl transition-colors btn-press"
-                  >
+                {!submitted ? (
+                  <button onClick={submit} disabled={!input.trim()} className="bg-kvenno-orange hover:bg-kvenno-orange-dark disabled:bg-warm-300 text-white font-bold px-6 py-3 rounded-xl transition-colors">
                     Svara
                   </button>
                 ) : (
-                  <button
-                    onClick={nextQuestion}
-                    className="bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-3 rounded-xl transition-colors btn-press"
-                  >
-                    Næsta →
+                  <button onClick={next} className="bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-3 rounded-xl transition-colors">
+                    {idx + 1 < TOTAL_QUESTIONS ? 'Næsta \u2192' : 'Sjá niðurstöðu'}
                   </button>
                 )}
               </div>
-
-              {inputError && (
-                <p className="text-red-600 text-sm mt-2">{inputError}</p>
-              )}
-
-              {showFeedback && (
-                <div className={`mt-4 p-4 rounded-xl animate-fade-in-up ${
-                  lastAnswerCorrect ? 'bg-green-100 border-2 border-green-500' : 'bg-red-100 border-2 border-red-500'
-                }`}>
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl">{lastAnswerCorrect ? '🎉' : '😅'}</span>
-                    <p className={`text-lg font-bold ${
-                      lastAnswerCorrect ? 'text-green-800' : 'text-red-800'
-                    }`}>
-                      {lastAnswerCorrect ? 'Rétt svar!' : 'Rangt svar'}
-                    </p>
-                  </div>
-                  {!lastAnswerCorrect && (
-                    <p className="text-warm-700 mt-1">
-                      Rétt svar: {currentCompound.molarMass.toFixed(3)} g/mol
-                    </p>
-                  )}
-                </div>
-              )}
+              {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
+              <p className="text-xs text-warm-400 mt-1">Hægt að nota vísisrithátt: 1.2e24, 1.2x10^24, eða venjulega tölu</p>
             </div>
-          </div>
 
-          {/* Helper Buttons */}
-          <div className="flex flex-wrap gap-3 mb-4">
-            <button
-              onClick={() => setShowPeriodicTable(true)}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-xl transition-colors btn-press"
-            >
-              📊 Lotukerfið
-            </button>
-
-            {!showSolution && !showFeedback && (
-              <button
-                onClick={showHint}
-                className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-xl transition-colors btn-press"
-              >
-                💡 Sýna útreikning (-5 stig)
-              </button>
+            {/* Feedback + solution */}
+            {submitted && (
+              <div className="mt-6 space-y-4 animate-fade-in-up">
+                <FeedbackPanel
+                  feedback={{
+                    isCorrect: correct,
+                    explanation: correct
+                      ? 'Vel gert! Þú reiknaðir öll skrefin rétt.'
+                      : `Rétt svar: ${fmtSci(p.answer)} ${p.unit}`,
+                  }}
+                  config={{ showExplanation: true, showMisconceptions: false, showRelatedConcepts: false, showNextSteps: false }}
+                />
+                <div className="bg-warm-50 border border-warm-200 rounded-xl p-4">
+                  <h3 className="font-bold text-warm-700 mb-3">Lausnarleiðin:</h3>
+                  <div className="space-y-3">
+                    {p.steps.map((step, i) => (
+                      <div key={i} className="bg-white rounded-lg p-3 border border-warm-100">
+                        <pre className="text-sm text-warm-700 whitespace-pre-wrap font-sans">{step}</pre>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             )}
           </div>
-
-          {/* Solution */}
-          {showSolution && (
-            <div className="animate-fade-in-up">
-              <CalculationBreakdown compound={currentCompound} />
-            </div>
-          )}
-
-          {/* Periodic Table Modal */}
-          {showPeriodicTable && (
-            <PeriodicTable onClose={() => setShowPeriodicTable(false)} />
-          )}
-        </div>
+        )}
       </div>
-    );
-  }
 
-  return null;
+      {showPT && <PeriodicTable onClose={() => setShowPT(false)} />}
+    </div>
+  );
 }
 
 export default Level3;
