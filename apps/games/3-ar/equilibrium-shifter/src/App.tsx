@@ -360,9 +360,43 @@ function App() {
   const renderMenu = () => (
     <div className="max-w-4xl mx-auto">
       <div className="bg-white rounded-lg shadow-md p-8">
-        <p className="text-lg text-warm-600 mb-8 text-center">
+        <p className="text-lg text-warm-600 mb-6 text-center">
           Lærðu Le Chatelier meginregluna í gegnum gagnvirkar æfingar
         </p>
+
+        {/* Conceptual intro — WHY does Le Chatelier work? */}
+        <div className="bg-indigo-50 p-6 rounded-xl mb-8 border border-indigo-200">
+          <h2 className="font-bold text-indigo-800 mb-3">Af hverju hliðrast jafnvægi?</h2>
+          <p className="text-sm text-indigo-700 mb-3">
+            Þegar efnahvörf ná <strong>jafnvægi</strong> er hraði framhvarfsins jafn hraða
+            bakhvarfsins. Ef við trufum kerfið (bætum við efni, breytum hitastigi eða þrýstingi) er
+            jafnvægið rofið.
+          </p>
+
+          <div className="bg-white p-4 rounded-lg mb-3">
+            <h3 className="font-bold text-indigo-800 mb-2 text-sm">Q vs K — lykillinn</h3>
+            <div className="text-sm text-indigo-700 space-y-1">
+              <p>
+                <strong>K</strong> = jafnvægisfastinn (breytist EKKI nema T breytist)
+              </p>
+              <p>
+                <strong>Q</strong> = hvarfastuðullinn (reiknað úr núverandi styrk)
+              </p>
+              <p className="mt-2">
+                • Ef Q &lt; K → framhvarf er hraðara → hliðrun <strong>til hægri →</strong>
+              </p>
+              <p>
+                • Ef Q &gt; K → bakhvarf er hraðara → hliðrun <strong>← til vinstri</strong>
+              </p>
+              <p>• Ef Q = K → jafnvægi ⇌</p>
+            </div>
+          </div>
+
+          <p className="text-xs text-indigo-600">
+            <strong>Le Chatelier:</strong> Kerfið bregst við álagi þannig að það dragi úr áhrifum
+            álagsins — það er afleiðing þess að Q ≠ K eftir truflun.
+          </p>
+        </div>
 
         {/* Mode Selection */}
         <div className="grid md:grid-cols-2 gap-6 mb-6">

@@ -308,6 +308,44 @@ function App() {
                   )}
                 </div>
 
+                {/* Conceptual intro — WHY does PV=nRT? */}
+                <div className="bg-purple-50 p-6 rounded-xl mb-8 border border-purple-200">
+                  <h2 className="font-bold text-purple-800 mb-3">Af hverju PV = nRT?</h2>
+                  <p className="text-sm text-purple-700 mb-3">
+                    Gasagnir (sameindir) eru á stöðugri hreyfingu. Þegar þær rekast á veggi ílátsins
+                    skapa þær <strong>þrýsting</strong>. Þetta tengir saman fjórar stærðir:
+                  </p>
+                  <div className="grid grid-cols-2 gap-3 text-sm mb-3">
+                    <div className="bg-white p-2 rounded">
+                      <strong className="text-blue-700">P (þrýstingur)</strong> — fleiri árekstur =
+                      meiri þrýstingur
+                    </div>
+                    <div className="bg-white p-2 rounded">
+                      <strong className="text-green-700">V (rúmmál)</strong> — minna ílát = fleiri
+                      árekstur
+                    </div>
+                    <div className="bg-white p-2 rounded">
+                      <strong className="text-red-700">T (hitastig)</strong> — hærra T = hraðari
+                      agnir = harðari árekstur
+                    </div>
+                    <div className="bg-white p-2 rounded">
+                      <strong className="text-amber-700">n (mólfjöldi)</strong> — fleiri agnir =
+                      fleiri árekstur
+                    </div>
+                  </div>
+                  <div className="bg-white p-3 rounded-lg text-center">
+                    <p className="font-mono text-purple-800 text-lg">PV = nRT</p>
+                    <p className="text-xs text-purple-600 mt-1">
+                      R = 0,08206 L·atm/(mol·K) — tengir einingarnar saman
+                    </p>
+                  </div>
+                  <p className="text-xs text-purple-600 mt-3">
+                    <strong>Mikilvægt:</strong> T verður alltaf að vera í Kelvin (K = °C + 273).
+                    Þetta lögmál gildir best fyrir gas við lágan þrýsting og hátt hitastig (tilvalið
+                    gas).
+                  </p>
+                </div>
+
                 <div className="grid md:grid-cols-2 gap-6">
                   {/* Practice Mode */}
                   <div className="game-card bg-blue-50 p-6 rounded-lg border-2 border-blue-200">

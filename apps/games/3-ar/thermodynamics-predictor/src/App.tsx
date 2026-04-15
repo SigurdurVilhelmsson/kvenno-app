@@ -312,18 +312,58 @@ function App() {
                 </div>
               )}
 
-              <div className="mb-8 p-6 bg-blue-50 rounded-lg">
-                <h2 className="text-xl font-bold mb-4">📚 Um leikinn</h2>
-                <p className="mb-4">Þessi leikur kennir þér að:</p>
-                <ul className="list-disc list-inside space-y-2 text-warm-700">
-                  <li>
-                    Reikna Gibbs frjálsa orku: <strong>ΔG = ΔH - TΔS</strong>
-                  </li>
-                  <li>Spá fyrir um sjálfviljugheit hvarfa</li>
-                  <li>Skilja áhrif hitastigs á hvarfefni</li>
-                  <li>Þekkja fjögur varmafræðileg atburðarás</li>
-                  <li>Túlka ΔG vs T gröf</li>
-                </ul>
+              {/* Conceptual derivation of ΔG = ΔH - TΔS */}
+              <div className="mb-8 p-6 bg-blue-50 rounded-lg space-y-4">
+                <h2 className="text-xl font-bold text-blue-800">Af hverju ΔG = ΔH − TΔS?</h2>
+
+                <p className="text-sm text-blue-700">
+                  Til að spá fyrir um hvort hvörf gerist sjálfkrafa (sjálfviljugt) þurfum við að
+                  skoða <strong>tvær drifkraftir</strong>:
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="bg-white p-3 rounded-lg">
+                    <strong className="text-red-700">ΔH (entalpía)</strong>
+                    <p className="text-sm text-warm-700 mt-1">
+                      Efni vilja losa orku → ΔH &lt; 0 er hagstætt.
+                      <br />
+                      (Eins og bolti sem vill rúlla niður hæð)
+                    </p>
+                  </div>
+                  <div className="bg-white p-3 rounded-lg">
+                    <strong className="text-purple-700">ΔS (óregla/entrópia)</strong>
+                    <p className="text-sm text-warm-700 mt-1">
+                      Náttúran stefnir í meiri óreglu → ΔS &gt; 0 er hagstætt.
+                      <br />
+                      (Eins og herbergi sem verður alltaf ósnyrtilegra)
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-white p-4 rounded-lg border border-blue-200">
+                  <p className="text-sm text-blue-800 mb-2">
+                    <strong>Gibbs</strong> sameinaði hvort tveggja í eina jöfnu:
+                  </p>
+                  <p className="font-mono text-lg text-center text-blue-900">ΔG = ΔH − TΔS</p>
+                  <div className="text-xs text-blue-600 mt-2 space-y-1">
+                    <p>
+                      • Ef ΔG &lt; 0 → hvörfin eru <strong>sjálfviljug</strong> (geta gerst
+                      sjálfkrafa)
+                    </p>
+                    <p>
+                      • Ef ΔG &gt; 0 → hvörfin eru <strong>ekki sjálfviljug</strong>
+                    </p>
+                    <p>
+                      • Ef ΔG = 0 → kerfið er í <strong>jafnvægi</strong>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-amber-50 p-3 rounded-lg text-sm text-amber-800">
+                  <strong>Hlutverk hitastigs:</strong> T margfaldar ΔS. Við hátt hitastig ráða
+                  óreguáhrif meiru (TΔS stórt). Við lágt hitastig ræður orkuáhrifin (ΔH). Þess vegna
+                  geta sum hvörf verið sjálfviljug aðeins við ákveðið hitastig.
+                </div>
               </div>
 
               <div className="mb-8">
