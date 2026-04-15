@@ -163,20 +163,13 @@ Gold standard games: Jafna Jöfnur (real-time atom counter), IMF Level 3 (real-w
 
 ### Restructure status (April 2026)
 
-**Completed:**
+**All phases completed:**
 
 - Phase 1: Teaching intros added to all games that tested before teaching (Y1-Y3)
 - Phase 2: All hint penalties removed (code + UI text), DA L2 prediction disabled, DA L3 scoring simplified
 - Phase 3-4: Real-world "Af hverju?" context cards + curriculum chain positions added to all 20 games
 - Phase 5a: Jafna Jöfnur reload fix + L3 hints, Nafnakerfid L3 explanations
-
-**Remaining (Phase 5b — large features):**
-
-- Lewis Structures L2: build interactive drawing component (students place bonds/lone pairs)
-- VSEPR L2-3: interactive geometry prediction tool
-- pH Titration L2: genuine interactive titration (student decides equivalence point)
-- Buffer L3: complete stock solution implementation
-- Lausnir L1: simplify particle animation (low priority — controls already teach well)
+- Phase 5b: Lewis Structures L2 interactive SVG drawing canvas, VSEPR L2 constrained prediction + L3 hybridization diagram, pH Titration L2 equivalence point marking, Lausnir L1 static beaker
 
 Full plan: `~/.claude/plans/mighty-mixing-puffin.md`
 
