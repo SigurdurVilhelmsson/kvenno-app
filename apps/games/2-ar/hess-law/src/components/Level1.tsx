@@ -250,7 +250,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     if (isCorrect) {
       onCorrectAnswer?.();
       if (!completed.includes(challenge.id)) {
-        const points = showHint ? 50 : 100;
+        const points = 100;
         setScore((prev) => prev + points);
         setCompleted((prev) => [...prev, challenge.id]);
       }

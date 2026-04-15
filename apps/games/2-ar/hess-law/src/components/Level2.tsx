@@ -419,7 +419,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     if (correct) {
       onCorrectAnswer?.();
       if (!completed.includes(puzzle.id)) {
-        const points = showHint ? 50 : 100;
+        const points = 100;
         setScore((prev) => prev + points);
         setCompleted((prev) => [...prev, puzzle.id]);
       }

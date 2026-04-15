@@ -55,7 +55,7 @@ function App() {
   const [userPrediction, setUserPrediction] = useState<ShiftDirection | null>(null);
   const [correctShift, setCorrectShift] = useState<ShiftResult | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
-  const [hintMultiplier, setHintMultiplier] = useState(1.0);
+  const [, setHintMultiplier] = useState(1.0);
   const [, setHintsUsedTier] = useState(0);
   const [hintResetKey, setHintResetKey] = useState(0);
 
@@ -290,9 +290,8 @@ function App() {
     setIsCorrect(correct);
     setShowExplanation(true);
 
-    // Update stats - apply hint multiplier to points
-    const basePoints = calculatePoints(correct, currentEquilibrium.difficulty);
-    const points = Math.round(basePoints * hintMultiplier);
+    // No hint penalty — hints are free for learning
+    const points = calculatePoints(correct, currentEquilibrium.difficulty);
 
     setStats((prev) => ({
       ...prev,

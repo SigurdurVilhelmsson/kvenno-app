@@ -148,7 +148,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     setPhase('result');
 
     if (volumeCorrect && indicatorOk) {
-      const points = showHint ? 50 : 100;
+      const points = 100;
       setScore((prev) => prev + points);
       onCorrectAnswer?.();
     } else {

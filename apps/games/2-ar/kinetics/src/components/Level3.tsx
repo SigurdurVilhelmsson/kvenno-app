@@ -28,9 +28,9 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const checkAnswer = () => {
     if (!selectedAnswer) return;
 
-    const selectedOption = challenge.options.find(opt => opt.id === selectedAnswer);
+    const selectedOption = challenge.options.find((opt) => opt.id === selectedAnswer);
     if (selectedOption?.correct) {
-      setScore(prev => prev + (showHint ? 10 : 20));
+      setScore((prev) => prev + 20);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();
@@ -40,7 +40,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const nextChallenge = () => {
     if (currentChallenge < challenges.length - 1) {
-      setCurrentChallenge(prev => prev + 1);
+      setCurrentChallenge((prev) => prev + 1);
       setSelectedAnswer(null);
       setShowResult(false);
       setShowHint(false);
@@ -92,7 +92,9 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <span>&larr;</span> Til baka
           </button>
           <div className="text-right">
-            <div className="text-sm text-warm-600">Stig 3 / Þraut {currentChallenge + 1} af {challenges.length}</div>
+            <div className="text-sm text-warm-600">
+              Stig 3 / Þraut {currentChallenge + 1} af {challenges.length}
+            </div>
             <div className="text-lg font-bold text-purple-600">{score} stig</div>
           </div>
         </div>
@@ -107,9 +109,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Main content */}
         <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <h2 className="text-2xl font-bold text-purple-800 mb-2">
-            {challenge.title}
-          </h2>
+          <h2 className="text-2xl font-bold text-purple-800 mb-2">{challenge.title}</h2>
           <p className="text-warm-600 mb-4">{challenge.description}</p>
 
           {/* Overall reaction */}
@@ -125,18 +125,19 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <h3 className="font-bold text-warm-700 mb-3">Hvarfgangsháttur:</h3>
             <div className="space-y-3">
               {challenge.mechanism.map((step, idx) => (
-                <div
-                  key={idx}
-                  className={`p-4 rounded-xl border-2 ${getStepStyle(step.type)}`}
-                >
+                <div key={idx} className={`p-4 rounded-xl border-2 ${getStepStyle(step.type)}`}>
                   <div className="flex items-center justify-between">
                     <div className="font-mono text-lg">{step.equation}</div>
                     {step.label && (
-                      <span className={`text-sm font-semibold px-2 py-1 rounded ${
-                        step.type === 'slow' ? 'text-red-700 bg-red-100' :
-                        step.type === 'fast' ? 'text-green-700 bg-green-100' :
-                        'text-blue-700 bg-blue-100'
-                      }`}>
+                      <span
+                        className={`text-sm font-semibold px-2 py-1 rounded ${
+                          step.type === 'slow'
+                            ? 'text-red-700 bg-red-100'
+                            : step.type === 'fast'
+                              ? 'text-green-700 bg-green-100'
+                              : 'text-blue-700 bg-blue-100'
+                        }`}
+                      >
                         {step.label}
                       </span>
                     )}
@@ -153,7 +154,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           {/* Options */}
           <div className="space-y-3 mb-6">
-            {challenge.options.map(option => (
+            {challenge.options.map((option) => (
               <button
                 key={option.id}
                 onClick={() => handleAnswerSelect(option.id)}
@@ -171,7 +172,9 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   )}
                 </div>
                 {showResult && selectedAnswer === option.id && (
-                  <div className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}>
+                  <div
+                    className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}
+                  >
                     {option.explanation}
                   </div>
                 )}
@@ -184,7 +187,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <button
               onClick={() => {
                 setShowHint(true);
-                setTotalHintsUsed(prev => prev + 1);
+                setTotalHintsUsed((prev) => prev + 1);
               }}
               className="text-purple-600 hover:text-purple-800 text-sm underline mb-4"
             >
@@ -214,9 +217,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           {showResult && (
             <div className="bg-purple-50 p-4 rounded-xl mb-4">
               <div className="font-bold text-purple-800 mb-2">Hugtak:</div>
-              <div className="text-purple-900 text-sm">
-                {challenge.conceptExplanation}
-              </div>
+              <div className="text-purple-900 text-sm">{challenge.conceptExplanation}</div>
             </div>
           )}
 

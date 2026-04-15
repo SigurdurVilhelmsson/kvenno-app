@@ -32,11 +32,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     setIsCorrect(correct);
 
     if (correct) {
-      if (!showHint) {
-        setScore((prev) => prev + 20);
-      } else {
-        setScore((prev) => prev + 10);
-      }
+      setScore((prev) => prev + 20);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();

@@ -60,7 +60,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
     setShowResult(true);
 
     if (correct) {
-      const points = showHint ? 10 : 20;
+      const points = 20;
       setScore((prev) => prev + points);
       onCorrectAnswer?.();
     } else {

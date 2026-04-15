@@ -42,9 +42,9 @@ const challenges: NamingChallenge[] = [
     steps: {
       identifyType: 'Jónefni (málmur + málmleysingi)',
       nameParts: ['Kalíum (málmur)', 'bróm → brómíð'],
-      finalName: 'Kalíum + brómíð = Kalíumbrómíð'
+      finalName: 'Kalíum + brómíð = Kalíumbrómíð',
     },
-    hint: 'K er málmur í hópi 1, Br er málmleysingi'
+    hint: 'K er málmur í hópi 1, Br er málmleysingi',
   },
   {
     id: 2,
@@ -56,9 +56,9 @@ const challenges: NamingChallenge[] = [
     steps: {
       identifyType: 'Jónefni (málmur + málmleysingi)',
       nameParts: ['Kalsíum (málmur)', 'súrefni → oxíð'],
-      finalName: 'Kalsíum + oxíð = Kalsíumoxíð'
+      finalName: 'Kalsíum + oxíð = Kalsíumoxíð',
     },
-    hint: 'Ca er málmur í hópi 2, O er súrefni'
+    hint: 'Ca er málmur í hópi 2, O er súrefni',
   },
   {
     id: 3,
@@ -71,9 +71,9 @@ const challenges: NamingChallenge[] = [
     steps: {
       identifyType: 'Jónefni með breytilega hleðslu',
       nameParts: ['Járn (breytileg hleðsla)', '3 Cl⁻ → Fe³⁺ → (III)', 'klór → klóríð'],
-      finalName: 'Járn(III) + klóríð = Járn(III)klóríð'
+      finalName: 'Járn(III) + klóríð = Járn(III)klóríð',
     },
-    hint: 'Járn getur haft +2 eða +3 hleðslu. 3 klór þýðir Fe³⁺'
+    hint: 'Járn getur haft +2 eða +3 hleðslu. 3 klór þýðir Fe³⁺',
   },
   {
     id: 4,
@@ -86,9 +86,9 @@ const challenges: NamingChallenge[] = [
     steps: {
       identifyType: 'Jónefni með breytilega hleðslu',
       nameParts: ['Kopar (breytileg hleðsla)', '2 Cu + O²⁻ → 2Cu⁺ → (I)', 'súrefni → oxíð'],
-      finalName: 'Kopar(I) + oxíð = Kopar(I)oxíð'
+      finalName: 'Kopar(I) + oxíð = Kopar(I)oxíð',
     },
-    hint: '2 kopar deila einni O²⁻, svo hver Cu er +1'
+    hint: '2 kopar deila einni O²⁻, svo hver Cu er +1',
   },
   {
     id: 5,
@@ -100,9 +100,9 @@ const challenges: NamingChallenge[] = [
     steps: {
       identifyType: 'Jónefni með fjölatóma jón',
       nameParts: ['Natríum (málmur)', 'SO₄²⁻ = súlfat (fjölatóma jón)'],
-      finalName: 'Natríum + súlfat = Natríumsúlfat'
+      finalName: 'Natríum + súlfat = Natríumsúlfat',
     },
-    hint: 'SO₄ er súlfat jónin - fjölatóma jón með fast nafn'
+    hint: 'SO₄ er súlfat jónin - fjölatóma jón með fast nafn',
   },
   {
     id: 6,
@@ -114,9 +114,9 @@ const challenges: NamingChallenge[] = [
     steps: {
       identifyType: 'Jónefni með fjölatóma jón',
       nameParts: ['Kalíum (málmur)', 'NO₃⁻ = nítrat (fjölatóma jón)'],
-      finalName: 'Kalíum + nítrat = Kalíumnítrat'
+      finalName: 'Kalíum + nítrat = Kalíumnítrat',
     },
-    hint: 'NO₃ er nítrat jónin'
+    hint: 'NO₃ er nítrat jónin',
   },
   {
     id: 7,
@@ -128,9 +128,9 @@ const challenges: NamingChallenge[] = [
     steps: {
       identifyType: 'Sameind (tveir málmleysingjar)',
       nameParts: ['C: 1 atóm → (sleppum mono)', 'O: 2 atóm → dí', 'súrefni → oxíð'],
-      finalName: 'Kol + dí + oxíð = Koldíoxíð'
+      finalName: 'Kol + dí + oxíð = Koldíoxíð',
     },
-    hint: 'Bæði C og O eru málmleysingjar - þetta er sameind'
+    hint: 'Bæði C og O eru málmleysingjar - þetta er sameind',
   },
   {
     id: 8,
@@ -142,9 +142,9 @@ const challenges: NamingChallenge[] = [
     steps: {
       identifyType: 'Sameind (tveir málmleysingjar)',
       nameParts: ['N: 2 atóm → dí', 'O: 4 atóm → tetra', 'súrefni → oxíð'],
-      finalName: 'Dí + nitur + tetra + oxíð = Díniturtetroxíð'
+      finalName: 'Dí + nitur + tetra + oxíð = Díniturtetroxíð',
     },
-    hint: 'N og O eru báðir málmleysingjar'
+    hint: 'N og O eru báðir málmleysingjar',
   },
   {
     id: 9,
@@ -156,9 +156,9 @@ const challenges: NamingChallenge[] = [
     steps: {
       identifyType: 'Sameind (tveir málmleysingjar)',
       nameParts: ['S: 1 atóm → (sleppum mono)', 'F: 6 atóm → hexa', 'flúor → flúoríð'],
-      finalName: 'Brennisteinn + hexa + flúoríð = Brennisteinshexaflúoríð'
+      finalName: 'Brennisteinn + hexa + flúoríð = Brennisteinshexaflúoríð',
     },
-    hint: 'S og F eru báðir málmleysingjar'
+    hint: 'S og F eru báðir málmleysingjar',
   },
   {
     id: 10,
@@ -170,9 +170,9 @@ const challenges: NamingChallenge[] = [
     steps: {
       identifyType: 'Jónefni með fjölatóma jón',
       nameParts: ['Kalsíum (málmur)', 'NO₃⁻ = nítrat (×2 breytir ekki nafninu)'],
-      finalName: 'Kalsíum + nítrat = Kalsíumnítrat'
+      finalName: 'Kalsíum + nítrat = Kalsíumnítrat',
     },
-    hint: 'Sviginn sýnir að það eru 2 nítrat jónir, en nafnið er samt bara nítrat'
+    hint: 'Sviginn sýnir að það eru 2 nítrat jónir, en nafnið er samt bara nítrat',
   },
   {
     id: 11,
@@ -185,9 +185,9 @@ const challenges: NamingChallenge[] = [
     steps: {
       identifyType: 'Jónefni með breytilega hleðslu',
       nameParts: ['Blý (breytileg hleðsla)', '2 O²⁻ = -4 → Pb⁴⁺ → (IV)', 'súrefni → oxíð'],
-      finalName: 'Blý(IV) + oxíð = Blý(IV)oxíð'
+      finalName: 'Blý(IV) + oxíð = Blý(IV)oxíð',
     },
-    hint: 'Blý getur haft +2 eða +4 hleðslu. 2 súrefni = -4, svo blý er +4'
+    hint: 'Blý getur haft +2 eða +4 hleðslu. 2 súrefni = -4, svo blý er +4',
   },
   {
     id: 12,
@@ -199,33 +199,33 @@ const challenges: NamingChallenge[] = [
     steps: {
       identifyType: 'Sameind (tveir málmleysingjar)',
       nameParts: ['P: 1 atóm → (sleppum mono)', 'Cl: 5 atóm → penta', 'klór → klóríð'],
-      finalName: 'Fosfor + penta + klóríð = Fosforpentaklóríð'
+      finalName: 'Fosfor + penta + klóríð = Fosforpentaklóríð',
     },
-    hint: 'P og Cl eru báðir málmleysingjar'
-  }
+    hint: 'P og Cl eru báðir málmleysingjar',
+  },
 ];
 
 const typeNames: Record<CompoundType, { name: string; color: string; description: string }> = {
   'ionic-simple': {
     name: 'Einfalt jónefni',
     color: 'blue',
-    description: 'Málmur + málmleysingi, fær endinguna -íð'
+    description: 'Málmur + málmleysingi, fær endinguna -íð',
   },
   'ionic-variable': {
     name: 'Jónefni (breytileg hleðsla)',
     color: 'purple',
-    description: 'Málmur með breytilega hleðslu, notar rómverskar tölur'
+    description: 'Málmur með breytilega hleðslu, notar rómverskar tölur',
   },
   'ionic-polyatomic': {
     name: 'Jónefni (fjölatóma jón)',
     color: 'green',
-    description: 'Inniheldur fjölatóma jón eins og súlfat, nítrat, eða karbónat'
+    description: 'Inniheldur fjölatóma jón eins og súlfat, nítrat, eða karbónat',
   },
-  'molecular': {
+  molecular: {
     name: 'Sameind',
     color: 'orange',
-    description: 'Tveir málmleysingjar, notar grísk forskeyti'
-  }
+    description: 'Tveir málmleysingjar, notar grísk forskeyti',
+  },
 };
 
 const greekPrefixes = [
@@ -236,7 +236,7 @@ const greekPrefixes = [
   { count: 5, prefix: 'penta-', note: '' },
   { count: 6, prefix: 'hexa-', note: '' },
   { count: 7, prefix: 'hepta-', note: '' },
-  { count: 8, prefix: 'okta-', note: '' }
+  { count: 8, prefix: 'okta-', note: '' },
 ];
 
 type Step = 'identify' | 'build' | 'answer' | 'feedback';
@@ -255,7 +255,9 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   const typeInfo = typeNames[challenge.type];
 
   const normalizeAnswer = (answer: string): string => {
-    return answer.toLowerCase().trim()
+    return answer
+      .toLowerCase()
+      .trim()
       .replace(/í/g, 'i')
       .replace(/ú/g, 'u')
       .replace(/ý/g, 'y')
@@ -275,7 +277,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     setTypeCorrect(correct);
 
     if (correct) {
-      setScore(prev => prev + 5);
+      setScore((prev) => prev + 5);
     }
 
     // Move to build step after a short delay
@@ -290,7 +292,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     const normalizedCorrect = normalizeAnswer(challenge.correctName);
 
     if (normalizedUser === normalizedCorrect) {
-      setScore(prev => prev + (showHint ? 5 : 10));
+      setScore((prev) => prev + 10);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();
@@ -299,7 +301,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
   const handleNext = () => {
     if (currentChallenge < challenges.length - 1) {
-      setCurrentChallenge(prev => prev + 1);
+      setCurrentChallenge((prev) => prev + 1);
       setStep('identify');
       setSelectedType(null);
       setUserAnswer('');
@@ -316,10 +318,30 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
   const getColorClasses = (color: string) => {
     const colors: Record<string, { bg: string; border: string; text: string; light: string }> = {
-      blue: { bg: 'bg-blue-500', border: 'border-blue-400', text: 'text-blue-800', light: 'bg-blue-50' },
-      purple: { bg: 'bg-purple-500', border: 'border-purple-400', text: 'text-purple-800', light: 'bg-purple-50' },
-      green: { bg: 'bg-green-500', border: 'border-green-400', text: 'text-green-800', light: 'bg-green-50' },
-      orange: { bg: 'bg-orange-500', border: 'border-orange-400', text: 'text-orange-800', light: 'bg-orange-50' }
+      blue: {
+        bg: 'bg-blue-500',
+        border: 'border-blue-400',
+        text: 'text-blue-800',
+        light: 'bg-blue-50',
+      },
+      purple: {
+        bg: 'bg-purple-500',
+        border: 'border-purple-400',
+        text: 'text-purple-800',
+        light: 'bg-purple-50',
+      },
+      green: {
+        bg: 'bg-green-500',
+        border: 'border-green-400',
+        text: 'text-green-800',
+        light: 'bg-green-50',
+      },
+      orange: {
+        bg: 'bg-orange-500',
+        border: 'border-orange-400',
+        text: 'text-orange-800',
+        light: 'bg-orange-50',
+      },
     };
     return colors[color] || colors.blue;
   };
@@ -333,7 +355,9 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           </button>
           <div className="flex items-center gap-4">
             <div className="text-sm text-warm-500">
-              {t('level2.ui.compoundNOfM', 'Efnasamband {n} af {m}').replace('{n}', String(currentChallenge + 1)).replace('{m}', String(challenges.length))}
+              {t('level2.ui.compoundNOfM', 'Efnasamband {n} af {m}')
+                .replace('{n}', String(currentChallenge + 1))
+                .replace('{m}', String(challenges.length))}
             </div>
             <div className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full font-bold">
               {t('common.score', 'Stig')}: {score}
@@ -358,10 +382,11 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               formula: challenge.formula,
               name: challenge.correctName,
               type: challenge.type === 'molecular' ? 'molecular' : 'ionic',
-              category: challenge.type === 'ionic-variable' ? 'málmar-breytilega-hleðsla' : 'jónefni',
+              category:
+                challenge.type === 'ionic-variable' ? 'málmar-breytilega-hleðsla' : 'jónefni',
               difficulty: 'easy',
               elements: [],
-              info: ''
+              info: '',
             }}
             size="medium"
             showLabels={true}
@@ -371,10 +396,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
         {/* Step indicator */}
         <div className="flex justify-center gap-2 mb-6">
           {['identify', 'build', 'answer', 'feedback'].map((s, idx) => (
-            <div
-              key={s}
-              className={`flex items-center ${idx < 3 ? 'gap-2' : ''}`}
-            >
+            <div key={s} className={`flex items-center ${idx < 3 ? 'gap-2' : ''}`}>
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
                   s === step
@@ -398,7 +420,9 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               {t('level2.ui.step1Title', 'Skref 1: Hvaða tegund efnasambands er þetta?')}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {(Object.entries(typeNames) as [CompoundType, typeof typeNames[CompoundType]][]).map(([type, info]) => {
+              {(
+                Object.entries(typeNames) as [CompoundType, (typeof typeNames)[CompoundType]][]
+              ).map(([type, info]) => {
                 const colors = getColorClasses(info.color);
                 return (
                   <button
@@ -423,10 +447,14 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             </div>
 
             {typeCorrect !== null && (
-              <div className={`p-4 rounded-xl text-center ${
-                typeCorrect ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
-              }`}>
-                {typeCorrect ? `✓ ${t('common.correct', 'Rétt!')}` : `Þetta er ${typeInfo.name.toLowerCase()}`}
+              <div
+                className={`p-4 rounded-xl text-center ${
+                  typeCorrect ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
+                }`}
+              >
+                {typeCorrect
+                  ? `✓ ${t('common.correct', 'Rétt!')}`
+                  : `Þetta er ${typeInfo.name.toLowerCase()}`}
               </div>
             )}
           </div>
@@ -439,7 +467,9 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               {t('level2.ui.step2Title', 'Skref 2: Hvernig er nafnið byggt upp?')}
             </h2>
 
-            <div className={`${getColorClasses(typeInfo.color).light} border-2 ${getColorClasses(typeInfo.color).border} rounded-xl p-4`}>
+            <div
+              className={`${getColorClasses(typeInfo.color).light} border-2 ${getColorClasses(typeInfo.color).border} rounded-xl p-4`}
+            >
               <div className={`font-bold ${getColorClasses(typeInfo.color).text} mb-2`}>
                 {typeInfo.name}
               </div>
@@ -463,9 +493,11 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             {/* Greek prefixes reference for molecular compounds */}
             {challenge.type === 'molecular' && (
               <div className="bg-orange-50 rounded-xl p-4">
-                <div className="font-bold text-orange-800 mb-2">{t('level2.ui.greekPrefixes', 'Grísk forskeyti:')}</div>
+                <div className="font-bold text-orange-800 mb-2">
+                  {t('level2.ui.greekPrefixes', 'Grísk forskeyti:')}
+                </div>
                 <div className="grid grid-cols-4 gap-2 text-sm">
-                  {greekPrefixes.slice(0, 8).map(p => (
+                  {greekPrefixes.slice(0, 8).map((p) => (
                     <div key={p.count} className="bg-white p-2 rounded text-center">
                       <span className="font-bold">{p.count}</span> = {p.prefix.replace('-', '')}
                     </div>
@@ -519,7 +551,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                 <button
                   onClick={() => {
                     setShowHint(true);
-                    setTotalHintsUsed(prev => prev + 1);
+                    setTotalHintsUsed((prev) => prev + 1);
                   }}
                   className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-3 px-6 rounded-xl"
                 >
@@ -544,17 +576,30 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
         {/* Step 4: Feedback */}
         {step === 'feedback' && (
           <div className="space-y-4">
-            <div className={`p-6 rounded-xl text-center ${
-              isAnswerCorrect ? 'bg-green-100 border-2 border-green-400' : 'bg-red-100 border-2 border-red-400'
-            }`}>
+            <div
+              className={`p-6 rounded-xl text-center ${
+                isAnswerCorrect
+                  ? 'bg-green-100 border-2 border-green-400'
+                  : 'bg-red-100 border-2 border-red-400'
+              }`}
+            >
               <div className="text-4xl mb-2">{isAnswerCorrect ? '✓' : '✗'}</div>
-              <div className={`text-xl font-bold ${isAnswerCorrect ? 'text-green-800' : 'text-red-800'}`}>
-                {isAnswerCorrect ? t('common.correct', 'Rétt!') : t('level2.ui.notQuite', 'Ekki alveg')}
+              <div
+                className={`text-xl font-bold ${isAnswerCorrect ? 'text-green-800' : 'text-red-800'}`}
+              >
+                {isAnswerCorrect
+                  ? t('common.correct', 'Rétt!')
+                  : t('level2.ui.notQuite', 'Ekki alveg')}
               </div>
               {!isAnswerCorrect && (
                 <div className="mt-2 text-red-700">
-                  <div>{t('level2.ui.youWrote', 'Þú skrifaðir:')} <strong>{userAnswer}</strong></div>
-                  <div>{t('level2.ui.correctAnswer', 'Rétt svar:')} <strong>{challenge.correctName}</strong></div>
+                  <div>
+                    {t('level2.ui.youWrote', 'Þú skrifaðir:')} <strong>{userAnswer}</strong>
+                  </div>
+                  <div>
+                    {t('level2.ui.correctAnswer', 'Rétt svar:')}{' '}
+                    <strong>{challenge.correctName}</strong>
+                  </div>
                 </div>
               )}
               {isAnswerCorrect && (
@@ -578,7 +623,9 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               onClick={handleNext}
               className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-xl"
             >
-              {currentChallenge < challenges.length - 1 ? t('level2.ui.nextCompound', 'Næsta efnasamband') + ' →' : t('level2.ui.finishLevel', 'Ljúka stigi') + ' →'}
+              {currentChallenge < challenges.length - 1
+                ? t('level2.ui.nextCompound', 'Næsta efnasamband') + ' →'
+                : t('level2.ui.finishLevel', 'Ljúka stigi') + ' →'}
             </button>
           </div>
         )}
@@ -593,7 +640,9 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
         {/* Quick reference */}
         <div className="mt-6 bg-warm-50 rounded-xl p-4">
-          <h3 className="font-semibold text-warm-700 mb-2 text-sm">{t('level2.ui.quickRef', 'Flýtileiðbeiningar:')}</h3>
+          <h3 className="font-semibold text-warm-700 mb-2 text-sm">
+            {t('level2.ui.quickRef', 'Flýtileiðbeiningar:')}
+          </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
             <div className="bg-blue-50 p-2 rounded border border-blue-200">
               <div className="font-bold text-blue-700">Jónefni</div>

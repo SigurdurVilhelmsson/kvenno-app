@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 
 import { level3Challenges } from '../data/challenges';
-import { scoreExplanation, calculateCompositeScore, countSignificantFigures } from '../utils/scoring';
+import {
+  scoreExplanation,
+  calculateCompositeScore,
+  countSignificantFigures,
+} from '../utils/scoring';
 
 interface ScoreResult {
   answer: number;
@@ -31,23 +35,31 @@ interface Level3Props {
   onIncorrectAnswer?: () => void;
 }
 
-export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
+export function Level3({
+  onComplete,
+  onBack,
+  initialProgress,
+  onCorrectAnswer,
+  onIncorrectAnswer,
+}: Level3Props) {
   const [currentProblemIndex, setCurrentProblemIndex] = useState(
     initialProgress?.problemsCompleted || 0
   );
   const [progress, setProgress] = useState<Level3Progress>(
-    initialProgress ? {
-      ...initialProgress,
-      totalSteps: initialProgress.totalSteps || 0,
-      hintsUsed: initialProgress.hintsUsed || 0
-    } : {
-      problemsCompleted: 0,
-      compositeScores: [],
-      totalSteps: 0,
-      achievements: [],
-      mastered: false,
-      hintsUsed: 0
-    }
+    initialProgress
+      ? {
+          ...initialProgress,
+          totalSteps: initialProgress.totalSteps || 0,
+          hintsUsed: initialProgress.hintsUsed || 0,
+        }
+      : {
+          problemsCompleted: 0,
+          compositeScores: [],
+          totalSteps: 0,
+          achievements: [],
+          mastered: false,
+          hintsUsed: 0,
+        }
   );
   const [totalHintsUsed, setTotalHintsUsed] = useState(initialProgress?.hintsUsed || 0);
 
@@ -77,12 +89,15 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
 
   const getHint = () => {
     const hints: Record<string, string> = {
-      reverse: 'Byrjaðu með upphafsgildinu og spyrðu þig: Hvaða stuðlar myndu breyta því í lokagildið?',
-      error_analysis: 'Athugaðu hvort stuðullinn sé snúinn rétt - einingin sem á að hverfa þarf að vera í nefnara.',
+      reverse:
+        'Byrjaðu með upphafsgildinu og spyrðu þig: Hvaða stuðlar myndu breyta því í lokagildið?',
+      error_analysis:
+        'Athugaðu hvort stuðullinn sé snúinn rétt - einingin sem á að hverfa þarf að vera í nefnara.',
       efficiency: 'Leitaðu að beinum stuðlum í stað þess að fara í gegnum margar millistig.',
-      synthesis: 'Byrjaðu á að margfalda rúmmál með eðlismassa til að fá massa, síðan umbreyttu einingum.',
+      synthesis:
+        'Byrjaðu á að margfalda rúmmál með eðlismassa til að fá massa, síðan umbreyttu einingum.',
       real_world: 'Umbreyttu öllum gildum í sömu einingar áður en þú reiknar fjölda skammta.',
-      derivation: 'Notaðu vísindatölustafi (t.d. 3.00e8) fyrir mjög stórar eða litlar tölur.'
+      derivation: 'Notaðu vísindatölustafi (t.d. 3.00e8) fyrir mjög stórar eða litlar tölur.',
     };
     return hints[problem.type] || 'Hugsaðu vel um hvaða stuðla þú þarft og í hvaða röð.';
   };
@@ -110,7 +125,10 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
       if (Math.abs(userNum - (problem.correctAnswer || 0)) < 0.01) {
         answerScore = 1;
       }
-      if (explanation.toLowerCase().includes('öfug') || explanation.toLowerCase().includes('rang')) {
+      if (
+        explanation.toLowerCase().includes('öfug') ||
+        explanation.toLowerCase().includes('rang')
+      ) {
         methodScore = 1;
       }
     } else if (problem.type === 'efficiency') {
@@ -152,7 +170,12 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
       }
     }
 
-    let composite = calculateCompositeScore(answerScore, methodScore, explanationScore, efficiencyScore);
+    let composite = calculateCompositeScore(
+      answerScore,
+      methodScore,
+      explanationScore,
+      efficiencyScore
+    );
 
     // Hint penalty
     if (hintUsed) {
@@ -167,7 +190,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
       composite: composite,
       sigFig: sigFigScore,
       userSigFigs: userSigFigs,
-      hintPenalty: hintUsed ? 0.10 : 0
+      hintPenalty: 0,
     });
 
     setShowFeedback(true);
@@ -183,7 +206,11 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
     const newProgress = {
       ...progress,
       compositeScores: [...progress.compositeScores, composite],
-      totalSteps: (progress.totalSteps || 0) + (selectedPath !== null && problem.type === 'efficiency' && problem.possiblePaths ? problem.possiblePaths[selectedPath].stepCount : 2)
+      totalSteps:
+        (progress.totalSteps || 0) +
+        (selectedPath !== null && problem.type === 'efficiency' && problem.possiblePaths
+          ? problem.possiblePaths[selectedPath].stepCount
+          : 2),
     };
     setProgress(newProgress);
   };
@@ -192,12 +219,13 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
     const newProgress = {
       ...progress,
       problemsCompleted: progress.problemsCompleted + 1,
-      hintsUsed: totalHintsUsed
+      hintsUsed: totalHintsUsed,
     };
 
     // Check mastery after 10 problems
     if (newProgress.problemsCompleted >= 10) {
-      const avgScore = newProgress.compositeScores.reduce((a, b) => a + b, 0) / newProgress.compositeScores.length;
+      const avgScore =
+        newProgress.compositeScores.reduce((a, b) => a + b, 0) / newProgress.compositeScores.length;
       newProgress.mastered = avgScore >= 0.75;
     }
 
@@ -213,9 +241,13 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
 
   if (!problem) return null;
 
-  const avgScore = progress.compositeScores.length > 0
-    ? Math.round((progress.compositeScores.reduce((a, b) => a + b, 0) / progress.compositeScores.length) * 100)
-    : 0;
+  const avgScore =
+    progress.compositeScores.length > 0
+      ? Math.round(
+          (progress.compositeScores.reduce((a, b) => a + b, 0) / progress.compositeScores.length) *
+            100
+        )
+      : 0;
 
   const problemTypeLabels: Record<string, string> = {
     reverse: 'Öfug greining',
@@ -223,7 +255,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
     efficiency: 'Skilvirkni',
     synthesis: 'Samsetning',
     real_world: 'Raunveruleiki',
-    derivation: 'Afleiðing'
+    derivation: 'Afleiðing',
   };
 
   return (
@@ -242,9 +274,11 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
               Stig 3: Útreikningar
             </span>
             <span>Áskorun {progress.problemsCompleted + 1} / 10</span>
-            <span className={`px-2 py-1 rounded text-xs ${
-              avgScore >= 75 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-            }`}>
+            <span
+              className={`px-2 py-1 rounded text-xs ${
+                avgScore >= 75 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+              }`}
+            >
               Meðal: {avgScore}%
             </span>
           </div>
@@ -254,7 +288,7 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
         <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-purple-500 h-2 rounded-full transition-all duration-500"
-            style={{ width: `${((progress.problemsCompleted) / 10) * 100}%` }}
+            style={{ width: `${(progress.problemsCompleted / 10) * 100}%` }}
           />
         </div>
 
@@ -286,13 +320,17 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                 {problem.startValue && problem.startUnit && (
                   <div className="bg-white p-3 rounded-lg">
                     <p className="text-xs text-warm-500">Rúmmál</p>
-                    <p className="font-bold text-purple-700">{problem.startValue} {problem.startUnit}</p>
+                    <p className="font-bold text-purple-700">
+                      {problem.startValue} {problem.startUnit}
+                    </p>
                   </div>
                 )}
                 {problem.density && problem.densityUnit && (
                   <div className="bg-white p-3 rounded-lg">
                     <p className="text-xs text-warm-500">Eðlismassi</p>
-                    <p className="font-bold text-purple-700">{problem.density} {problem.densityUnit}</p>
+                    <p className="font-bold text-purple-700">
+                      {problem.density} {problem.densityUnit}
+                    </p>
                   </div>
                 )}
                 {problem.targetUnit && (
@@ -320,13 +358,17 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                 {problem.startValue && problem.startUnit && (
                   <div className="bg-white p-3 rounded-lg">
                     <p className="text-xs text-warm-500">Heildarmagn</p>
-                    <p className="font-bold text-green-700">{problem.startValue} {problem.startUnit}</p>
+                    <p className="font-bold text-green-700">
+                      {problem.startValue} {problem.startUnit}
+                    </p>
                   </div>
                 )}
                 {problem.portionSize && problem.portionUnit && (
                   <div className="bg-white p-3 rounded-lg">
                     <p className="text-xs text-warm-500">Skammtastærð</p>
-                    <p className="font-bold text-green-700">{problem.portionSize} {problem.portionUnit}</p>
+                    <p className="font-bold text-green-700">
+                      {problem.portionSize} {problem.portionUnit}
+                    </p>
                   </div>
                 )}
               </div>
@@ -362,9 +404,13 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-medium">{option.text}</span>
-                        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                          selectedOption === idx ? 'bg-purple-200 text-purple-800' : 'bg-warm-100 text-warm-600'
-                        }`}>
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                            selectedOption === idx
+                              ? 'bg-purple-200 text-purple-800'
+                              : 'bg-warm-100 text-warm-600'
+                          }`}
+                        >
                           {option.steps} skref
                         </span>
                       </div>
@@ -389,15 +435,22 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                     >
                       <div className="space-y-2 mb-3">
                         {path.steps.map((step, sidx) => (
-                          <div key={sidx} className="font-mono text-sm bg-white px-3 py-2 rounded-lg border border-warm-100">
+                          <div
+                            key={sidx}
+                            className="font-mono text-sm bg-white px-3 py-2 rounded-lg border border-warm-100"
+                          >
                             {step}
                           </div>
                         ))}
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                          path.efficient ? 'bg-green-100 text-green-700' : 'bg-warm-100 text-warm-600'
-                        }`}>
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                            path.efficient
+                              ? 'bg-green-100 text-green-700'
+                              : 'bg-warm-100 text-warm-600'
+                          }`}
+                        >
                           {path.stepCount} skref
                         </span>
                         {path.efficient && (
@@ -419,14 +472,21 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                     type="text"
                     value={userAnswer}
                     onChange={(e) => setUserAnswer(e.target.value)}
-                    placeholder={(problem.type === 'derivation' && problem.scientificNotation) ? 't.d. 1.08e12' : 'Sláðu inn svar'}
+                    placeholder={
+                      problem.type === 'derivation' && problem.scientificNotation
+                        ? 't.d. 1.08e12'
+                        : 'Sláðu inn svar'
+                    }
                     className="flex-1 p-4 border-2 border-warm-300 rounded-xl font-mono text-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden transition-all"
                   />
-                  {problem.type !== 'reverse' && problem.type !== 'error_analysis' && 'targetUnit' in problem && problem.targetUnit && (
-                    <div className="px-4 py-3 bg-green-100 text-green-800 rounded-xl font-bold text-lg">
-                      {problem.targetUnit}
-                    </div>
-                  )}
+                  {problem.type !== 'reverse' &&
+                    problem.type !== 'error_analysis' &&
+                    'targetUnit' in problem &&
+                    problem.targetUnit && (
+                      <div className="px-4 py-3 bg-green-100 text-green-800 rounded-xl font-bold text-lg">
+                        {problem.targetUnit}
+                      </div>
+                    )}
                 </div>
               </div>
 
@@ -442,7 +502,8 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                   className="w-full p-4 border-2 border-warm-300 rounded-xl h-28 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden transition-all resize-none"
                 />
                 <p className="text-xs text-warm-500 mt-2 flex items-center gap-1">
-                  <span className="text-base">💡</span> Notaðu orð eins og "umbreyti", "stuðull", "eining" fyrir betri einkunn
+                  <span className="text-base">💡</span> Notaðu orð eins og "umbreyti", "stuðull",
+                  "eining" fyrir betri einkunn
                 </p>
               </div>
 
@@ -466,10 +527,10 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                     onClick={() => {
                       setShowHint(true);
                       setHintUsed(true);
-                      setTotalHintsUsed(prev => prev + 1);
-                      setProgress(prev => ({
+                      setTotalHintsUsed((prev) => prev + 1);
+                      setProgress((prev) => ({
                         ...prev,
-                        hintsUsed: prev.hintsUsed + 1
+                        hintsUsed: prev.hintsUsed + 1,
                       }));
                     }}
                     className="w-full border-2 border-blue-400 text-blue-600 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-colors"
@@ -490,42 +551,74 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
 
           {/* Feedback */}
           {showFeedback && scores && (
-            <div className={`p-6 rounded-xl border-2 ${
-              scores.composite >= 0.75 ? 'bg-green-100 border-green-300' : 'bg-yellow-100 border-yellow-300'
-            }`}>
+            <div
+              className={`p-6 rounded-xl border-2 ${
+                scores.composite >= 0.75
+                  ? 'bg-green-100 border-green-300'
+                  : 'bg-yellow-100 border-yellow-300'
+              }`}
+            >
               {/* Header with emoji */}
               <div className="text-center mb-6">
                 <div className="text-5xl mb-2">
-                  {scores.composite >= 0.9 ? '🏆' : scores.composite >= 0.75 ? '🎉' : scores.composite >= 0.5 ? '💪' : '📚'}
+                  {scores.composite >= 0.9
+                    ? '🏆'
+                    : scores.composite >= 0.75
+                      ? '🎉'
+                      : scores.composite >= 0.5
+                        ? '💪'
+                        : '📚'}
                 </div>
                 <h3 className="text-2xl font-bold">
-                  {scores.composite >= 0.9 ? 'Frábært!' : scores.composite >= 0.75 ? 'Vel gert!' : scores.composite >= 0.5 ? 'Gott!' : 'Þú getur gert betur'}
+                  {scores.composite >= 0.9
+                    ? 'Frábært!'
+                    : scores.composite >= 0.75
+                      ? 'Vel gert!'
+                      : scores.composite >= 0.5
+                        ? 'Gott!'
+                        : 'Þú getur gert betur'}
                 </h3>
               </div>
 
               {/* Score grid */}
               <div className="grid grid-cols-2 gap-3 mb-6">
                 <div className="bg-white p-4 rounded-xl text-center">
-                  <p className="text-xs text-warm-500 mb-1">Svar <span className="text-warm-400">(40% vægi)</span></p>
-                  <p className={`text-3xl font-bold ${scores.answer >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}>
+                  <p className="text-xs text-warm-500 mb-1">
+                    Svar <span className="text-warm-400">(40% vægi)</span>
+                  </p>
+                  <p
+                    className={`text-3xl font-bold ${scores.answer >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}
+                  >
                     {Math.round(scores.answer * 100)}%
                   </p>
                 </div>
                 <div className="bg-white p-4 rounded-xl text-center">
-                  <p className="text-xs text-warm-500 mb-1">Aðferð <span className="text-warm-400">(30% vægi)</span></p>
-                  <p className={`text-3xl font-bold ${scores.method >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}>
+                  <p className="text-xs text-warm-500 mb-1">
+                    Aðferð <span className="text-warm-400">(30% vægi)</span>
+                  </p>
+                  <p
+                    className={`text-3xl font-bold ${scores.method >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}
+                  >
                     {Math.round(scores.method * 100)}%
                   </p>
                 </div>
                 <div className="bg-white p-4 rounded-xl text-center">
-                  <p className="text-xs text-warm-500 mb-1">Útskýring <span className="text-warm-400">(20% vægi)</span></p>
-                  <p className={`text-3xl font-bold ${scores.explanation >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}>
+                  <p className="text-xs text-warm-500 mb-1">
+                    Útskýring <span className="text-warm-400">(20% vægi)</span>
+                  </p>
+                  <p
+                    className={`text-3xl font-bold ${scores.explanation >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}
+                  >
                     {Math.round(scores.explanation * 100)}%
                   </p>
                 </div>
                 <div className="bg-white p-4 rounded-xl text-center">
-                  <p className="text-xs text-warm-500 mb-1">Skilvirkni <span className="text-warm-400">(10% vægi)</span></p>
-                  <p className={`text-3xl font-bold ${scores.efficiency >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}>
+                  <p className="text-xs text-warm-500 mb-1">
+                    Skilvirkni <span className="text-warm-400">(10% vægi)</span>
+                  </p>
+                  <p
+                    className={`text-3xl font-bold ${scores.efficiency >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}
+                  >
                     {Math.round(scores.efficiency * 100)}%
                   </p>
                 </div>
@@ -534,7 +627,9 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
               {/* Total score */}
               <div className="bg-white p-5 rounded-xl text-center mb-6">
                 <p className="text-sm text-warm-600 mb-1">Heildareinkunn</p>
-                <p className={`text-4xl font-bold ${scores.composite >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}>
+                <p
+                  className={`text-4xl font-bold ${scores.composite >= 0.75 ? 'text-green-600' : 'text-yellow-600'}`}
+                >
                   {Math.round(scores.composite * 100)}%
                 </p>
                 {scores.hintPenalty > 0 && (
@@ -574,47 +669,69 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                   </div>
                   <div className="mt-3 p-3 bg-white rounded-lg border border-blue-100">
                     <p className="text-xs text-warm-600">
-                      <span className="font-bold text-blue-700">Mundu:</span> Einingin sem á að hverfa fer í nefnara,
-                      einingin sem á að koma út fer í teljara. Margfaldaðu gildið með öllum stuðlum.
+                      <span className="font-bold text-blue-700">Mundu:</span> Einingin sem á að
+                      hverfa fer í nefnara, einingin sem á að koma út fer í teljara. Margfaldaðu
+                      gildið með öllum stuðlum.
                     </p>
                   </div>
                 </div>
               )}
 
-              {'requiredSteps' in problem && problem.requiredSteps && !('correctMethod' in problem) && (
-                <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
-                  <p className="text-sm font-bold text-green-800 mb-3 flex items-center gap-2">
-                    <span>📋</span> Nauðsynleg skref:
-                  </p>
-                  <div className="space-y-2">
-                    {problem.requiredSteps.map((step, idx) => (
-                      <div key={idx} className="flex items-center gap-3">
-                        <span className="w-6 h-6 rounded-full bg-green-500 text-white text-xs font-bold flex items-center justify-center">
-                          {idx + 1}
-                        </span>
-                        <span className="bg-white px-3 py-2 rounded-lg border border-green-200 flex-1 text-sm">
-                          {step === 'multiply by density' && '🧪 Margfaldaðu með eðlismassa (g = mL × g/mL)'}
-                          {step === 'convert g to kg' && '⚖️ Umbreyttu g í kg (deila með 1000)'}
-                          {step === 'convert cm³ to m³' && '📐 Umbreyttu cm³ í m³ (deila með 1000000)'}
-                          {!['multiply by density', 'convert g to kg', 'convert cm³ to m³'].includes(step) && step}
-                        </span>
-                      </div>
-                    ))}
+              {'requiredSteps' in problem &&
+                problem.requiredSteps &&
+                !('correctMethod' in problem) && (
+                  <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                    <p className="text-sm font-bold text-green-800 mb-3 flex items-center gap-2">
+                      <span>📋</span> Nauðsynleg skref:
+                    </p>
+                    <div className="space-y-2">
+                      {problem.requiredSteps.map((step, idx) => (
+                        <div key={idx} className="flex items-center gap-3">
+                          <span className="w-6 h-6 rounded-full bg-green-500 text-white text-xs font-bold flex items-center justify-center">
+                            {idx + 1}
+                          </span>
+                          <span className="bg-white px-3 py-2 rounded-lg border border-green-200 flex-1 text-sm">
+                            {step === 'multiply by density' &&
+                              '🧪 Margfaldaðu með eðlismassa (g = mL × g/mL)'}
+                            {step === 'convert g to kg' && '⚖️ Umbreyttu g í kg (deila með 1000)'}
+                            {step === 'convert cm³ to m³' &&
+                              '📐 Umbreyttu cm³ í m³ (deila með 1000000)'}
+                            {![
+                              'multiply by density',
+                              'convert g to kg',
+                              'convert cm³ to m³',
+                            ].includes(step) && step}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
               {/* Significant figures feedback */}
-              {problem.type === 'synthesis' && problem.significantFigures && scores.sigFig !== null && (
-                <div className={`mb-6 p-4 rounded-xl ${scores.sigFig === 1 ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
-                  <p className="font-bold mb-1 flex items-center gap-2">
-                    {scores.sigFig === 1 ? <><span>✓</span> Markverðir stafir réttir</> : <><span>✗</span> Markverðir stafir rangir</>}
-                  </p>
-                  <p className="text-sm">
-                    Þitt svar: {scores.userSigFigs} stafir · Ætti: {problem.significantFigures} stafir
-                  </p>
-                </div>
-              )}
+              {problem.type === 'synthesis' &&
+                problem.significantFigures &&
+                scores.sigFig !== null && (
+                  <div
+                    className={`mb-6 p-4 rounded-xl ${scores.sigFig === 1 ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
+                  >
+                    <p className="font-bold mb-1 flex items-center gap-2">
+                      {scores.sigFig === 1 ? (
+                        <>
+                          <span>✓</span> Markverðir stafir réttir
+                        </>
+                      ) : (
+                        <>
+                          <span>✗</span> Markverðir stafir rangir
+                        </>
+                      )}
+                    </p>
+                    <p className="text-sm">
+                      Þitt svar: {scores.userSigFigs} stafir · Ætti: {problem.significantFigures}{' '}
+                      stafir
+                    </p>
+                  </div>
+                )}
 
               <button
                 onClick={handleContinue}
@@ -624,7 +741,9 @@ export function Level3({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                     : 'bg-purple-600 hover:bg-purple-700 text-white'
                 }`}
               >
-                {currentProblemIndex < level3Challenges.length - 1 ? 'Næsta áskorun →' : 'Ljúka stigi'}
+                {currentProblemIndex < level3Challenges.length - 1
+                  ? 'Næsta áskorun →'
+                  : 'Ljúka stigi'}
               </button>
             </div>
           )}

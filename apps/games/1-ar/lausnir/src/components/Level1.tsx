@@ -414,7 +414,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   // Submit answer
   const checkAnswer = useCallback(() => {
     if (isCorrect) {
-      const pointsEarned = showHint ? 50 : 100;
+      const pointsEarned = 100;
       setScore((prev) => prev + pointsEarned);
       setCompleted((prev) => [...prev, challenge.id]);
       setShowConcept(true);

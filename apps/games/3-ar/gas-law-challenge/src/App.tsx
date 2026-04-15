@@ -185,7 +185,7 @@ function App() {
       points = 100;
       if (error < 1) points = 150; // Very accurate
       if (gameMode === 'challenge' && timeRemaining && timeRemaining > 60) points += 50; // Time bonus
-      points -= showHint * 10; // Hint penalty
+      // Hints are free — no penalty for learning
 
       message = error < 1 ? 'Fullkomið! Mjög nákvæmt svar! ⭐' : 'Rétt! Innan vikmarka ✓';
     } else {

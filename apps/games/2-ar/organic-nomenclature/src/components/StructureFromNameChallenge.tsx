@@ -210,7 +210,7 @@ export function StructureFromNameChallenge({
     setShowFeedback(true);
 
     if (allMatch) {
-      const points = showHint ? 8 : 15;
+      const points = 15;
       setScore((prev) => prev + points);
       onCorrectAnswer?.();
     } else {
