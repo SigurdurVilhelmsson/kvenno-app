@@ -35,8 +35,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   // UI state
   const [showHint, setShowHint] = useState(false);
-  const [phase, setPhase] = useState<'titrating' | 'select-indicator' | 'result'>('titrating');
+  const [phase, setPhase] = useState<'titrating' | 'marking' | 'select-indicator' | 'result'>(
+    'titrating'
+  );
   const [submittedVolume, setSubmittedVolume] = useState<number | null>(null);
+  const [markedVolume, setMarkedVolume] = useState<number>(0);
   const [isCorrect, setIsCorrect] = useState(false);
   const [indicatorCorrect, setIndicatorCorrect] = useState(false);
 
@@ -63,6 +66,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     setPhase('titrating');
     setShowHint(false);
     setSubmittedVolume(null);
+    setMarkedVolume(0);
     setIsCorrect(false);
     setIndicatorCorrect(false);
   }, [currentIndex]);
@@ -123,9 +127,16 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     setTimeout(() => setIsSwirling(false), 500);
   }, [phase]);
 
-  const handleSubmitVolume = () => {
+  const handleEnterMarking = () => {
     if (!titration) return;
-    setSubmittedVolume(volumeAdded);
+    // Default marker to midpoint of added volume range
+    setMarkedVolume(Math.round((volumeAdded / 2) * 10) / 10);
+    setPhase('marking');
+  };
+
+  const handleSubmitMarkedVolume = () => {
+    if (!titration) return;
+    setSubmittedVolume(markedVolume);
     setPhase('select-indicator');
   };
 
@@ -176,6 +187,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     setSelectedIndicator(null);
     setPhase('titrating');
     setSubmittedVolume(null);
+    setMarkedVolume(0);
     setIsCorrect(false);
     setIndicatorCorrect(false);
   };
@@ -319,20 +331,80 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 currentPH={currentPH}
                 titration={titration}
                 showEquivalencePoints={phase === 'result'}
+                markedVolume={
+                  phase === 'marking' || phase === 'select-indicator' || phase === 'result'
+                    ? markedVolume
+                    : null
+                }
                 width={600}
                 height={300}
               />
             </div>
 
-            {/* Submit volume button */}
-            <Presence show={phase === 'titrating' && volumeAdded > 0} exitDuration={250}>
-              <div className="mt-4 flex justify-center">
-                <button
-                  onClick={handleSubmitVolume}
-                  className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold"
-                >
-                  Staðfesta rúmmál ({volumeAdded.toFixed(2)} mL) →
-                </button>
+            {/* Transition to marking */}
+            <Presence show={phase === 'titrating' && volumeAdded >= 5} exitDuration={250}>
+              <div className="mt-4">
+                <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-3 mb-3">
+                  <p className="text-sm text-indigo-800">
+                    <strong>Leiðbeiningar:</strong> Bættu við títrant þar til þú sérð{' '}
+                    <strong>snögga pH-breytingu</strong> á ferilnum (brattur halli). Smelltu síðan á
+                    hnappinn til að merkja jafngildispunktinn.
+                  </p>
+                </div>
+                <div className="flex justify-center">
+                  <button
+                    onClick={handleEnterMarking}
+                    className="px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold"
+                  >
+                    Títrun lokið — merkja jafngildispunkt →
+                  </button>
+                </div>
+              </div>
+            </Presence>
+
+            {/* Marking phase: slider to identify equivalence point */}
+            <Presence show={phase === 'marking'} exitDuration={250}>
+              <div className="mt-4 bg-orange-50 border border-orange-200 rounded-xl p-4">
+                <div className="font-bold text-orange-800 mb-2">
+                  📍 Merktu jafngildispunktinn á ferilnum
+                </div>
+                <p className="text-sm text-orange-700 mb-4">
+                  Dragðu sleðann þangað sem pH-ferillinn breytist mest (brattasti hluti ferilsins).
+                  Þetta er jafngildispunkturinn — þar sem mólfjöldi sýru = mólfjöldi basa.
+                </p>
+                <div className="space-y-3">
+                  <input
+                    type="range"
+                    min={0}
+                    max={volumeAdded}
+                    step={0.1}
+                    value={markedVolume}
+                    onChange={(e) => setMarkedVolume(parseFloat(e.target.value))}
+                    className="w-full accent-orange-500"
+                  />
+                  <div className="text-center">
+                    <span className="font-mono text-xl font-bold text-orange-800">
+                      {markedVolume.toFixed(1)} mL
+                    </span>
+                    <span className="text-sm text-orange-600 ml-2">
+                      (pH ≈ {titration ? calculatePH(titration, markedVolume).toFixed(1) : '?'})
+                    </span>
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => setPhase('titrating')}
+                      className="px-4 py-2 bg-warm-200 hover:bg-warm-300 text-warm-700 rounded-lg font-medium"
+                    >
+                      ← Til baka
+                    </button>
+                    <button
+                      onClick={handleSubmitMarkedVolume}
+                      className="flex-1 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold"
+                    >
+                      Staðfesta: {markedVolume.toFixed(1)} mL →
+                    </button>
+                  </div>
+                </div>
               </div>
             </Presence>
           </div>
@@ -426,6 +498,26 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   </div>
                 </div>
 
+                {/* Endpoint vs equivalence teaching */}
+                {selectedIndicator && (
+                  <div className="mt-3 bg-purple-50 border border-purple-200 rounded-lg p-3 text-sm">
+                    <div className="font-bold text-purple-800 mb-1">
+                      Jafngildispunktur ≠ Endapunktur
+                    </div>
+                    <div className="text-purple-700">
+                      <strong>Jafngildispunktur:</strong> {titration.equivalenceVolume.toFixed(1)}{' '}
+                      mL (pH {titration.equivalencePH.toFixed(1)}) — þar sem mólfjöldi sýru =
+                      mólfjöldi basa.
+                      <br />
+                      <strong>Endapunktur:</strong> þar sem vísirinn breytir um lit (
+                      {indicators.find((i) => i.id === selectedIndicator)?.name} breytist við pH{' '}
+                      {indicators.find((i) => i.id === selectedIndicator)?.pHRange.join('–')}).
+                      <br />
+                      Góður vísir hefur endapunkt nálægt jafngildispunktinum.
+                    </div>
+                  </div>
+                )}
+
                 <div className={`mt-3 text-sm ${isCorrect ? 'text-green-900' : 'text-red-900'}`}>
                   {puzzle.explanationIs}
                 </div>
@@ -455,7 +547,10 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   className={`flex-1 h-2 rounded ${phase === 'titrating' ? 'bg-blue-500' : 'bg-blue-200'}`}
                 />
                 <div
-                  className={`flex-1 h-2 rounded ${phase === 'select-indicator' ? 'bg-orange-500' : phase === 'result' ? 'bg-orange-200' : 'bg-warm-300'}`}
+                  className={`flex-1 h-2 rounded ${phase === 'marking' ? 'bg-orange-500' : phase === 'select-indicator' || phase === 'result' ? 'bg-orange-200' : 'bg-warm-300'}`}
+                />
+                <div
+                  className={`flex-1 h-2 rounded ${phase === 'select-indicator' ? 'bg-amber-500' : phase === 'result' ? 'bg-amber-200' : 'bg-warm-300'}`}
                 />
                 <div
                   className={`flex-1 h-2 rounded ${phase === 'result' ? 'bg-green-500' : 'bg-warm-300'}`}
@@ -463,6 +558,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               </div>
               <div className="flex justify-between text-xs text-warm-600 mt-1">
                 <span>Títra</span>
+                <span>Merkja</span>
                 <span>Vísi</span>
                 <span>Niðurstaða</span>
               </div>

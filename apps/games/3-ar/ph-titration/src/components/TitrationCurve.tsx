@@ -1,7 +1,13 @@
 import React, { useMemo } from 'react';
 
 import { InteractiveGraph } from '@shared/components';
-import type { DataPoint, DataSeries, MarkerConfig, RegionConfig, HorizontalLineConfig } from '@shared/components';
+import type {
+  DataPoint,
+  DataSeries,
+  MarkerConfig,
+  RegionConfig,
+  HorizontalLineConfig,
+} from '@shared/components';
 
 import { Titration } from '../types';
 
@@ -11,6 +17,7 @@ interface TitrationCurveProps {
   currentPH: number;
   titration: Titration | null;
   showEquivalencePoints?: boolean;
+  markedVolume?: number | null;
   width?: number;
   height?: number;
 }
@@ -24,22 +31,25 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
   currentPH,
   titration,
   showEquivalencePoints = false,
+  markedVolume = null,
   width = 600,
-  height = 400
+  height = 400,
 }) => {
   const graphData = useMemo(() => {
     // Convert curve data to DataPoints
-    const dataPoints: DataPoint[] = curveData.map(pt => ({
+    const dataPoints: DataPoint[] = curveData.map((pt) => ({
       x: pt.volume,
-      y: pt.pH
+      y: pt.pH,
     }));
 
-    const series: DataSeries[] = [{
-      id: 'titration-curve',
-      data: dataPoints,
-      color: '#3b82f6',
-      lineWidth: 3
-    }];
+    const series: DataSeries[] = [
+      {
+        id: 'titration-curve',
+        data: dataPoints,
+        color: '#3b82f6',
+        lineWidth: 3,
+      },
+    ];
 
     // Buffer regions and pKa lines
     const regions: RegionConfig[] = [];
@@ -52,14 +62,14 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
           yMin: pKa - 1,
           yMax: pKa + 1,
           color: 'rgba(251, 191, 36, 0.15)',
-          label: 'Púffursvæði'
+          label: 'Púffursvæði',
         });
         horizontalLines.push({
           y: pKa,
           color: '#f59e0b',
           lineDash: [5, 5],
           label: `pKa = ${pKa.toFixed(2)}`,
-          labelPosition: 'right'
+          labelPosition: 'right',
         });
       } else if (titration.type === 'polyprotic-diprotic') {
         const pKaValues = [titration.pKa1, titration.pKa2];
@@ -70,14 +80,14 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
           regions.push({
             yMin: pKa - 1,
             yMax: pKa + 1,
-            color: regionColors[idx]
+            color: regionColors[idx],
           });
           horizontalLines.push({
             y: pKa,
             color: lineColors[idx],
             lineDash: [5, 5],
             label: `pKa${idx + 1} = ${pKa.toFixed(2)}`,
-            labelPosition: 'right'
+            labelPosition: 'right',
           });
         });
       } else if (titration.type === 'polyprotic-triprotic') {
@@ -85,7 +95,7 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
         const regionColors = [
           'rgba(251, 191, 36, 0.15)',
           'rgba(147, 197, 253, 0.15)',
-          'rgba(134, 239, 172, 0.15)'
+          'rgba(134, 239, 172, 0.15)',
         ];
         const lineColors = ['#f59e0b', '#3b82f6', '#22c55e'];
 
@@ -93,14 +103,14 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
           regions.push({
             yMin: pKa - 1,
             yMax: pKa + 1,
-            color: regionColors[idx]
+            color: regionColors[idx],
           });
           horizontalLines.push({
             y: pKa,
             color: lineColors[idx],
             lineDash: [5, 5],
             label: `pKa${idx + 1} = ${pKa.toFixed(2)}`,
-            labelPosition: 'right'
+            labelPosition: 'right',
           });
         });
       }
@@ -118,7 +128,7 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
           color: '#22c55e',
           icon: '⭐',
           radius: 8,
-          label: 'Jafngildispunktur'
+          label: 'Jafngildispunktur',
         });
       } else if ('equivalenceVolumes' in titration && titration.equivalenceVolumes) {
         const colors = ['#22c55e', '#3b82f6', '#f59e0b'];
@@ -129,19 +139,35 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
             color: colors[idx] || '#22c55e',
             icon: '⭐',
             radius: 8,
-            label: `EP${idx + 1}`
+            label: `EP${idx + 1}`,
           });
         });
       }
     }
 
+    // Student's marked equivalence point
+    if (markedVolume != null) {
+      const closestPt = curveData.reduce(
+        (best, pt) =>
+          Math.abs(pt.volume - markedVolume) < Math.abs(best.volume - markedVolume) ? pt : best,
+        curveData[0] || { volume: 0, pH: 7 }
+      );
+      markers.push({
+        x: closestPt.volume,
+        y: closestPt.pH,
+        color: '#f36b22',
+        icon: '◆',
+        radius: 10,
+        label: 'Þitt val',
+      });
+    }
+
     // Current point (shown via InteractiveGraph's currentPoint prop)
-    const currentPoint: DataPoint | undefined = currentVolume > 0
-      ? { x: currentVolume, y: currentPH }
-      : undefined;
+    const currentPoint: DataPoint | undefined =
+      currentVolume > 0 ? { x: currentVolume, y: currentPH } : undefined;
 
     return { series, regions, horizontalLines, markers, currentPoint };
-  }, [curveData, currentVolume, currentPH, titration, showEquivalencePoints]);
+  }, [curveData, currentVolume, currentPH, titration, showEquivalencePoints, markedVolume]);
 
   return (
     <InteractiveGraph
