@@ -413,6 +413,157 @@ const challenges: Challenge[] = [
   },
 ];
 
+// Simple SVG hybridization diagram showing orbital mixing
+function HybridizationDiagram({ domains }: { domains: number }) {
+  const configs: Record<number, { label: string; orbitals: string; angle: string; shape: string }> =
+    {
+      2: { label: 'sp', orbitals: '1s + 1p', angle: '180°', shape: 'Línuleg' },
+      3: { label: 'sp²', orbitals: '1s + 2p', angle: '120°', shape: 'Þríhyrnd' },
+      4: { label: 'sp³', orbitals: '1s + 3p', angle: '109.5°', shape: 'Fjórflötungur' },
+      5: { label: 'sp³d', orbitals: '1s + 3p + 1d', angle: '90°/120°', shape: 'Tvípýramída' },
+      6: { label: 'sp³d²', orbitals: '1s + 3p + 2d', angle: '90°', shape: 'Áttflötungur' },
+    };
+  const c = configs[domains];
+  if (!c) return null;
+
+  // Orbital lobe angles for the result
+  const lobeAngles = Array.from({ length: domains }, (_, i) => (i / domains) * 360 - 90);
+  const lobeDist = 32;
+  const cx = 140,
+    cy = 55;
+
+  return (
+    <div className="bg-purple-50 rounded-xl p-4 border border-purple-200">
+      <div className="text-sm font-bold text-purple-800 mb-3">Blendni: {c.label}</div>
+      <svg viewBox="0 0 280 110" className="w-full max-w-[360px] mx-auto">
+        {/* Input orbitals */}
+        <text x="10" y="20" fill="#7c3aed" fontSize="11" fontWeight="bold">
+          Atómbrautar:
+        </text>
+        <text x="10" y="42" fill="#6b7280" fontSize="12">
+          {c.orbitals}
+        </text>
+        {/* s orbital circle */}
+        <circle cx="20" cy="65" r="10" fill="#c4b5fd" stroke="#7c3aed" strokeWidth="1.5" />
+        <text x="20" y="69" textAnchor="middle" fill="#7c3aed" fontSize="8" fontWeight="bold">
+          s
+        </text>
+        {/* p orbital lobes */}
+        {domains >= 2 && (
+          <g transform="translate(45,65)">
+            <ellipse rx="6" ry="12" fill="#a78bfa" stroke="#7c3aed" strokeWidth="1" />
+            <text x="0" y="4" textAnchor="middle" fill="#7c3aed" fontSize="7" fontWeight="bold">
+              p
+            </text>
+          </g>
+        )}
+        {domains >= 3 && (
+          <g transform="translate(62,65)">
+            <ellipse
+              rx="6"
+              ry="12"
+              fill="#a78bfa"
+              stroke="#7c3aed"
+              strokeWidth="1"
+              transform="rotate(90)"
+            />
+            <text x="0" y="4" textAnchor="middle" fill="#7c3aed" fontSize="7" fontWeight="bold">
+              p
+            </text>
+          </g>
+        )}
+        {domains >= 4 && (
+          <g transform="translate(79,65)">
+            <ellipse
+              rx="6"
+              ry="12"
+              fill="#a78bfa"
+              stroke="#7c3aed"
+              strokeWidth="1"
+              transform="rotate(45)"
+            />
+            <text x="0" y="4" textAnchor="middle" fill="#7c3aed" fontSize="7" fontWeight="bold">
+              p
+            </text>
+          </g>
+        )}
+        {domains >= 5 && (
+          <g transform="translate(96,65)">
+            <ellipse rx="5" ry="10" fill="#fbbf24" stroke="#d97706" strokeWidth="1" />
+            <text x="0" y="4" textAnchor="middle" fill="#92400e" fontSize="7" fontWeight="bold">
+              d
+            </text>
+          </g>
+        )}
+        {domains >= 6 && (
+          <g transform="translate(113,65)">
+            <ellipse
+              rx="5"
+              ry="10"
+              fill="#fbbf24"
+              stroke="#d97706"
+              strokeWidth="1"
+              transform="rotate(90)"
+            />
+            <text x="0" y="4" textAnchor="middle" fill="#92400e" fontSize="7" fontWeight="bold">
+              d
+            </text>
+          </g>
+        )}
+
+        {/* Arrow */}
+        <text x="120" y="42" fill="#374151" fontSize="16">
+          →
+        </text>
+
+        {/* Result: hybrid orbitals */}
+        <text x={cx} y="20" textAnchor="middle" fill="#7c3aed" fontSize="11" fontWeight="bold">
+          {domains}× {c.label}
+        </text>
+        {/* Central dot */}
+        <circle cx={cx} cy={cy} r="4" fill="#7c3aed" />
+        {/* Hybrid orbital lobes */}
+        {lobeAngles.map((deg, i) => {
+          const rad = (deg * Math.PI) / 180;
+          const ex = cx + Math.cos(rad) * lobeDist;
+          const ey = cy + Math.sin(rad) * lobeDist;
+          return (
+            <g key={i}>
+              <line x1={cx} y1={cy} x2={ex} y2={ey} stroke="#8b5cf6" strokeWidth="2" />
+              <ellipse
+                cx={ex}
+                cy={ey}
+                rx="8"
+                ry="5"
+                fill="#c4b5fd"
+                stroke="#7c3aed"
+                strokeWidth="1"
+                transform={`rotate(${deg},${ex},${ey})`}
+              />
+            </g>
+          );
+        })}
+
+        {/* Angle + shape label */}
+        <text x={cx} y="100" textAnchor="middle" fill="#6b7280" fontSize="10">
+          {c.angle} → {c.shape}
+        </text>
+
+        {/* Result arrow + label */}
+        <text x="230" y="42" fill="#374151" fontSize="16">
+          →
+        </text>
+        <text x="255" y="58" textAnchor="middle" fill="#059669" fontSize="12" fontWeight="bold">
+          {c.shape}
+        </text>
+        <text x="255" y="74" textAnchor="middle" fill="#6b7280" fontSize="10">
+          {c.angle}
+        </text>
+      </svg>
+    </div>
+  );
+}
+
 export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -432,11 +583,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     setIsCorrect(correct);
     if (correct) {
       onCorrectAnswer?.();
-      if (!showHint) {
-        setScore((prev) => prev + 12);
-      } else {
-        setScore((prev) => prev + 6);
-      }
+      setScore((prev) => prev + 12);
     } else {
       onIncorrectAnswer?.();
     }
@@ -614,6 +761,29 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   {isCorrect ? 'Rétt!' : 'Rangt'}
                 </div>
               </div>
+
+              {/* Hybridization diagram — shown after hybridization questions */}
+              {challenge.type === 'hybridization' && (
+                <div className="mb-4">
+                  <HybridizationDiagram
+                    domains={
+                      challenge.formula === 'CH₄'
+                        ? 4
+                        : challenge.formula === 'CO₂'
+                          ? 2
+                          : challenge.formula === 'NH₃'
+                            ? 4
+                            : challenge.formula === 'SF₆'
+                              ? 6
+                              : challenge.formula === 'C₂H₄'
+                                ? 3
+                                : challenge.formula === 'C₂H₂'
+                                  ? 2
+                                  : 4
+                    }
+                  />
+                </div>
+              )}
 
               {/* Concept explanation toggle */}
               <button

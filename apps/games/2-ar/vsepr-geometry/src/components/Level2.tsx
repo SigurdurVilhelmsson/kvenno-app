@@ -2,8 +2,8 @@ import { useState, useMemo } from 'react';
 
 import { AnimatedMolecule } from '@shared/components';
 import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
-import { shuffleArray } from '@shared/utils';
 
+import { ElectronRepulsionAnimation } from './ElectronRepulsionAnimation';
 import { vseprToMolecule } from '../utils/vseprConverter';
 
 interface Level2Props {
@@ -222,6 +222,48 @@ const molecules: Molecule[] = [
   },
 ];
 
+// Constrained geometry options by electron domain count
+const GEOMETRIES_BY_DOMAINS: Record<number, { id: string; name: string }[]> = {
+  2: [{ id: 'linear', name: 'Línuleg' }],
+  3: [
+    { id: 'trigonal-planar', name: 'Þríhyrnd slétt' },
+    { id: 'bent', name: 'Beygð' },
+  ],
+  4: [
+    { id: 'tetrahedral', name: 'Fjórflötungur' },
+    { id: 'trigonal-pyramidal', name: 'Þríhyrnd pýramída' },
+    { id: 'bent', name: 'Beygð' },
+  ],
+  5: [
+    { id: 'trigonal-bipyramidal', name: 'Þríhyrnd tvípýramída' },
+    { id: 'seesaw', name: 'Sjáldruslögun' },
+    { id: 't-shaped', name: 'T-lögun' },
+    { id: 'linear', name: 'Línuleg' },
+  ],
+  6: [
+    { id: 'octahedral', name: 'Áttflötungur' },
+    { id: 'square-planar', name: 'Ferningsslétt' },
+  ],
+};
+
+const ELECTRON_GEOMETRY_NAME: Record<number, string> = {
+  2: 'Línuleg',
+  3: 'Þríhyrnd slétt',
+  4: 'Fjórflötungur',
+  5: 'Þríhyrnd tvípýramída',
+  6: 'Áttflötungur',
+};
+
+// Geometry IDs that have repulsion animations available
+const ANIMATED_GEOMETRIES = new Set([
+  'linear',
+  'trigonal-planar',
+  'tetrahedral',
+  'trigonal-pyramidal',
+  'bent',
+  'octahedral',
+]);
+
 interface Step {
   id: 'count' | 'geometry' | 'angle' | 'explanation';
   label: string;
@@ -249,18 +291,21 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const [selectedAngle, setSelectedAngle] = useState('');
   const [explanation, setExplanation] = useState('');
 
+  // Track whether geometry has been correctly predicted (controls visualization)
+  const [geometryRevealed, setGeometryRevealed] = useState(false);
+
   // Feedback states
   const [stepResult, setStepResult] = useState<'correct' | 'incorrect' | null>(null);
 
   const molecule = molecules[currentMolecule];
   const step = STEPS[currentStep];
-  const maxScore = molecules.length * STEPS.length * 10; // 10 points per step without hints
+  const maxScore = molecules.length * STEPS.length * 10;
 
-  // Shuffle geometry options for current molecule - memoize to keep stable during molecule
-  const shuffledGeometryOptions = useMemo(() => {
-    return shuffleArray(GEOMETRY_OPTIONS);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when molecule index changes
-  }, [currentMolecule]);
+  // Get constrained geometry options for the current molecule's domain count
+  const geometryOptions = useMemo(
+    () => GEOMETRIES_BY_DOMAINS[molecule.electronDomains] || GEOMETRY_OPTIONS,
+    [molecule.electronDomains]
+  );
 
   const checkStep = () => {
     let correct = false;
@@ -306,10 +351,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
     if (correct) {
       onCorrectAnswer?.();
-      if (!showHint) {
-        setScore((prev) => prev + 10);
-      } else {
-        setScore((prev) => prev + 5);
+      setScore((prev) => prev + 10);
+      if (step.id === 'geometry') {
+        setGeometryRevealed(true);
       }
     } else {
       onIncorrectAnswer?.();
@@ -341,13 +385,14 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     setExplanation('');
     setStepResult(null);
     setShowHint(false);
+    setGeometryRevealed(false);
   };
 
   const getHint = () => {
     if (step.id === 'count') {
       return `${molecule.centralAtom} hefur ${molecule.bondingPairs + molecule.lonePairs * 2} gildisrafeindir. Hversu margar fara í tengsl?`;
     } else if (step.id === 'geometry') {
-      return `${molecule.electronDomains} rafeinasvið með ${molecule.lonePairs} einstæð pör gefur þessa lögun.`;
+      return `Einstæð pör taka meira pláss en bindandi pör og hrinda þeim saman. ${molecule.lonePairs === 0 ? 'Engin einstæð pör — rafeinalögun = sameindarlögun.' : 'Hversu mikil áhrif hafa ' + molecule.lonePairs + ' einstæð pör?'}`;
     } else if (step.id === 'angle') {
       return `Þessi lögun hefur venjulega horn nálægt ${molecule.bondAngle}.`;
     }
@@ -405,82 +450,113 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           {/* Molecule display */}
           <div className="flex flex-col md:flex-row gap-6 mb-8">
             <div className="flex-1">
-              {/* 2D/3D Toggle */}
-              <div className="flex justify-center gap-2 mb-3">
-                <button
-                  onClick={() => setViewMode('2d')}
-                  className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                    viewMode === '2d'
-                      ? 'bg-teal-600 text-white'
-                      : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
-                  }`}
-                >
-                  2D
-                </button>
-                <button
-                  onClick={() => setViewMode('3d')}
-                  className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                    viewMode === '3d'
-                      ? 'bg-teal-600 text-white'
-                      : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
-                  }`}
-                >
-                  3D
-                </button>
-              </div>
-
-              <div className="bg-warm-900 rounded-xl p-6">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-white mb-2">{molecule.formula}</div>
-                  <div className="text-warm-400 mb-4">{molecule.name}</div>
-                  <div className="flex justify-center py-4">
-                    {viewMode === '2d' ? (
-                      <AnimatedMolecule
-                        molecule={vseprToMolecule({
-                          formula: molecule.formula,
-                          name: molecule.name,
-                          centralAtom: molecule.centralAtom,
-                          bondingPairs: molecule.bondingPairs,
-                          lonePairs: molecule.lonePairs,
-                          electronDomains: molecule.electronDomains,
-                          correctGeometryId: molecule.correctGeometryId,
-                          isPolar: molecule.isPolar,
-                        })}
-                        mode="vsepr"
-                        size="lg"
-                        animation="scale-in"
-                        showLonePairs={true}
-                        ariaLabel={`${molecule.name} VSEPR lögun`}
-                      />
-                    ) : (
-                      <MoleculeViewer3DLazy
-                        molecule={vseprToMolecule({
-                          formula: molecule.formula,
-                          name: molecule.name,
-                          centralAtom: molecule.centralAtom,
-                          bondingPairs: molecule.bondingPairs,
-                          lonePairs: molecule.lonePairs,
-                          electronDomains: molecule.electronDomains,
-                          correctGeometryId: molecule.correctGeometryId,
-                          isPolar: molecule.isPolar,
-                        })}
-                        style="ball-stick"
-                        showLabels={true}
-                        autoRotate={true}
-                        autoRotateSpeed={1.5}
-                        height={200}
-                        width="100%"
-                        backgroundColor="transparent"
-                      />
-                    )}
+              {geometryRevealed ? (
+                <>
+                  {/* 2D/3D Toggle — only after geometry predicted */}
+                  <div className="flex justify-center gap-2 mb-3">
+                    <button
+                      onClick={() => setViewMode('2d')}
+                      className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                        viewMode === '2d'
+                          ? 'bg-teal-600 text-white'
+                          : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
+                      }`}
+                    >
+                      2D
+                    </button>
+                    <button
+                      onClick={() => setViewMode('3d')}
+                      className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                        viewMode === '3d'
+                          ? 'bg-teal-600 text-white'
+                          : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
+                      }`}
+                    >
+                      3D
+                    </button>
                   </div>
-                  {viewMode === '3d' && (
-                    <div className="text-xs text-warm-500 mt-2">
-                      Dragðu til að snúa, skrollaðu til að stækka
+
+                  <div className="bg-warm-900 rounded-xl p-6">
+                    <div className="text-center">
+                      <div className="text-3xl font-bold text-white mb-2">{molecule.formula}</div>
+                      <div className="text-warm-400 mb-4">{molecule.name}</div>
+                      <div className="flex justify-center py-4">
+                        {viewMode === '2d' ? (
+                          <AnimatedMolecule
+                            molecule={vseprToMolecule({
+                              formula: molecule.formula,
+                              name: molecule.name,
+                              centralAtom: molecule.centralAtom,
+                              bondingPairs: molecule.bondingPairs,
+                              lonePairs: molecule.lonePairs,
+                              electronDomains: molecule.electronDomains,
+                              correctGeometryId: molecule.correctGeometryId,
+                              isPolar: molecule.isPolar,
+                            })}
+                            mode="vsepr"
+                            size="lg"
+                            animation="scale-in"
+                            showLonePairs={true}
+                            ariaLabel={`${molecule.name} VSEPR lögun`}
+                          />
+                        ) : (
+                          <MoleculeViewer3DLazy
+                            molecule={vseprToMolecule({
+                              formula: molecule.formula,
+                              name: molecule.name,
+                              centralAtom: molecule.centralAtom,
+                              bondingPairs: molecule.bondingPairs,
+                              lonePairs: molecule.lonePairs,
+                              electronDomains: molecule.electronDomains,
+                              correctGeometryId: molecule.correctGeometryId,
+                              isPolar: molecule.isPolar,
+                            })}
+                            style="ball-stick"
+                            showLabels={true}
+                            autoRotate={true}
+                            autoRotateSpeed={1.5}
+                            height={200}
+                            width="100%"
+                            backgroundColor="transparent"
+                          />
+                        )}
+                      </div>
+                      {viewMode === '3d' && (
+                        <div className="text-xs text-warm-500 mt-2">
+                          Dragðu til að snúa, skrollaðu til að stækka
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Repulsion animation — show why the geometry forms */}
+                  {ANIMATED_GEOMETRIES.has(molecule.correctGeometryId) && (
+                    <div className="mt-4 bg-indigo-50 rounded-xl p-4 border border-indigo-200">
+                      <div className="text-sm font-bold text-indigo-800 mb-2">
+                        Hvers vegna þessi lögun?
+                      </div>
+                      <ElectronRepulsionAnimation
+                        geometryId={molecule.correctGeometryId}
+                        autoPlay={true}
+                        showForces={true}
+                        compact={true}
+                      />
                     </div>
                   )}
+                </>
+              ) : (
+                /* Before geometry predicted — show Lewis structure + domain info */
+                <div className="bg-warm-900 rounded-xl p-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-bold text-white mb-2">{molecule.formula}</div>
+                    <div className="text-warm-400 mb-2">{molecule.name}</div>
+                    <div className="font-mono text-teal-400 my-4 whitespace-pre text-sm">
+                      {molecule.lewisStructure}
+                    </div>
+                    <div className="text-warm-500 text-sm">Spáðu fyrir um lögun sameindarinnar</div>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             <div className="flex-1 bg-warm-50 rounded-xl p-6">
@@ -531,17 +607,26 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
               {step.id === 'geometry' && (
                 <div className="space-y-4">
+                  <div className="bg-teal-50 p-3 rounded-lg mb-2">
+                    <div className="text-sm text-teal-800">
+                      <strong>{molecule.electronDomains} rafeinasvið</strong> → rafeinalögun:{' '}
+                      <strong>{ELECTRON_GEOMETRY_NAME[molecule.electronDomains]}</strong>
+                    </div>
+                    <div className="text-sm text-teal-700 mt-1">
+                      {molecule.bondingPairs} bindandi + {molecule.lonePairs} einstæð pör
+                    </div>
+                  </div>
                   <p className="text-warm-600">
-                    Með {molecule.bondingPairs} bindandi pör og {molecule.lonePairs} einstæð pör,
-                    hvaða <strong>sameindarlögun</strong> hefur þessi sameind?
+                    Með {molecule.lonePairs} einstæð pör, hvaða <strong>sameindarlögun</strong>{' '}
+                    myndast?
                   </p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {shuffledGeometryOptions.map((geo) => (
+                  <div className="space-y-2">
+                    {geometryOptions.map((geo) => (
                       <button
                         key={geo.id}
                         onClick={() => !stepResult && setSelectedGeometry(geo.id)}
                         disabled={stepResult !== null}
-                        className={`p-3 rounded-xl border-2 text-left transition-all ${
+                        className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
                           stepResult
                             ? geo.id === molecule.correctGeometryId
                               ? 'border-green-500 bg-green-50'
@@ -549,15 +634,20 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                                 ? 'border-red-500 bg-red-50'
                                 : 'border-warm-200 opacity-50'
                             : selectedGeometry === geo.id
-                              ? 'border-teal-500 bg-teal-50'
-                              : 'border-warm-200 hover:border-teal-300'
+                              ? 'border-teal-500 bg-teal-50 ring-2 ring-teal-200'
+                              : 'border-warm-200 hover:border-teal-300 hover:bg-teal-50'
                         }`}
                       >
-                        <div className="font-bold text-sm">{geo.name}</div>
-                        <div className="text-xs text-warm-500">{geo.bondAngle}</div>
+                        <div className="font-bold">{geo.name}</div>
                       </button>
                     ))}
                   </div>
+                  {stepResult === 'correct' && (
+                    <div className="bg-green-50 p-3 rounded-lg text-green-700 text-sm">
+                      Rétt! {molecule.electronGeometry} rafeinalögun → {molecule.molecularGeometry}{' '}
+                      sameindarlögun.
+                    </div>
+                  )}
                 </div>
               )}
 
