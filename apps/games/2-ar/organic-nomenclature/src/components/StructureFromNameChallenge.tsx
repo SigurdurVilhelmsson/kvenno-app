@@ -483,7 +483,7 @@ export function StructureFromNameChallenge({
                 }}
                 className="w-full text-yellow-600 hover:text-yellow-700 text-sm mb-4"
               >
-                💡 Sýna vísbendingu (-7 stig)
+                💡 Sýna vísbendingu
               </button>
             ) : (
               <div className="bg-yellow-50 border border-yellow-200 p-3 rounded-lg mb-4">

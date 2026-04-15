@@ -69,7 +69,7 @@ export function Level3({
   const [explanation, setExplanation] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
   const [scores, setScores] = useState<ScoreResult | null>(null);
-  const [hintUsed, setHintUsed] = useState(false);
+  const [, setHintUsed] = useState(false);
   const [showHint, setShowHint] = useState(false);
 
   const problem = level3Challenges[currentProblemIndex];
@@ -170,17 +170,14 @@ export function Level3({
       }
     }
 
-    let composite = calculateCompositeScore(
+    const composite = calculateCompositeScore(
       answerScore,
       methodScore,
       explanationScore,
       efficiencyScore
     );
 
-    // Hint penalty
-    if (hintUsed) {
-      composite = composite * 0.9;
-    }
+    // No hint penalty — hints are free for learning
 
     setScores({
       answer: answerScore,

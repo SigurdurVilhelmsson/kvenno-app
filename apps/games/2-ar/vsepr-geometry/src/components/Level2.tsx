@@ -64,7 +64,8 @@ const molecules: Molecule[] = [
     correctGeometryId: 'bent',
     bondAngle: '104.5°',
     isPolar: true,
-    explanation: 'Súrefni hefur 6 gildisrafeindir. 2 fara í tengsl við H, 4 mynda 2 einstæð pör. 4 rafeinasvið = fjórflötungs rafeinalögun, en 2 einstæð pör gera sameindarlögunina beygða.'
+    explanation:
+      'Súrefni hefur 6 gildisrafeindir. 2 fara í tengsl við H, 4 mynda 2 einstæð pör. 4 rafeinasvið = fjórflötungs rafeinalögun, en 2 einstæð pör gera sameindarlögunina beygða.',
   },
   {
     id: 2,
@@ -80,7 +81,8 @@ const molecules: Molecule[] = [
     correctGeometryId: 'trigonal-pyramidal',
     bondAngle: '107°',
     isPolar: true,
-    explanation: 'Nitur hefur 5 gildisrafeindir. 3 fara í tengsl við H, 2 mynda einstætt par. 4 rafeinasvið gefa fjórflötungs rafeinalögun, en 1 einstætt par gerir sameindarlögunina þríhyrnda pýramídu.'
+    explanation:
+      'Nitur hefur 5 gildisrafeindir. 3 fara í tengsl við H, 2 mynda einstætt par. 4 rafeinasvið gefa fjórflötungs rafeinalögun, en 1 einstætt par gerir sameindarlögunina þríhyrnda pýramídu.',
   },
   {
     id: 3,
@@ -96,7 +98,8 @@ const molecules: Molecule[] = [
     correctGeometryId: 'tetrahedral',
     bondAngle: '109.5°',
     isPolar: false,
-    explanation: 'Kolefni hefur 4 gildisrafeindir sem allar fara í tengsl við H. 4 rafeinasvið, engin einstæð pör — fullkomin fjórflötungs lögun.'
+    explanation:
+      'Kolefni hefur 4 gildisrafeindir sem allar fara í tengsl við H. 4 rafeinasvið, engin einstæð pör — fullkomin fjórflötungs lögun.',
   },
   {
     id: 4,
@@ -112,7 +115,8 @@ const molecules: Molecule[] = [
     correctGeometryId: 'linear',
     bondAngle: '180°',
     isPolar: false,
-    explanation: 'Tvöfaldar tengingar telja sem eitt rafeinasvið hvor. 2 rafeinasvið = línuleg lögun með 180° horn.'
+    explanation:
+      'Tvöfaldar tengingar telja sem eitt rafeinasvið hvor. 2 rafeinasvið = línuleg lögun með 180° horn.',
   },
   {
     id: 5,
@@ -128,7 +132,8 @@ const molecules: Molecule[] = [
     correctGeometryId: 'trigonal-planar',
     bondAngle: '120°',
     isPolar: false,
-    explanation: 'Bór hefur aðeins 3 gildisrafeindir og myndar 3 tengsl án einstæðra para. 3 rafeinasvið = þríhyrnd slétt lögun.'
+    explanation:
+      'Bór hefur aðeins 3 gildisrafeindir og myndar 3 tengsl án einstæðra para. 3 rafeinasvið = þríhyrnd slétt lögun.',
   },
   {
     id: 6,
@@ -144,7 +149,8 @@ const molecules: Molecule[] = [
     correctGeometryId: 'trigonal-bipyramidal',
     bondAngle: '90° og 120°',
     isPolar: false,
-    explanation: 'Fosfór getur rúmað 5 tengsl vegna d-skelja. 5 rafeinasvið = þríhyrnd tvípýramída með 3 á miðsléttunni (120°) og 2 á ásnum (90°).'
+    explanation:
+      'Fosfór getur rúmað 5 tengsl vegna d-skelja. 5 rafeinasvið = þríhyrnd tvípýramída með 3 á miðsléttunni (120°) og 2 á ásnum (90°).',
   },
   {
     id: 7,
@@ -160,7 +166,8 @@ const molecules: Molecule[] = [
     correctGeometryId: 'seesaw',
     bondAngle: '90° og 120°',
     isPolar: true,
-    explanation: 'Brennisteinn hefur 6 gildisrafeindir. 4 í tengsl, 2 mynda einstætt par. 5 rafeinasvið = þríhyrnd tvípýramída en einstæða parið veldur sjáldruslögun.'
+    explanation:
+      'Brennisteinn hefur 6 gildisrafeindir. 4 í tengsl, 2 mynda einstætt par. 5 rafeinasvið = þríhyrnd tvípýramída en einstæða parið veldur sjáldruslögun.',
   },
   {
     id: 8,
@@ -176,7 +183,8 @@ const molecules: Molecule[] = [
     correctGeometryId: 'octahedral',
     bondAngle: '90°',
     isPolar: false,
-    explanation: 'Brennisteinn getur rúmað 6 tengsl vegna d-skelja. 6 rafeinasvið í samhverfri áttflötungsröðun með öll horn 90°.'
+    explanation:
+      'Brennisteinn getur rúmað 6 tengsl vegna d-skelja. 6 rafeinasvið í samhverfri áttflötungsröðun með öll horn 90°.',
   },
   {
     id: 9,
@@ -192,7 +200,8 @@ const molecules: Molecule[] = [
     correctGeometryId: 'square-planar',
     bondAngle: '90°',
     isPolar: false,
-    explanation: 'Xenon hefur 8 gildisrafeindir. 4 í tengsl, 4 mynda 2 einstæð pör. 6 rafeinasvið = áttflötungs rafeinalögun, en 2 einstæð pör (í andstæðum stöðum) gefa ferningssléttu lögun.'
+    explanation:
+      'Xenon hefur 8 gildisrafeindir. 4 í tengsl, 4 mynda 2 einstæð pör. 6 rafeinasvið = áttflötungs rafeinalögun, en 2 einstæð pör (í andstæðum stöðum) gefa ferningssléttu lögun.',
   },
   {
     id: 10,
@@ -208,8 +217,9 @@ const molecules: Molecule[] = [
     correctGeometryId: 't-shaped',
     bondAngle: '90°',
     isPolar: true,
-    explanation: 'Klór hefur 7 gildisrafeindir. 3 í tengsl, 4 mynda 2 einstæð pör. 5 rafeinasvið = þríhyrnd tvípýramída en 2 einstæð pör á miðsléttunni gefa T-lögun.'
-  }
+    explanation:
+      'Klór hefur 7 gildisrafeindir. 3 í tengsl, 4 mynda 2 einstæð pör. 5 rafeinasvið = þríhyrnd tvípýramída en 2 einstæð pör á miðsléttunni gefa T-lögun.',
+  },
 ];
 
 interface Step {
@@ -221,7 +231,7 @@ const STEPS: Step[] = [
   { id: 'count', label: 'Telja rafeinasvið' },
   { id: 'geometry', label: 'Velja lögun' },
   { id: 'angle', label: 'Tengihorn' },
-  { id: 'explanation', label: 'Útskýra' }
+  { id: 'explanation', label: 'Útskýra' },
 ];
 
 export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level2Props) {
@@ -256,8 +266,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     let correct = false;
 
     if (step.id === 'count') {
-      correct = parseInt(bondingPairsAnswer) === molecule.bondingPairs &&
-                parseInt(lonePairsAnswer) === molecule.lonePairs;
+      correct =
+        parseInt(bondingPairsAnswer) === molecule.bondingPairs &&
+        parseInt(lonePairsAnswer) === molecule.lonePairs;
     } else if (step.id === 'geometry') {
       correct = selectedGeometry === molecule.correctGeometryId;
     } else if (step.id === 'angle') {
@@ -271,19 +282,20 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
       if (correctNums.length === 1 && answerNums.length >= 1) {
         // Single-angle geometry: accept if any entered number is within ±2°
-        correct = answerNums.some(a => Math.abs(a - correctNums[0]) <= 2);
+        correct = answerNums.some((a) => Math.abs(a - correctNums[0]) <= 2);
       } else if (correctNums.length >= 2 && answerNums.length >= 2) {
         // Multi-angle geometry (e.g. "90° og 120°"): all correct angles must be matched within ±2°
-        correct = correctNums.every(c => answerNums.some(a => Math.abs(a - c) <= 2));
+        correct = correctNums.every((c) => answerNums.some((a) => Math.abs(a - c) <= 2));
       } else {
         // Fallback to string matching
-        correct = normalizedAnswer === normalizedCorrect ||
-                  normalizedAnswer.includes(normalizedCorrect.replace('°', ''));
+        correct =
+          normalizedAnswer === normalizedCorrect ||
+          normalizedAnswer.includes(normalizedCorrect.replace('°', ''));
       }
 
       // Special case: bent geometry accepts ~104-105°
       if (!correct && molecule.correctGeometryId === 'bent') {
-        correct = answerNums.some(a => a >= 103 && a <= 106);
+        correct = answerNums.some((a) => a >= 103 && a <= 106);
       }
     } else if (step.id === 'explanation') {
       // Always correct for explanation step - it's about learning
@@ -295,9 +307,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     if (correct) {
       onCorrectAnswer?.();
       if (!showHint) {
-        setScore(prev => prev + 10);
+        setScore((prev) => prev + 10);
       } else {
-        setScore(prev => prev + 5);
+        setScore((prev) => prev + 5);
       }
     } else {
       onIncorrectAnswer?.();
@@ -306,13 +318,13 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const nextStep = () => {
     if (currentStep < STEPS.length - 1) {
-      setCurrentStep(prev => prev + 1);
+      setCurrentStep((prev) => prev + 1);
       setStepResult(null);
       setShowHint(false);
     } else {
       // Move to next molecule
       if (currentMolecule < molecules.length - 1) {
-        setCurrentMolecule(prev => prev + 1);
+        setCurrentMolecule((prev) => prev + 1);
         resetStepAnswers();
       } else {
         onComplete(score, maxScore, totalHintsUsed);
@@ -365,7 +377,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-teal-500 h-2 rounded-full transition-all duration-300"
-            style={{ width: `${((currentMolecule * STEPS.length + currentStep + 1) / (molecules.length * STEPS.length)) * 100}%` }}
+            style={{
+              width: `${((currentMolecule * STEPS.length + currentStep + 1) / (molecules.length * STEPS.length)) * 100}%`,
+            }}
           />
         </div>
 
@@ -378,8 +392,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 idx === currentStep
                   ? 'bg-teal-500 text-white'
                   : idx < currentStep
-                  ? 'bg-green-100 text-green-700'
-                  : 'bg-warm-100 text-warm-500'
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-warm-100 text-warm-500'
               }`}
             >
               {s.label}
@@ -522,7 +536,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     hvaða <strong>sameindarlögun</strong> hefur þessi sameind?
                   </p>
                   <div className="grid grid-cols-2 gap-2">
-                    {shuffledGeometryOptions.map(geo => (
+                    {shuffledGeometryOptions.map((geo) => (
                       <button
                         key={geo.id}
                         onClick={() => !stepResult && setSelectedGeometry(geo.id)}
@@ -532,11 +546,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                             ? geo.id === molecule.correctGeometryId
                               ? 'border-green-500 bg-green-50'
                               : selectedGeometry === geo.id
-                              ? 'border-red-500 bg-red-50'
-                              : 'border-warm-200 opacity-50'
+                                ? 'border-red-500 bg-red-50'
+                                : 'border-warm-200 opacity-50'
                             : selectedGeometry === geo.id
-                            ? 'border-teal-500 bg-teal-50'
-                            : 'border-warm-200 hover:border-teal-300'
+                              ? 'border-teal-500 bg-teal-50'
+                              : 'border-warm-200 hover:border-teal-300'
                         }`}
                       >
                         <div className="font-bold text-sm">{geo.name}</div>
@@ -580,87 +594,379 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       <div className="flex items-center justify-center py-4">
                         <svg width="180" height="120" viewBox="0 0 180 120" className="drop-shadow">
                           {/* Central atom */}
-                          <circle cx="90" cy="80" r="18" fill="#0d9488" stroke="#134e4a" strokeWidth="2" />
-                          <text x="90" y="85" textAnchor="middle" fill="white" fontWeight="bold" fontSize="14">
+                          <circle
+                            cx="90"
+                            cy="80"
+                            r="18"
+                            fill="#0d9488"
+                            stroke="#134e4a"
+                            strokeWidth="2"
+                          />
+                          <text
+                            x="90"
+                            y="85"
+                            textAnchor="middle"
+                            fill="white"
+                            fontWeight="bold"
+                            fontSize="14"
+                          >
                             {molecule.centralAtom}
                           </text>
 
                           {/* Bond lines - simplified representation */}
                           {molecule.correctGeometryId === 'linear' && (
                             <>
-                              <line x1="20" y1="80" x2="72" y2="80" stroke="#374151" strokeWidth="3" />
-                              <line x1="108" y1="80" x2="160" y2="80" stroke="#374151" strokeWidth="3" />
+                              <line
+                                x1="20"
+                                y1="80"
+                                x2="72"
+                                y2="80"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
+                              <line
+                                x1="108"
+                                y1="80"
+                                x2="160"
+                                y2="80"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
                               {/* Angle arc */}
-                              <path d="M 60 80 A 30 30 0 0 1 120 80" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeDasharray="4 2" />
-                              <text x="90" y="60" textAnchor="middle" fill="#8b5cf6" fontWeight="bold" fontSize="12">180°</text>
+                              <path
+                                d="M 60 80 A 30 30 0 0 1 120 80"
+                                fill="none"
+                                stroke="#8b5cf6"
+                                strokeWidth="2"
+                                strokeDasharray="4 2"
+                              />
+                              <text
+                                x="90"
+                                y="60"
+                                textAnchor="middle"
+                                fill="#8b5cf6"
+                                fontWeight="bold"
+                                fontSize="12"
+                              >
+                                180°
+                              </text>
                             </>
                           )}
 
                           {molecule.correctGeometryId === 'trigonal-planar' && (
                             <>
-                              <line x1="90" y1="62" x2="90" y2="20" stroke="#374151" strokeWidth="3" />
-                              <line x1="72" y1="80" x2="30" y2="100" stroke="#374151" strokeWidth="3" />
-                              <line x1="108" y1="80" x2="150" y2="100" stroke="#374151" strokeWidth="3" />
-                              <path d="M 70 35 A 25 25 0 0 1 110 35" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeDasharray="4 2" />
-                              <text x="90" y="50" textAnchor="middle" fill="#8b5cf6" fontWeight="bold" fontSize="11">120°</text>
+                              <line
+                                x1="90"
+                                y1="62"
+                                x2="90"
+                                y2="20"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
+                              <line
+                                x1="72"
+                                y1="80"
+                                x2="30"
+                                y2="100"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
+                              <line
+                                x1="108"
+                                y1="80"
+                                x2="150"
+                                y2="100"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
+                              <path
+                                d="M 70 35 A 25 25 0 0 1 110 35"
+                                fill="none"
+                                stroke="#8b5cf6"
+                                strokeWidth="2"
+                                strokeDasharray="4 2"
+                              />
+                              <text
+                                x="90"
+                                y="50"
+                                textAnchor="middle"
+                                fill="#8b5cf6"
+                                fontWeight="bold"
+                                fontSize="11"
+                              >
+                                120°
+                              </text>
                             </>
                           )}
 
-                          {(molecule.correctGeometryId === 'tetrahedral' || molecule.correctGeometryId === 'trigonal-pyramidal' || molecule.correctGeometryId === 'bent') && (
+                          {(molecule.correctGeometryId === 'tetrahedral' ||
+                            molecule.correctGeometryId === 'trigonal-pyramidal' ||
+                            molecule.correctGeometryId === 'bent') && (
                             <>
-                              <line x1="72" y1="80" x2="30" y2="55" stroke="#374151" strokeWidth="3" />
-                              <line x1="108" y1="80" x2="150" y2="55" stroke="#374151" strokeWidth="3" />
-                              {molecule.bondingPairs >= 3 && <line x1="90" y1="62" x2="90" y2="20" stroke="#374151" strokeWidth="3" />}
-                              {molecule.bondingPairs >= 4 && <line x1="90" y1="98" x2="90" y2="115" stroke="#374151" strokeWidth="3" />}
-                              <path d="M 50 55 A 35 35 0 0 1 130 55" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeDasharray="4 2" />
-                              <text x="90" y="45" textAnchor="middle" fill="#8b5cf6" fontWeight="bold" fontSize="11">{molecule.bondAngle}</text>
+                              <line
+                                x1="72"
+                                y1="80"
+                                x2="30"
+                                y2="55"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
+                              <line
+                                x1="108"
+                                y1="80"
+                                x2="150"
+                                y2="55"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
+                              {molecule.bondingPairs >= 3 && (
+                                <line
+                                  x1="90"
+                                  y1="62"
+                                  x2="90"
+                                  y2="20"
+                                  stroke="#374151"
+                                  strokeWidth="3"
+                                />
+                              )}
+                              {molecule.bondingPairs >= 4 && (
+                                <line
+                                  x1="90"
+                                  y1="98"
+                                  x2="90"
+                                  y2="115"
+                                  stroke="#374151"
+                                  strokeWidth="3"
+                                />
+                              )}
+                              <path
+                                d="M 50 55 A 35 35 0 0 1 130 55"
+                                fill="none"
+                                stroke="#8b5cf6"
+                                strokeWidth="2"
+                                strokeDasharray="4 2"
+                              />
+                              <text
+                                x="90"
+                                y="45"
+                                textAnchor="middle"
+                                fill="#8b5cf6"
+                                fontWeight="bold"
+                                fontSize="11"
+                              >
+                                {molecule.bondAngle}
+                              </text>
                             </>
                           )}
 
                           {molecule.correctGeometryId === 'octahedral' && (
                             <>
-                              <line x1="90" y1="62" x2="90" y2="20" stroke="#374151" strokeWidth="3" />
-                              <line x1="72" y1="80" x2="30" y2="80" stroke="#374151" strokeWidth="3" />
-                              <line x1="108" y1="80" x2="150" y2="80" stroke="#374151" strokeWidth="3" />
-                              <line x1="90" y1="98" x2="90" y2="115" stroke="#374151" strokeWidth="3" />
-                              <path d="M 90 50 A 30 30 0 0 1 120 80" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeDasharray="4 2" />
-                              <text x="115" y="60" textAnchor="middle" fill="#8b5cf6" fontWeight="bold" fontSize="11">90°</text>
+                              <line
+                                x1="90"
+                                y1="62"
+                                x2="90"
+                                y2="20"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
+                              <line
+                                x1="72"
+                                y1="80"
+                                x2="30"
+                                y2="80"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
+                              <line
+                                x1="108"
+                                y1="80"
+                                x2="150"
+                                y2="80"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
+                              <line
+                                x1="90"
+                                y1="98"
+                                x2="90"
+                                y2="115"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
+                              <path
+                                d="M 90 50 A 30 30 0 0 1 120 80"
+                                fill="none"
+                                stroke="#8b5cf6"
+                                strokeWidth="2"
+                                strokeDasharray="4 2"
+                              />
+                              <text
+                                x="115"
+                                y="60"
+                                textAnchor="middle"
+                                fill="#8b5cf6"
+                                fontWeight="bold"
+                                fontSize="11"
+                              >
+                                90°
+                              </text>
                             </>
                           )}
 
                           {molecule.correctGeometryId === 'square-planar' && (
                             <>
                               {/* 4 bonds in the square plane (left, right, top, bottom) */}
-                              <line x1="90" y1="62" x2="90" y2="20" stroke="#374151" strokeWidth="3" />
-                              <line x1="72" y1="80" x2="30" y2="80" stroke="#374151" strokeWidth="3" />
-                              <line x1="108" y1="80" x2="150" y2="80" stroke="#374151" strokeWidth="3" />
-                              <line x1="90" y1="98" x2="90" y2="115" stroke="#374151" strokeWidth="3" />
+                              <line
+                                x1="90"
+                                y1="62"
+                                x2="90"
+                                y2="20"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
+                              <line
+                                x1="72"
+                                y1="80"
+                                x2="30"
+                                y2="80"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
+                              <line
+                                x1="108"
+                                y1="80"
+                                x2="150"
+                                y2="80"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
+                              <line
+                                x1="90"
+                                y1="98"
+                                x2="90"
+                                y2="115"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
                               {/* 2 lone pairs (axial, perpendicular to plane) */}
-                              <ellipse cx="65" cy="55" rx="7" ry="5" fill="none" stroke="#ec4899" strokeWidth="2" strokeDasharray="3 2" />
-                              <text x="55" y="48" fontSize="8" fill="#ec4899" fontWeight="bold">LP</text>
-                              <ellipse cx="115" cy="105" rx="7" ry="5" fill="none" stroke="#ec4899" strokeWidth="2" strokeDasharray="3 2" />
-                              <text x="125" y="108" fontSize="8" fill="#ec4899" fontWeight="bold">LP</text>
-                              <path d="M 90 50 A 30 30 0 0 1 120 80" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeDasharray="4 2" />
-                              <text x="115" y="60" textAnchor="middle" fill="#8b5cf6" fontWeight="bold" fontSize="11">90°</text>
+                              <ellipse
+                                cx="65"
+                                cy="55"
+                                rx="7"
+                                ry="5"
+                                fill="none"
+                                stroke="#ec4899"
+                                strokeWidth="2"
+                                strokeDasharray="3 2"
+                              />
+                              <text x="55" y="48" fontSize="8" fill="#ec4899" fontWeight="bold">
+                                LP
+                              </text>
+                              <ellipse
+                                cx="115"
+                                cy="105"
+                                rx="7"
+                                ry="5"
+                                fill="none"
+                                stroke="#ec4899"
+                                strokeWidth="2"
+                                strokeDasharray="3 2"
+                              />
+                              <text x="125" y="108" fontSize="8" fill="#ec4899" fontWeight="bold">
+                                LP
+                              </text>
+                              <path
+                                d="M 90 50 A 30 30 0 0 1 120 80"
+                                fill="none"
+                                stroke="#8b5cf6"
+                                strokeWidth="2"
+                                strokeDasharray="4 2"
+                              />
+                              <text
+                                x="115"
+                                y="60"
+                                textAnchor="middle"
+                                fill="#8b5cf6"
+                                fontWeight="bold"
+                                fontSize="11"
+                              >
+                                90°
+                              </text>
                             </>
                           )}
 
-                          {(molecule.correctGeometryId === 'trigonal-bipyramidal' || molecule.correctGeometryId === 'seesaw' || molecule.correctGeometryId === 't-shaped') && (
+                          {(molecule.correctGeometryId === 'trigonal-bipyramidal' ||
+                            molecule.correctGeometryId === 'seesaw' ||
+                            molecule.correctGeometryId === 't-shaped') && (
                             <>
-                              <line x1="90" y1="62" x2="90" y2="15" stroke="#374151" strokeWidth="3" />
-                              <line x1="90" y1="98" x2="90" y2="115" stroke="#374151" strokeWidth="3" />
-                              <line x1="72" y1="80" x2="30" y2="80" stroke="#374151" strokeWidth="3" />
-                              <line x1="108" y1="80" x2="150" y2="80" stroke="#374151" strokeWidth="3" />
-                              <path d="M 90 45 A 35 35 0 0 1 125 80" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeDasharray="4 2" />
-                              <text x="130" y="55" textAnchor="start" fill="#8b5cf6" fontWeight="bold" fontSize="10">90°</text>
-                              <text x="50" y="95" textAnchor="middle" fill="#f59e0b" fontWeight="bold" fontSize="10">120°</text>
+                              <line
+                                x1="90"
+                                y1="62"
+                                x2="90"
+                                y2="15"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
+                              <line
+                                x1="90"
+                                y1="98"
+                                x2="90"
+                                y2="115"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
+                              <line
+                                x1="72"
+                                y1="80"
+                                x2="30"
+                                y2="80"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
+                              <line
+                                x1="108"
+                                y1="80"
+                                x2="150"
+                                y2="80"
+                                stroke="#374151"
+                                strokeWidth="3"
+                              />
+                              <path
+                                d="M 90 45 A 35 35 0 0 1 125 80"
+                                fill="none"
+                                stroke="#8b5cf6"
+                                strokeWidth="2"
+                                strokeDasharray="4 2"
+                              />
+                              <text
+                                x="130"
+                                y="55"
+                                textAnchor="start"
+                                fill="#8b5cf6"
+                                fontWeight="bold"
+                                fontSize="10"
+                              >
+                                90°
+                              </text>
+                              <text
+                                x="50"
+                                y="95"
+                                textAnchor="middle"
+                                fill="#f59e0b"
+                                fontWeight="bold"
+                                fontSize="10"
+                              >
+                                120°
+                              </text>
                             </>
                           )}
                         </svg>
                       </div>
                       <div className="text-xs text-indigo-600 text-center">
                         {molecule.lonePairs > 0 && (
-                          <span>⚠️ Einstæð pör (ekki sýnd) minnka hornið frá fullkominni röðun</span>
+                          <span>
+                            ⚠️ Einstæð pör (ekki sýnd) minnka hornið frá fullkominni röðun
+                          </span>
                         )}
                       </div>
                     </div>
@@ -671,7 +977,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               {step.id === 'explanation' && (
                 <div className="space-y-4">
                   <p className="text-warm-600">
-                    Útskýrðu af hverju {molecule.formula} hefur {molecule.molecularGeometry.toLowerCase()} lögun:
+                    Útskýrðu af hverju {molecule.formula} hefur{' '}
+                    {molecule.molecularGeometry.toLowerCase()} lögun:
                   </p>
                   <textarea
                     value={explanation}
@@ -697,11 +1004,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <button
               onClick={() => {
                 setShowHint(true);
-                setTotalHintsUsed(prev => prev + 1);
+                setTotalHintsUsed((prev) => prev + 1);
               }}
               className="text-teal-600 hover:text-teal-800 text-sm underline mb-4"
             >
-              Syna visbendingu (-5 stig)
+              Syna visbendingu
             </button>
           )}
 
@@ -713,10 +1020,16 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           )}
 
           {stepResult && (
-            <div className={`p-4 rounded-xl mb-4 ${
-              stepResult === 'correct' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
-            }`}>
-              <div className={`font-bold ${stepResult === 'correct' ? 'text-green-700' : 'text-red-700'}`}>
+            <div
+              className={`p-4 rounded-xl mb-4 ${
+                stepResult === 'correct'
+                  ? 'bg-green-50 border border-green-200'
+                  : 'bg-red-50 border border-red-200'
+              }`}
+            >
+              <div
+                className={`font-bold ${stepResult === 'correct' ? 'text-green-700' : 'text-red-700'}`}
+              >
                 {stepResult === 'correct' ? 'Rétt!' : 'Rangt — Sjáðu rétt svar hér að ofan'}
               </div>
             </div>
@@ -764,17 +1077,83 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-t"><td className="p-2">2</td><td>2</td><td>0</td><td>Línuleg</td><td>180°</td></tr>
-                <tr className="border-t"><td className="p-2">3</td><td>3</td><td>0</td><td>Þríhyrnd slétt</td><td>120°</td></tr>
-                <tr className="border-t"><td className="p-2">3</td><td>2</td><td>1</td><td>Beygð</td><td>&lt;120°</td></tr>
-                <tr className="border-t"><td className="p-2">4</td><td>4</td><td>0</td><td>Fjórflötungur</td><td>109.5°</td></tr>
-                <tr className="border-t"><td className="p-2">4</td><td>3</td><td>1</td><td>Þríhyrnd pýramída</td><td>107°</td></tr>
-                <tr className="border-t"><td className="p-2">4</td><td>2</td><td>2</td><td>Beygð</td><td>104.5°</td></tr>
-                <tr className="border-t bg-purple-50"><td className="p-2">5</td><td>5</td><td>0</td><td>Þríhyrnd tvípýramída</td><td>90°, 120°</td></tr>
-                <tr className="border-t bg-purple-50"><td className="p-2">5</td><td>4</td><td>1</td><td>Sjáldruslögun</td><td>~90°, ~120°</td></tr>
-                <tr className="border-t bg-purple-50"><td className="p-2">5</td><td>3</td><td>2</td><td>T-lögun</td><td>90°</td></tr>
-                <tr className="border-t bg-indigo-50"><td className="p-2">6</td><td>6</td><td>0</td><td>Áttflötungur</td><td>90°</td></tr>
-                <tr className="border-t bg-indigo-50"><td className="p-2">6</td><td>4</td><td>2</td><td>Ferningsslétt</td><td>90°</td></tr>
+                <tr className="border-t">
+                  <td className="p-2">2</td>
+                  <td>2</td>
+                  <td>0</td>
+                  <td>Línuleg</td>
+                  <td>180°</td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-2">3</td>
+                  <td>3</td>
+                  <td>0</td>
+                  <td>Þríhyrnd slétt</td>
+                  <td>120°</td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-2">3</td>
+                  <td>2</td>
+                  <td>1</td>
+                  <td>Beygð</td>
+                  <td>&lt;120°</td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-2">4</td>
+                  <td>4</td>
+                  <td>0</td>
+                  <td>Fjórflötungur</td>
+                  <td>109.5°</td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-2">4</td>
+                  <td>3</td>
+                  <td>1</td>
+                  <td>Þríhyrnd pýramída</td>
+                  <td>107°</td>
+                </tr>
+                <tr className="border-t">
+                  <td className="p-2">4</td>
+                  <td>2</td>
+                  <td>2</td>
+                  <td>Beygð</td>
+                  <td>104.5°</td>
+                </tr>
+                <tr className="border-t bg-purple-50">
+                  <td className="p-2">5</td>
+                  <td>5</td>
+                  <td>0</td>
+                  <td>Þríhyrnd tvípýramída</td>
+                  <td>90°, 120°</td>
+                </tr>
+                <tr className="border-t bg-purple-50">
+                  <td className="p-2">5</td>
+                  <td>4</td>
+                  <td>1</td>
+                  <td>Sjáldruslögun</td>
+                  <td>~90°, ~120°</td>
+                </tr>
+                <tr className="border-t bg-purple-50">
+                  <td className="p-2">5</td>
+                  <td>3</td>
+                  <td>2</td>
+                  <td>T-lögun</td>
+                  <td>90°</td>
+                </tr>
+                <tr className="border-t bg-indigo-50">
+                  <td className="p-2">6</td>
+                  <td>6</td>
+                  <td>0</td>
+                  <td>Áttflötungur</td>
+                  <td>90°</td>
+                </tr>
+                <tr className="border-t bg-indigo-50">
+                  <td className="p-2">6</td>
+                  <td>4</td>
+                  <td>2</td>
+                  <td>Ferningsslétt</td>
+                  <td>90°</td>
+                </tr>
               </tbody>
             </table>
           </div>

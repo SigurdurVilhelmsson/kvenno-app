@@ -8,10 +8,14 @@ import { imfToMolecule } from '../utils/imfConverter';
 
 // Misconceptions for IMF types
 const MISCONCEPTIONS = {
-  polar: 'Skautaðar sameindir hafa bæði London krafta OG tvípól-tvípól. Mundu: London er ALLTAF til staðar!',
-  nonpolar: 'Óskautaðar sameindir hafa AÐEINS London krafta. Samhverfa sameindin (eins og CO₂, CCl₄) getur haft skautuð tengsl en vera samt óskautuð í heild.',
-  hbond: 'Vetnistengi krefst H bundið við F, O, eða N. Ef H er bundið við C eða Cl, þá eru engin vetnistengi.',
-  london_strength: 'London kraftar verða sterkari eftir því sem mólmassi eykst (stærri rafeindaský = meiri dreifistuðull).',
+  polar:
+    'Skautaðar sameindir hafa bæði London krafta OG tvípól-tvípól. Mundu: London er ALLTAF til staðar!',
+  nonpolar:
+    'Óskautaðar sameindir hafa AÐEINS London krafta. Samhverfa sameindin (eins og CO₂, CCl₄) getur haft skautuð tengsl en vera samt óskautuð í heild.',
+  hbond:
+    'Vetnistengi krefst H bundið við F, O, eða N. Ef H er bundið við C eða Cl, þá eru engin vetnistengi.',
+  london_strength:
+    'London kraftar verða sterkari eftir því sem mólmassi eykst (stærri rafeindaský = meiri dreifistuðull).',
 };
 
 // Related concepts for IMF
@@ -42,32 +46,44 @@ const IMF_TYPES: IMFType[] = [
     id: 'london',
     name: 'London dreifikraftar',
     nameEn: 'London Dispersion Forces',
-    description: 'Veikir, tímabundnir aðdráttarkraftar vegna tímabundinna tvípóla. Til staðar í ÖLLUM sameindum.',
+    description:
+      'Veikir, tímabundnir aðdráttarkraftar vegna tímabundinna tvípóla. Til staðar í ÖLLUM sameindum.',
     strength: 'Veikastur',
-    examples: ['CH₄', 'Ar', 'CO₂', 'CCl₄', 'I₂']
+    examples: ['CH₄', 'Ar', 'CO₂', 'CCl₄', 'I₂'],
   },
   {
     id: 'dipole',
     name: 'Tvípól-tvípól kraftar',
     nameEn: 'Dipole-Dipole Forces',
-    description: 'Aðdráttarkraftar milli skauttaðra sameinda þar sem δ+ hluti einnar sameindar laðar að δ- hluta annarar.',
+    description:
+      'Aðdráttarkraftar milli skauttaðra sameinda þar sem δ+ hluti einnar sameindar laðar að δ- hluta annarar.',
     strength: 'Meðal',
-    examples: ['HCl', 'SO₂', 'CHCl₃', 'H₂S']
+    examples: ['HCl', 'SO₂', 'CHCl₃', 'H₂S'],
   },
   {
     id: 'hydrogen',
     name: 'Vetnistengi',
     nameEn: 'Hydrogen Bonding',
-    description: 'Sérstakt sterk tvípól-tvípól kraftur þegar H er bundið við F, O, eða N. Sterkasta IMF.',
+    description:
+      'Sérstakt sterk tvípól-tvípól kraftur þegar H er bundið við F, O, eða N. Sterkasta IMF.',
     strength: 'Sterkastur',
-    examples: ['H₂O', 'NH₃', 'HF', 'CH₃OH', 'DNA']
-  }
+    examples: ['H₂O', 'NH₃', 'HF', 'CH₃OH', 'DNA'],
+  },
 ];
 
 interface AtomVisualization {
   symbol: string;
   partialCharge?: 'positive' | 'negative' | 'none';
-  position: 'center' | 'left' | 'right' | 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+  position:
+    | 'center'
+    | 'left'
+    | 'right'
+    | 'top'
+    | 'bottom'
+    | 'top-left'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-right';
   size?: 'small' | 'medium' | 'large';
   color?: string;
 }
@@ -108,12 +124,25 @@ const molecules: Molecule[] = [
     hasHBond: true,
     molarMass: 18,
     correctIMFs: ['london', 'dipole', 'hydrogen'],
-    explanation: 'Vatn hefur alla þrjá krafta: London (alltaf), tvípól-tvípól (skautuð), og vetnistengi (O-H tengsl).',
+    explanation:
+      'Vatn hefur alla þrjá krafta: London (alltaf), tvípól-tvípól (skautuð), og vetnistengi (O-H tengsl).',
     visualization: {
       atoms: [
         { symbol: 'O', partialCharge: 'negative', position: 'center', size: 'large', color: 'red' },
-        { symbol: 'H', partialCharge: 'positive', position: 'top-left', size: 'small', color: 'gray' },
-        { symbol: 'H', partialCharge: 'positive', position: 'top-right', size: 'small', color: 'gray' },
+        {
+          symbol: 'H',
+          partialCharge: 'positive',
+          position: 'top-left',
+          size: 'small',
+          color: 'gray',
+        },
+        {
+          symbol: 'H',
+          partialCharge: 'positive',
+          position: 'top-right',
+          size: 'small',
+          color: 'gray',
+        },
       ],
       bonds: [
         { from: 'center', to: 'top-left', type: 'single', polar: true },
@@ -121,7 +150,7 @@ const molecules: Molecule[] = [
       ],
       shape: 'bent',
       dipoleMoment: 'up',
-    }
+    },
   },
   {
     id: 2,
@@ -148,7 +177,7 @@ const molecules: Molecule[] = [
       ],
       shape: 'tetrahedral',
       dipoleMoment: 'none',
-    }
+    },
   },
   {
     id: 3,
@@ -158,18 +187,23 @@ const molecules: Molecule[] = [
     hasHBond: false,
     molarMass: 36.5,
     correctIMFs: ['london', 'dipole'],
-    explanation: 'HCl er skautuð (Cl er rafneikvæðara) en H er ekki bundið við F, O, eða N — engin vetnistengi.',
+    explanation:
+      'HCl er skautuð (Cl er rafneikvæðara) en H er ekki bundið við F, O, eða N — engin vetnistengi.',
     visualization: {
       atoms: [
         { symbol: 'H', partialCharge: 'positive', position: 'left', size: 'small', color: 'white' },
-        { symbol: 'Cl', partialCharge: 'negative', position: 'right', size: 'large', color: 'green' },
+        {
+          symbol: 'Cl',
+          partialCharge: 'negative',
+          position: 'right',
+          size: 'large',
+          color: 'green',
+        },
       ],
-      bonds: [
-        { from: 'left', to: 'right', type: 'single', polar: true },
-      ],
+      bonds: [{ from: 'left', to: 'right', type: 'single', polar: true }],
       shape: 'diatomic',
       dipoleMoment: 'right',
-    }
+    },
   },
   {
     id: 4,
@@ -179,13 +213,38 @@ const molecules: Molecule[] = [
     hasHBond: true,
     molarMass: 17,
     correctIMFs: ['london', 'dipole', 'hydrogen'],
-    explanation: 'Ammóníak hefur N-H tengsl sem geta myndað vetnistengi, auk þess að vera skautuð sameind.',
+    explanation:
+      'Ammóníak hefur N-H tengsl sem geta myndað vetnistengi, auk þess að vera skautuð sameind.',
     visualization: {
       atoms: [
-        { symbol: 'N', partialCharge: 'negative', position: 'center', size: 'medium', color: 'blue' },
-        { symbol: 'H', partialCharge: 'positive', position: 'bottom-left', size: 'small', color: 'white' },
-        { symbol: 'H', partialCharge: 'positive', position: 'bottom', size: 'small', color: 'white' },
-        { symbol: 'H', partialCharge: 'positive', position: 'bottom-right', size: 'small', color: 'white' },
+        {
+          symbol: 'N',
+          partialCharge: 'negative',
+          position: 'center',
+          size: 'medium',
+          color: 'blue',
+        },
+        {
+          symbol: 'H',
+          partialCharge: 'positive',
+          position: 'bottom-left',
+          size: 'small',
+          color: 'white',
+        },
+        {
+          symbol: 'H',
+          partialCharge: 'positive',
+          position: 'bottom',
+          size: 'small',
+          color: 'white',
+        },
+        {
+          symbol: 'H',
+          partialCharge: 'positive',
+          position: 'bottom-right',
+          size: 'small',
+          color: 'white',
+        },
       ],
       bonds: [
         { from: 'center', to: 'bottom-left', type: 'single', polar: true },
@@ -194,7 +253,7 @@ const molecules: Molecule[] = [
       ],
       shape: 'trigonal',
       dipoleMoment: 'up',
-    }
+    },
   },
   {
     id: 5,
@@ -204,11 +263,18 @@ const molecules: Molecule[] = [
     hasHBond: false,
     molarMass: 44,
     correctIMFs: ['london'],
-    explanation: 'Þó C=O tengslin séu skautuð, er sameindin línuleg og óskautuð — aðeins London kraftar.',
+    explanation:
+      'Þó C=O tengslin séu skautuð, er sameindin línuleg og óskautuð — aðeins London kraftar.',
     visualization: {
       atoms: [
         { symbol: 'O', partialCharge: 'negative', position: 'left', size: 'medium', color: 'red' },
-        { symbol: 'C', partialCharge: 'positive', position: 'center', size: 'medium', color: 'gray' },
+        {
+          symbol: 'C',
+          partialCharge: 'positive',
+          position: 'center',
+          size: 'medium',
+          color: 'gray',
+        },
         { symbol: 'O', partialCharge: 'negative', position: 'right', size: 'medium', color: 'red' },
       ],
       bonds: [
@@ -217,7 +283,7 @@ const molecules: Molecule[] = [
       ],
       shape: 'linear',
       dipoleMoment: 'none', // Cancels out
-    }
+    },
   },
   {
     id: 6,
@@ -231,8 +297,20 @@ const molecules: Molecule[] = [
     visualization: {
       atoms: [
         { symbol: 'C', partialCharge: 'none', position: 'left', size: 'medium', color: 'gray' },
-        { symbol: 'O', partialCharge: 'negative', position: 'center', size: 'medium', color: 'red' },
-        { symbol: 'H', partialCharge: 'positive', position: 'right', size: 'small', color: 'white' },
+        {
+          symbol: 'O',
+          partialCharge: 'negative',
+          position: 'center',
+          size: 'medium',
+          color: 'red',
+        },
+        {
+          symbol: 'H',
+          partialCharge: 'positive',
+          position: 'right',
+          size: 'small',
+          color: 'white',
+        },
       ],
       bonds: [
         { from: 'left', to: 'center', type: 'single' },
@@ -240,7 +318,7 @@ const molecules: Molecule[] = [
       ],
       shape: 'bent',
       dipoleMoment: 'right',
-    }
+    },
   },
   {
     id: 7,
@@ -253,11 +331,41 @@ const molecules: Molecule[] = [
     explanation: 'CCl₄ er samhverf fjórflötungur — óskautuð þrátt fyrir skautuð C-Cl tengisl.',
     visualization: {
       atoms: [
-        { symbol: 'C', partialCharge: 'positive', position: 'center', size: 'medium', color: 'gray' },
-        { symbol: 'Cl', partialCharge: 'negative', position: 'top', size: 'medium', color: 'green' },
-        { symbol: 'Cl', partialCharge: 'negative', position: 'bottom', size: 'medium', color: 'green' },
-        { symbol: 'Cl', partialCharge: 'negative', position: 'left', size: 'medium', color: 'green' },
-        { symbol: 'Cl', partialCharge: 'negative', position: 'right', size: 'medium', color: 'green' },
+        {
+          symbol: 'C',
+          partialCharge: 'positive',
+          position: 'center',
+          size: 'medium',
+          color: 'gray',
+        },
+        {
+          symbol: 'Cl',
+          partialCharge: 'negative',
+          position: 'top',
+          size: 'medium',
+          color: 'green',
+        },
+        {
+          symbol: 'Cl',
+          partialCharge: 'negative',
+          position: 'bottom',
+          size: 'medium',
+          color: 'green',
+        },
+        {
+          symbol: 'Cl',
+          partialCharge: 'negative',
+          position: 'left',
+          size: 'medium',
+          color: 'green',
+        },
+        {
+          symbol: 'Cl',
+          partialCharge: 'negative',
+          position: 'right',
+          size: 'medium',
+          color: 'green',
+        },
       ],
       bonds: [
         { from: 'center', to: 'top', type: 'single', polar: true },
@@ -267,7 +375,7 @@ const molecules: Molecule[] = [
       ],
       shape: 'tetrahedral',
       dipoleMoment: 'none', // Cancels out
-    }
+    },
   },
   {
     id: 8,
@@ -282,9 +390,27 @@ const molecules: Molecule[] = [
       atoms: [
         { symbol: 'C', partialCharge: 'none', position: 'center', size: 'medium', color: 'gray' },
         { symbol: 'H', partialCharge: 'positive', position: 'top', size: 'small', color: 'white' },
-        { symbol: 'Cl', partialCharge: 'negative', position: 'bottom-left', size: 'medium', color: 'green' },
-        { symbol: 'Cl', partialCharge: 'negative', position: 'bottom', size: 'medium', color: 'green' },
-        { symbol: 'Cl', partialCharge: 'negative', position: 'bottom-right', size: 'medium', color: 'green' },
+        {
+          symbol: 'Cl',
+          partialCharge: 'negative',
+          position: 'bottom-left',
+          size: 'medium',
+          color: 'green',
+        },
+        {
+          symbol: 'Cl',
+          partialCharge: 'negative',
+          position: 'bottom',
+          size: 'medium',
+          color: 'green',
+        },
+        {
+          symbol: 'Cl',
+          partialCharge: 'negative',
+          position: 'bottom-right',
+          size: 'medium',
+          color: 'green',
+        },
       ],
       bonds: [
         { from: 'center', to: 'top', type: 'single' },
@@ -294,7 +420,7 @@ const molecules: Molecule[] = [
       ],
       shape: 'tetrahedral',
       dipoleMoment: 'up',
-    }
+    },
   },
   {
     id: 9,
@@ -308,14 +434,18 @@ const molecules: Molecule[] = [
     visualization: {
       atoms: [
         { symbol: 'H', partialCharge: 'positive', position: 'left', size: 'small', color: 'white' },
-        { symbol: 'F', partialCharge: 'negative', position: 'right', size: 'medium', color: 'yellow' },
+        {
+          symbol: 'F',
+          partialCharge: 'negative',
+          position: 'right',
+          size: 'medium',
+          color: 'yellow',
+        },
       ],
-      bonds: [
-        { from: 'left', to: 'right', type: 'single', polar: true },
-      ],
+      bonds: [{ from: 'left', to: 'right', type: 'single', polar: true }],
       shape: 'diatomic',
       dipoleMoment: 'right',
-    }
+    },
   },
   {
     id: 10,
@@ -325,19 +455,18 @@ const molecules: Molecule[] = [
     hasHBond: false,
     molarMass: 254,
     correctIMFs: ['london'],
-    explanation: 'I₂ er óskautuð tvíatóma sameind — aðeins London kraftar. En þeir eru sterkir vegna stórrar mólmassa.',
+    explanation:
+      'I₂ er óskautuð tvíatóma sameind — aðeins London kraftar. En þeir eru sterkir vegna stórrar mólmassa.',
     visualization: {
       atoms: [
         { symbol: 'I', partialCharge: 'none', position: 'left', size: 'large', color: 'purple' },
         { symbol: 'I', partialCharge: 'none', position: 'right', size: 'large', color: 'purple' },
       ],
-      bonds: [
-        { from: 'left', to: 'right', type: 'single' },
-      ],
+      bonds: [{ from: 'left', to: 'right', type: 'single' }],
       shape: 'diatomic',
       dipoleMoment: 'none',
-    }
-  }
+    },
+  },
 ];
 
 // Max possible score: 10 molecules * 15 points = 150 points
@@ -370,13 +499,13 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     const correctSet = new Set(molecule.correctIMFs);
     const isCorrect =
       selectedIMFs.size === correctSet.size &&
-      [...selectedIMFs].every(imf => correctSet.has(imf as 'london' | 'dipole' | 'hydrogen'));
+      [...selectedIMFs].every((imf) => correctSet.has(imf as 'london' | 'dipole' | 'hydrogen'));
 
     if (isCorrect) {
       if (!showHint) {
-        setScore(prev => prev + 15);
+        setScore((prev) => prev + 15);
       } else {
-        setScore(prev => prev + 8);
+        setScore((prev) => prev + 8);
       }
       onCorrectAnswer?.();
     } else {
@@ -387,7 +516,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const nextMolecule = () => {
     if (currentMolecule < molecules.length - 1) {
-      setCurrentMolecule(prev => prev + 1);
+      setCurrentMolecule((prev) => prev + 1);
       setSelectedIMFs(new Set());
       setShowResult(false);
       setShowHint(false);
@@ -398,7 +527,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const handleShowHint = () => {
     setShowHint(true);
-    setTotalHintsUsed(prev => prev + 1);
+    setTotalHintsUsed((prev) => prev + 1);
   };
 
   // IMF strength scale visualization
@@ -443,18 +572,27 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </h2>
 
             <div className="space-y-6">
-              {IMF_TYPES.map(imf => (
-                <div key={imf.id} className={`p-6 rounded-xl border-2 ${
-                  imf.id === 'london' ? 'bg-purple-50 border-purple-200' :
-                  imf.id === 'dipole' ? 'bg-blue-50 border-blue-200' :
-                  'bg-red-50 border-red-200'
-                }`}>
+              {IMF_TYPES.map((imf) => (
+                <div
+                  key={imf.id}
+                  className={`p-6 rounded-xl border-2 ${
+                    imf.id === 'london'
+                      ? 'bg-purple-50 border-purple-200'
+                      : imf.id === 'dipole'
+                        ? 'bg-blue-50 border-blue-200'
+                        : 'bg-red-50 border-red-200'
+                  }`}
+                >
                   <div className="flex items-start gap-4">
-                    <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl ${
-                      imf.id === 'london' ? 'bg-purple-200' :
-                      imf.id === 'dipole' ? 'bg-blue-200' :
-                      'bg-red-200'
-                    }`}>
+                    <div
+                      className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl ${
+                        imf.id === 'london'
+                          ? 'bg-purple-200'
+                          : imf.id === 'dipole'
+                            ? 'bg-blue-200'
+                            : 'bg-red-200'
+                      }`}
+                    >
                       {imf.id === 'london' ? '🌫️' : imf.id === 'dipole' ? '⚡' : '🔗'}
                     </div>
                     <div className="flex-1">
@@ -462,11 +600,15 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       <div className="text-sm text-warm-500 mb-2">{imf.nameEn}</div>
                       <p className="text-warm-700 mb-3">{imf.description}</p>
                       <div className="flex items-center gap-4">
-                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          imf.id === 'london' ? 'bg-purple-200 text-purple-800' :
-                          imf.id === 'dipole' ? 'bg-blue-200 text-blue-800' :
-                          'bg-red-200 text-red-800'
-                        }`}>
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-medium ${
+                            imf.id === 'london'
+                              ? 'bg-purple-200 text-purple-800'
+                              : imf.id === 'dipole'
+                                ? 'bg-blue-200 text-blue-800'
+                                : 'bg-red-200 text-red-800'
+                          }`}
+                        >
                           {imf.strength}
                         </span>
                         <span className="text-sm text-warm-500">
@@ -482,20 +624,22 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="mt-8 bg-yellow-50 p-4 rounded-xl border border-yellow-200">
               <h4 className="font-bold text-yellow-800 mb-2">🔑 Lykilatriði</h4>
               <ul className="space-y-1 text-yellow-900 text-sm">
-                <li>• <strong>Öll efni</strong> hafa London krafta — þeir eru alltaf til staðar</li>
-                <li>• <strong>Skautaðar sameindir</strong> hafa einnig tvípól-tvípól</li>
-                <li>• <strong>H-F, H-O, eða H-N</strong> tengsl gefa vetnistengi</li>
+                <li>
+                  • <strong>Öll efni</strong> hafa London krafta — þeir eru alltaf til staðar
+                </li>
+                <li>
+                  • <strong>Skautaðar sameindir</strong> hafa einnig tvípól-tvípól
+                </li>
+                <li>
+                  • <strong>H-F, H-O, eða H-N</strong> tengsl gefa vetnistengi
+                </li>
                 <li>• Stærra atóm / mólmassi = sterkari London kraftar</li>
               </ul>
             </div>
 
             {/* Force Strength Animation */}
             <div className="mt-8">
-              <ForceStrengthAnimation
-                interactive={true}
-                animate={true}
-                compact={false}
-              />
+              <ForceStrengthAnimation interactive={true} animate={true} compact={false} />
             </div>
           </div>
 
@@ -511,9 +655,12 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   }
 
   // Quiz phase
-  const isCorrect = showResult &&
+  const isCorrect =
+    showResult &&
     selectedIMFs.size === molecule.correctIMFs.length &&
-    [...selectedIMFs].every(imf => molecule.correctIMFs.includes(imf as 'london' | 'dipole' | 'hydrogen'));
+    [...selectedIMFs].every((imf) =>
+      molecule.correctIMFs.includes(imf as 'london' | 'dipole' | 'hydrogen')
+    );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
@@ -546,7 +693,11 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
 
             {/* 2D/3D Toggle */}
-            <div className="flex justify-center gap-2 mb-4" role="radiogroup" aria-label="Birtingarmáti">
+            <div
+              className="flex justify-center gap-2 mb-4"
+              role="radiogroup"
+              aria-label="Birtingarmáti"
+            >
               <button
                 onClick={() => setViewMode('2d')}
                 role="radio"
@@ -592,7 +743,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       size="md"
                       animation="fade-in"
                       showPartialCharges={molecule.isPolar}
-                      showDipoleMoment={molecule.isPolar && molecule.visualization.dipoleMoment !== 'none'}
+                      showDipoleMoment={
+                        molecule.isPolar && molecule.visualization.dipoleMoment !== 'none'
+                      }
                       ariaLabel={`${molecule.name} sameindaformúla`}
                     />
                   ) : (
@@ -631,9 +784,11 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             {/* Molecule properties badges */}
             <div className="flex justify-center gap-3 flex-wrap">
-              <span className={`px-3 py-1.5 rounded-full text-xs font-medium ${
-                molecule.isPolar ? 'bg-blue-500 text-white' : 'bg-warm-600 text-warm-300'
-              }`}>
+              <span
+                className={`px-3 py-1.5 rounded-full text-xs font-medium ${
+                  molecule.isPolar ? 'bg-blue-500 text-white' : 'bg-warm-600 text-warm-300'
+                }`}
+              >
                 {molecule.isPolar ? '⚡ Skautuð' : '○ Óskautuð'}
               </span>
               <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-purple-500 text-white">
@@ -653,7 +808,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           {/* IMF Selection */}
           <div className="space-y-3 mb-6">
-            {IMF_TYPES.map(imf => {
+            {IMF_TYPES.map((imf) => {
               const isSelected = selectedIMFs.has(imf.id);
               const isCorrectChoice = molecule.correctIMFs.includes(imf.id);
 
@@ -667,32 +822,42 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       ? isCorrectChoice
                         ? 'border-green-500 bg-green-50'
                         : isSelected
-                        ? 'border-red-500 bg-red-50'
-                        : 'border-warm-200 opacity-50'
+                          ? 'border-red-500 bg-red-50'
+                          : 'border-warm-200 opacity-50'
                       : isSelected
-                      ? `border-2 ring-2 ${
-                          imf.id === 'london' ? 'border-purple-500 ring-purple-200 bg-purple-50' :
-                          imf.id === 'dipole' ? 'border-blue-500 ring-blue-200 bg-blue-50' :
-                          'border-red-500 ring-red-200 bg-red-50'
-                        }`
-                      : 'border-warm-300 hover:border-warm-400'
+                        ? `border-2 ring-2 ${
+                            imf.id === 'london'
+                              ? 'border-purple-500 ring-purple-200 bg-purple-50'
+                              : imf.id === 'dipole'
+                                ? 'border-blue-500 ring-blue-200 bg-blue-50'
+                                : 'border-red-500 ring-red-200 bg-red-50'
+                          }`
+                        : 'border-warm-300 hover:border-warm-400'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <div className={`w-6 h-6 rounded border-2 flex items-center justify-center ${
-                      isSelected ? 'bg-indigo-500 border-indigo-500 text-white' : 'border-warm-400'
-                    }`}>
+                    <div
+                      className={`w-6 h-6 rounded border-2 flex items-center justify-center ${
+                        isSelected
+                          ? 'bg-indigo-500 border-indigo-500 text-white'
+                          : 'border-warm-400'
+                      }`}
+                    >
                       {isSelected && '✓'}
                     </div>
                     <div className="flex-1">
                       <div className="font-bold">{imf.name}</div>
                       <div className="text-xs text-warm-500">{imf.nameEn}</div>
                     </div>
-                    <span className={`px-2 py-1 rounded text-xs ${
-                      imf.id === 'london' ? 'bg-purple-100 text-purple-700' :
-                      imf.id === 'dipole' ? 'bg-blue-100 text-blue-700' :
-                      'bg-red-100 text-red-700'
-                    }`}>
+                    <span
+                      className={`px-2 py-1 rounded text-xs ${
+                        imf.id === 'london'
+                          ? 'bg-purple-100 text-purple-700'
+                          : imf.id === 'dipole'
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'bg-red-100 text-red-700'
+                      }`}
+                    >
                       {imf.strength}
                     </span>
                   </div>
@@ -707,7 +872,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               onClick={handleShowHint}
               className="text-indigo-600 hover:text-indigo-800 text-sm underline mb-4"
             >
-              Sýna vísbendingu (-7 stig)
+              Sýna vísbendingu
             </button>
           )}
 

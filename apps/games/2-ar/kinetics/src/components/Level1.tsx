@@ -57,7 +57,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     // Assign new sequential IDs (a, b, c, d) after shuffling
     return shuffled.map((opt, idx) => ({
       ...opt,
-      id: String.fromCharCode(97 + idx) // 'a', 'b', 'c', 'd'
+      id: String.fromCharCode(97 + idx), // 'a', 'b', 'c', 'd'
     }));
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when challenge index changes
   }, [currentChallenge, challenge.options]);
@@ -70,11 +70,11 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const checkAnswer = () => {
     if (!selectedAnswer) return;
 
-    const selectedOption = shuffledOptions.find(opt => opt.id === selectedAnswer);
+    const selectedOption = shuffledOptions.find((opt) => opt.id === selectedAnswer);
     const isCorrect = selectedOption?.correct ?? false;
     const points = calculateScore(isCorrect, showHint);
     if (isCorrect) {
-      setScore(prev => prev + points);
+      setScore((prev) => prev + points);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();
@@ -84,7 +84,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const nextChallenge = () => {
     if (currentChallenge < challenges.length - 1) {
-      setCurrentChallenge(prev => prev + 1);
+      setCurrentChallenge((prev) => prev + 1);
       setSelectedAnswer(null);
       setShowResult(false);
       setShowHint(false);
@@ -123,7 +123,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <span>&larr;</span> Til baka
           </button>
           <div className="text-right">
-            <div className="text-sm text-warm-600">Stig 1 / Þraut {currentChallenge + 1} af {challenges.length}</div>
+            <div className="text-sm text-warm-600">
+              Stig 1 / Þraut {currentChallenge + 1} af {challenges.length}
+            </div>
             <div className="text-lg font-bold text-blue-600">{score} stig</div>
           </div>
         </div>
@@ -138,15 +140,13 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Main content */}
         <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <h2 className="text-2xl font-bold text-blue-800 mb-2">
-            {challenge.title}
-          </h2>
+          <h2 className="text-2xl font-bold text-blue-800 mb-2">{challenge.title}</h2>
           <p className="text-warm-700 text-lg mb-6">{challenge.question}</p>
 
           {/* Multiple choice options */}
           {challenge.type === 'multiple_choice' && shuffledOptions.length > 0 && (
             <div className="space-y-3 mb-6">
-              {shuffledOptions.map(option => (
+              {shuffledOptions.map((option) => (
                 <button
                   key={option.id}
                   onClick={() => handleAnswerSelect(option.id)}
@@ -164,7 +164,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     )}
                   </div>
                   {showResult && selectedAnswer === option.id && (
-                    <div className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}>
+                    <div
+                      className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}
+                    >
                       {option.explanation}
                     </div>
                   )}
@@ -178,11 +180,11 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <button
               onClick={() => {
                 setShowHint(true);
-                setTotalHintsUsed(prev => prev + 1);
+                setTotalHintsUsed((prev) => prev + 1);
               }}
               className="text-blue-600 hover:text-blue-800 text-sm underline mb-4"
             >
-              Sýna vísbendingu (-10 stig)
+              Sýna vísbendingu
             </button>
           )}
 
@@ -209,19 +211,21 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="mb-4">
               <FeedbackPanel
                 feedback={{
-                  isCorrect: shuffledOptions.find(opt => opt.id === selectedAnswer)?.correct || false,
-                  explanation: `${shuffledOptions.find(opt => opt.id === selectedAnswer)?.explanation || ''}\n\n**Hugtak:** ${challenge.conceptExplanation}`,
-                  misconception: shuffledOptions.find(opt => opt.id === selectedAnswer)?.correct
+                  isCorrect:
+                    shuffledOptions.find((opt) => opt.id === selectedAnswer)?.correct || false,
+                  explanation: `${shuffledOptions.find((opt) => opt.id === selectedAnswer)?.explanation || ''}\n\n**Hugtak:** ${challenge.conceptExplanation}`,
+                  misconception: shuffledOptions.find((opt) => opt.id === selectedAnswer)?.correct
                     ? undefined
                     : MISCONCEPTIONS[challenge.id],
                   relatedConcepts: RELATED_CONCEPTS[challenge.id],
-                  nextSteps: shuffledOptions.find(opt => opt.id === selectedAnswer)?.correct
+                  nextSteps: shuffledOptions.find((opt) => opt.id === selectedAnswer)?.correct
                     ? 'Frábært! Þú skilur þetta hugtak vel. Haltu áfram.'
                     : 'Skoðaðu útskýringuna og hugsaðu um samband milli þáttanna.',
                 }}
                 config={{
                   showExplanation: true,
-                  showMisconceptions: !shuffledOptions.find(opt => opt.id === selectedAnswer)?.correct,
+                  showMisconceptions: !shuffledOptions.find((opt) => opt.id === selectedAnswer)
+                    ?.correct,
                   showRelatedConcepts: true,
                   showNextSteps: true,
                 }}
@@ -293,10 +297,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           {/* Side-by-side visualizations */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <MaxwellBoltzmann
-              temperature={temperature}
-              activationEnergy={activationEnergy}
-            />
+            <MaxwellBoltzmann temperature={temperature} activationEnergy={activationEnergy} />
             <CollisionDemo
               temperature={temperature}
               activationEnergy={activationEnergy}
@@ -306,7 +307,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           {/* Connection explanation */}
           <div className="mt-3 text-center text-xs text-warm-500 bg-blue-50 p-2 rounded">
-            Prófaðu að breyta hitastigi og sjáðu hvernig bæði orkudreifingin og árekstrartíðnin breytast!
+            Prófaðu að breyta hitastigi og sjáðu hvernig bæði orkudreifingin og árekstrartíðnin
+            breytast!
           </div>
 
           {/* Catalyst Effect Demo */}

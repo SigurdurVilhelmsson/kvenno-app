@@ -779,7 +779,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   }}
                   className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
                 >
-                  Syna visbendingu (-50 stig)
+                  Syna visbendingu
                 </button>
               )}
 

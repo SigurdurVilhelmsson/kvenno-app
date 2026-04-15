@@ -371,7 +371,7 @@ function App() {
                     <ul className="text-warm-700 mb-4 space-y-2 text-sm">
                       <li>⏱️ 90 sekúndur á spurningu</li>
                       <li>🎯 Tíma bónus fyrir hraða</li>
-                      <li>💡 Vísbendingar kosta stig (-10)</li>
+                      <li>💡 Vísbendingar í boði</li>
                       <li>📊 Stigatafla og röð</li>
                     </ul>
                     <button
@@ -720,7 +720,7 @@ function App() {
                             : 'bg-blue-500 text-white hover:bg-blue-600'
                         }`}
                       >
-                        Vísbending (H) {gameMode === 'challenge' && '(-10 stig)'}
+                        Vísbending (H) {gameMode === 'challenge' && ''}
                       </button>
                     </div>
                     {showHint > 0 ? (

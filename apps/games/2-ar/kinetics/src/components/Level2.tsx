@@ -272,7 +272,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               }}
               className="text-green-600 hover:text-green-800 text-sm underline mb-4"
             >
-              Sýna vísbendingu (-10 stig)
+              Sýna vísbendingu
             </button>
           )}
 

@@ -191,7 +191,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               }}
               className="text-purple-600 hover:text-purple-800 text-sm underline mb-4"
             >
-              Sýna vísbendingu (-10 stig)
+              Sýna vísbendingu
             </button>
           )}
 

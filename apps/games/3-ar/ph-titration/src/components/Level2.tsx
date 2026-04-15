@@ -370,7 +370,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   onClick={handleShowHint}
                   className="text-yellow-600 hover:text-yellow-800 text-sm flex items-center gap-2"
                 >
-                  💡 Sýna vísbendingu (-50 stig)
+                  💡 Sýna vísbendingu
                 </button>
               )}
             </Presence>
