@@ -116,9 +116,10 @@ function selectCompounds(): Compound[] {
 /** Naming rule explanation for a compound */
 function ruleFor(c: Compound): string {
   if (c.category === 'málmar-breytilega-hleðsla')
-    return 'Breytileg hleðsla: Málmur(rómversk tala) + málmleysingi-íð';
-  if (c.type === 'molecular') return 'Sameindaefni: Grísk forskeyti + frumefni-íð';
-  return 'Jónefni: Málmur + málmleysingi-íð';
+    return 'Breytileg hleðsla: Málmur(rómversk tala) + málmleysingi-íð. Rómverska talan segir hvaða hleðslu málmurinn hefur — þetta þarf þegar málmur getur haft fleiri en eina hleðslu (t.d. járn: +2 eða +3).';
+  if (c.type === 'molecular')
+    return 'Sameindaefni: Grísk forskeyti + frumefni-íð. Forskeytin segja hversu mörg atóm eru af hverri tegund (dí=2, trí=3, tetra=4...). Mono- er sleppt fyrir fyrra frumefnið.';
+  return 'Jónefni: Málmur + málmleysingi-íð. Málmurinn heldur nafni sínu, málmleysinginn fær endinguna -íð (t.d. klór → klóríð). Ef fjölatóma jón er til staðar (t.d. SO₄²⁻ = súlfat) heldur hún föstu nafni.';
 }
 
 export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {

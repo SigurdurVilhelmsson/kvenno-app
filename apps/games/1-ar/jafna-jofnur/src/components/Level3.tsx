@@ -35,11 +35,12 @@ function selectProblems(): Reaction[] {
  * - After balancing: FeedbackPanel
  */
 export function Level3({ onBack, onComplete }: Level3Props) {
-  const [problems] = useState<Reaction[]>(selectProblems);
+  const [problems, setProblems] = useState<Reaction[]>(selectProblems);
   const [index, setIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   const [done, setDone] = useState(false);
 
   const reaction = problems[index];
@@ -75,10 +76,19 @@ export function Level3({ onBack, onComplete }: Level3Props) {
     setProductCoeffs(nextReaction.products.map(() => 1));
     setAnswered(false);
     setIsCorrect(false);
+    setShowHint(false);
   };
 
   const handleRetry = () => {
-    window.location.reload();
+    const newProblems = selectProblems();
+    setProblems(newProblems);
+    setIndex(0);
+    setCorrectCount(0);
+    setAnswered(false);
+    setIsCorrect(false);
+    setDone(false);
+    setReactantCoeffs(newProblems[0].reactants.map(() => 1));
+    setProductCoeffs(newProblems[0].products.map(() => 1));
   };
 
   // --- Summary screen ---
@@ -177,6 +187,30 @@ export function Level3({ onBack, onComplete }: Level3Props) {
         <div className="mb-4">
           <AtomCounter elements={balanceResult.elements} />
         </div>
+
+        {/* Hint */}
+        {!answered && !showHint && (
+          <button
+            onClick={() => setShowHint(true)}
+            className="w-full mb-3 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold py-2 rounded-xl transition-colors text-sm"
+          >
+            Sýna vísbendingu
+          </button>
+        )}
+        {showHint && !answered && (
+          <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-3 mb-3 text-sm text-yellow-800">
+            <span className="font-bold">Vísbending:</span>{' '}
+            {(() => {
+              const unbalanced = balanceResult.elements.filter((e) => !e.balanced);
+              if (unbalanced.length === 0)
+                return 'Jafnan lítur út fyrir að vera jöfn — smelltu á Athuga!';
+              const el = unbalanced[0];
+              return `${el.element} er ójafnað: ${el.left} á vinstri, ${el.right} á hægri. ${
+                el.left < el.right ? 'Auktu stuðla á vinstri hlið.' : 'Auktu stuðla á hægri hlið.'
+              }`;
+            })()}
+          </div>
+        )}
 
         {/* Check button */}
         {!answered && (

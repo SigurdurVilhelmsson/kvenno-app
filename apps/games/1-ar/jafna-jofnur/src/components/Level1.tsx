@@ -35,7 +35,7 @@ function selectProblems(): Reaction[] {
  * - After balancing: FeedbackPanel with explanation
  */
 export function Level1({ onBack, onComplete }: Level1Props) {
-  const [problems] = useState<Reaction[]>(selectProblems);
+  const [problems, setProblems] = useState<Reaction[]>(selectProblems);
   const [index, setIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [answered, setAnswered] = useState(false);
@@ -81,9 +81,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
 
   const handleRetry = () => {
     const newProblems = selectProblems();
-    // We need to reload — simplest approach is to reset state
-    window.location.reload();
-    // fallback if reload is blocked
+    setProblems(newProblems);
     setIndex(0);
     setCorrectCount(0);
     setAnswered(false);

@@ -34,7 +34,7 @@ function selectProblems(): Reaction[] {
  * - After balancing: FeedbackPanel
  */
 export function Level2({ onBack, onComplete }: Level2Props) {
-  const [problems] = useState<Reaction[]>(selectProblems);
+  const [problems, setProblems] = useState<Reaction[]>(selectProblems);
   const [index, setIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [answered, setAnswered] = useState(false);
@@ -79,7 +79,16 @@ export function Level2({ onBack, onComplete }: Level2Props) {
   };
 
   const handleRetry = () => {
-    window.location.reload();
+    const newProblems = selectProblems();
+    setProblems(newProblems);
+    setIndex(0);
+    setCorrectCount(0);
+    setAnswered(false);
+    setIsCorrect(false);
+    setShowHint(false);
+    setDone(false);
+    setReactantCoeffs(newProblems[0].reactants.map(() => 1));
+    setProductCoeffs(newProblems[0].products.map(() => 1));
   };
 
   // --- Summary screen ---
