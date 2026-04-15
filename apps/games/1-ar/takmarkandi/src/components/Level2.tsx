@@ -169,11 +169,16 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         {/* Header */}
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
           <div className="flex justify-between items-center">
-            <button onClick={onBack} className="text-warm-500 hover:text-warm-700 font-semibold text-sm">
+            <button
+              onClick={onBack}
+              className="text-warm-500 hover:text-warm-700 font-semibold text-sm"
+            >
               ← Til baka
             </button>
             <h1 className="text-lg font-bold text-warm-800">Reikna afurðir – Stig 2</h1>
-            <span className="text-sm font-semibold text-warm-600">{index + 1}/{TOTAL}</span>
+            <span className="text-sm font-semibold text-warm-600">
+              {index + 1}/{TOTAL}
+            </span>
           </div>
           <div className="mt-3 h-2 bg-warm-200 rounded-full overflow-hidden">
             <div
@@ -196,22 +201,42 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="text-lg font-bold mb-2">{q.reaction.reactant1.formula}</div>
             <div className="flex flex-wrap justify-center gap-1 mb-2">
               {Array.from({ length: Math.min(q.r1Count, 8) }).map((_, i) => (
-                <Molecule key={i} formula={q.reaction.reactant1.formula} color={q.reaction.reactant1.color} size={28} />
+                <Molecule
+                  key={i}
+                  formula={q.reaction.reactant1.formula}
+                  color={q.reaction.reactant1.color}
+                  size={28}
+                />
               ))}
               {q.r1Count > 8 && <span className="text-warm-500 text-sm">+{q.r1Count - 8}</span>}
             </div>
-            <div className="text-sm text-warm-600">{q.r1Count} sameindur (stuðull: {q.reaction.reactant1.coeff})</div>
+            <div className="text-sm text-warm-600">
+              {q.r1Count} sameindur (stuðull: {q.reaction.reactant1.coeff})
+            </div>
           </div>
           <div className="bg-white rounded-xl shadow-md p-4 text-center">
             <div className="text-lg font-bold mb-2">{q.reaction.reactant2.formula}</div>
             <div className="flex flex-wrap justify-center gap-1 mb-2">
               {Array.from({ length: Math.min(q.r2Count, 8) }).map((_, i) => (
-                <Molecule key={i} formula={q.reaction.reactant2.formula} color={q.reaction.reactant2.color} size={28} />
+                <Molecule
+                  key={i}
+                  formula={q.reaction.reactant2.formula}
+                  color={q.reaction.reactant2.color}
+                  size={28}
+                />
               ))}
               {q.r2Count > 8 && <span className="text-warm-500 text-sm">+{q.r2Count - 8}</span>}
             </div>
-            <div className="text-sm text-warm-600">{q.r2Count} sameindur (stuðull: {q.reaction.reactant2.coeff})</div>
+            <div className="text-sm text-warm-600">
+              {q.r2Count} sameindur (stuðull: {q.reaction.reactant2.coeff})
+            </div>
           </div>
+        </div>
+
+        {/* Method card — always visible */}
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-4 text-sm text-blue-800">
+          <strong>Aðferð:</strong> Deildu fjölda hverrar tegundar með stuðli hennar. Lægri talan =
+          takmarkandi hvarfefni. Margfaldaðu þá tölu með stuðli afurðar.
         </div>
 
         {/* Question */}
@@ -265,13 +290,28 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
               <h3 className="font-bold text-blue-800 mb-2">Utreikningur:</h3>
               <div className="text-sm text-warm-700 space-y-1">
-                <div>{q.reaction.reactant1.formula}: {q.r1Count} ÷ {q.reaction.reactant1.coeff} = {answer.timesFromR1} skipti</div>
-                <div>{q.reaction.reactant2.formula}: {q.r2Count} ÷ {q.reaction.reactant2.coeff} = {answer.timesFromR2} skipti</div>
-                <div>Takmarkandi: <strong className="text-kvenno-orange">{answer.limitingReactant}</strong> (faerri skipti)</div>
-                <div>Hvorfin gerast: <strong>{answer.timesReactionRuns}</strong> sinnum</div>
                 <div>
-                  {q.reaction.products[0].formula} myndast: {answer.timesReactionRuns} × {q.reaction.products[0].coeff} ={' '}
-                  <strong className="text-green-700">{answer.productsFormed[q.reaction.products[0].formula]}</strong>
+                  {q.reaction.reactant1.formula}: {q.r1Count} ÷ {q.reaction.reactant1.coeff} ={' '}
+                  {answer.timesFromR1} skipti
+                </div>
+                <div>
+                  {q.reaction.reactant2.formula}: {q.r2Count} ÷ {q.reaction.reactant2.coeff} ={' '}
+                  {answer.timesFromR2} skipti
+                </div>
+                <div>
+                  Takmarkandi:{' '}
+                  <strong className="text-kvenno-orange">{answer.limitingReactant}</strong> (faerri
+                  skipti)
+                </div>
+                <div>
+                  Hvorfin gerast: <strong>{answer.timesReactionRuns}</strong> sinnum
+                </div>
+                <div>
+                  {q.reaction.products[0].formula} myndast: {answer.timesReactionRuns} ×{' '}
+                  {q.reaction.products[0].coeff} ={' '}
+                  <strong className="text-green-700">
+                    {answer.productsFormed[q.reaction.products[0].formula]}
+                  </strong>
                 </div>
               </div>
             </div>

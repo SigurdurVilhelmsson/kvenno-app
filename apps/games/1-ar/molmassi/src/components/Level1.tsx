@@ -53,6 +53,11 @@ function getTolerance(difficulty: Compound['difficulty']): number {
 const TOTAL = 10;
 
 export function Level1({ onBack, onComplete }: Level1Props) {
+  // Teaching phase state
+  const [phase, setPhase] = useState<'teach' | 'practice'>('teach');
+  const [teachStep, setTeachStep] = useState(0);
+
+  // Practice phase state
   const [problems, setProblems] = useState<Compound[]>(selectProblems);
   const [index, setIndex] = useState(0);
   const [input, setInput] = useState('');
@@ -100,14 +105,155 @@ export function Level1({ onBack, onComplete }: Level1Props) {
     setDone(false);
   };
 
-  // --- Summary screen ---
+  // ==================== TEACHING PHASE ====================
+  if (phase === 'teach') {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
+        <div className="max-w-lg mx-auto">
+          <div className="bg-white rounded-xl shadow-md p-4 mb-4">
+            <div className="flex justify-between items-center">
+              <button
+                onClick={onBack}
+                className="text-warm-500 hover:text-warm-700 font-semibold text-sm"
+              >
+                ← Til baka
+              </button>
+              <h1 className="text-lg font-bold text-warm-800">Mólmassi — Hvernig reikna?</h1>
+              <span className="text-sm text-warm-500">Kennsla</span>
+            </div>
+          </div>
+
+          {/* Step 0: What is molar mass? */}
+          {teachStep === 0 && (
+            <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 animate-slide-in">
+              <h2 className="text-xl font-bold text-warm-800">Hvað er mólmassi?</h2>
+              <p className="text-warm-700">
+                <strong>Mólmassi (M)</strong> er massi eins móls af efni, mældur í g/mol. Hann segir
+                okkur hversu þungt 6,022 × 10²³ eindir (atóm eða sameindir) eru.
+              </p>
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <p className="text-blue-800 font-mono text-center text-lg">
+                  M = Σ (fjöldi atóma × atómmassi)
+                </p>
+                <p className="text-sm text-blue-600 text-center mt-1">
+                  Leggðu saman massa allra atóma í formúlunni
+                </p>
+              </div>
+              <p className="text-warm-600 text-sm">
+                Til dæmis: Vatn (H₂O) hefur 2 vetnisatóm og 1 súrefnisatóm. Mólmassi vatns er massi
+                þessara atóma samanlagður.
+              </p>
+              <button
+                onClick={() => setTeachStep(1)}
+                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+              >
+                Sjáum dæmi →
+              </button>
+            </div>
+          )}
+
+          {/* Step 1: Walkthrough with H₂O */}
+          {teachStep === 1 && (
+            <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 animate-slide-in">
+              <h2 className="text-xl font-bold text-warm-800">Dæmi: H₂O (Vatn)</h2>
+              <p className="text-warm-700">Reiknum mólmassa vatns skref fyrir skref:</p>
+
+              <div className="bg-warm-50 p-4 rounded-lg space-y-3">
+                <div>
+                  <p className="font-semibold text-warm-800">Skref 1: Teldu atómin</p>
+                  <p className="text-warm-600 ml-4">
+                    H₂O hefur <strong>2 H</strong> og <strong>1 O</strong>
+                  </p>
+                </div>
+                <div>
+                  <p className="font-semibold text-warm-800">Skref 2: Flettu upp atómmassa</p>
+                  <p className="text-warm-600 ml-4">H ≈ 1,008 g/mol &bull; O ≈ 16,00 g/mol</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-warm-800">
+                    Skref 3: Margfaldaðu og leggðu saman
+                  </p>
+                  <div className="ml-4 font-mono text-warm-700 space-y-1">
+                    <p>H: 2 × 1,008 = 2,016 g/mol</p>
+                    <p>O: 1 × 16,00 = 16,00 g/mol</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-green-50 border-2 border-green-300 p-4 rounded-lg text-center">
+                <p className="text-sm text-green-700 font-semibold">Heild mólmassi:</p>
+                <p className="text-2xl font-bold text-green-800">
+                  2,016 + 16,00 = <span className="text-3xl">18,015 g/mol</span>
+                </p>
+              </div>
+
+              <button
+                onClick={() => setTeachStep(2)}
+                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+              >
+                Eitt dæmi til →
+              </button>
+            </div>
+          )}
+
+          {/* Step 2: Second example — CO₂ */}
+          {teachStep === 2 && (
+            <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 animate-slide-in">
+              <h2 className="text-xl font-bold text-warm-800">Dæmi: CO₂ (Koltvísýringur)</h2>
+              <p className="text-warm-700">
+                Nú geturðu reynt sjálf/ur. CO₂ hefur 1 kolefnisatóm og 2 súrefnisatóm.
+              </p>
+
+              <div className="bg-warm-50 p-4 rounded-lg space-y-3">
+                <div>
+                  <p className="font-semibold text-warm-800">Skref 1: Teldu atómin</p>
+                  <p className="text-warm-600 ml-4">
+                    <strong>1 C</strong> og <strong>2 O</strong>
+                  </p>
+                </div>
+                <div>
+                  <p className="font-semibold text-warm-800">Skref 2: Atómmassi</p>
+                  <p className="text-warm-600 ml-4">C ≈ 12,01 g/mol &bull; O ≈ 16,00 g/mol</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-warm-800">Skref 3: Reiknaðu</p>
+                  <div className="ml-4 font-mono text-warm-700 space-y-1">
+                    <p>C: 1 × 12,01 = 12,01 g/mol</p>
+                    <p>O: 2 × 16,00 = 32,00 g/mol</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-green-50 border-2 border-green-300 p-4 rounded-lg text-center">
+                <p className="text-sm text-green-700 font-semibold">Heild mólmassi:</p>
+                <p className="text-2xl font-bold text-green-800">
+                  12,01 + 32,00 = <span className="text-3xl">44,01 g/mol</span>
+                </p>
+              </div>
+
+              <div className="bg-blue-50 p-3 rounded-lg text-sm text-blue-800">
+                <strong>Aðferðin er alltaf sú sama:</strong> Telja → fletta upp → margfalda → leggja
+                saman.
+              </div>
+
+              <button
+                onClick={() => setPhase('practice')}
+                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+              >
+                Ég er tilbúin/n — byrja æfingar →
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // ==================== SUMMARY SCREEN ====================
   if (done) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4 flex items-center justify-center">
         <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center space-y-6">
-          <div className="text-5xl">
-            {correctCount >= 7 ? '🎉' : correctCount >= 4 ? '👍' : '📚'}
-          </div>
           <h2 className="text-2xl font-bold text-warm-800">Niðurstöður</h2>
           <p className="text-lg text-warm-700">
             Þú svaraðir <span className="font-bold text-kvenno-orange">{correctCount}</span> af{' '}
@@ -141,7 +287,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
     );
   }
 
-  // --- Main gameplay ---
+  // ==================== PRACTICE PHASE ====================
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
       <div className="max-w-lg mx-auto">
@@ -165,6 +311,11 @@ export function Level1({ onBack, onComplete }: Level1Props) {
               style={{ width: `${((index + 1) / TOTAL) * 100}%` }}
             />
           </div>
+        </div>
+
+        {/* Method reminder */}
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-4 text-sm text-blue-800">
+          <strong>Aðferð:</strong> Telja atóm → fletta upp atómmassa → margfalda → leggja saman
         </div>
 
         {/* Compound card */}

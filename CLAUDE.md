@@ -16,9 +16,9 @@ kvenno-app/
 │   ├── landing/          # Landing page (track selector) + chemistry year hubs (React SPA)
 │   ├── islenskubraut/    # Icelandic language teaching cards (React SPA, /islenskubraut/)
 │   ├── lab-reports/      # AI-powered lab report grading (React SPA)
-│   └── games/            # 17 chemistry games (single-file HTML builds)
-│       ├── 1-ar/         # 5 games for year 1
-│       ├── 2-ar/         # 7 games for year 2
+│   └── games/            # 20 chemistry games (single-file HTML builds)
+│       ├── 1-ar/         # 7 games for year 1
+│       ├── 2-ar/         # 8 games for year 2
 │       └── 3-ar/         # 5 games for year 3
 ├── packages/
 │   └── shared/           # Shared components, hooks, utils, types, i18n
@@ -67,6 +67,7 @@ pnpm test                 # Run tests
 **Brand color:** `#f36b22` (kvenno-orange)
 
 All apps use the shared Tailwind preset from `packages/shared/styles/tailwind-preset.ts`:
+
 - `kvenno-orange`: `#f36b22` (primary), `#d95a1a` (dark), `#ff8c4d` (light)
 - System font stack
 - Card border-radius: 12px, button border-radius: 8px
@@ -74,12 +75,13 @@ All apps use the shared Tailwind preset from `packages/shared/styles/tailwind-pr
 ## Shared Components
 
 `packages/shared/` provides site-wide components:
+
 - **Header** - Accepts `title` prop (default: "Námsvefur Kvennó"), plus "Kennarar" and "Upplýsingar" buttons. Accepts `authSlot` prop.
 - **Breadcrumbs** - "Heim > [Track] > [Section] > [Page]" navigation
 - **Footer** - Copyright notice. Accepts optional `department` prop (e.g., "Efnafræðideild").
 
-Game-specific shared components:
-- **AchievementsPanel** / **AchievementsButton** - Achievement system UI
+Game-specific shared components (gamification chrome stripped from all Y2/Y3 games, April 2026):
+
 - **HintSystem** - Tiered progressive hints
 - **FeedbackPanel** - Detailed answer feedback
 - **InteractiveGraph** - Canvas-based graph with cubic spline interpolation, gradient fills
@@ -87,15 +89,14 @@ Game-specific shared components:
 - **AnimatedMolecule** - Ball-and-stick molecular structure renderer
 - **DragDropBuilder** - Flexible drag-and-drop interface
 
-Graphics & animation components (integrated into all 17 games):
-- **ParticleCelebration** + `useParticleCelebration` - Canvas confetti/burst effects with 6 presets (burst, confetti, streak-3/5/10, level-complete) and year-theme color palettes
-- **AnimatedBackground** - Layered gradient blobs + floating chemistry SVG symbols, year-themed (1-ar=orange, 2-ar=teal, 3-ar=purple)
-- **AnimatedCounter** - Rolling number counter with easeOutExpo easing
-- **ScorePopup** - Floating "+N" indicators
-- **StreakCounter** - Escalating fire emoji streak badge
-- **SoundToggle** + `useGameSounds` - Web Audio API synthesized sounds (click, correct, wrong, level-complete, achievement, streak). Sounds default to OFF, persisted in localStorage.
+Graphics & animation components (legacy — stripped from Y2/Y3 games, still in some Y1 games):
+
+- **ParticleCelebration** + `useParticleCelebration` - Canvas confetti/burst effects
+- **AnimatedBackground** - Layered gradient blobs + floating chemistry SVG symbols
+- **SoundToggle** + `useGameSounds` - Web Audio API synthesized sounds
 
 Shared styles (`packages/shared/styles/`):
+
 - **theme.css** - Tailwind v4 `@theme` tokens: colors, typography, shadows, spring easing curves, glassmorphism tokens, 12 animation keyframes
 - **game-base.css** - Microinteraction utility classes: `game-btn`, `game-card`, `game-glass`, `game-correct`, `game-wrong`, `game-score-popup`, `game-streak-fire`, `game-stagger`
 
@@ -104,6 +105,7 @@ Shared styles (`packages/shared/styles/`):
 ## Track System
 
 Tracks are defined data-driven in `apps/landing/src/config/tracks.ts`. Each track has:
+
 - `id`, `path`, `title`, `description`, `icon`
 - `isExternal: true` for separate SPAs (e.g., íslenskubraut)
 
@@ -146,19 +148,49 @@ Express backend at `server/` (port 8000):
 - `GET /api/islenskubraut/pdf?flokkur={id}&stig={level}` — Generate teaching card PDF
 - `GET /health` — Health check
 
+## Game Design Philosophy (April 2026 restructure)
+
+Games follow a **teach-before-test** structure:
+
+1. **Explore** — Interactive discovery (no right/wrong)
+2. **Understand** — Guided explanation connecting observation to chemistry
+3. **Practice** — Scaffolded problem-solving with method support
+4. **Apply** — Independent problems with feedback
+
+**No scoring, timers, or streaks during learning phases.** Hint usage is never penalized.
+
+Gold standard games: Jafna Jöfnur (real-time atom counter), IMF Level 3 (real-world scenarios), Redox Level 3 (scaffolded half-reactions), Buffer Level 1 (visual ratio builder).
+
+### Game inventory
+
+**Year 1:** dimensional-analysis, lotukerfid, nafnakerfid, molmassi, jafna-jofnur, takmarkandi, lausnir
+**Year 2:** hess-law, kinetics, lewis-structures, vsepr-geometry, intermolecular-forces, organic-nomenclature, redox-reactions, rafeindabygging
+**Year 3:** ph-titration, gas-law-challenge, equilibrium-shifter, thermodynamics-predictor, buffer-recipe-creator
+
+### Curriculum chains
+
+```
+Y1: Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi → Jafna Jöfnur → Takmarkandi → Lausnir
+Y2: Rafeindabygging → Lewis → VSEPR → IMF → Hess → Kinetics → Redox → Organic
+Y3: Gaslögmál → Jafnvægi → Varmafræði → pH Títrun → Púfferar
+```
+
 ## Development Guidelines
 
 ### Adding a new game
+
 1. Create `apps/games/[year]/[game-name]/` following existing game pattern
 2. Add entry to `scripts/build-games.mjs` games array
 3. Add tool card to the year hub config in `apps/landing/src/pages/YearHub.tsx`
 
 ### Adding a new experiment to lab reports
+
 1. Create config in `apps/lab-reports/src/config/experiments/`
 2. Register in `apps/lab-reports/src/config/experiments/index.ts`
 3. See `apps/lab-reports/src/config/experiments/README.md`
 
 ### Adding a new track
+
 1. Add entry to `apps/landing/src/config/tracks.ts`
 2. Create app in `apps/[track-name]/`
 3. Add to `pnpm-workspace.yaml` and root `package.json` scripts
@@ -166,18 +198,22 @@ Express backend at `server/` (port 8000):
 5. Add SPA location to `server/nginx-site.conf`
 
 ### Updating shared components
+
 1. Edit in `packages/shared/`
 2. All apps pick up changes immediately (workspace dependency)
 3. Run `pnpm type-check` to verify no breakage
 
 ### Íslenskubraut data sync
+
 Category data exists in two places:
+
 - `apps/islenskubraut/src/data/` (TypeScript, client-side)
 - `server/lib/islenskubraut-data.mjs` (plain JS, server-side PDF generation)
 
 Keep both in sync when modifying categories.
 
 ### Deployment
+
 ```bash
 pnpm build                 # Build everything
 ./scripts/deploy.sh        # rsync to server + restart backend

@@ -104,6 +104,7 @@ function generateQuestions(): Question[] {
 const TOTAL = 8;
 
 export function Level3({ onBack, onComplete }: Level3Props) {
+  const [showIntro, setShowIntro] = useState(true);
   const [questions, setQuestions] = useState<Question[]>(generateQuestions);
   const [index, setIndex] = useState(0);
   const [input, setInput] = useState('');
@@ -189,6 +190,77 @@ export function Level3({ onBack, onComplete }: Level3Props) {
           <button onClick={onBack} className="text-warm-500 hover:text-warm-700 text-sm">
             Til baka í valmynd
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  // --- Teaching intro ---
+  if (showIntro) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white p-4">
+        <div className="max-w-lg mx-auto">
+          <div className="bg-white rounded-xl shadow-md p-4 mb-4">
+            <div className="flex justify-between items-center">
+              <button
+                onClick={onBack}
+                className="text-warm-500 hover:text-warm-700 font-semibold text-sm"
+              >
+                ← Til baka
+              </button>
+              <h1 className="text-lg font-bold text-warm-800">Bygging atómsins — Kennsla</h1>
+              <span className="text-sm text-warm-500">Yfirlit</span>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-lg p-6 space-y-5 animate-fade-in-up">
+            <h2 className="text-xl font-bold text-warm-800">Prótónur, nifteindir og rafeindir</h2>
+
+            <div className="bg-blue-50 p-4 rounded-lg space-y-2">
+              <p className="text-sm text-blue-800">
+                <strong>Prótónur (p⁺):</strong> Jákvætt hlaðnar agnir í kjarnanum. Fjöldi prótóna ={' '}
+                <strong>raðtala (Z)</strong>.
+              </p>
+              <p className="text-sm text-blue-800">
+                <strong>Rafeindir (e⁻):</strong> Neikvætt hlaðnar agnir utan kjarnans. Í hlutlausu
+                atómi: rafeindir = prótónur.
+              </p>
+              <p className="text-sm text-blue-800">
+                <strong>Nifteindir (n⁰):</strong> Hlutlausar agnir í kjarnanum. Fjöldi nifteinda ={' '}
+                <strong>massatala − raðtala</strong>.
+              </p>
+            </div>
+
+            <div className="bg-green-50 p-4 rounded-lg">
+              <h3 className="font-bold text-green-800 mb-2">Dæmi: Kolefni (C)</h3>
+              <div className="text-sm text-green-700 space-y-1 font-mono">
+                <p>
+                  Raðtala (Z) = 6 → <strong>6 prótónur</strong>
+                </p>
+                <p>
+                  Hlutlaust atóm → <strong>6 rafeindir</strong>
+                </p>
+                <p>
+                  Massatala ≈ 12 → Nifteindir = 12 − 6 = <strong>6 nifteindir</strong>
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-amber-50 p-4 rounded-lg">
+              <h3 className="font-bold text-amber-800 mb-2">Hvar finn ég upplýsingarnar?</h3>
+              <p className="text-sm text-amber-700">
+                Í lotukerfinu: raðtalan er neðst (t.d. 6 fyrir C) og frumeindamassinn er efst (t.d.
+                12,01 fyrir C). Námundaðu frumeindamann upp í heiltölu til að fá massatöluna.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowIntro(false)}
+              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+            >
+              Byrja æfingar →
+            </button>
+          </div>
         </div>
       </div>
     );

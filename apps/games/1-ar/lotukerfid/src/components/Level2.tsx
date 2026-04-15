@@ -191,6 +191,7 @@ function generateQuestions(): Question[] {
 const TOTAL = 8;
 
 export function Level2({ onBack, onComplete }: Level2Props) {
+  const [showIntro, setShowIntro] = useState(true);
   const [questions, setQuestions] = useState<Question[]>(generateQuestions);
   const [index, setIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
@@ -267,6 +268,79 @@ export function Level2({ onBack, onComplete }: Level2Props) {
           <button onClick={onBack} className="text-warm-500 hover:text-warm-700 text-sm">
             Til baka í valmynd
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  // --- Teaching intro ---
+  if (showIntro) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
+        <div className="max-w-lg mx-auto">
+          <div className="bg-white rounded-xl shadow-md p-4 mb-4">
+            <div className="flex justify-between items-center">
+              <button
+                onClick={onBack}
+                className="text-warm-500 hover:text-warm-700 font-semibold text-sm"
+              >
+                ← Til baka
+              </button>
+              <h1 className="text-lg font-bold text-warm-800">Flokkar og lóðir — Kennsla</h1>
+              <span className="text-sm text-warm-500">Yfirlit</span>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-lg p-6 space-y-5 animate-fade-in-up">
+            <h2 className="text-xl font-bold text-warm-800">Lotukerfið — mynstur og flokkar</h2>
+
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h3 className="font-bold text-blue-800 mb-2">Málmar, málmleysingjar og hálfmálmar</h3>
+              <p className="text-sm text-blue-700">
+                <strong>Málmar</strong> eru vinstra megin (flestir). <strong>Málmleysingjar</strong>{' '}
+                eru hægra megin.
+                <strong> Hálfmálmar</strong> (B, Si, Ge, As, Sb, Te) eru á mörkum þeirra — stiginn í
+                lotukerfinu.
+              </p>
+            </div>
+
+            <div className="bg-green-50 p-4 rounded-lg">
+              <h3 className="font-bold text-green-800 mb-2">Mikilvægustu flokkarnir</h3>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="bg-white p-2 rounded">
+                  <strong className="text-red-700">Flokkur 1:</strong> Alkalímálmar (Li, Na, K...) —
+                  1 gildisrafeind
+                </div>
+                <div className="bg-white p-2 rounded">
+                  <strong className="text-orange-700">Flokkur 2:</strong> Jarðalkalímálmar (Be, Mg,
+                  Ca...) — 2 gildisrafeindir
+                </div>
+                <div className="bg-white p-2 rounded">
+                  <strong className="text-purple-700">Flokkur 17:</strong> Halógen (F, Cl, Br...) —
+                  7 gildisrafeindir
+                </div>
+                <div className="bg-white p-2 rounded">
+                  <strong className="text-blue-700">Flokkur 18:</strong> Eðallofttegundir (He, Ne,
+                  Ar...) — full skel
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-warm-50 p-4 rounded-lg">
+              <h3 className="font-bold text-warm-800 mb-2">Frumeindamassi</h3>
+              <p className="text-sm text-warm-700">
+                Frumeindamassi eykst almennt eftir því sem raðtalan hækkar. Frumefni í sama flokki
+                (lóðrétt) hafa svipuð efnaeiginleika en aukinn massa.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowIntro(false)}
+              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+            >
+              Byrja æfingar →
+            </button>
+          </div>
         </div>
       </div>
     );
