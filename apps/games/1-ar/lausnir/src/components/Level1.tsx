@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { FeedbackPanel } from '@shared/components';
 import type { TieredHints } from '@shared/types';
 
-import { ParticleBeaker } from './ParticleBeaker';
+import { Beaker } from './Beaker';
 
 // Challenge types for categorizing feedback
 type ChallengeType = 'dilution' | 'mixing' | 'buildSolution' | 'concentrationMatch';
@@ -637,20 +637,23 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
             {/* Main interaction area */}
             <div className="grid md:grid-cols-2 gap-8 mb-6">
-              {/* Beaker visualization with animated particles */}
+              {/* Static labeled beaker */}
               <div className="flex flex-col items-center">
-                <ParticleBeaker
-                  molecules={molecules}
+                <Beaker
                   volume={volumeML}
                   maxVolume={challenge.constraints.maxVolume}
                   concentration={currentConcentration}
                   color={challenge.type === 'dilution' ? '#f97316' : '#3b82f6'}
-                  running={!showConcept}
+                  label={`${molecules} sameindir\n${volumeML} mL\n${currentConcentration.toFixed(2)} M`}
                 />
 
-                <div className="mt-8 text-center">
-                  <div className="text-sm text-warm-600">
-                    Sameindir: <span className="font-bold text-warm-800">{molecules}</span>
+                <div className="mt-4 bg-warm-50 rounded-lg p-3 text-center w-full">
+                  <div className="text-xs text-warm-500 mb-1">Styrkur = sameindir ÷ rúmmál</div>
+                  <div className="font-mono text-sm text-warm-700">
+                    {molecules} × 0.01 mol ÷ {(volumeML / 1000).toFixed(3)} L ={' '}
+                    <span className="font-bold text-blue-600">
+                      {currentConcentration.toFixed(2)} M
+                    </span>
                   </div>
                 </div>
               </div>
