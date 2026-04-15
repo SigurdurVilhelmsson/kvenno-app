@@ -1,7 +1,13 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 
 import { DragDropBuilder, FeedbackPanel } from '@shared/components';
-import type { DraggableItemData, DropZoneData, DropResult, ZoneState, DetailedFeedback } from '@shared/components';
+import type {
+  DraggableItemData,
+  DropZoneData,
+  DropResult,
+  ZoneState,
+  DetailedFeedback,
+} from '@shared/components';
 
 import { UnitBlock, ConversionFactorBlock } from './UnitBlock';
 import { UnitCancellationVisualizer } from './UnitCancellationVisualizer';
@@ -9,13 +15,20 @@ import { level2Problems } from '../data/problems';
 
 // Misconceptions for common errors
 const MISCONCEPTIONS: Record<string, string> = {
-  wrong_direction: 'Stuðullinn er rangur snúinn - einingin sem þú vilt losna við þarf að vera á gagnstæðri hlið (ef þú hefur g, settu g í nefnara).',
-  missing_step: 'Þú gætir þurft fleiri umbreytingarstuðla til að komast frá upphafseiningu til markeiningar.',
+  wrong_direction:
+    'Stuðullinn er rangur snúinn - einingin sem þú vilt losna við þarf að vera á gagnstæðri hlið (ef þú hefur g, settu g í nefnara).',
+  missing_step:
+    'Þú gætir þurft fleiri umbreytingarstuðla til að komast frá upphafseiningu til markeiningar.',
   extra_step: 'Þú gætir notað of marga stuðla. Reyndu að finna beina leið.',
 };
 
 // Related concepts
-const RELATED_CONCEPTS = ['Umbreytingarstuðlar', 'Strikun eininga', 'Víddargreining', 'Factor-label aðferð'];
+const RELATED_CONCEPTS = [
+  'Umbreytingarstuðlar',
+  'Strikun eininga',
+  'Víddargreining',
+  'Factor-label aðferð',
+];
 
 interface Level2Progress {
   problemsCompleted: number;
@@ -34,20 +47,28 @@ interface Level2Props {
 }
 
 // Generate distractor factors for a problem
-function generateDistractors(problem: typeof level2Problems[0]): string[] {
+function generateDistractors(problem: (typeof level2Problems)[0]): string[] {
   const distractors: string[] = [];
   const correctFactors = new Set(problem.correctPath);
 
   // Common conversion factors to use as distractors
   const commonFactors = [
-    '1000 g / 1 kg', '1 kg / 1000 g',
-    '1000 mL / 1 L', '1 L / 1000 mL',
-    '100 cm / 1 m', '1 m / 100 cm',
-    '1000 m / 1 km', '1 km / 1000 m',
-    '1000 mg / 1 g', '1 g / 1000 mg',
-    '60 s / 1 mín', '1 mín / 60 s',
-    '3600 s / 1 klst', '1 klst / 3600 s',
-    '1000 mm / 1 m', '1 m / 1000 mm',
+    '1000 g / 1 kg',
+    '1 kg / 1000 g',
+    '1000 mL / 1 L',
+    '1 L / 1000 mL',
+    '100 cm / 1 m',
+    '1 m / 100 cm',
+    '1000 m / 1 km',
+    '1 km / 1000 m',
+    '1000 mg / 1 g',
+    '1 g / 1000 mg',
+    '60 s / 1 mín',
+    '1 mín / 60 s',
+    '3600 s / 1 klst',
+    '1 klst / 3600 s',
+    '1000 mm / 1 m',
+    '1 m / 1000 mm',
   ];
 
   // Add inverted versions of correct factors as distractors
@@ -70,7 +91,13 @@ function generateDistractors(problem: typeof level2Problems[0]): string[] {
   return distractors.slice(0, 3);
 }
 
-export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, onIncorrectAnswer }: Level2Props) {
+export function Level2({
+  onComplete,
+  onBack,
+  initialProgress,
+  onCorrectAnswer,
+  onIncorrectAnswer,
+}: Level2Props) {
   const [currentProblemIndex, setCurrentProblemIndex] = useState(
     initialProgress?.problemsCompleted || 0
   );
@@ -80,7 +107,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
       predictionsMade: 0,
       predictionsCorrect: 0,
       finalAnswersCorrect: 0,
-      mastered: false
+      mastered: false,
     }
   );
 
@@ -90,7 +117,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
   const [showPredictionPrompt, setShowPredictionPrompt] = useState(false);
   const [predictionPhase, setPredictionPhase] = useState<'unit' | 'rationale'>('unit');
   const [selectedRationale, setSelectedRationale] = useState<string | null>(null);
-  const [pendingFactor, setPendingFactor] = useState('');
+  const [pendingFactor] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
@@ -154,10 +181,8 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
   }, [currentProblemIndex, problem]);
 
   const handleFactorSelect = (factor: string) => {
-    setPendingFactor(factor);
-    setPredictionPhase('unit');
-    setSelectedRationale(null);
-    setShowPredictionPrompt(true);
+    // Add factor directly — no prediction prompt
+    setSelectedFactors((prev) => [...prev, factor]);
   };
 
   // Handle drag-drop events
@@ -165,11 +190,11 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
     const { itemId, zoneId, index } = result;
 
     // Update zone state manually
-    setZoneState(prev => {
+    setZoneState((prev) => {
       const newState = { ...prev };
       // Remove item from pool/other zones
       for (const key of Object.keys(newState)) {
-        newState[key] = newState[key].filter(id => id !== itemId);
+        newState[key] = newState[key].filter((id) => id !== itemId);
       }
       // Add item to target zone at the specified index
       if (!newState[zoneId]) {
@@ -180,19 +205,16 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
     });
 
     // Get the factor from the dropped item
-    const item = draggableItems.find(i => i.id === itemId);
+    const item = draggableItems.find((i) => i.id === itemId);
     if (item && zoneId === 'conversion-chain' && item.data?.factor) {
-      // Trigger prediction prompt for the dropped factor
-      setPendingFactor(item.data.factor as string);
-      setPredictionPhase('unit');
-      setSelectedRationale(null);
-      setShowPredictionPrompt(true);
+      // Add factor directly — no prediction prompt
+      setSelectedFactors((prev) => [...prev, item.data!.factor as string]);
     }
   };
 
   // Handle reordering within a zone
   const handleReorder = (zoneId: string, newOrder: string[]) => {
-    setZoneState(prev => ({
+    setZoneState((prev) => ({
       ...prev,
       [zoneId]: newOrder,
     }));
@@ -201,16 +223,18 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
   // Sync selectedFactors with zone state
   useEffect(() => {
     const chainItems = zoneState['conversion-chain'] || [];
-    const factors = chainItems.map(itemId => {
-      const item = draggableItems.find(i => i.id === itemId);
-      return item?.data?.factor as string;
-    }).filter(Boolean);
+    const factors = chainItems
+      .map((itemId) => {
+        const item = draggableItems.find((i) => i.id === itemId);
+        return item?.data?.factor as string;
+      })
+      .filter(Boolean);
     setSelectedFactors(factors);
   }, [zoneState, draggableItems]);
 
   // Trigger cancellation animation when factors change
   const triggerCancellationAnimation = useCallback(() => {
-    setAnimationKey(prev => prev + 1);
+    setAnimationKey((prev) => prev + 1);
     setShowCancellationAnimation(true);
     // Reset animation flag after animation completes
     const timer = setTimeout(() => {
@@ -232,11 +256,11 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
     const pathCorrect = problem.correctPath.every((step, idx) => selectedFactors[idx] === step);
     const userNum = parseFloat(userAnswer);
     let expectedAnswer = problem.startValue;
-    problem.correctPath.forEach(factor => {
+    problem.correctPath.forEach((factor) => {
       const [num, den] = factor.split(' / ');
       const numVal = parseFloat(num.split(' ')[0]);
       const denVal = parseFloat(den.split(' ')[0]);
-      expectedAnswer = expectedAnswer * numVal / denVal;
+      expectedAnswer = (expectedAnswer * numVal) / denVal;
     });
     const answerCorrect = Math.abs(userNum - expectedAnswer) < 0.01;
 
@@ -274,9 +298,10 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
     const denUnit = denPart.split(' ').slice(1).join(' ');
 
     // Current unit before applying this factor (used for context)
-    const _currentUnit = selectedFactors.length > 0
-      ? selectedFactors[selectedFactors.length - 1].split(' / ')[0].split(' ').slice(1).join(' ')
-      : problem.startUnit;
+    const _currentUnit =
+      selectedFactors.length > 0
+        ? selectedFactors[selectedFactors.length - 1].split(' / ')[0].split(' ').slice(1).join(' ')
+        : problem.startUnit;
     void _currentUnit; // Mark as intentionally unused for now
 
     // Correct answer: the denominator unit cancels with current unit
@@ -286,15 +311,17 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
     const distractors = [
       `${numUnit} styttist út og ${denUnit} verður eftir`,
       `Báðar einingar styttast út`,
-      `Engar einingar styttast út`
+      `Engar einingar styttast út`,
     ];
 
     // Shuffle correct answer with distractors
     const options = [correctRationale, ...distractors.slice(0, 2)];
-    return options.sort(() => Math.random() - 0.5).map(text => ({
-      text,
-      isCorrect: text === correctRationale
-    }));
+    return options
+      .sort(() => Math.random() - 0.5)
+      .map((text) => ({
+        text,
+        isCorrect: text === correctRationale,
+      }));
   };
 
   const handleUnitPredictionSubmit = () => {
@@ -304,37 +331,51 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
 
   const handleRationaleSubmit = () => {
     // Track prediction
-    const numeratorUnits = [problem.startUnit, ...selectedFactors.map(f => f.split(' / ')[0].split(' ')[1])];
-    const denominatorUnits = selectedFactors.map(f => f.split(' / ')[1].split(' ')[1]);
+    const numeratorUnits = [
+      problem.startUnit,
+      ...selectedFactors.map((f) => f.split(' / ')[0].split(' ')[1]),
+    ];
+    const denominatorUnits = selectedFactors.map((f) => f.split(' / ')[1].split(' ')[1]);
 
     // Simple unit tracking - check if prediction makes sense
     const newNumeratorUnits = [...numeratorUnits, pendingFactor.split(' / ')[0].split(' ')[1]];
     const newDenominatorUnits = [...denominatorUnits, pendingFactor.split(' / ')[1].split(' ')[1]];
 
     // Remove cancelled units
-    const cancelledUnits = newNumeratorUnits.filter(u => newDenominatorUnits.includes(u));
-    const finalNumerator = newNumeratorUnits.filter(u => !cancelledUnits.includes(u) || newNumeratorUnits.filter(x => x === u).length > newDenominatorUnits.filter(x => x === u).length);
-    const finalDenominator = newDenominatorUnits.filter(u => !cancelledUnits.includes(u) || newDenominatorUnits.filter(x => x === u).length > newNumeratorUnits.filter(x => x === u).length);
+    const cancelledUnits = newNumeratorUnits.filter((u) => newDenominatorUnits.includes(u));
+    const finalNumerator = newNumeratorUnits.filter(
+      (u) =>
+        !cancelledUnits.includes(u) ||
+        newNumeratorUnits.filter((x) => x === u).length >
+          newDenominatorUnits.filter((x) => x === u).length
+    );
+    const finalDenominator = newDenominatorUnits.filter(
+      (u) =>
+        !cancelledUnits.includes(u) ||
+        newDenominatorUnits.filter((x) => x === u).length >
+          newNumeratorUnits.filter((x) => x === u).length
+    );
 
-    const actualUnit = finalDenominator.length > 0
-      ? `${finalNumerator[finalNumerator.length - 1]}/${finalDenominator[finalDenominator.length - 1]}`
-      : finalNumerator[finalNumerator.length - 1];
+    const actualUnit =
+      finalDenominator.length > 0
+        ? `${finalNumerator[finalNumerator.length - 1]}/${finalDenominator[finalDenominator.length - 1]}`
+        : finalNumerator[finalNumerator.length - 1];
 
     const predictionCorrect = predictedUnit.trim() === actualUnit;
 
     // Check if rationale is correct
     const rationaleOptions = getRationaleOptions();
-    const selectedOption = rationaleOptions.find(opt => opt.text === selectedRationale);
+    const selectedOption = rationaleOptions.find((opt) => opt.text === selectedRationale);
     const rationaleCorrect = selectedOption?.isCorrect || false;
 
     if (rationaleCorrect) {
-      setRationaleCorrectCount(prev => prev + 1);
+      setRationaleCorrectCount((prev) => prev + 1);
     }
 
     const newProgress = {
       ...progress,
       predictionsMade: progress.predictionsMade + 1,
-      predictionsCorrect: progress.predictionsCorrect + (predictionCorrect ? 1 : 0)
+      predictionsCorrect: progress.predictionsCorrect + (predictionCorrect ? 1 : 0),
     };
     setProgress(newProgress);
 
@@ -353,11 +394,11 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
     // Check final answer
     const userNum = parseFloat(userAnswer);
     let expectedAnswer = problem.startValue;
-    problem.correctPath.forEach(factor => {
+    problem.correctPath.forEach((factor) => {
       const [num, den] = factor.split(' / ');
       const numVal = parseFloat(num.split(' ')[0]);
       const denVal = parseFloat(den.split(' ')[0]);
-      expectedAnswer = expectedAnswer * numVal / denVal;
+      expectedAnswer = (expectedAnswer * numVal) / denVal;
     });
 
     const answerCorrect = Math.abs(userNum - expectedAnswer) < 0.01;
@@ -375,7 +416,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
 
     const newProgress = {
       ...progress,
-      finalAnswersCorrect: progress.finalAnswersCorrect + (finalCorrect ? 1 : 0)
+      finalAnswersCorrect: progress.finalAnswersCorrect + (finalCorrect ? 1 : 0),
     };
     setProgress(newProgress);
   };
@@ -383,13 +424,19 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
   const handleContinue = () => {
     const newProgress = {
       ...progress,
-      problemsCompleted: progress.problemsCompleted + 1
+      problemsCompleted: progress.problemsCompleted + 1,
     };
 
     // Check mastery after 15 problems
     if (newProgress.problemsCompleted >= 15) {
-      const predictionAccuracy = newProgress.predictionsMade > 0 ? newProgress.predictionsCorrect / newProgress.predictionsMade : 0;
-      const answerAccuracy = newProgress.problemsCompleted > 0 ? newProgress.finalAnswersCorrect / newProgress.problemsCompleted : 0;
+      const predictionAccuracy =
+        newProgress.predictionsMade > 0
+          ? newProgress.predictionsCorrect / newProgress.predictionsMade
+          : 0;
+      const answerAccuracy =
+        newProgress.problemsCompleted > 0
+          ? newProgress.finalAnswersCorrect / newProgress.problemsCompleted
+          : 0;
       newProgress.mastered = predictionAccuracy >= 0.7 && answerAccuracy >= 0.8;
     }
 
@@ -405,13 +452,17 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
 
   if (!problem) return null;
 
-  const predictionAccuracy = progress.predictionsMade > 0
-    ? Math.round((progress.predictionsCorrect / progress.predictionsMade) * 100)
-    : 0;
+  const predictionAccuracy =
+    progress.predictionsMade > 0
+      ? Math.round((progress.predictionsCorrect / progress.predictionsMade) * 100)
+      : 0;
 
   // Calculate current units for visualization
-  const numeratorUnits = [problem.startUnit, ...selectedFactors.map(f => f.split(' / ')[0].split(' ')[1])];
-  const denominatorUnits = selectedFactors.map(f => f.split(' / ')[1].split(' ')[1]);
+  const numeratorUnits = [
+    problem.startUnit,
+    ...selectedFactors.map((f) => f.split(' / ')[0].split(' ')[1]),
+  ];
+  const denominatorUnits = selectedFactors.map((f) => f.split(' / ')[1].split(' ')[1]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
@@ -439,7 +490,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
         <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-blue-500 h-2 rounded-full transition-all duration-500"
-            style={{ width: `${((progress.problemsCompleted) / 15) * 100}%` }}
+            style={{ width: `${(progress.problemsCompleted / 15) * 100}%` }}
           />
         </div>
 
@@ -524,7 +575,7 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                     onClick={() => {
                       setShowHint(true);
                       setHintUsed(true);
-                      setTotalHintsUsed(prev => prev + 1);
+                      setTotalHintsUsed((prev) => prev + 1);
                     }}
                     className="text-sm px-4 py-2 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-700 font-medium transition-colors"
                   >
@@ -546,7 +597,9 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
               {/* Drag-and-drop factor selection */}
               {useDragDrop ? (
                 <div className="mb-6">
-                  <p className="text-sm font-semibold mb-3">Dragðu umbreytingarstuðla til að byggja keðju:</p>
+                  <p className="text-sm font-semibold mb-3">
+                    Dragðu umbreytingarstuðla til að byggja keðju:
+                  </p>
                   <DragDropBuilder
                     items={draggableItems}
                     zones={dropZones}
@@ -561,35 +614,39 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                 <div className="mb-6">
                   <p className="text-sm font-semibold mb-3">Veldu umbreytingarstuðul:</p>
                   <div className="flex flex-wrap justify-center gap-4">
-                    {availableFactors.slice(0, Math.min(6, problem.correctPath.length + 3)).map((factor, idx) => {
-                      // Parse factor string like "1 L / 1000 mL"
-                      const [numPart, denPart] = factor.split(' / ');
-                      const numValue = parseFloat(numPart.split(' ')[0]);
-                      const numUnit = numPart.split(' ').slice(1).join(' ');
-                      const denValue = parseFloat(denPart.split(' ')[0]);
-                      const denUnit = denPart.split(' ').slice(1).join(' ');
-                      const isUsed = selectedFactors.includes(factor);
+                    {availableFactors
+                      .slice(0, Math.min(6, problem.correctPath.length + 3))
+                      .map((factor, idx) => {
+                        // Parse factor string like "1 L / 1000 mL"
+                        const [numPart, denPart] = factor.split(' / ');
+                        const numValue = parseFloat(numPart.split(' ')[0]);
+                        const numUnit = numPart.split(' ').slice(1).join(' ');
+                        const denValue = parseFloat(denPart.split(' ')[0]);
+                        const denUnit = denPart.split(' ').slice(1).join(' ');
+                        const isUsed = selectedFactors.includes(factor);
 
-                      return (
-                        <ConversionFactorBlock
-                          key={idx}
-                          numeratorValue={numValue}
-                          numeratorUnit={numUnit}
-                          denominatorValue={denValue}
-                          denominatorUnit={denUnit}
-                          onClick={isUsed ? undefined : () => handleFactorSelect(factor)}
-                          size="medium"
-                          isSelected={isUsed}
-                        />
-                      );
-                    })}
+                        return (
+                          <ConversionFactorBlock
+                            key={idx}
+                            numeratorValue={numValue}
+                            numeratorUnit={numUnit}
+                            denominatorValue={denValue}
+                            denominatorUnit={denUnit}
+                            onClick={isUsed ? undefined : () => handleFactorSelect(factor)}
+                            size="medium"
+                            isSelected={isUsed}
+                          />
+                        );
+                      })}
                   </div>
                 </div>
               )}
 
               {/* Answer input */}
               <div className="mb-6 p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl border-2 border-orange-200">
-                <label className="block font-semibold mb-3 text-warm-800">Hvað er lokagildið?</label>
+                <label className="block font-semibold mb-3 text-warm-800">
+                  Hvað er lokagildið?
+                </label>
                 <div className="flex items-center gap-3">
                   <input
                     type="text"
@@ -656,7 +713,9 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
               <div className="flex items-center justify-center gap-4">
                 <div className="text-center">
                   <p className="text-xs text-warm-600">Spánákvæmni</p>
-                  <p className={`text-2xl font-bold ${predictionAccuracy >= 70 ? 'text-green-600' : 'text-yellow-600'}`}>
+                  <p
+                    className={`text-2xl font-bold ${predictionAccuracy >= 70 ? 'text-green-600' : 'text-yellow-600'}`}
+                  >
                     {predictionAccuracy}%
                   </p>
                 </div>
@@ -670,21 +729,27 @@ export function Level2({ onComplete, onBack, initialProgress, onCorrectAnswer, o
                     : 'bg-blue-600 hover:bg-blue-700 text-white'
                 }`}
               >
-                {currentProblemIndex < level2Problems.length - 1 ? 'Næsta verkefni →' : 'Ljúka stigi'}
+                {currentProblemIndex < level2Problems.length - 1
+                  ? 'Næsta verkefni →'
+                  : 'Ljúka stigi'}
               </button>
             </div>
           )}
         </div>
       </div>
 
-      {/* Prediction modal */}
+      {/* Prediction modal — disabled (showPredictionPrompt is never set to true) */}
       {showPredictionPrompt && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full animate-slide-up">
             {/* Phase indicator */}
             <div className="flex justify-center gap-2 mb-4">
-              <div className={`w-3 h-3 rounded-full ${predictionPhase === 'unit' ? 'bg-blue-500' : 'bg-green-500'}`} />
-              <div className={`w-3 h-3 rounded-full ${predictionPhase === 'rationale' ? 'bg-blue-500' : 'bg-warm-300'}`} />
+              <div
+                className={`w-3 h-3 rounded-full ${predictionPhase === 'unit' ? 'bg-blue-500' : 'bg-green-500'}`}
+              />
+              <div
+                className={`w-3 h-3 rounded-full ${predictionPhase === 'rationale' ? 'bg-blue-500' : 'bg-warm-300'}`}
+              />
             </div>
 
             <div className="text-center mb-6">
