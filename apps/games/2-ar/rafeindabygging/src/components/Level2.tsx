@@ -13,6 +13,7 @@ interface Level2Props {
 
 export function Level2({ onComplete, onBack }: Level2Props) {
   const { language, setLanguage } = useGameI18n({ gameTranslations });
+  const [showIntro, setShowIntro] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userInput, setUserInput] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -82,6 +83,80 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       </div>
     );
   };
+
+  // --- Teaching intro ---
+  if (showIntro) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">
+        <Header
+          variant="game"
+          backHref="/efnafraedi/2-ar/"
+          gameTitle="Rafeindasmíð — Kennsla"
+          authSlot={
+            <LanguageSwitcher
+              language={language}
+              onLanguageChange={setLanguage}
+              variant="compact"
+            />
+          }
+        />
+        <div className="max-w-lg mx-auto p-4 md:p-8">
+          <button onClick={onBack} className="text-warm-600 hover:text-warm-800 mb-4">
+            ← Til baka
+          </button>
+          <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4 animate-slide-in">
+            <h2 className="text-xl font-bold text-warm-800">Hvernig fylla á í svigrúm?</h2>
+            <p className="text-warm-700">
+              Rafeindir fylla svigrúm í ákveðinni röð — frá lægstu orku til hæstu. Þetta kallast{' '}
+              <strong>Aufbau-reglan</strong>.
+            </p>
+
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h3 className="font-bold text-blue-800 mb-2">Aufbau-röðin</h3>
+              <p className="font-mono text-sm text-blue-700 text-center">
+                1s → 2s → 2p → 3s → 3p → 4s → 3d → 4p → 5s → ...
+              </p>
+              <p className="text-xs text-blue-600 mt-2 text-center">
+                Athugið: 4s fyllist FYRIR 3d (lægri orka)
+              </p>
+            </div>
+
+            <div className="bg-green-50 p-4 rounded-lg">
+              <h3 className="font-bold text-green-800 mb-2">Dæmi: Súrefni (O, Z=8)</h3>
+              <div className="text-sm text-green-700 font-mono space-y-1">
+                <p>1s² → 2 rafeindir (2 eftir af 8)</p>
+                <p>2s² → 2 rafeindir (4 eftir af 8)</p>
+                <p>2p⁴ → 4 rafeindir (8 eftir af 8) ✓</p>
+              </div>
+              <p className="text-sm text-green-700 mt-2">
+                Uppsetning: <strong>1s² 2s² 2p⁴</strong>
+              </p>
+            </div>
+
+            <div className="bg-amber-50 p-4 rounded-lg">
+              <h3 className="font-bold text-amber-800 mb-2">Regla Hunds</h3>
+              <p className="text-sm text-amber-700">
+                Rafeindir dreifastar fyrst einar (↑) í öll svigrúm undirskels áður en þær byrja að
+                parast (↑↓). Þetta lágmarkar fráhrun.
+              </p>
+            </div>
+
+            <div className="bg-warm-50 p-3 rounded-lg text-sm text-warm-700">
+              <strong>Skrifaðu svona:</strong> 1s2 eða 1s² — bæði virka. Biltu milli undirskela: 1s2
+              2s2 2p4
+            </div>
+
+            <button
+              onClick={() => setShowIntro(false)}
+              className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 rounded-xl transition-colors"
+            >
+              Byrja æfingar →
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">

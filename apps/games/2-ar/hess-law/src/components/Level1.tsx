@@ -29,13 +29,7 @@ const RELATED_CONCEPTS: Record<number, string[]> = {
 };
 
 // Energy diagram component
-function EnergyDiagram({
-  equation,
-  showPath = true
-}: {
-  equation: Equation;
-  showPath?: boolean;
-}) {
+function EnergyDiagram({ equation, showPath = true }: { equation: Equation; showPath?: boolean }) {
   const effectiveDeltaH = equation.deltaH * equation.multiplier * (equation.isReversed ? -1 : 1);
   const isExothermic = effectiveDeltaH < 0;
 
@@ -52,8 +46,8 @@ function EnergyDiagram({
   // Calculate positions (0-100 scale, lower value = higher on screen = higher energy)
   // For exothermic: reactants high (small top%), products low (large top%)
   // For endothermic: reactants low (large top%), products high (small top%)
-  const reactantLevel = isExothermic ? (50 - clampedGap) : (50 + clampedGap);
-  const productLevel = isExothermic ? (50 + clampedGap) : (50 - clampedGap);
+  const reactantLevel = isExothermic ? 50 - clampedGap : 50 + clampedGap;
+  const productLevel = isExothermic ? 50 + clampedGap : 50 - clampedGap;
 
   return (
     <div className="relative bg-gradient-to-b from-red-50 via-white to-blue-50 rounded-xl p-6 h-64 border-2 border-warm-200">
@@ -86,10 +80,11 @@ function EnergyDiagram({
 
         {/* Arrow showing energy change */}
         {showPath && (
-          <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center"
+          <div
+            className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center"
             style={{
               top: `${Math.min(reactantLevel, productLevel) + 5}%`,
-              height: `${Math.abs(productLevel - reactantLevel) - 10}%`
+              height: `${Math.abs(productLevel - reactantLevel) - 10}%`,
             }}
           >
             <div className={`w-1 flex-1 ${isExothermic ? 'bg-red-400' : 'bg-blue-400'}`} />
@@ -101,8 +96,11 @@ function EnergyDiagram({
 
         {/* ΔH label */}
         <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-white px-3 py-1 rounded-lg border-2 border-warm-300 shadow-sm">
-          <span className={`font-bold text-lg ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}>
-            ΔH = {effectiveDeltaH > 0 ? '+' : ''}{effectiveDeltaH} kJ
+          <span
+            className={`font-bold text-lg ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}
+          >
+            ΔH = {effectiveDeltaH > 0 ? '+' : ''}
+            {effectiveDeltaH} kJ
           </span>
         </div>
       </div>
@@ -115,7 +113,7 @@ function EquationDisplay({
   equation,
   onReverse,
   onMultiply,
-  showControls = true
+  showControls = true,
 }: {
   equation: Equation;
   onReverse?: () => void;
@@ -135,11 +133,15 @@ function EquationDisplay({
   );
 
   return (
-    <div className={`p-4 rounded-xl border-2 transition-all ${
-      equation.isReversed ? 'bg-red-50 border-red-300' :
-      equation.multiplier !== 1 ? 'bg-blue-50 border-blue-300' :
-      'bg-white border-warm-300'
-    }`}>
+    <div
+      className={`p-4 rounded-xl border-2 transition-all ${
+        equation.isReversed
+          ? 'bg-red-50 border-red-300'
+          : equation.multiplier !== 1
+            ? 'bg-blue-50 border-blue-300'
+            : 'bg-white border-warm-300'
+      }`}
+    >
       {/* Equation */}
       <div className="text-center mb-3">
         <span className="font-mono text-lg">
@@ -151,8 +153,11 @@ function EquationDisplay({
 
       {/* ΔH value */}
       <div className="text-center mb-4">
-        <span className={`font-bold text-xl ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}>
-          ΔH = {effectiveDeltaH > 0 ? '+' : ''}{effectiveDeltaH} kJ/mol
+        <span
+          className={`font-bold text-xl ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}
+        >
+          ΔH = {effectiveDeltaH > 0 ? '+' : ''}
+          {effectiveDeltaH} kJ/mol
         </span>
       </div>
 
@@ -172,7 +177,7 @@ function EquationDisplay({
 
           <div className="flex items-center gap-2">
             <span className="text-sm text-warm-600">×</span>
-            {[1, 2, 3].map(n => (
+            {[1, 2, 3].map((n) => (
               <button
                 key={n}
                 onClick={() => onMultiply?.(n)}
@@ -200,6 +205,7 @@ interface Level1Props {
 }
 
 export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
+  const [showIntro, setShowIntro] = useState(true);
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [equation, setEquation] = useState<Equation>(CHALLENGES[0].equation);
   const [totalHintsUsed, setTotalHintsUsed] = useState(0);
@@ -227,11 +233,11 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   // Handle equation modifications
   const handleReverse = () => {
-    setEquation(prev => ({ ...prev, isReversed: !prev.isReversed }));
+    setEquation((prev) => ({ ...prev, isReversed: !prev.isReversed }));
   };
 
   const handleMultiply = (factor: number) => {
-    setEquation(prev => ({ ...prev, multiplier: factor }));
+    setEquation((prev) => ({ ...prev, multiplier: factor }));
   };
 
   // Check answer
@@ -245,8 +251,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       onCorrectAnswer?.();
       if (!completed.includes(challenge.id)) {
         const points = showHint ? 50 : 100;
-        setScore(prev => prev + points);
-        setCompleted(prev => [...prev, challenge.id]);
+        setScore((prev) => prev + points);
+        setCompleted((prev) => [...prev, challenge.id]);
       }
     } else {
       onIncorrectAnswer?.();
@@ -256,7 +262,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   // Next challenge
   const nextChallenge = () => {
     if (currentChallenge < CHALLENGES.length - 1) {
-      setCurrentChallenge(prev => prev + 1);
+      setCurrentChallenge((prev) => prev + 1);
       // useEffect will reset the equation when currentChallenge changes
     } else {
       // Max score is 100 per challenge × 6 challenges = 600
@@ -267,11 +273,68 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   // Handle hint usage
   const handleShowHint = () => {
     setShowHint(true);
-    setTotalHintsUsed(prev => prev + 1);
+    setTotalHintsUsed((prev) => prev + 1);
   };
 
   // Show interactive controls for challenges 2-4
   const showEquationControls = challenge.id >= 2 && challenge.id <= 4;
+
+  // --- Teaching intro ---
+  if (showIntro) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
+        <div className="max-w-lg mx-auto">
+          <button onClick={onBack} className="text-warm-600 hover:text-warm-800 mb-4">
+            ← Til baka
+          </button>
+          <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4 animate-slide-in">
+            <h2 className="text-xl font-bold text-warm-800">Lögmál Hess — Af hverju?</h2>
+
+            <p className="text-warm-700">
+              <strong>Skammtavarmi (ΔH)</strong> er <em>ástandsfall</em> — það þýðir að heildar
+              orkubreyting fer eftir upphafs- og lokaástandi,{' '}
+              <strong>ekki hvaða leið er farin</strong>.
+            </p>
+
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h3 className="font-bold text-blue-800 mb-2">Hvað þýðir þetta?</h3>
+              <p className="text-sm text-blue-700">
+                Ef þú ferð frá A til B, skiptir ekki máli hvort þú ferð beina leið eða í gegnum C og
+                D. Heildar ΔH er sú sama. Við getum því <em>sameinað</em> jöfnur til að finna ΔH sem
+                erfitt er að mæla beint.
+              </p>
+            </div>
+
+            <div className="bg-green-50 p-4 rounded-lg">
+              <h3 className="font-bold text-green-800 mb-2">Tvær reglur</h3>
+              <div className="text-sm text-green-700 space-y-2">
+                <p>
+                  <strong>1. Snúa við hvörfum:</strong> Ef þú snýrð við jöfnunni, breytir formerkið
+                  á ΔH. (t.d. −286 → +286)
+                </p>
+                <p>
+                  <strong>2. Margfalda jöfnu:</strong> Ef þú margfaldar jöfnu með 2, margfaldast ΔH
+                  líka. (t.d. −286 → −572)
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-warm-50 p-3 rounded-lg text-sm text-warm-700">
+              Í þessum stigi muntu sjá hvernig þessar reglur virka gagnvirkt — prófaðu að snúa við
+              og margfalda jöfnur og sjáðu hvað gerist.
+            </div>
+
+            <button
+              onClick={() => setShowIntro(false)}
+              className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 rounded-xl transition-colors"
+            >
+              Byrja →
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
@@ -280,17 +343,12 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         <div className="bg-white rounded-2xl shadow-lg p-4 mb-6">
           <div className="flex justify-between items-center flex-wrap gap-4">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-blue-600">
-                Lögmál Hess - Stig 1
-              </h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-blue-600">Lögmál Hess - Stig 1</h1>
               <p className="text-sm text-warm-600">Skildu hugtökin - byggðu innsæi</p>
             </div>
 
             <div className="flex gap-4 items-center">
-              <button
-                onClick={onBack}
-                className="text-warm-600 hover:text-warm-800 text-sm"
-              >
+              <button onClick={onBack} className="text-warm-600 hover:text-warm-800 text-sm">
                 ← Til baka
               </button>
               <div className="text-center">
@@ -360,16 +418,18 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       ? option.correct
                         ? 'bg-green-100 border-green-500'
                         : selectedAnswer === index
-                        ? 'bg-red-100 border-red-500'
-                        : 'bg-warm-50 border-warm-200'
+                          ? 'bg-red-100 border-red-500'
+                          : 'bg-warm-50 border-warm-200'
                       : selectedAnswer === index
-                      ? 'bg-blue-100 border-blue-500'
-                      : 'bg-white border-warm-200 hover:border-blue-300 hover:bg-blue-50'
+                        ? 'bg-blue-100 border-blue-500'
+                        : 'bg-white border-warm-200 hover:border-blue-300 hover:bg-blue-50'
                   }`}
                 >
                   <div className="font-semibold">{option.text}</div>
                   {showResult && (selectedAnswer === index || option.correct) && (
-                    <div className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}>
+                    <div
+                      className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}
+                    >
                       {option.explanation}
                     </div>
                   )}
@@ -462,8 +522,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 completed.includes(c.id)
                   ? 'bg-green-500 text-white'
                   : i === currentChallenge
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
               }`}
             >
               {completed.includes(c.id) ? '✓' : i + 1}

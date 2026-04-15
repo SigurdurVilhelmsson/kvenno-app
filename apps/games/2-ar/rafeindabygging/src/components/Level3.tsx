@@ -13,6 +13,7 @@ interface Level3Props {
 
 export function Level3({ onComplete, onBack }: Level3Props) {
   const { language, setLanguage } = useGameI18n({ gameTranslations });
+  const [showIntro, setShowIntro] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -37,6 +38,73 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     setSelectedOption(null);
     setSubmitted(false);
   };
+
+  // --- Teaching intro ---
+  if (showIntro) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">
+        <Header
+          variant="game"
+          backHref="/efnafraedi/2-ar/"
+          gameTitle="Eðalgasstytting — Kennsla"
+          authSlot={
+            <LanguageSwitcher
+              language={language}
+              onLanguageChange={setLanguage}
+              variant="compact"
+            />
+          }
+        />
+        <div className="max-w-lg mx-auto p-4 md:p-8">
+          <button onClick={onBack} className="text-warm-600 hover:text-warm-800 mb-4">
+            ← Til baka
+          </button>
+          <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4 animate-slide-in">
+            <h2 className="text-xl font-bold text-warm-800">Eðalgasstytting</h2>
+            <p className="text-warm-700">
+              Í stað þess að skrifa alla rafeindauppsetninguna frá 1s² getum við notað
+              <strong> eðalgasstyttingu</strong> — byrjum á nánasta eðalgasi og skrifum aðeins
+              gildisrafeindir.
+            </p>
+
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h3 className="font-bold text-blue-800 mb-2">Dæmi: Járn (Fe, Z=26)</h3>
+              <div className="text-sm text-blue-700 space-y-1">
+                <p>Full uppsetning: 1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁶</p>
+                <p>Nánasta eðalgas: Argon (Ar, Z=18) = 1s² 2s² 2p⁶ 3s² 3p⁶</p>
+                <p>
+                  Stytting: <strong className="text-lg">[Ar] 4s² 3d⁶</strong>
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-amber-50 border-2 border-amber-200 p-4 rounded-lg">
+              <h3 className="font-bold text-amber-800 mb-2">⚠️ Undantekningar</h3>
+              <p className="text-sm text-amber-700 mb-2">
+                Sumir d-blokkarmálmar hafa óvænta uppsetningu vegna stöðugleika hálf- eða
+                fullfyltrar d-skeljar:
+              </p>
+              <div className="text-sm text-amber-700 font-mono space-y-1">
+                <p>
+                  <strong>Cr (Z=24):</strong> [Ar] 4s¹ 3d⁵ (EKKI 4s² 3d⁴) — hálffyllt d
+                </p>
+                <p>
+                  <strong>Cu (Z=29):</strong> [Ar] 4s¹ 3d¹⁰ (EKKI 4s² 3d⁹) — full d
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowIntro(false)}
+              className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 rounded-xl transition-colors"
+            >
+              Byrja æfingar →
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">

@@ -11,6 +11,7 @@ interface Level2Props {
 }
 
 export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level2Props) {
+  const [showIntro, setShowIntro] = useState(true);
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [orderA, setOrderA] = useState<number | null>(null);
   const [orderB, setOrderB] = useState<number | null>(null);
@@ -24,16 +25,17 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const checkAnswer = () => {
     const correctA = orderA === challenge.correctOrderA;
-    const correctB = orderB === challenge.correctOrderB || (challenge.correctOrderB === 0 && orderB === null);
+    const correctB =
+      orderB === challenge.correctOrderB || (challenge.correctOrderB === 0 && orderB === null);
 
     const correct = correctA && correctB;
     setIsCorrect(correct);
 
     if (correct) {
       if (!showHint) {
-        setScore(prev => prev + 20);
+        setScore((prev) => prev + 20);
       } else {
-        setScore(prev => prev + 10);
+        setScore((prev) => prev + 10);
       }
       onCorrectAnswer?.();
     } else {
@@ -44,7 +46,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const nextChallenge = () => {
     if (currentChallenge < challenges.length - 1) {
-      setCurrentChallenge(prev => prev + 1);
+      setCurrentChallenge((prev) => prev + 1);
       setOrderA(null);
       setOrderB(null);
       setShowHint(false);
@@ -55,7 +57,65 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     }
   };
 
-  const hasSecondReactant = challenge.data.some(d => d.concentrationB > 0);
+  const hasSecondReactant = challenge.data.some((d) => d.concentrationB > 0);
+
+  // --- Teaching intro ---
+  if (showIntro) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
+        <div className="max-w-lg mx-auto">
+          <button onClick={onBack} className="text-warm-600 hover:text-warm-800 mb-4">
+            ← Til baka
+          </button>
+          <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4 animate-slide-in">
+            <h2 className="text-xl font-bold text-warm-800">Hvernig finna röð hvörfunar?</h2>
+
+            <p className="text-warm-700">
+              Hraðalögmálið er: <strong className="font-mono">Rate = k[A]ᵐ[B]ⁿ</strong>.
+              Veldisvísarnir m og n (röð hvörfunar) segja hversu mikil áhrif styrkur hefur á
+              hraðann.
+            </p>
+
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h3 className="font-bold text-blue-800 mb-2">Hlutfallsaðferðin (3 skref)</h3>
+              <div className="text-sm text-blue-700 space-y-2">
+                <p>
+                  <strong>1.</strong> Finndu tvö tilraunasett þar sem <em>aðeins eitt hvarfefni</em>{' '}
+                  breytist (hitt er fast).
+                </p>
+                <p>
+                  <strong>2.</strong> Reiknaðu hlutfall: Rate₂/Rate₁ og [A]₂/[A]₁
+                </p>
+                <p>
+                  <strong>3.</strong> Ef styrkur tvöfaldaðist og hraðinn tvöfaldaðist → m = 1.
+                  <br />
+                  Ef styrkur tvöfaldaðist og hraðinn fjórfaldaðist → m = 2.
+                  <br />
+                  Ef styrkur tvöfaldaðist en hraðinn breyttist ekki → m = 0.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-green-50 p-4 rounded-lg">
+              <h3 className="font-bold text-green-800 mb-2">Dæmi</h3>
+              <div className="text-sm text-green-700 space-y-1">
+                <p>Tilraun 1: [A]=0.1, Rate=2.0</p>
+                <p>Tilraun 2: [A]=0.2, Rate=8.0 (styrkur × 2, hraði × 4)</p>
+                <p className="font-mono mt-2">2ᵐ = 4 → m = 2 (annars stigs)</p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowIntro(false)}
+              className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 rounded-xl transition-colors"
+            >
+              Byrja æfingar →
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
@@ -69,7 +129,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <span>&larr;</span> Til baka
           </button>
           <div className="text-right">
-            <div className="text-sm text-warm-600">Stig 2 / Þraut {currentChallenge + 1} af {challenges.length}</div>
+            <div className="text-sm text-warm-600">
+              Stig 2 / Þraut {currentChallenge + 1} af {challenges.length}
+            </div>
             <div className="text-lg font-bold text-green-600">{score} stig</div>
           </div>
         </div>
@@ -84,16 +146,12 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
         {/* Main content */}
         <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <h2 className="text-2xl font-bold text-green-800 mb-2">
-            {challenge.title}
-          </h2>
+          <h2 className="text-2xl font-bold text-green-800 mb-2">{challenge.title}</h2>
           <p className="text-warm-600 mb-4">{challenge.description}</p>
 
           {/* Chemical equation */}
           <div className="bg-green-50 p-4 rounded-xl mb-6">
-            <div className="text-center font-mono text-xl">
-              {challenge.equation}
-            </div>
+            <div className="text-center font-mono text-xl">{challenge.equation}</div>
           </div>
 
           {/* Experimental data table */}
@@ -131,7 +189,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div className="flex items-center gap-4">
                 <span className="font-mono font-bold w-32">Röð í [A]:</span>
                 <div className="flex gap-2">
-                  {[0, 1, 2].map(order => (
+                  {[0, 1, 2].map((order) => (
                     <button
                       key={order}
                       onClick={() => !showResult && setOrderA(order)}
@@ -147,8 +205,14 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   ))}
                 </div>
                 {showResult && (
-                  <span className={orderA === challenge.correctOrderA ? 'text-green-600' : 'text-red-600'}>
-                    {orderA === challenge.correctOrderA ? '✓' : `✗ (rétt: ${challenge.correctOrderA})`}
+                  <span
+                    className={
+                      orderA === challenge.correctOrderA ? 'text-green-600' : 'text-red-600'
+                    }
+                  >
+                    {orderA === challenge.correctOrderA
+                      ? '✓'
+                      : `✗ (rétt: ${challenge.correctOrderA})`}
                   </span>
                 )}
               </div>
@@ -158,7 +222,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 <div className="flex items-center gap-4">
                   <span className="font-mono font-bold w-32">Röð í [B]:</span>
                   <div className="flex gap-2">
-                    {[0, 1, 2].map(order => (
+                    {[0, 1, 2].map((order) => (
                       <button
                         key={order}
                         onClick={() => !showResult && setOrderB(order)}
@@ -174,8 +238,14 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     ))}
                   </div>
                   {showResult && (
-                    <span className={orderB === challenge.correctOrderB ? 'text-green-600' : 'text-red-600'}>
-                      {orderB === challenge.correctOrderB ? '✓' : `✗ (rétt: ${challenge.correctOrderB})`}
+                    <span
+                      className={
+                        orderB === challenge.correctOrderB ? 'text-green-600' : 'text-red-600'
+                      }
+                    >
+                      {orderB === challenge.correctOrderB
+                        ? '✓'
+                        : `✗ (rétt: ${challenge.correctOrderB})`}
                     </span>
                   )}
                 </div>
@@ -187,7 +257,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div className="mt-4 p-3 bg-white rounded-lg border border-green-200">
                 <div className="font-mono text-center text-lg">
                   Rate = k[A]<sup>{orderA ?? '?'}</sup>
-                  {hasSecondReactant && <>[B]<sup>{orderB ?? '?'}</sup></>}
+                  {hasSecondReactant && (
+                    <>
+                      [B]<sup>{orderB ?? '?'}</sup>
+                    </>
+                  )}
                 </div>
               </div>
             )}
@@ -198,7 +272,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <button
               onClick={() => {
                 setShowHint(true);
-                setTotalHintsUsed(prev => prev + 1);
+                setTotalHintsUsed((prev) => prev + 1);
               }}
               className="text-green-600 hover:text-green-800 text-sm underline mb-4"
             >
@@ -226,18 +300,25 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
           {/* Result feedback */}
           {showResult && (
-            <div className={`p-4 rounded-xl mb-4 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
-              <div className={`font-bold text-lg mb-2 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+            <div
+              className={`p-4 rounded-xl mb-4 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
+            >
+              <div
+                className={`font-bold text-lg mb-2 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
+              >
                 {isCorrect ? 'Rétt!' : 'Rangt'}
               </div>
-              <div className="text-sm text-warm-700 mb-2">
-                {challenge.explanation}
-              </div>
+              <div className="text-sm text-warm-700 mb-2">{challenge.explanation}</div>
               <div className="font-mono text-sm bg-white p-2 rounded border">
                 <strong>Hraðalögmál:</strong> Rate = k[A]<sup>{challenge.correctOrderA}</sup>
-                {hasSecondReactant && <>[B]<sup>{challenge.correctOrderB}</sup></>}
+                {hasSecondReactant && (
+                  <>
+                    [B]<sup>{challenge.correctOrderB}</sup>
+                  </>
+                )}
                 <br />
-                <strong>Hraðafasti:</strong> k = {challenge.correctRateConstant} {challenge.rateConstantUnit}
+                <strong>Hraðafasti:</strong> k = {challenge.correctRateConstant}{' '}
+                {challenge.rateConstantUnit}
               </div>
             </div>
           )}
@@ -258,7 +339,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <h3 className="font-bold text-warm-700 mb-2">Aðferð til að finna röð:</h3>
           <ol className="text-sm text-warm-600 space-y-1 list-decimal list-inside">
             <li>Finndu tvær tilraunir þar sem aðeins EINN styrkur breytist</li>
-            <li>Reiknaðu hlutfallið: (Rate₂/Rate₁) = ([A]₂/[A]₁)<sup>m</sup></li>
+            <li>
+              Reiknaðu hlutfallið: (Rate₂/Rate₁) = ([A]₂/[A]₁)<sup>m</sup>
+            </li>
             <li>Ef styrkur tvöfaldast og Rate tvöfaldast → m = 1</li>
             <li>Ef styrkur tvöfaldast og Rate fjórfaldast → m = 2</li>
             <li>Ef styrkur breytist en Rate helst sama → m = 0</li>
