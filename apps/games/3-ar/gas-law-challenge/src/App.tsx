@@ -410,6 +410,21 @@ function App() {
               </div>
             </main>
 
+            {/* Why this matters + curriculum */}
+            <div className="max-w-5xl mx-auto px-4 mb-6">
+              <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
+                <h3 className="font-semibold text-amber-800 mb-2">Af hverju gaslögmálin?</h3>
+                <p className="text-sm text-amber-700">
+                  Gaslögmálin útskýra veður, köfunarhættur, hvernig bílvélar virka, og af hverju
+                  flugvélar eru þrýstijafnaðar. Þau tengja saman þrýsting, hitastig og rúmmál.
+                </p>
+              </div>
+              <div className="mt-3 text-center text-xs text-warm-500">
+                <strong>Námsleiðin:</strong> <u>Gaslögmál</u> → Jafnvægi → Varmafræði → pH Títrun →
+                Púfferar
+              </div>
+            </div>
+
             <footer className="text-center text-sm text-warm-500 py-4">
               <p>© 2024 Kvennaskólinn - Efnafræðileikir</p>
             </footer>

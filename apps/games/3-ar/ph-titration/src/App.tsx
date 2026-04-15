@@ -370,8 +370,19 @@ function App() {
                 </div>
               </div>
 
-              {/* Credits */}
-              <div className="mt-6 text-center text-xs text-warm-500">
+              {/* Why this matters + curriculum */}
+              <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
+                <h3 className="font-semibold text-amber-800 mb-2">Af hverju títrun?</h3>
+                <p className="text-sm text-amber-700">
+                  Títrun er ein mikilvægasta greiningaraðferð efnafræðinnar. Hún er notuð til að
+                  ákvarða styrk sýru í regni, magasýru í meltingarfærum, og vítamín C í ávöxtum.
+                </p>
+              </div>
+              <div className="mt-3 text-center text-xs text-warm-500">
+                <strong>Námsleiðin:</strong> Gaslögmál → Jafnvægi → Varmafræði → <u>pH Títrun</u> →
+                Púfferar
+              </div>
+              <div className="mt-2 text-center text-xs text-warm-400">
                 Kafli 17 — Chemistry: The Central Science (Brown et al.)
               </div>
             </div>

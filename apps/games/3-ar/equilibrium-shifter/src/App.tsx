@@ -439,6 +439,19 @@ function App() {
           <h3 className="font-semibold text-warm-700 mb-2">Framvinda þín</h3>
           <p className="text-sm text-warm-600">Verkefni kláruð: {progress.problemsCompleted}</p>
         </div>
+
+        {/* Why this matters + curriculum */}
+        <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
+          <h3 className="font-semibold text-amber-800 mb-2">Af hverju efnajafnvægi?</h3>
+          <p className="text-sm text-amber-700">
+            Haber-ferlið framleiðir ammóníak til áburðargerðar og nærir milljarða manna. Le
+            Chatelier meginreglan hjálpar verkfræðingum að hámarka framleiðslu í iðnaði.
+          </p>
+        </div>
+        <div className="mt-3 text-center text-xs text-warm-500">
+          <strong>Námsleiðin:</strong> Gaslögmál → <u>Jafnvægi</u> → Varmafræði → pH Títrun →
+          Púfferar
+        </div>
       </div>
     </div>
   );

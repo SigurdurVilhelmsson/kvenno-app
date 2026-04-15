@@ -344,7 +344,19 @@ function App() {
             </div>
           </div>
 
-          <div className="mt-6 text-center text-xs text-warm-500">
+          {/* Why this matters + curriculum */}
+          <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
+            <h3 className="font-semibold text-amber-800 mb-2">Af hverju lífræn nafnagift?</h3>
+            <p className="text-sm text-amber-700">
+              Lyfjaefnafræðingar, líftæknifræðingar og matvælafræðingar nota IUPAC nöfn daglega.
+              Rétt nafn segir uppbyggingu sameindarinnar — forsenda samskipta í vísindum.
+            </p>
+          </div>
+          <div className="mt-3 text-center text-xs text-warm-500">
+            <strong>Námsleiðin:</strong> Rafeindabygging → Lewis → VSEPR → IMF → Hess → Kinetics →
+            Redox → <u>Organic</u>
+          </div>
+          <div className="mt-2 text-center text-xs text-warm-400">
             Sérsniðið námsefni — Lífræn efnafræði
           </div>
         </div>

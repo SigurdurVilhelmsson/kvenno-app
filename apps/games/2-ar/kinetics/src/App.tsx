@@ -336,8 +336,19 @@ function App() {
             </div>
           </div>
 
-          {/* Credits */}
-          <div className="mt-6 text-center text-xs text-warm-500">
+          {/* Why this matters + curriculum */}
+          <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
+            <h3 className="font-semibold text-amber-800 mb-2">Af hverju hvarfhraði?</h3>
+            <p className="text-sm text-amber-700">
+              Hvarfhraði ræður hversu hratt lyf virka, hversu lengi matvæli halda, og hversu hratt
+              járn ryðgar. Skilningur á hraða gefur okkur völd til að stýra efnahvörfum.
+            </p>
+          </div>
+          <div className="mt-3 text-center text-xs text-warm-500">
+            <strong>Námsleiðin:</strong> Rafeindabygging → Lewis → VSEPR → IMF → Hess →{' '}
+            <u>Kinetics</u> → Redox → Organic
+          </div>
+          <div className="mt-2 text-center text-xs text-warm-400">
             Kafli 14 — Chemistry: The Central Science (Brown et al.)
           </div>
         </div>

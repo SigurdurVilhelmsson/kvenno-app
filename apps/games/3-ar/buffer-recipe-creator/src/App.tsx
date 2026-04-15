@@ -330,8 +330,19 @@ function App() {
                 </div>
               </div>
 
-              {/* Credits */}
-              <div className="mt-6 text-center text-xs text-warm-500">
+              {/* Why this matters + curriculum */}
+              <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
+                <h3 className="font-semibold text-amber-800 mb-2">Af hverju púfferar?</h3>
+                <p className="text-sm text-amber-700">
+                  Blóð mannsins er púfferað við pH 7,4 — ef pH breytist um meira en 0,3 er
+                  lífshætta. Púfferlausnir eru einnig mikilvægar í umhverfisefnafræði og líftækni.
+                </p>
+              </div>
+              <div className="mt-3 text-center text-xs text-warm-500">
+                <strong>Námsleiðin:</strong> Gaslögmál → Jafnvægi → Varmafræði → pH Títrun →{' '}
+                <u>Púfferar</u>
+              </div>
+              <div className="mt-2 text-center text-xs text-warm-400">
                 Kafli 17 — Chemistry: The Central Science (Brown et al.)
               </div>
             </div>

@@ -269,6 +269,18 @@ function App() {
               </li>
             </ul>
           </div>
+          {/* Why this matters + curriculum */}
+          <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
+            <h3 className="font-semibold text-amber-800 mb-2">Af hverju takmarkandi hvarfefni?</h3>
+            <p className="text-sm text-amber-700">
+              Í iðnaði skiptir máli að vita hvaða hráefni klárast fyrst — það ákvarðar hversu mikil
+              afurð verður. Lyfjafyrirtæki nota þetta til að hámarka framleiðslu og lágmarka sóun.
+            </p>
+          </div>
+          <div className="mt-3 text-center text-xs text-warm-500">
+            <strong>Námsleiðin:</strong> Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi →
+            Jafna jöfnur → <u>Takmarkandi</u> → Lausnir
+          </div>
         </div>
       </div>
     </div>

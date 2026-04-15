@@ -305,7 +305,19 @@ function App() {
             </div>
           </div>
 
-          <div className="mt-6 text-center text-xs text-warm-500">{t('menu.footer')}</div>
+          {/* Why this matters + curriculum */}
+          <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
+            <h3 className="font-semibold text-amber-800 mb-2">Af hverju oxun og afoxun?</h3>
+            <p className="text-sm text-amber-700">
+              Rafhlöður, ryð, rafgreining og ljóstillífun — allt eru redox-hvörf. Skilningur á
+              rafeindiflutningi er lykillinn að orkutækni og efnafræði lífsins.
+            </p>
+          </div>
+          <div className="mt-3 text-center text-xs text-warm-500">
+            <strong>Námsleiðin:</strong> Rafeindabygging → Lewis → VSEPR → IMF → Hess → Kinetics →{' '}
+            <u>Redox</u> → Organic
+          </div>
+          <div className="mt-2 text-center text-xs text-warm-400">{t('menu.footer')}</div>
         </div>
       </div>
     </div>

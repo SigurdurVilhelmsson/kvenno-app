@@ -384,8 +384,19 @@ function App() {
             </div>
           </div>
 
-          {/* Credits */}
-          <div className="mt-6 text-center text-xs text-warm-500">
+          {/* Why this matters + curriculum */}
+          <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
+            <h3 className="font-semibold text-amber-800 mb-2">Af hverju Lewis-formúlur?</h3>
+            <p className="text-sm text-amber-700">
+              Lewis-formúlur sýna hvernig rafeindir tengjast milli atóma — lykilin að lyfjahönnun,
+              efnafræðilegri hvarfgirni og skilningi á hvernig efni hegða sér.
+            </p>
+          </div>
+          <div className="mt-3 text-center text-xs text-warm-500">
+            <strong>Námsleiðin:</strong> Rafeindabygging → <u>Lewis</u> → VSEPR → IMF → Hess →
+            Kinetics → Redox → Organic
+          </div>
+          <div className="mt-2 text-center text-xs text-warm-400">
             Kafli 8 — Chemistry: The Central Science (Brown et al.)
           </div>
         </div>

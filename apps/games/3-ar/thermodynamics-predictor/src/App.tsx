@@ -431,6 +431,20 @@ function App() {
                 </button>
               </div>
             </div>
+
+            {/* Why this matters + curriculum */}
+            <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
+              <h3 className="font-semibold text-amber-800 mb-2">Af hverju varmafræði?</h3>
+              <p className="text-sm text-amber-700">
+                ΔG segir okkur hvort efnahvörf GETA gerst sjálfkrafa — ekki bara hvort þau losa
+                orku. Þetta útskýrir af hverju ís bráðnar, af hverju salt leysist í vatni, og
+                hvernig lífverur nýta orku.
+              </p>
+            </div>
+            <div className="mt-3 text-center text-xs text-warm-500">
+              <strong>Námsleiðin:</strong> Gaslögmál → Jafnvægi → <u>Varmafræði</u> → pH Títrun →
+              Púfferar
+            </div>
           </div>
         </div>
       </div>

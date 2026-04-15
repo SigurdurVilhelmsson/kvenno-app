@@ -366,6 +366,20 @@ function App() {
               <p>{t('formulas.mixing')}</p>
             </div>
           </div>
+
+          {/* Why this matters + curriculum */}
+          <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
+            <h3 className="font-semibold text-amber-800 mb-2">Af hverju lausnir?</h3>
+            <p className="text-sm text-amber-700">
+              Læknar og hjúkrunarfræðingar reikna styrk lyfjalausna fyrir sjúklinga.
+              Hafefnafræðingar mæla styrk mengunarefna í vatni. Rétt þekking á lausnum getur
+              beinlínis bjargað mannslífum.
+            </p>
+          </div>
+          <div className="mt-3 text-center text-xs text-warm-500">
+            <strong>Námsleiðin:</strong> Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi →
+            Jafna jöfnur → Takmarkandi → <u>Lausnir</u>
+          </div>
         </div>
       </div>
     </div>

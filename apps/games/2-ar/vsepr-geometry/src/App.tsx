@@ -369,8 +369,19 @@ function App() {
             </div>
           </div>
 
-          {/* Credits */}
-          <div className="mt-6 text-center text-xs text-warm-500">
+          {/* Why this matters + curriculum */}
+          <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
+            <h3 className="font-semibold text-amber-800 mb-2">Af hverju VSEPR?</h3>
+            <p className="text-sm text-amber-700">
+              Lögun sameinda ákvarðar virkni þeirra — af hverju vatn er beygt (og leysi), af hverju
+              DNA er tvíþráður, af hverju lyf passa í ensím. Lögunin skýrir eiginleikana.
+            </p>
+          </div>
+          <div className="mt-3 text-center text-xs text-warm-500">
+            <strong>Námsleiðin:</strong> Rafeindabygging → Lewis → <u>VSEPR</u> → IMF → Hess →
+            Kinetics → Redox → Organic
+          </div>
+          <div className="mt-2 text-center text-xs text-warm-400">
             Kafli 9 — Chemistry: The Central Science (Brown et al.)
           </div>
         </div>

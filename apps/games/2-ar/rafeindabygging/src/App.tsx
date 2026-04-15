@@ -327,8 +327,19 @@ function App() {
             </div>
           </div>
 
-          {/* Credits */}
-          <div className="mt-6 text-center text-xs text-warm-500">
+          {/* Why this matters + curriculum */}
+          <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
+            <h3 className="font-semibold text-amber-800 mb-2">Af hverju rafeindabygging?</h3>
+            <p className="text-sm text-amber-700">
+              Rafeindauppsetning ákvarðar hvernig frumefni tengjast — hún útskýrir af hverju natríum
+              er hvarfgjarnt en argon er stöðugt. Undirstaða efnatengsla og lotukerfisins.
+            </p>
+          </div>
+          <div className="mt-3 text-center text-xs text-warm-500">
+            <strong>Námsleiðin:</strong> <u>Rafeindabygging</u> → Lewis → VSEPR → IMF → Hess →
+            Kinetics → Redox → Organic
+          </div>
+          <div className="mt-2 text-center text-xs text-warm-400">
             Kafli 6 — Chemistry: The Central Science (Brown et al.)
           </div>
         </div>

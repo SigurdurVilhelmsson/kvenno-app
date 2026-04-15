@@ -331,8 +331,19 @@ function App() {
             </div>
           </div>
 
-          {/* Credits */}
-          <div className="mt-6 text-center text-xs text-warm-500">
+          {/* Why this matters + curriculum */}
+          <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
+            <h3 className="font-semibold text-amber-800 mb-2">Af hverju lögmál Hess?</h3>
+            <p className="text-sm text-amber-700">
+              Sum hvörf er ómögulegt að mæla beint í tilraunastofu. Lögmál Hess leyfir okkur að
+              reikna ΔH með því að sameina jöfnur sem VER GETUM mælt — undirstaða varmafræðinnar.
+            </p>
+          </div>
+          <div className="mt-3 text-center text-xs text-warm-500">
+            <strong>Námsleiðin:</strong> Rafeindabygging → Lewis → VSEPR → IMF → <u>Hess</u> →
+            Kinetics → Redox → Organic
+          </div>
+          <div className="mt-2 text-center text-xs text-warm-400">
             Kafli 5 — Chemistry: The Central Science (Brown et al.)
           </div>
         </div>
