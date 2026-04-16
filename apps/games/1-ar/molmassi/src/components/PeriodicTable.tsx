@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   ELEMENTS,
@@ -73,6 +73,17 @@ export function PeriodicTable({
   const [selectedElement, setSelectedElement] = useState<Element | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showApprox, setShowApprox] = useState(showApproximate);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Trap focus within the modal and close on Escape.
+  useEffect(() => {
+    closeButtonRef.current?.focus();
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [onClose]);
 
   // Build periodic table grid (18 groups x 7 periods for main table)
   const periodicGrid = useMemo(() => {
@@ -124,20 +135,31 @@ export function PeriodicTable({
   ];
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 md:p-4">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="periodic-table-title"
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 md:p-4"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[95vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="bg-kvenno-orange text-white p-3 md:p-4 flex justify-between items-center shrink-0">
           <div>
-            <h2 className="text-xl md:text-2xl font-bold">Lotukerfið</h2>
+            <h2 id="periodic-table-title" className="text-xl md:text-2xl font-bold">
+              Lotukerfið
+            </h2>
             <p className="text-xs md:text-sm opacity-90">
-              Smelltu á frumefni til að sjá nánari upplýsingar
+              Smelltu á frumefni til að sjá nánari upplýsingar (Esc lokar)
             </p>
           </div>
           <button
+            ref={closeButtonRef}
             onClick={onClose}
-            className="text-white hover:text-warm-200 text-2xl font-bold w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/20 transition-colors"
-            aria-label="Loka"
+            className="text-white hover:text-warm-200 text-2xl font-bold w-11 h-11 flex items-center justify-center rounded-lg hover:bg-white/20 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white"
+            aria-label="Loka lotukerfinu"
           >
             ×
           </button>

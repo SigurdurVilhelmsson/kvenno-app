@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
+import { shuffleArray } from '@shared/utils';
 
 import { PeriodicTable } from './PeriodicTable';
 import { ELEMENTS, type Element } from '../data/elements';
@@ -22,18 +23,8 @@ interface Question {
   requiresTableClick?: boolean;
 }
 
-/** Fisher-Yates shuffle */
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
 function pickRandom<T>(arr: T[], n: number): T[] {
-  return shuffle(arr).slice(0, n);
+  return shuffleArray(arr).slice(0, n);
 }
 
 function neutronCount(el: Element): number {
@@ -98,7 +89,7 @@ function generateQuestions(): Question[] {
     });
   }
 
-  return shuffle(questions);
+  return shuffleArray(questions);
 }
 
 const TOTAL = 8;

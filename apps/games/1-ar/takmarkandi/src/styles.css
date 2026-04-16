@@ -1,85 +1,7 @@
-@import "tailwindcss";
-@import "../../../../../packages/shared/styles/theme.css";
+@import 'tailwindcss';
+@import '../../../../../packages/shared/styles/theme.css';
 @source "../../../../../packages/shared";
-@import "../../../../../packages/shared/styles/game-base.css";
-
-/* Molecule Animations */
-@keyframes moleculePop {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.15);
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes moleculeFadeOut {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-}
-
-@keyframes moleculeGlow {
-  0%, 100% {
-    box-shadow: 0 0 5px rgba(243, 107, 34, 0.5);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(243, 107, 34, 0.8);
-  }
-}
-
-.molecule-pop {
-  animation: moleculePop 0.4s ease-out;
-}
-
-.molecule-fade-out {
-  animation: moleculeFadeOut 0.3s ease-in forwards;
-}
-
-.molecule-glow {
-  animation: moleculeGlow 1.5s ease-in-out infinite;
-}
-
-/* Celebration Animation */
-@keyframes celebration {
-  0%, 100% {
-    transform: scale(1) rotate(0deg);
-  }
-  25% {
-    transform: scale(1.1) rotate(-5deg);
-  }
-  75% {
-    transform: scale(1.1) rotate(5deg);
-  }
-}
-
-.celebration {
-  animation: celebration 0.6s ease-out;
-}
-
-/* Timer Warning Animation */
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.6;
-  }
-}
-
-.timer-warning {
-  animation: pulse 1s ease-in-out infinite;
-}
+@import '../../../../../packages/shared/styles/game-base.css';
 
 /* Fade In Animation */
 @keyframes fadeIn {
@@ -95,53 +17,6 @@
 
 .fade-in {
   animation: fadeIn 0.3s ease-out;
-}
-
-/* Slide In Animation */
-@keyframes slideIn {
-  from {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-.slide-in {
-  animation: slideIn 0.4s ease-out;
-}
-
-/* Shake Animation for Wrong Answers */
-@keyframes shake {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  10%, 30%, 50%, 70%, 90% {
-    transform: translateX(-5px);
-  }
-  20%, 40%, 60%, 80% {
-    transform: translateX(5px);
-  }
-}
-
-.shake {
-  animation: shake 0.5s ease-in-out;
-}
-
-/* Bounce Animation for Correct Answers */
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-.bounce {
-  animation: bounce 0.5s ease-in-out;
 }
 
 /* Molecule Component Styles */

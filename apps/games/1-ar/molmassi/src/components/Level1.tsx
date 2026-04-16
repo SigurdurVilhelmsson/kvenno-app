@@ -1,23 +1,14 @@
 import { useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
+import { shuffleArray } from '@shared/utils';
 
 import { CalculationBreakdown } from './CalculationBreakdown';
 import { PeriodicTable } from './PeriodicTable';
 import { COMPOUNDS, type Compound } from '../data/compounds';
 
-/** Fisher-Yates shuffle */
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
 function pickRandom<T>(arr: T[], n: number): T[] {
-  return shuffle(arr).slice(0, n);
+  return shuffleArray(arr).slice(0, n);
 }
 
 interface Level1Props {
@@ -41,7 +32,7 @@ function selectProblems(): Compound[] {
     COMPOUNDS.filter((c) => c.difficulty === 'hard'),
     2
   );
-  return shuffle([...easy, ...medium, ...hard]);
+  return shuffleArray([...easy, ...medium, ...hard]);
 }
 
 function getTolerance(difficulty: Compound['difficulty']): number {
@@ -125,7 +116,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
 
           {/* Step 0: What is molar mass? */}
           {teachStep === 0 && (
-            <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 animate-slide-in">
+            <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 animate-fade-in-up">
               <h2 className="text-xl font-bold text-warm-800">Hvað er mólmassi?</h2>
               <p className="text-warm-700">
                 <strong>Mólmassi (M)</strong> er massi eins móls af efni, mældur í g/mol. Hann segir
@@ -154,7 +145,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
 
           {/* Step 1: Walkthrough with H₂O */}
           {teachStep === 1 && (
-            <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 animate-slide-in">
+            <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 animate-fade-in-up">
               <h2 className="text-xl font-bold text-warm-800">Dæmi: H₂O (Vatn)</h2>
               <p className="text-warm-700">Reiknum mólmassa vatns skref fyrir skref:</p>
 
@@ -198,7 +189,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
 
           {/* Step 2: Second example — CO₂ */}
           {teachStep === 2 && (
-            <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 animate-slide-in">
+            <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 animate-fade-in-up">
               <h2 className="text-xl font-bold text-warm-800">Dæmi: CO₂ (Koltvísýringur)</h2>
               <p className="text-warm-700">
                 Nú geturðu reynt sjálf/ur. CO₂ hefur 1 kolefnisatóm og 2 súrefnisatóm.

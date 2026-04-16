@@ -9,10 +9,8 @@ import type { Reaction } from '../types';
 import { calculateCorrectAnswer, generateReactantCounts } from '../utils/calculations';
 
 interface Level2Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 type QuestionType = 'times' | 'products';
@@ -44,7 +42,7 @@ function buildQuestions(): Question[] {
   return questions;
 }
 
-export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level2Props) {
+export function Level2({ onComplete, onBack }: Level2Props) {
   const [questions] = useState(buildQuestions);
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -69,9 +67,6 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     setAnswered(true);
     if (correct) {
       setScore((s) => s + POINTS_PER_Q);
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
     }
   };
 
@@ -118,7 +113,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               Reyna aftur
             </button>
             <button
-              onClick={() => onComplete(score, TOTAL * POINTS_PER_Q, 0)}
+              onClick={() => onComplete(score)}
               className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
             >
               Ljuka stigi

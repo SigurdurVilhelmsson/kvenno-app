@@ -1,3 +1,5 @@
+import type { KeyboardEvent } from 'react';
+
 import type { Molecule } from '../data/reactions';
 
 interface EquationEditorProps {
@@ -62,36 +64,64 @@ function FormulaDisplay({ formula }: { formula: string }) {
   );
 }
 
-/** Single coefficient control with +/- buttons */
+/** Single coefficient control with +/- buttons (44px touch targets + arrow-key support) */
 function CoefficientControl({
   value,
   onChange,
   disabled,
+  formula,
 }: {
   value: number;
   onChange: (v: number) => void;
   disabled?: boolean;
+  formula: string;
 }) {
+  const increment = () => onChange(Math.min(9, value + 1));
+  const decrement = () => onChange(Math.max(1, value - 1));
+
+  const handleDisplayKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (disabled) return;
+    if (e.key === 'ArrowUp' || e.key === '+') {
+      e.preventDefault();
+      increment();
+    } else if (e.key === 'ArrowDown' || e.key === '-') {
+      e.preventDefault();
+      decrement();
+    }
+  };
+
+  const buttonClass =
+    'coeff-btn w-11 h-11 rounded-lg bg-blue-100 hover:bg-blue-200 disabled:opacity-30 disabled:cursor-not-allowed text-blue-700 font-bold text-lg flex items-center justify-center outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-1';
+
   return (
     <div className="flex flex-col items-center gap-1">
       <button
-        onClick={() => onChange(Math.min(9, value + 1))}
+        onClick={increment}
         disabled={disabled || value >= 9}
-        className="coeff-btn w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-blue-100 hover:bg-blue-200 disabled:opacity-30 disabled:cursor-not-allowed text-blue-700 font-bold text-lg flex items-center justify-center"
-        aria-label="Hækka stuðul"
+        className={buttonClass}
+        aria-label={`Hækka stuðul ${formula}`}
       >
         +
       </button>
-      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white border-2 border-warm-300 flex items-center justify-center text-xl font-bold text-warm-800">
+      <div
+        role="spinbutton"
+        aria-label={`Stuðull ${formula}`}
+        aria-valuenow={value}
+        aria-valuemin={1}
+        aria-valuemax={9}
+        tabIndex={disabled ? -1 : 0}
+        onKeyDown={handleDisplayKeyDown}
+        className="w-11 h-11 rounded-lg bg-white border-2 border-warm-300 flex items-center justify-center text-xl font-bold text-warm-800 outline-none focus-visible:ring-2 focus-visible:ring-kvenno-orange focus-visible:ring-offset-1 select-none"
+      >
         {value}
       </div>
       <button
-        onClick={() => onChange(Math.max(1, value - 1))}
+        onClick={decrement}
         disabled={disabled || value <= 1}
-        className="coeff-btn w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-blue-100 hover:bg-blue-200 disabled:opacity-30 disabled:cursor-not-allowed text-blue-700 font-bold text-lg flex items-center justify-center"
-        aria-label="Lækka stuðul"
+        className={buttonClass}
+        aria-label={`Lækka stuðul ${formula}`}
       >
-        -
+        −
       </button>
     </div>
   );
@@ -122,6 +152,7 @@ export function EquationEditor({
               value={reactantCoeffs[i]}
               onChange={(v) => onReactantCoeffChange(i, v)}
               disabled={disabled}
+              formula={mol.formula}
             />
             <FormulaDisplay formula={mol.formula} />
           </div>
@@ -140,6 +171,7 @@ export function EquationEditor({
               value={productCoeffs[i]}
               onChange={(v) => onProductCoeffChange(i, v)}
               disabled={disabled}
+              formula={mol.formula}
             />
             <FormulaDisplay formula={mol.formula} />
           </div>

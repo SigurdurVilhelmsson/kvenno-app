@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
+import { shuffleArray } from '@shared/utils';
 
 import { PeriodicTable } from './PeriodicTable';
 import { ELEMENTS, CATEGORY_COLORS, type Element } from '../data/elements';
@@ -21,19 +22,9 @@ interface Question {
   correctOption?: string;
 }
 
-/** Fisher-Yates shuffle — proper unbiased randomization */
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
 /** Pick n unique random items */
 function pickRandom<T>(arr: T[], n: number): T[] {
-  return shuffle(arr).slice(0, n);
+  return shuffleArray(arr).slice(0, n);
 }
 
 /** Generate 10 random questions across the 3 types */
@@ -68,7 +59,7 @@ function generateQuestions(): Question[] {
       ELEMENTS.filter((e) => e.symbol !== el.symbol),
       3
     ).map((e) => e.name);
-    const options = shuffle([...distractors, el.name]);
+    const options = shuffleArray([...distractors, el.name]);
     questions.push({
       type: 'name-by-symbol',
       element: el,
@@ -78,12 +69,13 @@ function generateQuestions(): Question[] {
     });
   }
 
-  return shuffle(questions);
+  return shuffleArray(questions);
 }
 
 const TOTAL = 10;
 
 export function Level1({ onBack, onComplete }: Level1Props) {
+  const [showIntro, setShowIntro] = useState(true);
   const [questions, setQuestions] = useState<Question[]>(generateQuestions);
   const [index, setIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
@@ -139,6 +131,84 @@ export function Level1({ onBack, onComplete }: Level1Props) {
     setWrongSymbol(null);
     setDone(false);
   };
+
+  // --- Teaching intro ---
+  if (showIntro) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-4">
+        <div className="max-w-3xl mx-auto">
+          <div className="mb-4">
+            <button
+              onClick={onBack}
+              className="text-warm-600 hover:text-warm-800 flex items-center gap-2 text-lg"
+            >
+              ← Til baka
+            </button>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
+            <h2 className="text-2xl font-bold text-warm-800 text-center">
+              Hvernig á að lesa lotukerfið
+            </h2>
+
+            {/* Rows = Periods */}
+            <div className="bg-green-50 rounded-xl p-6 border-l-4 border-green-500">
+              <h3 className="font-bold text-green-800 mb-3">Lotur (raðir)</h3>
+              <p className="text-warm-700 mb-2">
+                Lotukerfið hefur <strong>7 lotur</strong> (láréttar raðir). Lota segir þér hversu
+                mörg rafeindaskel frumefnið hefur.
+              </p>
+              <p className="text-warm-700 text-sm">
+                Dæmi: Vetni (H) er á <strong>lotu 1</strong> — það hefur 1 rafeindaskel. Natríum
+                (Na) er á <strong>lotu 3</strong> — 3 rafeindaskel.
+              </p>
+            </div>
+
+            {/* Columns = Groups */}
+            <div className="bg-blue-50 rounded-xl p-6 border-l-4 border-blue-500">
+              <h3 className="font-bold text-blue-800 mb-3">Flokkar (dálkar)</h3>
+              <p className="text-warm-700 mb-2">
+                Það eru <strong>18 flokkar</strong> (lóðréttir dálkar). Frumefni í sama flokki hafa
+                svipaða efnaeiginleika vegna þess að þau hafa jafn margar{' '}
+                <strong>gildisrafeindir</strong>.
+              </p>
+              <div className="grid grid-cols-2 gap-3 mt-3 text-sm">
+                <div className="bg-white p-3 rounded-lg">
+                  <p className="font-semibold text-warm-800">Flokkur 1</p>
+                  <p className="text-warm-600">Alkalímálmar — 1 gildisrafeind</p>
+                </div>
+                <div className="bg-white p-3 rounded-lg">
+                  <p className="font-semibold text-warm-800">Flokkur 18</p>
+                  <p className="text-warm-600">Eðalgös — full ysta skel</p>
+                </div>
+              </div>
+            </div>
+
+            {/* How to find an element */}
+            <div className="bg-amber-50 rounded-xl p-6 border-l-4 border-amber-500">
+              <h3 className="font-bold text-amber-800 mb-3">Hvernig finnur þú frumefni?</h3>
+              <p className="text-warm-700 mb-2">
+                Hvert hólf sýnir: <strong>efnatáknið</strong> (t.d. Na),{' '}
+                <strong>atómnúmerið</strong> (fjöldi róteinda), og <strong>litinn</strong> segir þér
+                tegund frumefnisins (málmur, málmleysingur, eða hálf-málmur).
+              </p>
+              <p className="text-warm-700 text-sm">
+                Til dæmis: Ef þú leitar að kopar (Cu), veistu að hann er málmur — leitaðu í miðjunni
+                á lotukerfinu, á lotu 4.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowIntro(false)}
+              className="w-full py-4 rounded-xl font-bold text-lg bg-green-600 hover:bg-green-700 text-white transition-colors"
+            >
+              Byrja æfingar →
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // --- Summary screen ---
   if (done) {

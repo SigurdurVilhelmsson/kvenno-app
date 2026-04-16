@@ -9,9 +9,7 @@ export function calculateCorrectAnswer(
   const timesFromR2 = reactant2Count / reaction.reactant2.coeff;
 
   const limitingReactant =
-    timesFromR1 < timesFromR2
-      ? reaction.reactant1.formula
-      : reaction.reactant2.formula;
+    timesFromR1 < timesFromR2 ? reaction.reactant1.formula : reaction.reactant2.formula;
 
   const timesReactionRuns = Math.floor(Math.min(timesFromR1, timesFromR2));
 
@@ -43,7 +41,7 @@ export function calculateCorrectAnswer(
     timesFromR1,
     timesFromR2,
     r1Used,
-    r2Used
+    r2Used,
   };
 }
 
@@ -65,32 +63,4 @@ export function generateReactantCounts(difficulty: 'easy' | 'medium' | 'hard'): 
   }
 
   return { r1Count, r2Count };
-}
-
-export function calculatePoints(
-  difficulty: 'easy' | 'medium' | 'hard',
-  streak: number,
-  timeRemaining: number,
-  timerMode: boolean,
-  isGramMode = false
-): number {
-  let points = difficulty === 'easy' ? 10 : difficulty === 'medium' ? 15 : 20;
-
-  // Gram mode bonus (requires unit conversion, harder calculations)
-  if (isGramMode) {
-    points = Math.round(points * 1.5);
-  }
-
-  // Speed bonus in timer mode
-  if (timerMode) {
-    if (timeRemaining > 90) points += 10;
-    else if (timeRemaining > 60) points += 5;
-  }
-
-  // Streak bonus
-  if (streak % 10 === 0) points += 15;
-  else if (streak % 5 === 0) points += 10;
-  else if (streak % 3 === 0) points += 5;
-
-  return points;
 }

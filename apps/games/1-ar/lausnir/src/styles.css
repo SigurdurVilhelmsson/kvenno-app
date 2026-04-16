@@ -1,7 +1,7 @@
-@import "tailwindcss";
-@import "../../../../../packages/shared/styles/theme.css";
+@import 'tailwindcss';
+@import '../../../../../packages/shared/styles/theme.css';
 @source "../../../../../packages/shared";
-@import "../../../../../packages/shared/styles/game-base.css";
+@import '../../../../../packages/shared/styles/game-base.css';
 
 /* Beaker Visualizations */
 .beaker-container {
@@ -71,51 +71,6 @@
 
 .dissolve-animation {
   animation: dissolve 2s ease-in-out;
-}
-
-/* Streak flame animation */
-.streak-flame {
-  display: inline-block;
-  animation: flicker 1s ease-in-out infinite;
-}
-
-@keyframes flicker {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.9;
-  }
-}
-
-/* Timer warning pulse */
-.timer-warning {
-  animation: pulse 1s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
-/* Input validation styles */
-.input-error {
-  border-color: #ef4444 !important;
-  background-color: #fee2e2;
-}
-
-.error-message {
-  color: #dc2626;
-  font-size: 0.875rem;
-  margin-top: 0.5rem;
 }
 
 /* Step-by-step solution styles */

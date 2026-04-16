@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
-import { useGameI18n } from '@shared/hooks';
+import { useGameI18n, useGameProgress } from '@shared/hooks';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
 import { gameTranslations } from './i18n';
-import { storage } from './utils/storage';
 
 import './styles.css';
 
@@ -22,63 +21,47 @@ interface Progress {
   totalGamesPlayed: number;
 }
 
-const STORAGE_KEY = 'takmarkandi-levels-progress';
-
-function getDefaultProgress(): Progress {
-  return {
-    level1Completed: false,
-    level1Score: 0,
-    level2Completed: false,
-    level2Score: 0,
-    level3BestScore: 0,
-    totalGamesPlayed: 0,
-  };
-}
+const DEFAULT_PROGRESS: Progress = {
+  level1Completed: false,
+  level1Score: 0,
+  level2Completed: false,
+  level2Score: 0,
+  level3BestScore: 0,
+  totalGamesPlayed: 0,
+};
 
 function App() {
   const [screen, setScreen] = useState<Screen>('menu');
-  const [progress, setProgress] = useState<Progress>(() =>
-    storage.get<Progress>(STORAGE_KEY, getDefaultProgress())
+  const { progress, updateProgress, resetProgress } = useGameProgress<Progress>(
+    'takmarkandi-levels-progress',
+    DEFAULT_PROGRESS
   );
   const { t, language, setLanguage } = useGameI18n({ gameTranslations });
 
-  useEffect(() => {
-    storage.set(STORAGE_KEY, progress);
-  }, [progress]);
-
-  const handleLevel1Complete = (score: number, _maxScore: number, _hintsUsed: number) => {
-    setProgress((prev) => ({
-      ...prev,
+  const handleLevel1Complete = (score: number) => {
+    updateProgress({
       level1Completed: true,
-      level1Score: Math.max(prev.level1Score, score),
-      totalGamesPlayed: prev.totalGamesPlayed + 1,
-    }));
+      level1Score: Math.max(progress.level1Score, score),
+      totalGamesPlayed: progress.totalGamesPlayed + 1,
+    });
     setScreen('menu');
   };
 
-  const handleLevel2Complete = (score: number, _maxScore: number, _hintsUsed: number) => {
-    setProgress((prev) => ({
-      ...prev,
+  const handleLevel2Complete = (score: number) => {
+    updateProgress({
       level2Completed: true,
-      level2Score: Math.max(prev.level2Score, score),
-      totalGamesPlayed: prev.totalGamesPlayed + 1,
-    }));
+      level2Score: Math.max(progress.level2Score, score),
+      totalGamesPlayed: progress.totalGamesPlayed + 1,
+    });
     setScreen('menu');
   };
 
-  const handleLevel3Complete = (score: number, _maxScore: number, _hintsUsed: number) => {
-    setProgress((prev) => ({
-      ...prev,
-      level3BestScore: Math.max(prev.level3BestScore, score),
-      totalGamesPlayed: prev.totalGamesPlayed + 1,
-    }));
+  const handleLevel3Complete = (score: number) => {
+    updateProgress({
+      level3BestScore: Math.max(progress.level3BestScore, score),
+      totalGamesPlayed: progress.totalGamesPlayed + 1,
+    });
     setScreen('menu');
-  };
-
-  const resetProgress = () => {
-    const newProgress = getDefaultProgress();
-    setProgress(newProgress);
-    storage.set(STORAGE_KEY, newProgress);
   };
 
   // Level screens
@@ -187,7 +170,7 @@ function App() {
                       <h3 className="text-xl font-bold text-warm-800">Meistarapróf</h3>
                     </div>
                     <p className="text-warm-600 text-sm">
-                      Veldu erfiðleikastig og kepptu við tímann!
+                      Samþætt verkefni: finndu takmarkandi, reiknaðu afurðir og afgang
                     </p>
                   </div>
                   <div className="text-right">

@@ -1,7 +1,5 @@
 import { useState } from 'react';
 
-import { CompoundVisualization } from './MolecularStructure';
-
 interface Level2Props {
   t: (key: string, fallback?: string) => string;
   onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
@@ -372,25 +370,11 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           {t('level2.ui.followSteps', 'Fylgdu skrefunum til að nefna efnasambandið rétt')}
         </p>
 
-        {/* Formula display with molecular structure */}
+        {/* Formula display */}
         <div className="bg-warm-100 rounded-2xl p-6 md:p-8 mb-6 text-center">
-          <div className="text-4xl md:text-6xl font-mono font-bold text-warm-800 mb-4">
+          <div className="text-4xl md:text-6xl font-mono font-bold text-warm-800">
             {challenge.formula}
           </div>
-          <CompoundVisualization
-            compound={{
-              formula: challenge.formula,
-              name: challenge.correctName,
-              type: challenge.type === 'molecular' ? 'molecular' : 'ionic',
-              category:
-                challenge.type === 'ionic-variable' ? 'málmar-breytilega-hleðsla' : 'jónefni',
-              difficulty: 'easy',
-              elements: [],
-              info: '',
-            }}
-            size="medium"
-            showLabels={true}
-          />
         </div>
 
         {/* Step indicator */}
@@ -420,9 +404,8 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               {t('level2.ui.step1Title', 'Skref 1: Hvaða tegund efnasambands er þetta?')}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {(
-                Object.entries(typeNames) as [CompoundType, (typeof typeNames)[CompoundType]][]
-              ).map(([type, info]) => {
+              {(Object.keys(typeNames) as CompoundType[]).map((type) => {
+                const info = typeNames[type];
                 const colors = getColorClasses(info.color);
                 return (
                   <button

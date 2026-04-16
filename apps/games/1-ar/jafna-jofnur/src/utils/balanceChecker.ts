@@ -75,3 +75,39 @@ export function checkBalance(
 
   return { elements, isBalanced };
 }
+
+/** Icelandic element names for common elements in this game */
+const ELEMENT_NAMES_IS: Record<string, string> = {
+  H: 'Vetni (H)',
+  O: 'Súrefni (O)',
+  N: 'Köfnunarefni (N)',
+  C: 'Kolefni (C)',
+  Na: 'Natríum (Na)',
+  Cl: 'Klór (Cl)',
+  Mg: 'Magnesíum (Mg)',
+  Fe: 'Járn (Fe)',
+  Ca: 'Kalsíum (Ca)',
+  Li: 'Litíum (Li)',
+  Al: 'Ál (Al)',
+  K: 'Kalíum (K)',
+  S: 'Brennisteinn (S)',
+  Zn: 'Sink (Zn)',
+};
+
+/**
+ * Build an Icelandic diagnostic string listing which elements are unbalanced.
+ * Example: "Vetni (H): 4 vinstra megin en 2 hægra megin."
+ */
+export function buildUnbalancedDiagnostic(elements: ElementCount[]): string {
+  const unbalanced = elements.filter((e) => !e.balanced);
+  if (unbalanced.length === 0) return '';
+
+  return (
+    unbalanced
+      .map((e) => {
+        const name = ELEMENT_NAMES_IS[e.element] ?? e.element;
+        return `${name}: ${e.left} vinstra megin en ${e.right} hægra megin`;
+      })
+      .join('. ') + '.'
+  );
+}

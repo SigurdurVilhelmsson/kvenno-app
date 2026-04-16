@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
+import { shuffleArray } from '@shared/utils';
 
 import { Problem, ProblemType } from '../types';
 import { FormulaCard } from './FormulaCard';
@@ -12,20 +13,8 @@ const TOTAL = 8;
 const THEME = '#8b5cf6';
 
 interface Level3Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
-}
-
-/** Fisher-Yates shuffle */
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
 }
 
 /** Pre-generate 8 problems: 4 easier then 4 harder, shuffled within each group */
@@ -38,7 +27,7 @@ function generateAllProblems(): Problem[] {
     'molarityFromMass',
   ];
   const gen = (types: ProblemType[], diff: 'easy' | 'medium') =>
-    shuffle(types).map((type) => {
+    shuffleArray(types).map((type) => {
       let p = generateProblem(diff);
       while (p.type !== type) p = generateProblem(diff);
       return p;
@@ -46,13 +35,12 @@ function generateAllProblems(): Problem[] {
   return [...gen(easyTypes, 'easy'), ...gen(hardTypes, 'medium')];
 }
 
-export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
+export function Level3({ onComplete, onBack }: Level3Props) {
   const [problems] = useState<Problem[]>(generateAllProblems);
   const [idx, setIdx] = useState(0);
   const [input, setInput] = useState('');
   const [inputError, setInputError] = useState<string | null>(null);
   const [correctCount, setCorrectCount] = useState(0);
-  const [hintsUsed, setHintsUsed] = useState(0);
   const [hintLevel, setHintLevel] = useState(0);
   const [feedback, setFeedback] = useState(false);
   const [correct, setCorrect] = useState(false);
@@ -74,9 +62,6 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     setFeedback(true);
     if (ok) {
       setCorrectCount((c) => c + 1);
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
     }
   };
 
@@ -96,7 +81,6 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const showHint = () => {
     if (hintLevel >= 3) return;
     setHintLevel((h) => h + 1);
-    setHintsUsed((h) => h + 1);
   };
 
   if (done) {
@@ -105,7 +89,6 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       setIdx(0);
       setInput('');
       setCorrectCount(0);
-      setHintsUsed(0);
       setHintLevel(0);
       setFeedback(false);
       setDone(false);
@@ -136,7 +119,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               </button>
               {passed && (
                 <button
-                  onClick={() => onComplete(correctCount, TOTAL, hintsUsed)}
+                  onClick={() => onComplete(correctCount)}
                   className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-colors"
                 >
                   Ljúka stigi →

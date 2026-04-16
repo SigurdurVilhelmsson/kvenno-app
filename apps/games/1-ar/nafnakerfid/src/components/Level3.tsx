@@ -1,8 +1,10 @@
 import { useState, useCallback, useMemo } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
+import { shuffleArray } from '@shared/utils';
 
 import { COMPOUNDS, type Compound } from '../data/compounds';
+import { PREFIXES, ELEMENT_ROOTS } from '../data/naming';
 
 interface Level3Props {
   t: (key: string, fallback?: string) => string;
@@ -12,60 +14,10 @@ interface Level3Props {
   onIncorrectAnswer?: () => void;
 }
 
-/** Greek prefixes for molecular compounds */
-const PREFIXES: Record<number, string> = {
-  1: 'mónó',
-  2: 'dí',
-  3: 'trí',
-  4: 'tetra',
-  5: 'penta',
-  6: 'hexa',
-  7: 'hepta',
-  8: 'okta',
-  9: 'nóna',
-  10: 'deka',
-};
-
-/** Icelandic element roots for building compound names */
-const ELEMENT_ROOTS: Record<string, { root: string; full: string }> = {
-  H: { root: 'vetni', full: 'Vetni' },
-  C: { root: 'kol', full: 'Kolefni' },
-  N: { root: 'nitur', full: 'Köfnunarefni' },
-  O: { root: 'oxíð', full: 'Súrefni' },
-  F: { root: 'flúoríð', full: 'Flúor' },
-  Cl: { root: 'klóríð', full: 'Klór' },
-  Br: { root: 'brómíð', full: 'Bróm' },
-  I: { root: 'joðíð', full: 'Joð' },
-  S: { root: 'brennisteinið', full: 'Brennisteinn' },
-  P: { root: 'fosfór', full: 'Fosfór' },
-  Na: { root: 'natríum', full: 'Natríum' },
-  K: { root: 'kalíum', full: 'Kalíum' },
-  Ca: { root: 'kalsíum', full: 'Kalsíum' },
-  Mg: { root: 'magnesíum', full: 'Magnesíum' },
-  Al: { root: 'ál', full: 'Ál' },
-  Fe: { root: 'járn', full: 'Járn' },
-  Cu: { root: 'kopar', full: 'Kopar' },
-  Zn: { root: 'sink', full: 'Sink' },
-  Ag: { root: 'silfur', full: 'Silfur' },
-  Li: { root: 'litíum', full: 'Litíum' },
-  Ba: { root: 'baríum', full: 'Baríum' },
-  Xe: { root: 'xenon', full: 'Xenon' },
-};
-
 interface NamePart {
   id: string;
   text: string;
   type: 'prefix' | 'element' | 'suffix';
-}
-
-/** Fisher-Yates shuffle */
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
 }
 
 /** Generate available clickable parts plus distractors for a compound */
@@ -94,7 +46,7 @@ function generateParts(compound: Compound): NamePart[] {
     }
   });
 
-  return shuffle(parts);
+  return shuffleArray(parts);
 }
 
 /** Pick 10 compounds mixing different types, excluding special names */
@@ -110,7 +62,7 @@ function selectCompounds(): Compound[] {
       c.name !== 'Klór' &&
       !c.name.includes('(blandað)')
   );
-  return shuffle(pool).slice(0, 10);
+  return shuffleArray(pool).slice(0, 10);
 }
 
 /** Naming rule explanation for a compound */

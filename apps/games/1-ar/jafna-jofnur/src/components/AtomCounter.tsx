@@ -23,29 +23,35 @@ export function AtomCounter({ elements, highlightUnbalanced = false }: AtomCount
             <th className="text-left py-1.5 px-2 font-medium">Frumefni</th>
             <th className="text-center py-1.5 px-2 font-medium">Vinstri</th>
             <th className="text-center py-1.5 px-2 font-medium">Hægri</th>
-            <th className="text-center py-1.5 px-2 font-medium w-10"></th>
+            <th className="text-center py-1.5 px-2 font-medium">Staða</th>
           </tr>
         </thead>
         <tbody>
-          {elements.map(({ element, left, right, balanced }) => (
-            <tr
-              key={element}
-              className={`border-b border-warm-100 transition-colors duration-200 ${
-                highlightUnbalanced && !balanced ? 'bg-red-50' : balanced ? 'bg-green-50' : ''
-              }`}
-            >
-              <td className="py-1.5 px-2 font-bold text-warm-800">{element}</td>
-              <td className="py-1.5 px-2 text-center font-mono text-warm-700">{left}</td>
-              <td className="py-1.5 px-2 text-center font-mono text-warm-700">{right}</td>
-              <td className="py-1.5 px-2 text-center">
-                {balanced ? (
-                  <span className="text-green-500 font-bold text-base">✓</span>
-                ) : (
-                  <span className="text-red-500 font-bold text-base">✗</span>
-                )}
-              </td>
-            </tr>
-          ))}
+          {elements.map(({ element, left, right, balanced }) => {
+            const status = balanced
+              ? `${element} er jafnað: ${left} atóm beggja megin`
+              : `${element} er ójafnað: ${left} vinstra megin, ${right} hægra megin`;
+            return (
+              <tr
+                key={element}
+                aria-label={status}
+                className={`border-b border-warm-100 transition-colors duration-200 ${
+                  highlightUnbalanced && !balanced ? 'bg-red-50' : balanced ? 'bg-green-50' : ''
+                }`}
+              >
+                <td className="py-1.5 px-2 font-bold text-warm-800">{element}</td>
+                <td className="py-1.5 px-2 text-center font-mono text-warm-700">{left}</td>
+                <td className="py-1.5 px-2 text-center font-mono text-warm-700">{right}</td>
+                <td className="py-1.5 px-2 text-center" aria-hidden="true">
+                  {balanced ? (
+                    <span className="text-green-600 font-bold text-base">✓ jafnað</span>
+                  ) : (
+                    <span className="text-red-600 font-bold text-base">✗ ójafnað</span>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

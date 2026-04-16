@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
+import { shuffleArray } from '@shared/utils';
 
 import { PeriodicTable } from './PeriodicTable';
 import {
@@ -28,18 +29,8 @@ interface Question {
   highlightSymbols: string[];
 }
 
-/** Fisher-Yates shuffle */
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
 function pickRandom<T>(arr: T[], n: number): T[] {
-  return shuffle(arr).slice(0, n);
+  return shuffleArray(arr).slice(0, n);
 }
 
 /** Classification questions: metal / nonmetal / metalloid */
@@ -65,7 +56,7 @@ function makeOrderQuestion(): Question {
   );
   elements.sort((a, b) => a.atomicMass - b.atomicMass);
   const correctOrder = elements.map((e) => e.symbol).join(' < ');
-  const shuffled = shuffle(elements);
+  const shuffled = shuffleArray(elements);
 
   // Generate plausible wrong orderings
   const allPerms = [
@@ -88,7 +79,7 @@ function makeOrderQuestion(): Question {
   return {
     type: 'order-by-mass',
     text: `Raðaðu ${shuffled.map((e) => e.name).join(', ')} eftir vaxandi frumeindamassa:`,
-    options: shuffle(options),
+    options: shuffleArray(options),
     correctOption: correctOrder,
     explanation: `Rétt röðun: ${elements.map((e) => `${e.name} (${e.atomicMass.toFixed(1)})`).join(' < ')}.`,
     highlightSymbols: elements.map((e) => e.symbol),
@@ -161,7 +152,7 @@ function makeGroupQuestion(): Question {
   return {
     type: 'group-property',
     text: q.question,
-    options: shuffle(q.options),
+    options: shuffleArray(q.options),
     correctOption: q.correct,
     explanation: q.explanation,
     highlightSymbols: q.elements,
@@ -185,7 +176,7 @@ function generateQuestions(): Question[] {
   questions.push(makeGroupQuestion());
   questions.push(makeGroupQuestion());
 
-  return shuffle(questions);
+  return shuffleArray(questions);
 }
 
 const TOTAL = 8;

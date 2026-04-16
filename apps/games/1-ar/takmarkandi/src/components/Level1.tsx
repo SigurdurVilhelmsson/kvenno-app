@@ -4,15 +4,12 @@ import { FeedbackPanel } from '@shared/components';
 import { shuffleArray } from '@shared/utils';
 
 import { Molecule } from './Molecule';
-import { ReactionAnimation } from './ReactionAnimation';
 import { REACTIONS } from '../data/reactions';
 import type { Reaction } from '../types';
 
 interface Level1Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 interface Question {
@@ -49,15 +46,15 @@ function buildQuestions(): Question[] {
   return questions;
 }
 
-export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
+export function Level1({ onComplete, onBack }: Level1Props) {
   const [questions] = useState(buildQuestions);
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [selected, setSelected] = useState<string | null>(null);
-  const [showAnimation, setShowAnimation] = useState(false);
   const [done, setDone] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
 
   const q = questions[index];
   const timesR1 = q.r1Count / q.reaction.reactant1.coeff;
@@ -72,9 +69,6 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     setAnswered(true);
     if (correct) {
       setScore((s) => s + POINTS_PER_Q);
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
     }
   };
 
@@ -87,7 +81,6 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     setAnswered(false);
     setIsCorrect(false);
     setSelected(null);
-    setShowAnimation(false);
   };
 
   // --- Summary screen ---
@@ -115,7 +108,6 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 setAnswered(false);
                 setIsCorrect(false);
                 setSelected(null);
-                setShowAnimation(false);
                 setDone(false);
               }}
               className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-800 font-bold py-3 rounded-xl transition-colors"
@@ -123,7 +115,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               Reyna aftur
             </button>
             <button
-              onClick={() => onComplete(score, TOTAL * POINTS_PER_Q, 0)}
+              onClick={() => onComplete(score)}
               className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
             >
               Ljuka stigi
@@ -131,6 +123,76 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
           <button onClick={onBack} className="text-warm-500 hover:text-warm-700 text-sm">
             Til baka i valmynd
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // --- Teaching intro ---
+  if (showIntro) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white p-4 flex items-center justify-center">
+        <div className="max-w-lg w-full space-y-6">
+          <div className="bg-white rounded-xl shadow-lg p-8">
+            <h1 className="text-2xl font-bold text-warm-800 mb-2">Takmarkandi hvarfefni</h1>
+            <p className="text-warm-600 mb-6">
+              Af hverju skiptir maxi hvaða hvarfefni er takmarkandi?
+            </p>
+
+            {/* Core principle */}
+            <div className="bg-red-50 border border-red-200 rounded-xl p-5 mb-5">
+              <h2 className="font-bold text-red-800 mb-2">Meginreglan</h2>
+              <p className="text-red-700">
+                Þegar eitt hvarfefni klárast, <strong>stöðvast hvarfið</strong> — sama hversu mikið
+                er eftir af hinu hvarfefninu. Hvarfefnið sem klárast fyrst kallast{' '}
+                <strong>takmarkandi hvarfefni</strong>.
+              </p>
+            </div>
+
+            {/* Cooking analogy */}
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-5">
+              <h2 className="font-bold text-amber-800 mb-2">Samlokudæmið</h2>
+              <p className="text-amber-700">
+                Ef þú hefur 10 brauðsneiðar og 3 osta, geturðu bara gert 3 samlokur —{' '}
+                <strong>osturinn er takmarkandi</strong>. Þú átt 4 brauðsneiðar eftir sem þú getur
+                ekki notað.
+              </p>
+            </div>
+
+            {/* Math principle */}
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-5 mb-5">
+              <h2 className="font-bold text-blue-800 mb-2">Aðferðin</h2>
+              <p className="text-blue-700 mb-3">
+                Deildu fjölda sameinda með stuðlinum — <strong>lægri talan</strong> segir þér hvað
+                rennur fyrst út.
+              </p>
+              <div className="bg-white rounded-lg p-4 font-mono text-sm text-warm-700 space-y-1">
+                <div>2 Mg + O₂ → 2 MgO</div>
+                <div className="mt-2">
+                  Mg: 6 ÷ 2 = <strong>3</strong> skipti
+                </div>
+                <div>
+                  O₂: 2 ÷ 1 = <strong>2</strong> skipti
+                </div>
+                <div className="mt-2 text-kvenno-orange font-bold">
+                  O₂ er takmarkandi (2 &lt; 3)
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setShowIntro(false)}
+            className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-4 rounded-xl transition-colors text-lg"
+          >
+            Byrja æfingar →
+          </button>
+          <button
+            onClick={onBack}
+            className="w-full text-warm-500 hover:text-warm-700 text-sm py-2"
+          >
+            ← Til baka í valmynd
           </button>
         </div>
       </div>
@@ -234,30 +296,6 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               }}
               config={{ showExplanation: true, showMisconceptions: !isCorrect }}
             />
-
-            {/* Optional animation toggle */}
-            <button
-              onClick={() => setShowAnimation(!showAnimation)}
-              className={`w-full py-2 px-4 rounded-lg font-medium transition-colors ${
-                showAnimation
-                  ? 'bg-purple-100 text-purple-700 border-2 border-purple-300'
-                  : 'bg-purple-500 hover:bg-purple-600 text-white'
-              }`}
-            >
-              {showAnimation ? 'Fela hreyfimynd' : 'Sja hvorfin i hreyfimynd'}
-            </button>
-
-            {showAnimation && (
-              <ReactionAnimation
-                reactant1={q.reaction.reactant1}
-                reactant2={q.reaction.reactant2}
-                products={q.reaction.products}
-                r1Count={q.r1Count}
-                r2Count={q.r2Count}
-                showResult
-                autoPlay={false}
-              />
-            )}
 
             <button
               onClick={handleNext}

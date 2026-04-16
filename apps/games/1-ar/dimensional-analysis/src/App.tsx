@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
-import { useGameI18n } from '@shared/hooks';
+import { useGameI18n, useGameProgress } from '@shared/hooks';
 
 // Import Level components
 import { Level1Conceptual } from './components/Level1Conceptual';
@@ -9,22 +9,8 @@ import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
 import { gameTranslations } from './i18n';
 
-const STORAGE_KEY = 'dimensional-analysis-completed';
-
-/** Read completed levels from localStorage */
-function loadCompleted(): Set<number> {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return new Set(JSON.parse(raw) as number[]);
-  } catch {
-    /* ignore corrupt data */
-  }
-  return new Set<number>();
-}
-
-/** Persist completed levels to localStorage */
-function saveCompleted(levels: Set<number>) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify([...levels]));
+interface Progress {
+  completed: number[];
 }
 
 /**
@@ -33,19 +19,18 @@ function saveCompleted(levels: Set<number>) {
 function App() {
   const { t, language, setLanguage } = useGameI18n({ gameTranslations });
   const [screen, setScreen] = useState<'menu' | 'level1' | 'level2' | 'level3'>('menu');
-  const [completedLevels, setCompletedLevels] = useState<Set<number>>(() => loadCompleted());
+  const { progress, updateProgress } = useGameProgress<Progress>('dimensional-analysis-progress', {
+    completed: [],
+  });
+  const completedLevels = progress.completed;
 
-  useEffect(() => {
-    saveCompleted(completedLevels);
-  }, [completedLevels]);
-
-  const markCompleted = useCallback((level: number) => {
-    setCompletedLevels((prev) => {
-      const next = new Set(prev);
-      next.add(level);
-      return next;
-    });
-  }, []);
+  const markCompleted = useCallback(
+    (level: number) => {
+      if (completedLevels.includes(level)) return;
+      updateProgress({ completed: [...completedLevels, level] });
+    },
+    [completedLevels, updateProgress]
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
@@ -89,7 +74,9 @@ function App() {
                     <p className="text-green-100">
                       {t('levels.level1.description', 'Sjónræn lærdómur - engar útreikninga')}
                     </p>
-                    {completedLevels.has(1) && <p className="text-sm text-green-200 mt-2">Lokið</p>}
+                    {completedLevels.includes(1) && (
+                      <p className="text-sm text-green-200 mt-2">Lokið</p>
+                    )}
                   </button>
 
                   {/* Level 2 - Application (Predict & Reason) */}
@@ -106,7 +93,9 @@ function App() {
                     <p className="text-blue-100">
                       {t('levels.level2.description', 'Spá fyrir og rökstyðja')}
                     </p>
-                    {completedLevels.has(2) && <p className="text-sm text-blue-200 mt-2">Lokið</p>}
+                    {completedLevels.includes(2) && (
+                      <p className="text-sm text-blue-200 mt-2">Lokið</p>
+                    )}
                   </button>
 
                   {/* Level 3 - Calculation (Full Problems) */}
@@ -124,7 +113,7 @@ function App() {
                     <p className="text-orange-100">
                       {t('levels.level3.description', 'Fullir útreikningar með formúlum')}
                     </p>
-                    {completedLevels.has(3) && (
+                    {completedLevels.includes(3) && (
                       <p className="text-sm text-orange-200 mt-2">Lokið</p>
                     )}
                   </button>

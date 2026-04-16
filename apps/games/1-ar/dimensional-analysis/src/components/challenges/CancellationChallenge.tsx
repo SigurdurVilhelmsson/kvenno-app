@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { shuffleArray } from '@shared/utils';
+
 import { UnitBlock, ConversionFactorBlock } from '../UnitBlock';
 
 interface Factor {
@@ -28,15 +30,6 @@ interface CancellationChallengeProps {
 function getRandomStartValue(): number {
   const options = [250, 500, 750, 1500, 2000];
   return options[Math.floor(Math.random() * options.length)];
-}
-
-function shuffleFactors<T>(array: T[]): T[] {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
 }
 
 /**
@@ -93,7 +86,7 @@ function SingleStepCancellation({
   );
   const [startValue] = useState(() => getRandomStartValue());
   const [factors] = useState(() =>
-    shuffleFactors([
+    shuffleArray([
       { num: 1000, numUnit: 'mL', den: 1, denUnit: 'L', correct: false },
       { num: 1, numUnit: 'L', den: 1000, denUnit: 'mL', correct: true },
     ])

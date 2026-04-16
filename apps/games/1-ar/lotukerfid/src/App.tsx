@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
-import { useGameI18n } from '@shared/hooks/useGameI18n';
+import { useGameI18n, useGameProgress } from '@shared/hooks';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
@@ -16,33 +16,29 @@ interface Progress {
   level3Completed: boolean;
 }
 
-function loadProgress(): Progress {
-  const saved = localStorage.getItem('lotukerfidProgress');
-  if (saved) {
-    try {
-      return JSON.parse(saved);
-    } catch {
-      return { level1Completed: false, level2Completed: false, level3Completed: false };
-    }
-  }
-  return { level1Completed: false, level2Completed: false, level3Completed: false };
-}
+const DEFAULT_PROGRESS: Progress = {
+  level1Completed: false,
+  level2Completed: false,
+  level3Completed: false,
+};
 
-function saveProgress(progress: Progress): void {
-  localStorage.setItem('lotukerfidProgress', JSON.stringify(progress));
-}
+const LEVEL_KEYS: Record<1 | 2 | 3, keyof Progress> = {
+  1: 'level1Completed',
+  2: 'level2Completed',
+  3: 'level3Completed',
+};
 
 function App() {
   const [mode, setMode] = useState<AppMode>('menu');
-  const [progress, setProgress] = useState<Progress>(loadProgress());
+  const { progress, updateProgress, resetProgress } = useGameProgress<Progress>(
+    'lotukerfidProgress',
+    DEFAULT_PROGRESS
+  );
 
   const { t, language, setLanguage } = useGameI18n({ gameTranslations });
 
   const completeLevel = (level: 1 | 2 | 3) => {
-    const key = `level${level}Completed` as keyof Progress;
-    const newProgress = { ...progress, [key]: true };
-    setProgress(newProgress);
-    saveProgress(newProgress);
+    updateProgress({ [LEVEL_KEYS[level]]: true } as Partial<Progress>);
     setMode('menu');
   };
 
@@ -189,8 +185,8 @@ function App() {
           <div className="mt-8 bg-white rounded-2xl shadow-lg p-6">
             <h3 className="font-bold text-warm-800 mb-3">{t('menu.learningPath.title')}</h3>
             <div className="space-y-3 text-sm text-warm-600">
-              {[1, 2, 3].map((step) => {
-                const completed = progress[`level${step}Completed` as keyof Progress];
+              {([1, 2, 3] as const).map((step) => {
+                const completed = progress[LEVEL_KEYS[step]];
                 return (
                   <div key={step} className="flex items-start gap-3">
                     <div
@@ -232,13 +228,7 @@ function App() {
               <button
                 onClick={() => {
                   if (confirm(t('menu.resetConfirm'))) {
-                    const reset = {
-                      level1Completed: false,
-                      level2Completed: false,
-                      level3Completed: false,
-                    };
-                    setProgress(reset);
-                    saveProgress(reset);
+                    resetProgress();
                   }
                 }}
                 className="text-xs text-warm-400 hover:text-warm-600 underline"

@@ -272,10 +272,8 @@ function ConcentrationIndicator({
 }
 
 interface Level1Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 // Prediction question types based on challenge type
@@ -312,12 +310,11 @@ function getPredictionQuestion(challenge: Challenge): PredictionQuestion {
 }
 
 // Main Level1 component
-export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
+export function Level1({ onComplete, onBack }: Level1Props) {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [molecules, setMolecules] = useState(50);
   const [volumeML, setVolumeML] = useState(100);
   const [showHint, setShowHint] = useState(false);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
   const [completed, setCompleted] = useState<number[]>([]);
   const [score, setScore] = useState(0);
   const [showConcept, setShowConcept] = useState(false);
@@ -418,7 +415,6 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       setScore((prev) => prev + pointsEarned);
       setCompleted((prev) => [...prev, challenge.id]);
       setShowConcept(true);
-      onCorrectAnswer?.();
 
       // Move to next challenge after delay
       setTimeout(() => {
@@ -428,10 +424,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           setGameComplete(true);
         }
       }, 2500);
-    } else {
-      onIncorrectAnswer?.();
     }
-  }, [isCorrect, showHint, challenge.id, currentChallenge, onCorrectAnswer, onIncorrectAnswer]);
+  }, [isCorrect, showHint, challenge.id, currentChallenge]);
 
   // Game complete screen
   if (gameComplete) {
@@ -473,7 +467,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               Spila aftur
             </button>
             <button
-              onClick={() => onComplete(score, CHALLENGES.length * 100, totalHintsUsed)}
+              onClick={() => onComplete(score)}
               className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl transition-colors"
             >
               Áfram í Stig 2 →
@@ -529,6 +523,24 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <h2 className="text-2xl font-bold text-blue-800">Hugsaðu fyrst!</h2>
               <p className="text-warm-600 mt-2">Áður en þú byrjar, spáðu fyrir um útkomunna</p>
             </div>
+
+            {/* Bridging note: connect abstract units to real chemistry (shown on first challenge) */}
+            {currentChallenge === 0 && (
+              <div className="bg-indigo-50 border border-indigo-200 p-4 rounded-xl mb-6">
+                <h3 className="font-semibold text-indigo-800 mb-2">Um einingar í þessu verkefni</h3>
+                <ul className="text-sm text-indigo-700 space-y-1">
+                  <li>
+                    Í þessu stigi notum við <strong>&laquo;sameindir&raquo;</strong> sem abstrakta
+                    einingu &mdash; hver sameind táknar 0,01 mól.
+                  </li>
+                  <li>Á stigi 3 notum við raunverulegar einingar: grömm, mól og mólmassa.</li>
+                  <li>
+                    Hugmyndin er sú sama:{' '}
+                    <strong>styrkur = magn efnis &divide; rúmmál lausnar</strong>.
+                  </li>
+                </ul>
+              </div>
+            )}
 
             <div className="bg-blue-50 p-4 rounded-xl mb-6">
               <div className="text-sm text-warm-600 mb-2">
@@ -714,6 +726,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                       max={challenge.constraints.maxVolume}
                       value={volumeML}
                       onChange={(e) => changeVolume(parseInt(e.target.value))}
+                      aria-label="Rúmmál lausnar í millilítrum"
+                      aria-valuetext={`${volumeML} millilítrar af ${challenge.constraints.maxVolume}`}
                       className="w-full h-3 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
                     />
                     <div className="flex justify-between text-sm text-warm-600 mt-1">
@@ -776,10 +790,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <div className="flex flex-col md:flex-row gap-4">
               {!showHint && !showConcept && (
                 <button
-                  onClick={() => {
-                    setShowHint(true);
-                    setTotalHintsUsed((prev) => prev + 1);
-                  }}
+                  onClick={() => setShowHint(true)}
                   className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
                 >
                   Syna visbendingu
@@ -799,16 +810,6 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               >
                 {showConcept ? 'Hleð næsta verkefni...' : 'Athuga lausn ✓'}
               </button>
-            </div>
-
-            {/* Key concept reminder */}
-            <div className="mt-6 p-4 bg-warm-50 rounded-xl">
-              <h4 className="font-semibold text-warm-700 mb-2">🔑 Lykilhugmynd:</h4>
-              <p className="text-warm-600">
-                <strong>Styrkur</strong> segir til um hversu margar sameindir eru í hverju rúmmáli.
-                <br />
-                Meiri sameindir EÐA minna rúmmál = hærri styrkur.
-              </p>
             </div>
           </div>
         )}

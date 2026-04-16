@@ -15,7 +15,7 @@ export function Beaker({
   color = '#3b82f6',
   label,
   animate = false,
-  animationType = 'fill'
+  animationType = 'fill',
 }: BeakerProps) {
   const height = 200;
   const width = 120;
@@ -34,7 +34,13 @@ export function Beaker({
 
   return (
     <div className="beaker" style={{ textAlign: 'center' }}>
-      <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`Biker: ${volume} mL${concentration ? `, ${concentration} M` : ''}${label ? `, ${label}` : ''}`}>
+      <svg
+        width={width}
+        height={height}
+        viewBox={`0 0 ${width} ${height}`}
+        role="img"
+        aria-label={`Biker: ${volume} mL${concentration ? `, ${concentration} M` : ''}${label ? `, ${label}` : ''}`}
+      >
         <title>{`Biker með ${volume} mL lausn${concentration ? ` af styrk ${concentration} M` : ''}`}</title>
         {/* Beaker outline */}
         <path
@@ -75,11 +81,24 @@ export function Beaker({
             opacity="0.6"
           />
         )}
+
+        {/* Numeric concentration overlay (accessible to color-blind users) */}
+        {concentration !== undefined && fillHeight > 10 && (
+          <text
+            x={width / 2}
+            y={180 - fillHeight / 2}
+            fontSize="11"
+            fontWeight="700"
+            fill="#1f2937"
+            textAnchor="middle"
+            style={{ paintOrder: 'stroke', stroke: 'white', strokeWidth: 3 }}
+          >
+            {concentration.toFixed(2)} M
+          </text>
+        )}
       </svg>
       {label && (
-        <div className="text-sm mt-2 font-semibold text-warm-700 whitespace-pre-line">
-          {label}
-        </div>
+        <div className="text-sm mt-2 font-semibold text-warm-700 whitespace-pre-line">{label}</div>
       )}
     </div>
   );

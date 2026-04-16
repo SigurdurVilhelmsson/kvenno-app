@@ -38,50 +38,20 @@ export function countSignificantFigures(numStr: string): number {
 }
 
 /**
- * Score an explanation text based on keyword presence and length
+ * Score an explanation text — gives full credit for genuine effort.
+ *
+ * We can't meaningfully grade free-text Icelandic explanations with keyword
+ * matching. Instead: any substantive attempt (20+ chars, at least 3 words)
+ * gets full credit. This encourages reflection without false precision.
  */
-export function scoreExplanation(explanationText: string, problemType: string): number {
-  const text = explanationText.toLowerCase().trim();
+export function scoreExplanation(explanationText: string, _problemType: string): number {
+  const text = explanationText.trim();
+  if (text.length < 10) return 0;
 
-  if (text.length < 10) return 0; // Too short
-
-  let score = 0;
-  let maxScore = 0;
-
-  // Common quality indicators (apply to all types)
-  const qualityKeywords = ['umbreyti', 'stuðul', 'eining', 'margfalda', 'deila', 'strika'];
-  const qualityCount = qualityKeywords.filter((kw) => text.includes(kw)).length;
-  score += Math.min(qualityCount * 0.15, 0.3); // Up to 30% for vocabulary
-  maxScore += 0.3;
-
-  // Type-specific keywords
-  const typeKeywords: Record<string, string[]> = {
-    reverse: ['afturábak', 'byrja', 'enda', 'leið'],
-    error_analysis: ['rang', 'öfug', 'villa', 'snúinn', 'nefnara'],
-    efficiency: ['fæst', 'skref', 'skilvirkn', 'bein'],
-    synthesis: ['eðlismassi', 'rúmmál', 'massi', 'margfalda'],
-    real_world: ['skammta', 'deila', 'fjöldi', 'heiltala'],
-    derivation: ['vísindatölustaf', 'umbreyti', 'hraði'],
-  };
-
-  const keywords = typeKeywords[problemType] || [];
-  if (keywords.length > 0) {
-    const found = keywords.filter((kw) => text.includes(kw)).length;
-    score += (found / keywords.length) * 0.4;
-    maxScore += 0.4;
-  }
-
-  // Length bonus (up to 30%)
-  if (text.length >= 50) {
-    score += 0.3;
-  } else if (text.length >= 30) {
-    score += 0.2;
-  } else if (text.length >= 20) {
-    score += 0.1;
-  }
-  maxScore += 0.3;
-
-  return Math.min(score / maxScore, 1); // Normalize to 0-1
+  const wordCount = text.split(/\s+/).filter(Boolean).length;
+  if (wordCount < 3) return 0.3; // Minimal attempt
+  if (text.length < 20) return 0.5; // Brief but present
+  return 1.0; // Genuine effort — full credit
 }
 
 /**

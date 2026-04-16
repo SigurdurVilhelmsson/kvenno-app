@@ -42,6 +42,7 @@ export function Level3({
   onCorrectAnswer,
   onIncorrectAnswer,
 }: Level3Props) {
+  const [showIntro, setShowIntro] = useState(!initialProgress);
   const [currentProblemIndex, setCurrentProblemIndex] = useState(
     initialProgress?.problemsCompleted || 0
   );
@@ -111,8 +112,8 @@ export function Level3({
     let userSigFigs: number | null = null;
 
     // Score based on problem type
-    if (problem.type === 'reverse' && problem.options) {
-      const selected = problem.options[selectedOption!];
+    if (problem.type === 'reverse' && problem.options && selectedOption !== null) {
+      const selected = problem.options[selectedOption];
       if (selected && selected.correct) {
         answerScore = 1;
         methodScore = 1;
@@ -125,10 +126,8 @@ export function Level3({
       if (Math.abs(userNum - (problem.correctAnswer || 0)) < 0.01) {
         answerScore = 1;
       }
-      if (
-        explanation.toLowerCase().includes('öfug') ||
-        explanation.toLowerCase().includes('rang')
-      ) {
+      // Credit method for any substantive explanation attempt
+      if (explanation.trim().length > 20) {
         methodScore = 1;
       }
     } else if (problem.type === 'efficiency') {
@@ -236,7 +235,84 @@ export function Level3({
     }
   };
 
-  if (!problem) return null;
+  if (!problem && !showIntro) return null;
+
+  if (showIntro) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white p-4">
+        <div className="max-w-3xl mx-auto">
+          <div className="mb-4">
+            <button
+              onClick={onBack}
+              className="text-warm-600 hover:text-warm-800 flex items-center gap-2 text-lg"
+            >
+              ← Til baka
+            </button>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
+            <h2 className="text-2xl font-bold text-warm-800 text-center">
+              Einingagreining í raunveruleikanum
+            </h2>
+
+            <div className="bg-purple-50 rounded-xl p-6 border-l-4 border-purple-500">
+              <h3 className="font-bold text-purple-800 mb-3">Af hverju þetta stig?</h3>
+              <p className="text-warm-700">
+                Þú hefur lært <strong>hvernig</strong> einingar styttast út og hvernig
+                umbreytingakeðjur virka. Nú skaltu nota þessa þekkingu til að leysa raunveruleg
+                vandamál — þar sem villur geta skipt máli.
+              </p>
+            </div>
+
+            <div className="grid gap-3">
+              <div className="bg-warm-50 rounded-lg p-4 flex items-start gap-3">
+                <span className="text-xl mt-0.5">🔍</span>
+                <div>
+                  <p className="font-semibold text-warm-800">Villugreining</p>
+                  <p className="text-sm text-warm-600">
+                    Finndu villur í útreikningum annarra — öfugir stuðlar, gleymdir skref.
+                  </p>
+                </div>
+              </div>
+              <div className="bg-warm-50 rounded-lg p-4 flex items-start gap-3">
+                <span className="text-xl mt-0.5">⚡</span>
+                <div>
+                  <p className="font-semibold text-warm-800">Skilvirkni</p>
+                  <p className="text-sm text-warm-600">
+                    Veldu fæstu skrefin — styttri leiðir gefa nákvæmari niðurstöður.
+                  </p>
+                </div>
+              </div>
+              <div className="bg-warm-50 rounded-lg p-4 flex items-start gap-3">
+                <span className="text-xl mt-0.5">🧪</span>
+                <div>
+                  <p className="font-semibold text-warm-800">Samsetning og raunveruleiki</p>
+                  <p className="text-sm text-warm-600">
+                    Notaðu eðlismassa, rúmmál og styrk saman — eins og í rannsóknarstofu.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-amber-50 rounded-xl p-6 border-l-4 border-amber-500">
+              <h3 className="font-bold text-amber-800 mb-2">Vísbendingar alltaf í boði</h3>
+              <p className="text-warm-700 text-sm">
+                Þú getur alltaf beðið um vísbendingu án þess að það hafi áhrif á einkunn. Skrifaðu
+                stuttar útskýringar til að æfa hugsunina — lengd skiptir ekki máli, aðeins hugsunin.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowIntro(false)}
+              className="w-full py-4 rounded-xl font-bold text-lg bg-purple-600 hover:bg-purple-700 text-white transition-colors"
+            >
+              Byrja áskoranir →
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const avgScore =
     progress.compositeScores.length > 0

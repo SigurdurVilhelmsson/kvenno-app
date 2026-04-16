@@ -1,41 +1,45 @@
-import { useState, useMemo } from 'react';
+import { type ReactNode, useMemo, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
+import { shuffleArray } from '@shared/utils';
 
 import { AtomCounter } from './AtomCounter';
 import { EquationEditor } from './EquationEditor';
 import { REACTIONS, type Reaction } from '../data/reactions';
-import { checkBalance } from '../utils/balanceChecker';
+import { checkBalance, buildUnbalancedDiagnostic } from '../utils/balanceChecker';
 
-/** Fisher-Yates shuffle */
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
+type Difficulty = Reaction['difficulty'];
+type HintSource = 'reaction-hint' | 'dynamic-unbalanced';
+
+export interface LevelConfig {
+  difficulty: Difficulty;
+  /** Page title shown in the header (e.g. "Einfaldar jöfnur – Stig 1") */
+  title: string;
+  /** Tailwind background class for the page gradient, e.g. "from-green-50" */
+  bgFrom: string;
+  /** Optional teaching intro shown before the first problem (Level 1 only) */
+  intro?: ReactNode;
+  /** Optional inline instructions banner shown above the editor */
+  instructions?: string;
+  /** Whether hint mode highlights unbalanced elements in the AtomCounter */
+  highlightUnbalancedOnHint?: boolean;
+  /** How hints are generated — from reaction data or dynamically from balance state */
+  hintSource: HintSource;
 }
 
-interface Level3Props {
+interface LevelProps {
+  config: LevelConfig;
   onBack: () => void;
   onComplete: () => void;
 }
 
-/** Pick all hard reactions, shuffled */
-function selectProblems(): Reaction[] {
-  return shuffle(REACTIONS.filter((r) => r.difficulty === 'hard'));
+function selectProblems(difficulty: Difficulty): Reaction[] {
+  return shuffleArray(REACTIONS.filter((r) => r.difficulty === difficulty));
 }
 
-/**
- * Level 3: Erfiðar jöfnur (Hard Equations)
- * - 6 hard reactions (combustion, displacement, complex)
- * - No hints — student must reason independently
- * - AtomCounter visible but no highlighted guidance
- * - After balancing: FeedbackPanel
- */
-export function Level3({ onBack, onComplete }: Level3Props) {
-  const [problems, setProblems] = useState<Reaction[]>(selectProblems);
+export function Level({ config, onBack, onComplete }: LevelProps) {
+  const [showIntro, setShowIntro] = useState(Boolean(config.intro));
+  const [problems, setProblems] = useState<Reaction[]>(() => selectProblems(config.difficulty));
   const [index, setIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [answered, setAnswered] = useState(false);
@@ -80,21 +84,61 @@ export function Level3({ onBack, onComplete }: Level3Props) {
   };
 
   const handleRetry = () => {
-    const newProblems = selectProblems();
+    const newProblems = selectProblems(config.difficulty);
     setProblems(newProblems);
     setIndex(0);
     setCorrectCount(0);
     setAnswered(false);
     setIsCorrect(false);
+    setShowHint(false);
     setDone(false);
     setReactantCoeffs(newProblems[0].reactants.map(() => 1));
     setProductCoeffs(newProblems[0].products.map(() => 1));
   };
 
+  const hintAvailable = config.hintSource === 'dynamic-unbalanced' || Boolean(reaction.hint);
+
+  const hintText = (): string => {
+    if (config.hintSource === 'reaction-hint') return reaction.hint ?? '';
+    const unbalanced = balanceResult.elements.filter((e) => !e.balanced);
+    if (unbalanced.length === 0) {
+      return 'Jafnan lítur út fyrir að vera jöfn — smelltu á Athuga!';
+    }
+    const el = unbalanced[0];
+    const direction =
+      el.left < el.right ? 'Auktu stuðla á vinstri hlið.' : 'Auktu stuðla á hægri hlið.';
+    return `${el.element} er ójafnað: ${el.left} á vinstri, ${el.right} á hægri. ${direction}`;
+  };
+
+  // --- Teaching intro ---
+  if (showIntro && config.intro) {
+    return (
+      <div className={`min-h-screen bg-gradient-to-b ${config.bgFrom} to-white p-4`}>
+        <div className="max-w-lg mx-auto">
+          <button
+            onClick={onBack}
+            className="text-warm-500 hover:text-warm-700 font-semibold text-sm mb-4"
+          >
+            ← Til baka
+          </button>
+          {config.intro}
+          <button
+            onClick={() => setShowIntro(false)}
+            className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors text-lg"
+          >
+            Byrja æfingar →
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   // --- Summary screen ---
   if (done) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white p-4 flex items-center justify-center">
+      <div
+        className={`min-h-screen bg-gradient-to-b ${config.bgFrom} to-white p-4 flex items-center justify-center`}
+      >
         <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center space-y-6">
           <div className="text-5xl">
             {correctCount >= 5 ? '🎉' : correctCount >= 3 ? '👍' : '📚'}
@@ -134,7 +178,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
 
   // --- Main gameplay ---
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white p-4">
+    <div className={`min-h-screen bg-gradient-to-b ${config.bgFrom} to-white p-4`}>
       <div className="max-w-lg mx-auto">
         {/* Header */}
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
@@ -145,20 +189,25 @@ export function Level3({ onBack, onComplete }: Level3Props) {
             >
               ← Til baka
             </button>
-            <h1 className="text-lg font-bold text-warm-800">Erfiðar jöfnur – Stig 3</h1>
+            <h1 className="text-lg font-bold text-warm-800">{config.title}</h1>
             <span className="text-sm font-semibold text-warm-600">
               {index + 1}/{total}
             </span>
           </div>
           <div className="mt-3 h-2 bg-warm-200 rounded-full overflow-hidden">
             <div
-              className="h-full bg-kvenno-orange progress-fill"
+              className="h-full bg-kvenno-orange transition-all duration-500"
               style={{ width: `${((index + 1) / total) * 100}%` }}
             />
           </div>
         </div>
 
-        {/* Equation Editor */}
+        {config.instructions && (
+          <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-4 text-sm text-green-800">
+            {config.instructions}
+          </div>
+        )}
+
         <div className="mb-4">
           <EquationEditor
             reactants={reaction.reactants}
@@ -183,54 +232,45 @@ export function Level3({ onBack, onComplete }: Level3Props) {
           />
         </div>
 
-        {/* Atom Counter - visible but no highlight guidance */}
         <div className="mb-4">
-          <AtomCounter elements={balanceResult.elements} />
+          <AtomCounter
+            elements={balanceResult.elements}
+            highlightUnbalanced={config.highlightUnbalancedOnHint && showHint}
+          />
         </div>
 
-        {/* Hint */}
-        {!answered && !showHint && (
-          <button
-            onClick={() => setShowHint(true)}
-            className="w-full mb-3 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold py-2 rounded-xl transition-colors text-sm"
-          >
-            Sýna vísbendingu
-          </button>
-        )}
-        {showHint && !answered && (
-          <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-3 mb-3 text-sm text-yellow-800">
-            <span className="font-bold">Vísbending:</span>{' '}
-            {(() => {
-              const unbalanced = balanceResult.elements.filter((e) => !e.balanced);
-              if (unbalanced.length === 0)
-                return 'Jafnan lítur út fyrir að vera jöfn — smelltu á Athuga!';
-              const el = unbalanced[0];
-              return `${el.element} er ójafnað: ${el.left} á vinstri, ${el.right} á hægri. ${
-                el.left < el.right ? 'Auktu stuðla á vinstri hlið.' : 'Auktu stuðla á hægri hlið.'
-              }`;
-            })()}
-          </div>
-        )}
-
-        {/* Check button */}
         {!answered && (
           <button
             onClick={handleCheck}
-            className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+            className="w-full mb-3 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
           >
             Athuga
           </button>
         )}
 
-        {/* Feedback */}
+        {!answered && !showHint && hintAvailable && (
+          <button
+            onClick={() => setShowHint(true)}
+            className="w-full mb-4 px-4 py-2.5 rounded-xl text-sm font-semibold bg-yellow-100 text-yellow-800 hover:bg-yellow-200 transition-colors"
+          >
+            Vísbending
+          </button>
+        )}
+
+        {showHint && !answered && hintAvailable && (
+          <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4 mb-4 text-sm text-yellow-800 animate-fade-in-up">
+            <span className="font-bold">Vísbending:</span> {hintText()}
+          </div>
+        )}
+
         {answered && (
           <div className="space-y-4">
             <FeedbackPanel
               feedback={{
                 isCorrect,
                 explanation: isCorrect
-                  ? `Rétt! Jafnan er jöfn.`
-                  : `Rangt. Réttir stuðlar eru: ${[
+                  ? 'Rétt! Jafnan er jöfn.'
+                  : `Rangt. ${buildUnbalancedDiagnostic(balanceResult.elements)} Réttir stuðlar eru: ${[
                       ...reaction.reactants.map((m) => m.coefficient),
                       ...reaction.products.map((m) => m.coefficient),
                     ].join(', ')}.`,
@@ -251,4 +291,4 @@ export function Level3({ onBack, onComplete }: Level3Props) {
   );
 }
 
-export default Level3;
+export default Level;

@@ -565,20 +565,17 @@ function BeforeAfterVisual({
 }
 
 interface Level2Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
-export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level2Props) {
+export function Level2({ onComplete, onBack }: Level2Props) {
   const [currentScenario, setCurrentScenario] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
   const [completed, setCompleted] = useState<number[]>([]);
   const [showHint, setShowHint] = useState(false);
-  const [hintsUsed, setHintsUsed] = useState(0);
   const [showExplorer, setShowExplorer] = useState(false);
   const [explorerTemp, setExplorerTemp] = useState(25);
   const [selectedCompounds, setSelectedCompounds] = useState<string[]>(['KNO₃', 'NaCl', 'CO₂']);
@@ -606,11 +603,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     if (isCorrect) {
       setScore((prev) => prev + 100);
       setCompleted((prev) => [...prev, scenario.id]);
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
     }
-  }, [selectedAnswer, isCorrect, showHint, scenario.id, onCorrectAnswer, onIncorrectAnswer]);
+  }, [selectedAnswer, isCorrect, scenario.id]);
 
   const handleNext = useCallback(() => {
     if (currentScenario < SCENARIOS.length - 1) {
@@ -620,10 +614,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       setShowResult(false);
     } else {
       const finalScore = score + (isCorrect ? 100 : 0);
-      const maxScore = SCENARIOS.length * 100;
-      onComplete(finalScore, maxScore, hintsUsed);
+      onComplete(finalScore);
     }
-  }, [currentScenario, score, isCorrect, showHint, hintsUsed, onComplete]);
+  }, [currentScenario, score, isCorrect, onComplete]);
 
   const allComplete = currentScenario === SCENARIOS.length - 1 && showResult;
 
@@ -824,10 +817,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <>
                 {!showHint && (
                   <button
-                    onClick={() => {
-                      setShowHint(true);
-                      setHintsUsed((prev) => prev + 1);
-                    }}
+                    onClick={() => setShowHint(true)}
                     className="mb-3 text-sm px-4 py-2 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-700 font-medium transition-colors"
                   >
                     💡 Vísbending

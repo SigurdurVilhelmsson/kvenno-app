@@ -65,42 +65,23 @@ export function EquivalenceChallenge({ onComplete, onAttempt }: EquivalenceChall
           )}
 
           <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
-            <button
-              onClick={() => adjustValue(-1)}
-              className="px-4 py-3 bg-red-100 text-red-700 rounded-lg font-bold hover:bg-red-200 transition-colors text-lg"
-            >
-              -1
-            </button>
-            <button
-              onClick={() => adjustValue(-0.5)}
-              className="px-4 py-3 bg-red-100 text-red-700 rounded-lg font-bold hover:bg-red-200 transition-colors"
-            >
-              -0.5
-            </button>
-            <button
-              onClick={() => adjustValue(-0.1)}
-              className="px-4 py-3 bg-red-100 text-red-700 rounded-lg font-bold hover:bg-red-200 transition-colors"
-            >
-              -0.1
-            </button>
-            <button
-              onClick={() => adjustValue(0.1)}
-              className="px-4 py-3 bg-blue-100 text-blue-700 rounded-lg font-bold hover:bg-blue-200 transition-colors"
-            >
-              +0.1
-            </button>
-            <button
-              onClick={() => adjustValue(0.5)}
-              className="px-4 py-3 bg-blue-100 text-blue-700 rounded-lg font-bold hover:bg-blue-200 transition-colors"
-            >
-              +0.5
-            </button>
-            <button
-              onClick={() => adjustValue(1)}
-              className="px-4 py-3 bg-blue-100 text-blue-700 rounded-lg font-bold hover:bg-blue-200 transition-colors text-lg"
-            >
-              +1
-            </button>
+            {[-1, -0.5, -0.1, 0.1, 0.5, 1].map((delta) => {
+              const isNegative = delta < 0;
+              const sizeClass = Math.abs(delta) === 1 ? 'text-lg' : '';
+              const colorClass = isNegative
+                ? 'bg-red-100 text-red-700 hover:bg-red-200 focus-visible:ring-red-400'
+                : 'bg-blue-100 text-blue-700 hover:bg-blue-200 focus-visible:ring-blue-400';
+              return (
+                <button
+                  key={delta}
+                  onClick={() => adjustValue(delta)}
+                  aria-label={`${delta > 0 ? 'Bæta við' : 'Draga frá'} ${Math.abs(delta)} lítra`}
+                  className={`min-h-[44px] min-w-[44px] px-4 py-3 rounded-lg font-bold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${colorClass} ${sizeClass}`}
+                >
+                  {delta > 0 ? `+${delta}` : delta}
+                </button>
+              );
+            })}
           </div>
         </div>
       )}
