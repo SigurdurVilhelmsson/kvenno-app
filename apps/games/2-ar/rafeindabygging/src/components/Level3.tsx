@@ -7,7 +7,7 @@ import { periodicPuzzles } from '../data/periodic-configs';
 import { gameTranslations } from '../i18n';
 
 interface Level3Props {
-  onComplete: (score: number, maxScore: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
 }
 
@@ -31,7 +31,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
   const handleNext = () => {
     if (isLast) {
-      onComplete(score, periodicPuzzles.length);
+      onComplete(score);
       return;
     }
     setCurrentIndex((i) => i + 1);

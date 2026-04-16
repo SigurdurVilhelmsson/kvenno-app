@@ -8,7 +8,8 @@ import { MoleculeBuilder } from './MoleculeBuilder';
 
 // Misconceptions for organic nomenclature
 const MISCONCEPTIONS: Record<string, string> = {
-  prefix: 'Forskeytið segir til um fjölda kolefna í keðjunni. meth=1, eth=2, prop=3, but=4, pent=5, hex=6...',
+  prefix:
+    'Forskeytið segir til um fjölda kolefna í keðjunni. meth=1, eth=2, prop=3, but=4, pent=5, hex=6...',
   suffix: 'Viðskeytið segir til um tengjategund: -an (eintengi), -en (tvítengi), -yn (þrítengi).',
   name: 'Nafnið er samsett úr forskeyti (fjöldi C) + viðskeyti (tengjategund). T.d. eth + en = eten.',
 };
@@ -21,10 +22,8 @@ const RELATED_CONCEPTS: Record<string, string[]> = {
 };
 
 interface Level1Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 interface PrefixRule {
@@ -42,22 +41,37 @@ interface SuffixRule {
 }
 
 const prefixes: PrefixRule[] = [
-  { carbons: 1, prefix: "meth-", example: "metan", formula: "CH₄" },
-  { carbons: 2, prefix: "eth-", example: "etan", formula: "C₂H₆" },
-  { carbons: 3, prefix: "prop-", example: "propan", formula: "C₃H₈" },
-  { carbons: 4, prefix: "but-", example: "bútan", formula: "C₄H₁₀" },
-  { carbons: 5, prefix: "pent-", example: "pentan", formula: "C₅H₁₂" },
-  { carbons: 6, prefix: "hex-", example: "hexan", formula: "C₆H₁₄" },
-  { carbons: 7, prefix: "hept-", example: "heptan", formula: "C₇H₁₆" },
-  { carbons: 8, prefix: "oct-", example: "oktan", formula: "C₈H₁₈" },
-  { carbons: 9, prefix: "non-", example: "nonan", formula: "C₉H₂₀" },
-  { carbons: 10, prefix: "dec-", example: "dekan", formula: "C₁₀H₂₂" }
+  { carbons: 1, prefix: 'meth-', example: 'metan', formula: 'CH₄' },
+  { carbons: 2, prefix: 'eth-', example: 'etan', formula: 'C₂H₆' },
+  { carbons: 3, prefix: 'prop-', example: 'propan', formula: 'C₃H₈' },
+  { carbons: 4, prefix: 'but-', example: 'bútan', formula: 'C₄H₁₀' },
+  { carbons: 5, prefix: 'pent-', example: 'pentan', formula: 'C₅H₁₂' },
+  { carbons: 6, prefix: 'hex-', example: 'hexan', formula: 'C₆H₁₄' },
+  { carbons: 7, prefix: 'hept-', example: 'heptan', formula: 'C₇H₁₆' },
+  { carbons: 8, prefix: 'oct-', example: 'oktan', formula: 'C₈H₁₈' },
+  { carbons: 9, prefix: 'non-', example: 'nonan', formula: 'C₉H₂₀' },
+  { carbons: 10, prefix: 'dec-', example: 'dekan', formula: 'C₁₀H₂₂' },
 ];
 
 const suffixes: SuffixRule[] = [
-  { bondType: "Eintengi", suffix: "-an", bondSymbol: "C-C", description: "Öll tengi eru einföld (mettað)" },
-  { bondType: "Tvítengi", suffix: "-en", bondSymbol: "C=C", description: "Eitt eða fleiri tvítengi (ómettað)" },
-  { bondType: "Þrítengi", suffix: "-yn", bondSymbol: "C≡C", description: "Eitt eða fleiri þrítengi (ómettað)" }
+  {
+    bondType: 'Eintengi',
+    suffix: '-an',
+    bondSymbol: 'C-C',
+    description: 'Öll tengi eru einföld (mettað)',
+  },
+  {
+    bondType: 'Tvítengi',
+    suffix: '-en',
+    bondSymbol: 'C=C',
+    description: 'Eitt eða fleiri tvítengi (ómettað)',
+  },
+  {
+    bondType: 'Þrítengi',
+    suffix: '-yn',
+    bondSymbol: 'C≡C',
+    description: 'Eitt eða fleiri þrítengi (ómettað)',
+  },
 ];
 
 interface QuizQuestion {
@@ -70,39 +84,98 @@ interface QuizQuestion {
 }
 
 const quizQuestions: QuizQuestion[] = [
-  { id: 1, type: 'prefix', question: "Hvað táknar forskeyti 'meth-'?", correctAnswer: "1 kolefni", options: ["1 kolefni", "2 kolefni", "3 kolefni", "4 kolefni"] },
-  { id: 2, type: 'prefix', question: "Hvað táknar forskeyti 'prop-'?", correctAnswer: "3 kolefni", options: ["2 kolefni", "3 kolefni", "4 kolefni", "5 kolefni"] },
-  { id: 3, type: 'suffix', question: "Hvað táknar viðskeytið '-an'?", correctAnswer: "Eintengi", options: ["Eintengi", "Tvítengi", "Þrítengi", "Hóptengi"] },
-  { id: 4, type: 'suffix', question: "Hvað táknar viðskeytið '-en'?", correctAnswer: "Tvítengi", options: ["Eintengi", "Tvítengi", "Þrítengi", "Hóptengi"] },
-  { id: 5, type: 'prefix', question: "Hvaða forskeyti táknar 5 kolefni?", correctAnswer: "pent-", options: ["but-", "pent-", "hex-", "hept-"] },
-  { id: 6, type: 'suffix', question: "Hvað táknar viðskeytið '-yn'?", correctAnswer: "Þrítengi", options: ["Eintengi", "Tvítengi", "Þrítengi", "Hringtengi"] },
-  { id: 7, type: 'name', question: "Hvað heitir C₂H₆?", correctAnswer: "etan", options: ["metan", "etan", "propan", "bútan"] },
-  { id: 8, type: 'name', question: "Hvað heitir C₃H₄ með þrítengi?", correctAnswer: "propyn", options: ["propen", "propyn", "propan", "propanal"] },
-  { id: 9, type: 'prefix', question: "Hvaða forskeyti táknar 8 kolefni?", correctAnswer: "oct-", options: ["hex-", "hept-", "oct-", "non-"] },
-  { id: 10, type: 'name', question: "Hvað heitir C₂H₄ með tvítengi?", correctAnswer: "eten", options: ["etan", "eten", "etyn", "etanal"] }
+  {
+    id: 1,
+    type: 'prefix',
+    question: "Hvað táknar forskeyti 'meth-'?",
+    correctAnswer: '1 kolefni',
+    options: ['1 kolefni', '2 kolefni', '3 kolefni', '4 kolefni'],
+  },
+  {
+    id: 2,
+    type: 'prefix',
+    question: "Hvað táknar forskeyti 'prop-'?",
+    correctAnswer: '3 kolefni',
+    options: ['2 kolefni', '3 kolefni', '4 kolefni', '5 kolefni'],
+  },
+  {
+    id: 3,
+    type: 'suffix',
+    question: "Hvað táknar viðskeytið '-an'?",
+    correctAnswer: 'Eintengi',
+    options: ['Eintengi', 'Tvítengi', 'Þrítengi', 'Hóptengi'],
+  },
+  {
+    id: 4,
+    type: 'suffix',
+    question: "Hvað táknar viðskeytið '-en'?",
+    correctAnswer: 'Tvítengi',
+    options: ['Eintengi', 'Tvítengi', 'Þrítengi', 'Hóptengi'],
+  },
+  {
+    id: 5,
+    type: 'prefix',
+    question: 'Hvaða forskeyti táknar 5 kolefni?',
+    correctAnswer: 'pent-',
+    options: ['but-', 'pent-', 'hex-', 'hept-'],
+  },
+  {
+    id: 6,
+    type: 'suffix',
+    question: "Hvað táknar viðskeytið '-yn'?",
+    correctAnswer: 'Þrítengi',
+    options: ['Eintengi', 'Tvítengi', 'Þrítengi', 'Hringtengi'],
+  },
+  {
+    id: 7,
+    type: 'name',
+    question: 'Hvað heitir C₂H₆?',
+    correctAnswer: 'etan',
+    options: ['metan', 'etan', 'propan', 'bútan'],
+  },
+  {
+    id: 8,
+    type: 'name',
+    question: 'Hvað heitir C₃H₄ með þrítengi?',
+    correctAnswer: 'propyn',
+    options: ['propen', 'propyn', 'propan', 'propanal'],
+  },
+  {
+    id: 9,
+    type: 'prefix',
+    question: 'Hvaða forskeyti táknar 8 kolefni?',
+    correctAnswer: 'oct-',
+    options: ['hex-', 'hept-', 'oct-', 'non-'],
+  },
+  {
+    id: 10,
+    type: 'name',
+    question: 'Hvað heitir C₂H₄ með tvítengi?',
+    correctAnswer: 'eten',
+    options: ['etan', 'eten', 'etyn', 'etanal'],
+  },
 ];
 
-export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
+export function Level1({ onComplete, onBack }: Level1Props) {
   const [phase, setPhase] = useState<'prefixes' | 'suffixes' | 'builder' | 'quiz'>('prefixes');
   const [currentItem, setCurrentItem] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [totalHintsUsed] = useState(0); // Level1 doesn't have hints in quiz
-  const maxScore = quizQuestions.length * 10;
+  // (quiz has no hints)
 
   const handleNext = () => {
     if (phase === 'prefixes') {
       if (currentItem < prefixes.length - 1) {
-        setCurrentItem(prev => prev + 1);
+        setCurrentItem((prev) => prev + 1);
       } else {
         setPhase('suffixes');
         setCurrentItem(0);
       }
     } else if (phase === 'suffixes') {
       if (currentItem < suffixes.length - 1) {
-        setCurrentItem(prev => prev + 1);
+        setCurrentItem((prev) => prev + 1);
       } else {
         setPhase('builder');
       }
@@ -113,7 +186,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const handlePrev = () => {
     if (currentItem > 0) {
-      setCurrentItem(prev => prev - 1);
+      setCurrentItem((prev) => prev - 1);
     } else if (phase === 'suffixes') {
       setPhase('prefixes');
       setCurrentItem(prefixes.length - 1);
@@ -126,19 +199,16 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     setShowFeedback(true);
 
     if (correct) {
-      setScore(prev => prev + 10);
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
+      setScore((prev) => prev + 10);
     }
   };
 
   const handleNextQuestion = () => {
     if (currentQuestion < quizQuestions.length - 1) {
-      setCurrentQuestion(prev => prev + 1);
+      setCurrentQuestion((prev) => prev + 1);
       setShowFeedback(false);
     } else {
-      onComplete(score, maxScore, totalHintsUsed);
+      onComplete(score);
     }
   };
 
@@ -177,7 +247,11 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div
                 key={idx}
                 className={`w-2 h-2 rounded-full ${
-                  idx === currentItem ? 'bg-warm-700' : idx < currentItem ? 'bg-green-500' : 'bg-warm-300'
+                  idx === currentItem
+                    ? 'bg-warm-700'
+                    : idx < currentItem
+                      ? 'bg-green-500'
+                      : 'bg-warm-300'
                 }`}
               />
             ))}
@@ -211,9 +285,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   <div className="w-8 h-8 rounded-full bg-warm-800 text-white font-bold text-sm flex items-center justify-center">
                     C
                   </div>
-                  {idx < prefix.carbons - 1 && (
-                    <div className="w-4 h-1 bg-warm-600"></div>
-                  )}
+                  {idx < prefix.carbons - 1 && <div className="w-4 h-1 bg-warm-600"></div>}
                 </div>
               ))}
             </div>
@@ -270,7 +342,11 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div
                 key={idx}
                 className={`w-3 h-3 rounded-full ${
-                  idx === currentItem ? 'bg-green-700' : idx < currentItem ? 'bg-green-500' : 'bg-warm-300'
+                  idx === currentItem
+                    ? 'bg-green-700'
+                    : idx < currentItem
+                      ? 'bg-green-500'
+                      : 'bg-warm-300'
                 }`}
               />
             ))}
@@ -290,15 +366,21 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             </div>
 
             <div className="grid grid-cols-3 gap-4 text-sm">
-              <div className={`p-3 rounded-lg text-center ${currentItem === 0 ? 'bg-warm-200' : 'bg-white'}`}>
+              <div
+                className={`p-3 rounded-lg text-center ${currentItem === 0 ? 'bg-warm-200' : 'bg-white'}`}
+              >
                 <div className="font-bold">-an</div>
                 <div className="text-warm-500">C-C</div>
               </div>
-              <div className={`p-3 rounded-lg text-center ${currentItem === 1 ? 'bg-green-200' : 'bg-white'}`}>
+              <div
+                className={`p-3 rounded-lg text-center ${currentItem === 1 ? 'bg-green-200' : 'bg-white'}`}
+              >
                 <div className="font-bold">-en</div>
                 <div className="text-warm-500">C=C</div>
               </div>
-              <div className={`p-3 rounded-lg text-center ${currentItem === 2 ? 'bg-purple-200' : 'bg-white'}`}>
+              <div
+                className={`p-3 rounded-lg text-center ${currentItem === 2 ? 'bg-purple-200' : 'bg-white'}`}
+              >
                 <div className="font-bold">-yn</div>
                 <div className="text-warm-500">C≡C</div>
               </div>
@@ -333,9 +415,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
               ← Til baka
             </button>
-            <div className="text-sm text-warm-500">
-              Sameindasmiður
-            </div>
+            <div className="text-sm text-warm-500">Sameindasmiður</div>
           </div>
 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-emerald-600">
@@ -345,18 +425,21 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             Byggðu sameindir og sjáðu hvernig nafnið breytist
           </p>
 
-          <MoleculeBuilder
-            compact={false}
-            maxCarbons={8}
-            initialCarbons={4}
-          />
+          <MoleculeBuilder compact={false} maxCarbons={8} initialCarbons={4} />
 
           <div className="mt-6 bg-emerald-50 p-4 rounded-xl border border-emerald-200">
             <h3 className="font-semibold text-emerald-800 mb-2">📝 Taktu eftir:</h3>
             <ul className="text-sm text-emerald-700 space-y-1">
-              <li>• <strong>Forskeytið</strong> breytist þegar þú bætir við/fjarlægir kolefni</li>
-              <li>• <strong>Viðskeytið</strong> breytist þegar þú breytir tengingum (ein/tví/þrí)</li>
-              <li>• Fyrir 4+ kolefni birtist <strong>staðsetningartala</strong> fyrir tvítengi/þrítengi</li>
+              <li>
+                • <strong>Forskeytið</strong> breytist þegar þú bætir við/fjarlægir kolefni
+              </li>
+              <li>
+                • <strong>Viðskeytið</strong> breytist þegar þú breytir tengingum (ein/tví/þrí)
+              </li>
+              <li>
+                • Fyrir 4+ kolefni birtist <strong>staðsetningartala</strong> fyrir
+                tvítengi/þrítengi
+              </li>
             </ul>
           </div>
 
@@ -405,9 +488,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         </h1>
 
         <div className="bg-emerald-50 p-6 rounded-xl mb-6 text-center border-2 border-emerald-200">
-          <div className="text-xl md:text-2xl font-bold text-warm-800">
-            {question.question}
-          </div>
+          <div className="text-xl md:text-2xl font-bold text-warm-800">{question.question}</div>
         </div>
 
         {!showFeedback ? (

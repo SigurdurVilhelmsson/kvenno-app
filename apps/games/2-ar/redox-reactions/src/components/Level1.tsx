@@ -18,10 +18,8 @@ const OXIDATION_RELATED: string[] = ['Oxunartölur', 'Redox hvörf', 'Rafeindasa
 
 interface Level1Props {
   t: (key: string, fallback?: string) => string;
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 interface OxidationRule {
@@ -162,7 +160,7 @@ const problems: OxidationProblem[] = [
   },
 ];
 
-export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
+export function Level1({ t, onComplete, onBack }: Level1Props) {
   const [phase, setPhase] = useState<'learn' | 'practice'>('learn');
   const [currentRule, setCurrentRule] = useState(0);
   const [currentProblem, setCurrentProblem] = useState(0);
@@ -172,9 +170,7 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   const [score, setScore] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [attempts, setAttempts] = useState(0);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
-
-  const maxScore = problems.length * L1_SCORING.MAX_PER_PROBLEM;
+  const [, setTotalHintsUsed] = useState(0);
 
   const handleNextRule = () => {
     if (currentRule < oxidationRules.length - 1) {
@@ -204,9 +200,6 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             ? L1_SCORING.SECOND_TRY
             : L1_SCORING.THIRD_PLUS_TRY;
       setScore((prev) => prev + points);
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
     }
   };
 
@@ -218,7 +211,7 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
       setShowHint(false);
       setAttempts(0);
     } else {
-      onComplete(score, maxScore, totalHintsUsed);
+      onComplete(score);
     }
   };
 

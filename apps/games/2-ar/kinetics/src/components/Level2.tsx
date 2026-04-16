@@ -1,17 +1,14 @@
 import { useState } from 'react';
 
 import { ConcentrationTimeGraph } from './ConcentrationTimeGraph';
-import { MAX_SCORE } from '../data/constants';
 import { challenges } from '../data/level2-questions';
 
 interface Level2Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
-export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level2Props) {
+export function Level2({ onComplete, onBack }: Level2Props) {
   const [showIntro, setShowIntro] = useState(true);
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [orderA, setOrderA] = useState<number | null>(null);
@@ -20,7 +17,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [score, setScore] = useState(0);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
+  const [, setTotalHintsUsed] = useState(0);
 
   const challenge = challenges[currentChallenge];
 
@@ -34,9 +31,6 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
     if (correct) {
       setScore((prev) => prev + 20);
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
     }
     setShowResult(true);
   };
@@ -50,7 +44,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       setShowResult(false);
       setIsCorrect(false);
     } else {
-      onComplete(score, MAX_SCORE, totalHintsUsed);
+      onComplete(score);
     }
   };
 

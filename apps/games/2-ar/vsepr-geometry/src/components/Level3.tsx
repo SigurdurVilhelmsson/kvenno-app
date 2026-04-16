@@ -1,10 +1,8 @@
 import { useState } from 'react';
 
 interface Level3Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 interface Challenge {
@@ -564,7 +562,7 @@ function HybridizationDiagram({ domains }: { domains: number }) {
   );
 }
 
-export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
+export function Level3({ onComplete, onBack }: Level3Props) {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -572,20 +570,16 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const [showConcept, setShowConcept] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [score, setScore] = useState(0);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
+  const [, setTotalHintsUsed] = useState(0);
 
   const challenge = challenges[currentChallenge];
-  const maxScore = challenges.length * 12; // 12 points per question without hints
 
   const checkAnswer = () => {
     const selected = challenge.options.find((opt) => opt.id === selectedOption);
     const correct = selected?.correct ?? false;
     setIsCorrect(correct);
     if (correct) {
-      onCorrectAnswer?.();
       setScore((prev) => prev + 12);
-    } else {
-      onIncorrectAnswer?.();
     }
     setShowResult(true);
   };
@@ -599,7 +593,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       setShowConcept(false);
       setIsCorrect(false);
     } else {
-      onComplete(score, maxScore, totalHintsUsed);
+      onComplete(score);
     }
   };
 

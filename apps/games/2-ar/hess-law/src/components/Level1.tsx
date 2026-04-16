@@ -198,17 +198,15 @@ function EquationDisplay({
 }
 
 interface Level1Props {
-  onComplete: (score: number, maxScore?: number, hintsUsed?: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
-export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
+export function Level1({ onComplete, onBack }: Level1Props) {
   const [showIntro, setShowIntro] = useState(true);
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [equation, setEquation] = useState<Equation>(CHALLENGES[0].equation);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
+  const [, setTotalHintsUsed] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [showHint, setShowHint] = useState(false);
@@ -248,14 +246,11 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     setShowResult(true);
 
     if (isCorrect) {
-      onCorrectAnswer?.();
       if (!completed.includes(challenge.id)) {
         const points = 100;
         setScore((prev) => prev + points);
         setCompleted((prev) => [...prev, challenge.id]);
       }
-    } else {
-      onIncorrectAnswer?.();
     }
   };
 
@@ -266,7 +261,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       // useEffect will reset the equation when currentChallenge changes
     } else {
       // Max score is 100 per challenge × 6 challenges = 600
-      onComplete(score, 600, totalHintsUsed);
+      onComplete(score);
     }
   };
 

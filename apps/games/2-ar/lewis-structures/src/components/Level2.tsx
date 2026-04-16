@@ -8,10 +8,8 @@ import { LewisGuidedMode } from './LewisGuidedMode';
 import { lewisToMolecule } from '../utils/lewisConverter';
 
 interface Level2Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 interface LewisStructure {
@@ -245,12 +243,11 @@ const challenges: Challenge[] = [
 ];
 
 // 9 challenges × 15 points each = 135
-const MAX_SCORE = 135;
 
-export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level2Props) {
+export function Level2({ onComplete, onBack }: Level2Props) {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [score, setScore] = useState(0);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
+  const [, setTotalHintsUsed] = useState(0);
   const [drawingCorrect, setDrawingCorrect] = useState(false);
   const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
   const [showTutorial, setShowTutorial] = useState(false);
@@ -267,11 +264,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const handleDrawingComplete = (correct: boolean) => {
     if (correct) {
-      onCorrectAnswer?.();
       setScore((prev) => prev + 15);
       setDrawingCorrect(true);
-    } else {
-      onIncorrectAnswer?.();
     }
   };
 
@@ -283,7 +277,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       setHintsRevealed(0);
       setCanvasKey((prev) => prev + 1);
     } else {
-      onComplete(score, MAX_SCORE, totalHintsUsed);
+      onComplete(score);
     }
   };
 

@@ -7,15 +7,13 @@ import { problems } from '../data/half-reactions';
 
 interface Level3Props {
   t: (key: string, fallback?: string) => string;
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 type Step = 'identify' | 'write-ox' | 'write-red' | 'balance' | 'complete';
 
-export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
+export function Level3({ t, onComplete, onBack }: Level3Props) {
   const [showIntro, setShowIntro] = useState(true);
   useEscapeKey(onBack, showIntro);
   const [currentProblem, setCurrentProblem] = useState(0);
@@ -35,9 +33,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     correct: false,
     message: '',
   });
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
-
-  const maxScore = problems.length * L3_SCORING.MAX_PER_PROBLEM;
+  const [, setTotalHintsUsed] = useState(0);
 
   const problem = problems[currentProblem];
 
@@ -56,14 +52,12 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
         correct: true,
         message: t('level3.identifyCorrect', 'Rétt! Þú greindir hvað oxast og afoxast.'),
       });
-      onCorrectAnswer?.();
     } else {
       setFeedback({
         show: true,
         correct: false,
         message: `${problem.oxidationHalf.speciesDisplay} ${t('level3.oxidizes', 'oxast')} (${t('level3.losesElectrons', 'gefur e⁻')}), ${problem.reductionHalf.speciesDisplay} ${t('level3.reduces', 'afoxast')} (${t('level3.gainsElectrons', 'tekur e⁻')}).`,
       });
-      onIncorrectAnswer?.();
     }
   };
 
@@ -78,14 +72,42 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
         correct: true,
         message: t('level3.balanceCorrect', 'Frábært! Þú jafnaðir rafeindirnar rétt.'),
       });
-      onCorrectAnswer?.();
     } else {
       setFeedback({
         show: true,
         correct: false,
         message: `${t('level3.toBalance', 'Til að jafna')} ${problem.oxidationHalf.electrons}e⁻ ${t('level3.and', 'og')} ${problem.reductionHalf.electrons}e⁻, ${t('level3.needMultipliers', 'þarftu margfaldara')} ${problem.multiplierOx} ${t('level3.and', 'og')} ${problem.multiplierRed}.`,
       });
-      onIncorrectAnswer?.();
+    }
+  };
+
+  const checkOxElectrons = () => {
+    if (feedback.show || !answers.oxElectrons) return;
+    const correct = parseInt(answers.oxElectrons) === problem.oxidationHalf.electrons;
+    if (correct) {
+      setScore((prev) => prev + L3_SCORING.OXIDATION_HALF);
+      setFeedback({ show: true, correct: true, message: t('common.correct', 'Rétt!') });
+    } else {
+      setFeedback({
+        show: true,
+        correct: false,
+        message: `${problem.oxidationHalf.speciesDisplay} → ${problem.oxidationHalf.productDisplay} + ${problem.oxidationHalf.electrons}e⁻`,
+      });
+    }
+  };
+
+  const checkRedElectrons = () => {
+    if (feedback.show || !answers.redElectrons) return;
+    const correct = parseInt(answers.redElectrons) === problem.reductionHalf.electrons;
+    if (correct) {
+      setScore((prev) => prev + L3_SCORING.REDUCTION_HALF);
+      setFeedback({ show: true, correct: true, message: t('common.correct', 'Rétt!') });
+    } else {
+      setFeedback({
+        show: true,
+        correct: false,
+        message: `${problem.reductionHalf.speciesDisplay} + ${problem.reductionHalf.electrons}e⁻ → ${problem.reductionHalf.productDisplay}`,
+      });
     }
   };
 
@@ -114,7 +136,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           redMultiplier: '',
         });
       } else {
-        onComplete(score, maxScore, totalHintsUsed);
+        onComplete(score);
       }
     }
   };
@@ -226,6 +248,9 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                 type="number"
                 value={answers.oxElectrons}
                 onChange={(e) => setAnswers((prev) => ({ ...prev, oxElectrons: e.target.value }))}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') checkOxElectrons();
+                }}
                 placeholder={t('level3.electronCount', 'Fjöldi rafeinda')}
                 className="w-full p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-none"
               />
@@ -233,25 +258,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
             {!feedback.show && (
               <button
-                onClick={() => {
-                  const correct = parseInt(answers.oxElectrons) === problem.oxidationHalf.electrons;
-                  if (correct) {
-                    setScore((prev) => prev + L3_SCORING.OXIDATION_HALF);
-                    setFeedback({
-                      show: true,
-                      correct: true,
-                      message: t('common.correct', 'Rétt!'),
-                    });
-                    onCorrectAnswer?.();
-                  } else {
-                    setFeedback({
-                      show: true,
-                      correct: false,
-                      message: `${problem.oxidationHalf.speciesDisplay} → ${problem.oxidationHalf.productDisplay} + ${problem.oxidationHalf.electrons}e⁻`,
-                    });
-                    onIncorrectAnswer?.();
-                  }
-                }}
+                onClick={checkOxElectrons}
                 disabled={!answers.oxElectrons}
                 className={`w-full font-bold py-3 px-6 rounded-xl ${
                   !answers.oxElectrons
@@ -287,6 +294,9 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                 type="number"
                 value={answers.redElectrons}
                 onChange={(e) => setAnswers((prev) => ({ ...prev, redElectrons: e.target.value }))}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') checkRedElectrons();
+                }}
                 placeholder={t('level3.electronCount', 'Fjöldi rafeinda')}
                 className="w-full p-3 border-2 border-red-300 rounded-xl focus:border-red-500 focus:outline-none"
               />
@@ -294,26 +304,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
             {!feedback.show && (
               <button
-                onClick={() => {
-                  const correct =
-                    parseInt(answers.redElectrons) === problem.reductionHalf.electrons;
-                  if (correct) {
-                    setScore((prev) => prev + L3_SCORING.REDUCTION_HALF);
-                    setFeedback({
-                      show: true,
-                      correct: true,
-                      message: t('common.correct', 'Rétt!'),
-                    });
-                    onCorrectAnswer?.();
-                  } else {
-                    setFeedback({
-                      show: true,
-                      correct: false,
-                      message: `${problem.reductionHalf.speciesDisplay} + ${problem.reductionHalf.electrons}e⁻ → ${problem.reductionHalf.productDisplay}`,
-                    });
-                    onIncorrectAnswer?.();
-                  }
-                }}
+                onClick={checkRedElectrons}
                 disabled={!answers.redElectrons}
                 className={`w-full font-bold py-3 px-6 rounded-xl ${
                   !answers.redElectrons
@@ -361,6 +352,16 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                   onChange={(e) =>
                     setAnswers((prev) => ({ ...prev, oxMultiplier: e.target.value }))
                   }
+                  onKeyDown={(e) => {
+                    if (
+                      e.key === 'Enter' &&
+                      answers.oxMultiplier &&
+                      answers.redMultiplier &&
+                      !feedback.show
+                    ) {
+                      checkMultipliers();
+                    }
+                  }}
                   placeholder="x?"
                   className="w-full p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-none"
                 />
@@ -375,6 +376,16 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                   onChange={(e) =>
                     setAnswers((prev) => ({ ...prev, redMultiplier: e.target.value }))
                   }
+                  onKeyDown={(e) => {
+                    if (
+                      e.key === 'Enter' &&
+                      answers.oxMultiplier &&
+                      answers.redMultiplier &&
+                      !feedback.show
+                    ) {
+                      checkMultipliers();
+                    }
+                  }}
                   placeholder="x?"
                   className="w-full p-3 border-2 border-red-300 rounded-xl focus:border-red-500 focus:outline-none"
                 />

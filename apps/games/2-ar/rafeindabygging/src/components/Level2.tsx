@@ -7,7 +7,7 @@ import { configPuzzles, normalizeConfig } from '../data/electron-configs';
 import { gameTranslations } from '../i18n';
 
 interface Level2Props {
-  onComplete: (score: number, maxScore: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
 }
 
@@ -70,7 +70,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   const handleNext = () => {
     if (isLast) {
-      onComplete(score, configPuzzles.length);
+      onComplete(score);
       return;
     }
     setCurrentIndex((i) => i + 1);

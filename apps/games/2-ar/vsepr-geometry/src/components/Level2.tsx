@@ -7,10 +7,8 @@ import { ElectronRepulsionAnimation } from './ElectronRepulsionAnimation';
 import { vseprToMolecule } from '../utils/vseprConverter';
 
 interface Level2Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 interface GeometryOption {
@@ -276,12 +274,12 @@ const STEPS: Step[] = [
   { id: 'explanation', label: 'Útskýra' },
 ];
 
-export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level2Props) {
+export function Level2({ onComplete, onBack }: Level2Props) {
   const [currentMolecule, setCurrentMolecule] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [score, setScore] = useState(0);
   const [showHint, setShowHint] = useState(false);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
+  const [, setTotalHintsUsed] = useState(0);
   const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
 
   // Step answers
@@ -299,7 +297,6 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const molecule = molecules[currentMolecule];
   const step = STEPS[currentStep];
-  const maxScore = molecules.length * STEPS.length * 10;
 
   // Get constrained geometry options for the current molecule's domain count
   const geometryOptions = useMemo(
@@ -350,13 +347,10 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     setStepResult(correct ? 'correct' : 'incorrect');
 
     if (correct) {
-      onCorrectAnswer?.();
       setScore((prev) => prev + 10);
       if (step.id === 'geometry') {
         setGeometryRevealed(true);
       }
-    } else {
-      onIncorrectAnswer?.();
     }
   };
 
@@ -371,7 +365,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         setCurrentMolecule((prev) => prev + 1);
         resetStepAnswers();
       } else {
-        onComplete(score, maxScore, totalHintsUsed);
+        onComplete(score);
       }
     }
   };

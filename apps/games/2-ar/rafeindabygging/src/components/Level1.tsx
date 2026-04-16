@@ -7,7 +7,7 @@ import { puzzles } from '../data/quantum-numbers';
 import { gameTranslations } from '../i18n';
 
 interface Level1Props {
-  onComplete: (score: number, maxScore: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
 }
 
@@ -47,7 +47,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
   const handleNext = () => {
     if (isLast) {
-      onComplete(score, puzzles.length);
+      onComplete(score);
       return;
     }
     setCurrentIndex((i) => i + 1);

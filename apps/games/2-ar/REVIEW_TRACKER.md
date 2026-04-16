@@ -293,3 +293,58 @@
 - [x] Redox L3 identify step submits on Enter when both inputs are filled
 - [x] Rafeindabygging L2 wrong answers display per-electron delta diagnostic
 - [x] VSEPR L2 geometry step has visible ✓/✗ glyphs alongside the colored borders
+
+---
+
+## Iteration 4: Polish & Content Accuracy — 2026-04-16
+
+### Scope
+
+Drain the iter-3 deferred queue. Focus on cross-cutting cleanup (22 Level files) and per-game polish. The truly heavy rebuilds (Lewis SVG-canvas keyboard nav, Three.js viewer keyboard rotation, DragDropBuilder touch reimplementation) remain deferred — they need dedicated design work outside the review cycle.
+
+### Changes Applied
+
+#### Cross-cutting (22 Level files + 4 App.tsx)
+
+| #   | Game / File                    | Finding                                                         | Done                                                                                                                                                                       |
+| --- | ------------------------------ | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | ALL Y2 Level files (22)        | Unused `onCorrectAnswer?` / `onIncorrectAnswer?` props          | Yes — removed from Props interfaces, destructuring, and call sites (`onCorrectAnswer?.()` / `onIncorrectAnswer?.()`) across 22 Y2 Level files + StructureFromNameChallenge |
+| 2   | ALL Y2 Level files (22)        | 3-arg `onComplete(score, maxScore, hintsUsed)` signature        | Yes — collapsed to `(score: number) => void` everywhere; also updated Y2 App.tsx handlers that still had `_maxScore` / `_hintsUsed` unused params                          |
+| 3   | ALL Y2 Level files             | `totalHintsUsed`, `hintsUsedTier`, `hintsUsed`, `maxScore` dead | Yes — getters renamed to `[, setX]` (still track hint usage for future UX) or declarations removed where safe                                                              |
+| 4   | Kinetics/IMF/Lewis Level files | Unused local `MAX_SCORE` constants (no longer referenced)       | Yes — deleted; also removed `data/constants.ts` in kinetics (created in iter 2, no longer referenced)                                                                      |
+| 5   | IMF App.tsx                    | 80%-mastery threshold tied to maxScore no longer passed         | Yes — simplified to "completed on any submit" pattern to match Lewis/Organic; tracker still records best score                                                             |
+
+#### Per-game polish
+
+| #   | Game     | Finding                                                         | Done                                                                                                                                                                         |
+| --- | -------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 6   | Hess L3  | Wrong-answer feedback showed correct value but not user's delta | Yes — when `isCorrect === false`, feedback now renders "Þú slóðir inn X — munurinn er +/-Y kJ/mol (leyft svigrúm: ±2 kJ/mol)" plus a ✓/✗ glyph                               |
+| 7   | Redox L3 | Write-ox, write-red, balance steps no Enter-to-submit binding   | Yes — extracted `checkOxElectrons()` and `checkRedElectrons()` to top-level handlers; all four step inputs now submit on Enter when fields are filled and feedback not shown |
+
+### Deferred to a future iteration
+
+These items need dedicated design work, not another review pass:
+
+| Finding                                               | Reason                                                                         |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Lewis L2 drawing-canvas keyboard nav                  | Requires roving-tabindex bond cycling + arrow-key selection                    |
+| VSEPR / IMF 3D-viewer keyboard rotation               | Needs custom wrapper over Three.js OrbitControls                               |
+| Organic DragDropBuilder touch support                 | `@shared/components/DragDropBuilder` stubs `handleTouchMove` — shared-pkg work |
+| IMF L2 ranking click-only                             | Replace with reorder-list (arrow-key swap) pattern                             |
+| VSEPR / IMF / Lewis Three.js in main bundle           | Lazy-split / feature flag — bundle stays at ~3MB until addressed               |
+| Bond pattern alternatives in Lewis/Organic            | Color-only encoding; needs SVG stripe/dash patterns — deferred                 |
+| Organic L2 branched molecules (parent-chain exercise) | Needs new data entries                                                         |
+| Organic prefix/suffix data duplicated 3×              | Extract to `src/data/nomenclature.ts`                                          |
+| Kinetics / Redox shuffle problem order                | Risk of touching exam-style testing flow                                       |
+| Hess Polish i18n block unused                         | Teacher sign-off before deleting                                               |
+| Redox App.tsx hardcoded text-based language check     | Part of broader i18n restructure                                               |
+
+### Verification (2026-04-16)
+
+- [x] `pnpm type-check` passes across entire monorepo (0 errors)
+- [x] `pnpm build:games` — 20 succeeded, 0 failed
+- [x] Y2 bundle envelope unchanged: rafeindabygging 310KB, hess 361KB, redox 363KB, kinetics 369KB, organic 380KB; IMF/Lewis/VSEPR ~3.0MB
+- [x] All 22 Y2 Level files simplified to `onComplete: (score: number) => void`
+- [x] All Y2 Level files free of unused `onCorrectAnswer`/`onIncorrectAnswer` props
+- [x] Hess L3 wrong answers now show per-student delta alongside the correct value
+- [x] Redox L3 all four step inputs (identify ox, identify red, write-ox electrons, write-red electrons, balance multipliers) accept Enter-to-submit when their fields are filled

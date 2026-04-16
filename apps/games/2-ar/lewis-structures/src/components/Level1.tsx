@@ -23,10 +23,8 @@ const RELATED_CONCEPTS: Record<string, string[]> = {
 };
 
 interface Level1Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 interface Challenge {
@@ -241,15 +239,14 @@ const challenges: Challenge[] = [
 ];
 
 // Calculate max score: 8 challenges * 15 points each = 120
-const MAX_SCORE = 120;
 
-export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
+export function Level1({ onComplete, onBack }: Level1Props) {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [hintMultiplier, setHintMultiplier] = useState(1.0);
-  const [hintsUsedTier, setHintsUsedTier] = useState(0);
+  const [, setHintsUsedTier] = useState(0);
   const [isCorrect, setIsCorrect] = useState(false);
   const [score, setScore] = useState(0);
 
@@ -281,11 +278,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
     setIsCorrect(correct);
     if (correct) {
-      onCorrectAnswer?.();
       const earnedPoints = Math.round(basePoints * hintMultiplier);
       setScore((prev) => prev + earnedPoints);
-    } else {
-      onIncorrectAnswer?.();
     }
     setShowResult(true);
   };
@@ -300,7 +294,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       setHintsUsedTier(0);
       setIsCorrect(false);
     } else {
-      onComplete(score, MAX_SCORE, hintsUsedTier);
+      onComplete(score);
     }
   };
 

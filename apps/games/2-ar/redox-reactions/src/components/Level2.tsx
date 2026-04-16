@@ -8,10 +8,8 @@ import { OxidationStateDisplay } from './OxidationStateDisplay';
 import { L2_SCORING } from '../config/scoring';
 
 interface Level2Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
   t: (key: string, fallback?: string) => string;
 }
 
@@ -165,7 +163,7 @@ const questionTypes: Question[] = [
   },
 ];
 
-export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer, t }: Level2Props) {
+export function Level2({ onComplete, onBack, t }: Level2Props) {
   const [showIntro, setShowIntro] = useState(true);
   useEscapeKey(onBack, showIntro);
   const [currentReaction, setCurrentReaction] = useState(0);
@@ -175,9 +173,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
   const [score, setScore] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [showExplanation, setShowExplanation] = useState(false);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
-
-  const maxScore = reactions.length * questionTypes.length * L2_SCORING.POINTS_PER_QUESTION;
+  const [, setTotalHintsUsed] = useState(0);
 
   const reaction = reactions[currentReaction];
   const question = questionTypes[currentQuestion];
@@ -210,9 +206,6 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
 
     if (correct) {
       setScore((prev) => prev + L2_SCORING.POINTS_PER_QUESTION);
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
     }
   };
 
@@ -224,7 +217,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
       setCurrentQuestion(0);
       setShowExplanation(false);
     } else {
-      onComplete(score, maxScore, totalHintsUsed);
+      onComplete(score);
       return;
     }
     setShowFeedback(false);

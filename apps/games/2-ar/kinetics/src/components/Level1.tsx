@@ -6,7 +6,6 @@ import { shuffleArray } from '@shared/utils';
 import { CatalystEffectDemo } from './CatalystEffectDemo';
 import { CollisionDemo } from './CollisionDemo';
 import { MaxwellBoltzmann } from './MaxwellBoltzmann';
-import { MAX_SCORE } from '../data/constants';
 import { challenges } from '../data/level1-questions';
 import { calculateScore } from '../utils/kinetics-scoring';
 
@@ -31,18 +30,16 @@ const RELATED_CONCEPTS: Record<number, string[]> = {
 };
 
 interface Level1Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
-export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
+export function Level1({ onComplete, onBack }: Level1Props) {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [showHint, setShowHint] = useState(false);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
+  const [, setTotalHintsUsed] = useState(0);
   const [score, setScore] = useState(0);
 
   // Shared state for visualizations
@@ -76,9 +73,6 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     const points = calculateScore(isCorrect, showHint);
     if (isCorrect) {
       setScore((prev) => prev + points);
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
     }
     setShowResult(true);
   };
@@ -90,7 +84,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       setShowResult(false);
       setShowHint(false);
     } else {
-      onComplete(score, MAX_SCORE, totalHintsUsed);
+      onComplete(score);
     }
   };
 

@@ -2,18 +2,15 @@ import { useState } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
 
-import { MAX_SCORE } from '../data/constants';
 import { challenges } from '../data/level3-questions';
 import type { MechanismStep } from '../data/level3-questions';
 
 interface Level3Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
-export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
+export function Level3({ onComplete, onBack }: Level3Props) {
   const [showIntro, setShowIntro] = useState(true);
   useEscapeKey(onBack, showIntro);
   const [currentChallenge, setCurrentChallenge] = useState(0);
@@ -21,7 +18,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const [showResult, setShowResult] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [score, setScore] = useState(0);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
+  const [, setTotalHintsUsed] = useState(0);
 
   const challenge = challenges[currentChallenge];
 
@@ -36,9 +33,6 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     const selectedOption = challenge.options.find((opt) => opt.id === selectedAnswer);
     if (selectedOption?.correct) {
       setScore((prev) => prev + 20);
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
     }
     setShowResult(true);
   };
@@ -50,7 +44,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       setShowResult(false);
       setShowHint(false);
     } else {
-      onComplete(score, MAX_SCORE, totalHintsUsed);
+      onComplete(score);
     }
   };
 

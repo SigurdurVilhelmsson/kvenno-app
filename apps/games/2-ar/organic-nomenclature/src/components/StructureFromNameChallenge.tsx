@@ -126,17 +126,13 @@ const MISCONCEPTIONS = {
 };
 
 interface StructureFromNameChallengeProps {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 export function StructureFromNameChallenge({
   onComplete,
   onBack,
-  onCorrectAnswer,
-  onIncorrectAnswer,
 }: StructureFromNameChallengeProps) {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [carbonCount, setCarbonCount] = useState(4);
@@ -145,10 +141,9 @@ export function StructureFromNameChallenge({
   const [isCorrect, setIsCorrect] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [score, setScore] = useState(0);
-  const [hintsUsed, setHintsUsed] = useState(0);
+  const [, setHintsUsed] = useState(0);
 
   const challenge = CHALLENGES[currentChallenge];
-  const maxScore = CHALLENGES.length * 15;
 
   // Initialize bonds when carbon count changes
   const updateCarbonCount = (newCount: number) => {
@@ -185,7 +180,6 @@ export function StructureFromNameChallenge({
     if (carbonCount !== target.carbons) {
       setIsCorrect(false);
       setShowFeedback(true);
-      onIncorrectAnswer?.();
       return;
     }
 
@@ -197,7 +191,6 @@ export function StructureFromNameChallenge({
     if (userUnsaturated.length !== targetUnsaturated.length) {
       setIsCorrect(false);
       setShowFeedback(true);
-      onIncorrectAnswer?.();
       return;
     }
 
@@ -212,11 +205,8 @@ export function StructureFromNameChallenge({
     if (allMatch) {
       const points = 15;
       setScore((prev) => prev + points);
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
     }
-  }, [carbonCount, bonds, challenge, showHint, onCorrectAnswer, onIncorrectAnswer]);
+  }, [carbonCount, bonds, challenge, showHint]);
 
   // Get feedback details
   const getFeedback = () => {
@@ -268,7 +258,7 @@ export function StructureFromNameChallenge({
       setShowFeedback(false);
       setShowHint(false);
     } else {
-      onComplete(score, maxScore, hintsUsed);
+      onComplete(score);
     }
   };
 

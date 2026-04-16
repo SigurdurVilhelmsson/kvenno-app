@@ -1,10 +1,8 @@
 import { useState } from 'react';
 
 interface Level3Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 interface AtomCharge {
@@ -347,15 +345,14 @@ const challenges: Challenge[] = [
 ];
 
 // Calculate max score: 8 challenges * 15 points each = 120
-const MAX_SCORE = 120;
 
-export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
+export function Level3({ onComplete, onBack }: Level3Props) {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [score, setScore] = useState(0);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
+  const [, setTotalHintsUsed] = useState(0);
 
   const challenge = challenges[currentChallenge];
 
@@ -363,14 +360,11 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     const correct = challenge.options?.find((opt) => opt.id === selectedAnswer)?.correct ?? false;
 
     if (correct) {
-      onCorrectAnswer?.();
       if (!showHint) {
         setScore((prev) => prev + 15);
       } else {
         setScore((prev) => prev + 8);
       }
-    } else {
-      onIncorrectAnswer?.();
     }
 
     setShowResult(true);
@@ -383,7 +377,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       setShowResult(false);
       setShowHint(false);
     } else {
-      onComplete(score, MAX_SCORE, totalHintsUsed);
+      onComplete(score);
     }
   };
 

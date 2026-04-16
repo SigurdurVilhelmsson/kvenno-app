@@ -3,10 +3,8 @@ import { useState, useMemo } from 'react';
 import { shuffleArray } from '@shared/utils';
 
 interface Level3Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 interface Challenge {
@@ -399,16 +397,15 @@ const challenges: Challenge[] = [
 ];
 
 // Max possible score: 10 challenges * 12 points = 120 points
-const MAX_SCORE = 120;
 
-export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
+export function Level3({ onComplete, onBack }: Level3Props) {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [showConcept, setShowConcept] = useState(false);
   const [score, setScore] = useState(0);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
+  const [, setTotalHintsUsed] = useState(0);
 
   const challenge = challenges[currentChallenge];
 
@@ -432,9 +429,6 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       } else {
         setScore((prev) => prev + 6);
       }
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
     }
     setShowResult(true);
   };
@@ -447,7 +441,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       setShowHint(false);
       setShowConcept(false);
     } else {
-      onComplete(score, MAX_SCORE, totalHintsUsed);
+      onComplete(score);
     }
   };
 

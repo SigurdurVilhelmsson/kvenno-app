@@ -352,13 +352,11 @@ function EquationBlock({
 }
 
 interface Level2Props {
-  onComplete: (score: number, maxScore?: number, hintsUsed?: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
-export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level2Props) {
+export function Level2({ onComplete, onBack }: Level2Props) {
   const [currentPuzzle, setCurrentPuzzle] = useState(0);
   const [equations, setEquations] = useState<Equation[]>(
     PUZZLES[0].availableEquations.map((eq) => ({ ...eq }))
@@ -369,7 +367,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const [score, setScore] = useState(0);
   const [completed, setCompleted] = useState<number[]>([]);
   const [explanation, setExplanation] = useState('');
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
+  const [, setTotalHintsUsed] = useState(0);
 
   const puzzle = PUZZLES[currentPuzzle];
 
@@ -417,14 +415,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     );
 
     if (correct) {
-      onCorrectAnswer?.();
       if (!completed.includes(puzzle.id)) {
         const points = 100;
         setScore((prev) => prev + points);
         setCompleted((prev) => [...prev, puzzle.id]);
       }
-    } else {
-      onIncorrectAnswer?.();
     }
   };
 
@@ -442,7 +437,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       resetPuzzle(next);
     } else {
       // Max score is 100 per puzzle × 5 puzzles = 500
-      onComplete(score, 500, totalHintsUsed);
+      onComplete(score);
     }
   };
 

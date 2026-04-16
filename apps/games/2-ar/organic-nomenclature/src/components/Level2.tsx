@@ -16,10 +16,8 @@ const NOMENCLATURE_MISCONCEPTIONS: Record<string, string> = {
 const NOMENCLATURE_RELATED = ['IUPAC nafnakerfi', 'Kolefniskeðjur', 'Vetniskolefni', 'Hóptengi'];
 
 interface Level2Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 interface Molecule {
@@ -36,25 +34,130 @@ interface Molecule {
 
 const molecules: Molecule[] = [
   // Alkanes
-  { id: 1, type: 'alkane', carbons: 2, structure: "C-C", formula: "C₂H₆", correctName: "etan", hint: "2 kolefni + eintengi = eth + an" },
-  { id: 2, type: 'alkane', carbons: 4, structure: "C-C-C-C", formula: "C₄H₁₀", correctName: "bútan", hint: "4 kolefni + eintengi = but + an" },
-  { id: 3, type: 'alkane', carbons: 6, structure: "C-C-C-C-C-C", formula: "C₆H₁₄", correctName: "hexan", hint: "6 kolefni + eintengi = hex + an" },
+  {
+    id: 1,
+    type: 'alkane',
+    carbons: 2,
+    structure: 'C-C',
+    formula: 'C₂H₆',
+    correctName: 'etan',
+    hint: '2 kolefni + eintengi = eth + an',
+  },
+  {
+    id: 2,
+    type: 'alkane',
+    carbons: 4,
+    structure: 'C-C-C-C',
+    formula: 'C₄H₁₀',
+    correctName: 'bútan',
+    hint: '4 kolefni + eintengi = but + an',
+  },
+  {
+    id: 3,
+    type: 'alkane',
+    carbons: 6,
+    structure: 'C-C-C-C-C-C',
+    formula: 'C₆H₁₄',
+    correctName: 'hexan',
+    hint: '6 kolefni + eintengi = hex + an',
+  },
 
   // Alkenes
-  { id: 4, type: 'alkene', carbons: 2, structure: "C=C", formula: "C₂H₄", correctName: "eten", doublePosition: 1, hint: "2 kolefni + tvítengi = eth + en" },
-  { id: 5, type: 'alkene', carbons: 3, structure: "C=C-C", formula: "C₃H₆", correctName: "propen", doublePosition: 1, hint: "3 kolefni + tvítengi = prop + en" },
-  { id: 6, type: 'alkene', carbons: 4, structure: "C=C-C-C", formula: "C₄H₈", correctName: "1-búten", doublePosition: 1, hint: "4+ kolefni þarf staðsetningartölu" },
-  { id: 7, type: 'alkene', carbons: 4, structure: "C-C=C-C", formula: "C₄H₈", correctName: "2-búten", doublePosition: 2, hint: "Tvítengi byrjar á kolefni 2" },
+  {
+    id: 4,
+    type: 'alkene',
+    carbons: 2,
+    structure: 'C=C',
+    formula: 'C₂H₄',
+    correctName: 'eten',
+    doublePosition: 1,
+    hint: '2 kolefni + tvítengi = eth + en',
+  },
+  {
+    id: 5,
+    type: 'alkene',
+    carbons: 3,
+    structure: 'C=C-C',
+    formula: 'C₃H₆',
+    correctName: 'propen',
+    doublePosition: 1,
+    hint: '3 kolefni + tvítengi = prop + en',
+  },
+  {
+    id: 6,
+    type: 'alkene',
+    carbons: 4,
+    structure: 'C=C-C-C',
+    formula: 'C₄H₈',
+    correctName: '1-búten',
+    doublePosition: 1,
+    hint: '4+ kolefni þarf staðsetningartölu',
+  },
+  {
+    id: 7,
+    type: 'alkene',
+    carbons: 4,
+    structure: 'C-C=C-C',
+    formula: 'C₄H₈',
+    correctName: '2-búten',
+    doublePosition: 2,
+    hint: 'Tvítengi byrjar á kolefni 2',
+  },
 
   // Alkynes
-  { id: 8, type: 'alkyne', carbons: 2, structure: "C≡C", formula: "C₂H₂", correctName: "etyn", triplePosition: 1, hint: "2 kolefni + þrítengi = eth + yn" },
-  { id: 9, type: 'alkyne', carbons: 3, structure: "C≡C-C", formula: "C₃H₄", correctName: "propyn", triplePosition: 1, hint: "3 kolefni + þrítengi = prop + yn" },
-  { id: 10, type: 'alkyne', carbons: 4, structure: "C≡C-C-C", formula: "C₄H₆", correctName: "1-bútyn", triplePosition: 1, hint: "4+ kolefni þarf staðsetningartölu" },
-  { id: 11, type: 'alkyne', carbons: 5, structure: "C-C≡C-C-C", formula: "C₅H₈", correctName: "2-pentyn", triplePosition: 2, hint: "Þrítengi byrjar á kolefni 2" },
-  { id: 12, type: 'alkene', carbons: 5, structure: "C=C-C-C-C", formula: "C₅H₁₀", correctName: "1-penten", doublePosition: 1, hint: "5 kolefni, tvítengi á stað 1" }
+  {
+    id: 8,
+    type: 'alkyne',
+    carbons: 2,
+    structure: 'C≡C',
+    formula: 'C₂H₂',
+    correctName: 'etyn',
+    triplePosition: 1,
+    hint: '2 kolefni + þrítengi = eth + yn',
+  },
+  {
+    id: 9,
+    type: 'alkyne',
+    carbons: 3,
+    structure: 'C≡C-C',
+    formula: 'C₃H₄',
+    correctName: 'propyn',
+    triplePosition: 1,
+    hint: '3 kolefni + þrítengi = prop + yn',
+  },
+  {
+    id: 10,
+    type: 'alkyne',
+    carbons: 4,
+    structure: 'C≡C-C-C',
+    formula: 'C₄H₆',
+    correctName: '1-bútyn',
+    triplePosition: 1,
+    hint: '4+ kolefni þarf staðsetningartölu',
+  },
+  {
+    id: 11,
+    type: 'alkyne',
+    carbons: 5,
+    structure: 'C-C≡C-C-C',
+    formula: 'C₅H₈',
+    correctName: '2-pentyn',
+    triplePosition: 2,
+    hint: 'Þrítengi byrjar á kolefni 2',
+  },
+  {
+    id: 12,
+    type: 'alkene',
+    carbons: 5,
+    structure: 'C=C-C-C-C',
+    formula: 'C₅H₁₀',
+    correctName: '1-penten',
+    doublePosition: 1,
+    hint: '5 kolefni, tvítengi á stað 1',
+  },
 ];
 
-export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level2Props) {
+export function Level2({ onComplete, onBack }: Level2Props) {
   const [mode, setMode] = useState<'select' | 'name' | 'build'>('select');
   const [currentMolecule, setCurrentMolecule] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
@@ -63,10 +166,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const [score, setScore] = useState(0);
   const [showHint, setShowHint] = useState(false);
   const [attempts, setAttempts] = useState(0);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
+  const [, setTotalHintsUsed] = useState(0);
   const [useDragDrop, setUseDragDrop] = useState(true);
   const [zoneState, setZoneState] = useState<ZoneState>({});
-  const maxScore = molecules.length * 10;
 
   const molecule = molecules[currentMolecule];
 
@@ -99,7 +201,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     const items: DraggableItemData[] = [];
 
     // Add prefix items
-    prefixes.forEach(p => {
+    prefixes.forEach((p) => {
       items.push({
         id: p.id,
         content: (
@@ -115,7 +217,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     // Add position items (only if molecule needs position)
     const needsPosition = molecule.carbons >= 4 && molecule.type !== 'alkane';
     if (needsPosition) {
-      positions.forEach(p => {
+      positions.forEach((p) => {
         items.push({
           id: p.id,
           content: (
@@ -130,15 +232,19 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     }
 
     // Add suffix items
-    suffixes.forEach(s => {
+    suffixes.forEach((s) => {
       items.push({
         id: s.id,
         content: (
-          <div className={`px-3 py-2 rounded-lg border-2 font-bold ${
-            s.type === 'alkane' ? 'bg-warm-100 border-warm-300 text-warm-700' :
-            s.type === 'alkene' ? 'bg-green-100 border-green-300 text-green-700' :
-            'bg-purple-100 border-purple-300 text-purple-700'
-          }`}>
+          <div
+            className={`px-3 py-2 rounded-lg border-2 font-bold ${
+              s.type === 'alkane'
+                ? 'bg-warm-100 border-warm-300 text-warm-700'
+                : s.type === 'alkene'
+                  ? 'bg-green-100 border-green-300 text-green-700'
+                  : 'bg-purple-100 border-purple-300 text-purple-700'
+            }`}
+          >
             {s.label}
           </div>
         ),
@@ -184,11 +290,11 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const handleDrop = (result: DropResult) => {
     const { itemId, zoneId } = result;
 
-    setZoneState(prev => {
+    setZoneState((prev) => {
       const newState = { ...prev };
       // Remove item from other zones
       for (const key of Object.keys(newState)) {
-        newState[key] = newState[key].filter(id => id !== itemId);
+        newState[key] = newState[key].filter((id) => id !== itemId);
       }
       // Add to target zone
       if (!newState[zoneId]) {
@@ -207,7 +313,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     // Get position if present
     const positionItem = zoneState['zone-position']?.[0];
     if (positionItem) {
-      const item = nameItems.find(i => i.id === positionItem);
+      const item = nameItems.find((i) => i.id === positionItem);
       if (item?.data?.label) {
         name += item.data.label;
       }
@@ -216,7 +322,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     // Get prefix
     const prefixItem = zoneState['zone-prefix']?.[0];
     if (prefixItem) {
-      const item = nameItems.find(i => i.id === prefixItem);
+      const item = nameItems.find((i) => i.id === prefixItem);
       if (item?.data?.label) {
         const label = item.data.label as string;
         name += label.replace('-', '');
@@ -226,7 +332,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     // Get suffix
     const suffixItem = zoneState['zone-suffix']?.[0];
     if (suffixItem) {
-      const item = nameItems.find(i => i.id === suffixItem);
+      const item = nameItems.find((i) => i.id === suffixItem);
       if (item?.data?.label) {
         const label = item.data.label as string;
         name += label.replace('-', '');
@@ -248,10 +354,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
     if (correct) {
       const points = attempts === 0 ? 10 : attempts === 1 ? 5 : 2;
-      setScore(prev => prev + points);
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
+      setScore((prev) => prev + points);
     }
   };
 
@@ -291,7 +394,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   };
 
   const normalizeAnswer = (answer: string): string => {
-    return answer.toLowerCase().trim()
+    return answer
+      .toLowerCase()
+      .trim()
       .replace(/í/g, 'i')
       .replace(/ú/g, 'u')
       .replace(/ý/g, 'y')
@@ -310,23 +415,20 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
     if (correct) {
       const points = attempts === 0 ? 10 : attempts === 1 ? 5 : 2;
-      setScore(prev => prev + points);
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
+      setScore((prev) => prev + points);
     }
   };
 
   const handleNext = () => {
     if (currentMolecule < molecules.length - 1) {
-      setCurrentMolecule(prev => prev + 1);
+      setCurrentMolecule((prev) => prev + 1);
       setUserAnswer('');
       setShowFeedback(false);
       setShowHint(false);
       setAttempts(0);
       setZoneState({});
     } else {
-      onComplete(score, maxScore, totalHintsUsed);
+      onComplete(score);
     }
   };
 
@@ -334,23 +436,29 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     setShowFeedback(false);
     setUserAnswer('');
     setZoneState({});
-    setAttempts(prev => prev + 1);
+    setAttempts((prev) => prev + 1);
     setShowHint(true);
   };
 
   const getTypeColor = () => {
     switch (molecule.type) {
-      case 'alkane': return 'from-warm-50 to-warm-100 border-warm-300';
-      case 'alkene': return 'from-green-50 to-emerald-100 border-green-300';
-      case 'alkyne': return 'from-purple-50 to-violet-100 border-purple-300';
+      case 'alkane':
+        return 'from-warm-50 to-warm-100 border-warm-300';
+      case 'alkene':
+        return 'from-green-50 to-emerald-100 border-green-300';
+      case 'alkyne':
+        return 'from-purple-50 to-violet-100 border-purple-300';
     }
   };
 
   const getTypeName = () => {
     switch (molecule.type) {
-      case 'alkane': return 'Alkan (eintengi)';
-      case 'alkene': return 'Alken (tvítengi)';
-      case 'alkyne': return 'Alkyn (þrítengi)';
+      case 'alkane':
+        return 'Alkan (eintengi)';
+      case 'alkene':
+        return 'Alken (tvítengi)';
+      case 'alkyne':
+        return 'Alkyn (þrítengi)';
     }
   };
 
@@ -368,9 +476,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-green-600">
             🏷️ Stig 2: Nafna og byggja
           </h1>
-          <p className="text-center text-warm-600 mb-8">
-            Veldu hvernig þú vilt æfa þig
-          </p>
+          <p className="text-center text-warm-600 mb-8">Veldu hvernig þú vilt æfa þig</p>
 
           <div className="space-y-4">
             <button
@@ -381,9 +487,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 <div className="text-4xl">🏷️</div>
                 <div className="flex-1">
                   <div className="text-xl font-bold text-green-800">Nefna sameindir</div>
-                  <div className="text-sm text-green-600 mt-1">
-                    Sjáðu sameind → Skrifaðu nafnið
-                  </div>
+                  <div className="text-sm text-green-600 mt-1">Sjáðu sameind → Skrifaðu nafnið</div>
                 </div>
               </div>
             </button>
@@ -409,7 +513,8 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             <p className="text-sm text-warm-600">
               <strong>Nefna sameindir</strong> æfir þig í að þekkja byggingu og skrifa nafn.
               <br />
-              <strong>Byggja sameindir</strong> æfir öfuga leið: lesa nafn og búa til rétta byggingu.
+              <strong>Byggja sameindir</strong> æfir öfuga leið: lesa nafn og búa til rétta
+              byggingu.
             </p>
           </div>
         </div>
@@ -419,14 +524,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   // Build mode - use StructureFromNameChallenge
   if (mode === 'build') {
-    return (
-      <StructureFromNameChallenge
-        onComplete={onComplete}
-        onBack={() => setMode('select')}
-        onCorrectAnswer={onCorrectAnswer}
-        onIncorrectAnswer={onIncorrectAnswer}
-      />
-    );
+    return <StructureFromNameChallenge onComplete={onComplete} onBack={() => setMode('select')} />;
   }
 
   // Name mode - existing functionality
@@ -473,22 +571,24 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
 
           <div className="text-center">
-            <span className="text-2xl font-mono font-bold text-warm-800">
-              {molecule.formula}
-            </span>
+            <span className="text-2xl font-mono font-bold text-warm-800">{molecule.formula}</span>
           </div>
 
           {/* Functional group legend */}
           {molecule.type !== 'alkane' && (
-            <div className={`mt-4 p-3 rounded-lg border-2 ${
-              molecule.type === 'alkene'
-                ? 'bg-green-50 border-green-300'
-                : 'bg-purple-50 border-purple-300'
-            }`}>
+            <div
+              className={`mt-4 p-3 rounded-lg border-2 ${
+                molecule.type === 'alkene'
+                  ? 'bg-green-50 border-green-300'
+                  : 'bg-purple-50 border-purple-300'
+              }`}
+            >
               <div className="flex items-center justify-center gap-2">
-                <span className={`text-lg font-bold ${
-                  molecule.type === 'alkene' ? 'text-green-600' : 'text-purple-600'
-                }`}>
+                <span
+                  className={`text-lg font-bold ${
+                    molecule.type === 'alkene' ? 'text-green-600' : 'text-purple-600'
+                  }`}
+                >
                   {molecule.type === 'alkene' ? '🟢 Tvítengi (C=C)' : '🟣 Þrítengi (C≡C)'}
                 </span>
                 <span className="text-sm text-warm-600">
@@ -543,9 +643,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 {/* Preview of built name */}
                 <div className="mt-4 p-4 bg-emerald-50 rounded-xl border-2 border-emerald-200 text-center">
                   <div className="text-sm text-warm-500 mb-1">Nafnið sem þú byggir:</div>
-                  <div className="text-2xl font-bold text-emerald-700">
-                    {getBuiltName() || '—'}
-                  </div>
+                  <div className="text-2xl font-bold text-emerald-700">{getBuiltName() || '—'}</div>
                 </div>
               </div>
             ) : (
@@ -570,7 +668,7 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 <button
                   onClick={() => {
                     setShowHint(true);
-                    setTotalHintsUsed(prev => prev + 1);
+                    setTotalHintsUsed((prev) => prev + 1);
                   }}
                   className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-3 px-6 rounded-xl"
                 >
@@ -603,11 +701,17 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 }}
               />
             ) : (
-              <div className={`p-6 rounded-xl text-center ${
-                isCorrect ? 'bg-green-100 border-2 border-green-400' : 'bg-red-100 border-2 border-red-400'
-              }`}>
+              <div
+                className={`p-6 rounded-xl text-center ${
+                  isCorrect
+                    ? 'bg-green-100 border-2 border-green-400'
+                    : 'bg-red-100 border-2 border-red-400'
+                }`}
+              >
                 <div className="text-4xl mb-2">{isCorrect ? '✓' : '✗'}</div>
-                <div className={`text-xl font-bold ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+                <div
+                  className={`text-xl font-bold ${isCorrect ? 'text-green-800' : 'text-red-800'}`}
+                >
                   {isCorrect ? 'Rétt!' : 'Rangt'}
                 </div>
                 {isCorrect ? (
@@ -626,23 +730,45 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div className="font-bold text-warm-700 mb-2">Útskýring:</div>
               <div className="text-sm text-warm-600">
                 <span className="text-blue-600 font-bold">
-                  {molecule.carbons === 1 ? 'meth' :
-                   molecule.carbons === 2 ? 'eth' :
-                   molecule.carbons === 3 ? 'prop' :
-                   molecule.carbons === 4 ? 'but' :
-                   molecule.carbons === 5 ? 'pent' :
-                   molecule.carbons === 6 ? 'hex' :
-                   molecule.carbons === 7 ? 'hept' :
-                   molecule.carbons === 8 ? 'oct' : 'non'}
+                  {molecule.carbons === 1
+                    ? 'meth'
+                    : molecule.carbons === 2
+                      ? 'eth'
+                      : molecule.carbons === 3
+                        ? 'prop'
+                        : molecule.carbons === 4
+                          ? 'but'
+                          : molecule.carbons === 5
+                            ? 'pent'
+                            : molecule.carbons === 6
+                              ? 'hex'
+                              : molecule.carbons === 7
+                                ? 'hept'
+                                : molecule.carbons === 8
+                                  ? 'oct'
+                                  : 'non'}
                 </span>
                 <span className="text-warm-500"> ({molecule.carbons} kolefni) + </span>
                 <span className="text-green-600 font-bold">
                   {molecule.type === 'alkane' ? 'an' : molecule.type === 'alkene' ? 'en' : 'yn'}
                 </span>
-                <span className="text-warm-500"> ({molecule.type === 'alkane' ? 'eintengi' : molecule.type === 'alkene' ? 'tvítengi' : 'þrítengi'})</span>
+                <span className="text-warm-500">
+                  {' '}
+                  (
+                  {molecule.type === 'alkane'
+                    ? 'eintengi'
+                    : molecule.type === 'alkene'
+                      ? 'tvítengi'
+                      : 'þrítengi'}
+                  )
+                </span>
                 {(molecule.doublePosition || molecule.triplePosition) && molecule.carbons >= 4 && (
                   <span className="text-warm-500">
-                    {' '}+ staðsetningartala <span className="text-red-600 font-bold">{molecule.doublePosition || molecule.triplePosition}</span>
+                    {' '}
+                    + staðsetningartala{' '}
+                    <span className="text-red-600 font-bold">
+                      {molecule.doublePosition || molecule.triplePosition}
+                    </span>
                   </span>
                 )}
               </div>

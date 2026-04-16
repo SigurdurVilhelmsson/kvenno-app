@@ -25,10 +25,8 @@ const VSEPR_MISCONCEPTIONS: Record<string, string> = {
 const VSEPR_RELATED: string[] = ['VSEPR kenningin', 'Rafeinasvið', 'Sameindaröðun', 'Tengjahorn'];
 
 interface Level1Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 interface Geometry {
@@ -470,7 +468,7 @@ const challenges: Challenge[] = [
   },
 ];
 
-export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
+export function Level1({ onComplete, onBack }: Level1Props) {
   const [phase, setPhase] = useState<'explore' | 'quiz'>('explore');
   const [selectedGeometry, setSelectedGeometry] = useState<Geometry | null>(null);
   const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
@@ -482,10 +480,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   const [hintsUsedTier, setHintsUsedTier] = useState(0);
   const [isCorrect, setIsCorrect] = useState(false);
   const [score, setScore] = useState(0);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
+  const [, setTotalHintsUsed] = useState(0);
 
   const challenge = challenges[currentChallenge];
-  const maxScore = challenges.length * 15; // 15 points per question without hints
 
   // Shuffle options for current challenge - memoize to keep stable during challenge
   const shuffledOptions = useMemo(() => {
@@ -505,11 +502,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     const correct = selected?.correct ?? false;
     setIsCorrect(correct);
     if (correct) {
-      onCorrectAnswer?.();
       const earnedPoints = Math.round(basePoints * hintMultiplier);
       setScore((prev) => prev + earnedPoints);
-    } else {
-      onIncorrectAnswer?.();
     }
     setShowResult(true);
   };
@@ -529,7 +523,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       setHintsUsedTier(0);
       setIsCorrect(false);
     } else {
-      onComplete(score, maxScore, totalHintsUsed + hintsUsedTier);
+      onComplete(score);
     }
   };
 

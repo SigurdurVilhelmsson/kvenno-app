@@ -38,28 +38,19 @@ function App() {
     DEFAULT_PROGRESS
   );
 
-  const applyLevelResult = (
-    level: 1 | 2 | 3,
-    score: number,
-    maxScore: number,
-    next: ActiveLevel
-  ) => {
-    const mastered = maxScore > 0 && score / maxScore >= 0.8;
+  const applyLevelResult = (level: 1 | 2 | 3, score: number, next: ActiveLevel) => {
     const key = `level${level}` as const;
     updateProgress({
-      [`${key}Completed`]: mastered || progress[`${key}Completed`],
+      [`${key}Completed`]: true,
       [`${key}Score`]: Math.max(progress[`${key}Score`], score),
       totalGamesPlayed: progress.totalGamesPlayed + 1,
     } as Partial<Progress>);
     setActiveLevel(next);
   };
 
-  const handleLevel1Complete = (score: number, maxScore: number) =>
-    applyLevelResult(1, score, maxScore, 'menu');
-  const handleLevel2Complete = (score: number, maxScore: number) =>
-    applyLevelResult(2, score, maxScore, 'menu');
-  const handleLevel3Complete = (score: number, maxScore: number) =>
-    applyLevelResult(3, score, maxScore, 'complete');
+  const handleLevel1Complete = (score: number) => applyLevelResult(1, score, 'menu');
+  const handleLevel2Complete = (score: number) => applyLevelResult(2, score, 'menu');
+  const handleLevel3Complete = (score: number) => applyLevelResult(3, score, 'complete');
 
   if (activeLevel === 'level1') {
     return <Level1 onComplete={handleLevel1Complete} onBack={() => setActiveLevel('menu')} />;

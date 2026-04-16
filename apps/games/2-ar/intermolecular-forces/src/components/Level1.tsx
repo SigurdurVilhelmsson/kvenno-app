@@ -26,10 +26,8 @@ const RELATED_CONCEPTS: Record<string, string[]> = {
 };
 
 interface Level1Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 interface IMFType {
@@ -470,16 +468,15 @@ const molecules: Molecule[] = [
 ];
 
 // Max possible score: 10 molecules * 15 points = 150 points
-const MAX_SCORE = 150;
 
-export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
+export function Level1({ onComplete, onBack }: Level1Props) {
   const [phase, setPhase] = useState<'learn' | 'quiz'>('learn');
   const [currentMolecule, setCurrentMolecule] = useState(0);
   const [selectedIMFs, setSelectedIMFs] = useState<Set<string>>(new Set());
   const [showResult, setShowResult] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [score, setScore] = useState(0);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
+  const [, setTotalHintsUsed] = useState(0);
   const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
 
   const molecule = molecules[currentMolecule];
@@ -507,9 +504,6 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       } else {
         setScore((prev) => prev + 8);
       }
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
     }
     setShowResult(true);
   };
@@ -521,7 +515,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
       setShowResult(false);
       setShowHint(false);
     } else {
-      onComplete(score, MAX_SCORE, totalHintsUsed);
+      onComplete(score);
     }
   };
 

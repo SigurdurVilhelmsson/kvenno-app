@@ -39,7 +39,7 @@ function App() {
     DEFAULT_PROGRESS
   );
 
-  const handleLevel1Complete = (score: number, _maxScore: number, _hintsUsed: number) => {
+  const handleLevel1Complete = (score: number) => {
     updateProgress({
       level1Completed: true,
       level1Score: Math.max(progress.level1Score, score),
@@ -48,7 +48,7 @@ function App() {
     setActiveLevel('menu');
   };
 
-  const handleLevel2Complete = (score: number, _maxScore: number, _hintsUsed: number) => {
+  const handleLevel2Complete = (score: number) => {
     updateProgress({
       level2Completed: true,
       level2Score: Math.max(progress.level2Score, score),
@@ -57,7 +57,7 @@ function App() {
     setActiveLevel('menu');
   };
 
-  const handleLevel3Complete = (score: number, _maxScore: number, _hintsUsed: number) => {
+  const handleLevel3Complete = (score: number) => {
     updateProgress({
       level3Completed: true,
       level3Score: Math.max(progress.level3Score, score),

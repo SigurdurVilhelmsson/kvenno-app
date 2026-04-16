@@ -9,10 +9,8 @@ import {
 
 interface Level3Props {
   t: (key: string, fallback?: string) => string;
-  onComplete: (score: number, maxScore?: number, hintsUsed?: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 interface Challenge {
@@ -141,7 +139,7 @@ const challenges: Challenge[] = [
   },
 ];
 
-export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
+export function Level3({ t, onComplete, onBack }: Level3Props) {
   const [showIntro, setShowIntro] = useState(true);
   useEscapeKey(onBack, showIntro);
   const [currentChallenge, setCurrentChallenge] = useState(0);
@@ -151,7 +149,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [score, setScore] = useState(0);
   const [showTable, setShowTable] = useState(false);
-  const [totalHintsUsed, setTotalHintsUsed] = useState(0);
+  const [, setTotalHintsUsed] = useState(0);
 
   const challenge = challenges[currentChallenge];
 
@@ -161,14 +159,11 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
     setIsCorrect(correct);
     if (correct) {
-      onCorrectAnswer?.();
       if (!showHint) {
         setScore((prev) => prev + 20);
       } else {
         setScore((prev) => prev + 10);
       }
-    } else {
-      onIncorrectAnswer?.();
     }
     setShowExplanation(true);
   };
@@ -187,7 +182,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
       setIsCorrect(null);
     } else {
       // Max score is 20 per challenge × 6 challenges = 120
-      onComplete(score, 120, totalHintsUsed);
+      onComplete(score);
     }
   };
 
@@ -442,13 +437,32 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               className={`p-4 rounded-xl mb-4 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
             >
               <div
-                className={`font-bold text-lg mb-2 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
+                className={`flex items-center gap-2 font-bold text-lg mb-2 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
               >
-                {isCorrect ? t('common.correct') : t('common.incorrect')}
+                <span aria-label={isCorrect ? 'Rétt svar' : 'Rangt svar'}>
+                  {isCorrect ? '✓' : '✗'}
+                </span>
+                <span>{isCorrect ? t('common.correct') : t('common.incorrect')}</span>
               </div>
               <div className={`font-mono ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
                 {t('level3.correctAnswer')} {challenge.correctAnswer} {challenge.unit}
               </div>
+              {!isCorrect &&
+                (() => {
+                  const userNum = parseFloat(userAnswer);
+                  if (isNaN(userNum)) return null;
+                  const delta = userNum - challenge.correctAnswer;
+                  return (
+                    <div className="text-sm text-warm-700 mt-2">
+                      Þú slóðir inn <span className="font-mono">{userAnswer}</span> — munurinn er{' '}
+                      <span className="font-mono font-bold">
+                        {delta > 0 ? '+' : ''}
+                        {delta.toFixed(1)}
+                      </span>{' '}
+                      {challenge.unit} (leyft svigrúm: ±2 {challenge.unit}).
+                    </div>
+                  );
+                })()}
             </div>
           )}
 

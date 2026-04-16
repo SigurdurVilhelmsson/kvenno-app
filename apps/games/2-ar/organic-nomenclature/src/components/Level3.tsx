@@ -1,10 +1,8 @@
 import { useState } from 'react';
 
 interface Level3Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 interface FunctionalGroup {
@@ -20,45 +18,45 @@ interface FunctionalGroup {
 
 const functionalGroups: FunctionalGroup[] = [
   {
-    name: "Alcohol",
-    nameIcelandic: "Alkóhól",
-    formula: "-OH",
-    suffix: "-ól",
-    example: "CH₃OH",
-    exampleName: "metanól",
-    description: "Hýdroxýlhópur bundinn við kolefni",
-    color: "bg-blue-100 border-blue-400 text-blue-800"
+    name: 'Alcohol',
+    nameIcelandic: 'Alkóhól',
+    formula: '-OH',
+    suffix: '-ól',
+    example: 'CH₃OH',
+    exampleName: 'metanól',
+    description: 'Hýdroxýlhópur bundinn við kolefni',
+    color: 'bg-blue-100 border-blue-400 text-blue-800',
   },
   {
-    name: "Aldehyde",
-    nameIcelandic: "Aldehýð",
-    formula: "-CHO",
-    suffix: "-al",
-    example: "CH₃CHO",
-    exampleName: "etanal",
-    description: "Karbonýlhópur í enda keðju",
-    color: "bg-amber-100 border-amber-400 text-amber-800"
+    name: 'Aldehyde',
+    nameIcelandic: 'Aldehýð',
+    formula: '-CHO',
+    suffix: '-al',
+    example: 'CH₃CHO',
+    exampleName: 'etanal',
+    description: 'Karbonýlhópur í enda keðju',
+    color: 'bg-amber-100 border-amber-400 text-amber-800',
   },
   {
-    name: "Ketone",
-    nameIcelandic: "Ketón",
-    formula: "C-CO-C",
-    suffix: "-ón",
-    example: "CH₃COCH₃",
-    exampleName: "própanón",
-    description: "Karbonýlhópur í miðri keðju",
-    color: "bg-orange-100 border-orange-400 text-orange-800"
+    name: 'Ketone',
+    nameIcelandic: 'Ketón',
+    formula: 'C-CO-C',
+    suffix: '-ón',
+    example: 'CH₃COCH₃',
+    exampleName: 'própanón',
+    description: 'Karbonýlhópur í miðri keðju',
+    color: 'bg-orange-100 border-orange-400 text-orange-800',
   },
   {
-    name: "Carboxylic Acid",
-    nameIcelandic: "Karboxýlsýra",
-    formula: "-COOH",
-    suffix: "-sýra",
-    example: "CH₃COOH",
-    exampleName: "etansýra",
-    description: "Karboxýlhópur (sýruhópur)",
-    color: "bg-red-100 border-red-400 text-red-800"
-  }
+    name: 'Carboxylic Acid',
+    nameIcelandic: 'Karboxýlsýra',
+    formula: '-COOH',
+    suffix: '-sýra',
+    example: 'CH₃COOH',
+    exampleName: 'etansýra',
+    description: 'Karboxýlhópur (sýruhópur)',
+    color: 'bg-red-100 border-red-400 text-red-800',
+  },
 ];
 
 interface Challenge {
@@ -77,109 +75,108 @@ const challenges: Challenge[] = [
   {
     id: 1,
     type: 'identify',
-    question: "Hvaða hóptengi er í CH₃OH?",
-    formula: "CH₃OH",
-    correctAnswer: "Alkóhól (-OH)",
-    options: ["Alkóhól (-OH)", "Aldehýð (-CHO)", "Karboxýlsýra (-COOH)", "Ketón (C=O)"],
-    explanation: "CH₃OH hefur -OH hóp sem er hýdroxýlhópur (alkóhól)"
+    question: 'Hvaða hóptengi er í CH₃OH?',
+    formula: 'CH₃OH',
+    correctAnswer: 'Alkóhól (-OH)',
+    options: ['Alkóhól (-OH)', 'Aldehýð (-CHO)', 'Karboxýlsýra (-COOH)', 'Ketón (C=O)'],
+    explanation: 'CH₃OH hefur -OH hóp sem er hýdroxýlhópur (alkóhól)',
   },
   {
     id: 2,
     type: 'identify',
-    question: "Hvaða hóptengi er í CH₃COOH?",
-    formula: "CH₃COOH",
-    correctAnswer: "Karboxýlsýra (-COOH)",
-    options: ["Alkóhól (-OH)", "Aldehýð (-CHO)", "Karboxýlsýra (-COOH)", "Ketón (C=O)"],
-    explanation: "-COOH hópurinn er karboxýlhópur (sýruhópur)"
+    question: 'Hvaða hóptengi er í CH₃COOH?',
+    formula: 'CH₃COOH',
+    correctAnswer: 'Karboxýlsýra (-COOH)',
+    options: ['Alkóhól (-OH)', 'Aldehýð (-CHO)', 'Karboxýlsýra (-COOH)', 'Ketón (C=O)'],
+    explanation: '-COOH hópurinn er karboxýlhópur (sýruhópur)',
   },
   {
     id: 3,
     type: 'identify',
-    question: "Hvaða hóptengi er í CH₃CHO?",
-    formula: "CH₃CHO",
-    correctAnswer: "Aldehýð (-CHO)",
-    options: ["Alkóhól (-OH)", "Aldehýð (-CHO)", "Karboxýlsýra (-COOH)", "Ketón (C=O)"],
-    explanation: "-CHO er aldehýðhópur (karbonýl í enda keðju)"
+    question: 'Hvaða hóptengi er í CH₃CHO?',
+    formula: 'CH₃CHO',
+    correctAnswer: 'Aldehýð (-CHO)',
+    options: ['Alkóhól (-OH)', 'Aldehýð (-CHO)', 'Karboxýlsýra (-COOH)', 'Ketón (C=O)'],
+    explanation: '-CHO er aldehýðhópur (karbonýl í enda keðju)',
   },
 
   // Naming challenges
   {
     id: 4,
     type: 'name',
-    question: "Hvað heitir CH₃CH₂OH?",
-    formula: "CH₃CH₂OH",
-    correctAnswer: "etanól",
-    options: ["metanól", "etanól", "própanól", "etanal"],
-    explanation: "2 kolefni (eth-) + alkóhól (-ól) = etanól"
+    question: 'Hvað heitir CH₃CH₂OH?',
+    formula: 'CH₃CH₂OH',
+    correctAnswer: 'etanól',
+    options: ['metanól', 'etanól', 'própanól', 'etanal'],
+    explanation: '2 kolefni (eth-) + alkóhól (-ól) = etanól',
   },
   {
     id: 5,
     type: 'name',
-    question: "Hvað heitir CH₃CH₂COOH?",
-    formula: "CH₃CH₂COOH",
-    correctAnswer: "própansýra",
-    options: ["etansýra", "própansýra", "propanól", "propan"],
-    explanation: "3 kolefni (prop-) + karboxýlsýra (-sýra) = própansýra"
+    question: 'Hvað heitir CH₃CH₂COOH?',
+    formula: 'CH₃CH₂COOH',
+    correctAnswer: 'própansýra',
+    options: ['etansýra', 'própansýra', 'propanól', 'propan'],
+    explanation: '3 kolefni (prop-) + karboxýlsýra (-sýra) = própansýra',
   },
   {
     id: 6,
     type: 'name',
-    question: "Hvað heitir HCHO?",
-    formula: "HCHO",
-    correctAnswer: "metanal",
-    options: ["metanal", "etanal", "metanól", "metansýra"],
-    explanation: "1 kolefni (meth-) + aldehýð (-al) = metanal (einnig kallað formaldehýð)"
+    question: 'Hvað heitir HCHO?',
+    formula: 'HCHO',
+    correctAnswer: 'metanal',
+    options: ['metanal', 'etanal', 'metanól', 'metansýra'],
+    explanation: '1 kolefni (meth-) + aldehýð (-al) = metanal (einnig kallað formaldehýð)',
   },
   {
     id: 7,
     type: 'name',
-    question: "Hvað heitir CH₃COCH₃?",
-    formula: "CH₃COCH₃",
-    correctAnswer: "própanón",
-    options: ["etanón", "própanón", "própanól", "propan"],
-    explanation: "3 kolefni (prop-) + ketón (-ón) = própanón (einnig kallað asetón)"
+    question: 'Hvað heitir CH₃COCH₃?',
+    formula: 'CH₃COCH₃',
+    correctAnswer: 'própanón',
+    options: ['etanón', 'própanón', 'própanól', 'propan'],
+    explanation: '3 kolefni (prop-) + ketón (-ón) = própanón (einnig kallað asetón)',
   },
 
   // Structure challenges
   {
     id: 8,
     type: 'structure',
-    question: "Hvaða formúla á METANÓL?",
-    correctAnswer: "CH₃OH",
-    options: ["CH₃OH", "CH₃CHO", "HCOOH", "CH₄"],
-    explanation: "Metanól = 1 kolefni + alkóhól = CH₃ + OH = CH₃OH"
+    question: 'Hvaða formúla á METANÓL?',
+    correctAnswer: 'CH₃OH',
+    options: ['CH₃OH', 'CH₃CHO', 'HCOOH', 'CH₄'],
+    explanation: 'Metanól = 1 kolefni + alkóhól = CH₃ + OH = CH₃OH',
   },
   {
     id: 9,
     type: 'structure',
-    question: "Hvaða formúla á ETANSÝRA?",
-    correctAnswer: "CH₃COOH",
-    options: ["CH₃COOH", "CH₃CHO", "CH₃OH", "C₂H₆"],
-    explanation: "Etansýra = 2 kolefni + karboxýlsýra = CH₃COOH (edik)"
+    question: 'Hvaða formúla á ETANSÝRA?',
+    correctAnswer: 'CH₃COOH',
+    options: ['CH₃COOH', 'CH₃CHO', 'CH₃OH', 'C₂H₆'],
+    explanation: 'Etansýra = 2 kolefni + karboxýlsýra = CH₃COOH (edik)',
   },
   {
     id: 10,
     type: 'structure',
-    question: "Hvaða formúla á PRÓPANÓL?",
-    correctAnswer: "CH₃CH₂CH₂OH",
-    options: ["CH₃CH₂CH₂OH", "CH₃CH₂CHO", "CH₃CH₂COOH", "C₃H₈"],
-    explanation: "Própanól = 3 kolefni + alkóhól = CH₃CH₂CH₂OH"
-  }
+    question: 'Hvaða formúla á PRÓPANÓL?',
+    correctAnswer: 'CH₃CH₂CH₂OH',
+    options: ['CH₃CH₂CH₂OH', 'CH₃CH₂CHO', 'CH₃CH₂COOH', 'C₃H₈'],
+    explanation: 'Própanól = 3 kolefni + alkóhól = CH₃CH₂CH₂OH',
+  },
 ];
 
-export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
+export function Level3({ onComplete, onBack }: Level3Props) {
   const [phase, setPhase] = useState<'learn' | 'challenge'>('learn');
   const [currentGroup, setCurrentGroup] = useState(0);
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [score, setScore] = useState(0);
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [totalHintsUsed] = useState(0); // Level3 doesn't have hints in challenge
-  const maxScore = challenges.length * 10;
+  // (quiz has no hints)
 
   const handleNextGroup = () => {
     if (currentGroup < functionalGroups.length - 1) {
-      setCurrentGroup(prev => prev + 1);
+      setCurrentGroup((prev) => prev + 1);
     } else {
       setPhase('challenge');
     }
@@ -187,7 +184,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const handlePrevGroup = () => {
     if (currentGroup > 0) {
-      setCurrentGroup(prev => prev - 1);
+      setCurrentGroup((prev) => prev - 1);
     }
   };
 
@@ -197,19 +194,16 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     setShowFeedback(true);
 
     if (correct) {
-      setScore(prev => prev + 10);
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
+      setScore((prev) => prev + 10);
     }
   };
 
   const handleNextChallenge = () => {
     if (currentChallenge < challenges.length - 1) {
-      setCurrentChallenge(prev => prev + 1);
+      setCurrentChallenge((prev) => prev + 1);
       setShowFeedback(false);
     } else {
-      onComplete(score, maxScore, totalHintsUsed);
+      onComplete(score);
     }
   };
 
@@ -240,7 +234,11 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               <div
                 key={idx}
                 className={`w-3 h-3 rounded-full ${
-                  idx === currentGroup ? 'bg-purple-500' : idx < currentGroup ? 'bg-green-500' : 'bg-warm-300'
+                  idx === currentGroup
+                    ? 'bg-purple-500'
+                    : idx < currentGroup
+                      ? 'bg-green-500'
+                      : 'bg-warm-300'
                 }`}
               />
             ))}
@@ -274,9 +272,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               </div>
             </div>
 
-            <div className="text-center text-sm">
-              {group.description}
-            </div>
+            <div className="text-center text-sm">{group.description}</div>
           </div>
 
           <div className="flex gap-4 mt-8">
@@ -305,9 +301,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
               {functionalGroups.map((fg, idx) => (
                 <div
                   key={idx}
-                  className={`p-2 rounded border ${
-                    idx === currentGroup ? fg.color : 'bg-white'
-                  }`}
+                  className={`p-2 rounded border ${idx === currentGroup ? fg.color : 'bg-white'}`}
                 >
                   <span className="font-bold">{fg.formula}</span>
                   <span className="text-warm-500"> → </span>
@@ -326,9 +320,12 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const getTypeLabel = () => {
     switch (challenge.type) {
-      case 'identify': return '🔍 Þekkja hóptengi';
-      case 'name': return '🏷️ Nefna sameind';
-      case 'structure': return '🧪 Finna formúlu';
+      case 'identify':
+        return '🔍 Þekkja hóptengi';
+      case 'name':
+        return '🏷️ Nefna sameind';
+      case 'structure':
+        return '🧪 Finna formúlu';
     }
   };
 
@@ -358,9 +355,7 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
             {challenge.question}
           </div>
           {challenge.formula && (
-            <div className="text-3xl font-mono font-bold text-purple-700">
-              {challenge.formula}
-            </div>
+            <div className="text-3xl font-mono font-bold text-purple-700">{challenge.formula}</div>
           )}
         </div>
 
@@ -378,9 +373,13 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
           </div>
         ) : (
           <div className="space-y-4">
-            <div className={`p-6 rounded-xl text-center ${
-              isCorrect ? 'bg-green-100 border-2 border-green-400' : 'bg-red-100 border-2 border-red-400'
-            }`}>
+            <div
+              className={`p-6 rounded-xl text-center ${
+                isCorrect
+                  ? 'bg-green-100 border-2 border-green-400'
+                  : 'bg-red-100 border-2 border-red-400'
+              }`}
+            >
               <div className="text-4xl mb-2">{isCorrect ? '✓' : '✗'}</div>
               <div className={`text-xl font-bold ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
                 {isCorrect ? 'Rétt!' : 'Rangt'}
