@@ -621,26 +621,43 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                     myndast?
                   </p>
                   <div className="space-y-2">
-                    {geometryOptions.map((geo) => (
-                      <button
-                        key={geo.id}
-                        onClick={() => !stepResult && setSelectedGeometry(geo.id)}
-                        disabled={stepResult !== null}
-                        className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                          stepResult
-                            ? geo.id === molecule.correctGeometryId
-                              ? 'border-green-500 bg-green-50'
+                    {geometryOptions.map((geo) => {
+                      const isCorrectGeo = geo.id === molecule.correctGeometryId;
+                      const isPickedWrong =
+                        stepResult !== null && selectedGeometry === geo.id && !isCorrectGeo;
+                      return (
+                        <button
+                          key={geo.id}
+                          onClick={() => !stepResult && setSelectedGeometry(geo.id)}
+                          disabled={stepResult !== null}
+                          className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
+                            stepResult
+                              ? isCorrectGeo
+                                ? 'border-green-500 bg-green-50'
+                                : selectedGeometry === geo.id
+                                  ? 'border-red-500 bg-red-50'
+                                  : 'border-warm-200 opacity-50'
                               : selectedGeometry === geo.id
-                                ? 'border-red-500 bg-red-50'
-                                : 'border-warm-200 opacity-50'
-                            : selectedGeometry === geo.id
-                              ? 'border-teal-500 bg-teal-50 ring-2 ring-teal-200'
-                              : 'border-warm-200 hover:border-teal-300 hover:bg-teal-50'
-                        }`}
-                      >
-                        <div className="font-bold">{geo.name}</div>
-                      </button>
-                    ))}
+                                ? 'border-teal-500 bg-teal-50 ring-2 ring-teal-200'
+                                : 'border-warm-200 hover:border-teal-300 hover:bg-teal-50'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 font-bold">
+                            {stepResult && isCorrectGeo && (
+                              <span aria-label="Rétt svar" className="text-green-700">
+                                ✓
+                              </span>
+                            )}
+                            {isPickedWrong && (
+                              <span aria-label="Rangt svar" className="text-red-700">
+                                ✗
+                              </span>
+                            )}
+                            <span>{geo.name}</span>
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                   {stepResult === 'correct' && (
                     <div className="bg-green-50 p-3 rounded-lg text-green-700 text-sm">

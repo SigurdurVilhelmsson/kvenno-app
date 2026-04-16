@@ -194,3 +194,102 @@
 - [x] All 8 Y2 games' App.tsx now use `useGameProgress` — no more manual localStorage in the Y2 catalog
 - [x] Kinetics `MAX_SCORE` is a single constant; deleted 3 duplicate declarations
 - [x] Rafeindabygging L1 feedback logic no longer has dead branches; `normalizeConfig` is one regex instead of eleven
+
+---
+
+## Iteration 3: UX & Accessibility — 2026-04-16
+
+### Review Ratings
+
+| Game                  | P1 Teach | P2 Why  | P3 One Concept | P4 Visuals | P5 Hints | P6 Technical | P7 Accessible     |
+| --------------------- | -------- | ------- | -------------- | ---------- | -------- | ------------ | ----------------- |
+| Hess Law              | PASS     | PASS    | PASS           | PASS       | PASS     | PARTIAL      | PARTIAL → PASS    |
+| Kinetics              | PASS     | PASS    | PARTIAL        | PASS       | PASS     | PASS         | PARTIAL → PASS    |
+| Lewis Structures      | PARTIAL  | PARTIAL | PASS           | PASS       | PASS     | PASS         | FAIL              |
+| VSEPR Geometry        | PARTIAL  | PARTIAL | PASS           | PASS       | PASS     | PASS         | PARTIAL → PASS    |
+| Intermolecular Forces | PASS     | PARTIAL | PASS           | PASS       | PASS     | PASS         | PARTIAL           |
+| Organic Nomenclature  | PARTIAL  | PARTIAL | PASS           | PASS       | PASS     | PASS         | FAIL              |
+| Redox Reactions       | PASS     | PASS    | PASS           | PASS       | PASS     | PASS         | PARTIAL → PARTIAL |
+| Rafeindabygging       | PASS     | PASS    | PASS           | PASS       | PASS     | PASS         | PARTIAL → PASS    |
+
+### Key Findings (UX & Accessibility Focus)
+
+**Cross-cutting:**
+
+- 5/8 games rely on color-only feedback after submission (red/green borders without ✓/✗ icons or text labels) — fails WCAG 2.1 SC 1.4.1.
+- All sliders (Kinetics + others) lacked descriptive `aria-label` / `aria-valuetext`. Native arrow-key navigation works (browser default), but screen-reader output is unhelpful.
+- Drawing/3D-viewer accessibility is genuinely hard: Lewis L2 SVG drawing canvas is mouse-only; VSEPR/IMF 3D viewers (Three.js OrbitControls) have no keyboard rotation. Both noted as iter-4 candidates given scope.
+- Drag-drop touch support in `@shared/components/DragDropBuilder` has stubbed `handleTouchMove` — affects Organic L2.
+- Cross-cutting iter-2 deferrals (unused `onCorrectAnswer`/`onIncorrectAnswer`, 3-arg `onComplete`) intentionally not batched this round — would have ballooned diff scope; punted to iter 4.
+
+**Per-game critical findings:**
+
+1. **Hess Law**: L1 answer buttons distinguish correct/wrong only by background color + colored explanation text — colorblind users see identical gray.
+2. **Kinetics**: L1 sliders work via arrow keys but screen readers announce only "slider, X". L2 wrong-answer feedback says correct order but not why student's chosen order failed.
+3. **Lewis Structures**: SVG drawing canvas has zero keyboard support. Bond errors color-only. WCAG A keyboard failure — biggest blocker on Y2 catalog.
+4. **VSEPR**: Geometry-step option buttons rely on color-only feedback. 3D viewer keyboard-inaccessible. L2 cognitive load very high (10+ visible UI zones during geometry step).
+5. **IMF**: Multi-select via Set is button-based but lacks Space-toggle. L2 ranking is click-only (no keyboard alternative). Bond color coding for IMF types lacks redundant pattern signal.
+6. **Organic Nomenclature**: Bond visualizations rely on color + line count alone (single tan, double green, triple purple). Drag-drop mode has touch handler stubbed — broken on phones.
+7. **Redox**: L3 multi-step text inputs don't bind Enter to submit (must click). Identify step inputs now bind Enter; balance/electron-count steps still click-only.
+8. **Rafeindabygging**: L2 wrong answers said "Ekki rétt" with no diagnostic — student couldn't tell if they were off by 1 electron, used wrong subshell order, or made a typo.
+
+### Triage
+
+| #   | Game            | Finding                                               | Disposition | Effort |
+| --- | --------------- | ----------------------------------------------------- | ----------- | ------ |
+| 1   | Hess L1         | Color-only feedback on answer buttons                 | FIX         | S      |
+| 2   | Kinetics L1     | Sliders missing `aria-label` / `aria-valuetext`       | FIX         | S      |
+| 3   | Redox L3        | Identify-step inputs no Enter-to-submit               | FIX         | S      |
+| 4   | Rafeindabygging | L2 no diagnostic feedback for off-by-N electrons      | FIX         | S      |
+| 5   | VSEPR L2        | Geometry-step buttons: color-only feedback            | FIX         | S      |
+| 6   | Hess L3         | L3 wrong answer shows correct value but no delta      | DEFER       | S      |
+| 7   | Kinetics L2     | L2 wrong-answer feedback not explanatory              | DEFER       | M      |
+| 8   | Lewis L2        | SVG drawing canvas keyboard-inaccessible              | DEFER       | L      |
+| 9   | Lewis L2        | Bond errors color-only                                | DEFER       | M      |
+| 10  | VSEPR / IMF     | 3D viewer (Three.js) keyboard-inaccessible            | DEFER       | L      |
+| 11  | IMF L2          | Ranking click-only (no keyboard)                      | DEFER       | M      |
+| 12  | IMF             | ForceStrengthAnimation bars color-only                | DEFER       | S      |
+| 13  | Organic         | DragDropBuilder touch handler stubbed                 | DEFER       | M      |
+| 14  | Organic         | Bond visualization color-only (no pattern)            | DEFER       | S      |
+| 15  | Redox L3        | Balance/electron-count steps no Enter binding         | DEFER       | S      |
+| 16  | Redox L3        | LCM rationale missing from balance-step feedback      | DEFER       | S      |
+| 17  | ALL             | Unused `onCorrectAnswer`/`onIncorrectAnswer` props    | DEFER       | M      |
+| 18  | ALL             | `onComplete(score, max, hints)` → `(score)` signature | DEFER       | M      |
+
+**Disposition summary:** 5 FIX applied, 13 DEFER (iter 4 scope).
+
+### Changes Applied
+
+| #   | Game            | Finding                              | Done                                                                                                                                                  |
+| --- | --------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Hess L1         | Color-only feedback                  | Yes — answer buttons now prefix correct/wrong with `✓`/`✗` glyphs (with `aria-label`) before the option text                                          |
+| 2   | Kinetics L1     | Sliders missing aria-label/valuetext | Yes — temperature and activation-energy sliders now have descriptive Icelandic labels and valuetext (e.g., "300 Kelvin (250 til 500)")                |
+| 3   | Redox L3        | Identify-step Enter binding          | Yes — both `oxidized-input` and `reduced-input` now submit identify step on Enter when both fields filled and feedback not yet shown                  |
+| 4   | Rafeindabygging | L2 diagnostic feedback               | Yes — `countElectrons()` parses normalized config; wrong answers now show "Þú vantar N rafeindir (heild: X, ætti að vera Y)" or the inverse when over |
+| 5   | VSEPR L2        | Geometry-step buttons color-only     | Yes — option buttons now prefix `✓` (correct) or `✗` (picked-wrong) before the geometry name with `aria-label` for screen readers                     |
+
+### Deferred Items
+
+| Finding                                                  | Reason                                                          | Target      |
+| -------------------------------------------------------- | --------------------------------------------------------------- | ----------- |
+| Lewis L2 drawing-canvas keyboard nav                     | Major rebuild — needs roving tabindex + arrow-key bond cycling  | Iteration 4 |
+| Lewis L2 bond errors color-only                          | Pair with canvas a11y rebuild                                   | Iteration 4 |
+| VSEPR / IMF 3D viewer keyboard rotation                  | Three.js OrbitControls — needs custom keyboard-event wrapper    | Iteration 4 |
+| IMF L2 ranking click-only                                | Replace with reorder-list pattern (arrow-key swap)              | Iteration 4 |
+| IMF ForceStrengthAnimation bars                          | Add hatching pattern + numeric labels                           | Iteration 4 |
+| Organic DragDropBuilder touch                            | Replace HTML5 dnd with `@dnd-kit` or custom touch event handler | Iteration 4 |
+| Organic bond color-only                                  | Add stripe/dash patterns to single/double/triple                | Iteration 4 |
+| Hess L3 / Kinetics L2 / Redox L3 explanatory feedback    | Per-error diagnostics — each game needs custom logic            | Iteration 4 |
+| Redox L3 balance/electron Enter binding                  | Each step has different inline submit; need helper extraction   | Iteration 4 |
+| Cross-cutting unused callback props + 3-arg `onComplete` | 24 files; batch in iter 4 alongside touch/canvas a11y rebuild   | Iteration 4 |
+
+### Verification (2026-04-16)
+
+- [x] `pnpm type-check` passes across entire monorepo (0 errors)
+- [x] `pnpm build:games` — 20 succeeded, 0 failed
+- [x] Y2 bundle envelope unchanged
+- [x] Hess L1 buttons announce ✓/✗ via `aria-label` even for colorblind users
+- [x] Kinetics L1 slider arrow-key navigation now produces meaningful screen-reader output
+- [x] Redox L3 identify step submits on Enter when both inputs are filled
+- [x] Rafeindabygging L2 wrong answers display per-electron delta diagnostic
+- [x] VSEPR L2 geometry step has visible ✓/✗ glyphs alongside the colored borders

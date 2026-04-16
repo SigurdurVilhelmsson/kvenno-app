@@ -425,7 +425,19 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                         : 'bg-white border-warm-200 hover:border-blue-300 hover:bg-blue-50'
                   }`}
                 >
-                  <div className="font-semibold">{option.text}</div>
+                  <div className="flex items-start gap-2 font-semibold">
+                    {showResult && option.correct && (
+                      <span aria-label="Rétt svar" className="text-green-700 font-bold">
+                        ✓
+                      </span>
+                    )}
+                    {showResult && !option.correct && selectedAnswer === index && (
+                      <span aria-label="Rangt svar" className="text-red-700 font-bold">
+                        ✗
+                      </span>
+                    )}
+                    <span>{option.text}</span>
+                  </div>
                   {showResult && (selectedAnswer === index || option.correct) && (
                     <div
                       className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}

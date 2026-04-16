@@ -146,6 +146,16 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                   type="text"
                   value={answers.oxidized}
                   onChange={(e) => setAnswers((prev) => ({ ...prev, oxidized: e.target.value }))}
+                  onKeyDown={(e) => {
+                    if (
+                      e.key === 'Enter' &&
+                      answers.oxidized &&
+                      answers.reduced &&
+                      !feedback.show
+                    ) {
+                      checkIdentify();
+                    }
+                  }}
                   placeholder={t('level3.examplePlaceholder', 't.d. Zn')}
                   className="w-full p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-none"
                 />
@@ -162,6 +172,16 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                   type="text"
                   value={answers.reduced}
                   onChange={(e) => setAnswers((prev) => ({ ...prev, reduced: e.target.value }))}
+                  onKeyDown={(e) => {
+                    if (
+                      e.key === 'Enter' &&
+                      answers.oxidized &&
+                      answers.reduced &&
+                      !feedback.show
+                    ) {
+                      checkIdentify();
+                    }
+                  }}
                   placeholder={t('level3.examplePlaceholder', 't.d. Zn')}
                   className="w-full p-3 border-2 border-red-300 rounded-xl focus:border-red-500 focus:outline-none"
                 />

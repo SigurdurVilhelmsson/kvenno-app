@@ -265,6 +265,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 step="10"
                 value={temperature}
                 onChange={(e) => setTemperature(Number(e.target.value))}
+                aria-label="Hitastig í Kelvin"
+                aria-valuetext={`${temperature} Kelvin (250 til 500)`}
                 className="w-full h-2 bg-warm-200 rounded-lg appearance-none cursor-pointer accent-blue-500"
               />
               <div className="flex justify-between text-xs text-warm-400 mt-1">
@@ -287,6 +289,8 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 step="5"
                 value={activationEnergy}
                 onChange={(e) => setActivationEnergy(Number(e.target.value))}
+                aria-label="Virkjunarorka í kJ/mól"
+                aria-valuetext={`${activationEnergy} kJ á mól (20 til 80)`}
                 className="w-full h-2 bg-warm-200 rounded-lg appearance-none cursor-pointer accent-red-500"
               />
               <div className="flex justify-between text-xs text-warm-400 mt-1">

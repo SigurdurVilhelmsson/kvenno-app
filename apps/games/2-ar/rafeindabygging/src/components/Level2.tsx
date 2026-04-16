@@ -22,6 +22,19 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   const puzzle = configPuzzles[currentIndex];
   const isLast = currentIndex >= configPuzzles.length - 1;
+  const [diagnostic, setDiagnostic] = useState<string | null>(null);
+
+  /** Sum the electron-count exponents in a config string like "1s2 2s2 2p4" → 8. */
+  const countElectrons = (config: string): number | null => {
+    const matches = config.matchAll(/[1-7][spdf](\d+)/g);
+    let total = 0;
+    let saw = false;
+    for (const m of matches) {
+      saw = true;
+      total += parseInt(m[1], 10);
+    }
+    return saw ? total : null;
+  };
 
   const handleSubmit = () => {
     if (submitted || !userInput.trim()) return;
@@ -32,7 +45,27 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
     setIsCorrect(correct);
     setSubmitted(true);
-    if (correct) setScore((s) => s + 1);
+    if (correct) {
+      setScore((s) => s + 1);
+      setDiagnostic(null);
+    } else {
+      const userCount = countElectrons(userNorm);
+      const correctCount = countElectrons(correctNorm);
+      if (userCount !== null && correctCount !== null && userCount !== correctCount) {
+        const diff = correctCount - userCount;
+        if (diff > 0) {
+          setDiagnostic(
+            `Þú vantar ${diff} rafeind${diff === 1 ? '' : 'ir'} (heild: ${userCount}, ætti að vera ${correctCount}).`
+          );
+        } else {
+          setDiagnostic(
+            `Þú ert með ${-diff} rafeind${-diff === 1 ? '' : 'ir'} of mörg (heild: ${userCount}, ætti að vera ${correctCount}).`
+          );
+        }
+      } else {
+        setDiagnostic(null);
+      }
+    }
   };
 
   const handleNext = () => {
@@ -44,6 +77,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     setUserInput('');
     setSubmitted(false);
     setIsCorrect(false);
+    setDiagnostic(null);
   };
 
   // Orbital box diagram
@@ -275,9 +309,17 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   {isCorrect ? '✅ Rétt!' : '❌ Ekki rétt'}
                 </div>
                 {!isCorrect && (
-                  <p className="text-sm font-mono text-warm-800 mb-2">
-                    Rétt svar: {puzzle.correctConfig}
-                  </p>
+                  <>
+                    <p className="text-sm font-mono text-warm-800 mb-2">
+                      Rétt svar: {puzzle.correctConfig}
+                    </p>
+                    {diagnostic && (
+                      <p className="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded p-2 mb-2">
+                        <span className="font-semibold">Athugaðu: </span>
+                        {diagnostic}
+                      </p>
+                    )}
+                  </>
                 )}
                 <p className="text-sm text-warm-700">
                   {language === 'is' ? puzzle.explanation_is : puzzle.explanation_en}
