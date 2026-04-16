@@ -181,6 +181,16 @@ function generateQuestions(): Question[] {
 
 const TOTAL = 8;
 
+function hintFor(question: Question): string {
+  if (question.type === 'classify') {
+    return 'Skoðaðu hvar frumefnið er í lotukerfinu: málmar eru vinstra megin, hálfmálmar á landamærum, málmleysingjar hægra megin og efst.';
+  }
+  if (question.type === 'order-by-mass') {
+    return 'Frumeindamassi vex frá vinstri til hægri og niður eftir lotunum.';
+  }
+  return 'Flokkurinn (dálkurinn) ákvarðar eiginleikana. Sjáðu hvar táknin eru í lotukerfinu fyrir neðan.';
+}
+
 export function Level2({ onBack, onComplete }: Level2Props) {
   const [showIntro, setShowIntro] = useState(true);
   const [questions, setQuestions] = useState<Question[]>(generateQuestions);
@@ -189,6 +199,7 @@ export function Level2({ onBack, onComplete }: Level2Props) {
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [showHint, setShowHint] = useState(false);
   const [done, setDone] = useState(false);
 
   const question = questions[index];
@@ -211,6 +222,7 @@ export function Level2({ onBack, onComplete }: Level2Props) {
     setAnswered(false);
     setIsCorrect(false);
     setSelectedOption(null);
+    setShowHint(false);
   };
 
   const handleRetry = () => {
@@ -220,6 +232,7 @@ export function Level2({ onBack, onComplete }: Level2Props) {
     setAnswered(false);
     setIsCorrect(false);
     setSelectedOption(null);
+    setShowHint(false);
     setDone(false);
   };
 
@@ -371,6 +384,19 @@ export function Level2({ onBack, onComplete }: Level2Props) {
           key={index}
         >
           <p className="text-lg sm:text-xl font-bold text-warm-800">{question.text}</p>
+          {!answered && !showHint && (
+            <button
+              onClick={() => setShowHint(true)}
+              className="mt-3 text-sm px-4 py-2 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-yellow-400 outline-none"
+            >
+              💡 Vísbending
+            </button>
+          )}
+          {!answered && showHint && (
+            <div className="mt-3 bg-yellow-50 border-2 border-yellow-200 rounded-xl p-3 text-sm text-yellow-900 text-left">
+              <span className="font-bold">Vísbending:</span> {hintFor(question)}
+            </div>
+          )}
         </div>
 
         {/* Options */}

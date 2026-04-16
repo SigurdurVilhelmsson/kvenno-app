@@ -328,3 +328,36 @@
 - [x] CoefficientControl responds to ArrowUp/Down, +/- keys when focused
 - [x] AtomCounter row status announced via aria-label regardless of color
 - [x] Molmassi modal closes on Escape; focus lands on close button on open
+
+---
+
+## Iteration 4: Polish — 2026-04-16
+
+### Scope
+
+Targeted polish addressing the remaining P5 FAIL (Lotukerfid hints) and two high-value deferred items (Nafnakerfid typo-diff feedback, Molmassi per-element diagnostic). No parallel re-review dispatched — these three fixes were identified in iter 3 reviews but scoped out as below the accessibility bar; now addressed as content-quality polish.
+
+### Changes Applied
+
+| #   | Game        | Finding                                 | Disposition | Done                                                                                                                                                                                                                                                                                                                                |
+| --- | ----------- | --------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Lotukerfid  | P5 FAIL — no hint system                | FIX         | Yes — inline "Vísbending" button on every question in L1/L2/L3; hints tailored by question type (find-by-name cites category+period; find-by-position cites shell/valence; classify reminds of metal placement; order-by-mass cites periodic trend; protons/electrons/neutrons give the right formula). Hints never penalize score. |
+| 2   | Nafnakerfid | Level 3 character-level typo feedback   | FIX         | Yes — Levenshtein `editDistance()` + `renderDiff()` highlight mismatched characters in red when the user was within 3 edits of the correct name. Surfaces "Þú varst nálægt" panel under FeedbackPanel so typos are visibly distinct from conceptual errors.                                                                         |
+| 3   | Molmassi    | Level 1 per-element diagnostic feedback | FIX         | Yes — new `diagnoseMistake()` perturbs each element count ±1 and checks which mutation best matches the student's guess; reports "Þú virðist hafa talið einu N-atómi of mikið" or "Þú virðist hafa gleymt einu N-atómi". Shows under FeedbackPanel, above CalculationBreakdown.                                                     |
+
+### Verification (2026-04-16)
+
+- [x] `pnpm type-check` passes across entire monorepo (0 errors)
+- [x] `pnpm build:games` — 20 succeeded, 0 failed
+- [x] Y1 bundles 298KB–377KB (unchanged envelope)
+- [x] Lotukerfid hint button renders on all levels, dismisses on next question, does not affect scoring
+- [x] Nafnakerfid typo-diff only shows when within 3 edit-distance of the correct name
+- [x] Molmassi diagnostic only shows when a single-element off-by-one explains ≥60% of the residual
+
+### Done Criteria Check (against plan)
+
+1. **Zero FAIL ratings across all 7 games** — achieved; Lotukerfid P5 now has hints.
+2. **No REBUILD dispositions needed** — achieved; iter 4 was 3 FIX items only.
+3. **All verification checklists pass** — achieved.
+
+Iter 4 closes the review cycle. Remaining items from iter-3 DEFER list (Lausnir temperature-solubility scope creep, Lausnir explicit return types on problem-generator) are low-impact and can be picked up opportunistically, not as a scheduled iteration.

@@ -94,6 +94,19 @@ function generateQuestions(): Question[] {
 
 const TOTAL = 8;
 
+function hintFor(question: Question): string {
+  if (question.type === 'protons') {
+    return 'Fjöldi róteinda = atómnúmer (Z). Finndu frumefnið í lotukerfinu og lestu atómnúmerið.';
+  }
+  if (question.type === 'electrons') {
+    return 'Hlutlaust atóm hefur jafnmargar rafeindir og róteindir (= atómnúmer).';
+  }
+  if (question.type === 'neutrons') {
+    return 'Fjöldi nifteinda = massatala − fjöldi róteinda. Rúnaðu frumeindamassann og dragðu frá atómnúmerinu.';
+  }
+  return 'Atómnúmerið (fjöldi róteinda) ákvarðar hvaða frumefni þetta er. Leitaðu að þeim atómnúmeri í lotukerfinu.';
+}
+
 export function Level3({ onBack, onComplete }: Level3Props) {
   const [showIntro, setShowIntro] = useState(true);
   const [questions, setQuestions] = useState<Question[]>(generateQuestions);
@@ -102,6 +115,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
   const [correctCount, setCorrectCount] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   const [done, setDone] = useState(false);
 
   const question = questions[index];
@@ -133,6 +147,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
     setInput('');
     setAnswered(false);
     setIsCorrect(false);
+    setShowHint(false);
   };
 
   const handleRetry = () => {
@@ -142,6 +157,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
     setCorrectCount(0);
     setAnswered(false);
     setIsCorrect(false);
+    setShowHint(false);
     setDone(false);
   };
 
@@ -291,6 +307,19 @@ export function Level3({ onBack, onComplete }: Level3Props) {
           <p className="text-lg sm:text-xl font-bold text-warm-800">{question.text}</p>
           {question.requiresTableClick && !answered && (
             <p className="text-sm text-warm-500 mt-1">Smelltu á rétt frumefni í lotukerfinu</p>
+          )}
+          {!answered && !showHint && (
+            <button
+              onClick={() => setShowHint(true)}
+              className="mt-3 text-sm px-4 py-2 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-yellow-400 outline-none"
+            >
+              💡 Vísbending
+            </button>
+          )}
+          {!answered && showHint && (
+            <div className="mt-3 bg-yellow-50 border-2 border-yellow-200 rounded-xl p-3 text-sm text-yellow-900 text-left">
+              <span className="font-bold">Vísbending:</span> {hintFor(question)}
+            </div>
           )}
         </div>
 

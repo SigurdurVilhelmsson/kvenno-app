@@ -6,6 +6,44 @@ import { shuffleArray } from '@shared/utils';
 import { CalculationBreakdown } from './CalculationBreakdown';
 import { PeriodicTable } from './PeriodicTable';
 import { COMPOUNDS, type Compound } from '../data/compounds';
+import { ELEMENTS } from '../data/elements';
+
+/**
+ * Given the student's guess, infer the most likely element-count mistake by
+ * trying off-by-one perturbations on each element and reporting the closest
+ * match. Returns null if no perturbation is clearly closer than the guess.
+ */
+function diagnoseMistake(userValue: number, compound: Compound): string | null {
+  const correct = compound.molarMass;
+  const guessError = Math.abs(userValue - correct);
+  let best: { elementName: string; direction: 'extra' | 'missing'; residual: number } | null = null;
+
+  for (const el of compound.elements) {
+    const element = ELEMENTS.find((e) => e.symbol === el.symbol);
+    if (!element) continue;
+    // Student may have counted one extra of this element
+    const extra = correct + element.atomicMass;
+    // Student may have missed one of this element
+    const missing = correct - element.atomicMass;
+    const elementName = element.name.toLowerCase();
+    const candidates = [
+      { value: extra, direction: 'extra' as const },
+      { value: missing, direction: 'missing' as const },
+    ];
+    for (const c of candidates) {
+      const residual = Math.abs(userValue - c.value);
+      if (residual < guessError * 0.4 && (best === null || residual < best.residual)) {
+        best = { elementName, direction: c.direction, residual };
+      }
+    }
+  }
+
+  if (!best) return null;
+  if (best.direction === 'extra') {
+    return `Þú virðist hafa talið einu ${best.elementName}-atómi of mikið.`;
+  }
+  return `Þú virðist hafa gleymt einu ${best.elementName}-atómi.`;
+}
 
 function pickRandom<T>(arr: T[], n: number): T[] {
   return shuffleArray(arr).slice(0, n);
@@ -56,6 +94,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
   const [hintsUsed, setHintsUsed] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [diagnostic, setDiagnostic] = useState<string | null>(null);
   const [showHint, setShowHint] = useState(false);
   const [showPeriodicTable, setShowPeriodicTable] = useState(false);
   const [done, setDone] = useState(false);
@@ -68,6 +107,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
     const tolerance = getTolerance(compound.difficulty);
     const correct = Math.abs(value - compound.molarMass) <= tolerance;
     setIsCorrect(correct);
+    setDiagnostic(correct ? null : diagnoseMistake(value, compound));
     if (correct) setCorrectCount((prev) => prev + 1);
     setAnswered(true);
   };
@@ -81,6 +121,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
     setInput('');
     setAnswered(false);
     setIsCorrect(false);
+    setDiagnostic(null);
     setShowHint(false);
   };
 
@@ -401,6 +442,13 @@ export function Level1({ onBack, onComplete }: Level1Props) {
               }}
               config={{ showExplanation: true }}
             />
+
+            {diagnostic && !isCorrect && (
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800">
+                <span className="font-bold">Líklegast var mistökin: </span>
+                {diagnostic}
+              </div>
+            )}
 
             <CalculationBreakdown compound={compound} />
 

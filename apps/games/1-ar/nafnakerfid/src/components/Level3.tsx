@@ -1,10 +1,49 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, type ReactNode } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { shuffleArray } from '@shared/utils';
 
 import { COMPOUNDS, type Compound } from '../data/compounds';
 import { PREFIXES, ELEMENT_ROOTS } from '../data/naming';
+
+/** Levenshtein edit distance — used to classify typo vs. conceptual error. */
+function editDistance(a: string, b: string): number {
+  const m = a.length;
+  const n = b.length;
+  if (m === 0) return n;
+  if (n === 0) return m;
+  const dp = Array.from({ length: m + 1 }, () => new Array<number>(n + 1).fill(0));
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
+    }
+  }
+  return dp[m][n];
+}
+
+/** Render the student's attempt with mismatched characters highlighted. */
+function renderDiff(userName: string, correctName: string): ReactNode {
+  const correctLower = correctName.toLowerCase();
+  const userLower = userName.toLowerCase();
+  const output: ReactNode[] = [];
+  const len = Math.max(userLower.length, correctLower.length);
+  for (let i = 0; i < len; i++) {
+    const ch = userName[i] ?? '';
+    const match = userLower[i] === correctLower[i];
+    output.push(
+      <span
+        key={i}
+        className={match ? 'text-warm-700' : 'bg-red-100 text-red-700 font-bold rounded px-0.5'}
+      >
+        {ch || '·'}
+      </span>
+    );
+  }
+  return output;
+}
 
 interface Level3Props {
   t: (key: string, fallback?: string) => string;
@@ -253,7 +292,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
           {/* Feedback */}
           {answered && (
-            <div className="mb-4">
+            <div className="mb-4 space-y-2">
               <FeedbackPanel
                 feedback={{
                   isCorrect,
@@ -263,6 +302,22 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                 }}
                 config={{ showExplanation: true }}
               />
+              {!isCorrect &&
+                displayName.length > 0 &&
+                editDistance(displayName.toLowerCase(), compound.name.toLowerCase()) <= 3 && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm">
+                    <p className="text-amber-800 font-semibold mb-1">Þú varst nálægt:</p>
+                    <p className="font-mono text-base">
+                      Þú skrifaðir: <span>{renderDiff(displayName, compound.name)}</span>
+                    </p>
+                    <p className="font-mono text-base">
+                      Rétt: <span className="text-green-700">{compound.name}</span>
+                    </p>
+                    <p className="text-amber-700 text-xs mt-2">
+                      Rautt sýnir stafina sem munu milli nafnanna.
+                    </p>
+                  </div>
+                )}
             </div>
           )}
 

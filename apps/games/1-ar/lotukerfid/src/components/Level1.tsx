@@ -4,7 +4,21 @@ import { FeedbackPanel } from '@shared/components';
 import { shuffleArray } from '@shared/utils';
 
 import { PeriodicTable } from './PeriodicTable';
-import { ELEMENTS, CATEGORY_COLORS, type Element } from '../data/elements';
+import { ELEMENTS, CATEGORY_COLORS, CATEGORY_LABELS, type Element } from '../data/elements';
+
+/** Generate a one-line hint tailored to the question type. */
+function hintFor(question: Question): string {
+  const el = question.element;
+  const categoryLabel = CATEGORY_LABELS[el.category];
+  if (question.type === 'find-by-name') {
+    return `${el.name} er ${categoryLabel}. Leitaðu á lotu ${el.period}.`;
+  }
+  if (question.type === 'find-by-position') {
+    return `Lotan segir til um fjölda rafeindaskelja og flokkurinn um gildisrafeindir. Fyrsti bókstafur nafnsins er "${el.name.charAt(0).toUpperCase()}".`;
+  }
+  // name-by-symbol
+  return `Frumefnið er ${categoryLabel}. Nafnið byrjar á "${el.name.charAt(0).toUpperCase()}".`;
+}
 
 interface Level1Props {
   onBack: () => void;
@@ -83,6 +97,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
   const [isCorrect, setIsCorrect] = useState(false);
   const [correctSymbol, setCorrectSymbol] = useState<string | null>(null);
   const [wrongSymbol, setWrongSymbol] = useState<string | null>(null);
+  const [showHint, setShowHint] = useState(false);
   const [done, setDone] = useState(false);
 
   const question = questions[index];
@@ -119,6 +134,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
     setIsCorrect(false);
     setCorrectSymbol(null);
     setWrongSymbol(null);
+    setShowHint(false);
   };
 
   const handleRetry = () => {
@@ -129,6 +145,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
     setIsCorrect(false);
     setCorrectSymbol(null);
     setWrongSymbol(null);
+    setShowHint(false);
     setDone(false);
   };
 
@@ -288,6 +305,19 @@ export function Level1({ onBack, onComplete }: Level1Props) {
           <p className="text-lg sm:text-xl font-bold text-warm-800">{question.text}</p>
           {question.type !== 'name-by-symbol' && (
             <p className="text-sm text-warm-500 mt-1">Smelltu á rétt frumefni í lotukerfinu</p>
+          )}
+          {!answered && !showHint && (
+            <button
+              onClick={() => setShowHint(true)}
+              className="mt-3 text-sm px-4 py-2 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-yellow-400 outline-none"
+            >
+              💡 Vísbending
+            </button>
+          )}
+          {!answered && showHint && (
+            <div className="mt-3 bg-yellow-50 border-2 border-yellow-200 rounded-xl p-3 text-sm text-yellow-900 text-left">
+              <span className="font-bold">Vísbending:</span> {hintFor(question)}
+            </div>
           )}
         </div>
 
