@@ -6,7 +6,8 @@ import { shuffleArray } from '@shared/utils';
 import { CatalystEffectDemo } from './CatalystEffectDemo';
 import { CollisionDemo } from './CollisionDemo';
 import { MaxwellBoltzmann } from './MaxwellBoltzmann';
-import { challenges, MAX_SCORE } from '../data/level1-questions';
+import { MAX_SCORE } from '../data/constants';
+import { challenges } from '../data/level1-questions';
 import { calculateScore } from '../utils/kinetics-scoring';
 
 // Misconceptions for kinetics concepts

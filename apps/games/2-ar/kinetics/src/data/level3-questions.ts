@@ -30,13 +30,29 @@ export const challenges: MechanismChallenge[] = [
     question: 'Hvert er millistigið í þessum hvarfgangshátt?',
     type: 'identify_intermediate',
     options: [
-      { id: 'a', text: 'F (flúoratom)', correct: true, explanation: 'F myndast í skrefi 1 og eyðist í skrefi 2 - klassískt millistig!' },
-      { id: 'b', text: 'NO₂', correct: false, explanation: 'NO₂ er hvarfefni sem er til staðar í upphafi.' },
+      {
+        id: 'a',
+        text: 'F (flúoratom)',
+        correct: true,
+        explanation: 'F myndast í skrefi 1 og eyðist í skrefi 2 - klassískt millistig!',
+      },
+      {
+        id: 'b',
+        text: 'NO₂',
+        correct: false,
+        explanation: 'NO₂ er hvarfefni sem er til staðar í upphafi.',
+      },
       { id: 'c', text: 'NO₂F', correct: false, explanation: 'NO₂F er lokafurð, ekki millistig.' },
-      { id: 'd', text: 'F₂', correct: false, explanation: 'F₂ er hvarfefni sem er til staðar í upphafi.' },
+      {
+        id: 'd',
+        text: 'F₂',
+        correct: false,
+        explanation: 'F₂ er hvarfefni sem er til staðar í upphafi.',
+      },
     ],
     hint: 'Millistig birtist á hægri hlið eins skrefs og vinstri hlið annars',
-    conceptExplanation: 'Millistig eru efni sem myndast og eyðast innan hvarfgangsháttarins. Þau eru aldrei meðal upphaflegra hvarfefna eða lokaafurða.'
+    conceptExplanation:
+      'Millistig eru efni sem myndast og eyðast innan hvarfgangsháttarins. Þau eru aldrei meðal upphaflegra hvarfefna eða lokaafurða.',
   },
   {
     id: 2,
@@ -50,13 +66,34 @@ export const challenges: MechanismChallenge[] = [
     question: 'Hvert skref er hraðaákvarðandi?',
     type: 'rate_determining',
     options: [
-      { id: 'a', text: 'Skref 2 (hægt)', correct: true, explanation: 'Hægasta skrefið er alltaf hraðaákvarðandi - það er "flöskuhálsinn".' },
-      { id: 'b', text: 'Skref 1 (hratt jafnvægi)', correct: false, explanation: 'Hraðar skref bíða eftir hægari skrefum.' },
-      { id: 'c', text: 'Bæði skref jafn mikilvæg', correct: false, explanation: 'Eitt skref ræður alltaf heildarhraðanum.' },
-      { id: 'd', text: 'Hvorugt skref', correct: false, explanation: 'Í hvarfgangshátt er alltaf eitt skref hraðaákvarðandi.' },
+      {
+        id: 'a',
+        text: 'Skref 2 (hægt)',
+        correct: true,
+        explanation: 'Hægasta skrefið er alltaf hraðaákvarðandi - það er "flöskuhálsinn".',
+      },
+      {
+        id: 'b',
+        text: 'Skref 1 (hratt jafnvægi)',
+        correct: false,
+        explanation: 'Hraðar skref bíða eftir hægari skrefum.',
+      },
+      {
+        id: 'c',
+        text: 'Bæði skref jafn mikilvæg',
+        correct: false,
+        explanation: 'Eitt skref ræður alltaf heildarhraðanum.',
+      },
+      {
+        id: 'd',
+        text: 'Hvorugt skref',
+        correct: false,
+        explanation: 'Í hvarfgangshátt er alltaf eitt skref hraðaákvarðandi.',
+      },
     ],
     hint: 'Hugsaðu um umferð: hægasti bíllinn ákvarðar hraða allra',
-    conceptExplanation: 'Hraðaákvarðandi skref (rate-determining step) er hægasta frumskrefið. Heildarhraðinn getur aldrei verið hraðari en hægasta skrefið.'
+    conceptExplanation:
+      'Hraðaákvarðandi skref (rate-determining step) er hægasta frumskrefið. Heildarhraðinn getur aldrei verið hraðari en hægasta skrefið.',
   },
   {
     id: 3,
@@ -70,13 +107,35 @@ export const challenges: MechanismChallenge[] = [
     question: 'Hvert er hraðalögmálið fyrir þetta hvörf?',
     type: 'rate_law',
     options: [
-      { id: 'a', text: 'Rate = k[NO]²[Br₂]', correct: true, explanation: 'Skref 2 er hægt, en NOBr₂ er millistig. Setjum jafnvægi frá skrefi 1 inn → [NOBr₂] = K[NO][Br₂], svo Rate = k\'[NO][Br₂][NO] = k[NO]²[Br₂].' },
-      { id: 'b', text: 'Rate = k[NO][Br₂]', correct: false, explanation: 'Þetta vantar annan NO þátt frá skrefi 2.' },
-      { id: 'c', text: 'Rate = k[NOBr₂][NO]', correct: false, explanation: 'Rétt frá skrefi 2, en NOBr₂ er millistig - ekki má vera í hraðalögmáli.' },
-      { id: 'd', text: 'Rate = k[Br₂]', correct: false, explanation: 'Þetta tekur ekki tillit til NO styrks.' },
+      {
+        id: 'a',
+        text: 'Rate = k[NO]²[Br₂]',
+        correct: true,
+        explanation:
+          "Skref 2 er hægt, en NOBr₂ er millistig. Setjum jafnvægi frá skrefi 1 inn → [NOBr₂] = K[NO][Br₂], svo Rate = k'[NO][Br₂][NO] = k[NO]²[Br₂].",
+      },
+      {
+        id: 'b',
+        text: 'Rate = k[NO][Br₂]',
+        correct: false,
+        explanation: 'Þetta vantar annan NO þátt frá skrefi 2.',
+      },
+      {
+        id: 'c',
+        text: 'Rate = k[NOBr₂][NO]',
+        correct: false,
+        explanation: 'Rétt frá skrefi 2, en NOBr₂ er millistig - ekki má vera í hraðalögmáli.',
+      },
+      {
+        id: 'd',
+        text: 'Rate = k[Br₂]',
+        correct: false,
+        explanation: 'Þetta tekur ekki tillit til NO styrks.',
+      },
     ],
     hint: 'Millistig má ekki vera í hraðalögmáli - notaðu jafnvægið til að losna við það',
-    conceptExplanation: 'Þegar millistig er í hraðaákvarðandi skrefi, notum við jafnvægislíkinguna til að skipta því út fyrir upprunalegu hvarfefnin.'
+    conceptExplanation:
+      'Þegar millistig er í hraðaákvarðandi skrefi, notum við jafnvægislíkinguna til að skipta því út fyrir upprunalegu hvarfefnin.',
   },
   {
     id: 4,
@@ -90,13 +149,24 @@ export const challenges: MechanismChallenge[] = [
     question: 'Hvaða efni er hvatinn í þessu hvarfi?',
     type: 'identify_catalyst',
     options: [
-      { id: 'a', text: 'I⁻ (joðíð)', correct: true, explanation: 'I⁻ eyðist í skrefi 1 og myndast aftur í skrefi 2 - klassískt hvataeinkenni!' },
-      { id: 'b', text: 'IO⁻', correct: false, explanation: 'IO⁻ er millistig (myndast og eyðist), ekki hvati.' },
+      {
+        id: 'a',
+        text: 'I⁻ (joðíð)',
+        correct: true,
+        explanation: 'I⁻ eyðist í skrefi 1 og myndast aftur í skrefi 2 - klassískt hvataeinkenni!',
+      },
+      {
+        id: 'b',
+        text: 'IO⁻',
+        correct: false,
+        explanation: 'IO⁻ er millistig (myndast og eyðist), ekki hvati.',
+      },
       { id: 'c', text: 'H₂O₂', correct: false, explanation: 'H₂O₂ er hvarfefni sem eyðist.' },
       { id: 'd', text: 'O₂', correct: false, explanation: 'O₂ er afurð hvarfsins.' },
     ],
     hint: 'Hvati birtist bæði sem hvarfefni og afurð í heildarferlinu',
-    conceptExplanation: 'Hvati tekur þátt í hvörfum en myndast aftur. Í hvarfgangshátt sést þetta þar sem hvatinn eyðist í einu skrefi og myndast í öðru.'
+    conceptExplanation:
+      'Hvati tekur þátt í hvörfum en myndast aftur. Í hvarfgangshátt sést þetta þar sem hvatinn eyðist í einu skrefi og myndast í öðru.',
   },
   {
     id: 5,
@@ -111,13 +181,35 @@ export const challenges: MechanismChallenge[] = [
     question: 'Ef þessi hvarfgangsháttur er réttur, hvert ætti hraðalögmálið að vera?',
     type: 'rate_law',
     options: [
-      { id: 'a', text: 'Rate = k[CHCl₃][Cl₂]^½', correct: true, explanation: 'Skref 2 er hægt: Rate = k\'[Cl][CHCl₃]. Frá jafnvægi skrefs 1: [Cl] = K[Cl₂]^½. Þannig: Rate = k[CHCl₃][Cl₂]^½.' },
-      { id: 'b', text: 'Rate = k[Cl₂][CHCl₃]', correct: false, explanation: 'Þetta væri rétt ef skref 2 notaði Cl₂ beint.' },
-      { id: 'c', text: 'Rate = k[Cl][CHCl₃]', correct: false, explanation: 'Cl er millistig - ekki má vera í lokahraðalögmáli.' },
-      { id: 'd', text: 'Rate = k[Cl₂]', correct: false, explanation: 'CHCl₃ tekur þátt í hraðaákvarðandi skrefi.' },
+      {
+        id: 'a',
+        text: 'Rate = k[CHCl₃][Cl₂]^½',
+        correct: true,
+        explanation:
+          "Skref 2 er hægt: Rate = k'[Cl][CHCl₃]. Frá jafnvægi skrefs 1: [Cl] = K[Cl₂]^½. Þannig: Rate = k[CHCl₃][Cl₂]^½.",
+      },
+      {
+        id: 'b',
+        text: 'Rate = k[Cl₂][CHCl₃]',
+        correct: false,
+        explanation: 'Þetta væri rétt ef skref 2 notaði Cl₂ beint.',
+      },
+      {
+        id: 'c',
+        text: 'Rate = k[Cl][CHCl₃]',
+        correct: false,
+        explanation: 'Cl er millistig - ekki má vera í lokahraðalögmáli.',
+      },
+      {
+        id: 'd',
+        text: 'Rate = k[Cl₂]',
+        correct: false,
+        explanation: 'CHCl₃ tekur þátt í hraðaákvarðandi skrefi.',
+      },
     ],
     hint: 'Jafnvægi Cl₂ ⇌ 2Cl gefur [Cl] = √(K[Cl₂])',
-    conceptExplanation: 'Þegar millistig (Cl) er í hraðaákvarðandi skrefi og kemur frá jafnvægi, þá kemur brotveldi (½) í hraðalögmálið.'
+    conceptExplanation:
+      'Þegar millistig (Cl) er í hraðaákvarðandi skrefi og kemur frá jafnvægi, þá kemur brotveldi (½) í hraðalögmálið.',
   },
   {
     id: 6,
@@ -132,14 +224,29 @@ export const challenges: MechanismChallenge[] = [
     question: 'Hvaða millistig eru í þessum hvarfgangshátt?',
     type: 'identify_intermediate',
     options: [
-      { id: 'a', text: 'NO₃ og NO', correct: true, explanation: 'NO₃ myndast í skrefi 1 og eyðist í skrefum 2 og 3. NO myndast í skrefi 2 og eyðist í skrefi 3.' },
-      { id: 'b', text: 'Aðeins NO₃', correct: false, explanation: 'NO myndast líka tímabundið innan hvarfgangsháttarins.' },
-      { id: 'c', text: 'Aðeins NO₂', correct: false, explanation: 'NO₂ er lokafurð, ekki millistig.' },
+      {
+        id: 'a',
+        text: 'NO₃ og NO',
+        correct: true,
+        explanation:
+          'NO₃ myndast í skrefi 1 og eyðist í skrefum 2 og 3. NO myndast í skrefi 2 og eyðist í skrefi 3.',
+      },
+      {
+        id: 'b',
+        text: 'Aðeins NO₃',
+        correct: false,
+        explanation: 'NO myndast líka tímabundið innan hvarfgangsháttarins.',
+      },
+      {
+        id: 'c',
+        text: 'Aðeins NO₂',
+        correct: false,
+        explanation: 'NO₂ er lokafurð, ekki millistig.',
+      },
       { id: 'd', text: 'Aðeins NO', correct: false, explanation: 'NO₃ er einnig millistig.' },
     ],
     hint: 'Leitaðu að efnum sem myndast og eyðast innan hvarfgangsháttarins',
-    conceptExplanation: 'Í flóknum hvarfgangsháttum geta verið mörg millistig. Þau eru öll efni sem myndast og eyðast innan ferlisins.'
+    conceptExplanation:
+      'Í flóknum hvarfgangsháttum geta verið mörg millistig. Þau eru öll efni sem myndast og eyðast innan ferlisins.',
   },
 ];
-
-export const MAX_SCORE = 20 * 6; // 20 points per challenge, 6 challenges

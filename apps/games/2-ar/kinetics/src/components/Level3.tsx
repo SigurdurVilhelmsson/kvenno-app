@@ -2,7 +2,8 @@ import { useState } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
 
-import { challenges, MAX_SCORE } from '../data/level3-questions';
+import { MAX_SCORE } from '../data/constants';
+import { challenges } from '../data/level3-questions';
 import type { MechanismStep } from '../data/level3-questions';
 
 interface Level3Props {

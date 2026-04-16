@@ -256,9 +256,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               let className = 'quantum-card';
               if (isSelected && !submitted) className += ' selected';
               if (submitted) {
-                if (opt.isValid && isSelected) className += ' correct';
-                else if (opt.isValid && !isSelected) className += ' correct';
-                else if (!opt.isValid && isSelected) className += ' incorrect';
+                if (opt.isValid) className += ' correct';
+                else if (isSelected) className += ' incorrect';
               }
 
               return (

@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { Header, LanguageSwitcher, ErrorBoundary } from '@shared/components';
-import { useGameI18n } from '@shared/hooks';
+import { useGameI18n, useGameProgress } from '@shared/hooks';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
@@ -20,83 +20,46 @@ interface Progress {
   totalGamesPlayed: number;
 }
 
-const STORAGE_KEY = 'imf-progress';
-
-function loadProgress(): Progress {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    try {
-      return JSON.parse(saved);
-    } catch {
-      return getDefaultProgress();
-    }
-  }
-  return getDefaultProgress();
-}
-
-function getDefaultProgress(): Progress {
-  return {
-    level1Completed: false,
-    level1Score: 0,
-    level2Completed: false,
-    level2Score: 0,
-    level3Completed: false,
-    level3Score: 0,
-    totalGamesPlayed: 0,
-  };
-}
-
-function saveProgress(progress: Progress): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-}
+const DEFAULT_PROGRESS: Progress = {
+  level1Completed: false,
+  level1Score: 0,
+  level2Completed: false,
+  level2Score: 0,
+  level3Completed: false,
+  level3Score: 0,
+  totalGamesPlayed: 0,
+};
 
 function App() {
   const [activeLevel, setActiveLevel] = useState<ActiveLevel>('menu');
   const { language, setLanguage } = useGameI18n({ gameTranslations });
-  const [progress, setProgress] = useState<Progress>(loadProgress);
+  const { progress, updateProgress, resetProgress } = useGameProgress<Progress>(
+    'imf-progress',
+    DEFAULT_PROGRESS
+  );
 
-  useEffect(() => {
-    saveProgress(progress);
-  }, [progress]);
-
-  const handleLevel1Complete = (score: number, maxScore: number, _hintsUsed: number) => {
+  const applyLevelResult = (
+    level: 1 | 2 | 3,
+    score: number,
+    maxScore: number,
+    next: ActiveLevel
+  ) => {
     const mastered = maxScore > 0 && score / maxScore >= 0.8;
-    setProgress((prev) => ({
-      ...prev,
-      level1Completed: mastered || prev.level1Completed,
-      level1Score: Math.max(prev.level1Score, score),
-      totalGamesPlayed: prev.totalGamesPlayed + 1,
-    }));
-    setActiveLevel('menu');
+    const key = `level${level}` as const;
+    updateProgress({
+      [`${key}Completed`]: mastered || progress[`${key}Completed`],
+      [`${key}Score`]: Math.max(progress[`${key}Score`], score),
+      totalGamesPlayed: progress.totalGamesPlayed + 1,
+    } as Partial<Progress>);
+    setActiveLevel(next);
   };
 
-  const handleLevel2Complete = (score: number, maxScore: number, _hintsUsed: number) => {
-    const mastered = maxScore > 0 && score / maxScore >= 0.8;
-    setProgress((prev) => ({
-      ...prev,
-      level2Completed: mastered || prev.level2Completed,
-      level2Score: Math.max(prev.level2Score, score),
-      totalGamesPlayed: prev.totalGamesPlayed + 1,
-    }));
-    setActiveLevel('menu');
-  };
-
-  const handleLevel3Complete = (score: number, maxScore: number, _hintsUsed: number) => {
-    const mastered = maxScore > 0 && score / maxScore >= 0.8;
-    setProgress((prev) => ({
-      ...prev,
-      level3Completed: mastered || prev.level3Completed,
-      level3Score: Math.max(prev.level3Score, score),
-      totalGamesPlayed: prev.totalGamesPlayed + 1,
-    }));
-    setActiveLevel('complete');
-  };
-
-  const resetProgress = () => {
-    const newProgress = getDefaultProgress();
-    setProgress(newProgress);
-    saveProgress(newProgress);
-  };
+  const handleLevel1Complete = (score: number, maxScore: number) =>
+    applyLevelResult(1, score, maxScore, 'menu');
+  const handleLevel2Complete = (score: number, maxScore: number) =>
+    applyLevelResult(2, score, maxScore, 'menu');
+  const handleLevel3Complete = (score: number, maxScore: number) =>
+    applyLevelResult(3, score, maxScore, 'complete');
 
   if (activeLevel === 'level1') {
     return <Level1 onComplete={handleLevel1Complete} onBack={() => setActiveLevel('menu')} />;

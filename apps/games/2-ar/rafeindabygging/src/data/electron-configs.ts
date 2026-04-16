@@ -125,20 +125,23 @@ export const configPuzzles: ElectronConfigPuzzle[] = [
   },
 ];
 
-/** Normalize config string for comparison: strip spaces, convert superscripts to digits */
+const SUPERSCRIPT_MAP: Record<string, string> = {
+  '⁰': '0',
+  '¹': '1',
+  '²': '2',
+  '³': '3',
+  '⁴': '4',
+  '⁵': '5',
+  '⁶': '6',
+  '⁷': '7',
+  '⁸': '8',
+  '⁹': '9',
+};
+
+/** Normalize config string for comparison: strip spaces, convert superscripts to digits. */
 export function normalizeConfig(input: string): string {
   return input
     .replace(/\s+/g, '')
-    .replace(/⁰/g, '0')
-    .replace(/¹/g, '1')
-    .replace(/²/g, '2')
-    .replace(/³/g, '3')
-    .replace(/⁴/g, '4')
-    .replace(/⁵/g, '5')
-    .replace(/⁶/g, '6')
-    .replace(/⁷/g, '7')
-    .replace(/⁸/g, '8')
-    .replace(/⁹/g, '9')
-    .replace(/¹⁰/g, '10')
+    .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g, (c) => SUPERSCRIPT_MAP[c] ?? c)
     .toLowerCase();
 }
