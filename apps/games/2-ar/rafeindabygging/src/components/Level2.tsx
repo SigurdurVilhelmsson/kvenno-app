@@ -121,6 +121,35 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               </p>
             </div>
 
+            <div className="bg-indigo-50 p-4 rounded-lg">
+              <h3 className="font-bold text-indigo-800 mb-2">Orkuröðun — af hverju 4s &lt; 3d?</h3>
+              <div className="my-3 text-xs font-mono">
+                <div className="text-right text-indigo-700">
+                  <div>5s 5p 4d ────────────</div>
+                  <div className="mt-1">4s 4p ────</div>
+                  <div className="mt-1">3d ───</div>
+                  <div className="mt-1">4s ──</div>
+                  <div className="mt-1">3s 3p ──</div>
+                  <div className="mt-1">2s 2p ─</div>
+                  <div className="mt-1">1s ─</div>
+                </div>
+                <p className="text-indigo-700 text-center mt-2">↑ hærri orka · neðst = lægri</p>
+              </div>
+              <p className="text-sm text-indigo-700">
+                4s-svigrúmið liggur <strong>innar</strong> (nær kjarnanum) en 3d vegna skörpari
+                kjarnaáhrifa. Því er 4s-orkan aðeins lægri — og rafeindir fylla það fyrst.
+              </p>
+            </div>
+
+            <div className="bg-purple-50 p-4 rounded-lg">
+              <h3 className="font-bold text-purple-800 mb-2">Útilokunarregla Paulis</h3>
+              <p className="text-sm text-purple-700">
+                Engar tvær rafeindir í sama atómi mega hafa öll fjögur skammtatölur eins — þar með
+                er ljóst að í hverju svigrúmi (sömu n, l, m<sub>l</sub>) rúmast að hámarki{' '}
+                <strong>tvær rafeindir</strong> með gagnstæða spinna (m<sub>s</sub> = +½ og −½).
+              </p>
+            </div>
+
             <div className="bg-green-50 p-4 rounded-lg">
               <h3 className="font-bold text-green-800 mb-2">Dæmi: Súrefni (O, Z=8)</h3>
               <div className="text-sm text-green-700 font-mono space-y-1">

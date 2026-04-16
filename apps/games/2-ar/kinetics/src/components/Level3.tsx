@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { useEscapeKey } from '@shared/hooks';
+
 import { challenges, MAX_SCORE } from '../data/level3-questions';
 import type { MechanismStep } from '../data/level3-questions';
 
@@ -11,6 +13,8 @@ interface Level3Props {
 }
 
 export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
+  const [showIntro, setShowIntro] = useState(true);
+  useEscapeKey(onBack, showIntro);
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
@@ -79,6 +83,77 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
         return 'border-warm-300 bg-white';
     }
   };
+
+  if (showIntro) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
+        <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 space-y-5">
+          <div className="flex items-center justify-between">
+            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+              ← Til baka
+            </button>
+            <h1 className="text-lg font-bold text-warm-800">
+              Gangvegir og hraðaákveðandi skref — Kennsla
+            </h1>
+            <span className="text-sm text-warm-500">Stig 3</span>
+          </div>
+
+          <div className="bg-purple-50 border-l-4 border-purple-500 rounded-lg p-4">
+            <h2 className="font-bold text-purple-900 mb-2">Hvað er gangvegur?</h2>
+            <p className="text-warm-700 text-sm leading-relaxed">
+              Flest efnahvörf gerast ekki í einu skrefi — þau hafa <strong>gangveg</strong> með
+              mörgum <strong>einþrepa skrefum</strong>. Hvert skref hefur sitt eigið hraðastig.
+            </p>
+          </div>
+
+          <div className="bg-white border border-warm-200 rounded-lg p-4 space-y-3">
+            <h3 className="font-bold text-warm-800">Þrjú lykilhugtök</h3>
+
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm">
+              <p className="font-bold text-amber-800 mb-1">Millistig (intermediate)</p>
+              <p className="text-warm-700">
+                Tegund sem <strong>myndast í einu skrefi og eyðist í öðru</strong>. Hún kemur ekki
+                fram í heildarjöfnunni og má <strong>ekki</strong> birtast í hraðalögmálinu.
+              </p>
+              <p className="font-mono text-xs text-warm-800 mt-1">
+                Skref 1: A + B → I &nbsp;&nbsp; Skref 2: I + C → D &nbsp;&nbsp; (I = millistig)
+              </p>
+            </div>
+
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm">
+              <p className="font-bold text-red-800 mb-1">Hraðaákveðandi skref (RDS)</p>
+              <p className="text-warm-700">
+                <strong>Hægasta skrefið</strong> ákvarðar hraða alls hvarfsins — eins og hægasti
+                hlaupari stýrir hraða boðhlaupsteyma. Hraðalögmálið kemur beint úr hvarfefnum
+                hraðaákveðandi skrefsins.
+              </p>
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
+              <p className="font-bold text-blue-800 mb-1">Hverfa um jafnvægi (fast equilibrium)</p>
+              <p className="text-warm-700">
+                Ef hraðaákveðandi skrefið inniheldur millistig, notum við jafnvægisstuðulinn úr
+                hröðu skrefinu á undan til að losna við millistigið í lokajöfnunni.
+              </p>
+              <p className="font-mono text-xs text-warm-800 mt-1">
+                NO + Br₂ ⇌ NOBr₂ (hratt) &nbsp;&nbsp; NOBr₂ + NO → 2NOBr (hægt)
+              </p>
+              <p className="text-xs text-warm-700 mt-1">
+                [NOBr₂] = K[NO][Br₂] → Rate = k[NO]²[Br₂]
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setShowIntro(false)}
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition-colors"
+          >
+            Byrja æfingar →
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
