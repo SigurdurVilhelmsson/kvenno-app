@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
+import { useEscapeKey } from '@shared/hooks';
 import { shuffleArray } from '@shared/utils';
 
 import { Molecule } from './Molecule';
@@ -55,6 +56,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const [selected, setSelected] = useState<string | null>(null);
   const [done, setDone] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+  useEscapeKey(onBack, showIntro);
 
   const q = questions[index];
   const timesR1 = q.r1Count / q.reaction.reactant1.coeff;

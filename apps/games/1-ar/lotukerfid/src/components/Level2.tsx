@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
+import { useEscapeKey } from '@shared/hooks';
 import { shuffleArray } from '@shared/utils';
 
 import { PeriodicTable } from './PeriodicTable';
@@ -193,6 +194,7 @@ function hintFor(question: Question): string {
 
 export function Level2({ onBack, onComplete }: Level2Props) {
   const [showIntro, setShowIntro] = useState(true);
+  useEscapeKey(onBack, showIntro);
   const [questions, setQuestions] = useState<Question[]>(generateQuestions);
   const [index, setIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);

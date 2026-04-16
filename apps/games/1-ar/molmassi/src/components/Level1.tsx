@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
+import { useEscapeKey } from '@shared/hooks';
 import { shuffleArray } from '@shared/utils';
 
 import { CalculationBreakdown } from './CalculationBreakdown';
@@ -84,6 +85,7 @@ const TOTAL = 10;
 export function Level1({ onBack, onComplete }: Level1Props) {
   // Teaching phase state
   const [phase, setPhase] = useState<'teach' | 'practice'>('teach');
+  useEscapeKey(onBack, phase === 'teach');
   const [teachStep, setTeachStep] = useState(0);
 
   // Practice phase state

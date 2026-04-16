@@ -1,6 +1,7 @@
 import { type ReactNode, useMemo, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
+import { useEscapeKey } from '@shared/hooks';
 import { shuffleArray } from '@shared/utils';
 
 import { AtomCounter } from './AtomCounter';
@@ -39,6 +40,7 @@ function selectProblems(difficulty: Difficulty): Reaction[] {
 
 export function Level({ config, onBack, onComplete }: LevelProps) {
   const [showIntro, setShowIntro] = useState(Boolean(config.intro));
+  useEscapeKey(onBack, showIntro);
   const [problems, setProblems] = useState<Reaction[]>(() => selectProblems(config.difficulty));
   const [index, setIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);

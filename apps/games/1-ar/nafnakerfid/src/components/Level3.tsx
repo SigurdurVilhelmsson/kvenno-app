@@ -277,7 +277,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                     key={part.id}
                     onClick={() => removePart(part)}
                     disabled={answered}
-                    className="px-3 py-1.5 bg-kvenno-orange text-white rounded-lg text-sm font-medium hover:bg-kvenno-orange-dark transition-colors disabled:opacity-50"
+                    className="px-4 py-2.5 min-h-[44px] bg-kvenno-orange text-white rounded-lg text-sm font-medium hover:bg-kvenno-orange-dark transition-colors disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-kvenno-orange-dark focus-visible:ring-offset-1"
                   >
                     {part.text}
                     {!answered && <span className="ml-1.5 text-orange-200">x</span>}
@@ -332,10 +332,10 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                   key={part.id}
                   onClick={() => selectPart(part)}
                   disabled={answered}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                  className={`px-4 py-2.5 min-h-[44px] rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed outline-none focus-visible:ring-2 focus-visible:ring-offset-1 ${
                     part.type === 'prefix'
-                      ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-                      : 'bg-warm-100 text-warm-700 hover:bg-warm-200'
+                      ? 'bg-blue-100 text-blue-700 hover:bg-blue-200 focus-visible:ring-blue-400'
+                      : 'bg-warm-100 text-warm-700 hover:bg-warm-200 focus-visible:ring-warm-400'
                   }`}
                 >
                   {part.text}

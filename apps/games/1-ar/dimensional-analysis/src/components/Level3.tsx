@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+import { useEscapeKey } from '@shared/hooks';
+
 import { level3Challenges } from '../data/challenges';
 import {
   scoreExplanation,
@@ -43,6 +45,7 @@ export function Level3({
   onIncorrectAnswer,
 }: Level3Props) {
   const [showIntro, setShowIntro] = useState(!initialProgress);
+  useEscapeKey(onBack, showIntro);
   const [currentProblemIndex, setCurrentProblemIndex] = useState(
     initialProgress?.problemsCompleted || 0
   );

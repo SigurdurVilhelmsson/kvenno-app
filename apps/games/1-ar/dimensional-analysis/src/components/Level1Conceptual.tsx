@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+import { useEscapeKey } from '@shared/hooks';
+
 import { CancellationChallenge } from './challenges/CancellationChallenge';
 import { challenges, cancellationVariants, successMessages } from './challenges/challengeData';
 import { EquivalenceChallenge } from './challenges/EquivalenceChallenge';
@@ -47,6 +49,7 @@ export function Level1Conceptual({
   const [progress, setProgress] = useState<Level1Progress>(initialProgress || INITIAL_PROGRESS);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showIntro, setShowIntro] = useState(!initialProgress?.questionsAnswered);
+  useEscapeKey(onBack, showIntro);
   const [showSummary, setShowSummary] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [hintTier, setHintTier] = useState(0);

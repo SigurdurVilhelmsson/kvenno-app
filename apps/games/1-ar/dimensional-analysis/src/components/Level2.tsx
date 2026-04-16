@@ -8,6 +8,7 @@ import type {
   ZoneState,
   DetailedFeedback,
 } from '@shared/components';
+import { useEscapeKey } from '@shared/hooks';
 import { shuffleArray } from '@shared/utils';
 
 import { UnitBlock, ConversionFactorBlock } from './UnitBlock';
@@ -98,6 +99,7 @@ export function Level2({
   onIncorrectAnswer,
 }: Level2Props) {
   const [showIntro, setShowIntro] = useState(!initialProgress);
+  useEscapeKey(onBack, showIntro);
   const [currentProblemIndex, setCurrentProblemIndex] = useState(
     initialProgress?.problemsCompleted || 0
   );

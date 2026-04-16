@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
+import { useEscapeKey } from '@shared/hooks';
 import { shuffleArray } from '@shared/utils';
 
 import { COMPOUNDS, type Compound } from '../data/compounds';
@@ -128,6 +129,7 @@ export function Level2({
   initialProgress,
 }: Level2Props) {
   const [showIntro, setShowIntro] = useState(!initialProgress);
+  useEscapeKey(onBack, showIntro);
   const [problems, setProblems] = useState<Problem[]>(generateAllProblems);
   const [idx, setIdx] = useState(0);
   const [input, setInput] = useState('');
