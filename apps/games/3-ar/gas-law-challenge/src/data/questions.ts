@@ -863,6 +863,40 @@ export function getRandomQuestion(): GasLawQuestion {
 }
 
 /**
+ * Gas-law curriculum level (introduced in iter 5 P3 restructure).
+ *
+ * Level 1: Ideal gas law only — students learn PV=nRT as the central relationship.
+ * Level 2: Boyle/Charles/Gay-Lussac — simplifications of the ideal law when one or more
+ *          variables are held constant.
+ * Level 3: Combined gas law + Avogadro — recognising that conservation of moles / constant
+ *          conditions turn PV=nRT into the combined form, and that equal volumes of any gas
+ *          at the same T and P contain equal moles.
+ */
+export type Level = 1 | 2 | 3;
+
+const LEVEL_LAWS: Record<Level, GasLawQuestion['gasLaw'][]> = {
+  1: ['ideal'],
+  2: ['boyles', 'charles', 'gay-lussac'],
+  3: ['combined', 'avogadro'],
+};
+
+/**
+ * Return all questions for a given curriculum level.
+ */
+export function getQuestionsForLevel(level: Level): GasLawQuestion[] {
+  const laws = LEVEL_LAWS[level];
+  return questions.filter((q) => laws.includes(q.gasLaw));
+}
+
+/**
+ * Return a random question filtered to the given level.
+ */
+export function getRandomQuestionForLevel(level: Level): GasLawQuestion {
+  const pool = getQuestionsForLevel(level);
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+/**
  * Get question by ID
  */
 export function getQuestionById(id: number): GasLawQuestion | undefined {

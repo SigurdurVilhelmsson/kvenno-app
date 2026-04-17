@@ -10,7 +10,7 @@ import {
 import { useGameI18n, useGameProgress } from '@shared/hooks';
 
 import { GasLawSimulator } from './components/GasLawSimulator';
-import { questions, getRandomQuestion } from './data';
+import { questions, getRandomQuestionForLevel, type Level } from './data';
 import { gameTranslations } from './i18n';
 import {
   GasLawQuestion,
@@ -36,6 +36,7 @@ function App() {
   const [screen, setScreen] = useState<'menu' | 'game' | 'feedback'>('menu');
   const { language, setLanguage } = useGameI18n({ gameTranslations });
   const [gameMode, setGameMode] = useState<GameMode>('practice');
+  const [selectedLevel, setSelectedLevel] = useState<Level>(1);
   const [currentQuestion, setCurrentQuestion] = useState<GasLawQuestion | null>(null);
   const [userAnswer, setUserAnswer] = useState('');
   const [showHint, setShowHint] = useState(0);
@@ -61,18 +62,23 @@ function App() {
     resetProgress: resetStats,
   } = useGameProgress<GameStats>('gas-law-challenge-progress', DEFAULT_STATS);
 
-  // Start new question
-  const startNewQuestion = (mode: GameMode) => {
-    const question = getRandomQuestion();
+  // Start new question — draws from the pool for the currently selected level.
+  // Level 1 is always ideal gas law so the law-selection step is skipped; Levels 2/3 include
+  // multiple laws so the "identify the law first" scaffolding stays in practice mode.
+  const startNewQuestion = (mode: GameMode, level: Level = selectedLevel) => {
+    const question = getRandomQuestionForLevel(level);
     setGameMode(mode);
+    setSelectedLevel(level);
     setCurrentQuestion(question);
     setUserAnswer('');
     setShowHint(0);
     setShowSolution(false);
     setFeedback(null);
     setTimeRemaining(mode === 'challenge' ? 90 : null);
-    // Law selection step - only in practice mode
-    setGameStep(mode === 'practice' ? 'select-law' : 'solve');
+    // Law selection is meaningful only when the level spans multiple laws (L2, L3).
+    // Level 1 is ideal-only; go straight to solve.
+    const needsLawSelection = mode === 'practice' && level !== 1;
+    setGameStep(needsLawSelection ? 'select-law' : 'solve');
     setSelectedLaw(null);
     setLawFeedback(null);
     setScreen('game');
@@ -316,6 +322,64 @@ function App() {
                   </p>
                 </div>
 
+                {/* Level selector — iter 5 P3 restructure (was: random across 6 laws). */}
+                <div className="mb-6">
+                  <h2 className="font-bold text-warm-800 mb-3">Veldu stig:</h2>
+                  <div className="grid md:grid-cols-3 gap-3">
+                    <button
+                      onClick={() => setSelectedLevel(1)}
+                      aria-pressed={selectedLevel === 1}
+                      className={`p-4 rounded-lg border-2 text-left transition ${
+                        selectedLevel === 1
+                          ? 'border-blue-500 bg-blue-50 shadow-md'
+                          : 'border-warm-300 bg-white hover:border-blue-300'
+                      }`}
+                    >
+                      <div className="font-bold text-blue-800">
+                        Stig 1 — Tilvalin lofttegundalögmál
+                      </div>
+                      <div className="text-xs text-warm-600 mt-1 font-mono">PV = nRT</div>
+                      <div className="text-xs text-warm-500 mt-2">
+                        Lærðu miðlögmálið og allar fjórar breyturnar.
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => setSelectedLevel(2)}
+                      aria-pressed={selectedLevel === 2}
+                      className={`p-4 rounded-lg border-2 text-left transition ${
+                        selectedLevel === 2
+                          ? 'border-green-500 bg-green-50 shadow-md'
+                          : 'border-warm-300 bg-white hover:border-green-300'
+                      }`}
+                    >
+                      <div className="font-bold text-green-800">Stig 2 — Sérstök tilvik</div>
+                      <div className="text-xs text-warm-600 mt-1 font-mono">
+                        Boyle / Charles / Gay-Lussac
+                      </div>
+                      <div className="text-xs text-warm-500 mt-2">
+                        Sjáðu hvað gerist þegar ein breyta er fastlagt.
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => setSelectedLevel(3)}
+                      aria-pressed={selectedLevel === 3}
+                      className={`p-4 rounded-lg border-2 text-left transition ${
+                        selectedLevel === 3
+                          ? 'border-purple-500 bg-purple-50 shadow-md'
+                          : 'border-warm-300 bg-white hover:border-purple-300'
+                      }`}
+                    >
+                      <div className="font-bold text-purple-800">Stig 3 — Samanburður</div>
+                      <div className="text-xs text-warm-600 mt-1 font-mono">
+                        Sameinað + Avogadro
+                      </div>
+                      <div className="text-xs text-warm-500 mt-2">
+                        Beittu mörgum lögmálum saman.
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
                 <div className="grid md:grid-cols-2 gap-6">
                   {/* Practice Mode */}
                   <div className="game-card bg-blue-50 p-6 rounded-lg border-2 border-blue-200">
@@ -331,7 +395,7 @@ function App() {
                       className="w-full py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90"
                       style={{ backgroundColor: '#3b82f6' }}
                     >
-                      Byrja að Æfa
+                      Byrja að Æfa (Stig {selectedLevel})
                     </button>
                   </div>
 
@@ -349,7 +413,7 @@ function App() {
                       className="w-full py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90"
                       style={{ backgroundColor: '#f36b22' }}
                     >
-                      Byrja Keppni
+                      Byrja Keppni (Stig {selectedLevel})
                     </button>
                   </div>
                 </div>
@@ -418,6 +482,7 @@ function App() {
                     Gas Law Challenge
                   </h1>
                   <p className="text-sm text-warm-600">
+                    Stig {selectedLevel} •{' '}
                     {gameMode === 'practice' ? 'Æfingahamur' : 'Keppnishamur'} • Spurning{' '}
                     {currentQuestion.id}
                   </p>
