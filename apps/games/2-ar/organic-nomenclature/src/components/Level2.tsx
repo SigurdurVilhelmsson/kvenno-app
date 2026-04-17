@@ -1,10 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
 import { AnimatedMolecule, DragDropBuilder, FeedbackPanel } from '@shared/components';
 import type { DraggableItemData, DropZoneData, DropResult, ZoneState } from '@shared/components';
 
 import { StructureFromNameChallenge } from './StructureFromNameChallenge';
-import { organicToMolecule } from '../utils/organicConverter';
+import { organicToMolecule, hasBranches, type OrganicBranch } from '../utils/organicConverter';
 
 // Misconceptions for organic nomenclature
 const NOMENCLATURE_MISCONCEPTIONS: Record<string, string> = {
@@ -29,6 +29,7 @@ interface Molecule {
   correctName: string;
   doublePosition?: number;
   triplePosition?: number;
+  branches?: OrganicBranch[];
   hint: string;
 }
 
@@ -155,6 +156,38 @@ const molecules: Molecule[] = [
     doublePosition: 1,
     hint: '5 kolefni, tvítengi á stað 1',
   },
+
+  // Branched alkanes — exercise the parent-chain rule (find the longest C chain).
+  {
+    id: 13,
+    type: 'alkane',
+    carbons: 3,
+    structure: 'C-C(-C)-C',
+    formula: 'C₄H₁₀',
+    correctName: '2-metýlprópan',
+    branches: [{ atPosition: 2, length: 1 }],
+    hint: 'Lengsta kolefniskeðjan er 3 (própan). Metýl-grein á kolefni 2. Sama summuformúla og bútan!',
+  },
+  {
+    id: 14,
+    type: 'alkane',
+    carbons: 4,
+    structure: 'C-C(-C)-C-C',
+    formula: 'C₅H₁₂',
+    correctName: '2-metýlbútan',
+    branches: [{ atPosition: 2, length: 1 }],
+    hint: 'Finndu lengstu keðju (4 kolefni = bútan) og númeraðu svo lágt númer fáist fyrir greinina.',
+  },
+  {
+    id: 15,
+    type: 'alkane',
+    carbons: 5,
+    structure: 'C-C-C(-C)-C-C',
+    formula: 'C₆H₁₄',
+    correctName: '3-metýlpentan',
+    branches: [{ atPosition: 3, length: 1 }],
+    hint: 'Lengsta keðjan er 5 kolefni (pentan). Greinin er á miðkolefninu — númer 3 burtséð frá báðum endum.',
+  },
 ];
 
 export function Level2({ onComplete, onBack }: Level2Props) {
@@ -171,6 +204,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [zoneState, setZoneState] = useState<ZoneState>({});
 
   const molecule = molecules[currentMolecule];
+  const isBranched = hasBranches(molecule);
+
+  // Branched molecules require text entry: the drag-drop builder has no
+  // substituent prefix items (e.g., "2-metýl-"), so force text mode when one loads.
+  useEffect(() => {
+    if (isBranched && useDragDrop) setUseDragDrop(false);
+  }, [isBranched, useDragDrop]);
 
   // Generate draggable items for building names
   const { nameItems, nameZones } = useMemo(() => {
@@ -615,11 +655,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
         {!showFeedback ? (
           <div className="space-y-4">
-            {/* Mode toggle */}
+            {/* Mode toggle — drag-drop builder has no substituent prefixes, so branched molecules require text entry. */}
             <div className="flex justify-end">
               <button
                 onClick={() => setUseDragDrop(!useDragDrop)}
-                className="text-xs px-3 py-1 rounded-full bg-warm-100 hover:bg-warm-200 text-warm-600"
+                disabled={isBranched}
+                className="text-xs px-3 py-1 rounded-full bg-warm-100 hover:bg-warm-200 text-warm-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                title={isBranched ? 'Greinótt sameind — aðeins skrifa-hamur' : undefined}
               >
                 {useDragDrop ? '⌨️ Skipta í skrifa-ham' : '✋ Skipta í draga-ham'}
               </button>

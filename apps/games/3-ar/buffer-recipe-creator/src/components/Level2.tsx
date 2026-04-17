@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 
 import { HintSystem, Presence } from '@shared/components';
 
+import { BufferCapacityVisualization } from './BufferCapacityVisualization';
 import FlaskComparison from './FlaskComparison';
 import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
@@ -589,6 +590,19 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                     </li>
                   </ul>
                 </div>
+              </div>
+
+              {/* Interactive buffer capacity viz — lets students see that the buffer they
+                  designed actually holds pH steady against added acid/base. */}
+              <div className="mb-4">
+                <BufferCapacityVisualization
+                  pKa={problem.pKa}
+                  acidConc={problem.correctAcidMoles / problem.volume}
+                  baseConc={problem.correctBaseMoles / problem.volume}
+                  totalConc={problem.totalConcentration}
+                  acidName={problem.acidName}
+                  baseName={problem.baseName}
+                />
               </div>
 
               <button

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 
 import { HintSystem, Presence } from '@shared/components';
 
+import { BufferCapacityVisualization } from './BufferCapacityVisualization';
 import { LEVEL3_PUZZLES } from '../data/level3-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
 
@@ -662,6 +663,18 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Interactive buffer-capacity check: proves the recipe actually buffers. */}
+              <div className="mb-4">
+                <BufferCapacityVisualization
+                  pKa={problem.pKa}
+                  acidConc={correctAcidMoles / (puzzle.targetVolume / 1000)}
+                  baseConc={correctBaseMoles / (puzzle.targetVolume / 1000)}
+                  totalConc={puzzle.targetConcentration}
+                  acidName={problem.acidName}
+                  baseName={problem.baseName}
+                />
               </div>
 
               <button

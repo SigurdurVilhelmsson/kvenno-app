@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 
 import { InteractiveGraph } from '@shared/components';
 import type {
@@ -18,6 +18,7 @@ interface TitrationCurveProps {
   titration: Titration | null;
   showEquivalencePoints?: boolean;
   markedVolume?: number | null;
+  /** Maximum width (px). The curve shrinks to fit narrower containers. */
   width?: number;
   height?: number;
 }
@@ -32,9 +33,27 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
   titration,
   showEquivalencePoints = false,
   markedVolume = null,
-  width = 600,
+  width: maxWidth = 600,
   height = 400,
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [renderWidth, setRenderWidth] = useState(maxWidth);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const update = () => {
+      const available = el.clientWidth;
+      if (available > 0) setRenderWidth(Math.min(maxWidth, available));
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [maxWidth]);
+
+  const MIN_ASPECT_HEIGHT = 240;
+  const renderHeight = Math.max(MIN_ASPECT_HEIGHT, Math.round((renderWidth / maxWidth) * height));
   const graphData = useMemo(() => {
     // Convert curve data to DataPoints
     const dataPoints: DataPoint[] = curveData.map((pt) => ({
@@ -170,17 +189,19 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
   }, [curveData, currentVolume, currentPH, titration, showEquivalencePoints, markedVolume]);
 
   return (
-    <InteractiveGraph
-      width={width}
-      height={height}
-      series={graphData.series}
-      xAxis={{ min: 0, max: 60, label: 'Rúmmál bætt við (mL)', tickInterval: 10 }}
-      yAxis={{ min: 0, max: 14, label: 'pH', tickInterval: 2 }}
-      regions={graphData.regions}
-      horizontalLines={graphData.horizontalLines}
-      markers={graphData.markers}
-      currentPoint={graphData.currentPoint}
-      ariaLabel="Títrunarkúrfa - pH vs rúmmál"
-    />
+    <div ref={containerRef} style={{ width: '100%', maxWidth }}>
+      <InteractiveGraph
+        width={renderWidth}
+        height={renderHeight}
+        series={graphData.series}
+        xAxis={{ min: 0, max: 60, label: 'Rúmmál bætt við (mL)', tickInterval: 10 }}
+        yAxis={{ min: 0, max: 14, label: 'pH', tickInterval: 2 }}
+        regions={graphData.regions}
+        horizontalLines={graphData.horizontalLines}
+        markers={graphData.markers}
+        currentPoint={graphData.currentPoint}
+        ariaLabel="Títrunarkúrfa - pH vs rúmmál"
+      />
+    </div>
   );
 };
