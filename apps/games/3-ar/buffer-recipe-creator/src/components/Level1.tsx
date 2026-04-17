@@ -375,7 +375,7 @@ export default function Level1({
                     onClick={removeAcid}
                     disabled={acidCount === 0}
                     aria-label="Fjarlægja sýrusameind"
-                    className="flex-1 py-3 bg-red-100 hover:bg-red-200 disabled:bg-warm-100 disabled:text-warm-400 rounded-lg font-bold transition-colors"
+                    className="flex-1 py-3 bg-red-100 hover:bg-red-200 disabled:bg-warm-100 disabled:text-warm-400 rounded-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
                   >
                     − Fjarlægja
                   </button>
@@ -383,7 +383,7 @@ export default function Level1({
                     onClick={addAcid}
                     disabled={acidCount >= MAX_MOLECULES}
                     aria-label="Bæta við sýrusameind"
-                    className="flex-1 py-3 bg-red-500 hover:bg-red-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors"
+                    className="flex-1 py-3 bg-red-500 hover:bg-red-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
                   >
                     + Bæta við
                   </button>
@@ -397,7 +397,7 @@ export default function Level1({
                     onClick={removeBase}
                     disabled={baseCount === 0}
                     aria-label="Fjarlægja basasameind"
-                    className="flex-1 py-3 bg-blue-100 hover:bg-blue-200 disabled:bg-warm-100 disabled:text-warm-400 rounded-lg font-bold transition-colors"
+                    className="flex-1 py-3 bg-blue-100 hover:bg-blue-200 disabled:bg-warm-100 disabled:text-warm-400 rounded-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
                   >
                     − Fjarlægja
                   </button>
@@ -405,7 +405,7 @@ export default function Level1({
                     onClick={addBase}
                     disabled={baseCount >= MAX_MOLECULES}
                     aria-label="Bæta við basasameind"
-                    className="flex-1 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors"
+                    className="flex-1 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
                   >
                     + Bæta við
                   </button>

@@ -617,6 +617,8 @@ function App() {
           {appliedStress && correctShift && (
             <div>
               <div
+                role="status"
+                aria-live="polite"
                 className={`bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4 mb-4 ${appliedStress ? 'selected' : ''}`}
               >
                 <div className="font-semibold text-warm-800 mb-1">Álag sem beitt er:</div>

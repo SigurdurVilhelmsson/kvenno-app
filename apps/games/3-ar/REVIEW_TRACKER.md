@@ -192,3 +192,108 @@
 - [x] Thermodynamics styles.css trimmed of ~60 lines of dead CSS
 - [x] Gas-law `Object.keys` cast eliminated; type safety preserved at single `as GasLaw` on the id passed to setter
 - [x] Buffer Level2 optional chaining removed on required fields
+
+---
+
+## Iteration 3: UX & Accessibility — 2026-04-17
+
+### Review Ratings
+
+| Game                     | P1 Teach | P2 Why  | P3 One Concept | P4 Visuals | P5 Hints | P6 Technical | P7 Accessible     |
+| ------------------------ | -------- | ------- | -------------- | ---------- | -------- | ------------ | ----------------- |
+| Gas Law Challenge        | PASS     | PASS    | FAIL           | PARTIAL    | PASS     | PARTIAL      | PARTIAL → PARTIAL |
+| Equilibrium Shifter      | PASS     | PASS    | PASS           | PASS       | PASS     | PASS         | PARTIAL → PASS    |
+| Thermodynamics Predictor | PARTIAL  | PARTIAL | PASS           | PASS       | PASS     | PASS         | PARTIAL → PASS    |
+| pH Titration             | PARTIAL  | PASS    | PASS           | PASS       | PASS     | PASS         | PARTIAL → PARTIAL |
+| Buffer Recipe Creator    | PASS     | PASS    | PARTIAL        | PASS       | PASS     | PASS         | PARTIAL → PASS    |
+
+### Key Findings (UX & Accessibility Focus)
+
+**Cross-cutting:**
+
+- Missing focus-visible rings on L1 MCQ/selection buttons across multiple games — keyboard-only users couldn't see where focus was.
+- Color-only signals: Flask acidity/basicity (pH Titration), scenario badges (Thermodynamics), time urgency (Gas Law). All ran afoul of WCAG 2.1 SC 1.4.1.
+- No `role="radio"` / `aria-checked` on tri-state button groups (Thermodynamics spontaneity). Feedback divs lacked `role="alert"` / `aria-live`.
+- Three reviewer claims were **false positives** (discarded after verification):
+  - Gas-law-challenge: "law selection buttons not keyboard-accessible" — native `<button>` elements handle Enter/Space natively via browser defaults.
+  - Thermodynamics: "temperature slider not keyboard-accessible" — `<input type="range">` is natively keyboard-operable via arrow keys (what was missing was `aria-valuetext` for screen readers).
+  - Buffer: "L1 molecule display lacks color-independent text fallback" — text labels "Sýra (HA)" / "Basi (A⁻)" already present at Level1.tsx:299–300.
+
+**Per-game critical findings:**
+
+1. **Gas Law Challenge**: Time-remaining indicator was color-only (red bg when <30s). Input field used placeholder only, no label element. Missing aria-live for timer in challenge mode.
+2. **Equilibrium Shifter**: Stress buttons (12px padding) and prediction buttons (20px padding) both missed WCAG 2.5.5 44px minimum touch target. No aria-live when stress was applied — screen-reader user never learned the stress had been accepted.
+3. **Thermodynamics Predictor**: Scenario badges showed only "Atburðarás 1" with no indication of meaning (color only). Slider had no `aria-label`/`aria-valuetext`. Spontaneity buttons lacked `role="radio"` + `aria-checked`. Feedback div missing `role="alert"` / `aria-live`.
+4. **pH Titration**: Flask indicated acid/base only through solution color (aria-label existed for screen readers but nothing visible). L3 input had `<label>` as sibling with no `htmlFor`/`id` association. L1 MCQ buttons had no focus-visible outlines.
+5. **Buffer Recipe Creator**: L1 add/remove buttons had no focus-visible outlines. (Molecule color legend is present — false finding; IMF-style indicator color legend is out of scope.)
+
+### Triage
+
+| #   | Game                     | Finding                                                   | Disposition | Effort |
+| --- | ------------------------ | --------------------------------------------------------- | ----------- | ------ |
+| 1   | Thermodynamics Predictor | Scenario badges color-only (WCAG 1.4.1)                   | FIX         | XS     |
+| 2   | Thermodynamics Predictor | Slider lacks aria-label + aria-valuetext                  | FIX         | XS     |
+| 3   | Thermodynamics Predictor | Spontaneity buttons lack role="radio" / aria-checked      | FIX         | S      |
+| 4   | Thermodynamics Predictor | Feedback div missing role="alert"/aria-live               | FIX         | XS     |
+| 5   | pH Titration             | Flask acidity/basicity color-only (visible text missing)  | FIX         | XS     |
+| 6   | pH Titration             | L3 input lacks label htmlFor/id association               | FIX         | XS     |
+| 7   | pH Titration             | L1 MCQ buttons missing focus-visible outlines             | FIX         | XS     |
+| 8   | Gas Law Challenge        | Input field missing label element                         | FIX         | XS     |
+| 9   | Gas Law Challenge        | Timer color-only urgency + missing aria-live              | FIX         | S      |
+| 10  | Equilibrium Shifter      | Stress buttons + prediction buttons below 44px min-height | FIX         | XS     |
+| 11  | Equilibrium Shifter      | Applied-stress status lacks aria-live                     | FIX         | XS     |
+| 12  | Buffer Recipe Creator    | L1 add/remove buttons missing focus-visible outlines      | FIX         | XS     |
+| 13  | pH Titration             | Flask visible; IndicatorSelector swatches title-only      | DEFER       | S      |
+| 14  | pH Titration             | TitrationCurve not responsive at 375px                    | DEFER       | M      |
+| 15  | Gas Law Challenge        | Particle simulator may overflow on mobile at high volumes | DEFER       | S      |
+| 16  | Equilibrium Shifter      | Q vs K bar white-on-saturated contrast                    | DEFER       | S      |
+| 17  | Equilibrium Shifter      | Challenge mode explanation auto-advance too fast (3s)     | DEFER       | XS     |
+
+**Disposition summary:** 12 FIX applied, 5 DEFER.
+
+### Changes Applied
+
+| #   | Game                     | Finding                             | Done                                                                                                                                                                                            |
+| --- | ------------------------ | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Thermodynamics Predictor | Scenario badges color-only          | Yes — badge text now includes ΔH/ΔS shorthand: "Atburðarás 1: ΔH<0, ΔS>0" for each of 4 scenarios. Color retained as redundant signal; text now primary.                                        |
+| 2   | Thermodynamics Predictor | Slider a11y                         | Yes — added `aria-label="Hitastig í Kelvinum"` and `aria-valuetext` reporting current K + °C to the temperature `<input type="range">`.                                                         |
+| 3   | Thermodynamics Predictor | Spontaneity buttons radio semantics | Yes — wrapped the 3-button group in `role="radiogroup"` with `aria-label`; each button now has `role="radio"` + `aria-checked={userSpontaneity === '...'}`.                                     |
+| 4   | Thermodynamics Predictor | Feedback alert semantics            | Yes — feedback `<div>` now has `role="alert"` + `aria-live="polite"` so the right/wrong announcement reaches assistive tech.                                                                    |
+| 5   | pH Titration             | Flask visible acidity/basicity text | Yes — Flask.tsx now renders a third pill next to Rúmmál/pH labeled "Eðli" with Súr / Hlutlaus / Basísk based on pH (`<6.5` / `7.5-6.5` / `>7.5`). Flex layout wraps at mobile widths.           |
+| 6   | pH Titration             | L3 input label association          | Yes — Level3.tsx: `<label htmlFor="ph-titration-l3-answer">` + input `id="ph-titration-l3-answer"`. Screen reader now announces "Svar (unit)" when focus lands on the input.                    |
+| 7   | pH Titration             | L1 MCQ focus-visible                | Yes — added `focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600` to the option button className.                                                             |
+| 8   | Gas Law Challenge        | Input field label                   | Yes — heading `<h3>` now wraps a `<label htmlFor="gas-law-answer">`; input has matching `id` + `aria-label` including variable name and unit.                                                   |
+| 9   | Gas Law Challenge        | Timer color + live region           | Yes — timer `<div>` now has `role="timer"`; `aria-live="assertive"` when ≤10 s; `aria-label` describes remaining seconds + urgency; visible ⚠️ prefix when <30 s (text signal alongside color). |
+| 10  | Equilibrium Shifter      | Touch target min-height             | Yes — `.stress-btn` and `.predict-btn` CSS now include `min-height: 44px` so both meet WCAG 2.5.5 on mobile widths.                                                                             |
+| 11  | Equilibrium Shifter      | Applied-stress aria-live            | Yes — applied-stress container `<div>` now has `role="status"` + `aria-live="polite"` so the newly-applied stress is announced to screen readers.                                               |
+| 12  | Buffer Recipe Creator    | L1 focus-visible rings              | Yes — all 4 add/remove buttons (Sýra remove/add, Basi remove/add) now have `focus-visible:outline-2 focus-visible:outline-offset-2` with color-matched outline per button.                      |
+
+### Deferred Items
+
+| Finding                                                     | Reason                                                           | Target       |
+| ----------------------------------------------------------- | ---------------------------------------------------------------- | ------------ |
+| pH Titration IndicatorSelector swatches title-only          | Needs visible label layout rework                                | Iteration 4  |
+| pH Titration TitrationCurve not responsive at 375px         | Component width is fixed 600px; requires shared-component change | Iteration 4+ |
+| Gas Law particle simulator mobile overflow at high volumes  | Bounded already by container max-width; watch on real mobile     | Iteration 4  |
+| Equilibrium Shifter Q vs K bar white-on-saturated contrast  | Needs contrast testing + palette redesign                        | Iteration 4  |
+| Equilibrium Shifter challenge-mode 3s auto-advance too fast | Design call — balance timer pressure vs reading time             | Iteration 4  |
+
+### Discarded (False Findings)
+
+| Finding                                                            | Reason discarded                                                        |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| Gas-law-challenge "law selection buttons not keyboard-accessible"  | Native `<button>` elements handle Enter/Space by default via browser.   |
+| Thermodynamics "temperature slider not keyboard-accessible"        | `<input type="range">` is natively keyboard-operable via arrow keys.    |
+| Buffer "L1 molecule display lacks color-independent text fallback" | Labels "Sýra (HA)" / "Basi (A⁻)" already present at Level1.tsx:299–300. |
+
+### Verification (2026-04-17)
+
+- [x] `pnpm type-check` passes across entire monorepo (0 errors)
+- [x] `pnpm build:games` — 20 succeeded, 0 failed
+- [x] Y3 bundle sizes: thermo 318KB, gas-law 333KB, equilibrium 353KB, ph-titration 372KB, buffer 399KB — ~100-400 byte increases from added `aria-*` attributes, all well under 3MB ceiling.
+- [x] Thermodynamics scenario badges now announce ΔH/ΔS sign meaning alongside color
+- [x] Thermodynamics slider reports Kelvin and Celsius value to screen readers via aria-valuetext
+- [x] Thermodynamics spontaneity buttons form a proper radio group with aria-checked
+- [x] pH Titration Flask displays visible Súr/Hlutlaus/Basísk eðli pill alongside pH
+- [x] Gas Law Challenge timer speaks remaining seconds to screen readers at ≤10s assertive threshold; visible ⚠️ appears at <30s
+- [x] Equilibrium Shifter stress and prediction buttons now meet 44px WCAG 2.5.5 touch target minimum

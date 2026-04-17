@@ -237,11 +237,15 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
 
           {/* Answer input */}
           <div className="mb-4">
-            <label className="block text-sm font-semibold text-warm-700 mb-2">
+            <label
+              htmlFor="ph-titration-l3-answer"
+              className="block text-sm font-semibold text-warm-700 mb-2"
+            >
               Svar {challenge.unit && `(${challenge.unit})`}:
             </label>
             <div className="flex gap-3">
               <input
+                id="ph-titration-l3-answer"
                 type="text"
                 value={userAnswer}
                 onChange={(e) => setUserAnswer(e.target.value)}

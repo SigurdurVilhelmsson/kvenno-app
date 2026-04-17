@@ -523,7 +523,14 @@ function App() {
                   <span
                     className={`inline-block px-3 py-1 rounded-full text-white text-sm scenario-${currentProblem.scenario}`}
                   >
-                    Atburðarás {currentProblem.scenario}
+                    Atburðarás {currentProblem.scenario}:{' '}
+                    {currentProblem.scenario === 1
+                      ? 'ΔH<0, ΔS>0'
+                      : currentProblem.scenario === 2
+                        ? 'ΔH>0, ΔS<0'
+                        : currentProblem.scenario === 3
+                          ? 'ΔH<0, ΔS<0'
+                          : 'ΔH>0, ΔS>0'}
                   </span>
                   <span className="ml-2 text-sm text-warm-600">{currentProblem.difficulty}</span>
                 </div>
@@ -592,6 +599,8 @@ function App() {
                     value={temperature}
                     onChange={(e) => setTemperature(parseInt(e.target.value))}
                     className="w-full"
+                    aria-label="Hitastig í Kelvinum"
+                    aria-valuetext={`${temperature} Kelvin (${(temperature - 273).toFixed(0)} gráður á Celsíus)`}
                   />
                   <div className="flex justify-between text-sm text-warm-600 mt-2">
                     <span>200 K</span>
@@ -708,11 +717,13 @@ function App() {
                     />
                   </div>
 
-                  <div className="mb-4">
+                  <div className="mb-4" role="radiogroup" aria-label="Sjálfviljugheit">
                     <label className="block text-sm font-medium mb-2">Sjálfviljugheit:</label>
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
                       <button
                         onClick={() => setUserSpontaneity('spontaneous')}
+                        role="radio"
+                        aria-checked={userSpontaneity === 'spontaneous'}
                         className={`px-4 py-2 rounded-lg border-2 transition ${
                           userSpontaneity === 'spontaneous'
                             ? 'border-green-500 bg-green-50 font-bold'
@@ -723,6 +734,8 @@ function App() {
                       </button>
                       <button
                         onClick={() => setUserSpontaneity('equilibrium')}
+                        role="radio"
+                        aria-checked={userSpontaneity === 'equilibrium'}
                         className={`px-4 py-2 rounded-lg border-2 transition ${
                           userSpontaneity === 'equilibrium'
                             ? 'border-yellow-500 bg-yellow-50 font-bold'
@@ -733,6 +746,8 @@ function App() {
                       </button>
                       <button
                         onClick={() => setUserSpontaneity('non-spontaneous')}
+                        role="radio"
+                        aria-checked={userSpontaneity === 'non-spontaneous'}
                         className={`px-4 py-2 rounded-lg border-2 transition ${
                           userSpontaneity === 'non-spontaneous'
                             ? 'border-red-500 bg-red-50 font-bold'
@@ -837,6 +852,8 @@ function App() {
               {/* Feedback */}
               <Presence show={!!feedback} exitDuration={250}>
                 <div
+                  role="alert"
+                  aria-live="polite"
                   className={`rounded-lg shadow-lg p-6 ${
                     feedback?.includes('Rétt')
                       ? 'bg-green-50 border-2 border-green-500'

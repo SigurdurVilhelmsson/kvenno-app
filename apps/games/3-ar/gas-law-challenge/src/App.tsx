@@ -425,9 +425,13 @@ function App() {
                 <div className="flex gap-2">
                   {gameMode === 'challenge' && timeRemaining !== null && (
                     <div
+                      role="timer"
+                      aria-live={timeRemaining < 10 ? 'assertive' : 'off'}
+                      aria-label={`${timeRemaining} sekúndur eftir${timeRemaining < 30 ? ' — stutt eftir' : ''}`}
                       className={`px-4 py-2 rounded-lg font-bold ${timeRemaining < 30 ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}`}
                     >
-                      ⏱️ {timeRemaining}s
+                      ⏱️ {timeRemaining < 30 ? '⚠️ ' : ''}
+                      {timeRemaining}s
                     </div>
                   )}
                   <button
@@ -648,11 +652,14 @@ function App() {
                     }`}
                   >
                     <h3 className="font-bold text-orange-900 mb-2">
-                      {gameMode === 'practice' && gameStep === 'select-law' && '(Skref 2) '}
-                      Finndu {getVariableName(currentQuestion.find)} ({currentQuestion.find}):
+                      <label htmlFor="gas-law-answer">
+                        {gameMode === 'practice' && gameStep === 'select-law' && '(Skref 2) '}
+                        Finndu {getVariableName(currentQuestion.find)} ({currentQuestion.find}):
+                      </label>
                     </h3>
                     <div className="flex gap-2">
                       <input
+                        id="gas-law-answer"
                         type="number"
                         value={userAnswer}
                         onChange={(e) => setUserAnswer(e.target.value)}
@@ -666,6 +673,7 @@ function App() {
                           e.key === 'Enter' && gameStep === 'solve' && checkUserAnswer()
                         }
                         disabled={gameMode === 'practice' && gameStep === 'select-law'}
+                        aria-label={`Svar fyrir ${getVariableName(currentQuestion.find)} í einingunni ${getUnit(currentQuestion.find)}`}
                       />
                       <div className="bg-white px-4 py-3 rounded-lg border-2 border-warm-300 font-bold text-warm-700">
                         {getUnit(currentQuestion.find)}

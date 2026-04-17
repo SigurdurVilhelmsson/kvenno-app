@@ -250,7 +250,7 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                   key={option.id}
                   onClick={() => handleOptionSelect(option.id)}
                   disabled={showResult}
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${bgColor} ${borderColor} ${
+                  className={`w-full p-4 rounded-xl border-2 text-left transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${bgColor} ${borderColor} ${
                     showResult ? 'cursor-default' : 'cursor-pointer'
                   }`}
                 >
