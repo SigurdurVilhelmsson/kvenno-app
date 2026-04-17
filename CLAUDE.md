@@ -177,9 +177,14 @@ Full plan: `~/.claude/plans/mighty-mixing-puffin.md`
 
 - **Y1 (7 games):** Iterations 1-4 complete (Apr 2026). Tracker: `apps/games/1-ar/REVIEW_TRACKER.md`.
 - **Y2 (8 games):** Iterations 1-5 complete (Apr 2026). Zero FAIL ratings at iter 5. Tracker: `apps/games/2-ar/REVIEW_TRACKER.md`.
-- **Y3 (5 games):** Not yet started — next candidate for the same cycle.
+- **Y3 (5 games):** Iterations 1-4 complete + cross-iter design work (Apr 2026). Gas Law P3 restructured into 3 curriculum-ordered levels. Tracker: `apps/games/3-ar/REVIEW_TRACKER.md`.
 
-Remaining cross-year deferred work (each needs dedicated design, not another review pass): Three.js keyboard-rotation wrapper for VSEPR/IMF 3D viewers, `@shared/components/DragDropBuilder` touch support, Three.js lazy-split (IMF/Lewis/VSEPR at ~3MB ceiling), Organic L2 branched-molecule data, bond pattern alternatives (stripe/dash) in Lewis/Organic.
+**Shared-component accessibility additions (Apr 2026):**
+
+- `@shared/components/MoleculeViewer3D` is keyboard-accessible: arrow keys rotate (±5°), `+`/`−` zoom, `R` resets. The outer `<div>` is focusable with `role="application"` and an Icelandic aria-label. Used by VSEPR, IMF, Lewis.
+- `@shared/components/DragDropBuilder` supports touch drag-and-drop: `onTouchMove` previews the zone under the finger via `document.elementFromPoint`, `onTouchEnd` commits through the same pipeline as mouse drops. Used by Organic Nomenclature.
+
+Remaining deferred work (each is now an optimization, not a pedagogy/WCAG block): Gas Law 980-line App.tsx extraction, Three.js lazy-split (IMF/Lewis/VSEPR at ~3MB ceiling), Organic L2 branched-molecule data, pH Titration TitrationCurve responsive width, project-level decision on `useGameI18n` `t()` usage (CLAUDE.md says Icelandic-only UI).
 
 Full plan: `~/.claude/plans/logical-wandering-llama.md`
 

@@ -2,12 +2,7 @@ import { useState, useCallback, useMemo } from 'react';
 
 import { DraggableItem } from './DraggableItem';
 import { DropZone } from './DropZone';
-import {
-  DragDropBuilderProps,
-  DraggableItemData,
-  ZoneState,
-  DropResult,
-} from './types';
+import { DragDropBuilderProps, DraggableItemData, ZoneState, DropResult } from './types';
 
 /**
  * DragDropBuilder Component
@@ -162,6 +157,21 @@ export function DragDropBuilder({
     [zoneState, canDropInZone, onDrop]
   );
 
+  /**
+   * Touch-drop handler. Called by DraggableItem when a touch release lands on a
+   * `[data-zone-id]` element. Re-uses the same drop pipeline as mouse drops, appending
+   * to the end of the target zone (touch UX doesn't support fine-grained index drop).
+   */
+  const handleTouchDrop = useCallback(
+    (itemId: string, zoneId: string) => {
+      const currentItems = zoneState[zoneId] || [];
+      // If the item is being re-touch-dropped into the same zone, treat as no-op.
+      if (currentItems.includes(itemId)) return;
+      handleZoneDrop(zoneId)(itemId, currentItems.length);
+    },
+    [zoneState, handleZoneDrop]
+  );
+
   // Handle reorder within a zone
   const handleZoneReorder = useCallback(
     (zoneId: string) => (newOrder: string[]) => {
@@ -192,23 +202,20 @@ export function DragDropBuilder({
   }, []);
 
   // Handle drop back to pool
-  const handlePoolDrop = useCallback(
-    (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      const itemId = e.dataTransfer.getData('text/plain');
-      if (!itemId) return;
+  const handlePoolDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const itemId = e.dataTransfer.getData('text/plain');
+    if (!itemId) return;
 
-      // Remove from any zone
-      setZoneState((prev) => {
-        const newState = { ...prev };
-        for (const zoneId of Object.keys(newState)) {
-          newState[zoneId] = prev[zoneId].filter((id) => id !== itemId);
-        }
-        return newState;
-      });
-    },
-    []
-  );
+    // Remove from any zone
+    setZoneState((prev) => {
+      const newState = { ...prev };
+      for (const zoneId of Object.keys(newState)) {
+        newState[zoneId] = prev[zoneId].filter((id) => id !== itemId);
+      }
+      return newState;
+    });
+  }, []);
 
   const handlePoolDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -242,9 +249,7 @@ export function DragDropBuilder({
           `}
         >
           {poolItems.length === 0 && (
-            <div className="text-gray-400 text-sm italic py-2">
-              Öll atriði hafa verið sett
-            </div>
+            <div className="text-gray-400 text-sm italic py-2">Öll atriði hafa verið sett</div>
           )}
           {poolItems.map((item) => (
             <DraggableItem
@@ -253,6 +258,7 @@ export function DragDropBuilder({
               isDragging={draggingId === item.id}
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
+              onTouchDrop={handleTouchDrop}
             />
           ))}
         </div>
@@ -273,11 +279,7 @@ export function DragDropBuilder({
           const canDrop = draggingId ? canDropInZone(draggingId, zone.id) : true;
 
           return (
-            <div
-              key={zone.id}
-              className="flex-1"
-              onDragOver={() => handleZoneDragOver(zone.id)}
-            >
+            <div key={zone.id} className="flex-1" onDragOver={() => handleZoneDragOver(zone.id)}>
               <DropZone
                 zone={zone}
                 items={zoneItems}
@@ -285,6 +287,7 @@ export function DragDropBuilder({
                 canDrop={canDrop}
                 onDrop={handleZoneDrop(zone.id)}
                 onReorder={handleZoneReorder(zone.id)}
+                onTouchDrop={handleTouchDrop}
                 orientation={orientation}
               />
             </div>

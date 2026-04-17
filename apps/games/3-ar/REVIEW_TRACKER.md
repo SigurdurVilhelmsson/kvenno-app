@@ -367,3 +367,56 @@ Per `~/.claude/plans/logical-wandering-llama.md`:
 3. All verification checklists pass — **yes**.
 
 Gas Law Challenge P3 failure requires a dedicated design decision (split games or law-per-level restructure). Tracked as a cross-iter concern; not blocking per the plan's escalation note. The remaining four Y3 games satisfy the stop criteria.
+
+---
+
+## Cross-Iter Design Work — 2026-04-17
+
+After iter 4, the user asked to "tackle remaining cross-iter design work" — the items tagged across multiple iterations as needing dedicated design effort outside the review cycle. Addressed in three phases.
+
+### Phase A — Small polish (commit `53c7eea`)
+
+| Game                     | Change                                                                                                                                                   |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Equilibrium Shifter      | Q vs K bar colors: -500/-700 → -700/-800 so white text meets WCAG AA 4.5:1 contrast.                                                                     |
+| Equilibrium Shifter      | Challenge auto-advance: 3s → 6s + "Næsta strax →" manual continue button.                                                                                |
+| pH Titration             | IndicatorSelector: color swatches now have visible Súr/Basísk labels (was title-attr only).                                                              |
+| Thermodynamics Predictor | New Discover mode ("🔬 Könnun"): manipulable T slider + live ΔG on a canonical scenario-3 demo. GameMode extended `menu\|discover\|learning\|challenge`. |
+
+### Phase B — Gas Law P3 restructure (commit `6b03f45`)
+
+Closes the only remaining P3 FAIL. The previous structure drew questions randomly across 6 gas laws. Restructured into 3 curriculum-ordered levels (data-driven, no question rewrites):
+
+- **Level 1** (ideal): 13 questions (PV = nRT). Law-selection step skipped (only 1 law).
+- **Level 2** (special cases): 6 questions (Boyle + Charles + Gay-Lussac). Law-selection preserved.
+- **Level 3** (combined): 4 questions (combined + Avogadro). Law-selection preserved.
+
+Added `Level` type + `LEVEL_LAWS` partition + `getQuestionsForLevel` / `getRandomQuestionForLevel` helpers in `data/questions.ts`. Menu now shows a 3-card level selector (with `aria-pressed`) driving both practice and challenge. Game header shows "Stig N • Mode • Spurning X".
+
+### Phase C — Shared-package work (commit pending)
+
+| Component                             | Change                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@shared/components/DragDropBuilder`  | **Touch support** — added `onTouchDrop` wire-through + `findZoneIdAt(x,y)` via `document.elementFromPoint`. `handleTouchMove` now previews the zone under the finger; `handleTouchEnd` commits the drop through the same pipeline as mouse drops. Fixes Organic L2 on mobile (deferred since iter 3). Added `touch-none` class to prevent scroll during drag.                                                                             |
+| `@shared/components/MoleculeViewer3D` | **Keyboard-accessible 3D viewer** — wrapped `<Canvas>` in a `tabIndex={0}` container with `role="application"` + Icelandic aria-label. Keyboard handler on wrapper: Arrow keys rotate (±5°), `+/-` zoom in/out, `R` reset. Uses `ComponentRef<typeof OrbitControls>` for the ref; rotateLeft/rotateUp accessed via a typed façade (three.js stable internal API). Benefits VSEPR, IMF, and Lewis (wherever MoleculeViewer3D is embedded). |
+
+### Discarded (false findings verified)
+
+| Finding                                          | Reason discarded                                                                                                                                                                 |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "Bond visualization color-only in Lewis/Organic" | Bond rendering already uses line count (1/2/3 parallel lines) as primary differentiator + per-bond `aria-label` ("single bond"/"double bond"/"triple bond"). Color is redundant. |
+
+### Still Deferred (not essential to stop criteria)
+
+| Finding                                                     | Reason                                                           |
+| ----------------------------------------------------------- | ---------------------------------------------------------------- |
+| Gas Law Challenge: 980-line App.tsx monolith                | Refactor only — no user-visible change                           |
+| Gas Law Challenge: pre-game interactive PV=nRT discovery    | Same pattern as thermo discover; could add later                 |
+| pH Titration: TitrationCurve not responsive at 375px        | Shared component width fixed 600px — would affect multiple games |
+| Gas Law: particle simulator mobile overflow at high volumes | Real-hardware test needed                                        |
+| Buffer: BufferCapacityVisualization absent in L2-L3         | Integration work — current L2/L3 already teach without it        |
+| All Y3: `useGameI18n` imported but `t()` largely unused     | CLAUDE.md says Icelandic-only UI — needs project-level decision  |
+| VSEPR/IMF/Lewis: Three.js lazy-split (~3MB bundles)         | Bundle-size optimization — not a functional issue                |
+| Organic L2: branched-molecule data                          | Data authoring — expand question pool                            |
+| Hess: Polish i18n block unused                              | Teacher sign-off needed                                          |
+| Kinetics / Redox: shuffle problem order                     | Preserve exam-style consistency                                  |

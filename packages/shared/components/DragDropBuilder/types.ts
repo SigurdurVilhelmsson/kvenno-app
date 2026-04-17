@@ -69,6 +69,14 @@ export interface DraggableItemProps {
   onDragStart?: (itemId: string) => void;
   /** Callback when drag ends */
   onDragEnd?: () => void;
+  /**
+   * Callback when a touch drop completes over a zone.
+   * Touch events don't integrate with HTML5 drag-drop, so the DraggableItem
+   * reads `document.elementFromPoint(touch.clientX, touch.clientY)` on touchend,
+   * walks up to the nearest `[data-zone-id]` ancestor, and emits the zone id here.
+   * DragDropBuilder wires this to its internal drop handler.
+   */
+  onTouchDrop?: (itemId: string, zoneId: string) => void;
   /** Additional CSS classes */
   className?: string;
 }
@@ -89,6 +97,8 @@ export interface DropZoneProps {
   onDrop?: (itemId: string, index: number) => void;
   /** Callback when items are reordered within the zone */
   onReorder?: (newOrder: string[]) => void;
+  /** Forwarded to child DraggableItems so items already placed can be touch-dragged between zones. */
+  onTouchDrop?: (itemId: string, zoneId: string) => void;
   /** Orientation of items in the zone */
   orientation?: 'horizontal' | 'vertical';
   /** Additional CSS classes */

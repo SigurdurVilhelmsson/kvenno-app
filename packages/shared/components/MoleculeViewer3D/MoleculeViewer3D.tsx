@@ -5,11 +5,18 @@
  * with Three.js. Supports ball-and-stick and space-fill rendering styles.
  */
 
-import { Suspense, useMemo, useCallback, useRef } from 'react';
+import { Suspense, useMemo, useCallback, useRef, useEffect, type ComponentRef } from 'react';
 
 import { OrbitControls, Text, Html } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import * as THREE from 'three';
+
+/**
+ * Keyboard-accessible handle on the underlying three-stdlib OrbitControls exposed by drei.
+ * We rely on React's `ComponentRef` helper to derive the ref type from the drei component
+ * without adding a direct dependency on `three-stdlib`.
+ */
+type OrbitControlsHandle = ComponentRef<typeof OrbitControls>;
 
 import type { MoleculeViewer3DProps, Atom3DProps, Bond3DProps } from './types';
 import type { MoleculeAtom, MoleculeBond } from '../../types/molecule.types';
@@ -34,7 +41,7 @@ function getGeometryPositions(
   // Standard geometric positions based on VSEPR theory
   const positions: Record<string, [number, number, number][]> = {
     // Linear: 180° angle
-    'linear': [
+    linear: [
       [bondLength, 0, 0],
       [-bondLength, 0, 0],
     ],
@@ -47,16 +54,16 @@ function getGeometryPositions(
     ],
 
     // Bent (from trigonal planar with 1 lone pair): ~117° angle
-    'bent': [
+    bent: [
       [bondLength * 0.9, bondLength * 0.44, 0],
       [-bondLength * 0.9, bondLength * 0.44, 0],
     ],
 
     // Tetrahedral: 109.5° angles
-    'tetrahedral': [
-      [0, bondLength, 0],                                    // top
-      [bondLength * 0.943, -bondLength * 0.333, 0],         // front-right
-      [-bondLength * 0.471, -bondLength * 0.333, bondLength * 0.816],  // back-left
+    tetrahedral: [
+      [0, bondLength, 0], // top
+      [bondLength * 0.943, -bondLength * 0.333, 0], // front-right
+      [-bondLength * 0.471, -bondLength * 0.333, bondLength * 0.816], // back-left
       [-bondLength * 0.471, -bondLength * 0.333, -bondLength * 0.816], // back-right
     ],
 
@@ -69,18 +76,18 @@ function getGeometryPositions(
 
     // Trigonal bipyramidal: 90° and 120° angles
     'trigonal-bipyramidal': [
-      [0, bondLength, 0],                    // axial top
-      [0, -bondLength, 0],                   // axial bottom
-      [bondLength, 0, 0],                    // equatorial
+      [0, bondLength, 0], // axial top
+      [0, -bondLength, 0], // axial bottom
+      [bondLength, 0, 0], // equatorial
       [-bondLength * 0.5, 0, bondLength * 0.866],
       [-bondLength * 0.5, 0, -bondLength * 0.866],
     ],
 
     // See-saw (from trigonal bipyramidal with 1 equatorial lone pair)
     'see-saw': [
-      [0, bondLength, 0],                    // axial top
-      [0, -bondLength, 0],                   // axial bottom
-      [bondLength, 0, 0],                    // equatorial
+      [0, bondLength, 0], // axial top
+      [0, -bondLength, 0], // axial bottom
+      [bondLength, 0, 0], // equatorial
       [-bondLength, 0, 0],
     ],
 
@@ -101,7 +108,7 @@ function getGeometryPositions(
 
     // Square pyramidal
     'square-pyramidal': [
-      [0, bondLength, 0],                    // apex
+      [0, bondLength, 0], // apex
       [bondLength * 0.707, -bondLength * 0.3, bondLength * 0.707],
       [bondLength * 0.707, -bondLength * 0.3, -bondLength * 0.707],
       [-bondLength * 0.707, -bondLength * 0.3, bondLength * 0.707],
@@ -109,7 +116,7 @@ function getGeometryPositions(
     ],
 
     // Octahedral: 90° angles
-    'octahedral': [
+    octahedral: [
       [0, bondLength, 0],
       [0, -bondLength, 0],
       [bondLength, 0, 0],
@@ -197,7 +204,7 @@ function calculateAtomPositions3D(
       // Find what this atom is bonded to
       let parentPos: [number, number, number] = [0, 0, 0];
       for (const bond of bonds) {
-        const otherId = bond.from === atom.id ? bond.to : (bond.to === atom.id ? bond.from : null);
+        const otherId = bond.from === atom.id ? bond.to : bond.to === atom.id ? bond.from : null;
         if (otherId && positions.has(otherId)) {
           parentPos = positions.get(otherId)!;
           break;
@@ -205,11 +212,7 @@ function calculateAtomPositions3D(
       }
       // Place at an offset from parent
       const offset = bondLength * 0.8;
-      positions.set(atom.id, [
-        parentPos[0] + offset,
-        parentPos[1] + offset * 0.5,
-        parentPos[2],
-      ]);
+      positions.set(atom.id, [parentPos[0] + offset, parentPos[1] + offset * 0.5, parentPos[2]]);
     }
   }
 
@@ -288,19 +291,12 @@ function Bond3D({ start, end, radius, color }: Bond3DProps) {
     (start[2] + end[2]) / 2,
   ];
 
-  const direction = new THREE.Vector3(
-    end[0] - start[0],
-    end[1] - start[1],
-    end[2] - start[2]
-  );
+  const direction = new THREE.Vector3(end[0] - start[0], end[1] - start[1], end[2] - start[2]);
   const length = direction.length();
 
   // Calculate rotation to align cylinder with bond direction
   const quaternion = new THREE.Quaternion();
-  quaternion.setFromUnitVectors(
-    new THREE.Vector3(0, 1, 0),
-    direction.normalize()
-  );
+  quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize());
 
   return (
     <mesh position={midpoint} quaternion={quaternion}>
@@ -441,9 +437,80 @@ export function MoleculeViewer3D({
     }
   }, [cameraPreset]);
 
+  // Keyboard-rotation ref + handler. OrbitControls (from three-stdlib via drei) exposes
+  // rotateLeft/rotateUp/dollyIn/dollyOut/reset. Arrow keys rotate; +/- zoom; R resets.
+  const controlsRef = useRef<OrbitControlsHandle | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    const step = Math.PI / 36; // ~5 degrees per key press
+    /**
+     * three.js OrbitControls exposes `rotateLeft`/`rotateUp` internally (via three-stdlib)
+     * but its public .d.ts doesn't declare them. They ARE stable at runtime — the drei
+     * OrbitControls is a thin wrapper over the underlying impl. Cast once here to a typed
+     * façade so the switch body stays readable.
+     */
+    type KeyboardControls = {
+      rotateLeft: (angle: number) => void;
+      rotateUp: (angle: number) => void;
+      dollyIn: (scale: number) => void;
+      dollyOut: (scale: number) => void;
+      reset: () => void;
+      update: () => void;
+    };
+    const onKey = (e: KeyboardEvent) => {
+      const raw = controlsRef.current;
+      if (!raw) return;
+      const c = raw as unknown as KeyboardControls;
+      // Only consume keys when wrapper is focused (prevents hijacking global keys).
+      if (document.activeElement !== el) return;
+      let handled = true;
+      switch (e.key) {
+        case 'ArrowLeft':
+          c.rotateLeft(step);
+          break;
+        case 'ArrowRight':
+          c.rotateLeft(-step);
+          break;
+        case 'ArrowUp':
+          c.rotateUp(step);
+          break;
+        case 'ArrowDown':
+          c.rotateUp(-step);
+          break;
+        case '+':
+        case '=':
+          c.dollyIn(1.15);
+          break;
+        case '-':
+        case '_':
+          c.dollyOut(1.15);
+          break;
+        case 'r':
+        case 'R':
+          c.reset();
+          break;
+        default:
+          handled = false;
+      }
+      if (handled) {
+        e.preventDefault();
+        c.update();
+      }
+    };
+    el.addEventListener('keydown', onKey);
+    return () => el.removeEventListener('keydown', onKey);
+  }, []);
+
   return (
     <div
-      className={`molecule-viewer-3d ${className}`}
+      ref={wrapperRef}
+      tabIndex={0}
+      role="application"
+      aria-label="Þrívíð sameindasýn — nota örvatakka til að snúa, + / − til að súma, R til að núllstilla"
+      className={`molecule-viewer-3d focus-visible:outline-3 focus-visible:outline focus-visible:outline-blue-500 focus-visible:outline-offset-2 ${className}`}
       style={{
         width: typeof width === 'number' ? `${width}px` : width,
         height: typeof height === 'number' ? `${height}px` : height,
@@ -463,6 +530,7 @@ export function MoleculeViewer3D({
           />
         </Suspense>
         <OrbitControls
+          ref={controlsRef}
           autoRotate={autoRotate}
           autoRotateSpeed={autoRotateSpeed}
           enablePan={true}

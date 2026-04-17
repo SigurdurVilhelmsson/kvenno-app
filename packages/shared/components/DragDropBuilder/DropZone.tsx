@@ -16,6 +16,7 @@ export function DropZone({
   canDrop = true,
   onDrop,
   onReorder,
+  onTouchDrop,
   orientation = 'horizontal',
   className = '',
   renderItem,
@@ -155,9 +156,7 @@ export function DropZone({
       aria-label={zone.label || `Drop zone ${zone.id}`}
     >
       {/* Zone label */}
-      {zone.label && (
-        <div className="text-xs font-medium text-gray-500 mb-2">{zone.label}</div>
-      )}
+      {zone.label && <div className="text-xs font-medium text-gray-500 mb-2">{zone.label}</div>}
 
       {/* Items container */}
       <div
@@ -194,6 +193,7 @@ export function DropZone({
                 isDragging={localDraggingId === item.id}
                 onDragStart={handleItemDragStart}
                 onDragEnd={handleItemDragEnd}
+                onTouchDrop={onTouchDrop}
               />
             )}
           </div>
