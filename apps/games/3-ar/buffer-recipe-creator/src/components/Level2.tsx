@@ -7,10 +7,8 @@ import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
 
 interface Level2Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 type Step = 'direction' | 'ratio' | 'mass' | 'complete';
@@ -29,16 +27,11 @@ type Direction = 'higher' | 'equal' | 'lower' | null;
  * 2. Ratio: Calculate the required [Base]/[Acid] ratio
  * 3. Mass: Calculate grams of acid and base needed
  */
-export default function Level2({
-  onComplete,
-  onBack,
-  onCorrectAnswer,
-  onIncorrectAnswer,
-}: Level2Props) {
+export default function Level2({ onComplete, onBack }: Level2Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [step, setStep] = useState<Step>('direction');
   const [score, setScore] = useState(0);
-  const [hintsUsedTotal, setHintsUsedTotal] = useState(0);
+  const [, setHintsUsedTotal] = useState(0);
   const [hintMultiplier, setHintMultiplier] = useState(1.0);
   const [hintResetKey, setHintResetKey] = useState(0);
   const [completed, setCompleted] = useState(0);
@@ -65,15 +58,14 @@ export default function Level2({
 
   const puzzle = LEVEL2_PUZZLES[currentIndex];
   const problem = BUFFER_PROBLEMS.find((p) => p.id === puzzle.problemId);
-  const maxScore = LEVEL2_PUZZLES.length * 100;
 
   // Check completion - must be before conditional returns to satisfy rules-of-hooks
   useEffect(() => {
     if (completed >= LEVEL2_PUZZLES.length && !levelCompleteReported.current) {
       levelCompleteReported.current = true;
-      onComplete(score, maxScore, hintsUsedTotal);
+      onComplete(score);
     }
-  }, [completed, score, maxScore, hintsUsedTotal, onComplete]);
+  }, [completed, score, onComplete]);
 
   // Safety check - should never happen with valid data
   if (!problem) {
@@ -117,7 +109,6 @@ export default function Level2({
             ? `Ekki rétt. Markmiðs-pH (${problem.targetPH.toFixed(2)}) er ${correctDir === 'higher' ? 'stærra' : 'jafnt'} pKa (${problem.pKa.toFixed(2)}), þannig að svarið er ekki "lægra".`
             : `Ekki rétt. Markmiðs-pH (${problem.targetPH.toFixed(2)}) er ${correctDir === 'higher' ? 'stærra en' : correctDir === 'lower' ? 'minna en' : 'jafnt'} pKa (${problem.pKa.toFixed(2)}).`
       );
-      onIncorrectAnswer?.();
     }
   };
 
@@ -141,7 +132,6 @@ export default function Level2({
       setRatioFeedback(
         `Ekki rétt. Mundu: hlutfall = 10^(pH - pKa) = 10^(${problem.targetPH.toFixed(2)} - ${problem.pKa.toFixed(2)})`
       );
-      onIncorrectAnswer?.();
     }
   };
 
@@ -172,7 +162,6 @@ export default function Level2({
       setMassFeedback(`Frábært! +${points} stig`);
       setShowExplanation(true);
       setStep('complete');
-      onCorrectAnswer?.();
     } else {
       let feedback = 'Ekki rétt. ';
       if (!acidOk)
@@ -180,7 +169,6 @@ export default function Level2({
       if (!baseOk)
         feedback += `Basamassi er ${userBaseMass > correctBaseMass ? 'of hár' : 'of lágur'}.`;
       setMassFeedback(feedback);
-      onIncorrectAnswer?.();
     }
   };
 

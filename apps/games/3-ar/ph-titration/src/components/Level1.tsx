@@ -25,10 +25,8 @@ const TITRATION_MISCONCEPTIONS: Record<string, string> = {
 const TITRATION_RELATED: string[] = ['Títrun', 'Jafngildispunktur', 'Vísar', 'Stuðpúðasvæði'];
 
 interface Level1Props {
-  onComplete: (score: number, maxScore?: number, hintsUsed?: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 // Get sample titration data for curve visualization (only monoprotic)
@@ -39,20 +37,19 @@ const weakStrongTitration = titrations.find(
   (t): t is MonoproticTitration => t.type === 'weak-strong'
 );
 
-export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
+export function Level1({ onComplete, onBack }: Level1Props) {
   const [showIntro, setShowIntro] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
-  const [hintsUsed, setHintsUsed] = useState(0);
+  const [, setHintsUsed] = useState(0);
   const [hintMultiplier, setHintMultiplier] = useState(1.0);
   const [hintResetKey, setHintResetKey] = useState(0);
   const [completed, setCompleted] = useState(0);
   const levelCompleteReported = useRef(false);
 
   const challenge = LEVEL1_CHALLENGES[currentIndex];
-  const maxScore = LEVEL1_CHALLENGES.length * 100;
 
   // Shuffle options for current challenge - memoize to keep stable during challenge
   const shuffledOptions = useMemo(() => {
@@ -69,9 +66,9 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   useEffect(() => {
     if (completed >= LEVEL1_CHALLENGES.length && !levelCompleteReported.current) {
       levelCompleteReported.current = true;
-      onComplete(score, maxScore, hintsUsed);
+      onComplete(score);
     }
-  }, [completed, score, maxScore, hintsUsed, onComplete]);
+  }, [completed, score, onComplete]);
 
   const handleOptionSelect = (optionId: string) => {
     if (showResult) return;
@@ -89,9 +86,6 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     if (isCorrect) {
       const points = Math.round(100 * hintMultiplier);
       setScore((prev) => prev + points);
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
     }
   };
 

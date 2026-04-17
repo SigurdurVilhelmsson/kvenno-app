@@ -6,10 +6,8 @@ import { LEVEL3_PUZZLES } from '../data/level3-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
 
 interface Level3Props {
-  onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
 type Step = 'ratio' | 'moles' | 'volumes' | 'complete';
@@ -27,17 +25,12 @@ type Step = 'ratio' | 'moles' | 'volumes' | 'complete';
  * 2. Moles: Calculate moles of each component
  * 3. Volumes: Calculate volumes of stock solutions needed
  */
-export default function Level3({
-  onComplete,
-  onBack,
-  onCorrectAnswer,
-  onIncorrectAnswer,
-}: Level3Props) {
+export default function Level3({ onComplete, onBack }: Level3Props) {
   const [showIntro, setShowIntro] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [step, setStep] = useState<Step>('ratio');
   const [score, setScore] = useState(0);
-  const [hintsUsedTotal, setHintsUsedTotal] = useState(0);
+  const [, setHintsUsedTotal] = useState(0);
   const [hintMultiplier, setHintMultiplier] = useState(1.0);
   const [hintResetKey, setHintResetKey] = useState(0);
   const [completed, setCompleted] = useState(0);
@@ -65,15 +58,14 @@ export default function Level3({
 
   const puzzle = LEVEL3_PUZZLES[currentIndex];
   const problem = BUFFER_PROBLEMS.find((p) => p.id === puzzle.problemId);
-  const maxScore = LEVEL3_PUZZLES.length * 100;
 
   // Check completion - must be before conditional returns to satisfy rules-of-hooks
   useEffect(() => {
     if (completed >= LEVEL3_PUZZLES.length && !levelCompleteReported.current) {
       levelCompleteReported.current = true;
-      onComplete(score, maxScore, hintsUsedTotal);
+      onComplete(score);
     }
-  }, [completed, score, maxScore, hintsUsedTotal, onComplete]);
+  }, [completed, score, onComplete]);
 
   // Safety check
   if (!problem) {
@@ -119,7 +111,6 @@ export default function Level3({
       setRatioFeedback(
         `Ekki rétt. Hlutfall = 10^(pH - pKa) = 10^(${problem.targetPH.toFixed(2)} - ${problem.pKa.toFixed(2)}) = 10^${(problem.targetPH - problem.pKa).toFixed(2)}`
       );
-      onIncorrectAnswer?.();
     }
   };
 
@@ -146,7 +137,6 @@ export default function Level3({
       feedback += `Heildar mól = ${puzzle.targetConcentration} M × ${puzzle.targetVolume / 1000} L = ${targetMoles.toFixed(4)} mol. `;
       feedback += `Skiptu samkvæmt hlutfalli ${correctRatio.toFixed(2)}.`;
       setMolesFeedback(feedback);
-      onIncorrectAnswer?.();
     }
   };
 
@@ -178,7 +168,6 @@ export default function Level3({
       setVolumeFeedback(`Frábært! +${points} stig`);
       setShowExplanation(true);
       setStep('complete');
-      onCorrectAnswer?.();
     } else {
       let feedback = 'Ekki rétt. ';
       feedback += `Muna: V = n / C (rúmmál = mól / styrkur birgðalausnar).`;
@@ -189,7 +178,6 @@ export default function Level3({
         feedback += ` Basarúmmál er ${userBaseVolume > puzzle.correctBaseVolume ? 'of hátt' : 'of lágt'}.`;
       }
       setVolumeFeedback(feedback);
-      onIncorrectAnswer?.();
     }
   };
 

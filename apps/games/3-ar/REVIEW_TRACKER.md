@@ -297,3 +297,73 @@
 - [x] pH Titration Flask displays visible Súr/Hlutlaus/Basísk eðli pill alongside pH
 - [x] Gas Law Challenge timer speaks remaining seconds to screen readers at ≤10s assertive threshold; visible ⚠️ appears at <30s
 - [x] Equilibrium Shifter stress and prediction buttons now meet 44px WCAG 2.5.5 touch target minimum
+
+---
+
+## Iteration 4: Polish & Cross-Cutting Cleanup — 2026-04-17
+
+### Scope
+
+Drain iter 1-3 deferred queue, focusing on cross-cutting legacy patterns (pH Titration + Buffer Level files) that Y1/Y2 iter 4 already cleaned up. No fresh reviews this iteration — the work is known from prior iterations.
+
+### Changes Applied
+
+#### Cross-cutting (6 Level files)
+
+| #   | Game / File                                    | Finding                                                         | Done                                                                                                                                   |
+| --- | ---------------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | pH Titration Level1/L2/L3                      | Unused `onCorrectAnswer?` / `onIncorrectAnswer?` props          | Yes — removed from Props interfaces, destructuring, and call sites. Matches Y2 iter 4 pattern.                                         |
+| 2   | Buffer Level1/L2/L3                            | Unused `onCorrectAnswer?` / `onIncorrectAnswer?` props          | Yes — removed from all three. Level1 previously used `onLevelComplete` instead of `onComplete`; kept name but trimmed to `(score) =>`. |
+| 3   | pH Titration Level1/L2/L3                      | 3-arg `onComplete(score, maxScore?, hintsUsed?)` signature      | Yes — collapsed to `(score: number) => void` everywhere. Matches Y2 iter 4.                                                            |
+| 4   | Buffer Level2/L3                               | 3-arg `onComplete(score, maxScore, hintsUsed)` signature        | Yes — collapsed to `(score: number) => void`.                                                                                          |
+| 5   | pH Titration Level1/L2/L3, Buffer Level1/L2/L3 | Dead `hintsUsed` / `hintsUsedTotal` getters + `maxScore` locals | Yes — getters renamed to `[, setX]` where setter still writes; unused `maxScore` locals deleted. 6 files cleaned.                      |
+
+#### Per-game polish
+
+| #   | Game                     | Finding                                                     | Done                                                                                                                              |
+| --- | ------------------------ | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| 6   | Thermodynamics Predictor | `ΔG° = −RT ln K` formula in reference card but never graded | Yes — removed from formula-reference card; added `ΔG° < 0 → sjálfviljugt` spontaneity rule as a more useful quick-reference item. |
+
+### Discarded (verified false findings from prior iterations)
+
+| Finding                                                          | Reason discarded                                                                                  |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| pH Titration "L1 hint multiplier not reset per challenge"        | Verified: `setHintMultiplier(1.0)` is called in `handleNext` at Level1.tsx:99. Works as intended. |
+| pH Titration "L3 polyprotic type defined but never instantiated" | Verified: 2 polyprotic instances exist at level3-challenges.ts:144 and :177.                      |
+
+### Deferred to a future iteration
+
+These remain outside iter 4 scope — each needs dedicated design work:
+
+| Finding                                                      | Reason                                                           |
+| ------------------------------------------------------------ | ---------------------------------------------------------------- |
+| Gas Law Challenge: P3 scope restructure (6 laws in one game) | Design decision (split games or law-per-level)                   |
+| Gas Law Challenge: 980-line App.tsx extraction               | Large refactor — extract to Level/Mode components                |
+| Gas Law Challenge: pre-game interactive discovery            | Requires new manipulable PV=nRT component                        |
+| Thermodynamics Predictor: pre-L1 guided discovery            | Requires new "manipulate T, observe ΔG" warm-up screen           |
+| pH Titration: IndicatorSelector swatches title-only          | Needs visible label layout rework                                |
+| pH Titration: TitrationCurve not responsive at 375px         | Shared component width is fixed 600px                            |
+| Gas Law: particle simulator mobile overflow at high volumes  | Watch on real mobile hardware                                    |
+| Equilibrium Shifter: Q vs K bar white-on-saturated contrast  | Needs contrast testing + palette redesign                        |
+| Equilibrium Shifter: challenge-mode 3s auto-advance too fast | Design decision balancing timer pressure and reading time        |
+| Buffer: BufferCapacityVisualization absent in L2-L3          | Integration design work                                          |
+| All Y3: `useGameI18n` imported but `t()` largely unused      | Repo-wide pattern — needs project-level decision on bilingual UI |
+
+### Verification (2026-04-17)
+
+- [x] `pnpm type-check` passes across entire monorepo (0 errors)
+- [x] `pnpm build:games` — 20 succeeded, 0 failed
+- [x] Y3 bundle envelope unchanged: thermo 317KB, gas-law 333KB, equilibrium 353KB, ph-titration 372KB, buffer 399KB
+- [x] All 6 Y3 Level files simplified to `onComplete: (score: number) => void`
+- [x] All 6 Y3 Level files free of unused `onCorrectAnswer?` / `onIncorrectAnswer?` props
+- [x] Thermodynamics formula reference no longer advertises ΔG° = −RT ln K (never graded); added spontaneity rule instead
+
+### Done Criteria Check (per plan)
+
+Per `~/.claude/plans/logical-wandering-llama.md`:
+
+1. Most recent review has zero FAIL ratings across all games — **partial**: Gas Law Challenge retains P3 FAIL (6 laws in one game); all other Y3 games zero FAIL.
+2. No REBUILD dispositions needed — **yes**: iter 4 had no REBUILDs; all FIX.
+3. All verification checklists pass — **yes**.
+
+Gas Law Challenge P3 failure requires a dedicated design decision (split games or law-per-level restructure). Tracked as a cross-iter concern; not blocking per the plan's escalation note. The remaining four Y3 games satisfy the stop criteria.

@@ -969,7 +969,6 @@ function App() {
                 <h3 className="font-bold mb-3">📐 Formúlur</h3>
                 <div className="space-y-2 text-sm font-mono">
                   <div className="bg-white p-2 rounded">ΔG° = ΔH° - TΔS°</div>
-                  <div className="bg-white p-2 rounded">ΔG° = -RT ln K</div>
                   <div className="bg-white p-2 rounded">
                     T<sub>cross</sub> = ΔH° / ΔS°
                   </div>
@@ -977,6 +976,8 @@ function App() {
                 <div className="mt-3 text-xs text-warm-600">
                   R = 8.314 J/(mol·K)
                   <br />T í Kelvin (K = °C + 273)
+                  <br />
+                  ΔG° &lt; 0 → sjálfviljugt
                 </div>
               </div>
             </div>

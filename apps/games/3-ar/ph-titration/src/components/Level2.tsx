@@ -13,16 +13,14 @@ import type { MonoproticTitration, IndicatorType } from '../types';
 import { calculatePH, generateTitrationCurve } from '../utils/ph-calculations';
 
 interface Level2Props {
-  onComplete: (score: number, maxScore?: number, hintsUsed?: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
 }
 
-export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level2Props) {
+export function Level2({ onComplete, onBack }: Level2Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const [hintsUsed, setHintsUsed] = useState(0);
+  const [, setHintsUsed] = useState(0);
   const [completed, setCompleted] = useState(0);
   const levelCompleteReported = useRef(false);
 
@@ -45,7 +43,6 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const puzzle = LEVEL2_PUZZLES[currentIndex];
   const titration = getTitrationById(puzzle.titrationId) as MonoproticTitration | null;
-  const maxScore = LEVEL2_PUZZLES.length * 100;
 
   // Calculate current pH
   const currentPH = titration ? calculatePH(titration, volumeAdded) : 7;
@@ -75,9 +72,9 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
   useEffect(() => {
     if (completed >= LEVEL2_PUZZLES.length && !levelCompleteReported.current) {
       levelCompleteReported.current = true;
-      onComplete(score, maxScore, hintsUsed);
+      onComplete(score);
     }
-  }, [completed, score, maxScore, hintsUsed, onComplete]);
+  }, [completed, score, onComplete]);
 
   // Pouring interval
   useEffect(() => {
@@ -161,9 +158,6 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
     if (volumeCorrect && indicatorOk) {
       const points = 100;
       setScore((prev) => prev + points);
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
     }
   };
 

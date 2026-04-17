@@ -5,17 +5,15 @@ import { Presence } from '@shared/components';
 import { LEVEL3_CHALLENGES } from '../data/level3-challenges';
 
 interface Level3Props {
-  onComplete: (score: number, maxScore?: number, hintsUsed?: number) => void;
+  onComplete: (score: number) => void;
   onBack: () => void;
-  onCorrectAnswer?: () => void;
-  onIncorrectAnswer?: () => void;
   t?: (key: string, fallback?: string) => string;
 }
 
-export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer, t }: Level3Props) {
+export function Level3({ onComplete, onBack, t }: Level3Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const [hintsUsed, setHintsUsed] = useState(0);
+  const [, setHintsUsed] = useState(0);
   const [completed, setCompleted] = useState(0);
   const levelCompleteReported = useRef(false);
 
@@ -27,7 +25,6 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
   const [isCorrect, setIsCorrect] = useState(false);
 
   const challenge = LEVEL3_CHALLENGES[currentIndex];
-  const maxScore = LEVEL3_CHALLENGES.length * 20;
 
   // Reset state when changing challenges
   useEffect(() => {
@@ -42,9 +39,9 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
   useEffect(() => {
     if (completed >= LEVEL3_CHALLENGES.length && !levelCompleteReported.current) {
       levelCompleteReported.current = true;
-      onComplete(score, maxScore, hintsUsed);
+      onComplete(score);
     }
-  }, [completed, score, maxScore, hintsUsed, onComplete]);
+  }, [completed, score, onComplete]);
 
   const handleSubmit = () => {
     if (!userAnswer.trim()) return;
@@ -62,9 +59,6 @@ export function Level3({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer,
     if (correct) {
       const points = 20;
       setScore((prev) => prev + points);
-      onCorrectAnswer?.();
-    } else {
-      onIncorrectAnswer?.();
     }
   };
 
