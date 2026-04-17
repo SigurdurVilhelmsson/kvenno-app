@@ -184,7 +184,19 @@ Full plan: `~/.claude/plans/mighty-mixing-puffin.md`
 - `@shared/components/MoleculeViewer3D` is keyboard-accessible: arrow keys rotate (±5°), `+`/`−` zoom, `R` resets. The outer `<div>` is focusable with `role="application"` and an Icelandic aria-label. Used by VSEPR, IMF, Lewis.
 - `@shared/components/DragDropBuilder` supports touch drag-and-drop: `onTouchMove` previews the zone under the finger via `document.elementFromPoint`, `onTouchEnd` commits through the same pipeline as mouse drops. Used by Organic Nomenclature.
 
-Remaining deferred work (each is now an optimization, not a pedagogy/WCAG block): Gas Law 980-line App.tsx extraction, Three.js lazy-split (IMF/Lewis/VSEPR at ~3MB ceiling), Organic L2 branched-molecule data, pH Titration TitrationCurve responsive width, project-level decision on `useGameI18n` `t()` usage (CLAUDE.md says Icelandic-only UI).
+**Deferred-work pass (Apr 2026, commit `6e26c0c`):** shipped 4 of 8 items.
+
+- ✅ Gas Law `App.tsx` extraction — 1022 → 279 lines; new `MenuScreen`/`GameScreen`/`FeedbackScreen` under `apps/games/3-ar/gas-law-challenge/src/components/`
+- ✅ pH Titration `TitrationCurve` responsive — ResizeObserver in `TitrationCurve.tsx`, shrinks to container width
+- ✅ Organic L2 branched molecules — 3 new entries (2-metýlprópan, 2-metýlbútan, 3-metýlpentan) with explicit positions via extended `organicConverter.ts`; drag-drop auto-disables when branched
+- ✅ Buffer L2/L3 `BufferCapacityVisualization` — wired into completion explanation screens in both levels
+
+Remaining deferred (all need a decision, not code):
+
+- **Three.js lazy-split** — `MoleculeViewer3DLazy` is already imported; the 3MB comes from `vite-plugin-singlefile` re-inlining dynamic imports. Real fix requires switching IMF/Lewis/VSEPR off singlefile (chunk files + nginx + build-script updates).
+- **`useGameI18n` `t()` across Y3** — Y3 games import `useGameI18n` + render `LanguageSwitcher` but UI stays hardcoded Icelandic. Conflicts with this file's "Icelandic UI only." Decide: strip it, finish wiring, or keep as-is.
+- **Hess Polish i18n block** — teacher sign-off.
+- **Kinetics/Redox problem order shuffle** — deliberately skipped (exam-style stability).
 
 Full plan: `~/.claude/plans/logical-wandering-llama.md`
 
