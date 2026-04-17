@@ -368,9 +368,12 @@ export function Level2({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
                 <div className="font-bold text-orange-800 mb-2">
                   📍 Merktu jafngildispunktinn á ferilnum
                 </div>
-                <p className="text-sm text-orange-700 mb-4">
+                <p className="text-sm text-orange-700 mb-1">
                   Dragðu sleðann þangað sem pH-ferillinn breytist mest (brattasti hluti ferilsins).
                   Þetta er jafngildispunkturinn — þar sem mólfjöldi sýru = mólfjöldi basa.
+                </p>
+                <p className="text-xs text-orange-600 mb-4">
+                  Leyfilegt svigrúm: ±{puzzle.volumeTolerance.toFixed(1)} mL.
                 </p>
                 <div className="space-y-3">
                   <input

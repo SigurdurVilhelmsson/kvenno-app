@@ -163,7 +163,7 @@ Gold standard games: Jafna Jöfnur (real-time atom counter), IMF Level 3 (real-w
 
 ### Restructure status (April 2026)
 
-**All phases completed:**
+**mighty-mixing-puffin plan — all phases completed:**
 
 - Phase 1: Teaching intros added to all games that tested before teaching (Y1-Y3)
 - Phase 2: All hint penalties removed (code + UI text), DA L2 prediction disabled, DA L3 scoring simplified
@@ -172,6 +172,16 @@ Gold standard games: Jafna Jöfnur (real-time atom counter), IMF Level 3 (real-w
 - Phase 5b: Lewis Structures L2 interactive SVG drawing canvas, VSEPR L2 constrained prediction + L3 hybridization diagram, pH Titration L2 equivalence point marking, Lausnir L1 static beaker
 
 Full plan: `~/.claude/plans/mighty-mixing-puffin.md`
+
+**logical-wandering-llama iterative review cycle:**
+
+- **Y1 (7 games):** Iterations 1-4 complete (Apr 2026). Tracker: `apps/games/1-ar/REVIEW_TRACKER.md`.
+- **Y2 (8 games):** Iterations 1-5 complete (Apr 2026). Zero FAIL ratings at iter 5. Tracker: `apps/games/2-ar/REVIEW_TRACKER.md`.
+- **Y3 (5 games):** Not yet started — next candidate for the same cycle.
+
+Remaining cross-year deferred work (each needs dedicated design, not another review pass): Three.js keyboard-rotation wrapper for VSEPR/IMF 3D viewers, `@shared/components/DragDropBuilder` touch support, Three.js lazy-split (IMF/Lewis/VSEPR at ~3MB ceiling), Organic L2 branched-molecule data, bond pattern alternatives (stripe/dash) in Lewis/Organic.
+
+Full plan: `~/.claude/plans/logical-wandering-llama.md`
 
 ### Game inventory
 

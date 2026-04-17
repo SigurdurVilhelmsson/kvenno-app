@@ -40,6 +40,7 @@ const weakStrongTitration = titrations.find(
 );
 
 export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
+  const [showIntro, setShowIntro] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -112,6 +113,55 @@ export function Level1({ onComplete, onBack, onCorrectAnswer, onIncorrectAnswer 
 
   const selectedOpt = shuffledOptions.find((o) => o.id === selectedOption);
   const isCorrect = selectedOpt?.isCorrect ?? false;
+
+  if (showIntro) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8">
+        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 space-y-4">
+          <button onClick={onBack} className="text-warm-600 hover:text-warm-800 text-sm">
+            ← Til baka
+          </button>
+          <h2 className="text-2xl font-bold text-purple-700">Títrun — um hvað snýst þetta?</h2>
+          <p className="text-warm-700">
+            Í títrun bætum við hægt og rólega basa (eða sýru) úr búrettu við óþekkt magn af sýru
+            (eða basa) í kolbu. Við fylgjumst með pH-gildi á meðan — og teiknum{' '}
+            <strong>títrunarferil</strong>
+            (pH sem fall af rúmmáli sem bætt er við).
+          </p>
+          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <div className="font-bold text-blue-800 mb-1">Mikilvægustu atriði á ferlinum:</div>
+            <ul className="text-sm text-blue-900 space-y-1 list-disc list-inside">
+              <li>
+                <strong>Jafngildispunktur</strong> = þar sem mólfjöldi sýru = mólfjöldi basa.
+                Ferillinn er brattastur þar — pH breytist mest á litlu rúmmálsviðbót.
+              </li>
+              <li>
+                <strong>Endapunktur</strong> = þar sem vísirinn skiptir um lit. Þetta er nálgun á
+                jafngildispunkt — ekki alveg það sama!
+              </li>
+            </ul>
+          </div>
+          <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+            <div className="font-bold text-purple-800 mb-1">Hvað ræður lögun ferilsins?</div>
+            <p className="text-sm text-purple-900">
+              <strong>Sterk sýra + sterkur basi</strong> → jafngildispunktur við pH 7 (hlutlaust).
+              <br />
+              <strong>Veik sýra + sterkur basi</strong> → jafngildispunktur við pH &gt; 7 (samokki
+              basinn er eftir).
+              <br />
+              <strong>Sterk sýra + veikur basi</strong> → jafngildispunktur við pH &lt; 7.
+            </p>
+          </div>
+          <button
+            onClick={() => setShowIntro(false)}
+            className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 rounded-xl"
+          >
+            Byrja æfingu →
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8">

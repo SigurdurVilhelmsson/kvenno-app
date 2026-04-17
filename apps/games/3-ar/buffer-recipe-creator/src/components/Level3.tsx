@@ -33,6 +33,7 @@ export default function Level3({
   onCorrectAnswer,
   onIncorrectAnswer,
 }: Level3Props) {
+  const [showIntro, setShowIntro] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [step, setStep] = useState<Step>('ratio');
   const [score, setScore] = useState(0);
@@ -220,6 +221,52 @@ export default function Level3({
     setHintMultiplier(1.0);
     setHintResetKey((prev) => prev + 1);
   };
+
+  if (showIntro) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-teal-100 p-4 md:p-8">
+        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 space-y-4">
+          <button onClick={onBack} className="text-warm-600 hover:text-warm-800 text-sm">
+            ← Til baka
+          </button>
+          <h2 className="text-2xl font-bold text-green-700">Stig 3 — frá massa til rúmmála</h2>
+          <p className="text-warm-700">
+            Í stigi 2 reiknuðum við út <strong>massa</strong> hreinna efna (n × M). Í þessu stigi
+            notum við <strong>birgðalausnir</strong> sem þegar eru leystar upp í vatni — við mælum
+            því út rúmmál í stað þess að vigta.
+          </p>
+          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <div className="font-bold text-blue-800 mb-1">Þynningarformúlan: C₁V₁ = C₂V₂</div>
+            <p className="text-sm text-blue-900">
+              Þegar við þynnum birgðalausn (C₁) í lokalausn með styrk C₂ og rúmmál V₂, helst
+              mólfjöldinn óbreyttur: n = C₁V₁ = C₂V₂. Við vitum mólfjöldann sem við þurfum (úr
+              hlutfalli og heildarstyrk) og birgðastyrkinn — þannig leysum við fyrir V₁.
+            </p>
+          </div>
+          <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+            <div className="font-bold text-green-800 mb-1">Skrefin þrjú:</div>
+            <ol className="text-sm text-green-900 space-y-1 list-decimal list-inside">
+              <li>
+                <strong>Hlutfall</strong> [basi]/[sýra] úr Henderson-Hasselbalch
+              </li>
+              <li>
+                <strong>Mólfjöldi</strong> hvers efnis úr markmiðsstyrk × lokarúmmáli
+              </li>
+              <li>
+                <strong>Rúmmál</strong> birgðalausnar: V = n / C₁
+              </li>
+            </ol>
+          </div>
+          <button
+            onClick={() => setShowIntro(false)}
+            className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl"
+          >
+            Byrja →
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-teal-100 p-4 md:p-8">

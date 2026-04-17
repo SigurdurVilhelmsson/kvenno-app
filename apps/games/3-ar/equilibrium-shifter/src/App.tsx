@@ -416,22 +416,37 @@ function App() {
             </ul>
           </button>
 
-          <button
-            onClick={() => startGame('challenge')}
-            className="game-card mode-card bg-white border-2 border-orange-200 hover:border-orange-400 rounded-lg p-6 text-left transition-all"
-          >
-            <div className="text-3xl mb-3">🏆</div>
-            <h3 className="text-xl font-bold text-warm-800 mb-2">Keppnishamur</h3>
-            <p className="text-warm-600 text-sm mb-3">
-              Prófaðu kunnáttu þína með tímasettum spurningum
-            </p>
-            <ul className="text-sm text-warm-500 space-y-1">
-              <li>✓ 20 sekúndur á spurningu</li>
-              <li>✓ 10 spurningar</li>
-              <li>✓ Stigagjöf og raðir</li>
-              <li>✓ Hraðbónus</li>
-            </ul>
-          </button>
+          {(() => {
+            const CHALLENGE_UNLOCK_THRESHOLD = 5;
+            const challengeUnlocked = progress.problemsCompleted >= CHALLENGE_UNLOCK_THRESHOLD;
+            const remaining = CHALLENGE_UNLOCK_THRESHOLD - progress.problemsCompleted;
+            return (
+              <button
+                onClick={() => challengeUnlocked && startGame('challenge')}
+                disabled={!challengeUnlocked}
+                aria-disabled={!challengeUnlocked}
+                className={`game-card mode-card bg-white border-2 rounded-lg p-6 text-left transition-all ${
+                  challengeUnlocked
+                    ? 'border-orange-200 hover:border-orange-400 cursor-pointer'
+                    : 'border-warm-200 opacity-60 cursor-not-allowed'
+                }`}
+              >
+                <div className="text-3xl mb-3">{challengeUnlocked ? '🏆' : '🔒'}</div>
+                <h3 className="text-xl font-bold text-warm-800 mb-2">Keppnishamur</h3>
+                <p className="text-warm-600 text-sm mb-3">
+                  {challengeUnlocked
+                    ? 'Prófaðu kunnáttu þína með tímasettum spurningum'
+                    : `Opnast þegar þú hefur klárað ${CHALLENGE_UNLOCK_THRESHOLD} verkefni í lærdómshamri (${remaining} eftir).`}
+                </p>
+                <ul className="text-sm text-warm-500 space-y-1">
+                  <li>✓ 20 sekúndur á spurningu</li>
+                  <li>✓ 10 spurningar</li>
+                  <li>✓ Stigagjöf og raðir</li>
+                  <li>✓ Hraðbónus</li>
+                </ul>
+              </button>
+            );
+          })()}
         </div>
 
         {/* Progress Summary */}

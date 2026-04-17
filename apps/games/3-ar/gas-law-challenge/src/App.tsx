@@ -896,6 +896,16 @@ function App() {
                 </div>
               </div>
 
+              {/* Why this law works — principle card (iter 1 P2 fix) */}
+              <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 mb-6">
+                <h3 className="font-bold text-purple-900 mb-2">
+                  Af hverju virkar {GAS_LAW_INFO[currentQuestion.gasLaw].nameIs}?
+                </h3>
+                <p className="text-sm text-purple-800">
+                  {GAS_LAW_INFO[currentQuestion.gasLaw].principleIs}
+                </p>
+              </div>
+
               {/* Stats Update */}
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6">
                 <h3 className="font-bold text-blue-900 mb-2">Árangur:</h3>

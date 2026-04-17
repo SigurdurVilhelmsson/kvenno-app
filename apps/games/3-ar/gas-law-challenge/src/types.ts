@@ -25,6 +25,8 @@ export interface GasLawInfo {
   formula: string;
   description: string;
   constants: string;
+  /** Molecular-level reason why the law works (Icelandic). Shown in feedback to connect formula to principle. */
+  principleIs: string;
 }
 
 export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
@@ -34,7 +36,9 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
     nameEn: 'Ideal Gas Law',
     formula: 'PV = nRT',
     description: 'Tengir þrýsting, rúmmál, mól og hitastig',
-    constants: 'R = 0.08206 L·atm/(mol·K)'
+    constants: 'R = 0.08206 L·atm/(mol·K)',
+    principleIs:
+      'Gasagnir hreyfast stöðugt og rekast á veggi ílátsins. PV = nRT tengir saman fjölda árekstra (P), plássið sem agnirnar hafa (V), fjölda agna (n) og hraðann þeirra (T). R er fastinn sem gerir einingarnar samstæðar.',
   },
   boyles: {
     id: 'boyles',
@@ -42,7 +46,9 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
     nameEn: "Boyle's Law",
     formula: 'P₁V₁ = P₂V₂',
     description: 'Þrýstingur og rúmmál eru í andhverfu hlutfalli',
-    constants: 'T og n eru fastar'
+    constants: 'T og n eru fastar',
+    principleIs:
+      'Ef þú minnkar rúmmálið (V↓) án þess að breyta hitastigi eða fjölda agna, þá þurfa sömu agnir að rekast við minni veggi á styttri tíma → fleiri árekstur á fermetra → hærri þrýstingur. P og V eru því andhverf: þegar annað tvöfaldast, helmingast hitt.',
   },
   charles: {
     id: 'charles',
@@ -50,7 +56,9 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
     nameEn: "Charles's Law",
     formula: 'V₁/T₁ = V₂/T₂',
     description: 'Rúmmál og hitastig eru í beinu hlutfalli',
-    constants: 'P og n eru fastar'
+    constants: 'P og n eru fastar',
+    principleIs:
+      'Hærra hitastig þýðir að agnirnar hreyfast hraðar. Til að halda sama þrýstingi (sami fjöldi árekstra á fermetra) þarf rúmmálið að aukast. V og T eru því í beinu hlutfalli í Kelvin.',
   },
   'gay-lussac': {
     id: 'gay-lussac',
@@ -58,7 +66,9 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
     nameEn: "Gay-Lussac's Law",
     formula: 'P₁/T₁ = P₂/T₂',
     description: 'Þrýstingur og hitastig eru í beinu hlutfalli',
-    constants: 'V og n eru fastar'
+    constants: 'V og n eru fastar',
+    principleIs:
+      'Í lokuðu íláti (V fast) gera hraðari agnir harðari árekstur við veggina. Hærra T → harðari árekstur → hærri P. Þess vegna sprenga loftkútar þegar þeir ofhitna.',
   },
   combined: {
     id: 'combined',
@@ -66,7 +76,9 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
     nameEn: 'Combined Gas Law',
     formula: 'P₁V₁/T₁ = P₂V₂/T₂',
     description: 'Sameinar Boyles, Charles og Gay-Lussac',
-    constants: 'n er fast'
+    constants: 'n er fast',
+    principleIs:
+      'Þegar fjöldi agna er fastur (n₁ = n₂) þá má sameina Boyles, Charles og Gay-Lussac í eina formúlu. Stuðullinn PV/T er fastur fyrir sama gas svo lengi sem ekkert tapast eða bætist við.',
   },
   avogadro: {
     id: 'avogadro',
@@ -74,8 +86,10 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
     nameEn: "Avogadro's Law",
     formula: 'V₁/n₁ = V₂/n₂',
     description: 'Rúmmál og mólfjöldi eru í beinu hlutfalli',
-    constants: 'P og T eru fastar'
-  }
+    constants: 'P og T eru fastar',
+    principleIs:
+      'Við sama þrýsting og hitastig þurfa fleiri agnir (n↑) meira pláss til að halda sama árekstri á fermetra. Þess vegna hefur 1 mól af hvaða gasi sem er sama rúmmál við staðalskilyrði (22,4 L við STP).',
+  },
 };
 
 export type GameMode = 'practice' | 'challenge';

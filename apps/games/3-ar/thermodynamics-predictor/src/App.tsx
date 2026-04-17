@@ -114,6 +114,28 @@ function App() {
     return descriptions[scenario] || '';
   };
 
+  /**
+   * Build a conceptual "why" sentence for the current scenario + temperature.
+   * Helps students connect the correct answer back to the ΔH/ΔS sign pattern rather than just memorizing the formula.
+   */
+  const buildSpontaneityReasoning = (): string => {
+    if (!currentProblem) return '';
+    const { deltaS, scenario } = currentProblem;
+    const TdeltaS = (temperature * deltaS) / 1000;
+    switch (scenario) {
+      case 1:
+        return `ΔH er neikvætt (efnahvarfið losar varma) og ΔS er jákvætt (entrópía eykst). Báðir þættir styðja sjálfvilja — þess vegna er þetta hvarf alltaf sjálfviljugt óháð hitastigi.`;
+      case 2:
+        return `ΔH er jákvætt (efnahvarfið þarf varma) og ΔS er neikvætt (entrópía minnkar). Báðir þættir andmæla sjálfvilja — þess vegna er þetta hvarf aldrei sjálfviljugt óháð hitastigi.`;
+      case 3:
+        return `ΔH er neikvætt (styður sjálfvilja) en ΔS er neikvætt (andmælir). Við ${temperature} K vegur TΔS = ${TdeltaS.toFixed(1)} kJ/mol. Ef |ΔH| > |TΔS|, þá vinnur varminn og hvarfið er sjálfviljugt. Þess vegna eru svona hvörf sjálfviljug við lágt hitastig en ekki við hátt.`;
+      case 4:
+        return `ΔH er jákvætt (andmælir sjálfvilja) en ΔS er jákvætt (styður). Við ${temperature} K vegur TΔS = ${TdeltaS.toFixed(1)} kJ/mol. Ef TΔS > ΔH, þá vinnur entrópía og hvarfið er sjálfviljugt. Þess vegna eru svona hvörf ekki sjálfviljug við lágt hitastig en verða sjálfviljug við nógu hátt.`;
+      default:
+        return '';
+    }
+  };
+
   // Check answer
   const checkAnswer = () => {
     const calculatedDeltaG = calcDeltaGForProblem(temperature);
@@ -137,8 +159,9 @@ function App() {
       setFeedback(`Rétt! +${points} stig`);
     } else {
       setStreak(0);
+      const reasoning = buildSpontaneityReasoning();
       if (!deltaGCorrect && !spontaneityCorrect) {
-        setFeedback('Rangt. Bæði ΔG útreikningur og sjálfviljugheit eru röng.');
+        setFeedback(`Rangt. Bæði ΔG útreikningur og sjálfviljugheit eru röng. ${reasoning}`);
       } else if (!deltaGCorrect) {
         setFeedback(
           `Sjálfviljugheit er rétt en ΔG er rangt. Rétt svar: ${calculatedDeltaG.toFixed(1)} kJ/mol`
@@ -150,7 +173,9 @@ function App() {
             : correctSpontaneity === 'equilibrium'
               ? 'Jafnvægi'
               : 'Ekki sjálfviljugt';
-        setFeedback(`ΔG er rétt en sjálfviljugheit er röng. Rétt svar: ${spontaneityText}`);
+        setFeedback(
+          `ΔG er rétt en sjálfviljugheit er röng. Rétt svar: ${spontaneityText}. ${reasoning}`
+        );
       }
     }
     setShowSolution(true);
