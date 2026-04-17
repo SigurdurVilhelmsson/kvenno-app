@@ -175,23 +175,11 @@ function App() {
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div className="bg-blue-100 p-3 rounded-lg text-center">
                 <div className="font-bold text-blue-800">{t('concepts.oxidation')}</div>
-                <div className="text-blue-600">
-                  {t('concepts.oxidation') === 'Oxun'
-                    ? 'Tapa e⁻ → ox# ↑'
-                    : t('concepts.oxidation') === 'Utlenianie'
-                      ? 'Utrata e⁻ → ox# ↑'
-                      : 'Lose e⁻ → ox# ↑'}
-                </div>
+                <div className="text-blue-600">{t('concepts.oxidationSubline')}</div>
               </div>
               <div className="bg-red-100 p-3 rounded-lg text-center">
                 <div className="font-bold text-red-800">{t('concepts.reduction')}</div>
-                <div className="text-red-600">
-                  {t('concepts.reduction') === 'Afoxun'
-                    ? 'Öðlast e⁻ → ox# ↓'
-                    : t('concepts.reduction') === 'Redukcja'
-                      ? 'Zyskanie e⁻ → ox# ↓'
-                      : 'Gain e⁻ → ox# ↓'}
-                </div>
+                <div className="text-red-600">{t('concepts.reductionSubline')}</div>
               </div>
             </div>
           </div>

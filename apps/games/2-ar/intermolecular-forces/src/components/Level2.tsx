@@ -503,30 +503,40 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   : null;
                 const correctId = problem.correctOrder[idx];
 
+                const slotClasses = `min-w-24 p-3 rounded-xl border-2 text-center ${
+                  showResult
+                    ? placedId === correctId
+                      ? 'border-green-500 bg-green-50'
+                      : 'border-red-500 bg-red-50'
+                    : placedCompound
+                      ? 'border-indigo-500 bg-indigo-50 cursor-pointer'
+                      : 'border-dashed border-warm-300'
+                }`;
                 return (
                   <div key={idx} className="flex items-center gap-2">
                     {idx > 0 && <span className="text-warm-400">→</span>}
-                    <div
-                      className={`min-w-24 p-3 rounded-xl border-2 text-center ${
-                        showResult
-                          ? placedId === correctId
-                            ? 'border-green-500 bg-green-50'
-                            : 'border-red-500 bg-red-50'
-                          : placedCompound
-                            ? 'border-indigo-500 bg-indigo-50 cursor-pointer'
-                            : 'border-dashed border-warm-300'
-                      }`}
-                      onClick={() => placedId && removeFromOrder(placedId)}
-                    >
-                      {placedCompound ? (
-                        <>
-                          <div className="font-bold">{placedCompound.formula}</div>
-                          <div className="text-xs text-warm-500">{placedCompound.name}</div>
-                        </>
-                      ) : (
-                        <div className="text-warm-400 text-sm">{idx + 1}</div>
-                      )}
-                    </div>
+                    {placedCompound && !showResult ? (
+                      <button
+                        type="button"
+                        className={slotClasses}
+                        onClick={() => removeFromOrder(placedId!)}
+                        aria-label={`Fjarlægja ${placedCompound.formula} úr sæti ${idx + 1}`}
+                      >
+                        <div className="font-bold">{placedCompound.formula}</div>
+                        <div className="text-xs text-warm-500">{placedCompound.name}</div>
+                      </button>
+                    ) : (
+                      <div className={slotClasses}>
+                        {placedCompound ? (
+                          <>
+                            <div className="font-bold">{placedCompound.formula}</div>
+                            <div className="text-xs text-warm-500">{placedCompound.name}</div>
+                          </>
+                        ) : (
+                          <div className="text-warm-400 text-sm">{idx + 1}</div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 );
               })}

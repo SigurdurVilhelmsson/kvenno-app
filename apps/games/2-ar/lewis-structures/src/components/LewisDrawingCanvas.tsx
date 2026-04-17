@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 
 type BondType = 'none' | 'single' | 'double' | 'triple';
 
@@ -59,6 +59,8 @@ export function LewisDrawingCanvas({
   const [surroundingLP, setSurroundingLP] = useState<number[]>(() => Array(n).fill(0));
   const [submitted, setSubmitted] = useState(false);
   const [feedback, setFeedback] = useState<DrawingFeedback | null>(null);
+  const [focusedBondIdx, setFocusedBondIdx] = useState<number | null>(null);
+  const bondRefs = useRef<(SVGGElement | null)[]>([]);
 
   const electronsUsed = useMemo(
     () =>
@@ -148,6 +150,24 @@ export function LewisDrawingCanvas({
     });
   };
 
+  const focusBond = (i: number) => {
+    bondRefs.current[i]?.focus();
+  };
+
+  const onBondKeyDown = (e: React.KeyboardEvent<SVGGElement>, i: number) => {
+    if (!canInteract) return;
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      cycleBond(i);
+    } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      focusBond((i + 1) % n);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      focusBond((i - 1 + n) % n);
+    }
+  };
+
   const adjustLP = (atomIdx: number, delta: number) => {
     if (!canInteract) return;
     clearFeedback();
@@ -222,12 +242,36 @@ export function LewisDrawingCanvas({
     const hasErr = feedback?.bondErrors.some((e) => e.index === i);
     const color = hasErr ? '#ef4444' : '#374151';
 
+    const isFocused = focusedBondIdx === i;
+    const bondAriaLabel = `Tengi ${i + 1} af ${n}: ${centralAtom}–${atomLabel(i)}, núna ${BOND_LABEL[bt]}. Ýttu á Enter eða bil til að skipta.`;
+
     return (
       <g
         key={`bond-${i}`}
+        ref={(el) => {
+          bondRefs.current[i] = el;
+        }}
+        role="button"
+        tabIndex={canInteract ? 0 : -1}
+        aria-label={bondAriaLabel}
         onClick={() => cycleBond(i)}
-        style={{ cursor: canInteract ? 'pointer' : 'default' }}
+        onKeyDown={(e) => onBondKeyDown(e, i)}
+        onFocus={() => setFocusedBondIdx(i)}
+        onBlur={() => setFocusedBondIdx((cur) => (cur === i ? null : cur))}
+        style={{ cursor: canInteract ? 'pointer' : 'default', outline: 'none' }}
       >
+        {isFocused && canInteract && (
+          <line
+            x1={x1}
+            y1={y1}
+            x2={x2}
+            y2={y2}
+            stroke="#3b82f6"
+            strokeWidth={12}
+            strokeLinecap="round"
+            opacity={0.3}
+          />
+        )}
         <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="transparent" strokeWidth={24} />
         {bt === 'none' && (
           <line
@@ -403,7 +447,7 @@ export function LewisDrawingCanvas({
               fontSize={11}
               className="pointer-events-none select-none"
             >
-              Smelltu á strik til að breyta tengjum
+              Smelltu eða notaðu Tab + Enter til að breyta tengjum
             </text>
           )}
         </svg>

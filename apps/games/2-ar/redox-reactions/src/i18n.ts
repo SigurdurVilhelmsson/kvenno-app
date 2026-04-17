@@ -12,7 +12,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Hvað eru redox hvörf?',
-      description: 'Redox hvörf fela í sér flutning rafeinda á milli efna. Oxun þýðir að tapa rafeindum, afoxun þýðir að öðlast rafeindir.',
+      description:
+        'Redox hvörf fela í sér flutning rafeinda á milli efna. Oxun þýðir að tapa rafeindum, afoxun þýðir að öðlast rafeindir.',
       mnemonic: 'OIL RIG: Oxidation Is Loss, Reduction Is Gain',
     },
     menu: {
@@ -68,7 +69,9 @@ export const gameTranslations = createGameTranslations({
     },
     concepts: {
       oxidation: 'Oxun',
+      oxidationSubline: 'Tapa e⁻ → ox# ↑',
       reduction: 'Afoxun',
+      reductionSubline: 'Öðlast e⁻ → ox# ↓',
       oxidationNumber: 'Oxunartala',
       oxidizingAgent: 'Oxunarefni',
       reducingAgent: 'Afoxunarefni',
@@ -101,7 +104,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'What are redox reactions?',
-      description: 'Redox reactions involve the transfer of electrons between substances. Oxidation means losing electrons, reduction means gaining electrons.',
+      description:
+        'Redox reactions involve the transfer of electrons between substances. Oxidation means losing electrons, reduction means gaining electrons.',
       mnemonic: 'OIL RIG: Oxidation Is Loss, Reduction Is Gain',
     },
     menu: {
@@ -157,7 +161,9 @@ export const gameTranslations = createGameTranslations({
     },
     concepts: {
       oxidation: 'Oxidation',
+      oxidationSubline: 'Lose e⁻ → ox# ↑',
       reduction: 'Reduction',
+      reductionSubline: 'Gain e⁻ → ox# ↓',
       oxidationNumber: 'Oxidation number',
       oxidizingAgent: 'Oxidizing agent',
       reducingAgent: 'Reducing agent',
@@ -190,7 +196,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Czym są reakcje redoks?',
-      description: 'Reakcje redoks obejmują transfer elektronów między substancjami. Utlenianie oznacza utratę elektronów, redukcja oznacza zyskanie elektronów.',
+      description:
+        'Reakcje redoks obejmują transfer elektronów między substancjami. Utlenianie oznacza utratę elektronów, redukcja oznacza zyskanie elektronów.',
       mnemonic: 'LEO GER: Loss of Electrons is Oxidation, Gain of Electrons is Reduction',
     },
     menu: {
@@ -246,7 +253,9 @@ export const gameTranslations = createGameTranslations({
     },
     concepts: {
       oxidation: 'Utlenianie',
+      oxidationSubline: 'Utrata e⁻ → ox# ↑',
       reduction: 'Redukcja',
+      reductionSubline: 'Zyskanie e⁻ → ox# ↓',
       oxidationNumber: 'Stopień utlenienia',
       oxidizingAgent: 'Utleniacz',
       reducingAgent: 'Reduktor',

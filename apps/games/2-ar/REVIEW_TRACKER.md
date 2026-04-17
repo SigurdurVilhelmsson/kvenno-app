@@ -348,3 +348,106 @@ These items need dedicated design work, not another review pass:
 - [x] All Y2 Level files free of unused `onCorrectAnswer`/`onIncorrectAnswer` props
 - [x] Hess L3 wrong answers now show per-student delta alongside the correct value
 - [x] Redox L3 all four step inputs (identify ox, identify red, write-ox electrons, write-red electrons, balance multipliers) accept Enter-to-submit when their fields are filled
+
+---
+
+## Iteration 5: Content Accuracy / Remaining Deferred A11y — 2026-04-17
+
+### Scope
+
+Fresh content-accuracy reviews across all 8 Y2 games (8 parallel agents) plus dedicated work on the highest-severity remaining deferred accessibility items from iter 3-4. Reviews were verified before applying fixes — 2 reviewer claims turned out to be false positives and were discarded.
+
+### Review Ratings
+
+| Game                  | P1 Teach | P2 Why  | P3 One Concept | P4 Visuals | P5 Hints | P6 Technical   | P7 Accessible  |
+| --------------------- | -------- | ------- | -------------- | ---------- | -------- | -------------- | -------------- |
+| Hess Law              | PASS     | PASS    | PASS           | PASS       | PASS     | PASS           | PASS           |
+| Kinetics              | PASS     | PASS    | PARTIAL        | PASS       | PASS     | PARTIAL → PASS | PASS           |
+| Lewis Structures      | PASS     | PASS    | PASS           | PASS       | PASS     | PASS           | FAIL → PASS    |
+| VSEPR Geometry        | PASS     | PASS    | PASS           | PASS       | PASS     | PASS           | PARTIAL        |
+| Intermolecular Forces | PASS     | PARTIAL | PASS           | PASS       | PASS     | PASS           | PARTIAL → PASS |
+| Organic Nomenclature  | PARTIAL  | PARTIAL | PASS           | PASS       | PASS     | PASS           | PARTIAL        |
+| Redox Reactions       | PASS     | PASS    | PASS           | PASS       | PASS     | PARTIAL → PASS | PARTIAL        |
+| Rafeindabygging       | PASS     | PASS    | PASS           | PASS       | PASS     | PASS           | PASS           |
+
+### Key Findings (Content Accuracy Focus)
+
+**Cross-cutting:**
+
+- Chemistry accuracy across all 8 Y2 games is excellent — all reviewers verified formation enthalpies, oxidation states, half-reaction balancing, rate laws, electron configurations (including Cr/Cu exceptions), and IUPAC stems/suffixes against Brown et al.
+- Several reviewer-flagged "English leaks" were confirmed as intentional bilingual pedagogical parentheticals (e.g., "Hóptengi (Functional Groups)", "rafeinasvið (electron domains)") — help students map Icelandic terms to textbook English. These are a feature, not a bug, and CLAUDE.md explicitly calls Icelandic the UI language.
+- Two reviewer claims were **false positives**:
+  - Kinetics L3 Challenge 6 "NO₂ + NO₃ → NO₂ + O₂ + NO" flagged as unbalanced — verified balanced (2N, 5O both sides).
+  - Redox `OxidationStateDisplay.isOxidized: c.after > c.before` flagged as "backwards" — equivalent to `c.before < c.after` (oxidation = state increases). Logic is correct.
+
+**Per-game critical findings:**
+
+1. **Hess Law**: Chemistry and i18n complete. Back-button "Til baka" is hardcoded but that's Icelandic-primary-UI per CLAUDE.md — not a real issue.
+2. **Kinetics**: Rate laws, Arrhenius, RDS all correct. Minor: zero-order k unit in L2 Q2 explanation lacked explicit unit reasoning.
+3. **Lewis Structures**: WCAG A FAIL — SVG drawing canvas mouse-only (known iter 3/4 defer, addressed this iteration).
+4. **VSEPR**: Bond angles, geometries, hybridizations all textbook-correct. Unused `seesawShape` i18n key out of sync with Level2 usage.
+5. **IMF**: Chemistry verified. L2 ranking removal slots keyboard-inaccessible (known defer).
+6. **Organic Nomenclature**: IUPAC stems/suffixes correct. L2 branched-molecule gap (known defer, kept deferred — needs dedicated data design).
+7. **Redox**: Oxidation numbers, half-reactions, LCM multipliers all correct. Hardcoded text-comparison language check (known defer from iter 2).
+8. **Rafeindabygging**: No issues found — strongest game on chemistry correctness.
+
+### Triage
+
+| #   | Game            | Finding                                                 | Disposition | Effort |
+| --- | --------------- | ------------------------------------------------------- | ----------- | ------ |
+| 1   | Lewis           | L2 SVG canvas keyboard nav (WCAG A failure)             | FIX         | M      |
+| 2   | IMF             | L2 ranking removal slots keyboard-inaccessible          | FIX         | S      |
+| 3   | Redox           | App.tsx text-comparison language check                  | FIX         | S      |
+| 4   | VSEPR           | Unused `seesawShape` i18n key out of sync with Level2   | FIX         | XS     |
+| 5   | Kinetics        | L2 Q2 zero-order rate constant unit clarification       | FIX         | XS     |
+| 6   | Organic         | L2 branched molecules (parent-chain rule not exercised) | DEFER       | M      |
+| 7   | VSEPR/IMF       | 3D viewer (Three.js OrbitControls) keyboard rotation    | DEFER       | L      |
+| 8   | Organic         | `@shared/components/DragDropBuilder` touch support      | DEFER       | M      |
+| 9   | VSEPR/IMF/Lewis | Three.js lazy-split / bundle ~3MB ceiling               | DEFER       | L      |
+| 10  | Lewis/Organic   | Bond color-only encoding (add stripe/dash pattern)      | DEFER       | S      |
+| 11  | Hess            | Unused Polish i18n block (~103 lines)                   | DEFER       | S      |
+| 12  | Kinetics/Redox  | Shuffle problem order in L2/L3                          | DEFER       | S      |
+
+**Disposition summary:** 5 FIX applied, 7 DEFER (all need dedicated design work outside review-cycle scope).
+
+### Changes Applied
+
+| #   | Game     | Finding                                | Done                                                                                                                                                                                                                                                                                             |
+| --- | -------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | Lewis    | L2 SVG canvas keyboard nav             | Yes — `LewisDrawingCanvas.tsx`: bond `<g>` elements now have `role="button"`, `tabIndex={0}`, `aria-label` with current bond state, `onKeyDown` for Enter/Space (cycle) + Arrow keys (navigate between bonds); focus ring renders on focused bond; instruction text updated to mention keyboard. |
+| 2   | IMF      | L2 ranking removal slots               | Yes — `intermolecular-forces/Level2.tsx`: when a placed compound exists and result not shown, the slot renders as `<button>` with `aria-label`; keyboard activation via Enter/Space triggers `removeFromOrder`.                                                                                  |
+| 3   | Redox    | App.tsx text-comparison language check | Yes — added `concepts.oxidationSubline` and `concepts.reductionSubline` keys to is/en/pl blocks in i18n.ts; App.tsx now uses single `t('concepts.oxidationSubline')` / `t('concepts.reductionSubline')` instead of 5-line ternary chain.                                                         |
+| 4   | VSEPR    | Unused `seesawShape` key               | Yes — synced i18n.ts Icelandic value from "Vippu" to "Sjáldruslögun" to match Level2 usage (English/Polish values preserved).                                                                                                                                                                    |
+| 5   | Kinetics | L2 Q2 zero-order unit clarification    | Yes — explanation now includes "(eining: styrkur/tími fyrir 0. stigs hvörf)" to make the unit reasoning explicit.                                                                                                                                                                                |
+
+### Deferred Items
+
+| Finding                                                        | Reason                                                                         |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| VSEPR / IMF 3D viewer keyboard rotation                        | Needs custom wrapper over Three.js OrbitControls — significant new component   |
+| Organic DragDropBuilder touch support                          | `@shared/components/DragDropBuilder` stubs handleTouchMove — shared-pkg change |
+| VSEPR / IMF / Lewis Three.js in main bundle                    | Lazy-split / feature flag — bundles stable at ~3MB ceiling                     |
+| Organic L2 branched molecules                                  | Needs new molecule data, hint text, answer validator                           |
+| Bond pattern alternatives (Lewis/Organic single/double/triple) | Color-only encoding; needs SVG stripe/dash patterns                            |
+| Organic prefix/suffix data duplicated 3×                       | Extract to `src/data/nomenclature.ts`                                          |
+| Kinetics / Redox shuffle problem order                         | Deliberate deferral — preserve exam-style stability                            |
+| Hess Polish i18n block unused                                  | Teacher sign-off needed before deleting                                        |
+
+### Discarded (False Findings)
+
+| Finding                                                                  | Reason discarded                                                           |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| Kinetics L3 Ch.6 mechanism "NO₂ + NO₃ → NO₂ + O₂ + NO" unbalanced        | Verified: 2N and 5O both sides. Equation is correct.                       |
+| Redox `OxidationStateDisplay.isOxidized: c.after > c.before` "backwards" | `a > b ≡ b < a` — oxidation = state increases. Logic is correct.           |
+| "English leaks" in parenthetical Icelandic+English terms                 | Intentional bilingual reference aligning Icelandic → Brown et al. English. |
+
+### Verification (2026-04-17)
+
+- [x] `pnpm type-check` passes across entire monorepo (0 errors)
+- [x] `pnpm build:games` — 20 succeeded, 0 failed
+- [x] Y2 bundle envelope unchanged: rafeindabygging 310KB, hess 361KB, redox 363KB, kinetics 369KB, organic 380KB; IMF 3.002MB, Lewis 3.005MB, VSEPR 3.027MB
+- [x] Lewis L2 drawing canvas: bonds now reachable via Tab; Enter/Space cycles bond order; arrow keys move focus between bonds; focus ring visible on focused bond
+- [x] IMF L2 ranking: placed compound slots render as `<button>` with `aria-label`; keyboard-activatable removal
+- [x] Redox intro card: subline text driven by i18n (supports future language additions without touching App.tsx)
+- [x] VSEPR seesaw naming: i18n `seesawShape` value matches Level2 usage (`Sjáldruslögun`)
+- [x] Kinetics L2 Q2 explanation: zero-order rate constant units now explicit

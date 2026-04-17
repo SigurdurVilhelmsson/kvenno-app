@@ -12,7 +12,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Hvað er VSEPR?',
-      description: 'VSEPR (Valence Shell Electron Pair Repulsion) útskýrir hvernig rafeindasvæði í kringum miðatóm fælast frá hvor öðru og mynda mismunandi lögun sameinda.',
+      description:
+        'VSEPR (Valence Shell Electron Pair Repulsion) útskýrir hvernig rafeindasvæði í kringum miðatóm fælast frá hvor öðru og mynda mismunandi lögun sameinda.',
     },
     levels: {
       level1: {
@@ -41,7 +42,7 @@ export const gameTranslations = createGameTranslations({
       tetrahedral: 'Fjórhliða',
       trigonalBipyramidal: 'Þríhliða tvípýramída',
       octahedral: 'Áttflötungur',
-      seesawShape: 'Vippu',
+      seesawShape: 'Sjáldruslögun',
       tShape: 'T-lögun',
       squarePlanar: 'Ferningur slétt',
       squarePyramidal: 'Fernings pýramída',
@@ -66,7 +67,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'What is VSEPR?',
-      description: 'VSEPR (Valence Shell Electron Pair Repulsion) explains how electron regions around a central atom repel each other and form different molecular shapes.',
+      description:
+        'VSEPR (Valence Shell Electron Pair Repulsion) explains how electron regions around a central atom repel each other and form different molecular shapes.',
     },
     levels: {
       level1: {
@@ -120,7 +122,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Czym jest VSEPR?',
-      description: 'VSEPR (Valence Shell Electron Pair Repulsion) wyjasnia jak obszary elektronowe wokol atomu centralnego odpychaja sie nawzajem i tworza rozne ksztalty czastek.',
+      description:
+        'VSEPR (Valence Shell Electron Pair Repulsion) wyjasnia jak obszary elektronowe wokol atomu centralnego odpychaja sie nawzajem i tworza rozne ksztalty czastek.',
     },
     levels: {
       level1: {

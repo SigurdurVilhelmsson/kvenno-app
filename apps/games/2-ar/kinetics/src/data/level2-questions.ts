@@ -54,7 +54,7 @@ export const challenges: RateLawChallenge[] = [
     rateConstantUnit: 'M·s⁻¹',
     hint: 'Ef hraðinn breytist ekki þegar styrkur breytist, hver er röðin?',
     explanation:
-      'Styrkur tvöfaldast en hraðinn helst sá sami → 0. stigs hvörf. Rate = k = 0.020 M/s.',
+      'Styrkur tvöfaldast en hraðinn helst sá sami → 0. stigs hvörf. Rate = k = 0.020 M·s⁻¹ (eining: styrkur/tími fyrir 0. stigs hvörf).',
   },
   {
     id: 3,
