@@ -94,3 +94,101 @@
 - [x] pH Titration Level 1 now opens with a teaching card (equivalence point vs endpoint, 3 acid-base combos)
 - [x] pH Titration Level 2 marking phase discloses volume tolerance upfront
 - [x] Buffer Recipe Creator Level 3 opens with a dilution-formula intro bridging from L2 (mass) to L3 (volume)
+
+---
+
+## Iteration 2: Technical Quality & Code Health — 2026-04-17
+
+### Review Ratings
+
+| Game                     | P1 Teach | P2 Why  | P3 One Concept | P4 Visuals | P5 Hints | P6 Technical   | P7 Accessible |
+| ------------------------ | -------- | ------- | -------------- | ---------- | -------- | -------------- | ------------- |
+| Gas Law Challenge        | PASS     | PASS    | FAIL           | PARTIAL    | PASS     | FAIL → PARTIAL | PASS          |
+| Equilibrium Shifter      | PASS     | PASS    | PASS           | PASS       | PASS     | PASS           | PASS          |
+| Thermodynamics Predictor | PARTIAL  | PARTIAL | PASS           | PASS       | PASS     | PARTIAL → PASS | PASS          |
+| pH Titration             | PARTIAL  | PASS    | PASS           | PASS       | PASS     | PARTIAL → PASS | PASS          |
+| Buffer Recipe Creator    | PASS     | PASS    | PARTIAL        | PASS       | PASS     | PARTIAL → PASS | PASS          |
+
+### Key Findings (Technical Focus)
+
+**Cross-cutting:**
+
+- 4 of 5 Y3 games had manual `loadProgress`/`saveProgress` + localStorage boilerplate in App.tsx (gas-law, buffer, ph-titration, thermo). Equilibrium-shifter already used the `useProgress` shared hook. Same pattern Y2 iter 2 fixed.
+- Bilingual-translation infrastructure (`useGameI18n` + `gameTranslations`) is imported in all Y3 games but `t()` is largely unused — all UI text is hardcoded Icelandic. This is consistent with CLAUDE.md "Primary Language: Icelandic (all UI text must be in Icelandic)". The `language`/`setLanguage` state drives the `LanguageSwitcher` but has no visible effect. Out of scope for iter 2 — same pattern exists in Y2.
+- Two reviewer claims were false positives (discarded):
+  - pH Titration "`type: 'polyprotic'` vs `'polyprotic-diprotic' | 'polyprotic-triprotic'` mismatch" — these are two unrelated types (Level3Challenge.type vs Titration.type) with non-intersecting unions. No mismatch.
+  - Equilibrium Shifter "unused setters `setHintMultiplier`/`setHintsUsedTier`" — verified both setters are called (lines 164, 165, 351, 662). The Y2 iter-4 pattern of discarding only the getter was applied correctly.
+
+**Per-game critical findings:**
+
+1. **Gas Law Challenge**: Manual `loadStats`/`saveStats` (80+ lines of boilerplate); unsafe `Object.keys(GAS_LAW_INFO) as GasLaw[]` cast; 980-line monolithic App.tsx.
+2. **Equilibrium Shifter**: Clean code; uses `useProgress` correctly. No critical issues.
+3. **Thermodynamics Predictor**: Manual `loadProgress`/`saveProgress`; ~60 lines of dead CSS (`.entropy-container`, `.particle*`, `@keyframes vibrate/float/pulse-success/shake`) for a component that uses inline-styled `ParticleSimulation`.
+4. **pH Titration**: Manual `loadProgress`/`saveProgress`; `titration.Ka3!` non-null assertion (acceptable under discriminated-union narrowing but imperfect).
+5. **Buffer Recipe Creator**: Manual `loadProgress`/`saveProgress`; `correctAcidMoles?` / `correctBaseMoles?` optional-chained despite being required in `BufferProblem` type (dead defensive code).
+
+### Triage
+
+| #   | Game                     | Finding                                                                  | Disposition | Effort |
+| --- | ------------------------ | ------------------------------------------------------------------------ | ----------- | ------ |
+| 1   | pH Titration             | Manual localStorage → `useGameProgress` + applyLevelResult factory       | FIX         | S      |
+| 2   | Buffer Recipe Creator    | Manual localStorage → `useGameProgress` + applyLevelResult               | FIX         | S      |
+| 3   | Thermodynamics Predictor | Manual localStorage → `useGameProgress`                                  | FIX         | S      |
+| 4   | Gas Law Challenge        | Manual `loadStats`/`saveStats` → `useGameProgress`                       | FIX         | S      |
+| 5   | Thermodynamics Predictor | Dead CSS (`entropy-container`, particle classes, unused keyframes)       | FIX         | XS     |
+| 6   | Buffer Recipe Creator    | Remove unnecessary optional chaining on required fields                  | FIX         | XS     |
+| 7   | Gas Law Challenge        | Unsafe `Object.keys as GasLaw[]` cast → `Object.entries`                 | FIX         | XS     |
+| 8   | pH Titration             | `titration.Ka3!` non-null assertion (discriminated-union limit)          | DEFER       | S      |
+| 9   | Gas Law Challenge        | 980-line monolithic App.tsx (extract to Level components)                | DEFER       | L      |
+| 10  | All Y3                   | `useGameI18n` imported but `t()` largely unused (Icelandic-only UI)      | DEFER       | M      |
+| 11  | Thermodynamics Predictor | ΔG° = −RT ln K in formula card but K never graded                        | DEFER       | S      |
+| 12  | pH Titration             | L3 hint multiplier bug (iter 1 deferred)                                 | DEFER       | S      |
+| 13  | pH Titration             | L3 polyprotic data instances                                             | DEFER       | M      |
+| 14  | Buffer Recipe Creator    | BufferCapacityVisualization absent in L2-L3                              | DEFER       | M      |
+| 15  | All Y3 Level files       | Legacy `onComplete(score, maxScore?, hintsUsed?)` 3-arg signature        | DEFER       | M      |
+| 16  | All Y3 Level files       | Unused `onCorrectAnswer?`/`onIncorrectAnswer?` props (Y2 iter-4 pattern) | DEFER       | M      |
+
+**Disposition summary:** 7 FIX applied, 9 DEFER.
+
+### Changes Applied
+
+| #   | Game                     | Finding                               | Done                                                                                                                                                                                                            |
+| --- | ------------------------ | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | pH Titration             | Manual localStorage → useGameProgress | Yes — `useGameProgress<Progress>('ph-titration-progress', DEFAULT_PROGRESS)` with `applyLevelResult(levelKey, score, nextScreen)` factory replaces 3 near-identical level handlers.                             |
+| 2   | Buffer Recipe Creator    | Manual localStorage → useGameProgress | Yes — same pattern + `handleResetProgress` wraps `resetProgress` with `window.confirm` guard (preserves original reset behavior).                                                                               |
+| 3   | Thermodynamics Predictor | Manual localStorage → useGameProgress | Yes — `progress`/`updateProgress`/`resetProgress` replace manual load+save+setProgress; correct-answer branch now uses `updateProgress({ ... })` instead of `setProgress(prev => ...)`.                         |
+| 4   | Gas Law Challenge        | Manual `loadStats`/`saveStats` → hook | Yes — `useGameProgress<GameStats>('gas-law-challenge-progress', DEFAULT_STATS)` renamed via destructure (`progress: stats`, `updateProgress: updateStats`, `resetProgress: resetStats`).                        |
+| 5   | Thermodynamics Predictor | Dead CSS cleanup                      | Yes — removed `.entropy-container`, `.particle*`, `.pulse-success`, `.shake` classes + `@keyframes vibrate`/`float`/`pulse-success`/`shake` + legacy `#deltaGGraph` IDs + empty mobile block. ~60 lines.        |
+| 6   | Buffer Recipe Creator    | Unnecessary optional chaining         | Yes — Level2.tsx: `problem.correctAcidMoles?.toFixed(4)` → `problem.correctAcidMoles.toFixed(4)` (same for Base). Type is required; optional chaining was dead defensive code.                                  |
+| 7   | Gas Law Challenge        | Unsafe `Object.keys` cast             | Yes — changed `(Object.keys(GAS_LAW_INFO) as GasLaw[]).map(...)` → `Object.entries(GAS_LAW_INFO).map(([law, info]) => ...)` — avoids the blanket cast, keeps one local cast at `setSelectedLaw(law as GasLaw)`. |
+
+### Deferred Items
+
+| Finding                                                              | Reason                                                                                                    | Target       |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------ |
+| Gas Law Challenge 980-line App.tsx monolith                          | Large refactor — extract to Level components                                                              | Iteration 3+ |
+| Y3 Level files: 3-arg `onComplete(score, max?, hints?)` signature    | Cross-cutting across all 15 Y3 Level files; batch in iter 3 alongside onCorrectAnswer cleanup             | Iteration 3  |
+| Y3 Level files: unused `onCorrectAnswer?`/`onIncorrectAnswer?` props | Same cross-cutting batch                                                                                  | Iteration 3  |
+| All Y3: `useGameI18n` imported but `t()` unused                      | Repo-wide pattern; CLAUDE.md says Icelandic-only UI. Needs discussion before removing `LanguageSwitcher`. | Future       |
+| Thermodynamics: ΔG° = −RT ln K in formula card but K not graded      | Design question — remove card or add K grading                                                            | Iteration 3  |
+| pH Titration: L3 polyprotic data instances                           | Data authoring work                                                                                       | Iteration 3  |
+| pH Titration: L3 hint multiplier bug                                 | Small bug — batch with data fixes                                                                         | Iteration 3  |
+| Buffer: BufferCapacityVisualization absent in L2-L3                  | Integration design work                                                                                   | Iteration 3  |
+| pH Titration: `Ka3!` non-null assertion                              | Discriminated-union refactor to separate di/tri types                                                     | Iteration 3  |
+
+### Discarded (False Findings)
+
+| Finding                                                                   | Reason discarded                                                                                                         |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| pH Titration `type: 'polyprotic'` vs union mismatch                       | Two unrelated types (Level3Challenge.type vs Titration.type); no conflict.                                               |
+| Equilibrium Shifter `setHintMultiplier`/`setHintsUsedTier` unused setters | Both setters ARE called (lines 164, 165, 351, 662). Y2 iter-4 pattern (discarded getter, kept setter) applied correctly. |
+
+### Verification (2026-04-17)
+
+- [x] `pnpm type-check` passes across entire monorepo (0 errors)
+- [x] `pnpm build:games` — 20 succeeded, 0 failed
+- [x] Y3 bundle envelope unchanged or smaller: thermo 317KB (was 318), gas-law 333KB, equilibrium 353KB, ph-titration 371KB, buffer 398KB
+- [x] All 5 Y3 games' App.tsx now use shared hooks (`useGameProgress` for 4, `useProgress` for equilibrium-shifter)
+- [x] Thermodynamics styles.css trimmed of ~60 lines of dead CSS
+- [x] Gas-law `Object.keys` cast eliminated; type safety preserved at single `as GasLaw` on the id passed to setter
+- [x] Buffer Level2 optional chaining removed on required fields

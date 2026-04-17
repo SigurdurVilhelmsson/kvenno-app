@@ -15,7 +15,7 @@ import type {
   RegionConfig,
   VerticalLineConfig,
 } from '@shared/components';
-import { useGameI18n } from '@shared/hooks';
+import { useGameI18n, useGameProgress } from '@shared/hooks';
 
 import { EntropyVisualization } from './components/EntropyVisualization';
 import { PROBLEMS } from './data';
@@ -30,32 +30,12 @@ interface ThermoProgress {
   problemsCompleted: number;
 }
 
-const STORAGE_KEY = 'thermodynamics-predictor-progress';
-
-function loadProgress(): ThermoProgress {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    try {
-      return JSON.parse(saved);
-    } catch {
-      return getDefaultProgress();
-    }
-  }
-  return getDefaultProgress();
-}
-
-function getDefaultProgress(): ThermoProgress {
-  return {
-    score: 0,
-    highScore: 0,
-    bestStreak: 0,
-    problemsCompleted: 0,
-  };
-}
-
-function saveProgress(progress: ThermoProgress): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-}
+const DEFAULT_PROGRESS: ThermoProgress = {
+  score: 0,
+  highScore: 0,
+  bestStreak: 0,
+  problemsCompleted: 0,
+};
 
 function App() {
   const [mode, setMode] = useState<GameMode>('menu');
@@ -67,18 +47,16 @@ function App() {
   const [userSpontaneity, setUserSpontaneity] = useState<Spontaneity | ''>('');
   const [showSolution, setShowSolution] = useState(false);
   const [feedback, setFeedback] = useState('');
-  const [progress, setProgress] = useState<ThermoProgress>(loadProgress);
+  const {
+    progress,
+    updateProgress,
+    resetProgress: resetStoredProgress,
+  } = useGameProgress<ThermoProgress>('thermodynamics-predictor-progress', DEFAULT_PROGRESS);
   const [streak, setStreak] = useState(0);
   const [timeLeft, setTimeLeft] = useState(90);
-  // Save progress whenever it changes
-  useEffect(() => {
-    saveProgress(progress);
-  }, [progress]);
 
   const resetProgress = () => {
-    const newProgress = getDefaultProgress();
-    setProgress(newProgress);
-    saveProgress(newProgress);
+    resetStoredProgress();
     setStreak(0);
   };
 
@@ -149,13 +127,13 @@ function App() {
       const points = 100 + streak * 10;
       const newStreak = streak + 1;
       setStreak(newStreak);
-      setProgress((prev) => ({
-        ...prev,
-        score: prev.score + points,
-        problemsCompleted: prev.problemsCompleted + 1,
-        highScore: Math.max(prev.highScore, prev.score + points),
-        bestStreak: Math.max(prev.bestStreak, newStreak),
-      }));
+      const newScore = progress.score + points;
+      updateProgress({
+        score: newScore,
+        problemsCompleted: progress.problemsCompleted + 1,
+        highScore: Math.max(progress.highScore, newScore),
+        bestStreak: Math.max(progress.bestStreak, newStreak),
+      });
       setFeedback(`Rétt! +${points} stig`);
     } else {
       setStreak(0);

@@ -7,7 +7,7 @@ import {
   Presence,
   FadePresence,
 } from '@shared/components';
-import { useGameI18n } from '@shared/hooks';
+import { useGameI18n, useGameProgress } from '@shared/hooks';
 
 import { GasLawSimulator } from './components/GasLawSimulator';
 import { questions, getRandomQuestion } from './data';
@@ -22,34 +22,14 @@ import {
 } from './types';
 import { checkAnswer, calculateError, getUnit, getVariableName } from './utils/gas-calculations';
 
-const STORAGE_KEY = 'gas-law-challenge-progress';
-
-function loadStats(): GameStats {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    try {
-      return JSON.parse(saved);
-    } catch {
-      return getDefaultStats();
-    }
-  }
-  return getDefaultStats();
-}
-
-function getDefaultStats(): GameStats {
-  return {
-    score: 0,
-    questionsAnswered: 0,
-    correctAnswers: 0,
-    streak: 0,
-    bestStreak: 0,
-    hintsUsed: 0,
-  };
-}
-
-function saveStats(stats: GameStats): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(stats));
-}
+const DEFAULT_STATS: GameStats = {
+  score: 0,
+  questionsAnswered: 0,
+  correctAnswers: 0,
+  streak: 0,
+  bestStreak: 0,
+  hintsUsed: 0,
+};
 
 function App() {
   // Game state
@@ -74,19 +54,12 @@ function App() {
   );
   const [validationError, setValidationError] = useState<string | null>(null);
 
-  // Stats with localStorage persistence
-  const [stats, setStats] = useState<GameStats>(loadStats);
-
-  // Save stats whenever they change
-  useEffect(() => {
-    saveStats(stats);
-  }, [stats]);
-
-  const resetStats = () => {
-    const newStats = getDefaultStats();
-    setStats(newStats);
-    saveStats(newStats);
-  };
+  // Stats with localStorage persistence via shared hook
+  const {
+    progress: stats,
+    updateProgress: updateStats,
+    resetProgress: resetStats,
+  } = useGameProgress<GameStats>('gas-law-challenge-progress', DEFAULT_STATS);
 
   // Start new question
   const startNewQuestion = (mode: GameMode) => {
@@ -199,17 +172,14 @@ function App() {
       setSessionCompleted(true);
     }
 
-    const newStats = {
-      ...stats,
+    updateStats({
       questionsAnswered: stats.questionsAnswered + 1,
       correctAnswers: isCorrect ? stats.correctAnswers + 1 : stats.correctAnswers,
       streak: isCorrect ? stats.streak + 1 : 0,
       bestStreak: isCorrect ? Math.max(stats.bestStreak, stats.streak + 1) : stats.bestStreak,
       score: stats.score + points,
       hintsUsed: stats.hintsUsed + showHint,
-    };
-
-    setStats(newStats);
+    });
     setFeedback({
       isCorrect,
       message,
@@ -546,12 +516,11 @@ function App() {
 
                     {/* Law selection buttons */}
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
-                      {(Object.keys(GAS_LAW_INFO) as GasLaw[]).map((law) => {
-                        const info = GAS_LAW_INFO[law];
+                      {Object.entries(GAS_LAW_INFO).map(([law, info]) => {
                         return (
                           <button
                             key={law}
-                            onClick={() => setSelectedLaw(law)}
+                            onClick={() => setSelectedLaw(law as GasLaw)}
                             className={`p-3 rounded-lg border-2 transition-all text-left ${
                               selectedLaw === law
                                 ? 'border-indigo-500 bg-indigo-50'

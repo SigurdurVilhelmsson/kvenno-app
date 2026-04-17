@@ -592,11 +592,11 @@ export default function Level2({
                       {(problem.totalConcentration * problem.volume).toFixed(4)} mol
                     </li>
                     <li>
-                      • Sýra: {problem.correctAcidMoles?.toFixed(4)} mol × {problem.acidMolarMass}{' '}
+                      • Sýra: {problem.correctAcidMoles.toFixed(4)} mol × {problem.acidMolarMass}{' '}
                       g/mol = {problem.correctAcidMass} g
                     </li>
                     <li>
-                      • Basi: {problem.correctBaseMoles?.toFixed(4)} mol × {problem.baseMolarMass}{' '}
+                      • Basi: {problem.correctBaseMoles.toFixed(4)} mol × {problem.baseMolarMass}{' '}
                       g/mol = {problem.correctBaseMass} g
                     </li>
                   </ul>
