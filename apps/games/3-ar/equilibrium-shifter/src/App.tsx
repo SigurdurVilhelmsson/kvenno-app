@@ -308,11 +308,12 @@ function App() {
       },
     }));
 
-    // In challenge mode, auto-advance after 3 seconds
+    // In challenge mode, auto-advance after 6 seconds (was 3 — too fast to read explanation).
+    // Manual "Næsta →" button is rendered alongside so users can advance immediately if they want.
     if (gameMode === 'challenge') {
       setTimeout(() => {
         handleNextQuestion();
-      }, 3000);
+      }, 6000);
     }
   };
 
@@ -758,10 +759,16 @@ function App() {
                     </div>
                   )}
 
-                  {/* Challenge Mode - Auto advance message */}
+                  {/* Challenge Mode - Auto advance message + manual continue */}
                   {gameMode === 'challenge' && (
-                    <div className="mt-4 text-center text-sm text-warm-600">
-                      Næsta spurning birtist sjálfkrafa...
+                    <div className="mt-4 flex items-center justify-center gap-3 text-sm text-warm-600">
+                      <span>Næsta spurning birtist sjálfkrafa (6 sek)...</span>
+                      <button
+                        onClick={handleNextQuestion}
+                        className="bg-orange-500 hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700 text-white rounded-lg px-4 py-2 transition-colors text-sm font-semibold"
+                      >
+                        Næsta strax →
+                      </button>
                     </div>
                   )}
                 </div>

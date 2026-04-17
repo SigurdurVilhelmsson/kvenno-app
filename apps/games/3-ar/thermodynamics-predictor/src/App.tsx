@@ -408,6 +408,18 @@ function App() {
                 </div>
               </div>
 
+              {/* Discover button (recommended first step) */}
+              <button
+                onClick={() => setMode('discover')}
+                className="game-card w-full p-5 rounded-lg text-white font-bold text-lg transition mb-4"
+                style={{ background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' }}
+              >
+                🔬 Könnun — sjáðu hvernig ΔG breytist með hitastigi
+                <div className="text-sm font-normal mt-1">
+                  Byrjaðu hér — stillanlegur hita-sleði og rauntíma-útreikningur
+                </div>
+              </button>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <button
                   onClick={() => {
@@ -453,6 +465,135 @@ function App() {
       </div>
     </div>
   );
+
+  /**
+   * Discover mode — interactive warm-up.
+   * Uses a canonical scenario 3 reaction (CH₄ combustion: ΔH=-802, ΔS=-5, crossover ≈ 160400 K — artificially low ΔS).
+   * Students slide the temperature to watch ΔG flip sign at the crossover temperature; this builds the
+   * intuition that temperature modulates the TΔS term before any graded problems appear.
+   */
+  const renderDiscover = () => {
+    // Canonical scenario 3 demo: ΔH=-100 kJ/mol, ΔS=-200 J/(mol·K) → crossover at 500 K.
+    const demoDeltaH = -100;
+    const demoDeltaS = -200; // J/(mol·K)
+    const demoT = temperature;
+    const demoDeltaG = demoDeltaH - (demoT * demoDeltaS) / 1000;
+    const demoCrossover = Math.abs(demoDeltaH / (demoDeltaS / 1000));
+    const demoSpontaneous = demoDeltaG < 0;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100 p-4 md:p-8">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 space-y-5">
+          <button
+            onClick={() => setMode('menu')}
+            className="text-warm-600 hover:text-warm-800 text-sm"
+          >
+            ← Til baka í valmynd
+          </button>
+          <h2 className="text-2xl font-bold text-indigo-700">
+            🔬 Könnun: hvernig hitastig hefur áhrif á ΔG
+          </h2>
+          <p className="text-warm-700">
+            Hér er dæmi um efnahvarf sem losar varma (ΔH = −100 kJ/mol) en entrópía minnkar (ΔS =
+            −200 J/(mol·K)). Dragðu hitastigs-sleðann og sjáðu hvernig ΔG breytist.
+          </p>
+
+          <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-6 rounded-xl border border-indigo-200">
+            <div className="grid grid-cols-2 gap-4 mb-4 text-center">
+              <div className="bg-red-50 p-3 rounded-lg border border-red-200">
+                <div className="text-xs text-red-700 font-semibold">ΔH° (varmamismunur)</div>
+                <div className="text-2xl font-bold text-red-800">{demoDeltaH} kJ/mol</div>
+                <div className="text-xs text-red-600 mt-1">Losun varma → styður sjálfvilja</div>
+              </div>
+              <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
+                <div className="text-xs text-purple-700 font-semibold">ΔS° (óreiðumismunur)</div>
+                <div className="text-2xl font-bold text-purple-800">{demoDeltaS} J/(mol·K)</div>
+                <div className="text-xs text-purple-600 mt-1">Minni óreiða → andmælir</div>
+              </div>
+            </div>
+
+            <label htmlFor="thermo-discover-temp" className="block font-semibold mb-2">
+              🌡️ Hitastig: {demoT} K ({(demoT - 273).toFixed(0)}°C)
+            </label>
+            <input
+              id="thermo-discover-temp"
+              type="range"
+              min={200}
+              max={1200}
+              value={demoT}
+              onChange={(e) => setTemperature(parseInt(e.target.value))}
+              className="w-full mb-2"
+              aria-valuetext={`${demoT} Kelvin`}
+            />
+            <div className="flex justify-between text-xs text-warm-500">
+              <span>200 K</span>
+              <span>1200 K</span>
+            </div>
+
+            <div
+              className={`mt-4 p-4 rounded-lg border-2 ${
+                demoSpontaneous
+                  ? 'bg-green-50 border-green-500 text-green-900'
+                  : 'bg-red-50 border-red-500 text-red-900'
+              }`}
+            >
+              <div className="font-bold text-sm">
+                ΔG° = ΔH° − TΔS° = {demoDeltaH} − ({demoT})({(demoDeltaS / 1000).toFixed(3)}) ={' '}
+                <span className="text-xl">{demoDeltaG.toFixed(1)} kJ/mol</span>
+              </div>
+              <div className="mt-1 text-sm">
+                {demoSpontaneous ? (
+                  <>
+                    ✓ <strong>Sjálfviljugt</strong> — ΔG &lt; 0
+                  </>
+                ) : (
+                  <>
+                    ✗ <strong>Ekki sjálfviljugt</strong> — ΔG &gt; 0
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
+            <div className="font-bold text-amber-900 mb-2">Hvað sést?</div>
+            <ul className="text-sm text-amber-900 space-y-2 list-disc list-inside">
+              <li>
+                Við lágt hitastig vinnur <strong>ΔH</strong> og hvarfið er{' '}
+                <strong>sjálfviljugt</strong> (ΔG &lt; 0).
+              </li>
+              <li>
+                Þegar T vex, vex <strong>TΔS</strong>-liðurinn. Þar sem ΔS er neikvætt, þýðir það
+                stórt jákvætt tillag til ΔG.
+              </li>
+              <li>
+                Við <strong>þveragahitastig T = ΔH/ΔS ≈ {demoCrossover.toFixed(0)} K</strong> verða
+                liðurnir jafnir og hvarfið nær jafnvægi.
+              </li>
+              <li>Ofan við þveragahitastigið verður hvarfið ekki sjálfviljugt.</li>
+            </ul>
+          </div>
+
+          <div className="flex gap-3">
+            <button
+              onClick={() => setMode('menu')}
+              className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-700 font-bold py-3 rounded-xl"
+            >
+              ← Valmynd
+            </button>
+            <button
+              onClick={() => {
+                setMode('learning');
+                startNewProblem();
+              }}
+              className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl"
+            >
+              Byrja æfingarhamur →
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const renderGame = () => {
     if (!currentProblem) return null;
@@ -992,7 +1133,10 @@ function App() {
       <FadePresence show={mode === 'menu'} exitDuration={200}>
         {renderMenu()}
       </FadePresence>
-      <FadePresence show={mode !== 'menu'} exitDuration={200}>
+      <FadePresence show={mode === 'discover'} exitDuration={200}>
+        {renderDiscover()}
+      </FadePresence>
+      <FadePresence show={mode === 'learning' || mode === 'challenge'} exitDuration={200}>
         {renderGame()}
       </FadePresence>
     </>

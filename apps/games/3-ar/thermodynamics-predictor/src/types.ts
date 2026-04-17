@@ -12,7 +12,7 @@ export interface Problem {
 
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced';
 
-export type GameMode = 'menu' | 'learning' | 'challenge';
+export type GameMode = 'menu' | 'discover' | 'learning' | 'challenge';
 
 export type Spontaneity = 'spontaneous' | 'equilibrium' | 'non-spontaneous';
 

@@ -15,7 +15,7 @@ interface IndicatorSelectorProps {
 export const IndicatorSelector: React.FC<IndicatorSelectorProps> = ({
   selectedIndicator,
   onSelect,
-  disabled = false
+  disabled = false,
 }) => {
   return (
     <div className="bg-white rounded-lg p-4 shadow-md border-2 border-warm-200">
@@ -39,17 +39,23 @@ export const IndicatorSelector: React.FC<IndicatorSelectorProps> = ({
                   pH {indicator.pHRange[0].toFixed(1)} - {indicator.pHRange[1].toFixed(1)}
                 </p>
               </div>
-              <div className="flex gap-1 ml-2">
-                <div
-                  className="w-6 h-6 rounded border border-warm-400"
-                  style={{ backgroundColor: indicator.colorAcidic }}
-                  title="Súr litur"
-                />
-                <div
-                  className="w-6 h-6 rounded border border-warm-400"
-                  style={{ backgroundColor: indicator.colorBasic }}
-                  title="Basískur litur"
-                />
+              <div className="flex gap-2 ml-2">
+                <div className="flex flex-col items-center">
+                  <div
+                    className="w-6 h-6 rounded border border-warm-400"
+                    style={{ backgroundColor: indicator.colorAcidic }}
+                    aria-label="Litur í sýrri lausn"
+                  />
+                  <span className="text-[10px] text-warm-600 mt-0.5">Súr</span>
+                </div>
+                <div className="flex flex-col items-center">
+                  <div
+                    className="w-6 h-6 rounded border border-warm-400"
+                    style={{ backgroundColor: indicator.colorBasic }}
+                    aria-label="Litur í basískri lausn"
+                  />
+                  <span className="text-[10px] text-warm-600 mt-0.5">Basísk</span>
+                </div>
               </div>
             </div>
             <p className="text-xs text-warm-500 mt-1 italic">{indicator.description}</p>
@@ -60,7 +66,7 @@ export const IndicatorSelector: React.FC<IndicatorSelectorProps> = ({
       {selectedIndicator && (
         <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded">
           <p className="text-xs text-green-800 font-semibold">
-            ✓ Valinn: {indicators.find(i => i.id === selectedIndicator)?.name}
+            ✓ Valinn: {indicators.find((i) => i.id === selectedIndicator)?.name}
           </p>
         </div>
       )}

@@ -25,7 +25,7 @@ export function QKComparison({
   shiftDirection,
   stress,
   isExothermic,
-  animate = true
+  animate = true,
 }: QKComparisonProps) {
   // Determine Q vs K relationship based on shift direction
   const qkRelation = useMemo(() => {
@@ -52,7 +52,7 @@ export function QKComparison({
       return {
         qEffect: 'Q breytist ekki',
         kEffect: 'K breytist ekki',
-        reason: 'Hvati hraðar bæði fram- og bakhvarf jafnt'
+        reason: 'Hvati hraðar bæði fram- og bakhvarf jafnt',
       };
     }
 
@@ -61,13 +61,13 @@ export function QKComparison({
         return {
           qEffect: 'Q er óbreytt',
           kEffect: 'K minnkar við hærra hita',
-          reason: 'Fyrir varmalosandi hvörf lækkar K við hækkun hitastigs'
+          reason: 'Fyrir varmalosandi hvörf lækkar K við hækkun hitastigs',
         };
       } else {
         return {
           qEffect: 'Q er óbreytt',
           kEffect: 'K eykst við hærra hita',
-          reason: 'Fyrir varmabindandi hvörf hækkar K við hækkun hitastigs'
+          reason: 'Fyrir varmabindandi hvörf hækkar K við hækkun hitastigs',
         };
       }
     }
@@ -77,13 +77,13 @@ export function QKComparison({
         return {
           qEffect: 'Q er óbreytt',
           kEffect: 'K eykst við lægra hita',
-          reason: 'Fyrir varmalosandi hvörf hækkar K við lækkun hitastigs'
+          reason: 'Fyrir varmalosandi hvörf hækkar K við lækkun hitastigs',
         };
       } else {
         return {
           qEffect: 'Q er óbreytt',
           kEffect: 'K minnkar við lægra hita',
-          reason: 'Fyrir varmabindandi hvörf lækkar K við lækkun hitastigs'
+          reason: 'Fyrir varmabindandi hvörf lækkar K við lækkun hitastigs',
         };
       }
     }
@@ -92,7 +92,7 @@ export function QKComparison({
       return {
         qEffect: stressType === 'increase-pressure' ? 'Q eykst (þéttari)' : 'Q minnkar (þanist)',
         kEffect: 'K er óbreytt',
-        reason: 'Þrýstingsbreyting hefur áhrif á styrk en ekki K'
+        reason: 'Þrýstingsbreyting hefur áhrif á styrk en ekki K',
       };
     }
 
@@ -101,7 +101,7 @@ export function QKComparison({
       return {
         qEffect: 'Q minnkar',
         kEffect: 'K er óbreytt',
-        reason: 'Meira af hvarfefnum eða minna af afurðum lækkar Q'
+        reason: 'Meira af hvarfefnum eða minna af afurðum lækkar Q',
       };
     }
 
@@ -109,14 +109,14 @@ export function QKComparison({
       return {
         qEffect: 'Q eykst',
         kEffect: 'K er óbreytt',
-        reason: 'Meira af afurðum eða minna af hvarfefnum hækkar Q'
+        reason: 'Meira af afurðum eða minna af hvarfefnum hækkar Q',
       };
     }
 
     return {
       qEffect: 'Q breytist',
       kEffect: 'K er óbreytt',
-      reason: 'Kerfið leitast við að jafnvægi'
+      reason: 'Kerfið leitast við að jafnvægi',
     };
   }, [stress, isExothermic]);
 
@@ -130,12 +130,13 @@ export function QKComparison({
     return 'Q = K, kerfið er í jafnvægi';
   }, [shiftDirection]);
 
+  // Use -700/-800 shades only to guarantee WCAG AA contrast (≥4.5:1) for white text.
   const getBarColor = (type: 'q' | 'k') => {
-    if (shiftDirection === 'none') return 'bg-warm-500';
+    if (shiftDirection === 'none') return 'bg-warm-700';
     if (type === 'q') {
-      return shiftDirection === 'right' ? 'bg-blue-500' : 'bg-blue-700';
+      return shiftDirection === 'right' ? 'bg-blue-700' : 'bg-blue-800';
     }
-    return shiftDirection === 'right' ? 'bg-purple-700' : 'bg-purple-500';
+    return shiftDirection === 'right' ? 'bg-purple-800' : 'bg-purple-700';
   };
 
   return (
@@ -179,11 +180,15 @@ export function QKComparison({
         </div>
 
         {/* Relation indicator */}
-        <div className={`text-center mt-4 text-2xl font-bold ${animate ? 'animate-pulse' : ''} ${
-          shiftDirection === 'right' ? 'text-green-600' :
-          shiftDirection === 'left' ? 'text-red-600' :
-          'text-warm-600'
-        }`}>
+        <div
+          className={`text-center mt-4 text-2xl font-bold ${animate ? 'animate-pulse' : ''} ${
+            shiftDirection === 'right'
+              ? 'text-green-600'
+              : shiftDirection === 'left'
+                ? 'text-red-600'
+                : 'text-warm-600'
+          }`}
+        >
           {qkRelation}
         </div>
       </div>
@@ -209,17 +214,25 @@ export function QKComparison({
         </div>
 
         {/* Result */}
-        <div className={`rounded-lg p-3 border-2 ${
-          shiftDirection === 'right' ? 'bg-green-50 border-green-300' :
-          shiftDirection === 'left' ? 'bg-red-50 border-red-300' :
-          'bg-warm-50 border-warm-300'
-        }`}>
+        <div
+          className={`rounded-lg p-3 border-2 ${
+            shiftDirection === 'right'
+              ? 'bg-green-50 border-green-300'
+              : shiftDirection === 'left'
+                ? 'bg-red-50 border-red-300'
+                : 'bg-warm-50 border-warm-300'
+          }`}
+        >
           <div className="font-semibold text-warm-800 text-xs mb-1">Niðurstaða</div>
-          <div className={`font-medium ${
-            shiftDirection === 'right' ? 'text-green-700' :
-            shiftDirection === 'left' ? 'text-red-700' :
-            'text-warm-700'
-          }`}>
+          <div
+            className={`font-medium ${
+              shiftDirection === 'right'
+                ? 'text-green-700'
+                : shiftDirection === 'left'
+                  ? 'text-red-700'
+                  : 'text-warm-700'
+            }`}
+          >
             {shiftExplanation}
           </div>
         </div>
