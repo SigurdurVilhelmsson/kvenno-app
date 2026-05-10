@@ -20,6 +20,8 @@ describe('generateCalculationBreakdown', () => {
     };
     const breakdown = generateCalculationBreakdown(water);
     expect(breakdown.length).toBeGreaterThan(0);
-    expect(breakdown[0].label).toContain('H');
+    // Non-hydrate compounds produce 'calculation' steps with `symbol`, not
+    // `label` (label is reserved for 'section' headers used in hydrates).
+    expect(breakdown[0].symbol).toBe('H');
   });
 });
