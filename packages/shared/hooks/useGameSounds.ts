@@ -66,8 +66,11 @@ function writeEnabledState(enabled: boolean): void {
  * Check whether the Web Audio API is available in the current environment.
  */
 function isWebAudioSupported(): boolean {
-  return typeof window !== 'undefined' &&
-    (typeof AudioContext !== 'undefined' || typeof (window as unknown as Record<string, unknown>).webkitAudioContext !== 'undefined');
+  return (
+    typeof window !== 'undefined' &&
+    (typeof AudioContext !== 'undefined' ||
+      typeof (window as unknown as Record<string, unknown>).webkitAudioContext !== 'undefined')
+  );
 }
 
 /**
@@ -75,11 +78,15 @@ function isWebAudioSupported(): boolean {
  * Handles the browser autoplay-policy requirement (context starts suspended
  * until triggered by a user gesture).
  */
-function ensureAudioContext(ctxRef: React.MutableRefObject<AudioContext | null>): AudioContext | null {
+function ensureAudioContext(
+  ctxRef: React.MutableRefObject<AudioContext | null>
+): AudioContext | null {
   if (!isWebAudioSupported()) return null;
 
   if (!ctxRef.current) {
-    const Ctor = window.AudioContext ?? (window as unknown as Record<string, typeof AudioContext>).webkitAudioContext;
+    const Ctor =
+      window.AudioContext ??
+      (window as unknown as Record<string, typeof AudioContext>).webkitAudioContext;
     ctxRef.current = new Ctor();
   }
 
@@ -115,11 +122,7 @@ interface NoteSpec {
  * Schedule a single oscillator note with an ADSR-like gain envelope.
  * Automatically stops and disconnects the oscillator when done.
  */
-function scheduleNote(
-  ctx: AudioContext,
-  destination: AudioNode,
-  spec: NoteSpec,
-): void {
+function scheduleNote(ctx: AudioContext, destination: AudioNode, spec: NoteSpec): void {
   const { freq, type, startTime, duration, gain, attack = 0.01, release = 0.04 } = spec;
 
   const osc = ctx.createOscillator();
@@ -168,11 +171,22 @@ function scheduleNote(
 export function useGameSounds(): UseGameSoundsReturn {
   const [isEnabled, setIsEnabled] = useState<boolean>(readEnabledState);
   const ctxRef = useRef<AudioContext | null>(null);
+  const pendingTimeoutsRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
 
   // Keep localStorage in sync whenever isEnabled changes
   useEffect(() => {
     writeEnabledState(isEnabled);
   }, [isEnabled]);
+
+  // Clear any pending audio-cleanup timeouts on unmount so they don't fire
+  // against a hook instance whose AudioContext is about to be GC'd.
+  useEffect(() => {
+    const pending = pendingTimeoutsRef.current;
+    return () => {
+      pending.forEach((id) => clearTimeout(id));
+      pending.clear();
+    };
+  }, []);
 
   // -----------------------------------------------------------------------
   // State setters
@@ -300,9 +314,9 @@ export function useGameSounds(): UseGameSoundsReturn {
       const now = ctx.currentTime;
 
       const notes = [
-        { freq: 523, offset: 0 },     // C5
-        { freq: 659, offset: 0.1 },   // E5
-        { freq: 784, offset: 0.2 },   // G5
+        { freq: 523, offset: 0 }, // C5
+        { freq: 659, offset: 0.1 }, // E5
+        { freq: 784, offset: 0.2 }, // G5
       ];
 
       // Create a subtle delay effect for reverb-like depth
@@ -350,16 +364,21 @@ export function useGameSounds(): UseGameSoundsReturn {
 
       // Clean up delay nodes after sounds finish
       const cleanupTime = (now + 0.6) * 1000 - ctx.currentTime * 1000 + 200;
-      setTimeout(() => {
-        try {
-          delayNode.disconnect();
-          feedbackGain.disconnect();
-          dryGain.disconnect();
-          wetGain.disconnect();
-        } catch {
-          // Already disconnected
-        }
-      }, Math.max(cleanupTime, 1000));
+      const timeoutId = setTimeout(
+        () => {
+          pendingTimeoutsRef.current.delete(timeoutId);
+          try {
+            delayNode.disconnect();
+            feedbackGain.disconnect();
+            dryGain.disconnect();
+            wetGain.disconnect();
+          } catch {
+            // Already disconnected
+          }
+        },
+        Math.max(cleanupTime, 1000)
+      );
+      pendingTimeoutsRef.current.add(timeoutId);
     } catch {
       // Graceful degradation
     }
@@ -377,10 +396,10 @@ export function useGameSounds(): UseGameSoundsReturn {
       const now = ctx.currentTime;
 
       const notes = [
-        { freq: 523, offset: 0 },      // C5
-        { freq: 659, offset: 0.06 },   // E5
-        { freq: 784, offset: 0.12 },   // G5
-        { freq: 1047, offset: 0.18 },  // C6
+        { freq: 523, offset: 0 }, // C5
+        { freq: 659, offset: 0.06 }, // E5
+        { freq: 784, offset: 0.12 }, // G5
+        { freq: 1047, offset: 0.18 }, // C6
       ];
 
       for (const { freq, offset } of notes) {
@@ -480,7 +499,7 @@ export function useGameSounds(): UseGameSoundsReturn {
         // Graceful degradation
       }
     },
-    [isEnabled],
+    [isEnabled]
   );
 
   return {
