@@ -520,7 +520,7 @@ function App() {
               min={200}
               max={1200}
               value={demoT}
-              onChange={(e) => setTemperature(parseInt(e.target.value))}
+              onChange={(e) => setTemperature(parseInt(e.target.value, 10))}
               className="w-full mb-2"
               aria-valuetext={`${demoT} Kelvin`}
             />
@@ -738,7 +738,7 @@ function App() {
                     min="200"
                     max="1200"
                     value={temperature}
-                    onChange={(e) => setTemperature(parseInt(e.target.value))}
+                    onChange={(e) => setTemperature(parseInt(e.target.value, 10))}
                     className="w-full"
                     aria-label="Hitastig í Kelvinum"
                     aria-valuetext={`${temperature} Kelvin (${(temperature - 273).toFixed(0)} gráður á Celsíus)`}

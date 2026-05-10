@@ -309,8 +309,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
     if (step.id === 'count') {
       correct =
-        parseInt(bondingPairsAnswer) === molecule.bondingPairs &&
-        parseInt(lonePairsAnswer) === molecule.lonePairs;
+        parseInt(bondingPairsAnswer, 10) === molecule.bondingPairs &&
+        parseInt(lonePairsAnswer, 10) === molecule.lonePairs;
     } else if (step.id === 'geometry') {
       correct = selectedGeometry === molecule.correctGeometryId;
     } else if (step.id === 'angle') {

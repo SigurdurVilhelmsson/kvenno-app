@@ -116,7 +116,7 @@ function parseInput(raw: string): number | null {
     .replace(/×|x|\*/g, '*')
     .replace(/\^/g, '**');
   const m = s.match(/^([+-]?\d+\.?\d*)\s*\*\s*10\*\*\s*(\d+)$/);
-  if (m) return parseFloat(m[1]) * 10 ** parseInt(m[2]);
+  if (m) return parseFloat(m[1]) * 10 ** parseInt(m[2], 10);
   const v = parseFloat(s);
   return isNaN(v) ? null : v;
 }

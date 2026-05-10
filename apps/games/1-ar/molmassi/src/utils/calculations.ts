@@ -23,7 +23,7 @@ export function generateCalculationBreakdown(compound: Compound): CalculationSte
 
     // Extract water multiplier (e.g., "5H₂O" -> 5)
     const waterMatch = waterPart.match(/^(\d+)/);
-    const waterMultiplier = waterMatch ? parseInt(waterMatch[1]) : 1;
+    const waterMultiplier = waterMatch ? parseInt(waterMatch[1], 10) : 1;
 
     breakdown.push({ type: 'section', label: `Aðalefni (${mainFormula}):` });
 

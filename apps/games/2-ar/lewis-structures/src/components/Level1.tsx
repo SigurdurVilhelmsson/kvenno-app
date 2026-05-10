@@ -272,7 +272,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       const selected = shuffledOptions.find((opt) => opt.id === selectedOption);
       correct = selected?.correct ?? false;
     } else {
-      const numAnswer = parseInt(userAnswer);
+      const numAnswer = parseInt(userAnswer, 10);
       correct = numAnswer === challenge.correctAnswer;
     }
 

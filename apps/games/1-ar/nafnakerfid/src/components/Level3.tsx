@@ -66,7 +66,7 @@ function generateParts(compound: Compound): NamePart[] {
 
   // Add common prefixes (up to 4, plus any that appear in the name)
   Object.entries(PREFIXES).forEach(([num, prefix]) => {
-    if (parseInt(num) <= 4 || compound.name.toLowerCase().includes(prefix)) {
+    if (parseInt(num, 10) <= 4 || compound.name.toLowerCase().includes(prefix)) {
       parts.push({ id: `p-${id++}`, text: prefix, type: 'prefix' });
     }
   });
