@@ -62,8 +62,8 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
   };
 
   const checkMultipliers = () => {
-    const oxM = parseInt(answers.oxMultiplier);
-    const redM = parseInt(answers.redMultiplier);
+    const oxM = parseInt(answers.oxMultiplier, 10);
+    const redM = parseInt(answers.redMultiplier, 10);
 
     if (oxM === problem.multiplierOx && redM === problem.multiplierRed) {
       setScore((prev) => prev + L3_SCORING.BALANCE);
@@ -83,7 +83,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
 
   const checkOxElectrons = () => {
     if (feedback.show || !answers.oxElectrons) return;
-    const correct = parseInt(answers.oxElectrons) === problem.oxidationHalf.electrons;
+    const correct = parseInt(answers.oxElectrons, 10) === problem.oxidationHalf.electrons;
     if (correct) {
       setScore((prev) => prev + L3_SCORING.OXIDATION_HALF);
       setFeedback({ show: true, correct: true, message: t('common.correct', 'Rétt!') });
@@ -98,7 +98,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
 
   const checkRedElectrons = () => {
     if (feedback.show || !answers.redElectrons) return;
-    const correct = parseInt(answers.redElectrons) === problem.reductionHalf.electrons;
+    const correct = parseInt(answers.redElectrons, 10) === problem.reductionHalf.electrons;
     if (correct) {
       setScore((prev) => prev + L3_SCORING.REDUCTION_HALF);
       setFeedback({ show: true, correct: true, message: t('common.correct', 'Rétt!') });

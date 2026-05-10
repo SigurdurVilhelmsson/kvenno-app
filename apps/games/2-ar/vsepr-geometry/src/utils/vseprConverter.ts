@@ -2,7 +2,13 @@
  * Utility to convert VSEPR game format to AnimatedMolecule format
  */
 
-import type { Molecule, MoleculeAtom, MoleculeBond, BondType, MolecularGeometry } from '@shared/types';
+import type {
+  Molecule,
+  MoleculeAtom,
+  MoleculeBond,
+  BondType,
+  MolecularGeometry,
+} from '@shared/types';
 
 export interface VSEPRGeometry {
   id: string;
@@ -28,31 +34,41 @@ export interface VSEPRMolecule {
  * Map VSEPR geometry IDs to AnimatedMolecule geometry types
  */
 const GEOMETRY_MAP: Record<string, MolecularGeometry | undefined> = {
-  'linear': 'linear',
-  'bent': 'bent',
+  linear: 'linear',
+  bent: 'bent',
   'bent-2': 'bent',
   'bent-4': 'bent',
   'trigonal-planar': 'trigonal-planar',
   'trigonal-pyramidal': 'trigonal-pyramidal',
-  'tetrahedral': 'tetrahedral',
-  'seesaw': 'see-saw',
+  tetrahedral: 'tetrahedral',
+  seesaw: 'see-saw',
   'see-saw': 'see-saw',
   't-shaped': 't-shaped',
   'trigonal-bipyramidal': 'trigonal-bipyramidal',
   'square-planar': 'square-planar',
   'square-pyramidal': 'square-pyramidal',
-  'octahedral': 'octahedral',
+  octahedral: 'octahedral',
 };
 
 /**
  * Extract atom symbols from a chemical formula
  */
-function parseFormula(formula: string): { central: string; surrounding: { symbol: string; count: number }[] } {
+function parseFormula(formula: string): {
+  central: string;
+  surrounding: { symbol: string; count: number }[];
+} {
   // Remove subscript characters and convert to regular numbers
   const normalized = formula
-    .replace(/₀/g, '0').replace(/₁/g, '1').replace(/₂/g, '2')
-    .replace(/₃/g, '3').replace(/₄/g, '4').replace(/₅/g, '5')
-    .replace(/₆/g, '6').replace(/₇/g, '7').replace(/₈/g, '8').replace(/₉/g, '9');
+    .replace(/₀/g, '0')
+    .replace(/₁/g, '1')
+    .replace(/₂/g, '2')
+    .replace(/₃/g, '3')
+    .replace(/₄/g, '4')
+    .replace(/₅/g, '5')
+    .replace(/₆/g, '6')
+    .replace(/₇/g, '7')
+    .replace(/₈/g, '8')
+    .replace(/₉/g, '9');
 
   // Match element symbols with optional counts
   const matches = normalized.match(/([A-Z][a-z]?)(\d*)/g) || [];
@@ -62,7 +78,7 @@ function parseFormula(formula: string): { central: string; surrounding: { symbol
     const symbolMatch = match.match(/([A-Z][a-z]?)(\d*)/);
     if (symbolMatch) {
       const symbol = symbolMatch[1];
-      const count = symbolMatch[2] ? parseInt(symbolMatch[2]) : 1;
+      const count = symbolMatch[2] ? parseInt(symbolMatch[2], 10) : 1;
       if (symbol) {
         atoms.push({ symbol, count });
       }
@@ -79,10 +95,7 @@ function parseFormula(formula: string): { central: string; surrounding: { symbol
 /**
  * Convert a VSEPR molecule to AnimatedMolecule Molecule format
  */
-export function vseprToMolecule(
-  vsepr: VSEPRMolecule,
-  bondType: BondType = 'single'
-): Molecule {
+export function vseprToMolecule(vsepr: VSEPRMolecule, bondType: BondType = 'single'): Molecule {
   const atoms: MoleculeAtom[] = [];
   const bonds: MoleculeBond[] = [];
 

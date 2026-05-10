@@ -97,8 +97,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     let correct = false;
     if (step === 'limiting') correct = selectedLimiting === ans.limitingReactant;
     else if (step === 'products')
-      correct = parseInt(productInput) === ans.productsFormed[product.formula];
-    else if (step === 'excess') correct = parseInt(excessInput) === ans.excessRemaining;
+      correct = parseInt(productInput, 10) === ans.productsFormed[product.formula];
+    else if (step === 'excess') correct = parseInt(excessInput, 10) === ans.excessRemaining;
 
     setStepCorrect(correct);
     setStepAnswered(true);

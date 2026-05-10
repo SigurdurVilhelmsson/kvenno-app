@@ -725,7 +725,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                       min={challenge.constraints.minVolume}
                       max={challenge.constraints.maxVolume}
                       value={volumeML}
-                      onChange={(e) => changeVolume(parseInt(e.target.value))}
+                      onChange={(e) => changeVolume(parseInt(e.target.value, 10))}
                       aria-label="Rúmmál lausnar í millilítrum"
                       aria-valuetext={`${volumeML} millilítrar af ${challenge.constraints.maxVolume}`}
                       className="w-full h-3 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-600"

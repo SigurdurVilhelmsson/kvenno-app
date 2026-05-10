@@ -233,7 +233,7 @@ function parseAnswer(input: string): number | null {
   if (!isNaN(direct) && isFinite(direct)) return direct;
   const m = cleaned.match(/^([+-]?\d+\.?\d*)[x*\u00d7]10\^([+-]?\d+)$/i);
   if (m) {
-    const val = parseFloat(m[1]) * 10 ** parseInt(m[2]);
+    const val = parseFloat(m[1]) * 10 ** parseInt(m[2], 10);
     if (isFinite(val)) return val;
   }
   return null;

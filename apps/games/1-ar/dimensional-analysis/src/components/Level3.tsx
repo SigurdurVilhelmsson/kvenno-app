@@ -165,7 +165,7 @@ export function Level3({
         methodScore = 1;
       }
     } else if (problem.type === 'real_world') {
-      const userNum = parseInt(userAnswer);
+      const userNum = parseInt(userAnswer, 10);
       if (userNum === problem.expectedAnswer) {
         answerScore = 1;
         methodScore = 1;

@@ -187,7 +187,7 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
   };
 
   const handleSubmit = () => {
-    const answer = parseInt(userAnswer);
+    const answer = parseInt(userAnswer, 10);
     const correct = answer === problems[currentProblem].correctAnswer;
     setIsCorrect(correct);
     setShowFeedback(true);
