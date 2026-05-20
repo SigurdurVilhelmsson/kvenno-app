@@ -42,18 +42,27 @@ rsync -avz --delete ${DRY_RUN:+"$DRY_RUN"} \
   "$DIST_DIR/" "$SERVER:$WEB_ROOT/"
 
 # Step 2: Deploy backend
+# Use `pnpm deploy` to produce a standalone, self-contained bundle of the
+# server package (with node_modules and a resolved lockfile) — no workspace
+# context or `pnpm install` needed on the production host.
+BUNDLE_DIR="$(mktemp -d -t kvenno-server-bundle-XXXXXX)"
+trap 'rm -rf "$BUNDLE_DIR"' EXIT
+
+echo ""
+echo "📦 Building standalone backend bundle in $BUNDLE_DIR..."
+pnpm --filter kvenno-server deploy --prod "$BUNDLE_DIR"
+
 echo ""
 echo "⚙️  Deploying backend to $BACKEND_DIR..."
-rsync -avz ${DRY_RUN:+"$DRY_RUN"} \
-  --exclude='node_modules' \
+rsync -avz --delete ${DRY_RUN:+"$DRY_RUN"} \
   --exclude='.env' \
-  "$SERVER_DIR/" "$SERVER:$BACKEND_DIR/"
+  "$BUNDLE_DIR/" "$SERVER:$BACKEND_DIR/"
 
-# Step 3: Install backend dependencies and restart
+# Step 3: Restart backend
 if [ -z "$DRY_RUN" ]; then
   echo ""
-  echo "📦 Installing backend dependencies and restarting..."
-  ssh "$SERVER" "cd $BACKEND_DIR && pnpm install --frozen-lockfile --prod && sudo systemctl restart kvenno-backend"
+  echo "🔄 Restarting backend..."
+  ssh "$SERVER" "sudo systemctl restart kvenno-backend"
 
   echo ""
   echo "🔍 Setting permissions..."
