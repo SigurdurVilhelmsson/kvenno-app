@@ -74,7 +74,11 @@ test.describe('Year hub — Tool cards', () => {
     await page.goto('/efnafraedi/1-ar');
     // Breadcrumbs show Heim > Efnafraedi > 1. ar
     await expect(page.locator('text=Heim').first()).toBeVisible();
-    await expect(page.locator('nav >> text=Efnafræði').or(page.locator('[aria-label*="braut"] >> text=Efnafræði')).or(page.locator('text=Efnafræði').first())).toBeVisible();
+    // Scope to the Brauðmolar (breadcrumb) nav so we don't strict-match
+    // sidebar / header occurrences of "Efnafræði".
+    await expect(
+      page.getByLabel('Brauðmolar').getByRole('link', { name: 'Efnafræði' })
+    ).toBeVisible();
   });
 
   test('back button navigates to chemistry hub', async ({ page }) => {
@@ -124,7 +128,9 @@ test.describe('Navigation flow — Full path: track selector to game and back', 
     await expect(page.locator('h1')).toContainText('Námsvef');
   });
 
-  test('full navigation flow: landing → chemistry hub → year hub → back to hub', async ({ page }) => {
+  test('full navigation flow: landing → chemistry hub → year hub → back to hub', async ({
+    page,
+  }) => {
     // Start at landing
     await page.goto('/');
     await expect(page.locator('h1')).toContainText('Námsvef');

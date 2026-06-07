@@ -51,16 +51,17 @@ test.describe('Game flow — Level completion (molmassi)', () => {
     await page.waitForLoadState('networkidle');
 
     // Verify the progress was saved by checking localStorage
-    const savedProgress = await page.evaluate(() =>
-      localStorage.getItem('molmassiLevelProgress')
-    );
+    const savedProgress = await page.evaluate(() => localStorage.getItem('molmassiLevelProgress'));
 
     expect(savedProgress).not.toBeNull();
     const parsed = JSON.parse(savedProgress!);
     expect(parsed.level1Completed).toBe(true);
   });
 
-  test('level 2 is locked when level 1 is not completed', async ({ page }) => {
+  // Skipped: the April 2026 game restructure removed level locking — every
+  // level card on the molmassi menu is now an active button regardless of
+  // prior progress. There is no `button[disabled]` or 🔒 indicator to assert.
+  test.skip('level 2 is locked when level 1 is not completed', async ({ page }) => {
     await page.goto(gameUrl);
     await page.waitForLoadState('networkidle');
 

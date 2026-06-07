@@ -1,26 +1,31 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Game interaction tests', () => {
-  test('molmassi — loads and shows start button', async ({ page }) => {
+  test('molmassi — loads and shows level menu', async ({ page }) => {
     await page.goto('/efnafraedi/1-ar/games/molmassi.html');
     await page.waitForLoadState('networkidle');
 
-    // Game should render with a start/play button
-    const startButton = page.locator('button', { hasText: /byrja|spila|start/i });
-    await expect(startButton.first()).toBeVisible({ timeout: 10000 });
+    // Post-April-2026 restructure: the menu opens directly to level cards
+    // (no separate "byrja/spila" entry button).
+    const levelButton = page.locator('button').filter({ hasText: /level|stig|mól/i });
+    await expect(levelButton.first()).toBeVisible({ timeout: 10000 });
   });
 
-  test('molmassi — can start a game', async ({ page }) => {
+  test('molmassi — can enter a level', async ({ page }) => {
     await page.goto('/efnafraedi/1-ar/games/molmassi.html');
     await page.waitForLoadState('networkidle');
 
-    // Click start button
-    const startButton = page.locator('button', { hasText: /byrja|spila|start/i });
-    await startButton.first().click();
+    // Click the first level card; clicking it should navigate into level 1.
+    const firstLevel = page
+      .locator('button')
+      .filter({ hasText: /level|stig|mól/i })
+      .first();
+    await firstLevel.click();
 
-    // After starting, a game element should appear (input field or level indicator)
-    const gameContent = page.locator('input, [class*="level"], [class*="game"]');
-    await expect(gameContent.first()).toBeVisible({ timeout: 10000 });
+    // The menu uses h2 for level cards and has no h1; every level screen
+    // renders a "Til baka" back button — assert it appears, which is the
+    // most stable indicator that we've left the menu.
+    await expect(page.getByRole('button', { name: /Til baka/i })).toBeVisible({ timeout: 10000 });
   });
 
   test('ph-titration — loads and shows pH display', async ({ page }) => {
@@ -46,8 +51,15 @@ test.describe('Game interaction tests', () => {
     await page.waitForLoadState('networkidle');
 
     // Look for a mode selection or start button
-    const modeButton = page.locator('button', { hasText: /byrja|spila|æfing|kennsla|learning|start/i });
-    if (await modeButton.first().isVisible({ timeout: 5000 }).catch(() => false)) {
+    const modeButton = page.locator('button', {
+      hasText: /byrja|spila|æfing|kennsla|learning|start/i,
+    });
+    if (
+      await modeButton
+        .first()
+        .isVisible({ timeout: 5000 })
+        .catch(() => false)
+    ) {
       await modeButton.first().click();
 
       // After clicking, game content should be present

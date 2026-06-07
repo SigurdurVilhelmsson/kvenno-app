@@ -33,9 +33,16 @@ test.describe('Islenskubraut — Category grid', () => {
     await page.waitForURL('**/islenskubraut/spjald/dyr');
   });
 
-  test('header shows Islenskubraut title', async ({ page }) => {
+  test('header shows site title and links islenskubraut track', async ({ page }) => {
     await page.goto('/islenskubraut/');
-    await expect(page.locator('header h1')).toContainText('Íslenskubraut');
+    // The shared Header (default variant) renders the site title as a
+    // home-link <a>, not an h1, and signals the current section via the
+    // activeTrack prop. Assert the title link plus the visible Íslenskubraut
+    // track tab in the header.
+    await expect(page.locator('header')).toContainText('Námsvefur Kvennó');
+    await expect(
+      page.locator('header').getByRole('link', { name: 'Íslenskubraut' }).first()
+    ).toBeVisible();
   });
 
   test('navigation link back to Namsvefur Kvenno exists', async ({ page }) => {
@@ -47,9 +54,9 @@ test.describe('Islenskubraut — Category grid', () => {
 
   test('footer shows correct text', async ({ page }) => {
     await page.goto('/islenskubraut/');
-    await expect(
-      page.locator('footer').locator('text=Íslenskubraut — Kvennaskólinn í Reykjavík')
-    ).toBeVisible();
+    // Shared Footer renders "© <year> Kvennaskólinn í Reykjavík — <department>".
+    await expect(page.locator('footer')).toContainText('Kvennaskólinn í Reykjavík');
+    await expect(page.locator('footer')).toContainText('Íslenskubraut');
   });
 });
 
@@ -63,7 +70,9 @@ test.describe('Islenskubraut — Teaching card page navigation', () => {
     await expect(categoryLinks).toHaveCount(6);
   });
 
-  test('clicking Matur og drykkur navigates to teaching card page with correct URL', async ({ page }) => {
+  test('clicking Matur og drykkur navigates to teaching card page with correct URL', async ({
+    page,
+  }) => {
     await page.goto('/islenskubraut/');
     await page.waitForLoadState('networkidle');
 

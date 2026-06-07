@@ -16,9 +16,11 @@ test.describe('Mobile viewport tests', () => {
     // Main heading should be visible
     await expect(page.locator('h1').first()).toBeVisible();
 
-    // Track cards should be visible (Efnafraedi and Islenskubraut)
-    await expect(page.locator('text=Efnafræði').first()).toBeVisible();
-    await expect(page.locator('text=Íslenskubraut').first()).toBeVisible();
+    // Track cards live in <main>; the sidebar nav also references these names
+    // but may be collapsed on a 375px viewport, so scope to the main region.
+    const main = page.locator('main');
+    await expect(main.locator('text=Efnafræði').first()).toBeVisible();
+    await expect(main.locator('text=Íslenskubraut').first()).toBeVisible();
   });
 
   test('chemistry hub year cards are visible on small screen', async ({ page }) => {
@@ -49,12 +51,7 @@ test.describe('Mobile viewport tests', () => {
   });
 
   test('no horizontal overflow on main pages', async ({ page }) => {
-    const pagesToCheck = [
-      '/',
-      '/efnafraedi',
-      '/efnafraedi/1-ar',
-      '/islenskubraut/',
-    ];
+    const pagesToCheck = ['/', '/efnafraedi', '/efnafraedi/1-ar', '/islenskubraut/'];
 
     for (const url of pagesToCheck) {
       await page.goto(url);
@@ -65,10 +62,7 @@ test.describe('Mobile viewport tests', () => {
         return document.documentElement.scrollWidth > document.documentElement.clientWidth + 5;
       });
 
-      expect(
-        hasHorizontalOverflow,
-        `Horizontal overflow detected on ${url}`
-      ).toBe(false);
+      expect(hasHorizontalOverflow, `Horizontal overflow detected on ${url}`).toBe(false);
     }
   });
 });
