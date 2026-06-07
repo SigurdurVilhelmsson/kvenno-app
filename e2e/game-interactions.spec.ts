@@ -15,17 +15,17 @@ test.describe('Game interaction tests', () => {
     await page.goto('/efnafraedi/1-ar/games/molmassi.html');
     await page.waitForLoadState('networkidle');
 
-    // Click the first level card; clicking it should navigate into level 1
-    // (the level cards contain emoji + title; we click via the button role).
+    // Click the first level card; clicking it should navigate into level 1.
     const firstLevel = page
       .locator('button')
       .filter({ hasText: /level|stig|mól/i })
       .first();
     await firstLevel.click();
 
-    // After entering, a level-specific element should appear (input or content).
-    const gameContent = page.locator('input, [class*="level"], [class*="game"]');
-    await expect(gameContent.first()).toBeVisible({ timeout: 10000 });
+    // The menu uses h2 for level cards and has no h1; every level screen
+    // renders a "Til baka" back button — assert it appears, which is the
+    // most stable indicator that we've left the menu.
+    await expect(page.getByRole('button', { name: /Til baka/i })).toBeVisible({ timeout: 10000 });
   });
 
   test('ph-titration — loads and shows pH display', async ({ page }) => {

@@ -35,10 +35,11 @@ test.describe('Islenskubraut — Category grid', () => {
 
   test('header shows site title and links islenskubraut track', async ({ page }) => {
     await page.goto('/islenskubraut/');
-    // The shared Header renders "Námsvefur Kvennó" as the h1 across all
-    // apps and signals the current section via activeTrack rather than a
-    // per-app heading. Assert both.
-    await expect(page.locator('header h1')).toContainText('Námsvefur Kvennó');
+    // The shared Header (default variant) renders the site title as a
+    // home-link <a>, not an h1, and signals the current section via the
+    // activeTrack prop. Assert the title link plus the visible Íslenskubraut
+    // track tab in the header.
+    await expect(page.locator('header')).toContainText('Námsvefur Kvennó');
     await expect(
       page.locator('header').getByRole('link', { name: 'Íslenskubraut' }).first()
     ).toBeVisible();
