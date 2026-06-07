@@ -180,12 +180,7 @@ test.describe('Performance smoke tests — Load times', () => {
   });
 
   test('no JavaScript errors in console on main pages', async ({ page }) => {
-    const pages = [
-      '/',
-      '/efnafraedi',
-      '/efnafraedi/1-ar',
-      '/islenskubraut/',
-    ];
+    const pages = ['/', '/efnafraedi', '/efnafraedi/1-ar', '/islenskubraut/'];
 
     for (const url of pages) {
       const consoleErrors: string[] = [];
@@ -225,12 +220,11 @@ test.describe('Performance smoke tests — Load times', () => {
     await page.goto('/islenskubraut/');
     await page.waitForLoadState('networkidle');
 
-    // All captured asset responses should be 200
+    // All captured asset responses should be successful. 304 Not Modified
+    // is also a success path — when the same asset is requested across both
+    // page loads, the dev server can short-circuit with a conditional response.
     for (const asset of assetStatuses) {
-      expect(
-        asset.status,
-        `Asset ${asset.url} returned ${asset.status}`
-      ).toBe(200);
+      expect([200, 304], `Asset ${asset.url} returned ${asset.status}`).toContain(asset.status);
     }
 
     // We should have captured at least some assets

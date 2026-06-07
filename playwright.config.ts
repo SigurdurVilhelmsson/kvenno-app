@@ -25,8 +25,9 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npx serve dist -l 4173 -s',
+    command: 'node e2e/preview-server.mjs',
     port: 4173,
+    env: { PORT: '4173' },
     reuseExistingServer: !process.env.CI,
   },
 });
