@@ -64,6 +64,11 @@ vi.mock('@shared/hooks', () => ({
     language: 'is' as const,
     setLanguage: vi.fn(),
   }),
+  useGameProgress: <T,>(_storageKey: string, defaultProgress: T) => ({
+    progress: defaultProgress,
+    updateProgress: vi.fn(),
+    resetProgress: vi.fn(),
+  }),
 }));
 
 vi.mock('@shared/hooks/useAchievements', () => ({
