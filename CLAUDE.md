@@ -121,7 +121,7 @@ dist/
 │   ├── index.html                     # Chemistry hub (SPA fallback)
 │   ├── 1-ar/
 │   │   ├── index.html                 # Year 1 hub (SPA fallback)
-│   │   └── games/*.html               # Self-contained games (~200KB each)
+│   │   └── games/*.html               # Self-contained games (~290-400 KB each)
 │   ├── 2-ar/
 │   │   ├── index.html
 │   │   ├── games/...
@@ -191,7 +191,7 @@ Full plan: `~/.claude/plans/mighty-mixing-puffin.md`
 - ✅ Buffer L2/L3 `BufferCapacityVisualization` — wired into completion explanation screens in both levels
 
 **Three.js code-split (Aug 2026):** VSEPR, Lewis, and IMF now load ~380–400 KB up front instead
-of ~2.9 MB; the ~2.6 MB Three.js payload is deferred until a student opens a 3D view.
+of ~2.9 MB. See the drei follow-up below for the deferred payload's final size.
 
 Two causes, both needed fixing — the earlier diagnosis blamed only the second:
 
@@ -295,7 +295,9 @@ pnpm build                 # Build everything
 
 - **Icelandic UI:** All user-facing text must be in Icelandic
 - **KVENNO-STRUCTURE.md:** The master design document lives at `docs/KVENNO-STRUCTURE.md`
-- **Games build to single HTML files** via `vite-plugin-singlefile` (1.2-2.9 MB each; see `docs/bundle-sizes.md`)
+- **Most games build to single HTML files** via `vite-plugin-singlefile` (~290-400 KB each). The three
+  Three.js games (VSEPR, Lewis, IMF) opt out via `singleFile: false` and emit `{game}.html` +
+  `{game}.css` + `assets/{game}/*.js`, which must be deployed together. See `docs/bundle-sizes.md`.
 - **Lab reports need 2 builds:** One for `/efnafraedi/2-ar/lab-reports/` and one for `/efnafraedi/3-ar/lab-reports/`
 - **Server needs system deps:** `pandoc` and `libreoffice` for .docx processing
 - **API key security:** Claude API key lives in `server/.env` (never committed), proxied through Express backend

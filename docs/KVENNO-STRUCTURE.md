@@ -34,12 +34,13 @@ All code lives in a single pnpm monorepo (`kvenno-app/`):
 
 - **Landing + Year Hubs** (`apps/landing`) - React SPA serving the track selector and all chemistry year hub pages
 - **Lab Reports** (`apps/lab-reports`) - React SPA, deployed to 2 paths (2-ar, 3-ar) with separate builds
-- **Chemistry Games** (`apps/games/`) - 17 single-file HTML games organized by year:
-  - `apps/games/1-ar/` - 5 games for year 1
-  - `apps/games/2-ar/` - 7 games for year 2
+- **Chemistry Games** (`apps/games/`) - 20 games organized by year (single-file HTML, except the
+  three Three.js games which emit separate chunks):
+  - `apps/games/1-ar/` - 7 games for year 1
+  - `apps/games/2-ar/` - 8 games for year 2
   - `apps/games/3-ar/` - 5 games for year 3
 - **Islenskubraut** (`apps/islenskubraut`) - Icelandic language teaching cards SPA
-- **Shared Library** (`packages/shared/`) - Components, hooks, utils, types, i18n, animations, sounds
+- **Shared Library** (`packages/shared/`) - Components, hooks, utils, types, i18n, animations
 
 ### Deployment Strategy
 
@@ -752,7 +753,7 @@ Each app (Lab Reports, AI Tutor, etc.) must include:
 - **Contains**:
   - Track selector landing page (`/`) and chemistry year hubs (`/efnafraedi/*`)
   - Lab reports SPA (`/efnafraedi/2-ar/lab-reports/`, `/efnafraedi/3-ar/lab-reports/`)
-  - 17 chemistry games as single-file HTML builds
+  - 20 chemistry games (single-file HTML, except the three Three.js games)
   - Islenskubraut teaching cards SPA (`/islenskubraut/`)
   - Express backend (`server/`) for Claude API proxy and PDF generation
   - Shared component library (`packages/shared/`)
@@ -767,9 +768,9 @@ kvenno-app/
 │   ├── landing/          # Track selector + chemistry year hubs (React SPA)
 │   ├── islenskubraut/    # Icelandic language teaching cards (React SPA)
 │   ├── lab-reports/      # AI-powered lab report grading (React SPA)
-│   └── games/            # 17 chemistry games (single-file HTML builds)
-│       ├── 1-ar/         # 5 games for year 1
-│       ├── 2-ar/         # 7 games for year 2
+│   └── games/            # 20 chemistry games (single-file HTML, except the 3 Three.js ones)
+│       ├── 1-ar/         # 7 games for year 1
+│       ├── 2-ar/         # 8 games for year 2
 │       └── 3-ar/         # 5 games for year 3
 ├── packages/
 │   └── shared/           # Shared components, hooks, utils, types, i18n
@@ -793,7 +794,7 @@ pnpm build
 The build script (`scripts/build-all.mjs`) orchestrates all builds:
 
 1. Builds the landing page SPA
-2. Builds all 17 games as self-contained HTML files
+2. Builds all 20 games (self-contained HTML, except the three Three.js games)
 3. Builds lab-reports twice (for 2-ar and 3-ar paths)
 4. Builds islenskubraut SPA
 5. Copies media assets
@@ -869,7 +870,8 @@ pnpm test:e2e             # Run E2E tests (Playwright)
 2. **Use shared components**: Import Header, Breadcrumbs, Footer from `packages/shared/`
 3. **Test navigation**: Make sure links and breadcrumbs work correctly
 4. **Responsive**: Test on mobile sizes
-5. **i18n**: Use `useGameI18n` hook for game translations (all 17 games support IS/EN/PL)
+5. **i18n**: Use `useGameI18n` hook for game translations (all 20 games import it; see
+   `docs/i18n-coverage.md` for actual per-game coverage)
 
 ## 11. Icelandic Language
 
@@ -955,7 +957,7 @@ Manual or automated deployment via `./scripts/deploy.sh` (rsync to server + back
 
 ## 16. i18n System
 
-All 17 chemistry games support internationalization via the `useGameI18n` hook:
+All 20 chemistry games import the `useGameI18n` hook:
 
 - **Languages**: Icelandic (IS, default), English (EN), Polish (PL)
 - **Implementation**: Each game has an `i18n.ts` file with `createGameTranslations()` calls
