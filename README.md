@@ -192,9 +192,9 @@ kvenno-app/
 │   ├── landing/          # Track selector + chemistry year hubs (React SPA)
 │   ├── islenskubraut/    # Icelandic teaching cards (React SPA)
 │   ├── lab-reports/      # AI lab report grading (React SPA)
-│   └── games/            # 17 chemistry games (single-file HTML builds)
-│       ├── 1-ar/         # 5 games for year 1
-│       ├── 2-ar/         # 7 games for year 2
+│   └── games/            # 20 chemistry games (single-file HTML, except the 3 Three.js ones)
+│       ├── 1-ar/         # 7 games for year 1
+│       ├── 2-ar/         # 8 games for year 2
 │       └── 3-ar/         # 5 games for year 3
 ├── packages/
 │   └── shared/           # Shared components, hooks, utils, types, i18n

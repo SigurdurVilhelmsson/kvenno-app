@@ -108,12 +108,20 @@ Bundle cost: effectively **0 KB** of additional dependencies. The component code
 
 ## Optimization Recommendations
 
-1. **Games are the largest contributor.** The 0.3-2.9 MB per game is due to vite-plugin-singlefile bundling all dependencies (React, Tailwind CSS, Three.js) into each HTML file. This is by design for offline-capable, zero-dependency deployment but means each game re-bundles shared libraries.
+1. **Done (Aug 2026) — Three.js is deferred.** VSEPR, Lewis, and IMF used to ship ~2.9 MB up front.
+   They now open in ~380-400 KB, with ~1004 KB fetched only when a student opens a 3D view. This was
+   two bugs, not a bundler limitation: a static re-export defeating the lazy boundary, and a
+   dependency probe importing the whole `@react-three/drei` barrel. `e2e/threejs-lazy-loading.spec.ts`
+   guards it — do not "simplify" that spec away.
 
-2. **Three.js games are ~2x larger** than non-3D games (2.9 MB vs 1.2-1.3 MB). If game load time is a concern, consider lazy-loading Three.js within 3D games.
+2. **Single-file builds re-bundle shared libraries.** Each of the 17 single-file games inlines its own
+   copy of React and Tailwind, so the ~290-400 KB is mostly duplicated across games. That is the
+   deliberate cost of self-contained, offline-capable HTML. Only revisit it if a game exceeds ~500 KB.
 
-3. **Lab reports PDF worker** (1.4 MB) is the largest single asset. It's loaded as a web worker on-demand, so it doesn't block initial page load.
+3. **Lab reports PDF worker** (~1210 KB) is the largest single asset. It loads as a web worker
+   on-demand, so it does not block initial page load.
 
-4. **Landing page** already code-splits the MoleculeViewer3D chunk (948 KB Three.js). Good pattern.
+4. **Landing page carries no 3D code** (react-vendor 185 KB + index 63 KB). It previously code-split a
+   MoleculeViewer3D chunk; the landing app no longer references it at all.
 
 5. **Gzip compression** reduces transfer sizes significantly (lab-reports main chunk: 813 KB -> 227 KB gzipped). Ensure nginx serves with gzip/brotli.
