@@ -49,7 +49,8 @@ function DefaultLoadingPlaceholder({
     >
       <div className="text-center">
         <div className="animate-spin w-6 h-6 border-2 border-gray-300 border-t-blue-500 rounded-full mx-auto mb-2" />
-        <span>Loading 3D viewer...</span>
+        {/* "Sæki", not "Hleð" — in these games "hleðsla" is electric charge. */}
+        <span>Sæki þrívíddarsýn…</span>
       </div>
     </div>
   );
@@ -58,15 +59,7 @@ function DefaultLoadingPlaceholder({
 /**
  * Error fallback when Three.js fails to load
  */
-function ErrorFallback({
-  width,
-  height,
-  error,
-}: {
-  width?: string | number;
-  height?: string | number;
-  error?: string;
-}) {
+function ErrorFallback({ width, height }: { width?: string | number; height?: string | number }) {
   return (
     <div
       className="
@@ -81,9 +74,9 @@ function ErrorFallback({
     >
       <div className="text-center p-4">
         <span className="block text-amber-500 text-lg mb-2">⚠</span>
-        <span className="block">3D viewer not available</span>
+        <span className="block">Þrívíddarsýn er ekki tiltæk</span>
         <span className="block text-xs text-gray-400 mt-1">
-          {error || 'Three.js dependencies may not be installed'}
+          Ekki tókst að sækja þrívíddarsýnina. Athugaðu nettenginguna.
         </span>
       </div>
     </div>
@@ -114,24 +107,33 @@ function ErrorFallback({
  */
 export function MoleculeViewer3DLazy(props: MoleculeViewer3DProps) {
   const [hasError, setHasError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string>();
 
-  // Check if Three.js is available
+  // Probe the deferred 3D chunks so a network failure degrades to a localized
+  // message inside the molecule panel. Without this the Suspense fallback spins
+  // forever with no explanation — React.lazy failures don't reach Suspense, and
+  // the games' only ErrorBoundary wraps the whole App, so an uncaught throw would
+  // replace the entire game rather than just this panel.
+  //
+  // Deliberately does NOT probe '@react-three/drei': importing that barrel pulled
+  // 1.6 MB (hls.js, @mediapipe/tasks-vision) into the graph purely to test that it
+  // resolves. three + fiber are the chunks that actually travel over the network.
   useEffect(() => {
     const checkDependencies = async () => {
       try {
         await import('three');
         await import('@react-three/fiber');
       } catch (err) {
+        // Students get the Icelandic message below; the raw cause goes to the
+        // console rather than on screen.
+        console.error('3D dependency load failed:', err);
         setHasError(true);
-        setErrorMessage(err instanceof Error ? err.message : 'Failed to load 3D dependencies');
       }
     };
     checkDependencies();
   }, []);
 
   if (hasError) {
-    return <ErrorFallback width={props.width} height={props.height} error={errorMessage} />;
+    return <ErrorFallback width={props.width} height={props.height} />;
   }
 
   return (
