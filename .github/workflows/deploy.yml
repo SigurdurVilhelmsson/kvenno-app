@@ -67,19 +67,29 @@ jobs:
             -e "ssh -i ~/.ssh/deploy_key" \
             dist/ ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/
 
+      # Build a standalone, self-contained bundle of the server package
+      # (compiled dist/ + resolved prod node_modules) so the production host
+      # never needs workspace context or a pnpm install. Mirrors scripts/deploy.sh.
+      - name: Bundle backend
+        run: pnpm --filter kvenno-server deploy --prod /tmp/kvenno-server-bundle
+
+      - name: Verify backend bundle is complete
+        run: |
+          if [ ! -f /tmp/kvenno-server-bundle/dist/index.js ]; then
+            echo "::error::Backend bundle is missing dist/index.js — the systemd unit runs 'node dist/index.js' and would crash-loop. Aborting before touching production."
+            exit 1
+          fi
+
       - name: Deploy backend
         run: |
-          rsync -avz \
-            --exclude='node_modules' \
+          rsync -avz --delete \
             --exclude='.env' \
             -e "ssh -i ~/.ssh/deploy_key" \
-            server/ ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/opt/kvenno-server/
+            /tmp/kvenno-server-bundle/ ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/opt/kvenno-server/
 
-      - name: Install backend dependencies and restart
+      - name: Restart backend
         run: |
           ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "\
-            cd /opt/kvenno-server && \
-            pnpm install --frozen-lockfile --prod && \
             sudo systemctl restart kvenno-backend"
 
       - name: Set permissions
@@ -88,16 +98,30 @@ jobs:
             sudo chown -R www-data:www-data ${{ secrets.DEPLOY_PATH }} && \
             sudo chmod -R 755 ${{ secrets.DEPLOY_PATH }}"
 
+      # Checked on the host against the backend port directly, not via
+      # https://$DEPLOY_HOST/health: nginx only proxies /api/, so a public
+      # /health request falls through to `try_files $uri /index.html` and
+      # returns the SPA with HTTP 200 even when the backend is dead.
+      # The Origin header is required — in production the CORS policy rejects
+      # origin-less requests with HTTP 500.
       - name: Health check
         run: |
-          echo "Waiting for server to start..."
-          sleep 5
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://${{ secrets.DEPLOY_HOST }}/health || true)
-          if [ "$HTTP_STATUS" = "200" ]; then
-            echo "Health check passed (HTTP $HTTP_STATUS)" >> "$GITHUB_STEP_SUMMARY"
+          echo "Waiting for backend to come up..."
+          STATUS="000"
+          for _ in $(seq 1 10); do
+            STATUS=$(ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+              "curl -s -o /dev/null -w '%{http_code}' -H 'Origin: https://${{ secrets.DEPLOY_HOST }}' http://127.0.0.1:8000/health" 2>/dev/null || echo "000")
+            [ "$STATUS" = "200" ] && break
+            sleep 3
+          done
+          if [ "$STATUS" = "200" ]; then
+            echo "Backend health check passed (HTTP 200)" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "::warning::Health check returned HTTP $HTTP_STATUS"
-            echo "Health check warning: HTTP $HTTP_STATUS" >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::Backend health check failed (HTTP $STATUS) after 10 attempts"
+            echo "Backend health check FAILED (HTTP $STATUS)" >> "$GITHUB_STEP_SUMMARY"
+            ssh -i ~/.ssh/deploy_key ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+              "sudo journalctl -u kvenno-backend -n 30 --no-pager" || true
+            exit 1
           fi
 
       - name: Cleanup SSH key
