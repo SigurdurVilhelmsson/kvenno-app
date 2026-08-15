@@ -1,39 +1,52 @@
 # Bundle Sizes
 
-Measured: 2026-03-17
+Measured: 2026-08-15 (20 games, post Three.js code-split)
 
-## Chemistry Games (single-file HTML via vite-plugin-singlefile)
+## Chemistry Games
 
-Games using Three.js (3D molecule viewers):
+Most games build to one self-contained HTML file via `vite-plugin-singlefile`. The three Three.js
+games opt out (`singleFile: false` in `apps/games/shared-vite-config.ts`) so their 3D payload can
+be deferred — see the note below.
 
-| Game                  | Year | Size   |
-| --------------------- | ---- | ------ |
-| lewis-structures      | 2-ar | 2.9 MB |
-| vsepr-geometry        | 2-ar | 2.9 MB |
-| intermolecular-forces | 2-ar | 2.9 MB |
-| molmassi              | 1-ar | 2.9 MB |
+"Initial" is what a student downloads on page open (HTML + CSS + entry JS). "Deferred" loads only
+if they open a 3D view.
 
-Games without Three.js:
+| Game                     | Year | Initial | Deferred |
+| ------------------------ | ---- | ------- | -------- |
+| vsepr-geometry           | 2-ar | 401 KB  | 2600 KB  |
+| buffer-recipe-creator    | 3-ar | 389 KB  | —        |
+| lewis-structures         | 2-ar | 380 KB  | 2600 KB  |
+| intermolecular-forces    | 2-ar | 377 KB  | 2600 KB  |
+| organic-nomenclature     | 2-ar | 373 KB  | —        |
+| dimensional-analysis     | 1-ar | 368 KB  | —        |
+| ph-titration             | 3-ar | 362 KB  | —        |
+| kinetics                 | 2-ar | 359 KB  | —        |
+| redox-reactions          | 2-ar | 354 KB  | —        |
+| lausnir                  | 1-ar | 353 KB  | —        |
+| hess-law                 | 2-ar | 351 KB  | —        |
+| equilibrium-shifter      | 3-ar | 344 KB  | —        |
+| nafnakerfid              | 1-ar | 331 KB  | —        |
+| gas-law-challenge        | 3-ar | 328 KB  | —        |
+| molmassi                 | 1-ar | 326 KB  | —        |
+| thermodynamics-predictor | 3-ar | 315 KB  | —        |
+| lotukerfid               | 1-ar | 314 KB  | —        |
+| rafeindabygging          | 2-ar | 302 KB  | —        |
+| takmarkandi              | 1-ar | 300 KB  | —        |
+| jafna-jofnur             | 1-ar | 290 KB  | —        |
 
-| Game                     | Year | Size   |
-| ------------------------ | ---- | ------ |
-| buffer-recipe-creator    | 3-ar | 427 KB |
-| dimensional-analysis     | 1-ar | 424 KB |
-| lausnir                  | 1-ar | 419 KB |
-| organic-nomenclature     | 2-ar | 413 KB |
-| nafnakerfid              | 1-ar | 405 KB |
-| ph-titration             | 3-ar | 398 KB |
-| kinetics                 | 2-ar | 395 KB |
-| takmarkandi              | 1-ar | 391 KB |
-| redox-reactions          | 2-ar | 388 KB |
-| hess-law                 | 2-ar | 387 KB |
-| equilibrium-shifter      | 3-ar | 384 KB |
-| gas-law-challenge        | 3-ar | 351 KB |
-| thermodynamics-predictor | 3-ar | 348 KB |
+Every game now opens in 290–401 KB. Two changes got here:
 
-Total: 17 games, ~16.5 MB combined
+- **Vite 8 / Rolldown** took non-3D games from ~1.3 MB to ~300–400 KB.
+- **The Aug 2026 Three.js code-split** took VSEPR, Lewis, and IMF from ~2.9 MB to ~380–400 KB by
+  deferring three / fiber / drei until a 3D view is actually opened. The blocker was not the
+  bundler: a static re-export in `packages/shared/components/MoleculeViewer3D/index.ts` had been
+  silently defeating the existing lazy boundary. `e2e/threejs-lazy-loading.spec.ts` guards it.
 
-Note: Non-3D games dropped from ~1.3 MB to ~350-430 KB (~70% reduction) after upgrading to Vite 8 (Rolldown bundler).
+To re-measure:
+
+```bash
+pnpm build && ls -la dist/efnafraedi/*/games/*.html
+```
 
 ## Lab Reports (multi-chunk SPA, deployed to 2-ar and 3-ar)
 
@@ -76,7 +89,8 @@ Total: ~340 KB
 
 ## Full dist/ Total
 
-~18 MB (dominated by 17 single-file game HTML files)
+~22 MB across 20 games. The three Three.js games account for ~7.8 MB of that, but ~7.4 MB of it
+is deferred chunks a student only downloads if they open a 3D view.
 
 ## Animation & Graphics Components
 
@@ -88,8 +102,6 @@ The remaining graphics and animation features (`AnimatedCounter`, `ScorePopup`, 
 Bundle cost: effectively **0 KB** of additional dependencies. The component code itself adds a few KB per game but is negligible relative to the React/Tailwind baseline.
 
 **Removed Aug 2026:** `ParticleCelebration`, `AnimatedBackground`, `SoundToggle`, and `useGameSounds` (with its Web Audio oscillator bank) were deleted after the April 2026 restructure left them with zero importers across `apps/`.
-
-> ⚠️ The size tables above predate the April 2026 restructure and are stale — e.g. `molmassi` is listed at 2.9 MB but currently builds to ~0.3 MB. Re-measure with `pnpm build && ls -la dist/efnafraedi/*/games/*.html` before relying on these figures.
 
 ## Optimization Recommendations
 

@@ -10,7 +10,7 @@
  */
 
 import { execFile } from 'child_process';
-import { existsSync, renameSync, unlinkSync, mkdirSync } from 'fs';
+import { existsSync, renameSync, unlinkSync, mkdirSync, rmSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { promisify } from 'util';
@@ -76,6 +76,12 @@ async function buildGame(year, folder, outputName) {
   }
 
   mkdirSync(outputDir, { recursive: true });
+
+  // Games build with emptyOutDir:false (they share one output directory per year),
+  // so code-split games would otherwise accumulate every past build's hashed
+  // chunks forever. Their chunks are namespaced under assets/<game>/, which makes
+  // this scoped removal safe — it never touches another game's output.
+  rmSync(join(outputDir, 'assets', outputName), { recursive: true, force: true });
 
   console.log(`📦 Building ${year}/${folder}...`);
 
