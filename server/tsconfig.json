@@ -13,6 +13,10 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "noEmit": false,
+    // Inherited as true from tsconfig.base.json for the Vite apps, which are
+    // noEmit. This package emits real JS, and TS5096 rejects the combination.
+    // All relative imports here already carry .js extensions.
+    "allowImportingTsExtensions": false,
     "jsx": "react-jsx"
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],

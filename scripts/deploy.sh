@@ -52,6 +52,16 @@ echo ""
 echo "📦 Building standalone backend bundle in $BUNDLE_DIR..."
 pnpm --filter kvenno-server deploy --prod "$BUNDLE_DIR"
 
+# Guard: the systemd unit runs `node dist/index.js`, and the rsync below uses
+# --delete. Shipping a bundle without dist/ would remove the working build on
+# the host and leave the service crash-looping, so refuse before touching it.
+# `pnpm deploy` copies the package as-is; it does not run the build.
+if [ ! -f "$BUNDLE_DIR/dist/index.js" ]; then
+  echo "❌ Backend bundle is missing dist/index.js — refusing to deploy."
+  echo "   The backend was not compiled. Run 'pnpm build' first."
+  exit 1
+fi
+
 echo ""
 echo "⚙️  Deploying backend to $BACKEND_DIR..."
 rsync -avz --delete ${DRY_RUN:+"$DRY_RUN"} \
@@ -67,6 +77,28 @@ if [ -z "$DRY_RUN" ]; then
   echo ""
   echo "🔍 Setting permissions..."
   ssh "$SERVER" "sudo chown -R www-data:www-data $WEB_ROOT && sudo chmod -R 755 $WEB_ROOT"
+
+  # Verify the backend actually came back up. Checked on the host against the
+  # backend port (nginx only proxies /api/, so a public /health request returns
+  # the SPA with HTTP 200 even when the backend is dead), and with an Origin
+  # header (production CORS rejects origin-less requests with HTTP 500).
+  echo ""
+  echo "🩺 Checking backend health..."
+  HEALTH_STATUS="000"
+  for _ in $(seq 1 10); do
+    HEALTH_STATUS=$(ssh "$SERVER" \
+      "curl -s -o /dev/null -w '%{http_code}' -H 'Origin: https://kvenno.app' http://127.0.0.1:8000/health" 2>/dev/null || echo "000")
+    [ "$HEALTH_STATUS" = "200" ] && break
+    sleep 3
+  done
+
+  if [ "$HEALTH_STATUS" != "200" ]; then
+    echo "❌ Backend health check failed (HTTP $HEALTH_STATUS)"
+    echo "   Recent service logs:"
+    ssh "$SERVER" "sudo journalctl -u kvenno-backend -n 30 --no-pager" || true
+    exit 1
+  fi
+  echo "   ✅ Backend healthy (HTTP 200)"
 
   echo ""
   echo "✅ Deployment complete!"

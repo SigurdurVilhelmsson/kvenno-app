@@ -42,6 +42,7 @@ const skipGames = args.includes('--skip-games');
 const skipLabReports = args.includes('--skip-lab-reports');
 const skipLanding = args.includes('--skip-landing');
 const skipIslenskubraut = args.includes('--skip-islenskubraut');
+const skipServer = args.includes('--skip-server');
 
 const stdio = verbose ? 'inherit' : 'pipe';
 
@@ -70,8 +71,11 @@ if (!skipLanding) {
 if (!skipLanding) {
   const spaRoutes = [
     'efnafraedi',
-    'efnafraedi/1-ar', 'efnafraedi/2-ar', 'efnafraedi/3-ar',
-    'efnafraedi/val', 'efnafraedi/f-bekkir',
+    'efnafraedi/1-ar',
+    'efnafraedi/2-ar',
+    'efnafraedi/3-ar',
+    'efnafraedi/val',
+    'efnafraedi/f-bekkir',
   ];
   for (const route of spaRoutes) {
     const routeDir = join(distDir, route);
@@ -130,6 +134,22 @@ if (!skipIslenskubraut) {
   }
 }
 
+// Step 4b: Compile the Express backend (TypeScript -> server/dist).
+// Output lives in server/dist, not dist/ — the backend is deployed to
+// /opt/kvenno-server separately from the static site. Built here so that
+// `pnpm build` produces everything a deploy needs, and so CI fails on a
+// broken backend compile instead of discovering it at deploy time.
+if (!skipServer) {
+  console.log('\n🔌 Building backend...');
+  try {
+    execSync('pnpm --filter kvenno-server build', { cwd: rootDir, stdio });
+    console.log('   ✅ Backend built');
+  } catch (error) {
+    console.error('   ❌ Backend build failed:', error.message);
+    process.exit(1);
+  }
+}
+
 // Step 5: Copy media assets
 console.log('\n🖼️  Copying media assets...');
 const mediaSource = join(rootDir, 'media');
@@ -142,4 +162,7 @@ if (existsSync(mediaSource)) {
 // Summary
 console.log('\n✅ Build complete!');
 console.log(`   Output: ${distDir}`);
+if (!skipServer) {
+  console.log(`   Backend: ${join(rootDir, 'server', 'dist')}`);
+}
 console.log('\n   Test locally with: npx serve dist/');
