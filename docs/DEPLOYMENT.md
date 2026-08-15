@@ -114,18 +114,56 @@ with `/tmp` writable for document conversion).
 
 ### Server runtime
 
-`ExecStart=/usr/bin/node` is **not version-pinned** — production runs whatever
-Node the host has installed. This is independent of `.nvmrc`, of the `engines`
-floor, and of the Node version CI builds on, and `scripts/deploy.sh` ships a
-pre-built bundle rather than installing against the declared engine, so a
-mismatch will not be caught automatically.
+**Production runs Node 22.22.2** (Maintenance LTS, security-supported until
+April 2027) — as of 2026-08-15. CI and the deploy workflow build on Node 24.
 
-Verify it directly, and keep it on a supported line (Node 20 reached
-end-of-life in April 2026):
+`ExecStart=/usr/bin/node` is **not version-pinned by this repo, and cannot be**:
+that is the system-wide Node binary, shared with every other application on the
+host. It is independent of `.nvmrc`, of the `engines` floor, and of the Node
+version CI builds on, and `scripts/deploy.sh` ships a pre-built bundle rather
+than installing against the declared engine, so a mismatch is not caught
+automatically. Re-check after any host upgrade:
 
 ```bash
 ssh siggi@kvenno.app 'node -v'
 ```
+
+**The build-host / run-host version gap is safe for this backend**, verified:
+the deployable bundle contains no native addons (`*.node`) and no packages with
+install/build lifecycle scripts, so nothing is compiled against a specific Node
+ABI. The TypeScript target is ES2022, well within Node 22. The bundle has been
+run end-to-end on Node 22.22.2 and serves `/health` correctly.
+
+That guarantee holds only while the backend stays pure JS. **If a native
+dependency is ever added** (anything shipping `.node` binaries or a `node-gyp`
+build), the bundle must be built on the same Node major the host runs, or
+installed on the host instead of rsynced.
+
+#### Upgrading the host runtime
+
+Because `/usr/bin/node` is shared, this is a whole-host decision, not a
+kvenno-app one. Other applications on the box (e.g. `namsbokasafn-efni`,
+`namsbokasafn-vefur`) run on the same binary and would move with it. Establish
+what is actually coupled before changing anything:
+
+```bash
+# Is nodejs held or pinned to a major line?
+apt-mark showhold | grep -i node
+ls /etc/apt/sources.list.d/ | grep -i node
+apt-cache policy nodejs
+
+# Which services share the system node?
+systemctl list-units --type=service | grep -i namsbokasafn
+systemctl cat <service> | grep ExecStart   # /usr/bin/node, or a versioned path?
+which -a node && ls -l /usr/bin/node
+```
+
+If every unit points at `/usr/bin/node`, all apps upgrade together. If any uses
+a versioned path or an nvm shim, that app is independent.
+
+Node 24 is Active LTS (EOL April 2028) and Node 26 enters LTS in October 2026
+(EOL April 2029) — either is a reasonable next target once the coupling above is
+understood. There is no urgency: Node 22 is supported until April 2027.
 
 ### Environment variables (`server/.env`)
 
