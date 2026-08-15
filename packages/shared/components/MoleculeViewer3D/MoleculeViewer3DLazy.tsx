@@ -122,25 +122,16 @@ export function MoleculeViewer3DLazy(props: MoleculeViewer3DProps) {
       try {
         await import('three');
         await import('@react-three/fiber');
-        await import('@react-three/drei');
       } catch (err) {
         setHasError(true);
-        setErrorMessage(
-          err instanceof Error ? err.message : 'Failed to load 3D dependencies'
-        );
+        setErrorMessage(err instanceof Error ? err.message : 'Failed to load 3D dependencies');
       }
     };
     checkDependencies();
   }, []);
 
   if (hasError) {
-    return (
-      <ErrorFallback
-        width={props.width}
-        height={props.height}
-        error={errorMessage}
-      />
-    );
+    return <ErrorFallback width={props.width} height={props.height} error={errorMessage} />;
   }
 
   return (
