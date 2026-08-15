@@ -4,7 +4,8 @@
 
 ### Local
 
-- Node.js >= 22 (`.nvmrc` pins 24; CI builds on 24)
+- Node.js >= 22 (`.nvmrc` pins 24; see [Server runtime](#server-runtime) for the
+  full version map)
 - pnpm >= 9
 - SSH access to the production server
 
@@ -115,7 +116,19 @@ with `/tmp` writable for document conversion).
 ### Server runtime
 
 **Production runs Node 22.22.2** (Maintenance LTS, security-supported until
-April 2027) — as of 2026-08-15. CI and the deploy workflow build on Node 24.
+April 2027) — as of 2026-08-15.
+
+Node versions in play, and why they differ:
+
+| Where           | Version | Why                                                                         |
+| --------------- | ------- | --------------------------------------------------------------------------- |
+| Production host | 22.22.2 | system-wide `/usr/bin/node`, shared with other apps                         |
+| `deploy.yml`    | 22      | **matches the host** — this job builds the artifact that runs in production |
+| CI (`ci.yml`)   | 24      | Active LTS, forward coverage on tests and builds                            |
+| `.nvmrc`        | 24      | local development default                                                   |
+| `engines.node`  | `>=22`  | floor; excludes EOL Node 20, admits the host                                |
+
+Bump `deploy.yml` together with the host, not ahead of it.
 
 `ExecStart=/usr/bin/node` is **not version-pinned by this repo, and cannot be**:
 that is the system-wide Node binary, shared with every other application on the
@@ -128,16 +141,22 @@ automatically. Re-check after any host upgrade:
 ssh siggi@kvenno.app 'node -v'
 ```
 
-**The build-host / run-host version gap is safe for this backend**, verified:
-the deployable bundle contains no native addons (`*.node`) and no packages with
-install/build lifecycle scripts, so nothing is compiled against a specific Node
-ABI. The TypeScript target is ES2022, well within Node 22. The bundle has been
-run end-to-end on Node 22.22.2 and serves `/health` correctly.
+The automated deploy builds the backend bundle on the host's Node major, so its
+artifact matches the runtime by construction. A **manual** `./scripts/deploy.sh`
+run does not — it bundles on whatever Node the operator has locally, which may
+be 24 via `.nvmrc`.
+
+**That gap is safe for this backend**, verified: the deployable bundle contains
+no native addons (`*.node`) and no packages with install/build lifecycle
+scripts, so nothing is compiled against a specific Node ABI. The TypeScript
+target is ES2022, well within Node 22. The bundle has been run end-to-end on
+Node 22.22.2 and serves `/health` correctly.
 
 That guarantee holds only while the backend stays pure JS. **If a native
 dependency is ever added** (anything shipping `.node` binaries or a `node-gyp`
-build), the bundle must be built on the same Node major the host runs, or
-installed on the host instead of rsynced.
+build), the bundle must be built on the same Node major the host runs — deploy
+via the workflow rather than the script, or install on the host instead of
+rsyncing.
 
 #### Upgrading the host runtime
 

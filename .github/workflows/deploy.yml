@@ -29,9 +29,14 @@ jobs:
 
       - uses: pnpm/action-setup@v6
 
+      # Pinned to the production host's Node major (22.22.2), not the 24 that
+      # CI builds on: this job produces the artifact that actually runs in
+      # production, including the backend's node_modules, so it should be
+      # built on the runtime it will execute on. CI stays on 24 for forward
+      # coverage. Bump this together with the host, not ahead of it.
       - uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version: 22
 
       - name: Get pnpm store directory
         id: pnpm-cache
