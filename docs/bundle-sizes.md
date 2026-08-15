@@ -13,10 +13,10 @@ if they open a 3D view.
 
 | Game                     | Year | Initial | Deferred |
 | ------------------------ | ---- | ------- | -------- |
-| vsepr-geometry           | 2-ar | 401 KB  | 2600 KB  |
+| vsepr-geometry           | 2-ar | 401 KB  | 1004 KB  |
 | buffer-recipe-creator    | 3-ar | 389 KB  | —        |
-| lewis-structures         | 2-ar | 380 KB  | 2600 KB  |
-| intermolecular-forces    | 2-ar | 377 KB  | 2600 KB  |
+| lewis-structures         | 2-ar | 379 KB  | 1004 KB  |
+| intermolecular-forces    | 2-ar | 376 KB  | 1004 KB  |
 | organic-nomenclature     | 2-ar | 373 KB  | —        |
 | dimensional-analysis     | 1-ar | 368 KB  | —        |
 | ph-titration             | 3-ar | 362 KB  | —        |
@@ -41,6 +41,9 @@ Every game now opens in 290–401 KB. Two changes got here:
   deferring three / fiber / drei until a 3D view is actually opened. The blocker was not the
   bundler: a static re-export in `packages/shared/components/MoleculeViewer3D/index.ts` had been
   silently defeating the existing lazy boundary. `e2e/threejs-lazy-loading.spec.ts` guards it.
+- **The drei-probe fix** then halved the deferred payload again, 2600 KB → 1004 KB, by dropping an
+  `await import('@react-three/drei')` that pulled the entire barrel (incl. `hls.js` and
+  `@mediapipe/tasks-vision`) just to test that it resolved.
 
 To re-measure:
 
@@ -89,7 +92,7 @@ Total: ~340 KB
 
 ## Full dist/ Total
 
-~22 MB across 20 games. The three Three.js games account for ~7.8 MB of that, but ~7.4 MB of it
+~18 MB across 20 games. The three Three.js games account for ~4.1 MB of that, but ~3.0 MB of it
 is deferred chunks a student only downloads if they open a 3D view.
 
 ## Animation & Graphics Components
