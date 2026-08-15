@@ -18,6 +18,18 @@ export type {
   Bond3DProps,
 } from './types';
 
-// Export the non-lazy version for direct use when Three.js is already loaded
-// Note: Importing this directly will include Three.js in your bundle
-export { MoleculeViewer3D as MoleculeViewer3DDirect } from './MoleculeViewer3D';
+// The non-lazy MoleculeViewer3D is deliberately NOT re-exported here.
+//
+// A static re-export from this barrel puts './MoleculeViewer3D' — and therefore
+// three, @react-three/fiber, and @react-three/drei — into the same chunk as the
+// barrel itself. Since games import MoleculeViewer3DLazy *from this barrel*, that
+// static edge silently defeated the lazy boundary: Rollup emitted
+// "INEFFECTIVE_DYNAMIC_IMPORT ... dynamic import will not move module into
+// another chunk" and Three.js loaded eagerly on every page open.
+//
+// If you genuinely need the eager component (Three.js already loaded), import it
+// from its module directly — that keeps the static edge out of this barrel:
+//
+//   import { MoleculeViewer3D } from '@shared/components/MoleculeViewer3D/MoleculeViewer3D';
+//
+// e2e/threejs-lazy-loading.spec.ts guards this.

@@ -190,9 +190,30 @@ Full plan: `~/.claude/plans/mighty-mixing-puffin.md`
 - ✅ Organic L2 branched molecules — 3 new entries (2-metýlprópan, 2-metýlbútan, 3-metýlpentan) with explicit positions via extended `organicConverter.ts`; drag-drop auto-disables when branched
 - ✅ Buffer L2/L3 `BufferCapacityVisualization` — wired into completion explanation screens in both levels
 
+**Three.js code-split (Aug 2026):** VSEPR, Lewis, and IMF now load ~380–400 KB up front instead
+of ~2.9 MB; the ~2.6 MB Three.js payload is deferred until a student opens a 3D view.
+
+Two causes, both needed fixing — the earlier diagnosis blamed only the second:
+
+1. `packages/shared/components/MoleculeViewer3D/index.ts` statically re-exported the eager
+   `MoleculeViewer3D` from the same barrel games import `MoleculeViewer3DLazy` from. That static
+   edge put Three.js in the entry chunk and silently defeated the lazy boundary (Rollup's only
+   signal was an `INEFFECTIVE_DYNAMIC_IMPORT` warning). Removing it is what actually splits the bundle.
+2. `vite-plugin-singlefile` re-inlines dynamic chunks, so step 1 buys nothing while it is on.
+   `createGameViteConfig` now takes `singleFile` (default `true`); those three games pass `false`.
+
+Consequences: the three games are no longer single portable files — each is `{game}.html` +
+`{game}.css` + `assets/{game}/*.js`. nginx needed no change (its `.js` location already precedes
+the games-HTML block). `scripts/build-games.mjs` clears `assets/<game>/` before each build, since
+`emptyOutDir: false` would otherwise accumulate stale hashed chunks.
+`e2e/threejs-lazy-loading.spec.ts` guards the boundary — verified to fail when cause 1 is reintroduced.
+
+Still open, and unchanged by this work: `MoleculeViewer3D.tsx` imports from the `@react-three/drei`
+barrel while using only `OrbitControls`/`Text`/`Html`, which drags in `hls.js` (~574 KB) and
+`@mediapipe/tasks-vision` (~137 KB). Deep imports resolve for some helpers but not `Html`.
+
 Remaining deferred (all need a decision, not code):
 
-- **Three.js lazy-split** — `MoleculeViewer3DLazy` is already imported; the 3MB comes from `vite-plugin-singlefile` re-inlining dynamic imports. Real fix requires switching IMF/Lewis/VSEPR off singlefile (chunk files + nginx + build-script updates).
 - **`useGameI18n` `t()` across Y3** — Y3 games import `useGameI18n` + render `LanguageSwitcher` but UI stays hardcoded Icelandic. Conflicts with this file's "Icelandic UI only." Decide: strip it, finish wiring, or keep as-is.
 - **Hess Polish i18n block** — teacher sign-off.
 - **Kinetics/Redox problem order shuffle** — deliberately skipped (exam-style stability).
