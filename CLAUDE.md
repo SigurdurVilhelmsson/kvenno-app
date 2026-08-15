@@ -208,9 +208,22 @@ the games-HTML block). `scripts/build-games.mjs` clears `assets/<game>/` before 
 `emptyOutDir: false` would otherwise accumulate stale hashed chunks.
 `e2e/threejs-lazy-loading.spec.ts` guards the boundary — verified to fail when cause 1 is reintroduced.
 
-Still open, and unchanged by this work: `MoleculeViewer3D.tsx` imports from the `@react-three/drei`
-barrel while using only `OrbitControls`/`Text`/`Html`, which drags in `hls.js` (~574 KB) and
-`@mediapipe/tasks-vision` (~137 KB). Deep imports resolve for some helpers but not `Html`.
+**drei barrel follow-up (Aug 2026):** deferred payload halved again, 2601 KB → 1004 KB per game.
+
+The cause was not the `import { OrbitControls, Text, Html } from '@react-three/drei'` in
+`MoleculeViewer3D.tsx` — that import is fine and tree-shakes correctly. It was
+`MoleculeViewer3DLazy`'s dependency probe doing `await import('@react-three/drei')`, which pulled
+the whole barrel (1.6 MB, incl. `hls.js` and `@mediapipe/tasks-vision`) into the graph purely to
+test that it resolved. Removing that one line is the entire saving.
+
+Deep drei imports were measured as an alternative and are **not needed** — byte-identical result.
+Avoid them: drei ships no `exports` map, so paths like `web/Html` vs `core/Html` are unguaranteed
+across upgrades.
+
+The probe itself was kept (it costs ~13 KB). Without it a failed chunk leaves the Suspense fallback
+spinning silently: `React.lazy` rejections don't reach Suspense, and the games' only `ErrorBoundary`
+wraps the whole `App`, so an uncaught throw blanks the entire game instead of one panel. Its
+messages are now Icelandic — note `Sæki`, not `Hleð`, since `hleðsla` means electric charge here.
 
 Remaining deferred (all need a decision, not code):
 
