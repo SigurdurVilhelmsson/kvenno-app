@@ -19,10 +19,7 @@ shared/
 │   ├── ParticleSimulation/           # Physics particle engine (sphere shading, trails, glow)
 │   ├── AnimatedMolecule/             # Ball-and-stick molecule renderer
 │   ├── DragDropBuilder/              # Drag-and-drop interface
-│   ├── ParticleCelebration/          # Canvas confetti/burst effects (6 presets)
-│   ├── AnimatedBackground/           # Gradient blobs + chemistry SVG symbols
 │   ├── AnimatedCounter/              # Rolling numbers, ScorePopup, StreakCounter
-│   ├── SoundToggle/                  # Sound enable/disable toggle button
 │   └── index.ts                      # Barrel exports
 ├── hooks/                         # React hooks
 │   ├── useI18n.ts                    # Internationalization
@@ -31,7 +28,6 @@ shared/
 │   ├── useAccessibility.ts           # Accessibility settings
 │   ├── useAchievements.ts            # Achievement tracking
 │   ├── useGameProgress.ts            # Game-specific progress persistence
-│   ├── useGameSounds.ts              # Web Audio API synthesized sounds
 │   └── index.ts                      # Hook exports
 ├── utils/                         # Utility functions
 │   ├── storage.ts                    # localStorage helpers
@@ -60,6 +56,7 @@ shared/
 Provides internationalization (i18n) support with automatic translation loading and language switching.
 
 **Features:**
+
 - Dynamic translation loading from JSON files
 - Dot notation for nested translations (`mainMenu.title`)
 - Automatic localStorage persistence of language preference
@@ -91,12 +88,12 @@ function MyComponent() {
 
 **API:**
 
-| Method/Property | Type | Description |
-|----------------|------|-------------|
-| `t(key, fallback?)` | `(key: string, fallback?: string) => string` | Translate a key using dot notation |
-| `language` | `'is' \| 'en' \| 'pl'` | Current language code |
-| `setLanguage` | `(lang: Language) => void` | Change language and persist to localStorage |
-| `availableLanguages` | `Language[]` | Array of supported languages |
+| Method/Property      | Type                                         | Description                                 |
+| -------------------- | -------------------------------------------- | ------------------------------------------- |
+| `t(key, fallback?)`  | `(key: string, fallback?: string) => string` | Translate a key using dot notation          |
+| `language`           | `'is' \| 'en' \| 'pl'`                       | Current language code                       |
+| `setLanguage`        | `(lang: Language) => void`                   | Change language and persist to localStorage |
+| `availableLanguages` | `Language[]`                                 | Array of supported languages                |
 
 **Translation File Structure:**
 
@@ -121,6 +118,7 @@ function MyComponent() {
 Manages game progress with automatic localStorage persistence.
 
 **Features:**
+
 - Automatic save on every update
 - Auto-update last played timestamp
 - Built-in reset functionality
@@ -168,13 +166,13 @@ function MyGame() {
 
 **API:**
 
-| Method/Property | Type | Description |
-|----------------|------|-------------|
-| `progress` | `GameProgress` | Current progress object |
-| `updateProgress` | `(updates: Partial<GameProgress>) => void` | Update progress fields |
-| `resetProgress` | `() => void` | Reset to initial progress |
-| `incrementProblems` | `() => void` | Increment problemsCompleted by 1 |
-| `setLevel` | `(level: number) => void` | Set current level |
+| Method/Property     | Type                                       | Description                      |
+| ------------------- | ------------------------------------------ | -------------------------------- |
+| `progress`          | `GameProgress`                             | Current progress object          |
+| `updateProgress`    | `(updates: Partial<GameProgress>) => void` | Update progress fields           |
+| `resetProgress`     | `() => void`                               | Reset to initial progress        |
+| `incrementProblems` | `() => void`                               | Increment problemsCompleted by 1 |
+| `setLevel`          | `(level: number) => void`                  | Set current level                |
 
 **GameProgress Type:**
 
@@ -191,61 +189,12 @@ interface GameProgress {
 
 ---
 
-### `useGameSounds()`
-
-Provides synthesized game sound effects using the Web Audio API. All sounds are generated on-the-fly via oscillators — no audio files required. Sound preference persists in localStorage (`kvenno-sound-enabled`). **Sounds are OFF by default.**
-
-**Features:**
-- 6 distinct sound effects synthesized from oscillators
-- Lazy AudioContext creation (on first play)
-- Master volume: 0.3
-- Graceful degradation if Web Audio unavailable
-- Handles browser autoplay-policy (resumes suspended context)
-
-**Usage:**
-
-```typescript
-import { useGameSounds } from '@shared/hooks';
-import { SoundToggle } from '@shared/components/SoundToggle';
-
-function MyGame() {
-  const { playCorrect, playWrong, playClick, playLevelComplete, isEnabled, toggleSound } = useGameSounds();
-
-  const handleAnswer = (correct: boolean) => {
-    if (correct) playCorrect();
-    else playWrong();
-  };
-
-  return (
-    <div>
-      <SoundToggle isEnabled={isEnabled} onToggle={toggleSound} />
-      <button onClick={() => { playClick(); startLevel(); }}>Start</button>
-    </div>
-  );
-}
-```
-
-**API:**
-
-| Method/Property | Type | Description |
-|----------------|------|-------------|
-| `playClick()` | `() => void` | Short high-pitched tick (triangle 800 Hz, 40 ms) |
-| `playCorrect()` | `() => void` | Ascending two-tone chime (C5→E5, major third) |
-| `playWrong()` | `() => void` | Low dissonant buzz (detuned sawtooth 150/153 Hz) |
-| `playLevelComplete()` | `() => void` | Rising arpeggiated chord (C5→E5→G5 + delay effect) |
-| `playAchievement()` | `() => void` | Celebratory jingle (C5→E5→G5→C6 + sparkle flutter) |
-| `playStreak(count)` | `(count: number) => void` | Escalating tone; pitch rises at 5+ and 10+ streaks |
-| `isEnabled` | `boolean` | Whether sound is currently enabled |
-| `toggleSound()` | `() => void` | Toggle sound on/off |
-| `setEnabled(bool)` | `(enabled: boolean) => void` | Explicitly set enabled state |
-
----
-
 ### `useAccessibility()`
 
 Manages accessibility settings with automatic DOM manipulation and localStorage persistence.
 
 **Features:**
+
 - High contrast mode
 - Text size adjustment (small/medium/large)
 - Reduced motion support
@@ -304,15 +253,15 @@ function AccessibilityMenu() {
 
 **API:**
 
-| Method/Property | Type | Description |
-|----------------|------|-------------|
-| `settings` | `AccessibilitySettings` | Current accessibility settings |
-| `updateSettings` | `(updates: Partial<AccessibilitySettings>) => void` | Update multiple settings |
-| `toggleHighContrast` | `() => void` | Toggle high contrast mode |
-| `setTextSize` | `(size: 'small' \| 'medium' \| 'large') => void` | Set text size |
-| `toggleReducedMotion` | `() => void` | Toggle reduced motion |
-| `toggleKeyboardShortcuts` | `() => void` | Toggle keyboard shortcuts |
-| `resetSettings` | `() => void` | Reset to default settings |
+| Method/Property           | Type                                                | Description                    |
+| ------------------------- | --------------------------------------------------- | ------------------------------ |
+| `settings`                | `AccessibilitySettings`                             | Current accessibility settings |
+| `updateSettings`          | `(updates: Partial<AccessibilitySettings>) => void` | Update multiple settings       |
+| `toggleHighContrast`      | `() => void`                                        | Toggle high contrast mode      |
+| `setTextSize`             | `(size: 'small' \| 'medium' \| 'large') => void`    | Set text size                  |
+| `toggleReducedMotion`     | `() => void`                                        | Toggle reduced motion          |
+| `toggleKeyboardShortcuts` | `() => void`                                        | Toggle keyboard shortcuts      |
+| `resetSettings`           | `() => void`                                        | Reset to default settings      |
 
 **CSS Classes Applied:**
 
@@ -323,106 +272,6 @@ function AccessibilityMenu() {
 ---
 
 ## 🎆 Graphics & Animation Components
-
-### `ParticleCelebration` + `useParticleCelebration`
-
-Canvas-based particle celebration overlay with 6 presets and year-theme color palettes. Renders bursts, confetti, streaks, and level-complete effects using physics simulation (gravity, damping, rotation).
-
-**Features:**
-- 6 presets: `burst`, `confetti`, `streak-3`, `streak-5`, `streak-10`, `level-complete`
-- Year-theme palettes: 1-ar (orange), 2-ar (teal), 3-ar (purple)
-- Particle shapes: circle, square, star, triangle with radial gradients
-- Queue up to 3 celebrations with auto-advance
-- Respects `prefers-reduced-motion` (shows color flash instead)
-
-**Usage:**
-
-```typescript
-import { ParticleCelebration, useParticleCelebration } from '@shared/components/ParticleCelebration';
-
-function MyGame() {
-  const { triggerCorrect, triggerStreak, triggerLevelComplete, celebrationProps } =
-    useParticleCelebration('2-ar');
-
-  const handleAnswer = (correct: boolean, streak: number) => {
-    if (correct) {
-      triggerCorrect({ x: 0.5, y: 0.3 });
-      if (streak >= 3) triggerStreak(streak);
-    }
-  };
-
-  return (
-    <div className="relative">
-      <GameBoard onAnswer={handleAnswer} />
-      <ParticleCelebration {...celebrationProps} />
-    </div>
-  );
-}
-```
-
-**Hook API (`useParticleCelebration`):**
-
-| Method | Type | Description |
-|--------|------|-------------|
-| `trigger(config)` | `(config: CelebrationConfig) => void` | Trigger with full config control |
-| `triggerCorrect(origin?)` | `(origin?: {x,y}) => void` | Burst at origin (normalized 0-1, default center) |
-| `triggerWrong()` | `() => void` | No-op placeholder (extensible) |
-| `triggerStreak(count)` | `(count: number) => void` | Auto-selects preset by count (3/5/10) |
-| `triggerLevelComplete()` | `() => void` | Full confetti + starburst |
-| `celebrationProps` | `ParticleCelebrationProps` | Spread onto `<ParticleCelebration>` |
-
-**Presets:**
-
-| Preset | Particles | Duration | Shapes |
-|--------|-----------|----------|--------|
-| `burst` | 25 | 800ms | Circles |
-| `confetti` | 70 | 2000ms | Squares (confetti rain) |
-| `streak-3` | 15 | 800ms | Single-color circles |
-| `streak-5` | 30 | 1000ms | Two-tone circles |
-| `streak-10` | 50 | 1500ms | Circles + stars |
-| `level-complete` | 100 | 3000ms | Stars (center) + confetti (rain) |
-
----
-
-### `AnimatedBackground`
-
-Layered, subtly animated background with drifting gradient blobs and optional floating chemistry SVG symbols. Replaces flat gradient backgrounds with atmospheric, year-themed visuals.
-
-**Features:**
-- 3 gradient blobs with independent drift cycles (de-synced for organic feel)
-- 6 chemistry SVG symbols: atom, beaker, flask, molecule, hex ring, test tube
-- 4 variants: `default`, `menu`, `gameplay`, `celebration`
-- 3 intensity levels: `low`, `medium`, `high`
-- All decorative layers are `pointer-events: none` and `aria-hidden`
-- Respects `prefers-reduced-motion`
-
-**Usage:**
-
-```typescript
-import { AnimatedBackground } from '@shared/components/AnimatedBackground';
-
-<AnimatedBackground yearTheme="2-ar" variant="gameplay" showSymbols>
-  <GameContent />
-</AnimatedBackground>
-
-// Menu screen with more visible blobs
-<AnimatedBackground yearTheme="1-ar" variant="menu" showSymbols>
-  <MenuScreen />
-</AnimatedBackground>
-```
-
-**Props:**
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `yearTheme` | `'1-ar' \| '2-ar' \| '3-ar'` | required | Color palette (orange/teal/purple) |
-| `variant` | `'default' \| 'menu' \| 'gameplay' \| 'celebration'` | `'default'` | Adjusts blob opacity |
-| `showSymbols` | `boolean` | `false` | Show floating chemistry SVGs |
-| `intensity` | `'low' \| 'medium' \| 'high'` | `'medium'` | Animation speed (40s/25s/15s) |
-| `children` | `ReactNode` | required | Content rendered above layers |
-| `className` | `string` | `''` | Additional wrapper classes |
-
----
 
 ### `AnimatedCounter`
 
@@ -439,14 +288,14 @@ import { AnimatedCounter } from '@shared/components/AnimatedCounter';
 
 **Props:**
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `number` | required | Target value to animate to |
-| `duration` | `number` | `500` | Animation duration in ms |
-| `prefix` | `string` | `''` | Text before number (e.g., "+") |
-| `suffix` | `string` | `''` | Text after number (e.g., " stig") |
-| `className` | `string` | `''` | Additional CSS classes |
-| `formatNumber` | `(n: number) => string` | Icelandic locale | Custom formatter |
+| Prop           | Type                    | Default          | Description                       |
+| -------------- | ----------------------- | ---------------- | --------------------------------- |
+| `value`        | `number`                | required         | Target value to animate to        |
+| `duration`     | `number`                | `500`            | Animation duration in ms          |
+| `prefix`       | `string`                | `''`             | Text before number (e.g., "+")    |
+| `suffix`       | `string`                | `''`             | Text after number (e.g., " stig") |
+| `className`    | `string`                | `''`             | Additional CSS classes            |
+| `formatNumber` | `(n: number) => string` | Icelandic locale | Custom formatter                  |
 
 ---
 
@@ -490,6 +339,7 @@ function ScoreDisplay() {
 Escalating fire emoji streak badge. Hidden when streak < 3. Shows progressively more intense fire emojis with a pulse glow at 10+.
 
 **Emoji progression:**
+
 - 0-2: hidden
 - 3-4: fire + count
 - 5-9: fire fire + count
@@ -504,32 +354,6 @@ import { StreakCounter } from '@shared/components/AnimatedCounter';
 ```
 
 **Props:** `count: number`, `className?: string`
-
----
-
-### `SoundToggle`
-
-Compact pill-shaped toggle button for enabling/disabling game sounds. Uses inline SVG speaker icons with cross-fade transition. Labels are in Icelandic ("Hljóð á" / "Hljóð af").
-
-**Usage:**
-
-```typescript
-import { SoundToggle } from '@shared/components/SoundToggle';
-import { useGameSounds } from '@shared/hooks';
-
-const { isEnabled, toggleSound } = useGameSounds();
-<SoundToggle isEnabled={isEnabled} onToggle={toggleSound} />
-<SoundToggle isEnabled={isEnabled} onToggle={toggleSound} size="sm" />
-```
-
-**Props:**
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `isEnabled` | `boolean` | required | Current sound state |
-| `onToggle` | `() => void` | required | Toggle callback |
-| `size` | `'sm' \| 'md'` | `'md'` | Button size variant |
-| `className` | `string` | `''` | Additional CSS classes |
 
 ---
 
@@ -572,7 +396,7 @@ saveProgress('molmassi', {
   problemsCompleted: 42,
   lastPlayedDate: new Date().toISOString(),
   totalTimeSpent: 1800,
-  levelProgress: { 1: 10, 2: 15, 3: 17 }
+  levelProgress: { 1: 10, 2: 15, 3: 17 },
 });
 
 // Load progress
@@ -631,15 +455,15 @@ scoreExplanation(
 import {
   calculateCompositeScore,
   countSignificantFigures,
-  validateSignificantFigures
+  validateSignificantFigures,
 } from '@shared/utils/scoring';
 
 // Calculate composite score
 const finalScore = calculateCompositeScore(
-  1.0,  // answer correct
-  0.8,  // good method
-  0.6,  // decent explanation
-  0.9   // efficient solution
+  1.0, // answer correct
+  0.8, // good method
+  0.6, // decent explanation
+  0.9 // efficient solution
 );
 // Result: 0.83 (weighted average)
 
@@ -688,17 +512,11 @@ calculatePercentage(correct: number, total: number): number
 import { exportProgressAsJSON, formatTimeSpent } from '@shared/utils/export';
 
 // Export progress as JSON
-exportProgressAsJSON(
-  'molmassi',
-  'Mólmassi Leikur',
-  '1.0.0',
-  progress,
-  {
-    correctAnswers: 42,
-    accuracy: 0.85,
-    averageTime: formatTimeSpent(1800)
-  }
-);
+exportProgressAsJSON('molmassi', 'Mólmassi Leikur', '1.0.0', progress, {
+  correctAnswers: 42,
+  accuracy: 0.85,
+  averageTime: formatTimeSpent(1800),
+});
 // Downloads: molmassi-progress-2025-11-29.json
 
 // Format time
@@ -758,11 +576,11 @@ interface ExportData {
 
 ### Supported Languages
 
-| Code | Language | Status |
-|------|----------|--------|
+| Code | Language             | Status                |
+| ---- | -------------------- | --------------------- |
 | `is` | Íslenska (Icelandic) | ✅ Complete (Primary) |
-| `en` | English | ✅ Complete |
-| `pl` | Polski (Polish) | 🚧 In Progress |
+| `en` | English              | ✅ Complete           |
+| `pl` | Polski (Polish)      | 🚧 In Progress        |
 
 ### Adding a New Language
 
@@ -784,7 +602,7 @@ type Language = 'is' | 'en' | 'pl' | 'de';
 4. **Add to available languages:**
 
 ```typescript
-availableLanguages: ['is', 'en', 'pl', 'de'] as Language[]
+availableLanguages: ['is', 'en', 'pl', 'de'] as Language[];
 ```
 
 All games will automatically support the new language!
@@ -812,7 +630,7 @@ const Button = styled.button`
 ```typescript
 export const theme = {
   colors: {
-    primary: '#f36b22',      // Kvenno orange
+    primary: '#f36b22', // Kvenno orange
     secondary: '#2c3e50',
     success: '#27ae60',
     error: '#e74c3c',
@@ -820,26 +638,26 @@ export const theme = {
     text: {
       dark: '#2c3e50',
       light: '#ffffff',
-      muted: '#7f8c8d'
+      muted: '#7f8c8d',
     },
     background: {
       light: '#ffffff',
       gray: '#f8f9fa',
-      dark: '#2c3e50'
-    }
+      dark: '#2c3e50',
+    },
   },
   spacing: {
     xs: '0.25rem',
     sm: '0.5rem',
     md: '1rem',
     lg: '1.5rem',
-    xl: '2rem'
+    xl: '2rem',
   },
   borderRadius: {
     sm: '0.25rem',
     md: '0.5rem',
-    lg: '1rem'
-  }
+    lg: '1rem',
+  },
 };
 ```
 
@@ -895,11 +713,13 @@ function App() {
 ### 1. Always Use Hooks for State Management
 
 ✅ **Good:**
+
 ```typescript
 const { progress } = useProgress({ gameId: 'molmassi' });
 ```
 
 ❌ **Bad:**
+
 ```typescript
 const progress = JSON.parse(localStorage.getItem('progress'));
 ```
@@ -907,11 +727,13 @@ const progress = JSON.parse(localStorage.getItem('progress'));
 ### 2. Use Translation Keys, Not Hard-coded Text
 
 ✅ **Good:**
+
 ```typescript
 <button>{t('common.submit')}</button>
 ```
 
 ❌ **Bad:**
+
 ```typescript
 <button>Staðfesta</button>
 ```
@@ -919,21 +741,26 @@ const progress = JSON.parse(localStorage.getItem('progress'));
 ### 3. Leverage Utility Functions
 
 ✅ **Good:**
+
 ```typescript
 const isValid = validateSignificantFigures(answer, 3);
 ```
 
 ❌ **Bad:**
+
 ```typescript
-const countSigFigs = (num) => { /* reimplementing the wheel */ };
+const countSigFigs = (num) => {
+  /* reimplementing the wheel */
+};
 ```
 
 ### 4. Export Types for Type Safety
 
 ✅ **Good:**
+
 ```typescript
 import type { GameProgress } from '@shared/types';
-const progress: GameProgress = { /* ... */ };
+const progress: GameProgress = {/* ... */};
 ```
 
 ---
@@ -951,13 +778,13 @@ vi.mock('@shared/hooks', () => ({
     t: (key: string) => key,
     language: 'is',
     setLanguage: vi.fn(),
-    availableLanguages: ['is', 'en', 'pl']
+    availableLanguages: ['is', 'en', 'pl'],
   }),
   useProgress: () => ({
     progress: { currentLevel: 1, problemsCompleted: 0 },
     updateProgress: vi.fn(),
-    resetProgress: vi.fn()
-  })
+    resetProgress: vi.fn(),
+  }),
 }));
 ```
 
@@ -1002,10 +829,11 @@ All games use the `@shared` alias configured in `tsconfig.base.json`:
 
 ## 🔄 Version History
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 2.0.0 | 2026-02-20 | Graphics & animation system: ParticleCelebration, AnimatedBackground, AnimatedCounter, ScorePopup, StreakCounter, SoundToggle, useGameSounds, useParticleCelebration. Integrated into all 17 games. |
-| 1.0.0 | 2025-11-29 | Initial shared library with all 12 games migrated |
+| Version | Date       | Changes                                                                                                                                                                                             |
+| ------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.1.0   | 2026-08-15 | Removed unused gamification chrome: ParticleCelebration, useParticleCelebration, AnimatedBackground, SoundToggle, useGameSounds. Zero importers after the April 2026 game restructure.              |
+| 2.0.0   | 2026-02-20 | Graphics & animation system: ParticleCelebration, AnimatedBackground, AnimatedCounter, ScorePopup, StreakCounter, SoundToggle, useGameSounds, useParticleCelebration. Integrated into all 17 games. |
+| 1.0.0   | 2025-11-29 | Initial shared library with all 12 games migrated                                                                                                                                                   |
 
 ---
 
@@ -1025,6 +853,7 @@ When adding new shared functionality:
 ## 📞 Support
 
 For questions about the shared library:
+
 - Check this README first
 - Look at existing game implementations for examples
 - Review TypeScript types for API details

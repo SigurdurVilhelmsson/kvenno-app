@@ -29,10 +29,6 @@ export default defineConfig({
         '**/*.test.{ts,tsx}',
         '**/*.d.ts',
         '**/index.ts',
-        // Web Audio API wrapper; jsdom has no AudioContext, so coverage
-        // would require mocking the entire audio graph without
-        // validating real behavior.
-        'packages/shared/hooks/useGameSounds.ts',
       ],
       thresholds: {
         'packages/shared/utils/**/*.ts': {
