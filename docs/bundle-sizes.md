@@ -80,13 +80,16 @@ Total: ~340 KB
 
 ## Animation & Graphics Components
 
-All graphics and animation features (`ParticleCelebration`, `AnimatedBackground`, `AnimatedCounter`, `ScorePopup`, `StreakCounter`, `SoundToggle`, `useGameSounds`) are implemented with **zero external dependencies**:
+The remaining graphics and animation features (`AnimatedCounter`, `ScorePopup`, `StreakCounter`, `ParticleSimulation`) are implemented with **zero external dependencies**:
 
 - **CSS**: Spring easing curves via `cubic-bezier()`, 17 keyframe animations, utility classes
 - **Canvas 2D**: Particle physics rendered with `requestAnimationFrame`
-- **Web Audio API**: 6 synthesized sound effects via oscillators (no audio files)
 
 Bundle cost: effectively **0 KB** of additional dependencies. The component code itself adds a few KB per game but is negligible relative to the React/Tailwind baseline.
+
+**Removed Aug 2026:** `ParticleCelebration`, `AnimatedBackground`, `SoundToggle`, and `useGameSounds` (with its Web Audio oscillator bank) were deleted after the April 2026 restructure left them with zero importers across `apps/`.
+
+> ⚠️ The size tables above predate the April 2026 restructure and are stale — e.g. `molmassi` is listed at 2.9 MB but currently builds to ~0.3 MB. Re-measure with `pnpm build && ls -la dist/efnafraedi/*/games/*.html` before relying on these figures.
 
 ## Optimization Recommendations
 

@@ -89,11 +89,10 @@ Game-specific shared components (gamification chrome stripped from all Y2/Y3 gam
 - **AnimatedMolecule** - Ball-and-stick molecular structure renderer
 - **DragDropBuilder** - Flexible drag-and-drop interface
 
-Graphics & animation components (legacy — stripped from Y2/Y3 games, still in some Y1 games):
-
-- **ParticleCelebration** + `useParticleCelebration` - Canvas confetti/burst effects
-- **AnimatedBackground** - Layered gradient blobs + floating chemistry SVG symbols
-- **SoundToggle** + `useGameSounds` - Web Audio API synthesized sounds
+**Removed (Aug 2026):** `ParticleCelebration`/`useParticleCelebration`, `AnimatedBackground`, and
+`SoundToggle`/`useGameSounds` were deleted from `packages/shared/`. The April 2026 restructure
+stripped them from every game, leaving zero importers. Don't reintroduce celebration, animated
+background, or sound chrome into games without a pedagogical reason.
 
 Shared styles (`packages/shared/styles/`):
 

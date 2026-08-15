@@ -51,6 +51,7 @@ pnpm build          # Build everything to dist/
 ```
 
 The build script (`scripts/build-all.mjs`) handles multi-path builds automatically:
+
 - Lab Reports is built twice (for `/efnafraedi/2-ar/lab-reports/` and `/efnafraedi/3-ar/lab-reports/`)
 - Games are built as self-contained single HTML files via `vite-plugin-singlefile`
 - Landing page serves all hub routes via React Router
@@ -60,12 +61,14 @@ The build script (`scripts/build-all.mjs`) handles multi-path builds automatical
 ### Overview
 
 The kvenno.app site uses a mixed access model:
+
 - **Open access**: Landing page, hub pages, and games (no authentication required)
 - **Authenticated access**: Lab Reports and AI Tutor (require Azure AD login)
 
 ### Authentication Method
 
 **Azure AD (Microsoft Entra ID)** via the Menntaský project
+
 - Integrated with all Icelandic secondary schools and universities
 - Users authenticate with their @kvenno.is school accounts
 - Implemented using Microsoft Authentication Library (MSAL) for React
@@ -73,9 +76,11 @@ The kvenno.app site uses a mixed access model:
 ### Which Apps Require Authentication
 
 **Protected Apps:**
+
 - Lab Reports (`/efnafraedi/2-ar/lab-reports/`, `/efnafraedi/3-ar/lab-reports/`)
 
 **Open Access:**
+
 - Landing page (`/`)
 - Chemistry track hub (`/efnafraedi/`)
 - All year hub pages (`/efnafraedi/1-ar/`, `/efnafraedi/2-ar/`, `/efnafraedi/3-ar/`, `/efnafraedi/val/`, `/efnafraedi/f-bekkir/`)
@@ -85,11 +90,13 @@ The kvenno.app site uses a mixed access model:
 ### Role-Based Access Control
 
 **Teachers:**
+
 - Identified by email address (maintained in `TEACHER_EMAILS` array)
 - Access to teacher features in Lab Reports (grading interface)
 - Future: May expand to additional management features
 
 **Students:**
+
 - All other @kvenno.is users
 - Access to student features only
 - Cannot access teacher-specific pages
@@ -97,9 +104,11 @@ The kvenno.app site uses a mixed access model:
 ### Authentication Implementation Details
 
 **For detailed implementation instructions**, see:
+
 - `docs/azure-ad-setup.md` - Azure AD setup, auth flow, components, and troubleshooting
 
 **Key Technologies:**
+
 - `@azure/msal-browser` - Core authentication library
 - `@azure/msal-react` - React integration and hooks
 - Client-side authentication (no backend auth server needed)
@@ -107,6 +116,7 @@ The kvenno.app site uses a mixed access model:
 - Secure token storage (handled by MSAL)
 
 **Configuration:**
+
 ```typescript
 // Environment variables required (.env)
 VITE_AZURE_CLIENT_ID=your-client-id
@@ -115,6 +125,7 @@ VITE_TEACHER_EMAILS=teacher1@kvenno.is,teacher2@kvenno.is
 ```
 
 **Deployment Considerations:**
+
 - Each deployment path needs its own redirect URI registered in Azure AD
 - Authentication works independently at each path
 - Tokens are scoped per domain, not per path
@@ -158,6 +169,7 @@ After updating, rebuild and redeploy the lab-reports app. See `apps/lab-reports/
 ### Future Authentication Enhancements
 
 **Planned improvements:**
+
 - Move from email list to Azure AD security groups
 - Server-side role validation for critical operations
 - Session timeout warnings for users
@@ -173,6 +185,7 @@ After updating, rebuild and redeploy the lab-reports app. See `apps/lab-reports/
 Both LabReports and AI Tutor need to call the Claude API, but **API keys must NOT be stored in frontend environment variables** (variables starting with `VITE_`).
 
 **Why this is critical:**
+
 - Vite bundles environment variables into JavaScript at build time
 - `VITE_` prefixed variables are embedded in the client-side code
 - Anyone can open browser DevTools and extract your API key
@@ -193,6 +206,7 @@ Both LabReports and AI Tutor need to call the Claude API, but **API keys must NO
 ```
 
 **Flow:**
+
 1. React app sends request to `/api/analyze` (your backend)
 2. Backend validates request (can check authentication)
 3. Backend calls Claude API with secure key
@@ -233,10 +247,12 @@ require('dotenv').config();
 const app = express();
 
 // CORS configuration - only allow requests from your domain
-app.use(cors({
-  origin: ['https://kvenno.app', 'https://www.kvenno.app'],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: ['https://kvenno.app', 'https://www.kvenno.app'],
+    credentials: true,
+  })
+);
 
 app.use(express.json({ limit: '10mb' }));
 
@@ -269,9 +285,9 @@ app.post('/api/analyze', async (req, res) => {
     res.json(response);
   } catch (error) {
     console.error('Claude API error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to process request',
-      message: error.message 
+      message: error.message,
     });
   }
 });
@@ -295,9 +311,9 @@ app.post('/api/chat', async (req, res) => {
     res.json(response);
   } catch (error) {
     console.error('Claude API error:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to process chat request',
-      message: error.message 
+      message: error.message,
     });
   }
 });
@@ -388,7 +404,7 @@ location /api/ {
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $scheme;
-    
+
     # Increase timeout for long API calls
     proxy_read_timeout 120s;
     proxy_connect_timeout 10s;
@@ -443,6 +459,7 @@ export async function analyzeReport(prompt: string, systemPrompt?: string) {
 ### Environment Variables Summary
 
 **Frontend (React apps) - .env in repo root:**
+
 ```bash
 # These are SAFE to be public (baked into client JavaScript)
 VITE_AZURE_CLIENT_ID=public-azure-client-id
@@ -452,6 +469,7 @@ VITE_BASE_PATH=/2-ar/lab-reports/  # Set before each build
 ```
 
 **Backend (Node.js server) - .env on server only:**
+
 ```bash
 # These are SECRETS (never commit, never expose)
 CLAUDE_API_KEY=sk-ant-api-key-here
@@ -520,6 +538,7 @@ curl -X POST http://localhost:8000/api/analyze \
 ### Troubleshooting
 
 **Backend won't start:**
+
 ```bash
 # Check logs
 sudo journalctl -u kvenno-backend -n 50
@@ -531,6 +550,7 @@ sudo journalctl -u kvenno-backend -n 50
 ```
 
 **API requests timing out:**
+
 ```bash
 # Check if backend is running
 sudo systemctl status kvenno-backend
@@ -542,6 +562,7 @@ sudo tail -f /var/log/nginx/error.log
 ```
 
 **High API costs:**
+
 ```bash
 # Add rate limiting to backend
 npm install express-rate-limit
@@ -558,6 +579,7 @@ app.use('/api/', limiter);
 ### Future Backend Enhancements
 
 **Planned improvements:**
+
 - Add authentication middleware (verify Azure AD tokens)
 - Add rate limiting per user (not just per IP)
 - Add request logging and analytics
@@ -570,18 +592,22 @@ app.use('/api/', limiter);
 ## 4. Design System
 
 ### Brand Colors
+
 - **Primary Orange**: `#f36b22` (Kvennaskólinn í Reykjavík brand color)
 - **Background**: White or light gray (`#f5f5f5` for sections)
 - **Text**: Dark gray/black (`#333333` for body text)
 - **Accent/Links**: Consider darker shade of orange or complementary color
 
 ### Typography
+
 - **Headings**: Sans-serif, bold
 - **Body**: Sans-serif, regular weight
 - **Specific fonts**: TBD - currently using system defaults
 
 ### Button/Tile Styling
+
 All navigation buttons and tool tiles should use:
+
 - Border: 2px solid #f36b22 (or filled background #f36b22 with white text)
 - Border radius: 8px
 - Padding: 16px 24px
@@ -589,6 +615,7 @@ All navigation buttons and tool tiles should use:
 - Font size: 16-18px for buttons
 
 ### Layout Patterns
+
 - **Maximum content width**: 1200px, centered
 - **Spacing**: Consistent 16px or 24px grid
 - **Responsive**: Mobile-first, stack tiles vertically on small screens
@@ -604,8 +631,9 @@ Every page on kvenno.app must include a consistent header with:
 ```
 
 ### Header Requirements:
+
 - **Site name/logo**: "Efnafræðivefur Kvennó" or similar, links to `/`
-- **Right-aligned buttons**: 
+- **Right-aligned buttons**:
   - "Admin" (for teacher access)
   - "Info" (for help/about)
 - **Background**: White with bottom border or subtle shadow
@@ -613,11 +641,14 @@ Every page on kvenno.app must include a consistent header with:
 - **Sticky**: Consider making header sticky on scroll
 
 ### Header Code Template:
+
 ```jsx
 // Add to every app
 <header className="site-header">
   <div className="header-content">
-    <a href="/" className="site-logo">Efnafræðivefur Kvennó</a>
+    <a href="/" className="site-logo">
+      Efnafræðivefur Kvennó
+    </a>
     <div className="header-actions">
       <button className="header-btn">Admin</button>
       <button className="header-btn">Info</button>
@@ -629,6 +660,7 @@ Every page on kvenno.app must include a consistent header with:
 ## 4. Navigation & Breadcrumbs
 
 ### Breadcrumb Pattern
+
 Every sub-page must show its location in the hierarchy:
 
 ```
@@ -641,11 +673,13 @@ Heim > 1. ár > Lab Reports
 - Style: Small text, gray, with > or / separators
 
 ### Back Navigation
+
 Each app should also include a clear "Til baka" (Back) button that goes to its parent hub.
 
 ## 5. Landing Page (/)
 
 The root landing page is a track selector containing:
+
 1. **Header** (as defined above)
 2. **Intro section**: Brief welcome text about Kvennaskólinn tools
 3. **Main navigation tiles**: Track cards defined in `apps/landing/src/config/tracks.ts`:
@@ -653,6 +687,7 @@ The root landing page is a track selector containing:
    - **Islenskubraut** → `/islenskubraut/` (Icelandic language track)
 
 ### Landing Page Layout:
+
 ```
 ┌─────────────────────────────────┐
 │          Header                  │
@@ -675,6 +710,7 @@ The root landing page is a track selector containing:
 ## 6. Year/Section Hub Pages
 
 Each hub page (1.ár, 2.ár, 3.ár, Val) has:
+
 1. **Header** (consistent)
 2. **Breadcrumbs**: `Heim > [Section Name]`
 3. **Section title**: e.g., "1. árs verkfæri"
@@ -682,7 +718,9 @@ Each hub page (1.ár, 2.ár, 3.ár, Val) has:
 5. **Future expansion space**: Placeholder tiles for upcoming tools
 
 ### Tool Tile Structure:
+
 Each tool tile should display:
+
 - Icon or image (optional)
 - Tool name (e.g., "Lab Reports")
 - Brief description (1-2 sentences)
@@ -698,6 +736,7 @@ Each app (Lab Reports, AI Tutor, etc.) must include:
 4. **Footer with navigation**: Link back to hub and home
 
 ### App Deployment:
+
 - Each app is a separate React build
 - Deployed to its designated path (e.g., `/1-ar/lab-reports/`)
 - Uses `basename` in React Router if needed
@@ -752,6 +791,7 @@ pnpm build
 ```
 
 The build script (`scripts/build-all.mjs`) orchestrates all builds:
+
 1. Builds the landing page SPA
 2. Builds all 17 games as self-contained HTML files
 3. Builds lab-reports twice (for 2-ar and 3-ar paths)
@@ -786,6 +826,7 @@ dist/
 ```
 
 ### Server Setup (nginx)
+
 - All static files served from `/var/www/kvenno.app/`
 - Express backend proxied at `/api/` (port 8000)
 - SPA fallback routes configured per app
@@ -793,6 +834,7 @@ dist/
 - Legacy URLs (`/1-ar/`, `/2-ar/`, etc.) redirect to `/efnafraedi/...`
 
 ### Environment Variables:
+
 ```bash
 # Frontend (.env in repo root)
 VITE_AZURE_CLIENT_ID=your-client-id
@@ -822,6 +864,7 @@ pnpm test:e2e             # Run E2E tests (Playwright)
 ```
 
 ### Development Guidelines:
+
 1. **Reference design system**: Use #f36b22, consistent button styles from Tailwind preset
 2. **Use shared components**: Import Header, Breadcrumbs, Footer from `packages/shared/`
 3. **Test navigation**: Make sure links and breadcrumbs work correctly
@@ -831,6 +874,7 @@ pnpm test:e2e             # Run E2E tests (Playwright)
 ## 11. Icelandic Language
 
 All user-facing text must be in Icelandic:
+
 - "Heim" not "Home"
 - "Til baka" not "Back"
 - "Verkfæri" not "Tools"
@@ -854,11 +898,9 @@ The `packages/shared/hooks/` directory provides reusable hooks used across all g
 - **`useAchievements`** - Achievement/badge system for games (unlock conditions, persistent state)
 - **`useAccessibility`** - Accessibility features (reduced motion, font size, high contrast preferences)
 - **`useProgress`** - Generic progress tracking hook
-- **`useGameSounds`** - Web Audio API synthesized sounds (click, correct, wrong, level-complete, achievement, streak). Sounds default to OFF, persisted in localStorage (`kvenno-sound-enabled`).
 
 Graphics/animation hooks (in `packages/shared/components/`):
 
-- **`useParticleCelebration`** - Manages particle celebration lifecycle: triggering, queuing (up to 3), auto-advancing. Returns `triggerCorrect`, `triggerStreak`, `triggerLevelComplete`, `celebrationProps`.
 - **`useScorePopups`** - Manages queue of floating "+N" score popups (max 5 concurrent, oldest evicted).
 
 All hooks have unit tests in `packages/shared/hooks/__tests__/`.
@@ -882,16 +924,18 @@ Refactored games include: `hess-law`, `kinetics`, `redox-reactions`, and others.
 
 ### Graphics & Animation Integration
 
-All 17 games include the following shared graphics/animation components:
+The February 2026 graphics system (`AnimatedBackground`, `ParticleCelebration` +
+`useParticleCelebration`, `SoundToggle` + `useGameSounds`) was rolled into all 17 games, then
+stripped from every game by the April 2026 pedagogical restructure — celebration, ambient
+background motion, and sound effects were judged to distract from the teach-before-test flow.
+Those components were deleted from `packages/shared/` in August 2026 once they had zero importers.
 
-- **`AnimatedBackground`** — Wraps the menu/start screen with year-themed gradient blobs and floating chemistry SVGs
-- **`ParticleCelebration`** + **`useParticleCelebration`** — Canvas particle overlay for correct answers (burst), streaks (escalating), and level completions (confetti + stars)
-- **`SoundToggle`** + **`useGameSounds`** — Sound toggle button in menu header; `playCorrect`/`playWrong`/`playLevelComplete` calls in answer handlers
+What remains in games:
+
 - **`game-card`** CSS class — Applied to level selection buttons for spring hover/press microinteractions
+- **`ParticleSimulation`** — Physics particle visualization used as a _teaching_ visual (not celebration)
 
-Year-theme palettes: 1-ar games use `yearTheme='1-ar'` (orange), 2-ar uses `'2-ar'` (teal), 3-ar uses `'3-ar'` (purple).
-
-Zero external animation/sound libraries — all motion is CSS keyframes, Canvas 2D, and Web Audio API oscillators.
+Zero external animation libraries — all motion is CSS keyframes and Canvas 2D.
 
 ## 15. CI/CD Pipeline
 
@@ -934,9 +978,10 @@ The shared i18n files live in `packages/shared/i18n/` (`is.json`, `en.json`, `pl
 **Primary Color**: #f36b22  
 **Max Width**: 1200px  
 **Header Height**: ~60px  
-**Button Radius**: 8px  
+**Button Radius**: 8px
 
 **Key Links**:
+
 - Home: `/`
 - Chemistry Track: `/efnafraedi/`
 - 1st Year: `/efnafraedi/1-ar/`
@@ -947,5 +992,5 @@ The shared i18n files live in `packages/shared/i18n/` (`is.json`, `en.json`, `pl
 
 ---
 
-*Last updated: 2026-02-21*
-*Maintainer: Sigurður E. Vilhelmsson, Kvennaskólinn í Reykjavík*
+_Last updated: 2026-02-21_
+_Maintainer: Sigurður E. Vilhelmsson, Kvennaskólinn í Reykjavík_
