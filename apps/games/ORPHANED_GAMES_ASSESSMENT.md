@@ -75,7 +75,17 @@ Two of those three duplicate topics that already existed in the old repo, and bo
 - `jafna-jofnur` (new) vs `stilltu-efnajofnur` (old). The new `data/reactions.ts` stores per-molecule element-composition maps so atoms can be counted programmatically — which is what makes the live `AtomCounter` possible. The old `data/equations.ts` opens with an `ELEMENT_COLORS` table and a `ReactionType` union. The rewrite is the better design.
 - `lotukerfid` (new, 1836 LOC) vs `lotukerfid` (old, 1693 LOC). Independent implementations; the new one adds a reusable `PeriodicTable.tsx`.
 
-**One regression came out of that rewrite.** The old `lotukerfid` shipped `src/data/trends.ts` — 200 lines of periodic-trend content (atomic radius, ionization energy, electronegativity) with the rule for each trend across periods and down groups, in Icelandic and English, plus per-question explanations. The rewrite dropped it and nothing replaced it.
+**One regression came out of that rewrite** — and it is the cheapest recoverable item in this entire document.
+
+The old `lotukerfid` shipped `src/data/trends.ts`: exactly 200 lines, verified by hand. It defines three trend types with an Icelandic and English name, description and **rule** each — `Atómgeisli` ("minnkar eftir lotu og stækkar niður hópa"), `Jónunarorka` ("eykst eftir lotu og minnkar niður hópa"), `Rafneikvæðni` ("eykst eftir lotu og minnkar niður hópa (eðalgös undanskilin)") — plus **12 paired comparison questions**, four per trend, each with an Icelandic explanation. All three rules are correct as stated, and **all 12 answer keys verify correct**: Na>Cl, Na>Li, S>O, C>F on radius; F>Li, Na>K, Mg>Ca, N>B on ionization energy; Cl>Na, F>Cl, O>C, Br>K on electronegativity.
+
+It also uses `Rafneikvæðni` — the term this codebase already uses elsewhere — not the `rafdrægni` that returns zero hits.
+
+The rewrite dropped it and nothing replaced it. `grep -rn "Atómgeisli|Jónunarorka|Rafneikvæðni|atomic-radius|ionization" apps/games/1-ar/lotukerfid/src/` returns **nothing**.
+
+**Verdict on old `lotukerfid`: harvest-content-only, effort S.** Lift `trends.ts` into `apps/games/1-ar/lotukerfid/src/data/` and give it a level. Nothing else in the old implementation is worth taking — the shipped rewrite is the better architecture, as noted above.
+
+**One correction to a natural misreading:** the old `lotukerfid` does **not** fix the shipped game's neutron blocker (`CURRICULUM_REVIEW.md` B1). It contains no neutron counting at all — `grep -rn "nifteind|neutron|massatala|massNumber|samsæt|isotope"` over its `src/` returns zero hits, and the shipped bug is still live at `apps/games/1-ar/lotukerfid/src/components/Level3.tsx:31-32`, `Math.round(el.atomicMass) - el.atomicNumber`. The isotope content that fixes B1 is in `uppbygging-atomanna`, a different game.
 
 The grep behind that claim was partly wrong and has been re-run. `rafdrægni` returns **0** hits — it is not the term this codebase uses; `rafneikvæðni` returns 2. The original conclusion survived only because `electronegativ` was in the same alternation. And "only an unused i18n label in IMF" is wrong: `apps/games/2-ar/intermolecular-forces/src/components/Level1.tsx:24` puts `'Rafneikvæðni'` in `RELATED_CONCEPTS.dipole`, spread into rendered output at `:911` when `molecule.isPolar` — live UI, not a dead label. **The core claim survives: periodic trends are nowhere _taught_ in the platform.**
 
