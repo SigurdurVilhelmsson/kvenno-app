@@ -34,7 +34,9 @@ Among them, and the count is now resolved by `git diff --name-status 912d997 379
 
 Verified absent today: no `Level4` or `Level5` exists under `apps/games/{1-ar/molmassi,1-ar/takmarkandi,3-ar/ph-titration,3-ar/equilibrium-shifter}/src/components/`, and a grep for `ICETable|ICE tafla|jafnvægistafla` across all 20 shipped games returns zero.
 
-**No curator selecting for completeness removes Level 4 from a game they are carrying over. A stale snapshot does it automatically.** This work is recoverable from the old repo at `379266e`.
+**No curator selecting for completeness removes Level 4 from a game they are carrying over. A stale snapshot does it automatically.**
+
+**But do not read "recoverable" as "drop-in."** These files were added 1–2 February — the same generator burst that produced every orphan pathology in this document — so they are pre-restructure code and carry it: `molmassi/Level5.tsx` calls `setScore` at `:42,83`, `takmarkandi/Level4.tsx` at `:49,78,106`, and `equilibrium-shifter/ICETable.tsx` carries `hintMultiplier` at `:51,93` — a hint penalty. Recovering any of them is a **rebuild-from-content** item on the same terms as the fifteen assessed below, not a free restoration. What is genuinely free is the _content_: the problem sets, the chains, the ICE-table method.
 
 **Two rows of `CURRICULUM_REVIEW.md` are wrong-as-diagnosed because of it:**
 
@@ -47,7 +49,7 @@ Keep the distinction sharp: `C3-yield` and the mole-chain row are **taught, then
 
 **Inference:** that the stale checkout is the _whole_ mechanism. It explains 31 of 33 directories. `games/archive/ph-titration-master` and `ph-titration-practice` were first committed 2025-11-28/29 (`9d59d66`, `d37ec64`), **were** on disk at `912d997`, and still did not migrate. A second filter ran — a path glob over `games/{1,2,3}-ar/*`, or the frozen 17-entry `scripts/build-games.mjs` (last touched 2025-12-31, `3c47726`, listing exactly those 17) — and which one is **not determined**; `914e6f5` is a squashed commit preserving no import script.
 
-**Not determined:** whether the February PRs were known to exist on 2026-02-19. If they were reviewed and passed over, a deliberate-selection reading reopens; the reflog implies they were out of sight. Also not determined: what "completed" meant subjectively. Every contemporaneous document in the old repo marks all 27 games complete and production-ready (`repository-status.md:185`, `:235`; `docs/_generated/games.md:49`), so an unwritten personal standard can be neither confirmed nor refuted — though it remains true that no such standard was _applied_, because the 14 games were not present to filter.
+**Resolved 2026-08-16, by the author.** In February he was working locally on an unrelated project, and reached the games repo only occasionally through the **web and cloud** versions of Claude Code — possibly including design work during the February sprint that he no longer remembers doing or where it was saved. That is the missing half of the mechanism, and it corroborates the reflog rather than reopening the question: the February work was authored in sessions that pushed to GitHub and never touched this machine, so on 2026-02-19 there was nothing to notice and nothing to pass over. **The deliberate-selection reading is closed.** Also not determined: what "completed" meant subjectively. Every contemporaneous document in the old repo marks all 27 games complete and production-ready (`repository-status.md:185`, `:235`; `docs/_generated/games.md:49`), so an unwritten personal standard can be neither confirmed nor refuted — though it remains true that no such standard was _applied_, because the 14 games were not present to filter.
 
 ### Chrome did not predict migration — the table, rebuilt
 
