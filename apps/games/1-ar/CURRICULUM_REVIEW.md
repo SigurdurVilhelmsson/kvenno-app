@@ -7,6 +7,16 @@
 
 ---
 
+## Updates since publication (2026-08-16)
+
+Three findings from `apps/games/ORPHANED_GAMES_ASSESSMENT.md` change what is written below. Read them before acting on §2 or §6.
+
+1. **B1 is quantified and worse than stated.** Of the 36 elements in Lotukerfið's pool, 7 mismatch, and 6 of those round to radioactive nuclides (Ni-59, Cu-64, Zn-65, Ga-70, Se-79, Br-80). Drawing 2 neutron slots from 36, **~31% of playthroughs mis-grade a correct answer**; across all 4 neutron-derived slots, ~54–60% display a wrong neutron count. The fix content already exists in the old repo's `uppbygging-atomanna` (`src/components/Level3.tsx:157-163`, `src/i18n.ts:64-71`).
+2. **Two rows in §1 are wrong-as-diagnosed, not wrong-as-taught.** `C3-yield` (percent yield, line 72) and the mass→mole→mass row (line 68) describe content that **existed and was lost** in the Feb 2026 consolidation, not content never written. Old `takmarkandi/Level4.tsx` shipped 8 percent-yield problems; old `molmassi/conversionChains.ts` drove a `Level5.tsx`. Both are recoverable at `379266e` in `namsbokasafn-leikir`. The remaining gaps in §1 were re-tested against better Icelandic stems and **stand**.
+3. **A worse defect than anything in §2 exists in Year 3.** `apps/games/3-ar/ph-titration/src/utils/ph-calculations.ts:57,95,133,198` divides a molarity that is already in mol/L by 1000, so every initial-pH branch is wrong — 0.100 M acetic acid renders **pH 4.37** where the game's own `data/titrations.ts:76` asserts **2.87**. Verified by hand. This review is Year-1 scoped and never looked at it; there is no equivalent Y2/Y3 review.
+
+---
+
 ## Assumption you should check first
 
 No curriculum mapping exists anywhere in this repo, so the chapter→topic map below is **assumed from Brown 14th ed.** and drives the whole coverage section. If your edition splits differently, correct this one table and the gaps re-sort themselves.
