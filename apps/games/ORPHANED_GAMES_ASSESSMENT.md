@@ -1,35 +1,63 @@
 # Orphaned Games — Assessment of `namsbokasafn-leikir`
 
-**Date:** 2026-08-15
-**Question:** the old repo `~/dev/repos/namsbokasafn-leikir` holds 32 game projects; kvenno-app kept 20. What is in the 12 that were left behind, and would any of them fit here?
+**Date:** 2026-08-15, substantially revised 2026-08-16
+**Question:** the old repo `~/dev/repos/namsbokasafn-leikir` holds **33 game directories** (31 live + 2 archived); kvenno-app took **17** and wrote 3 more from scratch. What is in the **16** that were left behind, why were they left, and would any of them fit here?
 **Companion:** `apps/games/1-ar/CURRICULUM_REVIEW.md` (the gaps these games are measured against)
-**Method:** one agent per orphaned game, reading all source and data files, with file:line evidence required on every claim.
+**Method:** one agent per game, reading all source and data files, with file:line evidence required on every claim; every headline claim then re-checked by an adversarial verifier instructed to refute it. The causal section additionally used six forensic agents and three competing hypotheses argued independently before being judged.
+
+> **Read the revision note.** The first version of this document (commit `583f073`) got the causal story wrong and shipped a chrome table that contradicted its own prose. Both are corrected below, and the corrections are itemised rather than quietly overwritten — see [Corrections to the first version](#corrections-to-the-first-version-of-this-document).
 
 ---
 
 ## Why they were left behind
 
-Not a chrome decision. The migrated games are the **chrome-heaviest** in the old repo, and the stripping happened afterwards, here.
+**Nothing was judged and nothing was rejected. There was no selection event.**
 
-| Old-repo game                                                                                                                     | timer | streak | confetti | sound | penalty |             |
-| --------------------------------------------------------------------------------------------------------------------------------- | ----- | ------ | -------- | ----- | ------- | ----------- |
-| takmarkandi                                                                                                                       | 5     | 4      | 2        | 2     | 0       | migrated    |
-| lausnir                                                                                                                           | 5     | 4      | 0        | 0     | 2       | migrated    |
-| molmassi                                                                                                                          | 3     | 1      | 2        | 0     | 1       | migrated    |
-| dimensional-analysis                                                                                                              | 3     | 0      | 2        | 0     | 1       | migrated    |
-| hlutfallsgreining, uppbygging-atomanna, calorimetry, electrochemistry, organic-reactions, ka-kb-jafnvaegi, solubility-equilibrium | 0     | 0      | 0        | 0     | 0       | **orphans** |
+The local clone of `namsbokasafn-leikir` had been sitting untouched since **2026-01-25 20:59** (`912d997`). On 2026-02-19 kvenno-app was built by copying what was on disk — and what was on disk was exactly the 17 games that came over. The 14 missing games were written by cloud/agent sessions (PRs #87–#100) in a four-day burst on **1–4 February**, straight to GitHub. They did not reach the machine until the pull on **2026-05-10**, 80 days after the migration.
 
-(counts = files matching each pattern under `src/`)
+That is why five independent searches found no commit message, no PR and no document explaining the choice. **No rationale was recorded because no decision was ever made.**
 
-What predicts migration is **when the game was written**, and the split is exact:
+### The evidence
 
-- **All 17 games consolidated on 2026-02-19 (`914e6f5`) were first committed in 2025** — 2025-11-28 through 2025-12-29. Every one.
-- **All 12 orphans were first committed 2026-02-01 → 2026-02-04**, a four-day burst. Not one of them made the cut.
-- Orphans: 1788–2895 LOC, **exactly 5 source files each** (App + Level1/2/3 + i18n) — one template.
-- Consolidated games: 2281–7196 LOC across 2–15 files.
-- Old repo's last commit 2026-02-05; consolidation 2026-02-19, two weeks later.
+Established by measurement, and re-verified by hand:
 
-There are **no exceptions in either direction**. The boundary is the turn of the year: everything built in 2025 came over, nothing built in February 2026 did.
+- **Byte-level provenance.** For each of the 17 migrated games, `git ls-tree -r 914e6f5 -- apps/games/<g>/src` matches `git ls-tree -r 912d997 -- games/<g>/src` at **219/219 blobs, 100% per game**. Against the old repo's actual HEAD (`379266e`) the same trees hold 253 files with only 162 matches. Spot-re-verified independently: takmarkandi 17/17, hess-law 9/9, equilibrium-shifter 10/10. The migration source is fingerprinted to one specific commit.
+- **The reflog freeze.** `.git/logs/HEAD` in the old repo: the last local move is `912d997` at epoch 1769374740 (2026-01-25 20:59:00); the next two entries are `reset: moving to HEAD` (1778414574) and `379266e … pull: Fast-forward` (1778414580), both 2026-05-10. **Zero activity spans 2026-02-19.**
+- **The frozen tree is the migrated set.** `git ls-tree -d 912d997:games/{1,2,3}-ar` returns exactly 5 / 7 / 5 directories — precisely the 17 present at `914e6f5`, and precisely the "17 chemistry games (5 year-1, 7 year-2, 5 year-3)" that commit's own body claims.
+- **Stripping post-dates migration.** No commit anywhere in the old repo — main, all 33 branches, both stashes — removes gamification chrome; the counts rise monotonically to its last commit. The stripping is two commits _here_: `bbbdd12` (2026-04-14 13:23, Y2/Y3) and `8ce63d5` (2026-04-14 16:16, Y1), two months after `914e6f5`. **The games arrived in kvenno-app with scoring and achievements fully intact.**
+
+### The fact that settles it: the migration also amputated finished work from games that were kept
+
+`git diff --name-status 912d997 379266e` over the 17 **kept** game directories shows **34 added `.ts`/`.tsx` files**, none of which ever entered kvenno-app on any ref (`git log --all --diff-filter=A` returns 0 commits for each of `Level4.tsx`, `Level5.tsx`, `ICETable.tsx`, `FactoryMode.tsx`, `MysteryMolecule.tsx`, `Pipette.tsx`, `EquationBuilder.tsx`, `QKChallenge.tsx`).
+
+Among them: the `Level4.tsx` of lausnir, molmassi, takmarkandi, hess-law, kinetics, lewis-structures, intermolecular-forces, organic-nomenclature and ph-titration (counted as eight in one pass and nine in another; the discrepancy is not resolved); molmassi's `Level5.tsx` + `MysteryMolecule.tsx` + `data/conversionChains.ts`; takmarkandi's `FactoryMode.tsx` + `StoichiometryVisualization.tsx`; equilibrium-shifter's `ICETable.tsx` + `QKChallenge.tsx` + `utils/ice-table.ts`; lausnir's `Pipette.tsx` + `IndicatorSystem.tsx` + `data/saturation.ts`; hess-law's `EquationBuilder.tsx`; dimensional-analysis's `Level4Chemistry.tsx` + `UnitConversionBuilder.tsx`.
+
+Verified absent today: no `Level4` or `Level5` exists under `apps/games/{1-ar/molmassi,1-ar/takmarkandi,3-ar/ph-titration,3-ar/equilibrium-shifter}/src/components/`, and a grep for `ICETable|ICE tafla|jafnvægistafla` across all 20 shipped games returns zero.
+
+**No curator selecting for completeness removes Level 4 from a game they are carrying over. A stale snapshot does it automatically.** This work is recoverable from the old repo at `379266e`.
+
+**Two rows of `CURRICULUM_REVIEW.md` are wrong-as-diagnosed because of it:**
+
+- `CURRICULUM_REVIEW.md:72` — "Percent yield ○ **Advertised but never taught** — `takmarkandi/src/i18n.ts:11` promises 'reikna heimtir'; nothing in the game delivers it." The old `games/1-ar/takmarkandi/src/components/Level4.tsx` imports `PERCENT_YIELD_PROBLEMS`, `calculateTheoreticalYield` and `calculateActualYield` from `data/molarMasses.ts`, which holds 8 problems with `actualYieldPercent` values. **The promise was true when written.** That i18n line is an amputation scar, not false advertising.
+- `CURRICULUM_REVIEW.md:68` — "No gram→mole→ratio→mole→gram calculation exists anywhere in Y1." The old `games/1-ar/molmassi/src/data/conversionChains.ts` opens `// Mole Conversion Chain Problems / Mass → Moles → Molecules → Atoms` and drives `Level5.tsx`; `Level4.tsx` + `avogadro.ts` cover Avogadro's number with scientific-notation input parsing.
+
+Keep the distinction sharp: `C3-yield` and the mole-chain row are **taught, then lost**. `C4-electrolyte`, `C3-empirical`, `C4-precip`, net-ionic, isotopes and separation techniques are **genuinely empty** — re-tested on Icelandic stems (`rafkleyf`, `rafleiðar`, `raflausn`, `jónast`, `reynsluformúl`, `botnfall`, `útfelling`, `leysnireglur`, `samsæt`, `massatal`, `eiming`, `litskilj`, `síun`, `aðskilnað`) across all 20 shipped games' `src/` and their built HTML, with zero or false-positive-only hits. `(aq)` returns 12 hits, **all Year 3** — so the Y1 claim holds, and Y3 uses a notation Y1 never introduces.
+
+### What is inference, and what is not determined
+
+**Inference:** that the stale checkout is the _whole_ mechanism. It explains 31 of 33 directories. `games/archive/ph-titration-master` and `ph-titration-practice` were first committed 2025-11-28/29 (`9d59d66`, `d37ec64`), **were** on disk at `912d997`, and still did not migrate. A second filter ran — a path glob over `games/{1,2,3}-ar/*`, or the frozen 17-entry `scripts/build-games.mjs` (last touched 2025-12-31, `3c47726`, listing exactly those 17) — and which one is **not determined**; `914e6f5` is a squashed commit preserving no import script.
+
+**Not determined:** whether the February PRs were known to exist on 2026-02-19. If they were reviewed and passed over, a deliberate-selection reading reopens; the reflog implies they were out of sight. Also not determined: what "completed" meant subjectively. Every contemporaneous document in the old repo marks all 27 games complete and production-ready (`repository-status.md:185`, `:235`; `docs/_generated/games.md:49`), so an unwritten personal standard can be neither confirmed nor refuted — though it remains true that no such standard was _applied_, because the 14 games were not present to filter.
+
+### Chrome did not predict migration
+
+The first version of this document asserted that "the migrated games are the chrome-heaviest in the old repo" and printed a table scoring every orphan at zero on timer, streak, confetti, sound and penalty. **Both halves are wrong**, and they contradicted this document's own prose forty lines further down.
+
+Re-measured across all 33 projects: the direction holds on average (migrated mean 3.35 vs orphan 1.50 on those five patterns) but there is no separation. **Seven of the 17 migrated games score exactly zero**, and the orphan `flokkun-efna` scores 5, outscoring 12 of the 17 migrated games. The omitted non-zero orphans: `flokkun-efna` timer=2/streak=3, `gerdir-efnahvarfa` timer=2/streak=3, `jonir-i-lausn` streak=3, `markverdir-tolustafir` timer=1, `sydur-og-basar` streak=4. Sorted honestly, the boundary vanishes.
+
+The zeros were a measurement artefact. The regex `penalty|deduct` structurally cannot match a labelled Icelandic cost — `uppbygging-atomanna` scored penalty=0 while shipping `Sýna vísbendingu (-50 stig)` at `Level1.tsx:365`, `Level3.tsx:260` and `i18n.ts:100` — nor the reduced-award form (`hlutfallsgreining/src/components/Level3.tsx:84-85`, `showSteps ? 5 : showHint ? 7 : 10`). Twelve files across seven orphans carry a `(-N stig)` label. **The prose was correct; the table was measuring an English-identifier vocabulary that could not see what the prose described.** It has been removed rather than patched.
+
+None of the 16 left-behind games ever entered kvenno-app: `git log --all` returns zero commits touching any of their paths. They were never dropped or rejected — they simply were not in the tree that was copied.
 
 None of the orphans ever entered kvenno-app: `git log --all` returns zero commits touching any of their paths. They were dropped at consolidation, not deleted later, and nothing in either repo records the decision.
 
@@ -47,17 +75,21 @@ Two of those three duplicate topics that already existed in the old repo, and bo
 - `jafna-jofnur` (new) vs `stilltu-efnajofnur` (old). The new `data/reactions.ts` stores per-molecule element-composition maps so atoms can be counted programmatically — which is what makes the live `AtomCounter` possible. The old `data/equations.ts` opens with an `ELEMENT_COLORS` table and a `ReactionType` union. The rewrite is the better design.
 - `lotukerfid` (new, 1836 LOC) vs `lotukerfid` (old, 1693 LOC). Independent implementations; the new one adds a reusable `PeriodicTable.tsx`.
 
-**One regression came out of that rewrite.** The old `lotukerfid` shipped `src/data/trends.ts` — 200 lines of periodic-trend content (atomic radius, ionization energy, electronegativity) with the rule for each trend across periods and down groups, in Icelandic and English, plus per-question explanations. The rewrite dropped it and nothing replaced it: grepping all 20 games for `atómgeisli|jónunarorka|rafdrægni|electronegativ|ionization` returns only an unused i18n label in IMF and an unrelated "autoionization" string in equilibrium-shifter. Periodic trends are taught nowhere in the platform.
+**One regression came out of that rewrite.** The old `lotukerfid` shipped `src/data/trends.ts` — 200 lines of periodic-trend content (atomic radius, ionization energy, electronegativity) with the rule for each trend across periods and down groups, in Icelandic and English, plus per-question explanations. The rewrite dropped it and nothing replaced it.
 
-**Consequence:** all 12 are frozen at the **pre-restructure state**. Every defect the April 2026 restructure removed from the shipped games is still present in these — and in the same places, because both sets came from one template.
+The grep behind that claim was partly wrong and has been re-run. `rafdrægni` returns **0** hits — it is not the term this codebase uses; `rafneikvæðni` returns 2. The original conclusion survived only because `electronegativ` was in the same alternation. And "only an unused i18n label in IMF" is wrong: `apps/games/2-ar/intermolecular-forces/src/components/Level1.tsx:24` puts `'Rafneikvæðni'` in `RELATED_CONCEPTS.dipole`, spread into rendered output at `:911` when `molecule.isPolar` — live UI, not a dead label. **The core claim survives: periodic trends are nowhere _taught_ in the platform.**
+
+**Consequence:** all 16 left-behind projects are frozen at the **pre-restructure state**. Every defect the April 2026 restructure removed from the shipped games is still present in these, for the simple reason that the restructure happened here and they were not here to receive it.
 
 ---
 
-## The template pathology
+## The shared defect set — and why "fix the template" is not available
 
-Every one of the seven Year-1 orphans shares the same defect set, and it is the same set the curriculum review found in the shipped games:
+Every one of the seven Year-1 orphans shares the same defect set, and it is the same set the curriculum review found in the shipped games. The first version of this document attributed that to a shared code template. **That premise is false, and it was checked:** `tools/game-template/src/App.tsx` is 175 lines, imports only `useProgress`, `useAccessibility`, `useGameI18n` and `LanguageSwitcher`, and has no score, no streak, no timer, no hint cost, no level gate, no achievements and **no question of any kind** — its game screen is a placeholder div. Of the eight items below, only #6 (by omission) and #8 are template-inherited.
 
-1. **The answer is on screen before the student answers** — in _all seven_. `flokkun-efna`: only pure substances carry a `formula` field, and it renders above the buttons, so the formula alone resolves half the four-way choice. `jonir-i-lausn`: all 15 Level-1 descriptions name the category in words ("Sterk sýra sem leysist algjörlega"). `sydur-og-basar`: Icelandic acid/base names are suffix-transparent and the name prints above the two buttons. Combined with the four leaks already found in the shipped games, **11 of 12 Y1 games leak the answer** — this is inherited from the template, not per-game sloppiness.
+The defects really are shared across the orphans; the common ancestor is a **generation prompt, not a file**. The practical consequence is that there is no single upstream fix — each game carries its own copy of the pathology and must be treated individually.
+
+1. **The answer is on screen before the student answers** — in _all seven_. `flokkun-efna`: only pure substances carry a `formula` field, and it renders above the buttons, so the formula alone resolves half the four-way choice. `jonir-i-lausn`: all 15 Level-1 descriptions name the category in words ("Sterk sýra sem leysist algjörlega"). `sydur-og-basar`: Icelandic acid/base names are suffix-transparent and the name prints above the two buttons. Combined with the four leaks already found in the shipped games, **11 of 12 Y1 games leak the answer**.
 2. **Score, streak counters and streak bonuses** through every level.
 3. **Hints that cost points**, several advertising the penalty in the button label (`'Sýna vísbendingu (-50 stig)'`).
 4. **Completion- or score-gated levels** with padlocks — ironically the one thing the shipped games _should_ have kept.
@@ -66,13 +98,39 @@ Every one of the seven Year-1 orphans shares the same defect set, and it is the 
 7. **Achievements chrome** wired in throughout. The exports do still exist in `packages/shared/`, so this is dead weight rather than a broken import.
 8. **Bilingual/trilingual UI** with a rendered LanguageSwitcher, against the Icelandic-only rule.
 
-Two orphans additionally ship **diacritic-stripped ASCII Icelandic** (þ→th, æ→ae, ð→d) as their actual rendered UI: `uppbygging-atomanna` in all three level components, `sydur-og-basar` across ~45 strings.
+**Diacritic-stripped ASCII Icelandic** (þ→th, æ→ae, ð→d) ships as rendered UI in `uppbygging-atomanna` (all three level components) and `sydur-og-basar`. Two corrections to the first version: the counts appear to have been swapped — a consistent token detector gives ~20 for `sydur-og-basar` and ~45 for `uppbygging-atomanna` — and **treat both figures as unverified in either direction**, since any token list undercounts and `sydur-og-basar` mixes correctly-rendering HTML entities with genuinely stripped ASCII, sometimes on one line (`Level3.tsx:286`, `Retta svari&eth;`: the entity renders, `Retta` does not). More importantly, this is **not an orphan trait**: of the seven old-repo projects that ship it, five are migrated or superseded (`lausnir`, `molmassi`, `vsepr-geometry`, `equilibrium-shifter`, old `lotukerfid`) and only two are orphans. `apps/games/2-ar/vsepr-geometry` was still shipping it at the time of measurement.
+
+---
+
+## Corrections to the first version of this document
+
+Every claim below has been fixed in place above. It is itemised here because a document that quietly rewrites itself teaches you nothing about how much to trust its next version.
+
+| What the first version said                               | What is true                                                                                                                                                                                                                                                                                                          |
+| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "32 game projects; kvenno-app kept 20"                    | 33 directories (31 live + 2 archived). **17** migrated; the other 3 kvenno games were written fresh on 2026-04-14.                                                                                                                                                                                                    |
+| "the 12" orphans                                          | **14** left behind (the 12 named, plus `stilltu-efnajofnur` and old `lotukerfid`); **16** counting the archive pair. The first version discussed two of them without counting them.                                                                                                                                   |
+| "The migrated games are the chrome-heaviest"              | Direction holds on average, but 7 of 17 migrated games score zero and the orphan `flokkun-efna` outscores 12 of them. Chrome has no discriminating power.                                                                                                                                                             |
+| The chrome table                                          | Cherry-picked: the "orphans" row aggregated 7 of 12 and omitted the five non-zero ones; the migrated rows were the four heaviest of 17. Removed.                                                                                                                                                                      |
+| Table says penalty=0, prose quotes `(-50 stig)`           | **The table was the defective half.** Its regex could not match a labelled Icelandic cost. The prose was right.                                                                                                                                                                                                       |
+| "exactly 5 source files each"                             | False of the source trees: hlutfallsgreining 10, uppbygging-atomanna 10, calorimetry 8, electrochemistry 8, organic-reactions 8, solubility-equilibrium 12, ka-kb-jafnvaegi 14.                                                                                                                                       |
+| "Orphans: 1788–2895 LOC … 2–15 files"                     | Orphans measure 1902–3009 LOC; migrated `src/` file counts are 8–22.                                                                                                                                                                                                                                                  |
+| "no exceptions in either direction… the turn of the year" | Refuted twice over. The archive pH pair is from November 2025 and did not migrate. The real cut is **2026-01-25 20:59**, not the year line — they coincide only because no game was created between 2025-12-29 and 2026-02-01, which makes the year-line claim unfalsifiable exactly where it differs from the truth. |
+| "What predicts migration is when the game was written"    | Correlation right, mechanism wrong. Date is collinear. The operative variable is **presence in the local working tree on consolidation day**.                                                                                                                                                                         |
+| "dropped at consolidation… nothing records the decision"  | Nothing was dropped or rejected. The second clause is right for the wrong reason: no rationale exists because no decision was made.                                                                                                                                                                                   |
+| "inherited from the template"                             | The template is 175 lines with no scoring, no gating and no questions. The shared ancestor is a generation prompt, not a file — so there is no upstream fix.                                                                                                                                                          |
+| "three wrong answer keys in Level 2"                      | Only `l2-5` is a key edit; `l2-1` needs corrected percentages; `l2-10` must be regenerated.                                                                                                                                                                                                                           |
+| "reaction-type names contradict the school's textbooks"   | Not verifiable — no textbook is named. Half the fix is mechanical from the glossary; half needs a decision.                                                                                                                                                                                                           |
+| "`sydur-og-basar` across ~45 strings"                     | Figures appear swapped (~20 vs ~45), and both are unverified. Also not an orphan trait — 5 of the 7 projects shipping ASCII Icelandic are migrated or superseded.                                                                                                                                                     |
+| the periodic-trends grep                                  | `rafdrægni` returns 0 hits; the codebase uses `rafneikvæðni`. The IMF hit is live UI, not a dead label. The conclusion survives.                                                                                                                                                                                      |
+| "The exports do still exist in `packages/shared`"         | **Correct, and re-confirmed.** The achievements surface is fully intact and still exported, with zero production importers under `apps/`.                                                                                                                                                                             |
+| — _omission_                                              | The consolidation also lost **34 finished files from games that did migrate**. It is the fact that refutes every judgment-based explanation, and the first version never mentioned it.                                                                                                                                |
 
 ---
 
 ## Year 1 — the seven orphans
 
-Ordered by value to the curriculum.
+Ordered by value to the curriculum. This section was written on a **curriculum-and-correctness** axis; the four-axis assessment (structure/pedagogy, UX/chrome, coverage, fit) for these same seven is in [The leftover games, assessed](#the-leftover-games-assessed) below.
 
 ### 1. `jonir-i-lausn` — the highest-value orphan → **migrate** (M)
 
@@ -88,7 +146,7 @@ Teaches electrolyte classification (strong/weak/non), solubility rules, and prec
 Percent composition → empirical formula → molecular formula. Fills `C3-fw` and `C3-empirical`, the latter confirmed absent from all three years. 30 fixed items.
 
 - Response format is free construction throughout — no multiple choice anywhere.
-- **Three wrong answer keys in Level 2** (`l2-1`, `l2-5`, `l2-10`) plus a duplicate item pair (`l2-2`/`l2-8`). Non-negotiable fix, independent of migration.
+- **Three defective Level-2 items**, but only one is a key edit — the first version of this document overstated the fix. `l2-5` (`data/compounds.ts:303`) is a genuine key error: N 35.00 / H 5.04 / O 59.96 gives N₂H₄O₃, the key says `NH₂O₃`. `l2-1` (`:262`) is named "Vetnis peroxíð grunnformúla" and feeds `l3-2` (`:394`), so the **percentages** are the defect, not the key (should be H 5.93 / O 94.07). `l2-10` (`:354`) yields no clean formula at all — Mg 28.83 / P 22.04 / O 49.13 against real Mg₃(PO₄)₂ at 27.74 / 23.57 / 48.69 — **no key edit fixes it; the data must be regenerated.** The `l2-2`/`l2-8` duplicate is confirmed; `l2-3,4,6,7,9` and all of L3 recompute correct.
 - Entirely test-first: all three levels open on problem 1 with an empty box; the only exposition is a four-bullet objectives list on the menu.
 - L1 has no skip, so a student stuck on Al₂(SO₄)₃ can never unlock L2.
 
@@ -133,7 +191,7 @@ Classification of matter: element / compound / homogeneous / heterogeneous, 24 i
 Five reaction patterns — synthesis, decomposition, single replacement, double replacement, combustion — over 20 pre-balanced equations. Fills `C3-rxntypes`, and sits exactly on the Y1 chain between Jafna Jöfnur and Takmarkandi.
 
 - All 20 equations verified balanced, including 2C₈H₁₈ + 25O₂ → 16CO₂ + 18H₂O.
-- **The Icelandic reaction-type names contradict the school's textbooks** and are referenced by every level, the summary and all 20 hints — a terminology pass is required before reuse.
+- **The Icelandic reaction-type names need a terminology pass**, and they are referenced by every level, the summary and all 20 hints. The first version claimed they "contradict the school's textbooks" — that is not verifiable from either repo, since no textbook is named. What _is_ checkable: `Sundurliturarhvarf` (`i18n.ts:46`, `:69`, `data/reactions.ts:48`) is not an Icelandic chemistry word, the glossary supplies `decomposition reaction;niðurbrotsefnahvarf` at `packages/shared/i18n/ordabok.md:132`, and **the game already uses that root** in three item names (`reactions.ts:176,191,206`). So about half the terminology blocker is mechanically fixable today. The genuinely blocked half: the glossary has no entry for synthesis, replacement, displacement or metathesis — that needs your decision.
 - All three levels are the same 5-way MCQ; Level 1's genuinely good explore phase is optional and unassessed, and the quiz button is visible from first render.
 - Level 3 is a mandatory 12-second-per-question countdown behind a completion gate.
 
