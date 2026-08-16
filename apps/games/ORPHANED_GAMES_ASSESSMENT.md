@@ -49,17 +49,71 @@ Keep the distinction sharp: `C3-yield` and the mole-chain row are **taught, then
 
 **Not determined:** whether the February PRs were known to exist on 2026-02-19. If they were reviewed and passed over, a deliberate-selection reading reopens; the reflog implies they were out of sight. Also not determined: what "completed" meant subjectively. Every contemporaneous document in the old repo marks all 27 games complete and production-ready (`repository-status.md:185`, `:235`; `docs/_generated/games.md:49`), so an unwritten personal standard can be neither confirmed nor refuted — though it remains true that no such standard was _applied_, because the 14 games were not present to filter.
 
-### Chrome did not predict migration
+### Chrome did not predict migration — the table, rebuilt
 
-The first version of this document asserted that "the migrated games are the chrome-heaviest in the old repo" and printed a table scoring every orphan at zero on timer, streak, confetti, sound and penalty. **Both halves are wrong**, and they contradicted this document's own prose forty lines further down.
+The first version of this document asserted that "the migrated games are the chrome-heaviest in the old repo" and printed a table scoring every orphan at zero on timer, streak, confetti, sound and penalty. **Both halves were wrong**, and the table contradicted this document's own prose forty lines below it.
 
-Re-measured across all 33 projects: the direction holds on average (migrated mean 3.35 vs orphan 1.50 on those five patterns) but there is no separation. **Seven of the 17 migrated games score exactly zero**, and the orphan `flokkun-efna` scores 5, outscoring 12 of the 17 migrated games. The omitted non-zero orphans: `flokkun-efna` timer=2/streak=3, `gerdir-efnahvarfa` timer=2/streak=3, `jonir-i-lausn` streak=3, `markverdir-tolustafir` timer=1, `sydur-og-basar` streak=4. Sorted honestly, the boundary vanishes.
+The zeros were a measurement artefact, not a fact about the games. The pattern `penalty|deduct` is an English-identifier vocabulary that structurally cannot match a labelled Icelandic cost — `uppbygging-atomanna` scored penalty=0 while shipping `Sýna vísbendingu (-50 stig)` at `Level1.tsx:365`, `Level3.tsx:260` and `i18n.ts:100` — nor the reduced-award form (`hlutfallsgreining/src/components/Level3.tsx:84-85`, `showSteps ? 5 : showHint ? 7 : 10`). **The prose was right; the instrument could not see what the prose described.**
 
-The zeros were a measurement artefact. The regex `penalty|deduct` structurally cannot match a labelled Icelandic cost — `uppbygging-atomanna` scored penalty=0 while shipping `Sýna vísbendingu (-50 stig)` at `Level1.tsx:365`, `Level3.tsx:260` and `i18n.ts:100` — nor the reduced-award form (`hlutfallsgreining/src/components/Level3.tsx:84-85`, `showSteps ? 5 : showHint ? 7 : 10`). Twelve files across seven orphans carry a `(-N stig)` label. **The prose was correct; the table was measuring an English-identifier vocabulary that could not see what the prose described.** It has been removed rather than patched.
+Rebuilt below over **all 33 projects**, none omitted. Cell = **number of files under `src/` matching**, measured at the old repo's HEAD (`379266e`), with these patterns:
 
-None of the 16 left-behind games ever entered kvenno-app: `git log --all` returns zero commits touching any of their paths. They were never dropped or rejected — they simply were not in the tree that was copied.
+| Column   | Pattern                                                                                                     |
+| -------- | ----------------------------------------------------------------------------------------------------------- |
+| timer    | `timeLeft\|timeRemaining\|secondsLeft\|countdown\|setInterval`                                              |
+| streak   | `\bstreak\|\bcombo\b`                                                                                       |
+| confetti | `confetti\|[Cc]elebration`                                                                                  |
+| sound    | `useGameSounds\|SoundToggle\|playSound\|new Audio\|\.play\(\)`                                              |
+| penalty  | `\(-\d+\s*stig\|kosta stig\|hintMultiplier\|hintPenalty\|showHint\s*\?\s*\d+\s*:\|showSteps\s*\?\s*\d+\s*:` |
 
-None of the orphans ever entered kvenno-app: `git log --all` returns zero commits touching any of their paths. They were dropped at consolidation, not deleted later, and nothing in either repo records the decision.
+| Game                       | Yr      |            | timer | streak | confetti | sound | penalty |  **Σ** |
+| -------------------------- | ------- | ---------- | ----: | -----: | -------: | ----: | ------: | -----: |
+| `takmarkandi`              | 1-ar    | migrated   |     3 |      3 |        1 |     2 |       2 | **11** |
+| `lausnir`                  | 1-ar    | migrated   |     4 |      3 |        0 |     0 |       3 | **10** |
+| `molmassi`                 | 1-ar    | migrated   |     3 |      1 |        1 |     0 |       5 | **10** |
+| `sydur-og-basar`           | 1-ar    | **orphan** |     0 |      4 |        0 |     0 |       4 |  **8** |
+| `equilibrium-shifter`      | 3-ar    | migrated   |     2 |      2 |        0 |     0 |       3 |  **7** |
+| `gas-law-challenge`        | 3-ar    | migrated   |     2 |      3 |        0 |     0 |       2 |  **7** |
+| `lotukerfid`               | 1-ar    | superseded |     1 |      3 |        0 |     0 |       3 |  **7** |
+| `flokkun-efna`             | 1-ar    | **orphan** |     2 |      3 |        0 |     0 |       1 |  **6** |
+| `gerdir-efnahvarfa`        | 1-ar    | **orphan** |     2 |      3 |        0 |     0 |       1 |  **6** |
+| `intermolecular-forces`    | 2-ar    | migrated   |     2 |      0 |        0 |     0 |       4 |  **6** |
+| `jonir-i-lausn`            | 1-ar    | **orphan** |     0 |      3 |        0 |     0 |       2 |  **5** |
+| `ph-titration`             | 3-ar    | migrated   |     1 |      0 |        0 |     0 |       4 |  **5** |
+| `hess-law`                 | 2-ar    | migrated   |     0 |      0 |        0 |     0 |       4 |  **4** |
+| `kinetics`                 | 2-ar    | migrated   |     0 |      0 |        0 |     0 |       4 |  **4** |
+| `lewis-structures`         | 2-ar    | migrated   |     0 |      0 |        0 |     0 |       4 |  **4** |
+| `uppbygging-atomanna`      | 1-ar    | **orphan** |     0 |      0 |        0 |     0 |       4 |  **4** |
+| `vsepr-geometry`           | 2-ar    | migrated   |     1 |      0 |        0 |     0 |       3 |  **4** |
+| `buffer-recipe-creator`    | 3-ar    | migrated   |     0 |      0 |        0 |     0 |       3 |  **3** |
+| `dimensional-analysis`     | 1-ar    | migrated   |     0 |      0 |        1 |     0 |       2 |  **3** |
+| `ka-kb-jafnvaegi`          | 3-ar    | **orphan** |     0 |      0 |        0 |     0 |       3 |  **3** |
+| `thermodynamics-predictor` | 3-ar    | migrated   |     1 |      1 |        0 |     0 |       1 |  **3** |
+| `hlutfallsgreining`        | 1-ar    | **orphan** |     0 |      0 |        0 |     0 |       2 |  **2** |
+| `nafnakerfid`              | 1-ar    | migrated   |     0 |      0 |        0 |     0 |       2 |  **2** |
+| `stilltu-efnajofnur`       | 1-ar    | superseded |     1 |      0 |        0 |     0 |       1 |  **2** |
+| `markverdir-tolustafir`    | 1-ar    | **orphan** |     1 |      0 |        0 |     0 |       0 |  **1** |
+| `organic-nomenclature`     | 2-ar    | migrated   |     0 |      0 |        0 |     0 |       1 |  **1** |
+| `calorimetry`              | 2-ar    | **orphan** |     0 |      0 |        0 |     0 |       0 |  **0** |
+| `electrochemistry`         | 2-ar    | **orphan** |     0 |      0 |        0 |     0 |       0 |  **0** |
+| `organic-reactions`        | 2-ar    | **orphan** |     0 |      0 |        0 |     0 |       0 |  **0** |
+| `ph-titration-master`      | archive | archived   |     0 |      0 |        0 |     0 |       0 |  **0** |
+| `ph-titration-practice`    | archive | archived   |     0 |      0 |        0 |     0 |       0 |  **0** |
+| `redox-reactions`          | 2-ar    | migrated   |     0 |      0 |        0 |     0 |       0 |  **0** |
+| `solubility-equilibrium`   | 3-ar    | **orphan** |     0 |      0 |        0 |     0 |       0 |  **0** |
+
+**Direction holds; separation does not.** Migrated mean **4.94**, orphan mean **2.92** — so the original claim points the right way on average, and that is the most that can be said for it. The distributions overlap almost completely:
+
+- Migrated games span **0–11**; orphans span **0–8**.
+- **Five of the twelve orphans** score at or above the migrated median of 4: `sydur-og-basar` (8), `flokkun-efna` (6), `gerdir-efnahvarfa` (6), `jonir-i-lausn` (5), `uppbygging-atomanna` (4). `sydur-og-basar` alone out-chromes **14 of the 17 migrated games**.
+- **Six of the seventeen migrated games** score at or below the orphan median of 3: `dimensional-analysis`, `buffer-recipe-creator`, `thermodynamics-predictor`, `nafnakerfid`, `organic-nomenclature` and `redox-reactions` — the last of which scores **0**, the same as three orphans.
+
+**No threshold separates the two groups.** Any cut you draw misclassifies at least five games. Chrome has no discriminating power, which is consistent with the actual mechanism: nothing about a game's contents was ever consulted.
+
+Three columns are omitted from the table because they are constant and therefore uninformative. **Achievements wiring is present in all 33 projects**, without exception. A rendered `LanguageSwitcher` is present in 30 of 33 — the exceptions are `nafnakerfid` and the two archived pH variants. Level-gating appears in 22 of 33, on both sides of the split.
+
+One genuine signal does fall out, and it is about age rather than migration: the two **archived** pH variants score a clean 0 across every column and carry no `LanguageSwitcher`. They predate the chrome conventions entirely.
+
+None of the 16 left-behind projects ever entered kvenno-app: `git log --all` returns zero commits touching any of their paths. They were never dropped or rejected — they simply were not in the tree that was copied.
 
 ### Then three games were written fresh, here
 
@@ -120,8 +174,8 @@ Every claim below has been fixed in place above. It is itemised here because a d
 | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | "32 game projects; kvenno-app kept 20"                    | 33 directories (31 live + 2 archived). **17** migrated; the other 3 kvenno games were written fresh on 2026-04-14.                                                                                                                                                                                                    |
 | "the 12" orphans                                          | **14** left behind (the 12 named, plus `stilltu-efnajofnur` and old `lotukerfid`); **16** counting the archive pair. The first version discussed two of them without counting them.                                                                                                                                   |
-| "The migrated games are the chrome-heaviest"              | Direction holds on average, but 7 of 17 migrated games score zero and the orphan `flokkun-efna` outscores 12 of them. Chrome has no discriminating power.                                                                                                                                                             |
-| The chrome table                                          | Cherry-picked: the "orphans" row aggregated 7 of 12 and omitted the five non-zero ones; the migrated rows were the four heaviest of 17. Removed.                                                                                                                                                                      |
+| "The migrated games are the chrome-heaviest"              | Direction holds on average (migrated mean 4.94 vs orphan 2.92) and nothing more. Five of 12 orphans beat the migrated median; six of 17 migrated games fall at or below the orphan median, one of them scoring zero. No threshold separates the groups.                                                               |
+| The chrome table                                          | Cherry-picked: the "orphans" row aggregated 7 of 12 and omitted the five non-zero ones; the migrated rows were the four heaviest of 17. **Rebuilt over all 33 projects with Icelandic-aware patterns**, above — not removed.                                                                                          |
 | Table says penalty=0, prose quotes `(-50 stig)`           | **The table was the defective half.** Its regex could not match a labelled Icelandic cost. The prose was right.                                                                                                                                                                                                       |
 | "exactly 5 source files each"                             | False of the source trees: hlutfallsgreining 10, uppbygging-atomanna 10, calorimetry 8, electrochemistry 8, organic-reactions 8, solubility-equilibrium 12, ka-kb-jafnvaegi 14.                                                                                                                                       |
 | "Orphans: 1788–2895 LOC … 2–15 files"                     | Orphans measure 1902–3009 LOC; migrated `src/` file counts are 8–22.                                                                                                                                                                                                                                                  |
