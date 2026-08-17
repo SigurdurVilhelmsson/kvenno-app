@@ -25,8 +25,8 @@ function checkString(value, where) {
 }
 
 /** Parse and validate one category file into the Category shape. */
-export function loadCategory(id) {
-  const doc = parse(readFileSync(resolve(CONTENT_DIR, `${id}.yaml`), 'utf8'));
+export function loadCategory(id, contentDir = CONTENT_DIR) {
+  const doc = parse(readFileSync(resolve(contentDir, `${id}.yaml`), 'utf8'));
   assert(doc.id === id, `${id}.yaml declares id "${doc.id}"`);
   for (const field of ['name', 'description', 'color', 'icon'])
     checkString(doc[field], `${id}.${field}`);
@@ -71,11 +71,11 @@ export function loadCategory(id) {
 }
 
 /** All categories, in taught order. Throws if a file on disk is not in CATEGORY_ORDER. */
-export function loadCategories() {
-  const onDisk = readdirSync(CONTENT_DIR)
+export function loadCategories(contentDir = CONTENT_DIR) {
+  const onDisk = readdirSync(contentDir)
     .filter((f) => f.endsWith('.yaml'))
     .map((f) => f.replace(/\.yaml$/, ''));
   const unknown = onDisk.filter((id) => !CATEGORY_ORDER.includes(id));
   assert(unknown.length === 0, `${unknown.join(', ')} not listed in CATEGORY_ORDER`);
-  return CATEGORY_ORDER.map(loadCategory);
+  return CATEGORY_ORDER.map((id) => loadCategory(id, contentDir));
 }
