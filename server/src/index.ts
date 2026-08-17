@@ -14,7 +14,7 @@ import path from 'path';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { generatePdf } from './lib/islenskubraut-pdf.js';
-import { getCategoryById } from './lib/islenskubraut-data.js';
+import { categoryIds, getCategoryById } from './lib/islenskubraut-data.js';
 import type {
   AnalyzeRequestBody,
   Analyze2arRequestBody,
@@ -302,7 +302,7 @@ app.post(
       const libreOfficeAvailable = await isLibreOfficeAvailable();
       if (!libreOfficeAvailable) {
         return res.status(500).json({
-          error: 'Villa vid vinnslu skjals',
+          error: 'Villa við vinnslu skjals',
         });
       }
 
@@ -516,7 +516,7 @@ app.post(
           // Map upstream status to generic codes — never forward Anthropic's status/message to clients
           const clientStatus = response.status === 429 ? 503 : 502;
           return res.status(clientStatus).json({
-            error: 'Villa vid greiningu - reyndu aftur sidar',
+            error: 'Villa við greiningu — reyndu aftur síðar',
           });
         }
 
@@ -544,7 +544,7 @@ app.post(
         if (fetchError instanceof Error && fetchError.name === 'AbortError') {
           console.error('Request timeout');
           return res.status(504).json({
-            error: 'Request timeout - greining tok of langan tima',
+            error: 'Greining tók of langan tíma',
           });
         }
         throw fetchError;
@@ -633,7 +633,7 @@ app.post(
           // Map upstream status to generic codes — never forward Anthropic's status/message to clients
           const clientStatus = response.status === 429 ? 503 : 502;
           return res.status(clientStatus).json({
-            error: 'Villa vid greiningu - reyndu aftur sidar',
+            error: 'Villa við greiningu — reyndu aftur síðar',
           });
         }
 
@@ -653,7 +653,7 @@ app.post(
         if (fetchError instanceof Error && fetchError.name === 'AbortError') {
           console.error('Request timeout (2ar)');
           return res.status(504).json({
-            error: 'Request timeout - greining tok of langan tima',
+            error: 'Greining tók of langan tíma',
           });
         }
         throw fetchError;
@@ -678,22 +678,23 @@ app.get(
 
       if (!flokkur || !stig) {
         return res.status(400).json({
-          error: 'Vantar faeribreytur: flokkur og stig',
+          error: 'Vantar færibreytur: flokkur og stig',
         });
       }
 
-      // Validate flokkur against known category IDs
-      const validCategoryIds = ['dyr', 'matur', 'farartaeki', 'manneskja', 'stadir', 'klaednadur'];
-      if (!validCategoryIds.includes(flokkur)) {
+      // Validate flokkur against the generated data, not a hand-written list: a third
+      // hardcoded copy of the ids used to live here, so adding a category to both data
+      // files still returned 400 until someone remembered to edit this line too.
+      if (!categoryIds.includes(flokkur)) {
         return res.status(400).json({
-          error: `Ogilt flokkur: ${flokkur}. Leyfileg gildi: ${validCategoryIds.join(', ')}`,
+          error: `Ógildur flokkur: ${flokkur}. Leyfileg gildi: ${categoryIds.join(', ')}`,
         });
       }
 
       const validLevels = ['A1', 'A2', 'B1'];
       if (!validLevels.includes(stig)) {
         return res.status(400).json({
-          error: `Ogilt stig: ${stig}. Leyfileg gildi: ${validLevels.join(', ')}`,
+          error: `Ógilt stig: ${stig}. Leyfileg gildi: ${validLevels.join(', ')}`,
         });
       }
 
@@ -714,7 +715,7 @@ app.get(
     } catch (error: unknown) {
       console.error('[Islenskubraut PDF] Error:', error);
       return res.status(500).json({
-        error: 'Villa vid ad bua til PDF',
+        error: 'Villa við að búa til PDF',
       });
     }
   }

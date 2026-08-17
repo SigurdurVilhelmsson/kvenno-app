@@ -9,7 +9,17 @@ export const farartaeki: Category = {
   subCategories: [
     {
       name: 'Tegund',
-      options: ['bíll', 'rúta', 'hjól/reiðhjól', 'mótorhjól', 'lest', 'flugvél', 'skip/bátur', 'sleði', 'hlaupahjól'],
+      options: [
+        'bíll',
+        'rúta',
+        'hjól/reiðhjól',
+        'mótorhjól',
+        'lest',
+        'flugvél',
+        'skip/bátur',
+        'sleði',
+        'hlaupahjól',
+      ],
     },
     {
       name: 'Hvar fer það',
@@ -71,8 +81,26 @@ export const farartaeki: Category = {
       icon: '📚',
       answers: [
         { level: 'A1', options: ['bíll', 'rúta', 'hjól', 'flugvél', 'skip'] },
-        { level: 'A2', options: ['bíll', 'rúta', 'hjól', 'mótorhjól', 'lest', 'flugvél', 'skip/bátur', 'sleði'] },
-        { level: 'B1', options: ['bíll', 'rúta', 'hjól', 'mótorhjól', 'lest', 'flugvél', 'skip/bátur', 'sleði', 'hlaupahjól', 'sportvagn', 'þyrla'] },
+        {
+          level: 'A2',
+          options: ['bíll', 'rúta', 'hjól', 'mótorhjól', 'lest', 'flugvél', 'skip/bátur', 'sleði'],
+        },
+        {
+          level: 'B1',
+          options: [
+            'bíll',
+            'rúta',
+            'hjól',
+            'mótorhjól',
+            'lest',
+            'flugvél',
+            'skip/bátur',
+            'sleði',
+            'hlaupahjól',
+            'sportvagn',
+            'þyrla',
+          ],
+        },
       ],
     },
     {
@@ -80,8 +108,26 @@ export const farartaeki: Category = {
       icon: '👁️',
       answers: [
         { level: 'A1', options: ['stórt', 'lítið', 'með hjólum', 'án hjóla'] },
-        { level: 'A2', options: ['stórt', 'lítið', 'með hjólum', 'án hjóla', 'langt', 'stuttt', 'hátt', 'lágt'] },
-        { level: 'B1', options: ['stórt', 'lítið', 'með hjólum', 'án hjóla', 'langt', 'stuttt', 'hátt', 'lágt', 'straumlínulaga', 'fernt', 'hraðvirkt'] },
+        {
+          level: 'A2',
+          options: ['stórt', 'lítið', 'með hjólum', 'án hjóla', 'langt', 'stutt', 'hátt', 'lágt'],
+        },
+        {
+          level: 'B1',
+          options: [
+            'stórt',
+            'lítið',
+            'með hjólum',
+            'án hjóla',
+            'langt',
+            'stutt',
+            'hátt',
+            'lágt',
+            'straumlínulaga',
+            'fernt',
+            'hraðvirkt',
+          ],
+        },
       ],
     },
     {
@@ -90,7 +136,21 @@ export const farartaeki: Category = {
       answers: [
         { level: 'A1', options: ['hátt', 'lágt', 'þögult'] },
         { level: 'A2', options: ['hátt', 'lágt', 'þögult', 'súðar', 'hringir', 'öskrar'] },
-        { level: 'B1', options: ['hátt', 'lágt', 'þögult', 'súðar', 'hringir', 'öskrar', 'hvæsir', 'umar', 'dúnar', 'þrymir'] },
+        {
+          level: 'B1',
+          options: [
+            'hátt',
+            'lágt',
+            'þögult',
+            'súðar',
+            'hringir',
+            'öskrar',
+            'hvæsir',
+            'umar',
+            'dúnar',
+            'þrymir',
+          ],
+        },
       ],
     },
     {
@@ -99,7 +159,19 @@ export const farartaeki: Category = {
       answers: [
         { level: 'A1', options: ['úr málmi', 'úr plasti', 'úr tré'] },
         { level: 'A2', options: ['úr málmi', 'úr plasti', 'úr tré', 'úr steini', 'úr gleri'] },
-        { level: 'B1', options: ['úr málmi', 'úr plasti', 'úr tré', 'úr steini', 'úr gleri', 'úr endurunnru efni', 'úr náttúrulegum efnum', 'úr gerviefnum'] },
+        {
+          level: 'B1',
+          options: [
+            'úr málmi',
+            'úr plasti',
+            'úr tré',
+            'úr steini',
+            'úr gleri',
+            'úr endurunnru efni',
+            'úr náttúrulegum efnum',
+            'úr gerviefnum',
+          ],
+        },
       ],
     },
     {
@@ -107,8 +179,40 @@ export const farartaeki: Category = {
       icon: '🔷',
       answers: [
         { level: 'A1', options: ['stórt', 'lítið', 'kringlótt', 'fernt'] },
-        { level: 'A2', options: ['stórt', 'lítið', 'kringlótt', 'fernt', 'langt', 'stuttt', 'hátt', 'lágt', 'flatt', 'þykkt'] },
-        { level: 'B1', options: ['stórt', 'lítið', 'kringlótt', 'fernt', 'langt', 'stuttt', 'hátt', 'lágt', 'flatt', 'þykkt', 'sporöskjulaga', 'þríhyrningslaga', 'sívalningslaga', 'óreglulegt'] },
+        {
+          level: 'A2',
+          options: [
+            'stórt',
+            'lítið',
+            'kringlótt',
+            'fernt',
+            'langt',
+            'stutt',
+            'hátt',
+            'lágt',
+            'flatt',
+            'þykkt',
+          ],
+        },
+        {
+          level: 'B1',
+          options: [
+            'stórt',
+            'lítið',
+            'kringlótt',
+            'fernt',
+            'langt',
+            'stutt',
+            'hátt',
+            'lágt',
+            'flatt',
+            'þykkt',
+            'sporöskjulaga',
+            'þríhyrningslaga',
+            'sívalningslaga',
+            'óreglulegt',
+          ],
+        },
       ],
     },
     {
@@ -116,8 +220,21 @@ export const farartaeki: Category = {
       icon: '🎯',
       answers: [
         { level: 'A1', options: ['til að ferðast', 'til að flytja', 'til að leika sér'] },
-        { level: 'A2', options: ['til að ferðast', 'til að flytja', 'til að leika sér', 'til að vinna'] },
-        { level: 'B1', options: ['til að ferðast', 'til að flytja', 'til að leika sér', 'til að vinna', 'til að keppa', 'til að bjarga'] },
+        {
+          level: 'A2',
+          options: ['til að ferðast', 'til að flytja', 'til að leika sér', 'til að vinna'],
+        },
+        {
+          level: 'B1',
+          options: [
+            'til að ferðast',
+            'til að flytja',
+            'til að leika sér',
+            'til að vinna',
+            'til að keppa',
+            'til að bjarga',
+          ],
+        },
       ],
     },
     {
@@ -125,8 +242,24 @@ export const farartaeki: Category = {
       icon: '👤',
       answers: [
         { level: 'A1', options: ['allir', 'börn', 'fullorðnir'] },
-        { level: 'A2', options: ['allir', 'börn', 'fullorðnir', 'bílstjórar', 'flugmenn', 'sjómenn'] },
-        { level: 'B1', options: ['allir', 'börn', 'fullorðnir', 'bílstjórar', 'flugmenn', 'sjómenn', 'sérfræðingar', 'ferðamenn', 'iðnaðarmenn'] },
+        {
+          level: 'A2',
+          options: ['allir', 'börn', 'fullorðnir', 'bílstjórar', 'flugmenn', 'sjómenn'],
+        },
+        {
+          level: 'B1',
+          options: [
+            'allir',
+            'börn',
+            'fullorðnir',
+            'bílstjórar',
+            'flugmenn',
+            'sjómenn',
+            'sérfræðingar',
+            'ferðamenn',
+            'iðnaðarmenn',
+          ],
+        },
       ],
     },
     {
@@ -134,8 +267,22 @@ export const farartaeki: Category = {
       icon: '📍',
       answers: [
         { level: 'A1', options: ['á götunni', 'á sjónum', 'í loftinu'] },
-        { level: 'A2', options: ['á götunni', 'á sjónum', 'í loftinu', 'á þjóðveginum', 'á flugvellinum'] },
-        { level: 'B1', options: ['á götunni', 'á sjónum', 'í loftinu', 'á þjóðveginum', 'á flugvellinum', 'í höfninni', 'á lestarbraut'] },
+        {
+          level: 'A2',
+          options: ['á götunni', 'á sjónum', 'í loftinu', 'á þjóðveginum', 'á flugvellinum'],
+        },
+        {
+          level: 'B1',
+          options: [
+            'á götunni',
+            'á sjónum',
+            'í loftinu',
+            'á þjóðveginum',
+            'á flugvellinum',
+            'í höfninni',
+            'á lestarbraut',
+          ],
+        },
       ],
     },
     {
@@ -143,8 +290,37 @@ export const farartaeki: Category = {
       icon: '🕐',
       answers: [
         { level: 'A1', options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'] },
-        { level: 'A2', options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf', 'á veturna', 'á sumrin', 'um helgar', 'á virkum dögum'] },
-        { level: 'B1', options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf', 'á veturna', 'á sumrin', 'um helgar', 'á virkum dögum', 'í sérstökum tilvikum', 'í hátíðum', 'daglega', 'sjaldan', 'oft'] },
+        {
+          level: 'A2',
+          options: [
+            'á morgnana',
+            'á daginn',
+            'á kvöldin',
+            'alltaf',
+            'á veturna',
+            'á sumrin',
+            'um helgar',
+            'á virkum dögum',
+          ],
+        },
+        {
+          level: 'B1',
+          options: [
+            'á morgnana',
+            'á daginn',
+            'á kvöldin',
+            'alltaf',
+            'á veturna',
+            'á sumrin',
+            'um helgar',
+            'á virkum dögum',
+            'í sérstökum tilvikum',
+            'í hátíðum',
+            'daglega',
+            'sjaldan',
+            'oft',
+          ],
+        },
       ],
     },
   ],

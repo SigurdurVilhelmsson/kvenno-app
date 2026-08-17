@@ -38,12 +38,7 @@ export const stadir: Category = {
   sentenceFrames: [
     {
       level: 'A1',
-      frames: [
-        'Þetta er ___.',
-        'Maður ___ þar.',
-        'Það er ___.',
-        'Maður notar það til að ___.',
-      ],
+      frames: ['Þetta er ___.', 'Maður ___ þar.', 'Það er ___.', 'Maður notar það til að ___.'],
     },
     {
       level: 'A2',
@@ -72,8 +67,38 @@ export const stadir: Category = {
       icon: '📚',
       answers: [
         { level: 'A1', options: ['hús', 'skóli', 'búð', 'sundlaug'] },
-        { level: 'A2', options: ['hús', 'íbúð', 'skóli', 'sjúkrahús', 'búð/verslun', 'veitingastaður', 'safn', 'kirkja', 'sundlaug', 'leikvöllur'] },
-        { level: 'B1', options: ['hús', 'íbúð', 'skóli', 'sjúkrahús', 'búð/verslun', 'veitingastaður', 'safn', 'kirkja', 'sundlaug', 'leikvöllur', 'bókasafn', 'íþróttahús'] },
+        {
+          level: 'A2',
+          options: [
+            'hús',
+            'íbúð',
+            'skóli',
+            'sjúkrahús',
+            'búð/verslun',
+            'veitingastaður',
+            'safn',
+            'kirkja',
+            'sundlaug',
+            'leikvöllur',
+          ],
+        },
+        {
+          level: 'B1',
+          options: [
+            'hús',
+            'íbúð',
+            'skóli',
+            'sjúkrahús',
+            'búð/verslun',
+            'veitingastaður',
+            'safn',
+            'kirkja',
+            'sundlaug',
+            'leikvöllur',
+            'bókasafn',
+            'íþróttahús',
+          ],
+        },
       ],
     },
     {
@@ -81,8 +106,25 @@ export const stadir: Category = {
       icon: '👁️',
       answers: [
         { level: 'A1', options: ['stórt', 'lítið', 'hátt', 'lágt'] },
-        { level: 'A2', options: ['stórt', 'lítið', 'hátt', 'lágt', 'gamalt', 'nýtt', 'fallegt', 'ljótt'] },
-        { level: 'B1', options: ['stórt', 'lítið', 'hátt', 'lágt', 'gamalt', 'nýtt', 'fallegt', 'ljótt', 'nútímalegt', 'sögulegt'] },
+        {
+          level: 'A2',
+          options: ['stórt', 'lítið', 'hátt', 'lágt', 'gamalt', 'nýtt', 'fallegt', 'ljótt'],
+        },
+        {
+          level: 'B1',
+          options: [
+            'stórt',
+            'lítið',
+            'hátt',
+            'lágt',
+            'gamalt',
+            'nýtt',
+            'fallegt',
+            'ljótt',
+            'nútímalegt',
+            'sögulegt',
+          ],
+        },
       ],
     },
     {
@@ -91,7 +133,21 @@ export const stadir: Category = {
       answers: [
         { level: 'A1', options: ['gott', 'vont', 'ekkert'] },
         { level: 'A2', options: ['gott', 'vont', 'ekkert', 'ferskt', 'sterkt', 'milt'] },
-        { level: 'B1', options: ['gott', 'vont', 'ekkert', 'ferskt', 'sterkt', 'milt', 'ilmandi', 'stingandi', 'sætt', 'beiskt'] },
+        {
+          level: 'B1',
+          options: [
+            'gott',
+            'vont',
+            'ekkert',
+            'ferskt',
+            'sterkt',
+            'milt',
+            'ilmandi',
+            'stingandi',
+            'sætt',
+            'beiskt',
+          ],
+        },
       ],
     },
     {
@@ -100,7 +156,19 @@ export const stadir: Category = {
       answers: [
         { level: 'A1', options: ['úr tré', 'úr steini', 'úr málmi'] },
         { level: 'A2', options: ['úr tré', 'úr steini', 'úr málmi', 'úr gleri', 'úr plasti'] },
-        { level: 'B1', options: ['úr tré', 'úr steini', 'úr málmi', 'úr gleri', 'úr plasti', 'úr endurunnru efni', 'úr náttúrulegum efnum', 'úr gerviefnum'] },
+        {
+          level: 'B1',
+          options: [
+            'úr tré',
+            'úr steini',
+            'úr málmi',
+            'úr gleri',
+            'úr plasti',
+            'úr endurunnru efni',
+            'úr náttúrulegum efnum',
+            'úr gerviefnum',
+          ],
+        },
       ],
     },
     {
@@ -108,8 +176,40 @@ export const stadir: Category = {
       icon: '🔷',
       answers: [
         { level: 'A1', options: ['stórt', 'lítið', 'kringlótt', 'fernt'] },
-        { level: 'A2', options: ['stórt', 'lítið', 'kringlótt', 'fernt', 'langt', 'stuttt', 'hátt', 'lágt', 'flatt', 'þykkt'] },
-        { level: 'B1', options: ['stórt', 'lítið', 'kringlótt', 'fernt', 'langt', 'stuttt', 'hátt', 'lágt', 'flatt', 'þykkt', 'sporöskjulaga', 'þríhyrningslaga', 'sívalningslaga', 'óreglulegt'] },
+        {
+          level: 'A2',
+          options: [
+            'stórt',
+            'lítið',
+            'kringlótt',
+            'fernt',
+            'langt',
+            'stutt',
+            'hátt',
+            'lágt',
+            'flatt',
+            'þykkt',
+          ],
+        },
+        {
+          level: 'B1',
+          options: [
+            'stórt',
+            'lítið',
+            'kringlótt',
+            'fernt',
+            'langt',
+            'stutt',
+            'hátt',
+            'lágt',
+            'flatt',
+            'þykkt',
+            'sporöskjulaga',
+            'þríhyrningslaga',
+            'sívalningslaga',
+            'óreglulegt',
+          ],
+        },
       ],
     },
     {
@@ -117,8 +217,22 @@ export const stadir: Category = {
       icon: '🎯',
       answers: [
         { level: 'A1', options: ['til að búa', 'til að læra', 'til að versla'] },
-        { level: 'A2', options: ['til að búa', 'til að læra', 'til að versla', 'til að vinna', 'til að hvílast'] },
-        { level: 'B1', options: ['til að búa', 'til að læra', 'til að versla', 'til að vinna', 'til að hvílast', 'til að stunda íþróttir', 'til að skemmta sér'] },
+        {
+          level: 'A2',
+          options: ['til að búa', 'til að læra', 'til að versla', 'til að vinna', 'til að hvílast'],
+        },
+        {
+          level: 'B1',
+          options: [
+            'til að búa',
+            'til að læra',
+            'til að versla',
+            'til að vinna',
+            'til að hvílast',
+            'til að stunda íþróttir',
+            'til að skemmta sér',
+          ],
+        },
       ],
     },
     {
@@ -127,7 +241,21 @@ export const stadir: Category = {
       answers: [
         { level: 'A1', options: ['allir', 'börn', 'fullorðnir'] },
         { level: 'A2', options: ['allir', 'börn', 'fullorðnir', 'nemendur', 'kennarar', 'læknar'] },
-        { level: 'B1', options: ['allir', 'börn', 'fullorðnir', 'nemendur', 'kennarar', 'læknar', 'sérfræðingar', 'listamenn', 'ferðamenn', 'iðnaðarmenn'] },
+        {
+          level: 'B1',
+          options: [
+            'allir',
+            'börn',
+            'fullorðnir',
+            'nemendur',
+            'kennarar',
+            'læknar',
+            'sérfræðingar',
+            'listamenn',
+            'ferðamenn',
+            'iðnaðarmenn',
+          ],
+        },
       ],
     },
     {
@@ -135,8 +263,22 @@ export const stadir: Category = {
       icon: '📍',
       answers: [
         { level: 'A1', options: ['í bænum', 'úti á landi', 'við sjóinn'] },
-        { level: 'A2', options: ['í bænum', 'úti á landi', 'við sjóinn', 'í úthverfi', 'í fjöllunum'] },
-        { level: 'B1', options: ['í bænum', 'úti á landi', 'við sjóinn', 'í úthverfi', 'í fjöllunum', 'í miðborginni', 'á hálendinu'] },
+        {
+          level: 'A2',
+          options: ['í bænum', 'úti á landi', 'við sjóinn', 'í úthverfi', 'í fjöllunum'],
+        },
+        {
+          level: 'B1',
+          options: [
+            'í bænum',
+            'úti á landi',
+            'við sjóinn',
+            'í úthverfi',
+            'í fjöllunum',
+            'í miðborginni',
+            'á hálendinu',
+          ],
+        },
       ],
     },
     {
@@ -144,8 +286,37 @@ export const stadir: Category = {
       icon: '🕐',
       answers: [
         { level: 'A1', options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'] },
-        { level: 'A2', options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf', 'á veturna', 'á sumrin', 'um helgar', 'á virkum dögum'] },
-        { level: 'B1', options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf', 'á veturna', 'á sumrin', 'um helgar', 'á virkum dögum', 'í sérstökum tilvikum', 'í hátíðum', 'daglega', 'sjaldan', 'oft'] },
+        {
+          level: 'A2',
+          options: [
+            'á morgnana',
+            'á daginn',
+            'á kvöldin',
+            'alltaf',
+            'á veturna',
+            'á sumrin',
+            'um helgar',
+            'á virkum dögum',
+          ],
+        },
+        {
+          level: 'B1',
+          options: [
+            'á morgnana',
+            'á daginn',
+            'á kvöldin',
+            'alltaf',
+            'á veturna',
+            'á sumrin',
+            'um helgar',
+            'á virkum dögum',
+            'í sérstökum tilvikum',
+            'í hátíðum',
+            'daglega',
+            'sjaldan',
+            'oft',
+          ],
+        },
       ],
     },
   ],
