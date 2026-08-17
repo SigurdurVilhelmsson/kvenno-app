@@ -578,6 +578,8 @@ Defined in `packages/shared/styles/game-base.css`:
 
 ### 8.5 Canvas-Based Animations
 
+> **Deleted Aug 2026** (zero importers after the April 2026 restructure stripped the chrome from every game) — `packages/shared/components/ParticleCelebration/` and `packages/shared/components/AnimatedBackground/` no longer exist. Retained below as design history. See CLAUDE.md "Removed (Aug 2026)".
+
 **ParticleCelebration** (`packages/shared/components/ParticleCelebration/`):
 Canvas-based particle effects with physics (gravity, velocity damping). Six presets:
 
@@ -597,6 +599,8 @@ Particles use radial gradient rendering for sphere-like depth. Respects `prefers
 Three drifting gradient blobs (CSS radial-gradient + `filter: blur(80px)`) with figure-8, circular, and diagonal drift paths. Optional floating chemistry SVG symbols (atom, beaker, flask, molecule, hexring, test tube) at low opacity. GPU-composited transforms only.
 
 ### 8.6 Sound Design
+
+> **Deleted Aug 2026** (zero importers after the April 2026 restructure) — `packages/shared/hooks/useGameSounds.ts` and the `SoundToggle` component no longer exist. Retained below as design history. See CLAUDE.md "Removed (Aug 2026)".
 
 **useGameSounds** (`packages/shared/hooks/useGameSounds.ts`):
 Web Audio API oscillator-based sounds — no audio files needed. Six synthesized effects:

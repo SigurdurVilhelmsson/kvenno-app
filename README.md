@@ -1,6 +1,6 @@
 # kvenno.app
 
-An interactive chemistry education platform for secondary school students. Built as a teaching tool at [Kvennaskólinn í Reykjavík](https://kvenno.is) (Iceland), it includes 17 browser-based chemistry games, an AI-powered lab report grading system, and an Icelandic language teaching card generator. The UI is in Icelandic, but the codebase and documentation are in English.
+An interactive chemistry education platform for secondary school students. Built as a teaching tool at [Kvennaskólinn í Reykjavík](https://kvenno.is) (Iceland), it includes 20 browser-based chemistry games, an AI-powered lab report grading system, and an Icelandic language teaching card generator. The UI is in Icelandic, but the codebase and documentation are in English.
 
 ## About
 
@@ -18,38 +18,40 @@ This is a real tool in active classroom use, not a demo. If you teach chemistry 
 
 ## Tech Stack
 
-- **Runtime:** Node.js >= 20
-- **Frontend:** React 19, TypeScript 5, Vite 6
+- **Runtime:** Node.js >= 22
+- **Frontend:** React 19, TypeScript 5, Vite 8
 - **Styling:** Tailwind CSS 4 with shared design preset (`#f36b22` kvenno-orange)
 - **Monorepo:** pnpm 9 workspaces
 - **Backend:** Express (TypeScript) — Claude API proxy, DOCX-to-PDF conversion, PDF generation
 - **AI:** Claude API (Anthropic) for lab report analysis
-- **Games:** Each game builds to a self-contained single-file HTML via `vite-plugin-singlefile`
+- **Games:** Most games build to a self-contained single-file HTML via `vite-plugin-singlefile`; the 3 Three.js ones (VSEPR, Lewis, Intermolecular Forces) opt out and emit HTML + CSS + JS
 - **Testing:** Vitest + Playwright
 - **Linting:** ESLint + Prettier + commitlint (husky pre-commit hooks)
 
 ## What's Inside
 
-| App               | Path                 | Description                                                           |
-| ----------------- | -------------------- | --------------------------------------------------------------------- |
-| **Landing**       | `apps/landing`       | Track selector and year-based navigation hubs                         |
-| **Games**         | `apps/games`         | 17 interactive chemistry games across 3 school years                  |
-| **Lab Reports**   | `apps/lab-reports`   | AI-powered lab report grading with Claude                             |
-| **Íslenskubraut** | `apps/islenskubraut` | Icelandic language teaching cards (A1/A2/B1)                          |
-| **Shared**        | `packages/shared`    | Component library, hooks, animations, sounds, i18n, and design system |
-| **Server**        | `server`             | Express backend (Claude API proxy, PDF generation)                    |
+| App               | Path                 | Description                                                   |
+| ----------------- | -------------------- | ------------------------------------------------------------- |
+| **Landing**       | `apps/landing`       | Track selector and year-based navigation hubs                 |
+| **Games**         | `apps/games`         | 20 interactive chemistry games across 3 school years          |
+| **Lab Reports**   | `apps/lab-reports`   | AI-powered lab report grading with Claude                     |
+| **Íslenskubraut** | `apps/islenskubraut` | Icelandic language teaching cards (A1/A2/B1)                  |
+| **Shared**        | `packages/shared`    | Component library, hooks, animations, i18n, and design system |
+| **Server**        | `server`             | Express backend (Claude API proxy, PDF generation)            |
 
 ### Games by Year
 
-**Year 1** (5 games): Dimensional Analysis, Molar Mass, Naming System, Solutions, Limiting Reagent
+Listed in curriculum order.
 
-**Year 2** (7 games): Hess's Law, Kinetics, Lewis Structures, VSEPR Geometry, Intermolecular Forces, Organic Nomenclature, Redox Reactions
+**Year 1** (7 games): Dimensional Analysis, Periodic Table (Lotukerfið), Naming System, Molar Mass, Balancing Equations (Jafna Jöfnur), Limiting Reagent, Solutions
 
-**Year 3** (5 games): pH & Titration, Gas Law Challenge, Equilibrium Shifter, Thermodynamics Predictor, Buffer Recipe Creator
+**Year 2** (8 games): Electronic Structure (Rafeindabygging), Lewis Structures, VSEPR Geometry, Intermolecular Forces, Hess's Law, Kinetics, Redox Reactions, Organic Nomenclature
+
+**Year 3** (5 games): Gas Law Challenge, Equilibrium Shifter, Thermodynamics Predictor, pH & Titration, Buffer Recipe Creator
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) >= 20.0.0
+- [Node.js](https://nodejs.org/) >= 22.0.0
 - [pnpm](https://pnpm.io/) >= 9.0.0
 
 For the backend server (production only):
@@ -99,11 +101,14 @@ cp apps/lab-reports/.env.example apps/lab-reports/.env
 ### 3. Run (development)
 
 ```bash
-pnpm dev:landing          # Landing page at http://localhost:5173
-pnpm dev:lab-reports      # Lab reports at http://localhost:5174
-pnpm dev:islenskubraut    # Islenskubraut at http://localhost:5175
+pnpm dev:landing          # Landing page
+pnpm dev:lab-reports      # Lab reports (served under base /lab-reports/)
+pnpm dev:islenskubraut    # Islenskubraut
 pnpm dev:games            # All games (multiple dev servers)
 ```
+
+No app pins a dev-server port, so Vite starts at `http://localhost:5173` and increments for each
+additional server already running. Use the URL Vite prints rather than assuming a fixed port.
 
 ### 4. Build
 
@@ -118,9 +123,13 @@ pnpm build:landing
 pnpm build:lab-reports
 pnpm build:islenskubraut
 pnpm build:games
-pnpm build:game -- molmassi        # Single game
-pnpm build:year -- 2-ar            # All games for one year
+pnpm build:games --game=molmassi   # Single game
+pnpm build:games --year=2-ar       # All games for one year
 ```
+
+The `=` form is required. `package.json` also defines `build:game` / `build:year` aliases that pass
+a bare `--game` / `--year` flag; `scripts/build-games.mjs` parses only `--game=` / `--year=`, so
+those aliases silently build all 20 games instead of filtering.
 
 ### 5. Preview the built site
 
@@ -150,29 +159,25 @@ pnpm build
 The deploy script:
 
 1. Rsyncs `dist/` to `/var/www/kvenno.app/` on the server
-2. Rsyncs `server/` to `/opt/kvenno-server/` (excludes `node_modules` and `.env`)
-3. Runs `npm ci --omit=dev` on the server
-4. Restarts the `kvenno-backend` systemd service
-5. Sets file permissions (`www-data:www-data`, `755`)
+2. Builds a standalone backend bundle in a temp dir (`pnpm --filter kvenno-server deploy --prod`), so
+   the host installs nothing
+3. Refuses to continue if the bundle is missing `dist/index.js` (the rsync uses `--delete`, and the
+   systemd unit runs `node dist/index.js`)
+4. Rsyncs that bundle to `/opt/kvenno-server/` (excludes `.env`)
+5. Restarts the `kvenno-backend` systemd service
+6. Sets file permissions on the web root (`www-data:www-data`, `755`)
+7. Health-checks the backend on the host loopback, dumping recent journal logs and failing if it
+   does not come back up
+
+See `docs/DEPLOYMENT.md` for the exact sequence — it is the source of truth for deployment.
 
 ### Systemd service
 
-```ini
-[Unit]
-Description=kvenno.app Backend API
-After=network.target
-
-[Service]
-Type=simple
-User=siggi
-WorkingDirectory=/opt/kvenno-server
-ExecStart=/usr/bin/node dist/index.js
-Restart=on-failure
-EnvironmentFile=/opt/kvenno-server/.env
-
-[Install]
-WantedBy=multi-user.target
-```
+The unit is checked in at `server/kvenno-backend.service` — install that file, do not hand-write one.
+It runs as `www-data` from `/opt/kvenno-server` via `/usr/bin/node dist/index.js`, with
+`Restart=always`, `RestartSec=10` and systemd sandboxing (`NoNewPrivileges`, `ProtectSystem=strict`,
+`ProtectHome`, `PrivateTmp`, `PrivateDevices`, `ProtectKernel*`, `RestrictSUIDSGID`,
+`ReadWritePaths=/tmp`). See `docs/DEPLOYMENT.md`.
 
 ### API endpoints
 
@@ -200,8 +205,8 @@ kvenno-app/
 │   └── shared/           # Shared components, hooks, utils, types, i18n
 ├── server/               # Express backend (TypeScript)
 │   ├── src/index.ts      # Entry point (API routes)
-│   ├── .env.example      # Environment variable template
-│   └── lib/              # PDF generation, Islenskubraut data
+│   ├── src/lib/          # PDF generation, Islenskubraut data
+│   └── .env.example      # Environment variable template
 ├── scripts/
 │   ├── build-all.mjs     # Orchestrates full build
 │   ├── build-games.mjs   # Builds individual/all games
@@ -221,10 +226,10 @@ dist/
 │   ├── index.html              # Chemistry hub
 │   ├── 1-ar/
 │   │   ├── index.html          # Year 1 hub
-│   │   └── games/              # 5 single-file HTML games
+│   │   └── games/              # 7 single-file HTML games
 │   ├── 2-ar/
 │   │   ├── index.html          # Year 2 hub
-│   │   ├── games/              # 7 single-file HTML games
+│   │   ├── games/              # 8 games (3 multi-file: the Three.js ones)
 │   │   └── lab-reports/        # Lab reports SPA
 │   ├── 3-ar/
 │   │   ├── index.html          # Year 3 hub
@@ -274,7 +279,7 @@ pnpm format                # Format all files with Prettier
 ### Analyze bundle sizes
 
 ```bash
-pnpm analyze               # Opens bundle visualization
+pnpm analyze               # Rebuilds lab-reports with ANALYZE=true, prints size tables for dist/
 ```
 
 ## Contributing

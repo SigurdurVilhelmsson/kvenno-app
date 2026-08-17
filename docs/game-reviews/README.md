@@ -9,7 +9,7 @@ Do not read them as a current account of any game. They are kept because they re
 **Current, evidence-cited reviews:**
 
 - `apps/games/1-ar/CURRICULUM_REVIEW.md` — Year 1 against Brown ch. 1–4, with 17 verified correctness defects
-- `apps/games/ORPHANED_GAMES_ASSESSMENT.md` — the 16 games left in the old repo, on four axes
+- `apps/games/ORPHANED_GAMES_ASSESSMENT.md` — the 16 games left in the old repo; 15 of them on four axes, the 16th (the old repo's own `lotukerfid`) assessed separately
 - `docs/FEBRUARY-DECISIONS-RECOVERED.md` — the recovered terminology ruling and curriculum judgments
 
 See `docs/README.md` for the full index.

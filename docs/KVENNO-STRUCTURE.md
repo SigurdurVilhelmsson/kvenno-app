@@ -54,7 +54,8 @@ pnpm build          # Build everything to dist/
 The build script (`scripts/build-all.mjs`) handles multi-path builds automatically:
 
 - Lab Reports is built twice (for `/efnafraedi/2-ar/lab-reports/` and `/efnafraedi/3-ar/lab-reports/`)
-- Games are built as self-contained single HTML files via `vite-plugin-singlefile`
+- Games are built as self-contained single HTML files via `vite-plugin-singlefile` — except VSEPR,
+  Lewis and IMF, which opt out (`singleFile: false`) to keep their Three.js payload deferred
 - Landing page serves all hub routes via React Router
 
 ## 2. Authentication & Access Control
@@ -215,6 +216,35 @@ Both LabReports and AI Tutor need to call the Claude API, but **API keys must NO
 
 ### Backend Setup on Linode Server
 
+> ⚠️ **SUPERSEDED — do not follow Steps 1–5 below. They describe a backend that no longer exists.**
+>
+> Steps 1–5 predate the TypeScript backend. They describe a hand-written `server.js` in
+> `/var/www/kvenno.app/backend`, installed with `npm install` on the host and using
+> `@anthropic-ai/sdk`. Measured 2026-08-17: that path does not exist, there is no `server.js`, and
+> `@anthropic-ai/sdk` is not a dependency of `server/package.json`.
+>
+> **What is actually live:**
+>
+> - Source: `server/src/index.ts` (TypeScript), compiled to `server/dist/` by `pnpm build`.
+> - Deploy target: `/opt/kvenno-server` — `scripts/deploy.sh` rsyncs a standalone bundle built with
+>   `pnpm --filter kvenno-server deploy --prod`. Nothing is installed on the host.
+> - systemd unit: **checked in at `server/kvenno-backend.service`** — install that file, do not
+>   hand-write one. It runs as `www-data` from `/opt/kvenno-server` via `node dist/index.js`, with
+>   sandboxing (`ProtectSystem=strict`, `PrivateTmp`, …). The unit printed further down this section
+>   is the dead one.
+> - Claude calls are raw `fetch` to `https://api.anthropic.com/v1/messages` (not the SDK) —
+>   `server/src/index.ts:473,596` — and the model id is not the one in the sample below.
+> - JSON body limit is `15mb` (`server/src/index.ts:109`), not the `10mb` shown below.
+>
+> **Still accurate further down this section:** the `systemctl` / `journalctl` commands under
+> "Backend Management Commands" (the service name `kvenno-backend` is unchanged) and the
+> "Security Best Practices" list. The dead material is Steps 1–5 plus the individual paths and
+> commands flagged inline below.
+>
+> **`docs/DEPLOYMENT.md` is the accurate document** — see its "Backend (systemd)", "Environment
+> variables" and "Verification" sections. The code below is retained only as a record of the
+> original design.
+
 **Step 1: Create backend directory**
 
 ```bash
@@ -354,6 +384,12 @@ sudo chown www-data:www-data /var/www/kvenno.app/backend/.env
 
 **Step 4: Create systemd service to keep backend running**
 
+> ⚠️ **DEAD UNIT — do not install this one.** The live unit is checked in at
+> `server/kvenno-backend.service`: `WorkingDirectory=/opt/kvenno-server`,
+> `ExecStart=/usr/bin/node dist/index.js`, `EnvironmentFile=/opt/kvenno-server/.env`, plus systemd
+> hardening. Copy that file to `/etc/systemd/system/`. The `ExecStart` below points at a path that
+> does not exist on the server. See `docs/DEPLOYMENT.md` § Backend (systemd).
+
 ```bash
 sudo nano /etc/systemd/system/kvenno-backend.service
 ```
@@ -466,7 +502,7 @@ export async function analyzeReport(prompt: string, systemPrompt?: string) {
 VITE_AZURE_CLIENT_ID=public-azure-client-id
 VITE_AZURE_TENANT_ID=public-azure-tenant-id
 VITE_API_ENDPOINT=https://kvenno.app/api
-VITE_BASE_PATH=/2-ar/lab-reports/  # Set before each build
+VITE_BASE_PATH=/efnafraedi/2-ar/lab-reports/  # Set by scripts/build-all.mjs before each build
 ```
 
 **Backend (Node.js server) - .env on server only:**
@@ -477,6 +513,11 @@ CLAUDE_API_KEY=sk-ant-api-key-here
 PORT=8000
 NODE_ENV=production
 ```
+
+> The live list is longer — `FRONTEND_URL` is load-bearing (in production the server rejects
+> requests with a missing or mismatched `Origin`), and the file lives at `/opt/kvenno-server/.env`,
+> not under `/var/www`. Template: `server/.env.example`. See `docs/DEPLOYMENT.md` § Environment
+> variables.
 
 ### Security Best Practices
 
@@ -518,17 +559,20 @@ sudo journalctl -u kvenno-backend -f
 # View recent logs
 sudo journalctl -u kvenno-backend -n 100
 
-# Update backend code
-cd /var/www/kvenno.app/backend
-sudo nano server.js  # Make changes
-sudo systemctl restart kvenno-backend
+# Update backend code — do NOT edit on the server.
+# Edit server/src/index.ts locally, then:  pnpm build && ./scripts/deploy.sh
+# (deploy.sh rsyncs a compiled bundle to /opt/kvenno-server and restarts the service)
 ```
 
 ### Testing the Backend
 
 ```bash
-# Test health endpoint
-curl https://kvenno.app/api/health
+# Test health endpoint — must run ON THE HOST, with an Origin header.
+# nginx proxies /api/ only, so there is no public /api/health route, and a public
+# request for /health falls through to the SPA and returns HTTP 200 even when the
+# backend is dead. Production CORS also rejects origin-less requests.
+ssh siggi@kvenno.app \
+  "curl -s -H 'Origin: https://kvenno.app' http://127.0.0.1:8000/health"
 
 # Test from your local machine during development
 curl -X POST http://localhost:8000/api/analyze \
@@ -545,9 +589,11 @@ curl -X POST http://localhost:8000/api/analyze \
 sudo journalctl -u kvenno-backend -n 50
 
 # Common issues:
-# - Missing dependencies: cd /var/www/kvenno.app/backend && npm install
+# - Missing/incomplete bundle: the unit runs `node dist/index.js` from /opt/kvenno-server.
+#   Nothing is installed on the host — rebuild and redeploy (pnpm build && ./scripts/deploy.sh);
+#   deploy.sh refuses to ship a bundle without dist/index.js.
 # - Port already in use: sudo lsof -i :8000
-# - Permission issues: sudo chown -R www-data:www-data /var/www/kvenno.app/backend
+# - Permission issues: sudo chown -R www-data:www-data /opt/kvenno-server
 ```
 
 **API requests timing out:**
@@ -565,10 +611,11 @@ sudo tail -f /var/log/nginx/error.log
 **High API costs:**
 
 ```bash
-# Add rate limiting to backend
-npm install express-rate-limit
+# Add rate limiting to backend (illustrative — the live backend is TypeScript;
+# add the dependency to server/package.json and the middleware in server/src/index.ts)
+pnpm --filter kvenno-server add express-rate-limit
 
-# In server.js:
+# In server/src/index.ts (sketch, CommonJS form kept from the original note):
 const rateLimit = require('express-rate-limit');
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -623,40 +670,31 @@ All navigation buttons and tool tiles should use:
 
 ## 3. Header Component
 
-Every page on kvenno.app must include a consistent header with:
+> ⚠️ **SUPERSEDED.** This section used to prescribe a hand-rolled header with the site name
+> "Efnafræðivefur Kvennó" and right-aligned "Admin"/"Info" buttons, using `site-header` /
+> `site-logo` / `header-btn` classes. None of that matches what ships. The requirements and JSX
+> template have been replaced below with the shared component's real contract; the source of truth
+> is `packages/shared/components/Header.tsx`.
 
-```
-┌─────────────────────────────────────────────┐
-│ [Logo/Site Name]              [Admin] [Info] │
-└─────────────────────────────────────────────┘
-```
+**Do not hand-roll a header.** Import `Header` from `@shared/components`
+(`packages/shared/components/Header.tsx`) — all apps use the same one.
 
-### Header Requirements:
+### Props (as shipped):
 
-- **Site name/logo**: "Efnafræðivefur Kvennó" or similar, links to `/`
-- **Right-aligned buttons**:
-  - "Admin" (for teacher access)
-  - "Info" (for help/about)
-- **Background**: White with bottom border or subtle shadow
-- **Height**: ~60px
-- **Sticky**: Consider making header sticky on scroll
+- `title` — defaults to **"Námsvefur Kvennó"**, links to `/`
+- `authSlot` — slot for authentication UI (e.g. `AuthButton` from lab-reports)
+- `onInfoClick` — renders the "Upplýsingar" button **only when provided**; there is no "Admin" button
+- `variant` — `'default'` | `'game'` (the game variant is a slim header with a back link)
+- `activeTrack` — highlights the current track tab
+- `backHref`, `backLabel` (default "Til baka"), `gameTitle` — used by the game variant
 
-### Header Code Template:
+### Layout (as shipped):
 
-```jsx
-// Add to every app
-<header className="site-header">
-  <div className="header-content">
-    <a href="/" className="site-logo">
-      Efnafræðivefur Kvennó
-    </a>
-    <div className="header-actions">
-      <button className="header-btn">Admin</button>
-      <button className="header-btn">Info</button>
-    </div>
-  </div>
-</header>
-```
+- Default variant: logo left, **Efnafræði / Íslenskubraut track tabs** centre (hidden below `md`,
+  where `BottomNav` takes over), utility slot right
+- Sticky (`sticky top-0 z-50`), raised surface background with a subtle shadow — no bottom border
+- Height: `h-16` (64px) default variant, `h-14` (56px) game variant
+- Tailwind classes throughout
 
 ## 4. Navigation & Breadcrumbs
 
@@ -897,13 +935,13 @@ The `packages/shared/hooks/` directory provides reusable hooks used across all g
 - **`useGameProgress`** - Tracks game state (score, attempts, current question) with localStorage persistence
 - **`useGameI18n`** - Internationalization for games; supports IS/EN/PL via `createGameTranslations()`
 - **`useI18n`** - General-purpose i18n hook for non-game apps
-- **`useAchievements`** - Achievement/badge system for games (unlock conditions, persistent state)
+- **`useAchievements`** - Achievement/badge system for games (unlock conditions, persistent state). _No game imports it as of Aug 2026 — dormant since the April restructure (the only references in `apps/` are `vi.mock` stubs in `1-ar/dimensional-analysis/src/__tests__/a11y.test.tsx`)._
 - **`useAccessibility`** - Accessibility features (reduced motion, font size, high contrast preferences)
 - **`useProgress`** - Generic progress tracking hook
 
 Graphics/animation hooks (in `packages/shared/components/`):
 
-- **`useScorePopups`** - Manages queue of floating "+N" score popups (max 5 concurrent, oldest evicted).
+- **`useScorePopups`** - Manages queue of floating "+N" score popups (max 5 concurrent, oldest evicted). _No game imports it as of Aug 2026 — dormant since the April restructure, like the rest of the `AnimatedCounter`/`ScorePopup`/`StreakCounter` family. Still present in `packages/shared/`; retire-or-keep is undecided._
 
 All hooks have unit tests in `packages/shared/hooks/__tests__/`.
 
@@ -946,14 +984,17 @@ Zero external animation libraries — all motion is CSS keyframes and Canvas 2D.
 5 parallel jobs on every push/PR to `main`:
 
 1. **Lint & Type Check** - ESLint + TypeScript `tsc --noEmit`
-2. **Unit Tests** - Vitest with coverage reporting (~1022 tests)
-3. **Server Tests** - Vitest for Express backend (~40 tests)
+2. **Unit Tests** - Vitest with coverage reporting (967 tests across 55 files, measured 2026-08-17)
+3. **Server Tests** - Vitest for Express backend (46 tests across 2 files, measured 2026-08-17)
 4. **Build** - Full production build to `dist/`
 5. **E2E Tests** - Playwright (chromium + firefox), runs after build
 
 ### Deployment (`.github/workflows/deploy.yml`)
 
-Manual or automated deployment via `./scripts/deploy.sh` (rsync to server + backend restart).
+Automated deploy runs on CI success on `main` (`workflow_run`; there is no `workflow_dispatch`
+trigger) and reimplements the `scripts/deploy.sh` sequence inline rather than invoking it. It
+requires four repository secrets and has not yet run successfully — see `docs/DEPLOYMENT.md`
+§ Automated. `./scripts/deploy.sh` is the manual path, and the only one used to date.
 
 ## 16. i18n System
 
@@ -970,7 +1011,7 @@ The shared i18n files live in `packages/shared/i18n/` (`is.json`, `en.json`, `pl
 - **Unit tests**: Vitest for all packages and apps
 - **E2E tests**: Playwright for integration testing (chromium + firefox)
 - **Server tests**: Vitest + supertest for Express API testing
-- **Coverage**: ~1062 total tests (1022 unit + 40 server)
+- **Coverage**: 1013 total tests (967 unit + 46 server), measured 2026-08-17
 - **Bundle analysis**: See `docs/bundle-sizes.md` for per-game bundle size tracking
 
 ---
@@ -979,7 +1020,7 @@ The shared i18n files live in `packages/shared/i18n/` (`is.json`, `en.json`, `pl
 
 **Primary Color**: #f36b22  
 **Max Width**: 1200px  
-**Header Height**: ~60px  
+**Header Height**: 64px (`h-16`; 56px / `h-14` for the game variant)  
 **Button Radius**: 8px
 
 **Key Links**:
@@ -989,10 +1030,15 @@ The shared i18n files live in `packages/shared/i18n/` (`is.json`, `en.json`, `pl
 - 1st Year: `/efnafraedi/1-ar/`
 - 2nd Year: `/efnafraedi/2-ar/`
 - 3rd Year: `/efnafraedi/3-ar/`
+- Games hubs: `/efnafraedi/{1-ar,2-ar,3-ar}/games/` (landing SPA — the only link from a year hub to any game)
 - Electives: `/efnafraedi/val/`
 - Islenskubraut: `/islenskubraut/`
+- MSAL redirect target: `/auth/callback` (served by nginx; see `docs/azure-ad-setup.md`)
 
 ---
 
-_Last updated: 2026-02-21_
+_Last updated: 2026-08-17 (mixed vintage — this file is amended in place, so sections carry different
+dates. The backend-setup and header sections predate the TypeScript backend and the shared `Header`
+component and are marked superseded above; `docs/DEPLOYMENT.md` and
+`packages/shared/components/Header.tsx` are current for those.)_
 _Maintainer: Sigurður E. Vilhelmsson, Kvennaskólinn í Reykjavík_
