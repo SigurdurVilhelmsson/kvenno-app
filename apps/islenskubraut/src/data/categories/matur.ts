@@ -1,3 +1,10 @@
+// AUTO-GENERATED FILE — DO NOT EDIT BY HAND.
+//
+// Source:     content/islenskubraut/
+// Regenerate: pnpm islenskubraut:build
+//
+// Edit the YAML, not this file. A test fails if this file drifts from it.
+
 import { Category } from '../types';
 
 export const matur: Category = {
@@ -87,7 +94,10 @@ export const matur: Category = {
       question: 'Hvers konar matur er þetta?',
       icon: '📚',
       answers: [
-        { level: 'A1', options: ['ávöxtur', 'grænmeti', 'kjöt', 'drykkur'] },
+        {
+          level: 'A1',
+          options: ['ávöxtur', 'grænmeti', 'kjöt', 'drykkur'],
+        },
         {
           level: 'A2',
           options: [
@@ -122,7 +132,10 @@ export const matur: Category = {
       question: 'Hvernig lítur það út?',
       icon: '👁️',
       answers: [
-        { level: 'A1', options: ['rautt', 'grænt', 'gult', 'hvítt'] },
+        {
+          level: 'A1',
+          options: ['rautt', 'grænt', 'gult', 'hvítt'],
+        },
         {
           level: 'A2',
           options: ['rautt', 'grænt', 'gult', 'hvítt', 'brúnt', 'appelsínugult', 'stórt', 'lítið'],
@@ -149,7 +162,10 @@ export const matur: Category = {
       question: 'Hvernig bragðast það?',
       icon: '👅',
       answers: [
-        { level: 'A1', options: ['sætt', 'salt', 'súrt', 'beiskt'] },
+        {
+          level: 'A1',
+          options: ['sætt', 'salt', 'súrt', 'beiskt'],
+        },
         {
           level: 'A2',
           options: ['sætt', 'salt', 'súrt', 'beiskt', 'kryddað', 'sterkt', 'milt', 'ferskt'],
@@ -177,7 +193,10 @@ export const matur: Category = {
       question: 'Hvernig finnst það við snertingu?',
       icon: '✋',
       answers: [
-        { level: 'A1', options: ['mjúkt', 'hart', 'slétt', 'gróft'] },
+        {
+          level: 'A1',
+          options: ['mjúkt', 'hart', 'slétt', 'gróft'],
+        },
         {
           level: 'A2',
           options: [
@@ -218,8 +237,14 @@ export const matur: Category = {
       question: 'Hvernig lyktar af því?',
       icon: '👃',
       answers: [
-        { level: 'A1', options: ['gott', 'vont', 'ekkert'] },
-        { level: 'A2', options: ['gott', 'vont', 'ekkert', 'ferskt', 'sterkt', 'milt'] },
+        {
+          level: 'A1',
+          options: ['gott', 'vont', 'ekkert'],
+        },
+        {
+          level: 'A2',
+          options: ['gott', 'vont', 'ekkert', 'ferskt', 'sterkt', 'milt'],
+        },
         {
           level: 'B1',
           options: [
@@ -241,7 +266,10 @@ export const matur: Category = {
       question: 'Hvaða lögun hefur það?',
       icon: '🔷',
       answers: [
-        { level: 'A1', options: ['stórt', 'lítið', 'kringlótt', 'fernt'] },
+        {
+          level: 'A1',
+          options: ['stórt', 'lítið', 'kringlótt', 'fernt'],
+        },
         {
           level: 'A2',
           options: [
@@ -282,7 +310,10 @@ export const matur: Category = {
       question: 'Til hvers er það notað?',
       icon: '🎯',
       answers: [
-        { level: 'A1', options: ['til að borða', 'til að drekka'] },
+        {
+          level: 'A1',
+          options: ['til að borða', 'til að drekka'],
+        },
         {
           level: 'A2',
           options: ['til að borða', 'til að drekka', 'til að elda með', 'til að baka með'],
@@ -304,8 +335,14 @@ export const matur: Category = {
       question: 'Hver notar þetta?',
       icon: '👤',
       answers: [
-        { level: 'A1', options: ['allir', 'börn', 'fullorðnir'] },
-        { level: 'A2', options: ['allir', 'börn', 'fullorðnir', 'kokkar', 'bakarar'] },
+        {
+          level: 'A1',
+          options: ['allir', 'börn', 'fullorðnir'],
+        },
+        {
+          level: 'A2',
+          options: ['allir', 'börn', 'fullorðnir', 'kokkar', 'bakarar'],
+        },
         {
           level: 'B1',
           options: [
@@ -324,8 +361,14 @@ export const matur: Category = {
       question: 'Hvar er hægt að finna þetta?',
       icon: '📍',
       answers: [
-        { level: 'A1', options: ['heima', 'í búð', 'á veitingastað'] },
-        { level: 'A2', options: ['heima', 'í búð', 'á veitingastað', 'í skólanum', 'úti'] },
+        {
+          level: 'A1',
+          options: ['heima', 'í búð', 'á veitingastað'],
+        },
+        {
+          level: 'A2',
+          options: ['heima', 'í búð', 'á veitingastað', 'í skólanum', 'úti'],
+        },
         {
           level: 'B1',
           options: [
@@ -344,7 +387,10 @@ export const matur: Category = {
       question: 'Hvenær er þetta notað?',
       icon: '🕐',
       answers: [
-        { level: 'A1', options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'] },
+        {
+          level: 'A1',
+          options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'],
+        },
         {
           level: 'A2',
           options: [

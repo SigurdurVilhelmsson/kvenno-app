@@ -1,11 +1,9 @@
 // AUTO-GENERATED FILE — DO NOT EDIT BY HAND.
 //
-// Source:     apps/islenskubraut/src/data/
-// Regenerate: pnpm generate:islenskubraut-data
+// Source:     content/islenskubraut/
+// Regenerate: pnpm islenskubraut:build
 //
-// The server cannot import the Íslenskubraut SPA, so the category data is copied here.
-// This copy previously drifted and shipped corrupted Icelandic onto student teaching
-// cards. Edit the source above and re-run the generator; a test fails if these diverge.
+// Edit the YAML, not this file. A test fails if this file drifts from it.
 
 import type { Category } from '../types/index.js';
 

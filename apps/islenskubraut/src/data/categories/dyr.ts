@@ -1,3 +1,10 @@
+// AUTO-GENERATED FILE — DO NOT EDIT BY HAND.
+//
+// Source:     content/islenskubraut/
+// Regenerate: pnpm islenskubraut:build
+//
+// Edit the YAML, not this file. A test fails if this file drifts from it.
+
 import { Category } from '../types';
 
 export const dyr: Category = {
@@ -83,8 +90,14 @@ export const dyr: Category = {
       question: 'Hvers konar dýr er þetta?',
       icon: '📚',
       answers: [
-        { level: 'A1', options: ['gæludýr', 'villt dýr', 'húsdýr'] },
-        { level: 'A2', options: ['gæludýr', 'villt dýr', 'húsdýr', 'spendýr', 'fugl', 'fiskur'] },
+        {
+          level: 'A1',
+          options: ['gæludýr', 'villt dýr', 'húsdýr'],
+        },
+        {
+          level: 'A2',
+          options: ['gæludýr', 'villt dýr', 'húsdýr', 'spendýr', 'fugl', 'fiskur'],
+        },
         {
           level: 'B1',
           options: [
@@ -105,7 +118,10 @@ export const dyr: Category = {
       question: 'Hvernig lítur það út?',
       icon: '👁️',
       answers: [
-        { level: 'A1', options: ['feldur', 'fjaðrir', 'hreistur', 'hali'] },
+        {
+          level: 'A1',
+          options: ['feldur', 'fjaðrir', 'hreistur', 'hali'],
+        },
         {
           level: 'A2',
           options: [
@@ -141,7 +157,10 @@ export const dyr: Category = {
       question: 'Hvernig finnst það við snertingu?',
       icon: '✋',
       answers: [
-        { level: 'A1', options: ['mjúkt', 'hart', 'slétt', 'gróft'] },
+        {
+          level: 'A1',
+          options: ['mjúkt', 'hart', 'slétt', 'gróft'],
+        },
         {
           level: 'A2',
           options: ['mjúkt', 'hart', 'slétt', 'gróft', 'þungt', 'létt', 'blautt', 'þurrt'],
@@ -169,7 +188,10 @@ export const dyr: Category = {
       question: 'Hvaða hljóð gefur það frá sér?',
       icon: '🔊',
       answers: [
-        { level: 'A1', options: ['hátt', 'lágt', 'þögult'] },
+        {
+          level: 'A1',
+          options: ['hátt', 'lágt', 'þögult'],
+        },
         {
           level: 'A2',
           options: ['hátt', 'lágt', 'þögult', 'gelur', 'mjallar', 'öskrar', 'súðar', 'hringir'],
@@ -197,7 +219,10 @@ export const dyr: Category = {
       question: 'Hvaða lögun hefur það?',
       icon: '🔷',
       answers: [
-        { level: 'A1', options: ['stórt', 'lítið', 'kringlótt', 'fernt'] },
+        {
+          level: 'A1',
+          options: ['stórt', 'lítið', 'kringlótt', 'fernt'],
+        },
         {
           level: 'A2',
           options: [
@@ -238,7 +263,10 @@ export const dyr: Category = {
       question: 'Til hvers er það notað?',
       icon: '🎯',
       answers: [
-        { level: 'A1', options: ['til að gæta', 'til að klappa', 'til að borða'] },
+        {
+          level: 'A1',
+          options: ['til að gæta', 'til að klappa', 'til að borða'],
+        },
         {
           level: 'A2',
           options: [
@@ -269,7 +297,10 @@ export const dyr: Category = {
       question: 'Hver notar þetta?',
       icon: '👤',
       answers: [
-        { level: 'A1', options: ['allir', 'börn', 'fullorðnir'] },
+        {
+          level: 'A1',
+          options: ['allir', 'börn', 'fullorðnir'],
+        },
         {
           level: 'A2',
           options: ['allir', 'börn', 'fullorðnir', 'bændur', 'dýralæknar', 'veiðimenn'],
@@ -293,7 +324,10 @@ export const dyr: Category = {
       question: 'Hvar er hægt að finna þetta?',
       icon: '📍',
       answers: [
-        { level: 'A1', options: ['heima', 'úti', 'á bæ'] },
+        {
+          level: 'A1',
+          options: ['heima', 'úti', 'á bæ'],
+        },
         {
           level: 'A2',
           options: ['heima', 'úti', 'á bæ', 'í dýragarðinum', 'í náttúrunni', 'í sjónum'],
@@ -317,7 +351,10 @@ export const dyr: Category = {
       question: 'Hvenær er þetta sést?',
       icon: '🕐',
       answers: [
-        { level: 'A1', options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'] },
+        {
+          level: 'A1',
+          options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'],
+        },
         {
           level: 'A2',
           options: [

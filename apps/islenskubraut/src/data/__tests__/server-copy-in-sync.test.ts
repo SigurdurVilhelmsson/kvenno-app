@@ -1,13 +1,16 @@
 /**
- * Guards the hand-copied server data against drift.
+ * Guards the generated server data against drift.
  *
  * The Express server renders teaching-card PDFs and cannot import this SPA, so
  * `server/src/lib/islenskubraut-data.ts` holds a generated copy of the category data.
- * That copy previously drifted for months and shipped corrupted Icelandic onto the PDFs
- * students receive — "Orðaforði" became "Orda­fordi", "Þessi" became "Þssi", and
- * "rannsaka" became "rannsóka".
+ * Both this file and the SPA's `../index` are now generated from `content/islenskubraut/`
+ * (see `scripts/islenskubraut/build.mjs`), so this test guards against the two consumers
+ * drifting from each other, e.g. a stale generated file that was hand-edited or not
+ * regenerated after the YAML changed. It previously drifted for months by hand and shipped
+ * corrupted Icelandic onto the PDFs students receive — "Orðaforði" became "Orda­fordi",
+ * "Þessi" became "Þssi", and "rannsaka" became "rannsóka".
  *
- * If this fails, do NOT edit the server file: run `pnpm generate:islenskubraut-data`.
+ * If this fails, do NOT edit either generated file: run `pnpm islenskubraut:build`.
  */
 import { describe, expect, it } from 'vitest';
 

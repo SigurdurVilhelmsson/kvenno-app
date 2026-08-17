@@ -1,3 +1,10 @@
+// AUTO-GENERATED FILE — DO NOT EDIT BY HAND.
+//
+// Source:     content/islenskubraut/
+// Regenerate: pnpm islenskubraut:build
+//
+// Edit the YAML, not this file. A test fails if this file drifts from it.
+
 import { Category } from '../types';
 
 export const farartaeki: Category = {
@@ -80,7 +87,10 @@ export const farartaeki: Category = {
       question: 'Hvers konar farartæki er þetta?',
       icon: '📚',
       answers: [
-        { level: 'A1', options: ['bíll', 'rúta', 'hjól', 'flugvél', 'skip'] },
+        {
+          level: 'A1',
+          options: ['bíll', 'rúta', 'hjól', 'flugvél', 'skip'],
+        },
         {
           level: 'A2',
           options: ['bíll', 'rúta', 'hjól', 'mótorhjól', 'lest', 'flugvél', 'skip/bátur', 'sleði'],
@@ -107,7 +117,10 @@ export const farartaeki: Category = {
       question: 'Hvernig lítur það út?',
       icon: '👁️',
       answers: [
-        { level: 'A1', options: ['stórt', 'lítið', 'með hjólum', 'án hjóla'] },
+        {
+          level: 'A1',
+          options: ['stórt', 'lítið', 'með hjólum', 'án hjóla'],
+        },
         {
           level: 'A2',
           options: ['stórt', 'lítið', 'með hjólum', 'án hjóla', 'langt', 'stutt', 'hátt', 'lágt'],
@@ -134,8 +147,14 @@ export const farartaeki: Category = {
       question: 'Hvaða hljóð gefur það frá sér?',
       icon: '🔊',
       answers: [
-        { level: 'A1', options: ['hátt', 'lágt', 'þögult'] },
-        { level: 'A2', options: ['hátt', 'lágt', 'þögult', 'súðar', 'hringir', 'öskrar'] },
+        {
+          level: 'A1',
+          options: ['hátt', 'lágt', 'þögult'],
+        },
+        {
+          level: 'A2',
+          options: ['hátt', 'lágt', 'þögult', 'súðar', 'hringir', 'öskrar'],
+        },
         {
           level: 'B1',
           options: [
@@ -157,8 +176,14 @@ export const farartaeki: Category = {
       question: 'Úr hverju er það gert?',
       icon: '🧱',
       answers: [
-        { level: 'A1', options: ['úr málmi', 'úr plasti', 'úr tré'] },
-        { level: 'A2', options: ['úr málmi', 'úr plasti', 'úr tré', 'úr steini', 'úr gleri'] },
+        {
+          level: 'A1',
+          options: ['úr málmi', 'úr plasti', 'úr tré'],
+        },
+        {
+          level: 'A2',
+          options: ['úr málmi', 'úr plasti', 'úr tré', 'úr steini', 'úr gleri'],
+        },
         {
           level: 'B1',
           options: [
@@ -178,7 +203,10 @@ export const farartaeki: Category = {
       question: 'Hvaða lögun hefur það?',
       icon: '🔷',
       answers: [
-        { level: 'A1', options: ['stórt', 'lítið', 'kringlótt', 'fernt'] },
+        {
+          level: 'A1',
+          options: ['stórt', 'lítið', 'kringlótt', 'fernt'],
+        },
         {
           level: 'A2',
           options: [
@@ -219,7 +247,10 @@ export const farartaeki: Category = {
       question: 'Til hvers er það notað?',
       icon: '🎯',
       answers: [
-        { level: 'A1', options: ['til að ferðast', 'til að flytja', 'til að leika sér'] },
+        {
+          level: 'A1',
+          options: ['til að ferðast', 'til að flytja', 'til að leika sér'],
+        },
         {
           level: 'A2',
           options: ['til að ferðast', 'til að flytja', 'til að leika sér', 'til að vinna'],
@@ -241,7 +272,10 @@ export const farartaeki: Category = {
       question: 'Hver notar þetta?',
       icon: '👤',
       answers: [
-        { level: 'A1', options: ['allir', 'börn', 'fullorðnir'] },
+        {
+          level: 'A1',
+          options: ['allir', 'börn', 'fullorðnir'],
+        },
         {
           level: 'A2',
           options: ['allir', 'börn', 'fullorðnir', 'bílstjórar', 'flugmenn', 'sjómenn'],
@@ -266,7 +300,10 @@ export const farartaeki: Category = {
       question: 'Hvar er hægt að nota/finna þetta?',
       icon: '📍',
       answers: [
-        { level: 'A1', options: ['á götunni', 'á sjónum', 'í loftinu'] },
+        {
+          level: 'A1',
+          options: ['á götunni', 'á sjónum', 'í loftinu'],
+        },
         {
           level: 'A2',
           options: ['á götunni', 'á sjónum', 'í loftinu', 'á þjóðveginum', 'á flugvellinum'],
@@ -289,7 +326,10 @@ export const farartaeki: Category = {
       question: 'Hvenær er þetta notað?',
       icon: '🕐',
       answers: [
-        { level: 'A1', options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'] },
+        {
+          level: 'A1',
+          options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'],
+        },
         {
           level: 'A2',
           options: [
