@@ -153,35 +153,6 @@ export const manneskja: Category = {
       ],
     },
     {
-      question: 'Hvaða lögun hefur það?',
-      icon: '🔷',
-      answers: [
-        {
-          level: 'A1',
-          options: ['stórt', 'lítið', 'hátt', 'lágt'],
-        },
-        {
-          level: 'A2',
-          options: ['stórt', 'lítið', 'hátt', 'lágt', 'langt', 'stutt', 'þykkt', 'mjótt'],
-        },
-        {
-          level: 'B1',
-          options: [
-            'stórt',
-            'lítið',
-            'hátt',
-            'lágt',
-            'langt',
-            'stutt',
-            'þykkt',
-            'mjótt',
-            'sporöskjulaga',
-            'kringlótt',
-          ],
-        },
-      ],
-    },
-    {
       question: 'Fyrir hvað er manneskjan þekkt?',
       icon: '🎯',
       answers: [
@@ -211,36 +182,6 @@ export const manneskja: Category = {
             'til að kenna',
             'til að stjórna',
             'til að skapa',
-          ],
-        },
-      ],
-    },
-    {
-      question: 'Hver notar þetta?',
-      icon: '👤',
-      answers: [
-        {
-          level: 'A1',
-          options: ['allir', 'börn', 'fullorðnir'],
-        },
-        {
-          level: 'A2',
-          options: ['allir', 'börn', 'fullorðnir', 'nemendur', 'kennarar', 'læknar', 'íþróttamenn'],
-        },
-        {
-          level: 'B1',
-          options: [
-            'allir',
-            'börn',
-            'fullorðnir',
-            'nemendur',
-            'kennarar',
-            'læknar',
-            'íþróttamenn',
-            'sérfræðingar',
-            'listamenn',
-            'ferðamenn',
-            'iðnaðarmenn',
           ],
         },
       ],

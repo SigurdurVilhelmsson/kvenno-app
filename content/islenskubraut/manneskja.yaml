@@ -148,35 +148,6 @@ guidingQuestions:
         - með skegg
         - án skeggs
   - id: q3
-    question: Hvaða lögun hefur það?
-    icon: 🔷
-    answers:
-      A1:
-        - stórt
-        - lítið
-        - hátt
-        - lágt
-      A2:
-        - stórt
-        - lítið
-        - hátt
-        - lágt
-        - langt
-        - stutt
-        - þykkt
-        - mjótt
-      B1:
-        - stórt
-        - lítið
-        - hátt
-        - lágt
-        - langt
-        - stutt
-        - þykkt
-        - mjótt
-        - sporöskjulaga
-        - kringlótt
-  - id: q4
     question: Fyrir hvað er manneskjan þekkt?
     icon: 🎯
     answers:
@@ -200,35 +171,7 @@ guidingQuestions:
         - til að kenna
         - til að stjórna
         - til að skapa
-  - id: q5
-    question: Hver notar þetta?
-    icon: 👤
-    answers:
-      A1:
-        - allir
-        - börn
-        - fullorðnir
-      A2:
-        - allir
-        - börn
-        - fullorðnir
-        - nemendur
-        - kennarar
-        - læknar
-        - íþróttamenn
-      B1:
-        - allir
-        - börn
-        - fullorðnir
-        - nemendur
-        - kennarar
-        - læknar
-        - íþróttamenn
-        - sérfræðingar
-        - listamenn
-        - ferðamenn
-        - iðnaðarmenn
-  - id: q6
+  - id: q4
     question: Hvar er hægt að finna þessa manneskju?
     icon: 📍
     answers:
@@ -251,7 +194,7 @@ guidingQuestions:
         - á sviði
         - í sjónvarpi
         - á ferðalagi
-  - id: q7
+  - id: q5
     question: Hvenær er hún/hann virk/virkur?
     icon: 🕐
     answers:
