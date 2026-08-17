@@ -165,7 +165,7 @@ Gold standard games: Jafna Jöfnur (real-time atom counter), IMF Level 3 (real-w
 **mighty-mixing-puffin plan — all phases completed:**
 
 - Phase 1: Teaching intros added to all games that tested before teaching (Y1-Y3)
-- Phase 2: All hint penalties removed (code + UI text), DA L2 prediction disabled, DA L3 scoring simplified
+- Phase 2: Hint penalties removed from Y1 (code + UI text), DA L2 prediction disabled, DA L3 scoring simplified. **This line used to claim "all" — measured Aug 2026, three games still ship one:** `2-ar/hess-law/src/i18n.ts:76` and `3-ar/gas-law-challenge/src/i18n.ts:34` advertise a cost on the affordance; `3-ar/ph-titration` applies one as a multiplier (`Level1.tsx:47,87`, `Level2.tsx:454-455`, `Level3.tsx:309-310`)
 - Phase 3-4: Real-world "Af hverju?" context cards + curriculum chain positions added to all 20 games
 - Phase 5a: Jafna Jöfnur reload fix + L3 hints, Nafnakerfid L3 explanations
 - Phase 5b: Lewis Structures L2 interactive SVG drawing canvas, VSEPR L2 constrained prediction + L3 hybridization diagram, pH Titration L2 equivalence point marking, Lausnir L1 static beaker
@@ -227,9 +227,10 @@ messages are now Icelandic — note `Sæki`, not `Hleð`, since `hleðsla` means
 
 Remaining deferred (all need a decision, not code):
 
-- **`useGameI18n` `t()` across Y3** — Y3 games import `useGameI18n` + render `LanguageSwitcher` but UI stays hardcoded Icelandic. Conflicts with this file's "Icelandic UI only." Decide: strip it, finish wiring, or keep as-is.
-- **Hess Polish i18n block** — teacher sign-off.
-- **Kinetics/Redox problem order shuffle** — deliberately skipped (exam-style stability).
+- **`useGameI18n` `t()` across Y3** — Y3 games import `useGameI18n` + render `LanguageSwitcher` but UI stays hardcoded Icelandic. Conflicts with this file's "Icelandic UI only." Decide: strip it, finish wiring, or keep as-is. Note this is wider than Y3: shipped `2-ar/organic-nomenclature` has the same dead wiring (switcher rendered, zero `t()` calls), and every old-repo game carries it too.
+- **Hess Polish i18n block** — teacher sign-off. Same decision as above.
+- **Kinetics/Redox problem order shuffle** — deliberately skipped (exam-style stability). **Do not generalise this to other games:** several ship an unshuffled array where the answer is positionally predictable, which is a different problem. See `docs/README.md`.
+- **Level 4, and whether levels are gated** — the old repo's design capped games at 3 levels; the April restructure replaced that with Explore → Understand → Practice → Apply, which has no level count. Most salvageable content from the old repo is Level-4 material. Decide once whether a Level 4 exists or that content becomes the Apply phase. Gating strings for 14 games already exist in three languages with no consumers.
 
 Full plan: `~/.claude/plans/logical-wandering-llama.md`
 
@@ -290,6 +291,30 @@ Keep both in sync when modifying categories.
 pnpm build                 # Build everything
 ./scripts/deploy.sh        # rsync to server + restart backend
 ```
+
+## Before changing a game, read `docs/README.md`
+
+Three August-2026 review documents supersede the older per-game reviews and the year `REVIEW_TRACKER.md` files. They carry `file:line` citations and were adversarially verified:
+`apps/games/1-ar/CURRICULUM_REVIEW.md` · `apps/games/ORPHANED_GAMES_ASSESSMENT.md` · `docs/FEBRUARY-DECISIONS-RECOVERED.md`
+
+**Live defects students meet today** — fix before adding features:
+
+- `3-ar/ph-titration/src/utils/ph-calculations.ts:57,95,133,198` divides a molarity already in mol/L by 1000 (0.100 M acetic acid renders pH 4.37; its own `data/titrations.ts:76` says 2.87)
+- `1-ar/lotukerfid/src/components/Level3.tsx:31-33` teaches `round(atomicMass) − Z` as the neutron method; ~31% of playthroughs mis-grade
+- `1-ar/dimensional-analysis/src/data/challenges.ts:271` (speed of light, 1000× out) and `:354` (unsatisfiable)
+- Unshuffled option arrays, worst in `2-ar/rafeindabygging` Level 3 (8/8 at index 0)
+
+## Icelandic terminology is governed, not chosen per-game
+
+`packages/shared/i18n/ordabok.md` is the authority — it was moved into the shared library deliberately. When a term is disputed, resolve in this order:
+
+1. `packages/shared/i18n/ordabok.md`
+2. `~/dev/repos/namsbokasafn-efni`, the school's textbook corpus (`grep -roi "<stem>[a-uáéíóúýþæö]*" --include=*.md . | wc -l`)
+3. Ask Siggi — only where both are silent or they disagree
+
+Already ruled, and still wrong in this repo: **`sætistala`** for atomic number (not `atómnúmer`/`raðtala`), **`vermi`** for enthalpy (not `skammtavarmi`/`Enþalpía`), **`sjálfgengur`** for spontaneous (not `sjálfvirkur`), **`anóða`/`katóða`**, **`stuðpúði`** (not `púffer`), and the Ksp family (`leysnimargfeldi`, `samjónahrif`, `mólarleysni`, `hlutfelling`). Full table with citations in `docs/FEBRUARY-DECISIONS-RECOVERED.md`.
+
+Do not invent Icelandic chemistry terms. A game written in April 2026 re-committed an error that had been fixed in February, because nothing enforces the glossary.
 
 ## Important Notes
 
