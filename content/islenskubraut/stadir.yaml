@@ -1,0 +1,327 @@
+# Efni fyrir Íslenskubraut — þessi skrá er UPPRUNINN (source of truth).
+#
+# Breyttu þessari skrá beint, eða notaðu Excel-yfirferð:
+#   pnpm islenskubraut:export          # býr til .xlsx til yfirlestrar
+#   pnpm islenskubraut:import <skrá>   # les leiðréttingar til baka
+#
+# Keyrðu ALLTAF eftir breytingu:
+#   pnpm islenskubraut:build
+# Hún býr til TypeScript-skrárnar sem vefurinn og PDF-þjónninn nota.
+# Ekki breyta þeim skrám handvirkt.
+
+id: stadir
+name: Staðir og byggingar
+icon: 🏠
+description: Orðaforði um staði — tegundir bygginga og hvað maður gerir þar
+color: "#C1121F"
+subCategories:
+  - id: s1
+    name: Tegund
+    options:
+      - hús
+      - íbúð
+      - skóli
+      - sjúkrahús
+      - búð/verslun
+      - veitingastaður
+      - safn
+      - kirkja
+      - sundlaug
+      - leikvöllur
+  - id: s2
+    name: Staðsetning
+    options:
+      - í bænum/borginni
+      - í úthverfi
+      - á landi/sveitinni
+      - við sjóinn
+      - í fjöllunum
+  - id: s3
+    name: Stærð
+    options:
+      - lítill/lítið
+      - meðalstór/meðalstórt
+      - stór/stórt
+  - id: s4
+    name: Hvað gerir maður þar
+    options:
+      - borðar
+      - verslar
+      - syndir
+      - lærir
+      - vinnur
+      - sefur
+      - leikur sér
+sentenceFrames:
+  - id: f1
+    level: A1
+    frames:
+      - Þetta er ___.
+      - Maður ___ þar.
+      - Það er ___.
+      - Maður notar það til að ___.
+  - id: f2
+    level: A2
+    frames:
+      - Þetta er ___ sem er ___.
+      - Maður fer þangað til að ___.
+      - Það er gert úr ___.
+      - Maður finnur það ___.
+      - Maður notar það ___.
+  - id: f3
+    level: B1
+    frames:
+      - Þetta er ___ sem er staðsett ___.
+      - Fólk fer þangað til að ___ og ___.
+      - Það er ___ að snerta vegna þess að ___.
+      - Það er gert úr ___ sem er ___.
+      - Það er oftast notað af ___ til að ___.
+guidingQuestions:
+  - id: q1
+    question: Hvers konar staður er þetta?
+    icon: 📚
+    answers:
+      A1:
+        - hús
+        - skóli
+        - búð
+        - sundlaug
+      A2:
+        - hús
+        - íbúð
+        - skóli
+        - sjúkrahús
+        - búð/verslun
+        - veitingastaður
+        - safn
+        - kirkja
+        - sundlaug
+        - leikvöllur
+      B1:
+        - hús
+        - íbúð
+        - skóli
+        - sjúkrahús
+        - búð/verslun
+        - veitingastaður
+        - safn
+        - kirkja
+        - sundlaug
+        - leikvöllur
+        - bókasafn
+        - íþróttahús
+  - id: q2
+    question: Hvernig lítur þetta út?
+    icon: 👁️
+    answers:
+      A1:
+        - stórt
+        - lítið
+        - hátt
+        - lágt
+      A2:
+        - stórt
+        - lítið
+        - hátt
+        - lágt
+        - gamalt
+        - nýtt
+        - fallegt
+        - ljótt
+      B1:
+        - stórt
+        - lítið
+        - hátt
+        - lágt
+        - gamalt
+        - nýtt
+        - fallegt
+        - ljótt
+        - nútímalegt
+        - sögulegt
+  - id: q3
+    question: Hvernig lyktar þar?
+    icon: 👃
+    answers:
+      A1:
+        - gott
+        - vont
+        - ekkert
+      A2:
+        - gott
+        - vont
+        - ekkert
+        - ferskt
+        - sterkt
+        - milt
+      B1:
+        - gott
+        - vont
+        - ekkert
+        - ferskt
+        - sterkt
+        - milt
+        - ilmandi
+        - stingandi
+        - sætt
+        - beiskt
+  - id: q4
+    question: Úr hverju er það gert?
+    icon: 🧱
+    answers:
+      A1:
+        - úr tré
+        - úr steini
+        - úr málmi
+      A2:
+        - úr tré
+        - úr steini
+        - úr málmi
+        - úr gleri
+        - úr plasti
+      B1:
+        - úr tré
+        - úr steini
+        - úr málmi
+        - úr gleri
+        - úr plasti
+        - úr endurunnru efni
+        - úr náttúrulegum efnum
+        - úr gerviefnum
+  - id: q5
+    question: Hvaða lögun hefur það?
+    icon: 🔷
+    answers:
+      A1:
+        - stórt
+        - lítið
+        - kringlótt
+        - fernt
+      A2:
+        - stórt
+        - lítið
+        - kringlótt
+        - fernt
+        - langt
+        - stutt
+        - hátt
+        - lágt
+        - flatt
+        - þykkt
+      B1:
+        - stórt
+        - lítið
+        - kringlótt
+        - fernt
+        - langt
+        - stutt
+        - hátt
+        - lágt
+        - flatt
+        - þykkt
+        - sporöskjulaga
+        - þríhyrningslaga
+        - sívalningslaga
+        - óreglulegt
+  - id: q6
+    question: Til hvers er þetta notað?
+    icon: 🎯
+    answers:
+      A1:
+        - til að búa
+        - til að læra
+        - til að versla
+      A2:
+        - til að búa
+        - til að læra
+        - til að versla
+        - til að vinna
+        - til að hvílast
+      B1:
+        - til að búa
+        - til að læra
+        - til að versla
+        - til að vinna
+        - til að hvílast
+        - til að stunda íþróttir
+        - til að skemmta sér
+  - id: q7
+    question: Hver notar þetta?
+    icon: 👤
+    answers:
+      A1:
+        - allir
+        - börn
+        - fullorðnir
+      A2:
+        - allir
+        - börn
+        - fullorðnir
+        - nemendur
+        - kennarar
+        - læknar
+      B1:
+        - allir
+        - börn
+        - fullorðnir
+        - nemendur
+        - kennarar
+        - læknar
+        - sérfræðingar
+        - listamenn
+        - ferðamenn
+        - iðnaðarmenn
+  - id: q8
+    question: Hvar er þetta?
+    icon: 📍
+    answers:
+      A1:
+        - í bænum
+        - úti á landi
+        - við sjóinn
+      A2:
+        - í bænum
+        - úti á landi
+        - við sjóinn
+        - í úthverfi
+        - í fjöllunum
+      B1:
+        - í bænum
+        - úti á landi
+        - við sjóinn
+        - í úthverfi
+        - í fjöllunum
+        - í miðborginni
+        - á hálendinu
+  - id: q9
+    question: Hvenær er þetta notað?
+    icon: 🕐
+    answers:
+      A1:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+      A2:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+        - á veturna
+        - á sumrin
+        - um helgar
+        - á virkum dögum
+      B1:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+        - á veturna
+        - á sumrin
+        - um helgar
+        - á virkum dögum
+        - í sérstökum tilvikum
+        - í hátíðum
+        - daglega
+        - sjaldan
+        - oft

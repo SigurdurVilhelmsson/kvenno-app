@@ -1,0 +1,346 @@
+# Efni fyrir Íslenskubraut — þessi skrá er UPPRUNINN (source of truth).
+#
+# Breyttu þessari skrá beint, eða notaðu Excel-yfirferð:
+#   pnpm islenskubraut:export          # býr til .xlsx til yfirlestrar
+#   pnpm islenskubraut:import <skrá>   # les leiðréttingar til baka
+#
+# Keyrðu ALLTAF eftir breytingu:
+#   pnpm islenskubraut:build
+# Hún býr til TypeScript-skrárnar sem vefurinn og PDF-þjónninn nota.
+# Ekki breyta þeim skrám handvirkt.
+
+id: dyr
+name: Dýr
+icon: 🐾
+description: Orðaforði um dýr — gæludýr, villt dýr og húsdýr
+color: "#2D6A4F"
+subCategories:
+  - id: s1
+    name: Tegund
+    options:
+      - gæludýr
+      - villt dýr
+      - húsdýr (búfénaður)
+  - id: s2
+    name: Líffræðilegur flokkur
+    options:
+      - spendýr
+      - fugl
+      - fiskur
+      - skriðdýr
+      - froskdýr
+      - skordýr
+  - id: s3
+    name: Búsvæði
+    options:
+      - á landi
+      - í vatni
+      - í lofti
+      - á landi og í vatni
+  - id: s4
+    name: Útlit
+    options:
+      - hefur feld
+      - hefur fjaðrir
+      - hefur hreistur
+      - hefur hala
+      - hefur gogg
+      - hefur horn
+      - hefur fjóra fætur
+      - hefur tvo fætur
+      - flýgur
+      - syndir
+      - hleypur
+  - id: s5
+    name: Stærð
+    options:
+      - lítið
+      - meðalstórt
+      - stórt
+      - mjög stórt
+  - id: s6
+    name: Fæða
+    options:
+      - étur plöntur (grasæta)
+      - étur kjöt (kjötæta)
+      - étur bæði (alæta)
+sentenceFrames:
+  - id: f1
+    level: A1
+    frames:
+      - Þetta er dýr.
+      - Það er ___.
+      - Það hefur ___.
+      - Það er ___.
+      - Það hljómar ___.
+      - Maður notar það til að ___.
+  - id: f2
+    level: A2
+    frames:
+      - Þetta er ___ sem býr ___.
+      - Það hefur ___ og ___.
+      - Það étur ___.
+      - Það finnst ___ við snertingu.
+      - Maður finnur það ___.
+      - Maður notar það ___.
+  - id: f3
+    level: B1
+    frames:
+      - Ég held að þetta sé ___ vegna þess að ___.
+      - Þetta dýr er ___ og ___.
+      - Það er líkt ___ en ólíkt ___.
+      - Það er ___ að snerta vegna þess að ___.
+      - Það er oftast notað af ___ til að ___.
+guidingQuestions:
+  - id: q1
+    question: Hvers konar dýr er þetta?
+    icon: 📚
+    answers:
+      A1:
+        - gæludýr
+        - villt dýr
+        - húsdýr
+      A2:
+        - gæludýr
+        - villt dýr
+        - húsdýr
+        - spendýr
+        - fugl
+        - fiskur
+      B1:
+        - gæludýr
+        - villt dýr
+        - húsdýr
+        - spendýr
+        - fugl
+        - fiskur
+        - skriðdýr
+        - froskdýr
+        - skordýr
+  - id: q2
+    question: Hvernig lítur það út?
+    icon: 👁️
+    answers:
+      A1:
+        - feldur
+        - fjaðrir
+        - hreistur
+        - hali
+      A2:
+        - feldur
+        - fjaðrir
+        - hreistur
+        - hali
+        - goggur
+        - horn
+        - fjórir fætur
+        - tveir fætur
+      B1:
+        - feldur
+        - fjaðrir
+        - hreistur
+        - hali
+        - goggur
+        - horn
+        - fjórir fætur
+        - tveir fætur
+        - flýgur
+        - syndir
+        - hleypur
+  - id: q3
+    question: Hvernig finnst það við snertingu?
+    icon: ✋
+    answers:
+      A1:
+        - mjúkt
+        - hart
+        - slétt
+        - gróft
+      A2:
+        - mjúkt
+        - hart
+        - slétt
+        - gróft
+        - þungt
+        - létt
+        - blautt
+        - þurrt
+      B1:
+        - mjúkt
+        - hart
+        - slétt
+        - gróft
+        - þungt
+        - létt
+        - blautt
+        - þurrt
+        - loðið
+        - hált
+        - stinnt
+        - sveigjanlegt
+  - id: q4
+    question: Hvaða hljóð gefur það frá sér?
+    icon: 🔊
+    answers:
+      A1:
+        - hátt
+        - lágt
+        - þögult
+      A2:
+        - hátt
+        - lágt
+        - þögult
+        - gelur
+        - mjallar
+        - öskrar
+        - súðar
+        - hringir
+      B1:
+        - hátt
+        - lágt
+        - þögult
+        - gelur
+        - mjallar
+        - öskrar
+        - súðar
+        - hringir
+        - hvæsir
+        - umar
+        - dúnar
+        - þrymir
+  - id: q5
+    question: Hvaða lögun hefur það?
+    icon: 🔷
+    answers:
+      A1:
+        - stórt
+        - lítið
+        - kringlótt
+        - fernt
+      A2:
+        - stórt
+        - lítið
+        - kringlótt
+        - fernt
+        - langt
+        - stutt
+        - hátt
+        - lágt
+        - flatt
+        - þykkt
+      B1:
+        - stórt
+        - lítið
+        - kringlótt
+        - fernt
+        - langt
+        - stutt
+        - hátt
+        - lágt
+        - flatt
+        - þykkt
+        - sporöskjulaga
+        - þríhyrningslaga
+        - sívalningslaga
+        - óreglulegt
+  - id: q6
+    question: Til hvers er það notað?
+    icon: 🎯
+    answers:
+      A1:
+        - til að gæta
+        - til að klappa
+        - til að borða
+      A2:
+        - til að gæta
+        - til að klappa
+        - til að borða
+        - til að hjálpa
+        - til að vinna
+        - til að leika sér
+      B1:
+        - til að gæta
+        - til að klappa
+        - til að borða
+        - til að hjálpa
+        - til að vinna
+        - til að leika sér
+        - til að verja
+        - til að rannsaka
+  - id: q7
+    question: Hver notar þetta?
+    icon: 👤
+    answers:
+      A1:
+        - allir
+        - börn
+        - fullorðnir
+      A2:
+        - allir
+        - börn
+        - fullorðnir
+        - bændur
+        - dýralæknar
+        - veiðimenn
+      B1:
+        - allir
+        - börn
+        - fullorðnir
+        - bændur
+        - dýralæknar
+        - veiðimenn
+        - sérfræðingar
+        - ferðamenn
+  - id: q8
+    question: Hvar er hægt að finna þetta?
+    icon: 📍
+    answers:
+      A1:
+        - heima
+        - úti
+        - á bæ
+      A2:
+        - heima
+        - úti
+        - á bæ
+        - í dýragarðinum
+        - í náttúrunni
+        - í sjónum
+      B1:
+        - heima
+        - úti
+        - á bæ
+        - í dýragarðinum
+        - í náttúrunni
+        - í sjónum
+        - á hálendinu
+        - í skóginum
+  - id: q9
+    question: Hvenær er þetta sést?
+    icon: 🕐
+    answers:
+      A1:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+      A2:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+        - á veturna
+        - á sumrin
+        - um helgar
+      B1:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+        - á veturna
+        - á sumrin
+        - um helgar
+        - í sérstökum tilvikum
+        - daglega
+        - sjaldan
+        - oft

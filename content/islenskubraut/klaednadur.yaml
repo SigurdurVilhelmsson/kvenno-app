@@ -1,0 +1,357 @@
+# Efni fyrir Íslenskubraut — þessi skrá er UPPRUNINN (source of truth).
+#
+# Breyttu þessari skrá beint, eða notaðu Excel-yfirferð:
+#   pnpm islenskubraut:export          # býr til .xlsx til yfirlestrar
+#   pnpm islenskubraut:import <skrá>   # les leiðréttingar til baka
+#
+# Keyrðu ALLTAF eftir breytingu:
+#   pnpm islenskubraut:build
+# Hún býr til TypeScript-skrárnar sem vefurinn og PDF-þjónninn nota.
+# Ekki breyta þeim skrám handvirkt.
+
+id: klaednadur
+name: Föt og klæðnaður
+icon: 👕
+description: Orðaforði um föt — tegundir, litir, efni og hvenær þau eru notuð
+color: "#F4A261"
+subCategories:
+  - id: s1
+    name: Tegund
+    options:
+      - bolur/stuttermabolur
+      - peysa
+      - skyrta
+      - buxur
+      - pilsið/pils
+      - jakki
+      - úlpa
+      - sokkar
+      - skór
+      - húfa
+      - hanskar
+      - trefill
+  - id: s2
+    name: Litur
+    options:
+      - rauður/rautt
+      - blár/blátt
+      - grænn/grænt
+      - gulur/gult
+      - svartur/svart
+      - hvítur/hvítt
+      - bleikur/bleikt
+      - brúnn/brúnt
+  - id: s3
+    name: Efni
+    options:
+      - úr ull
+      - úr bómull
+      - úr leðri
+      - úr plasti
+  - id: s4
+    name: Hvenær
+    options:
+      - á veturna
+      - á sumrin
+      - allt árið
+      - þegar rignir
+      - í sérstakar tilefni
+  - id: s5
+    name: Á hvaða líkamshluta
+    options:
+      - á höfðinu
+      - á efri hluta líkamans
+      - á neðri hluta líkamans
+      - á fótunum
+      - á höndunum
+sentenceFrames:
+  - id: f1
+    level: A1
+    frames:
+      - Þetta er ___.
+      - Það er ___.
+      - Það er ___.
+      - Maður notar það til að ___.
+  - id: f2
+    level: A2
+    frames:
+      - Þetta er ___ sem er ___.
+      - Maður klæðist því ___.
+      - Það finnst ___ við snertingu.
+      - Það er gert úr ___.
+      - Maður finnur það ___.
+      - Maður notar það ___.
+  - id: f3
+    level: B1
+    frames:
+      - Þetta er ___ úr ___ sem maður notar ___.
+      - Það er ___ og hentar vel ___.
+      - Það er ___ að snerta vegna þess að ___.
+      - Það er gert úr ___ sem er ___.
+      - Það er oftast notað af ___ til að ___.
+guidingQuestions:
+  - id: q1
+    question: Hvers konar klæðnaður er þetta?
+    icon: 📚
+    answers:
+      A1:
+        - bolur
+        - buxur
+        - jakki
+        - skór
+      A2:
+        - bolur
+        - peysa
+        - skyrta
+        - buxur
+        - pilsið
+        - jakki
+        - úlpa
+        - sokkar
+        - skór
+        - húfa
+      B1:
+        - bolur
+        - peysa
+        - skyrta
+        - buxur
+        - pilsið
+        - jakki
+        - úlpa
+        - sokkar
+        - skór
+        - húfa
+        - hanskar
+        - trefill
+  - id: q2
+    question: Hvernig lítur það út?
+    icon: 👁️
+    answers:
+      A1:
+        - rautt
+        - blátt
+        - grænt
+        - svart
+        - hvítt
+      A2:
+        - rautt
+        - blátt
+        - grænt
+        - svart
+        - hvítt
+        - gult
+        - bleikt
+        - brúnt
+        - stórt
+        - lítið
+      B1:
+        - rautt
+        - blátt
+        - grænt
+        - svart
+        - hvítt
+        - gult
+        - bleikt
+        - brúnt
+        - stórt
+        - lítið
+        - mynstur
+        - einlitt
+  - id: q3
+    question: Hvernig finnst það við snertingu?
+    icon: ✋
+    answers:
+      A1:
+        - mjúkt
+        - hart
+        - slétt
+        - gróft
+      A2:
+        - mjúkt
+        - hart
+        - slétt
+        - gróft
+        - þungt
+        - létt
+        - heitt
+        - kalt
+        - blautt
+        - þurrt
+      B1:
+        - mjúkt
+        - hart
+        - slétt
+        - gróft
+        - þungt
+        - létt
+        - heitt
+        - kalt
+        - blautt
+        - þurrt
+        - loðið
+        - hálkt
+        - stinnt
+        - sveigjanlegt
+  - id: q4
+    question: Úr hverju er það gert?
+    icon: 🧱
+    answers:
+      A1:
+        - úr ull
+        - úr bómull
+        - úr leðri
+        - úr plasti
+      A2:
+        - úr ull
+        - úr bómull
+        - úr leðri
+        - úr plasti
+        - úr tré
+        - úr málmi
+        - úr steini
+        - úr gleri
+      B1:
+        - úr ull
+        - úr bómull
+        - úr leðri
+        - úr plasti
+        - úr tré
+        - úr málmi
+        - úr steini
+        - úr gleri
+        - úr endurunnru efni
+        - úr náttúrulegum efnum
+        - úr gerviefnum
+  - id: q5
+    question: Hvaða lögun hefur það?
+    icon: 🔷
+    answers:
+      A1:
+        - stórt
+        - lítið
+        - kringlótt
+        - fernt
+      A2:
+        - stórt
+        - lítið
+        - kringlótt
+        - fernt
+        - langt
+        - stutt
+        - hátt
+        - lágt
+        - flatt
+        - þykkt
+      B1:
+        - stórt
+        - lítið
+        - kringlótt
+        - fernt
+        - langt
+        - stutt
+        - hátt
+        - lágt
+        - flatt
+        - þykkt
+        - sporöskjulaga
+        - þríhyrningslaga
+        - sívalningslaga
+        - óreglulegt
+  - id: q6
+    question: Til hvers er það notað?
+    icon: 🎯
+    answers:
+      A1:
+        - til að hlýja sér
+        - til að verja sig
+        - til að líta vel út
+      A2:
+        - til að hlýja sér
+        - til að verja sig
+        - til að líta vel út
+        - til að stunda íþróttir
+      B1:
+        - til að hlýja sér
+        - til að verja sig
+        - til að líta vel út
+        - til að stunda íþróttir
+        - til að vinna
+        - til að vera þægilegur
+  - id: q7
+    question: Hver notar þetta?
+    icon: 👤
+    answers:
+      A1:
+        - allir
+        - börn
+        - fullorðnir
+      A2:
+        - allir
+        - börn
+        - fullorðnir
+        - nemendur
+        - íþróttamenn
+      B1:
+        - allir
+        - börn
+        - fullorðnir
+        - nemendur
+        - íþróttamenn
+        - sérfræðingar
+        - listamenn
+        - ferðamenn
+        - iðnaðarmenn
+  - id: q8
+    question: Hvar er hægt að nota þetta?
+    icon: 📍
+    answers:
+      A1:
+        - inni
+        - úti
+        - í skólanum
+      A2:
+        - inni
+        - úti
+        - í skólanum
+        - í vinnunni
+        - í íþróttum
+      B1:
+        - inni
+        - úti
+        - í skólanum
+        - í vinnunni
+        - í íþróttum
+        - á hátíð
+        - á ferðalagi
+  - id: q9
+    question: Hvenær er þetta notað?
+    icon: 🕐
+    answers:
+      A1:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+      A2:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+        - á veturna
+        - á sumrin
+        - um helgar
+        - á virkum dögum
+      B1:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+        - á veturna
+        - á sumrin
+        - um helgar
+        - á virkum dögum
+        - í sérstökum tilvikum
+        - í hátíðum
+        - daglega
+        - sjaldan
+        - oft
