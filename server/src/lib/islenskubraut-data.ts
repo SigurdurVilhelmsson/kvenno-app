@@ -1365,7 +1365,7 @@ export const categories: Category[] = [
         ],
       },
       {
-        question: 'Til hvers er hún/hann þekktur?',
+        question: 'Fyrir hvað er manneskjan þekkt?',
         icon: '🎯',
         answers: [
           {

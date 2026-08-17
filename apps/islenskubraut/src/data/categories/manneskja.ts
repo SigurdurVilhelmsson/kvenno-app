@@ -166,7 +166,7 @@ export const manneskja: Category = {
       ],
     },
     {
-      question: 'Til hvers er hún/hann þekktur?',
+      question: 'Fyrir hvað er manneskjan þekkt?',
       icon: '🎯',
       answers: [
         { level: 'A1', options: ['til að vinna', 'til að læra', 'til að leika sér'] },
