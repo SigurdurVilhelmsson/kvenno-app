@@ -72,27 +72,65 @@ function requireMany(groups, key) {
 }
 
 /**
+ * Every key shape this module understands, for one category. Anything else in
+ * the sheet is a reviewer's typo, a stray row, or another category's rows fed in
+ * by mistake — all of which must be reported rather than quietly skipped.
+ */
+function recognised(categoryId) {
+  return new RegExp(
+    `^${categoryId}\\.(description|s\\d+\\.(name|options)|f\\d+|q\\d+(\\.(${LEVELS.join('|')}))?)$`
+  );
+}
+
+/**
+ * Reject rows this module would otherwise drop on the floor. A dropped row is
+ * silent data loss: the reviewer's string never reaches the YAML and nothing
+ * anywhere says so. Wholly blank rows are the one exception — Excel appends them
+ * freely and they carry no intent.
+ */
+function rejectUnusable(categoryId, rows) {
+  const ok = recognised(categoryId);
+  const unkeyed = rows.filter((r) => !r.lykill && (r.islenska || '').trim() !== '');
+  if (unkeyed.length > 0)
+    throw new Error(
+      `islenskubraut: ${unkeyed.length} row(s) carry text but no lykill — ` +
+        `copy the key from the row above: ${unkeyed.map((r) => `"${r.islenska}"`).join(', ')}`
+    );
+
+  const unknown = [...new Set(rows.map((r) => r.lykill).filter((k) => k && !ok.test(k)))];
+  if (unknown.length > 0)
+    throw new Error(`islenskubraut: unrecognised lykill: ${unknown.join(', ')}`);
+}
+
+/**
  * Rebuild a category from rows. `base` supplies the fields the sheet does not
  * carry (id, name, icon, color, and each question's icon), which are structural
  * rather than reviewable prose. Always the real category loaded from YAML in
  * production — never inferred, since a fabricated fallback would hardcode one
  * category's identity into a module that must handle all six.
+ *
+ * Takes one category's rows only: keys belonging to another category are
+ * rejected, not ignored.
  */
 export function fromRows(categoryId, rows, base) {
+  rejectUnusable(categoryId, rows);
   const groups = group(rows);
 
-  const subCount = [...groups.keys()].filter((k) =>
+  // All three list types are rebuilt from the keys actually present, never from a
+  // contiguous 1..N count, so deleting a whole subcategory, frame group or question
+  // works at any position — not only at the end.
+  const subKeys = [...groups.keys()].filter((k) =>
     new RegExp(`^${categoryId}\\.s\\d+\\.name$`).test(k)
-  ).length;
+  );
   const frameKeys = [...groups.keys()].filter((k) => new RegExp(`^${categoryId}\\.f\\d+$`).test(k));
   const qKeys = [...groups.keys()].filter((k) => new RegExp(`^${categoryId}\\.q\\d+$`).test(k));
 
   return {
     ...base,
     description: require1(groups, `${categoryId}.description`),
-    subCategories: Array.from({ length: subCount }, (_, i) => ({
-      name: require1(groups, `${categoryId}.s${i + 1}.name`),
-      options: requireMany(groups, `${categoryId}.s${i + 1}.options`),
+    subCategories: subKeys.map((key) => ({
+      name: require1(groups, key),
+      options: requireMany(groups, key.replace(/\.name$/, '.options')),
     })),
     sentenceFrames: frameKeys.map((key) => ({
       level: groups.get(key)[0].stig,

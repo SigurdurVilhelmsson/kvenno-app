@@ -103,4 +103,47 @@ describe('fromRows', () => {
     const rows = toRows(twoQ).filter((r) => !r.lykill.startsWith('manneskja.q1'));
     expect(fromRows('manneskja', rows, twoQ).guidingQuestions[0].icon).toBe('2️⃣');
   });
+
+  const twoSub = {
+    ...category,
+    subCategories: [
+      { name: 'S1', options: ['a'] },
+      { name: 'S2', options: ['b'] },
+    ],
+  };
+
+  it('keeps the surviving subcategory when an earlier one is deleted entirely', () => {
+    const rows = toRows(twoSub).filter((r) => !r.lykill.startsWith('manneskja.s1'));
+    expect(fromRows('manneskja', rows, twoSub).subCategories).toEqual([
+      { name: 'S2', options: ['b'] },
+    ]);
+  });
+
+  it('keeps subcategory order as the sheet gives it', () => {
+    const rows = toRows(twoSub);
+    const s1 = rows.filter((r) => r.lykill.startsWith('manneskja.s1'));
+    const rest = rows.filter((r) => !r.lykill.startsWith('manneskja.s1'));
+    expect(fromRows('manneskja', [...rest, ...s1], twoSub).subCategories).toEqual([
+      { name: 'S2', options: ['b'] },
+      { name: 'S1', options: ['a'] },
+    ]);
+  });
+
+  it('throws on an unrecognised lykill rather than dropping the row', () => {
+    const rows = toRows(category);
+    rows.push({ ...rows[0], lykill: 'manneskja.zz', islenska: 'glatað' });
+    expect(() => fromRows('manneskja', rows, category)).toThrow(/manneskja\.zz/);
+  });
+
+  it('throws when a row carries text but no lykill', () => {
+    const rows = toRows(category);
+    rows.push({ ...rows[0], lykill: '', islenska: 'gleymdi lyklinum' });
+    expect(() => fromRows('manneskja', rows, category)).toThrow(/gleymdi lyklinum/);
+  });
+
+  it('ignores a wholly blank row, which Excel appends freely', () => {
+    const rows = toRows(category);
+    rows.push({ lykill: '', gerd: '', stig: '', samhengi: '', islenska: '', athugasemd: '' });
+    expect(fromRows('manneskja', rows, category)).toEqual(category);
+  });
 });
