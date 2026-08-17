@@ -76,6 +76,24 @@ icon: 🧪
     );
   });
 
+  it('throws when a required string field is an empty string', () => {
+    const target = makeDir();
+    write(
+      target,
+      'prufa.yaml',
+      `id: prufa
+name: Prufa
+description: ""
+color: "#123456"
+icon: 🧪
+`
+    );
+
+    expect(() => loadCategory('prufa', target)).toThrow(
+      /prufa\.description must be a non-empty string/
+    );
+  });
+
   it('throws when a sub-category option list is empty', () => {
     const target = makeDir();
     write(
@@ -117,6 +135,26 @@ sentenceFrames:
     expect(() => loadCategory('prufa', target)).toThrow(/prufa\.f1 has level "C1"/);
   });
 
+  it('throws when a sentence frame has an empty frames list', () => {
+    const target = makeDir();
+    write(
+      target,
+      'prufa.yaml',
+      `id: prufa
+name: Prufa
+description: Lýsing á prufuflokki.
+color: "#123456"
+icon: 🧪
+sentenceFrames:
+  - id: f1
+    level: A1
+    frames: []
+`
+    );
+
+    expect(() => loadCategory('prufa', target)).toThrow(/prufa\.f1\.frames is empty/);
+  });
+
   it('throws when the id field disagrees with the filename', () => {
     const target = makeDir();
     write(
@@ -152,6 +190,28 @@ guidingQuestions:
     );
 
     expect(() => loadCategory('prufa', target)).toThrow(/prufa\.q1 has no answers at any level/);
+  });
+
+  it('throws when a guiding question level has an empty answer list', () => {
+    const target = makeDir();
+    write(
+      target,
+      'prufa.yaml',
+      `id: prufa
+name: Prufa
+description: Lýsing á prufuflokki.
+color: "#123456"
+icon: 🧪
+guidingQuestions:
+  - id: q1
+    question: Er þetta próf?
+    icon: ❓
+    answers:
+      A1: []
+`
+    );
+
+    expect(() => loadCategory('prufa', target)).toThrow(/prufa\.q1\.A1 is empty/);
   });
 
   it('does not throw for a valid fixture, and returns the expected shape', () => {
