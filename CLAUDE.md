@@ -298,18 +298,31 @@ Y3: Gaslögmál → Jafnvægi → Varmafræði → pH Títrun → Púfferar
 
 ### Íslenskubraut data sync
 
-Category data exists in **three** places, all of which must be edited together:
+**Edit `apps/islenskubraut/src/data/` only.** It is the single source of truth.
 
-- `apps/islenskubraut/src/data/` (TypeScript, client-side)
-- `server/src/lib/islenskubraut-data.ts` (TypeScript, server-side PDF generation)
-- `server/src/index.ts:686` — a hardcoded `validCategoryIds` array that rejects anything not in it
-  with HTTP 400, independent of `getCategoryById`. Adding a category to the first two alone still
-  fails `GET /api/islenskubraut/pdf`.
+The Express server renders teaching-card PDFs and must not import the Vite/React app, so it needs
+its own copy. That copy is now **generated**, not hand-maintained:
 
-There is no generator: the copies are hand-maintained mirrors, and they are **not** in sync today —
-the server copy has corrupted Icelandic in its `description` fields and elsewhere, and the client
-copy ships `stuttt` (triple t) at ~14 sites where the server has `stutt`. The server copy is what
-prints on student teaching cards. Diff the two before trusting either.
+```bash
+pnpm generate:islenskubraut-data          # rewrite the server copy from the SPA data
+pnpm generate:islenskubraut-data --check   # exit 1 if it is stale (CI-friendly)
+```
+
+- `apps/islenskubraut/src/data/` — source of truth, hand-edited
+- `server/src/lib/islenskubraut-data.ts` — **generated; never edit by hand**
+- `server/src/index.ts` validates against the generated `categoryIds` export, so adding a category
+  no longer requires editing a third hardcoded list
+
+`apps/islenskubraut/src/data/__tests__/server-copy-in-sync.test.ts` fails if the two diverge, if any
+string carries a soft hyphen, or if a string has lost its Icelandic characters. Verified to fail on
+the original corruption, not just to pass today.
+
+**Why the guard exists.** Until Aug 2026 the copies were hand-mirrored and had drifted for months.
+The server copy — the one students actually read on the PDF — had lost every Icelandic character in
+places (`Orðaforði` → `Orda­fordi`, with a U+00AD soft hyphen wedged mid-word, invisible in an editor),
+rendered `Þessi` as `Þssi`, and taught `rannsóka` and `Undirbuníngur`, neither of which is a word.
+The client copy had its own defect the server did not: `stuttt` at 14 sites. A `// Auto-generated`
+header claimed a generator that did not exist, which is precisely why nobody re-derived the file.
 
 ### Deployment
 
