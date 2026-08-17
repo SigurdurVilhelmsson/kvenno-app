@@ -16,7 +16,7 @@ kvenno-app/
 │   ├── landing/          # Landing page (track selector) + chemistry year hubs (React SPA)
 │   ├── islenskubraut/    # Icelandic language teaching cards (React SPA, /islenskubraut/)
 │   ├── lab-reports/      # AI-powered lab report grading (React SPA)
-│   └── games/            # 20 chemistry games (single-file HTML builds)
+│   └── games/            # 20 chemistry games (single-file HTML, except the 3 Three.js ones)
 │       ├── 1-ar/         # 7 games for year 1
 │       ├── 2-ar/         # 8 games for year 2
 │       └── 3-ar/         # 5 games for year 3
@@ -35,10 +35,12 @@ kvenno-app/
 /                                      # Track selector (Efnafræði, Íslenskubraut, ...)
 /efnafraedi/                           # Chemistry track hub (year tiles)
 /efnafraedi/{1-ar,2-ar,3-ar,val,f-bekkir}/  # Year hubs
+/efnafraedi/{1-ar,2-ar,3-ar}/games/    # Games hub (landing SPA — the only link from a year hub to a game)
 /efnafraedi/{year}/games/*.html        # Chemistry games
 /efnafraedi/{year}/lab-reports/        # Lab reports SPA (2-ar, 3-ar)
 /islenskubraut/                        # Íslenskubraut SPA (category grid)
 /islenskubraut/spjald/:flokkur         # Teaching card detail page
+/auth/callback                         # MSAL redirect target — serves the 2-ar lab-reports build
 ```
 
 Legacy URLs (`/1-ar`, `/2-ar`, etc.) redirect to `/efnafraedi/...` via nginx.
@@ -47,7 +49,7 @@ Legacy URLs (`/1-ar`, `/2-ar`, etc.) redirect to `/efnafraedi/...` via nginx.
 
 ```bash
 pnpm install              # Install all dependencies
-pnpm build                # Build everything to dist/
+pnpm build                # Build everything: static site → dist/, backend → server/dist/
 pnpm dev:landing          # Dev server for landing page
 pnpm dev:islenskubraut    # Dev server for íslenskubraut
 pnpm dev:lab-reports      # Dev server for lab reports
@@ -55,10 +57,13 @@ pnpm dev:games            # Dev servers for all games
 pnpm build:games          # Build only games
 pnpm build:landing        # Build only landing
 pnpm build:islenskubraut  # Build only íslenskubraut
-pnpm build:lab-reports    # Build only lab reports
+pnpm build:lab-reports    # Type-check + build in place (apps/lab-reports/dist, base /lab-reports/)
+                          #   — NOT the deployable output; `pnpm build` emits the 2-ar and 3-ar copies
 pnpm type-check           # TypeScript check across all packages
 pnpm lint                 # ESLint check
 pnpm test                 # Run tests
+pnpm test:e2e             # Playwright E2E (incl. the Three.js lazy-load guard)
+pnpm check-all            # type-check + lint + format:check
 ./scripts/deploy.sh       # Deploy to production server
 ```
 
@@ -76,9 +81,9 @@ All apps use the shared Tailwind preset from `packages/shared/styles/tailwind-pr
 
 `packages/shared/` provides site-wide components:
 
-- **Header** - Accepts `title` prop (default: "Námsvefur Kvennó"), plus "Kennarar" and "Upplýsingar" buttons. Accepts `authSlot` prop.
+- **Header** - Accepts `title` (default: "Námsvefur Kvennó"), `authSlot`, and `onInfoClick` (renders the "Upplýsingar" button only when provided). Also accepts `variant` (`'default' | 'game'`), `activeTrack`, `backHref`, `backLabel`, `gameTitle`. The default variant renders Efnafræði/Íslenskubraut track tabs (`Header.tsx:14-22`); there is **no** "Kennarar" button — it was removed, and `Header.test.tsx:32-36` asserts its absence.
 - **Breadcrumbs** - "Heim > [Track] > [Section] > [Page]" navigation
-- **Footer** - Copyright notice. Accepts optional `department` prop (e.g., "Efnafræðideild").
+- **Footer** - Copyright notice. Accepts optional `department` prop (e.g., "Efnafræðideild") and an optional `subtitle` prop for a second line below the copyright.
 
 Game-specific shared components (gamification chrome stripped from all Y2/Y3 games, April 2026):
 
@@ -89,6 +94,11 @@ Game-specific shared components (gamification chrome stripped from all Y2/Y3 gam
 - **AnimatedMolecule** - Ball-and-stick molecular structure renderer
 - **DragDropBuilder** - Flexible drag-and-drop interface
 
+Design primitives also exported from the barrel, undocumented above: `Card`, `Button`, `Container`,
+`Badge`, `PageBackground`, `SkipLink`, `BottomNav`, `ErrorBoundary`, `Presence`/`FadePresence`
+(from `./Transition`), `ResponsiveContainer`, `MoleculeViewer` (2D), `LanguageSwitcher`.
+`MoleculeViewer3D` is imported from `@shared/components/MoleculeViewer3D`, deliberately not the barrel.
+
 **Removed (Aug 2026):** `ParticleCelebration`/`useParticleCelebration`, `AnimatedBackground`, and
 `SoundToggle`/`useGameSounds` were deleted from `packages/shared/`. The April 2026 restructure
 stripped them from every game, leaving zero importers. Don't reintroduce celebration, animated
@@ -96,7 +106,7 @@ background, or sound chrome into games without a pedagogical reason.
 
 Shared styles (`packages/shared/styles/`):
 
-- **theme.css** - Tailwind v4 `@theme` tokens: colors, typography, shadows, spring easing curves, glassmorphism tokens, 12 animation keyframes
+- **theme.css** - Tailwind v4 `@theme` tokens: colors, typography, shadows, spring easing curves, glassmorphism tokens, 17 animation keyframes (13 exposed as `--animate-*` utility tokens)
 - **game-base.css** - Microinteraction utility classes: `game-btn`, `game-card`, `game-glass`, `game-correct`, `game-wrong`, `game-score-popup`, `game-streak-fire`, `game-stagger`
 
 **Note:** Íslenskubraut uses its own header/footer (different design from the shared components).
@@ -136,6 +146,9 @@ dist/
     ├── index.html                     # Íslenskubraut SPA
     └── assets/
 ```
+
+Plus `server/dist/` — the compiled Express backend, emitted outside `dist/` by `pnpm build`
+(`scripts/build-all.mjs` step 4b). `scripts/deploy.sh` refuses to deploy without it.
 
 ## Server API Endpoints
 
@@ -181,7 +194,7 @@ Full plan: `~/.claude/plans/mighty-mixing-puffin.md`
 **Shared-component accessibility additions (Apr 2026):**
 
 - `@shared/components/MoleculeViewer3D` is keyboard-accessible: arrow keys rotate (±5°), `+`/`−` zoom, `R` resets. The outer `<div>` is focusable with `role="application"` and an Icelandic aria-label. Used by VSEPR, IMF, Lewis.
-- `@shared/components/DragDropBuilder` supports touch drag-and-drop: `onTouchMove` previews the zone under the finger via `document.elementFromPoint`, `onTouchEnd` commits through the same pipeline as mouse drops. Used by Organic Nomenclature.
+- `@shared/components/DragDropBuilder` supports touch drag-and-drop: `onTouchMove` previews the zone under the finger via `document.elementFromPoint`, `onTouchEnd` commits through the same pipeline as mouse drops. Used by Organic Nomenclature (Y2 L2) and Dimensional Analysis (Y1 L2).
 
 **Deferred-work pass (Apr 2026, commit `6e26c0c`):** shipped 4 of 8 items.
 
@@ -203,8 +216,14 @@ Two causes, both needed fixing — the earlier diagnosis blamed only the second:
    `createGameViteConfig` now takes `singleFile` (default `true`); those three games pass `false`.
 
 Consequences: the three games are no longer single portable files — each is `{game}.html` +
-`{game}.css` + `assets/{game}/*.js`. nginx needed no change (its `.js` location already precedes
-the games-HTML block). `scripts/build-games.mjs` clears `assets/<game>/` before each build, since
+`{game}.js` + `{game}.css` + `assets/{game}/*.js`. The entry script sits beside the HTML, not under
+`assets/` (`apps/games/shared-vite-config.ts:63-64`); copying only the HTML and CSS ships a game
+that cannot boot. nginx needed no location change (its `.js` location already precedes the
+games-HTML block) — but note `{game}.js`/`{game}.css` are **unhashed** and fall into that location's
+`expires 1y; Cache-Control "public, immutable"` block (`server/nginx-site.conf:49-51`); only the
+deferred chunks under `assets/{game}/` are content-hashed. A redeploy of these three games can
+therefore serve a returning visitor a year-cached stale entry bundle. (Inferred from the config plus
+the emitted filenames; not tested against the production cache.) `scripts/build-games.mjs` clears `assets/<game>/` before each build, since
 `emptyOutDir: false` would otherwise accumulate stale hashed chunks.
 `e2e/threejs-lazy-loading.spec.ts` guards the boundary — verified to fail when cause 1 is reintroduced.
 
@@ -227,10 +246,10 @@ messages are now Icelandic — note `Sæki`, not `Hleð`, since `hleðsla` means
 
 Remaining deferred (all need a decision, not code):
 
-- **`useGameI18n` `t()` across Y3** — Y3 games import `useGameI18n` + render `LanguageSwitcher` but UI stays hardcoded Icelandic. Conflicts with this file's "Icelandic UI only." Decide: strip it, finish wiring, or keep as-is. Note this is wider than Y3: shipped `2-ar/organic-nomenclature` has the same dead wiring (switcher rendered, zero `t()` calls), and every old-repo game carries it too.
+- **`useGameI18n` `t()` — 7 of 20 games are switcher-only.** All 20 import the hook and render `LanguageSwitcher`; seven have zero `t()` calls of any form and serve hardcoded Icelandic — three Y3 (`gas-law-challenge`, `buffer-recipe-creator`, `thermodynamics-predictor`) and four Y2 (`kinetics`, `lewis-structures`, `organic-nomenclature`, `intermolecular-forces`). Two more are zero in all but name: `ph-titration` and `rafeindabygging` have exactly one call each (`ph-titration`'s is a template literal with a hardcoded Icelandic fallback, `src/components/Level3.tsx:104`, which a `t('` grep misses). `equilibrium-shifter` is partial at 7, so this is not "all of Y3". Per-game counts: `docs/i18n-coverage.md` — the authority; every old-repo game carries the same dead wiring. Conflicts with this file's "Icelandic UI only." Decide: strip it, finish wiring, or keep as-is.
 - **Hess Polish i18n block** — teacher sign-off. Same decision as above.
 - **Kinetics/Redox problem order shuffle** — deliberately skipped (exam-style stability). **Do not generalise this to other games:** several ship an unshuffled array where the answer is positionally predictable, which is a different problem. See `docs/README.md`.
-- **Level 4, and whether levels are gated** — the old repo's design capped games at 3 levels; the April restructure replaced that with Explore → Understand → Practice → Apply, which has no level count. Most salvageable content from the old repo is Level-4 material. Decide once whether a Level 4 exists or that content becomes the Apply phase. Gating strings for 14 games already exist in three languages with no consumers.
+- **Level 4, and whether levels are gated** — the old repo's design capped games at 3 levels; the April restructure replaced that with Explore → Understand → Practice → Apply, which has no level count. Most salvageable content from the old repo is Level-4 material. Decide once whether a Level 4 exists or that content becomes the Apply phase. Gating strings for 15 games already exist in three languages with no consumers — 14 under `menu.levels.*.locked`, plus `1-ar/nafnakerfid` under `completeLevel1First`/`completeLevel2First` (`src/i18n.ts:23-24`). Grep both key names before wiring or stripping.
 
 Full plan: `~/.claude/plans/logical-wandering-llama.md`
 
@@ -254,7 +273,8 @@ Y3: Gaslögmál → Jafnvægi → Varmafræði → pH Títrun → Púfferar
 
 1. Create `apps/games/[year]/[game-name]/` following existing game pattern
 2. Add entry to `scripts/build-games.mjs` games array
-3. Add tool card to the year hub config in `apps/landing/src/pages/YearHub.tsx`
+3. Add a game card to `yearGamesConfigs` in `apps/landing/src/pages/GamesHub.tsx` (title, description, and `slug` matching the build-games.mjs output name). **Not `YearHub.tsx`** — that file holds only the three aggregate "Leikir og æfingar" links, so editing it leaves the new game unreachable.
+4. Update the `Námsleiðin` chain string in every sibling game's `App.tsx` for that year (`src/components/MenuScreen.tsx` for gas-law-challenge)
 
 ### Adding a new experiment to lab reports
 
@@ -278,12 +298,18 @@ Y3: Gaslögmál → Jafnvægi → Varmafræði → pH Títrun → Púfferar
 
 ### Íslenskubraut data sync
 
-Category data exists in two places:
+Category data exists in **three** places, all of which must be edited together:
 
 - `apps/islenskubraut/src/data/` (TypeScript, client-side)
-- `server/lib/islenskubraut-data.mjs` (plain JS, server-side PDF generation)
+- `server/src/lib/islenskubraut-data.ts` (TypeScript, server-side PDF generation)
+- `server/src/index.ts:686` — a hardcoded `validCategoryIds` array that rejects anything not in it
+  with HTTP 400, independent of `getCategoryById`. Adding a category to the first two alone still
+  fails `GET /api/islenskubraut/pdf`.
 
-Keep both in sync when modifying categories.
+There is no generator: the copies are hand-maintained mirrors, and they are **not** in sync today —
+the server copy has corrupted Icelandic in its `description` fields and elsewhere, and the client
+copy ships `stuttt` (triple t) at ~14 sites where the server has `stutt`. The server copy is what
+prints on student teaching cards. Diff the two before trusting either.
 
 ### Deployment
 
@@ -317,7 +343,17 @@ The current work order for these lives in `docs/plans/2026-08-16-games-roadmap.m
 2. `~/dev/repos/namsbokasafn-efni`, the school's textbook corpus (`grep -roi "<stem>[a-uáéíóúýþæö]*" --include=*.md . | wc -l`)
 3. Ask Siggi — only where both are silent or they disagree
 
-Already ruled, and still wrong in this repo: **`sætistala`** for atomic number (not `atómnúmer`/`raðtala`), **`vermi`** for enthalpy (not `skammtavarmi`/`Enþalpía`), **`sjálfgengur`** for spontaneous (not `sjálfvirkur`), **`anóða`/`katóða`**, **`stuðpúði`** (not `púffer`), and the Ksp family (`leysnimargfeldi`, `samjónahrif`, `mólarleysni`, `hlutfelling`). Full table with citations in `docs/FEBRUARY-DECISIONS-RECOVERED.md`.
+Already ruled, and still wrong in this repo (each parenthetical names what is actually shipping, measured 2026-08-17):
+
+- **`sætistala`** for atomic number — shipping as `atómnúmer` (4 files) and `raðtala` (2 files); `sætistala` has zero hits
+- **`vermi`** for enthalpy — shipping as `skammtavarmi`, 6 lines in 5 files (`2-ar/hess-law`: `App.tsx:190`, `i18n.ts:15`, `components/Level1.tsx:23,289`, `data/challenges.ts:27`; `3-ar/thermodynamics-predictor/src/i18n.ts:38`). `Enþalpía` has zero hits here — it is an old-repo `calorimetry` coinage; do not import it if that game is ported
+- **`sjálfgengur`/`sjálfgengt`** for spontaneous — shipping as `Sjálfspyrjandi` and `sjálfviljug*`, both in `3-ar/thermodynamics-predictor` (one game, two wrong words). `sjálfvirkur` has zero hits; do not grep for it
+- **`katóða`** for cathode — shipping as `kaþóða` (4 occurrences, `2-ar/redox-reactions/src/components/ElectrochemicalCell.tsx`); `katóða` has zero hits. **`anóða`** is already correct in that file, so only the cathode half needs fixing
+- **`stuðpúði`** (not `púffer`) — `púffer*` still ships in 7 files
+
+Decided in advance, with nothing yet to correct: the Ksp family (`leysnimargfeldi`, `samjónahrif`, `mólarleysni`, `hlutfelling`). Solubility equilibria are absent platform-wide — all four return zero real hits (roadmap Phase 5). Use these terms when the content lands; do not coin new ones.
+
+Full table with citations in `docs/FEBRUARY-DECISIONS-RECOVERED.md`.
 
 Do not invent Icelandic chemistry terms. A game written in April 2026 re-committed an error that had been fixed in February, because nothing enforces the glossary.
 
@@ -327,7 +363,8 @@ Do not invent Icelandic chemistry terms. A game written in April 2026 re-committ
 - **KVENNO-STRUCTURE.md:** The master design document lives at `docs/KVENNO-STRUCTURE.md`
 - **Most games build to single HTML files** via `vite-plugin-singlefile` (~290-400 KB each). The three
   Three.js games (VSEPR, Lewis, IMF) opt out via `singleFile: false` and emit `{game}.html` +
-  `{game}.css` + `assets/{game}/*.js`, which must be deployed together. See `docs/bundle-sizes.md`.
+  `{game}.js` + `{game}.css` + `assets/{game}/*.js`, which must be deployed together — the entry
+  `{game}.js` sits beside the HTML, not under `assets/`. See `docs/bundle-sizes.md`.
 - **Lab reports need 2 builds:** One for `/efnafraedi/2-ar/lab-reports/` and one for `/efnafraedi/3-ar/lab-reports/`
 - **Server needs system deps:** `pandoc` and `libreoffice` for .docx processing
 - **API key security:** Claude API key lives in `server/.env` (never committed), proxied through Express backend

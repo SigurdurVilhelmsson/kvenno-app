@@ -1,5 +1,7 @@
 # Year 3 Games — Iterative Review Tracker
 
+> **Superseded — historical.** Accurate within its own P1–P7 rubric, which does not cover curriculum, chemical correctness, or whether the answer is visible before the student answers. "Zero FAIL ratings" is true only inside that rubric. Current reviews: `apps/games/1-ar/CURRICULUM_REVIEW.md`, `apps/games/ORPHANED_GAMES_ASSESSMENT.md`. See `docs/README.md`.
+
 ## Iteration 1: Pedagogical Structure — 2026-04-17
 
 ### Review Ratings

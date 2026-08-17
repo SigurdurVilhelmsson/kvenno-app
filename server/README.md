@@ -26,13 +26,20 @@ Set your `ANTHROPIC_API_KEY` and other variables.
 npm start
 ```
 
-Server runs on http://localhost:3001
+Server runs on http://127.0.0.1:8000 (the process binds loopback only — `server/src/index.ts:31,736`).
 
 ## Production Deployment (Ubuntu 24.04)
 
+> **Partly historical.** `docs/DEPLOYMENT.md` is the accurate, maintained deployment
+> reference — use it for the real paths, the systemd unit and the deploy sequence.
+> The steps below still describe the old `/var/www/labreports` layout. The backend
+> is deployed to `/opt/kvenno-server` by `scripts/deploy.sh` and runs from the
+> checked-in unit `server/kvenno-backend.service`. Ports, health checks and nginx
+> details in this file were corrected against source on 2026-08-17.
+
 ### Prerequisites
 
-1. **Node.js 18+** installed
+1. **Node.js 22+** installed (`package.json` declares `"engines": { "node": ">=22.0.0" }`; production runs 22.x — see `docs/DEPLOYMENT.md` § Server runtime)
 2. **nginx** installed
 3. **pandoc** installed (`sudo apt install pandoc`)
 4. **systemd** for process management (built into Ubuntu)
@@ -77,19 +84,23 @@ Edit `.env`:
 
 ```bash
 ANTHROPIC_API_KEY=sk-ant-your-actual-key
-PORT=3001
+PORT=8000
 NODE_ENV=production
 FRONTEND_URL=https://www.kvenno.app
 ```
+
+`PORT=8000` is load-bearing: `server/nginx-site.conf:60-61` proxies `/api/` to
+`http://localhost:8000`, so any other value makes every `/api/` call return 502.
+`server/.env.example` already ships the correct value.
 
 #### 4. Configure nginx
 
 ```bash
 # Copy nginx configuration
-sudo cp nginx-site.conf /etc/nginx/sites-available/labreports
+sudo cp nginx-site.conf /etc/nginx/sites-available/kvenno
 
 # Enable site
-sudo ln -s /etc/nginx/sites-available/labreports /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/kvenno /etc/nginx/sites-enabled/
 
 # Remove default site (if present)
 sudo rm /etc/nginx/sites-enabled/default
@@ -103,21 +114,26 @@ sudo systemctl reload nginx
 
 #### 5. Setup systemd Service
 
+The unit is checked in at `server/kvenno-backend.service` — install that file, do
+not hand-write one. There is no `labreports.service` in this repo. The service
+name is `kvenno-backend`; substitute it for `labreports` in the commands further
+down this file.
+
 ```bash
 # Copy service file
-sudo cp labreports.service /etc/systemd/system/
+sudo cp server/kvenno-backend.service /etc/systemd/system/
 
 # Reload systemd
 sudo systemctl daemon-reload
 
 # Enable service (start on boot)
-sudo systemctl enable labreports
+sudo systemctl enable kvenno-backend
 
 # Start service
-sudo systemctl start labreports
+sudo systemctl start kvenno-backend
 
 # Check status
-sudo systemctl status labreports
+sudo systemctl status kvenno-backend
 ```
 
 #### 6. Setup SSL with Let's Encrypt (Recommended)
@@ -137,10 +153,14 @@ Certbot will automatically update your nginx configuration with SSL.
 
 ### Verify Deployment
 
-1. **Check backend is running:**
+1. **Check backend is running** — must be run **on the host** and **with an
+   `Origin` header** (nginx proxies `/api/` only, so no public URL reaches
+   `/health`; and in production the CORS middleware rejects requests with no
+   `Origin` — `server/src/index.ts:63-69`):
 
    ```bash
-   curl http://localhost:3001/health
+   ssh siggi@kvenno.app \
+     "curl -s -H 'Origin: https://kvenno.app' http://127.0.0.1:8000/health"
    ```
 
    Should return: `{"status":"ok","timestamp":"..."}`
@@ -153,16 +173,15 @@ Certbot will automatically update your nginx configuration with SSL.
 
    Should return HTML content.
 
-3. **Check API endpoint through nginx:**
-
-   ```bash
-   curl http://localhost/api/health
-   ```
-
-4. **Check from outside:**
-   ```bash
-   curl https://www.kvenno.app/api/health
-   ```
+3. **There is no `/api/health` endpoint — do not health-check from outside.**
+   The only health route is `app.get('/health')` (`server/src/index.ts:113`), and
+   nginx proxies the `/api/` prefix _without_ stripping it, so a request for
+   `/api/health` arrives at the backend as `/api/health` and 404s. A public
+   request for `https://kvenno.app/health` is worse: it is not under `/api/`, so
+   it falls through to `try_files $uri /index.html` and returns the SPA with
+   HTTP 200 **even when the backend is completely down**. Never use a public URL
+   as a health signal — use the loopback check in step 1, which is what
+   `scripts/deploy.sh:89-90` does.
 
 ## Troubleshooting
 
@@ -173,7 +192,7 @@ Certbot will automatically update your nginx configuration with SSL.
 sudo journalctl -u labreports -n 50 --no-pager
 
 # Check if port is in use
-sudo netstat -tulpn | grep 3001
+sudo netstat -tulpn | grep 8000
 ```
 
 ### 502 Bad Gateway
@@ -215,14 +234,21 @@ sudo chmod 644 /var/www/labreports/server/.env
 
 ### CORS errors
 
-Check that your frontend URL is in the allowed origins list in `server/index.js`:
+Check that your frontend URL is in the allowed origins list at
+`server/src/index.ts:47-52`:
 
-```javascript
-const allowedOrigins = [
+```typescript
+const allowedOrigins: (string | undefined)[] = [
+  'https://kvenno.app',
   'https://www.kvenno.app',
-  // ... add your domain here
+  process.env.FRONTEND_URL,
 ];
 ```
+
+Setting `FRONTEND_URL` in `.env` is the supported way to add a domain. Note that
+in production the same middleware rejects requests with **no** `Origin` header
+(`server/src/index.ts:63-69` — the origin callback errors out), which is why
+`curl` health checks must pass one.
 
 ## Updating the Application
 
@@ -315,8 +341,10 @@ free -h
 The production backend uses systemd (NOT PM2). The service is managed as follows:
 
 **Service name:** `kvenno-backend`
-**Service file:** `/etc/systemd/system/kvenno-backend.service`
-**Backend location:** `/var/www/kvenno.app/backend/`
+**Service file:** `/etc/systemd/system/kvenno-backend.service` (install the
+checked-in `server/kvenno-backend.service`; do not hand-write one)
+**Backend location:** `/opt/kvenno-server/` (`scripts/deploy.sh`), started as
+`/usr/bin/node dist/index.js` from that working directory
 
 ### systemd Commands
 
@@ -344,6 +372,17 @@ sudo journalctl -u kvenno-backend -f
 ```
 
 ### Service File Example
+
+> **Superseded — do not copy this block.** The real unit is checked in at
+> `server/kvenno-backend.service`; install that file. It differs from the
+> illustration below on every path: `WorkingDirectory=/opt/kvenno-server`,
+> `ExecStart=/usr/bin/node dist/index.js`, an `EnvironmentFile=`, and a systemd
+> hardening stanza (`NoNewPrivileges`, `ProtectSystem=strict`, `ProtectHome`,
+> `PrivateTmp`, `PrivateDevices`, `ProtectKernel*`, `RestrictSUIDSGID`,
+> `ReadWritePaths=/tmp`). There is no `server.js` and no
+> `/var/www/kvenno.app/backend` — the backend is compiled TypeScript
+> (`server/src/index.ts` → `server/dist/index.js`). See `docs/DEPLOYMENT.md`
+> § Backend (systemd). Kept below only as a record of the earlier layout.
 
 Location: `/etc/systemd/system/kvenno-backend.service`
 
@@ -393,16 +432,18 @@ cd server
 npm run dev
 ```
 
-Uses Node.js `--watch` flag to auto-restart on changes.
+Runs `tsx watch src/index.ts` (`server/package.json`), auto-restarting on
+changes and running the TypeScript sources directly — no build step needed.
+`npm start` is the production form and runs the compiled `dist/index.js`.
 
 ### Testing API endpoints
 
 ```bash
-# Health check
-curl http://localhost:3001/health
+# Health check (dev only — production rejects requests with no Origin header)
+curl http://localhost:8000/health
 
 # Test analyze endpoint (requires actual frontend or curl with JSON)
-curl -X POST http://localhost:3001/api/analyze \
+curl -X POST http://localhost:8000/api/analyze \
   -H "Content-Type: application/json" \
   -d '{"content":"test","systemPrompt":"test","mode":"teacher"}'
 ```
@@ -423,7 +464,7 @@ curl -X POST http://localhost:3001/api/analyze \
        │
        ↓
 ┌─────────────┐
-│  Express.js │ (Port 3001)
+│  Express.js │ (Port 8000)
 │  - /api/*   │
 └──────┬──────┘
        │
@@ -440,9 +481,10 @@ curl -X POST http://localhost:3001/api/analyze \
 
 The backend uses `max_tokens: 8192` for Claude API calls (both teacher and student modes). This was increased from 2000 to prevent response truncation for complex reports.
 
-**Location**: `server/index.js:361`
+**Location**: `server/src/index.ts:485` (`/api/analyze`) and `:605`
+(`/api/analyze-2ar`) — two call sites, both must be changed together.
 
-```javascript
+```typescript
 max_tokens: 8192,  // Increased to handle complex reports without truncation
 ```
 
@@ -470,15 +512,17 @@ max_tokens: parseInt(process.env.MAX_TOKENS || '8192', 10),
 
 The backend includes enhanced logging for troubleshooting API responses:
 
-**Location**: `server/index.js:385-394`
+**Location**: `server/src/index.ts:526-539`
 
-```javascript
+```typescript
 console.log('[Analysis] Response received:', {
   stopReason: data.stop_reason,
   textLength: textContent.length,
   textPreview: textContent.substring(0, 200),
   textEnd: textContent.substring(textContent.length - 200),
   usage: data.usage,
+  cacheCreated: data.usage?.cache_creation_input_tokens || 0,
+  cacheHit: data.usage?.cache_read_input_tokens || 0,
 });
 ```
 
@@ -489,6 +533,7 @@ console.log('[Analysis] Response received:', {
 - `textPreview`: First 200 characters
 - `textEnd`: Last 200 characters (helpful for truncation detection)
 - `usage`: Token usage statistics (input_tokens, output_tokens)
+- `cacheCreated` / `cacheHit`: prompt-cache tokens written and read
 
 **When to Check Logs**:
 
@@ -515,20 +560,22 @@ sudo journalctl -u kvenno-backend | grep "\[Analysis\]"
 
 - Generous timeout for processing 8+ reports simultaneously
 - Anthropic API typically responds in 30-60 seconds per report
-- Adjust if needed in `server/index.js:340`
+- Adjust if needed in `server/src/index.ts:470` (`/api/analyze`) and `:593`
+  (`/api/analyze-2ar`)
 
 **Process Document Endpoint**: 30 seconds
 
 - Sufficient for .docx → PDF conversion via LibreOffice
 - Includes pandoc equation extraction
-- Adjust if needed in `server/index.js:218`
+- Adjust if needed in `server/src/index.ts:162` (the LibreOffice `execFile`
+  timeout)
 
 ### nginx Buffering
 
 **Important**: For large API responses (8192 token responses), nginx must have proper buffering:
 
 ```nginx
-# In /etc/nginx/sites-available/kvenno.conf
+# In /etc/nginx/sites-available/kvenno
 location /api/ {
     proxy_buffering on;  # MUST be "on" for large responses
     proxy_buffer_size 16k;

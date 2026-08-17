@@ -21,38 +21,44 @@ Language preference is persisted in `localStorage` under the key `kvenno-languag
 
 ## Games i18n Coverage
 
-Re-measured 2026-08-15 across all 20 games.
+Re-measured 2026-08-17 across all 20 games. (The 2026-08-15 pass counted only `t('` — the
+single-quoted form — and so undercounted seven games; the counts below include the template-literal
+`` t(`…` ``, variable-key `t(c…)` and line-wrapped forms.)
 
 **All 20 games import `useGameI18n` and render `LanguageSwitcher`** — so importing the hook says
 nothing about whether a game is actually translated. What matters is whether its UI strings go
-through `t()`. Counting `t('` calls per game:
+through `t()`. Counting every `t()` call site per game:
 
 | Game                     | Year | `t()` calls | Translated? |
 | ------------------------ | ---- | ----------- | ----------- |
-| redox-reactions          | 2-ar | 154         | yes         |
+| redox-reactions          | 2-ar | 156         | yes         |
 | nafnakerfid              | 1-ar | 91          | yes         |
 | lausnir                  | 1-ar | 48          | yes         |
-| hess-law                 | 2-ar | 28          | yes         |
-| molmassi                 | 1-ar | 20          | yes         |
-| lotukerfid               | 1-ar | 20          | yes         |
-| jafna-jofnur             | 1-ar | 20          | yes         |
+| hess-law                 | 2-ar | 32          | yes         |
+| molmassi                 | 1-ar | 22          | yes         |
+| lotukerfid               | 1-ar | 22          | yes         |
+| jafna-jofnur             | 1-ar | 22          | yes         |
 | dimensional-analysis     | 1-ar | 10          | partial     |
 | equilibrium-shifter      | 3-ar | 7           | partial     |
 | takmarkandi              | 1-ar | 2           | partial     |
 | vsepr-geometry           | 2-ar | 2           | partial     |
 | rafeindabygging          | 2-ar | 1           | partial     |
+| ph-titration             | 3-ar | 1           | partial     |
 | kinetics                 | 2-ar | 0           | **no**      |
 | lewis-structures         | 2-ar | 0           | **no**      |
 | organic-nomenclature     | 2-ar | 0           | **no**      |
 | intermolecular-forces    | 2-ar | 0           | **no**      |
-| ph-titration             | 3-ar | 0           | **no**      |
 | gas-law-challenge        | 3-ar | 0           | **no**      |
 | buffer-recipe-creator    | 3-ar | 0           | **no**      |
 | thermodynamics-predictor | 3-ar | 0           | **no**      |
 
-**8 of 20 games have zero `t()` calls.** They import the hook, render a language switcher, and
+**7 of 20 games have zero `t()` calls.** They import the hook, render a language switcher, and
 serve hardcoded Icelandic — so switching to EN or PL changes nothing a student can see. That is
-all of Year 3 plus four Year 2 games.
+three of the five Year 3 games plus four Year 2 games.
+
+Two more are zero in all but name: `rafeindabygging` and `ph-titration` have exactly one `t()` call
+each (`ph-titration`'s is a template literal with a hardcoded Icelandic fallback,
+`src/components/Level3.tsx:104`). Nine of the twenty are therefore effectively untranslated.
 
 Caveats on this measurement:
 
@@ -74,23 +80,23 @@ strip the i18n scaffolding, finish wiring it, or leave it. Needs a teacher's cal
 
 ### Components with hardcoded Icelandic strings (no i18n)
 
-| Component                      | Hardcoded Strings                             |
-| ------------------------------ | --------------------------------------------- |
-| `Header`                       | "Námsvefur Kvennó", "Kennarar", "Upplýsingar" |
-| `Footer`                       | "Kvennaskólinn í Reykjavík" copyright text    |
-| `Breadcrumbs`                  | "Heim" (home link)                            |
-| `ErrorBoundary`                | Error fallback messages                       |
-| `AchievementsPanel`            | Achievement titles and descriptions           |
-| `AchievementNotificationPopup` | Notification text                             |
-| `HintSystem`                   | Hint tier labels                              |
-| `FeedbackPanel`                | Feedback messages                             |
-| `InteractiveGraph`             | Axis labels, tooltips                         |
-| `DragDropBuilder`              | Instruction text                              |
-| `ResponsiveContainer`          | No visible text                               |
-| `MoleculeViewer`               | Atom labels (chemistry terms)                 |
-| `ParticleSimulation`           | No visible text                               |
+| Component                      | Hardcoded Strings                                                                                                                                              |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Header`                       | "Námsvefur Kvennó", "Efnafræði", "Íslenskubraut", "Svið" (nav aria-label), "Til baka" (default `backLabel`), "Upplýsingar" (only when `onInfoClick` is passed) |
+| `Footer`                       | "Kvennaskólinn í Reykjavík" copyright text                                                                                                                     |
+| `Breadcrumbs`                  | `aria-label="Brauðmolar"` only — the visible labels, "Heim" included, come from the caller-supplied `items` array                                              |
+| `ErrorBoundary`                | Error fallback messages                                                                                                                                        |
+| `AchievementsPanel`            | Achievement titles and descriptions (dormant — no game imports it)                                                                                             |
+| `AchievementNotificationPopup` | Notification text (dormant — no game imports it)                                                                                                               |
+| `HintSystem`                   | Hint tier labels                                                                                                                                               |
+| `FeedbackPanel`                | Feedback messages                                                                                                                                              |
+| `InteractiveGraph`             | Axis labels, tooltips                                                                                                                                          |
+| `DragDropBuilder`              | Instruction text                                                                                                                                               |
+| `ResponsiveContainer`          | No visible text                                                                                                                                                |
+| `MoleculeViewer`               | Atom labels (chemistry terms)                                                                                                                                  |
+| `ParticleSimulation`           | No visible text                                                                                                                                                |
 
-### Estimated shared component i18n coverage: ~5% (1/14 visible components)
+### Estimated shared component i18n coverage: ~7% (1/14 listed components)
 
 ## Non-Game Apps i18n Coverage
 
@@ -114,29 +120,25 @@ The `useGameI18n` hook includes built-in translations for these namespaces:
 
 ## Recommendations (Priority Order)
 
-### High Priority
-
-1. **`nafnakerfid` game** - Wire up the existing `i18n.ts` file to use `useGameI18n` in `App.tsx`. The translation file already exists; this is likely a straightforward integration.
-
 ### Medium Priority
 
-2. **Shared `Header` component** - Add i18n for "Kennarar" and "Upplýsingar" button labels. These appear on every page.
+1. **Shared `Header` component** - Add i18n for the track tabs ("Efnafræði", "Íslenskubraut"), the "Svið" nav aria-label, the default `backLabel` "Til baka", and the "Upplýsingar" button. The track tabs and aria-label appear on every page that renders the default variant; "Upplýsingar" only renders when a caller passes `onInfoClick`. There is no "Kennarar" button — it was removed, and `Header.test.tsx` asserts its absence.
 
-3. **Shared `Breadcrumbs` component** - Add i18n for "Heim" and any separator text.
+2. **Shared `Breadcrumbs` component** - Add i18n for the `aria-label="Brauðmolar"`. The visible labels are not the component's to translate: callers pass them in via `items`, so "Heim" has to be fixed at each call site. The separator is a `ChevronRight` icon, not text.
 
-4. **`ErrorBoundary`** - Add i18n for error fallback messages shown to users.
-
-5. **`AchievementsPanel` / `AchievementNotificationPopup`** - Achievement titles and descriptions are shown during gameplay.
+3. **`ErrorBoundary`** - Add i18n for error fallback messages shown to users.
 
 ### Low Priority
 
-6. **`HintSystem`** - Hint tier labels during gameplay.
+4. **`HintSystem`** - Hint tier labels during gameplay.
 
-7. **`FeedbackPanel`** - Game feedback messages.
+5. **`FeedbackPanel`** - Game feedback messages.
 
-8. **`landing` app** - Track selector page. Lower priority since the school's primary audience is Icelandic-speaking.
+6. **`landing` app** - Track selector page. Lower priority since the school's primary audience is Icelandic-speaking.
 
-9. **`lab-reports` app** - Teacher-facing tool. The audience is primarily Icelandic teachers.
+7. **`lab-reports` app** - Teacher-facing tool. The audience is primarily Icelandic teachers.
+
+8. **`AchievementsPanel` / `AchievementNotificationPopup`** - Dormant, so effectively "do not do". No game imports either component as of Aug 2026; the only matches in `apps/` are `vi.mock` stubs in `dimensional-analysis/src/__tests__/a11y.test.tsx:74,128,132`. Their strings are shown to nobody, so translating them is wasted work until the achievements family is either revived or retired — Siggi's call. (Earlier versions of this file ranked this Medium on the claim that the titles "are shown during gameplay". They are not.)
 
 ### Intentionally Icelandic-Only
 
@@ -153,16 +155,17 @@ The following should remain in Icelandic as they are educational chemistry conte
 | Category                                | Coverage                                                    |
 | --------------------------------------- | ----------------------------------------------------------- |
 | Games importing `useGameI18n`           | 20/20 (100%) — but see caveat below                         |
-| Games actually routing UI through `t()` | 12/20 translated or partial; **8/20 have zero `t()` calls** |
+| Games actually routing UI through `t()` | 13/20 translated or partial; **7/20 have zero `t()` calls** |
 | Shared components with i18n             | 1/14 (~7%)                                                  |
 | Non-game apps with i18n                 | 0/3 (0%)                                                    |
 
 **No overall percentage is quoted deliberately.** The previous "~60-65%" rested on counting hook
-imports as coverage, which overstated it: every game imports the hook, and 8 of them translate
+imports as coverage, which overstated it: every game imports the hook, and 7 of them translate
 nothing. Any honest figure needs a string-by-string audit that has not been done.
 
-The gap is concentrated in Year 3 (all 5 games at zero) and four Year 2 games. Shared components and
-non-game apps remain Icelandic-only by design, serving an Icelandic-only audience.
+The gap is concentrated in Year 3 (3 of 5 games at zero, and `ph-titration` at a single call) and
+four Year 2 games. Shared components and non-game apps remain Icelandic-only by design, serving an
+Icelandic-only audience.
 
 Note: the earlier version of this file claimed `nafnakerfid` was the one game _not_ wired up. That is
 wrong — it has 91 `t()` calls, the second-highest in the repo.

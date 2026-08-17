@@ -521,7 +521,7 @@ Accurate as claimed: ICE 10 (3/3/4), Q-vs-K 12 (4/4/4), Dalton 8, pH-Titration L
 ### Re-decide, because the platform changed
 
 - **Level 4 vs the 3-level cap.** Almost every port below is Level-4 content (net ionic, percent yield, Ka-from-curve, quantitative Arrhenius, bond enthalpy, Dalton), and February's own house rule was three levels. April replaced that with Explore → Understand → Practice → Apply, which has no level count. Decide once whether Level 4 exists, or whether that content becomes the Apply phase.
-- **Level gating.** February built it, April removed it, August wants it back, and the strings for 14 games are already written in three languages with no consumers. One decision, then wiring.
+- **Level gating.** February built it, April removed it, August wants it back, and the strings for 15 games are already written in three languages with no consumers — 14 under `menu.levels.*.locked`, plus `1-ar/nafnakerfid` under `completeLevel1First`/`completeLevel2First` (measured 2026-08-17; grep both key names). One decision, then wiring.
 - **Polish.** February shipped it systematically; `CLAUDE.md` now says Icelandic-only. The open item is much bigger than the Hess block it names.
 - **Where sig figs live.** February built a standalone game; `ORPHANED_GAMES_ASSESSMENT.md:356` argues for a _"Stig 0 — Nákvæmni og staðalform"_ level inside `dimensional-analysis`, _"not an eighth Y1 game: Brown treats sig figs as a subsection."_
 - **TTS pronunciation of Icelandic chemical names.** Ranked 🟡 MED in January and appearing in three separate lists. Aug 2026 deleted the sound chrome with a standing "don't reintroduce without a pedagogical reason." Pronouncing Icelandic chemical names plausibly is that reason — but it needs you to say so.

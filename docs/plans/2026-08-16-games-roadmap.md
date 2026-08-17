@@ -15,7 +15,7 @@ Your goal has three words in it and they are not equally urgent.
 
 **Pedagogically sound** comes second because you already wrote the test for it, in `review-prompt.md`, in November: _"A student who doesn't understand the concept should NOT be able to score well through guessing or pattern recognition."_ The repo ships seven Year-1 games and at least five of them fail it: four print the correct answer on screen before the student answers (B14–B17), and Takmarkandi is scoreable 100% without reading the question because the correct side simply alternates left/right (`takmarkandi/src/components/Level1.tsx:38-44`). Five is a floor — the four answer leaks are measured, but the wider guessing test was never scored game by game. (An earlier draft of this line said "eleven of twelve". That figure mixed two populations: its numerator counted seven Year-1 _orphans_ that live only in the frozen old repo alongside the four shipped leaks, and its denominator was the all-year orphan count, twelve. Neither number describes the shipped library. Do not reinstate it.) That is a bigger body of work than the correctness fixes and it does not have a victim this week.
 
-**Covering the curriculum** comes last, not because it matters least, but because it is the only part that needs decisions from you before code can start, and because it is measured in months. Four gaps are real and confirmed by two independent reviews six months apart: electrolytes/precipitation, empirical formula, Ka/Kb, Ksp.
+**Covering the curriculum** comes last, not because it matters least, but because it is the only part that needs decisions from you before code can start, and because it is measured in months. Four gaps are real and confirmed by two independent reviews six months apart: electrolytes/precipitation, empirical formula, Ka/Kb, Ksp. This set differs from `apps/games/1-ar/CURRICULUM_REVIEW.md:96`, which is Year-1 scoped: net ionic is folded into the electrolytes row below, percent yield is tracked under "Also unplaced" at the end of Phase 5, and Ka/Kb and Ksp are Year-3 gaps the Year-1 review never looked at. The set below is the platform-wide planning set.
 
 There is also a structural reason for the order. The Year-1 review found that **the three games with zero test files were exactly the three carrying unguarded blockers**. The suite is green and certifies nothing about chemistry. So each phase below adds the test that would have caught its own bug — otherwise Phase 5 just manufactures new Phase 1 work.
 
@@ -99,7 +99,7 @@ This is where your November test gets applied to the games you actually ship.
 - **The decimal comma** — a repo-wide pass. On `type="number"` the browser eats the comma before your code runs, so a student's `0,5` submits as `5` and grades as a silent 10× error. Non-integer answers need `type="text"` + `inputMode="decimal"`, then normalise before parsing.
 - **Misconception slots** — the shared panel has a purpose-built channel that renders _outside_ the collapse, and four of seven Y1 games leave it empty.
 
-**Blocked on you:** whether levels are gated. February built gating, April removed it, the August review wants it back, and the strings for 14 games already exist in three languages with no consumers.
+**Blocked on you:** whether levels are gated. February built gating, April removed it, the August review wants it back, and the strings for **15** games already exist in three languages with no consumers — 14 under `menu.levels.*.locked`, plus `1-ar/nafnakerfid` under `completeLevel1First`/`completeLevel2First`. Grep both key names. (Measured 2026-08-17.)
 
 ---
 
@@ -128,7 +128,7 @@ These block Phase 5 and parts of Phase 4. Four of them will produce contradictio
 4. **Stoichiometry** — you currently ship `stökjómetríu`, `Stökefnafræði` and `stækifræði`.
 5. **The galvanic cell noun** — no glossary entry; the shipped text is ungrammatical whichever noun wins (`klefi` is masculine, so `Galvanískur klefi`).
 6. **Where significant figures live** — its own game, or a "Stig 0" inside Einingagreining.
-7. **The i18n question** — strip `LanguageSwitcher` or finish the wiring. Currently a dozen games render a switcher over dictionaries their level components never call.
+7. **The i18n question** — strip `LanguageSwitcher` or finish the wiring. All 20 games render a switcher; eight route essentially nothing through it — seven have **zero** `t()` calls (`2-ar/kinetics`, `2-ar/lewis-structures`, `2-ar/intermolecular-forces`, `2-ar/organic-nomenclature`, `3-ar/buffer-recipe-creator`, `3-ar/gas-law-challenge`, `3-ar/thermodynamics-predictor`) and `3-ar/ph-titration` has exactly one. Several more route only a handful (`2-ar/rafeindabygging` 1, `2-ar/vsepr-geometry` 2, `1-ar/takmarkandi` 2). Per-game counts: `docs/i18n-coverage.md`. (Measured 2026-08-17; an earlier draft said "a dozen", which is closer to the number of games that _do_ call `t()`.)
 
 ---
 

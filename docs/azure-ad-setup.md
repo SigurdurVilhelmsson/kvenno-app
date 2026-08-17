@@ -7,6 +7,7 @@ Developer documentation for Azure AD (Microsoft Entra ID) authentication in the 
 The lab-reports app uses Microsoft Authentication Library (MSAL.js) to authenticate users with their Kvennaskólinn school accounts (`@kvenno.is`). Authentication is implemented client-side using the redirect flow -- no backend auth server is needed.
 
 Key libraries:
+
 - `@azure/msal-browser` -- Core authentication library
 - `@azure/msal-react` -- React integration (hooks, components, provider)
 
@@ -20,7 +21,7 @@ To configure authentication, an App Registration is needed in the Azure AD (Micr
 2. **Platform**: Single-page application (SPA)
 3. **Redirect URIs**:
    - Production: `https://kvenno.app/auth/callback`
-   - Development: `http://localhost:3000/auth/callback`
+   - Development: `http://localhost:5173/auth/callback` -- this is what the app actually sends (`authConfig.ts`, verified 2026-08-17); 5173 is Vite's default port and no app sets `server.port`, so a second dev server running first will shift it. Override with `VITE_REDIRECT_URI` and register whatever value you use. If the registration currently lists port 3000, dev login will fail with AADSTS50011.
 4. **API permissions**: `User.Read` (delegated) -- for basic profile info (name, email)
 
 ### Important Notes
@@ -45,6 +46,9 @@ VITE_BASE_PATH=/efnafraedi/2-ar/lab-reports/
 
 # Optional: Skip authentication in development
 VITE_BYPASS_AUTH=true
+
+# Optional: Override the development redirect URI (default http://localhost:5173/auth/callback)
+VITE_REDIRECT_URI=http://localhost:5173/auth/callback
 ```
 
 The `VITE_AZURE_CLIENT_ID` and `VITE_AZURE_TENANT_ID` values are public (baked into client-side JavaScript at build time). They identify the app but do not grant access on their own.
@@ -70,7 +74,7 @@ The authentication flow uses MSAL's redirect method:
 Defined in `apps/lab-reports/src/config/authConfig.ts`:
 
 - **Authority**: `https://login.microsoftonline.com/{tenantId}`
-- **Redirect URI**: `https://kvenno.app/auth/callback` (production) or `http://localhost:3000/auth/callback` (dev)
+- **Redirect URI**: `https://kvenno.app/auth/callback` (production) or `VITE_REDIRECT_URI`, defaulting to `http://localhost:5173/auth/callback` (dev)
 - **Cache location**: `sessionStorage`
 - **Scopes**: `['User.Read']`
 - **navigateToLoginRequestUrl**: `false` (manual navigation handling)
@@ -80,6 +84,7 @@ Defined in `apps/lab-reports/src/config/authConfig.ts`:
 The MSAL `PublicClientApplication` is created once in `apps/lab-reports/src/utils/msalInstance.ts` and shared across the entire app. Do not create multiple instances.
 
 Initialization (`initializeMsal()`) must be called before rendering the app. It:
+
 1. Initializes the MSAL instance
 2. Handles any pending redirect promises (if returning from Azure AD)
 3. Redirects to the saved return URL if on the `/auth/callback` route
@@ -128,6 +133,7 @@ VITE_TEACHER_EMAILS=existing.teacher@kvenno.is,new.teacher@kvenno.is
 ### AuthButton (`apps/lab-reports/src/components/AuthButton.tsx`)
 
 Login/logout button for the header. Shows:
+
 - "Skra inn" (Log in) with login icon when unauthenticated
 - User name + "Skra ut" (Log out) when authenticated
 
@@ -144,6 +150,7 @@ Wrapper component that protects routes/content requiring authentication:
 ```
 
 Behavior:
+
 - If user is authenticated, renders children
 - If user is not authenticated, saves current URL and triggers redirect login
 - Shows a loading spinner during authentication
@@ -154,6 +161,7 @@ Behavior:
 Handles the redirect from Azure AD after authentication. Mounted at the `/auth/callback` route.
 
 Behavior:
+
 - Processes the MSAL redirect response
 - Extracts the saved return URL from sessionStorage
 - Navigates user back to their original page
@@ -167,9 +175,10 @@ Behavior:
 **Error**: `AADSTS50011: The redirect URI specified in the request does not match...`
 
 **Fix**: Ensure the redirect URI registered in Azure AD portal exactly matches what the app sends. Check:
+
 - Production: `https://kvenno.app/auth/callback`
-- Development: `http://localhost:3000/auth/callback`
-- The URI must include the correct protocol (http vs https) and port
+- Development: `http://localhost:5173/auth/callback` (the `authConfig.ts` default), or whatever `VITE_REDIRECT_URI` is set to
+- The URI must include the correct protocol (http vs https) and port. Vite increments the port when 5173 is already taken, which is a common cause of this error locally.
 
 ### CORS errors
 
@@ -186,6 +195,7 @@ Behavior:
 ### Authentication works locally but not in production
 
 **Check**:
+
 1. `VITE_AZURE_CLIENT_ID` and `VITE_AZURE_TENANT_ID` are set in the production build environment
 2. The production redirect URI (`https://kvenno.app/auth/callback`) is registered in Azure AD
 3. The app is served over HTTPS (required for MSAL in production)
