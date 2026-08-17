@@ -165,7 +165,7 @@ Gold standard games: Jafna Jöfnur (real-time atom counter), IMF Level 3 (real-w
 **mighty-mixing-puffin plan — all phases completed:**
 
 - Phase 1: Teaching intros added to all games that tested before teaching (Y1-Y3)
-- Phase 2: Hint penalties removed from Y1 (code + UI text), DA L2 prediction disabled, DA L3 scoring simplified. **This line used to claim "all" — measured Aug 2026, three games still ship one:** `2-ar/hess-law/src/i18n.ts:76` and `3-ar/gas-law-challenge/src/i18n.ts:34` advertise a cost on the affordance; `3-ar/ph-titration` applies one as a multiplier (`Level1.tsx:47,87`, `Level2.tsx:454-455`, `Level3.tsx:309-310`)
+- Phase 2: Hint penalties removed from Y1 **code**, DA L2 prediction disabled, DA L3 scoring simplified. **This line used to claim "all", and used to claim Y1 was clean in "code + UI text" — both measured false.** Three games still apply or advertise a penalty: `2-ar/hess-law/src/i18n.ts:76` and `3-ar/gas-law-challenge/src/i18n.ts:34` advertise a cost on the affordance; `3-ar/ph-titration` applies one as a multiplier (`Level1.tsx:47,87`, `Level2.tsx:454-455`, `Level3.tsx:309-310`). And Y1's UI half was never done: `1-ar/dimensional-analysis/src/components/Level3.tsx:594` still renders "⚠️ 10% dregið frá heildareinkunn" (measured 2026-08-17)
 - Phase 3-4: Real-world "Af hverju?" context cards + curriculum chain positions added to all 20 games
 - Phase 5a: Jafna Jöfnur reload fix + L3 hints, Nafnakerfid L3 explanations
 - Phase 5b: Lewis Structures L2 interactive SVG drawing canvas, VSEPR L2 constrained prediction + L3 hybridization diagram, pH Titration L2 equivalence point marking, Lausnir L1 static beaker
@@ -300,9 +300,14 @@ Three August-2026 review documents supersede the older per-game reviews and the 
 **Live defects students meet today** — fix before adding features:
 
 - `3-ar/ph-titration/src/utils/ph-calculations.ts:57,95,133,198` divides a molarity already in mol/L by 1000 (0.100 M acetic acid renders pH 4.37; its own `data/titrations.ts:76` says 2.87)
-- `1-ar/lotukerfid/src/components/Level3.tsx:31-33` teaches `round(atomicMass) − Z` as the neutron method; ~31% of playthroughs mis-grade
-- `1-ar/dimensional-analysis/src/data/challenges.ts:271` (speed of light, 1000× out) and `:354` (unsatisfiable)
+- `1-ar/lotukerfid/src/components/Level3.tsx:31-33` teaches `round(atomicMass) − Z` as the neutron method; ~36% of playthroughs mis-grade a graded neutron answer, and ~86% display at least one wrong neutron count somewhere in the run
+- `1-ar/dimensional-analysis/src/data/challenges.ts:271` (speed of light, 1000× out)
 - Unshuffled option arrays, worst in `2-ar/rafeindabygging` Level 3 (8/8 at index 0)
+- `1-ar/dimensional-analysis/src/components/Level3.tsx:594` tells the student "⚠️ 10% dregið frá heildareinkunn" every time a hint opens, but `hintPenalty` is `0` (`:192`) so nothing is deducted. The game discourages hint use with a penalty it does not apply — the opposite of the stated design. Deleting `:593-595` is the whole fix
+
+The former "`challenges.ts:354` is unsatisfiable" claim was retired Aug 2026 by executing `Level3`'s grading path — see `docs/README.md`. Do not reinstate it.
+
+The current work order for these lives in `docs/plans/2026-08-16-games-roadmap.md`.
 
 ## Icelandic terminology is governed, not chosen per-game
 
