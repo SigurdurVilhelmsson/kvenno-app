@@ -1700,6 +1700,22 @@ the semantic identity actually implemented."
 - [ ] Load `/islenskubraut/` in dev and open one teaching card
 - [ ] Generate one PDF via `GET /api/islenskubraut/pdf?flokkur=manneskja&stig=A1` and read the Icelandic on it
 
+## Unfinished — required before the first real review cycle
+
+- [ ] **Rewrite the reviewer-facing Icelandic in the exported workbook.** Every string a colleague
+      reads is placeholder wording drafted by Claude and never reviewed: the three-line instruction
+      block, the six column headers, the six `COLUMN_HELP` cell notes and the Leiðbeiningar tab —
+      all marked `PLACEHOLDER ICELANDIC` in `scripts/islenskubraut/export-xlsx.mjs`. The plan's
+      Global Constraints called this out from the start and it is still owed. **Do not send an
+      export to a colleague until Siggi has written this copy** — the instructions tell a reviewer
+      how to add, delete and reorder rows, so wording that misleads produces a workbook the importer
+      then refuses.
+- [ ] **Open an exported workbook in real Excel.** Untested: whether _Insert Copied Cells_ works on
+      a protected sheet, and whether the freeze, shading and locked columns behave for a human. If
+      insert-copied-cells is refused, the unlocked `lykill` column (Task 5, deviation 3) is the
+      reviewer's fallback and the instruction text must say so.
+- [ ] **Task 7:** `content/islenskubraut/README.md` was never written.
+
 ## What this plan deliberately does not do
 
 The content review itself. This builds the means to review; the review is a separate pass, and

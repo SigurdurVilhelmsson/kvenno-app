@@ -376,9 +376,14 @@ or formula, and a row carrying text with no `lykill`. It strips invisible charac
 normalises silently but reports every one. `scripts/islenskubraut/rows.mjs` (row mapping) and
 `review.mjs` (sheet → rows, category → YAML) are the pure halves both commands share.
 
-**The workbook's Icelandic reviewer-facing copy — instructions, column headers, the Leiðbeiningar
-tab — is placeholder wording that Siggi has not reviewed.** Do not send an export to a colleague
-until that review happens.
+**UNFINISHED, blocking the first real review cycle:** every reviewer-facing Icelandic string in
+the workbook — the instruction block, the six column headers, the six column cell notes and the
+Leiðbeiningar tab — is placeholder wording drafted by Claude and never reviewed. It is marked
+`PLACEHOLDER ICELANDIC` in `scripts/islenskubraut/export-xlsx.mjs`. **Do not send an export to a
+colleague until Siggi has rewritten it.** The instructions tell a reviewer how to add, delete and
+reorder rows, so misleading wording produces a workbook the importer then refuses. Tracked in the
+plan's "Unfinished — required before the first real review cycle" section, along with the fact that
+nobody has yet opened an exported workbook in real Excel.
 
 ### Deployment
 
