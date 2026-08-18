@@ -1,9 +1,11 @@
 import { describe, it, expect } from 'vitest';
 
+import { titrations } from '../data/titrations';
 import {
   calculateStrongStrongPH,
   calculateWeakStrongPH,
   calculateStrongWeakPH,
+  calculatePH,
   getPHColor,
 } from '../utils/ph-calculations';
 
@@ -49,10 +51,29 @@ describe('calculateWeakStrongPH', () => {
   // 50 mL of 0.1 M acetic acid (Ka = 1.8e-5) titrated with 0.1 M NaOH
 
   it('returns acidic pH for initial weak acid solution', () => {
-    const pH = calculateWeakStrongPH(50, 0.1, 1.8e-5, 0, 0.1);
-    // Initial pH of weak acid
-    expect(pH).toBeGreaterThan(1);
-    expect(pH).toBeLessThan(7);
+    // 25.0 mL of 0.100 M acetic acid, Ka = 1.8e-5.
+    // pH = -log10(sqrt(Ka * C)) = -log10(sqrt(1.8e-6)) = 2.87
+    // This is the value the game's own data asserts: data/titrations.ts:76 initialPH: 2.87
+    const pH = calculateWeakStrongPH(25.0, 0.1, 1.8e-5, 0, 0.1);
+    expect(pH).toBeCloseTo(2.87, 2);
+  });
+
+  it('initial pH does not depend on the volume of acid present', () => {
+    // Concentration, not amount, sets the initial pH. A 1000x volume change must not move it.
+    const small = calculateWeakStrongPH(25.0, 0.1, 1.8e-5, 0, 0.1);
+    const large = calculateWeakStrongPH(25000, 0.1, 1.8e-5, 0, 0.1);
+    expect(small).toBeCloseTo(large, 6);
+  });
+
+  it('returns the correct initial pOH-derived pH for a weak base', () => {
+    // 25.0 mL of 0.100 M NH3. The third parameter is a pKa, NOT a Ka -- see the
+    // note on calculateStrongWeakPH. data/titrations.ts:143 records pKa: 9.26.
+    //   Ka  = 10^-9.26
+    //   Kb  = Kw/Ka = 1e-14 / 10^-9.26 = 10^(-14+9.26) = 10^-4.74 = 1.82e-5
+    //   pOH = 0.5*(-log10(Kb) - log10(C)) = 0.5*(4.74 + 1.00) = 2.87
+    //   pH  = 14 - 2.87 = 11.13, which is data/titrations.ts:138 initialPH: 11.13
+    const pH = calculateStrongWeakPH(25.0, 0.1, 9.26, 0, 0.1);
+    expect(pH).toBeCloseTo(11.13, 1);
   });
 
   it('returns pKa at half-equivalence point (buffer region)', () => {
@@ -134,5 +155,33 @@ describe('getPHColor', () => {
       const color = getPHColor(pH);
       expect(color).toMatch(/^#[0-9A-Fa-f]{6}$/);
     }
+  });
+});
+
+// Declared initialPH disagrees with the corrected formula by 0.06-0.14 for these
+// three. Left asserted-as-failing on purpose, pending a teacher decision on the
+// declared values -- the gaps plausibly come from an activity correction or a
+// different Ka rather than from a fresh defect, but that is a guess.
+// Keyed by id, not name: 'HCl + NaOH' is the name of both id 1 and id 3.
+const KNOWN_DISAGREEING = [6, 11, 12]; // HF + NaOH, H2SO3 + NaOH, H2C2O4 + NaOH
+
+describe('every titration starts where its data says it does', () => {
+  it.each(
+    titrations
+      .filter((t) => !KNOWN_DISAGREEING.includes(t.id))
+      .map((t) => [`${t.id} ${t.name}`, t] as const)
+  )('%s starts at its declared initialPH', (_label, t) => {
+    expect(calculatePH(t, 0)).toBeCloseTo(t.initialPH, 1);
+  });
+
+  // These three do NOT agree. `it.fails` pins that: if a later edit reconciles the
+  // data with the formula, this case goes red and the comment above gets revisited,
+  // rather than the disagreement quietly disappearing.
+  it.fails.each(
+    titrations
+      .filter((t) => KNOWN_DISAGREEING.includes(t.id))
+      .map((t) => [`${t.id} ${t.name}`, t] as const)
+  )('%s does not yet start at its declared initialPH', (_label, t) => {
+    expect(calculatePH(t, 0)).toBeCloseTo(t.initialPH, 1);
   });
 });
