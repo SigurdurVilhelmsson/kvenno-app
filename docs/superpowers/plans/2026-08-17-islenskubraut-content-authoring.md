@@ -10,12 +10,11 @@
 
 **Spec:** `docs/superpowers/specs/2026-08-17-islenskubraut-content-authoring-design.md`
 
-**Status (2026-08-18):** Tasks 1-6 complete. The Excel round-trip is whole: `pnpm
-islenskubraut:export` (PR #20) and `pnpm islenskubraut:import` both exist. Each of those two tasks
-shipped with deliberate deviations from the code listed below — three for Task 5, four for Task 6,
-plus a new `review.mjs`; the notes under each task say what and why. Task 7's documentation work was
-folded into the Tasks 1-4 merge, with one piece outstanding: `content/islenskubraut/README.md`,
-which Task 7 specifies, was never written.
+**Status (2026-08-18): all seven tasks complete.** The Excel round-trip is whole — `pnpm
+islenskubraut:export` (PR #20) and `pnpm islenskubraut:import` (PR #21) — and
+`content/islenskubraut/README.md` is written. Tasks 5, 6 and 7 each shipped with deliberate
+deviations from the code listed below; the note under each task says what and why. What remains is
+not code: see "Unfinished — required before the first real review cycle" at the end.
 
 ## Prerequisite
 
@@ -1587,6 +1586,22 @@ rather than staying in a spreadsheet."
 
 ### Task 7: Documentation
 
+**Implemented 2026-08-18. Step 2 was adapted, not applied as written.**
+
+Steps 1, 3 and 4 shipped as listed. Step 2 told us to replace the body of CLAUDE.md's
+Íslenskubraut section with a six-line summary — but by the time Task 7 ran, that section had been
+rewritten twice (during the Tasks 1-4 merge, and again for Tasks 5-6) and now carries the
+three-file category edit, the guards, the corruption history and the UNFINISHED block. Applying
+the draft would have deleted all of it to install something thinner. The section instead gained a
+pointer to the new `content/islenskubraut/README.md` and kept its contents.
+
+Step 1's README also departs from the draft, which described behaviour that had not been built
+when it was written: it now covers what import refuses outright (coerced cells, a row with text
+and no key, an emptied group), and separates the repairs that are reported from the ones that are
+silent — measured, because the draft's "reports every instance" is wrong. NFC normalisation,
+non-breaking spaces and whitespace collapsing are all silent; only the invisible characters are
+named.
+
 **Files:**
 
 - Create: `content/islenskubraut/README.md`
@@ -1594,7 +1609,7 @@ rather than staying in a spreadsheet."
 - Modify: `docs/README.md` (index)
 - Modify: `docs/superpowers/specs/2026-08-17-islenskubraut-content-authoring-design.md` (the byte-identity correction)
 
-- [ ] **Step 1: Write the content README**
+- [x] **Step 1: Write the content README**
 
 Create `content/islenskubraut/README.md`:
 
@@ -1639,7 +1654,7 @@ onto the PDFs students were handed — `Orðaforði` rendered as `Orda<soft hyph
 unnoticed for months because nobody could read the content in that form.
 ```
 
-- [ ] **Step 2: Replace the CLAUDE.md section**
+- [x] **Step 2: Replace the CLAUDE.md section**
 
 Replace the body of `### Íslenskubraut data sync` with:
 
@@ -1656,11 +1671,11 @@ Generated, never hand-edited: `apps/islenskubraut/src/data/categories/*.ts` and
 diverge. See `content/islenskubraut/README.md`.
 ```
 
-- [ ] **Step 3: Correct the spec**
+- [x] **Step 3: Correct the spec**
 
 In the spec, change Rollout §1 and the Validation table row from byte-identity to semantic identity, matching the "Correction to the spec" section of this plan. Leaving both statements in the repo would be exactly the doc-vs-reality drift the August sweep spent a day removing.
 
-- [ ] **Step 4: Add the content README to the docs index**
+- [x] **Step 4: Add the content README to the docs index**
 
 In `docs/README.md`, under "Platform and operations", add:
 
@@ -1668,7 +1683,7 @@ In `docs/README.md`, under "Platform and operations", add:
 | [`content/islenskubraut/README.md`](../content/islenskubraut/README.md) | Editing Íslenskubraut content, directly or by spreadsheet |
 ```
 
-- [ ] **Step 5: Final verification**
+- [x] **Step 5: Final verification**
 
 ```bash
 cd /home/siggi/dev/repos/kvenno-app
@@ -1678,7 +1693,7 @@ pnpm islenskubraut:build --check && pnpm type-check && pnpm lint && pnpm test
 
 Expected: all four exit 0. Note `pnpm format:check` fails on `main` already, on unrelated files — do not treat that as a regression, and do not reformat those files here.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add content/islenskubraut/README.md CLAUDE.md docs/README.md docs/superpowers/specs/2026-08-17-islenskubraut-content-authoring-design.md
@@ -1714,7 +1729,6 @@ the semantic identity actually implemented."
       a protected sheet, and whether the freeze, shading and locked columns behave for a human. If
       insert-copied-cells is refused, the unlocked `lykill` column (Task 5, deviation 3) is the
       reviewer's fallback and the instruction text must say so.
-- [ ] **Task 7:** `content/islenskubraut/README.md` was never written.
 
 ## What this plan deliberately does not do
 

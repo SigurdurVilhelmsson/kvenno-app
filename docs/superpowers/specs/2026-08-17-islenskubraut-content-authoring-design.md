@@ -267,8 +267,10 @@ preservation across wholesale replacement cannot be made reliable.
 ## Rollout
 
 1. **Migrate.** Convert the existing TypeScript to YAML mechanically, so none of the 1,737 strings
-   is retyped. Prove it by generating TS back from the YAML and asserting byte-identity with what is
-   committed today. Nothing is deleted until that passes.
+   is retyped. Prove it by **semantic identity**, not byte-identity: evaluate the data before the
+   migration, snapshot it, and assert deep equality against what the generated modules export. The
+   committed TypeScript is hand-formatted, so byte-identity would require the generator to reproduce
+   hand-formatting rather than to be correct. Nothing is deleted until that passes.
 2. **Retarget.** Point both generators at the YAML; delete the Vite-based generator, which no longer
    needs to load a TypeScript module.
 3. **Export** the first workbook. This is the artifact for the human review that motivated the work.
