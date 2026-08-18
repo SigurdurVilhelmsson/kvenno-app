@@ -64,4 +64,24 @@ describe('generated problems are physically possible', () => {
       expect(impossible.slice(0, 5)).toEqual([]);
     }
   );
+  it.each(DIFFICULTIES)('%s: no problem states a quantity of zero', (difficulty) => {
+    // The ceiling compresses the drawn band for sparingly soluble substances, and
+    // quantities that determine a molarity are rounded down. A zero is worse than
+    // an impossible value: it is ungradeable rather than merely wrong.
+    const degenerate: string[] = [];
+    for (let i = 0; i < RUNS; i++) {
+      const p = generateProblem(difficulty);
+      const g = p.given as Record<string, number | undefined>;
+      for (const key of ['massInGrams', 'moles', 'M1', 'M2', 'molarity', 'V1', 'V2'] as const) {
+        const v = g[key];
+        if (typeof v === 'number' && v <= 0) {
+          degenerate.push(`${p.type} ${p.chemical?.name} ${key}=${v}`);
+        }
+      }
+      if (typeof p.answer === 'number' && p.answer <= 0) {
+        degenerate.push(`${p.type} ${p.chemical?.name} answer=${p.answer}`);
+      }
+    }
+    expect(degenerate.slice(0, 5)).toEqual([]);
+  });
 });
