@@ -29,7 +29,7 @@ function pickRandom<T>(arr: T[], n: number): T[] {
 }
 
 function neutronCount(el: Element): number {
-  return Math.round(el.atomicMass) - el.atomicNumber;
+  return el.massNumber - el.atomicNumber;
 }
 
 function generateQuestions(): Question[] {
@@ -70,9 +70,9 @@ function generateQuestions(): Question[] {
     questions.push({
       type: 'neutrons',
       element: el,
-      text: `Hversu margar nifteindir hefur ${el.name} (${el.symbol})? Notaðu lotukerfið.`,
+      text: `Hversu margar nifteindir hefur ${el.name}-${el.massNumber} (${el.symbol}-${el.massNumber})?`,
       correctAnswer: n,
-      explanation: `Nifteindir = massatala - atómnúmer = ${Math.round(el.atomicMass)} - ${el.atomicNumber} = ${n}.`,
+      explanation: `Nifteindir = massatala - atómnúmer = ${el.massNumber} - ${el.atomicNumber} = ${n}.`,
     });
   }
 
@@ -103,7 +103,7 @@ function hintFor(question: Question): string {
     return 'Hlutlaust atóm hefur jafnmargar rafeindir og róteindir (= atómnúmer).';
   }
   if (question.type === 'neutrons') {
-    return 'Fjöldi nifteinda = massatala − fjöldi róteinda. Rúnaðu frumeindamassann og dragðu frá atómnúmerinu.';
+    return 'Nifteindir = massatala − atómnúmer. Massatalan er talan í heiti samsætunnar (t.d. 63 í Cu-63) — hún er ekki frumeindamassinn sem stendur á lotukerfinu.';
   }
   return 'Atómnúmerið (fjöldi róteinda) ákvarðar hvaða frumefni þetta er. Leitaðu að þeim atómnúmeri í lotukerfinu.';
 }
@@ -241,7 +241,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
             </div>
 
             <div className="bg-green-50 p-4 rounded-lg">
-              <h3 className="font-bold text-green-800 mb-2">Dæmi: Kolefni (C)</h3>
+              <h3 className="font-bold text-green-800 mb-2">Dæmi: Kolefni-12 (C-12)</h3>
               <div className="text-sm text-green-700 space-y-1 font-mono">
                 <p>
                   Raðtala (Z) = 6 → <strong>6 prótónur</strong>
@@ -250,7 +250,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
                   Hlutlaust atóm → <strong>6 rafeindir</strong>
                 </p>
                 <p>
-                  Massatala ≈ 12 → Nifteindir = 12 − 6 = <strong>6 nifteindir</strong>
+                  Massatala = 12 → Nifteindir = 12 − 6 = <strong>6 nifteindir</strong>
                 </p>
               </div>
             </div>
@@ -259,7 +259,10 @@ export function Level3({ onBack, onComplete }: Level3Props) {
               <h3 className="font-bold text-amber-800 mb-2">Hvar finn ég upplýsingarnar?</h3>
               <p className="text-sm text-amber-700">
                 Í lotukerfinu: raðtalan er neðst (t.d. 6 fyrir C) og frumeindamassinn er efst (t.d.
-                12,01 fyrir C). Námundaðu frumeindamann upp í heiltölu til að fá massatöluna.
+                12,01 fyrir C). Frumeindamassinn er meðaltal allra samsæta frumefnisins og er því
+                ekki massatalan: massatalan á við eina tiltekna samsætu og er alltaf heiltala. Hún
+                stendur í heiti samsætunnar — 12 í kolefni-12 (C-12) — og spurningarnar hér gefa
+                hana því beint.
               </p>
             </div>
 
@@ -390,7 +393,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
               <h3 className="font-bold text-warm-800 mb-2">
                 {question.element.name} ({question.element.symbol})
               </h3>
-              <div className="grid grid-cols-3 gap-3 text-center text-sm">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-sm">
                 <div className="bg-white rounded-lg p-2 border">
                   <div className="text-warm-500 text-xs">Róteindir</div>
                   <div className="font-bold text-lg">{question.element.atomicNumber}</div>
@@ -400,14 +403,16 @@ export function Level3({ onBack, onComplete }: Level3Props) {
                   <div className="font-bold text-lg">{question.element.atomicNumber}</div>
                 </div>
                 <div className="bg-white rounded-lg p-2 border">
+                  <div className="text-warm-500 text-xs">Massatala</div>
+                  <div className="font-bold text-lg">{question.element.massNumber}</div>
+                </div>
+                <div className="bg-white rounded-lg p-2 border">
                   <div className="text-warm-500 text-xs">Nifteindir</div>
-                  <div className="font-bold text-lg">
-                    {Math.round(question.element.atomicMass) - question.element.atomicNumber}
-                  </div>
+                  <div className="font-bold text-lg">{neutronCount(question.element)}</div>
                 </div>
               </div>
               <p className="text-xs text-warm-500 mt-2 text-center">
-                Massatala = róteindir + nifteindir = {Math.round(question.element.atomicMass)}
+                Massatala = róteindir + nifteindir = {question.element.massNumber}
               </p>
             </div>
 

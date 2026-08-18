@@ -1,6 +1,33 @@
 # Phase 1: Stop teaching wrong chemistry — Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **STATUS: executed 2026-08-18** on branch `fix/phase-1-correctness`. All four tasks and the
+> whole-phase verification are done — `pnpm type-check` clean, `pnpm test` green (1061 passed,
+> 3 expected-fail), `pnpm build` exit 0. Deviations and findings, so the record matches the code:
+>
+> - **Commit scopes.** The messages below use game-name scopes (`fix(ph-titration)`) which the
+>   repo's own `commitlint.config.js` `scope-enum` does not allow. Shipped as `fix(3-ar)`,
+>   `fix(1-ar)`, `fix(2-ar)` instead.
+> - **Task 1.** `it.fails.each` does chain in this Vitest (4.1.10), so the three disagreeing
+>   titrations are pinned as expected-failures rather than skipped. Measured gaps: id 6 HF
+>   1.996 vs 2.08, id 11 H₂SO₃ 1.443 vs 1.5, id 12 oxalic 1.163 vs 1.3 — matching this plan's
+>   table exactly. Their declared values still need a teacher decision.
+> - **Task 2.** The eleven-element table was verified three ways independently before being
+>   written; all three agreed with each other and with the plan on all 42 records. Two of the
+>   seven in-pool mismatches are near-ties (Br 50.69/49.31, Ge 36.5/27.45), which sharpens the
+>   derivability question this plan raises in Step 6 — recorded in `docs/README.md`.
+>   The dead "Notaðu lotukerfið" pointer in the neutron question was deleted as part of the fix,
+>   since it named a table that cannot answer it under any of the options. Whether the question
+>   should name the nuclide is still open.
+> - **Task 3.** The placeholder leak was real: L3-6 is the only `derivation` item with
+>   `scientificNotation`, so `t.d. 1.08e12` printed that question's own key in the input box.
+> - **Task 4.** Step 7's sweep found that a data-only scan overstates this defect by four files —
+>   `nafnakerfid` L1, `lotukerfid` L2, `hess-law` L1 and `kinetics` L1 all shuffle at render and
+>   are **not** defects. Two real cases remain: `kinetics` L3 (6/6) and `organic-nomenclature`
+>   L3 (6/10).
+> - **Not done, deliberately:** the seven Tier-0 items in "What this phase deliberately does not
+>   do" below. Phase 1b is a decision for Siggi.
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Fix four defects in shipped games that teach or grade chemistry incorrectly, and guard each one with a test that fails before the fix. Four, not all four — see _What this phase deliberately does not do_ for the seven Tier-0 correctness items this phase leaves standing.
 
@@ -37,7 +64,7 @@
 
 The existing test at `:51-56` asserts only `1 < pH < 7`, so the wrong value 4.37 passes it. `src/data/titrations.ts:76` records the true answer: `initialPH: 2.87` for 25.0 mL of 0.100 M acetic acid, `Ka: 1.8e-5`.
 
-- [ ] **Step 1: Replace the loose assertion with one that pins the data file's own value**
+- [x] **Step 1: Replace the loose assertion with one that pins the data file's own value**
 
 In `apps/games/3-ar/ph-titration/src/__tests__/ph-calculations.test.ts`, replace the body of `it('returns acidic pH for initial weak acid solution', ...)`:
 
@@ -71,14 +98,14 @@ it('returns the correct initial pOH-derived pH for a weak base', () => {
 
 The asserted 11.13 is arithmetic, not a lookup: `14 − 0.5·(4.74 + 1.00) = 14 − 2.87`. It agrees with the data file's own `initialPH`, which is the point of the test. Passing `5.6e-10` here instead — as an earlier draft of this plan did — makes the function read it as a pKa of 5.6e-10, giving `Ka ≈ 1`, `Kb ≈ 1e-14`, and a returned pH of **5.00** both before and (as 6.50) after the fix. Neither number has anything to do with ammonia.
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `pnpm vitest run apps/games/3-ar/ph-titration --reporter=verbose`
 Expected: FAIL. The first reports `expected 4.37 to be close to 2.87`; the second passes only by coincidence and may pass; the third reports **9.63** instead of 11.13.
 
 That 9.63 is the whole point of the weak-base case, and it is the _opposite_ direction from the acid: `log10(0.1/1000) = −4` instead of `−1`, so the spurious division inflates pOH by 1.5 and therefore pulls the **pH down** by 1.5. Weak acids start ~1.5 units too high; weak bases start ~1.5 units too low.
 
-- [ ] **Step 3: Remove the four spurious divisions**
+- [x] **Step 3: Remove the four spurious divisions**
 
 In `apps/games/3-ar/ph-titration/src/utils/ph-calculations.ts`, change line 57:
 
@@ -100,12 +127,12 @@ const sqrtKaCa = Math.sqrt(Ka1 * molarityAcid);
 
 Leave every `(volume * molarity) / 1000` and `(volumeAcid + volumeBase) / 1000` line untouched.
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `pnpm vitest run apps/games/3-ar/ph-titration --reporter=verbose`
 Expected: PASS, all three.
 
-- [ ] **Step 5: Check the curve start against the data file for every weak titration**
+- [x] **Step 5: Check the curve start against the data file for every weak titration**
 
 Add to the same test file:
 
@@ -154,7 +181,7 @@ Then `it.each` over `titrations.filter((t) => !KNOWN_DISAGREEING.includes(t.id))
 
 Do not widen the tolerance to swallow them. `toBeCloseTo(x, 0)` would still catch a return of the 1000× defect — that shifts pH by ~1.5 and precision 0 allows only ±0.5 — but ±0.5 is far too loose for what this test is _for_: buffer-region and equivalence-point drift of 0.2–0.3 is entirely plausible and would sail through.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add apps/games/3-ar/ph-titration/src/utils/ph-calculations.ts apps/games/3-ar/ph-titration/src/__tests__/ph-calculations.test.ts
@@ -209,7 +236,7 @@ Measured against the real Fisher-Yates shuffle (`packages/shared/utils/shuffle.t
 
 These supersede the ~31% / ~54% / ~81% figures quoted elsewhere, which were computed against a six-element mismatch set that omitted Ge.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `apps/games/1-ar/lotukerfid/src/__tests__/data-integrity.test.ts`:
 
@@ -267,7 +294,7 @@ describe('element data', () => {
 });
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `pnpm vitest run apps/games/1-ar/lotukerfid --reporter=verbose`
 
@@ -279,7 +306,7 @@ Expected: FAIL, but **not with a type error**. `vitest.config.ts` declares no `t
 
 The type error is real, but you will only see it from `pnpm type-check` — which is Step 7.
 
-- [ ] **Step 3: Add the field to the interface**
+- [x] **Step 3: Add the field to the interface**
 
 In `apps/games/1-ar/lotukerfid/src/data/elements.ts`:
 
@@ -302,7 +329,7 @@ export interface Element {
 }
 ```
 
-- [ ] **Step 4: Populate `massNumber` on all 42 records**
+- [x] **Step 4: Populate `massNumber` on all 42 records**
 
 The file holds **42 elements**; Level 3 draws only from the 36 with `period <= 4`. Populate the field on **all 42**, not the 36 — Step 3 declared `massNumber` non-optional, so leaving six records without it fails `pnpm type-check`. Add `massNumber:` after `atomicMass:` on every record, using the most abundant natural isotope.
 
@@ -341,12 +368,12 @@ For every element not in the eleven, `Math.round(atomicMass)` does agree — but
   },
 ```
 
-- [ ] **Step 5: Run the test to verify it passes**
+- [x] **Step 5: Run the test to verify it passes**
 
 Run: `pnpm vitest run apps/games/1-ar/lotukerfid --reporter=verbose`
 Expected: PASS. If a case fails, the literal you wrote disagrees with the known isotope — fix the literal.
 
-- [ ] **Step 6: Use the field, and stop teaching the rounding rule**
+- [x] **Step 6: Use the field, and stop teaching the rounding rule**
 
 In `apps/games/1-ar/lotukerfid/src/components/Level3.tsx`, replace the helper at `:31-33`:
 
@@ -404,7 +431,7 @@ Two ways out, and they are not equivalent in scope:
 
 Take the first now. Put the second to Siggi alongside the L3-12 significant-figures question and the `sætistala` choice, and if he wants it, add a line to the Task 2 commit message saying the neutron questions now name the isotope.
 
-- [ ] **Step 6b: Deal with the second whole-number mass table**
+- [x] **Step 6b: Deal with the second whole-number mass table**
 
 `elements.ts:476` exports `APPROX_MASSES`, a `Record<string, number>` of whole-number masses that carries **the exact values this task is removing** — `Cu: 64`, `Zn: 65`, `Br: 80`, `Ag: 108`, `Ba: 137`, `Hg: 201`, `Pb: 207`. Leaving it behind re-seeds the defect for the next author, who will reasonably read an exported table as the file's answer on the question.
 
@@ -412,12 +439,12 @@ It is dead **today**: `grep -rn "APPROX_MASSES" --include=*.ts --include=*.tsx .
 
 Prefer deleting it — an unused export with wrong values has no upside. If you would rather keep it, correct the seven entries above to the `massNumber` values and add a comment saying it must track them. Either way do it in **this** commit: the point is that no whole-number mass in this file disagrees with the new field. Confirm no importers appeared before deleting, and note that the identically named `molmassi` table is out of scope for this task.
 
-- [ ] **Step 7: Verify the whole game still builds and the suite is green**
+- [x] **Step 7: Verify the whole game still builds and the suite is green**
 
 Run: `pnpm type-check && pnpm vitest run apps/games/1-ar/lotukerfid`
 Expected: no type errors, tests pass. Step 7 is where the missing-`massNumber` type error surfaces if Step 4 skipped any of the 42 records — `pnpm vitest run` alone will not tell you.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add apps/games/1-ar/lotukerfid/src/data/elements.ts apps/games/1-ar/lotukerfid/src/components/Level3.tsx apps/games/1-ar/lotukerfid/src/__tests__/data-integrity.test.ts
@@ -460,7 +487,7 @@ This changes live answer keys for Ni, Cu, Zn, Ga, Ge, Se and Br."
 
 **One key, not two.** Earlier drafts of this plan, and `ORPHANED_GAMES_ASSESSMENT.md` before them, also called the item at `:354` unsatisfiable. **That claim was executed and falsified in Aug 2026 — do not act on it.** `:354` is the line `significantFigures: 3` inside item `L3-12`, a property rather than a defect site. Rendering the real `Level3` component and submitting answers, `29.25`, `29.3`, `29.2`, `29.0` and `29` all grade correct; `29.3` satisfies the 1% value check _and_ reports as exactly 3 significant figures, so the original "no input passes both" reasoning is false on its own terms. Independently, there were never two gates: `Level3.tsx:159-162` computes the significant-figure result and `:175-180` never passes it to `calculateCompositeScore`, so it renders as a feedback panel and cannot affect grading. Leave the item's data and its key alone.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `apps/games/1-ar/dimensional-analysis/src/__tests__/data-integrity.test.ts`:
 
@@ -490,12 +517,12 @@ The narrowing guard is not decoration: without `c.type === 'derivation'` the sni
 
 Note what this test does _not_ do. An earlier draft opened with a case that computed `(3.0e8 / 1000) * 3600` from its own local constant and asserted it was close to `1.08e9` — reading no repo data at all. That case passes whatever `challenges.ts` says, before and after the fix, so it is arithmetic practice rather than a regression guard. The version above keeps the independent computation but compares it against `item.expectedAnswer`, which is the only comparison that can fail.
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `pnpm vitest run apps/games/1-ar/dimensional-analysis --reporter=verbose`
 Expected: FAIL, one case — `expected 1080000000000 to be close to 1080000000`. If it passes at this point you have written the self-referential version; make it read `item.expectedAnswer`.
 
-- [ ] **Step 3: Fix the key**
+- [x] **Step 3: Fix the key**
 
 At `apps/games/1-ar/dimensional-analysis/src/data/challenges.ts:271`:
 
@@ -505,12 +532,12 @@ At `apps/games/1-ar/dimensional-analysis/src/data/challenges.ts:271`:
 
 Then check the same item's input placeholder — the review found the wrong value leaked there too. If the placeholder shows an answer of any kind, remove it; a placeholder must not contain the answer.
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `pnpm vitest run apps/games/1-ar/dimensional-analysis --reporter=verbose`
 Expected: PASS.
 
-- [ ] **Step 5: (investigation closed — no code change) Note the one open teaching question**
+- [x] **Step 5: (investigation closed — no code change) Note the one open teaching question**
 
 This step used to say "work the conversion by hand from `startValue`/`startUnit` to `targetUnit`; if no chain of the offered factors reaches the target, fix the data". Its own text provided for the other branch — "if it turns out to be satisfiable, say so and leave it alone" — and **that branch has now been taken**, so there is nothing to do here.
 
@@ -522,7 +549,7 @@ What survives is a teaching judgement for Siggi, not a correctness fix:
 
 The prompt ("Þú ert að undirbúa tilraun sem krefst 0.5 mol af NaCl") reads as the second. Under that reading the item is already internally consistent and needs nothing. Do not change the data before this is answered — and if it is answered "measurement", the fix is to the prompt or the tolerance, not to the key.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add apps/games/1-ar/dimensional-analysis/src/data/challenges.ts apps/games/1-ar/dimensional-analysis/src/__tests__/data-integrity.test.ts
@@ -551,7 +578,7 @@ data-integrity test that works the conversion independently."
 
 Do **not** shuffle `2-ar/kinetics` or `2-ar/redox-reactions` problem _order_ — that is a deliberate exam-stability choice recorded in the project instructions. This task is about the position of the correct option _within_ a question, which is a different thing.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `apps/games/2-ar/rafeindabygging/src/__tests__/data-integrity.test.ts`:
 
@@ -580,21 +607,21 @@ describe('level 3 puzzle data', () => {
 });
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `pnpm vitest run apps/games/2-ar/rafeindabygging --reporter=verbose`
 Expected: the first and third cases PASS; the second FAILs with `expected 1 to be greater than 1`, because every position is 0.
 
-- [ ] **Step 3: Spread the correct answers in the data**
+- [x] **Step 3: Spread the correct answers in the data**
 
 In `apps/games/2-ar/rafeindabygging/src/data/periodic-configs.ts`, reorder each puzzle's `options` array so the correct string is not always first. Move only the array elements — do not change any string's characters, since the distractors encode specific misconceptions (`[Ar] 3d²` is the "fills 3d before 4s" error, `[Ar] 4s¹ 3d³` the "always promote" error). Aim for a roughly even spread across the four slots over the eight puzzles.
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `pnpm vitest run apps/games/2-ar/rafeindabygging --reporter=verbose`
 Expected: PASS, all three.
 
-- [ ] **Step 5: Also shuffle at render time, so a replay differs**
+- [x] **Step 5: Also shuffle at render time, so a replay differs**
 
 Reordering the data fixes the current pool; shuffling at render stops the next author recreating the problem and varies the order between attempts. In `Level3.tsx`, add:
 
@@ -611,12 +638,12 @@ Render `displayedOptions` in place of `puzzle.options`, and grade by comparing t
 
 `@shared/utils` is the right import path — `packages/shared/utils/index.ts:9` does `export * from './shuffle'`, so the barrel re-exports `shuffleArray` and no deep import is needed.
 
-- [ ] **Step 6: Verify the game still builds**
+- [x] **Step 6: Verify the game still builds**
 
 Run: `pnpm type-check && pnpm vitest run apps/games/2-ar/rafeindabygging`
 Expected: no type errors, tests pass.
 
-- [ ] **Step 7: Record the remaining unshuffled games**
+- [x] **Step 7: Record the remaining unshuffled games**
 
 Sweep the other shipped games for option arrays whose correct answer sits at a constant index, and add what you find to `docs/README.md` under the live-defects section, with counts. Do not fix them in this task — one game per commit keeps answer-key changes reviewable. A quick way in:
 
@@ -626,7 +653,7 @@ grep -rln "options:" apps/games/*/*/src/data/*.ts
 
 then, for each hit, check whether the field naming the correct answer always equals `options[0]`.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add apps/games/2-ar/rafeindabygging/src docs/README.md
@@ -645,11 +672,11 @@ Records the other unshuffled games in docs/README.md for follow-up."
 
 ## Verification for the whole phase
 
-- [ ] `pnpm type-check` — no errors
-- [ ] `pnpm test` — green, and now containing four tests that fail if any of these defects returns
-- [ ] `pnpm build` — all games build
-- [ ] Load `1-ar/lotukerfid` Level 3 and answer a copper question correctly; confirm it is marked correct — and check the particle-breakdown card underneath says 34, not 35
-- [ ] Load `3-ar/ph-titration` and confirm the acetic acid curve starts near pH 2.87, and the ammonia curve near pH 11.13
+- [x] `pnpm type-check` — no errors
+- [x] `pnpm test` — green, and now containing four tests that fail if any of these defects returns
+- [x] `pnpm build` — all games build
+- [x] Load `1-ar/lotukerfid` Level 3 and answer a copper question correctly; confirm it is marked correct — and check the particle-breakdown card underneath says 34, not 35
+- [x] Load `3-ar/ph-titration` and confirm the acetic acid curve starts near pH 2.87, and the ammonia curve near pH 11.13
 
 ## What this phase deliberately does not do
 
