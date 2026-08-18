@@ -1,3 +1,10 @@
+// AUTO-GENERATED FILE — DO NOT EDIT BY HAND.
+//
+// Source:     content/islenskubraut/
+// Regenerate: pnpm islenskubraut:build
+//
+// Edit the YAML, not this file. A test fails if this file drifts from it.
+
 import { Category } from '../types';
 
 export const klaednadur: Category = {
@@ -88,7 +95,10 @@ export const klaednadur: Category = {
       question: 'Hvers konar klæðnaður er þetta?',
       icon: '📚',
       answers: [
-        { level: 'A1', options: ['bolur', 'buxur', 'jakki', 'skór'] },
+        {
+          level: 'A1',
+          options: ['bolur', 'buxur', 'jakki', 'skór'],
+        },
         {
           level: 'A2',
           options: [
@@ -127,7 +137,10 @@ export const klaednadur: Category = {
       question: 'Hvernig lítur það út?',
       icon: '👁️',
       answers: [
-        { level: 'A1', options: ['rautt', 'blátt', 'grænt', 'svart', 'hvítt'] },
+        {
+          level: 'A1',
+          options: ['rautt', 'blátt', 'grænt', 'svart', 'hvítt'],
+        },
         {
           level: 'A2',
           options: [
@@ -166,7 +179,10 @@ export const klaednadur: Category = {
       question: 'Hvernig finnst það við snertingu?',
       icon: '✋',
       answers: [
-        { level: 'A1', options: ['mjúkt', 'hart', 'slétt', 'gróft'] },
+        {
+          level: 'A1',
+          options: ['mjúkt', 'hart', 'slétt', 'gróft'],
+        },
         {
           level: 'A2',
           options: [
@@ -207,7 +223,10 @@ export const klaednadur: Category = {
       question: 'Úr hverju er það gert?',
       icon: '🧱',
       answers: [
-        { level: 'A1', options: ['úr ull', 'úr bómull', 'úr leðri', 'úr plasti'] },
+        {
+          level: 'A1',
+          options: ['úr ull', 'úr bómull', 'úr leðri', 'úr plasti'],
+        },
         {
           level: 'A2',
           options: [
@@ -243,7 +262,10 @@ export const klaednadur: Category = {
       question: 'Hvaða lögun hefur það?',
       icon: '🔷',
       answers: [
-        { level: 'A1', options: ['stórt', 'lítið', 'kringlótt', 'fernt'] },
+        {
+          level: 'A1',
+          options: ['stórt', 'lítið', 'kringlótt', 'fernt'],
+        },
         {
           level: 'A2',
           options: [
@@ -284,7 +306,10 @@ export const klaednadur: Category = {
       question: 'Til hvers er það notað?',
       icon: '🎯',
       answers: [
-        { level: 'A1', options: ['til að hlýja sér', 'til að verja sig', 'til að líta vel út'] },
+        {
+          level: 'A1',
+          options: ['til að hlýja sér', 'til að verja sig', 'til að líta vel út'],
+        },
         {
           level: 'A2',
           options: [
@@ -311,8 +336,14 @@ export const klaednadur: Category = {
       question: 'Hver notar þetta?',
       icon: '👤',
       answers: [
-        { level: 'A1', options: ['allir', 'börn', 'fullorðnir'] },
-        { level: 'A2', options: ['allir', 'börn', 'fullorðnir', 'nemendur', 'íþróttamenn'] },
+        {
+          level: 'A1',
+          options: ['allir', 'börn', 'fullorðnir'],
+        },
+        {
+          level: 'A2',
+          options: ['allir', 'börn', 'fullorðnir', 'nemendur', 'íþróttamenn'],
+        },
         {
           level: 'B1',
           options: [
@@ -333,8 +364,14 @@ export const klaednadur: Category = {
       question: 'Hvar er hægt að nota þetta?',
       icon: '📍',
       answers: [
-        { level: 'A1', options: ['inni', 'úti', 'í skólanum'] },
-        { level: 'A2', options: ['inni', 'úti', 'í skólanum', 'í vinnunni', 'í íþróttum'] },
+        {
+          level: 'A1',
+          options: ['inni', 'úti', 'í skólanum'],
+        },
+        {
+          level: 'A2',
+          options: ['inni', 'úti', 'í skólanum', 'í vinnunni', 'í íþróttum'],
+        },
         {
           level: 'B1',
           options: [
@@ -353,7 +390,10 @@ export const klaednadur: Category = {
       question: 'Hvenær er þetta notað?',
       icon: '🕐',
       answers: [
-        { level: 'A1', options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'] },
+        {
+          level: 'A1',
+          options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'],
+        },
         {
           level: 'A2',
           options: [

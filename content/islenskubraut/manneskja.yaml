@@ -1,0 +1,217 @@
+id: manneskja
+name: Manneskja
+icon: 👤
+description: Orðaforði um fólk — útlit, starf og athafnir
+color: "#7B2CBF"
+subCategories:
+  - id: s1
+    name: Staða
+    options:
+      - á lífi
+      - látin
+      - skálduð persóna
+  - id: s2
+    name: Frægð
+    options:
+      - fræg
+      - ekki fræg
+  - id: s3
+    name: Starf/hlutverk
+    options:
+      - leikari
+      - íþróttamaður
+      - söngvari
+      - stjórnmálamaður
+      - nemandi
+      - kennari
+      - læknir
+      - lögreglumaður
+      - kokkur
+      - listamaður
+  - id: s4
+    name: Aldur
+    options:
+      - barn
+      - unglingur
+      - fullorðinn
+      - aldraður/öldruð
+  - id: s5
+    name: Útlit
+    options:
+      - há/hár
+      - lág/lágur
+      - ung/ungur
+      - gömul/gamall
+      - með sítt hár
+      - með stutt hár
+      - sköllótt
+      - með gleraugu
+      - án gleraugna
+      - með skegg
+      - án skeggs
+  - id: s6
+    name: Athafnir
+    options:
+      - vinnur
+      - lærir
+      - syngur
+      - spilar
+      - ferðast
+      - eldar
+      - les
+      - teiknar
+sentenceFrames:
+  - id: f1
+    level: A1
+    frames:
+      - Þetta er ___.
+      - Hún/Hann er ___.
+      - Hún/Hann ___.
+      - Maður notar það til að ___.
+  - id: f2
+    level: A2
+    frames:
+      - Þetta er ___ sem er ___.
+      - Hún/Hann er ___ og ___.
+      - Hún/Hann vinnur sem ___.
+      - Maður finnur það ___.
+      - Maður notar það ___.
+  - id: f3
+    level: B1
+    frames:
+      - Ég held að þetta sé ___ vegna þess að ___.
+      - Þessi manneskja er ___ og er þekkt/óþekkt fyrir ___.
+      - Það er oftast notað af ___ til að ___.
+guidingQuestions:
+  - id: q1
+    question: Hvers konar manneskja er þetta?
+    icon: 📚
+    answers:
+      A1:
+        - barn
+        - fullorðinn
+        - gamall/gömul
+      A2:
+        - barn
+        - unglingur
+        - fullorðinn
+        - aldraður/öldruð
+        - fræg
+        - ekki fræg
+      B1:
+        - barn
+        - unglingur
+        - fullorðinn
+        - aldraður/öldruð
+        - fræg
+        - ekki fræg
+        - á lífi
+        - látin
+        - skálduð persóna
+  - id: q2
+    question: Hvernig lítur hún/hann út?
+    icon: 👁️
+    answers:
+      A1:
+        - há/hár
+        - lág/lágur
+        - ung/ungur
+        - gömul/gamall
+      A2:
+        - há/hár
+        - lág/lágur
+        - ung/ungur
+        - gömul/gamall
+        - með sítt hár
+        - með stutt hár
+        - með gleraugu
+      B1:
+        - há/hár
+        - lág/lágur
+        - ung/ungur
+        - gömul/gamall
+        - með sítt hár
+        - með stutt hár
+        - sköllótt
+        - með gleraugu
+        - með skegg
+        - án skeggs
+  - id: q3
+    question: Fyrir hvað er manneskjan þekkt?
+    icon: 🎯
+    answers:
+      A1:
+        - til að vinna
+        - til að læra
+        - til að leika sér
+      A2:
+        - til að vinna
+        - til að læra
+        - til að leika sér
+        - til að syngja
+        - til að lækna
+        - til að kenna
+      B1:
+        - til að vinna
+        - til að læra
+        - til að leika sér
+        - til að syngja
+        - til að lækna
+        - til að kenna
+        - til að stjórna
+        - til að skapa
+  - id: q4
+    question: Hvar er hægt að finna þessa manneskju?
+    icon: 📍
+    answers:
+      A1:
+        - heima
+        - í vinnunni
+        - í skólanum
+      A2:
+        - heima
+        - í vinnunni
+        - í skólanum
+        - á sjúkrahúsi
+        - á leikvelli
+      B1:
+        - heima
+        - í vinnunni
+        - í skólanum
+        - á sjúkrahúsi
+        - á leikvelli
+        - á sviði
+        - í sjónvarpi
+        - á ferðalagi
+  - id: q5
+    question: Hvenær er hún/hann virk/virkur?
+    icon: 🕐
+    answers:
+      A1:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+      A2:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+        - á veturna
+        - á sumrin
+        - um helgar
+        - á virkum dögum
+      B1:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+        - á veturna
+        - á sumrin
+        - um helgar
+        - á virkum dögum
+        - í sérstökum tilvikum
+        - í hátíðum
+        - daglega
+        - sjaldan
+        - oft

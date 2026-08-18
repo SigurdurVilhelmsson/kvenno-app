@@ -1,0 +1,367 @@
+id: matur
+name: Matur og drykkur
+icon: 🍽️
+description: Orðaforði um mat og drykk — tegundir, bragð og undirbúning
+color: "#E76F51"
+subCategories:
+  - id: s1
+    name: Tegund
+    options:
+      - ávöxtur
+      - grænmeti
+      - kjöt
+      - fiskur
+      - mjólkurvara
+      - sælgæti
+      - brauð/korn
+      - drykkur
+  - id: s2
+    name: Bragð
+    options:
+      - sætt
+      - salt
+      - súrt
+      - beiskt
+      - kryddað/sterkt
+  - id: s3
+    name: Áferð/form
+    options:
+      - mjúkt
+      - hart
+      - fljótandi
+      - þurrt
+  - id: s4
+    name: Undirbúningur
+    options:
+      - hrátt
+      - soðið
+      - steikt
+      - bakað
+      - heitt
+      - kalt
+      - frosið
+  - id: s5
+    name: Hvar
+    options:
+      - í eldhúsinu
+      - í ísskápnum
+      - í búðinni
+      - á veitingastað
+  - id: s6
+    name: Hvenær
+    options:
+      - í morgunmat
+      - í hádegismat
+      - í kvöldmat
+      - sem millimál
+      - alltaf/hvenær sem er
+sentenceFrames:
+  - id: f1
+    level: A1
+    frames:
+      - Þetta er ___.
+      - Það er ___.
+      - Maður borðar það ___.
+      - Það er ___.
+      - Maður notar það til að ___.
+  - id: f2
+    level: A2
+    frames:
+      - Þetta er ___ sem er ___.
+      - Maður borðar/drekkur það ___.
+      - Það er ___.
+      - Það finnst ___ við snertingu.
+      - Það er gert úr ___.
+      - Maður finnur það ___.
+      - Maður notar það ___.
+  - id: f3
+    level: B1
+    frames:
+      - Þetta er ___ sem bragðast ___.
+      - Það er oft borðað/drukkið ___.
+      - Mér finnst ___.
+      - Það er ___ að snerta vegna þess að ___.
+      - Það er gert úr ___ sem er ___.
+      - Það er oftast notað af ___ til að ___.
+guidingQuestions:
+  - id: q1
+    question: Hvers konar matur er þetta?
+    icon: 📚
+    answers:
+      A1:
+        - ávöxtur
+        - grænmeti
+        - kjöt
+        - drykkur
+      A2:
+        - ávöxtur
+        - grænmeti
+        - kjöt
+        - fiskur
+        - mjólkurvara
+        - sælgæti
+        - brauð/korn
+        - drykkur
+      B1:
+        - ávöxtur
+        - grænmeti
+        - kjöt
+        - fiskur
+        - mjólkurvara
+        - sælgæti
+        - brauð/korn
+        - drykkur
+        - krydd
+        - sósa
+  - id: q2
+    question: Hvernig lítur það út?
+    icon: 👁️
+    answers:
+      A1:
+        - rautt
+        - grænt
+        - gult
+        - hvítt
+      A2:
+        - rautt
+        - grænt
+        - gult
+        - hvítt
+        - brúnt
+        - appelsínugult
+        - stórt
+        - lítið
+      B1:
+        - rautt
+        - grænt
+        - gult
+        - hvítt
+        - brúnt
+        - appelsínugult
+        - stórt
+        - lítið
+        - kringlótt
+        - langt
+        - flatt
+  - id: q3
+    question: Hvernig bragðast það?
+    icon: 👅
+    answers:
+      A1:
+        - sætt
+        - salt
+        - súrt
+        - beiskt
+      A2:
+        - sætt
+        - salt
+        - súrt
+        - beiskt
+        - kryddað
+        - sterkt
+        - milt
+        - ferskt
+      B1:
+        - sætt
+        - salt
+        - súrt
+        - beiskt
+        - kryddað
+        - sterkt
+        - milt
+        - ferskt
+        - bragðmikið
+        - bragðlaust
+        - sælgæti-sætt
+        - náttúrulega sætt
+  - id: q4
+    question: Hvernig finnst það við snertingu?
+    icon: ✋
+    answers:
+      A1:
+        - mjúkt
+        - hart
+        - slétt
+        - gróft
+      A2:
+        - mjúkt
+        - hart
+        - slétt
+        - gróft
+        - þungt
+        - létt
+        - heitt
+        - kalt
+        - blautt
+        - þurrt
+      B1:
+        - mjúkt
+        - hart
+        - slétt
+        - gróft
+        - þungt
+        - létt
+        - heitt
+        - kalt
+        - blautt
+        - þurrt
+        - loðið
+        - hálkt
+        - stinnt
+        - sveigjanlegt
+  - id: q5
+    question: Hvernig lyktar af því?
+    icon: 👃
+    answers:
+      A1:
+        - gott
+        - vont
+        - ekkert
+      A2:
+        - gott
+        - vont
+        - ekkert
+        - ferskt
+        - sterkt
+        - milt
+      B1:
+        - gott
+        - vont
+        - ekkert
+        - ferskt
+        - sterkt
+        - milt
+        - ilmandi
+        - stingandi
+        - sætt
+        - beiskt
+  - id: q6
+    question: Hvaða lögun hefur það?
+    icon: 🔷
+    answers:
+      A1:
+        - stórt
+        - lítið
+        - kringlótt
+        - fernt
+      A2:
+        - stórt
+        - lítið
+        - kringlótt
+        - fernt
+        - langt
+        - stutt
+        - hátt
+        - lágt
+        - flatt
+        - þykkt
+      B1:
+        - stórt
+        - lítið
+        - kringlótt
+        - fernt
+        - langt
+        - stutt
+        - hátt
+        - lágt
+        - flatt
+        - þykkt
+        - sporöskjulaga
+        - þríhyrningslaga
+        - sívalningslaga
+        - óreglulegt
+  - id: q7
+    question: Til hvers er það notað?
+    icon: 🎯
+    answers:
+      A1:
+        - til að borða
+        - til að drekka
+      A2:
+        - til að borða
+        - til að drekka
+        - til að elda með
+        - til að baka með
+      B1:
+        - til að borða
+        - til að drekka
+        - til að elda með
+        - til að baka með
+        - til að næra sig
+        - til að njóta
+  - id: q8
+    question: Hver notar þetta?
+    icon: 👤
+    answers:
+      A1:
+        - allir
+        - börn
+        - fullorðnir
+      A2:
+        - allir
+        - börn
+        - fullorðnir
+        - kokkar
+        - bakarar
+      B1:
+        - allir
+        - börn
+        - fullorðnir
+        - kokkar
+        - bakarar
+        - sérfræðingar
+        - ferðamenn
+  - id: q9
+    question: Hvar er hægt að finna þetta?
+    icon: 📍
+    answers:
+      A1:
+        - heima
+        - í búð
+        - á veitingastað
+      A2:
+        - heima
+        - í búð
+        - á veitingastað
+        - í skólanum
+        - úti
+      B1:
+        - heima
+        - í búð
+        - á veitingastað
+        - í skólanum
+        - úti
+        - á markaði
+        - í garðinum
+  - id: q10
+    question: Hvenær er þetta notað?
+    icon: 🕐
+    answers:
+      A1:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+      A2:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+        - á veturna
+        - á sumrin
+        - um helgar
+        - á virkum dögum
+      B1:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+        - á veturna
+        - á sumrin
+        - um helgar
+        - á virkum dögum
+        - í sérstökum tilvikum
+        - í hátíðum
+        - daglega
+        - sjaldan
+        - oft

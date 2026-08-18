@@ -10,6 +10,12 @@
 
 **Spec:** `docs/superpowers/specs/2026-08-17-islenskubraut-content-authoring-design.md`
 
+**Status (2026-08-18):** Tasks 1-4 complete, reviewed and merged to `main`. Tasks 5 (Excel export),
+6 (Excel import) and 7 (documentation) are NOT started — so `pnpm islenskubraut:export` and
+`pnpm islenskubraut:import`, named throughout this plan, do not exist yet. Task 7's documentation
+work was folded into the Tasks 1-4 merge instead, because leaving `CLAUDE.md` pointing at the old
+source of truth until Task 7 would have misdirected anyone reading it in the meantime.
+
 ## Prerequisite
 
 **PR #16 must be merged first.** This plan modifies `scripts/generate-islenskubraut-data.mjs`, the `generate:islenskubraut-data` package script, the `categoryIds` export in `server/src/lib/islenskubraut-data.ts`, and `apps/islenskubraut/src/data/__tests__/server-copy-in-sync.test.ts` — none of which exist on `main` yet. Branch from `main` after #16 lands.

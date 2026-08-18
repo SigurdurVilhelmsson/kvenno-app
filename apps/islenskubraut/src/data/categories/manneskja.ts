@@ -1,3 +1,10 @@
+// AUTO-GENERATED FILE — DO NOT EDIT BY HAND.
+//
+// Source:     content/islenskubraut/
+// Regenerate: pnpm islenskubraut:build
+//
+// Edit the YAML, not this file. A test fails if this file drifts from it.
+
 import { Category } from '../types';
 
 export const manneskja: Category = {
@@ -84,7 +91,10 @@ export const manneskja: Category = {
       question: 'Hvers konar manneskja er þetta?',
       icon: '📚',
       answers: [
-        { level: 'A1', options: ['barn', 'fullorðinn', 'gamall/gömul'] },
+        {
+          level: 'A1',
+          options: ['barn', 'fullorðinn', 'gamall/gömul'],
+        },
         {
           level: 'A2',
           options: ['barn', 'unglingur', 'fullorðinn', 'aldraður/öldruð', 'fræg', 'ekki fræg'],
@@ -109,7 +119,10 @@ export const manneskja: Category = {
       question: 'Hvernig lítur hún/hann út?',
       icon: '👁️',
       answers: [
-        { level: 'A1', options: ['há/hár', 'lág/lágur', 'ung/ungur', 'gömul/gamall'] },
+        {
+          level: 'A1',
+          options: ['há/hár', 'lág/lágur', 'ung/ungur', 'gömul/gamall'],
+        },
         {
           level: 'A2',
           options: [
@@ -140,36 +153,13 @@ export const manneskja: Category = {
       ],
     },
     {
-      question: 'Hvaða lögun hefur það?',
-      icon: '🔷',
-      answers: [
-        { level: 'A1', options: ['stórt', 'lítið', 'hátt', 'lágt'] },
-        {
-          level: 'A2',
-          options: ['stórt', 'lítið', 'hátt', 'lágt', 'langt', 'stutt', 'þykkt', 'mjótt'],
-        },
-        {
-          level: 'B1',
-          options: [
-            'stórt',
-            'lítið',
-            'hátt',
-            'lágt',
-            'langt',
-            'stutt',
-            'þykkt',
-            'mjótt',
-            'sporöskjulaga',
-            'kringlótt',
-          ],
-        },
-      ],
-    },
-    {
       question: 'Fyrir hvað er manneskjan þekkt?',
       icon: '🎯',
       answers: [
-        { level: 'A1', options: ['til að vinna', 'til að læra', 'til að leika sér'] },
+        {
+          level: 'A1',
+          options: ['til að vinna', 'til að læra', 'til að leika sér'],
+        },
         {
           level: 'A2',
           options: [
@@ -197,37 +187,13 @@ export const manneskja: Category = {
       ],
     },
     {
-      question: 'Hver notar þetta?',
-      icon: '👤',
-      answers: [
-        { level: 'A1', options: ['allir', 'börn', 'fullorðnir'] },
-        {
-          level: 'A2',
-          options: ['allir', 'börn', 'fullorðnir', 'nemendur', 'kennarar', 'læknar', 'íþróttamenn'],
-        },
-        {
-          level: 'B1',
-          options: [
-            'allir',
-            'börn',
-            'fullorðnir',
-            'nemendur',
-            'kennarar',
-            'læknar',
-            'íþróttamenn',
-            'sérfræðingar',
-            'listamenn',
-            'ferðamenn',
-            'iðnaðarmenn',
-          ],
-        },
-      ],
-    },
-    {
       question: 'Hvar er hægt að finna þessa manneskju?',
       icon: '📍',
       answers: [
-        { level: 'A1', options: ['heima', 'í vinnunni', 'í skólanum'] },
+        {
+          level: 'A1',
+          options: ['heima', 'í vinnunni', 'í skólanum'],
+        },
         {
           level: 'A2',
           options: ['heima', 'í vinnunni', 'í skólanum', 'á sjúkrahúsi', 'á leikvelli'],
@@ -251,7 +217,10 @@ export const manneskja: Category = {
       question: 'Hvenær er hún/hann virk/virkur?',
       icon: '🕐',
       answers: [
-        { level: 'A1', options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'] },
+        {
+          level: 'A1',
+          options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'],
+        },
         {
           level: 'A2',
           options: [

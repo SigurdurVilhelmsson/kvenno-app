@@ -1,0 +1,325 @@
+id: farartaeki
+name: Farartæki
+icon: 🚗
+description: Orðaforði um farartæki — á landi, sjó og í lofti
+color: "#264653"
+subCategories:
+  - id: s1
+    name: Tegund
+    options:
+      - bíll
+      - rúta
+      - hjól/reiðhjól
+      - mótorhjól
+      - lest
+      - flugvél
+      - skip/bátur
+      - sleði
+      - hlaupahjól
+  - id: s2
+    name: Hvar fer það
+    options:
+      - á landi
+      - á sjó/vatni
+      - í lofti
+      - á snjó
+  - id: s3
+    name: Stærð
+    options:
+      - lítið
+      - meðalstórt
+      - stórt
+      - risastórt
+  - id: s4
+    name: Eiginleikar
+    options:
+      - hefur hjól
+      - hefur ekki hjól
+      - með vél
+      - án vélar
+      - hraðvirkt
+      - hægvirkt
+  - id: s5
+    name: Hvenær notað
+    options:
+      - á veturna
+      - á sumrin
+      - allt árið
+      - í sérstökum tilfellum
+  - id: s6
+    name: Fjöldi farþega
+    options:
+      - einn
+      - fáir
+      - margir
+sentenceFrames:
+  - id: f1
+    level: A1
+    frames:
+      - Þetta er ___.
+      - Það fer ___.
+      - Það er ___.
+      - Það hljómar ___.
+      - Maður notar það til að ___.
+  - id: f2
+    level: A2
+    frames:
+      - Þetta er ___ sem fer ___.
+      - Það hefur ___ og er ___.
+      - Það finnst ___ við snertingu.
+      - Það er gert úr ___.
+      - Maður finnur það ___.
+      - Maður notar það ___.
+  - id: f3
+    level: B1
+    frames:
+      - Þetta farartæki er ___ sem er notað til að ___.
+      - Það getur flutt ___ og fer ___.
+      - Það er ___ að snerta vegna þess að ___.
+      - Það er gert úr ___ sem er ___.
+      - Það er oftast notað af ___ til að ___.
+guidingQuestions:
+  - id: q1
+    question: Hvers konar farartæki er þetta?
+    icon: 📚
+    answers:
+      A1:
+        - bíll
+        - rúta
+        - hjól
+        - flugvél
+        - skip
+      A2:
+        - bíll
+        - rúta
+        - hjól
+        - mótorhjól
+        - lest
+        - flugvél
+        - skip/bátur
+        - sleði
+      B1:
+        - bíll
+        - rúta
+        - hjól
+        - mótorhjól
+        - lest
+        - flugvél
+        - skip/bátur
+        - sleði
+        - hlaupahjól
+        - sportvagn
+        - þyrla
+  - id: q2
+    question: Hvernig lítur það út?
+    icon: 👁️
+    answers:
+      A1:
+        - stórt
+        - lítið
+        - með hjólum
+        - án hjóla
+      A2:
+        - stórt
+        - lítið
+        - með hjólum
+        - án hjóla
+        - langt
+        - stutt
+        - hátt
+        - lágt
+      B1:
+        - stórt
+        - lítið
+        - með hjólum
+        - án hjóla
+        - langt
+        - stutt
+        - hátt
+        - lágt
+        - straumlínulaga
+        - fernt
+        - hraðvirkt
+  - id: q3
+    question: Hvaða hljóð gefur það frá sér?
+    icon: 🔊
+    answers:
+      A1:
+        - hátt
+        - lágt
+        - þögult
+      A2:
+        - hátt
+        - lágt
+        - þögult
+        - súðar
+        - hringir
+        - öskrar
+      B1:
+        - hátt
+        - lágt
+        - þögult
+        - súðar
+        - hringir
+        - öskrar
+        - hvæsir
+        - umar
+        - dúnar
+        - þrymir
+  - id: q4
+    question: Úr hverju er það gert?
+    icon: 🧱
+    answers:
+      A1:
+        - úr málmi
+        - úr plasti
+        - úr tré
+      A2:
+        - úr málmi
+        - úr plasti
+        - úr tré
+        - úr steini
+        - úr gleri
+      B1:
+        - úr málmi
+        - úr plasti
+        - úr tré
+        - úr steini
+        - úr gleri
+        - úr endurunnru efni
+        - úr náttúrulegum efnum
+        - úr gerviefnum
+  - id: q5
+    question: Hvaða lögun hefur það?
+    icon: 🔷
+    answers:
+      A1:
+        - stórt
+        - lítið
+        - kringlótt
+        - fernt
+      A2:
+        - stórt
+        - lítið
+        - kringlótt
+        - fernt
+        - langt
+        - stutt
+        - hátt
+        - lágt
+        - flatt
+        - þykkt
+      B1:
+        - stórt
+        - lítið
+        - kringlótt
+        - fernt
+        - langt
+        - stutt
+        - hátt
+        - lágt
+        - flatt
+        - þykkt
+        - sporöskjulaga
+        - þríhyrningslaga
+        - sívalningslaga
+        - óreglulegt
+  - id: q6
+    question: Til hvers er það notað?
+    icon: 🎯
+    answers:
+      A1:
+        - til að ferðast
+        - til að flytja
+        - til að leika sér
+      A2:
+        - til að ferðast
+        - til að flytja
+        - til að leika sér
+        - til að vinna
+      B1:
+        - til að ferðast
+        - til að flytja
+        - til að leika sér
+        - til að vinna
+        - til að keppa
+        - til að bjarga
+  - id: q7
+    question: Hver notar þetta?
+    icon: 👤
+    answers:
+      A1:
+        - allir
+        - börn
+        - fullorðnir
+      A2:
+        - allir
+        - börn
+        - fullorðnir
+        - bílstjórar
+        - flugmenn
+        - sjómenn
+      B1:
+        - allir
+        - börn
+        - fullorðnir
+        - bílstjórar
+        - flugmenn
+        - sjómenn
+        - sérfræðingar
+        - ferðamenn
+        - iðnaðarmenn
+  - id: q8
+    question: Hvar er hægt að nota/finna þetta?
+    icon: 📍
+    answers:
+      A1:
+        - á götunni
+        - á sjónum
+        - í loftinu
+      A2:
+        - á götunni
+        - á sjónum
+        - í loftinu
+        - á þjóðveginum
+        - á flugvellinum
+      B1:
+        - á götunni
+        - á sjónum
+        - í loftinu
+        - á þjóðveginum
+        - á flugvellinum
+        - í höfninni
+        - á lestarbraut
+  - id: q9
+    question: Hvenær er þetta notað?
+    icon: 🕐
+    answers:
+      A1:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+      A2:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+        - á veturna
+        - á sumrin
+        - um helgar
+        - á virkum dögum
+      B1:
+        - á morgnana
+        - á daginn
+        - á kvöldin
+        - alltaf
+        - á veturna
+        - á sumrin
+        - um helgar
+        - á virkum dögum
+        - í sérstökum tilvikum
+        - í hátíðum
+        - daglega
+        - sjaldan
+        - oft

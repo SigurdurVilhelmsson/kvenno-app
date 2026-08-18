@@ -1,3 +1,10 @@
+// AUTO-GENERATED FILE — DO NOT EDIT BY HAND.
+//
+// Source:     content/islenskubraut/
+// Regenerate: pnpm islenskubraut:build
+//
+// Edit the YAML, not this file. A test fails if this file drifts from it.
+
 import { Category } from '../types';
 
 export const stadir: Category = {
@@ -66,7 +73,10 @@ export const stadir: Category = {
       question: 'Hvers konar staður er þetta?',
       icon: '📚',
       answers: [
-        { level: 'A1', options: ['hús', 'skóli', 'búð', 'sundlaug'] },
+        {
+          level: 'A1',
+          options: ['hús', 'skóli', 'búð', 'sundlaug'],
+        },
         {
           level: 'A2',
           options: [
@@ -105,7 +115,10 @@ export const stadir: Category = {
       question: 'Hvernig lítur þetta út?',
       icon: '👁️',
       answers: [
-        { level: 'A1', options: ['stórt', 'lítið', 'hátt', 'lágt'] },
+        {
+          level: 'A1',
+          options: ['stórt', 'lítið', 'hátt', 'lágt'],
+        },
         {
           level: 'A2',
           options: ['stórt', 'lítið', 'hátt', 'lágt', 'gamalt', 'nýtt', 'fallegt', 'ljótt'],
@@ -131,8 +144,14 @@ export const stadir: Category = {
       question: 'Hvernig lyktar þar?',
       icon: '👃',
       answers: [
-        { level: 'A1', options: ['gott', 'vont', 'ekkert'] },
-        { level: 'A2', options: ['gott', 'vont', 'ekkert', 'ferskt', 'sterkt', 'milt'] },
+        {
+          level: 'A1',
+          options: ['gott', 'vont', 'ekkert'],
+        },
+        {
+          level: 'A2',
+          options: ['gott', 'vont', 'ekkert', 'ferskt', 'sterkt', 'milt'],
+        },
         {
           level: 'B1',
           options: [
@@ -154,8 +173,14 @@ export const stadir: Category = {
       question: 'Úr hverju er það gert?',
       icon: '🧱',
       answers: [
-        { level: 'A1', options: ['úr tré', 'úr steini', 'úr málmi'] },
-        { level: 'A2', options: ['úr tré', 'úr steini', 'úr málmi', 'úr gleri', 'úr plasti'] },
+        {
+          level: 'A1',
+          options: ['úr tré', 'úr steini', 'úr málmi'],
+        },
+        {
+          level: 'A2',
+          options: ['úr tré', 'úr steini', 'úr málmi', 'úr gleri', 'úr plasti'],
+        },
         {
           level: 'B1',
           options: [
@@ -175,7 +200,10 @@ export const stadir: Category = {
       question: 'Hvaða lögun hefur það?',
       icon: '🔷',
       answers: [
-        { level: 'A1', options: ['stórt', 'lítið', 'kringlótt', 'fernt'] },
+        {
+          level: 'A1',
+          options: ['stórt', 'lítið', 'kringlótt', 'fernt'],
+        },
         {
           level: 'A2',
           options: [
@@ -216,7 +244,10 @@ export const stadir: Category = {
       question: 'Til hvers er þetta notað?',
       icon: '🎯',
       answers: [
-        { level: 'A1', options: ['til að búa', 'til að læra', 'til að versla'] },
+        {
+          level: 'A1',
+          options: ['til að búa', 'til að læra', 'til að versla'],
+        },
         {
           level: 'A2',
           options: ['til að búa', 'til að læra', 'til að versla', 'til að vinna', 'til að hvílast'],
@@ -239,8 +270,14 @@ export const stadir: Category = {
       question: 'Hver notar þetta?',
       icon: '👤',
       answers: [
-        { level: 'A1', options: ['allir', 'börn', 'fullorðnir'] },
-        { level: 'A2', options: ['allir', 'börn', 'fullorðnir', 'nemendur', 'kennarar', 'læknar'] },
+        {
+          level: 'A1',
+          options: ['allir', 'börn', 'fullorðnir'],
+        },
+        {
+          level: 'A2',
+          options: ['allir', 'börn', 'fullorðnir', 'nemendur', 'kennarar', 'læknar'],
+        },
         {
           level: 'B1',
           options: [
@@ -262,7 +299,10 @@ export const stadir: Category = {
       question: 'Hvar er þetta?',
       icon: '📍',
       answers: [
-        { level: 'A1', options: ['í bænum', 'úti á landi', 'við sjóinn'] },
+        {
+          level: 'A1',
+          options: ['í bænum', 'úti á landi', 'við sjóinn'],
+        },
         {
           level: 'A2',
           options: ['í bænum', 'úti á landi', 'við sjóinn', 'í úthverfi', 'í fjöllunum'],
@@ -285,7 +325,10 @@ export const stadir: Category = {
       question: 'Hvenær er þetta notað?',
       icon: '🕐',
       answers: [
-        { level: 'A1', options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'] },
+        {
+          level: 'A1',
+          options: ['á morgnana', 'á daginn', 'á kvöldin', 'alltaf'],
+        },
         {
           level: 'A2',
           options: [
