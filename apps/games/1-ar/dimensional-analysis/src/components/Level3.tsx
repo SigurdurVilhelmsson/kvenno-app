@@ -550,7 +550,7 @@ export function Level3({
                     onChange={(e) => setUserAnswer(e.target.value)}
                     placeholder={
                       problem.type === 'derivation' && problem.scientificNotation
-                        ? 't.d. 1.08e12'
+                        ? 't.d. 4.2e5'
                         : 'Sláðu inn svar'
                     }
                     className="flex-1 p-4 border-2 border-warm-300 rounded-xl font-mono text-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden transition-all"
