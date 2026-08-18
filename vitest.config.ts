@@ -9,7 +9,15 @@ export default defineConfig({
     hookTimeout: 10000,
     retry: 2,
     include: ['**/*.test.ts', '**/*.test.tsx', '**/*.test.js'],
-    exclude: ['**/node_modules/**', '**/dist/**', '.worktrees/**', 'server/**'],
+    // Worktrees are created under `.claude/worktrees/`, not `.worktrees/` — without the former,
+    // vitest walks into every checked-out worktree and runs the whole suite twice.
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '.worktrees/**',
+      '.claude/worktrees/**',
+      'server/**',
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'json-summary'],
