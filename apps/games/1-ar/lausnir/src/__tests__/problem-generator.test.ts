@@ -53,8 +53,9 @@ describe('generated problems are physically possible', () => {
         const p = generateProblem(difficulty);
         if (!p.chemical) continue;
         const peak = peakMolarity(p);
-        // A little slack for rounding in the generators' own toFixed calls.
-        if (peak > p.chemical.maxMolarity * 1.02) {
+        // No slack: quantities that determine a molarity are rounded down, so a
+        // draw at the ceiling stays at or under it.
+        if (peak > p.chemical.maxMolarity) {
           impossible.push(
             `${p.type} ${p.chemical.name}: ${peak.toFixed(2)} M > ${p.chemical.maxMolarity} M`
           );

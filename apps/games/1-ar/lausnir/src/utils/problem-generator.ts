@@ -49,6 +49,19 @@ function roundQuantity(value: number): number {
   return parseFloat(value.toPrecision(2));
 }
 
+/**
+ * Round a quantity DOWN at the same precision. Used where the quantity is what
+ * determines the molarity: rounding to two significant figures can round up, and
+ * a value already at the ceiling then crosses it by a few percent.
+ */
+function floorQuantity(value: number): number {
+  if (value >= 10) return Math.floor(value);
+  if (value >= 1) return Math.floor(value * 10) / 10;
+  if (value <= 0) return 0;
+  const magnitude = Math.pow(10, Math.ceil(-Math.log10(value)) + 1);
+  return Math.floor(value * magnitude) / magnitude;
+}
+
 /** Format a quantity for a hint line without rounding a small one away to 0.000. */
 function fmt(value: number): string {
   if (value === 0) return '0';
@@ -120,7 +133,7 @@ function generateDilutionProblem(difficulty: Difficulty, chemical: Chemical): Pr
 
 function generateMolarityProblem(difficulty: Difficulty, chemical: Chemical): Problem {
   const volume = parseFloat((Math.random() * 0.9 + 0.1).toFixed(2));
-  const moles = roundQuantity(drawMolarity(chemical, 0.1, 5) * volume);
+  const moles = floorQuantity(drawMolarity(chemical, 0.1, 5) * volume);
   const molarity = parseFloat((moles / volume).toFixed(3));
 
   return {
@@ -144,7 +157,7 @@ function generateMolarityProblem(difficulty: Difficulty, chemical: Chemical): Pr
 function generateMolarityFromMassProblem(difficulty: Difficulty, chemical: Chemical): Problem {
   const volumeInML = Math.round(Math.random() * 450 + 50);
   const volumeInL = volumeInML / 1000;
-  const massInGrams = roundQuantity(
+  const massInGrams = floorQuantity(
     drawMolarity(chemical, 0.2, 4) * volumeInL * chemical.molarMass
   );
   const moles = massInGrams / chemical.molarMass;
