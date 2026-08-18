@@ -1,14 +1,3 @@
-# Efni fyrir Íslenskubraut — þessi skrá er UPPRUNINN (source of truth).
-#
-# Breyttu þessari skrá beint, eða notaðu Excel-yfirferð:
-#   pnpm islenskubraut:export          # býr til .xlsx til yfirlestrar
-#   pnpm islenskubraut:import <skrá>   # les leiðréttingar til baka
-#
-# Keyrðu ALLTAF eftir breytingu:
-#   pnpm islenskubraut:build
-# Hún býr til TypeScript-skrárnar sem vefurinn og PDF-þjónninn nota.
-# Ekki breyta þeim skrám handvirkt.
-
 id: manneskja
 name: Manneskja
 icon: 👤
