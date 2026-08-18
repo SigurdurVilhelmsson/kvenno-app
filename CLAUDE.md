@@ -306,7 +306,10 @@ Y3: Gaslögmál → Jafnvægi → Varmafræði → pH Títrun → Púfferar
 ### Íslenskubraut content
 
 **Edit `content/islenskubraut/*.yaml` only.** Those six files are the source of truth. Both
-TypeScript copies are generated from them and must never be hand-edited:
+TypeScript copies are generated from them and must never be hand-edited. The editing workflow —
+directly, or by spreadsheet — is written up for a human in
+[`content/islenskubraut/README.md`](content/islenskubraut/README.md); what follows is the
+architecture behind it.
 
 ```bash
 pnpm islenskubraut:build           # regenerate both consumers from the YAML

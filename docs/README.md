@@ -34,13 +34,14 @@ The complete ruling — ~30 term corrections, each with its glossary citation an
 
 ## Platform and operations
 
-| Document                                     | What it holds                                        |
-| -------------------------------------------- | ---------------------------------------------------- |
-| [`KVENNO-STRUCTURE.md`](KVENNO-STRUCTURE.md) | The master design document for the platform          |
-| [`DEPLOYMENT.md`](DEPLOYMENT.md)             | Build and deploy                                     |
-| [`azure-ad-setup.md`](azure-ad-setup.md)     | Auth configuration                                   |
-| [`bundle-sizes.md`](bundle-sizes.md)         | Measured bundle sizes, incl. the Three.js code-split |
-| [`i18n-coverage.md`](i18n-coverage.md)       | Translation coverage                                 |
+| Document                                                                | What it holds                                             |
+| ----------------------------------------------------------------------- | --------------------------------------------------------- |
+| [`KVENNO-STRUCTURE.md`](KVENNO-STRUCTURE.md)                            | The master design document for the platform               |
+| [`DEPLOYMENT.md`](DEPLOYMENT.md)                                        | Build and deploy                                          |
+| [`azure-ad-setup.md`](azure-ad-setup.md)                                | Auth configuration                                        |
+| [`bundle-sizes.md`](bundle-sizes.md)                                    | Measured bundle sizes, incl. the Three.js code-split      |
+| [`i18n-coverage.md`](i18n-coverage.md)                                  | Translation coverage                                      |
+| [`content/islenskubraut/README.md`](../content/islenskubraut/README.md) | Editing Íslenskubraut content, directly or by spreadsheet |
 
 ## Superseded — do not read as current
 
