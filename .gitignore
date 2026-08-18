@@ -39,3 +39,6 @@ test-results/
 
 # Worktrees
 .worktrees/
+
+# Íslenskubraut review workbooks (pnpm islenskubraut:export)
+islenskubraut-yfirlestur-*.xlsx
