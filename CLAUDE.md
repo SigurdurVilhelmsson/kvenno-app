@@ -24,6 +24,7 @@ kvenno-app/
 │   └── shared/           # Shared components, hooks, utils, types, i18n
 ├── server/               # Express backend (Claude AI proxy + PDF generation)
 ├── scripts/              # Build and deploy scripts
+├── content/              # Íslenskubraut content (YAML) — source of truth, hand-edited
 ├── docs/                 # KVENNO-STRUCTURE.md and other docs
 ├── media/                # Favicons and brand assets
 └── dist/                 # Build output (gitignored)
@@ -57,6 +58,8 @@ pnpm dev:games            # Dev servers for all games
 pnpm build:games          # Build only games
 pnpm build:landing        # Build only landing
 pnpm build:islenskubraut  # Build only íslenskubraut
+pnpm islenskubraut:build  # Regenerate the Íslenskubraut TS from content/islenskubraut/*.yaml
+                          #   — add --check to fail instead of rewrite (CI)
 pnpm build:lab-reports    # Type-check + build in place (apps/lab-reports/dist, base /lab-reports/)
                           #   — NOT the deployable output; `pnpm build` emits the 2-ar and 3-ar copies
 pnpm type-check           # TypeScript check across all packages
@@ -64,6 +67,8 @@ pnpm lint                 # ESLint check
 pnpm test                 # Run tests
 pnpm test:e2e             # Playwright E2E (incl. the Three.js lazy-load guard)
 pnpm check-all            # type-check + lint + format:check
+                          #   — currently FAILS: format:check reports 166 pre-existing files,
+                          #     unrelated to any one change. type-check and lint are clean.
 ./scripts/deploy.sh       # Deploy to production server
 ```
 
@@ -296,33 +301,64 @@ Y3: Gaslögmál → Jafnvægi → Varmafræði → pH Títrun → Púfferar
 2. All apps pick up changes immediately (workspace dependency)
 3. Run `pnpm type-check` to verify no breakage
 
-### Íslenskubraut data sync
+### Íslenskubraut content
 
-**Edit `apps/islenskubraut/src/data/` only.** It is the single source of truth.
-
-The Express server renders teaching-card PDFs and must not import the Vite/React app, so it needs
-its own copy. That copy is now **generated**, not hand-maintained:
+**Edit `content/islenskubraut/*.yaml` only.** Those six files are the source of truth. Both
+TypeScript copies are generated from them and must never be hand-edited:
 
 ```bash
-pnpm generate:islenskubraut-data          # rewrite the server copy from the SPA data
-pnpm generate:islenskubraut-data --check   # exit 1 if it is stale (CI-friendly)
+pnpm islenskubraut:build           # regenerate both consumers from the YAML
+pnpm islenskubraut:build --check   # exit 1 if either is stale (CI-friendly)
 ```
 
-- `apps/islenskubraut/src/data/` — source of truth, hand-edited
-- `server/src/lib/islenskubraut-data.ts` — **generated; never edit by hand**
-- `server/src/index.ts` validates against the generated `categoryIds` export, so adding a category
-  no longer requires editing a third hardcoded list
+- `content/islenskubraut/{dyr,matur,farartaeki,manneskja,stadir,klaednadur}.yaml` — source of truth,
+  hand-edited, plain YAML a teacher can read without knowing TypeScript
+- `apps/islenskubraut/src/data/categories/*.ts` — **generated; never edit by hand**
+- `server/src/lib/islenskubraut-data.ts` — **generated; never edit by hand**. The Express server
+  renders the teaching-card PDFs and must not import the Vite/React app, which is why a second copy
+  exists at all
+- `server/src/index.ts` validates the `flokkur` query param against the generated `categoryIds`
+  export, so the PDF route cannot 400 on a category that exists
 
-`apps/islenskubraut/src/data/__tests__/server-copy-in-sync.test.ts` fails if the two diverge, if any
-string carries a soft hyphen, or if a string has lost its Icelandic characters. Verified to fail on
-the original corruption, not just to pass today.
+Both generated files open with an `AUTO-GENERATED FILE — DO NOT EDIT BY HAND` header naming the
+source directory and the regenerate command.
 
-**Why the guard exists.** Until Aug 2026 the copies were hand-mirrored and had drifted for months.
-The server copy — the one students actually read on the PDF — had lost every Icelandic character in
-places (`Orðaforði` → `Orda­fordi`, with a U+00AD soft hyphen wedged mid-word, invisible in an editor),
-rendered `Þessi` as `Þssi`, and taught `rannsóka` and `Undirbuníngur`, neither of which is a word.
-The client copy had its own defect the server did not: `stuttt` at 14 sites. A `// Auto-generated`
-header claimed a generator that did not exist, which is precisely why nobody re-derived the file.
+**Adding a category is a three-file edit**, not one. There is no way around this today:
+
+1. `content/islenskubraut/<id>.yaml` — the content
+2. `CATEGORY_ORDER` in `scripts/islenskubraut/load.mjs` — the taught order, deliberately not
+   alphabetical
+3. `apps/islenskubraut/src/data/index.ts` — still hand-maintained, one import plus one array entry
+
+Omitting step 2 or 3 is caught by the test suite, but as a whole-tree deep-equality failure that
+does not say "you forgot to register the new category." `index.ts` was left hand-maintained on
+purpose (it is the file every component imports); generating it is a clean follow-up, not a
+prerequisite for anything.
+
+**What guards the content:**
+
+- `scripts/islenskubraut/load.mjs` validates every string on load and refuses to generate from bad
+  input: empty strings, invisible characters (soft hyphen, zero-width space, BOM and friends), and
+  ASCII-flattened Icelandic
+- `scripts/islenskubraut/__tests__/generated-matches-yaml.test.ts` — the generated modules agree
+  with each other and still ship all six categories in taught order
+- `apps/islenskubraut/src/data/__tests__/server-copy-in-sync.test.ts` — the two generated copies
+  stay byte-identical in content and expose the same category ids
+
+**Why this exists.** Until Aug 2026 the two copies were hand-mirrored and had drifted for months.
+The server copy — the one students actually read on the printed card — had lost every Icelandic
+character in places (`Orðaforði` → `Orda­fordi`, with a U+00AD soft hyphen wedged mid-word,
+invisible in an editor), rendered `Þessi` as `Þssi`, and taught `rannsóka` and `Undirbuníngur`,
+neither of which is a word. The client copy had its own defect the server did not: `stuttt` at 14
+sites. A `// Auto-generated` header claimed a generator that did not exist, which is precisely why
+nobody re-derived the file. The deeper cause was that the content lived in nested TypeScript object
+literals no Icelandic teacher could read, let alone proofread — which is what moving to YAML fixes.
+
+**Not built yet:** an Excel round-trip (`pnpm islenskubraut:export` / `:import`) so a reviewer who
+does not use git can proofread the content in a spreadsheet. Designed and planned; Tasks 5-7 of
+`docs/superpowers/plans/2026-08-17-islenskubraut-content-authoring.md`. The mapping those commands
+will use already exists and is tested (`scripts/islenskubraut/rows.mjs`). Do not reference those two
+commands in user-facing text until they land.
 
 ### Deployment
 
