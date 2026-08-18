@@ -35,7 +35,7 @@ function buildQuestions(): Question[] {
 
   for (let i = 0; i < TOTAL; i++) {
     const reaction = pool[i % pool.length];
-    const { r1Count, r2Count } = generateReactantCounts(reaction.difficulty);
+    const { r1Count, r2Count } = generateReactantCounts(reaction.difficulty, reaction);
     const type: QuestionType = i % 2 === 0 ? 'times' : 'products';
     questions.push({ type, reaction, r1Count, r2Count });
   }
