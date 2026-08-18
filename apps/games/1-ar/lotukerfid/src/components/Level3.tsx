@@ -70,7 +70,7 @@ function generateQuestions(): Question[] {
     questions.push({
       type: 'neutrons',
       element: el,
-      text: `Hversu margar nifteindir hefur ${el.name} (${el.symbol})?`,
+      text: `Hversu margar nifteindir hefur ${el.name}-${el.massNumber} (${el.symbol}-${el.massNumber})?`,
       correctAnswer: n,
       explanation: `Nifteindir = massatala - atómnúmer = ${el.massNumber} - ${el.atomicNumber} = ${n}.`,
     });
@@ -103,7 +103,7 @@ function hintFor(question: Question): string {
     return 'Hlutlaust atóm hefur jafnmargar rafeindir og róteindir (= atómnúmer).';
   }
   if (question.type === 'neutrons') {
-    return 'Nifteindir = massatala − atómnúmer. Massatalan er heiltala — hún er ekki frumeindamassinn sem stendur á lotukerfinu.';
+    return 'Nifteindir = massatala − atómnúmer. Massatalan er talan í heiti samsætunnar (t.d. 63 í Cu-63) — hún er ekki frumeindamassinn sem stendur á lotukerfinu.';
   }
   return 'Atómnúmerið (fjöldi róteinda) ákvarðar hvaða frumefni þetta er. Leitaðu að þeim atómnúmeri í lotukerfinu.';
 }
@@ -241,7 +241,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
             </div>
 
             <div className="bg-green-50 p-4 rounded-lg">
-              <h3 className="font-bold text-green-800 mb-2">Dæmi: Kolefni (C)</h3>
+              <h3 className="font-bold text-green-800 mb-2">Dæmi: Kolefni-12 (C-12)</h3>
               <div className="text-sm text-green-700 space-y-1 font-mono">
                 <p>
                   Raðtala (Z) = 6 → <strong>6 prótónur</strong>
@@ -260,8 +260,9 @@ export function Level3({ onBack, onComplete }: Level3Props) {
               <p className="text-sm text-amber-700">
                 Í lotukerfinu: raðtalan er neðst (t.d. 6 fyrir C) og frumeindamassinn er efst (t.d.
                 12,01 fyrir C). Frumeindamassinn er meðaltal allra samsæta frumefnisins og er því
-                ekki massatalan: massatalan á við eina tiltekna samsætu og er alltaf heiltala.
-                Massatalan kemur fram með svarinu í hverri æfingu.
+                ekki massatalan: massatalan á við eina tiltekna samsætu og er alltaf heiltala. Hún
+                stendur í heiti samsætunnar — 12 í kolefni-12 (C-12) — og spurningarnar hér gefa
+                hana því beint.
               </p>
             </div>
 
