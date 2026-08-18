@@ -30,7 +30,7 @@ function buildProblems(): Problem[] {
   const pool = shuffleArray(LEVEL3_REACTIONS);
   return Array.from({ length: TOTAL }, (_, i) => {
     const reaction = pool[i % pool.length];
-    const { r1Count, r2Count } = generateReactantCounts(reaction.difficulty);
+    const { r1Count, r2Count } = generateReactantCounts(reaction.difficulty, reaction);
     return { reaction, r1Count, r2Count };
   });
 }
