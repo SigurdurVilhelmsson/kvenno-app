@@ -354,11 +354,21 @@ sites. A `// Auto-generated` header claimed a generator that did not exist, whic
 nobody re-derived the file. The deeper cause was that the content lived in nested TypeScript object
 literals no Icelandic teacher could read, let alone proofread — which is what moving to YAML fixes.
 
-**Not built yet:** an Excel round-trip (`pnpm islenskubraut:export` / `:import`) so a reviewer who
-does not use git can proofread the content in a spreadsheet. Designed and planned; Tasks 5-7 of
-`docs/superpowers/plans/2026-08-17-islenskubraut-content-authoring.md`. The mapping those commands
-will use already exists and is tested (`scripts/islenskubraut/rows.mjs`). Do not reference those two
-commands in user-facing text until they land.
+**Half built:** the Excel round-trip, so a reviewer who does not use git can proofread the content
+in a spreadsheet.
+
+- `pnpm islenskubraut:export` exists (Task 5, Aug 2026). It writes
+  `islenskubraut-yfirlestur-<date>.xlsx` — a Leiðbeiningar tab, then one sheet per category, plus a
+  hidden `_meta` sheet carrying a sha256 per YAML file so import can refuse a stale workbook.
+  `--out <file>` overrides the path. The default lands in the repo root and is gitignored.
+- `pnpm islenskubraut:import` does **not** exist — Task 6 of
+  `docs/superpowers/plans/2026-08-17-islenskubraut-content-authoring.md`. Corrections written into a
+  workbook cannot be read back yet; they have to be typed into the YAML by hand. Do not reference
+  `:import` in user-facing text until it lands.
+
+Both halves share the row mapping in `scripts/islenskubraut/rows.mjs`. **The workbook's Icelandic
+reviewer-facing copy — instructions, column headers, the Leiðbeiningar tab — is placeholder wording
+that Siggi has not reviewed.** Do not send an export to a colleague until that review happens.
 
 ### Deployment
 

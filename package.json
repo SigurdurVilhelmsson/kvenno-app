@@ -19,6 +19,7 @@
     "build:game": "node scripts/build-games.mjs --game",
     "build:year": "node scripts/build-games.mjs --year",
     "islenskubraut:build": "node scripts/islenskubraut/build.mjs",
+    "islenskubraut:export": "node scripts/islenskubraut/export-xlsx.mjs",
     "type-check": "pnpm --recursive run type-check",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
