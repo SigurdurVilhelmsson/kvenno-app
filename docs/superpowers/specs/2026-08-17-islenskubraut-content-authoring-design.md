@@ -2,9 +2,10 @@
 
 **Date:** 2026-08-17
 **Status:** partly implemented — Tasks 1-4 shipped 2026-08-18 (YAML is the source of truth and
-both consumers are generated from it). Task 5 shipped 2026-08-18, so `pnpm islenskubraut:export`
-exists. `pnpm islenskubraut:import` (Task 6) and `content/islenskubraut/README.md` (Task 7) are
-**not built**; that command does not exist yet. See the plan for task-by-task status.
+both consumers are generated from it). Tasks 5 and 6 shipped 2026-08-18, so both
+`pnpm islenskubraut:export` and `pnpm islenskubraut:import` exist. Only
+`content/islenskubraut/README.md` (Task 7) is still unwritten. See the plan for task-by-task status,
+including where the shipped code deliberately departs from it.
 **Author:** Claude, with Sigurður Vilhelmsson
 
 ## Why
