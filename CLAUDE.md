@@ -60,6 +60,8 @@ pnpm build:landing        # Build only landing
 pnpm build:islenskubraut  # Build only íslenskubraut
 pnpm islenskubraut:build  # Regenerate the Íslenskubraut TS from content/islenskubraut/*.yaml
                           #   — add --check to fail instead of rewrite (CI)
+pnpm islenskubraut:export # Write an .xlsx of the content for a reviewer (--out <file>)
+pnpm islenskubraut:import # Read a reviewed .xlsx back into the YAML (--dry-run, --force)
 pnpm build:lab-reports    # Type-check + build in place (apps/lab-reports/dist, base /lab-reports/)
                           #   — NOT the deployable output; `pnpm build` emits the 2-ar and 3-ar copies
 pnpm type-check           # TypeScript check across all packages
@@ -354,21 +356,29 @@ sites. A `// Auto-generated` header claimed a generator that did not exist, whic
 nobody re-derived the file. The deeper cause was that the content lived in nested TypeScript object
 literals no Icelandic teacher could read, let alone proofread — which is what moving to YAML fixes.
 
-**Half built:** the Excel round-trip, so a reviewer who does not use git can proofread the content
-in a spreadsheet.
+**Excel round-trip (Aug 2026), so a reviewer who does not use git can proofread the content in a
+spreadsheet:**
 
-- `pnpm islenskubraut:export` exists (Task 5, Aug 2026). It writes
-  `islenskubraut-yfirlestur-<date>.xlsx` — a Leiðbeiningar tab, then one sheet per category, plus a
-  hidden `_meta` sheet carrying a sha256 per YAML file so import can refuse a stale workbook.
-  `--out <file>` overrides the path. The default lands in the repo root and is gitignored.
-- `pnpm islenskubraut:import` does **not** exist — Task 6 of
-  `docs/superpowers/plans/2026-08-17-islenskubraut-content-authoring.md`. Corrections written into a
-  workbook cannot be read back yet; they have to be typed into the YAML by hand. Do not reference
-  `:import` in user-facing text until it lands.
+```bash
+pnpm islenskubraut:export                  # islenskubraut-yfirlestur-<date>.xlsx (--out overrides)
+pnpm islenskubraut:import <file> --dry-run # preview: per-category diff, writes nothing
+pnpm islenskubraut:import <file>           # rewrite the YAML, then run islenskubraut:build
+```
 
-Both halves share the row mapping in `scripts/islenskubraut/rows.mjs`. **The workbook's Icelandic
-reviewer-facing copy — instructions, column headers, the Leiðbeiningar tab — is placeholder wording
-that Siggi has not reviewed.** Do not send an export to a colleague until that review happens.
+The workbook is a Leiðbeiningar tab, one sheet per category, and a hidden `_meta` sheet carrying a
+sha256 per YAML file — import refuses a workbook exported before a later repo edit unless you pass
+`--force`, and refuses the whole run rather than writing the categories that were still current. The
+default export path is gitignored. Reviewer comments in the `athugasemd` column are collected into
+`content/islenskubraut/_athugasemdir-YYYY-MM.md` for the PR; they never enter the content.
+
+Import refuses, rather than repairs, anything it cannot read as text: a cell Excel coerced to a date
+or formula, and a row carrying text with no `lykill`. It strips invisible characters and NFC-
+normalises silently but reports every one. `scripts/islenskubraut/rows.mjs` (row mapping) and
+`review.mjs` (sheet → rows, category → YAML) are the pure halves both commands share.
+
+**The workbook's Icelandic reviewer-facing copy — instructions, column headers, the Leiðbeiningar
+tab — is placeholder wording that Siggi has not reviewed.** Do not send an export to a colleague
+until that review happens.
 
 ### Deployment
 

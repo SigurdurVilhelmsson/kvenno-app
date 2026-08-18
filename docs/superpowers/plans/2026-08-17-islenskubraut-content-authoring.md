@@ -10,13 +10,12 @@
 
 **Spec:** `docs/superpowers/specs/2026-08-17-islenskubraut-content-authoring-design.md`
 
-**Status (2026-08-18):** Tasks 1-4 complete, reviewed and merged to `main`. Task 5 (Excel export)
-complete — `pnpm islenskubraut:export` exists, with three deliberate deviations from the code below;
-see the note under Task 5. Task 6 (Excel import) is NOT started, so `pnpm islenskubraut:import`,
-named throughout this plan, does not exist yet. Task 7's documentation work was folded into the
-Tasks 1-4 merge instead, because leaving `CLAUDE.md` pointing at the old source of truth until
-Task 7 would have misdirected anyone reading it in the meantime — with one piece outstanding:
-`content/islenskubraut/README.md`, which Task 7 specifies, was never written.
+**Status (2026-08-18):** Tasks 1-6 complete. The Excel round-trip is whole: `pnpm
+islenskubraut:export` (PR #20) and `pnpm islenskubraut:import` both exist. Each of those two tasks
+shipped with deliberate deviations from the code listed below — three for Task 5, four for Task 6,
+plus a new `review.mjs`; the notes under each task say what and why. Task 7's documentation work was
+folded into the Tasks 1-4 merge, with one piece outstanding: `content/islenskubraut/README.md`,
+which Task 7 specifies, was never written.
 
 ## Prerequisite
 
@@ -47,6 +46,7 @@ The spec says the migration is proven by generating TypeScript back from YAML an
 | `scripts/islenskubraut/render.mjs`      | Categories → TypeScript source strings.                              |
 | `scripts/islenskubraut/build.mjs`       | CLI: YAML → both TS modules. `--check`.                              |
 | `scripts/islenskubraut/rows.mjs`        | Category ↔ flat spreadsheet rows. Shared by export and import. Pure. |
+| `scripts/islenskubraut/review.mjs`      | Reviewed sheet → rows, category → YAML text, diff summary. Pure.     |
 | `scripts/islenskubraut/export-xlsx.mjs` | CLI: YAML → `.xlsx`.                                                 |
 | `scripts/islenskubraut/import-xlsx.mjs` | CLI: `.xlsx` → YAML.                                                 |
 | `scripts/islenskubraut/migrate.mjs`     | One-time TS → YAML. Deleted after Task 3.                            |
@@ -1240,6 +1240,49 @@ stale workbook."
 
 ### Task 6: Import from Excel
 
+**Implemented 2026-08-18. The pure logic lives in a new `scripts/islenskubraut/review.mjs`, not
+inside the CLI, and four behaviours below were changed. Do not "restore" them.**
+
+The plan put five pure functions inside `import-xlsx.mjs`, where a test cannot reach them — the CLI
+runs on import. They now sit in `review.mjs` (`readSheet`, `toYamlShape`, `renderYaml`,
+`yamlHeader`, `diffSummary`, `headerRowNumber`), matching how `rows.mjs` and `render.mjs` already
+relate to `build.mjs`. That is what lets the write path be tested against a temp directory instead
+of against `content/`, with no `--content-dir` escape hatch in production code.
+
+1. **Cells are read with `cell.text`, never `String(cell.value)`.** Text pasted from Word arrives as
+   `{ richText: [...] }`, and `String()` turns that into the literal `"[object Object]"` — measured,
+   not theorised. It is non-empty, carries no invisible characters and is not ASCII-flattened, so it
+   passes `checkString` too and would print on a student's card. `text.mjs`'s own docstring names
+   pasting from Word as the expected reviewer behaviour, so this is the common path, not the edge.
+2. **A cell Excel coerced is refused, not repaired.** `.text` fixes rich text but makes a
+   date look clean while being wrong: a Date cell yields
+   `"Sun Mar 01 2026 00:00:00 GMT+0000 (Greenwich Mean Time)"`, which every validator accepts.
+   Date, Formula, Error and Boolean cells are now fatal problems naming the column. Numbers are
+   allowed.
+3. **A row with text but no `lykill` is fatal, not skipped.** The plan's `if (!lykill) return;` drops
+   it before `fromRows` ever sees it, so `rejectUnusable`'s "carry text but no lykill" branch is
+   unreachable from the importer and the reviewer's string vanishes silently. This is the exact row a
+   reviewer produces by inserting a blank line and typing — the case Task 5's unlocked `lykill`
+   column exists to make recoverable. Wholly blank rows are still skipped.
+4. **`problems` are `{ message, fatal }` objects.** The plan decided severity by substring-matching
+   its own error text (`p.includes('changed since')`), which breaks the moment a message is reworded.
+
+Also: `fromRows` throwing and a missing category file are caught and reported as problems rather
+than aborting the run with a stack trace; the non-data sheet names are compared NFC-normalised; and
+the category id is taken from the majority of a sheet's keys rather than the first row, so one typo
+in the top key names the typo instead of failing on a missing file.
+
+**Known and deliberately not fixed:** `diffSummary`'s `flatten` keys groups positionally
+(`f${i+1}`), so deleting a whole group shifts the ones after it and prints a run of spurious +/-
+pairs. Cosmetic, in the printed summary only — the written YAML is unaffected.
+
+**Verified by hand beyond the tests:** a real import of a one-string edit rewrites exactly one line
+of `dyr.yaml` (`renderYaml` reproduces all six committed files byte-for-byte, which is also a test),
+writes the reviewer's comment to `_athugasemdir-2026-08.md`, and leaves `islenskubraut:build --check`
+correctly reporting the two generated files as stale. A workbook exported before a repo edit is
+refused with exit 1, and in the mixed case — one stale category plus one legitimately edited one —
+nothing at all is written.
+
 **Files:**
 
 - Create: `scripts/islenskubraut/import-xlsx.mjs`
@@ -1251,7 +1294,7 @@ stale workbook."
 - Consumes: `loadCategory`, `CONTENT_DIR` from `./load.mjs`; `fromRows` from `./rows.mjs`; `normalizeText`, `findInvisible`, `isFlattened` from `./text.mjs`.
 - Produces: rewritten YAML files, plus `content/islenskubraut/_athugasemdir-YYYY-MM.md`.
 
-- [ ] **Step 1: Write the importer**
+- [x] **Step 1: Write the importer**
 
 Create `scripts/islenskubraut/import-xlsx.mjs`:
 
@@ -1445,13 +1488,13 @@ function diffSummary(before, after) {
 }
 ```
 
-- [ ] **Step 2: Add the script**
+- [x] **Step 2: Add the script**
 
 ```json
     "islenskubraut:import": "node scripts/islenskubraut/import-xlsx.mjs",
 ```
 
-- [ ] **Step 3: Write the test**
+- [x] **Step 3: Write the test**
 
 Create `scripts/islenskubraut/__tests__/import.test.ts`:
 
@@ -1511,12 +1554,12 @@ describe('import', () => {
 });
 ```
 
-- [ ] **Step 4: Run it**
+- [x] **Step 4: Run it**
 
 Run: `/home/siggi/.nvm/versions/node/v24.13.0/bin/pnpm vitest run scripts/islenskubraut/__tests__/import.test.ts`
 Expected: PASS, 3 cases. The third asserts the paste-hygiene path reports rather than silently swallowing.
 
-- [ ] **Step 5: Verify the refusal path by hand**
+- [x] **Step 5: Verify the refusal path by hand**
 
 ```bash
 cd /home/siggi/dev/repos/kvenno-app
@@ -1528,7 +1571,7 @@ git checkout content/islenskubraut/dyr.yaml
 
 Expected: a message naming `dyr` as changed since export, and a non-zero exit. This is the guard that stops a three-week-old workbook silently reverting later edits — confirm it fires before trusting it.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add package.json scripts/islenskubraut/import-xlsx.mjs scripts/islenskubraut/__tests__/import.test.ts
