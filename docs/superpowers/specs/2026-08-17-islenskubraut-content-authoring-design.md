@@ -1,7 +1,10 @@
 # Íslenskubraut content authoring — design
 
 **Date:** 2026-08-17
-**Status:** approved, not yet implemented
+**Status:** partly implemented — Tasks 1-4 shipped 2026-08-18 (YAML is the source of truth and
+both consumers are generated from it). The Excel round-trip below — `pnpm islenskubraut:export`
+and `pnpm islenskubraut:import` — is Tasks 5-7 and is **not built**; those two commands do not
+exist yet. See the plan for task-by-task status.
 **Author:** Claude, with Sigurður Vilhelmsson
 
 ## Why

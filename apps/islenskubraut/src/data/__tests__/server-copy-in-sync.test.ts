@@ -2,12 +2,17 @@
  * Guards the generated server data against drift.
  *
  * The Express server renders teaching-card PDFs and cannot import this SPA, so
- * `server/src/lib/islenskubraut-data.ts` holds a generated copy of the category data.
- * Both this file and the SPA's `../index` are now generated from `content/islenskubraut/`
- * (see `scripts/islenskubraut/build.mjs`), so this test guards against the two consumers
- * drifting from each other, e.g. a stale generated file that was hand-edited or not
- * regenerated after the YAML changed. It previously drifted for months by hand and shipped
- * corrupted Icelandic onto the PDFs students receive — "Orðaforði" became "Orda­fordi",
+ * `server/src/lib/islenskubraut-data.ts` holds a second copy of the category data.
+ * That file and the SPA's `./categories/*.ts` are both generated from
+ * `content/islenskubraut/` (see `scripts/islenskubraut/build.mjs`), so this test guards
+ * against the two consumers drifting apart — a generated file that was hand-edited, or
+ * one not regenerated after the YAML changed.
+ *
+ * `../index` is NOT generated. It is a hand-maintained barrel re-exporting the generated
+ * category modules, which is why adding a category still means editing it by hand.
+ *
+ * The data drifted for months while both copies were hand-mirrored, and shipped corrupted
+ * Icelandic onto the PDFs students are handed — "Orðaforði" became "Orda<U+00AD>fordi",
  * "Þessi" became "Þssi", and "rannsaka" became "rannsóka".
  *
  * If this fails, do NOT edit either generated file: run `pnpm islenskubraut:build`.
