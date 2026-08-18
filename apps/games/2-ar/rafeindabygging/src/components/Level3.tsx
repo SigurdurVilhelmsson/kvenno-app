@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { Header, LanguageSwitcher } from '@shared/components';
 import { useGameI18n } from '@shared/hooks';
+import { shuffleArray } from '@shared/utils';
 
 import { periodicPuzzles } from '../data/periodic-configs';
 import { gameTranslations } from '../i18n';
@@ -22,6 +23,13 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const puzzle = periodicPuzzles[currentIndex];
   const isLast = currentIndex >= periodicPuzzles.length - 1;
   const isCorrect = selectedOption === puzzle.fullShorthand;
+
+  // Shuffle per question, not per render: keying the memo on `puzzle` keeps the
+  // order stable while a student reads it and changes it only when the question
+  // does. The data file is also ordered so the answer is not always first --
+  // this stops the pattern creeping back in. Grading compares the selected
+  // string against fullShorthand, never an index, so reordering is safe.
+  const displayedOptions = useMemo(() => shuffleArray(puzzle.options), [puzzle]);
 
   const handleSubmit = () => {
     if (submitted || !selectedOption) return;
@@ -162,7 +170,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
           {/* Options */}
           <div className="space-y-3 mb-6">
-            {puzzle.options.map((option) => {
+            {displayedOptions.map((option) => {
               let className = 'mc-option';
               if (submitted) {
                 if (option === puzzle.fullShorthand) className += ' correct';
