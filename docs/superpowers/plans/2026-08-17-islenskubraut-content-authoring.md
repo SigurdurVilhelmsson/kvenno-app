@@ -10,11 +10,13 @@
 
 **Spec:** `docs/superpowers/specs/2026-08-17-islenskubraut-content-authoring-design.md`
 
-**Status (2026-08-18):** Tasks 1-4 complete, reviewed and merged to `main`. Tasks 5 (Excel export),
-6 (Excel import) and 7 (documentation) are NOT started — so `pnpm islenskubraut:export` and
-`pnpm islenskubraut:import`, named throughout this plan, do not exist yet. Task 7's documentation
-work was folded into the Tasks 1-4 merge instead, because leaving `CLAUDE.md` pointing at the old
-source of truth until Task 7 would have misdirected anyone reading it in the meantime.
+**Status (2026-08-18):** Tasks 1-4 complete, reviewed and merged to `main`. Task 5 (Excel export)
+complete — `pnpm islenskubraut:export` exists, with three deliberate deviations from the code below;
+see the note under Task 5. Task 6 (Excel import) is NOT started, so `pnpm islenskubraut:import`,
+named throughout this plan, does not exist yet. Task 7's documentation work was folded into the
+Tasks 1-4 merge instead, because leaving `CLAUDE.md` pointing at the old source of truth until
+Task 7 would have misdirected anyone reading it in the meantime — with one piece outstanding:
+`content/islenskubraut/README.md`, which Task 7 specifies, was never written.
 
 ## Prerequisite
 
@@ -990,6 +992,32 @@ those gestures directly."
 
 ### Task 5: Export to Excel
 
+**Implemented 2026-08-18 with three deviations from the code below. Do not "restore" them.**
+
+1. **Sheet order.** The `workbook.worksheets.unshift(workbook.worksheets.pop())` line is a no-op:
+   exceljs's `worksheets` getter returns a sorted _copy_ (`lib/doc/workbook.js:119-125`), so
+   reordering it changes nothing and the Leiðbeiningar tab ended up sixth. The shipped exporter
+   adds the guidance sheet _before_ the category loop instead. This is what makes Step 3's own
+   first assertion pass.
+2. **Sheet protection.** `protect()` applies no defaults — it merges only what you pass, and every
+   unpassed action stays locked. `{ selectLockedCells, selectUnlockedCells }` alone therefore
+   forbids inserting, deleting and sorting rows: the three things the instruction block at the top
+   of each sheet tells the reviewer to do. The shipped exporter also passes
+   `insertRows: true, deleteRows: true, sort: true`, and a test pins them.
+3. **The `lykill` column is unlocked** (though still unshaded, and still marked "ekki breyta").
+   Locking it creates a dead end: a reviewer who adds a row by inserting a blank one can type into
+   the yellow `íslenska` cell but cannot fill in the key, and `rejectUnusable` in `rows.mjs` then
+   refuses the whole import with "copy the key from the row above" — advice protection prevents
+   them from following. A mistyped key still fails loudly at import; an unfillable one had no
+   in-sheet escape.
+
+Also: `gerð`'s help text gained `Valkostur` (it is one of the six values `toRows` emits),
+`git rev-parse` is wrapped so a missing git does not abort an export, and
+`islenskubraut-yfirlestur-*.xlsx` was added to `.gitignore`.
+
+**Still unverified:** nobody has opened the workbook in real Excel. Whether "Insert Copied Cells"
+works on a protected sheet is untested — if it does not, deviation 3 is the reviewer's fallback.
+
 **Files:**
 
 - Create: `scripts/islenskubraut/export-xlsx.mjs`
@@ -1001,7 +1029,7 @@ those gestures directly."
 - Consumes: `loadCategories` from `./load.mjs`, `toRows` from `./rows.mjs`.
 - Produces: an `.xlsx` at a path given by `--out`, default `islenskubraut-yfirlestur-<YYYY-MM-DD>.xlsx`.
 
-- [ ] **Step 1: Write the exporter**
+- [x] **Step 1: Write the exporter**
 
 Create `scripts/islenskubraut/export-xlsx.mjs`:
 
@@ -1115,7 +1143,7 @@ await workbook.xlsx.writeFile(outPath);
 console.log(`wrote ${outPath} — ${categories.length} sheets`);
 ```
 
-- [ ] **Step 2: Add the script**
+- [x] **Step 2: Add the script**
 
 In `package.json`, after `islenskubraut:build`:
 
@@ -1123,7 +1151,7 @@ In `package.json`, after `islenskubraut:build`:
     "islenskubraut:export": "node scripts/islenskubraut/export-xlsx.mjs",
 ```
 
-- [ ] **Step 3: Write the round-trip test**
+- [x] **Step 3: Write the round-trip test**
 
 Create `scripts/islenskubraut/__tests__/export-roundtrip.test.ts`:
 
@@ -1191,12 +1219,12 @@ describe('export', () => {
 });
 ```
 
-- [ ] **Step 4: Run it**
+- [x] **Step 4: Run it**
 
 Run: `/home/siggi/.nvm/versions/node/v24.13.0/bin/pnpm vitest run scripts/islenskubraut/__tests__/export-roundtrip.test.ts`
 Expected: PASS. Then open the file yourself and look at it — the freeze and the shading are the point, and no test sees them the way a reviewer will.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add package.json scripts/islenskubraut/export-xlsx.mjs scripts/islenskubraut/__tests__/export-roundtrip.test.ts
