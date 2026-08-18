@@ -3,14 +3,22 @@ export interface Chemical {
   formula?: string;
   molarMass: number;
   displayName: string;
+  /**
+   * Highest molarity an aqueous solution of this substance can actually reach at
+   * room temperature. Generators clamp to it: without a ceiling the game asked
+   * students to compute the concentration of solutions that cannot exist, up to
+   * 54 M HCl against a real limit of 12 M.
+   *
+   * For substances that are miscible with water rather than merely soluble
+   * (ethanol, acetic acid, hydrogen peroxide) this is the molarity of the pure
+   * liquid; for the concentrated mineral acids it is the ordinary reagent
+   * strength, not a hypothetical.
+   */
+  maxMolarity: number;
 }
 
 export type ProblemType =
-  | 'dilution'
-  | 'molarity'
-  | 'molarityFromMass'
-  | 'massFromMolarity'
-  | 'mixing';
+  'dilution' | 'molarity' | 'molarityFromMass' | 'massFromMolarity' | 'mixing';
 
 export type Difficulty = 'easy' | 'medium' | 'hard';
 export type GameMode = 'competition' | 'practice';

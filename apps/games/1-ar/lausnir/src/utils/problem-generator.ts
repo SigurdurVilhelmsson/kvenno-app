@@ -7,12 +7,13 @@ export function generateProblem(difficulty: Difficulty): Problem {
     'molarity',
     'mixing',
     'molarityFromMass',
-    'massFromMolarity'
+    'massFromMolarity',
   ];
 
-  const availableTypes = difficulty === 'easy'
-    ? ['dilution', 'molarity', 'molarityFromMass' as ProblemType]
-    : problemTypes;
+  const availableTypes =
+    difficulty === 'easy'
+      ? ['dilution', 'molarity', 'molarityFromMass' as ProblemType]
+      : problemTypes;
 
   const type = availableTypes[Math.floor(Math.random() * availableTypes.length)];
 
@@ -21,8 +22,8 @@ export function generateProblem(difficulty: Difficulty): Problem {
     difficulty === 'easy'
       ? CHEMICALS.simple
       : difficulty === 'medium'
-      ? CHEMICALS.medium
-      : CHEMICALS.hard;
+        ? CHEMICALS.medium
+        : CHEMICALS.hard;
   const chemical = chemicalSet[Math.floor(Math.random() * chemicalSet.length)];
 
   switch (type) {
@@ -41,9 +42,41 @@ export function generateProblem(difficulty: Difficulty): Problem {
   }
 }
 
+/** Round to a precision that stays readable for 29 g and for 0.37 g alike. */
+function roundQuantity(value: number): number {
+  if (value >= 10) return Math.round(value);
+  if (value >= 1) return parseFloat(value.toFixed(1));
+  return parseFloat(value.toPrecision(2));
+}
+
+/** Format a quantity for a hint line without rounding a small one away to 0.000. */
+function fmt(value: number): string {
+  if (value === 0) return '0';
+  if (Math.abs(value) < 0.01) return value.toPrecision(2);
+  if (Math.abs(value) < 1) return parseFloat(value.toFixed(3)).toString();
+  if (Math.abs(value) < 10) return parseFloat(value.toFixed(2)).toString();
+  return parseFloat(value.toFixed(1)).toString();
+}
+
+/**
+ * Draw a molarity this substance can actually reach.
+ *
+ * Every generator used to draw its concentrations from a fixed range with no
+ * reference to what dissolves, so the game asked students to work out the
+ * concentration of solutions that cannot exist: up to 54 M HCl against a real
+ * limit of 12 M, and any molarity at all of Ca(OH)2, which saturates at 0.022 M.
+ * The requested band is kept where the ceiling allows it and compressed under
+ * the ceiling where it does not.
+ */
+function drawMolarity(chemical: Chemical, lo: number, hi: number): number {
+  const top = Math.min(hi, chemical.maxMolarity);
+  const bottom = Math.min(lo, top * 0.2);
+  return roundQuantity(bottom + Math.random() * (top - bottom));
+}
+
 function generateDilutionProblem(difficulty: Difficulty, chemical: Chemical): Problem {
   if (difficulty === 'easy') {
-    const M1 = Math.round(Math.random() * 4 + 1);
+    const M1 = drawMolarity(chemical, 1, 5);
     const V1 = Math.round(Math.random() * 90 + 10);
     const V2 = Math.round(Math.random() * 400 + 100);
     const M2 = parseFloat(((M1 * V1) / V2).toFixed(3));
@@ -61,11 +94,11 @@ function generateDilutionProblem(difficulty: Difficulty, chemical: Chemical): Pr
       hints: [
         'Notaðu M₁V₁ = M₂V₂',
         `M₂ = (M₁ × V₁) / V₂ = (${M1} × ${V1}) / ${V2}`,
-        `M₂ = ${M2.toFixed(3)} M`
-      ]
+        `M₂ = ${M2.toFixed(3)} M`,
+      ],
     };
   } else {
-    const M1 = parseFloat((Math.random() * 4.5 + 0.5).toFixed(2));
+    const M1 = drawMolarity(chemical, 0.5, 5);
     const V1 = Math.round(Math.random() * 45 + 5);
     const V2 = Math.round(Math.random() * 450 + 50);
     const M2 = parseFloat(((M1 * V1) / V2).toFixed(4));
@@ -80,18 +113,14 @@ function generateDilutionProblem(difficulty: Difficulty, chemical: Chemical): Pr
       answer: V1,
       unit: 'mL',
       difficulty: difficulty,
-      hints: [
-        'V₁ = (M₂ × V₂) / M₁',
-        `V₁ = (${M2.toFixed(3)} × ${V2}) / ${M1}`,
-        `V₁ = ${V1} mL`
-      ]
+      hints: ['V₁ = (M₂ × V₂) / M₁', `V₁ = (${M2.toFixed(3)} × ${V2}) / ${M1}`, `V₁ = ${V1} mL`],
     };
   }
 }
 
 function generateMolarityProblem(difficulty: Difficulty, chemical: Chemical): Problem {
-  const moles = parseFloat((Math.random() * 1.9 + 0.1).toFixed(2));
   const volume = parseFloat((Math.random() * 0.9 + 0.1).toFixed(2));
+  const moles = roundQuantity(drawMolarity(chemical, 0.1, 5) * volume);
   const molarity = parseFloat((moles / volume).toFixed(3));
 
   return {
@@ -107,16 +136,18 @@ function generateMolarityProblem(difficulty: Difficulty, chemical: Chemical): Pr
     hints: [
       'Mólstyrkur (M) = mól / lítrar',
       `M = ${moles} / ${volume}`,
-      `M = ${molarity.toFixed(3)} M`
-    ]
+      `M = ${molarity.toFixed(3)} M`,
+    ],
   };
 }
 
 function generateMolarityFromMassProblem(difficulty: Difficulty, chemical: Chemical): Problem {
-  const massInGrams = Math.round(Math.random() * 90 + 10);
   const volumeInML = Math.round(Math.random() * 450 + 50);
-  const moles = massInGrams / chemical.molarMass;
   const volumeInL = volumeInML / 1000;
+  const massInGrams = roundQuantity(
+    drawMolarity(chemical, 0.2, 4) * volumeInL * chemical.molarMass
+  );
+  const moles = massInGrams / chemical.molarMass;
   const molarity = parseFloat((moles / volumeInL).toFixed(3));
 
   return {
@@ -131,18 +162,18 @@ function generateMolarityFromMassProblem(difficulty: Difficulty, chemical: Chemi
     difficulty: difficulty,
     hints: [
       'Fyrst reiknaðu mól = g / (g/mol), síðan M = mól / L',
-      `mól = ${massInGrams} / ${chemical.molarMass} = ${moles.toFixed(3)}; L = ${volumeInML}/1000 = ${volumeInL.toFixed(3)}`,
-      `M = ${moles.toFixed(3)} / ${volumeInL.toFixed(3)} = ${molarity.toFixed(3)} M`
-    ]
+      `mól = ${massInGrams} / ${chemical.molarMass} = ${fmt(moles)}; L = ${volumeInML}/1000 = ${volumeInL.toFixed(3)}`,
+      `M = ${fmt(moles)} / ${volumeInL.toFixed(3)} = ${fmt(molarity)} M`,
+    ],
   };
 }
 
 function generateMassFromMolarityProblem(difficulty: Difficulty, chemical: Chemical): Problem {
-  const molarity = parseFloat((Math.random() * 2 + 0.5).toFixed(2));
+  const molarity = drawMolarity(chemical, 0.5, 2.5);
   const volumeInML = Math.round(Math.random() * 400 + 100);
   const volumeInL = volumeInML / 1000;
   const moles = molarity * volumeInL;
-  const mass = parseFloat((moles * chemical.molarMass).toFixed(1));
+  const mass = roundQuantity(moles * chemical.molarMass);
 
   return {
     id: crypto.randomUUID(),
@@ -156,16 +187,16 @@ function generateMassFromMolarityProblem(difficulty: Difficulty, chemical: Chemi
     difficulty: difficulty,
     hints: [
       'Fyrst reiknaðu mól = M × L, síðan massi = mól × mólmassi',
-      `mól = ${molarity} × ${volumeInL.toFixed(3)} = ${moles.toFixed(3)}`,
-      `massi = ${moles.toFixed(3)} × ${chemical.molarMass} = ${mass.toFixed(1)} g`
-    ]
+      `mól = ${molarity} × ${volumeInL.toFixed(3)} = ${fmt(moles)}`,
+      `massi = ${fmt(moles)} × ${chemical.molarMass} = ${fmt(mass)} g`,
+    ],
   };
 }
 
 function generateMixingProblem(difficulty: Difficulty, chemical: Chemical): Problem {
-  const M1 = parseFloat((Math.random() * 4 + 1).toFixed(2));
+  const M1 = drawMolarity(chemical, 1, 5);
   const V1 = Math.round(Math.random() * 90 + 10);
-  const M2 = parseFloat((Math.random() * 4 + 1).toFixed(2));
+  const M2 = drawMolarity(chemical, 1, 5);
   const V2 = Math.round(Math.random() * 90 + 10);
 
   const totalMoles = (M1 * V1 + M2 * V2) / 1000;
@@ -185,7 +216,7 @@ function generateMixingProblem(difficulty: Difficulty, chemical: Chemical): Prob
     hints: [
       'M_lokal = (M₁V₁ + M₂V₂) / (V₁ + V₂)',
       `M = (${M1}×${V1} + ${M2}×${V2}) / (${V1}+${V2})`,
-      `M = ${finalMolarity.toFixed(3)} M`
-    ]
+      `M = ${finalMolarity.toFixed(3)} M`,
+    ],
   };
 }
