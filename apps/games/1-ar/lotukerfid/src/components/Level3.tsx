@@ -70,7 +70,7 @@ function generateQuestions(): Question[] {
     questions.push({
       type: 'neutrons',
       element: el,
-      text: `Hversu margar nifteindir hefur ${el.name} (${el.symbol})? Notaðu lotukerfið.`,
+      text: `Hversu margar nifteindir hefur ${el.name} (${el.symbol})?`,
       correctAnswer: n,
       explanation: `Nifteindir = massatala - atómnúmer = ${el.massNumber} - ${el.atomicNumber} = ${n}.`,
     });

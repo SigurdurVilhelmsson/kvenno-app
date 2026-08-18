@@ -39,6 +39,17 @@ describe('element data', () => {
     expect(bad.map((e) => e.symbol)).toEqual([]);
   });
 
+  // The eleven below are pinned individually. This pins the other 31, which are
+  // only otherwise checked as "an integer >= Z" -- the field was inserted by
+  // pairing each `symbol:` with the `atomicMass:` under it, so a positional slip
+  // among the 31 would go unnoticed. It is also the claim the plan asserts and
+  // nothing else tests: outside the eleven, rounding does give the mass number.
+  it('every element outside the eleven agrees with the rounded atomic mass', () => {
+    const others = ELEMENTS.filter((e) => !(e.symbol in KNOWN_MOST_ABUNDANT));
+    const wrong = others.filter((e) => e.massNumber !== Math.round(e.atomicMass));
+    expect(wrong.map((e) => e.symbol)).toEqual([]);
+  });
+
   it.each(Object.entries(KNOWN_MOST_ABUNDANT))(
     '%s has mass number %i, which rounding the atomic mass would get wrong',
     (symbol, expected) => {
