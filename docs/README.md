@@ -45,7 +45,11 @@ Level 1's fix needed one shared change, because the penalty was partly the share
 
 Guarded by `src/__tests__/hint-cost.test.tsx`, which drives the component: it reveals every tier, answers challenge 1 correctly, and asserts the full 100. Against the old code it fails with `expected 'Stig: 40' to be 'Stig: 100'`.
 
-**Noticed while doing this, not fixed:** `3-ar/equilibrium-shifter/src/App.tsx:58` declares the multiplier write-only — `const [, setHintMultiplier] = useState(1.0)` — and `calculatePoints` (`:323-327`) never reads it. So that game shows `HintSystem`'s cost indicator while awarding full points: another phantom penalty, in a game nobody has asked about yet. One `showPointCost={false}` at `:663` would settle it.
+**`3-ar/equilibrium-shifter` — found while doing the above, fixed 2026-08-26.** It declared the multiplier write-only (`const [, setHintMultiplier] = useState(1.0)`, `App.tsx:58`) and `calculatePoints` (`:320-328`) never read it, so learning mode showed `HintSystem`'s cost indicator while awarding full points — `basePoints + streakBonus + timeBonus`, untouched by hints. It now passes `showPointCost={false}`, and the dead state is gone.
+
+**The rule is now enforced rather than re-checked.** Four games got this wrong in four different ways, and two of them were mis-recorded here before anyone read the code, so `packages/shared/components/HintSystem/__tests__/consumers-honest.test.ts` scans every `<HintSystem` call site under `apps/games/` and requires each to **either apply the multiplier or pass `showPointCost={false}`**. A call site that captures the multiplier write-only — `const [, setX] = useState(1.0)`, which is how both phantom cases happened to be written — cannot be applying it, and fails. Against the pre-fix equilibrium-shifter it reports `setHintMultiplier is write-only, so the displayed cost is never charged`. It also asserts it found call sites at all, so it cannot quietly cover nothing.
+
+Note what that guard does and does not do: it enforces **honesty** — no game may quote a price it does not charge — not the restructure's "hints are free" policy. A game that displays and genuinely applies a penalty passes it. The policy is held per game by the four `hint-cost` tests. `packages/shared/components/HintSystem/__tests__/HintSystem.test.tsx` covers the prop itself, including that the default stays `true` so `2-ar/lewis-structures` and `3-ar/buffer-recipe-creator` keep telling their students what a hint costs.
 
 **Known live defects, worth reading before anything else** — students meet these today:
 
