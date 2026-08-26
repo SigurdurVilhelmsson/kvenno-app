@@ -1,0 +1,42 @@
+@import 'tailwindcss';
+@import '../../../../../packages/shared/styles/theme.css';
+@source "../../../../../packages/shared";
+@import '../../../../../packages/shared/styles/game-base.css';
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* A unit that has been cancelled out by the step being shown. */
+.unit-cancelled {
+  position: relative;
+  opacity: 0.45;
+}
+
+.unit-cancelled::after {
+  content: '';
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  top: 50%;
+  height: 2px;
+  background: currentColor;
+  transform: rotate(-12deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in {
+    animation: none;
+  }
+}

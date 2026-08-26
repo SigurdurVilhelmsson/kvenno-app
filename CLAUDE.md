@@ -16,8 +16,8 @@ kvenno-app/
 │   ├── landing/          # Landing page (track selector) + chemistry year hubs (React SPA)
 │   ├── islenskubraut/    # Icelandic language teaching cards (React SPA, /islenskubraut/)
 │   ├── lab-reports/      # AI-powered lab report grading (React SPA)
-│   └── games/            # 20 chemistry games (single-file HTML, except the 3 Three.js ones)
-│       ├── 1-ar/         # 7 games for year 1
+│   └── games/            # 21 chemistry games (single-file HTML, except the 3 Three.js ones)
+│       ├── 1-ar/         # 8 games for year 1
 │       ├── 2-ar/         # 8 games for year 2
 │       └── 3-ar/         # 5 games for year 3
 ├── packages/
@@ -253,7 +253,7 @@ messages are now Icelandic — note `Sæki`, not `Hleð`, since `hleðsla` means
 
 Remaining deferred (all need a decision, not code):
 
-- **`useGameI18n` `t()` — 7 of 20 games are switcher-only.** All 20 import the hook and render `LanguageSwitcher`; seven have zero `t()` calls of any form and serve hardcoded Icelandic — three Y3 (`gas-law-challenge`, `buffer-recipe-creator`, `thermodynamics-predictor`) and four Y2 (`kinetics`, `lewis-structures`, `organic-nomenclature`, `intermolecular-forces`). Two more are zero in all but name: `ph-titration` and `rafeindabygging` have exactly one call each (`ph-titration`'s is a template literal with a hardcoded Icelandic fallback, `src/components/Level3.tsx:104`, which a `t('` grep misses). `equilibrium-shifter` is partial at 7, so this is not "all of Y3". Per-game counts: `docs/i18n-coverage.md` — the authority; every old-repo game carries the same dead wiring. Conflicts with this file's "Icelandic UI only." Decide: strip it, finish wiring, or keep as-is.
+- **`useGameI18n` `t()` — 7 of 20 games are switcher-only.** Those 20 all import the hook and render `LanguageSwitcher`; `1-ar/einingakedjan` (Aug 2026) is the one game that does neither, deliberately — it ships hardcoded Icelandic so it does not add a 21st case to this undecided question. The rest of this entry is unchanged and counts only the original 20: seven have zero `t()` calls of any form and serve hardcoded Icelandic — three Y3 (`gas-law-challenge`, `buffer-recipe-creator`, `thermodynamics-predictor`) and four Y2 (`kinetics`, `lewis-structures`, `organic-nomenclature`, `intermolecular-forces`). Two more are zero in all but name: `ph-titration` and `rafeindabygging` have exactly one call each (`ph-titration`'s is a template literal with a hardcoded Icelandic fallback, `src/components/Level3.tsx:104`, which a `t('` grep misses). `equilibrium-shifter` is partial at 7, so this is not "all of Y3". Per-game counts: `docs/i18n-coverage.md` — the authority; every old-repo game carries the same dead wiring. Conflicts with this file's "Icelandic UI only." Decide: strip it, finish wiring, or keep as-is.
 - **Hess Polish i18n block** — teacher sign-off. Same decision as above.
 - **Kinetics/Redox problem order shuffle** — deliberately skipped (exam-style stability). **Do not generalise this to other games:** several ship an unshuffled array where the answer is positionally predictable, which is a different problem. See `docs/README.md`.
 - **Level 4, and whether levels are gated** — the old repo's design capped games at 3 levels; the April restructure replaced that with Explore → Understand → Practice → Apply, which has no level count. Most salvageable content from the old repo is Level-4 material. Decide once whether a Level 4 exists or that content becomes the Apply phase. Gating strings for 15 games already exist in three languages with no consumers — 14 under `menu.levels.*.locked`, plus `1-ar/nafnakerfid` under `completeLevel1First`/`completeLevel2First` (`src/i18n.ts:23-24`). Grep both key names before wiring or stripping.
@@ -262,14 +262,14 @@ Full plan: `~/.claude/plans/logical-wandering-llama.md`
 
 ### Game inventory
 
-**Year 1:** dimensional-analysis, lotukerfid, nafnakerfid, molmassi, jafna-jofnur, takmarkandi, lausnir
+**Year 1:** dimensional-analysis, lotukerfid, nafnakerfid, molmassi, jafna-jofnur, takmarkandi, lausnir, einingakedjan
 **Year 2:** hess-law, kinetics, lewis-structures, vsepr-geometry, intermolecular-forces, organic-nomenclature, redox-reactions, rafeindabygging
 **Year 3:** ph-titration, gas-law-challenge, equilibrium-shifter, thermodynamics-predictor, buffer-recipe-creator
 
 ### Curriculum chains
 
 ```
-Y1: Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi → Jafna Jöfnur → Takmarkandi → Lausnir
+Y1: Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi → Jafna Jöfnur → Takmarkandi → Lausnir → Einingakeðjan
 Y2: Rafeindabygging → Lewis → VSEPR → IMF → Hess → Kinetics → Redox → Organic
 Y3: Gaslögmál → Jafnvægi → Varmafræði → pH Títrun → Púfferar
 ```

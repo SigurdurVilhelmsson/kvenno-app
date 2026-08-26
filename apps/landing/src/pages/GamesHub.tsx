@@ -62,6 +62,11 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
         description: 'Mólstyrkur og útþynning lausna',
         slug: 'lausnir',
       },
+      {
+        title: 'Einingakeðjan',
+        description: 'Byggðu leiðina frá mælingu að svari og láttu einingarnar styttast út',
+        slug: 'einingakedjan',
+      },
     ],
   },
   '2-ar': {

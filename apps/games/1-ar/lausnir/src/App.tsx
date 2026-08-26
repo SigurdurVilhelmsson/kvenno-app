@@ -345,7 +345,7 @@ function App() {
           </div>
           <div className="mt-3 text-center text-xs text-warm-500">
             <strong>Námsleiðin:</strong> Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi →
-            Jafna jöfnur → Takmarkandi → <u>Lausnir</u>
+            Jafna jöfnur → Takmarkandi → <u>Lausnir</u> → Einingakeðjan
           </div>
         </div>
       </div>
