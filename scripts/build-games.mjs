@@ -32,6 +32,7 @@ const games = [
   ['1-ar', 'jafna-jofnur', 'jafna-jofnur'],
   ['1-ar', 'takmarkandi', 'takmarkandi'],
   ['1-ar', 'lausnir', 'lausnir'],
+  ['1-ar', 'einingakedjan', 'einingakedjan'],
 
   // Year 2 games
   ['2-ar', 'hess-law', 'hess-law'],
