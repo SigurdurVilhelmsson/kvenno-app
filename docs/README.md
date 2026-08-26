@@ -73,9 +73,35 @@ Guarded three ways, all of which fail against the old builder:
 ten-question runs to a perfect score. Against the pre-fix builder that last one reports
 `no "súlfat" part offered for K₂SO₄ (Kalíumsúlfat); tray held [tetra, mónó, trí, súlfíð, oxíð, dí]`.
 
-**Known live defects, worth reading before anything else** — students meet these today:
+**Fixed 2026-08-26 — the two unshuffled option arrays.** `2-ar/kinetics` Level 3 put the correct
+option first in **all 6** challenges and `2-ar/organic-nomenclature` Level 3 in **6 of 10**, and both
+mapped the data straight into buttons, so "click the top one" beat reading the question. Both levels
+now shuffle in a `useMemo` keyed on the challenge index — the idiom four other levels in the repo
+already used, including **Level 1 of kinetics itself**.
 
-- Option arrays where the correct answer sits at a constant index, in two games that map `challenge.options` straight into buttons with no shuffle: `2-ar/kinetics/src/data/level3-questions.ts` puts the correct option first on **all 6** items (rendered at `components/Level3.tsx:227`), and `2-ar/organic-nomenclature` Level 3 puts it first on **6 of 10** (rendered at `components/Level3.tsx:364`). Both grade by value — option `id` and `correctAnswer` string respectively — so reordering is safe. Four other files that a data-only scan flags as constant are **not** defects, because their components shuffle before rendering: `1-ar/nafnakerfid` L1 (`:360`), `1-ar/lotukerfid` L2 (`:156`), `2-ar/hess-law` L1 (`:219`), `2-ar/kinetics` L1 (`:52`). Measured 2026-08-18 by scanning every `options:` array in all three years and then checking each hit's render path — a scan of the data alone overstates this defect by four files. This is the position of the correct option _within_ a question, which is not the deliberate exam-stability choice about problem _order_ in Kinetics and Redox.
+The kinetics fix had a trap worth recording. Its option `id`s double as the visible letters, so the
+shuffle has to reassign them a/b/c/d by position — and once reassigned, the id the student clicked no
+longer identifies the same entry in the original array, so `checkAnswer` had to look up in
+`shuffledOptions` too. A fix that shuffles the render but leaves grading on `challenge.options`
+silently mis-scores: measured at 20–40 points out of 120 for an all-correct run, and 20–40 out of
+zero for an all-wrong one. `2-ar/kinetics/src/__tests__/option-order.test.tsx` plays all six
+challenges twice over and fails against exactly that half-done fix, as well as against no shuffle at
+all; `2-ar/organic-nomenclature/src/__tests__/option-order.test.tsx` does the same for its ten.
+
+Both test files scope their queries to the rendered container rather than `screen`, because the repo
+runs vitest with `retry: 2` and no RTL auto-cleanup — a failed attempt leaves its DOM in the
+document, and a document-wide query then reports something confusing instead of the real fault.
+
+**Still true, and still the thing to check before "fixing" a fifth file:** four other games look
+constant in the data but shuffle at render, so they are **not** defects — `1-ar/nafnakerfid` L1
+(`:360`), `1-ar/lotukerfid` L2 (`:156`), `2-ar/hess-law` L1 (`:219`), `2-ar/kinetics` L1 (`:52`). A
+scan of the data alone overstates this defect by four files. And this is the position of the correct
+option _within_ a question, which is not the deliberate exam-stability choice about problem _order_
+in Kinetics and Redox.
+
+**No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
+fixed, and each carries a test that fails against the pre-fix code. The entries above record what
+each one was; what remains is enrichment and open decisions, not defects.
 
 **The current work order is [`plans/2026-08-16-games-roadmap.md`](plans/2026-08-16-games-roadmap.md)**, with the first phase specified in [`plans/2026-08-16-phase-1-correctness.md`](plans/2026-08-16-phase-1-correctness.md). Both are live August-2026 documents, not history.
 

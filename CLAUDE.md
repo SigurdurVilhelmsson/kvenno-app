@@ -436,9 +436,13 @@ first. Guarded by `1-ar/dimensional-analysis/src/__tests__/hint-cost.test.ts`.
 
 **Fixed 2026-08-26 — Nafnakerfið's Level 3 name builder.** 33 of the 51 compounds in its pool could not be assembled from the parts it offered, so they could never be marked correct — roughly six unanswerable questions per ten-question run. The parts were improvised from element symbols and could not express a Roman numeral, a polyatomic ion, six of the metals, or an elided prefix. `src/data/naming.ts` now declares the naming vocabulary and `segmentName` decomposes a name back into it, so the parts come from the name itself; `src/utils/nameParts.ts` holds the tray and pool logic. Fe₃O₄ returned to the pool (52 of 59; the seven excluded are the trivial names and bare elements). Three tests guard it, all verified to fail against the old builder — `name-builder`, `name-parts`, and `level3-answerable.test.tsx`, which renders the component and plays five full runs to a perfect score. **When adding a compound**, if its name needs a morpheme that is not declared, `name-builder.test.ts` fails and names it.
 
-**Live defects students meet today** — fix before adding features:
+**Fixed 2026-08-26 — the two unshuffled option arrays.** `2-ar/kinetics` L3 put the correct option first in all 6 challenges, `2-ar/organic-nomenclature` L3 in 6 of 10; both now shuffle in a `useMemo` keyed on the challenge index, the idiom four other levels already used including kinetics' own L1. Kinetics' option `id`s double as the visible letters, so the shuffle reassigns them a/b/c/d by position — and `checkAnswer` therefore had to move to `shuffledOptions`, since the clicked id no longer identifies the same entry in the original array. An `option-order.test.tsx` in each game plays every challenge twice over; both fail against no shuffle, and the kinetics one also against that half-done fix. **Four other games still look constant in the data but shuffle at render — see `docs/README.md` before "fixing" a fifth.**
 
-- Unshuffled option arrays in `2-ar/kinetics` Level 3 (6/6 first) and `2-ar/organic-nomenclature` Level 3 (6/10 first). Four other games look constant in the data but shuffle at render — see `docs/README.md` before "fixing" them
+**No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
+now fixed, and each carries a test that fails against the pre-fix code. What is left is enrichment
+and unfinished decisions, not defects — the work order is
+`docs/plans/2026-08-16-games-roadmap.md`, and `docs/README.md` carries the four look-alike option
+arrays that are **not** defects, so nobody "fixes" a fifth.
 
 The former "`challenges.ts:354` is unsatisfiable" claim was retired Aug 2026 by executing `Level3`'s grading path — see `docs/README.md`. Do not reinstate it.
 
