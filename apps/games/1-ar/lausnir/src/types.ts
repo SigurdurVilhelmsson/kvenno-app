@@ -4,6 +4,17 @@ export interface Chemical {
   molarMass: number;
   displayName: string;
   /**
+   * Physical form of the pure substance at room temperature.
+   *
+   * Only a `solid` can be weighed out and dissolved, so only a solid may appear
+   * in a problem that instructs the student to do that. The liquids and the one
+   * gas here reach a school as bought stock solutions and are dispensed by
+   * volume — "Þú leysir 60 g af HCl" is not something a student can carry out.
+   * They still appear in dilution and mixing problems, which is where they
+   * belong: diluting concentrated acid from stock is the real lab skill.
+   */
+  form: 'solid' | 'liquid' | 'gas';
+  /**
    * Highest molarity an aqueous solution of this substance can actually reach at
    * room temperature. Generators clamp to it: without a ceiling the game asked
    * students to compute the concentration of solutions that cannot exist, up to
