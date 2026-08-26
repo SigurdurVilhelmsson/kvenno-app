@@ -20,7 +20,7 @@ const MISCONCEPTIONS: Record<number, string> = {
 
 // Related concepts for each challenge
 const RELATED_CONCEPTS: Record<number, string[]> = {
-  1: ['Exothermic', 'Endothermic', 'Skammtavarmi'],
+  1: ['Exothermic', 'Endothermic', 'Vermi'],
   2: ['Öfug hvörf', 'Formerkisbreyting', 'Hverfanleiki'],
   3: ['Stökefnafræði', 'Mólhlutföll', 'Hlutfallsleg orka'],
   4: ['Samsett aðgerðir', 'Sundrun vs myndun', 'Margföldun'],
@@ -286,7 +286,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <h2 className="text-xl font-bold text-warm-800">Lögmál Hess — Af hverju?</h2>
 
             <p className="text-warm-700">
-              <strong>Skammtavarmi (ΔH)</strong> er <em>ástandsfall</em> — það þýðir að heildar
+              <strong>Vermi (ΔH)</strong> er <em>ástandsfall</em> — það þýðir að heildar
               orkubreyting fer eftir upphafs- og lokaástandi,{' '}
               <strong>ekki hvaða leið er farin</strong>.
             </p>

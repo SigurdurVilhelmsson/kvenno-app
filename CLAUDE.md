@@ -443,16 +443,30 @@ The current work order for these lives in `docs/plans/2026-08-16-games-roadmap.m
 `packages/shared/i18n/ordabok.md` is the authority — it was moved into the shared library deliberately. When a term is disputed, resolve in this order:
 
 1. `packages/shared/i18n/ordabok.md`
-2. `~/dev/repos/namsbokasafn-efni`, the school's textbook corpus (`grep -roi "<stem>[a-uáéíóúýþæö]*" --include=*.md . | wc -l`)
+2. `~/dev/repos/namsbokasafn-efni`, the school's textbook corpus (`grep -roi "<stem>[a-uáéíóúýþæö]*" --include=*.md . | wc -l`) — a local checkout, so it is not reachable from a cloud session; say so rather than guessing when it is absent
 3. Ask Siggi — only where both are silent or they disagree
 
-Already ruled, and still wrong in this repo (each parenthetical names what is actually shipping, measured 2026-08-17):
+**Applied 2026-08-26 (roadmap Phase 2) and now enforced by a test.** All six terms below are
+corrected in the shipped source, and `packages/shared/i18n/__tests__/governed-terms.test.ts` fails
+if a banned form reappears anywhere under `apps/games`, `apps/landing/src`, `apps/islenskubraut/src`
+or `packages/shared/components` — including inside a dead `i18n.ts` block no game currently renders,
+since a wrong term parked there ships the moment someone wires it up.
 
-- **`sætistala`** for atomic number — shipping as `atómnúmer` (4 files) and `raðtala` (2 files); `sætistala` has zero hits
-- **`vermi`** for enthalpy — shipping as `skammtavarmi`, 6 lines in 5 files (`2-ar/hess-law`: `App.tsx:190`, `i18n.ts:15`, `components/Level1.tsx:23,289`, `data/challenges.ts:27`; `3-ar/thermodynamics-predictor/src/i18n.ts:38`). `Enþalpía` has zero hits here — it is an old-repo `calorimetry` coinage; do not import it if that game is ported
-- **`sjálfgengur`/`sjálfgengt`** for spontaneous — shipping as `Sjálfspyrjandi` and `sjálfviljug*`, both in `3-ar/thermodynamics-predictor` (one game, two wrong words). `sjálfvirkur` has zero hits; do not grep for it
-- **`katóða`** for cathode — shipping as `kaþóða` (4 occurrences, `2-ar/redox-reactions/src/components/ElectrochemicalCell.tsx`); `katóða` has zero hits. **`anóða`** is already correct in that file, so only the cathode half needs fixing
-- **`stuðpúði`** (not `púffer`) — `púffer*` still ships in 7 files
+| Concept       | Use           | Never                             | Grammar note                                                                                                                                                                                                                  |
+| ------------- | ------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| atomic number | `sætistala`   | `atómnúmer`, `raðtala`            | Feminine, where `atómnúmer` was neuter — nom `sætistala`, def. `sætistalan`, acc. def. `sætistöluna`, dat. `sætistölu`. Determiners change with it (`þeim atómnúmeri` → `þeirri sætistölu`)                                   |
+| enthalpy      | `vermi`       | `skammtavarmi`, `enþalpía`        | Masculine, same as `skammtavarmi`, so agreement is unaffected. `enþalpía` is an old-repo `calorimetry` coinage — do not import it if that game is ported                                                                      |
+| spontaneous   | `sjálfgengur` | `sjálfspyrjandi`, `sjálfviljugur` | `sjálfgengur` (m) / `sjálfgeng` (f, and n.pl) / `sjálfgengt` (n)                                                                                                                                                              |
+| spontaneity   | `sjálfgengi`  | `sjálfviljugheit`, `sjálfvilji`   | Neuter, where `sjálfviljugheit` was being treated as feminine — its adjectives change too (`er röng` → `er rangt`)                                                                                                            |
+| cathode       | `katóða`      | `kaþóða`                          | Same declension; the correction is only þ → t. `anóða` was already correct                                                                                                                                                    |
+| buffer        | `stuðpúði`    | `púffer`                          | Masculine, where `púffer` was neuter in some strings — adjectives change (`Súrt púffer` → `Súr stuðpúði`). Compounds take the genitive stem `stuðpúða-`: `stuðpúðalausn`, `stuðpúðageta`, `stuðpúðasvæði`. Plural `stuðpúðar` |
+
+`sjálfvirkur` has zero hits and is not the word for spontaneous; do not grep for it.
+
+**What the test cannot do.** It matches strings, so it cannot check agreement. Replacing a banned
+term in Icelandic is not a string swap — three of the six above change grammatical gender, which
+moves the adjectives and determiners around them. A future fix that swaps only the noun will pass
+the test and still read wrong to a student.
 
 Decided in advance, with nothing yet to correct: the Ksp family (`leysnimargfeldi`, `samjónahrif`, `mólarleysni`, `hlutfelling`). Solubility equilibria are absent platform-wide — all four return zero real hits (roadmap Phase 5). Use these terms when the content lands; do not coin new ones.
 

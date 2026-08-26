@@ -13,7 +13,7 @@ export const gameTranslations = createGameTranslations({
     intro: {
       title: 'Hvað er lögmál Hess?',
       description:
-        'Skammtavarmi (ΔH) er ástandsfall — það skiptir ekki máli hvaða leið efnahvörfin taka, aðeins upphafs- og lokaaðstæður skipta máli. Þetta þýðir að við getum sameinað jöfnur til að finna ΔH fyrir hvörf sem erfitt er að mæla beint.',
+        'Vermi (ΔH) er ástandsfall — það skiptir ekki máli hvaða leið efnahvörfin taka, aðeins upphafs- og lokaaðstæður skipta máli. Þetta þýðir að við getum sameinað jöfnur til að finna ΔH fyrir hvörf sem erfitt er að mæla beint.',
       formula: 'ΔH heild = ΔH₁ + ΔH₂ + ΔH₃ + ...',
     },
     levels: {

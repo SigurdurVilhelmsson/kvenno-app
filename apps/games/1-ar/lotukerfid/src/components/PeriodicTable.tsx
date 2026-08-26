@@ -78,7 +78,7 @@ function ElementCell({
       onFocus={onFocus}
       tabIndex={interactive ? tabIndex : -1}
       disabled={!interactive}
-      aria-label={`${element.name} (${element.symbol}), atómnúmer ${element.atomicNumber}, ${categoryLabel}`}
+      aria-label={`${element.name} (${element.symbol}), sætistala ${element.atomicNumber}, ${categoryLabel}`}
       className={`
         element-cell relative w-full h-full min-h-[44px] sm:min-h-[48px] md:min-h-[56px] p-0.5 rounded-md border-2
         flex flex-col items-center justify-center text-center

@@ -84,10 +84,10 @@ function App() {
   // Get scenario description
   const getScenarioDescription = (scenario: number): string => {
     const descriptions: Record<number, string> = {
-      1: 'Alltaf sjálfviljugt (ΔH<0, ΔS>0 eða ΔH<<0)',
-      2: 'Aldrei sjálfviljugt (ΔH>0, ΔS<0)',
-      3: 'Sjálfviljugt við lágt hitastig (ΔH<0, ΔS<0)',
-      4: 'Sjálfviljugt við hátt hitastig (ΔH>0, ΔS>0)',
+      1: 'Alltaf sjálfgengt (ΔH<0, ΔS>0 eða ΔH<<0)',
+      2: 'Aldrei sjálfgengt (ΔH>0, ΔS<0)',
+      3: 'Sjálfgengt við lágt hitastig (ΔH<0, ΔS<0)',
+      4: 'Sjálfgengt við hátt hitastig (ΔH>0, ΔS>0)',
     };
     return descriptions[scenario] || '';
   };
@@ -102,13 +102,13 @@ function App() {
     const TdeltaS = (temperature * deltaS) / 1000;
     switch (scenario) {
       case 1:
-        return `ΔH er neikvætt (efnahvarfið losar varma) og ΔS er jákvætt (entrópía eykst). Báðir þættir styðja sjálfvilja — þess vegna er þetta hvarf alltaf sjálfviljugt óháð hitastigi.`;
+        return `ΔH er neikvætt (efnahvarfið losar varma) og ΔS er jákvætt (entrópía eykst). Báðir þættir styðja sjálfgengi — þess vegna er þetta hvarf alltaf sjálfgengt óháð hitastigi.`;
       case 2:
-        return `ΔH er jákvætt (efnahvarfið þarf varma) og ΔS er neikvætt (entrópía minnkar). Báðir þættir andmæla sjálfvilja — þess vegna er þetta hvarf aldrei sjálfviljugt óháð hitastigi.`;
+        return `ΔH er jákvætt (efnahvarfið þarf varma) og ΔS er neikvætt (entrópía minnkar). Báðir þættir andmæla sjálfgengi — þess vegna er þetta hvarf aldrei sjálfgengt óháð hitastigi.`;
       case 3:
-        return `ΔH er neikvætt (styður sjálfvilja) en ΔS er neikvætt (andmælir). Við ${temperature} K vegur TΔS = ${TdeltaS.toFixed(1)} kJ/mol. Ef |ΔH| > |TΔS|, þá vinnur varminn og hvarfið er sjálfviljugt. Þess vegna eru svona hvörf sjálfviljug við lágt hitastig en ekki við hátt.`;
+        return `ΔH er neikvætt (styður sjálfgengi) en ΔS er neikvætt (andmælir). Við ${temperature} K vegur TΔS = ${TdeltaS.toFixed(1)} kJ/mol. Ef |ΔH| > |TΔS|, þá vinnur varminn og hvarfið er sjálfgengt. Þess vegna eru svona hvörf sjálfgeng við lágt hitastig en ekki við hátt.`;
       case 4:
-        return `ΔH er jákvætt (andmælir sjálfvilja) en ΔS er jákvætt (styður). Við ${temperature} K vegur TΔS = ${TdeltaS.toFixed(1)} kJ/mol. Ef TΔS > ΔH, þá vinnur entrópía og hvarfið er sjálfviljugt. Þess vegna eru svona hvörf ekki sjálfviljug við lágt hitastig en verða sjálfviljug við nógu hátt.`;
+        return `ΔH er jákvætt (andmælir sjálfgengi) en ΔS er jákvætt (styður). Við ${temperature} K vegur TΔS = ${TdeltaS.toFixed(1)} kJ/mol. Ef TΔS > ΔH, þá vinnur entrópía og hvarfið er sjálfgengt. Þess vegna eru svona hvörf ekki sjálfgeng við lágt hitastig en verða sjálfgeng við nógu hátt.`;
       default:
         return '';
     }
@@ -139,20 +139,20 @@ function App() {
       setStreak(0);
       const reasoning = buildSpontaneityReasoning();
       if (!deltaGCorrect && !spontaneityCorrect) {
-        setFeedback(`Rangt. Bæði ΔG útreikningur og sjálfviljugheit eru röng. ${reasoning}`);
+        setFeedback(`Rangt. Bæði ΔG útreikningur og sjálfgengi eru röng. ${reasoning}`);
       } else if (!deltaGCorrect) {
         setFeedback(
-          `Sjálfviljugheit er rétt en ΔG er rangt. Rétt svar: ${calculatedDeltaG.toFixed(1)} kJ/mol`
+          `Sjálfgengi er rétt en ΔG er rangt. Rétt svar: ${calculatedDeltaG.toFixed(1)} kJ/mol`
         );
       } else {
         const spontaneityText =
           correctSpontaneity === 'spontaneous'
-            ? 'Sjálfviljugt'
+            ? 'Sjálfgengt'
             : correctSpontaneity === 'equilibrium'
               ? 'Jafnvægi'
-              : 'Ekki sjálfviljugt';
+              : 'Ekki sjálfgengt';
         setFeedback(
-          `ΔG er rétt en sjálfviljugheit er röng. Rétt svar: ${spontaneityText}. ${reasoning}`
+          `ΔG er rétt en sjálfgengi er rangt. Rétt svar: ${spontaneityText}. ${reasoning}`
         );
       }
     }
@@ -190,14 +190,14 @@ function App() {
         yMin: -500,
         yMax: 0,
         color: 'rgba(34, 197, 94, 0.1)',
-        label: 'Sjálfviljugt',
+        label: 'Sjálfgengt',
         labelPosition: 'left',
       },
       {
         yMin: 0,
         yMax: 500,
         color: 'rgba(239, 68, 68, 0.1)',
-        label: 'Ekki sjálfviljugt',
+        label: 'Ekki sjálfgengt',
         labelPosition: 'left',
       },
     ];
@@ -279,7 +279,7 @@ function App() {
           <div className="max-w-4xl mx-auto px-4">
             <div className="bg-white rounded-lg shadow-lg p-8" id="game-content">
               <p className="text-warm-600 mb-4">
-                Lærðu um Gibbs frjálsa orku og sjálfviljugheit efnahvarfa
+                Lærðu um Gibbs frjálsa orku og sjálfgengi efnahvarfa
               </p>
 
               {/* Progress Stats */}
@@ -320,8 +320,8 @@ function App() {
                 <h2 className="text-xl font-bold text-blue-800">Af hverju ΔG = ΔH − TΔS?</h2>
 
                 <p className="text-sm text-blue-700">
-                  Til að spá fyrir um hvort hvörf gerist sjálfkrafa (sjálfviljugt) þurfum við að
-                  skoða <strong>tvær drifkraftir</strong>:
+                  Til að spá fyrir um hvort hvörf gerist sjálfkrafa (sjálfgengt) þurfum við að skoða{' '}
+                  <strong>tvær drifkraftir</strong>:
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -350,11 +350,11 @@ function App() {
                   <p className="font-mono text-lg text-center text-blue-900">ΔG = ΔH − TΔS</p>
                   <div className="text-xs text-blue-600 mt-2 space-y-1">
                     <p>
-                      • Ef ΔG &lt; 0 → hvörfin eru <strong>sjálfviljug</strong> (geta gerst
+                      • Ef ΔG &lt; 0 → hvörfin eru <strong>sjálfgeng</strong> (geta gerst
                       sjálfkrafa)
                     </p>
                     <p>
-                      • Ef ΔG &gt; 0 → hvörfin eru <strong>ekki sjálfviljug</strong>
+                      • Ef ΔG &gt; 0 → hvörfin eru <strong>ekki sjálfgeng</strong>
                     </p>
                     <p>
                       • Ef ΔG = 0 → kerfið er í <strong>jafnvægi</strong>
@@ -365,7 +365,7 @@ function App() {
                 <div className="bg-amber-50 p-3 rounded-lg text-sm text-amber-800">
                   <strong>Hlutverk hitastigs:</strong> T margfaldar ΔS. Við hátt hitastig ráða
                   óreguáhrif meiru (TΔS stórt). Við lágt hitastig ræður orkuáhrifin (ΔH). Þess vegna
-                  geta sum hvörf verið sjálfviljug aðeins við ákveðið hitastig.
+                  geta sum hvörf verið sjálfgeng aðeins við ákveðið hitastig.
                 </div>
               </div>
 
@@ -458,7 +458,7 @@ function App() {
             </div>
             <div className="mt-3 text-center text-xs text-warm-500">
               <strong>Námsleiðin:</strong> Gaslögmál → Jafnvægi → <u>Varmafræði</u> → pH Títrun →
-              Púfferar
+              Stuðpúðar
             </div>
           </div>
         </div>
@@ -502,7 +502,7 @@ function App() {
               <div className="bg-red-50 p-3 rounded-lg border border-red-200">
                 <div className="text-xs text-red-700 font-semibold">ΔH° (varmamismunur)</div>
                 <div className="text-2xl font-bold text-red-800">{demoDeltaH} kJ/mol</div>
-                <div className="text-xs text-red-600 mt-1">Losun varma → styður sjálfvilja</div>
+                <div className="text-xs text-red-600 mt-1">Losun varma → styður sjálfgengi</div>
               </div>
               <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
                 <div className="text-xs text-purple-700 font-semibold">ΔS° (óreiðumismunur)</div>
@@ -543,11 +543,11 @@ function App() {
               <div className="mt-1 text-sm">
                 {demoSpontaneous ? (
                   <>
-                    ✓ <strong>Sjálfviljugt</strong> — ΔG &lt; 0
+                    ✓ <strong>Sjálfgengt</strong> — ΔG &lt; 0
                   </>
                 ) : (
                   <>
-                    ✗ <strong>Ekki sjálfviljugt</strong> — ΔG &gt; 0
+                    ✗ <strong>Ekki sjálfgengt</strong> — ΔG &gt; 0
                   </>
                 )}
               </div>
@@ -559,7 +559,7 @@ function App() {
             <ul className="text-sm text-amber-900 space-y-2 list-disc list-inside">
               <li>
                 Við lágt hitastig vinnur <strong>ΔH</strong> og hvarfið er{' '}
-                <strong>sjálfviljugt</strong> (ΔG &lt; 0).
+                <strong>sjálfgengt</strong> (ΔG &lt; 0).
               </li>
               <li>
                 Þegar T vex, vex <strong>TΔS</strong>-liðurinn. Þar sem ΔS er neikvætt, þýðir það
@@ -569,7 +569,7 @@ function App() {
                 Við <strong>þveragahitastig T = ΔH/ΔS ≈ {demoCrossover.toFixed(0)} K</strong> verða
                 liðurnir jafnir og hvarfið nær jafnvægi.
               </li>
-              <li>Ofan við þveragahitastigið verður hvarfið ekki sjálfviljugt.</li>
+              <li>Ofan við þveragahitastigið verður hvarfið ekki sjálfgengt.</li>
             </ul>
           </div>
 
@@ -766,9 +766,9 @@ function App() {
                   <div
                     className={`text-lg font-bold ${currentSpontaneity === 'spontaneous' ? 'text-green-600' : currentSpontaneity === 'equilibrium' ? 'text-yellow-600' : 'text-red-600'}`}
                   >
-                    {currentSpontaneity === 'spontaneous' && '✓ Sjálfviljugt'}
+                    {currentSpontaneity === 'spontaneous' && '✓ Sjálfgengt'}
                     {currentSpontaneity === 'equilibrium' && '⚖️ Jafnvægi'}
-                    {currentSpontaneity === 'non-spontaneous' && '✗ Ekki sjálfviljugt'}
+                    {currentSpontaneity === 'non-spontaneous' && '✗ Ekki sjálfgengt'}
                   </div>
                 </div>
 
@@ -798,11 +798,11 @@ function App() {
                       <div className="mt-2 text-xs">
                         {currentProblem.scenario === 3 ? (
                           <span className="text-purple-600">
-                            ⚡ Þetta hvarf er sjálfviljugt <strong>undir</strong> þessu hitastigi
+                            ⚡ Þetta hvarf er sjálfgengt <strong>undir</strong> þessu hitastigi
                           </span>
                         ) : (
                           <span className="text-purple-600">
-                            ⚡ Þetta hvarf er sjálfviljugt <strong>yfir</strong> þessu hitastigi
+                            ⚡ Þetta hvarf er sjálfgengt <strong>yfir</strong> þessu hitastigi
                           </span>
                         )}
                       </div>
@@ -858,8 +858,8 @@ function App() {
                     />
                   </div>
 
-                  <div className="mb-4" role="radiogroup" aria-label="Sjálfviljugheit">
-                    <label className="block text-sm font-medium mb-2">Sjálfviljugheit:</label>
+                  <div className="mb-4" role="radiogroup" aria-label="Sjálfgengi">
+                    <label className="block text-sm font-medium mb-2">Sjálfgengi:</label>
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
                       <button
                         onClick={() => setUserSpontaneity('spontaneous')}
@@ -871,7 +871,7 @@ function App() {
                             : 'border-warm-300 hover:border-green-300'
                         }`}
                       >
-                        ✓ Sjálfviljugt
+                        ✓ Sjálfgengt
                       </button>
                       <button
                         onClick={() => setUserSpontaneity('equilibrium')}
@@ -895,7 +895,7 @@ function App() {
                             : 'border-warm-300 hover:border-red-300'
                         }`}
                       >
-                        ✗ Ekki sjálfviljugt
+                        ✗ Ekki sjálfgengt
                       </button>
                     </div>
                   </div>
@@ -937,9 +937,9 @@ function App() {
                     <div>
                       <strong>Skref 3:</strong> Túlka niðurstöðu
                       <br />
-                      {currentDeltaG < -1 && 'ΔG° < 0 → SJÁLFVILJUGT ✓'}
+                      {currentDeltaG < -1 && 'ΔG° < 0 → SJÁLFGENGT ✓'}
                       {Math.abs(currentDeltaG) <= 1 && 'ΔG° ≈ 0 → JAFNVÆGI ⚖️'}
-                      {currentDeltaG > 1 && 'ΔG° > 0 → EKKI SJÁLFVILJUGT ✗'}
+                      {currentDeltaG > 1 && 'ΔG° > 0 → EKKI SJÁLFGENGT ✗'}
                     </div>
                     {/* Crossover temperature explanation for scenarios 3 & 4 */}
                     {(currentProblem.scenario === 3 || currentProblem.scenario === 4) &&
@@ -962,19 +962,17 @@ function App() {
                           <div className="mt-2 text-sm">
                             {currentProblem.scenario === 3 ? (
                               <>
-                                🔹 Við T &lt; {crossoverTemp.toFixed(0)} K: ΔG° &lt; 0
-                                (sjálfviljugt)
+                                🔹 Við T &lt; {crossoverTemp.toFixed(0)} K: ΔG° &lt; 0 (sjálfgengt)
                                 <br />
                                 🔹 Við T &gt; {crossoverTemp.toFixed(0)} K: ΔG° &gt; 0 (ekki
-                                sjálfviljugt)
+                                sjálfgengt)
                               </>
                             ) : (
                               <>
                                 🔹 Við T &lt; {crossoverTemp.toFixed(0)} K: ΔG° &gt; 0 (ekki
-                                sjálfviljugt)
+                                sjálfgengt)
                                 <br />
-                                🔹 Við T &gt; {crossoverTemp.toFixed(0)} K: ΔG° &lt; 0
-                                (sjálfviljugt)
+                                🔹 Við T &gt; {crossoverTemp.toFixed(0)} K: ΔG° &lt; 0 (sjálfgengt)
                               </>
                             )}
                           </div>
@@ -1043,9 +1041,9 @@ function App() {
                 )}
                 <div className="mt-3 text-xs text-warm-600 grid grid-cols-2 gap-2">
                   <div>🟠 Línuhalli: -ΔS°</div>
-                  <div>🟢 Sjálfviljugt: ΔG° &lt; 0</div>
+                  <div>🟢 Sjálfgengt: ΔG° &lt; 0</div>
                   <div>🔵 Y-skurður: ΔH°</div>
-                  <div>🔴 Ekki sjálfviljugt: ΔG° &gt; 0</div>
+                  <div>🔴 Ekki sjálfgengt: ΔG° &gt; 0</div>
                   <div className="col-span-2">
                     <span className="inline-block w-3 h-3 rounded-full bg-purple-500 mr-1"></span>T
                     <sub>cross</sub>: Umbreytingarhitastig (ΔG° = 0)
@@ -1091,16 +1089,16 @@ function App() {
                 <h3 className="font-bold mb-3">🎯 Fjögur Atburðarás</h3>
                 <div className="space-y-2 text-xs">
                   <div className="p-2 rounded scenario-1 text-white">
-                    <strong>1: ΔH&lt;0, ΔS&gt;0</strong> → Alltaf sjálfviljugt
+                    <strong>1: ΔH&lt;0, ΔS&gt;0</strong> → Alltaf sjálfgengt
                   </div>
                   <div className="p-2 rounded scenario-2 text-white">
-                    <strong>2: ΔH&gt;0, ΔS&lt;0</strong> → Aldrei sjálfviljugt
+                    <strong>2: ΔH&gt;0, ΔS&lt;0</strong> → Aldrei sjálfgengt
                   </div>
                   <div className="p-2 rounded scenario-3 text-white">
-                    <strong>3: ΔH&lt;0, ΔS&lt;0</strong> → Sjálfviljugt við lágt T
+                    <strong>3: ΔH&lt;0, ΔS&lt;0</strong> → Sjálfgengt við lágt T
                   </div>
                   <div className="p-2 rounded scenario-4 text-white">
-                    <strong>4: ΔH&gt;0, ΔS&gt;0</strong> → Sjálfviljugt við hátt T
+                    <strong>4: ΔH&gt;0, ΔS&gt;0</strong> → Sjálfgengt við hátt T
                   </div>
                 </div>
               </div>
@@ -1118,7 +1116,7 @@ function App() {
                   R = 8.314 J/(mol·K)
                   <br />T í Kelvin (K = °C + 273)
                   <br />
-                  ΔG° &lt; 0 → sjálfviljugt
+                  ΔG° &lt; 0 → sjálfgengt
                 </div>
               </div>
             </div>
