@@ -159,11 +159,9 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
 
     setIsCorrect(correct);
     if (correct) {
-      if (!showHint) {
-        setScore((prev) => prev + 20);
-      } else {
-        setScore((prev) => prev + 10);
-      }
+      // Hints are free: the April 2026 restructure makes hint use unpenalised,
+      // so an answer is worth the same 20 whether or not one was opened.
+      setScore((prev) => prev + 20);
     }
     setShowExplanation(true);
   };
