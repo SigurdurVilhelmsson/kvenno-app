@@ -17,7 +17,6 @@ interface ScoreResult {
   composite: number;
   sigFig: number | null;
   userSigFigs: number | null;
-  hintPenalty: number;
 }
 
 interface Level3Progress {
@@ -179,8 +178,7 @@ export function Level3({
       efficiencyScore
     );
 
-    // No hint penalty — hints are free for learning
-
+    // Hints are free for learning — nothing here reads hint use.
     setScores({
       answer: answerScore,
       method: methodScore,
@@ -189,7 +187,6 @@ export function Level3({
       composite: composite,
       sigFig: sigFigScore,
       userSigFigs: userSigFigs,
-      hintPenalty: 0,
     });
 
     setShowFeedback(true);
@@ -589,10 +586,7 @@ export function Level3({
                   <p className="text-sm font-bold text-blue-800 mb-2 flex items-center gap-2">
                     <span className="text-xl">💡</span> Vísbending:
                   </p>
-                  <p className="text-blue-700 mb-3">{getHint()}</p>
-                  <p className="text-xs text-orange-600 bg-orange-50 px-3 py-2 rounded-lg inline-block">
-                    ⚠️ 10% dregið frá heildareinkunn
-                  </p>
+                  <p className="text-blue-700">{getHint()}</p>
                 </div>
               )}
 
@@ -611,7 +605,7 @@ export function Level3({
                     }}
                     className="w-full border-2 border-blue-400 text-blue-600 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-colors"
                   >
-                    💡 Sýna vísbendingu (kostar 15% af einkunn)
+                    💡 Sýna vísbendingu
                   </button>
                 )}
                 <button
