@@ -140,7 +140,7 @@ const challenges: Challenge[] = [
   },
   {
     id: 5,
-    title: 'Koltvísýringur',
+    title: 'Koldíoxíð',
     type: 'total_electrons',
     question: 'Hversu margar gildisrafeindir eru alls í CO₂?',
     molecule: 'CO₂',

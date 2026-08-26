@@ -233,7 +233,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
           {/* Step 2: Second example — CO₂ */}
           {teachStep === 2 && (
             <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 animate-fade-in-up">
-              <h2 className="text-xl font-bold text-warm-800">Dæmi: CO₂ (Koltvísýringur)</h2>
+              <h2 className="text-xl font-bold text-warm-800">Dæmi: CO₂ (Koldíoxíð)</h2>
               <p className="text-warm-700">
                 Nú geturðu reynt sjálf/ur. CO₂ hefur 1 kolefnisatóm og 2 súrefnisatóm.
               </p>

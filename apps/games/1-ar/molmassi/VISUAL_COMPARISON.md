@@ -54,7 +54,7 @@ Understanding gained: Procedural only (can calculate, can't explain)
 │   Hversu margar Súrefni frumeindir (O) eru í CO₂?          │
 │                                                             │
 │                        CO₂                                  │
-│                   Koltvísýringur                            │
+│                     Koldíoxíð                               │
 │                                                             │
 │            ┌─────────────────────────────┐                  │
 │            │                             │                  │
@@ -85,6 +85,7 @@ Understanding gained: Conceptual (can explain what formula means)
 ## Key Visual Differences
 
 ### OLD: Abstract Formula
+
 ```
       H₂O
       ↓
@@ -92,6 +93,7 @@ Understanding gained: Conceptual (can explain what formula means)
 ```
 
 ### NEW: Visual Molecules
+
 ```
       H₂O
       ↓
@@ -106,6 +108,7 @@ Understanding gained: Conceptual (can explain what formula means)
 ## Interaction Comparison
 
 ### OLD Game Loop:
+
 ```
 1. See formula (text)
 2. Open periodic table
@@ -119,6 +122,7 @@ Understanding gained: Conceptual (can explain what formula means)
 ```
 
 ### NEW Game Loop:
+
 ```
 1. See visual molecule
 2. Engage with challenge (count/compare/build)
@@ -135,6 +139,7 @@ Understanding gained: Conceptual (can explain what formula means)
 ## Challenge Type Visuals
 
 ### Type 1: Telja frumeindir (Count Atoms)
+
 ```
 ┌─────────────────────────────────────────┐
 │  Hversu margar H frumeindir í CH₄?     │
@@ -148,6 +153,7 @@ Understanding gained: Conceptual (can explain what formula means)
 ```
 
 ### Type 2: Bera saman massa (Compare Mass)
+
 ```
 ┌─────────────────────────────────────────┐
 │  Hvort efnið er þyngra?                │
@@ -163,6 +169,7 @@ Understanding gained: Conceptual (can explain what formula means)
 ```
 
 ### Type 3: Byggja sameind (Build Molecule)
+
 ```
 ┌─────────────────────────────────────────┐
 │  Byggðu: NH₃ (Ammóníak)                │
@@ -185,6 +192,7 @@ Understanding gained: Conceptual (can explain what formula means)
 ```
 
 ### Type 4: Áætla massabil (Estimate Range)
+
 ```
 ┌─────────────────────────────────────────┐
 │  Í hvaða massabil fellur CaO?          │
@@ -224,32 +232,36 @@ Ca         🟠 Orange  Large   ~40 g/mol
 ## Can Student Cheat?
 
 ### OLD Game:
-| Method | Possible? |
-|--------|-----------|
-| Click "Sýna útreikning" | ✅ YES |
-| Copy answer from friend | ✅ YES |
-| Use calculator without understanding | ✅ YES |
-| **Pass without learning** | ✅ YES |
+
+| Method                               | Possible? |
+| ------------------------------------ | --------- |
+| Click "Sýna útreikning"              | ✅ YES    |
+| Copy answer from friend              | ✅ YES    |
+| Use calculator without understanding | ✅ YES    |
+| **Pass without learning**            | ✅ YES    |
 
 ### NEW Game:
-| Method | Possible? |
-|--------|-----------|
-| Show solution button | ❌ NO (doesn't exist) |
-| Guess randomly | ⚠️ Harder (must understand) |
-| Copy from friend | ❌ NO (visual interaction) |
-| **Must understand to succeed** | ✅ YES |
+
+| Method                         | Possible?                   |
+| ------------------------------ | --------------------------- |
+| Show solution button           | ❌ NO (doesn't exist)       |
+| Guess randomly                 | ⚠️ Harder (must understand) |
+| Copy from friend               | ❌ NO (visual interaction)  |
+| **Must understand to succeed** | ✅ YES                      |
 
 ---
 
 ## Mobile Experience
 
 ### OLD:
+
 - Requires keyboard for number input
 - Small touch targets
 - Periodic table modal is cramped
 - Calculator needed (external app)
 
 ### NEW:
+
 - Large touch-friendly buttons
 - No keyboard needed
 - Visual atoms easy to tap
@@ -260,12 +272,14 @@ Ca         🟠 Orange  Large   ~40 g/mol
 ## Learning Outcomes
 
 ### After OLD Game:
+
 ```
 Student can: Calculate 2×1.008 + 15.999 = 18.015
 Student cannot: Explain what H₂O means visually
 ```
 
 ### After NEW Game:
+
 ```
 Student can: "H₂O has 2 hydrogen atoms and 1 oxygen atom"
 Student can: "Oxygen is heavier than hydrogen"
@@ -293,16 +307,19 @@ NO NUMBERS              ROUGH NUMBERS           EXACT NUMBERS
 ## Why This Matters
 
 ### Cognitive Load Theory
+
 - Visual < Symbolic < Abstract
 - Pictures are processed faster than text
 - Spatial reasoning builds mathematical intuition
 
 ### Constructivism
+
 - Students build knowledge through interaction
 - Active manipulation > passive observation
 - Mistakes are learning opportunities
 
 ### PhET Principles
+
 - "Manipulate, observe, explain"
 - Immediate feedback
 - Multiple representations

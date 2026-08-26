@@ -14,7 +14,7 @@ import { describe, it, expect } from 'vitest';
  *
  * Scope and limits, stated plainly:
  *
- *  - It covers the six terms Phase 2 of the games roadmap ruled on, not the whole
+ *  - It covers the terms Phase 2 of the games roadmap ruled on, plus later rulings, not the whole
  *    glossary. Adding a row here is cheap; do it when a term is next disputed and
  *    settled.
  *  - It scans source text, so it catches a banned term wherever it appears —
@@ -82,6 +82,13 @@ const GOVERNED_TERMS: GovernedTerm[] = [
     ],
     guidance:
       'The verb is stilla, not jafna: að stilla efnajöfnu, Stilltu jöfnuna, stillt efnajafna, óstillt efnajafna. Siggi ruled on this (authority 3) — ordabok.md had no entry, and the platform shipped both words. Note the noun jafna (an equation) and jafnvægi (equilibrium) are unrelated and correct; so is jafnast út (to cancel out) and þrýstijafnaður (pressurised).',
+  },
+  {
+    english: 'carbon dioxide',
+    correct: 'koldíoxíð',
+    banned: [/koltvísýring/i],
+    guidance:
+      "Siggi's ruling, 2026-08-26 — ordabok.md was silent and the platform shipped both words. koldíoxíð is neuter where koltvísýringur was masculine, so the cases change with it: acc. koldíoxíð (not -ing), dat. koldíoxíði (not -ingi), gen. koldíoxíðs / def. koldíoxíðsins (not -ings / -ingsins). Unrelated and left alone: kolsýringur, which is CO, not CO₂.",
   },
   {
     english: 'buffer',

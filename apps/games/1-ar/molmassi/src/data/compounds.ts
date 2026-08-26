@@ -108,7 +108,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'CO₂',
-    name: 'Koltvísýringur',
+    name: 'Koldíoxíð',
     elements: [
       { symbol: 'C', count: 1 },
       { symbol: 'O', count: 2 },

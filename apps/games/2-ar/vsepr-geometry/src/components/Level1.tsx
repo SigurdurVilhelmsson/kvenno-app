@@ -57,7 +57,7 @@ const GEOMETRIES: Geometry[] = [
     molecularGeometry: 'Línuleg',
     bondAngle: '180°',
     example: 'CO₂',
-    exampleName: 'Koltvísýringur',
+    exampleName: 'Koldíoxíð',
     description: 'Tvö rafeinasvið staðsetjast á sitthvora hlið miðatómsins.',
     visual: '○—●—○',
   },
@@ -181,7 +181,7 @@ const challenges: Challenge[] = [
   {
     id: 1,
     type: 'identify',
-    question: 'Hvaða lögun hefur CO₂ (koltvísýringur)?',
+    question: 'Hvaða lögun hefur CO₂ (koldíoxíð)?',
     geometryId: 'linear',
     options: [
       {

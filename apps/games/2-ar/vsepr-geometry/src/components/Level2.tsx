@@ -102,7 +102,7 @@ const molecules: Molecule[] = [
   {
     id: 4,
     formula: 'CO₂',
-    name: 'Koltvísýringur',
+    name: 'Koldíoxíð',
     lewisStructure: 'O = C = O',
     centralAtom: 'C',
     bondingPairs: 2,
