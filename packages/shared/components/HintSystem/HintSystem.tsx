@@ -24,6 +24,13 @@ interface HintSystemProps {
   className?: string;
   /** Reset hint state (increment to reset) */
   resetKey?: number;
+  /**
+   * Show the "Stig: x / y" indicator that tells the student what the revealed
+   * tiers have cost them. Defaults to true, which is what the games that
+   * actually apply `onPointsChange` want. Pass false in a game where hints are
+   * free — otherwise the indicator announces a penalty nothing deducts.
+   */
+  showPointCost?: boolean;
 }
 
 /**
@@ -51,6 +58,7 @@ export function HintSystem({
   onHintUsed,
   onPointsChange,
   disabled = false,
+  showPointCost = true,
   className = '',
   resetKey = 0,
 }: HintSystemProps) {
@@ -124,13 +132,11 @@ export function HintSystem({
 
       {/* All hints used message */}
       {allRevealed && (
-        <div className="text-center text-gray-500 text-sm py-2">
-          Allar vísbendingar notaðar
-        </div>
+        <div className="text-center text-gray-500 text-sm py-2">Allar vísbendingar notaðar</div>
       )}
 
       {/* Point indicator */}
-      {revealedTiers.length > 0 && (
+      {showPointCost && revealedTiers.length > 0 && (
         <div className="text-center text-xs text-gray-400 mt-2">
           Stig: {Math.round(basePoints * HINT_MULTIPLIERS[currentTierIndex])} / {basePoints}
         </div>

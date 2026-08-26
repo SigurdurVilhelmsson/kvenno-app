@@ -451,8 +451,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               >
                 <div className={`font-bold mb-2 ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
                   {isCorrect ? '✓ Rétt!' : '✗ Ekki rétt'}
-                  {isCorrect && showHint && ' (50 stig)'}
-                  {isCorrect && !showHint && ' (+100 stig)'}
+                  {isCorrect && ' (+100 stig)'}
                 </div>
 
                 <div className="text-sm space-y-2">

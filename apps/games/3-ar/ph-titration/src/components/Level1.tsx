@@ -44,7 +44,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [, setHintsUsed] = useState(0);
-  const [hintMultiplier, setHintMultiplier] = useState(1.0);
+  const [hintUsedThisChallenge, setHintUsedThisChallenge] = useState(false);
   const [hintResetKey, setHintResetKey] = useState(0);
   const [completed, setCompleted] = useState(0);
   const levelCompleteReported = useRef(false);
@@ -84,7 +84,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     setShowResult(true);
 
     if (isCorrect) {
-      const points = Math.round(100 * hintMultiplier);
+      // Hints are free: the April 2026 restructure makes hint use unpenalised,
+      // so the tier reached never scales the points.
+      const points = 100;
       setScore((prev) => prev + points);
     }
   };
@@ -96,13 +98,14 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       setCurrentIndex((prev) => prev + 1);
       setSelectedOption(null);
       setShowResult(false);
-      setHintMultiplier(1.0);
       setHintResetKey((prev) => prev + 1);
+      setHintUsedThisChallenge(false);
     }
   };
 
   const handleHintUsed = () => {
     setHintsUsed((prev) => prev + 1);
+    setHintUsedThisChallenge(true);
   };
 
   const selectedOpt = shuffledOptions.find((o) => o.id === selectedOption);
@@ -269,7 +272,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               hints={challenge.hints}
               basePoints={100}
               onHintUsed={handleHintUsed}
-              onPointsChange={setHintMultiplier}
+              showPointCost={false}
               disabled={showResult}
               resetKey={hintResetKey}
             />
@@ -281,7 +284,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <FeedbackPanel
               feedback={{
                 isCorrect,
-                explanation: `${isCorrect ? '✓ Rétt!' : '✗ Rangt'}${isCorrect ? ` (+${Math.round(100 * hintMultiplier)} stig)` : ''}\n\n${challenge.explanationIs}`,
+                explanation: `${isCorrect ? '✓ Rétt!' : '✗ Rangt'}${isCorrect ? ' (+100 stig)' : ''}\n\n${challenge.explanationIs}`,
                 misconception: isCorrect ? undefined : TITRATION_MISCONCEPTIONS.equivalence,
                 relatedConcepts: TITRATION_RELATED,
                 nextSteps: isCorrect
@@ -300,7 +303,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
         {/* Action buttons */}
         <div className="flex justify-between">
-          <div className="text-sm text-warm-500">{hintMultiplier < 1 && '💡 Vísbending notuð'}</div>
+          <div className="text-sm text-warm-500">
+            {hintUsedThisChallenge && '💡 Vísbending notuð'}
+          </div>
           <div className="flex gap-3">
             {!showResult ? (
               <button
