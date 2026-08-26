@@ -1,10 +1,10 @@
 import { useState, useCallback, useMemo, type ReactNode } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
-import { shuffleArray } from '@shared/utils';
 
-import { COMPOUNDS, type Compound } from '../data/compounds';
-import { PREFIXES, ELEMENT_ROOTS } from '../data/naming';
+import { type Compound } from '../data/compounds';
+import { type MorphemeKind } from '../data/naming';
+import { generateParts, selectCompounds, type NamePart } from '../utils/nameParts';
 
 /** Levenshtein edit distance — used to classify typo vs. conceptual error. */
 function editDistance(a: string, b: string): number {
@@ -53,52 +53,17 @@ interface Level3Props {
   onIncorrectAnswer?: () => void;
 }
 
-interface NamePart {
-  id: string;
-  text: string;
-  type: 'prefix' | 'element' | 'suffix';
-}
-
-/** Generate available clickable parts plus distractors for a compound */
-function generateParts(compound: Compound): NamePart[] {
-  const parts: NamePart[] = [];
-  let id = 0;
-
-  // Add common prefixes (up to 4, plus any that appear in the name)
-  Object.entries(PREFIXES).forEach(([num, prefix]) => {
-    if (parseInt(num, 10) <= 4 || compound.name.toLowerCase().includes(prefix)) {
-      parts.push({ id: `p-${id++}`, text: prefix, type: 'prefix' });
-    }
-  });
-
-  // Add element roots based on elements in the compound
-  compound.elements.forEach((el) => {
-    const info = ELEMENT_ROOTS[el];
-    if (info) parts.push({ id: `e-${id++}`, text: info.root.toLowerCase(), type: 'element' });
-  });
-
-  // Distractors
-  const distractors = ['súlfat', 'nítrat', 'karbon', 'amid'];
-  distractors.slice(0, 2).forEach((d) => {
-    if (!compound.name.toLowerCase().includes(d)) {
-      parts.push({ id: `d-${id++}`, text: d, type: 'element' });
-    }
-  });
-
-  return shuffleArray(parts);
-}
-
 /**
- * Pick 10 compounds whose name this level can actually ask a student to build.
- *
- * The exclusions are declared on the compound (`excludeFromNameBuilder`) rather
- * than inferred from its name here — matching on the name meant a name could not
- * be corrected without silently changing which items the level asks about.
+ * One colour per kind of part, so the four naming ingredients stay visually
+ * distinct — a Greek prefix is not the same kind of decision as a Roman numeral.
+ * The legend under the tray names them.
  */
-function selectCompounds(): Compound[] {
-  const pool = COMPOUNDS.filter((c) => !c.excludeFromNameBuilder);
-  return shuffleArray(pool).slice(0, 10);
-}
+const KIND_STYLES: Record<MorphemeKind, string> = {
+  prefix: 'bg-blue-100 text-blue-700 hover:bg-blue-200 focus-visible:ring-blue-400',
+  root: 'bg-warm-100 text-warm-700 hover:bg-warm-200 focus-visible:ring-warm-400',
+  ion: 'bg-purple-100 text-purple-700 hover:bg-purple-200 focus-visible:ring-purple-400',
+  charge: 'bg-amber-100 text-amber-800 hover:bg-amber-200 focus-visible:ring-amber-400',
+};
 
 /** Naming rule explanation for a compound */
 function ruleFor(c: Compound): string {
@@ -235,6 +200,9 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               <li>
                 <strong>Breytileg hleðsla:</strong> Málmur(tala) + -íð (Fe₂O₃ = Járn(III)oxíð)
               </li>
+              <li>
+                <strong>Fjölatóma jónir:</strong> halda föstu nafni (K₂SO₄ = Kalíumsúlfat)
+              </li>
             </ul>
           )}
         </button>
@@ -322,17 +290,27 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             <div className="text-xs text-warm-600 mb-1">
               {t('level3.ui.availableParts', 'Tiltækir partar:')}
             </div>
+            <div className="mb-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-warm-500">
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2.5 w-2.5 rounded-sm bg-blue-200" /> forskeyti
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2.5 w-2.5 rounded-sm bg-warm-200" /> frumefni
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2.5 w-2.5 rounded-sm bg-purple-200" /> fjölatóma jón
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="inline-block h-2.5 w-2.5 rounded-sm bg-amber-200" /> hleðsla
+              </span>
+            </div>
             <div className="flex flex-wrap gap-2">
               {available.map((part) => (
                 <button
                   key={part.id}
                   onClick={() => selectPart(part)}
                   disabled={answered}
-                  className={`px-4 py-2.5 min-h-[44px] rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed outline-none focus-visible:ring-2 focus-visible:ring-offset-1 ${
-                    part.type === 'prefix'
-                      ? 'bg-blue-100 text-blue-700 hover:bg-blue-200 focus-visible:ring-blue-400'
-                      : 'bg-warm-100 text-warm-700 hover:bg-warm-200 focus-visible:ring-warm-400'
-                  }`}
+                  className={`px-4 py-2.5 min-h-[44px] rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed outline-none focus-visible:ring-2 focus-visible:ring-offset-1 ${KIND_STYLES[part.kind]}`}
                 >
                   {part.text}
                 </button>

@@ -32,17 +32,30 @@ B12: `1-ar/jafna-jofnur/src/__tests__/balance-checker.test.ts` (the game's **fir
 none, which is how B12 survived four review iterations) and the two `compound-names.test.ts` files
 under `1-ar/nafnakerfid` and `1-ar/molmassi`.
 
-**A larger defect was measured while fixing B5 and is _not_ fixed:** Nafnakerfið's Level 3 asks the
-student to assemble a compound name from clickable parts, and **33 of the 51 compounds in its pool
-cannot be assembled from the parts it offers**, so they can never be graded correct. `generateParts`
-(`nafnakerfid/src/components/Level3.tsx:63-88`) offers Greek prefixes 1–4 plus any prefix whose
-literal string appears in the name, the element roots from `naming.ts`, and two fixed distractors.
-It offers no token for a Roman numeral (`Járn(III)oxíð`), no polyatomic-ion name (`súlfat`,
-`nítrat`, `karbónat`, `fosfat`, `hýdroxíð` — `súlfat` and `nítrat` are present only as
-_distractors_), no root for Mn, Cr, Pb, Hg or Sn, and no elided prefix form (`dekoxíð` needs
-`deka` + `oxíð`, which concatenate to `dekaoxíð`). Fixing it is a design decision about how fine the
-parts should be, not a correction, so it is recorded rather than guessed at. Measured 2026-08-26 by
-running the real `generateParts` against every compound in the real pool.
+**A larger defect was measured while fixing B5, and closed the same day.** Nafnakerfið's Level 3
+asks the student to assemble a compound name from clickable parts, and **33 of the 51 compounds in
+its pool could not be assembled from the parts it offered** — so they could never be graded correct,
+about six unanswerable questions in a run of ten. `generateParts` improvised the parts from the
+compound's element symbols: Greek prefixes 1–4 plus any prefix whose literal string appeared in the
+name, the element roots from `naming.ts`, and two fixed distractors. It had no token for a Roman
+numeral (`Járn(III)oxíð`), no polyatomic-ion name (`súlfat` and `nítrat` were present only as
+_distractors_), no root for Mn, Cr, Pb, Hg, Sn or Co, and no elided prefix form (`dekoxíð` cannot be
+reached from `deka` + `oxíð`, which concatenate to `dekaoxíð`). Measured by running the real
+`generateParts` against every compound in the real pool.
+
+The fix inverts the direction. `nafnakerfid/src/data/naming.ts` now declares the naming vocabulary
+once — Greek prefixes, element roots and the separate first-element stems, the elided oxide forms,
+polyatomic ions, Roman numerals — and `segmentName` decomposes any name back into it, so the parts
+come from the name itself and the target is always reachable. Distractors are drawn from the same
+vocabulary, same-kind first, scaling with the compound's difficulty; `nafnakerfid/src/utils/
+nameParts.ts` holds the tray and pool logic, out of the component. Fe₃O₄ rejoined the pool once
+Roman numerals existed as parts, so the pool is 52 of 59 and the seven exclusions are exactly the
+trivial names and the bare elements.
+
+The design question this raised — how fine the parts should be — was answered by the decomposition
+rather than by taste: a part is a morpheme the naming rules name, so `járn | (III) | oxíð` and not
+syllables. Three tests hold it, all verified to fail against the old builder, the last by rendering
+the real component and playing five full runs to a perfect score.
 
 **Off-plan work that landed anyway.** `1-ar/einingakedjan` (Einingakeðjan) shipped 2026-08-26 as
 Year-1 chain position 8 — PR #27. It builds the **mass→mole→mass bridge** that Phase 5 lists under
