@@ -1,5 +1,5 @@
 /**
- * Reaction data for the Jafna Jöfnur (Balance Equations) game.
+ * Reaction data for the Stilla efnajöfnur (Balance Equations) game.
  * ~20 unbalanced reactions at 3 difficulty tiers.
  *
  * Each molecule stores its element composition so we can count atoms
@@ -54,7 +54,7 @@ export const REACTIONS: Reaction[] = [
     ],
     products: [{ formula: 'MgO', elements: { Mg: 1, O: 1 }, coefficient: 2 }],
     difficulty: 'easy',
-    hint: 'O₂ hefur 2 súrefnisatóm - þú þarft 2 MgO til að jafna.',
+    hint: 'O₂ hefur 2 súrefnisatóm - þú þarft 2 MgO til að stilla.',
   },
   {
     id: 4,
@@ -112,7 +112,7 @@ export const REACTIONS: Reaction[] = [
       { formula: 'H₂O', elements: { H: 2, O: 1 }, coefficient: 2 },
     ],
     difficulty: 'medium',
-    hint: 'Byrjaðu á kolefni, síðan vetni, og jafnaðu súrefni síðast.',
+    hint: 'Byrjaðu á kolefni, síðan vetni, og stilltu súrefni síðast.',
   },
   {
     id: 9,
@@ -138,7 +138,7 @@ export const REACTIONS: Reaction[] = [
       { formula: 'CO₂', elements: { C: 1, O: 2 }, coefficient: 3 },
     ],
     difficulty: 'medium',
-    hint: 'Jafnaðu járn fyrst, síðan kolefni, og athugaðu súrefni.',
+    hint: 'Stilltu járn fyrst, síðan kolefni, og athugaðu súrefni.',
   },
   {
     id: 11,
@@ -148,7 +148,7 @@ export const REACTIONS: Reaction[] = [
       { formula: 'O₂', elements: { O: 2 }, coefficient: 3 },
     ],
     difficulty: 'medium',
-    hint: 'Jafnaðu K og Cl fyrst - þeir eru auðveldastir.',
+    hint: 'Stilltu K og Cl fyrst - þeir eru auðveldastir.',
   },
   {
     id: 12,
@@ -171,7 +171,7 @@ export const REACTIONS: Reaction[] = [
       { formula: 'CO₂', elements: { C: 1, O: 2 }, coefficient: 1 },
     ],
     difficulty: 'medium',
-    hint: 'Þessi jafna er nú þegar jöfn með stuðlum 1.',
+    hint: 'Þessi efnajafna er nú þegar stillt með stuðlum 1.',
   },
   {
     id: 14,

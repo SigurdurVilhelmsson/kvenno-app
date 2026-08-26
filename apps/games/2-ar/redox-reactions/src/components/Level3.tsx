@@ -70,13 +70,13 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
       setFeedback({
         show: true,
         correct: true,
-        message: t('level3.balanceCorrect', 'Frábært! Þú jafnaðir rafeindirnar rétt.'),
+        message: t('level3.balanceCorrect', 'Frábært! Þú stilltir rafeindirnar rétt.'),
       });
     } else {
       setFeedback({
         show: true,
         correct: false,
-        message: `${t('level3.toBalance', 'Til að jafna')} ${problem.oxidationHalf.electrons}e⁻ ${t('level3.and', 'og')} ${problem.reductionHalf.electrons}e⁻, ${t('level3.needMultipliers', 'þarftu margfaldara')} ${problem.multiplierOx} ${t('level3.and', 'og')} ${problem.multiplierRed}.`,
+        message: `${t('level3.toBalance', 'Til að stilla')} ${problem.oxidationHalf.electrons}e⁻ ${t('level3.and', 'og')} ${problem.reductionHalf.electrons}e⁻, ${t('level3.needMultipliers', 'þarftu margfaldara')} ${problem.multiplierOx} ${t('level3.and', 'og')} ${problem.multiplierRed}.`,
       });
     }
   };
@@ -323,7 +323,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           <div className="space-y-4">
             <div className="bg-amber-50 p-4 rounded-xl">
               <h3 className="font-bold text-amber-800 mb-2">
-                {t('level3.step4Title', 'Skref 4: Jafna rafeindirnar')}
+                {t('level3.step4Title', 'Skref 4: Stilla rafeindirnar')}
               </h3>
               <p className="text-amber-600 text-sm mb-3">
                 {t(
@@ -414,7 +414,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
             <div className="bg-green-50 p-6 rounded-xl border-2 border-green-400 text-center">
               <div className="text-4xl mb-2">✓</div>
               <h3 className="font-bold text-green-800 text-xl mb-2">
-                {t('level3.equationBalanced', 'Jöfnuð jafna!')}
+                {t('level3.equationBalanced', 'Stillt efnajafna!')}
               </h3>
               <div className="text-2xl font-mono text-green-700 mb-4">{problem.finalDisplay}</div>
 
@@ -465,7 +465,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
             <p className="text-warm-700 text-sm leading-relaxed">
               Rafeindir <strong>hverfa ekki</strong> í efnahvörfum. Fjöldi rafeinda sem ein tegund
               tapar verður að vera <em>jafn</em> fjölda sem önnur öðlast. Með því að aðskilja
-              redoxhvarf í tvö hálfhvörf getum við jafnað rafeindafjölda beint.
+              redoxhvarf í tvö hálfhvörf getum við stillt rafeindafjölda beint.
             </p>
           </div>
 
@@ -485,7 +485,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
             </div>
 
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm">
-              <p className="font-bold text-amber-800 mb-1">Skref 3 — Jafna rafeindir</p>
+              <p className="font-bold text-amber-800 mb-1">Skref 3 — Stilla rafeindir</p>
               <p className="text-warm-700">
                 Oxun gefur <strong>3 rafeindir</strong>, afoxun þarfnast{' '}
                 <strong>2 rafeindir</strong>. Minnsta samþakning er 6. Margföldum oxun með 2 og
@@ -536,7 +536,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
         </div>
 
         <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-purple-600">
-          {t('levels.level3.name', 'Jafna redox-jofnur')}
+          {t('levels.level3.name', 'Stilla redox-jöfnur')}
         </h1>
         <p className="text-center text-warm-600 mb-4">
           {t('level3.subtitle', 'Half-hvorf adferdin')}

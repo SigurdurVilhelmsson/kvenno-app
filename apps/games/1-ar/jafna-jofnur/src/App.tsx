@@ -227,15 +227,15 @@ function App() {
 
           {/* Why this matters + curriculum */}
           <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
-            <h3 className="font-semibold text-amber-800 mb-2">Af hverju jafna jöfnur?</h3>
+            <h3 className="font-semibold text-amber-800 mb-2">Af hverju að stilla efnajöfnur?</h3>
             <p className="text-sm text-amber-700">
               Massavarðveislulögmálið segir að atóm hverfa ekki og myndast ekki — þau breyta bara um
-              tengsl. Jöfnuð jafna tryggir að fjöldi atóma er sá sami beggja megin.
+              tengsl. Stillt efnajafna tryggir að fjöldi atóma er sá sami beggja megin.
             </p>
           </div>
           <div className="mt-3 text-center text-xs text-warm-500">
             <strong>Námsleiðin:</strong> Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi →{' '}
-            <u>Jafna jöfnur</u> → Takmarkandi → Lausnir → Einingakeðjan
+            <u>Stilla efnajöfnur</u> → Takmarkandi → Lausnir → Einingakeðjan
           </div>
 
           {/* Reset */}

@@ -21,7 +21,7 @@ function Level1Intro() {
           <p className="font-mono text-lg text-warm-800 mb-1">
             H<sub>2</sub> + O<sub>2</sub> → H<sub>2</sub>O
           </p>
-          <p className="text-xs text-warm-500">Ójöfnuð jafna</p>
+          <p className="text-xs text-warm-500">Óstillt efnajafna</p>
         </div>
         <div className="space-y-3 text-sm text-warm-700">
           <div className="flex items-start gap-2">
@@ -29,7 +29,7 @@ function Level1Intro() {
               1
             </span>
             <p>
-              <strong>Telja atóm:</strong> Vinstri: 2 H, 2 O. Hægri: 2 H, 1 O. Súrefni er ójafnað!
+              <strong>Telja atóm:</strong> Vinstri: 2 H, 2 O. Hægri: 2 H, 1 O. Súrefni er óstillð!
             </p>
           </div>
           <div className="flex items-start gap-2">
@@ -40,7 +40,7 @@ function Level1Intro() {
               <strong>
                 Setja 2 framan við H<sub>2</sub>O:
               </strong>{' '}
-              Nú er hægri hliðin 2 H<sub>2</sub>O = 4 H og 2 O. Súrefni jafnað!
+              Nú er hægri hliðin 2 H<sub>2</sub>O = 4 H og 2 O. Súrefni stillt!
             </p>
           </div>
           <div className="flex items-start gap-2">
@@ -57,15 +57,15 @@ function Level1Intro() {
           <p className="font-mono text-lg text-green-800">
             <strong>2</strong>H<sub>2</sub> + O<sub>2</sub> → <strong>2</strong>H<sub>2</sub>O
           </p>
-          <p className="text-xs text-green-600 mt-1">Jöfnuð jafna — 4 H og 2 O beggja megin</p>
+          <p className="text-xs text-green-600 mt-1">Stillt efnajafna — 4 H og 2 O beggja megin</p>
         </div>
       </div>
 
       <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-        <h3 className="text-lg font-bold text-warm-800 mb-3">Aðferð til að jafna</h3>
+        <h3 className="text-lg font-bold text-warm-800 mb-3">Aðferð til að stilla</h3>
         <ol className="space-y-2 text-sm text-warm-700 list-decimal list-inside">
           <li>
-            Jafnaðu <strong>málma</strong> fyrst (Na, Fe, Ca, ...)
+            Stilltu <strong>málma</strong> fyrst (Na, Fe, Ca, ...)
           </li>
           <li>
             Síðan <strong>málmleysingja</strong> sem ekki eru O eða H (Cl, N, S, ...)
@@ -90,7 +90,8 @@ export const LEVEL1_CONFIG: LevelConfig = {
   title: 'Einfaldar jöfnur – Stig 1',
   bgFrom: 'from-green-50',
   intro: <Level1Intro />,
-  instructions: 'Notaðu + og - takkana til að breyta stuðlum og jafna jöfnuna.',
+  instructions:
+    'Notaðu + og - takkana til að breyta stuðlum og stilla efnajöfnuna. Notaðu lægstu heilu tölurnar sem ganga upp.',
   highlightUnbalancedOnHint: true,
   hintSource: 'reaction-hint',
 };

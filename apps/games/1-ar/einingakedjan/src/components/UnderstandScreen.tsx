@@ -116,7 +116,7 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
       <div className="mt-5 rounded-xl border-2 border-amber-300 bg-amber-50 p-5">
         <h3 className="font-semibold text-amber-900">Og eitt hlutfall í viðbót: efnajafnan</h3>
         <p className="mt-2 text-sm text-amber-900">
-          Stuðlarnir í jafnaðri efnajöfnu eru líka hlutfall — en aðeins á milli{' '}
+          Stuðlarnir í stilltri efnajöfnu eru líka hlutfall — en aðeins á milli{' '}
           <strong>móla</strong>, aldrei á milli gramma. Í jöfnunni 2 Mg + O₂ → 2 MgO stendur 2 mól
           Mg á móti 2 mólum MgO. Það er eina hlutfallið í leiknum sem færir þig á milli tveggja
           ólíkra efna, og þess vegna þarftu alltaf að komast inn í mól áður en þú notar það.

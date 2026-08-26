@@ -70,6 +70,20 @@ const GOVERNED_TERMS: GovernedTerm[] = [
       'Same declension as kaþóða — the correction is only þ to t. anóða is already correct.',
   },
   {
+    english: 'balanced equation',
+    correct: 'stilla / stillt efnajafna',
+    banned: [
+      /jafnaðu\b/i,
+      /ójafnað/i,
+      /jafnaðri efnajöfn/i,
+      /þú jafnaðir/i,
+      /jafnað (helmingshvarf|hvarf)\b/i,
+      /jafna (jöfnur|efnajöfnu|efnajöfnur|hleðslu|hleðslurnar|frumeindir|súrefni|vetni|rafeindir|rafeindirnar)/i,
+    ],
+    guidance:
+      'The verb is stilla, not jafna: að stilla efnajöfnu, Stilltu jöfnuna, stillt efnajafna, óstillt efnajafna. Siggi ruled on this (authority 3) — ordabok.md had no entry, and the platform shipped both words. Note the noun jafna (an equation) and jafnvægi (equilibrium) are unrelated and correct; so is jafnast út (to cancel out) and þrýstijafnaður (pressurised).',
+  },
+  {
     english: 'buffer',
     correct: 'stuðpúði',
     banned: [/púffer/i],

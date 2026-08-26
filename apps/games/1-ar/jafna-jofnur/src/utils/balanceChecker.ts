@@ -17,6 +17,19 @@ export interface BalanceResult {
   elements: ElementCount[];
   /** True if every element is balanced */
   isBalanced: boolean;
+  /**
+   * True when the atoms balance but the coefficients share a common factor,
+   * so the set is not in lowest whole-number terms — `4H₂ + 2O₂ → 4H₂O`
+   * rather than `2H₂ + O₂ → 2H₂O`.
+   *
+   * The convention that a balanced equation uses the smallest whole numbers was
+   * never checked here and is never stated anywhere in the game, so a student
+   * who doubled every coefficient was told they were right (B12 in the Year-1
+   * curriculum review). Kept separate from `isBalanced` because it is a
+   * different thing to tell a student: the atoms genuinely do balance, and the
+   * remaining step is to reduce.
+   */
+  isReduced: boolean;
 }
 
 /**
@@ -72,8 +85,29 @@ export function checkBalance(
   });
 
   const isBalanced = elements.every((e) => e.balanced);
+  const isReduced = coefficientsAreReduced([...reactantCoeffs, ...productCoeffs]);
 
-  return { elements, isBalanced };
+  return { elements, isBalanced, isReduced };
+}
+
+/** Greatest common divisor, for whole numbers. */
+function gcd(a: number, b: number): number {
+  return b === 0 ? a : gcd(b, a % b);
+}
+
+/**
+ * Are these coefficients in lowest whole-number terms?
+ *
+ * True when their greatest common divisor is 1. A set containing a zero is
+ * treated as unreduced rather than crashing: zero is not a usable coefficient in
+ * a balanced equation, and gcd(0, n) is n, which would otherwise let
+ * `0, 2, 2` pass as reduced only when some other coefficient happened to be odd.
+ */
+export function coefficientsAreReduced(coefficients: number[]): boolean {
+  const values = coefficients.map((c) => Math.abs(Math.round(c)));
+  if (values.length === 0) return true;
+  if (values.some((v) => v === 0)) return false;
+  return values.reduce((acc, v) => gcd(acc, v)) === 1;
 }
 
 /** Icelandic element names for common elements in this game */

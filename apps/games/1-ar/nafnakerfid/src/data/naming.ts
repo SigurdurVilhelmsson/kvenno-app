@@ -22,7 +22,7 @@ export const ELEMENT_ROOTS: Record<string, { root: string; full: string }> = {
   Cl: { root: 'klóríð', full: 'Klór' },
   Br: { root: 'brómíð', full: 'Bróm' },
   I: { root: 'joðíð', full: 'Joð' },
-  S: { root: 'brennisteinið', full: 'Brennisteinn' },
+  S: { root: 'súlfíð', full: 'Brennisteinn' },
   P: { root: 'fosfór', full: 'Fosfór' },
   Na: { root: 'natríum', full: 'Natríum' },
   K: { root: 'kalíum', full: 'Kalíum' },

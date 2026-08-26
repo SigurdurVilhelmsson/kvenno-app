@@ -29,8 +29,8 @@ export function AtomCounter({ elements, highlightUnbalanced = false }: AtomCount
         <tbody>
           {elements.map(({ element, left, right, balanced }) => {
             const status = balanced
-              ? `${element} er jafnað: ${left} atóm beggja megin`
-              : `${element} er ójafnað: ${left} vinstra megin, ${right} hægra megin`;
+              ? `${element} er stillt: ${left} atóm beggja megin`
+              : `${element} er óstillt: ${left} vinstra megin, ${right} hægra megin`;
             return (
               <tr
                 key={element}
@@ -44,9 +44,9 @@ export function AtomCounter({ elements, highlightUnbalanced = false }: AtomCount
                 <td className="py-1.5 px-2 text-center font-mono text-warm-700">{right}</td>
                 <td className="py-1.5 px-2 text-center" aria-hidden="true">
                   {balanced ? (
-                    <span className="text-green-600 font-bold text-base">✓ jafnað</span>
+                    <span className="text-green-600 font-bold text-base">✓ stillt</span>
                   ) : (
-                    <span className="text-red-600 font-bold text-base">✗ ójafnað</span>
+                    <span className="text-red-600 font-bold text-base">✗ óstillt</span>
                   )}
                 </td>
               </tr>

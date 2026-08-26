@@ -22,12 +22,27 @@ disagree, this block is current.
 | 4 — Close the pedagogy gaps              | Not started                | —                                                                                                                            |
 | 5 — Fill the curriculum holes            | Not started, but see below | —                                                                                                                            |
 
-**Tier-0 correctness: two of the nine remain open — B5 and B12.** Phase 1 closed B1 and B2;
-Phase 1b closed B3, B6 and B8; B4 and B13 were closed on 2026-08-26 (PR #30). The Phase 1
-deferred list further down still enumerates seven because it is the 08-16 text; the five that have
-since been fixed are struck through there. The two that remain are specified with `file:line` in
-[`2026-08-16-phase-1-correctness.md`](2026-08-16-phase-1-correctness.md) at the table near its end,
-and neither yet has a phase.
+**Tier-0 correctness: none of the nine remain open.** Phase 1 closed B1 and B2; Phase 1b closed
+B3, B6 and B8; B4 and B13 were closed on 2026-08-26 (PR #30); **B5 and B12 were closed on
+2026-08-26**, which empties the list. The Phase 1 deferred list further down still enumerates seven
+because it is the 08-16 text; all seven are struck through there now.
+
+Each of the nine now carries a test that fails if the defect returns. Two were added with B5 and
+B12: `1-ar/jafna-jofnur/src/__tests__/balance-checker.test.ts` (the game's **first** tests — it had
+none, which is how B12 survived four review iterations) and the two `compound-names.test.ts` files
+under `1-ar/nafnakerfid` and `1-ar/molmassi`.
+
+**A larger defect was measured while fixing B5 and is _not_ fixed:** Nafnakerfið's Level 3 asks the
+student to assemble a compound name from clickable parts, and **33 of the 51 compounds in its pool
+cannot be assembled from the parts it offers**, so they can never be graded correct. `generateParts`
+(`nafnakerfid/src/components/Level3.tsx:63-88`) offers Greek prefixes 1–4 plus any prefix whose
+literal string appears in the name, the element roots from `naming.ts`, and two fixed distractors.
+It offers no token for a Roman numeral (`Járn(III)oxíð`), no polyatomic-ion name (`súlfat`,
+`nítrat`, `karbónat`, `fosfat`, `hýdroxíð` — `súlfat` and `nítrat` are present only as
+_distractors_), no root for Mn, Cr, Pb, Hg or Sn, and no elided prefix form (`dekoxíð` needs
+`deka` + `oxíð`, which concatenate to `dekaoxíð`). Fixing it is a design decision about how fine the
+parts should be, not a correction, so it is recorded rather than guessed at. Measured 2026-08-26 by
+running the real `generateParts` against every compound in the real pool.
 
 **Off-plan work that landed anyway.** `1-ar/einingakedjan` (Einingakeðjan) shipped 2026-08-26 as
 Year-1 chain position 8 — PR #27. It builds the **mass→mole→mass bridge** that Phase 5 lists under
@@ -80,20 +95,40 @@ Each fix is small. The tests are the phase's real deliverable.
 
 **What this phase does not close.** The Year-1 review's Tier-0 correctness list has nine items. This phase closes two of them — B1 (item 2 above) and B2 (item 3). The other two tasks are real but come from elsewhere: item 1 from the review's Updates section, item 4 from `docs/README.md`. So four defects close, seven Tier-0 items stay open, and none of the seven currently has a phase _(as written 2026-08-16 — three of the seven have since been fixed; see the note directly below)_:
 
-> **Superseded in part, 2026-08-26.** Phase 1b closed B3, B6 and B8 on 2026-08-18 (PR #24), and
-> B4 and B13 were closed on 2026-08-26 (PR #30). The five are struck through below and their
-> descriptions are the pre-fix state, kept so the measurements stay readable.
-> **Two remain open: B5 and B12.**
+> **Superseded, 2026-08-26.** Phase 1b closed B3, B6 and B8 on 2026-08-18 (PR #24); B4 and B13
+> were closed on 2026-08-26 (PR #30); B5 and B12 were closed on 2026-08-26. All seven are struck
+> through below and their descriptions are the pre-fix state, kept so the measurements stay
+> readable.
+> **All seven are now fixed; B5 and B12 closed 2026-08-26.**
 
 - ~~**B3**~~ — **fixed 2026-08-18.** Lausnir's gas solubility data was 10× too high, g/L values printed under a `g/100g H2O` axis label (`lausnir/src/components/TemperatureSolubility.tsx:59,67`, label at `:220`). Correcting the data alone would have hidden the curves instead — see `docs/README.md`.
 - ~~**B4**~~ — **fixed 2026-08-26.** 12 of Mólmassi's 29 compounds printed a per-element breakdown whose lines did not sum to the total printed under them, in the one game whose entire skill is summing element masses. `molarMass` was hand-written from more precise atomic masses than the table the game shows a student; it is now summed from `elements.ts`, so the two cannot disagree.
-- **B5** — wrong compound names taught as fact in `nafnakerfid` and `molmassi`.
+- ~~**B5**~~ — **fixed 2026-08-26.** Wrong compound names taught as fact in `nafnakerfid` and
+  `molmassi`, in the one game whose entire subject is what a compound is called. P₄O₁₀ was
+  `Fosfordekoxíð` (now `Tetrafosfórdekoxíð`), Co(NO₃)₂ was `Kóbolt(II)nítrat` (now `Kóbalt`),
+  Fe₃O₄ was `Járnoxíð (blandað)` (now `Járn(II,III)oxíð`), and `naming.ts:25` gave sulfur the
+  non-word root `brennisteinið` (now `súlfíð`). In Mólmassi, Na₂CO₃·10H₂O was `Vatnaglas hýdrat`
+  — vatnsgler is sodium _silicate_ — and NaOH was `Natrímhýdroxíð`. Four more found in the same
+  pass and fixed with them: PCl₅ was `Fosforpentaklóríð` against the accented `fosfór` in the
+  file's own root table, and the remaining three hydrates carried no water count
+  (`Epsom salt hýdrat`, `Járnsúlfat hýdrat`, and `Koparbrennisteinshýdrat`, which is not a name in
+  any language). The `(blandað)` parenthetical **also served as a filter flag** at
+  `Level3.tsx:102`, so the wrong name was load-bearing; compounds now declare
+  `excludeFromNameBuilder` instead. The `þvottasódi` collision `docs/README.md` recorded is
+  resolved in the same edit: Lausnir's anhydrous Na₂CO₃ (106 g/mol) is now
+  `Na₂CO₃ (natríumkarbónat)`, leaving the word to name the decahydrate only.
 - ~~**B6**~~ — **fixed 2026-08-18.** Lausnir Level 3 generated physically impossible solutions (no solubility ceiling; up to 54 M HCl). The recorded diagnosis named one generator at 14–20%; measurement over 300k problems found all five, worst case Ca(OH)₂ at 1156×.
 - ~~**B8**~~ — **fixed 2026-08-18.** Takmarkandi's generator drew reactant counts with no relation to the coefficients, so a student following the game's own printed hint `min(A/c1, B/c2)` was graded wrong on roughly 44% of Level 2 and 70% of Level 3 problems (`takmarkandi/src/utils/calculations.ts:48-66`, floor at `:14`). Measured over 400k problems at 43.9% / 69.8%.
-- **B12** — Jafna jöfnur accepts non-reduced coefficient sets; the lowest-whole-number requirement is never checked or mentioned.
+- ~~**B12**~~ — **fixed 2026-08-26.** Stilla efnajöfnur accepted any balanced coefficient set, so
+  `4H₂ + 2O₂ → 4H₂O` scored correct. `checkBalance` now returns `isReduced` alongside `isBalanced`
+  and the level requires both. Because the review's finding was that the convention is never
+  checked **or mentioned**, the instructions now state it (_"Notaðu lægstu heilu tölurnar sem ganga
+  upp."_) and balanced-but-unreduced gets its own feedback rather than a bare "Rangt" — the student
+  has done the chemistry and is being held to a convention. All 20 stored answer keys were verified
+  balanced and reduced.
 - ~~**B13**~~ — **fixed 2026-08-26.** Einingagreining graded on an absolute 0.01 tolerance, so on an answer of 0.005 kg typing `0` scored correct. Now a 1% relative tolerance, matching what this game's own Level 3 already used for its synthesis problems. The same expression could not read an Icelandic decimal comma (half of B9), so it is fixed in these two components too — the repo-wide B9 pass is still open.
 
-Listing them here is not scheduling them. Whether either of the two still open moves into a phase is your call.
+Listing them here is not scheduling them — and as of 2026-08-26 there is nothing left in this list to schedule.
 
 ---
 
@@ -169,7 +204,7 @@ These block Phase 5 and parts of Phase 4. Four of them will produce contradictio
 
 1. **Does a Level 4 exist?** Most salvageable content is Level-4 material. The old design capped at three; April replaced that with Explore → Understand → Practice → Apply, which has no level count. Decide once.
 2. **Are levels gated?**
-3. **The five reaction-type names.** Three are settled across two independent old games; decomposition is contested three ways and the singular/plural form is open. Nothing in Jafna Jöfnur should be written until these five words exist.
+3. **The five reaction-type names.** Three are settled across two independent old games; decomposition is contested three ways and the singular/plural form is open. Nothing in Stilla efnajöfnur should be written until these five words exist.
 4. **Stoichiometry** — you currently ship `stökjómetríu`, `Stökefnafræði` and `stækifræði`.
 5. **The galvanic cell noun** — no glossary entry; the shipped text is ungrammatical whichever noun wins (`klefi` is masculine, so `Galvanískur klefi`).
 6. **Where significant figures live** — its own game, or a "Stig 0" inside Einingagreining.
