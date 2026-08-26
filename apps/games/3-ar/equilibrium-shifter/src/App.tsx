@@ -55,7 +55,6 @@ function App() {
   const [userPrediction, setUserPrediction] = useState<ShiftDirection | null>(null);
   const [correctShift, setCorrectShift] = useState<ShiftResult | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
-  const [, setHintMultiplier] = useState(1.0);
   const [, setHintsUsedTier] = useState(0);
   const [hintResetKey, setHintResetKey] = useState(0);
 
@@ -161,7 +160,6 @@ function App() {
 
     setUserPrediction(null);
     setShowExplanation(false);
-    setHintMultiplier(1.0);
     setHintsUsedTier(0);
     setHintResetKey((prev) => prev + 1);
     setIsCorrect(null);
@@ -662,7 +660,7 @@ function App() {
                       hints={generateHints()}
                       basePoints={calculatePoints(true, currentEquilibrium.difficulty)}
                       onHintUsed={handleHintUsed}
-                      onPointsChange={setHintMultiplier}
+                      showPointCost={false}
                       disabled={showExplanation}
                       resetKey={hintResetKey}
                     />

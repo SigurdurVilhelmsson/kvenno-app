@@ -306,8 +306,7 @@ export function Level3({ onComplete, onBack, t }: Level3Props) {
             >
               <div className={`font-bold mb-2 ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
                 {isCorrect ? '✓ Rétt!' : '✗ Rangt'}
-                {isCorrect && showHint && ' (10 stig)'}
-                {isCorrect && !showHint && ' (+20 stig)'}
+                {isCorrect && ' (+20 stig)'}
               </div>
 
               <div className="text-sm mb-2">

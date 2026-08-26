@@ -185,7 +185,7 @@ Gold standard games: Jafna Jöfnur (real-time atom counter), IMF Level 3 (real-w
 **mighty-mixing-puffin plan — all phases completed:**
 
 - Phase 1: Teaching intros added to all games that tested before teaching (Y1-Y3)
-- Phase 2: Hint penalties removed from Y1 **code**, DA L2 prediction disabled, DA L3 scoring simplified. **This line used to claim "all", and used to claim Y1 was clean in "code + UI text" — both measured false.** Three games still apply or advertise a penalty: `2-ar/hess-law/src/i18n.ts:76` and `3-ar/gas-law-challenge/src/i18n.ts:34` advertise a cost on the affordance; `3-ar/ph-titration` applies one as a multiplier (`Level1.tsx:47,87`, `Level2.tsx:454-455`, `Level3.tsx:309-310`). And Y1's UI half was never done: `1-ar/dimensional-analysis/src/components/Level3.tsx:594` still renders "⚠️ 10% dregið frá heildareinkunn" (measured 2026-08-17)
+- Phase 2: Hint penalties removed from Y1 **code**, DA L2 prediction disabled, DA L3 scoring simplified. **This line used to claim "all", and used to claim Y1 was clean in "code + UI text" — both measured false.** **Finished 2026-08-26 across all four stragglers**, so no game now charges for a hint: `1-ar/dimensional-analysis` (two phantom strings), `3-ar/gas-law-challenge` (a phantom string, never rendered), `2-ar/hess-law` (a **real** penalty, 20 unaided against 10, now a flat 20), and `3-ar/ph-titration` — where the recorded claim that all three levels "apply a multiplier" held for **Level 1 only**: L2 and L3 awarded a flat 100 and 20 while _displaying_ "(50 stig)" and "(10 stig)", so they were phantom. L1's was real, via the shared `HintSystem` tier multiplier (1.0/0.8/0.6/0.4/0.4), and is now a flat 100. Each of the four carries a test that fails if the penalty returns
 - Phase 3-4: Real-world "Af hverju?" context cards + curriculum chain positions added to all 20 games
 - Phase 5a: Jafna Jöfnur reload fix + L3 hints, Nafnakerfid L3 explanations
 - Phase 5b: Lewis Structures L2 interactive SVG drawing canvas, VSEPR L2 constrained prediction + L3 hybridization diagram, pH Titration L2 equivalence point marking, Lausnir L1 static beaker
@@ -405,11 +405,14 @@ dimensional-analysis speed-of-light key, and rafeindabygging's constant answer i
 **Fixed by Phase 1b (2026-08-18)** — B3 (Lausnir gas solubility), B8 (Takmarkandi generator), B6
 (impossible molarities). Each has a test. Do not re-report any of these as live; details are in
 `docs/README.md`.
+**Fixed 2026-08-26** — the dimensional-analysis phantom hint penalty, in **both** places it was
+advertised. The recorded fix ("deleting `:593-595` is the whole fix") was one short: the hint
+_button_ said `(kostar 15% af einkunn)` as well, a second phantom penalty that disagreed with the
+first. Guarded by `1-ar/dimensional-analysis/src/__tests__/hint-cost.test.ts`.
 
 **Live defects students meet today** — fix before adding features:
 
 - Unshuffled option arrays in `2-ar/kinetics` Level 3 (6/6 first) and `2-ar/organic-nomenclature` Level 3 (6/10 first). Four other games look constant in the data but shuffle at render — see `docs/README.md` before "fixing" them
-- `1-ar/dimensional-analysis/src/components/Level3.tsx:594` tells the student "⚠️ 10% dregið frá heildareinkunn" every time a hint opens, but `hintPenalty` is `0` (`:192`) so nothing is deducted. The game discourages hint use with a penalty it does not apply — the opposite of the stated design. Deleting `:593-595` is the whole fix
 - Four Tier-0 correctness items still open: B4 (Mólmassi breakdowns that do not sum), B5 (wrong compound names), B12 (non-reduced coefficients accepted), B13 (absolute 0.01 tolerance). Listed in `docs/plans/2026-08-16-phase-1-correctness.md`
 - **Lausnir asks students to weigh out substances that are not weighed.** Surfaced while fixing B6, not fixed there — the numbers are now possible, but the premise is still wrong for seven of the 21 chemicals. HCl is a gas; H₂SO₄, HNO₃, H₃PO₄, CH₃COOH, etanól and H₂O₂ are liquids bought as stock solutions and dispensed by volume. "Þú leysir 60 g af HCl" is not something a student can do; those belong in dilution-from-stock problems. Also: `Ca(OH)₂` saturates at 0.022 M and `K₂Cr₂O₇` at ~0.49 M, so both now generate milligram masses — and Cr(VI) is a category-1 carcinogen most Icelandic schools may no longer stock. Both are candidates for removal from the dissolve-a-mass pool
 - **`lausnir` calls anhydrous Na₂CO₃ (106 g/mol) `þvottasódi`** while `molmassi` gives that name's referent, Na₂CO₃·10H₂O, a molar mass of 286.141 — one platform, one word, two substances. Related to B5, which already rules on this compound's name

@@ -12,14 +12,16 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Hvað er lögmál Hess?',
-      description: 'Skammtavarmi (ΔH) er ástandsfall — það skiptir ekki máli hvaða leið efnahvörfin taka, aðeins upphafs- og lokaaðstæður skipta máli. Þetta þýðir að við getum sameinað jöfnur til að finna ΔH fyrir hvörf sem erfitt er að mæla beint.',
+      description:
+        'Skammtavarmi (ΔH) er ástandsfall — það skiptir ekki máli hvaða leið efnahvörfin taka, aðeins upphafs- og lokaaðstæður skipta máli. Þetta þýðir að við getum sameinað jöfnur til að finna ΔH fyrir hvörf sem erfitt er að mæla beint.',
       formula: 'ΔH heild = ΔH₁ + ΔH₂ + ΔH₃ + ...',
     },
     levels: {
       level1: {
         name: 'Stig 1: Skilningur',
         description: 'Orkubrautir og ΔH merki',
-        details: 'Sjáðu hvernig ΔH breytist þegar þú snýrð við eða margfaldar jöfnur. Byggðu innsæi fyrir lögmál Hess.',
+        details:
+          'Sjáðu hvernig ΔH breytist þegar þú snýrð við eða margfaldar jöfnur. Byggðu innsæi fyrir lögmál Hess.',
       },
       level2: {
         name: 'Stig 2: Þrautir',
@@ -73,7 +75,7 @@ export const gameTranslations = createGameTranslations({
       totalReactants: 'Samtals hvarfefni:',
       placeholder: 'Sláðu inn svar...',
       check: 'Athuga',
-      showHint: 'Sýna vísbendingu (-10 stig)',
+      showHint: 'Sýna vísbendingu',
       hintLabel: 'Vísbending:',
       correctAnswer: 'Rétt svar:',
       explanationLabel: 'Útskýring:',
@@ -98,7 +100,8 @@ export const gameTranslations = createGameTranslations({
       c4title: 'Óþekkt myndunarvarminn',
       c4desc: 'Gefið er ΔH°rxn = -296.8 kJ/mol. Finndu ΔH°f fyrir SO₂(g).',
       c4hint: 'Þetta er myndunarhvarf! ΔH°rxn = ΔH°f fyrir afurðina.',
-      c4explanation: 'Þar sem hvarfefnin eru frumefni í stöðluðu ástandi: ΔH°rxn = ΔH°f(SO₂) = -296.8 kJ/mol',
+      c4explanation:
+        'Þar sem hvarfefnin eru frumefni í stöðluðu ástandi: ΔH°rxn = ΔH°f(SO₂) = -296.8 kJ/mol',
       c5title: 'Brennsla etanóls',
       c5desc: 'Reiknaðu varmamyndun við brennslu etanóls.',
       c5hint: 'Mundu að margfalda ΔH°f með stuðlinum!',
@@ -117,14 +120,16 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: "What is Hess's Law?",
-      description: 'Enthalpy (ΔH) is a state function — it does not matter which path a chemical reaction takes, only the initial and final states matter. This means we can combine equations to find ΔH for reactions that are difficult to measure directly.',
+      description:
+        'Enthalpy (ΔH) is a state function — it does not matter which path a chemical reaction takes, only the initial and final states matter. This means we can combine equations to find ΔH for reactions that are difficult to measure directly.',
       formula: 'ΔH total = ΔH₁ + ΔH₂ + ΔH₃ + ...',
     },
     levels: {
       level1: {
         name: 'Level 1: Understanding',
         description: 'Energy pathways and ΔH signs',
-        details: 'See how ΔH changes when you reverse or multiply equations. Build intuition for Hess\'s Law.',
+        details:
+          "See how ΔH changes when you reverse or multiply equations. Build intuition for Hess's Law.",
       },
       level2: {
         name: 'Level 2: Puzzles',
@@ -178,7 +183,7 @@ export const gameTranslations = createGameTranslations({
       totalReactants: 'Total reactants:',
       placeholder: 'Enter answer...',
       check: 'Check',
-      showHint: 'Show hint (-10 points)',
+      showHint: 'Show hint',
       hintLabel: 'Hint:',
       correctAnswer: 'Correct answer:',
       explanationLabel: 'Explanation:',
@@ -203,7 +208,8 @@ export const gameTranslations = createGameTranslations({
       c4title: 'Unknown formation enthalpy',
       c4desc: 'Given ΔH°rxn = -296.8 kJ/mol. Find ΔH°f for SO₂(g).',
       c4hint: 'This is a formation reaction! ΔH°rxn = ΔH°f for the product.',
-      c4explanation: 'Since reactants are elements in standard state: ΔH°rxn = ΔH°f(SO₂) = -296.8 kJ/mol',
+      c4explanation:
+        'Since reactants are elements in standard state: ΔH°rxn = ΔH°f(SO₂) = -296.8 kJ/mol',
       c5title: 'Ethanol combustion',
       c5desc: 'Calculate heat of combustion for ethanol.',
       c5hint: 'Remember to multiply ΔH°f by the coefficient!',
@@ -222,14 +228,16 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Czym jest prawo Hessa?',
-      description: 'Entalpia (ΔH) jest funkcją stanu — nie ma znaczenia jaką drogą przebiega reakcja chemiczna, liczy się tylko stan początkowy i końcowy. Oznacza to, że możemy łączyć równania, aby znaleźć ΔH dla reakcji trudnych do bezpośredniego pomiaru.',
+      description:
+        'Entalpia (ΔH) jest funkcją stanu — nie ma znaczenia jaką drogą przebiega reakcja chemiczna, liczy się tylko stan początkowy i końcowy. Oznacza to, że możemy łączyć równania, aby znaleźć ΔH dla reakcji trudnych do bezpośredniego pomiaru.',
       formula: 'ΔH całkowite = ΔH₁ + ΔH₂ + ΔH₃ + ...',
     },
     levels: {
       level1: {
         name: 'Poziom 1: Zrozumienie',
         description: 'Ścieżki energetyczne i znaki ΔH',
-        details: 'Zobacz jak ΔH zmienia się gdy odwracasz lub mnożysz równania. Zbuduj intuicję dla prawa Hessa.',
+        details:
+          'Zobacz jak ΔH zmienia się gdy odwracasz lub mnożysz równania. Zbuduj intuicję dla prawa Hessa.',
       },
       level2: {
         name: 'Poziom 2: Łamigłówki',
@@ -283,7 +291,7 @@ export const gameTranslations = createGameTranslations({
       totalReactants: 'Suma substratów:',
       placeholder: 'Wpisz odpowiedź...',
       check: 'Sprawdź',
-      showHint: 'Pokaż wskazówkę (-10 punktów)',
+      showHint: 'Pokaż wskazówkę',
       hintLabel: 'Wskazówka:',
       correctAnswer: 'Poprawna odpowiedź:',
       explanationLabel: 'Wyjaśnienie:',
@@ -308,7 +316,8 @@ export const gameTranslations = createGameTranslations({
       c4title: 'Nieznana entalpia tworzenia',
       c4desc: 'Dane: ΔH°rxn = -296.8 kJ/mol. Znajdź ΔH°f dla SO₂(g).',
       c4hint: 'To jest reakcja tworzenia! ΔH°rxn = ΔH°f dla produktu.',
-      c4explanation: 'Ponieważ substraty to pierwiastki w stanie standardowym: ΔH°rxn = ΔH°f(SO₂) = -296.8 kJ/mol',
+      c4explanation:
+        'Ponieważ substraty to pierwiastki w stanie standardowym: ΔH°rxn = ΔH°f(SO₂) = -296.8 kJ/mol',
       c5title: 'Spalanie etanolu',
       c5desc: 'Oblicz ciepło spalania etanolu.',
       c5hint: 'Pamiętaj, aby pomnożyć ΔH°f przez współczynnik!',
