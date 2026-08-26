@@ -57,6 +57,11 @@ Note what that guard does and does not do: it enforces **honesty** — no game m
 
 **The current work order is [`plans/2026-08-16-games-roadmap.md`](plans/2026-08-16-games-roadmap.md)**, with the first phase specified in [`plans/2026-08-16-phase-1-correctness.md`](plans/2026-08-16-phase-1-correctness.md). Both are live August-2026 documents, not history.
 
+**Read the roadmap's `STATUS` block first.** Its phase bodies are the 2026-08-16 text and are kept
+intact so the reasoning stays legible, which means parts of them describe defects that have since
+been fixed. The status block at the top carries what has actually happened — as of 2026-08-26,
+Phases 1 and 1b are done and **four Tier-0 correctness items remain open: B4, B5, B12, B13**.
+
 ## Icelandic terminology
 
 `packages/shared/i18n/ordabok.md` **governs**. It was moved into the shared library deliberately, which is the statement that it applies to every game. Authority order when a term is disputed:
@@ -77,6 +82,23 @@ The complete ruling — ~30 term corrections, each with its glossary citation an
 | [`bundle-sizes.md`](bundle-sizes.md)                                    | Measured bundle sizes, incl. the Three.js code-split      |
 | [`i18n-coverage.md`](i18n-coverage.md)                                  | Translation coverage                                      |
 | [`content/islenskubraut/README.md`](../content/islenskubraut/README.md) | Editing Íslenskubraut content, directly or by spreadsheet |
+
+## Íslenskubraut content authoring — the design record
+
+These two live under `docs/superpowers/` rather than `docs/plans/`, which is why they are easy to
+miss. They are **current, not history**: the design document carries its own status header, and the
+part it lists as unfinished is still unfinished.
+
+| Document                                                                                                                                           | What it holds                                                                                                                                                               |
+| -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`superpowers/specs/2026-08-17-islenskubraut-content-authoring-design.md`](superpowers/specs/2026-08-17-islenskubraut-content-authoring-design.md) | The design and its status. Tasks 1–6 shipped 2026-08-18: YAML is the source of truth, both TypeScript consumers are generated, and the xlsx export/import round-trip exists |
+| [`superpowers/plans/2026-08-17-islenskubraut-content-authoring.md`](superpowers/plans/2026-08-17-islenskubraut-content-authoring.md)               | The task-by-task implementation plan behind it                                                                                                                              |
+
+**Still blocking the first real review cycle:** every reviewer-facing Icelandic string in the
+exported workbook is placeholder wording drafted by Claude and never reviewed, marked
+`PLACEHOLDER ICELANDIC` in `scripts/islenskubraut/export-xlsx.mjs`. Do not send an export to a
+colleague until Siggi has rewritten it — the instructions tell a reviewer how to add, delete and
+reorder rows, so misleading wording produces a workbook the importer then refuses.
 
 ## Superseded — do not read as current
 
