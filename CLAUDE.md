@@ -431,7 +431,7 @@ first. Guarded by `1-ar/dimensional-analysis/src/__tests__/hint-cost.test.ts`.
 **Live defects students meet today** — fix before adding features:
 
 - Unshuffled option arrays in `2-ar/kinetics` Level 3 (6/6 first) and `2-ar/organic-nomenclature` Level 3 (6/10 first). Four other games look constant in the data but shuffle at render — see `docs/README.md` before "fixing" them
-- Four Tier-0 correctness items still open: B4 (Mólmassi breakdowns that do not sum), B5 (wrong compound names), B12 (non-reduced coefficients accepted), B13 (absolute 0.01 tolerance). Listed in `docs/plans/2026-08-16-phase-1-correctness.md`
+- Two Tier-0 correctness items still open: B5 (wrong compound names) and B12 (non-reduced coefficients accepted). Listed in `docs/plans/2026-08-16-phase-1-correctness.md`. **B4 and B13 were fixed 2026-08-26**, each with a test: `molmassi` now derives every molar mass from `elements.ts` so a breakdown cannot disagree with its own total, and `dimensional-analysis` grades on a 1% relative tolerance through `src/utils/grading.ts`, which also reads the Icelandic decimal comma
 - **`lausnir` calls anhydrous Na₂CO₃ (106 g/mol) `þvottasódi`** while `molmassi` gives that name's referent, Na₂CO₃·10H₂O, a molar mass of 286.141 — one platform, one word, two substances. Related to B5, which already rules on this compound's name
 
 The former "`challenges.ts:354` is unsatisfiable" claim was retired Aug 2026 by executing `Level3`'s grading path — see `docs/README.md`. Do not reinstate it.
