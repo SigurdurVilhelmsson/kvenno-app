@@ -139,9 +139,12 @@ describe('Level 3 excludes compounds by declaration, not by their name', () => {
     }
   });
 
-  it('excludes the trivial names, the bare elements and Fe₃O₄', () => {
+  it('excludes the trivial names and the bare elements, and nothing else', () => {
+    // Fe₃O₄ used to be here too, because the part pool had no Roman-numeral
+    // token. It now does, so Járn(II,III)oxíð is buildable like any other
+    // variable-charge compound — see `name-builder.test.ts`.
     expect(excluded.map((c) => c.formula).sort()).toEqual(
-      ['CH₄', 'Cl₂', 'Fe₃O₄', 'H₂', 'H₂O', 'N₂', 'NH₃', 'O₂'].sort()
+      ['CH₄', 'Cl₂', 'H₂', 'H₂O', 'N₂', 'NH₃', 'O₂'].sort()
     );
   });
 

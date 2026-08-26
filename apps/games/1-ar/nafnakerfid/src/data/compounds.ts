@@ -16,16 +16,17 @@ export interface Compound {
   /**
    * Keep this compound out of Level 3's name builder.
    *
-   * Level 3 asks the student to assemble a name from Greek prefixes and element
-   * roots, so it can only ask about compounds whose name is built that way. Two
-   * kinds are excluded: trivial names (Vatn, Ammóníak, Metan), bare element
-   * names (the diatomics), and names carrying a Roman-numeral pair that the part
-   * pool has no token for (Fe₃O₄).
+   * Level 3 asks the student to assemble a name from its parts, so it can only
+   * ask about names that *have* parts. Excluded are the trivial names (Vatn,
+   * Ammóníak, Metan) and the bare element names (the diatomics): each is a
+   * single indivisible word, so building it is one click and teaches nothing.
    *
    * This used to be inferred from the name string — Fe₃O₄ was called
    * "Járnoxíð (blandað)" and Level 3 filtered on `.includes('(blandað)')`, so
-   * correcting the name would silently have put an unbuildable item back in the
-   * pool. The flag says what is meant instead.
+   * correcting the name would silently have changed the question pool. The flag
+   * says what is meant instead. Fe₃O₄ no longer carries it: once the parts
+   * included Roman numerals, Járn(II,III)oxíð became buildable like any other
+   * variable-charge compound.
    */
   excludeFromNameBuilder?: boolean;
 }
@@ -573,7 +574,6 @@ export const COMPOUNDS: Compound[] = [
     difficulty: 'hard',
     elements: ['Fe', 'O'],
     info: 'Segulsteinn, blanda Fe²⁺ og Fe³⁺',
-    excludeFromNameBuilder: true,
   },
 ];
 

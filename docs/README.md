@@ -51,19 +51,29 @@ Guarded by `src/__tests__/hint-cost.test.tsx`, which drives the component: it re
 
 Note what that guard does and does not do: it enforces **honesty** — no game may quote a price it does not charge — not the restructure's "hints are free" policy. A game that displays and genuinely applies a penalty passes it. The policy is held per game by the four `hint-cost` tests. `packages/shared/components/HintSystem/__tests__/HintSystem.test.tsx` covers the prop itself, including that the default stays `true` so `2-ar/lewis-structures` and `3-ar/buffer-recipe-creator` keep telling their students what a hint costs.
 
-**Known live defects, worth reading before anything else** — students meet these today:
+**Fixed 2026-08-26 — Nafnakerfið's Level 3 name builder.** The level asks a student to assemble a
+compound name from clickable parts, and **33 of the 51 compounds it drew from could not be built
+from the parts it offered** — about six unanswerable questions in a run of ten. The parts were
+improvised from the compound's element symbols, so there was no token for a Roman numeral
+(`Járn(III)oxíð`), none for a polyatomic ion (`súlfat` and `nítrat` existed only as _distractors_),
+no root for Mn/Cr/Pb/Hg/Sn/Co, and no form for an elided prefix (`dekoxíð` cannot be reached from
+`deka` + `oxíð`).
 
-- **Nafnakerfið Level 3 cannot grade two thirds of its own pool.** The level asks the student to
-  assemble a compound name from clickable parts, and **33 of the 51 compounds it draws from cannot
-  be built from the parts it offers**, so those can never be marked correct. `generateParts`
-  (`1-ar/nafnakerfid/src/components/Level3.tsx:63-88`) offers Greek prefixes 1–4 plus any prefix
-  whose literal string appears in the name, the element roots from `naming.ts`, and two fixed
-  distractors. It has no token for a Roman numeral (`Járn(III)oxíð`), no polyatomic-ion name
-  (`súlfat`, `nítrat`, `karbónat`, `fosfat`, `hýdroxíð` — and `súlfat`/`nítrat` appear only as
-  _distractors_), no root for Mn, Cr, Pb, Hg or Sn, and no elided prefix form (`dekoxíð` needs
-  `deka` + `oxíð`, which concatenate to `dekaoxíð`). Found 2026-08-26 while fixing B5, by running
-  the real `generateParts` against the real pool. Not fixed: how fine the parts should be is a
-  design decision, not a correction. Correcting the names did not change the count either way.
+The fix declares the naming vocabulary once — Greek prefixes, element roots and first-element stems,
+elided oxide forms, polyatomic ions, Roman numerals — and `segmentName` (`src/data/naming.ts`)
+decomposes any name back into it, so the parts come from the name itself. Distractors are drawn from
+the same vocabulary, same-kind first, and scale with the compound's difficulty. Fe₃O₄ came back into
+the pool, which is now 52 of 59; the seven still excluded are the trivial names and the bare
+elements, each a single indivisible word.
+
+Guarded three ways, all of which fail against the old builder:
+`__tests__/name-builder.test.ts` (every pool name decomposes and spells itself),
+`__tests__/name-parts.test.ts` (the tray contains the answer; distractors never duplicate it), and
+`__tests__/level3-answerable.test.tsx`, which renders the real component and plays five full
+ten-question runs to a perfect score. Against the pre-fix builder that last one reports
+`no "súlfat" part offered for K₂SO₄ (Kalíumsúlfat); tray held [tetra, mónó, trí, súlfíð, oxíð, dí]`.
+
+**Known live defects, worth reading before anything else** — students meet these today:
 
 - Option arrays where the correct answer sits at a constant index, in two games that map `challenge.options` straight into buttons with no shuffle: `2-ar/kinetics/src/data/level3-questions.ts` puts the correct option first on **all 6** items (rendered at `components/Level3.tsx:227`), and `2-ar/organic-nomenclature` Level 3 puts it first on **6 of 10** (rendered at `components/Level3.tsx:364`). Both grade by value — option `id` and `correctAnswer` string respectively — so reordering is safe. Four other files that a data-only scan flags as constant are **not** defects, because their components shuffle before rendering: `1-ar/nafnakerfid` L1 (`:360`), `1-ar/lotukerfid` L2 (`:156`), `2-ar/hess-law` L1 (`:219`), `2-ar/kinetics` L1 (`:52`). Measured 2026-08-18 by scanning every `options:` array in all three years and then checking each hit's render path — a scan of the data alone overstates this defect by four files. This is the position of the correct option _within_ a question, which is not the deliberate exam-stability choice about problem _order_ in Kinetics and Redox.
 
