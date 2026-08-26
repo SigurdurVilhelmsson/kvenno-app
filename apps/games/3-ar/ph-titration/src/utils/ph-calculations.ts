@@ -54,7 +54,7 @@ export function calculateWeakStrongPH(
 
   if (molesBase === 0) {
     // Initial pH (weak acid)
-    const sqrtKaCa = Math.sqrt(Ka * (molarityAcid / 1000));
+    const sqrtKaCa = Math.sqrt(Ka * molarityAcid);
     return -Math.log10(sqrtKaCa);
   } else if (molesBase < molesAcid - EPSILON) {
     // Buffer region (Henderson-Hasselbalch)
@@ -92,7 +92,7 @@ export function calculateStrongWeakPH(
   if (molesAcid === 0) {
     // Initial pH (weak base)
     const Kb = KW / Ka;
-    const pOH = 0.5 * (-Math.log10(Kb) - Math.log10(molarityBase / 1000));
+    const pOH = 0.5 * (-Math.log10(Kb) - Math.log10(molarityBase));
     return 14 - pOH;
   } else if (molesAcid < molesBase - EPSILON) {
     // Buffer region
@@ -130,7 +130,7 @@ export function calculatePolyproticDiproticPH(
 
   if (molesBase === 0) {
     // Initial pH - diprotic acid (use Ka1 only)
-    const sqrtKaCa = Math.sqrt(Ka1 * (molarityAcid / 1000));
+    const sqrtKaCa = Math.sqrt(Ka1 * molarityAcid);
     return -Math.log10(sqrtKaCa);
   } else if (molesBase < molesAcid * 0.5 - EPSILON) {
     // First buffer region (H2A/HA-)
@@ -195,7 +195,7 @@ export function calculatePolyproticTriproticPH(
 
   if (molesBase === 0) {
     // Initial pH - triprotic acid
-    const sqrtKaCa = Math.sqrt(Ka1 * (molarityAcid / 1000));
+    const sqrtKaCa = Math.sqrt(Ka1 * molarityAcid);
     return -Math.log10(sqrtKaCa);
   } else if (molesBase < molesAcid * 0.5) {
     // First buffer region (H3A/H2A-)

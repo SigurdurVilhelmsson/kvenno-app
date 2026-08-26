@@ -24,7 +24,7 @@ export const periodicPuzzles: PeriodicConfigPuzzle[] = [
     valenceConfig: '4s²',
     fullShorthand: '[Ar] 4s²',
     isException: false,
-    options: ['[Ar] 4s²', '[Ar] 3d²', '[Ne] 3s² 3p⁶ 4s²', '[Ar] 4s¹ 3d¹'],
+    options: ['[Ar] 3d²', '[Ne] 3s² 3p⁶ 4s²', '[Ar] 4s²', '[Ar] 4s¹ 3d¹'],
   },
   {
     id: 2,
@@ -52,7 +52,7 @@ export const periodicPuzzles: PeriodicConfigPuzzle[] = [
       'Króm er undantekning! Hálffyllt d-skel (3d⁵) er sérlega stöðug, svo ein rafeind flytur úr 4s yfir í 3d. Vænt: [Ar] 4s² 3d⁴, raunverulegt: [Ar] 4s¹ 3d⁵.',
     exceptionExplanation_en:
       'Chromium is an exception! A half-filled d-subshell (3d⁵) is especially stable, so one electron transfers from 4s to 3d. Expected: [Ar] 4s² 3d⁴, actual: [Ar] 4s¹ 3d⁵.',
-    options: ['[Ar] 4s¹ 3d⁵', '[Ar] 4s² 3d⁴', '[Ar] 3d⁶', '[Ar] 4s² 3d³ 4p¹'],
+    options: ['[Ar] 4s² 3d⁴', '[Ar] 3d⁶', '[Ar] 4s² 3d³ 4p¹', '[Ar] 4s¹ 3d⁵'],
   },
   {
     id: 4,
@@ -68,7 +68,7 @@ export const periodicPuzzles: PeriodicConfigPuzzle[] = [
       'Kopar er undantekning! Fullfyllt d-skel (3d¹⁰) er sérlega stöðugt, svo ein rafeind flytur úr 4s yfir í 3d. Vænt: [Ar] 4s² 3d⁹, raunverulegt: [Ar] 4s¹ 3d¹⁰.',
     exceptionExplanation_en:
       'Copper is an exception! A fully filled d-subshell (3d¹⁰) is especially stable, so one electron transfers from 4s to 3d. Expected: [Ar] 4s² 3d⁹, actual: [Ar] 4s¹ 3d¹⁰.',
-    options: ['[Ar] 4s¹ 3d¹⁰', '[Ar] 4s² 3d⁹', '[Ar] 3d¹¹', '[Kr] 4s¹'],
+    options: ['[Ar] 4s² 3d⁹', '[Ar] 4s¹ 3d¹⁰', '[Ar] 3d¹¹', '[Kr] 4s¹'],
   },
   {
     id: 5,
@@ -80,7 +80,7 @@ export const periodicPuzzles: PeriodicConfigPuzzle[] = [
     valenceConfig: '4s² 3d¹⁰ 4p⁵',
     fullShorthand: '[Ar] 4s² 3d¹⁰ 4p⁵',
     isException: false,
-    options: ['[Ar] 4s² 3d¹⁰ 4p⁵', '[Kr] 4p⁵', '[Ar] 4s² 3d¹⁰ 4p⁶', '[Ar] 4s² 3d⁹ 4p⁶'],
+    options: ['[Kr] 4p⁵', '[Ar] 4s² 3d¹⁰ 4p⁶', '[Ar] 4s² 3d¹⁰ 4p⁵', '[Ar] 4s² 3d⁹ 4p⁶'],
   },
   {
     id: 6,
@@ -92,7 +92,7 @@ export const periodicPuzzles: PeriodicConfigPuzzle[] = [
     valenceConfig: '5s²',
     fullShorthand: '[Kr] 5s²',
     isException: false,
-    options: ['[Kr] 5s²', '[Kr] 4d²', '[Ar] 4s² 3d¹⁰ 4p⁶ 5s²', '[Kr] 5s¹ 4d¹'],
+    options: ['[Kr] 4d²', '[Ar] 4s² 3d¹⁰ 4p⁶ 5s²', '[Kr] 5s¹ 4d¹', '[Kr] 5s²'],
   },
   {
     id: 7,
@@ -104,7 +104,7 @@ export const periodicPuzzles: PeriodicConfigPuzzle[] = [
     valenceConfig: '4s² 3d⁶',
     fullShorthand: '[Ar] 4s² 3d⁶',
     isException: false,
-    options: ['[Ar] 4s² 3d⁶', '[Ar] 3d⁸', '[Ar] 4s¹ 3d⁷', '[Kr] 3d⁶'],
+    options: ['[Ar] 3d⁸', '[Ar] 4s² 3d⁶', '[Ar] 4s¹ 3d⁷', '[Kr] 3d⁶'],
   },
   {
     id: 8,

@@ -400,13 +400,16 @@ pnpm build                 # Build everything
 Three August-2026 review documents supersede the older per-game reviews and the year `REVIEW_TRACKER.md` files. They carry `file:line` citations and were adversarially verified:
 `apps/games/1-ar/CURRICULUM_REVIEW.md` · `apps/games/ORPHANED_GAMES_ASSESSMENT.md` · `docs/FEBRUARY-DECISIONS-RECOVERED.md`
 
+**Fixed by Phase 1 (2026-08-18)** — ph-titration's `/1000`, lotukerfið's neutron rule, the
+dimensional-analysis speed-of-light key, and rafeindabygging's constant answer index. Each has a
+`data-integrity` test. Do not re-report these as live; details and the one open question they raised
+are in `docs/README.md`.
+
 **Live defects students meet today** — fix before adding features:
 
-- `3-ar/ph-titration/src/utils/ph-calculations.ts:57,95,133,198` divides a molarity already in mol/L by 1000 (0.100 M acetic acid renders pH 4.37; its own `data/titrations.ts:76` says 2.87)
-- `1-ar/lotukerfid/src/components/Level3.tsx:31-33` teaches `round(atomicMass) − Z` as the neutron method; ~36% of playthroughs mis-grade a graded neutron answer, and ~86% display at least one wrong neutron count somewhere in the run
-- `1-ar/dimensional-analysis/src/data/challenges.ts:271` (speed of light, 1000× out)
-- Unshuffled option arrays, worst in `2-ar/rafeindabygging` Level 3 (8/8 at index 0)
+- Unshuffled option arrays in `2-ar/kinetics` Level 3 (6/6 first) and `2-ar/organic-nomenclature` Level 3 (6/10 first). Four other games look constant in the data but shuffle at render — see `docs/README.md` before "fixing" them
 - `1-ar/dimensional-analysis/src/components/Level3.tsx:594` tells the student "⚠️ 10% dregið frá heildareinkunn" every time a hint opens, but `hintPenalty` is `0` (`:192`) so nothing is deducted. The game discourages hint use with a penalty it does not apply — the opposite of the stated design. Deleting `:593-595` is the whole fix
+- Seven Tier-0 correctness items Phase 1 did not reach: B3 (Lausnir gas solubility 10× out), B4 (Mólmassi breakdowns that do not sum), B5 (wrong compound names), B6 (impossible molarities), B8 (Takmarkandi generator), B12 (non-reduced coefficients accepted), B13 (absolute 0.01 tolerance). Listed in `docs/plans/2026-08-16-phase-1-correctness.md`
 
 The former "`challenges.ts:354` is unsatisfiable" claim was retired Aug 2026 by executing `Level3`'s grading path — see `docs/README.md`. Do not reinstate it.
 
