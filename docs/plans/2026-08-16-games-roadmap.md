@@ -22,12 +22,12 @@ disagree, this block is current.
 | 4 — Close the pedagogy gaps              | Not started                | —                                                                                                                            |
 | 5 — Fill the curriculum holes            | Not started, but see below | —                                                                                                                            |
 
-**Tier-0 correctness: four of the nine remain open — B4, B5, B12, B13.** Phase 1 closed B1 and B2;
-Phase 1b closed B3, B6 and B8. The Phase 1 deferred list further down still enumerates seven
-because it is the 08-16 text; the three struck entries there are marked. The four that remain are
-specified with `file:line` in
+**Tier-0 correctness: two of the nine remain open — B5 and B12.** Phase 1 closed B1 and B2;
+Phase 1b closed B3, B6 and B8; B4 and B13 were closed on 2026-08-26 (PR #30). The Phase 1
+deferred list further down still enumerates seven because it is the 08-16 text; the five that have
+since been fixed are struck through there. The two that remain are specified with `file:line` in
 [`2026-08-16-phase-1-correctness.md`](2026-08-16-phase-1-correctness.md) at the table near its end,
-and none of them yet has a phase.
+and neither yet has a phase.
 
 **Off-plan work that landed anyway.** `1-ar/einingakedjan` (Einingakeðjan) shipped 2026-08-26 as
 Year-1 chain position 8 — PR #27. It builds the **mass→mole→mass bridge** that Phase 5 lists under
@@ -80,19 +80,20 @@ Each fix is small. The tests are the phase's real deliverable.
 
 **What this phase does not close.** The Year-1 review's Tier-0 correctness list has nine items. This phase closes two of them — B1 (item 2 above) and B2 (item 3). The other two tasks are real but come from elsewhere: item 1 from the review's Updates section, item 4 from `docs/README.md`. So four defects close, seven Tier-0 items stay open, and none of the seven currently has a phase _(as written 2026-08-16 — three of the seven have since been fixed; see the note directly below)_:
 
-> **Superseded in part, 2026-08-26.** Phase 1b closed B3, B6 and B8 on 2026-08-18 (PR #24). The
-> three are struck through below and their descriptions are the pre-fix state, kept so the
-> measurements stay readable. **Four remain open: B4, B5, B12, B13.**
+> **Superseded in part, 2026-08-26.** Phase 1b closed B3, B6 and B8 on 2026-08-18 (PR #24), and
+> B4 and B13 were closed on 2026-08-26 (PR #30). The five are struck through below and their
+> descriptions are the pre-fix state, kept so the measurements stay readable.
+> **Two remain open: B5 and B12.**
 
 - ~~**B3**~~ — **fixed 2026-08-18.** Lausnir's gas solubility data was 10× too high, g/L values printed under a `g/100g H2O` axis label (`lausnir/src/components/TemperatureSolubility.tsx:59,67`, label at `:220`). Correcting the data alone would have hidden the curves instead — see `docs/README.md`.
-- **B4** — 12 of Mólmassi's 29 compounds print a per-element breakdown whose lines do not sum to the total printed under them, in the one game whose entire skill is summing element masses.
+- ~~**B4**~~ — **fixed 2026-08-26.** 12 of Mólmassi's 29 compounds printed a per-element breakdown whose lines did not sum to the total printed under them, in the one game whose entire skill is summing element masses. `molarMass` was hand-written from more precise atomic masses than the table the game shows a student; it is now summed from `elements.ts`, so the two cannot disagree.
 - **B5** — wrong compound names taught as fact in `nafnakerfid` and `molmassi`.
 - ~~**B6**~~ — **fixed 2026-08-18.** Lausnir Level 3 generated physically impossible solutions (no solubility ceiling; up to 54 M HCl). The recorded diagnosis named one generator at 14–20%; measurement over 300k problems found all five, worst case Ca(OH)₂ at 1156×.
 - ~~**B8**~~ — **fixed 2026-08-18.** Takmarkandi's generator drew reactant counts with no relation to the coefficients, so a student following the game's own printed hint `min(A/c1, B/c2)` was graded wrong on roughly 44% of Level 2 and 70% of Level 3 problems (`takmarkandi/src/utils/calculations.ts:48-66`, floor at `:14`). Measured over 400k problems at 43.9% / 69.8%.
 - **B12** — Jafna jöfnur accepts non-reduced coefficient sets; the lowest-whole-number requirement is never checked or mentioned.
-- **B13** — Einingagreining grades on an absolute 0.01 tolerance, so on an answer of 0.005 kg typing `0` scores correct. Note item 3 above touches only `challenges.ts` and does not sweep this. Still live at `dimensional-analysis/src/components/Level2.tsx:254,295` (re-checked 2026-08-26).
+- ~~**B13**~~ — **fixed 2026-08-26.** Einingagreining graded on an absolute 0.01 tolerance, so on an answer of 0.005 kg typing `0` scored correct. Now a 1% relative tolerance, matching what this game's own Level 3 already used for its synthesis problems. The same expression could not read an Icelandic decimal comma (half of B9), so it is fixed in these two components too — the repo-wide B9 pass is still open.
 
-Listing them here is not scheduling them. Whether any move into Phase 1 is your call — of the four still open, B13 is the one with the widest blast radius per hour spent.
+Listing them here is not scheduling them. Whether either of the two still open moves into a phase is your call.
 
 ---
 

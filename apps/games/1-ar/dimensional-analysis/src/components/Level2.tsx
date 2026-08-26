@@ -14,6 +14,7 @@ import { shuffleArray } from '@shared/utils';
 import { UnitBlock, ConversionFactorBlock } from './UnitBlock';
 import { UnitCancellationVisualizer } from './UnitCancellationVisualizer';
 import { level2Problems } from '../data/problems';
+import { applyFactorPath, isAnswerCorrect, parseStudentNumber } from '../utils/grading';
 
 // Misconceptions for common errors
 const MISCONCEPTIONS: Record<string, string> = {
@@ -243,15 +244,9 @@ export function Level2({
   // Generate feedback for FeedbackPanel
   const getDetailedFeedback = (): DetailedFeedback => {
     const pathCorrect = problem.correctPath.every((step, idx) => selectedFactors[idx] === step);
-    const userNum = parseFloat(userAnswer);
-    let expectedAnswer = problem.startValue;
-    problem.correctPath.forEach((factor) => {
-      const [num, den] = factor.split(' / ');
-      const numVal = parseFloat(num.split(' ')[0]);
-      const denVal = parseFloat(den.split(' ')[0]);
-      expectedAnswer = (expectedAnswer * numVal) / denVal;
-    });
-    const answerCorrect = Math.abs(userNum - expectedAnswer) < 0.01;
+    const userNum = parseStudentNumber(userAnswer);
+    const expectedAnswer = applyFactorPath(problem.startValue, problem.correctPath);
+    const answerCorrect = isAnswerCorrect(userNum, expectedAnswer);
 
     if (pathCorrect && answerCorrect) {
       return {
@@ -283,16 +278,9 @@ export function Level2({
     const pathCorrect = problem.correctPath.every((step, idx) => selectedFactors[idx] === step);
 
     // Check final answer
-    const userNum = parseFloat(userAnswer);
-    let expectedAnswer = problem.startValue;
-    problem.correctPath.forEach((factor) => {
-      const [num, den] = factor.split(' / ');
-      const numVal = parseFloat(num.split(' ')[0]);
-      const denVal = parseFloat(den.split(' ')[0]);
-      expectedAnswer = (expectedAnswer * numVal) / denVal;
-    });
-
-    const answerCorrect = Math.abs(userNum - expectedAnswer) < 0.01;
+    const userNum = parseStudentNumber(userAnswer);
+    const expectedAnswer = applyFactorPath(problem.startValue, problem.correctPath);
+    const answerCorrect = isAnswerCorrect(userNum, expectedAnswer);
     const finalCorrect = pathCorrect && answerCorrect;
 
     setIsCorrect(finalCorrect);

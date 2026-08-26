@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useEscapeKey } from '@shared/hooks';
 
 import { level3Challenges } from '../data/challenges';
+import { isAnswerCorrect, parseStudentNumber } from '../utils/grading';
 import {
   scoreExplanation,
   calculateCompositeScore,
@@ -124,8 +125,8 @@ export function Level3({
         else if (selected.steps === 2) efficiencyScore = 0.8;
       }
     } else if (problem.type === 'error_analysis') {
-      const userNum = parseFloat(userAnswer);
-      if (Math.abs(userNum - (problem.correctAnswer || 0)) < 0.01) {
+      const userNum = parseStudentNumber(userAnswer);
+      if (isAnswerCorrect(userNum, problem.correctAnswer || 0)) {
         answerScore = 1;
       }
       // Credit method for any substantive explanation attempt
@@ -133,8 +134,8 @@ export function Level3({
         methodScore = 1;
       }
     } else if (problem.type === 'efficiency') {
-      const userNum = parseFloat(userAnswer);
-      if (Math.abs(userNum - (problem.targetAnswer || 0)) < 0.01) {
+      const userNum = parseStudentNumber(userAnswer);
+      if (isAnswerCorrect(userNum, problem.targetAnswer || 0)) {
         answerScore = 1;
       }
       if (selectedPath !== null && problem.possiblePaths) {
@@ -147,9 +148,8 @@ export function Level3({
         }
       }
     } else if (problem.type === 'synthesis' || problem.type === 'derivation') {
-      const userNum = parseFloat(userAnswer);
-      const tolerance = (problem.expectedAnswer || 0) * 0.01; // 1% tolerance
-      if (Math.abs(userNum - (problem.expectedAnswer || 0)) < tolerance) {
+      const userNum = parseStudentNumber(userAnswer);
+      if (isAnswerCorrect(userNum, problem.expectedAnswer || 0)) {
         answerScore = 1;
       }
 

@@ -60,7 +60,7 @@ Note what that guard does and does not do: it enforces **honesty** — no game m
 **Read the roadmap's `STATUS` block first.** Its phase bodies are the 2026-08-16 text and are kept
 intact so the reasoning stays legible, which means parts of them describe defects that have since
 been fixed. The status block at the top carries what has actually happened — as of 2026-08-26,
-Phases 1 and 1b are done and **four Tier-0 correctness items remain open: B4, B5, B12, B13**.
+Phases 1, 1b and 2 are done, B4 and B13 were closed on 2026-08-26, and **two Tier-0 correctness items remain open: B5 and B12**.
 
 ## Icelandic terminology
 
