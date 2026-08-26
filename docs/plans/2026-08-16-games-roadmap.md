@@ -1,9 +1,40 @@
 # Chemistry games roadmap — from here to "sound, accurate, complete"
 
-**Date:** 2026-08-16
+**Date:** 2026-08-16 · **Status block updated:** 2026-08-26
 **Goal, verbatim:** "a pedagogically sound games library, accurate and error free, covering the curriculum of my students"
 **Base:** kvenno-app. The old repo `namsbokasafn-leikir` is a quarry, frozen at `379266e`. No new work happens there.
 **Evidence:** `docs/README.md` indexes the three review documents every claim below is drawn from.
+
+---
+
+## STATUS — read this first
+
+The phase bodies below are the plan as written on 2026-08-16 and are left intact, so the reasoning
+behind each ordering stays legible. This block is what has actually happened since. Where the two
+disagree, this block is current.
+
+| Phase                                    | Status                     | Landed                                                                                           |
+| ---------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------ |
+| 1 — Stop teaching wrong chemistry        | **Done** 2026-08-18        | PR #23, `fix/phase-1-correctness`. All four tasks; see the sub-plan's own STATUS header          |
+| 1b — the three Tier-0 items with victims | **Done** 2026-08-18        | PR #24, `fix/phase-1b-correctness`. B3, B6, B8                                                   |
+| 2 — Make terminology govern              | Not started                | Re-measured 2026-08-26: `sætistala` 0 files against `atómnúmer` 4; `katóða` 0 against `kaþóða` 1 |
+| 3 — Harvest the cheap content            | Not started                | —                                                                                                |
+| 4 — Close the pedagogy gaps              | Not started                | —                                                                                                |
+| 5 — Fill the curriculum holes            | Not started, but see below | —                                                                                                |
+
+**Tier-0 correctness: four of the nine remain open — B4, B5, B12, B13.** Phase 1 closed B1 and B2;
+Phase 1b closed B3, B6 and B8. The Phase 1 deferred list further down still enumerates seven
+because it is the 08-16 text; the three struck entries there are marked. The four that remain are
+specified with `file:line` in
+[`2026-08-16-phase-1-correctness.md`](2026-08-16-phase-1-correctness.md) at the table near its end,
+and none of them yet has a phase.
+
+**Off-plan work that landed anyway.** `1-ar/einingakedjan` (Einingakeðjan) shipped 2026-08-26 as
+Year-1 chain position 8 — PR #27. It builds the **mass→mole→mass bridge** that Phase 5 lists under
+"Also unplaced", using molar mass, Avogadro, molarity, density and mole ratios from a balanced
+equation. It did not come out of this roadmap; it is recorded here so the plan and the library
+agree. It does not close any Tier-0 item, and it deliberately avoids inheriting B9 and B13 rather
+than fixing them in the older game — see `apps/games/1-ar/einingakedjan/README.md`.
 
 ---
 
@@ -31,7 +62,7 @@ There is also a structural reason for the order. The Year-1 review found that **
 | 4   | Close the pedagogy gaps in shipped games | Partly                 | 1–2 weeks  | Your own November test starts passing                                                                                            |
 | 5   | Fill the curriculum holes                | **Yes**                | Months     | The four confirmed gaps close                                                                                                    |
 
-Phases 1–3 are fully unblocked and total roughly a week. **If you stopped after Phase 3 the library would be terminologically consistent, materially richer, and free of its four loudest defects** — but not yet accurate. Seven Tier-0 correctness items would still be open: B3, B4, B5, B6, B8, B12 and B13. Phase 3 replaces the data behind B3, but that is enrichment rather than the fix (see the note there), and the other six have no phase at all. Closing those is what would make "accurate" true; until they are scheduled, "every remaining item is a deliberate choice rather than a debt" is a goal, not a description.
+Phases 1–3 are fully unblocked and total roughly a week. **If you stopped after Phase 3 the library would be terminologically consistent, materially richer, and free of its four loudest defects** — but not yet accurate. _(As written 08-16 this said seven Tier-0 items would still be open — B3, B4, B5, B6, B8, B12, B13 — and that Phase 3's harvest was enrichment rather than the B3 fix. Phase 1b has since closed B3, B6 and B8 directly, so the count is now **four**: B4, B5, B12, B13.)_ None of the four has a phase at all. Closing those is what would make "accurate" true; until they are scheduled, "every remaining item is a deliberate choice rather than a debt" is a goal, not a description.
 
 ---
 
@@ -47,17 +78,21 @@ Detailed executable plan: [`2026-08-16-phase-1-correctness.md`](2026-08-16-phase
 
 Each fix is small. The tests are the phase's real deliverable.
 
-**What this phase does not close.** The Year-1 review's Tier-0 correctness list has nine items. This phase closes two of them — B1 (item 2 above) and B2 (item 3). The other two tasks are real but come from elsewhere: item 1 from the review's Updates section, item 4 from `docs/README.md`. So four defects close, seven Tier-0 items stay open, and none of the seven currently has a phase:
+**What this phase does not close.** The Year-1 review's Tier-0 correctness list has nine items. This phase closes two of them — B1 (item 2 above) and B2 (item 3). The other two tasks are real but come from elsewhere: item 1 from the review's Updates section, item 4 from `docs/README.md`. So four defects close, seven Tier-0 items stay open, and none of the seven currently has a phase _(as written 2026-08-16 — three of the seven have since been fixed; see the note directly below)_:
 
-- **B3** — Lausnir's gas solubility data is 10× too high, g/L values printed under a `g/100g H2O` axis label (`lausnir/src/components/TemperatureSolubility.tsx:59,67`, label at `:220`). Phase 3 lists a harvest that would replace this data; see the note there for why the harvest is not the same thing as the fix.
+> **Superseded in part, 2026-08-26.** Phase 1b closed B3, B6 and B8 on 2026-08-18 (PR #24). The
+> three are struck through below and their descriptions are the pre-fix state, kept so the
+> measurements stay readable. **Four remain open: B4, B5, B12, B13.**
+
+- ~~**B3**~~ — **fixed 2026-08-18.** Lausnir's gas solubility data was 10× too high, g/L values printed under a `g/100g H2O` axis label (`lausnir/src/components/TemperatureSolubility.tsx:59,67`, label at `:220`). Correcting the data alone would have hidden the curves instead — see `docs/README.md`.
 - **B4** — 12 of Mólmassi's 29 compounds print a per-element breakdown whose lines do not sum to the total printed under them, in the one game whose entire skill is summing element masses.
 - **B5** — wrong compound names taught as fact in `nafnakerfid` and `molmassi`.
-- **B6** — Lausnir Level 3 generates physically impossible solutions (no solubility ceiling; up to 54 M HCl).
-- **B8** — Takmarkandi's generator draws reactant counts with no relation to the coefficients, so a student following the game's own printed hint `min(A/c1, B/c2)` is graded wrong on roughly 44% of Level 2 and 70% of Level 3 problems (`takmarkandi/src/utils/calculations.ts:48-66`, floor at `:14`). The review sizes this M and says it fixes three blockers at once.
+- ~~**B6**~~ — **fixed 2026-08-18.** Lausnir Level 3 generated physically impossible solutions (no solubility ceiling; up to 54 M HCl). The recorded diagnosis named one generator at 14–20%; measurement over 300k problems found all five, worst case Ca(OH)₂ at 1156×.
+- ~~**B8**~~ — **fixed 2026-08-18.** Takmarkandi's generator drew reactant counts with no relation to the coefficients, so a student following the game's own printed hint `min(A/c1, B/c2)` was graded wrong on roughly 44% of Level 2 and 70% of Level 3 problems (`takmarkandi/src/utils/calculations.ts:48-66`, floor at `:14`). Measured over 400k problems at 43.9% / 69.8%.
 - **B12** — Jafna jöfnur accepts non-reduced coefficient sets; the lowest-whole-number requirement is never checked or mentioned.
-- **B13** — Einingagreining grades on an absolute 0.01 tolerance, so on an answer of 0.005 kg typing `0` scores correct. Note item 3 above touches only `challenges.ts` and does not sweep this.
+- **B13** — Einingagreining grades on an absolute 0.01 tolerance, so on an answer of 0.005 kg typing `0` scores correct. Note item 3 above touches only `challenges.ts` and does not sweep this. Still live at `dimensional-analysis/src/components/Level2.tsx:254,295` (re-checked 2026-08-26).
 
-Listing them here is not scheduling them. Whether any move into Phase 1 is your call — B8 and B13 are the two with the widest blast radius per hour spent.
+Listing them here is not scheduling them. Whether any move into Phase 1 is your call — of the four still open, B13 is the one with the widest blast radius per hour spent.
 
 ---
 
@@ -84,7 +119,7 @@ No new games. Data files and single components dropping into games that already 
 | `data/trends.ts` — 3 trends with Icelandic rules, 12 verified items     | old `1-ar/lotukerfid`      | `1-ar/lotukerfid`                                  | Periodic trends are taught nowhere on the platform. All 12 keys verified correct                                                                                        |
 | `data/saturation.ts` — solubility vs temperature, 6 points per compound | old `1-ar/lausnir`         | `1-ar/lausnir`                                     | Real sourced curves in place of the shipped game's hand-typed arrays. Enrichment — **not** the B3 fix; see the note below                                               |
 
-**On B3, honestly.** An earlier version of this table claimed the `saturation.ts` harvest _fixes_ B3, which put a false-chemistry defect with a live victim two phases behind the phase whose whole stated purpose is to stop teaching wrong chemistry — and behind Phase 2, which has no victim at all. The two halves come apart cleanly. The correctness half is editing two arrays and one axis label (`lausnir/src/components/TemperatureSolubility.tsx:59,67,220`), needs nothing from the frozen repo, and could land in Phase 1 tomorrow. The harvest is the enrichment half, and it is strictly _slower_ than the correctness half, because everything coming out of the old repo needs the per-string terminology re-check described below. Keeping the harvest here is deliberate; leaving the correctness half unscheduled is not a recommendation — it is flagged in Phase 1's deferred list for you to decide.
+**On B3, honestly.** _(Resolved: the correctness half landed in Phase 1b on 2026-08-18. The harvest half below is still open. The note is kept because its reasoning about separating a correctness fix from an enrichment is the reason the split happened.)_ An earlier version of this table claimed the `saturation.ts` harvest _fixes_ B3, which put a false-chemistry defect with a live victim two phases behind the phase whose whole stated purpose is to stop teaching wrong chemistry — and behind Phase 2, which has no victim at all. The two halves come apart cleanly. The correctness half is editing two arrays and one axis label (`lausnir/src/components/TemperatureSolubility.tsx:59,67,220`), needs nothing from the frozen repo, and could land in Phase 1 tomorrow. The harvest is the enrichment half, and it is strictly _slower_ than the correctness half, because everything coming out of the old repo needs the per-string terminology re-check described below. Keeping the harvest here is deliberate; leaving the correctness half unscheduled is not a recommendation — it is flagged in Phase 1's deferred list for you to decide.
 
 **Take the data, not the code.** All of it was written 1–2 February and carries `setScore`, `hintMultiplier` and dead `LanguageSwitcher` wiring. Nine of the old games were never covered by the terminology pass, so their Icelandic strings are agent coinage, not ruling — re-check every string against `ordabok.md` on the way in.
 
@@ -114,7 +149,7 @@ Four gaps, each confirmed independently in February and again in August.
 | **Electrolytes, precipitation, net ionic** | 1    | Four absent topics; the only net-ionic content in either repo. February answered the "new game or new level?" question with _both_ — a new game plus a Lausnir enhancement                                |
 | **Empirical formula**                      | 1    | Confirmed absent from all three years. Fix three data defects before porting anything                                                                                                                     |
 
-Also unplaced: percent yield and the mass→mole→mass bridge (both were built in February and lost), and significant figures, which `dimensional-analysis` **scores today without ever teaching**. One qualification, from the Level-3 measurement behind Phase 1 item 3: in Level 3 the significant-figures check is feedback-only — computed at `Level3.tsx:159-162`, rendered as a panel at `:745-770`, and never passed to `calculateCompositeScore`. Whether Levels 1–2 actually grade on it was not measured; confirm before treating "grades" as established. The teaching gap is real either way.
+Also unplaced: percent yield, and significant figures, which `dimensional-analysis` **scores today without ever teaching**. One qualification, from the Level-3 measurement behind Phase 1 item 3: in Level 3 the significant-figures check is feedback-only — computed at `Level3.tsx:159-162`, rendered as a panel at `:745-770`, and never passed to `calculateCompositeScore`. Whether Levels 1–2 actually grade on it was not measured; confirm before treating "grades" as established. The teaching gap is real either way. **The mass→mole→mass bridge, listed here as unplaced until 2026-08-26, is now built** — `1-ar/einingakedjan`, see the status block at the top. Percent yield is still unplaced.
 
 ---
 
@@ -128,7 +163,7 @@ These block Phase 5 and parts of Phase 4. Four of them will produce contradictio
 4. **Stoichiometry** — you currently ship `stökjómetríu`, `Stökefnafræði` and `stækifræði`.
 5. **The galvanic cell noun** — no glossary entry; the shipped text is ungrammatical whichever noun wins (`klefi` is masculine, so `Galvanískur klefi`).
 6. **Where significant figures live** — its own game, or a "Stig 0" inside Einingagreining.
-7. **The i18n question** — strip `LanguageSwitcher` or finish the wiring. All 20 games render a switcher; eight route essentially nothing through it — seven have **zero** `t()` calls (`2-ar/kinetics`, `2-ar/lewis-structures`, `2-ar/intermolecular-forces`, `2-ar/organic-nomenclature`, `3-ar/buffer-recipe-creator`, `3-ar/gas-law-challenge`, `3-ar/thermodynamics-predictor`) and `3-ar/ph-titration` has exactly one. Several more route only a handful (`2-ar/rafeindabygging` 1, `2-ar/vsepr-geometry` 2, `1-ar/takmarkandi` 2). Per-game counts: `docs/i18n-coverage.md`. (Measured 2026-08-17; an earlier draft said "a dozen", which is closer to the number of games that _do_ call `t()`.)
+7. **The i18n question** — strip `LanguageSwitcher` or finish the wiring. 20 of the 21 games render a switcher — `1-ar/einingakedjan` (Aug 2026) deliberately ships neither the hook nor the switcher, so it does not add a case to this question. Of those 20, eight route essentially nothing through it — seven have **zero** `t()` calls (`2-ar/kinetics`, `2-ar/lewis-structures`, `2-ar/intermolecular-forces`, `2-ar/organic-nomenclature`, `3-ar/buffer-recipe-creator`, `3-ar/gas-law-challenge`, `3-ar/thermodynamics-predictor`) and `3-ar/ph-titration` has exactly one. Several more route only a handful (`2-ar/rafeindabygging` 1, `2-ar/vsepr-geometry` 2, `1-ar/takmarkandi` 2). Per-game counts: `docs/i18n-coverage.md`. (Measured 2026-08-17; an earlier draft said "a dozen", which is closer to the number of games that _do_ call `t()`.)
 
 ---
 

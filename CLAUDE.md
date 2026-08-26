@@ -190,7 +190,14 @@ Gold standard games: Jafna Jöfnur (real-time atom counter), IMF Level 3 (real-w
 - Phase 5a: Jafna Jöfnur reload fix + L3 hints, Nafnakerfid L3 explanations
 - Phase 5b: Lewis Structures L2 interactive SVG drawing canvas, VSEPR L2 constrained prediction + L3 hybridization diagram, pH Titration L2 equivalence point marking, Lausnir L1 static beaker
 
-Full plan: `~/.claude/plans/mighty-mixing-puffin.md`
+Full plan: `mighty-mixing-puffin.md` — the April 2026 restructure, phases 1 through 5b.
+
+> **This file is not in the repository.** It lives only in a local `~/.claude/plans/` directory on
+> Siggi's machine and was never committed — verified 2026-08-26: absent from this checkout, absent
+> from `git log --all`, absent from disk. That is the exact failure the games roadmap's closing
+> section names ("February's work was lost because it lived in cloud sessions that never landed
+> anywhere you looked"). **Commit it into `docs/plans/` from the machine that has it.** Until then
+> the summary above is the only account of this work that survives in the repo.
 
 **logical-wandering-llama iterative review cycle:**
 
@@ -258,7 +265,14 @@ Remaining deferred (all need a decision, not code):
 - **Kinetics/Redox problem order shuffle** — deliberately skipped (exam-style stability). **Do not generalise this to other games:** several ship an unshuffled array where the answer is positionally predictable, which is a different problem. See `docs/README.md`.
 - **Level 4, and whether levels are gated** — the old repo's design capped games at 3 levels; the April restructure replaced that with Explore → Understand → Practice → Apply, which has no level count. Most salvageable content from the old repo is Level-4 material. Decide once whether a Level 4 exists or that content becomes the Apply phase. Gating strings for 15 games already exist in three languages with no consumers — 14 under `menu.levels.*.locked`, plus `1-ar/nafnakerfid` under `completeLevel1First`/`completeLevel2First` (`src/i18n.ts:23-24`). Grep both key names before wiring or stripping.
 
-Full plan: `~/.claude/plans/logical-wandering-llama.md`
+Full plan: `logical-wandering-llama.md` — the Y1/Y2/Y3 iterative review cycle.
+
+> **This file is not in the repository.** It lives only in a local `~/.claude/plans/` directory on
+> Siggi's machine and was never committed — verified 2026-08-26: absent from this checkout, absent
+> from `git log --all`, absent from disk. That is the exact failure the games roadmap's closing
+> section names ("February's work was lost because it lived in cloud sessions that never landed
+> anywhere you looked"). **Commit it into `docs/plans/` from the machine that has it.** Until then
+> the summary above is the only account of this work that survives in the repo.
 
 ### Game inventory
 
