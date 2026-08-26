@@ -335,7 +335,7 @@ export function Level2({ onBack, onComplete }: Level2Props) {
             <div className="bg-warm-50 p-4 rounded-lg">
               <h3 className="font-bold text-warm-800 mb-2">Frumeindamassi</h3>
               <p className="text-sm text-warm-700">
-                Frumeindamassi eykst almennt eftir því sem raðtalan hækkar. Frumefni í sama flokki
+                Frumeindamassi eykst almennt eftir því sem sætistalan hækkar. Frumefni í sama flokki
                 (lóðrétt) hafa svipuð efnaeiginleika en aukinn massa.
               </p>
             </div>

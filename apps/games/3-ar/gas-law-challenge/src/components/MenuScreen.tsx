@@ -240,7 +240,7 @@ export function MenuScreen({
             </div>
             <div className="mt-3 text-center text-xs text-warm-500">
               <strong>Námsleiðin:</strong> <u>Gaslögmál</u> → Jafnvægi → Varmafræði → pH Títrun →
-              Púfferar
+              Stuðpúðar
             </div>
           </div>
 

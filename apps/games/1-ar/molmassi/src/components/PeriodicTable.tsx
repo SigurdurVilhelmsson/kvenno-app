@@ -170,7 +170,7 @@ export function PeriodicTable({
           <div className="flex flex-wrap gap-2 md:gap-4 items-center">
             <input
               type="text"
-              placeholder="Leita (nafn, tákn, atómnúmer)..."
+              placeholder="Leita (nafn, tákn, sætistala)..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="flex-1 min-w-[150px] px-3 py-2 border-2 border-warm-300 rounded-lg focus:border-kvenno-orange focus:outline-none text-sm"
@@ -322,7 +322,7 @@ export function PeriodicTable({
                 <h3 className="text-xl font-bold text-warm-800">{selectedElement.name}</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2 text-sm">
                   <div className="bg-white rounded-lg p-2 border">
-                    <div className="text-warm-500 text-xs">Atómnúmer</div>
+                    <div className="text-warm-500 text-xs">Sætistala</div>
                     <div className="font-bold">{selectedElement.atomicNumber}</div>
                   </div>
                   <div className="bg-white rounded-lg p-2 border">

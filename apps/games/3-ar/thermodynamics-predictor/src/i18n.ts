@@ -8,11 +8,12 @@ export const gameTranslations = createGameTranslations({
     game: {
       title: 'Varmafræði Spámaður',
       subtitle: 'Kvennaskólinn - Efnafræði 3. ár',
-      description: 'Lærðu um Gibbs orkuna og spáðu hvort hvörf séu sjálfspyrjandi',
+      description: 'Lærðu um Gibbs orkuna og spáðu hvort hvörf séu sjálfgeng',
     },
     intro: {
       title: 'Hvað er Gibbs orka?',
-      description: 'Gibbs orka (ΔG) segir okkur hvort hvarf sé sjálfspyrjandi. Ef ΔG < 0, þá gerist hvarfið sjálfkrafa.',
+      description:
+        'Gibbs orka (ΔG) segir okkur hvort hvarf sé sjálfgengt. Ef ΔG < 0, þá gerist hvarfið sjálfkrafa.',
       formula: 'ΔG = ΔH - TΔS',
     },
     levels: {
@@ -23,7 +24,7 @@ export const gameTranslations = createGameTranslations({
       },
       level2: {
         name: 'Stig 2: Spá',
-        description: 'Spáðu hvort hvörf séu sjálfspyrjandi',
+        description: 'Spáðu hvort hvörf séu sjálfgeng',
         details: 'Notaðu merki ΔH og ΔS til að spá fyrir um ΔG.',
         locked: 'Ljúktu stigi 1 fyrst',
       },
@@ -35,11 +36,11 @@ export const gameTranslations = createGameTranslations({
       },
     },
     concepts: {
-      enthalpy: 'Skammtavarmi (ΔH)',
+      enthalpy: 'Vermi (ΔH)',
       entropy: 'Óreiða (ΔS)',
       gibbsEnergy: 'Gibbs orka (ΔG)',
-      spontaneous: 'Sjálfspyrjandi',
-      nonSpontaneous: 'Ekki sjálfspyrjandi',
+      spontaneous: 'Sjálfgengt',
+      nonSpontaneous: 'Ekki sjálfgengt',
       exothermic: 'Varmagefjandi (ΔH < 0)',
       endothermic: 'Varmatökandi (ΔH > 0)',
       entropyIncrease: 'Óreiða eykst (ΔS > 0)',
@@ -47,16 +48,16 @@ export const gameTranslations = createGameTranslations({
       crossoverTemperature: 'Crossover hitastig',
     },
     predictions: {
-      alwaysSpontaneous: 'Alltaf sjálfspyrjandi',
-      neverSpontaneous: 'Aldrei sjálfspyrjandi',
-      spontaneousAtLowT: 'Sjálfspyrjandi við lágan hita',
-      spontaneousAtHighT: 'Sjálfspyrjandi við háan hita',
+      alwaysSpontaneous: 'Alltaf sjálfgengt',
+      neverSpontaneous: 'Aldrei sjálfgengt',
+      spontaneousAtLowT: 'Sjálfgengt við lágan hita',
+      spontaneousAtHighT: 'Sjálfgengt við háan hita',
     },
     formulas: {
       title: 'Lykilformúlur',
       gibbsEnergy: 'ΔG = ΔH - TΔS',
       crossover: 'T = ΔH / ΔS (þegar ΔG = 0)',
-      spontaneity: 'ΔG < 0 → sjálfspyrjandi',
+      spontaneity: 'ΔG < 0 → sjálfgengt',
     },
     progress: {
       title: 'Framvinda',
@@ -74,7 +75,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'What is Gibbs energy?',
-      description: "Gibbs energy (ΔG) tells us whether a reaction is spontaneous. If ΔG < 0, the reaction occurs spontaneously.",
+      description:
+        'Gibbs energy (ΔG) tells us whether a reaction is spontaneous. If ΔG < 0, the reaction occurs spontaneously.',
       formula: 'ΔG = ΔH - TΔS',
     },
     levels: {
@@ -136,7 +138,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Czym jest energia Gibbsa?',
-      description: 'Energia Gibbsa (ΔG) mowi nam czy reakcja jest samorzutna. Jesli ΔG < 0, reakcja zachodzi samorzutnie.',
+      description:
+        'Energia Gibbsa (ΔG) mowi nam czy reakcja jest samorzutna. Jesli ΔG < 0, reakcja zachodzi samorzutnie.',
       formula: 'ΔG = ΔH - TΔS',
     },
     levels: {

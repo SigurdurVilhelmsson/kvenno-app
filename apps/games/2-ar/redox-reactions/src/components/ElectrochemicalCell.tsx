@@ -52,7 +52,8 @@ const CELL_PAIRS: CellPair[] = [
       solutionColor: '#bbdefb',
       metalColor: '#f57c00',
     },
-    description: 'Klassískt dæmi um galvaníska klefi. Zn oxast (tapar e⁻), Cu²⁺ afoxast (öðlast e⁻).',
+    description:
+      'Klassískt dæmi um galvaníska klefi. Zn oxast (tapar e⁻), Cu²⁺ afoxast (öðlast e⁻).',
   },
   {
     id: 'mg-cu',
@@ -117,7 +118,7 @@ const CELL_PAIRS: CellPair[] = [
       metalSymbol: 'Ag',
       ion: 'Ag⁺',
       ionCharge: '+',
-      standardPotential: 0.80,
+      standardPotential: 0.8,
       solutionColor: '#eceff1',
       metalColor: '#cfd8dc',
     },
@@ -153,7 +154,7 @@ export function ElectrochemicalCell({
   const animationRef = useRef<number | null>(null);
   const particleIdRef = useRef(0);
 
-  const pair = CELL_PAIRS.find(p => p.id === selectedPair) || CELL_PAIRS[0];
+  const pair = CELL_PAIRS.find((p) => p.id === selectedPair) || CELL_PAIRS[0];
   const cellPotential = pair.cathode.standardPotential - pair.anode.standardPotential;
 
   // Initialize particles
@@ -208,71 +209,91 @@ export function ElectrochemicalCell({
     if (!isRunning) return;
 
     const animate = () => {
-      setParticles(prev => {
-        const updated = prev.map(p => {
-          let newX = p.x + p.vx;
-          let newY = p.y + p.vy;
-          let newVx = p.vx;
-          let newVy = p.vy;
-          let newSide = p.side;
+      setParticles((prev) => {
+        const updated = prev
+          .map((p) => {
+            let newX = p.x + p.vx;
+            let newY = p.y + p.vy;
+            let newVx = p.vx;
+            let newVy = p.vy;
+            let newSide = p.side;
 
-          if (p.type === 'electron') {
-            // Electrons flow from anode to cathode through wire
-            if (p.side === 'anode') {
-              // Move toward wire (top)
-              if (newY > 60) {
-                newVy = -0.5;
-              }
-              // Move right through wire
-              if (newY <= 65 && newX < 200) {
-                newVy = 0;
-                newVx = 1.5;
-              }
-              // Transition to cathode side
-              if (newX >= 200) {
-                newSide = 'cathode';
-              }
-            } else {
-              // Move down into cathode
-              if (newY < 120) {
-                newVx = 0;
-                newVy = 0.5;
+            if (p.type === 'electron') {
+              // Electrons flow from anode to cathode through wire
+              if (p.side === 'anode') {
+                // Move toward wire (top)
+                if (newY > 60) {
+                  newVy = -0.5;
+                }
+                // Move right through wire
+                if (newY <= 65 && newX < 200) {
+                  newVy = 0;
+                  newVx = 1.5;
+                }
+                // Transition to cathode side
+                if (newX >= 200) {
+                  newSide = 'cathode';
+                }
               } else {
-                // Reached cathode, remove particle
-                return null;
+                // Move down into cathode
+                if (newY < 120) {
+                  newVx = 0;
+                  newVy = 0.5;
+                } else {
+                  // Reached cathode, remove particle
+                  return null;
+                }
+              }
+            } else if (p.type === 'cation') {
+              // Random motion with slight drift
+              newVx += (Math.random() - 0.5) * 0.1;
+              newVy += (Math.random() - 0.5) * 0.1;
+              newVx *= 0.98;
+              newVy *= 0.98;
+
+              // Boundary constraints
+              if (p.side === 'anode') {
+                if (newX < 30) {
+                  newX = 30;
+                  newVx *= -1;
+                }
+                if (newX > 150) {
+                  newX = 150;
+                  newVx *= -1;
+                }
+              } else {
+                if (newX < 250) {
+                  newX = 250;
+                  newVx *= -1;
+                }
+                if (newX > 370) {
+                  newX = 370;
+                  newVx *= -1;
+                }
+              }
+              if (newY < 130) {
+                newY = 130;
+                newVy *= -1;
+              }
+              if (newY > 210) {
+                newY = 210;
+                newVy *= -1;
               }
             }
-          } else if (p.type === 'cation') {
-            // Random motion with slight drift
-            newVx += (Math.random() - 0.5) * 0.1;
-            newVy += (Math.random() - 0.5) * 0.1;
-            newVx *= 0.98;
-            newVy *= 0.98;
 
-            // Boundary constraints
-            if (p.side === 'anode') {
-              if (newX < 30) { newX = 30; newVx *= -1; }
-              if (newX > 150) { newX = 150; newVx *= -1; }
-            } else {
-              if (newX < 250) { newX = 250; newVx *= -1; }
-              if (newX > 370) { newX = 370; newVx *= -1; }
-            }
-            if (newY < 130) { newY = 130; newVy *= -1; }
-            if (newY > 210) { newY = 210; newVy *= -1; }
-          }
-
-          return {
-            ...p,
-            x: newX,
-            y: newY,
-            vx: newVx,
-            vy: newVy,
-            side: newSide,
-          };
-        }).filter(Boolean) as Particle[];
+            return {
+              ...p,
+              x: newX,
+              y: newY,
+              vx: newVx,
+              vy: newVy,
+              side: newSide,
+            };
+          })
+          .filter(Boolean) as Particle[];
 
         // Spawn new electrons periodically
-        if (Math.random() < 0.05 && updated.filter(p => p.type === 'electron').length < 8) {
+        if (Math.random() < 0.05 && updated.filter((p) => p.type === 'electron').length < 8) {
           updated.push({
             id: particleIdRef.current++,
             x: 80 + Math.random() * 20,
@@ -303,7 +324,9 @@ export function ElectrochemicalCell({
   const height = compact ? 200 : 250;
 
   return (
-    <div className={`${compact ? 'p-3' : 'p-4'} bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-200`}>
+    <div
+      className={`${compact ? 'p-3' : 'p-4'} bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-200`}
+    >
       <div className="flex items-center justify-between mb-3">
         <h3 className={`font-bold text-amber-800 ${compact ? 'text-sm' : 'text-base'}`}>
           Galvanísk klefi
@@ -313,7 +336,7 @@ export function ElectrochemicalCell({
             <input
               type="checkbox"
               checked={showLabels}
-              onChange={e => setShowLabels(e.target.checked)}
+              onChange={(e) => setShowLabels(e.target.checked)}
               className="rounded border-warm-300"
             />
             Merki
@@ -324,7 +347,7 @@ export function ElectrochemicalCell({
       {/* Cell selector */}
       {interactive && (
         <div className="flex gap-2 mb-4 flex-wrap">
-          {CELL_PAIRS.map(p => (
+          {CELL_PAIRS.map((p) => (
             <button
               key={p.id}
               onClick={() => {
@@ -353,7 +376,9 @@ export function ElectrochemicalCell({
           role="img"
           aria-label={`Galvanísk klefi: ${pair.anode.metal} anoða og ${pair.cathode.metal} katoða með rafeinda- og jónaflæði`}
         >
-          <title>Rafefnaklefi með {pair.anode.metal}/{pair.cathode.metal}</title>
+          <title>
+            Rafefnaklefi með {pair.anode.metal}/{pair.cathode.metal}
+          </title>
           <defs>
             {/* Gradients for electrodes */}
             <linearGradient id="anodeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -381,11 +406,29 @@ export function ElectrochemicalCell({
           </text>
 
           {/* Anode beaker */}
-          <rect x="30" y="80" width="120" height="150" rx="5" fill="white" stroke="#9e9e9e" strokeWidth="2" />
+          <rect
+            x="30"
+            y="80"
+            width="120"
+            height="150"
+            rx="5"
+            fill="white"
+            stroke="#9e9e9e"
+            strokeWidth="2"
+          />
           <rect x="35" y="120" width="110" height="105" fill={pair.anode.solutionColor} />
 
           {/* Cathode beaker */}
-          <rect x="250" y="80" width="120" height="150" rx="5" fill="white" stroke="#9e9e9e" strokeWidth="2" />
+          <rect
+            x="250"
+            y="80"
+            width="120"
+            height="150"
+            rx="5"
+            fill="white"
+            stroke="#9e9e9e"
+            strokeWidth="2"
+          />
           <rect x="255" y="120" width="110" height="105" fill={pair.cathode.solutionColor} />
 
           {/* Salt bridge */}
@@ -411,16 +454,10 @@ export function ElectrochemicalCell({
           <rect x="300" y="60" width="20" height="140" fill="url(#cathodeGrad)" rx="2" />
 
           {/* Animated particles */}
-          {particles.map(p => (
+          {particles.map((p) => (
             <g key={p.id}>
               {p.type === 'electron' && (
-                <circle
-                  cx={p.x}
-                  cy={p.y}
-                  r="4"
-                  fill="#ffc107"
-                  className="animate-pulse"
-                />
+                <circle cx={p.x} cy={p.y} r="4" fill="#ffc107" className="animate-pulse" />
               )}
               {p.type === 'cation' && (
                 <circle
@@ -439,7 +476,14 @@ export function ElectrochemicalCell({
           {showLabels && (
             <>
               {/* Anode label */}
-              <text x="90" y="245" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#d32f2f">
+              <text
+                x="90"
+                y="245"
+                textAnchor="middle"
+                fontSize="12"
+                fontWeight="bold"
+                fill="#d32f2f"
+              >
                 Anóða (-)
               </text>
               <text x="90" y={compact ? 258 : 260} textAnchor="middle" fontSize="10" fill="#616161">
@@ -447,10 +491,23 @@ export function ElectrochemicalCell({
               </text>
 
               {/* Cathode label */}
-              <text x="310" y="245" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#1976d2">
-                Kaþóða (+)
+              <text
+                x="310"
+                y="245"
+                textAnchor="middle"
+                fontSize="12"
+                fontWeight="bold"
+                fill="#1976d2"
+              >
+                Katóða (+)
               </text>
-              <text x="310" y={compact ? 258 : 260} textAnchor="middle" fontSize="10" fill="#616161">
+              <text
+                x="310"
+                y={compact ? 258 : 260}
+                textAnchor="middle"
+                fontSize="10"
+                fill="#616161"
+              >
                 {pair.cathode.ion} + e⁻ → {pair.cathode.metalSymbol}
               </text>
 
@@ -463,7 +520,14 @@ export function ElectrochemicalCell({
               <text x="90" y="135" textAnchor="middle" fontSize="14" fontWeight="bold" fill="white">
                 {pair.anode.metalSymbol}
               </text>
-              <text x="310" y="135" textAnchor="middle" fontSize="14" fontWeight="bold" fill="white">
+              <text
+                x="310"
+                y="135"
+                textAnchor="middle"
+                fontSize="14"
+                fontWeight="bold"
+                fill="white"
+              >
                 {pair.cathode.metalSymbol}
               </text>
 
@@ -476,7 +540,14 @@ export function ElectrochemicalCell({
                 markerEnd="url(#arrowhead)"
               />
               <defs>
-                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <marker
+                  id="arrowhead"
+                  markerWidth="10"
+                  markerHeight="7"
+                  refX="9"
+                  refY="3.5"
+                  orient="auto"
+                >
                   <polygon points="0 0, 10 3.5, 0 7" fill="#ffc107" />
                 </marker>
               </defs>
@@ -514,20 +585,29 @@ export function ElectrochemicalCell({
             <div className="text-xs text-red-600">
               {pair.anode.metalSymbol} → {pair.anode.ion} + 2e⁻
             </div>
-            <div className="text-xs text-warm-500">E° = {pair.anode.standardPotential.toFixed(2)} V</div>
+            <div className="text-xs text-warm-500">
+              E° = {pair.anode.standardPotential.toFixed(2)} V
+            </div>
           </div>
           <div className="bg-blue-50 p-2 rounded border border-blue-200">
-            <div className="font-medium text-blue-700">Kaþóða (afoxun)</div>
+            <div className="font-medium text-blue-700">Katóða (afoxun)</div>
             <div className="text-xs text-blue-600">
               {pair.cathode.ion} + 2e⁻ → {pair.cathode.metalSymbol}
             </div>
-            <div className="text-xs text-warm-500">E° = {pair.cathode.standardPotential.toFixed(2)} V</div>
+            <div className="text-xs text-warm-500">
+              E° = {pair.cathode.standardPotential.toFixed(2)} V
+            </div>
           </div>
         </div>
 
         <div className="text-center p-2 bg-amber-100 rounded-lg">
           <div className="text-sm text-amber-700">
-            <strong>E°<sub>cell</sub></strong> = E°<sub>kaþóða</sub> - E°<sub>anóða</sub> = {pair.cathode.standardPotential.toFixed(2)} - ({pair.anode.standardPotential.toFixed(2)}) = <strong>{cellPotential.toFixed(2)} V</strong>
+            <strong>
+              E°<sub>cell</sub>
+            </strong>{' '}
+            = E°<sub>katóða</sub> - E°<sub>anóða</sub> = {pair.cathode.standardPotential.toFixed(2)}{' '}
+            - ({pair.anode.standardPotential.toFixed(2)}) ={' '}
+            <strong>{cellPotential.toFixed(2)} V</strong>
           </div>
         </div>
 
@@ -539,7 +619,8 @@ export function ElectrochemicalCell({
       {/* Educational note */}
       <div className={`mt-3 text-center ${compact ? 'text-xs' : 'text-sm'} text-warm-600`}>
         <p>
-          <strong>Galvanísk klefi</strong> breytir efnaorku í raforku. Rafeindir flæða frá anóðu til kaþóðu.
+          <strong>Galvanísk klefi</strong> breytir efnaorku í raforku. Rafeindir flæða frá anóðu til
+          katóðu.
         </p>
       </div>
     </div>

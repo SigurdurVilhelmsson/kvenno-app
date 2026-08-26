@@ -13,14 +13,14 @@ The phase bodies below are the plan as written on 2026-08-16 and are left intact
 behind each ordering stays legible. This block is what has actually happened since. Where the two
 disagree, this block is current.
 
-| Phase                                    | Status                     | Landed                                                                                           |
-| ---------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------ |
-| 1 — Stop teaching wrong chemistry        | **Done** 2026-08-18        | PR #23, `fix/phase-1-correctness`. All four tasks; see the sub-plan's own STATUS header          |
-| 1b — the three Tier-0 items with victims | **Done** 2026-08-18        | PR #24, `fix/phase-1b-correctness`. B3, B6, B8                                                   |
-| 2 — Make terminology govern              | Not started                | Re-measured 2026-08-26: `sætistala` 0 files against `atómnúmer` 4; `katóða` 0 against `kaþóða` 1 |
-| 3 — Harvest the cheap content            | Not started                | —                                                                                                |
-| 4 — Close the pedagogy gaps              | Not started                | —                                                                                                |
-| 5 — Fill the curriculum holes            | Not started, but see below | —                                                                                                |
+| Phase                                    | Status                     | Landed                                                                                                                       |
+| ---------------------------------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 1 — Stop teaching wrong chemistry        | **Done** 2026-08-18        | PR #23, `fix/phase-1-correctness`. All four tasks; see the sub-plan's own STATUS header                                      |
+| 1b — the three Tier-0 items with victims | **Done** 2026-08-18        | PR #24, `fix/phase-1b-correctness`. B3, B6, B8                                                                               |
+| 2 — Make terminology govern              | **Done** 2026-08-26        | All six ruled terms applied, plus a test that fails if any returns — `packages/shared/i18n/__tests__/governed-terms.test.ts` |
+| 3 — Harvest the cheap content            | Not started                | —                                                                                                                            |
+| 4 — Close the pedagogy gaps              | Not started                | —                                                                                                                            |
+| 5 — Fill the curriculum holes            | Not started, but see below | —                                                                                                                            |
 
 **Tier-0 correctness: four of the nine remain open — B4, B5, B12, B13.** Phase 1 closed B1 and B2;
 Phase 1b closed B3, B6 and B8. The Phase 1 deferred list further down still enumerates seven
@@ -103,6 +103,15 @@ Listing them here is not scheduling them. Whether any move into Phase 1 is your 
 **Apply (decided, cited, zero judgment required):** `sætistala` for atomic number · `vermi` for enthalpy · `sjálfgengur` for spontaneous · `anóða`/`katóða` · `stuðpúði` not `púffer` · the Ksp family (`leysnimargfeldi`, `samjónahrif`, `mólarleysni`, `hlutfelling`).
 
 **Then make it stick:** a banned-term → correct-term table in `CLAUDE.md` plus a test that greps rendered strings. Without the test this phase is temporary.
+
+> **Done 2026-08-26.** All six terms applied across 12 files, the table is in `CLAUDE.md`, and
+> `packages/shared/i18n/__tests__/governed-terms.test.ts` enforces it — verified to fail when a
+> banned term is reintroduced. Three of the six change grammatical gender, so adjectives and
+> determiners moved with them; the test matches strings and cannot check that, which the CLAUDE.md
+> table records. Two findings while doing it: the hub tile called `3-ar/buffer-recipe-creator`
+> "Púfferuppskrift" while the game's own header already read "Stuðpúðasmíði", and two ALL-CAPS
+> occurrences of the spontaneity adjective survived a case-sensitive pass and were caught only by
+> the new test.
 
 **Fix first, in this order:** the three games that contradict _themselves_ (`lotukerfid`, `buffer-recipe-creator`, `thermodynamics-predictor`). A student who notices a game using two words for one concept learns that the vocabulary is unreliable.
 

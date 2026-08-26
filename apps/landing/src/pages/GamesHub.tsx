@@ -140,8 +140,8 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
         slug: 'thermodynamics-predictor',
       },
       {
-        title: 'Púfferuppskrift',
-        description: 'Henderson-Hasselbalch jafnan og púfferlausnir',
+        title: 'Stuðpúðasmíði',
+        description: 'Henderson-Hasselbalch jafnan og stuðpúðalausnir',
         slug: 'buffer-recipe-creator',
       },
     ],

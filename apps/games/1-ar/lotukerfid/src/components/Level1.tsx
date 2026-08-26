@@ -208,7 +208,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
               <h3 className="font-bold text-amber-800 mb-3">Hvernig finnur þú frumefni?</h3>
               <p className="text-warm-700 mb-2">
                 Hvert hólf sýnir: <strong>efnatáknið</strong> (t.d. Na),{' '}
-                <strong>atómnúmerið</strong> (fjöldi róteinda), og <strong>litinn</strong> segir þér
+                <strong>sætistöluna</strong> (fjöldi róteinda), og <strong>litinn</strong> segir þér
                 tegund frumefnisins (málmur, málmleysingur, eða hálf-málmur).
               </p>
               <p className="text-warm-700 text-sm">
@@ -388,7 +388,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                 </div>
                 <div className="text-sm">
                   <div className="font-bold text-warm-800">{elementInfo.name}</div>
-                  <div className="text-warm-600">Atómnúmer: {elementInfo.atomicNumber}</div>
+                  <div className="text-warm-600">Sætistala: {elementInfo.atomicNumber}</div>
                   <div className="text-warm-600">
                     Atómmassi: {elementInfo.atomicMass.toFixed(3)} g/mol
                   </div>

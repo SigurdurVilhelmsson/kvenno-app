@@ -187,7 +187,7 @@ function App() {
           <div className="bg-teal-50 p-6 rounded-xl mb-8">
             <h2 className="font-bold text-teal-800 mb-3">Hvað er lögmál Hess?</h2>
             <p className="text-teal-900 text-sm mb-4">
-              <strong>Skammtavarmi (ΔH)</strong> er ástandsfall — það skiptir ekki máli hvaða leið
+              <strong>Vermi (ΔH)</strong> er ástandsfall — það skiptir ekki máli hvaða leið
               efnahvörfin taka, aðeins upphafs- og lokaaðstæður skipta máli. Þetta þýðir að við
               getum <em>sameinað</em> jöfnur til að finna ΔH fyrir hvörf sem erfitt er að mæla
               beint.

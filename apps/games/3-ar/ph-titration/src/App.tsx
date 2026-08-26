@@ -342,7 +342,7 @@ function App() {
               </div>
               <div className="mt-3 text-center text-xs text-warm-500">
                 <strong>Námsleiðin:</strong> Gaslögmál → Jafnvægi → Varmafræði → <u>pH Títrun</u> →
-                Púfferar
+                Stuðpúðar
               </div>
               <div className="mt-2 text-center text-xs text-warm-400">
                 Kafli 17 — Chemistry: The Central Science (Brown et al.)

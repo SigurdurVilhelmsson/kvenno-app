@@ -47,7 +47,7 @@ function generateQuestions(): Question[] {
       element: el,
       text: `Hversu margar róteindir hefur ${el.name} (${el.symbol})?`,
       correctAnswer: el.atomicNumber,
-      explanation: `Atómnúmer ${el.name} er ${el.atomicNumber}, þannig að það hefur ${el.atomicNumber} róteindir. Fjöldi róteinda = atómnúmer.`,
+      explanation: `Sætistala ${el.name} er ${el.atomicNumber}, þannig að það hefur ${el.atomicNumber} róteindir. Fjöldi róteinda = sætistala.`,
     });
   }
 
@@ -72,7 +72,7 @@ function generateQuestions(): Question[] {
       element: el,
       text: `Hversu margar nifteindir hefur ${el.name}-${el.massNumber} (${el.symbol}-${el.massNumber})?`,
       correctAnswer: n,
-      explanation: `Nifteindir = massatala - atómnúmer = ${el.massNumber} - ${el.atomicNumber} = ${n}.`,
+      explanation: `Nifteindir = massatala - sætistala = ${el.massNumber} - ${el.atomicNumber} = ${n}.`,
     });
   }
 
@@ -85,7 +85,7 @@ function generateQuestions(): Question[] {
       element: el,
       text: `Hvaða frumefni hefur ${el.atomicNumber} róteindir og ${n} nifteindir?`,
       correctAnswer: el.atomicNumber,
-      explanation: `Frumefni með ${el.atomicNumber} róteindir er ${el.name} (${el.symbol}). Atómnúmerið ákvarðar hvaða frumefni það er.`,
+      explanation: `Frumefni með ${el.atomicNumber} róteindir er ${el.name} (${el.symbol}). Sætistalan ákvarðar hvaða frumefni það er.`,
       requiresTableClick: true,
     });
   }
@@ -97,15 +97,15 @@ const TOTAL = 8;
 
 function hintFor(question: Question): string {
   if (question.type === 'protons') {
-    return 'Fjöldi róteinda = atómnúmer (Z). Finndu frumefnið í lotukerfinu og lestu atómnúmerið.';
+    return 'Fjöldi róteinda = sætistala (Z). Finndu frumefnið í lotukerfinu og lestu sætistöluna.';
   }
   if (question.type === 'electrons') {
-    return 'Hlutlaust atóm hefur jafnmargar rafeindir og róteindir (= atómnúmer).';
+    return 'Hlutlaust atóm hefur jafnmargar rafeindir og róteindir (= sætistala).';
   }
   if (question.type === 'neutrons') {
-    return 'Nifteindir = massatala − atómnúmer. Massatalan er talan í heiti samsætunnar (t.d. 63 í Cu-63) — hún er ekki frumeindamassinn sem stendur á lotukerfinu.';
+    return 'Nifteindir = massatala − sætistala. Massatalan er talan í heiti samsætunnar (t.d. 63 í Cu-63) — hún er ekki frumeindamassinn sem stendur á lotukerfinu.';
   }
-  return 'Atómnúmerið (fjöldi róteinda) ákvarðar hvaða frumefni þetta er. Leitaðu að þeim atómnúmeri í lotukerfinu.';
+  return 'Sætistalan (fjöldi róteinda) ákvarðar hvaða frumefni þetta er. Leitaðu að þeirri sætistölu í lotukerfinu.';
 }
 
 export function Level3({ onBack, onComplete }: Level3Props) {
@@ -228,7 +228,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
             <div className="bg-blue-50 p-4 rounded-lg space-y-2">
               <p className="text-sm text-blue-800">
                 <strong>Prótónur (p⁺):</strong> Jákvætt hlaðnar agnir í kjarnanum. Fjöldi prótóna ={' '}
-                <strong>raðtala (Z)</strong>.
+                <strong>sætistala (Z)</strong>.
               </p>
               <p className="text-sm text-blue-800">
                 <strong>Rafeindir (e⁻):</strong> Neikvætt hlaðnar agnir utan kjarnans. Í hlutlausu
@@ -236,7 +236,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
               </p>
               <p className="text-sm text-blue-800">
                 <strong>Nifteindir (n⁰):</strong> Hlutlausar agnir í kjarnanum. Fjöldi nifteinda ={' '}
-                <strong>massatala − raðtala</strong>.
+                <strong>massatala − sætistala</strong>.
               </p>
             </div>
 
@@ -244,7 +244,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
               <h3 className="font-bold text-green-800 mb-2">Dæmi: Kolefni-12 (C-12)</h3>
               <div className="text-sm text-green-700 space-y-1 font-mono">
                 <p>
-                  Raðtala (Z) = 6 → <strong>6 prótónur</strong>
+                  Sætistala (Z) = 6 → <strong>6 prótónur</strong>
                 </p>
                 <p>
                   Hlutlaust atóm → <strong>6 rafeindir</strong>
@@ -258,10 +258,10 @@ export function Level3({ onBack, onComplete }: Level3Props) {
             <div className="bg-amber-50 p-4 rounded-lg">
               <h3 className="font-bold text-amber-800 mb-2">Hvar finn ég upplýsingarnar?</h3>
               <p className="text-sm text-amber-700">
-                Í lotukerfinu: raðtalan er neðst (t.d. 6 fyrir C) og frumeindamassinn er efst (t.d.
-                12,01 fyrir C). Frumeindamassinn er meðaltal allra samsæta frumefnisins og er því
-                ekki massatalan: massatalan á við eina tiltekna samsætu og er alltaf heiltala. Hún
-                stendur í heiti samsætunnar — 12 í kolefni-12 (C-12) — og spurningarnar hér gefa
+                Í lotukerfinu: sætistalan er neðst (t.d. 6 fyrir C) og frumeindamassinn er efst
+                (t.d. 12,01 fyrir C). Frumeindamassinn er meðaltal allra samsæta frumefnisins og er
+                því ekki massatalan: massatalan á við eina tiltekna samsætu og er alltaf heiltala.
+                Hún stendur í heiti samsætunnar — 12 í kolefni-12 (C-12) — og spurningarnar hér gefa
                 hana því beint.
               </p>
             </div>
