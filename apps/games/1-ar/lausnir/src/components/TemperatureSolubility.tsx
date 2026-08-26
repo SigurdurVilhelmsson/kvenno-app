@@ -6,7 +6,12 @@ import { useState, useEffect, useMemo } from 'react';
  * and real solubility data for common compounds
  */
 
-// Solubility data (g/100g H₂O) at different temperatures
+// Solubility data in g per 100 g of water, at different temperatures.
+// The two gases are quoted at 1 atm of the pure gas over the water -- gas
+// solubility is pressure-dependent (Henry's law), so the figure is meaningless
+// without that condition. They used to be stored in g/L, which is the unit gas
+// solubility is usually tabulated in, under a g/100g axis label: every gas curve
+// read 10x too high. 1 L of water is 1000 g, so g/L / 10 = g/100 g.
 // Based on real chemistry data
 export interface SolubilityData {
   compound: string;
@@ -25,7 +30,7 @@ export const SOLUBILITY_DATA: SolubilityData[] = [
     emoji: '🧪',
     type: 'solid',
     solubility: [13, 32, 64, 110, 169, 246],
-    color: '#8b5cf6' // purple
+    color: '#8b5cf6', // purple
   },
   {
     compound: 'Natríumklóríð',
@@ -33,7 +38,7 @@ export const SOLUBILITY_DATA: SolubilityData[] = [
     emoji: '🧂',
     type: 'solid',
     solubility: [35.7, 36.0, 36.4, 37.1, 38.0, 39.2],
-    color: '#3b82f6' // blue
+    color: '#3b82f6', // blue
   },
   {
     compound: 'Sykur',
@@ -41,36 +46,49 @@ export const SOLUBILITY_DATA: SolubilityData[] = [
     emoji: '🍬',
     type: 'solid',
     solubility: [179, 204, 238, 287, 362, 487],
-    color: '#f59e0b' // amber
+    color: '#f59e0b', // amber
   },
   {
     compound: 'Kalsíumsúlfat',
     formula: 'CaSO₄',
     emoji: '⚪',
     type: 'solid',
-    solubility: [0.176, 0.209, 0.210, 0.193, 0.162, 0.114],
-    color: '#64748b' // slate
+    solubility: [0.176, 0.209, 0.21, 0.193, 0.162, 0.114],
+    color: '#64748b', // slate
   },
   {
     compound: 'Súrefni',
     formula: 'O₂',
     emoji: '💨',
     type: 'gas',
-    solubility: [0.069, 0.044, 0.031, 0.023, 0.018, 0.0],
-    color: '#22c55e' // green
+    solubility: [0.0069, 0.0044, 0.0031, 0.0023, 0.0018, 0.0],
+    color: '#22c55e', // green
   },
   {
     compound: 'Koltvísýringur',
     formula: 'CO₂',
     emoji: '🫧',
     type: 'gas',
-    solubility: [3.35, 1.69, 0.97, 0.58, 0.36, 0.0],
-    color: '#6b7280' // gray
-  }
+    solubility: [0.335, 0.169, 0.097, 0.058, 0.036, 0.0],
+    color: '#6b7280', // gray
+  },
 ];
 
 // Temperature tick marks
 const TEMPERATURES = [0, 20, 40, 60, 80, 100];
+
+/**
+ * Render a solubility figure with enough digits to be readable at both ends of
+ * the range: sucrose reaches 487 g/100g, oxygen sits at 0.0069. A flat
+ * toFixed(1) prints the gases as "0.0".
+ */
+export function formatSolubility(value: number): string {
+  if (value === 0) return '0';
+  if (value < 0.1) return value.toFixed(4).replace(/0+$/, '');
+  if (value < 10) return value.toFixed(2).replace(/\.?0+$/, '');
+  if (value < 100) return value.toFixed(1);
+  return value.toFixed(0);
+}
 
 // Interpolate solubility at any temperature
 function interpolateSolubility(data: SolubilityData, temp: number): number {
@@ -112,21 +130,23 @@ export function TemperatureSolubilityCurve({
   temperature,
   onTemperatureChange,
   interactive = true,
-  showCurve = true
+  showCurve = true,
 }: TemperatureSolubilityCurveProps) {
   const selectedData = useMemo(
-    () => SOLUBILITY_DATA.filter(d => selectedCompounds.includes(d.formula)),
+    () => SOLUBILITY_DATA.filter((d) => selectedCompounds.includes(d.formula)),
     [selectedCompounds]
   );
 
   // Calculate max solubility for scaling
   const maxSolubility = useMemo(() => {
     let max = 0;
-    selectedData.forEach(d => {
+    selectedData.forEach((d) => {
       const m = Math.max(...d.solubility);
       if (m > max) max = m;
     });
-    return Math.max(max * 1.1, 10); // Add 10% padding, minimum 10
+    // Scale to what is actually selected. A hard minimum of 10 used to flatten
+    // every gas curve onto the axis, since no gas exceeds 0.34 g/100g.
+    return max > 0 ? max * 1.1 : 1;
   }, [selectedData]);
 
   // SVG dimensions
@@ -144,10 +164,10 @@ export function TemperatureSolubilityCurve({
   const generatePath = (data: SolubilityData) => {
     const points = TEMPERATURES.map((t, i) => ({
       x: xScale(t),
-      y: yScale(data.solubility[i])
+      y: yScale(data.solubility[i]),
     }));
 
-    return `M ${points.map(p => `${p.x},${p.y}`).join(' L ')}`;
+    return `M ${points.map((p) => `${p.x},${p.y}`).join(' L ')}`;
   };
 
   return (
@@ -155,7 +175,7 @@ export function TemperatureSolubilityCurve({
       {/* SVG Chart */}
       <svg viewBox={`0 0 ${width} ${height}`} className="w-full max-w-md mx-auto">
         {/* Grid lines */}
-        {[0, 25, 50, 75, 100].map(temp => (
+        {[0, 25, 50, 75, 100].map((temp) => (
           <line
             key={`grid-x-${temp}`}
             x1={xScale(temp)}
@@ -166,7 +186,7 @@ export function TemperatureSolubilityCurve({
             strokeWidth="1"
           />
         ))}
-        {[0, 0.25, 0.5, 0.75, 1].map(ratio => (
+        {[0, 0.25, 0.5, 0.75, 1].map((ratio) => (
           <line
             key={`grid-y-${ratio}`}
             x1={padding.left}
@@ -197,7 +217,7 @@ export function TemperatureSolubilityCurve({
         />
 
         {/* X-axis labels */}
-        {[0, 20, 40, 60, 80, 100].map(temp => (
+        {[0, 20, 40, 60, 80, 100].map((temp) => (
           <text
             key={`x-${temp}`}
             x={xScale(temp)}
@@ -221,7 +241,7 @@ export function TemperatureSolubilityCurve({
         </text>
 
         {/* Y-axis values */}
-        {[0, 0.5, 1].map(ratio => (
+        {[0, 0.5, 1].map((ratio) => (
           <text
             key={`y-${ratio}`}
             x={padding.left - 5}
@@ -229,21 +249,22 @@ export function TemperatureSolubilityCurve({
             textAnchor="end"
             className="text-xs fill-warm-600"
           >
-            {(ratio * maxSolubility).toFixed(0)}
+            {formatSolubility(ratio * maxSolubility)}
           </text>
         ))}
 
         {/* Curves */}
-        {showCurve && selectedData.map(data => (
-          <path
-            key={data.formula}
-            d={generatePath(data)}
-            fill="none"
-            stroke={data.color}
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
-        ))}
+        {showCurve &&
+          selectedData.map((data) => (
+            <path
+              key={data.formula}
+              d={generatePath(data)}
+              fill="none"
+              stroke={data.color}
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+          ))}
 
         {/* Current temperature line */}
         <line
@@ -258,7 +279,7 @@ export function TemperatureSolubilityCurve({
         />
 
         {/* Current values */}
-        {selectedData.map(data => {
+        {selectedData.map((data) => {
           const sol = interpolateSolubility(data, temperature);
           return (
             <circle
@@ -298,7 +319,7 @@ export function TemperatureSolubilityCurve({
 
       {/* Legend */}
       <div className="mt-4 flex flex-wrap justify-center gap-3">
-        {selectedData.map(data => {
+        {selectedData.map((data) => {
           const sol = interpolateSolubility(data, temperature);
           return (
             <div
@@ -309,9 +330,7 @@ export function TemperatureSolubilityCurve({
               <span className="text-sm font-medium" style={{ color: data.color }}>
                 {data.formula}
               </span>
-              <span className="text-xs text-warm-600">
-                {sol.toFixed(1)} g
-              </span>
+              <span className="text-xs text-warm-600">{formatSolubility(sol)} g</span>
             </div>
           );
         })}
@@ -329,7 +348,7 @@ interface TemperatureBeakerProps {
 export function TemperatureBeaker({
   compound,
   temperature,
-  showDissolving = true
+  showDissolving = true,
 }: TemperatureBeakerProps) {
   const [particles, setParticles] = useState<{ x: number; y: number; dissolved: boolean }[]>([]);
 
@@ -346,7 +365,7 @@ export function TemperatureBeaker({
       Array.from({ length: particleCount }).map((_, i) => ({
         x: 15 + Math.random() * 50,
         y: i < dissolvedCount ? 30 + Math.random() * 50 : 75 + Math.random() * 15,
-        dissolved: i < dissolvedCount
+        dissolved: i < dissolvedCount,
       }))
     );
   }, [temperature, saturationRatio]);
@@ -376,14 +395,7 @@ export function TemperatureBeaker({
         />
 
         {/* Temperature indicator */}
-        <rect
-          x="72"
-          y="20"
-          width="6"
-          height="60"
-          fill="#e5e7eb"
-          rx="2"
-        />
+        <rect x="72" y="20" width="6" height="60" fill="#e5e7eb" rx="2" />
         <rect
           x="72"
           y={80 - (temperature / 100) * 60}
@@ -395,17 +407,18 @@ export function TemperatureBeaker({
         />
 
         {/* Particles */}
-        {showDissolving && particles.map((p, i) => (
-          <circle
-            key={i}
-            cx={p.x}
-            cy={p.y}
-            r={p.dissolved ? 2 : 3}
-            fill={compound.color}
-            opacity={p.dissolved ? 0.7 : 1}
-            className="transition-all duration-700"
-          />
-        ))}
+        {showDissolving &&
+          particles.map((p, i) => (
+            <circle
+              key={i}
+              cx={p.x}
+              cy={p.y}
+              r={p.dissolved ? 2 : 3}
+              fill={compound.color}
+              opacity={p.dissolved ? 0.7 : 1}
+              className="transition-all duration-700"
+            />
+          ))}
 
         {/* Undissolved sediment */}
         {saturationRatio < 0.5 && (
@@ -422,10 +435,12 @@ export function TemperatureBeaker({
       </svg>
 
       <div className="mt-2">
-        <div className="text-sm font-medium">{compound.emoji} {compound.formula}</div>
+        <div className="text-sm font-medium">
+          {compound.emoji} {compound.formula}
+        </div>
         <div className="text-xs text-warm-600">{temperature}°C</div>
         <div className="text-xs font-bold" style={{ color: compound.color }}>
-          {solubility.toFixed(1)} g/100g
+          {formatSolubility(solubility)} g/100g
         </div>
       </div>
     </div>
@@ -444,7 +459,7 @@ export function TemperatureComparison({
   compound,
   tempBefore,
   tempAfter,
-  showAfter
+  showAfter,
 }: TemperatureComparisonProps) {
   const solBefore = interpolateSolubility(compound, tempBefore);
   const solAfter = interpolateSolubility(compound, tempAfter);
@@ -463,7 +478,9 @@ export function TemperatureComparison({
         </div>
       </div>
 
-      <div className={`text-center transition-opacity duration-300 ${showAfter ? 'opacity-100' : 'opacity-30'}`}>
+      <div
+        className={`text-center transition-opacity duration-300 ${showAfter ? 'opacity-100' : 'opacity-30'}`}
+      >
         <div className="text-sm font-semibold mb-2 text-warm-700">Eftir</div>
         <TemperatureBeaker compound={compound} temperature={showAfter ? tempAfter : tempBefore} />
       </div>
@@ -472,9 +489,9 @@ export function TemperatureComparison({
         <div className="ml-4 bg-warm-50 p-3 rounded-lg text-sm">
           <div className="font-semibold text-warm-700 mb-1">Breyting:</div>
           <div className={solAfter > solBefore ? 'text-green-600' : 'text-red-600'}>
-            {solBefore.toFixed(1)} → {solAfter.toFixed(1)} g/100g
-            <br />
-            ({solAfter > solBefore ? '+' : ''}{((solAfter - solBefore) / solBefore * 100).toFixed(0)}%)
+            {formatSolubility(solBefore)} → {formatSolubility(solAfter)} g/100g
+            <br />({solAfter > solBefore ? '+' : ''}
+            {(((solAfter - solBefore) / solBefore) * 100).toFixed(0)}%)
           </div>
         </div>
       )}

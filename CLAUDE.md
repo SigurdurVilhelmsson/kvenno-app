@@ -401,15 +401,18 @@ Three August-2026 review documents supersede the older per-game reviews and the 
 `apps/games/1-ar/CURRICULUM_REVIEW.md` · `apps/games/ORPHANED_GAMES_ASSESSMENT.md` · `docs/FEBRUARY-DECISIONS-RECOVERED.md`
 
 **Fixed by Phase 1 (2026-08-18)** — ph-titration's `/1000`, lotukerfið's neutron rule, the
-dimensional-analysis speed-of-light key, and rafeindabygging's constant answer index. Each has a
-`data-integrity` test. Do not re-report these as live; details and the one open question they raised
-are in `docs/README.md`.
+dimensional-analysis speed-of-light key, and rafeindabygging's constant answer index.
+**Fixed by Phase 1b (2026-08-18)** — B3 (Lausnir gas solubility), B8 (Takmarkandi generator), B6
+(impossible molarities). Each has a test. Do not re-report any of these as live; details are in
+`docs/README.md`.
 
 **Live defects students meet today** — fix before adding features:
 
 - Unshuffled option arrays in `2-ar/kinetics` Level 3 (6/6 first) and `2-ar/organic-nomenclature` Level 3 (6/10 first). Four other games look constant in the data but shuffle at render — see `docs/README.md` before "fixing" them
 - `1-ar/dimensional-analysis/src/components/Level3.tsx:594` tells the student "⚠️ 10% dregið frá heildareinkunn" every time a hint opens, but `hintPenalty` is `0` (`:192`) so nothing is deducted. The game discourages hint use with a penalty it does not apply — the opposite of the stated design. Deleting `:593-595` is the whole fix
-- Seven Tier-0 correctness items Phase 1 did not reach: B3 (Lausnir gas solubility 10× out), B4 (Mólmassi breakdowns that do not sum), B5 (wrong compound names), B6 (impossible molarities), B8 (Takmarkandi generator), B12 (non-reduced coefficients accepted), B13 (absolute 0.01 tolerance). Listed in `docs/plans/2026-08-16-phase-1-correctness.md`
+- Four Tier-0 correctness items still open: B4 (Mólmassi breakdowns that do not sum), B5 (wrong compound names), B12 (non-reduced coefficients accepted), B13 (absolute 0.01 tolerance). Listed in `docs/plans/2026-08-16-phase-1-correctness.md`
+- **Lausnir asks students to weigh out substances that are not weighed.** Surfaced while fixing B6, not fixed there — the numbers are now possible, but the premise is still wrong for seven of the 21 chemicals. HCl is a gas; H₂SO₄, HNO₃, H₃PO₄, CH₃COOH, etanól and H₂O₂ are liquids bought as stock solutions and dispensed by volume. "Þú leysir 60 g af HCl" is not something a student can do; those belong in dilution-from-stock problems. Also: `Ca(OH)₂` saturates at 0.022 M and `K₂Cr₂O₇` at ~0.49 M, so both now generate milligram masses — and Cr(VI) is a category-1 carcinogen most Icelandic schools may no longer stock. Both are candidates for removal from the dissolve-a-mass pool
+- **`lausnir` calls anhydrous Na₂CO₃ (106 g/mol) `þvottasódi`** while `molmassi` gives that name's referent, Na₂CO₃·10H₂O, a molar mass of 286.141 — one platform, one word, two substances. Related to B5, which already rules on this compound's name
 
 The former "`challenges.ts:354` is unsatisfiable" claim was retired Aug 2026 by executing `Level3`'s grading path — see `docs/README.md`. Do not reinstate it.
 
