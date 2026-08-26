@@ -410,11 +410,14 @@ advertised. The recorded fix ("deleting `:593-595` is the whole fix") was one sh
 _button_ said `(kostar 15% af einkunn)` as well, a second phantom penalty that disagreed with the
 first. Guarded by `1-ar/dimensional-analysis/src/__tests__/hint-cost.test.ts`.
 
+**Fixed 2026-08-26** — Lausnir's weighing premise. Each chemical now declares a `form`, and the two problem types that say "Þú leysir …" draw only solids that can be weighed out. The liquids and the one gas keep their dilution, mixing and massFromMolarity problems, which is where diluting concentrated acid from stock belongs. **The recorded note was right about the seven substances and wrong about the masses:** only `Ca(OH)₂` reached milligrams (16 mg floor, against a 0.81 g ceiling set by its 0.022 M saturation); `K₂Cr₂O₇` bottomed out at 1.44 g, comfortably weighable. Guarded by `1-ar/lausnir/src/__tests__/weighable-substances.test.ts`.
+
+**`K₂Cr₂O₇` removed from lausnir 2026-08-26**, on Siggi's call — the pool is now 20 chemicals. Not a numbers defect: Cr(VI) is a category-1 carcinogen many Icelandic schools no longer stock, and lausnir is the one place a student is told to weigh it out and dissolve it. It is deliberately **kept** in `1-ar/nafnakerfid` (naming `Kalíumdíkrómat`) and `2-ar/redox-reactions` (the oxidation number of Cr in `Cr₂O₇²⁻`), which are paper exercises needing no bottle on the shelf. The test asserts it does not return.
+
 **Live defects students meet today** — fix before adding features:
 
 - Unshuffled option arrays in `2-ar/kinetics` Level 3 (6/6 first) and `2-ar/organic-nomenclature` Level 3 (6/10 first). Four other games look constant in the data but shuffle at render — see `docs/README.md` before "fixing" them
 - Four Tier-0 correctness items still open: B4 (Mólmassi breakdowns that do not sum), B5 (wrong compound names), B12 (non-reduced coefficients accepted), B13 (absolute 0.01 tolerance). Listed in `docs/plans/2026-08-16-phase-1-correctness.md`
-- **Lausnir asks students to weigh out substances that are not weighed.** Surfaced while fixing B6, not fixed there — the numbers are now possible, but the premise is still wrong for seven of the 21 chemicals. HCl is a gas; H₂SO₄, HNO₃, H₃PO₄, CH₃COOH, etanól and H₂O₂ are liquids bought as stock solutions and dispensed by volume. "Þú leysir 60 g af HCl" is not something a student can do; those belong in dilution-from-stock problems. Also: `Ca(OH)₂` saturates at 0.022 M and `K₂Cr₂O₇` at ~0.49 M, so both now generate milligram masses — and Cr(VI) is a category-1 carcinogen most Icelandic schools may no longer stock. Both are candidates for removal from the dissolve-a-mass pool
 - **`lausnir` calls anhydrous Na₂CO₃ (106 g/mol) `þvottasódi`** while `molmassi` gives that name's referent, Na₂CO₃·10H₂O, a molar mass of 286.141 — one platform, one word, two substances. Related to B5, which already rules on this compound's name
 
 The former "`challenges.ts:354` is unsatisfiable" claim was retired Aug 2026 by executing `Level3`'s grading path — see `docs/README.md`. Do not reinstate it.

@@ -24,7 +24,29 @@ export function generateProblem(difficulty: Difficulty): Problem {
       : difficulty === 'medium'
         ? CHEMICALS.medium
         : CHEMICALS.hard;
-  const chemical = chemicalSet[Math.floor(Math.random() * chemicalSet.length)];
+
+  // 'molarity' and 'molarityFromMass' both open "Þú leysir ... af X" — they
+  // instruct the student to measure out the pure substance and dissolve it.
+  // Only a solid can be handled that way. The liquids and the one gas arrive as
+  // bought stock solutions, so they stay in dilution, mixing and
+  // massFromMolarity, which ask what a solution contains rather than telling the
+  // student to make one from the pure substance.
+  const dissolvesPureSubstance = type === 'molarity' || type === 'molarityFromMass';
+  // Both restrictions apply to the same two types. molarityFromMass prints the
+  // mass outright; molarity states the same quantity in moles — "Þú leysir
+  // 0.00079 mól af Ca(OH)₂" is 58 mg on the balance, no more carryable out for
+  // being unprinted.
+  const pool = chemicalSet.filter(
+    (c) => !dissolvesPureSubstance || (c.form === 'solid' && canBeWeighedOut(c))
+  );
+  const chemical = pool[Math.floor(Math.random() * pool.length)];
+  if (!chemical) {
+    // Unreachable with the shipped data — every difficulty keeps at least two
+    // qualifying solids, which weighable-substances.test.ts asserts directly.
+    // Failing here makes a future data edit that empties a pool obvious, rather
+    // than rendering "Þú leysir undefined g" to a student.
+    throw new Error(`Enginn hentugur efnaskostur fyrir ${type} (${difficulty})`);
+  }
 
   switch (type) {
     case 'dilution':
@@ -40,6 +62,26 @@ export function generateProblem(difficulty: Difficulty): Problem {
     default:
       return generateDilutionProblem(difficulty, chemical);
   }
+}
+
+/**
+ * Smallest mass worth putting in front of a student. A school balance reads to
+ * 0.01 g, so below about this the measurement is mostly its own error.
+ */
+const MIN_WEIGHABLE_G = 0.1;
+
+/**
+ * Can this substance yield a weighable mass across the whole range
+ * generateMolarityFromMassProblem draws from?
+ *
+ * Derived rather than hand-flagged, so lowering a `maxMolarity` later drops the
+ * substance out of the mass problems by itself instead of quietly asking for
+ * milligrams. The worst case is the generator's lowest molarity — `drawMolarity`
+ * floors at a fifth of the ceiling — at its smallest volume, 50 mL.
+ */
+function canBeWeighedOut(chemical: Chemical): boolean {
+  const lowestMolarity = Math.min(0.2, Math.min(4, chemical.maxMolarity) * 0.2);
+  return lowestMolarity * 0.05 * chemical.molarMass >= MIN_WEIGHABLE_G;
 }
 
 /** Round to a precision that stays readable for 29 g and for 0.37 g alike. */
