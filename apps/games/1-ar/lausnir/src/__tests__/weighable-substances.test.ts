@@ -61,13 +61,14 @@ describe('lausnir only asks students to weigh out things that can be weighed', (
   );
 
   it('every chemical declares a form, and the known non-solids are classified', () => {
-    expect(ALL).toHaveLength(21);
+    expect(ALL).toHaveLength(20);
     for (const c of ALL) {
       expect(['solid', 'liquid', 'gas'], `${c.name} has form ${c.form}`).toContain(c.form);
     }
 
     // HCl is the only gas; the six liquids are the concentrated-stock reagents.
     expect(byName.get('HCl')?.form).toBe('gas');
+
     for (const name of ['H₂SO₄', 'HNO₃', 'H₃PO₄', 'CH₃COOH', 'etanól', 'H₂O₂']) {
       expect(byName.get(name)?.form, `${name} should be a liquid`).toBe('liquid');
     }
@@ -115,6 +116,17 @@ describe('lausnir only asks students to weigh out things that can be weighed', (
       expect(tooSmall.slice(0, 5)).toEqual([]);
     }
   );
+
+  it('holds no potassium dichromate', () => {
+    // Removed 2026-08-26 on Siggi's call. K₂Cr₂O₇ is Cr(VI), a category-1
+    // carcinogen many Icelandic schools no longer stock, and this game is the
+    // one place that asks a student to weigh it out and dissolve it. Its
+    // numbers were fine — 1.44 g at the low end — so nothing but the safety
+    // question is at issue, and that question does not reach the naming and
+    // oxidation-number exercises in 1-ar/nafnakerfid and 2-ar/redox-reactions,
+    // which are paper chemistry and keep it.
+    expect(ALL.map((c) => c.name)).not.toContain('K₂Cr₂O₇');
+  });
 
   it('liquids and gases still appear, in the problem types that suit them', () => {
     // Removing them from the game entirely would lose the dilution-from-stock

@@ -154,14 +154,6 @@ export const CHEMICALS = {
       maxMolarity: 0.022,
     },
     {
-      name: 'K₂Cr₂O₇',
-      molarMass: 294,
-      form: 'solid',
-      displayName: 'K₂Cr₂O₇ (kalíumdíkrómat)',
-      molarMassDisplay: 'mólmassi: 294 g/mol',
-      maxMolarity: 0.49,
-    },
-    {
       name: 'FeCl₃',
       molarMass: 162.2,
       form: 'solid',
