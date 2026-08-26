@@ -99,7 +99,7 @@ export const CHEMICALS = {
       name: 'Na₂CO₃',
       molarMass: 106,
       form: 'solid',
-      displayName: 'Na₂CO₃ (þvottasódi)',
+      displayName: 'Na₂CO₃ (natríumkarbónat)',
       molarMassDisplay: 'mólmassi: 106 g/mol',
       maxMolarity: 2.7,
     },

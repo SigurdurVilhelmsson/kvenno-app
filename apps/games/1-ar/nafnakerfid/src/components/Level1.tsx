@@ -246,8 +246,8 @@ const quizQuestions: QuizQuestion[] = [
     hints: {
       topic: 'Þetta snýst um fjölatóma jónir.',
       strategy: 'Súlfat er fjölatóma jón með sína eigin formúlu og hleðslu.',
-      method: 'Súlfat = SO₄²⁻. Natríum = Na⁺. Jafnaðu hleðslurnar.',
-      solution: 'Súlfat er SO₄²⁻. Natríum er Na⁺. Þarf 2 Na⁺ til að jafna -2 hleðsluna: Na₂SO₄.',
+      method: 'Súlfat = SO₄²⁻. Natríum = Na⁺. Stilltu hleðslurnar.',
+      solution: 'Súlfat er SO₄²⁻. Natríum er Na⁺. Þarf 2 Na⁺ til að stilla -2 hleðsluna: Na₂SO₄.',
     },
     ruleId: 'ionic-polyatomic',
   },

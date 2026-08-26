@@ -48,8 +48,8 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
         slug: 'molmassi',
       },
       {
-        title: 'Jafna Jöfnur',
-        description: 'Lærðu að jafna efnajöfnur',
+        title: 'Stilla efnajöfnur',
+        description: 'Lærðu að stilla efnajöfnur',
         slug: 'jafna-jofnur',
       },
       {

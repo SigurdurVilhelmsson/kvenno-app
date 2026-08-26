@@ -1,14 +1,14 @@
 import { createGameTranslations } from '@shared/hooks/useGameI18n';
 
 /**
- * Jafna Jöfnur (Balance Equations) Game Translations
+ * Stilla efnajöfnur (Balance Equations) Game Translations
  * Covers balancing chemical equations at three difficulty tiers.
  */
 export const gameTranslations = createGameTranslations({
   is: {
     game: {
-      title: 'Jafna Jöfnur',
-      subtitle: 'Lærðu að jafna efnajöfnur - undirstaða stækifræði',
+      title: 'Stilla efnajöfnur',
+      subtitle: 'Lærðu að stilla efnajöfnur - undirstaða stækifræði',
     },
     menu: {
       level1: {
@@ -58,10 +58,10 @@ export const gameTranslations = createGameTranslations({
     },
     equation: {
       check: 'Athuga',
-      next: 'Næsta jafna',
+      next: 'Næsta efnajafna',
       seeResults: 'Sjá niðurstöður',
-      balanced: 'Jafna jöfn!',
-      notBalanced: 'Jafnan er ekki jöfn - reyndu aftur.',
+      balanced: 'Efnajafnan er stillt!',
+      notBalanced: 'Efnajafnan er ekki stillt - reyndu aftur.',
       coefficient: 'Stuðull',
       leftSide: 'Vinstri',
       rightSide: 'Hægri',
@@ -73,7 +73,7 @@ export const gameTranslations = createGameTranslations({
     },
     results: {
       title: 'Niðurstöður',
-      score: 'Þú jafnaðir {correct} af {total} jöfnum rétt',
+      score: 'Þú stilltir {correct} af {total} efnajöfnum rétt',
       retry: 'Reyna aftur',
       complete: 'Ljúka stigi',
       backToMenu: 'Til baka í valmynd',

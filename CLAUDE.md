@@ -178,7 +178,7 @@ Games follow a **teach-before-test** structure:
 
 **No scoring, timers, or streaks during learning phases.** Hint usage is never penalized.
 
-Gold standard games: Jafna Jöfnur (real-time atom counter), IMF Level 3 (real-world scenarios), Redox Level 3 (scaffolded half-reactions), Buffer Level 1 (visual ratio builder).
+Gold standard games: Stilla efnajöfnur (real-time atom counter), IMF Level 3 (real-world scenarios), Redox Level 3 (scaffolded half-reactions), Buffer Level 1 (visual ratio builder).
 
 ### Restructure status (April 2026)
 
@@ -187,7 +187,7 @@ Gold standard games: Jafna Jöfnur (real-time atom counter), IMF Level 3 (real-w
 - Phase 1: Teaching intros added to all games that tested before teaching (Y1-Y3)
 - Phase 2: Hint penalties removed from Y1 **code**, DA L2 prediction disabled, DA L3 scoring simplified. **This line used to claim "all", and used to claim Y1 was clean in "code + UI text" — both measured false.** **Finished 2026-08-26 across all four stragglers**, so no game now charges for a hint: `1-ar/dimensional-analysis` (two phantom strings), `3-ar/gas-law-challenge` (a phantom string, never rendered), `2-ar/hess-law` (a **real** penalty, 20 unaided against 10, now a flat 20), and `3-ar/ph-titration` — where the recorded claim that all three levels "apply a multiplier" held for **Level 1 only**: L2 and L3 awarded a flat 100 and 20 while _displaying_ "(50 stig)" and "(10 stig)", so they were phantom. L1's was real, via the shared `HintSystem` tier multiplier (1.0/0.8/0.6/0.4/0.4), and is now a flat 100. Each of the four carries a test that fails if the penalty returns
 - Phase 3-4: Real-world "Af hverju?" context cards + curriculum chain positions added to all 20 games
-- Phase 5a: Jafna Jöfnur reload fix + L3 hints, Nafnakerfid L3 explanations
+- Phase 5a: Stilla efnajöfnur reload fix + L3 hints, Nafnakerfid L3 explanations
 - Phase 5b: Lewis Structures L2 interactive SVG drawing canvas, VSEPR L2 constrained prediction + L3 hybridization diagram, pH Titration L2 equivalence point marking, Lausnir L1 static beaker
 
 Full plan: `mighty-mixing-puffin.md` — the April 2026 restructure, phases 1 through 5b.
@@ -283,7 +283,7 @@ Full plan: `logical-wandering-llama.md` — the Y1/Y2/Y3 iterative review cycle.
 ### Curriculum chains
 
 ```
-Y1: Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi → Jafna Jöfnur → Takmarkandi → Lausnir → Einingakeðjan
+Y1: Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi → Stilla efnajöfnur → Takmarkandi → Lausnir → Einingakeðjan
 Y2: Rafeindabygging → Lewis → VSEPR → IMF → Hess → Kinetics → Redox → Organic
 Y3: Gaslögmál → Jafnvægi → Varmafræði → pH Títrun → Púfferar
 ```
@@ -428,11 +428,16 @@ first. Guarded by `1-ar/dimensional-analysis/src/__tests__/hint-cost.test.ts`.
 
 **`K₂Cr₂O₇` removed from lausnir 2026-08-26**, on Siggi's call — the pool is now 20 chemicals. Not a numbers defect: Cr(VI) is a category-1 carcinogen many Icelandic schools no longer stock, and lausnir is the one place a student is told to weigh it out and dissolve it. It is deliberately **kept** in `1-ar/nafnakerfid` (naming `Kalíumdíkrómat`) and `2-ar/redox-reactions` (the oxidation number of Cr in `Cr₂O₇²⁻`), which are paper exercises needing no bottle on the shelf. The test asserts it does not return.
 
+**Fixed 2026-08-26 — the last two Tier-0 items, B5 and B12; the correctness list is now empty.**
+
+- **B5, wrong compound names.** `nafnakerfid`: P₄O₁₀ `Fosfordekoxíð` → `Tetrafosfórdekoxíð`, Co(NO₃)₂ `Kóbolt` → `Kóbalt`, Fe₃O₄ `Járnoxíð (blandað)` → `Járn(II,III)oxíð`, PCl₅ `Fosfor-` → `Fosfór-`, and `naming.ts:25`'s non-word sulfur root `brennisteinið` → `súlfíð`. `molmassi`: `Natrímhýdroxíð` → `Natríumhýdroxíð`, `Vatnaglas hýdrat` → `Þvottasódi` (vatnsgler is sodium _silicate_), and the three remaining hydrates now carry their water count. Fe₃O₄'s old name **doubled as Level 3's filter flag** (`Level3.tsx:102` matched `(blandað)`), so compounds now declare `excludeFromNameBuilder` instead. The `þvottasódi` collision is resolved with it: `lausnir`'s anhydrous Na₂CO₃ (106 g/mol) is `Na₂CO₃ (natríumkarbónat)`, leaving the word for the decahydrate alone. Guarded by `compound-names.test.ts` in both games — the molmassi one reads lausnir's source, so the collision cannot come back.
+- **B12, non-reduced coefficients.** `checkBalance` returns `isReduced` next to `isBalanced` and the level requires both, so `4H₂ + 2O₂ → 4H₂O` is no longer correct. The review's finding was that the convention is never checked **or mentioned**, so the instructions now state it and balanced-but-unreduced gets its own feedback instead of a bare "Rangt". Guarded by `1-ar/jafna-jofnur/src/__tests__/balance-checker.test.ts` — this game's **first** tests, which is how B12 survived four review iterations; it also verifies all 20 answer keys are balanced and reduced.
+- **B4 and B13 were fixed earlier the same day** (PR #30), each with a test: `molmassi` derives every molar mass from `elements.ts` so a breakdown cannot disagree with its own total, and `dimensional-analysis` grades on a 1% relative tolerance through `src/utils/grading.ts`, which also reads the Icelandic decimal comma.
+
 **Live defects students meet today** — fix before adding features:
 
 - Unshuffled option arrays in `2-ar/kinetics` Level 3 (6/6 first) and `2-ar/organic-nomenclature` Level 3 (6/10 first). Four other games look constant in the data but shuffle at render — see `docs/README.md` before "fixing" them
-- Two Tier-0 correctness items still open: B5 (wrong compound names) and B12 (non-reduced coefficients accepted). Listed in `docs/plans/2026-08-16-phase-1-correctness.md`. **B4 and B13 were fixed 2026-08-26**, each with a test: `molmassi` now derives every molar mass from `elements.ts` so a breakdown cannot disagree with its own total, and `dimensional-analysis` grades on a 1% relative tolerance through `src/utils/grading.ts`, which also reads the Icelandic decimal comma
-- **`lausnir` calls anhydrous Na₂CO₃ (106 g/mol) `þvottasódi`** while `molmassi` gives that name's referent, Na₂CO₃·10H₂O, a molar mass of 286.141 — one platform, one word, two substances. Related to B5, which already rules on this compound's name
+- **Nafnakerfið Level 3 cannot grade 33 of the 51 compounds in its own pool.** It asks the student to build a name from clickable parts, and `generateParts` (`src/components/Level3.tsx:63-88`) offers no Roman-numeral token, no polyatomic-ion name (`súlfat` and `nítrat` appear only as _distractors_), no root for Mn/Cr/Pb/Hg/Sn, and no elided prefix form (`dekoxíð` needs `deka`+`oxíð` = `dekaoxíð`). Measured 2026-08-26 against the real pool. **Not fixed** — how fine the parts should be is a design decision, not a correction, and it is a bigger job than the name fix that surfaced it
 
 The former "`challenges.ts:354` is unsatisfiable" claim was retired Aug 2026 by executing `Level3`'s grading path — see `docs/README.md`. Do not reinstate it.
 
@@ -446,22 +451,33 @@ The current work order for these lives in `docs/plans/2026-08-16-games-roadmap.m
 2. `~/dev/repos/namsbokasafn-efni`, the school's textbook corpus (`grep -roi "<stem>[a-uáéíóúýþæö]*" --include=*.md . | wc -l`) — a local checkout, so it is not reachable from a cloud session; say so rather than guessing when it is absent
 3. Ask Siggi — only where both are silent or they disagree
 
-**Applied 2026-08-26 (roadmap Phase 2) and now enforced by a test.** All six terms below are
+**Applied 2026-08-26 (roadmap Phase 2) and now enforced by a test.** All seven terms below are
 corrected in the shipped source, and `packages/shared/i18n/__tests__/governed-terms.test.ts` fails
 if a banned form reappears anywhere under `apps/games`, `apps/landing/src`, `apps/islenskubraut/src`
 or `packages/shared/components` — including inside a dead `i18n.ts` block no game currently renders,
 since a wrong term parked there ships the moment someone wires it up.
 
-| Concept       | Use           | Never                             | Grammar note                                                                                                                                                                                                                  |
-| ------------- | ------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| atomic number | `sætistala`   | `atómnúmer`, `raðtala`            | Feminine, where `atómnúmer` was neuter — nom `sætistala`, def. `sætistalan`, acc. def. `sætistöluna`, dat. `sætistölu`. Determiners change with it (`þeim atómnúmeri` → `þeirri sætistölu`)                                   |
-| enthalpy      | `vermi`       | `skammtavarmi`, `enþalpía`        | Masculine, same as `skammtavarmi`, so agreement is unaffected. `enþalpía` is an old-repo `calorimetry` coinage — do not import it if that game is ported                                                                      |
-| spontaneous   | `sjálfgengur` | `sjálfspyrjandi`, `sjálfviljugur` | `sjálfgengur` (m) / `sjálfgeng` (f, and n.pl) / `sjálfgengt` (n)                                                                                                                                                              |
-| spontaneity   | `sjálfgengi`  | `sjálfviljugheit`, `sjálfvilji`   | Neuter, where `sjálfviljugheit` was being treated as feminine — its adjectives change too (`er röng` → `er rangt`)                                                                                                            |
-| cathode       | `katóða`      | `kaþóða`                          | Same declension; the correction is only þ → t. `anóða` was already correct                                                                                                                                                    |
-| buffer        | `stuðpúði`    | `púffer`                          | Masculine, where `púffer` was neuter in some strings — adjectives change (`Súrt púffer` → `Súr stuðpúði`). Compounds take the genitive stem `stuðpúða-`: `stuðpúðalausn`, `stuðpúðageta`, `stuðpúðasvæði`. Plural `stuðpúðar` |
+| Concept               | Use           | Never                             | Grammar note                                                                                                                                                                                                                                                                                                                                                                 |
+| --------------------- | ------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| atomic number         | `sætistala`   | `atómnúmer`, `raðtala`            | Feminine, where `atómnúmer` was neuter — nom `sætistala`, def. `sætistalan`, acc. def. `sætistöluna`, dat. `sætistölu`. Determiners change with it (`þeim atómnúmeri` → `þeirri sætistölu`)                                                                                                                                                                                  |
+| enthalpy              | `vermi`       | `skammtavarmi`, `enþalpía`        | Masculine, same as `skammtavarmi`, so agreement is unaffected. `enþalpía` is an old-repo `calorimetry` coinage — do not import it if that game is ported                                                                                                                                                                                                                     |
+| spontaneous           | `sjálfgengur` | `sjálfspyrjandi`, `sjálfviljugur` | `sjálfgengur` (m) / `sjálfgeng` (f, and n.pl) / `sjálfgengt` (n)                                                                                                                                                                                                                                                                                                             |
+| spontaneity           | `sjálfgengi`  | `sjálfviljugheit`, `sjálfvilji`   | Neuter, where `sjálfviljugheit` was being treated as feminine — its adjectives change too (`er röng` → `er rangt`)                                                                                                                                                                                                                                                           |
+| cathode               | `katóða`      | `kaþóða`                          | Same declension; the correction is only þ → t. `anóða` was already correct                                                                                                                                                                                                                                                                                                   |
+| buffer                | `stuðpúði`    | `púffer`                          | Masculine, where `púffer` was neuter in some strings — adjectives change (`Súrt púffer` → `Súr stuðpúði`). Compounds take the genitive stem `stuðpúða-`: `stuðpúðalausn`, `stuðpúðageta`, `stuðpúðasvæði`. Plural `stuðpúðar`                                                                                                                                                |
+| balance (an equation) | `stilla`      | `jafna` (as a verb)               | **Siggi's ruling, 2026-08-26** — `ordabok.md` was silent and the platform shipped both words. `að stilla efnajöfnu`, `Stilltu jöfnuna`, `stillt efnajafna`, `óstillt efnajafna`. The Y1 game is now **Stilla efnajöfnur**. Unrelated and correct: the **noun** `jafna` (an equation), `jafnvægi` (equilibrium), `jafnast út` (to cancel out), `þrýstijafnaður` (pressurised) |
 
 `sjálfvirkur` has zero hits and is not the word for spontaneous; do not grep for it.
+
+The `stilla` rename swept `1-ar/jafna-jofnur` (6 files), the `Námsleiðin` chain string in every
+Y1 sibling, `apps/landing/src/pages/GamesHub.tsx`, and — beyond the Y1 game Siggi named —
+`2-ar/redox-reactions`, where the same verb balanced half-reactions, atoms, oxygen, hydrogen and
+charge. Fixing one game and not the other would have reproduced the one-platform-two-words defect
+the glossary exists to prevent; say so if that was not wanted. **Two names were deliberately left
+alone:** the URL slug `/efnafraedi/1-ar/games/jafna-jofnur.html` (renaming it breaks every link a
+student has already been given) and the `jafnaJofnurProgress` localStorage key (renaming it wipes
+saved progress). Both are invisible to students; the visible title, HTML `<title>` and hub card all
+say Stilla efnajöfnur.
 
 **What the test cannot do.** It matches strings, so it cannot check agreement. Replacing a banned
 term in Icelandic is not a string swap — three of the six above change grammatical gender, which

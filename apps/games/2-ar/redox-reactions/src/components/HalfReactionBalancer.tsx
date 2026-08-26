@@ -34,27 +34,27 @@ const HALF_REACTIONS: HalfReaction[] = [
     type: 'oxidation',
     steps: [
       {
-        instruction: '1. Skrifaðu ójafnaða helmingshvarfið',
+        instruction: '1. Skrifaðu óstillta helmingshvarfið',
         result: 'Fe → Fe³⁺',
         hint: 'Byrjaðu með hvarfefnið og myndafnið',
       },
       {
-        instruction: '2. Jafnaðu aðrar frumeindir (ekki O eða H)',
+        instruction: '2. Stilltu aðrar frumeindir (ekki O eða H)',
         result: 'Fe → Fe³⁺',
-        hint: 'Fe er þegar jafnað (1 á báðum hliðum)',
+        hint: 'Fe er þegar stillt (1 á báðum hliðum)',
       },
       {
-        instruction: '3. Bættu við H₂O til að jafna O',
+        instruction: '3. Bættu við H₂O til að stilla O',
         result: 'Fe → Fe³⁺',
         hint: 'Engin O - sleppa þessu skrefi',
       },
       {
-        instruction: '4. Bættu við H⁺ til að jafna H',
+        instruction: '4. Bættu við H⁺ til að stilla H',
         result: 'Fe → Fe³⁺',
         hint: 'Engin H - sleppa þessu skrefi',
       },
       {
-        instruction: '5. Bættu við e⁻ til að jafna hleðslu',
+        instruction: '5. Bættu við e⁻ til að stilla hleðslu',
         result: 'Fe → Fe³⁺ + 3e⁻',
         hint: 'Vinstri: 0, Hægri: +3. Bættu við 3e⁻ hægra megin',
         addedSpecies: '3e⁻',
@@ -69,35 +69,36 @@ const HALF_REACTIONS: HalfReaction[] = [
     type: 'reduction',
     steps: [
       {
-        instruction: '1. Skrifaðu ójafnaða helmingshvarfið',
+        instruction: '1. Skrifaðu óstillta helmingshvarfið',
         result: 'MnO₄⁻ → Mn²⁺',
         hint: 'Permanganat jónin afoxast í manganjón',
       },
       {
-        instruction: '2. Jafnaðu aðrar frumeindir (ekki O eða H)',
+        instruction: '2. Stilltu aðrar frumeindir (ekki O eða H)',
         result: 'MnO₄⁻ → Mn²⁺',
-        hint: 'Mn er þegar jafnað (1 á báðum hliðum)',
+        hint: 'Mn er þegar stillt (1 á báðum hliðum)',
       },
       {
-        instruction: '3. Bættu við H₂O til að jafna O',
+        instruction: '3. Bættu við H₂O til að stilla O',
         result: 'MnO₄⁻ → Mn²⁺ + 4H₂O',
         hint: '4 O vinstra megin - bættu við 4H₂O hægra megin',
         addedSpecies: '4H₂O',
       },
       {
-        instruction: '4. Bættu við H⁺ til að jafna H',
+        instruction: '4. Bættu við H⁺ til að stilla H',
         result: '8H⁺ + MnO₄⁻ → Mn²⁺ + 4H₂O',
         hint: '8 H hægra megin - bættu við 8H⁺ vinstra megin',
         addedSpecies: '8H⁺',
       },
       {
-        instruction: '5. Bættu við e⁻ til að jafna hleðslu',
+        instruction: '5. Bættu við e⁻ til að stilla hleðslu',
         result: '5e⁻ + 8H⁺ + MnO₄⁻ → Mn²⁺ + 4H₂O',
         hint: 'Vinstri: +7, Hægri: +2. Bættu við 5e⁻ vinstra megin',
         addedSpecies: '5e⁻',
       },
     ],
-    explanation: 'MnO₄⁻ öðlast 5 rafeindir og afoxast í Mn²⁺. Þetta er afoxunarhelmingshvarf í súru umhverfi.',
+    explanation:
+      'MnO₄⁻ öðlast 5 rafeindir og afoxast í Mn²⁺. Þetta er afoxunarhelmingshvarf í súru umhverfi.',
   },
   {
     id: 'cr-oxidation',
@@ -106,27 +107,27 @@ const HALF_REACTIONS: HalfReaction[] = [
     type: 'oxidation',
     steps: [
       {
-        instruction: '1. Skrifaðu ójafnaða helmingshvarfið',
+        instruction: '1. Skrifaðu óstillta helmingshvarfið',
         result: 'Cr → Cr³⁺',
         hint: 'Króm oxast í Cr³⁺ jón',
       },
       {
-        instruction: '2. Jafnaðu aðrar frumeindir',
+        instruction: '2. Stilltu aðrar frumeindir',
         result: 'Cr → Cr³⁺',
-        hint: 'Cr er þegar jafnað',
+        hint: 'Cr er þegar stillt',
       },
       {
-        instruction: '3. Bættu við H₂O til að jafna O',
+        instruction: '3. Bættu við H₂O til að stilla O',
         result: 'Cr → Cr³⁺',
         hint: 'Engin O - sleppa',
       },
       {
-        instruction: '4. Bættu við H⁺ til að jafna H',
+        instruction: '4. Bættu við H⁺ til að stilla H',
         result: 'Cr → Cr³⁺',
         hint: 'Engin H - sleppa',
       },
       {
-        instruction: '5. Bættu við e⁻ til að jafna hleðslu',
+        instruction: '5. Bættu við e⁻ til að stilla hleðslu',
         result: 'Cr → Cr³⁺ + 3e⁻',
         hint: 'Vinstri: 0, Hægri: +3. Bættu við 3e⁻',
         addedSpecies: '3e⁻',
@@ -141,27 +142,27 @@ const HALF_REACTIONS: HalfReaction[] = [
     type: 'reduction',
     steps: [
       {
-        instruction: '1. Skrifaðu ójafnaða helmingshvarfið',
+        instruction: '1. Skrifaðu óstillta helmingshvarfið',
         result: 'Cu²⁺ → Cu',
         hint: 'Koparjón afoxast í koparmal',
       },
       {
-        instruction: '2. Jafnaðu aðrar frumeindir',
+        instruction: '2. Stilltu aðrar frumeindir',
         result: 'Cu²⁺ → Cu',
-        hint: 'Cu er þegar jafnað',
+        hint: 'Cu er þegar stillt',
       },
       {
-        instruction: '3. Bættu við H₂O til að jafna O',
+        instruction: '3. Bættu við H₂O til að stilla O',
         result: 'Cu²⁺ → Cu',
         hint: 'Engin O - sleppa',
       },
       {
-        instruction: '4. Bættu við H⁺ til að jafna H',
+        instruction: '4. Bættu við H⁺ til að stilla H',
         result: 'Cu²⁺ → Cu',
         hint: 'Engin H - sleppa',
       },
       {
-        instruction: '5. Bættu við e⁻ til að jafna hleðslu',
+        instruction: '5. Bættu við e⁻ til að stilla hleðslu',
         result: '2e⁻ + Cu²⁺ → Cu',
         hint: 'Vinstri: +2, Hægri: 0. Bættu við 2e⁻ vinstra megin',
         addedSpecies: '2e⁻',
@@ -172,11 +173,11 @@ const HALF_REACTIONS: HalfReaction[] = [
 ];
 
 const BALANCING_RULES = [
-  { step: 1, title: 'Ójafnað hvarf', description: 'Skrifaðu hvarfefni og myndefni' },
-  { step: 2, title: 'Jafna frumeindir', description: 'Jafnaðu aðrar frumeindir en O og H' },
-  { step: 3, title: 'Jafna súrefni', description: 'Bættu við H₂O til að jafna O' },
-  { step: 4, title: 'Jafna vetni', description: 'Bættu við H⁺ til að jafna H' },
-  { step: 5, title: 'Jafna hleðslu', description: 'Bættu við e⁻ til að jafna hleðslu' },
+  { step: 1, title: 'Óstillt hvarf', description: 'Skrifaðu hvarfefni og myndefni' },
+  { step: 2, title: 'Stilla frumeindir', description: 'Stilltu aðrar frumeindir en O og H' },
+  { step: 3, title: 'Stilla súrefni', description: 'Bættu við H₂O til að stilla O' },
+  { step: 4, title: 'Stilla vetni', description: 'Bættu við H⁺ til að stilla H' },
+  { step: 5, title: 'Stilla hleðslu', description: 'Bættu við e⁻ til að stilla hleðslu' },
 ];
 
 /**
@@ -201,7 +202,8 @@ export function HalfReactionBalancer({
 
   const reaction = HALF_REACTIONS[selectedReaction];
   const step = reaction.steps[currentStep];
-  const isComplete = currentStep >= reaction.steps.length - 1 && completedSteps.includes(currentStep);
+  const isComplete =
+    currentStep >= reaction.steps.length - 1 && completedSteps.includes(currentStep);
 
   const handleNextStep = () => {
     if (!completedSteps.includes(currentStep)) {
@@ -235,13 +237,15 @@ export function HalfReactionBalancer({
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-white font-bold text-sm flex items-center gap-2">
           <span className="text-lg">⚖️</span>
-          Helmingshvarfajafnari
+          Stilling helmingshvarfa
         </h3>
-        <div className={`px-2 py-1 rounded text-xs font-medium ${
-          reaction.type === 'oxidation'
-            ? 'bg-red-500/30 text-red-400'
-            : 'bg-blue-500/30 text-blue-400'
-        }`}>
+        <div
+          className={`px-2 py-1 rounded text-xs font-medium ${
+            reaction.type === 'oxidation'
+              ? 'bg-red-500/30 text-red-400'
+              : 'bg-blue-500/30 text-blue-400'
+          }`}
+        >
           {reaction.type === 'oxidation' ? 'Oxun' : 'Afoxun'}
         </div>
       </div>
@@ -298,13 +302,9 @@ export function HalfReactionBalancer({
         {/* Current equation state */}
         <div className="bg-warm-900 p-4 rounded-lg mb-3">
           <div className="text-center">
-            <div className="text-xl font-mono text-white mb-2">
-              {step.result}
-            </div>
+            <div className="text-xl font-mono text-white mb-2">{step.result}</div>
             {step.addedSpecies && completedSteps.includes(currentStep) && (
-              <div className="text-green-400 text-sm animate-pulse">
-                + {step.addedSpecies}
-              </div>
+              <div className="text-green-400 text-sm animate-pulse">+ {step.addedSpecies}</div>
             )}
           </div>
         </div>
@@ -357,16 +357,14 @@ export function HalfReactionBalancer({
         <div className="mt-4 bg-green-500/20 border border-green-500/40 rounded-lg p-4">
           <div className="text-green-400 font-bold mb-2 flex items-center gap-2">
             <span>✓</span>
-            Jafnað helmingshvarf!
+            Stillt helmingshvarf!
           </div>
           <div className="text-center bg-warm-900 p-3 rounded-lg mb-2">
             <div className="text-xl font-mono text-white">
               {reaction.steps[reaction.steps.length - 1].result}
             </div>
           </div>
-          <div className="text-warm-300 text-sm">
-            {reaction.explanation}
-          </div>
+          <div className="text-warm-300 text-sm">{reaction.explanation}</div>
         </div>
       )}
 

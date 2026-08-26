@@ -88,19 +88,15 @@ function generateParts(compound: Compound): NamePart[] {
   return shuffleArray(parts);
 }
 
-/** Pick 10 compounds mixing different types, excluding special names */
+/**
+ * Pick 10 compounds whose name this level can actually ask a student to build.
+ *
+ * The exclusions are declared on the compound (`excludeFromNameBuilder`) rather
+ * than inferred from its name here — matching on the name meant a name could not
+ * be corrected without silently changing which items the level asks about.
+ */
 function selectCompounds(): Compound[] {
-  const pool = COMPOUNDS.filter(
-    (c) =>
-      c.name !== 'Vatn' &&
-      c.name !== 'Ammóníak' &&
-      c.name !== 'Metan' &&
-      c.name !== 'Súrefni' &&
-      c.name !== 'Nitur' &&
-      c.name !== 'Vetni' &&
-      c.name !== 'Klór' &&
-      !c.name.includes('(blandað)')
-  );
+  const pool = COMPOUNDS.filter((c) => !c.excludeFromNameBuilder);
   return shuffleArray(pool).slice(0, 10);
 }
 

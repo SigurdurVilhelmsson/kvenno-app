@@ -65,7 +65,9 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
   );
 
   const handleCheck = () => {
-    const correct = balanceResult.isBalanced;
+    // Balanced is not enough: the convention is the smallest whole numbers, so a
+    // doubled set is not yet an answer (B12).
+    const correct = balanceResult.isBalanced && balanceResult.isReduced;
     setIsCorrect(correct);
     if (correct) setCorrectCount((prev) => prev + 1);
     setAnswered(true);
@@ -104,12 +106,12 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
     if (config.hintSource === 'reaction-hint') return reaction.hint ?? '';
     const unbalanced = balanceResult.elements.filter((e) => !e.balanced);
     if (unbalanced.length === 0) {
-      return 'Jafnan lítur út fyrir að vera jöfn — smelltu á Athuga!';
+      return 'Efnajafnan lítur út fyrir að vera stillt — smelltu á Athuga!';
     }
     const el = unbalanced[0];
     const direction =
       el.left < el.right ? 'Auktu stuðla á vinstri hlið.' : 'Auktu stuðla á hægri hlið.';
-    return `${el.element} er ójafnað: ${el.left} á vinstri, ${el.right} á hægri. ${direction}`;
+    return `${el.element} er óstillt: ${el.left} á vinstri, ${el.right} á hægri. ${direction}`;
   };
 
   // --- Teaching intro ---
@@ -147,7 +149,7 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
           </div>
           <h2 className="text-2xl font-bold text-warm-800">Niðurstöður</h2>
           <p className="text-lg text-warm-700">
-            Þú jafnaðir <span className="font-bold text-kvenno-orange">{correctCount}</span> af{' '}
+            Þú stilltir <span className="font-bold text-kvenno-orange">{correctCount}</span> af{' '}
             <span className="font-bold">{total}</span> jöfnum rétt
           </p>
           <div className="h-3 bg-warm-200 rounded-full overflow-hidden">
@@ -271,11 +273,19 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
               feedback={{
                 isCorrect,
                 explanation: isCorrect
-                  ? 'Rétt! Jafnan er jöfn.'
-                  : `Rangt. ${buildUnbalancedDiagnostic(balanceResult.elements)} Réttir stuðlar eru: ${[
-                      ...reaction.reactants.map((m) => m.coefficient),
-                      ...reaction.products.map((m) => m.coefficient),
-                    ].join(', ')}.`,
+                  ? 'Rétt! Efnajafnan er stillt.'
+                  : balanceResult.isBalanced
+                    ? // Atoms balance but the coefficients share a common factor. Say
+                      // that plainly — the student has done the hard part and is being
+                      // held to a convention nothing had told them about.
+                      `Atómin standast á, en stuðlarnir eru ekki í lægstu heilu tölum — þú getur deilt þeim öllum með sömu tölu. Réttir stuðlar eru: ${[
+                        ...reaction.reactants.map((m) => m.coefficient),
+                        ...reaction.products.map((m) => m.coefficient),
+                      ].join(', ')}.`
+                    : `Rangt. ${buildUnbalancedDiagnostic(balanceResult.elements)} Réttir stuðlar eru: ${[
+                        ...reaction.reactants.map((m) => m.coefficient),
+                        ...reaction.products.map((m) => m.coefficient),
+                      ].join(', ')}.`,
               }}
               config={{ showExplanation: true }}
             />
@@ -284,7 +294,7 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
               onClick={handleNext}
               className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
             >
-              {index + 1 < total ? 'Næsta jafna →' : 'Sjá niðurstöður →'}
+              {index + 1 < total ? 'Næsta efnajafna →' : 'Sjá niðurstöður →'}
             </button>
           </div>
         )}

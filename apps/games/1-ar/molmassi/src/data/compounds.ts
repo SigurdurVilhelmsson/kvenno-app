@@ -157,7 +157,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'NaOH',
-    name: 'Natrímhýdroxíð',
+    name: 'Natríumhýdroxíð',
     elements: [
       { symbol: 'Na', count: 1 },
       { symbol: 'O', count: 1 },
@@ -258,7 +258,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'MgSO₄·7H₂O',
-    name: 'Epsom salt hýdrat',
+    name: 'Magnesíumsúlfat heptahýdrat',
     elements: [
       { symbol: 'Mg', count: 1 },
       { symbol: 'S', count: 1 },
@@ -269,7 +269,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'Na₂CO₃·10H₂O',
-    name: 'Vatnaglas hýdrat',
+    name: 'Þvottasódi',
     elements: [
       { symbol: 'Na', count: 2 },
       { symbol: 'C', count: 1 },
@@ -280,7 +280,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'FeSO₄·7H₂O',
-    name: 'Járnsúlfat hýdrat',
+    name: 'Járn(II)súlfat heptahýdrat',
     elements: [
       { symbol: 'Fe', count: 1 },
       { symbol: 'S', count: 1 },
@@ -322,7 +322,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'CuSO₄·5H₂O',
-    name: 'Koparbrennisteinshýdrat',
+    name: 'Kopar(II)súlfat pentahýdrat',
     elements: [
       { symbol: 'Cu', count: 1 },
       { symbol: 'S', count: 1 },

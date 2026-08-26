@@ -225,7 +225,7 @@ function App() {
           </div>
           <div className="mt-3 text-center text-xs text-warm-500">
             <strong>Námsleiðin:</strong> Einingagreining → Lotukerfið → Nafnakerfið →{' '}
-            <u>Mólmassi</u> → Jafna jöfnur → Takmarkandi → Lausnir → Einingakeðjan
+            <u>Mólmassi</u> → Stilla efnajöfnur → Takmarkandi → Lausnir → Einingakeðjan
           </div>
 
           {/* Reset */}

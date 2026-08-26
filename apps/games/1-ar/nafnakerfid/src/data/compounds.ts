@@ -13,6 +13,21 @@ export interface Compound {
   difficulty: Difficulty;
   elements: string[];
   info: string;
+  /**
+   * Keep this compound out of Level 3's name builder.
+   *
+   * Level 3 asks the student to assemble a name from Greek prefixes and element
+   * roots, so it can only ask about compounds whose name is built that way. Two
+   * kinds are excluded: trivial names (Vatn, Ammóníak, Metan), bare element
+   * names (the diatomics), and names carrying a Roman-numeral pair that the part
+   * pool has no token for (Fe₃O₄).
+   *
+   * This used to be inferred from the name string — Fe₃O₄ was called
+   * "Járnoxíð (blandað)" and Level 3 filtered on `.includes('(blandað)')`, so
+   * correcting the name would silently have put an unbuildable item back in the
+   * pool. The flag says what is meant instead.
+   */
+  excludeFromNameBuilder?: boolean;
 }
 
 export const COMPOUNDS: Compound[] = [
@@ -34,6 +49,7 @@ export const COMPOUNDS: Compound[] = [
     difficulty: 'easy',
     elements: ['H', 'O'],
     info: 'Eina efnið með sérheiti!',
+    excludeFromNameBuilder: true,
   },
   {
     formula: 'CO₂',
@@ -52,6 +68,7 @@ export const COMPOUNDS: Compound[] = [
     difficulty: 'easy',
     elements: ['N', 'H'],
     info: 'Algengt efnasamband',
+    excludeFromNameBuilder: true,
   },
   {
     formula: 'MgO',
@@ -97,6 +114,7 @@ export const COMPOUNDS: Compound[] = [
     difficulty: 'easy',
     elements: ['C', 'H'],
     info: 'Einfaldasta kolvetnið',
+    excludeFromNameBuilder: true,
   },
   {
     formula: 'O₂',
@@ -106,6 +124,7 @@ export const COMPOUNDS: Compound[] = [
     difficulty: 'easy',
     elements: ['O'],
     info: 'Tvíatóma sameind',
+    excludeFromNameBuilder: true,
   },
   {
     formula: 'N₂',
@@ -115,6 +134,7 @@ export const COMPOUNDS: Compound[] = [
     difficulty: 'easy',
     elements: ['N'],
     info: 'Tvíatóma sameind',
+    excludeFromNameBuilder: true,
   },
   {
     formula: 'H₂',
@@ -124,6 +144,7 @@ export const COMPOUNDS: Compound[] = [
     difficulty: 'easy',
     elements: ['H'],
     info: 'Léttasta frumefnið',
+    excludeFromNameBuilder: true,
   },
   {
     formula: 'Cl₂',
@@ -133,6 +154,7 @@ export const COMPOUNDS: Compound[] = [
     difficulty: 'easy',
     elements: ['Cl'],
     info: 'Grænt gas',
+    excludeFromNameBuilder: true,
   },
   {
     formula: 'NaF',
@@ -354,7 +376,7 @@ export const COMPOUNDS: Compound[] = [
   },
   {
     formula: 'P₄O₁₀',
-    name: 'Fosfordekoxíð',
+    name: 'Tetrafosfórdekoxíð',
     type: 'molecular',
     category: 'sameind',
     difficulty: 'medium',
@@ -437,12 +459,12 @@ export const COMPOUNDS: Compound[] = [
   },
   {
     formula: 'Co(NO₃)₂',
-    name: 'Kóbolt(II)nítrat',
+    name: 'Kóbalt(II)nítrat',
     type: 'ionic',
     category: 'málmar-breytilega-hleðsla',
     difficulty: 'hard',
     elements: ['Co', 'N', 'O'],
-    info: 'Kóbolt +2',
+    info: 'Kóbalt +2',
   },
   {
     formula: 'Al₂(SO₄)₃',
@@ -482,7 +504,7 @@ export const COMPOUNDS: Compound[] = [
   },
   {
     formula: 'PCl₅',
-    name: 'Fosforpentaklóríð',
+    name: 'Fosfórpentaklóríð',
     type: 'molecular',
     category: 'sameind',
     difficulty: 'hard',
@@ -545,12 +567,13 @@ export const COMPOUNDS: Compound[] = [
   },
   {
     formula: 'Fe₃O₄',
-    name: 'Járnoxíð (blandað)',
+    name: 'Járn(II,III)oxíð',
     type: 'ionic',
     category: 'málmar-breytilega-hleðsla',
     difficulty: 'hard',
     elements: ['Fe', 'O'],
     info: 'Segulsteinn, blanda Fe²⁺ og Fe³⁺',
+    excludeFromNameBuilder: true,
   },
 ];
 

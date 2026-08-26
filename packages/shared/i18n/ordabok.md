@@ -46,6 +46,8 @@ atomic symbol;frumeindatákn
 autoionization;sjálfjónun
 autoionization constant of water;klofningsfasti vatns
 average rate;meðalhraði
+balance (a chemical equation);stilla
+balanced equation;stillt efnajafna
 band theory;borðalíkan
 base;basi
 base anhydride;basaanhýdríð
@@ -84,6 +86,7 @@ change of state;fasaskipti
 charge;hleðsla
 chemical bond;efnatengi
 chemical energy;efnaorka
+chemical equation;efnajafna
 chemical equilibrium;efnajafnvægi
 chemical formula;efnaformúla
 chemical properties;efnaeiginleikar
@@ -91,7 +94,7 @@ chemical reaction;efnahvarf
 chemiluminescence;hvarfljómun
 chemistry;efnafræði
 chiral center;hendnimiðja
-chirality;hendni 
+chirality;hendni
 chromatography;litskiljun
 coefficient;stuðull
 cohesion;samloðun
