@@ -66,9 +66,23 @@ if [ ! -f "$BUNDLE_DIR/dist/index.js" ]; then
 fi
 
 # Step 2: Deploy frontend
+#
+# $WEB_ROOT must be owned by the deploying user with group www-data, set up
+# once with:
+#
+#   sudo chown -R <deploy-user>:www-data /var/www/kvenno.app
+#   sudo find /var/www/kvenno.app -type d -exec chmod 2775 {} +
+#
+# Group-write alone is NOT enough: rsync -a sets permissions and mtimes on the
+# entries it touches, and chmod/utimes require *ownership*, not write access.
+# Against a www-data-owned tree this fails with "Operation not permitted" on
+# the first existing directory it updates. --chmod below keeps new entries at
+# 2775/664; the setgid bit keeps group www-data on everything rsync creates,
+# so nginx can always read.
 echo ""
 echo "📄 Deploying frontend to $WEB_ROOT..."
 rsync -avz --delete ${DRY_RUN:+"$DRY_RUN"} \
+  --chmod=D2775,F664 \
   --exclude='.git' \
   --exclude='node_modules' \
   "$DIST_DIR/" "$SERVER:$WEB_ROOT/"
@@ -88,12 +102,9 @@ if [ -z "$DRY_RUN" ]; then
   # a tty it fails with "a terminal is required to read the password".
   ssh -t "$SERVER" "sudo systemctl restart kvenno-backend"
 
-  # Group-writable on purpose: the deploying user is in the www-data group, so
-  # 775/664 is what lets the frontend rsync above run without sudo. Dropping
-  # back to 755/644 makes every future deploy fail with permission denied.
-  echo ""
-  echo "🔍 Setting permissions..."
-  ssh -t "$SERVER" "sudo chown -R www-data:www-data $WEB_ROOT && sudo find $WEB_ROOT -type d -exec chmod 775 {} + && sudo find $WEB_ROOT -type f -exec chmod 664 {} +"
+  # No permission step: rsync --chmod above already sets the modes, and there is
+  # deliberately no chown back to www-data:www-data — that would take ownership
+  # away from the deploying user and break the next run's rsync.
 
   # Verify the backend actually came back up. Checked on the host against the
   # backend port (nginx only proxies /api/, so a public /health request returns
