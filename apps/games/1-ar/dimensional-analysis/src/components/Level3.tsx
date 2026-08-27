@@ -510,7 +510,14 @@ export function Level3({
                 </div>
               )}
 
-              {/* Efficiency problem paths */}
+              {/* Efficiency problem paths.
+                  B17: these buttons used to print the answer on themselves —
+                  a green step-count badge and a literal efficiency label on
+                  every shortest path, while the prompt asks the student to
+                  find exactly that. The step count went with them: the
+                  task is "fæst skref", so counting them is the work. The steps
+                  are all still there to be read and counted; which path was
+                  efficient is settled in the feedback below. */}
               {problem.type === 'efficiency' && problem.possiblePaths && (
                 <div className="space-y-3">
                   <p className="font-bold text-warm-800">Veldu leið:</p>
@@ -524,7 +531,8 @@ export function Level3({
                           : 'border-warm-200 hover:border-purple-300 hover:bg-warm-50'
                       }`}
                     >
-                      <div className="space-y-2 mb-3">
+                      <div className="text-sm font-semibold text-warm-600 mb-2">Leið {idx + 1}</div>
+                      <div className="space-y-2">
                         {path.steps.map((step, sidx) => (
                           <div
                             key={sidx}
@@ -533,20 +541,6 @@ export function Level3({
                             {step}
                           </div>
                         ))}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            path.efficient
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-warm-100 text-warm-600'
-                          }`}
-                        >
-                          {path.stepCount} skref
-                        </span>
-                        {path.efficient && (
-                          <span className="text-green-600 text-sm">⚡ Skilvirkt</span>
-                        )}
                       </div>
                     </button>
                   ))}
@@ -682,6 +676,51 @@ export function Level3({
                   </p>
                 )}
               </div>
+
+              {/* Which path was the efficient one, and why. The buttons no
+                  longer say, so this has to. */}
+              {problem.type === 'efficiency' && problem.possiblePaths && (
+                <div className="mb-6 p-4 bg-white rounded-xl border border-warm-200">
+                  <p className="text-sm font-bold text-warm-800 mb-3 flex items-center gap-2">
+                    <span>⚡</span> Leiðirnar bornar saman:
+                  </p>
+                  <div className="space-y-2">
+                    {problem.possiblePaths.map((path, idx) => (
+                      <div
+                        key={idx}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg border ${
+                          path.efficient
+                            ? 'bg-green-50 border-green-300'
+                            : 'bg-warm-50 border-warm-200'
+                        }`}
+                      >
+                        <span className="text-sm font-semibold text-warm-700">Leið {idx + 1}</span>
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                            path.efficient
+                              ? 'bg-green-100 text-green-700'
+                              : 'bg-warm-100 text-warm-600'
+                          }`}
+                        >
+                          {path.stepCount} skref
+                        </span>
+                        {path.efficient && (
+                          <span className="text-green-600 text-sm">⚡ Skilvirkt</span>
+                        )}
+                        {selectedPath === idx && (
+                          <span className="ml-auto text-sm text-purple-700 font-semibold">
+                            þitt val
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-sm text-warm-600 mt-3">
+                    Skilvirkasta leiðin notar fæst skref. Allar leiðirnar hér gefa sama svarið —
+                    munurinn er hversu mörg umreikningshlutföll þarf til.
+                  </p>
+                </div>
+              )}
 
               {/* Error explanation */}
               {problem.type === 'error_analysis' && problem.errorExplanation && (
