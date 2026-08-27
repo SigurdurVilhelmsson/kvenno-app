@@ -1,6 +1,6 @@
 # Chemistry games roadmap — from here to "sound, accurate, complete"
 
-**Date:** 2026-08-16 · **Status block updated:** 2026-08-26
+**Date:** 2026-08-16 · **Status block updated:** 2026-08-27
 **Goal, verbatim:** "a pedagogically sound games library, accurate and error free, covering the curriculum of my students"
 **Base:** kvenno-app. The old repo `namsbokasafn-leikir` is a quarry, frozen at `379266e`. No new work happens there.
 **Evidence:** `docs/README.md` indexes the three review documents every claim below is drawn from.
@@ -13,14 +13,55 @@ The phase bodies below are the plan as written on 2026-08-16 and are left intact
 behind each ordering stays legible. This block is what has actually happened since. Where the two
 disagree, this block is current.
 
-| Phase                                    | Status                     | Landed                                                                                                                       |
-| ---------------------------------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| 1 — Stop teaching wrong chemistry        | **Done** 2026-08-18        | PR #23, `fix/phase-1-correctness`. All four tasks; see the sub-plan's own STATUS header                                      |
-| 1b — the three Tier-0 items with victims | **Done** 2026-08-18        | PR #24, `fix/phase-1b-correctness`. B3, B6, B8                                                                               |
-| 2 — Make terminology govern              | **Done** 2026-08-26        | All six ruled terms applied, plus a test that fails if any returns — `packages/shared/i18n/__tests__/governed-terms.test.ts` |
-| 3 — Harvest the cheap content            | **Done** 2026-08-27        | PR #34, `claude/phase-3-continuation-1f7fn2`. All four rows; two of the four premises were wrong — see below                 |
-| 4 — Close the pedagogy gaps              | Not started                | —                                                                                                                            |
-| 5 — Fill the curriculum holes            | Not started, but see below | —                                                                                                                            |
+| Phase                                    | Status                              | Landed                                                                                                                       |
+| ---------------------------------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| 1 — Stop teaching wrong chemistry        | **Done** 2026-08-18                 | PR #23, `fix/phase-1-correctness`. All four tasks; see the sub-plan's own STATUS header                                      |
+| 1b — the three Tier-0 items with victims | **Done** 2026-08-18                 | PR #24, `fix/phase-1b-correctness`. B3, B6, B8                                                                               |
+| 2 — Make terminology govern              | **Done** 2026-08-26                 | All six ruled terms applied, plus a test that fails if any returns — `packages/shared/i18n/__tests__/governed-terms.test.ts` |
+| 3 — Harvest the cheap content            | **Done** 2026-08-27                 | PR #34, `claude/phase-3-continuation-1f7fn2`. All four rows; two of the four premises were wrong — see below                 |
+| 4 — Close the pedagogy gaps              | **Unblocked parts done** 2026-08-27 | PR #36, `claude/dev-plan-remaining-b4foz1`. Everything except level gating, which is still a decision — see below            |
+| 5 — Fill the curriculum holes            | Not started, but see below          | —                                                                                                                            |
+
+### Phase 4, as it actually turned out (2026-08-27)
+
+Four of the five items in the Phase 4 body below are done. The fifth, **level gating, is still
+blocked on you** and is untouched — the dead strings for 15 games are still dead, still under two
+different key names. Nothing here decided it either way.
+
+| Item                    | Done                                                                                                                                                               |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `FeedbackPanel.tsx:104` | Opens expanded, with a `defaultExpanded` config flag for a call site that has the same text visible elsewhere. 26 call sites, all three years                      |
+| The four answer leaks   | B14, B15, B16, B17 all closed, each with a test that plays the real level and asserts on what reaches the screen                                                   |
+| The decimal comma       | All 27 `type="number"` inputs across three years audited, not the two the Year-1 review named. 13 converted; the parser is now `@shared/utils`                     |
+| Misconception slots     | The two games the review names as genuinely bare — Lotukerfið and Stilla efnajöfnur — now diagnose the student's actual answer rather than restating the right one |
+| **Levels gated?**       | **Untouched. Still yours.**                                                                                                                                        |
+
+**Three live defects were found while doing this, none of them in the reviews' lists.** They matter
+because `docs/README.md` was carrying "No known live defects" at the time:
+
+1. **B5's `Fosfór` correction was only half-applied.** It landed in `nafnakerfid/src/data/compounds.ts`
+   and `naming.ts`, but Levels 1 and 2 hardcode their own worked examples and both still taught and
+   **graded** `Fosforpentaklóríð`. A student writing the corrected name in Level 2 was marked wrong.
+   The B5 test only ever read the data file. It now checks every formula the components hardcode
+   against the canonical data.
+2. **`dimensional-analysis` L3-10 marked two paths efficient** when one is a single-step direct
+   conversion and the other a two-step chain, so the level gave full efficiency credit for the chain
+   it exists to talk a student out of — against a prompt asking for the _most_ efficient route. Its
+   sibling L3-3 already used the other convention.
+3. **Lotukerfið's table legend built plurals by appending "ar" to the singular**, so six of its eight
+   chips read `Alkalímálmurar` and the like. `málmur` pluralises to `málmar`.
+
+**And one design tension the masking work surfaced.** Hiding the atomic masses on Lotukerfið L2's
+reference table makes the order-by-mass items answerable only by the rule the level teaches — that
+mass rises with sætistala — and **inside its own draw pool Ar/K and Co/Ni contradict that rule**.
+While the masses were printed on the cells those items were answerable by reading; masked, they
+would not be. The generator now builds each triple one element at a time and never takes a candidate
+that would invert against one already chosen, and the teaching text names the exception and says why
+the table is ordered by sætistala rather than mass. This is the general shape of the answer-leak
+work: removing the leak often removes the student's only route to the answer, and the route has to
+be put back deliberately.
+
+---
 
 ### Phase 3, as it actually turned out (2026-08-27)
 
