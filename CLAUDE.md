@@ -438,6 +438,23 @@ first. Guarded by `1-ar/dimensional-analysis/src/__tests__/hint-cost.test.ts`.
 
 **Fixed 2026-08-26 — the two unshuffled option arrays.** `2-ar/kinetics` L3 put the correct option first in all 6 challenges, `2-ar/organic-nomenclature` L3 in 6 of 10; both now shuffle in a `useMemo` keyed on the challenge index, the idiom four other levels already used including kinetics' own L1. Kinetics' option `id`s double as the visible letters, so the shuffle reassigns them a/b/c/d by position — and `checkAnswer` therefore had to move to `shuffledOptions`, since the clicked id no longer identifies the same entry in the original array. An `option-order.test.tsx` in each game plays every challenge twice over; both fail against no shuffle, and the kinetics one also against that half-done fix. **Four other games still look constant in the data but shuffle at render — see `docs/README.md` before "fixing" a fifth.**
 
+**mol↔L landed 2026-08-27, in `1-ar/molmassi`** — the gap Phase 3 found and then mis-filed as
+Year-3 material. Level 2 asks it in both directions and the intro teaches it as a **fourth** key
+relationship beside mass↔mól and mól↔eindir.
+
+- The constant is **22,4 L/mól at STP, and STP is 273,15 K and 1 atm.** The school's textbook states
+  it, notes that IUPAC moved standard pressure to 1 bar in 1982, and then says plainly it keeps the
+  older definition. At 1 bar it is 22,7, so the conditions are printed with every question and a
+  test asserts they never separate from the number. Term: `staðalmólrúmmál`.
+- **`compounds.ts` now declares a `state` at STP on every compound** (`'gas' | 'vökvi' | 'fast'`),
+  and the molar-volume question draws only gases. Without it the question would ask what volume a
+  mole of table salt occupies — the same class of defect as `lausnir` asking a student to weigh out
+  a gas. `state` describes the substance **as this game names it**, which is why `H₂O` is `vökvi`.
+- **Open, and Siggi's call:** `molmassi` names `HCl` **`Saltsýra`**, which is HCl(aq) — a solution,
+  with no molar volume — while quoting 36,46 g/mol, the molar mass of the compound. HCl is excluded
+  from molar-volume questions rather than renamed, because the compound is `vetnisklóríð` and that
+  is a naming ruling, not a molar-volume one. See `apps/games/1-ar/molmassi/HARVEST.md`.
+
 **Phase 3 of the games roadmap landed 2026-08-27** — the harvest out of the frozen
 `namsbokasafn-leikir`. All four rows, each with a `HARVEST.md` beside the game it touched:
 25 real-world scenarios into `1-ar/dimensional-analysis`, periodic trends into `1-ar/lotukerfid`
@@ -447,8 +464,10 @@ first. Guarded by `1-ar/dimensional-analysis/src/__tests__/hint-cost.test.ts`.
 **Two of the four roadmap rows had false premises**, and this is where the correction lives:
 `saturation.ts`'s curves were **already shipped, digit for digit**, plus two gases the old file
 never had — there was nothing to swap; and `avogadro.ts`'s g↔mol and mol↔particles already
-shipped too, while **mol↔L is in neither harvested file** and remains a genuine gap belonging with
-the Year-3 gas laws. `conversionChains.ts` was deliberately not ported: `1-ar/einingakedjan` is
+shipped too, while **mol↔L is in neither harvested file**. That gap is real, and it is a **Year-1**
+gap — Siggi's correction, 2026-08-27, replacing this file's earlier claim that it belonged with the
+Year-3 gas laws, which was inferred from where the platform mentioned molar volume rather than from
+the course. It is now taught in `1-ar/molmassi`. `conversionChains.ts` was deliberately not ported: `1-ar/einingakedjan` is
 that file as a game, with species-tagged ratios.
 
 **Checking harvested data against the shipped graders found four defects in shipped code**, listed

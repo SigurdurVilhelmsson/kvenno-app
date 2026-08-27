@@ -16,6 +16,7 @@ describe('generateCalculationBreakdown', () => {
         { symbol: 'O', count: 1 },
       ],
       molarMass: 18.015,
+      state: 'vökvi',
       difficulty: 'easy',
     };
     const breakdown = generateCalculationBreakdown(water);

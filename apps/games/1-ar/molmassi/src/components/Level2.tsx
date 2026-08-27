@@ -4,7 +4,7 @@ import { FeedbackPanel } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
 import { shuffleArray } from '@shared/utils';
 
-import { COMPOUNDS, type Compound } from '../data/compounds';
+import { COMPOUNDS, STANDARD_MOLAR_VOLUME, STP_LABEL, type Compound } from '../data/compounds';
 import { getElementBySymbol } from '../data/elements';
 import { parseScientificAnswer } from '../utils/parseAnswer';
 
@@ -22,7 +22,14 @@ export type ConvType =
    * `avogadro.ts` (`atoms_in_compound`), which is the one conversion of its
    * five that this level did not already ask.
    */
-  | 'moles_to_element_atoms';
+  | 'moles_to_element_atoms'
+  /**
+   * Moles of a gas to its volume at STP, and back. The third leg of the mole
+   * chain: mass, particles, and — for a gas only — volume. Both directions,
+   * matching how the mass and particle conversions are already asked.
+   */
+  | 'moles_to_gas_volume'
+  | 'gas_volume_to_moles';
 
 export interface Problem {
   compound: Compound;
@@ -55,6 +62,11 @@ function randRange(min: number, max: number, step: number): number {
   return sigfig(min + Math.floor(Math.random() * (Math.round((max - min) / step) + 1)) * step, 3);
 }
 
+/** Is this a gas at STP, so that 22,4 L/mól applies to it? */
+export function isGas(c: Compound): boolean {
+  return c.state === 'gas';
+}
+
 /** Does the formula have an element appearing more than once? */
 export function hasRepeatedElement(c: Compound): boolean {
   return c.elements.some((e) => e.count > 1);
@@ -68,6 +80,8 @@ export function generateAllProblems(): Problem[] {
     'moles_to_particles',
     'particles_to_moles',
     'moles_to_element_atoms',
+    'moles_to_gas_volume',
+    'gas_volume_to_moles',
   ];
 
   // `moles_to_element_atoms` is only a question when a subscript is above one:
@@ -84,8 +98,16 @@ export function generateAllProblems(): Problem[] {
 
   return Array.from({ length: TOTAL }, (_, i) => {
     const type = types[i % types.length];
-    const compound =
-      type === 'moles_to_element_atoms' ? take(hasRepeatedElement) : take(() => true);
+    // The molar-volume slots must draw a gas: one mole occupies 22,4 L only if
+    // it is one. The subscript slot needs a formula with a subscript above one.
+    let compound: Compound;
+    if (type === 'moles_to_gas_volume' || type === 'gas_volume_to_moles') {
+      compound = take(isGas);
+    } else if (type === 'moles_to_element_atoms') {
+      compound = take(hasRepeatedElement);
+    } else {
+      compound = take(() => true);
+    }
     return generateProblem(compound, type);
   });
 }
@@ -146,6 +168,35 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
       questionText: `Hversu mörg ${elementName}-atóm (${element.symbol}) eru í ${n} mól af ${label}?`,
       solutionFormula: 'Einingagreining: mól × (atóm af frumefninu / 1 mól) × (atóm / 1 mól)',
       solutionSteps: `Í hverri sameind af ${c.formula} eru ${element.count} ${element.symbol}-atóm.\n${n} mól × (${element.count} mól ${element.symbol} / 1 mól ${c.formula}) × (6,022 × 10²³ atóm / 1 mól) = ${fmt(ans)} atóm\nEiningin mól strikast út tvisvar.`,
+    };
+  }
+
+  if (type === 'moles_to_gas_volume' || type === 'gas_volume_to_moles') {
+    // Never asked about a solid or a liquid: `generateAllProblems` only sends a
+    // gas, and a pool that somehow held none would ask the mass question rather
+    // than claim 22,4 L for a spoonful of salt.
+    if (!isGas(c)) return generateProblem(c, 'mass_to_moles');
+
+    if (type === 'moles_to_gas_volume') {
+      const n = randRange(0.1, 5.0, 0.1);
+      const ans = n * STANDARD_MOLAR_VOLUME;
+      return {
+        compound: c,
+        correctAnswer: ans,
+        questionText: `Hvaða rúmmál taka ${n} mól af ${label} við ${STP_LABEL}?`,
+        solutionFormula: 'Einingagreining: mól × (L / 1 mól) → L',
+        solutionSteps: `${n} mól × (${STANDARD_MOLAR_VOLUME} L / 1 mól) = ${fmt(ans)} L\nEiningin mól strikast út. Þetta gildir aðeins um gas — 22,4 L/mól segir ekkert um fast efni eða vökva.`,
+      };
+    }
+
+    const volume = randRange(2, 60, 2);
+    const ans = volume / STANDARD_MOLAR_VOLUME;
+    return {
+      compound: c,
+      correctAnswer: ans,
+      questionText: `Hversu mörg mól eru í ${volume} L af ${label} við ${STP_LABEL}?`,
+      solutionFormula: 'Einingagreining: L × (1 mól / L) → mól',
+      solutionSteps: `${volume} L × (1 mól / ${STANDARD_MOLAR_VOLUME} L) = ${fmt(ans)} mól\nEiningin L strikast út. Þetta gildir aðeins um gas.`,
     };
   }
 
@@ -249,7 +300,7 @@ export function Level2({
 
             {/* Three key relationships */}
             <div>
-              <h3 className="text-lg font-bold text-warm-800 mb-3">Þrjú lykilsambönd</h3>
+              <h3 className="text-lg font-bold text-warm-800 mb-3">Fjögur lykilsambönd</h3>
               <div className="space-y-3">
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                   <p className="font-mono text-blue-800 text-center">
@@ -259,6 +310,16 @@ export function Level2({
                 <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
                   <p className="font-mono text-purple-800 text-center">
                     fjöldi móla × 6,022 × 10²³ = fjöldi einda
+                  </p>
+                </div>
+                <div className="bg-teal-50 border border-teal-200 rounded-lg p-3">
+                  <p className="font-mono text-teal-800 text-center">
+                    fjöldi móla × {STANDARD_MOLAR_VOLUME} L/mól = rúmmál <strong>gass</strong>
+                  </p>
+                  <p className="text-xs text-teal-700 text-center mt-2">
+                    Aðeins við {STP_LABEL} — og aðeins fyrir gas. Eitt mól af hvaða gasi sem er
+                    tekur sama rúmmál, því sameindirnar eru svo langt hver frá annarri að stærð
+                    þeirra skiptir ekki máli. Eitt mól af salti eða vatni gerir það ekki.
                   </p>
                 </div>
                 <div className="bg-warm-50 border border-warm-200 rounded-lg p-3 text-sm text-warm-700 text-center">

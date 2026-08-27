@@ -13,10 +13,14 @@ and built and lost."_ Three claims, and they need separating.
 cancellation, with a tolerance and a decimal-comma-aware parser the old repo did not have.
 
 **mol↔L is in neither.** It is not in `avogadro.ts` and not in `conversionChains.ts`, whose
-conversion type is `'mass' | 'moles' | 'molecules' | 'atoms'` — there is no volume in it. Molar
-volume appears exactly once on the whole platform, in a Year-3 gas-law explanation string
-(`3-ar/gas-law-challenge/src/types.ts:91`, "22,4 L við STP"). It is a genuine gap, it belongs with
-the gas laws rather than here, and nothing in the frozen repo fills it. Recorded, not invented.
+conversion type is `'mass' | 'moles' | 'molecules' | 'atoms'` — there is no volume in it. So the
+roadmap's third claim was right that it is missing, and nothing in the frozen repo fills it.
+
+> **Correction, 2026-08-27 — Siggi.** This entry originally added that molar volume "belongs with
+> the gas laws rather than here", filing it as a Year-3 gap. **That is wrong: mol↔L is in the
+> first-year curriculum.** It was inferred from where the platform happened to mention it — a
+> single Year-3 gas-law string — which is evidence about the platform, not about the course.
+> Molar volume is now taught and practised in this game; see the section below.
 
 **`conversionChains.ts` is deliberately not ported.** `1-ar/einingakedjan` (August 2026) is that
 file as a game, and better: its ratios are tagged by species, so a chain cannot silently bridge two
@@ -40,6 +44,38 @@ a thousand — it said counting a mole at a million atoms per second would take 
 has existed. The ping-pong figure checks out at about 60 km once random packing is allowed for. The
 third has been replaced with a glass of water, which is the same idea attached to something a
 student can hold.
+
+## Molar volume — the gap this note first mis-filed
+
+Added 2026-08-27, after Siggi corrected the entry above: **mol↔L is first-year material.** Level 2
+now asks it in both directions, and the intro teaches it as a fourth key relationship rather than a
+fifth kind of arithmetic.
+
+**The constant is 22,4 L/mól at STP, and STP is 273,15 K and 1 atm.** That is not a detail: the
+school's textbook states it explicitly, notes that IUPAC moved standard pressure to 1 bar in 1982,
+and then says plainly that it keeps the older definition — _"fyrri skilgreiningin er enn í notkun í
+mörgum heimildum og verður notuð í þessum texta"_. At 1 bar the figure is 22,7 L/mól. So the
+conditions are printed in every question and the test asserts they travel with the number.
+
+**The rule is about gases and nothing else**, which is the whole difficulty. `compounds.ts` had no
+state field, so a naive version of this question would cheerfully ask what volume a mole of table
+salt occupies — the same class of defect as `lausnir` asking a student to weigh out a gas, measured
+and fixed in August 2026. Every compound now declares a `state` at STP, the molar-volume slots draw
+only gases, and both the solution steps and the intro say out loud that 22,4 L/mól tells you nothing
+about a solid or a liquid.
+
+Two of the twenty-nine needed a decision rather than a lookup:
+
+- **H₂O is not a gas here.** At STP water is not a vapour, and "one mole of water occupies 22,4 L"
+  is the most plausible wrong thing a student could take away from this level.
+- **HCl is named `Saltsýra` in this game**, which is hydrochloric _acid_ — HCl dissolved in water.
+  The pure compound is a gas; a solution is not, and has no molar volume. The state follows the
+  label a student actually reads, so HCl is excluded from these questions. **The naming is worth a
+  ruling of its own:** the compound HCl is `vetnisklóríð` and `saltsýra` is HCl(aq), and this game
+  quotes 36,46 g/mol, which is the molar mass of the compound rather than of the solution. Not
+  renamed here — that is a `nafnakerfid`-shaped decision, not a molar-volume one.
+
+Guarded by `src/__tests__/gas-volume.test.ts`, verified to fail when H₂O is marked a gas.
 
 ## The defect the harvest uncovered: neither level could read its own notation
 

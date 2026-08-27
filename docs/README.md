@@ -99,6 +99,22 @@ scan of the data alone overstates this defect by four files. And this is the pos
 option _within_ a question, which is not the deliberate exam-stability choice about problem _order_
 in Kinetics and Redox.
 
+**Added 2026-08-27 — mol↔L in `1-ar/molmassi`, and a correction to how the gap was recorded.**
+The Phase 3 harvest found that molar volume is taught nowhere in Year 1 and then filed it as a
+**Year-3** gap "belonging with the gas laws". That was wrong — mol↔L is first-year material
+(Siggi, 2026-08-27) — and the error came from inferring the curriculum from where the platform
+happened to _mention_ molar volume, a single Year-3 gas-law string, rather than from the course.
+**Do not re-derive a curriculum boundary from platform grep counts.**
+
+Level 2 now asks it in both directions at **22,4 L/mól, STP being 273,15 K and 1 atm** — the
+textbook's own definition, which it keeps against IUPAC's 1982 move to 1 bar (where the figure would
+be 22,7). Every compound declares a `state` at STP so the question can only be asked of a gas;
+`src/__tests__/gas-volume.test.ts` holds that, and was verified to fail when H₂O is marked a gas.
+
+**Still open, needing a ruling:** `molmassi` names `HCl` `Saltsýra`, which is HCl(aq) — a solution —
+while quoting the compound's molar mass. HCl is excluded from molar-volume questions rather than
+renamed; the compound is `vetnisklóríð`. Recorded in that game's `HARVEST.md`.
+
 **Fixed 2026-08-27 by the Phase 3 harvest — four gradeability defects the August reviews did not
 find, because they were found by running old data through the shipped graders rather than by
 reading the games.** Each carries a test verified to fail against the pre-fix code, and each is
