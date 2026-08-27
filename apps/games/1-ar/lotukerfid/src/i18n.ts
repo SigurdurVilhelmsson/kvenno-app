@@ -21,7 +21,7 @@ export const gameTranslations = createGameTranslations({
         },
       },
       level2: {
-        title: 'Stig 2: Flokkar og lóðir',
+        title: 'Stig 2: Flokkar og lotubundnar sveiflur',
         description: 'Flokka frumefni og skilja mynstur lotukerfisins',
         tags: {
           classify: 'Flokka',
@@ -30,7 +30,7 @@ export const gameTranslations = createGameTranslations({
         },
       },
       level3: {
-        title: 'Stig 3: Sameindagerð',
+        title: 'Stig 3: Atómbygging',
         description: 'Róteindir, nifteindir og rafeindir frumefna',
         tags: {
           protons: 'Róteindir',
@@ -45,11 +45,11 @@ export const gameTranslations = createGameTranslations({
           description: 'Finna frumefni í lotukerfinu og þekkja tákn þeirra',
         },
         step2: {
-          title: 'Flokkar og lóðir',
+          title: 'Flokkar og lotubundnar sveiflur',
           description: 'Skilja skipulag lotukerfisins og mynstur þess',
         },
         step3: {
-          title: 'Sameindagerð',
+          title: 'Atómbygging',
           description: 'Reikna fjölda róteinda, nifteinda og rafeinda',
         },
       },

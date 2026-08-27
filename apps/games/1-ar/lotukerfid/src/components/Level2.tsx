@@ -12,13 +12,14 @@ import {
   type Element,
   type ElementClassification,
 } from '../data/elements';
+import { TREND_INFO, TREND_QUESTIONS, type TrendQuestion } from '../data/trends';
 
 interface Level2Props {
   onBack: () => void;
   onComplete: () => void;
 }
 
-type QuestionType = 'classify' | 'order-by-mass' | 'group-property';
+type QuestionType = 'classify' | 'order-by-mass' | 'group-property' | 'trend';
 
 interface Question {
   type: QuestionType;
@@ -160,6 +161,35 @@ function makeGroupQuestion(): Question {
   };
 }
 
+/**
+ * A periodic-trend comparison.
+ *
+ * Two options rather than four, which is what the textbook exercise is and what
+ * the harvested data supports: the pairs are curated so that both elements sit
+ * in the same period or the same group, because the rules this level teaches
+ * disagree on a diagonal comparison. A run draws two of the twelve, so guessing
+ * both is a 1-in-4 shot at two of ten questions — the trade for asking the
+ * comparison in the form a student will meet it in.
+ */
+function makeTrendQuestion(trend: TrendQuestion): Question {
+  const info = TREND_INFO[trend.trendType];
+  const other =
+    trend.answerSymbol === trend.element1Symbol ? trend.element2Symbol : trend.element1Symbol;
+  const nameOf = (symbol: string) => {
+    const element = ELEMENTS.find((e) => e.symbol === symbol);
+    return element ? `${element.name} (${symbol})` : symbol;
+  };
+
+  return {
+    type: 'trend',
+    text: `${info.emoji} ${trend.question}`,
+    options: shuffleArray([nameOf(trend.answerSymbol), nameOf(other)]),
+    correctOption: nameOf(trend.answerSymbol),
+    explanation: `${trend.explanation} Regla: ${info.rule}`,
+    highlightSymbols: [trend.element1Symbol, trend.element2Symbol],
+  };
+}
+
 function generateQuestions(): Question[] {
   const questions: Question[] = [];
   const classifyElements = pickRandom(
@@ -177,12 +207,26 @@ function generateQuestions(): Question[] {
   questions.push(makeGroupQuestion());
   questions.push(makeGroupQuestion());
 
+  // Two trends, drawn from different trend types so a run never asks the same
+  // rule twice.
+  const trendTypes = shuffleArray([...new Set(TREND_QUESTIONS.map((q) => q.trendType))]).slice(
+    0,
+    2
+  );
+  for (const trendType of trendTypes) {
+    const forType = TREND_QUESTIONS.filter((q) => q.trendType === trendType);
+    questions.push(makeTrendQuestion(shuffleArray(forType)[0]));
+  }
+
   return shuffleArray(questions);
 }
 
-const TOTAL = 8;
+const TOTAL = 10;
 
 function hintFor(question: Question): string {
+  if (question.type === 'trend') {
+    return 'Finndu bæði frumefnin í lotukerfinu fyrir neðan. Eru þau í sömu lotu (láréttri röð) eða sama flokki (lóðréttum dálki)? Reglan fyrir hvora átt er í kennslunni.';
+  }
   if (question.type === 'classify') {
     return 'Skoðaðu hvar frumefnið er í lotukerfinu: málmar eru vinstra megin, hálfmálmar á landamærum, málmleysingjar hægra megin og efst.';
   }
@@ -292,7 +336,9 @@ export function Level2({ onBack, onComplete }: Level2Props) {
               >
                 ← Til baka
               </button>
-              <h1 className="text-lg font-bold text-warm-800">Flokkar og lóðir — Kennsla</h1>
+              <h1 className="text-lg font-bold text-warm-800">
+                Flokkar og lotubundnar sveiflur — Kennsla
+              </h1>
               <span className="text-sm text-warm-500">Yfirlit</span>
             </div>
           </div>
@@ -332,6 +378,25 @@ export function Level2({ onBack, onComplete }: Level2Props) {
               </div>
             </div>
 
+            <div className="bg-purple-50 p-4 rounded-lg">
+              <h3 className="font-bold text-purple-800 mb-2">Lotubundnar sveiflur</h3>
+              <p className="text-sm text-purple-700 mb-2">
+                Þrír eiginleikar breytast eftir reglu þegar farið er um lotukerfið — og allir þrír
+                eiga sér sömu skýringu: hversu fast kjarninn heldur í ystu rafeindirnar.
+              </p>
+              <div className="space-y-2 text-sm">
+                {(Object.keys(TREND_INFO) as (keyof typeof TREND_INFO)[]).map((key) => (
+                  <div key={key} className="bg-white p-2 rounded">
+                    <strong className="text-purple-700">
+                      {TREND_INFO[key].emoji} {TREND_INFO[key].name}:
+                    </strong>{' '}
+                    {TREND_INFO[key].description}
+                    <p className="text-warm-600 mt-1">{TREND_INFO[key].rule}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="bg-warm-50 p-4 rounded-lg">
               <h3 className="font-bold text-warm-800 mb-2">Frumeindamassi</h3>
               <p className="text-sm text-warm-700">
@@ -367,7 +432,9 @@ export function Level2({ onBack, onComplete }: Level2Props) {
             >
               ← Til baka
             </button>
-            <h1 className="text-base sm:text-lg font-bold text-warm-800">Flokkar og lóðir</h1>
+            <h1 className="text-base sm:text-lg font-bold text-warm-800">
+              Flokkar og lotubundnar sveiflur
+            </h1>
             <span className="text-sm font-semibold text-warm-600">
               {index + 1}/{TOTAL}
             </span>
