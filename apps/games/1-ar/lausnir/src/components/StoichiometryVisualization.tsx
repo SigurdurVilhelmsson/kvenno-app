@@ -16,7 +16,7 @@ function QuantityDots({
   count,
   maxDisplay,
   color,
-  size
+  size,
 }: {
   count: number;
   maxDisplay: number;
@@ -43,9 +43,7 @@ function QuantityDots({
           }}
         />
       ))}
-      {hasMore && (
-        <span className="text-xs text-warm-500 ml-1">+{count - maxDisplay}</span>
-      )}
+      {hasMore && <span className="text-xs text-warm-500 ml-1">+{count - maxDisplay}</span>}
     </div>
   );
 }
@@ -62,7 +60,7 @@ function simplifyRatio(values: number[]): number[] {
   if (values.length === 1) return [1];
 
   // Convert to integers by multiplying by 1000 and rounding
-  const integers = values.map(v => Math.round(v * 1000));
+  const integers = values.map((v) => Math.round(v * 1000));
 
   // Find GCD of all values
   let divisor = integers[0];
@@ -71,12 +69,12 @@ function simplifyRatio(values: number[]): number[] {
   }
 
   // Divide by GCD
-  const simplified = integers.map(v => Math.round(v / divisor));
+  const simplified = integers.map((v) => Math.round(v / divisor));
 
   // If values are too large, just show as-is
   const maxValue = Math.max(...simplified);
   if (maxValue > 10) {
-    return values.map(v => Math.round(v * 10) / 10);
+    return values.map((v) => Math.round(v * 10) / 10);
   }
 
   return simplified;
@@ -90,32 +88,25 @@ export function StoichiometryVisualization({
   quantities,
   showRatio = true,
   label,
-  size = 'medium'
+  size = 'medium',
 }: StoichiometryProps) {
   const maxDotsPerGroup = size === 'small' ? 5 : size === 'medium' ? 8 : 12;
 
   const ratio = useMemo(() => {
     if (!showRatio || quantities.length < 2) return null;
-    const moles = quantities.map(q => q.moles);
+    const moles = quantities.map((q) => q.moles);
     return simplifyRatio(moles);
   }, [quantities, showRatio]);
 
   return (
     <div className="bg-warm-50 rounded-xl p-4">
-      {label && (
-        <div className="text-sm font-semibold text-warm-700 text-center mb-3">
-          {label}
-        </div>
-      )}
+      {label && <div className="text-sm font-semibold text-warm-700 text-center mb-3">{label}</div>}
 
       <div className="flex items-center justify-center gap-4">
         {quantities.map((q, i) => (
           <div key={i} className="flex flex-col items-center">
             {/* Symbol */}
-            <div
-              className="text-lg font-bold mb-2"
-              style={{ color: q.color }}
-            >
+            <div className="text-lg font-bold mb-2" style={{ color: q.color }}>
               {q.symbol}
             </div>
 
@@ -128,16 +119,10 @@ export function StoichiometryVisualization({
             />
 
             {/* Moles value */}
-            <div className="text-xs text-warm-600 mt-2">
-              {q.moles.toFixed(2)} mól
-            </div>
+            <div className="text-xs text-warm-600 mt-2">{q.moles.toFixed(2)} mól</div>
 
             {/* Ratio number */}
-            {ratio && (
-              <div className="text-lg font-bold text-warm-800 mt-1">
-                {ratio[i]}
-              </div>
-            )}
+            {ratio && <div className="text-lg font-bold text-warm-800 mt-1">{ratio[i]}</div>}
           </div>
         ))}
       </div>
@@ -167,7 +152,7 @@ export function ConcentrationComparison({
   before,
   after,
   showParticles = true,
-  animate = false
+  animate = false,
 }: ConcentrationComparisonProps) {
   const calcConcentration = (molecules: number, volumeML: number) =>
     (molecules * 0.01) / (volumeML / 1000);
@@ -196,23 +181,21 @@ export function ConcentrationComparison({
           )}
           <div className="text-xs text-warm-500">{before.molecules} agnir</div>
           <div className="text-xs text-warm-500">{before.volumeML} mL</div>
-          <div className="text-lg font-bold text-blue-600 mt-1">
-            {beforeConc.toFixed(2)} M
-          </div>
+          <div className="text-lg font-bold text-blue-600 mt-1">{beforeConc.toFixed(2)} M</div>
         </div>
       </div>
 
       {/* Arrow */}
-      <div className={`text-3xl text-warm-400 ${animate ? 'animate-pulse' : ''}`}>
-        →
-      </div>
+      <div className={`text-3xl text-warm-400 ${animate ? 'animate-pulse' : ''}`}>→</div>
 
       {/* After state */}
       <div className="text-center">
         <div className="text-sm font-semibold text-warm-600 mb-2">Eftir</div>
-        <div className={`bg-green-50 border-2 border-green-200 rounded-xl p-4 min-w-[120px] ${
-          animate ? 'animate-fade-in' : ''
-        }`}>
+        <div
+          className={`bg-green-50 border-2 border-green-200 rounded-xl p-4 min-w-[120px] ${
+            animate ? 'animate-fade-in' : ''
+          }`}
+        >
           {showParticles && (
             <div className="mb-2">
               <QuantityDots
@@ -225,9 +208,7 @@ export function ConcentrationComparison({
           )}
           <div className="text-xs text-warm-500">{after.molecules} agnir</div>
           <div className="text-xs text-warm-500">{after.volumeML} mL</div>
-          <div className="text-lg font-bold text-green-600 mt-1">
-            {afterConc.toFixed(2)} M
-          </div>
+          <div className="text-lg font-bold text-green-600 mt-1">{afterConc.toFixed(2)} M</div>
         </div>
       </div>
     </div>
@@ -248,7 +229,7 @@ export function MixingVisualization({
   solution1,
   solution2,
   result,
-  showAnimation = false
+  showAnimation = false,
 }: MixingVisualizationProps) {
   const calcConcentration = (molecules: number, volumeML: number) =>
     (molecules * 0.01) / (volumeML / 1000);
@@ -258,7 +239,7 @@ export function MixingVisualization({
   const resultState = result || {
     molecules: solution1.molecules + solution2.molecules,
     volumeML: solution1.volumeML + solution2.volumeML,
-    color: '#8b5cf6'
+    color: '#8b5cf6',
   };
 
   return (
@@ -272,7 +253,7 @@ export function MixingVisualization({
           className="rounded-xl p-3 min-w-[100px] border-2"
           style={{
             backgroundColor: `${solution1.color}15`,
-            borderColor: `${solution1.color}50`
+            borderColor: `${solution1.color}50`,
           }}
         >
           <QuantityDots
@@ -300,7 +281,7 @@ export function MixingVisualization({
           className="rounded-xl p-3 min-w-[100px] border-2"
           style={{
             backgroundColor: `${solution2.color}15`,
-            borderColor: `${solution2.color}50`
+            borderColor: `${solution2.color}50`,
           }}
         >
           <QuantityDots
@@ -317,9 +298,7 @@ export function MixingVisualization({
       </div>
 
       {/* Arrow */}
-      <div className={`text-3xl text-warm-400 ${showAnimation ? 'animate-pulse' : ''}`}>
-        →
-      </div>
+      <div className={`text-3xl text-warm-400 ${showAnimation ? 'animate-pulse' : ''}`}>→</div>
 
       {/* Result */}
       <div className="text-center">
@@ -330,7 +309,7 @@ export function MixingVisualization({
           }`}
           style={{
             backgroundColor: `${resultState.color}15`,
-            borderColor: `${resultState.color}50`
+            borderColor: `${resultState.color}50`,
           }}
         >
           <QuantityDots
@@ -365,7 +344,7 @@ interface DilutionVisualizationProps {
 export function DilutionVisualization({
   initial,
   finalVolumeML,
-  animate = false
+  animate = false,
 }: DilutionVisualizationProps) {
   const calcConcentration = (molecules: number, volumeML: number) =>
     (molecules * 0.01) / (volumeML / 1000);
@@ -391,9 +370,7 @@ export function DilutionVisualization({
               size="medium"
             />
             <div className="text-xs text-warm-500 mt-2">{initial.volumeML} mL</div>
-            <div className="text-lg font-bold text-orange-600">
-              {initialConc.toFixed(2)} M
-            </div>
+            <div className="text-lg font-bold text-orange-600">{initialConc.toFixed(2)} M</div>
           </div>
         </div>
 
@@ -412,16 +389,16 @@ export function DilutionVisualization({
         </div>
 
         {/* Arrow */}
-        <div className={`text-3xl text-warm-400 ${animate ? 'animate-pulse' : ''}`}>
-          →
-        </div>
+        <div className={`text-3xl text-warm-400 ${animate ? 'animate-pulse' : ''}`}>→</div>
 
         {/* Final state */}
         <div className="text-center">
           <div className="text-sm font-semibold text-warm-600 mb-2">Þynnt lausn</div>
-          <div className={`bg-green-50 border-2 border-green-200 rounded-xl p-4 min-w-[140px] ${
-            animate ? 'animate-fade-in' : ''
-          }`}>
+          <div
+            className={`bg-green-50 border-2 border-green-200 rounded-xl p-4 min-w-[140px] ${
+              animate ? 'animate-fade-in' : ''
+            }`}
+          >
             <QuantityDots
               count={initial.molecules}
               maxDisplay={maxParticles}
@@ -429,9 +406,7 @@ export function DilutionVisualization({
               size="medium"
             />
             <div className="text-xs text-warm-500 mt-2">{finalVolumeML} mL</div>
-            <div className="text-lg font-bold text-green-600">
-              {finalConc.toFixed(3)} M
-            </div>
+            <div className="text-lg font-bold text-green-600">{finalConc.toFixed(3)} M</div>
           </div>
         </div>
       </div>
