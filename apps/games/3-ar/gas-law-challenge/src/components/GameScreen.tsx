@@ -297,7 +297,8 @@ export function GameScreen({
                   <div className="flex gap-2">
                     <input
                       id="gas-law-answer"
-                      type="number"
+                      type="text"
+                      inputMode="decimal"
                       value={userAnswer}
                       onChange={(e) => setUserAnswer(e.target.value)}
                       placeholder={

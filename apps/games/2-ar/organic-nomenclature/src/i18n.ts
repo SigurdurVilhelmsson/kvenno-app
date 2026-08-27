@@ -12,7 +12,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Hvað er lífrænt nafnakerfi?',
-      description: 'IUPAC nafnakerfið er alþjóðlegt kerfi til að nefna lífræn efnasambönd. Nafnið lýsir byggingu sameindarinnar.',
+      description:
+        'IUPAC nafnakerfið er alþjóðlegt kerfi til að nefna lífræn efnasambönd. Nafnið lýsir byggingu sameindarinnar.',
     },
     levels: {
       level1: {
@@ -81,7 +82,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'What is organic nomenclature?',
-      description: 'The IUPAC nomenclature system is an international system for naming organic compounds. The name describes the structure of the molecule.',
+      description:
+        'The IUPAC nomenclature system is an international system for naming organic compounds. The name describes the structure of the molecule.',
     },
     levels: {
       level1: {
@@ -150,7 +152,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Czym jest nomenklatura organiczna?',
-      description: 'System nazewnictwa IUPAC to miedzynarodowy system nazewnictwa zwiazkow organicznych. Nazwa opisuje strukture czasteczki.',
+      description:
+        'System nazewnictwa IUPAC to miedzynarodowy system nazewnictwa zwiazkow organicznych. Nazwa opisuje strukture czasteczki.',
     },
     levels: {
       level1: {

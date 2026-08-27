@@ -26,10 +26,7 @@ describe('solveGasLaw', () => {
   const T = 273.15;
 
   it('solves for P when given n, R, T, V', () => {
-    const result = solveGasLaw(
-      { n: gv(n), T: gv(T), V: gv(V) },
-      'P'
-    );
+    const result = solveGasLaw({ n: gv(n), T: gv(T), V: gv(V) }, 'P');
     // P = nRT / V
     const expected = (n * R * T) / V;
     expect(result).toBeCloseTo(expected, 4);
@@ -37,10 +34,7 @@ describe('solveGasLaw', () => {
   });
 
   it('solves for V when given n, R, T, P', () => {
-    const result = solveGasLaw(
-      { n: gv(n), T: gv(T), P: gv(P) },
-      'V'
-    );
+    const result = solveGasLaw({ n: gv(n), T: gv(T), P: gv(P) }, 'V');
     // V = nRT / P
     const expected = (n * R * T) / P;
     expect(result).toBeCloseTo(expected, 4);
@@ -48,10 +42,7 @@ describe('solveGasLaw', () => {
   });
 
   it('solves for T when given P, V, n', () => {
-    const result = solveGasLaw(
-      { P: gv(P), V: gv(V), n: gv(n) },
-      'T'
-    );
+    const result = solveGasLaw({ P: gv(P), V: gv(V), n: gv(n) }, 'T');
     // T = PV / (nR)
     const expected = (P * V) / (n * R);
     expect(result).toBeCloseTo(expected, 4);
@@ -60,10 +51,7 @@ describe('solveGasLaw', () => {
   });
 
   it('solves for n when given P, V, T', () => {
-    const result = solveGasLaw(
-      { P: gv(P), V: gv(V), T: gv(T) },
-      'n'
-    );
+    const result = solveGasLaw({ P: gv(P), V: gv(V), T: gv(T) }, 'n');
     // n = PV / (RT)
     const expected = (P * V) / (R * T);
     expect(result).toBeCloseTo(expected, 4);
@@ -72,52 +60,44 @@ describe('solveGasLaw', () => {
 
   it('solves for P with different known values', () => {
     // 2 mol at 300 K in 10 L
-    const result = solveGasLaw(
-      { n: gv(2), T: gv(300), V: gv(10) },
-      'P'
-    );
+    const result = solveGasLaw({ n: gv(2), T: gv(300), V: gv(10) }, 'P');
     const expected = (2 * R * 300) / 10;
     expect(result).toBeCloseTo(expected, 4);
   });
 
   it('solves for V with high pressure', () => {
     // 5 mol at 400 K under 10 atm
-    const result = solveGasLaw(
-      { n: gv(5), T: gv(400), P: gv(10) },
-      'V'
-    );
+    const result = solveGasLaw({ n: gv(5), T: gv(400), P: gv(10) }, 'V');
     const expected = (5 * R * 400) / 10;
     expect(result).toBeCloseTo(expected, 4);
   });
 
   it('throws an error when insufficient data for P (missing V)', () => {
-    expect(() =>
-      solveGasLaw({ n: gv(1), T: gv(300) }, 'P')
-    ).toThrow('Cannot solve for P with given values');
+    expect(() => solveGasLaw({ n: gv(1), T: gv(300) }, 'P')).toThrow(
+      'Cannot solve for P with given values'
+    );
   });
 
   it('throws an error when insufficient data for V (missing P)', () => {
-    expect(() =>
-      solveGasLaw({ n: gv(1), T: gv(300) }, 'V')
-    ).toThrow('Cannot solve for V with given values');
+    expect(() => solveGasLaw({ n: gv(1), T: gv(300) }, 'V')).toThrow(
+      'Cannot solve for V with given values'
+    );
   });
 
   it('throws an error when insufficient data for T (missing n)', () => {
-    expect(() =>
-      solveGasLaw({ P: gv(1), V: gv(10) }, 'T')
-    ).toThrow('Cannot solve for T with given values');
+    expect(() => solveGasLaw({ P: gv(1), V: gv(10) }, 'T')).toThrow(
+      'Cannot solve for T with given values'
+    );
   });
 
   it('throws an error when insufficient data for n (missing T)', () => {
-    expect(() =>
-      solveGasLaw({ P: gv(1), V: gv(10) }, 'n')
-    ).toThrow('Cannot solve for n with given values');
+    expect(() => solveGasLaw({ P: gv(1), V: gv(10) }, 'n')).toThrow(
+      'Cannot solve for n with given values'
+    );
   });
 
   it('throws when all values are missing', () => {
-    expect(() =>
-      solveGasLaw({}, 'P')
-    ).toThrow('Cannot solve for P');
+    expect(() => solveGasLaw({}, 'P')).toThrow('Cannot solve for P');
   });
 });
 

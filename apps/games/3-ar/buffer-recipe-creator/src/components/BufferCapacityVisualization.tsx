@@ -43,12 +43,15 @@ export function BufferCapacityVisualization({
   const [showComparison, setShowComparison] = useState(false);
 
   // Calculate current pH from Henderson-Hasselbalch
-  const calculatePH = useCallback((acid: number, base: number): number => {
-    if (acid <= 0 || base <= 0) {
-      return acid <= 0 ? 14 : 0; // Extreme values
-    }
-    return pKa + Math.log10(base / acid);
-  }, [pKa]);
+  const calculatePH = useCallback(
+    (acid: number, base: number): number => {
+      if (acid <= 0 || base <= 0) {
+        return acid <= 0 ? 14 : 0; // Extreme values
+      }
+      return pKa + Math.log10(base / acid);
+    },
+    [pKa]
+  );
 
   // Calculate adjusted concentrations after acid/base addition
   const adjustedState = useMemo(() => {
@@ -85,7 +88,10 @@ export function BufferCapacityVisualization({
   }, [acidAdded, baseAdded]);
 
   // Initial pH
-  const initialPH = useMemo(() => calculatePH(acidConc, baseConc), [acidConc, baseConc, calculatePH]);
+  const initialPH = useMemo(
+    () => calculatePH(acidConc, baseConc),
+    [acidConc, baseConc, calculatePH]
+  );
 
   // Buffer capacity (β) at current pH
   const bufferCapacity = useMemo(() => {
@@ -112,7 +118,7 @@ export function BufferCapacityVisualization({
 
   // Max capacity for scaling
   const maxCapacity = useMemo(() => {
-    return Math.max(...capacityCurve.map(p => p.capacity));
+    return Math.max(...capacityCurve.map((p) => p.capacity));
   }, [capacityCurve]);
 
   // Handle adding acid
@@ -175,7 +181,9 @@ export function BufferCapacityVisualization({
 
   // Generate SVG path for capacity curve
   const pathD = capacityCurve
-    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${xScale(p.pH).toFixed(1)} ${yScale(p.capacity).toFixed(1)}`)
+    .map(
+      (p, i) => `${i === 0 ? 'M' : 'L'} ${xScale(p.pH).toFixed(1)} ${yScale(p.capacity).toFixed(1)}`
+    )
     .join(' ');
 
   // pH color based on value
@@ -196,18 +204,34 @@ export function BufferCapacityVisualization({
 
       {/* Buffer Capacity Curve */}
       <div className="bg-warm-700/50 rounded-lg p-3 mb-4">
-        <div className="text-xs text-warm-400 mb-2 text-center">
-          β (stuðpúðageta) vs pH
-        </div>
-        <svg width="100%" viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="overflow-visible" role="img" aria-label={`Stuðpúðageta graf: pH ${adjustedState.pH.toFixed(2)}, pKa ${pKa.toFixed(1)}. Besta stuðpúðasvæði er pH ${(pKa - 1).toFixed(1)} til ${(pKa + 1).toFixed(1)}.`}>
+        <div className="text-xs text-warm-400 mb-2 text-center">β (stuðpúðageta) vs pH</div>
+        <svg
+          width="100%"
+          viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+          className="overflow-visible"
+          role="img"
+          aria-label={`Stuðpúðageta graf: pH ${adjustedState.pH.toFixed(2)}, pKa ${pKa.toFixed(1)}. Besta stuðpúðasvæði er pH ${(pKa - 1).toFixed(1)} til ${(pKa + 1).toFixed(1)}.`}
+        >
           <title>Stuðpúðageta (β) sem fall af pH</title>
           {/* Grid lines */}
           <defs>
             <pattern id="grid-capacity" width="20" height="20" patternUnits="userSpaceOnUse">
-              <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3" />
+              <path
+                d="M 20 0 L 0 0 0 20"
+                fill="none"
+                stroke="#374151"
+                strokeWidth="0.5"
+                opacity="0.3"
+              />
             </pattern>
           </defs>
-          <rect x={padding.left} y={padding.top} width={graphWidth} height={graphHeight} fill="url(#grid-capacity)" />
+          <rect
+            x={padding.left}
+            y={padding.top}
+            width={graphWidth}
+            height={graphHeight}
+            fill="url(#grid-capacity)"
+          />
 
           {/* Optimal buffer range (pKa ± 1) shaded region */}
           <rect
@@ -230,13 +254,7 @@ export function BufferCapacityVisualization({
           </text>
 
           {/* Buffer capacity curve */}
-          <path
-            d={pathD}
-            fill="none"
-            stroke="#60a5fa"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-          />
+          <path d={pathD} fill="none" stroke="#60a5fa" strokeWidth="2.5" strokeLinecap="round" />
 
           {/* pKa marker */}
           <line
@@ -270,7 +288,7 @@ export function BufferCapacityVisualization({
           />
 
           {/* X-axis labels */}
-          {[pKa - 2, pKa - 1, pKa, pKa + 1, pKa + 2].map(pH => (
+          {[pKa - 2, pKa - 1, pKa, pKa + 1, pKa + 2].map((pH) => (
             <text
               key={pH}
               x={xScale(pH)}
@@ -296,13 +314,7 @@ export function BufferCapacityVisualization({
           </text>
 
           {/* X-axis label */}
-          <text
-            x={svgWidth / 2}
-            y={svgHeight - 2}
-            textAnchor="middle"
-            fill="#9ca3af"
-            fontSize="10"
-          >
+          <text x={svgWidth / 2} y={svgHeight - 2} textAnchor="middle" fill="#9ca3af" fontSize="10">
             pH
           </text>
         </svg>
@@ -318,15 +330,15 @@ export function BufferCapacityVisualization({
         </div>
         <div className="bg-warm-700 rounded-lg p-2 text-center">
           <div className="text-xs text-warm-400">Upphafs pH</div>
-          <div className="text-lg font-semibold text-warm-300">
-            {initialPH.toFixed(2)}
-          </div>
+          <div className="text-lg font-semibold text-warm-300">{initialPH.toFixed(2)}</div>
         </div>
         <div className="bg-warm-700 rounded-lg p-2 text-center">
           <div className="text-xs text-warm-400">ΔpH</div>
-          <div className={`text-lg font-semibold ${
-            Math.abs(adjustedState.pH - initialPH) < 0.5 ? 'text-green-400' : 'text-orange-400'
-          }`}>
+          <div
+            className={`text-lg font-semibold ${
+              Math.abs(adjustedState.pH - initialPH) < 0.5 ? 'text-green-400' : 'text-orange-400'
+            }`}
+          >
             {(adjustedState.pH - initialPH).toFixed(2)}
           </div>
         </div>
@@ -441,9 +453,7 @@ export function BufferCapacityVisualization({
           <div className="grid grid-cols-2 gap-4">
             {/* Buffer solution */}
             <div className="text-center">
-              <div className="text-xs text-green-400 font-semibold mb-1">
-                Með stuðpúða
-              </div>
+              <div className="text-xs text-green-400 font-semibold mb-1">Með stuðpúða</div>
               <div
                 className="h-24 rounded-lg flex items-center justify-center text-white font-bold text-lg transition-colors"
                 style={{ backgroundColor: getPhColor(adjustedState.pH) }}
@@ -457,9 +467,7 @@ export function BufferCapacityVisualization({
 
             {/* Pure water */}
             <div className="text-center">
-              <div className="text-xs text-red-400 font-semibold mb-1">
-                Án stuðpúða (vatn)
-              </div>
+              <div className="text-xs text-red-400 font-semibold mb-1">Án stuðpúða (vatn)</div>
               <div
                 className="h-24 rounded-lg flex items-center justify-center text-white font-bold text-lg transition-colors"
                 style={{ backgroundColor: getPhColor(unbufferedPH) }}
@@ -480,12 +488,15 @@ export function BufferCapacityVisualization({
 
       {/* Buffer mechanism explanation */}
       <div className="mt-4 bg-yellow-900/30 rounded-lg p-3">
-        <div className="text-xs text-yellow-400 font-semibold mb-1">
-          Hvernig stuðpúðinn virkar:
-        </div>
+        <div className="text-xs text-yellow-400 font-semibold mb-1">Hvernig stuðpúðinn virkar:</div>
         <div className="text-xs text-warm-300 space-y-1">
-          <div>• <span className="text-red-400">Við sýrubótun:</span> {baseName} + H⁺ → {acidName}</div>
-          <div>• <span className="text-blue-400">Við basabótun:</span> {acidName} + OH⁻ → {baseName} + H₂O</div>
+          <div>
+            • <span className="text-red-400">Við sýrubótun:</span> {baseName} + H⁺ → {acidName}
+          </div>
+          <div>
+            • <span className="text-blue-400">Við basabótun:</span> {acidName} + OH⁻ → {baseName} +
+            H₂O
+          </div>
           <div className="text-warm-400 mt-2">
             Stuðpúðagetan er mest þegar pH = pKa (hlutfall {baseName}/{acidName} ≈ 1)
           </div>

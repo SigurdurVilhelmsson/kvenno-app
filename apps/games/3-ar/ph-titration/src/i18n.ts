@@ -12,7 +12,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Hvað er títrun?',
-      description: 'Títrun er aðferð til að finna styrk óþekktrar lausnar með því að bæta við þekktri lausn þar til jafngildispunkti er náð.',
+      description:
+        'Títrun er aðferð til að finna styrk óþekktrar lausnar með því að bæta við þekktri lausn þar til jafngildispunkti er náð.',
     },
     levels: {
       level1: {
@@ -90,7 +91,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'What is titration?',
-      description: 'Titration is a method to find the concentration of an unknown solution by adding a known solution until the equivalence point is reached.',
+      description:
+        'Titration is a method to find the concentration of an unknown solution by adding a known solution until the equivalence point is reached.',
     },
     levels: {
       level1: {
@@ -168,7 +170,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Czym jest miareczkowanie?',
-      description: 'Miareczkowanie to metoda znajdowania stezenia nieznanego roztworu poprzez dodawanie znanego roztworu az do osiagniecia punktu rownowaznikowego.',
+      description:
+        'Miareczkowanie to metoda znajdowania stezenia nieznanego roztworu poprzez dodawanie znanego roztworu az do osiagniecia punktu rownowaznikowego.',
     },
     levels: {
       level1: {

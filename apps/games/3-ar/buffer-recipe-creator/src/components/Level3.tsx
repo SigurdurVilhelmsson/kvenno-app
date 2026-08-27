@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 import { HintSystem, Presence } from '@shared/components';
+import { parseStudentNumber } from '@shared/utils';
 
 import { BufferCapacityVisualization } from './BufferCapacityVisualization';
 import { LEVEL3_PUZZLES } from '../data/level3-puzzles';
@@ -95,7 +96,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
 
   // Step 1: Check ratio answer
   const checkRatio = () => {
-    const userRatio = parseFloat(ratioInput);
+    const userRatio = parseStudentNumber(ratioInput);
     if (isNaN(userRatio) || userRatio <= 0) {
       setRatioFeedback('Vinsamlegast sláðu inn jákvæða tölu.');
       return;
@@ -117,8 +118,8 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
 
   // Step 2: Check moles answer
   const checkMoles = () => {
-    const userAcidMoles = parseFloat(acidMolesInput);
-    const userBaseMoles = parseFloat(baseMolesInput);
+    const userAcidMoles = parseStudentNumber(acidMolesInput);
+    const userBaseMoles = parseStudentNumber(baseMolesInput);
 
     if (isNaN(userAcidMoles) || isNaN(userBaseMoles) || userAcidMoles <= 0 || userBaseMoles <= 0) {
       setMolesFeedback('Vinsamlegast sláðu inn jákvæðar tölur.');
@@ -143,8 +144,8 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
 
   // Step 3: Check volumes answer
   const checkVolumes = () => {
-    const userAcidVolume = parseFloat(acidVolumeInput);
-    const userBaseVolume = parseFloat(baseVolumeInput);
+    const userAcidVolume = parseStudentNumber(acidVolumeInput);
+    const userBaseVolume = parseStudentNumber(baseVolumeInput);
 
     if (
       isNaN(userAcidVolume) ||
@@ -435,8 +436,8 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                   Hlutfall [Basi]/[Sýra]:
                 </label>
                 <input
-                  type="number"
-                  step="0.01"
+                  type="text"
+                  inputMode="decimal"
                   value={ratioInput}
                   onChange={(e) => setRatioInput(e.target.value)}
                   placeholder="t.d. 1.58"
@@ -487,8 +488,8 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                 <div>
                   <label className="block text-sm font-medium text-red-700 mb-1">Mól sýru:</label>
                   <input
-                    type="number"
-                    step="0.0001"
+                    type="text"
+                    inputMode="decimal"
                     value={acidMolesInput}
                     onChange={(e) => setAcidMolesInput(e.target.value)}
                     placeholder="t.d. 0.0039"
@@ -498,8 +499,8 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                 <div>
                   <label className="block text-sm font-medium text-blue-700 mb-1">Mól basa:</label>
                   <input
-                    type="number"
-                    step="0.0001"
+                    type="text"
+                    inputMode="decimal"
                     value={baseMolesInput}
                     onChange={(e) => setBaseMolesInput(e.target.value)}
                     placeholder="t.d. 0.0061"
@@ -551,8 +552,8 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                     Rúmmál sýru (mL):
                   </label>
                   <input
-                    type="number"
-                    step="0.1"
+                    type="text"
+                    inputMode="decimal"
                     value={acidVolumeInput}
                     onChange={(e) => setAcidVolumeInput(e.target.value)}
                     placeholder="t.d. 7.76"
@@ -564,8 +565,8 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                     Rúmmál basa (mL):
                   </label>
                   <input
-                    type="number"
-                    step="0.1"
+                    type="text"
+                    inputMode="decimal"
                     value={baseVolumeInput}
                     onChange={(e) => setBaseVolumeInput(e.target.value)}
                     placeholder="t.d. 12.24"

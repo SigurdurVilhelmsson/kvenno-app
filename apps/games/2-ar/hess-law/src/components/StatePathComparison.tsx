@@ -35,10 +35,8 @@ const EXAMPLES: PathExample[] = [
         id: 'direct',
         name: 'Bein leið',
         color: '#22c55e',
-        steps: [
-          { label: 'C + O₂ → CO₂', deltaH: -393.5 }
-        ],
-        description: 'Fullkomin bruna kolefnis í einu skrefi'
+        steps: [{ label: 'C + O₂ → CO₂', deltaH: -393.5 }],
+        description: 'Fullkomin bruna kolefnis í einu skrefi',
       },
       {
         id: 'via-co',
@@ -46,12 +44,13 @@ const EXAMPLES: PathExample[] = [
         color: '#3b82f6',
         steps: [
           { label: 'C + ½O₂ → CO', deltaH: -110.5 },
-          { label: 'CO + ½O₂ → CO₂', deltaH: -283.0 }
+          { label: 'CO + ½O₂ → CO₂', deltaH: -283.0 },
         ],
-        description: 'Fyrst ófullkomin bruna (CO), síðan áframhaldandi bruna'
-      }
+        description: 'Fyrst ófullkomin bruna (CO), síðan áframhaldandi bruna',
+      },
     ],
-    explanation: 'Hvort sem kolefni brennur beint í CO₂ eða fyrst í CO og síðan í CO₂, er heildarorkubreytingin sú sama: -393.5 kJ'
+    explanation:
+      'Hvort sem kolefni brennur beint í CO₂ eða fyrst í CO og síðan í CO₂, er heildarorkubreytingin sú sama: -393.5 kJ',
   },
   {
     id: 'water-formation',
@@ -64,10 +63,8 @@ const EXAMPLES: PathExample[] = [
         id: 'direct',
         name: 'Bein leið',
         color: '#22c55e',
-        steps: [
-          { label: 'H₂ + ½O₂ → H₂O(l)', deltaH: -285.8 }
-        ],
-        description: 'Bein myndun fljótandi vatns'
+        steps: [{ label: 'H₂ + ½O₂ → H₂O(l)', deltaH: -285.8 }],
+        description: 'Bein myndun fljótandi vatns',
       },
       {
         id: 'via-gas',
@@ -75,12 +72,13 @@ const EXAMPLES: PathExample[] = [
         color: '#f59e0b',
         steps: [
           { label: 'H₂ + ½O₂ → H₂O(g)', deltaH: -241.8 },
-          { label: 'H₂O(g) → H₂O(l)', deltaH: -44.0 }
+          { label: 'H₂O(g) → H₂O(l)', deltaH: -44.0 },
         ],
-        description: 'Fyrst myndast vatnsgufa, síðan þéttist hún í vökva'
-      }
+        description: 'Fyrst myndast vatnsgufa, síðan þéttist hún í vökva',
+      },
     ],
-    explanation: 'Vatn getur myndast beint sem vökvi eða fyrst sem gufa sem síðan þéttist. Heildarorkan er alltaf -285.8 kJ'
+    explanation:
+      'Vatn getur myndast beint sem vökvi eða fyrst sem gufa sem síðan þéttist. Heildarorkan er alltaf -285.8 kJ',
   },
   {
     id: 'ammonia',
@@ -93,10 +91,8 @@ const EXAMPLES: PathExample[] = [
         id: 'direct',
         name: 'Haber-ferlið',
         color: '#22c55e',
-        steps: [
-          { label: '½N₂ + 3/2H₂ → NH₃', deltaH: -46.1 }
-        ],
-        description: 'Bein samsetning í Haber-ferlinu'
+        steps: [{ label: '½N₂ + 3/2H₂ → NH₃', deltaH: -46.1 }],
+        description: 'Bein samsetning í Haber-ferlinu',
       },
       {
         id: 'via-atoms',
@@ -105,13 +101,14 @@ const EXAMPLES: PathExample[] = [
         steps: [
           { label: '½N₂ → N', deltaH: 472.7 },
           { label: '3/2H₂ → 3H', deltaH: 654.8 },
-          { label: 'N + 3H → NH₃', deltaH: -1173.6 }
+          { label: 'N + 3H → NH₃', deltaH: -1173.6 },
         ],
-        description: 'Sundrun í atóm, síðan samsetning - þetta er óraunhæft en sýnir sömu orku'
-      }
+        description: 'Sundrun í atóm, síðan samsetning - þetta er óraunhæft en sýnir sömu orku',
+      },
     ],
-    explanation: 'Þótt atómaleiðin sé ekki framkvæmanleg í raun, sýnir hún að orkubreytingin er ástand-háð, ekki leið-háð'
-  }
+    explanation:
+      'Þótt atómaleiðin sé ekki framkvæmanleg í raun, sýnir hún að orkubreytingin er ástand-háð, ekki leið-háð',
+  },
 ];
 
 interface StatePathComparisonProps {
@@ -121,10 +118,10 @@ interface StatePathComparisonProps {
 
 export function StatePathComparison({ exampleId, compact = false }: StatePathComparisonProps) {
   const [selectedExample, setSelectedExample] = useState(
-    EXAMPLES.find(e => e.id === exampleId) || EXAMPLES[0]
+    EXAMPLES.find((e) => e.id === exampleId) || EXAMPLES[0]
   );
   const [visiblePaths, setVisiblePaths] = useState<string[]>(
-    selectedExample.paths.map(p => p.id)
+    selectedExample.paths.map((p) => p.id)
   );
   const [animating, setAnimating] = useState(false);
   const [showOverlay, setShowOverlay] = useState(true);
@@ -135,9 +132,9 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
   // Calculate energy scale
   const allEnergies = useMemo(() => {
     const energies: number[] = [0];
-    selectedExample.paths.forEach(path => {
+    selectedExample.paths.forEach((path) => {
       let cumulative = 0;
-      path.steps.forEach(step => {
+      path.steps.forEach((step) => {
         cumulative += step.deltaH;
         energies.push(cumulative);
       });
@@ -163,7 +160,8 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
       const stepWidth = (endX - startX) / (totalSteps + 0.5);
 
       let cumulative = 0;
-      const points: { x: number; y: number; label: string; deltaH: number; cumulative: number }[] = [];
+      const points: { x: number; y: number; label: string; deltaH: number; cumulative: number }[] =
+        [];
 
       // Start point
       points.push({ x: startX, y: energyToY(0), label: 'Start', deltaH: 0, cumulative: 0 });
@@ -177,7 +175,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
           y: energyToY(cumulative),
           label: step.label,
           deltaH: step.deltaH,
-          cumulative
+          cumulative,
         });
       });
 
@@ -208,23 +206,25 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
 
   const handleExampleChange = (example: PathExample) => {
     setSelectedExample(example);
-    setVisiblePaths(example.paths.map(p => p.id));
+    setVisiblePaths(example.paths.map((p) => p.id));
     setAnimating(true);
     setTimeout(() => setAnimating(false), 1000);
   };
 
   const togglePath = (pathId: string) => {
-    setVisiblePaths(prev =>
-      prev.includes(pathId)
-        ? prev.filter(p => p !== pathId)
-        : [...prev, pathId]
+    setVisiblePaths((prev) =>
+      prev.includes(pathId) ? prev.filter((p) => p !== pathId) : [...prev, pathId]
     );
   };
 
   return (
-    <div className={`bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-200 ${compact ? 'p-4' : 'p-6'}`}>
+    <div
+      className={`bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-200 ${compact ? 'p-4' : 'p-6'}`}
+    >
       <div className="flex items-center justify-between mb-4">
-        <h3 className={`font-bold text-indigo-800 flex items-center gap-2 ${compact ? 'text-base' : 'text-lg'}`}>
+        <h3
+          className={`font-bold text-indigo-800 flex items-center gap-2 ${compact ? 'text-base' : 'text-lg'}`}
+        >
           <span>🔀</span> Ástandsfall: Mismunandi leiðir
         </h3>
         <div className="flex items-center gap-2">
@@ -233,14 +233,16 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
             onClick={() => setShowOverlay(!showOverlay)}
             className={`w-10 h-5 rounded-full transition-colors ${showOverlay ? 'bg-indigo-500' : 'bg-warm-300'}`}
           >
-            <div className={`w-4 h-4 rounded-full bg-white transform transition-transform ${showOverlay ? 'translate-x-5' : 'translate-x-0.5'}`} />
+            <div
+              className={`w-4 h-4 rounded-full bg-white transform transition-transform ${showOverlay ? 'translate-x-5' : 'translate-x-0.5'}`}
+            />
           </button>
         </div>
       </div>
 
       {/* Example selector */}
       <div className="flex flex-wrap gap-2 mb-4">
-        {EXAMPLES.map(example => (
+        {EXAMPLES.map((example) => (
           <button
             key={example.id}
             onClick={() => handleExampleChange(example)}
@@ -269,23 +271,18 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
 
       {/* Path toggles */}
       <div className="flex flex-wrap gap-3 mb-4">
-        {selectedExample.paths.map(path => (
+        {selectedExample.paths.map((path) => (
           <button
             key={path.id}
             onClick={() => togglePath(path.id)}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all border-2 ${
-              visiblePaths.includes(path.id)
-                ? 'bg-white shadow-xs'
-                : 'bg-warm-100 opacity-50'
+              visiblePaths.includes(path.id) ? 'bg-white shadow-xs' : 'bg-warm-100 opacity-50'
             }`}
             style={{
-              borderColor: visiblePaths.includes(path.id) ? path.color : '#d1d5db'
+              borderColor: visiblePaths.includes(path.id) ? path.color : '#d1d5db',
             }}
           >
-            <div
-              className="w-4 h-4 rounded-full"
-              style={{ backgroundColor: path.color }}
-            />
+            <div className="w-4 h-4 rounded-full" style={{ backgroundColor: path.color }} />
             <span>{path.name}</span>
             <span className="text-warm-500">({path.steps.length} skref)</span>
           </button>
@@ -305,7 +302,13 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
           {/* Grid */}
           <defs>
             <pattern id="state-grid" width="30" height="30" patternUnits="userSpaceOnUse">
-              <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.2" />
+              <path
+                d="M 30 0 L 0 0 0 30"
+                fill="none"
+                stroke="#374151"
+                strokeWidth="0.5"
+                opacity="0.2"
+              />
             </pattern>
           </defs>
           <rect width={width} height={height} fill="url(#state-grid)" />
@@ -320,7 +323,9 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
             strokeWidth="1"
             strokeDasharray="4,4"
           />
-          <text x="20" y={energyToY(0) + 4} fill="#9ca3af" fontSize="10" textAnchor="middle">0</text>
+          <text x="20" y={energyToY(0) + 4} fill="#9ca3af" fontSize="10" textAnchor="middle">
+            0
+          </text>
 
           {/* Target line (final energy) */}
           <line
@@ -358,11 +363,15 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
                   strokeLinejoin="round"
                   opacity={animating ? 0 : 0.9}
                   className={animating ? '' : 'transition-opacity duration-500'}
-                  style={animating ? {
-                    strokeDasharray: '1000',
-                    strokeDashoffset: '1000',
-                    animation: 'drawStatePath 1s ease-out forwards'
-                  } : {}}
+                  style={
+                    animating
+                      ? {
+                          strokeDasharray: '1000',
+                          strokeDashoffset: '1000',
+                          animation: 'drawStatePath 1s ease-out forwards',
+                        }
+                      : {}
+                  }
                 />
 
                 {/* Step markers */}
@@ -385,7 +394,8 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
                         textAnchor="middle"
                         fontWeight="bold"
                       >
-                        {point.deltaH > 0 ? '+' : ''}{point.deltaH.toFixed(0)}
+                        {point.deltaH > 0 ? '+' : ''}
+                        {point.deltaH.toFixed(0)}
                       </text>
                     )}
                   </g>
@@ -395,7 +405,14 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
           })}
 
           {/* Start label */}
-          <text x="60" y={energyToY(0) - 20} fill="#22c55e" fontSize="11" textAnchor="middle" fontWeight="bold">
+          <text
+            x="60"
+            y={energyToY(0) - 20}
+            fill="#22c55e"
+            fontSize="11"
+            textAnchor="middle"
+            fontWeight="bold"
+          >
             Byrjun
           </text>
 
@@ -435,24 +452,27 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
 
       {/* Path descriptions */}
       <div className="space-y-2 mb-4">
-        {selectedExample.paths.map(path => (
-          visiblePaths.includes(path.id) && (
-            <div
-              key={path.id}
-              className="flex items-start gap-2 text-sm p-2 rounded-lg"
-              style={{ backgroundColor: `${path.color}15` }}
-            >
+        {selectedExample.paths.map(
+          (path) =>
+            visiblePaths.includes(path.id) && (
               <div
-                className="w-3 h-3 rounded-full mt-0.5 flex-shrink-0"
-                style={{ backgroundColor: path.color }}
-              />
-              <div>
-                <span className="font-medium" style={{ color: path.color }}>{path.name}:</span>
-                <span className="text-warm-700 ml-1">{path.description}</span>
+                key={path.id}
+                className="flex items-start gap-2 text-sm p-2 rounded-lg"
+                style={{ backgroundColor: `${path.color}15` }}
+              >
+                <div
+                  className="w-3 h-3 rounded-full mt-0.5 flex-shrink-0"
+                  style={{ backgroundColor: path.color }}
+                />
+                <div>
+                  <span className="font-medium" style={{ color: path.color }}>
+                    {path.name}:
+                  </span>
+                  <span className="text-warm-700 ml-1">{path.description}</span>
+                </div>
               </div>
-            </div>
-          )
-        ))}
+            )
+        )}
       </div>
 
       {/* Key insight */}
@@ -463,7 +483,8 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
 
       {/* State function reminder */}
       <div className="mt-4 text-center text-xs text-warm-500">
-        Entalpí (H) er <strong>ástandsfall</strong> — gildi þess fer aðeins eftir upphafs- og lokaástandi, ekki leiðinni þar á milli.
+        Entalpí (H) er <strong>ástandsfall</strong> — gildi þess fer aðeins eftir upphafs- og
+        lokaástandi, ekki leiðinni þar á milli.
       </div>
     </div>
   );

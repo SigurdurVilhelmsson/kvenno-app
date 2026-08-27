@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 import { ErrorBoundary, FadePresence } from '@shared/components';
 import { useGameI18n, useGameProgress } from '@shared/hooks';
+import { parseStudentNumber } from '@shared/utils';
 
 import { FeedbackScreen } from './components/FeedbackScreen';
 import { GameScreen } from './components/GameScreen';
@@ -121,7 +122,7 @@ function App() {
   const checkUserAnswer = () => {
     if (!currentQuestion) return;
 
-    const userNum = parseFloat(userAnswer);
+    const userNum = parseStudentNumber(userAnswer);
     if (isNaN(userNum)) {
       setValidationError('Vinsamlegast sláðu inn gilt númer');
       return;

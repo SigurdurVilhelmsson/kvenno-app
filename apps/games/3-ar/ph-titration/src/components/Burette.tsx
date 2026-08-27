@@ -22,7 +22,7 @@ export const Burette: React.FC<BuretteProps> = ({
   maxVolume = 60,
   isAnimating = false,
   responsive = true,
-  size = 'md'
+  size = 'md',
 }) => {
   const fillPercentage = Math.min((volumeAdded / maxVolume) * 100, 100);
 
@@ -73,7 +73,7 @@ export const Burette: React.FC<BuretteProps> = ({
           aria-valuemax={maxVolume}
           style={{
             background: 'linear-gradient(to bottom, #e0e7ff 0%, #c7d2fe 100%)',
-            boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.1)'
+            boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.1)',
           }}
         >
           {/* Liquid level */}
@@ -87,13 +87,13 @@ export const Burette: React.FC<BuretteProps> = ({
 
           {/* Dripping animation */}
           {isAnimating && (
-            <div
-              className="absolute bottom-[-20px] left-1/2 transform -translate-x-1/2 w-2 h-2 rounded-full bg-blue-500 animate-drip"
-            />
+            <div className="absolute bottom-[-20px] left-1/2 transform -translate-x-1/2 w-2 h-2 rounded-full bg-blue-500 animate-drip" />
           )}
 
           {/* Volume scale marks */}
-          <div className={`absolute ${config.scaleMarks} top-2 bottom-2 flex flex-col justify-between font-bold text-indigo-700`}>
+          <div
+            className={`absolute ${config.scaleMarks} top-2 bottom-2 flex flex-col justify-between font-bold text-indigo-700`}
+          >
             {[0, 10, 20, 30, 40, 50, 60].reverse().map((vol) => (
               <div key={vol} className="relative">
                 <span>{vol}</span>
@@ -111,7 +111,7 @@ export const Burette: React.FC<BuretteProps> = ({
             height: 0,
             borderLeft: `${config.tipSize}px solid transparent`,
             borderRight: `${config.tipSize}px solid transparent`,
-            borderTop: `${Math.round(config.tipSize * 1.875)}px solid #4338ca`
+            borderTop: `${Math.round(config.tipSize * 1.875)}px solid #4338ca`,
           }}
         />
 
@@ -119,7 +119,7 @@ export const Burette: React.FC<BuretteProps> = ({
         <div
           className={`absolute bottom-[-8px] right-[-20px] ${config.stopcockWidth} h-3 rounded-md border-2 border-indigo-900`}
           style={{
-            background: 'linear-gradient(to right, #6366f1, #4338ca)'
+            background: 'linear-gradient(to right, #6366f1, #4338ca)',
           }}
         />
       </div>

@@ -12,7 +12,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Hvað er hvarfhraði?',
-      description: 'Hvarfhraði lýsir hversu hratt efnahvarf á sér stað. Hraðinn fer eftir styrk hvarfefna, hita, hvata og yfirborðsflatarmáli.',
+      description:
+        'Hvarfhraði lýsir hversu hratt efnahvarf á sér stað. Hraðinn fer eftir styrk hvarfefna, hita, hvata og yfirborðsflatarmáli.',
     },
     levels: {
       level1: {
@@ -67,7 +68,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'What is reaction kinetics?',
-      description: 'Reaction rate describes how fast a chemical reaction occurs. The rate depends on reactant concentration, temperature, catalysts, and surface area.',
+      description:
+        'Reaction rate describes how fast a chemical reaction occurs. The rate depends on reactant concentration, temperature, catalysts, and surface area.',
     },
     levels: {
       level1: {
@@ -122,7 +124,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Czym jest kinetyka reakcji?',
-      description: 'Szybkość reakcji opisuje jak szybko zachodzi reakcja chemiczna. Szybkość zależy od stężenia reagentów, temperatury, katalizatorów i powierzchni.',
+      description:
+        'Szybkość reakcji opisuje jak szybko zachodzi reakcja chemiczna. Szybkość zależy od stężenia reagentów, temperatury, katalizatorów i powierzchni.',
     },
     levels: {
       level1: {

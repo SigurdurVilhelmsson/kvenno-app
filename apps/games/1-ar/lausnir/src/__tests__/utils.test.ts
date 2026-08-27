@@ -28,6 +28,15 @@ describe('validateInput', () => {
     expect(result.error).toBeNull();
   });
 
+  it('reads the Icelandic decimal comma', () => {
+    // B9: `parseFloat('0,5')` is 0, so a student writing the answer the way the
+    // game's own worked examples write it graded as a tenth of it.
+    expect(validateInput('0,5')).toEqual({ valid: true, error: null, value: 0.5 });
+    expect(validateInput('12,25')).toEqual({ valid: true, error: null, value: 12.25 });
+    // A full stop still works, for a student on a different keyboard.
+    expect(validateInput('0.5')).toEqual({ valid: true, error: null, value: 0.5 });
+  });
+
   it('returns error for NaN input', () => {
     const result = validateInput('abc');
     expect(result.valid).toBe(false);

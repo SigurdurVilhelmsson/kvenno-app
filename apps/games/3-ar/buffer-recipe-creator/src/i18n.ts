@@ -12,7 +12,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Hvað er stuðpúðalausn?',
-      description: 'Stuðpúðalausn er lausn sem viðheldur næstum föstu pH þegar lítið magn af sýru eða basa er bætt við. Hún inniheldur veika sýru og samstæða basa (eða öfugt).',
+      description:
+        'Stuðpúðalausn er lausn sem viðheldur næstum föstu pH þegar lítið magn af sýru eða basa er bætt við. Hún inniheldur veika sýru og samstæða basa (eða öfugt).',
     },
     levels: {
       level1: {
@@ -85,7 +86,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'What is a buffer solution?',
-      description: 'A buffer solution maintains a nearly constant pH when small amounts of acid or base are added. It contains a weak acid and its conjugate base (or vice versa).',
+      description:
+        'A buffer solution maintains a nearly constant pH when small amounts of acid or base are added. It contains a weak acid and its conjugate base (or vice versa).',
     },
     levels: {
       level1: {
@@ -158,7 +160,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Czym jest roztwor buforowy?',
-      description: 'Roztwor buforowy utrzymuje prawie stale pH gdy dodawane sa male ilosci kwasu lub zasady. Zawiera slaby kwas i jego sprzezona zasade (lub odwrotnie).',
+      description:
+        'Roztwor buforowy utrzymuje prawie stale pH gdy dodawane sa male ilosci kwasu lub zasady. Zawiera slaby kwas i jego sprzezona zasade (lub odwrotnie).',
     },
     levels: {
       level1: {

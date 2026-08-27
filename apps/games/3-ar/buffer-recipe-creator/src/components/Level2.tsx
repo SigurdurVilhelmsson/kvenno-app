@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 import { HintSystem, Presence } from '@shared/components';
+import { parseStudentNumber } from '@shared/utils';
 
 import { BufferCapacityVisualization } from './BufferCapacityVisualization';
 import FlaskComparison from './FlaskComparison';
@@ -115,7 +116,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
 
   // Step 2: Check ratio answer
   const checkRatio = () => {
-    const userRatio = parseFloat(ratioInput);
+    const userRatio = parseStudentNumber(ratioInput);
     if (isNaN(userRatio) || userRatio <= 0) {
       setRatioFeedback('Vinsamlegast sláðu inn jákvæða tölu.');
       return;
@@ -138,8 +139,8 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
 
   // Step 3: Check mass answers
   const checkMass = () => {
-    const userAcidMass = parseFloat(acidMassInput);
-    const userBaseMass = parseFloat(baseMassInput);
+    const userAcidMass = parseStudentNumber(acidMassInput);
+    const userBaseMass = parseStudentNumber(baseMassInput);
 
     if (isNaN(userAcidMass) || isNaN(userBaseMass) || userAcidMass <= 0 || userBaseMass <= 0) {
       setMassFeedback('Vinsamlegast sláðu inn jákvæðar tölur fyrir báða massa.');
@@ -461,8 +462,8 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                   Hlutfall [Basi]/[Sýra]:
                 </label>
                 <input
-                  type="number"
-                  step="0.01"
+                  type="text"
+                  inputMode="decimal"
                   value={ratioInput}
                   onChange={(e) => setRatioInput(e.target.value)}
                   placeholder="t.d. 1.58"
@@ -513,8 +514,8 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                     Sýrumassi (g):
                   </label>
                   <input
-                    type="number"
-                    step="0.01"
+                    type="text"
+                    inputMode="decimal"
                     value={acidMassInput}
                     onChange={(e) => setAcidMassInput(e.target.value)}
                     placeholder={`${problem.acidName}`}
@@ -526,8 +527,8 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                     Basamassi (g):
                   </label>
                   <input
-                    type="number"
-                    step="0.01"
+                    type="text"
+                    inputMode="decimal"
                     value={baseMassInput}
                     onChange={(e) => setBaseMassInput(e.target.value)}
                     placeholder={`${problem.baseName}`}

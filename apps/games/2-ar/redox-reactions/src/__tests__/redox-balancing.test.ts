@@ -1,6 +1,12 @@
 import { describe, it, expect } from 'vitest';
 
-import { gcd, lcm, calculateMultipliers, stripCharges, checkIdentification } from '../utils/redox-balancing';
+import {
+  gcd,
+  lcm,
+  calculateMultipliers,
+  stripCharges,
+  checkIdentification,
+} from '../utils/redox-balancing';
 
 describe('gcd', () => {
   it('returns gcd for common cases', () => {

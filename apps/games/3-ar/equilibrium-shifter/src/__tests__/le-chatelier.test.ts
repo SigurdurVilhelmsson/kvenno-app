@@ -17,9 +17,7 @@ import {
  * Creates a minimal Equilibrium object for testing.
  * Defaults: endothermic, 4 reactant gas moles vs 2 product gas moles.
  */
-const makeEquilibrium = (
-  overrides: Partial<Equilibrium> = {},
-): Equilibrium => ({
+const makeEquilibrium = (overrides: Partial<Equilibrium> = {}): Equilibrium => ({
   id: 1,
   equation: 'N2(g) + 3H2(g) ⇌ 2NH3(g)',
   name: 'Haber process',
@@ -29,9 +27,7 @@ const makeEquilibrium = (
     { formula: 'N2', coefficient: 1, phase: 'g', display: '🔵' },
     { formula: 'H2', coefficient: 3, phase: 'g', display: '⚪' },
   ],
-  products: [
-    { formula: 'NH3', coefficient: 2, phase: 'g', display: '🟢' },
-  ],
+  products: [{ formula: 'NH3', coefficient: 2, phase: 'g', display: '🟢' }],
   thermodynamics: { deltaH: 92, type: 'endothermic' },
   gasMoles: { reactants: 4, products: 2 },
   description: 'Synthesis of ammonia',
@@ -56,9 +52,7 @@ const moreProductMolesEq = makeEquilibrium({
 
 const noGasEq = makeEquilibrium({
   gasMoles: { reactants: 0, products: 0 },
-  reactants: [
-    { formula: 'AgCl', coefficient: 1, phase: 's', display: '⬜' },
-  ],
+  reactants: [{ formula: 'AgCl', coefficient: 1, phase: 's', display: '⬜' }],
   products: [
     { formula: 'Ag+', coefficient: 1, phase: 'aq', display: '🔘' },
     { formula: 'Cl-', coefficient: 1, phase: 'aq', display: '🟡' },
@@ -211,9 +205,7 @@ describe('calculateShift - catalyst', () => {
     expect(result.direction).toBe('none');
     expect(result.explanation).toContain('CATALYST');
     expect(result.explanationIs).toContain('HVATI');
-    expect(result.reasoning).toContain(
-      'NO SHIFT - this is critical to understand!',
-    );
+    expect(result.reasoning).toContain('NO SHIFT - this is critical to understand!');
   });
 });
 

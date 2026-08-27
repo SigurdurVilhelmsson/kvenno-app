@@ -38,7 +38,7 @@ function calculateFractionAboveEa(T: number, Ea: number, maxE: number = 150): nu
     const E2 = (i + 1) * dE;
     const f1 = maxwellBoltzmann(E1, T);
     const f2 = maxwellBoltzmann(E2, T);
-    const area = (f1 + f2) * dE / 2;
+    const area = ((f1 + f2) * dE) / 2;
 
     totalArea += area;
     if (E1 >= Ea) {
@@ -81,7 +81,7 @@ export function MaxwellBoltzmann({
   activationEnergy,
   compareTemperature,
   className = '',
-  responsive = true
+  responsive = true,
 }: MaxwellBoltzmannProps) {
   // Generate curve data
   const { mainCurve, compareCurve, maxY } = useMemo(() => {
@@ -131,20 +131,19 @@ export function MaxwellBoltzmann({
   const scaleY = (y: number) => margin.top + plotHeight - (y / maxY) * plotHeight;
 
   // Generate SVG path for curve
-  const pathD = mainCurve.map((p, i) =>
-    `${i === 0 ? 'M' : 'L'} ${scaleX(p.x)} ${scaleY(p.y)}`
-  ).join(' ');
+  const pathD = mainCurve
+    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${scaleX(p.x)} ${scaleY(p.y)}`)
+    .join(' ');
 
   // Generate SVG path for comparison curve
-  const comparePathD = compareCurve.length > 0
-    ? compareCurve.map((p, i) =>
-        `${i === 0 ? 'M' : 'L'} ${scaleX(p.x)} ${scaleY(p.y)}`
-      ).join(' ')
-    : '';
+  const comparePathD =
+    compareCurve.length > 0
+      ? compareCurve.map((p, i) => `${i === 0 ? 'M' : 'L'} ${scaleX(p.x)} ${scaleY(p.y)}`).join(' ')
+      : '';
 
   // Generate shaded area path (from Ea to end, under curve)
   const shadedPath = useMemo(() => {
-    const startIdx = mainCurve.findIndex(p => p.x >= activationEnergy);
+    const startIdx = mainCurve.findIndex((p) => p.x >= activationEnergy);
     if (startIdx === -1) return '';
 
     const relevantPoints = mainCurve.slice(startIdx);
@@ -162,7 +161,7 @@ export function MaxwellBoltzmann({
     }
 
     // Follow the curve
-    relevantPoints.forEach(p => {
+    relevantPoints.forEach((p) => {
       d += ` L ${scaleX(p.x)} ${scaleY(p.y)}`;
     });
 
@@ -178,9 +177,7 @@ export function MaxwellBoltzmann({
     <div className={`bg-warm-900 rounded-xl p-4 ${className}`}>
       <div className="mb-2 flex justify-between items-center">
         <h3 className="text-white font-semibold text-sm">Orkudreifing Maxwell-Boltzmann</h3>
-        <div className="text-xs text-warm-400">
-          {temperature} K
-        </div>
+        <div className="text-xs text-warm-400">{temperature} K</div>
       </div>
 
       <svg
@@ -195,7 +192,7 @@ export function MaxwellBoltzmann({
       >
         {/* Grid lines */}
         <g className="text-warm-700">
-          {[0, 30, 60, 90, 120].map(x => (
+          {[0, 30, 60, 90, 120].map((x) => (
             <line
               key={`grid-x-${x}`}
               x1={scaleX(x)}
@@ -263,7 +260,7 @@ export function MaxwellBoltzmann({
         </text>
 
         {/* X-axis ticks */}
-        {[0, 30, 60, 90, 120].map(x => (
+        {[0, 30, 60, 90, 120].map((x) => (
           <g key={`tick-${x}`}>
             <line
               x1={scaleX(x)}
@@ -286,12 +283,7 @@ export function MaxwellBoltzmann({
         ))}
 
         {/* Shaded area above Ea */}
-        <path
-          d={shadedPath}
-          fill="#22c55e"
-          fillOpacity="0.3"
-          stroke="none"
-        />
+        <path d={shadedPath} fill="#22c55e" fillOpacity="0.3" stroke="none" />
 
         {/* Activation energy line */}
         <line
@@ -338,17 +330,12 @@ export function MaxwellBoltzmann({
       {/* Percentage display */}
       <div className="mt-3 flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <div
-            className="w-4 h-3 rounded"
-            style={{ backgroundColor: '#22c55e', opacity: 0.5 }}
-          />
+          <div className="w-4 h-3 rounded" style={{ backgroundColor: '#22c55e', opacity: 0.5 }} />
           <span className="text-green-400 text-sm font-semibold">
             {percentAboveEa}% sameinda með E ≥ Ea
           </span>
         </div>
-        <div className="text-xs text-warm-400">
-          Ea = {activationEnergy} kJ/mol
-        </div>
+        <div className="text-xs text-warm-400">Ea = {activationEnergy} kJ/mol</div>
       </div>
 
       {/* Educational note */}

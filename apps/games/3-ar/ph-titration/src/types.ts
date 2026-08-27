@@ -3,20 +3,12 @@
  */
 
 export type TitrationType =
-  | 'strong-strong'
-  | 'weak-strong'
-  | 'strong-weak'
-  | 'polyprotic-diprotic'
-  | 'polyprotic-triprotic';
+  'strong-strong' | 'weak-strong' | 'strong-weak' | 'polyprotic-diprotic' | 'polyprotic-triprotic';
 
 export type DifficultyLevel = 'Byrjandi' | 'Miðlungs' | 'Háþróað' | 'Sérfræðingur';
 
 export type IndicatorType =
-  | 'methyl-orange'
-  | 'methyl-red'
-  | 'bromothymol-blue'
-  | 'phenolphthalein'
-  | 'thymol-blue';
+  'methyl-orange' | 'methyl-red' | 'bromothymol-blue' | 'phenolphthalein' | 'thymol-blue';
 
 export interface ChemicalSpecies {
   formula: string;

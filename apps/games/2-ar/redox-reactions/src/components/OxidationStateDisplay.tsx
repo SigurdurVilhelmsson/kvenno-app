@@ -39,7 +39,7 @@ export function OxidationStateDisplay({
 
   // Calculate electrons transferred for each species
   const electronChanges = useMemo(() => {
-    return changes.map(c => ({
+    return changes.map((c) => ({
       ...c,
       electronsDelta: c.before - c.after, // Negative = oxidized (lost e⁻), positive = reduced (gained e⁻)
       isOxidized: c.after > c.before,
@@ -48,8 +48,8 @@ export function OxidationStateDisplay({
   }, [changes]);
 
   // Find oxidized and reduced species
-  const oxidizedSpecies = electronChanges.find(c => c.isOxidized);
-  const reducedSpecies = electronChanges.find(c => c.isReduced);
+  const oxidizedSpecies = electronChanges.find((c) => c.isOxidized);
+  const reducedSpecies = electronChanges.find((c) => c.isReduced);
 
   // Start animation when component mounts
   useEffect(() => {
@@ -118,9 +118,7 @@ export function OxidationStateDisplay({
         {electronChanges.map((change) => (
           <div key={change.element} className="flex flex-col items-center">
             {/* Element symbol */}
-            <div className={`font-bold ${classes.element} text-white mb-2`}>
-              {change.element}
-            </div>
+            <div className={`font-bold ${classes.element} text-white mb-2`}>{change.element}</div>
 
             {/* Oxidation state change */}
             <div className="flex items-center gap-2">
@@ -156,13 +154,15 @@ export function OxidationStateDisplay({
             </div>
 
             {/* Label: Oxidized/Reduced */}
-            <div className={`mt-2 text-xs font-bold px-2 py-1 rounded ${
-              change.isOxidized
-                ? 'bg-orange-500/30 text-orange-300'
-                : change.isReduced
-                  ? 'bg-blue-500/30 text-blue-300'
-                  : 'bg-warm-500/30 text-warm-400'
-            }`}>
+            <div
+              className={`mt-2 text-xs font-bold px-2 py-1 rounded ${
+                change.isOxidized
+                  ? 'bg-orange-500/30 text-orange-300'
+                  : change.isReduced
+                    ? 'bg-blue-500/30 text-blue-300'
+                    : 'bg-warm-500/30 text-warm-400'
+              }`}
+            >
               {change.isOxidized ? '↑ OXAST' : change.isReduced ? '↓ AFOXAST' : 'Óbreytt'}
             </div>
 
@@ -208,8 +208,13 @@ export function OxidationStateDisplay({
                   <span className="text-orange-300 font-semibold">{oxidizedSpecies.element}</span>
                   <span className="text-warm-400"> oxast: </span>
                   <span className="text-warm-300">
-                    {oxidizedSpecies.before > 0 ? `+${oxidizedSpecies.before}` : oxidizedSpecies.before} →
-                    {oxidizedSpecies.after > 0 ? `+${oxidizedSpecies.after}` : oxidizedSpecies.after}
+                    {oxidizedSpecies.before > 0
+                      ? `+${oxidizedSpecies.before}`
+                      : oxidizedSpecies.before}{' '}
+                    →
+                    {oxidizedSpecies.after > 0
+                      ? `+${oxidizedSpecies.after}`
+                      : oxidizedSpecies.after}
                   </span>
                 </div>
               </div>
@@ -221,8 +226,10 @@ export function OxidationStateDisplay({
                   <span className="text-blue-300 font-semibold">{reducedSpecies.element}</span>
                   <span className="text-warm-400"> afoxast: </span>
                   <span className="text-warm-300">
-                    {reducedSpecies.before > 0 ? `+${reducedSpecies.before}` : reducedSpecies.before} →
-                    {reducedSpecies.after > 0 ? `+${reducedSpecies.after}` : reducedSpecies.after}
+                    {reducedSpecies.before > 0
+                      ? `+${reducedSpecies.before}`
+                      : reducedSpecies.before}{' '}
+                    →{reducedSpecies.after > 0 ? `+${reducedSpecies.after}` : reducedSpecies.after}
                   </span>
                 </div>
               </div>

@@ -113,8 +113,8 @@ describe('thermodynamic scenarios', () => {
   it('Scenario 3: ΔH<0, ΔS<0 is spontaneous at low T, non-spontaneous at high T', () => {
     // Haber process: ΔH = -92, ΔS = -199
     // Crossover T = |ΔH / (ΔS/1000)| = 92 / 0.199 ≈ 462 K
-    const lowT = calculateDeltaG(-92, -199, 200);   // below crossover
-    const highT = calculateDeltaG(-92, -199, 800);   // above crossover
+    const lowT = calculateDeltaG(-92, -199, 200); // below crossover
+    const highT = calculateDeltaG(-92, -199, 800); // above crossover
 
     expect(getSpontaneity(lowT)).toBe('spontaneous');
     expect(getSpontaneity(highT)).toBe('non-spontaneous');
@@ -123,8 +123,8 @@ describe('thermodynamic scenarios', () => {
   it('Scenario 4: ΔH>0, ΔS>0 is spontaneous at high T, non-spontaneous at low T', () => {
     // CaCO3 decomposition: ΔH = 178, ΔS = 161
     // Crossover T = |ΔH / (ΔS/1000)| = 178 / 0.161 ≈ 1106 K
-    const lowT = calculateDeltaG(178, 161, 200);    // below crossover
-    const highT = calculateDeltaG(178, 161, 1200);   // above crossover
+    const lowT = calculateDeltaG(178, 161, 200); // below crossover
+    const highT = calculateDeltaG(178, 161, 1200); // above crossover
 
     expect(getSpontaneity(lowT)).toBe('non-spontaneous');
     expect(getSpontaneity(highT)).toBe('spontaneous');

@@ -15,7 +15,7 @@ export function Molecule({ formula, color, size = 50, className = '' }: Molecule
         width: size,
         height: size,
         backgroundColor: color,
-        fontSize: size > 40 ? '0.75rem' : '0.625rem'
+        fontSize: size > 40 ? '0.75rem' : '0.625rem',
       }}
     >
       {formula}

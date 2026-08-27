@@ -52,7 +52,7 @@ export function getFormula(find: Variable): string {
     P: 'P = nRT/V',
     V: 'V = nRT/P',
     T: 'T = PV/nR',
-    n: 'n = PV/RT'
+    n: 'n = PV/RT',
   };
   return formulas[find];
 }
@@ -65,7 +65,7 @@ export function getUnit(variable: Variable): string {
     P: 'atm',
     V: 'L',
     T: 'K',
-    n: 'mol'
+    n: 'mol',
   };
   return units[variable];
 }
@@ -78,7 +78,7 @@ export function getVariableName(variable: Variable): string {
     P: 'Þrýstingur',
     V: 'Rúmmál',
     T: 'Hiti',
-    n: 'Mólfjöldi'
+    n: 'Mólfjöldi',
   };
   return names[variable];
 }

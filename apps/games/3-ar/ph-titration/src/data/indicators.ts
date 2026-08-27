@@ -10,7 +10,7 @@ export const indicators: Indicator[] = [
     pHRange: [3.1, 4.4],
     colorAcidic: '#ef4444', // Red
     colorBasic: '#f97316', // Orange-yellow
-    description: 'Best for strong acid titrations'
+    description: 'Best for strong acid titrations',
   },
   {
     id: 'methyl-red',
@@ -18,7 +18,7 @@ export const indicators: Indicator[] = [
     pHRange: [4.4, 6.2],
     colorAcidic: '#dc2626', // Red
     colorBasic: '#fbbf24', // Yellow
-    description: 'Good for weak base + strong acid titrations'
+    description: 'Good for weak base + strong acid titrations',
   },
   {
     id: 'bromothymol-blue',
@@ -26,7 +26,7 @@ export const indicators: Indicator[] = [
     pHRange: [6.0, 7.6],
     colorAcidic: '#fbbf24', // Yellow
     colorBasic: '#3b82f6', // Blue
-    description: 'Ideal for strong acid + strong base titrations'
+    description: 'Ideal for strong acid + strong base titrations',
   },
   {
     id: 'phenolphthalein',
@@ -34,7 +34,7 @@ export const indicators: Indicator[] = [
     pHRange: [8.3, 10.0],
     colorAcidic: 'transparent',
     colorBasic: '#ec4899', // Pink
-    description: 'Best for weak acid + strong base titrations'
+    description: 'Best for weak acid + strong base titrations',
   },
   {
     id: 'thymol-blue',
@@ -42,15 +42,15 @@ export const indicators: Indicator[] = [
     pHRange: [8.0, 9.6],
     colorAcidic: '#fbbf24', // Yellow
     colorBasic: '#3b82f6', // Blue
-    description: 'Alternative for weak acid + strong base'
-  }
+    description: 'Alternative for weak acid + strong base',
+  },
 ];
 
 /**
  * Get indicator color based on current pH
  */
 export function getIndicatorColor(indicatorId: string, pH: number): string {
-  const indicator = indicators.find(ind => ind.id === indicatorId);
+  const indicator = indicators.find((ind) => ind.id === indicatorId);
   if (!indicator) return 'transparent';
 
   const [lowPH, highPH] = indicator.pHRange;
@@ -65,11 +65,8 @@ export function getIndicatorColor(indicatorId: string, pH: number): string {
 /**
  * Check if an indicator is appropriate for a titration
  */
-export function isIndicatorAppropriate(
-  indicatorId: string,
-  equivalencePH: number
-): boolean {
-  const indicator = indicators.find(ind => ind.id === indicatorId);
+export function isIndicatorAppropriate(indicatorId: string, equivalencePH: number): boolean {
+  const indicator = indicators.find((ind) => ind.id === indicatorId);
   if (!indicator) return false;
 
   const [lowPH, highPH] = indicator.pHRange;
