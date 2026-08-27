@@ -24,11 +24,13 @@ export function UnitCancellationVisualizer({
   onCancel,
   showCancelButton = false,
   enhancedAnimation = true,
-  autoAnimate = false
+  autoAnimate = false,
 }: UnitCancellationVisualizerProps) {
   const [cancellingUnit, setCancellingUnit] = useState<string | null>(null);
   const [cancelledUnits, setCancelledUnits] = useState<Set<string>>(new Set());
-  const [connectingLines, setConnectingLines] = useState<Array<{numIdx: number, denIdx: number, unit: string}>>([]);
+  const [connectingLines, setConnectingLines] = useState<
+    Array<{ numIdx: number; denIdx: number; unit: string }>
+  >([]);
   const [animatingLine, setAnimatingLine] = useState<number | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -36,21 +38,23 @@ export function UnitCancellationVisualizer({
   const denRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Find matching units that can be cancelled
-  const matchingUnits = numeratorUnits.filter(u => denominatorUnits.includes(u) && !cancelledUnits.has(u));
+  const matchingUnits = numeratorUnits.filter(
+    (u) => denominatorUnits.includes(u) && !cancelledUnits.has(u)
+  );
   const hasMatchingUnits = matchingUnits.length > 0;
 
   // Calculate connecting lines between matching units
   const updateConnectingLines = useCallback(() => {
     if (!enhancedAnimation) return;
 
-    const lines: Array<{numIdx: number, denIdx: number, unit: string}> = [];
+    const lines: Array<{ numIdx: number; denIdx: number; unit: string }> = [];
     const usedDenIndices = new Set<number>();
 
     numeratorUnits.forEach((unit, numIdx) => {
       if (cancelledUnits.has(unit)) return;
 
-      const denIdx = denominatorUnits.findIndex((d, idx) =>
-        d === unit && !usedDenIndices.has(idx) && !cancelledUnits.has(d)
+      const denIdx = denominatorUnits.findIndex(
+        (d, idx) => d === unit && !usedDenIndices.has(idx) && !cancelledUnits.has(d)
       );
 
       if (denIdx !== -1) {
@@ -81,17 +85,20 @@ export function UnitCancellationVisualizer({
     setCancellingUnit(unit);
 
     // Find and animate the connecting line
-    const lineIdx = connectingLines.findIndex(l => l.unit === unit);
+    const lineIdx = connectingLines.findIndex((l) => l.unit === unit);
     if (lineIdx !== -1) {
       setAnimatingLine(lineIdx);
     }
 
-    setTimeout(() => {
-      if (onCancel) onCancel(unit);
-      setCancellingUnit(null);
-      setCancelledUnits(prev => new Set([...prev, unit]));
-      setAnimatingLine(null);
-    }, enhancedAnimation ? 800 : 600);
+    setTimeout(
+      () => {
+        if (onCancel) onCancel(unit);
+        setCancellingUnit(null);
+        setCancelledUnits((prev) => new Set([...prev, unit]));
+        setAnimatingLine(null);
+      },
+      enhancedAnimation ? 800 : 600
+    );
   };
 
   // Determine which units are matching and should be highlighted
@@ -106,7 +113,10 @@ export function UnitCancellationVisualizer({
     return 'normal';
   };
 
-  const getUnitColor = (status: string, position: 'numerator' | 'denominator'): 'blue' | 'green' | 'orange' | 'gray' => {
+  const getUnitColor = (
+    status: string,
+    position: 'numerator' | 'denominator'
+  ): 'blue' | 'green' | 'orange' | 'gray' => {
     if (status === 'cancelling' || status === 'cancelled') return 'gray';
     if (status === 'matching') return 'orange';
     return position === 'numerator' ? 'blue' : 'green';
@@ -135,7 +145,10 @@ export function UnitCancellationVisualizer({
   };
 
   return (
-    <div ref={containerRef} className="bg-gradient-to-b from-warm-50 to-white p-6 rounded-2xl shadow-lg border-2 border-warm-200 relative">
+    <div
+      ref={containerRef}
+      className="bg-gradient-to-b from-warm-50 to-white p-6 rounded-2xl shadow-lg border-2 border-warm-200 relative"
+    >
       {/* SVG overlay for connecting lines */}
       {enhancedAnimation && connectingLines.length > 0 && (
         <svg
@@ -172,7 +185,9 @@ export function UnitCancellationVisualizer({
       {/* Numerator */}
       <div className="mb-2">
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-xs font-semibold text-blue-600 bg-blue-100 px-2 py-1 rounded">Teljari</span>
+          <span className="text-xs font-semibold text-blue-600 bg-blue-100 px-2 py-1 rounded">
+            Teljari
+          </span>
         </div>
         <div className="min-h-[60px] border-2 border-dashed border-blue-300 rounded-xl p-3 bg-blue-50 flex flex-wrap items-center justify-center gap-3">
           {numeratorUnits.length === 0 ? (
@@ -181,7 +196,12 @@ export function UnitCancellationVisualizer({
             numeratorUnits.map((unit, idx) => {
               const status = getUnitStatus(unit, 'numerator');
               return (
-                <div key={`num-${idx}`} ref={el => { numRefs.current[idx] = el; }}>
+                <div
+                  key={`num-${idx}`}
+                  ref={(el) => {
+                    numRefs.current[idx] = el;
+                  }}
+                >
                   <UnitBlock
                     value={1}
                     unit={unit}
@@ -205,7 +225,9 @@ export function UnitCancellationVisualizer({
         <div className="h-1 bg-warm-800 rounded-full" />
         {hasMatchingUnits && (
           <div className="absolute -top-1 left-1/2 transform -translate-x-1/2">
-            <div className={`w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center ${cancellingUnit ? 'animate-ping' : 'animate-pulse'}`}>
+            <div
+              className={`w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center ${cancellingUnit ? 'animate-ping' : 'animate-pulse'}`}
+            >
               <span className="text-white text-lg">×</span>
             </div>
           </div>
@@ -215,7 +237,9 @@ export function UnitCancellationVisualizer({
       {/* Denominator */}
       <div className="mb-4">
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-xs font-semibold text-green-600 bg-green-100 px-2 py-1 rounded">Nefnari</span>
+          <span className="text-xs font-semibold text-green-600 bg-green-100 px-2 py-1 rounded">
+            Nefnari
+          </span>
         </div>
         <div className="min-h-[60px] border-2 border-dashed border-green-300 rounded-xl p-3 bg-green-50 flex flex-wrap items-center justify-center gap-3">
           {denominatorUnits.length === 0 ? (
@@ -224,7 +248,12 @@ export function UnitCancellationVisualizer({
             denominatorUnits.map((unit, idx) => {
               const status = getUnitStatus(unit, 'denominator');
               return (
-                <div key={`denom-${idx}`} ref={el => { denRefs.current[idx] = el; }}>
+                <div
+                  key={`denom-${idx}`}
+                  ref={(el) => {
+                    denRefs.current[idx] = el;
+                  }}
+                >
                   <UnitBlock
                     value={1}
                     unit={unit}
@@ -247,7 +276,8 @@ export function UnitCancellationVisualizer({
       {hasMatchingUnits && (
         <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-xl text-center">
           <p className="text-sm text-orange-700">
-            <span className="font-bold">{matchingUnits.join(', ')}</span> er í bæði teljara og nefnara og strikast út!
+            <span className="font-bold">{matchingUnits.join(', ')}</span> er í bæði teljara og
+            nefnara og strikast út!
           </p>
         </div>
       )}
@@ -267,9 +297,11 @@ export function UnitCancellationVisualizer({
       {!hasMatchingUnits && numeratorUnits.length > 0 && (
         <div className="p-3 bg-green-50 border border-green-200 rounded-xl text-center">
           <p className="text-sm text-green-700 font-semibold">
-            Lokaeining: {numeratorUnits.filter(u => !denominatorUnits.includes(u)).join(' · ') || '(einingalaust)'}
-            {denominatorUnits.filter(u => !numeratorUnits.includes(u)).length > 0 && (
-              <> / {denominatorUnits.filter(u => !numeratorUnits.includes(u)).join(' · ')}</>
+            Lokaeining:{' '}
+            {numeratorUnits.filter((u) => !denominatorUnits.includes(u)).join(' · ') ||
+              '(einingalaust)'}
+            {denominatorUnits.filter((u) => !numeratorUnits.includes(u)).length > 0 && (
+              <> / {denominatorUnits.filter((u) => !numeratorUnits.includes(u)).join(' · ')}</>
             )}
           </p>
         </div>

@@ -38,7 +38,7 @@ export const predictResultingUnit = (currentUnit: string, factor: ConversionFact
   const current = parseUnit(currentUnit);
   const factorParsed = {
     numerator: factor.num.split(' ')[1],
-    denominator: factor.den.split(' ')[1]
+    denominator: factor.den.split(' ')[1],
   };
 
   if (!current.denominator) {
