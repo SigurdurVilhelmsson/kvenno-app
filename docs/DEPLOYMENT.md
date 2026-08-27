@@ -94,7 +94,7 @@ kvenno-backend`, `chown`, and `chmod` on the web root.
 ### nginx
 
 Checked in at `server/nginx-site.conf` — copy to
-`/etc/nginx/sites-available/kvenno` and symlink into `sites-enabled/`.
+`/etc/nginx/sites-available/kvenno.app` and symlink into `sites-enabled/`.
 
 It serves the static site from `/var/www/kvenno.app`, proxies **`/api/` only**
 to the backend on port 8000, redirects legacy year URLs (`/1-ar` →

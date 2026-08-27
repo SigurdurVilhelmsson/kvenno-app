@@ -97,10 +97,10 @@ FRONTEND_URL=https://www.kvenno.app
 
 ```bash
 # Copy nginx configuration
-sudo cp nginx-site.conf /etc/nginx/sites-available/kvenno
+sudo cp nginx-site.conf /etc/nginx/sites-available/kvenno.app
 
 # Enable site
-sudo ln -s /etc/nginx/sites-available/kvenno /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/kvenno.app /etc/nginx/sites-enabled/
 
 # Remove default site (if present)
 sudo rm /etc/nginx/sites-enabled/default
@@ -111,6 +111,15 @@ sudo nginx -t
 # Reload nginx
 sudo systemctl reload nginx
 ```
+
+`nginx -t` validates the files on disk, not what the running process is serving —
+so a passing test says nothing about whether your change is live. After reloading,
+give it a moment before verifying: nginx keeps its old workers alive until their
+connections drain, so a request issued in the same breath as the reload can still
+be answered by the old config.
+
+Note also that `scripts/deploy.sh` never touches nginx configuration. Changes to
+`nginx-site.conf` reach production only by being copied here by hand.
 
 #### 5. Setup systemd Service
 
@@ -642,7 +651,7 @@ sudo journalctl -u kvenno-backend | grep "\[Analysis\]"
 **Important**: For large API responses (8192 token responses), nginx must have proper buffering:
 
 ```nginx
-# In /etc/nginx/sites-available/kvenno
+# In /etc/nginx/sites-available/kvenno.app
 location /api/ {
     proxy_buffering on;  # MUST be "on" for large responses
     proxy_buffer_size 16k;
