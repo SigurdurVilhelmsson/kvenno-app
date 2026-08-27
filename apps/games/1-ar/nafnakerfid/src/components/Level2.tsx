@@ -190,14 +190,14 @@ const challenges: NamingChallenge[] = [
   {
     id: 12,
     formula: 'PCl₅',
-    correctName: 'Fosforpentaklóríð',
+    correctName: 'Fosfórpentaklóríð',
     type: 'molecular',
     prefix1: '',
     prefix2: 'penta',
     steps: {
       identifyType: 'Sameind (tveir málmleysingjar)',
       nameParts: ['P: 1 atóm → (sleppum mono)', 'Cl: 5 atóm → penta', 'klór → klóríð'],
-      finalName: 'Fosfor + penta + klóríð = Fosforpentaklóríð',
+      finalName: 'Fosfór + penta + klóríð = Fosfórpentaklóríð',
     },
     hint: 'P og Cl eru báðir málmleysingjar',
   },
@@ -226,6 +226,51 @@ const typeNames: Record<CompoundType, { name: string; color: string; description
   },
 };
 
+/**
+ * How much of the worked breakdown Step 2 shows for a given item.
+ *
+ * B14: Step 2 used to end with `→ {finalName}` and Step 3 repeated it in a box
+ * labelled "Mundu:", directly above the input asking for the name. Both are
+ * gone; what replaces them is a fade, so the method is still taught before it
+ * is tested.
+ *
+ * Support is withdrawn per compound type rather than per position, because the
+ * twelve items introduce four types and then revisit three of them: the first
+ * item of a type is worked in full, the second hides the transformations, and
+ * any later one gives only the pattern. Ordered by position instead, the
+ * revisit items — which are the ones that should be independent — would have
+ * come out with the most help.
+ */
+type SupportLevel = 'full' | 'partial' | 'none';
+
+export function supportLadder(items: { type: CompoundType }[]): SupportLevel[] {
+  const seen = new Map<CompoundType, number>();
+  return items.map((item) => {
+    const n = (seen.get(item.type) ?? 0) + 1;
+    seen.set(item.type, n);
+    return n === 1 ? 'full' : n === 2 ? 'partial' : 'none';
+  });
+}
+
+/**
+ * At `partial` support the input to each step stays and the transformation is
+ * blanked, so `súrefni → oxíð` becomes `súrefni → ?`. A part with nothing to
+ * transform is shown whole.
+ */
+function fadePart(part: string, support: SupportLevel): string {
+  if (support !== 'partial') return part;
+  const arrow = part.indexOf('→');
+  return arrow === -1 ? part : `${part.slice(0, arrow + 1)} ?`;
+}
+
+/** The naming pattern for a type, shown once the worked parts are withdrawn. */
+const TYPE_PATTERNS: Record<CompoundType, string> = {
+  'ionic-simple': 'málmur + málmleysingi með -íð endingu',
+  'ionic-variable': 'málmur + (rómversk tala fyrir hleðsluna) + -íð',
+  'ionic-polyatomic': 'málmur + nafn fjölatóma jónarinnar',
+  molecular: 'grískt forskeyti + fyrra frumefni, forskeyti + seinna með -íð',
+};
+
 const greekPrefixes = [
   { count: 1, prefix: 'mono-', note: '(sleppum fyrir fyrra frumefni)' },
   { count: 2, prefix: 'dí-', note: '' },
@@ -239,6 +284,8 @@ const greekPrefixes = [
 
 type Step = 'identify' | 'build' | 'answer' | 'feedback';
 
+const SUPPORT = supportLadder(challenges);
+
 export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level2Props) {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [step, setStep] = useState<Step>('identify');
@@ -251,6 +298,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
   const challenge = challenges[currentChallenge];
   const typeInfo = typeNames[challenge.type];
+  const support = SUPPORT[currentChallenge];
 
   const normalizeAnswer = (answer: string): string => {
     return answer
@@ -459,16 +507,27 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               <div className="text-warm-700 mb-4">{challenge.steps.identifyType}</div>
 
               <div className="bg-white rounded-lg p-4 space-y-2">
-                {challenge.steps.nameParts.map((part, idx) => (
-                  <div key={idx} className="flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-full bg-warm-200 flex items-center justify-center text-sm font-bold">
-                      {idx + 1}
-                    </span>
-                    <span>{part}</span>
+                {support === 'none' ? (
+                  <div className="text-warm-700">
+                    <div className="font-bold mb-1">
+                      {t('level2.ui.pattern', 'Mynstrið fyrir þessa tegund:')}
+                    </div>
+                    <div>{TYPE_PATTERNS[challenge.type]}</div>
                   </div>
-                ))}
+                ) : (
+                  challenge.steps.nameParts.map((part, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-warm-200 flex items-center justify-center text-sm font-bold">
+                        {idx + 1}
+                      </span>
+                      <span>{fadePart(part, support)}</span>
+                    </div>
+                  ))
+                )}
                 <div className="pt-2 border-t mt-2">
-                  <span className="font-bold text-warm-700">→ {challenge.steps.finalName}</span>
+                  <span className="font-bold text-warm-700">
+                    {t('level2.ui.nowBuildIt', 'Byggðu nafnið upp eftir reglunni.')}
+                  </span>
                 </div>
               </div>
             </div>
@@ -506,8 +565,10 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             </h2>
 
             <div className="bg-warm-50 rounded-xl p-4 mb-4">
-              <div className="text-sm text-warm-600 mb-2">{t('level2.ui.remember', 'Mundu:')}</div>
-              <div className="text-warm-700">{challenge.steps.finalName}</div>
+              <div className="text-sm text-warm-600 mb-2">
+                {t('level2.ui.compoundType', 'Tegund:')}
+              </div>
+              <div className="text-warm-700">{challenge.steps.identifyType}</div>
             </div>
 
             <input

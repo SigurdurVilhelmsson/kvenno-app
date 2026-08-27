@@ -124,8 +124,8 @@ const namingRules: NamingRule[] = [
       },
       {
         formula: 'PCl₅',
-        name: 'Fosforpentaklóríð',
-        explanation: 'P (eitt) + Cl₅ (fimm) = fosfor + penta + klóríð',
+        name: 'Fosfórpentaklóríð',
+        explanation: 'P (eitt) + Cl₅ (fimm) = fosfór + penta + klóríð',
       },
     ],
     color: 'orange',
