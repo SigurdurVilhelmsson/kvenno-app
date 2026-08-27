@@ -546,7 +546,18 @@ export const SCENARIOS: Scenario[] = [
   },
 ];
 
-// Visual component showing before/after states
+/**
+ * Before/after beakers for the concentration scenarios.
+ *
+ * B16: the "after" beaker used to render the answer — its fill, its molecules
+ * and, in words, its molarity — before the student had answered, dimmed to 30%
+ * opacity but fully legible. Three of the six scenarios are this type, which is
+ * the review's "half of Level 2's items display the answer".
+ *
+ * It is now an empty outline with a question mark until the answer is in, which
+ * is what the sibling `TemperatureComparison` already did and what Level 1's
+ * prediction gate does. The student commits, then sees.
+ */
 function BeforeAfterVisual({
   before,
   after,
@@ -561,8 +572,32 @@ function BeforeAfterVisual({
   const renderBeaker = (
     data: { molecules: number; volumeML: number; concentration: number },
     label: string,
-    opacity: number = 1
+    { revealed = true }: { revealed?: boolean } = {}
   ) => {
+    if (!revealed) {
+      return (
+        <div className="text-center">
+          <div className="text-sm font-semibold mb-2 text-warm-700">{label}</div>
+          <svg viewBox="0 0 80 120" className="w-24 h-32 mx-auto" role="img" aria-label="Óþekkt">
+            <path
+              d="M10 10 L10 100 Q10 110 20 110 L60 110 Q70 110 70 100 L70 10"
+              fill="none"
+              stroke="#9ca3af"
+              strokeWidth="2"
+              strokeDasharray="4 3"
+            />
+            <text x="40" y="70" textAnchor="middle" fontSize="28" fill="#9ca3af" fontWeight="bold">
+              ?
+            </text>
+          </svg>
+          <div className="text-xs text-warm-500 mt-1">
+            <div>?</div>
+            <div className="font-bold">? M</div>
+          </div>
+        </div>
+      );
+    }
+
     const fillPercent = (data.volumeML / maxVolume) * 80;
     const displayMolecules = Math.min(data.molecules, 50);
 
@@ -593,7 +628,7 @@ function BeforeAfterVisual({
     const ySpacing = availableLiquidHeight / (rows + 1);
 
     return (
-      <div className="text-center" style={{ opacity }}>
+      <div className="text-center">
         <div className="text-sm font-semibold mb-2 text-warm-700">{label}</div>
         <svg viewBox="0 0 80 120" className="w-24 h-32 mx-auto">
           {/* Beaker */}
@@ -657,9 +692,9 @@ function BeforeAfterVisual({
 
   return (
     <div className="flex items-center justify-center gap-4 my-4">
-      {renderBeaker(before, 'Fyrir', 1)}
+      {renderBeaker(before, 'Fyrir')}
       <div className="text-2xl text-warm-400">→</div>
-      {renderBeaker(after, 'Eftir', showAfter ? 1 : 0.3)}
+      {renderBeaker(after, 'Eftir', { revealed: showAfter })}
     </div>
   );
 }

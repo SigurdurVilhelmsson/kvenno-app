@@ -145,21 +145,76 @@ Two authored-but-unrendered items were also wired up: every `real_world` challen
 (the one challenge type with no other feedback), and `requiredSteps` rendered untranslated English —
 `multiply by molar mass` — at students whenever a step was not one of three magic strings.
 
+**Fixed 2026-08-27 by Phase 4 — the four answer leaks, the collapsed explanation, the decimal comma,
+and the empty misconception slots.** Written up in the roadmap's `Phase 4, as it actually turned out`
+section; the short version is below, along with the three live defects the work turned up.
+
+- **The `FeedbackPanel` collapse (`FeedbackPanel.tsx:104`).** One `useState(false)` hid the authored
+  explanation behind a click at all 26 call sites in all three years. It now opens expanded, with a
+  `defaultExpanded` config flag for a call site whose text is already visible elsewhere. The two
+  obvious-looking adjacent fixes really were no-ops, as recorded: `showExplanation` was already
+  `true` and gates only the toggle button.
+- **B14–B17, the four answer leaks.** Nafnakerfið L2 printed the finished name twice before asking
+  for it (Step 2's breakdown and a "Mundu:" box above the input) and now fades its worked support
+  per compound type instead. Lotukerfið L2 was answerable from the reference table beneath it, so the
+  datum the current question asks about is masked until the student commits, then revealed. Lausnir
+  L2 drew the "after" beaker in full at 30% opacity, and now draws an empty outline with a question
+  mark. Einingagreining L3 labelled the efficient path `⚡ Skilvirkt` on the button the student was
+  being asked to pick, and now settles it in the feedback instead.
+- **B9/B10, the decimal comma, repo-wide.** All 27 `type="number"` inputs across the three years were
+  audited, not the two the Year-1 review named. Thirteen take a non-integer answer and are now
+  `type="text"` + `inputMode="decimal"`; fourteen take a whole count and keep `type="number"`.
+  `parseStudentNumber` moved to `@shared/utils`. A repo-wide scan in
+  `packages/shared/utils/__tests__/decimal-input.test.ts` allow-lists the count-only files by what
+  they count.
+- **The misconception slots.** Lotukerfið and Stilla efnajöfnur were the two Y1 games leaving the
+  channel entirely empty — the two where, as the review says, the bare word "Rangt" really was the
+  whole response. Both now read what the student actually answered and name the single confusion that
+  explains it, and both decline to speak where they cannot read the answer.
+
+**Three live defects were found while doing that, none of them on the reviews' lists**, which is why
+the paragraph below is narrower than it used to be:
+
+1. **B5's `Fosfór` correction was only half-applied.** It reached `nafnakerfid/src/data/compounds.ts`
+   and `naming.ts`, but Levels 1 and 2 hardcode their own worked examples and both still taught and
+   **graded** `Fosforpentaklóríð` — so a student writing the corrected name in Level 2 was marked
+   wrong. `compound-names.test.ts` only ever read the data file; it now checks every formula the
+   components hardcode against it.
+2. **`1-ar/dimensional-analysis` L3-10 marked two paths efficient**, a one-step direct conversion and
+   a two-step chain to the same answer, so the level gave full efficiency credit for the chain it
+   exists to talk a student out of, against a prompt asking for the _most_ efficient route. Its
+   sibling L3-3 already used the other convention: efficient means at the minimum step count, where
+   two paths can tie.
+3. **`1-ar/lotukerfid`'s table legend built plurals by appending "ar" to the singular**, so six of its
+   eight chips read `Alkalímálmurar` and the like. `málmur` pluralises to `málmar`.
+
+**The general lesson from the leak work, worth having before the next one:** removing a leak often
+removes the student's only route to the answer. Masking the atomic masses on Lotukerfið L2 left its
+order-by-mass items answerable only by the rule the level teaches — and Ar/K and Co/Ni inside its own
+draw pool contradict that rule. The generator now cannot produce such a triple, and the teaching text
+names the exception. Check for this every time.
+
 **No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
-fixed, and each carries a test that fails against the pre-fix code. The entries above record what
-each one was; what remains is enrichment and open decisions, not defects. **What the Phase 3 entry
-above should be read as saying is that "the reviews found everything" was never the claim** — the
-four defects it lists were invisible to a reading review and turned up the moment old data was run
-through the graders.
+fixed, as are the three above, and each carries a test that fails against the pre-fix code. The
+entries above record what each one was; what remains is enrichment and open decisions, not defects.
+**What the Phase 3 entry above should be read as saying is that "the reviews found everything" was
+never the claim** — the four defects it lists were invisible to a reading review and turned up the
+moment old data was run through the graders, and the three Phase 4 defects above turned up the same
+way, by touching the code rather than by reading a list.
 
 **The current work order is [`plans/2026-08-16-games-roadmap.md`](plans/2026-08-16-games-roadmap.md)**, with the first phase specified in [`plans/2026-08-16-phase-1-correctness.md`](plans/2026-08-16-phase-1-correctness.md). Both are live August-2026 documents, not history.
 
 **Read the roadmap's `STATUS` block first.** Its phase bodies are the 2026-08-16 text and are kept
 intact so the reasoning stays legible, which means parts of them describe defects that have since
-been fixed. The status block at the top carries what has actually happened — as of 2026-08-26,
-Phases 1, 1b and 2 are done, and **the Tier-0 correctness list is empty**: B4 and B13 closed on
-2026-08-26 (PR #30), B5 and B12 on 2026-08-26. Each of the nine now carries a test that fails if it
-returns.
+been fixed. The status block at the top carries what has actually happened — as of 2026-08-27,
+Phases 1, 1b, 2 and 3 are done, Phase 4's unblocked parts are done, and **the Tier-0 correctness list
+is empty**: B4 and B13 closed on 2026-08-26 (PR #30), B5 and B12 on 2026-08-26. Each of the nine now
+carries a test that fails if it returns.
+
+**The one Phase 4 item still open is level gating, and it is a decision, not code.** February built
+it, April removed it, the August review wants it back, and gating strings for 15 games already exist
+in three languages with no consumers — 14 under `menu.levels.*.locked`, plus `1-ar/nafnakerfid` under
+`completeLevel1First`/`completeLevel2First`. Grep both key names before wiring or stripping.
 
 ## Icelandic terminology
 

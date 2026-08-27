@@ -1,9 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import {
-  organicToMolecule,
-  type OrganicMolecule,
-} from '../utils/organicConverter';
+import { organicToMolecule, type OrganicMolecule } from '../utils/organicConverter';
 
 describe('organicToMolecule', () => {
   describe('alkane molecules (all single bonds)', () => {

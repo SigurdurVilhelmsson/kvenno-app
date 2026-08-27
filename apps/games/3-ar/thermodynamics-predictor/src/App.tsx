@@ -16,6 +16,7 @@ import type {
   VerticalLineConfig,
 } from '@shared/components';
 import { useGameI18n, useGameProgress } from '@shared/hooks';
+import { parseStudentNumber } from '@shared/utils';
 
 import { EntropyVisualization } from './components/EntropyVisualization';
 import { PROBLEMS } from './data';
@@ -119,7 +120,7 @@ function App() {
     const calculatedDeltaG = calcDeltaGForProblem(temperature);
     const correctSpontaneity = getSpontaneity(calculatedDeltaG);
 
-    const deltaGDiff = Math.abs(parseFloat(userDeltaG) - calculatedDeltaG);
+    const deltaGDiff = Math.abs(parseStudentNumber(userDeltaG) - calculatedDeltaG);
     const deltaGCorrect = deltaGDiff <= 3;
     const spontaneityCorrect = userSpontaneity === correctSpontaneity;
 
@@ -849,8 +850,8 @@ function App() {
                       ΔG° við {temperature} K (kJ/mol):
                     </label>
                     <input
-                      type="number"
-                      step="0.1"
+                      type="text"
+                      inputMode="decimal"
                       value={userDeltaG}
                       onChange={(e) => setUserDeltaG(e.target.value)}
                       className="w-full px-4 py-2 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-none"

@@ -14,6 +14,9 @@
  * - a solution step left in English, which the level renders verbatim.
  */
 
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import { describe, it, expect } from 'vitest';
 
 import { level3Challenges } from '../data/challenges';
@@ -139,4 +142,57 @@ describe('nothing renders English at a student', () => {
   it.each(steps)('%s — %s is not untranslated English', (_id, step) => {
     expect(/^[a-z][a-z\s]*$/.test(step)).toBe(false);
   });
+});
+
+describe('B17 — the efficiency items do not print the answer on the buttons', () => {
+  const efficiencies = level3Challenges.filter((c) => c.type === 'efficiency');
+
+  // The prompt asks the student to find the path with the fewest steps, and the
+  // buttons used to carry a green "N skref" badge and a literal "⚡ Skilvirkt"
+  // label on every efficient one. Both are gone from the choice UI; this checks
+  // the component source, because the leak was in what the button renders and
+  // there is no state in which the old markup would be correct.
+  const source = readFileSync(join(__dirname, '..', 'components', 'Level3.tsx'), 'utf8');
+
+  /** The block that renders the choice buttons, up to the answer input. */
+  const choiceBlock = (() => {
+    const start = source.indexOf('{/* Efficiency problem paths');
+    const end = source.indexOf('{/* Answer input */}', start);
+    expect(start, 'the efficiency path block moved').toBeGreaterThan(-1);
+    expect(end, 'the answer input moved').toBeGreaterThan(start);
+    return source.slice(start, end);
+  })();
+
+  it('does not label the efficient path on the button', () => {
+    expect(choiceBlock).not.toMatch(/Skilvirkt/);
+    expect(choiceBlock).not.toMatch(/path\.efficient/);
+  });
+
+  it('does not print the step count on the button', () => {
+    expect(choiceBlock).not.toMatch(/stepCount/);
+  });
+
+  it('still shows the steps themselves, which is what the student counts', () => {
+    expect(choiceBlock).toMatch(/path\.steps\.map/);
+  });
+
+  it('settles which path was efficient in the feedback instead', () => {
+    const feedback = source.slice(source.indexOf('{showFeedback && scores &&'));
+    expect(feedback).toMatch(/Skilvirkt/);
+    expect(feedback).toMatch(/stepCount/);
+  });
+
+  it.each(efficiencies.map((c) => [c.id, c] as const))(
+    '%s — efficient means fewest steps, which is what the prompt promises',
+    (id, challenge) => {
+      if (challenge.type !== 'efficiency') throw new Error(`${id} is not an efficiency item`);
+      const fewest = Math.min(...challenge.possiblePaths.map((p) => p.stepCount));
+      for (const path of challenge.possiblePaths) {
+        expect(
+          path.efficient,
+          `${id}: a ${path.stepCount}-step path is marked efficient=${path.efficient}, fewest is ${fewest}`
+        ).toBe(path.stepCount === fewest);
+      }
+    }
+  );
 });

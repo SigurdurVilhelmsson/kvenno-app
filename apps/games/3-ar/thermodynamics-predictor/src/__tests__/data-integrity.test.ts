@@ -63,12 +63,15 @@ describe('problems data integrity - required fields', () => {
 
   it('every problem has a positive defaultTemp in Kelvin', () => {
     for (const problem of allProblems) {
-      expect(problem.defaultTemp, `Problem "${problem.name}" has non-positive temp`).toBeGreaterThan(0);
+      expect(
+        problem.defaultTemp,
+        `Problem "${problem.name}" has non-positive temp`
+      ).toBeGreaterThan(0);
     }
   });
 
   it('all problem ids are unique', () => {
-    const ids = allProblems.map(p => p.id);
+    const ids = allProblems.map((p) => p.id);
     const uniqueIds = new Set(ids);
     expect(uniqueIds.size).toBe(ids.length);
   });
@@ -76,38 +79,62 @@ describe('problems data integrity - required fields', () => {
 
 describe('problems data integrity - scenario classification', () => {
   it('scenario 1 problems have ΔH<0 and ΔS>0', () => {
-    const scenario1 = allProblems.filter(p => p.scenario === 1);
+    const scenario1 = allProblems.filter((p) => p.scenario === 1);
     expect(scenario1.length).toBeGreaterThan(0);
     for (const problem of scenario1) {
-      expect(problem.deltaH, `Problem "${problem.name}" (scenario 1) should have ΔH<0`).toBeLessThan(0);
-      expect(problem.deltaS, `Problem "${problem.name}" (scenario 1) should have ΔS>0`).toBeGreaterThan(0);
+      expect(
+        problem.deltaH,
+        `Problem "${problem.name}" (scenario 1) should have ΔH<0`
+      ).toBeLessThan(0);
+      expect(
+        problem.deltaS,
+        `Problem "${problem.name}" (scenario 1) should have ΔS>0`
+      ).toBeGreaterThan(0);
     }
   });
 
   it('scenario 2 problems have ΔH>0 and ΔS<0', () => {
-    const scenario2 = allProblems.filter(p => p.scenario === 2);
+    const scenario2 = allProblems.filter((p) => p.scenario === 2);
     expect(scenario2.length).toBeGreaterThan(0);
     for (const problem of scenario2) {
-      expect(problem.deltaH, `Problem "${problem.name}" (scenario 2) should have ΔH>0`).toBeGreaterThan(0);
-      expect(problem.deltaS, `Problem "${problem.name}" (scenario 2) should have ΔS<0`).toBeLessThan(0);
+      expect(
+        problem.deltaH,
+        `Problem "${problem.name}" (scenario 2) should have ΔH>0`
+      ).toBeGreaterThan(0);
+      expect(
+        problem.deltaS,
+        `Problem "${problem.name}" (scenario 2) should have ΔS<0`
+      ).toBeLessThan(0);
     }
   });
 
   it('scenario 3 problems have ΔH<0 and ΔS<0', () => {
-    const scenario3 = allProblems.filter(p => p.scenario === 3);
+    const scenario3 = allProblems.filter((p) => p.scenario === 3);
     expect(scenario3.length).toBeGreaterThan(0);
     for (const problem of scenario3) {
-      expect(problem.deltaH, `Problem "${problem.name}" (scenario 3) should have ΔH<0`).toBeLessThan(0);
-      expect(problem.deltaS, `Problem "${problem.name}" (scenario 3) should have ΔS<0`).toBeLessThan(0);
+      expect(
+        problem.deltaH,
+        `Problem "${problem.name}" (scenario 3) should have ΔH<0`
+      ).toBeLessThan(0);
+      expect(
+        problem.deltaS,
+        `Problem "${problem.name}" (scenario 3) should have ΔS<0`
+      ).toBeLessThan(0);
     }
   });
 
   it('scenario 4 problems have ΔH>0 and ΔS>0', () => {
-    const scenario4 = allProblems.filter(p => p.scenario === 4);
+    const scenario4 = allProblems.filter((p) => p.scenario === 4);
     expect(scenario4.length).toBeGreaterThan(0);
     for (const problem of scenario4) {
-      expect(problem.deltaH, `Problem "${problem.name}" (scenario 4) should have ΔH>0`).toBeGreaterThan(0);
-      expect(problem.deltaS, `Problem "${problem.name}" (scenario 4) should have ΔS>0`).toBeGreaterThan(0);
+      expect(
+        problem.deltaH,
+        `Problem "${problem.name}" (scenario 4) should have ΔH>0`
+      ).toBeGreaterThan(0);
+      expect(
+        problem.deltaS,
+        `Problem "${problem.name}" (scenario 4) should have ΔS>0`
+      ).toBeGreaterThan(0);
     }
   });
 });

@@ -8,7 +8,7 @@ export const REACTIONS: Reaction[] = [
     reactant1: { formula: 'H₂', coeff: 2, color: '#3b82f6' },
     reactant2: { formula: 'O₂', coeff: 1, color: '#ef4444' },
     products: [{ formula: 'H₂O', coeff: 2, color: '#8b5cf6' }],
-    difficulty: 'easy'
+    difficulty: 'easy',
   },
   {
     id: '2',
@@ -16,7 +16,7 @@ export const REACTIONS: Reaction[] = [
     reactant1: { formula: 'Mg', coeff: 2, color: '#a855f7' },
     reactant2: { formula: 'O₂', coeff: 1, color: '#ef4444' },
     products: [{ formula: 'MgO', coeff: 2, color: '#f97316' }],
-    difficulty: 'easy'
+    difficulty: 'easy',
   },
   {
     id: '3',
@@ -24,7 +24,7 @@ export const REACTIONS: Reaction[] = [
     reactant1: { formula: 'C', coeff: 1, color: '#1f2937' },
     reactant2: { formula: 'O₂', coeff: 1, color: '#ef4444' },
     products: [{ formula: 'CO₂', coeff: 1, color: '#6b7280' }],
-    difficulty: 'easy'
+    difficulty: 'easy',
   },
   {
     id: '7',
@@ -32,7 +32,7 @@ export const REACTIONS: Reaction[] = [
     reactant1: { formula: 'Na', coeff: 2, color: '#fbbf24' },
     reactant2: { formula: 'Cl₂', coeff: 1, color: '#84cc16' },
     products: [{ formula: 'NaCl', coeff: 2, color: '#f3f4f6' }],
-    difficulty: 'easy'
+    difficulty: 'easy',
   },
   {
     id: '8',
@@ -40,7 +40,7 @@ export const REACTIONS: Reaction[] = [
     reactant1: { formula: 'K', coeff: 2, color: '#c084fc' },
     reactant2: { formula: 'Cl₂', coeff: 1, color: '#84cc16' },
     products: [{ formula: 'KCl', coeff: 2, color: '#e5e7eb' }],
-    difficulty: 'easy'
+    difficulty: 'easy',
   },
   {
     id: '9',
@@ -48,7 +48,7 @@ export const REACTIONS: Reaction[] = [
     reactant1: { formula: 'Ca', coeff: 1, color: '#fb923c' },
     reactant2: { formula: 'S', coeff: 1, color: '#fde047' },
     products: [{ formula: 'CaS', coeff: 1, color: '#fcd34d' }],
-    difficulty: 'easy'
+    difficulty: 'easy',
   },
   {
     id: '10',
@@ -56,7 +56,7 @@ export const REACTIONS: Reaction[] = [
     reactant1: { formula: 'Zn', coeff: 1, color: '#94a3b8' },
     reactant2: { formula: 'S', coeff: 1, color: '#fde047' },
     products: [{ formula: 'ZnS', coeff: 1, color: '#f59e0b' }],
-    difficulty: 'easy'
+    difficulty: 'easy',
   },
   {
     id: '11',
@@ -64,7 +64,7 @@ export const REACTIONS: Reaction[] = [
     reactant1: { formula: 'Cu', coeff: 2, color: '#f97316' },
     reactant2: { formula: 'O₂', coeff: 1, color: '#ef4444' },
     products: [{ formula: 'CuO', coeff: 2, color: '#78350f' }],
-    difficulty: 'easy'
+    difficulty: 'easy',
   },
 
   // MEDIUM LEVEL - 3:1, 1:3, and 2:3 ratios
@@ -74,7 +74,7 @@ export const REACTIONS: Reaction[] = [
     reactant1: { formula: 'N₂', coeff: 1, color: '#10b981' },
     reactant2: { formula: 'H₂', coeff: 3, color: '#3b82f6' },
     products: [{ formula: 'NH₃', coeff: 2, color: '#f59e0b' }],
-    difficulty: 'medium'
+    difficulty: 'medium',
   },
   {
     id: '12',
@@ -82,7 +82,7 @@ export const REACTIONS: Reaction[] = [
     reactant1: { formula: 'Al', coeff: 4, color: '#cbd5e1' },
     reactant2: { formula: 'O₂', coeff: 3, color: '#ef4444' },
     products: [{ formula: 'Al₂O₃', coeff: 2, color: '#f3f4f6' }],
-    difficulty: 'medium'
+    difficulty: 'medium',
   },
   {
     id: '13',
@@ -90,7 +90,7 @@ export const REACTIONS: Reaction[] = [
     reactant1: { formula: 'Ca', coeff: 3, color: '#fb923c' },
     reactant2: { formula: 'N₂', coeff: 1, color: '#10b981' },
     products: [{ formula: 'Ca₃N₂', coeff: 1, color: '#fdba74' }],
-    difficulty: 'medium'
+    difficulty: 'medium',
   },
   {
     id: '14',
@@ -98,7 +98,7 @@ export const REACTIONS: Reaction[] = [
     reactant1: { formula: 'C', coeff: 2, color: '#1f2937' },
     reactant2: { formula: 'O₂', coeff: 1, color: '#ef4444' },
     products: [{ formula: 'CO', coeff: 2, color: '#4b5563' }],
-    difficulty: 'medium'
+    difficulty: 'medium',
   },
   {
     id: '15',
@@ -106,7 +106,7 @@ export const REACTIONS: Reaction[] = [
     reactant1: { formula: 'Mg', coeff: 3, color: '#a855f7' },
     reactant2: { formula: 'N₂', coeff: 1, color: '#10b981' },
     products: [{ formula: 'Mg₃N₂', coeff: 1, color: '#c084fc' }],
-    difficulty: 'medium'
+    difficulty: 'medium',
   },
 
   // HARD LEVEL - Complex ratios and larger coefficients
@@ -116,7 +116,7 @@ export const REACTIONS: Reaction[] = [
     reactant1: { formula: 'Fe', coeff: 4, color: '#dc2626' },
     reactant2: { formula: 'O₂', coeff: 3, color: '#ef4444' },
     products: [{ formula: 'Fe₂O₃', coeff: 2, color: '#92400e' }],
-    difficulty: 'hard'
+    difficulty: 'hard',
   },
   {
     id: '16',
@@ -124,7 +124,7 @@ export const REACTIONS: Reaction[] = [
     reactant1: { formula: 'Fe', coeff: 3, color: '#dc2626' },
     reactant2: { formula: 'O₂', coeff: 2, color: '#ef4444' },
     products: [{ formula: 'Fe₃O₄', coeff: 1, color: '#7c2d12' }],
-    difficulty: 'hard'
+    difficulty: 'hard',
   },
   {
     id: '17',
@@ -132,7 +132,7 @@ export const REACTIONS: Reaction[] = [
     reactant1: { formula: 'P₄', coeff: 1, color: '#7c3aed' },
     reactant2: { formula: 'O₂', coeff: 5, color: '#ef4444' },
     products: [{ formula: 'P₂O₅', coeff: 2, color: '#f3f4f6' }],
-    difficulty: 'hard'
+    difficulty: 'hard',
   },
   {
     id: '18',
@@ -140,7 +140,7 @@ export const REACTIONS: Reaction[] = [
     reactant1: { formula: 'S₈', coeff: 1, color: '#fde047' },
     reactant2: { formula: 'O₂', coeff: 12, color: '#ef4444' },
     products: [{ formula: 'SO₃', coeff: 8, color: '#fef3c7' }],
-    difficulty: 'hard'
+    difficulty: 'hard',
   },
 
   // MULTI-PRODUCT REACTIONS
@@ -151,9 +151,9 @@ export const REACTIONS: Reaction[] = [
     reactant2: { formula: 'O₂', coeff: 2, color: '#ef4444' },
     products: [
       { formula: 'CO₂', coeff: 1, color: '#6b7280' },
-      { formula: 'H₂O', coeff: 2, color: '#8b5cf6' }
+      { formula: 'H₂O', coeff: 2, color: '#8b5cf6' },
     ],
-    difficulty: 'medium'
+    difficulty: 'medium',
   },
   {
     id: '19',
@@ -162,9 +162,9 @@ export const REACTIONS: Reaction[] = [
     reactant2: { formula: 'CuO', coeff: 3, color: '#78350f' },
     products: [
       { formula: 'Al₂O₃', coeff: 1, color: '#f3f4f6' },
-      { formula: 'Cu', coeff: 3, color: '#f97316' }
+      { formula: 'Cu', coeff: 3, color: '#f97316' },
     ],
-    difficulty: 'hard'
+    difficulty: 'hard',
   },
   {
     id: '20',
@@ -173,8 +173,8 @@ export const REACTIONS: Reaction[] = [
     reactant2: { formula: 'O₂', coeff: 11, color: '#ef4444' },
     products: [
       { formula: 'Fe₂O₃', coeff: 2, color: '#92400e' },
-      { formula: 'SO₂', coeff: 8, color: '#fef3c7' }
+      { formula: 'SO₂', coeff: 8, color: '#fef3c7' },
     ],
-    difficulty: 'hard'
-  }
+    difficulty: 'hard',
+  },
 ];

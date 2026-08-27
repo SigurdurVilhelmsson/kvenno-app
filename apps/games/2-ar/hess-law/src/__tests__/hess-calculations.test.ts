@@ -18,16 +18,12 @@ describe('calculateSum', () => {
   });
 
   it('handles multiplier correctly', () => {
-    const equations = [
-      { deltaH: -393.5, multiplier: 2, isReversed: false },
-    ];
+    const equations = [{ deltaH: -393.5, multiplier: 2, isReversed: false }];
     expect(calculateSum(equations)).toBeCloseTo(-787.0);
   });
 
   it('handles reversal (sign flip)', () => {
-    const equations = [
-      { deltaH: -297.0, multiplier: 1, isReversed: true },
-    ];
+    const equations = [{ deltaH: -297.0, multiplier: 1, isReversed: true }];
     expect(calculateSum(equations)).toBeCloseTo(297.0);
   });
 
@@ -98,9 +94,7 @@ describe('calculateDeltaHrxn', () => {
   });
 
   it('calculates ammonia formation correctly', () => {
-    const products = [
-      { formula: 'NH3(g)', coefficient: 2, deltaHf: -46.1 },
-    ];
+    const products = [{ formula: 'NH3(g)', coefficient: 2, deltaHf: -46.1 }];
     const reactants = [
       { formula: 'N2(g)', coefficient: 1, deltaHf: 0 },
       { formula: 'H2(g)', coefficient: 3, deltaHf: 0 },
@@ -113,9 +107,7 @@ describe('calculateDeltaHrxn', () => {
       { formula: 'CaO(s)', coefficient: 1, deltaHf: -635.1 },
       { formula: 'CO2(g)', coefficient: 1, deltaHf: -393.5 },
     ];
-    const reactants = [
-      { formula: 'CaCO3(s)', coefficient: 1, deltaHf: -1206.9 },
-    ];
+    const reactants = [{ formula: 'CaCO3(s)', coefficient: 1, deltaHf: -1206.9 }];
     // (-635.1 + -393.5) - (-1206.9) = -1028.6 + 1206.9 = 178.3
     expect(calculateDeltaHrxn(products, reactants)).toBeCloseTo(178.3);
   });

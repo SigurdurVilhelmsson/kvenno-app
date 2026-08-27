@@ -28,7 +28,7 @@ export function EnergyPathwayDiagram({
   steps,
   targetDeltaH,
   isCorrect,
-  height = 280
+  height = 280,
 }: EnergyPathwayDiagramProps) {
   // Calculate cumulative energy at each step
   const energySteps: EnergyStep[] = useMemo(() => {
@@ -39,13 +39,13 @@ export function EnergyPathwayDiagram({
         label: step.label,
         deltaH: step.deltaH,
         cumulativeH: cumulative,
-        color: step.deltaH < 0 ? '#ef4444' : '#3b82f6' // red for exothermic, blue for endothermic
+        color: step.deltaH < 0 ? '#ef4444' : '#3b82f6', // red for exothermic, blue for endothermic
       };
     });
   }, [steps]);
 
   // Find the range for scaling
-  const allValues = [0, targetDeltaH, ...energySteps.map(s => s.cumulativeH)];
+  const allValues = [0, targetDeltaH, ...energySteps.map((s) => s.cumulativeH)];
   const minEnergy = Math.min(...allValues) - 50;
   const maxEnergy = Math.max(...allValues) + 50;
   const range = maxEnergy - minEnergy;
@@ -92,7 +92,10 @@ export function EnergyPathwayDiagram({
 
   // Target line position
   const targetY = energyToY(targetDeltaH);
-  const finalY = energySteps.length > 0 ? energyToY(energySteps[energySteps.length - 1].cumulativeH) : energyToY(0);
+  const finalY =
+    energySteps.length > 0
+      ? energyToY(energySteps[energySteps.length - 1].cumulativeH)
+      : energyToY(0);
 
   return (
     <div className="bg-gradient-to-b from-warm-800 to-warm-900 rounded-xl p-4 shadow-lg">
@@ -112,7 +115,13 @@ export function EnergyPathwayDiagram({
         {/* Background grid */}
         <defs>
           <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#374151" strokeWidth="0.5" opacity="0.3" />
+            <path
+              d="M 40 0 L 0 0 0 40"
+              fill="none"
+              stroke="#374151"
+              strokeWidth="0.5"
+              opacity="0.3"
+            />
           </pattern>
         </defs>
         <rect width={width} height={height} fill="url(#grid)" />
@@ -127,7 +136,9 @@ export function EnergyPathwayDiagram({
           strokeWidth="1"
           strokeDasharray="4,4"
         />
-        <text x="10" y={energyToY(0) + 4} fill="#9ca3af" fontSize="10">0</text>
+        <text x="10" y={energyToY(0) + 4} fill="#9ca3af" fontSize="10">
+          0
+        </text>
 
         {/* Target energy line */}
         <line
@@ -170,22 +181,22 @@ export function EnergyPathwayDiagram({
               style={{
                 strokeDasharray: '1000',
                 strokeDashoffset: '0',
-                animation: 'drawPath 1s ease-out forwards'
+                animation: 'drawPath 1s ease-out forwards',
               }}
             />
           </>
         )}
 
         {/* Start point */}
-        <circle
-          cx="50"
-          cy={energyToY(0)}
-          r="8"
+        <circle cx="50" cy={energyToY(0)} r="8" fill="#22c55e" stroke="#fff" strokeWidth="2" />
+        <text
+          x="50"
+          y={energyToY(0) - 15}
           fill="#22c55e"
-          stroke="#fff"
-          strokeWidth="2"
-        />
-        <text x="50" y={energyToY(0) - 15} fill="#22c55e" fontSize="11" textAnchor="middle" fontWeight="bold">
+          fontSize="11"
+          textAnchor="middle"
+          fontWeight="bold"
+        >
           Byrjun
         </text>
 
@@ -216,17 +227,12 @@ export function EnergyPathwayDiagram({
                 textAnchor="middle"
                 fontWeight="bold"
               >
-                {step.deltaH > 0 ? '+' : ''}{step.deltaH.toFixed(0)} kJ
+                {step.deltaH > 0 ? '+' : ''}
+                {step.deltaH.toFixed(0)} kJ
               </text>
 
               {/* Cumulative label */}
-              <text
-                x={x}
-                y={y + 18}
-                fill="#9ca3af"
-                fontSize="9"
-                textAnchor="middle"
-              >
+              <text x={x} y={y + 18} fill="#9ca3af" fontSize="9" textAnchor="middle">
                 Σ = {step.cumulativeH.toFixed(0)}
               </text>
             </g>

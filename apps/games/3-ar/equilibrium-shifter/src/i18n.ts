@@ -12,7 +12,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Hvað er Le Chatelier regla?',
-      description: 'Þegar ytri aðstæður breytast, bregst kerfið við til að vinna á móti breytingunni og ná nýju jafnvægi.',
+      description:
+        'Þegar ytri aðstæður breytast, bregst kerfið við til að vinna á móti breytingunni og ná nýju jafnvægi.',
     },
     levels: {
       level1: {
@@ -75,7 +76,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: "What is Le Chatelier's principle?",
-      description: 'When external conditions change, the system responds to counteract the change and reach a new equilibrium.',
+      description:
+        'When external conditions change, the system responds to counteract the change and reach a new equilibrium.',
     },
     levels: {
       level1: {
@@ -138,7 +140,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Czym jest zasada Le Chateliera?',
-      description: 'Gdy warunki zewnetrzne sie zmieniaja, uklad reaguje aby przeciwdzialac zmianie i osiagnac nowa rownowage.',
+      description:
+        'Gdy warunki zewnetrzne sie zmieniaja, uklad reaguje aby przeciwdzialac zmianie i osiagnac nowa rownowage.',
     },
     levels: {
       level1: {

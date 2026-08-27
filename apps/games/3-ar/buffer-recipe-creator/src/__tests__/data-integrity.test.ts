@@ -194,11 +194,9 @@ describe('Henderson-Hasselbalch verification for all non-special problems', () =
   });
 
   it('beginner problems all have ratio = 1.00 (pH = pKa)', () => {
-    const beginnerProblems = BUFFER_PROBLEMS.filter(
-      (p) => p.difficulty === 'beginner'
-    );
+    const beginnerProblems = BUFFER_PROBLEMS.filter((p) => p.difficulty === 'beginner');
     for (const problem of beginnerProblems) {
-      expect(problem.ratio).toBe(1.00);
+      expect(problem.ratio).toBe(1.0);
       expect(problem.targetPH).toBeCloseTo(problem.pKa, 2);
     }
   });

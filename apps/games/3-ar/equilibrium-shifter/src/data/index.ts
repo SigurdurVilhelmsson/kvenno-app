@@ -1,1 +1,6 @@
-export { equilibria, getEquilibriumById, getEquilibriaByDifficulty, getRandomEquilibrium } from './equilibria';
+export {
+  equilibria,
+  getEquilibriumById,
+  getEquilibriaByDifficulty,
+  getRandomEquilibrium,
+} from './equilibria';

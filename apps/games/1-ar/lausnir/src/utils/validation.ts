@@ -1,3 +1,5 @@
+import { parseStudentNumber } from '@shared/utils';
+
 export interface ValidationResult {
   valid: boolean;
   error: string | null;
@@ -12,7 +14,7 @@ export function validateInput(value: string): ValidationResult {
   // Handle scientific notation
   let numValue: number;
   try {
-    numValue = parseFloat(value);
+    numValue = parseStudentNumber(value);
   } catch {
     return { valid: false, error: 'Ógilt snið' };
   }

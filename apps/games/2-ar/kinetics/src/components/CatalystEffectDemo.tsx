@@ -98,7 +98,9 @@ export function CatalystEffectDemo({
         const normalizedProgress = (progress - 0.15) / 0.7;
         const peakCenter = 0.5;
         const sigma = 0.2;
-        const gaussian = Math.exp(-Math.pow(normalizedProgress - peakCenter, 2) / (2 * sigma * sigma));
+        const gaussian = Math.exp(
+          -Math.pow(normalizedProgress - peakCenter, 2) / (2 * sigma * sigma)
+        );
 
         // Interpolate between start/end and peak
         const baseLevel = reactantEnergy + (productEnergy - reactantEnergy) * normalizedProgress;
@@ -223,7 +225,14 @@ export function CatalystEffectDemo({
           </linearGradient>
         </defs>
 
-        <rect x={margin.left} y={margin.top} width={plotWidth} height={plotHeight} fill="url(#grid)" opacity="0.3" />
+        <rect
+          x={margin.left}
+          y={margin.top}
+          width={plotWidth}
+          height={plotHeight}
+          fill="url(#grid)"
+          opacity="0.3"
+        />
 
         {/* Y-axis */}
         <line
@@ -343,7 +352,14 @@ export function CatalystEffectDemo({
           <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
             <path d="M0,0 L0,6 L9,3 z" fill="#ef4444" />
           </marker>
-          <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+          <marker
+            id="arrowGreen"
+            markerWidth="10"
+            markerHeight="10"
+            refX="9"
+            refY="3"
+            orient="auto"
+          >
             <path d="M0,0 L0,6 L9,3 z" fill="#22c55e" />
           </marker>
         </defs>
@@ -399,30 +415,20 @@ export function CatalystEffectDemo({
         </text>
 
         {/* Transition state markers */}
-        <circle
-          cx={peakX}
-          cy={uncatPeakY}
-          r="4"
-          fill="#ef4444"
-          stroke="#1f2937"
-          strokeWidth="2"
-        />
-        <circle
-          cx={peakX}
-          cy={catPeakY}
-          r="4"
-          fill="#22c55e"
-          stroke="#1f2937"
-          strokeWidth="2"
-        />
+        <circle cx={peakX} cy={uncatPeakY} r="4" fill="#ef4444" stroke="#1f2937" strokeWidth="2" />
+        <circle cx={peakX} cy={catPeakY} r="4" fill="#22c55e" stroke="#1f2937" strokeWidth="2" />
 
         {/* Legend */}
         <g transform={`translate(${margin.left + 10}, ${margin.top + 5})`}>
           <line x1="0" y1="0" x2="20" y2="0" stroke="#ef4444" strokeWidth="3" />
-          <text x="25" y="4" className="fill-warm-300" style={{ fontSize: '9px' }}>Án hvata</text>
+          <text x="25" y="4" className="fill-warm-300" style={{ fontSize: '9px' }}>
+            Án hvata
+          </text>
 
           <line x1="0" y1="15" x2="20" y2="15" stroke="#22c55e" strokeWidth="3" />
-          <text x="25" y="19" className="fill-warm-300" style={{ fontSize: '9px' }}>Með hvata</text>
+          <text x="25" y="19" className="fill-warm-300" style={{ fontSize: '9px' }}>
+            Með hvata
+          </text>
         </g>
       </svg>
 
@@ -448,12 +454,8 @@ export function CatalystEffectDemo({
       {/* Speedup indicator */}
       <div className="mt-3 bg-warm-700/50 rounded-lg p-3 text-center">
         <div className="text-warm-400 text-xs mb-1">Hvörf hraðar um</div>
-        <div className="text-2xl font-bold text-yellow-400">
-          {rates.speedup.toExponential(1)}×
-        </div>
-        <div className="text-warm-500 text-xs mt-1">
-          Hvati lækkar Ea um {baseEa - catEa} kJ/mol
-        </div>
+        <div className="text-2xl font-bold text-yellow-400">{rates.speedup.toExponential(1)}×</div>
+        <div className="text-warm-500 text-xs mt-1">Hvati lækkar Ea um {baseEa - catEa} kJ/mol</div>
       </div>
 
       {/* Key points */}

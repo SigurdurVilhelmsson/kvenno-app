@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import { describe, it, expect } from 'vitest';
 
 import { COMPOUNDS } from '../data/compounds';
@@ -150,5 +153,41 @@ describe('Level 3 excludes compounds by declaration, not by their name', () => {
 
   it('leaves a pool large enough for the ten questions it asks', () => {
     expect(COMPOUNDS.length - excluded.length).toBeGreaterThanOrEqual(10);
+  });
+});
+
+/**
+ * Levels 1 and 2 hardcode their own worked examples instead of drawing from
+ * `compounds.ts`, and that is how the B5 fix went half-applied: PCl₅ became
+ * `Fosfórpentaklóríð` in the data and in this file's expectations, while both
+ * components went on teaching and grading `Fosforpentaklóríð` — so a student
+ * who wrote the corrected name in Level 2 was marked wrong.
+ *
+ * The duplication is deliberate (the examples carry per-level teaching text),
+ * so this checks agreement rather than removing it. A formula that only the
+ * component knows about is fine; a formula both know about must be spelled the
+ * same way in both.
+ */
+describe('the hardcoded worked examples agree with compounds.ts', () => {
+  const canonical = new Map(COMPOUNDS.map((c) => [c.formula, c.name]));
+
+  const hardcoded = (file: string): [string, string][] => {
+    const source = readFileSync(join(__dirname, '..', 'components', file), 'utf8');
+    const pattern = /formula: '([^']+)',\s*\n\s*(?:correctName|name): '([^']+)'/g;
+    const rows: [string, string][] = [];
+    let match: RegExpExecArray | null;
+    while ((match = pattern.exec(source)) !== null) rows.push([match[1], match[2]]);
+    return rows;
+  };
+
+  it.each(['Level1.tsx', 'Level2.tsx'])('%s', (file) => {
+    const rows = hardcoded(file);
+    expect(rows.length, `found no hardcoded compounds in ${file}`).toBeGreaterThan(0);
+
+    for (const [formula, name] of rows) {
+      const canon = canonical.get(formula);
+      if (canon === undefined) continue;
+      expect(name, `${file} names ${formula} differently from compounds.ts`).toBe(canon);
+    }
   });
 });

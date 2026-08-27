@@ -358,7 +358,13 @@ export const level3Challenges: Level3Challenge[] = [
     startUnit: 'mg',
     targetUnit: 'kg',
     possiblePaths: [
-      { steps: ['1 g / 1000 mg', '1 kg / 1000 g'], stepCount: 2, efficient: true },
+      // Correct, and one step longer than it needs to be. This used to be
+      // `efficient: true` alongside the single-step path below, so the level
+      // gave full efficiency credit for the chain it exists to talk a student
+      // out of — while the prompt asks for the *most* efficient route. Its
+      // sibling L3-3 already used the other convention: efficient means at the
+      // minimum step count, and two paths tie there.
+      { steps: ['1 g / 1000 mg', '1 kg / 1000 g'], stepCount: 2, efficient: false },
       { steps: ['1 kg / 1000000 mg'], stepCount: 1, efficient: true },
       // The long way round — correct, but three steps through a unit nobody
       // needs here. This slot used to hold `1000 g / 1 kg`, an *inverted*

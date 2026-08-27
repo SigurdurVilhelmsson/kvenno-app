@@ -7,7 +7,36 @@
 
 ---
 
-## Updates since publication (2026-08-16)
+## Updates since publication
+
+### What has been fixed (2026-08-27)
+
+Tiers 0, 1 and 2 of §6's work order are closed. Do not re-report these; each carries a test that
+fails against the pre-fix code, and `docs/README.md` records what each one was.
+
+- **Tier 0, all nine correctness items** — B1–B4, B6, B8, B12, B13 and B5, closed across Phases 1,
+  1b and the 2026-08-26 work.
+- **Tier 1, the four answer leaks** — B14 (Nafnakerfið's "Mundu:" block, now a per-type fade),
+  B15 (Lotukerfið's reference table, now masking whichever datum the question asks about),
+  B16 (Lausnir's "after" beaker, now an outline with a question mark) and B17 (Einingagreining's
+  `⚡ Skilvirkt` label, now in the feedback instead). The Nafnakerfið chip pool went with them on
+  2026-08-26.
+- **Tier 2, the `FeedbackPanel` collapse** — it opens expanded at all 26 call sites. Its named
+  companion is done too: the two games §3 identifies as genuinely bare, Lotukerfið and Stilla
+  efnajöfnur, now populate the misconception slot by diagnosing the student's actual answer.
+- **The decimal comma (B9/B10)** — swept repo-wide, all three years, not just the five sites §6
+  lists.
+
+**§3's gating paragraph is still current.** No game gates any level, and the dead strings are still
+there under both key names. That is a decision, not code.
+
+**Two claims in §6 were measured wrong and are corrected here.** B16 is described against a
+six-scenario Lausnir Level 2; the cooling harvest has since taken it to twelve, of which five are
+concentration scenarios — all five had the defect. And B17's leak was threefold, not the single
+label §2 cites: the green step-count badge and the count itself also gave it away, since the prompt
+asks for the route with the fewest steps.
+
+### Findings from the orphaned-games assessment (2026-08-16)
 
 Three findings from `apps/games/ORPHANED_GAMES_ASSESSMENT.md` change what is written below. Read them before acting on §2 or §6.
 

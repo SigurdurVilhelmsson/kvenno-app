@@ -6,6 +6,7 @@ import { shuffleArray } from '@shared/utils';
 
 import { PeriodicTable } from './PeriodicTable';
 import { ELEMENTS, type Element } from '../data/elements';
+import { particleMisconception } from '../utils/misconceptions';
 
 interface Level3Props {
   onBack: () => void;
@@ -117,6 +118,8 @@ export function Level3({ onBack, onComplete }: Level3Props) {
   const [correctCount, setCorrectCount] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  /** What the student actually answered, so the feedback can diagnose it. */
+  const [given, setGiven] = useState<number | null>(null);
   const [showHint, setShowHint] = useState(false);
   const [done, setDone] = useState(false);
 
@@ -127,6 +130,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
     const value = parseInt(input, 10);
     if (isNaN(value)) return;
     const correct = value === question.correctAnswer;
+    setGiven(value);
     setIsCorrect(correct);
     if (correct) setCorrectCount((prev) => prev + 1);
     setAnswered(true);
@@ -135,6 +139,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
   const handleElementClick = (element: Element) => {
     if (answered || !question.requiresTableClick) return;
     const correct = element.atomicNumber === question.correctAnswer;
+    setGiven(element.atomicNumber);
     setIsCorrect(correct);
     if (correct) setCorrectCount((prev) => prev + 1);
     setAnswered(true);
@@ -147,6 +152,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
     }
     setIndex((prev) => prev + 1);
     setInput('');
+    setGiven(null);
     setAnswered(false);
     setIsCorrect(false);
     setShowHint(false);
@@ -384,6 +390,12 @@ export function Level3({ onBack, onComplete }: Level3Props) {
               feedback={{
                 isCorrect,
                 explanation: question.explanation,
+                // Renders outside the collapsible explanation, so it is the one
+                // thing a student who reads nothing else still sees.
+                misconception:
+                  isCorrect || given === null
+                    ? undefined
+                    : particleMisconception(question.type, question.element, given),
               }}
               config={{ showExplanation: true }}
             />

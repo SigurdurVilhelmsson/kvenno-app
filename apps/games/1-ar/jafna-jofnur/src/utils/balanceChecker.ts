@@ -145,3 +145,97 @@ export function buildUnbalancedDiagnostic(elements: ElementCount[]): string {
       .join('. ') + '.'
   );
 }
+
+/**
+ * Name the error a wrong coefficient set most likely comes from.
+ *
+ * `buildUnbalancedDiagnostic` says *what* does not add up; this says *why* it
+ * probably does not, and it goes in the `FeedbackPanel`'s misconception slot,
+ * which renders outside the collapsible explanation. The Year-1 curriculum
+ * review found this game names no misconception at all, so "Rangt" plus a count
+ * was the whole response to a wrong answer.
+ *
+ * Modelled on `1-ar/molmassi`'s `diagnoseMistake`, which the same review holds
+ * up as one of the four patterns worth copying: look at what the student
+ * actually typed and find the single mistake that explains it, rather than
+ * restating the right answer.
+ *
+ * Returns `undefined` when nothing specific can be said. That is deliberate — a
+ * misconception the student does not hold is worse than none, because they will
+ * try to act on it.
+ */
+export function diagnoseMisconception(
+  reactants: Molecule[],
+  products: Molecule[],
+  reactantCoeffs: number[],
+  productCoeffs: number[],
+  result: BalanceResult
+): string | undefined {
+  // The unreduced case has its own message and is not a misconception: the
+  // student balanced the equation and is being held to a convention.
+  if (result.isBalanced) return undefined;
+
+  const allCoeffs = [...reactantCoeffs, ...productCoeffs];
+
+  // Nothing has been changed yet. The commonest misconception in balancing is
+  // that you fix an equation by editing the formulas, so say what a coefficient
+  // does before anything else.
+  if (allCoeffs.every((c) => c === 1)) {
+    return (
+      'Stuðullinn framan við sameind margfaldar öll atóm í henni — 2H₂O er fjögur vetni og ' +
+      'tvö súrefni. Vísitölunum (litlu tölunum) má aldrei breyta: þær segja hvaða efni þetta er.'
+    );
+  }
+
+  // Only one side has been touched, and the untouched side does need a
+  // coefficient. Balancing is a comparison between the sides, and stopping after
+  // the first one is a real habit — but only worth saying where it is true:
+  // 2Na + Cl₂ → 2NaCl needs nothing on the right, and telling a student
+  // otherwise sends them looking for a coefficient that does not exist.
+  const leftUntouched = reactantCoeffs.every((c) => c === 1);
+  const rightUntouched = productCoeffs.every((c) => c === 1);
+  const untouchedSideNeedsOne = leftUntouched
+    ? reactants.some((m) => m.coefficient > 1)
+    : products.some((m) => m.coefficient > 1);
+  if (leftUntouched !== rightUntouched && untouchedSideNeedsOne) {
+    return leftUntouched
+      ? 'Þú hefur aðeins breytt hægri hliðinni. Atómin verða að standast á milli hliða, og hér þarf stuðul vinstra megin líka.'
+      : 'Þú hefur aðeins breytt vinstri hliðinni. Atómin verða að standast á milli hliða, og hér þarf stuðul hægra megin líka.';
+  }
+
+  // Every element that does not add up appears in more than one molecule on the
+  // side where it is short. That is the classic slip: the element is counted in
+  // the molecule you are looking at and not in the other one it also sits in.
+  const unbalanced = result.elements.filter((e) => !e.balanced);
+  const spreadOut = unbalanced.filter((e) => {
+    const shortSide = e.left < e.right ? reactants : products;
+    return shortSide.filter((m) => m.elements[e.element] !== undefined).length > 1;
+  });
+  if (unbalanced.length > 0 && spreadOut.length === unbalanced.length) {
+    const names = spreadOut.map((e) => ELEMENT_NAMES_IS[e.element] ?? e.element).join(' og ');
+    return `${names} kemur fyrir í fleiri en einni sameind sömu megin. Teldu atómin í þeim öllum, ekki bara í þeirri sem þú ert að horfa á.`;
+  }
+
+  // An element that only enters one side as a lone diatomic molecule can only
+  // ever contribute an even number of atoms, so if the other side needs an odd
+  // number the equation cannot close without doubling everything. This is the
+  // spot where balancing stops being bookkeeping, and a student who has not met
+  // it will keep nudging one coefficient up and down.
+  const parityTrap = unbalanced.find((e) => {
+    const needed = e.left < e.right ? e.right : e.left;
+    const shortSide = e.left < e.right ? reactants : products;
+    const carriers = shortSide.filter((m) => m.elements[e.element] !== undefined);
+    return (
+      needed % 2 === 1 &&
+      carriers.length === 1 &&
+      Object.keys(carriers[0].elements).length === 1 &&
+      carriers[0].elements[e.element] === 2
+    );
+  });
+  if (parityTrap) {
+    const name = ELEMENT_NAMES_IS[parityTrap.element] ?? parityTrap.element;
+    return `${name} kemur aðeins inn sem tvíatóma sameind öðrum megin, svo sú hlið getur bara lagt til slétta tölu atóma. Þegar hin hliðin þarf oddatölu gengur jafnan ekki upp fyrr en þú tvöfaldar alla hina stuðlana.`;
+  }
+
+  return undefined;
+}

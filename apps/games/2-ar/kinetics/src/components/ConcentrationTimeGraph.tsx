@@ -18,12 +18,7 @@ interface ConcentrationTimeGraphProps {
 /**
  * Calculate concentration at time t for different orders
  */
-function calculateConcentration(
-  t: number,
-  A0: number,
-  k: number,
-  order: 0 | 1 | 2
-): number {
+function calculateConcentration(t: number, A0: number, k: number, order: 0 | 1 | 2): number {
   switch (order) {
     case 0:
       // [A] = [A]₀ - kt
@@ -120,7 +115,7 @@ export function ConcentrationTimeGraph({
 
   // Generate curve data
   const curves = useMemo(() => {
-    const orders = showComparison ? [0, 1, 2] as const : [selectedOrder];
+    const orders = showComparison ? ([0, 1, 2] as const) : [selectedOrder];
     const result: Record<number, { x: number; y: number }[]> = {};
 
     for (const ord of orders) {
@@ -145,9 +140,7 @@ export function ConcentrationTimeGraph({
 
   // Generate SVG path for a curve
   const generatePath = (points: { x: number; y: number }[]) => {
-    return points
-      .map((p, i) => `${i === 0 ? 'M' : 'L'} ${scaleX(p.x)} ${scaleY(p.y)}`)
-      .join(' ');
+    return points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${scaleX(p.x)} ${scaleY(p.y)}`).join(' ');
   };
 
   // Calculate half-life for current settings
@@ -291,13 +284,7 @@ export function ConcentrationTimeGraph({
           const label = (ratio * A0).toFixed(2);
           return (
             <g key={ratio}>
-              <line
-                x1={margin.left - 5}
-                y1={y}
-                x2={margin.left}
-                y2={y}
-                stroke="#6b7280"
-              />
+              <line x1={margin.left - 5} y1={y} x2={margin.left} y2={y} stroke="#6b7280" />
               <text
                 x={margin.left - 8}
                 y={y + 4}
@@ -391,7 +378,7 @@ export function ConcentrationTimeGraph({
         )}
 
         {/* Concentration curves */}
-        {(showComparison ? [0, 1, 2] as const : [selectedOrder]).map((ord) => (
+        {(showComparison ? ([0, 1, 2] as const) : [selectedOrder]).map((ord) => (
           <path
             key={ord}
             d={generatePath(curves[ord] || [])}
@@ -426,20 +413,8 @@ export function ConcentrationTimeGraph({
           <g transform={`translate(${width - margin.right - 60}, ${margin.top + 10})`}>
             {([0, 1, 2] as const).map((ord, i) => (
               <g key={ord} transform={`translate(0, ${i * 15})`}>
-                <line
-                  x1="0"
-                  y1="0"
-                  x2="15"
-                  y2="0"
-                  stroke={ORDER_INFO[ord].color}
-                  strokeWidth="2"
-                />
-                <text
-                  x="20"
-                  y="4"
-                  className="fill-warm-300"
-                  style={{ fontSize: '9px' }}
-                >
+                <line x1="0" y1="0" x2="15" y2="0" stroke={ORDER_INFO[ord].color} strokeWidth="2" />
+                <text x="20" y="4" className="fill-warm-300" style={{ fontSize: '9px' }}>
                   {ord}. stig
                 </text>
               </g>

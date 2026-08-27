@@ -25,10 +25,7 @@ export function gcd(a: number, b: number): number {
  *
  * Returns [multiplierOx, multiplierRed].
  */
-export function calculateMultipliers(
-  electronsOx: number,
-  electronsRed: number
-): [number, number] {
+export function calculateMultipliers(electronsOx: number, electronsRed: number): [number, number] {
   const totalElectrons = lcm(electronsOx, electronsRed);
   return [totalElectrons / electronsOx, totalElectrons / electronsRed];
 }

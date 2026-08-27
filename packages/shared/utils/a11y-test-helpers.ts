@@ -26,7 +26,7 @@ export function setupAxeMatchers(): void {
  */
 export async function expectNoAxeViolations(
   container: HTMLElement,
-  options?: Parameters<typeof axe>[1],
+  options?: Parameters<typeof axe>[1]
 ): Promise<void> {
   const results = await axe(container, options);
   expect(results).toHaveNoViolations();

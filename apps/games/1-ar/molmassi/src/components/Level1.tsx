@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
-import { shuffleArray } from '@shared/utils';
+import { shuffleArray, parseStudentNumber } from '@shared/utils';
 
 import { CalculationBreakdown } from './CalculationBreakdown';
 import { PeriodicTable } from './PeriodicTable';
@@ -104,7 +104,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
   const compound = problems[index];
 
   const handleSubmit = () => {
-    const value = parseFloat(input.replace(',', '.'));
+    const value = parseStudentNumber(input);
     if (isNaN(value)) return;
     const tolerance = getTolerance(compound.difficulty);
     const correct = Math.abs(value - compound.molarMass) <= tolerance;
@@ -381,8 +381,8 @@ export function Level1({ onBack, onComplete }: Level1Props) {
             <label className="block text-sm font-medium text-warm-700 mb-2">Svar (g/mol):</label>
             <div className="flex gap-3">
               <input
-                type="number"
-                step="0.01"
+                type="text"
+                inputMode="decimal"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}

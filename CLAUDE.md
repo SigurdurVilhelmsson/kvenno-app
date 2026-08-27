@@ -95,7 +95,11 @@ All apps use the shared Tailwind preset from `packages/shared/styles/tailwind-pr
 Game-specific shared components (gamification chrome stripped from all Y2/Y3 games, April 2026):
 
 - **HintSystem** - Tiered progressive hints
-- **FeedbackPanel** - Detailed answer feedback
+- **FeedbackPanel** - Detailed answer feedback. The "Af hverju?" explanation **opens expanded**
+  (Aug 2026); pass `config={{ defaultExpanded: false }}` only where the same text is already visible
+  elsewhere on screen. The `misconception` slot renders _outside_ the collapse, so it is the one
+  thing a student who reads nothing else still sees — populate it where you can diagnose the
+  student's actual answer, and leave it undefined where you cannot
 - **InteractiveGraph** - Canvas-based graph with cubic spline interpolation, gradient fills
 - **ParticleSimulation** - Physics-based particle visualization with sphere shading, motion trails, speed glow, collision flash
 - **AnimatedMolecule** - Ball-and-stick molecular structure renderer
@@ -479,9 +483,32 @@ above, enforced by `governed-terms.test.ts` like the rest:** `atómradíus`, `le
 The first two were applied with the harvest; `hvolf` was swept afterwards and is the one that moves
 grammatical gender, so read its row before touching any string containing it.
 
+**Phase 4 of the games roadmap landed 2026-08-27** — the four answer leaks (B14–B17), the
+`FeedbackPanel` collapse, the repo-wide decimal-comma pass (B9/B10) and the empty misconception
+slots. **Level gating is the one item still open, and it is a decision, not code.**
+
+Two things from it worth knowing before touching a game:
+
+- **Any field whose answer can be non-integer must be `type="text"` + `inputMode="decimal"`, never
+  `type="number"`** — the browser eats the Icelandic decimal comma before your code runs, and no
+  normalising downstream recovers it. Parse with `parseStudentNumber` from `@shared/utils`. Count
+  fields (protons, electrons, molecules, coefficients) keep `type="number"`;
+  `packages/shared/utils/__tests__/decimal-input.test.ts` allow-lists them by what they count and
+  fails on anything new.
+- **Removing an answer leak often removes the student's only route to the answer.** Masking the
+  atomic masses on Lotukerfið L2 left its order-by-mass items answerable only by the rule the level
+  teaches — and Ar/K and Co/Ni inside its own draw pool contradict that rule. Check for this every
+  time; the route has to be put back deliberately.
+
+**Three live defects were found doing Phase 4, none of them on the reviews' lists** — the details are
+in `docs/README.md`. The largest: **B5's `Fosfór` correction was only half-applied**, reaching
+`nafnakerfid/src/data/compounds.ts` but not Levels 1 and 2, which hardcode their own worked examples
+and both still taught and **graded** `Fosforpentaklóríð`. A student writing the corrected name in
+Level 2 was marked wrong. If you fix a name in a game's data file, grep the components too.
+
 **No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
-now fixed, and each carries a test that fails against the pre-fix code. What is left is enrichment
-and unfinished decisions, not defects — the work order is
+now fixed, as are the three above, and each carries a test that fails against the pre-fix code. What
+is left is enrichment and unfinished decisions, not defects — the work order is
 `docs/plans/2026-08-16-games-roadmap.md`, and `docs/README.md` carries the four look-alike option
 arrays that are **not** defects, so nobody "fixes" a fifth.
 

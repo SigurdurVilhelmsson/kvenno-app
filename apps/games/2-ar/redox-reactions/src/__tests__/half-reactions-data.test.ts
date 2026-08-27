@@ -14,7 +14,7 @@ describe('half-reactions data integrity', () => {
   });
 
   it('each problem has all required fields', () => {
-    problems.forEach(p => {
+    problems.forEach((p) => {
       expect(p.description).toBeTruthy();
       expect(p.overallReaction).toBeTruthy();
       expect(p.overallDisplay).toBeTruthy();
@@ -28,19 +28,19 @@ describe('half-reactions data integrity', () => {
   });
 
   it('oxidation half-reactions have isOxidation=true', () => {
-    problems.forEach(p => {
+    problems.forEach((p) => {
       expect(p.oxidationHalf.isOxidation).toBe(true);
     });
   });
 
   it('reduction half-reactions have isOxidation=false', () => {
-    problems.forEach(p => {
+    problems.forEach((p) => {
       expect(p.reductionHalf.isOxidation).toBe(false);
     });
   });
 
   it('multipliers balance electron transfer', () => {
-    problems.forEach(p => {
+    problems.forEach((p) => {
       const totalOxElectrons = p.multiplierOx * p.oxidationHalf.electrons;
       const totalRedElectrons = p.multiplierRed * p.reductionHalf.electrons;
       expect(totalOxElectrons).toBe(totalRedElectrons);
@@ -48,7 +48,7 @@ describe('half-reactions data integrity', () => {
   });
 
   it('all electron counts are positive', () => {
-    problems.forEach(p => {
+    problems.forEach((p) => {
       expect(p.oxidationHalf.electrons).toBeGreaterThan(0);
       expect(p.reductionHalf.electrons).toBeGreaterThan(0);
     });

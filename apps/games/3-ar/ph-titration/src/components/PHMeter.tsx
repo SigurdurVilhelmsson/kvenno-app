@@ -15,7 +15,14 @@ export const PHMeter: React.FC<PHMeterProps> = ({ pH, isActive = true }) => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="bg-warm-800 rounded-lg p-4 shadow-xl border-4 border-warm-700" role="meter" aria-label={isActive ? `pH mælir: ${pH.toFixed(2)}` : 'pH mælir: í biðstöðu'} aria-valuenow={isActive ? pH : undefined} aria-valuemin={0} aria-valuemax={14}>
+      <div
+        className="bg-warm-800 rounded-lg p-4 shadow-xl border-4 border-warm-700"
+        role="meter"
+        aria-label={isActive ? `pH mælir: ${pH.toFixed(2)}` : 'pH mælir: í biðstöðu'}
+        aria-valuenow={isActive ? pH : undefined}
+        aria-valuemin={0}
+        aria-valuemax={14}
+      >
         {/* Brand label */}
         <div className="text-center mb-2">
           <p className="text-xs text-warm-400 font-bold">DIGITAL pH METER</p>
@@ -26,7 +33,7 @@ export const PHMeter: React.FC<PHMeterProps> = ({ pH, isActive = true }) => {
           className="bg-warm-900 rounded px-6 py-4 mb-3 border-2 border-warm-600"
           style={{
             fontFamily: '"Courier New", monospace',
-            boxShadow: 'inset 0 2px 6px rgba(0, 0, 0, 0.5)'
+            boxShadow: 'inset 0 2px 6px rgba(0, 0, 0, 0.5)',
           }}
         >
           {isActive ? (
@@ -35,7 +42,7 @@ export const PHMeter: React.FC<PHMeterProps> = ({ pH, isActive = true }) => {
                 className="text-4xl font-bold tabular-nums"
                 style={{
                   color: pHColor,
-                  textShadow: `0 0 8px ${pHColor}`
+                  textShadow: `0 0 8px ${pHColor}`,
                 }}
               >
                 {pH.toFixed(2)}
@@ -56,7 +63,8 @@ export const PHMeter: React.FC<PHMeterProps> = ({ pH, isActive = true }) => {
           <div
             className="absolute inset-0"
             style={{
-              background: 'linear-gradient(to right, #8B0000 0%, #DC143C 7%, #FF0000 14%, #FF4500 21%, #FF6347 28%, #FFA500 35%, #FFD700 42%, #00FF00 50%, #00CED1 57%, #1E90FF 64%, #0000FF 71%, #4B0082 78%, #8B00FF 85%, #9400D3 92%, #800080 100%)'
+              background:
+                'linear-gradient(to right, #8B0000 0%, #DC143C 7%, #FF0000 14%, #FF4500 21%, #FF6347 28%, #FFA500 35%, #FFD700 42%, #00FF00 50%, #00CED1 57%, #1E90FF 64%, #0000FF 71%, #4B0082 78%, #8B00FF 85%, #9400D3 92%, #800080 100%)',
             }}
           />
 
@@ -67,7 +75,7 @@ export const PHMeter: React.FC<PHMeterProps> = ({ pH, isActive = true }) => {
               style={{
                 left: `${(pH / 14) * 100}%`,
                 transform: 'translateX(-50%)',
-                boxShadow: '0 0 4px rgba(255, 255, 255, 0.8)'
+                boxShadow: '0 0 4px rgba(255, 255, 255, 0.8)',
               }}
             >
               <div className="absolute -top-1 left-1/2 transform -translate-x-1/2">

@@ -15,19 +15,15 @@ export const equilibria: Equilibrium[] = [
     name: 'Dinitrogen Tetroxide',
     nameIs: 'Díköfnunarefnisoxíð',
     difficulty: 'beginner',
-    reactants: [
-      { formula: 'N₂O₄', coefficient: 1, phase: 'g', display: '⚫' }
-    ],
-    products: [
-      { formula: 'NO₂', coefficient: 2, phase: 'g', display: '🟤' }
-    ],
+    reactants: [{ formula: 'N₂O₄', coefficient: 1, phase: 'g', display: '⚫' }],
+    products: [{ formula: 'NO₂', coefficient: 2, phase: 'g', display: '🟤' }],
     thermodynamics: {
       deltaH: 58,
-      type: 'endothermic'
+      type: 'endothermic',
     },
     gasMoles: {
       reactants: 1,
-      products: 2
+      products: 2,
     },
     description: 'Colorless N₂O₄ gas converts to brown NO₂ gas when heated.',
     descriptionIs: 'Litlaust N₂O₄ gas breytist í brúnt NO₂ gas við upphitun.',
@@ -38,8 +34,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'decrease-temp', target: null },
       { type: 'increase-pressure', target: null },
       { type: 'decrease-pressure', target: null },
-      { type: 'add-catalyst', target: null }
-    ]
+      { type: 'add-catalyst', target: null },
+    ],
   },
 
   // Equilibrium 2: Hydrogen Iodide Formation
@@ -51,18 +47,16 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'beginner',
     reactants: [
       { formula: 'H₂', coefficient: 1, phase: 'g', display: '⚪' },
-      { formula: 'I₂', coefficient: 1, phase: 'g', display: '🟣' }
+      { formula: 'I₂', coefficient: 1, phase: 'g', display: '🟣' },
     ],
-    products: [
-      { formula: 'HI', coefficient: 2, phase: 'g', display: '⚪🟣' }
-    ],
+    products: [{ formula: 'HI', coefficient: 2, phase: 'g', display: '⚪🟣' }],
     thermodynamics: {
       deltaH: 53,
-      type: 'endothermic'
+      type: 'endothermic',
     },
     gasMoles: {
       reactants: 2,
-      products: 2
+      products: 2,
     },
     description: 'Simple formation reaction used to teach equilibrium constants.',
     descriptionIs: 'Einfalt myndunarhvarf sem notað er til að kenna jafnvægisfasta.',
@@ -74,8 +68,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'increase-temp', target: null },
       { type: 'decrease-temp', target: null },
       { type: 'increase-pressure', target: null },
-      { type: 'add-catalyst', target: null }
-    ]
+      { type: 'add-catalyst', target: null },
+    ],
   },
 
   // Equilibrium 3: Phosphorus Pentachloride
@@ -85,20 +79,18 @@ export const equilibria: Equilibrium[] = [
     name: 'Phosphorus Pentachloride',
     nameIs: 'Fosfórpentaklóríð',
     difficulty: 'beginner',
-    reactants: [
-      { formula: 'PCl₅', coefficient: 1, phase: 'g', display: '🔷' }
-    ],
+    reactants: [{ formula: 'PCl₅', coefficient: 1, phase: 'g', display: '🔷' }],
     products: [
       { formula: 'PCl₃', coefficient: 1, phase: 'g', display: '🔹' },
-      { formula: 'Cl₂', coefficient: 1, phase: 'g', display: '🟢' }
+      { formula: 'Cl₂', coefficient: 1, phase: 'g', display: '🟢' },
     ],
     thermodynamics: {
       deltaH: 88,
-      type: 'endothermic'
+      type: 'endothermic',
     },
     gasMoles: {
       reactants: 1,
-      products: 2
+      products: 2,
     },
     description: 'Decomposition of PCl₅ upon heating.',
     descriptionIs: 'Umbreyting PCl₅ við upphitun.',
@@ -109,8 +101,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'increase-temp', target: null },
       { type: 'decrease-temp', target: null },
       { type: 'increase-pressure', target: null },
-      { type: 'add-catalyst', target: null }
-    ]
+      { type: 'add-catalyst', target: null },
+    ],
   },
 
   // Equilibrium 4: Methanol Synthesis
@@ -122,18 +114,16 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'beginner',
     reactants: [
       { formula: 'CO', coefficient: 1, phase: 'g', display: '⚫🔴' },
-      { formula: 'H₂', coefficient: 2, phase: 'g', display: '⚪' }
+      { formula: 'H₂', coefficient: 2, phase: 'g', display: '⚪' },
     ],
-    products: [
-      { formula: 'CH₃OH', coefficient: 1, phase: 'g', display: '🧪' }
-    ],
+    products: [{ formula: 'CH₃OH', coefficient: 1, phase: 'g', display: '🧪' }],
     thermodynamics: {
       deltaH: -91,
-      type: 'exothermic'
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 3,
-      products: 1
+      products: 1,
     },
     description: 'Industrial production of methanol for fuel and chemicals.',
     descriptionIs: 'Iðnaðarframleiðsla á metanóli sem eldsneyti og efni.',
@@ -144,8 +134,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'decrease-temp', target: null },
       { type: 'increase-pressure', target: null },
       { type: 'decrease-pressure', target: null },
-      { type: 'add-catalyst', target: null }
-    ]
+      { type: 'add-catalyst', target: null },
+    ],
   },
 
   // Equilibrium 5: Calcium Carbonate Decomposition
@@ -155,20 +145,18 @@ export const equilibria: Equilibrium[] = [
     name: 'Calcium Carbonate Decomposition',
     nameIs: 'Sundrun kalsíumkarbónats',
     difficulty: 'beginner',
-    reactants: [
-      { formula: 'CaCO₃', coefficient: 1, phase: 's', display: '🪨' }
-    ],
+    reactants: [{ formula: 'CaCO₃', coefficient: 1, phase: 's', display: '🪨' }],
     products: [
       { formula: 'CaO', coefficient: 1, phase: 's', display: '⚪' },
-      { formula: 'CO₂', coefficient: 1, phase: 'g', display: '⚫🔴' }
+      { formula: 'CO₂', coefficient: 1, phase: 'g', display: '⚫🔴' },
     ],
     thermodynamics: {
       deltaH: 178,
-      type: 'endothermic'
+      type: 'endothermic',
     },
     gasMoles: {
       reactants: 0,
-      products: 1
+      products: 1,
     },
     description: 'Limestone decomposition, used in cement production.',
     descriptionIs: 'Kalksteinn við upphitun, notað í sementframleiðslu.',
@@ -177,8 +165,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'increase-temp', target: null },
       { type: 'decrease-temp', target: null },
       { type: 'increase-pressure', target: null },
-      { type: 'decrease-pressure', target: null }
-    ]
+      { type: 'decrease-pressure', target: null },
+    ],
   },
 
   // Equilibrium 6: Iron Thiocyanate Complex
@@ -190,18 +178,16 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'beginner',
     reactants: [
       { formula: 'Fe³⁺', coefficient: 1, phase: 'aq', display: '🟡⁺' },
-      { formula: 'SCN⁻', coefficient: 1, phase: 'aq', display: '⚪⁻' }
+      { formula: 'SCN⁻', coefficient: 1, phase: 'aq', display: '⚪⁻' },
     ],
-    products: [
-      { formula: 'FeSCN²⁺', coefficient: 1, phase: 'aq', display: '🔴' }
-    ],
+    products: [{ formula: 'FeSCN²⁺', coefficient: 1, phase: 'aq', display: '🔴' }],
     thermodynamics: {
       deltaH: -20,
-      type: 'exothermic'
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 0,
-      products: 0
+      products: 0,
     },
     description: 'Blood-red complex ion, used in chemistry demonstrations.',
     descriptionIs: 'Blóðrauður þynningarefnakomplexinn, notaður í efnafræðisýningum.',
@@ -209,8 +195,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'add-reactant', target: 'Fe³⁺' },
       { type: 'add-reactant', target: 'SCN⁻' },
       { type: 'increase-temp', target: null },
-      { type: 'decrease-temp', target: null }
-    ]
+      { type: 'decrease-temp', target: null },
+    ],
   },
 
   // Equilibrium 7: Water Autoionization
@@ -220,20 +206,18 @@ export const equilibria: Equilibrium[] = [
     name: 'Water Autoionization',
     nameIs: 'Sjálfjafnvægi vatns',
     difficulty: 'beginner',
-    reactants: [
-      { formula: 'H₂O', coefficient: 1, phase: 'l', display: '💧' }
-    ],
+    reactants: [{ formula: 'H₂O', coefficient: 1, phase: 'l', display: '💧' }],
     products: [
       { formula: 'H⁺', coefficient: 1, phase: 'aq', display: '⊕' },
-      { formula: 'OH⁻', coefficient: 1, phase: 'aq', display: '⊖' }
+      { formula: 'OH⁻', coefficient: 1, phase: 'aq', display: '⊖' },
     ],
     thermodynamics: {
       deltaH: 56,
-      type: 'endothermic'
+      type: 'endothermic',
     },
     gasMoles: {
       reactants: 0,
-      products: 0
+      products: 0,
     },
     description: 'Self-ionization of water, basis of pH system.',
     descriptionIs: 'Sjálfjafnvægi vatns, grunnur pH kerfis.',
@@ -241,8 +225,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'add-product', target: 'H⁺' },
       { type: 'add-product', target: 'OH⁻' },
       { type: 'increase-temp', target: null },
-      { type: 'decrease-temp', target: null }
-    ]
+      { type: 'decrease-temp', target: null },
+    ],
   },
 
   // Equilibrium 8: Acetic Acid Dissociation
@@ -252,28 +236,26 @@ export const equilibria: Equilibrium[] = [
     name: 'Acetic Acid Dissociation',
     nameIs: 'Ediksýrusundrun',
     difficulty: 'beginner',
-    reactants: [
-      { formula: 'CH₃COOH', coefficient: 1, phase: 'aq', display: '🧪' }
-    ],
+    reactants: [{ formula: 'CH₃COOH', coefficient: 1, phase: 'aq', display: '🧪' }],
     products: [
       { formula: 'CH₃COO⁻', coefficient: 1, phase: 'aq', display: '🧪⁻' },
-      { formula: 'H⁺', coefficient: 1, phase: 'aq', display: '⊕' }
+      { formula: 'H⁺', coefficient: 1, phase: 'aq', display: '⊕' },
     ],
     thermodynamics: {
       deltaH: 5,
-      type: 'endothermic'
+      type: 'endothermic',
     },
     gasMoles: {
       reactants: 0,
-      products: 0
+      products: 0,
     },
     description: 'Acetic acid, typical weak acid equilibrium.',
     descriptionIs: 'Ediksýra, dæmigert veikt sýrujafnvægi.',
     possibleStresses: [
       { type: 'add-reactant', target: 'CH₃COOH' },
       { type: 'add-product', target: 'H⁺' },
-      { type: 'increase-temp', target: null }
-    ]
+      { type: 'increase-temp', target: null },
+    ],
   },
 
   // Equilibrium 9: Ammonia Base
@@ -285,19 +267,19 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'beginner',
     reactants: [
       { formula: 'NH₃', coefficient: 1, phase: 'aq', display: '🔷' },
-      { formula: 'H₂O', coefficient: 1, phase: 'l', display: '💧' }
+      { formula: 'H₂O', coefficient: 1, phase: 'l', display: '💧' },
     ],
     products: [
       { formula: 'NH₄⁺', coefficient: 1, phase: 'aq', display: '🔷⁺' },
-      { formula: 'OH⁻', coefficient: 1, phase: 'aq', display: '⊖' }
+      { formula: 'OH⁻', coefficient: 1, phase: 'aq', display: '⊖' },
     ],
     thermodynamics: {
       deltaH: -3,
-      type: 'exothermic'
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 0,
-      products: 0
+      products: 0,
     },
     description: 'Ammonia as a weak base in water.',
     descriptionIs: 'Ammóníak sem veikur basi í vatni.',
@@ -305,8 +287,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'add-reactant', target: 'NH₃' },
       { type: 'add-product', target: 'OH⁻' },
       { type: 'increase-temp', target: null },
-      { type: 'decrease-temp', target: null }
-    ]
+      { type: 'decrease-temp', target: null },
+    ],
   },
 
   // Equilibrium 10: Silver Chloride Precipitation
@@ -316,20 +298,18 @@ export const equilibria: Equilibrium[] = [
     name: 'Silver Chloride Precipitation',
     nameIs: 'Silfurklóríð úrfellingajafnvægi',
     difficulty: 'beginner',
-    reactants: [
-      { formula: 'AgCl', coefficient: 1, phase: 's', display: '🔘' }
-    ],
+    reactants: [{ formula: 'AgCl', coefficient: 1, phase: 's', display: '🔘' }],
     products: [
       { formula: 'Ag⁺', coefficient: 1, phase: 'aq', display: '⚪⁺' },
-      { formula: 'Cl⁻', coefficient: 1, phase: 'aq', display: '🟢⁻' }
+      { formula: 'Cl⁻', coefficient: 1, phase: 'aq', display: '🟢⁻' },
     ],
     thermodynamics: {
       deltaH: 65,
-      type: 'endothermic'
+      type: 'endothermic',
     },
     gasMoles: {
       reactants: 0,
-      products: 0
+      products: 0,
     },
     description: 'Solubility equilibrium of silver chloride, white precipitate.',
     descriptionIs: 'Leysnijafnvægi silfurklóríðs, hvítur fellur út.',
@@ -337,8 +317,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'add-product', target: 'Ag⁺' },
       { type: 'add-product', target: 'Cl⁻' },
       { type: 'increase-temp', target: null },
-      { type: 'decrease-temp', target: null }
-    ]
+      { type: 'decrease-temp', target: null },
+    ],
   },
 
   // ==================== INTERMEDIATE LEVEL (12) ====================
@@ -352,18 +332,16 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'intermediate',
     reactants: [
       { formula: 'N₂', coefficient: 1, phase: 'g', display: '🔵' },
-      { formula: 'H₂', coefficient: 3, phase: 'g', display: '⚪' }
+      { formula: 'H₂', coefficient: 3, phase: 'g', display: '⚪' },
     ],
-    products: [
-      { formula: 'NH₃', coefficient: 2, phase: 'g', display: '🔷' }
-    ],
+    products: [{ formula: 'NH₃', coefficient: 2, phase: 'g', display: '🔷' }],
     thermodynamics: {
       deltaH: -92,
-      type: 'exothermic'
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 4,
-      products: 2
+      products: 2,
     },
     description: 'Haber process, industrial ammonia synthesis for fertilizers.',
     descriptionIs: 'Haber-aðferð, iðnaðarframleiðsla á ammóníaki fyrir áburð.',
@@ -374,8 +352,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'decrease-temp', target: null },
       { type: 'increase-pressure', target: null },
       { type: 'decrease-pressure', target: null },
-      { type: 'add-catalyst', target: null }
-    ]
+      { type: 'add-catalyst', target: null },
+    ],
   },
 
   // Equilibrium 12: Contact Process
@@ -387,18 +365,16 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'intermediate',
     reactants: [
       { formula: 'SO₂', coefficient: 2, phase: 'g', display: '💛' },
-      { formula: 'O₂', coefficient: 1, phase: 'g', display: '🔴' }
+      { formula: 'O₂', coefficient: 1, phase: 'g', display: '🔴' },
     ],
-    products: [
-      { formula: 'SO₃', coefficient: 2, phase: 'g', display: '🟡' }
-    ],
+    products: [{ formula: 'SO₃', coefficient: 2, phase: 'g', display: '🟡' }],
     thermodynamics: {
       deltaH: -198,
-      type: 'exothermic'
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 3,
-      products: 2
+      products: 2,
     },
     description: 'Sulfuric acid production in industry.',
     descriptionIs: 'Brennisteinssýruframleiðsla í iðnaði.',
@@ -408,8 +384,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'increase-temp', target: null },
       { type: 'decrease-temp', target: null },
       { type: 'increase-pressure', target: null },
-      { type: 'add-catalyst', target: null }
-    ]
+      { type: 'add-catalyst', target: null },
+    ],
   },
 
   // Equilibrium 13: Ostwald Process
@@ -421,19 +397,19 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'intermediate',
     reactants: [
       { formula: 'NH₃', coefficient: 4, phase: 'g', display: '🔷' },
-      { formula: 'O₂', coefficient: 5, phase: 'g', display: '🔴' }
+      { formula: 'O₂', coefficient: 5, phase: 'g', display: '🔴' },
     ],
     products: [
       { formula: 'NO', coefficient: 4, phase: 'g', display: '🔴⚫' },
-      { formula: 'H₂O', coefficient: 6, phase: 'g', display: '💧' }
+      { formula: 'H₂O', coefficient: 6, phase: 'g', display: '💧' },
     ],
     thermodynamics: {
       deltaH: -905,
-      type: 'exothermic'
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 9,
-      products: 10
+      products: 10,
     },
     description: 'Nitrogen oxide production for nitric acid.',
     descriptionIs: 'Köfnunarefnisoxíðframleiðsla fyrir salpeturssýru.',
@@ -442,8 +418,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'increase-temp', target: null },
       { type: 'decrease-temp', target: null },
       { type: 'increase-pressure', target: null },
-      { type: 'add-catalyst', target: null }
-    ]
+      { type: 'add-catalyst', target: null },
+    ],
   },
 
   // Equilibrium 14: Water Gas Shift
@@ -455,19 +431,19 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'intermediate',
     reactants: [
       { formula: 'CO', coefficient: 1, phase: 'g', display: '⚫🔴' },
-      { formula: 'H₂O', coefficient: 1, phase: 'g', display: '💧' }
+      { formula: 'H₂O', coefficient: 1, phase: 'g', display: '💧' },
     ],
     products: [
       { formula: 'CO₂', coefficient: 1, phase: 'g', display: '⚫🔴🔴' },
-      { formula: 'H₂', coefficient: 1, phase: 'g', display: '⚪' }
+      { formula: 'H₂', coefficient: 1, phase: 'g', display: '⚪' },
     ],
     thermodynamics: {
       deltaH: -41,
-      type: 'exothermic'
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 2,
-      products: 2
+      products: 2,
     },
     description: 'Important in hydrogen production and industry.',
     descriptionIs: 'Mikilvægt í vetniframleiðslu og iðnaði.',
@@ -476,8 +452,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'remove-product', target: 'H₂' },
       { type: 'increase-temp', target: null },
       { type: 'decrease-temp', target: null },
-      { type: 'increase-pressure', target: null }
-    ]
+      { type: 'increase-pressure', target: null },
+    ],
   },
 
   // Equilibrium 15: Nitrogen Oxide Formation
@@ -489,18 +465,16 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'intermediate',
     reactants: [
       { formula: 'NO', coefficient: 2, phase: 'g', display: '🔴⚫' },
-      { formula: 'O₂', coefficient: 1, phase: 'g', display: '🔴' }
+      { formula: 'O₂', coefficient: 1, phase: 'g', display: '🔴' },
     ],
-    products: [
-      { formula: 'NO₂', coefficient: 2, phase: 'g', display: '🟤' }
-    ],
+    products: [{ formula: 'NO₂', coefficient: 2, phase: 'g', display: '🟤' }],
     thermodynamics: {
       deltaH: -114,
-      type: 'exothermic'
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 3,
-      products: 2
+      products: 2,
     },
     description: 'Air pollution and industrial reaction.',
     descriptionIs: 'Loftmengun og iðnaðarhvarf.',
@@ -509,8 +483,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'increase-temp', target: null },
       { type: 'decrease-temp', target: null },
       { type: 'increase-pressure', target: null },
-      { type: 'decrease-pressure', target: null }
-    ]
+      { type: 'decrease-pressure', target: null },
+    ],
   },
 
   // Equilibrium 16: Boudouard Reaction
@@ -522,18 +496,16 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'intermediate',
     reactants: [
       { formula: 'C', coefficient: 1, phase: 's', display: '⚫' },
-      { formula: 'CO₂', coefficient: 1, phase: 'g', display: '⚫🔴🔴' }
+      { formula: 'CO₂', coefficient: 1, phase: 'g', display: '⚫🔴🔴' },
     ],
-    products: [
-      { formula: 'CO', coefficient: 2, phase: 'g', display: '⚫🔴' }
-    ],
+    products: [{ formula: 'CO', coefficient: 2, phase: 'g', display: '⚫🔴' }],
     thermodynamics: {
       deltaH: 172,
-      type: 'endothermic'
+      type: 'endothermic',
     },
     gasMoles: {
       reactants: 1,
-      products: 2
+      products: 2,
     },
     description: 'Carbon reaction in high-temperature furnaces and metallurgy.',
     descriptionIs: 'Kolefnishvarf í há hitasmíði og málmvinnslu.',
@@ -542,8 +514,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'decrease-temp', target: null },
       { type: 'increase-pressure', target: null },
       { type: 'decrease-pressure', target: null },
-      { type: 'remove-product', target: 'CO' }
-    ]
+      { type: 'remove-product', target: 'CO' },
+    ],
   },
 
   // Equilibrium 17: Steam Reforming
@@ -555,19 +527,19 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'intermediate',
     reactants: [
       { formula: 'CH₄', coefficient: 1, phase: 'g', display: '⚫⚪' },
-      { formula: 'H₂O', coefficient: 1, phase: 'g', display: '💧' }
+      { formula: 'H₂O', coefficient: 1, phase: 'g', display: '💧' },
     ],
     products: [
       { formula: 'CO', coefficient: 1, phase: 'g', display: '⚫🔴' },
-      { formula: 'H₂', coefficient: 3, phase: 'g', display: '⚪' }
+      { formula: 'H₂', coefficient: 3, phase: 'g', display: '⚪' },
     ],
     thermodynamics: {
       deltaH: 206,
-      type: 'endothermic'
+      type: 'endothermic',
     },
     gasMoles: {
       reactants: 2,
-      products: 4
+      products: 4,
     },
     description: 'Primary method for hydrogen production from natural gas.',
     descriptionIs: 'Helsta aðferð við vetniframleiðslu úr náttúrugasi.',
@@ -577,8 +549,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'decrease-temp', target: null },
       { type: 'increase-pressure', target: null },
       { type: 'decrease-pressure', target: null },
-      { type: 'add-catalyst', target: null }
-    ]
+      { type: 'add-catalyst', target: null },
+    ],
   },
 
   // Equilibrium 18: Reverse Water Gas
@@ -590,19 +562,19 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'intermediate',
     reactants: [
       { formula: 'H₂', coefficient: 1, phase: 'g', display: '⚪' },
-      { formula: 'CO₂', coefficient: 1, phase: 'g', display: '⚫🔴🔴' }
+      { formula: 'CO₂', coefficient: 1, phase: 'g', display: '⚫🔴🔴' },
     ],
     products: [
       { formula: 'H₂O', coefficient: 1, phase: 'g', display: '💧' },
-      { formula: 'CO', coefficient: 1, phase: 'g', display: '⚫🔴' }
+      { formula: 'CO', coefficient: 1, phase: 'g', display: '⚫🔴' },
     ],
     thermodynamics: {
       deltaH: 41,
-      type: 'endothermic'
+      type: 'endothermic',
     },
     gasMoles: {
       reactants: 2,
-      products: 2
+      products: 2,
     },
     description: 'Reverse of the Water Gas Shift reaction.',
     descriptionIs: 'Andhverfa Water Gas Shift hvarfsins.',
@@ -611,8 +583,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'increase-temp', target: null },
       { type: 'decrease-temp', target: null },
       { type: 'increase-pressure', target: null },
-      { type: 'remove-product', target: 'CO' }
-    ]
+      { type: 'remove-product', target: 'CO' },
+    ],
   },
 
   // Equilibrium 19: Nitrogen Fixation
@@ -624,18 +596,16 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'intermediate',
     reactants: [
       { formula: 'N₂', coefficient: 1, phase: 'g', display: '🔵' },
-      { formula: 'O₂', coefficient: 1, phase: 'g', display: '🔴' }
+      { formula: 'O₂', coefficient: 1, phase: 'g', display: '🔴' },
     ],
-    products: [
-      { formula: 'NO', coefficient: 2, phase: 'g', display: '🔴⚫' }
-    ],
+    products: [{ formula: 'NO', coefficient: 2, phase: 'g', display: '🔴⚫' }],
     thermodynamics: {
       deltaH: 181,
-      type: 'endothermic'
+      type: 'endothermic',
     },
     gasMoles: {
       reactants: 2,
-      products: 2
+      products: 2,
     },
     description: 'Lightning in atmosphere fixes nitrogen.',
     descriptionIs: 'Eldingar í andrúmslofti binda köfnunarefni.',
@@ -643,8 +613,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'add-reactant', target: 'N₂' },
       { type: 'increase-temp', target: null },
       { type: 'decrease-temp', target: null },
-      { type: 'increase-pressure', target: null }
-    ]
+      { type: 'increase-pressure', target: null },
+    ],
   },
 
   // Equilibrium 20: Hydrogen Sulfide Oxidation
@@ -656,19 +626,19 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'intermediate',
     reactants: [
       { formula: 'H₂S', coefficient: 2, phase: 'g', display: '💛⚪' },
-      { formula: 'O₂', coefficient: 3, phase: 'g', display: '🔴' }
+      { formula: 'O₂', coefficient: 3, phase: 'g', display: '🔴' },
     ],
     products: [
       { formula: 'H₂O', coefficient: 2, phase: 'g', display: '💧' },
-      { formula: 'SO₂', coefficient: 2, phase: 'g', display: '💛' }
+      { formula: 'SO₂', coefficient: 2, phase: 'g', display: '💛' },
     ],
     thermodynamics: {
       deltaH: -1036,
-      type: 'exothermic'
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 5,
-      products: 4
+      products: 4,
     },
     description: 'Combustion of hydrogen sulfide, rotten egg smell.',
     descriptionIs: 'Brennsla vetisbrennsisteinss, lykt af rotnum eggjum.',
@@ -677,8 +647,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'increase-temp', target: null },
       { type: 'decrease-temp', target: null },
       { type: 'increase-pressure', target: null },
-      { type: 'remove-reactant', target: 'O₂' }
-    ]
+      { type: 'remove-reactant', target: 'O₂' },
+    ],
   },
 
   // Equilibrium 21: Carbonic Acid
@@ -688,28 +658,26 @@ export const equilibria: Equilibrium[] = [
     name: 'Carbonic Acid',
     nameIs: 'Kolsýra',
     difficulty: 'intermediate',
-    reactants: [
-      { formula: 'H₂CO₃', coefficient: 1, phase: 'aq', display: '💧⚫' }
-    ],
+    reactants: [{ formula: 'H₂CO₃', coefficient: 1, phase: 'aq', display: '💧⚫' }],
     products: [
       { formula: 'H⁺', coefficient: 1, phase: 'aq', display: '⊕' },
-      { formula: 'HCO₃⁻', coefficient: 1, phase: 'aq', display: '⊖' }
+      { formula: 'HCO₃⁻', coefficient: 1, phase: 'aq', display: '⊖' },
     ],
     thermodynamics: {
       deltaH: 10,
-      type: 'endothermic'
+      type: 'endothermic',
     },
     gasMoles: {
       reactants: 0,
-      products: 0
+      products: 0,
     },
     description: 'Carbonic acid in water, important in blood buffer system.',
     descriptionIs: 'Kolsýra í vatni, mikilvægt í blóðpufferkerfi.',
     possibleStresses: [
       { type: 'add-reactant', target: 'H₂CO₃' },
       { type: 'add-product', target: 'H⁺' },
-      { type: 'increase-temp', target: null }
-    ]
+      { type: 'increase-temp', target: null },
+    ],
   },
 
   // Equilibrium 22: Copper Ammonia Complex
@@ -719,28 +687,26 @@ export const equilibria: Equilibrium[] = [
     name: 'Copper Ammonia Complex',
     nameIs: 'Kopar-ammóníak komplexið',
     difficulty: 'intermediate',
-    reactants: [
-      { formula: 'Cu(NH₃)₄²⁺', coefficient: 1, phase: 'aq', display: '🔵' }
-    ],
+    reactants: [{ formula: 'Cu(NH₃)₄²⁺', coefficient: 1, phase: 'aq', display: '🔵' }],
     products: [
       { formula: 'Cu²⁺', coefficient: 1, phase: 'aq', display: '💙' },
-      { formula: 'NH₃', coefficient: 4, phase: 'aq', display: '🔷' }
+      { formula: 'NH₃', coefficient: 4, phase: 'aq', display: '🔷' },
     ],
     thermodynamics: {
       deltaH: 42,
-      type: 'endothermic'
+      type: 'endothermic',
     },
     gasMoles: {
       reactants: 0,
-      products: 0
+      products: 0,
     },
     description: 'Deep blue copper-ammonia complex, example of ligand exchange.',
     descriptionIs: 'Djúpblár koparammóníakkomplexinn, dæmi um ligandskipti.',
     possibleStresses: [
       { type: 'add-product', target: 'NH₃' },
       { type: 'increase-temp', target: null },
-      { type: 'decrease-temp', target: null }
-    ]
+      { type: 'decrease-temp', target: null },
+    ],
   },
 
   // ==================== ADVANCED LEVEL (8) ====================
@@ -754,18 +720,16 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'advanced',
     reactants: [
       { formula: 'C', coefficient: 2, phase: 's', display: '⚫' },
-      { formula: 'O₂', coefficient: 1, phase: 'g', display: '🔴' }
+      { formula: 'O₂', coefficient: 1, phase: 'g', display: '🔴' },
     ],
-    products: [
-      { formula: 'CO', coefficient: 2, phase: 'g', display: '⚫🔴' }
-    ],
+    products: [{ formula: 'CO', coefficient: 2, phase: 'g', display: '⚫🔴' }],
     thermodynamics: {
       deltaH: -221,
-      type: 'exothermic'
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 1,
-      products: 2
+      products: 2,
     },
     description: 'Complex coupled reactions in combustion processes.',
     descriptionIs: 'Flókin samtenging hvarfa í brennsluferli.',
@@ -773,8 +737,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'add-reactant', target: 'O₂' },
       { type: 'increase-temp', target: null },
       { type: 'decrease-temp', target: null },
-      { type: 'increase-pressure', target: null }
-    ]
+      { type: 'increase-pressure', target: null },
+    ],
   },
 
   // Equilibrium 24: Buffer System (Acetic Acid)
@@ -786,26 +750,26 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'advanced',
     reactants: [
       { formula: 'CH₃COOH', coefficient: 1, phase: 'aq', display: '🧪' },
-      { formula: 'H₂O', coefficient: 1, phase: 'l', display: '💧' }
+      { formula: 'H₂O', coefficient: 1, phase: 'l', display: '💧' },
     ],
     products: [
       { formula: 'CH₃COO⁻', coefficient: 1, phase: 'aq', display: '🧪⁻' },
-      { formula: 'H₃O⁺', coefficient: 1, phase: 'aq', display: '⊕' }
+      { formula: 'H₃O⁺', coefficient: 1, phase: 'aq', display: '⊕' },
     ],
     thermodynamics: {
       deltaH: 0,
-      type: 'exothermic'
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 0,
-      products: 0
+      products: 0,
     },
     description: 'Buffer system that maintains stable pH.',
     descriptionIs: 'Bufferkerfi sem viðheldur pH stöðugu.',
     possibleStresses: [
       { type: 'add-product', target: 'H₃O⁺' },
-      { type: 'add-product', target: 'CH₃COO⁻' }
-    ]
+      { type: 'add-product', target: 'CH₃COO⁻' },
+    ],
   },
 
   // Equilibrium 25: Temperature-Dependent K (Haber)
@@ -817,18 +781,16 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'advanced',
     reactants: [
       { formula: 'N₂', coefficient: 1, phase: 'g', display: '🔵' },
-      { formula: 'H₂', coefficient: 3, phase: 'g', display: '⚪' }
+      { formula: 'H₂', coefficient: 3, phase: 'g', display: '⚪' },
     ],
-    products: [
-      { formula: 'NH₃', coefficient: 2, phase: 'g', display: '🔷' }
-    ],
+    products: [{ formula: 'NH₃', coefficient: 2, phase: 'g', display: '🔷' }],
     thermodynamics: {
       deltaH: -92,
-      type: 'exothermic'
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 4,
-      products: 2
+      products: 2,
     },
     description: 'How equilibrium constant changes with temperature.',
     descriptionIs: 'Hvernig jafnvægisfasti breytist með hitastigi.',
@@ -836,8 +798,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'increase-temp', target: null },
       { type: 'decrease-temp', target: null },
       { type: 'increase-pressure', target: null },
-      { type: 'add-catalyst', target: null }
-    ]
+      { type: 'add-catalyst', target: null },
+    ],
   },
 
   // Equilibrium 26: Pressure-Dependent Industrial Process
@@ -849,18 +811,16 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'advanced',
     reactants: [
       { formula: 'N₂', coefficient: 1, phase: 'g', display: '🔵' },
-      { formula: 'H₂', coefficient: 3, phase: 'g', display: '⚪' }
+      { formula: 'H₂', coefficient: 3, phase: 'g', display: '⚪' },
     ],
-    products: [
-      { formula: 'NH₃', coefficient: 2, phase: 'g', display: '🔷' }
-    ],
+    products: [{ formula: 'NH₃', coefficient: 2, phase: 'g', display: '🔷' }],
     thermodynamics: {
       deltaH: -92,
-      type: 'exothermic'
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 4,
-      products: 2
+      products: 2,
     },
     description: 'Real industrial optimization with trade-offs.',
     descriptionIs: 'Raunveruleg iðnaðarbestun með mótsögnum.',
@@ -868,8 +828,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'increase-pressure', target: null },
       { type: 'decrease-pressure', target: null },
       { type: 'increase-temp', target: null },
-      { type: 'add-catalyst', target: null }
-    ]
+      { type: 'add-catalyst', target: null },
+    ],
   },
 
   // Equilibrium 27: Simultaneous Equilibria
@@ -879,27 +839,25 @@ export const equilibria: Equilibrium[] = [
     name: 'Simultaneous Equilibria',
     nameIs: 'Samhliða jafnvægi',
     difficulty: 'advanced',
-    reactants: [
-      { formula: 'H₃PO₄', coefficient: 1, phase: 'aq', display: '🧪' }
-    ],
+    reactants: [{ formula: 'H₃PO₄', coefficient: 1, phase: 'aq', display: '🧪' }],
     products: [
       { formula: 'H⁺', coefficient: 1, phase: 'aq', display: '⊕' },
-      { formula: 'H₂PO₄⁻', coefficient: 1, phase: 'aq', display: '🧪⁻' }
+      { formula: 'H₂PO₄⁻', coefficient: 1, phase: 'aq', display: '🧪⁻' },
     ],
     thermodynamics: {
       deltaH: 5,
-      type: 'endothermic'
+      type: 'endothermic',
     },
     gasMoles: {
       reactants: 0,
-      products: 0
+      products: 0,
     },
     description: 'Stepwise deprotonation of phosphoric acid.',
     descriptionIs: 'Þrepin deprotonun fosforsýru.',
     possibleStresses: [
       { type: 'add-product', target: 'H⁺' },
-      { type: 'increase-temp', target: null }
-    ]
+      { type: 'increase-temp', target: null },
+    ],
   },
 
   // Equilibrium 28: Heterogeneous Catalysis
@@ -911,26 +869,24 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'advanced',
     reactants: [
       { formula: 'N₂', coefficient: 1, phase: 'g', display: '🔵' },
-      { formula: 'H₂', coefficient: 3, phase: 'g', display: '⚪' }
+      { formula: 'H₂', coefficient: 3, phase: 'g', display: '⚪' },
     ],
-    products: [
-      { formula: 'NH₃', coefficient: 2, phase: 'g', display: '🔷' }
-    ],
+    products: [{ formula: 'NH₃', coefficient: 2, phase: 'g', display: '🔷' }],
     thermodynamics: {
       deltaH: -92,
-      type: 'exothermic'
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 4,
-      products: 2
+      products: 2,
     },
     description: 'How catalysts speed equilibrium without shifting it.',
     descriptionIs: 'Hvernig hvatar flýta fyrir jafnvægi án þess að hliðra því.',
     possibleStresses: [
       { type: 'add-catalyst', target: null },
       { type: 'increase-temp', target: null },
-      { type: 'increase-pressure', target: null }
-    ]
+      { type: 'increase-pressure', target: null },
+    ],
   },
 
   // Equilibrium 29: Le Chatelier in Biology
@@ -942,18 +898,16 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'advanced',
     reactants: [
       { formula: 'Hb', coefficient: 1, phase: 'aq', display: '🔴' },
-      { formula: 'O₂', coefficient: 4, phase: 'g', display: '🔴' }
+      { formula: 'O₂', coefficient: 4, phase: 'g', display: '🔴' },
     ],
-    products: [
-      { formula: 'Hb(O₂)₄', coefficient: 1, phase: 'aq', display: '🔴💧' }
-    ],
+    products: [{ formula: 'Hb(O₂)₄', coefficient: 1, phase: 'aq', display: '🔴💧' }],
     thermodynamics: {
       deltaH: -50,
-      type: 'exothermic'
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 4,
-      products: 0
+      products: 0,
     },
     description: 'Hemoglobin binding oxygen in blood.',
     descriptionIs: 'Hemóglóbín binding súrefnis í blóði.',
@@ -961,8 +915,8 @@ export const equilibria: Equilibrium[] = [
       { type: 'add-reactant', target: 'O₂' },
       { type: 'remove-reactant', target: 'O₂' },
       { type: 'increase-temp', target: null },
-      { type: 'increase-pressure', target: null }
-    ]
+      { type: 'increase-pressure', target: null },
+    ],
   },
 
   // Equilibrium 30: Industrial Optimization Problem
@@ -974,18 +928,16 @@ export const equilibria: Equilibrium[] = [
     difficulty: 'advanced',
     reactants: [
       { formula: 'SO₂', coefficient: 2, phase: 'g', display: '💛' },
-      { formula: 'O₂', coefficient: 1, phase: 'g', display: '🔴' }
+      { formula: 'O₂', coefficient: 1, phase: 'g', display: '🔴' },
     ],
-    products: [
-      { formula: 'SO₃', coefficient: 2, phase: 'g', display: '🟡' }
-    ],
+    products: [{ formula: 'SO₃', coefficient: 2, phase: 'g', display: '🟡' }],
     thermodynamics: {
       deltaH: -198,
-      type: 'exothermic'
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 3,
-      products: 2
+      products: 2,
     },
     description: 'Real industrial decision-making with multiple variables.',
     descriptionIs: 'Raunveruleg iðnaðarákvörðun með mörgum breytum.',
@@ -993,18 +945,18 @@ export const equilibria: Equilibrium[] = [
       { type: 'increase-temp', target: null },
       { type: 'decrease-temp', target: null },
       { type: 'increase-pressure', target: null },
-      { type: 'add-catalyst', target: null }
-    ]
-  }
+      { type: 'add-catalyst', target: null },
+    ],
+  },
 ];
 
 // Helper functions
 export const getEquilibriumById = (id: number): Equilibrium | undefined => {
-  return equilibria.find(eq => eq.id === id);
+  return equilibria.find((eq) => eq.id === id);
 };
 
 export const getEquilibriaByDifficulty = (difficulty: DifficultyLevel): Equilibrium[] => {
-  return equilibria.filter(eq => eq.difficulty === difficulty);
+  return equilibria.filter((eq) => eq.difficulty === difficulty);
 };
 
 export const getRandomEquilibrium = (difficulty?: DifficultyLevel): Equilibrium => {

@@ -7,7 +7,11 @@ import { shuffleArray } from '@shared/utils';
 import { AtomCounter } from './AtomCounter';
 import { EquationEditor } from './EquationEditor';
 import { REACTIONS, type Reaction } from '../data/reactions';
-import { checkBalance, buildUnbalancedDiagnostic } from '../utils/balanceChecker';
+import {
+  checkBalance,
+  buildUnbalancedDiagnostic,
+  diagnoseMisconception,
+} from '../utils/balanceChecker';
 
 type Difficulty = Reaction['difficulty'];
 type HintSource = 'reaction-hint' | 'dynamic-unbalanced';
@@ -286,6 +290,15 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
                         ...reaction.reactants.map((m) => m.coefficient),
                         ...reaction.products.map((m) => m.coefficient),
                       ].join(', ')}.`,
+                // Renders outside the collapsible explanation, so it is the one
+                // thing a student who reads nothing else still sees.
+                misconception: diagnoseMisconception(
+                  reaction.reactants,
+                  reaction.products,
+                  reactantCoeffs,
+                  productCoeffs,
+                  balanceResult
+                ),
               }}
               config={{ showExplanation: true }}
             />

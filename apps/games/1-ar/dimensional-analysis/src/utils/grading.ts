@@ -20,21 +20,20 @@
  * over half the level. `1-ar/molmassi` already normalises the comma before
  * parsing; this follows that precedent.
  *
- * The repo-wide decimal-comma pass (B9/B10 across every game) is still open — this
- * fixes the two components of this game, not the platform.
+ * The repo-wide decimal-comma pass (B9/B10 across every game) has since landed;
+ * the parser this game introduced is now `@shared/utils`' and is re-exported
+ * below.
  */
 
 /**
  * Read a number the way an Icelandic student writes one.
  *
- * Returns `NaN` for anything unparseable, including an empty or whitespace-only
- * string, which `parseFloat` also does but `Number('')` does not.
+ * This game got the fix first and the rest of the library followed, so the
+ * implementation now lives in `@shared/utils` and this is the re-export. It
+ * stays because every call site in this game imports it from here alongside
+ * `isAnswerCorrect`, which is game-specific.
  */
-export function parseStudentNumber(input: string): number {
-  const trimmed = input.trim();
-  if (trimmed === '') return Number.NaN;
-  return Number.parseFloat(trimmed.replace(',', '.'));
-}
+export { parseStudentNumber } from '@shared/utils';
 
 /** The share of the expected value a student's answer may differ by. */
 export const RELATIVE_TOLERANCE = 0.01;

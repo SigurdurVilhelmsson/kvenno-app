@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
-import { shuffleArray } from '@shared/utils';
+import { shuffleArray, parseStudentNumber } from '@shared/utils';
 
 import { Problem, ProblemType } from '../types';
 import { FormulaCard } from './FormulaCard';
@@ -200,9 +200,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                   <label className="block text-sm font-semibold text-warm-700 mb-1">Svar:</label>
                   <input
                     ref={inputRef}
-                    type="number"
+                    type="text"
                     inputMode="decimal"
-                    step="any"
                     value={input}
                     onChange={(e) => {
                       setInput(e.target.value);
@@ -248,7 +247,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                   explanation: `Rétt svar: ${problem.answer.toFixed(3)} ${problem.unit}`,
                   misconception: correct
                     ? undefined
-                    : getContextualFeedback(parseFloat(input), problem.answer),
+                    : getContextualFeedback(parseStudentNumber(input), problem.answer),
                 }}
                 config={{
                   showExplanation: true,

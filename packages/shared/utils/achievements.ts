@@ -328,7 +328,10 @@ export function getAchievementsByCategory(category: Achievement['category']): Ac
 /**
  * Check if an achievement is unlocked
  */
-export function isAchievementUnlocked(achievements: PlayerAchievements, achievementId: string): boolean {
+export function isAchievementUnlocked(
+  achievements: PlayerAchievements,
+  achievementId: string
+): boolean {
   return achievements.unlocked.includes(achievementId);
 }
 
@@ -435,8 +438,7 @@ export function checkAchievements(
       case 'level_complete':
         if (event.type === 'level_complete') {
           progressValue = 1;
-          unlocked =
-            !achievement.criteria.level || achievement.criteria.level === event.level;
+          unlocked = !achievement.criteria.level || achievement.criteria.level === event.level;
         }
         break;
 
@@ -528,9 +530,7 @@ export function getUnlockedAchievements(achievements: PlayerAchievements): Achie
  * Get all locked achievements (excluding secret ones)
  */
 export function getLockedAchievements(achievements: PlayerAchievements): Achievement[] {
-  return ACHIEVEMENTS.filter(
-    (a) => !achievements.unlocked.includes(a.id) && !a.secret
-  );
+  return ACHIEVEMENTS.filter((a) => !achievements.unlocked.includes(a.id) && !a.secret);
 }
 
 /**

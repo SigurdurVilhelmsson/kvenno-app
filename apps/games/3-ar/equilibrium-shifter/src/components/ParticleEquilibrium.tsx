@@ -24,28 +24,30 @@ export function ParticleEquilibrium({
   shiftDirection = null,
   isExothermic = true,
   running = true,
-  className = ''
+  className = '',
 }: ParticleEquilibriumProps) {
-
   // Particle types
-  const particleTypes: ParticleType[] = useMemo(() => [
-    {
-      id: 'R',
-      color: '#f97316', // Orange for reactants
-      radius: 5,
-      label: 'R',
-      strokeColor: '#c2410c',
-      mass: 1
-    },
-    {
-      id: 'P',
-      color: '#8b5cf6', // Purple for products
-      radius: 5,
-      label: 'P',
-      strokeColor: '#6d28d9',
-      mass: 1
-    }
-  ], []);
+  const particleTypes: ParticleType[] = useMemo(
+    () => [
+      {
+        id: 'R',
+        color: '#f97316', // Orange for reactants
+        radius: 5,
+        label: 'R',
+        strokeColor: '#c2410c',
+        mass: 1,
+      },
+      {
+        id: 'P',
+        color: '#8b5cf6', // Purple for products
+        radius: 5,
+        label: 'P',
+        strokeColor: '#6d28d9',
+        mass: 1,
+      },
+    ],
+    []
+  );
 
   // Adjust particle counts based on shift
   const adjustedReactants = useMemo(() => {
@@ -71,17 +73,21 @@ export function ParticleEquilibrium({
     <div className={`relative ${className}`}>
       {/* Direction indicators */}
       <div className="absolute -left-8 top-1/2 -translate-y-1/2 z-10">
-        <div className={`text-2xl transition-all duration-300 ${
-          shiftDirection === 'left' ? 'text-red-500 scale-150' : 'text-warm-400'
-        }`}>
+        <div
+          className={`text-2xl transition-all duration-300 ${
+            shiftDirection === 'left' ? 'text-red-500 scale-150' : 'text-warm-400'
+          }`}
+        >
           ←
         </div>
       </div>
 
       <div className="absolute -right-8 top-1/2 -translate-y-1/2 z-10">
-        <div className={`text-2xl transition-all duration-300 ${
-          shiftDirection === 'right' ? 'text-green-500 scale-150' : 'text-warm-400'
-        }`}>
+        <div
+          className={`text-2xl transition-all duration-300 ${
+            shiftDirection === 'right' ? 'text-green-500 scale-150' : 'text-warm-400'
+          }`}
+        >
           →
         </div>
       </div>
@@ -94,17 +100,17 @@ export function ParticleEquilibrium({
             height: 180,
             backgroundColor: '#0f172a',
             borderColor: containerBorderColor,
-            borderWidth: shiftDirection ? 4 : 2
+            borderWidth: shiftDirection ? 4 : 2,
           }}
           particleTypes={particleTypes}
           particles={[
             { typeId: 'R', count: adjustedReactants },
-            { typeId: 'P', count: adjustedProducts }
+            { typeId: 'P', count: adjustedProducts },
           ]}
           physics={{
             ...PHYSICS_PRESETS.realGas,
             speedMultiplier: 0.8,
-            enableCollisions: true
+            enableCollisions: true,
           }}
           temperature={300}
           running={running}
@@ -134,11 +140,15 @@ export function ParticleEquilibrium({
 
       {/* Equilibrium status */}
       {shiftDirection && (
-        <div className={`mt-2 text-center text-sm font-semibold ${
-          shiftDirection === 'right' ? 'text-green-600' :
-          shiftDirection === 'left' ? 'text-red-600' :
-          'text-warm-600'
-        }`}>
+        <div
+          className={`mt-2 text-center text-sm font-semibold ${
+            shiftDirection === 'right'
+              ? 'text-green-600'
+              : shiftDirection === 'left'
+                ? 'text-red-600'
+                : 'text-warm-600'
+          }`}
+        >
           {shiftDirection === 'right' && '→ Hliðrun til hægri'}
           {shiftDirection === 'left' && '← Hliðrun til vinstri'}
           {shiftDirection === 'none' && '⇌ Engin hliðrun'}

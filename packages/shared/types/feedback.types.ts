@@ -38,6 +38,14 @@ export interface FeedbackPanelConfig {
   showNextSteps?: boolean;
   /** Auto-collapse the panel after this many milliseconds (0 = never) */
   autoCollapseMs?: number;
+  /**
+   * Whether the "Af hverju?" explanation starts open. Defaults to `true`.
+   *
+   * The authored explanation is the teaching content of the panel; hiding it
+   * behind a click meant most students never read it. Pass `false` only where
+   * the same text is already visible elsewhere on the screen.
+   */
+  defaultExpanded?: boolean;
 }
 
 /**

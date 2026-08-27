@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
+import { parseStudentNumber } from '@shared/utils';
 
 import {
   FORMATION_ENTHALPIES,
@@ -154,7 +155,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
   const challenge = challenges[currentChallenge];
 
   const checkAnswer = () => {
-    const userNum = parseFloat(userAnswer);
+    const userNum = parseStudentNumber(userAnswer);
     const correct = checkAnswerTolerance(userNum, challenge.correctAnswer);
 
     setIsCorrect(correct);
@@ -389,8 +390,8 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               </label>
               <div className="flex gap-2">
                 <input
-                  type="number"
-                  step="0.1"
+                  type="text"
+                  inputMode="decimal"
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
                   className="flex-1 p-3 border-2 border-warm-300 rounded-xl focus:border-purple-500 focus:outline-none text-lg font-mono"
@@ -447,7 +448,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               </div>
               {!isCorrect &&
                 (() => {
-                  const userNum = parseFloat(userAnswer);
+                  const userNum = parseStudentNumber(userAnswer);
                   if (isNaN(userNum)) return null;
                   const delta = userNum - challenge.correctAnswer;
                   return (

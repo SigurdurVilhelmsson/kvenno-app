@@ -10,7 +10,7 @@ import type { Spontaneity } from '../types';
  */
 export function calculateDeltaG(deltaH: number, deltaS: number, temp: number): number {
   const deltaSinKJ = deltaS / 1000; // Convert J/(mol·K) to kJ/(mol·K)
-  return deltaH - (temp * deltaSinKJ);
+  return deltaH - temp * deltaSinKJ;
 }
 
 /**

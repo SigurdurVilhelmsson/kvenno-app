@@ -12,6 +12,7 @@ const DEFAULT_CONFIG: FeedbackPanelConfig = {
   showRelatedConcepts: true,
   showNextSteps: true,
   autoCollapseMs: 0,
+  defaultExpanded: true,
 };
 
 /**
@@ -74,7 +75,7 @@ function getSeverityIcon(severity: FeedbackSeverity): string {
  * Displays detailed feedback for game answers with expandable sections.
  *
  * Features:
- * - Expandable "Why?" explanation section
+ * - The "Why?" explanation, open by default and collapsible
  * - Misconception warnings (amber highlight)
  * - Related concept chips
  * - Next steps suggestions
@@ -101,10 +102,11 @@ export function FeedbackPanel({
   onConceptClick,
   className = '',
 }: FeedbackPanelProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const config = { ...DEFAULT_CONFIG, ...configProp };
+
+  const [isExpanded, setIsExpanded] = useState(config.defaultExpanded !== false);
   const [isVisible, setIsVisible] = useState(true);
 
-  const config = { ...DEFAULT_CONFIG, ...configProp };
   const severity = severityProp ?? (feedback.isCorrect ? 'success' : 'error');
   const classes = getSeverityClasses(severity);
   const icon = getSeverityIcon(severity);
@@ -162,9 +164,7 @@ export function FeedbackPanel({
 
         <div className="flex-1 min-w-0">
           {/* Primary feedback message */}
-          <p className={`${classes.text} font-medium`}>
-            {feedback.isCorrect ? 'Rétt!' : 'Rangt'}
-          </p>
+          <p className={`${classes.text} font-medium`}>{feedback.isCorrect ? 'Rétt!' : 'Rangt'}</p>
 
           {/* Expandable explanation */}
           {config.showExplanation && feedback.explanation && (
