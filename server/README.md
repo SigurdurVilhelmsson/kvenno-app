@@ -142,14 +142,81 @@ sudo systemctl status kvenno-backend
 # Install certbot
 sudo apt install certbot python3-certbot-nginx
 
-# Get SSL certificate
-sudo certbot --nginx -d www.kvenno.app -d kvenno.app
+# Get SSL certificate. Domain order matters: certbot names the lineage after the
+# FIRST -d, and nginx-site.conf points at /etc/letsencrypt/live/kvenno.app/.
+sudo certbot --nginx --cert-name kvenno.app -d kvenno.app -d www.kvenno.app
 
-# Test auto-renewal
+# Test auto-renewal — this is the check that matters; it proves the systemd
+# timer will succeed unattended for the next 90 days.
 sudo certbot renew --dry-run
 ```
 
 Certbot will automatically update your nginx configuration with SSL.
+
+##### Renewing
+
+Renewal is automatic via certbot's systemd timer. To renew by hand:
+
+```bash
+sudo certbot renew
+```
+
+**Never renew by re-running the issuance command without `--cert-name`.** Certbot
+will create a second lineage — `kvenno.app-0001` — write the new certificate
+there, and leave nginx serving the old expiring one from
+`/etc/letsencrypt/live/kvenno.app/`. The site stays broken and the cause is
+invisible from the config.
+
+If renewal fails with **"Could not bind TCP port 80 because it is already in use
+by another process"**, the lineage is using the `standalone` authenticator, which
+starts its own web server on port 80 and cannot coexist with a running nginx.
+Check with:
+
+```bash
+sudo grep -E "authenticator|installer" /etc/letsencrypt/renewal/kvenno.app.conf
+```
+
+Fix it by switching the lineage to the `nginx` authenticator, which validates
+through the running nginx with no downtime and persists the change to the
+renewal config:
+
+```bash
+sudo certbot certonly --nginx --cert-name kvenno.app \
+  -d kvenno.app -d www.kvenno.app
+sudo nginx -t && sudo systemctl reload nginx
+sudo certbot renew --dry-run
+```
+
+*(This happened in production on 2026-08-27: the lineage had been on `standalone`
+with no pre/post hooks, so every automatic renewal had been failing silently
+against a running nginx.)*
+
+The `webroot` authenticator is also viable — `nginx-site.conf` serves
+`/.well-known/acme-challenge/` from `/var/www/certbot` for it — but that
+directory must exist and be readable by nginx first:
+
+```bash
+sudo mkdir -p /var/www/certbot && sudo chown www-data:www-data /var/www/certbot
+```
+
+Do **not** point the challenge webroot at `/var/www/kvenno.app`: `scripts/deploy.sh`
+rsyncs that directory with `--delete`, so a deploy during a renewal would erase the
+challenge token. Note also that the HTTPS server block ends in
+`location / { try_files $uri /index.html; }`, so a missing file there returns the
+SPA shell with HTTP 200 rather than a 404 — a misconfigured webroot challenge
+fails by handing Let's Encrypt a page of HTML with a success status.
+
+To verify a renewal actually reached the browser (run from a machine outside the
+server, since nginx must be reloaded before it serves the new certificate):
+
+```bash
+echo | openssl s_client -connect kvenno.app:443 -servername kvenno.app 2>/dev/null \
+  | openssl x509 -noout -subject -issuer -dates -ext subjectAltName
+```
+
+Check `notAfter` is ~90 days out and that the SAN list covers **both**
+`kvenno.app` and `www.kvenno.app` — a certificate missing the `www` SAN fails for
+half the people who type the address.
 
 ### Verify Deployment
 
