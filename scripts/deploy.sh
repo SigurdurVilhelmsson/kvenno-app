@@ -14,6 +14,7 @@ set -euo pipefail
 SERVER="siggi@kvenno.app"
 WEB_ROOT="/var/www/kvenno.app"
 BACKEND_DIR="/opt/kvenno-server"
+BACKEND_PORT="8000"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 DIST_DIR="$ROOT_DIR/dist"
@@ -33,19 +34,21 @@ fi
 
 echo "🚀 Deploying kvenno.app..."
 
-# Step 1: Deploy frontend
-echo ""
-echo "📄 Deploying frontend to $WEB_ROOT..."
-rsync -avz --delete ${DRY_RUN:+"$DRY_RUN"} \
-  --exclude='.git' \
-  --exclude='node_modules' \
-  "$DIST_DIR/" "$SERVER:$WEB_ROOT/"
-
-# Step 2: Deploy backend
+# Step 1: Build and validate the backend bundle — before anything is shipped.
+# Nothing reaches the server until we know both halves are deployable;
+# otherwise a bad backend leaves the site on a new frontend against an old API.
+#
 # Use `pnpm deploy` to produce a standalone, self-contained bundle of the
 # server package (with node_modules and a resolved lockfile) — no workspace
 # context or `pnpm install` needed on the production host.
-BUNDLE_DIR="$(mktemp -d -t kvenno-server-bundle-XXXXXX)"
+#
+# The bundle directory must live inside the repo. pnpm 9.15's `deploy` resolves
+# the bundle's node_modules/.bin one directory too shallow when the target sits
+# outside the workspace: a /tmp target maps onto root-owned /home and fails with
+# `EACCES: mkdir '/home/tmp'` (exit 243), and a target under $HOME silently
+# writes the bins one level up from where they belong.
+BUNDLE_DIR="$ROOT_DIR/.deploy-bundle"
+rm -rf "$BUNDLE_DIR"
 trap 'rm -rf "$BUNDLE_DIR"' EXIT
 
 echo ""
@@ -62,21 +65,35 @@ if [ ! -f "$BUNDLE_DIR/dist/index.js" ]; then
   exit 1
 fi
 
+# Step 2: Deploy frontend
+echo ""
+echo "📄 Deploying frontend to $WEB_ROOT..."
+rsync -avz --delete ${DRY_RUN:+"$DRY_RUN"} \
+  --exclude='.git' \
+  --exclude='node_modules' \
+  "$DIST_DIR/" "$SERVER:$WEB_ROOT/"
+
+# Step 3: Deploy backend
 echo ""
 echo "⚙️  Deploying backend to $BACKEND_DIR..."
 rsync -avz --delete ${DRY_RUN:+"$DRY_RUN"} \
   --exclude='.env' \
   "$BUNDLE_DIR/" "$SERVER:$BACKEND_DIR/"
 
-# Step 3: Restart backend
+# Step 4: Restart backend
 if [ -z "$DRY_RUN" ]; then
   echo ""
   echo "🔄 Restarting backend..."
-  ssh "$SERVER" "sudo systemctl restart kvenno-backend"
+  # -t allocates a terminal: sudo on the host requires a password, and without
+  # a tty it fails with "a terminal is required to read the password".
+  ssh -t "$SERVER" "sudo systemctl restart kvenno-backend"
 
+  # Group-writable on purpose: the deploying user is in the www-data group, so
+  # 775/664 is what lets the frontend rsync above run without sudo. Dropping
+  # back to 755/644 makes every future deploy fail with permission denied.
   echo ""
   echo "🔍 Setting permissions..."
-  ssh "$SERVER" "sudo chown -R www-data:www-data $WEB_ROOT && sudo chmod -R 755 $WEB_ROOT"
+  ssh -t "$SERVER" "sudo chown -R www-data:www-data $WEB_ROOT && sudo find $WEB_ROOT -type d -exec chmod 775 {} + && sudo find $WEB_ROOT -type f -exec chmod 664 {} +"
 
   # Verify the backend actually came back up. Checked on the host against the
   # backend port (nginx only proxies /api/, so a public /health request returns
@@ -87,7 +104,7 @@ if [ -z "$DRY_RUN" ]; then
   HEALTH_STATUS="000"
   for _ in $(seq 1 10); do
     HEALTH_STATUS=$(ssh "$SERVER" \
-      "curl -s -o /dev/null -w '%{http_code}' -H 'Origin: https://kvenno.app' http://127.0.0.1:8000/health" 2>/dev/null || echo "000")
+      "curl -s -o /dev/null -w '%{http_code}' -H 'Origin: https://kvenno.app' http://127.0.0.1:$BACKEND_PORT/health" 2>/dev/null || echo "000")
     [ "$HEALTH_STATUS" = "200" ] && break
     sleep 3
   done
@@ -95,7 +112,7 @@ if [ -z "$DRY_RUN" ]; then
   if [ "$HEALTH_STATUS" != "200" ]; then
     echo "❌ Backend health check failed (HTTP $HEALTH_STATUS)"
     echo "   Recent service logs:"
-    ssh "$SERVER" "sudo journalctl -u kvenno-backend -n 30 --no-pager" || true
+    ssh -t "$SERVER" "sudo journalctl -u kvenno-backend -n 30 --no-pager" || true
     exit 1
   fi
   echo "   ✅ Backend healthy (HTTP 200)"
@@ -103,7 +120,7 @@ if [ -z "$DRY_RUN" ]; then
   echo ""
   echo "✅ Deployment complete!"
   echo "   Frontend: https://kvenno.app/"
-  echo "   Backend:  http://127.0.0.1:8000/health"
+  echo "   Backend:  http://127.0.0.1:$BACKEND_PORT/health"
 else
   echo ""
   echo "🔍 Dry run complete - no changes made"

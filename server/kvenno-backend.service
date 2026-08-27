@@ -7,7 +7,7 @@ Type=simple
 User=www-data
 WorkingDirectory=/opt/kvenno-server
 Environment="NODE_ENV=production"
-Environment="HOME=/var/www"
+Environment="HOME=/tmp"
 EnvironmentFile=/opt/kvenno-server/.env
 ExecStart=/usr/bin/node dist/index.js
 Restart=always
