@@ -65,7 +65,7 @@ export const SOLUBILITY_DATA: SolubilityData[] = [
     color: '#22c55e', // green
   },
   {
-    compound: 'Koltvísýringur',
+    compound: 'Koldíoxíð',
     formula: 'CO₂',
     emoji: '🫧',
     type: 'gas',

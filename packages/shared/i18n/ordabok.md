@@ -75,6 +75,7 @@ buffer solution;stuðpúðalausn
 Bunsen burner;Bunsen brennari
 burette;búretta
 capillary force;hárpípukraftur
+carbon dioxide;koldíoxíð
 catalysis;hvötun
 catalyst;hvati
 cathode;katóða

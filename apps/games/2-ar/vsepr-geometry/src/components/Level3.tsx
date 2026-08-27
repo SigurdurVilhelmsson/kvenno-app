@@ -54,7 +54,7 @@ const challenges: Challenge[] = [
     id: 2,
     type: 'hybridization',
     formula: 'CO₂',
-    name: 'Koltvísýringur',
+    name: 'Koldíoxíð',
     question: 'Hvaða blendni hefur kolefnið í CO₂?',
     options: [
       {
@@ -164,7 +164,7 @@ const challenges: Challenge[] = [
     id: 6,
     type: 'polarity',
     formula: 'CO₂',
-    name: 'Koltvísýringur',
+    name: 'Koldíoxíð',
     question: 'Er CO₂ skautuð eða óskautuð sameind?',
     options: [
       {

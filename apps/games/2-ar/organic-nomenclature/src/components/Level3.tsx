@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+
+import { shuffleArray } from '@shared/utils';
 
 interface Level3Props {
   onComplete: (score: number) => void;
@@ -188,6 +190,19 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     }
   };
 
+  /**
+   * The correct answer sits first in the data on 6 of the 10 challenges, so
+   * rendering them in order rewarded picking the top-left button. Memoised on
+   * the challenge index so the grid holds still while the student reads it.
+   *
+   * Grading is by string equality against `correctAnswer`, so reordering is safe
+   * here — nothing identifies an option by its position.
+   */
+  const shuffledOptions = useMemo(
+    () => shuffleArray(challenges[currentChallenge].options),
+    [currentChallenge]
+  );
+
   const handleAnswer = (answer: string) => {
     const correct = answer === challenges[currentChallenge].correctAnswer;
     setIsCorrect(correct);
@@ -361,9 +376,9 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
         {!showFeedback ? (
           <div className="grid grid-cols-2 gap-4">
-            {challenge.options.map((option, idx) => (
+            {shuffledOptions.map((option) => (
               <button
-                key={idx}
+                key={option}
                 onClick={() => handleAnswer(option)}
                 className="p-4 rounded-xl border-2 border-purple-300 bg-white hover:bg-purple-50 hover:border-purple-400 text-lg font-bold text-warm-800 transition-all"
               >

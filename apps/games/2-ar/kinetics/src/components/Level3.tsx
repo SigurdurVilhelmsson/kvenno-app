@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
+import { shuffleArray } from '@shared/utils';
 
 import { challenges } from '../data/level3-questions';
 import type { MechanismStep } from '../data/level3-questions';
@@ -22,6 +23,25 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
   const challenge = challenges[currentChallenge];
 
+  /**
+   * The correct option is first in the data on all six challenges, so rendering
+   * them in order made "pick the top one" a winning strategy that needs no
+   * chemistry. Level 1 of this same game already shuffles; Level 3 never did.
+   *
+   * Memoised on the challenge index so the buttons hold still while the student
+   * is reading them, and the ids are reassigned a/b/c/d after shuffling so the
+   * visible letters stay in order. That reassignment is why every lookup below
+   * has to go through `shuffledOptions` and not `challenge.options` — the id the
+   * student clicked no longer identifies the same option in the original array.
+   */
+  const shuffledOptions = useMemo(() => {
+    return shuffleArray(challenge.options).map((option, idx) => ({
+      ...option,
+      id: String.fromCharCode(97 + idx),
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when challenge index changes
+  }, [currentChallenge, challenge.options]);
+
   const handleAnswerSelect = (optionId: string) => {
     if (showResult) return;
     setSelectedAnswer(optionId);
@@ -30,7 +50,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const checkAnswer = () => {
     if (!selectedAnswer) return;
 
-    const selectedOption = challenge.options.find((opt) => opt.id === selectedAnswer);
+    const selectedOption = shuffledOptions.find((opt) => opt.id === selectedAnswer);
     if (selectedOption?.correct) {
       setScore((prev) => prev + 20);
     }
@@ -224,7 +244,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
           {/* Options */}
           <div className="space-y-3 mb-6">
-            {challenge.options.map((option) => (
+            {shuffledOptions.map((option) => (
               <button
                 key={option.id}
                 onClick={() => handleAnswerSelect(option.id)}

@@ -83,7 +83,7 @@ const challenges: Challenge[] = [
   },
   {
     id: 3,
-    title: 'Koltvísýringur (CO₂)',
+    title: 'Koldíoxíð (CO₂)',
     molecule: 'CO₂',
     totalElectrons: 16,
     correctStructure: {

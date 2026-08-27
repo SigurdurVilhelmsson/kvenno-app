@@ -256,7 +256,7 @@ const molecules: Molecule[] = [
   {
     id: 5,
     formula: 'CO₂',
-    name: 'Koltvísýringur',
+    name: 'Koldíoxíð',
     isPolar: false,
     hasHBond: false,
     molarMass: 44,

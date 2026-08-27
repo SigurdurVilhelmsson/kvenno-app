@@ -79,7 +79,7 @@ export const questions: GasLawQuestion[] = [
   {
     id: 3,
     emoji: '🥤',
-    scenario_is: 'Kólaflaska inniheldur koltvísýring undir þrýstingi.',
+    scenario_is: 'Kólaflaska inniheldur koldíoxíð undir þrýstingi.',
     scenario_en: 'A soda bottle contains carbon dioxide under pressure.',
     difficulty: 'Auðvelt',
     gasLaw: 'ideal',

@@ -10,7 +10,7 @@ interface EquationForSum {
  */
 export function calculateSum(equations: EquationForSum[]): number {
   return equations.reduce((sum, eq) => {
-    return sum + (eq.deltaH * eq.multiplier * (eq.isReversed ? -1 : 1));
+    return sum + eq.deltaH * eq.multiplier * (eq.isReversed ? -1 : 1);
   }, 0);
 }
 
@@ -20,7 +20,7 @@ export function calculateSum(equations: EquationForSum[]): number {
 export const FORMATION_ENTHALPIES: Record<string, { value: number; name: string }> = {
   'H2O(l)': { value: -285.8, name: 'Vatn (fljótandi)' },
   'H2O(g)': { value: -241.8, name: 'Vatnsgufa' },
-  'CO2(g)': { value: -393.5, name: 'Koltvísýringur' },
+  'CO2(g)': { value: -393.5, name: 'Koldíoxíð' },
   'CO(g)': { value: -110.5, name: 'Kolsýringur' },
   'CH4(g)': { value: -74.8, name: 'Metan' },
   'C2H6(g)': { value: -84.7, name: 'Etan' },
@@ -69,17 +69,8 @@ export function checkAnswer(userAnswer: number, correctAnswer: number): boolean 
  * Calculate delta H rxn from reactant and product formation enthalpies.
  * ΔH°rxn = Σ(n × ΔH°f products) - Σ(n × ΔH°f reactants)
  */
-export function calculateDeltaHrxn(
-  products: CompoundEntry[],
-  reactants: CompoundEntry[]
-): number {
-  const productsSum = products.reduce(
-    (sum, p) => sum + p.coefficient * p.deltaHf,
-    0
-  );
-  const reactantsSum = reactants.reduce(
-    (sum, r) => sum + r.coefficient * r.deltaHf,
-    0
-  );
+export function calculateDeltaHrxn(products: CompoundEntry[], reactants: CompoundEntry[]): number {
+  const productsSum = products.reduce((sum, p) => sum + p.coefficient * p.deltaHf, 0);
+  const reactantsSum = reactants.reduce((sum, r) => sum + r.coefficient * r.deltaHf, 0);
   return productsSum - reactantsSum;
 }
