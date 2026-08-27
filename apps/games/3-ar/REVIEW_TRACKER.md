@@ -362,7 +362,8 @@ These remain outside iter 4 scope — each needs dedicated design work:
 
 ### Done Criteria Check (per plan)
 
-Per `~/.claude/plans/logical-wandering-llama.md`:
+Per `logical-wandering-llama.md` — **that plan file is lost** (see CLAUDE.md's search record,
+2026-08-27); the three criteria are reproduced here, and this list is now the record of them:
 
 1. Most recent review has zero FAIL ratings across all games — **partial**: Gas Law Challenge retains P3 FAIL (6 laws in one game); all other Y3 games zero FAIL.
 2. No REBUILD dispositions needed — **yes**: iter 4 had no REBUILDs; all FIX.
