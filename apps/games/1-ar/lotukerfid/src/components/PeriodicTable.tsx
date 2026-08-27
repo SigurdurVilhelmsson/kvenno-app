@@ -19,6 +19,23 @@ interface PeriodicTableProps {
   wrongElement?: string | null;
   /** Whether cells are clickable */
   interactive?: boolean;
+  /**
+   * Whether each cell shows its category — colour, the two-letter badge, the
+   * legend, and the category in the accessible name. Default `true`.
+   *
+   * Set `false` while a question asks the student to classify an element or to
+   * name what a group has in common: with it `true` the table below the
+   * question answers the question. Position stays visible, which is the datum
+   * the level actually teaches them to read.
+   */
+  showCategories?: boolean;
+  /**
+   * Whether each cell shows its atomic mass. Default `true`.
+   *
+   * Set `false` while a question asks the student to order elements by mass,
+   * for the same reason.
+   */
+  showMasses?: boolean;
 }
 
 /** Two-letter Icelandic category abbreviation rendered in each cell. */
@@ -41,6 +58,8 @@ function ElementCell({
   isCorrect,
   isWrong,
   interactive,
+  showCategory,
+  showMass,
   tabIndex,
   onClick,
   onKeyDown,
@@ -52,13 +71,15 @@ function ElementCell({
   isCorrect: boolean;
   isWrong: boolean;
   interactive: boolean;
+  showCategory: boolean;
+  showMass: boolean;
   tabIndex: number;
   onClick?: () => void;
   onKeyDown: (e: KeyboardEvent<HTMLButtonElement>) => void;
   onFocus: () => void;
   buttonRef: (el: HTMLButtonElement | null) => void;
 }) {
-  const colors = CATEGORY_COLORS[element.category];
+  const colors = showCategory ? CATEGORY_COLORS[element.category] : MASKED_COLORS;
   const categoryLabel = CATEGORY_LABELS[element.category];
 
   const stateClasses = isCorrect
@@ -78,7 +99,11 @@ function ElementCell({
       onFocus={onFocus}
       tabIndex={interactive ? tabIndex : -1}
       disabled={!interactive}
-      aria-label={`${element.name} (${element.symbol}), sætistala ${element.atomicNumber}, ${categoryLabel}`}
+      aria-label={
+        showCategory
+          ? `${element.name} (${element.symbol}), sætistala ${element.atomicNumber}, ${categoryLabel}`
+          : `${element.name} (${element.symbol}), sætistala ${element.atomicNumber}`
+      }
       className={`
         element-cell relative w-full h-full min-h-[44px] sm:min-h-[48px] md:min-h-[56px] p-0.5 rounded-md border-2
         flex flex-col items-center justify-center text-center
@@ -88,24 +113,36 @@ function ElementCell({
         ${stateClasses}
       `}
     >
-      <span
-        aria-hidden="true"
-        className="absolute top-0 right-0.5 text-[6px] sm:text-[7px] md:text-[8px] font-semibold opacity-70 leading-none"
-      >
-        {CATEGORY_ABBR[element.category]}
-      </span>
+      {showCategory && (
+        <span
+          aria-hidden="true"
+          className="absolute top-0 right-0.5 text-[6px] sm:text-[7px] md:text-[8px] font-semibold opacity-70 leading-none"
+        >
+          {CATEGORY_ABBR[element.category]}
+        </span>
+      )}
       <span className="text-[7px] sm:text-[8px] md:text-[10px] text-warm-500 leading-none">
         {element.atomicNumber}
       </span>
       <span className="text-xs sm:text-sm md:text-lg font-bold leading-tight">
         {element.symbol}
       </span>
-      <span className="text-[6px] sm:text-[7px] md:text-[9px] font-mono leading-none">
-        {element.atomicMass.toFixed(1)}
+      <span
+        className="text-[6px] sm:text-[7px] md:text-[9px] font-mono leading-none"
+        aria-hidden={showMass ? undefined : true}
+      >
+        {showMass ? element.atomicMass.toFixed(1) : '\u00A0'}
       </span>
     </button>
   );
 }
+
+/** Neutral cell palette used when the category is masked. */
+const MASKED_COLORS = {
+  bg: 'bg-warm-100',
+  text: 'text-warm-700',
+  border: 'border-warm-300',
+};
 
 function EmptyCell() {
   return <div className="w-full h-full min-h-[44px] sm:min-h-[48px] md:min-h-[56px]" />;
@@ -117,6 +154,8 @@ export function PeriodicTable({
   correctElement = null,
   wrongElement = null,
   interactive = true,
+  showCategories = true,
+  showMasses = true,
 }: PeriodicTableProps) {
   const highlightSet = highlightedElements ?? new Set<string>();
   const [focusedSymbol, setFocusedSymbol] = useState<string | null>(null);
@@ -185,16 +224,20 @@ export function PeriodicTable({
     [moveFocus]
   );
 
-  // Category legend
+  // Category legend.
+  //
+  // The plurals are declared rather than built by appending to the singular:
+  // `málmur` pluralises to `málmar`, not `málmurar`, so the six -ur nouns here
+  // came out as non-words. `Halógen` is neuter and unchanged in the plural.
   const categories: { key: ElementCategory; label: string }[] = [
-    { key: 'alkali-metal', label: `Al — ${CATEGORY_LABELS['alkali-metal']}ar` },
-    { key: 'alkaline-earth', label: `Jm — ${CATEGORY_LABELS['alkaline-earth']}ar` },
-    { key: 'transition-metal', label: `Sk — ${CATEGORY_LABELS['transition-metal']}ar` },
-    { key: 'post-transition-metal', label: `Pm — ${CATEGORY_LABELS['post-transition-metal']}ar` },
-    { key: 'metalloid', label: `Hm — ${CATEGORY_LABELS.metalloid}ar` },
-    { key: 'nonmetal', label: `Óm — ${CATEGORY_LABELS.nonmetal}ar` },
-    { key: 'halogen', label: `Ha — ${CATEGORY_LABELS.halogen}` },
-    { key: 'noble-gas', label: `Eð — ${CATEGORY_LABELS['noble-gas']}ir` },
+    { key: 'alkali-metal', label: 'Al — Alkalímálmar' },
+    { key: 'alkaline-earth', label: 'Jm — Jarðalkalímálmar' },
+    { key: 'transition-metal', label: 'Sk — Skiptimálmar' },
+    { key: 'post-transition-metal', label: 'Pm — P-málmar' },
+    { key: 'metalloid', label: 'Hm — Hálfmálmar' },
+    { key: 'nonmetal', label: 'Óm — Ómálmar' },
+    { key: 'halogen', label: 'Ha — Halógen' },
+    { key: 'noble-gas', label: 'Eð — Eðallofttegundir' },
   ];
 
   return (
@@ -227,6 +270,8 @@ export function PeriodicTable({
                   isCorrect={correctElement === element.symbol}
                   isWrong={wrongElement === element.symbol}
                   interactive={interactive}
+                  showCategory={showCategories}
+                  showMass={showMasses}
                   tabIndex={(focusedSymbol ?? firstSymbol) === element.symbol ? 0 : -1}
                   buttonRef={(el) => {
                     if (el) cellRefs.current.set(element.symbol, el);
@@ -245,21 +290,23 @@ export function PeriodicTable({
       </div>
 
       {/* Category Legend (includes abbreviations for color-blind users) */}
-      <div className="mt-3 pt-3 border-t border-warm-200">
-        <div className="flex flex-wrap gap-1.5">
-          {categories.map((cat) => {
-            const colors = CATEGORY_COLORS[cat.key];
-            return (
-              <div
-                key={cat.key}
-                className={`px-2 py-0.5 rounded text-[10px] sm:text-xs font-medium ${colors.bg} ${colors.text} ${colors.border} border`}
-              >
-                {cat.label}
-              </div>
-            );
-          })}
+      {showCategories && (
+        <div className="mt-3 pt-3 border-t border-warm-200">
+          <div className="flex flex-wrap gap-1.5">
+            {categories.map((cat) => {
+              const colors = CATEGORY_COLORS[cat.key];
+              return (
+                <div
+                  key={cat.key}
+                  className={`px-2 py-0.5 rounded text-[10px] sm:text-xs font-medium ${colors.bg} ${colors.text} ${colors.border} border`}
+                >
+                  {cat.label}
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

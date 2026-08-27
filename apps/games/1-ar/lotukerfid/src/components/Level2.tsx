@@ -21,7 +21,7 @@ interface Level2Props {
 
 type QuestionType = 'classify' | 'order-by-mass' | 'group-property' | 'trend';
 
-interface Question {
+export interface Question {
   type: QuestionType;
   text: string;
   options: string[];
@@ -50,12 +50,35 @@ function makeClassifyQuestion(el: Element): Question {
   };
 }
 
+/**
+ * True where ordering by sætistala and ordering by frumeindamassi disagree.
+ *
+ * The intro teaches that mass rises with the atomic number, and inside the
+ * period<=4 pool that rule holds everywhere except Ar/K and Co/Ni, where the
+ * heavier-numbered element is the lighter one. While the masses were printed on
+ * every cell of the table below the question those two pairs were answerable by
+ * reading; now that they are masked, an item containing one would be an item the
+ * taught rule gets wrong and the student has no way to check. Draw around them
+ * and name the exception in the teaching text instead.
+ */
+function hasMassInversion(elements: Element[]): boolean {
+  const byNumber = [...elements].sort((a, b) => a.atomicNumber - b.atomicNumber);
+  return byNumber.some((el, i) => i > 0 && byNumber[i - 1].atomicMass > el.atomicMass);
+}
+
 /** Order elements by atomic mass */
 function makeOrderQuestion(): Question {
-  const elements = pickRandom(
-    ELEMENTS.filter((e) => e.period <= 4),
-    3
-  );
+  const pool = ELEMENTS.filter((e) => e.period <= 4);
+
+  // Built one element at a time rather than drawn and retried, so the guarantee
+  // is structural: a candidate that would invert against anything already
+  // chosen is never taken in the first place.
+  const elements: Element[] = [];
+  for (const candidate of shuffleArray(pool)) {
+    if (elements.length === 3) break;
+    if (!hasMassInversion([...elements, candidate])) elements.push(candidate);
+  }
+
   elements.sort((a, b) => a.atomicMass - b.atomicMass);
   const correctOrder = elements.map((e) => e.symbol).join(' < ');
   const shuffled = shuffleArray(elements);
@@ -190,7 +213,8 @@ function makeTrendQuestion(trend: TrendQuestion): Question {
   };
 }
 
-function generateQuestions(): Question[] {
+/** Exported for tests: the level's whole question pool for one run. */
+export function generateQuestions(): Question[] {
   const questions: Question[] = [];
   const classifyElements = pickRandom(
     ELEMENTS.filter((e) => e.period <= 4),
@@ -403,6 +427,11 @@ export function Level2({ onBack, onComplete }: Level2Props) {
                 Frumeindamassi eykst almennt eftir því sem sætistalan hækkar. Frumefni í sama flokki
                 (lóðrétt) hafa svipuð efnaeiginleika en aukinn massa.
               </p>
+              <p className="text-sm text-warm-600 mt-2">
+                <strong>Almennt</strong> — ekki alltaf. Argon (18) er þyngra en kalíum (19), og
+                kóbalt (27) þyngra en nikkel (28), því frumeindamassi er meðaltal yfir samsætur.
+                Þess vegna er lotukerfinu raðað eftir sætistölu en ekki massa.
+              </p>
             </div>
 
             <button
@@ -419,6 +448,13 @@ export function Level2({ onBack, onComplete }: Level2Props) {
 
   // --- Gameplay ---
   const highlightSet = new Set(question.highlightSymbols);
+
+  // The table below the question is a locator, not an answer key. Whichever
+  // datum the current question asks about is masked until the student has
+  // committed — then revealed, which is where the checking happens.
+  const showCategories =
+    answered || (question.type !== 'classify' && question.type !== 'group-property');
+  const showMasses = answered || question.type !== 'order-by-mass';
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-2 sm:p-4">
@@ -499,7 +535,19 @@ export function Level2({ onBack, onComplete }: Level2Props) {
 
         {/* Periodic table (reference, non-interactive) */}
         <div className="bg-white rounded-xl shadow-lg p-2 sm:p-4 mb-3">
-          <PeriodicTable highlightedElements={highlightSet} interactive={false} />
+          <p className="text-xs text-warm-500 mb-2 text-center">
+            {showCategories && showMasses
+              ? 'Lotukerfið til hliðsjónar — staðsetningin segir þér mest.'
+              : showCategories
+                ? 'Frumeindamassinn er falinn þangað til þú hefur svarað — notaðu regluna um sætistöluna.'
+                : 'Flokkalitirnir eru faldir þangað til þú hefur svarað — notaðu staðsetninguna.'}
+          </p>
+          <PeriodicTable
+            highlightedElements={highlightSet}
+            interactive={false}
+            showCategories={showCategories}
+            showMasses={showMasses}
+          />
         </div>
 
         {/* Feedback */}
