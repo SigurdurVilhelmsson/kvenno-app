@@ -194,14 +194,21 @@ Gold standard games: Stilla efnajöfnur (real-time atom counter), IMF Level 3 (r
 - Phase 5a: Stilla efnajöfnur reload fix + L3 hints, Nafnakerfid L3 explanations
 - Phase 5b: Lewis Structures L2 interactive SVG drawing canvas, VSEPR L2 constrained prediction + L3 hybridization diagram, pH Titration L2 equivalence point marking, Lausnir L1 static beaker
 
-Full plan: `mighty-mixing-puffin.md` — the April 2026 restructure, phases 1 through 5b.
+Plan file: `mighty-mixing-puffin.md` — the April 2026 restructure, phases 1 through 5b. **Lost; see below.**
 
-> **This file is not in the repository.** It lives only in a local `~/.claude/plans/` directory on
-> Siggi's machine and was never committed — verified 2026-08-26: absent from this checkout, absent
-> from `git log --all`, absent from disk. That is the exact failure the games roadmap's closing
-> section names ("February's work was lost because it lived in cloud sessions that never landed
-> anywhere you looked"). **Commit it into `docs/plans/` from the machine that has it.** Until then
-> the summary above is the only account of this work that survives in the repo.
+> **This file is lost. The summary above is the entire surviving record of this work.** Searched
+> exhaustively 2026-08-27, after 2026-08-26 had already found it missing from this checkout. It is
+> absent from `git log --all` and from every remote branch; from the file trees of all seven active
+> GitHub repos; from this machine, from the Windows profile beside it, and from the production
+> server; and `~/.claude/plans/`, the directory this file used to cite, does not exist on any of
+> them. All 48 hits across the Claude session transcripts and file-history are _references to the
+> path_ — never the content. No session on any machine here ever read or wrote it.
+>
+> Both plan names are cloud-session names, so the one place left to look is Siggi's own session
+> history on claude.ai; nobody else can reach it. **The earlier instruction to "commit it into
+> `docs/plans/` from the machine that has it" is retired — no such machine exists.** Do not cite
+> this file as a source. When you learn something about this work, extend the summary above; that
+> is now the primary record, not a stand-in for one.
 
 **logical-wandering-llama iterative review cycle:**
 
@@ -269,14 +276,12 @@ Remaining deferred (all need a decision, not code):
 - **Kinetics/Redox problem order shuffle** — deliberately skipped (exam-style stability). **Do not generalise this to other games:** several ship an unshuffled array where the answer is positionally predictable, which is a different problem. See `docs/README.md`.
 - **Level 4, and whether levels are gated** — the old repo's design capped games at 3 levels; the April restructure replaced that with Explore → Understand → Practice → Apply, which has no level count. Most salvageable content from the old repo is Level-4 material. Decide once whether a Level 4 exists or that content becomes the Apply phase. Gating strings for 15 games already exist in three languages with no consumers — 14 under `menu.levels.*.locked`, plus `1-ar/nafnakerfid` under `completeLevel1First`/`completeLevel2First` (`src/i18n.ts:23-24`). Grep both key names before wiring or stripping.
 
-Full plan: `logical-wandering-llama.md` — the Y1/Y2/Y3 iterative review cycle.
+Plan file: `logical-wandering-llama.md` — the Y1/Y2/Y3 iterative review cycle. **Lost; see below.**
 
-> **This file is not in the repository.** It lives only in a local `~/.claude/plans/` directory on
-> Siggi's machine and was never committed — verified 2026-08-26: absent from this checkout, absent
-> from `git log --all`, absent from disk. That is the exact failure the games roadmap's closing
-> section names ("February's work was lost because it lived in cloud sessions that never landed
-> anywhere you looked"). **Commit it into `docs/plans/` from the machine that has it.** Until then
-> the summary above is the only account of this work that survives in the repo.
+> **This file is lost, exactly as `mighty-mixing-puffin.md` is** — see the search record under the
+> April 2026 restructure above (2026-08-27: absent from git, from GitHub, from every machine here,
+> and from `~/.claude/plans/`, which does not exist). The summary above is the entire surviving
+> record of the review cycle. Do not cite this file as a source; extend the summary instead.
 
 ### Game inventory
 
