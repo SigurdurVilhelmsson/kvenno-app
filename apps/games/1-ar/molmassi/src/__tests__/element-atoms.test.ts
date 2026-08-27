@@ -19,7 +19,7 @@ import {
   hasRepeatedElement,
   type ConvType,
 } from '../components/Level2';
-import { COMPOUNDS } from '../data/compounds';
+import { COMPOUNDS, STP_LABEL } from '../data/compounds';
 import { getElementBySymbol } from '../data/elements';
 
 const AVOGADRO = 6.022e23;
@@ -88,27 +88,31 @@ describe('moles_to_element_atoms', () => {
 });
 
 describe('a Level 2 run', () => {
-  it('asks all five conversions', () => {
-    // The generator deals types round-robin over ten compounds, so a run holds
-    // two of each. If a type is ever added without the pool growing, this says
-    // which one stopped appearing.
+  it('asks all seven conversions', () => {
+    // The generator deals types round-robin over ten compounds, so with seven
+    // types the first three come round twice. If a type is ever added without
+    // the pool growing, or a slot silently falls back to another conversion,
+    // this says which one stopped appearing.
     const problems = generateAllProblems();
     const asked = new Set<ConvType>();
 
     for (const problem of problems) {
-      if (/Hversu mörg mól eru í .* g af/.test(problem.questionText)) asked.add('mass_to_moles');
-      else if (/Hvað vega .* mól/.test(problem.questionText)) asked.add('moles_to_mass');
-      else if (/Hversu margar sameindir/.test(problem.questionText))
-        asked.add('moles_to_particles');
-      else if (/Hversu mörg mól eru .* sameindir/.test(problem.questionText))
-        asked.add('particles_to_moles');
-      else if (/-atóm/.test(problem.questionText)) asked.add('moles_to_element_atoms');
+      const q = problem.questionText;
+      if (q.includes(STP_LABEL)) {
+        asked.add(q.startsWith('Hvaða rúmmál') ? 'moles_to_gas_volume' : 'gas_volume_to_moles');
+      } else if (/-atóm/.test(q)) asked.add('moles_to_element_atoms');
+      else if (/Hversu mörg mól eru í .* g af/.test(q)) asked.add('mass_to_moles');
+      else if (/Hvað vega .* mól/.test(q)) asked.add('moles_to_mass');
+      else if (/Hversu margar sameindir/.test(q)) asked.add('moles_to_particles');
+      else if (/Hversu mörg mól eru .* sameindir/.test(q)) asked.add('particles_to_moles');
     }
 
     expect([...asked].sort()).toEqual(
       [
+        'gas_volume_to_moles',
         'mass_to_moles',
         'moles_to_element_atoms',
+        'moles_to_gas_volume',
         'moles_to_mass',
         'moles_to_particles',
         'particles_to_moles',

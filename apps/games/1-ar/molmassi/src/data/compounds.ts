@@ -8,10 +8,23 @@ export interface CompoundElement {
   count: number;
 }
 
+/**
+ * State at STP (273,15 K, 1 atm), describing the substance **as this game names
+ * it** — which is not always the same as the bare formula.
+ *
+ * It exists so the molar-volume question can only be asked about a gas. One mole
+ * of anything occupies 22,4 L only if it is a gas; asking for the volume of a
+ * mole of table salt is the same class of defect as `lausnir` asking a student
+ * to weigh out a gas, which was fixed in August 2026.
+ */
+export type CompoundState = 'gas' | 'vökvi' | 'fast';
+
 export interface Compound {
   formula: string;
   name: string;
   elements: CompoundElement[];
+  /** State at STP. See `CompoundState`. */
+  state: CompoundState;
   /**
    * Summed from `elements` and the atomic masses in `elements.ts` — never authored.
    *
@@ -43,6 +56,20 @@ function atomicMassOf(symbol: string): number {
 }
 
 /** The total a student gets by summing the printed lines, because it is that sum. */
+/**
+ * Standard molar volume: one mole of an ideal gas at STP occupies 22,4 L.
+ *
+ * STP here is 273,15 K and **1 atm**, which is what the school's textbook uses —
+ * it notes that IUPAC moved standard pressure to 1 bar in 1982 and then says
+ * plainly that the earlier definition "verður notuð í þessum texta". At 1 bar the
+ * figure would be 22,7 L/mól, so the condition is not decoration: it is stated
+ * everywhere this constant is shown to a student.
+ */
+export const STANDARD_MOLAR_VOLUME = 22.4;
+
+/** The conditions the constant above is quoted at, for any string that shows it. */
+export const STP_LABEL = 'STP (0 °C og 1 atm)';
+
 export function molarMassOf(elements: CompoundElement[]): number {
   return elements.reduce((sum, e) => sum + e.count * atomicMassOf(e.symbol), 0);
 }
@@ -56,6 +83,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   // Easy - Real-world chemicals students know
   {
     formula: 'H₂O',
+    state: 'vökvi',
     name: 'Vatn',
     elements: [
       { symbol: 'H', count: 2 },
@@ -65,6 +93,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'NaCl',
+    state: 'fast',
     name: 'Borðsalt',
     elements: [
       { symbol: 'Na', count: 1 },
@@ -72,15 +101,23 @@ const DEFINITIONS: CompoundDefinition[] = [
     ],
     difficulty: 'easy',
   },
-  { formula: 'O₂', name: 'Súrefni', elements: [{ symbol: 'O', count: 2 }], difficulty: 'easy' },
+  {
+    formula: 'O₂',
+    name: 'Súrefni',
+    elements: [{ symbol: 'O', count: 2 }],
+    state: 'gas',
+    difficulty: 'easy',
+  },
   {
     formula: 'N₂',
+    state: 'gas',
     name: 'Köfnunarefni',
     elements: [{ symbol: 'N', count: 2 }],
     difficulty: 'easy',
   },
   {
     formula: 'CH₄',
+    state: 'gas',
     name: 'Metan',
     elements: [
       { symbol: 'C', count: 1 },
@@ -90,6 +127,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'C₂H₆',
+    state: 'gas',
     name: 'Etan',
     elements: [
       { symbol: 'C', count: 2 },
@@ -99,6 +137,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'C₃H₈',
+    state: 'gas',
     name: 'Própan',
     elements: [
       { symbol: 'C', count: 3 },
@@ -108,6 +147,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'CO₂',
+    state: 'gas',
     name: 'Koldíoxíð',
     elements: [
       { symbol: 'C', count: 1 },
@@ -117,6 +157,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'NH₃',
+    state: 'gas',
     name: 'Ammóníak',
     elements: [
       { symbol: 'N', count: 1 },
@@ -126,6 +167,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'HCl',
+    state: 'vökvi',
     name: 'Saltsýra',
     elements: [
       { symbol: 'H', count: 1 },
@@ -137,6 +179,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   // Medium - Common chemicals in labs and household
   {
     formula: 'C₂H₅OH',
+    state: 'vökvi',
     name: 'Etanól',
     elements: [
       { symbol: 'C', count: 2 },
@@ -147,6 +190,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'CH₃COOH',
+    state: 'vökvi',
     name: 'Ediksýra',
     elements: [
       { symbol: 'C', count: 2 },
@@ -157,6 +201,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'NaOH',
+    state: 'fast',
     name: 'Natríumhýdroxíð',
     elements: [
       { symbol: 'Na', count: 1 },
@@ -167,6 +212,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'CaCO₃',
+    state: 'fast',
     name: 'Kalsíumkarbónat',
     elements: [
       { symbol: 'Ca', count: 1 },
@@ -177,6 +223,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'KCl',
+    state: 'fast',
     name: 'Kalíumklóríð',
     elements: [
       { symbol: 'K', count: 1 },
@@ -186,6 +233,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'MgSO₄',
+    state: 'fast',
     name: 'Magnesíumsúlfat',
     elements: [
       { symbol: 'Mg', count: 1 },
@@ -196,6 +244,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'NaHCO₃',
+    state: 'fast',
     name: 'Matarsódi',
     elements: [
       { symbol: 'Na', count: 1 },
@@ -207,6 +256,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'H₂O₂',
+    state: 'vökvi',
     name: 'Vetnisperoxíð',
     elements: [
       { symbol: 'H', count: 2 },
@@ -216,6 +266,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'C₆H₁₂O₆',
+    state: 'fast',
     name: 'Glúkósi',
     elements: [
       { symbol: 'C', count: 6 },
@@ -226,6 +277,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'H₂SO₄',
+    state: 'vökvi',
     name: 'Brennisteinssýra',
     elements: [
       { symbol: 'H', count: 2 },
@@ -238,6 +290,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   // Hard - Complex molecules and hydrates
   {
     formula: 'C₆H₅OH',
+    state: 'fast',
     name: 'Fenól',
     elements: [
       { symbol: 'C', count: 6 },
@@ -248,6 +301,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'C₁₂H₂₂O₁₁',
+    state: 'fast',
     name: 'Súkrósi/Sykur',
     elements: [
       { symbol: 'C', count: 12 },
@@ -258,6 +312,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'MgSO₄·7H₂O',
+    state: 'fast',
     name: 'Magnesíumsúlfat heptahýdrat',
     elements: [
       { symbol: 'Mg', count: 1 },
@@ -269,6 +324,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'Na₂CO₃·10H₂O',
+    state: 'fast',
     name: 'Þvottasódi',
     elements: [
       { symbol: 'Na', count: 2 },
@@ -280,6 +336,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'FeSO₄·7H₂O',
+    state: 'fast',
     name: 'Járn(II)súlfat heptahýdrat',
     elements: [
       { symbol: 'Fe', count: 1 },
@@ -291,6 +348,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: '(NH₄)₃PO₄',
+    state: 'fast',
     name: 'Ammóníumfosfat',
     elements: [
       { symbol: 'N', count: 3 },
@@ -302,6 +360,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'Al₂(SO₄)₃',
+    state: 'fast',
     name: 'Álsúlfat',
     elements: [
       { symbol: 'Al', count: 2 },
@@ -312,6 +371,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'Ca₃(PO₄)₂',
+    state: 'fast',
     name: 'Kalsíumfosfat',
     elements: [
       { symbol: 'Ca', count: 3 },
@@ -322,6 +382,7 @@ const DEFINITIONS: CompoundDefinition[] = [
   },
   {
     formula: 'CuSO₄·5H₂O',
+    state: 'fast',
     name: 'Kopar(II)súlfat pentahýdrat',
     elements: [
       { symbol: 'Cu', count: 1 },

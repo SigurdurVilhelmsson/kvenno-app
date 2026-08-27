@@ -447,8 +447,10 @@ first. Guarded by `1-ar/dimensional-analysis/src/__tests__/hint-cost.test.ts`.
 **Two of the four roadmap rows had false premises**, and this is where the correction lives:
 `saturation.ts`'s curves were **already shipped, digit for digit**, plus two gases the old file
 never had — there was nothing to swap; and `avogadro.ts`'s g↔mol and mol↔particles already
-shipped too, while **mol↔L is in neither harvested file** and remains a genuine gap belonging with
-the Year-3 gas laws. `conversionChains.ts` was deliberately not ported: `1-ar/einingakedjan` is
+shipped too, while **mol↔L is in neither harvested file**. That gap is real, and it is a **Year-1**
+gap — Siggi's correction, 2026-08-27, replacing this file's earlier claim that it belonged with the
+Year-3 gas laws, which was inferred from where the platform mentioned molar volume rather than from
+the course. It is now taught in `1-ar/molmassi`. `conversionChains.ts` was deliberately not ported: `1-ar/einingakedjan` is
 that file as a game, with species-tagged ratios.
 
 **Checking harvested data against the shipped graders found four defects in shipped code**, listed
