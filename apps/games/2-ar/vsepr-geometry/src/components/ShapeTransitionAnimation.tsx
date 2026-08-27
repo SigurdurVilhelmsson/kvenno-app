@@ -143,44 +143,46 @@ export function ShapeTransitionAnimation({
 
       const speed = 0.008 * delta;
 
-      setDomains(prev => {
+      setDomains((prev) => {
         let allDone = true;
-        const updated = prev.map(d => {
-          // Calculate distance to target
-          const dx = d.targetX - d.x;
-          const dy = d.targetY - d.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+        const updated = prev
+          .map((d) => {
+            // Calculate distance to target
+            const dx = d.targetX - d.x;
+            const dy = d.targetY - d.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
 
-          // Handle opacity for new/removing domains
-          let newOpacity = d.opacity;
-          if (d.isNew && d.opacity < 1) {
-            newOpacity = Math.min(1, d.opacity + 0.05);
-            allDone = false;
-          }
-          if (d.isRemoving && d.opacity > 0) {
-            newOpacity = Math.max(0, d.opacity - 0.08);
-            allDone = false;
-          }
+            // Handle opacity for new/removing domains
+            let newOpacity = d.opacity;
+            if (d.isNew && d.opacity < 1) {
+              newOpacity = Math.min(1, d.opacity + 0.05);
+              allDone = false;
+            }
+            if (d.isRemoving && d.opacity > 0) {
+              newOpacity = Math.max(0, d.opacity - 0.08);
+              allDone = false;
+            }
 
-          // Move toward target
-          if (dist > 1) {
-            allDone = false;
+            // Move toward target
+            if (dist > 1) {
+              allDone = false;
+              return {
+                ...d,
+                x: d.x + dx * speed,
+                y: d.y + dy * speed,
+                opacity: newOpacity,
+              };
+            }
+
             return {
               ...d,
-              x: d.x + dx * speed,
-              y: d.y + dy * speed,
+              x: d.targetX,
+              y: d.targetY,
               opacity: newOpacity,
+              isNew: false,
             };
-          }
-
-          return {
-            ...d,
-            x: d.targetX,
-            y: d.targetY,
-            opacity: newOpacity,
-            isNew: false,
-          };
-        }).filter(d => !(d.isRemoving && d.opacity <= 0));
+          })
+          .filter((d) => !(d.isRemoving && d.opacity <= 0));
 
         if (allDone) {
           setIsAnimating(false);
@@ -274,7 +276,9 @@ export function ShapeTransitionAnimation({
   const domainRadius = compact ? 14 : 18;
 
   return (
-    <div className={`${compact ? 'p-3' : 'p-4'} bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-200`}>
+    <div
+      className={`${compact ? 'p-3' : 'p-4'} bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-200`}
+    >
       <div className="flex items-center justify-between mb-3">
         <h3 className={`font-bold text-indigo-800 ${compact ? 'text-sm' : 'text-base'}`}>
           Lögunarbreyting
@@ -327,42 +331,43 @@ export function ShapeTransitionAnimation({
           </defs>
 
           {/* Trail paths (ghost positions) */}
-          {showTrail && domains.map(d => {
-            const dx = d.targetX - d.x;
-            const dy = d.targetY - d.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 5 || d.isRemoving) return null;
+          {showTrail &&
+            domains.map((d) => {
+              const dx = d.targetX - d.x;
+              const dy = d.targetY - d.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < 5 || d.isRemoving) return null;
 
-            return (
-              <g key={`trail-${d.id}`}>
-                {/* Trail line */}
-                <line
-                  x1={center + d.x}
-                  y1={center + d.y}
-                  x2={center + d.targetX}
-                  y2={center + d.targetY}
-                  stroke="#94a3b8"
-                  strokeWidth="1"
-                  strokeDasharray="4 4"
-                  opacity="0.4"
-                />
-                {/* Target ghost */}
-                <circle
-                  cx={center + d.targetX}
-                  cy={center + d.targetY}
-                  r={domainRadius}
-                  fill="none"
-                  stroke="#94a3b8"
-                  strokeWidth="1.5"
-                  strokeDasharray="4 4"
-                  opacity="0.3"
-                />
-              </g>
-            );
-          })}
+              return (
+                <g key={`trail-${d.id}`}>
+                  {/* Trail line */}
+                  <line
+                    x1={center + d.x}
+                    y1={center + d.y}
+                    x2={center + d.targetX}
+                    y2={center + d.targetY}
+                    stroke="#94a3b8"
+                    strokeWidth="1"
+                    strokeDasharray="4 4"
+                    opacity="0.4"
+                  />
+                  {/* Target ghost */}
+                  <circle
+                    cx={center + d.targetX}
+                    cy={center + d.targetY}
+                    r={domainRadius}
+                    fill="none"
+                    stroke="#94a3b8"
+                    strokeWidth="1.5"
+                    strokeDasharray="4 4"
+                    opacity="0.3"
+                  />
+                </g>
+              );
+            })}
 
           {/* Bonds from center to domains */}
-          {domains.map(d => (
+          {domains.map((d) => (
             <line
               key={`bond-${d.id}`}
               x1={center}
@@ -390,14 +395,14 @@ export function ShapeTransitionAnimation({
             textAnchor="middle"
             dominantBaseline="central"
             fill="white"
-            fontSize={compact ? "12" : "14"}
+            fontSize={compact ? '12' : '14'}
             fontWeight="bold"
           >
             X
           </text>
 
           {/* Electron domains */}
-          {domains.map(d => (
+          {domains.map((d) => (
             <g key={d.id} opacity={d.opacity}>
               <circle
                 cx={center + d.x}
@@ -411,13 +416,7 @@ export function ShapeTransitionAnimation({
           ))}
 
           {/* Domain count label */}
-          <text
-            x={size - 12}
-            y={20}
-            textAnchor="end"
-            fill="#94a3b8"
-            fontSize="12"
-          >
+          <text x={size - 12} y={20} textAnchor="end" fill="#94a3b8" fontSize="12">
             {domainCount} svið
           </text>
         </svg>
@@ -479,7 +478,7 @@ export function ShapeTransitionAnimation({
 
       {/* Geometry sequence */}
       <div className="mt-4 flex justify-center gap-1">
-        {[2, 3, 4, 5, 6].map(n => (
+        {[2, 3, 4, 5, 6].map((n) => (
           <button
             key={n}
             onClick={() => changeDomains(n)}

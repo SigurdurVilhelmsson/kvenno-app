@@ -313,7 +313,7 @@ function App() {
             <h3 className="font-semibold text-warm-700 mb-2">📐 Skammtatölur</h3>
             <div className="text-sm space-y-2 text-warm-600">
               <p>
-                <strong>n</strong> (aðalskammtatala): 1, 2, 3, ... — ákvarðar skel/orkustig
+                <strong>n</strong> (aðalskammtatala): 1, 2, 3, ... — ákvarðar hvolf/orkustig
               </p>
               <p>
                 <strong>l</strong> (hliðarskammtatala): 0 til n-1 — s(0), p(1), d(2), f(3)

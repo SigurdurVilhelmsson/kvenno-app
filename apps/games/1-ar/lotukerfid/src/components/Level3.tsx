@@ -291,7 +291,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
             >
               ← Til baka
             </button>
-            <h1 className="text-base sm:text-lg font-bold text-warm-800">Sameindagerð</h1>
+            <h1 className="text-base sm:text-lg font-bold text-warm-800">Atómbygging</h1>
             <span className="text-sm font-semibold text-warm-600">
               {index + 1}/{TOTAL}
             </span>

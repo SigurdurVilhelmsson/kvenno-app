@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
 
 import { level3Challenges } from '../data/challenges';
 import { isAnswerCorrect, parseStudentNumber } from '../utils/grading';
+import { buildLevel3Run } from '../utils/level3Run';
 import {
   scoreExplanation,
   calculateCompositeScore,
@@ -76,7 +77,11 @@ export function Level3({
   const [, setHintUsed] = useState(false);
   const [showHint, setShowHint] = useState(false);
 
-  const problem = level3Challenges[currentProblemIndex];
+  // A run drawn from the pool, not the whole pool: see `buildLevel3Run`.
+  // Drawn once per mount, so returning to the level mid-run keeps the run.
+  const run = useMemo(() => buildLevel3Run(level3Challenges), []);
+
+  const problem = run[currentProblemIndex];
 
   useEffect(() => {
     if (problem) {
@@ -103,7 +108,11 @@ export function Level3({
       real_world: 'Umbreyttu öllum gildum í sömu einingar áður en þú reiknar fjölda skammta.',
       derivation: 'Notaðu vísindatölustafi (t.d. 3.00e8) fyrir mjög stórar eða litlar tölur.',
     };
-    return hints[problem.type] || 'Hugsaðu vel um hvaða stuðla þú þarft og í hvaða röð.';
+    // An item may override the type hint: the derivation hint talks about
+    // scientific notation, which is no help on a derivation about minutes.
+    return (
+      problem.hint || hints[problem.type] || 'Hugsaðu vel um hvaða stuðla þú þarft og í hvaða röð.'
+    );
   };
 
   const handleSubmit = () => {
@@ -164,8 +173,15 @@ export function Level3({
         methodScore = 1;
       }
     } else if (problem.type === 'real_world') {
-      const userNum = parseInt(userAnswer, 10);
-      if (userNum === problem.expectedAnswer) {
+      // `parseInt` truncated a decimal answer and could not read an Icelandic
+      // decimal comma, so an item whose answer is 24,5 was ungradeable and
+      // `requireInteger` decided nothing. Read the number the way the rest of
+      // the game does, then let the flag decide what counts.
+      const userNum = parseStudentNumber(userAnswer);
+      const correct = problem.requireInteger
+        ? Number.isInteger(userNum) && userNum === problem.expectedAnswer
+        : isAnswerCorrect(userNum, problem.expectedAnswer);
+      if (correct) {
         answerScore = 1;
         methodScore = 1;
       }
@@ -227,11 +243,11 @@ export function Level3({
 
     setProgress(newProgress);
 
-    if (currentProblemIndex < level3Challenges.length - 1) {
+    if (currentProblemIndex < run.length - 1) {
       setCurrentProblemIndex(currentProblemIndex + 1);
     } else {
-      // Max score is 100 per problem x 10 problems = 1000
-      onComplete(newProgress, 1000, totalHintsUsed);
+      // Max score is 100 per problem in the run.
+      onComplete(newProgress, run.length * 100, totalHintsUsed);
     }
   };
 
@@ -392,7 +408,7 @@ export function Level3({
               <div className="grid grid-cols-2 gap-3">
                 {problem.startValue && problem.startUnit && (
                   <div className="bg-white p-3 rounded-lg">
-                    <p className="text-xs text-warm-500">Rúmmál</p>
+                    <p className="text-xs text-warm-500">{problem.startLabel ?? 'Rúmmál'}</p>
                     <p className="font-bold text-purple-700">
                       {problem.startValue} {problem.startUnit}
                     </p>
@@ -400,7 +416,7 @@ export function Level3({
                 )}
                 {problem.density && problem.densityUnit && (
                   <div className="bg-white p-3 rounded-lg">
-                    <p className="text-xs text-warm-500">Eðlismassi</p>
+                    <p className="text-xs text-warm-500">{problem.factorLabel ?? 'Eðlismassi'}</p>
                     <p className="font-bold text-purple-700">
                       {problem.density} {problem.densityUnit}
                     </p>
@@ -430,7 +446,7 @@ export function Level3({
               <div className="grid grid-cols-2 gap-3">
                 {problem.startValue && problem.startUnit && (
                   <div className="bg-white p-3 rounded-lg">
-                    <p className="text-xs text-warm-500">Heildarmagn</p>
+                    <p className="text-xs text-warm-500">{problem.startLabel ?? 'Heildarmagn'}</p>
                     <p className="font-bold text-green-700">
                       {problem.startValue} {problem.startUnit}
                     </p>
@@ -438,7 +454,9 @@ export function Level3({
                 )}
                 {problem.portionSize && problem.portionUnit && (
                   <div className="bg-white p-3 rounded-lg">
-                    <p className="text-xs text-warm-500">Skammtastærð</p>
+                    <p className="text-xs text-warm-500">
+                      {problem.portionLabel ?? 'Skammtastærð'}
+                    </p>
                     <p className="font-bold text-green-700">
                       {problem.portionSize} {problem.portionUnit}
                     </p>
@@ -675,6 +693,18 @@ export function Level3({
                 </div>
               )}
 
+              {/* The worked solution for a real-world item. Authored on every one
+                  of them since the level shipped, and rendered nowhere until now —
+                  so a student who got one wrong was shown no way to get it right. */}
+              {problem.type === 'real_world' && problem.explanation && (
+                <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                  <p className="text-sm font-bold text-green-800 mb-2 flex items-center gap-2">
+                    <span>📋</span> Svona er þetta reiknað:
+                  </p>
+                  <p className="text-warm-700">{problem.explanation}</p>
+                </div>
+              )}
+
               {/* Step-by-step solution display */}
               {'correctMethod' in problem && problem.correctMethod && (
                 <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
@@ -717,16 +747,7 @@ export function Level3({
                             {idx + 1}
                           </span>
                           <span className="bg-white px-3 py-2 rounded-lg border border-green-200 flex-1 text-sm">
-                            {step === 'multiply by density' &&
-                              '🧪 Margfaldaðu með eðlismassa (g = mL × g/mL)'}
-                            {step === 'convert g to kg' && '⚖️ Umbreyttu g í kg (deila með 1000)'}
-                            {step === 'convert cm³ to m³' &&
-                              '📐 Umbreyttu cm³ í m³ (deila með 1000000)'}
-                            {![
-                              'multiply by density',
-                              'convert g to kg',
-                              'convert cm³ to m³',
-                            ].includes(step) && step}
+                            {step}
                           </span>
                         </div>
                       ))}
@@ -767,9 +788,7 @@ export function Level3({
                     : 'bg-purple-600 hover:bg-purple-700 text-white'
                 }`}
               >
-                {currentProblemIndex < level3Challenges.length - 1
-                  ? 'Næsta áskorun →'
-                  : 'Ljúka stigi'}
+                {currentProblemIndex < run.length - 1 ? 'Næsta áskorun →' : 'Ljúka stigi'}
               </button>
             </div>
           )}

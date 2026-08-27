@@ -18,15 +18,40 @@ interface ChallengeOption {
 }
 
 /**
- * Reverse challenge: Identify conversion factors used to transform one unit to another
+ * The everyday setting a challenge is dressed in.
+ *
+ * Only the harvested real-world items carry one. `buildLevel3Run` uses it to
+ * spread a run across settings instead of handing a student five kitchen
+ * problems in a row; nothing is rendered from it.
  */
-export interface Level3ChallengeReverse {
+export type Level3Context = 'eldhús' | 'apótek' | 'verkfræði' | 'íþróttir' | 'ferðalög';
+
+/**
+ * The fields every Level 3 challenge carries, whatever its type.
+ */
+interface Level3ChallengeShared {
   /** Unique identifier */
   id: string;
-  /** Challenge type */
-  type: 'reverse';
   /** Question prompt in Icelandic */
   prompt: string;
+  /** Everyday setting, used only to spread a run across contexts */
+  context?: Level3Context;
+  /**
+   * Replaces the generic per-type hint for this one item.
+   *
+   * The per-type hints are written for the type's usual shape — the derivation
+   * hint, for instance, talks about scientific notation, which is wrong for a
+   * derivation about minutes and hours.
+   */
+  hint?: string;
+}
+
+/**
+ * Reverse challenge: Identify conversion factors used to transform one unit to another
+ */
+export interface Level3ChallengeReverse extends Level3ChallengeShared {
+  /** Challenge type */
+  type: 'reverse';
   /** Setup with starting and ending values/units */
   setup: {
     start: string;
@@ -43,13 +68,9 @@ export interface Level3ChallengeReverse {
 /**
  * Error analysis challenge: Identify and correct calculation mistakes
  */
-export interface Level3ChallengeErrorAnalysis {
-  /** Unique identifier */
-  id: string;
+export interface Level3ChallengeErrorAnalysis extends Level3ChallengeShared {
   /** Challenge type */
   type: 'error_analysis';
-  /** Question prompt in Icelandic */
-  prompt: string;
   /** The incorrect work shown */
   incorrectWork: string;
   /** Correct numerical answer */
@@ -65,13 +86,9 @@ export interface Level3ChallengeErrorAnalysis {
 /**
  * Efficiency challenge: Find the most efficient solution path
  */
-export interface Level3ChallengeEfficiency {
-  /** Unique identifier */
-  id: string;
+export interface Level3ChallengeEfficiency extends Level3ChallengeShared {
   /** Challenge type */
   type: 'efficiency';
-  /** Question prompt in Icelandic */
-  prompt: string;
   /** Starting numerical value */
   startValue: number;
   /** Starting unit */
@@ -94,67 +111,81 @@ export interface Level3ChallengeEfficiency {
 /**
  * Synthesis challenge: Combine multiple skills (conversions, density, significant figures)
  */
-export interface Level3ChallengeSynthesis {
-  /** Unique identifier */
-  id: string;
+export interface Level3ChallengeSynthesis extends Level3ChallengeShared {
   /** Challenge type */
   type: 'synthesis';
-  /** Question prompt in Icelandic */
-  prompt: string;
   /** Starting numerical value */
   startValue: number;
   /** Starting unit */
   startUnit: string;
-  /** Target unit */
-  targetUnit: string;
+  /**
+   * What the starting value *is*, for the "Gefnar upplýsingar" card.
+   *
+   * Defaults to `Rúmmál`, which is what the card said unconditionally before
+   * this field existed — and was wrong on every item whose starting value is a
+   * mass, an amount of substance or a speed.
+   */
+  startLabel?: string;
   /** Density value (optional, for density-based problems) */
   density?: number;
   /** Unit for density (optional) */
   densityUnit?: string;
+  /**
+   * What the factor *is*, for the same card. Defaults to `Eðlismassi`.
+   *
+   * A molar mass, a dose per kilo and a fuel consumption all live in the
+   * `density` field; only some of them are an eðlismassi.
+   */
+  factorLabel?: string;
+  /** Target unit */
+  targetUnit: string;
   /** Expected answer */
   expectedAnswer: number;
-  /** Required significant figures (optional) */
+  /**
+   * Significant figures the correct answer carries.
+   *
+   * Feedback only — never part of the score. Declare it only where the count is
+   * derivable from the precision the problem gives the student; leaving it out
+   * says "this item is not about significant figures", which is honest, where a
+   * wrong count teaches a rule backwards.
+   */
   significantFigures?: number;
-  /** Required steps for solution */
+  /** Required steps for solution, in Icelandic — rendered verbatim */
   requiredSteps: string[];
 }
 
 /**
  * Real-world challenge: Apply conversions to practical scenarios
  */
-export interface Level3ChallengeRealWorld {
-  /** Unique identifier */
-  id: string;
+export interface Level3ChallengeRealWorld extends Level3ChallengeShared {
   /** Challenge type */
   type: 'real_world';
-  /** Question prompt in Icelandic */
-  prompt: string;
   /** Starting numerical value */
   startValue: number;
   /** Starting unit */
   startUnit: string;
+  /** What the starting value is, for the card. Defaults to `Heildarmagn` */
+  startLabel?: string;
   /** Size/amount of each portion */
   portionSize: number;
   /** Unit for portion size */
   portionUnit: string;
+  /** What the portion is, for the card. Defaults to `Skammtastærð` */
+  portionLabel?: string;
   /** Expected answer */
   expectedAnswer: number;
-  /** Whether answer must be an integer */
+  /** Whether the answer must be a whole number */
   requireInteger: boolean;
-  /** Explanation for constraints */
+  /** Worked solution, shown with the feedback */
   explanation: string;
 }
 
 /**
  * Derivation challenge: Convert large-scale or scientific notation values
  */
-export interface Level3ChallengeDerivation {
-  /** Unique identifier */
-  id: string;
+export interface Level3ChallengeDerivation extends Level3ChallengeShared {
   /** Challenge type */
   type: 'derivation';
-  /** Question prompt in Icelandic */
-  prompt: string;
   /** Starting numerical value */
   startValue: number;
   /** Starting unit */
@@ -179,7 +210,6 @@ export type Level3Challenge =
   | Level3ChallengeSynthesis
   | Level3ChallengeRealWorld
   | Level3ChallengeDerivation;
-
 /**
  * Level 3 Challenges: Advanced multi-step problems requiring synthesis and analysis
  * Includes reverse engineering, error analysis, efficiency optimization, and real-world applications
@@ -250,7 +280,7 @@ export const level3Challenges: Level3Challenge[] = [
     targetUnit: 'kg',
     expectedAnswer: 0.125,
     significantFigures: 3,
-    requiredSteps: ['multiply by density', 'convert g to kg'],
+    requiredSteps: ['🧪 Margfaldaðu rúmmál með eðlismassa (g = mL × g/mL)', '⚖️ 1 kg / 1000 g'],
   },
   {
     id: 'L3-5',
@@ -304,10 +334,11 @@ export const level3Challenges: Level3Challenge[] = [
     prompt: 'Eðlismassi kopar er 8.96 g/cm³. Breyttu þessu í kg/m³.',
     startValue: 8.96,
     startUnit: 'g/cm³',
+    startLabel: 'Eðlismassi',
     targetUnit: 'kg/m³',
     expectedAnswer: 8960,
     significantFigures: 3,
-    requiredSteps: ['convert g to kg', 'convert cm³ to m³'],
+    requiredSteps: ['⚖️ 1 kg / 1000 g', '📐 1000000 cm³ / 1 m³'],
   },
   {
     id: 'L3-9',
@@ -329,7 +360,15 @@ export const level3Challenges: Level3Challenge[] = [
     possiblePaths: [
       { steps: ['1 g / 1000 mg', '1 kg / 1000 g'], stepCount: 2, efficient: true },
       { steps: ['1 kg / 1000000 mg'], stepCount: 1, efficient: true },
-      { steps: ['1000 g / 1 kg'], stepCount: 1, efficient: false },
+      // The long way round — correct, but three steps through a unit nobody
+      // needs here. This slot used to hold `1000 g / 1 kg`, an *inverted*
+      // factor that lands on 5 × 10⁸ kg; the level scored picking it as a
+      // slow-but-valid method, which is the opposite of what the level teaches.
+      {
+        steps: ['1 g / 1000 mg', '1 tonn / 1000000 g', '1000 kg / 1 tonn'],
+        stepCount: 3,
+        efficient: false,
+      },
     ],
     targetAnswer: 0.5,
   },
@@ -354,12 +393,14 @@ export const level3Challenges: Level3Challenge[] = [
       '🔬 Þú ert að undirbúa tilraun sem krefst 0.5 mol af NaCl. Mólmassi NaCl er 58.5 g/mol. Hversu mörg grömm þarftu?',
     startValue: 0.5,
     startUnit: 'mol',
+    startLabel: 'Efnismagn',
     density: 58.5,
     densityUnit: 'g/mol',
+    factorLabel: 'Mólmassi',
     targetUnit: 'g',
     expectedAnswer: 29.25,
     significantFigures: 3,
-    requiredSteps: ['multiply by molar mass'],
+    requiredSteps: ['⚗️ Margfaldaðu efnismagn með mólmassa (g = mol × g/mol)'],
   },
   {
     id: 'L3-13',
@@ -385,7 +426,7 @@ export const level3Challenges: Level3Challenge[] = [
     targetUnit: 'g',
     expectedAnswer: 59.2,
     significantFigures: 3,
-    requiredSteps: ['multiply by density'],
+    requiredSteps: ['🧪 Margfaldaðu rúmmál með eðlismassa (g = mL × g/mL)'],
   },
   {
     id: 'L3-17',
@@ -411,5 +452,386 @@ export const level3Challenges: Level3Challenge[] = [
     expectedAnswer: 10,
     requireInteger: true,
     explanation: 'Umbreyta 2.5 L í mL: 2500 mL. Síðan 2500 ÷ 250 = 10 flöskur',
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // RAUNVERULEG SAMHENGI — harvested from namsbokasafn-leikir dc5e614.
+  //
+  // The Year-1 curriculum review's sharpest complaint was that five of seven
+  // games dress every problem in the same lab-bench setting. These 25 put the
+  // same conversions in a kitchen, a pharmacy, a building site, a gym and an
+  // airport, so a student meets dimensional analysis where they will actually
+  // use it.
+  //
+  // Taken as data, not as code, and every one of them re-checked on the way in:
+  // see the harvest note in the game's README for what was wrong with them.
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // ─── ELDHÚS ────────────────────────────────────────────────────────────────
+  {
+    id: 'L3-COOK-1',
+    type: 'synthesis',
+    context: 'eldhús',
+    prompt:
+      '👨‍🍳 Uppskrift krefst 2 bolla af mjólk en mæliglasið þitt er merkt í mL. Hversu marga mL þarftu? (1 bolli = 240 mL)',
+    startValue: 2,
+    startUnit: 'bollar',
+    startLabel: 'Magn',
+    density: 240,
+    densityUnit: 'mL/bolli',
+    factorLabel: 'Umreikningsstuðull',
+    targetUnit: 'mL',
+    expectedAnswer: 480,
+    requiredSteps: ['🥛 Margfaldaðu fjölda bolla með 240 mL/bolli'],
+  },
+  {
+    id: 'L3-COOK-2',
+    type: 'synthesis',
+    context: 'eldhús',
+    prompt:
+      '🥧 Uppskrift þarf 4 oz af smjöri en pakkningin er merkt í grömmum. Hversu mörg g þarftu? (1 oz = 28.35 g)',
+    startValue: 4,
+    startUnit: 'oz',
+    startLabel: 'Magn',
+    density: 28.35,
+    densityUnit: 'g/oz',
+    factorLabel: 'Umreikningsstuðull',
+    targetUnit: 'g',
+    expectedAnswer: 113.4,
+    significantFigures: 4,
+    requiredSteps: ['⚖️ 28.35 g / 1 oz'],
+  },
+  {
+    id: 'L3-COOK-3',
+    type: 'derivation',
+    context: 'eldhús',
+    prompt:
+      '🍰 Þú þrefaldar uppskrift sem þarf 1.5 dl af sykri. Hversu marga mL af sykri þarftu alls? (1 dl = 100 mL)',
+    startValue: 1.5,
+    startUnit: 'dl',
+    targetUnit: 'mL',
+    expectedAnswer: 450,
+    scientificNotation: false,
+    correctMethod: ['3 uppskriftir / 1 uppskrift', '100 mL / 1 dl'],
+    hint: 'Þrefaldaðu fyrst magnið, umbreyttu svo dl í mL — eða öfugt, svarið er það sama.',
+  },
+  {
+    id: 'L3-COOK-4',
+    type: 'efficiency',
+    context: 'eldhús',
+    prompt: '🥄 Breyttu 3 matskeiðum (msk) í teskeiðar (tsk). (1 msk = 3 tsk)',
+    startValue: 3,
+    startUnit: 'msk',
+    targetUnit: 'tsk',
+    possiblePaths: [
+      { steps: ['3 tsk / 1 msk'], stepCount: 1, efficient: true },
+      { steps: ['15 mL / 1 msk', '1 tsk / 5 mL'], stepCount: 2, efficient: false },
+    ],
+    targetAnswer: 9,
+  },
+  {
+    id: 'L3-COOK-5',
+    type: 'real_world',
+    context: 'eldhús',
+    prompt:
+      '🍕 Pizzudeig krefst 500 g af hveiti. Þú átt 2 kg poka. Hversu mörg deig geturðu búið til?',
+    startValue: 2,
+    startUnit: 'kg',
+    portionSize: 500,
+    portionUnit: 'g',
+    expectedAnswer: 4,
+    requireInteger: true,
+    explanation: '2 kg = 2000 g. 2000 g ÷ 500 g/deig = 4 deig.',
+  },
+
+  // ─── APÓTEK ────────────────────────────────────────────────────────────────
+  {
+    id: 'L3-PHARM-1',
+    type: 'synthesis',
+    context: 'apótek',
+    prompt:
+      '💊 Barn sem vegur 25 kg fær lyf í skammtinum 15 mg/kg líkamsþyngdar. Hversu mörg mg fær barnið?',
+    startValue: 25,
+    startUnit: 'kg',
+    startLabel: 'Líkamsþyngd',
+    density: 15,
+    densityUnit: 'mg/kg',
+    factorLabel: 'Skammtur',
+    targetUnit: 'mg',
+    expectedAnswer: 375,
+    requiredSteps: ['💊 Margfaldaðu líkamsþyngd með skammtinum (mg = kg × mg/kg)'],
+  },
+  {
+    id: 'L3-PHARM-2',
+    type: 'synthesis',
+    context: 'apótek',
+    prompt:
+      '💉 Lyfjaskammtur er 0.5 mL/kg líkamsþyngdar. Sjúklingur vegur 70 kg. Hversu marga mL þarf sjúklingurinn?',
+    startValue: 70,
+    startUnit: 'kg',
+    startLabel: 'Líkamsþyngd',
+    density: 0.5,
+    densityUnit: 'mL/kg',
+    factorLabel: 'Skammtur',
+    targetUnit: 'mL',
+    expectedAnswer: 35,
+    requiredSteps: ['💉 Margfaldaðu líkamsþyngd með skammtinum (mL = kg × mL/kg)'],
+  },
+  {
+    id: 'L3-PHARM-3',
+    type: 'synthesis',
+    context: 'apótek',
+    prompt:
+      '🩺 Lyfjalausn inniheldur 125 mg í hverjum 5 mL. Sjúklingur á að fá 250 mg. Hversu marga mL þarf að gefa?',
+    startValue: 250,
+    startUnit: 'mg',
+    startLabel: 'Skammtur',
+    density: 5,
+    densityUnit: 'mL / 125 mg',
+    factorLabel: 'Styrkur lausnar',
+    targetUnit: 'mL',
+    expectedAnswer: 10,
+    requiredSteps: ['🧪 Margfaldaðu skammtinn með 5 mL / 125 mg'],
+  },
+  {
+    id: 'L3-PHARM-4',
+    type: 'real_world',
+    context: 'apótek',
+    prompt:
+      '💊 Hvert hylki inniheldur 200 mg. Daglegur skammtur er 0.6 g. Hversu mörg hylki þarf á dag?',
+    startValue: 0.6,
+    startUnit: 'g',
+    portionSize: 200,
+    portionUnit: 'mg',
+    expectedAnswer: 3,
+    requireInteger: true,
+    explanation: '0.6 g = 600 mg. 600 mg ÷ 200 mg/hylki = 3 hylki.',
+  },
+  {
+    id: 'L3-PHARM-5',
+    type: 'derivation',
+    context: 'apótek',
+    prompt: '🏥 Innrennslishraði er 2 mL/mín. Hversu marga mL fær sjúklingurinn á klukkustund?',
+    startValue: 2,
+    startUnit: 'mL/mín',
+    targetUnit: 'mL/klst',
+    expectedAnswer: 120,
+    scientificNotation: false,
+    correctMethod: ['60 mín / 1 klst'],
+    hint: 'Mínúturnar eiga að styttast út — settu þær í nefnara stuðulsins.',
+  },
+
+  // ─── VERKFRÆÐI ─────────────────────────────────────────────────────────────
+  {
+    id: 'L3-ENG-1',
+    type: 'synthesis',
+    context: 'verkfræði',
+    prompt:
+      '🏗️ Steypa hefur eðlismassann 2400 kg/m³. Þú steypir 0.50 m³. Hversu mörg kg vegur steypan?',
+    startValue: 0.5,
+    startUnit: 'm³',
+    density: 2400,
+    densityUnit: 'kg/m³',
+    targetUnit: 'kg',
+    expectedAnswer: 1200,
+    significantFigures: 2,
+    requiredSteps: ['🧱 Margfaldaðu rúmmál með eðlismassa (kg = m³ × kg/m³)'],
+  },
+  {
+    id: 'L3-ENG-2',
+    type: 'real_world',
+    context: 'verkfræði',
+    prompt:
+      '🔩 Skrúfupakki inniheldur 50 skrúfur. Verkefnið þarf 325 skrúfur. Hversu marga pakka þarftu að kaupa?',
+    startValue: 325,
+    startUnit: 'skrúfur',
+    portionSize: 50,
+    portionUnit: 'skrúfur',
+    expectedAnswer: 7,
+    requireInteger: true,
+    explanation:
+      '325 ÷ 50 = 6.5 pakkar. Þú getur ekki keypt hálfan pakka, svo það þarf að kaupa 7 — hér er námundað upp.',
+  },
+  {
+    id: 'L3-ENG-3',
+    type: 'synthesis',
+    context: 'verkfræði',
+    prompt: '🪨 Sandur hefur eðlismassann 1.6 g/cm³. Breyttu því í kg/m³.',
+    startValue: 1.6,
+    startUnit: 'g/cm³',
+    startLabel: 'Eðlismassi',
+    targetUnit: 'kg/m³',
+    expectedAnswer: 1600,
+    significantFigures: 2,
+    requiredSteps: ['⚖️ 1 kg / 1000 g', '📐 1000000 cm³ / 1 m³'],
+  },
+  {
+    id: 'L3-ENG-4',
+    type: 'real_world',
+    context: 'verkfræði',
+    prompt:
+      '🧱 Múrsteinn vegur 2.5 kg. Flutningabíll ber 2 tonn. Hversu marga steina getur hann flutt?',
+    startValue: 2,
+    startUnit: 'tonn',
+    portionSize: 2.5,
+    portionUnit: 'kg',
+    expectedAnswer: 800,
+    requireInteger: true,
+    explanation: '2 tonn = 2000 kg. 2000 kg ÷ 2.5 kg/stein = 800 steinar.',
+  },
+  {
+    id: 'L3-ENG-5',
+    type: 'derivation',
+    context: 'verkfræði',
+    prompt: '⚡ Rafmagnsofn hefur aflið 1500 W. Hversu mörg kW er það?',
+    startValue: 1500,
+    startUnit: 'W',
+    targetUnit: 'kW',
+    expectedAnswer: 1.5,
+    scientificNotation: false,
+    correctMethod: ['1 kW / 1000 W'],
+    hint: 'Forskeytið kíló þýðir þúsund: 1 kW = 1000 W.',
+  },
+
+  // ─── ÍÞRÓTTIR ──────────────────────────────────────────────────────────────
+  {
+    id: 'L3-SPORT-1',
+    type: 'derivation',
+    context: 'íþróttir',
+    prompt: '🏃 Hlaupari hleypur 10 km á 50 mínútum. Hver er meðalhraðinn í km/klst?',
+    startValue: 10,
+    startUnit: 'km',
+    targetUnit: 'km/klst',
+    expectedAnswer: 12,
+    scientificNotation: false,
+    correctMethod: ['1 / 50 mín', '60 mín / 1 klst'],
+    hint: 'Finndu fyrst hraðann í km/mín (10 km ÷ 50 mín) og margfaldaðu svo með 60 mín/klst.',
+  },
+  {
+    id: 'L3-SPORT-2',
+    type: 'synthesis',
+    context: 'íþróttir',
+    prompt: '🚴 Hjólreiðamaður hjólar á 25.0 km/klst. Breyttu hraðanum í m/s.',
+    startValue: 25.0,
+    startUnit: 'km/klst',
+    startLabel: 'Hraði',
+    targetUnit: 'm/s',
+    expectedAnswer: 6.94,
+    significantFigures: 3,
+    requiredSteps: ['📏 1000 m / 1 km', '⏱️ 1 klst / 3600 s'],
+  },
+  {
+    id: 'L3-SPORT-3',
+    type: 'real_world',
+    context: 'íþróttir',
+    prompt:
+      '🏊 Sundlaugin er 25 m löng. Þjálfarinn vill að nemendur syndi 1 km. Hversu margar ferðir þurfa þeir að synda?',
+    startValue: 1,
+    startUnit: 'km',
+    portionSize: 25,
+    portionUnit: 'm',
+    expectedAnswer: 40,
+    requireInteger: true,
+    explanation: '1 km = 1000 m. 1000 m ÷ 25 m/ferð = 40 ferðir.',
+  },
+  {
+    id: 'L3-SPORT-4',
+    type: 'efficiency',
+    context: 'íþróttir',
+    prompt: '⏱️ Hlaupari hleypur míluna á 4:30 mínútum. Breyttu tímanum í sekúndur.',
+    startValue: 4.5,
+    startUnit: 'mín',
+    targetUnit: 's',
+    possiblePaths: [
+      { steps: ['60 s / 1 mín'], stepCount: 1, efficient: true },
+      { steps: ['1 klst / 60 mín', '3600 s / 1 klst'], stepCount: 2, efficient: false },
+    ],
+    targetAnswer: 270,
+  },
+  {
+    id: 'L3-SPORT-5',
+    type: 'synthesis',
+    context: 'íþróttir',
+    prompt:
+      '🎿 Skíðamaður fer á 45.0 km/klst. Hversu margar mínútur tekur það hann að fara einn km?',
+    startValue: 45.0,
+    startUnit: 'km/klst',
+    startLabel: 'Hraði',
+    targetUnit: 'mín/km',
+    expectedAnswer: 1.33,
+    significantFigures: 3,
+    requiredSteps: ['↔️ Snúðu hraðanum við: 1 klst / 45.0 km', '⏱️ 60 mín / 1 klst'],
+  },
+
+  // ─── FERÐALÖG ──────────────────────────────────────────────────────────────
+  {
+    id: 'L3-TRAVEL-1',
+    type: 'synthesis',
+    context: 'ferðalög',
+    prompt: '✈️ Flugið tekur 8.5 klst. Hversu margar mínútur eru það?',
+    startValue: 8.5,
+    startUnit: 'klst',
+    startLabel: 'Tími',
+    targetUnit: 'mín',
+    expectedAnswer: 510,
+    significantFigures: 2,
+    requiredSteps: ['⏱️ 60 mín / 1 klst'],
+  },
+  {
+    id: 'L3-TRAVEL-2',
+    type: 'synthesis',
+    context: 'ferðalög',
+    prompt: '⛽ Bíll eyðir 7.0 L á hverja 100 km. Ferðin er 350 km. Hversu marga lítra þarftu?',
+    startValue: 350,
+    startUnit: 'km',
+    startLabel: 'Vegalengd',
+    density: 7.0,
+    densityUnit: 'L / 100 km',
+    factorLabel: 'Eyðsla',
+    targetUnit: 'L',
+    expectedAnswer: 24.5,
+    requiredSteps: ['⛽ Margfaldaðu vegalengdina með 7.0 L / 100 km'],
+  },
+  {
+    id: 'L3-TRAVEL-3',
+    type: 'efficiency',
+    context: 'ferðalög',
+    prompt: '🌍 Breyttu 100 km í mílur. (1 míla = 1.609 km)',
+    startValue: 100,
+    startUnit: 'km',
+    targetUnit: 'mílur',
+    possiblePaths: [
+      { steps: ['1 míla / 1.609 km'], stepCount: 1, efficient: true },
+      { steps: ['1000 m / 1 km', '1 míla / 1609 m'], stepCount: 2, efficient: false },
+    ],
+    targetAnswer: 62.15,
+  },
+  {
+    id: 'L3-TRAVEL-4',
+    type: 'derivation',
+    context: 'ferðalög',
+    prompt: '🚂 Lest fer á 200 km/klst. Hversu langt fer hún á 45 mínútum?',
+    startValue: 45,
+    startUnit: 'mín',
+    targetUnit: 'km',
+    expectedAnswer: 150,
+    scientificNotation: false,
+    correctMethod: ['1 klst / 60 mín', '200 km / 1 klst'],
+    hint: 'Byrjaðu á tímanum, ekki hraðanum: umbreyttu 45 mín í klst og margfaldaðu svo með hraðanum.',
+  },
+  {
+    id: 'L3-TRAVEL-5',
+    type: 'real_world',
+    context: 'ferðalög',
+    prompt:
+      '🛫 Flugvélin er 73 m löng. Flugbrautin er 3.5 km. Hversu margar flugvélar komast fyrir á brautinni?',
+    startValue: 3.5,
+    startUnit: 'km',
+    portionSize: 73,
+    portionUnit: 'm',
+    expectedAnswer: 47,
+    requireInteger: true,
+    explanation:
+      '3.5 km = 3500 m. 3500 m ÷ 73 m/flugvél = 47.9 — hér er námundað niður, því hálf flugvél kemst ekki fyrir.',
   },
 ];

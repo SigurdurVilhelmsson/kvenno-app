@@ -148,7 +148,7 @@ const molecules: Molecule[] = [
     bondAngle: '90° og 120°',
     isPolar: false,
     explanation:
-      'Fosfór getur rúmað 5 tengsl vegna d-skelja. 5 rafeinasvið = þríhyrnd tvípýramída með 3 á miðsléttunni (120°) og 2 á ásnum (90°).',
+      'Fosfór getur rúmað 5 tengsl vegna d-hvolfa. 5 rafeinasvið = þríhyrnd tvípýramída með 3 á miðsléttunni (120°) og 2 á ásnum (90°).',
   },
   {
     id: 7,
@@ -182,7 +182,7 @@ const molecules: Molecule[] = [
     bondAngle: '90°',
     isPolar: false,
     explanation:
-      'Brennisteinn getur rúmað 6 tengsl vegna d-skelja. 6 rafeinasvið í samhverfri áttflötungsröðun með öll horn 90°.',
+      'Brennisteinn getur rúmað 6 tengsl vegna d-hvolfa. 6 rafeinasvið í samhverfri áttflötungsröðun með öll horn 90°.',
   },
   {
     id: 9,

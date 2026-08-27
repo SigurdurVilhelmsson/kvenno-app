@@ -4,9 +4,9 @@
  */
 
 export interface ConversionFactor {
-  num: string;  // Numerator (e.g., "1 kg")
-  den: string;  // Denominator (e.g., "1000 g")
-  units: string[];  // Units involved in the conversion
+  num: string; // Numerator (e.g., "1 kg")
+  den: string; // Denominator (e.g., "1000 g")
+  units: string[]; // Units involved in the conversion
 }
 
 export const conversionFactors: ConversionFactor[] = [
@@ -34,5 +34,5 @@ export const conversionFactors: ConversionFactor[] = [
   { num: '1 klst', den: '60 mín', units: ['klst', 'mín'] },
   { num: '60 mín', den: '1 klst', units: ['mín', 'klst'] },
   { num: '1 mín', den: '60 s', units: ['mín', 's'] },
-  { num: '60 s', den: '1 mín', units: ['s', 'mín'] }
+  { num: '60 s', den: '1 mín', units: ['s', 'mín'] },
 ];

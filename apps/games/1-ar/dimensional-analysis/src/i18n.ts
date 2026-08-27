@@ -47,7 +47,8 @@ export const gameTranslations = createGameTranslations({
       title: 'Stig 1: Hugtök',
       challenge: 'Áskorun',
       accuracy: 'Nákvæmni',
-      selectFactor: 'Veldu stuðul þannig að einingin sem þú vilt losna við sé á gagnstæðri hlið við upphafsmagn',
+      selectFactor:
+        'Veldu stuðul þannig að einingin sem þú vilt losna við sé á gagnstæðri hlið við upphafsmagn',
       correctExplanation: 'Rétt! Þú skildir hvernig á að nota umbreytingarstuðla.',
     },
     level2: {
@@ -114,7 +115,8 @@ export const gameTranslations = createGameTranslations({
       title: 'Level 1: Concepts',
       challenge: 'Challenge',
       accuracy: 'Accuracy',
-      selectFactor: 'Select a factor so that the unit you want to cancel is on the opposite side of the starting amount',
+      selectFactor:
+        'Select a factor so that the unit you want to cancel is on the opposite side of the starting amount',
       correctExplanation: 'Correct! You understood how to use conversion factors.',
     },
     level2: {
@@ -181,7 +183,8 @@ export const gameTranslations = createGameTranslations({
       title: 'Poziom 1: Pojecia',
       challenge: 'Wyzwanie',
       accuracy: 'Dokladnosc',
-      selectFactor: 'Wybierz wspolczynnik tak, aby jednostka, ktora chcesz usunac, byla po przeciwnej stronie',
+      selectFactor:
+        'Wybierz wspolczynnik tak, aby jednostka, ktora chcesz usunac, byla po przeciwnej stronie',
       correctExplanation: 'Poprawnie! Zrozumiales, jak uzywac wspolczynnikow konwersji.',
     },
     level2: {

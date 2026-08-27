@@ -20,13 +20,13 @@ const colorClasses = {
   green: 'bg-green-500 text-white border-green-600',
   orange: 'bg-orange-500 text-white border-orange-600',
   red: 'bg-red-500 text-white border-red-600',
-  gray: 'bg-warm-400 text-warm-200 border-warm-500'
+  gray: 'bg-warm-400 text-warm-200 border-warm-500',
 };
 
 const sizeClasses = {
   small: 'px-2 py-1 text-sm',
   medium: 'px-4 py-2 text-base',
-  large: 'px-6 py-3 text-xl'
+  large: 'px-6 py-3 text-xl',
 };
 
 /**
@@ -44,7 +44,7 @@ export function UnitBlock({
   color = 'blue',
   size = 'medium',
   showValue = true,
-  useStrikethrough = false
+  useStrikethrough = false,
 }: UnitBlockProps) {
   const [animationClass, setAnimationClass] = useState('');
   const [showStrikethrough, setShowStrikethrough] = useState(false);
@@ -77,7 +77,11 @@ export function UnitBlock({
         setAnimationClass('opacity-0 scale-0');
       }
     } else if (isSelected || isMatching) {
-      setAnimationClass(isMatching ? 'unit-match-glow ring-4 ring-orange-400 scale-105' : 'ring-4 ring-yellow-400 scale-105');
+      setAnimationClass(
+        isMatching
+          ? 'unit-match-glow ring-4 ring-orange-400 scale-105'
+          : 'ring-4 ring-yellow-400 scale-105'
+      );
       setShowStrikethrough(false);
       setShowBurst(false);
     } else {
@@ -170,20 +174,21 @@ export function ConversionFactorBlock({
   isSelected = false,
   isCorrect = null,
   onClick,
-  size = 'medium'
+  size = 'medium',
 }: ConversionFactorBlockProps) {
-  const borderColor = isCorrect === true
-    ? 'border-green-500 bg-green-50'
-    : isCorrect === false
-    ? 'border-red-500 bg-red-50'
-    : isSelected
-    ? 'border-orange-500 bg-orange-50'
-    : 'border-warm-300 bg-white';
+  const borderColor =
+    isCorrect === true
+      ? 'border-green-500 bg-green-50'
+      : isCorrect === false
+        ? 'border-red-500 bg-red-50'
+        : isSelected
+          ? 'border-orange-500 bg-orange-50'
+          : 'border-warm-300 bg-white';
 
   const sizeStyles = {
     small: { container: 'p-2 min-w-[80px]', text: 'text-sm' },
     medium: { container: 'p-3 min-w-[120px]', text: 'text-base' },
-    large: { container: 'p-4 min-w-[160px]', text: 'text-lg' }
+    large: { container: 'p-4 min-w-[160px]', text: 'text-lg' },
   };
 
   return (
@@ -230,7 +235,7 @@ export function EquivalenceDisplay({
   rightValue,
   rightUnit,
   isEqual,
-  comparison = 0
+  comparison = 0,
 }: EquivalenceDisplayProps) {
   // Determine tilt direction and amount
   // Positive comparison = right is heavier = tilt right down
@@ -238,7 +243,7 @@ export function EquivalenceDisplay({
   const getTiltClass = () => {
     if (isEqual) return '';
     if (comparison > 0) return 'rotate-[-5deg]'; // Right heavier - right goes down
-    if (comparison < 0) return 'rotate-[5deg]';  // Left heavier - left goes down
+    if (comparison < 0) return 'rotate-[5deg]'; // Left heavier - left goes down
     return '';
   };
 
@@ -246,13 +251,13 @@ export function EquivalenceDisplay({
   const getLeftPanClass = () => {
     if (isEqual) return '';
     if (comparison > 0) return '-translate-y-3'; // Right heavier - left goes up
-    if (comparison < 0) return 'translate-y-3';  // Left heavier - left goes down
+    if (comparison < 0) return 'translate-y-3'; // Left heavier - left goes down
     return '';
   };
 
   const getRightPanClass = () => {
     if (isEqual) return '';
-    if (comparison > 0) return 'translate-y-3';  // Right heavier - right goes down
+    if (comparison > 0) return 'translate-y-3'; // Right heavier - right goes down
     if (comparison < 0) return '-translate-y-3'; // Left heavier - right goes up
     return '';
   };
@@ -260,11 +265,13 @@ export function EquivalenceDisplay({
   return (
     <div className="flex flex-col items-center p-6 bg-gradient-to-b from-warm-50 to-warm-100 rounded-xl">
       {/* Scale beam */}
-      <div className={`
+      <div
+        className={`
         relative w-full max-w-md h-2 bg-warm-800 rounded-full
         transition-transform duration-500 origin-center
         ${getTiltClass()}
-      `}>
+      `}
+      >
         {/* Fulcrum */}
         <div className="absolute left-1/2 -translate-x-1/2 top-full">
           <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-t-[16px] border-l-transparent border-r-transparent border-t-warm-800" />
@@ -273,46 +280,42 @@ export function EquivalenceDisplay({
 
       {/* Scale pans */}
       <div className="flex justify-between w-full max-w-md mt-6 px-4">
-        <div className={`
+        <div
+          className={`
           transition-all duration-500
           ${getLeftPanClass()}
-        `}>
-          <UnitBlock
-            value={leftValue}
-            unit={leftUnit}
-            color="blue"
-            size="large"
-          />
+        `}
+        >
+          <UnitBlock value={leftValue} unit={leftUnit} color="blue" size="large" />
         </div>
 
-        <div className={`
+        <div
+          className={`
           flex items-center text-3xl font-bold
           ${isEqual ? 'text-green-600' : 'text-warm-400'}
-        `}>
+        `}
+        >
           {isEqual ? '=' : '?'}
         </div>
 
-        <div className={`
+        <div
+          className={`
           transition-all duration-500
           ${getRightPanClass()}
-        `}>
-          <UnitBlock
-            value={rightValue}
-            unit={rightUnit}
-            color="green"
-            size="large"
-          />
+        `}
+        >
+          <UnitBlock value={rightValue} unit={rightUnit} color="green" size="large" />
         </div>
       </div>
 
       {/* Status message */}
-      <div className={`
+      <div
+        className={`
         mt-6 px-6 py-2 rounded-full font-bold text-lg
         transition-all duration-300
-        ${isEqual
-          ? 'bg-green-100 text-green-700'
-          : 'bg-yellow-100 text-yellow-700'}
-      `}>
+        ${isEqual ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}
+      `}
+      >
         {isEqual ? 'Jafnvægi! Sama rúmmál!' : 'Ekki jafnvægi...'}
       </div>
     </div>

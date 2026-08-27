@@ -5,13 +5,26 @@ import { useEscapeKey } from '@shared/hooks';
 import { shuffleArray } from '@shared/utils';
 
 import { COMPOUNDS, type Compound } from '../data/compounds';
+import { getElementBySymbol } from '../data/elements';
+import { parseScientificAnswer } from '../utils/parseAnswer';
 
 const AVOGADRO = 6.022e23;
 const TOTAL = 10;
 
-type ConvType = 'mass_to_moles' | 'moles_to_mass' | 'moles_to_particles' | 'particles_to_moles';
+export type ConvType =
+  | 'mass_to_moles'
+  | 'moles_to_mass'
+  | 'moles_to_particles'
+  | 'particles_to_moles'
+  /**
+   * Moles of a compound to atoms of one element in it — the step where the
+   * subscript in the formula does the work. Harvested from the frozen repo's
+   * `avogadro.ts` (`atoms_in_compound`), which is the one conversion of its
+   * five that this level did not already ask.
+   */
+  | 'moles_to_element_atoms';
 
-interface Problem {
+export interface Problem {
   compound: Compound;
   correctAnswer: number;
   questionText: string;
@@ -42,19 +55,42 @@ function randRange(min: number, max: number, step: number): number {
   return sigfig(min + Math.floor(Math.random() * (Math.round((max - min) / step) + 1)) * step, 3);
 }
 
+/** Does the formula have an element appearing more than once? */
+export function hasRepeatedElement(c: Compound): boolean {
+  return c.elements.some((e) => e.count > 1);
+}
+
 /** Pre-generate all problems using unique compounds */
-function generateAllProblems(): Problem[] {
+export function generateAllProblems(): Problem[] {
   const types: ConvType[] = [
     'mass_to_moles',
     'moles_to_mass',
     'moles_to_particles',
     'particles_to_moles',
+    'moles_to_element_atoms',
   ];
-  const compounds = shuffleArray(COMPOUNDS).slice(0, TOTAL);
-  return compounds.map((c, i) => generateProblem(c, types[i % types.length]));
+
+  // `moles_to_element_atoms` is only a question when a subscript is above one:
+  // on NaCl or KCl it collapses into the moles-to-molecules question the level
+  // already asks, with a step that multiplies by 1. Those slots draw from the
+  // compounds that have a real subscript; the rest draw from anything left.
+  const shuffled = shuffleArray(COMPOUNDS);
+  const used = new Set<string>();
+  const take = (predicate: (c: Compound) => boolean): Compound => {
+    const compound = shuffled.find((c) => !used.has(c.formula) && predicate(c)) ?? shuffled[0];
+    used.add(compound.formula);
+    return compound;
+  };
+
+  return Array.from({ length: TOTAL }, (_, i) => {
+    const type = types[i % types.length];
+    const compound =
+      type === 'moles_to_element_atoms' ? take(hasRepeatedElement) : take(() => true);
+    return generateProblem(compound, type);
+  });
 }
 
-function generateProblem(c: Compound, type: ConvType): Problem {
+export function generateProblem(c: Compound, type: ConvType): Problem {
   const M = c.molarMass;
   const label = `${c.name} (${c.formula})`;
 
@@ -91,6 +127,28 @@ function generateProblem(c: Compound, type: ConvType): Problem {
       solutionSteps: `${n} mól × (6,022 × 10²³ sameindir / 1 mól) = ${fmt(ans)} sameindir\nEiningin mól strikast út.`,
     };
   }
+  if (type === 'moles_to_element_atoms') {
+    // Only a question when a subscript is above one. On a flat formula like
+    // NaCl this collapses into the moles-to-molecules question with a step
+    // that multiplies by 1, so ask that one outright instead.
+    // `generateAllProblems` only ever sends a compound with a real subscript.
+    if (!hasRepeatedElement(c)) return generateProblem(c, 'moles_to_particles');
+
+    // The element with the largest subscript, so the multiplication is the
+    // point of the question.
+    const element = [...c.elements].sort((a, b) => b.count - a.count)[0];
+    const elementName = getElementBySymbol(element.symbol)?.name ?? element.symbol;
+    const n = randRange(0.1, 5.0, 0.1);
+    const ans = n * element.count * AVOGADRO;
+    return {
+      compound: c,
+      correctAnswer: ans,
+      questionText: `Hversu mörg ${elementName}-atóm (${element.symbol}) eru í ${n} mól af ${label}?`,
+      solutionFormula: 'Einingagreining: mól × (atóm af frumefninu / 1 mól) × (atóm / 1 mól)',
+      solutionSteps: `Í hverri sameind af ${c.formula} eru ${element.count} ${element.symbol}-atóm.\n${n} mól × (${element.count} mól ${element.symbol} / 1 mól ${c.formula}) × (6,022 × 10²³ atóm / 1 mól) = ${fmt(ans)} atóm\nEiningin mól strikast út tvisvar.`,
+    };
+  }
+
   // particles_to_moles
   const coeff = randRange(0.5, 9.0, 0.5);
   const ans = (coeff * 1e23) / AVOGADRO;
@@ -106,19 +164,6 @@ function generateProblem(c: Compound, type: ConvType): Problem {
 function withinTolerance(user: number, correct: number): boolean {
   if (correct === 0) return Math.abs(user) < 0.001;
   return Math.abs(user - correct) / Math.abs(correct) <= 0.05;
-}
-
-/** Parse user input -- handles 3.6e23, 3.6*10^23, commas as decimal separators */
-function parseInput(raw: string): number | null {
-  const s = raw
-    .trim()
-    .replace(',', '.')
-    .replace(/×|x|\*/g, '*')
-    .replace(/\^/g, '**');
-  const m = s.match(/^([+-]?\d+\.?\d*)\s*\*\s*10\*\*\s*(\d+)$/);
-  if (m) return parseFloat(m[1]) * 10 ** parseInt(m[2], 10);
-  const v = parseFloat(s);
-  return isNaN(v) ? null : v;
 }
 
 export function Level2({
@@ -142,7 +187,7 @@ export function Level2({
 
   const submit = () => {
     if (feedback) return;
-    const v = parseInput(input);
+    const v = parseScientificAnswer(input);
     if (v === null) return;
     const ok = withinTolerance(v, problem.correctAnswer);
     setCorrect(ok);
@@ -220,6 +265,28 @@ export function Level2({
                   Þetta er bara margföldun og deiling — sama einingagreining og í Stigi 1.
                 </div>
               </div>
+            </div>
+
+            {/* How big Avogadro's number actually is. Harvested with the
+                problems: the level named the number and moved straight to
+                arithmetic with it, which teaches it as a symbol rather than a
+                quantity. */}
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+              <h3 className="font-bold text-amber-800 mb-2">Hversu stór er þessi tala?</h3>
+              <ul className="text-sm text-amber-900 space-y-2 list-disc list-inside">
+                <li>
+                  Ef þú teldir eina milljón atóma á sekúndu tæki það um{' '}
+                  <strong>19 milljarða ára</strong> að telja eitt mól — meira en aldur alheimsins.
+                </li>
+                <li>
+                  Eitt mól af borðtenniskúlum myndi hylja alla jörðina í um{' '}
+                  <strong>60 km þykku lagi</strong>.
+                </li>
+                <li>
+                  Í einu glasi af vatni (250 mL) eru um <strong>8 × 10²⁴ sameindir</strong> — meira
+                  en tíu mól.
+                </li>
+              </ul>
             </div>
 
             {/* Worked example */}

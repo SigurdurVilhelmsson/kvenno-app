@@ -6,7 +6,13 @@ interface BalanceScaleProps {
   balanced: boolean;
 }
 
-export function BalanceScale({ leftValue, leftUnit, rightValue, rightUnit, balanced }: BalanceScaleProps) {
+export function BalanceScale({
+  leftValue,
+  leftUnit,
+  rightValue,
+  rightUnit,
+  balanced,
+}: BalanceScaleProps) {
   return (
     <div className="flex flex-col items-center p-6">
       <p className="text-lg text-warm-700 mb-4 font-semibold">
@@ -15,9 +21,11 @@ export function BalanceScale({ leftValue, leftUnit, rightValue, rightUnit, balan
 
       <div className="relative w-full max-w-md">
         {/* Balance beam */}
-        <div className={`w-full h-2 bg-warm-800 rounded transition-transform duration-500 ${
-          balanced ? '' : 'rotate-2'
-        }`}>
+        <div
+          className={`w-full h-2 bg-warm-800 rounded transition-transform duration-500 ${
+            balanced ? '' : 'rotate-2'
+          }`}
+        >
           {/* Fulcrum */}
           <div className="absolute left-1/2 -translate-x-1/2 top-full">
             <div className="w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-warm-800"></div>
@@ -27,19 +35,27 @@ export function BalanceScale({ leftValue, leftUnit, rightValue, rightUnit, balan
         <div className="flex justify-between mt-4">
           {/* Left side */}
           <div className="flex flex-col items-center">
-            <div className={`bg-blue-500 text-white rounded-lg px-6 py-4 shadow-lg transition-transform duration-500 ${
-              balanced ? 'translate-y-0' : '-translate-y-2'
-            }`}>
-              <p className="text-2xl font-bold">{leftValue} {leftUnit}</p>
+            <div
+              className={`bg-blue-500 text-white rounded-lg px-6 py-4 shadow-lg transition-transform duration-500 ${
+                balanced ? 'translate-y-0' : '-translate-y-2'
+              }`}
+            >
+              <p className="text-2xl font-bold">
+                {leftValue} {leftUnit}
+              </p>
             </div>
           </div>
 
           {/* Right side */}
           <div className="flex flex-col items-center">
-            <div className={`bg-green-500 text-white rounded-lg px-6 py-4 shadow-lg transition-transform duration-500 ${
-              balanced ? 'translate-y-0' : '-translate-y-2'
-            }`}>
-              <p className="text-2xl font-bold">{rightValue} {rightUnit}</p>
+            <div
+              className={`bg-green-500 text-white rounded-lg px-6 py-4 shadow-lg transition-transform duration-500 ${
+                balanced ? 'translate-y-0' : '-translate-y-2'
+              }`}
+            >
+              <p className="text-2xl font-bold">
+                {rightValue} {rightUnit}
+              </p>
             </div>
           </div>
         </div>

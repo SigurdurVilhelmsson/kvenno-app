@@ -12,7 +12,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Hvað eru millisameindakraftar?',
-      description: 'Millisameindakraftar eru aðdráttarkraftar milli sameinda sem hafa áhrif á suðu- og bræðslumark, seigju og leysanleika.',
+      description:
+        'Millisameindakraftar eru aðdráttarkraftar milli sameinda sem hafa áhrif á suðu- og bræðslumark, seigju og leysni.',
     },
     levels: {
       level1: {
@@ -44,7 +45,7 @@ export const gameTranslations = createGameTranslations({
       meltingPoint: 'Bræðslumark',
       viscosity: 'Seigja',
       surfaceTension: 'Yfirborðsspenna',
-      solubility: 'Leysanleiki',
+      solubility: 'Leysni',
       vaporPressure: 'Gufuþrýstingur',
     },
     concepts: {
@@ -65,17 +66,20 @@ export const gameTranslations = createGameTranslations({
     game: {
       title: 'Intermolecular Forces',
       subtitle: 'Kvennaskólinn - Chemistry Year 2',
-      description: 'Learn about forces between molecules and how they affect properties of substances',
+      description:
+        'Learn about forces between molecules and how they affect properties of substances',
     },
     intro: {
       title: 'What are intermolecular forces?',
-      description: 'Intermolecular forces are attractive forces between molecules that affect boiling and melting points, viscosity, and solubility.',
+      description:
+        'Intermolecular forces are attractive forces between molecules that affect boiling and melting points, viscosity, and solubility.',
     },
     levels: {
       level1: {
         name: 'Level 1: Types of Forces',
         description: 'Get to know different forces',
-        details: 'Learn about London dispersion forces, dipole-dipole forces, and hydrogen bonding.',
+        details:
+          'Learn about London dispersion forces, dipole-dipole forces, and hydrogen bonding.',
       },
       level2: {
         name: 'Level 2: Compare',
@@ -126,7 +130,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Czym sa sily miedzyczasteczkowe?',
-      description: 'Sily miedzyczasteczkowe to sily przyciagania miedzy czasteczkami, ktore wplywaja na temperatury wrzenia i topnienia, lepkosc i rozpuszczalnosc.',
+      description:
+        'Sily miedzyczasteczkowe to sily przyciagania miedzy czasteczkami, ktore wplywaja na temperatury wrzenia i topnienia, lepkosc i rozpuszczalnosc.',
     },
     levels: {
       level1: {

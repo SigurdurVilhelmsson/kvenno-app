@@ -160,7 +160,7 @@ const challenges: Challenge[] = [
       'Cl hefur 3 einstæð pör (7 gildisrafeindir - 1 í tengi = 6 = 3 pör).',
     ],
     finalExplanation:
-      'HCl: Einfalt H-Cl tengi. Cl hefur 3 einstæð rafeindarapör. Bæði H og Cl hafa fulla ystu skel.',
+      'HCl: Einfalt H-Cl tengi. Cl hefur 3 einstæð rafeindarapör. Bæði H og Cl hafa fullt ysta hvolf.',
   },
   // === OCTET RULE EXCEPTIONS ===
   {
@@ -211,7 +211,7 @@ const challenges: Challenge[] = [
       'P hefur 10 rafeindir — stækkuð átta (expanded octet).',
     ],
     finalExplanation:
-      'PCl₅ er dæmi um stækkaða áttu: Fosfór hefur 10 rafeindir í kringum sig. Þetta er mögulegt vegna þess að P er á 3. lotu og getur notað d-undirskeljum.',
+      'PCl₅ er dæmi um stækkaða áttu: Fosfór hefur 10 rafeindir í kringum sig. Þetta er mögulegt vegna þess að P er á 3. lotu og getur notað d-undirhvolf.',
   },
   {
     id: 9,
@@ -238,7 +238,7 @@ const challenges: Challenge[] = [
       'S hefur 12 rafeindir — tvöfalt meira en áttureglan!',
     ],
     finalExplanation:
-      'SF₆ er dæmi um stækkaða áttu: S hefur 12 rafeindir í kringum sig (6 tengsl). Þetta er mögulegt vegna d-undirskelja.',
+      'SF₆ er dæmi um stækkaða áttu: S hefur 12 rafeindir í kringum sig (6 tengsl). Þetta er mögulegt vegna d-undirhvolfa.',
   },
 ];
 
@@ -583,7 +583,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 >
                   <div className="font-bold text-purple-700">Stækkuð átta (Expanded Octet)</div>
                   <div className="text-warm-600">
-                    Atóm á 3. lotu+ geta haft fleiri en 8 rafeindir (nota d-undirskeljum)
+                    Atóm á 3. lotu+ geta haft fleiri en 8 rafeindir (nota d-undirhvolf)
                   </div>
                   <div className="text-xs text-warm-500 mt-1">
                     Dæmi: PCl₅ (10 rafeindir), SF₆ (12 rafeindir)

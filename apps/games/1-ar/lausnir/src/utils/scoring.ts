@@ -57,10 +57,7 @@ export function getProblemCount(difficulty: Difficulty): number {
   }
 }
 
-export function getAchievement(
-  streak: number,
-  problemType: string
-): string | null {
+export function getAchievement(streak: number, problemType: string): string | null {
   if (streak === 3 && problemType === 'mixing') return 'achievements.perfectMixing';
   if (streak === 3 && problemType === 'dilution') return 'achievements.dilutionExpert';
   if (streak === 5) return 'achievements.fiveCorrect';

@@ -118,7 +118,7 @@ function App() {
             <h2 className="font-bold text-teal-800 mb-3">Hvað lærðir þú?</h2>
             <ul className="space-y-2 text-teal-900 text-sm">
               <li>
-                ✓ <strong>Gildisrafeindir:</strong> Rafeindir í ystu skel ákvarða efnatengsl
+                ✓ <strong>Gildisrafeindir:</strong> Rafeindir í ysta hvolfi ákvarða efnatengsl
               </li>
               <li>
                 ✓ <strong>Áttureglann:</strong> Atóm vilja hafa 8 rafeindir (H vill 2)

@@ -49,7 +49,7 @@ export const periodicPuzzles: PeriodicConfigPuzzle[] = [
     fullShorthand: '[Ar] 4s¹ 3d⁵',
     isException: true,
     exceptionExplanation_is:
-      'Króm er undantekning! Hálffyllt d-skel (3d⁵) er sérlega stöðug, svo ein rafeind flytur úr 4s yfir í 3d. Vænt: [Ar] 4s² 3d⁴, raunverulegt: [Ar] 4s¹ 3d⁵.',
+      'Króm er undantekning! Hálffyllt d-hvolf (3d⁵) er sérlega stöðugt, svo ein rafeind flytur úr 4s yfir í 3d. Vænt: [Ar] 4s² 3d⁴, raunverulegt: [Ar] 4s¹ 3d⁵.',
     exceptionExplanation_en:
       'Chromium is an exception! A half-filled d-subshell (3d⁵) is especially stable, so one electron transfers from 4s to 3d. Expected: [Ar] 4s² 3d⁴, actual: [Ar] 4s¹ 3d⁵.',
     options: ['[Ar] 4s² 3d⁴', '[Ar] 3d⁶', '[Ar] 4s² 3d³ 4p¹', '[Ar] 4s¹ 3d⁵'],
@@ -65,7 +65,7 @@ export const periodicPuzzles: PeriodicConfigPuzzle[] = [
     fullShorthand: '[Ar] 4s¹ 3d¹⁰',
     isException: true,
     exceptionExplanation_is:
-      'Kopar er undantekning! Fullfyllt d-skel (3d¹⁰) er sérlega stöðugt, svo ein rafeind flytur úr 4s yfir í 3d. Vænt: [Ar] 4s² 3d⁹, raunverulegt: [Ar] 4s¹ 3d¹⁰.',
+      'Kopar er undantekning! Fullfyllt d-hvolf (3d¹⁰) er sérlega stöðugt, svo ein rafeind flytur úr 4s yfir í 3d. Vænt: [Ar] 4s² 3d⁹, raunverulegt: [Ar] 4s¹ 3d¹⁰.',
     exceptionExplanation_en:
       'Copper is an exception! A fully filled d-subshell (3d¹⁰) is especially stable, so one electron transfers from 4s to 3d. Expected: [Ar] 4s² 3d⁹, actual: [Ar] 4s¹ 3d¹⁰.',
     options: ['[Ar] 4s² 3d⁹', '[Ar] 4s¹ 3d¹⁰', '[Ar] 3d¹¹', '[Kr] 4s¹'],

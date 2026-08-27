@@ -15,7 +15,7 @@ function hintFor(question: Question): string {
     return `${el.name} er ${categoryLabel}. Leitaðu á lotu ${el.period}.`;
   }
   if (question.type === 'find-by-position') {
-    return `Lotan segir til um fjölda rafeindaskelja og flokkurinn um gildisrafeindir. Fyrsti bókstafur nafnsins er "${el.name.charAt(0).toUpperCase()}".`;
+    return `Lotan segir til um fjölda rafeindahvolfa og flokkurinn um gildisrafeindir. Fyrsti bókstafur nafnsins er "${el.name.charAt(0).toUpperCase()}".`;
   }
   // name-by-symbol
   return `Frumefnið er ${categoryLabel}. Nafnið byrjar á "${el.name.charAt(0).toUpperCase()}".`;
@@ -175,11 +175,11 @@ export function Level1({ onBack, onComplete }: Level1Props) {
               <h3 className="font-bold text-green-800 mb-3">Lotur (raðir)</h3>
               <p className="text-warm-700 mb-2">
                 Lotukerfið hefur <strong>7 lotur</strong> (láréttar raðir). Lota segir þér hversu
-                mörg rafeindaskel frumefnið hefur.
+                mörg rafeindahvolf frumefnið hefur.
               </p>
               <p className="text-warm-700 text-sm">
-                Dæmi: Vetni (H) er á <strong>lotu 1</strong> — það hefur 1 rafeindaskel. Natríum
-                (Na) er á <strong>lotu 3</strong> — 3 rafeindaskel.
+                Dæmi: Vetni (H) er á <strong>lotu 1</strong> — það hefur 1 rafeindahvolf. Natríum
+                (Na) er á <strong>lotu 3</strong> — 3 rafeindahvolf.
               </p>
             </div>
 
@@ -198,7 +198,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                 </div>
                 <div className="bg-white p-3 rounded-lg">
                   <p className="font-semibold text-warm-800">Flokkur 18</p>
-                  <p className="text-warm-600">Eðalgös — full ysta skel</p>
+                  <p className="text-warm-600">Eðalgös — fullt ysta hvolf</p>
                 </div>
               </div>
             </div>

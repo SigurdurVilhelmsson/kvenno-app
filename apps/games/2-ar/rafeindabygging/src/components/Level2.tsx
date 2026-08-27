@@ -199,14 +199,14 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             <div className="bg-amber-50 p-4 rounded-lg">
               <h3 className="font-bold text-amber-800 mb-2">Regla Hunds</h3>
               <p className="text-sm text-amber-700">
-                Rafeindir dreifastar fyrst einar (↑) í öll svigrúm undirskels áður en þær byrja að
+                Rafeindir dreifastar fyrst einar (↑) í öll svigrúm undirhvolfs áður en þær byrja að
                 parast (↑↓). Þetta lágmarkar fráhrun.
               </p>
             </div>
 
             <div className="bg-warm-50 p-3 rounded-lg text-sm text-warm-700">
-              <strong>Skrifaðu svona:</strong> 1s2 eða 1s² — bæði virka. Biltu milli undirskela: 1s2
-              2s2 2p4
+              <strong>Skrifaðu svona:</strong> 1s2 eða 1s² — bæði virka. Biltu milli undirhvolfa:
+              1s2 2s2 2p4
             </div>
 
             <button

@@ -5,6 +5,7 @@ import { shuffleArray } from '@shared/utils';
 
 import { PeriodicTable } from './PeriodicTable';
 import { COMPOUNDS, type Compound } from '../data/compounds';
+import { parseScientificAnswer } from '../utils/parseAnswer';
 
 const AVOGADRO = 6.022e23;
 const TOTAL_QUESTIONS = 8;
@@ -227,18 +228,6 @@ function buildProblem(d: Desc): Problem {
   };
 }
 
-function parseAnswer(input: string): number | null {
-  const cleaned = input.trim().replace(/,/g, '.').replace(/\s+/g, '');
-  const direct = parseFloat(cleaned);
-  if (!isNaN(direct) && isFinite(direct)) return direct;
-  const m = cleaned.match(/^([+-]?\d+\.?\d*)[x*\u00d7]10\^([+-]?\d+)$/i);
-  if (m) {
-    const val = parseFloat(m[1]) * 10 ** parseInt(m[2], 10);
-    if (isFinite(val)) return val;
-  }
-  return null;
-}
-
 function withinTolerance(user: number, correct: number): boolean {
   if (correct === 0) return Math.abs(user) < 1e-10;
   return Math.abs(user - correct) / Math.abs(correct) <= 0.05;
@@ -270,7 +259,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
 
   const submit = () => {
     if (!p || !input.trim()) return;
-    const val = parseAnswer(input);
+    const val = parseScientificAnswer(input);
     if (val === null) {
       setError('Ógilt gildi. Notaðu t.d. 1.2e24 eða 1.2x10^24');
       return;

@@ -30,7 +30,7 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.2, y: 0.5 },
       { x: 0.8, y: 0.5 },
     ],
-    description: '2 rafeinasvið hrinda hvort öðru 180° í sundur'
+    description: '2 rafeinasvið hrinda hvort öðru 180° í sundur',
   },
   {
     id: 'trigonal-planar',
@@ -42,7 +42,7 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.2, y: 0.75 },
       { x: 0.8, y: 0.75 },
     ],
-    description: '3 rafeinasvið raðast í 120° hornin'
+    description: '3 rafeinasvið raðast í 120° hornin',
   },
   {
     id: 'tetrahedral',
@@ -55,7 +55,7 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.8, y: 0.55 },
       { x: 0.5, y: 0.85 },
     ],
-    description: '4 rafeinasvið raðast í 109.5° hornin'
+    description: '4 rafeinasvið raðast í 109.5° hornin',
   },
   {
     id: 'trigonal-pyramidal',
@@ -63,12 +63,12 @@ const GEOMETRIES: GeometryConfig[] = [
     domains: 4,
     lonePairs: 1,
     positions: [
-      { x: 0.5, y: 0.15 },  // lone pair
+      { x: 0.5, y: 0.15 }, // lone pair
       { x: 0.2, y: 0.55 },
       { x: 0.8, y: 0.55 },
       { x: 0.5, y: 0.85 },
     ],
-    description: 'Einstætt par hrindur bindandi pörum niður á við'
+    description: 'Einstætt par hrindur bindandi pörum niður á við',
   },
   {
     id: 'bent',
@@ -76,12 +76,12 @@ const GEOMETRIES: GeometryConfig[] = [
     domains: 4,
     lonePairs: 2,
     positions: [
-      { x: 0.35, y: 0.2 },  // lone pair
-      { x: 0.65, y: 0.2 },  // lone pair
+      { x: 0.35, y: 0.2 }, // lone pair
+      { x: 0.65, y: 0.2 }, // lone pair
       { x: 0.2, y: 0.7 },
       { x: 0.8, y: 0.7 },
     ],
-    description: '2 einstæð pör ýta bindandi pörum nær saman'
+    description: '2 einstæð pör ýta bindandi pörum nær saman',
   },
   {
     id: 'octahedral',
@@ -96,7 +96,7 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.3, y: 0.3 },
       { x: 0.7, y: 0.7 },
     ],
-    description: '6 rafeinasvið raðast í 90° hornin'
+    description: '6 rafeinasvið raðast í 90° hornin',
   },
 ];
 
@@ -111,10 +111,10 @@ export function ElectronRepulsionAnimation({
   geometryId = 'tetrahedral',
   autoPlay = false,
   showForces = true,
-  compact = false
+  compact = false,
 }: ElectronRepulsionAnimationProps) {
   const [selectedGeometry, setSelectedGeometry] = useState(
-    GEOMETRIES.find(g => g.id === geometryId) || GEOMETRIES[2]
+    GEOMETRIES.find((g) => g.id === geometryId) || GEOMETRIES[2]
   );
   const [domains, setDomains] = useState<Domain[]>([]);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -174,13 +174,13 @@ export function ElectronRepulsionAnimation({
     if (!isAnimating || phase !== 'repelling') return;
 
     const animate = () => {
-      setDomains(prevDomains => {
-        const newDomains = prevDomains.map(domain => {
+      setDomains((prevDomains) => {
+        const newDomains = prevDomains.map((domain) => {
           let fx = 0;
           let fy = 0;
 
           // Repulsion from other domains
-          prevDomains.forEach(other => {
+          prevDomains.forEach((other) => {
             if (other.id === domain.id) return;
 
             const dx = domain.x - other.x;
@@ -233,7 +233,7 @@ export function ElectronRepulsionAnimation({
         return newDomains;
       });
 
-      setStep(prev => prev + 1);
+      setStep((prev) => prev + 1);
     };
 
     const interval = setInterval(animate, 16);
@@ -258,25 +258,31 @@ export function ElectronRepulsionAnimation({
   const height = compact ? 200 : 300;
 
   return (
-    <div className={`bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border border-purple-200 ${compact ? 'p-4' : 'p-6'}`}>
+    <div
+      className={`bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border border-purple-200 ${compact ? 'p-4' : 'p-6'}`}
+    >
       <div className="flex items-center justify-between mb-4">
-        <h3 className={`font-bold text-purple-800 flex items-center gap-2 ${compact ? 'text-base' : 'text-lg'}`}>
+        <h3
+          className={`font-bold text-purple-800 flex items-center gap-2 ${compact ? 'text-base' : 'text-lg'}`}
+        >
           <span>⚡</span> Rafeindahrun
         </h3>
-        <div className={`text-xs px-2 py-1 rounded-full ${
-          phase === 'initial' ? 'bg-warm-100 text-warm-600' :
-          phase === 'repelling' ? 'bg-purple-100 text-purple-700 animate-pulse' :
-          'bg-green-100 text-green-700'
-        }`}>
-          {phase === 'initial' ? 'Tilbúið' :
-           phase === 'repelling' ? 'Hrundur...' :
-           'Stöðugt'}
+        <div
+          className={`text-xs px-2 py-1 rounded-full ${
+            phase === 'initial'
+              ? 'bg-warm-100 text-warm-600'
+              : phase === 'repelling'
+                ? 'bg-purple-100 text-purple-700 animate-pulse'
+                : 'bg-green-100 text-green-700'
+          }`}
+        >
+          {phase === 'initial' ? 'Tilbúið' : phase === 'repelling' ? 'Hrundur...' : 'Stöðugt'}
         </div>
       </div>
 
       {/* Geometry selector */}
       <div className="flex flex-wrap gap-2 mb-4">
-        {GEOMETRIES.map(geo => (
+        {GEOMETRIES.map((geo) => (
           <button
             key={geo.id}
             onClick={() => handleGeometryChange(geo)}
@@ -325,74 +331,71 @@ export function ElectronRepulsionAnimation({
           </text>
 
           {/* Force arrows (when showing forces and animating) */}
-          {showForces && phase === 'repelling' && domains.map((domain, i) => {
-            const otherDomains = domains.filter(d => d.id !== domain.id);
-            return otherDomains.map((other, j) => {
-              const dx = domain.x - other.x;
-              const dy = domain.y - other.y;
-              const dist = Math.sqrt(dx * dx + dy * dy);
-              if (dist > 0.3) return null;
+          {showForces &&
+            phase === 'repelling' &&
+            domains.map((domain, i) => {
+              const otherDomains = domains.filter((d) => d.id !== domain.id);
+              return otherDomains.map((other, j) => {
+                const dx = domain.x - other.x;
+                const dy = domain.y - other.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist > 0.3) return null;
 
-              const midX = (domain.x + other.x) / 2;
-              const midY = (domain.y + other.y) / 2;
-              const arrowLen = 0.05;
-              const nx = dx / dist;
-              const ny = dy / dist;
+                const midX = (domain.x + other.x) / 2;
+                const midY = (domain.y + other.y) / 2;
+                const arrowLen = 0.05;
+                const nx = dx / dist;
+                const ny = dy / dist;
 
-              return (
-                <g key={`force-${i}-${j}`} opacity={0.4}>
-                  {/* Arrow from midpoint toward domain */}
-                  <line
-                    x1={midX}
-                    y1={midY}
-                    x2={midX + nx * arrowLen}
-                    y2={midY + ny * arrowLen}
-                    stroke="#ef4444"
-                    strokeWidth={0.008}
-                    markerEnd="url(#arrowhead)"
-                  />
-                  {/* Arrow from midpoint toward other */}
-                  <line
-                    x1={midX}
-                    y1={midY}
-                    x2={midX - nx * arrowLen}
-                    y2={midY - ny * arrowLen}
-                    stroke="#ef4444"
-                    strokeWidth={0.008}
-                    markerEnd="url(#arrowhead)"
-                  />
-                </g>
-              );
-            });
-          })}
+                return (
+                  <g key={`force-${i}-${j}`} opacity={0.4}>
+                    {/* Arrow from midpoint toward domain */}
+                    <line
+                      x1={midX}
+                      y1={midY}
+                      x2={midX + nx * arrowLen}
+                      y2={midY + ny * arrowLen}
+                      stroke="#ef4444"
+                      strokeWidth={0.008}
+                      markerEnd="url(#arrowhead)"
+                    />
+                    {/* Arrow from midpoint toward other */}
+                    <line
+                      x1={midX}
+                      y1={midY}
+                      x2={midX - nx * arrowLen}
+                      y2={midY - ny * arrowLen}
+                      stroke="#ef4444"
+                      strokeWidth={0.008}
+                      markerEnd="url(#arrowhead)"
+                    />
+                  </g>
+                );
+              });
+            })}
 
           {/* Arrow marker definition */}
           <defs>
-            <marker
-              id="arrowhead"
-              markerWidth="4"
-              markerHeight="4"
-              refX="3"
-              refY="2"
-              orient="auto"
-            >
+            <marker id="arrowhead" markerWidth="4" markerHeight="4" refX="3" refY="2" orient="auto">
               <polygon points="0,0 4,2 0,4" fill="#ef4444" />
             </marker>
           </defs>
 
           {/* Bonds to central atom */}
-          {domains.filter(d => d.type === 'bonding').map(domain => (
-            <line
-              key={`bond-${domain.id}`}
-              x1={centerX}
-              y1={centerY}
-              x2={domain.x}
-              y2={domain.y}
-              stroke="#374151"
-              strokeWidth={0.015}
-              strokeLinecap="round"
-            />
-          ))}
+          {domains
+            .filter((d) => d.type === 'bonding')
+            .map((domain) => (
+              <line
+                key={`bond-${domain.id}`}
+                x1={centerX}
+                y1={centerY}
+                x2={domain.x}
+                y2={domain.y}
+                stroke="#374151"
+                strokeWidth={0.015}
+                strokeLinecap="round"
+              />
+            ))}
 
           {/* Electron domains */}
           {domains.map((domain, i) => (
@@ -429,19 +432,20 @@ export function ElectronRepulsionAnimation({
           ))}
 
           {/* Target positions (ghost) when not settled */}
-          {phase !== 'settled' && selectedGeometry.positions.map((pos, i) => (
-            <circle
-              key={`target-${i}`}
-              cx={pos.x}
-              cy={pos.y}
-              r={0.04}
-              fill="none"
-              stroke="#a5b4fc"
-              strokeWidth={0.005}
-              strokeDasharray="0.02 0.02"
-              opacity={0.5}
-            />
-          ))}
+          {phase !== 'settled' &&
+            selectedGeometry.positions.map((pos, i) => (
+              <circle
+                key={`target-${i}`}
+                cx={pos.x}
+                cy={pos.y}
+                r={0.04}
+                fill="none"
+                stroke="#a5b4fc"
+                strokeWidth={0.005}
+                strokeDasharray="0.02 0.02"
+                opacity={0.5}
+              />
+            ))}
         </svg>
       </div>
 

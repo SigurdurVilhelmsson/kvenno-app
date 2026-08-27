@@ -41,7 +41,7 @@ export const level2Problems: Level2Problem[] = [
     targetUnit: 'g',
     correctPath: ['1 g / 1000 mg'],
     scaffoldingLevel: 3,
-    hint: 'Finndu stuðul sem breytir mg beint í g. Mundu að mg þarf að styttast út.'
+    hint: 'Finndu stuðul sem breytir mg beint í g. Mundu að mg þarf að styttast út.',
   },
   {
     id: 'L2-2',
@@ -52,7 +52,7 @@ export const level2Problems: Level2Problem[] = [
     targetUnit: 'L',
     correctPath: ['1 L / 1000 mL'],
     scaffoldingLevel: 3,
-    hint: 'Finndu stuðul sem breytir mL beint í L. Settu mL í nefnarann svo það styttist út.'
+    hint: 'Finndu stuðul sem breytir mL beint í L. Settu mL í nefnarann svo það styttist út.',
   },
   {
     id: 'L2-3',
@@ -63,7 +63,7 @@ export const level2Problems: Level2Problem[] = [
     targetUnit: 'kg',
     correctPath: ['1 kg / 1000 g'],
     scaffoldingLevel: 3,
-    hint: 'Finndu stuðul sem breytir g beint í kg. Hversu mörg g eru í einu kg?'
+    hint: 'Finndu stuðul sem breytir g beint í kg. Hversu mörg g eru í einu kg?',
   },
   {
     id: 'L2-4',
@@ -74,7 +74,7 @@ export const level2Problems: Level2Problem[] = [
     targetUnit: 'm',
     correctPath: ['1 m / 100 cm'],
     scaffoldingLevel: 3,
-    hint: 'Finndu stuðul sem breytir cm beint í m. Hversu mörg cm eru í einum metra?'
+    hint: 'Finndu stuðul sem breytir cm beint í m. Hversu mörg cm eru í einum metra?',
   },
   {
     id: 'L2-5',
@@ -85,7 +85,7 @@ export const level2Problems: Level2Problem[] = [
     targetUnit: 'g',
     correctPath: ['1000 g / 1 kg'],
     scaffoldingLevel: 3,
-    hint: 'Finndu stuðul sem breytir kg beint í g. Passaðu að kg sé í nefnaranum.'
+    hint: 'Finndu stuðul sem breytir kg beint í g. Passaðu að kg sé í nefnaranum.',
   },
   {
     id: 'L2-6',
@@ -96,7 +96,7 @@ export const level2Problems: Level2Problem[] = [
     targetUnit: 'cm',
     correctPath: ['1000 m / 1 km', '100 cm / 1 m'],
     scaffoldingLevel: 2,
-    hint: 'Þetta þarf 2 skref. Byrjaðu á að breyta km í metra og síðan metra í cm.'
+    hint: 'Þetta þarf 2 skref. Byrjaðu á að breyta km í metra og síðan metra í cm.',
   },
   {
     id: 'L2-7',
@@ -107,7 +107,7 @@ export const level2Problems: Level2Problem[] = [
     targetUnit: 'kg',
     correctPath: ['1 g / 1000 mg', '1 kg / 1000 g'],
     scaffoldingLevel: 2,
-    hint: 'Þetta þarf 2 skref. Byrjaðu á að breyta mg í gramm og síðan gramm í kg.'
+    hint: 'Þetta þarf 2 skref. Byrjaðu á að breyta mg í gramm og síðan gramm í kg.',
   },
   {
     id: 'L2-8',
@@ -118,7 +118,7 @@ export const level2Problems: Level2Problem[] = [
     targetUnit: 'm/s',
     correctPath: ['1000 m / 1 km', '1 klst / 3600 s'],
     scaffoldingLevel: 2,
-    hint: 'Þetta þarf 2 skref. Breyttu fyrst km í m og síðan klst í sekúndur.'
+    hint: 'Þetta þarf 2 skref. Breyttu fyrst km í m og síðan klst í sekúndur.',
   },
   {
     id: 'L2-9',
@@ -129,7 +129,7 @@ export const level2Problems: Level2Problem[] = [
     targetUnit: 's',
     correctPath: ['3600 s / 1 klst'],
     scaffoldingLevel: 2,
-    hint: 'Finndu stuðul sem breytir klst beint í sekúndur. Hversu margar sekúndur eru í einni klukkustund?'
+    hint: 'Finndu stuðul sem breytir klst beint í sekúndur. Hversu margar sekúndur eru í einni klukkustund?',
   },
   {
     id: 'L2-10',
@@ -140,7 +140,7 @@ export const level2Problems: Level2Problem[] = [
     targetUnit: 'km',
     correctPath: ['1 m / 1000 mm', '1 km / 1000 m'],
     scaffoldingLevel: 2,
-    hint: 'Þetta þarf 2 skref. Byrjaðu á að breyta mm í metra og síðan metra í km.'
+    hint: 'Þetta þarf 2 skref. Byrjaðu á að breyta mm í metra og síðan metra í km.',
   },
   {
     id: 'L2-11',
@@ -151,7 +151,7 @@ export const level2Problems: Level2Problem[] = [
     targetUnit: 'km/klst',
     correctPath: ['1 km / 1000 m', '3600 s / 1 klst'],
     scaffoldingLevel: 1,
-    hint: 'Hugsaðu um hvaða einingar þurfa að styttast út í hverju skrefi. Bæði m og s þurfa umbreytingu.'
+    hint: 'Hugsaðu um hvaða einingar þurfa að styttast út í hverju skrefi. Bæði m og s þurfa umbreytingu.',
   },
   {
     id: 'L2-12',
@@ -162,7 +162,7 @@ export const level2Problems: Level2Problem[] = [
     targetUnit: 'km',
     correctPath: ['1 m / 100 cm', '1 km / 1000 m'],
     scaffoldingLevel: 1,
-    hint: 'Hugsaðu um hvaða einingar þurfa að styttast út í hverju skrefi. Farðu í gegnum millieininguna metra.'
+    hint: 'Hugsaðu um hvaða einingar þurfa að styttast út í hverju skrefi. Farðu í gegnum millieininguna metra.',
   },
   {
     id: 'L2-13',
@@ -173,7 +173,7 @@ export const level2Problems: Level2Problem[] = [
     targetUnit: 'L',
     correctPath: ['1 L / 1000 mL'],
     scaffoldingLevel: 1,
-    hint: 'Hugsaðu um hvaða einingar þurfa að styttast út. Þetta er eitt skref -- settu mL í nefnarann.'
+    hint: 'Hugsaðu um hvaða einingar þurfa að styttast út. Þetta er eitt skref -- settu mL í nefnarann.',
   },
   {
     id: 'L2-14',
@@ -184,7 +184,7 @@ export const level2Problems: Level2Problem[] = [
     targetUnit: 'klst',
     correctPath: ['1 klst / 3600 s'],
     scaffoldingLevel: 1,
-    hint: 'Hugsaðu um hvaða einingar þurfa að styttast út. Settu s í nefnarann til að styttast út.'
+    hint: 'Hugsaðu um hvaða einingar þurfa að styttast út. Settu s í nefnarann til að styttast út.',
   },
   {
     id: 'L2-15',
@@ -195,6 +195,6 @@ export const level2Problems: Level2Problem[] = [
     targetUnit: 'kg/L',
     correctPath: ['1 kg / 1000 g', '1000 mL / 1 L'],
     scaffoldingLevel: 1,
-    hint: 'Hugsaðu um hvaða einingar þurfa að styttast út í hverju skrefi. Bæði g og mL þurfa umbreytingu.'
-  }
+    hint: 'Hugsaðu um hvaða einingar þurfa að styttast út í hverju skrefi. Bæði g og mL þurfa umbreytingu.',
+  },
 ];

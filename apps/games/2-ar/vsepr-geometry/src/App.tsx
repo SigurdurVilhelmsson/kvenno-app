@@ -173,8 +173,8 @@ function App() {
             <h2 className="font-bold text-teal-800 mb-3">Hvað er VSEPR?</h2>
             <p className="text-teal-900 text-sm mb-4">
               <strong>VSEPR</strong> (Valence Shell Electron Pair Repulsion) segir að rafeindasvið í
-              ystu skel miðatóms <em>hrindi hvert öðru frá</em> og staðsetji sig eins langt í sundur
-              og hægt er. Þetta ákvarðar lögun sameindarinnar.
+              ysta hvolfi miðatóms <em>hrindi hvert öðru frá</em> og staðsetji sig eins langt í
+              sundur og hægt er. Þetta ákvarðar lögun sameindarinnar.
             </p>
             <div className="bg-white p-3 rounded-lg border border-teal-200">
               <p className="text-sm text-teal-800 font-mono text-center">

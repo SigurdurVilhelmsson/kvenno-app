@@ -244,7 +244,7 @@ const challenges: Challenge[] = [
         id: 'd',
         text: '6 rafeinasvið',
         correct: false,
-        explanation: 'Það eru aðeins 4 rafeinapör í ystu skel súrefnis.',
+        explanation: 'Það eru aðeins 4 rafeinapör í ysta hvolfi súrefnis.',
       },
     ],
     hints: {

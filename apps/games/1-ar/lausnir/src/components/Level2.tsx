@@ -51,11 +51,21 @@ interface TemperatureScenario extends BaseScenario {
 
 type Scenario = ConcentrationScenario | TemperatureScenario;
 
-// Get compound data by formula
-const getCompound = (formula: string): SolubilityData =>
-  SOLUBILITY_DATA.find((d) => d.formula === formula) || SOLUBILITY_DATA[0];
+/**
+ * Get compound data by formula.
+ *
+ * Throws rather than falling back. It used to return `SOLUBILITY_DATA[0]` for
+ * an unknown formula, which is potassium nitrate — so a typo would have quietly
+ * drawn the KNO₃ curve under a question about calcium sulfate, with every
+ * number in the explanation still describing the compound that was meant.
+ */
+const getCompound = (formula: string): SolubilityData => {
+  const compound = SOLUBILITY_DATA.find((d) => d.formula === formula);
+  if (!compound) throw new Error(`no solubility data for ${formula}`);
+  return compound;
+};
 
-const SCENARIOS: Scenario[] = [
+export const SCENARIOS: Scenario[] = [
   // Concentration scenarios (original)
   {
     id: 1,
@@ -175,37 +185,37 @@ const SCENARIOS: Scenario[] = [
     type: 'temperature',
     title: 'Hitun á saltlausn',
     setup: 'Þú ert með mettuð NaCl (borðsalt) lausn við 20°C.',
-    question: 'Þú hitar lausnina upp í 80°C. Hvað gerist við leysigetu saltsins?',
-    hint: 'NaCl er þekkt sem undantekning — skoðaðu leysigetu feril.',
+    question: 'Þú hitar lausnina upp í 80°C. Hvað gerist við leysni saltsins?',
+    hint: 'NaCl er þekkt sem undantekning — skoðaðu leysniferilinn.',
     options: [
       {
         id: 'a',
-        text: 'Leysigeta eykst talsvert',
+        text: 'Leysni eykst talsvert',
         isCorrect: false,
-        explanation: 'Nei - NaCl er óvenjulegt. Leysigeta þess breytist mjög lítið með hitastigi.',
+        explanation: 'Nei - NaCl er óvenjulegt. Leysni þess breytist mjög lítið með hitastigi.',
       },
       {
         id: 'b',
-        text: 'Leysigeta eykst lítillega',
+        text: 'Leysni eykst lítillega',
         isCorrect: true,
         explanation:
           'Rétt! NaCl fer úr 36 g/100g við 20°C í 38 g/100g við 80°C - bara ~6% aukning!',
       },
       {
         id: 'c',
-        text: 'Leysigeta minnkar',
+        text: 'Leysni minnkar',
         isCorrect: false,
-        explanation: 'Nei - leysigeta NaCl minnkar ekki við hitun.',
+        explanation: 'Nei - leysni NaCl minnkar ekki við hitun.',
       },
       {
         id: 'd',
-        text: 'Leysigeta helst nákvæmlega óbreytt',
+        text: 'Leysni helst nákvæmlega óbreytt',
         isCorrect: false,
         explanation: 'Nei - hún breytist aðeins, en minna en flest önnur efni.',
       },
     ],
     concept:
-      'NaCl er sérstakt: leysigeta þess breytist mjög lítið með hitastigi (35.7-39.2 g/100g frá 0°C til 100°C).',
+      'NaCl er sérstakt: leysni þess breytist mjög lítið með hitastigi (35.7-39.2 g/100g frá 0°C til 100°C).',
     compound: getCompound('NaCl'),
     tempBefore: 20,
     tempAfter: 80,
@@ -215,37 +225,37 @@ const SCENARIOS: Scenario[] = [
     type: 'temperature',
     title: 'Hitun á KNO₃ lausn',
     setup: 'Þú ert með mettuð kalíumnítrat (KNO₃) lausn við 20°C.',
-    question: 'Þú hitar lausnina upp í 60°C. Hvað gerist við leysigetu KNO₃?',
+    question: 'Þú hitar lausnina upp í 60°C. Hvað gerist við leysni KNO₃?',
     hint: 'KNO₃ hefur eitt hæsta hitaháðni meðal salta.',
     options: [
       {
         id: 'a',
-        text: 'Leysigeta eykst mikið (meira en tvöfaldast)',
+        text: 'Leysni eykst mikið (meira en tvöfaldast)',
         isCorrect: true,
         explanation:
           'Rétt! KNO₃ fer úr 32 g/100g við 20°C í 110 g/100g við 60°C - meira en þrefaldast!',
       },
       {
         id: 'b',
-        text: 'Leysigeta eykst lítillega',
+        text: 'Leysni eykst lítillega',
         isCorrect: false,
-        explanation: 'Nei - KNO₃ hefur eina hæstu hitabreytni í leysigetu. Hún eykst gríðarlega.',
+        explanation: 'Nei - KNO₃ hefur eina hæstu hitabreytni í leysni. Hún eykst gríðarlega.',
       },
       {
         id: 'c',
-        text: 'Leysigeta minnkar',
+        text: 'Leysni minnkar',
         isCorrect: false,
-        explanation: 'Nei - fyrir flest fast efni eykst leysigeta við hitun.',
+        explanation: 'Nei - fyrir flest fast efni eykst leysni við hitun.',
       },
       {
         id: 'd',
-        text: 'Leysigeta helst óbreytt',
+        text: 'Leysni helst óbreytt',
         isCorrect: false,
-        explanation: 'Nei - KNO₃ er þekkt fyrir mikla hitaháða leysigetu.',
+        explanation: 'Nei - KNO₃ er þekkt fyrir mikla hitaháða leysni.',
       },
     ],
     concept:
-      'KNO₃ er dæmi um efni með mikla hitaháðni: leysigeta fer frá 13 g/100g við 0°C upp í 246 g/100g við 100°C.',
+      'KNO₃ er dæmi um efni með mikla hitaháðni: leysni fer frá 13 g/100g við 0°C upp í 246 g/100g við 100°C.',
     compound: getCompound('KNO₃'),
     tempBefore: 20,
     tempAfter: 60,
@@ -275,7 +285,7 @@ const SCENARIOS: Scenario[] = [
         id: 'c',
         text: 'CO₂ innihald helst óbreytt',
         isCorrect: false,
-        explanation: 'Nei - hitastig hefur mikil áhrif á leysigetu lofttegunda.',
+        explanation: 'Nei - hitastig hefur mikil áhrif á leysni lofttegunda.',
       },
       {
         id: 'd',
@@ -352,7 +362,7 @@ const SCENARIOS: Scenario[] = [
         id: 'c',
         text: 'Súrefni helst óbreytt',
         isCorrect: false,
-        explanation: 'Nei - hitastig hefur mikil áhrif á leysigetu lofttegunda.',
+        explanation: 'Nei - hitastig hefur mikil áhrif á leysni lofttegunda.',
       },
       {
         id: 'd',
@@ -410,7 +420,7 @@ const SCENARIOS: Scenario[] = [
     title: 'Sykurlausn',
     setup: 'Þú ert að búa til karamellulausn. Þú hefur mettuð sykurlausn við 20°C.',
     question: 'Þú hitar lausnina upp í 80°C. Getur þú nú bætt við meiri sykri?',
-    hint: 'Sykur er dæmi um efni með mikla hitaháðni í leysigetu.',
+    hint: 'Sykur er dæmi um efni með mikla hitaháðni í leysni.',
     options: [
       {
         id: 'a',
@@ -423,11 +433,11 @@ const SCENARIOS: Scenario[] = [
         id: 'b',
         text: 'Já, aðeins meira',
         isCorrect: false,
-        explanation: 'Nei - sykur hefur mikla hitabreytni í leysigetu, ekki litla.',
+        explanation: 'Nei - sykur hefur mikla hitabreytni í leysni, ekki litla.',
       },
       {
         id: 'c',
-        text: 'Nei, leysigeta helst óbreytt',
+        text: 'Nei, leysni helst óbreytt',
         isCorrect: false,
         explanation: 'Nei - sykur leysist mun betur í heitu vatni.',
       },
@@ -439,9 +449,99 @@ const SCENARIOS: Scenario[] = [
       },
     ],
     concept:
-      'Sykur er gott dæmi um efni með mikla hitaháðni í leysigetu (179 g/100g við 0°C upp í 487 g/100g við 100°C).',
+      'Sykur er gott dæmi um efni með mikla hitaháðni í leysni (179 g/100g við 0°C upp í 487 g/100g við 100°C).',
     compound: getCompound('C₁₂H₂₂O₁₁'),
     tempBefore: 20,
+    tempAfter: 80,
+  },
+  // Cooling scenarios, harvested from the frozen repo's saturation data.
+  // Every temperature scenario above heats; the widget has drawn a "❄️ Kæla"
+  // arrow since it was written and nothing ever asked for one. Cooling is the
+  // direction that matters — it is how crystals grow and how a solid is
+  // purified by recrystallisation.
+  {
+    id: 11,
+    type: 'temperature',
+    title: 'Kristöllun við kælingu',
+    setup: 'Þú leystir 200 g af kalíumnítrati (KNO₃) upp í 100 g af vatni við 100°C.',
+    question: 'Þú kælir lausnina hægt niður í 20°C. Hvað gerist?',
+    hint: 'Lestu leysni KNO₃ af ferlinum við bæði hitastigin. Það sem kemst ekki fyrir verður að fara úr lausninni.',
+    options: [
+      {
+        id: 'a',
+        text: 'Um 168 g falla út sem kristallar',
+        isCorrect: true,
+        explanation:
+          'Rétt! Við 100°C leysast 246 g/100g, svo 200 g haldast uppleyst. Við 20°C leysast aðeins 32 g/100g — mismunurinn, 200 - 32 = 168 g, fellur út.',
+      },
+      {
+        id: 'b',
+        text: 'Ekkert gerist, lausnin helst óbreytt',
+        isCorrect: false,
+        explanation:
+          'Nei - leysni KNO₃ hrynur við kælingu, úr 246 g/100g niður í 32 g/100g. Vatnið rúmar einfaldlega ekki 200 g við 20°C.',
+      },
+      {
+        id: 'c',
+        text: 'Um 32 g falla út',
+        isCorrect: false,
+        explanation:
+          'Nei - 32 g er það sem helst uppleyst við 20°C, ekki það sem fellur út. Það sem fellur út er afgangurinn: 200 - 32.',
+      },
+      {
+        id: 'd',
+        text: 'Vatnið gufar upp og skilur saltið eftir',
+        isCorrect: false,
+        explanation:
+          'Nei - lausnin er að kólna, ekki hitna. Vatnsmagnið helst óbreytt; það er leysnin sem breytist.',
+      },
+    ],
+    concept:
+      'Þegar mettuð lausn kólnar minnkar leysnin og umframefnið fellur út sem kristallar. Þannig eru kristallar ræktaðir — og þannig er fast efni hreinsað með endurkristöllun.',
+    compound: getCompound('KNO₃'),
+    tempBefore: 100,
+    tempAfter: 20,
+  },
+  {
+    id: 12,
+    type: 'temperature',
+    title: 'Öfug leysni',
+    setup: 'Vatnið í hitakerfi hússins er mettað af kalsíumsúlfati (CaSO₄) við 40°C.',
+    question: 'Vatnið er hitað upp í 80°C. Hvað gerist við kalsíumsúlfatið?',
+    hint: 'CaSO₄ er undantekningin sem kynnt var hér að ofan. Skoðaðu hvernig ferillinn hallar.',
+    options: [
+      {
+        id: 'a',
+        text: 'Hluti þess fellur út og sest sem skán á heitasta flötinn',
+        isCorrect: true,
+        explanation:
+          'Rétt! Leysni CaSO₄ minnkar við hitun, úr 0.21 g/100g við 40°C í 0.16 g/100g við 80°C. Umframefnið sest þar sem heitast er — þess vegna kalkar á hitaelementum.',
+      },
+      {
+        id: 'b',
+        text: 'Meira leysist upp, eins og hjá flestum söltum',
+        isCorrect: false,
+        explanation:
+          'Nei - CaSO₄ er einmitt undantekningin. Flest föst efni leysast betur við hitun; CaSO₄ gerir það ekki.',
+      },
+      {
+        id: 'c',
+        text: 'Ekkert breytist',
+        isCorrect: false,
+        explanation:
+          'Nei - leysnin fer úr 0.21 í 0.16 g/100g. Munurinn er lítill í grömmum en hann er raunverulegur og safnast upp með tímanum.',
+      },
+      {
+        id: 'd',
+        text: 'Það breytist í gas og hverfur',
+        isCorrect: false,
+        explanation: 'Nei - CaSO₄ er fast salt. Það gufar ekki upp við 80°C.',
+      },
+    ],
+    concept:
+      'CaSO₄ hefur öfuga leysni: hún minnkar við hitun. Þess vegna kalkar frekar á heitum flötum en köldum — í hitakerfum, kötlum og hraðsuðukönnum.',
+    compound: getCompound('CaSO₄'),
+    tempBefore: 40,
     tempAfter: 80,
   },
 ];
@@ -640,7 +740,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               <button
                 onClick={() => setShowExplorer(true)}
                 className="bg-purple-100 hover:bg-purple-200 text-purple-700 px-3 py-1 rounded-lg text-sm font-medium transition-colors"
-                title="Kanna leysigetu"
+                title="Kanna leysni"
               >
                 🔬 Kanna
               </button>
@@ -873,7 +973,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold text-purple-700">🔬 Könnun á leysigetu</h2>
+                <h2 className="text-2xl font-bold text-purple-700">🔬 Könnun á leysni</h2>
                 <button
                   onClick={() => setShowExplorer(false)}
                   className="text-warm-500 hover:text-warm-700 text-2xl"
@@ -883,7 +983,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               </div>
 
               <p className="text-warm-600 mb-4">
-                Dragðu sleðann til að sjá hvernig hitastig hefur áhrif á leysigetu mismunandi efna.
+                Dragðu sleðann til að sjá hvernig hitastig hefur áhrif á leysni mismunandi efna.
                 Taktu eftir muninum á föstum efnum og lofttegundum!
               </p>
 
