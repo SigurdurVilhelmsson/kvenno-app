@@ -438,6 +438,31 @@ first. Guarded by `1-ar/dimensional-analysis/src/__tests__/hint-cost.test.ts`.
 
 **Fixed 2026-08-26 — the two unshuffled option arrays.** `2-ar/kinetics` L3 put the correct option first in all 6 challenges, `2-ar/organic-nomenclature` L3 in 6 of 10; both now shuffle in a `useMemo` keyed on the challenge index, the idiom four other levels already used including kinetics' own L1. Kinetics' option `id`s double as the visible letters, so the shuffle reassigns them a/b/c/d by position — and `checkAnswer` therefore had to move to `shuffledOptions`, since the clicked id no longer identifies the same entry in the original array. An `option-order.test.tsx` in each game plays every challenge twice over; both fail against no shuffle, and the kinetics one also against that half-done fix. **Four other games still look constant in the data but shuffle at render — see `docs/README.md` before "fixing" a fifth.**
 
+**Phase 3 of the games roadmap landed 2026-08-27** — the harvest out of the frozen
+`namsbokasafn-leikir`. All four rows, each with a `HARVEST.md` beside the game it touched:
+25 real-world scenarios into `1-ar/dimensional-analysis`, periodic trends into `1-ar/lotukerfid`
+(a fourth question type in Level 2), the subscript conversion and the superscript parser into
+`1-ar/molmassi`, and the cooling direction into `1-ar/lausnir`.
+
+**Two of the four roadmap rows had false premises**, and this is where the correction lives:
+`saturation.ts`'s curves were **already shipped, digit for digit**, plus two gases the old file
+never had — there was nothing to swap; and `avogadro.ts`'s g↔mol and mol↔particles already
+shipped too, while **mol↔L is in neither harvested file** and remains a genuine gap belonging with
+the Year-3 gas laws. `conversionChains.ts` was deliberately not ported: `1-ar/einingakedjan` is
+that file as a game, with species-tagged ratios.
+
+**Checking harvested data against the shipped graders found four defects in shipped code**, listed
+in `docs/README.md`. The largest: `molmassi` printed `× 10²³` at students and neither level's parser
+could read a superscript back, so a correct answer graded as its mantissa.
+
+**Two terminology corrections were applied on the way in, and are candidates for the table above —
+Siggi's call:** `atómgeisli` → `atómradíus` (ordabok; corpus 23 vs 0) and `leysigeta` → `leysni`
+(ordabok; corpus 260 vs 0, in 19 places in `lausnir`, the one game whose whole subject it names).
+Both are pinned by their own game's tests, not by `governed-terms.test.ts`. A third is **open**:
+the platform says `skel` for an electron shell in about twenty places across three games, the
+textbook says `hvolf` (133 vs 7), and that one changes grammatical gender — see
+`apps/games/1-ar/lotukerfid/HARVEST.md`.
+
 **No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
 now fixed, and each carries a test that fails against the pre-fix code. What is left is enrichment
 and unfinished decisions, not defects — the work order is

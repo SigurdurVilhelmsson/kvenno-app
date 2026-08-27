@@ -18,9 +18,35 @@ disagree, this block is current.
 | 1 — Stop teaching wrong chemistry        | **Done** 2026-08-18        | PR #23, `fix/phase-1-correctness`. All four tasks; see the sub-plan's own STATUS header                                      |
 | 1b — the three Tier-0 items with victims | **Done** 2026-08-18        | PR #24, `fix/phase-1b-correctness`. B3, B6, B8                                                                               |
 | 2 — Make terminology govern              | **Done** 2026-08-26        | All six ruled terms applied, plus a test that fails if any returns — `packages/shared/i18n/__tests__/governed-terms.test.ts` |
-| 3 — Harvest the cheap content            | Not started                | —                                                                                                                            |
+| 3 — Harvest the cheap content            | **Done** 2026-08-27        | PR #34, `claude/phase-3-continuation-1f7fn2`. All four rows; two of the four premises were wrong — see below                 |
 | 4 — Close the pedagogy gaps              | Not started                | —                                                                                                                            |
 | 5 — Fill the curriculum holes            | Not started, but see below | —                                                                                                                            |
+
+### Phase 3, as it actually turned out (2026-08-27)
+
+All four rows landed, each with a `HARVEST.md` beside the game it touched. **Two of the four
+premises in the Phase 3 table below were false, and one row's real content was not what the row
+described.** They are left as written; this is the correction.
+
+| Row                                                | What the table said                                                    | What was true                                                                                                                                                                              |
+| -------------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 25 scenarios → `dimensional-analysis`              | Correct                                                                | Landed. The data itself had never been verified: three unwritable significant-figure counts, one ungradeable key, and Icelandic that is not Icelandic                                      |
+| `avogadro.ts` + `conversionChains.ts` → `molmassi` | "g↔mol, mol↔particles, mol↔L were specified and built and lost"        | g↔mol and mol↔particles already shipped. **mol↔L is in neither harvested file** and is a real gap belonging with the gas laws. `conversionChains.ts` is superseded by `einingakedjan`      |
+| `trends.ts` → `lotukerfid`                         | Correct                                                                | Landed as a fourth question type in Level 2. All twelve keys check out; the Icelandic did not                                                                                              |
+| `saturation.ts` → `lausnir`                        | "Real sourced curves in place of the shipped game's hand-typed arrays" | **The shipped arrays are those curves, digit for digit**, plus two gases the old file never had. Nothing to swap. What was missing was the cooling direction, which no scenario ever asked |
+
+**The harvest was worth doing anyway, and not for the reason the plan gave.** Checking old data
+against the shipped graders is what found the defects; four of them are in code that shipped, not in
+anything harvested. They are listed in `docs/README.md`.
+
+**Two terminology corrections were applied on the way in**, both settled by `ordabok.md` and the
+textbook corpus rather than by a ruling: `atómgeisli` → `atómradíus` (corpus 23 vs 0) and
+`leysigeta` → `leysni` (260 vs 0, in 19 places in the one game whose whole subject it names). Both
+are pinned inside their own game's tests. **Whether they belong in the banned-term table in
+`CLAUDE.md` is Siggi's call** — as is `skel` vs `hvolf` for an electron shell, where the platform
+says `skel` in about twenty places across three games and the textbook says `hvolf` (133 vs 7).
+That one changes grammatical gender and needs its own pass; see
+`apps/games/1-ar/lotukerfid/HARVEST.md`.
 
 **Tier-0 correctness: none of the nine remain open.** Phase 1 closed B1 and B2; Phase 1b closed
 B3, B6 and B8; B4 and B13 were closed on 2026-08-26 (PR #30); **B5 and B12 were closed on

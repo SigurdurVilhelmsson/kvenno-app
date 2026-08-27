@@ -99,9 +99,42 @@ scan of the data alone overstates this defect by four files. And this is the pos
 option _within_ a question, which is not the deliberate exam-stability choice about problem _order_
 in Kinetics and Redox.
 
+**Fixed 2026-08-27 by the Phase 3 harvest — four gradeability defects the August reviews did not
+find, because they were found by running old data through the shipped graders rather than by
+reading the games.** Each carries a test verified to fail against the pre-fix code, and each is
+written up in the `HARVEST.md` beside its game.
+
+- **`1-ar/molmassi` could not read the notation it prints.** Level 2 asks
+  `Hversu mörg mól eru 3.5 × 10²³ sameindir?` and Level 3 prints `6,022 × 10²³` in every worked
+  solution, and **neither parser could read a superscript back**. Level 2 matched only an ASCII
+  `10^23`, so `3,5 × 10²³` fell through to `parseFloat` and graded as `3.5` — a correct answer
+  marked wrong by a factor of 10²³, from a student copying the format they had just been shown.
+  Level 3 was worse: it called `parseFloat` _before_ its scientific-notation regex, and `parseFloat`
+  never returns `NaN` for a string starting with a digit, so the regex was **unreachable** and
+  `3.34×10^22` graded as `3.34` — on `mass-to-particles` problems, whose every key is that size.
+  Both now use `src/utils/parseAnswer.ts`. This is the B9 family: a correct answer read as a
+  different number.
+- **`1-ar/dimensional-analysis`'s `real_world` grader used `parseInt`**, which truncates a decimal
+  and cannot read an Icelandic decimal comma. `requireInteger` therefore decided nothing, and a
+  non-integer key was unreachable.
+- **`1-ar/dimensional-analysis` L3-10 offered an inverted factor as a solution path.**
+  `1000 g / 1 kg` is not a slower route to kilograms; it lands on 5 × 10⁸. The level scored picking
+  it as a valid-but-inefficient _method_. Found by the new data test on its first run.
+- **`1-ar/lausnir`'s `getCompound` fell back to `SOLUBILITY_DATA[0]`** — potassium nitrate — for any
+  formula it did not recognise, so a typo would have drawn the KNO₃ curve under a question about
+  calcium sulfate whose every quoted figure still described the compound that was meant.
+
+Two authored-but-unrendered items were also wired up: every `real_world` challenge in
+`dimensional-analysis` has carried an `explanation` since the level shipped and nothing rendered it
+(the one challenge type with no other feedback), and `requiredSteps` rendered untranslated English —
+`multiply by molar mass` — at students whenever a step was not one of three magic strings.
+
 **No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
 fixed, and each carries a test that fails against the pre-fix code. The entries above record what
-each one was; what remains is enrichment and open decisions, not defects.
+each one was; what remains is enrichment and open decisions, not defects. **What the Phase 3 entry
+above should be read as saying is that "the reviews found everything" was never the claim** — the
+four defects it lists were invisible to a reading review and turned up the moment old data was run
+through the graders.
 
 **The current work order is [`plans/2026-08-16-games-roadmap.md`](plans/2026-08-16-games-roadmap.md)**, with the first phase specified in [`plans/2026-08-16-phase-1-correctness.md`](plans/2026-08-16-phase-1-correctness.md). Both are live August-2026 documents, not history.
 
