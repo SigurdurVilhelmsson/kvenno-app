@@ -13,6 +13,7 @@ import {
   type ElementClassification,
 } from '../data/elements';
 import { TREND_INFO, TREND_QUESTIONS, type TrendQuestion } from '../data/trends';
+import { level2Misconception } from '../utils/misconceptions';
 
 interface Level2Props {
   onBack: () => void;
@@ -557,6 +558,9 @@ export function Level2({ onBack, onComplete }: Level2Props) {
               feedback={{
                 isCorrect,
                 explanation: question.explanation,
+                // Renders outside the collapsible explanation, so it is the one
+                // thing a student who reads nothing else still sees.
+                misconception: isCorrect ? undefined : level2Misconception(question.type),
               }}
               config={{ showExplanation: true }}
             />

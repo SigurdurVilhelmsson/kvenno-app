@@ -6,6 +6,7 @@ import { shuffleArray } from '@shared/utils';
 
 import { PeriodicTable } from './PeriodicTable';
 import { ELEMENTS, CATEGORY_COLORS, CATEGORY_LABELS, type Element } from '../data/elements';
+import { tableClickMisconception } from '../utils/misconceptions';
 
 /** Generate a one-line hint tailored to the question type. */
 function hintFor(question: Question): string {
@@ -103,6 +104,9 @@ export function Level1({ onBack, onComplete }: Level1Props) {
   const [done, setDone] = useState(false);
 
   const question = questions[index];
+  const wrongElement = wrongSymbol
+    ? (ELEMENTS.find((e) => e.symbol === wrongSymbol) ?? null)
+    : null;
 
   const handleElementClick = useCallback(
     (element: Element) => {
@@ -371,6 +375,13 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                 explanation: isCorrect
                   ? `Rétt! ${question.element.name} (${question.element.symbol}) er á lotu ${question.element.period}, flokki ${question.element.group}.`
                   : `Rangt. Rétt svar er ${question.element.name} (${question.element.symbol}), á lotu ${question.element.period}, flokki ${question.element.group}.`,
+                // Renders outside the collapsible explanation, so it is the one
+                // thing a student who reads nothing else still sees. Only a
+                // table click carries enough signal to diagnose; an option
+                // click does not say where in the table the student was looking.
+                misconception: wrongElement
+                  ? tableClickMisconception(question.element, wrongElement)
+                  : undefined,
               }}
               config={{ showExplanation: true }}
             />
