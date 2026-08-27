@@ -1,10 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import {
-  lewisToMolecule,
-  createDiatomic,
-  type LewisStructure,
-} from '../utils/lewisConverter';
+import { lewisToMolecule, createDiatomic, type LewisStructure } from '../utils/lewisConverter';
 
 describe('lewisToMolecule', () => {
   it('creates a simple water molecule (bent, 2 lone pairs on central)', () => {
@@ -109,9 +105,7 @@ describe('lewisToMolecule', () => {
     };
 
     const molecule = lewisToMolecule(lewis, 'NH\u2084\u207a');
-    const centralAtom = molecule.atoms.find(
-      (a) => a.id === 'n-central'
-    );
+    const centralAtom = molecule.atoms.find((a) => a.id === 'n-central');
 
     expect(centralAtom?.formalCharge).toBe(1);
   });

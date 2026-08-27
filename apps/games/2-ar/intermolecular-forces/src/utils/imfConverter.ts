@@ -2,12 +2,29 @@
  * Utility to convert IMF game visualization format to AnimatedMolecule format
  */
 
-import type { Molecule, MoleculeAtom, MoleculeBond, BondType, MolecularGeometry, PartialCharge, DipoleMoment } from '@shared/types';
+import type {
+  Molecule,
+  MoleculeAtom,
+  MoleculeBond,
+  BondType,
+  MolecularGeometry,
+  PartialCharge,
+  DipoleMoment,
+} from '@shared/types';
 
 export interface AtomVisualization {
   symbol: string;
   partialCharge?: 'positive' | 'negative' | 'none';
-  position: 'center' | 'left' | 'right' | 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+  position:
+    | 'center'
+    | 'left'
+    | 'right'
+    | 'top'
+    | 'bottom'
+    | 'top-left'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-right';
   size?: 'small' | 'medium' | 'large';
 }
 
@@ -37,11 +54,11 @@ export interface IMFMolecule {
  * Map IMF shape to AnimatedMolecule geometry
  */
 const SHAPE_TO_GEOMETRY: Record<string, MolecularGeometry | undefined> = {
-  'linear': 'linear',
-  'diatomic': 'linear',
-  'bent': 'bent',
-  'trigonal': 'trigonal-planar',
-  'tetrahedral': 'tetrahedral',
+  linear: 'linear',
+  diatomic: 'linear',
+  bent: 'bent',
+  trigonal: 'trigonal-planar',
+  tetrahedral: 'tetrahedral',
 };
 
 /**
@@ -78,9 +95,12 @@ export function imfToMolecule(imf: IMFMolecule): Molecule {
     const atomId = positionToId(atom.position, atom.symbol, index);
     positionToAtomId.set(atom.position, atomId);
 
-    const partialCharge: PartialCharge = atom.partialCharge === 'positive' ? 'positive'
-      : atom.partialCharge === 'negative' ? 'negative'
-      : 'none';
+    const partialCharge: PartialCharge =
+      atom.partialCharge === 'positive'
+        ? 'positive'
+        : atom.partialCharge === 'negative'
+          ? 'negative'
+          : 'none';
 
     atoms.push({
       id: atomId,

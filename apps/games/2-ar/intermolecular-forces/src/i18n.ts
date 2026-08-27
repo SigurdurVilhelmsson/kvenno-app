@@ -45,7 +45,7 @@ export const gameTranslations = createGameTranslations({
       meltingPoint: 'Bræðslumark',
       viscosity: 'Seigja',
       surfaceTension: 'Yfirborðsspenna',
-      solubility: 'Leysanleiki',
+      solubility: 'Leysni',
       vaporPressure: 'Gufuþrýstingur',
     },
     concepts: {

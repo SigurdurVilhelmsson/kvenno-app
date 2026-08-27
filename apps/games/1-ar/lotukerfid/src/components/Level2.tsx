@@ -133,7 +133,7 @@ function makeGroupQuestion(): Question {
         'Þau eru öll málmar',
       ],
       explanation:
-        'He, Ne og Ar eru eðallofttegundir (flokkur 18). Þau hafa fulla ystu rafeindaskel og eru mjög stöðug.',
+        'He, Ne og Ar eru eðallofttegundir (flokkur 18). Þau hafa fullt ysta rafeindahvolf og eru mjög stöðug.',
     },
     {
       elements: ['Be', 'Mg', 'Ca'],
@@ -373,7 +373,7 @@ export function Level2({ onBack, onComplete }: Level2Props) {
                 </div>
                 <div className="bg-white p-2 rounded">
                   <strong className="text-blue-700">Flokkur 18:</strong> Eðallofttegundir (He, Ne,
-                  Ar...) — full skel
+                  Ar...) — fullt hvolf
                 </div>
               </div>
             </div>

@@ -80,7 +80,7 @@ export const configPuzzles: ElectronConfigPuzzle[] = [
     orbitalOrder: ['1s', '2s', '2p', '3s'],
     electronCounts: [2, 2, 6, 1],
     maxElectrons: [2, 2, 6, 2],
-    explanation_is: 'Natrín: 11 rafeindir. Eftir að 2. skel fyllist (2s²2p⁶) fer 1 rafeind í 3s.',
+    explanation_is: 'Natrín: 11 rafeindir. Eftir að 2. hvolf fyllist (2s²2p⁶) fer 1 rafeind í 3s.',
     explanation_en:
       'Sodium: 11 electrons. After the 2nd shell fills (2s²2p⁶), 1 electron goes to 3s.',
   },
@@ -94,7 +94,7 @@ export const configPuzzles: ElectronConfigPuzzle[] = [
     orbitalOrder: ['1s', '2s', '2p', '3s', '3p'],
     electronCounts: [2, 2, 6, 2, 5],
     maxElectrons: [2, 2, 6, 2, 6],
-    explanation_is: 'Klór: 17 rafeindir. 3p⁵ — vantar eina rafeind til að fylla 3p skelina.',
+    explanation_is: 'Klór: 17 rafeindir. 3p⁵ — vantar eina rafeind til að fylla 3p-hvolfið.',
     explanation_en: 'Chlorine: 17 electrons. 3p⁵ — one electron short of filling the 3p subshell.',
   },
   {
@@ -120,7 +120,7 @@ export const configPuzzles: ElectronConfigPuzzle[] = [
     orbitalOrder: ['1s', '2s', '2p', '3s', '3p', '4s', '3d', '4p'],
     electronCounts: [2, 2, 6, 2, 6, 2, 10, 6],
     maxElectrons: [2, 2, 6, 2, 6, 2, 10, 6],
-    explanation_is: 'Krypton: 36 rafeindir. Eðalgas — allar skeljar fylltar. Mjög stöðugt.',
+    explanation_is: 'Krypton: 36 rafeindir. Eðalgas — öll hvolf fyllt. Mjög stöðugt.',
     explanation_en: 'Krypton: 36 electrons. Noble gas — all subshells filled. Very stable.',
   },
 ];

@@ -455,13 +455,10 @@ that file as a game, with species-tagged ratios.
 in `docs/README.md`. The largest: `molmassi` printed `× 10²³` at students and neither level's parser
 could read a superscript back, so a correct answer graded as its mantissa.
 
-**Two terminology corrections were applied on the way in, and are candidates for the table above —
-Siggi's call:** `atómgeisli` → `atómradíus` (ordabok; corpus 23 vs 0) and `leysigeta` → `leysni`
-(ordabok; corpus 260 vs 0, in 19 places in `lausnir`, the one game whose whole subject it names).
-Both are pinned by their own game's tests, not by `governed-terms.test.ts`. A third is **open**:
-the platform says `skel` for an electron shell in about twenty places across three games, the
-textbook says `hvolf` (133 vs 7), and that one changes grammatical gender — see
-`apps/games/1-ar/lotukerfid/HARVEST.md`.
+**Three terminology questions the harvest raised were ruled on 2026-08-27 and are now in the table
+above, enforced by `governed-terms.test.ts` like the rest:** `atómradíus`, `leysni` and `hvolf`.
+The first two were applied with the harvest; `hvolf` was swept afterwards and is the one that moves
+grammatical gender, so read its row before touching any string containing it.
 
 **No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
 now fixed, and each carries a test that fails against the pre-fix code. What is left is enrichment
@@ -498,6 +495,9 @@ since a wrong term parked there ships the moment someone wires it up.
 | balance (an equation) | `stilla`      | `jafna` (as a verb)               | **Siggi's ruling, 2026-08-26** — `ordabok.md` was silent and the platform shipped both words. `að stilla efnajöfnu`, `Stilltu jöfnuna`, `stillt efnajafna`, `óstillt efnajafna`. The Y1 game is now **Stilla efnajöfnur**. Unrelated and correct: the **noun** `jafna` (an equation), `jafnvægi` (equilibrium), `jafnast út` (to cancel out), `þrýstijafnaður` (pressurised)                                                                              |
 | carbon dioxide        | `koldíoxíð`   | `koltvísýringur`                  | **Siggi's ruling, 2026-08-26** — `ordabok.md` was silent and the platform shipped both words: `nafnakerfid` taught `koldíoxíð`, nine other games said `koltvísýringur`. Neuter, where `koltvísýringur` was masculine, so the cases change with it: acc. `koldíoxíð`, dat. `koldíoxíði`, gen. `koldíoxíðs` / def. `koldíoxíðsins`. **Unrelated and left alone:** `kolsýringur` is CO, not CO₂, and is used consistently by the three games that mention it |
 
+| atomic radius | `atómradíus` | `atómgeisli` | **Siggi's ruling, 2026-08-27**, agreeing with `ordabok.md` (`atomic radius;atómradíus`) and the corpus (23 vs **0**). Both masculine, so agreement is unaffected. `atómgeisli` was an old-repo coinage that arrived with the periodic-trends harvest |
+| solubility | `leysni` | `leysigeta`, `leysanleiki` | **Siggi's ruling, 2026-08-27**, agreeing with `ordabok.md` (`solubility;leysni`) and the corpus (260 vs **0**). Both feminine, and `leysni` does not decline in the singular oblique cases, so nothing around it moves — the easiest swap in this table. **Unrelated and left alone:** the adjective `leysanlegur` (soluble) |
+| electron shell | `hvolf` | `skel`, `rafeindaskel`, `undirskel` | **Siggi's ruling, 2026-08-27**, agreeing with `ordabok.md` (`shell;hvolf`) and the corpus (133 `hvolfi` + 33 `gildishvolf` vs 7 `skelja`). **Neuter, where `skel` was feminine — the largest agreement change in this table.** `fulla ystu skel` → `fullt ysta hvolf`; `í ystu skel` → `í ysta hvolfi`; `fullrar ystu skeljar` → `fulls ysta hvolfs`; `allar skeljar fylltar` → `öll hvolf fyllt`. Declension: `hvolf` / `hvolf` / `hvolfi` / `hvolfs`, plural `hvolf` / `hvolf` / `hvolfum` / `hvolfa`. **Unrelated and left alone:** `skeljabrot` (seashell fragments) in `nafnakerfid` |
 `sjálfvirkur` has zero hits and is not the word for spontaneous; do not grep for it.
 
 The `stilla` rename swept `1-ar/jafna-jofnur` (6 files), the `Námsleiðin` chain string in every
@@ -509,6 +509,22 @@ alone:** the URL slug `/efnafraedi/1-ar/games/jafna-jofnur.html` (renaming it br
 student has already been given) and the `jafnaJofnurProgress` localStorage key (renaming it wipes
 saved progress). Both are invisible to students; the visible title, HTML `<title>` and hub card all
 say Stilla efnajöfnur.
+
+The `hvolf` ruling swept 43 occurrences across five games — `1-ar` lotukerfið (including the freshly
+harvested `trends.ts`), and `2-ar` rafeindabygging, Lewis, VSEPR. It is the ruling this file's
+closing warning was written about: **almost none of the 43 was a string swap.** `skel` is feminine
+and `hvolf` is neuter, so `full ysta skel` became `fullt ysta hvolf`, `í ystu skel` became `í ysta
+hvolfi`, `vegna fullrar ystu skeljar` became `vegna fulls ysta hvolfs`, and `allar skeljar fylltar`
+became `öll hvolf fyllt`. Two strings were already ungrammatical before the change and are now
+right by accident: `mörg rafeindaskel` (neuter agreement on a feminine noun) and
+`Fullfyllt d-skel ... er sérlega stöðugt`. Two more were wrong for an unrelated reason and were
+fixed with them: `nota d-undirskeljum` takes the accusative, not the dative.
+
+The `leysni` ruling swept 20 occurrences: 19 in `1-ar/lausnir`, the one game whose whole subject it
+names, plus a `Leysanleiki` label in `2-ar/intermolecular-forces`. One phrase needed rewriting
+rather than substitution — `skoðaðu leysigetu feril` was already ungrammatical and is now
+`skoðaðu leysniferilinn`. `atómradíus` swept only the harvested `trends.ts`: the coinage had no
+foothold in shipped code.
 
 The `koldíoxíð` ruling swept 18 occurrences across all three years — `1-ar` einingakedjan, lausnir
 and molmassi; `2-ar` IMF, Lewis, Hess and VSEPR; `3-ar` gas-law. Five are prose and needed the

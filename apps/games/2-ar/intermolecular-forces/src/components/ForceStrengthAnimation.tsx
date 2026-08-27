@@ -71,7 +71,9 @@ export function ForceStrengthAnimation({
   compact = false,
   animate = true,
 }: ForceStrengthAnimationProps) {
-  const [selectedForce, setSelectedForce] = useState<'london' | 'dipole' | 'hydrogen' | null>(highlightForce);
+  const [selectedForce, setSelectedForce] = useState<'london' | 'dipole' | 'hydrogen' | null>(
+    highlightForce
+  );
   const [animationPhase, setAnimationPhase] = useState(0);
   const [showComparison, setShowComparison] = useState(false);
 
@@ -80,7 +82,7 @@ export function ForceStrengthAnimation({
     if (!animate) return;
 
     const interval = setInterval(() => {
-      setAnimationPhase(prev => (prev + 1) % 100);
+      setAnimationPhase((prev) => (prev + 1) % 100);
     }, 50);
 
     return () => clearInterval(interval);
@@ -117,7 +119,7 @@ export function ForceStrengthAnimation({
     return path;
   };
 
-  const selectedData = selectedForce ? FORCES.find(f => f.id === selectedForce) : null;
+  const selectedData = selectedForce ? FORCES.find((f) => f.id === selectedForce) : null;
 
   return (
     <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-4 shadow-lg">
@@ -150,9 +152,10 @@ export function ForceStrengthAnimation({
               onKeyDown={(e) => {
                 if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
                   e.preventDefault();
-                  const nextIdx = e.key === 'ArrowLeft'
-                    ? (idx - 1 + FORCES.length) % FORCES.length
-                    : (idx + 1) % FORCES.length;
+                  const nextIdx =
+                    e.key === 'ArrowLeft'
+                      ? (idx - 1 + FORCES.length) % FORCES.length
+                      : (idx + 1) % FORCES.length;
                   setSelectedForce(FORCES[nextIdx].id);
                   (e.currentTarget.parentElement?.children[nextIdx] as HTMLElement)?.focus();
                 }
@@ -294,7 +297,7 @@ export function ForceStrengthAnimation({
         ) : selectedForce ? (
           // Show selected force in detail
           (() => {
-            const force = FORCES.find(f => f.id === selectedForce)!;
+            const force = FORCES.find((f) => f.id === selectedForce)!;
             const centerX = width / 2;
             const centerY = height / 2 - 20;
             const oscillation = getOscillation(0, force.strength);
@@ -432,12 +435,7 @@ export function ForceStrengthAnimation({
 
                 return (
                   <g key={force.id}>
-                    <text
-                      x={0}
-                      y={y + 12}
-                      className="fill-warm-400"
-                      style={{ fontSize: '9px' }}
-                    >
+                    <text x={0} y={y + 12} className="fill-warm-400" style={{ fontSize: '9px' }}>
                       {force.icon}
                     </text>
                     <rect
@@ -469,7 +467,10 @@ export function ForceStrengthAnimation({
       {selectedData && !showComparison && (
         <div
           className="mt-4 p-3 rounded-lg"
-          style={{ backgroundColor: `${selectedData.color}20`, borderColor: `${selectedData.color}40` }}
+          style={{
+            backgroundColor: `${selectedData.color}20`,
+            borderColor: `${selectedData.color}40`,
+          }}
         >
           <div className="flex items-center gap-2 mb-2">
             <span className="text-2xl">{selectedData.icon}</span>
@@ -499,15 +500,21 @@ export function ForceStrengthAnimation({
           <ul className="text-warm-300 text-xs space-y-1">
             <li className="flex items-start gap-2">
               <span className="text-purple-400">●</span>
-              <span><strong>London</strong> er alltaf til staðar, sterkari með auknum mólmassa</span>
+              <span>
+                <strong>London</strong> er alltaf til staðar, sterkari með auknum mólmassa
+              </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-blue-400">●</span>
-              <span><strong>Tvípól</strong> krefst skautaðrar sameindar (ósamhverf)</span>
+              <span>
+                <strong>Tvípól</strong> krefst skautaðrar sameindar (ósamhverf)
+              </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-red-400">●</span>
-              <span><strong>Vetnistengi</strong> krefst H bundið við F, O, eða N</span>
+              <span>
+                <strong>Vetnistengi</strong> krefst H bundið við F, O, eða N
+              </span>
             </li>
           </ul>
         </div>

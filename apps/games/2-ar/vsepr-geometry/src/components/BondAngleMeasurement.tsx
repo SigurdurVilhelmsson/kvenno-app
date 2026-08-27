@@ -22,7 +22,7 @@ interface BondAngleMeasurementProps {
 
 // Bond angle data for all VSEPR geometries
 const BOND_ANGLES: Record<string, BondAngleData> = {
-  'linear': {
+  linear: {
     geometry: 'linear',
     geometryName: 'Línuleg',
     idealAngle: 180,
@@ -52,7 +52,7 @@ const BOND_ANGLES: Record<string, BondAngleData> = {
     example: 'SO₂',
     explanation: 'Einstætt par þrýstir bindandi pörum saman.',
   },
-  'tetrahedral': {
+  tetrahedral: {
     geometry: 'tetrahedral',
     geometryName: 'Fjórflötungur',
     idealAngle: 109.5,
@@ -92,7 +92,7 @@ const BOND_ANGLES: Record<string, BondAngleData> = {
     example: 'PCl₅',
     explanation: 'Ás-horn 90°, miðsléttuhhorn 120°.',
   },
-  'octahedral': {
+  octahedral: {
     geometry: 'octahedral',
     geometryName: 'Áttflötungur',
     idealAngle: 90,
@@ -182,7 +182,13 @@ export function BondAngleMeasurement({
     return (
       <div className="bg-warm-800 rounded-lg p-3">
         <div className="flex items-center gap-3">
-          <svg width={svgSize} height={svgSize} className="flex-shrink-0" role="img" aria-label={`Tengihorn: ${angleData.actualAngle}°`}>
+          <svg
+            width={svgSize}
+            height={svgSize}
+            className="flex-shrink-0"
+            role="img"
+            aria-label={`Tengihorn: ${angleData.actualAngle}°`}
+          >
             <title>Mæling á tengihorni</title>
             {/* Angle arc */}
             <path
@@ -274,7 +280,12 @@ export function BondAngleMeasurement({
       <div className="flex flex-col md:flex-row gap-4">
         {/* Angle diagram */}
         <div className="flex-1 flex justify-center">
-          <svg width={svgSize} height={svgSize} role="img" aria-label={`Tengihornarit: ${angleData.actualAngle}° horn milli tengja`}>
+          <svg
+            width={svgSize}
+            height={svgSize}
+            role="img"
+            aria-label={`Tengihornarit: ${angleData.actualAngle}° horn milli tengja`}
+          >
             <title>Tengihornarit</title>
             {/* Background circle for reference */}
             <circle
@@ -387,8 +398,22 @@ export function BondAngleMeasurement({
             <circle cx={centerX} cy={centerY} r="14" fill="#f472b6" stroke="#fff" strokeWidth="2" />
 
             {/* Terminal atoms */}
-            <circle cx={actualBonds.left.x} cy={actualBonds.left.y} r="10" fill="#60a5fa" stroke="#fff" strokeWidth="2" />
-            <circle cx={actualBonds.right.x} cy={actualBonds.right.y} r="10" fill="#60a5fa" stroke="#fff" strokeWidth="2" />
+            <circle
+              cx={actualBonds.left.x}
+              cy={actualBonds.left.y}
+              r="10"
+              fill="#60a5fa"
+              stroke="#fff"
+              strokeWidth="2"
+            />
+            <circle
+              cx={actualBonds.right.x}
+              cy={actualBonds.right.y}
+              r="10"
+              fill="#60a5fa"
+              stroke="#fff"
+              strokeWidth="2"
+            />
 
             {/* Lone pair indicators */}
             {angleData.lonePairs > 0 && (

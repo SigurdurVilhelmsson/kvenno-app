@@ -91,6 +91,27 @@ const GOVERNED_TERMS: GovernedTerm[] = [
       "Siggi's ruling, 2026-08-26 — ordabok.md was silent and the platform shipped both words. koldíoxíð is neuter where koltvísýringur was masculine, so the cases change with it: acc. koldíoxíð (not -ing), dat. koldíoxíði (not -ingi), gen. koldíoxíðs / def. koldíoxíðsins (not -ings / -ingsins). Unrelated and left alone: kolsýringur, which is CO, not CO₂.",
   },
   {
+    english: 'atomic radius',
+    correct: 'atómradíus',
+    banned: [/atómgeisl/i],
+    guidance:
+      "Siggi's ruling, 2026-08-27, agreeing with ordabok.md (atomic radius;atómradíus) and the textbook corpus (23 hits for atómradíus, zero for atómgeisl-). Both are masculine, so agreement is unaffected. atómgeisli was an old-repo coinage that arrived with the periodic-trends harvest.",
+  },
+  {
+    english: 'solubility',
+    correct: 'leysni',
+    banned: [/leysiget/i, /leysanleik/i],
+    guidance:
+      "Siggi's ruling, 2026-08-27, agreeing with ordabok.md (solubility;leysni) and the textbook corpus (260 hits for leysni, zero for leysigeta). leysni and leysigeta are both feminine and leysni does not decline in the singular oblique cases, so nothing around it moves. The adjective leysanlegur (soluble) is a different word and is not banned.",
+  },
+  {
+    english: 'shell',
+    correct: 'hvolf',
+    banned: [/rafeindaskel/i, /undirskel/i, /\bd-skel/i, /\bskel(in|ina|inni|jar|jum|ja)?\b/i],
+    guidance:
+      "Siggi's ruling, 2026-08-27, agreeing with ordabok.md (shell;hvolf) and the textbook corpus (133 hits for hvolfi and 33 for gildishvolf, against 7 for skelja). hvolf is NEUTER where skel was feminine, so every adjective and determiner moves with it: fulla ystu skel becomes fullt ysta hvolf, í ystu skel becomes í ysta hvolfi, fullrar ystu skeljar becomes fulls ysta hvolfs, allar skeljar fylltar becomes öll hvolf fyllt. Declension: hvolf / hvolf / hvolfi / hvolfs, plural hvolf / hvolf / hvolfum / hvolfa. Unrelated and left alone: skeljabrot (seashell fragments) in nafnakerfid.",
+  },
+  {
     english: 'buffer',
     correct: 'stuðpúði',
     banned: [/púffer/i],

@@ -39,14 +39,12 @@ described.** They are left as written; this is the correction.
 against the shipped graders is what found the defects; four of them are in code that shipped, not in
 anything harvested. They are listed in `docs/README.md`.
 
-**Two terminology corrections were applied on the way in**, both settled by `ordabok.md` and the
-textbook corpus rather than by a ruling: `atómgeisli` → `atómradíus` (corpus 23 vs 0) and
-`leysigeta` → `leysni` (260 vs 0, in 19 places in the one game whose whole subject it names). Both
-are pinned inside their own game's tests. **Whether they belong in the banned-term table in
-`CLAUDE.md` is Siggi's call** — as is `skel` vs `hvolf` for an electron shell, where the platform
-says `skel` in about twenty places across three games and the textbook says `hvolf` (133 vs 7).
-That one changes grammatical gender and needs its own pass; see
-`apps/games/1-ar/lotukerfid/HARVEST.md`.
+**Three terminology questions the harvest raised were put to Siggi and ruled on 2026-08-27:**
+`atómradíus` (corpus 23 vs 0), `leysni` (260 vs 0) and `hvolf` (133 vs 7). All three are now rows in
+the `CLAUDE.md` table and enforced by `packages/shared/i18n/__tests__/governed-terms.test.ts`. The
+first two were applied with the harvest; `hvolf` was swept afterwards across 43 occurrences in five
+games, and is the ruling this repo's standing warning was written about — `skel` is feminine and
+`hvolf` is neuter, so almost none of the 43 was a string swap.
 
 **Tier-0 correctness: none of the nine remain open.** Phase 1 closed B1 and B2; Phase 1b closed
 B3, B6 and B8; B4 and B13 were closed on 2026-08-26 (PR #30); **B5 and B12 were closed on

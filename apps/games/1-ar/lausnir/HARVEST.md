@@ -56,8 +56,10 @@ warning — that replacing a term is not a string swap — is about the three Ph
 gender; this is not one of them. One phrase needed real rewriting rather than substitution:
 `skoðaðu leysigetu feril` was already ungrammatical and is now `skoðaðu leysniferilinn`.
 
-Whether `leysigeta` belongs in the banned-term table in `CLAUDE.md` is Siggi's call; for now it is
-pinned inside this game's tests.
+**Ruled 2026-08-27: `leysni`**, so it is in the banned-term table in `CLAUDE.md` and enforced
+repo-wide by `packages/shared/i18n/__tests__/governed-terms.test.ts`, which also caught a
+`Leysanleiki` label still sitting in `2-ar/intermolecular-forces`' i18n block. This game's own test
+stays as the positive assertion.
 
 ## One more defect, found while wiring the scenarios up
 

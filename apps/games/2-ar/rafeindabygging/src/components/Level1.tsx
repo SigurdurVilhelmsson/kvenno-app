@@ -93,7 +93,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   <strong className="text-blue-800">n</strong>{' '}
                   <span className="text-blue-600">(aðalskammtatala)</span>
                   <p className="text-sm text-blue-700 mt-1">
-                    Ákvarðar skelina / orkustigið. n = 1, 2, 3, ...
+                    Ákvarðar hvolfið / orkustigið. n = 1, 2, 3, ...
                   </p>
                 </div>
                 <div className="bg-green-50 p-3 rounded-lg">

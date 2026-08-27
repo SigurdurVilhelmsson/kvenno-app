@@ -12,7 +12,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'Hvað eru Lewis formúlur?',
-      description: 'Lewis formúlur sýna hvernig gildisrafeindir eru dreifðar í sameind. Þær sýna bindingar og stakeindir á einfaldan hátt.',
+      description:
+        'Lewis formúlur sýna hvernig gildisrafeindir eru dreifðar í sameind. Þær sýna bindingar og stakeindir á einfaldan hátt.',
     },
     levels: {
       level1: {
@@ -66,7 +67,8 @@ export const gameTranslations = createGameTranslations({
     },
     intro: {
       title: 'What are Lewis structures?',
-      description: 'Lewis structures show how valence electrons are distributed in a molecule. They show bonds and lone pairs in a simple way.',
+      description:
+        'Lewis structures show how valence electrons are distributed in a molecule. They show bonds and lone pairs in a simple way.',
     },
     levels: {
       level1: {
@@ -116,11 +118,13 @@ export const gameTranslations = createGameTranslations({
     game: {
       title: 'Struktury Lewisa',
       subtitle: 'Kvennaskólinn - Chemia rok 2',
-      description: 'Naucz sie rysowac struktury Lewisa i rozumiec elektrony w wiazaniach chemicznych',
+      description:
+        'Naucz sie rysowac struktury Lewisa i rozumiec elektrony w wiazaniach chemicznych',
     },
     intro: {
       title: 'Czym sa struktury Lewisa?',
-      description: 'Struktury Lewisa pokazuja jak elektrony walencyjne sa rozlozone w czasteczce. Pokazuja wiazania i wolne pary w prosty sposob.',
+      description:
+        'Struktury Lewisa pokazuja jak elektrony walencyjne sa rozlozone w czasteczce. Pokazuja wiazania i wolne pary w prosty sposob.',
     },
     levels: {
       level1: {

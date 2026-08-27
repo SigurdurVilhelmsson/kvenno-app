@@ -7,16 +7,16 @@ import { shuffleArray } from '@shared/utils';
 // Misconceptions for Lewis structure concepts
 const MISCONCEPTIONS: Record<string, string> = {
   count_valence:
-    'Gildisrafeindir eru rafeindir í ystu skel. Hópnúmer (1-8 fyrir aðalflokka) segir beint til um fjöldann.',
+    'Gildisrafeindir eru rafeindir í ysta hvolfi. Hópnúmer (1-8 fyrir aðalflokka) segir beint til um fjöldann.',
   total_electrons:
     'Heildarfjöldi = summa gildisrafeinda allra atóma. Mundu að margfalda með fjölda atóma af hverri tegund.',
-  octet_rule: 'Áttureglan segir að atóm vilja hafa 8 rafeindir í ystu skel (nema H sem vill 2).',
+  octet_rule: 'Áttureglan segir að atóm vilja hafa 8 rafeindir í ysta hvolfi (nema H sem vill 2).',
   electron_need: 'Rafeindaþörf = 8 - gildisrafeindir (eða 2 - gildisrafeindir fyrir H).',
 };
 
 // Related concepts for Lewis structures
 const RELATED_CONCEPTS: Record<string, string[]> = {
-  count_valence: ['Lotukerfið', 'Hópar', 'Rafeindaskel'],
+  count_valence: ['Lotukerfið', 'Hópar', 'Rafeindahvolf'],
   total_electrons: ['Sameindaformúlur', 'Atómafjöldi', 'Summa rafeinda'],
   octet_rule: ['Áttureglan', 'Stöðugleiki', 'Eðalgösin'],
   electron_need: ['Efnatengi', 'Rafeindasameignir', 'Jónatengi'],
@@ -183,7 +183,7 @@ const challenges: Challenge[] = [
     id: 7,
     title: 'Áttureglann',
     type: 'octet_rule',
-    question: 'Hversu margar rafeindir vill súrefni hafa í ystu skel sinni?',
+    question: 'Hversu margar rafeindir vill súrefni hafa í ysta hvolfi sínu?',
     correctAnswer: 8,
     options: [
       {
@@ -202,23 +202,23 @@ const challenges: Challenge[] = [
         id: 'c',
         text: '8 rafeindir',
         correct: true,
-        explanation: 'Rétt! Áttureglan segir að atóm vilja hafa 8 rafeindir í ystu skel.',
+        explanation: 'Rétt! Áttureglan segir að atóm vilja hafa 8 rafeindir í ysta hvolfi.',
       },
       {
         id: 'd',
         text: '18 rafeindir',
         correct: false,
-        explanation: '18 er fyrir d-undirskeljar, ekki s og p.',
+        explanation: '18 er fyrir d-undirhvolf, ekki s og p.',
       },
     ],
     hints: {
       topic: 'Áttureglan (octet rule) er grundvallarregla í efnafræði.',
-      strategy: 'Hugsaðu um eðalgastegundir - þær eru stöðugar vegna fullrar ystu skeljar.',
-      method: 'Flest atóm vilja líkja eftir eðalgastegundum með 8 rafeindir í ystu skel.',
-      solution: 'Súrefni vill hafa 8 rafeindir í ystu skel (áttureglan).',
+      strategy: 'Hugsaðu um eðalgastegundir - þær eru stöðugar vegna fulls ysta hvolfs.',
+      method: 'Flest atóm vilja líkja eftir eðalgastegundum með 8 rafeindir í ysta hvolfi.',
+      solution: 'Súrefni vill hafa 8 rafeindir í ysta hvolfi (áttureglan).',
     },
     explanation:
-      'Áttureglan: Atóm vilja hafa 8 rafeindir í ystu skel til að vera stöðug (eins og eðalgastegundir).',
+      'Áttureglan: Atóm vilja hafa 8 rafeindir í ysta hvolfi til að vera stöðug (eins og eðalgastegundir).',
   },
   {
     id: 8,
@@ -228,7 +228,7 @@ const challenges: Challenge[] = [
       'Ef klór hefur 7 gildisrafeindir, hversu margar rafeindir vantar til að uppfylla átturegluna?',
     correctAnswer: 1,
     hints: {
-      topic: 'Áttureglan segir að atóm vilja hafa 8 rafeindir í ystu skel.',
+      topic: 'Áttureglan segir að atóm vilja hafa 8 rafeindir í ysta hvolfi.',
       strategy: 'Reiknaðu mismuninn á milli 8 og núverandi gildisrafeinda.',
       method: 'Rafeindir sem vantar = 8 - gildisrafeindir',
       solution: '8 - 7 = 1 rafeind. Þess vegna myndar Cl eitt efnatengi.',

@@ -43,22 +43,22 @@ Both were visible on the menu, and both are settled by the file's own English an
 | `Flokkar og lóðir` | `Flokkar og lotubundnar sveiflur` | `Groups and Trends` / `Grupy i trendy`. A `lóð` is a weight or a plot of land; a period is a `lota`                 |
 | `Sameindagerð`     | `Atómbygging`                     | `Atomic Structure` / `Budowa atomu`. The level counts protons, neutrons and electrons; there are no molecules in it |
 
-## A term this harvest did not touch, and why
+## A term this harvest deferred, and the ruling that closed it
 
-The old data said `rafeindaskel` for an electron shell. So does the shipped platform, in about
-twenty places across `lotukerfid`, `lewis-structures` and `rafeindabygging` — so the new content
-says it too, because one platform with one word for one concept is the property the glossary exists
-to protect.
+The old data said `rafeindaskel` for an electron shell. So did the shipped platform, in 43 places
+across `lotukerfid`, `lewis-structures`, `rafeindabygging` and `vsepr-geometry` — so the harvested
+content shipped saying it too, because one platform with one word for one concept is the property
+the glossary exists to protect, and this was a ruling rather than a harvest.
 
-But it is worth Siggi knowing that the textbook disagrees. `ordabok.md` gives `shell;hvolf`, and the
-corpus has **133** hits for `hvolfi` and **33** for `gildishvolf` against **7** for `skelja` and
-**2** for `ystu skel`. Students read `hvolf` in the book and `skel` in the games.
+The evidence put to Siggi: `ordabok.md` gives `shell;hvolf`, and the corpus has **133** hits for
+`hvolfi` and **33** for `gildishvolf` against **7** for `skelja` and **2** for `ystu skel`. Students
+read `hvolf` in the book and `skel` in the games.
 
-That is a Phase-2-shaped ruling, not a harvest: `skel` is feminine and `hvolf` is neuter, so
-`fulla ystu skel` becomes `fullt ysta hvolf` and every adjective and determiner around it moves —
-exactly the kind of change `CLAUDE.md` warns a string swap will get wrong. It needs a decision and
-its own pass. Same for whether `atómgeisli` should join the banned-term table in `CLAUDE.md`; for
-now it is pinned only inside this game.
+**Ruled 2026-08-27: `hvolf`**, and swept the same day. It is the largest agreement change in the
+`CLAUDE.md` table, because `skel` is feminine and `hvolf` is neuter — `fulla ystu skel` became
+`fullt ysta hvolf`, `í ystu skel` became `í ysta hvolfi`, `vegna fullrar ystu skeljar` became
+`vegna fulls ysta hvolfs`. `atómradíus` was ruled with it, so this game's own pin is now backed by
+`packages/shared/i18n/__tests__/governed-terms.test.ts` as well.
 
 ## What guards it
 

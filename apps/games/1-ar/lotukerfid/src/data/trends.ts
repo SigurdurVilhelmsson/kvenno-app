@@ -8,13 +8,13 @@
  * mass*, which is a lookup, not a trend.
  *
  * The twelve comparisons came over as written — every key was checked and every
- * one is right. The Icelandic did not: the old file called the atomic radius
- * `atómgeisli`, which `packages/shared/i18n/ordabok.md` gives as `atómradíus`
- * and which returns **zero** hits in the school's textbook corpus against 23
- * for `atómradíus`. It also blamed the across-period contraction on
- * `sterkari kjarnakraftur` — the strong nuclear force, which has nothing to do
- * with it. The cause is the rising *effective nuclear charge*, `virk
- * kjarnhleðsla`, which is what the textbook calls it.
+ * one is right. The Icelandic did not: the old file used a coined word for the
+ * atomic radius where the glossary and the textbook both say `atómradíus`, and
+ * it blamed the across-period contraction on the strong nuclear force, which
+ * has nothing to do with it. The cause is the rising *effective nuclear
+ * charge*, `virk kjarnhleðsla`, which is what the textbook calls it. Both
+ * corrections are now ruled terms — see the table in `CLAUDE.md` — and the
+ * measurements behind them are in `../../HARVEST.md`.
  *
  * Every pair is either in the same period or the same group, deliberately: the
  * naive rules disagree on a diagonal comparison, and this level teaches the
@@ -48,7 +48,7 @@ export interface TrendQuestion {
 export const TREND_INFO: Record<TrendType, TrendInfo> = {
   'atomic-radius': {
     name: 'Atómradíus',
-    description: 'Stærð atómsins — fjarlægðin frá kjarnanum út í ystu rafeindaskel.',
+    description: 'Stærð atómsins — fjarlægðin frá kjarnanum út í ysta rafeindahvolf.',
     rule: 'Atómradíus minnkar til hægri yfir lotuna og stækkar niður flokkinn.',
     emoji: '🔴',
   },
@@ -86,7 +86,7 @@ export const TREND_QUESTIONS: TrendQuestion[] = [
     answerSymbol: 'Na',
     question: 'Hvort hefur stærri atómradíus: Li eða Na?',
     explanation:
-      'Na hefur stærri atómradíus. Niður flokkinn bætist ný rafeindaskel við í hverri lotu og atómið stækkar.',
+      'Na hefur stærri atómradíus. Niður flokkinn bætist nýtt rafeindahvolf við í hverri lotu og atómið stækkar.',
   },
   {
     id: 'ar-3',
@@ -96,7 +96,7 @@ export const TREND_QUESTIONS: TrendQuestion[] = [
     answerSymbol: 'S',
     question: 'Hvort hefur stærri atómradíus: O eða S?',
     explanation:
-      'S hefur stærri atómradíus. S er neðar í sama flokki og hefur fleiri rafeindaskeljar utan um kjarnann.',
+      'S hefur stærri atómradíus. S er neðar í sama flokki og hefur fleiri rafeindahvolf utan um kjarnann.',
   },
   {
     id: 'ar-4',
@@ -160,7 +160,7 @@ export const TREND_QUESTIONS: TrendQuestion[] = [
     answerSymbol: 'Cl',
     question: 'Hvort er rafneikvæðara: Na eða Cl?',
     explanation:
-      'Cl er rafneikvæðara. Rafneikvæðni eykst til hægri yfir lotuna, því þau atóm eru nær því að fylla ystu skel og sækjast eftir rafeindum.',
+      'Cl er rafneikvæðara. Rafneikvæðni eykst til hægri yfir lotuna, því þau atóm eru nær því að fylla ysta hvolf og sækjast eftir rafeindum.',
   },
   {
     id: 'en-2',
@@ -170,7 +170,7 @@ export const TREND_QUESTIONS: TrendQuestion[] = [
     answerSymbol: 'F',
     question: 'Hvort er rafneikvæðara: F eða Cl?',
     explanation:
-      'F er rafneikvæðast allra frumefna. Ofar í flokknum er ysta skelin nær kjarnanum og rafneikvæðnin meiri.',
+      'F er rafneikvæðast allra frumefna. Ofar í flokknum er ysta hvolfið nær kjarnanum og rafneikvæðnin meiri.',
   },
   {
     id: 'en-3',
@@ -190,6 +190,6 @@ export const TREND_QUESTIONS: TrendQuestion[] = [
     answerSymbol: 'Br',
     question: 'Hvort er rafneikvæðara: K eða Br?',
     explanation:
-      'Br er rafneikvæðara. Br er halógen og vantar aðeins eina rafeind í fulla ystu skel, en K er alkalímálmur sem losar sig frekar við sína.',
+      'Br er rafneikvæðara. Br er halógen og vantar aðeins eina rafeind í fullt ysta hvolf, en K er alkalímálmur sem losar sig frekar við sína.',
   },
 ];

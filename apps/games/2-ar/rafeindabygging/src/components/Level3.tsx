@@ -89,8 +89,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             <div className="bg-amber-50 border-2 border-amber-200 p-4 rounded-lg">
               <h3 className="font-bold text-amber-800 mb-2">⚠️ Undantekningar</h3>
               <p className="text-sm text-amber-700 mb-2">
-                Sumir d-blokkarmálmar hafa óvænta uppsetningu vegna stöðugleika hálf- eða
-                fullfyltrar d-skeljar:
+                Sumir d-blokkarmálmar hafa óvænta uppsetningu vegna stöðugleika hálf- eða fullfyllts
+                d-hvolfs:
               </p>
               <div className="text-sm text-amber-700 font-mono space-y-1">
                 <p>

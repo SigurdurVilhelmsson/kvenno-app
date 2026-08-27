@@ -2,7 +2,13 @@
  * Utility to convert Lewis Structure game format to AnimatedMolecule format
  */
 
-import type { Molecule, MoleculeAtom, MoleculeBond, BondType, MolecularGeometry } from '@shared/types';
+import type {
+  Molecule,
+  MoleculeAtom,
+  MoleculeBond,
+  BondType,
+  MolecularGeometry,
+} from '@shared/types';
 
 export interface LewisStructure {
   centralAtom: string;
@@ -66,11 +72,7 @@ function inferGeometry(
 /**
  * Convert a LewisStructure to a Molecule object for AnimatedMolecule
  */
-export function lewisToMolecule(
-  lewis: LewisStructure,
-  formula: string,
-  name?: string
-): Molecule {
+export function lewisToMolecule(lewis: LewisStructure, formula: string, name?: string): Molecule {
   const atoms: MoleculeAtom[] = [];
   const bonds: MoleculeBond[] = [];
 

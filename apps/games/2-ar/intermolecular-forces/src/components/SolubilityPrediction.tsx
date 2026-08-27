@@ -28,7 +28,7 @@ const solvents: Solvent[] = [
     formula: 'H₂O',
     polarity: 'polar',
     description: 'Skautað leysi með vetnistengjum',
-    color: '#3b82f6'
+    color: '#3b82f6',
   },
   {
     id: 'hexane',
@@ -36,8 +36,8 @@ const solvents: Solvent[] = [
     formula: 'C₆H₁₄',
     polarity: 'nonpolar',
     description: 'Óskautað leysi með London kraftum',
-    color: '#f59e0b'
-  }
+    color: '#f59e0b',
+  },
 ];
 
 const solutes: Solute[] = [
@@ -47,7 +47,8 @@ const solutes: Solute[] = [
     formula: 'NaCl',
     polarity: 'ionic',
     dissolves: { water: true, hexane: false },
-    explanation: 'Jónabindingarefni leysast í skautuðum leysum. Vatnssameindir umkringja jónirnar og rjúfa kristalbygginguna.'
+    explanation:
+      'Jónabindingarefni leysast í skautuðum leysum. Vatnssameindir umkringja jónirnar og rjúfa kristalbygginguna.',
   },
   {
     id: 'ethanol',
@@ -55,7 +56,8 @@ const solutes: Solute[] = [
     formula: 'C₂H₅OH',
     polarity: 'polar',
     dissolves: { water: true, hexane: true },
-    explanation: 'Etanól er „amfífíll" — skautaður O-H hópur leysist í vatni, en kolvetnis keðjan leysist í hexani. Blandast báðum!'
+    explanation:
+      'Etanól er „amfífíll" — skautaður O-H hópur leysist í vatni, en kolvetnis keðjan leysist í hexani. Blandast báðum!',
   },
   {
     id: 'oil',
@@ -63,7 +65,8 @@ const solutes: Solute[] = [
     formula: '(CH₂)ₙ',
     polarity: 'nonpolar',
     dissolves: { water: false, hexane: true },
-    explanation: 'Olía er óskautuð og hefur aðeins London krafta. Leysist í hexani en ekki vatni — þess vegna flýtur olía á vatni.'
+    explanation:
+      'Olía er óskautuð og hefur aðeins London krafta. Leysist í hexani en ekki vatni — þess vegna flýtur olía á vatni.',
   },
   {
     id: 'sugar',
@@ -71,7 +74,8 @@ const solutes: Solute[] = [
     formula: 'C₁₂H₂₂O₁₁',
     polarity: 'polar',
     dissolves: { water: true, hexane: false },
-    explanation: 'Sykur hefur marga O-H hópa sem mynda vetnistengi við vatn. Leysist vel í vatni en ekki í hexani.'
+    explanation:
+      'Sykur hefur marga O-H hópa sem mynda vetnistengi við vatn. Leysist vel í vatni en ekki í hexani.',
   },
   {
     id: 'iodine',
@@ -79,7 +83,8 @@ const solutes: Solute[] = [
     formula: 'I₂',
     polarity: 'nonpolar',
     dissolves: { water: false, hexane: true },
-    explanation: 'I₂ er óskautað og hefur aðeins sterka London krafta. Leysist vel í hexani og gefur fjólubláan lit.'
+    explanation:
+      'I₂ er óskautað og hefur aðeins sterka London krafta. Leysist vel í hexani og gefur fjólubláan lit.',
   },
   {
     id: 'ammonia',
@@ -87,8 +92,8 @@ const solutes: Solute[] = [
     formula: 'NH₃',
     polarity: 'polar',
     dissolves: { water: true, hexane: false },
-    explanation: 'NH₃ er skautað og getur myndað vetnistengi við vatn. Leysist mjög vel í vatni.'
-  }
+    explanation: 'NH₃ er skautað og getur myndað vetnistengi við vatn. Leysist mjög vel í vatni.',
+  },
 ];
 
 interface SolubilityPredictionProps {
@@ -104,9 +109,10 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
   const [animationPhase, setAnimationPhase] = useState<'idle' | 'mixing' | 'result'>('idle');
   const [stats, setStats] = useState({ correct: 0, total: 0 });
 
-  const actualResult = selectedSolute && selectedSolvent
-    ? selectedSolute.dissolves[selectedSolvent.id as 'water' | 'hexane']
-    : null;
+  const actualResult =
+    selectedSolute && selectedSolvent
+      ? selectedSolute.dissolves[selectedSolvent.id as 'water' | 'hexane']
+      : null;
 
   const makePredict = (willDissolve: boolean) => {
     setUserPrediction(willDissolve);
@@ -119,9 +125,9 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
         setAnimationPhase('result');
         setShowResult(true);
         const isCorrect = userPrediction === actualResult;
-        setStats(prev => ({
+        setStats((prev) => ({
           correct: prev.correct + (isCorrect ? 1 : 0),
-          total: prev.total + 1
+          total: prev.total + 1,
         }));
         onPrediction?.(isCorrect);
       }, 1500);
@@ -146,13 +152,19 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
   const isCorrect = userPrediction === actualResult;
 
   return (
-    <div className={`bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl border border-cyan-200 ${compact ? 'p-4' : 'p-6'}`}>
+    <div
+      className={`bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl border border-cyan-200 ${compact ? 'p-4' : 'p-6'}`}
+    >
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className={`font-bold text-cyan-800 flex items-center gap-2 ${compact ? 'text-base' : 'text-lg'}`}>
+          <h3
+            className={`font-bold text-cyan-800 flex items-center gap-2 ${compact ? 'text-base' : 'text-lg'}`}
+          >
             <span>🧪</span> Leysni: „Líkt leysist í líku"
           </h3>
-          <span className="text-xs text-cyan-600 italic">Aukaverkfæri – telst ekki í stigagjöf</span>
+          <span className="text-xs text-cyan-600 italic">
+            Aukaverkfæri – telst ekki í stigagjöf
+          </span>
         </div>
         {stats.total > 0 && (
           <div className="text-sm text-cyan-700 bg-cyan-100 px-3 py-1 rounded-full">
@@ -169,10 +181,13 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
       <div className="mb-4">
         <div className="text-sm font-medium text-warm-700 mb-2">1. Veldu efni til að leysa:</div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-          {solutes.map(solute => (
+          {solutes.map((solute) => (
             <button
               key={solute.id}
-              onClick={() => { setSelectedSolute(solute); tryNew(); }}
+              onClick={() => {
+                setSelectedSolute(solute);
+                tryNew();
+              }}
               disabled={showResult}
               className={`p-3 rounded-lg border-2 transition-all text-left ${
                 selectedSolute?.id === solute.id
@@ -182,13 +197,20 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
             >
               <div className="font-bold text-warm-800">{solute.formula}</div>
               <div className="text-xs text-warm-500">{solute.name}</div>
-              <div className={`text-xs mt-1 px-1.5 py-0.5 rounded inline-block ${
-                solute.polarity === 'polar' ? 'bg-blue-100 text-blue-700' :
-                solute.polarity === 'ionic' ? 'bg-purple-100 text-purple-700' :
-                'bg-amber-100 text-amber-700'
-              }`}>
-                {solute.polarity === 'polar' ? 'Skautað' :
-                 solute.polarity === 'ionic' ? 'Jónatengi' : 'Óskautað'}
+              <div
+                className={`text-xs mt-1 px-1.5 py-0.5 rounded inline-block ${
+                  solute.polarity === 'polar'
+                    ? 'bg-blue-100 text-blue-700'
+                    : solute.polarity === 'ionic'
+                      ? 'bg-purple-100 text-purple-700'
+                      : 'bg-amber-100 text-amber-700'
+                }`}
+              >
+                {solute.polarity === 'polar'
+                  ? 'Skautað'
+                  : solute.polarity === 'ionic'
+                    ? 'Jónatengi'
+                    : 'Óskautað'}
               </div>
             </button>
           ))}
@@ -200,10 +222,13 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
         <div className="mb-4">
           <div className="text-sm font-medium text-warm-700 mb-2">2. Veldu leysi:</div>
           <div className="grid grid-cols-2 gap-3">
-            {solvents.map(solvent => (
+            {solvents.map((solvent) => (
               <button
                 key={solvent.id}
-                onClick={() => { setSelectedSolvent(solvent); tryNew(); }}
+                onClick={() => {
+                  setSelectedSolvent(solvent);
+                  tryNew();
+                }}
                 disabled={showResult}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   selectedSolvent?.id === solvent.id
@@ -217,9 +242,11 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
                 />
                 <div className="font-bold text-warm-800">{solvent.formula}</div>
                 <div className="text-sm text-warm-600">{solvent.name}</div>
-                <div className={`text-xs mt-1 ${
-                  solvent.polarity === 'polar' ? 'text-blue-600' : 'text-amber-600'
-                }`}>
+                <div
+                  className={`text-xs mt-1 ${
+                    solvent.polarity === 'polar' ? 'text-blue-600' : 'text-amber-600'
+                  }`}
+                >
                   {solvent.polarity === 'polar' ? '(Skautað)' : '(Óskautað)'}
                 </div>
               </button>
@@ -315,7 +342,7 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
                   height="68"
                   rx="3"
                   fill={selectedSolvent.color}
-                  opacity={actualResult ? "0.5" : "0.3"}
+                  opacity={actualResult ? '0.5' : '0.3'}
                 />
                 {actualResult ? (
                   // Dissolved - uniform color
@@ -344,61 +371,69 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
                       />
                     ) : (
                       // Solid at bottom
-                      <ellipse
-                        cx="50"
-                        cy="100"
-                        rx="25"
-                        ry="8"
-                        fill="#9ca3af"
-                        opacity="0.8"
-                      />
+                      <ellipse cx="50" cy="100" rx="25" ry="8" fill="#9ca3af" opacity="0.8" />
                     )}
                   </>
                 )}
               </svg>
               {/* Label */}
-              <div className={`absolute -bottom-6 left-0 right-0 text-center text-sm font-bold ${
-                actualResult ? 'text-green-600' : 'text-red-600'
-              }`}>
+              <div
+                className={`absolute -bottom-6 left-0 right-0 text-center text-sm font-bold ${
+                  actualResult ? 'text-green-600' : 'text-red-600'
+                }`}
+              >
                 {actualResult ? 'Leyst!' : 'Leysist ekki'}
               </div>
             </div>
           </div>
 
           {/* Feedback */}
-          <div className={`p-4 rounded-lg ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+          <div
+            className={`p-4 rounded-lg ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
+          >
             <div className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
               {isCorrect ? '✓ Rétt spáð!' : '✗ Ekki rétt'}
             </div>
-            <p className="text-sm text-warm-700 mt-2">
-              {selectedSolute.explanation}
-            </p>
+            <p className="text-sm text-warm-700 mt-2">{selectedSolute.explanation}</p>
           </div>
 
           {/* Polarity explanation */}
           <div className="bg-warm-50 p-4 rounded-lg text-sm">
             <div className="font-medium text-warm-700 mb-2">Af hverju?</div>
             <div className="flex items-center gap-2 flex-wrap">
-              <span className={`px-2 py-1 rounded ${
-                selectedSolute.polarity === 'polar' ? 'bg-blue-100 text-blue-700' :
-                selectedSolute.polarity === 'ionic' ? 'bg-purple-100 text-purple-700' :
-                'bg-amber-100 text-amber-700'
-              }`}>
-                {selectedSolute.formula} = {
-                  selectedSolute.polarity === 'polar' ? 'Skautað' :
-                  selectedSolute.polarity === 'ionic' ? 'Jónatengi' : 'Óskautað'
-                }
+              <span
+                className={`px-2 py-1 rounded ${
+                  selectedSolute.polarity === 'polar'
+                    ? 'bg-blue-100 text-blue-700'
+                    : selectedSolute.polarity === 'ionic'
+                      ? 'bg-purple-100 text-purple-700'
+                      : 'bg-amber-100 text-amber-700'
+                }`}
+              >
+                {selectedSolute.formula} ={' '}
+                {selectedSolute.polarity === 'polar'
+                  ? 'Skautað'
+                  : selectedSolute.polarity === 'ionic'
+                    ? 'Jónatengi'
+                    : 'Óskautað'}
               </span>
               <span className="text-warm-500">+</span>
-              <span className={`px-2 py-1 rounded ${
-                selectedSolvent.polarity === 'polar' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'
-              }`}>
-                {selectedSolvent.formula} = {selectedSolvent.polarity === 'polar' ? 'Skautað' : 'Óskautað'}
+              <span
+                className={`px-2 py-1 rounded ${
+                  selectedSolvent.polarity === 'polar'
+                    ? 'bg-blue-100 text-blue-700'
+                    : 'bg-amber-100 text-amber-700'
+                }`}
+              >
+                {selectedSolvent.formula} ={' '}
+                {selectedSolvent.polarity === 'polar' ? 'Skautað' : 'Óskautað'}
               </span>
               <span className="text-warm-500">=</span>
-              <span className={`px-2 py-1 rounded font-bold ${
-                actualResult ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-              }`}>
+              <span
+                className={`px-2 py-1 rounded font-bold ${
+                  actualResult ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                }`}
+              >
                 {actualResult ? 'Líkt leysist í líku ✓' : 'Ólíkt → leysist ekki ✗'}
               </span>
             </div>
@@ -418,9 +453,18 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
         <div className="bg-white p-4 rounded-lg border border-warm-200 mt-4">
           <div className="text-sm font-medium text-warm-700 mb-2">Minnispunktar:</div>
           <ul className="text-xs text-warm-600 space-y-1">
-            <li>• <span className="text-blue-600 font-medium">Skautað</span> leysist í <span className="text-blue-600 font-medium">skautuðu</span> (vatn, alk., sýrur)</li>
-            <li>• <span className="text-amber-600 font-medium">Óskautað</span> leysist í <span className="text-amber-600 font-medium">óskautuðu</span> (olíur, fita, hexan)</li>
-            <li>• <span className="text-purple-600 font-medium">Jónatengi</span> leysist í <span className="text-blue-600 font-medium">skautuðu</span> (salt í vatni)</li>
+            <li>
+              • <span className="text-blue-600 font-medium">Skautað</span> leysist í{' '}
+              <span className="text-blue-600 font-medium">skautuðu</span> (vatn, alk., sýrur)
+            </li>
+            <li>
+              • <span className="text-amber-600 font-medium">Óskautað</span> leysist í{' '}
+              <span className="text-amber-600 font-medium">óskautuðu</span> (olíur, fita, hexan)
+            </li>
+            <li>
+              • <span className="text-purple-600 font-medium">Jónatengi</span> leysist í{' '}
+              <span className="text-blue-600 font-medium">skautuðu</span> (salt í vatni)
+            </li>
           </ul>
         </div>
       )}

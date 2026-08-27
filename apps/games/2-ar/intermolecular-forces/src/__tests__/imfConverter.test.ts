@@ -1,9 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import {
-  imfToMolecule,
-  type IMFMolecule,
-} from '../utils/imfConverter';
+import { imfToMolecule, type IMFMolecule } from '../utils/imfConverter';
 
 describe('imfToMolecule', () => {
   describe('with visualization data', () => {
@@ -18,9 +15,7 @@ describe('imfToMolecule', () => {
             { symbol: 'H', partialCharge: 'positive', position: 'left' },
             { symbol: 'Cl', partialCharge: 'negative', position: 'right' },
           ],
-          bonds: [
-            { from: 'left', to: 'right', type: 'single', polar: true },
-          ],
+          bonds: [{ from: 'left', to: 'right', type: 'single', polar: true }],
           shape: 'diatomic',
           dipoleMoment: 'right',
         },
@@ -43,9 +38,7 @@ describe('imfToMolecule', () => {
             { symbol: 'H', partialCharge: 'positive', position: 'left' },
             { symbol: 'Cl', partialCharge: 'negative', position: 'right' },
           ],
-          bonds: [
-            { from: 'left', to: 'right', type: 'single', polar: true },
-          ],
+          bonds: [{ from: 'left', to: 'right', type: 'single', polar: true }],
           shape: 'diatomic',
         },
       };
@@ -67,9 +60,7 @@ describe('imfToMolecule', () => {
             { symbol: 'H', partialCharge: 'positive', position: 'left' },
             { symbol: 'F', partialCharge: 'negative', position: 'right' },
           ],
-          bonds: [
-            { from: 'left', to: 'right', type: 'single', polar: true },
-          ],
+          bonds: [{ from: 'left', to: 'right', type: 'single', polar: true }],
           shape: 'diatomic',
           dipoleMoment: 'right',
         },
@@ -141,9 +132,7 @@ describe('imfToMolecule', () => {
             { symbol: 'Cl', partialCharge: 'none', position: 'left' },
             { symbol: 'Cl', partialCharge: 'none', position: 'right' },
           ],
-          bonds: [
-            { from: 'left', to: 'right', type: 'single' },
-          ],
+          bonds: [{ from: 'left', to: 'right', type: 'single' }],
           shape: 'diatomic',
         },
       };
@@ -231,9 +220,7 @@ describe('imfToMolecule', () => {
             { symbol: 'H', position: 'left', partialCharge: 'positive' },
             { symbol: 'Cl', position: 'right', partialCharge: 'negative' },
           ],
-          bonds: [
-            { from: 'left', to: 'right', type: 'single' },
-          ],
+          bonds: [{ from: 'left', to: 'right', type: 'single' }],
           shape: 'diatomic',
         },
       };
