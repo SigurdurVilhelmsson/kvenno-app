@@ -257,7 +257,7 @@ This is where your November test gets applied to the games you actually ship.
 - **The decimal comma** — a repo-wide pass. On `type="number"` the browser eats the comma before your code runs, so a student's `0,5` submits as `5` and grades as a silent 10× error. Non-integer answers need `type="text"` + `inputMode="decimal"`, then normalise before parsing.
 - **Misconception slots** — the shared panel has a purpose-built channel that renders _outside_ the collapse, and four of seven Y1 games leave it empty.
 
-**Blocked on you:** whether levels are gated. February built gating, April removed it, the August review wants it back, and the strings for **15** games already exist in three languages with no consumers — 14 under `menu.levels.*.locked`, plus `1-ar/nafnakerfid` under `completeLevel1First`/`completeLevel2First`. Grep both key names. (Measured 2026-08-17.)
+**Settled 2026-08-29 — levels are not gated.** Siggi's ruling. The dead strings were stripped the same day: 93 across 16 files, not the 15 games this line recorded — the count missed `common.locked` in `packages/shared/hooks/useGameI18n.ts`. They were also at `levels.*.locked`, not `menu.levels.*.locked`. Phase 4 is now complete. **Left standing, needing its own ruling:** `3-ar/equilibrium-shifter` gates its timed _Keppnishamur_ mode behind 5 problems — a live mode gate, not a level gate.
 
 ---
 
@@ -280,8 +280,8 @@ Also unplaced: percent yield, and significant figures, which `dimensional-analys
 
 These block Phase 5 and parts of Phase 4. Four of them will produce contradictions _inside a single curriculum chain_ if made per-game instead of once.
 
-1. **Does a Level 4 exist?** Most salvageable content is Level-4 material. The old design capped at three; April replaced that with Explore → Understand → Practice → Apply, which has no level count. Decide once.
-2. **Are levels gated?**
+1. ~~**Does a Level 4 exist?**~~ **Answered 2026-08-29: no.** Level-4 material from the old repo becomes Apply-phase content. Nothing in the tree referenced a level 4, so there was nothing to strip.
+2. ~~**Are levels gated?**~~ **Answered 2026-08-29: no.** 93 dead gating strings removed; see the Phase 4 note above.
 3. **The five reaction-type names.** Three are settled across two independent old games; decomposition is contested three ways and the singular/plural form is open. Nothing in Stilla efnajöfnur should be written until these five words exist.
 4. **Stoichiometry** — you currently ship `stökjómetríu`, `Stökefnafræði` and `stækifræði`.
 5. **The galvanic cell noun** — no glossary entry; the shipped text is ungrammatical whichever noun wins (`klefi` is masculine, so `Galvanískur klefi`).

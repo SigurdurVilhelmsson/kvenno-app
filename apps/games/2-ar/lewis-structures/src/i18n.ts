@@ -25,13 +25,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Stig 2: Margfaldar bindingar',
         description: 'Tvöfaldar og þrífaldar bindingar',
         details: 'Kynntu þér tvöfaldar og þrífaldar efnabindingar.',
-        locked: 'Ljúktu stigi 1 fyrst',
       },
       level3: {
         name: 'Stig 3: Formhleðsla',
         description: 'Formhleðsla og samómun',
         details: 'Reiknaðu formhleðslu og teiknaðu samómunarmyndir.',
-        locked: 'Ljúktu stigi 2 fyrst',
       },
     },
     concepts: {
@@ -80,13 +78,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Level 2: Multiple Bonds',
         description: 'Double and triple bonds',
         details: 'Get familiar with double and triple chemical bonds.',
-        locked: 'Complete level 1 first',
       },
       level3: {
         name: 'Level 3: Formal Charge',
         description: 'Formal charge and resonance',
         details: 'Calculate formal charge and draw resonance structures.',
-        locked: 'Complete level 2 first',
       },
     },
     concepts: {
@@ -136,13 +132,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Poziom 2: Wiazania wielokrotne',
         description: 'Wiazania podwojne i potrojne',
         details: 'Zapoznaj sie z podwojnymi i potrojnymi wiazaniami chemicznymi.',
-        locked: 'Najpierw ukoncz poziom 1',
       },
       level3: {
         name: 'Poziom 3: Ladunek formalny',
         description: 'Ladunek formalny i rezonans',
         details: 'Obliczaj ladunek formalny i rysuj struktury rezonansowe.',
-        locked: 'Najpierw ukoncz poziom 2',
       },
     },
     concepts: {

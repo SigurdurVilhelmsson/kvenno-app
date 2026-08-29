@@ -25,13 +25,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Stig 2: Henderson-Hasselbalch',
         description: 'Notaðu jöfnuna til að reikna pH',
         details: 'Notaðu Henderson-Hasselbalch jöfnuna til að spá pH stuðpúðalausna.',
-        locked: 'Ljúktu stigi 1 fyrst',
       },
       level3: {
         name: 'Stig 3: Búðu til lausn',
         description: 'Hannaðu stuðpúðalausnir',
         details: 'Reiknaðu hlutföll til að búa til stuðpúðalausn með ákveðið pH.',
-        locked: 'Ljúktu stigi 2 fyrst',
       },
     },
     concepts: {
@@ -99,13 +97,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Level 2: Henderson-Hasselbalch',
         description: 'Use the equation to calculate pH',
         details: 'Use the Henderson-Hasselbalch equation to predict pH of buffer solutions.',
-        locked: 'Complete level 1 first',
       },
       level3: {
         name: 'Level 3: Create a Solution',
         description: 'Design buffer solutions',
         details: 'Calculate ratios to create a buffer solution with a specific pH.',
-        locked: 'Complete level 2 first',
       },
     },
     concepts: {
@@ -173,13 +169,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Poziom 2: Henderson-Hasselbalch',
         description: 'Uzyj rownania do obliczenia pH',
         details: 'Uzyj rownania Hendersona-Hasselbalcha do przewidzenia pH roztworow buforowych.',
-        locked: 'Najpierw ukoncz poziom 1',
       },
       level3: {
         name: 'Poziom 3: Stworz roztwor',
         description: 'Projektuj roztwory buforowe',
         details: 'Oblicz proporcje aby stworzyc roztwor buforowy o okreslonym pH.',
-        locked: 'Najpierw ukoncz poziom 2',
       },
     },
     concepts: {

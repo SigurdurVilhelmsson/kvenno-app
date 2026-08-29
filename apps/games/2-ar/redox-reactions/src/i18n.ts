@@ -58,13 +58,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Stig 2: Greina hvörf',
         description: 'Finna oxun og afoxun',
         details: 'Greindu hvaða efni oxast og hvaða efni afoxast.',
-        locked: 'Ljúktu stigi 1 fyrst',
       },
       level3: {
         name: 'Stig 3: Stilla hvörf',
         description: 'Stilla redox hvörf',
         details: 'Notaðu hálfhvarfsaðferð til að stilla redox jöfnur.',
-        locked: 'Ljúktu stigi 2 fyrst',
       },
     },
     concepts: {
@@ -150,13 +148,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Level 2: Analyze Reactions',
         description: 'Find oxidation and reduction',
         details: 'Identify which substances are oxidized and which are reduced.',
-        locked: 'Complete level 1 first',
       },
       level3: {
         name: 'Level 3: Balance Reactions',
         description: 'Balance redox reactions',
         details: 'Use the half-reaction method to balance redox equations.',
-        locked: 'Complete level 2 first',
       },
     },
     concepts: {
@@ -242,13 +238,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Poziom 2: Analiza reakcji',
         description: 'Znajdź utlenianie i redukcję',
         details: 'Określ które substancje się utleniają, a które redukują.',
-        locked: 'Najpierw ukończ poziom 1',
       },
       level3: {
         name: 'Poziom 3: Równoważenie reakcji',
         description: 'Równoważ reakcje redoks',
         details: 'Użyj metody półreakcji do równoważenia równań redoks.',
-        locked: 'Najpierw ukończ poziom 2',
       },
     },
     concepts: {

@@ -25,13 +25,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Stig 2: Hraðajöfnur',
         description: 'Hraðalögmál og hraðafasti',
         details: 'Skildu og notaðu hraðajöfnur til að reikna hvarfhraða.',
-        locked: 'Ljúktu stigi 1 fyrst',
       },
       level3: {
         name: 'Stig 3: Arrhenius',
         description: 'Virkjunarorka og hitastuðull',
         details: 'Notaðu Arrhenius jöfnuna til að tengja hita og hraðafasta.',
-        locked: 'Ljúktu stigi 2 fyrst',
       },
     },
     concepts: {
@@ -81,13 +79,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Level 2: Rate Equations',
         description: 'Rate laws and rate constants',
         details: 'Understand and use rate equations to calculate reaction rates.',
-        locked: 'Complete level 1 first',
       },
       level3: {
         name: 'Level 3: Arrhenius',
         description: 'Activation energy and temperature coefficient',
         details: 'Use the Arrhenius equation to relate temperature and rate constant.',
-        locked: 'Complete level 2 first',
       },
     },
     concepts: {
@@ -137,13 +133,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Poziom 2: Równania kinetyczne',
         description: 'Prawo szybkości i stała szybkości',
         details: 'Zrozum i użyj równań kinetycznych do obliczania szybkości reakcji.',
-        locked: 'Najpierw ukończ poziom 1',
       },
       level3: {
         name: 'Poziom 3: Arrhenius',
         description: 'Energia aktywacji i współczynnik temperaturowy',
         details: 'Użyj równania Arrheniusa do powiązania temperatury ze stałą szybkości.',
-        locked: 'Najpierw ukończ poziom 2',
       },
     },
     concepts: {

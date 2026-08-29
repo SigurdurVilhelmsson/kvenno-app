@@ -25,13 +25,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Stig 2: Greinar og hringir',
         description: 'Greindur alkanar og cycloalkanar',
         details: 'Nefndu sameindir með hliðarkeðjum og hringlaga byggingu.',
-        locked: 'Ljúktu stigi 1 fyrst',
       },
       level3: {
         name: 'Stig 3: Virk hópar',
         description: 'Alkóhólar, aldehýð, ketónar og fleira',
         details: 'Lærðu nöfn á virkum hópum og forgangsröð þeirra.',
-        locked: 'Ljúktu stigi 2 fyrst',
       },
     },
     prefixes: {
@@ -95,13 +93,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Level 2: Branches and Rings',
         description: 'Branched alkanes and cycloalkanes',
         details: 'Name molecules with side chains and ring structures.',
-        locked: 'Complete level 1 first',
       },
       level3: {
         name: 'Level 3: Functional Groups',
         description: 'Alcohols, aldehydes, ketones, and more',
         details: 'Learn names of functional groups and their priority order.',
-        locked: 'Complete level 2 first',
       },
     },
     prefixes: {
@@ -165,13 +161,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Poziom 2: Rozgalezienia i pierscienie',
         description: 'Rozgalezione alkany i cykloalkany',
         details: 'Nazywaj czasteczki z lancuchami bocznymi i strukturami pierscieniowymi.',
-        locked: 'Najpierw ukoncz poziom 1',
       },
       level3: {
         name: 'Poziom 3: Grupy funkcyjne',
         description: 'Alkohole, aldehydy, ketony i wiecej',
         details: 'Poznaj nazwy grup funkcyjnych i ich kolejnosc priorytetowa.',
-        locked: 'Najpierw ukoncz poziom 2',
       },
     },
     prefixes: {

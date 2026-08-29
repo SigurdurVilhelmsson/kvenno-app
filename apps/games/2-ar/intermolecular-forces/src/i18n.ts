@@ -25,13 +25,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Stig 2: Bera saman',
         description: 'Raða eftir styrkleika',
         details: 'Berðu saman krafta og útskýrðu mismun á eiginleikum.',
-        locked: 'Ljúktu stigi 1 fyrst',
       },
       level3: {
         name: 'Stig 3: Spá eiginleikum',
         description: 'Tengja krafta við eiginleika',
         details: 'Notaðu þekkingu til að spá fyrir um efniseiginleika.',
-        locked: 'Ljúktu stigi 2 fyrst',
       },
     },
     forces: {
@@ -85,13 +83,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Level 2: Compare',
         description: 'Rank by strength',
         details: 'Compare forces and explain differences in properties.',
-        locked: 'Complete level 1 first',
       },
       level3: {
         name: 'Level 3: Predict Properties',
         description: 'Connect forces to properties',
         details: 'Use knowledge to predict material properties.',
-        locked: 'Complete level 2 first',
       },
     },
     forces: {
@@ -143,13 +139,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Poziom 2: Porownaj',
         description: 'Uszereguj wedlug sily',
         details: 'Porownaj sily i wyjasnij roznice we wlasciwosciach.',
-        locked: 'Najpierw ukoncz poziom 1',
       },
       level3: {
         name: 'Poziom 3: Przewiduj wlasciwosci',
         description: 'Polacz sily z wlasciwosciami',
         details: 'Uzyj wiedzy do przewidywania wlasciwosci materialow.',
-        locked: 'Najpierw ukoncz poziom 2',
       },
     },
     forces: {

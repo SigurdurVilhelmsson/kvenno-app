@@ -27,13 +27,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Stig 2: Þrautir',
         description: 'Sameina jöfnur til að ná markmiðsjöfnu',
         details: 'Notaðu 2-3 jöfnur til að búa til nýja jöfnu. Útskýrðu rökstuðning.',
-        locked: 'Ljúktu stigi 1 fyrst',
       },
       level3: {
         name: 'Stig 3: Útreikningar',
         description: 'Myndunarvarminn og flókin hvörf',
         details: 'Notaðu ΔH°f töflur til að reikna ΔH°rxn. Leystu öfug verkefni.',
-        locked: 'Ljúktu stigi 2 fyrst',
       },
     },
     complete: {
@@ -135,13 +133,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Level 2: Puzzles',
         description: 'Combine equations to reach target equation',
         details: 'Use 2-3 equations to create a new equation. Explain your reasoning.',
-        locked: 'Complete level 1 first',
       },
       level3: {
         name: 'Level 3: Calculations',
         description: 'Formation enthalpy and complex reactions',
         details: 'Use ΔH°f tables to calculate ΔH°rxn. Solve reverse problems.',
-        locked: 'Complete level 2 first',
       },
     },
     complete: {
@@ -243,13 +239,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Poziom 2: Łamigłówki',
         description: 'Łącz równania aby osiągnąć równanie docelowe',
         details: 'Użyj 2-3 równań aby stworzyć nowe równanie. Wyjaśnij swoje rozumowanie.',
-        locked: 'Najpierw ukończ poziom 1',
       },
       level3: {
         name: 'Poziom 3: Obliczenia',
         description: 'Entalpia tworzenia i złożone reakcje',
         details: 'Użyj tabel ΔH°f do obliczenia ΔH°rxn. Rozwiązuj zadania odwrotne.',
-        locked: 'Najpierw ukończ poziom 2',
       },
     },
     complete: {

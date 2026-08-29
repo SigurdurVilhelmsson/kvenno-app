@@ -26,13 +26,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Stig 2: Spá',
         description: 'Spáðu hvort hvörf séu sjálfgeng',
         details: 'Notaðu merki ΔH og ΔS til að spá fyrir um ΔG.',
-        locked: 'Ljúktu stigi 1 fyrst',
       },
       level3: {
         name: 'Stig 3: Útreikningar',
         description: 'Reiknaðu ΔG og crossover hitastig',
         details: 'Notaðu formúluna til að finna ΔG og hitastigið þar sem ΔG = 0.',
-        locked: 'Ljúktu stigi 2 fyrst',
       },
     },
     concepts: {
@@ -89,13 +87,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Level 2: Predict',
         description: 'Predict whether reactions are spontaneous',
         details: 'Use signs of ΔH and ΔS to predict ΔG.',
-        locked: 'Complete level 1 first',
       },
       level3: {
         name: 'Level 3: Calculations',
         description: 'Calculate ΔG and crossover temperature',
         details: 'Use the formula to find ΔG and the temperature where ΔG = 0.',
-        locked: 'Complete level 2 first',
       },
     },
     concepts: {
@@ -152,13 +148,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Poziom 2: Przewiduj',
         description: 'Przewiduj czy reakcje sa samorzutne',
         details: 'Uzyj znakow ΔH i ΔS do przewidzenia ΔG.',
-        locked: 'Najpierw ukoncz poziom 1',
       },
       level3: {
         name: 'Poziom 3: Obliczenia',
         description: 'Oblicz ΔG i temperature przejscia',
         details: 'Uzyj wzoru aby znalezc ΔG i temperature gdzie ΔG = 0.',
-        locked: 'Najpierw ukoncz poziom 2',
       },
     },
     concepts: {
