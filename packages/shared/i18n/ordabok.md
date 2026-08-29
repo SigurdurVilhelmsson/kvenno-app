@@ -159,6 +159,7 @@ distribution;dreifing
 distribution of speeds;hraðadreifing
 doping;íbæting
 double bond;tvítengi
+double displacement;tvöfalt skiptihvarf
 drying tube;þurrkrör
 ductile;teygjanlegur
 dynamic equilibrium;kvikt jafnvægi
@@ -503,6 +504,7 @@ significant figures;markverðir stafir
 simple cubic;einföld teningslaga
 simple cubic;einfaldur teningur
 single bond;eintengi
+single displacement;einfalt skiptihvarf
 solid;fast efni
 solubility;leysni
 solubility product;leysnimargfeldi
@@ -546,6 +548,8 @@ suction flask;sogflaska
 superconductor;ofurleiðari
 supersaturated solution;yfirmettuð lausn
 surface tension;yfirborðsspenna
+synthesis;samruni
+synthesis reaction;samrunaefnahvarf
 target molecule;markeind
 tautomer;ráphverfa
 tautomerization;ráphvarf
