@@ -73,6 +73,19 @@ const GOVERNED_TERMS: GovernedTerm[] = [
       'katóða, and compounds keep it (fórnaranóða).',
   },
   {
+    english: 'galvanic cell',
+    correct: 'galvaníhlað',
+    banned: [/galvanísk/i, /galvaníklef/i],
+    guidance:
+      "Siggi's ruling, 2026-08-27. The compound absorbs the adjective, so any " +
+      'galvanísk- form is now wrong: not "Galvanískur klefi" but Galvaníhlað. ' +
+      'Neuter — nom/acc galvaníhlað, dat galvaníhlaði, gen galvaníhlaðs — where ' +
+      'klefi was masculine, so adjectives and determiners move with it. ' +
+      'Deliberately NOT banning klefi on its own: Rafefnaklefi (electrochemical ' +
+      'cell, ElectrochemicalCell.tsx:380) is a different compound and Siggi has ' +
+      'not ruled on it.',
+  },
+  {
     english: 'stoichiometry',
     correct: 'hlutfallaefnafræði',
     banned: [/stökjómetr/i, /stökefnafræð/i, /stækifræð/i],

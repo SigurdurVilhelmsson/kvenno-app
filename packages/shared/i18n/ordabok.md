@@ -103,6 +103,7 @@ collision theory;árekstrakenningin
 colloid;svif
 colloidal suspension;sviflausn
 combustion;bruni
+combustion reaction;brunaefnahvarf
 common ion effect;samjónahrif
 complex;flóki
 complex bond;flókatengi
@@ -133,6 +134,7 @@ crucible;deigla
 crystal;kristall
 crystalline solid;kristalkennt fastefni
 cuvette;kúvetta
+decomposition;niðurbrot
 decomposition reaction;niðurbrotsefnahvarf
 degree of unsaturation;ómettunarstuðull
 density;eðlismassi
@@ -241,6 +243,7 @@ fuel cell;efnarafall
 fume hood;stinkskápur
 functional group;virknihópur
 funnel;trekt
+galvanic cell;galvaníhlað
 gas;gas
 gas constant;gasfastinn
 Gibbs free energy;Gibbs fríorka
