@@ -846,6 +846,16 @@ importers:
         specifier: ^2.3.3
         version: 2.3.3(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)(yaml@2.9.0))
 
+  apps/games/3-ar/syrufastinn:
+    dependencies:
+      '@kvenno/shared':
+        specifier: workspace:*
+        version: link:../../../../packages/shared
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   apps/games/3-ar/thermodynamics-predictor:
     dependencies:
       '@kvenno/shared':
