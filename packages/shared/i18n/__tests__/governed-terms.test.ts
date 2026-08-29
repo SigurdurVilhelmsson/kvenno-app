@@ -63,11 +63,23 @@ const GOVERNED_TERMS: GovernedTerm[] = [
       'Adjective: sjálfgengur (m) / sjálfgeng (f, and n.pl) / sjálfgengt (n). Noun for spontaneity: sjálfgengi (neuter) — sjálfviljugheit was being treated as feminine, so its adjectives change too.',
   },
   {
-    english: 'cathode',
-    correct: 'katóða',
-    banned: [/kaþóð/i],
+    english: 'anode / cathode',
+    correct: 'anóða / katóða',
+    banned: [/kaþóð/i, /\banoð/i, /katoð/i],
     guidance:
-      'Same declension as kaþóða — the correction is only þ to t. anóða is already correct.',
+      'Two separate errors. kaþóða is the þ-for-t spelling; anoða and katoða are the ' +
+      'accentless forms, which the original ruling did not ban and which therefore ' +
+      'survived in an aria-label until 2026-08-27. Both vowels carry an acute: anóða, ' +
+      'katóða, and compounds keep it (fórnaranóða).',
+  },
+  {
+    english: 'stoichiometry',
+    correct: 'hlutfallaefnafræði',
+    banned: [/stökjómetr/i, /stökefnafræð/i, /stækifræð/i],
+    guidance:
+      "Siggi's ruling, 2026-08-27, where ordabok.md had been silent and the platform " +
+      'shipped all three words. hlutfallaefnafræði is feminine and, like efnafræði, ' +
+      'does not decline in the singular — so it substitutes cleanly in every case.',
   },
   {
     english: 'balanced equation',

@@ -22,7 +22,7 @@ const MISCONCEPTIONS: Record<number, string> = {
 const RELATED_CONCEPTS: Record<number, string[]> = {
   1: ['Exothermic', 'Endothermic', 'Vermi'],
   2: ['Öfug hvörf', 'Formerkisbreyting', 'Hverfanleiki'],
-  3: ['Stökefnafræði', 'Mólhlutföll', 'Hlutfallsleg orka'],
+  3: ['Hlutfallaefnafræði', 'Mólhlutföll', 'Hlutfallsleg orka'],
   4: ['Samsett aðgerðir', 'Sundrun vs myndun', 'Margföldun'],
   5: ['Lögmál Hess', 'Orkuvarðveisla', 'Hverfanleiki'],
   6: ['Orkubraut', 'Ferlisstuðull', 'Heildar ΔH'],

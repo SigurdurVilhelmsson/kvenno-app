@@ -8,7 +8,7 @@ export const gameTranslations = createGameTranslations({
   is: {
     game: {
       title: 'Stilla efnajöfnur',
-      subtitle: 'Lærðu að stilla efnajöfnur - undirstaða stækifræði',
+      subtitle: 'Lærðu að stilla efnajöfnur - undirstaða hlutfallaefnafræði',
     },
     menu: {
       level1: {

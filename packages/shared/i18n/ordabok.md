@@ -530,6 +530,7 @@ state of matter;efnishamur
 stereoisomer;rúmhverfa
 steric hindrance;fyrirferð
 stir bar;segull
+stoichiometry;hlutfallaefnafræði
 STP;staðalaðstæður
 strong acid/base;sterk sýra
 strong base;sterkur basi

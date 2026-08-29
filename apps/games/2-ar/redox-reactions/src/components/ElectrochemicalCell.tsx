@@ -374,7 +374,7 @@ export function ElectrochemicalCell({
           viewBox={`0 0 ${width} ${height}`}
           className="bg-warm-100 rounded-xl border border-warm-200"
           role="img"
-          aria-label={`Galvanísk klefi: ${pair.anode.metal} anoða og ${pair.cathode.metal} katoða með rafeinda- og jónaflæði`}
+          aria-label={`Galvanísk klefi: ${pair.anode.metal} anóða og ${pair.cathode.metal} katóða með rafeinda- og jónaflæði`}
         >
           <title>
             Rafefnaklefi með {pair.anode.metal}/{pair.cathode.metal}
