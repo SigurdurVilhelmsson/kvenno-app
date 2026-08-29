@@ -52,8 +52,7 @@ const CELL_PAIRS: CellPair[] = [
       solutionColor: '#bbdefb',
       metalColor: '#f57c00',
     },
-    description:
-      'Klassískt dæmi um galvaníska klefi. Zn oxast (tapar e⁻), Cu²⁺ afoxast (öðlast e⁻).',
+    description: 'Klassískt dæmi um galvaníhlað. Zn oxast (tapar e⁻), Cu²⁺ afoxast (öðlast e⁻).',
   },
   {
     id: 'mg-cu',
@@ -329,7 +328,7 @@ export function ElectrochemicalCell({
     >
       <div className="flex items-center justify-between mb-3">
         <h3 className={`font-bold text-amber-800 ${compact ? 'text-sm' : 'text-base'}`}>
-          Galvanísk klefi
+          Galvaníhlað
         </h3>
         <div className="flex items-center gap-2">
           <label className="flex items-center gap-1.5 text-xs text-warm-600 cursor-pointer">
@@ -374,10 +373,10 @@ export function ElectrochemicalCell({
           viewBox={`0 0 ${width} ${height}`}
           className="bg-warm-100 rounded-xl border border-warm-200"
           role="img"
-          aria-label={`Galvanísk klefi: ${pair.anode.metal} anoða og ${pair.cathode.metal} katoða með rafeinda- og jónaflæði`}
+          aria-label={`Galvaníhlað: ${pair.anode.metal} anóða og ${pair.cathode.metal} katóða með rafeinda- og jónaflæði`}
         >
           <title>
-            Rafefnaklefi með {pair.anode.metal}/{pair.cathode.metal}
+            Rafefnahlað með {pair.anode.metal}/{pair.cathode.metal}
           </title>
           <defs>
             {/* Gradients for electrodes */}
@@ -619,7 +618,7 @@ export function ElectrochemicalCell({
       {/* Educational note */}
       <div className={`mt-3 text-center ${compact ? 'text-xs' : 'text-sm'} text-warm-600`}>
         <p>
-          <strong>Galvanísk klefi</strong> breytir efnaorku í raforku. Rafeindir flæða frá anóðu til
+          <strong>Galvaníhlað</strong> breytir efnaorku í raforku. Rafeindir flæða frá anóðu til
           katóðu.
         </p>
       </div>

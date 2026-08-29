@@ -63,11 +63,46 @@ const GOVERNED_TERMS: GovernedTerm[] = [
       'Adjective: sjálfgengur (m) / sjálfgeng (f, and n.pl) / sjálfgengt (n). Noun for spontaneity: sjálfgengi (neuter) — sjálfviljugheit was being treated as feminine, so its adjectives change too.',
   },
   {
-    english: 'cathode',
-    correct: 'katóða',
-    banned: [/kaþóð/i],
+    english: 'anode / cathode',
+    correct: 'anóða / katóða',
+    banned: [/kaþóð/i, /\banoð/i, /katoð/i],
     guidance:
-      'Same declension as kaþóða — the correction is only þ to t. anóða is already correct.',
+      'Two separate errors. kaþóða is the þ-for-t spelling; anoða and katoða are the ' +
+      'accentless forms, which the original ruling did not ban and which therefore ' +
+      'survived in an aria-label until 2026-08-27. Both vowels carry an acute: anóða, ' +
+      'katóða, and compounds keep it (fórnaranóða).',
+  },
+  {
+    english: 'galvanic cell',
+    correct: 'galvaníhlað',
+    banned: [/galvanísk/i, /galvaníklef/i],
+    guidance:
+      "Siggi's ruling, 2026-08-27. The compound absorbs the adjective, so any " +
+      'galvanísk- form is now wrong: not "Galvanískur klefi" but Galvaníhlað. ' +
+      'Neuter — nom/acc galvaníhlað, dat galvaníhlaði, gen galvaníhlaðs — where ' +
+      'klefi was masculine, so adjectives and determiners move with it.',
+  },
+  {
+    english: 'electrochemical cell',
+    correct: 'rafefnahlað',
+    banned: [/klef/i],
+    guidance:
+      "Siggi's ruling, 2026-08-29, completing the pair with galvaníhlað. The one " +
+      'shipped use was Rafefnaklefi in the SVG <title> of ElectrochemicalCell.tsx — ' +
+      'the same diagram whose aria-label says Galvaníhlað, four lines away, so the ' +
+      'component named one picture two ways. Neuter like galvaníhlað: nom/acc ' +
+      'rafefnahlað, dat rafefnahlaði, gen rafefnahlaðs. Bare klefi is banned outright ' +
+      'because no chemistry term on this platform uses it any more — if a legitimate ' +
+      'non-chemistry use ever appears, get a ruling rather than loosening this.',
+  },
+  {
+    english: 'stoichiometry',
+    correct: 'hlutfallaefnafræði',
+    banned: [/stökjómetr/i, /stökefnafræð/i, /stækifræð/i],
+    guidance:
+      "Siggi's ruling, 2026-08-27, where ordabok.md had been silent and the platform " +
+      'shipped all three words. hlutfallaefnafræði is feminine and, like efnafræði, ' +
+      'does not decline in the singular — so it substitutes cleanly in every case.',
   },
   {
     english: 'balanced equation',

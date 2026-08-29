@@ -54,7 +54,7 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
       },
       {
         title: 'Takmarkandi hvarfefni',
-        description: 'Takmarkandi hvarfefni og stökjómetría',
+        description: 'Takmarkandi hvarfefni og hlutfallaefnafræði',
         slug: 'takmarkandi',
       },
       {

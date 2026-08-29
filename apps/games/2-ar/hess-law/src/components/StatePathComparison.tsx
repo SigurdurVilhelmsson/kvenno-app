@@ -36,7 +36,7 @@ const EXAMPLES: PathExample[] = [
         name: 'Bein leið',
         color: '#22c55e',
         steps: [{ label: 'C + O₂ → CO₂', deltaH: -393.5 }],
-        description: 'Fullkomin bruna kolefnis í einu skrefi',
+        description: 'Fullkominn bruni kolefnis í einu skrefi',
       },
       {
         id: 'via-co',
@@ -46,7 +46,7 @@ const EXAMPLES: PathExample[] = [
           { label: 'C + ½O₂ → CO', deltaH: -110.5 },
           { label: 'CO + ½O₂ → CO₂', deltaH: -283.0 },
         ],
-        description: 'Fyrst ófullkomin bruna (CO), síðan áframhaldandi bruna',
+        description: 'Fyrst ófullkominn bruni (CO), síðan áframhaldandi bruni',
       },
     ],
     explanation:

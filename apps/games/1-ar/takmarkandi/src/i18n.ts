@@ -48,7 +48,7 @@ export const gameTranslations = createGameTranslations({
       point1: 'Hvað er takmarkandi hvarfefni og hvers vegna það skiptir máli',
       point2: 'Hvernig á að finna takmarkandi hvarfefni út frá stuðlum',
       point3: 'Reikna magn afurða og afganga eftir hvarf',
-      point4: 'Nota stökjómetríu til að leysa raunveruleg vandamál',
+      point4: 'Nota hlutfallaefnafræði til að leysa raunveruleg vandamál',
     },
   },
   en: {

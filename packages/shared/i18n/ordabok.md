@@ -103,6 +103,7 @@ collision theory;árekstrakenningin
 colloid;svif
 colloidal suspension;sviflausn
 combustion;bruni
+combustion reaction;brunaefnahvarf
 common ion effect;samjónahrif
 complex;flóki
 complex bond;flókatengi
@@ -133,6 +134,7 @@ crucible;deigla
 crystal;kristall
 crystalline solid;kristalkennt fastefni
 cuvette;kúvetta
+decomposition;niðurbrot
 decomposition reaction;niðurbrotsefnahvarf
 degree of unsaturation;ómettunarstuðull
 density;eðlismassi
@@ -157,6 +159,7 @@ distribution;dreifing
 distribution of speeds;hraðadreifing
 doping;íbæting
 double bond;tvítengi
+double displacement;tvöfalt skiptihvarf
 drying tube;þurrkrör
 ductile;teygjanlegur
 dynamic equilibrium;kvikt jafnvægi
@@ -166,6 +169,7 @@ electric current;straumur
 electric field;rafsvið
 electrical circuit;rafrás
 electrical resistance;viðnám
+electrochemical cell;rafefnahlað
 electrochemistry;rafefnafræði
 electrode;raftroð
 electrolysis;rafgreining
@@ -241,6 +245,7 @@ fuel cell;efnarafall
 fume hood;stinkskápur
 functional group;virknihópur
 funnel;trekt
+galvanic cell;galvaníhlað
 gas;gas
 gas constant;gasfastinn
 Gibbs free energy;Gibbs fríorka
@@ -500,6 +505,7 @@ significant figures;markverðir stafir
 simple cubic;einföld teningslaga
 simple cubic;einfaldur teningur
 single bond;eintengi
+single displacement;einfalt skiptihvarf
 solid;fast efni
 solubility;leysni
 solubility product;leysnimargfeldi
@@ -530,6 +536,7 @@ state of matter;efnishamur
 stereoisomer;rúmhverfa
 steric hindrance;fyrirferð
 stir bar;segull
+stoichiometry;hlutfallaefnafræði
 STP;staðalaðstæður
 strong acid/base;sterk sýra
 strong base;sterkur basi
@@ -542,6 +549,8 @@ suction flask;sogflaska
 superconductor;ofurleiðari
 supersaturated solution;yfirmettuð lausn
 surface tension;yfirborðsspenna
+synthesis;samruni
+synthesis reaction;samrunaefnahvarf
 target molecule;markeind
 tautomer;ráphverfa
 tautomerization;ráphvarf

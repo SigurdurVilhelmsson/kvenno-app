@@ -248,7 +248,7 @@ function App() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-orange-500 mt-0.5">✓</span>
-                <span>Nota stökjómetríu til að leysa raunveruleg vandamál</span>
+                <span>Nota hlutfallaefnafræði til að leysa raunveruleg vandamál</span>
               </li>
             </ul>
           </div>
