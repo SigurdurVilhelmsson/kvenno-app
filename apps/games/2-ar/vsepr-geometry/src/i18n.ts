@@ -25,13 +25,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Stig 2: Stakeindir',
         description: 'Stakeindir breyta lögun',
         details: 'Sjáðu hvernig stakeindarapör hafa áhrif á sameindalögun.',
-        locked: 'Ljúktu stigi 1 fyrst',
       },
       level3: {
         name: 'Stig 3: Bindishorn',
         description: 'Spáðu bindishornum',
         details: 'Reiknaðu og spáðu bindishornum milli atóma.',
-        locked: 'Ljúktu stigi 2 fyrst',
       },
     },
     geometry: {
@@ -80,13 +78,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Level 2: Lone Pairs',
         description: 'Lone pairs change shapes',
         details: 'See how lone pairs affect molecular geometry.',
-        locked: 'Complete level 1 first',
       },
       level3: {
         name: 'Level 3: Bond Angles',
         description: 'Predict bond angles',
         details: 'Calculate and predict bond angles between atoms.',
-        locked: 'Complete level 2 first',
       },
     },
     geometry: {
@@ -135,13 +131,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Poziom 2: Wolne pary',
         description: 'Wolne pary zmieniaja ksztalt',
         details: 'Zobacz jak wolne pary wplywaja na geometrie czasteczki.',
-        locked: 'Najpierw ukoncz poziom 1',
       },
       level3: {
         name: 'Poziom 3: Katy wiazania',
         description: 'Przewiduj katy wiazania',
         details: 'Obliczaj i przewiduj katy wiazania miedzy atomami.',
-        locked: 'Najpierw ukoncz poziom 2',
       },
     },
     geometry: {

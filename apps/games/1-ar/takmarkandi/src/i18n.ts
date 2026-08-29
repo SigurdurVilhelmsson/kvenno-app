@@ -24,13 +24,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Stig 2',
         title: 'Leiðbeind æfing',
         description: 'Leystu verkefni skref fyrir skref með leiðsögn',
-        locked: 'Ljúktu stigi 1 fyrst',
       },
       level3: {
         name: 'Stig 3',
         title: 'Meistarapróf',
         description: 'Veldu erfiðleikastig og kepptu við tímann!',
-        locked: 'Ljúktu stigi 2 fyrst',
       },
     },
     progress: {
@@ -71,13 +69,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Level 2',
         title: 'Guided Practice',
         description: 'Solve problems step by step with guidance',
-        locked: 'Complete level 1 first',
       },
       level3: {
         name: 'Level 3',
         title: 'Master Test',
         description: 'Choose difficulty and race against time!',
-        locked: 'Complete level 2 first',
       },
     },
     progress: {
@@ -118,13 +114,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Poziom 2',
         title: 'Cwiczenia z prowadzeniem',
         description: 'Rozwiazuj zadania krok po kroku z pomoca',
-        locked: 'Najpierw ukoncz poziom 1',
       },
       level3: {
         name: 'Poziom 3',
         title: 'Test mistrzowski',
         description: 'Wybierz trudnosc i scigaj sie z czasem!',
-        locked: 'Najpierw ukoncz poziom 2',
       },
     },
     progress: {

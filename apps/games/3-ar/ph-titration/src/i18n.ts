@@ -25,13 +25,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Stig 2: Jafngildispunktur',
         description: 'Finndu jafngildispunktinn',
         details: 'Greindu títrunarkúrfur og finndu pH við jafngildispunkt.',
-        locked: 'Ljúktu stigi 1 fyrst',
       },
       level3: {
         name: 'Stig 3: Útreikningar',
         description: 'Reiknaðu styrk og rúmmál',
         details: 'Notaðu títrunargögn til að reikna óþekktar stærðir.',
-        locked: 'Ljúktu stigi 2 fyrst',
       },
     },
     concepts: {
@@ -104,13 +102,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Level 2: Equivalence Point',
         description: 'Find the equivalence point',
         details: 'Analyze titration curves and find pH at equivalence point.',
-        locked: 'Complete level 1 first',
       },
       level3: {
         name: 'Level 3: Calculations',
         description: 'Calculate concentration and volume',
         details: 'Use titration data to calculate unknown quantities.',
-        locked: 'Complete level 2 first',
       },
     },
     concepts: {
@@ -183,13 +179,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Poziom 2: Punkt rownowaznikowy',
         description: 'Znajdz punkt rownowaznikowy',
         details: 'Analizuj krzywe miareczkowania i znajdz pH w punkcie rownowaznikowym.',
-        locked: 'Najpierw ukoncz poziom 1',
       },
       level3: {
         name: 'Poziom 3: Obliczenia',
         description: 'Oblicz stezenie i objetosc',
         details: 'Uzyj danych z miareczkowania do obliczenia nieznanych wielkosci.',
-        locked: 'Najpierw ukoncz poziom 2',
       },
     },
     concepts: {

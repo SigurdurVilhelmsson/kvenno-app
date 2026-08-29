@@ -25,13 +25,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Stig 2: Spá',
         description: 'Spáðu áhrifum breytinga',
         details: 'Notaðu Le Chatelier reglu til að spá fyrir um jafnvægisfærslur.',
-        locked: 'Ljúktu stigi 1 fyrst',
       },
       level3: {
         name: 'Stig 3: Q vs K',
         description: 'Hvarfastuðlar og stefna',
         details: 'Berðu saman Q og K til að ákvarða stefnu hvarfs.',
-        locked: 'Ljúktu stigi 2 fyrst',
       },
     },
     concepts: {
@@ -89,13 +87,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Level 2: Predict',
         description: 'Predict effects of changes',
         details: "Use Le Chatelier's principle to predict equilibrium shifts.",
-        locked: 'Complete level 1 first',
       },
       level3: {
         name: 'Level 3: Q vs K',
         description: 'Reaction quotients and direction',
         details: 'Compare Q and K to determine reaction direction.',
-        locked: 'Complete level 2 first',
       },
     },
     concepts: {
@@ -153,13 +149,11 @@ export const gameTranslations = createGameTranslations({
         name: 'Poziom 2: Przewiduj',
         description: 'Przewiduj efekty zmian',
         details: 'Uzyj zasady Le Chateliera do przewidywania przesuniecia rownowagi.',
-        locked: 'Najpierw ukoncz poziom 1',
       },
       level3: {
         name: 'Poziom 3: Q vs K',
         description: 'Ilorazy reakcji i kierunek',
         details: 'Porownaj Q i K aby okreslic kierunek reakcji.',
-        locked: 'Najpierw ukoncz poziom 2',
       },
     },
     concepts: {

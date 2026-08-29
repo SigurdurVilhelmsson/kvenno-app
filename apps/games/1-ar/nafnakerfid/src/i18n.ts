@@ -20,8 +20,6 @@ export const gameTranslations = createGameTranslations({
       completed: 'Lokið',
       best: 'Besta',
       moves: 'leikir',
-      completeLevel1First: 'Ljúktu stigi 1 fyrst',
-      completeLevel2First: 'Ljúktu stigi 2 fyrst',
     },
     levels: {
       level1: {
@@ -128,8 +126,6 @@ export const gameTranslations = createGameTranslations({
       completed: 'Completed',
       best: 'Best',
       moves: 'moves',
-      completeLevel1First: 'Complete level 1 first',
-      completeLevel2First: 'Complete level 2 first',
     },
     levels: {
       level1: {
@@ -236,8 +232,6 @@ export const gameTranslations = createGameTranslations({
       completed: 'Ukończone',
       best: 'Najlepszy',
       moves: 'ruchy',
-      completeLevel1First: 'Najpierw ukończ poziom 1',
-      completeLevel2First: 'Najpierw ukończ poziom 2',
     },
     levels: {
       level1: {

@@ -43,7 +43,6 @@ const sharedTranslations: GameTranslations = {
       level: 'Stig',
       score: 'Stig',
       time: 'Tími',
-      locked: 'Læst',
       completed: 'Lokið',
     },
     language: {
@@ -96,7 +95,6 @@ const sharedTranslations: GameTranslations = {
       level: 'Level',
       score: 'Score',
       time: 'Time',
-      locked: 'Locked',
       completed: 'Completed',
     },
     language: {
@@ -149,7 +147,6 @@ const sharedTranslations: GameTranslations = {
       level: 'Poziom',
       score: 'Wynik',
       time: 'Czas',
-      locked: 'Zablokowany',
       completed: 'Ukończony',
     },
     language: {
