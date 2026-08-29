@@ -376,7 +376,7 @@ export function ElectrochemicalCell({
           aria-label={`Galvaníhlað: ${pair.anode.metal} anóða og ${pair.cathode.metal} katóða með rafeinda- og jónaflæði`}
         >
           <title>
-            Rafefnaklefi með {pair.anode.metal}/{pair.cathode.metal}
+            Rafefnahlað með {pair.anode.metal}/{pair.cathode.metal}
           </title>
           <defs>
             {/* Gradients for electrodes */}

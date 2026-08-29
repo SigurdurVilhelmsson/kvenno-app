@@ -169,6 +169,7 @@ electric current;straumur
 electric field;rafsvið
 electrical circuit;rafrás
 electrical resistance;viðnám
+electrochemical cell;rafefnahlað
 electrochemistry;rafefnafræði
 electrode;raftroð
 electrolysis;rafgreining
