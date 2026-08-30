@@ -153,7 +153,7 @@ export const CHALLENGES: Challenge[] = [
       multiplier: 1,
     },
     question:
-      'Myndun ammoníaks: N₂ + 3H₂ → 2NH₃ hefur ΔH = -92 kJ. Hvað er ΔH ef 4 mól af NH₃ sundrast?',
+      'Myndun ammóníaks: N₂ + 3H₂ → 2NH₃ hefur ΔH = -92 kJ. Hvað er ΔH ef 4 mól af NH₃ sundrast?',
     options: [
       {
         text: '+184 kJ',

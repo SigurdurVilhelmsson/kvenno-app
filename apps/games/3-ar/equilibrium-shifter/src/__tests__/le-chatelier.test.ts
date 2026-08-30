@@ -31,7 +31,7 @@ const makeEquilibrium = (overrides: Partial<Equilibrium> = {}): Equilibrium => (
   thermodynamics: { deltaH: 92, type: 'endothermic' },
   gasMoles: { reactants: 4, products: 2 },
   description: 'Synthesis of ammonia',
-  descriptionIs: 'Myndun ammoníaks',
+  descriptionIs: 'Myndun ammóníaks',
   possibleStresses: [],
   ...overrides,
 });
