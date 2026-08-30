@@ -64,7 +64,7 @@ export const LEVEL2_PUZZLES: Level2Puzzle[] = [
     id: 4,
     titrationId: 9, // NH₃ + HCl (weak base + strong acid)
     taskIs:
-      'Títraðu 25.0 mL af 0.100 M ammoníaki (NH₃) með 0.100 M HCl. Þetta er veik basi + sterk sýra!',
+      'Títraðu 25.0 mL af 0.100 M ammóníaki (NH₃) með 0.100 M HCl. Þetta er veik basi + sterk sýra!',
     task: 'Titrate 25.0 mL of 0.100 M ammonia (NH₃) with 0.100 M HCl. This is weak base + strong acid!',
     volumeTolerance: 1.0,
     acceptableIndicators: ['methyl-orange', 'methyl-red'],
