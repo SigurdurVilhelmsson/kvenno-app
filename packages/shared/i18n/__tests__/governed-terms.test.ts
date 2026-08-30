@@ -149,7 +149,12 @@ const GOVERNED_TERMS: GovernedTerm[] = [
   {
     english: 'buffer',
     correct: 'stuðpúði',
-    banned: [/púffer/i],
+    // Deliberately /púff/ and not /púffer/: the original ban matched only the
+    // -er spelling, and 16 occurrences of `púffur-` survived underneath it in
+    // ph-titration and buffer-recipe-creator until 2026-08-30. Same failure as
+    // the accentless anoða/katoða. `stuðpúði` contains `púð`, not `púff`, so
+    // the correct forms cannot trip this.
+    banned: [/púff/i],
     guidance:
       'stuðpúði is masculine; compounds take the genitive stem stuðpúða- (stuðpúðalausn, stuðpúðageta, stuðpúðasvæði), plural stuðpúðar. púffer was neuter in some strings, so adjectives change with it.',
   },
