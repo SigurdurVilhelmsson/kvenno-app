@@ -263,7 +263,7 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
     titleIs: 'Henderson-Hasselbalch: Finndu hlutfall',
     title: 'Henderson-Hasselbalch: Find ratio',
     descriptionIs:
-      'Þú þarft púffur með pH = 9.50 úr ammoníaki (NH₃) og ammóníumklóríði (NH₄Cl). pKₐ(NH₄⁺) = 9.26. Hvert þarf hlutfall [NH₃]/[NH₄⁺] að vera?',
+      'Þú þarft púffur með pH = 9.50 úr ammóníaki (NH₃) og ammóníumklóríði (NH₄Cl). pKₐ(NH₄⁺) = 9.26. Hvert þarf hlutfall [NH₃]/[NH₄⁺] að vera?',
     description:
       'You need a buffer with pH = 9.50 using ammonia (NH₃) and ammonium chloride (NH₄Cl). pKₐ(NH₄⁺) = 9.26. What ratio [NH₃]/[NH₄⁺] is needed?',
     givenData: {
