@@ -228,7 +228,7 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
     titleIs: 'Henderson-Hasselbalch: Finndu pH',
     title: 'Henderson-Hasselbalch: Find pH',
     descriptionIs:
-      'Púffurlausn inniheldur 0.15 M ediksýru (CH₃COOH) og 0.20 M natríumasetat (CH₃COONa). pKₐ = 4.74. Hver er pH púffursins?',
+      'Stuðpúðalausn inniheldur 0.15 M ediksýru (CH₃COOH) og 0.20 M natríumasetat (CH₃COONa). pKₐ = 4.74. Hver er pH stuðpúðans?',
     description:
       'A buffer contains 0.15 M acetic acid (CH₃COOH) and 0.20 M sodium acetate (CH₃COONa). pKₐ = 4.74. What is the buffer pH?',
     givenData: {
@@ -263,7 +263,7 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
     titleIs: 'Henderson-Hasselbalch: Finndu hlutfall',
     title: 'Henderson-Hasselbalch: Find ratio',
     descriptionIs:
-      'Þú þarft púffur með pH = 9.50 úr ammóníaki (NH₃) og ammóníumklóríði (NH₄Cl). pKₐ(NH₄⁺) = 9.26. Hvert þarf hlutfall [NH₃]/[NH₄⁺] að vera?',
+      'Þú þarft stuðpúða með pH = 9.50 úr ammóníaki (NH₃) og ammóníumklóríði (NH₄Cl). pKₐ(NH₄⁺) = 9.26. Hvert þarf hlutfall [NH₃]/[NH₄⁺] að vera?',
     description:
       'You need a buffer with pH = 9.50 using ammonia (NH₃) and ammonium chloride (NH₄Cl). pKₐ(NH₄⁺) = 9.26. What ratio [NH₃]/[NH₄⁺] is needed?',
     givenData: {

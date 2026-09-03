@@ -81,7 +81,7 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
           yMin: pKa - 1,
           yMax: pKa + 1,
           color: 'rgba(251, 191, 36, 0.15)',
-          label: 'Púffursvæði',
+          label: 'Stuðpúðasvæði',
         });
         horizontalLines.push({
           y: pKa,

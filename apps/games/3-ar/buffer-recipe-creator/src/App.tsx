@@ -281,7 +281,7 @@ function App() {
                     </sup>
                   </p>
                   <p>
-                    <strong>Púffursvæði:</strong> pH = pK<sub>a</sub> ± 1
+                    <strong>Stuðpúðasvæði:</strong> pH = pK<sub>a</sub> ± 1
                   </p>
                   <p>
                     <strong>Massi:</strong> m = n × M (mól × mólmassi)
