@@ -324,7 +324,7 @@ function App() {
                     <strong>Henderson-Hasselbalch:</strong> pH = pK<sub>a</sub> + log([A⁻]/[HA])
                   </p>
                   <p>
-                    <strong>Púffur svæði:</strong> pH = pK<sub>a</sub> ± 1
+                    <strong>Stuðpúðasvæði:</strong> pH = pK<sub>a</sub> ± 1
                   </p>
                   <p>
                     <strong>Fjölprótón:</strong> Mörg jafngildispunkt fyrir H₂SO₃, H₃PO₄

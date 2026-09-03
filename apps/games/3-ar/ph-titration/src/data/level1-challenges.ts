@@ -42,7 +42,7 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
       },
       {
         id: 'B',
-        labelIs: 'Kúrfa B: pH byrjar lágt (~3), púffursvæði, stökk yfir pH 7, endar hátt',
+        labelIs: 'Kúrfa B: pH byrjar lágt (~3), stuðpúðasvæði, stökk yfir pH 7, endar hátt',
         label: 'Curve B: pH starts low (~3), buffer region, jump above pH 7, ends high',
         isCorrect: false,
       },
@@ -82,7 +82,7 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
       },
       {
         id: 'B',
-        labelIs: 'Púffursvæði þar sem pH breytist lítið og jafngildispunktur yfir pH 7',
+        labelIs: 'Stuðpúðasvæði þar sem pH breytist lítið og jafngildispunktur yfir pH 7',
         label: 'Buffer region where pH changes little and equivalence point above pH 7',
         isCorrect: true,
       },
@@ -107,10 +107,10 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
       method:
         'Veik sýra + sterk basi myndar samþjöppuð basa (basískt) við jafngildispunkt → pH > 7.',
       solution:
-        'Púffursvæði + jafngildispunktur yfir pH 7 eru lykileinkenni veikrar sýru + sterkrar basa.',
+        'Stuðpúðasvæði + jafngildispunktur yfir pH 7 eru lykileinkenni veikrar sýru + sterkrar basa.',
     },
     explanationIs:
-      'Veik sýra + sterk basi hefur: 1) Hærra upphafs-pH (3-5) vegna hlutasundurgreiningar, 2) Púffursvæði við hálfan jafngildispunkt þar sem pH ≈ pKₐ, 3) Jafngildispunkt YFIR pH 7 vegna þess að samþjöppuð basi (t.d. CH₃COO⁻) er basísk.',
+      'Veik sýra + sterk basi hefur: 1) Hærra upphafs-pH (3-5) vegna hlutasundurgreiningar, 2) Stuðpúðasvæði við hálfan jafngildispunkt þar sem pH ≈ pKₐ, 3) Jafngildispunkt YFIR pH 7 vegna þess að samþjöppuð basi (t.d. CH₃COO⁻) er basísk.',
     explanation:
       'Weak acid + strong base has: 1) Higher initial pH (3-5) due to partial dissociation, 2) Buffer region at half-equivalence where pH ≈ pKₐ, 3) Equivalence point ABOVE pH 7 because conjugate base (e.g., CH₃COO⁻) is basic.',
   },
@@ -199,7 +199,7 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
   {
     id: 5,
     type: 'curve-feature',
-    questionIs: 'Á títrunarkúrfu fyrir veika sýru + sterka basa, hvar er púffursvæðið?',
+    questionIs: 'Á títrunarkúrfu fyrir veika sýru + sterka basa, hvar er stuðpúðasvæðið?',
     question: 'On a titration curve for weak acid + strong base, where is the buffer region?',
     curveType: 'weak-strong',
     options: [
@@ -229,15 +229,15 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
       },
     ],
     hints: {
-      topic: 'Þetta snýst um púffursvæði á títrunarkúrfu.',
+      topic: 'Þetta snýst um stuðpúðasvæði á títrunarkúrfu.',
       strategy:
-        'Púffur myndast þegar bæði veik sýra og samþjöppuð basi hennar eru til staðar í sambærilegu magni.',
+        'Stuðpúði myndast þegar bæði veik sýra og samþjöppuð basi hennar eru til staðar í sambærilegu magni.',
       method:
-        'Við hálfan jafngildispunkt er [HA] = [A⁻], svo pH = pKₐ. Púffursvæði er pH = pKₐ ± 1.',
-      solution: 'Púffursvæðið er fyrir og eftir hálfan jafngildispunkt (pH = pKₐ ± 1).',
+        'Við hálfan jafngildispunkt er [HA] = [A⁻], svo pH = pKₐ. Stuðpúðasvæði er pH = pKₐ ± 1.',
+      solution: 'Stuðpúðasvæðið er fyrir og eftir hálfan jafngildispunkt (pH = pKₐ ± 1).',
     },
     explanationIs:
-      'Púffursvæðið er við pH = pKₐ ± 1. Við hálfan jafngildispunkt er [HA] = [A⁻], svo pH = pKₐ (Henderson-Hasselbalch). Þetta svæði mótstöðist pH breytingum best.',
+      'Stuðpúðasvæðið er við pH = pKₐ ± 1. Við hálfan jafngildispunkt er [HA] = [A⁻], svo pH = pKₐ (Henderson-Hasselbalch). Þetta svæði mótstöðist pH breytingum best.',
     explanation:
       'The buffer region is at pH = pKₐ ± 1. At half-equivalence point, [HA] = [A⁻], so pH = pKₐ (Henderson-Hasselbalch). This region resists pH changes best.',
   },
