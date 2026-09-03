@@ -1,6 +1,12 @@
 import { describe, it, expect } from 'vitest';
 
-import { WEAK_ACIDS, MONOPROTIC_ACIDS } from '../data/acids';
+import {
+  WEAK_ACIDS,
+  MONOPROTIC_ACIDS,
+  CONCENTRATIONS,
+  ANSWERABLE_PAIRS,
+  isAnswerable,
+} from '../data/acids';
 import {
   KW,
   solveWeakAcid,
@@ -150,10 +156,57 @@ describe('the shipped acid data', () => {
     expect(WEAK_ACIDS.some((a) => a.protons > 1)).toBe(true); // guard is load-bearing
   });
 
-  it('stays inside the model: water autoionisation is negligible at 0.1 M', () => {
-    for (const acid of MONOPROTIC_ACIDS) {
-      const { hExact } = solveWeakAcid(acid.ka, 0.1);
-      expect(waterContributionMatters(hExact), acid.name).toBe(false);
+  it('never offers a pair the model cannot answer', () => {
+    // This assertion used to read "water autoionisation is negligible at 0.1 M"
+    // and check every monoprotic acid at that one concentration. That held only
+    // while the pool contained nothing weaker than acetic acid. Fenól (Ka
+    // 1,3 × 10⁻¹⁰) breaks it: at 0,1 M its [H⁺] is 3,6 × 10⁻⁶ and water's own
+    // 10⁻⁷ is 2,8 % of that, so the pH the engine computes is not the pH the
+    // solution has. The acid is not the problem — the *pair* is, and fenól at
+    // 1,0 M is fine. So the guard moved to the pair, and this checks the pair.
+    for (const { acid, concentration } of ANSWERABLE_PAIRS) {
+      const { hExact } = solveWeakAcid(acid.ka, concentration);
+      expect(waterContributionMatters(hExact), `${acid.name} @ ${concentration} M`).toBe(false);
+    }
+  });
+
+  it('the answerability guard actually rejects something', () => {
+    // A guard that never fires is a guard nobody notices has stopped working.
+    // 6 of the 28 acid×concentration pairs are refused, all of them fenól below
+    // 1,0 M. If the pool changes so that nothing is refused, this fails and asks
+    // whether the guard still means anything.
+    const total = MONOPROTIC_ACIDS.length * CONCENTRATIONS.length;
+    expect(ANSWERABLE_PAIRS.length).toBeLessThan(total);
+    expect(ANSWERABLE_PAIRS.length).toBeGreaterThan(total / 2);
+    expect(
+      isAnswerable(
+        WEAK_ACIDS.find((a) => a.id === 'fenol')!,
+        0.01
+      )
+    ).toBe(false);
+    expect(
+      isAnswerable(
+        WEAK_ACIDS.find((a) => a.id === 'fenol')!,
+        1.0
+      )
+    ).toBe(true);
+  });
+
+  it('excludes every polyprotic acid from the answerable pairs, not just the pool', () => {
+    const polyprotic = WEAK_ACIDS.filter((a) => a.protons > 1);
+    expect(polyprotic.length).toBeGreaterThan(0);
+    for (const acid of polyprotic) {
+      for (const c of CONCENTRATIONS) {
+        expect(isAnswerable(acid, c), `${acid.name} @ ${c} M`).toBe(false);
+      }
+    }
+  });
+
+  it('names every acid somewhere the platform already ships it', () => {
+    // The other half of the data discipline: an invented Icelandic name is the
+    // error this repo re-committed in April after fixing it in February.
+    for (const acid of WEAK_ACIDS) {
+      expect(acid.nameEstablished, acid.name).not.toBe('');
     }
   });
 

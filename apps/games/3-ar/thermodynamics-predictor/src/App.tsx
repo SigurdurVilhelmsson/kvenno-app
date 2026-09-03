@@ -458,8 +458,8 @@ function App() {
               </p>
             </div>
             <div className="mt-3 text-center text-xs text-warm-500">
-              <strong>Námsleiðin:</strong> Gaslögmál → Jafnvægi → <u>Varmafræði</u> → pH Títrun →
-              Stuðpúðar
+              <strong>Námsleiðin:</strong> Gaslögmál → Jafnvægi → Sýrufastinn → <u>Varmafræði</u> →
+              pH Títrun → Stuðpúðar
             </div>
           </div>
         </div>

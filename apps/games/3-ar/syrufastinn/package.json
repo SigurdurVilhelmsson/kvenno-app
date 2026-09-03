@@ -1,16 +1,29 @@
 {
   "name": "@kvenno/syrufastinn",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Sýrufastinn - hvað Ka er, og hvaðan hann kemur",
   "type": "module",
   "scripts": {
-    "type-check": "tsc --noEmit"
+    "dev": "vite",
+    "build": "tsc && vite build && mv ../../../../dist/efnafraedi/3-ar/games/index.html ../../../../dist/efnafraedi/3-ar/games/syrufastinn.html",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@kvenno/shared": "workspace:*"
+    "@kvenno/shared": "workspace:*",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
-    "typescript": "^5.9.3"
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^6.0.5",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3",
+    "vite": "^8.2.1",
+    "vite-plugin-singlefile": "^2.3.3"
   }
 }

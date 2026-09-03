@@ -48,6 +48,7 @@ const games = [
   ['3-ar', 'ph-titration', 'ph-titration'],
   ['3-ar', 'gas-law-challenge', 'gas-law-challenge'],
   ['3-ar', 'equilibrium-shifter', 'equilibrium-shifter'],
+  ['3-ar', 'syrufastinn', 'syrufastinn'],
   ['3-ar', 'thermodynamics-predictor', 'thermodynamics-predictor'],
   ['3-ar', 'buffer-recipe-creator', 'buffer-recipe-creator'],
 ];

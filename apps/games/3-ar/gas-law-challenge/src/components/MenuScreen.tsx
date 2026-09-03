@@ -239,8 +239,8 @@ export function MenuScreen({
               </p>
             </div>
             <div className="mt-3 text-center text-xs text-warm-500">
-              <strong>Námsleiðin:</strong> <u>Gaslögmál</u> → Jafnvægi → Varmafræði → pH Títrun →
-              Stuðpúðar
+              <strong>Námsleiðin:</strong> <u>Gaslögmál</u> → Jafnvægi → Sýrufastinn → Varmafræði →
+              pH Títrun → Stuðpúðar
             </div>
           </div>
 
