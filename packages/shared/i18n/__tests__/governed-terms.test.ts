@@ -43,6 +43,27 @@ interface GovernedTerm {
 
 const GOVERNED_TERMS: GovernedTerm[] = [
   {
+    english: 'acid dissociation constant',
+    correct: 'sýrufasti',
+    banned: [/sýrustuð(?!púð)/i],
+    guidance:
+      'sýrufasti is masculine: nom sýrufasti, acc/dat sýrufasta, gen sýrufasta, def. sýrufastinn. The -fasti pattern is the platform-wide one (jafnvægisfasti, hraðafasti, klofningsfasti vatns) — a -stuðull form belongs to a coefficient, not a constant. The ban stops at "stuð" on purpose: stuðull is stuð+ull in the nominative and stuðl- only in the oblique cases, so a stem of "stuðl" would miss the commonest form. Two exclusions are deliberate: activity coefficient;virknistuðull is a real -stuðull term and carries no sýru- prefix, and the lookahead lets through maurasýrustuðpúði / sítrónusýrustuðpúði in buffer-recipe-creator, where the match is only the seam between the genitive of an acid name and stuðpúði.',
+  },
+  {
+    english: 'base dissociation constant',
+    correct: 'basafasti',
+    banned: [/basastuð(?!púð)/i, /basaklofningsfast/i],
+    guidance:
+      "Siggi's ruling, 2026-09-03, completing the pair with sýrufasti. Masculine, same declension. Do not build it from klofningsfasti — that name is already taken by klofningsfasti vatns (Kw), and reusing it for Kb would name two different constants the same thing.",
+  },
+  {
+    english: 'percent dissociation',
+    correct: 'klofnunarhlutfall',
+    banned: [/klofnunarprósent/i, /sundrunarhlutfall/i, /sundrunarprósent/i, /jónunarprósent/i],
+    guidance:
+      "Siggi's ruling, 2026-09-03. Neuter: nom/acc klofnunarhlutfall, dat klofnunarhlutfalli, gen klofnunarhlutfalls, def. klofnunarhlutfallið. NOTE the near neighbours in ordabok.md that make the wrong form tempting — mass percentage;massaprósenta, volume percentage;rúmmálsprósenta, percent yield;prósentuheimtur all use -prósenta. This one does not, deliberately: it is built on dissociation;klofnun, which the glossary already carries. Do not 'correct' it to klofnunarprósenta. jonunarprósenta is banned for a different reason: it is the name the February old-repo game ka-kb-jafnvaegi gave its Level 3 (docs/FEBRUARY-DECISIONS-RECOVERED.md:280), so it arrives with that game if it is ever ported — the same trap as enþalpía from calorimetry.",
+  },
+  {
     english: 'atomic number',
     correct: 'sætistala',
     banned: [/atómnúmer/i, /raðtal[ae]/i],

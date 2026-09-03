@@ -51,6 +51,7 @@ balanced equation;stillt efnajafna
 band theory;borðalíkan
 base;basi
 base anhydride;basaanhýdríð
+base dissociation constant;basafasti
 basic;basískur
 basicity;basastig
 beaker;bikarglas
@@ -406,6 +407,7 @@ particle;eind
 Pasteur pipette;Pasteur pípetta
 Pauli exclusion principle;einsetulögmál Pauli
 pear flask;peruflaska
+percent dissociation;klofnunarhlutfall
 percent yield;prósentuheimtur
 perfectly elastic;fullkomlega fjaðrandi
 period;lota

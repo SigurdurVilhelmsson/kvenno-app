@@ -287,14 +287,14 @@ Plan file: `logical-wandering-llama.md` — the Y1/Y2/Y3 iterative review cycle.
 
 **Year 1:** dimensional-analysis, lotukerfid, nafnakerfid, molmassi, jafna-jofnur, takmarkandi, lausnir, einingakedjan
 **Year 2:** hess-law, kinetics, lewis-structures, vsepr-geometry, intermolecular-forces, organic-nomenclature, redox-reactions, rafeindabygging
-**Year 3:** ph-titration, gas-law-challenge, equilibrium-shifter, thermodynamics-predictor, buffer-recipe-creator
+**Year 3:** ph-titration, gas-law-challenge, equilibrium-shifter, syrufastinn, thermodynamics-predictor, buffer-recipe-creator
 
 ### Curriculum chains
 
 ```
 Y1: Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi → Stilla efnajöfnur → Takmarkandi → Lausnir → Einingakeðjan
 Y2: Rafeindabygging → Lewis → VSEPR → IMF → Hess → Kinetics → Redox → Organic
-Y3: Gaslögmál → Jafnvægi → Varmafræði → pH Títrun → Púfferar
+Y3: Gaslögmál → Jafnvægi → Sýrufastinn → Varmafræði → pH Títrun → Stuðpúðar
 ```
 
 ## Development Guidelines
@@ -511,6 +511,57 @@ in `docs/README.md`. The largest: **B5's `Fosfór` correction was only half-appl
 and both still taught and **graded** `Fosforpentaklóríð`. A student writing the corrected name in
 Level 2 was marked wrong. If you fix a name in a game's data file, grep the components too.
 
+**Phase 5 opened 2026-09-03 with `3-ar/syrufastinn` — Sýrufastinn, the Ka/Kb node.** It is the
+21st game, and the first new Y3 game since the April restructure. Four phases (Kanna, Skilja, Æfa,
+Beita) on the `1-ar/einingakedjan` model, 61 tests. Read
+`apps/games/3-ar/syrufastinn/README.md` before touching it; what matters platform-wide:
+
+- **The gap it filled was real and specific.** `equilibrium-shifter` teaches equilibrium with **no
+  number anywhere** — `QKComparison.tsx` compares Q and K as bar widths chosen from the shift
+  direction — while `ph-titration` and `buffer-recipe-creator` both _compute_ with Ka and hand the
+  student `pKa` as given data. Nothing said what Ka is, and `sýrufasti` had zero platform hits.
+- **Grading is on the approximation, by the 5 % rule — Siggi's ruling, 2026-09-03**, and it is what
+  keeps the chain consistent: `ph-titration` stores `initialPH: 2.87` and `11.13`
+  (`data/titrations.ts:76,138`) and **both are `√(Ka·C)` values.** Grading the exact quadratic would
+  have had two adjacent nodes disagree about the same beaker. A test asserts the new game reproduces
+  both stored values.
+- **The exact root is accepted too, with no second comparison, and the arithmetic is why.**
+  `h_exact = h_approx·√(1−α)`, so the pH gap is `−½·log₁₀(1−α)` ≤ **0,0111** under the 5 % rule —
+  inside the ±0,02 tolerance. **An earlier draft of that file wrote the gap as `−log₁₀(1−α)` =
+  0,0223, missing the factor of ½, and built an unreachable branch on it.** If you touch
+  `PH_TOLERANCE`, note it may not go below ~0,012 without marking correct quadratic solutions wrong.
+- **Two defects were found in problems written the same day, both familiar shapes.** A question
+  disagreed with its own grader (it asked for Ka from pH = 2,87 but stored the tidy table value
+  1,8 × 10⁻⁵ instead of the 1,84 × 10⁻⁵ that pH implies — outside a 1 % tolerance), and a percentage
+  question carried an absolute ±0,1 pp tolerance on an answer of 0,0011 %, which accepts a bare `0`
+  — B13 exactly. **New general rule now encoded as a test:** every graded problem must reject `0`,
+  double, half and `NaN`. Assert the property; do not trust the choice of comparison mode.
+- **A tolerance note worth reusing:** Ka back-calculated from a two-decimal pH cannot be graded at
+  1 %. Ka ∝ [H⁺]², so ±0,005 in pH is 2·ln10·0,005 = **2,3 %** in Ka before the student rounds
+  anything.
+- **`chain-string.test.ts` now enforces the `Námsleiðin` chain across all six Y3 games**, and that
+  every game `build-games.mjs` emits has an entry. Step 4 of "Adding a new game" was written down
+  and never checked; a Y1 equivalent does not exist yet and would be a cheap follow-up.
+- **CLAUDE.md's own Y3 chain line said `Púfferar`** — a banned form, fixed here. It survived the
+  August sweep because `governed-terms.test.ts` scans `.tsx?` only, so no Markdown is covered.
+  `docs/FEBRUARY-DECISIONS-RECOVERED.md:118` had explicitly named this line as part of that fix.
+
+**Open after it, and wanting a ruling:** the platform names three acids inconsistently, which is why
+they are absent from the new game's pool — **HF** is `Flússýra` in `ph-titration/data/titrations.ts:87`
+but `flúorsýru` in that same game's `level2-puzzles.ts:82` and `level3-challenges.ts:303`, and
+`Flúorsýra` in `2-ar/intermolecular-forces`; **HNO₃/HNO₂** appears as `saltpéturssýra`,
+`saltpétursýru` (one `s`) and `salpeturssýru` (missing `t` and accent,
+`equilibrium-shifter/data/equilibria.ts:415`); and **H₃PO₄** as both `Fosfórsýra` and the accentless
+`fosforsýru` (`equilibria.ts:856`) — that last one is not a new question but a **missed site of the
+existing B5 `Fosfór` ruling**. Also `brennisteinsýru` with one `s` (`2-ar/hess-law`) and
+`Benzoesýrustuðpúði` with a `z` (`buffer-recipe-creator/data/problems.ts:146`).
+
+**Still open in Phase 5, deliberately untouched:** `equilibrium-shifter` is still entirely
+qualitative. The scope ruling was the weak-acid case only, so general Kc/Kp and ICE for arbitrary
+equilibria remain unbuilt. Also unverified: **every Ka value in the new game is Brown et al.
+Appendix D and has not been checked against the school's own copy**, since the corpus is not
+reachable from a cloud session.
+
 **No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
 now fixed, as are the three above, and each carries a test that fails against the pre-fix code. What
 is left is enrichment and unfinished decisions, not defects — the work order is
@@ -557,6 +608,9 @@ since a wrong term parked there ships the moment someone wires it up.
 | decomposition | `niðurbrot` | — | **Siggi's ruling, 2026-08-27**, beside the existing `decomposition reaction;niðurbrotsefnahvarf`. Neuter. The one shipped use (`hess-law/src/i18n.ts:97`, `fyrir niðurbrot kalsíumkarbónats`) already agrees with it. No banned form, so no test row |
 | synthesis / synthesis reaction | `samruni` / `samrunaefnahvarf` | — | **Siggi's ruling, 2026-08-29**, completing the five reaction-type names. Nothing shipped uses either, so no banned form and no test row. **Note the neighbour:** `ordabok.md` already carries `nuclear fusion;kjarnasamruni`, which is the same root qualified — `samruni` alone is synthesis, `kjarnasamruni` stays nuclear fusion |
 | single / double displacement | `einfalt skiptihvarf` / `tvöfalt skiptihvarf` | — | **Siggi's ruling, 2026-08-29.** Nothing shipped uses either. **The qualifier is load-bearing:** `ordabok.md` already carries `substitution;skiptihvarf`, so bare `skiptihvarf` means substitution and only the qualified forms name the displacement reactions. Do not shorten either in prose |
+| acid dissociation constant | `sýrufasti` | `sýrustuðull` | **Siggi's ruling implicit in the 2026-09-03 Ka/Kb rulings**, and `ordabok.md` already carried `acid dissociation constant;sýrufasti`. Masculine — nom `sýrufasti`, acc/dat/gen `sýrufasta`, def. `sýrufastinn`. Had **zero** occurrences platform-wide until `3-ar/syrufastinn` shipped: the platform used Ka in three games without ever naming it. The `-fasti` pattern is the platform-wide one (`jafnvægisfasti`, `hraðafasti`, `myndunarfasti`, `klofningsfasti vatns`); a `-stuðull` names a coefficient, not a constant. **The ban stops at `stuð`, not `stuðl`** — `stuðull` is `stuð`+`ull` in the nominative and `stuðl-` only in the oblique cases, so the shorter stem would have missed the commonest form (found by probing, and the same class of miss as the accentless `anoða`). A lookahead exempts `maurasýrustuðpúði` / `sítrónusýrustuðpúði` in `buffer-recipe-creator`, where the match is only the seam between an acid name's genitive and `stuðpúði` |
+| base dissociation constant | `basafasti` | `basastuðull`, `basaklofningsfasti` | **Siggi's ruling, 2026-09-03**, completing the pair. Masculine, same declension as `sýrufasti`. Now `base dissociation constant;basafasti` in `ordabok.md`, where there had been no entry at all. **Do not build it from `klofningsfasti`:** that name is taken by `klofningsfasti vatns` (Kw), and reusing it for Kb would name two different constants the same thing |
+| percent dissociation | `klofnunarhlutfall` | `klofnunarprósenta`, `sundrunarhlutfall`, `sundrunarprósenta`, **`jónunarprósenta`** | **Siggi's ruling, 2026-09-03.** Neuter — nom/acc `klofnunarhlutfall`, dat `klofnunarhlutfalli`, gen `klofnunarhlutfalls`, def. `klofnunarhlutfallið`. **Read this row before 'correcting' it:** `ordabok.md`'s near neighbours `mass percentage;massaprósenta`, `volume percentage;rúmmálsprósenta` and `percent yield;prósentuheimtur` all use `-prósenta`, so `klofnunarprósenta` looks like the consistent form. It is not the ruling — this one is built on the existing `dissociation;klofnun`. `jónunarprósenta` is banned for a different reason: it is what the February old-repo game `ka-kb-jafnvaegi` called its Level 3 (`docs/FEBRUARY-DECISIONS-RECOVERED.md:280`), so it arrives with that game if it is ever ported — the same trap as `enþalpía` from `calorimetry` |
 `sjálfvirkur` has zero hits and is not the word for spontaneous; do not grep for it.
 
 The `stilla` rename swept `1-ar/jafna-jofnur` (6 files), the `Námsleiðin` chain string in every

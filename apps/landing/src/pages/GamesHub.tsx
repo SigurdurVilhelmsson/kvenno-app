@@ -135,6 +135,11 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
         slug: 'equilibrium-shifter',
       },
       {
+        title: 'Sýrufastinn',
+        description: 'Hvað Ka er, hvaðan hann kemur og hvenær nálgunin má nota',
+        slug: 'syrufastinn',
+      },
+      {
         title: 'Varmafræði spámaður',
         description: 'Læra um efnahvörf og varmafræði',
         slug: 'thermodynamics-predictor',
