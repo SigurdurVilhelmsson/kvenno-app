@@ -147,7 +147,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">
-      <Header variant="game" backHref="/efnafraedi/2-ar/" gameTitle="Lífræn Nafnagift" />
+      <Header variant="game" backHref="/efnafraedi/2-ar/" gameTitle="Lífræn nafnagift" />
       <div className="min-h-screen p-4 md:p-8">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
           <p className="text-center text-warm-600 mb-8">

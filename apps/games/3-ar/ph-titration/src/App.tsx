@@ -156,7 +156,7 @@ function App() {
 
       <FadePresence show={activeLevel === 'menu'} exitDuration={200}>
         <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
-          <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="pH Titrun" />
+          <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="pH Títrun" />
           <div className="min-h-screen p-4 md:p-8">
             <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
               <p className="text-warm-600 mb-4">

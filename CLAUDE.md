@@ -307,13 +307,21 @@ Y3: Gaslögmál → Jafnvægi → Sýrufastinn → Varmafræði → pH Títrun �
 4. Update the `Námsleiðin` chain string in every sibling game's `App.tsx` for that year (`src/components/MenuScreen.tsx` for gas-law-challenge)
 5. **Give the game one name and use it in all three places** — the hub card in step 3, the
    `<title>` in `index.html` (suffixed `- Kvennaskólinn`), and the `gameTitle` on the `Header`.
-   Nothing checks this yet, and **10 of the 22 games disagree with themselves**: two carry two
-   different names outright (`molmassi` is `Mólhugtakið` on the hub and `Molmassi Leikur` in its
-   tab; `nafnakerfid` is `Nafnakerfið` against `Nafnapör - Efnanöfn`), and the rest drift on
-   capitals, accents or the suffix. Full table and what is ruled: `docs/plans/2026-09-19-session-record.md`.
-   **`gas-law-challenge` was the worst case and is fixed** — it said `Gas Law Challenge`, in
-   English, at four student-facing sites, against this file's first rule. It is `Gaslögmál` now,
-   which is what its hub card and every Y3 chain string already called it
+   **`packages/shared/i18n/__tests__/game-titles-agree.test.ts` enforces it**, with the hub card as
+   the source of truth since it is the only one of the three a student reads before choosing the
+   game. It also bans `Gas Law Challenge` by name and the `| Kvennaskólinn` suffix form.
+   **`2-ar/rafeindabygging` is the one header exemption**: it sets `gameTitle` per screen
+   (`Skammtatölur`, `Rafeindasmíð`, …) so the header names the sub-topic, which is deliberate — and
+   the test asserts the waiver is still earned, so it cannot outlive its reason
+
+   The test exists because **10 of the 22 games disagreed with themselves** on 2026-09-19 — details
+   in `docs/plans/2026-09-19-session-record.md`. All are now fixed. Three were more than drift:
+   `gas-law-challenge` said `Gas Law Challenge` in English at four student-facing sites;
+   `buffer-recipe-creator`'s tab read `Púfferuppskrift`, a term banned since August; and two games
+   carried two different names outright. **Siggi ruled those two on 2026-09-19 — `Mólhugtakið` for
+   `molmassi` and `Nafnakerfið` for `nafnakerfid`, the hub-card name in both cases.** That ruling is
+   what made the test writable: it needs to know which name is right, and a test cannot settle a
+   naming question, only hold one that is settled
 
 ### Adding a new experiment to lab reports
 
