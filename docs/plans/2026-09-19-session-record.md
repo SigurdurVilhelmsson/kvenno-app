@@ -13,14 +13,15 @@ This file is committed for that reason.
 
 ## What merged
 
-| PR                                                               | What                                                                                |
-| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| [#46](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/46) | Prettier backlog cleared (83 files); dead `deploy.yml` removed                      |
-| [#47](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/47) | Five acid names ruled + guarded; CI format gate; Y1 chain test; generated SPA index |
-| [#48](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/48) | Buffer recipes derived instead of stored; six Appendix D corrections                |
-| [#49](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/49) | TRIS problems dropped; `flússýra` added to Sýrufastinn                              |
-| [#51](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/51) | HNO₂ and HCN added to Sýrufastinn; acid names now decline                           |
-| [#52](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/52) | i18n switcher stripped from the eight games that translated nothing                 |
+| PR                                                               | What                                                                                  |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| [#46](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/46) | Prettier backlog cleared (83 files); dead `deploy.yml` removed                        |
+| [#47](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/47) | Five acid names ruled + guarded; CI format gate; Y1 chain test; generated SPA index   |
+| [#48](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/48) | Buffer recipes derived instead of stored; six Appendix D corrections                  |
+| [#49](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/49) | TRIS problems dropped; `flússýra` added to Sýrufastinn                                |
+| [#51](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/51) | HNO₂ and HCN added to Sýrufastinn; acid names now decline                             |
+| [#52](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/52) | i18n switcher stripped from the eight games that translated nothing                   |
+| [#53](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/53) | Gas-law game renamed to Icelandic; `Púfferuppskrift` swept; term scan widened to HTML |
 
 Suite went **1948 → 2064** tests (plus 46 server). `pnpm check-all` passes all three legs for the
 first time, and `format:check` is now a CI step so it stays that way.
@@ -117,6 +118,8 @@ future one-`s` `saltpétursýrlingur` without touching the correct double-`s` fo
 
 ### Ruled but not built
 
+- **Game names: which one wins for `molmassi` and `nafnakerfid`** — see the section above. Blocks a
+  title-agreement test that would prevent the whole class of drift.
 - **Trim Sýrufastinn's Beita phase** — ruled 2026-09-19. Adding HNO₂ took it from 12 problems to
   16, twelve of them one generated template differing only in acid and concentration.
   `APPLY_PROBLEMS` appends every member of `RULE_BREAKING_PROBLEMS`; that is the one line to
@@ -162,6 +165,50 @@ Recorded because the wrong versions were stated confidently before being checked
   lesson running in reverse — **check the reference tables, not just the data.**
 
 ---
+
+## Found last, and the largest thing still open
+
+**Ten of the twenty-two games disagree with themselves about their own name.** Found while fixing
+the gas-law title, by comparing three surfaces per game: the hub card in
+`apps/landing/src/pages/GamesHub.tsx`, the browser-tab `<title>` in the game's `index.html`, and the
+`gameTitle` on its `Header`.
+
+| Game                       | Hub card              | Browser tab                                   | In-game header          |
+| -------------------------- | --------------------- | --------------------------------------------- | ----------------------- |
+| `molmassi`                 | Mólhugtakið           | **Molmassi Leikur**                           | —                       |
+| `nafnakerfid`              | Nafnakerfið           | **Nafnapör - Efnanöfn**                       | —                       |
+| `buffer-recipe-creator`    | Stuðpúðasmíði         | ~~Púfferuppskrift~~ (fixed)                   | Stuðpúðasmíði           |
+| `ph-titration`             | pH Títrun             | pH Títrun                                     | **pH Titrun**           |
+| `takmarkandi`              | Takmarkandi hvarfefni | Takmarkandi **H**varfefni                     | —                       |
+| `redox-reactions`          | Oxun og afoxun        | Oxun og **A**foxun                            | —                       |
+| `organic-nomenclature`     | Lífræn nafnagift      | Lífræn **N**afnagift                          | Lífræn **N**afnagift    |
+| `thermodynamics-predictor` | Varmafræði spámaður   | Varmafræði **S**pámaður                       | Varmafræði **S**pámaður |
+| `kinetics`                 | Hvarfhraði            | Hvarfhraði - Efnahvörfum **\|** Kvennaskólinn | Hvarfhraði              |
+| `lewis-structures`         | Lewis-formúlur        | Lewis-formúlur **\|** Kvennaskólinn           | Lewis-formúlur          |
+| `rafeindabygging`          | Rafeindabygging       | Rafeindabygging **\|** Kvennó                 | per-screen (by design)  |
+
+Four distinct problems are tangled here, and **only the first two are decided**:
+
+1. **A banned term.** `Púfferuppskrift` — `púffer` has been banned since August. **Fixed**, and the
+   root cause with it: `governed-terms.test.ts` scanned `.tsx?` only, so no `index.html` had ever
+   been read. It now scans `.html` too, verified both ways (the old scan passes with
+   `Púfferuppskrift` present; the new one fails). **Markdown is still uncovered** — the same blind
+   spot that let CLAUDE.md's own Y3 chain line say `Púfferar` until September.
+2. **An English name**, `Gas Law Challenge`, at four student-facing sites. **Fixed** to `Gaslögmál`,
+   which is not a coinage: it is the hub card, the chain node in all six Y3 games, and this game's
+   own chain chip. A code comment in `types.ts:2` still says it; not user-facing, left alone.
+3. **Two games that carry two different names** — `molmassi` (Mólhugtakið vs Molmassi Leikur, the
+   second also missing the accent on `Mólmassi`) and `nafnakerfid` (Nafnakerfið vs Nafnapör -
+   Efnanöfn). **Siggi's call which name wins**, so untouched. This is the one with real
+   consequences: the tab title is what a student sees in a pinned bookmark.
+4. **Drift, not disagreement** — mid-title capitals that Icelandic does not take (`Hvarfefni`,
+   `Afoxun`, `Nafnagift`, `Spámaður`), a missing accent in `pH Titrun`, and three tabs using
+   `| Kvennaskólinn` / `| Kvennó` where the other nineteen use `- Kvennaskólinn`. Mechanical, and
+   worth one sweep once (3) is decided.
+
+**A title-agreement test would catch all of it** and does not exist. It is cheap — the survey above
+was a 20-line script — but it cannot be written before (3) is ruled, because it needs to know which
+name is right.
 
 ## Two operational facts worth keeping
 

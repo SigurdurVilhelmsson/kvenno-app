@@ -21,13 +21,13 @@ export function MenuScreen({
   return (
     <div>
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
-        <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="Gas Law Challenge" />
+        <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="Gaslögmál" />
         <div className="min-h-screen">
           <main className="max-w-5xl mx-auto px-4 py-8">
             <div className="bg-white rounded-xl shadow-lg p-8">
               <div className="text-center mb-8">
                 <p className="text-lg text-warm-600 mb-2">
-                  Læðu að leysa verkefni um tilvalin lofttegundalögmál: PV = nRT
+                  Lærðu að leysa verkefni um tilvalin lofttegundalögmál: PV = nRT
                 </p>
                 <p className="text-sm text-warm-500">
                   {questions.length} spurningar í boði • Auðvelt, Miðlungs, Erfitt
