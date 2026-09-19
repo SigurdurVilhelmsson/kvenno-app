@@ -52,9 +52,9 @@ const GOVERNED_TERMS: GovernedTerm[] = [
   {
     english: 'nitric acid',
     correct: 'saltpéturssýra',
-    banned: [/saltpétursýr/i, /salpétur/i, /saltpetur/i, /salpetur/i],
+    banned: [/saltpétursýr/i, /salpétur/i, /saltpetur(?!ssyrlingur)/i, /salpetur/i],
     guidance:
-      "Siggi's ruling, 2026-09-19. The genitive of saltpétur is saltpéturs, so the compound takes a double s: saltpéturssýra. The platform shipped three spellings — saltpéturssýra (correct), saltpétursýru (one s), and salpeturssýru (missing both the t and the accent). The four banned forms cover single-s, missing-t, missing-accent and missing-both; none of them matches the correct spelling.",
+      "Siggi's ruling, 2026-09-19. The genitive of saltpétur is saltpéturs, so the compound takes a double s: saltpéturssýra. The platform shipped three spellings — saltpéturssýra (correct), saltpétursýru (one s), and salpeturssýru (missing both the t and the accent). The four banned forms cover single-s, missing-t, missing-accent and missing-both; none of them matches the correct spelling. The lookahead exempts one thing: the accent-stripped IDENTIFIER saltpeturssyrlingur in 3-ar/syrufastinn's acid data, added 2026-09-19. Every id in that file transliterates its Icelandic name without accents (maurasyra, ediksyra, flussyra), so the ASCII stem there is the convention rather than a misspelling — the same kind of carve-out the sýrufasti row makes for maurasýrustuðpúði. Accentless PROSE is still banned: saltpeturssyra and saltpeturssýru both still fail.",
   },
   {
     english: 'sulfuric acid',
@@ -279,6 +279,29 @@ describe('governed Icelandic terminology', () => {
       ).toEqual([]);
     }
   );
+});
+
+describe('the one lookahead carve-out', () => {
+  // A negative lookahead is the only way this file exempts anything, and an
+  // exemption that is wider than intended silently stops enforcing a ruling.
+  // So each one is probed directly: the thing it exempts, and the things it
+  // must still catch.
+  const nitric = GOVERNED_TERMS.find((t) => t.english === 'nitric acid')!;
+  const hits = (word: string) => nitric.banned.some((b) => b.test(word));
+
+  it('lets the accent-stripped identifier through', () => {
+    // 3-ar/syrufastinn's ids transliterate without accents by convention.
+    expect(hits('saltpeturssyrlingur')).toBe(false);
+    expect(hits('saltpéturssýrlingur')).toBe(false); // the ruled word itself
+    expect(hits('saltpéturssýra')).toBe(false);
+  });
+
+  it('still catches every misspelling it was written for', () => {
+    expect(hits('saltpétursýru')).toBe(true); // one s
+    expect(hits('salpeturssýru')).toBe(true); // no t, no accent
+    expect(hits('saltpeturssýru')).toBe(true); // no accent
+    expect(hits('saltpeturssyra')).toBe(true); // accentless prose, not an id
+  });
 });
 
 describe('the ruling this test enforces', () => {

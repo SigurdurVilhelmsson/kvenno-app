@@ -516,7 +516,7 @@ Level 2 was marked wrong. If you fix a name in a game's data file, grep the comp
 
 **Phase 5 opened 2026-09-03 with `3-ar/syrufastinn` — Sýrufastinn, the Ka/Kb node.** It is the
 21st game, and the first new Y3 game since the April restructure. Four phases (Kanna, Skilja, Æfa,
-Beita) on the `1-ar/einingakedjan` model, 61 tests. Read
+Beita) on the `1-ar/einingakedjan` model, 76 tests. Read
 `apps/games/3-ar/syrufastinn/README.md` before touching it; what matters platform-wide:
 
 - **The gap it filled was real and specific.** `equilibrium-shifter` teaches equilibrium with **no
@@ -549,15 +549,15 @@ Beita) on the `1-ar/einingakedjan` model, 61 tests. Read
   August sweep because `governed-terms.test.ts` scans `.tsx?` only, so no Markdown is covered.
   `docs/FEBRUARY-DECISIONS-RECOVERED.md:118` had explicitly named this line as part of that fix.
 
-**Open after it, and wanting a ruling:** the platform names three acids inconsistently, which is why
-they are absent from the new game's pool — **HF** is `Flússýra` in `ph-titration/data/titrations.ts:87`
-but `flúorsýru` in that same game's `level2-puzzles.ts:82` and `level3-challenges.ts:303`, and
-`Flúorsýra` in `2-ar/intermolecular-forces`; **HNO₃/HNO₂** appears as `saltpéturssýra`,
-`saltpétursýru` (one `s`) and `salpeturssýru` (missing `t` and accent,
-`equilibrium-shifter/data/equilibria.ts:415`); and **H₃PO₄** as both `Fosfórsýra` and the accentless
-`fosforsýru` (`equilibria.ts:856`) — that last one is not a new question but a **missed site of the
-existing B5 `Fosfór` ruling**. Also `brennisteinsýru` with one `s` (`2-ar/hess-law`) and
-`Benzoesýrustuðpúði` with a `z` (`buffer-recipe-creator/data/problems.ts:146`).
+**Opened by it and now closed — the five acid names the platform spelled more than one way.** All
+ruled 2026-09-19, swept, and each given a `governed-terms.test.ts` row: **HF** `flússýra` (was also
+`Flúorsýra`/`flúorsýru`, two words inside `ph-titration` alone), **HNO₃** `saltpéturssýra` (was also
+`saltpétursýru` and `salpeturssýru`), **H₃PO₄** `fosfórsýra` (the accentless `fosforsýru` at
+`equilibrium-shifter/data/equilibria.ts:856` was a missed site of the B5 ruling, not a new
+question), **H₂SO₄** `brennisteinssýra` (was `brennisteinsýru` in `2-ar/hess-law`), and **benzoic**
+`bensósýra` (was `Benzoesýru`/`Benzoesýrustuðpúði`). `ordabok.md` had carried **no acid names at
+all** before this; it now carries these five. **The HF ruling went against platform frequency**,
+which stood 3 to 1 the other way — occurrence counts are evidence, not the decision.
 
 **Still open in Phase 5, deliberately untouched:** `equilibrium-shifter` is still entirely
 qualitative. The scope ruling was the weak-acid case only, so general Kc/Kp and ICE for arbitrary
@@ -576,19 +576,35 @@ rulings came out of that check and are **decided but not yet built**:
   Level 2 and one Level 3 puzzle that used #13, so **both levels now serve 5 puzzles rather than 6**.
   `appendix-d-conformance.test.ts` asserts TRIS does not return and carries **no exemption list** —
   apply the same test to anything new: a constant with no Appendix D row does not ship.
-- **Sýrufastinn's pool: 6 → 7, not 9.** Siggi ruled all three additions on 2026-09-19 and **only
-  HF landed** (2026-09-19, pool is now 7). D.1 settled the Ka disagreements that had excluded the
-  other two — HNO₂ is 4,5 × 10⁻⁴ (against a competing 5,6 × 10⁻⁴) and HCN is 4,9 × 10⁻¹⁰ (against
-  6,2 × 10⁻¹⁰) — **so what blocks them now is naming, not chemistry.** `ordabok.md` has no entry for
-  nitrous acid, the nitrite ion, hydrocyanic acid or the cyanide ion, and the platform ships none of
-  those words; coining them is what this file's own rule forbids. **Four terms are needed before
-  those two can ship: HNO₂, NO₂⁻, HCN, CN⁻.** The `-sýrlingur` pattern for a lower oxidation state
-  has exactly one platform precedent (`Brennisteinssýrling` for H₂SO₃, `ph-titration/data/titrations.ts:166`
-  — and note that is the accusative where every sibling `name:` field is nominative), which is
-  suggestive but not an authority. **HF needed no new term:** `flússýra` was ruled that day and is in
-  `ordabok.md`, and `flúoríð` already ships six times in `1-ar/nafnakerfid`. HF is also the pool's
-  first acid whose α breaks the 5 % rule across most of the range (2,6 % at 1,0 M to 22,9 % at
-  0,01 M), which is deliberate — the Beita phase exists to cover pairs where the approximation fails.
+- **Sýrufastinn's pool: 6 → 9, all three additions ruled and shipped 2026-09-19.** D.1 settled the
+  Ka disagreements that had excluded two of them — HNO₂ is 4,5 × 10⁻⁴ (against a competing
+  5,6 × 10⁻⁴) and HCN is 4,9 × 10⁻¹⁰ (against 6,2 × 10⁻¹⁰) — after which what blocked them was
+  naming, not chemistry: `ordabok.md` had no entry for nitrous acid, the nitrite ion, hydrocyanic
+  acid or the cyanide ion, and coining them is what this file's own rule forbids. **Siggi ruled the
+  four terms the same day: `saltpéturssýrlingur` (HNO₂), `nítrítjón` (NO₂⁻), `vetnissýaníð`
+  (`blásýra`, HCN) and `sýaníðjón` (CN⁻)**, all now in `ordabok.md`. They get **no
+  `governed-terms.test.ts` row**, because no wrong form ships — nothing on the platform said these
+  words at all — the same treatment `brunaefnahvarf` and `niðurbrot` got. The near miss is already
+  covered: the nitric-acid row's `/saltpétursýr/i` catches a future one-`s` `saltpétursýrlingur`
+  without touching the correct double-`s` form. **The nitric-acid row did need one carve-out**,
+  found by the test rather than by inspection: its accentless ban `/saltpetur/i` matched the acid's
+  own **id**, `saltpeturssyrlingur`, because every id in that data file transliterates its Icelandic
+  name without accents (`maurasyra`, `ediksyra`, `flussyra`). The ban is now
+  `/saltpetur(?!ssyrlingur)/i`, and a dedicated test probes the carve-out from both sides — an
+  exemption wider than intended stops enforcing a ruling silently. **HF needed no new term:** `flússýra` was ruled that
+  day and `flúoríð` already ships six times in `1-ar/nafnakerfid`. HF and HNO₂ both break the 5 %
+  rule across much of the range (HF: 2,6 % at 1,0 M to 22,9 % at 0,01 M), which is deliberate — the
+  Beita phase exists to cover pairs where the approximation fails, and it now serves 16 problems
+  rather than 12 because of it.
+- **Adding those two acids exposed a grammar defect in the game's question templates**, and the
+  fix is the pattern to copy. The templates interpolated `acid.name.toLowerCase()` after `af`,
+  which governs the dative, so Æfa and every Beita rule-breaker read `lausn af flússýra`. It was
+  invisible while every acid in the pool was a feminine `-sýra` and unmissable once a neuter
+  (`vetnissýaníð`) and a masculine (`saltpéturssýrlingur`) joined. `WeakAcid` now carries
+  `nameDative` and `nameGenitive`; two tests in `problems.test.ts` hold the templates to them and
+  were verified to fail against the old interpolation. **This is the concrete case behind this
+  file's standing warning that a term swap in Icelandic is not a string swap** — if a data file
+  feeds names into sentence templates, the cases belong in the data.
 
 **Fixed 2026-09-19 — `buffer-recipe-creator` Level 2 graded against its own broken arithmetic.**
 `data/problems.ts` stored `correctAcidMass`, `correctBaseMass`, `correctAcidMoles`, `correctBaseMoles`

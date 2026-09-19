@@ -210,6 +210,30 @@ describe('the shipped acid data', () => {
     }
   });
 
+  it('declines every name, because the question templates need oblique cases', () => {
+    // `lausn af ediksýra` is not Icelandic. The pool spans three genders, so the
+    // nominative cannot be massaged into the dative by rule — CLAUDE.md's
+    // standing warning that a term swap in Icelandic is not a string swap.
+    for (const acid of WEAK_ACIDS) {
+      expect(acid.nameDative, acid.name).not.toBe('');
+      expect(acid.nameGenitive, acid.name).not.toBe('');
+      expect(acid.nameDative, `${acid.name} dative is capitalised`).toBe(
+        acid.nameDative.toLowerCase()
+      );
+      expect(acid.nameGenitive, `${acid.name} genitive is capitalised`).toBe(
+        acid.nameGenitive.toLowerCase()
+      );
+      // Every name in this pool declines, so no oblique form may equal the
+      // nominative — that is the shape the bug took before this test existed.
+      expect(acid.nameDative, `${acid.name} dative is the nominative`).not.toBe(
+        acid.name.toLowerCase()
+      );
+      expect(acid.nameGenitive, `${acid.name} genitive is the nominative`).not.toBe(
+        acid.name.toLowerCase()
+      );
+    }
+  });
+
   it('has unique ids and formulas', () => {
     expect(new Set(WEAK_ACIDS.map((a) => a.id)).size).toBe(WEAK_ACIDS.length);
     expect(new Set(WEAK_ACIDS.map((a) => a.formula)).size).toBe(WEAK_ACIDS.length);
@@ -226,7 +250,9 @@ describe('every Ka traces to Brown Appendix D', () => {
     ediksyra: 1.8e-5, // acetic
     propansyra: 1.3e-5, // propionic
     flussyra: 6.8e-4, // hydrofluoric
+    saltpeturssyrlingur: 4.5e-4, // nitrous
     fenol: 1.3e-10, // phenol
+    vetnissyanid: 4.9e-10, // hydrocyanic
     kolsyra: 4.3e-7, // carbonic Ka1
     oxalsyra: 5.9e-2, // oxalic Ka1
   };
@@ -238,6 +264,18 @@ describe('every Ka traces to Brown Appendix D', () => {
   it.each(WEAK_ACIDS.map((a) => [a.id, a.name] as const))('%s (%s)', (id) => {
     const acid = WEAK_ACIDS.find((a) => a.id === id)!;
     expect(acid.ka, `${id} is not its Appendix D value`).toBe(D1[id]);
+  });
+
+  it('HNO2 and HCN are in, with the values D.1 settled', () => {
+    // Both were held out until 2026-09-19: first because two sources disagreed
+    // about their Ka, then — once D.1 settled that — because the platform had no
+    // Icelandic name for either. Siggi ruled the four terms that day.
+    const hno2 = WEAK_ACIDS.find((a) => a.id === 'saltpeturssyrlingur')!;
+    expect(hno2.ka).toBe(4.5e-4); // not the competing 5.6e-4
+    expect(hno2.conjugateBaseName).toBe('nítrítjón');
+    const hcn = WEAK_ACIDS.find((a) => a.id === 'vetnissyanid')!;
+    expect(hcn.ka).toBe(4.9e-10); // not the competing 6.2e-10
+    expect(hcn.conjugateBaseName).toBe('sýaníðjón');
   });
 
   it('HF is in the pool, and is the case that breaks the 5 % rule', () => {

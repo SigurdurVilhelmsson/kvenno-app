@@ -5,7 +5,7 @@ Year 3, chain position 3: **Gaslögmál → Jafnvægi → _Sýrufastinn_ → Var
 Phase 5 of `docs/plans/2026-08-16-games-roadmap.md`, the Ka/Kb gap. Started 2026-08-29,
 finished 2026-09-03 once the four blocking rulings came in.
 
-**Status: complete and registered.** Four phases, 61 tests, in `build-games.mjs`, on the
+**Status: complete and registered.** Four phases, 76 tests, in `build-games.mjs`, on the
 GamesHub card, and in the `Námsleiðin` chain of all five sibling Y3 games.
 
 ## What it fills, measured
@@ -103,29 +103,52 @@ student rounds anything. `KA_FROM_PH_TOLERANCE` is 5 %.
 textbook the platform already cites by name on `buffer-recipe-creator`'s menu, and the source
 whose acetic-acid Ka `ph-titration` is already computing with.
 
-**Not verified against the school's own copy.** `~/dev/repos/namsbokasafn-efni` is not
-reachable from a cloud session. The pool is therefore restricted to acids whose Ka does not
-disagree between sources — HNO₂ (4,5 vs 5,6 × 10⁻⁴) and HCN (6,2 vs 4,9 × 10⁻¹⁰) are absent
-for that reason. **This is the one thing worth checking before the game is put in front of a
-class.**
+**Verified 2026-09-19.** Siggi supplied Tables D.1 and D.2 directly and every Ka here matches
+D.1 exactly, so the earlier "not verified against the school's own copy" caveat is retired.
+That check also settled the two disagreements that had kept acids out — HNO₂ (4,5 against a
+competing 5,6 × 10⁻⁴) and HCN (4,9 against 6,2 × 10⁻¹⁰) — and both are now in the pool, which
+is **nine acids, seven of them monoprotic**.
 
-Every Icelandic name already ships elsewhere on the platform; `nameEstablished` records
-where, and a test requires it non-empty.
+`appendix-d-conformance` lives inside `ka.test.ts`: its `D1` record must list every acid in
+the pool, so a new acid cannot be added without stating the Appendix D row it came from.
 
-### Names the platform cannot agree on
+Every Icelandic name either already ships elsewhere on the platform or carries the ruling that
+established it; `nameEstablished` records which, and a test requires it non-empty.
 
-Three acids that would otherwise belong are excluded because the platform contradicts
-itself, and these want a ruling:
+### Names decline, so the data carries the cases
 
-| Acid      | Forms shipped                                                                                                                                                                                                                               |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| HF        | `Flússýra` (`ph-titration/data/titrations.ts:87`), `Flúorsýra` (`2-ar/intermolecular-forces/components/Level1.tsx:426`), `flúorsýru` (`ph-titration/data/level2-puzzles.ts:82`, `level3-challenges.ts:303`) — **two words inside one game** |
-| HNO₂/HNO₃ | `saltpéturssýra`, `saltpétursýru` (one `s`, `ph-titration/data/level2-puzzles.ts:52`), `salpeturssýru` (missing `t` and accent, `equilibrium-shifter/data/equilibria.ts:415`)                                                               |
-| H₃PO₄     | `Fosfórsýra` and `fosforsýru` (accentless, `equilibrium-shifter/data/equilibria.ts:856`) — B5 already ruled `Fosfór`, so this is a missed site of an existing ruling, not a new question                                                    |
+`WeakAcid` has `nameDative` and `nameGenitive` beside `name`. Icelandic needs the dative after
+`af` (`lausn af ediksýru`, `af fenóli`, `af vetnissýaníði`) and the genitive after `samoka basa`,
+and the pool spans all three genders — a rule that got `-sýra` right would still print
+`af vetnissýaníð`.
 
-Also spotted, unrelated to this game: `brennisteinsýru` with one `s`
-(`2-ar/hess-law/components/Level2.tsx:177`), and `Benzoesýrustuðpúði`
-(`buffer-recipe-creator/data/problems.ts:146`) with a `z`.
+This was a live defect until HNO₂ and HCN arrived: the templates interpolated
+`name.toLowerCase()`, so the Æfa screen and every Beita rule-breaker read `lausn af flússýra`.
+It was invisible while every acid was a feminine `-sýra` and obvious the moment a neuter and a
+masculine joined them. Two tests in `problems.test.ts` now hold the templates to the declined
+forms; both were verified to fail against the old interpolation.
+
+### Names the platform could not agree on — all ruled, 2026-09-19
+
+This section used to list three acids kept out of the pool because the platform spelled them
+more than one way, plus two strays. **All five were ruled and swept in the same week**, and each
+now has a row in `governed-terms.test.ts`, so the wrong forms cannot come back:
+
+| Acid     | Ruled              | Was also shipped as                                            |
+| -------- | ------------------ | -------------------------------------------------------------- |
+| HF       | `flússýra`         | `Flúorsýra`, `flúorsýru` — **two words inside one game**       |
+| HNO₃     | `saltpéturssýra`   | `saltpétursýru` (one `s`), `salpeturssýru` (no `t`, no accent) |
+| H₃PO₄    | `fosfórsýra`       | `fosforsýru` — a missed site of the 2026-08-26 B5 ruling       |
+| H₂SO₄    | `brennisteinssýra` | `brennisteinsýru` (one `s`)                                    |
+| C₆H₅COOH | `bensósýra`        | `Benzoesýru`, `Benzoesýrustuðpúði`                             |
+
+The HF ruling is the one to remember: it went **against platform frequency**, which stood 3 to 1
+the other way. Counting occurrences is not how this is decided.
+
+HNO₂ and HCN were a different problem — not two spellings but none. `ordabok.md` had no entry
+for either acid or either conjugate base, so they waited on the four terms Siggi ruled the same
+day: `saltpéturssýrlingur`, `nítrítjón`, `vetnissýaníð` (`blásýra`), `sýaníðjón`. They carry no
+banned form, because nothing had ever spelled them wrong — nothing had spelled them at all.
 
 ## Guards on the data
 
@@ -150,7 +173,7 @@ src/engine/grade.ts           the grading ruling, and the tolerances it implies
 src/data/acids.ts             acids, with protons / nameEstablished / answerability guards
 src/data/problems.ts          the Æfa and Beita sets, generated from the engine
 src/components/               ExploreScreen, UnderstandScreen, PracticeScreen, ApplyScreen, KlofnunBar
-src/__tests__/                61 tests across ka, grade, problems, chain-string
+src/__tests__/                76 tests across ka, grade, problems, chain-string
 ```
 
 ## Tests

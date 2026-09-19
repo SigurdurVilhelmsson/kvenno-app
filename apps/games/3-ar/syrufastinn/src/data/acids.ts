@@ -14,21 +14,30 @@
  *
  * That check also settled the two Ka disagreements that had kept acids out: D.1
  * gives HNO₂ 4,5 × 10⁻⁴ (against a competing 5,6 × 10⁻⁴) and HCN 4,9 × 10⁻¹⁰
- * (against 6,2 × 10⁻¹⁰). **Neither is in the pool yet, and the reason is now
- * naming rather than chemistry:** `ordabok.md` has no entry for nitrous acid, for
- * the nitrite ion, or for anything cyanide, and the platform ships none of those
- * words. Coining them here is exactly what this repo's glossary rule forbids, so
- * they wait on a ruling. **HF was the third**, and it is in — its name was ruled
- * on 2026-09-19 (`flússýra`) and `flúoríð` already ships in `1-ar/nafnakerfid`.
+ * (against 6,2 × 10⁻¹⁰). **Both are now in**, together with HF, which makes the
+ * pool nine. What had held HNO₂ and HCN back after the Ka question closed was
+ * naming, not chemistry: `ordabok.md` had no entry for nitrous acid, the nitrite
+ * ion, or anything cyanide, and coining them here is exactly what this repo's
+ * glossary rule forbids. Siggi ruled all four terms on 2026-09-19 —
+ * `saltpéturssýrlingur`, `nítrítjón`, `vetnissýaníð` (`blásýra`) and
+ * `sýaníðjón` — and they are in `ordabok.md` now.
  *
- * **HF is also the pool's first acid that breaks the 5 % rule across most of the
- * range** — α runs 2,6 % at 1,0 M to 22,9 % at 0,01 M — which is a feature: the
- * Beita phase exists to include pairs where the approximation fails.
+ * **HF and HNO₂ break the 5 % rule across much of the range** — HF's α runs 2,6 %
+ * at 1,0 M to 22,9 % at 0,01 M — which is a feature: the Beita phase exists to
+ * include pairs where the approximation fails.
  *
- * **Every name here already ships elsewhere on the platform**, which is the other
- * half of the same discipline — `nameEstablished` records where. Three acids that
- * would otherwise belong are excluded because the platform contradicts itself
- * about their names; see the README's "Names the platform cannot agree on".
+ * **Every name here is either already shipping elsewhere on the platform or
+ * carries the ruling that established it**, which is the other half of the same
+ * discipline — `nameEstablished` records which. Three acids that would otherwise
+ * belong were excluded because the platform contradicted itself about their
+ * names; HF was one and is now in, so the README's "Names the platform cannot
+ * agree on" is down to H₃PO₄ and the HNO₃ spellings.
+ *
+ * **Names decline.** Icelandic needs the dative after `af` and the genitive after
+ * `samoka basa`, so the nominative alone is not enough to build a sentence with:
+ * `lausn af ediksýra` is not Icelandic, and with `Vetnissýaníð` (neuter) and
+ * `Saltpéturssýrlingur` (masculine) in the pool the nominative is not even close.
+ * `nameDative` and `nameGenitive` carry the forms the question templates need.
  *
  * This repo has been bitten by unverified data before: `lausnir` shipped gas
  * solubilities 10× out under a mislabelled axis (B3), and `molmassi` printed
@@ -40,8 +49,17 @@ import { solveWeakAcid, waterContributionMatters } from '../engine/ka';
 
 export interface WeakAcid {
   id: string;
-  /** Icelandic name. See `nameEstablished`. */
+  /** Icelandic name, nominative and capitalised. See `nameEstablished`. */
   name: string;
+  /**
+   * Dative, lowercase — what `af` governs: `lausn af ediksýru`, `af fenóli`,
+   * `af vetnissýaníði`. Stored rather than derived because the pool spans all
+   * three genders and two declension classes; a rule that got `-sýra` right
+   * would still print `af vetnissýaníð`.
+   */
+  nameDative: string;
+  /** Genitive, lowercase — `samoka basi ediksýru`, `samoka basi fenóls`. */
+  nameGenitive: string;
   formula: string;
   /** Formula of the conjugate base. */
   conjugateBase: string;
@@ -58,7 +76,11 @@ export interface WeakAcid {
    * unanswerable question.
    */
   protons: number;
-  /** Where this Icelandic name already ships. Empty would mean unconfirmed. */
+  /**
+   * Where this Icelandic name comes from — the games that already ship it, or
+   * the ruling that established it. Empty would mean unconfirmed, which is the
+   * state no name in this file is allowed to be in.
+   */
   nameEstablished: string;
   /** Where a student meets it. Real context, per the April restructure. */
   context: string;
@@ -68,6 +90,8 @@ export const WEAK_ACIDS: WeakAcid[] = [
   {
     id: 'maurasyra',
     name: 'Maurasýra',
+    nameDative: 'maurasýru',
+    nameGenitive: 'maurasýru',
     formula: 'HCOOH',
     conjugateBase: 'HCOO⁻',
     conjugateBaseName: 'formíatjón',
@@ -79,6 +103,8 @@ export const WEAK_ACIDS: WeakAcid[] = [
   {
     id: 'ediksyra',
     name: 'Ediksýra',
+    nameDative: 'ediksýru',
+    nameGenitive: 'ediksýru',
     formula: 'CH₃COOH',
     conjugateBase: 'CH₃COO⁻',
     conjugateBaseName: 'asetatjón',
@@ -90,6 +116,8 @@ export const WEAK_ACIDS: WeakAcid[] = [
   {
     id: 'propansyra',
     name: 'Própansýra',
+    nameDative: 'própansýru',
+    nameGenitive: 'própansýru',
     formula: 'CH₃CH₂COOH',
     conjugateBase: 'CH₃CH₂COO⁻',
     conjugateBaseName: 'própanatjón',
@@ -101,6 +129,8 @@ export const WEAK_ACIDS: WeakAcid[] = [
   {
     id: 'flussyra',
     name: 'Flússýra',
+    nameDative: 'flússýru',
+    nameGenitive: 'flússýru',
     formula: 'HF',
     conjugateBase: 'F⁻',
     conjugateBaseName: 'flúoríðjón',
@@ -110,8 +140,24 @@ export const WEAK_ACIDS: WeakAcid[] = [
     context: 'Flússýra leysir upp gler og er geymd í plastílátum, ekki glerflöskum.',
   },
   {
+    id: 'saltpeturssyrlingur',
+    name: 'Saltpéturssýrlingur',
+    nameDative: 'saltpéturssýrlingi',
+    nameGenitive: 'saltpéturssýrlings',
+    formula: 'HNO₂',
+    conjugateBase: 'NO₂⁻',
+    conjugateBaseName: 'nítrítjón',
+    ka: 4.5e-4,
+    protons: 1,
+    nameEstablished: "Siggi's ruling 2026-09-19; ordabok.md nitrous acid / nitrite ion",
+    context:
+      'Nítrítsölt eru notuð til að verja unnar kjötvörur og gefa þeim bleika litinn; í súrri lausn myndast saltpéturssýrlingur.',
+  },
+  {
     id: 'fenol',
     name: 'Fenól',
+    nameDative: 'fenóli',
+    nameGenitive: 'fenóls',
     formula: 'C₆H₅OH',
     conjugateBase: 'C₆H₅O⁻',
     conjugateBaseName: 'fenoxíðjón',
@@ -121,8 +167,24 @@ export const WEAK_ACIDS: WeakAcid[] = [
     context: 'Fenól var fyrsta sótthreinsiefnið sem notað var við skurðaðgerðir.',
   },
   {
+    id: 'vetnissyanid',
+    name: 'Vetnissýaníð',
+    nameDative: 'vetnissýaníði',
+    nameGenitive: 'vetnissýaníðs',
+    formula: 'HCN',
+    conjugateBase: 'CN⁻',
+    conjugateBaseName: 'sýaníðjón',
+    ka: 4.9e-10,
+    protons: 1,
+    nameEstablished: "Siggi's ruling 2026-09-19; ordabok.md hydrogen cyanide / cyanide ion",
+    context:
+      'Vetnissýaníð (blásýra) myndast úr amygdalíni í beiskum möndlum og apríkósusteinum og lyktar af marsípani.',
+  },
+  {
     id: 'kolsyra',
     name: 'Kolsýra',
+    nameDative: 'kolsýru',
+    nameGenitive: 'kolsýru',
     formula: 'H₂CO₃',
     conjugateBase: 'HCO₃⁻',
     conjugateBaseName: 'bíkarbónatjón',
@@ -134,6 +196,8 @@ export const WEAK_ACIDS: WeakAcid[] = [
   {
     id: 'oxalsyra',
     name: 'Oxalsýra',
+    nameDative: 'oxalsýru',
+    nameGenitive: 'oxalsýru',
     formula: 'H₂C₂O₄',
     conjugateBase: 'HC₂O₄⁻',
     conjugateBaseName: 'hýdrogenoxalatjón',
