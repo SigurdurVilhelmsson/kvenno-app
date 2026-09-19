@@ -206,25 +206,6 @@ export const BUFFER_PROBLEMS: BufferProblem[] = [
       '🏊 Chemia basenu: Bufor węglanowy utrzymuje pH w basenach (pH 7.2-7.8). Zbyt wysokie pH powoduje podrażnienie skóry.',
   },
   {
-    id: 13,
-    difficulty: 'intermediate',
-    system: 'TRIS·H⁺ / TRIS',
-    acidName: 'TRIS·HCl',
-    baseName: 'TRIS',
-    pKa: 8.06,
-    targetPH: 8.0,
-    volume: 0.5,
-    totalConcentration: 0.05,
-    acidMolarMass: 157.6,
-    baseMolarMass: 121.14,
-    context:
-      '🔬 DNA/RNA rannsóknir: TRIS-stuðpúði er mest notaði stuðpúði í sameindalíffræði. Notaður í PCR, rafdráttum og DNA einangrun.',
-    contextEn:
-      '🔬 DNA/RNA research: TRIS buffer is the most widely used buffer in molecular biology. Used in PCR, electrophoresis and DNA isolation.',
-    contextPl:
-      '🔬 Badania DNA/RNA: Bufor TRIS jest najczęściej używanym buforem w biologii molekularnej. Stosowany w PCR, elektroforezie i izolacji DNA.',
-  },
-  {
     id: 14,
     difficulty: 'intermediate',
     system: 'CH₃COOH / CH₃COO⁻',
@@ -440,23 +421,6 @@ export const BUFFER_PROBLEMS: BufferProblem[] = [
       '🍊 Food industry & blood bank: Citric acid buffer is used to preserve blood in blood banks and in soft drinks. Triprotic acid with 3 pKa values.',
     contextPl:
       '🍊 Przemysł spożywczy i bank krwi: Bufor kwasu cytrynowego jest używany do konserwacji krwi w bankach krwi oraz w napojach gazowanych. Kwas trójprotonowy z 3 wartościami pKa.',
-  },
-  {
-    id: 27,
-    difficulty: 'advanced',
-    system: 'TRIS·H⁺ / TRIS',
-    acidName: 'TRIS·HCl',
-    baseName: 'TRIS',
-    pKa: 7.82,
-    targetPH: 8.0,
-    volume: 1.0,
-    totalConcentration: 0.05,
-    acidMolarMass: 157.6,
-    baseMolarMass: 121.14,
-    context: 'Hitaáhrif: pKa við 37°C er 7.82 (ekki 8.06)',
-    contextEn: 'Temperature effects: pKa at 37°C is 7.82 (not 8.06)',
-    contextPl: 'Wpływ temperatury: pKa w 37°C wynosi 7.82 (nie 8.06)',
-    temperature: 37,
   },
   {
     id: 28,

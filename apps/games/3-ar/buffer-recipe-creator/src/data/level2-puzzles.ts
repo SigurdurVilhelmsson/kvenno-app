@@ -132,42 +132,6 @@ export const LEVEL2_PUZZLES: Level2Puzzle[] = [
       'Bufor amonowy o pH 9.50 wymaga proporcji 1.78. Zauważ, że amoniak (NH₃) ma bardzo niską masę molową (17 g/mol), więc masa jest niewielka.',
   },
   {
-    id: 4,
-    problemId: 13, // TRIS pH 8.00
-    taskIs: 'Búðu til TRIS-stuðpúða við pH 8.00 fyrir DNA-rannsóknir.',
-    taskEn: 'Prepare a TRIS buffer at pH 8.00 for DNA research.',
-    taskPl: 'Przygotuj bufor TRIS o pH 8.00 do badań DNA.',
-    ratioTolerance: 0.1,
-    massTolerance: 0.05,
-    hints: {
-      topic: 'TRIS er algengur stuðpúði í sameindalíffræði með pKa = 8.06.',
-      strategy: 'Markmiðs-pH (8.00) er LÆGRA en pKa (8.06). Þarftu meira af sýru.',
-      method: 'Hlutfall = 10^(8.00 - 8.06) = 10^(-0.06) ≈ 0.87.',
-      solution:
-        'Hlutfall = 0.87. Með 0.050 M og 0.5 L: 0.0134 mol sýru (2.10 g) og 0.0116 mol basa (1.41 g).',
-    },
-    hintsEn: {
-      topic: 'TRIS is a common buffer in molecular biology with pKa = 8.06.',
-      strategy: 'Target pH (8.00) is LOWER than pKa (8.06). You need more acid.',
-      method: 'Ratio = 10^(8.00 - 8.06) = 10^(-0.06) ≈ 0.87.',
-      solution:
-        'Ratio = 0.87. With 0.050 M and 0.5 L: 0.0134 mol acid (2.10 g) and 0.0116 mol base (1.41 g).',
-    },
-    hintsPl: {
-      topic: 'TRIS to popularny bufor w biologii molekularnej z pKa = 8.06.',
-      strategy: 'Docelowe pH (8.00) jest NIŻSZE niż pKa (8.06). Potrzebujesz więcej kwasu.',
-      method: 'Proporcja = 10^(8.00 - 8.06) = 10^(-0.06) ≈ 0.87.',
-      solution:
-        'Proporcja = 0.87. Przy 0.050 M i 0.5 L: 0.0134 mol kwasu (2.10 g) i 0.0116 mol zasady (1.41 g).',
-    },
-    explanationIs:
-      'TRIS-stuðpúði við pH 8.00 (lítið undir pKa) þarf hlutfall 0.87. Þetta þýðir aðeins meira af sýru. TRIS er notað í PCR og rafdráttum.',
-    explanationEn:
-      'A TRIS buffer at pH 8.00 (slightly below pKa) requires a ratio of 0.87. This means slightly more acid. TRIS is used in PCR and electrophoresis.',
-    explanationPl:
-      'Bufor TRIS o pH 8.00 (nieco poniżej pKa) wymaga proporcji 0.87. Oznacza to nieco więcej kwasu. TRIS jest stosowany w PCR i elektroforezie.',
-  },
-  {
     id: 5,
     problemId: 19, // Formic acid pH 4.00
     taskIs: 'Búðu til maurasýrustuðpúða við pH 4.00.',

@@ -570,17 +570,25 @@ rulings came out of that check and are **decided but not yet built**:
 
 - **Appendix D is authoritative** where shipped data disagrees with it — Siggi's ruling,
   2026-09-19. See the buffer/pH-titration corrections tracked in `docs/README.md`.
-- **Drop any problem whose constant is not in Appendix D** — Siggi's ruling, 2026-09-19. The known
-  case is **TRIS**, which Brown does not list at all, and which `buffer-recipe-creator` ships with
-  **two different pKa values** (7.82 at `problems.ts` #27, 8.06 at #13) from an unrecorded source.
-  Both problems go unless another cited reference is supplied. Apply the same test to anything new:
-  a constant with no Appendix D row does not ship.
-- **Sýrufastinn's pool grows from 6 acids to 9** — Siggi's ruling, 2026-09-19. Three acids were
-  excluded for reasons the tables and the 2026-09-19 naming rulings have now resolved, and all
-  three are monoprotic, so the game's `protons` guard admits them: **HF** (`flússýra`, Ka
-  6,8 × 10⁻⁴) was out only over the `Flússýra`/`Flúorsýra` split; **HNO₂** (Ka 4,5 × 10⁻⁴) and
-  **HCN** (Ka 4,9 × 10⁻¹⁰) were out because two sources disagreed, and D.1 settles both. Note HNO₂
-  is `saltpéturssýrlingur`, **not** `saltpéturssýra` — that is HNO₃, and the two must not collide.
+- **Drop any problem whose constant is not in Appendix D** — Siggi's ruling, 2026-09-19, **applied
+  the same day**. **TRIS** was the case: absent from Brown entirely and shipped at two different pKa
+  values (7.82 and 8.06) from an unrecorded source. Problems #13 and #27 are gone, along with the one
+  Level 2 and one Level 3 puzzle that used #13, so **both levels now serve 5 puzzles rather than 6**.
+  `appendix-d-conformance.test.ts` asserts TRIS does not return and carries **no exemption list** —
+  apply the same test to anything new: a constant with no Appendix D row does not ship.
+- **Sýrufastinn's pool: 6 → 7, not 9.** Siggi ruled all three additions on 2026-09-19 and **only
+  HF landed** (2026-09-19, pool is now 7). D.1 settled the Ka disagreements that had excluded the
+  other two — HNO₂ is 4,5 × 10⁻⁴ (against a competing 5,6 × 10⁻⁴) and HCN is 4,9 × 10⁻¹⁰ (against
+  6,2 × 10⁻¹⁰) — **so what blocks them now is naming, not chemistry.** `ordabok.md` has no entry for
+  nitrous acid, the nitrite ion, hydrocyanic acid or the cyanide ion, and the platform ships none of
+  those words; coining them is what this file's own rule forbids. **Four terms are needed before
+  those two can ship: HNO₂, NO₂⁻, HCN, CN⁻.** The `-sýrlingur` pattern for a lower oxidation state
+  has exactly one platform precedent (`Brennisteinssýrling` for H₂SO₃, `ph-titration/data/titrations.ts:166`
+  — and note that is the accusative where every sibling `name:` field is nominative), which is
+  suggestive but not an authority. **HF needed no new term:** `flússýra` was ruled that day and is in
+  `ordabok.md`, and `flúoríð` already ships six times in `1-ar/nafnakerfid`. HF is also the pool's
+  first acid whose α breaks the 5 % rule across most of the range (2,6 % at 1,0 M to 22,9 % at
+  0,01 M), which is deliberate — the Beita phase exists to cover pairs where the approximation fails.
 
 **No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
 now fixed, as are the three above, and each carries a test that fails against the pre-fix code. What
