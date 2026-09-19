@@ -1,19 +1,38 @@
 # Bundle Sizes
 
-Measured: 2026-08-15 (20 games, post Three.js code-split)
+Measured: 2026-09-19 (22 games), from a `pnpm build:games` run made the same day.
 
-**Provenance.** Every figure below comes from the on-disk `dist/`, which is the **2026-08-15
-20:00–20:01** build. The three app tables (lab-reports, landing, íslenskubraut) were re-derived by
-`ls -l` / `gzip -c -9 | wc -c` against that build on **2026-08-17**; the previous versions of those
-tables had the `index.js` and `react-vendor.js` rows transposed. Sizes are KiB (bytes ÷ 1024).
+**Provenance.** Every game figure below is read off the on-disk `dist/` immediately after that
+build, so the table is current to the source in this commit rather than to an mtime argument. Sizes
+are KiB (bytes ÷ 1024). The three app tables further down (lab-reports, landing, íslenskubraut) are
+**not** re-derived here — they still date from the 2026-08-17 pass against the 2026-08-15 build, and
+nothing since has touched those apps' source.
 
-**Is `dist/` stale?** Mostly no. Comparing mtimes across every file under `apps/`, `packages/`,
-`scripts/` and `server/` (excluding `node_modules/` and build output), exactly one non-Markdown file
-post-dates the build: `packages/shared/components/MoleculeViewer3D/MoleculeViewer3DLazy.tsx`, at
-20:11 — eleven minutes after it finished. So the three Three.js games' figures may be one edit
-behind current source; everything else that changed since is documentation. Re-run `pnpm build`
-before trusting the game table to the kilobyte. (mtime is a weaker signal than a rebuild — it is
-what was available without running a build.)
+**What moved since 2026-08-15.** Don't read the August table against this one to price a single
+change — the source moved in many other ways between the two builds, and roadmap phases 3–5 grew
+several games while the i18n strip shrank eight.
+
+**The i18n strip was measured in isolation instead**, by building the same tree twice with only that
+change stashed. Fourteen games came out byte-identical, and the eight lost **9,5–11,7 KB each,
+85,5 KB in total** — entirely dead translation tables that no game rendered, inlined into every
+single-file build:
+
+| Game                     | Before  | After   | Saved   |
+| ------------------------ | ------- | ------- | ------- |
+| gas-law-challenge        | 336 220 | 324 288 | 11,7 KB |
+| ph-titration             | 371 204 | 359 779 | 11,2 KB |
+| buffer-recipe-creator    | 391 284 | 379 873 | 11,1 KB |
+| thermodynamics-predictor | 322 911 | 312 309 | 10,4 KB |
+| organic-nomenclature     | 381 868 | 371 336 | 10,3 KB |
+| kinetics                 | 368 042 | 358 088 | 9,7 KB  |
+| intermolecular-forces    | 385 718 | 375 775 | 9,7 KB  |
+| lewis-structures         | 388 944 | 379 241 | 9,5 KB  |
+
+(Bytes, initial payload. Those "before" figures are this commit's parent, not the August build,
+which is why they do not match the August table.)
+
+The table below also carries the two games the August measurement predates, `1-ar/einingakedjan`
+and `3-ar/syrufastinn`.
 
 ## Chemistry Games
 
@@ -27,27 +46,29 @@ if they open a 3D view.
 | Game                     | Year | Initial | Deferred |
 | ------------------------ | ---- | ------- | -------- |
 | vsepr-geometry           | 2-ar | 401 KB  | 1004 KB  |
-| buffer-recipe-creator    | 3-ar | 389 KB  | —        |
-| lewis-structures         | 2-ar | 379 KB  | 1004 KB  |
-| intermolecular-forces    | 2-ar | 376 KB  | 1004 KB  |
-| organic-nomenclature     | 2-ar | 373 KB  | —        |
-| dimensional-analysis     | 1-ar | 368 KB  | —        |
-| ph-titration             | 3-ar | 362 KB  | —        |
-| kinetics                 | 2-ar | 359 KB  | —        |
+| dimensional-analysis     | 1-ar | 379 KB  | —        |
+| buffer-recipe-creator    | 3-ar | 370 KB  | —        |
+| lewis-structures         | 2-ar | 370 KB  | 1004 KB  |
+| intermolecular-forces    | 2-ar | 366 KB  | 1004 KB  |
+| organic-nomenclature     | 2-ar | 362 KB  | —        |
+| lausnir                  | 1-ar | 357 KB  | —        |
 | redox-reactions          | 2-ar | 354 KB  | —        |
-| lausnir                  | 1-ar | 353 KB  | —        |
 | hess-law                 | 2-ar | 351 KB  | —        |
+| ph-titration             | 3-ar | 351 KB  | —        |
+| kinetics                 | 2-ar | 349 KB  | —        |
 | equilibrium-shifter      | 3-ar | 344 KB  | —        |
-| nafnakerfid              | 1-ar | 331 KB  | —        |
-| gas-law-challenge        | 3-ar | 328 KB  | —        |
-| molmassi                 | 1-ar | 326 KB  | —        |
-| thermodynamics-predictor | 3-ar | 315 KB  | —        |
-| lotukerfid               | 1-ar | 314 KB  | —        |
+| nafnakerfid              | 1-ar | 335 KB  | —        |
+| molmassi                 | 1-ar | 329 KB  | —        |
+| lotukerfid               | 1-ar | 325 KB  | —        |
+| gas-law-challenge        | 3-ar | 316 KB  | —        |
+| thermodynamics-predictor | 3-ar | 304 KB  | —        |
 | rafeindabygging          | 2-ar | 302 KB  | —        |
 | takmarkandi              | 1-ar | 300 KB  | —        |
-| jafna-jofnur             | 1-ar | 290 KB  | —        |
+| einingakedjan            | 1-ar | 293 KB  | —        |
+| jafna-jofnur             | 1-ar | 292 KB  | —        |
+| syrufastinn              | 3-ar | 289 KB  | —        |
 
-Every game now opens in 290–401 KB. Two changes got here:
+Every game now opens in 289–401 KB. Three changes got here:
 
 - **Vite 8 / Rolldown** took non-3D games from ~1.3 MB to ~300–400 KB.
 - **The Aug 2026 Three.js code-split** took VSEPR, Lewis, and IMF from ~2.9 MB to ~380–400 KB by
@@ -57,11 +78,20 @@ Every game now opens in 290–401 KB. Two changes got here:
 - **The drei-probe fix** then halved the deferred payload again, 2600 KB → 1004 KB, by dropping an
   `await import('@react-three/drei')` that pulled the entire barrel (incl. `hls.js` and
   `@mediapipe/tasks-vision`) just to test that it resolved.
+- **The Sep 2026 i18n strip** took 9,5–11,7 KB off each of eight games, 85,5 KB in total. Small next to the two above, and
+  listed because it is the whole of what a dead translation table costs: three languages of UI
+  strings that no game rendered, inlined into every single-file build.
 
-To re-measure:
+To re-measure. **Do not use `ls` on the HTML alone** — the three Three.js games keep their entry JS
+and CSS beside it, so an HTML-only listing reads them ~200 KB light:
 
 ```bash
-pnpm build && ls -la dist/efnafraedi/*/games/*.html
+pnpm build:games
+for f in dist/efnafraedi/*/games/*.html; do
+  g="${f%.html}"
+  echo "$(( ($(stat -c%s "$f") + $(stat -c%s "$g.js" 2>/dev/null || echo 0) \
+    + $(stat -c%s "$g.css" 2>/dev/null || echo 0)) / 1024 )) KB  $(basename "$g")"
+done | sort -rn
 ```
 
 ## Lab Reports (multi-chunk SPA, deployed to 2-ar and 3-ar)

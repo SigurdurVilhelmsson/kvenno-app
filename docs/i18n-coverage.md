@@ -21,44 +21,54 @@ Language preference is persisted in `localStorage` under the key `kvenno-languag
 
 ## Games i18n Coverage
 
-Re-measured 2026-08-17 across all 20 games. (The 2026-08-15 pass counted only `t('` — the
-single-quoted form — and so undercounted seven games; the counts below include the template-literal
-`` t(`…` ``, variable-key `t(c…)` and line-wrapped forms.)
+Re-measured 2026-08-17 across all 20 games then wired. (The 2026-08-15 pass counted only `t('` —
+the single-quoted form — and so undercounted seven games; the counts below include the
+template-literal `` t(`…` ``, variable-key `t(c…)` and line-wrapped forms.)
 
-**All 20 games import `useGameI18n` and render `LanguageSwitcher`** — so importing the hook says
-nothing about whether a game is actually translated. What matters is whether its UI strings go
-through `t()`. Counting every `t()` call site per game:
+**Eight of those games were stripped on 2026-09-19 — Siggi's ruling.** They imported the hook,
+rendered a switcher, and translated nothing, so picking English or Polish moved the control and left
+the page in Icelandic. Their dead `i18n.ts` files (1 661 lines across the eight) were deleted with
+zero consumers. `packages/shared/i18n/__tests__/switcher-earns-its-place.test.ts` now enforces the
+rule as a property: **a game that renders `LanguageSwitcher` must have at least one `t()` call.**
 
-| Game                     | Year | `t()` calls | Translated? |
-| ------------------------ | ---- | ----------- | ----------- |
-| redox-reactions          | 2-ar | 156         | yes         |
-| nafnakerfid              | 1-ar | 91          | yes         |
-| lausnir                  | 1-ar | 48          | yes         |
-| hess-law                 | 2-ar | 32          | yes         |
-| molmassi                 | 1-ar | 22          | yes         |
-| lotukerfid               | 1-ar | 22          | yes         |
-| jafna-jofnur             | 1-ar | 22          | yes         |
-| dimensional-analysis     | 1-ar | 10          | partial     |
-| equilibrium-shifter      | 3-ar | 7           | partial     |
-| takmarkandi              | 1-ar | 2           | partial     |
-| vsepr-geometry           | 2-ar | 2           | partial     |
-| rafeindabygging          | 2-ar | 1           | partial     |
-| ph-titration             | 3-ar | 1           | partial     |
-| kinetics                 | 2-ar | 0           | **no**      |
-| lewis-structures         | 2-ar | 0           | **no**      |
-| organic-nomenclature     | 2-ar | 0           | **no**      |
-| intermolecular-forces    | 2-ar | 0           | **no**      |
-| gas-law-challenge        | 3-ar | 0           | **no**      |
-| buffer-recipe-creator    | 3-ar | 0           | **no**      |
-| thermodynamics-predictor | 3-ar | 0           | **no**      |
+That leaves **12 games with i18n wiring and 10 without.** Of the ten, eight are the stripped ones;
+`1-ar/einingakedjan` (Aug 2026) and `3-ar/syrufastinn` (Sep 2026) never had any, deliberately.
 
-**7 of 20 games have zero `t()` calls.** They import the hook, render a language switcher, and
-serve hardcoded Icelandic — so switching to EN or PL changes nothing a student can see. That is
-three of the five Year 3 games plus four Year 2 games.
+Counting every `t()` call site per game, as measured before the strip:
 
-Two more are zero in all but name: `rafeindabygging` and `ph-titration` have exactly one `t()` call
-each (`ph-titration`'s is a template literal with a hardcoded Icelandic fallback,
-`src/components/Level3.tsx:104`). Nine of the twenty are therefore effectively untranslated.
+| Game                     | Year | `t()` calls | Translated?             |
+| ------------------------ | ---- | ----------- | ----------------------- |
+| redox-reactions          | 2-ar | 156         | yes                     |
+| nafnakerfid              | 1-ar | 91          | yes                     |
+| lausnir                  | 1-ar | 48          | yes                     |
+| hess-law                 | 2-ar | 32          | yes                     |
+| molmassi                 | 1-ar | 22          | yes                     |
+| lotukerfid               | 1-ar | 22          | yes                     |
+| jafna-jofnur             | 1-ar | 22          | yes                     |
+| dimensional-analysis     | 1-ar | 10          | partial                 |
+| equilibrium-shifter      | 3-ar | 7           | partial                 |
+| takmarkandi              | 1-ar | 2           | partial                 |
+| vsepr-geometry           | 2-ar | 2           | partial                 |
+| rafeindabygging          | 2-ar | 1           | partial                 |
+| ph-titration             | 3-ar | 1           | **stripped 2026-09-19** |
+| kinetics                 | 2-ar | 0           | **stripped 2026-09-19** |
+| lewis-structures         | 2-ar | 0           | **stripped 2026-09-19** |
+| organic-nomenclature     | 2-ar | 0           | **stripped 2026-09-19** |
+| intermolecular-forces    | 2-ar | 0           | **stripped 2026-09-19** |
+| gas-law-challenge        | 3-ar | 0           | **stripped 2026-09-19** |
+| buffer-recipe-creator    | 3-ar | 0           | **stripped 2026-09-19** |
+| thermodynamics-predictor | 3-ar | 0           | **stripped 2026-09-19** |
+
+**The eight stripped are the seven with zero `t()` calls, plus `ph-titration`.** Its single call was
+a template literal with a hardcoded Icelandic fallback (`src/components/Level3.tsx:104`) covering
+five badge labels; the Icelandic it now prints is the string that lookup already fell back to, so
+nothing a student sees changed.
+
+**`2-ar/rafeindabygging` was left alone, and it is the closest call.** It also has exactly one `t()`
+call — but that one is `t('game.title')`, a real translated string rather than a fallback, so
+switching language does change something visible. The ruling drew the line at zero and this is not
+zero. It, `2-ar/vsepr-geometry` (2) and `1-ar/takmarkandi` (2) are the barely-translated remainder,
+and finishing or stripping them is still open.
 
 Caveats on this measurement:
 
@@ -67,8 +77,9 @@ Caveats on this measurement:
 - Deliberately **no overall percentage** is quoted. The previous "~94% (16/17 games)" figure counted
   hook imports, which overstated real coverage by a wide margin.
 
-This conflicts with CLAUDE.md's "Icelandic UI only" rule and is tracked there as an open decision:
-strip the i18n scaffolding, finish wiring it, or leave it. Needs a teacher's call, not a code change.
+This conflicted with CLAUDE.md's "Icelandic UI only" rule and was tracked as an open decision —
+**settled 2026-09-19: strip the scaffolding where it translates nothing.** The three barely-wired
+games above are what is left of the question.
 
 ## Shared Components i18n Coverage
 
@@ -152,20 +163,21 @@ The following should remain in Icelandic as they are educational chemistry conte
 
 ## Summary
 
-| Category                                | Coverage                                                    |
-| --------------------------------------- | ----------------------------------------------------------- |
-| Games importing `useGameI18n`           | 20/20 (100%) — but see caveat below                         |
-| Games actually routing UI through `t()` | 13/20 translated or partial; **7/20 have zero `t()` calls** |
-| Shared components with i18n             | 1/14 (~7%)                                                  |
-| Non-game apps with i18n                 | 0/3 (0%)                                                    |
+| Category                               | Coverage                                                        |
+| -------------------------------------- | --------------------------------------------------------------- |
+| Games importing `useGameI18n`          | 12/22 — every one of them routes at least one string through it |
+| Games with no i18n wiring at all       | 10/22 — the 8 stripped, plus einingakedjan and syrufastinn      |
+| Games shipping a switcher that is dead | **0** — enforced by `switcher-earns-its-place.test.ts`          |
+| Shared components with i18n            | 1/14 (~7%)                                                      |
+| Non-game apps with i18n                | 0/3 (0%)                                                        |
 
 **No overall percentage is quoted deliberately.** The previous "~60-65%" rested on counting hook
-imports as coverage, which overstated it: every game imports the hook, and 7 of them translate
-nothing. Any honest figure needs a string-by-string audit that has not been done.
+imports as coverage, which overstated it. Any honest figure needs a string-by-string audit that has
+not been done — a game with 20 `t()` calls may still have dozens of hardcoded strings.
 
-The gap is concentrated in Year 3 (3 of 5 games at zero, and `ph-titration` at a single call) and
-four Year 2 games. Shared components and non-game apps remain Icelandic-only by design, serving an
-Icelandic-only audience.
+Year 3 now has **one** game with i18n wiring (`equilibrium-shifter`, 7 calls); the other five
+either never had it or were stripped. Shared components and non-game apps remain Icelandic-only by
+design, serving an Icelandic-only audience.
 
 Note: the earlier version of this file claimed `nafnakerfid` was the one game _not_ wired up. That is
 wrong — it has 91 `t()` calls, the second-highest in the repo.

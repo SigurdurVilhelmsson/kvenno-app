@@ -158,12 +158,25 @@ banned form, because nothing had ever spelled them wrong — nothing had spelled
 - **`isAnswerable(acid, concentration)`** applies the same discipline to the _pair_.
   `solveWeakAcid` neglects water's own H⁺, and at 0,1 M fenól that is 2,8 % of the total —
   the pH the game would grade is not the pH the solution has. Fenól at 1,0 M is fine; below
-  that it is refused. 6 of 28 pairs are rejected, and a test asserts the guard rejects
+  that it is refused. 10 of 49 pairs are rejected, and a test asserts the guard rejects
   something so it cannot quietly become vacuous.
 
 The Æfa set is entirely inside the 5 % rule; the Beita set is not, and its rule-breakers are
-real pairs from the pool (maurasýra at 0,05 M and below), not contrived. A rule that never
-fires is a rule nobody believes.
+real pairs from the pool (HF, maurasýra and saltpéturssýrlingur at the lower concentrations),
+not contrived. A rule that never fires is a rule nobody believes.
+
+### Beita is too long, and is to be trimmed
+
+**Siggi's ruling, 2026-09-19 — decided, not yet built.** Adding HNO₂ took Beita from 12 problems
+to 16, and twelve of those are the same generated template with a different acid and
+concentration. `APPLY_PROBLEMS` appends **every** member of `RULE_BREAKING_PROBLEMS`, and that
+is the single line to change.
+
+**The selection rule is not part of the ruling.** How many to keep, and chosen how, is Siggi's
+call — do not improvise one and record it as settled. Whatever lands must keep the two
+properties `problems.test.ts` already asserts, and should keep at least one pair from each of
+HF, maurasýra and saltpéturssýrlingur, which fail the approximation by visibly different
+margins (5,1 % up to 22,9 %).
 
 ## Layout
 

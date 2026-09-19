@@ -3,7 +3,6 @@ import { useState, useEffect, useMemo } from 'react';
 import {
   Header,
   InteractiveGraph,
-  LanguageSwitcher,
   ErrorBoundary,
   Presence,
   FadePresence,
@@ -15,12 +14,11 @@ import type {
   RegionConfig,
   VerticalLineConfig,
 } from '@shared/components';
-import { useGameI18n, useGameProgress } from '@shared/hooks';
+import { useGameProgress } from '@shared/hooks';
 import { parseStudentNumber } from '@shared/utils';
 
 import { EntropyVisualization } from './components/EntropyVisualization';
 import { PROBLEMS } from './data';
-import { gameTranslations } from './i18n';
 import type { Difficulty, GameMode, Spontaneity, Problem } from './types';
 import { calculateDeltaG, getSpontaneity } from './utils/thermo-calculations';
 
@@ -40,7 +38,6 @@ const DEFAULT_PROGRESS: ThermoProgress = {
 
 function App() {
   const [mode, setMode] = useState<GameMode>('menu');
-  const { language, setLanguage } = useGameI18n({ gameTranslations });
   const [difficulty, setDifficulty] = useState<Difficulty>('beginner');
   const [currentProblem, setCurrentProblem] = useState<Problem | null>(null);
   const [temperature, setTemperature] = useState(298);
@@ -258,18 +255,7 @@ function App() {
   const renderMenu = () => (
     <div>
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
-        <Header
-          variant="game"
-          backHref="/efnafraedi/3-ar/"
-          gameTitle="Varmafræði Spámaður"
-          authSlot={
-            <LanguageSwitcher
-              language={language}
-              onLanguageChange={setLanguage}
-              variant="compact"
-            />
-          }
-        />
+        <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="Varmafræði Spámaður" />
         <div className="min-h-screen py-8">
           <a
             href="#game-content"

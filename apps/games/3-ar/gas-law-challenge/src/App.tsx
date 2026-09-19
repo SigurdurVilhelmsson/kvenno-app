@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 
 import { ErrorBoundary, FadePresence } from '@shared/components';
-import { useGameI18n, useGameProgress } from '@shared/hooks';
+import { useGameProgress } from '@shared/hooks';
 import { parseStudentNumber } from '@shared/utils';
 
 import { FeedbackScreen } from './components/FeedbackScreen';
 import { GameScreen } from './components/GameScreen';
 import { MenuScreen } from './components/MenuScreen';
 import { getRandomQuestionForLevel, type Level } from './data';
-import { gameTranslations } from './i18n';
 import {
   GasLawQuestion,
   GameMode,
@@ -30,7 +29,6 @@ const DEFAULT_STATS: GameStats = {
 
 function App() {
   const [screen, setScreen] = useState<'menu' | 'game' | 'feedback'>('menu');
-  const { language, setLanguage } = useGameI18n({ gameTranslations });
   const [gameMode, setGameMode] = useState<GameMode>('practice');
   const [selectedLevel, setSelectedLevel] = useState<Level>(1);
   const [currentQuestion, setCurrentQuestion] = useState<GasLawQuestion | null>(null);
@@ -217,8 +215,6 @@ function App() {
           stats={stats}
           selectedLevel={selectedLevel}
           setSelectedLevel={setSelectedLevel}
-          language={language}
-          setLanguage={setLanguage}
           resetStats={resetStats}
           onStart={startNewQuestion}
         />

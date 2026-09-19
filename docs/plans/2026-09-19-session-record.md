@@ -20,8 +20,9 @@ This file is committed for that reason.
 | [#48](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/48) | Buffer recipes derived instead of stored; six Appendix D corrections                |
 | [#49](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/49) | TRIS problems dropped; `flússýra` added to Sýrufastinn                              |
 | [#51](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/51) | HNO₂ and HCN added to Sýrufastinn; acid names now decline                           |
+| [#52](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/52) | i18n switcher stripped from the eight games that translated nothing                 |
 
-Suite went **1948 → 2032** tests (plus 46 server). `pnpm check-all` passes all three legs for the
+Suite went **1948 → 2064** tests (plus 46 server). `pnpm check-all` passes all three legs for the
 first time, and `format:check` is now a CI step so it stays that way.
 
 ---
@@ -70,6 +71,7 @@ All Siggi's, all 2026-09-19. The terminology ones are in `ordabok.md` and enforc
 | Phase 5 build order    | empirical formula → electrolytes/precipitation → Ksp → `equilibrium-shifter` Kc/Kp |
 | constants              | **Appendix D is authoritative**; a constant with no Appendix D row does not ship   |
 | Íslenskubraut          | **On hold** as a project                                                           |
+| Beita's length         | **Trim** the rule-breaking set — selection rule still Siggi's to give              |
 | HNO₂ / NO₂⁻            | `saltpéturssýrlingur` / `nítrítjón`                                                |
 | HCN / CN⁻              | `vetnissýaníð` (`blásýra`) / `sýaníðjón`                                           |
 
@@ -96,10 +98,31 @@ entries and no `governed-terms.test.ts` row, the same treatment `brunaefnahvarf`
 got. The existing nitric-acid row already covers the near miss: its `/saltpétursýr/i` ban catches a
 future one-`s` `saltpétursýrlingur` without touching the correct double-`s` form.
 
+### Built after the rulings
+
+- **The i18n switcher is stripped** from the eight games that routed nothing through `t()` —
+  `2-ar/kinetics`, `lewis-structures`, `organic-nomenclature`, `intermolecular-forces`;
+  `3-ar/buffer-recipe-creator`, `gas-law-challenge`, `thermodynamics-predictor`, `ph-titration`.
+  1 661 lines of dead `i18n.ts` deleted, zero consumers.
+  `packages/shared/i18n/__tests__/switcher-earns-its-place.test.ts` states the rule as a property
+  rather than a list — **a game rendering `LanguageSwitcher` must have at least one `t()` call** —
+  so the next half-wiring fails instead of shipping. Both its guards were verified to fail against
+  a reintroduction.
+
+  **`ph-titration` was the judgement call.** Its single `t()` was a fallback-backed lookup over
+  five badge labels, so stripping it changed nothing a student sees. **`2-ar/rafeindabygging` also
+  has exactly one call and was left alone**, because that one is `t('game.title')` — a real
+  translated string, not a fallback. The ruling drew the line at zero and this is not zero. It,
+  `vsepr-geometry` (2) and `takmarkandi` (2) are what is left of the question.
+
 ### Ruled but not built
 
-- **Strip the i18n switcher** from the eight games that route nothing through `t()` — the ruling is
-  made, the work is not done. Per-game counts: `docs/i18n-coverage.md`.
+- **Trim Sýrufastinn's Beita phase** — ruled 2026-09-19. Adding HNO₂ took it from 12 problems to
+  16, twelve of them one generated template differing only in acid and concentration.
+  `APPLY_PROBLEMS` appends every member of `RULE_BREAKING_PROBLEMS`; that is the one line to
+  change. **The selection rule was not part of the ruling and must not be improvised into one** —
+  see the roadmap's item 13 for the unruled candidates and the two constraints any of them must
+  keep.
 - **Significant figures as a Stig 0 in `1-ar/einingakedjan`** — real content work.
 - **Phase 5, in the ruled order**: empirical formula (Y1) first.
 

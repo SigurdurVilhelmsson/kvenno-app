@@ -7,10 +7,9 @@ import { LEVEL3_CHALLENGES } from '../data/level3-challenges';
 interface Level3Props {
   onComplete: (score: number) => void;
   onBack: () => void;
-  t?: (key: string, fallback?: string) => string;
 }
 
-export function Level3({ onComplete, onBack, t }: Level3Props) {
+export function Level3({ onComplete, onBack }: Level3Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [, setHintsUsed] = useState(0);
@@ -83,15 +82,10 @@ export function Level3({ onComplete, onBack, t }: Level3Props) {
     }
   };
 
-  const challengeTypeKeys: Record<string, string> = {
-    'find-concentration': 'findConcentration',
-    'find-volume': 'findVolume',
-    polyprotic: 'polyprotic',
-    'henderson-hasselbalch': 'hendersonHasselbalch',
-    combined: 'combined',
-  };
-
-  const challengeTypeFallbacks: Record<string, string> = {
+  // These five badge labels were this game's only `t()` call. The i18n wiring
+  // was stripped 2026-09-19 (Siggi's ruling) and the Icelandic here is the same
+  // string the lookup already fell back to, so nothing a student sees changed.
+  const challengeTypeLabels: Record<string, string> = {
     'find-concentration': 'Styrkur',
     'find-volume': 'Rúmmál',
     polyprotic: 'Fjölprótón',
@@ -99,11 +93,7 @@ export function Level3({ onComplete, onBack, t }: Level3Props) {
     combined: 'Samansett',
   };
 
-  const getChallengeTypeLabel = (type: string): string => {
-    const key = challengeTypeKeys[type];
-    if (key && t) return t(`challengeTypes.${key}`, challengeTypeFallbacks[type]);
-    return challengeTypeFallbacks[type] || type;
-  };
+  const getChallengeTypeLabel = (type: string): string => challengeTypeLabels[type] || type;
 
   const getChallengeTypeColor = (type: string): string => {
     switch (type) {
