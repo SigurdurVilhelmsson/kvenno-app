@@ -43,6 +43,41 @@ interface GovernedTerm {
 
 const GOVERNED_TERMS: GovernedTerm[] = [
   {
+    english: 'hydrofluoric acid',
+    correct: 'flússýra',
+    banned: [/fl[úu]orsýr/i],
+    guidance:
+      "Siggi's ruling, 2026-09-19. HF is flússýra, not flúorsýra. NOTE this ruling went AGAINST platform frequency: flúorsýr- had three sites to Flússýra's one, and ph-titration shipped both inside one game (titrations.ts said Flússýra while its own level2-puzzles.ts and level3-challenges.ts said flúorsýru). Feminine, declining like any -sýra, and the swap is flúor- -> flús- with no agreement change. The ban requires sýr immediately after, so the element flúor and the anion flúoríð are untouched.",
+  },
+  {
+    english: 'nitric acid',
+    correct: 'saltpéturssýra',
+    banned: [/saltpétursýr/i, /salpétur/i, /saltpetur/i, /salpetur/i],
+    guidance:
+      "Siggi's ruling, 2026-09-19. The genitive of saltpétur is saltpéturs, so the compound takes a double s: saltpéturssýra. The platform shipped three spellings — saltpéturssýra (correct), saltpétursýru (one s), and salpeturssýru (missing both the t and the accent). The four banned forms cover single-s, missing-t, missing-accent and missing-both; none of them matches the correct spelling.",
+  },
+  {
+    english: 'sulfuric acid',
+    correct: 'brennisteinssýra',
+    banned: [/brennisteinsýr/i],
+    guidance:
+      "Siggi's ruling, 2026-09-19, agreeing with platform frequency (4 to 1). The genitive of brennisteinn is brennisteins, so the compound takes a double s. The single-s brennisteinsýru in 2-ar/hess-law was the odd one out.",
+  },
+  {
+    english: 'benzoic acid',
+    correct: 'bensósýra',
+    banned: [/ben[sz]oesýr/i, /benzósýr/i],
+    guidance:
+      "Siggi's ruling, 2026-09-19. Icelandic dropped z in the 1974 spelling reform, so Benzoesýra is wrong on two counts — the z and the -oe-. Both banned forms are covered: benzoesýr/bensoesýr (the -oe- stem, either consonant) and benzósýr (right vowel, wrong consonant). Compounds take the genitive stem bensósýru-, as in bensósýrustuðpúði.",
+  },
+  {
+    english: 'phosphoric acid',
+    correct: 'fosfórsýra',
+    banned: [/fosforsýr/i, /fosforpent/i, /fosfordek/i],
+    guidance:
+      "This is the B5 Fosfór ruling (2026-08-26) finally given a test row. It was applied by hand across nafnakerfid's data and components, and an accentless fosforsýru in 3-ar/equilibrium-shifter survived for three weeks precisely because nothing checked — the same failure mode this whole file exists to prevent. The o is long: fosfór. Banned forms cover the acid plus the two compound names B5 originally corrected (Fosforpentaklóríð, Fosfordekoxíð).",
+  },
+  {
     english: 'acid dissociation constant',
     correct: 'sýrufasti',
     banned: [/sýrustuð(?!púð)/i],

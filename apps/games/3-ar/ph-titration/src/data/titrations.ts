@@ -114,7 +114,7 @@ export const titrations: Titration[] = [
     id: 8,
     type: 'weak-strong',
     name: 'C₆H₅COOH + NaOH',
-    analyte: { formula: 'C₆H₅COOH', volume: 25.0, molarity: 0.1, name: 'Bensoesýra' },
+    analyte: { formula: 'C₆H₅COOH', volume: 25.0, molarity: 0.1, name: 'Bensósýra' },
     titrant: { formula: 'NaOH', molarity: 0.1, name: 'Natríumhýdroxíð' },
     equivalenceVolume: 25.0,
     equivalencePH: 8.6,

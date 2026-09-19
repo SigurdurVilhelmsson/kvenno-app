@@ -300,7 +300,7 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
     titleIs: 'Samansett verkefni: pH við hálfan jafngildispunkt',
     title: 'Combined problem: pH at half-equivalence',
     descriptionIs:
-      'Títrun á 30.0 mL af 0.100 M flúorsýru (HF, pKₐ = 3.17) með 0.100 M NaOH. Hver er pH við hálfan jafngildispunkt?',
+      'Títrun á 30.0 mL af 0.100 M flússýru (HF, pKₐ = 3.17) með 0.100 M NaOH. Hver er pH við hálfan jafngildispunkt?',
     description:
       'Titration of 30.0 mL of 0.100 M hydrofluoric acid (HF, pKₐ = 3.17) with 0.100 M NaOH. What is the pH at half-equivalence?',
     givenData: {
