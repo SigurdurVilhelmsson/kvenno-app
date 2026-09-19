@@ -1,5 +1,4 @@
-import { Header, LanguageSwitcher } from '@shared/components';
-import type { Language } from '@shared/hooks';
+import { Header } from '@shared/components';
 
 import { questions, type Level } from '../data';
 import { GameMode, GameStats } from '../types';
@@ -8,8 +7,6 @@ interface MenuScreenProps {
   stats: GameStats;
   selectedLevel: Level;
   setSelectedLevel: (level: Level) => void;
-  language: Language;
-  setLanguage: (lang: Language) => void;
   resetStats: () => void;
   onStart: (mode: GameMode) => void;
 }
@@ -18,26 +15,13 @@ export function MenuScreen({
   stats,
   selectedLevel,
   setSelectedLevel,
-  language,
-  setLanguage,
   resetStats,
   onStart,
 }: MenuScreenProps) {
   return (
     <div>
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
-        <Header
-          variant="game"
-          backHref="/efnafraedi/3-ar/"
-          gameTitle="Gas Law Challenge"
-          authSlot={
-            <LanguageSwitcher
-              language={language}
-              onLanguageChange={setLanguage}
-              variant="compact"
-            />
-          }
-        />
+        <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="Gas Law Challenge" />
         <div className="min-h-screen">
           <main className="max-w-5xl mx-auto px-4 py-8">
             <div className="bg-white rounded-xl shadow-lg p-8">
