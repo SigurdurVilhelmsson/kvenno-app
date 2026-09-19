@@ -62,7 +62,7 @@ export function GameScreen({
             <div className="flex justify-between items-center mb-6">
               <div>
                 <h1 className="text-2xl font-bold" style={{ color: '#f36b22' }}>
-                  Gas Law Challenge
+                  Gaslögmál
                 </h1>
                 <p className="text-sm text-warm-600">
                   Stig {selectedLevel} • {gameMode === 'practice' ? 'Æfingahamur' : 'Keppnishamur'}{' '}

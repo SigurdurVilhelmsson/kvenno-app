@@ -305,6 +305,15 @@ Y3: Gaslögmál → Jafnvægi → Sýrufastinn → Varmafræði → pH Títrun �
 2. Add entry to `scripts/build-games.mjs` games array
 3. Add a game card to `yearGamesConfigs` in `apps/landing/src/pages/GamesHub.tsx` (title, description, and `slug` matching the build-games.mjs output name). **Not `YearHub.tsx`** — that file holds only the three aggregate "Leikir og æfingar" links, so editing it leaves the new game unreachable.
 4. Update the `Námsleiðin` chain string in every sibling game's `App.tsx` for that year (`src/components/MenuScreen.tsx` for gas-law-challenge)
+5. **Give the game one name and use it in all three places** — the hub card in step 3, the
+   `<title>` in `index.html` (suffixed `- Kvennaskólinn`), and the `gameTitle` on the `Header`.
+   Nothing checks this yet, and **10 of the 22 games disagree with themselves**: two carry two
+   different names outright (`molmassi` is `Mólhugtakið` on the hub and `Molmassi Leikur` in its
+   tab; `nafnakerfid` is `Nafnakerfið` against `Nafnapör - Efnanöfn`), and the rest drift on
+   capitals, accents or the suffix. Full table and what is ruled: `docs/plans/2026-09-19-session-record.md`.
+   **`gas-law-challenge` was the worst case and is fixed** — it said `Gas Law Challenge`, in
+   English, at four student-facing sites, against this file's first rule. It is `Gaslögmál` now,
+   which is what its hub card and every Y3 chain string already called it
 
 ### Adding a new experiment to lab reports
 
@@ -667,6 +676,13 @@ corrected in the shipped source, and `packages/shared/i18n/__tests__/governed-te
 if a banned form reappears anywhere under `apps/games`, `apps/landing/src`, `apps/islenskubraut/src`
 or `packages/shared/components` — including inside a dead `i18n.ts` block no game currently renders,
 since a wrong term parked there ships the moment someone wires it up.
+
+**It scans `.html` as well as `.tsx?`, since 2026-09-19.** The tsx-only scan had never read a game's
+`index.html`, which holds the browser-tab `<title>` — so `3-ar/buffer-recipe-creator` shipped
+**`Púfferuppskrift`** in the one string every student's browser tab shows, straight through the
+August `stuðpúði` sweep. Fixed to `Stuðpúðasmíði`, matching its hub card and in-game header, and the
+widened scan is verified both ways. **Markdown is still not covered**, which is the same blind spot
+that let this file's own Y3 chain line say `Púfferar` until September.
 
 | Concept               | Use           | Never                             | Grammar note                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | --------------------- | ------------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

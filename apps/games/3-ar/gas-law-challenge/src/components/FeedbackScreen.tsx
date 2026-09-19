@@ -50,9 +50,7 @@ export function FeedbackScreen({
             {sessionCompleted && sessionQuestionsAnswered === 15 && (
               <div className="bg-gradient-to-r from-yellow-100 to-amber-100 border-2 border-yellow-400 rounded-xl p-4 mb-6 text-center">
                 <div className="text-3xl mb-1">🎉⭐</div>
-                <p className="font-bold text-yellow-800 text-lg">
-                  Þú hefur lokið Gas Law Challenge!
-                </p>
+                <p className="font-bold text-yellow-800 text-lg">Þú hefur lokið Gaslögmálum!</p>
                 <p className="text-yellow-700 text-sm">
                   15 spurningar svaraðar — þú getur haldið áfram til að bæta stigin þín.
                 </p>

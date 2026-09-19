@@ -20,7 +20,13 @@ import { describe, it, expect } from 'vitest';
  *  - It scans source text, so it catches a banned term wherever it appears —
  *    including in an `i18n.ts` block no game currently renders. That is
  *    deliberate: several games carry dead translation wiring, and a wrong term
- *    parked there ships the moment someone wires it up.
+ *    parked there ships the moment someone wires it up. (Those blocks are far
+ *    fewer since the 2026-09-19 i18n strip, but the reasoning is unchanged.)
+ *  - It scans `.html` as well as `.tsx?`, since 2026-09-19. A game's index.html
+ *    holds the browser-tab `<title>`, and the tsx-only scan never saw it — which
+ *    is how `buffer-recipe-creator` shipped `Púfferuppskrift` in its tab through
+ *    the entire August stuðpúði sweep. **Markdown is still not covered**, which
+ *    is how CLAUDE.md's own Y3 chain line kept saying `Púfferar` until Sep 2026.
  *  - It cannot check grammatical agreement. Replacing a banned term is not just a
  *    string swap in Icelandic — `púffer` was treated as neuter in some strings and
  *    `stuðpúði` is masculine, so adjectives had to change with it. A future fix
@@ -240,7 +246,12 @@ function sourceFiles(dir: string): string[] {
       if (entry.name === 'node_modules' || entry.name === 'dist') return [];
       return sourceFiles(full);
     }
-    return /\.tsx?$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name) ? [full] : [];
+    // `.html` is scanned as well as `.tsx?`, added 2026-09-19. Each game's
+    // index.html carries the browser-tab <title>, and the tsx-only scan had
+    // never seen it — which is how `Púfferuppskrift` survived the August
+    // stuðpúði sweep in the one string every student's tab shows. Same blind
+    // spot as Markdown, which is still not covered.
+    return /\.(tsx?|html)$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name) ? [full] : [];
   });
 }
 
