@@ -991,12 +991,12 @@ Zero external animation libraries — all motion is CSS keyframes and Canvas 2D.
 4. **Build** - Full production build to `dist/`
 5. **E2E Tests** - Playwright (chromium + firefox), runs after build
 
-### Deployment (`.github/workflows/deploy.yml`)
+### Deployment
 
-Automated deploy runs on CI success on `main` (`workflow_run`; there is no `workflow_dispatch`
-trigger) and reimplements the `scripts/deploy.sh` sequence inline rather than invoking it. It
-requires four repository secrets and has not yet run successfully — see `docs/DEPLOYMENT.md`
-§ Automated. `./scripts/deploy.sh` is the manual path, and the only one used to date.
+There is no deploy workflow. `.github/workflows/deploy.yml` was removed 2026-09-19 after
+100 runs and 0 successes — its four secrets were never created, so every run died at the
+`ssh-keyscan` step. `./scripts/deploy.sh` is the deploy path, and always was the only one
+used. See `docs/DEPLOYMENT.md` § Automated for what a replacement would have to solve.
 
 ## 16. i18n System
 
