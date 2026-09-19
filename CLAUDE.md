@@ -561,9 +561,26 @@ existing B5 `Fosfór` ruling**. Also `brennisteinsýru` with one `s` (`2-ar/hess
 
 **Still open in Phase 5, deliberately untouched:** `equilibrium-shifter` is still entirely
 qualitative. The scope ruling was the weak-acid case only, so general Kc/Kp and ICE for arbitrary
-equilibria remain unbuilt. Also unverified: **every Ka value in the new game is Brown et al.
-Appendix D and has not been checked against the school's own copy**, since the corpus is not
-reachable from a cloud session.
+equilibria remain unbuilt.
+
+**Sýrufastinn's Ka values are now verified — 2026-09-19.** Siggi supplied Brown et al. Tables D.1
+(acids) and D.2 (bases) directly, so the "not checked against the school's own copy" caveat is
+retired: **all six Ka values in `3-ar/syrufastinn/src/data/acids.ts` match D.1 exactly.** Two
+rulings came out of that check and are **decided but not yet built**:
+
+- **Appendix D is authoritative** where shipped data disagrees with it — Siggi's ruling,
+  2026-09-19. See the buffer/pH-titration corrections tracked in `docs/README.md`.
+- **Drop any problem whose constant is not in Appendix D** — Siggi's ruling, 2026-09-19. The known
+  case is **TRIS**, which Brown does not list at all, and which `buffer-recipe-creator` ships with
+  **two different pKa values** (7.82 at `problems.ts` #27, 8.06 at #13) from an unrecorded source.
+  Both problems go unless another cited reference is supplied. Apply the same test to anything new:
+  a constant with no Appendix D row does not ship.
+- **Sýrufastinn's pool grows from 6 acids to 9** — Siggi's ruling, 2026-09-19. Three acids were
+  excluded for reasons the tables and the 2026-09-19 naming rulings have now resolved, and all
+  three are monoprotic, so the game's `protons` guard admits them: **HF** (`flússýra`, Ka
+  6,8 × 10⁻⁴) was out only over the `Flússýra`/`Flúorsýra` split; **HNO₂** (Ka 4,5 × 10⁻⁴) and
+  **HCN** (Ka 4,9 × 10⁻¹⁰) were out because two sources disagreed, and D.1 settles both. Note HNO₂
+  is `saltpéturssýrlingur`, **not** `saltpéturssýra` — that is HNO₃, and the two must not collide.
 
 **No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
 now fixed, as are the three above, and each carries a test that fails against the pre-fix code. What
