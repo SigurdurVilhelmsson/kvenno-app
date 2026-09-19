@@ -204,6 +204,8 @@ way, by touching the code rather than by reading a list.
 
 **The current work order is [`plans/2026-08-16-games-roadmap.md`](plans/2026-08-16-games-roadmap.md)**, with the first phase specified in [`plans/2026-08-16-phase-1-correctness.md`](plans/2026-08-16-phase-1-correctness.md). Both are live August-2026 documents, not history.
 
+**Then read [`plans/2026-09-19-session-record.md`](plans/2026-09-19-session-record.md)** — the most recent handoff. It carries what four merged PRs changed on 2026-09-19, the ten rulings taken that day, the one Tier-0 grading defect found (`buffer-recipe-creator` Level 2 graded against arithmetic that contradicted itself), what is blocked and on what, and four corrections to claims made mid-session before they were checked.
+
 **Read the roadmap's `STATUS` block first.** Its phase bodies are the 2026-08-16 text and are kept
 intact so the reasoning stays legible, which means parts of them describe defects that have since
 been fixed. The status block at the top carries what has actually happened — as of 2026-08-27,

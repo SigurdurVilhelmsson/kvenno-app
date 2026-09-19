@@ -590,6 +590,34 @@ rulings came out of that check and are **decided but not yet built**:
   first acid whose α breaks the 5 % rule across most of the range (2,6 % at 1,0 M to 22,9 % at
   0,01 M), which is deliberate — the Beita phase exists to cover pairs where the approximation fails.
 
+**Fixed 2026-09-19 — `buffer-recipe-creator` Level 2 graded against its own broken arithmetic.**
+`data/problems.ts` stored `correctAcidMass`, `correctBaseMass`, `correctAcidMoles`, `correctBaseMoles`
+and `ratio` per problem. `data-integrity.test.ts` checked the stored `ratio` against `10^(pH − pKa)`
+and it always passed — but nothing checked that the moles followed from the ratio, or the masses
+from the moles, and **13 of the 29 real problems had at least one that did not** (worst: #15's base
+mass was `totalConcentration × molarMass`, 21.29 g, where `baseMoles × molarMass` is 11.36 g). Level 2
+grades entered masses at ±5 %, so on **three of the six problems it served** a correct student was
+marked wrong and the explanation then printed the false multiplication back. **Fixed by deriving** —
+`engine/buffer.ts` computes all of it and the five fields are gone from the type and the data, the
+same cure B4 got in `molmassi`. Level 3 was never affected; it already derived at runtime.
+**`phAdjustment` is the branch to preserve if you touch this:** problem #25 weighs out _all_ the weak
+acid and adds NaOH, and that model lived only in the stored numbers because `Level2.tsx` never read
+the flag — deriving with the standard formula would have broken the one problem whose data was right.
+
+**Constants are sourced, 2026-09-19 — Siggi's ruling: Appendix D is authoritative, and a constant
+with no Appendix D row does not ship.** `packages/shared/data/appendix-d.ts` transcribes the Brown
+et al. Tables D.1 and D.2 rows the platform uses;
+`buffer-recipe-creator/src/__tests__/appendix-d-conformance.test.ts` asserts every pKa in that game
+traces to one, **compared at the precision it is written to** (`7.2` is a fair one-decimal rounding of
+7.2076; `10.33` is simply another book). Six values were corrected: bicarbonate 10.33 → **10.25**
+(19,7 % in the required ratio), benzoic 4.19 → **4.20** in two games, citric 4.76 → **4.77**, ammonium
+9.25 → **9.26**, formic 3.75 → **3.74** in two games plus hint text in three languages, and
+`ph-titration/components/Level3.tsx:370`'s **student-facing reference table, where six of nine values
+came from another book**. That last is the one to remember: the table is the student's route to the
+answer, so check reference tables and not just data. **Formic is the internal proof** — it shares the
+mantissa 1,8 with acetic, so their pKa values differ by exactly 1,000 (3,7447 and 4,7447); the
+platform rounded one to 4,74 and the other to 3,75, which cannot both be right.
+
 **No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
 now fixed, as are the three above, and each carries a test that fails against the pre-fix code. What
 is left is enrichment and unfinished decisions, not defects — the work order is
