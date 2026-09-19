@@ -179,7 +179,11 @@ function appReducer(state: AppState, action: AppAction): AppState {
         ...state,
         files: {
           ...state.files,
-          status: { ...state.files.status, current: action.current, currentFile: action.currentFile },
+          status: {
+            ...state.files.status,
+            current: action.current,
+            currentFile: action.currentFile,
+          },
         },
       };
 
@@ -205,7 +209,12 @@ function appReducer(state: AppState, action: AppAction): AppState {
     case 'SESSION_SAVED':
       return {
         ...state,
-        session: { ...state.session, currentName: action.name, currentId: action.id, isSaved: true },
+        session: {
+          ...state.session,
+          currentName: action.name,
+          currentId: action.id,
+          isSaved: true,
+        },
         ui: { ...state.ui, showSaveDialog: false },
       };
 

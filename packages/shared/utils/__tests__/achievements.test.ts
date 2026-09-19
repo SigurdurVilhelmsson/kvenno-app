@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
-import type { PlayerAchievements, Achievement, AchievementEvent } from '../../types/achievement.types';
+import type {
+  PlayerAchievements,
+  Achievement,
+  AchievementEvent,
+} from '../../types/achievement.types';
 import {
   ACHIEVEMENTS,
   getDefaultPlayerAchievements,
@@ -106,7 +110,14 @@ describe('achievements', () => {
     });
 
     it('should have valid categories', () => {
-      const validCategories = ['performance', 'streak', 'speed', 'mastery', 'dedication', 'special'];
+      const validCategories = [
+        'performance',
+        'streak',
+        'speed',
+        'mastery',
+        'dedication',
+        'special',
+      ];
       for (const achievement of ACHIEVEMENTS) {
         expect(validCategories).toContain(achievement.category);
       }
@@ -793,9 +804,7 @@ describe('achievements', () => {
           notifications = checkAchievements(loadAchievements(), event);
         }
 
-        const streak3Notification = notifications.find(
-          (n) => n.achievement?.id === 'streak-3'
-        );
+        const streak3Notification = notifications.find((n) => n.achievement?.id === 'streak-3');
         expect(streak3Notification?.isNew).toBe(true);
       });
 

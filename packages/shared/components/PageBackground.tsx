@@ -21,13 +21,7 @@ export function PageBackground({
   children,
 }: PageBackgroundProps) {
   const bgClass =
-    staticVariants[variant] ??
-    yearThemes[variant as YearTheme]?.gradient ??
-    staticVariants.default;
+    staticVariants[variant] ?? yearThemes[variant as YearTheme]?.gradient ?? staticVariants.default;
 
-  return (
-    <div className={`min-h-screen ${bgClass} ${className}`}>
-      {children}
-    </div>
-  );
+  return <div className={`min-h-screen ${bgClass} ${className}`}>{children}</div>;
 }

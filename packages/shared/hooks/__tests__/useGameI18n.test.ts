@@ -154,9 +154,7 @@ describe('useGameI18n', () => {
 
   describe('game-specific translations', () => {
     it('should merge game translations with shared translations', () => {
-      const { result } = renderHook(() =>
-        useGameI18n({ gameTranslations: mockGameTranslations })
-      );
+      const { result } = renderHook(() => useGameI18n({ gameTranslations: mockGameTranslations }));
 
       // Game-specific key
       expect(result.current.t('game.title')).toBe('Leikur');
@@ -187,9 +185,7 @@ describe('useGameI18n', () => {
         pl: {},
       };
 
-      const { result } = renderHook(() =>
-        useGameI18n({ gameTranslations: partialTranslations })
-      );
+      const { result } = renderHook(() => useGameI18n({ gameTranslations: partialTranslations }));
 
       // Switch to English
       act(() => {
@@ -224,9 +220,7 @@ describe('useGameI18n', () => {
     });
 
     it('should update translations when language changes', () => {
-      const { result } = renderHook(() =>
-        useGameI18n({ gameTranslations: mockGameTranslations })
-      );
+      const { result } = renderHook(() => useGameI18n({ gameTranslations: mockGameTranslations }));
 
       expect(result.current.t('game.title')).toBe('Leikur');
 

@@ -10,21 +10,21 @@ import type { ElementVisual, MolecularGeometry, Position3D } from '@shared/types
  */
 export const ELEMENT_VISUALS: Record<string, ElementVisual> = {
   // Common elements - H and C have stroke colors for visibility on any background
-  H:  { color: '#F3F4F6', radius: 0.6, name: 'Hydrogen', mass: 1.008, strokeColor: '#9CA3AF' },
-  C:  { color: '#4B5563', radius: 1.0, name: 'Carbon', mass: 12.011, strokeColor: '#D1D5DB' },
-  N:  { color: '#3B82F6', radius: 0.95, name: 'Nitrogen', mass: 14.007 },
-  O:  { color: '#EF4444', radius: 0.9, name: 'Oxygen', mass: 15.999 },
-  F:  { color: '#84CC16', radius: 0.7, name: 'Fluorine', mass: 18.998 },
+  H: { color: '#F3F4F6', radius: 0.6, name: 'Hydrogen', mass: 1.008, strokeColor: '#9CA3AF' },
+  C: { color: '#4B5563', radius: 1.0, name: 'Carbon', mass: 12.011, strokeColor: '#D1D5DB' },
+  N: { color: '#3B82F6', radius: 0.95, name: 'Nitrogen', mass: 14.007 },
+  O: { color: '#EF4444', radius: 0.9, name: 'Oxygen', mass: 15.999 },
+  F: { color: '#84CC16', radius: 0.7, name: 'Fluorine', mass: 18.998 },
 
   // Halogens
   Cl: { color: '#22C55E', radius: 1.15, name: 'Chlorine', mass: 35.453 },
   Br: { color: '#991B1B', radius: 1.25, name: 'Bromine', mass: 79.904 },
-  I:  { color: '#7C3AED', radius: 1.4, name: 'Iodine', mass: 126.904 },
+  I: { color: '#7C3AED', radius: 1.4, name: 'Iodine', mass: 126.904 },
 
   // Alkali metals
   Li: { color: '#A855F7', radius: 1.2, name: 'Lithium', mass: 6.941 },
-  Na: { color: '#8B5CF6', radius: 1.5, name: 'Sodium', mass: 22.990 },
-  K:  { color: '#EC4899', radius: 1.8, name: 'Potassium', mass: 39.098 },
+  Na: { color: '#8B5CF6', radius: 1.5, name: 'Sodium', mass: 22.99 },
+  K: { color: '#EC4899', radius: 1.8, name: 'Potassium', mass: 39.098 },
 
   // Alkaline earth metals
   Be: { color: '#A3E635', radius: 0.9, name: 'Beryllium', mass: 9.012 },
@@ -32,8 +32,8 @@ export const ELEMENT_VISUALS: Record<string, ElementVisual> = {
   Ca: { color: '#F97316', radius: 1.6, name: 'Calcium', mass: 40.078 },
 
   // Other common elements
-  S:  { color: '#EAB308', radius: 1.2, name: 'Sulfur', mass: 32.065 },
-  P:  { color: '#F59E0B', radius: 1.1, name: 'Phosphorus', mass: 30.974 },
+  S: { color: '#EAB308', radius: 1.2, name: 'Sulfur', mass: 32.065 },
+  P: { color: '#F59E0B', radius: 1.1, name: 'Phosphorus', mass: 30.974 },
   Si: { color: '#D4A574', radius: 1.15, name: 'Silicon', mass: 28.086 },
 
   // Metals
@@ -46,7 +46,7 @@ export const ELEMENT_VISUALS: Record<string, ElementVisual> = {
 
   // Noble gases
   He: { color: '#00FFFF', radius: 0.5, name: 'Helium', mass: 4.003 },
-  Ne: { color: '#FF6347', radius: 0.7, name: 'Neon', mass: 20.180 },
+  Ne: { color: '#FF6347', radius: 0.7, name: 'Neon', mass: 20.18 },
   Ar: { color: '#00CED1', radius: 1.0, name: 'Argon', mass: 39.948 },
 };
 
@@ -127,11 +127,11 @@ export const ANIMATION_DURATIONS = {
  * All coordinates are normalized to fit within [-1, 1] range
  */
 export const GEOMETRY_COORDS: Record<MolecularGeometry, Position3D[]> = {
-  'linear': [
+  linear: [
     { x: -1, y: 0, z: 0 },
     { x: 1, y: 0, z: 0 },
   ],
-  'bent': [
+  bent: [
     { x: -0.7, y: -0.5, z: 0 },
     { x: 0.7, y: -0.5, z: 0 },
   ],
@@ -145,7 +145,7 @@ export const GEOMETRY_COORDS: Record<MolecularGeometry, Position3D[]> = {
     { x: -0.7, y: 0.4, z: 0.3 },
     { x: 0.7, y: 0.4, z: 0.3 },
   ],
-  'tetrahedral': [
+  tetrahedral: [
     { x: 0, y: -0.9, z: 0.3 },
     { x: -0.85, y: 0.3, z: 0.3 },
     { x: 0.85, y: 0.3, z: 0.3 },
@@ -182,7 +182,7 @@ export const GEOMETRY_COORDS: Record<MolecularGeometry, Position3D[]> = {
     { x: -0.8, y: 0.3, z: -0.6 },
     { x: 0.8, y: 0.3, z: -0.6 },
   ],
-  'octahedral': [
+  octahedral: [
     { x: 0, y: -1, z: 0 },
     { x: 0, y: 1, z: 0 },
     { x: -1, y: 0, z: 0 },
@@ -225,9 +225,9 @@ export const MOLECULE_COLORS = {
  */
 export const LONE_PAIR_ANGLES = {
   // For atoms at different positions relative to central atom
-  top: [225, 315],      // Lone pairs below the atom
-  bottom: [45, 135],    // Lone pairs above the atom
-  left: [315, 45],      // Lone pairs to the right
-  right: [135, 225],    // Lone pairs to the left
+  top: [225, 315], // Lone pairs below the atom
+  bottom: [45, 135], // Lone pairs above the atom
+  left: [315, 45], // Lone pairs to the right
+  right: [135, 225], // Lone pairs to the left
   center: [0, 90, 180, 270], // For central atoms with multiple lone pairs
 } as const;

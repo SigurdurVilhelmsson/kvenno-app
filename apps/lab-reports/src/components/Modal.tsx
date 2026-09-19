@@ -102,9 +102,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   confirmVariant = 'danger',
 }) => {
   const confirmColor =
-    confirmVariant === 'danger'
-      ? 'bg-red-600 hover:bg-red-700'
-      : 'bg-green-600 hover:bg-green-700';
+    confirmVariant === 'danger' ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700';
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title}>

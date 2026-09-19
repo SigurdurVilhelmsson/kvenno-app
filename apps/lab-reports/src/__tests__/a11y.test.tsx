@@ -35,10 +35,14 @@ vi.mock('@kvenno/shared/components', () => ({
     </header>
   ),
   Container: ({ children, className }: { children: React.ReactNode; className?: string }) => (
-    <div data-testid="container" className={className}>{children}</div>
+    <div data-testid="container" className={className}>
+      {children}
+    </div>
   ),
   Card: ({ children, className, ...props }: Record<string, unknown>) => (
-    <div data-testid="card" className={className as string} {...props}>{children as React.ReactNode}</div>
+    <div data-testid="card" className={className as string} {...props}>
+      {children as React.ReactNode}
+    </div>
   ),
 }));
 

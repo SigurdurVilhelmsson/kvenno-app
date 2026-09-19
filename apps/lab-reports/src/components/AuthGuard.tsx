@@ -76,9 +76,7 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
               {isAuthenticated ? 'Hleð...' : 'Skráir inn...'}
             </h2>
             <p className="text-warm-600">
-              {isAuthenticated
-                ? 'Vinsamlegast bíðið...'
-                : 'Þú verður vísað á innskráningarsíðu...'}
+              {isAuthenticated ? 'Vinsamlegast bíðið...' : 'Þú verður vísað á innskráningarsíðu...'}
             </p>
           </div>
         </div>

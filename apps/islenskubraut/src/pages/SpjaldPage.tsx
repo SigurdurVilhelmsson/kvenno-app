@@ -28,9 +28,7 @@ export function SpjaldPage() {
   if (!category) {
     return (
       <Container className="py-16 text-center">
-        <h1 className="font-heading text-2xl font-bold text-warm-900 mb-4">
-          Flokkur fannst ekki
-        </h1>
+        <h1 className="font-heading text-2xl font-bold text-warm-900 mb-4">Flokkur fannst ekki</h1>
         <p className="text-warm-600 mb-8">
           Þessi flokkur er ekki til. Veldu annan flokk af forsíðunni.
         </p>
@@ -39,7 +37,12 @@ export function SpjaldPage() {
           className="inline-flex items-center gap-2 text-warm-600 hover:text-warm-900 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
           Til baka
         </Link>
@@ -56,7 +59,12 @@ export function SpjaldPage() {
           className="inline-flex items-center gap-2 text-sm text-warm-500 hover:text-warm-900 transition-colors"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
           Allir flokkar
         </Link>
@@ -84,11 +92,7 @@ export function SpjaldPage() {
 
       {/* Download button */}
       <div className="mb-10">
-        <DownloadButton
-          categoryId={category.id}
-          level={level}
-          color={category.color}
-        />
+        <DownloadButton categoryId={category.id} level={level} color={category.color} />
       </div>
 
       {/* Tab navigation */}
@@ -112,9 +116,7 @@ export function SpjaldPage() {
 
       {/* Preview content */}
       <div className="max-w-lg mx-auto">
-        {activeTab === 'spurningaspjald' && (
-          <SpurningaSpjald category={category} level={level} />
-        )}
+        {activeTab === 'spurningaspjald' && <SpurningaSpjald category={category} level={level} />}
         {activeTab === 'ordafordi' && (
           <SpjaldPreview category={category} level={level} view="front" />
         )}

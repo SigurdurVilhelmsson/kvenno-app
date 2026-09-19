@@ -75,18 +75,8 @@ export const hlutleysing_syru: ExperimentConfig = {
   year: 3, // Assuming 3rd year based on content complexity
   worksheet: {
     reaction: 'CH₃COOH(aq) + HCO₃⁻(aq) → CH₃COO⁻(aq) + H₂O(l) + CO₂(g)',
-    materials: [
-      'Borðedik / ediksýra 4%',
-      'Matarsódi (NaHCO₃)',
-    ],
-    equipment: [
-      '500 mL gosflaska',
-      'Blaðra',
-      'Teskeið',
-      'Vog',
-      'pH pappír',
-      'Mæliglas',
-    ],
+    materials: ['Borðedik / ediksýra 4%', 'Matarsódi (NaHCO₃)'],
+    equipment: ['500 mL gosflaska', 'Blaðra', 'Teskeið', 'Vog', 'pH pappír', 'Mæliglas'],
     steps: [
       'Mæla 100 mL af ediki og setja í flösku',
       'Mæla pH ediks með pH pappír',
@@ -128,8 +118,10 @@ export const hlutleysing_syru: ExperimentConfig = {
       pointGuidance: {
         '10-12':
           'Complete: Acid-base definitions (Brønsted-Lowry), conjugate pairs explained, pH/pOH relationship, ideal gas law explained, spectator ions defined, percent yield concept, good paragraph structure',
-        '7-9': 'Mostly complete: Has key concepts but one topic poorly explained OR minor experiment-specific observations',
-        '4-6': 'Partial: Lists concepts without explaining mechanisms OR significant experiment-specific content (actual pH values, measurements)',
+        '7-9':
+          'Mostly complete: Has key concepts but one topic poorly explained OR minor experiment-specific observations',
+        '4-6':
+          'Partial: Lists concepts without explaining mechanisms OR significant experiment-specific content (actual pH values, measurements)',
         '1-3': 'Minimal: Mentions concepts but no real explanation',
         '0': 'Missing or describes only this specific experiment with no general theory',
       },
@@ -164,7 +156,8 @@ export const hlutleysing_syru: ExperimentConfig = {
     {
       id: 'framkvamd',
       name: 'Framkvæmd',
-      description: 'Should reference specific worksheet, optionally with comment on how it went or any deviations',
+      description:
+        'Should reference specific worksheet, optionally with comment on how it went or any deviations',
       maxPoints: 4,
       pointGuidance: {
         '4': 'Perfect: Specific worksheet reference by name, optionally with comment on how it went or changes made, NO misplaced content',
@@ -192,10 +185,13 @@ export const hlutleysing_syru: ExperimentConfig = {
       pointGuidance: {
         '11-12':
           'Excellent: ALL calculations correct (mass NaHCO₃, balloon volume, gas law for moles CO₂, theoretical yield, percent yield, [H⁺] and [OH⁻] from pH), ALL observations recorded (pH before/after, balloon measurement), chemical equations with acid/base/conjugate pairs labeled, spectator ion explanation, AND good formatting',
-        '9-10': 'Complete content but formatting issues: All calculations and explanations present and correct, BUT results run together without clear separation (wall of text) = cap at 10 points maximum',
-        '7-8': 'Mostly complete: Has most calculations and observations, but 1-2 items lack depth or are missing',
+        '9-10':
+          'Complete content but formatting issues: All calculations and explanations present and correct, BUT results run together without clear separation (wall of text) = cap at 10 points maximum',
+        '7-8':
+          'Mostly complete: Has most calculations and observations, but 1-2 items lack depth or are missing',
         '5-6': 'Partial: Missing 2-3 calculations OR several explanations are superficial',
-        '2-4': 'Incomplete: Missing multiple calculations OR missing pH data OR missing chemical equations',
+        '2-4':
+          'Incomplete: Missing multiple calculations OR missing pH data OR missing chemical equations',
         '0-1': 'Minimal: Very little content, or calculations in wrong section with nothing here',
       },
       criteria: {
@@ -211,13 +207,14 @@ export const hlutleysing_syru: ExperimentConfig = {
     {
       id: 'lokaord',
       name: 'Lokaorð',
-      description:
-        'Summary with connection to theory and discussion of uncertainty',
+      description: 'Summary with connection to theory and discussion of uncertainty',
       maxPoints: 8,
       pointGuidance: {
-        '7-8': 'Excellent: Concise summary connecting to acid-base theory AND gas laws, uncertainty discussed (especially balloon measurement, pH paper precision), coherent flow, no repetition',
+        '7-8':
+          'Excellent: Concise summary connecting to acid-base theory AND gas laws, uncertainty discussed (especially balloon measurement, pH paper precision), coherent flow, no repetition',
         '5-6': 'Good: Has key elements but minor repetition OR brief uncertainty discussion',
-        '3-4': 'Partial: Missing uncertainty discussion OR significant repetition OR poor coherence',
+        '3-4':
+          'Partial: Missing uncertainty discussion OR significant repetition OR poor coherence',
         '1-2': 'Minimal: Rambling, excessive repetition, or disconnected from theory',
         '0': 'Missing or completely incoherent',
       },
@@ -234,11 +231,12 @@ export const hlutleysing_syru: ExperimentConfig = {
     {
       id: 'undirskrift',
       name: 'Undirskrift',
-      description: 'Student signature (author\'s actual name) present at END of report (after Lokaorð)',
+      description:
+        "Student signature (author's actual name) present at END of report (after Lokaorð)",
       maxPoints: 2,
       pointGuidance: {
-        '2': 'Author\'s actual name (full name or first name) present at END of report, after Lokaorð',
-        '0': 'Missing OR only on title page/header OR name at end is NOT the author\'s name',
+        '2': "Author's actual name (full name or first name) present at END of report, after Lokaorð",
+        '0': "Missing OR only on title page/header OR name at end is NOT the author's name",
       },
       criteria: {
         good: 'Undirskrift til staðar NEÐST í skýrslu, EFTIR Lokaorð kafla - VERÐUR að vera RAUNVERULEGT NAFN HÖFUNDAR (fullt nafn eða eiginnafn)',
@@ -246,7 +244,7 @@ export const hlutleysing_syru: ExperimentConfig = {
           'Undirskrift VANTAR, eða er AÐEINS á titilsíðu/haus (ekki neðst eftir Lokaorð), eða nafn neðst er EKKI nafn höfundar',
       },
       specialNote:
-        'SIGNATURE VERIFICATION (CRITICAL): (1) Signature must appear AFTER the Lokaorð section, at the very END of the report body. (2) A name on a TITLE PAGE or HEADER does NOT count as a signature. (3) CRITICAL: The signature MUST be the ACTUAL AUTHOR\'S NAME. Verify that the name at the end matches the author of the report (check title page or header for author\'s name). (4) COMMON MISTAKE: Another person\'s name mentioned in text at the end is NOT a signature. Example: "Ég notaði spjallmennið sem Siggi bjó til." - "Siggi" here is NOT the author\'s signature, it is a reference to the teacher/creator. This should receive 0 points. (5) Look for the author\'s name specifically appearing as a standalone signature after all content, not embedded in a sentence referring to someone else. (6) This is BINARY: either author\'s signature is at end (2 points) or it is not (0 points). (7) Accept full name or first name only, as long as it matches the author. (8) IMAGE SIGNATURES: Signatures may be inserted as IMAGES in .docx files (handwritten signature photos, digital signatures). These ARE VALID if they appear after Lokaorð and represent the author.',
+        "SIGNATURE VERIFICATION (CRITICAL): (1) Signature must appear AFTER the Lokaorð section, at the very END of the report body. (2) A name on a TITLE PAGE or HEADER does NOT count as a signature. (3) CRITICAL: The signature MUST be the ACTUAL AUTHOR'S NAME. Verify that the name at the end matches the author of the report (check title page or header for author's name). (4) COMMON MISTAKE: Another person's name mentioned in text at the end is NOT a signature. Example: \"Ég notaði spjallmennið sem Siggi bjó til.\" - \"Siggi\" here is NOT the author's signature, it is a reference to the teacher/creator. This should receive 0 points. (5) Look for the author's name specifically appearing as a standalone signature after all content, not embedded in a sentence referring to someone else. (6) This is BINARY: either author's signature is at end (2 points) or it is not (0 points). (7) Accept full name or first name only, as long as it matches the author. (8) IMAGE SIGNATURES: Signatures may be inserted as IMAGES in .docx files (handwritten signature photos, digital signatures). These ARE VALID if they appear after Lokaorð and represent the author.",
     },
     {
       id: 'samhengi',
@@ -257,7 +255,8 @@ export const hlutleysing_syru: ExperimentConfig = {
         '6': 'Excellent: All content in correct sections, complete with no blanks, logical flow, good readability with proper paragraph breaks, appears proofread',
         '5': 'Very good: Minor structural issues or few typos, generally good readability',
         '4': 'Good: Some content slightly misplaced OR minor incomplete parts OR some readability issues',
-        '2-3': 'Fair: Notable structural issues (calculations in wrong section) OR several incomplete parts OR poor readability',
+        '2-3':
+          'Fair: Notable structural issues (calculations in wrong section) OR several incomplete parts OR poor readability',
         '1': 'Poor: Major structural problems, significant missing content, very poor readability',
         '0': 'Very poor: Severely disorganized, major sections missing, incoherent',
       },

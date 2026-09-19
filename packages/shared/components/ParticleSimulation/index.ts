@@ -1,5 +1,9 @@
 export { ParticleSimulation } from './ParticleSimulation';
-export { useParticleSimulation, calculateAverageKE, temperatureFromKE } from './useParticleSimulation';
+export {
+  useParticleSimulation,
+  calculateAverageKE,
+  temperatureFromKE,
+} from './useParticleSimulation';
 export {
   PARTICLE_TYPES,
   PHYSICS_PRESETS,
@@ -7,7 +11,7 @@ export {
   createGasSimulation,
   createGasMixture,
   createKineticsSimulation,
-  createEquilibriumSimulation
+  createEquilibriumSimulation,
 } from './presets';
 export type {
   ParticleType,
@@ -21,5 +25,5 @@ export type {
   SimulationPreset,
   SimulationControls,
   EnhancedRenderingConfig,
-  CollisionFlash
+  CollisionFlash,
 } from './types';

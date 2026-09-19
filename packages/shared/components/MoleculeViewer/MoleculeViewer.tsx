@@ -56,22 +56,15 @@ export function MoleculeViewer({
       className={`molecule-viewer flex flex-col items-center ${variantStyles[variant]} ${containerClassName}`}
     >
       {showLabel && labelPosition === 'above' && (
-        <div className={`mb-2 ${labelStyles[variant]}`}>
-          {displayLabel}
-        </div>
+        <div className={`mb-2 ${labelStyles[variant]}`}>{displayLabel}</div>
       )}
 
       <div className="flex items-center justify-center">
-        <AnimatedMolecule
-          molecule={molecule}
-          {...moleculeProps}
-        />
+        <AnimatedMolecule molecule={molecule} {...moleculeProps} />
       </div>
 
       {showLabel && labelPosition === 'below' && (
-        <div className={`mt-2 ${labelStyles[variant]}`}>
-          {displayLabel}
-        </div>
+        <div className={`mt-2 ${labelStyles[variant]}`}>{displayLabel}</div>
       )}
     </div>
   );

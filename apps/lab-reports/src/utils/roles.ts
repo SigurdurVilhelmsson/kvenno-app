@@ -33,9 +33,7 @@ export const TEACHER_EMAILS: string[] = (import.meta.env.VITE_TEACHER_EMAILS || 
  */
 export const isTeacher = (email: string): boolean => {
   const normalizedEmail = email.toLowerCase().trim();
-  return TEACHER_EMAILS.some(
-    (teacherEmail) => teacherEmail.toLowerCase() === normalizedEmail
-  );
+  return TEACHER_EMAILS.some((teacherEmail) => teacherEmail.toLowerCase() === normalizedEmail);
 };
 
 /**

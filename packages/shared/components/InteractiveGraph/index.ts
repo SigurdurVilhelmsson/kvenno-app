@@ -7,5 +7,5 @@ export type {
   RegionConfig,
   HorizontalLineConfig,
   VerticalLineConfig,
-  InteractiveGraphProps
+  InteractiveGraphProps,
 } from './types';

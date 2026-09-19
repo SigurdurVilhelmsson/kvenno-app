@@ -22,18 +22,10 @@ export const experimentId: ExperimentConfig = {
     reaction: 'A + B → C',
 
     // List of materials/chemicals needed
-    materials: [
-      'Material 1',
-      'Material 2',
-      'Material 3',
-    ],
+    materials: ['Material 1', 'Material 2', 'Material 3'],
 
     // List of equipment needed
-    equipment: [
-      'Equipment 1',
-      'Equipment 2',
-      'Equipment 3',
-    ],
+    equipment: ['Equipment 1', 'Equipment 2', 'Equipment 3'],
 
     // Step-by-step procedure
     steps: [

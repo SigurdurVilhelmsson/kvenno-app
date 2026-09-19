@@ -59,7 +59,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     const droppedFiles = Array.from(event.dataTransfer.files);
 
     // Filter files based on accepted types
-    const validFiles = droppedFiles.filter(file => {
+    const validFiles = droppedFiles.filter((file) => {
       if (acceptedFileTypes.includes('image/*') && file.type.startsWith('image/')) {
         return true;
       }
@@ -88,9 +88,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
     <>
       <div
         className={`border-2 border-dashed rounded-lg p-8 text-center mb-6 transition-colors ${
-          isDragging
-            ? 'border-kvenno-orange bg-orange-50'
-            : 'border-warm-300 bg-white'
+          isDragging ? 'border-kvenno-orange bg-orange-50' : 'border-warm-300 bg-white'
         }`}
         onDragEnter={handleDragEnter}
         onDragOver={handleDragOver}

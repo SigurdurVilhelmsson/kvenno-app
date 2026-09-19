@@ -1,15 +1,7 @@
 import React from 'react';
 
 export type BadgeVariant =
-  | 'default'
-  | 'orange'
-  | 'level1'
-  | 'level2'
-  | 'level3'
-  | 'success'
-  | 'warning'
-  | 'error'
-  | 'info';
+  'default' | 'orange' | 'level1' | 'level2' | 'level3' | 'success' | 'warning' | 'error' | 'info';
 
 export interface BadgeProps {
   variant?: BadgeVariant;
@@ -29,11 +21,7 @@ const variantClasses: Record<BadgeVariant, string> = {
   info: 'bg-info-light text-blue-800',
 };
 
-export function Badge({
-  variant = 'default',
-  className = '',
-  children,
-}: BadgeProps) {
+export function Badge({ variant = 'default', className = '', children }: BadgeProps) {
   return (
     <span
       className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${variantClasses[variant]} ${className}`}

@@ -72,18 +72,8 @@ export const jafnvaegi: ExperimentConfig = {
   year: 3,
   worksheet: {
     reaction: 'Fe³⁺(aq) + SCN⁻(aq) ⇌ FeSCN²⁺(aq)',
-    materials: [
-      'KSCN(s)',
-      '0,002M KSCN lausn',
-      '0,2 M Fe(NO₃)₃',
-      '0,1 M AgNO₃ lausn',
-    ],
-    equipment: [
-      '2 bikarglös',
-      '6 tilraunaglös',
-      'glasastandur',
-      'dropateljarar',
-    ],
+    materials: ['KSCN(s)', '0,002M KSCN lausn', '0,2 M Fe(NO₃)₃', '0,1 M AgNO₃ lausn'],
+    equipment: ['2 bikarglös', '6 tilraunaglös', 'glasastandur', 'dropateljarar'],
     steps: [
       'Reikna út hvernig blanda skal lausnir (100 mL af hverri)',
       'Athuga KSCN lausn (litur og jónir)',
@@ -110,8 +100,7 @@ export const jafnvaegi: ExperimentConfig = {
       },
       criteria: {
         good: 'Skýr lýsing á markmiðum: skoða áhrif breytinga á jafnvægisstöðu hvarfsins og/eða prófa Le Chatelier reglu',
-        needsImprovement:
-          'Tilgangur til staðar en vantar smáatriði um Le Chatelier eða jafnvægið',
+        needsImprovement: 'Tilgangur til staðar en vantar smáatriði um Le Chatelier eða jafnvægið',
         unsatisfactory: 'Mjög óljós eða vantar alveg',
       },
     },
@@ -124,8 +113,10 @@ export const jafnvaegi: ExperimentConfig = {
       pointGuidance: {
         '10-12':
           'Complete: Equilibrium defined, Le Chatelier explained with mechanism, all three factors with GENERAL examples, good paragraph structure',
-        '7-9': 'Mostly complete: Has key concepts but one factor poorly explained OR minor experiment-specific observations (not just reaction equation)',
-        '4-6': 'Partial: Lists factors without explaining mechanisms OR significant experiment-specific content (colors, observations)',
+        '7-9':
+          'Mostly complete: Has key concepts but one factor poorly explained OR minor experiment-specific observations (not just reaction equation)',
+        '4-6':
+          'Partial: Lists factors without explaining mechanisms OR significant experiment-specific content (colors, observations)',
         '1-3': 'Minimal: Mentions concepts but no real explanation',
         '0': 'Missing or describes only this specific experiment with no general theory',
       },
@@ -182,16 +173,19 @@ export const jafnvaegi: ExperimentConfig = {
     {
       id: 'nidurstodur',
       name: 'Niðurstöður',
-      description:
-        'All calculations, observations, answers to worksheet questions',
+      description: 'All calculations, observations, answers to worksheet questions',
       maxPoints: 12,
       pointGuidance: {
         '11-12':
           'Excellent: All THREE calculations correct, ALL 5 test tubes with FULL Le Chatelier explanations, AND good formatting (clear breaks between each result/calculation)',
-        '9-10': 'Complete content but formatting issues: All calculations and explanations present and correct, BUT results run together without clear separation (wall of text) = cap at 10 points maximum',
-        '7-8': 'Mostly complete: Has calculations and observations, but 1-2 explanations lack depth (missing WHY), regardless of formatting',
-        '5-6': 'Partial: Missing one calculation OR several explanations are superficial ("verður rautt" without mechanism)',
-        '2-4': 'Incomplete: Missing multiple calculations OR missing exo/endothermic determination OR several test tubes not explained',
+        '9-10':
+          'Complete content but formatting issues: All calculations and explanations present and correct, BUT results run together without clear separation (wall of text) = cap at 10 points maximum',
+        '7-8':
+          'Mostly complete: Has calculations and observations, but 1-2 explanations lack depth (missing WHY), regardless of formatting',
+        '5-6':
+          'Partial: Missing one calculation OR several explanations are superficial ("verður rautt" without mechanism)',
+        '2-4':
+          'Incomplete: Missing multiple calculations OR missing exo/endothermic determination OR several test tubes not explained',
         '0-1': 'Minimal: Very little content, or calculations in wrong section with nothing here',
       },
       criteria: {
@@ -207,13 +201,14 @@ export const jafnvaegi: ExperimentConfig = {
     {
       id: 'lokaord',
       name: 'Lokaorð',
-      description:
-        'Summary with connection to theory and discussion of uncertainty',
+      description: 'Summary with connection to theory and discussion of uncertainty',
       maxPoints: 8,
       pointGuidance: {
-        '7-8': 'Excellent: Concise summary connecting to Le Chatelier, uncertainty discussed, coherent flow, no repetition',
+        '7-8':
+          'Excellent: Concise summary connecting to Le Chatelier, uncertainty discussed, coherent flow, no repetition',
         '5-6': 'Good: Has key elements but minor repetition OR brief uncertainty discussion',
-        '3-4': 'Partial: Missing uncertainty discussion OR significant repetition OR poor coherence',
+        '3-4':
+          'Partial: Missing uncertainty discussion OR significant repetition OR poor coherence',
         '1-2': 'Minimal: Rambling, excessive repetition, or disconnected from theory',
         '0': 'Missing or completely incoherent',
       },
@@ -230,11 +225,12 @@ export const jafnvaegi: ExperimentConfig = {
     {
       id: 'undirskrift',
       name: 'Undirskrift',
-      description: 'Student signature (author\'s actual name) present at END of report (after Lokaorð)',
+      description:
+        "Student signature (author's actual name) present at END of report (after Lokaorð)",
       maxPoints: 2,
       pointGuidance: {
-        '2': 'Author\'s actual name (full name or first name) present at END of report, after Lokaorð',
-        '0': 'Missing OR only on title page/header OR name at end is NOT the author\'s name',
+        '2': "Author's actual name (full name or first name) present at END of report, after Lokaorð",
+        '0': "Missing OR only on title page/header OR name at end is NOT the author's name",
       },
       criteria: {
         good: 'Undirskrift til staðar NEÐST í skýrslu, EFTIR Lokaorð kafla - VERÐUR að vera RAUNVERULEGT NAFN HÖFUNDAR (fullt nafn eða eiginnafn)',
@@ -242,7 +238,7 @@ export const jafnvaegi: ExperimentConfig = {
           'Undirskrift VANTAR, eða er AÐEINS á titilsíðu/haus (ekki neðst eftir Lokaorð), eða nafn neðst er EKKI nafn höfundar',
       },
       specialNote:
-        'SIGNATURE VERIFICATION (CRITICAL): (1) Signature must appear AFTER the Lokaorð section, at the very END of the report body. (2) A name on a TITLE PAGE or HEADER does NOT count as a signature. (3) CRITICAL: The signature MUST be the ACTUAL AUTHOR\'S NAME. Verify that the name at the end matches the author of the report (check title page or header for author\'s name). (4) COMMON MISTAKE: Another person\'s name mentioned in text at the end is NOT a signature. Example: "Eina heimild mín var vinnuseðillinn og spjallmennið sem Siggi bjó til." - "Siggi" here is NOT the author\'s signature, it is a reference to the teacher/creator. This should receive 0 points. (5) Look for the author\'s name specifically appearing as a standalone signature after all content, not embedded in a sentence referring to someone else. (6) This is BINARY: either author\'s signature is at end (2 points) or it is not (0 points). (7) Accept full name or first name only, as long as it matches the author. (8) IMAGE SIGNATURES: Signatures may be inserted as IMAGES in .docx files (handwritten signature photos, digital signatures). These ARE VALID if they appear after Lokaorð and represent the author. When processing documents, ensure image content is checked for signatures, not just text extraction.',
+        "SIGNATURE VERIFICATION (CRITICAL): (1) Signature must appear AFTER the Lokaorð section, at the very END of the report body. (2) A name on a TITLE PAGE or HEADER does NOT count as a signature. (3) CRITICAL: The signature MUST be the ACTUAL AUTHOR'S NAME. Verify that the name at the end matches the author of the report (check title page or header for author's name). (4) COMMON MISTAKE: Another person's name mentioned in text at the end is NOT a signature. Example: \"Eina heimild mín var vinnuseðillinn og spjallmennið sem Siggi bjó til.\" - \"Siggi\" here is NOT the author's signature, it is a reference to the teacher/creator. This should receive 0 points. (5) Look for the author's name specifically appearing as a standalone signature after all content, not embedded in a sentence referring to someone else. (6) This is BINARY: either author's signature is at end (2 points) or it is not (0 points). (7) Accept full name or first name only, as long as it matches the author. (8) IMAGE SIGNATURES: Signatures may be inserted as IMAGES in .docx files (handwritten signature photos, digital signatures). These ARE VALID if they appear after Lokaorð and represent the author. When processing documents, ensure image content is checked for signatures, not just text extraction.",
     },
     {
       id: 'samhengi',
@@ -253,7 +249,8 @@ export const jafnvaegi: ExperimentConfig = {
         '6': 'Excellent: All content in correct sections, complete with no blanks, logical flow, good readability with proper paragraph breaks, appears proofread',
         '5': 'Very good: Minor structural issues or few typos, generally good readability',
         '4': 'Good: Some content slightly misplaced OR minor incomplete parts OR some readability issues (missing paragraph breaks)',
-        '2-3': 'Fair: Notable structural issues (calculations in wrong section) OR several incomplete parts OR poor readability (wall of text)',
+        '2-3':
+          'Fair: Notable structural issues (calculations in wrong section) OR several incomplete parts OR poor readability (wall of text)',
         '1': 'Poor: Major structural problems, significant missing content, very poor readability',
         '0': 'Very poor: Severely disorganized, major sections missing, incoherent',
       },

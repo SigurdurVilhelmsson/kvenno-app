@@ -69,8 +69,8 @@ describe('shuffleArray', () => {
       const shuffled = shuffleArray(objects);
 
       expect(shuffled.length).toBe(3);
-      expect(shuffled.find(o => o.correct)).toBeDefined();
-      expect(shuffled.map(o => o.id).sort()).toEqual(['a', 'b', 'c']);
+      expect(shuffled.find((o) => o.correct)).toBeDefined();
+      expect(shuffled.map((o) => o.id).sort()).toEqual(['a', 'b', 'c']);
     });
 
     it('should preserve object references', () => {

@@ -64,9 +64,7 @@ export function LanguageSwitcher({
   if (variant === 'dropdown') {
     return (
       <div className={`flex items-center gap-2 ${className}`}>
-        {showLabels && (
-          <span className="text-sm text-gray-600">{languageFlags[language]}</span>
-        )}
+        {showLabels && <span className="text-sm text-gray-600">{languageFlags[language]}</span>}
         <select
           value={language}
           onChange={(e) => onLanguageChange(e.target.value as Language)}
@@ -85,7 +83,11 @@ export function LanguageSwitcher({
 
   if (variant === 'buttons') {
     return (
-      <div className={`flex items-center gap-1 ${className}`} role="group" aria-label="Language selection">
+      <div
+        className={`flex items-center gap-1 ${className}`}
+        role="group"
+        aria-label="Language selection"
+      >
         {availableLanguages.map((lang) => (
           <button
             key={lang}
@@ -107,7 +109,11 @@ export function LanguageSwitcher({
 
   // Compact variant - flags only
   return (
-    <div className={`flex items-center gap-0.5 ${className}`} role="group" aria-label="Language selection">
+    <div
+      className={`flex items-center gap-0.5 ${className}`}
+      role="group"
+      aria-label="Language selection"
+    >
       {availableLanguages.map((lang) => (
         <button
           key={lang}

@@ -21,20 +21,36 @@ vi.mock('@kvenno/shared/components', () => ({
     </nav>
   ),
   Card: ({ children, className, ...props }: Record<string, unknown>) => (
-    <div data-testid="card" className={className as string} {...props}>{children as React.ReactNode}</div>
+    <div data-testid="card" className={className as string} {...props}>
+      {children as React.ReactNode}
+    </div>
   ),
   Button: ({ children, href, as, className, ...props }: Record<string, unknown>) => {
     const Tag = as === 'a' ? 'a' : 'button';
-    return <Tag href={href as string} className={className as string} {...props}>{children as React.ReactNode}</Tag>;
+    return (
+      <Tag href={href as string} className={className as string} {...props}>
+        {children as React.ReactNode}
+      </Tag>
+    );
   },
-  Badge: ({ children }: { children: React.ReactNode }) => <span data-testid="badge">{children}</span>,
+  Badge: ({ children }: { children: React.ReactNode }) => (
+    <span data-testid="badge">{children}</span>
+  ),
   Container: ({ children, className }: { children: React.ReactNode; className?: string }) => (
-    <div data-testid="container" className={className}>{children}</div>
+    <div data-testid="container" className={className}>
+      {children}
+    </div>
   ),
   PageBackground: ({ children, className }: { children: React.ReactNode; className?: string }) => (
-    <div data-testid="page-background" className={className}>{children}</div>
+    <div data-testid="page-background" className={className}>
+      {children}
+    </div>
   ),
-  SkipLink: () => <a href="#main-content" className="skip-link">Fara beint í efni</a>,
+  SkipLink: () => (
+    <a href="#main-content" className="skip-link">
+      Fara beint í efni
+    </a>
+  ),
   BottomNav: () => <nav data-testid="bottom-nav" />,
 }));
 
@@ -42,11 +58,7 @@ vi.mock('@kvenno/shared/components', () => ({
  * Helper to render a component inside MemoryRouter at a given path.
  */
 function renderWithRouter(ui: React.ReactElement, initialEntries: string[] = ['/']) {
-  return render(
-    <MemoryRouter initialEntries={initialEntries}>
-      {ui}
-    </MemoryRouter>
-  );
+  return render(<MemoryRouter initialEntries={initialEntries}>{ui}</MemoryRouter>);
 }
 
 // ---------------------------------------------------------------------------
@@ -270,7 +282,9 @@ describe('App routing', () => {
     const matches = screen.getAllByText('Efnafræði');
     expect(matches.length).toBeGreaterThanOrEqual(1);
     expect(
-      screen.getByText('Safn af gagnvirkum verkfærum fyrir efnafræðikennslu við Kvennaskólann í Reykjavík. Veldu áfanga hér að neðan til að skoða tiltæk verkfæri.')
+      screen.getByText(
+        'Safn af gagnvirkum verkfærum fyrir efnafræðikennslu við Kvennaskólann í Reykjavík. Veldu áfanga hér að neðan til að skoða tiltæk verkfæri.'
+      )
     ).toBeDefined();
   });
 

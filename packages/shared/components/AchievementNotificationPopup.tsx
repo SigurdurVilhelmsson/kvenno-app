@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import {
-  AchievementNotification,
-  RARITY_COLORS,
-  RARITY_LABELS,
-} from '../types/achievement.types';
+import { AchievementNotification, RARITY_COLORS, RARITY_LABELS } from '../types/achievement.types';
 
 interface AchievementNotificationPopupProps {
   notification: AchievementNotification;
@@ -88,17 +84,15 @@ export function AchievementNotificationPopup({
             {achievement.icon}
           </div>
           <div className="flex-1">
-            <div className={`font-bold text-lg ${colors.text}`}>
-              {achievement.name}
-            </div>
-            <div className="text-sm text-gray-600">
-              {achievement.description}
-            </div>
+            <div className={`font-bold text-lg ${colors.text}`}>{achievement.name}</div>
+            <div className="text-sm text-gray-600">{achievement.description}</div>
             <div className="flex items-center gap-2 mt-1">
               <span className={`text-sm font-semibold ${colors.text}`}>
                 +{achievement.points} stig
               </span>
-              <span className={`text-xs px-2 py-0.5 rounded-full ${colors.bg} ${colors.text} border ${colors.border}`}>
+              <span
+                className={`text-xs px-2 py-0.5 rounded-full ${colors.bg} ${colors.text} border ${colors.border}`}
+              >
                 {RARITY_LABELS[achievement.rarity]}
               </span>
             </div>

@@ -53,7 +53,9 @@ export const StudentFeedback: React.FC<StudentFeedbackProps> = ({
 
   return (
     <div className="bg-surface-raised rounded-lg shadow-lg p-8">
-      <h2 className="text-2xl font-bold font-heading text-warm-900 mb-6">Endurgjöf á skýrsluna þína</h2>
+      <h2 className="text-2xl font-bold font-heading text-warm-900 mb-6">
+        Endurgjöf á skýrsluna þína
+      </h2>
 
       <div className="space-y-8">
         {feedback.map((item, idx) => (
@@ -65,8 +67,7 @@ export const StudentFeedback: React.FC<StudentFeedbackProps> = ({
               <div className="bg-orange-50 border-l-4 border-kvenno-orange p-4 mb-6">
                 <p className="text-2xl font-bold text-warm-900">
                   Áætluð einkunn:{' '}
-                  {item.heildareinkunn ||
-                    `${item.totalPoints}/${item.maxTotalPoints || 30}`}
+                  {item.heildareinkunn || `${item.totalPoints}/${item.maxTotalPoints || 30}`}
                 </p>
                 <p className="text-sm text-warm-700 mt-1">
                   Þetta er til leiðbeiningar - raunveruleg einkunn kemur frá kennara
@@ -250,7 +251,7 @@ export const StudentFeedback: React.FC<StudentFeedbackProps> = ({
                 fileContent={{
                   type: 'pdf',
                   data: '',
-                  debug: item.extractionDebug
+                  debug: item.extractionDebug,
                 }}
                 fileName={item.filename}
               />

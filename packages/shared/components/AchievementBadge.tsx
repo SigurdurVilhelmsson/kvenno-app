@@ -57,9 +57,7 @@ export function AchievementBadge({
           transition-all
         `}
       >
-        <span className={isUnlocked ? '' : 'opacity-30'}>
-          {achievement.icon}
-        </span>
+        <span className={isUnlocked ? '' : 'opacity-30'}>{achievement.icon}</span>
       </div>
 
       {/* Badge info */}
@@ -68,9 +66,7 @@ export function AchievementBadge({
           {achievement.secret && !isUnlocked ? '???' : achievement.name}
         </div>
         <div className="text-xs text-gray-500 truncate">
-          {achievement.secret && !isUnlocked
-            ? 'Leynilegt afrek'
-            : achievement.description}
+          {achievement.secret && !isUnlocked ? 'Leynilegt afrek' : achievement.description}
         </div>
 
         {/* Progress bar */}
@@ -93,9 +89,7 @@ export function AchievementBadge({
         {/* Unlocked info */}
         {isUnlocked && (
           <div className="flex items-center gap-2 mt-1">
-            <span className={`text-xs ${colors.text}`}>
-              +{achievement.points} stig
-            </span>
+            <span className={`text-xs ${colors.text}`}>+{achievement.points} stig</span>
             <span className={`text-xs px-1.5 py-0.5 rounded ${colors.bg} ${colors.text}`}>
               {RARITY_LABELS[achievement.rarity]}
             </span>

@@ -51,7 +51,8 @@ describe('API module - buildMessageContent behavior', () => {
 
 describe('API module - JSON response parsing', () => {
   it('extracts JSON from response text with surrounding content', () => {
-    const responseText = 'Here is the analysis:\n{"sections": {}, "suggestedGrade": "8/15"}\n\nDone.';
+    const responseText =
+      'Here is the analysis:\n{"sections": {}, "suggestedGrade": "8/15"}\n\nDone.';
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
 
     expect(jsonMatch).not.toBeNull();

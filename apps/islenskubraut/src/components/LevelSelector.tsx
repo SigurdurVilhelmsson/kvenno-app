@@ -12,11 +12,7 @@ const levels: { value: Level; label: string; description: string }[] = [
   { value: 'B1', label: 'B1', description: 'Miðstig' },
 ];
 
-export function LevelSelector({
-  selected,
-  onChange,
-  color,
-}: LevelSelectorProps) {
+export function LevelSelector({ selected, onChange, color }: LevelSelectorProps) {
   return (
     <div className="flex gap-3">
       {levels.map((level) => {
@@ -36,11 +32,7 @@ export function LevelSelector({
             style={isSelected ? { backgroundColor: color } : undefined}
           >
             <div className="text-lg">{level.label}</div>
-            <div
-              className={`text-xs mt-0.5 ${
-                isSelected ? 'text-white/80' : 'text-warm-400'
-              }`}
-            >
+            <div className={`text-xs mt-0.5 ${isSelected ? 'text-white/80' : 'text-warm-400'}`}>
               {level.description}
             </div>
           </button>

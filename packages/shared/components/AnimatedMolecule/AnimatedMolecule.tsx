@@ -26,8 +26,17 @@ import {
 } from './molecule.utils';
 import { MoleculeAtom, MoleculeAtomDefs } from './MoleculeAtom';
 import { MoleculeBond, MoleculeBondDefs } from './MoleculeBond';
-import { MoleculeDipole, MoleculeDipoleDefs, calculateDipoleDirection, calculateDipoleLength } from './MoleculeDipole';
-import { MoleculeLonePair, MoleculeLonePairDefs, calculateLonePairAngles } from './MoleculeLonePair';
+import {
+  MoleculeDipole,
+  MoleculeDipoleDefs,
+  calculateDipoleDirection,
+  calculateDipoleLength,
+} from './MoleculeDipole';
+import {
+  MoleculeLonePair,
+  MoleculeLonePairDefs,
+  calculateLonePairAngles,
+} from './MoleculeLonePair';
 import { useMoleculeAnimation, MOLECULE_KEYFRAMES } from './useMoleculeAnimation';
 
 export function AnimatedMolecule({
@@ -65,20 +74,16 @@ export function AnimatedMolecule({
   }, [atomsWithIds, showLonePairs, mode]);
 
   // Use animation hook for orchestrated timing
-  const {
-    getAtomTiming,
-    getBondTiming,
-    getLonePairTiming,
-    shouldSkipAnimation,
-  } = useMoleculeAnimation({
-    atomCount: atomsWithIds.length,
-    bondCount: molecule.bonds.length,
-    lonePairCount,
-    animation,
-    baseDuration: animationDuration,
-    reducedMotion,
-    onAnimationComplete,
-  });
+  const { getAtomTiming, getBondTiming, getLonePairTiming, shouldSkipAnimation } =
+    useMoleculeAnimation({
+      atomCount: atomsWithIds.length,
+      bondCount: molecule.bonds.length,
+      lonePairCount,
+      animation,
+      baseDuration: animationDuration,
+      reducedMotion,
+      onAnimationComplete,
+    });
 
   // Calculate atom positions based on mode
   const atomPositions = useMemo(() => {
@@ -90,12 +95,7 @@ export function AnimatedMolecule({
         atomRadius
       );
     }
-    return calculateAtomPositions(
-      { ...molecule, atoms: atomsWithIds },
-      width,
-      height,
-      atomRadius
-    );
+    return calculateAtomPositions({ ...molecule, atoms: atomsWithIds }, width, height, atomRadius);
   }, [molecule, atomsWithIds, width, height, atomRadius, mode]);
 
   // Calculate bond angles for each atom (needed for lone pair positioning)
@@ -130,7 +130,8 @@ export function AnimatedMolecule({
 
   // Get 3D depth info for VSEPR mode
   const depthInfo = useMemo(() => {
-    if (mode !== 'vsepr' || !molecule.geometry) return new Map<string, { opacity: number; scale: number }>();
+    if (mode !== 'vsepr' || !molecule.geometry)
+      return new Map<string, { opacity: number; scale: number }>();
 
     const coords3D = GEOMETRY_COORDS[molecule.geometry];
     if (!coords3D) return new Map();
@@ -161,19 +162,26 @@ export function AnimatedMolecule({
     if (!dipoleDirection && molecule.isPolar) {
       // Build atom position data for dipole calculation
       const atomsWithPositions = atomsWithIds
-        .map(atom => ({
+        .map((atom) => ({
           position: atomPositions.get(atom.id)!,
           partialCharge: atom.partialCharge,
         }))
-        .filter(a => a.position);
+        .filter((a) => a.position);
 
-      dipoleDirection = calculateDipoleDirection(atomsWithPositions, { x: width / 2, y: height / 2 });
+      dipoleDirection = calculateDipoleDirection(atomsWithPositions, {
+        x: width / 2,
+        y: height / 2,
+      });
     }
 
     if (!dipoleDirection) return null;
 
     // Calculate dipole arrow length based on molecule size
-    const dipoleLength = calculateDipoleLength(width * 0.6, height * 0.6, molecule.dipoleMoment?.magnitude);
+    const dipoleLength = calculateDipoleLength(
+      width * 0.6,
+      height * 0.6,
+      molecule.dipoleMoment?.magnitude
+    );
 
     return {
       direction: dipoleDirection,
@@ -181,12 +189,20 @@ export function AnimatedMolecule({
       length: dipoleLength,
       center: { x: width / 2, y: height / 2 },
     };
-  }, [showDipoleMoment, molecule.dipoleMoment, molecule.isPolar, atomsWithIds, atomPositions, width, height]);
+  }, [
+    showDipoleMoment,
+    molecule.dipoleMoment,
+    molecule.isPolar,
+    atomsWithIds,
+    atomPositions,
+    width,
+    height,
+  ]);
 
   // Handle atom click
   const handleAtomClick = (atomId: string) => {
     if (!interactive || !onAtomClick) return;
-    const atom = atomsWithIds.find(a => a.id === atomId);
+    const atom = atomsWithIds.find((a) => a.id === atomId);
     onAtomClick({ type: 'atom', atomId, atom });
   };
 
@@ -205,8 +221,8 @@ export function AnimatedMolecule({
     if (!fromPos || !toPos) return null;
 
     // Get atom radii for bond endpoint calculation
-    const fromAtom = atomsWithIds.find(a => a.id === bond.from);
-    const toAtom = atomsWithIds.find(a => a.id === bond.to);
+    const fromAtom = atomsWithIds.find((a) => a.id === bond.from);
+    const toAtom = atomsWithIds.find((a) => a.id === bond.to);
     const fromRadius = atomRadius * (fromAtom ? getElementVisual(fromAtom.symbol).radius : 1);
     const toRadius = atomRadius * (toAtom ? getElementVisual(toAtom.symbol).radius : 1);
 
@@ -263,7 +279,9 @@ export function AnimatedMolecule({
   });
 
   // Generate accessible label
-  const accessibleLabel = ariaLabel || `${molecule.name || molecule.formula} molecule with ${atomsWithIds.length} atoms and ${molecule.bonds.length} bonds`;
+  const accessibleLabel =
+    ariaLabel ||
+    `${molecule.name || molecule.formula} molecule with ${atomsWithIds.length} atoms and ${molecule.bonds.length} bonds`;
 
   return (
     <svg
@@ -284,24 +302,13 @@ export function AnimatedMolecule({
       <MoleculeDipoleDefs />
 
       {/* Background (optional) */}
-      <rect
-        x={0}
-        y={0}
-        width={width}
-        height={height}
-        fill="transparent"
-        rx={8}
-      />
+      <rect x={0} y={0} width={width} height={height} fill="transparent" rx={8} />
 
       {/* Bonds layer (rendered first so atoms appear on top) */}
-      <g className="molecule-bonds">
-        {renderedBonds}
-      </g>
+      <g className="molecule-bonds">{renderedBonds}</g>
 
       {/* Atoms layer */}
-      <g className="molecule-atoms">
-        {renderedAtoms}
-      </g>
+      <g className="molecule-atoms">{renderedAtoms}</g>
 
       {/* Lone pairs layer (Lewis mode only) */}
       {showLonePairs && mode === 'lewis' && (

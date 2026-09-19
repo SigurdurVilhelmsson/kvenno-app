@@ -15,12 +15,8 @@ const CONTEXT_COLORS: Record<string, { bg: string; text: string }> = {
 const CONTEXT_ICONS = new Set(['📍', '🕐', '👤', '🎯']);
 
 export function SpurningaSpjald({ category, level }: SpurningaSpjaldProps) {
-  const mainQuestions = category.guidingQuestions.filter(
-    (q) => !CONTEXT_ICONS.has(q.icon)
-  );
-  const contextQuestions = category.guidingQuestions.filter(
-    (q) => CONTEXT_ICONS.has(q.icon)
-  );
+  const mainQuestions = category.guidingQuestions.filter((q) => !CONTEXT_ICONS.has(q.icon));
+  const contextQuestions = category.guidingQuestions.filter((q) => CONTEXT_ICONS.has(q.icon));
 
   return (
     <div>
@@ -32,10 +28,7 @@ export function SpurningaSpjald({ category, level }: SpurningaSpjaldProps) {
         style={{ borderColor: category.color }}
       >
         {/* Header */}
-        <div
-          className="px-6 py-4 text-white"
-          style={{ backgroundColor: category.color }}
-        >
+        <div className="px-6 py-4 text-white" style={{ backgroundColor: category.color }}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <span className="text-3xl">{category.icon}</span>
@@ -43,9 +36,7 @@ export function SpurningaSpjald({ category, level }: SpurningaSpjaldProps) {
                 {category.name}
               </h2>
             </div>
-            <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-bold">
-              {level}
-            </span>
+            <span className="bg-white/20 px-3 py-1 rounded-full text-sm font-bold">{level}</span>
           </div>
         </div>
 
@@ -75,11 +66,7 @@ export function SpurningaSpjald({ category, level }: SpurningaSpjaldProps) {
           {contextQuestions.length > 0 && (
             <div className="grid grid-cols-2 gap-3">
               {contextQuestions.map((question, index) => (
-                <ContextCard
-                  key={index}
-                  question={question}
-                  level={level}
-                />
+                <ContextCard key={index} question={question} level={level} />
               ))}
             </div>
           )}
@@ -87,9 +74,7 @@ export function SpurningaSpjald({ category, level }: SpurningaSpjaldProps) {
 
         {/* Footer */}
         <div className="px-4 py-2 text-center border-t border-gray-100">
-          <p className="text-xs text-gray-400">
-            Íslenskubraut — Kvennaskólinn í Reykjavík
-          </p>
+          <p className="text-xs text-gray-400">Íslenskubraut — Kvennaskólinn í Reykjavík</p>
         </div>
       </div>
     </div>
@@ -111,9 +96,7 @@ function QuestionBlock({
   return (
     <div className="rounded-xl border border-gray-200 overflow-hidden">
       <div className="px-3 py-2 bg-gray-50">
-        <p className="text-sm font-semibold text-gray-800">
-          {question.question}
-        </p>
+        <p className="text-sm font-semibold text-gray-800">{question.question}</p>
         <p className="text-xs text-gray-500">
           {question.icon} {getQuestionLabel(question.icon)}
         </p>
@@ -137,13 +120,7 @@ function QuestionBlock({
   );
 }
 
-function ContextCard({
-  question,
-  level,
-}: {
-  question: GuidingQuestion;
-  level: Level;
-}) {
+function ContextCard({ question, level }: { question: GuidingQuestion; level: Level }) {
   const answers = question.answers.find((a) => a.level === level);
   if (!answers || answers.options.length === 0) return null;
 
@@ -153,25 +130,15 @@ function ContextCard({
   };
 
   return (
-    <div
-      className="rounded-xl overflow-hidden"
-      style={{ backgroundColor: colors.bg + '15' }}
-    >
-      <div
-        className="px-3 py-2 text-white"
-        style={{ backgroundColor: colors.bg }}
-      >
+    <div className="rounded-xl overflow-hidden" style={{ backgroundColor: colors.bg + '15' }}>
+      <div className="px-3 py-2 text-white" style={{ backgroundColor: colors.bg }}>
         <p className="text-xs font-bold">
           {question.icon} {question.question}
         </p>
       </div>
       <div className="px-3 py-2 space-y-1">
         {answers.options.map((option, index) => (
-          <p
-            key={index}
-            className="text-xs font-medium"
-            style={{ color: colors.bg }}
-          >
+          <p key={index} className="text-xs font-medium" style={{ color: colors.bg }}>
             {option}
           </p>
         ))}

@@ -24,7 +24,10 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
         <React.Fragment key={index}>
           {index > 0 && <ChevronRight size={14} className="text-warm-400 shrink-0" />}
           {item.href ? (
-            <a href={item.href} className="text-kvenno-orange-700 hover:text-kvenno-orange hover:underline no-underline transition-colors">
+            <a
+              href={item.href}
+              className="text-kvenno-orange-700 hover:text-kvenno-orange hover:underline no-underline transition-colors"
+            >
               {item.label}
             </a>
           ) : (

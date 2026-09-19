@@ -214,10 +214,7 @@ describe('build2ndYearUserPrompt', () => {
   });
 
   it('includes both draft and final content when draft provided', () => {
-    const prompt = build2ndYearUserPrompt(
-      'Þetta er drögin',
-      'Þetta er lokaskýrslan'
-    );
+    const prompt = build2ndYearUserPrompt('Þetta er drögin', 'Þetta er lokaskýrslan');
     expect(prompt).toContain('DRÖG');
     expect(prompt).toContain('Þetta er drögin');
     expect(prompt).toContain('LOKASKÝRSLA');

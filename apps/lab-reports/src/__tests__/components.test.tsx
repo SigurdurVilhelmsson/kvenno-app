@@ -10,13 +10,17 @@ import { GradingSession } from '../types';
 // Mock lucide-react icons to avoid SVG rendering issues in jsdom
 vi.mock('lucide-react', () => ({
   Upload: (props: Record<string, unknown>) => <div data-testid="upload-icon" {...props} />,
-  CheckCircle: (props: Record<string, unknown>) => <div data-testid="check-circle-icon" {...props} />,
+  CheckCircle: (props: Record<string, unknown>) => (
+    <div data-testid="check-circle-icon" {...props} />
+  ),
   RotateCcw: (props: Record<string, unknown>) => <div data-testid="rotate-icon" {...props} />,
   XCircle: (props: Record<string, unknown>) => <div data-testid="x-circle-icon" {...props} />,
   AlertTriangle: (props: Record<string, unknown>) => <div data-testid="alert-icon" {...props} />,
   Info: (props: Record<string, unknown>) => <div data-testid="info-icon" {...props} />,
   Trash2: (props: Record<string, unknown>) => <div data-testid="trash-icon" {...props} />,
-  GraduationCap: (props: Record<string, unknown>) => <div data-testid="graduation-icon" {...props} />,
+  GraduationCap: (props: Record<string, unknown>) => (
+    <div data-testid="graduation-icon" {...props} />
+  ),
   BookOpen: (props: Record<string, unknown>) => <div data-testid="book-icon" {...props} />,
 }));
 
@@ -106,12 +110,7 @@ describe('Modal component', () => {
 describe('SaveDialog component', () => {
   it('renders when open with default name', () => {
     render(
-      <SaveDialog
-        isOpen={true}
-        onClose={() => {}}
-        onSave={() => {}}
-        defaultName="Tilraun 1"
-      />
+      <SaveDialog isOpen={true} onClose={() => {}} onSave={() => {}} defaultName="Tilraun 1" />
     );
 
     expect(screen.getByText('Vista greiningu')).toBeDefined();
@@ -122,12 +121,7 @@ describe('SaveDialog component', () => {
 
   it('does not render when closed', () => {
     render(
-      <SaveDialog
-        isOpen={false}
-        onClose={() => {}}
-        onSave={() => {}}
-        defaultName="Tilraun 1"
-      />
+      <SaveDialog isOpen={false} onClose={() => {}} onSave={() => {}} defaultName="Tilraun 1" />
     );
 
     expect(screen.queryByText('Vista greiningu')).toBeNull();
@@ -135,14 +129,7 @@ describe('SaveDialog component', () => {
 
   it('calls onSave with the entered name', () => {
     const onSave = vi.fn();
-    render(
-      <SaveDialog
-        isOpen={true}
-        onClose={() => {}}
-        onSave={onSave}
-        defaultName="Tilraun 1"
-      />
-    );
+    render(<SaveDialog isOpen={true} onClose={() => {}} onSave={onSave} defaultName="Tilraun 1" />);
 
     const saveButton = screen.getByText('Vista');
     fireEvent.click(saveButton);
@@ -153,12 +140,7 @@ describe('SaveDialog component', () => {
   it('calls onClose when Haetta vid is clicked', () => {
     const onClose = vi.fn();
     render(
-      <SaveDialog
-        isOpen={true}
-        onClose={onClose}
-        onSave={() => {}}
-        defaultName="Tilraun 1"
-      />
+      <SaveDialog isOpen={true} onClose={onClose} onSave={() => {}} defaultName="Tilraun 1" />
     );
 
     fireEvent.click(screen.getByText('Hætta við'));
@@ -167,14 +149,7 @@ describe('SaveDialog component', () => {
   });
 
   it('disables save button when name is empty', () => {
-    render(
-      <SaveDialog
-        isOpen={true}
-        onClose={() => {}}
-        onSave={() => {}}
-        defaultName=""
-      />
-    );
+    render(<SaveDialog isOpen={true} onClose={() => {}} onSave={() => {}} defaultName="" />);
 
     const saveButton = screen.getByText('Vista') as HTMLButtonElement;
     expect(saveButton.disabled).toBe(true);
@@ -198,9 +173,7 @@ describe('ConfirmDialog component', () => {
     );
 
     expect(screen.getByText('Eyða greiningu')).toBeDefined();
-    expect(
-      screen.getByText('Ertu viss um að þú viljir eyða þessari greiningu?')
-    ).toBeDefined();
+    expect(screen.getByText('Ertu viss um að þú viljir eyða þessari greiningu?')).toBeDefined();
   });
 
   it('does not render when closed', () => {
@@ -482,7 +455,9 @@ describe('FileUpload component', () => {
   it('shows selected files count when files are provided', async () => {
     const FileUpload = await getFileUpload();
     const mockFiles = [
-      new File(['content'], 'test.docx', { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }),
+      new File(['content'], 'test.docx', {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      }),
       new File(['content'], 'test2.pdf', { type: 'application/pdf' }),
     ];
 
@@ -503,7 +478,9 @@ describe('FileUpload component', () => {
   it('shows singular file count for 1 file', async () => {
     const FileUpload = await getFileUpload();
     const mockFiles = [
-      new File(['content'], 'test.docx', { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }),
+      new File(['content'], 'test.docx', {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      }),
     ];
 
     render(
@@ -523,7 +500,9 @@ describe('FileUpload component', () => {
   it('renders process button when files are selected', async () => {
     const FileUpload = await getFileUpload();
     const mockFiles = [
-      new File(['content'], 'test.docx', { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }),
+      new File(['content'], 'test.docx', {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      }),
     ];
 
     render(
@@ -543,7 +522,9 @@ describe('FileUpload component', () => {
   it('renders student-mode process button text', async () => {
     const FileUpload = await getFileUpload();
     const mockFiles = [
-      new File(['content'], 'test.docx', { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }),
+      new File(['content'], 'test.docx', {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      }),
     ];
 
     render(
@@ -563,7 +544,9 @@ describe('FileUpload component', () => {
   it('shows processing status when processing', async () => {
     const FileUpload = await getFileUpload();
     const mockFiles = [
-      new File(['content'], 'test.docx', { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }),
+      new File(['content'], 'test.docx', {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      }),
     ];
 
     render(
@@ -586,7 +569,9 @@ describe('FileUpload component', () => {
   it('disables process button when processing', async () => {
     const FileUpload = await getFileUpload();
     const mockFiles = [
-      new File(['content'], 'test.docx', { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }),
+      new File(['content'], 'test.docx', {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      }),
     ];
 
     const { container } = render(
@@ -608,7 +593,9 @@ describe('FileUpload component', () => {
   it('renders file names in the file list', async () => {
     const FileUpload = await getFileUpload();
     const mockFiles = [
-      new File(['content'], 'skyrsla1.docx', { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }),
+      new File(['content'], 'skyrsla1.docx', {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      }),
       new File(['content'], 'skyrsla2.pdf', { type: 'application/pdf' }),
     ];
 
@@ -631,7 +618,9 @@ describe('FileUpload component', () => {
     const FileUpload = await getFileUpload();
     const onProcess = vi.fn();
     const mockFiles = [
-      new File(['content'], 'test.docx', { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }),
+      new File(['content'], 'test.docx', {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      }),
     ];
 
     render(
@@ -826,11 +815,7 @@ describe('SessionHistory component', () => {
 
   it('renders list of saved sessions', () => {
     render(
-      <SessionHistory
-        sessions={mockSessions}
-        onLoadSession={() => {}}
-        onDeleteSession={() => {}}
-      />
+      <SessionHistory sessions={mockSessions} onLoadSession={() => {}} onDeleteSession={() => {}} />
     );
 
     expect(screen.getByText('Eldri greiningar')).toBeDefined();
@@ -876,13 +861,7 @@ describe('SessionHistory component', () => {
   });
 
   it('shows empty state when no sessions', () => {
-    render(
-      <SessionHistory
-        sessions={[]}
-        onLoadSession={() => {}}
-        onDeleteSession={() => {}}
-      />
-    );
+    render(<SessionHistory sessions={[]} onLoadSession={() => {}} onDeleteSession={() => {}} />);
 
     expect(screen.getByText('Engar vistaðar greiningar')).toBeDefined();
     expect(screen.queryByText('Opna')).toBeNull();
@@ -890,11 +869,7 @@ describe('SessionHistory component', () => {
 
   it('displays experiment title from config', () => {
     render(
-      <SessionHistory
-        sessions={mockSessions}
-        onLoadSession={() => {}}
-        onDeleteSession={() => {}}
-      />
+      <SessionHistory sessions={mockSessions} onLoadSession={() => {}} onDeleteSession={() => {}} />
     );
 
     // Should use the config title, not the raw experiment key

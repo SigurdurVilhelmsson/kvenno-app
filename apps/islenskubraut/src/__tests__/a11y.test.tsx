@@ -16,7 +16,10 @@ vi.mock('@kvenno/shared/components', () => ({
     <header data-testid="header">
       <span>Íslenskubraut</span>
       {subtitle && <span>{subtitle}</span>}
-      <nav aria-label="Aðalvalmynd"><a href="/">Allir flokkar</a><a href="/">Námsvefur Kvennó</a></nav>
+      <nav aria-label="Aðalvalmynd">
+        <a href="/">Allir flokkar</a>
+        <a href="/">Námsvefur Kvennó</a>
+      </nav>
     </header>
   ),
   Footer: ({ subtitle }: { variant?: string; subtitle?: string }) => (
@@ -26,7 +29,9 @@ vi.mock('@kvenno/shared/components', () => ({
     </footer>
   ),
   Container: ({ children, className }: { children: React.ReactNode; className?: string }) => (
-    <div data-testid="container" className={className}>{children}</div>
+    <div data-testid="container" className={className}>
+      {children}
+    </div>
   ),
   BottomNav: () => <nav data-testid="bottom-nav" aria-label="Neðri valmynd" />,
 }));
@@ -35,7 +40,14 @@ vi.mock('../components/DownloadButton', () => ({
   DownloadButton: () => <button>Hala niður PDF</button>,
 }));
 vi.mock('../components/LevelSelector', () => ({
-  LevelSelector: ({ selected, onChange }: { selected: string; onChange: (v: string) => void; color?: string }) => (
+  LevelSelector: ({
+    selected,
+    onChange,
+  }: {
+    selected: string;
+    onChange: (v: string) => void;
+    color?: string;
+  }) => (
     <div role="radiogroup" aria-label="Erfiðleikastig">
       {['A1', 'A2', 'B1'].map((lvl) => (
         <button
@@ -64,11 +76,7 @@ import { App } from '../App';
 import { Home } from '../pages/Home';
 
 function renderWithRouter(ui: React.ReactElement, initialEntries: string[] = ['/']) {
-  return render(
-    <MemoryRouter initialEntries={initialEntries}>
-      {ui}
-    </MemoryRouter>,
-  );
+  return render(<MemoryRouter initialEntries={initialEntries}>{ui}</MemoryRouter>);
 }
 
 // ---------------------------------------------------------------------------

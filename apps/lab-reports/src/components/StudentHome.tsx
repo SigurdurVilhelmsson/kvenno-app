@@ -66,8 +66,8 @@ export const StudentHome: React.FC<StudentHomeProps> = ({
 
       <div className="bg-orange-50 border-l-4 border-kvenno-orange p-4 mb-6">
         <p className="text-sm text-orange-900">
-          <strong>Athugið:</strong> Þetta app aðstoðar þig við að skrifa betri skýrslu, en
-          skrifar hana ALDREI fyrir þig.
+          <strong>Athugið:</strong> Þetta app aðstoðar þig við að skrifa betri skýrslu, en skrifar
+          hana ALDREI fyrir þig.
         </p>
       </div>
 

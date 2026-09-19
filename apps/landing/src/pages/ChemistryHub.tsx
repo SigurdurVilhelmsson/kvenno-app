@@ -37,10 +37,7 @@ const navTiles: NavTile[] = [
   },
 ];
 
-const breadcrumbItems: BreadcrumbItem[] = [
-  { label: 'Heim', href: '/' },
-  { label: 'Efnafræði' },
-];
+const breadcrumbItems: BreadcrumbItem[] = [{ label: 'Heim', href: '/' }, { label: 'Efnafræði' }];
 
 export function ChemistryHub() {
   return (
@@ -51,7 +48,13 @@ export function ChemistryHub() {
       </div>
 
       {/* Back Button */}
-      <Button as="a" href="/" variant="secondary" className="mb-8 no-underline" aria-label="Fara til baka á heimasíðu">
+      <Button
+        as="a"
+        href="/"
+        variant="secondary"
+        className="mb-8 no-underline"
+        aria-label="Fara til baka á heimasíðu"
+      >
         &larr; Til baka
       </Button>
 
@@ -61,8 +64,8 @@ export function ChemistryHub() {
           Efnafræði
         </h1>
         <p className="text-lg text-warm-500 max-w-[800px] mx-auto">
-          Safn af gagnvirkum verkfærum fyrir efnafræðikennslu við Kvennaskólann í Reykjavík.
-          Veldu áfanga hér að neðan til að skoða tiltæk verkfæri.
+          Safn af gagnvirkum verkfærum fyrir efnafræðikennslu við Kvennaskólann í Reykjavík. Veldu
+          áfanga hér að neðan til að skoða tiltæk verkfæri.
         </p>
       </Card>
 
@@ -74,12 +77,8 @@ export function ChemistryHub() {
             to={tile.to}
             className="bg-surface-raised border-2 border-kvenno-orange rounded-card py-12 px-8 text-center no-underline text-warm-800 shadow-md cursor-pointer transition-all duration-200 ease-out hover:bg-kvenno-orange hover:text-white hover:-translate-y-0.5 hover:shadow-orange group"
           >
-            <h2 className="font-heading text-[2rem] font-bold mb-2">
-              {tile.title}
-            </h2>
-            <p className="text-base opacity-80">
-              {tile.description}
-            </p>
+            <h2 className="font-heading text-[2rem] font-bold mb-2">{tile.title}</h2>
+            <p className="text-base opacity-80">{tile.description}</p>
           </Link>
         ))}
       </div>

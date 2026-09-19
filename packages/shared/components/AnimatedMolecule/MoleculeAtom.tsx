@@ -2,7 +2,11 @@
  * MoleculeAtom - SVG component for rendering individual atoms
  */
 
-import type { MoleculeAtom as MoleculeAtomType, Position2D, MoleculeRenderMode } from '@shared/types';
+import type {
+  MoleculeAtom as MoleculeAtomType,
+  Position2D,
+  MoleculeRenderMode,
+} from '@shared/types';
 
 import { MOLECULE_COLORS } from './molecule.constants';
 import { getElementVisual, getContrastTextColor } from './molecule.utils';
@@ -146,7 +150,11 @@ export function MoleculeAtom({
             cx={position.x + radius * 0.7}
             cy={position.y - radius * 0.7}
             r={fontSize * 0.6}
-            fill={atom.formalCharge > 0 ? MOLECULE_COLORS.formalChargePositive : MOLECULE_COLORS.formalChargeNegative}
+            fill={
+              atom.formalCharge > 0
+                ? MOLECULE_COLORS.formalChargePositive
+                : MOLECULE_COLORS.formalChargeNegative
+            }
           />
           <text
             x={position.x + radius * 0.7}
@@ -171,7 +179,11 @@ export function MoleculeAtom({
           dominantBaseline="central"
           fontSize={fontSize * 0.9}
           fontWeight="bold"
-          fill={atom.partialCharge === 'positive' ? MOLECULE_COLORS.partialChargePositive : MOLECULE_COLORS.partialChargeNegative}
+          fill={
+            atom.partialCharge === 'positive'
+              ? MOLECULE_COLORS.partialChargePositive
+              : MOLECULE_COLORS.partialChargeNegative
+          }
           style={animationStyle}
         >
           {atom.partialCharge === 'positive' ? 'δ+' : 'δ−'}
@@ -188,12 +200,7 @@ export function MoleculeAtom({
           style={animationStyle}
         >
           {!reducedMotion && (
-            <animate
-              attributeName="opacity"
-              values="1;0.5;1"
-              dur="1s"
-              repeatCount="indefinite"
-            />
+            <animate attributeName="opacity" values="1;0.5;1" dur="1s" repeatCount="indefinite" />
           )}
         </circle>
       )}

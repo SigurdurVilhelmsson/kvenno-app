@@ -91,7 +91,7 @@ function getDepthStyle(z: number): { opacity: number; scale: number; zIndex: num
 
   return {
     opacity: 0.5 + normalizedZ * 0.5, // 0.5 to 1.0
-    scale: 0.7 + normalizedZ * 0.3,   // 0.7 to 1.0
+    scale: 0.7 + normalizedZ * 0.3, // 0.7 to 1.0
     zIndex: Math.round(normalizedZ * 100), // 0 to 100
   };
 }
@@ -105,8 +105,14 @@ function calculateVSEPRPositions(
   width: number,
   height: number,
   atomRadius: number
-): Map<string, { position: Position2D; depth: { opacity: number; scale: number; zIndex: number } }> {
-  const result = new Map<string, { position: Position2D; depth: { opacity: number; scale: number; zIndex: number } }>();
+): Map<
+  string,
+  { position: Position2D; depth: { opacity: number; scale: number; zIndex: number } }
+> {
+  const result = new Map<
+    string,
+    { position: Position2D; depth: { opacity: number; scale: number; zIndex: number } }
+  >();
   const coords3D = GEOMETRY_COORDS[geometry];
 
   if (!coords3D || atoms.length === 0) {
@@ -150,18 +156,27 @@ function calculateSimplePositions(
   width: number,
   height: number,
   atomRadius: number
-): Map<string, { position: Position2D; depth: { opacity: number; scale: number; zIndex: number } }> {
-  const result = new Map<string, { position: Position2D; depth: { opacity: number; scale: number; zIndex: number } }>();
+): Map<
+  string,
+  { position: Position2D; depth: { opacity: number; scale: number; zIndex: number } }
+> {
+  const result = new Map<
+    string,
+    { position: Position2D; depth: { opacity: number; scale: number; zIndex: number } }
+  >();
   const defaultDepth = { opacity: 1, scale: 1, zIndex: 50 };
 
   if (atoms.length === 0) return result;
 
   // Check for atoms with explicit positions
-  const hasExplicitPositions = atoms.some(a => a.position);
+  const hasExplicitPositions = atoms.some((a) => a.position);
 
   if (hasExplicitPositions) {
     // Use explicit positions, scaling to fit
-    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    let minX = Infinity,
+      maxX = -Infinity,
+      minY = Infinity,
+      maxY = -Infinity;
     for (const atom of atoms) {
       if (atom.position) {
         minX = Math.min(minX, atom.position.x);
@@ -211,7 +226,7 @@ function calculateSimplePositions(
   // Use BFS to place atoms
   const placed = new Set<string>();
   const queue: Array<{ id: string; position: Position2D }> = [];
-  const spacing = Math.min(width, height) / Math.max(atoms.length, 2) * 0.8;
+  const spacing = (Math.min(width, height) / Math.max(atoms.length, 2)) * 0.8;
 
   // Start with first atom at center
   const startPos = { x: width / 2, y: height / 2 };
@@ -223,7 +238,7 @@ function calculateSimplePositions(
   while (queue.length > 0) {
     const current = queue.shift()!;
     const neighbors = adjacency.get(current.id) || [];
-    const unplacedNeighbors = neighbors.filter(n => !placed.has(n));
+    const unplacedNeighbors = neighbors.filter((n) => !placed.has(n));
 
     if (unplacedNeighbors.length > 0) {
       const angleStep = (2 * Math.PI) / Math.max(unplacedNeighbors.length, 1);
@@ -264,11 +279,9 @@ function calculateSimplePositions(
 /**
  * Calculate net dipole moment from atom positions and charges
  */
-function calculateNetDipole(
-  atomLayouts: AtomLayout[]
-): DipoleMoment | null {
-  const positiveAtoms = atomLayouts.filter(a => a.atom.partialCharge === 'positive');
-  const negativeAtoms = atomLayouts.filter(a => a.atom.partialCharge === 'negative');
+function calculateNetDipole(atomLayouts: AtomLayout[]): DipoleMoment | null {
+  const positiveAtoms = atomLayouts.filter((a) => a.atom.partialCharge === 'positive');
+  const negativeAtoms = atomLayouts.filter((a) => a.atom.partialCharge === 'negative');
 
   if (positiveAtoms.length === 0 || negativeAtoms.length === 0) {
     return null;
@@ -309,10 +322,7 @@ function calculateNetDipole(
 /**
  * Hook for calculating molecule layout
  */
-export function useMoleculeLayout(
-  molecule: Molecule,
-  config: LayoutConfig
-): MoleculeLayoutResult {
+export function useMoleculeLayout(molecule: Molecule, config: LayoutConfig): MoleculeLayoutResult {
   const { width, height, atomRadius, mode } = config;
 
   return useMemo(() => {
@@ -320,16 +330,31 @@ export function useMoleculeLayout(
     const atomsWithIds = ensureAtomIds(molecule.atoms);
 
     // Calculate positions based on mode and geometry
-    let positionMap: Map<string, { position: Position2D; depth: { opacity: number; scale: number; zIndex: number } }>;
+    let positionMap: Map<
+      string,
+      { position: Position2D; depth: { opacity: number; scale: number; zIndex: number } }
+    >;
 
     if (mode === 'vsepr' && molecule.geometry) {
-      positionMap = calculateVSEPRPositions(atomsWithIds, molecule.geometry, width, height, atomRadius);
+      positionMap = calculateVSEPRPositions(
+        atomsWithIds,
+        molecule.geometry,
+        width,
+        height,
+        atomRadius
+      );
     } else {
-      positionMap = calculateSimplePositions(atomsWithIds, molecule.bonds, width, height, atomRadius);
+      positionMap = calculateSimplePositions(
+        atomsWithIds,
+        molecule.bonds,
+        width,
+        height,
+        atomRadius
+      );
     }
 
     // Build atom layouts
-    const atomLayouts: AtomLayout[] = atomsWithIds.map(atom => {
+    const atomLayouts: AtomLayout[] = atomsWithIds.map((atom) => {
       const layoutData = positionMap.get(atom.id) || {
         position: { x: width / 2, y: height / 2 },
         depth: { opacity: 1, scale: 1, zIndex: 50 },
@@ -352,8 +377,8 @@ export function useMoleculeLayout(
 
     // Build bond layouts
     const bondLayouts: BondLayout[] = molecule.bonds.map((bond, index) => {
-      const fromAtom = atomLayouts.find(a => a.id === bond.from);
-      const toAtom = atomLayouts.find(a => a.id === bond.to);
+      const fromAtom = atomLayouts.find((a) => a.id === bond.from);
+      const toAtom = atomLayouts.find((a) => a.id === bond.to);
 
       if (!fromAtom || !toAtom) {
         return { index, start: { x: 0, y: 0 }, end: { x: 0, y: 0 }, length: 0 };
@@ -374,7 +399,10 @@ export function useMoleculeLayout(
     });
 
     // Calculate bounds
-    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    let minX = Infinity,
+      maxX = -Infinity,
+      minY = Infinity,
+      maxY = -Infinity;
     for (const atom of atomLayouts) {
       minX = Math.min(minX, atom.position.x - atom.radius);
       maxX = Math.max(maxX, atom.position.x + atom.radius);

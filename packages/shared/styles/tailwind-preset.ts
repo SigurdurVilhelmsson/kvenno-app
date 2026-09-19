@@ -13,13 +13,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: [
-          '-apple-system',
-          'BlinkMacSystemFont',
-          "'Segoe UI'",
-          'Arial',
-          'sans-serif',
-        ],
+        sans: ['-apple-system', 'BlinkMacSystemFont', "'Segoe UI'", 'Arial', 'sans-serif'],
       },
       maxWidth: {
         container: '1200px',
