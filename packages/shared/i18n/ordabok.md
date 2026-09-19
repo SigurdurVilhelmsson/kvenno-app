@@ -56,6 +56,7 @@ basic;basískur
 basicity;basastig
 beaker;bikarglas
 bent;beygður
+benzoic acid;bensósýra
 bidentate;tvítenntur
 bimolecular reaction;tvísameinda efnahvarf
 binding energy;bindiorka
@@ -269,6 +270,7 @@ homogeneous;einsleitur
 hot plate;hitahræra
 Hund's rule;regla Hunds
 hydration;vötnun
+hydrofluoric acid;flússýra
 hydrogen bond;vetnistengi
 hydrogenation;vetnun
 hydrolysis;vatnsrof
@@ -376,6 +378,7 @@ monomer;einliða
 neutral;hlutlaus
 neutralization;hlutleysing
 neutron;nifteind
+nitric acid;saltpéturssýra
 noble gas;eðalgas
 node;nóða
 nonelectrolyte;órafkleyft efni
@@ -415,6 +418,7 @@ periodic table;lotukerfið
 periodic trends;lotubundnir eiginleikar
 phase;fasi
 phase diagram;fasarit
+phosphoric acid;fosfórsýra
 photochemical reaction;ljóshvatað efnahvarf
 photoelectric effect;ljósröfun
 photoelectron;ljósrafeind
@@ -548,6 +552,7 @@ subshell;undirhvolf
 chemical substance;hreint efni
 substitution;skiptihvarf
 suction flask;sogflaska
+sulfuric acid;brennisteinssýra
 superconductor;ofurleiðari
 supersaturated solution;yfirmettuð lausn
 surface tension;yfirborðsspenna

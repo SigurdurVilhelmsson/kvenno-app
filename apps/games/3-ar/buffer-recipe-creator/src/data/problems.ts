@@ -143,7 +143,7 @@ export const BUFFER_PROBLEMS: BufferProblem[] = [
     totalConcentration: 0.1,
     acidMolarMass: 122.12,
     baseMolarMass: 144.1,
-    context: 'Benzoesýrustuðpúði',
+    context: 'Bensósýrustuðpúði',
     contextEn: 'Benzoic acid buffer',
     contextPl: 'Bufor kwasu benzoesowego',
     correctAcidMass: 6.11,

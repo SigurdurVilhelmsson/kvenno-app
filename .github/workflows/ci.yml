@@ -48,6 +48,12 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      # Added 2026-09-19, once the standing backlog was cleared. Without this
+      # step `pnpm check-all` had a leg that CI never ran, so formatting drifted
+      # to 166 files unnoticed; the pre-commit hook was the only thing holding it.
+      - name: Format check
+        run: pnpm format:check
+
   test:
     name: Unit Tests
     runs-on: ubuntu-latest

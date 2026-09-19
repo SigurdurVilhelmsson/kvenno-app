@@ -49,7 +49,7 @@ export const LEVEL2_PUZZLES: Level2Puzzle[] = [
   {
     id: 3,
     titrationId: 2, // HNO₃ + KOH
-    taskIs: 'Títraðu 25.0 mL af 0.100 M saltpétursýru (HNO₃) með 0.100 M KOH.',
+    taskIs: 'Títraðu 25.0 mL af 0.100 M saltpéturssýru (HNO₃) með 0.100 M KOH.',
     task: 'Titrate 25.0 mL of 0.100 M nitric acid (HNO₃) with 0.100 M KOH.',
     volumeTolerance: 1.0,
     acceptableIndicators: ['methyl-red', 'bromothymol-blue', 'methyl-orange'],
@@ -79,7 +79,7 @@ export const LEVEL2_PUZZLES: Level2Puzzle[] = [
   {
     id: 5,
     titrationId: 5, // HF + NaOH
-    taskIs: 'Títraðu 25.0 mL af 0.100 M flúorsýru (HF) með 0.100 M NaOH. HF er veik sýra.',
+    taskIs: 'Títraðu 25.0 mL af 0.100 M flússýru (HF) með 0.100 M NaOH. HF er veik sýra.',
     task: 'Titrate 25.0 mL of 0.100 M hydrofluoric acid (HF) with 0.100 M NaOH. HF is a weak acid.',
     volumeTolerance: 1.0,
     acceptableIndicators: ['phenolphthalein', 'thymol-blue'],

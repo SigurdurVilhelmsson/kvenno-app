@@ -412,7 +412,7 @@ export const equilibria: Equilibrium[] = [
       products: 10,
     },
     description: 'Nitrogen oxide production for nitric acid.',
-    descriptionIs: 'Köfnunarefnisoxíðframleiðsla fyrir salpeturssýru.',
+    descriptionIs: 'Köfnunarefnisoxíðframleiðsla fyrir saltpéturssýru.',
     possibleStresses: [
       { type: 'add-reactant', target: 'NH₃' },
       { type: 'increase-temp', target: null },
@@ -853,7 +853,7 @@ export const equilibria: Equilibrium[] = [
       products: 0,
     },
     description: 'Stepwise deprotonation of phosphoric acid.',
-    descriptionIs: 'Þrepin deprotonun fosforsýru.',
+    descriptionIs: 'Þrepin deprotonun fosfórsýru.',
     possibleStresses: [
       { type: 'add-product', target: 'H⁺' },
       { type: 'increase-temp', target: null },

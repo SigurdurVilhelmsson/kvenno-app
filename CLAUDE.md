@@ -351,17 +351,20 @@ pnpm islenskubraut:build --check   # exit 1 if either is stale (CI-friendly)
 Both generated files open with an `AUTO-GENERATED FILE — DO NOT EDIT BY HAND` header naming the
 source directory and the regenerate command.
 
-**Adding a category is a three-file edit**, not one. There is no way around this today:
+**Adding a category is a two-file edit** (it was three until 2026-09-19):
 
 1. `content/islenskubraut/<id>.yaml` — the content
 2. `CATEGORY_ORDER` in `scripts/islenskubraut/load.mjs` — the taught order, deliberately not
    alphabetical
-3. `apps/islenskubraut/src/data/index.ts` — still hand-maintained, one import plus one array entry
 
-Omitting step 2 or 3 is caught by the test suite, but as a whole-tree deep-equality failure that
-does not say "you forgot to register the new category." `index.ts` was left hand-maintained on
-purpose (it is the file every component imports); generating it is a clean follow-up, not a
-prerequisite for anything.
+`apps/islenskubraut/src/data/index.ts` was the third step and is **now generated** by
+`renderSpaIndex` in `scripts/islenskubraut/render.mjs`, so `pnpm islenskubraut:build` writes it and
+`--check` fails if it is stale. It carries the same DO-NOT-EDIT header as the other generated files.
+Its **array** follows `CATEGORY_ORDER` while its **imports** are sorted alphabetically — the two
+orders differ deliberately, because `import-x/order` warns otherwise.
+
+Omitting step 2 is still caught only as a whole-tree deep-equality failure that does not say "you
+forgot to register the new category."
 
 **What guards the content:**
 

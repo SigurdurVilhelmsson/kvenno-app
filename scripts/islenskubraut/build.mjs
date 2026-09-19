@@ -5,10 +5,16 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { loadCategories } from './load.mjs';
-import { prettify, renderServerModule, renderSpaCategory } from './render.mjs';
+import {
+  prettify,
+  renderServerModule,
+  renderSpaCategory,
+  renderSpaIndex,
+} from './render.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const SPA_DIR = resolve(ROOT, 'apps/islenskubraut/src/data/categories');
+const SPA_INDEX = resolve(ROOT, 'apps/islenskubraut/src/data/index.ts');
 const SERVER_FILE = resolve(ROOT, 'server/src/lib/islenskubraut-data.ts');
 
 const check = process.argv.includes('--check');
@@ -16,6 +22,7 @@ const categories = loadCategories();
 
 const outputs = [
   ...categories.map((c) => [resolve(SPA_DIR, `${c.id}.ts`), renderSpaCategory(c)]),
+  [SPA_INDEX, renderSpaIndex(categories)],
   [SERVER_FILE, renderServerModule(categories)],
 ];
 

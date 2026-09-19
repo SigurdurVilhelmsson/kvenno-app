@@ -19,6 +19,38 @@ export const ${category.id}: Category = ${literal(category)};
 `;
 }
 
+/**
+ * The SPA barrel every component imports.
+ *
+ * Generated as of Sep 2026. It used to be hand-maintained, which made adding a
+ * category a three-file edit where forgetting this file failed as a whole-tree
+ * deep-equality error that never said "you forgot to register the new category".
+ * The ARRAY follows CATEGORY_ORDER in load.mjs, so the taught order lives in
+ * exactly one place. The IMPORTS are sorted alphabetically instead, because
+ * eslint's import-x/order rule warns otherwise — the two orders differ and that
+ * is deliberate, not an oversight.
+ */
+export function renderSpaIndex(categories) {
+  const imports = [...categories]
+    .sort((a, b) => a.id.localeCompare(b.id, 'en'))
+    .map((c) => `import { ${c.id} } from './categories/${c.id}';`)
+    .join('\n');
+  const names = categories.map((c) => c.id).join(', ');
+  return `${WARNING}
+
+${imports}
+import { Category } from './types';
+
+export const categories: Category[] = [${names}];
+
+export function getCategoryById(id: string): Category | undefined {
+  return categories.find((c) => c.id === id);
+}
+
+export type { Category, Level, SubCategory, SentenceFrame, GuidingQuestion } from './types';
+`;
+}
+
 export function renderServerModule(categories) {
   return `${WARNING}
 

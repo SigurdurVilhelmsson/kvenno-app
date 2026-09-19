@@ -130,8 +130,8 @@ function App() {
                 </div>
 
                 <div className="mt-3 text-center text-xs text-warm-500">
-                  <strong>Námsleiðin:</strong> Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi
-                  → Stilla efnajöfnur → Takmarkandi → Lausnir → Einingakeðjan
+                  <strong>Námsleiðin:</strong> <u>Einingagreining</u> → Lotukerfið → Nafnakerfið →
+                  Mólmassi → Stilla efnajöfnur → Takmarkandi → Lausnir → Einingakeðjan
                 </div>
               </div>
             </div>

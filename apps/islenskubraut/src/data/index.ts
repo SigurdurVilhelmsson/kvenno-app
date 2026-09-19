@@ -1,3 +1,10 @@
+// AUTO-GENERATED FILE — DO NOT EDIT BY HAND.
+//
+// Source:     content/islenskubraut/
+// Regenerate: pnpm islenskubraut:build
+//
+// Edit the YAML, not this file. A test fails if this file drifts from it.
+
 import { dyr } from './categories/dyr';
 import { farartaeki } from './categories/farartaeki';
 import { klaednadur } from './categories/klaednadur';
