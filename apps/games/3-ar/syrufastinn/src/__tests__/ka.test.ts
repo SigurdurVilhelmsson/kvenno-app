@@ -215,3 +215,40 @@ describe('the shipped acid data', () => {
     expect(new Set(WEAK_ACIDS.map((a) => a.formula)).size).toBe(WEAK_ACIDS.length);
   });
 });
+
+describe('every Ka traces to Brown Appendix D', () => {
+  // Siggi supplied Tables D.1 and D.2 on 2026-09-19 and ruled Appendix D
+  // authoritative. This file's acids were verified against D.1 that day; this
+  // holds them there, so a future edit cannot quietly swap in another book's
+  // second significant figure.
+  const D1: Record<string, number> = {
+    maurasyra: 1.8e-4, // formic
+    ediksyra: 1.8e-5, // acetic
+    propansyra: 1.3e-5, // propionic
+    flussyra: 6.8e-4, // hydrofluoric
+    fenol: 1.3e-10, // phenol
+    kolsyra: 4.3e-7, // carbonic Ka1
+    oxalsyra: 5.9e-2, // oxalic Ka1
+  };
+
+  it('covers every acid in the pool, so a new one cannot skip the check', () => {
+    expect(Object.keys(D1).sort()).toEqual(WEAK_ACIDS.map((a) => a.id).sort());
+  });
+
+  it.each(WEAK_ACIDS.map((a) => [a.id, a.name] as const))('%s (%s)', (id) => {
+    const acid = WEAK_ACIDS.find((a) => a.id === id)!;
+    expect(acid.ka, `${id} is not its Appendix D value`).toBe(D1[id]);
+  });
+
+  it('HF is in the pool, and is the case that breaks the 5 % rule', () => {
+    // Added 2026-09-19 once its name was ruled. Unlike the rest it dissociates
+    // far enough that the approximation fails over most of the range, which is
+    // the Beita phase's whole point — so its presence is deliberate, not an
+    // oversight to be "corrected" by removing it.
+    const hf = WEAK_ACIDS.find((a) => a.id === 'flussyra');
+    expect(hf).toBeDefined();
+    expect(hf!.protons).toBe(1);
+    const { hExact } = solveWeakAcid(hf!.ka, 0.1);
+    expect(hExact / 0.1).toBeGreaterThan(0.05);
+  });
+});

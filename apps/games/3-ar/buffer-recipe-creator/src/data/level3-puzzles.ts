@@ -116,47 +116,6 @@ export const LEVEL3_PUZZLES: Level3Puzzle[] = [
     correctWaterVolume: 225.0,
   },
   {
-    id: 3,
-    problemId: 13, // TRIS pH 8.00
-    taskIs: 'Búðu til 50 mL af TRIS-stuðpúða við pH 8.00 fyrir DNA einangrun.',
-    taskEn: 'Prepare 50 mL of TRIS buffer at pH 8.00 for DNA isolation.',
-    taskPl: 'Przygotuj 50 mL buforu TRIS o pH 8.00 do izolacji DNA.',
-    stockAcidConc: 0.25, // 0.25 M TRIS-HCl
-    stockBaseConc: 0.25, // 0.25 M TRIS base
-    targetVolume: 50,
-    targetConcentration: 0.05,
-    volumeTolerance: 0.05,
-    hints: {
-      topic: 'TRIS-stuðpúði er algengur í sameindalíffræði með pKa = 8.06.',
-      strategy:
-        'pH 8.00 er LÆGRA en pKa 8.06, þannig að þú þarft meira af sýru. Hlutfall = 10^(-0.06) = 0.87.',
-      method: 'Heildar mól = 0.05 M × 0.05 L = 0.0025 mol. Sýra: 0.00134 mol, Basi: 0.00116 mol.',
-      solution: 'Úr 0.25 M birgð: Sýra = 5.36 mL, Basi = 4.64 mL, Vatn = 40.0 mL.',
-    },
-    hintsEn: {
-      topic: 'TRIS buffer is common in molecular biology with pKa = 8.06.',
-      strategy: 'pH 8.00 is LOWER than pKa 8.06, so you need more acid. Ratio = 10^(-0.06) = 0.87.',
-      method: 'Total moles = 0.05 M × 0.05 L = 0.0025 mol. Acid: 0.00134 mol, Base: 0.00116 mol.',
-      solution: 'From 0.25 M stock: Acid = 5.36 mL, Base = 4.64 mL, Water = 40.0 mL.',
-    },
-    hintsPl: {
-      topic: 'Bufor TRIS jest powszechny w biologii molekularnej z pKa = 8.06.',
-      strategy:
-        'pH 8.00 jest NIŻSZE niż pKa 8.06, więc potrzebujesz więcej kwasu. Proporcja = 10^(-0.06) = 0.87.',
-      method: 'Łączne mole = 0.05 M × 0.05 L = 0.0025 mol. Kwas: 0.00134 mol, Zasada: 0.00116 mol.',
-      solution: 'Z 0.25 M roztworu: Kwas = 5.36 mL, Zasada = 4.64 mL, Woda = 40.0 mL.',
-    },
-    explanationIs:
-      'TRIS-stuðpúði við pH 8.00 þarf hlutfall 0.87 (lítið meira af sýru). Fyrir 50 mL af 0.05 M stuðpúða: 5.36 mL sýrubirgð, 4.64 mL basabirgð.',
-    explanationEn:
-      'A TRIS buffer at pH 8.00 requires a ratio of 0.87 (slightly more acid). For 50 mL of 0.05 M buffer: 5.36 mL acid stock, 4.64 mL base stock.',
-    explanationPl:
-      'Bufor TRIS o pH 8.00 wymaga proporcji 0.87 (nieco więcej kwasu). Na 50 mL 0.05 M buforu: 5.36 mL roztworu kwasu, 4.64 mL roztworu zasady.',
-    correctAcidVolume: 5.36,
-    correctBaseVolume: 4.64,
-    correctWaterVolume: 40.0,
-  },
-  {
     id: 4,
     problemId: 21, // Phosphate pH 7.00
     taskIs: 'Búðu til 500 mL af fosfatstuðpúða við hlutlaust pH (7.00).',

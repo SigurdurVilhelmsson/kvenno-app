@@ -8,11 +8,22 @@
  * with. Grading a student against a different book's second significant figure
  * is the failure this note exists to prevent.
  *
- * **What is still unverified.** The local corpus at `~/dev/repos/namsbokasafn-efni`
- * is not reachable from a cloud session, so none of this was checked against the
- * school's own copy. The pool is therefore restricted to acids whose Ka does not
- * disagree between sources: HNO₂ (quoted as both 4,5 × 10⁻⁴ and 5,6 × 10⁻⁴) and
- * HCN (6,2 × 10⁻¹⁰ and 4,9 × 10⁻¹⁰) are deliberately absent for that reason.
+ * **Verified 2026-09-19.** Siggi supplied Tables D.1 and D.2 directly and every Ka
+ * below matches D.1 exactly, so the earlier "unchecked against the school's own
+ * copy" caveat is retired.
+ *
+ * That check also settled the two Ka disagreements that had kept acids out: D.1
+ * gives HNO₂ 4,5 × 10⁻⁴ (against a competing 5,6 × 10⁻⁴) and HCN 4,9 × 10⁻¹⁰
+ * (against 6,2 × 10⁻¹⁰). **Neither is in the pool yet, and the reason is now
+ * naming rather than chemistry:** `ordabok.md` has no entry for nitrous acid, for
+ * the nitrite ion, or for anything cyanide, and the platform ships none of those
+ * words. Coining them here is exactly what this repo's glossary rule forbids, so
+ * they wait on a ruling. **HF was the third**, and it is in — its name was ruled
+ * on 2026-09-19 (`flússýra`) and `flúoríð` already ships in `1-ar/nafnakerfid`.
+ *
+ * **HF is also the pool's first acid that breaks the 5 % rule across most of the
+ * range** — α runs 2,6 % at 1,0 M to 22,9 % at 0,01 M — which is a feature: the
+ * Beita phase exists to include pairs where the approximation fails.
  *
  * **Every name here already ships elsewhere on the platform**, which is the other
  * half of the same discipline — `nameEstablished` records where. Three acids that
@@ -86,6 +97,17 @@ export const WEAK_ACIDS: WeakAcid[] = [
     protons: 1,
     nameEstablished: '2-ar/organic-nomenclature',
     context: 'Própansýra og sölt hennar verja brauð gegn myglu.',
+  },
+  {
+    id: 'flussyra',
+    name: 'Flússýra',
+    formula: 'HF',
+    conjugateBase: 'F⁻',
+    conjugateBaseName: 'flúoríðjón',
+    ka: 6.8e-4,
+    protons: 1,
+    nameEstablished: '3-ar/ph-titration, 2-ar/intermolecular-forces',
+    context: 'Flússýra leysir upp gler og er geymd í plastílátum, ekki glerflöskum.',
   },
   {
     id: 'fenol',

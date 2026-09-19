@@ -49,14 +49,12 @@ const SOURCED: { pKa: number; source: string }[] = [
 ];
 
 /**
- * TRIS is **not in Appendix D at all**, and this game ships it at two different
- * pKa values (7.82 and 8.06) from an unrecorded source. Siggi's ruling of
- * 2026-09-19 is that such problems are dropped; that removal is logged as
- * pending work rather than done here, so the exemption is explicit and
- * temporary. Do not add to this list — the ruling is that unsourced constants
- * do not ship.
+ * TRIS was the case that proved the ruling: absent from Appendix D entirely, and
+ * shipped at two different pKa values (7.82 and 8.06) from an unrecorded source.
+ * Both problems were removed 2026-09-19, so there is no exemption list any more
+ * and there should never be one again — an unsourced constant does not ship.
  */
-const PENDING_REMOVAL = new Set([7.82, 8.06]);
+const NO_EXEMPTIONS_BY_DESIGN = true;
 
 /**
  * Problem #30 asks for a buffer's useful range from a stated pKa. Its acid is
@@ -85,10 +83,19 @@ describe('every pKa traces to Brown Appendix D', () => {
 
   it('has problems to check', () => {
     expect(rows.length).toBeGreaterThan(0);
+    expect(NO_EXEMPTIONS_BY_DESIGN).toBe(true);
+  });
+
+  it('TRIS is gone — no problem cites a constant Brown does not list', () => {
+    // The ruling's original case. If TRIS returns it must arrive with a citation,
+    // and one pKa rather than two.
+    for (const { what, acid } of rows) {
+      expect(acid, `${what} reintroduces TRIS`).not.toMatch(/TRIS/i);
+    }
   });
 
   it.each(rows)('$what (pKa $pKa)', ({ what, pKa: value }) => {
-    if (PENDING_REMOVAL.has(value) || HYPOTHETICAL.has(value)) return;
+    if (HYPOTHETICAL.has(value)) return;
     const d = decimals(value);
     const hit = SOURCED.find((s) => roundTo(s.pKa, d) === roundTo(value, d));
     expect(
