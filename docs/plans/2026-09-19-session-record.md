@@ -126,7 +126,7 @@ future one-`s` `saltpétursýrlingur` without touching the correct double-`s` fo
   change. **The selection rule was not part of the ruling and must not be improvised into one** —
   see the roadmap's item 13 for the unruled candidates and the two constraints any of them must
   keep.
-- **Significant figures as a Stig 0 in `1-ar/einingakedjan`** — real content work.
+- ~~**Significant figures as a Stig 0**~~ **built 2026-09-19** — see the section below.
 - **Phase 5, in the ruled order**: empirical formula (Y1) first.
 
 ### Not ruled
@@ -197,6 +197,43 @@ before choosing the game. Four distinct problems were tangled together:
 cannot settle a naming question — only hold one that is settled. `2-ar/rafeindabygging` is the sole
 header exemption: it sets `gameTitle` per screen so the header names the sub-topic, which is
 deliberate, and the test asserts that waiver is still earned so it cannot outlive its reason.
+
+## Stig 0 — Markverðir stafir (built)
+
+Siggi's ruling: significant figures live **inside Einingagreining**, not in a game of their own.
+
+**The target was nearly got wrong.** This record first said `1-ar/einingakedjan`. Einingagreining is
+`1-ar/dimensional-analysis` (`GamesHub.tsx:31`); `Einingakeðjan` is the separate game at
+`GamesHub.tsx:66`. Four letters apart, adjacent in the Y1 chain. Caught before any code was written,
+by checking the hub card rather than trusting the note.
+
+The ruling's target was right on the merits too: **`dimensional-analysis` already marked students on
+significant figures and never taught them.** `Level3.tsx:167-169` counts them and shows a red panel;
+`challenges.ts` asks for "3 markverðum stöfum" in the problem text. **The roadmap's open question of
+whether Levels 1–2 also grade on it is now settled — they do not mention them at all**, and the L3
+check is feedback-only (`calculateCompositeScore` takes four scores and this is not one).
+
+Two things worth carrying forward:
+
+- **`utils/sigfigs.ts` works on the written string, never a `number`.** `1200`, `1200,` and
+  `1,200 × 10³` are one quantity at three precisions and a float cannot tell them apart.
+- **A round-trip property test changed the design.** 60,221 to two significant figures **cannot be
+  written in plain decimal** — `60` claims one figure by rule 4 — so `roundToSigFigs` verifies its
+  own output and falls back to `6,0 × 10¹`. The test asserts 455 cases; it found this, I did not.
+
+## A soft hyphen, and the guard it bought
+
+Writing the new Icelandic content, Claude put a **U+00AD soft hyphen inside `ónákvæmasta`**.
+Invisible in an editor, survives review, breaks search and screen readers — and precisely the defect
+that left the Íslenskubraut server copy reading `Orða{soft hyphen}forði` for months.
+`load.mjs` has validated the YAML since August; **game and app source was never covered**, which is
+where this one landed.
+
+`packages/shared/i18n/__tests__/no-invisible-characters.test.ts` now covers `.ts`, `.tsx`, `.html`,
+`.yaml` and `.md` across the app and shared roots. A repo-wide sweep found **exactly two other
+occurrences, both legitimate** and both allow-listed: a U+200D joiner inside an emoji in
+`challenges.ts`, and a U+00A0 in `numbers.test.ts`, which tests that `parseStudentNumber` handles
+one. A third assertion fails if an allow-list entry outlives its character.
 
 ## Two operational facts worth keeping
 

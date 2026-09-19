@@ -633,6 +633,44 @@ lausn af X? Athugaðu 5 % regluna`) differing only in acid and concentration. `A
   file's standing warning that a term swap in Icelandic is not a string swap** — if a data file
   feeds names into sentence templates, the cases belong in the data.
 
+**Stig 0 — Markverðir stafir — landed 2026-09-19, in `1-ar/dimensional-analysis`.** Siggi's ruling:
+significant figures live **inside Einingagreining**, not in a game of their own.
+
+- **Einingagreining is `1-ar/dimensional-analysis`** (`GamesHub.tsx:31`), **not `1-ar/einingakedjan`**,
+  which is `Einingakeðjan` (`GamesHub.tsx:66`). The 2026-09-19 session record first wrote the wrong
+  one; the names differ by four letters and sit next to each other in the Y1 chain. Corrected there.
+- **The gap was real and this game was the right home for it:** `Level3.tsx:167-169` already counts
+  a student's significant figures and shows a red panel when they are wrong, and `challenges.ts`
+  asks for "3 markverðum stöfum" in the problem text — so a student met the rule first as a mark
+  against them. **The roadmap's open question of whether Levels 1–2 also grade on it is now
+  settled: they do not mention significant figures at all.** Every occurrence in the game is in
+  `Level3.tsx` or the data it reads, and the L3 check is feedback-only —
+  `calculateCompositeScore` takes four scores and this is not one of them.
+- **`utils/sigfigs.ts` works on the written string, never on a `number`,** and that is the subject
+  rather than fussiness: `1200`, `1200,` and `1,200 × 10³` are one quantity written to two, four and
+  four significant figures, and a float cannot tell them apart.
+- **`roundToSigFigs` verifies its own output and falls back to scientific notation.** A round-trip
+  property test found the case: **60,221 to two significant figures cannot be written in plain
+  decimal at all**, because `60` claims one figure by rule 4. It prints `6,0 × 10¹`, and Stig 0 says
+  why. 455 round-trip cases are asserted.
+- **Grading a written answer compares the value _and_ the figure count.** `2,5` and `2,50` are the
+  same number and different answers; checking value alone would accept the exact mistake the step
+  exists to correct.
+- **Exact conversion factors carry unlimited significant figures** and are passed as `null`, so
+  `2,50 g × (1000 mg / 1 g)` keeps three. Without that a student would cap every unit conversion at
+  the figures in `1000` — which is why this belongs in Einingagreining and not beside it.
+
+**A soft hyphen got into the new Icelandic content while it was being written**, and is the reason
+`packages/shared/i18n/__tests__/no-invisible-characters.test.ts` now exists. `ónákvæmasta` carried a
+U+00AD mid-word: invisible in an editor, survives review, breaks search and screen readers. This is
+the defect that cost the Íslenskubraut server copy months of `Orða{soft hyphen}forði`;
+`scripts/islenskubraut/load.mjs` has validated the YAML since August, but **game and app source was
+never covered**, which is exactly where the new one landed. The scan covers `.ts`, `.tsx`, `.html`,
+`.yaml` and `.md` under the app and shared roots. **Exactly two occurrences are allowed**, both
+verified: a U+200D joiner inside an emoji in `dimensional-analysis/data/challenges.ts`, and a U+00A0
+in `numbers.test.ts`, which tests that `parseStudentNumber` copes with one. A third test asserts the
+allow-list is not stale.
+
 **Fixed 2026-09-19 — `buffer-recipe-creator` Level 2 graded against its own broken arithmetic.**
 `data/problems.ts` stored `correctAcidMass`, `correctBaseMass`, `correctAcidMoles`, `correctBaseMoles`
 and `ratio` per problem. `data-integrity.test.ts` checked the stored `ratio` against `10^(pH − pKa)`

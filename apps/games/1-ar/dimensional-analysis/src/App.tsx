@@ -4,6 +4,7 @@ import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
 import { useGameI18n, useGameProgress } from '@shared/hooks';
 
 // Import Level components
+import { Level0SigFigs } from './components/Level0SigFigs';
 import { Level1Conceptual } from './components/Level1Conceptual';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
@@ -18,7 +19,7 @@ interface Progress {
  */
 function App() {
   const { t, language, setLanguage } = useGameI18n({ gameTranslations });
-  const [screen, setScreen] = useState<'menu' | 'level1' | 'level2' | 'level3'>('menu');
+  const [screen, setScreen] = useState<'menu' | 'level0' | 'level1' | 'level2' | 'level3'>('menu');
   const { progress, updateProgress } = useGameProgress<Progress>('dimensional-analysis-progress', {
     completed: [],
   });
@@ -62,6 +63,26 @@ function App() {
 
                 {/* Level Cards - Conceptual First Progression */}
                 <div className="grid gap-4">
+                  {/* Level 0 - Significant figures. Siggi's ruling 2026-09-19:
+                      this lives inside Einingagreining, not in its own game.
+                      It comes first because Level 3 already marks students on
+                      it. */}
+                  <button
+                    onClick={() => setScreen('level0')}
+                    className="game-card bg-warm-600 hover:bg-warm-700 text-white rounded-lg p-6 text-left transition-colors"
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-2xl">0</span>
+                      <h3 className="text-xl font-semibold">Markverðir stafir</h3>
+                    </div>
+                    <p className="text-warm-100">
+                      Hversu nákvæm er mælingin — og hvernig skrifarðu það niður
+                    </p>
+                    {completedLevels.includes(0) && (
+                      <p className="text-sm text-warm-200 mt-2">Lokið</p>
+                    )}
+                  </button>
+
                   {/* Level 1 - Conceptual (Visual Learning) */}
                   <button
                     onClick={() => setScreen('level1')}
@@ -138,6 +159,16 @@ function App() {
           )}
 
           {/* Level Screens */}
+          {screen === 'level0' && (
+            <Level0SigFigs
+              onComplete={(levelProgress) => {
+                if (levelProgress.mastered) markCompleted(0);
+                setScreen('menu');
+              }}
+              onBack={() => setScreen('menu')}
+            />
+          )}
+
           {screen === 'level1' && (
             <Level1Conceptual
               onComplete={(levelProgress) => {
