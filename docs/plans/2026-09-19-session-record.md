@@ -19,8 +19,9 @@ This file is committed for that reason.
 | [#47](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/47) | Five acid names ruled + guarded; CI format gate; Y1 chain test; generated SPA index |
 | [#48](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/48) | Buffer recipes derived instead of stored; six Appendix D corrections                |
 | [#49](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/49) | TRIS problems dropped; `flússýra` added to Sýrufastinn                              |
+| [#51](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/51) | HNO₂ and HCN added to Sýrufastinn; acid names now decline                           |
 
-Suite went **1948 → 2024** tests (plus 46 server). `pnpm check-all` passes all three legs for the
+Suite went **1948 → 2032** tests (plus 46 server). `pnpm check-all` passes all three legs for the
 first time, and `format:check` is now a CI step so it stays that way.
 
 ---
@@ -69,22 +70,31 @@ All Siggi's, all 2026-09-19. The terminology ones are in `ordabok.md` and enforc
 | Phase 5 build order    | empirical formula → electrolytes/precipitation → Ksp → `equilibrium-shifter` Kc/Kp |
 | constants              | **Appendix D is authoritative**; a constant with no Appendix D row does not ship   |
 | Íslenskubraut          | **On hold** as a project                                                           |
+| HNO₂ / NO₂⁻            | `saltpéturssýrlingur` / `nítrítjón`                                                |
+| HCN / CN⁻              | `vetnissýaníð` (`blásýra`) / `sýaníðjón`                                           |
 
 ---
 
 ## Open, and what each needs
 
-### Blocked on Siggi — four Icelandic terms
+### Closed the same day — the four Icelandic terms
 
-`3-ar/syrufastinn`'s pool is **7 acids, not the 9 the ruling admitted**. HF landed. **HNO₂ and HCN
-did not**, and the reason is naming, not chemistry: D.1 settled both Ka values (HNO₂ 4,5 × 10⁻⁴,
-HCN 4,9 × 10⁻¹⁰), but `ordabok.md` has no entry for nitrous acid, the nitrite ion, hydrocyanic acid
-or the cyanide ion, and the platform ships none of those words.
+`3-ar/syrufastinn`'s pool was **7 acids, not the 9 the ruling admitted**, because D.1 had settled
+both Ka values (HNO₂ 4,5 × 10⁻⁴, HCN 4,9 × 10⁻¹⁰) while `ordabok.md` carried no word for either
+acid or either conjugate base. Siggi ruled all four, so **the pool is 9**:
 
-**Needed: HNO₂, NO₂⁻, HCN, CN⁻.** Do not coin them — that is the failure `governed-terms.test.ts`
-exists to prevent. The `-sýrlingur` pattern has exactly one precedent (`Brennisteinssýrling` for
-H₂SO₃, `ph-titration/data/titrations.ts:166`, and that is an accusative where every sibling `name:`
-field is nominative), which is suggestive but not an authority.
+| Species | Icelandic                  |
+| ------- | -------------------------- |
+| HNO₂    | `saltpéturssýrlingur`      |
+| NO₂⁻    | `nítrítjón`                |
+| HCN     | `vetnissýaníð` (`blásýra`) |
+| CN⁻     | `sýaníðjón`                |
+
+All four are in `ordabok.md`. No banned form exists for any of them — nothing on the platform
+spelled them any other way, because nothing on the platform said them at all — so they get glossary
+entries and no `governed-terms.test.ts` row, the same treatment `brunaefnahvarf` and `niðurbrot`
+got. The existing nitric-acid row already covers the near miss: its `/saltpétursýr/i` ban catches a
+future one-`s` `saltpétursýrlingur` without touching the correct double-`s` form.
 
 ### Ruled but not built
 
@@ -114,6 +124,14 @@ Recorded because the wrong versions were stated confidently before being checked
 - **A sixth Ka correction was missed from the original list: formic, 3.75 → 3.74.** The proof is
   internal — formic and acetic share the mantissa 1.8, so their pKa values differ by exactly 1.000
   (3.7447 and 4.7447). The platform rounded one to 4.74 and the other to 3.75.
+- **Adding HNO₂ and HCN surfaced a grammar defect nobody had looked for.** Sýrufastinn's question
+  templates interpolated `acid.name.toLowerCase()` after `af`, which governs the dative — so the
+  Æfa screen and every Beita rule-breaker read `lausn af flússýra` and `lausn af própansýra`.
+  Invisible while every acid in the pool was a feminine `-sýra`; obvious the moment a neuter
+  (`vetnissýaníð`) and a masculine (`saltpéturssýrlingur`) joined it. `WeakAcid` now carries
+  `nameDative` and `nameGenitive`, and two tests hold the templates to them. **This is exactly what
+  `CLAUDE.md` warns about under "What the test cannot do":** `governed-terms.test.ts` matches
+  strings and cannot see agreement, so a pool that spans three genders needs the cases in the data.
 - **`ph-titration`'s Level 3 reference table was the largest single find and was not on any list.**
   Six of its nine values came from another book: H₂CO₃ read `6.35, 10.33` against Appendix D's
   `6.37, 10.25`, H₃PO₄ read `2.15, 7.20, 12.35` against `2.12, 7.21, 12.38`. That table is the

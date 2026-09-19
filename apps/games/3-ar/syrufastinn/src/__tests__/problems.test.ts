@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
+import { WEAK_ACIDS } from '../data/acids';
 import {
   APPLY_PROBLEMS,
   PRACTICE_PROBLEMS,
@@ -107,6 +108,31 @@ describe('the apply set', () => {
       const text = [p.question, p.explanation, p.misconception ?? ''].join(' ');
       const withDot = text.match(/\d+\.\d+/g);
       expect(withDot, `${p.id}: ${withDot?.join(', ')}`).toBeNull();
+    }
+  });
+
+  it('never puts a nominative after a preposition that governs a case', () => {
+    // `lausn af própansýra` is not Icelandic — `af` takes the dative, and
+    // `samoka basa` takes the genitive. Every question is built from a template,
+    // so one careless interpolation puts the wrong case in front of every
+    // student. Checked against the pool rather than against a fixed list, so a
+    // new acid is covered the day it is added.
+    for (const p of APPLY_PROBLEMS) {
+      for (const acid of WEAK_ACIDS) {
+        const nom = acid.name.toLowerCase();
+        expect(p.question, `${p.id} says "af ${nom}"`).not.toContain(`af ${nom} `);
+        expect(p.question, `${p.id} says "af ${nom}"`).not.toContain(`af ${nom},`);
+        expect(p.question, `${p.id} says "basa ${nom}"`).not.toContain(`basa ${nom}`);
+      }
+    }
+  });
+
+  it('uses the dative of the acid it names, for every rule-breaking pair', () => {
+    // The generated half of Beita: one template, every acid over 5 %. HNO₂ and HF
+    // decline differently from each other, so this catches a regression the four
+    // hand-written problems above would not.
+    for (const p of APPLY_PROBLEMS.filter((x) => x.id.startsWith('apply-break-'))) {
+      expect(p.question, p.id).toContain(`lausn af ${p.acid.nameDative} `);
     }
   });
 

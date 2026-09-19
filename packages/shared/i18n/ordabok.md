@@ -136,6 +136,7 @@ crucible;deigla
 crystal;kristall
 crystalline solid;kristalkennt fastefni
 cuvette;kúvetta
+cyanide ion;sýaníðjón
 decomposition;niðurbrot
 decomposition reaction;niðurbrotsefnahvarf
 degree of unsaturation;ómettunarstuðull
@@ -270,8 +271,10 @@ homogeneous;einsleitur
 hot plate;hitahræra
 Hund's rule;regla Hunds
 hydration;vötnun
+hydrocyanic acid;blásýra
 hydrofluoric acid;flússýra
 hydrogen bond;vetnistengi
+hydrogen cyanide;vetnissýaníð
 hydrogenation;vetnun
 hydrolysis;vatnsrof
 hydrophilic;vatnssækinn
@@ -379,6 +382,8 @@ neutral;hlutlaus
 neutralization;hlutleysing
 neutron;nifteind
 nitric acid;saltpéturssýra
+nitrite ion;nítrítjón
+nitrous acid;saltpéturssýrlingur
 noble gas;eðalgas
 node;nóða
 nonelectrolyte;órafkleyft efni

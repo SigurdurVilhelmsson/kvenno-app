@@ -114,7 +114,7 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
         <div className="mb-6 rounded-lg bg-warm-50 p-4">
           <p className="text-warm-800">
             <strong>{fmt(problem.concentration, 3)} M</strong> lausn af{' '}
-            <strong>{problem.acid.name.toLowerCase()}</strong> ({problem.acid.formula}), Ka ={' '}
+            <strong>{problem.acid.nameDative}</strong> ({problem.acid.formula}), Ka ={' '}
             {sciText(problem.acid.ka)}.
           </p>
           <p className="mt-1 text-sm text-warm-600">{problem.acid.context}</p>
