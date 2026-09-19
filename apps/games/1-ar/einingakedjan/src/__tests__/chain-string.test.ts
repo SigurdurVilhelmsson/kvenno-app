@@ -7,7 +7,8 @@ import { describe, it, expect } from 'vitest';
  * The Year-1 counterpart of `3-ar/syrufastinn`'s chain test.
  *
  * Every Y1 game prints the same `Námsleiðin` chain, and adding a node means
- * editing all eight. `CLAUDE.md`'s "Adding a new game" step 4 says so, and until
+ * editing all of them — nine since `reynsluformulur` landed, and this test is
+ * what made that edit safe: four of the nine wrap the string across lines. `CLAUDE.md`'s "Adding a new game" step 4 says so, and until
  * Sep 2026 only Year 3 enforced it — so Y1 had the rule written down, followed
  * by hand, and checked by nobody. Miss one game and a student sees two different
  * course maps depending on which tile they opened.
@@ -29,6 +30,7 @@ const CHAIN_FILES = [
   'apps/games/1-ar/lotukerfid/src/App.tsx',
   'apps/games/1-ar/nafnakerfid/src/App.tsx',
   'apps/games/1-ar/molmassi/src/App.tsx',
+  'apps/games/1-ar/reynsluformulur/src/App.tsx',
   'apps/games/1-ar/jafna-jofnur/src/App.tsx',
   'apps/games/1-ar/takmarkandi/src/App.tsx',
   'apps/games/1-ar/lausnir/src/App.tsx',
@@ -36,7 +38,7 @@ const CHAIN_FILES = [
 ];
 
 const EXPECTED =
-  'Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi → Stilla efnajöfnur → Takmarkandi → Lausnir → Einingakeðjan';
+  'Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi → Reynsluformúlur → Stilla efnajöfnur → Takmarkandi → Lausnir → Einingakeðjan';
 
 const MARKER = '<strong>Námsleiðin:</strong>';
 

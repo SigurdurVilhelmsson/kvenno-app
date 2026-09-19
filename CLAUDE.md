@@ -16,8 +16,8 @@ kvenno-app/
 │   ├── landing/          # Landing page (track selector) + chemistry year hubs (React SPA)
 │   ├── islenskubraut/    # Icelandic language teaching cards (React SPA, /islenskubraut/)
 │   ├── lab-reports/      # AI-powered lab report grading (React SPA)
-│   └── games/            # 22 chemistry games (single-file HTML, except the 3 Three.js ones)
-│       ├── 1-ar/         # 8 games for year 1
+│   └── games/            # 23 chemistry games (single-file HTML, except the 3 Three.js ones)
+│       ├── 1-ar/         # 9 games for year 1
 │       ├── 2-ar/         # 8 games for year 2
 │       └── 3-ar/         # 6 games for year 3
 ├── packages/
@@ -285,14 +285,14 @@ Plan file: `logical-wandering-llama.md` — the Y1/Y2/Y3 iterative review cycle.
 
 ### Game inventory
 
-**Year 1:** dimensional-analysis, lotukerfid, nafnakerfid, molmassi, jafna-jofnur, takmarkandi, lausnir, einingakedjan
+**Year 1:** dimensional-analysis, lotukerfid, nafnakerfid, molmassi, reynsluformulur, jafna-jofnur, takmarkandi, lausnir, einingakedjan
 **Year 2:** hess-law, kinetics, lewis-structures, vsepr-geometry, intermolecular-forces, organic-nomenclature, redox-reactions, rafeindabygging
 **Year 3:** ph-titration, gas-law-challenge, equilibrium-shifter, syrufastinn, thermodynamics-predictor, buffer-recipe-creator
 
 ### Curriculum chains
 
 ```
-Y1: Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi → Stilla efnajöfnur → Takmarkandi → Lausnir → Einingakeðjan
+Y1: Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi → Reynsluformúlur → Stilla efnajöfnur → Takmarkandi → Lausnir → Einingakeðjan
 Y2: Rafeindabygging → Lewis → VSEPR → IMF → Hess → Kinetics → Redox → Organic
 Y3: Gaslögmál → Jafnvægi → Sýrufastinn → Varmafræði → pH Títrun → Stuðpúðar
 ```
@@ -561,7 +561,11 @@ Beita) on the `1-ar/einingakedjan` model, 76 tests. Read
   anything.
 - **`chain-string.test.ts` now enforces the `Námsleiðin` chain across all six Y3 games**, and that
   every game `build-games.mjs` emits has an entry. Step 4 of "Adding a new game" was written down
-  and never checked; a Y1 equivalent does not exist yet and would be a cheap follow-up.
+  and never checked. **The Y1 equivalent now exists too** —
+  `1-ar/einingakedjan/src/__tests__/chain-string.test.ts`, added 2026-09-19; this line said it did
+  not for the rest of that day, which is how a tenth game nearly shipped with a duplicate of it.
+  Its whitespace handling models how JSX renders the markup rather than merely collapsing it, and
+  that is load-bearing: a rewrap can delete a space the chain needs.
 - **CLAUDE.md's own Y3 chain line said `Púfferar`** — a banned form, fixed here. It survived the
   August sweep because `governed-terms.test.ts` scans `.tsx?` only, so no Markdown is covered.
   `docs/FEBRUARY-DECISIONS-RECOVERED.md:118` had explicitly named this line as part of that fix.
@@ -670,6 +674,34 @@ never covered**, which is exactly where the new one landed. The scan covers `.ts
 verified: a U+200D joiner inside an emoji in `dimensional-analysis/data/challenges.ts`, and a U+00A0
 in `numbers.test.ts`, which tests that `parseStudentNumber` copes with one. A third test asserts the
 allow-list is not stale.
+
+**Phase 5 continued 2026-09-19 with `1-ar/reynsluformulur` — Reynsluformúlur, the empirical-formula
+node.** The 23rd game, and the second of Phase 5's four confirmed curriculum gaps to close after
+Sýrufastinn. Empirical formula was absent from all three years. Read
+`apps/games/1-ar/reynsluformulur/README.md`; what matters platform-wide:
+
+- **It sits between Mólmassi and Stilla efnajöfnur** (Brown ch. 3), so the Y1 chain is nine nodes
+  and every sibling's `Námsleiðin` string changed. Four of the nine wrap it across lines with a JSX
+  `{' '}`, which is why doing this by eye does not scale.
+- **The roadmap said "fix three data defects before porting anything", and all three were
+  re-verified by arithmetic first** — two of Phase 3's four harvest rows had had false premises.
+  This time `ORPHANED_GAMES_ASSESSMENT.md:338` was right on all three: `l2-1` carried water's
+  percentages under hydrogen peroxide's name, `l2-5`'s stored key `NH₂O₃` was the 1,5-rounded-to-2
+  mistake frozen into the answer (the data reduces to N₂H₄O₃), and `l2-10`'s numbers made the stored
+  `Mg₃(PO₄)₂` unreachable.
+- **One correction to that assessment:** `l2-10`'s percentages do _not_ "reduce to no whole-number
+  formula at all". ×3 gives 5 : 3 : 12,95, within 0,4 % of Mg₅P₃O₁₃ — the arithmetic works and the
+  chemistry does not, which an engine that only knows arithmetic cannot tell apart. `MAX_SUBSCRIPT`
+  is what rejects it, not the tolerance.
+- **The whole class of defect is now structurally impossible, not merely fixed.** Compounds are
+  written as **formulas**; `percentComposition` derives the percentages and `deriveEmpirical`
+  derives the key back from them. Nobody types a percentage, so `l2-1` and `l2-10` cannot recur; no
+  key is stored, so `l2-5` cannot. **This is the pattern to copy for any game whose data is an
+  arithmetic result rather than a fact.**
+- **The old game's Level 3 scaffold _was_ its answer leak** — it printed `(empirical) × n =
+molecular` below a live input, and 18 of 30 items exposed the answer before commit. The Æfa phase
+  is the assessment's own proposed fix: the step table inverted into a live one the student fills
+  column by column, nothing shown before it is earned, and feedback that names the column.
 
 **Fixed 2026-09-19 — `buffer-recipe-creator` Level 2 graded against its own broken arithmetic.**
 `data/problems.ts` stored `correctAcidMass`, `correctBaseMass`, `correctAcidMoles`, `correctBaseMoles`

@@ -23,7 +23,7 @@ This file is committed for that reason.
 | [#52](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/52) | i18n switcher stripped from the eight games that translated nothing                   |
 | [#53](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/53) | Gas-law game renamed to Icelandic; `Púfferuppskrift` swept; term scan widened to HTML |
 
-Suite went **1948 → 2101** tests (plus 46 server). `pnpm check-all` passes all three legs for the
+Suite went **1948 → 2186** tests (plus 46 server). `pnpm check-all` passes all three legs for the
 first time, and `format:check` is now a CI step so it stays that way.
 
 ---
@@ -127,7 +127,8 @@ future one-`s` `saltpétursýrlingur` without touching the correct double-`s` fo
   see the roadmap's item 13 for the unruled candidates and the two constraints any of them must
   keep.
 - ~~**Significant figures as a Stig 0**~~ **built 2026-09-19** — see the section below.
-- **Phase 5, in the ruled order**: empirical formula (Y1) first.
+- ~~**Phase 5, empirical formula**~~ **built 2026-09-19** — `1-ar/reynsluformulur`, the 23rd game.
+  Next in the ruled order: electrolytes/precipitation, then Ksp, then `equilibrium-shifter` Kc/Kp.
 
 ### Not ruled
 
@@ -234,6 +235,30 @@ where this one landed.
 occurrences, both legitimate** and both allow-listed: a U+200D joiner inside an emoji in
 `challenges.ts`, and a U+00A0 in `numbers.test.ts`, which tests that `parseStudentNumber` handles
 one. A third assertion fails if an allow-list entry outlives its character.
+
+## Reynsluformúlur (built) — and a note I had wrong
+
+Phase 5's empirical-formula gap, closed. `1-ar/reynsluformulur`, four phases, 56 tests, chain
+position 5. Detail in the game's README and CLAUDE.md; three things belong here.
+
+**The old repo is reachable from a cloud session.** `namsbokasafn-leikir` and
+`namsbokasafn-efni` are both public on GitHub and clone through the git proxy. **CLAUDE.md says the
+textbook corpus "is not reachable from a cloud session" and that a session should say so rather than
+guess** — that is now wrong, and terminology resolution step 2 is usable here after all. Left as-is
+in this pass rather than edited blind: worth confirming the corpus clone is the same content Siggi
+greps locally before rewriting the rule.
+
+**A note of mine sent the previous task to the wrong game, and this one nearly to a duplicate.**
+CLAUDE.md said a Y1 chain test "does not exist yet and would be a cheap follow-up". It does exist —
+`1-ar/einingakedjan/src/__tests__/chain-string.test.ts`, added the same day in PR #47, by me. I
+wrote a second one before the full suite failed and pointed at the original. Duplicate deleted, the
+existing test extended to nine games, CLAUDE.md corrected. Two stale notes in one day, both mine,
+both caught by running the whole suite rather than the one directory being worked in.
+
+**The data-defect fix is worth copying.** The old game's three defects were all the same shape: a
+number typed next to the question it answers. Here compounds are written as **formulas** and both
+the percentages and the key are derived, so there is no percentage to mistype and no key to
+disagree. That is the `l2-1`/`l2-5`/`l2-10` class made impossible rather than fixed.
 
 ## Two operational facts worth keeping
 

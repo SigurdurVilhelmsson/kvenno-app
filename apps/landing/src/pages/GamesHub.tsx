@@ -48,6 +48,11 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
         slug: 'molmassi',
       },
       {
+        title: 'Reynsluformúlur',
+        description: 'Frá prósentusamsetningu að reynsluformúlu, og þaðan að sameindaformúlu',
+        slug: 'reynsluformulur',
+      },
+      {
         title: 'Stilla efnajöfnur',
         description: 'Lærðu að stilla efnajöfnur',
         slug: 'jafna-jofnur',

@@ -114,8 +114,10 @@ const CARDS = hubCards();
 const GAMES = games();
 
 describe('every game has one name', () => {
-  it('finds all 22 games and a hub card for each', () => {
-    expect(GAMES.length).toBe(22);
+  it('finds every game and a hub card for each', () => {
+    // 23 since `1-ar/reynsluformulur` landed. The number is asserted rather than
+    // derived so that a game which fails to register shows up here too.
+    expect(GAMES.length).toBe(23);
     for (const g of GAMES) {
       expect(CARDS.get(g.slug), `${g.slug} has no card in GamesHub.tsx`).toBeDefined();
     }
