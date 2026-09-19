@@ -81,14 +81,18 @@ export function AchievementsPanel({
       : allAchievements.filter((a) => a.category === selectedCategory);
 
   const unlockedCount = achievements.unlocked.length;
-  const totalCount = allAchievements.filter((a) => !a.secret || achievements.unlocked.includes(a.id)).length;
+  const totalCount = allAchievements.filter(
+    (a) => !a.secret || achievements.unlocked.includes(a.id)
+  ).length;
   const percentage = Math.round((unlockedCount / allAchievements.length) * 100);
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
       role="presentation"
-      onClick={(e) => { if (e.target === e.currentTarget && onClose) onClose(); }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget && onClose) onClose();
+      }}
     >
       <div
         ref={dialogRef}
@@ -102,9 +106,7 @@ export function AchievementsPanel({
         <div className="bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-white">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold flex items-center gap-2">
-                🏆 Afrek
-              </h2>
+              <h2 className="text-2xl font-bold flex items-center gap-2">🏆 Afrek</h2>
               <p className="text-yellow-100 text-sm mt-1">
                 {unlockedCount} / {totalCount} opnuð ({percentage}%)
               </p>
@@ -194,11 +196,7 @@ export function AchievementsPanel({
                       : 'bg-gray-50 border-gray-200'
                   }`}
                 >
-                  <AchievementBadge
-                    achievement={achievement}
-                    progress={progress}
-                    size="md"
-                  />
+                  <AchievementBadge achievement={achievement} progress={progress} size="md" />
                 </div>
               );
             })}

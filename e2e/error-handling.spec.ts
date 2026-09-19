@@ -66,23 +66,16 @@ test.describe('Error handling — Invalid routes', () => {
     });
 
     // Navigate through the main routes in sequence
-    const routes = [
-      '/',
-      '/efnafraedi',
-      '/efnafraedi/1-ar',
-      '/efnafraedi/2-ar',
-      '/efnafraedi/3-ar',
-    ];
+    const routes = ['/', '/efnafraedi', '/efnafraedi/1-ar', '/efnafraedi/2-ar', '/efnafraedi/3-ar'];
 
     for (const route of routes) {
       consoleErrors.length = 0;
       await page.goto(route);
       await page.waitForLoadState('networkidle');
 
-      expect(
-        consoleErrors,
-        `Console errors on ${route}: ${consoleErrors.join(', ')}`
-      ).toHaveLength(0);
+      expect(consoleErrors, `Console errors on ${route}: ${consoleErrors.join(', ')}`).toHaveLength(
+        0
+      );
     }
   });
 });

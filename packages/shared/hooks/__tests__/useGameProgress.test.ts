@@ -58,9 +58,7 @@ describe('useGameProgress', () => {
   });
 
   it('returns default progress when localStorage is empty', () => {
-    const { result } = renderHook(() =>
-      useGameProgress('test-game', DEFAULT_PROGRESS)
-    );
+    const { result } = renderHook(() => useGameProgress('test-game', DEFAULT_PROGRESS));
 
     expect(result.current.progress).toEqual(DEFAULT_PROGRESS);
   });
@@ -77,9 +75,7 @@ describe('useGameProgress', () => {
       'test-game': JSON.stringify(savedProgress),
     });
 
-    const { result } = renderHook(() =>
-      useGameProgress('test-game', DEFAULT_PROGRESS)
-    );
+    const { result } = renderHook(() => useGameProgress('test-game', DEFAULT_PROGRESS));
 
     expect(result.current.progress).toEqual(savedProgress);
   });
@@ -89,17 +85,13 @@ describe('useGameProgress', () => {
       'test-game': 'not-valid-json{{{',
     });
 
-    const { result } = renderHook(() =>
-      useGameProgress('test-game', DEFAULT_PROGRESS)
-    );
+    const { result } = renderHook(() => useGameProgress('test-game', DEFAULT_PROGRESS));
 
     expect(result.current.progress).toEqual(DEFAULT_PROGRESS);
   });
 
   it('saves progress to localStorage on update', () => {
-    const { result } = renderHook(() =>
-      useGameProgress('test-game', DEFAULT_PROGRESS)
-    );
+    const { result } = renderHook(() => useGameProgress('test-game', DEFAULT_PROGRESS));
 
     act(() => {
       result.current.updateProgress({
@@ -117,9 +109,7 @@ describe('useGameProgress', () => {
   });
 
   it('merges partial updates without overwriting other fields', () => {
-    const { result } = renderHook(() =>
-      useGameProgress('test-game', DEFAULT_PROGRESS)
-    );
+    const { result } = renderHook(() => useGameProgress('test-game', DEFAULT_PROGRESS));
 
     act(() => {
       result.current.updateProgress({ level1Score: 50 });
@@ -145,9 +135,7 @@ describe('useGameProgress', () => {
       'test-game': JSON.stringify(savedProgress),
     });
 
-    const { result } = renderHook(() =>
-      useGameProgress('test-game', DEFAULT_PROGRESS)
-    );
+    const { result } = renderHook(() => useGameProgress('test-game', DEFAULT_PROGRESS));
 
     expect(result.current.progress.level1Completed).toBe(true);
 
@@ -164,20 +152,12 @@ describe('useGameProgress', () => {
     renderHook(() => useGameProgress('game-a', DEFAULT_PROGRESS));
     renderHook(() => useGameProgress('game-b', DEFAULT_PROGRESS));
 
-    expect(mockStorage.setItem).toHaveBeenCalledWith(
-      'game-a',
-      expect.any(String)
-    );
-    expect(mockStorage.setItem).toHaveBeenCalledWith(
-      'game-b',
-      expect.any(String)
-    );
+    expect(mockStorage.setItem).toHaveBeenCalledWith('game-a', expect.any(String));
+    expect(mockStorage.setItem).toHaveBeenCalledWith('game-b', expect.any(String));
   });
 
   it('persists progress across re-renders', () => {
-    const { result, rerender } = renderHook(() =>
-      useGameProgress('test-game', DEFAULT_PROGRESS)
-    );
+    const { result, rerender } = renderHook(() => useGameProgress('test-game', DEFAULT_PROGRESS));
 
     act(() => {
       result.current.updateProgress({ totalGamesPlayed: 10 });

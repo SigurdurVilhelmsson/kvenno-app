@@ -396,7 +396,13 @@ describe('useAchievements', () => {
 
     it('should calculate percentage correctly', () => {
       // Pre-unlock half the achievements
-      const allAchievementIds = ['streak-3', 'streak-5', 'streak-10', 'perfect-level-1', 'high-scorer'];
+      const allAchievementIds = [
+        'streak-3',
+        'streak-5',
+        'streak-10',
+        'perfect-level-1',
+        'high-scorer',
+      ];
       const savedAchievements = createPlayerAchievements({
         unlocked: allAchievementIds,
         totalPoints: 50,

@@ -17,7 +17,8 @@ interface TeacherResultsProps {
 
 const getQualityIcon = (quality?: string) => {
   if (quality === 'good') return <CheckCircle className="text-green-600" size={20} />;
-  if (quality === 'needs improvement') return <AlertTriangle className="text-yellow-600" size={20} />;
+  if (quality === 'needs improvement')
+    return <AlertTriangle className="text-yellow-600" size={20} />;
   return <XCircle className="text-red-600" size={20} />;
 };
 
@@ -73,7 +74,8 @@ export const TeacherResults: React.FC<TeacherResultsProps> = ({
           <div key={idx} className="border rounded-lg p-6">
             <div className="flex justify-between items-start mb-4">
               <h3 className="text-lg font-semibold text-warm-800">{result.filename}</h3>
-              {(result.suggestedGrade || (result.totalPoints !== undefined && result.maxTotalPoints !== undefined)) && (
+              {(result.suggestedGrade ||
+                (result.totalPoints !== undefined && result.maxTotalPoints !== undefined)) && (
                 <div className="text-right">
                   <div className="text-sm text-warm-600">Tillaga að einkunn:</div>
                   <div className="text-2xl font-bold text-warm-900">
@@ -127,7 +129,9 @@ export const TeacherResults: React.FC<TeacherResultsProps> = ({
                                 {data.note && <div className="text-warm-600 mt-1">{data.note}</div>}
                                 {data.reasoning && (
                                   <div className="mt-2 pt-2 border-t border-warm-300">
-                                    <span className="font-semibold text-warm-700">Rökstuðningur: </span>
+                                    <span className="font-semibold text-warm-700">
+                                      Rökstuðningur:{' '}
+                                    </span>
                                     <span className="text-warm-700">{data.reasoning}</span>
                                   </div>
                                 )}
@@ -150,7 +154,7 @@ export const TeacherResults: React.FC<TeacherResultsProps> = ({
                 fileContent={{
                   type: 'pdf',
                   data: '',
-                  debug: result.extractionDebug
+                  debug: result.extractionDebug,
                 }}
                 fileName={result.filename}
               />

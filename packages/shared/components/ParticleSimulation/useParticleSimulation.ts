@@ -73,7 +73,7 @@ export function useParticleSimulation(initialTemperature = 300): SimulationContr
     addParticles,
     removeParticles,
     setTemperature,
-    getParticleCounts
+    getParticleCounts,
   };
 }
 

@@ -16,10 +16,10 @@ kvenno-app/
 │   ├── landing/          # Landing page (track selector) + chemistry year hubs (React SPA)
 │   ├── islenskubraut/    # Icelandic language teaching cards (React SPA, /islenskubraut/)
 │   ├── lab-reports/      # AI-powered lab report grading (React SPA)
-│   └── games/            # 21 chemistry games (single-file HTML, except the 3 Three.js ones)
+│   └── games/            # 22 chemistry games (single-file HTML, except the 3 Three.js ones)
 │       ├── 1-ar/         # 8 games for year 1
 │       ├── 2-ar/         # 8 games for year 2
-│       └── 3-ar/         # 5 games for year 3
+│       └── 3-ar/         # 6 games for year 3
 ├── packages/
 │   └── shared/           # Shared components, hooks, utils, types, i18n
 ├── server/               # Express backend (Claude AI proxy + PDF generation)
@@ -68,9 +68,9 @@ pnpm type-check           # TypeScript check across all packages
 pnpm lint                 # ESLint check
 pnpm test                 # Run tests
 pnpm test:e2e             # Playwright E2E (incl. the Three.js lazy-load guard)
-pnpm check-all            # type-check + lint + format:check
-                          #   — currently FAILS: format:check reports 166 pre-existing files,
-                          #     unrelated to any one change. type-check and lint are clean.
+pnpm check-all            # type-check + lint + format:check — all three pass (2026-09-19).
+                          #   The long-standing format:check backlog is cleared; keep it that way
+                          #   by running `pnpm format` before committing.
 ./scripts/deploy.sh       # Deploy to production server
 ```
 

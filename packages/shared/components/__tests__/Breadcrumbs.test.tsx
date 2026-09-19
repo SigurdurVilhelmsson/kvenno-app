@@ -19,10 +19,7 @@ describe('Breadcrumbs', () => {
   });
 
   it('renders linked items as anchor elements', () => {
-    const items: BreadcrumbItem[] = [
-      { label: 'Heim', href: '/' },
-      { label: 'Efnafræði' },
-    ];
+    const items: BreadcrumbItem[] = [{ label: 'Heim', href: '/' }, { label: 'Efnafræði' }];
 
     render(<Breadcrumbs items={items} />);
 
@@ -32,10 +29,7 @@ describe('Breadcrumbs', () => {
   });
 
   it('renders last item without href as non-link text', () => {
-    const items: BreadcrumbItem[] = [
-      { label: 'Heim', href: '/' },
-      { label: 'Núverandi síða' },
-    ];
+    const items: BreadcrumbItem[] = [{ label: 'Heim', href: '/' }, { label: 'Núverandi síða' }];
 
     render(<Breadcrumbs items={items} />);
 

@@ -1,11 +1,6 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 
-import type {
-  InteractiveGraphProps,
-  DataPoint,
-  DataSeries,
-  Margin
-} from './types';
+import type { InteractiveGraphProps, DataPoint, DataSeries, Margin } from './types';
 
 const DEFAULT_MARGIN: Margin = { top: 30, right: 30, bottom: 50, left: 60 };
 
@@ -47,7 +42,7 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
   onPointHover,
   onPointClick,
   currentPoint,
-  ariaLabel = 'Graf'
+  ariaLabel = 'Graf',
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hoveredPoint, setHoveredPoint] = useState<{
@@ -88,9 +83,7 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
         s.data.forEach((point) => {
           const screenX = toScreenX(point.x);
           const screenY = toScreenY(point.y);
-          const distance = Math.sqrt(
-            Math.pow(mouseX - screenX, 2) + Math.pow(mouseY - screenY, 2)
-          );
+          const distance = Math.sqrt(Math.pow(mouseX - screenX, 2) + Math.pow(mouseY - screenY, 2));
 
           if (distance < maxDistance && distance < nearestDistance) {
             nearestPoint = point;
@@ -138,8 +131,8 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
           region.labelPosition === 'left'
             ? xStart + 5
             : region.labelPosition === 'right'
-            ? xEnd - ctx.measureText(region.label).width - 5
-            : (xStart + xEnd) / 2 - ctx.measureText(region.label).width / 2;
+              ? xEnd - ctx.measureText(region.label).width - 5
+              : (xStart + xEnd) / 2 - ctx.measureText(region.label).width / 2;
         ctx.fillText(region.label, labelX, (yTop + yBottom) / 2);
       }
     });
@@ -189,7 +182,10 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
       if (line.label) {
         ctx.fillStyle = line.color;
         ctx.font = 'bold 11px sans-serif';
-        const labelX = line.labelPosition === 'left' ? margin.left + 5 : width - margin.right - ctx.measureText(line.label).width - 5;
+        const labelX =
+          line.labelPosition === 'left'
+            ? margin.left + 5
+            : width - margin.right - ctx.measureText(line.label).width - 5;
         ctx.fillText(line.label, labelX, screenY - 5);
       }
     });
@@ -234,11 +230,7 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
     ctx.font = 'bold 14px sans-serif';
 
     // X-axis label
-    ctx.fillText(
-      xAxis.label,
-      width / 2 - ctx.measureText(xAxis.label).width / 2,
-      height - 10
-    );
+    ctx.fillText(xAxis.label, width / 2 - ctx.measureText(xAxis.label).width / 2, height - 10);
 
     // Y-axis label (rotated)
     ctx.save();
@@ -269,9 +261,9 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
     series.forEach((s) => {
       if (s.data.length < 2) return;
 
-      const screenPoints = s.data.map(p => ({
+      const screenPoints = s.data.map((p) => ({
         x: toScreenX(p.x),
-        y: toScreenY(p.y)
+        y: toScreenY(p.y),
       }));
 
       ctx.strokeStyle = s.color;
@@ -315,14 +307,19 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
         const baseline = height - margin.bottom;
 
         const gradient = ctx.createLinearGradient(0, margin.top, 0, baseline);
-        gradient.addColorStop(0, s.color.replace(')', `, ${fillOpacity})`).replace('rgb(', 'rgba('));
+        gradient.addColorStop(
+          0,
+          s.color.replace(')', `, ${fillOpacity})`).replace('rgb(', 'rgba(')
+        );
         gradient.addColorStop(1, s.color.replace(')', ', 0)').replace('rgb(', 'rgba('));
 
         // If color is hex, convert for gradient
         const hexMatch = s.color.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
         if (hexMatch) {
           const [, rh, gh, bh] = hexMatch;
-          const rc = parseInt(rh, 16), gc = parseInt(gh, 16), bc = parseInt(bh, 16);
+          const rc = parseInt(rh, 16),
+            gc = parseInt(gh, 16),
+            bc = parseInt(bh, 16);
           const gradHex = ctx.createLinearGradient(0, margin.top, 0, baseline);
           gradHex.addColorStop(0, `rgba(${rc}, ${gc}, ${bc}, ${fillOpacity})`);
           gradHex.addColorStop(1, `rgba(${rc}, ${gc}, ${bc}, 0)`);
@@ -520,7 +517,7 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
     hoveredPoint,
     toScreenX,
     toScreenY,
-    margin
+    margin,
   ]);
 
   // Handle mouse move
@@ -539,7 +536,7 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
           point: nearest.point,
           series: nearest.series,
           screenX: toScreenX(nearest.point.x),
-          screenY: toScreenY(nearest.point.y)
+          screenY: toScreenY(nearest.point.y),
         });
         onPointHover?.(nearest.point, nearest.series);
       } else {
@@ -594,10 +591,7 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
             .filter((s) => s.label)
             .map((s) => (
               <div key={s.id} className="flex items-center gap-2">
-                <div
-                  className="w-4 h-1 rounded"
-                  style={{ backgroundColor: s.color }}
-                />
+                <div className="w-4 h-1 rounded" style={{ backgroundColor: s.color }} />
                 <span className="text-sm text-gray-700">{s.label}</span>
               </div>
             ))}

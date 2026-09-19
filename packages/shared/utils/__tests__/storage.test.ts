@@ -168,9 +168,7 @@ describe('storage', () => {
       const loaded = loadProgress('test-game');
 
       expect(loaded).toBeNull();
-      expect(console.warn).toHaveBeenCalledWith(
-        'Invalid progress data for test-game, ignoring'
-      );
+      expect(console.warn).toHaveBeenCalledWith('Invalid progress data for test-game, ignoring');
     });
 
     it('should reject progress with missing currentLevel', () => {

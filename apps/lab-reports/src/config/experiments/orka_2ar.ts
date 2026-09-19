@@ -20,15 +20,17 @@ export const orka_2ar: ExperimentConfig2 = {
   baselineComparison: {
     enabled: true,
     requiredConcepts: [
-      'hvarfvarmi', 'enthalpy', '∆H',
-      'innvermin', 'endothermic',
-      'útvermin', 'exothermic',
-      'orkubreyting', 'energy change',
+      'hvarfvarmi',
+      'enthalpy',
+      '∆H',
+      'innvermin',
+      'endothermic',
+      'útvermin',
+      'exothermic',
+      'orkubreyting',
+      'energy change',
     ],
-    requiredFormulas: [
-      'q = C', 'q=C',
-      '∆H', 'ΔH',
-    ],
+    requiredFormulas: ['q = C', 'q=C', '∆H', 'ΔH'],
   },
 
   checklist: {
@@ -49,9 +51,7 @@ export const orka_2ar: ExperimentConfig2 = {
     framkvamd: {
       name: 'Framkvæmd',
       weight: '5%',
-      items: [
-        { id: 'visad_vinnusedil', label: 'Vísað í vinnuseðil með nafni', autoCheck: true },
-      ],
+      items: [{ id: 'visad_vinnusedil', label: 'Vísað í vinnuseðil með nafni', autoCheck: true }],
     },
 
     nidurstodur_hluti1: {
@@ -60,7 +60,11 @@ export const orka_2ar: ExperimentConfig2 = {
       items: [
         { id: 'efnajafna', label: 'Stillta efnajafna til staðar', autoCheck: true },
         { id: 'hvarfvarmi_utreikningur', label: 'Útreikningur á ∆H (hvarfvarma)', autoCheck: true },
-        { id: 'innihaldsefni_listi', label: 'Listi af innihaldsefnum og hlutverkum', autoCheck: true },
+        {
+          id: 'innihaldsefni_listi',
+          label: 'Listi af innihaldsefnum og hlutverkum',
+          autoCheck: true,
+        },
       ],
     },
 
@@ -81,10 +85,22 @@ export const orka_2ar: ExperimentConfig2 = {
       name: 'Umræður og ályktanir',
       weight: '10%',
       items: [
-        { id: 'hluti1_umraeda', label: 'Hluti 1 ræddur (hvarfefni, myndefni, ∆H)', autoCheck: true },
-        { id: 'hluti2_umraeda', label: 'Hluti 2 ræddur (samanburður við viðurkennd gildi)', autoCheck: true },
+        {
+          id: 'hluti1_umraeda',
+          label: 'Hluti 1 ræddur (hvarfefni, myndefni, ∆H)',
+          autoCheck: true,
+        },
+        {
+          id: 'hluti2_umraeda',
+          label: 'Hluti 2 ræddur (samanburður við viðurkennd gildi)',
+          autoCheck: true,
+        },
         { id: 'naoh_utvermid', label: 'NaOH merkt sem útvermið (exothermic)', autoCheck: true },
-        { id: 'nh4no3_innvermid', label: 'NH₄NO₃ merkt sem innvermið (endothermic)', autoCheck: true },
+        {
+          id: 'nh4no3_innvermid',
+          label: 'NH₄NO₃ merkt sem innvermið (endothermic)',
+          autoCheck: true,
+        },
         { id: 'skekkjur', label: 'Skekkjur/óvissa rædd', autoCheck: true },
         { id: 'tenging_fraedi', label: 'Niðurstöður tengdar fræðikafla', autoCheck: true },
       ],
@@ -96,8 +112,18 @@ export const orka_2ar: ExperimentConfig2 = {
       items: [
         { id: 'header_info', label: 'Dagsetning, heiti, nafn, samstarfsfólk', autoCheck: true },
         { id: 'einingar_allt', label: 'Einingar á öllum gildum', autoCheck: true },
-        { id: 'jofnur_ser_linum', label: 'Jöfnur og útreikningar í sér línum', autoCheck: false, manualRequired: true },
-        { id: 'samraemi', label: 'Samræmi (leturgerð, uppsetning)', autoCheck: false, manualRequired: true },
+        {
+          id: 'jofnur_ser_linum',
+          label: 'Jöfnur og útreikningar í sér línum',
+          autoCheck: false,
+          manualRequired: true,
+        },
+        {
+          id: 'samraemi',
+          label: 'Samræmi (leturgerð, uppsetning)',
+          autoCheck: false,
+          manualRequired: true,
+        },
         { id: 'undirskrift', label: 'Undirskrift til staðar', autoCheck: true },
       ],
     },

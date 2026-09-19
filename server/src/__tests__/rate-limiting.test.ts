@@ -23,14 +23,11 @@ const { app } = await import('../index.js');
 // ---------------------------------------------------------------------------
 describe('Rate limiting: allows requests within the limit', () => {
   it('allows a single request to /api/analyze', async () => {
-    const res = await request(app)
-      .post('/api/analyze')
-      .set('Origin', 'https://kvenno.app')
-      .send({
-        content: 'test content',
-        systemPrompt: 'test prompt',
-        mode: 'teacher',
-      });
+    const res = await request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
+      content: 'test content',
+      systemPrompt: 'test prompt',
+      mode: 'teacher',
+    });
 
     // Should not be rate limited (may fail on API call, but not with 429)
     // Note: in shared test runner, earlier tests may have consumed the window.
@@ -98,14 +95,10 @@ describe('Rate limiting: per-endpoint configuration', () => {
 
     // Get the limit values from headers
     const analyzeLimit = Number(
-      analyzeRes.headers['ratelimit-limit'] ||
-      analyzeRes.headers['x-ratelimit-limit'] ||
-      '0'
+      analyzeRes.headers['ratelimit-limit'] || analyzeRes.headers['x-ratelimit-limit'] || '0'
     );
     const documentLimit = Number(
-      documentRes.headers['ratelimit-limit'] ||
-      documentRes.headers['x-ratelimit-limit'] ||
-      '0'
+      documentRes.headers['ratelimit-limit'] || documentRes.headers['x-ratelimit-limit'] || '0'
     );
 
     // analyzeLimiter: max=10, documentLimiter: max=20
@@ -128,14 +121,11 @@ describe('Rate limiting: blocks excessive requests', () => {
     const requests = [];
     for (let i = 0; i < 15; i++) {
       requests.push(
-        request(app)
-          .post('/api/analyze')
-          .set('Origin', 'https://kvenno.app')
-          .send({
-            content: 'test content',
-            systemPrompt: 'test prompt',
-            mode: 'student',
-          })
+        request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
+          content: 'test content',
+          systemPrompt: 'test prompt',
+          mode: 'student',
+        })
       );
     }
 
@@ -160,14 +150,11 @@ describe('Rate limiting: error response format', () => {
     // Send requests until rate limited
     let rateLimitedResponse = null;
     for (let i = 0; i < 20; i++) {
-      const res = await request(app)
-        .post('/api/analyze')
-        .set('Origin', 'https://kvenno.app')
-        .send({
-          content: 'test',
-          systemPrompt: 'test',
-          mode: 'teacher',
-        });
+      const res = await request(app).post('/api/analyze').set('Origin', 'https://kvenno.app').send({
+        content: 'test',
+        systemPrompt: 'test',
+        mode: 'teacher',
+      });
 
       if (res.status === 429) {
         rateLimitedResponse = res;

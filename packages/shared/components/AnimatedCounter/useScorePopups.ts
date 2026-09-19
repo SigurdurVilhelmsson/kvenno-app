@@ -70,24 +70,21 @@ export function useScorePopups(): UseScorePopupsReturn {
   const [popups, setPopups] = useState<PopupItem[]>([]);
   const counterRef = useRef(0);
 
-  const addPopup = useCallback(
-    (points: number, position: { x: number; y: number }) => {
-      counterRef.current += 1;
-      const id = `score-popup-${counterRef.current}-${Date.now()}`;
+  const addPopup = useCallback((points: number, position: { x: number; y: number }) => {
+    counterRef.current += 1;
+    const id = `score-popup-${counterRef.current}-${Date.now()}`;
 
-      const newPopup: PopupItem = { id, points, position };
+    const newPopup: PopupItem = { id, points, position };
 
-      setPopups((prev) => {
-        const next = [...prev, newPopup];
-        // Evict oldest popups if we exceed the maximum
-        if (next.length > MAX_CONCURRENT_POPUPS) {
-          return next.slice(next.length - MAX_CONCURRENT_POPUPS);
-        }
-        return next;
-      });
-    },
-    [],
-  );
+    setPopups((prev) => {
+      const next = [...prev, newPopup];
+      // Evict oldest popups if we exceed the maximum
+      if (next.length > MAX_CONCURRENT_POPUPS) {
+        return next.slice(next.length - MAX_CONCURRENT_POPUPS);
+      }
+      return next;
+    });
+  }, []);
 
   const removePopup = useCallback((id: string) => {
     setPopups((prev) => prev.filter((popup) => popup.id !== id));

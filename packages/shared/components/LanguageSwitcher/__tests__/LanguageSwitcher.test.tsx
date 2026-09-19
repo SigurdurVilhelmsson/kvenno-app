@@ -33,9 +33,7 @@ describe('LanguageSwitcher', () => {
 
     it('fires onLanguageChange when a different language is selected', () => {
       const onLanguageChange = vi.fn();
-      render(
-        <LanguageSwitcher {...defaultProps} onLanguageChange={onLanguageChange} />
-      );
+      render(<LanguageSwitcher {...defaultProps} onLanguageChange={onLanguageChange} />);
 
       const select = screen.getByRole('combobox', { name: /select language/i });
       fireEvent.change(select, { target: { value: 'en' } });
@@ -51,12 +49,7 @@ describe('LanguageSwitcher', () => {
     });
 
     it('renders only specified available languages', () => {
-      render(
-        <LanguageSwitcher
-          {...defaultProps}
-          availableLanguages={['is', 'en']}
-        />
-      );
+      render(<LanguageSwitcher {...defaultProps} availableLanguages={['is', 'en']} />);
 
       const options = screen.getAllByRole('option');
       expect(options).toHaveLength(2);
@@ -84,11 +77,7 @@ describe('LanguageSwitcher', () => {
     it('fires onLanguageChange when a language button is clicked', () => {
       const onLanguageChange = vi.fn();
       render(
-        <LanguageSwitcher
-          {...defaultProps}
-          variant="buttons"
-          onLanguageChange={onLanguageChange}
-        />
+        <LanguageSwitcher {...defaultProps} variant="buttons" onLanguageChange={onLanguageChange} />
       );
 
       const enButton = screen.getByRole('button', { name: /English/i });
@@ -121,13 +110,7 @@ describe('LanguageSwitcher', () => {
     });
 
     it('marks current language as pressed', () => {
-      render(
-        <LanguageSwitcher
-          {...defaultProps}
-          language="pl"
-          variant="compact"
-        />
-      );
+      render(<LanguageSwitcher {...defaultProps} language="pl" variant="compact" />);
 
       const plButton = screen.getByRole('button', { name: /Polski/i });
       expect(plButton.getAttribute('aria-pressed')).toBe('true');
@@ -139,9 +122,7 @@ describe('LanguageSwitcher', () => {
 
   describe('className prop', () => {
     it('applies custom className to the container', () => {
-      const { container } = render(
-        <LanguageSwitcher {...defaultProps} className="custom-class" />
-      );
+      const { container } = render(<LanguageSwitcher {...defaultProps} className="custom-class" />);
 
       expect(container.firstElementChild?.classList.contains('custom-class')).toBe(true);
     });
@@ -149,9 +130,7 @@ describe('LanguageSwitcher', () => {
 
   describe('showLabels prop', () => {
     it('hides flag label in dropdown when showLabels is false', () => {
-      const { container } = render(
-        <LanguageSwitcher {...defaultProps} showLabels={false} />
-      );
+      const { container } = render(<LanguageSwitcher {...defaultProps} showLabels={false} />);
 
       // The flag span before the select should not be rendered
       const spans = container.querySelectorAll('span');

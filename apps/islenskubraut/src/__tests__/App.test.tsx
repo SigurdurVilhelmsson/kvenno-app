@@ -13,17 +13,23 @@ vi.mock('@kvenno/shared/components', () => ({
     <header data-testid="header">
       <a href="/">{title || 'Námsvefur Kvennó'}</a>
       {activeTrack && <span data-testid="active-track">{activeTrack}</span>}
-      <nav><a href="/islenskubraut/">Allir flokkar</a></nav>
+      <nav>
+        <a href="/islenskubraut/">Allir flokkar</a>
+      </nav>
     </header>
   ),
   Footer: ({ department, subtitle }: { department?: string; subtitle?: string }) => (
     <footer data-testid="footer">
-      <p>{department ? `${department} — Kvennaskólinn í Reykjavík` : 'Kvennaskólinn í Reykjavík'}</p>
+      <p>
+        {department ? `${department} — Kvennaskólinn í Reykjavík` : 'Kvennaskólinn í Reykjavík'}
+      </p>
       {subtitle && <p>{subtitle}</p>}
     </footer>
   ),
   Container: ({ children, className }: { children: React.ReactNode; className?: string }) => (
-    <div data-testid="container" className={className}>{children}</div>
+    <div data-testid="container" className={className}>
+      {children}
+    </div>
   ),
   BottomNav: () => <nav data-testid="bottom-nav" />,
 }));
@@ -41,11 +47,7 @@ vi.mock('../components/DownloadButton', () => ({
  * Helper to render a component inside MemoryRouter at a given path.
  */
 function renderWithRouter(ui: React.ReactElement, initialEntries: string[] = ['/']) {
-  return render(
-    <MemoryRouter initialEntries={initialEntries}>
-      {ui}
-    </MemoryRouter>
-  );
+  return render(<MemoryRouter initialEntries={initialEntries}>{ui}</MemoryRouter>);
 }
 
 // ---------------------------------------------------------------------------
@@ -278,9 +280,7 @@ describe('Islenskubraut App routing', () => {
   it('renders the footer', () => {
     renderWithRouter(<App />, ['/']);
 
-    expect(
-      screen.getByText('Íslenskubraut — Kvennaskólinn í Reykjavík')
-    ).toBeDefined();
+    expect(screen.getByText('Íslenskubraut — Kvennaskólinn í Reykjavík')).toBeDefined();
   });
 
   it('renders navigation links', () => {

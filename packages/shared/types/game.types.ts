@@ -69,12 +69,7 @@ export interface GameSettings {
 }
 
 export type QuestionType =
-  | 'equivalence'
-  | 'cancellation_prediction'
-  | 'multi_step'
-  | 'reverse'
-  | 'synthesis'
-  | 'derivation';
+  'equivalence' | 'cancellation_prediction' | 'multi_step' | 'reverse' | 'synthesis' | 'derivation';
 
 export interface BaseQuestion {
   id: string;

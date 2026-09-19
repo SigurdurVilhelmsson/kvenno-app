@@ -26,10 +26,7 @@ describe('roles - isTeacher', () => {
   });
 
   it('populates TEACHER_EMAILS from env var', () => {
-    expect(TEACHER_EMAILS).toEqual([
-      'anna.sigurdsdottir@kvenno.is',
-      'jon.jonsson@kvenno.is',
-    ]);
+    expect(TEACHER_EMAILS).toEqual(['anna.sigurdsdottir@kvenno.is', 'jon.jonsson@kvenno.is']);
   });
 
   it('returns true for an email in the TEACHER_EMAILS list', () => {

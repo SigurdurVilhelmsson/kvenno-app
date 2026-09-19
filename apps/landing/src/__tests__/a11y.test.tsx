@@ -29,27 +29,47 @@ vi.mock('@kvenno/shared/components', () => ({
       <ol>
         {items.map((item, i) => (
           <li key={i}>
-            {item.href ? <a href={item.href}>{item.label}</a> : <span aria-current="page">{item.label}</span>}
+            {item.href ? (
+              <a href={item.href}>{item.label}</a>
+            ) : (
+              <span aria-current="page">{item.label}</span>
+            )}
           </li>
         ))}
       </ol>
     </nav>
   ),
   Card: ({ children, className, ...props }: Record<string, unknown>) => (
-    <div data-testid="card" className={className as string} {...props}>{children as React.ReactNode}</div>
+    <div data-testid="card" className={className as string} {...props}>
+      {children as React.ReactNode}
+    </div>
   ),
   Button: ({ children, href, as, className, ...props }: Record<string, unknown>) => {
     const Tag = as === 'a' ? 'a' : 'button';
-    return <Tag href={href as string} className={className as string} {...props}>{children as React.ReactNode}</Tag>;
+    return (
+      <Tag href={href as string} className={className as string} {...props}>
+        {children as React.ReactNode}
+      </Tag>
+    );
   },
-  Badge: ({ children }: { children: React.ReactNode }) => <span data-testid="badge">{children}</span>,
+  Badge: ({ children }: { children: React.ReactNode }) => (
+    <span data-testid="badge">{children}</span>
+  ),
   Container: ({ children, className }: { children: React.ReactNode; className?: string }) => (
-    <div data-testid="container" className={className}>{children}</div>
+    <div data-testid="container" className={className}>
+      {children}
+    </div>
   ),
   PageBackground: ({ children, className }: { children: React.ReactNode; className?: string }) => (
-    <div data-testid="page-background" className={className}>{children}</div>
+    <div data-testid="page-background" className={className}>
+      {children}
+    </div>
   ),
-  SkipLink: () => <a href="#main-content" className="skip-link">Fara beint í efni</a>,
+  SkipLink: () => (
+    <a href="#main-content" className="skip-link">
+      Fara beint í efni
+    </a>
+  ),
   BottomNav: () => <nav data-testid="bottom-nav" />,
 }));
 
@@ -62,11 +82,7 @@ import { Home } from '../pages/Home';
 import { YearHub } from '../pages/YearHub';
 
 function renderWithRouter(ui: React.ReactElement, initialEntries: string[] = ['/']) {
-  return render(
-    <MemoryRouter initialEntries={initialEntries}>
-      {ui}
-    </MemoryRouter>,
-  );
+  return render(<MemoryRouter initialEntries={initialEntries}>{ui}</MemoryRouter>);
 }
 
 // ---------------------------------------------------------------------------
@@ -86,9 +102,7 @@ describe('Landing page - track selector grid accessibility', () => {
     // Track cards render as <a> (Link) or <a> (external) — both are links
     const links = screen.getAllByRole('link');
     const trackLinks = links.filter(
-      (a) =>
-        a.textContent?.includes('Efnafræði') ||
-        a.textContent?.includes('Íslenskubraut'),
+      (a) => a.textContent?.includes('Efnafræði') || a.textContent?.includes('Íslenskubraut')
     );
 
     expect(trackLinks.length).toBeGreaterThanOrEqual(2);

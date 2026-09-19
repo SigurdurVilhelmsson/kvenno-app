@@ -43,12 +43,7 @@ export interface ScorePopupProps {
  *
  * @param props - {@link ScorePopupProps}
  */
-export function ScorePopup({
-  points,
-  position,
-  onComplete,
-  className = '',
-}: ScorePopupProps) {
+export function ScorePopup({ points, position, onComplete, className = '' }: ScorePopupProps) {
   const elementRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {

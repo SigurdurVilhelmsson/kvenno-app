@@ -6,14 +6,7 @@ import { matur } from './categories/matur';
 import { stadir } from './categories/stadir';
 import { Category } from './types';
 
-export const categories: Category[] = [
-  dyr,
-  matur,
-  farartaeki,
-  manneskja,
-  stadir,
-  klaednadur,
-];
+export const categories: Category[] = [dyr, matur, farartaeki, manneskja, stadir, klaednadur];
 
 export function getCategoryById(id: string): Category | undefined {
   return categories.find((c) => c.id === id);

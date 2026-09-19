@@ -57,13 +57,7 @@ export function MoleculeLonePair({
 
   return (
     <g className="molecule-lone-pair" aria-label="lone pair">
-      <circle
-        cx={dot1.x}
-        cy={dot1.y}
-        r={dotSize / 2}
-        fill={color}
-        style={animationStyle}
-      />
+      <circle cx={dot1.x} cy={dot1.y} r={dotSize / 2} fill={color} style={animationStyle} />
       <circle
         cx={dot2.x}
         cy={dot2.y}
@@ -85,10 +79,7 @@ export function MoleculeLonePair({
  * @param lonePairCount - Number of lone pairs to place
  * @returns Array of angles for each lone pair
  */
-export function calculateLonePairAngles(
-  bondAngles: number[],
-  lonePairCount: number
-): number[] {
+export function calculateLonePairAngles(bondAngles: number[], lonePairCount: number): number[] {
   if (lonePairCount === 0) return [];
 
   // If no bonds, distribute lone pairs evenly

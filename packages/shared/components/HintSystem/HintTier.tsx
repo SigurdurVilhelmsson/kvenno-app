@@ -61,9 +61,7 @@ export function HintTier({ tier, content, animationDelay = 0 }: HintTierProps) {
           {icon}
         </span>
         <div className="flex-1 min-w-0">
-          <span className="font-semibold text-xs uppercase tracking-wide opacity-70">
-            {label}
-          </span>
+          <span className="font-semibold text-xs uppercase tracking-wide opacity-70">{label}</span>
           <p className="text-sm mt-0.5 leading-relaxed">{content}</p>
         </div>
       </div>

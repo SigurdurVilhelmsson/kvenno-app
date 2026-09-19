@@ -155,8 +155,12 @@ export function useMoleculeAnimation({
     if (shouldSkipAnimation) return 0;
 
     const atomsEnd = atomCount * timingConfig.atomDelay + timingConfig.atomDuration;
-    const bondsEnd = timingConfig.bondStartDelay + bondCount * timingConfig.bondDelay + timingConfig.bondDuration;
-    const lonePairsEnd = timingConfig.lonePairStartDelay + lonePairCount * timingConfig.lonePairDelay + timingConfig.lonePairDuration;
+    const bondsEnd =
+      timingConfig.bondStartDelay + bondCount * timingConfig.bondDelay + timingConfig.bondDuration;
+    const lonePairsEnd =
+      timingConfig.lonePairStartDelay +
+      lonePairCount * timingConfig.lonePairDelay +
+      timingConfig.lonePairDuration;
 
     return Math.max(atomsEnd, bondsEnd, lonePairsEnd);
   }, [atomCount, bondCount, lonePairCount, timingConfig, shouldSkipAnimation]);
@@ -207,7 +211,7 @@ export function useMoleculeAnimation({
 
   // Restart animation
   const restart = useCallback(() => {
-    setAnimationKey(k => k + 1);
+    setAnimationKey((k) => k + 1);
     setState('idle');
   }, []);
 

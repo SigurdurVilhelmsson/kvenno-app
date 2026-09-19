@@ -35,11 +35,13 @@ export const AuthButton = () => {
   };
 
   const handleLogout = () => {
-    instance.logoutRedirect({
-      postLogoutRedirectUri: window.location.origin + window.location.pathname,
-    }).catch((error) => {
-      console.error('Útskráningarvilla:', error);
-    });
+    instance
+      .logoutRedirect({
+        postLogoutRedirectUri: window.location.origin + window.location.pathname,
+      })
+      .catch((error) => {
+        console.error('Útskráningarvilla:', error);
+      });
   };
 
   if (!isAuthenticated) {

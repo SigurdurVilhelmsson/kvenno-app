@@ -68,26 +68,32 @@ The script:
 7. Health-checks the backend and fails loudly with recent journal logs if it
    did not come back up
 
-### Automated (GitHub Actions)
+### Automated — removed 2026-09-19
 
-`.github/workflows/deploy.yml` runs the same sequence after CI passes on `main`.
-It requires four repository secrets, which must be configured under
-**Settings → Secrets and variables → Actions**:
+There is no deploy workflow. `.github/workflows/deploy.yml` existed from Feb 2026
+until 2026-09-19 and **never deployed anything**: across 100 runs it recorded 0
+successes, 35 failures and 64 skips. Every failure died at the same step, because
+the four secrets it needed (`SSH_PRIVATE_KEY`, `DEPLOY_HOST`, `DEPLOY_USER`,
+`DEPLOY_PATH`) were never created — `ssh-keyscan -H` got an empty host and printed
+its usage block. It was deleted rather than fixed, on Siggi's call: `scripts/deploy.sh`
+is the real path and always has been, and a permanently red Deploy badge on every
+merge to `main` trains everyone to ignore the one signal that would matter if it
+ever did work.
 
-| Secret            | Meaning                         | Example                         |
-| ----------------- | ------------------------------- | ------------------------------- |
-| `SSH_PRIVATE_KEY` | Private key for the deploy user | contents of `~/.ssh/id_ed25519` |
-| `DEPLOY_HOST`     | Server hostname                 | `kvenno.app`                    |
-| `DEPLOY_USER`     | SSH username                    | `siggi`                         |
-| `DEPLOY_PATH`     | Static web root                 | `/var/www/kvenno.app`           |
+**If you reinstate it**, the missing secrets are only the first blocker. Two more
+are waiting, both of which the manual script already documents:
 
-The deploy user also needs passwordless sudo for `systemctl restart
-kvenno-backend`, `chown`, and `chmod` on the web root.
+1. **Passwordless sudo.** The old workflow ran `sudo systemctl restart` and `sudo chown`
+   over a plain non-tty ssh. `scripts/deploy.sh` uses `ssh -t` precisely because sudo
+   on the host prompts for a password and fails without a terminal. The deploy user
+   needs a NOPASSWD sudoers entry, or the workflow needs another way in.
+2. **The ownership models conflict.** The old workflow ended with
+   `sudo chown -R www-data:www-data` on the web root. `scripts/deploy.sh` deliberately
+   does not, and says why: that hands ownership away from the deploying user and breaks
+   the _next_ run's rsync. A working automated deploy would therefore break the manual
+   one. Pick one owner model and make both paths agree before turning anything on.
 
-> Until these secrets exist the workflow fails at the "Configure SSH" step with
-> an `ssh-keyscan` usage error, because the host argument expands to an empty
-> string. Automated deploy has never completed successfully; every production
-> deploy to date has gone out via `scripts/deploy.sh`.
+The deleted workflow is recoverable from git history if it is worth starting from.
 
 ## Server Configuration
 
@@ -120,15 +126,12 @@ April 2027) — as of 2026-08-15.
 
 Node versions in play, and why they differ:
 
-| Where           | Version | Why                                                                         |
-| --------------- | ------- | --------------------------------------------------------------------------- |
-| Production host | 22.22.2 | system-wide `/usr/bin/node`, shared with other apps                         |
-| `deploy.yml`    | 22      | **matches the host** — this job builds the artifact that runs in production |
-| CI (`ci.yml`)   | 24      | Active LTS, forward coverage on tests and builds                            |
-| `.nvmrc`        | 24      | local development default                                                   |
-| `engines.node`  | `>=22`  | floor; excludes EOL Node 20, admits the host                                |
-
-Bump `deploy.yml` together with the host, not ahead of it.
+| Where           | Version | Why                                                 |
+| --------------- | ------- | --------------------------------------------------- |
+| Production host | 22.22.2 | system-wide `/usr/bin/node`, shared with other apps |
+| CI (`ci.yml`)   | 24      | Active LTS, forward coverage on tests and builds    |
+| `.nvmrc`        | 24      | local development default                           |
+| `engines.node`  | `>=22`  | floor; excludes EOL Node 20, admits the host        |
 
 `ExecStart=/usr/bin/node` is **not version-pinned by this repo, and cannot be**:
 that is the system-wide Node binary, shared with every other application on the

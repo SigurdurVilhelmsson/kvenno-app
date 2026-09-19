@@ -8,10 +8,7 @@ import { SpjaldPage } from './pages/SpjaldPage';
 export function App() {
   return (
     <div className="min-h-screen bg-surface-page text-warm-900 antialiased">
-      <Header
-        title="Námsvefur Kvennó"
-        activeTrack="islenskubraut"
-      />
+      <Header title="Námsvefur Kvennó" activeTrack="islenskubraut" />
 
       <main className="pb-[72px] md:pb-0">
         <Routes>

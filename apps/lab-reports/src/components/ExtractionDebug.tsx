@@ -50,7 +50,9 @@ export const ExtractionDebug: React.FC<ExtractionDebugProps> = ({ fileContent, f
             </div>
             <div>
               <span className="text-warm-600">Whitespace:</span>{' '}
-              <span className="font-semibold">{(debug.textStructure?.whitespaceDensity ?? 0) * 100}%</span>
+              <span className="font-semibold">
+                {(debug.textStructure?.whitespaceDensity ?? 0) * 100}%
+              </span>
             </div>
           </div>
         </div>
@@ -84,7 +86,9 @@ export const ExtractionDebug: React.FC<ExtractionDebugProps> = ({ fileContent, f
             </div>
             <div>
               <span className="text-warm-600">Avg line length:</span>{' '}
-              <span className="font-semibold">{debug.textStructure?.averageLineLength ?? 0} chars</span>
+              <span className="font-semibold">
+                {debug.textStructure?.averageLineLength ?? 0} chars
+              </span>
             </div>
           </div>
         </div>
@@ -95,7 +99,9 @@ export const ExtractionDebug: React.FC<ExtractionDebugProps> = ({ fileContent, f
           <div className="grid grid-cols-2 gap-2">
             <div>
               <span className="text-warm-600">Column separators:</span>{' '}
-              <span className="font-semibold">{debug.tableDetection?.columnSeparatorsDetected ?? 0}</span>
+              <span className="font-semibold">
+                {debug.tableDetection?.columnSeparatorsDetected ?? 0}
+              </span>
             </div>
             <div>
               <span className="text-warm-600">Has tables:</span>{' '}
@@ -123,7 +129,8 @@ export const ExtractionDebug: React.FC<ExtractionDebugProps> = ({ fileContent, f
       </div>
 
       <div className="mt-3 text-xs text-warm-500 italic">
-        💡 Tip: Compare this debug info when uploading the same document as .docx vs .pdf to identify differences.
+        💡 Tip: Compare this debug info when uploading the same document as .docx vs .pdf to
+        identify differences.
       </div>
     </div>
   );

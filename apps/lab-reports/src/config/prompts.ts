@@ -10,15 +10,17 @@ const JSON_FORMAT_INSTRUCTIONS = `Svaraðu EINGÖNGU með gilt JSON (valid JSON)
 // Build per-section grading scale - shared by both teacher and student modes
 const buildGradingScale = (experiment: ExperimentConfig): string => {
   return `MATSKVARÐI PER KAFLI:
-${experiment.sections.map(s => {
-  const criteria = s.criteria;
-  return `
+${experiment.sections
+  .map((s) => {
+    const criteria = s.criteria;
+    return `
 ${s.name} (0-${s.maxPoints} stig):
 - ${s.maxPoints} stig: ${criteria.good}
 ${criteria.needsImprovement ? `- ${(s.maxPoints || 0) * 0.6} - ${(s.maxPoints || 0) * 0.8} stig: ${criteria.needsImprovement}` : ''}
 - 0-${(s.maxPoints || 0) * 0.5} stig: ${criteria.unsatisfactory}
 ${s.specialNote ? `ATHUGIÐ: ${s.specialNote}` : ''}`;
-}).join('\n')}`;
+  })
+  .join('\n')}`;
 };
 
 // Shared core evaluation rules - used by BOTH teacher and student modes
@@ -41,7 +43,7 @@ Ef þú ert ekki 100% viss um að eitthvað vanti - EKKI gera athugasemd við þ
 🎯 HVERNIG Á AÐ GEFA EINKUNN:
 
 Hver kafli hefur ÁKVEÐIÐ HÁMARK:
-${experiment.sections.map(s => `- ${s.name}: 0-${s.maxPoints} stig`).join('\n')}
+${experiment.sections.map((s) => `- ${s.name}: 0-${s.maxPoints} stig`).join('\n')}
 
 Heildareinkunn = summa allra kafla (hámark ${totalMaxPoints})
 
@@ -81,14 +83,18 @@ ${JSON_FORMAT_INSTRUCTIONS}
 JSON sniðmát:
 {
   "sections": {
-${experiment.sections.map(s => `    "${s.id}": {
+${experiment.sections
+  .map(
+    (s) => `    "${s.id}": {
       "present": true/false,
       "quality": "good"/"needs improvement"/"unsatisfactory",
       "points": númer (0-${s.maxPoints}),
       "maxPoints": ${s.maxPoints},
       "note": "stuttur texti á íslensku - hvað er vel gert eða hvað þarf að bæta",
       "reasoning": "nákvæm útskýring á íslensku fyrir hvers vegna stig eru dregin frá (ef points < maxPoints). Útskýrðu hvað vantar eða þarf að bæta. Ef full stig (points == maxPoints), skildu þetta eftir tómt eða segðu 'Allt vel gert'"
-    }`).join(',\n')}
+    }`
+  )
+  .join(',\n')}
   },
   "totalPoints": númer (summa allra points),
   "maxTotalPoints": ${totalMaxPoints},
@@ -119,7 +125,9 @@ JSON sniðmát:
   "styrkir": ["jákvæð atriði sem eru vel gerð", "önnur sterk atriði"],
   "almennarAthugasemdir": ["hvetjandi almenn athugasemd"],
   "sections": {
-${experiment.sections.map(s => `    "${s.id}": {
+${experiment.sections
+  .map(
+    (s) => `    "${s.id}": {
       "present": true/false,
       "points": númer (0-${s.maxPoints}),
       "maxPoints": ${s.maxPoints},
@@ -127,7 +135,9 @@ ${experiment.sections.map(s => `    "${s.id}": {
       "improvements": ["hvað þarf að bæta"],
       "suggestions": ["nákvæmar tillögur - spurningar sem hjálpa nemanda að hugsa, ekki tilbúinn texti"],
       "athugasemdir": "nákvæm athugasemd á íslensku"
-    }`).join(',\n')}
+    }`
+  )
+  .join(',\n')}
   },
   "næstuSkref": ["nákvæm skref sem nemandi á að taka til að bæta skýrsluna"]
 }`;
@@ -141,8 +151,8 @@ export const build2ndYearSystemPrompt = (experiment: ExperimentConfig2): string 
   const checklistText = Object.entries(experiment.checklist)
     .map(([_key, section]) => {
       const items = section.items
-        .filter(item => item.autoCheck)
-        .map(item => `- ${item.id}: ${item.label}`)
+        .filter((item) => item.autoCheck)
+        .map((item) => `- ${item.id}: ${item.label}`)
         .join('\n');
       return `${section.name}:\n${items}`;
     })

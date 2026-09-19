@@ -119,7 +119,7 @@ export function AnimatedCounter({
 
       animationFrameRef.current = requestAnimationFrame(step);
     },
-    [duration],
+    [duration]
   );
 
   useEffect(() => {

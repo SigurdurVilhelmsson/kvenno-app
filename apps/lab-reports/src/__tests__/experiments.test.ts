@@ -83,11 +83,11 @@ describe('3rd year configs - sections structure', () => {
           section.pointGuidance,
           `${key} section ${section.id} missing pointGuidance`
         ).toBeDefined();
+        expect(section.criteria, `${key} section ${section.id} missing criteria`).toBeDefined();
         expect(
-          section.criteria,
-          `${key} section ${section.id} missing criteria`
+          section.criteria.good,
+          `${key} section ${section.id} missing criteria.good`
         ).toBeDefined();
-        expect(section.criteria.good, `${key} section ${section.id} missing criteria.good`).toBeDefined();
         expect(
           section.criteria.unsatisfactory,
           `${key} section ${section.id} missing criteria.unsatisfactory`

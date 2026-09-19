@@ -27,7 +27,11 @@ function getSectionName(key: string): string {
   return SECTION_NAMES[key] || key;
 }
 
-function countByStatus(items: ChecklistResult[]): { present: number; missing: number; manual: number } {
+function countByStatus(items: ChecklistResult[]): {
+  present: number;
+  missing: number;
+  manual: number;
+} {
   let present = 0;
   let missing = 0;
   let manual = 0;
@@ -52,17 +56,25 @@ export const ChecklistResults: React.FC<Props> = ({ result }) => {
     <div className="space-y-6">
       {/* Baseline Comparison */}
       {result.baselineComparison && (
-        <div className={`p-4 rounded-lg border ${
-          result.baselineComparison.overallVerdict === 'ok'
-            ? 'bg-green-50 border-green-200'
-            : result.baselineComparison.overallVerdict === 'warning'
-            ? 'bg-amber-50 border-amber-200'
-            : 'bg-red-50 border-red-200'
-        }`}>
+        <div
+          className={`p-4 rounded-lg border ${
+            result.baselineComparison.overallVerdict === 'ok'
+              ? 'bg-green-50 border-green-200'
+              : result.baselineComparison.overallVerdict === 'warning'
+                ? 'bg-amber-50 border-amber-200'
+                : 'bg-red-50 border-red-200'
+          }`}
+        >
           <h3 className="font-bold mb-2 flex items-center gap-2">
-            {result.baselineComparison.overallVerdict === 'ok' && <CheckCircle className="text-green-600" size={20} />}
-            {result.baselineComparison.overallVerdict === 'warning' && <AlertCircle className="text-amber-600" size={20} />}
-            {result.baselineComparison.overallVerdict === 'mismatch' && <XCircle className="text-red-600" size={20} />}
+            {result.baselineComparison.overallVerdict === 'ok' && (
+              <CheckCircle className="text-green-600" size={20} />
+            )}
+            {result.baselineComparison.overallVerdict === 'warning' && (
+              <AlertCircle className="text-amber-600" size={20} />
+            )}
+            {result.baselineComparison.overallVerdict === 'mismatch' && (
+              <XCircle className="text-red-600" size={20} />
+            )}
             Samanburður við drög
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm">
@@ -82,16 +94,18 @@ export const ChecklistResults: React.FC<Props> = ({ result }) => {
           {result.baselineComparison.notes && (
             <p className="mt-2 text-sm text-warm-700">{result.baselineComparison.notes}</p>
           )}
-          {result.baselineComparison.conceptsMissing && result.baselineComparison.conceptsMissing.length > 0 && (
-            <p className="mt-1 text-sm text-red-700">
-              Hugtök sem vantar: {result.baselineComparison.conceptsMissing.join(', ')}
-            </p>
-          )}
-          {result.baselineComparison.formulasMissing && result.baselineComparison.formulasMissing.length > 0 && (
-            <p className="mt-1 text-sm text-red-700">
-              Formúlur sem vantar: {result.baselineComparison.formulasMissing.join(', ')}
-            </p>
-          )}
+          {result.baselineComparison.conceptsMissing &&
+            result.baselineComparison.conceptsMissing.length > 0 && (
+              <p className="mt-1 text-sm text-red-700">
+                Hugtök sem vantar: {result.baselineComparison.conceptsMissing.join(', ')}
+              </p>
+            )}
+          {result.baselineComparison.formulasMissing &&
+            result.baselineComparison.formulasMissing.length > 0 && (
+              <p className="mt-1 text-sm text-red-700">
+                Formúlur sem vantar: {result.baselineComparison.formulasMissing.join(', ')}
+              </p>
+            )}
         </div>
       )}
 
@@ -99,30 +113,26 @@ export const ChecklistResults: React.FC<Props> = ({ result }) => {
       {Object.entries(result.checklist).map(([sectionKey, items]) => {
         const counts = countByStatus(items);
         return (
-        <div key={sectionKey} className="border rounded-lg p-4">
-          <h3 className="font-bold mb-1 text-warm-800">
-            {getSectionName(sectionKey)}
-          </h3>
-          <p className="text-xs text-warm-500 mb-3">
-            {counts.present} til staðar, {counts.missing} vantar
-            {counts.manual > 0 && `, ${counts.manual} þarf yfirferð`}
-          </p>
-          <div className="space-y-2">
-            {items.map((item) => (
-              <div key={item.id} className="flex items-start gap-2">
-                <StatusIcon status={item.present} />
-                <div className="flex-1">
-                  <span className={item.present === false ? 'text-red-700' : 'text-warm-700'}>
-                    {item.label}
-                  </span>
-                  {item.note && (
-                    <p className="text-sm text-warm-500 mt-0.5">{item.note}</p>
-                  )}
+          <div key={sectionKey} className="border rounded-lg p-4">
+            <h3 className="font-bold mb-1 text-warm-800">{getSectionName(sectionKey)}</h3>
+            <p className="text-xs text-warm-500 mb-3">
+              {counts.present} til staðar, {counts.missing} vantar
+              {counts.manual > 0 && `, ${counts.manual} þarf yfirferð`}
+            </p>
+            <div className="space-y-2">
+              {items.map((item) => (
+                <div key={item.id} className="flex items-start gap-2">
+                  <StatusIcon status={item.present} />
+                  <div className="flex-1">
+                    <span className={item.present === false ? 'text-red-700' : 'text-warm-700'}>
+                      {item.label}
+                    </span>
+                    {item.note && <p className="text-sm text-warm-500 mt-0.5">{item.note}</p>}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
         );
       })}
 

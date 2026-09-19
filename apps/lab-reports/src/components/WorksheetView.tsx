@@ -10,11 +10,7 @@ interface WorksheetViewProps {
   onBack: () => void;
 }
 
-export const WorksheetView: React.FC<WorksheetViewProps> = ({
-  experiment,
-  onContinue,
-  onBack,
-}) => {
+export const WorksheetView: React.FC<WorksheetViewProps> = ({ experiment, onContinue, onBack }) => {
   if (!experiment.worksheet) {
     return (
       <div className="bg-surface-raised rounded-lg shadow-lg p-8">

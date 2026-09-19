@@ -33,11 +33,16 @@ export interface MoleculeDipoleProps {
  */
 function directionToAngle(direction: DipoleMoment['direction']): number {
   switch (direction) {
-    case 'right': return 0;
-    case 'down': return 90;
-    case 'left': return 180;
-    case 'up': return 270;
-    default: return 0;
+    case 'right':
+      return 0;
+    case 'down':
+      return 90;
+    case 'left':
+      return 180;
+    case 'up':
+      return 270;
+    default:
+      return 0;
   }
 }
 
@@ -84,13 +89,13 @@ export function MoleculeDipole({
   };
 
   const arrowLeft = {
-    x: arrowBase.x + Math.cos(perpAngle) * arrowHeadWidth / 2,
-    y: arrowBase.y + Math.sin(perpAngle) * arrowHeadWidth / 2,
+    x: arrowBase.x + (Math.cos(perpAngle) * arrowHeadWidth) / 2,
+    y: arrowBase.y + (Math.sin(perpAngle) * arrowHeadWidth) / 2,
   };
 
   const arrowRight = {
-    x: arrowBase.x - Math.cos(perpAngle) * arrowHeadWidth / 2,
-    y: arrowBase.y - Math.sin(perpAngle) * arrowHeadWidth / 2,
+    x: arrowBase.x - (Math.cos(perpAngle) * arrowHeadWidth) / 2,
+    y: arrowBase.y - (Math.sin(perpAngle) * arrowHeadWidth) / 2,
   };
 
   // Animation styles
@@ -175,8 +180,8 @@ export function calculateDipoleDirection(
   _center: Position2D
 ): DipoleMoment['direction'] | undefined {
   // Find atoms with partial charges
-  const positiveAtoms = atoms.filter(a => a.partialCharge === 'positive');
-  const negativeAtoms = atoms.filter(a => a.partialCharge === 'negative');
+  const positiveAtoms = atoms.filter((a) => a.partialCharge === 'positive');
+  const negativeAtoms = atoms.filter((a) => a.partialCharge === 'negative');
 
   if (positiveAtoms.length === 0 || negativeAtoms.length === 0) {
     return undefined; // No clear dipole

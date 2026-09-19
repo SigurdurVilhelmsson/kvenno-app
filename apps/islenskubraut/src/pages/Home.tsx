@@ -12,8 +12,8 @@ export function Home() {
           Kennsluspjöld fyrir íslenskukennslu
         </h1>
         <p className="text-lg sm:text-xl text-warm-600 max-w-2xl mx-auto leading-relaxed">
-          Veldu efnisflokk og erfiðleikastig til að búa til prentvæn spjöld sem
-          styðja nemendur í að lýsa myndum munnlega á íslensku.
+          Veldu efnisflokk og erfiðleikastig til að búa til prentvæn spjöld sem styðja nemendur í að
+          lýsa myndum munnlega á íslensku.
         </p>
       </div>
 

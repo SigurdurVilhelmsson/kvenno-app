@@ -6,12 +6,12 @@
  * Categories of achievements
  */
 export type AchievementCategory =
-  | 'performance'    // Score-based achievements
-  | 'streak'         // Consecutive correct answers
-  | 'speed'          // Time-based achievements
-  | 'mastery'        // Level/game completion
-  | 'dedication'     // Playing regularly
-  | 'special';       // Unique achievements
+  | 'performance' // Score-based achievements
+  | 'streak' // Consecutive correct answers
+  | 'speed' // Time-based achievements
+  | 'mastery' // Level/game completion
+  | 'dedication' // Playing regularly
+  | 'special'; // Unique achievements
 
 /**
  * Rarity levels for achievements
@@ -23,17 +23,17 @@ export type AchievementRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legen
  */
 export interface AchievementCriteria {
   type:
-    | 'perfect_score'        // 100% on a level
-    | 'streak'               // N correct answers in a row
-    | 'speed'                // Complete in under X seconds
-    | 'first_try'            // Correct on first attempt
-    | 'level_complete'       // Complete a specific level
-    | 'game_complete'        // Complete all levels
-    | 'total_problems'       // Solve N total problems
-    | 'total_games'          // Play N total games
-    | 'no_hints'             // Complete without using hints
-    | 'daily_play'           // Play on N different days
-    | 'high_score';          // Achieve score >= N
+    | 'perfect_score' // 100% on a level
+    | 'streak' // N correct answers in a row
+    | 'speed' // Complete in under X seconds
+    | 'first_try' // Correct on first attempt
+    | 'level_complete' // Complete a specific level
+    | 'game_complete' // Complete all levels
+    | 'total_problems' // Solve N total problems
+    | 'total_games' // Play N total games
+    | 'no_hints' // Complete without using hints
+    | 'daily_play' // Play on N different days
+    | 'high_score'; // Achieve score >= N
 
   /** Target value for the criteria */
   target: number;
@@ -175,7 +175,10 @@ export interface AchievementNotification {
 /**
  * Colors associated with achievement rarity
  */
-export const RARITY_COLORS: Record<AchievementRarity, { bg: string; border: string; text: string }> = {
+export const RARITY_COLORS: Record<
+  AchievementRarity,
+  { bg: string; border: string; text: string }
+> = {
   common: { bg: 'bg-gray-100', border: 'border-gray-300', text: 'text-gray-700' },
   uncommon: { bg: 'bg-green-100', border: 'border-green-400', text: 'text-green-700' },
   rare: { bg: 'bg-blue-100', border: 'border-blue-400', text: 'text-blue-700' },

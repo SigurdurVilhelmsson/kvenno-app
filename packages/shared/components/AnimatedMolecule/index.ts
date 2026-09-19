@@ -44,7 +44,11 @@ export { AnimatedMolecule } from './AnimatedMolecule';
 // Sub-components (for advanced/custom usage)
 export { MoleculeAtom, MoleculeAtomDefs } from './MoleculeAtom';
 export { MoleculeBond, MoleculeBondDefs } from './MoleculeBond';
-export { MoleculeLonePair, MoleculeLonePairDefs, calculateLonePairAngles } from './MoleculeLonePair';
+export {
+  MoleculeLonePair,
+  MoleculeLonePairDefs,
+  calculateLonePairAngles,
+} from './MoleculeLonePair';
 export {
   MoleculeDipole,
   MoleculeDipoleDefs,
@@ -67,10 +71,21 @@ export type {
 
 // Layout hook (for advanced positioning control)
 export { useMoleculeLayout, getDepthStyle } from './useMoleculeLayout';
-export type { LayoutConfig, AtomLayout, BondLayout, MoleculeLayoutResult } from './useMoleculeLayout';
+export type {
+  LayoutConfig,
+  AtomLayout,
+  BondLayout,
+  MoleculeLayoutResult,
+} from './useMoleculeLayout';
 
 // Constants and utilities
-export { ELEMENT_VISUALS, SIZE_CONFIG, GEOMETRY_COORDS, MOLECULE_COLORS, ANIMATION_DURATIONS } from './molecule.constants';
+export {
+  ELEMENT_VISUALS,
+  SIZE_CONFIG,
+  GEOMETRY_COORDS,
+  MOLECULE_COLORS,
+  ANIMATION_DURATIONS,
+} from './molecule.constants';
 export {
   getElementVisual,
   project3Dto2D,

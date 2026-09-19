@@ -22,10 +22,7 @@ export function SpjaldPreview({ category, level, view = 'both' }: SpjaldPreviewP
             style={{ borderColor: category.color, aspectRatio: '210/297' }}
           >
             {/* Header */}
-            <div
-              className="px-6 py-4 text-white"
-              style={{ backgroundColor: category.color }}
-            >
+            <div className="px-6 py-4 text-white" style={{ backgroundColor: category.color }}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">{category.icon}</span>
@@ -40,7 +37,10 @@ export function SpjaldPreview({ category, level, view = 'both' }: SpjaldPreviewP
             </div>
 
             {/* Sub-categories grid */}
-            <div className="p-4 space-y-3 overflow-y-auto" style={{ maxHeight: 'calc(100% - 80px)' }}>
+            <div
+              className="p-4 space-y-3 overflow-y-auto"
+              style={{ maxHeight: 'calc(100% - 80px)' }}
+            >
               {category.subCategories.map((sub, index) => (
                 <div key={index} className="rounded-xl border border-gray-200 overflow-hidden">
                   <div
@@ -82,10 +82,7 @@ export function SpjaldPreview({ category, level, view = 'both' }: SpjaldPreviewP
             style={{ borderColor: category.color, aspectRatio: '210/297' }}
           >
             {/* Header */}
-            <div
-              className="px-6 py-4 text-white"
-              style={{ backgroundColor: category.color }}
-            >
+            <div className="px-6 py-4 text-white" style={{ backgroundColor: category.color }}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">{category.icon}</span>
@@ -100,10 +97,11 @@ export function SpjaldPreview({ category, level, view = 'both' }: SpjaldPreviewP
             </div>
 
             {/* Sentence frames */}
-            <div className="p-6 flex flex-col justify-center" style={{ minHeight: 'calc(100% - 80px)' }}>
-              <h3 className="text-lg font-bold text-gray-800 mb-6 text-center">
-                Setningarammar
-              </h3>
+            <div
+              className="p-6 flex flex-col justify-center"
+              style={{ minHeight: 'calc(100% - 80px)' }}
+            >
+              <h3 className="text-lg font-bold text-gray-800 mb-6 text-center">Setningarammar</h3>
               {sentenceFrame && (
                 <div className="space-y-4">
                   {sentenceFrame.frames.map((frame, index) => (
@@ -112,10 +110,7 @@ export function SpjaldPreview({ category, level, view = 'both' }: SpjaldPreviewP
                       className="p-4 rounded-xl border-2 border-dashed text-center"
                       style={{ borderColor: category.color + '60' }}
                     >
-                      <p
-                        className="text-lg font-semibold"
-                        style={{ color: category.color }}
-                      >
+                      <p className="text-lg font-semibold" style={{ color: category.color }}>
                         {frame}
                       </p>
                     </div>
@@ -128,16 +123,13 @@ export function SpjaldPreview({ category, level, view = 'both' }: SpjaldPreviewP
                 <h4 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">
                   Dæmi
                 </h4>
-                <p className="text-gray-700 italic">
-                  {getExample(category.id, level)}
-                </p>
+                <p className="text-gray-700 italic">{getExample(category.id, level)}</p>
               </div>
 
               {/* Teacher note */}
               <div className="mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
                 <p className="text-xs text-yellow-800">
-                  <span className="font-bold">Fyrir kennara:</span>{' '}
-                  {getTeacherNote(level)}
+                  <span className="font-bold">Fyrir kennara:</span> {getTeacherNote(level)}
                 </p>
               </div>
             </div>
