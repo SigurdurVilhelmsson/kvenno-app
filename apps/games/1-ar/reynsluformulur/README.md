@@ -1,6 +1,6 @@
 # Reynsluformúlur
 
-**Status: complete and registered.** Four phases, 56 tests, in `build-games.mjs`, on the hub, and
+**Status: complete and registered.** Four phases, 36 tests of its own, in `build-games.mjs`, on the hub, and
 in the Y1 `Námsleiðin` chain between Mólmassi and Stilla efnajöfnur.
 
 Phase 5 of the games roadmap, first of the four confirmed curriculum gaps to be built after
@@ -84,10 +84,11 @@ the formula.
 - **The atomic masses are held to `molmassi`'s.** A second copy exists because each game is its own
   Vite build; `problems.test.ts` compares every shared symbol and fails on disagreement. Two copies
   of the same numbers is how B4 happened.
-- **`chain-string.test.ts`** checks all nine Y1 games print the same chain and underline themselves,
-  and that every game `build-games.mjs` emits has a node. The Y3 equivalent's own note called a Y1
-  version "a cheap follow-up"; adding a ninth node — in nine files, four of which wrap the string
-  across lines — is what made it worth writing.
+- **The Y1 chain test lives in `1-ar/einingakedjan/src/__tests__/chain-string.test.ts`**, not here,
+  and was extended to nine games by this change. Worth knowing: CLAUDE.md said that test "does not
+  exist yet" while it did, so a duplicate was written here before the full suite pointed at the
+  original. Deleted. Its whitespace handling models how JSX renders the markup rather than merely
+  collapsing it, which is load-bearing — a rewrap can delete a space the chain needs.
 
 ## Layout
 
@@ -96,7 +97,7 @@ src/engine/empirical.ts       the four columns; no React, no Icelandic
 src/data/elements.ts          atomic masses, held to molmassi's by test
 src/data/problems.ts          compounds as formulas; percentages and keys derived
 src/components/               KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen
-src/__tests__/                56 tests across empirical, problems, chain-string
+src/__tests__/                36 tests across empirical and problems
 ```
 
 ## Open
