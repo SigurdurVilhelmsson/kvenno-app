@@ -7,6 +7,7 @@ import { BufferCapacityVisualization } from './BufferCapacityVisualization';
 import FlaskComparison from './FlaskComparison';
 import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
+import { solveBuffer } from '../engine/buffer';
 
 interface Level2Props {
   onComplete: (score: number) => void;
@@ -60,6 +61,8 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
 
   const puzzle = LEVEL2_PUZZLES[currentIndex];
   const problem = BUFFER_PROBLEMS.find((p) => p.id === puzzle.problemId);
+  // Every correct answer on this screen is derived, never stored — see engine/buffer.ts.
+  const solution = problem ? solveBuffer(problem) : null;
 
   // Check completion - must be before conditional returns to satisfy rules-of-hooks
   useEffect(() => {
@@ -70,7 +73,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
   }, [completed, score, onComplete]);
 
   // Safety check - should never happen with valid data
-  if (!problem) {
+  if (!problem || !solution) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 flex items-center justify-center">
         <div className="bg-white rounded-xl p-6 shadow-lg text-center">
@@ -122,7 +125,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
       return;
     }
 
-    const correctRatio = problem.ratio;
+    const correctRatio = solution.ratio;
     const tolerance = puzzle.ratioTolerance;
     const relativeError = Math.abs(userRatio - correctRatio) / correctRatio;
 
@@ -147,8 +150,8 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
       return;
     }
 
-    const correctAcidMass = problem.correctAcidMass;
-    const correctBaseMass = problem.correctBaseMass;
+    const correctAcidMass = solution.acidMass;
+    const correctBaseMass = solution.baseMass;
     const tolerance = puzzle.massTolerance;
 
     const acidError = Math.abs(userAcidMass - correctAcidMass) / correctAcidMass;
@@ -575,19 +578,19 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                     </li>
                     <li>
                       • Hlutfall = 10^{(problem.targetPH - problem.pKa).toFixed(2)} ={' '}
-                      {problem.ratio.toFixed(2)}
+                      {solution.ratio.toFixed(2)}
                     </li>
                     <li>
                       • Heildar mól = {problem.totalConcentration} M × {problem.volume} L ={' '}
                       {(problem.totalConcentration * problem.volume).toFixed(4)} mol
                     </li>
                     <li>
-                      • Sýra: {problem.correctAcidMoles.toFixed(4)} mol × {problem.acidMolarMass}{' '}
-                      g/mol = {problem.correctAcidMass} g
+                      • Sýra: {solution.acidMoles.toFixed(4)} mol × {problem.acidMolarMass} g/mol ={' '}
+                      {solution.acidMass.toFixed(2)} g
                     </li>
                     <li>
-                      • Basi: {problem.correctBaseMoles.toFixed(4)} mol × {problem.baseMolarMass}{' '}
-                      g/mol = {problem.correctBaseMass} g
+                      • Basi: {solution.baseMoles.toFixed(4)} mol × {problem.baseMolarMass} g/mol ={' '}
+                      {solution.baseMass.toFixed(2)} g
                     </li>
                   </ul>
                 </div>
@@ -598,8 +601,8 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
               <div className="mb-4">
                 <BufferCapacityVisualization
                   pKa={problem.pKa}
-                  acidConc={problem.correctAcidMoles / problem.volume}
-                  baseConc={problem.correctBaseMoles / problem.volume}
+                  acidConc={solution.acidConc}
+                  baseConc={solution.baseConc}
                   totalConc={problem.totalConcentration}
                   acidName={problem.acidName}
                   baseName={problem.baseName}
