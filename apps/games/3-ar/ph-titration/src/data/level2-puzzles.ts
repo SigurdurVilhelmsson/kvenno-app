@@ -100,8 +100,8 @@ export const LEVEL2_PUZZLES: Level2Puzzle[] = [
     hintIs: 'Maurasýra er veik sýra eins og ediksýra. Jafngildispunktur verður yfir pH 7.',
     hint: 'Formic acid is a weak acid like acetic acid. Equivalence point will be above pH 7.',
     explanationIs:
-      'HCOOH + NaOH gefur HCOONa. Formiat jónin (HCOO⁻) er veik basi, svo lausnin verður basísk við jafngildispunkt. pKₐ(HCOOH) ≈ 3.75.',
+      'HCOOH + NaOH gefur HCOONa. Formiat jónin (HCOO⁻) er veik basi, svo lausnin verður basísk við jafngildispunkt. pKₐ(HCOOH) ≈ 3.74.',
     explanation:
-      'HCOOH + NaOH produces HCOONa. The formate ion (HCOO⁻) is a weak base, so solution becomes basic at equivalence. pKₐ(HCOOH) ≈ 3.75.',
+      'HCOOH + NaOH produces HCOONa. The formate ion (HCOO⁻) is a weak base, so solution becomes basic at equivalence. pKₐ(HCOOH) ≈ 3.74.',
   },
 ];

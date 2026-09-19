@@ -17,11 +17,10 @@ export interface BufferProblem {
   context: string;
   contextEn?: string;
   contextPl?: string;
-  correctAcidMass: number;
-  correctBaseMass: number;
-  correctAcidMoles: number;
-  correctBaseMoles: number;
-  ratio: number;
+  // No correctAcidMass / correctBaseMass / correctAcidMoles / correctBaseMoles /
+  // ratio here on purpose. They were stored until Sep 2026 and 13 of 29 problems
+  // had at least one that disagreed with the others; derive them with
+  // `solveBuffer` from `engine/buffer.ts` instead.
   stockSolution?: boolean;
   acidVolume?: number;
   baseVolume?: number;

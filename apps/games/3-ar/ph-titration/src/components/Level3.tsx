@@ -373,7 +373,7 @@ export function Level3({ onComplete, onBack, t }: Level3Props) {
                   </tr>
                   <tr>
                     <td>HCOOH</td>
-                    <td>3.75</td>
+                    <td>3.74</td>
                   </tr>
                   <tr>
                     <td>CH₃COOH</td>
@@ -381,11 +381,11 @@ export function Level3({ onComplete, onBack, t }: Level3Props) {
                   </tr>
                   <tr>
                     <td>H₂CO₃</td>
-                    <td>6.35, 10.33</td>
+                    <td>6.37, 10.25</td>
                   </tr>
                   <tr>
                     <td>H₃PO₄</td>
-                    <td>2.15, 7.20, 12.35</td>
+                    <td>2.12, 7.21, 12.38</td>
                   </tr>
                   <tr>
                     <td>NH₄⁺</td>

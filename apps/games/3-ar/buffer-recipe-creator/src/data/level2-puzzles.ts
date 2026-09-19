@@ -176,23 +176,23 @@ export const LEVEL2_PUZZLES: Level2Puzzle[] = [
     ratioTolerance: 0.1,
     massTolerance: 0.05,
     hints: {
-      topic: 'Maurasýra (HCOOH) hefur pKa = 3.75, lægra en ediksýra.',
-      strategy: 'Markmiðs-pH (4.00) er HÆRRA en pKa (3.75). Þarftu meira af basa.',
-      method: 'Hlutfall = 10^(4.00 - 3.75) = 10^0.25 ≈ 1.78.',
+      topic: 'Maurasýra (HCOOH) hefur pKa = 3.74, lægra en ediksýra.',
+      strategy: 'Markmiðs-pH (4.00) er HÆRRA en pKa (3.74). Þarftu meira af basa.',
+      method: 'Hlutfall = 10^(4.00 - 3.74) = 10^0.26 ≈ 1.82.',
       solution:
         'Hlutfall = 1.78. Með 0.100 M og 1.0 L: 0.0561 mol sýru (2.58 g) og 0.0439 mol basa (4.80 g).',
     },
     hintsEn: {
-      topic: 'Formic acid (HCOOH) has pKa = 3.75, lower than acetic acid.',
-      strategy: 'Target pH (4.00) is HIGHER than pKa (3.75). You need more base.',
-      method: 'Ratio = 10^(4.00 - 3.75) = 10^0.25 ≈ 1.78.',
+      topic: 'Formic acid (HCOOH) has pKa = 3.74, lower than acetic acid.',
+      strategy: 'Target pH (4.00) is HIGHER than pKa (3.74). You need more base.',
+      method: 'Ratio = 10^(4.00 - 3.74) = 10^0.26 ≈ 1.82.',
       solution:
         'Ratio = 1.78. With 0.100 M and 1.0 L: 0.0561 mol acid (2.58 g) and 0.0439 mol base (4.80 g).',
     },
     hintsPl: {
-      topic: 'Kwas mrówkowy (HCOOH) ma pKa = 3.75, niższe niż kwas octowy.',
-      strategy: 'Docelowe pH (4.00) jest WYŻSZE niż pKa (3.75). Potrzebujesz więcej zasady.',
-      method: 'Proporcja = 10^(4.00 - 3.75) = 10^0.25 ≈ 1.78.',
+      topic: 'Kwas mrówkowy (HCOOH) ma pKa = 3.74, niższe niż kwas octowy.',
+      strategy: 'Docelowe pH (4.00) jest WYŻSZE niż pKa (3.74). Potrzebujesz więcej zasady.',
+      method: 'Proporcja = 10^(4.00 - 3.74) = 10^0.26 ≈ 1.82.',
       solution:
         'Proporcja = 1.78. Przy 0.100 M i 1.0 L: 0.0561 mol kwasu (2.58 g) i 0.0439 mol zasady (4.80 g).',
     },

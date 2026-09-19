@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 
 import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
+import { solveBuffer } from '../engine/buffer';
 import type { Difficulty } from '../types';
 
 const VALID_DIFFICULTIES: Difficulty[] = ['beginner', 'intermediate', 'advanced'];
@@ -83,14 +84,11 @@ describe('Henderson-Hasselbalch verification for level 2 puzzles', () => {
       // Skip special problems (rangeQuestion, etc.)
       if (problem.rangeQuestion || problem.targetPH === 0) continue;
 
-      // Henderson-Hasselbalch: pH = pKa + log10([Base]/[Acid])
-      // So: ratio = 10^(pH - pKa)
+      // Henderson-Hasselbalch: pH = pKa + log10([Base]/[Acid]), so ratio = 10^(pH - pKa).
+      // Nothing is stored any more, so this is now a check that the engine agrees
+      // with the formula rather than that a hand-typed number does.
       const expectedRatio = Math.pow(10, problem.targetPH - problem.pKa);
-
-      // The stored ratio should match the Henderson-Hasselbalch calculation
-      // Using a tolerance of 0.1 (10%) to account for rounding in stored values
-      const relativeError = Math.abs(problem.ratio - expectedRatio) / expectedRatio;
-      expect(relativeError).toBeLessThan(0.1);
+      expect(solveBuffer(problem).ratio).toBeCloseTo(expectedRatio, 10);
     }
   });
 });
@@ -114,7 +112,7 @@ describe('BUFFER_PROBLEMS data integrity', () => {
       expect(problem).toHaveProperty('acidMolarMass');
       expect(problem).toHaveProperty('baseMolarMass');
       expect(problem).toHaveProperty('context');
-      expect(problem).toHaveProperty('ratio');
+      // 'ratio' is deliberately absent — it is derived by solveBuffer, not stored.
 
       expect(typeof problem.id).toBe('number');
       expect(typeof problem.difficulty).toBe('string');
@@ -179,25 +177,57 @@ describe('BUFFER_PROBLEMS data integrity', () => {
 });
 
 describe('Henderson-Hasselbalch verification for all non-special problems', () => {
+  const standardProblems = BUFFER_PROBLEMS.filter((p) => !p.rangeQuestion && p.targetPH > 0);
+
   it('ratio matches 10^(pH - pKa) for standard problems', () => {
-    const standardProblems = BUFFER_PROBLEMS.filter(
-      (p) => !p.rangeQuestion && p.targetPH > 0 && p.ratio > 0
-    );
-
     expect(standardProblems.length).toBeGreaterThan(0);
-
     for (const problem of standardProblems) {
       const expectedRatio = Math.pow(10, problem.targetPH - problem.pKa);
-      const relativeError = Math.abs(problem.ratio - expectedRatio) / expectedRatio;
-      expect(relativeError).toBeLessThan(0.1);
+      expect(solveBuffer(problem).ratio).toBeCloseTo(expectedRatio, 10);
     }
   });
 
   it('beginner problems all have ratio = 1.00 (pH = pKa)', () => {
     const beginnerProblems = BUFFER_PROBLEMS.filter((p) => p.difficulty === 'beginner');
     for (const problem of beginnerProblems) {
-      expect(problem.ratio).toBe(1.0);
       expect(problem.targetPH).toBeCloseTo(problem.pKa, 2);
+      expect(solveBuffer(problem).ratio).toBeCloseTo(1.0, 2);
+    }
+  });
+
+  // The three checks below are the ones that did not exist before Sep 2026, and
+  // their absence is why 13 of 29 problems shipped with a mole or mass value that
+  // disagreed with the ratio the test above was happily verifying. Checking one
+  // link of a chain proves nothing about the others.
+
+  it('moles split the total according to the ratio, and sum back to it', () => {
+    for (const problem of standardProblems) {
+      const { ratio, acidMoles, baseMoles } = solveBuffer(problem);
+      const total = problem.totalConcentration * problem.volume;
+      expect(acidMoles + baseMoles).toBeCloseTo(total, 10);
+      expect(baseMoles / acidMoles).toBeCloseTo(ratio, 8);
+    }
+  });
+
+  it('masses are their own moles times their own molar mass', () => {
+    for (const problem of standardProblems) {
+      const { acidMoles, baseMoles, acidMass, baseMass } = solveBuffer(problem);
+      // A pH-adjustment problem weighs out all the acid, not just the acid fraction.
+      const expectedAcidMoles = problem.phAdjustment
+        ? problem.totalConcentration * problem.volume
+        : acidMoles;
+      expect(acidMass).toBeCloseTo(expectedAcidMoles * problem.acidMolarMass, 10);
+      expect(baseMass).toBeCloseTo(baseMoles * problem.baseMolarMass, 10);
+    }
+  });
+
+  it('round-trips: the derived recipe reproduces the target pH', () => {
+    // The strongest statement available — whatever the engine hands a student,
+    // putting it back into Henderson-Hasselbalch must give the pH that was asked for.
+    for (const problem of standardProblems) {
+      const { acidMoles, baseMoles } = solveBuffer(problem);
+      const pH = problem.pKa + Math.log10(baseMoles / acidMoles);
+      expect(pH).toBeCloseTo(problem.targetPH, 8);
     }
   });
 });

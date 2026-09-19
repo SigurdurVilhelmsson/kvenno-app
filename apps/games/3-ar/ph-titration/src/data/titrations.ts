@@ -104,11 +104,11 @@ export const titrations: Titration[] = [
     equivalenceVolume: 40.0,
     equivalencePH: 8.35,
     initialPH: 2.22,
-    halfEquivalencePH: 3.75,
+    halfEquivalencePH: 3.74,
     bestIndicator: 'phenolphthalein',
     difficulty: 'Miðlungs',
     Ka: 1.8e-4,
-    pKa: 3.75,
+    pKa: 3.74,
   },
   {
     id: 8,
@@ -123,7 +123,7 @@ export const titrations: Titration[] = [
     bestIndicator: 'phenolphthalein',
     difficulty: 'Miðlungs',
     Ka: 6.5e-5,
-    pKa: 4.19,
+    pKa: 4.2,
   },
 
   // ===== INTERMEDIATE LEVEL (Weak Base + Strong Acid) =====
