@@ -268,7 +268,9 @@ heat;varmi
 heat capacity;varmarýmd
 heating mantle;hitasveppur
 heterogeneous;misleitur
+heterogeneous equilibrium;misleitt jafnvægi
 homogeneous;einsleitur
+homogeneous equilibrium;einsleitt jafnvægi
 hot plate;hitahræra
 Hund's rule;regla Hunds
 hydration;vötnun
@@ -282,6 +284,7 @@ hydrophilic;vatnssækinn
 hydrophobic;vatnsfælinn
 hypertonic;yfirþrýstinn
 hypotonic;undirþrýstinn
+ICE table;ICE-tafla
 ideal gas;kjörgas
 ideal gas law;kjörgaslögmálið
 ideal solution;kjörlausn
@@ -479,7 +482,7 @@ rate law;hraðajafna
 rate-determining step;hraðatakmarkandi skref
 ray;geisli
 reactant;hvarfefni
-reaction Quotient;hvarfstuðull
+reaction quotient;hvarfstuðull
 reaction rate;hvarfhraði
 reactive;hvarfgjarn
 reactivity;hvarfgirni

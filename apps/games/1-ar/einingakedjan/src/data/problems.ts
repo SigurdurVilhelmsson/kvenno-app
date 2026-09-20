@@ -140,7 +140,7 @@ export const problems: Problem[] = [
     equation: '2 Mg + O₂ → 2 MgO',
     poolIds: ['mm-Mg', 'jafna-Mg-MgO', 'mm-MgO', 'jafna-Mg-O2', 'mm-O2', 'metric-g-kg'],
     hint: 'Efnajafnan tengir mól við mól — aldrei grömm við grömm. Þú þarft því að fara inn í mól, yfir jöfnuna, og út í grömm aftur.',
-    why: 'Massi frá einu efni yfir í annað er algengasta útreikningur efnafræðinnar: hversu mikið hráefni þarf til að fá tiltekið magn af afurð?',
+    why: 'Massi frá einu efni yfir í annað er algengasta útreikningur efnafræðinnar: hversu mikið hráefni þarf til að fá tiltekið magn af myndefni?',
     expectedValue: 8.28877,
     expectedSteps: 3,
   },

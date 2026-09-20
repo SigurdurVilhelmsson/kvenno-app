@@ -45,8 +45,8 @@ export const gameTranslations = createGameTranslations({
     changes: {
       addReactant: 'Bæta við hvarfefni',
       removeReactant: 'Fjarlægja hvarfefni',
-      addProduct: 'Bæta við afurð',
-      removeProduct: 'Fjarlægja afurð',
+      addProduct: 'Bæta við myndefni',
+      removeProduct: 'Fjarlægja myndefni',
       increaseTemperature: 'Hækka hita',
       decreaseTemperature: 'Lækka hita',
       increasePressure: 'Auka þrýsting',

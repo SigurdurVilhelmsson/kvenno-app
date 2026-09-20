@@ -170,7 +170,7 @@ function App() {
                       <h3 className="text-xl font-bold text-warm-800">Meistarapróf</h3>
                     </div>
                     <p className="text-warm-600 text-sm">
-                      Samþætt verkefni: finndu takmarkandi, reiknaðu afurðir og afgang
+                      Samþætt verkefni: finndu takmarkandi, reiknaðu myndefni og afgang
                     </p>
                   </div>
                   <div className="text-right">
@@ -244,7 +244,7 @@ function App() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-orange-500 mt-0.5">✓</span>
-                <span>Reikna magn afurða og afganga eftir hvarf</span>
+                <span>Reikna magn myndefna og afganga eftir hvarf</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-orange-500 mt-0.5">✓</span>
@@ -256,8 +256,9 @@ function App() {
           <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
             <h3 className="font-semibold text-amber-800 mb-2">Af hverju takmarkandi hvarfefni?</h3>
             <p className="text-sm text-amber-700">
-              Í iðnaði skiptir máli að vita hvaða hráefni klárast fyrst — það ákvarðar hversu mikil
-              afurð verður. Lyfjafyrirtæki nota þetta til að hámarka framleiðslu og lágmarka sóun.
+              Í iðnaði skiptir máli að vita hvaða hráefni klárast fyrst — það ákvarðar hversu mikið
+              myndefni verður. Lyfjafyrirtæki nota þetta til að hámarka framleiðslu og lágmarka
+              sóun.
             </p>
           </div>
           <div className="mt-3 text-center text-xs text-warm-500">

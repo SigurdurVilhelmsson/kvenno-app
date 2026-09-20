@@ -149,7 +149,9 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         explanation: stepCorrect
           ? `Rett! ${ans.timesReactionRuns} × ${product.coeff} = ${exp}.`
           : `Rett svar: ${exp}. ${ans.timesReactionRuns} × ${product.coeff} = ${exp}.`,
-        misconception: stepCorrect ? undefined : 'Margfaldaðu fjolda skipta med stuðli afurðar.',
+        misconception: stepCorrect
+          ? undefined
+          : 'Margfaldaðu fjolda skipta med stuðli myndefnisins.',
       };
     }
     return {

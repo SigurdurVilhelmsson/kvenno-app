@@ -141,8 +141,8 @@ function App() {
                 ✓ <strong>Margfalda:</strong> Ef þú margfaldar jöfnu, margfaldar þú einnig ΔH
               </li>
               <li>
-                ✓ <strong>Myndunarvarminn:</strong> ΔH°<sub>rxn</sub> = Σ ΔH°<sub>f</sub>(afurðir) -
-                Σ ΔH°<sub>f</sub>(hvarfefni)
+                ✓ <strong>Myndunarvarminn:</strong> ΔH°<sub>rxn</sub> = Σ ΔH°<sub>f</sub>(myndefni)
+                - Σ ΔH°<sub>f</sub>(hvarfefni)
               </li>
             </ul>
           </div>
@@ -325,8 +325,8 @@ function App() {
                 <strong>Margfalda jöfnu:</strong> n × jafna → n × ΔH
               </p>
               <p>
-                <strong>Myndunarvarminn:</strong> ΔH°<sub>rxn</sub> = Σ ΔH°<sub>f</sub>(afurðir) - Σ
-                ΔH°<sub>f</sub>(hvarfefni)
+                <strong>Myndunarvarminn:</strong> ΔH°<sub>rxn</sub> = Σ ΔH°<sub>f</sub>(myndefni) -
+                Σ ΔH°<sub>f</sub>(hvarfefni)
               </p>
             </div>
           </div>

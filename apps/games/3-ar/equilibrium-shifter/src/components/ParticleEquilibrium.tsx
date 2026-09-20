@@ -134,7 +134,7 @@ export function ParticleEquilibrium({
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-3 h-3 rounded-full bg-purple-500" />
-          <span className="text-warm-600">Afurðir ({adjustedProducts})</span>
+          <span className="text-warm-600">Myndefni ({adjustedProducts})</span>
         </div>
       </div>
 

@@ -58,7 +58,7 @@ export const CHALLENGES: Challenge[] = [
   {
     id: 2,
     title: 'Snúa við hvörfum',
-    description: 'Þegar þú snýrð við efnahvörfum (hvarfefni ↔ afurðir), þá snýst formerkið á ΔH.',
+    description: 'Þegar þú snýrð við efnahvörfum (hvarfefni ↔ myndefni), þá snýst formerkið á ΔH.',
     concept: 'Ef A → B hefur ΔH = -100 kJ, þá hefur B → A ΔH = +100 kJ',
     equation: {
       id: 'eq2',
@@ -209,7 +209,7 @@ export const CHALLENGES: Challenge[] = [
         text: '-677 kJ',
         correct: false,
         explanation:
-          'Rangt. Þú lagðir saman, en þú þarft að snúa við jöfnu (2) til að CO sé afurð.',
+          'Rangt. Þú lagðir saman, en þú þarft að snúa við jöfnu (2) til að CO sé myndefni.',
       },
       {
         text: '+111 kJ',
@@ -224,8 +224,8 @@ export const CHALLENGES: Challenge[] = [
     ],
     hints: {
       topic: 'Þetta snýst um að nota Hess lögmál til að finna ΔH.',
-      strategy: 'Þú þarft að stilla jöfnur þannig að CO sé afurð og annað strikist út.',
-      method: 'Nota jöfnu (1) eins og hún er. Snúa við jöfnu (2) svo CO verði afurð.',
+      strategy: 'Þú þarft að stilla jöfnur þannig að CO sé myndefni og annað strikist út.',
+      method: 'Nota jöfnu (1) eins og hún er. Snúa við jöfnu (2) svo CO verði myndefni.',
       solution: 'Jafna (1): -394 kJ. Öfug jafna (2): +283 kJ. Heildar: -394 + 283 = -111 kJ.',
     },
   },

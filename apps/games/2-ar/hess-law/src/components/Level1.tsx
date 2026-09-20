@@ -14,7 +14,7 @@ const MISCONCEPTIONS: Record<number, string> = {
   2: 'Þegar þú snýrð við hvörfum, snýrðu við FORMERKINU á ΔH. Ef ΔH = -X, þá verður öfugt hvarf ΔH = +X.',
   3: 'Við margföldun breytist formerkið EKKI. Ef ΔH = -X, þá er 2×ΔH = -2X (enn neikvætt).',
   4: 'Mundu röðina: snúðu fyrst við (breytir formerki), SÍÐAN margfaldaðu.',
-  5: 'Til að nota Hess, þarftu að stilla jöfnur þannig að hvarfefni og afurðir strikist út rétt.',
+  5: 'Til að nota Hess, þarftu að stilla jöfnur þannig að hvarfefni og myndefni strikist út rétt.',
   6: 'Orkubraut: leiðin skiptir ekki máli, aðeins upphafs- og lokastaða. Heildar ΔH er summa allra skrefa.',
 };
 
