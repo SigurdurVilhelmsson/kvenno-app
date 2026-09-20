@@ -21,6 +21,7 @@ const repoRoot = join(__dirname, '../../../../../..');
 
 const CHAIN_FILES = [
   'apps/games/3-ar/gas-law-challenge/src/components/MenuScreen.tsx',
+  'apps/games/3-ar/jafnvaegisfasti/src/App.tsx',
   'apps/games/3-ar/equilibrium-shifter/src/App.tsx',
   'apps/games/3-ar/syrufastinn/src/App.tsx',
   'apps/games/3-ar/thermodynamics-predictor/src/App.tsx',
@@ -30,7 +31,8 @@ const CHAIN_FILES = [
 ];
 
 const EXPECTED =
-  'Gaslögmál → Jafnvægi → Sýrufastinn → Varmafræði → pH Títrun → Stuðpúðar → Leysnijafnvægi';
+  'Gaslögmál → Jafnvægisfastinn → Hliðrun jafnvægis → Sýrufastinn → Varmafræði → pH Títrun → ' +
+  'Stuðpúðar → Leysnijafnvægi';
 
 function chainOf(relative: string): string {
   const src = readFileSync(join(repoRoot, relative), 'utf8');

@@ -16,7 +16,7 @@ kvenno-app/
 │   ├── landing/          # Landing page (track selector) + chemistry year hubs (React SPA)
 │   ├── islenskubraut/    # Icelandic language teaching cards (React SPA, /islenskubraut/)
 │   ├── lab-reports/      # AI-powered lab report grading (React SPA)
-│   └── games/            # 25 chemistry games (single-file HTML, except the 3 Three.js ones)
+│   └── games/            # 26 chemistry games (single-file HTML, except the 3 Three.js ones)
 │       ├── 1-ar/         # 10 games for year 1
 │       ├── 2-ar/         # 8 games for year 2
 │       └── 3-ar/         # 7 games for year 3
@@ -287,14 +287,14 @@ Plan file: `logical-wandering-llama.md` — the Y1/Y2/Y3 iterative review cycle.
 
 **Year 1:** dimensional-analysis, lotukerfid, nafnakerfid, molmassi, reynsluformulur, jafna-jofnur, utfellingarhvorf, takmarkandi, lausnir, einingakedjan
 **Year 2:** hess-law, kinetics, lewis-structures, vsepr-geometry, intermolecular-forces, organic-nomenclature, redox-reactions, rafeindabygging
-**Year 3:** ph-titration, gas-law-challenge, equilibrium-shifter, syrufastinn, thermodynamics-predictor, buffer-recipe-creator, leysnijafnvaegi
+**Year 3:** ph-titration, gas-law-challenge, jafnvaegisfasti, equilibrium-shifter, syrufastinn, thermodynamics-predictor, buffer-recipe-creator, leysnijafnvaegi
 
 ### Curriculum chains
 
 ```
 Y1: Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi → Reynsluformúlur → Stilla efnajöfnur → Útfellingarhvörf → Takmarkandi → Lausnir → Einingakeðjan
 Y2: Rafeindabygging → Lewis → VSEPR → IMF → Hess → Kinetics → Redox → Organic
-Y3: Gaslögmál → Jafnvægi → Sýrufastinn → Varmafræði → pH Títrun → Stuðpúðar → Leysnijafnvægi
+Y3: Gaslögmál → Jafnvægisfastinn → Hliðrun jafnvægis → Sýrufastinn → Varmafræði → pH Títrun → Stuðpúðar → Leysnijafnvægi
 ```
 
 ## Development Guidelines
@@ -836,6 +836,78 @@ What matters platform-wide:
   so the ban is now `/jó[ðd]íð/i`. Same class of miss as the accentless `anoða` and `stuð` against
   `stuðl`.
 
+**Phase 5's follow-on landed 2026-09-20 — `3-ar/jafnvaegisfasti`, Jafnvægisfastinn, the Kc/Kp and
+ICE node.** The 26th game, and it closes what Leysnijafnvægi named as the largest remaining Y3 gap:
+`equilibrium-shifter` taught equilibrium with **no number anywhere**. Read
+`apps/games/3-ar/jafnvaegisfasti/README.md`; what matters platform-wide:
+
+- **The Y3 chain is now eight nodes, and the new one sits SECOND — before Le Chatelier, not after.**
+  The school's chapter 13 runs Efnajafnvægi → **Jafnvægisfastar** → Tilfærsla jafnvægis →
+  **Jafnvægisútreikningar**, so the book puts K before Le Chatelier and the chapter numbering
+  settles the position without a teaching ruling, exactly as ch. 4 against ch. 11 settled
+  Útfellingarhvörf against Lausnir's Stig 0. It also repairs something already shipping:
+  `equilibrium-shifter`'s Q vs K panel argues from a constant the platform had never defined.
+  **One deliberate deviation, reversible and Siggi's:** the book puts ICE _after_ Le Chatelier and
+  this game carries it _before_, rather than splitting one chapter across three chain nodes.
+- **`equilibrium-shifter`'s node label changed from `Jafnvægi` to `Hliðrun jafnvægis`** — the book's
+  own chapter-abstract wording, and the verb the game itself already used throughout. With two
+  equilibrium nodes adjacent, `Jafnvægi` no longer distinguishes them. The game's title, slug and
+  hub card are untouched.
+- **The Appendix D ruling has no Kc analogue, and this is the substitute.** Siggi's 2026-09-19
+  ruling — a constant with no Appendix D row does not ship — cannot apply here: **neither book has a
+  Kc appendix**, because Ka and Ksp are quoted at one standard temperature while a general
+  equilibrium constant only means anything beside the temperature it was measured at. Both books
+  state Kc inside worked examples. So every constant carries a **citation to a named place in
+  ch. 13**, and `sources.test.ts` refuses one without. If a Kc table is wanted instead,
+  `src/data/reactions.ts` is the file it replaces.
+- **Two constants carry no temperature and none was invented.** The book introduces the PCl₅
+  decomposition as holding "under certain conditions" and gives the HCN example as a bare Kc.
+  Writing a plausible 25 °C into either would have put an unsourced number on screen invisibly, so
+  `canConvertToKp` returns false for them and they never reach the Kc-to-Kp exercise. **The
+  consequence is enforced rather than documented** — which is the pattern to copy whenever a datum
+  is genuinely absent rather than merely unrecorded.
+- **The ICE solver bisects on the extent of reaction instead of special-casing the algebra.** Q rises
+  monotonically with extent and sweeps 0 to infinity across the feasible range, so there is one root
+  and bisection always finds it — for **any** stoichiometry. That is why the Beita phase can pose
+  N₂ + 3H₂ ⇌ 2NH₃, whose ICE algebra is a quartic. Heterogeneous reactions are **refused**, not
+  approximated: a solid is not in K, so an ICE row for one would change and never affect the answer.
+- **A live defect was found in `equilibrium-shifter` while doing this, and it had shipped since the
+  game was written.** `QKComparison.tsx` said **"Q eykst" for any pressure increase**. Compressing
+  multiplies every concentration by the same factor f, so Q moves by f^Δn — for the Haber process
+  (Δn = −2) compression makes Q **fall**, which is why the equilibrium shifts right. Of the 21
+  equilibria offering a pressure stress, **10 have Δn < 0 and 4 have Δn = 0, so the sentence was
+  wrong on 14 of them** — and it **contradicted the bars drawn directly above it**, which take their
+  widths from the shift direction and were correct. Guarded by `qk-pressure.test.tsx`, which drives
+  the real component and fails 4 of 5 against the old code. The panel renders in learning mode and
+  after every wrong answer, so students met it.
+- **Two terminology corrections, neither of them a new ruling — both were already in `ordabok.md`
+  and nothing enforced them.** `hvarfkvóti` → **`hvarfstuðull`** for the reaction quotient (glossary
+  already said so; corpus 48 to 5, and the 5 are all in the book's own Le Chatelier section, so the
+  book disagrees with itself as it does over `nettójónajafna`), and `afurð` → **`myndefni`** for a
+  reaction product at **68 sites across five games** (glossary already said so; corpus 324 to 92).
+  Both now have `governed-terms.test.ts` rows. **`myndefni` moves gender** — `afurð` is feminine,
+  `myndefni` neuter — so three agreements moved with it: `hversu mikil afurð` → `hversu mikið
+myndefni`, `Kerfið eyðir henni` → `Kerfið eyðir því`, `Afurð fjarlægð` → `Myndefni fjarlægt`. The
+  ban starts at a word boundary deliberately, so the book's own `lokaafurð` and `aukaafurð` pass; it
+  reserves bare `afurð` for by-products and for produce in the everyday sense.
+- **A lowercase grep is not a sweep.** The first pass of that rename used `grep "\bafurð"` and
+  missed **16 capitalised occurrences** — `Afurðir:` at the start of a label, and one `AFURÐAR` in
+  caps. `governed-terms.test.ts` matches case-insensitively and caught every one. Grep with `-i`, or
+  let the guard find them.
+- **`formatScientific` and `gradeScientific` moved to `@shared/utils`.** `leysnijafnvaegi` wrote
+  them for Ksp and this game needs the identical printer and grader; a second copy is how two games
+  come to round differently. `leysnijafnvaegi/src/engine/ksp.ts` re-exports them, so its imports and
+  tests are unchanged.
+- **The book has a rounding slip, recorded rather than reproduced.** Its third water-gas experiment
+  prints Q = 0,48 where its own inputs give 0,4851, which is 0,49 to two figures. The conclusion is
+  unaffected (Q < K either way) but the game shows its computed value, so a test says why the screen
+  and the page differ in the last digit.
+
+**Still open after it, and named in the new README:** `equilibrium-shifter` is no longer the largest
+Y3 gap but is still entirely qualitative; K's own temperature dependence (van 't Hoff) is unbuilt;
+ICE in partial pressures works in the engine but no problem poses it; and the book's coupled-reaction
+rules (reverse → 1/K, multiply by n → Kⁿ, add → multiply) are not covered.
+
 **No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
 now fixed, as are the three above, and each carries a test that fails against the pre-fix code. What
 is left is enrichment and unfinished decisions, not defects — the work order is
@@ -897,6 +969,8 @@ that let this file's own Y3 chain line say `Púfferar` until September.
 | iodide | `joðíð` | `jódíð` | **2026-09-20**, and this one was already right everywhere it shipped — `nafnakerfid`, `kinetics` and `equilibrium-shifter` all say `joðíð`, and the corpus is **54 to 0**. The row exists solely because the old repo's `jonir-i-lausn` says `jódíð` four times and it lands on **the very reaction the textbook uses as its worked example**, PbI₂. Spelling only; no agreement change |
 | net ionic equation | `nettójónajafna` | — | **Taken from the textbook, 2026-09-20.** Feminine weak, like `jafna`: nom `nettójónajafna`, obl. sg. `nettójónajöfnu`, def. `nettójónajafnan`, pl. `nettójónajöfnur`, dat. pl. `nettójónajöfnum`. Nothing shipped used the concept at all, so there is no banned form and no test row. **One variant is unconfirmed and is Siggi's call:** the book's _glossary headword_ is the two-word `nettó jónajafna`, while its _running prose_ is 23 to 8 for the solid compound. The solid form was taken, matching `ordabok.md`'s `jónajafna` and `sameindajafna`. Same question, same answer, for `heildarjónajafna` (6 to 1 against the glossary's `fullkomin jónajafna`) |
 | precipitation reaction | `útfellingarhvarf` | — | **2026-09-20**, resolving a split the corpus itself carries: `útfellingarhvarf` 9, `botnfallshvarf` 7. `ordabok.md`'s existing pair decides it — `precipitation;útfelling` names the **process** and `precipitate;botnfall` names the **solid**, so the reaction is built on the first. Neuter, like `efnahvarf`: nom/acc `útfellingarhvarf`, dat `útfellingarhvarfi`, gen `útfellingarhvarfs`, pl. `útfellingarhvörf`. Nothing shipped used either word, so no banned form and no test row — but **do not shorten it to `botnfallshvarf`**, which is the form the old repo's game used |
+| product | `myndefni` | **`afurð`** (bare) | **2026-09-20, and nothing was newly ruled** — `ordabok.md` has said `product;myndefni` all along and the corpus agrees **324 to 92**, but the platform shipped `afurð` at **68 sites across five games** (`equilibrium-shifter` 33, `hess-law` 18, `kinetics` 8, `takmarkandi` 8, `einingakedjan` 1) and `myndefni` at 3. **Feminine to NEUTER, so this is not a string swap** — nom/acc/dat `myndefni`, gen `myndefnis`, pl. `myndefni`/`myndefni`/`myndefnum`/`myndefna`, def. sg. `myndefnið`. Three agreements moved with the noun: `hversu mikil afurð` → `hversu mikið myndefni`, `Kerfið eyðir henni` → `Kerfið eyðir því` (a pronoun standing for the noun), `Afurð fjarlægð` → `Myndefni fjarlægt`. **The ban starts at a word boundary on purpose:** the book's own `lokaafurð`, `aukaafurð`, `brunaafurðir` and `klofnunarafurðir` are correct and still pass — it reserves bare `afurð` for by-products and for produce in the everyday sense. `lokafurð` (missing an `a`, 0 corpus hits against 5) was corrected to `lokaafurð` at the same time |
+| reaction quotient | `hvarfstuðull` | `hvarfkvóti` | **2026-09-20**, and also already governed: `ordabok.md` carried `reaction quotient;hvarfstuðull` while `equilibrium-shifter`'s `QKComparison.tsx` said `hvarfkvóti`. Corpus **48 to 5** — and note _where_ the 5 are: the book uses `hvarfstuðull` throughout its teaching sections (`ch13/m68798`, `ch13/m68801`, including the glossary definition of `jafnvægisfasti`) and slips into `hvarfkvóti` only in its Le Chatelier section, so it disagrees with itself exactly as it does over `nettójónajafna`. Running prose in the section that defines the term wins. **This does not conflict with the `sýrufasti` row's `-fasti` against `-stuðull` argument** — Q is precisely the quantity that is _not_ constant, so the split is what makes the pair legible: `jafnvægisfasti` for K, `hvarfstuðull` for Q. Masculine: `hvarfstuðull` / `hvarfstuðul` / `hvarfstuðli` / `hvarfstuðuls`, def. `hvarfstuðullinn`. The `ordabok.md` headword was `reaction Quotient` with a stray capital and is now lowercase, matching every other entry |
 `sjálfvirkur` has zero hits and is not the word for spontaneous; do not grep for it.
 
 The `stilla` rename swept `1-ar/jafna-jofnur` (6 files), the `Námsleiðin` chain string in every

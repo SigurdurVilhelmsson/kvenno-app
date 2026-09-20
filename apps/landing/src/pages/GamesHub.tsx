@@ -140,6 +140,11 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
         slug: 'gas-law-challenge',
       },
       {
+        title: 'Jafnvægisfastinn',
+        description: 'Kc, Kp, hvarfstuðullinn Q og ICE-töflur',
+        slug: 'jafnvaegisfasti',
+      },
+      {
         title: 'Jafnvægisstjóri',
         description: 'Læra um Le Chatelier meginregluna',
         slug: 'equilibrium-shifter',

@@ -1,6 +1,6 @@
 # Bundle Sizes
 
-Measured: 2026-09-20 (25 games), from a `pnpm build:games` run made the same day.
+Measured: 2026-09-20 (26 games), from a `pnpm build:games` run made the same day.
 
 **Provenance.** Every game figure below is read off the on-disk `dist/` immediately after that
 build, so the table is current to the source in this commit rather than to an mtime argument. Sizes
@@ -8,11 +8,12 @@ are KiB (bytes ÷ 1024). The three app tables further down (lab-reports, landing
 **not** re-derived here — they still date from the 2026-08-17 pass against the 2026-08-15 build, and
 nothing since has touched those apps' source.
 
-**The three newest games are the three smallest** — `reynsluformulur` 273 KB, `utfellingarhvorf`
-284 KB, `leysnijafnvaegi` 286 KB — and that is not a coincidence. All three are
-derive-don't-store designs whose data files are a few dozen lines of facts plus an engine, with no
-Three.js, no canvas and no shared visualisation component. The heavy end of the table is where a
-game pulls in a 3D viewer or a large hand-built SVG.
+**The newest games cluster at the bottom of the table** — `reynsluformulur` 273 KB,
+`utfellingarhvorf` 284 KB, `leysnijafnvaegi` 286 KB, `syrufastinn` 289 KB, `jafnvaegisfasti`
+297 KB — and that is not a coincidence. All five are derive-don't-store designs whose data files
+are a few dozen lines of facts plus an engine, with no Three.js, no canvas and no shared
+visualisation component. The heavy end of the table is where a game pulls in a 3D viewer or a large
+hand-built SVG.
 
 **What moved since 2026-08-15.** Don't read the August table against this one to price a single
 change — the source moved in many other ways between the two builds, and roadmap phases 3–5 grew
@@ -49,18 +50,24 @@ be deferred — see the note below.
 "Initial" is what a student downloads on page open (HTML + CSS + entry JS). "Deferred" loads only
 if they open a 3D view.
 
+**Correction to the 2026-09-20 figures, made the same day.** The three Three.js rows each read 1 KB
+low — vsepr-geometry 400, lewis-structures 369, intermolecular-forces 366 — and are now 401, 370 and 367. This was checked rather than assumed: vsepr was rebuilt from a stashed tree and came out
+**byte-identical** (341 652 + 698 + 68 437 = 410 787 B = 401,16 KiB), so nothing in the
+`jafnvaegisfasti` work moved them and the earlier numbers were simply wrong. Worth knowing because
+these are the three games whose "initial" is a sum over three files rather than one.
+
 | Game                     | Year | Initial | Deferred |
 | ------------------------ | ---- | ------- | -------- |
-| vsepr-geometry           | 2-ar | 400 KB  | 1004 KB  |
+| vsepr-geometry           | 2-ar | 401 KB  | 1004 KB  |
 | dimensional-analysis     | 1-ar | 394 KB  | —        |
 | lausnir                  | 1-ar | 371 KB  | —        |
 | buffer-recipe-creator    | 3-ar | 371 KB  | —        |
-| lewis-structures         | 2-ar | 369 KB  | 1004 KB  |
+| lewis-structures         | 2-ar | 370 KB  | 1004 KB  |
 | intermolecular-forces    | 2-ar | 366 KB  | 1004 KB  |
 | organic-nomenclature     | 2-ar | 362 KB  | —        |
 | redox-reactions          | 2-ar | 354 KB  | —        |
-| ph-titration             | 3-ar | 351 KB  | —        |
 | hess-law                 | 2-ar | 351 KB  | —        |
+| ph-titration             | 3-ar | 351 KB  | —        |
 | kinetics                 | 2-ar | 349 KB  | —        |
 | equilibrium-shifter      | 3-ar | 344 KB  | —        |
 | nafnakerfid              | 1-ar | 335 KB  | —        |
@@ -70,6 +77,7 @@ if they open a 3D view.
 | thermodynamics-predictor | 3-ar | 305 KB  | —        |
 | rafeindabygging          | 2-ar | 302 KB  | —        |
 | takmarkandi              | 1-ar | 300 KB  | —        |
+| jafnvaegisfasti          | 3-ar | 297 KB  | —        |
 | einingakedjan            | 1-ar | 293 KB  | —        |
 | jafna-jofnur             | 1-ar | 292 KB  | —        |
 | syrufastinn              | 3-ar | 289 KB  | —        |
@@ -77,7 +85,7 @@ if they open a 3D view.
 | utfellingarhvorf         | 1-ar | 284 KB  | —        |
 | reynsluformulur          | 1-ar | 273 KB  | —        |
 
-Every game now opens in 273–400 KB. Three changes got here:
+Every game now opens in 273–401 KB. Three changes got here:
 
 - **Vite 8 / Rolldown** took non-3D games from ~1.3 MB to ~300–400 KB.
 - **The Aug 2026 Three.js code-split** took VSEPR, Lewis, and IMF from ~2.9 MB to ~380–400 KB by
