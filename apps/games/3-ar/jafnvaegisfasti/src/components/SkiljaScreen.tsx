@@ -1,8 +1,5 @@
 import { useState } from 'react';
 
-import { formatScientific } from '@shared/utils';
-
-import { reactionBy } from '../data/reactions';
 import {
   deltaNGas,
   equationOf,
@@ -11,7 +8,10 @@ import {
   kpExpression,
   omittedFromK,
   R_GAS,
-} from '../engine/equilibrium';
+} from '@shared/engine/equilibrium';
+import { formatScientific } from '@shared/utils';
+
+import { reactionBy } from '../data/reactions';
 
 /**
  * Skilja — the four things that make K more than a formula.

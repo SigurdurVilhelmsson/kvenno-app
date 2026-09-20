@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
+import { amountsAtExtent, deltaNGas, kcToKp, reactionQuotient } from '@shared/engine/equilibrium';
+
 import {
   APPROXIMATION_HOLDS,
   APPROXIMATION_FAILS,
@@ -8,7 +10,6 @@ import {
   ICE_PROBLEMS,
   KP_PROBLEMS,
 } from '../data/problems';
-import { amountsAtExtent, deltaNGas, kcToKp, reactionQuotient } from '../engine/equilibrium';
 
 describe('the expression set', () => {
   it('covers homogeneous and heterogeneous, and leads with the easy case', () => {
