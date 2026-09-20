@@ -83,7 +83,7 @@ export function NumbersPanel({ outcome, constant, order }: Props) {
         </div>
         {constant.reversedFrom && (
           <p className="mt-1 text-xs text-warm-500">
-            Andhverfa af {constant.reversedFrom}, svo K er umhverfan.
+            Þetta er bakhvarfið við {constant.reversedFrom}, svo K er umhverfan.
           </p>
         )}
       </div>

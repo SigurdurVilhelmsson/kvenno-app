@@ -83,6 +83,55 @@ to assume the change is negligible, so its 0,0072 atm is the shortcut's number; 
 like with like rather than holding the exact root to a figure that was never the exact root — the
 same care `3-ar/syrufastinn` needed over `√(Ka·C)` against the quadratic.
 
+## Tengd jafnvægi — coupled equilibria
+
+The book's three operations (`ch13/m68798`): reverse an equation and K becomes 1/K; multiply it
+through by n and K becomes Kⁿ; add two equations and the K values multiply.
+
+**None of the three is a new rule, and the Skilja step says so in as many words.** K is a ratio of
+product terms over reactant terms, so swapping the sides inverts the ratio, multiplying the
+coefficients raises every term to that power, and adding two equations multiplies the two ratios and
+cancels whatever stands on both sides. One fact, three consequences — which is worth more to a
+student than three formulas to memorise.
+
+**No new constant was needed.** The three single-operation problems transform a constant the game
+already sources, and a transformed K is derived rather than quoted. The two combination problems are
+the book's own worked example and its check-your-learning; the worked example's givens were already
+in `reactions.ts`, cited to this very passage, and only the cobalt pair is new.
+
+**The route is found, not asserted.** A problem declares the equations the student is handed and the
+equation asked about — the question, never the answer — and `findCoupledRoute` searches for the
+operations that get from one to the other at module load. A problem whose target is unreachable
+throws on import rather than shipping. `1-ar/nafnakerfid` shipped 33 compounds its own answer tray
+could not spell, roughly six unanswerable questions per run, and the cure is the same: have the code
+prove the route exists rather than have an author assert it.
+
+**Stage one of the exercise is graded by doing it.** The operations a student picks are applied
+through the same engine the data uses and the result compared with the target equation, rather than
+checked against a stored list of correct choices. The composed equation is on screen the whole time,
+so the student is building something and watching it change rather than guessing at a multiple
+choice.
+
+**`coupled-task.test.tsx` plays every problem through the real buttons**, and it is not ceremony:
+the search allows factors up to six while the screen offers 1, 2 and 3, so a problem needing a
+factor of four would be solvable in the data and unanswerable on the screen. The test reads the
+offered factors off the card rather than assuming them, and was verified to fail — naming the
+problem and the missing factor — when the buttons were cut to 1 and 2.
+
+**Two refusals worth keeping.** A scale factor must be positive: zero deletes the equation and a
+negative one is rule 1 in disguise, which would give one operation two spellings. And two constants
+measured at different temperatures do not combine at all — K is a function of temperature, so their
+product describes no single system, and `addReactions` returns no constant rather than a plausible
+one. The cobalt problem is the case that makes this concrete: its target is the water-gas shift
+written backwards, which this game also ships at 800 °C. 1/0,64 = 1,56 against 0,14 for the same
+equation. Nothing is wrong — that is what "K depends on temperature" means, and the problem says so.
+
+**Adding the cobalt pair changed an exercise nobody was looking at.** `KP_PROBLEMS` is a blanket
+filter over every reaction that _can_ be converted, so both cobalt equilibria joined the Kc→Kp task
+by default — and both have Δn = 0, taking it from three Δn = 0 cases in eight to five in ten. They
+now carry `excludeFromKpExercise`, the same shape as `nafnakerfid`'s `excludeFromNameBuilder`, and
+`sources.test.ts` now guards the Δn spread so the next reaction added does not do it silently.
+
 ## Why bisection, not algebra
 
 `solveExtent` finds the root of Q(x) = K by bisection on the **extent of reaction**, rather than
@@ -154,15 +203,45 @@ both, and reserves bare `afurð` for by-products and for produce in the everyday
 New in `ordabok.md`: `ICE table;ICE-tafla` (the book's own form, used verbatim),
 `homogeneous equilibrium;einsleitt jafnvægi`, `heterogeneous equilibrium;misleitt jafnvægi`.
 
+**Five more with the coupled-equilibria work, all taken from the textbook and none ruled on:**
+`coupled equilibria;tengd jafnvægi`, `forward reaction;framhvarf`, `reverse reaction;bakhvarf`,
+`reciprocal;umhverfa`, `overall equation;heildarjafna`.
+
+| Concept            | Use                      | Evidence                                                                                           |
+| ------------------ | ------------------------ | -------------------------------------------------------------------------------------------------- |
+| coupled equilibria | `tengd jafnvægi`         | ch15's **glossary headword, with a definition**; the italicised defining use in both ch13 and ch15 |
+| forward / reverse  | `framhvarf` / `bakhvarf` | the book's own glossary definitions in ch13/m68797, teaching prose across six chapters, 20 to 15   |
+| reciprocal         | `umhverfa`               | the book's word in the sentence that states rule 1                                                 |
+
+**`andhverfa` was the live defect here, and it is now banned for the reaction sense only.**
+`equilibrium-shifter` said `bakhvarf` in `App.tsx` and `QKComparison.tsx` and `Andhverfa af …` in
+`NumbersPanel.tsx`, so one game named the same thing two ways; two more occurrences sat in its
+equilibria data, one of them carrying **English** (`Andhverfa Water Gas Shift hvarfsins`) in an
+Icelandic string. All four are fixed. The ban is the whole word with a single carve-out for a
+following form of `hlutfall`, because `andhverfu hlutfalli` in `3-ar/gas-law-challenge` is a
+different and correct sense — Boyle's law really is an inverse proportion. `handhverfa`
+(enantiomer, ch19) is excluded by the leading word boundary.
+
+**One legitimate string was reworded rather than exempted.** `gas-law-challenge` also said
+`P og V eru því andhverf` predicatively, with no noun to key a carve-out on, two lines below its own
+`í andhverfu hlutfalli`. Normalising it to that phrasing keeps one carve-out instead of a growing
+exemption list — and an exemption wider than intended stops enforcing a ruling silently, which is
+the lesson the `saltpetur(?!ssyrlingur)` row was written after.
+
+**Not settled, and deliberately left:** `umhverfa` has exactly **one** corpus hit, in rule 1's own
+sentence. That is the book's word in the place that matters, and `andhverfa` is taken by the
+reaction sense, so there is no competitor — but one hit is thin evidence and Siggi may want to look.
+
 ## Layout
 
 ```
 packages/shared/engine/equilibrium.ts   the maths; no React, no Icelandic
                                         (shared with `3-ar/equilibrium-shifter`)
-src/data/reactions.ts       22 reactions, every constant cited to a module
+src/data/reactions.ts       24 reactions, every constant cited to a module
 src/data/problems.ts        7 expression · 6 direction · 8 Kc→Kp · 6 ICE (M) · 4 ICE (atm)
+src/data/coupled.ts         5 coupled: 3 single-rule, then the book's 2 combinations
 src/components/             KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen
-src/__tests__/              87 tests
+src/__tests__/              114 tests
 ```
 
 ## Open
@@ -172,5 +251,9 @@ src/__tests__/              87 tests
 - **No temperature dependence of K itself.** The game states each constant's temperature and never
   varies it. Van 't Hoff now exists, in `3-ar/equilibrium-shifter` and in the shared engine, so this
   is no longer a gap on the platform — but this game does not use it.
-- **Coupled reactions.** The book's fifth worked example adds and reverses equations to get a new K
-  (reverse → 1/K, multiply by n → Kⁿ, add → multiply). Real content, not covered here.
+- **The water-gas reaction is named two ways on the platform** and the corpus cannot settle it:
+  `vatnsgashvarf` and `vatnsgas hvarf` both return **zero** hits in the book, so the compound
+  spelling is not the book's to decide. This game says `Vatnsgashvarfið`; `3-ar/equilibrium-shifter`
+  said `Vatnsgas hvarfið` and was harmonised to match, because a genitive compound
+  (`bakhvarf vatnsgashvarfsins`) cannot be split and one of the two had to give. That is a spelling
+  harmonisation, not a ruling — Siggi's to confirm or reverse.

@@ -48,7 +48,7 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
     description: 'Þrýstingur og rúmmál eru í andhverfu hlutfalli',
     constants: 'T og n eru fastar',
     principleIs:
-      'Ef þú minnkar rúmmálið (V↓) án þess að breyta hitastigi eða fjölda agna, þá þurfa sömu agnir að rekast við minni veggi á styttri tíma → fleiri árekstur á fermetra → hærri þrýstingur. P og V eru því andhverf: þegar annað tvöfaldast, helmingast hitt.',
+      'Ef þú minnkar rúmmálið (V↓) án þess að breyta hitastigi eða fjölda agna, þá þurfa sömu agnir að rekast við minni veggi á styttri tíma → fleiri árekstur á fermetra → hærri þrýstingur. P og V eru því í andhverfu hlutfalli: þegar annað tvöfaldast, helmingast hitt.',
   },
   charles: {
     id: 'charles',

@@ -115,6 +115,57 @@ export const REACTIONS: Reaction[] = [
     },
     source: { module: M68798, where: 'sýnidæmi — jafnvægisfastar tengdra efnahvarfa' },
   },
+  // The two cobalt equilibria of the coupled-reactions exercise. They are here
+  // rather than inline in `coupled.ts` so that `sources.test.ts` holds them to
+  // the same citation rule as every other constant — and because they are the
+  // one pair on the platform whose solids cancel when the equations are added,
+  // which is the whole point of the exercise.
+  {
+    id: 'kobolt-koloxid',
+    excludeFromKpExercise: true,
+    name: 'Afoxun kóbaltoxíðs með kolsýringi',
+    reactants: [
+      { formula: 'CoO', coefficient: 1, phase: 's' },
+      { formula: 'CO', coefficient: 1, phase: 'g' },
+    ],
+    products: [
+      { formula: 'Co', coefficient: 1, phase: 's' },
+      { formula: 'CO₂', coefficient: 1, phase: 'g' },
+    ],
+    constant: {
+      value: 490,
+      temperatureC: 550,
+      basis: 'Kc',
+      source: {
+        module: M68798,
+        where: 'kannaðu þekkingu þína — jafnvægisfastar tengdra efnahvarfa',
+      },
+    },
+    source: { module: M68798, where: 'kannaðu þekkingu þína — jafnvægisfastar tengdra efnahvarfa' },
+  },
+  {
+    id: 'kobolt-vetni',
+    excludeFromKpExercise: true,
+    name: 'Afoxun kóbaltoxíðs með vetni',
+    reactants: [
+      { formula: 'CoO', coefficient: 1, phase: 's' },
+      { formula: 'H₂', coefficient: 1, phase: 'g' },
+    ],
+    products: [
+      { formula: 'Co', coefficient: 1, phase: 's' },
+      { formula: 'H₂O', coefficient: 1, phase: 'g' },
+    ],
+    constant: {
+      value: 67,
+      temperatureC: 550,
+      basis: 'Kc',
+      source: {
+        module: M68798,
+        where: 'kannaðu þekkingu þína — jafnvægisfastar tengdra efnahvarfa',
+      },
+    },
+    source: { module: M68798, where: 'kannaðu þekkingu þína — jafnvægisfastar tengdra efnahvarfa' },
+  },
   {
     id: 'kolefnistvisulfid',
     name: 'Vetnun kolefnistvísúlfíðs',

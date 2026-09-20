@@ -908,7 +908,7 @@ myndefni`, `Kerfið eyðir henni` → `Kerfið eyðir því`, `Afurð fjarlægð
 2026-09-20, below)**; K's own temperature dependence (van 't Hoff) is unbuilt **(closed the same
 day, in `equilibrium-shifter`)**; ICE in partial pressures works in the engine but no problem poses
 it **(closed 2026-09-20, below)**; and the book's coupled-reaction rules (reverse → 1/K, multiply by
-n → Kⁿ, add → multiply) are not covered — **still open.**
+n → Kⁿ, add → multiply) are not covered — **also closed 2026-09-20, below. All four are now done.**
 
 **`3-ar/equilibrium-shifter` is no longer qualitative — 2026-09-20.** The gap Jafnvægisfastinn's
 README named as the largest one left in Y3. The game still asks the same question and the
@@ -1008,6 +1008,61 @@ P_total(0) + Δn·x` exactly, so `extentFromTotalPressure` inverts a manometer r
   the book states them without one, and inventing a plausible 25 °C would put an unsourced number on
   screen invisibly.
 
+**Tengd jafnvægi — coupled equilibria — landed 2026-09-20, in `3-ar/jafnvaegisfasti`.** The last of
+the four items that game's README opened, and the end of the Y3 equilibrium arc. What matters
+platform-wide:
+
+- **The three operations are one fact, and the teaching step says so.** Reverse an equation and K
+  becomes 1/K; multiply it through by n and K becomes Kⁿ; add two and the K values multiply. All
+  three fall out of K being a ratio of product terms over reactant terms — swapping the sides
+  inverts the ratio, multiplying the coefficients raises every term to that power, adding
+  multiplies the ratios and cancels what stands on both sides. Three formulas to memorise is the
+  worse version of this.
+- **No new constant was needed, and that is the point of where the problems came from.** The three
+  single-operation problems transform a constant the game already sources — a transformed K is
+  derived, not quoted — and the two combination problems are the book's own worked example and its
+  check-your-learning. Only the cobalt pair is new data, cited like everything else.
+- **The route is found, not asserted.** A problem declares the equations handed to the student and
+  the equation asked about, never the answer, and `findCoupledRoute` searches for the operations at
+  module load. **A problem whose target is unreachable throws on import rather than shipping** —
+  `1-ar/nafnakerfid`'s 33 unspellable compounds are what that guard is for, and an author's
+  assertion that a problem is solvable is not evidence that it is.
+- **A test plays every problem through the real buttons, and it earned its place.** The search
+  allows factors up to six while the screen offers 1, 2 and 3, so a problem needing four would be
+  solvable in the data and unanswerable on screen. `coupled-task.test.tsx` reads the offered factors
+  off the card rather than assuming them, and was verified to fail — naming the problem and the
+  missing factor — with the buttons cut to 1 and 2.
+- **Two constants at different temperatures do not combine, and the engine returns nothing rather
+  than something plausible.** K is a function of temperature. The cobalt problem makes it concrete:
+  its target is the water-gas shift written backwards, which the same game ships at 800 °C, and
+  1/0,64 = 1,56 against 0,14 for the identical equation. Not a contradiction — the definition.
+- **Adding two reactions changed an exercise nobody was looking at.** `KP_PROBLEMS` is a blanket
+  filter over everything convertible, so both cobalt equilibria joined the Kc→Kp task by default,
+  and both have Δn = 0 — taking it from three Δn = 0 cases in eight to five in ten. They now carry
+  `excludeFromKpExercise`, the same shape as `nafnakerfid`'s `excludeFromNameBuilder`, and
+  `sources.test.ts` guards the Δn spread so the next one is caught rather than noticed. **Watch for
+  this whenever a data file feeds a derived set: adding a row is not a local change.**
+- **Five terms, all taken from the textbook, none needing a ruling** — `tengd jafnvægi` is ch15's
+  **glossary headword with a definition** and the italicised defining use in two chapters;
+  `framhvarf`/`bakhvarf` are the book's own glossary definitions in ch13/m68797 and its teaching
+  prose across six chapters; `umhverfa` is its word in the sentence stating rule 1; `heildarjafna`
+  is its word for the combined equation.
+- **`andhverfa` was a live one-game-two-words defect, at four sites.** `equilibrium-shifter` said
+  `bakhvarf` in two files and `Andhverfa af …` in a third, and its equilibria data carried two more
+  — one of them **English inside an Icelandic string**, `Andhverfa Water Gas Shift hvarfsins`. All
+  four fixed. The ban is the whole word with one carve-out for a following form of `hlutfall`,
+  because `andhverfu hlutfalli` in `3-ar/gas-law-challenge` is a different and correct sense: Boyle's
+  law really is an inverse proportion. `handhverfa` (enantiomer) is excluded by the leading word
+  boundary. **One legitimate string was reworded rather than exempted** — the same file also said
+  `P og V eru því andhverf` predicatively, with no noun to key a carve-out on, two lines below its
+  own `í andhverfu hlutfalli`; normalising it keeps one carve-out instead of a growing exemption
+  list.
+- **Open, and Siggi's:** the water-gas reaction is named two ways on the platform and **the corpus
+  cannot settle it** — both `vatnsgashvarf` and `vatnsgas hvarf` return zero hits. `equilibrium-shifter`
+  was harmonised to `jafnvaegisfasti`'s `Vatnsgashvarfið` because a genitive compound cannot be
+  split, but that is a spelling harmonisation and not a ruling. Also thin: `umhverfa` has exactly
+  one corpus hit, in the sentence that matters and with no competitor, but one hit is one hit.
+
 **No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
 now fixed, as are the three above, and each carries a test that fails against the pre-fix code. What
 is left is enrichment and unfinished decisions, not defects — the work order is
@@ -1071,6 +1126,7 @@ that let this file's own Y3 chain line say `Púfferar` until September.
 | precipitation reaction | `útfellingarhvarf` | — | **2026-09-20**, resolving a split the corpus itself carries: `útfellingarhvarf` 9, `botnfallshvarf` 7. `ordabok.md`'s existing pair decides it — `precipitation;útfelling` names the **process** and `precipitate;botnfall` names the **solid**, so the reaction is built on the first. Neuter, like `efnahvarf`: nom/acc `útfellingarhvarf`, dat `útfellingarhvarfi`, gen `útfellingarhvarfs`, pl. `útfellingarhvörf`. Nothing shipped used either word, so no banned form and no test row — but **do not shorten it to `botnfallshvarf`**, which is the form the old repo's game used |
 | product | `myndefni` | **`afurð`** (bare) | **2026-09-20, and nothing was newly ruled** — `ordabok.md` has said `product;myndefni` all along and the corpus agrees **324 to 92**, but the platform shipped `afurð` at **68 sites across five games** (`equilibrium-shifter` 33, `hess-law` 18, `kinetics` 8, `takmarkandi` 8, `einingakedjan` 1) and `myndefni` at 3. **Feminine to NEUTER, so this is not a string swap** — nom/acc/dat `myndefni`, gen `myndefnis`, pl. `myndefni`/`myndefni`/`myndefnum`/`myndefna`, def. sg. `myndefnið`. Three agreements moved with the noun: `hversu mikil afurð` → `hversu mikið myndefni`, `Kerfið eyðir henni` → `Kerfið eyðir því` (a pronoun standing for the noun), `Afurð fjarlægð` → `Myndefni fjarlægt`. **The ban starts at a word boundary on purpose:** the book's own `lokaafurð`, `aukaafurð`, `brunaafurðir` and `klofnunarafurðir` are correct and still pass — it reserves bare `afurð` for by-products and for produce in the everyday sense. `lokafurð` (missing an `a`, 0 corpus hits against 5) was corrected to `lokaafurð` at the same time |
 | reaction quotient | `hvarfstuðull` | `hvarfkvóti` | **2026-09-20**, and also already governed: `ordabok.md` carried `reaction quotient;hvarfstuðull` while `equilibrium-shifter`'s `QKComparison.tsx` said `hvarfkvóti`. Corpus **48 to 5** — and note _where_ the 5 are: the book uses `hvarfstuðull` throughout its teaching sections (`ch13/m68798`, `ch13/m68801`, including the glossary definition of `jafnvægisfasti`) and slips into `hvarfkvóti` only in its Le Chatelier section, so it disagrees with itself exactly as it does over `nettójónajafna`. Running prose in the section that defines the term wins. **This does not conflict with the `sýrufasti` row's `-fasti` against `-stuðull` argument** — Q is precisely the quantity that is _not_ constant, so the split is what makes the pair legible: `jafnvægisfasti` for K, `hvarfstuðull` for Q. Masculine: `hvarfstuðull` / `hvarfstuðul` / `hvarfstuðli` / `hvarfstuðuls`, def. `hvarfstuðullinn`. The `ordabok.md` headword was `reaction Quotient` with a stray capital and is now lowercase, matching every other entry |
+| reverse reaction | `bakhvarf` (og `framhvarf`) | **`andhverfa`** um efnahvarf | **Taken from the textbook, 2026-09-20**; `ordabok.md` was silent and now carries `forward reaction;framhvarf` and `reverse reaction;bakhvarf`. The pair is the book's own **glossary definition** wording (`ch13/m68797` defines `jafnvægi` and `afturkræft efnahvarf` with it) and its teaching prose across six chapters, **20 hits to 15**; `andhverft hvarf` appears 4 times, all inside end-of-chapter problems in one module. The pair also reads as a pair: `fram-` against `bak-`. Neuter, like `efnahvarf`: `bakhvarf` / `bakhvarf` / `bakhvarfi` / `bakhvarfs`. **This was live, not a precaution** — `3-ar/equilibrium-shifter` said `bakhvarf` in `App.tsx` and `QKComparison.tsx` and `Andhverfa af …` in `NumbersPanel.tsx`, plus two more in its equilibria data, one carrying **English** (`Andhverfa Water Gas Shift hvarfsins`) inside an Icelandic string. **Read the regex before narrowing it:** the ban is the whole word with a single carve-out for a following form of `hlutfall`, because `andhverfu hlutfalli` in `3-ar/gas-law-challenge` is a **different and correct sense** — Boyle's law really is an inverse proportion — and `handhverfa` (enantiomer, ch19) is excluded by the leading word boundary. A first draft matched only `andhverf-` followed by a reaction or `af`, and it missed two of the four shipped sites. **Unrelated and separate:** `umhverfa` is the reciprocal of a **number**, which is what a reversed reaction's K is, and is the book's word in the sentence that states that rule |
 `sjálfvirkur` has zero hits and is not the word for spontaneous; do not grep for it.
 
 The `stilla` rename swept `1-ar/jafna-jofnur` (6 files), the `Námsleiðin` chain string in every
