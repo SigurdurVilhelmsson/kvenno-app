@@ -181,7 +181,7 @@ function App() {
             <h2 className="font-bold text-teal-800 mb-3">Hvað er hvarfhraði?</h2>
             <p className="text-teal-900 text-sm mb-4">
               <strong>Hvarfhraði (reaction rate)</strong> lýsir því hversu hratt hvarfefni breytast
-              í afurðir. Hraðinn ákvarðast af mörgum þáttum: styrk hvarfefna, hitastigi, hvata og
+              í myndefni. Hraðinn ákvarðast af mörgum þáttum: styrk hvarfefna, hitastigi, hvata og
               yfirborðsflatarmáli.
             </p>
             <div className="bg-white p-3 rounded-lg border border-teal-200">
@@ -309,7 +309,7 @@ function App() {
             <h3 className="font-semibold text-warm-700 mb-2">📐 Lykilformúlur</h3>
             <div className="font-mono text-sm space-y-2 text-warm-600">
               <p>
-                <strong>Meðalhraði:</strong> Rate = -Δ[hvarfefni]/Δt = +Δ[afurð]/Δt
+                <strong>Meðalhraði:</strong> Rate = -Δ[hvarfefni]/Δt = +Δ[myndefni]/Δt
               </p>
               <p>
                 <strong>Hraðalögmál:</strong> Rate = k[A]<sup>m</sup>[B]<sup>n</sup>

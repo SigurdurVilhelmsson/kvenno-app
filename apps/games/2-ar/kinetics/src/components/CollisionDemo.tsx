@@ -187,7 +187,7 @@ export function CollisionDemo({
             className="w-3 h-3 bg-green-500 border border-white/20"
             style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}
           />
-          <span className="text-warm-200 font-medium">◆ Afurð AB</span>
+          <span className="text-warm-200 font-medium">◆ Myndefni AB</span>
         </div>
       </div>
 

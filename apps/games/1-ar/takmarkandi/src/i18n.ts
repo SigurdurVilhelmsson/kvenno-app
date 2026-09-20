@@ -45,7 +45,7 @@ export const gameTranslations = createGameTranslations({
       title: 'Hvað lærir þú?',
       point1: 'Hvað er takmarkandi hvarfefni og hvers vegna það skiptir máli',
       point2: 'Hvernig á að finna takmarkandi hvarfefni út frá stuðlum',
-      point3: 'Reikna magn afurða og afganga eftir hvarf',
+      point3: 'Reikna magn myndefna og afganga eftir hvarf',
       point4: 'Nota hlutfallaefnafræði til að leysa raunveruleg vandamál',
     },
   },

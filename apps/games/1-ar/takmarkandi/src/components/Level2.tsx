@@ -142,7 +142,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     }
     return (
       `Hvorfin geta gerst ${answer.timesReactionRuns} sinnum. ` +
-      `Afurðir: ${answer.timesReactionRuns} × ${p.coeff} = ${answer.productsFormed[p.formula]} ${p.formula}.`
+      `Myndefni: ${answer.timesReactionRuns} × ${p.coeff} = ${answer.productsFormed[p.formula]} ${p.formula}.`
     );
   };
 
@@ -170,7 +170,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             >
               ← Til baka
             </button>
-            <h1 className="text-lg font-bold text-warm-800">Reikna afurðir – Stig 2</h1>
+            <h1 className="text-lg font-bold text-warm-800">Reikna myndefni – Stig 2</h1>
             <span className="text-sm font-semibold text-warm-600">
               {index + 1}/{TOTAL}
             </span>
@@ -231,7 +231,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         {/* Method card — always visible */}
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-4 text-sm text-blue-800">
           <strong>Aðferð:</strong> Deildu fjölda hverrar tegundar með stuðli hennar. Lægri talan =
-          takmarkandi hvarfefni. Margfaldaðu þá tölu með stuðli afurðar.
+          takmarkandi hvarfefni. Margfaldaðu þá tölu með stuðli myndefnisins.
         </div>
 
         {/* Question */}
@@ -276,7 +276,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   ? undefined
                   : q.type === 'times'
                     ? 'Deildu fjolda sameinda hvarfefnis med stuðli þess. Lægri talan segir hversu oft hvorfin geta gerst.'
-                    : 'Margfaldaðu fjolda skipta med stuðli AFURÐAR, ekki hvarfefnis.',
+                    : 'Margfaldaðu fjolda skipta med stuðli MYNDEFNISINS, ekki hvarfefnisins.',
               }}
               config={{ showExplanation: true, showMisconceptions: !isCorrect }}
             />

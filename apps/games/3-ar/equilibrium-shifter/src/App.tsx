@@ -217,7 +217,7 @@ function App() {
     let method = '';
     if (stress.type === 'increase-temp') {
       method = isExothermic
-        ? 'Varmalosandi hvarf: Varmi er „afurð". Meira varma → hliðrun til vinstri.'
+        ? 'Varmalosandi hvarf: Varmi er „myndefni". Meira varma → hliðrun til vinstri.'
         : 'Varmabindandi hvarf: Varmi er „hvarfefni". Meira varma → hliðrun til hægri.';
     } else if (stress.type === 'decrease-temp') {
       method = isExothermic
@@ -225,15 +225,15 @@ function App() {
         : 'Varmabindandi hvarf: Minna varma → hliðrun til vinstri.';
     } else if (stress.type === 'increase-pressure') {
       if (moreGasOnRight) {
-        method = `Hvarfefni: ${eq.gasMoles?.reactants} mól gas. Afurðir: ${eq.gasMoles?.products} mól gas. Hliðrun til vinstri (færri mól).`;
+        method = `Hvarfefni: ${eq.gasMoles?.reactants} mól gas. Myndefni: ${eq.gasMoles?.products} mól gas. Hliðrun til vinstri (færri mól).`;
       } else if (moreGasOnLeft) {
-        method = `Hvarfefni: ${eq.gasMoles?.reactants} mól gas. Afurðir: ${eq.gasMoles?.products} mól gas. Hliðrun til hægri (færri mól).`;
+        method = `Hvarfefni: ${eq.gasMoles?.reactants} mól gas. Myndefni: ${eq.gasMoles?.products} mól gas. Hliðrun til hægri (færri mól).`;
       } else {
-        method = `Hvarfefni: ${eq.gasMoles?.reactants || 0} mól gas. Afurðir: ${eq.gasMoles?.products || 0} mól gas. Jafnt → engin hliðrun.`;
+        method = `Hvarfefni: ${eq.gasMoles?.reactants || 0} mól gas. Myndefni: ${eq.gasMoles?.products || 0} mól gas. Jafnt → engin hliðrun.`;
       }
     } else if (stress.type === 'decrease-pressure') {
       if (moreGasOnRight) {
-        method = `Afurðir hafa fleiri mól gas (${eq.gasMoles?.products}). Hliðrun til hægri.`;
+        method = `Myndefni hafa fleiri mól gas (${eq.gasMoles?.products}). Hliðrun til hægri.`;
       } else if (moreGasOnLeft) {
         method = `Hvarfefni hafa fleiri mól gas (${eq.gasMoles?.reactants}). Hliðrun til vinstri.`;
       } else {
@@ -244,11 +244,11 @@ function App() {
     } else if (stress.type === 'add-reactant') {
       method = `Bætt við hvarfefni (${stress.target}). Kerfið eyðir því → hliðrun til hægri.`;
     } else if (stress.type === 'add-product') {
-      method = `Bætt við afurð (${stress.target}). Kerfið eyðir henni → hliðrun til vinstri.`;
+      method = `Bætt við myndefni (${stress.target}). Kerfið eyðir því → hliðrun til vinstri.`;
     } else if (stress.type === 'remove-reactant') {
       method = `Hvarfefni fjarlægt (${stress.target}). Kerfið bætir upp → hliðrun til vinstri.`;
     } else if (stress.type === 'remove-product') {
-      method = `Afurð fjarlægð (${stress.target}). Kerfið bætir upp → hliðrun til hægri.`;
+      method = `Myndefni fjarlægt (${stress.target}). Kerfið bætir upp → hliðrun til hægri.`;
     }
 
     // Solution hint - full worked answer
@@ -463,8 +463,8 @@ function App() {
           </p>
         </div>
         <div className="mt-3 text-center text-xs text-warm-500">
-          <strong>Námsleiðin:</strong> Gaslögmál → <u>Jafnvægi</u> → Sýrufastinn → Varmafræði → pH
-          Títrun → Stuðpúðar → Leysnijafnvægi
+          <strong>Námsleiðin:</strong> Gaslögmál → Jafnvægisfastinn → <u>Hliðrun jafnvægis</u> →
+          Sýrufastinn → Varmafræði → pH Títrun → Stuðpúðar → Leysnijafnvægi
         </div>
       </div>
     </div>
@@ -558,7 +558,7 @@ function App() {
               className={`molecule-container products-side ${isCorrect !== null && correctShift?.direction === 'right' ? 'glowing' : ''}`}
             >
               <div className="text-center">
-                <div className="text-sm text-warm-600 mb-2 font-semibold">Afurðir</div>
+                <div className="text-sm text-warm-600 mb-2 font-semibold">Myndefni</div>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {currentEquilibrium.products.map((p, idx) => (
                     <div key={idx} className="molecule">
@@ -705,6 +705,7 @@ function App() {
                         shiftDirection={correctShift.direction}
                         stress={appliedStress}
                         isExothermic={currentEquilibrium.thermodynamics.type === 'exothermic'}
+                        gasMoles={currentEquilibrium.gasMoles}
                         animate={true}
                       />
                     </div>

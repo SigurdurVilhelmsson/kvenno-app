@@ -52,7 +52,7 @@ const PUZZLES: Puzzle[] = [
       { equationId: 'eq1', reverse: false, multiply: 1 },
       { equationId: 'eq2', reverse: true, multiply: 1 },
     ],
-    hint: 'Þú vilt CO sem afurð, en í jöfnu 2 er CO hvarfefni. Hvað þarftu að gera?',
+    hint: 'Þú vilt CO sem myndefni, en í jöfnu 2 er CO hvarfefni. Hvað þarftu að gera?',
     explanation:
       'Nota jöfnu 1 (C → CO₂) og snúa við jöfnu 2 (CO₂ → CO). CO₂ styttist út: -393.5 + 283.0 = -110.5 kJ',
   },
@@ -132,7 +132,7 @@ const PUZZLES: Puzzle[] = [
       { equationId: 'eq2', reverse: false, multiply: 3 },
       { equationId: 'eq3', reverse: true, multiply: 1 },
     ],
-    hint: 'Etanól er hvarfefni, en í jöfnu 3 er það afurð. Þú þarft 2 CO₂ og 3 H₂O.',
+    hint: 'Etanól er hvarfefni, en í jöfnu 3 er það myndefni. Þú þarft 2 CO₂ og 3 H₂O.',
     explanation: '2×(-393.5) + 3×(-285.8) + (+277.0) = -787 - 857.4 + 277 = -1367.4 kJ',
   },
   {
@@ -202,7 +202,7 @@ const PUZZLES: Puzzle[] = [
       { equationId: 'eq1', reverse: true, multiply: 1 },
       { equationId: 'eq2', reverse: false, multiply: 1 },
     ],
-    hint: 'SO₂ er hvarfefni í markmiðinu, en afurð í jöfnu 1. Hvað þarftu að gera?',
+    hint: 'SO₂ er hvarfefni í markmiðinu, en myndefni í jöfnu 1. Hvað þarftu að gera?',
     explanation: 'Snúa við jöfnu 1 og leggja við jöfnu 2: +297.0 + (-396.0) = -99.0 kJ',
   },
   {
@@ -237,7 +237,7 @@ const PUZZLES: Puzzle[] = [
       { equationId: 'eq1', reverse: false, multiply: 1 },
       { equationId: 'eq2', reverse: true, multiply: 1 },
     ],
-    hint: 'Fe₂O₃ er hvarfefni í markmiðinu (neysla), en afurð í jöfnu 2 (myndun).',
+    hint: 'Fe₂O₃ er hvarfefni í markmiðinu (neysla), en myndefni í jöfnu 2 (myndun).',
     explanation: 'Jafna 1 + öfug jafna 2: -1676 + 824 = -852 kJ. Þetta er thermít-hvörfin!',
   },
 ];

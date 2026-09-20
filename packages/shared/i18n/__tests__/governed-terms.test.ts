@@ -241,6 +241,20 @@ const GOVERNED_TERMS: GovernedTerm[] = [
     guidance:
       "The corpus is 54 to 0 and the shipped platform was already clean — nafnakerfid, kinetics and equilibrium-shifter all say joðíð. The old repo's jonir-i-lausn says jódíð four times (reactions.ts:47,51,55 and solubility.ts:46), and it lands on the very reaction the textbook uses as its worked example, PbI₂. This row is here so a later harvest from that file cannot bring it in. **Widened 2026-09-20, the same day it was written:** the first form of this ban was /jódíð/i, which matches only the d-spelling. Starting the Ksp work turned up a THIRD variant in the old repo's solubility-equilibrium — Blýjóðíð and Silfurjóðíð, with the correct ð but an accented ó — and the narrow ban sailed straight past it. Both wrong forms carry the accented ó and the correct joðíð does not, so the character class keys on exactly that. Same class of miss as the accentless anoða, and as stuð against stuðl: write the ban against every variant you have actually seen, not against the one in front of you.",
   },
+  {
+    english: 'product',
+    correct: 'myndefni',
+    banned: [/\bafurð/i],
+    guidance:
+      '2026-09-20, and this one was already governed — ordabok.md has said product;myndefni all along, and the corpus agrees 324 to 92 (8 to 1 even counting only the bare forms). The platform shipped afurð at 68 sites across five games and myndefni at 3, so nothing enforced it. Read the corpus split before reversing this: the book keeps afurð for by-products and for produce in the everyday sense — brunaafurðir, aukaafurð, ferskar afurðir — and uses myndefni for the thing on the right of an arrow. **Feminine to NEUTER, so this is not a string swap.** The sweep changed three agreements that a noun-only substitution would have left wrong: hversu mikil afurð -> hversu mikið myndefni (1-ar/takmarkandi), Kerfið eyðir henni -> Kerfið eyðir því (3-ar/equilibrium-shifter, where the pronoun stands for the noun), and ΔH°f fyrir afurðina -> fyrir myndefnið. Declension: myndefni / myndefni / myndefni / myndefnis, plural myndefni / myndefni / myndefnum / myndefna. The ban starts at a word boundary ON PURPOSE, so the legitimate compounds lokaafurð and aukaafurð still pass — the book uses both.',
+  },
+  {
+    english: 'reaction quotient',
+    correct: 'hvarfstuðull',
+    banned: [/hvarfkvót/i],
+    guidance:
+      "2026-09-20. ordabok.md already carried reaction Quotient;hvarfstuðull and 3-ar/equilibrium-shifter's QKComparison.tsx said hvarfkvóti, so the glossary and the code disagreed. The corpus settles it 48 to 5 — and note WHERE the 5 are: the book uses hvarfstuðull throughout its teaching sections (ch13/m68798 and m68801, including the glossary definition of jafnvægisfasti) and slips into hvarfkvóti only in its Le Chatelier section, so the book disagrees with itself exactly the way it does over nettójónajafna. Running prose in the section that defines the term wins. This does NOT conflict with the sýrufasti row's argument that a -stuðull names a coefficient rather than a constant: Q is precisely the quantity that is not constant, so the -fasti/-stuðull split is what makes the pair legible — jafnvægisfasti for K, hvarfstuðull for Q. Masculine: hvarfstuðull / hvarfstuðul / hvarfstuðli / hvarfstuðuls, definite hvarfstuðullinn.",
+  },
 ];
 
 /** Directories whose rendered strings a student can actually meet. */

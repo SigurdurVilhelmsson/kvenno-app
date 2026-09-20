@@ -221,7 +221,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
             </p>
             <div className="bg-teal-50 border border-teal-200 rounded-lg p-3 text-center">
               <p className="font-mono text-teal-900 text-base">
-                ΔH°<sub>rxn</sub> = Σ n·ΔH°f(afurðir) − Σ n·ΔH°f(hvarfefni)
+                ΔH°<sub>rxn</sub> = Σ n·ΔH°f(myndefni) − Σ n·ΔH°f(hvarfefni)
               </p>
             </div>
             <p className="text-xs text-warm-600">

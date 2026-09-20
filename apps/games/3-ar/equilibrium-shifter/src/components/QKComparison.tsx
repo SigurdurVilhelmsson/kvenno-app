@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import type { ShiftDirection, Stress } from '../types';
+import type { GasMoles, ShiftDirection, Stress } from '../types';
 
 interface QKComparisonProps {
   /** The direction the equilibrium shifts */
@@ -9,6 +9,16 @@ interface QKComparisonProps {
   stress: Stress;
   /** Whether the reaction is exothermic */
   isExothermic: boolean;
+  /**
+   * Moles of gas on each side.
+   *
+   * **Required, because the pressure case cannot be answered without it.**
+   * Compressing a mixture multiplies every concentration by the same factor,
+   * so Q changes by that factor raised to Δn — and Δn is negative for most of
+   * the classic equilibria. This panel used to say "Q eykst" for any pressure
+   * increase, which is right only when Δn > 0.
+   */
+  gasMoles: GasMoles;
   /** Animation state */
   animate?: boolean;
 }
@@ -25,6 +35,7 @@ export function QKComparison({
   shiftDirection,
   stress,
   isExothermic,
+  gasMoles,
   animate = true,
 }: QKComparisonProps) {
   // Determine Q vs K relationship based on shift direction
@@ -47,6 +58,7 @@ export function QKComparison({
   // Get explanation based on stress type
   const explanation = useMemo(() => {
     const stressType = stress.type;
+    const deltaN = gasMoles.products - gasMoles.reactants;
 
     if (stressType === 'add-catalyst') {
       return {
@@ -89,10 +101,36 @@ export function QKComparison({
     }
 
     if (stressType.includes('pressure')) {
+      // Squeezing the mixture into a smaller volume multiplies every
+      // concentration by the same factor f, so Q is multiplied by f^Δn. Which
+      // way Q moves therefore depends on the SIGN of Δn, not on the direction
+      // of the pressure change alone.
+      //
+      // This branch used to read "Q eykst" for every pressure increase. That
+      // is right for N₂O₄ ⇌ 2NO₂ (Δn = +1) and backwards for the Haber process
+      // (Δn = −2) — and it contradicted the bars drawn directly above it,
+      // which take their widths from the shift direction and so were correct.
+      // Of the 21 equilibria in this game that offer a pressure stress, 10
+      // have Δn < 0 and 4 have Δn = 0, so the sentence was wrong on 14 of them.
+      if (deltaN === 0) {
+        return {
+          qEffect: 'Q er óbreytt',
+          kEffect: 'K er óbreytt',
+          reason:
+            'Jafn mörg gasmól beggja vegna, svo þrýstingsbreytingin margfaldar teljara og nefnara með sömu tölu og Q stendur í stað',
+        };
+      }
+      const squeezing = stressType === 'increase-pressure';
+      // Q rises when squeezing a reaction that makes more gas, and when
+      // expanding one that makes less.
+      const makesMoreGas = deltaN > 0;
+      const qRises = squeezing === makesMoreGas;
       return {
-        qEffect: stressType === 'increase-pressure' ? 'Q eykst (þéttari)' : 'Q minnkar (þanist)',
+        qEffect: qRises ? 'Q eykst' : 'Q minnkar',
         kEffect: 'K er óbreytt',
-        reason: 'Þrýstingsbreyting hefur áhrif á styrk en ekki K',
+        reason: `Δn = ${deltaN > 0 ? '+' : ''}${deltaN}, svo ${
+          squeezing ? 'þjöppun' : 'þensla'
+        } margfaldar Q með stuðli í veldinu ${deltaN > 0 ? '+' : ''}${deltaN} — K breytist ekki við þrýsting`,
       };
     }
 
@@ -101,7 +139,7 @@ export function QKComparison({
       return {
         qEffect: 'Q minnkar',
         kEffect: 'K er óbreytt',
-        reason: 'Meira af hvarfefnum eða minna af afurðum lækkar Q',
+        reason: 'Meira af hvarfefnum eða minna af myndefnum lækkar Q',
       };
     }
 
@@ -109,7 +147,7 @@ export function QKComparison({
       return {
         qEffect: 'Q eykst',
         kEffect: 'K er óbreytt',
-        reason: 'Meira af afurðum eða minna af hvarfefnum hækkar Q',
+        reason: 'Meira af myndefnum eða minna af hvarfefnum hækkar Q',
       };
     }
 
@@ -118,7 +156,7 @@ export function QKComparison({
       kEffect: 'K er óbreytt',
       reason: 'Kerfið leitast við að jafnvægi',
     };
-  }, [stress, isExothermic]);
+  }, [stress, isExothermic, gasMoles]);
 
   // Get shift explanation
   const shiftExplanation = useMemo(() => {
@@ -198,7 +236,7 @@ export function QKComparison({
         {/* What happened to Q and K */}
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-blue-50 rounded-lg p-2 border border-blue-200">
-            <div className="font-semibold text-blue-800 text-xs mb-1">Q (hvarfkvóti)</div>
+            <div className="font-semibold text-blue-800 text-xs mb-1">Q (hvarfstuðull)</div>
             <div className="text-blue-700">{explanation.qEffect}</div>
           </div>
           <div className="bg-purple-50 rounded-lg p-2 border border-purple-200">
@@ -240,7 +278,7 @@ export function QKComparison({
 
       {/* Formula reminder */}
       <div className="mt-4 text-center text-xs text-warm-500 bg-white rounded p-2">
-        <span className="font-mono">Q = [afurðir]ⁿ / [hvarfefni]ᵐ</span>
+        <span className="font-mono">Q = [myndefni]ⁿ / [hvarfefni]ᵐ</span>
         <span className="mx-2">•</span>
         <span>Q leitar alltaf í átt að K</span>
       </div>

@@ -169,8 +169,8 @@ function App() {
               </div>
 
               <div className="mt-3 text-center text-xs text-warm-500">
-                <strong>Námsleiðin:</strong> Gaslögmál → Jafnvægi → <u>Sýrufastinn</u> → Varmafræði
-                → pH Títrun → Stuðpúðar → Leysnijafnvægi
+                <strong>Námsleiðin:</strong> Gaslögmál → Jafnvægisfastinn → Hliðrun jafnvægis →{' '}
+                <u>Sýrufastinn</u> → Varmafræði → pH Títrun → Stuðpúðar → Leysnijafnvægi
               </div>
               <div className="mt-2 text-center text-xs text-warm-400">
                 Kafli 16 — Chemistry: The Central Science (Brown et al.)

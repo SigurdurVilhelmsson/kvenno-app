@@ -236,9 +236,9 @@ describe('getStressDescriptionIs', () => {
   it('returns Icelandic description for each stress type', () => {
     const cases: Array<{ stress: Stress; expected: string }> = [
       { stress: { type: 'add-reactant', target: 'N2' }, expected: 'Bæta við N2 (hvarfefni)' },
-      { stress: { type: 'add-product', target: 'NH3' }, expected: 'Bæta við NH3 (afurð)' },
+      { stress: { type: 'add-product', target: 'NH3' }, expected: 'Bæta við NH3 (myndefni)' },
       { stress: { type: 'remove-reactant', target: 'H2' }, expected: 'Fjarlægja H2 (hvarfefni)' },
-      { stress: { type: 'remove-product', target: 'NH3' }, expected: 'Fjarlægja NH3 (afurð)' },
+      { stress: { type: 'remove-product', target: 'NH3' }, expected: 'Fjarlægja NH3 (myndefni)' },
       { stress: { type: 'increase-temp', target: null }, expected: 'Auka hitastig' },
       { stress: { type: 'decrease-temp', target: null }, expected: 'Lækka hitastig' },
       { stress: { type: 'increase-pressure', target: null }, expected: 'Auka þrýsting' },

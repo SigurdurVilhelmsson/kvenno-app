@@ -8,3 +8,4 @@ export * from './scoring';
 export * from './achievements';
 export * from './shuffle';
 export * from './numbers';
+export * from './scientific';

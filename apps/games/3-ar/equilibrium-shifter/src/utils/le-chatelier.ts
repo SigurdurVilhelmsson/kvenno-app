@@ -31,7 +31,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
     direction = 'right';
     const reactantFormula = target || '';
     explanation = `Adding ${reactantFormula} (a reactant) increases reactant concentration. The system shifts RIGHT to consume the added ${reactantFormula} and produce more products.`;
-    explanationIs = `Að bæta við ${reactantFormula} (hvarfefni) eykur styrk hvarfefna. Kerfið hliðrast TIL HÆGRI til að neyta ${reactantFormula} og framleiða meira af afurðum.`;
+    explanationIs = `Að bæta við ${reactantFormula} (hvarfefni) eykur styrk hvarfefna. Kerfið hliðrast TIL HÆGRI til að neyta ${reactantFormula} og framleiða meira af myndefnum.`;
     reasoning = [
       "Le Chatelier's Principle: System shifts to relieve stress",
       `Stress: Increased [${reactantFormula}]`,
@@ -43,7 +43,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
     direction = 'left';
     const productFormula = target || '';
     explanation = `Adding ${productFormula} (a product) increases product concentration. The system shifts LEFT to consume the added ${productFormula} and produce more reactants.`;
-    explanationIs = `Að bæta við ${productFormula} (afurð) eykur styrk afurða. Kerfið hliðrast TIL VINSTRI til að neyta ${productFormula} og framleiða meira af hvarfefnum.`;
+    explanationIs = `Að bæta við ${productFormula} (myndefni) eykur styrk myndefna. Kerfið hliðrast TIL VINSTRI til að neyta ${productFormula} og framleiða meira af hvarfefnum.`;
     reasoning = [
       "Le Chatelier's Principle: System shifts to relieve stress",
       `Stress: Increased [${productFormula}]`,
@@ -67,7 +67,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
     direction = 'right';
     const productFormula = target || '';
     explanation = `Removing ${productFormula} (a product) decreases product concentration. The system shifts RIGHT to produce more ${productFormula} from reactants.`;
-    explanationIs = `Að fjarlægja ${productFormula} (afurð) minnkar styrk afurða. Kerfið hliðrast TIL HÆGRI til að framleiða meira af ${productFormula}.`;
+    explanationIs = `Að fjarlægja ${productFormula} (myndefni) minnkar styrk myndefna. Kerfið hliðrast TIL HÆGRI til að framleiða meira af ${productFormula}.`;
     reasoning = [
       "Le Chatelier's Principle: System shifts to relieve stress",
       `Stress: Decreased [${productFormula}]`,
@@ -96,7 +96,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
       // Exothermic (ΔH < 0): Heat is a PRODUCT
       direction = 'left';
       explanation = `This reaction is EXOTHERMIC (ΔH = ${thermodynamics.deltaH} kJ/mol < 0), so heat is a product. Increasing temperature is like adding a product. The system shifts LEFT to consume the added heat.`;
-      explanationIs = `Þetta hvarf er VARMALOSANDI (ΔH = ${thermodynamics.deltaH} kJ/mol < 0), svo hiti er afurð. Að auka hitastig er eins og að bæta við afurð. Kerfið hliðrast TIL VINSTRI til að neyta hitans.`;
+      explanationIs = `Þetta hvarf er VARMALOSANDI (ΔH = ${thermodynamics.deltaH} kJ/mol < 0), svo hiti er myndefni. Að auka hitastig er eins og að bæta við myndefni. Kerfið hliðrast TIL VINSTRI til að neyta hitans.`;
       reasoning = [
         'Exothermic reaction: Heat is released (heat is a product)',
         `ΔH = ${thermodynamics.deltaH} kJ/mol < 0`,
@@ -124,7 +124,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
       // Exothermic (ΔH < 0): Heat is a PRODUCT
       direction = 'right';
       explanation = `This reaction is EXOTHERMIC (ΔH = ${thermodynamics.deltaH} kJ/mol < 0), so heat is a product. Decreasing temperature is like removing a product. The system shifts RIGHT to produce more heat (and products).`;
-      explanationIs = `Þetta hvarf er VARMALOSANDI (ΔH = ${thermodynamics.deltaH} kJ/mol < 0), svo hiti er afurð. Að minnka hitastig er eins og að fjarlægja afurð. Kerfið hliðrast TIL HÆGRI.`;
+      explanationIs = `Þetta hvarf er VARMALOSANDI (ΔH = ${thermodynamics.deltaH} kJ/mol < 0), svo hiti er myndefni. Að minnka hitastig er eins og að fjarlægja myndefni. Kerfið hliðrast TIL HÆGRI.`;
       reasoning = [
         'Exothermic reaction: Heat is released (heat is a product)',
         `ΔH = ${thermodynamics.deltaH} kJ/mol < 0`,
@@ -155,7 +155,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
       // Equal moles - no shift
       direction = 'none';
       explanation = `Equal moles of gas: ${gasMoles.reactants} moles reactants ⇌ ${gasMoles.products} moles products. Increasing pressure affects both sides equally. No shift occurs.`;
-      explanationIs = `Jafn fjöldi mólefna af gasi: ${gasMoles.reactants} mól hvarfefni ⇌ ${gasMoles.products} mól afurða. Að auka þrýsting hefur jöfn áhrif á báðar hliðar. Engin hliðrun.`;
+      explanationIs = `Jafn fjöldi mólefna af gasi: ${gasMoles.reactants} mól hvarfefni ⇌ ${gasMoles.products} mól myndefna. Að auka þrýsting hefur jöfn áhrif á báðar hliðar. Engin hliðrun.`;
       reasoning = [
         `Reactant gas moles: ${gasMoles.reactants}`,
         `Product gas moles: ${gasMoles.products}`,
@@ -168,7 +168,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
       // Shift toward fewer moles (products)
       direction = 'right';
       explanation = `Increasing pressure favors the side with FEWER gas moles. Reactants: ${gasMoles.reactants} moles, Products: ${gasMoles.products} moles. System shifts RIGHT toward fewer moles.`;
-      explanationIs = `Að auka þrýsting stuðlar að hliðinni með FÆRRI gasmólum. Hvarfefni: ${gasMoles.reactants} mól, Afurðir: ${gasMoles.products} mól. Kerfið hliðrast TIL HÆGRI.`;
+      explanationIs = `Að auka þrýsting stuðlar að hliðinni með FÆRRI gasmólum. Hvarfefni: ${gasMoles.reactants} mól, Myndefni: ${gasMoles.products} mól. Kerfið hliðrast TIL HÆGRI.`;
       reasoning = [
         'Le Chatelier: System shifts to relieve pressure stress',
         `Reactant gas moles: ${gasMoles.reactants}`,
@@ -181,7 +181,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
       // Shift toward fewer moles (reactants)
       direction = 'left';
       explanation = `Increasing pressure favors the side with FEWER gas moles. Reactants: ${gasMoles.reactants} moles, Products: ${gasMoles.products} moles. System shifts LEFT toward fewer moles.`;
-      explanationIs = `Að auka þrýsting stuðlar að hliðinni með FÆRRI gasmólum. Hvarfefni: ${gasMoles.reactants} mól, Afurðir: ${gasMoles.products} mól. Kerfið hliðrast TIL VINSTRI.`;
+      explanationIs = `Að auka þrýsting stuðlar að hliðinni með FÆRRI gasmólum. Hvarfefni: ${gasMoles.reactants} mól, Myndefni: ${gasMoles.products} mól. Kerfið hliðrast TIL VINSTRI.`;
       reasoning = [
         'Le Chatelier: System shifts to relieve pressure stress',
         `Reactant gas moles: ${gasMoles.reactants}`,
@@ -209,7 +209,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
       // Equal moles - no shift
       direction = 'none';
       explanation = `Equal moles of gas: ${gasMoles.reactants} moles reactants ⇌ ${gasMoles.products} moles products. Decreasing pressure affects both sides equally. No shift occurs.`;
-      explanationIs = `Jafn fjöldi mólefna af gasi: ${gasMoles.reactants} mól hvarfefni ⇌ ${gasMoles.products} mól afurða. Að minnka þrýsting hefur jöfn áhrif á báðar hliðar. Engin hliðrun.`;
+      explanationIs = `Jafn fjöldi mólefna af gasi: ${gasMoles.reactants} mól hvarfefni ⇌ ${gasMoles.products} mól myndefna. Að minnka þrýsting hefur jöfn áhrif á báðar hliðar. Engin hliðrun.`;
       reasoning = [
         `Reactant gas moles: ${gasMoles.reactants}`,
         `Product gas moles: ${gasMoles.products}`,
@@ -222,7 +222,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
       // Shift toward more moles (reactants)
       direction = 'left';
       explanation = `Decreasing pressure favors the side with MORE gas moles. Reactants: ${gasMoles.reactants} moles, Products: ${gasMoles.products} moles. System shifts LEFT toward more moles.`;
-      explanationIs = `Að minnka þrýsting stuðlar að hliðinni með FLEIRI gasmólum. Hvarfefni: ${gasMoles.reactants} mól, Afurðir: ${gasMoles.products} mól. Kerfið hliðrast TIL VINSTRI.`;
+      explanationIs = `Að minnka þrýsting stuðlar að hliðinni með FLEIRI gasmólum. Hvarfefni: ${gasMoles.reactants} mól, Myndefni: ${gasMoles.products} mól. Kerfið hliðrast TIL VINSTRI.`;
       reasoning = [
         'Le Chatelier: System shifts to relieve pressure stress',
         `Reactant gas moles: ${gasMoles.reactants}`,
@@ -235,7 +235,7 @@ export const calculateShift = (equilibrium: Equilibrium, stress: Stress): ShiftR
       // Shift toward more moles (products)
       direction = 'right';
       explanation = `Decreasing pressure favors the side with MORE gas moles. Reactants: ${gasMoles.reactants} moles, Products: ${gasMoles.products} moles. System shifts RIGHT toward more moles.`;
-      explanationIs = `Að minnka þrýsting stuðlar að hliðinni með FLEIRI gasmólum. Hvarfefni: ${gasMoles.reactants} mól, Afurðir: ${gasMoles.products} mól. Kerfið hliðrast TIL HÆGRI.`;
+      explanationIs = `Að minnka þrýsting stuðlar að hliðinni með FLEIRI gasmólum. Hvarfefni: ${gasMoles.reactants} mól, Myndefni: ${gasMoles.products} mól. Kerfið hliðrast TIL HÆGRI.`;
       reasoning = [
         'Le Chatelier: System shifts to relieve pressure stress',
         `Reactant gas moles: ${gasMoles.reactants}`,
@@ -284,11 +284,11 @@ export const getStressDescriptionIs = (stress: Stress): string => {
     case 'add-reactant':
       return `Bæta við ${target} (hvarfefni)`;
     case 'add-product':
-      return `Bæta við ${target} (afurð)`;
+      return `Bæta við ${target} (myndefni)`;
     case 'remove-reactant':
       return `Fjarlægja ${target} (hvarfefni)`;
     case 'remove-product':
-      return `Fjarlægja ${target} (afurð)`;
+      return `Fjarlægja ${target} (myndefni)`;
     case 'increase-temp':
       return `Auka hitastig`;
     case 'decrease-temp':
