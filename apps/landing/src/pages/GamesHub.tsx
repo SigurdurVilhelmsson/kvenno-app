@@ -159,6 +159,11 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
         description: 'Henderson-Hasselbalch jafnan og stuðpúðalausnir',
         slug: 'buffer-recipe-creator',
       },
+      {
+        title: 'Leysnijafnvægi',
+        description: 'Leysnimargfeldi, mólarleysni, samjónahrif og hlutfelling',
+        slug: 'leysnijafnvaegi',
+      },
     ],
   },
 };

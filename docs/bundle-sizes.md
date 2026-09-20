@@ -1,12 +1,18 @@
 # Bundle Sizes
 
-Measured: 2026-09-19 (22 games), from a `pnpm build:games` run made the same day.
+Measured: 2026-09-20 (25 games), from a `pnpm build:games` run made the same day.
 
 **Provenance.** Every game figure below is read off the on-disk `dist/` immediately after that
 build, so the table is current to the source in this commit rather than to an mtime argument. Sizes
 are KiB (bytes ÷ 1024). The three app tables further down (lab-reports, landing, íslenskubraut) are
 **not** re-derived here — they still date from the 2026-08-17 pass against the 2026-08-15 build, and
 nothing since has touched those apps' source.
+
+**The three newest games are the three smallest** — `reynsluformulur` 273 KB, `utfellingarhvorf`
+284 KB, `leysnijafnvaegi` 286 KB — and that is not a coincidence. All three are
+derive-don't-store designs whose data files are a few dozen lines of facts plus an engine, with no
+Three.js, no canvas and no shared visualisation component. The heavy end of the table is where a
+game pulls in a 3D viewer or a large hand-built SVG.
 
 **What moved since 2026-08-15.** Don't read the August table against this one to price a single
 change — the source moved in many other ways between the two builds, and roadmap phases 3–5 grew
@@ -45,30 +51,33 @@ if they open a 3D view.
 
 | Game                     | Year | Initial | Deferred |
 | ------------------------ | ---- | ------- | -------- |
-| vsepr-geometry           | 2-ar | 401 KB  | 1004 KB  |
-| dimensional-analysis     | 1-ar | 379 KB  | —        |
-| buffer-recipe-creator    | 3-ar | 370 KB  | —        |
-| lewis-structures         | 2-ar | 370 KB  | 1004 KB  |
+| vsepr-geometry           | 2-ar | 400 KB  | 1004 KB  |
+| dimensional-analysis     | 1-ar | 394 KB  | —        |
+| lausnir                  | 1-ar | 371 KB  | —        |
+| buffer-recipe-creator    | 3-ar | 371 KB  | —        |
+| lewis-structures         | 2-ar | 369 KB  | 1004 KB  |
 | intermolecular-forces    | 2-ar | 366 KB  | 1004 KB  |
 | organic-nomenclature     | 2-ar | 362 KB  | —        |
-| lausnir                  | 1-ar | 357 KB  | —        |
 | redox-reactions          | 2-ar | 354 KB  | —        |
-| hess-law                 | 2-ar | 351 KB  | —        |
 | ph-titration             | 3-ar | 351 KB  | —        |
+| hess-law                 | 2-ar | 351 KB  | —        |
 | kinetics                 | 2-ar | 349 KB  | —        |
 | equilibrium-shifter      | 3-ar | 344 KB  | —        |
 | nafnakerfid              | 1-ar | 335 KB  | —        |
 | molmassi                 | 1-ar | 329 KB  | —        |
 | lotukerfid               | 1-ar | 325 KB  | —        |
 | gas-law-challenge        | 3-ar | 316 KB  | —        |
-| thermodynamics-predictor | 3-ar | 304 KB  | —        |
+| thermodynamics-predictor | 3-ar | 305 KB  | —        |
 | rafeindabygging          | 2-ar | 302 KB  | —        |
 | takmarkandi              | 1-ar | 300 KB  | —        |
 | einingakedjan            | 1-ar | 293 KB  | —        |
 | jafna-jofnur             | 1-ar | 292 KB  | —        |
 | syrufastinn              | 3-ar | 289 KB  | —        |
+| leysnijafnvaegi          | 3-ar | 286 KB  | —        |
+| utfellingarhvorf         | 1-ar | 284 KB  | —        |
+| reynsluformulur          | 1-ar | 273 KB  | —        |
 
-Every game now opens in 289–401 KB. Three changes got here:
+Every game now opens in 273–400 KB. Three changes got here:
 
 - **Vite 8 / Rolldown** took non-3D games from ~1.3 MB to ~300–400 KB.
 - **The Aug 2026 Three.js code-split** took VSEPR, Lewis, and IMF from ~2.9 MB to ~380–400 KB by
@@ -169,7 +178,7 @@ Bundle cost: effectively **0 KB** of additional dependencies. The component code
    2600 KB figures are historical and cannot be re-measured without reverting the fix.
 
 2. **Single-file builds re-bundle shared libraries.** Each of the 17 single-file games inlines its own
-   copy of React and Tailwind, so the ~290-400 KB is mostly duplicated across games. That is the
+   copy of React and Tailwind, so the ~275-400 KB is mostly duplicated across games. That is the
    deliberate cost of self-contained, offline-capable HTML. Only revisit it if a game exceeds ~500 KB.
 
 3. **Lab reports PDF worker** (~1210 KB) is the largest single asset. It loads as a web worker

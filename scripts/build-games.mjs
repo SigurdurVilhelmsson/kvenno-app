@@ -53,6 +53,7 @@ const games = [
   ['3-ar', 'syrufastinn', 'syrufastinn'],
   ['3-ar', 'thermodynamics-predictor', 'thermodynamics-predictor'],
   ['3-ar', 'buffer-recipe-creator', 'buffer-recipe-creator'],
+  ['3-ar', 'leysnijafnvaegi', 'leysnijafnvaegi'],
 ];
 
 const args = process.argv.slice(2);

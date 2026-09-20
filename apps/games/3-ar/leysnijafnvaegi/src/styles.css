@@ -1,0 +1,25 @@
+@import 'tailwindcss';
+@import '../../../../../packages/shared/styles/theme.css';
+@source "../../../../../packages/shared";
+@import '../../../../../packages/shared/styles/game-base.css';
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in {
+    animation: none;
+  }
+}
