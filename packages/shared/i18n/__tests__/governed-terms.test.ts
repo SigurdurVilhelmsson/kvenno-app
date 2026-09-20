@@ -216,9 +216,9 @@ const GOVERNED_TERMS: GovernedTerm[] = [
     // ph-titration and buffer-recipe-creator until 2026-08-30. Same failure as
     // the accentless anoða/katoða. `stuðpúði` contains `púð`, not `púff`, so
     // the correct forms cannot trip this.
-    banned: [/púff/i],
+    banned: [/púff/i, /bufferkerfi/i],
     guidance:
-      'stuðpúði is masculine; compounds take the genitive stem stuðpúða- (stuðpúðalausn, stuðpúðageta, stuðpúðasvæði), plural stuðpúðar. púffer was neuter in some strings, so adjectives change with it.',
+      'stuðpúði is masculine; compounds take the genitive stem stuðpúða- (stuðpúðalausn, stuðpúðageta, stuðpúðasvæði), plural stuðpúðar. púffer was neuter in some strings, so adjectives change with it. EXTENDED 2026-09-20 with /bufferkerfi/i: the August sweep banned only the naturalised púffer, so 3-ar/equilibrium-shifter kept the bare English loanword in two student-facing Icelandic strings — its nameIs and its descriptionIs for the acetic-acid system — straight through it. Now Stuðpúðakerfi, the compound the book itself uses (7 corpus hits). The ban names that exact compound rather than bare buffer, because English buffer is correct English and appears legitimately in dozens of comments, in English description fields, and throughout the ph-titration test names.',
   },
   {
     english: 'electrolyte',
@@ -232,7 +232,7 @@ const GOVERNED_TERMS: GovernedTerm[] = [
     correct: 'áhorfendajón',
     banned: [/áhorfandajón/i],
     guidance:
-      'The linking form is the genitive plural áhorfenda-, not áhorfanda-. The corpus is 6 to 0. Feminine, like jón: áhorfendajón / áhorfendajónina / áhorfendajónum / áhorfendajóna. ORPHANED_GAMES_ASSESSMENT.md:207 writes the wrong form, and Markdown is not scanned, so this row guards the code against it being copied across.',
+      'The linking form is the genitive plural áhorfenda-, not áhorfanda-. The corpus is 6 to 0. Feminine, like jón: áhorfendajón / áhorfendajónina / áhorfendajónum / áhorfendajóna. ORPHANED_GAMES_ASSESSMENT.md:207 writes the wrong form, and Markdown is not scanned, so this row guards the code against it being copied across. EXTENDED 2026-09-20 with /bufferkerfi/i: the August sweep banned only the naturalised puffer, so 3-ar/equilibrium-shifter kept the bare English loanword in nameIs: Bufferkerfi (ediksyra) and in its descriptionIs -- two student-facing Icelandic strings -- straight through it. Now Studpudakerfi, which is the compound the book itself uses (7 corpus hits). The ban names that exact compound rather than bare buffer, because English buffer is correct English and appears legitimately in dozens of comments, in English description fields, and throughout the ph-titration test names.',
   },
   {
     english: 'iodide',
