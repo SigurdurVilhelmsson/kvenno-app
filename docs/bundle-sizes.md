@@ -178,7 +178,7 @@ Bundle cost: effectively **0 KB** of additional dependencies. The component code
    2600 KB figures are historical and cannot be re-measured without reverting the fix.
 
 2. **Single-file builds re-bundle shared libraries.** Each of the 17 single-file games inlines its own
-   copy of React and Tailwind, so the ~290-400 KB is mostly duplicated across games. That is the
+   copy of React and Tailwind, so the ~275-400 KB is mostly duplicated across games. That is the
    deliberate cost of self-contained, offline-capable HTML. Only revisit it if a game exceeds ~500 KB.
 
 3. **Lab reports PDF worker** (~1210 KB) is the largest single asset. It loads as a web worker

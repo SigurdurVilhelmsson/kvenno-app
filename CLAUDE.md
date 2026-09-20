@@ -16,7 +16,7 @@ kvenno-app/
 │   ├── landing/          # Landing page (track selector) + chemistry year hubs (React SPA)
 │   ├── islenskubraut/    # Icelandic language teaching cards (React SPA, /islenskubraut/)
 │   ├── lab-reports/      # AI-powered lab report grading (React SPA)
-│   └── games/            # 23 chemistry games (single-file HTML, except the 3 Three.js ones)
+│   └── games/            # 25 chemistry games (single-file HTML, except the 3 Three.js ones)
 │       ├── 1-ar/         # 10 games for year 1
 │       ├── 2-ar/         # 8 games for year 2
 │       └── 3-ar/         # 7 games for year 3
@@ -142,7 +142,7 @@ dist/
 │   ├── index.html                     # Chemistry hub (SPA fallback)
 │   ├── 1-ar/
 │   │   ├── index.html                 # Year 1 hub (SPA fallback)
-│   │   └── games/*.html               # Self-contained games (~290-400 KB each)
+│   │   └── games/*.html               # Self-contained games (~275-400 KB each)
 │   ├── 2-ar/
 │   │   ├── index.html
 │   │   ├── games/...
@@ -946,7 +946,7 @@ Do not invent Icelandic chemistry terms. A game written in April 2026 re-committ
 
 - **Icelandic UI:** All user-facing text must be in Icelandic
 - **KVENNO-STRUCTURE.md:** The master design document lives at `docs/KVENNO-STRUCTURE.md`
-- **Most games build to single HTML files** via `vite-plugin-singlefile` (~290-400 KB each). The three
+- **Most games build to single HTML files** via `vite-plugin-singlefile` (~275-400 KB each). The three
   Three.js games (VSEPR, Lewis, IMF) opt out via `singleFile: false` and emit `{game}.html` +
   `{game}.js` + `{game}.css` + `assets/{game}/*.js`, which must be deployed together — the entry
   `{game}.js` sits beside the HTML, not under `assets/`. See `docs/bundle-sizes.md`.
