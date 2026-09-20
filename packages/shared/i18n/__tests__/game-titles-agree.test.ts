@@ -36,7 +36,7 @@ import { describe, it, expect } from 'vitest';
 const repoRoot = join(__dirname, '..', '..', '..', '..');
 const gamesRoot = join(repoRoot, 'apps', 'games');
 
-/** Every tab title ends this way. Nineteen of twenty-two already did. */
+/** Every tab title ends this way. Nineteen of the original twenty-two already did. */
 const TAB_SUFFIX = ' - Kvennaskólinn';
 
 /**
@@ -115,9 +115,9 @@ const GAMES = games();
 
 describe('every game has one name', () => {
   it('finds every game and a hub card for each', () => {
-    // 23 since `1-ar/reynsluformulur` landed. The number is asserted rather than
-    // derived so that a game which fails to register shows up here too.
-    expect(GAMES.length).toBe(23);
+    // 24 since `1-ar/utfellingarhvorf` landed. The number is asserted rather
+    // than derived so that a game which fails to register shows up here too.
+    expect(GAMES.length).toBe(24);
     for (const g of GAMES) {
       expect(CARDS.get(g.slug), `${g.slug} has no card in GamesHub.tsx`).toBeDefined();
     }

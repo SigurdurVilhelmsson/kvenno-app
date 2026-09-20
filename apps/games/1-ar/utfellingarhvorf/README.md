@@ -1,0 +1,157 @@
+# Útfellingarhvörf
+
+**Status: complete and registered.** Four phases, 60 tests of its own, in `build-games.mjs`, on the
+hub, and in the Y1 `Námsleiðin` chain between Stilla efnajöfnur and Takmarkandi.
+
+Phase 5 of the games roadmap. The third of the four confirmed curriculum gaps to close, after
+Sýrufastinn (Ka/Kb) and Reynsluformúlur (empirical formula). This one closes **three** absences at
+once — electrolyte classification goes to `1-ar/lausnir`, and solubility rules, precipitation and
+net ionic equations come here.
+
+## The gap was the largest one measured
+
+`ORPHANED_GAMES_ASSESSMENT.md:322` ran 34 greps in Icelandic and English across all twenty shipped
+games: `rafkleyfi` 0 · `raflausn` 0 · `rafleiðni` 0 · `jónast` 0 · `botnfall` 0 · `útfelling` 0 ·
+`net ionic` 0 · `áhorfendajón` 0 · `leysnireglur` 0. `(aq)` returned twelve hits, **all Year 3** — so
+Year 1 had never seen the notation either.
+
+The near-miss is worth naming, because the two share an Icelandic word and nothing else:
+`1-ar/lausnir` does teach `leysni`, but `TemperatureSolubility.tsx` is g/100 g H₂O against
+temperature (Brown §13.3, _how much_ dissolves). It never asks _which_ ionic compounds dissolve,
+which is §4.2 and is what this game is.
+
+**Net ionic equations were the single largest hole**: absent from all three years. February
+specified a fourth level of `jonir-i-lausn` for them and never built it, so what shipped was the
+eight equations as post-answer display strings — decoration, not practice
+(`docs/FEBRUARY-DECISIONS-RECOVERED.md:234`).
+
+## Where the chapter split put it
+
+The assessment offered two defensible chain positions. The school's own textbook settles it:
+electrolytes are **ch. 11** (`ch11/m68781`, solutions) and precipitation is **ch. 4**
+(`ch04/m68710`). So precipitation comes first and this node sits after Stilla efnajöfnur, while the
+electrolyte phase belongs in Lausnir, further along the chain. Both deliverables, in the order the
+book teaches them — which is what February answered when it said "both".
+
+## Why nothing here is stored
+
+Compare the ancestor. `jonir-i-lausn` stored, per reaction, a molecular equation, a net ionic
+equation, a product name and an explanation, as four independent strings. Nothing made them agree,
+and `ORPHANED_GAMES_ASSESSMENT.md:326` found the consequence: **it tested an Ag₂CrO₄ precipitate
+against a six-rule table with no chromate row**, so the question could not be reasoned to at all.
+
+Here a scenario is **two soluble salts and a sentence of context**. Everything else is computed:
+
+| Derived                | From                                            |
+| ---------------------- | ----------------------------------------------- |
+| the compound's formula | the two ion charges, crossed and reduced        |
+| soluble or not         | the school's table, plus the exception list     |
+| the molecular equation | ion conservation, solved and reduced            |
+| the complete ionic one | splitting every aqueous salt                    |
+| the net ionic one      | striking the spectators out of the complete one |
+| the spectator ions     | equal amounts on both sides                     |
+
+So the Ag₂CrO₄ defect is not fixed, it is **unwritable**: `solubility()` throws when no rule covers
+an anion rather than defaulting, and `precipitation.test.ts` asserts as a property that every anion
+in the pool is covered. `react()` also refuses a scenario whose reactants are not both soluble, so
+"pour the AgCl solution" cannot be typed either.
+
+This is the pattern `1-ar/reynsluformulur` used for the same class of defect, and the reason to
+reach for it is the same: the data is an arithmetic result, not a fact, so it should be computed.
+
+## The solubility table is the book's, not the old game's
+
+Transcribed from `ch04/m68710-segments.is.md`. The old game's six-rule paraphrase differs in four
+places, and each difference mattered:
+
+- **no chromate rule at all**, while the game tested a chromate precipitate;
+- sulfate exceptions omitted **Ag⁺** and **Hg₂²⁺**;
+- hydroxide exceptions included **Ca²⁺**, which the book does not list — Ca(OH)₂ is insoluble here;
+- no rule for **F⁻**, acetate, bicarbonate or chlorate.
+
+Adding the fluoride row bought a scenario the old game could not pose: CaF₂, where a normally
+soluble anion precipitates with a group-2 cation.
+
+## The answer leak, and why the builder is a tray rather than a text box
+
+`ORPHANED_GAMES_ASSESSMENT.md:326` measured the old Level 3's grader. `normalizeFormula` stripped
+only whitespace and state labels — despite a comment claiming more — then did exact string equality
+against Unicode-subscript strings, so **six of its eight precipitates were unanswerable from an
+Icelandic keyboard**, and the placeholder told the student to type `BaSO₄(s)`. `Level3.tsx:81` then
+set `isCorrect = true` on any formula submission at all, so both the score and the accuracy readout
+were fiction.
+
+The Beita phase therefore has the student **select ions from a tray and set coefficients**, which is
+answerable on any keyboard and is graded against a derived answer. Same shape as
+`1-ar/nafnakerfid`'s name builder, this repo's precedent for exactly this problem: an input a
+student cannot physically produce is not an assessment.
+
+Level 1's leak was separate and just as total — all fifteen descriptions named the category in
+words, and the unlit bulb rendered before the answer. That content went to Lausnir, rewritten.
+
+## Terminology
+
+Four terms were missing from `ordabok.md` and all four came out of the school's textbook rather than
+being coined. Counts are from the live corpus, excluding its backup tree:
+
+| Term                    | Ruled              | Corpus              |
+| ----------------------- | ------------------ | ------------------- |
+| net ionic equation      | `nettójónajafna`   | 23 vs 8 two-word    |
+| complete ionic equation | `heildarjónajafna` | 6 vs 1              |
+| spectator ion           | `áhorfendajón`     | 6 vs 0              |
+| precipitation reaction  | `útfellingarhvarf` | 9 vs 7 `botnfalls-` |
+
+**One variant is worth Siggi's confirmation and is not blocking**: the book's glossary headwords are
+the two-word `nettó jónajafna` and `fullkomin jónajafna`, while its running prose overwhelmingly
+writes the solid compounds above. The solid forms were taken because prose frequency is decisive and
+because `ordabok.md`'s neighbours (`jónajafna`, `sameindajafna`) are solid. Both forms are the
+book's own, so this is a spelling choice, not a coinage.
+
+`útfellingarhvarf` over `botnfallshvarf` follows `ordabok.md`'s existing split: `precipitation;
+útfelling` names the process and `precipitate;botnfall` names the solid, so the reaction takes the
+first.
+
+Three `governed-terms.test.ts` rows were added, and **none of them guards a form that ships today**.
+They guard the file this game was harvested from, because a later port would bring them back — the
+`enþalpía`-from-`calorimetry` trap:
+
+- **`rafkleyfi` is masculine.** The old game rendered `Sterkt rafkleyfi` and `Veikt rafkleyfi` on
+  every Level-1 answer button; the corpus says `sterkur rafkleyfi` and `sterkir rafkleyfar`. Its
+  `Órafkleyfi` is not a word the book uses at all — non-electrolyte is `órafkleyft efni`, an
+  adjective plus a noun, which is what `ordabok.md` already carried.
+- **`áhorfendajón`, not `áhorfandajón`.** The linking form is the genitive plural.
+  `ORPHANED_GAMES_ASSESSMENT.md:207` writes the wrong one, and Markdown is not scanned.
+- **`joðíð`, not `jódíð`.** The corpus is 54 to 0 and the shipped platform was already clean; the
+  old game says `jódíð` four times, on the very reaction the book uses as its worked example.
+
+`rafleiðari` and `raflausn` were checked and are **not** banned: the corpus uses both correctly, for
+_conductor_ and for _electrolyte solution_. February's ruling was that `rafleiðari` must not be used
+to mean electrolyte, not that the word is wrong.
+
+## Layout
+
+```
+src/data/ions.ts               ions, charges, and the school's solubility table
+src/engine/precipitation.ts    formulas, verdicts, balancing, the three equations
+src/data/problems.ts           17 scenarios as ion pairs; 24 drill compounds
+src/components/                KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen
+src/__tests__/                 60 tests across precipitation and problems
+```
+
+The engine is exercised over **every** soluble pairing in the pool, not just the shipped scenarios —
+several hundred reactions, each checked for atom balance, charge balance, reduced coefficients, and
+a net ionic equation containing no spectator. A new ion is therefore tested the moment it is
+declared.
+
+## Open
+
+- **Ksp is the sibling gap and is still unbuilt.** This game is the qualitative question ("does a
+  precipitate form, by rule?", Brown 4.2); `solubility-equilibrium` in the frozen repo is the
+  quantitative one ("by Q vs Ksp?", 17.6), and they share anchor compounds. The Ksp terminology is
+  already ruled and unused: `leysnimargfeldi`, `samjónahrif`, `mólarleysni`, `hlutfelling`.
+- **Precipitate colours are named in prose, not rendered.** The beaker has three states. The colours
+  a student actually sees are in the context sentences instead;
+  `solubility-equilibrium/src/data/compounds.ts` has colour data for twenty compounds if that is
+  ever wanted.
+- **Acetate, bicarbonate and chlorate are in the book's table but not in the ion pool.** Nothing
+  needs them yet, and each would need a name ruling before it could be rendered.
