@@ -29,6 +29,7 @@ const games = [
   ['1-ar', 'lotukerfid', 'lotukerfid'],
   ['1-ar', 'nafnakerfid', 'nafnakerfid'],
   ['1-ar', 'molmassi', 'molmassi'],
+  ['1-ar', 'reynsluformulur', 'reynsluformulur'],
   ['1-ar', 'jafna-jofnur', 'jafna-jofnur'],
   ['1-ar', 'takmarkandi', 'takmarkandi'],
   ['1-ar', 'lausnir', 'lausnir'],

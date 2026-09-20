@@ -3,10 +3,11 @@ import { useCallback, useMemo, useState } from 'react';
 import { ErrorBoundary, Header } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
 
-import { ChainBuilder } from './components/ChainBuilder';
-import { ExploreScreen } from './components/ExploreScreen';
-import { UnderstandScreen } from './components/UnderstandScreen';
-import { problemsForPhase } from './data/problems';
+import { AefaScreen } from './components/AefaScreen';
+import { BeitaScreen } from './components/BeitaScreen';
+import { KannaScreen } from './components/KannaScreen';
+import { SkiljaScreen } from './components/SkiljaScreen';
+import './styles.css';
 
 type Screen = 'menu' | 'kanna' | 'skilja' | 'aefa' | 'beita';
 
@@ -19,47 +20,43 @@ const PHASES: { id: Screen; number: string; name: string; description: string; t
     id: 'kanna',
     number: '1',
     name: 'Kanna',
-    description: 'Prófaðu þig áfram með hlutföll. Ekkert rétt eða rangt.',
+    description: 'Massahlutfall og fjöldi frumeinda eru ekki sami hluturinn.',
     tone: 'bg-green-500 hover:bg-green-600',
   },
   {
     id: 'skilja',
     number: '2',
     name: 'Skilja',
-    description: 'Mólmassi, mólstyrkur og eðlismassi — hvert um sig tvö brot.',
+    description: 'Fjórar súlur: prósenta → mól → hlutfall → vísitala.',
     tone: 'bg-sky-600 hover:bg-sky-700',
   },
   {
     id: 'aefa',
     number: '3',
     name: 'Æfa',
-    description: 'Fimm dæmi í tveimur skrefum, með vísbendingum og spá um útkomuna.',
+    description: 'Fylltu töfluna sjálf/ur, súlu fyrir súlu, á átta efnum.',
     tone: 'bg-kvenno-orange hover:bg-kvenno-orange-dark',
   },
   {
     id: 'beita',
     number: '4',
     name: 'Beita',
-    description: 'Fimm dæmi í þremur til fjórum skrefum, með efnajöfnum og fleiri hlutföllum.',
+    description: 'Reynsluformúla plús mældur mólmassi gefur sameindaformúluna.',
     tone: 'bg-purple-600 hover:bg-purple-700',
   },
 ];
 
 function App() {
   const [screen, setScreen] = useState<Screen>('menu');
-  const { progress, updateProgress } = useGameProgress<Progress>('einingakedjan-progress', {
+  const { progress, updateProgress } = useGameProgress<Progress>('reynsluformulur-progress', {
     completed: [],
   });
 
-  // Defaulted through useMemo so the identity is stable across renders and the
-  // markCompleted callback below is not rebuilt every time.
   const completed = useMemo(() => progress.completed ?? [], [progress.completed]);
 
   const markCompleted = useCallback(
     (phase: Screen) => {
-      if (!completed.includes(phase)) {
-        updateProgress({ completed: [...completed, phase] });
-      }
+      if (!completed.includes(phase)) updateProgress({ completed: [...completed, phase] });
       setScreen('menu');
     },
     [completed, updateProgress]
@@ -69,7 +66,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
-      <Header variant="game" backHref="/efnafraedi/1-ar/" gameTitle="Einingakeðjan" />
+      <Header variant="game" backHref="/efnafraedi/1-ar/" gameTitle="Reynsluformúlur" />
 
       <a href="#main-content" className="skip-link">
         Fara beint í efni
@@ -79,16 +76,16 @@ function App() {
         {screen === 'menu' && (
           <div className="mx-auto max-w-4xl">
             <p className="mb-8 text-center text-lg text-warm-600">
-              Byggðu leiðina frá mælingu að svari — og láttu einingarnar segja þér hvort hún gengur
-              upp
+              Efnagreining gefur þér prósentur. Formúlan er ekki í þeim — hún fæst með því að deila
+              massanum burt
             </p>
 
             <div className="rounded-lg bg-white p-8 shadow-md">
               <h2 className="mb-2 text-2xl font-bold text-warm-800">Fjórir áfangar</h2>
               <p className="mb-6 text-warm-600">
-                Þú færð mælingu sem þú getur séð fyrir þér, mark sem þú átt að komast á, og safn af
-                hlutföllum. Verkefnið er að raða hlutföllunum þannig að allar einingar styttist út
-                nema sú sem þú leitar að.
+                Þú kannt að reikna mólmassa út frá formúlu. Hér ferðu í hina áttina: út frá því sem
+                mælitækið gefur — hversu stór hluti massans er kolefni, hversu stór hluti er vetni —
+                og að formúlunni sjálfri.
               </p>
 
               <div className="grid gap-4">
@@ -116,70 +113,82 @@ function App() {
                 <ul className="space-y-1.5 text-sm text-warm-700">
                   <li className="flex items-start gap-2">
                     <span className="mt-0.5 text-orange-500">✓</span>
+                    <span>Að massahlutfall og fjöldi frumeinda eru sitt hvor spurningin</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-0.5 text-orange-500">✓</span>
+                    <span>Fjögurra súlna leiðina: prósenta → mól → hlutfall → vísitala</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-0.5 text-orange-500">✓</span>
                     <span>
-                      Að hvert hlutfall má nota í báðar áttir — og hvernig þú velur áttina
+                      Að hlutfall upp á 1,5 er ekki námundunarvilla heldur helmingur — margfaldaðu,
+                      ekki námunda
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="mt-0.5 text-orange-500">✓</span>
                     <span>
-                      Að mólmassi, mólstyrkur, eðlismassi og stuðlar úr efnajöfnu eru allt sömu
-                      tegund verkfæris
+                      Að reynsluformúlan ein og sér segir ekki hvaða efni þú ert með; til þess þarf
+                      mólmassann
                     </span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-0.5 text-orange-500">✓</span>
-                    <span>Að komast frá massa eins efnis yfir í massa annars — í gegnum mólin</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-0.5 text-orange-500">✓</span>
-                    <span>Að lesa úr einingunum sjálfum hvort leiðin gengur upp</span>
                   </li>
                 </ul>
               </div>
 
+              <div className="mt-6 rounded-lg bg-warm-50 p-4">
+                <h3 className="mb-2 font-semibold text-warm-700">Lykilskref</h3>
+                <div className="space-y-2 font-mono text-sm text-warm-600">
+                  <p>
+                    <strong>Mól:</strong> n = m / M — prósentan er grömm í 100 g sýni
+                  </p>
+                  <p>
+                    <strong>Hlutfall:</strong> deildu öllu með minnsta mólfjöldanum
+                  </p>
+                  <p>
+                    <strong>Vísitala:</strong> margfaldaðu upp í heilar tölur
+                  </p>
+                  <p>
+                    <strong>Sameind:</strong> n = mólmassi / massi reynsluformúlu
+                  </p>
+                </div>
+              </div>
+
               <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4">
-                <h3 className="mb-2 font-semibold text-amber-800">Af hverju einingakeðjur?</h3>
+                <h3 className="mb-2 font-semibold text-amber-800">Af hverju reynsluformúlur?</h3>
                 <p className="text-sm text-amber-700">
-                  Enginn mælir efni í mólum. Það er vigtað í grömmum, mælt í millilítrum og selt í
-                  töflum — en efnajafnan talar bara um mól. Öll efnafræði sem er raunverulega notuð,
-                  hvort sem það er skammtastærð lyfs eða kolefnisspor eldsneytis, byrjar á því að
-                  brúa þetta bil. Einingarnar sjálfar segja þér hvort brúin heldur.
+                  Þegar nýtt efni finnst — í plöntu, í þvagsýni, í fornri leirkrukku — veit enginn
+                  formúluna. Tækið brennir sýnið og mælir hvað kemur út: svo mikið kolefni, svo
+                  mikið vetni. Reynsluformúlan er fyrsta svarið sem hægt er að fá úr þeirri mælingu,
+                  og hún er það sem stendur í greininni þegar nýtt efnasamband er birt.
                 </p>
               </div>
 
               <div className="mt-3 text-center text-xs text-warm-500">
-                <strong>Námsleiðin:</strong> Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi →
-                Reynsluformúlur → Stilla efnajöfnur → Takmarkandi → Lausnir → <u>Einingakeðjan</u>
+                <strong>Námsleiðin:</strong> Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi →{' '}
+                <u>Reynsluformúlur</u> → Stilla efnajöfnur → Takmarkandi → Lausnir → Einingakeðjan
+              </div>
+              <div className="mt-2 text-center text-xs text-warm-400">
+                Kafli 3 — Chemistry: The Central Science (Brown et al.)
               </div>
             </div>
           </div>
         )}
 
         {screen === 'kanna' && (
-          <ExploreScreen onComplete={() => markCompleted('kanna')} onBack={backToMenu} />
+          <KannaScreen onComplete={() => markCompleted('kanna')} onBack={backToMenu} />
         )}
 
         {screen === 'skilja' && (
-          <UnderstandScreen onComplete={() => markCompleted('skilja')} onBack={backToMenu} />
+          <SkiljaScreen onComplete={() => markCompleted('skilja')} onBack={backToMenu} />
         )}
 
         {screen === 'aefa' && (
-          <ChainBuilder
-            problems={problemsForPhase('aefa')}
-            predictBeforeSolving
-            onComplete={() => markCompleted('aefa')}
-            onBack={backToMenu}
-          />
+          <AefaScreen onComplete={() => markCompleted('aefa')} onBack={backToMenu} />
         )}
 
         {screen === 'beita' && (
-          <ChainBuilder
-            problems={problemsForPhase('beita')}
-            predictBeforeSolving={false}
-            onComplete={() => markCompleted('beita')}
-            onBack={backToMenu}
-          />
+          <BeitaScreen onComplete={() => markCompleted('beita')} onBack={backToMenu} />
         )}
       </main>
     </div>

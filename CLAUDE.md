@@ -16,8 +16,8 @@ kvenno-app/
 │   ├── landing/          # Landing page (track selector) + chemistry year hubs (React SPA)
 │   ├── islenskubraut/    # Icelandic language teaching cards (React SPA, /islenskubraut/)
 │   ├── lab-reports/      # AI-powered lab report grading (React SPA)
-│   └── games/            # 22 chemistry games (single-file HTML, except the 3 Three.js ones)
-│       ├── 1-ar/         # 8 games for year 1
+│   └── games/            # 23 chemistry games (single-file HTML, except the 3 Three.js ones)
+│       ├── 1-ar/         # 9 games for year 1
 │       ├── 2-ar/         # 8 games for year 2
 │       └── 3-ar/         # 6 games for year 3
 ├── packages/
@@ -285,14 +285,14 @@ Plan file: `logical-wandering-llama.md` — the Y1/Y2/Y3 iterative review cycle.
 
 ### Game inventory
 
-**Year 1:** dimensional-analysis, lotukerfid, nafnakerfid, molmassi, jafna-jofnur, takmarkandi, lausnir, einingakedjan
+**Year 1:** dimensional-analysis, lotukerfid, nafnakerfid, molmassi, reynsluformulur, jafna-jofnur, takmarkandi, lausnir, einingakedjan
 **Year 2:** hess-law, kinetics, lewis-structures, vsepr-geometry, intermolecular-forces, organic-nomenclature, redox-reactions, rafeindabygging
 **Year 3:** ph-titration, gas-law-challenge, equilibrium-shifter, syrufastinn, thermodynamics-predictor, buffer-recipe-creator
 
 ### Curriculum chains
 
 ```
-Y1: Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi → Stilla efnajöfnur → Takmarkandi → Lausnir → Einingakeðjan
+Y1: Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi → Reynsluformúlur → Stilla efnajöfnur → Takmarkandi → Lausnir → Einingakeðjan
 Y2: Rafeindabygging → Lewis → VSEPR → IMF → Hess → Kinetics → Redox → Organic
 Y3: Gaslögmál → Jafnvægi → Sýrufastinn → Varmafræði → pH Títrun → Stuðpúðar
 ```
@@ -307,13 +307,21 @@ Y3: Gaslögmál → Jafnvægi → Sýrufastinn → Varmafræði → pH Títrun �
 4. Update the `Námsleiðin` chain string in every sibling game's `App.tsx` for that year (`src/components/MenuScreen.tsx` for gas-law-challenge)
 5. **Give the game one name and use it in all three places** — the hub card in step 3, the
    `<title>` in `index.html` (suffixed `- Kvennaskólinn`), and the `gameTitle` on the `Header`.
-   Nothing checks this yet, and **10 of the 22 games disagree with themselves**: two carry two
-   different names outright (`molmassi` is `Mólhugtakið` on the hub and `Molmassi Leikur` in its
-   tab; `nafnakerfid` is `Nafnakerfið` against `Nafnapör - Efnanöfn`), and the rest drift on
-   capitals, accents or the suffix. Full table and what is ruled: `docs/plans/2026-09-19-session-record.md`.
-   **`gas-law-challenge` was the worst case and is fixed** — it said `Gas Law Challenge`, in
-   English, at four student-facing sites, against this file's first rule. It is `Gaslögmál` now,
-   which is what its hub card and every Y3 chain string already called it
+   **`packages/shared/i18n/__tests__/game-titles-agree.test.ts` enforces it**, with the hub card as
+   the source of truth since it is the only one of the three a student reads before choosing the
+   game. It also bans `Gas Law Challenge` by name and the `| Kvennaskólinn` suffix form.
+   **`2-ar/rafeindabygging` is the one header exemption**: it sets `gameTitle` per screen
+   (`Skammtatölur`, `Rafeindasmíð`, …) so the header names the sub-topic, which is deliberate — and
+   the test asserts the waiver is still earned, so it cannot outlive its reason
+
+   The test exists because **10 of the 22 games disagreed with themselves** on 2026-09-19 — details
+   in `docs/plans/2026-09-19-session-record.md`. All are now fixed. Three were more than drift:
+   `gas-law-challenge` said `Gas Law Challenge` in English at four student-facing sites;
+   `buffer-recipe-creator`'s tab read `Púfferuppskrift`, a term banned since August; and two games
+   carried two different names outright. **Siggi ruled those two on 2026-09-19 — `Mólhugtakið` for
+   `molmassi` and `Nafnakerfið` for `nafnakerfid`, the hub-card name in both cases.** That ruling is
+   what made the test writable: it needs to know which name is right, and a test cannot settle a
+   naming question, only hold one that is settled
 
 ### Adding a new experiment to lab reports
 
@@ -553,7 +561,11 @@ Beita) on the `1-ar/einingakedjan` model, 76 tests. Read
   anything.
 - **`chain-string.test.ts` now enforces the `Námsleiðin` chain across all six Y3 games**, and that
   every game `build-games.mjs` emits has an entry. Step 4 of "Adding a new game" was written down
-  and never checked; a Y1 equivalent does not exist yet and would be a cheap follow-up.
+  and never checked. **The Y1 equivalent now exists too** —
+  `1-ar/einingakedjan/src/__tests__/chain-string.test.ts`, added 2026-09-19; this line said it did
+  not for the rest of that day, which is how a tenth game nearly shipped with a duplicate of it.
+  Its whitespace handling models how JSX renders the markup rather than merely collapsing it, and
+  that is load-bearing: a rewrap can delete a space the chain needs.
 - **CLAUDE.md's own Y3 chain line said `Púfferar`** — a banned form, fixed here. It survived the
   August sweep because `governed-terms.test.ts` scans `.tsx?` only, so no Markdown is covered.
   `docs/FEBRUARY-DECISIONS-RECOVERED.md:118` had explicitly named this line as part of that fix.
@@ -624,6 +636,72 @@ lausn af X? Athugaðu 5 % regluna`) differing only in acid and concentration. `A
   were verified to fail against the old interpolation. **This is the concrete case behind this
   file's standing warning that a term swap in Icelandic is not a string swap** — if a data file
   feeds names into sentence templates, the cases belong in the data.
+
+**Stig 0 — Markverðir stafir — landed 2026-09-19, in `1-ar/dimensional-analysis`.** Siggi's ruling:
+significant figures live **inside Einingagreining**, not in a game of their own.
+
+- **Einingagreining is `1-ar/dimensional-analysis`** (`GamesHub.tsx:31`), **not `1-ar/einingakedjan`**,
+  which is `Einingakeðjan` (`GamesHub.tsx:66`). The 2026-09-19 session record first wrote the wrong
+  one; the names differ by four letters and sit next to each other in the Y1 chain. Corrected there.
+- **The gap was real and this game was the right home for it:** `Level3.tsx:167-169` already counts
+  a student's significant figures and shows a red panel when they are wrong, and `challenges.ts`
+  asks for "3 markverðum stöfum" in the problem text — so a student met the rule first as a mark
+  against them. **The roadmap's open question of whether Levels 1–2 also grade on it is now
+  settled: they do not mention significant figures at all.** Every occurrence in the game is in
+  `Level3.tsx` or the data it reads, and the L3 check is feedback-only —
+  `calculateCompositeScore` takes four scores and this is not one of them.
+- **`utils/sigfigs.ts` works on the written string, never on a `number`,** and that is the subject
+  rather than fussiness: `1200`, `1200,` and `1,200 × 10³` are one quantity written to two, four and
+  four significant figures, and a float cannot tell them apart.
+- **`roundToSigFigs` verifies its own output and falls back to scientific notation.** A round-trip
+  property test found the case: **60,221 to two significant figures cannot be written in plain
+  decimal at all**, because `60` claims one figure by rule 4. It prints `6,0 × 10¹`, and Stig 0 says
+  why. 455 round-trip cases are asserted.
+- **Grading a written answer compares the value _and_ the figure count.** `2,5` and `2,50` are the
+  same number and different answers; checking value alone would accept the exact mistake the step
+  exists to correct.
+- **Exact conversion factors carry unlimited significant figures** and are passed as `null`, so
+  `2,50 g × (1000 mg / 1 g)` keeps three. Without that a student would cap every unit conversion at
+  the figures in `1000` — which is why this belongs in Einingagreining and not beside it.
+
+**A soft hyphen got into the new Icelandic content while it was being written**, and is the reason
+`packages/shared/i18n/__tests__/no-invisible-characters.test.ts` now exists. `ónákvæmasta` carried a
+U+00AD mid-word: invisible in an editor, survives review, breaks search and screen readers. This is
+the defect that cost the Íslenskubraut server copy months of `Orða{soft hyphen}forði`;
+`scripts/islenskubraut/load.mjs` has validated the YAML since August, but **game and app source was
+never covered**, which is exactly where the new one landed. The scan covers `.ts`, `.tsx`, `.html`,
+`.yaml` and `.md` under the app and shared roots. **Exactly two occurrences are allowed**, both
+verified: a U+200D joiner inside an emoji in `dimensional-analysis/data/challenges.ts`, and a U+00A0
+in `numbers.test.ts`, which tests that `parseStudentNumber` copes with one. A third test asserts the
+allow-list is not stale.
+
+**Phase 5 continued 2026-09-19 with `1-ar/reynsluformulur` — Reynsluformúlur, the empirical-formula
+node.** The 23rd game, and the second of Phase 5's four confirmed curriculum gaps to close after
+Sýrufastinn. Empirical formula was absent from all three years. Read
+`apps/games/1-ar/reynsluformulur/README.md`; what matters platform-wide:
+
+- **It sits between Mólmassi and Stilla efnajöfnur** (Brown ch. 3), so the Y1 chain is nine nodes
+  and every sibling's `Námsleiðin` string changed. Four of the nine wrap it across lines with a JSX
+  `{' '}`, which is why doing this by eye does not scale.
+- **The roadmap said "fix three data defects before porting anything", and all three were
+  re-verified by arithmetic first** — two of Phase 3's four harvest rows had had false premises.
+  This time `ORPHANED_GAMES_ASSESSMENT.md:338` was right on all three: `l2-1` carried water's
+  percentages under hydrogen peroxide's name, `l2-5`'s stored key `NH₂O₃` was the 1,5-rounded-to-2
+  mistake frozen into the answer (the data reduces to N₂H₄O₃), and `l2-10`'s numbers made the stored
+  `Mg₃(PO₄)₂` unreachable.
+- **One correction to that assessment:** `l2-10`'s percentages do _not_ "reduce to no whole-number
+  formula at all". ×3 gives 5 : 3 : 12,95, within 0,4 % of Mg₅P₃O₁₃ — the arithmetic works and the
+  chemistry does not, which an engine that only knows arithmetic cannot tell apart. `MAX_SUBSCRIPT`
+  is what rejects it, not the tolerance.
+- **The whole class of defect is now structurally impossible, not merely fixed.** Compounds are
+  written as **formulas**; `percentComposition` derives the percentages and `deriveEmpirical`
+  derives the key back from them. Nobody types a percentage, so `l2-1` and `l2-10` cannot recur; no
+  key is stored, so `l2-5` cannot. **This is the pattern to copy for any game whose data is an
+  arithmetic result rather than a fact.**
+- **The old game's Level 3 scaffold _was_ its answer leak** — it printed `(empirical) × n =
+molecular` below a live input, and 18 of 30 items exposed the answer before commit. The Æfa phase
+  is the assessment's own proposed fix: the step table inverted into a live one the student fills
+  column by column, nothing shown before it is earned, and feedback that names the column.
 
 **Fixed 2026-09-19 — `buffer-recipe-creator` Level 2 graded against its own broken arithmetic.**
 `data/problems.ts` stored `correctAcidMass`, `correctBaseMass`, `correctAcidMoles`, `correctBaseMoles`

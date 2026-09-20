@@ -1,0 +1,53 @@
+@import 'tailwindcss';
+@import '../../../../../packages/shared/styles/theme.css';
+@source "../../../../../packages/shared";
+@import '../../../../../packages/shared/styles/game-base.css';
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* The dissociation bar: how much of the acid has actually come apart.
+   Deliberately not to scale as a fraction of the beaker — at 1 % a true-scale
+   bar is invisible, and invisible is the wrong lesson. It is a log-ish scale
+   with the 5 % line drawn on it, so the rule is a place on the picture. */
+.klofnun-bar {
+  position: relative;
+  height: 1.75rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: var(--color-warm-100, #f5f0eb);
+}
+
+.klofnun-bar__fill {
+  height: 100%;
+  transition: width 0.35s ease-out;
+}
+
+.klofnun-bar__threshold {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #b45309;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in {
+    animation: none;
+  }
+  .klofnun-bar__fill {
+    transition: none;
+  }
+}

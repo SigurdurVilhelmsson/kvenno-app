@@ -255,7 +255,7 @@ function App() {
   const renderMenu = () => (
     <div>
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
-        <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="Varmafræði Spámaður" />
+        <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="Varmafræði spámaður" />
         <div className="min-h-screen py-8">
           <a
             href="#game-content"

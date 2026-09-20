@@ -23,7 +23,7 @@ This file is committed for that reason.
 | [#52](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/52) | i18n switcher stripped from the eight games that translated nothing                   |
 | [#53](https://github.com/SigurdurVilhelmsson/kvenno-app/pull/53) | Gas-law game renamed to Icelandic; `Púfferuppskrift` swept; term scan widened to HTML |
 
-Suite went **1948 → 2064** tests (plus 46 server). `pnpm check-all` passes all three legs for the
+Suite went **1948 → 2186** tests (plus 46 server). `pnpm check-all` passes all three legs for the
 first time, and `format:check` is now a CI step so it stays that way.
 
 ---
@@ -73,6 +73,8 @@ All Siggi's, all 2026-09-19. The terminology ones are in `ordabok.md` and enforc
 | constants              | **Appendix D is authoritative**; a constant with no Appendix D row does not ship   |
 | Íslenskubraut          | **On hold** as a project                                                           |
 | Beita's length         | **Trim** the rule-breaking set — selection rule still Siggi's to give              |
+| `molmassi` name        | **`Mólhugtakið`** — the hub-card name; its tab had said `Molmassi Leikur`          |
+| `nafnakerfid` name     | **`Nafnakerfið`** — the hub-card name; its tab had said `Nafnapör - Efnanöfn`      |
 | HNO₂ / NO₂⁻            | `saltpéturssýrlingur` / `nítrítjón`                                                |
 | HCN / CN⁻              | `vetnissýaníð` (`blásýra`) / `sýaníðjón`                                           |
 
@@ -118,16 +120,15 @@ future one-`s` `saltpétursýrlingur` without touching the correct double-`s` fo
 
 ### Ruled but not built
 
-- **Game names: which one wins for `molmassi` and `nafnakerfid`** — see the section above. Blocks a
-  title-agreement test that would prevent the whole class of drift.
 - **Trim Sýrufastinn's Beita phase** — ruled 2026-09-19. Adding HNO₂ took it from 12 problems to
   16, twelve of them one generated template differing only in acid and concentration.
   `APPLY_PROBLEMS` appends every member of `RULE_BREAKING_PROBLEMS`; that is the one line to
   change. **The selection rule was not part of the ruling and must not be improvised into one** —
   see the roadmap's item 13 for the unruled candidates and the two constraints any of them must
   keep.
-- **Significant figures as a Stig 0 in `1-ar/einingakedjan`** — real content work.
-- **Phase 5, in the ruled order**: empirical formula (Y1) first.
+- ~~**Significant figures as a Stig 0**~~ **built 2026-09-19** — see the section below.
+- ~~**Phase 5, empirical formula**~~ **built 2026-09-19** — `1-ar/reynsluformulur`, the 23rd game.
+  Next in the ruled order: electrolytes/precipitation, then Ksp, then `equilibrium-shifter` Kc/Kp.
 
 ### Not ruled
 
@@ -166,49 +167,98 @@ Recorded because the wrong versions were stated confidently before being checked
 
 ---
 
-## Found last, and the largest thing still open
+## Found last, ruled, and closed the same day
 
-**Ten of the twenty-two games disagree with themselves about their own name.** Found while fixing
+**Ten of the twenty-two games disagreed with themselves about their own name.** Found while fixing
 the gas-law title, by comparing three surfaces per game: the hub card in
 `apps/landing/src/pages/GamesHub.tsx`, the browser-tab `<title>` in the game's `index.html`, and the
 `gameTitle` on its `Header`.
 
-| Game                       | Hub card              | Browser tab                                   | In-game header          |
-| -------------------------- | --------------------- | --------------------------------------------- | ----------------------- |
-| `molmassi`                 | Mólhugtakið           | **Molmassi Leikur**                           | —                       |
-| `nafnakerfid`              | Nafnakerfið           | **Nafnapör - Efnanöfn**                       | —                       |
-| `buffer-recipe-creator`    | Stuðpúðasmíði         | ~~Púfferuppskrift~~ (fixed)                   | Stuðpúðasmíði           |
-| `ph-titration`             | pH Títrun             | pH Títrun                                     | **pH Titrun**           |
-| `takmarkandi`              | Takmarkandi hvarfefni | Takmarkandi **H**varfefni                     | —                       |
-| `redox-reactions`          | Oxun og afoxun        | Oxun og **A**foxun                            | —                       |
-| `organic-nomenclature`     | Lífræn nafnagift      | Lífræn **N**afnagift                          | Lífræn **N**afnagift    |
-| `thermodynamics-predictor` | Varmafræði spámaður   | Varmafræði **S**pámaður                       | Varmafræði **S**pámaður |
-| `kinetics`                 | Hvarfhraði            | Hvarfhraði - Efnahvörfum **\|** Kvennaskólinn | Hvarfhraði              |
-| `lewis-structures`         | Lewis-formúlur        | Lewis-formúlur **\|** Kvennaskólinn           | Lewis-formúlur          |
-| `rafeindabygging`          | Rafeindabygging       | Rafeindabygging **\|** Kvennó                 | per-screen (by design)  |
+**All ten are fixed, and `packages/shared/i18n/__tests__/game-titles-agree.test.ts` now holds them
+there** — the hub card is the source of truth, being the only one of the three a student reads
+before choosing the game. Four distinct problems were tangled together:
 
-Four distinct problems are tangled here, and **only the first two are decided**:
+1. **A banned term.** `buffer-recipe-creator`'s tab read `Púfferuppskrift`; `púffer` has been banned
+   since August. Fixed, and the root cause with it: `governed-terms.test.ts` scanned `.tsx?` only,
+   so no `index.html` had ever been read. It scans `.html` too now, verified both ways. **Markdown
+   is still uncovered** — the same blind spot that let CLAUDE.md's Y3 chain line say `Púfferar`.
+2. **An English name**, `Gas Law Challenge`, at four student-facing sites. Now `Gaslögmál`, which is
+   not a coinage — it is the hub card, the chain node in all six Y3 games, and this game's own chain
+   chip. A code comment in `types.ts:2` still says it; not user-facing, left alone.
+3. **Two games carrying two different names each.** **Siggi's ruling, 2026-09-19: `Mólhugtakið` for
+   `molmassi` and `Nafnakerfið` for `nafnakerfid` — the hub-card name both times.** `molmassi`'s tab
+   had said `Molmassi Leikur`, also missing the accent on `Mól-`; `nafnakerfid`'s had said
+   `Nafnapör - Efnanöfn`. This mattered most of the four: the tab title is what a bookmark keeps.
+4. **Drift.** Mid-title capitals Icelandic does not take (`Takmarkandi Hvarfefni`, `Oxun og Afoxun`,
+   `Lífræn Nafnagift`, `Varmafræði Spámaður`), a missing accent in the `pH Titrun` header, and three
+   tabs suffixed `| Kvennaskólinn` / `| Kvennó` where nineteen used `- Kvennaskólinn`. Swept once
+   (3) was ruled.
 
-1. **A banned term.** `Púfferuppskrift` — `púffer` has been banned since August. **Fixed**, and the
-   root cause with it: `governed-terms.test.ts` scanned `.tsx?` only, so no `index.html` had ever
-   been read. It now scans `.html` too, verified both ways (the old scan passes with
-   `Púfferuppskrift` present; the new one fails). **Markdown is still uncovered** — the same blind
-   spot that let CLAUDE.md's own Y3 chain line say `Púfferar` until September.
-2. **An English name**, `Gas Law Challenge`, at four student-facing sites. **Fixed** to `Gaslögmál`,
-   which is not a coinage: it is the hub card, the chain node in all six Y3 games, and this game's
-   own chain chip. A code comment in `types.ts:2` still says it; not user-facing, left alone.
-3. **Two games that carry two different names** — `molmassi` (Mólhugtakið vs Molmassi Leikur, the
-   second also missing the accent on `Mólmassi`) and `nafnakerfid` (Nafnakerfið vs Nafnapör -
-   Efnanöfn). **Siggi's call which name wins**, so untouched. This is the one with real
-   consequences: the tab title is what a student sees in a pinned bookmark.
-4. **Drift, not disagreement** — mid-title capitals that Icelandic does not take (`Hvarfefni`,
-   `Afoxun`, `Nafnagift`, `Spámaður`), a missing accent in `pH Titrun`, and three tabs using
-   `| Kvennaskólinn` / `| Kvennó` where the other nineteen use `- Kvennaskólinn`. Mechanical, and
-   worth one sweep once (3) is decided.
+**The ruling is what made the test writable.** It needs to know which name is right, and a test
+cannot settle a naming question — only hold one that is settled. `2-ar/rafeindabygging` is the sole
+header exemption: it sets `gameTitle` per screen so the header names the sub-topic, which is
+deliberate, and the test asserts that waiver is still earned so it cannot outlive its reason.
 
-**A title-agreement test would catch all of it** and does not exist. It is cheap — the survey above
-was a 20-line script — but it cannot be written before (3) is ruled, because it needs to know which
-name is right.
+## Stig 0 — Markverðir stafir (built)
+
+Siggi's ruling: significant figures live **inside Einingagreining**, not in a game of their own.
+
+**The target was nearly got wrong.** This record first said `1-ar/einingakedjan`. Einingagreining is
+`1-ar/dimensional-analysis` (`GamesHub.tsx:31`); `Einingakeðjan` is the separate game at
+`GamesHub.tsx:66`. Four letters apart, adjacent in the Y1 chain. Caught before any code was written,
+by checking the hub card rather than trusting the note.
+
+The ruling's target was right on the merits too: **`dimensional-analysis` already marked students on
+significant figures and never taught them.** `Level3.tsx:167-169` counts them and shows a red panel;
+`challenges.ts` asks for "3 markverðum stöfum" in the problem text. **The roadmap's open question of
+whether Levels 1–2 also grade on it is now settled — they do not mention them at all**, and the L3
+check is feedback-only (`calculateCompositeScore` takes four scores and this is not one).
+
+Two things worth carrying forward:
+
+- **`utils/sigfigs.ts` works on the written string, never a `number`.** `1200`, `1200,` and
+  `1,200 × 10³` are one quantity at three precisions and a float cannot tell them apart.
+- **A round-trip property test changed the design.** 60,221 to two significant figures **cannot be
+  written in plain decimal** — `60` claims one figure by rule 4 — so `roundToSigFigs` verifies its
+  own output and falls back to `6,0 × 10¹`. The test asserts 455 cases; it found this, I did not.
+
+## A soft hyphen, and the guard it bought
+
+Writing the new Icelandic content, Claude put a **U+00AD soft hyphen inside `ónákvæmasta`**.
+Invisible in an editor, survives review, breaks search and screen readers — and precisely the defect
+that left the Íslenskubraut server copy reading `Orða{soft hyphen}forði` for months.
+`load.mjs` has validated the YAML since August; **game and app source was never covered**, which is
+where this one landed.
+
+`packages/shared/i18n/__tests__/no-invisible-characters.test.ts` now covers `.ts`, `.tsx`, `.html`,
+`.yaml` and `.md` across the app and shared roots. A repo-wide sweep found **exactly two other
+occurrences, both legitimate** and both allow-listed: a U+200D joiner inside an emoji in
+`challenges.ts`, and a U+00A0 in `numbers.test.ts`, which tests that `parseStudentNumber` handles
+one. A third assertion fails if an allow-list entry outlives its character.
+
+## Reynsluformúlur (built) — and a note I had wrong
+
+Phase 5's empirical-formula gap, closed. `1-ar/reynsluformulur`, four phases, 56 tests, chain
+position 5. Detail in the game's README and CLAUDE.md; three things belong here.
+
+**The old repo is reachable from a cloud session.** `namsbokasafn-leikir` and
+`namsbokasafn-efni` are both public on GitHub and clone through the git proxy. **CLAUDE.md says the
+textbook corpus "is not reachable from a cloud session" and that a session should say so rather than
+guess** — that is now wrong, and terminology resolution step 2 is usable here after all. Left as-is
+in this pass rather than edited blind: worth confirming the corpus clone is the same content Siggi
+greps locally before rewriting the rule.
+
+**A note of mine sent the previous task to the wrong game, and this one nearly to a duplicate.**
+CLAUDE.md said a Y1 chain test "does not exist yet and would be a cheap follow-up". It does exist —
+`1-ar/einingakedjan/src/__tests__/chain-string.test.ts`, added the same day in PR #47, by me. I
+wrote a second one before the full suite failed and pointed at the original. Duplicate deleted, the
+existing test extended to nine games, CLAUDE.md corrected. Two stale notes in one day, both mine,
+both caught by running the whole suite rather than the one directory being worked in.
+
+**The data-defect fix is worth copying.** The old game's three defects were all the same shape: a
+number typed next to the question it answers. Here compounds are written as **formulas** and both
+the percentages and the key are derived, so there is no percentage to mistype and no key to
+disagree. That is the `l2-1`/`l2-5`/`l2-10` class made impossible rather than fixed.
 
 ## Two operational facts worth keeping
 
