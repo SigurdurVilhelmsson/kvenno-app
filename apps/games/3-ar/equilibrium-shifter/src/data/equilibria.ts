@@ -427,7 +427,7 @@ export const equilibria: Equilibrium[] = [
     id: 14,
     equation: 'CO(g) + H₂O(g) ⇌ CO₂(g) + H₂(g)',
     name: 'Water Gas Shift',
-    nameIs: 'Vatnsgas hvarfið',
+    nameIs: 'Vatnsgashvarfið',
     difficulty: 'intermediate',
     reactants: [
       { formula: 'CO', coefficient: 1, phase: 'g', display: '⚫🔴' },
@@ -558,7 +558,7 @@ export const equilibria: Equilibrium[] = [
     id: 18,
     equation: 'H₂(g) + CO₂(g) ⇌ H₂O(g) + CO(g)',
     name: 'Reverse Water Gas',
-    nameIs: 'Andhverfa vatnsgas',
+    nameIs: 'Bakhvarf vatnsgashvarfsins',
     difficulty: 'intermediate',
     reactants: [
       { formula: 'H₂', coefficient: 1, phase: 'g', display: '⚪' },
@@ -577,7 +577,7 @@ export const equilibria: Equilibrium[] = [
       products: 2,
     },
     description: 'Reverse of the Water Gas Shift reaction.',
-    descriptionIs: 'Andhverfa Water Gas Shift hvarfsins.',
+    descriptionIs: 'Bakhvarf vatnsgashvarfsins.',
     possibleStresses: [
       { type: 'add-reactant', target: 'H₂' },
       { type: 'increase-temp', target: null },

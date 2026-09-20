@@ -7,7 +7,9 @@ import {
   kcToKp,
   kpExpression,
   omittedFromK,
+  reverseReaction,
   R_GAS,
+  scaleReaction,
 } from '@shared/engine/equilibrium';
 import { formatScientific } from '@shared/utils';
 
@@ -31,6 +33,11 @@ const ammoniak = reactionBy('ammoniak');
 const kalksteinn = reactionBy('kalksteinn');
 const blyklorid = reactionBy('blyklorid');
 const vatnsgas = reactionBy('vatnsgas');
+const vetnisjodid = reactionBy('vetnisjodid');
+
+/** The three operations, worked on equations the student has already seen. */
+const ammoniakBakhvarf = reverseReaction(ammoniak);
+const vetnisjodidTvofalt = scaleReaction(vetnisjodid, 2);
 
 interface Props {
   onComplete: () => void;
@@ -42,6 +49,7 @@ const STEPS = [
   'Föst efni og hreinir vökvar detta út',
   'Sami fasti, tvær leiðir: Kc og Kp',
   'Q er sama stæðan, utan jafnvægis',
+  'Þrjár aðgerðir á jöfnu',
 ] as const;
 
 export function SkiljaScreen({ onComplete, onBack }: Props) {
@@ -204,6 +212,74 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               Þetta er svarið við því sem Hliðrun jafnvægis sýndi þér: þegar þú bætir efni út í
               færirðu Q frá K, og kerfið hliðrast í þá átt sem færir Q til baka.
             </p>
+          </section>
+        )}
+
+        {step === 4 && (
+          <section className="space-y-4">
+            <p className="text-warm-700">
+              Oft er fastinn sem þú þarft ekki í töflunni, en fastar fyrir{' '}
+              <strong>tengd jafnvægi</strong> eru það — efnahvörf sem eiga hvarfefni eða myndefni
+              sameiginleg. Þá má smíða jöfnuna sem þig vantar úr þeim sem þú hefur, og fastinn
+              fylgir með. Aðgerðirnar eru þrjár.
+            </p>
+
+            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-5">
+              <p className="mb-2 text-sm font-semibold text-warm-800">
+                1. Snúa jöfnunni við → K verður umhverfa sín
+              </p>
+              <p className="font-mono text-sm text-warm-700">{equationOf(ammoniak)}</p>
+              <p className="mb-2 font-mono text-sm text-warm-700">
+                Kc = {ammoniak.constant!.value.toString().replace('.', ',')}
+              </p>
+              <p className="font-mono text-sm text-warm-800">{equationOf(ammoniakBakhvarf)}</p>
+              <p className="font-mono text-sm font-semibold text-kvenno-orange-dark">
+                Kc = 1 / {ammoniak.constant!.value.toString().replace('.', ',')} ={' '}
+                {formatScientific(ammoniakBakhvarf.constant!.value, 2)}
+              </p>
+            </div>
+
+            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-5">
+              <p className="mb-2 text-sm font-semibold text-warm-800">
+                2. Margfalda stuðlana með n → K fer í n-ta veldi
+              </p>
+              <p className="font-mono text-sm text-warm-700">{equationOf(vetnisjodid)}</p>
+              <p className="mb-2 font-mono text-sm text-warm-700">
+                Kc = {vetnisjodid.constant!.value}
+              </p>
+              <p className="font-mono text-sm text-warm-800">{equationOf(vetnisjodidTvofalt)}</p>
+              <p className="font-mono text-sm font-semibold text-kvenno-orange-dark">
+                Kc = {vetnisjodid.constant!.value}² ={' '}
+                {formatScientific(vetnisjodidTvofalt.constant!.value, 2)}
+              </p>
+            </div>
+
+            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-5">
+              <p className="mb-2 text-sm font-semibold text-warm-800">
+                3. Leggja tvær jöfnur saman → fastarnir margfaldast
+              </p>
+              <p className="font-mono text-sm text-warm-700">A ⇌ B&nbsp;&nbsp;&nbsp;K₁</p>
+              <p className="mb-2 font-mono text-sm text-warm-700">B ⇌ C&nbsp;&nbsp;&nbsp;K₂</p>
+              <p className="font-mono text-sm text-warm-800">A ⇌ C</p>
+              <p className="font-mono text-sm font-semibold text-kvenno-orange-dark">K = K₁ · K₂</p>
+              <p className="mt-2 text-sm text-warm-600">
+                B stendur sitt hvorum megin og styttist út. Það sama gerist með öll efni sem koma
+                fram beggja vegna — líka föst efni, sem voru hvort eð er ekki í K.
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">
+              <strong>Engin af þessum þremur er ný regla.</strong> K er brot með myndefnum uppi og
+              hvarfefnum niðri, svo það að víxla hliðunum snýr brotinu við, það að margfalda
+              stuðlana hefur hvern lið upp í það veldi, og það að leggja saman margfaldar brotin tvö
+              og styttir út það sem stendur beggja vegna. Ein staðreynd, þrjár afleiðingar.
+            </div>
+
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+              <strong>Eitt skilyrði:</strong> fastarnir verða að eiga við sama hitastig. K er háður
+              hitastigi, svo margfeldi tveggja fasta sem mældir voru við sitt hvort hitastigið lýsir
+              engu kerfi.
+            </div>
           </section>
         )}
 

@@ -34,7 +34,7 @@ const PHASES: { id: Screen; number: string; name: string; description: string; t
     id: 'aefa',
     number: '3',
     name: 'Æfa',
-    description: 'Skrifa stæðuna, spá fyrir um stefnu, breyta Kc í Kp.',
+    description: 'Skrifa stæðuna, spá fyrir um stefnu, breyta Kc í Kp, tengja jafnvægi saman.',
     tone: 'bg-kvenno-orange hover:bg-kvenno-orange-dark',
   },
   {

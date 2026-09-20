@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 
 import { canConvertToKp } from '@shared/engine/equilibrium';
 
+import { KP_PROBLEMS } from '../data/problems';
 import { REACTIONS, WITH_CONSTANT } from '../data/reactions';
 
 /**
@@ -114,5 +115,31 @@ describe('agreement with the rest of the platform', () => {
     );
     expect(salts).toContain("formula: 'PbCl₂'");
     expect(REACTIONS.some((r) => r.id === 'blyklorid')).toBe(true);
+  });
+});
+
+describe('the Kc-to-Kp exercise keeps its shape', () => {
+  it('does not let Δn = 0 take over the set', () => {
+    // KP_PROBLEMS is a blanket filter over everything convertible, so a
+    // reaction added for another purpose joins this exercise by default. The
+    // cobalt pair did exactly that — both Δn = 0 — and would have made five of
+    // ten problems the special case where (R·T)^Δn disappears. They now carry
+    // `excludeFromKpExercise`. This is the guard that says so next time.
+    const flat = KP_PROBLEMS.filter((p) => p.deltaN === 0);
+    expect(flat.length, KP_PROBLEMS.map((p) => `${p.id}:${p.deltaN}`).join(' ')).toBeLessThan(
+      KP_PROBLEMS.length / 2
+    );
+  });
+
+  it('spans both signs of Δn as well as zero', () => {
+    const signs = new Set(KP_PROBLEMS.map((p) => Math.sign(p.deltaN)));
+    expect([...signs].sort()).toEqual([-1, 0, 1]);
+  });
+
+  it('excludes only what is named, and names why', () => {
+    // An exclusion list that grows silently is an exemption that stops
+    // enforcing the rule it was carved out of.
+    const excluded = REACTIONS.filter((r) => r.excludeFromKpExercise).map((r) => r.id);
+    expect(excluded.sort()).toEqual(['kobolt-koloxid', 'kobolt-vetni']);
   });
 });

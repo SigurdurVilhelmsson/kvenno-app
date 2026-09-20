@@ -127,6 +127,7 @@ constitutional isomer;byggingarhverfa
 coordination compound ;girðisamband
 coordination number;girðitala
 corrosion;tæring
+coupled equilibria;tengd jafnvægi
 covalent bond;samgilt tengi
 critical point;markpunktur
 critical pressure;markþrýstingur
@@ -236,6 +237,7 @@ fission;kjarnaklofnun
 flame test;logapróf
 fluorescence;flúrljómun
 formation constant;myndunarfasti
+forward reaction;framhvarf
 fractional crystallization;hlutkristöllun
 fractional distillation;hluteiming
 fractional precipitation;hlutfelling
@@ -411,6 +413,7 @@ organic chemistry;lífræn efnafræði
 organometallic chemistry;málmlífræn efnafræði
 osmosis;himnuflæði
 osmotic pressure;flæðiþrýstingur
+overall equation;heildarjafna
 overall order of reaction;heildarstig efnahvarfs
 oxidation;oxun
 oxidation number;oxunartala
@@ -489,6 +492,7 @@ reactivity;hvarfgirni
 real gas;raungas
 real solution;raunlausn
 rearrangement;umröðun
+reciprocal;umhverfa
 redox;oxunar-afoxunarhvarf
 reduction;afoxun
 reduction potential;afoxunarspenna
@@ -499,6 +503,7 @@ relative atomic mass;meðalatómmassi
 resolution;upplausn
 resonance;vok
 resonance;samhrif
+reverse reaction;bakhvarf
 reversible;afturkræfur
 rotary evaporator;hverfisvali
 rotavap;hverfisvali

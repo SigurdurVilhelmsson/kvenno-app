@@ -72,6 +72,18 @@ export interface Reaction {
   products: Species[];
   /** Absent where the reaction is used only to practise writing an expression. */
   constant?: EquilibriumConstant;
+  /**
+   * Keep this reaction out of the Kc-to-Kp exercise even though it qualifies.
+   *
+   * **Not a chemistry claim — a set-composition one.** `KP_PROBLEMS` is a
+   * blanket filter over every reaction that *can* be converted, so a reaction
+   * added for some other purpose silently joins that exercise and changes its
+   * balance. The cobalt pair, added for the coupled-equilibria problems, did
+   * exactly that: both have Δn = 0, and they took the exercise from three
+   * Δn = 0 cases in eight to five in ten. The same shape as `nafnakerfid`'s
+   * `excludeFromNameBuilder`, and for the same reason.
+   */
+  excludeFromKpExercise?: boolean;
   source: Source;
 }
 
@@ -207,6 +219,7 @@ export function equationOf(reaction: Reaction): string {
  */
 export function canConvertToKp(reaction: Reaction): boolean {
   return (
+    reaction.excludeFromKpExercise !== true &&
     reaction.constant?.temperatureC !== undefined &&
     reaction.constant.basis === 'Kc' &&
     kpExpression(reaction) !== null
@@ -552,4 +565,213 @@ export function extentFromTotalPressure(
     throw new RangeError(`Total pressure must be positive, got ${observedTotal}`);
   }
   return (observedTotal - totalPressure(reaction, initial)) / deltaN;
+}
+
+/* ------------------------------------------------------------------ *
+ * Coupled equilibria — tengd jafnvægi
+ *
+ * Two or more equilibria sharing a species can be combined into one, and
+ * the book gives three operations for doing it (`ch13/m68798`):
+ *
+ *   1. Reverse an equation      → K becomes 1/K
+ *   2. Multiply it through by n → K becomes Kⁿ
+ *   3. Add two equations        → K becomes the product of the two
+ *
+ * **All three fall out of the same fact and none of them is a new rule to
+ * memorise:** K is a ratio of product terms over reactant terms, so swapping
+ * the sides inverts the ratio, multiplying the coefficients raises every term
+ * to that power, and adding two equations multiplies their ratios and cancels
+ * whatever appears on both sides. That is why the functions below derive the
+ * constant rather than take one — a combined K that could be written down
+ * separately from the equation it belongs to is exactly the kind of datum
+ * `1-ar/reynsluformulur` and `3-ar/leysnijafnvaegi` stopped storing.
+ * ------------------------------------------------------------------ */
+
+/**
+ * Coefficients are compared and cancelled as floats, because rule 2 admits a
+ * fractional factor. Anything at or below this counts as nothing left.
+ */
+const COEFFICIENT_EPSILON = 1e-9;
+
+/** Same formula in the same phase — the identity used when cancelling. */
+function sameSpecies(a: Species, b: Species): boolean {
+  return a.formula === b.formula && a.phase === b.phase;
+}
+
+/** Coefficients added for repeats of one species on one side. */
+function mergeSide(side: Species[]): Species[] {
+  const merged: Species[] = [];
+  for (const s of side) {
+    const seen = merged.find((m) => sameSpecies(m, s));
+    if (seen) seen.coefficient += s.coefficient;
+    else merged.push({ ...s });
+  }
+  return merged;
+}
+
+/**
+ * The constant of a derived reaction, or `undefined` where one given had none.
+ *
+ * **Undefined propagates deliberately.** A combined K is only as sourced as
+ * the least sourced of its parts, so a reaction built from a given that the
+ * book puts no number on carries no number either. Inventing one here would
+ * launder an unsourced value into a reaction that looks derived.
+ */
+function derivedConstant(
+  parts: EquilibriumConstant[],
+  value: number,
+  source: Source
+): EquilibriumConstant | undefined {
+  const basis = parts[0]?.basis;
+  if (basis === undefined || parts.some((p) => p.basis !== basis)) return undefined;
+  const temperatures = parts.map((p) => p.temperatureC);
+  // Two constants measured at different temperatures do not combine: K is a
+  // function of temperature, so their product describes no single system.
+  if (temperatures.some((t) => t !== temperatures[0])) return undefined;
+  return { value, basis, temperatureC: temperatures[0], source };
+}
+
+/** Rule 1 — swap the sides. K becomes its reciprocal. */
+export function reverseReaction(reaction: Reaction, id = `${reaction.id}-bakhvarf`): Reaction {
+  const constant = reaction.constant;
+  return {
+    ...reaction,
+    id,
+    reactants: reaction.products.map((s) => ({ ...s })),
+    products: reaction.reactants.map((s) => ({ ...s })),
+    constant: constant && derivedConstant([constant], 1 / constant.value, constant.source),
+  };
+}
+
+/**
+ * Rule 2 — multiply every coefficient by `factor`. K is raised to that power.
+ *
+ * The factor may be fractional (halving an equation is as legitimate as
+ * doubling it), but it may not be zero or negative: zero deletes the equation
+ * and a negative one is rule 1 wearing a disguise, which would give two
+ * spellings for one operation and let a route "scale by −1" past a test
+ * checking that it never reversed anything.
+ */
+export function scaleReaction(reaction: Reaction, factor: number, id?: string): Reaction {
+  if (!(factor > 0) || !Number.isFinite(factor)) {
+    throw new RangeError(`Scale factor must be finite and positive, got ${factor}`);
+  }
+  const scale = (s: Species) => ({ ...s, coefficient: s.coefficient * factor });
+  const constant = reaction.constant;
+  return {
+    ...reaction,
+    id: id ?? `${reaction.id}-x${factor}`,
+    reactants: reaction.reactants.map(scale),
+    products: reaction.products.map(scale),
+    constant: constant && derivedConstant([constant], constant.value ** factor, constant.source),
+  };
+}
+
+/**
+ * Rule 3 — add two equations, cancelling whatever appears on both sides.
+ *
+ * Cancellation is by the smaller coefficient, so `3H₂` on the left against
+ * `3H₂` on the right leaves nothing while `3H₂` against `H₂` leaves `2H₂` on
+ * the left. A species is only cancelled against itself **in the same phase**:
+ * the book's cobalt example works precisely because CoO(s) and Co(s) appear on
+ * opposite sides of the two given equations and drop out, and a phase-blind
+ * match would also cancel a gas against its own liquid.
+ */
+export function addReactions(a: Reaction, b: Reaction, id?: string, name?: string): Reaction {
+  const left = mergeSide([...a.reactants, ...b.reactants]);
+  const right = mergeSide([...a.products, ...b.products]);
+
+  for (const l of left) {
+    const r = right.find((s) => sameSpecies(s, l));
+    if (!r) continue;
+    const shared = Math.min(l.coefficient, r.coefficient);
+    l.coefficient -= shared;
+    r.coefficient -= shared;
+  }
+  const kept = (side: Species[]) => side.filter((s) => s.coefficient > COEFFICIENT_EPSILON);
+
+  const constants = [a.constant, b.constant].filter((c): c is EquilibriumConstant => Boolean(c));
+  return {
+    id: id ?? `${a.id}+${b.id}`,
+    name: name ?? `${a.name} + ${b.name}`,
+    reactants: kept(left),
+    products: kept(right),
+    constant:
+      constants.length === 2
+        ? // The first part's citation. Both halves of a coupled problem come
+          // from one worked example in practice, and the problem carries the
+          // citation in its own right — but a caller adding two reactions from
+          // different places should read the derived source as "the first of
+          // them", not as a source for the product.
+          derivedConstant(constants, a.constant!.value * b.constant!.value, a.constant!.source)
+        : undefined,
+    source: a.source,
+  };
+}
+
+/** One given equation, and what to do with it on the way to the target. */
+export interface CoupledStep {
+  reaction: Reaction;
+  reversed: boolean;
+  factor: number;
+}
+
+/** Apply the steps in order and add the results together. */
+export function applyCoupledSteps(steps: CoupledStep[], id: string, name: string): Reaction {
+  if (steps.length === 0) throw new RangeError('A coupled route needs at least one step');
+  const prepared = steps.map((step) => {
+    const directed = step.reversed ? reverseReaction(step.reaction) : step.reaction;
+    return step.factor === 1 ? directed : scaleReaction(directed, step.factor);
+  });
+  return prepared.reduce((acc, next, i) => (i === 0 ? next : addReactions(acc, next, id, name)));
+}
+
+/** Both sides match, species for species, allowing for order. */
+export function sameEquation(a: Reaction, b: Reaction): boolean {
+  const sideMatches = (x: Species[], y: Species[]) =>
+    x.length === y.length &&
+    x.every((s) => {
+      const found = y.find((t) => sameSpecies(s, t));
+      return (
+        found !== undefined && Math.abs(found.coefficient - s.coefficient) < COEFFICIENT_EPSILON
+      );
+    });
+  return sideMatches(a.reactants, b.reactants) && sideMatches(a.products, b.products);
+}
+
+/**
+ * Search the given equations for a set of operations reaching `target`.
+ *
+ * **This exists so that a problem cannot ship unsolvable.** `1-ar/nafnakerfid`
+ * shipped 33 compounds its own answer tray could not spell, and they could
+ * never be marked correct; the cure there, and here, is to have the code prove
+ * the route exists rather than have an author assert it. A test runs this over
+ * every shipped problem.
+ *
+ * It is a plain exhaustive search: each given is reversed or not and scaled by
+ * one of a few small whole numbers, which is at most a few thousand
+ * combinations for the two- and three-equation problems the book poses. It
+ * returns the first route it finds, and a separate test asserts what matters
+ * about a second one — that any route reaching the same target carries the
+ * same K, since K is a property of the equation and not of how it was reached.
+ */
+export function findCoupledRoute(
+  givens: Reaction[],
+  target: Reaction,
+  factors: number[] = [1, 2, 3, 4, 5, 6]
+): CoupledStep[] | null {
+  const search = (index: number, chosen: CoupledStep[]): CoupledStep[] | null => {
+    if (index === givens.length) {
+      const composed = applyCoupledSteps(chosen, 'leit', 'leit');
+      return sameEquation(composed, target) ? chosen : null;
+    }
+    for (const reversed of [false, true]) {
+      for (const factor of factors) {
+        const found = search(index + 1, [...chosen, { reaction: givens[index], reversed, factor }]);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+  return search(0, []);
 }
