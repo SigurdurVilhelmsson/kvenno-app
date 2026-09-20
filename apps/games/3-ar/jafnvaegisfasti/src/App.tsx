@@ -41,7 +41,7 @@ const PHASES: { id: Screen; number: string; name: string; description: string; t
     id: 'beita',
     number: '4',
     name: 'Beita',
-    description: 'ICE-töflur — og dæmi þar sem nálgunin dugar ekki.',
+    description: 'ICE-töflur í styrkjum og í hlutþrýstingi — og dæmi þar sem nálgunin dugar ekki.',
     tone: 'bg-purple-600 hover:bg-purple-700',
   },
 ];

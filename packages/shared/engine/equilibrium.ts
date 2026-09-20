@@ -305,27 +305,37 @@ export function extentRange(reaction: Reaction, initial: Amounts): { min: number
  * The midpoint is always strictly inside the bracket, so no concentration is
  * ever evaluated at zero and the endpoints are never touched.
  *
- * **What is refused, and why it is this rule rather than "homogeneous only".**
- * The bar is that K must have at least one species on each side. Where it does
- * not — `CaCO₃(s) ⇌ CaO(s) + CO₂(g)`, whose K is just `[CO₂]` — there is no
- * extent to solve for at all: the equilibrium concentration is K, whatever you
- * started from, and an ICE table would carry rows that change and never affect
- * the answer. That is the misconception this topic exists to remove.
+ * **What is refused, and the rule has been wrong twice in the narrowing
+ * direction, so read this before tightening it again.**
  *
- * The rule started as "homogeneous only", which was right for
- * `3-ar/jafnvaegisfasti` and too strict once `3-ar/equilibrium-shifter` needed
- * it: `NH₃(aq) + H₂O(l) ⇌ NH₄⁺(aq) + OH⁻(aq)` is not homogeneous, but the water
- * is a solvent in vast excess whose amount is exactly what K's derivation
- * already drops, and both sides do have species in K. Dropping the solvent is
- * the standard treatment, not an approximation this code is inventing.
+ * It started as "homogeneous only", which suited `3-ar/jafnvaegisfasti` and was
+ * too strict once `3-ar/equilibrium-shifter` needed a weak base in water:
+ * `NH₃(aq) + H₂O(l) ⇌ NH₄⁺(aq) + OH⁻(aq)` is not homogeneous, but the water is
+ * a solvent whose amount K's own derivation already divides out.
+ *
+ * It then became "K must have a species on each side", which was still too
+ * strict. `NH₄Cl(s) ⇌ NH₃(g) + HCl(g)` has nothing in K on the left, and the
+ * textbook poses it anyway — correctly, because the equilibrium composition is
+ * perfectly well determined: each gas comes out at √Kp. What is undetermined is
+ * how much *solid* was consumed, and that was never in the table. The real
+ * obstacle was mechanical rather than chemical: with no reactant in K, nothing
+ * bounds the extent from above, and bisection needs a finite bracket. That is
+ * handled by walking the bracket outwards instead of refusing.
+ *
+ * So the bar now is only that K has a species on **some** side. With none on
+ * either, Q is 1 at every extent and no amount of reacting reaches K.
+ *
+ * **The thing a solid really does teach is still here**, just not as a refusal:
+ * `amountsAtExtent` tracks it and K ignores it, so the answer does not move
+ * however much of it there is. A test asserts exactly that.
  */
 export function solveExtent(reaction: Reaction, initial: Amounts, k: number): number {
   if (k <= 0 || !Number.isFinite(k))
     throw new RangeError(`K must be finite and positive, got ${k}`);
-  if (activeReactants(reaction).length === 0 || activeProducts(reaction).length === 0) {
+  if (activeReactants(reaction).length === 0 && activeProducts(reaction).length === 0) {
     throw new RangeError(
-      `${reaction.id} has no species in K on one side, so there is no extent to solve for: ` +
-        `its equilibrium concentrations are fixed by K alone, whatever you start from.`
+      `${reaction.id} has nothing in K on either side, so Q is 1 at every extent and no ` +
+        `amount of reacting can bring it to K.`
     );
   }
   const { min, max } = extentRange(reaction, initial);
@@ -336,6 +346,33 @@ export function solveExtent(reaction: Reaction, initial: Amounts, k: number): nu
   }
   let lo = min;
   let hi = max;
+
+  // One side of the bracket is infinite when that side of K is empty — a solid
+  // decomposing into gases, say, where nothing limits how far the reaction can
+  // run except the solid, whose amount is not in K and is not tracked. Walk
+  // outwards until Q passes K, which it must: Q rises without bound as the
+  // products build up.
+  if (!Number.isFinite(hi)) {
+    hi = Math.max(1, Math.abs(lo));
+    for (
+      let i = 0;
+      i < 400 && reactionQuotient(reaction, amountsAtExtent(reaction, initial, hi)) < k;
+      i += 1
+    ) {
+      hi *= 2;
+    }
+  }
+  if (!Number.isFinite(lo)) {
+    lo = -Math.max(1, Math.abs(hi));
+    for (
+      let i = 0;
+      i < 400 && reactionQuotient(reaction, amountsAtExtent(reaction, initial, lo)) > k;
+      i += 1
+    ) {
+      lo *= 2;
+    }
+  }
+
   // 100 halvings take a double-precision bracket below its own resolution.
   for (let i = 0; i < 100; i += 1) {
     const mid = (lo + hi) / 2;
@@ -423,8 +460,15 @@ export interface IceResult {
 export function iceTable(reaction: Reaction, initial: Amounts, k: number): IceResult {
   const extent = solveExtent(reaction, initial, k);
   const final = amountsAtExtent(reaction, initial, extent);
+  // Species outside K get no row. That is the textbook convention for a
+  // heterogeneous equilibrium and it is not cosmetic: the extent is fixed by
+  // K, which ignores the solid, so the "amount of solid" a row would print is
+  // arbitrary — and can come out negative, as the ammonium chloride problem
+  // does when the flask is charged with less solid than the extent consumes.
+  // A row that can go negative without anything being wrong is a row that
+  // should not be shown.
   const rows: IceRow[] = [
-    ...reaction.reactants.map((s) => ({
+    ...reaction.reactants.filter(appearsInK).map((s) => ({
       formula: s.formula,
       side: 'hvarfefni' as const,
       coefficient: s.coefficient,
@@ -432,7 +476,7 @@ export function iceTable(reaction: Reaction, initial: Amounts, k: number): IceRe
       change: -s.coefficient * extent,
       equilibrium: final[s.formula],
     })),
-    ...reaction.products.map((s) => ({
+    ...reaction.products.filter(appearsInK).map((s) => ({
       formula: s.formula,
       side: 'myndefni' as const,
       coefficient: s.coefficient,
@@ -451,4 +495,61 @@ export function iceTable(reaction: Reaction, initial: Amounts, k: number): IceRe
     initialQuotient: reactionQuotient(reaction, initial),
     direction: directionFromQ(reactionQuotient(reaction, initial), k),
   };
+}
+
+/**
+ * Total pressure of a gas mixture — Dalton's law, summed over gases only.
+ *
+ * Dissolved species are deliberately excluded: they have a concentration and
+ * no partial pressure, so including them would add a number with no physical
+ * meaning to a reading a manometer would give.
+ */
+export function totalPressure(reaction: Reaction, pressures: Amounts): number {
+  return reaction.reactants
+    .concat(reaction.products)
+    .filter((s) => s.phase === 'g')
+    .reduce((total, s) => {
+      const p = pressures[s.formula];
+      if (p === undefined) throw new RangeError(`No pressure given for ${s.formula}`);
+      if (p < 0) throw new RangeError(`Negative pressure for ${s.formula}: ${p}`);
+      return total + p;
+    }, 0);
+}
+
+/**
+ * How far the reaction has run, read off the total pressure.
+ *
+ * **This is why a chemist works in pressures rather than concentrations.**
+ * Running the reaction changes the number of gas molecules by Δn per unit of
+ * extent, so the total pressure moves linearly with it:
+ *
+ *     P_total(x) = P_total(0) + Δn · x
+ *
+ * A manometer therefore measures the extent directly — no sampling, no
+ * titrating, no separating the mixture. It is the standard way these
+ * equilibria are actually followed in a lab, and it is the one quantity in the
+ * topic a student could read off an instrument themselves.
+ *
+ * **Refused when Δn is zero, and that refusal is the lesson.** For
+ * `H₂ + I₂ ⇌ 2HI` the total pressure never moves however far the reaction
+ * runs, so the measurement carries no information about the extent at all. A
+ * student who expects a pressure change there has mistaken "the reaction is
+ * happening" for "the number of molecules is changing".
+ */
+export function extentFromTotalPressure(
+  reaction: Reaction,
+  initial: Amounts,
+  observedTotal: number
+): number {
+  const deltaN = deltaNGas(reaction);
+  if (deltaN === 0) {
+    throw new RangeError(
+      `${reaction.id} has Δn = 0, so the total pressure is the same at every extent and ` +
+        `cannot be used to measure one.`
+    );
+  }
+  if (observedTotal <= 0) {
+    throw new RangeError(`Total pressure must be positive, got ${observedTotal}`);
+  }
+  return (observedTotal - totalPressure(reaction, initial)) / deltaN;
 }

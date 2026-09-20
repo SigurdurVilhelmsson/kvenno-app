@@ -903,10 +903,12 @@ myndefni`, `Kerfið eyðir henni` → `Kerfið eyðir því`, `Afurð fjarlægð
   unaffected (Q < K either way) but the game shows its computed value, so a test says why the screen
   and the page differ in the last digit.
 
-**Still open after it, and named in the new README:** `equilibrium-shifter` is no longer the largest
-Y3 gap but is still entirely qualitative; K's own temperature dependence (van 't Hoff) is unbuilt;
-ICE in partial pressures works in the engine but no problem poses it; and the book's coupled-reaction
-rules (reverse → 1/K, multiply by n → Kⁿ, add → multiply) are not covered.
+**Still open after it, and named in the new README — two of the four have since been closed:**
+`equilibrium-shifter` is no longer the largest Y3 gap but is still entirely qualitative **(closed
+2026-09-20, below)**; K's own temperature dependence (van 't Hoff) is unbuilt **(closed the same
+day, in `equilibrium-shifter`)**; ICE in partial pressures works in the engine but no problem poses
+it **(closed 2026-09-20, below)**; and the book's coupled-reaction rules (reverse → 1/K, multiply by
+n → Kⁿ, add → multiply) are not covered — **still open.**
 
 **`3-ar/equilibrium-shifter` is no longer qualitative — 2026-09-20.** The gap Jafnvægisfastinn's
 README named as the largest one left in Y3. The game still asks the same question and the
@@ -964,10 +966,47 @@ it. What matters platform-wide:
   option arrays: so nobody "fixes" it and so it cannot quietly grow.
 
 **Still open here:** the ten systems with no sourced constant would need the Icelandic book's
-complex-ion formation constants (`m68869`), which is a new source and Siggi's call; the aqueous
+complex-ion formation constants (`m68869`), which is a new source and Siggi's call; and the aqueous
 systems have a constant but no derivable ΔH, because the formation table carries no dissolved ions,
-so their temperature stresses stay directional; and ICE in partial pressures still works in the
-engine with nothing posing it.
+so their temperature stresses stay directional.
+
+**ICE in partial pressures is built — 2026-09-20, in `3-ar/jafnvaegisfasti`.** The last thing the
+engine could do that nothing posed. Four problems in the Beita phase, sourced to ch. 13 like the
+rest. What matters platform-wide:
+
+- **The pressure problems run through the same screen as the concentration ones, and that is the
+  teaching claim.** Nothing about the method changes when the units do — the engine never knew what
+  an amount measured — so a separate screen would present ICE in atm as a second technique to learn.
+  `BeitaScreen` reads a `unit` and a `constantSymbol` off the problem and labels its columns `(M)`
+  or `(atm)`. The Icelandic moves with it: the 5 % rule is stated against `upphafsstyrknum` or
+  `upphafsþrýstingnum`, and Q is read from `upphafsstyrkjunum` or `upphafsþrýstingunum`.
+- **A solid gets no ICE row, and that is not cosmetic.** `iceTable` now omits every species outside
+  K. The extent is fixed by K, which ignores the solid, so a row for it prints an arbitrary number —
+  and NH₄Cl(s) ⇌ NH₃ + HCl went **negative** when the flask was charged with less solid than the
+  extent consumed. A row that can go negative with nothing wrong is a row that should not be shown.
+- **Total pressure is an observable, and where Δn = 0 it observes nothing.** `P_total(x) =
+P_total(0) + Δn·x` exactly, so `extentFromTotalPressure` inverts a manometer reading without a
+  single partial pressure being measured. Where Δn = 0 it **throws** rather than returning a number,
+  and Cl₂ + Br₂ ⇌ 2BrCl is in the set for that alone: the instrument is not broken, there is simply
+  nothing to measure, and the screen says so.
+- **`solveExtent`'s refusal was narrowed twice, each time by a real consumer**, and the reasoning is
+  written into the file so it is not tightened back. It is now "nothing in K on **either** side",
+  which still refuses `CaCO₃(s) ⇌ CaO(s) + CO₂(g)` — K is just `[CO₂]` and there is no extent to
+  solve for — while admitting NH₄Cl, which the book poses and which solves to √Kp per gas. The real
+  obstacle there was never the rule but an **unbounded bracket**; the bisection now expands its
+  bracket before it starts.
+- **Two of the book's own exercises must not be reused as they look.** Its BrCl question gives 0,115
+  and 0,450 atm as the pressures _in the mixture_ — equilibrium values, so it is a missing-pressure
+  question and not an ICE, and solving it as one gives a different number entirely. And its H₂S
+  answer, 0,0072 atm, is the **approximation** (the exercise says to assume the change is
+  negligible); the exact root is 0,007118. Both round to 0,007 and the 5 % rule passes either way,
+  so the test compares like with like — the same care `3-ar/syrufastinn` needed over `√(Ka·C)`
+  against the quadratic.
+- **A Kp-basis constant never reaches the Kc→Kp exercise**, enforced by `sources.test.ts`:
+  converting a Kp the book already states as a Kp is arithmetic performed on an answer. Three of the
+  four new reactions also carry no temperature, for the same reason `pcl5` and `blasyra` do not —
+  the book states them without one, and inventing a plausible 25 °C would put an unsourced number on
+  screen invisibly.
 
 **No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
 now fixed, as are the three above, and each carries a test that fails against the pre-fix code. What

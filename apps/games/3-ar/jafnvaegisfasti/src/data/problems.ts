@@ -15,9 +15,11 @@ import {
   deltaNGas,
   directionFromQ,
   iceTable,
+  kcExpression,
   kcToKp,
   kpExpression,
   reactionQuotient,
+  totalPressure,
   type Amounts,
   type Direction,
   type IceResult,
@@ -269,3 +271,151 @@ export const ICE_PROBLEMS: IceProblem[] = ICE_ORDER.map((p, i) => {
 /** Problems where the shortcut holds, and where it does not. */
 export const APPROXIMATION_HOLDS = ICE_PROBLEMS.filter((p) => p.result.approximationSafe);
 export const APPROXIMATION_FAILS = ICE_PROBLEMS.filter((p) => !p.result.approximationSafe);
+
+/**
+ * ICE in partial pressures.
+ *
+ * **Not the concentration problems with the units relabelled.** The algebra is
+ * identical — which is the point, and the engine is unit-agnostic for exactly
+ * that reason — but three things are genuinely different, and each of the
+ * problems below exists for one of them:
+ *
+ * 1. **The constant is a Kp the book states as a Kp.** Nothing is converted.
+ * 2. **A heterogeneous system loses its solid from K entirely**, so the two
+ *    gases the ammonium chloride releases are all there is, and they come out
+ *    equal because the equation makes them 1 : 1.
+ * 3. **Total pressure is an observable.** Where Δn ≠ 0 a manometer reads the
+ *    extent directly. Where Δn = 0 it reads nothing at all, however far the
+ *    reaction has run, and that is worth meeting once.
+ */
+export interface PressureProblem {
+  id: string;
+  reaction: Reaction;
+  difficulty: Difficulty;
+  /** Partial pressures in atm. */
+  initial: Amounts;
+  context: string;
+  /** Derived. */
+  result: IceResult;
+  initialTotal: number;
+  /** Total pressure once it settles — `null` where Δn = 0 and it cannot move. */
+  equilibriumTotal: number | null;
+}
+
+const PRESSURE_ORDER: {
+  reactionId: string;
+  difficulty: Difficulty;
+  initial: Amounts;
+  context: string;
+}[] = [
+  {
+    reactionId: 'brennisteinsvetni',
+    difficulty: 'ledd',
+    initial: { 'H₂S': 0.824, 'H₂': 0, 'S₂': 0 },
+    context:
+      'Kennslubókardæmið, og það er valið vegna þess að Kp er örsmátt: breytingin er hverfandi á móti 0,824 atm og 5 % reglan heldur með miklum afgangi. Sama nálgun og í styrkjum — ekkert nýtt nema einingin.',
+  },
+  {
+    reactionId: 'bromklorid',
+    difficulty: 'mid',
+    initial: { 'Cl₂': 0.6, 'Br₂': 0.9, BrCl: 0 },
+    context:
+      'Δn er núll hér, svo heildarþrýstingurinn hreyfist ekki hvað sem hvarfið gengur langt. Mælitækið segir ekkert — það er ekki bilað, það er bara ekkert að mæla.',
+  },
+  {
+    reactionId: 'ammoniumklorid',
+    difficulty: 'mid',
+    // The solid gets a nominal amount because the type wants one; it is not
+    // in K, gets no ICE row, and cannot move the answer — which a test checks.
+    initial: { 'NH₄Cl': 1, 'NH₃': 0, HCl: 0 },
+    context:
+      'Fasta saltið dettur út úr Kp, svo stæðan er bara margfeldi gasþrýstinganna tveggja — og jafnan gerir þá jafna, svo hvor um sig er kvaðratrótin af Kp.',
+  },
+  {
+    reactionId: 'nituroxidklorid',
+    difficulty: 'thung',
+    initial: { NO: 1.0, 'Cl₂': 1.0, NOCl: 0 },
+    context:
+      'Stórt Kp, svo hvarfið gengur nánast til enda og nálgunin á ekkert erindi. Δn er −1, svo heildarþrýstingurinn fellur mælanlega meðan á því stendur.',
+  },
+];
+
+export const PRESSURE_PROBLEMS: PressureProblem[] = PRESSURE_ORDER.map((p, i) => {
+  const reaction = reactionBy(p.reactionId);
+  const k = reaction.constant?.value;
+  if (k === undefined) throw new RangeError(`${p.reactionId} has no constant`);
+  const result = iceTable(reaction, p.initial, k);
+  const settled = Object.fromEntries(result.rows.map((r) => [r.formula, r.equilibrium]));
+  // Not guarded: every gas is in K, so every gas has a row, so this cannot
+  // throw for want of a pressure. Catching it would turn a data defect into a
+  // silent `null` and the screen would quietly stop showing a reading.
+  return {
+    ...p,
+    id: `p-${p.reactionId}-${i}`,
+    reaction,
+    result,
+    initialTotal: totalPressure(reaction, p.initial),
+    // Δn = 0 and the reading does not move, however far the reaction runs.
+    equilibriumTotal: deltaNGas(reaction) === 0 ? null : totalPressure(reaction, settled),
+  };
+});
+
+/**
+ * What the Beita phase actually serves: the concentration problems, then the
+ * pressure ones.
+ *
+ * **One list, one screen, one method.** The algebra does not change when the
+ * units do, and putting the pressure problems behind a separate screen would
+ * teach the opposite — that ICE in atm is a second technique to learn rather
+ * than the same one with a manometer instead of a flask. What the screen has
+ * to know is only what differs: the unit its columns are labelled in, the
+ * symbol beside the constant, and whether a total-pressure reading exists.
+ */
+export interface BeitaProblem {
+  id: string;
+  reaction: Reaction;
+  difficulty: Difficulty;
+  initial: Amounts;
+  context: string;
+  result: IceResult;
+  /** `M` for concentrations, `atm` for partial pressures. */
+  unit: 'M' | 'atm';
+  /** What the student is handed — `K` or `Kp`. */
+  constantSymbol: 'K' | 'Kp';
+  /** The expression, written in whichever of the two the problem uses. */
+  expression: string;
+  /**
+   * The manometer, where there is one. `equilibrium` is `null` where Δn = 0:
+   * the reading does not move however far the reaction runs, and saying so is
+   * the whole point of that problem.
+   */
+  totals: { initial: number; equilibrium: number | null } | null;
+}
+
+export const BEITA_PROBLEMS: BeitaProblem[] = [
+  ...ICE_PROBLEMS.map((p): BeitaProblem => ({
+    ...p,
+    unit: 'M',
+    constantSymbol: 'K',
+    expression: kcExpression(p.reaction),
+    totals: null,
+  })),
+  ...PRESSURE_PROBLEMS.map((p): BeitaProblem => {
+    const expression = kpExpression(p.reaction);
+    if (expression === null) {
+      throw new RangeError(`${p.id} is served in atm but has no Kp expression`);
+    }
+    return {
+      id: p.id,
+      reaction: p.reaction,
+      difficulty: p.difficulty,
+      initial: p.initial,
+      context: p.context,
+      result: p.result,
+      unit: 'atm',
+      constantSymbol: 'Kp',
+      expression,
+      totals: { initial: p.initialTotal, equilibrium: p.equilibriumTotal },
+    };
+  }),
+];
