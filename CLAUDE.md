@@ -285,14 +285,14 @@ Plan file: `logical-wandering-llama.md` — the Y1/Y2/Y3 iterative review cycle.
 
 ### Game inventory
 
-**Year 1:** dimensional-analysis, lotukerfid, nafnakerfid, molmassi, reynsluformulur, jafna-jofnur, takmarkandi, lausnir, einingakedjan
+**Year 1:** dimensional-analysis, lotukerfid, nafnakerfid, molmassi, reynsluformulur, jafna-jofnur, utfellingarhvorf, takmarkandi, lausnir, einingakedjan
 **Year 2:** hess-law, kinetics, lewis-structures, vsepr-geometry, intermolecular-forces, organic-nomenclature, redox-reactions, rafeindabygging
 **Year 3:** ph-titration, gas-law-challenge, equilibrium-shifter, syrufastinn, thermodynamics-predictor, buffer-recipe-creator
 
 ### Curriculum chains
 
 ```
-Y1: Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi → Reynsluformúlur → Stilla efnajöfnur → Takmarkandi → Lausnir → Einingakeðjan
+Y1: Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi → Reynsluformúlur → Stilla efnajöfnur → Útfellingarhvörf → Takmarkandi → Lausnir → Einingakeðjan
 Y2: Rafeindabygging → Lewis → VSEPR → IMF → Hess → Kinetics → Redox → Organic
 Y3: Gaslögmál → Jafnvægi → Sýrufastinn → Varmafræði → pH Títrun → Stuðpúðar
 ```
@@ -731,6 +731,64 @@ answer, so check reference tables and not just data. **Formic is the internal pr
 mantissa 1,8 with acetic, so their pKa values differ by exactly 1,000 (3,7447 and 4,7447); the
 platform rounded one to 4,74 and the other to 3,75, which cannot both be right.
 
+**Phase 5 continued 2026-09-20 with the Year-1 chapter-4 hole, shipped as BOTH deliverables** —
+`1-ar/utfellingarhvorf` (Útfellingarhvörf, the 24th game) **and** Stig 0 — Rafkleyfi inside
+`1-ar/lausnir`. February answered the "new game or new level?" question with _both_, and Siggi
+confirmed it. This was the largest absence the August review measured: 34 greps across all twenty
+shipped games returned zero for `rafkleyfi`, `botnfall`, `útfelling`, `leysnireglur` and
+`áhorfendajón`, and `(aq)` appeared only in Year 3. What matters platform-wide:
+
+- **The school's textbook settled the chain positions, so no teaching decision was needed.**
+  `ORPHANED_GAMES_ASSESSMENT.md:330` offered two defensible placements and flagged it as a call for
+  Siggi. The chapter numbers answer it: precipitation is **ch. 4** (`ch04/m68710`) and electrolytes
+  are **ch. 11** (`ch11/m68781`), so Útfellingarhvörf sits after Stilla efnajöfnur and the
+  electrolyte content goes later, in Lausnir. **The Y1 chain is now ten nodes.**
+- **It is Stig 0 in Lausnir, not Stig 4**, because Siggi ruled on 2026-08-29 that there is no
+  Level 4. The shape copies `1-ar/dimensional-analysis`'s Stig 0 exactly, including that its
+  Icelandic is **hardcoded inside a game that otherwise uses `t()`** — writing the `pl` block would
+  mean coining Polish chemistry terms against no glossary, and `useGameI18n`'s `t()` already falls
+  back to Icelandic for a missing key.
+- **The derive-don't-store pattern again, and it retired a whole defect class.** A scenario is two
+  soluble salts and a sentence; the formulas, solubility verdicts, coefficients, all three equations
+  and the spectator ions are computed. So the ancestor's worst defect is **unwritable** rather than
+  fixed: it tested an Ag₂CrO₄ precipitate against a rule table with **no chromate row**, and
+  `solubility()` now throws when no rule covers an anion, with a property test over the whole pool.
+  `react()` likewise refuses a scenario whose reactants are not both soluble. The engine is
+  exercised over **every** soluble pairing — several hundred reactions — for atom balance, charge
+  balance, reduced coefficients and a net ionic equation containing no spectator.
+- **Transcribe the table from the book, not from the old game.** Its six-rule paraphrase differed
+  from `ch04/m68710` in four places: no chromate rule at all, sulfate exceptions missing Ag⁺ and
+  Hg₂²⁺, a hydroxide exception for Ca²⁺ the book does not list, and no F⁻ row.
+- **An input a student cannot physically produce is not an assessment.** The old grader compared raw
+  strings against Unicode subscripts, so **six of its eight precipitates were unanswerable from an
+  Icelandic keyboard**, and it set `isCorrect = true` on any submission at all. Beita has the
+  student build the equation by selecting ions from a tray — the `1-ar/nafnakerfid` name-builder
+  shape, which is this repo's precedent for exactly this problem.
+- **Both answer leaks in the old Level 1 were structural and both are fixed by splitting a field.**
+  All fifteen descriptions named the category, and the **unlit bulb rendered before the answer** —
+  which is itself the picture for `órafkleyft efni`. `Solute` now carries an `observable` (shown
+  first, and a test greps it for every classifying stem) and a `why` (shown after), and the bulb
+  draws no verdict until an answer is in. **That test caught one of my own strings**: HCl's
+  observable said `lyktarsterk`, which contains `sterk`.
+- **Four terms were missing from `ordabok.md` and all four came out of the textbook, not from
+  coinage** — `nettójónajafna` (23 vs 8 two-word), `heildarjónajafna` (6 vs 1), `áhorfendajón`
+  (6 vs 0) and `útfellingarhvarf` (9 vs 7 `botnfalls-`). **One variant wants Siggi's confirmation
+  and is not blocking:** the book's glossary headwords are the two-word `nettó jónajafna` and
+  `fullkomin jónajafna` while its prose writes both solid. The solid forms were taken; both are the
+  book's own, so this is spelling, not coinage.
+- **Three `governed-terms` rows were added and none guards a form that ships today.** They guard the
+  file this game was harvested from, which is the `enþalpía`-from-`calorimetry` trap: `rafkleyfi` is
+  **masculine** (the old game said `Sterkt`/`Veikt rafkleyfi` on every answer button, and its
+  `Órafkleyfi` is not a word the book uses — non-electrolyte is `órafkleyft efni`, an adjective plus
+  a noun); `áhorfendajón` takes the genitive-plural link, not `áhorfanda-`; and `joðíð`, not
+  `jódíð`. **`rafleiðari` and `raflausn` were checked and deliberately NOT banned** — the corpus
+  uses both correctly, for _conductor_ and for _electrolyte solution_. February's ruling was that
+  `rafleiðari` must not be used to **mean** electrolyte, not that the word is wrong.
+- **Still open, and named in the new README:** Ksp is the sibling gap — this game is the qualitative
+  question ("does a precipitate form, by rule?", Brown 4.2) and `solubility-equilibrium` is the
+  quantitative one (Q vs Ksp, 17.6). They share anchor compounds, and the Ksp terminology has been
+  ruled and unused since February.
+
 **No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
 now fixed, as are the three above, and each carries a test that fails against the pre-fix code. What
 is left is enrichment and unfinished decisions, not defects — the work order is
@@ -746,7 +804,7 @@ The current work order for these lives in `docs/plans/2026-08-16-games-roadmap.m
 `packages/shared/i18n/ordabok.md` is the authority — it was moved into the shared library deliberately. When a term is disputed, resolve in this order:
 
 1. `packages/shared/i18n/ordabok.md`
-2. `~/dev/repos/namsbokasafn-efni`, the school's textbook corpus (`grep -roi "<stem>[a-uáéíóúýþæö]*" --include=*.md . | wc -l`) — a local checkout, so it is not reachable from a cloud session; say so rather than guessing when it is absent
+2. `namsbokasafn-efni`, the school's textbook corpus (`grep -roi "<stem>[a-uáéíóúýþæö]*" --include=*.md . | wc -l`). **Corrected 2026-09-20: it IS reachable from a cloud session** — `git clone https://github.com/SigurdurVilhelmsson/namsbokasafn-efni.git` works through the git proxy, and the 2026-09-20 rulings were all taken from it that way. This line used to say it was a local checkout only, and that claim cost earlier sessions rulings they could have made themselves. **Two cautions when you clone it.** Grep `books/efnafraedi-2e/02-mt-output/` and nothing else: the tree also holds `.backup-*` directories whose hits double-count (`nettójónajafna` reads 28 across the whole clone and 23 in the live text). And the book can disagree with itself — its glossary headwords are `nettó jónajafna` and `fullkomin jónajafna` while its prose writes both solid; prefer running prose and say which you took
 3. Ask Siggi — only where both are silent or they disagree
 
 **Applied 2026-08-26 (roadmap Phase 2) and now enforced by a test.** All eight terms below are
@@ -787,6 +845,11 @@ that let this file's own Y3 chain line say `Púfferar` until September.
 | acid dissociation constant | `sýrufasti` | `sýrustuðull` | **Siggi's ruling implicit in the 2026-09-03 Ka/Kb rulings**, and `ordabok.md` already carried `acid dissociation constant;sýrufasti`. Masculine — nom `sýrufasti`, acc/dat/gen `sýrufasta`, def. `sýrufastinn`. Had **zero** occurrences platform-wide until `3-ar/syrufastinn` shipped: the platform used Ka in three games without ever naming it. The `-fasti` pattern is the platform-wide one (`jafnvægisfasti`, `hraðafasti`, `myndunarfasti`, `klofningsfasti vatns`); a `-stuðull` names a coefficient, not a constant. **The ban stops at `stuð`, not `stuðl`** — `stuðull` is `stuð`+`ull` in the nominative and `stuðl-` only in the oblique cases, so the shorter stem would have missed the commonest form (found by probing, and the same class of miss as the accentless `anoða`). A lookahead exempts `maurasýrustuðpúði` / `sítrónusýrustuðpúði` in `buffer-recipe-creator`, where the match is only the seam between an acid name's genitive and `stuðpúði` |
 | base dissociation constant | `basafasti` | `basastuðull`, `basaklofningsfasti` | **Siggi's ruling, 2026-09-03**, completing the pair. Masculine, same declension as `sýrufasti`. Now `base dissociation constant;basafasti` in `ordabok.md`, where there had been no entry at all. **Do not build it from `klofningsfasti`:** that name is taken by `klofningsfasti vatns` (Kw), and reusing it for Kb would name two different constants the same thing |
 | percent dissociation | `klofnunarhlutfall` | `klofnunarprósenta`, `sundrunarhlutfall`, `sundrunarprósenta`, **`jónunarprósenta`** | **Siggi's ruling, 2026-09-03.** Neuter — nom/acc `klofnunarhlutfall`, dat `klofnunarhlutfalli`, gen `klofnunarhlutfalls`, def. `klofnunarhlutfallið`. **Read this row before 'correcting' it:** `ordabok.md`'s near neighbours `mass percentage;massaprósenta`, `volume percentage;rúmmálsprósenta` and `percent yield;prósentuheimtur` all use `-prósenta`, so `klofnunarprósenta` looks like the consistent form. It is not the ruling — this one is built on the existing `dissociation;klofnun`. `jónunarprósenta` is banned for a different reason: it is what the February old-repo game `ka-kb-jafnvaegi` called its Level 3 (`docs/FEBRUARY-DECISIONS-RECOVERED.md:280`), so it arrives with that game if it is ever ported — the same trap as `enþalpía` from `calorimetry` |
+| electrolyte | `rafkleyfi` (m) / `órafkleyft efni` | **`Sterkt rafkleyfi`**, **`Veikt rafkleyfi`**, **`Órafkleyfi`** | **Taken from the textbook, 2026-09-20** — `ordabok.md` already carried both `electrolyte;rafkleyfi` and `nonelectrolyte;órafkleyft efni`, and the corpus settles the gender the glossary does not state. **Masculine**: `sterkur rafkleyfi` (9 corpus hits), `sterkir`/`veikir rafkleyfar`, dat. sg. def. `rafkleyfanum`. The old repo's `jonir-i-lausn` said `Sterkt`/`Veikt rafkleyfi` on **every Level-1 answer button**. Non-electrolyte is an **adjective plus a noun**, not a noun: `órafkleyft efni`, `órafkleyf efni` in the plural — the old file's `Órafkleyfi` is not a word the book uses. **Nothing wrong ships**; the row guards the harvest source. **Deliberately not banned:** `rafleiðari` (a conductor — the corpus uses it for the conductor/semiconductor/insulator trio) and `raflausn` (an electrolyte solution, e.g. the acid in a battery). February's ruling was that `rafleiðari` must not be used to _mean_ electrolyte |
+| spectator ion | `áhorfendajón` | `áhorfandajón` | **Taken from the textbook, 2026-09-20**; `ordabok.md` had no entry and now carries `spectator ion;áhorfendajón`. The linking form is the **genitive plural** `áhorfenda-`, 6 corpus hits to 0. Feminine like `jón`: nom `áhorfendajón`, acc. def. `áhorfendajónina`, dat. pl. `áhorfendajónum`, gen. pl. `áhorfendajóna`. `ORPHANED_GAMES_ASSESSMENT.md:207` writes the wrong form, and **Markdown is not scanned**, so the row guards the code against it being copied across |
+| iodide | `joðíð` | `jódíð` | **2026-09-20**, and this one was already right everywhere it shipped — `nafnakerfid`, `kinetics` and `equilibrium-shifter` all say `joðíð`, and the corpus is **54 to 0**. The row exists solely because the old repo's `jonir-i-lausn` says `jódíð` four times and it lands on **the very reaction the textbook uses as its worked example**, PbI₂. Spelling only; no agreement change |
+| net ionic equation | `nettójónajafna` | — | **Taken from the textbook, 2026-09-20.** Feminine weak, like `jafna`: nom `nettójónajafna`, obl. sg. `nettójónajöfnu`, def. `nettójónajafnan`, pl. `nettójónajöfnur`, dat. pl. `nettójónajöfnum`. Nothing shipped used the concept at all, so there is no banned form and no test row. **One variant is unconfirmed and is Siggi's call:** the book's _glossary headword_ is the two-word `nettó jónajafna`, while its _running prose_ is 23 to 8 for the solid compound. The solid form was taken, matching `ordabok.md`'s `jónajafna` and `sameindajafna`. Same question, same answer, for `heildarjónajafna` (6 to 1 against the glossary's `fullkomin jónajafna`) |
+| precipitation reaction | `útfellingarhvarf` | — | **2026-09-20**, resolving a split the corpus itself carries: `útfellingarhvarf` 9, `botnfallshvarf` 7. `ordabok.md`'s existing pair decides it — `precipitation;útfelling` names the **process** and `precipitate;botnfall` names the **solid**, so the reaction is built on the first. Neuter, like `efnahvarf`: nom/acc `útfellingarhvarf`, dat `útfellingarhvarfi`, gen `útfellingarhvarfs`, pl. `útfellingarhvörf`. Nothing shipped used either word, so no banned form and no test row — but **do not shorten it to `botnfallshvarf`**, which is the form the old repo's game used |
 `sjálfvirkur` has zero hits and is not the word for spontaneous; do not grep for it.
 
 The `stilla` rename swept `1-ar/jafna-jofnur` (6 files), the `Námsleiðin` chain string in every
