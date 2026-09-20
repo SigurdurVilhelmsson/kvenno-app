@@ -237,9 +237,9 @@ const GOVERNED_TERMS: GovernedTerm[] = [
   {
     english: 'iodide',
     correct: 'joðíð',
-    banned: [/jódíð/i],
+    banned: [/jó[ðd]íð/i],
     guidance:
-      "The corpus is 54 to 0 and the shipped platform was already clean — nafnakerfid, kinetics and equilibrium-shifter all say joðíð. The old repo's jonir-i-lausn says jódíð four times (reactions.ts:47,51,55 and solubility.ts:46), and it lands on the very reaction the textbook uses as its worked example, PbI₂. This row is here so a later harvest from that file cannot bring it in.",
+      "The corpus is 54 to 0 and the shipped platform was already clean — nafnakerfid, kinetics and equilibrium-shifter all say joðíð. The old repo's jonir-i-lausn says jódíð four times (reactions.ts:47,51,55 and solubility.ts:46), and it lands on the very reaction the textbook uses as its worked example, PbI₂. This row is here so a later harvest from that file cannot bring it in. **Widened 2026-09-20, the same day it was written:** the first form of this ban was /jódíð/i, which matches only the d-spelling. Starting the Ksp work turned up a THIRD variant in the old repo's solubility-equilibrium — Blýjóðíð and Silfurjóðíð, with the correct ð but an accented ó — and the narrow ban sailed straight past it. Both wrong forms carry the accented ó and the correct joðíð does not, so the character class keys on exactly that. Same class of miss as the accentless anoða, and as stuð against stuðl: write the ban against every variant you have actually seen, not against the one in front of you.",
   },
 ];
 

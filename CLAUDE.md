@@ -17,9 +17,9 @@ kvenno-app/
 │   ├── islenskubraut/    # Icelandic language teaching cards (React SPA, /islenskubraut/)
 │   ├── lab-reports/      # AI-powered lab report grading (React SPA)
 │   └── games/            # 23 chemistry games (single-file HTML, except the 3 Three.js ones)
-│       ├── 1-ar/         # 9 games for year 1
+│       ├── 1-ar/         # 10 games for year 1
 │       ├── 2-ar/         # 8 games for year 2
-│       └── 3-ar/         # 6 games for year 3
+│       └── 3-ar/         # 7 games for year 3
 ├── packages/
 │   └── shared/           # Shared components, hooks, utils, types, i18n
 ├── server/               # Express backend (Claude AI proxy + PDF generation)
@@ -287,14 +287,14 @@ Plan file: `logical-wandering-llama.md` — the Y1/Y2/Y3 iterative review cycle.
 
 **Year 1:** dimensional-analysis, lotukerfid, nafnakerfid, molmassi, reynsluformulur, jafna-jofnur, utfellingarhvorf, takmarkandi, lausnir, einingakedjan
 **Year 2:** hess-law, kinetics, lewis-structures, vsepr-geometry, intermolecular-forces, organic-nomenclature, redox-reactions, rafeindabygging
-**Year 3:** ph-titration, gas-law-challenge, equilibrium-shifter, syrufastinn, thermodynamics-predictor, buffer-recipe-creator
+**Year 3:** ph-titration, gas-law-challenge, equilibrium-shifter, syrufastinn, thermodynamics-predictor, buffer-recipe-creator, leysnijafnvaegi
 
 ### Curriculum chains
 
 ```
 Y1: Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi → Reynsluformúlur → Stilla efnajöfnur → Útfellingarhvörf → Takmarkandi → Lausnir → Einingakeðjan
 Y2: Rafeindabygging → Lewis → VSEPR → IMF → Hess → Kinetics → Redox → Organic
-Y3: Gaslögmál → Jafnvægi → Sýrufastinn → Varmafræði → pH Títrun → Stuðpúðar
+Y3: Gaslögmál → Jafnvægi → Sýrufastinn → Varmafræði → pH Títrun → Stuðpúðar → Leysnijafnvægi
 ```
 
 ## Development Guidelines
@@ -788,6 +788,53 @@ shipped games returned zero for `rafkleyfi`, `botnfall`, `útfelling`, `leysnire
   question ("does a precipitate form, by rule?", Brown 4.2) and `solubility-equilibrium` is the
   quantitative one (Q vs Ksp, 17.6). They share anchor compounds, and the Ksp terminology has been
   ruled and unused since February.
+
+**Phase 5 is complete — `3-ar/leysnijafnvaegi` landed 2026-09-20, closing the last of the four
+confirmed curriculum gaps.** Ka/Kb, empirical formula, electrolytes/precipitation and now Ksp. It is
+the 25th game and the quantitative half of the arc `1-ar/utfellingarhvorf` opened: that one answers
+"will it precipitate?" by rule, this one by number, and they share anchor compounds deliberately.
+What matters platform-wide:
+
+- **Appendix D.3 now exists in `packages/shared/data/appendix-d.ts`** — Siggi supplied the page on
+  2026-09-20. **Until then no Ksp value on the platform had a source at all**, which is precisely why
+  this game could not be built earlier: the 2026-09-19 ruling says a constant with no Appendix D row
+  does not ship.
+- **The school's two books disagree about Ksp far more than about acids, and this is the thing to
+  know before touching the data.** The Icelandic textbook has its own `Leysnimargfeldi` appendix
+  (`efnafraedi-2e/02-mt-output/appendices/m68868`). Of the 33 compounds both list, **13 differ by
+  3× or more** — Ca₃(PO₄)₂ by 1538×, PbCrO₄ by 1400×, BaSO₄ by 209× — and only 12 agree within 30 %.
+  Brown wins by the ruling, but **a BaSO₄ molar solubility differs 14-fold between the books**, so a
+  student checking the Icelandic appendix finds the game contradicting it. The pool prefers the
+  agreeing compounds and every divergent one carries a written note. **Do not "correct" a Ksp against
+  the Icelandic appendix** — read the note first.
+- **Table D.3's starred sulfides are not ordinary rows.** The footnote gives their equilibrium as
+  `MS(s) + H₂O(l) ⇌ M²⁺ + HS⁻ + OH⁻`, so the constant is a three-species product and **not**
+  `[M²⁺][S²⁻]`. Computing a molar solubility for CuS as √Ksp is wrong by twenty orders of magnitude
+  and looks entirely plausible. They carry `hydrolytic: true`, the pool throws on one, and two tests
+  hold it — the second asserts the flags are still set, without which the first passes vacuously.
+- **PbI₂ has no Appendix D row, so it cannot carry a Ksp on this platform** — the same treatment TRIS
+  got in `syrufastinn`. It is Útfellingarhvörf's opening scenario, but that game is qualitative, so
+  the arc still joins.
+- **Two defects were found by building, not by inspection.** `precipitationOrder` had `x` and `y`
+  swapped: correct for 1:1 salts, and for Ag₂CrO₄ it inverted the Mohr result the task exists to
+  teach. And **the common-ion approximation is not universally safe** — for PbCl₂ it is out by 53 %,
+  because its molar solubility (1,6 × 10⁻² M) exceeds the common ion added. That now uses **the same
+  5 % threshold as `syrufastinn`**, so students meet one convention, not two.
+- **The symbol stays `Ksp` while the word is `leysnimargfeldi`.** The Icelandic appendix writes
+  `K_lm` once in its own title; the book's running text writes `K_sp` **81 times**. Same arrangement
+  as `sýrufasti` and Ka. All four February Ksp terms are now in use for the first time, and the
+  corpus confirms each: `mólarleysni` 33 against `mólleysni` 0, `samjónahrif` 6.
+- **A text-scanning guard cannot tell a use from a mention, and that bit three times in one day.**
+  `governed-terms.test.ts` and `decimal-input.test.ts` scan source _including comments_, so a
+  comment explaining why a banned form is avoided fails the test it is explaining. It happened in
+  `lausnir`'s electrolyte data, in this game's salt data (the Icelandic for seashells trips the
+  `hvolf` ban, as `skeljabrot` already did), and in its Æfa screen. **Write the explanation without
+  writing the banned string**, and say that is what you are doing.
+- **The iodide ban was widened the same day it was written.** `/jódíð/i` caught only the d-spelling;
+  the old Ksp game uses `Blýjóðíð` and `Silfurjóðíð`, with the correct ð and an accented ó, and
+  sailed straight through. Both wrong forms carry the accented ó and the correct `joðíð` does not,
+  so the ban is now `/jó[ðd]íð/i`. Same class of miss as the accentless `anoða` and `stuð` against
+  `stuðl`.
 
 **No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
 now fixed, as are the three above, and each carries a test that fails against the pre-fix code. What

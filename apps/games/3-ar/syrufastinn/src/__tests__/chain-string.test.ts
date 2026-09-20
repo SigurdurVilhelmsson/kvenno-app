@@ -26,9 +26,11 @@ const CHAIN_FILES = [
   'apps/games/3-ar/thermodynamics-predictor/src/App.tsx',
   'apps/games/3-ar/ph-titration/src/App.tsx',
   'apps/games/3-ar/buffer-recipe-creator/src/App.tsx',
+  'apps/games/3-ar/leysnijafnvaegi/src/App.tsx',
 ];
 
-const EXPECTED = 'Gaslögmál → Jafnvægi → Sýrufastinn → Varmafræði → pH Títrun → Stuðpúðar';
+const EXPECTED =
+  'Gaslögmál → Jafnvægi → Sýrufastinn → Varmafræði → pH Títrun → Stuðpúðar → Leysnijafnvægi';
 
 function chainOf(relative: string): string {
   const src = readFileSync(join(repoRoot, relative), 'utf8');
