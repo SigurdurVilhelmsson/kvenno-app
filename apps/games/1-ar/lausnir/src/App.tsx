@@ -3,14 +3,17 @@ import { useState } from 'react';
 import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
 import { useGameI18n, useGameProgress } from '@shared/hooks';
 
+import { Level0Electrolytes } from './components/Level0Electrolytes';
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
 import { gameTranslations } from './i18n';
 
-type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'complete';
+type ActiveLevel = 'menu' | 'level0' | 'level1' | 'level2' | 'level3' | 'complete';
 
 interface Progress {
+  level0Score: number | null;
+  level0Completed: boolean;
   level1Score: number | null;
   level1Completed: boolean;
   level2Score: number | null;
@@ -21,6 +24,8 @@ interface Progress {
 }
 
 const DEFAULT_PROGRESS: Progress = {
+  level0Score: null,
+  level0Completed: false,
   level1Score: null,
   level1Completed: false,
   level2Score: null,
@@ -38,6 +43,15 @@ function App() {
   );
 
   const { t, language, setLanguage } = useGameI18n({ gameTranslations });
+
+  const handleLevel0Complete = (score: number) => {
+    updateProgress({
+      level0Score: Math.max(progress.level0Score || 0, score),
+      level0Completed: true,
+      totalGamesPlayed: progress.totalGamesPlayed + 1,
+    });
+    setActiveLevel('menu');
+  };
 
   const handleLevel1Complete = (score: number) => {
     updateProgress({
@@ -67,6 +81,12 @@ function App() {
   };
 
   // Render active level
+  if (activeLevel === 'level0') {
+    return (
+      <Level0Electrolytes onComplete={handleLevel0Complete} onBack={() => setActiveLevel('menu')} />
+    );
+  }
+
   if (activeLevel === 'level1') {
     return <Level1 onComplete={handleLevel1Complete} onBack={() => setActiveLevel('menu')} />;
   }
@@ -187,6 +207,42 @@ function App() {
 
           {/* Level selection */}
           <div className="space-y-4">
+            {/* Stig 0 - Rafkleyfi. Brown ch. 11, and the half of February's
+                "both" answer that belongs in Lausnir rather than in
+                Útfellingarhvörf. Stig 0 and not Stig 4 because Siggi ruled on
+                2026-08-29 that there is no Level 4; the precedent for the shape
+                is dimensional-analysis's Stig 0. Hardcoded Icelandic, as that
+                one is. */}
+            <button
+              onClick={() => setActiveLevel('level0')}
+              className="game-card w-full p-6 rounded-xl border-4 border-warm-400 bg-warm-50 hover:bg-warm-100 transition-all text-left"
+            >
+              <div className="flex items-center gap-4">
+                <div className="text-4xl">💡</div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl font-bold text-warm-800">Rafkleyfi</span>
+                    {progress.level0Completed && (
+                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                        ✓ {t('levels.completed')}
+                      </span>
+                    )}
+                    {progress.level0Score !== null && (
+                      <span className="bg-warm-600 text-white text-xs px-2 py-1 rounded-full">
+                        {progress.level0Score} {t('levels.points')}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-sm text-warm-600 mt-1">
+                    Hvað verður um efnið þegar það leysist — og leiðir lausnin straum?
+                  </div>
+                  <div className="text-xs text-warm-600 mt-2">
+                    Sterkur rafkleyfi, veikur rafkleyfi, órafkleyft efni
+                  </div>
+                </div>
+              </div>
+            </button>
+
             {/* Level 1 - Always available */}
             <button
               onClick={() => setActiveLevel('level1')}
@@ -345,7 +401,8 @@ function App() {
           </div>
           <div className="mt-3 text-center text-xs text-warm-500">
             <strong>Námsleiðin:</strong> Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi →
-            Reynsluformúlur → Stilla efnajöfnur → Takmarkandi → <u>Lausnir</u> → Einingakeðjan
+            Reynsluformúlur → Stilla efnajöfnur → Útfellingarhvörf → Takmarkandi → <u>Lausnir</u> →
+            Einingakeðjan
           </div>
         </div>
       </div>

@@ -150,7 +150,8 @@ function App() {
 
               <div className="mt-3 text-center text-xs text-warm-500">
                 <strong>Námsleiðin:</strong> Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi →
-                Reynsluformúlur → Stilla efnajöfnur → Takmarkandi → Lausnir → <u>Einingakeðjan</u>
+                Reynsluformúlur → Stilla efnajöfnur → Útfellingarhvörf → Takmarkandi → Lausnir →{' '}
+                <u>Einingakeðjan</u>
               </div>
             </div>
           </div>

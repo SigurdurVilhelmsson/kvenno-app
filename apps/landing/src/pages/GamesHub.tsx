@@ -58,6 +58,11 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
         slug: 'jafna-jofnur',
       },
       {
+        title: 'Útfellingarhvörf',
+        description: 'Leysnireglur, botnfall og nettójónajöfnur',
+        slug: 'utfellingarhvorf',
+      },
+      {
         title: 'Takmarkandi hvarfefni',
         description: 'Takmarkandi hvarfefni og hlutfallaefnafræði',
         slug: 'takmarkandi',

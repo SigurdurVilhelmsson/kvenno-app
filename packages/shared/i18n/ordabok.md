@@ -107,6 +107,7 @@ colloidal suspension;sviflausn
 combustion;bruni
 combustion reaction;brunaefnahvarf
 common ion effect;samjónahrif
+complete ionic equation;heildarjónajafna
 complex;flóki
 complex bond;flókatengi
 complex ion;flókajón
@@ -301,6 +302,7 @@ interaction;víxlverkun
 intermediate;milliefni
 intermolecular forces;millisameindakraftar
 intramolecular forces;innansameindakraftar
+iodide;joðíð
 ion;jón
 ionic bond;jónatengi
 ionic compound;jónaefni
@@ -378,6 +380,7 @@ monoatomic ion;einfrumeinda jón
 monochromator;ljósgreiða
 monodentate;eintenntur
 monomer;einliða
+net ionic equation;nettójónajafna
 neutral;hlutlaus
 neutralization;hlutleysing
 neutron;nifteind
@@ -452,6 +455,7 @@ power;afl
 pre-exponential factor;tíðnifasti
 precipitate;botnfall
 precipitation;útfelling
+precipitation reaction;útfellingarhvarf
 pressure;þrýstingur
 principal quantum number;höfuðskammtatala
 product;myndefni
@@ -526,6 +530,7 @@ solution;lausn
 solvent;leysir
 spatula;spatúla
 specific heat capacity;eðlisvarmi
+spectator ion;áhorfendajón
 spectrophotometer;litrófsgreinir
 spectrophotometry;ljósgleypnimælingar
 spectroscopy;litrófsgreining

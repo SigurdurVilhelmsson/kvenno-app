@@ -220,6 +220,27 @@ const GOVERNED_TERMS: GovernedTerm[] = [
     guidance:
       'stuðpúði is masculine; compounds take the genitive stem stuðpúða- (stuðpúðalausn, stuðpúðageta, stuðpúðasvæði), plural stuðpúðar. púffer was neuter in some strings, so adjectives change with it.',
   },
+  {
+    english: 'electrolyte',
+    correct: 'rafkleyfi',
+    banned: [/sterkt rafkleyfi/i, /veikt rafkleyfi/i, /órafkleyfi/i],
+    guidance:
+      "rafkleyfi is MASCULINE — the school's textbook says sterkur rafkleyfi and sterkir/veikir rafkleyfar, never sterkt. The old repo's jonir-i-lausn/src/data/substances.ts:30,42 rendered 'Sterkt rafkleyfi' and 'Veikt rafkleyfi' on every Level-1 answer button, and ORPHANED_GAMES_ASSESSMENT.md:328 measured the disagreement (9 corpus hits for sterkur, 2 for veikur, 0 for the neuter). Non-electrolyte is an ADJECTIVE plus a noun, órafkleyft efni, which is what ordabok.md:389 carries — the noun 'Órafkleyfi' in that same file is not a word the textbook uses at all. Nothing wrong ships today; this row exists because the wrong forms sit in the file Útfellingarhvörf was harvested from, so they arrive with any further port — the same trap as enþalpía from calorimetry.",
+  },
+  {
+    english: 'spectator ion',
+    correct: 'áhorfendajón',
+    banned: [/áhorfandajón/i],
+    guidance:
+      'The linking form is the genitive plural áhorfenda-, not áhorfanda-. The corpus is 6 to 0. Feminine, like jón: áhorfendajón / áhorfendajónina / áhorfendajónum / áhorfendajóna. ORPHANED_GAMES_ASSESSMENT.md:207 writes the wrong form, and Markdown is not scanned, so this row guards the code against it being copied across.',
+  },
+  {
+    english: 'iodide',
+    correct: 'joðíð',
+    banned: [/jódíð/i],
+    guidance:
+      "The corpus is 54 to 0 and the shipped platform was already clean — nafnakerfid, kinetics and equilibrium-shifter all say joðíð. The old repo's jonir-i-lausn says jódíð four times (reactions.ts:47,51,55 and solubility.ts:46), and it lands on the very reaction the textbook uses as its worked example, PbI₂. This row is here so a later harvest from that file cannot bring it in.",
+  },
 ];
 
 /** Directories whose rendered strings a student can actually meet. */
