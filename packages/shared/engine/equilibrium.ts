@@ -1,5 +1,12 @@
 /**
- * The maths behind Jafnvægisfastinn. No React, no Icelandic.
+ * The maths of chemical equilibrium. No React, no Icelandic.
+ *
+ * **Shared, because two Y3 games need the same arithmetic and must not
+ * disagree about it.** `3-ar/jafnvaegisfasti` wrote it to teach Kc, Kp and ICE;
+ * `3-ar/equilibrium-shifter` needs it to put real numbers behind Le Chatelier.
+ * The two sit next to each other in the chain and describe the same systems, so
+ * a second copy is how one node comes to compute a different answer from its
+ * neighbour about the same flask.
  *
  * **Nothing is stored that can be computed.** A reaction is a list of species
  * with coefficients and phases, plus a constant read from a cited place in the
@@ -298,18 +305,27 @@ export function extentRange(reaction: Reaction, initial: Amounts): { min: number
  * The midpoint is always strictly inside the bracket, so no concentration is
  * ever evaluated at zero and the endpoints are never touched.
  *
- * Heterogeneous reactions are refused rather than approximated. A solid's
- * amount does not enter K, so an ICE table over one would have a row that
- * changes and never affects the answer — which is the misconception this
- * topic exists to remove, not one to encode.
+ * **What is refused, and why it is this rule rather than "homogeneous only".**
+ * The bar is that K must have at least one species on each side. Where it does
+ * not — `CaCO₃(s) ⇌ CaO(s) + CO₂(g)`, whose K is just `[CO₂]` — there is no
+ * extent to solve for at all: the equilibrium concentration is K, whatever you
+ * started from, and an ICE table would carry rows that change and never affect
+ * the answer. That is the misconception this topic exists to remove.
+ *
+ * The rule started as "homogeneous only", which was right for
+ * `3-ar/jafnvaegisfasti` and too strict once `3-ar/equilibrium-shifter` needed
+ * it: `NH₃(aq) + H₂O(l) ⇌ NH₄⁺(aq) + OH⁻(aq)` is not homogeneous, but the water
+ * is a solvent in vast excess whose amount is exactly what K's derivation
+ * already drops, and both sides do have species in K. Dropping the solvent is
+ * the standard treatment, not an approximation this code is inventing.
  */
 export function solveExtent(reaction: Reaction, initial: Amounts, k: number): number {
   if (k <= 0 || !Number.isFinite(k))
     throw new RangeError(`K must be finite and positive, got ${k}`);
-  if (!isHomogeneous(reaction)) {
+  if (activeReactants(reaction).length === 0 || activeProducts(reaction).length === 0) {
     throw new RangeError(
-      `${reaction.id} is not homogeneous. A pure solid or liquid does not appear in K, so ` +
-        `solving for an extent over one would report a change that cannot affect the answer.`
+      `${reaction.id} has no species in K on one side, so there is no extent to solve for: ` +
+        `its equilibrium concentrations are fixed by K alone, whatever you start from.`
     );
   }
   const { min, max } = extentRange(reaction, initial);

@@ -10,7 +10,6 @@
  * six problems it served.
  */
 
-import { REACTIONS, reactionBy } from './reactions';
 import {
   canConvertToKp,
   deltaNGas,
@@ -23,7 +22,9 @@ import {
   type Direction,
   type IceResult,
   type Reaction,
-} from '../engine/equilibrium';
+} from '@shared/engine/equilibrium';
+
+import { REACTIONS, reactionBy } from './reactions';
 
 export type Difficulty = 'ledd' | 'mid' | 'thung';
 

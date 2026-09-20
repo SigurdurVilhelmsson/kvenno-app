@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 
-import { REACTIONS, WITH_CONSTANT, reactionBy } from '../data/reactions';
 import {
   APPROXIMATION_THRESHOLD,
   R_GAS,
@@ -22,7 +21,10 @@ import {
   omittedFromK,
   reactionQuotient,
   solveExtent,
-} from '../engine/equilibrium';
+  type Reaction,
+} from '@shared/engine/equilibrium';
+
+import { REACTIONS, WITH_CONSTANT, reactionBy } from '../data/reactions';
 
 const ammoniak = reactionBy('ammoniak');
 const kalksteinn = reactionBy('kalksteinn');
@@ -230,10 +232,39 @@ describe('solving for the extent of reaction', () => {
     expect(3 - eq['H₂']).toBeCloseTo((3 * eq['NH₃']) / 2, 12);
   });
 
-  it('refuses a heterogeneous reaction rather than pretending', () => {
+  it('refuses a reaction with no species in K on one side', () => {
+    // CaCO₃(s) ⇌ CaO(s) + CO₂(g): K is just [CO₂], so there is no extent to
+    // solve for — the equilibrium concentration is K whatever you start from.
     expect(() => solveExtent(kalksteinn, { CaO: 1, 'CO₂': 1, 'CaCO₃': 0 }, 1)).toThrow(
-      /not homogeneous/
+      /no species in K on one side/
     );
+  });
+
+  it('accepts a reaction whose only untracked species is a solvent', () => {
+    // The rule is "K has a species on each side", not "homogeneous". A weak
+    // base in water is not homogeneous, but the water is a solvent in vast
+    // excess whose amount K's derivation already drops, and both sides do
+    // have species in K. This case is why the rule was loosened.
+    const ammoniaInWater: Reaction = {
+      id: 'ammonia-water',
+      name: 'test',
+      reactants: [
+        { formula: 'NH₃', coefficient: 1, phase: 'aq' },
+        { formula: 'H₂O', coefficient: 1, phase: 'l' },
+      ],
+      products: [
+        { formula: 'NH₄⁺', coefficient: 1, phase: 'aq' },
+        { formula: 'OH⁻', coefficient: 1, phase: 'aq' },
+      ],
+      source: { module: 'ch13/m68798', where: 'test fixture, not shipped' },
+    };
+    const initial = { 'NH₃': 0.1, 'H₂O': 55.5, 'NH₄⁺': 0, 'OH⁻': 0 };
+    const x = solveExtent(ammoniaInWater, initial, 1.8e-5);
+    // x² / (0,1 − x) = 1,8 × 10⁻⁵ gives x ≈ 1,33 × 10⁻³.
+    expect(x).toBeCloseTo(1.33e-3, 5);
+    // And the water is untouched by K, so its amount cannot move the answer.
+    const withLessWater = solveExtent(ammoniaInWater, { ...initial, 'H₂O': 1 }, 1.8e-5);
+    expect(withLessWater).toBeCloseTo(x, 12);
   });
 
   it('refuses a non-positive or infinite K', () => {

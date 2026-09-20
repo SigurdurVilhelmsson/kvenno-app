@@ -1,8 +1,5 @@
 import { useMemo, useState } from 'react';
 
-import { DECIMAL_INPUT_PROPS, formatScientific, gradeScientific } from '@shared/utils';
-
-import { DIRECTION_PROBLEMS, EXPRESSION_PROBLEMS, KP_PROBLEMS } from '../data/problems';
 import {
   activeProducts,
   activeReactants,
@@ -10,7 +7,10 @@ import {
   kcExpression,
   omittedFromK,
   type Direction,
-} from '../engine/equilibrium';
+} from '@shared/engine/equilibrium';
+import { DECIMAL_INPUT_PROPS, formatScientific, gradeScientific } from '@shared/utils';
+
+import { DIRECTION_PROBLEMS, EXPRESSION_PROBLEMS, KP_PROBLEMS } from '../data/problems';
 
 /**
  * Æfa — three skills, in the order the book teaches them.

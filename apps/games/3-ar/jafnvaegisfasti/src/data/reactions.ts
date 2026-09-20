@@ -24,7 +24,7 @@
  *   ch13/m68801 — Jafnvægisútreikningar (the calculations, ICE tables)
  */
 
-import type { Reaction } from '../engine/equilibrium';
+import type { Reaction } from '@shared/engine/equilibrium';
 
 const M68798 = 'ch13/m68798';
 const M68801 = 'ch13/m68801';

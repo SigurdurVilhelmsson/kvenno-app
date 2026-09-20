@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
+import { APPROXIMATION_THRESHOLD, equationOf, kcExpression } from '@shared/engine/equilibrium';
 import { DECIMAL_INPUT_PROPS, formatScientific, gradeScientific } from '@shared/utils';
 
 import { ICE_PROBLEMS } from '../data/problems';
-import { APPROXIMATION_THRESHOLD, equationOf, kcExpression } from '../engine/equilibrium';
 
 /**
  * Beita — the ICE table, filled in one column at a time.

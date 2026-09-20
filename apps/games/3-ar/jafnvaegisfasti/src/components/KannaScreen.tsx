@@ -1,8 +1,5 @@
 import { useMemo, useState } from 'react';
 
-import { formatScientific } from '@shared/utils';
-
-import { reactionBy } from '../data/reactions';
 import {
   amountsAtExtent,
   directionFromQ,
@@ -10,7 +7,10 @@ import {
   kcExpression,
   reactionQuotient,
   solveExtent,
-} from '../engine/equilibrium';
+} from '@shared/engine/equilibrium';
+import { formatScientific } from '@shared/utils';
+
+import { reactionBy } from '../data/reactions';
 
 /**
  * Kanna — push a mixture around and watch Q move. No right or wrong.
