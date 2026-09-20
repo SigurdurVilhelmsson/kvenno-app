@@ -50,6 +50,11 @@ be deferred — see the note below.
 "Initial" is what a student downloads on page open (HTML + CSS + entry JS). "Deferred" loads only
 if they open a 3D view.
 
+**`equilibrium-shifter` grew 344 → 364 KB on 2026-09-20**, when it stopped being qualitative. The
+20 KB is the sourced-constants table, the formation-enthalpy rows it derives ΔH from, and the panel
+that shows the arithmetic. It is the one game in the table whose size moved for a reason worth
+recording rather than as build noise.
+
 **Correction to the 2026-09-20 figures, made the same day.** The three Three.js rows each read 1 KB
 low — vsepr-geometry 400, lewis-structures 369, intermolecular-forces 366 — and are now 401, 370 and 367. This was checked rather than assumed: vsepr was rebuilt from a stashed tree and came out
 **byte-identical** (341 652 + 698 + 68 437 = 410 787 B = 401,16 KiB), so nothing in the
@@ -69,7 +74,7 @@ these are the three games whose "initial" is a sum over three files rather than 
 | hess-law                 | 2-ar | 351 KB  | —        |
 | ph-titration             | 3-ar | 351 KB  | —        |
 | kinetics                 | 2-ar | 349 KB  | —        |
-| equilibrium-shifter      | 3-ar | 344 KB  | —        |
+| equilibrium-shifter      | 3-ar | 364 KB  | —        |
 | nafnakerfid              | 1-ar | 335 KB  | —        |
 | molmassi                 | 1-ar | 329 KB  | —        |
 | lotukerfid               | 1-ar | 325 KB  | —        |

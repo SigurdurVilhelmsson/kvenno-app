@@ -18,7 +18,7 @@ export const equilibria: Equilibrium[] = [
     reactants: [{ formula: 'N₂O₄', coefficient: 1, phase: 'g', display: '⚫' }],
     products: [{ formula: 'NO₂', coefficient: 2, phase: 'g', display: '🟤' }],
     thermodynamics: {
-      deltaH: 58,
+      deltaH: 55.3,
       type: 'endothermic',
     },
     gasMoles: {
@@ -51,8 +51,8 @@ export const equilibria: Equilibrium[] = [
     ],
     products: [{ formula: 'HI', coefficient: 2, phase: 'g', display: '⚪🟣' }],
     thermodynamics: {
-      deltaH: 53,
-      type: 'endothermic',
+      deltaH: -9.48,
+      type: 'exothermic',
     },
     gasMoles: {
       reactants: 2,
@@ -85,7 +85,7 @@ export const equilibria: Equilibrium[] = [
       { formula: 'Cl₂', coefficient: 1, phase: 'g', display: '🟢' },
     ],
     thermodynamics: {
-      deltaH: 88,
+      deltaH: 87.9,
       type: 'endothermic',
     },
     gasMoles: {
@@ -118,7 +118,7 @@ export const equilibria: Equilibrium[] = [
     ],
     products: [{ formula: 'CH₃OH', coefficient: 1, phase: 'g', display: '🧪' }],
     thermodynamics: {
-      deltaH: -91,
+      deltaH: -90.48,
       type: 'exothermic',
     },
     gasMoles: {
@@ -151,7 +151,7 @@ export const equilibria: Equilibrium[] = [
       { formula: 'CO₂', coefficient: 1, phase: 'g', display: '⚫🔴' },
     ],
     thermodynamics: {
-      deltaH: 178,
+      deltaH: 191.59,
       type: 'endothermic',
     },
     gasMoles: {
@@ -336,7 +336,7 @@ export const equilibria: Equilibrium[] = [
     ],
     products: [{ formula: 'NH₃', coefficient: 2, phase: 'g', display: '🔷' }],
     thermodynamics: {
-      deltaH: -92,
+      deltaH: -91.8,
       type: 'exothermic',
     },
     gasMoles: {
@@ -369,7 +369,7 @@ export const equilibria: Equilibrium[] = [
     ],
     products: [{ formula: 'SO₃', coefficient: 2, phase: 'g', display: '🟡' }],
     thermodynamics: {
-      deltaH: -198,
+      deltaH: -197.78,
       type: 'exothermic',
     },
     gasMoles: {
@@ -404,7 +404,7 @@ export const equilibria: Equilibrium[] = [
       { formula: 'H₂O', coefficient: 6, phase: 'g', display: '💧' },
     ],
     thermodynamics: {
-      deltaH: -905,
+      deltaH: -906.32,
       type: 'exothermic',
     },
     gasMoles: {
@@ -438,7 +438,7 @@ export const equilibria: Equilibrium[] = [
       { formula: 'H₂', coefficient: 1, phase: 'g', display: '⚪' },
     ],
     thermodynamics: {
-      deltaH: -41,
+      deltaH: -41.17,
       type: 'exothermic',
     },
     gasMoles: {
@@ -469,7 +469,7 @@ export const equilibria: Equilibrium[] = [
     ],
     products: [{ formula: 'NO₂', coefficient: 2, phase: 'g', display: '🟤' }],
     thermodynamics: {
-      deltaH: -114,
+      deltaH: -114.1,
       type: 'exothermic',
     },
     gasMoles: {
@@ -500,7 +500,7 @@ export const equilibria: Equilibrium[] = [
     ],
     products: [{ formula: 'CO', coefficient: 2, phase: 'g', display: '⚫🔴' }],
     thermodynamics: {
-      deltaH: 172,
+      deltaH: 172.47,
       type: 'endothermic',
     },
     gasMoles: {
@@ -534,7 +534,7 @@ export const equilibria: Equilibrium[] = [
       { formula: 'H₂', coefficient: 3, phase: 'g', display: '⚪' },
     ],
     thermodynamics: {
-      deltaH: 206,
+      deltaH: 205.9,
       type: 'endothermic',
     },
     gasMoles: {
@@ -569,7 +569,7 @@ export const equilibria: Equilibrium[] = [
       { formula: 'CO', coefficient: 1, phase: 'g', display: '⚫🔴' },
     ],
     thermodynamics: {
-      deltaH: 41,
+      deltaH: 41.17,
       type: 'endothermic',
     },
     gasMoles: {
@@ -600,7 +600,7 @@ export const equilibria: Equilibrium[] = [
     ],
     products: [{ formula: 'NO', coefficient: 2, phase: 'g', display: '🔴⚫' }],
     thermodynamics: {
-      deltaH: 181,
+      deltaH: 180.5,
       type: 'endothermic',
     },
     gasMoles: {
@@ -633,7 +633,7 @@ export const equilibria: Equilibrium[] = [
       { formula: 'SO₂', coefficient: 2, phase: 'g', display: '💛' },
     ],
     thermodynamics: {
-      deltaH: -1036,
+      deltaH: -1036.1,
       type: 'exothermic',
     },
     gasMoles: {
@@ -724,7 +724,7 @@ export const equilibria: Equilibrium[] = [
     ],
     products: [{ formula: 'CO', coefficient: 2, phase: 'g', display: '⚫🔴' }],
     thermodynamics: {
-      deltaH: -221,
+      deltaH: -221.04,
       type: 'exothermic',
     },
     gasMoles: {
@@ -746,7 +746,7 @@ export const equilibria: Equilibrium[] = [
     id: 24,
     equation: 'CH₃COOH(aq) + H₂O(l) ⇌ CH₃COO⁻(aq) + H₃O⁺(aq)',
     name: 'Buffer System (Acetic Acid)',
-    nameIs: 'Bufferkerfi (ediksýra)',
+    nameIs: 'Stuðpúðakerfi (ediksýra)',
     difficulty: 'advanced',
     reactants: [
       { formula: 'CH₃COOH', coefficient: 1, phase: 'aq', display: '🧪' },
@@ -765,7 +765,7 @@ export const equilibria: Equilibrium[] = [
       products: 0,
     },
     description: 'Buffer system that maintains stable pH.',
-    descriptionIs: 'Bufferkerfi sem viðheldur pH stöðugu.',
+    descriptionIs: 'Stuðpúðakerfi sem heldur pH stöðugu.',
     possibleStresses: [
       { type: 'add-product', target: 'H₃O⁺' },
       { type: 'add-product', target: 'CH₃COO⁻' },
@@ -785,7 +785,7 @@ export const equilibria: Equilibrium[] = [
     ],
     products: [{ formula: 'NH₃', coefficient: 2, phase: 'g', display: '🔷' }],
     thermodynamics: {
-      deltaH: -92,
+      deltaH: -91.8,
       type: 'exothermic',
     },
     gasMoles: {
@@ -815,7 +815,7 @@ export const equilibria: Equilibrium[] = [
     ],
     products: [{ formula: 'NH₃', coefficient: 2, phase: 'g', display: '🔷' }],
     thermodynamics: {
-      deltaH: -92,
+      deltaH: -91.8,
       type: 'exothermic',
     },
     gasMoles: {
@@ -873,7 +873,7 @@ export const equilibria: Equilibrium[] = [
     ],
     products: [{ formula: 'NH₃', coefficient: 2, phase: 'g', display: '🔷' }],
     thermodynamics: {
-      deltaH: -92,
+      deltaH: -91.8,
       type: 'exothermic',
     },
     gasMoles: {
@@ -932,7 +932,7 @@ export const equilibria: Equilibrium[] = [
     ],
     products: [{ formula: 'SO₃', coefficient: 2, phase: 'g', display: '🟡' }],
     thermodynamics: {
-      deltaH: -198,
+      deltaH: -197.78,
       type: 'exothermic',
     },
     gasMoles: {

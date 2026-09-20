@@ -11,9 +11,12 @@ import {
 import { useProgress, useAccessibility, useGameI18n } from '@shared/hooks';
 import type { TieredHints } from '@shared/types';
 
+import { NumbersPanel } from './components/NumbersPanel';
 import { ParticleEquilibrium } from './components/ParticleEquilibrium';
 import { QKComparison } from './components/QKComparison';
 import { getRandomEquilibrium } from './data';
+import { CONSTANTS, STARTING_MIXTURES } from './data/constants';
+import { applyStress } from './engine/stress';
 import { gameTranslations } from './i18n';
 import {
   Equilibrium,
@@ -710,6 +713,37 @@ function App() {
                       />
                     </div>
                   )}
+
+                  {/* The same comparison in real numbers, where the system
+                      carries a sourced constant. Twenty of the thirty do; the
+                      rest show the reasoning above and no figures, rather than
+                      figures nobody can source. */}
+                  {(gameMode === 'learning' || !isCorrect) &&
+                    appliedStress &&
+                    (() => {
+                      const constant = CONSTANTS[currentEquilibrium.id];
+                      const start = STARTING_MIXTURES[currentEquilibrium.id];
+                      if (!constant || !start) return null;
+                      const outcome = applyStress(
+                        currentEquilibrium,
+                        constant,
+                        start,
+                        appliedStress
+                      );
+                      if (!outcome) return null;
+                      return (
+                        <div className="mb-4">
+                          <NumbersPanel
+                            outcome={outcome}
+                            constant={constant}
+                            order={[
+                              ...currentEquilibrium.reactants.map((m) => m.formula),
+                              ...currentEquilibrium.products.map((m) => m.formula),
+                            ]}
+                          />
+                        </div>
+                      );
+                    })()}
 
                   {gameMode === 'learning' && (
                     <div className="mb-4">

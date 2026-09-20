@@ -908,6 +908,67 @@ Y3 gap but is still entirely qualitative; K's own temperature dependence (van 't
 ICE in partial pressures works in the engine but no problem poses it; and the book's coupled-reaction
 rules (reverse → 1/K, multiply by n → Kⁿ, add → multiply) are not covered.
 
+**`3-ar/equilibrium-shifter` is no longer qualitative — 2026-09-20.** The gap Jafnvægisfastinn's
+README named as the largest one left in Y3. The game still asks the same question and the
+qualitative engine is untouched; what changed is that the answer now carries the arithmetic behind
+it. What matters platform-wide:
+
+- **The equilibrium engine moved to `packages/shared/engine/equilibrium.ts`**, imported by both Y3
+  nodes. Two adjacent games describing the same flask must not compute different answers about it —
+  the same reasoning that moved `formatScientific` to `@shared/utils` the day before.
+- **The engine's rule for what it refuses changed, and the second consumer is why.** It was
+  "homogeneous only", which was right for Jafnvægisfastinn and too strict once a weak base in water
+  needed solving: `NH₃(aq) + H₂O(l) ⇌ NH₄⁺ + OH⁻` is not homogeneous, but the water is a solvent
+  whose amount K's own derivation already divides out. The rule is now **K must have a species on
+  each side**, which still refuses `CaCO₃(s) ⇌ CaO(s) + CO₂(g)` — there K is just `[CO₂]` and there
+  is no extent to solve for — and admits the solvent case. A test drives both.
+- **Twenty of the thirty systems carry a sourced constant; ten carry none, by name, with a written
+  reason each.** Nothing was newly sourced: the acids, bases and Ksp come from `appendix-d.ts`, the
+  gas-phase Kc values from the ch. 13 citations Jafnvægisfastinn already carries, and a reaction
+  written backwards takes `1/K` rather than a second lookup — a test asserts the reciprocal pair
+  multiplies to 1. The ten without are the complex-ion and hemoglobin systems, the two where K has
+  nothing on one side, and five the book puts no number on. **The count is asserted**, so quietly
+  supplying one is a failure rather than an improvement nobody reviewed.
+- **`packages/shared/data/thermo.ts` is new, and is NOT a second `appendix-d.ts`.** It transcribes
+  the **Icelandic** book's `m68865` formation enthalpies, for a quantity Brown's Appendix D does not
+  cover — so the 2026-09-19 "Appendix D is authoritative" ruling does not reach it, and nothing in
+  it has been checked against Brown. Given how far the two books diverged on Ksp, that caveat is
+  written into the file rather than left to memory. Two values already differ by more than rounding:
+  N₂O₄ ⇌ 2NO₂ (55,3 against a stored 58) and CaCO₃ ⇌ CaO + CO₂ (191,6 against 178). Neither changes
+  a sign, so no answer moved.
+- **A second live defect in this game, and it did change answers.** It shipped ΔH = **+53 kJ/mol**
+  for `H₂(g) + I₂(g) ⇌ 2HI(g)` — which is the enthalpy of `H₂(g) + I₂(s) → 2HI(g)`, a **different
+  equation from the one it writes, draws and counts gas moles for**. For gaseous iodine the reaction
+  is mildly **exothermic** at −9,5 kJ/mol, so the game answered **both temperature stresses
+  backwards** on a beginner-level system. Found by deriving ΔH rather than by reading it.
+- **ΔH is now derived from the formation enthalpies for all twenty reactions the table covers, and
+  the stored value is held equal to the derived one by a test.** Not "agrees in sign" — one number,
+  not two. That is what makes the I₂ defect unwritable rather than merely fixed, and it is the
+  `1-ar/reynsluformulur` pattern applied to enthalpy.
+- **Van 't Hoff is built, which closes the item the Jafnvægisfastinn README left open.** Heating or
+  cooling now moves **K itself** while leaving the mixture alone; every other stress moves **Q** and
+  leaves K alone. That one distinction is the topic, and the code is arranged around it.
+- **"Cannot say how much" is kept distinct from "nothing happens", and that distinction is
+  load-bearing.** A temperature change with no reference temperature or no derivable ΔH leaves K and
+  the mixture both unmoved — numerically identical to a catalyst, and the opposite in meaning.
+  Collapsing them would tell a student a heater and a catalyst do the same thing, which is precisely
+  the misconception this game exists to remove. `StressOutcome` carries `kUnknown` beside `inert`
+  and a test holds them apart on the same equilibrium.
+- **`Bufferkerfi` → `Stuðpúðakerfi`**, and the buffer row's ban now also matches `/bufferkerfi/i`.
+  The August sweep banned only the naturalised `púffer`, so the bare English loanword survived in
+  two student-facing Icelandic strings. The ban names that exact compound rather than bare `buffer`,
+  which is correct English and appears legitimately in dozens of comments and test names.
+- **Six of the thirty slots are two reactions repeated, and that is deliberate** — the Haber process
+  four times, the contact process twice, each copy framing a different question, with different
+  names to match. Pinned by a test for the same reason `docs/README.md` pins the four look-alike
+  option arrays: so nobody "fixes" it and so it cannot quietly grow.
+
+**Still open here:** the ten systems with no sourced constant would need the Icelandic book's
+complex-ion formation constants (`m68869`), which is a new source and Siggi's call; the aqueous
+systems have a constant but no derivable ΔH, because the formation table carries no dissolved ions,
+so their temperature stresses stay directional; and ICE in partial pressures still works in the
+engine with nothing posing it.
+
 **No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
 now fixed, as are the three above, and each carries a test that fails against the pre-fix code. What
 is left is enrichment and unfinished decisions, not defects — the work order is
