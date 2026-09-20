@@ -3,6 +3,8 @@ import { join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
+import { canConvertToKp } from '@shared/engine/equilibrium';
+
 import { REACTIONS, WITH_CONSTANT } from '../data/reactions';
 
 /**
@@ -57,11 +59,29 @@ describe('every constant is sourced', () => {
   });
 
   it('records a temperature for most constants and never invents one', () => {
-    // Two constants genuinely have no temperature in the book. The count is
-    // asserted so that a future edit which quietly supplies one is a failure
-    // rather than a silent improvement.
+    // Five constants genuinely have no temperature in the book — it states one
+    // for most values and not for all. The list is asserted by name so that a
+    // future edit which quietly supplies one is a failure rather than a silent
+    // improvement, and so that adding a reaction without checking is caught.
     const without = WITH_CONSTANT.filter((r) => r.constant!.temperatureC === undefined);
-    expect(without.map((r) => r.id).sort()).toEqual(['blasyra', 'pcl5']);
+    expect(without.map((r) => r.id).sort()).toEqual([
+      'ammoniumklorid',
+      'blasyra',
+      'brennisteinsvetni',
+      'nituroxidklorid',
+      'pcl5',
+    ]);
+  });
+
+  it('keeps a Kp quoted as Kp out of the Kc-to-Kp exercise', () => {
+    // Nothing converts a constant the book already states as Kp. Asking a
+    // student to convert it would mean converting it back first, and
+    // `canConvertToKp` guards that by requiring a Kc basis.
+    const quotedAsKp = WITH_CONSTANT.filter((r) => r.constant!.basis === 'Kp');
+    expect(quotedAsKp.length).toBeGreaterThan(0);
+    for (const r of quotedAsKp) {
+      expect(canConvertToKp(r), r.id).toBe(false);
+    }
   });
 });
 

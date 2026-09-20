@@ -220,6 +220,73 @@ export const REACTIONS: Reaction[] = [
     source: { module: M68798, where: 'sýnidæmi — útreikningur á Kp, liður a' },
   },
 
+  // ---------------------------------------------------------------- quoted as Kp
+  //
+  // These four carry a Kp rather than a Kc, because that is how the book
+  // quotes them. Nothing converts them: a Kp stated in the source is used as
+  // a Kp, and `kcToKp` exists for the reactions quoted the other way round.
+  {
+    id: 'brennisteinsvetni',
+    name: 'Niðurbrot brennisteinsvetnis',
+    reactants: [{ formula: 'H₂S', coefficient: 2, phase: 'g' }],
+    products: [
+      { formula: 'H₂', coefficient: 2, phase: 'g' },
+      { formula: 'S₂', coefficient: 1, phase: 'g' },
+    ],
+    constant: {
+      value: 2.2e-6,
+      basis: 'Kp',
+      source: { module: M68801, where: 'æfing — jafnvægisþrýstingur með nálgun' },
+    },
+    source: { module: M68801, where: 'æfing — jafnvægisþrýstingur með nálgun' },
+  },
+  {
+    id: 'bromklorid',
+    name: 'Myndun brómklóríðs',
+    reactants: [
+      { formula: 'Cl₂', coefficient: 1, phase: 'g' },
+      { formula: 'Br₂', coefficient: 1, phase: 'g' },
+    ],
+    products: [{ formula: 'BrCl', coefficient: 2, phase: 'g' }],
+    constant: {
+      value: 4.7e-2,
+      temperatureC: 25,
+      basis: 'Kp',
+      source: { module: M68801, where: 'æfing — þrýstingur BrCl í jafnvægisblöndu' },
+    },
+    source: { module: M68801, where: 'æfing — þrýstingur BrCl í jafnvægisblöndu' },
+  },
+  {
+    id: 'nituroxidklorid',
+    name: 'Myndun nítrósýlklóríðs',
+    reactants: [
+      { formula: 'NO', coefficient: 2, phase: 'g' },
+      { formula: 'Cl₂', coefficient: 1, phase: 'g' },
+    ],
+    products: [{ formula: 'NOCl', coefficient: 2, phase: 'g' }],
+    constant: {
+      value: 1.9e3,
+      basis: 'Kp',
+      source: { module: M68801, where: 'æfing — Kp út frá mældum jafnvægisþrýstingum' },
+    },
+    source: { module: M68801, where: 'æfing — Kp út frá mældum jafnvægisþrýstingum' },
+  },
+  {
+    id: 'ammoniumklorid',
+    name: 'Niðurbrot ammóníumklóríðs',
+    reactants: [{ formula: 'NH₄Cl', coefficient: 1, phase: 's' }],
+    products: [
+      { formula: 'NH₃', coefficient: 1, phase: 'g' },
+      { formula: 'HCl', coefficient: 1, phase: 'g' },
+    ],
+    constant: {
+      value: 3.06,
+      basis: 'Kp',
+      source: { module: M68801, where: 'æfing — Kp úr þrýstingi ammóníaks' },
+    },
+    source: { module: M68801, where: 'æfing — Kp úr þrýstingi ammóníaks' },
+  },
+
   // ---------------------------------------------------------------- homogeneous, aqueous
   {
     id: 'trijodid',

@@ -46,6 +46,43 @@ Writing a plausible 25 °C into either would put an unsourced number on screen i
 `canConvertToKp` returns false for them, so they never reach the Kc-to-Kp exercise at all — the
 consequence is enforced rather than documented.
 
+## ICE in partial pressures
+
+**The four pressure problems run through the same screen as the six concentration ones, and that is
+the teaching claim.** Nothing about the method changes when the units do — the engine never knew
+what an amount was a measure of — so putting ICE in atm behind its own screen would present it as a
+second technique to learn. Beita reads its unit and its constant's symbol off the problem and
+labels the columns `(M)` or `(atm)` accordingly.
+
+Three things _are_ genuinely different, and each of the four problems exists for one of them:
+
+1. **The constant is a Kp the book states as a Kp.** Nothing is converted. `sources.test.ts`
+   requires `basis: 'Kp'` on all four, and separately requires that a Kp-basis constant never reach
+   the Kc→Kp exercise — converting a Kp would be arithmetic performed on an answer.
+2. **A heterogeneous system loses its solid from K entirely.** NH₄Cl(s) ⇌ NH₃(g) + HCl(g) leaves two
+   gases in a 1 : 1 ratio, so each settles at √Kp. **The solid gets no ICE row**, which is the
+   textbook convention and is not cosmetic here: the extent is fixed by K, which ignores the solid,
+   so a row for it prints an arbitrary number — and went negative when the flask was charged with
+   less solid than the extent consumed.
+3. **Total pressure is an observable.** Where Δn ≠ 0, `P_total(x) = P_total(0) + Δn·x` exactly, so a
+   manometer reads the extent without a single partial pressure being measured;
+   `extentFromTotalPressure` inverts it. Where Δn = 0 it reads **nothing at all**, however far the
+   reaction has run — Cl₂ + Br₂ ⇌ 2BrCl is in the set for that alone, and the engine **refuses**
+   rather than returning a number, because an extent taken from a measurement carrying none is
+   invented. The screen says so in as many words: the instrument is not broken.
+
+**Read the book's BrCl exercise carefully before reusing it.** Its 0,115 and 0,450 atm are the
+pressures _in the mixture_ — equilibrium values, not initial ones — so it is a missing-pressure
+question and not an ICE at all. Solving it as an ICE from those two gives a different number
+entirely. The shipped problem starts from different pressures for that reason, and the test checks
+the book's own question against the K expression directly.
+
+**And the book's H₂S answer is the approximation, not the root.** The exercise says in as many words
+to assume the change is negligible, so its 0,0072 atm is the shortcut's number; the exact root is
+0,007118, 1,2 % lower. Both round to 0,007 and the 5 % rule passes either way. The test compares
+like with like rather than holding the exact root to a figure that was never the exact root — the
+same care `3-ar/syrufastinn` needed over `√(Ka·C)` against the quadratic.
+
 ## Why bisection, not algebra
 
 `solveExtent` finds the root of Q(x) = K by bisection on the **extent of reaction**, rather than
@@ -120,21 +157,20 @@ New in `ordabok.md`: `ICE table;ICE-tafla` (the book's own form, used verbatim),
 ## Layout
 
 ```
-src/engine/equilibrium.ts   the maths; no React, no Icelandic
-src/data/reactions.ts       18 reactions, every constant cited to a module
-src/data/problems.ts        7 expression · 6 direction · 8 Kc→Kp · 6 ICE
+packages/shared/engine/equilibrium.ts   the maths; no React, no Icelandic
+                                        (shared with `3-ar/equilibrium-shifter`)
+src/data/reactions.ts       22 reactions, every constant cited to a module
+src/data/problems.ts        7 expression · 6 direction · 8 Kc→Kp · 6 ICE (M) · 4 ICE (atm)
 src/components/             KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen
-src/__tests__/              60 tests
+src/__tests__/              87 tests
 ```
 
 ## Open
 
 - **The ICE ordering above** — the book puts the calculations after Le Chatelier and this game puts
   them before. Reversible by splitting the game in two, if Siggi would rather follow the book.
-- **Kp problems are Kc-to-Kp conversions only.** Solving an ICE table in partial pressures works in
-  the same engine — the maths is unit-agnostic — but no problem does it.
 - **No temperature dependence of K itself.** The game states each constant's temperature and never
-  varies it, so why K moves with temperature is still only `equilibrium-shifter`'s qualitative
-  answer. Van 't Hoff is unbuilt.
+  varies it. Van 't Hoff now exists, in `3-ar/equilibrium-shifter` and in the shared engine, so this
+  is no longer a gap on the platform — but this game does not use it.
 - **Coupled reactions.** The book's fifth worked example adds and reverses equations to get a new K
   (reverse → 1/K, multiply by n → Kⁿ, add → multiply). Real content, not covered here.

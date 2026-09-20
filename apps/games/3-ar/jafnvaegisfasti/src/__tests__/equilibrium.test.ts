@@ -232,12 +232,33 @@ describe('solving for the extent of reaction', () => {
     expect(3 - eq['H₂']).toBeCloseTo((3 * eq['NH₃']) / 2, 12);
   });
 
-  it('refuses a reaction with no species in K on one side', () => {
-    // CaCO₃(s) ⇌ CaO(s) + CO₂(g): K is just [CO₂], so there is no extent to
-    // solve for — the equilibrium concentration is K whatever you start from.
-    expect(() => solveExtent(kalksteinn, { CaO: 1, 'CO₂': 1, 'CaCO₃': 0 }, 1)).toThrow(
-      /no species in K on one side/
-    );
+  it('solves a reaction with nothing in K on one side, and ignores the solids', () => {
+    // CaO(s) + CO₂(g) ⇌ CaCO₃(s): K is 1/[CO₂], so the equilibrium is fixed by
+    // K alone. This USED to be refused on the grounds that "there is no extent
+    // to solve for", which was wrong — there is one, it is just insensitive to
+    // the solids, and the textbook poses exactly this shape. The obstacle was
+    // mechanical: with nothing in K on one side the bracket is unbounded, and
+    // bisection needs a finite one.
+    const k = 4;
+    const x = solveExtent(kalksteinn, { CaO: 1, 'CO₂': 1, 'CaCO₃': 0 }, k);
+    const at = amountsAtExtent(kalksteinn, { CaO: 1, 'CO₂': 1, 'CaCO₃': 0 }, x);
+    expect(reactionQuotient(kalksteinn, at)).toBeCloseTo(k, 9);
+    // 1/[CO₂] = 4, so [CO₂] settles at 0,25 whatever the solids were.
+    expect(at['CO₂']).toBeCloseTo(0.25, 9);
+    const withMoreSolid = solveExtent(kalksteinn, { CaO: 99, 'CO₂': 1, 'CaCO₃': 7 }, k);
+    expect(withMoreSolid).toBeCloseTo(x, 9);
+  });
+
+  it('refuses only when K has nothing on either side', () => {
+    // Then Q is 1 at every extent and no amount of reacting reaches K.
+    const allSolid: Reaction = {
+      id: 'all-solid',
+      name: 'test',
+      reactants: [{ formula: 'A', coefficient: 1, phase: 's' }],
+      products: [{ formula: 'B', coefficient: 1, phase: 's' }],
+      source: { module: 'ch13/m68798', where: 'test fixture, not shipped' },
+    };
+    expect(() => solveExtent(allSolid, { A: 1, B: 0 }, 2)).toThrow(/nothing in K on either side/);
   });
 
   it('accepts a reaction whose only untracked species is a solvent', () => {
