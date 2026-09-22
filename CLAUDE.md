@@ -1144,7 +1144,7 @@ specifics — read the README, not them.
   text moved to the decimal comma, and the law renamed `Kjörgaslögmálið` per `ordabok.md`; guarded by
   `icelandic-text.test.ts` and a `governed-terms` row. Question 14's mL answer was labelled `L`; fixed the
   same day by `answerUnit`, which takes the unit the question states the variable in, guarded by
-  `answer-unit.test.ts`. **Still open there:** `toFixed` output still prints a decimal point.
+  `answer-unit.test.ts`. Numbers formatted on screen moved to `formatDecimal` the same day, guarded by its `decimal-comma.test.ts`.
 - **`3-ar/equilibrium-shifter`'s Keppnishamur can never be unlocked.** The gate needs
   `problemsCompleted >= 5`, and that count is written only at the end of a challenge round. The
   mode-gate ruling this file already asked for is now also a fix.

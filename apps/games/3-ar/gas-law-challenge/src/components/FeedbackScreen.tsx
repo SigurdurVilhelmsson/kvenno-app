@@ -1,3 +1,5 @@
+import { formatDecimal } from '@shared/utils';
+
 import { GasLawQuestion, GameMode, GameStats, QuestionFeedback, GAS_LAW_INFO } from '../types';
 import { answerUnit } from '../utils/gas-calculations';
 
@@ -61,13 +63,13 @@ export function FeedbackScreen({
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <h3 className="font-bold text-blue-900 mb-2">Þitt svar:</h3>
                 <p className="text-2xl font-bold text-blue-800">
-                  {feedback.userAnswer.toFixed(2)} {answerUnit(currentQuestion)}
+                  {formatDecimal(feedback.userAnswer, 2)} {answerUnit(currentQuestion)}
                 </p>
               </div>
               <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                 <h3 className="font-bold text-green-900 mb-2">Rétt svar:</h3>
                 <p className="text-2xl font-bold text-green-800">
-                  {feedback.correctAnswer.toFixed(2)} {answerUnit(currentQuestion)}
+                  {formatDecimal(feedback.correctAnswer, 2)} {answerUnit(currentQuestion)}
                 </p>
               </div>
             </div>
@@ -76,7 +78,8 @@ export function FeedbackScreen({
               <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200 mb-6">
                 <h3 className="font-bold text-yellow-900 mb-1">Mismunur:</h3>
                 <p className="text-lg text-yellow-800">
-                  {feedback.difference.toFixed(2)} {answerUnit(currentQuestion)} frá réttum svari
+                  {formatDecimal(feedback.difference, 2)} {answerUnit(currentQuestion)} frá réttum
+                  svari
                 </p>
               </div>
             )}

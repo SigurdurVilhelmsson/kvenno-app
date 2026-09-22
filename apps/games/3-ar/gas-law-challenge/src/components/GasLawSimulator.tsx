@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { ParticleSimulation, PARTICLE_TYPES, PHYSICS_PRESETS } from '@shared/components';
+import { formatDecimal } from '@shared/utils';
 
 import type { GasLawQuestion, Variable } from '../types';
 import { R } from '../types';
@@ -168,7 +169,9 @@ function PressureGauge({
         {/* Center dot */}
         <circle cx={50} cy={55} r={3} fill="#f36b22" />
       </svg>
-      <span className="text-xs text-warm-300 font-mono mt-0.5">{pressure.toFixed(1)} atm</span>
+      <span className="text-xs text-warm-300 font-mono mt-0.5">
+        {formatDecimal(pressure, 1)} atm
+      </span>
     </div>
   );
 }
@@ -202,7 +205,7 @@ function EquationDisplay({
       <span className={isTarget ? answerClass : normalClass}>
         <span className={isTarget ? highlightClass : 'font-semibold'}>{label}</span>
         {' = '}
-        {isTarget && !showAnswer ? '?' : value.toFixed(2)}{' '}
+        {isTarget && !showAnswer ? '?' : formatDecimal(value, 2)}{' '}
         <span className="text-[10px]">{unit}</span>
       </span>
     );
@@ -217,7 +220,9 @@ function EquationDisplay({
         {varSpan('n', n, units.n, 'n')}
         {varSpan('T', T, units.T, 'T')}
       </div>
-      <div className="text-center text-warm-500 mt-1 text-[10px]">R = {R} L·atm/(mol·K)</div>
+      <div className="text-center text-warm-500 mt-1 text-[10px]">
+        R = {formatDecimal(R)} L·atm/(mol·K)
+      </div>
     </div>
   );
 }
@@ -289,7 +294,7 @@ export function GasLawSimulator({
 
           {/* Volume label overlay */}
           <div className="absolute bottom-1 left-1/2 -translate-x-1/2 bg-slate-900/70 px-2 py-0.5 rounded text-[10px] text-warm-300 font-mono pointer-events-none">
-            V = {values.V.toFixed(1)} {units.V}
+            V = {formatDecimal(values.V, 1)} {units.V}
           </div>
 
           {/* Temperature label overlay */}
