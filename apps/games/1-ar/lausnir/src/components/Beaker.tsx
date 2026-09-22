@@ -1,3 +1,5 @@
+import { formatDecimal } from '@shared/utils';
+
 interface BeakerProps {
   volume: number;
   maxVolume?: number;
@@ -39,9 +41,9 @@ export function Beaker({
         height={height}
         viewBox={`0 0 ${width} ${height}`}
         role="img"
-        aria-label={`Biker: ${volume} mL${concentration ? `, ${concentration} M` : ''}${label ? `, ${label}` : ''}`}
+        aria-label={`Biker: ${volume} mL${concentration ? `, ${formatDecimal(concentration)} M` : ''}${label ? `, ${label}` : ''}`}
       >
-        <title>{`Biker með ${volume} mL lausn${concentration ? ` af styrk ${concentration} M` : ''}`}</title>
+        <title>{`Biker með ${volume} mL lausn${concentration ? ` af styrk ${formatDecimal(concentration)} M` : ''}`}</title>
         {/* Beaker outline */}
         <path
           d={`M 20 20 L 20 170 L 30 180 L 90 180 L 100 170 L 100 20`}
@@ -93,7 +95,7 @@ export function Beaker({
             textAnchor="middle"
             style={{ paintOrder: 'stroke', stroke: 'white', strokeWidth: 3 }}
           >
-            {concentration.toFixed(2)} M
+            {formatDecimal(concentration, 2)} M
           </text>
         )}
       </svg>

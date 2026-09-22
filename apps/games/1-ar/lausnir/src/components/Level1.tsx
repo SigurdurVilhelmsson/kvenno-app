@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import type { TieredHints } from '@shared/types';
+import { formatDecimal } from '@shared/utils';
 
 import { Beaker } from './Beaker';
 
@@ -74,8 +75,8 @@ const CHALLENGES: Challenge[] = [
     hints: {
       topic: 'Þetta snýst um útþynningu og hvernig styrkur breytist með rúmmáli.',
       strategy: 'Þegar þú bætir við vatni, dreifast sameindir á stærra svæði.',
-      method: 'Styrkur = sameindir / rúmmál. Finndu rúmmálið sem gefur 2.0 M.',
-      solution: '50 sameindir × 0.01 = 0.5 mól. 0.5 mól / 2.0 M = 0.25 L = 250 mL',
+      method: 'Styrkur = sameindir / rúmmál. Finndu rúmmálið sem gefur 2,0 M.',
+      solution: '50 sameindir × 0,01 = 0,5 mól. 0,5 mól / 2,0 M = 0,25 L = 250 mL',
     },
     conceptMessage: 'Styrkur = sameindir / rúmmál',
   },
@@ -84,7 +85,7 @@ const CHALLENGES: Challenge[] = [
     id: 2,
     type: 'buildSolution',
     title: 'Byggja lausn',
-    description: 'Bættu við sameindum og stilltu rúmmál til að ná 1.5 M styrk.',
+    description: 'Bættu við sameindum og stilltu rúmmál til að ná 1,5 M styrk.',
     targetConcentration: 1.5,
     tolerance: 5,
     initialState: { molecules: 20, volumeML: 200 },
@@ -99,8 +100,8 @@ const CHALLENGES: Challenge[] = [
     hints: {
       topic: 'Þetta snýst um að búa til lausn með ákveðnum styrk.',
       strategy: 'Þú getur breytt bæði sameindum og rúmmáli til að ná markmiði.',
-      method: 'Styrkur = sameindir × 0.01 / (rúmmál í lítrum). Prófaðu mismunandi samsetningar.',
-      solution: 'Til dæmis: 30 sameindir í 200 mL gefur 0.3 mól / 0.2 L = 1.5 M',
+      method: 'Styrkur = sameindir × 0,01 / (rúmmál í lítrum). Prófaðu mismunandi samsetningar.',
+      solution: 'Til dæmis: 30 sameindir í 200 mL gefur 0,3 mól / 0,2 L = 1,5 M',
     },
     conceptMessage: 'Meira af sameindum í sama rúmmáli = hærri styrkur',
   },
@@ -109,7 +110,7 @@ const CHALLENGES: Challenge[] = [
     id: 3,
     type: 'dilution',
     title: 'Nákvæm útþynning',
-    description: 'Þú ert með sterka lausn. Þynntu hana niður í 0.8 M.',
+    description: 'Þú ert með sterka lausn. Þynntu hana niður í 0,8 M.',
     targetConcentration: 0.8,
     tolerance: 5,
     initialState: { molecules: 40, volumeML: 100 },
@@ -124,8 +125,8 @@ const CHALLENGES: Challenge[] = [
     hints: {
       topic: 'Þetta snýst um útþynningu sterkar lausnar.',
       strategy: 'Sameindir haldast óbreyttar. Aðeins rúmmálið breytist!',
-      method: 'Styrkur = (sameindir × 0.01) / rúmmál í lítrum. Leysðu fyrir rúmmál.',
-      solution: '40 × 0.01 = 0.4 mól. 0.4 mól / 0.8 M = 0.5 L = 500 mL',
+      method: 'Styrkur = (sameindir × 0,01) / rúmmál í lítrum. Leysðu fyrir rúmmál.',
+      solution: '40 × 0,01 = 0,4 mól. 0,4 mól / 0,8 M = 0,5 L = 500 mL',
     },
     conceptMessage: 'Við útþynningu: sameindir haldast, styrkur minnkar',
   },
@@ -134,7 +135,7 @@ const CHALLENGES: Challenge[] = [
     id: 4,
     type: 'concentrationMatch',
     title: 'Styrkjamöt',
-    description: 'Breyttu fjölda sameinda til að ná 3.0 M styrk í 150 mL.',
+    description: 'Breyttu fjölda sameinda til að ná 3,0 M styrk í 150 mL.',
     targetConcentration: 3.0,
     tolerance: 5,
     initialState: { molecules: 30, volumeML: 150 },
@@ -149,8 +150,8 @@ const CHALLENGES: Challenge[] = [
     hints: {
       topic: 'Þetta snýst um að stilla fjölda sameinda til að ná ákveðnum styrk.',
       strategy: 'Rúmmálið er fast. Þú þarft að finna réttan fjölda sameinda.',
-      method: 'sameindir = Styrkur × rúmmál í lítrum / 0.01',
-      solution: '3.0 M × 0.15 L = 0.45 mól. 0.45 / 0.01 = 45 sameindir',
+      method: 'sameindir = Styrkur × rúmmál í lítrum / 0,01',
+      solution: '3,0 M × 0,15 L = 0,45 mól. 0,45 / 0,01 = 45 sameindir',
     },
     conceptMessage: 'Fleiri sameindir í sama rúmmáli = hærri styrkur',
   },
@@ -174,8 +175,8 @@ const CHALLENGES: Challenge[] = [
     hints: {
       topic: 'Þetta snýst um hlutfallslega útþynningu.',
       strategy: 'Til að þynna í þriðjung þarftu þrefalt meira rúmmál!',
-      method: 'Upphaflegt: 5 M í 100 mL. Markmiðsstyrkur er ~1.67 M (þriðjungur).',
-      solution: 'Þrefalda rúmmálið: 100 mL × 3 = 300 mL gefur ~1.67 M',
+      method: 'Upphaflegt: 5 M í 100 mL. Markmiðsstyrkur er ~1,67 M (þriðjungur).',
+      solution: 'Þrefalda rúmmálið: 100 mL × 3 = 300 mL gefur ~1,67 M',
     },
     conceptMessage: 'Styrkur × rúmmál = fasti (heildarmagn sameinda)',
   },
@@ -184,7 +185,7 @@ const CHALLENGES: Challenge[] = [
     id: 6,
     type: 'buildSolution',
     title: 'Sérsmíðuð lausn',
-    description: 'Búðu til nákvæmlega 2.5 M lausn með því að stilla bæði sameindir og rúmmál.',
+    description: 'Búðu til nákvæmlega 2,5 M lausn með því að stilla bæði sameindir og rúmmál.',
     targetConcentration: 2.5,
     tolerance: 3,
     initialState: { molecules: 25, volumeML: 200 },
@@ -198,9 +199,9 @@ const CHALLENGES: Challenge[] = [
     },
     hints: {
       topic: 'Þetta snýst um að búa til nákvæman styrk með tveimur breytum.',
-      strategy: 'Margar samsetningar virka! Finndu eina þar sem niðurstaðan er 2.5 M.',
-      method: 'Styrkur = (sameindir × 0.01) / rúmmál í lítrum. Prófaðu auðveldar tölur.',
-      solution: 'Til dæmis: 50 sameindir í 200 mL: 0.5 mól / 0.2 L = 2.5 M',
+      strategy: 'Margar samsetningar virka! Finndu eina þar sem niðurstaðan er 2,5 M.',
+      method: 'Styrkur = (sameindir × 0,01) / rúmmál í lítrum. Prófaðu auðveldar tölur.',
+      solution: 'Til dæmis: 50 sameindir í 200 mL: 0,5 mól / 0,2 L = 2,5 M',
     },
     conceptMessage: 'Sama styrkur getur orðið með mismunandi magni',
   },
@@ -244,10 +245,10 @@ function ConcentrationIndicator({
       <div className="text-center">
         <div className="text-sm text-warm-600 mb-1">Núverandi styrkur</div>
         <div className={`text-3xl font-bold ${textColor}`}>
-          {current.toFixed(2)} M {indicator}
+          {formatDecimal(current, 2)} M {indicator}
         </div>
         <div className="text-sm text-warm-500 mt-1">
-          Markmið: {target.toFixed(2)} M (±{tolerance}%)
+          Markmið: {formatDecimal(target, 2)} M (±{tolerance}%)
         </div>
       </div>
 
@@ -656,15 +657,15 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   maxVolume={challenge.constraints.maxVolume}
                   concentration={currentConcentration}
                   color={challenge.type === 'dilution' ? '#f97316' : '#3b82f6'}
-                  label={`${molecules} sameindir\n${volumeML} mL\n${currentConcentration.toFixed(2)} M`}
+                  label={`${molecules} sameindir\n${volumeML} mL\n${formatDecimal(currentConcentration, 2)} M`}
                 />
 
                 <div className="mt-4 bg-warm-50 rounded-lg p-3 text-center w-full">
                   <div className="text-xs text-warm-500 mb-1">Styrkur = sameindir ÷ rúmmál</div>
                   <div className="font-mono text-sm text-warm-700">
-                    {molecules} × 0.01 mol ÷ {(volumeML / 1000).toFixed(3)} L ={' '}
+                    {molecules} × 0,01 mol ÷ {formatDecimal(volumeML / 1000, 3)} L ={' '}
                     <span className="font-bold text-blue-600">
-                      {currentConcentration.toFixed(2)} M
+                      {formatDecimal(currentConcentration, 2)} M
                     </span>
                   </div>
                 </div>

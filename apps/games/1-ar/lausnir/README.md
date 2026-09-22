@@ -23,6 +23,15 @@ Stig 0 was added on 2026-09-20.
 Stig 3 grades at a 2 % relative tolerance (`utils/validation.ts`), and its input is `type="text"`
 read through `parseStudentNumber`, so the Icelandic decimal comma works.
 
+**Every number a student reads is written with the decimal comma (2026-09-22).** Until then the
+field read a comma while the game printed a full stop everywhere else — Stig 3's generated
+questions (`Þú leysir 0.00079 mól …`), hints, worked solutions and "Rétt svar" line, the Stig 1 and
+Stig 2 beaker labels, and the authored Stig 1/2 text. All of it now goes through `formatDecimal`
+from `@shared/utils`, formatted where the string is built (`utils/problem-generator.ts` for Stig 3).
+`__tests__/decimal-comma.test.ts` generates 1 200 problems and renders their worked solutions, scans
+the authored text, and bans `.toFixed(` in components; it fails 8 of 8 against the old code. The
+worked solutions also stopped printing float noise in M₁ × V₁ products.
+
 ## Stig 0 — Rafkleyfi
 
 The electrolyte half of February's "both" answer; the precipitation half is `1-ar/utfellingarhvorf`.

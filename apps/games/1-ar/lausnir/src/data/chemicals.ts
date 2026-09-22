@@ -7,7 +7,7 @@ export const CHEMICALS = {
       molarMass: 58.5,
       form: 'solid',
       displayName: 'NaCl (borðsalt)',
-      molarMassDisplay: 'mólmassi: 58.5 g/mol',
+      molarMassDisplay: 'mólmassi: 58,5 g/mol',
       maxMolarity: 5.4,
     },
     {
@@ -32,7 +32,7 @@ export const CHEMICALS = {
       molarMass: 74.6,
       form: 'solid',
       displayName: 'KCl (kalíumklóríð)',
-      molarMassDisplay: 'mólmassi: 74.6 g/mol',
+      molarMassDisplay: 'mólmassi: 74,6 g/mol',
       maxMolarity: 4.1,
     },
     {
@@ -84,7 +84,7 @@ export const CHEMICALS = {
       molarMass: 36.5,
       form: 'gas',
       displayName: 'HCl (saltsýra)',
-      molarMassDisplay: 'mólmassi: 36.5 g/mol',
+      molarMassDisplay: 'mólmassi: 36,5 g/mol',
       maxMolarity: 12,
     },
     {
@@ -108,7 +108,7 @@ export const CHEMICALS = {
       molarMass: 53.5,
       form: 'solid',
       displayName: 'NH₄Cl (ammóníumklóríð)',
-      molarMassDisplay: 'mólmassi: 53.5 g/mol',
+      molarMassDisplay: 'mólmassi: 53,5 g/mol',
       maxMolarity: 5.7,
     },
     {
@@ -158,7 +158,7 @@ export const CHEMICALS = {
       molarMass: 162.2,
       form: 'solid',
       displayName: 'FeCl₃ (járnklóríð)',
-      molarMassDisplay: 'mólmassi: 162.2 g/mol',
+      molarMassDisplay: 'mólmassi: 162,2 g/mol',
       maxMolarity: 4.5,
     },
     {

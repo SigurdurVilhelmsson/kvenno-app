@@ -1163,12 +1163,14 @@ specifics — read the README, not them.
   accentless name.
 
 **`formatDecimal` now exists in `@shared/utils`, beside `parseStudentNumber`** — the printing half
-of the decimal-comma pass, added 2026-09-22 when `3-ar/buffer-recipe-creator` became the first game
-to print every number with a comma (`decimal-comma.test.ts` there bans `toFixed` in its components
-except for SVG geometry). Use it for the games below rather than another local `fmt`.
+of the decimal-comma pass, added 2026-09-22. Four games now print every number a student reads with
+a comma, each guarded by its own `decimal-comma.test.ts`: `3-ar/buffer-recipe-creator`,
+`3-ar/gas-law-challenge`, `1-ar/molmassi` (which also lost its float noise — HCl's molar mass had
+shown as `36.458000000000006 g` — and prints Avogadro-scale values through `formatScientific`) and
+`1-ar/lausnir`. Other games were not audited for this; use `formatDecimal` rather than a local
+`fmt` when you find one.
 
-Reported by the audit and recorded in the READMEs, not independently re-verified: decimal points
-and float noise in displayed numbers (`molmassi` Stig 2, `gas-law-challenge`, `lausnir` Stig 3); points
+Reported by the audit and recorded in the READMEs, not independently re-verified: points
 and streaks shown in practice modes (`equilibrium-shifter`, `gas-law-challenge`,
 `thermodynamics-predictor`); ungoverned terms in `thermodynamics-predictor` (enthalpy loanword in
 t-spelling, four names for entropy); dead `needScore`

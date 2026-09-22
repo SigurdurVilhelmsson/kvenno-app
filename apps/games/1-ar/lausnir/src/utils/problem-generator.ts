@@ -1,3 +1,5 @@
+import { formatDecimal } from '@shared/utils';
+
 import { CHEMICALS } from '../data';
 import { Problem, Difficulty, ProblemType, Chemical } from '../types';
 
@@ -104,14 +106,22 @@ function floorQuantity(value: number): number {
   return Math.floor(value * magnitude) / magnitude;
 }
 
-/** Format a quantity for a hint line without rounding a small one away to 0.000. */
+/**
+ * Format a quantity for a hint line without rounding a small one away to 0,000.
+ * Written with the Icelandic decimal comma, like every number in this file that
+ * reaches a student — the answer field reads a comma, so the question has to
+ * write one.
+ */
 function fmt(value: number): string {
   if (value === 0) return '0';
-  if (Math.abs(value) < 0.01) return value.toPrecision(2);
-  if (Math.abs(value) < 1) return parseFloat(value.toFixed(3)).toString();
-  if (Math.abs(value) < 10) return parseFloat(value.toFixed(2)).toString();
-  return parseFloat(value.toFixed(1)).toString();
+  if (Math.abs(value) < 0.01) return value.toPrecision(2).replace('.', ',');
+  if (Math.abs(value) < 1) return formatDecimal(parseFloat(value.toFixed(3)));
+  if (Math.abs(value) < 10) return formatDecimal(parseFloat(value.toFixed(2)));
+  return formatDecimal(parseFloat(value.toFixed(1)));
 }
+
+/** A value printed as written, with the decimal comma. */
+const n = (value: number): string => formatDecimal(value);
 
 /**
  * Draw a molarity this substance can actually reach.
@@ -142,14 +152,14 @@ function generateDilutionProblem(difficulty: Difficulty, chemical: Chemical): Pr
       chemical,
       description: 'Útþynning',
       given: { M1, V1, V2 },
-      question: `Þú ert með ${V1} mL af ${M1} M ${chemical.name} lausn. Þú bætir við vatni þannig að endanlegt rúmmál verður ${V2} mL. Hver er endanlegur mólstyrkur?`,
+      question: `Þú ert með ${V1} mL af ${n(M1)} M ${chemical.name} lausn. Þú bætir við vatni þannig að endanlegt rúmmál verður ${V2} mL. Hver er endanlegur mólstyrkur?`,
       answer: M2,
       unit: 'M',
       difficulty: 'easy',
       hints: [
         'Notaðu M₁V₁ = M₂V₂',
-        `M₂ = (M₁ × V₁) / V₂ = (${M1} × ${V1}) / ${V2}`,
-        `M₂ = ${M2.toFixed(3)} M`,
+        `M₂ = (M₁ × V₁) / V₂ = (${n(M1)} × ${V1}) / ${V2}`,
+        `M₂ = ${formatDecimal(M2, 3)} M`,
       ],
     };
   } else {
@@ -164,11 +174,15 @@ function generateDilutionProblem(difficulty: Difficulty, chemical: Chemical): Pr
       chemical,
       description: 'Nákvæm útþynning',
       given: { M1, V1, V2 },
-      question: `Þú þarft að útbúa ${V2} mL af ${M2.toFixed(3)} M ${chemical.name} lausn með því að þynna ${M1} M stofnlausn. Hversu mikið þarftu af stofnlausninni?`,
+      question: `Þú þarft að útbúa ${V2} mL af ${formatDecimal(M2, 3)} M ${chemical.name} lausn með því að þynna ${n(M1)} M stofnlausn. Hversu mikið þarftu af stofnlausninni?`,
       answer: V1,
       unit: 'mL',
       difficulty: difficulty,
-      hints: ['V₁ = (M₂ × V₂) / M₁', `V₁ = (${M2.toFixed(3)} × ${V2}) / ${M1}`, `V₁ = ${V1} mL`],
+      hints: [
+        'V₁ = (M₂ × V₂) / M₁',
+        `V₁ = (${formatDecimal(M2, 3)} × ${V2}) / ${n(M1)}`,
+        `V₁ = ${V1} mL`,
+      ],
     };
   }
 }
@@ -184,14 +198,14 @@ function generateMolarityProblem(difficulty: Difficulty, chemical: Chemical): Pr
     chemical,
     description: 'Reikna mólstyrk',
     given: { moles, volume },
-    question: `Þú leysir ${moles} mól af ${chemical.name} í ${volume} L af lausn. Hver er mólstyrkurinn?`,
+    question: `Þú leysir ${n(moles)} mól af ${chemical.name} í ${n(volume)} L af lausn. Hver er mólstyrkurinn?`,
     answer: molarity,
     unit: 'M',
     difficulty: difficulty,
     hints: [
       'Mólstyrkur (M) = mól / lítrar',
-      `M = ${moles} / ${volume}`,
-      `M = ${molarity.toFixed(3)} M`,
+      `M = ${n(moles)} / ${n(volume)}`,
+      `M = ${formatDecimal(molarity, 3)} M`,
     ],
   };
 }
@@ -211,14 +225,14 @@ function generateMolarityFromMassProblem(difficulty: Difficulty, chemical: Chemi
     chemical,
     description: 'Reikna mólstyrk út frá massa',
     given: { massInGrams, molarMass: chemical.molarMass, volumeInML },
-    question: `Þú leysir ${massInGrams} g af ${chemical.displayName} (mólmassi ${chemical.molarMass} g/mol) í ${volumeInML} mL af lausn. Hver er mólstyrkurinn?`,
+    question: `Þú leysir ${n(massInGrams)} g af ${chemical.displayName} (mólmassi ${n(chemical.molarMass)} g/mol) í ${volumeInML} mL af lausn. Hver er mólstyrkurinn?`,
     answer: molarity,
     unit: 'M',
     difficulty: difficulty,
     hints: [
       'Fyrst reiknaðu mól = g / (g/mol), síðan M = mól / L',
-      `mól = ${massInGrams} / ${chemical.molarMass} = ${fmt(moles)}; L = ${volumeInML}/1000 = ${volumeInL.toFixed(3)}`,
-      `M = ${fmt(moles)} / ${volumeInL.toFixed(3)} = ${fmt(molarity)} M`,
+      `mól = ${n(massInGrams)} / ${n(chemical.molarMass)} = ${fmt(moles)}; L = ${volumeInML}/1000 = ${formatDecimal(volumeInL, 3)}`,
+      `M = ${fmt(moles)} / ${formatDecimal(volumeInL, 3)} = ${fmt(molarity)} M`,
     ],
   };
 }
@@ -236,14 +250,14 @@ function generateMassFromMolarityProblem(difficulty: Difficulty, chemical: Chemi
     chemical,
     description: 'Reikna massa út frá mólstyrk',
     given: { molarity, volumeInML, molarMass: chemical.molarMass },
-    question: `Þú ert með ${volumeInML} mL af ${molarity} M ${chemical.name} lausn. Hversu mörg grömm af ${chemical.name} eru í lausninni? (mólmassi ${chemical.molarMass} g/mol)`,
+    question: `Þú ert með ${volumeInML} mL af ${n(molarity)} M ${chemical.name} lausn. Hversu mörg grömm af ${chemical.name} eru í lausninni? (mólmassi ${n(chemical.molarMass)} g/mol)`,
     answer: mass,
     unit: 'g',
     difficulty: difficulty,
     hints: [
       'Fyrst reiknaðu mól = M × L, síðan massi = mól × mólmassi',
-      `mól = ${molarity} × ${volumeInL.toFixed(3)} = ${fmt(moles)}`,
-      `massi = ${fmt(moles)} × ${chemical.molarMass} = ${fmt(mass)} g`,
+      `mól = ${n(molarity)} × ${formatDecimal(volumeInL, 3)} = ${fmt(moles)}`,
+      `massi = ${fmt(moles)} × ${n(chemical.molarMass)} = ${fmt(mass)} g`,
     ],
   };
 }
@@ -264,14 +278,14 @@ function generateMixingProblem(difficulty: Difficulty, chemical: Chemical): Prob
     chemical,
     description: 'Blanda tvær lausnir',
     given: { M1, V1, M2, V2 },
-    question: `Þú blandar ${V1} mL af ${M1} M ${chemical.name} lausn með ${V2} mL af ${M2} M ${chemical.name} lausn. Hver er mólstyrkur blöndunnar?`,
+    question: `Þú blandar ${V1} mL af ${n(M1)} M ${chemical.name} lausn með ${V2} mL af ${n(M2)} M ${chemical.name} lausn. Hver er mólstyrkur blöndunnar?`,
     answer: finalMolarity,
     unit: 'M',
     difficulty: difficulty,
     hints: [
       'M_lokal = (M₁V₁ + M₂V₂) / (V₁ + V₂)',
-      `M = (${M1}×${V1} + ${M2}×${V2}) / (${V1}+${V2})`,
-      `M = ${finalMolarity.toFixed(3)} M`,
+      `M = (${n(M1)}×${V1} + ${n(M2)}×${V2}) / (${V1}+${V2})`,
+      `M = ${formatDecimal(finalMolarity, 3)} M`,
     ],
   };
 }

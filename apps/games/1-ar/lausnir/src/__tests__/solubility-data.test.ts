@@ -46,7 +46,7 @@ describe('formatSolubility', () => {
   // toFixed(1) everywhere printed the corrected O2 figure as "0.0", so fixing the
   // data alone would have hidden the gas curves behind a rounded-away label.
   it('keeps a small gas value visible', () => {
-    expect(formatSolubility(0.0069)).toBe('0.0069');
+    expect(formatSolubility(0.0069)).toBe('0,0069');
   });
 
   it('does not pad a large solid value with noise', () => {
@@ -54,7 +54,12 @@ describe('formatSolubility', () => {
   });
 
   it('keeps one decimal in the ordinary range', () => {
-    expect(formatSolubility(35.7)).toBe('35.7');
+    expect(formatSolubility(35.7)).toBe('35,7');
+  });
+
+  it('writes the Icelandic decimal comma and trims trailing zeros after it', () => {
+    expect(formatSolubility(0.5)).toBe('0,5');
+    expect(formatSolubility(5)).toBe('5');
   });
 
   it('renders zero plainly', () => {
