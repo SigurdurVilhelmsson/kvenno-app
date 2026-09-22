@@ -5,6 +5,7 @@ import {
   APPLY_PROBLEMS,
   PRACTICE_PROBLEMS,
   RULE_BREAKING_PROBLEMS,
+  APPLY_RULE_BREAKERS,
   EXPLORABLE_ACIDS,
   exploreSeries,
   gradeApply,
@@ -41,6 +42,40 @@ describe('the apply set', () => {
     // the pool, not contrived.
     expect(RULE_BREAKING_PROBLEMS.length).toBeGreaterThan(0);
     expect(APPLY_PROBLEMS.some((p) => !p.approximationValid)).toBe(true);
+  });
+
+  it('poses one rule-breaking pair per acid, and no more', () => {
+    // Siggi's ruling, 2026-09-22. Every acid that breaks the rule anywhere in
+    // the pool appears exactly once, so the three still fail by visibly
+    // different margins, and the phase is no longer one template twelve times.
+    const breakers = APPLY_PROBLEMS.filter((p) => p.id.startsWith('apply-break-'));
+    const acids = breakers.map((p) => p.acid.id);
+    expect(new Set(acids).size, acids.join(', ')).toBe(acids.length);
+    expect([...new Set(RULE_BREAKING_PROBLEMS.map((p) => p.acid.id))].sort()).toEqual(
+      [...acids].sort()
+    );
+    expect(breakers.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('keeps the most dilute pair of each acid', () => {
+    for (const p of APPLY_RULE_BREAKERS) {
+      const same = RULE_BREAKING_PROBLEMS.filter((q) => q.acid.id === p.acid.id);
+      const widest = Math.max(...same.map((q) => q.percentDissociated));
+      expect(p.percentDissociated, p.id).toBe(widest);
+    }
+  });
+
+  it('marks the approximation wrong on every rule-breaking problem it poses', () => {
+    // The reason for "most dilute". Near 5 % the √(Ka·C) answer sits within
+    // PH_TOLERANCE of the exact one, so a student who skipped the check would
+    // be graded correct and the misconception text would accuse a right answer.
+    // Rounded to two decimals, as the answer hint asks, and nudged both ways.
+    for (const p of APPLY_PROBLEMS.filter((q) => !q.approximationValid)) {
+      const approx = solveWeakAcid(p.acid.ka, p.concentration).pHApprox;
+      for (const typed of [approx, Math.round(approx * 100) / 100]) {
+        expect(gradeApply(p, typed), `${p.id} accepts ${typed}`).toBe(false);
+      }
+    }
   });
 
   it('asks each kind at least once', () => {

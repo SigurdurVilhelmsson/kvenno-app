@@ -74,6 +74,26 @@ export const RULE_BREAKING_PROBLEMS: PHProblem[] = ALL.filter((p) => !p.approxim
   (a, b) => a.percentDissociated - b.percentDissociated
 );
 
+/**
+ * The rule-breakers Beita actually poses: one pair per acid, the most dilute.
+ *
+ * Siggi's ruling, 2026-09-22 — one pair per acid. Before it, Beita appended all
+ * twelve, the same template twelve times. **Most dilute, not nearest the line,
+ * and that half is not taste:** close to 5 % the gap between √(Ka·C) and the
+ * exact root is only −½·log₁₀(1−α) ≈ 0,011, inside `PH_TOLERANCE`, so a student
+ * who skipped the check would be marked right — five of the twelve were like that.
+ * Taking the largest α per acid keeps every gap well outside the tolerance, which
+ * `problems.test.ts` asserts, and still shows the three acids failing by
+ * visibly different margins.
+ */
+export const APPLY_RULE_BREAKERS: PHProblem[] = [
+  ...RULE_BREAKING_PROBLEMS.reduce((byAcid, p) => {
+    const kept = byAcid.get(p.acid.id);
+    if (!kept || p.percentDissociated > kept.percentDissociated) byAcid.set(p.acid.id, p);
+    return byAcid;
+  }, new Map<string, PHProblem>()).values(),
+].sort((a, b) => a.percentDissociated - b.percentDissociated);
+
 export interface ApplyProblem {
   id: string;
   kind: ApplyKind;
@@ -134,7 +154,7 @@ const sci = (n: number) => {
 };
 
 /**
- * Beita: one of each kind, plus every rule-breaking pair.
+ * Beita: one of each kind, plus one rule-breaking pair per acid.
  *
  * The rule-breakers come last and are the reason the phase exists: a student who
  * substitutes √(Ka·C) without checking gets them wrong, and the feedback says
@@ -220,7 +240,7 @@ export const APPLY_PROBLEMS: ApplyProblem[] = (() => {
     approximationValid: true,
   });
 
-  for (const p of RULE_BREAKING_PROBLEMS) {
+  for (const p of APPLY_RULE_BREAKERS) {
     const s = solveWeakAcid(p.acid.ka, p.concentration);
     out.push({
       id: `apply-break-${p.id}`,

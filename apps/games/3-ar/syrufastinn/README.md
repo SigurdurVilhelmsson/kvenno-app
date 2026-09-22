@@ -165,18 +165,21 @@ The Æfa set is entirely inside the 5 % rule; the Beita set is not, and its rule
 real pairs from the pool (HF, maurasýra and saltpéturssýrlingur at the lower concentrations),
 not contrived. A rule that never fires is a rule nobody believes.
 
-### Beita is too long, and is to be trimmed
+### Beita: one rule-breaking pair per acid
 
-**Siggi's ruling, 2026-09-19 — decided, not yet built.** Adding HNO₂ took Beita from 12 problems
-to 16, and twelve of those are the same generated template with a different acid and
-concentration. `APPLY_PROBLEMS` appends **every** member of `RULE_BREAKING_PROBLEMS`, and that
-is the single line to change.
+**Siggi's ruling, 2026-09-22, built the same day.** Adding HNO₂ had taken Beita from 12 problems
+to 16, twelve of them one generated template differing only in acid and concentration. It now
+poses **seven**: the four hand-written problems (pH, Ka, Kb, klofnunarhlutfall) and one
+rule-breaker per acid — `APPLY_RULE_BREAKERS` in `src/data/problems.ts`.
 
-**The selection rule is not part of the ruling.** How many to keep, and chosen how, is Siggi's
-call — do not improvise one and record it as settled. Whatever lands must keep the two
-properties `problems.test.ts` already asserts, and should keep at least one pair from each of
-HF, maurasýra and saltpéturssýrlingur, which fail the approximation by visibly different
-margins (5,1 % up to 22,9 %).
+**Which pair per acid was not in the ruling, and the grader decided it: the most dilute.** Near
+the 5 % line the gap between √(Ka·C) and the exact root is only about 0,011 in pH, inside
+`PH_TOLERANCE` (±0,02), so a student who skipped the check was **graded correct** — while the
+misconception text told them they had used the approximation. Five of the twelve old rule-breakers
+were like that. The three kept are HF at 0,010 M (22,9 %, gap 0,056), saltpéturssýrlingur at
+0,010 M (19,1 %, gap 0,046) and maurasýra at 0,010 M (12,6 %, gap 0,029), so the three still fail
+by visibly different margins. `problems.test.ts` asserts one pair per rule-breaking acid, that it
+is the most dilute, and that the approximate answer is rejected on every rule-breaker Beita poses.
 
 ## Layout
 

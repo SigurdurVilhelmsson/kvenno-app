@@ -616,17 +616,13 @@ rulings came out of that check and are **decided but not yet built**:
   day and `flúoríð` already ships six times in `1-ar/nafnakerfid`. HF and HNO₂ both break the 5 %
   rule across much of the range (HF: 2,6 % at 1,0 M to 22,9 % at 0,01 M), which is deliberate — the
   Beita phase exists to cover pairs where the approximation fails.
-- **Beita is to be trimmed — Siggi's ruling, 2026-09-19. Decided, not yet built.** Adding HNO₂ took
-  the phase from 12 problems to 16, twelve of which are one generated template (`Hvert er pH í … M
-lausn af X? Athugaðu 5 % regluna`) differing only in acid and concentration. `APPLY_PROBLEMS`
-  currently appends **every** member of `RULE_BREAKING_PROBLEMS`, and that is the line to change
-  (`3-ar/syrufastinn/src/data/problems.ts`). **The selection rule is not part of the ruling and must
-  not be improvised into one** — how many to keep, and chosen how, is Siggi's call. The obvious
-  candidates, none of them ruled: one pair per rule-breaking acid (3), a spread across the α range,
-  or a fixed cap taking the widest-margin cases. Whatever lands, keep the two properties
-  `problems.test.ts` already asserts — Æfa entirely inside the 5 % rule, Beita not — and keep at
-  least one pair from each rule-breaking acid, since HF, maurasýra and saltpéturssýrlingur fail the
-  approximation by visibly different margins.
+- **Beita is trimmed — Siggi's ruling, 2026-09-22: one rule-breaking pair per acid.** It had grown
+  to 16 problems, twelve of them one generated template. It now poses 7: the four hand-written
+  problems plus `APPLY_RULE_BREAKERS` in `3-ar/syrufastinn/src/data/problems.ts`, the **most dilute**
+  pair of HF, maurasýra and saltpéturssýrlingur. **Most dilute is load-bearing, not taste:** near the
+  5 % line the √(Ka·C) answer is within `PH_TOLERANCE` of the exact root, so on five of the old twelve
+  a student who skipped the check was graded correct. `problems.test.ts` asserts the approximate
+  answer is rejected on every rule-breaker posed — keep that if the selection ever changes.
 - **Adding those two acids exposed a grammar defect in the game's question templates**, and the
   fix is the pattern to copy. The templates interpolated `acid.name.toLowerCase()` after `af`,
   which governs the dative, so Æfa and every Beita rule-breaker read `lausn af flússýra`. It was
