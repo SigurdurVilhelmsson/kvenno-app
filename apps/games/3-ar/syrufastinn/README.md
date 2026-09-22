@@ -1,6 +1,6 @@
 # Sýrufastinn
 
-Year 3, chain position 3: **Gaslögmál → Jafnvægi → _Sýrufastinn_ → Varmafræði → pH Títrun → Stuðpúðar**
+Year 3, chain position 4 of 8: **Gaslögmál → Jafnvægisfastinn → Hliðrun jafnvægis → _Sýrufastinn_ → Varmafræði → pH Títrun → Stuðpúðar → Leysnijafnvægi**
 
 Phase 5 of `docs/plans/2026-08-16-games-roadmap.md`, the Ka/Kb gap. Started 2026-08-29,
 finished 2026-09-03 once the four blocking rulings came in.

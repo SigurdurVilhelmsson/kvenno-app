@@ -1124,16 +1124,43 @@ sameinda hvarfefnis med stuðli þess … hvorfin geta gerst.'`, where `stuðli`
   a comment explaining why a banned attribute is avoided, and my `'rett'` outcome identifiers. Write
   the explanation without writing the string.
 
-**`1-ar/takmarkandi`'s README was an unedited scaffold template** — headed "Kvennaskólinn Chemistry
-Game Template", documenting a `create-game.sh` that does not exist in this repository, and saying
-nothing about the game. Replaced. **Worth a look elsewhere:** nothing has audited the other games'
-READMEs for the same.
+**Eight game READMEs were an unedited scaffold template, and none is now — 2026-09-22.**
+`1-ar/takmarkandi` was found first; the audit that followed found seven more byte-identical copies —
+`1-ar/lausnir`, `1-ar/molmassi`, `1-ar/nafnakerfid`, `3-ar/buffer-recipe-creator`,
+`3-ar/equilibrium-shifter`, `3-ar/gas-law-challenge`, `3-ar/thermodynamics-predictor` — each headed
+"Kvennaskólinn Chemistry Game Template" and documenting a `create-game.sh` that does not exist. All
+eight now describe their game, and `packages/shared/i18n/__tests__/no-scaffold-readmes.test.ts`
+fails if the template returns. **Thirteen games have no README at all**; the test does not require
+one. The older side files beside some READMEs (`LEVEL1_README.md`, `VISUAL_COMPARISON.md`,
+`PROTOTYPE_SUMMARY.md`, `TEST_LEVEL1.md`, `MIGRATION-SUMMARY.md`) are prototype notes, stale on most
+specifics — read the README, not them.
 
-**No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
-now fixed, as are the three above, and each carries a test that fails against the pre-fix code. What
-is left is enrichment and unfinished decisions, not defects — the work order is
-`docs/plans/2026-08-16-games-roadmap.md`, and `docs/README.md` carries the four look-alike option
-arrays that are **not** defects, so nobody "fixes" a fifth.
+**The audit found live defects, so "no known live defects" no longer holds.** Each new README's
+`## Open` section carries the detail. Verified directly against the code:
+
+- **`3-ar/gas-law-challenge` Level 1 — the default level — shows English.** All 13 ideal-gas
+  questions carry English `hints` and `solution.steps`, and every question renders `scenario_en`
+  under the Icelandic. Question 14 stores its answer in mL while the screen labels it `L`.
+- **`3-ar/equilibrium-shifter`'s Keppnishamur can never be unlocked.** The gate needs
+  `problemsCompleted >= 5`, and that count is written only at the end of a challenge round. The
+  mode-gate ruling this file already asked for is now also a fix.
+- **`3-ar/thermodynamics-predictor` id 25 stores ΔH = −137 kJ/mol for C + ½O₂ → CO** — that is
+  CO's ΔG°f; its ΔH°f is −110,5. The game keeps its own ΔH/ΔS and does not use
+  `packages/shared/data/thermo.ts`; ids 12 and 21 also disagree with it.
+- **`3-ar/buffer-recipe-creator` Level 2's hint tiers were not derived with the rest** — they still
+  quote the pre-Appendix-D ammonium pKa 9,25 and the old stored numbers.
+- **`1-ar/nafnakerfid` Level 2 strips accents before comparing**, so the recorded claim that it
+  graded the corrected `Fosfór` spelling wrong is overstated — it accepted both, and accepts any
+  accentless name.
+
+Reported by the audit and recorded in the READMEs, not independently re-verified: decimal points
+and float noise in displayed numbers (`molmassi` Stig 2, `gas-law-challenge`, `lausnir` Stig 3); points
+and streaks shown in practice modes (`equilibrium-shifter`, `gas-law-challenge`,
+`thermodynamics-predictor`); ungoverned terms in `thermodynamics-predictor` (enthalpy loanword in
+t-spelling, four names for entropy) and the ideal gas law named two ways across Y3; dead `needScore`
+gating strings in `lausnir/src/i18n.ts`; wrong menu score denominators in `nafnakerfid`. Two
+misspellings in `equilibrium-shifter` (`hvarfstuðullinn` with a stray `a`, `efni` with an accent)
+were fixed with the audit.
 
 The former "`challenges.ts:354` is unsatisfiable" claim was retired Aug 2026 by executing `Level3`'s grading path — see `docs/README.md`. Do not reinstate it.
 
