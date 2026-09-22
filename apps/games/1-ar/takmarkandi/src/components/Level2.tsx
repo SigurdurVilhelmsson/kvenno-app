@@ -116,11 +116,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               onClick={() => onComplete(score)}
               className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
             >
-              Ljuka stigi
+              Ljúka stigi
             </button>
           </div>
           <button onClick={onBack} className="text-warm-500 hover:text-warm-700 text-sm">
-            Til baka i valmynd
+            Til baka í valmynd
           </button>
         </div>
       </div>
@@ -137,11 +137,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       return (
         `${r1.formula}: ${q.r1Count} ÷ ${r1.coeff} = ${answer.timesFromR1} skipti. ` +
         `${r2.formula}: ${q.r2Count} ÷ ${r2.coeff} = ${answer.timesFromR2} skipti. ` +
-        `Lægri talan er ${answer.timesReactionRuns}, svo hvorfin geta gerst ${answer.timesReactionRuns} sinnum.`
+        `Lægri talan er ${answer.timesReactionRuns}, svo hvörfin geta gerst ${answer.timesReactionRuns} sinnum.`
       );
     }
     return (
-      `Hvorfin geta gerst ${answer.timesReactionRuns} sinnum. ` +
+      `Hvörfin geta gerst ${answer.timesReactionRuns} sinnum. ` +
       `Myndefni: ${answer.timesReactionRuns} × ${p.coeff} = ${answer.productsFormed[p.formula]} ${p.formula}.`
     );
   };
@@ -155,7 +155,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const questionHint =
     q.type === 'times'
       ? `Reiknaðu: min(${q.reaction.reactant1.formula} ÷ ${q.reaction.reactant1.coeff}, ${q.reaction.reactant2.formula} ÷ ${q.reaction.reactant2.coeff})`
-      : `Hvorfin geta gerst ${answer.timesReactionRuns} sinnum. Stuðull ${q.reaction.products[0].formula} er ${q.reaction.products[0].coeff}.`;
+      : `Hvörfin geta gerst ${answer.timesReactionRuns} sinnum. Stuðull ${q.reaction.products[0].formula} er ${q.reaction.products[0].coeff}.`;
 
   // --- Main gameplay ---
   return (
@@ -270,20 +270,20 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               feedback={{
                 isCorrect,
                 explanation: isCorrect
-                  ? `Rett! ${buildSolution()}`
-                  : `Rett svar: ${correctValue}. ${buildSolution()}`,
+                  ? `Rétt! ${buildSolution()}`
+                  : `Rétt svar: ${correctValue}. ${buildSolution()}`,
                 misconception: isCorrect
                   ? undefined
                   : q.type === 'times'
-                    ? 'Deildu fjolda sameinda hvarfefnis med stuðli þess. Lægri talan segir hversu oft hvorfin geta gerst.'
-                    : 'Margfaldaðu fjolda skipta med stuðli MYNDEFNISINS, ekki hvarfefnisins.',
+                    ? 'Deildu fjölda sameinda hvarfefnis með stuðli þess. Lægri talan segir hversu oft hvörfin geta gerst.'
+                    : 'Margfaldaðu fjölda skipta með stuðli MYNDEFNISINS, ekki hvarfefnisins.',
               }}
               config={{ showExplanation: true, showMisconceptions: !isCorrect }}
             />
 
             {/* Step-by-step solution box */}
             <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
-              <h3 className="font-bold text-blue-800 mb-2">Utreikningur:</h3>
+              <h3 className="font-bold text-blue-800 mb-2">Útreikningur:</h3>
               <div className="text-sm text-warm-700 space-y-1">
                 <div>
                   {q.reaction.reactant1.formula}: {q.r1Count} ÷ {q.reaction.reactant1.coeff} ={' '}
@@ -299,7 +299,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   skipti)
                 </div>
                 <div>
-                  Hvorfin gerast: <strong>{answer.timesReactionRuns}</strong> sinnum
+                  Hvörfin gerast: <strong>{answer.timesReactionRuns}</strong> sinnum
                 </div>
                 <div>
                   {q.reaction.products[0].formula} myndast: {answer.timesReactionRuns} ×{' '}
@@ -315,7 +315,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               onClick={handleNext}
               className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
             >
-              {index + 1 < TOTAL ? 'Naesta spurning →' : 'Sja nidurstodur →'}
+              {index + 1 < TOTAL ? 'Næsta spurning →' : 'Sjá niðurstöður →'}
             </button>
           </div>
         )}

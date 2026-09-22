@@ -8,7 +8,7 @@ export const gameTranslations = createGameTranslations({
   is: {
     game: {
       title: 'Lausnir',
-      subtitle: 'Laerdu um molstyrk, utthynningu og lausnir',
+      subtitle: 'Lærðu um mólstyrk, útþynningu og lausnir',
     },
     menu: {
       howItWorks: 'Hvernig virkar þetta?',
@@ -21,7 +21,7 @@ export const gameTranslations = createGameTranslations({
       totalPoints: 'Heildar stig',
       games: 'Leikir',
       formulas: 'Formúlur (Stig 3)',
-      backToGames: 'Til baka i leikjayfirlit',
+      backToGames: 'Til baka í leikjayfirlit',
     },
     levels: {
       level1: {
