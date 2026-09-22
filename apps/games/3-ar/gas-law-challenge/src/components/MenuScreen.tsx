@@ -27,7 +27,7 @@ export function MenuScreen({
             <div className="bg-white rounded-xl shadow-lg p-8">
               <div className="text-center mb-8">
                 <p className="text-lg text-warm-600 mb-2">
-                  Lærðu að leysa verkefni um tilvalin lofttegundalögmál: PV = nRT
+                  Lærðu að leysa verkefni um kjörgaslögmálið: PV = nRT
                 </p>
                 <p className="text-sm text-warm-500">
                   {questions.length} spurningar í boði • Auðvelt, Miðlungs, Erfitt
@@ -110,9 +110,7 @@ export function MenuScreen({
                         : 'border-warm-300 bg-white hover:border-blue-300'
                     }`}
                   >
-                    <div className="font-bold text-blue-800">
-                      Stig 1 — Tilvalin lofttegundalögmál
-                    </div>
+                    <div className="font-bold text-blue-800">Stig 1 — Kjörgaslögmálið</div>
                     <div className="text-xs text-warm-600 mt-1 font-mono">PV = nRT</div>
                     <div className="text-xs text-warm-500 mt-2">
                       Lærðu miðlögmálið og allar fjórar breyturnar.
@@ -193,9 +191,9 @@ export function MenuScreen({
                 <h3 className="font-bold text-warm-800 mb-2">Leiðbeiningar:</h3>
                 <div className="grid md:grid-cols-2 gap-4 text-sm text-warm-700">
                   <div>
-                    <p className="font-semibold">Tilvalin lofttegundalögmál:</p>
+                    <p className="font-semibold">Kjörgaslögmálið:</p>
                     <p className="font-mono bg-white px-2 py-1 rounded mt-1">PV = nRT</p>
-                    <p className="text-xs mt-1">þar sem R = 0.08206 L·atm/(mol·K)</p>
+                    <p className="text-xs mt-1">þar sem R = 0,08206 L·atm/(mol·K)</p>
                   </div>
                   <div>
                     <p className="font-semibold">Lyklaborð:</p>

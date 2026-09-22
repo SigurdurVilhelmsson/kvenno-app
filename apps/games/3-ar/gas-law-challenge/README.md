@@ -44,6 +44,13 @@ Feedback shows the student's and the correct answer, the step-by-step solution, 
   `Gaslögmál`, enforced by `game-titles-agree.test.ts`. The old English title appeared at four
   student-facing sites until 2026-09-19 and is banned by name; do not reintroduce it, including in
   new UI copy.
+- **Everything a student reads is Icelandic, with a decimal comma.** Until 2026-09-22 all 13 Stig 1
+  questions — the default level — carried English hints and worked solutions, and every question
+  printed an English copy of its scenario under the Icelandic one. Both are gone (the `scenario_en`
+  and `nameEn` fields with them), and `src/__tests__/icelandic-text.test.ts` fails on English
+  vocabulary or a decimal point in any question string or `GAS_LAW_INFO` field. The law is
+  `Kjörgaslögmálið`, as `ordabok.md` has it; `governed-terms.test.ts` bans the old
+  `lofttegundalögmál` compound.
 - **The `Námsleiðin` chain lives in `src/components/MenuScreen.tsx`**, not `App.tsx` as in the
   sibling games. `3-ar/syrufastinn/src/__tests__/chain-string.test.ts` reads it from there.
 - **`andhverfu hlutfalli` is correct here.** Boyle's law really is an inverse proportion, and the
@@ -68,22 +75,17 @@ src/components/GameScreen.tsx   law selection, answer input, hints, solution
 src/components/FeedbackScreen.tsx
 src/components/GasLawSimulator.tsx   particle view of the question's P, V, T, n
 src/__tests__/gas-calculations.test.ts
+src/__tests__/icelandic-text.test.ts
 ```
 
 ## Open
 
-- **Level 1 speaks English.** All 13 ideal-gas questions (ids 1-13) carry English `hints` and
-  English `solution.steps` ("Solve for V. Rearrange PV = nRT", "Start with PV = nRT"), rendered by
-  `GameScreen.tsx:357-364` and `FeedbackScreen.tsx:87-92`. Levels 2 and 3 are in Icelandic. Every
-  question also renders its `scenario_en` directly under the Icelandic scenario
-  (`GameScreen.tsx:130` and `:226`). Level 1 is the default level.
 - **Question 14's unit is wrong on screen.** It gives 10,0 mL and stores the answer 4,0 in mL, but
   the input and feedback label it `L`; a student who answers in litres (0,004) is marked wrong.
-- **Decimal points, not commas, in displayed numbers** — the scenarios and hints write `1.0 atm`, and
-  answers are printed with `toFixed`. Input accepts the comma; output does not use it.
-- **The ideal gas law is named two ways across adjacent Y3 nodes.** This game says
-  `Tilvalin lofttegundalögmál`; `ordabok.md` carries `ideal gas law;kjörgaslögmálið`, and
-  `3-ar/jafnvaegisfasti` already writes `kjörgas-`. No `governed-terms.test.ts` row covers it.
+- **Computed numbers still print with a decimal point.** The question text — scenarios, hints and
+  worked solutions — has written the comma since 2026-09-22, but numbers formatted at render time
+  (`toFixed` in `FeedbackScreen.tsx`, `GameScreen.tsx`'s revealed answer, and `GasLawSimulator.tsx`)
+  do not. The input already accepts the comma.
 - **Score, streak and "Besta röð" are shown in both modes**, including practice, and a correct
   practice answer still awards points. That sits uneasily with the no-scoring-while-learning rule;
   whether practice should keep them is a ruling, not a code fix.

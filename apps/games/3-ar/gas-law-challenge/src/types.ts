@@ -21,7 +21,6 @@ export type GasLaw = 'ideal' | 'boyles' | 'charles' | 'gay-lussac' | 'combined' 
 export interface GasLawInfo {
   id: GasLaw;
   nameIs: string;
-  nameEn: string;
   formula: string;
   description: string;
   constants: string;
@@ -32,18 +31,16 @@ export interface GasLawInfo {
 export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
   ideal: {
     id: 'ideal',
-    nameIs: 'Tilvalin lofttegundalögmál',
-    nameEn: 'Ideal Gas Law',
+    nameIs: 'Kjörgaslögmálið',
     formula: 'PV = nRT',
     description: 'Tengir þrýsting, rúmmál, mól og hitastig',
-    constants: 'R = 0.08206 L·atm/(mol·K)',
+    constants: 'R = 0,08206 L·atm/(mol·K)',
     principleIs:
       'Gasagnir hreyfast stöðugt og rekast á veggi ílátsins. PV = nRT tengir saman fjölda árekstra (P), plássið sem agnirnar hafa (V), fjölda agna (n) og hraðann þeirra (T). R er fastinn sem gerir einingarnar samstæðar.',
   },
   boyles: {
     id: 'boyles',
     nameIs: 'Lögmál Boyles',
-    nameEn: "Boyle's Law",
     formula: 'P₁V₁ = P₂V₂',
     description: 'Þrýstingur og rúmmál eru í andhverfu hlutfalli',
     constants: 'T og n eru fastar',
@@ -53,7 +50,6 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
   charles: {
     id: 'charles',
     nameIs: 'Lögmál Charles',
-    nameEn: "Charles's Law",
     formula: 'V₁/T₁ = V₂/T₂',
     description: 'Rúmmál og hitastig eru í beinu hlutfalli',
     constants: 'P og n eru fastar',
@@ -63,7 +59,6 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
   'gay-lussac': {
     id: 'gay-lussac',
     nameIs: 'Lögmál Gay-Lussac',
-    nameEn: "Gay-Lussac's Law",
     formula: 'P₁/T₁ = P₂/T₂',
     description: 'Þrýstingur og hitastig eru í beinu hlutfalli',
     constants: 'V og n eru fastar',
@@ -73,7 +68,6 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
   combined: {
     id: 'combined',
     nameIs: 'Sameinuð gaslögmál',
-    nameEn: 'Combined Gas Law',
     formula: 'P₁V₁/T₁ = P₂V₂/T₂',
     description: 'Sameinar Boyles, Charles og Gay-Lussac',
     constants: 'n er fast',
@@ -83,7 +77,6 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
   avogadro: {
     id: 'avogadro',
     nameIs: 'Lögmál Avogadros',
-    nameEn: "Avogadro's Law",
     formula: 'V₁/n₁ = V₂/n₂',
     description: 'Rúmmál og mólfjöldi eru í beinu hlutfalli',
     constants: 'P og T eru fastar',
@@ -101,8 +94,7 @@ export interface GasValue {
 
 export interface GasLawQuestion {
   id: number;
-  scenario_is: string; // Icelandic scenario
-  scenario_en: string; // English scenario
+  scenario_is: string;
   emoji: string;
   difficulty: DifficultyLevel;
   gasLaw: GasLaw; // Which gas law applies to this question

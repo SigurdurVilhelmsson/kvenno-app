@@ -127,7 +127,6 @@ export function GameScreen({
                     <h4 className="font-bold text-warm-800 mb-1">
                       {currentQuestion.emoji} {currentQuestion.scenario_is}
                     </h4>
-                    <p className="text-xs text-warm-500">{currentQuestion.scenario_en}</p>
                   </div>
 
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4 text-xs">
@@ -223,7 +222,6 @@ export function GameScreen({
                   <h3 className="font-bold text-warm-800 mb-2">
                     {currentQuestion.emoji} {currentQuestion.scenario_is}
                   </h3>
-                  <p className="text-sm text-warm-600">{currentQuestion.scenario_en}</p>
                 </div>
 
                 <GasLawSimulator
@@ -262,7 +260,7 @@ export function GameScreen({
                     )}
                   </div>
                   <div className="mt-2 text-xs text-blue-800 font-mono bg-white px-2 py-1 rounded">
-                    PV = nRT þar sem R = 0.08206 L·atm/(mol·K)
+                    PV = nRT þar sem R = 0,08206 L·atm/(mol·K)
                   </div>
                 </div>
               </div>

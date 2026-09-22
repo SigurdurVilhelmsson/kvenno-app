@@ -256,6 +256,13 @@ const GOVERNED_TERMS: GovernedTerm[] = [
       "2026-09-20. ordabok.md already carried reaction Quotient;hvarfstuðull and 3-ar/equilibrium-shifter's QKComparison.tsx said hvarfkvóti, so the glossary and the code disagreed. The corpus settles it 48 to 5 — and note WHERE the 5 are: the book uses hvarfstuðull throughout its teaching sections (ch13/m68798 and m68801, including the glossary definition of jafnvægisfasti) and slips into hvarfkvóti only in its Le Chatelier section, so the book disagrees with itself exactly the way it does over nettójónajafna. Running prose in the section that defines the term wins. This does NOT conflict with the sýrufasti row's argument that a -stuðull names a coefficient rather than a constant: Q is precisely the quantity that is not constant, so the -fasti/-stuðull split is what makes the pair legible — jafnvægisfasti for K, hvarfstuðull for Q. Masculine: hvarfstuðull / hvarfstuðul / hvarfstuðli / hvarfstuðuls, definite hvarfstuðullinn.",
   },
   {
+    english: 'ideal gas law',
+    correct: 'kjörgaslögmálið',
+    banned: [/lofttegundalögmál/i],
+    guidance:
+      "2026-09-22, and not a new ruling — ordabok.md has carried ideal gas law;kjörgaslögmálið (and ideal gas;kjörgas) all along, and 3-ar/jafnvaegisfasti already wrote kjörgas-. 3-ar/gas-law-challenge said 'Tilvalin lofttegundalögmál' at four sites, including the Stig 1 heading of the level devoted to that law, so two adjacent Y3 nodes named one law two ways. Neuter and definite: nom/acc kjörgaslögmálið, dat kjörgaslögmálinu, gen kjörgaslögmálsins. The ban is on the lofttegund- compound rather than on 'tilvalin', which is an ordinary adjective.",
+  },
+  {
     english: 'reverse reaction',
     correct: 'bakhvarf',
     banned: [
