@@ -1,209 +1,93 @@
-# Kvennaskólinn Chemistry Game Template
+# Gaslögmál
 
-This template provides a starting point for creating new chemistry educational games in the Kvennaskólinn repository.
+Chain position 1 in Year 3, before Jafnvægisfastinn. The game teaches the ideal gas law
+`PV = nRT` (R = 0,08206 L·atm/(mol·K)) and the special cases that fall out of it when one or more
+variables are held constant: Boyle, Charles, Gay-Lussac, the combined gas law and Avogadro.
 
-## Features
+> This file replaced an **unedited scaffold template** on 2026-09-22. The old one was headed
+> "Kvennaskólinn Chemistry Game Template", documented a `create-game.sh` that does not exist in this
+> repository, and said nothing whatever about this game. Nothing was lost by replacing it.
 
-- ✅ **Shared Component Library**: Pre-configured to use @kvenno/shared hooks and utilities
-- ✅ **TypeScript**: Full type safety out of the box
-- ✅ **Vite + React**: Modern, fast development experience
-- ✅ **Tailwind CSS**: Utility-first styling with Kvennaskólinn branding
-- ✅ **i18n Support**: Multi-language ready (Icelandic, English, Polish)
-- ✅ **Accessibility**: High contrast mode, text sizing, keyboard navigation
-- ✅ **Single-file Build**: Compiles to a single HTML file for easy deployment
-- ✅ **Progress Tracking**: Automatic localStorage persistence
+## Structure
 
-## Quick Start
+A menu with an intro card ("Af hverju PV = nRT?"), a level picker and two modes. Each question is
+drawn at random, with replacement, from the chosen level's pool (`getRandomQuestionForLevel` in
+`src/data/questions.ts`). Levels are not gated.
 
-### Using the Setup Script
+| Stig | Laws                       | Questions | Law-selection step |
+| ---- | -------------------------- | --------- | ------------------ |
+| 1    | `ideal` only               | 13        | skipped            |
+| 2    | Boyle, Charles, Gay-Lussac | 6         | yes, in practice   |
+| 3    | combined gas law, Avogadro | 4         | yes, in practice   |
 
-```bash
-cd /home/user/ChemistryGames/tools
-./create-game.sh <year> <game-name> "<Game Title>" "<Description>"
+Before this, every question was drawn at random from all six laws, which the Y3 review cycle rated
+a P3 failure. The iteration-5 restructure split them by law into the three curriculum-ordered levels
+above (`LEVEL_LAWS`, `src/data/questions.ts`).
+
+- **Æfingahamur** — no timer, unlimited hints, a "Sýna lausn" panel. On Levels 2 and 3 the student
+  first picks which law applies ("Skref 1: Hvaða lögmál á við?") and is told why if wrong.
+- **Keppnishamur** — 90 seconds per question, no law-selection step, no solution panel, and a
+  50-point bonus for answering with more than 60 seconds left.
+
+Feedback shows the student's and the correct answer, the step-by-step solution, and an
+"Af hverju virkar …?" card carrying the law's molecular-level `principleIs` from `src/types.ts`.
+
+## Before touching it
+
+- **Hints cost nothing.** Points come from accuracy only — 100 within tolerance, 150 within 1 %, plus
+  the challenge time bonus (`src/App.tsx:148-152`); `getHint()` only counts hints for the stats. A
+  phantom "hints cost points" string lived in the old `i18n.ts` and went with it (see
+  `docs/README.md`).
+- **The language switcher was stripped on 2026-09-19** — the game had zero `t()` calls, and the
+  `i18n.ts` is gone. `switcher-earns-its-place.test.ts` lists this game and fails if it returns.
+- **One name, three places:** the hub card, the `<title>` and the `Header`'s `gameTitle` all say
+  `Gaslögmál`, enforced by `game-titles-agree.test.ts`. The old English title appeared at four
+  student-facing sites until 2026-09-19 and is banned by name; do not reintroduce it, including in
+  new UI copy.
+- **The `Námsleiðin` chain lives in `src/components/MenuScreen.tsx`**, not `App.tsx` as in the
+  sibling games. `3-ar/syrufastinn/src/__tests__/chain-string.test.ts` reads it from there.
+- **`andhverfu hlutfalli` is correct here.** Boyle's law really is an inverse proportion, and the
+  `governed-terms.test.ts` ban on the reaction sense of that word carves out a following form of
+  `hlutfall` for exactly this string in `src/types.ts`.
+- **The answer field is `type="text"` + `inputMode="decimal"`** and is parsed with
+  `parseStudentNumber`, so an Icelandic decimal comma is read. Grading is an absolute `±tolerance`
+  per question (`checkAnswer`, `src/utils/gas-calculations.ts`).
+- **The answer's unit label comes from the variable, not the question** — `getUnit(find)` returns
+  `L` for every volume. See Open.
+
+## Layout
+
+```
+index.html                      <title>Gaslögmál - Kvennaskólinn</title>
+src/App.tsx                     state, grading, timer, keyboard (Enter / H / S)
+src/types.ts                    GasLawQuestion, GAS_LAW_INFO (six laws), R
+src/data/questions.ts           23 questions, LEVEL_LAWS, level pools
+src/utils/gas-calculations.ts   solveGasLaw, checkAnswer, calculateError, units, names
+src/components/MenuScreen.tsx   intro, level picker, modes, Námsleiðin chain
+src/components/GameScreen.tsx   law selection, answer input, hints, solution
+src/components/FeedbackScreen.tsx
+src/components/GasLawSimulator.tsx   particle view of the question's P, V, T, n
+src/__tests__/gas-calculations.test.ts
 ```
 
-**Example:**
-```bash
-./create-game.sh 1-ar molmassi "Mólmassi Leikur" "Læra um mólmassa efna"
-```
+## Open
 
-### Manual Setup
-
-1. **Copy the template**:
-   ```bash
-   cp -r tools/game-template games/<year>/<game-name>
-   ```
-
-2. **Replace placeholders** in the following files:
-   - `package.json`: GAME_NAME, GAME_DESCRIPTION, OUTPUT_DIR, OUTPUT_FILENAME
-   - `vite.config.ts`: SHARED_PATH, OUTPUT_DIR, OUTPUT_FILENAME
-   - `tsconfig.json`: TSCONFIG_BASE_PATH, SHARED_INCLUDE_PATH
-   - `index.html`: GAME_TITLE, GAME_DESCRIPTION
-   - `src/App.tsx`: GAME_NAME, GAME_ID, GAME_TITLE, GAME_SUBTITLE, GAME_DESCRIPTION
-
-3. **Install dependencies**:
-   ```bash
-   cd games/<year>/<game-name>
-   pnpm install
-   ```
-
-4. **Start development**:
-   ```bash
-   pnpm dev
-   ```
-
-## Template Structure
-
-```
-game-template/
-├── src/
-│   ├── components/      # Game-specific React components
-│   ├── data/            # Game data (questions, problems, levels, etc.)
-│   ├── hooks/           # Custom hooks specific to this game
-│   ├── utils/           # Game-specific utility functions
-│   ├── App.tsx          # Main application component
-│   ├── main.tsx         # Application entry point
-│   └── styles.css       # Game styles (Tailwind + custom CSS)
-├── public/              # Static assets (images, audio, etc.)
-├── index.html           # HTML template
-├── package.json         # Dependencies and scripts
-├── vite.config.ts       # Vite configuration
-├── tsconfig.json        # TypeScript configuration
-├── tsconfig.node.json   # TypeScript config for Node
-├── tailwind.config.js   # Tailwind CSS configuration
-└── postcss.config.js    # PostCSS configuration
-```
-
-## Customization Guide
-
-### 1. Define Game Data
-
-Create TypeScript files in `src/data/`:
-
-```typescript
-// src/data/questions.ts
-export interface Question {
-  id: string;
-  prompt: string;
-  options: string[];
-  correct: number;
-}
-
-export const questions: Question[] = [
-  {
-    id: 'Q1',
-    prompt: 'Hvað er mólmassi CO₂?',
-    options: ['28 g/mol', '44 g/mol', '32 g/mol'],
-    correct: 1
-  }
-];
-```
-
-### 2. Create Game Components
-
-Create React components in `src/components/`:
-
-```typescript
-// src/components/GameBoard.tsx
-export function GameBoard({ question, onAnswer }: GameBoardProps) {
-  return (
-    <div className="game-board">
-      <h3>{question.prompt}</h3>
-      {/* Game UI */}
-    </div>
-  );
-}
-```
-
-### 3. Implement Game Logic
-
-Update `src/App.tsx` to:
-- Import your game data
-- Manage game state (current question, score, etc.)
-- Handle user interactions
-- Track progress using `useProgress` hook
-
-### 4. Add Custom Styles
-
-Extend `src/styles.css` with game-specific styles:
-
-```css
-/* Game-specific animations */
-.molecule-bounce {
-  animation: bounce 0.5s ease-in-out;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-}
-```
-
-## Available Shared Resources
-
-### Hooks
-- `useI18n()` - Internationalization
-- `useProgress()` - Progress tracking
-- `useAccessibility()` - Accessibility settings
-
-### Utilities
-- `saveProgress()` / `loadProgress()` - Progress persistence
-- `exportProgressAsJSON()` - Teacher data export
-- `calculateCompositeScore()` - Scoring algorithms
-- `countSignificantFigures()` - Sig fig validation
-
-### Types
-- `GameProgress` - Progress state type
-- `AccessibilitySettings` - A11y settings type
-- Level-specific types (Level1Progress, Level2Progress, Level3Progress)
-
-## Build and Deploy
-
-### Development
-```bash
-pnpm dev  # Start dev server at http://localhost:5173
-```
-
-### Production Build
-```bash
-pnpm build  # Outputs to OUTPUT_DIR/OUTPUT_FILENAME.html
-```
-
-### Type Checking
-```bash
-pnpm type-check  # Run TypeScript compiler without emitting files
-```
-
-### Preview Production Build
-```bash
-pnpm preview  # Preview production build locally
-```
-
-## Best Practices
-
-1. **Keep game logic separate**: Use `src/utils/` for game algorithms
-2. **Type everything**: Define TypeScript interfaces for all game data
-3. **Reuse shared components**: Don't reinvent common UI elements
-4. **Test accessibility**: Use high contrast mode and keyboard navigation
-5. **Support all languages**: Use `t()` function for all user-facing text
-6. **Track meaningful progress**: Store student performance for teacher insights
-
-## Troubleshooting
-
-### Build fails with module errors
-- Check that all @shared imports use correct paths
-- Run `pnpm install` from repository root first
-
-### TypeScript errors about rootDir
-- Ensure tsconfig.json includes "../../../shared/**/*" in the include array
-
-### Game doesn't load in browser
-- Check browser console for errors
-- Verify all imports are correct
-- Ensure data files export properly
-
-## Need Help?
-
-- See existing games in `/games/1-ar/dimensional-analysis/` for examples
-- Check shared library docs in `/shared/README.md`
-- Review the main repository README for architecture overview
+- **Level 1 speaks English.** All 13 ideal-gas questions (ids 1-13) carry English `hints` and
+  English `solution.steps` ("Solve for V. Rearrange PV = nRT", "Start with PV = nRT"), rendered by
+  `GameScreen.tsx:357-364` and `FeedbackScreen.tsx:87-92`. Levels 2 and 3 are in Icelandic. Every
+  question also renders its `scenario_en` directly under the Icelandic scenario
+  (`GameScreen.tsx:130` and `:226`). Level 1 is the default level.
+- **Question 14's unit is wrong on screen.** It gives 10,0 mL and stores the answer 4,0 in mL, but
+  the input and feedback label it `L`; a student who answers in litres (0,004) is marked wrong.
+- **Decimal points, not commas, in displayed numbers** — the scenarios and hints write `1.0 atm`, and
+  answers are printed with `toFixed`. Input accepts the comma; output does not use it.
+- **The ideal gas law is named two ways across adjacent Y3 nodes.** This game says
+  `Tilvalin lofttegundalögmál`; `ordabok.md` carries `ideal gas law;kjörgaslögmálið`, and
+  `3-ar/jafnvaegisfasti` already writes `kjörgas-`. No `governed-terms.test.ts` row covers it.
+- **Score, streak and "Besta röð" are shown in both modes**, including practice, and a correct
+  practice answer still awards points. That sits uneasily with the no-scoring-while-learning rule;
+  whether practice should keep them is a ruling, not a code fix.
+- **No Explore phase.** The first thing after the menu is a graded question; the review cycle
+  deferred a manipulable pre-game simulator.
+- **The test covers only the calculation helpers.** Nothing checks that each stored `answer` follows
+  from its givens, as `1-ar/reynsluformulur` and `3-ar/buffer-recipe-creator` now do by deriving.
