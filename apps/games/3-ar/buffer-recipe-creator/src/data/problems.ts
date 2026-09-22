@@ -180,11 +180,11 @@ export const BUFFER_PROBLEMS: BufferProblem[] = [
     acidMolarMass: 119.98,
     baseMolarMass: 141.96,
     context:
-      '🩸 Blóðstuðpúði (pH 7.35-7.45): Fosfatstuðpúði er annar mikilvægasti stuðpúði blóðsins eftir bíkarbónat. Viðheldur pH í frumunum.',
+      '🩸 Blóðstuðpúði (pH 7,35-7,45): Fosfatstuðpúði er annar mikilvægasti stuðpúði blóðsins eftir bíkarbónat. Viðheldur pH í frumunum.',
     contextEn:
       '🩸 Blood buffer (pH 7.35-7.45): Phosphate buffer is the second most important blood buffer after bicarbonate. Maintains pH inside cells.',
     contextPl:
-      '🩸 Bufor krwi (pH 7.35-7.45): Bufor fosforanowy jest drugim najważniejszym buforem krwi po wodorowęglanie. Utrzymuje pH wewnątrz komórek.',
+      '🩸 Bufor krwi (pH 7,35-7,45): Bufor fosforanowy jest drugim najważniejszym buforem krwi po wodorowęglanie. Utrzymuje pH wewnątrz komórek.',
   },
   {
     id: 12,
@@ -199,11 +199,11 @@ export const BUFFER_PROBLEMS: BufferProblem[] = [
     acidMolarMass: 84.01,
     baseMolarMass: 105.99,
     context:
-      '🏊 Sundlaugaefnafræði: Karbónatstuðpúði viðheldur pH í sundlaugum (pH 7.2-7.8). Of hátt pH veldur húðertingu.',
+      '🏊 Sundlaugaefnafræði: Karbónatstuðpúði viðheldur pH í sundlaugum (pH 7,2-7,8). Of hátt pH veldur húðertingu.',
     contextEn:
       '🏊 Swimming pool chemistry: Carbonate buffer maintains pH in swimming pools (pH 7.2-7.8). Too high pH causes skin irritation.',
     contextPl:
-      '🏊 Chemia basenu: Bufor węglanowy utrzymuje pH w basenach (pH 7.2-7.8). Zbyt wysokie pH powoduje podrażnienie skóry.',
+      '🏊 Chemia basenu: Bufor węglanowy utrzymuje pH w basenach (pH 7,2-7,8). Zbyt wysokie pH powoduje podrażnienie skóry.',
   },
   {
     id: 14,
@@ -329,9 +329,9 @@ export const BUFFER_PROBLEMS: BufferProblem[] = [
     totalConcentration: 0.1,
     acidMolarMass: 119.98,
     baseMolarMass: 141.96,
-    context: 'Fosfát við pH 7.0',
+    context: 'Fosfát við pH 7,0',
     contextEn: 'Phosphate at pH 7.0',
-    contextPl: 'Fosforan przy pH 7.0',
+    contextPl: 'Fosforan przy pH 7,0',
   },
   {
     id: 22,
@@ -363,16 +363,16 @@ export const BUFFER_PROBLEMS: BufferProblem[] = [
     totalConcentration: 0.2,
     acidMolarMass: 60.05,
     baseMolarMass: 82.03,
-    context: 'Stuðpúðageta: getur hlutleyst ±0.02 mol HCl eða NaOH',
+    context: 'Stuðpúðageta: getur hlutleyst ±0,02 mol HCl eða NaOH',
     contextEn: 'Buffer capacity: can neutralize ±0.02 mol HCl or NaOH',
-    contextPl: 'Pojemność buforowa: może zobojętnić ±0.02 mol HCl lub NaOH',
+    contextPl: 'Pojemność buforowa: może zobojętnić ±0,02 mol HCl lub NaOH',
   },
   {
     id: 24,
     difficulty: 'advanced',
     system: 'H₂PO₄⁻ / HPO₄²⁻',
-    acidName: 'NaH₂PO₄ (1.0 M)',
-    baseName: 'Na₂HPO₄ (1.0 M)',
+    acidName: 'NaH₂PO₄ (1,0 M)',
+    baseName: 'Na₂HPO₄ (1,0 M)',
     pKa: 7.2,
     targetPH: 7.4,
     volume: 2.0,
@@ -398,9 +398,9 @@ export const BUFFER_PROBLEMS: BufferProblem[] = [
     totalConcentration: 0.1,
     acidMolarMass: 60.05,
     baseMolarMass: 40.0,
-    context: 'pH leiðrétting: Byrja með 0.100 M CH₃COOH, hversu mikið NaOH?',
+    context: 'pH leiðrétting: Byrja með 0,100 M CH₃COOH, hversu mikið NaOH?',
     contextEn: 'pH adjustment: Start with 0.100 M CH₃COOH, how much NaOH?',
-    contextPl: 'Korekta pH: Zacznij od 0.100 M CH₃COOH, ile NaOH?',
+    contextPl: 'Korekta pH: Zacznij od 0,100 M CH₃COOH, ile NaOH?',
     phAdjustment: true,
   },
   {
@@ -470,6 +470,6 @@ export const BUFFER_PROBLEMS: BufferProblem[] = [
     contextEn: 'Buffer range determination: What pH range is effective?',
     contextPl: 'Określanie zakresu buforowego: Jaki zakres pH jest skuteczny?',
     rangeQuestion: true,
-    effectiveRange: 'pH 4.20 - 6.20',
+    effectiveRange: 'pH 4,20 - 6,20',
   },
 ];

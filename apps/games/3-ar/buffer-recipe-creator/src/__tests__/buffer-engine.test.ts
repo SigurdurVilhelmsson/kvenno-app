@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
+import { formatDecimal } from '@shared/utils';
+
 import { BUFFER_PROBLEMS } from '../data/problems';
 import { bufferRange, solveBuffer } from '../engine/buffer';
 
@@ -80,8 +82,9 @@ describe('solveBuffer', () => {
     const { low, high } = bufferRange(p);
     expect(low).toBeCloseTo(p.pKa - 1, 10);
     expect(high).toBeCloseTo(p.pKa + 1, 10);
-    // The prose answer stored on the problem must say the same thing.
-    expect(p.effectiveRange).toContain(low.toFixed(2));
-    expect(p.effectiveRange).toContain(high.toFixed(2));
+    // The prose answer stored on the problem must say the same thing, written
+    // with the decimal comma the rest of the game uses.
+    expect(p.effectiveRange).toContain(formatDecimal(low, 2));
+    expect(p.effectiveRange).toContain(formatDecimal(high, 2));
   });
 });

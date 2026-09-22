@@ -54,3 +54,18 @@ export const DECIMAL_INPUT_PROPS = {
   type: 'text',
   inputMode: 'decimal',
 } as const;
+
+/**
+ * Print a number the way an Icelandic student reads one — the other half of
+ * `parseStudentNumber`.
+ *
+ * `toFixed` and plain interpolation both write a full stop, so a worked
+ * solution printed `4.64 g` beside an answer field that teaches `4,64`. With
+ * `decimals` it rounds like `toFixed`; without, it prints the value as written.
+ * The minus stays an ASCII hyphen, so a student who copies a negative number
+ * back into a field still gets it parsed.
+ */
+export function formatDecimal(value: number, decimals?: number): string {
+  const text = decimals === undefined ? String(value) : value.toFixed(decimals);
+  return text.replace('.', ',');
+}

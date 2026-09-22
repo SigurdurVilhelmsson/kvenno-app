@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 import { HintSystem, FeedbackPanel, Presence } from '@shared/components';
+import { formatDecimal } from '@shared/utils';
 
 import { LEVEL1_CHALLENGES, type Level1Challenge } from '../data';
 import { BufferCapacityVisualization } from './BufferCapacityVisualization';
@@ -213,7 +214,7 @@ export default function Level1({ onLevelComplete }: Level1Props) {
               <div className="bg-warm-50 p-3 rounded-lg">
                 <div className="text-sm text-warm-600">Markmið pH</div>
                 <div className="text-xl font-bold text-kvenno-orange">
-                  {currentChallenge.targetPH}
+                  {formatDecimal(currentChallenge.targetPH)}
                 </div>
               </div>
             </div>
@@ -253,7 +254,7 @@ export default function Level1({ onLevelComplete }: Level1Props) {
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm text-warm-600">Núverandi pH:</span>
                 <span className="text-2xl font-bold" style={{ color: getPhColor(estimatedPH) }}>
-                  {estimatedPH.toFixed(2)}
+                  {formatDecimal(estimatedPH, 2)}
                 </span>
               </div>
               <div
@@ -347,11 +348,11 @@ export default function Level1({ onLevelComplete }: Level1Props) {
                 <div
                   className={`text-3xl font-bold transition-colors duration-300 ${isCorrect ? 'text-green-500' : 'text-kvenno-orange'}`}
                 >
-                  {acidCount > 0 ? currentRatio.toFixed(2) : '-'}
+                  {acidCount > 0 ? formatDecimal(currentRatio, 2) : '-'}
                 </div>
                 <div className="text-xs text-warm-500 mt-1">
-                  Markmið: {currentChallenge.targetRatioMin.toFixed(1)} -{' '}
-                  {currentChallenge.targetRatioMax.toFixed(1)}
+                  Markmið: {formatDecimal(currentChallenge.targetRatioMin, 1)} -{' '}
+                  {formatDecimal(currentChallenge.targetRatioMax, 1)}
                 </div>
               </div>
             </div>

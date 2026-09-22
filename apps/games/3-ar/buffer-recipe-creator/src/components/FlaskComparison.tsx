@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 interface FlaskComparisonProps {
   /** The target pH of the buffer */
   targetPH: number;
@@ -47,10 +49,10 @@ function Flask({ color, label, pH }: { color: string; label: string; pH: number 
         height="120"
         viewBox="0 0 80 120"
         role="img"
-        aria-label={`${label}: pH ${pH.toFixed(2)}`}
+        aria-label={`${label}: pH ${formatDecimal(pH, 2)}`}
       >
         <title>
-          {label} - pH {pH.toFixed(2)}
+          {label} - pH {formatDecimal(pH, 2)}
         </title>
         {/* Solution fill (behind flask outline) */}
         <path d="M 14 88 Q 12 108 30 113 L 50 113 Q 68 108 66 88 Z" fill={color} opacity="0.75">
@@ -82,7 +84,7 @@ function Flask({ color, label, pH }: { color: string; label: string; pH: number 
         />
         {/* pH label inside flask */}
         <text x="40" y="105" textAnchor="middle" fill="#fff" fontSize="12" fontWeight="bold">
-          {pH.toFixed(1)}
+          {formatDecimal(pH, 1)}
         </text>
       </svg>
     </div>
@@ -170,14 +172,14 @@ export default function FlaskComparison({
         <div
           className="absolute top-[-4px] transition-all duration-300"
           style={{ left: `${(bufferedPH / 14) * 100}%` }}
-          title={`Stuðpúðaður: pH ${bufferedPH.toFixed(2)}`}
+          title={`Stuðpúðaður: pH ${formatDecimal(bufferedPH, 2)}`}
         >
           <div className="w-2.5 h-2.5 -ml-1 rounded-full border-2 border-white bg-green-400" />
         </div>
         <div
           className="absolute top-[-4px] transition-all duration-300"
           style={{ left: `${(unbufferedPH / 14) * 100}%` }}
-          title={`Óstuðpúðaður: pH ${unbufferedPH.toFixed(2)}`}
+          title={`Óstuðpúðaður: pH ${formatDecimal(unbufferedPH, 2)}`}
         >
           <div className="w-2.5 h-2.5 -ml-1 rounded-full border-2 border-white bg-red-400" />
         </div>
@@ -196,8 +198,8 @@ export default function FlaskComparison({
       {/* Insight text */}
       {hasAddition && (
         <p className="text-[10px] text-warm-400 text-center mt-2">
-          Stuðpúðinn heldur pH stöðugu - munur aðeins {Math.abs(bufferedPH - targetPH).toFixed(2)}{' '}
-          einingar!
+          Stuðpúðinn heldur pH stöðugu - munur aðeins{' '}
+          {formatDecimal(Math.abs(bufferedPH - targetPH), 2)} einingar!
         </p>
       )}
     </div>

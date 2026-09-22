@@ -105,6 +105,16 @@ them, and they carried the same wrong numbers. The stale **9,25** in Stig 1 chal
 puzzle 5 hint text is corrected to 9,26 too, and `appendix-d-conformance.test.ts` now reads hint
 and explanation text for superseded values, not only the numeric fields.
 
+## Decimal comma, everywhere a student reads a number
+
+**Fixed 2026-09-22.** Task text, hints, worked solutions and every number a component formatted
+with `toFixed` printed a full stop, beside answer fields that teach the comma. Components now
+format through `formatDecimal` from `@shared/utils` (the printing half of `parseStudentNumber`),
+and the Icelandic and Polish data strings use the comma; English fields keep their full stop.
+`decimal-comma.test.ts` fails on a decimal point in any Icelandic data string and on any
+`toFixed` in a component other than the SVG path geometry in `BufferCapacityVisualization`,
+where a comma would break the path.
+
 ## Open
 
 - **Stig 3 is only half derived.** Its ratio and mole steps are computed at runtime
@@ -113,7 +123,3 @@ and explanation text for superseded values, not only the numeric fields.
   agree with derivation within tolerance — the ammonium puzzle is off by about 3 % (7.1 mL stored,
   7.31 mL derived) — but nothing tests them.
 - **Hint cost** — whether this game should follow the platform's free-hints policy is Siggi's call.
-- **Decimal points in Icelandic text.** Stig 1 and Stig 3 task strings, hints and explanations write
-  `7.40`, `0.100 M` and so on with a decimal point, where Icelandic writes a comma (Stig 2 moved to
-  the comma on 2026-09-22). Input parsing already accepts
-  both (`parseStudentNumber`); the displayed text does not follow it.

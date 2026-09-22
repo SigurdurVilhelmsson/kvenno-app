@@ -1162,6 +1162,11 @@ specifics — read the README, not them.
   graded the corrected `Fosfór` spelling wrong is overstated — it accepted both, and accepts any
   accentless name.
 
+**`formatDecimal` now exists in `@shared/utils`, beside `parseStudentNumber`** — the printing half
+of the decimal-comma pass, added 2026-09-22 when `3-ar/buffer-recipe-creator` became the first game
+to print every number with a comma (`decimal-comma.test.ts` there bans `toFixed` in its components
+except for SVG geometry). Use it for the games below rather than another local `fmt`.
+
 Reported by the audit and recorded in the READMEs, not independently re-verified: decimal points
 and float noise in displayed numbers (`molmassi` Stig 2, `gas-law-challenge`, `lausnir` Stig 3); points
 and streaks shown in practice modes (`equilibrium-shifter`, `gas-law-challenge`,
