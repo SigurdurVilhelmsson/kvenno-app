@@ -1,209 +1,103 @@
-# Kvennaskólinn Chemistry Game Template
+# Nafnakerfið
 
-This template provides a starting point for creating new chemistry educational games in the Kvennaskólinn repository.
+Chain position 3 in Year 1, between Lotukerfið and Mólmassi. The game teaches how an inorganic
+compound is named: simple ionic compounds, metals with a variable charge (Roman numerals),
+polyatomic ions, and binary molecular compounds with Greek prefixes.
 
-## Features
+> This file replaced an **unedited scaffold template** on 2026-09-22. The old one was headed
+> "Kvennaskólinn Chemistry Game Template", documented a `create-game.sh` that does not exist in this
+> repository, and said nothing whatever about this game. Nothing was lost by replacing it.
 
-- ✅ **Shared Component Library**: Pre-configured to use @kvenno/shared hooks and utilities
-- ✅ **TypeScript**: Full type safety out of the box
-- ✅ **Vite + React**: Modern, fast development experience
-- ✅ **Tailwind CSS**: Utility-first styling with Kvennaskólinn branding
-- ✅ **i18n Support**: Multi-language ready (Icelandic, English, Polish)
-- ✅ **Accessibility**: High contrast mode, text sizing, keyboard navigation
-- ✅ **Single-file Build**: Compiles to a single HTML file for easy deployment
-- ✅ **Progress Tracking**: Automatic localStorage persistence
+The name is **Nafnakerfið** on the hub card, the browser tab and the in-game header — Siggi's ruling
+of 2026-09-19, held by `packages/shared/i18n/__tests__/game-titles-agree.test.ts`.
 
-## Quick Start
+## The shape
 
-### Using the Setup Script
+Three levels, none gated (`App.test.tsx` asserts every level is open from the start).
 
-```bash
-cd /home/user/ChemistryGames/tools
-./create-game.sh <year> <game-name> "<Game Title>" "<Description>"
+| Level | Title              | What it asks                                                                                                                    |
+| ----- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | Grunnreglur        | Four naming rules taught with worked examples, then an 8-item metal/non-metal warm-up, then an 11-question multiple-choice quiz |
+| 2     | Æfing með leiðsögn | 12 hardcoded formulas: classify the compound type, then type the name, with worked support withdrawn per type                   |
+| 3     | Byggja nöfn        | Ten compounds drawn from `data/compounds.ts`; build each name by clicking parts in order                                        |
+
+Level 1's options are constant in the data but shuffled at render (`Level1.tsx:360`), so it is **not**
+one of the unshuffled-array defects — `docs/README.md` lists it among the four look-alikes.
+
+## What matters before touching it
+
+**Level 3's parts come from the name, not the formula.** It used to improvise its parts from element
+symbols, and 33 of the 51 compounds in its pool could not be assembled at all — no Roman numeral, no
+polyatomic ion, no root for six metals, no elided prefix. `data/naming.ts` now declares the naming
+vocabulary once (Greek prefixes, element roots and first-element stems such as `brennisteins-`,
+elided oxides like `dekoxíð`, polyatomic ions, Roman numerals) and `segmentName` decomposes a name
+back into it with backtracking. `utils/nameParts.ts` builds the tray: the name's own morphemes plus
+2, 3 or 4 distractors by difficulty, same kind first. Level 3 grades on exact (case-insensitive)
+string equality against `compound.name`, so a name the parts cannot spell is an unanswerable
+question. The pool is 52 of the 59 compounds; `name-builder.test.ts` pins both numbers.
+
+**Exclusion is declared, not inferred.** `excludeFromNameBuilder` sits on the seven compounds that
+are a single indivisible word — the trivial names (H₂O, NH₃, CH₄) and the four diatomic elements.
+It replaced a filter that matched a parenthetical in Fe₃O₄'s old name, which meant correcting that
+name would silently have changed the question set. Fe₃O₄ is now `Járn(II,III)oxíð` and in the pool.
+
+**B5, the wrong names, fixed 2026-08-26.** P₄O₁₀ lacked its tetra- prefix, cobalt was misspelled,
+Fe₃O₄ carried a descriptive label rather than a nomenclature name, sulfur's root in `naming.ts` was
+not an Icelandic word (it is now `súlfíð`), and PCl₅ lacked the accent on `Fosfór`.
+`compound-names.test.ts` guards all of them, and checks that molecular names carry the prefixes
+their formulas require.
+
+**Levels 1 and 2 hardcode their own examples.** That is how the `Fosfór` correction was first only
+half-applied: it reached the data file and not the components. The duplication is deliberate — the
+examples carry per-level teaching text — so `compound-names.test.ts` checks agreement instead: any
+formula both a component and `compounds.ts` know must be spelled the same in both. **If you fix a
+name in the data, grep the components too.**
+
+**Level 2 no longer prints the answer (B14).** Step 2 used to end with the finished name and Step 3
+repeated it above the input. `supportLadder` now fades support per compound type: the first item of
+a type is worked in full, the second blanks each transformation (`súrefni → ?`), later ones show
+only the pattern. `level2-no-answer-leak.test.tsx` holds it.
+
+**`Kalíumdíkrómat` stays.** K₂Cr₂O₇ was removed from `1-ar/lausnir` on 2026-08-26, where a student
+is told to weigh it out; here naming it is a paper exercise, so it is kept deliberately.
+
+### When adding a compound
+
+1. Add it to `COMPOUNDS` in `src/data/compounds.ts` with a formula, name, type, category and
+   difficulty.
+2. Run the tests. If its name needs a morpheme `naming.ts` does not declare, `name-builder.test.ts`
+   fails and names it — add the morpheme there, not a special case in the builder. The same file
+   fails on a morpheme nothing uses, so do not declare speculative ones.
+3. Only set `excludeFromNameBuilder` for a name that genuinely has no parts;
+   `compound-names.test.ts` lists exactly which formulas are excluded and will need updating.
+4. Update the counts `name-builder.test.ts` asserts (pool size and excluded count).
+5. Check the name against `packages/shared/i18n/ordabok.md` and the textbook before inventing one.
+
+## Layout
+
+```
+src/App.tsx                     menu, progress, Námsleiðin chain string
+src/i18n.ts                     is/en/pl strings for t()
+src/data/compounds.ts           59 compounds (21 easy, 18 medium, 20 hard)
+src/data/naming.ts              the naming morphemes and segmentName
+src/utils/nameParts.ts          Level 3 tray, distractors, pool selection
+src/components/Level1.tsx       rules, warm-up, quiz (hardcoded examples)
+src/components/Level2.tsx       guided practice, supportLadder (hardcoded examples)
+src/components/Level3.tsx       name builder
+src/__tests__/                  App, data, compound-names, name-builder, name-parts,
+                                level2-no-answer-leak, level3-answerable
 ```
 
-**Example:**
-```bash
-./create-game.sh 1-ar molmassi "Mólmassi Leikur" "Læra um mólmassa efna"
-```
+## Open
 
-### Manual Setup
-
-1. **Copy the template**:
-   ```bash
-   cp -r tools/game-template games/<year>/<game-name>
-   ```
-
-2. **Replace placeholders** in the following files:
-   - `package.json`: GAME_NAME, GAME_DESCRIPTION, OUTPUT_DIR, OUTPUT_FILENAME
-   - `vite.config.ts`: SHARED_PATH, OUTPUT_DIR, OUTPUT_FILENAME
-   - `tsconfig.json`: TSCONFIG_BASE_PATH, SHARED_INCLUDE_PATH
-   - `index.html`: GAME_TITLE, GAME_DESCRIPTION
-   - `src/App.tsx`: GAME_NAME, GAME_ID, GAME_TITLE, GAME_SUBTITLE, GAME_DESCRIPTION
-
-3. **Install dependencies**:
-   ```bash
-   cd games/<year>/<game-name>
-   pnpm install
-   ```
-
-4. **Start development**:
-   ```bash
-   pnpm dev
-   ```
-
-## Template Structure
-
-```
-game-template/
-├── src/
-│   ├── components/      # Game-specific React components
-│   ├── data/            # Game data (questions, problems, levels, etc.)
-│   ├── hooks/           # Custom hooks specific to this game
-│   ├── utils/           # Game-specific utility functions
-│   ├── App.tsx          # Main application component
-│   ├── main.tsx         # Application entry point
-│   └── styles.css       # Game styles (Tailwind + custom CSS)
-├── public/              # Static assets (images, audio, etc.)
-├── index.html           # HTML template
-├── package.json         # Dependencies and scripts
-├── vite.config.ts       # Vite configuration
-├── tsconfig.json        # TypeScript configuration
-├── tsconfig.node.json   # TypeScript config for Node
-├── tailwind.config.js   # Tailwind CSS configuration
-└── postcss.config.js    # PostCSS configuration
-```
-
-## Customization Guide
-
-### 1. Define Game Data
-
-Create TypeScript files in `src/data/`:
-
-```typescript
-// src/data/questions.ts
-export interface Question {
-  id: string;
-  prompt: string;
-  options: string[];
-  correct: number;
-}
-
-export const questions: Question[] = [
-  {
-    id: 'Q1',
-    prompt: 'Hvað er mólmassi CO₂?',
-    options: ['28 g/mol', '44 g/mol', '32 g/mol'],
-    correct: 1
-  }
-];
-```
-
-### 2. Create Game Components
-
-Create React components in `src/components/`:
-
-```typescript
-// src/components/GameBoard.tsx
-export function GameBoard({ question, onAnswer }: GameBoardProps) {
-  return (
-    <div className="game-board">
-      <h3>{question.prompt}</h3>
-      {/* Game UI */}
-    </div>
-  );
-}
-```
-
-### 3. Implement Game Logic
-
-Update `src/App.tsx` to:
-- Import your game data
-- Manage game state (current question, score, etc.)
-- Handle user interactions
-- Track progress using `useProgress` hook
-
-### 4. Add Custom Styles
-
-Extend `src/styles.css` with game-specific styles:
-
-```css
-/* Game-specific animations */
-.molecule-bounce {
-  animation: bounce 0.5s ease-in-out;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-}
-```
-
-## Available Shared Resources
-
-### Hooks
-- `useI18n()` - Internationalization
-- `useProgress()` - Progress tracking
-- `useAccessibility()` - Accessibility settings
-
-### Utilities
-- `saveProgress()` / `loadProgress()` - Progress persistence
-- `exportProgressAsJSON()` - Teacher data export
-- `calculateCompositeScore()` - Scoring algorithms
-- `countSignificantFigures()` - Sig fig validation
-
-### Types
-- `GameProgress` - Progress state type
-- `AccessibilitySettings` - A11y settings type
-- Level-specific types (Level1Progress, Level2Progress, Level3Progress)
-
-## Build and Deploy
-
-### Development
-```bash
-pnpm dev  # Start dev server at http://localhost:5173
-```
-
-### Production Build
-```bash
-pnpm build  # Outputs to OUTPUT_DIR/OUTPUT_FILENAME.html
-```
-
-### Type Checking
-```bash
-pnpm type-check  # Run TypeScript compiler without emitting files
-```
-
-### Preview Production Build
-```bash
-pnpm preview  # Preview production build locally
-```
-
-## Best Practices
-
-1. **Keep game logic separate**: Use `src/utils/` for game algorithms
-2. **Type everything**: Define TypeScript interfaces for all game data
-3. **Reuse shared components**: Don't reinvent common UI elements
-4. **Test accessibility**: Use high contrast mode and keyboard navigation
-5. **Support all languages**: Use `t()` function for all user-facing text
-6. **Track meaningful progress**: Store student performance for teacher insights
-
-## Troubleshooting
-
-### Build fails with module errors
-- Check that all @shared imports use correct paths
-- Run `pnpm install` from repository root first
-
-### TypeScript errors about rootDir
-- Ensure tsconfig.json includes "../../../shared/**/*" in the include array
-
-### Game doesn't load in browser
-- Check browser console for errors
-- Verify all imports are correct
-- Ensure data files export properly
-
-## Need Help?
-
-- See existing games in `/games/1-ar/dimensional-analysis/` for examples
-- Check shared library docs in `/shared/README.md`
-- Review the main repository README for architecture overview
+- **The menu's score denominators are wrong.** `App.tsx` shows Level 1 as `score/10` and Level 2 as
+  `score/12`, but Level 1 awards 10 per question over 11 questions (max 110) and Level 2 awards
+  5 + 10 per item over 12 items (max 180). `App.test.tsx` asserts the wrong strings (`9/10`,
+  `11/12`), so it would need changing with the fix.
+- **Level 2 grades with accents stripped.** `normalizeAnswer` folds `ó` to `o`, `ð` to `d` and so on
+  before comparing, so a name typed without Icelandic characters is marked correct. That may be a
+  deliberate keyboard concession; it is not recorded anywhere as one.
+- **Level 1 carries a dead hint multiplier.** `hintMultiplier` is initialised and reset to 1.0 but
+  never lowered, so no hint is charged; it is dead state rather than a penalty.
+- **The i18n question is undecided platform-wide.** Level 3's teaching text and several Level 2
+  strings are hardcoded Icelandic beside a full `i18n.ts`; see CLAUDE.md's deferred-work list.

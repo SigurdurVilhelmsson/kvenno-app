@@ -1,4 +1,4 @@
-import { Variable, GasValue, R } from '../types';
+import { Variable, GasValue, GasLawQuestion, R } from '../types';
 
 /**
  * Solve ideal gas law PV = nRT for any variable
@@ -68,6 +68,24 @@ export function getUnit(variable: Variable): string {
     n: 'mol',
   };
   return units[variable];
+}
+
+/**
+ * The unit a question states a variable in, falling back to the default.
+ *
+ * In the two-state laws the answer is the same quantity as one the question
+ * gives — V₂ beside V₁ — so it takes the unit the question gives it in. Question
+ * 14 states its syringe in mL and stores the answer in mL; labelling the answer
+ * field with `getUnit('V')` put `L` beside it, and a student who converted to
+ * match the label (0,004) was marked wrong.
+ */
+export function unitFor(question: GasLawQuestion, variable: Variable): string {
+  return question.given[variable]?.unit ?? getUnit(variable);
+}
+
+/** The unit the question's answer is stored — and graded — in. */
+export function answerUnit(question: GasLawQuestion): string {
+  return unitFor(question, question.find);
 }
 
 /**

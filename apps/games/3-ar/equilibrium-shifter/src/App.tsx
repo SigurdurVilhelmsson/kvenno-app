@@ -381,7 +381,7 @@ function App() {
                 <strong>K</strong> = jafnvægisfastinn (breytist EKKI nema T breytist)
               </p>
               <p>
-                <strong>Q</strong> = hvarfastuðullinn (reiknað úr núverandi styrk)
+                <strong>Q</strong> = hvarfstuðullinn (reiknað úr núverandi styrk)
               </p>
               <p className="mt-2">
                 • Ef Q &lt; K → framhvarf er hraðara → hliðrun <strong>til hægri →</strong>
@@ -908,7 +908,7 @@ function App() {
       >
         {/* Accessibility Skip Link */}
         <a href="#main-content" className="skip-link">
-          {t('accessibility.skipToContent', 'Fara beint í efní')}
+          {t('accessibility.skipToContent', 'Fara beint í efni')}
         </a>
 
         {/* Main Content */}

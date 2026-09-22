@@ -3,7 +3,7 @@ import { Presence } from '@shared/components';
 import type { Level } from '../data';
 import { GasLawQuestion, GameMode, GameStats, GasLaw, GAS_LAW_INFO } from '../types';
 import { GasLawSimulator } from './GasLawSimulator';
-import { getUnit, getVariableName } from '../utils/gas-calculations';
+import { answerUnit, getVariableName } from '../utils/gas-calculations';
 
 interface GameScreenProps {
   currentQuestion: GasLawQuestion;
@@ -127,7 +127,6 @@ export function GameScreen({
                     <h4 className="font-bold text-warm-800 mb-1">
                       {currentQuestion.emoji} {currentQuestion.scenario_is}
                     </h4>
-                    <p className="text-xs text-warm-500">{currentQuestion.scenario_en}</p>
                   </div>
 
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4 text-xs">
@@ -223,7 +222,6 @@ export function GameScreen({
                   <h3 className="font-bold text-warm-800 mb-2">
                     {currentQuestion.emoji} {currentQuestion.scenario_is}
                   </h3>
-                  <p className="text-sm text-warm-600">{currentQuestion.scenario_en}</p>
                 </div>
 
                 <GasLawSimulator
@@ -262,7 +260,7 @@ export function GameScreen({
                     )}
                   </div>
                   <div className="mt-2 text-xs text-blue-800 font-mono bg-white px-2 py-1 rounded">
-                    PV = nRT þar sem R = 0.08206 L·atm/(mol·K)
+                    PV = nRT þar sem R = 0,08206 L·atm/(mol·K)
                   </div>
                 </div>
               </div>
@@ -311,10 +309,10 @@ export function GameScreen({
                         e.key === 'Enter' && gameStep === 'solve' && onCheckAnswer()
                       }
                       disabled={gameMode === 'practice' && gameStep === 'select-law'}
-                      aria-label={`Svar fyrir ${getVariableName(currentQuestion.find)} í einingunni ${getUnit(currentQuestion.find)}`}
+                      aria-label={`Svar fyrir ${getVariableName(currentQuestion.find)} í einingunni ${answerUnit(currentQuestion)}`}
                     />
                     <div className="bg-white px-4 py-3 rounded-lg border-2 border-warm-300 font-bold text-warm-700">
-                      {getUnit(currentQuestion.find)}
+                      {answerUnit(currentQuestion)}
                     </div>
                   </div>
                   {validationError && (
@@ -391,7 +389,7 @@ export function GameScreen({
                           {currentQuestion.solution.calculation}
                         </div>
                         <div className="bg-green-50 px-3 py-2 rounded border border-green-300 font-bold text-green-800">
-                          Svar: {currentQuestion.answer.toFixed(2)} {getUnit(currentQuestion.find)}
+                          Svar: {currentQuestion.answer.toFixed(2)} {answerUnit(currentQuestion)}
                         </div>
                       </div>
                     </Presence>

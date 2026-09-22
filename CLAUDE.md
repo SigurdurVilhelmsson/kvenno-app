@@ -616,17 +616,13 @@ rulings came out of that check and are **decided but not yet built**:
   day and `flúoríð` already ships six times in `1-ar/nafnakerfid`. HF and HNO₂ both break the 5 %
   rule across much of the range (HF: 2,6 % at 1,0 M to 22,9 % at 0,01 M), which is deliberate — the
   Beita phase exists to cover pairs where the approximation fails.
-- **Beita is to be trimmed — Siggi's ruling, 2026-09-19. Decided, not yet built.** Adding HNO₂ took
-  the phase from 12 problems to 16, twelve of which are one generated template (`Hvert er pH í … M
-lausn af X? Athugaðu 5 % regluna`) differing only in acid and concentration. `APPLY_PROBLEMS`
-  currently appends **every** member of `RULE_BREAKING_PROBLEMS`, and that is the line to change
-  (`3-ar/syrufastinn/src/data/problems.ts`). **The selection rule is not part of the ruling and must
-  not be improvised into one** — how many to keep, and chosen how, is Siggi's call. The obvious
-  candidates, none of them ruled: one pair per rule-breaking acid (3), a spread across the α range,
-  or a fixed cap taking the widest-margin cases. Whatever lands, keep the two properties
-  `problems.test.ts` already asserts — Æfa entirely inside the 5 % rule, Beita not — and keep at
-  least one pair from each rule-breaking acid, since HF, maurasýra and saltpéturssýrlingur fail the
-  approximation by visibly different margins.
+- **Beita is trimmed — Siggi's ruling, 2026-09-22: one rule-breaking pair per acid.** It had grown
+  to 16 problems, twelve of them one generated template. It now poses 7: the four hand-written
+  problems plus `APPLY_RULE_BREAKERS` in `3-ar/syrufastinn/src/data/problems.ts`, the **most dilute**
+  pair of HF, maurasýra and saltpéturssýrlingur. **Most dilute is load-bearing, not taste:** near the
+  5 % line the √(Ka·C) answer is within `PH_TOLERANCE` of the exact root, so on five of the old twelve
+  a student who skipped the check was graded correct. `problems.test.ts` asserts the approximate
+  answer is rejected on every rule-breaker posed — keep that if the selection ever changes.
 - **Adding those two acids exposed a grammar defect in the game's question templates**, and the
   fix is the pattern to copy. The templates interpolated `acid.name.toLowerCase()` after `af`,
   which governs the dative, so Æfa and every Beita rule-breaker read `lausn af flússýra`. It was
@@ -1128,16 +1124,47 @@ sameinda hvarfefnis med stuðli þess … hvorfin geta gerst.'`, where `stuðli`
   a comment explaining why a banned attribute is avoided, and my `'rett'` outcome identifiers. Write
   the explanation without writing the string.
 
-**`1-ar/takmarkandi`'s README was an unedited scaffold template** — headed "Kvennaskólinn Chemistry
-Game Template", documenting a `create-game.sh` that does not exist in this repository, and saying
-nothing about the game. Replaced. **Worth a look elsewhere:** nothing has audited the other games'
-READMEs for the same.
+**Eight game READMEs were an unedited scaffold template, and none is now — 2026-09-22.**
+`1-ar/takmarkandi` was found first; the audit that followed found seven more byte-identical copies —
+`1-ar/lausnir`, `1-ar/molmassi`, `1-ar/nafnakerfid`, `3-ar/buffer-recipe-creator`,
+`3-ar/equilibrium-shifter`, `3-ar/gas-law-challenge`, `3-ar/thermodynamics-predictor` — each headed
+"Kvennaskólinn Chemistry Game Template" and documenting a `create-game.sh` that does not exist. All
+eight now describe their game, and `packages/shared/i18n/__tests__/no-scaffold-readmes.test.ts`
+fails if the template returns. **Thirteen games have no README at all**; the test does not require
+one. The older side files beside some READMEs (`LEVEL1_README.md`, `VISUAL_COMPARISON.md`,
+`PROTOTYPE_SUMMARY.md`, `TEST_LEVEL1.md`, `MIGRATION-SUMMARY.md`) are prototype notes, stale on most
+specifics — read the README, not them.
 
-**No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
-now fixed, as are the three above, and each carries a test that fails against the pre-fix code. What
-is left is enrichment and unfinished decisions, not defects — the work order is
-`docs/plans/2026-08-16-games-roadmap.md`, and `docs/README.md` carries the four look-alike option
-arrays that are **not** defects, so nobody "fixes" a fifth.
+**The audit found live defects, so "no known live defects" no longer holds.** Each new README's
+`## Open` section carries the detail. Verified directly against the code:
+
+- **`3-ar/gas-law-challenge` Level 1 — the default level — showed English. Fixed 2026-09-22.** All
+  13 ideal-gas questions carried English `hints` and `solution.steps`, and every question rendered
+  `scenario_en` under the Icelandic. All translated, `scenario_en`/`nameEn` removed, the question
+  text moved to the decimal comma, and the law renamed `Kjörgaslögmálið` per `ordabok.md`; guarded by
+  `icelandic-text.test.ts` and a `governed-terms` row. Question 14's mL answer was labelled `L`; fixed the
+  same day by `answerUnit`, which takes the unit the question states the variable in, guarded by
+  `answer-unit.test.ts`. **Still open there:** `toFixed` output still prints a decimal point.
+- **`3-ar/equilibrium-shifter`'s Keppnishamur can never be unlocked.** The gate needs
+  `problemsCompleted >= 5`, and that count is written only at the end of a challenge round. The
+  mode-gate ruling this file already asked for is now also a fix.
+- **`3-ar/thermodynamics-predictor` id 25 stores ΔH = −137 kJ/mol for C + ½O₂ → CO** — that is
+  CO's ΔG°f; its ΔH°f is −110,5. The game keeps its own ΔH/ΔS and does not use
+  `packages/shared/data/thermo.ts`; ids 12 and 21 also disagree with it.
+- **`3-ar/buffer-recipe-creator` Level 2's hint tiers were not derived with the rest** — they still
+  quote the pre-Appendix-D ammonium pKa 9,25 and the old stored numbers.
+- **`1-ar/nafnakerfid` Level 2 strips accents before comparing**, so the recorded claim that it
+  graded the corrected `Fosfór` spelling wrong is overstated — it accepted both, and accepts any
+  accentless name.
+
+Reported by the audit and recorded in the READMEs, not independently re-verified: decimal points
+and float noise in displayed numbers (`molmassi` Stig 2, `gas-law-challenge`, `lausnir` Stig 3); points
+and streaks shown in practice modes (`equilibrium-shifter`, `gas-law-challenge`,
+`thermodynamics-predictor`); ungoverned terms in `thermodynamics-predictor` (enthalpy loanword in
+t-spelling, four names for entropy); dead `needScore`
+gating strings in `lausnir/src/i18n.ts`; wrong menu score denominators in `nafnakerfid`. Two
+misspellings in `equilibrium-shifter` (`hvarfstuðullinn` with a stray `a`, `efni` with an accent)
+were fixed with the audit.
 
 The former "`challenges.ts:354` is unsatisfiable" claim was retired Aug 2026 by executing `Level3`'s grading path — see `docs/README.md`. Do not reinstate it.
 
@@ -1197,6 +1224,7 @@ that let this file's own Y3 chain line say `Púfferar` until September.
 | product | `myndefni` | **`afurð`** (bare) | **2026-09-20, and nothing was newly ruled** — `ordabok.md` has said `product;myndefni` all along and the corpus agrees **324 to 92**, but the platform shipped `afurð` at **68 sites across five games** (`equilibrium-shifter` 33, `hess-law` 18, `kinetics` 8, `takmarkandi` 8, `einingakedjan` 1) and `myndefni` at 3. **Feminine to NEUTER, so this is not a string swap** — nom/acc/dat `myndefni`, gen `myndefnis`, pl. `myndefni`/`myndefni`/`myndefnum`/`myndefna`, def. sg. `myndefnið`. Three agreements moved with the noun: `hversu mikil afurð` → `hversu mikið myndefni`, `Kerfið eyðir henni` → `Kerfið eyðir því` (a pronoun standing for the noun), `Afurð fjarlægð` → `Myndefni fjarlægt`. **The ban starts at a word boundary on purpose:** the book's own `lokaafurð`, `aukaafurð`, `brunaafurðir` and `klofnunarafurðir` are correct and still pass — it reserves bare `afurð` for by-products and for produce in the everyday sense. `lokafurð` (missing an `a`, 0 corpus hits against 5) was corrected to `lokaafurð` at the same time |
 | reaction quotient | `hvarfstuðull` | `hvarfkvóti` | **2026-09-20**, and also already governed: `ordabok.md` carried `reaction quotient;hvarfstuðull` while `equilibrium-shifter`'s `QKComparison.tsx` said `hvarfkvóti`. Corpus **48 to 5** — and note _where_ the 5 are: the book uses `hvarfstuðull` throughout its teaching sections (`ch13/m68798`, `ch13/m68801`, including the glossary definition of `jafnvægisfasti`) and slips into `hvarfkvóti` only in its Le Chatelier section, so it disagrees with itself exactly as it does over `nettójónajafna`. Running prose in the section that defines the term wins. **This does not conflict with the `sýrufasti` row's `-fasti` against `-stuðull` argument** — Q is precisely the quantity that is _not_ constant, so the split is what makes the pair legible: `jafnvægisfasti` for K, `hvarfstuðull` for Q. Masculine: `hvarfstuðull` / `hvarfstuðul` / `hvarfstuðli` / `hvarfstuðuls`, def. `hvarfstuðullinn`. The `ordabok.md` headword was `reaction Quotient` with a stray capital and is now lowercase, matching every other entry |
 | reverse reaction | `bakhvarf` (og `framhvarf`) | **`andhverfa`** um efnahvarf | **Taken from the textbook, 2026-09-20**; `ordabok.md` was silent and now carries `forward reaction;framhvarf` and `reverse reaction;bakhvarf`. The pair is the book's own **glossary definition** wording (`ch13/m68797` defines `jafnvægi` and `afturkræft efnahvarf` with it) and its teaching prose across six chapters, **20 hits to 15**; `andhverft hvarf` appears 4 times, all inside end-of-chapter problems in one module. The pair also reads as a pair: `fram-` against `bak-`. Neuter, like `efnahvarf`: `bakhvarf` / `bakhvarf` / `bakhvarfi` / `bakhvarfs`. **This was live, not a precaution** — `3-ar/equilibrium-shifter` said `bakhvarf` in `App.tsx` and `QKComparison.tsx` and `Andhverfa af …` in `NumbersPanel.tsx`, plus two more in its equilibria data, one carrying **English** (`Andhverfa Water Gas Shift hvarfsins`) inside an Icelandic string. **Read the regex before narrowing it:** the ban is the whole word with a single carve-out for a following form of `hlutfall`, because `andhverfu hlutfalli` in `3-ar/gas-law-challenge` is a **different and correct sense** — Boyle's law really is an inverse proportion — and `handhverfa` (enantiomer, ch19) is excluded by the leading word boundary. A first draft matched only `andhverf-` followed by a reaction or `af`, and it missed two of the four shipped sites. **Unrelated and separate:** `umhverfa` is the reciprocal of a **number**, which is what a reversed reaction's K is, and is the book's word in the sentence that states that rule |
+| ideal gas law | `kjörgaslögmálið` | `lofttegundalögmál` (as in `Tilvalin lofttegundalögmál`) | **2026-09-22, not a new ruling** — `ordabok.md` has carried `ideal gas law;kjörgaslögmálið` and `ideal gas;kjörgas` all along, and `3-ar/jafnvaegisfasti` already wrote `kjörgas-`, while `3-ar/gas-law-challenge` said `Tilvalin lofttegundalögmál` at four sites including its Stig 1 heading. Neuter and definite: nom/acc `kjörgaslögmálið`, dat `kjörgaslögmálinu`, gen `kjörgaslögmálsins`. The ban is on the compound, not on `tilvalin`, which is an ordinary adjective |
 `sjálfvirkur` has zero hits and is not the word for spontaneous; do not grep for it.
 
 The `stilla` rename swept `1-ar/jafna-jofnur` (6 files), the `Námsleiðin` chain string in every

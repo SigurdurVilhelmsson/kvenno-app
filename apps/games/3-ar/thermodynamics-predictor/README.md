@@ -1,209 +1,95 @@
-# Kvennaskólinn Chemistry Game Template
+# Varmafræði spámaður
 
-This template provides a starting point for creating new chemistry educational games in the Kvennaskólinn repository.
+Year 3, chain position 5 of 8, between Sýrufastinn and pH Títrun (`src/App.tsx:447-448`):
+Gaslögmál → Jafnvægisfastinn → Hliðrun jafnvægis → Sýrufastinn → **Varmafræði** → pH Títrun →
+Stuðpúðar → Leysnijafnvægi. The chain string is enforced across all Y3 games by
+`3-ar/syrufastinn/src/__tests__/chain-string.test.ts`.
 
-## Features
+It teaches Gibbs free energy, ΔG° = ΔH° − TΔS°: given ΔH° and ΔS° for a reaction and a
+temperature, compute ΔG° and say whether the reaction is `sjálfgengt`, `ekki sjálfgengt` or at
+`jafnvægi`, and see how the four sign combinations of ΔH and ΔS decide whether temperature can
+change the verdict.
 
-- ✅ **Shared Component Library**: Pre-configured to use @kvenno/shared hooks and utilities
-- ✅ **TypeScript**: Full type safety out of the box
-- ✅ **Vite + React**: Modern, fast development experience
-- ✅ **Tailwind CSS**: Utility-first styling with Kvennaskólinn branding
-- ✅ **i18n Support**: Multi-language ready (Icelandic, English, Polish)
-- ✅ **Accessibility**: High contrast mode, text sizing, keyboard navigation
-- ✅ **Single-file Build**: Compiles to a single HTML file for easy deployment
-- ✅ **Progress Tracking**: Automatic localStorage persistence
+> This file replaced an **unedited scaffold template** on 2026-09-22. The old one was headed
+> "Kvennaskólinn Chemistry Game Template", documented a `create-game.sh` that does not exist in this
+> repository, and said nothing about this game.
 
-## Quick Start
+## Structure
 
-### Using the Setup Script
+One screen per mode, all in `src/App.tsx`; there are no level components.
 
-```bash
-cd /home/user/ChemistryGames/tools
-./create-game.sh <year> <game-name> "<Game Title>" "<Description>"
+| Mode                       | What it does                                                                                                                                                                        |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Menu                       | A static derivation of ΔG = ΔH − TΔS, then a difficulty choice (Auðvelt / Miðlungs / Erfitt, 10 / 12 / 8 problems)                                                                  |
+| Könnun (`discover`)        | Ungraded. A fixed demo reaction (ΔH = −100 kJ/mol, ΔS = −200 J/(mol·K), crossover 500 K) and a 200–1200 K slider; ΔG and its sign update live                                       |
+| Æfingarhamur (`learning`)  | A random problem from the chosen difficulty. Enter ΔG° (kJ/mol) and pick one of three verdicts; the solution then shows the steps and, for scenarios 3–4, the crossover temperature |
+| Keppnishamur (`challenge`) | The same problems with a 90-second timer, a score and a streak                                                                                                                      |
+
+Grading (`checkAnswer`, `src/App.tsx:116`): ΔG° is right within **±3 kJ/mol absolute**
+(`:121`), parsed with `parseStudentNumber`, so the decimal comma works (`type="text"` +
+`inputMode="decimal"`, `:839-840`). The verdict comes from `getSpontaneity`
+(`src/utils/thermo-calculations.ts`), which calls |ΔG| < 1 kJ/mol `jafnvægi`. Both must be right.
+Wrong answers get `buildSpontaneityReasoning()`, a scenario-specific explanation of which term wins.
+
+The temperature slider is live during a problem, so the student can change T and is graded at
+whatever T it is set to.
+
+## Before touching it
+
+- **The data is stored, not derived, and unsourced.** Each of the 30 problems in
+  `src/data/problems.ts` carries a hand-typed `deltaH` and `deltaS`. The game does **not** use
+  `packages/shared/data/thermo.ts`. Where that file can derive ΔH° (it transcribes the Icelandic
+  book's appendix `m68865`), most stored values agree within rounding — methane, water, CO, NO,
+  Haber, contact, steam reforming, PCl₅, vaporisation of water. Three do not; see **Open**.
+- **What the tests check.** `data-integrity.test.ts` checks required fields, unique ids, and that
+  each problem's `scenario` (1–4) matches the signs of its ΔH and ΔS. `thermo-calculations.test.ts`
+  checks the formula and the ±1 kJ/mol equilibrium band. **Nothing checks a value against a
+  source**, so a wrong number with the right sign passes.
+- **The i18n switcher was stripped on 2026-09-19** (`docs/i18n-coverage.md`); there is no
+  `i18n.ts` and no `useGameI18n`. The Icelandic is hardcoded in `App.tsx`.
+- **Terminology** is governed by `packages/shared/i18n/ordabok.md` and the table in `CLAUDE.md`
+  (`vermi`, `sjálfgengur`, `sjálfgengi`). The spontaneity vocabulary is clean. The rest is not —
+  see **Open** — and `governed-terms.test.ts` matches strings only, so it cannot catch agreement.
+- **Some reactions repeat:** water vaporisation at 298 K and 373 K (ids 5, 13), the Haber process
+  three times (11, 23, 24) and the contact process twice (16, 30), each with a different default
+  temperature or task. Nothing records whether that was intended.
+
+## Layout
+
+```
+index.html                           <title>Varmafræði spámaður - Kvennaskólinn</title>
+src/App.tsx                          all four modes, grading, graph data, feedback
+src/components/EntropyVisualization.tsx   before/after particle picture of ΔS, via ParticleSimulation
+src/data/problems.ts                 30 problems: reaction, ΔH, ΔS, default T, scenario, difficulty
+src/data/index.ts                    re-export
+src/types.ts                         Problem, GameMode, Spontaneity
+src/utils/thermo-calculations.ts     calculateDeltaG, getSpontaneity
+src/__tests__/                       data-integrity, thermo-calculations
 ```
 
-**Example:**
-```bash
-./create-game.sh 1-ar molmassi "Mólmassi Leikur" "Læra um mólmassa efna"
-```
+## Open
 
-### Manual Setup
-
-1. **Copy the template**:
-   ```bash
-   cp -r tools/game-template games/<year>/<game-name>
-   ```
-
-2. **Replace placeholders** in the following files:
-   - `package.json`: GAME_NAME, GAME_DESCRIPTION, OUTPUT_DIR, OUTPUT_FILENAME
-   - `vite.config.ts`: SHARED_PATH, OUTPUT_DIR, OUTPUT_FILENAME
-   - `tsconfig.json`: TSCONFIG_BASE_PATH, SHARED_INCLUDE_PATH
-   - `index.html`: GAME_TITLE, GAME_DESCRIPTION
-   - `src/App.tsx`: GAME_NAME, GAME_ID, GAME_TITLE, GAME_SUBTITLE, GAME_DESCRIPTION
-
-3. **Install dependencies**:
-   ```bash
-   cd games/<year>/<game-name>
-   pnpm install
-   ```
-
-4. **Start development**:
-   ```bash
-   pnpm dev
-   ```
-
-## Template Structure
-
-```
-game-template/
-├── src/
-│   ├── components/      # Game-specific React components
-│   ├── data/            # Game data (questions, problems, levels, etc.)
-│   ├── hooks/           # Custom hooks specific to this game
-│   ├── utils/           # Game-specific utility functions
-│   ├── App.tsx          # Main application component
-│   ├── main.tsx         # Application entry point
-│   └── styles.css       # Game styles (Tailwind + custom CSS)
-├── public/              # Static assets (images, audio, etc.)
-├── index.html           # HTML template
-├── package.json         # Dependencies and scripts
-├── vite.config.ts       # Vite configuration
-├── tsconfig.json        # TypeScript configuration
-├── tsconfig.node.json   # TypeScript config for Node
-├── tailwind.config.js   # Tailwind CSS configuration
-└── postcss.config.js    # PostCSS configuration
-```
-
-## Customization Guide
-
-### 1. Define Game Data
-
-Create TypeScript files in `src/data/`:
-
-```typescript
-// src/data/questions.ts
-export interface Question {
-  id: string;
-  prompt: string;
-  options: string[];
-  correct: number;
-}
-
-export const questions: Question[] = [
-  {
-    id: 'Q1',
-    prompt: 'Hvað er mólmassi CO₂?',
-    options: ['28 g/mol', '44 g/mol', '32 g/mol'],
-    correct: 1
-  }
-];
-```
-
-### 2. Create Game Components
-
-Create React components in `src/components/`:
-
-```typescript
-// src/components/GameBoard.tsx
-export function GameBoard({ question, onAnswer }: GameBoardProps) {
-  return (
-    <div className="game-board">
-      <h3>{question.prompt}</h3>
-      {/* Game UI */}
-    </div>
-  );
-}
-```
-
-### 3. Implement Game Logic
-
-Update `src/App.tsx` to:
-- Import your game data
-- Manage game state (current question, score, etc.)
-- Handle user interactions
-- Track progress using `useProgress` hook
-
-### 4. Add Custom Styles
-
-Extend `src/styles.css` with game-specific styles:
-
-```css
-/* Game-specific animations */
-.molecule-bounce {
-  animation: bounce 0.5s ease-in-out;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-}
-```
-
-## Available Shared Resources
-
-### Hooks
-- `useI18n()` - Internationalization
-- `useProgress()` - Progress tracking
-- `useAccessibility()` - Accessibility settings
-
-### Utilities
-- `saveProgress()` / `loadProgress()` - Progress persistence
-- `exportProgressAsJSON()` - Teacher data export
-- `calculateCompositeScore()` - Scoring algorithms
-- `countSignificantFigures()` - Sig fig validation
-
-### Types
-- `GameProgress` - Progress state type
-- `AccessibilitySettings` - A11y settings type
-- Level-specific types (Level1Progress, Level2Progress, Level3Progress)
-
-## Build and Deploy
-
-### Development
-```bash
-pnpm dev  # Start dev server at http://localhost:5173
-```
-
-### Production Build
-```bash
-pnpm build  # Outputs to OUTPUT_DIR/OUTPUT_FILENAME.html
-```
-
-### Type Checking
-```bash
-pnpm type-check  # Run TypeScript compiler without emitting files
-```
-
-### Preview Production Build
-```bash
-pnpm preview  # Preview production build locally
-```
-
-## Best Practices
-
-1. **Keep game logic separate**: Use `src/utils/` for game algorithms
-2. **Type everything**: Define TypeScript interfaces for all game data
-3. **Reuse shared components**: Don't reinvent common UI elements
-4. **Test accessibility**: Use high contrast mode and keyboard navigation
-5. **Support all languages**: Use `t()` function for all user-facing text
-6. **Track meaningful progress**: Store student performance for teacher insights
-
-## Troubleshooting
-
-### Build fails with module errors
-- Check that all @shared imports use correct paths
-- Run `pnpm install` from repository root first
-
-### TypeScript errors about rootDir
-- Ensure tsconfig.json includes "../../../shared/**/*" in the include array
-
-### Game doesn't load in browser
-- Check browser console for errors
-- Verify all imports are correct
-- Ensure data files export properly
-
-## Need Help?
-
-- See existing games in `/games/1-ar/dimensional-analysis/` for examples
-- Check shared library docs in `/shared/README.md`
-- Review the main repository README for architecture overview
+- **Three stored ΔH° values disagree with what `thermo.ts` derives.** `C(s) + ½O₂(g) → CO(g)`
+  (id 25) stores **−137**, where the book's formation enthalpy gives **−110,5**; −137 is close to
+  the standard Gibbs energy of formation of CO, so this looks like ΔG° entered as ΔH°. CaCO₃
+  decomposition (id 12) stores 178 against a derived 191,6, and NO₂ dimerisation (id 21) −57
+  against −55,3 — the same two divergences `thermo.ts`'s header records for `equilibrium-shifter`.
+  No ΔS° is sourced anywhere on the platform, so the ΔS values are unchecked.
+- **The answer is on screen before the student answers.** The "Við núverandi hitastig" panel
+  (`src/App.tsx:742-759`) prints the computed ΔG° and the verdict beside the question, and the graph
+  marker labels ΔG° at the current T. `REVIEW_TRACKER.md` raised this in iteration 1 and it was
+  never resolved. Removing it removes the live feedback the slider exists for, so it is a design
+  question, not a deletion.
+- **The Erfitt `advancedTask` prompts are not graded.** Ids 23, 24 and 27 ask for K, 28 for
+  ΔG° = −nFE°, 25 for Hess's law, 29 for a melting point, 30 for an optimum temperature; the grader
+  still checks only ΔG° and the verdict. `ΔG° = −RT ln K` was removed from the formula card for this
+  reason, but the prompts asking for K remain.
+- **Terminology the glossary settles but the game does not follow.** Entropy is named four ways in
+  one game (the glossary's `óreiða`, plus `óregla`, and two spellings of the loanword); enthalpy
+  appears as a t-spelled loanword at `:316` and `:673` and as `varmamismunur` at `:490`, never as
+  `vermi`; the menu says `Gibbs frjálsa orku` where `ordabok.md` has `Gibbs fríorka`; and the
+  exo/endothermic tags at `:687` are not the glossary's `útvermið` / `innvermið`. The roadmap
+  listed this game among the three that contradict themselves, and for entropy it still does.
+- **Score and streak accrue in Æfingarhamur too.** `checkAnswer` updates `score`, `highScore` and
+  `bestStreak` in both modes, and the menu shows them, though only Keppnishamur displays them in
+  play.

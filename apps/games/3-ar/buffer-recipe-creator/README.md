@@ -1,209 +1,110 @@
-# Kvennaskólinn Chemistry Game Template
+# Stuðpúðasmíði
 
-This template provides a starting point for creating new chemistry educational games in the Kvennaskólinn repository.
+Chain position 7 in Year 3, between pH Títrun and Leysnijafnvægi (the chain chip labels this node
+`Stuðpúðar`). The game teaches buffers through the Henderson–Hasselbalch equation,
+pH = pKa + log([A⁻]/[HA]): first as a ratio you can see, then as masses to weigh out, then as
+volumes to draw from stock solutions. The menu cites Brown et al., chapter 17.
 
-## Features
+> This file replaced an **unedited scaffold template** on 2026-09-22. The old one was headed
+> "Kvennaskólinn Chemistry Game Template", documented a `create-game.sh` that does not exist in this
+> repository, and said nothing whatever about this game. Nothing was lost by replacing it.
 
-- ✅ **Shared Component Library**: Pre-configured to use @kvenno/shared hooks and utilities
-- ✅ **TypeScript**: Full type safety out of the box
-- ✅ **Vite + React**: Modern, fast development experience
-- ✅ **Tailwind CSS**: Utility-first styling with Kvennaskólinn branding
-- ✅ **i18n Support**: Multi-language ready (Icelandic, English, Polish)
-- ✅ **Accessibility**: High contrast mode, text sizing, keyboard navigation
-- ✅ **Single-file Build**: Compiles to a single HTML file for easy deployment
-- ✅ **Progress Tracking**: Automatic localStorage persistence
+## The shape
 
-## Quick Start
+| Stig | Menu label                           | What the student does                                          | Items |
+| ---- | ------------------------------------ | -------------------------------------------------------------- | ----- |
+| 1    | Hugmyndafræði                        | Add and remove acid/base molecules until the ratio hits a band | 6     |
+| 2    | Útreikningar                         | Direction (more acid or more base?) → ratio → two masses       | 5     |
+| 3    | Birgðalausnir og rúmmálsútreikningar | Ratio → moles → volumes of each stock solution                 | 5     |
 
-### Using the Setup Script
+Stig 1 has no numbers to type: it grades whether [base]/[acid] falls inside the challenge's
+`targetRatioMin`–`targetRatioMax` band, and the six bands all contain `10^(pH − pKa)` for their own
+pKa. Stig 2 and 3 are the calculation. Levels are not gated (the 2026-08-29 ruling); progress is kept
+under the `buffer-recipe-creator-progress` key.
 
-```bash
-cd /home/user/ChemistryGames/tools
-./create-game.sh <year> <game-name> "<Game Title>" "<Description>"
+## Nothing in Stig 2 is stored
+
+`engine/buffer.ts` derives the ratio, the moles and the masses from each problem's pKa, target pH,
+volume, total concentration and molar masses; `Level2.tsx:65` calls `solveBuffer` and grades against
+it at the puzzle's `massTolerance` (±5 %).
+
+Until 2026-09-19 those five numbers were typed into `data/problems.ts`, and 13 of the 29 real problems
+then in the pool disagreed with themselves — a correct student was marked wrong on three of the
+Stig 2 puzzles, and the explanation printed the false arithmetic back. The comment at the top of
+`engine/buffer.ts` tells the story; the fields are gone from `types.ts` with a note saying why.
+`1-ar/takmarkandi`'s README cites this defect as its reason for storing nothing.
+
+**The `phAdjustment` branch is load-bearing.** Problem #25 weighs out _all_ the weak acid and adds
+NaOH to make the conjugate base, so its acid mass is the total, not the acid fraction.
+`buffer-engine.test.ts` pins both branches against hand-worked values. Note that no Stig 2 or Stig 3
+puzzle currently points at #25; the branch is guarded for the day one does.
+
+## Every pKa comes from Brown Appendix D
+
+Siggi's 2026-09-19 ruling: Appendix D is authoritative, and a constant with no Appendix D row does
+not ship. `appendix-d-conformance.test.ts` checks every numeric `pKa` field in the game against
+`packages/shared/data/appendix-d.ts`, compared at the precision it is written to, with no exemption
+list. Problem #30 (a hypothetical `Veikt sýra`, pKa 5.2) is the one value it skips.
+
+- **Corrected that day:** bicarbonate 10.33 → 10.25, benzoic 4.19 → 4.20, citric 4.76 → 4.77,
+  ammonium 9.25 → 9.26, formic 3.75 → 3.74. The test pins each and rejects the old value for the
+  same acid.
+- **TRIS was dropped**, which is why the problem ids skip 13 and 27 and why Stig 2 and Stig 3 each
+  serve five puzzles, not six (their ids skip 4 and 3 respectively).
+
+## Hints cost points here
+
+All three levels pass `onPointsChange` to the shared `HintSystem` and multiply the award by it
+(`Level1.tsx:127`, `Level2.tsx:165`, `Level3.tsx:168`), so the tier cost the component displays is
+genuinely charged. `docs/README.md` records this as deliberately left alone when ph-titration's
+penalty was removed, and `consumers-honest.test.ts` only requires that a displayed cost be real. It
+does sit against the platform's "hint usage is never penalised" rule — see Open.
+
+## Terminology and name
+
+The word is `stuðpúði` (masculine; compounds on `stuðpúða-`). The naturalised loanword this game
+used to carry is banned by `governed-terms.test.ts`, and it survived in the browser-tab `<title>`
+until 2026-09-19 because that scan did not read `.html`. Hub card, `<title>` and `gameTitle` now all
+say `Stuðpúðasmíði`, held by `game-titles-agree.test.ts`.
+
+The language switcher was stripped on 2026-09-19 (`switcher-earns-its-place.test.ts`); the game
+renders hardcoded Icelandic. The `En`/`Pl` fields in the data files are no longer read by any
+component.
+
+## Layout
+
+```
+src/App.tsx                               menu, progress, chain chip
+src/engine/buffer.ts                      solveBuffer, bufferRange
+src/types.ts                              BufferProblem (no stored answers)
+src/data/problems.ts                      28 problems: the pool Stig 2 and 3 draw from
+src/data/level1-challenges.ts             6 ratio-band challenges
+src/data/level2-puzzles.ts                5 puzzles, each a problemId plus tolerances and hints
+src/data/level3-puzzles.ts                5 puzzles, with stock concentrations and stored volumes
+src/components/                           Level1, Level2, Level3, FlaskComparison,
+                                          BufferCapacityVisualization
+src/__tests__/                            buffer-engine, data-integrity, appendix-d-conformance
+LEVEL1_README.md, PROTOTYPE_SUMMARY.md,   historical notes from the Level 1 prototype;
+TEST_LEVEL1.md, VISUAL_COMPARISON.md      they describe files and plans that no longer match
 ```
 
-**Example:**
-```bash
-./create-game.sh 1-ar molmassi "Mólmassi Leikur" "Læra um mólmassa efna"
-```
+## Open
 
-### Manual Setup
-
-1. **Copy the template**:
-   ```bash
-   cp -r tools/game-template games/<year>/<game-name>
-   ```
-
-2. **Replace placeholders** in the following files:
-   - `package.json`: GAME_NAME, GAME_DESCRIPTION, OUTPUT_DIR, OUTPUT_FILENAME
-   - `vite.config.ts`: SHARED_PATH, OUTPUT_DIR, OUTPUT_FILENAME
-   - `tsconfig.json`: TSCONFIG_BASE_PATH, SHARED_INCLUDE_PATH
-   - `index.html`: GAME_TITLE, GAME_DESCRIPTION
-   - `src/App.tsx`: GAME_NAME, GAME_ID, GAME_TITLE, GAME_SUBTITLE, GAME_DESCRIPTION
-
-3. **Install dependencies**:
-   ```bash
-   cd games/<year>/<game-name>
-   pnpm install
-   ```
-
-4. **Start development**:
-   ```bash
-   pnpm dev
-   ```
-
-## Template Structure
-
-```
-game-template/
-├── src/
-│   ├── components/      # Game-specific React components
-│   ├── data/            # Game data (questions, problems, levels, etc.)
-│   ├── hooks/           # Custom hooks specific to this game
-│   ├── utils/           # Game-specific utility functions
-│   ├── App.tsx          # Main application component
-│   ├── main.tsx         # Application entry point
-│   └── styles.css       # Game styles (Tailwind + custom CSS)
-├── public/              # Static assets (images, audio, etc.)
-├── index.html           # HTML template
-├── package.json         # Dependencies and scripts
-├── vite.config.ts       # Vite configuration
-├── tsconfig.json        # TypeScript configuration
-├── tsconfig.node.json   # TypeScript config for Node
-├── tailwind.config.js   # Tailwind CSS configuration
-└── postcss.config.js    # PostCSS configuration
-```
-
-## Customization Guide
-
-### 1. Define Game Data
-
-Create TypeScript files in `src/data/`:
-
-```typescript
-// src/data/questions.ts
-export interface Question {
-  id: string;
-  prompt: string;
-  options: string[];
-  correct: number;
-}
-
-export const questions: Question[] = [
-  {
-    id: 'Q1',
-    prompt: 'Hvað er mólmassi CO₂?',
-    options: ['28 g/mol', '44 g/mol', '32 g/mol'],
-    correct: 1
-  }
-];
-```
-
-### 2. Create Game Components
-
-Create React components in `src/components/`:
-
-```typescript
-// src/components/GameBoard.tsx
-export function GameBoard({ question, onAnswer }: GameBoardProps) {
-  return (
-    <div className="game-board">
-      <h3>{question.prompt}</h3>
-      {/* Game UI */}
-    </div>
-  );
-}
-```
-
-### 3. Implement Game Logic
-
-Update `src/App.tsx` to:
-- Import your game data
-- Manage game state (current question, score, etc.)
-- Handle user interactions
-- Track progress using `useProgress` hook
-
-### 4. Add Custom Styles
-
-Extend `src/styles.css` with game-specific styles:
-
-```css
-/* Game-specific animations */
-.molecule-bounce {
-  animation: bounce 0.5s ease-in-out;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-}
-```
-
-## Available Shared Resources
-
-### Hooks
-- `useI18n()` - Internationalization
-- `useProgress()` - Progress tracking
-- `useAccessibility()` - Accessibility settings
-
-### Utilities
-- `saveProgress()` / `loadProgress()` - Progress persistence
-- `exportProgressAsJSON()` - Teacher data export
-- `calculateCompositeScore()` - Scoring algorithms
-- `countSignificantFigures()` - Sig fig validation
-
-### Types
-- `GameProgress` - Progress state type
-- `AccessibilitySettings` - A11y settings type
-- Level-specific types (Level1Progress, Level2Progress, Level3Progress)
-
-## Build and Deploy
-
-### Development
-```bash
-pnpm dev  # Start dev server at http://localhost:5173
-```
-
-### Production Build
-```bash
-pnpm build  # Outputs to OUTPUT_DIR/OUTPUT_FILENAME.html
-```
-
-### Type Checking
-```bash
-pnpm type-check  # Run TypeScript compiler without emitting files
-```
-
-### Preview Production Build
-```bash
-pnpm preview  # Preview production build locally
-```
-
-## Best Practices
-
-1. **Keep game logic separate**: Use `src/utils/` for game algorithms
-2. **Type everything**: Define TypeScript interfaces for all game data
-3. **Reuse shared components**: Don't reinvent common UI elements
-4. **Test accessibility**: Use high contrast mode and keyboard navigation
-5. **Support all languages**: Use `t()` function for all user-facing text
-6. **Track meaningful progress**: Store student performance for teacher insights
-
-## Troubleshooting
-
-### Build fails with module errors
-- Check that all @shared imports use correct paths
-- Run `pnpm install` from repository root first
-
-### TypeScript errors about rootDir
-- Ensure tsconfig.json includes "../../../shared/**/*" in the include array
-
-### Game doesn't load in browser
-- Check browser console for errors
-- Verify all imports are correct
-- Ensure data files export properly
-
-## Need Help?
-
-- See existing games in `/games/1-ar/dimensional-analysis/` for examples
-- Check shared library docs in `/shared/README.md`
-- Review the main repository README for architecture overview
+- **Stig 2's worked-solution hints still carry the pre-fix numbers.** The `solution` tier in
+  `data/level2-puzzles.ts` is hand-typed text and was not derived when the grader was. For problems
+  #14, #17 and #19 its masses disagree with `solveBuffer` by more than the ±5 % tolerance (base
+  5.98 g against 5.29 g; base 1.21 g against 1.08 g; 2.58 g / 4.80 g against 1.63 g / 4.39 g), so a
+  student who copies the revealed solution is marked wrong. The #19 hint also gives ratio 1.78 in
+  its solution tier and 1.82 in its method tier.
+- **The ammonium hint text still says pKa 9.25** in all three levels (Stig 1 challenge 6, Stig 2
+  puzzle id 3, Stig 3 puzzle id 5), while every numeric `pKa` field is 9.26. The conformance test reads
+  fields, not prose.
+- **Stig 3 is only half derived.** Its ratio and mole steps are computed at runtime
+  (`Level3.tsx:86-89`), but the volume step grades against stored `correctAcidVolume` /
+  `correctBaseVolume` (`Level3.tsx:160-166`) and prints them in the explanation. They currently
+  agree with derivation within tolerance — the ammonium puzzle is off by about 3 % (7.1 mL stored,
+  7.31 mL derived) — but nothing tests them.
+- **Hint cost** — whether this game should follow the platform's free-hints policy is Siggi's call.
+- **Decimal points in Icelandic text.** Task strings, hints and explanations write `7.40`, `0.100 M`
+  and so on with a decimal point, where Icelandic writes a comma. Input parsing already accepts
+  both (`parseStudentNumber`); the displayed text does not follow it.
