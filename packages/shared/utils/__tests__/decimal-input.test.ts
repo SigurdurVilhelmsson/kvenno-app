@@ -25,7 +25,6 @@ const GAMES_DIR = join(__dirname, '..', '..', '..', '..', 'apps', 'games');
 /** Files allowed to use `type="number"`, and the whole numbers they take. */
 const COUNTS_ONLY: Record<string, string> = {
   '1-ar/takmarkandi/src/components/Level2.tsx': 'molecules formed, reaction runs',
-  '1-ar/takmarkandi/src/components/Level3.tsx': 'molecules formed, excess left over',
   '1-ar/lotukerfid/src/components/Level3.tsx': 'protons, neutrons, electrons',
   '2-ar/lewis-structures/src/components/Level1.tsx': 'valence electrons',
   '2-ar/lewis-structures/src/components/LewisGuidedMode.tsx': 'electrons, bonds',

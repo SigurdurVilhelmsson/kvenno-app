@@ -1063,6 +1063,76 @@ platform-wide:
   split, but that is a spelling harmonisation and not a ruling. Also thin: `umhverfa` has exactly
   one corpus hit, in the sentence that matters and with no competitor, but one hit is one hit.
 
+**Prósentuheimtur landed 2026-09-22, in `1-ar/takmarkandi`** — Siggi's placement, and the book
+settles it: `ch04/m68714` is one module, _Heimtur efnahvarfa_, covering limiting reactant **and**
+percent yield as one continuous calculation in grams. What matters platform-wide:
+
+- **Stig 1 and 2 count molecules; Stig 3 now weighs them.** That is the book's own progression — it
+  introduces the limiting reactant with grilled-cheese sandwiches and then does the whole thing in
+  grams, because no chemist counts molecules. The concept is taught as a picture and applied as a
+  calculation, which is what an Apply phase is for and where the 2026-08-29 no-Level-4 ruling sends
+  this material. **Siggi's call, 2026-09-22**, between that, a bridge from molecules, and a fourth
+  section.
+- **Atomic masses are shared now: `packages/shared/data/elements.ts`.** Two files held them —
+  `1-ar/molmassi`'s `ELEMENTS` array and `1-ar/reynsluformulur`'s transcribed copy — and
+  reynsluformulur's own comment explained why: "reaching across into a sibling's data directory is
+  not something this repo does". **That was right about game-to-game imports and does not reach
+  `packages/shared`**, which every game already imports and which already holds `appendix-d.ts` and
+  `thermo.ts`. A third game needing the numbers is what made the shared home obvious; a third copy
+  with a third agreement test would not have been. reynsluformulur re-exports under its old name so
+  its imports and tests are unchanged, and molmassi's richer array is still pinned by the existing
+  test. **That test is in `reynsluformulur/src/__tests__/problems.test.ts`** — the comment citing an
+  `elements-agree.test.ts` named a file that has never existed, now corrected.
+- **`packages/shared/utils/formula.ts` parses a formula and weighs it, and refuses rather than
+  guesses.** An unknown symbol, a stray character, a zero subscript and **parentheses** all throw:
+  no formula in the games that weigh things uses parentheses, and a silent wrong answer on
+  `Ca(OH)₂` is far worse than a refusal that names itself.
+- **The import guard caught my own bad data.** A problem whose actual yield exceeds its theoretical
+  yield throws on import, and the thermite problem was first written at 103 %. A real over-100 %
+  yield means a wet or impure product, which the book raises; a generated one means the data is
+  wrong, and a student cannot tell them apart.
+- **`ordabok.md` already governed the whole family and nothing had ever used it** — `yield;heimtur`,
+  `actual yield;raunheimtur`, `theoretical yield;fræðilegar heimtur`, `percent yield;prósentuheimtur`.
+  **The book disagrees with itself here and the glossary settles it:** inside `ch04/m68714` the
+  title, the learning objectives and the end-of-chapter glossary all use the `heimtur` family, while
+  the running prose of the percent-yield section says `nýtni` — 17 times in the chapter. Rule 1
+  decides it, `ordabok.md` not being silent, and the book's own glossary agrees. **No
+  `governed-terms.test.ts` row**, since `nýtni` has zero platform occurrences. **Unconfirmed and
+  Siggi's, not blocking:** `ordabok.md` writes `prósentuheimtur` where the book's glossary headword
+  is the two-word `heimtur í prósentum` — the same question as `nettójónajafna`.
+
+**ASCII-flattened Icelandic was shipping in three games, and there is now a guard — 2026-09-22.**
+This is the Íslenskubraut defect found live in game source. `1-ar/takmarkandi` had **30** stripped-accent
+words across its three level components, inconsistently, inside single sentences: `'Deildu fjolda
+sameinda hvarfefnis med stuðli þess … hvorfin geta gerst.'`, where `stuðli` and `þess` are right,
+`fjolda` and `med` are not, and `hvorfin` is a misspelling on top of the flattening.
+
+- **The existing guards did not cover this.** `scripts/islenskubraut/load.mjs` has validated the
+  YAML since August and `no-invisible-characters.test.ts` covers game source for zero-width
+  characters — **neither covered stripped accents in game source**, which is exactly where the next
+  one was. `packages/shared/i18n/__tests__/no-flattened-icelandic.test.ts` now does.
+- **It works from a list of known words, not a rule**, and that is deliberate: nothing distinguishes
+  `med` from `með` by shape, so a heuristic either misses most of them or fires on every English
+  word in the file. A list that catches the defect that happened beats a rule that catches nothing.
+  Extend the list when a new one appears.
+- **An ASCII identifier is not flattened prose.** Every id in this repo transliterates its Icelandic
+  without accents on purpose — `maurasyra`, `flussyra`, `jafnvaegisfasti`'s `'afram'`/`'afturabak'`
+  — and renaming them would break stored progress and data lookups. The scan skips a quoted literal
+  that is only the word.
+- **A first pass claimed takmarkandi was the only game with this, and that was wrong.** The guard
+  found `2-ar/redox-reactions` (five `t()` fallbacks, and it shipped both `'Halda afram'` and
+  `'Halda áfram'` in one game) and `1-ar/lausnir` (its subtitle and a menu label). It also caught
+  **three capitalised `Hvorfin`** my own case-sensitive sweep had missed — _a lowercase grep is not
+  a sweep_, the same lesson the `afurð` rename recorded.
+- **Two of its first hits were false positives of my own making**, both the use-versus-mention trap:
+  a comment explaining why a banned attribute is avoided, and my `'rett'` outcome identifiers. Write
+  the explanation without writing the string.
+
+**`1-ar/takmarkandi`'s README was an unedited scaffold template** — headed "Kvennaskólinn Chemistry
+Game Template", documenting a `create-game.sh` that does not exist in this repository, and saying
+nothing about the game. Replaced. **Worth a look elsewhere:** nothing has audited the other games'
+READMEs for the same.
+
 **No known live defects.** Every correctness and gradeability item the August 2026 reviews found is
 now fixed, as are the three above, and each carries a test that fails against the pre-fix code. What
 is left is enrichment and unfinished decisions, not defects — the work order is

@@ -120,11 +120,11 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               onClick={() => onComplete(score)}
               className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
             >
-              Ljuka stigi
+              Ljúka stigi
             </button>
           </div>
           <button onClick={onBack} className="text-warm-500 hover:text-warm-700 text-sm">
-            Til baka i valmynd
+            Til baka í valmynd
           </button>
         </div>
       </div>
@@ -272,9 +272,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
         {/* Question */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
-          <h2 className="text-xl font-bold text-warm-800 mb-2">Hvort hvarfefnid eydist fyrst?</h2>
+          <h2 className="text-xl font-bold text-warm-800 mb-2">Hvort hvarfefnið eyðist fyrst?</h2>
           <p className="text-warm-600 mb-6">
-            Skoðaðu stuðlana og fjolda sameinda. Hvort hvarfefnid mun klarast fyrst?
+            Skoðaðu stuðlana og fjölda sameinda. Hvort hvarfefnið mun klarast fyrst?
           </p>
 
           <div className="grid grid-cols-2 gap-4">
@@ -290,8 +290,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               feedback={{
                 isCorrect,
                 explanation: isCorrect
-                  ? `Rett! ${q.reaction.reactant1.formula}: ${q.r1Count}÷${q.reaction.reactant1.coeff}=${timesR1} skipti. ${q.reaction.reactant2.formula}: ${q.r2Count}÷${q.reaction.reactant2.coeff}=${timesR2} skipti. ${limiting} eydist fyrst.`
-                  : `Rett svar: ${limiting}. ${q.reaction.reactant1.formula}: ${q.r1Count}÷${q.reaction.reactant1.coeff}=${timesR1}. ${q.reaction.reactant2.formula}: ${q.r2Count}÷${q.reaction.reactant2.coeff}=${timesR2}.`,
+                  ? `Rétt! ${q.reaction.reactant1.formula}: ${q.r1Count}÷${q.reaction.reactant1.coeff}=${timesR1} skipti. ${q.reaction.reactant2.formula}: ${q.r2Count}÷${q.reaction.reactant2.coeff}=${timesR2} skipti. ${limiting} eyðist fyrst.`
+                  : `Rétt svar: ${limiting}. ${q.reaction.reactant1.formula}: ${q.r1Count}÷${q.reaction.reactant1.coeff}=${timesR1}. ${q.reaction.reactant2.formula}: ${q.r2Count}÷${q.reaction.reactant2.coeff}=${timesR2}.`,
                 misconception: isCorrect
                   ? undefined
                   : 'Þad er ekki alltaf þad sem er minna af — stuðlarnir skipta mali.',
@@ -303,7 +303,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               onClick={handleNext}
               className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
             >
-              {index + 1 < TOTAL ? 'Naesta spurning →' : 'Sja nidurstodur →'}
+              {index + 1 < TOTAL ? 'Næsta spurning →' : 'Sjá niðurstöður →'}
             </button>
           </div>
         )}

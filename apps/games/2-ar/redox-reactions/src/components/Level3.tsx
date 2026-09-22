@@ -526,7 +526,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           </button>
           <div className="flex items-center gap-4">
             <div className="text-sm text-warm-500">
-              {t('level3.problem', 'Daemi')} {currentProblem + 1} {t('level3.of', 'af')}{' '}
+              {t('level3.problem', 'Dæmi')} {currentProblem + 1} {t('level3.of', 'af')}{' '}
               {problems.length}
             </div>
             <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold">
@@ -539,7 +539,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           {t('levels.level3.name', 'Stilla redox-jöfnur')}
         </h1>
         <p className="text-center text-warm-600 mb-4">
-          {t('level3.subtitle', 'Half-hvorf adferdin')}
+          {t('level3.subtitle', 'Hálfhvarfaaðferðin')}
         </p>
 
         <div className="bg-warm-50 p-4 rounded-xl mb-6 text-center">
@@ -588,9 +588,9 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           >
             {step === 'complete'
               ? currentProblem < problems.length - 1
-                ? t('level3.nextProblem', 'Naesta daemi') + ' →'
-                : t('level3.completeLevel', 'Ljuka stigi') + ' →'
-              : t('common.next', 'Halda afram') + ' →'}
+                ? t('level3.nextProblem', 'Næsta dæmi') + ' →'
+                : t('level3.completeLevel', 'Ljúka stigi') + ' →'
+              : t('common.next', 'Halda áfram') + ' →'}
           </button>
         )}
 
