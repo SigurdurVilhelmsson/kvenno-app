@@ -67,14 +67,23 @@ src/utils/thermo-calculations.ts     calculateDeltaG, getSpontaneity
 src/__tests__/                       data-integrity, thermo-calculations
 ```
 
+## Fixed
+
+- **Id 25, C(s) + ½O₂(g) → CO(g), stored ΔG°f(CO) as its ΔH — fixed 2026-09-22.** It carried
+  −137 kJ/mol, CO's Gibbs energy of formation; the enthalpy of formation is −110,5. Because the
+  game computes ΔG° = ΔH − TΔS, it subtracted TΔS from a number that already had it subtracted and
+  showed ΔG° = −163,8 at 298 K. The verdict was right by luck — ΔH < 0 and ΔS > 0 make it
+  spontaneous at every temperature — but every number was wrong. `co-enthalpy.test.ts` holds ΔH to
+  `thermo.ts` and checks that the game's own ΔG° at 298 K lands on ΔG°f(CO), −137,2.
+
 ## Open
 
-- **Three stored ΔH° values disagree with what `thermo.ts` derives.** `C(s) + ½O₂(g) → CO(g)`
-  (id 25) stores **−137**, where the book's formation enthalpy gives **−110,5**; −137 is close to
-  the standard Gibbs energy of formation of CO, so this looks like ΔG° entered as ΔH°. CaCO₃
-  decomposition (id 12) stores 178 against a derived 191,6, and NO₂ dimerisation (id 21) −57
-  against −55,3 — the same two divergences `thermo.ts`'s header records for `equilibrium-shifter`.
-  No ΔS° is sourced anywhere on the platform, so the ΔS values are unchecked.
+- **Two stored ΔH° values disagree with what `thermo.ts` derives.** CaCO₃ decomposition (id 12)
+  stores 178 against a derived 191,6, and NO₂ dimerisation (id 21) −57 against −55,3 — the same two
+  divergences `thermo.ts`'s header records for `equilibrium-shifter`. Neither changes a sign, and
+  `thermo.ts` is the Icelandic book, not Brown, so which value is right is not settled. No ΔS° is
+  sourced anywhere on the platform, so the ΔS values are unchecked. (A third, id 25, is fixed —
+  see below.)
 - **The answer is on screen before the student answers.** The "Við núverandi hitastig" panel
   (`src/App.tsx:742-759`) prints the computed ΔG° and the verdict beside the question, and the graph
   marker labels ΔG° at the current T. `REVIEW_TRACKER.md` raised this in iteration 1 and it was

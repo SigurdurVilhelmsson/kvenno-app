@@ -252,7 +252,9 @@ export const PROBLEMS: ProblemsData = {
       id: 25,
       reaction: 'C(s) + ½O₂(g) → CO(g)',
       name: 'Samtvinnuð hvarfefni',
-      deltaH: -137,
+      // ΔHf°(CO), from packages/shared/data/thermo.ts. This was -137, which is
+      // ΔGf°(CO): ΔG° was entered where ΔH° belongs. See co-enthalpy.test.ts.
+      deltaH: -110.5,
       deltaS: 90,
       defaultTemp: 298,
       scenario: 1,

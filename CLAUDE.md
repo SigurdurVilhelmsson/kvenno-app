@@ -1148,9 +1148,11 @@ specifics — read the README, not them.
 - **`3-ar/equilibrium-shifter`'s Keppnishamur can never be unlocked.** The gate needs
   `problemsCompleted >= 5`, and that count is written only at the end of a challenge round. The
   mode-gate ruling this file already asked for is now also a fix.
-- **`3-ar/thermodynamics-predictor` id 25 stores ΔH = −137 kJ/mol for C + ½O₂ → CO** — that is
-  CO's ΔG°f; its ΔH°f is −110,5. The game keeps its own ΔH/ΔS and does not use
-  `packages/shared/data/thermo.ts`; ids 12 and 21 also disagree with it.
+- **`3-ar/thermodynamics-predictor` id 25 stored ΔH = −137 kJ/mol for C + ½O₂ → CO — fixed
+  2026-09-22.** That was CO's ΔG°f; its ΔH°f is −110,5, so the game showed ΔG° = −163,8 instead of
+  −137,2. Now −110,5, guarded by `co-enthalpy.test.ts`, which also checks the game's ΔG° at 298 K
+  lands on ΔG°f(CO). **Still open:** the game keeps its own ΔH/ΔS and does not use
+  `packages/shared/data/thermo.ts`; ids 12 and 21 disagree with it, without changing a sign.
 - **`3-ar/buffer-recipe-creator` Level 2's hint tiers were not derived with the rest** — they still
   quote the pre-Appendix-D ammonium pKa 9,25 and the old stored numbers.
 - **`1-ar/nafnakerfid` Level 2 strips accents before comparing**, so the recorded claim that it
