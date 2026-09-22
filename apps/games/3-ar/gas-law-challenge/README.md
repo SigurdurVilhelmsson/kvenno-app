@@ -59,8 +59,12 @@ Feedback shows the student's and the correct answer, the step-by-step solution, 
 - **The answer field is `type="text"` + `inputMode="decimal"`** and is parsed with
   `parseStudentNumber`, so an Icelandic decimal comma is read. Grading is an absolute `±tolerance`
   per question (`checkAnswer`, `src/utils/gas-calculations.ts`).
-- **The answer's unit label comes from the variable, not the question** — `getUnit(find)` returns
-  `L` for every volume. See Open.
+- **The answer's unit comes from the question, not the variable.** `answerUnit` in
+  `src/utils/gas-calculations.ts` uses the unit the question states the sought variable in — V₂ in
+  V₁'s unit — and falls back to `getUnit` for the ideal-gas questions, which never state it. Question
+  14 is the reason: its syringe is in mL and its answer is stored in mL, but the field was labelled
+  `L` until 2026-09-22, so a student who converted to match the label was marked wrong.
+  `answer-unit.test.ts` holds every answer label to the unit its worked solution ends in.
 
 ## Layout
 
@@ -76,12 +80,11 @@ src/components/FeedbackScreen.tsx
 src/components/GasLawSimulator.tsx   particle view of the question's P, V, T, n
 src/__tests__/gas-calculations.test.ts
 src/__tests__/icelandic-text.test.ts
+src/__tests__/answer-unit.test.ts
 ```
 
 ## Open
 
-- **Question 14's unit is wrong on screen.** It gives 10,0 mL and stores the answer 4,0 in mL, but
-  the input and feedback label it `L`; a student who answers in litres (0,004) is marked wrong.
 - **Computed numbers still print with a decimal point.** The question text — scenarios, hints and
   worked solutions — has written the comma since 2026-09-22, but numbers formatted at render time
   (`toFixed` in `FeedbackScreen.tsx`, `GameScreen.tsx`'s revealed answer, and `GasLawSimulator.tsx`)

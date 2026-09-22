@@ -4,6 +4,7 @@ import { ParticleSimulation, PARTICLE_TYPES, PHYSICS_PRESETS } from '@shared/com
 
 import type { GasLawQuestion, Variable } from '../types';
 import { R } from '../types';
+import { unitFor } from '../utils/gas-calculations';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -181,6 +182,7 @@ function EquationDisplay({
   n,
   findVar,
   showAnswer,
+  units,
 }: {
   P: number;
   V: number;
@@ -188,6 +190,7 @@ function EquationDisplay({
   n: number;
   findVar: Variable;
   showAnswer: boolean;
+  units: Record<Variable, string>;
 }) {
   const highlightClass = 'text-orange-400 font-bold';
   const normalClass = 'text-warm-300';
@@ -209,10 +212,10 @@ function EquationDisplay({
     <div className="bg-slate-800/60 rounded-lg px-3 py-2 text-xs font-mono">
       <div className="text-warm-400 font-bold text-center mb-1">PV = nRT</div>
       <div className="flex flex-wrap justify-center gap-x-3 gap-y-0.5">
-        {varSpan('P', P, 'atm', 'P')}
-        {varSpan('V', V, 'L', 'V')}
-        {varSpan('n', n, 'mol', 'n')}
-        {varSpan('T', T, 'K', 'T')}
+        {varSpan('P', P, units.P, 'P')}
+        {varSpan('V', V, units.V, 'V')}
+        {varSpan('n', n, units.n, 'n')}
+        {varSpan('T', T, units.T, 'T')}
       </div>
       <div className="text-center text-warm-500 mt-1 text-[10px]">R = {R} L·atm/(mol·K)</div>
     </div>
@@ -236,6 +239,15 @@ export function GasLawSimulator({
   );
 
   // Container dimensions keyed to volume
+  const units = useMemo(
+    () => ({
+      P: unitFor(question, 'P'),
+      V: unitFor(question, 'V'),
+      T: unitFor(question, 'T'),
+      n: unitFor(question, 'n'),
+    }),
+    [question]
+  );
   const containerWidth = useMemo(() => volumeToWidth(values.V), [values.V]);
   const containerHeight = 240;
 
@@ -277,7 +289,7 @@ export function GasLawSimulator({
 
           {/* Volume label overlay */}
           <div className="absolute bottom-1 left-1/2 -translate-x-1/2 bg-slate-900/70 px-2 py-0.5 rounded text-[10px] text-warm-300 font-mono pointer-events-none">
-            V = {values.V.toFixed(1)} L
+            V = {values.V.toFixed(1)} {units.V}
           </div>
 
           {/* Temperature label overlay */}
@@ -304,6 +316,7 @@ export function GasLawSimulator({
           n={values.n}
           findVar={question.find}
           showAnswer={showAnswer}
+          units={units}
         />
       </div>
 

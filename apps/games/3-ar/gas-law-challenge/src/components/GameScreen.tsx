@@ -3,7 +3,7 @@ import { Presence } from '@shared/components';
 import type { Level } from '../data';
 import { GasLawQuestion, GameMode, GameStats, GasLaw, GAS_LAW_INFO } from '../types';
 import { GasLawSimulator } from './GasLawSimulator';
-import { getUnit, getVariableName } from '../utils/gas-calculations';
+import { answerUnit, getVariableName } from '../utils/gas-calculations';
 
 interface GameScreenProps {
   currentQuestion: GasLawQuestion;
@@ -309,10 +309,10 @@ export function GameScreen({
                         e.key === 'Enter' && gameStep === 'solve' && onCheckAnswer()
                       }
                       disabled={gameMode === 'practice' && gameStep === 'select-law'}
-                      aria-label={`Svar fyrir ${getVariableName(currentQuestion.find)} í einingunni ${getUnit(currentQuestion.find)}`}
+                      aria-label={`Svar fyrir ${getVariableName(currentQuestion.find)} í einingunni ${answerUnit(currentQuestion)}`}
                     />
                     <div className="bg-white px-4 py-3 rounded-lg border-2 border-warm-300 font-bold text-warm-700">
-                      {getUnit(currentQuestion.find)}
+                      {answerUnit(currentQuestion)}
                     </div>
                   </div>
                   {validationError && (
@@ -389,7 +389,7 @@ export function GameScreen({
                           {currentQuestion.solution.calculation}
                         </div>
                         <div className="bg-green-50 px-3 py-2 rounded border border-green-300 font-bold text-green-800">
-                          Svar: {currentQuestion.answer.toFixed(2)} {getUnit(currentQuestion.find)}
+                          Svar: {currentQuestion.answer.toFixed(2)} {answerUnit(currentQuestion)}
                         </div>
                       </div>
                     </Presence>

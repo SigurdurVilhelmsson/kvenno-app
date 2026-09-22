@@ -1142,8 +1142,9 @@ specifics — read the README, not them.
   13 ideal-gas questions carried English `hints` and `solution.steps`, and every question rendered
   `scenario_en` under the Icelandic. All translated, `scenario_en`/`nameEn` removed, the question
   text moved to the decimal comma, and the law renamed `Kjörgaslögmálið` per `ordabok.md`; guarded by
-  `icelandic-text.test.ts` and a `governed-terms` row. **Still open there:** question 14 stores its
-  answer in mL while the screen labels it `L`, and `toFixed` output still prints a decimal point.
+  `icelandic-text.test.ts` and a `governed-terms` row. Question 14's mL answer was labelled `L`; fixed the
+  same day by `answerUnit`, which takes the unit the question states the variable in, guarded by
+  `answer-unit.test.ts`. **Still open there:** `toFixed` output still prints a decimal point.
 - **`3-ar/equilibrium-shifter`'s Keppnishamur can never be unlocked.** The gate needs
   `problemsCompleted >= 5`, and that count is written only at the end of a challenge round. The
   mode-gate ruling this file already asked for is now also a fix.
