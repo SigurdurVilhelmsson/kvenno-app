@@ -3,204 +3,170 @@
 
 import type { TieredHints } from '@shared/types';
 
+import { solveBuffer } from '../engine/buffer';
+import type { BufferProblem } from '../types';
+import { BUFFER_PROBLEMS } from './problems';
+
+/**
+ * A Level 2 puzzle as the level renders it.
+ *
+ * **Every number in `hints` and `explanationIs` is derived, not written.**
+ * Until 2026-09-22 the four hint tiers and the explanation were typed out by
+ * hand, and they were never re-derived when `engine/buffer.ts` took over the
+ * grading on 2026-09-19 or when Appendix D corrected ammonium's pKa to 9,26.
+ * So the level graded against one set of numbers and handed out another: the
+ * worked solution for the formate puzzle gave the ratio as 1,78 and the acid
+ * mass as 2,58 g (the grader wants 1,82 and 1,63 g, and the acid and base moles
+ * were swapped), the ammonium puzzle still taught pKa 9,25, and on three of the
+ * five puzzles a student who copied the revealed solution was marked wrong.
+ * Only the prose around the numbers is authored now; the numbers come from the
+ * same `solveBuffer` the grader calls, so the two cannot disagree again.
+ */
 export interface Level2Puzzle {
   id: number;
   problemId: number; // Reference to BUFFER_PROBLEMS
   taskIs: string; // Icelandic task description
-  taskEn?: string; // English task description
-  taskPl?: string; // Polish task description
   ratioTolerance: number; // Relative tolerance for ratio (e.g., 0.1 = ±10%)
   massTolerance: number; // Relative tolerance for mass (e.g., 0.05 = ±5%)
   hints: TieredHints;
-  hintsEn?: TieredHints;
-  hintsPl?: TieredHints;
   explanationIs: string;
-  explanationEn?: string;
-  explanationPl?: string;
 }
 
-export const LEVEL2_PUZZLES: Level2Puzzle[] = [
+/** What a puzzle's author writes: the task and the prose, never a computed number. */
+interface Level2PuzzleSource {
+  id: number;
+  problemId: number;
+  taskIs: string;
+  ratioTolerance: number;
+  massTolerance: number;
+  /** The first hint tier, naming the system. May quote the problem's pKa. */
+  topicIs: (problem: BufferProblem) => string;
+  /** A sentence appended to the derived explanation — context, not arithmetic. */
+  noteIs: string;
+}
+
+/** Icelandic decimal comma, which is what the answer fields accept. */
+const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');
+
+/** A signed exponent the way the hints print it: 0,20 or −0,20. */
+const signed = (n: number) => (n < 0 ? `−${fmt(-n, 2)}` : fmt(n, 2));
+
+function findProblem(id: number): BufferProblem {
+  const problem = BUFFER_PROBLEMS.find((p) => p.id === id);
+  if (!problem) throw new Error(`Level 2 puzzle points at missing problem ${id}`);
+  return problem;
+}
+
+function build(source: Level2PuzzleSource): Level2Puzzle {
+  const problem = findProblem(source.problemId);
+
+  // The sentences below describe mixing an acid and its conjugate base. A
+  // pH-adjustment problem (#25) weighs out all the acid and adds NaOH, and a
+  // range question has no target pH, so neither can be described this way.
+  // No puzzle points at one today; refuse rather than print a false recipe.
+  if (problem.phAdjustment || problem.rangeQuestion) {
+    throw new Error(
+      `Level 2 puzzle ${source.id} points at problem ${problem.id}, which is not a ` +
+        'mix-two-salts recipe; its hints would need their own wording.'
+    );
+  }
+
+  const r = solveBuffer(problem);
+  const diff = problem.targetPH - problem.pKa;
+  const pH = fmt(problem.targetPH, 2);
+  const pKa = fmt(problem.pKa, 2);
+  const ratio = fmt(r.ratio, 2);
+  const totalMoles = problem.totalConcentration * problem.volume;
+
+  const direction =
+    diff > 0
+      ? 'HÆRRA en pKa (' + pKa + '), svo þú þarft meira af basa en sýru'
+      : diff < 0
+        ? 'LÆGRA en pKa (' + pKa + '), svo þú þarft meira af sýru en basa'
+        : 'JAFNT pKa (' + pKa + '), svo þú þarft jafnmikið af sýru og basa';
+
+  const hints: TieredHints = {
+    topic: source.topicIs(problem),
+    strategy: `Markmiðs-pH (${pH}) er ${direction}. Reiknaðu hlutfallið fyrst.`,
+    method:
+      `Skref 1: pH − pKa = ${pH} − ${pKa} = ${signed(diff)}. ` +
+      `Skref 2: Hlutfall [Basi]/[Sýra] = 10^(${signed(diff)}) ≈ ${ratio}.`,
+    solution:
+      `Hlutfall = ${ratio}. Heildarmagn = ${fmt(problem.totalConcentration, 3)} M × ` +
+      `${fmt(problem.volume, 1)} L = ${fmt(totalMoles, 4)} mol. ` +
+      `Sýra: ${fmt(r.acidMoles, 4)} mol × ${fmt(problem.acidMolarMass, 2)} g/mol = ` +
+      `${fmt(r.acidMass, 2)} g. ` +
+      `Basi: ${fmt(r.baseMoles, 4)} mol × ${fmt(problem.baseMolarMass, 2)} g/mol = ` +
+      `${fmt(r.baseMass, 2)} g.`,
+  };
+
+  const where = diff > 0 ? 'yfir' : diff < 0 ? 'undir' : 'jafnt';
+  const offset =
+    diff === 0
+      ? `pH ${pH} er jafnt pKa`
+      : `pH ${pH} er ${fmt(Math.abs(diff), 2)} einingum ${where} pKa (${pKa})`;
+  const explanationIs =
+    `${offset}, svo hlutfallið [Basi]/[Sýra] = 10^(${signed(diff)}) ≈ ${ratio}. ` + source.noteIs;
+
+  return {
+    id: source.id,
+    problemId: source.problemId,
+    taskIs: source.taskIs,
+    ratioTolerance: source.ratioTolerance,
+    massTolerance: source.massTolerance,
+    hints,
+    explanationIs,
+  };
+}
+
+const SOURCES: Level2PuzzleSource[] = [
   {
     id: 1,
     problemId: 11, // Phosphate pH 7.40 - Blood buffer
-    taskIs: 'Búðu til fosfatstuðpúða við blóð-pH (7.40) úr NaH₂PO₄ og Na₂HPO₄.',
-    taskEn: 'Prepare a phosphate buffer at blood pH (7.40) from NaH₂PO₄ and Na₂HPO₄.',
-    taskPl: 'Przygotuj bufor fosforanowy o pH krwi (7.40) z NaH₂PO₄ i Na₂HPO₄.',
+    taskIs: 'Búðu til fosfatstuðpúða við blóð-pH (7,40) úr NaH₂PO₄ og Na₂HPO₄.',
     ratioTolerance: 0.1,
     massTolerance: 0.05,
-    hints: {
-      topic: 'Þetta snýst um Henderson-Hasselbalch jöfnuna: pH = pKa + log([Basi]/[Sýra]).',
-      strategy:
-        'Markmiðs-pH (7.40) er HÆRRA en pKa (7.20), svo þú þarft meira af basa. Reiknaðu hlutfallið fyrst.',
-      method: 'Skref 1: pH - pKa = 7.40 - 7.20 = 0.20. Skref 2: Hlutfall = 10^0.20 ≈ 1.58.',
-      solution:
-        'Hlutfall = 1.58. Með 0.100 M og 1.0 L: 0.0388 mol sýru (4.65 g) og 0.0612 mol basa (8.69 g).',
-    },
-    hintsEn: {
-      topic: 'This is about the Henderson-Hasselbalch equation: pH = pKa + log([Base]/[Acid]).',
-      strategy:
-        'Target pH (7.40) is HIGHER than pKa (7.20), so you need more base. Calculate the ratio first.',
-      method: 'Step 1: pH - pKa = 7.40 - 7.20 = 0.20. Step 2: Ratio = 10^0.20 ≈ 1.58.',
-      solution:
-        'Ratio = 1.58. With 0.100 M and 1.0 L: 0.0388 mol acid (4.65 g) and 0.0612 mol base (8.69 g).',
-    },
-    hintsPl: {
-      topic: 'To dotyczy równania Hendersona-Hasselbalcha: pH = pKa + log([Zasada]/[Kwas]).',
-      strategy:
-        'Docelowe pH (7.40) jest WYŻSZE niż pKa (7.20), więc potrzebujesz więcej zasady. Najpierw oblicz proporcję.',
-      method: 'Krok 1: pH - pKa = 7.40 - 7.20 = 0.20. Krok 2: Proporcja = 10^0.20 ≈ 1.58.',
-      solution:
-        'Proporcja = 1.58. Przy 0.100 M i 1.0 L: 0.0388 mol kwasu (4.65 g) i 0.0612 mol zasady (8.69 g).',
-    },
-    explanationIs:
-      'Blóð pH er 7.40, sem er 0.20 einingum yfir pKa fosfats. Þetta þýðir að hlutfall [Basi]/[Sýra] = 10^0.20 ≈ 1.58. Líkaminn viðheldur þessu hlutfalli til að halda pH stöðugu.',
-    explanationEn:
-      'Blood pH is 7.40, which is 0.20 units above the pKa of phosphate. This means the ratio [Base]/[Acid] = 10^0.20 ≈ 1.58. The body maintains this ratio to keep pH stable.',
-    explanationPl:
-      'pH krwi wynosi 7.40, co jest o 0.20 jednostki powyżej pKa fosforanu. Oznacza to, że proporcja [Zasada]/[Kwas] = 10^0.20 ≈ 1.58. Organizm utrzymuje tę proporcję, aby utrzymać stabilne pH.',
+    topicIs: () => 'Þetta snýst um Henderson-Hasselbalch jöfnuna: pH = pKa + log([Basi]/[Sýra]).',
+    noteIs: 'Þetta er pH blóðs, og líkaminn viðheldur þessu hlutfalli til að halda því stöðugu.',
   },
   {
     id: 2,
     problemId: 14, // Acetate pH 5.00
-    taskIs: 'Búðu til asetatstuðpúða við pH 5.00 úr ediksýru og natríumasetati.',
-    taskEn: 'Prepare an acetate buffer at pH 5.00 from acetic acid and sodium acetate.',
-    taskPl: 'Przygotuj bufor octanowy o pH 5.00 z kwasu octowego i octanu sodu.',
+    taskIs: 'Búðu til asetatstuðpúða við pH 5,00 úr ediksýru og natríumasetati.',
     ratioTolerance: 0.1,
     massTolerance: 0.05,
-    hints: {
-      topic: 'Asetatstuðpúði notar Henderson-Hasselbalch jöfnuna með pKa = 4.74.',
-      strategy: 'Markmiðs-pH (5.00) er HÆRRA en pKa (4.74). Munurinn er 0.26 einingar.',
-      method: 'Hlutfall = 10^(pH - pKa) = 10^(5.00 - 4.74) = 10^0.26 ≈ 1.82.',
-      solution:
-        'Hlutfall = 1.82. Með 0.100 M og 1.0 L: 0.0355 mol sýru (2.13 g) og 0.0645 mol basa (5.98 g).',
-    },
-    hintsEn: {
-      topic: 'The acetate buffer uses the Henderson-Hasselbalch equation with pKa = 4.74.',
-      strategy: 'Target pH (5.00) is HIGHER than pKa (4.74). The difference is 0.26 units.',
-      method: 'Ratio = 10^(pH - pKa) = 10^(5.00 - 4.74) = 10^0.26 ≈ 1.82.',
-      solution:
-        'Ratio = 1.82. With 0.100 M and 1.0 L: 0.0355 mol acid (2.13 g) and 0.0645 mol base (5.98 g).',
-    },
-    hintsPl: {
-      topic: 'Bufor octanowy wykorzystuje równanie Hendersona-Hasselbalcha z pKa = 4.74.',
-      strategy: 'Docelowe pH (5.00) jest WYŻSZE niż pKa (4.74). Różnica wynosi 0.26 jednostki.',
-      method: 'Proporcja = 10^(pH - pKa) = 10^(5.00 - 4.74) = 10^0.26 ≈ 1.82.',
-      solution:
-        'Proporcja = 1.82. Przy 0.100 M i 1.0 L: 0.0355 mol kwasu (2.13 g) i 0.0645 mol zasady (5.98 g).',
-    },
-    explanationIs:
-      'Til að ná pH 5.00 (0.26 yfir pKa) þarf hlutfall 1.82. Þetta þýðir næstum tvöfalt meira af basa en sýru.',
-    explanationEn:
-      'To reach pH 5.00 (0.26 above pKa) requires a ratio of 1.82. This means almost twice as much base as acid.',
-    explanationPl:
-      'Aby osiągnąć pH 5.00 (0.26 powyżej pKa), potrzebna jest proporcja 1.82. Oznacza to prawie dwukrotnie więcej zasady niż kwasu.',
+    topicIs: (p) =>
+      `Asetatstuðpúði notar Henderson-Hasselbalch jöfnuna með pKa = ${fmt(p.pKa, 2)}.`,
+    noteIs: 'Þetta þýðir næstum tvöfalt meira af basa en sýru.',
   },
   {
     id: 3,
     problemId: 17, // Ammonia pH 9.50
-    taskIs: 'Búðu til ammóníustuðpúða við pH 9.50 úr ammoniumklóríði og ammóníaki.',
-    taskEn: 'Prepare an ammonium buffer at pH 9.50 from ammonium chloride and ammonia.',
-    taskPl: 'Przygotuj bufor amonowy o pH 9.50 z chlorku amonu i amoniaku.',
+    taskIs: 'Búðu til ammóníustuðpúða við pH 9,50 úr ammóníumklóríði og ammóníaki.',
     ratioTolerance: 0.1,
     massTolerance: 0.05,
-    hints: {
-      topic: 'Ammóníustuðpúði virkar við hátt pH með pKa = 9.25.',
-      strategy: 'Markmiðs-pH (9.50) er HÆRRA en pKa (9.25). Þarftu meira af basa.',
-      method: 'Hlutfall = 10^(9.50 - 9.25) = 10^0.25 ≈ 1.78.',
-      solution:
-        'Hlutfall = 1.78. Með 0.100 M og 1.0 L: 0.0355 mol sýru (1.89 g) og 0.0645 mol basa (1.21 g).',
-    },
-    hintsEn: {
-      topic: 'The ammonium buffer works at high pH with pKa = 9.25.',
-      strategy: 'Target pH (9.50) is HIGHER than pKa (9.25). You need more base.',
-      method: 'Ratio = 10^(9.50 - 9.25) = 10^0.25 ≈ 1.78.',
-      solution:
-        'Ratio = 1.78. With 0.100 M and 1.0 L: 0.0355 mol acid (1.89 g) and 0.0645 mol base (1.21 g).',
-    },
-    hintsPl: {
-      topic: 'Bufor amonowy działa przy wysokim pH z pKa = 9.25.',
-      strategy: 'Docelowe pH (9.50) jest WYŻSZE niż pKa (9.25). Potrzebujesz więcej zasady.',
-      method: 'Proporcja = 10^(9.50 - 9.25) = 10^0.25 ≈ 1.78.',
-      solution:
-        'Proporcja = 1.78. Przy 0.100 M i 1.0 L: 0.0355 mol kwasu (1.89 g) i 0.0645 mol zasady (1.21 g).',
-    },
-    explanationIs:
-      'Ammóníustuðpúði við pH 9.50 þarf hlutfall 1.78. Athugaðu að ammóníak (NH₃) hefur mjög lágan mólarmassa (17 g/mol) svo massinn er lítill.',
-    explanationEn:
-      'An ammonium buffer at pH 9.50 requires a ratio of 1.78. Note that ammonia (NH₃) has a very low molar mass (17 g/mol), so the mass is small.',
-    explanationPl:
-      'Bufor amonowy o pH 9.50 wymaga proporcji 1.78. Zauważ, że amoniak (NH₃) ma bardzo niską masę molową (17 g/mol), więc masa jest niewielka.',
+    topicIs: (p) => `Ammóníustuðpúði virkar við hátt pH með pKa = ${fmt(p.pKa, 2)}.`,
+    noteIs:
+      'Athugaðu að ammóníak (NH₃) hefur mjög lágan mólarmassa (17 g/mol) svo massinn er lítill.',
   },
   {
     id: 5,
     problemId: 19, // Formic acid pH 4.00
-    taskIs: 'Búðu til maurasýrustuðpúða við pH 4.00.',
-    taskEn: 'Prepare a formic acid buffer at pH 4.00.',
-    taskPl: 'Przygotuj bufor mrówkowy o pH 4.00.',
+    taskIs: 'Búðu til maurasýrustuðpúða við pH 4,00.',
     ratioTolerance: 0.1,
     massTolerance: 0.05,
-    hints: {
-      topic: 'Maurasýra (HCOOH) hefur pKa = 3.74, lægra en ediksýra.',
-      strategy: 'Markmiðs-pH (4.00) er HÆRRA en pKa (3.74). Þarftu meira af basa.',
-      method: 'Hlutfall = 10^(4.00 - 3.74) = 10^0.26 ≈ 1.82.',
-      solution:
-        'Hlutfall = 1.78. Með 0.100 M og 1.0 L: 0.0561 mol sýru (2.58 g) og 0.0439 mol basa (4.80 g).',
-    },
-    hintsEn: {
-      topic: 'Formic acid (HCOOH) has pKa = 3.74, lower than acetic acid.',
-      strategy: 'Target pH (4.00) is HIGHER than pKa (3.74). You need more base.',
-      method: 'Ratio = 10^(4.00 - 3.74) = 10^0.26 ≈ 1.82.',
-      solution:
-        'Ratio = 1.78. With 0.100 M and 1.0 L: 0.0561 mol acid (2.58 g) and 0.0439 mol base (4.80 g).',
-    },
-    hintsPl: {
-      topic: 'Kwas mrówkowy (HCOOH) ma pKa = 3.74, niższe niż kwas octowy.',
-      strategy: 'Docelowe pH (4.00) jest WYŻSZE niż pKa (3.74). Potrzebujesz więcej zasady.',
-      method: 'Proporcja = 10^(4.00 - 3.74) = 10^0.26 ≈ 1.82.',
-      solution:
-        'Proporcja = 1.78. Przy 0.100 M i 1.0 L: 0.0561 mol kwasu (2.58 g) i 0.0439 mol zasady (4.80 g).',
-    },
-    explanationIs:
-      'Maurasýrustuðpúði við pH 4.00 þarf hlutfall 1.78. Maurasýra er einfaldasta karboxýlsýran (HCOOH).',
-    explanationEn:
-      'A formic acid buffer at pH 4.00 requires a ratio of 1.78. Formic acid is the simplest carboxylic acid (HCOOH).',
-    explanationPl:
-      'Bufor mrówkowy o pH 4.00 wymaga proporcji 1.78. Kwas mrówkowy jest najprostszym kwasem karboksylowym (HCOOH).',
+    topicIs: (p) => `Maurasýra (HCOOH) hefur pKa = ${fmt(p.pKa, 2)}, lægra en ediksýra.`,
+    noteIs: 'Maurasýra er einfaldasta karboxýlsýran (HCOOH).',
   },
   {
     id: 6,
     problemId: 21, // Phosphate pH 7.00
-    taskIs: 'Búðu til fosfatstuðpúða við pH 7.00 (hlutlaust).',
-    taskEn: 'Prepare a phosphate buffer at pH 7.00 (neutral).',
-    taskPl: 'Przygotuj bufor fosforanowy o pH 7.00 (obojętny).',
+    taskIs: 'Búðu til fosfatstuðpúða við pH 7,00 (hlutlaust).',
     ratioTolerance: 0.1,
     massTolerance: 0.05,
-    hints: {
-      topic: 'Fosfatstuðpúði við hlutlaust pH þarf meira af sýru.',
-      strategy: 'Markmiðs-pH (7.00) er LÆGRA en pKa (7.20). Þarftu meira af sýru.',
-      method: 'Hlutfall = 10^(7.00 - 7.20) = 10^(-0.20) ≈ 0.63.',
-      solution:
-        'Hlutfall = 0.63. Með 0.100 M og 1.0 L: 0.0613 mol sýru (7.59 g) og 0.0387 mol basa (5.66 g).',
-    },
-    hintsEn: {
-      topic: 'A phosphate buffer at neutral pH needs more acid.',
-      strategy: 'Target pH (7.00) is LOWER than pKa (7.20). You need more acid.',
-      method: 'Ratio = 10^(7.00 - 7.20) = 10^(-0.20) ≈ 0.63.',
-      solution:
-        'Ratio = 0.63. With 0.100 M and 1.0 L: 0.0613 mol acid (7.59 g) and 0.0387 mol base (5.66 g).',
-    },
-    hintsPl: {
-      topic: 'Bufor fosforanowy o obojętnym pH wymaga więcej kwasu.',
-      strategy: 'Docelowe pH (7.00) jest NIŻSZE niż pKa (7.20). Potrzebujesz więcej kwasu.',
-      method: 'Proporcja = 10^(7.00 - 7.20) = 10^(-0.20) ≈ 0.63.',
-      solution:
-        'Proporcja = 0.63. Przy 0.100 M i 1.0 L: 0.0613 mol kwasu (7.59 g) i 0.0387 mol zasady (5.66 g).',
-    },
-    explanationIs:
-      'Til að ná pH 7.00 (0.20 undir pKa) þarf hlutfall 0.63. Þetta þýðir um 60% meira af sýru en basa.',
-    explanationEn:
-      'To reach pH 7.00 (0.20 below pKa) requires a ratio of 0.63. This means about 60% more acid than base.',
-    explanationPl:
-      'Aby osiągnąć pH 7.00 (0.20 poniżej pKa), potrzebna jest proporcja 0.63. Oznacza to około 60% więcej kwasu niż zasady.',
+    topicIs: () => 'Fosfatstuðpúði við hlutlaust pH þarf meira af sýru.',
+    noteIs: 'Þetta þýðir um 60 % meira af sýru en basa.',
   },
 ];
+
+export const LEVEL2_PUZZLES: Level2Puzzle[] = SOURCES.map(build);

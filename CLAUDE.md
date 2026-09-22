@@ -1153,8 +1153,11 @@ specifics — read the README, not them.
   −137,2. Now −110,5, guarded by `co-enthalpy.test.ts`, which also checks the game's ΔG° at 298 K
   lands on ΔG°f(CO). **Still open:** the game keeps its own ΔH/ΔS and does not use
   `packages/shared/data/thermo.ts`; ids 12 and 21 disagree with it, without changing a sign.
-- **`3-ar/buffer-recipe-creator` Level 2's hint tiers were not derived with the rest** — they still
-  quote the pre-Appendix-D ammonium pKa 9,25 and the old stored numbers.
+- **`3-ar/buffer-recipe-creator` Level 2's hint tiers were not derived with the rest — fixed
+  2026-09-22.** On three of five puzzles a student who copied the revealed solution was marked
+  wrong. Every number in the hints and explanation now comes from `solveBuffer`, guarded by
+  `level2-hints.test.ts`; the stale ammonium 9,25 is gone from all three levels' text, and
+  `appendix-d-conformance.test.ts` now scans hint text as well as numeric fields.
 - **`1-ar/nafnakerfid` Level 2 strips accents before comparing**, so the recorded claim that it
   graded the corrected `Fosfór` spelling wrong is overstated — it accepted both, and accepts any
   accentless name.

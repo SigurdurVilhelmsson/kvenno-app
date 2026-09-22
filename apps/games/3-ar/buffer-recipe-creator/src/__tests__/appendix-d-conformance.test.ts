@@ -8,6 +8,8 @@ import {
 } from '@shared/data/appendix-d';
 
 import { LEVEL1_CHALLENGES } from '../data/level1-challenges';
+import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
+import { LEVEL3_PUZZLES } from '../data/level3-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
 
 /**
@@ -63,6 +65,19 @@ const NO_EXEMPTIONS_BY_DESIGN = true;
  */
 const HYPOTHETICAL = new Set([5.2]);
 
+// Matched on the acid as well as the number, deliberately. 4.19 is the wrong
+// value for benzoic AND the right value for oxalic Ka₂ (6.4 × 10⁻⁵), so a
+// bare numeric ban would block a legitimate oxalate buffer if one is ever
+// added. Every row here means "this number, for this acid, came from
+// somewhere other than Appendix D".
+const SUPERSEDED = [
+  { value: 10.33, acid: /HCO₃|NaHCO|bíkarb|karbón/i, why: 'carbonic Ka₂ gives 10.25' },
+  { value: 4.19, acid: /C₆H₅COOH|bens[oó]|benz/i, why: 'benzoic gives 4.20' },
+  { value: 4.76, acid: /citric|sítrón/i, why: 'citric Ka₂ gives 4.77' },
+  { value: 9.25, acid: /NH₄|amm[oó]n/i, why: 'ammonia Kb gives pKa(NH₄⁺) = 9.26' },
+  { value: 3.75, acid: /HCOOH|maura|formic/i, why: 'formic gives 3.74, as acetic gives 4.74' },
+];
+
 function describeSourced() {
   return SOURCED.map((s) => `${round2(s.pKa)} (${s.source})`).join(', ');
 }
@@ -114,21 +129,37 @@ describe('every pKa traces to Brown Appendix D', () => {
   });
 
   it('no problem still carries a superseded value', () => {
-    // Matched on the acid as well as the number, deliberately. 4.19 is the wrong
-    // value for benzoic AND the right value for oxalic Ka₂ (6.4 × 10⁻⁵), so a
-    // bare numeric ban would block a legitimate oxalate buffer if one is ever
-    // added. Every row here means "this number, for this acid, came from
-    // somewhere other than Appendix D".
-    const superseded = [
-      { value: 10.33, acid: /HCO₃|NaHCO|bíkarb|karbón/i, why: 'carbonic Ka₂ gives 10.25' },
-      { value: 4.19, acid: /C₆H₅COOH|bens[oó]|benz/i, why: 'benzoic gives 4.20' },
-      { value: 4.76, acid: /citric|sítrón/i, why: 'citric Ka₂ gives 4.77' },
-      { value: 9.25, acid: /NH₄|amm[oó]n/i, why: 'ammonia Kb gives pKa(NH₄⁺) = 9.26' },
-      { value: 3.75, acid: /HCOOH|maura|formic/i, why: 'formic gives 3.74, as acetic gives 4.74' },
-    ];
     for (const { what, pKa: value, acid } of rows) {
-      const hit = superseded.find((x) => x.value === value && x.acid.test(acid));
+      const hit = SUPERSEDED.find((x) => x.value === value && x.acid.test(acid));
       expect(hit, `${what} still uses a superseded value — Appendix D ${hit?.why}`).toBeUndefined();
+    }
+  });
+  it('no hint or explanation quotes a superseded value either', () => {
+    // The check above reads the numeric fields, so on 2026-09-19 the ammonium
+    // field moved to 9.26 while the hint text in all three levels kept saying
+    // 9.25 — the screen showed one number and the hints another. This reads
+    // every string a challenge or puzzle carries, in either decimal separator.
+    const texts = [
+      ...LEVEL1_CHALLENGES.map((c, i) => ({
+        what: `level 1 challenge ${i + 1}`,
+        acid: c.acidName,
+        text: JSON.stringify(c),
+      })),
+      ...[...LEVEL2_PUZZLES, ...LEVEL3_PUZZLES].map((p) => ({
+        what: `level ${LEVEL2_PUZZLES.includes(p as never) ? 2 : 3} puzzle ${p.id}`,
+        acid: BUFFER_PROBLEMS.find((b) => b.id === p.problemId)!.acidName,
+        text: JSON.stringify(p),
+      })),
+    ];
+    expect(texts.length).toBeGreaterThan(10);
+    for (const { what, acid, text } of texts) {
+      for (const { value, acid: pattern, why } of SUPERSEDED) {
+        if (!pattern.test(acid)) continue;
+        const [whole, frac] = value.toFixed(2).split('.');
+        expect(text, `${what} still quotes ${value} — Appendix D ${why}`).not.toMatch(
+          new RegExp(`\\b${whole}[.,]${frac}\\b`)
+        );
+      }
     }
   });
 });

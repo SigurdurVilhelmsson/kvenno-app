@@ -166,19 +166,19 @@ export const LEVEL3_PUZZLES: Level3Puzzle[] = [
     targetConcentration: 0.2,
     volumeTolerance: 0.05,
     hints: {
-      topic: 'Ammóníustuðpúði með pKa = 9.25 og markmiðs-pH = 9.50.',
+      topic: 'Ammóníustuðpúði með pKa = 9.26 og markmiðs-pH = 9.50.',
       strategy: 'pH > pKa þannig að hlutfall > 1. Hlutfall = 10^(0.25) = 1.78.',
       method: 'Heildar mól = 0.2 × 0.2 = 0.04 mol. Sýra: 0.0142 mol, Basi: 0.0258 mol.',
       solution: 'Úr 2.0 M birgð: Sýra = 7.10 mL, Basi = 12.90 mL, Vatn = 180.0 mL.',
     },
     hintsEn: {
-      topic: 'Ammonium buffer with pKa = 9.25 and target pH = 9.50.',
+      topic: 'Ammonium buffer with pKa = 9.26 and target pH = 9.50.',
       strategy: 'pH > pKa so the ratio > 1. Ratio = 10^(0.25) = 1.78.',
       method: 'Total moles = 0.2 × 0.2 = 0.04 mol. Acid: 0.0142 mol, Base: 0.0258 mol.',
       solution: 'From 2.0 M stock: Acid = 7.10 mL, Base = 12.90 mL, Water = 180.0 mL.',
     },
     hintsPl: {
-      topic: 'Bufor amonowy z pKa = 9.25 i docelowym pH = 9.50.',
+      topic: 'Bufor amonowy z pKa = 9.26 i docelowym pH = 9.50.',
       strategy: 'pH > pKa, więc proporcja > 1. Proporcja = 10^(0.25) = 1.78.',
       method: 'Łączne mole = 0.2 × 0.2 = 0.04 mol. Kwas: 0.0142 mol, Zasada: 0.0258 mol.',
       solution: 'Z 2.0 M roztworu: Kwas = 7.10 mL, Zasada = 12.90 mL, Woda = 180.0 mL.',

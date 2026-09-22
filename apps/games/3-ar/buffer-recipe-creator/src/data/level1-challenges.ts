@@ -295,27 +295,27 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
     hint: 'Sama reglan gildir: pH = pKa = jöfn hlutföll',
     hints: {
       topic: 'Þetta snýst um ammóníustuðpúða sem virkar við hátt pH.',
-      strategy: 'Þrátt fyrir að pKa sé hátt (9.25), gildir sama regla: pH = pKa → jafnt hlutfall.',
+      strategy: 'Þrátt fyrir að pKa sé hátt (9.26), gildir sama regla: pH = pKa → jafnt hlutfall.',
       method:
-        'pH = pKa + log([Basi]/[Sýra]). 9.25 = 9.25 + log([Basi]/[Sýra]). log = 0 → hlutfall = 1.',
+        'pH = pKa + log([Basi]/[Sýra]). 9.26 = 9.26 + log([Basi]/[Sýra]). log = 0 → hlutfall = 1.',
       solution:
-        'Markmiðs-pH (9.25) = pKa (9.25). Settu jafnt af hvoru, t.d. 5 af hvoru → hlutfall = 1.0.',
+        'Markmiðs-pH (9.26) = pKa (9.26). Settu jafnt af hvoru, t.d. 5 af hvoru → hlutfall = 1.0.',
     },
     hintsEn: {
       topic: 'This is about the ammonium buffer which works at high pH.',
-      strategy: 'Even though pKa is high (9.25), the same rule applies: pH = pKa → equal ratio.',
+      strategy: 'Even though pKa is high (9.26), the same rule applies: pH = pKa → equal ratio.',
       method:
-        'pH = pKa + log([Base]/[Acid]). 9.25 = 9.25 + log([Base]/[Acid]). log = 0 → ratio = 1.',
+        'pH = pKa + log([Base]/[Acid]). 9.26 = 9.26 + log([Base]/[Acid]). log = 0 → ratio = 1.',
       solution:
-        'Target pH (9.25) = pKa (9.25). Add equal amounts of each, e.g. 5 of each → ratio = 1.0.',
+        'Target pH (9.26) = pKa (9.26). Add equal amounts of each, e.g. 5 of each → ratio = 1.0.',
     },
     hintsPl: {
       topic: 'To dotyczy buforu amonowego, który działa przy wysokim pH.',
       strategy:
-        'Mimo że pKa jest wysokie (9.25), ta sama zasada obowiązuje: pH = pKa → równa proporcja.',
+        'Mimo że pKa jest wysokie (9.26), ta sama zasada obowiązuje: pH = pKa → równa proporcja.',
       method:
-        'pH = pKa + log([Zasada]/[Kwas]). 9.25 = 9.25 + log([Zasada]/[Kwas]). log = 0 → proporcja = 1.',
-      solution: 'Docelowe pH (9.25) = pKa (9.25). Dodaj równe ilości, np. po 5 → proporcja = 1.0.',
+        'pH = pKa + log([Zasada]/[Kwas]). 9.26 = 9.26 + log([Zasada]/[Kwas]). log = 0 → proporcja = 1.',
+      solution: 'Docelowe pH (9.26) = pKa (9.26). Dodaj równe ilości, np. po 5 → proporcja = 1.0.',
     },
     explanation:
       'Ammóníustuðpúði virkar við hátt pH. Sama hugmynd: jafnt hlutfall gefur pH = pKa, óháð hvaða stuðpúðakerfi er notað.',
