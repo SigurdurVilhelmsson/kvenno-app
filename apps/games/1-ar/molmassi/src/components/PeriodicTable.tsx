@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 import {
   ELEMENTS,
   CATEGORY_COLORS,
@@ -35,7 +37,7 @@ function ElementCell({
   const colors = CATEGORY_COLORS[element.category];
   const mass = showApproximate
     ? APPROX_MASSES[element.symbol] || Math.round(element.atomicMass)
-    : element.atomicMass.toFixed(3);
+    : formatDecimal(element.atomicMass, 3);
 
   return (
     <button
@@ -295,7 +297,7 @@ export function PeriodicTable({
                   <div className="text-sm font-mono text-warm-600 mt-1">
                     {showApprox
                       ? `≈ ${APPROX_MASSES[element.symbol] || Math.round(element.atomicMass)} g/mol`
-                      : `${element.atomicMass.toFixed(3)} g/mol`}
+                      : `${formatDecimal(element.atomicMass, 3)} g/mol`}
                   </div>
                 </button>
               ))}
@@ -328,7 +330,7 @@ export function PeriodicTable({
                   <div className="bg-white rounded-lg p-2 border">
                     <div className="text-warm-500 text-xs">Atómmassi (nákvæmt)</div>
                     <div className="font-bold font-mono">
-                      {selectedElement.atomicMass.toFixed(3)} g/mol
+                      {formatDecimal(selectedElement.atomicMass, 3)} g/mol
                     </div>
                   </div>
                   <div className="bg-white rounded-lg p-2 border">

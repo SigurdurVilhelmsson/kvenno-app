@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
-import { shuffleArray } from '@shared/utils';
+import { formatDecimal, formatScientific, shuffleArray } from '@shared/utils';
 
 import { COMPOUNDS, STANDARD_MOLAR_VOLUME, STP_LABEL, type Compound } from '../data/compounds';
 import { getElementBySymbol } from '../data/elements';
@@ -54,8 +54,23 @@ function sigfig(n: number, f: number): number {
   return Math.round(n * mag) / mag;
 }
 
+/**
+ * A result as a student reads it: four significant figures, Icelandic decimal
+ * comma, and Avogadro-scale values as `1,204 × 10²⁴` — which
+ * `parseScientificAnswer` reads back, superscripts and all.
+ */
 function fmt(n: number): string {
-  return Math.abs(n) >= 1e6 ? n.toExponential(3) : sigfig(n, 4).toString();
+  return Math.abs(n) >= 1e6 ? formatScientific(n, 4) : formatDecimal(sigfig(n, 4));
+}
+
+/**
+ * A molar mass as printed in a worked solution: two decimals, as the intro's
+ * `18,02 g/mól` does. The value itself is summed from the atomic masses and
+ * carries float noise (HCl is 36.458000000000006), which must not reach the
+ * screen; the answer is still graded against the unrounded value.
+ */
+function fmtMolarMass(M: number): string {
+  return formatDecimal(M, 2);
 }
 
 function randRange(min: number, max: number, step: number): number {
@@ -122,9 +137,9 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
     return {
       compound: c,
       correctAnswer: ans,
-      questionText: `Hversu mörg mól eru í ${m} g af ${label}?`,
+      questionText: `Hversu mörg mól eru í ${formatDecimal(m)} g af ${label}?`,
       solutionFormula: 'Einingagreining: g × (1 mól / g) → mól',
-      solutionSteps: `${m} g × (1 mól / ${M} g) = ${fmt(ans)} mól\nEiningin g strikast út og mól verður eftir.`,
+      solutionSteps: `${formatDecimal(m)} g × (1 mól / ${fmtMolarMass(M)} g) = ${fmt(ans)} mól\nEiningin g strikast út og mól verður eftir.`,
     };
   }
   if (type === 'moles_to_mass') {
@@ -133,9 +148,9 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
     return {
       compound: c,
       correctAnswer: ans,
-      questionText: `Hvað vega ${n} mól af ${label} í grömmum?`,
+      questionText: `Hvað vega ${formatDecimal(n)} mól af ${label} í grömmum?`,
       solutionFormula: 'Einingagreining: mól × (g / 1 mól) → g',
-      solutionSteps: `${n} mól × (${M} g / 1 mól) = ${fmt(ans)} g\nEiningin mól strikast út og g verður eftir.`,
+      solutionSteps: `${formatDecimal(n)} mól × (${fmtMolarMass(M)} g / 1 mól) = ${fmt(ans)} g\nEiningin mól strikast út og g verður eftir.`,
     };
   }
   if (type === 'moles_to_particles') {
@@ -144,9 +159,9 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
     return {
       compound: c,
       correctAnswer: ans,
-      questionText: `Hversu margar sameindir eru í ${n} mól af ${label}?`,
+      questionText: `Hversu margar sameindir eru í ${formatDecimal(n)} mól af ${label}?`,
       solutionFormula: 'Einingagreining: mól × (sameindir / 1 mól) → sameindir',
-      solutionSteps: `${n} mól × (6,022 × 10²³ sameindir / 1 mól) = ${fmt(ans)} sameindir\nEiningin mól strikast út.`,
+      solutionSteps: `${formatDecimal(n)} mól × (6,022 × 10²³ sameindir / 1 mól) = ${fmt(ans)} sameindir\nEiningin mól strikast út.`,
     };
   }
   if (type === 'moles_to_element_atoms') {
@@ -165,9 +180,9 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
     return {
       compound: c,
       correctAnswer: ans,
-      questionText: `Hversu mörg ${elementName}-atóm (${element.symbol}) eru í ${n} mól af ${label}?`,
+      questionText: `Hversu mörg ${elementName}-atóm (${element.symbol}) eru í ${formatDecimal(n)} mól af ${label}?`,
       solutionFormula: 'Einingagreining: mól × (atóm af frumefninu / 1 mól) × (atóm / 1 mól)',
-      solutionSteps: `Í hverri sameind af ${c.formula} eru ${element.count} ${element.symbol}-atóm.\n${n} mól × (${element.count} mól ${element.symbol} / 1 mól ${c.formula}) × (6,022 × 10²³ atóm / 1 mól) = ${fmt(ans)} atóm\nEiningin mól strikast út tvisvar.`,
+      solutionSteps: `Í hverri sameind af ${c.formula} eru ${element.count} ${element.symbol}-atóm.\n${formatDecimal(n)} mól × (${element.count} mól ${element.symbol} / 1 mól ${c.formula}) × (6,022 × 10²³ atóm / 1 mól) = ${fmt(ans)} atóm\nEiningin mól strikast út tvisvar.`,
     };
   }
 
@@ -183,9 +198,9 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
       return {
         compound: c,
         correctAnswer: ans,
-        questionText: `Hvaða rúmmál taka ${n} mól af ${label} við ${STP_LABEL}?`,
+        questionText: `Hvaða rúmmál taka ${formatDecimal(n)} mól af ${label} við ${STP_LABEL}?`,
         solutionFormula: 'Einingagreining: mól × (L / 1 mól) → L',
-        solutionSteps: `${n} mól × (${STANDARD_MOLAR_VOLUME} L / 1 mól) = ${fmt(ans)} L\nEiningin mól strikast út. Þetta gildir aðeins um gas — 22,4 L/mól segir ekkert um fast efni eða vökva.`,
+        solutionSteps: `${formatDecimal(n)} mól × (${formatDecimal(STANDARD_MOLAR_VOLUME)} L / 1 mól) = ${fmt(ans)} L\nEiningin mól strikast út. Þetta gildir aðeins um gas — 22,4 L/mól segir ekkert um fast efni eða vökva.`,
       };
     }
 
@@ -194,9 +209,9 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
     return {
       compound: c,
       correctAnswer: ans,
-      questionText: `Hversu mörg mól eru í ${volume} L af ${label} við ${STP_LABEL}?`,
+      questionText: `Hversu mörg mól eru í ${formatDecimal(volume)} L af ${label} við ${STP_LABEL}?`,
       solutionFormula: 'Einingagreining: L × (1 mól / L) → mól',
-      solutionSteps: `${volume} L × (1 mól / ${STANDARD_MOLAR_VOLUME} L) = ${fmt(ans)} mól\nEiningin L strikast út. Þetta gildir aðeins um gas.`,
+      solutionSteps: `${formatDecimal(volume)} L × (1 mól / ${formatDecimal(STANDARD_MOLAR_VOLUME)} L) = ${fmt(ans)} mól\nEiningin L strikast út. Þetta gildir aðeins um gas.`,
     };
   }
 
@@ -206,9 +221,9 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
   return {
     compound: c,
     correctAnswer: ans,
-    questionText: `Hversu mörg mól eru ${coeff} × 10²³ sameindir?`,
+    questionText: `Hversu mörg mól eru ${formatDecimal(coeff)} × 10²³ sameindir?`,
     solutionFormula: 'Einingagreining: sameindir × (1 mól / sameindir) → mól',
-    solutionSteps: `${coeff} × 10²³ sameindir × (1 mól / 6,022 × 10²³ sameindir) = ${fmt(ans)} mól\nEiningin sameindir strikast út.`,
+    solutionSteps: `${formatDecimal(coeff)} × 10²³ sameindir × (1 mól / 6,022 × 10²³ sameindir) = ${fmt(ans)} mól\nEiningin sameindir strikast út.`,
   };
 }
 
@@ -314,7 +329,8 @@ export function Level2({
                 </div>
                 <div className="bg-teal-50 border border-teal-200 rounded-lg p-3">
                   <p className="font-mono text-teal-800 text-center">
-                    fjöldi móla × {STANDARD_MOLAR_VOLUME} L/mól = rúmmál <strong>gass</strong>
+                    fjöldi móla × {formatDecimal(STANDARD_MOLAR_VOLUME)} L/mól = rúmmál{' '}
+                    <strong>gass</strong>
                   </p>
                   <p className="text-xs text-teal-700 text-center mt-2">
                     Aðeins við {STP_LABEL} — og aðeins fyrir gas. Eitt mól af hvaða gasi sem er

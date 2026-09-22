@@ -1,3 +1,5 @@
+import { formatDecimal } from '@shared/utils';
+
 import { Compound } from '../data/compounds';
 import { generateCalculationBreakdown } from '../utils/calculations';
 
@@ -33,10 +35,12 @@ export function CalculationBreakdown({ compound }: CalculationBreakdownProps) {
                   <span className="text-warm-600">×</span>
                   <span className="font-semibold">{step.count}</span>
                   <span className="text-warm-600">×</span>
-                  <span className="text-sm text-warm-600">{step.atomicMass?.toFixed(3)} g/mol</span>
+                  <span className="text-sm text-warm-600">
+                    {formatDecimal(step.atomicMass ?? 0, 3)} g/mol
+                  </span>
                 </div>
                 <span className="font-semibold text-green-600">
-                  = {step.total?.toFixed(3)} g/mol
+                  = {formatDecimal(step.total ?? 0, 3)} g/mol
                 </span>
               </div>
             )}
@@ -46,7 +50,7 @@ export function CalculationBreakdown({ compound }: CalculationBreakdownProps) {
           <div className="flex items-center justify-between bg-green-100 rounded px-3 py-2">
             <span className="font-bold text-warm-700">Heild mólmassi:</span>
             <span className="text-xl font-bold text-green-600">
-              {compound.molarMass.toFixed(3)} g/mol
+              {formatDecimal(compound.molarMass, 3)} g/mol
             </span>
           </div>
         </div>

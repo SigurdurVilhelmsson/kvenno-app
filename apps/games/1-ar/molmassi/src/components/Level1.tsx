@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
-import { shuffleArray, parseStudentNumber } from '@shared/utils';
+import { formatDecimal, shuffleArray, parseStudentNumber } from '@shared/utils';
 
 import { CalculationBreakdown } from './CalculationBreakdown';
 import { PeriodicTable } from './PeriodicTable';
@@ -371,7 +371,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
               : compound.difficulty === 'medium'
                 ? 'Miðlungs'
                 : 'Erfitt'}{' '}
-            (±{getTolerance(compound.difficulty)} g/mol)
+            (±{formatDecimal(getTolerance(compound.difficulty))} g/mol)
           </span>
         </div>
 
@@ -386,7 +386,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-                placeholder="t.d. 18.02"
+                placeholder="t.d. 18,02"
                 className="flex-1 px-4 py-3 border-2 border-warm-300 rounded-xl focus:border-kvenno-orange focus:outline-none text-lg font-mono"
                 autoFocus
               />
@@ -428,7 +428,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
         {showHint && !answered && (
           <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4 mb-4 text-sm text-yellow-800">
             <span className="font-bold">Vísbending:</span> Algeng atómmassi – H≈1, C≈12, N≈14, O≈16,
-            Na≈23, S≈32, Cl≈35.5, K≈39, Ca≈40
+            Na≈23, S≈32, Cl≈35,5, K≈39, Ca≈40
           </div>
         )}
 
@@ -439,8 +439,8 @@ export function Level1({ onBack, onComplete }: Level1Props) {
               feedback={{
                 isCorrect,
                 explanation: isCorrect
-                  ? `Rétt! Mólmassi ${compound.name} er ${compound.molarMass.toFixed(3)} g/mol.`
-                  : `Rangt. Rétt svar er ${compound.molarMass.toFixed(3)} g/mol. Sjáðu útreikninginn hér að neðan.`,
+                  ? `Rétt! Mólmassi ${compound.name} er ${formatDecimal(compound.molarMass, 3)} g/mol.`
+                  : `Rangt. Rétt svar er ${formatDecimal(compound.molarMass, 3)} g/mol. Sjáðu útreikninginn hér að neðan.`,
               }}
               config={{ showExplanation: true }}
             />
