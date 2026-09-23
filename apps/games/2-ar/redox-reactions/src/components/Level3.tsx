@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
 
@@ -34,6 +34,16 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
     message: '',
   });
   const [, setTotalHintsUsed] = useState(0);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+
+  // On a phone the verdict and its "Næsta" button land below the input. After Enter on the
+  // soft keyboard (which stays open) they sit under it, so bring them into view — 'nearest'
+  // leaves the page alone wherever they are already visible, as on desktop.
+  useEffect(() => {
+    if (feedback.show) {
+      feedbackRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+    }
+  }, [feedback.show]);
 
   const problem = problems[currentProblem];
 
@@ -179,6 +189,9 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                     }
                   }}
                   placeholder={t('level3.examplePlaceholder', 't.d. Zn')}
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck={false}
                   className="w-full p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-none"
                 />
               </div>
@@ -205,6 +218,9 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                     }
                   }}
                   placeholder={t('level3.examplePlaceholder', 't.d. Zn')}
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck={false}
                   className="w-full p-3 border-2 border-red-300 rounded-xl focus:border-red-500 focus:outline-none"
                 />
               </div>
@@ -246,6 +262,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               </label>
               <input
                 type="number"
+                inputMode="numeric"
                 value={answers.oxElectrons}
                 onChange={(e) => setAnswers((prev) => ({ ...prev, oxElectrons: e.target.value }))}
                 onKeyDown={(e) => {
@@ -292,6 +309,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               </label>
               <input
                 type="number"
+                inputMode="numeric"
                 value={answers.redElectrons}
                 onChange={(e) => setAnswers((prev) => ({ ...prev, redElectrons: e.target.value }))}
                 onKeyDown={(e) => {
@@ -348,6 +366,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                 </label>
                 <input
                   type="number"
+                  inputMode="numeric"
                   value={answers.oxMultiplier}
                   onChange={(e) =>
                     setAnswers((prev) => ({ ...prev, oxMultiplier: e.target.value }))
@@ -372,6 +391,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                 </label>
                 <input
                   type="number"
+                  inputMode="numeric"
                   value={answers.redMultiplier}
                   onChange={(e) =>
                     setAnswers((prev) => ({ ...prev, redMultiplier: e.target.value }))
@@ -450,14 +470,19 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
 
   if (showIntro) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 space-y-5">
-          <div className="flex justify-between items-center">
-            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-3 sm:p-4 md:p-8">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 space-y-5">
+          <div className="flex flex-wrap justify-between items-center gap-x-3 gap-y-1">
+            <button
+              onClick={onBack}
+              className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
+            >
               ← {t('common.back', 'Til baka')}
             </button>
-            <h1 className="text-lg font-bold text-warm-800">Hálfhvarfaaðferðin — Kennsla</h1>
-            <span className="text-sm text-warm-500">Stig 3</span>
+            <h1 className="text-lg font-bold text-warm-800 order-last w-full sm:order-none sm:w-auto">
+              Hálfhvarfaaðferðin — Kennsla
+            </h1>
+            <span className="text-sm text-warm-500 whitespace-nowrap">Stig 3</span>
           </div>
 
           <div className="bg-teal-50 border-l-4 border-teal-500 rounded-lg p-4">
@@ -518,18 +543,21 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-        <div className="flex justify-between items-center mb-6">
-          <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-3 sm:p-4 md:p-8">
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+        <div className="flex flex-wrap justify-between items-center gap-x-3 gap-y-2 mb-6">
+          <button
+            onClick={onBack}
+            className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
+          >
             <span>&larr;</span> {t('common.back', 'Til baka')}
           </button>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-warm-500">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="text-sm text-warm-500 whitespace-nowrap">
               {t('level3.problem', 'Dæmi')} {currentProblem + 1} {t('level3.of', 'af')}{' '}
               {problems.length}
             </div>
-            <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold">
+            <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold whitespace-nowrap">
               {t('level3.score', 'Stig')}: {score}
             </div>
           </div>
@@ -567,31 +595,33 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
         {renderStep()}
 
         {feedback.show && (
-          <div
-            className={`mt-4 p-4 rounded-xl ${
-              feedback.correct
-                ? 'bg-green-100 border-2 border-green-400'
-                : 'bg-amber-100 border-2 border-amber-400'
-            }`}
-          >
-            <div className={`font-bold ${feedback.correct ? 'text-green-800' : 'text-amber-800'}`}>
-              {feedback.correct ? '✓ ' : ''}
-              {feedback.message}
+          <div ref={feedbackRef} data-testid="step-feedback">
+            <div
+              className={`mt-4 p-4 rounded-xl ${
+                feedback.correct
+                  ? 'bg-green-100 border-2 border-green-400'
+                  : 'bg-amber-100 border-2 border-amber-400'
+              }`}
+            >
+              <div
+                className={`font-bold ${feedback.correct ? 'text-green-800' : 'text-amber-800'}`}
+              >
+                {feedback.correct ? '✓ ' : ''}
+                {feedback.message}
+              </div>
             </div>
-          </div>
-        )}
 
-        {feedback.show && (
-          <button
-            onClick={handleNext}
-            className="w-full mt-4 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl"
-          >
-            {step === 'complete'
-              ? currentProblem < problems.length - 1
-                ? t('level3.nextProblem', 'Næsta dæmi') + ' →'
-                : t('level3.completeLevel', 'Ljúka stigi') + ' →'
-              : t('common.next', 'Halda áfram') + ' →'}
-          </button>
+            <button
+              onClick={handleNext}
+              className="w-full mt-4 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl"
+            >
+              {step === 'complete'
+                ? currentProblem < problems.length - 1
+                  ? t('level3.nextProblem', 'Næsta dæmi') + ' →'
+                  : t('level3.completeLevel', 'Ljúka stigi') + ' →'
+                : t('common.next', 'Halda áfram') + ' →'}
+            </button>
+          </div>
         )}
 
         {showHint && (
@@ -609,7 +639,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               setShowHint(true);
               setTotalHintsUsed((prev) => prev + 1);
             }}
-            className="w-full mt-4 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-2 px-4 rounded-xl text-sm"
+            className="w-full mt-4 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-2 px-4 rounded-xl text-sm pointer-coarse:min-h-11"
           >
             {t('common.hint', 'Syna visbendingu')}
           </button>

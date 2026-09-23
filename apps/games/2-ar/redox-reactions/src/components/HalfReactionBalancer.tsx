@@ -233,7 +233,7 @@ export function HalfReactionBalancer({
   };
 
   return (
-    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-4 shadow-lg">
+    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-3 sm:p-4 shadow-lg">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-white font-bold text-sm flex items-center gap-2">
           <span className="text-lg">⚖️</span>
@@ -257,7 +257,7 @@ export function HalfReactionBalancer({
             <button
               key={r.id}
               onClick={() => handleReactionChange(i)}
-              className={`p-2 rounded-lg text-xs font-mono transition-colors ${
+              className={`p-2 rounded-lg text-xs font-mono transition-colors pointer-coarse:min-h-11 ${
                 selectedReaction === i
                   ? 'bg-purple-500 text-white'
                   : 'bg-warm-700 text-warm-300 hover:bg-warm-600'
@@ -287,7 +287,7 @@ export function HalfReactionBalancer({
       </div>
 
       {/* Current step display */}
-      <div className="bg-warm-700/50 rounded-lg p-4 mb-4">
+      <div className="bg-warm-700/50 rounded-lg p-3 sm:p-4 mb-4">
         <div className="flex items-center gap-2 mb-2">
           <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white font-bold text-sm">
             {currentStep + 1}
@@ -300,9 +300,9 @@ export function HalfReactionBalancer({
         <div className="text-white mb-3">{step.instruction}</div>
 
         {/* Current equation state */}
-        <div className="bg-warm-900 p-4 rounded-lg mb-3">
+        <div className="bg-warm-900 p-3 sm:p-4 rounded-lg mb-3">
           <div className="text-center">
-            <div className="text-xl font-mono text-white mb-2">{step.result}</div>
+            <div className="text-lg sm:text-xl font-mono text-white mb-2">{step.result}</div>
             {step.addedSpecies && completedSteps.includes(currentStep) && (
               <div className="text-green-400 text-sm animate-pulse">+ {step.addedSpecies}</div>
             )}
@@ -313,7 +313,7 @@ export function HalfReactionBalancer({
         {interactive && (
           <button
             onClick={() => setShowHint(!showHint)}
-            className="text-yellow-400 hover:text-yellow-300 text-sm underline"
+            className="text-yellow-400 hover:text-yellow-300 text-sm underline pointer-coarse:py-3 pointer-coarse:-my-3"
           >
             {showHint ? 'Fela vísbendingu' : 'Sýna vísbendingu'}
           </button>
@@ -335,13 +335,13 @@ export function HalfReactionBalancer({
           <button
             onClick={handlePrevStep}
             disabled={currentStep === 0}
-            className="flex-1 px-4 py-2 rounded-lg bg-warm-700 text-warm-300 hover:bg-warm-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="flex-1 px-4 py-2 rounded-lg bg-warm-700 text-warm-300 hover:bg-warm-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors pointer-coarse:min-h-11"
           >
             ← Fyrra skref
           </button>
           <button
             onClick={handleNextStep}
-            className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`flex-1 px-4 py-2 rounded-lg font-medium transition-colors pointer-coarse:min-h-11 ${
               isComplete
                 ? 'bg-green-500 text-white hover:bg-green-600'
                 : 'bg-purple-500 text-white hover:bg-purple-600'
@@ -360,7 +360,7 @@ export function HalfReactionBalancer({
             Stillt helmingshvarf!
           </div>
           <div className="text-center bg-warm-900 p-3 rounded-lg mb-2">
-            <div className="text-xl font-mono text-white">
+            <div className="text-lg sm:text-xl font-mono text-white">
               {reaction.steps[reaction.steps.length - 1].result}
             </div>
           </div>

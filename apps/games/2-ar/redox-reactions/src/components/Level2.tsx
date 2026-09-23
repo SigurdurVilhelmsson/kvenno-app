@@ -229,14 +229,19 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
 
   if (showIntro) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 space-y-5">
-          <div className="flex justify-between items-center">
-            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-3 sm:p-4 md:p-8">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 space-y-5">
+          <div className="flex flex-wrap justify-between items-center gap-x-3 gap-y-1">
+            <button
+              onClick={onBack}
+              className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
+            >
               {t('common.back', '← Til baka')}
             </button>
-            <h1 className="text-lg font-bold text-warm-800">Oxun & Afoxun — Kennsla</h1>
-            <span className="text-sm text-warm-500">Stig 2</span>
+            <h1 className="text-lg font-bold text-warm-800 order-last w-full sm:order-none sm:w-auto">
+              Oxun & Afoxun — Kennsla
+            </h1>
+            <span className="text-sm text-warm-500 whitespace-nowrap">Stig 2</span>
           </div>
 
           <div className="bg-teal-50 border-l-4 border-teal-500 rounded-lg p-4">
@@ -298,17 +303,20 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-        <div className="flex justify-between items-center mb-6">
-          <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-3 sm:p-4 md:p-8">
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+        <div className="flex flex-wrap justify-between items-center gap-x-3 gap-y-2 mb-6">
+          <button
+            onClick={onBack}
+            className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
+          >
             {t('common.back', '← Til baka')}
           </button>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-warm-500">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="text-sm text-warm-500 whitespace-nowrap">
               {currentProgress} {t('level2.progressOf', 'af')} {totalQuestions}
             </div>
-            <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-bold">
+            <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-bold whitespace-nowrap">
               {t('level2.score', 'Stig')}: {score}
             </div>
           </div>
@@ -318,7 +326,7 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
           🔄 {t('levels.level2.name', 'Greina redox-hvörf')}
         </h1>
 
-        <div className="bg-warm-50 p-6 rounded-xl mb-6">
+        <div className="bg-warm-50 p-3 sm:p-6 rounded-xl mb-6">
           <div className="text-center mb-4">
             <div className="text-sm text-warm-500 mb-2">
               {t('level2.reaction', 'Efnahvarf')} {currentReaction + 1}:
@@ -373,7 +381,7 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
                   setShowHint(true);
                   setTotalHintsUsed((prev) => prev + 1);
                 }}
-                className="w-full bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-2 px-4 rounded-xl text-sm"
+                className="w-full bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-2 px-4 rounded-xl text-sm pointer-coarse:min-h-11"
               >
                 💡 {t('common.hint', 'Sýna vísbendingu')}
               </button>
@@ -402,7 +410,7 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
             {currentQuestion === questionTypes.length - 1 && (
               <button
                 onClick={() => setShowExplanation((prev) => !prev)}
-                className="w-full bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold py-2 px-4 rounded-xl"
+                className="w-full bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold py-2 px-4 rounded-xl pointer-coarse:min-h-11"
               >
                 {showExplanation
                   ? `🔼 ${t('level2.hideExplanation', 'Fela útskýringu')}`
@@ -429,20 +437,20 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
           </div>
         )}
 
-        <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+        <div className="mt-6 bg-warm-50 p-3 sm:p-4 rounded-xl">
           <h3 className="font-semibold text-warm-700 mb-2">
             📚 {t('level2.keyConcepts', 'Lykilhugtök')}:
           </h3>
-          <div className="grid grid-cols-2 gap-3 text-sm">
-            <div className="bg-blue-50 p-3 rounded-lg">
+          <div className="grid grid-cols-1 min-[360px]:grid-cols-2 gap-2 sm:gap-3 text-sm">
+            <div className="bg-blue-50 p-2 sm:p-3 rounded-lg">
               <div className="font-bold text-blue-800">{t('concepts.oxidation', 'Oxun')}</div>
               <div className="text-blue-600">{t('concepts.oxidationDesc', 'Tapa e⁻ • ox# ↑')}</div>
             </div>
-            <div className="bg-red-50 p-3 rounded-lg">
+            <div className="bg-red-50 p-2 sm:p-3 rounded-lg">
               <div className="font-bold text-red-800">{t('concepts.reduction', 'Afoxun')}</div>
               <div className="text-red-600">{t('concepts.reductionDesc', 'Öðlast e⁻ • ox# ↓')}</div>
             </div>
-            <div className="bg-purple-50 p-3 rounded-lg">
+            <div className="bg-purple-50 p-2 sm:p-3 rounded-lg">
               <div className="font-bold text-purple-800">
                 {t('concepts.oxidizingAgent', 'Oxunarefni')}
               </div>
@@ -450,7 +458,7 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
                 {t('concepts.oxidizingAgentDesc', 'Veldur oxun • Afoxast sjálft')}
               </div>
             </div>
-            <div className="bg-green-50 p-3 rounded-lg">
+            <div className="bg-green-50 p-2 sm:p-3 rounded-lg">
               <div className="font-bold text-green-800">
                 {t('concepts.reducingAgent', 'Afoxunarefni')}
               </div>

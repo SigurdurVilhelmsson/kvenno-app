@@ -101,27 +101,31 @@ export function OxidationStateDisplay({
   // Size classes
   const sizeClasses = {
     small: { badge: 'w-8 h-8 text-sm', element: 'text-lg', container: 'gap-2' },
-    medium: { badge: 'w-12 h-12 text-lg', element: 'text-2xl', container: 'gap-4' },
+    medium: {
+      badge: 'w-10 h-10 text-base sm:w-12 sm:h-12 sm:text-lg',
+      element: 'text-2xl',
+      container: 'gap-x-3 gap-y-4 sm:gap-4',
+    },
     large: { badge: 'w-16 h-16 text-xl', element: 'text-3xl', container: 'gap-6' },
   };
 
   const classes = sizeClasses[size];
 
   return (
-    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-6 shadow-lg">
+    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-3 sm:p-6 shadow-lg">
       <h3 className="text-white font-bold text-sm mb-4 flex items-center gap-2">
         <span className="text-lg">⚡</span>
         Rafeindasamskipti (Electron Transfer)
       </h3>
 
-      <div className={`flex items-center justify-center ${classes.container} relative`}>
+      <div className={`flex flex-wrap items-center justify-center ${classes.container} relative`}>
         {electronChanges.map((change) => (
           <div key={change.element} className="flex flex-col items-center">
             {/* Element symbol */}
             <div className={`font-bold ${classes.element} text-white mb-2`}>{change.element}</div>
 
             {/* Oxidation state change */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               {/* Before state */}
               <div
                 className={`${classes.badge} ${getOxidationColor(change.before)} ${getTextColor(change.before)}
@@ -136,7 +140,7 @@ export function OxidationStateDisplay({
               <div className="flex flex-col items-center">
                 <div className="text-warm-400 text-xl">→</div>
                 {(change.isOxidized || change.isReduced) && (
-                  <div className="text-[9px] text-warm-500 whitespace-nowrap">
+                  <div className="text-[9px] max-sm:text-xs pointer-coarse:text-xs text-warm-500 whitespace-nowrap">
                     {change.isOxidized ? 'e⁻ →' : '← e⁻'}
                   </div>
                 )}
@@ -200,10 +204,10 @@ export function OxidationStateDisplay({
       {/* Explanation */}
       {animationPhase === 'complete' && (
         <div className="mt-4 bg-warm-700/50 rounded-lg p-3 text-sm">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             {oxidizedSpecies && (
               <div className="flex items-start gap-2">
-                <div className="w-2 h-2 rounded-full bg-orange-500 mt-1.5" />
+                <div className="w-2 h-2 shrink-0 rounded-full bg-orange-500 mt-1.5" />
                 <div>
                   <span className="text-orange-300 font-semibold">{oxidizedSpecies.element}</span>
                   <span className="text-warm-400"> oxast: </span>
@@ -221,7 +225,7 @@ export function OxidationStateDisplay({
             )}
             {reducedSpecies && (
               <div className="flex items-start gap-2">
-                <div className="w-2 h-2 rounded-full bg-blue-500 mt-1.5" />
+                <div className="w-2 h-2 shrink-0 rounded-full bg-blue-500 mt-1.5" />
                 <div>
                   <span className="text-blue-300 font-semibold">{reducedSpecies.element}</span>
                   <span className="text-warm-400"> afoxast: </span>
@@ -239,17 +243,17 @@ export function OxidationStateDisplay({
       )}
 
       {/* Legend */}
-      <div className="mt-4 flex justify-center gap-6 text-xs">
+      <div className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-2 sm:gap-6 text-xs">
         <div className="flex items-center gap-1">
-          <div className="w-4 h-4 rounded-full bg-gradient-to-r from-blue-600 to-blue-400" />
+          <div className="w-4 h-4 shrink-0 rounded-full bg-gradient-to-r from-blue-600 to-blue-400" />
           <span className="text-warm-400">Neikvæð oxunartala</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-4 h-4 rounded-full bg-warm-400" />
+          <div className="w-4 h-4 shrink-0 rounded-full bg-warm-400" />
           <span className="text-warm-400">Núll</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-4 h-4 rounded-full bg-gradient-to-r from-orange-400 to-red-600" />
+          <div className="w-4 h-4 shrink-0 rounded-full bg-gradient-to-r from-orange-400 to-red-600" />
           <span className="text-warm-400">Jákvæð oxunartala</span>
         </div>
       </div>
