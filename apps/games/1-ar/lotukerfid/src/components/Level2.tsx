@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
@@ -14,6 +14,7 @@ import {
 } from '../data/elements';
 import { TREND_INFO, TREND_QUESTIONS, type TrendQuestion } from '../data/trends';
 import { level2Misconception } from '../utils/misconceptions';
+import { revealOnPhone, scrollTopOnPhone } from '../utils/phoneScroll';
 
 interface Level2Props {
   onBack: () => void;
@@ -272,6 +273,14 @@ export function Level2({ onBack, onComplete }: Level2Props) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showHint, setShowHint] = useState(false);
   const [done, setDone] = useState(false);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+
+  // On a phone the feedback lands below the periodic table, out of sight, and
+  // the next question would open scrolled past its own text.
+  useEffect(() => scrollTopOnPhone(), [showIntro, index, done]);
+  useEffect(() => {
+    if (answered) revealOnPhone(feedbackRef.current);
+  }, [answered]);
 
   const question = questions[index];
 
@@ -340,7 +349,10 @@ export function Level2({ onBack, onComplete }: Level2Props) {
               Ljúka stigi
             </button>
           </div>
-          <button onClick={onBack} className="text-warm-500 hover:text-warm-700 text-sm">
+          <button
+            onClick={onBack}
+            className="text-warm-500 hover:text-warm-700 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
+          >
             Til baka í valmynd
           </button>
         </div>
@@ -354,21 +366,23 @@ export function Level2({ onBack, onComplete }: Level2Props) {
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
         <div className="max-w-lg mx-auto">
           <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-            <div className="flex justify-between items-center">
+            {/* On a phone the title takes a line of its own under the back
+                button, instead of being squeezed to a word per line. */}
+            <div className="flex flex-wrap md:flex-nowrap justify-between items-center gap-y-1">
               <button
                 onClick={onBack}
-                className="text-warm-500 hover:text-warm-700 font-semibold text-sm"
+                className="text-warm-500 hover:text-warm-700 font-semibold text-sm whitespace-nowrap md:whitespace-normal pointer-coarse:py-3 pointer-coarse:-my-3"
               >
                 ← Til baka
               </button>
-              <h1 className="text-lg font-bold text-warm-800">
+              <h1 className="order-last basis-full md:order-none md:basis-auto text-base md:text-lg font-bold text-warm-800">
                 Flokkar og lotubundnar sveiflur — Kennsla
               </h1>
               <span className="text-sm text-warm-500">Yfirlit</span>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-lg p-6 space-y-5 animate-fade-in-up">
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 space-y-5 animate-fade-in-up">
             <h2 className="text-xl font-bold text-warm-800">Lotukerfið — mynstur og flokkar</h2>
 
             <div className="bg-blue-50 p-4 rounded-lg">
@@ -383,7 +397,7 @@ export function Level2({ onBack, onComplete }: Level2Props) {
 
             <div className="bg-green-50 p-4 rounded-lg">
               <h3 className="font-bold text-green-800 mb-2">Mikilvægustu flokkarnir</h3>
-              <div className="grid grid-cols-2 gap-2 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
                 <div className="bg-white p-2 rounded">
                   <strong className="text-red-700">Flokkur 1:</strong> Alkalímálmar (Li, Na, K...) —
                   1 gildisrafeind
@@ -462,14 +476,14 @@ export function Level2({ onBack, onComplete }: Level2Props) {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-xl shadow-md p-3 sm:p-4 mb-3">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-2">
             <button
               onClick={onBack}
-              className="text-warm-500 hover:text-warm-700 font-semibold text-sm"
+              className="text-warm-500 hover:text-warm-700 font-semibold text-sm whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
             >
               ← Til baka
             </button>
-            <h1 className="text-base sm:text-lg font-bold text-warm-800">
+            <h1 className="min-w-0 text-center text-base sm:text-lg font-bold text-warm-800">
               Flokkar og lotubundnar sveiflur
             </h1>
             <span className="text-sm font-semibold text-warm-600">
@@ -493,7 +507,7 @@ export function Level2({ onBack, onComplete }: Level2Props) {
           {!answered && !showHint && (
             <button
               onClick={() => setShowHint(true)}
-              className="mt-3 text-sm px-4 py-2 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-yellow-400 outline-none"
+              className="mt-3 text-sm px-4 py-2 pointer-coarse:min-h-11 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-yellow-400 outline-none"
             >
               💡 Vísbending
             </button>
@@ -553,7 +567,7 @@ export function Level2({ onBack, onComplete }: Level2Props) {
 
         {/* Feedback */}
         {answered && (
-          <div className="space-y-3 mb-3 max-w-2xl mx-auto animate-fade-in-up">
+          <div ref={feedbackRef} className="space-y-3 mb-3 max-w-2xl mx-auto animate-fade-in-up">
             <FeedbackPanel
               feedback={{
                 isCorrect,

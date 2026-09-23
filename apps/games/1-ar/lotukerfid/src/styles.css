@@ -43,15 +43,18 @@
   animation: fade-in-up 0.4s ease-out;
 }
 
-/* Periodic table cell hover */
+/* Periodic table cell hover — pointer devices only, so a tapped cell on a
+   phone does not keep the raised state after the finger lifts. */
 .element-cell {
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease;
 }
 
-.element-cell:hover {
-  z-index: 10;
+@media (hover: hover) and (pointer: fine) {
+  .element-cell:hover {
+    z-index: 10;
+  }
 }
 
 /* Progress bar smooth fill */

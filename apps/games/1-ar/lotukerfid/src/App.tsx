@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
 import { useGameI18n, useGameProgress } from '@shared/hooks';
@@ -7,6 +7,7 @@ import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
 import { gameTranslations } from './i18n';
+import { scrollTopOnPhone } from './utils/phoneScroll';
 
 type AppMode = 'menu' | 'level1' | 'level2' | 'level3';
 
@@ -36,6 +37,9 @@ function App() {
   );
 
   const { t, language, setLanguage } = useGameI18n({ gameTranslations });
+
+  // A level opened from low on the menu would otherwise start scrolled down.
+  useEffect(() => scrollTopOnPhone(), [mode]);
 
   const completeLevel = (level: 1 | 2 | 3) => {
     updateProgress({ [LEVEL_KEYS[level]]: true } as Partial<Progress>);
@@ -73,7 +77,9 @@ function App() {
             <p className="text-warm-600">{t('game.subtitle')}</p>
           </div>
 
-          {/* Level Cards */}
+          {/* Level Cards. On a phone the wrapping title beside each icon tile
+              squeezed it into a narrow pill, so below md the tiles (and the
+              numbered circles further down) keep their size. */}
           <div className="space-y-4">
             {/* Level 1: Identify Elements */}
             <button
@@ -82,7 +88,7 @@ function App() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-green-100 flex items-center justify-center text-2xl">
+                  <div className="w-14 h-14 shrink-0 md:shrink rounded-xl bg-green-100 flex items-center justify-center text-2xl">
                     🔍
                   </div>
                   <div>
@@ -117,7 +123,7 @@ function App() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center text-2xl">
+                  <div className="w-14 h-14 shrink-0 md:shrink rounded-xl bg-blue-100 flex items-center justify-center text-2xl">
                     📊
                   </div>
                   <div>
@@ -152,7 +158,7 @@ function App() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-purple-100 flex items-center justify-center text-2xl">
+                  <div className="w-14 h-14 shrink-0 md:shrink rounded-xl bg-purple-100 flex items-center justify-center text-2xl">
                     ⚛️
                   </div>
                   <div>
@@ -190,7 +196,7 @@ function App() {
                 return (
                   <div key={step} className="flex items-start gap-3">
                     <div
-                      className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                      className={`w-6 h-6 shrink-0 md:shrink rounded-full flex items-center justify-center text-xs font-bold ${
                         completed ? 'bg-green-500 text-white' : 'bg-warm-200 text-warm-600'
                       }`}
                     >
@@ -232,7 +238,7 @@ function App() {
                     resetProgress();
                   }
                 }}
-                className="text-xs text-warm-400 hover:text-warm-600 underline"
+                className="text-xs text-warm-400 hover:text-warm-600 underline pointer-coarse:py-3.5 pointer-coarse:-my-3.5"
               >
                 {t('menu.resetProgress')}
               </button>
