@@ -55,10 +55,10 @@ const challenges: Challenge[] = [
     hints: [
       'H getur aðeins myndað 1 tengi, þannig að O verður að vera miðatómið.',
       'Súrefni myndar 2 einföld tengsl við vetni.',
-      'O hefur 2 einstæð rafeindarapör (8 - 4 í tengslum = 4 óbundnar = 2 pör).',
+      'O hefur 2 einstæð rafeindapör (8 - 4 í tengslum = 4 óbundnar = 2 pör).',
     ],
     finalExplanation:
-      'H₂O: O í miðju með 2 H tengd og 2 einstæð rafeindarapör. Þetta gefur 4 rafeindarapör í kringum O.',
+      'H₂O: O í miðju með 2 H tengd og 2 einstæð rafeindapör. Þetta gefur 4 rafeindapör í kringum O.',
   },
   {
     id: 2,
@@ -80,7 +80,7 @@ const challenges: Challenge[] = [
       'N hefur 1 einstætt par (8 - 6 = 2 óbundnar = 1 par).',
     ],
     finalExplanation:
-      'NH₃: N í miðju með 3 H tengd og 1 einstætt rafeindarapar. Þetta gerir N tetrahedral en sameindina pýramídalaga.',
+      'NH₃: N í miðju með 3 H tengd og 1 einstætt rafeindapar. Þetta gerir N ferflötungslaga en sameindina pýramídalaga.',
   },
   {
     id: 3,
@@ -98,7 +98,7 @@ const challenges: Challenge[] = [
     hints: [
       'C þarf 4 tengsl og hvert O þarf 2 tengsl (fyrir áttu).',
       'Prófaðu tvöföld tengsl milli C og beggja O.',
-      'Hvert O hefur 2 einstæð rafeindarapör. C hefur engin.',
+      'Hvert O hefur 2 einstæð rafeindapör. C hefur engin.',
     ],
     finalExplanation:
       'CO₂: O=C=O með tvöföldum tengslum. Hvert O hefur 2 einstæð pör. Þetta er línuleg sameind.',
@@ -124,7 +124,7 @@ const challenges: Challenge[] = [
       'Engin einstæð pör á neinu atómi.',
     ],
     finalExplanation:
-      'CH₄: C í miðju með 4 H tengd. Engin einstæð rafeindarapör. Þetta er tetrahedral sameind.',
+      'CH₄: C í miðju með 4 H tengd. Engin einstæð rafeindapör. Þetta er ferflötungslaga sameind.',
   },
   {
     id: 5,
@@ -138,16 +138,16 @@ const challenges: Challenge[] = [
       centralUnpairedElectron: true,
     },
     hints: [
-      'Sameindir með oddatölu rafeinda eru róttæki (radicals).',
+      'Sameindir með oddatölu rafeinda eru stakeindir.',
       'N=O tvöfalt tengi. O hefur 2 einstæð pör.',
       'N hefur 1 einstætt par + 1 óparaða rafeind (alls 11 rafeindir).',
     ],
     finalExplanation:
-      'NO: Tvöföld tengsl N=O með óparaðri rafeind á N. Þetta er róttæki og mjög hvarfgjarnt.',
+      'NO: Tvöföld tengsl N=O með óparaðri rafeind á N. Þetta er stakeind og hún er mjög hvarfgjörn.',
   },
   {
     id: 6,
-    title: 'Vetni klóríð (HCl)',
+    title: 'Vetnisklóríð (HCl)',
     molecule: 'HCl',
     totalElectrons: 8,
     correctStructure: {
@@ -161,7 +161,7 @@ const challenges: Challenge[] = [
       'Cl hefur 3 einstæð pör (7 gildisrafeindir - 1 í tengi = 6 = 3 pör).',
     ],
     finalExplanation:
-      'HCl: Einfalt H-Cl tengi. Cl hefur 3 einstæð rafeindarapör. Bæði H og Cl hafa fullt ysta hvolf.',
+      'HCl: Einfalt H-Cl tengi. Cl hefur 3 einstæð rafeindapör. Bæði H og Cl hafa fullt ysta hvolf.',
   },
   // === OCTET RULE EXCEPTIONS ===
   {
@@ -209,7 +209,7 @@ const challenges: Challenge[] = [
     hints: [
       'P er á 3. lotu og getur haft fleiri en 8 rafeindir.',
       '5 einföld P-Cl tengsl. Hvert Cl hefur 3 einstæð pör.',
-      'P hefur 10 rafeindir — stækkuð átta (expanded octet).',
+      'P hefur 10 rafeindir — stækkuð átta.',
     ],
     finalExplanation:
       'PCl₅ er dæmi um stækkaða áttu: Fosfór hefur 10 rafeindir í kringum sig. Þetta er mögulegt vegna þess að P er á 3. lotu og getur notað d-undirhvolf.',
@@ -487,7 +487,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                             <span className="text-lg">⚠️</span>
                             {challenge.correctStructure.octetException === 'electron-deficient' && (
                               <span>
-                                Rafeindaskort: {challenge.correctStructure.centralAtom} hefur{' '}
+                                Rafeindaskortur: {challenge.correctStructure.centralAtom} hefur{' '}
                                 {challenge.correctStructure.centralElectrons} rafeindir
                               </span>
                             )}
@@ -587,9 +587,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 <div
                   className={`p-3 rounded-lg ${challenge.correctStructure.octetException === 'electron-deficient' ? 'bg-orange-100 border-2 border-orange-300' : 'bg-white'}`}
                 >
-                  <div className="font-bold text-orange-700">
-                    Rafeindaskort (Electron Deficient)
-                  </div>
+                  <div className="font-bold text-orange-700">Rafeindaskortur</div>
                   <div className="text-warm-600">
                     Atóm eins og B og Al hafa færri en 8 rafeindir
                   </div>
@@ -600,7 +598,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 <div
                   className={`p-3 rounded-lg ${challenge.correctStructure.octetException === 'expanded-octet' ? 'bg-purple-100 border-2 border-purple-300' : 'bg-white'}`}
                 >
-                  <div className="font-bold text-purple-700">Stækkuð átta (Expanded Octet)</div>
+                  <div className="font-bold text-purple-700">Stækkuð átta</div>
                   <div className="text-warm-600">
                     Atóm á 3. lotu+ geta haft fleiri en 8 rafeindir (nota d-undirhvolf)
                   </div>
@@ -609,7 +607,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   </div>
                 </div>
                 <div className="p-3 rounded-lg bg-white">
-                  <div className="font-bold text-red-700">Oddatala rafeinda (Radicals)</div>
+                  <div className="font-bold text-red-700">Oddatala rafeinda (stakeindir)</div>
                   <div className="text-warm-600">
                     Sameindir með oddatölu rafeinda hafa óparaða rafeind
                   </div>

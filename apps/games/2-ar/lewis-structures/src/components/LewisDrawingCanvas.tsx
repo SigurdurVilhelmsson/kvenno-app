@@ -1,5 +1,7 @@
 import { useState, useMemo, useCallback, useRef, useSyncExternalStore } from 'react';
 
+import { centralLonePairAngles, pairCount } from '../utils/lonePairs';
+
 type BondType = 'none' | 'single' | 'double' | 'triple';
 
 interface CorrectAtom {
@@ -156,24 +158,11 @@ export function LewisDrawingCanvas({
   };
 
   const getCentralLPAngles = useCallback(
-    (count: number): number[] => {
-      if (count === 0) return [];
-      const bondAngles = positions.map((p) => Math.atan2(p.y - cy, p.x - cx));
-      if (bondAngles.length === 0) {
-        return Array.from({ length: count }, (_, i) => (i / count) * Math.PI * 2 - Math.PI / 2);
-      }
-      const sorted = [...bondAngles].sort((a, b) => a - b);
-      const gaps: { mid: number; size: number }[] = [];
-      for (let i = 0; i < sorted.length; i++) {
-        const curr = sorted[i];
-        const next = sorted[(i + 1) % sorted.length];
-        let size = next - curr;
-        if (size <= 0) size += Math.PI * 2;
-        gaps.push({ mid: curr + size / 2, size });
-      }
-      gaps.sort((a, b) => b.size - a.size);
-      return gaps.slice(0, count).map((g) => g.mid);
-    },
+    (count: number): number[] =>
+      centralLonePairAngles(
+        positions.map((p) => Math.atan2(p.y - cy, p.x - cx)),
+        count
+      ),
     [positions, cy, cx]
   );
 
@@ -430,6 +419,8 @@ export function LewisDrawingCanvas({
   };
 
   const hasNonH = surroundingAtoms.some((a) => a.symbol !== 'H');
+  const showUnpaired = !!correctStructure.centralUnpairedElectron && remaining === 1;
+  const centralSlots = getCentralLPAngles(centralLP + (showUnpaired ? 1 : 0));
 
   return (
     <div className="space-y-4">
@@ -444,8 +435,20 @@ export function LewisDrawingCanvas({
           {/* Bonds */}
           {positions.map((_, i) => renderBond(i))}
 
-          {/* Central lone pair dots */}
-          {renderLPDots(cx, cy, getCentralLPAngles(centralLP), !!feedback?.centralLPError, 36)}
+          {/* Central lone pair dots, plus the odd electron of a radical such as NO:
+              once the count leaves exactly that one electron, it is drawn on the
+              central atom beside the pairs rather than left out of the picture. */}
+          {renderLPDots(cx, cy, centralSlots.slice(0, centralLP), !!feedback?.centralLPError, 36)}
+          {showUnpaired && (
+            <circle
+              data-unpaired-electron=""
+              cx={cx + Math.cos(centralSlots[centralLP]) * 36}
+              cy={cy + Math.sin(centralSlots[centralLP]) * 36}
+              r={2.5}
+              fill="#6366f1"
+              className="pointer-events-none"
+            />
+          )}
 
           {/* Surrounding lone pair dots */}
           {positions.map((p, i) => {
@@ -524,7 +527,7 @@ export function LewisDrawingCanvas({
         <div className="flex justify-between items-center text-center">
           <div>
             <div className="text-xl font-bold text-blue-600">{totalElectrons}</div>
-            <div className="text-xs text-warm-500">Heildar</div>
+            <div className="text-xs text-warm-500">Alls</div>
           </div>
           <div className="text-warm-400 text-lg">−</div>
           <div>
@@ -551,7 +554,7 @@ export function LewisDrawingCanvas({
         </div>
         {remaining === 1 && correctStructure.centralUnpairedElectron && (
           <div className="text-xs text-yellow-700 bg-yellow-50 rounded px-2 py-1 mt-2 text-center">
-            1 rafeind eftir — óparuð rafeind (radical)
+            1 rafeind eftir — ópöruð rafeind: {molecule} er stakeind
           </div>
         )}
         {remaining < 0 && (
@@ -563,7 +566,7 @@ export function LewisDrawingCanvas({
 
       {/* Lone pair controls */}
       <div className="bg-white rounded-lg p-3 sm:p-4 shadow-xs space-y-3">
-        <div className="text-sm font-semibold text-warm-700">Einstæð rafeindarapör:</div>
+        <div className="text-sm font-semibold text-warm-700">Einstæð rafeindapör:</div>
 
         {/* Central atom. Below 360 px the round symbol badge is dropped to leave the
             label room beside 44 px steppers; the label names the atom anyway. */}
@@ -582,6 +585,7 @@ export function LewisDrawingCanvas({
             <button
               onClick={() => adjustLP(-1, -1)}
               disabled={centralLP === 0 || !canInteract}
+              aria-label={`Taka einstætt par af ${centralAtom} (miðatóm)`}
               className={`${STEP_BTN} bg-warm-200 hover:bg-warm-300 text-warm-700`}
             >
               −
@@ -590,6 +594,7 @@ export function LewisDrawingCanvas({
             <button
               onClick={() => adjustLP(-1, 1)}
               disabled={remaining < 2 || !canInteract}
+              aria-label={`Bæta einstæðu pari við ${centralAtom} (miðatóm)`}
               className={`${STEP_BTN} bg-blue-200 hover:bg-blue-300 text-blue-700`}
             >
               +
@@ -618,6 +623,7 @@ export function LewisDrawingCanvas({
                 <button
                   onClick={() => adjustLP(i, -1)}
                   disabled={surroundingLP[i] === 0 || !canInteract}
+                  aria-label={`Taka einstætt par af ${atomLabel(i)} (ytri)`}
                   className={`${STEP_BTN} bg-warm-200 hover:bg-warm-300 text-warm-700`}
                 >
                   −
@@ -626,6 +632,7 @@ export function LewisDrawingCanvas({
                 <button
                   onClick={() => adjustLP(i, 1)}
                   disabled={remaining < 2 || !canInteract}
+                  aria-label={`Bæta einstæðu pari við ${atomLabel(i)} (ytri)`}
                   className={`${STEP_BTN} bg-green-200 hover:bg-green-300 text-green-700`}
                 >
                   +
@@ -649,19 +656,20 @@ export function LewisDrawingCanvas({
           <ul className="text-sm text-red-700 space-y-1">
             {feedback.bondErrors.map((e, i) => (
               <li key={`be-${i}`}>
-                • {centralAtom}–{e.atom}: {BOND_LABEL[e.got]} → ætti að vera{' '}
+                • {centralAtom}–{atomLabel(e.index)}: {BOND_LABEL[e.got]} → ætti að vera{' '}
                 <strong>{BOND_LABEL[e.expected]}</strong>
               </li>
             ))}
             {feedback.centralLPError && (
               <li>
-                • {centralAtom}: {feedback.centralLPError.got} pör → ætti að vera{' '}
+                • {centralAtom}: {pairCount(feedback.centralLPError.got)} → ætti að vera{' '}
                 <strong>{feedback.centralLPError.expected}</strong>
               </li>
             )}
             {feedback.surroundingLPErrors.map((e, i) => (
               <li key={`le-${i}`}>
-                • {e.atom}: {e.got} pör → ætti að vera <strong>{e.expected}</strong>
+                • {atomLabel(e.index)}: {pairCount(e.got)} → ætti að vera{' '}
+                <strong>{e.expected}</strong>
               </li>
             ))}
           </ul>

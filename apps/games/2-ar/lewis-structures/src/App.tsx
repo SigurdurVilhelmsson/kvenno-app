@@ -128,13 +128,13 @@ function App() {
                 ✓ <strong>Gildisrafeindir:</strong> Rafeindir í ysta hvolfi ákvarða efnatengsl
               </li>
               <li>
-                ✓ <strong>Áttureglann:</strong> Atóm vilja hafa 8 rafeindir (H vill 2)
+                ✓ <strong>Áttureglan:</strong> Atóm vilja hafa 8 rafeindir (H vill 2)
               </li>
               <li>
                 ✓ <strong>Lewis-formúlur:</strong> Sýna hvernig rafeindir dreifast í sameindum
               </li>
               <li>
-                ✓ <strong>Formhleðsla:</strong> FC = Gildisraf. - (óbundin + ½ bundin)
+                ✓ <strong>Formhleðsla:</strong> FC = Gildisraf. - (óbundnar + ½ bundnar)
               </li>
               <li>
                 ✓ <strong>Samsvörun:</strong> Margar jafngildar formúlur fyrir sömu sameind
@@ -175,7 +175,7 @@ function App() {
           <div className="bg-teal-50 p-4 sm:p-6 rounded-xl mb-8">
             <h2 className="font-bold text-teal-800 mb-3">Hvað eru Lewis-formúlur?</h2>
             <p className="text-teal-900 text-sm mb-4">
-              <strong>Lewis-formúlur</strong> (eða rafeinapunktaformúlur) sýna hvernig
+              <strong>Lewis-formúlur</strong> (eða rafeindapunktaformúlur) sýna hvernig
               gildisrafeindir dreifast á milli atóma í sameind. Þær hjálpa okkur að skilja
               efnatengsl og lögun sameinda.
             </p>
@@ -238,7 +238,7 @@ function App() {
                     Byggja Lewis-formúlur skref fyrir skref
                   </div>
                   <div className="text-xs text-warm-600 mt-2">
-                    Settu miðatóm, teiknaðu tengsl og einstæð rafeindarapör.
+                    Settu miðatóm, teiknaðu tengsl og einstæð rafeindapör.
                   </div>
                 </div>
               </div>
@@ -294,7 +294,7 @@ function App() {
                 </div>
                 <div className="bg-green-50 rounded-lg p-2 sm:p-3">
                   <div className="text-2xl font-bold text-green-600">{totalScore}</div>
-                  <div className="text-xs text-warm-600">Heildar stig</div>
+                  <div className="text-xs text-warm-600">Heildarstig</div>
                 </div>
                 <div className="bg-purple-50 rounded-lg p-2 sm:p-3">
                   <div className="text-2xl font-bold text-purple-600">
@@ -349,7 +349,7 @@ function App() {
           <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
             <h3 className="font-semibold text-amber-800 mb-2">Af hverju Lewis-formúlur?</h3>
             <p className="text-sm text-amber-700">
-              Lewis-formúlur sýna hvernig rafeindir tengjast milli atóma — lykilin að lyfjahönnun,
+              Lewis-formúlur sýna hvernig rafeindir tengjast milli atóma — lykillinn að lyfjahönnun,
               efnafræðilegri hvarfgirni og skilningi á hvernig efni hegða sér.
             </p>
           </div>
