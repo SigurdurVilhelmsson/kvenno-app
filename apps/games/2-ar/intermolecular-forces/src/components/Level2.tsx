@@ -1,4 +1,6 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
+
+import { formatDecimal, shuffleArray } from '@shared/utils';
 
 import { SolubilityPrediction } from './SolubilityPrediction';
 
@@ -28,7 +30,7 @@ interface RankingProblem {
   hint: string;
 }
 
-const problems: RankingProblem[] = [
+export const problems: RankingProblem[] = [
   {
     id: 1,
     question: 'Raðaðu þessum efnum eftir SUÐUMARKI (lægst til hæst):',
@@ -49,7 +51,7 @@ const problems: RankingProblem[] = [
         name: 'Vatn',
         molarMass: 18,
         boilingPoint: 100,
-        imfs: ['London', 'Tvípól', 'H-tengi'],
+        imfs: ['London', 'Tvískaut', 'H-tengi'],
       },
       {
         id: 'C',
@@ -57,14 +59,14 @@ const problems: RankingProblem[] = [
         name: 'Saltsýra',
         molarMass: 36.5,
         boilingPoint: -85,
-        imfs: ['London', 'Tvípól'],
+        imfs: ['London', 'Tvískaut'],
       },
     ],
     correctOrder: ['A', 'C', 'B'],
     orderDirection: 'lowestFirst',
     explanation:
-      'CH₄ hefur aðeins veika London krafta. HCl hefur tvípól-tvípól líka. H₂O hefur vetnistengi sem eru sterkust → hæsta suðumarkið.',
-    hint: 'Hugsaðu um tegundir IMF: London < Tvípól-tvípól < Vetnistengi',
+      'CH₄ hefur aðeins veika London krafta. HCl hefur tvískauts-tvískauts krafta líka. H₂O hefur vetnistengi sem eru sterkust → hæsta suðumarkið.',
+    hint: 'Hugsaðu um tegundir IMF: London < Tvískauts-tvískauts < Vetnistengi',
   },
   {
     id: 2,
@@ -78,7 +80,7 @@ const problems: RankingProblem[] = [
         name: 'Metanól',
         molarMass: 32,
         boilingPoint: 65,
-        imfs: ['London', 'Tvípól', 'H-tengi'],
+        imfs: ['London', 'Tvískaut', 'H-tengi'],
       },
       {
         id: 'B',
@@ -94,13 +96,13 @@ const problems: RankingProblem[] = [
         name: 'Klórmetan',
         molarMass: 50.5,
         boilingPoint: -24,
-        imfs: ['London', 'Tvípól'],
+        imfs: ['London', 'Tvískaut'],
       },
     ],
     correctOrder: ['B', 'C', 'A'],
     orderDirection: 'lowestFirst',
     explanation:
-      'Etan er óskautað (aðeins London). Klórmetan er skautað. Metanól hefur vetnistengi og hæsta suðumark þrátt fyrir lægsta mólmassa.',
+      'Etan er óskautað (aðeins London). Klórmetan er skautað. Metanól hefur vetnistengi og hæsta suðumark þrátt fyrir lægri mólmassa en klórmetan.',
     hint: 'Vetnistengi (O-H hópur í metanóli) vinna yfir mólmassa.',
   },
   {
@@ -115,7 +117,7 @@ const problems: RankingProblem[] = [
         name: 'Vatn',
         molarMass: 18,
         boilingPoint: 100,
-        imfs: ['London', 'Tvípól', 'H-tengi'],
+        imfs: ['London', 'Tvískaut', 'H-tengi'],
       },
       {
         id: 'B',
@@ -123,7 +125,7 @@ const problems: RankingProblem[] = [
         name: 'Dímetýleter',
         molarMass: 46,
         boilingPoint: -24,
-        imfs: ['London', 'Tvípól'],
+        imfs: ['London', 'Tvískaut'],
       },
       {
         id: 'C',
@@ -131,13 +133,13 @@ const problems: RankingProblem[] = [
         name: 'Etanól',
         molarMass: 46,
         boilingPoint: 78,
-        imfs: ['London', 'Tvípól', 'H-tengi'],
+        imfs: ['London', 'Tvískaut', 'H-tengi'],
       },
     ],
     correctOrder: ['A', 'C', 'B'],
     orderDirection: 'lowestFirst',
     explanation:
-      'Gufuþrýstingur er ÖFUGUR við suðumark. Sterkari IMF → lægri gufuþrýstingur. H₂O hefur sterkustu vetnistenginn → lægstan gufuþrýsting.',
+      'Gufuþrýstingur er ÖFUGUR við suðumark. Sterkari IMF → lægri gufuþrýstingur. H₂O hefur sterkustu vetnistengin → lægstan gufuþrýsting.',
     hint: 'Gufuþrýstingur er öfugur við suðumark — sterkari kraftar = lægri gufuþrýstingur.',
   },
   {
@@ -162,7 +164,7 @@ const problems: RankingProblem[] = [
     orderDirection: 'lowestFirst',
     explanation:
       'Öll þessi efni hafa aðeins London krafta. Stærri atóm → meiri London kraftar → hærra suðumark. I₂ er stærst.',
-    hint: 'Öll eru óskautuð tvíatóma sameindir — aðeins London kraftar. Hvað eykur London krafta?',
+    hint: 'Öll eru óskautaðar tvíatóma sameindir — aðeins London kraftar. Hvað eykur London krafta?',
   },
   {
     id: 5,
@@ -176,7 +178,7 @@ const problems: RankingProblem[] = [
         name: 'Vatn',
         molarMass: 18,
         boilingPoint: 100,
-        imfs: ['London', 'Tvípól', 'H-tengi'],
+        imfs: ['London', 'Tvískaut', 'H-tengi'],
       },
       {
         id: 'B',
@@ -184,22 +186,22 @@ const problems: RankingProblem[] = [
         name: 'Etanól',
         molarMass: 46,
         boilingPoint: 78,
-        imfs: ['London', 'Tvípól', 'H-tengi'],
+        imfs: ['London', 'Tvískaut', 'H-tengi'],
       },
       {
         id: 'C',
-        formula: 'Glyceról',
-        name: 'Glýseról (C₃H₈O₃)',
+        formula: 'C₃H₈O₃',
+        name: 'Glýseról',
         molarMass: 92,
         boilingPoint: 290,
-        imfs: ['London', 'Tvípól', 'H-tengi×3'],
+        imfs: ['London', 'Tvískaut', 'H-tengi×3'],
       },
     ],
     correctOrder: ['A', 'B', 'C'],
     orderDirection: 'lowestFirst',
     explanation:
-      'Seigja eykst með fleiri vetnistengjum. Glýseról hefur 3 O-H hópa og getur myndað margar vetnistengsl → mjög seigt.',
-    hint: 'Glýseról hefur ÞRJÁ O-H hópa. Hvað gerir það við fjölda vetnistengsla?',
+      'Seigja eykst með fleiri vetnistengjum. Glýseról hefur 3 O-H hópa og getur myndað mörg vetnistengi → mjög seigt.',
+    hint: 'Glýseról hefur ÞRJÁ O-H hópa. Hvað gerir það við fjölda vetnistengja?',
   },
   {
     id: 6,
@@ -218,7 +220,7 @@ const problems: RankingProblem[] = [
       {
         id: 'B',
         formula: '(CH₃)₃CH',
-        name: 'Ísobútan',
+        name: 'Ísóbútan',
         molarMass: 58,
         boilingPoint: -12,
         imfs: ['London'],
@@ -227,8 +229,8 @@ const problems: RankingProblem[] = [
     correctOrder: ['B', 'A'],
     orderDirection: 'lowestFirst',
     explanation:
-      'Sama mólmassi! En n-bútan er lengri keðja → meira yfirborðsflatarmál → sterkari London kraftar. Ísobútan er þéttara → minna yfirborð.',
-    hint: 'Sama mólmassi en mismunandi lögun. Hvað ákvarðar styrk London krafta fyrir utan mólmassa?',
+      'Sami mólmassi! En n-bútan er lengri keðja → meira yfirborðsflatarmál → sterkari London kraftar. Ísóbútan er þéttara → minna yfirborð.',
+    hint: 'Sami mólmassi en mismunandi lögun. Hvað ákvarðar styrk London krafta fyrir utan mólmassa?',
   },
   {
     id: 7,
@@ -242,7 +244,7 @@ const problems: RankingProblem[] = [
         name: 'Ammóníak',
         molarMass: 17,
         boilingPoint: -33,
-        imfs: ['London', 'Tvípól', 'H-tengi'],
+        imfs: ['London', 'Tvískaut', 'H-tengi'],
       },
       {
         id: 'B',
@@ -250,7 +252,7 @@ const problems: RankingProblem[] = [
         name: 'Fosfín',
         molarMass: 34,
         boilingPoint: -88,
-        imfs: ['London', 'Tvípól'],
+        imfs: ['London', 'Tvískaut'],
       },
       {
         id: 'C',
@@ -258,7 +260,7 @@ const problems: RankingProblem[] = [
         name: 'Arsín',
         molarMass: 78,
         boilingPoint: -62,
-        imfs: ['London', 'Tvípól'],
+        imfs: ['London', 'Tvískaut'],
       },
     ],
     correctOrder: ['B', 'C', 'A'],
@@ -287,7 +289,7 @@ const problems: RankingProblem[] = [
         name: 'Metanól',
         molarMass: 32,
         boilingPoint: 65,
-        imfs: ['London', 'Tvípól', 'H-tengi'],
+        imfs: ['London', 'Tvískaut', 'H-tengi'],
       },
       {
         id: 'C',
@@ -295,7 +297,7 @@ const problems: RankingProblem[] = [
         name: 'Vatn',
         molarMass: 18,
         boilingPoint: 100,
-        imfs: ['London', 'Tvípól', 'H-tengi'],
+        imfs: ['London', 'Tvískaut', 'H-tengi'],
       },
     ],
     correctOrder: ['A', 'B', 'C'],
@@ -325,7 +327,7 @@ const problems: RankingProblem[] = [
         name: 'Ammóníak',
         molarMass: 17,
         boilingPoint: -33,
-        imfs: ['London', 'Tvípól', 'H-tengi'],
+        imfs: ['London', 'Tvískaut', 'H-tengi'],
       },
       {
         id: 'C',
@@ -333,13 +335,13 @@ const problems: RankingProblem[] = [
         name: 'Vatn',
         molarMass: 18,
         boilingPoint: 100,
-        imfs: ['London', 'Tvípól', 'H-tengi'],
+        imfs: ['London', 'Tvískaut', 'H-tengi'],
       },
     ],
     correctOrder: ['A', 'B', 'C'],
     orderDirection: 'lowestFirst',
     explanation:
-      '⚠️ MIKILVÆGT: CH₄ hefur 4 vetnisatóm en ENGIN vetnistengi! Kolefni er ekki rafneikvætt nóg. Aðeins H bundið við F, O, eða N myndar vetnistengi. NH₃ og H₂O hafa vetnistengi, þar af er vatn með sterkustu vetnistengsl.',
+      '⚠️ MIKILVÆGT: CH₄ hefur 4 vetnisatóm en ENGIN vetnistengi! Kolefni er ekki rafneikvætt nóg. Aðeins H bundið við F, O, eða N myndar vetnistengi. NH₃ og H₂O hafa vetnistengi, þar af er vatn með sterkustu vetnistengin.',
     hint: 'Vetnistengi myndast AÐEINS þegar H er bundið við F, O, eða N — ekki C!',
   },
   // Problem 10: Comparing similar molecules to reinforce the concept
@@ -363,7 +365,7 @@ const problems: RankingProblem[] = [
         name: 'Flúormetan',
         molarMass: 34,
         boilingPoint: -78,
-        imfs: ['London', 'Tvípól'],
+        imfs: ['London', 'Tvískaut'],
       },
       {
         id: 'C',
@@ -371,13 +373,13 @@ const problems: RankingProblem[] = [
         name: 'Metanól',
         molarMass: 32,
         boilingPoint: 65,
-        imfs: ['London', 'Tvípól', 'H-tengi'],
+        imfs: ['London', 'Tvískaut', 'H-tengi'],
       },
     ],
     correctOrder: ['A', 'B', 'C'],
     orderDirection: 'lowestFirst',
     explanation:
-      'Etan er óskautað (aðeins London). CH₃F er skautað en C-H bindingin gefur ekki vetnistengi (F getur tekið við H frá öðrum sameindum, en CH₃F getur ekki gefið). Metanól með O-H hópinn gefur og tekur vetnistengi → langsterkast.',
+      'Etan er óskautað (aðeins London). CH₃F er skautað en C-H tengið gefur ekki vetnistengi (F getur tekið við H frá öðrum sameindum, en CH₃F getur ekki gefið). Metanól með O-H hópinn gefur og tekur vetnistengi → langsterkast.',
     hint: 'Skoðaðu hvort sameindin getur GEFIÐ H til vetnistengis (þarf H bundið við F, O, eða N).',
   },
 ];
@@ -393,7 +395,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [, setTotalHintsUsed] = useState(0);
 
   const problem = problems[currentProblem];
-  const unplacedCompounds = problem.compounds.filter((c) => !userOrder.includes(c.id));
+  // The pool and the table list the compounds in a fresh order for each problem. In data
+  // order the answer was the pool read top to bottom on five of the ten problems.
+  const compoundsShown = useMemo(() => shuffleArray(problem.compounds), [problem]);
+  const unplacedCompounds = compoundsShown.filter((c) => !userOrder.includes(c.id));
 
   const addToOrder = (id: string) => {
     if (showResult) return;
@@ -407,13 +412,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   const checkAnswer = () => {
     const isCorrect = JSON.stringify(userOrder) === JSON.stringify(problem.correctOrder);
-    if (isCorrect) {
-      if (!showHint) {
-        setScore((prev) => prev + 15);
-      } else {
-        setScore((prev) => prev + 8);
-      }
-    }
+    // A hint never costs points: the same 15 with or without it.
+    if (isCorrect) setScore((prev) => prev + 15);
     setShowResult(true);
   };
 
@@ -483,11 +483,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 >
                   <div className="font-bold text-warm-800">{compound.formula}</div>
                   <div className="text-xs text-warm-500">{compound.name}</div>
-                  <div className="text-xs text-warm-400">M = {compound.molarMass}</div>
+                  <div className="text-xs text-warm-400">
+                    M = {formatDecimal(compound.molarMass)}
+                  </div>
                 </button>
               ))}
               {unplacedCompounds.length === 0 && !showResult && (
-                <div className="text-warm-400 italic">Öll efni hafa verið raðað</div>
+                <div className="text-warm-400 italic">Öllum efnum hefur verið raðað</div>
               )}
             </div>
           </div>
@@ -571,16 +573,16 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 </tr>
               </thead>
               <tbody>
-                {problem.compounds.map((compound) => (
+                {compoundsShown.map((compound) => (
                   <tr key={compound.id} className="border-t">
                     <td className="p-2 font-bold">
                       {compound.formula}
                       <div className="sm:hidden text-xs font-normal text-warm-600 whitespace-nowrap">
-                        M = {compound.molarMass} g/mol
+                        M = {formatDecimal(compound.molarMass)} g/mol
                       </div>
                     </td>
                     <td className="hidden sm:table-cell p-2 whitespace-nowrap">
-                      {compound.molarMass} g/mol
+                      {formatDecimal(compound.molarMass)} g/mol
                     </td>
                     <td className="p-2">
                       <div className="flex flex-wrap gap-1">
@@ -590,7 +592,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                             className={`px-1 py-0.5 rounded text-xs ${
                               imf === 'London'
                                 ? 'bg-purple-100 text-purple-700'
-                                : imf === 'Tvípól'
+                                : imf === 'Tvískaut'
                                   ? 'bg-blue-100 text-blue-700'
                                   : 'bg-red-100 text-red-700'
                             }`}

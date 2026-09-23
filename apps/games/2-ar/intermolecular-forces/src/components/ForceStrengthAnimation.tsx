@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 import { useContainerWidth } from '@shared/components/ResponsiveContainer';
+import { formatDecimal } from '@shared/utils';
 
 interface ForceStrengthAnimationProps {
   /** Selected force type to highlight */
@@ -16,9 +17,8 @@ interface ForceStrengthAnimationProps {
 interface ForceData {
   id: 'london' | 'dipole' | 'hydrogen';
   name: string;
-  nameEn: string;
   strength: number; // Relative strength 1-10
-  energyRange: string; // kJ/mol
+  energyRange: [number, number]; // kJ/mol, printed through formatDecimal
   color: string;
   description: string;
   example: string;
@@ -29,20 +29,18 @@ const FORCES: ForceData[] = [
   {
     id: 'london',
     name: 'London dreifikraftar',
-    nameEn: 'London Dispersion',
     strength: 2,
-    energyRange: '0.05 - 40',
+    energyRange: [0.05, 40],
     color: '#a855f7', // purple
-    description: 'Tímabundnir tvípólar í rafeindaský',
+    description: 'Tímabundin tvískaut í rafeindaskýi',
     example: 'CH₄, I₂, Ar',
     icon: '🌫️',
   },
   {
     id: 'dipole',
-    name: 'Tvípól-tvípól',
-    nameEn: 'Dipole-Dipole',
+    name: 'Tvískauts-tvískauts',
     strength: 5,
-    energyRange: '5 - 25',
+    energyRange: [5, 25],
     color: '#3b82f6', // blue
     description: 'Varanlegt aðdráttarafl milli δ+ og δ-',
     example: 'HCl, SO₂',
@@ -51,15 +49,19 @@ const FORCES: ForceData[] = [
   {
     id: 'hydrogen',
     name: 'Vetnistengi',
-    nameEn: 'Hydrogen Bond',
     strength: 8,
-    energyRange: '10 - 40',
+    energyRange: [10, 40],
     color: '#ef4444', // red
-    description: 'Sérstakur tvípól: H bundið við F, O, eða N',
+    description: 'Sérstakt tvískaut: H bundið við F, O, eða N',
     example: 'H₂O, NH₃, HF',
     icon: '🔗',
   },
 ];
+
+/** An energy range as a student reads it: '0,05 - 40', with the Icelandic decimal comma. */
+function formatRange([low, high]: [number, number]): string {
+  return `${formatDecimal(low)} - ${formatDecimal(high)}`;
+}
 
 /**
  * ForceStrengthAnimation - Visual comparison of IMF strengths
@@ -243,7 +245,7 @@ export function ForceStrengthAnimation({
                     className="fill-warm-400 text-[10px] pointer-coarse:text-xs"
                   >
                     {narrow && force.name.split(' ')[0].includes('-') ? (
-                      // 'Tvípól-tvípól' is wider than a phone column: break it at the hyphen.
+                      // 'Tvískauts-tvískauts' is wider than a phone column: break it at the hyphen.
                       <>
                         <tspan x={centerX}>{force.name.split(' ')[0].split('-')[0]}-</tspan>
                         <tspan x={centerX} dy="1.2em">
@@ -313,13 +315,13 @@ export function ForceStrengthAnimation({
                   >
                     {narrow ? (
                       <>
-                        <tspan x={centerX}>{force.energyRange}</tspan>
+                        <tspan x={centerX}>{formatRange(force.energyRange)}</tspan>
                         <tspan x={centerX} dy="1.2em">
                           kJ/mol
                         </tspan>
                       </>
                     ) : (
-                      `${force.energyRange} kJ/mol`
+                      `${formatRange(force.energyRange)} kJ/mol`
                     )}
                   </text>
                 </g>
@@ -439,7 +441,7 @@ export function ForceStrengthAnimation({
                     textAnchor="middle"
                     className="fill-warm-300 text-[11px] pointer-coarse:text-xs"
                   >
-                    {force.energyRange} kJ/mol
+                    {formatRange(force.energyRange)} kJ/mol
                   </text>
                 </g>
               );
@@ -509,16 +511,15 @@ export function ForceStrengthAnimation({
         >
           <div className="flex items-center gap-2 mb-2">
             <span className="text-2xl">{selectedData.icon}</span>
-            <div>
-              <div className="text-white font-bold text-sm">{selectedData.name}</div>
-              <div className="text-warm-400 text-xs">{selectedData.nameEn}</div>
-            </div>
+            <div className="text-white font-bold text-sm">{selectedData.name}</div>
           </div>
           <div className="text-warm-300 text-sm mb-2">{selectedData.description}</div>
           <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
             <div>
               <span className="text-warm-400">Styrkssvið:</span>
-              <span className="text-white ml-1">{selectedData.energyRange} kJ/mol</span>
+              <span className="text-white ml-1">
+                {formatRange(selectedData.energyRange)} kJ/mol
+              </span>
             </div>
             <div>
               <span className="text-warm-400">Dæmi:</span>
@@ -542,13 +543,13 @@ export function ForceStrengthAnimation({
             <li className="flex items-start gap-2">
               <span className="text-blue-400">●</span>
               <span>
-                <strong>Tvípól</strong> krefst skautaðrar sameindar (ósamhverf)
+                <strong>Tvískaut</strong> krefst skautaðrar sameindar (ósamhverf)
               </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-red-400">●</span>
               <span>
-                <strong>Vetnistengi</strong> krefst H bundið við F, O, eða N
+                <strong>Vetnistengi</strong> krefst þess að H sé bundið við F, O, eða N
               </span>
             </li>
           </ul>

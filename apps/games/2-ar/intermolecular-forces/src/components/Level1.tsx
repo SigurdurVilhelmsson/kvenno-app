@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { AnimatedMolecule, FeedbackPanel } from '@shared/components';
 import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
+import { formatDecimal } from '@shared/utils';
 
 import { ForceStrengthAnimation } from './ForceStrengthAnimation';
 import { imfToMolecule } from '../utils/imfConverter';
@@ -9,18 +10,16 @@ import { imfToMolecule } from '../utils/imfConverter';
 // Misconceptions for IMF types
 const MISCONCEPTIONS = {
   polar:
-    'Skautaðar sameindir hafa bæði London krafta OG tvípól-tvípól. Mundu: London er ALLTAF til staðar!',
+    'Skautaðar sameindir hafa bæði London krafta OG tvískauts-tvískauts krafta. Mundu: London er ALLTAF til staðar!',
   nonpolar:
-    'Óskautaðar sameindir hafa AÐEINS London krafta. Samhverfa sameindin (eins og CO₂, CCl₄) getur haft skautuð tengsl en vera samt óskautuð í heild.',
+    'Óskautaðar sameindir hafa AÐEINS London krafta. Samhverf sameind (eins og CO₂, CCl₄) getur haft skautuð tengi en samt verið óskautuð í heild.',
   hbond:
-    'Vetnistengi krefst H bundið við F, O, eða N. Ef H er bundið við C eða Cl, þá eru engin vetnistengi.',
-  london_strength:
-    'London kraftar verða sterkari eftir því sem mólmassi eykst (stærri rafeindaský = meiri dreifistuðull).',
+    'Vetnistengi krefst þess að H sé bundið við F, O, eða N. Ef H er bundið við C eða Cl, þá eru engin vetnistengi.',
 };
 
 // Related concepts for IMF
 const RELATED_CONCEPTS: Record<string, string[]> = {
-  london: ['Dreifikraftar', 'Mólmassi', 'Tímabundnir tvípólar'],
+  london: ['Dreifikraftar', 'Mólmassi', 'Tímabundin tvískaut'],
   dipole: ['Skautaðar sameindir', 'Rafneikvæðni', 'δ+ og δ-'],
   hydrogen: ['H-F, H-O, H-N', 'Suðumark', 'Vatnseiginleikar'],
 };
@@ -33,7 +32,6 @@ interface Level1Props {
 interface IMFType {
   id: 'london' | 'dipole' | 'hydrogen';
   name: string;
-  nameEn: string;
   description: string;
   strength: string;
   examples: string[];
@@ -43,27 +41,24 @@ const IMF_TYPES: IMFType[] = [
   {
     id: 'london',
     name: 'London dreifikraftar',
-    nameEn: 'London Dispersion Forces',
     description:
-      'Veikir, tímabundnir aðdráttarkraftar vegna tímabundinna tvípóla. Til staðar í ÖLLUM sameindum.',
+      'Veikir, tímabundnir aðdráttarkraftar vegna tímabundinna tvískauta. Til staðar í ÖLLUM sameindum.',
     strength: 'Veikastur',
     examples: ['CH₄', 'Ar', 'CO₂', 'CCl₄', 'I₂'],
   },
   {
     id: 'dipole',
-    name: 'Tvípól-tvípól kraftar',
-    nameEn: 'Dipole-Dipole Forces',
+    name: 'Tvískauts-tvískauts kraftar',
     description:
-      'Aðdráttarkraftar milli skauttaðra sameinda þar sem δ+ hluti einnar sameindar laðar að δ- hluta annarar.',
+      'Aðdráttarkraftar milli skautaðra sameinda þar sem δ+ hluti einnar sameindar laðar að δ- hluta annarrar.',
     strength: 'Meðal',
     examples: ['HCl', 'SO₂', 'CHCl₃', 'H₂S'],
   },
   {
     id: 'hydrogen',
     name: 'Vetnistengi',
-    nameEn: 'Hydrogen Bonding',
     description:
-      'Sérstakt sterk tvípól-tvípól kraftur þegar H er bundið við F, O, eða N. Sterkasta IMF.',
+      'Sérstaklega sterkur tvískauts-tvískauts kraftur þegar H er bundið við F, O, eða N. Sterkasta IMF.',
     strength: 'Sterkastur',
     examples: ['H₂O', 'NH₃', 'HF', 'CH₃OH', 'DNA'],
   },
@@ -93,11 +88,11 @@ interface BondVisualization {
   polar?: boolean;
 }
 
+// No stored dipole: the arrow is derived from the δ+ and δ− atoms as drawn (imfConverter).
 interface MoleculeVisualization {
   atoms: AtomVisualization[];
   bonds: BondVisualization[];
-  shape?: 'linear' | 'bent' | 'trigonal' | 'tetrahedral' | 'diatomic';
-  dipoleMoment?: 'left' | 'right' | 'up' | 'down' | 'none';
+  shape?: 'linear' | 'bent' | 'trigonal-pyramidal' | 'tetrahedral' | 'diatomic';
 }
 
 interface Molecule {
@@ -123,7 +118,7 @@ const molecules: Molecule[] = [
     molarMass: 18,
     correctIMFs: ['london', 'dipole', 'hydrogen'],
     explanation:
-      'Vatn hefur alla þrjá krafta: London (alltaf), tvípól-tvípól (skautuð), og vetnistengi (O-H tengsl).',
+      'Vatn hefur alla þrjá krafta: London (alltaf), tvískauts-tvískauts (skautuð), og vetnistengi (O-H tengi).',
     visualization: {
       atoms: [
         { symbol: 'O', partialCharge: 'negative', position: 'center', size: 'large', color: 'red' },
@@ -147,7 +142,6 @@ const molecules: Molecule[] = [
         { from: 'center', to: 'top-right', type: 'single', polar: true },
       ],
       shape: 'bent',
-      dipoleMoment: 'up',
     },
   },
   {
@@ -174,7 +168,6 @@ const molecules: Molecule[] = [
         { from: 'center', to: 'right', type: 'single' },
       ],
       shape: 'tetrahedral',
-      dipoleMoment: 'none',
     },
   },
   {
@@ -200,7 +193,6 @@ const molecules: Molecule[] = [
       ],
       bonds: [{ from: 'left', to: 'right', type: 'single', polar: true }],
       shape: 'diatomic',
-      dipoleMoment: 'right',
     },
   },
   {
@@ -212,7 +204,7 @@ const molecules: Molecule[] = [
     molarMass: 17,
     correctIMFs: ['london', 'dipole', 'hydrogen'],
     explanation:
-      'Ammóníak hefur N-H tengsl sem geta myndað vetnistengi, auk þess að vera skautuð sameind.',
+      'Ammóníak hefur N-H tengi sem geta myndað vetnistengi, auk þess að vera skautuð sameind.',
     visualization: {
       atoms: [
         {
@@ -249,8 +241,7 @@ const molecules: Molecule[] = [
         { from: 'center', to: 'bottom', type: 'single', polar: true },
         { from: 'center', to: 'bottom-right', type: 'single', polar: true },
       ],
-      shape: 'trigonal',
-      dipoleMoment: 'up',
+      shape: 'trigonal-pyramidal',
     },
   },
   {
@@ -262,7 +253,7 @@ const molecules: Molecule[] = [
     molarMass: 44,
     correctIMFs: ['london'],
     explanation:
-      'Þó C=O tengslin séu skautuð, er sameindin línuleg og óskautuð — aðeins London kraftar.',
+      'Þó C=O tengin séu skautuð, er sameindin línuleg og óskautuð — aðeins London kraftar.',
     visualization: {
       atoms: [
         { symbol: 'O', partialCharge: 'negative', position: 'left', size: 'medium', color: 'red' },
@@ -280,7 +271,6 @@ const molecules: Molecule[] = [
         { from: 'center', to: 'right', type: 'double', polar: true },
       ],
       shape: 'linear',
-      dipoleMoment: 'none', // Cancels out
     },
   },
   {
@@ -294,7 +284,13 @@ const molecules: Molecule[] = [
     explanation: 'Metanól hefur O-H hóp sem gerir kleift að mynda vetnistengi.',
     visualization: {
       atoms: [
-        { symbol: 'C', partialCharge: 'none', position: 'left', size: 'medium', color: 'gray' },
+        {
+          symbol: 'C',
+          partialCharge: 'positive',
+          position: 'left',
+          size: 'medium',
+          color: 'gray',
+        },
         {
           symbol: 'O',
           partialCharge: 'negative',
@@ -305,17 +301,16 @@ const molecules: Molecule[] = [
         {
           symbol: 'H',
           partialCharge: 'positive',
-          position: 'right',
+          position: 'top-right',
           size: 'small',
           color: 'white',
         },
       ],
       bonds: [
-        { from: 'left', to: 'center', type: 'single' },
-        { from: 'center', to: 'right', type: 'single', polar: true },
+        { from: 'left', to: 'center', type: 'single', polar: true },
+        { from: 'center', to: 'top-right', type: 'single', polar: true },
       ],
       shape: 'bent',
-      dipoleMoment: 'right',
     },
   },
   {
@@ -326,7 +321,7 @@ const molecules: Molecule[] = [
     hasHBond: false,
     molarMass: 154,
     correctIMFs: ['london'],
-    explanation: 'CCl₄ er samhverf fjórflötungur — óskautuð þrátt fyrir skautuð C-Cl tengisl.',
+    explanation: 'CCl₄ er samhverfur fjórflötungur — óskautuð þrátt fyrir skautuð C-Cl tengi.',
     visualization: {
       atoms: [
         {
@@ -372,7 +367,6 @@ const molecules: Molecule[] = [
         { from: 'center', to: 'right', type: 'single', polar: true },
       ],
       shape: 'tetrahedral',
-      dipoleMoment: 'none', // Cancels out
     },
   },
   {
@@ -383,7 +377,7 @@ const molecules: Molecule[] = [
     hasHBond: false,
     molarMass: 119,
     correctIMFs: ['london', 'dipole'],
-    explanation: 'Klóróform er ósamhverf og skautuð, en H er bundið við C — engin vetnistengi.',
+    explanation: 'Klóróform er ósamhverft og skautað, en H er bundið við C — engin vetnistengi.',
     visualization: {
       atoms: [
         { symbol: 'C', partialCharge: 'none', position: 'center', size: 'medium', color: 'gray' },
@@ -417,7 +411,6 @@ const molecules: Molecule[] = [
         { from: 'center', to: 'bottom-right', type: 'single', polar: true },
       ],
       shape: 'tetrahedral',
-      dipoleMoment: 'up',
     },
   },
   {
@@ -442,7 +435,6 @@ const molecules: Molecule[] = [
       ],
       bonds: [{ from: 'left', to: 'right', type: 'single', polar: true }],
       shape: 'diatomic',
-      dipoleMoment: 'right',
     },
   },
   {
@@ -454,7 +446,7 @@ const molecules: Molecule[] = [
     molarMass: 254,
     correctIMFs: ['london'],
     explanation:
-      'I₂ er óskautuð tvíatóma sameind — aðeins London kraftar. En þeir eru sterkir vegna stórrar mólmassa.',
+      'I₂ er óskautuð tvíatóma sameind — aðeins London kraftar. En þeir eru sterkir vegna stórs mólmassa.',
     visualization: {
       atoms: [
         { symbol: 'I', partialCharge: 'none', position: 'left', size: 'large', color: 'purple' },
@@ -462,7 +454,6 @@ const molecules: Molecule[] = [
       ],
       bonds: [{ from: 'left', to: 'right', type: 'single' }],
       shape: 'diatomic',
-      dipoleMoment: 'none',
     },
   },
 ];
@@ -498,13 +489,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       selectedIMFs.size === correctSet.size &&
       [...selectedIMFs].every((imf) => correctSet.has(imf as 'london' | 'dipole' | 'hydrogen'));
 
-    if (isCorrect) {
-      if (!showHint) {
-        setScore((prev) => prev + 15);
-      } else {
-        setScore((prev) => prev + 8);
-      }
-    }
+    // A hint never costs points: the same 15 with or without it.
+    if (isCorrect) setScore((prev) => prev + 15);
     setShowResult(true);
   };
 
@@ -536,7 +522,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         </div>
         <div className="flex justify-between text-xs mt-1">
           <span className="text-purple-700">London</span>
-          <span className="text-blue-700">Tvípól</span>
+          <span className="text-blue-700">Tvískaut</span>
           <span className="text-red-700">H-tengi</span>
         </div>
         <div className="flex justify-between text-xs text-warm-500">
@@ -593,8 +579,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                       {imf.id === 'london' ? '🌫️' : imf.id === 'dipole' ? '⚡' : '🔗'}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg sm:text-xl font-bold text-warm-800">{imf.name}</h3>
-                      <div className="text-sm text-warm-500 mb-2">{imf.nameEn}</div>
+                      <h3 className="text-lg sm:text-xl font-bold text-warm-800 mb-2">
+                        {imf.name}
+                      </h3>
                       <p className="text-warm-700 mb-3">{imf.description}</p>
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                         <span
@@ -625,10 +612,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   • <strong>Öll efni</strong> hafa London krafta — þeir eru alltaf til staðar
                 </li>
                 <li>
-                  • <strong>Skautaðar sameindir</strong> hafa einnig tvípól-tvípól
+                  • <strong>Skautaðar sameindir</strong> hafa einnig tvískauts-tvískauts krafta
                 </li>
                 <li>
-                  • <strong>H-F, H-O, eða H-N</strong> tengsl gefa vetnistengi
+                  • <strong>H-F, H-O, eða H-N</strong> tengi gefa vetnistengi
                 </li>
                 <li>• Stærra atóm / mólmassi = sterkari London kraftar</li>
               </ul>
@@ -743,9 +730,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                       size="md"
                       animation="fade-in"
                       showPartialCharges={molecule.isPolar}
-                      showDipoleMoment={
-                        molecule.isPolar && molecule.visualization.dipoleMoment !== 'none'
-                      }
+                      showDipoleMoment={molecule.isPolar}
                       ariaLabel={`${molecule.name} sameindaformúla`}
                     />
                   ) : (
@@ -792,7 +777,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 {molecule.isPolar ? '⚡ Skautuð' : '○ Óskautuð'}
               </span>
               <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-purple-500 text-white">
-                M = {molecule.molarMass} g/mol
+                M = {formatDecimal(molecule.molarMass)} g/mol
               </span>
               {molecule.hasHBond && (
                 <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-red-500 text-white">
@@ -847,10 +832,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                     >
                       {isSelected && '✓'}
                     </div>
-                    <div className="flex-1">
-                      <div className="font-bold">{imf.name}</div>
-                      <div className="text-xs text-warm-500">{imf.nameEn}</div>
-                    </div>
+                    <div className="flex-1 font-bold">{imf.name}</div>
                     <span
                       className={`px-2 py-1 rounded text-xs ${
                         imf.id === 'london'
@@ -883,7 +865,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               <span className="font-bold text-yellow-800">Vísbending: </span>
               <span className="text-yellow-900">
                 {molecule.isPolar
-                  ? 'Þessi sameind er skautuð — hvaða IMF eru til staðar í skautaðrar sameindum?'
+                  ? 'Þessi sameind er skautuð — hvaða IMF eru til staðar í skautuðum sameindum?'
                   : 'Þessi sameind er óskautuð — hvaða IMF er alltaf til staðar?'}
                 {molecule.hasHBond && ' Athugaðu einnig hvort H-F, H-O, eða H-N séu til staðar.'}
               </span>
@@ -905,15 +887,19 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   feedback={{
                     isCorrect,
                     explanation: molecule.explanation,
+                    // Each branch names the mistake the student actually made. Choosing
+                    // hydrogen bonds for a molecule without them (H on C or Cl) is the
+                    // commonest one, and it used to fall through to a note about molar mass.
                     misconception: isCorrect
                       ? undefined
-                      : molecule.hasHBond && !selectedIMFs.has('hydrogen')
+                      : molecule.hasHBond !== selectedIMFs.has('hydrogen')
                         ? MISCONCEPTIONS.hbond
-                        : molecule.isPolar && !selectedIMFs.has('dipole')
+                        : molecule.isPolar &&
+                            (!selectedIMFs.has('dipole') || !selectedIMFs.has('london'))
                           ? MISCONCEPTIONS.polar
                           : !molecule.isPolar && selectedIMFs.has('dipole')
                             ? MISCONCEPTIONS.nonpolar
-                            : MISCONCEPTIONS.london_strength,
+                            : undefined,
                     relatedConcepts: [
                       ...RELATED_CONCEPTS.london,
                       ...(molecule.isPolar ? RELATED_CONCEPTS.dipole : []),
@@ -921,7 +907,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                     ],
                     nextSteps: isCorrect
                       ? 'Frábært! Þú skilur IMF vel. Haltu áfram.'
-                      : 'Mundu: London er ALLTAF til staðar. Skautuð = tvípól. H-F/O/N = vetnistengi.',
+                      : 'Mundu: London er ALLTAF til staðar. Skautuð = tvískaut. H-F/O/N = vetnistengi.',
                   }}
                   config={{
                     showExplanation: true,
@@ -947,15 +933,15 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           {/* Phones: one row per force; three columns split 'Vetnistengi' mid-word. */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs mb-3">
             <div className="bg-purple-50 p-2 rounded flex items-center justify-between gap-2 text-right sm:block sm:text-center">
-              <div className="font-bold text-purple-700">London</div>
+              <div className="font-bold text-purple-700 whitespace-nowrap">London</div>
               <div className="text-purple-600">ALLTAF til staðar</div>
             </div>
             <div className="bg-blue-50 p-2 rounded flex items-center justify-between gap-2 text-right sm:block sm:text-center">
-              <div className="font-bold text-blue-700">Tvípól-tvípól</div>
+              <div className="font-bold text-blue-700 whitespace-nowrap">Tvískauts-tvískauts</div>
               <div className="text-blue-600">Skautaðar sameindir</div>
             </div>
             <div className="bg-red-50 p-2 rounded flex items-center justify-between gap-2 text-right sm:block sm:text-center">
-              <div className="font-bold text-red-700">Vetnistengi</div>
+              <div className="font-bold text-red-700 whitespace-nowrap">Vetnistengi</div>
               <div className="text-red-600">H-F, H-O, H-N</div>
             </div>
           </div>

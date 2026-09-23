@@ -36,19 +36,25 @@ function App() {
     DEFAULT_PROGRESS
   );
 
-  const applyLevelResult = (level: 1 | 2 | 3, score: number, next: ActiveLevel) => {
+  const applyLevelResult = (level: 1 | 2 | 3, score: number) => {
     const key = `level${level}` as const;
     updateProgress({
       [`${key}Completed`]: true,
       [`${key}Score`]: Math.max(progress[`${key}Score`], score),
       totalGamesPlayed: progress.totalGamesPlayed + 1,
     } as Partial<Progress>);
-    setActiveLevel(next);
+    // The closing screen says every level is done, so it opens only when that is true, after
+    // whichever level completes the set. Levels are not gated, and finishing Stig 3 first used
+    // to open it anyway, over two levels the student had never started.
+    const allDone = ([1, 2, 3] as const).every(
+      (n) => n === level || progress[`level${n}Completed`]
+    );
+    setActiveLevel(allDone ? 'complete' : 'menu');
   };
 
-  const handleLevel1Complete = (score: number) => applyLevelResult(1, score, 'menu');
-  const handleLevel2Complete = (score: number) => applyLevelResult(2, score, 'menu');
-  const handleLevel3Complete = (score: number) => applyLevelResult(3, score, 'complete');
+  const handleLevel1Complete = (score: number) => applyLevelResult(1, score);
+  const handleLevel2Complete = (score: number) => applyLevelResult(2, score);
+  const handleLevel3Complete = (score: number) => applyLevelResult(3, score);
 
   if (activeLevel === 'level1') {
     return <Level1 onComplete={handleLevel1Complete} onBack={() => setActiveLevel('menu')} />;
@@ -99,7 +105,7 @@ function App() {
             <div className="bg-green-50 p-4 rounded-xl flex justify-between items-center">
               <div>
                 <div className="font-bold text-green-800">Stig 3: Greining</div>
-                <div className="text-sm text-green-600">Flókin samanburður</div>
+                <div className="text-sm text-green-600">Flókinn samanburður</div>
               </div>
               <div className="text-2xl font-bold text-green-600">{progress.level3Score}</div>
             </div>
@@ -117,7 +123,7 @@ function App() {
                 ✓ <strong>London kraftar:</strong> Til staðar í öllum sameindum, eykst með stærð
               </li>
               <li>
-                ✓ <strong>Tvípól-tvípól:</strong> Milli skauttaðra sameinda
+                ✓ <strong>Tvískauts-tvískauts:</strong> Milli skautaðra sameinda
               </li>
               <li>
                 ✓ <strong>Vetnistengi:</strong> H við F, O, eða N — sterkasta tegund
@@ -172,7 +178,7 @@ function App() {
                 <div className="text-purple-600">Veikastur</div>
               </div>
               <div className="bg-blue-100 p-2 rounded-lg flex items-center justify-between gap-2 sm:block">
-                <div className="font-bold text-blue-800">Tvípól-tvípól</div>
+                <div className="font-bold text-blue-800">Tvískauts-tvískauts</div>
                 <div className="text-blue-600">Meðal</div>
               </div>
               <div className="bg-red-100 p-2 rounded-lg flex items-center justify-between gap-2 sm:block">
@@ -278,7 +284,7 @@ function App() {
                 </div>
                 <div className="bg-green-50 rounded-lg px-1 py-2 sm:p-3">
                   <div className="text-xl sm:text-2xl font-bold text-green-600">{totalScore}</div>
-                  <div className="text-xs text-warm-600">Heildar stig</div>
+                  <div className="text-xs text-warm-600">Heildarstig</div>
                 </div>
                 <div className="bg-blue-50 rounded-lg px-1 py-2 sm:p-3">
                   <div className="text-xl sm:text-2xl font-bold text-blue-600">
@@ -295,17 +301,17 @@ function App() {
             <h3 className="font-semibold text-warm-700 mb-3">📋 Tegundir millisameindakrafta</h3>
             <div className="space-y-2 text-sm">
               <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3 p-2 bg-purple-50 rounded">
-                <span className="font-bold text-purple-700 w-32">London (LDF)</span>
+                <span className="font-bold text-purple-700 w-44 shrink-0">London</span>
                 <span className="text-purple-600">
                   Öll efni — eykst með mólmassa og yfirborðsflatarmáli
                 </span>
               </div>
               <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3 p-2 bg-blue-50 rounded">
-                <span className="font-bold text-blue-700 w-32">Tvípól-tvípól</span>
+                <span className="font-bold text-blue-700 w-44 shrink-0">Tvískauts-tvískauts</span>
                 <span className="text-blue-600">Skautaðar sameindir — δ+ laðar að δ-</span>
               </div>
               <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3 p-2 bg-red-50 rounded">
-                <span className="font-bold text-red-700 w-32">Vetnistengi</span>
+                <span className="font-bold text-red-700 w-44 shrink-0">Vetnistengi</span>
                 <span className="text-red-600">H bundið við F, O, eða N — sterkasta IMF</span>
               </div>
             </div>

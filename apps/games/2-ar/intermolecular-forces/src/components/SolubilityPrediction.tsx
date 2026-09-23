@@ -27,7 +27,7 @@ const solvents: Solvent[] = [
     name: 'Vatn',
     formula: 'H₂O',
     polarity: 'polar',
-    description: 'Skautað leysi með vetnistengjum',
+    description: 'Skautaður leysir með vetnistengjum',
     color: '#3b82f6',
   },
   {
@@ -35,7 +35,7 @@ const solvents: Solvent[] = [
     name: 'Hexan',
     formula: 'C₆H₁₄',
     polarity: 'nonpolar',
-    description: 'Óskautað leysi með London kraftum',
+    description: 'Óskautaður leysir með London kraftum',
     color: '#f59e0b',
   },
 ];
@@ -48,7 +48,7 @@ const solutes: Solute[] = [
     polarity: 'ionic',
     dissolves: { water: true, hexane: false },
     explanation:
-      'Jónabindingarefni leysast í skautuðum leysum. Vatnssameindir umkringja jónirnar og rjúfa kristalbygginguna.',
+      'Jónaefni leysast í skautuðum leysum. Vatnssameindir umkringja jónirnar og rjúfa kristalbygginguna.',
   },
   {
     id: 'ethanol',
@@ -57,7 +57,7 @@ const solutes: Solute[] = [
     polarity: 'polar',
     dissolves: { water: true, hexane: true },
     explanation:
-      'Etanól er „amfífíll" — skautaður O-H hópur leysist í vatni, en kolvetnis keðjan leysist í hexani. Blandast báðum!',
+      'Etanól er „amfífíll" — skautaður O-H hópur leysist í vatni, en kolvetniskeðjan leysist í hexani. Blandast báðum!',
   },
   {
     id: 'oil',
@@ -66,7 +66,7 @@ const solutes: Solute[] = [
     polarity: 'nonpolar',
     dissolves: { water: false, hexane: true },
     explanation:
-      'Olía er óskautuð og hefur aðeins London krafta. Leysist í hexani en ekki vatni — þess vegna flýtur olía á vatni.',
+      'Olía er óskautuð og hefur aðeins London krafta. Leysist í hexani en ekki í vatni — þess vegna blandast olía og vatn ekki.',
   },
   {
     id: 'sugar',
@@ -217,7 +217,7 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
                 {solute.polarity === 'polar'
                   ? 'Skautað'
                   : solute.polarity === 'ionic'
-                    ? 'Jónatengi'
+                    ? 'Jónaefni'
                     : 'Óskautað'}
               </div>
             </button>
@@ -422,7 +422,7 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
                 {selectedSolute.polarity === 'polar'
                   ? 'Skautað'
                   : selectedSolute.polarity === 'ionic'
-                    ? 'Jónatengi'
+                    ? 'Jónaefni'
                     : 'Óskautað'}
               </span>
               <span className="text-warm-500">+</span>
@@ -470,7 +470,7 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
               <span className="text-amber-600 font-medium">óskautuðu</span> (olíur, fita, hexan)
             </li>
             <li>
-              • <span className="text-purple-600 font-medium">Jónatengi</span> leysist í{' '}
+              • <span className="text-purple-600 font-medium">Jónaefni</span> leysist í{' '}
               <span className="text-blue-600 font-medium">skautuðu</span> (salt í vatni)
             </li>
           </ul>
