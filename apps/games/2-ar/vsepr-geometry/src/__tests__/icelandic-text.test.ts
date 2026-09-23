@@ -69,7 +69,7 @@ describe('vsepr-geometry text', () => {
     ['brennisteinið', /brennisteinið/],
     ['Þú vantar', /Þú vantar/],
     ['fasti efnið', /fasti efnið/],
-    ['í þrívíð fjórflötungsröðun', /þrívíð fjórflöt/],
+    ['í þrívíð ferflötungsröðun', /þrívíð f(jór|er)flöt/],
     ['Þrjú … dreifist', /dreifist jafnt/],
     ['ferningssléttu lögun', /ferningssléttu lögun/],
     ['Úr þríhyrnd sléttri', /þríhyrnd sléttri/],

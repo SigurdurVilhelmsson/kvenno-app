@@ -42,7 +42,7 @@ export const CHALLENGES: Challenge[] = [
       isReversed: false,
       multiplier: 1,
     },
-    question: 'Brennsla metans gefur ΔH = -890 kJ/mol. Er þetta hvarf útvermið eða innvermið?',
+    question: 'Brennsla metans gefur ΔH = -890 kJ/mól. Er þetta hvarf útvermið eða innvermið?',
     options: [
       {
         text: 'Útvermið (gefur frá sér varma)',

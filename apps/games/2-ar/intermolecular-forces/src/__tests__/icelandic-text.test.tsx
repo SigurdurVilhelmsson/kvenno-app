@@ -117,7 +117,7 @@ describe('rendered text', () => {
       fireEvent.click(view.getByRole('button', { name: 'Næsta sameind' }));
     }
     expect(container.querySelector('.text-4xl')!.textContent).toBe('HCl');
-    expect(container.textContent).toContain('M = 36,5 g/mol');
+    expect(container.textContent).toContain('M = 36,5 g/mól');
     expect(visibleText(container)).not.toMatch(DECIMAL_POINT);
     expect(container.textContent).not.toMatch(/Forces|Dispersion|Dipole|Bonding|Hydrogen/);
   });
@@ -126,7 +126,7 @@ describe('rendered text', () => {
     const { container } = render(<Level2 onComplete={vi.fn()} onBack={vi.fn()} />);
     // Problem 1 includes HCl.
     expect(container.textContent).toContain('M = 36,5');
-    expect(container.textContent).toContain('36,5 g/mol');
+    expect(container.textContent).toContain('36,5 g/mól');
     expect(visibleText(container)).not.toMatch(DECIMAL_POINT);
   });
 
@@ -135,7 +135,7 @@ describe('rendered text', () => {
     const view = within(container);
     for (const force of ['London', 'Tvískauts-tvískauts', 'Vetnistengi']) {
       fireEvent.click(view.getByRole('button', { name: new RegExp(`${force}$`) }));
-      if (force === 'London') expect(container.textContent).toContain('0,05 - 40 kJ/mol');
+      if (force === 'London') expect(container.textContent).toContain('0,05 - 40 kJ/mól');
       expect(visibleText(container)).not.toMatch(DECIMAL_POINT);
       expect(container.textContent).not.toMatch(/Dispersion|Dipole|Hydrogen/);
     }

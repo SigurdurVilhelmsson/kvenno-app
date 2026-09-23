@@ -172,9 +172,9 @@ function App() {
       case 2:
         return `ΔH er jákvætt (efnahvarfið þarf varma) og ΔS er neikvætt (óreiða minnkar). Báðir þættir andmæla sjálfgengi — þess vegna er þetta hvarf aldrei sjálfgengt óháð hitastigi.`;
       case 3:
-        return `ΔH er neikvætt (styður sjálfgengi) en ΔS er neikvætt (andmælir). Við ${temperature} K vegur TΔS = ${formatRounded(TdeltaS, 1)} kJ/mol. Ef |ΔH| > |TΔS|, þá vinnur varminn og hvarfið er sjálfgengt. Þess vegna eru svona hvörf sjálfgeng við lágt hitastig en ekki við hátt.`;
+        return `ΔH er neikvætt (styður sjálfgengi) en ΔS er neikvætt (andmælir). Við ${temperature} K vegur TΔS = ${formatRounded(TdeltaS, 1)} kJ/mól. Ef |ΔH| > |TΔS|, þá vinnur varminn og hvarfið er sjálfgengt. Þess vegna eru svona hvörf sjálfgeng við lágt hitastig en ekki við hátt.`;
       case 4:
-        return `ΔH er jákvætt (andmælir sjálfgengi) en ΔS er jákvætt (styður). Við ${temperature} K vegur TΔS = ${formatRounded(TdeltaS, 1)} kJ/mol. Ef TΔS > ΔH, þá vinnur óreiða og hvarfið er sjálfgengt. Þess vegna eru svona hvörf ekki sjálfgeng við lágt hitastig en verða sjálfgeng við nógu hátt.`;
+        return `ΔH er jákvætt (andmælir sjálfgengi) en ΔS er jákvætt (styður). Við ${temperature} K vegur TΔS = ${formatRounded(TdeltaS, 1)} kJ/mól. Ef TΔS > ΔH, þá vinnur óreiða og hvarfið er sjálfgengt. Þess vegna eru svona hvörf ekki sjálfgeng við lágt hitastig en verða sjálfgeng við nógu hátt.`;
       default:
         return '';
     }
@@ -208,7 +208,7 @@ function App() {
         setFeedback(`Rangt. Bæði ΔG útreikningur og sjálfgengi eru röng. ${reasoning}`);
       } else if (!deltaGCorrect) {
         setFeedback(
-          `Sjálfgengi er rétt en ΔG er rangt. Rétt svar: ${formatRounded(calculatedDeltaG, 1)} kJ/mol`
+          `Sjálfgengi er rétt en ΔG er rangt. Rétt svar: ${formatRounded(calculatedDeltaG, 1)} kJ/mól`
         );
       } else {
         const spontaneityText =
@@ -282,7 +282,7 @@ function App() {
         y: currentDeltaG,
         color: currentDeltaG < 0 ? '#22c55e' : '#ef4444',
         radius: 6,
-        label: `${formatRounded(currentDeltaG, 0)} kJ/mol`,
+        label: `${formatRounded(currentDeltaG, 0)} kJ/mól`,
       },
     ];
 
@@ -556,8 +556,8 @@ function App() {
             🔬 Könnun: hvernig hitastig hefur áhrif á ΔG
           </h2>
           <p className="text-warm-700">
-            Hér er dæmi um efnahvarf sem losar varma (ΔH = −100 kJ/mol) en óreiða minnkar (ΔS = −200
-            J/(mol·K)). Dragðu hitastigs-sleðann og sjáðu hvernig ΔG breytist.
+            Hér er dæmi um efnahvarf sem losar varma (ΔH = −100 kJ/mól) en óreiða minnkar (ΔS = −200
+            J/(mól·K)). Dragðu hitastigs-sleðann og sjáðu hvernig ΔG breytist.
           </p>
 
           <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-6 rounded-xl border border-indigo-200">
@@ -565,12 +565,12 @@ function App() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 text-center">
               <div className="bg-red-50 p-3 rounded-lg border border-red-200">
                 <div className="text-xs text-red-700 font-semibold">ΔH° (vermibreyting)</div>
-                <div className="text-2xl font-bold text-red-800">{demoDeltaH} kJ/mol</div>
+                <div className="text-2xl font-bold text-red-800">{demoDeltaH} kJ/mól</div>
                 <div className="text-xs text-red-600 mt-1">Losun varma → styður sjálfgengi</div>
               </div>
               <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
                 <div className="text-xs text-purple-700 font-semibold">ΔS° (óreiðubreyting)</div>
-                <div className="text-2xl font-bold text-purple-800">{demoDeltaS} J/(mol·K)</div>
+                <div className="text-2xl font-bold text-purple-800">{demoDeltaS} J/(mól·K)</div>
                 <div className="text-xs text-purple-600 mt-1">Minni óreiða → andmælir</div>
               </div>
             </div>
@@ -605,7 +605,7 @@ function App() {
               <div className="font-bold text-sm">
                 ΔG° = ΔH° − TΔS° = {demoDeltaH} − ({demoT})({formatDecimal(demoDeltaS / 1000)}) ={' '}
                 <span className="text-xl whitespace-nowrap">
-                  {formatRounded(demoDeltaG, 1)} kJ/mol
+                  {formatRounded(demoDeltaG, 1)} kJ/mól
                 </span>
               </div>
               <div className="mt-1 text-sm">
@@ -765,7 +765,7 @@ function App() {
                       }}
                     >
                       {currentProblem.deltaH > 0 ? '+' : ''}
-                      {formatDecimal(currentProblem.deltaH)} kJ/mol
+                      {formatDecimal(currentProblem.deltaH)} kJ/mól
                     </div>
                     <div className="text-xs mt-1">
                       {currentProblem.deltaH < 0 ? '🔥 Útvermið' : '❄️ Innvermið'}
@@ -784,7 +784,7 @@ function App() {
                       }}
                     >
                       {currentProblem.deltaS > 0 ? '+' : ''}
-                      {formatDecimal(currentProblem.deltaS)} J/(mol·K)
+                      {formatDecimal(currentProblem.deltaS)} J/(mól·K)
                     </div>
                     <div className="text-xs mt-1">
                       {currentProblem.deltaS > 0 ? '↑ Óreiða eykst' : '↓ Óreiða minnkar'}
@@ -833,7 +833,7 @@ function App() {
                     {formatDecimal(currentProblem.deltaS / 1000)})<br />
                     ΔG° ={' '}
                     <span className="font-bold text-lg">
-                      {formatRounded(currentDeltaG, 1)} kJ/mol
+                      {formatRounded(currentDeltaG, 1)} kJ/mól
                     </span>
                   </div>
                   <div
@@ -919,7 +919,7 @@ function App() {
 
                   <div className="mb-4">
                     <label htmlFor="thermo-delta-g" className="block text-sm font-medium mb-2">
-                      ΔG° við {temperature} K (kJ/mol):
+                      ΔG° við {temperature} K (kJ/mól):
                     </label>
                     <div className="flex items-center gap-2">
                       <input
@@ -1004,10 +1004,10 @@ function App() {
                   <h3 className="font-bold text-lg mb-4">📝 Lausn:</h3>
                   <div className="space-y-3 text-sm">
                     <div>
-                      <strong>Skref 1:</strong> Umbreyta ΔS° í kJ/(mol·K)
+                      <strong>Skref 1:</strong> Umbreyta ΔS° í kJ/(mól·K)
                       <br />
-                      ΔS° = {formatDecimal(currentProblem.deltaS)} J/(mol·K) × (1 kJ / 1000 J) ={' '}
-                      {formatDecimal(currentProblem.deltaS / 1000)} kJ/(mol·K)
+                      ΔS° = {formatDecimal(currentProblem.deltaS)} J/(mól·K) × (1 kJ / 1000 J) ={' '}
+                      {formatDecimal(currentProblem.deltaS / 1000)} kJ/(mól·K)
                     </div>
                     <div>
                       <strong>Skref 2:</strong> Beita Gibbs jöfnunni
@@ -1021,7 +1021,7 @@ function App() {
                       ΔG° = ({formatDecimal(currentProblem.deltaH)}) - (
                       {formatRounded((temperature * currentProblem.deltaS) / 1000, 1)})
                       <br />
-                      <strong>ΔG° = {formatRounded(currentDeltaG, 1)} kJ/mol</strong>
+                      <strong>ΔG° = {formatRounded(currentDeltaG, 1)} kJ/mól</strong>
                     </div>
                     <div>
                       <strong>Skref 3:</strong> Túlka niðurstöðu
@@ -1122,7 +1122,7 @@ function App() {
                     yAxis={{
                       min: -graphData.yHalf,
                       max: graphData.yHalf,
-                      label: 'ΔG (kJ/mol)',
+                      label: 'ΔG (kJ/mól)',
                       tickInterval: graphData.yHalf / 5,
                     }}
                     regions={graphData.regions}
@@ -1213,7 +1213,7 @@ function App() {
                   </div>
                 </div>
                 <div className="mt-3 text-xs text-warm-600">
-                  R = 8,314 J/(mol·K)
+                  R = 8,314 J/(mól·K)
                   <br />T í Kelvin (K = °C + 273)
                   <br />
                   ΔG° &lt; 0 → sjálfgengt

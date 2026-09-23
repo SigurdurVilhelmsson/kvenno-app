@@ -57,8 +57,8 @@ describe('hess-law level 3 wrong-answer line', () => {
     const line = page.getByText(/munurinn er/).textContent ?? '';
     expect(line).toMatch(/^Þú slóst inn -800/);
     // 2 % of 890,3 kJ/mol is 17,8 kJ/mol — the old line said ±2.
-    expect(line).toMatch(/leyft svigrúm: ±17,8 kJ\/mol\)\./);
-    expect(page.getByText(/Rétt svar:/).textContent).toBe('Rétt svar: -890,3 kJ/mol');
+    expect(line).toMatch(/leyft svigrúm: ±17,8 kJ\/mól\)\./);
+    expect(page.getByText(/Rétt svar:/).textContent).toBe('Rétt svar: -890,3 kJ/mól');
   });
 
   it('is right about the tolerance: an answer 17 kJ/mol out is accepted', () => {
@@ -76,14 +76,14 @@ describe('hess-law level 3 reverse challenge', () => {
     fireEvent.click(page.getByRole('button', { name: 'Sýna ΔH°f töflu' }));
 
     const card = page.getByText('SO₂(g)', { selector: '.font-mono.font-bold' }).parentElement!;
-    expect(card.textContent).toContain('? kJ/mol');
+    expect(card.textContent).toContain('? kJ/mól');
     expect(card.textContent).not.toMatch(/296/);
     const total = page.getByText(/Samtals myndefni:/).textContent ?? '';
     expect(total).toMatch(/\?/);
     expect(total).not.toMatch(/296/);
 
     answer(page, ANSWERS[3]);
-    expect(card.textContent).toContain('-296,8 kJ/mol');
+    expect(card.textContent).toContain('-296,8 kJ/mól');
   });
 });
 

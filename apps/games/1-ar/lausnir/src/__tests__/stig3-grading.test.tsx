@@ -53,11 +53,11 @@ function exactFromQuestion(p: Problem): number {
       return num(moles) / num(litres);
     }
     case 'molarityFromMass': {
-      const [, g, mm, mL] = need(/leysir ([\d,]+) g af .*?\(mólmassi ([\d,]+) g\/mol\) í (\d+) mL/);
+      const [, g, mm, mL] = need(/leysir ([\d,]+) g af .*?\(mólmassi ([\d,]+) g\/mól\) í (\d+) mL/);
       return num(g) / num(mm) / (num(mL) / 1000);
     }
     case 'massFromMolarity': {
-      const [, mL, M, mm] = need(/með (\d+) mL af ([\d,]+) M .*?\(mólmassi ([\d,]+) g\/mol\)/);
+      const [, mL, M, mm] = need(/með (\d+) mL af ([\d,]+) M .*?\(mólmassi ([\d,]+) g\/mól\)/);
       return (num(M) * num(mL) * num(mm)) / 1000;
     }
     case 'mixing': {
@@ -155,8 +155,8 @@ describe('a worked step reproduces the answer from the numbers it prints', () =>
     const { container } = render(createElement(StepBySolution, { problem }));
     const line = [...container.querySelectorAll('p')]
       .map((p) => p.textContent ?? '')
-      .find((t) => /^M = [\d,]+ mol ÷ [\d,]+ L$/.test(t));
-    expect(line, 'no "M = … mol ÷ … L" line').toBeDefined();
+      .find((t) => /^M = [\d,]+ mól ÷ [\d,]+ L$/.test(t));
+    expect(line, 'no "M = … mól ÷ … L" line').toBeDefined();
     const [moles, litres] = line!.match(/\d+(?:,\d+)?/g)!.map(num);
     expect(checkAnswer(moles / litres, problem.answer), line).toBe(true);
   });

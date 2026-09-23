@@ -363,7 +363,7 @@ export const BUFFER_PROBLEMS: BufferProblem[] = [
     totalConcentration: 0.2,
     acidMolarMass: 60.05,
     baseMolarMass: 82.03,
-    context: 'Stuðpúðageta: getur hlutleyst ±0,02 mol HCl eða NaOH',
+    context: 'Stuðpúðageta: getur hlutleyst ±0,02 mól HCl eða NaOH',
     contextEn: 'Buffer capacity: can neutralize ±0.02 mol HCl or NaOH',
     contextPl: 'Pojemność buforowa: może zobojętnić ±0,02 mol HCl lub NaOH',
   },
@@ -416,7 +416,7 @@ export const BUFFER_PROBLEMS: BufferProblem[] = [
     acidMolarMass: 192.12,
     baseMolarMass: 258.07,
     context:
-      '🍊 Matvælaiðnaður & blóðbanki: Sítrónusýrustuðpúði er notaður til að varðveita blóð í blóðbönkum og í gosdrykki. Þriprótónsýra með 3 pKa gildi.',
+      '🍊 Matvælaiðnaður & blóðbanki: Sítrónusýrustuðpúði er notaður til að varðveita blóð í blóðbönkum og í gosdrykki. Þrívirk sýra með 3 pKa gildi.',
     contextEn:
       '🍊 Food industry & blood bank: Citric acid buffer is used to preserve blood in blood banks and in soft drinks. Triprotic acid with 3 pKa values.',
     contextPl:

@@ -34,7 +34,7 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
     nameIs: 'Kjörgaslögmálið',
     formula: 'PV = nRT',
     description: 'Tengir þrýsting, rúmmál, mól og hitastig',
-    constants: 'R = 0,08206 L·atm/(mol·K)',
+    constants: 'R = 0,08206 L·atm/(mól·K)',
     principleIs:
       'Gasagnir hreyfast stöðugt og rekast á veggi ílátsins. PV = nRT tengir saman fjölda árekstra (P), plássið sem agnirnar hafa (V), fjölda agna (n) og hraðann þeirra (T). R er fastinn sem gerir einingarnar samstæðar.',
   },

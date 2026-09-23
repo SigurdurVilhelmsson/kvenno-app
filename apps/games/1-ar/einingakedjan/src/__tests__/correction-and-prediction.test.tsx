@@ -181,7 +181,7 @@ describe('the prediction question', () => {
     // Molar mass as written, so g Mg lands on top and nothing cancels.
     tapCard(view, ': 24,31 g Mg');
     press(view, 'Leysa');
-    press(view, 'g Mg·g Mg / mol Mg');
+    press(view, 'g Mg·g Mg / mól Mg');
 
     const panel = predictionPanel(view);
     expect(panel.textContent).toContain('Rétt lesið úr keðjunni');

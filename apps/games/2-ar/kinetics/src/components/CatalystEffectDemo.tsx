@@ -50,7 +50,7 @@ export function CatalystEffectDemo({
   const [temp, setTemp] = useState(temperature);
   const [baseEa, setBaseEa] = useState(baseActivationEnergy);
   const [catEaChosen, setCatEa] = useState(catalyzedActivationEnergy);
-  // The "með hvata" slider stops 5 kJ/mol below the uncatalysed Ea, and lowering "án hvata"
+  // The "með hvata" slider stops 5 kJ/mól below the uncatalysed Ea, and lowering "án hvata"
   // moves that stop. Everything shown reads this capped value: it used to read the value chosen
   // before the stop moved, so the demo could show Ea' above Ea and a catalyst that slowed the
   // reaction, beside a slider thumb sitting at the cap.
@@ -272,7 +272,7 @@ export function CatalystEffectDemo({
           preserveAspectRatio="xMidYMid meet"
           className={`bg-warm-950 rounded-lg${narrow ? ' block h-auto' : ''}`}
           role="img"
-          aria-label={`Orkurit: Án hvata Ea=${baseEa} kJ/mol, Með hvata Ea=${catEa} kJ/mol`}
+          aria-label={`Orkurit: Án hvata Ea=${baseEa} kJ/mól, Með hvata Ea=${catEa} kJ/mól`}
         >
           {/* Grid lines */}
           <defs>
@@ -333,7 +333,7 @@ export function CatalystEffectDemo({
             className="fill-warm-400"
             style={{ fontSize: labelSize('10px') }}
           >
-            Orka (kJ/mol)
+            Orka (kJ/mól)
           </text>
 
           {/* X-axis label */}
@@ -529,7 +529,7 @@ export function CatalystEffectDemo({
       <div className="mt-4 grid grid-cols-2 gap-4">
         <div className="bg-red-500/20 border border-red-500/40 rounded-lg p-3">
           <div className="text-red-400 text-xs font-medium mb-1">Án hvata</div>
-          <div className="text-white text-lg font-bold">Ea = {baseEa} kJ/mol</div>
+          <div className="text-white text-lg font-bold">Ea = {baseEa} kJ/mól</div>
           <div className="text-warm-400 text-xs mt-1">
             {formatPercent(rates.withoutCatalyst * 100)} % sameinda geta hvarfast
           </div>
@@ -537,7 +537,7 @@ export function CatalystEffectDemo({
 
         <div className="bg-green-500/20 border border-green-500/40 rounded-lg p-3">
           <div className="text-green-400 text-xs font-medium mb-1">Með hvata</div>
-          <div className="text-white text-lg font-bold">Ea' = {catEa} kJ/mol</div>
+          <div className="text-white text-lg font-bold">Ea' = {catEa} kJ/mól</div>
           <div className="text-warm-400 text-xs mt-1">
             {formatPercent(rates.withCatalyst * 100)} % sameinda geta hvarfast
           </div>
@@ -548,7 +548,7 @@ export function CatalystEffectDemo({
       <div className="mt-3 bg-warm-700/50 rounded-lg p-3 text-center">
         <div className="text-warm-400 text-xs mb-1">Hvörf hraðar um</div>
         <div className="text-2xl font-bold text-yellow-400">{formatFactor(rates.speedup)} ×</div>
-        <div className="text-warm-500 text-xs mt-1">Hvati lækkar Ea um {baseEa - catEa} kJ/mol</div>
+        <div className="text-warm-500 text-xs mt-1">Hvati lækkar Ea um {baseEa - catEa} kJ/mól</div>
       </div>
 
       {/* Key points */}

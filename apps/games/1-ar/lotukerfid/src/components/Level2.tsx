@@ -145,7 +145,7 @@ const GROUP_QUESTIONS: GroupQuestion[] = [
     correct: 'Þau eru öll alkalímálmar',
     options: [
       'Þau eru öll alkalímálmar',
-      'Þau eru öll eðallofttegundir',
+      'Þau eru öll eðalgös',
       'Þau eru öll halógen',
       'Þau eru öll hliðarmálmar',
     ],
@@ -159,22 +159,22 @@ const GROUP_QUESTIONS: GroupQuestion[] = [
       'Þau eru öll halógen',
       'Þau eru öll alkalímálmar',
       'Þau eru öll málmleysingjar í flokki 16',
-      'Þau eru öll eðallofttegundir',
+      'Þau eru öll eðalgös',
     ],
     explanation: 'F, Cl og Br eru öll halógen (flokkur 17). Þau hafa 7 gildisrafeindir.',
   },
   {
     elements: ['He', 'Ne', 'Ar'],
     question: 'Hvað er sameiginlegt með He, Ne og Ar?',
-    correct: 'Þau eru öll eðallofttegundir',
+    correct: 'Þau eru öll eðalgös',
     options: [
-      'Þau eru öll eðallofttegundir',
+      'Þau eru öll eðalgös',
       'Þau eru öll málmleysingjar í flokki 1',
       'Þau eru öll halógen',
       'Þau eru öll málmar',
     ],
     explanation:
-      'He, Ne og Ar eru eðallofttegundir (flokkur 18). Þau hafa fullt ysta rafeindahvolf og eru mjög stöðug.',
+      'He, Ne og Ar eru eðalgös (flokkur 18). Þau hafa fullt ysta rafeindahvolf og eru mjög stöðug.',
   },
   {
     elements: ['Be', 'Mg', 'Ca'],
@@ -429,8 +429,8 @@ export function Level2({ onBack, onComplete }: Level2Props) {
                   7 gildisrafeindir
                 </div>
                 <div className="bg-white p-2 rounded">
-                  <strong className="text-blue-700">Flokkur 18:</strong> Eðallofttegundir (He, Ne,
-                  Ar...) — fullt hvolf
+                  <strong className="text-blue-700">Flokkur 18:</strong> Eðalgös (He, Ne, Ar...) —
+                  fullt hvolf
                 </div>
               </div>
             </div>

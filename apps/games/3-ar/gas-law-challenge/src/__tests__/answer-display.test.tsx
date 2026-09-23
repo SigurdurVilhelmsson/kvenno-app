@@ -134,10 +134,10 @@ describe('the feedback screen does not round the student’s answer into agreeme
     const q9 = questions.find((q) => q.id === 9)!; // 0,083 mol, tolerance 0,002
     renderFeedback(q9, 0.0805);
 
-    expect(screen.getByText('Þitt svar:').nextElementSibling?.textContent).toBe('0,0805 mol');
-    expect(screen.getByText('Rétt svar:').nextElementSibling?.textContent).toBe('0,083 mol');
+    expect(screen.getByText('Þitt svar:').nextElementSibling?.textContent).toBe('0,0805 mól');
+    expect(screen.getByText('Rétt svar:').nextElementSibling?.textContent).toBe('0,083 mól');
     expect(screen.getByText('Mismunur:').nextElementSibling?.textContent).toBe(
-      '0,0025 mol frá réttu svari'
+      '0,0025 mól frá réttu svari'
     );
   });
 

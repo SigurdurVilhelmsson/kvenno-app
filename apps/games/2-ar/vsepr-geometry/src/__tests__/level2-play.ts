@@ -26,7 +26,7 @@ export interface PoolEntry {
 export const POOL: PoolEntry[] = [
   { formula: 'H₂O', bondingPairs: 2, lonePairs: 2, shape: 'Beygð', angle: '104,5' },
   { formula: 'NH₃', bondingPairs: 3, lonePairs: 1, shape: 'Þríhyrnd pýramída', angle: '107' },
-  { formula: 'CH₄', bondingPairs: 4, lonePairs: 0, shape: 'Fjórflötungur', angle: '109,5' },
+  { formula: 'CH₄', bondingPairs: 4, lonePairs: 0, shape: 'Ferflötungur', angle: '109,5' },
   { formula: 'CO₂', bondingPairs: 2, lonePairs: 0, shape: 'Línuleg', angle: '180' },
   { formula: 'BF₃', bondingPairs: 3, lonePairs: 0, shape: 'Þríhyrnd slétt', angle: '120' },
   {

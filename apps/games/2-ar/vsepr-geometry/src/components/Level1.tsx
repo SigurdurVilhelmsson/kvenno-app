@@ -14,12 +14,11 @@ import { geometryToMolecule } from '../utils/vseprConverter';
 // Misconceptions for VSEPR geometry
 const VSEPR_MISCONCEPTIONS: Record<string, string> = {
   electron_domains:
-    'Rafeindasvið = bindandi pör + einstæð pör. Tvítengi og þrítengi telja sem EITT svið.',
-  lone_pairs: 'Einstæð pör taka meira pláss en bindandi pör og ýta horninu niður.',
+    'Rafeindasvið = bindandi pör + stök pör. Tvítengi og þrítengi telja sem EITT svið.',
+  lone_pairs: 'Stök pör taka meira pláss en bindandi pör og ýta horninu niður.',
   geometry:
-    'Rafeindaröðun (electron geometry) vs sameindaröðun (molecular geometry) - einstæð pör sjást ekki í sameindaröðun.',
-  bond_angle:
-    'Einstæð pör minnka hornið: fjórflötungur (109,5°) → pýramída (107°) → beygð (104,5°).',
+    'Rafeindaröðun (electron geometry) vs sameindaröðun (molecular geometry) - stök pör sjást ekki í sameindaröðun.',
+  bond_angle: 'Stök pör minnka hornið: ferflötungur (109,5°) → pýramída (107°) → beygð (104,5°).',
 };
 
 // The misconception each kind of question tests. Every wrong answer used to
@@ -100,22 +99,22 @@ const GEOMETRIES: Geometry[] = [
     bondAngle: '<120°',
     example: 'SO₂',
     exampleName: 'Brennisteinsdíoxíð',
-    description: 'Einstætt par ýtir bindandi pörum saman — lægra horn.',
+    description: 'Stakt par ýtir bindandi pörum saman — lægra horn.',
     visual: '○╲  ::\n  ●\n○╱',
   },
   {
     id: 'tetrahedral',
-    name: 'Fjórflötungur',
+    name: 'Ferflötungur',
     nameEn: 'Tetrahedral',
     electronDomains: 4,
     bondingPairs: 4,
     lonePairs: 0,
-    electronGeometry: 'Fjórflötungur',
-    molecularGeometry: 'Fjórflötungur',
+    electronGeometry: 'Ferflötungur',
+    molecularGeometry: 'Ferflötungur',
     bondAngle: '109,5°',
     example: 'CH₄',
     exampleName: 'Metan',
-    description: 'Fjögur rafeindasvið í þrívíðri fjórflötungsröðun.',
+    description: 'Fjögur rafeindasvið í þrívíðri ferflötungsröðun.',
     visual: '    ○\n    |\n○—●—○\n    |\n    ○',
   },
   {
@@ -125,12 +124,12 @@ const GEOMETRIES: Geometry[] = [
     electronDomains: 4,
     bondingPairs: 3,
     lonePairs: 1,
-    electronGeometry: 'Fjórflötungur',
+    electronGeometry: 'Ferflötungur',
     molecularGeometry: 'Þríhyrnd pýramída',
     bondAngle: '107°',
     example: 'NH₃',
     exampleName: 'Ammóníak',
-    description: 'Einstætt par ofan á þremur bindandi — pýramídalögun.',
+    description: 'Stakt par ofan á þremur bindandi — pýramídalögun.',
     visual: '    ::\n    |\n○—●—○\n    |\n    ○',
   },
   {
@@ -140,12 +139,12 @@ const GEOMETRIES: Geometry[] = [
     electronDomains: 4,
     bondingPairs: 2,
     lonePairs: 2,
-    electronGeometry: 'Fjórflötungur',
+    electronGeometry: 'Ferflötungur',
     molecularGeometry: 'Beygð',
     bondAngle: '104,5°',
     example: 'H₂O',
     exampleName: 'Vatn',
-    description: 'Tvö einstæð pör þrýsta bindandi pörum saman.',
+    description: 'Tvö stök pör þrýsta bindandi pörum saman.',
     visual: '  ::  ::\n    \\ /\n○—●—○',
   },
   {
@@ -206,7 +205,7 @@ const challenges: Challenge[] = [
         id: 'b',
         text: 'Beygð',
         correct: false,
-        explanation: 'Beygð lögun krefst einstæðra para á miðatómi.',
+        explanation: 'Beygð lögun krefst stakra para á miðatómi.',
       },
       {
         id: 'c',
@@ -216,9 +215,9 @@ const challenges: Challenge[] = [
       },
       {
         id: 'd',
-        text: 'Fjórflötungur',
+        text: 'Ferflötungur',
         correct: false,
-        explanation: 'Fjórflötungur hefur 4 rafeindasvið.',
+        explanation: 'Ferflötungur hefur 4 rafeindasvið.',
       },
     ],
     hints: {
@@ -244,13 +243,13 @@ const challenges: Challenge[] = [
         id: 'b',
         text: '3 rafeindasvið',
         correct: false,
-        explanation: 'Þig vantar eitt einstætt par.',
+        explanation: 'Þig vantar eitt stakt par.',
       },
       {
         id: 'c',
         text: '4 rafeindasvið',
         correct: true,
-        explanation: 'Rétt! 2 bindandi pör + 2 einstæð pör = 4 rafeindasvið.',
+        explanation: 'Rétt! 2 bindandi pör + 2 stök pör = 4 rafeindasvið.',
       },
       {
         id: 'd',
@@ -260,29 +259,29 @@ const challenges: Challenge[] = [
       },
     ],
     hints: {
-      topic: 'Mundu að telja bæði bindandi og einstæð pör.',
-      strategy: 'Rafeindasvið = bindandi pör + einstæð pör á miðatóminu.',
-      method: 'Súrefni hefur 6 gildisrafeindir. 2 fara í O-H tengingar, 4 mynda 2 einstæð pör.',
-      solution: '2 bindandi pör + 2 einstæð pör = 4 rafeindasvið.',
+      topic: 'Mundu að telja bæði bindandi og stök pör.',
+      strategy: 'Rafeindasvið = bindandi pör + stök pör á miðatóminu.',
+      method: 'Súrefni hefur 6 gildisrafeindir. 2 fara í O-H tengingar, 4 mynda 2 stök pör.',
+      solution: '2 bindandi pör + 2 stök pör = 4 rafeindasvið.',
     },
   },
   {
     id: 3,
     type: 'molecular_vs_electron',
-    question: 'NH₃ (ammóníak) hefur fjórflötungs RAFEINDALÖGUN en hvaða SAMEINDARLÖGUN?',
+    question: 'NH₃ (ammóníak) hefur ferflötungs RAFEINDALÖGUN en hvaða SAMEINDARLÖGUN?',
     geometryId: 'trigonal-pyramidal',
     options: [
       {
         id: 'a',
-        text: 'Fjórflötungur',
+        text: 'Ferflötungur',
         correct: false,
-        explanation: 'Sameindarlögun tekur ekki tillit til einstæðu paranna.',
+        explanation: 'Sameindarlögun tekur ekki tillit til stöku paranna.',
       },
       {
         id: 'b',
         text: 'Þríhyrnd pýramída',
         correct: true,
-        explanation: 'Rétt! Einstætt par á toppnum er ekki sýnilegt í sameindarlögun.',
+        explanation: 'Rétt! Stakt par á toppnum er ekki sýnilegt í sameindarlögun.',
       },
       {
         id: 'c',
@@ -299,15 +298,15 @@ const challenges: Challenge[] = [
     ],
     hints: {
       topic: 'Munurinn á rafeindalögun og sameindarlögun.',
-      strategy: 'Sameindarlögun lýsir aðeins stöðu atóma, ekki einstæðra para.',
+      strategy: 'Sameindarlögun lýsir aðeins stöðu atóma, ekki stakra para.',
       method: 'NH₃: 4 rafeindasvið (3 bp + 1 lp). Sameindarlögun sýnir aðeins 3 bindandi pörin.',
-      solution: 'Þríhyrnd pýramída - 3 H atóm í botninum, N á toppnum, einstætt par ósýnilegt.',
+      solution: 'Þríhyrnd pýramída - 3 H atóm í botninum, N á toppnum, stakt par ósýnilegt.',
     },
   },
   {
     id: 4,
     type: 'angle',
-    question: 'Hvert er tengihorn í fjórflötungssameindum (eins og CH₄)?',
+    question: 'Hvert er tengihorn í ferflötungssameindum (eins og CH₄)?',
     geometryId: 'tetrahedral',
     options: [
       {
@@ -333,8 +332,8 @@ const challenges: Challenge[] = [
     hints: {
       topic: 'Tengihorn ákvarðast af fjölda rafeindasviða.',
       strategy: 'Hornið hámarkar fjarlægð milli rafeindasviða í þrívíðri röðun.',
-      method: '4 rafeindasvið í þrívídd = fjórflötungur. Hornið er milli 90° og 120°.',
-      solution: '109,5° - þetta er nákvæmt fjórflötungshorn.',
+      method: '4 rafeindasvið í þrívídd = ferflötungur. Hornið er milli 90° og 120°.',
+      solution: '109,5° - þetta er nákvæmt ferflötungshorn.',
     },
   },
   {
@@ -350,9 +349,9 @@ const challenges: Challenge[] = [
       },
       {
         id: 'b',
-        text: 'Einstæð pör hrinda meira en bindandi pör',
+        text: 'Stök pör hrinda meira en bindandi pör',
         correct: true,
-        explanation: 'Rétt! Einstæð pör taka meira pláss og ýta bindandi pörum saman.',
+        explanation: 'Rétt! Stök pör taka meira pláss og ýta bindandi pörum saman.',
       },
       {
         id: 'c',
@@ -368,10 +367,10 @@ const challenges: Challenge[] = [
       },
     ],
     hints: {
-      topic: 'Áhrif einstæðra para á tengihorn.',
+      topic: 'Áhrif stakra para á tengihorn.',
       strategy: 'Hugsaðu um það sem „tekur meira pláss" í kringum miðatómið.',
-      method: 'Einstæð pör eru nær kjarna og dreifa sér meira en bindandi pör.',
-      solution: 'Einstæð pör hrinda meira og ýta bindandi pörum saman = minna horn.',
+      method: 'Stök pör eru nær kjarna og dreifa sér meira en bindandi pör.',
+      solution: 'Stök pör hrinda meira og ýta bindandi pörum saman = minna horn.',
     },
   },
   {
@@ -384,27 +383,27 @@ const challenges: Challenge[] = [
         id: 'a',
         text: 'Þríhyrnd pýramída',
         correct: false,
-        explanation: 'Pýramída hefur einstætt par á miðatóminu.',
+        explanation: 'Pýramída hefur stakt par á miðatóminu.',
       },
       {
         id: 'b',
         text: 'Þríhyrnd slétt',
         correct: true,
-        explanation: 'Rétt! 3 bindandi pör, engin einstæð pör — slétt 120° lögun.',
+        explanation: 'Rétt! 3 bindandi pör, engin stök pör — slétt 120° lögun.',
       },
-      { id: 'c', text: 'Beygð', correct: false, explanation: 'Beygð lögun hefur einstæð pör.' },
+      { id: 'c', text: 'Beygð', correct: false, explanation: 'Beygð lögun hefur stök pör.' },
       {
         id: 'd',
-        text: 'Fjórflötungur',
+        text: 'Ferflötungur',
         correct: false,
-        explanation: 'Fjórflötungur hefur 4 rafeindasvið, ekki 3.',
+        explanation: 'Ferflötungur hefur 4 rafeindasvið, ekki 3.',
       },
     ],
     hints: {
       topic: 'VSEPR lögun með 3 rafeindasvið.',
-      strategy: 'Athugaðu hvort miðatómið hefur einstæð pör.',
-      method: 'Bór hefur aðeins 3 gildisrafeindir og myndar ekki einstæð pör.',
-      solution: '3 bindandi pör, 0 einstæð = þríhyrnd slétt lögun (120°).',
+      strategy: 'Athugaðu hvort miðatómið hefur stök pör.',
+      method: 'Bór hefur aðeins 3 gildisrafeindir og myndar ekki stök pör.',
+      solution: '3 bindandi pör, 0 stök = þríhyrnd slétt lögun (120°).',
     },
   },
   {
@@ -466,9 +465,9 @@ const challenges: Challenge[] = [
       },
       {
         id: 'd',
-        text: 'Fjórflötungur',
+        text: 'Ferflötungur',
         correct: false,
-        explanation: 'Fjórflötungur hefur 4 rafeindasvið.',
+        explanation: 'Ferflötungur hefur 4 rafeindasvið.',
       },
     ],
     hints: {
@@ -714,7 +713,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                         </div>
                       </div>
                       <div className="bg-white p-3 rounded-lg">
-                        <div className="text-warm-500">Einstæð pör</div>
+                        <div className="text-warm-500">Stök pör</div>
                         <div className="font-bold text-yellow-600">
                           {selectedGeometry.lonePairs}
                         </div>
@@ -894,7 +893,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                         relatedConcepts: VSEPR_RELATED,
                         nextSteps: isCorrect
                           ? 'Frábært! Þú skilur VSEPR vel. Haltu áfram.'
-                          : 'Mundu: Teldu rafeindasvið fyrst, síðan athugaðu einstæð pör.',
+                          : 'Mundu: Teldu rafeindasvið fyrst, síðan athugaðu stök pör.',
                       }}
                       config={{
                         showExplanation: true,

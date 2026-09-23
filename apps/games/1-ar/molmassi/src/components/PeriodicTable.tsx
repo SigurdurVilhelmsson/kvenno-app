@@ -135,7 +135,7 @@ export function PeriodicTable({
     { key: 'metalloid', label: 'Hálfmálmar' },
     { key: 'nonmetal', label: 'Málmleysingjar' },
     { key: 'halogen', label: 'Halógen' },
-    { key: 'noble-gas', label: 'Eðallofttegundir' },
+    { key: 'noble-gas', label: 'Eðalgös' },
   ];
 
   return (

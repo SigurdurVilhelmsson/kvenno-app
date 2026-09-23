@@ -305,14 +305,14 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
               <div className="text-xs text-red-600 font-semibold">Sýra</div>
               <div className="font-bold text-red-800">{problem.acidName}</div>
               <div className="text-xs text-red-600">
-                M = {formatDecimal(problem.acidMolarMass)} g/mol
+                M = {formatDecimal(problem.acidMolarMass)} g/mól
               </div>
             </div>
             <div className="bg-blue-50 p-3 rounded-lg">
               <div className="text-xs text-blue-600 font-semibold">Basi</div>
               <div className="font-bold text-blue-800">{problem.baseName}</div>
               <div className="text-xs text-blue-600">
-                M = {formatDecimal(problem.baseMolarMass)} g/mol
+                M = {formatDecimal(problem.baseMolarMass)} g/mól
               </div>
             </div>
           </div>
@@ -617,16 +617,16 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                     <li>
                       • Heildarmól = {formatDecimal(problem.totalConcentration)} M ×{' '}
                       {formatDecimal(problem.volume)} L ={' '}
-                      {formatDecimal(problem.totalConcentration * problem.volume, 4)} mol
+                      {formatDecimal(problem.totalConcentration * problem.volume, 4)} mól
                     </li>
                     <li>
-                      • Sýra: {formatDecimal(solution.acidMoles, 4)} mol ×{' '}
-                      {formatDecimal(problem.acidMolarMass)} g/mol ={' '}
+                      • Sýra: {formatDecimal(solution.acidMoles, 4)} mól ×{' '}
+                      {formatDecimal(problem.acidMolarMass)} g/mól ={' '}
                       {formatDecimal(solution.acidMass, 2)} g
                     </li>
                     <li>
-                      • Basi: {formatDecimal(solution.baseMoles, 4)} mol ×{' '}
-                      {formatDecimal(problem.baseMolarMass)} g/mol ={' '}
+                      • Basi: {formatDecimal(solution.baseMoles, 4)} mól ×{' '}
+                      {formatDecimal(problem.baseMolarMass)} g/mól ={' '}
                       {formatDecimal(solution.baseMass, 2)} g
                     </li>
                   </ul>

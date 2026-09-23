@@ -25,7 +25,7 @@ const challenges: Challenge[] = [
     type: 'comparison',
     title: 'Etanól vs Dímetýleter',
     scenario:
-      'Etanól (CH₃CH₂OH) og dímetýleter (CH₃OCH₃) hafa bæði sömu sameindaformúlu: C₂H₆O og sama mólmassa (46 g/mol).',
+      'Etanól (CH₃CH₂OH) og dímetýleter (CH₃OCH₃) hafa bæði sömu sameindaformúlu: C₂H₆O og sama mólmassa (46 g/mól).',
     question: 'Af hverju hefur etanól MIKLU hærra suðumark (78°C) en dímetýleter (-24°C)?',
     compounds: [
       { formula: 'CH₃CH₂OH', name: 'Etanól', info: 'Suðumark: 78°C' },
@@ -55,14 +55,14 @@ const challenges: Challenge[] = [
     ],
     hint: 'Hvaða sameind getur myndað vetnistengi SEM GJAFI? (gefur H)',
     conceptNote:
-      'Vetnistengi krefst bæði GJAFA (H bundið við F/O/N) og ÞEGA (F/O/N með einstæð pör). Etanól getur verið hvort tveggja, dímetýleter er aðeins þegi.',
+      'Vetnistengi krefst bæði GJAFA (H bundið við F/O/N) og ÞEGA (F/O/N með stök pör). Etanól getur verið hvort tveggja, dímetýleter er aðeins þegi.',
   },
   {
     id: 2,
     type: 'anomaly',
     title: 'Óeðlilegir eiginleikar vatns',
     scenario:
-      'Vatn (H₂O, M=18 g/mol) hefur suðumark 100°C. Vetnissúlfíð (H₂S, M=34 g/mol) hefur suðumark -60°C.',
+      'Vatn (H₂O, M=18 g/mól) hefur suðumark 100°C. Vetnissúlfíð (H₂S, M=34 g/mól) hefur suðumark -60°C.',
     question:
       'Þrátt fyrir að H₂S sé nær tvöfalt þyngri, hefur vatn MIKLU hærra suðumark. Af hverju?',
     options: [
@@ -138,7 +138,7 @@ const challenges: Challenge[] = [
     type: 'multi_factor',
     title: 'n-Oktan vs. 2,2,3,3-Tetrametýlbútan',
     scenario:
-      'Báðar sameindir hafa formúlu C₈H₁₈ og mólmassa 114 g/mol. n-Oktan er löng keðja, 2,2,3,3-tetrametýlbútan er „kúlulaga".',
+      'Báðar sameindir hafa formúlu C₈H₁₈ og mólmassa 114 g/mól. n-Oktan er löng keðja, 2,2,3,3-tetrametýlbútan er „kúlulaga".',
     question: 'Hvor hefur hærra suðumark?',
     compounds: [
       { formula: 'n-Oktan', name: 'Löng keðja', info: 'Suðumark: 126°C' },
@@ -301,7 +301,7 @@ const challenges: Challenge[] = [
         text: 'Jurtaolía — mjög langar keðjur með miklu yfirborði',
         correct: true,
         explanation:
-          'Rétt! Jurtaolíur hafa risastórar sameindir (600-900 g/mol) með langar feitukeðjur → gríðarlega sterkir London kraftar.',
+          'Rétt! Jurtaolíur hafa risastórar sameindir (600-900 g/mól) með langar feitukeðjur → gríðarlega sterkir London kraftar.',
       },
       {
         id: 'c',
@@ -316,7 +316,7 @@ const challenges: Challenge[] = [
         explanation: 'Seigja er mjög mismunandi milli þessara vökva.',
       },
     ],
-    hint: 'Hugsaðu um stærð sameindanna. Jurtaolíur hafa mólmassa 600-900 g/mol.',
+    hint: 'Hugsaðu um stærð sameindanna. Jurtaolíur hafa mólmassa 600-900 g/mól.',
     conceptNote:
       'Þó vetnistengi séu sterk, geta risastórar sameindir með mikið yfirborð haft svo sterka London krafta að þeir vinna yfir H-tengi lítilla sameinda.',
   },
@@ -369,13 +369,13 @@ const challenges: Challenge[] = [
         text: 'HF getur aðeins myndað 2 H-tengi, vatn getur myndað 4',
         correct: true,
         explanation:
-          'Rétt! HF hefur aðeins eitt H og eitt F → hámark 2 H-tengi. H₂O hefur 2 H og 2 einstæð pör → allt að 4 H-tengi.',
+          'Rétt! HF hefur aðeins eitt H og eitt F → hámark 2 H-tengi. H₂O hefur 2 H og 2 stök pör → allt að 4 H-tengi.',
       },
       {
         id: 'b',
         text: 'Vatn er þyngra',
         correct: false,
-        explanation: 'Vatn er í raun léttara (18 vs 20 g/mol).',
+        explanation: 'Vatn er í raun léttara (18 vs 20 g/mól).',
       },
       {
         id: 'c',

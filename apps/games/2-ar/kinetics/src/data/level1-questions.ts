@@ -57,7 +57,7 @@ export const challenges: KineticsChallenge[] = [
       method: 'hraði = Δ[styrk]/Δtími',
       solution: 'hraði = (1,0 − 0,5) M / 10 s = 0,5/10 = 0,05 M/s',
     },
-    conceptExplanation: 'Hvarfhraði mælist í styrkbreytingu á tímaeiningu (M/s eða mol/L·s).',
+    conceptExplanation: 'Hvarfhraði mælist í styrkbreytingu á tímaeiningu (M/s eða mól/L·s).',
   },
   {
     id: 2,

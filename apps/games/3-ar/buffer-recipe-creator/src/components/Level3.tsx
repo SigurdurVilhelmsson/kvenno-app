@@ -155,7 +155,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
       setStep('volumes');
     } else {
       let feedback = 'Ekki rétt. ';
-      feedback += `Heildarmól = ${formatDecimal(puzzle.targetConcentration)} M × ${formatDecimal(puzzle.targetVolume / 1000)} L = ${formatDecimal(targetMoles, 4)} mol. `;
+      feedback += `Heildarmól = ${formatDecimal(puzzle.targetConcentration)} M × ${formatDecimal(puzzle.targetVolume / 1000)} L = ${formatDecimal(targetMoles, 4)} mól. `;
       feedback += `Skiptu samkvæmt hlutfalli ${formatDecimal(correctRatio, 2)}.`;
       setMolesFeedback(feedback);
     }
@@ -516,7 +516,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                   <strong>Heildarmól:</strong> n = C × V ={' '}
                   {formatDecimal(puzzle.targetConcentration)} M ×{' '}
                   {formatDecimal(puzzle.targetVolume / 1000)} L = {formatDecimal(targetMoles, 4)}{' '}
-                  mol
+                  mól
                 </p>
                 <p className="text-sm text-blue-800 mt-1">
                   <strong>Skipting:</strong> Notaðu hlutfallið {formatDecimal(correctRatio, 2)} til
@@ -655,16 +655,16 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                     <li>
                       • Heildarmól = {formatDecimal(puzzle.targetConcentration)} M ×{' '}
                       {formatDecimal(puzzle.targetVolume / 1000)} L ={' '}
-                      {formatDecimal(targetMoles, 4)} mol
+                      {formatDecimal(targetMoles, 4)} mól
                     </li>
                     <li>
-                      • Sýra: {formatDecimal(correctAcidMoles, 5)} mol /{' '}
+                      • Sýra: {formatDecimal(correctAcidMoles, 5)} mól /{' '}
                       {formatDecimal(puzzle.stockAcidConc)} M ={' '}
                       {formatDecimal(recipe.acidVolume / 1000, 5)} L ={' '}
                       {formatDecimal(recipe.acidVolume, 2)} mL
                     </li>
                     <li>
-                      • Basi: {formatDecimal(correctBaseMoles, 5)} mol /{' '}
+                      • Basi: {formatDecimal(correctBaseMoles, 5)} mól /{' '}
                       {formatDecimal(puzzle.stockBaseConc)} M ={' '}
                       {formatDecimal(recipe.baseVolume / 1000, 5)} L ={' '}
                       {formatDecimal(recipe.baseVolume, 2)} mL

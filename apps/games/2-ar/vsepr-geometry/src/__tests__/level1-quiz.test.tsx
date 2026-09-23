@@ -25,7 +25,7 @@ const SHAPE_NAMES = [
   'Línuleg',
   'Þríhyrnd',
   'Beygð',
-  'Fjórflötung',
+  'Ferflötung',
   'pýramída',
   'Áttflötung',
   'tvípýramída',
@@ -106,7 +106,7 @@ describe('the feedback panel', () => {
     pickOption(container, /2 rafeind?asvið/);
     fireEvent.click(ui.getByRole('button', { name: 'Athuga svar' }));
     expect(container.textContent).toContain('Rangt');
-    expect(container.textContent).toMatch(/2 bindandi pör \+ 2 einstæð pör = 4 rafeind?asvið/);
+    expect(container.textContent).toMatch(/2 bindandi pör \+ 2 stök pör = 4 rafeind?asvið/);
     expect(container.textContent).not.toContain('Rétt!');
   });
 

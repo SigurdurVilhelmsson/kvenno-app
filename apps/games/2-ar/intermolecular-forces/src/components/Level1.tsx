@@ -321,7 +321,7 @@ const molecules: Molecule[] = [
     hasHBond: false,
     molarMass: 154,
     correctIMFs: ['london'],
-    explanation: 'CCl₄ er samhverfur fjórflötungur — óskautuð þrátt fyrir skautuð C-Cl tengi.',
+    explanation: 'CCl₄ er samhverfur ferflötungur — óskautuð þrátt fyrir skautuð C-Cl tengi.',
     visualization: {
       atoms: [
         {
@@ -777,7 +777,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 {molecule.isPolar ? '⚡ Skautuð' : '○ Óskautuð'}
               </span>
               <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-purple-500 text-white">
-                M = {formatDecimal(molecule.molarMass)} g/mol
+                M = {formatDecimal(molecule.molarMass)} g/mól
               </span>
               {molecule.hasHBond && (
                 <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-red-500 text-white">

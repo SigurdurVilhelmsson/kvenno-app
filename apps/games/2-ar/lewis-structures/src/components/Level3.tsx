@@ -82,7 +82,7 @@ const challenges: Challenge[] = [
     type: 'calculate_fc',
     molecule: 'H₂O',
     description:
-      'Í vatni hefur súrefni 2 einstæð pör (4 óbundnar rafeindir) og 2 tengsl (4 bundnar rafeindir).',
+      'Í vatni hefur súrefni 2 stök pör (4 óbundnar rafeindir) og 2 tengsl (4 bundnar rafeindir).',
     atoms: [
       {
         symbol: 'O',
@@ -123,7 +123,7 @@ const challenges: Challenge[] = [
     type: 'calculate_fc',
     molecule: 'NH₄⁺',
     description:
-      'Í ammóníumjóninni er nitur tengt við 4 vetni með einföldum tengslum og engin einstæð pör.',
+      'Í ammóníumjóninni er nitur tengt við 4 vetni með einföldum tengslum og engin stök pör.',
     atoms: [
       {
         symbol: 'N',
@@ -783,7 +783,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               <strong>V</strong> = Gildisrafeindir (frá lotukerfinu)
             </li>
             <li>
-              <strong>L</strong> = Óbundnar rafeindir (í einstæðum pörum)
+              <strong>L</strong> = Óbundnar rafeindir (í stökum pörum)
             </li>
             <li>
               <strong>B</strong> = Bundnar rafeindir (í tengslum)

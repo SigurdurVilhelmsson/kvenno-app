@@ -46,7 +46,7 @@ const challenges: Challenge[] = [
         id: 'c',
         text: 'sp³',
         correct: true,
-        explanation: 'Rétt! 4 rafeindasvið = sp³ blendni = fjórflötungur.',
+        explanation: 'Rétt! 4 rafeindasvið = sp³ blendni = ferflötungur.',
       },
       { id: 'd', text: 'sp³d', correct: false, explanation: 'sp³d krefst 5 rafeindasviða.' },
     ],
@@ -68,7 +68,7 @@ const challenges: Challenge[] = [
         explanation: 'Rétt! 2 rafeindasvið (2 tvöfaldar tengingar) = sp blendni = línuleg.',
       },
       { id: 'b', text: 'sp²', correct: false, explanation: 'sp² gefur þríhyrnda slétta lögun.' },
-      { id: 'c', text: 'sp³', correct: false, explanation: 'sp³ gefur fjórflötung.' },
+      { id: 'c', text: 'sp³', correct: false, explanation: 'sp³ gefur ferflötung.' },
       {
         id: 'd',
         text: 'Engin blendni',
@@ -93,13 +93,13 @@ const challenges: Challenge[] = [
         id: 'c',
         text: 'sp³',
         correct: true,
-        explanation: 'Rétt! 3 tengsl + 1 einstætt par = 4 rafeindasvið = sp³.',
+        explanation: 'Rétt! 3 tengsl + 1 stakt par = 4 rafeindasvið = sp³.',
       },
       { id: 'd', text: 'sp³d', correct: false, explanation: 'sp³d krefst 5 rafeindasviða.' },
     ],
-    hint: 'Mundu að telja EINSTÆÐ PÖR sem rafeindasvið líka!',
+    hint: 'Mundu að telja STÖK PÖR sem rafeindasvið líka!',
     conceptExplanation:
-      'NH₃ hefur 3 N-H tengsl og 1 einstætt par á nitri = 4 rafeindasvið = sp³ blendni. Þó sameindarlögunin sé þríhyrnd pýramída er blendnin enn sp³.',
+      'NH₃ hefur 3 N-H tengsl og 1 stakt par á nitri = 4 rafeindasvið = sp³ blendni. Þó sameindarlögunin sé þríhyrnd pýramída er blendnin enn sp³.',
   },
   {
     id: 4,
@@ -245,9 +245,9 @@ const challenges: Challenge[] = [
     options: [
       {
         id: 'a',
-        text: 'Óskautuð vegna fjórflötungs',
+        text: 'Óskautuð vegna ferflötungs',
         correct: false,
-        explanation: 'Fjórflötungur er samhverfur, en CHCl₃ hefur mismunandi atóm.',
+        explanation: 'Ferflötungur er samhverfur, en CHCl₃ hefur mismunandi atóm.',
       },
       {
         id: 'b',
@@ -354,10 +354,10 @@ const challenges: Challenge[] = [
       },
       {
         id: 'b',
-        text: 'Fjórflötungslögun er samhverf — tvískautsvægi jafnast út',
+        text: 'Ferflötungslögun er samhverf — tvískautsvægi jafnast út',
         correct: true,
         explanation:
-          'Rétt! Fjögur jafn skautuð tengisl í fjórflötungi draga í jafnar áttir → nettó tvískautsvægi = 0.',
+          'Rétt! Fjögur jafn skautuð tengisl í ferflötungi draga í jafnar áttir → nettó tvískautsvægi = 0.',
       },
       {
         id: 'c',
@@ -372,9 +372,9 @@ const challenges: Challenge[] = [
         explanation: 'Leiðni hefur ekkert með skautun að gera.',
       },
     ],
-    hint: 'Hugsaðu um fjórflötunginn — ef þú dregur í allar 4 áttir jafnt...',
+    hint: 'Hugsaðu um ferflötunginn — ef þú dregur í allar 4 áttir jafnt...',
     conceptExplanation:
-      'Þetta er klassískt dæmi um SAMHVERFU. Þó hvert C-Cl tengi sé skautað, þá eru þau SAMHVERF dreifð í rúminu (fjórflötungur). Kraftarnir jafnast út → ekkert nettó tvískautsvægi.',
+      'Þetta er klassískt dæmi um SAMHVERFU. Þó hvert C-Cl tengi sé skautað, þá eru þau SAMHVERF dreifð í rúminu (ferflötungur). Kraftarnir jafnast út → ekkert nettó tvískautsvægi.',
   },
   {
     id: 12,
@@ -394,7 +394,7 @@ const challenges: Challenge[] = [
         text: 'NH₃ er meira skautuð',
         correct: true,
         explanation:
-          'Rétt! Í NH₃ benda einstæða parið og N-H tvískautsvægin í SÖMU átt. Í NF₃ benda þau í GAGNSTÆÐAR áttir.',
+          'Rétt! Í NH₃ benda staka parið og N-H tvískautsvægin í SÖMU átt. Í NF₃ benda þau í GAGNSTÆÐAR áttir.',
       },
       {
         id: 'c',
@@ -409,9 +409,9 @@ const challenges: Challenge[] = [
         explanation: 'Báðar eru skautaðar, en misjafnlega.',
       },
     ],
-    hint: 'Hugsaðu um einstæða parið á N — hvert bendir það? Og hvert benda tengslin?',
+    hint: 'Hugsaðu um staka parið á N — hvert bendir það? Og hvert benda tengslin?',
     conceptExplanation:
-      'Í NH₃: N-H tengisl benda FRÁ N (H er δ+) og einstæða parið bendir einnig upp → allir kraftar benda í SÖMU ÁTTINA → stórt tvískautsvægi. Í NF₃: N-F tengisl benda MÓTI N (F er δ-) en einstæða parið bendir í GAGNSTÆÐA ÁTT → kraftar hætta við → minna tvískautsvægi.',
+      'Í NH₃: N-H tengisl benda FRÁ N (H er δ+) og staka parið bendir einnig upp → allir kraftar benda í SÖMU ÁTTINA → stórt tvískautsvægi. Í NF₃: N-F tengisl benda MÓTI N (F er δ-) en staka parið bendir í GAGNSTÆÐA ÁTT → kraftar hætta við → minna tvískautsvægi.',
   },
 ];
 
@@ -421,8 +421,8 @@ const challenges: Challenge[] = [
 const POLARITY_EXAMPLES: { formula: string; text: string }[] = [
   { formula: 'CO₂', text: 'CO₂ (línuleg) → óskautuð' },
   { formula: 'H₂O', text: 'H₂O (beygð) → skautuð' },
-  { formula: 'CCl₄', text: 'CCl₄ (fjórflötungur) → óskautuð' },
-  { formula: 'CHCl₃', text: 'CHCl₃ (fjórflötungur) → skautuð' },
+  { formula: 'CCl₄', text: 'CCl₄ (ferflötungur) → óskautuð' },
+  { formula: 'CHCl₃', text: 'CHCl₃ (ferflötungur) → skautuð' },
 ];
 
 const HYBRIDIZATION_CONFIGS: Record<
@@ -431,7 +431,7 @@ const HYBRIDIZATION_CONFIGS: Record<
 > = {
   2: { label: 'sp', orbitals: '1s + 1p', angle: '180°', shape: 'Línuleg' },
   3: { label: 'sp²', orbitals: '1s + 2p', angle: '120°', shape: 'Þríhyrnd' },
-  4: { label: 'sp³', orbitals: '1s + 3p', angle: '109,5°', shape: 'Fjórflötungur' },
+  4: { label: 'sp³', orbitals: '1s + 3p', angle: '109,5°', shape: 'Ferflötungur' },
   5: { label: 'sp³d', orbitals: '1s + 3p + 1d', angle: '90°/120°', shape: 'Tvípýramída' },
   6: { label: 'sp³d²', orbitals: '1s + 3p + 2d', angle: '90°', shape: 'Áttflötungur' },
 };
@@ -969,7 +969,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 <tr className="border-t">
                   <td className="p-2">4</td>
                   <td className="hybridization-sp3">sp³</td>
-                  <td>Fjórflötungur</td>
+                  <td>Ferflötungur</td>
                 </tr>
                 <tr className="border-t">
                   <td className="p-2">5</td>

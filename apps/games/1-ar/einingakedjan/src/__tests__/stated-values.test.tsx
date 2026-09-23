@@ -177,7 +177,7 @@ describe('the starting measurement keeps its trailing zeros everywhere it is sho
 describe('a fraction tells a screen reader which way up it is', () => {
   it('names the fraction bar in a ratio', () => {
     const view = render(<RatioFraction ratio={orient(ratioById('mm-Mg'), 'flipped')} />);
-    expect(view.container.textContent?.replace(/\s+/g, ' ')).toBe('1 mol Mg deilt með 24,31 g Mg');
+    expect(view.container.textContent?.replace(/\s+/g, ' ')).toBe('1 mól Mg deilt með 24,31 g Mg');
   });
 
   it('names the fraction bar in a unit with a denominator', () => {
@@ -187,10 +187,10 @@ describe('a fraction tells a screen reader which way up it is', () => {
         { unit: 'g', species: 'Mg' },
         { unit: 'g', species: 'Mg' },
       ],
-      den: [{ unit: 'mol', species: 'Mg' }],
+      den: [{ unit: 'mól', species: 'Mg' }],
     };
     const view = render(<UnitsDisplay quantity={quantity} unitsOnly />);
-    expect(view.container.textContent?.replace(/\s+/g, ' ')).toContain('deilt með mol Mg');
+    expect(view.container.textContent?.replace(/\s+/g, ' ')).toContain('deilt með mól Mg');
   });
 
   it('keeps the words out of the visual layout', () => {

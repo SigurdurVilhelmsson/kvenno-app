@@ -60,7 +60,7 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
         <h3 className="text-lg font-bold text-warm-800">Lausn með skrefum:</h3>
         <div className="solution-step">
           <h4>Gefið:</h4>
-          <p>mól = {formatDecimal(problem.given.moles)} mol</p>
+          <p>mól = {formatDecimal(problem.given.moles)} mól</p>
           <p>rúmmál = {formatDecimal(problem.given.volume)} L</p>
         </div>
         <div className="solution-step">
@@ -70,7 +70,7 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
         <div className="solution-step">
           <h4>Skref 2: Setja inn gildi</h4>
           <p>
-            M = {formatDecimal(problem.given.moles)} mol ÷ {formatDecimal(problem.given.volume)} L
+            M = {formatDecimal(problem.given.moles)} mól ÷ {formatDecimal(problem.given.volume)} L
           </p>
           <p>M = {formatAnswer(problem.answer)} M</p>
         </div>
@@ -92,7 +92,7 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
           <p>
             massi = {formatDecimal(problem.given.massInGrams)} g {problem.chemical?.name || ''}
           </p>
-          <p>mólmassi = {formatDecimal(problem.given.molarMass)} g/mol</p>
+          <p>mólmassi = {formatDecimal(problem.given.molarMass)} g/mól</p>
           <p>rúmmál = {problem.given.volumeInML} mL</p>
         </div>
         <div className="solution-step">
@@ -107,15 +107,15 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
           <p>mól = massi ÷ mólmassi</p>
           <p>
             mól = {formatDecimal(problem.given.massInGrams)} g ÷{' '}
-            {formatDecimal(problem.given.molarMass)} g/mol
+            {formatDecimal(problem.given.molarMass)} g/mól
           </p>
-          <p>mól = {moles} mol</p>
+          <p>mól = {moles} mól</p>
         </div>
         <div className="solution-step">
           <h4>Skref 3: Reikna mólstyrk</h4>
           <p>M = mól ÷ lítrar</p>
           <p>
-            M = {moles} mol ÷ {formatDecimal(problem.given.volumeInML / 1000, 3)} L
+            M = {moles} mól ÷ {formatDecimal(problem.given.volumeInML / 1000, 3)} L
           </p>
           <p>M = {formatAnswer(problem.answer)} M</p>
         </div>
@@ -148,14 +148,14 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
           <h4>Skref 1: Reikna heildarmól</h4>
           <p>
             mól₁ = M₁ × V₁ = {formatDecimal(problem.given.M1)} M ×{' '}
-            {formatDecimal(problem.given.V1 / 1000, 3)} L = {formatDecimal(moles1, 3)} mol
+            {formatDecimal(problem.given.V1 / 1000, 3)} L = {formatDecimal(moles1, 3)} mól
           </p>
           <p>
             mól₂ = M₂ × V₂ = {formatDecimal(problem.given.M2)} M ×{' '}
-            {formatDecimal(problem.given.V2 / 1000, 3)} L = {formatDecimal(moles2, 3)} mol
+            {formatDecimal(problem.given.V2 / 1000, 3)} L = {formatDecimal(moles2, 3)} mól
           </p>
           <p>
-            mól_alls = {formatDecimal(moles1, 3)} + {formatDecimal(moles2, 3)} = {totalMoles} mol
+            mól_alls = {formatDecimal(moles1, 3)} + {formatDecimal(moles2, 3)} = {totalMoles} mól
           </p>
         </div>
         <div className="solution-step">
@@ -169,7 +169,7 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
           <h4>Skref 3: Reikna endanlegan mólstyrk</h4>
           <p>M_lokal = mól_alls ÷ V_alls</p>
           <p>
-            M_lokal = {totalMoles} mol ÷ {totalVolume} L
+            M_lokal = {totalMoles} mól ÷ {totalVolume} L
           </p>
           <p>M_lokal = {formatAnswer(problem.answer)} M</p>
         </div>
@@ -187,7 +187,7 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
           <h4>Gefið:</h4>
           <p>M = {formatDecimal(problem.given.molarity)} M</p>
           <p>V = {problem.given.volumeInML} mL</p>
-          <p>mólmassi = {formatDecimal(problem.given.molarMass)} g/mol</p>
+          <p>mólmassi = {formatDecimal(problem.given.molarMass)} g/mól</p>
         </div>
         <div className="solution-step">
           <h4>Skref 1: Breyta mL í L</h4>
@@ -202,13 +202,13 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
             mól = {formatDecimal(problem.given.molarity)} M ×{' '}
             {formatDecimal(problem.given.volumeInML / 1000, 3)} L
           </p>
-          <p>mól = {moles} mol</p>
+          <p>mól = {moles} mól</p>
         </div>
         <div className="solution-step">
           <h4>Skref 3: Reikna massa</h4>
           <p>massi = mól × mólmassi</p>
           <p>
-            massi = {moles} mol × {formatDecimal(problem.given.molarMass)} g/mol
+            massi = {moles} mól × {formatDecimal(problem.given.molarMass)} g/mól
           </p>
           <p>massi = {formatAnswer(problem.answer)} g</p>
         </div>

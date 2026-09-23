@@ -687,7 +687,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 <div className="order-last sm:order-none sm:mt-4 bg-warm-50 rounded-lg p-3 text-center w-full">
                   <div className="text-xs text-warm-500 mb-1">Styrkur = sameindir ÷ rúmmál</div>
                   <div className="font-mono text-sm text-warm-700">
-                    {molecules} × 0,01 mol ÷ {formatDecimal(volumeML / 1000, 3)} L ={' '}
+                    {molecules} × 0,01 mól ÷ {formatDecimal(volumeML / 1000, 3)} L ={' '}
                     <span className="whitespace-nowrap font-bold text-blue-600">
                       {formatDecimal(currentConcentration, 2)} M
                     </span>

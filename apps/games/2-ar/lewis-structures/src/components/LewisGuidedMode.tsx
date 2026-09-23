@@ -106,7 +106,7 @@ export function LewisGuidedMode({
     {
       id: 4,
       title: 'Dreifa eftirstandandi rafeindum',
-      instruction: `${totalElectrons} - ${electronsInBonds} = ${electronsForLonePairs} rafeindir eftir. Dreifðu þeim sem einstæðum pörum (2 rafeindir á hvert par).`,
+      instruction: `${totalElectrons} - ${electronsInBonds} = ${electronsForLonePairs} rafeindir eftir. Dreifðu þeim sem stökum pörum (2 rafeindir á hvert par).`,
       action: 'distribute',
       targetValue: electronsForLonePairs / 2,
       completed: false,
@@ -452,9 +452,7 @@ export function LewisGuidedMode({
           <div className="space-y-4">
             <div className="bg-yellow-50 p-3 rounded-lg text-sm text-yellow-800 mb-4">
               Rafeindir eftir: <strong>{electronsRemaining}</strong> ={' '}
-              {electronsRemaining === 2
-                ? '1 einstætt par'
-                : `${electronsRemaining / 2} einstæð pör`}
+              {electronsRemaining === 2 ? '1 stakt par' : `${electronsRemaining / 2} stök pör`}
             </div>
 
             {/* Interactive lone pair placement */}
@@ -471,7 +469,7 @@ export function LewisGuidedMode({
                   <button
                     onClick={() => handleAddLonePair(centralAtom?.symbol || '')}
                     disabled={electronsRemaining < 2}
-                    aria-label={`Bæta einstæðu pari við ${centralAtom?.symbol} (miðatóm)`}
+                    aria-label={`Bæta stöku pari við ${centralAtom?.symbol} (miðatóm)`}
                     className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white py-2 rounded pointer-coarse:min-h-11"
                   >
                     + Par
@@ -479,7 +477,7 @@ export function LewisGuidedMode({
                   <button
                     onClick={() => handleRemoveLonePair(centralAtom?.symbol || '')}
                     disabled={getAtomLonePairs(centralAtom?.symbol || '') === 0}
-                    aria-label={`Taka einstætt par af ${centralAtom?.symbol} (miðatóm)`}
+                    aria-label={`Taka stakt par af ${centralAtom?.symbol} (miðatóm)`}
                     className="flex-1 bg-warm-300 hover:bg-warm-400 disabled:bg-warm-200 text-warm-700 py-2 rounded pointer-coarse:min-h-11"
                   >
                     − Par
@@ -503,7 +501,7 @@ export function LewisGuidedMode({
                     <button
                       onClick={() => handleAddLonePair(atom.symbol)}
                       disabled={electronsRemaining < 2}
-                      aria-label={`Bæta einstæðu pari við ${atom.symbol} (ytri)`}
+                      aria-label={`Bæta stöku pari við ${atom.symbol} (ytri)`}
                       className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-warm-300 text-white py-2 rounded pointer-coarse:min-h-11"
                     >
                       + Par
@@ -511,7 +509,7 @@ export function LewisGuidedMode({
                     <button
                       onClick={() => handleRemoveLonePair(atom.symbol)}
                       disabled={getAtomLonePairs(atom.symbol) === 0}
-                      aria-label={`Taka einstætt par af ${atom.symbol} (ytri)`}
+                      aria-label={`Taka stakt par af ${atom.symbol} (ytri)`}
                       className="flex-1 bg-warm-300 hover:bg-warm-400 disabled:bg-warm-200 text-warm-700 py-2 rounded pointer-coarse:min-h-11"
                     >
                       − Par
@@ -659,7 +657,7 @@ export function LewisGuidedMode({
             'Miðatómið er venjulega það sem getur myndað flest tengsl (ekki H).'}
           {step.action === 'draw-bonds' &&
             'Byrjaðu alltaf með einföld tengsl. Tvöföld/þreföld koma seinna ef þarf.'}
-          {step.action === 'distribute' && 'Settu einstæð pör á ytri atóm fyrst, síðan miðatómið.'}
+          {step.action === 'distribute' && 'Settu stök pör á ytri atóm fyrst, síðan miðatómið.'}
           {step.action === 'check-octet' && 'H vill 2 rafeindir, flest önnur vilja 8 rafeindir.'}
           {step.action === 'complete' && 'Til hamingju! Reyndu næstu sameind.'}
         </div>

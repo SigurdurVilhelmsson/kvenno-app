@@ -26,10 +26,10 @@ const heldIn = (el: Element): string[] =>
 
 describe('unitRuns', () => {
   it('holds every unit with its substance, and leaves the prose free', () => {
-    const runs = unitRuns('Útkoman verður g Mg·g Mg / mol Mg, sem er ekki eining sem þýðir neitt.');
-    expect(runs.filter((r) => r.unit).map((r) => r.text)).toEqual(['g Mg', 'g Mg', 'mol Mg']);
+    const runs = unitRuns('Útkoman verður g Mg·g Mg / mól Mg, sem er ekki eining sem þýðir neitt.');
+    expect(runs.filter((r) => r.unit).map((r) => r.text)).toEqual(['g Mg', 'g Mg', 'mól Mg']);
     expect(runs.map((r) => r.text).join('')).toBe(
-      'Útkoman verður g Mg·g Mg / mol Mg, sem er ekki eining sem þýðir neitt.'
+      'Útkoman verður g Mg·g Mg / mól Mg, sem er ekki eining sem þýðir neitt.'
     );
   });
 
@@ -133,8 +133,8 @@ describe('the screen holds units whole where it builds sentences around them', (
     });
 
     const prompt = view.getByText(/Útkoman verður/);
-    expect(prompt.textContent).toContain('Útkoman verður g Mg·g Mg / mol Mg');
-    expect(heldIn(prompt)).toEqual(['g Mg', 'mol Mg', 'g Mg', 'g Mg', 'mol Mg']);
+    expect(prompt.textContent).toContain('Útkoman verður g Mg·g Mg / mól Mg');
+    expect(heldIn(prompt)).toEqual(['g Mg', 'mól Mg', 'g Mg', 'g Mg', 'mól Mg']);
   });
 
   it('in the prediction options and the target chip', () => {
@@ -149,8 +149,8 @@ describe('the screen holds units whole where it builds sentences around them', (
     tapCard(view, ': 24,31 g Mg');
     fireEvent.click(view.getByRole('button', { name: 'Leysa' }));
 
-    const option = view.getByRole('button', { name: 'g Mg·g Mg / mol Mg' });
-    expect(heldIn(option)).toEqual(['g Mg', 'g Mg', 'mol Mg']);
+    const option = view.getByRole('button', { name: 'g Mg·g Mg / mól Mg' });
+    expect(heldIn(option)).toEqual(['g Mg', 'g Mg', 'mól Mg']);
     // A break is still allowed between two units, after the dot.
     expect(option.querySelector('wbr')).not.toBeNull();
 

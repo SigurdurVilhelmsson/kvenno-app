@@ -68,8 +68,8 @@ describe('decimal comma on screen', () => {
 
   it('prints the stored ΔH° and ΔS° with a comma', () => {
     openProblem(15);
-    expect(screen.getByText(/-1,9 kJ\/mol/)).toBeTruthy();
-    expect(screen.getByText(/3,3 J\/\(mol·K\)/)).toBeTruthy();
+    expect(screen.getByText(/-1,9 kJ\/mól/)).toBeTruthy();
+    expect(screen.getByText(/3,3 J\/\(mól·K\)/)).toBeTruthy();
   });
 
   it('converts 3,3 J/(mol·K) to 0,0033 kJ/(mol·K), not 0,003', () => {

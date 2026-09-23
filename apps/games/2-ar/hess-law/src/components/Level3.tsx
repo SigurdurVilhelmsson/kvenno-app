@@ -49,7 +49,7 @@ const challenges: Challenge[] = [
       { formula: 'H2O(l)', coefficient: 2, deltaHf: -285.8 },
     ],
     correctAnswer: -890.3,
-    unit: 'kJ/mol',
+    unit: 'kJ/mól',
     hintKey: 'level3.c1hint',
     explanationKey: 'level3.c1explanation',
   },
@@ -65,7 +65,7 @@ const challenges: Challenge[] = [
     ],
     products: [{ formula: 'NH3(g)', coefficient: 2, deltaHf: -46.1 }],
     correctAnswer: -92.2,
-    unit: 'kJ/mol',
+    unit: 'kJ/mól',
     hintKey: 'level3.c2hint',
     explanationKey: 'level3.c2explanation',
   },
@@ -81,7 +81,7 @@ const challenges: Challenge[] = [
       { formula: 'CO2(g)', coefficient: 1, deltaHf: -393.5 },
     ],
     correctAnswer: 178.3,
-    unit: 'kJ/mol',
+    unit: 'kJ/mól',
     hintKey: 'level3.c3hint',
     explanationKey: 'level3.c3explanation',
   },
@@ -99,7 +99,7 @@ const challenges: Challenge[] = [
     unknownCompound: 'SO2(g)',
     givenDeltaHrxn: -296.8,
     correctAnswer: -296.8,
-    unit: 'kJ/mol',
+    unit: 'kJ/mól',
     hintKey: 'level3.c4hint',
     explanationKey: 'level3.c4explanation',
   },
@@ -118,7 +118,7 @@ const challenges: Challenge[] = [
       { formula: 'H2O(l)', coefficient: 3, deltaHf: -285.8 },
     ],
     correctAnswer: -1366.7,
-    unit: 'kJ/mol',
+    unit: 'kJ/mól',
     hintKey: 'level3.c5hint',
     explanationKey: 'level3.c5explanation',
   },
@@ -137,7 +137,7 @@ const challenges: Challenge[] = [
       { formula: 'Fe(s)', coefficient: 2, deltaHf: 0 },
     ],
     correctAnswer: -851.5,
-    unit: 'kJ/mol',
+    unit: 'kJ/mól',
     hintKey: 'level3.c6hint',
     explanationKey: 'level3.c6explanation',
   },
@@ -340,12 +340,12 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                       <div className="font-mono font-bold">{toSubscripts(formula)}</div>
                       <div className="text-warm-600 text-xs">{name}</div>
                       {isHidden(formula) ? (
-                        <div className="font-bold text-purple-600">? kJ/mol</div>
+                        <div className="font-bold text-purple-600">? kJ/mól</div>
                       ) : (
                         <div
                           className={`font-bold ${value < 0 ? 'text-blue-600' : value > 0 ? 'text-red-600' : 'text-warm-600'}`}
                         >
-                          {formatDecimal(value)} kJ/mol
+                          {formatDecimal(value)} kJ/mól
                         </div>
                       )}
                     </div>

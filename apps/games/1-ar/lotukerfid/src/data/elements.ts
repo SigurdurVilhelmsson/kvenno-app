@@ -67,7 +67,7 @@ export const CATEGORY_LABELS: Record<ElementCategory, string> = {
   metalloid: 'Hálfmálmur',
   nonmetal: 'Málmleysingi',
   halogen: 'Halógen',
-  'noble-gas': 'Eðallofttegund',
+  'noble-gas': 'Eðalgas',
   lanthanide: 'Lantaníð',
   actinide: 'Aktíníð',
 };
@@ -547,5 +547,5 @@ export const GROUP_NAMES: Record<number, string> = {
   1: 'Alkalímálmar (og vetni)',
   2: 'Jarðalkalímálmar',
   17: 'Halógen',
-  18: 'Eðallofttegundir',
+  18: 'Eðalgös',
 };

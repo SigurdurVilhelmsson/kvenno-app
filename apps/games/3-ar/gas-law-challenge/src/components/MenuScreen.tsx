@@ -88,7 +88,7 @@ export function MenuScreen({
                 <div className="bg-white p-3 rounded-lg text-center">
                   <p className="font-mono text-purple-800 text-lg">PV = nRT</p>
                   <p className="text-xs text-purple-600 mt-1">
-                    R = 0,08206 L·atm/(mol·K) — tengir einingarnar saman
+                    R = 0,08206 L·atm/(mól·K) — tengir einingarnar saman
                   </p>
                 </div>
                 <p className="text-xs text-purple-600 mt-3">
@@ -193,7 +193,7 @@ export function MenuScreen({
                   <div>
                     <p className="font-semibold">Kjörgaslögmálið:</p>
                     <p className="font-mono bg-white px-2 py-1 rounded mt-1">PV = nRT</p>
-                    <p className="text-xs mt-1">þar sem R = 0,08206 L·atm/(mol·K)</p>
+                    <p className="text-xs mt-1">þar sem R = 0,08206 L·atm/(mól·K)</p>
                   </div>
                   <div>
                     <p className="font-semibold">Lyklaborð:</p>

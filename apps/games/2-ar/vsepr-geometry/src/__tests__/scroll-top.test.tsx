@@ -106,7 +106,7 @@ describe('a new screen starts at the top on a phone', () => {
     check();
     next();
     fireEvent.change(container.querySelector('textarea') as HTMLElement, {
-      target: { value: 'Tvö einstæð pör ýta tengjunum saman.' },
+      target: { value: 'Tvö stök pör ýta tengjunum saman.' },
     });
     check();
     expect(scrollTo).not.toHaveBeenCalled();

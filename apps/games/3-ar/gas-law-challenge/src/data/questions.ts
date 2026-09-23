@@ -16,7 +16,7 @@ export const questions: GasLawQuestion[] = [
     given: {
       P: { value: 1.0, unit: 'atm' },
       T: { value: 310, unit: 'K' },
-      n: { value: 0.15, unit: 'mol' },
+      n: { value: 0.15, unit: 'mól' },
     },
     find: 'V',
     answer: 3.82,
@@ -29,7 +29,7 @@ export const questions: GasLawQuestion[] = [
     ],
     solution: {
       formula: 'V = nRT/P',
-      substitution: 'V = (0,15 mol)(0,08206 L·atm/mol·K)(310 K) / (1,0 atm)',
+      substitution: 'V = (0,15 mól)(0,08206 L·atm/mól·K)(310 K) / (1,0 atm)',
       calculation: 'V = 3,82 L',
       steps: [
         'Byrja á PV = nRT',
@@ -58,17 +58,17 @@ export const questions: GasLawQuestion[] = [
       'Finndu n (fjölda móla). Einangraðu n í PV = nRT',
       'Notaðu: n = PV/RT',
       'Settu inn: n = (2,5)(2,0)/[(0,08206)(288)]',
-      'Reiknaðu: n = 0,212 mol',
+      'Reiknaðu: n = 0,212 mól',
     ],
     solution: {
       formula: 'n = PV/RT',
-      substitution: 'n = (2,5 atm)(2,0 L) / [(0,08206 L·atm/mol·K)(288 K)]',
-      calculation: 'n = 0,212 mol',
+      substitution: 'n = (2,5 atm)(2,0 L) / [(0,08206 L·atm/mól·K)(288 K)]',
+      calculation: 'n = 0,212 mól',
       steps: [
         'Byrja á PV = nRT',
         'Einangra n: n = PV/RT',
         'Setja inn gildi: n = (2,5)(2,0)/(0,08206 × 288)',
-        'Reikna: n = 0,212 mol',
+        'Reikna: n = 0,212 mól',
       ],
     },
   },
@@ -82,7 +82,7 @@ export const questions: GasLawQuestion[] = [
     given: {
       V: { value: 2.0, unit: 'L' },
       T: { value: 298, unit: 'K' },
-      n: { value: 0.3, unit: 'mol' },
+      n: { value: 0.3, unit: 'mól' },
     },
     find: 'P',
     answer: 3.67,
@@ -95,7 +95,7 @@ export const questions: GasLawQuestion[] = [
     ],
     solution: {
       formula: 'P = nRT/V',
-      substitution: 'P = (0,30 mol)(0,08206 L·atm/mol·K)(298 K) / (2,0 L)',
+      substitution: 'P = (0,30 mól)(0,08206 L·atm/mól·K)(298 K) / (2,0 L)',
       calculation: 'P = 3,67 atm',
       steps: [
         'Byrja á PV = nRT',
@@ -115,7 +115,7 @@ export const questions: GasLawQuestion[] = [
     given: {
       P: { value: 1.0, unit: 'atm' },
       V: { value: 5.0, unit: 'L' },
-      n: { value: 0.2, unit: 'mol' },
+      n: { value: 0.2, unit: 'mól' },
     },
     find: 'T',
     answer: 305,
@@ -128,7 +128,7 @@ export const questions: GasLawQuestion[] = [
     ],
     solution: {
       formula: 'T = PV/nR',
-      substitution: 'T = (1,0 atm)(5,0 L) / [(0,20 mol)(0,08206 L·atm/mol·K)]',
+      substitution: 'T = (1,0 atm)(5,0 L) / [(0,20 mól)(0,08206 L·atm/mól·K)]',
       calculation: 'T = 305 K',
       steps: [
         'Byrja á PV = nRT',
@@ -158,18 +158,18 @@ export const questions: GasLawQuestion[] = [
       'Finndu fjölda móla á þessu dýpi. Notaðu n = PV/RT',
       'Taktu eftir að þrýstingurinn er tvöfaldur á þessu dýpi',
       'Settu inn: n = (2,0)(12,0)/[(0,08206)(283)]',
-      'Reiknaðu: n = 1,03 mol',
+      'Reiknaðu: n = 1,03 mól',
     ],
     solution: {
       formula: 'n = PV/RT',
-      substitution: 'n = (2,0 atm)(12,0 L) / [(0,08206 L·atm/mol·K)(283 K)]',
-      calculation: 'n = 1,03 mol',
+      substitution: 'n = (2,0 atm)(12,0 L) / [(0,08206 L·atm/mól·K)(283 K)]',
+      calculation: 'n = 1,03 mól',
       steps: [
         'Á 10 m dýpi er þrýstingurinn 2,0 atm',
         'Byrja á PV = nRT',
         'Einangra n: n = PV/RT',
         'Setja inn gildi: n = (2,0)(12,0)/(0,08206 × 283)',
-        'Reikna: n = 1,03 mol',
+        'Reikna: n = 1,03 mól',
       ],
     },
   },
@@ -183,7 +183,7 @@ export const questions: GasLawQuestion[] = [
     given: {
       P: { value: 1.0, unit: 'atm' },
       T: { value: 400, unit: 'K' },
-      n: { value: 150, unit: 'mol' },
+      n: { value: 150, unit: 'mól' },
     },
     find: 'V',
     answer: 4924,
@@ -196,7 +196,7 @@ export const questions: GasLawQuestion[] = [
     ],
     solution: {
       formula: 'V = nRT/P',
-      substitution: 'V = (150 mol)(0,08206 L·atm/mol·K)(400 K) / (1,0 atm)',
+      substitution: 'V = (150 mól)(0,08206 L·atm/mól·K)(400 K) / (1,0 atm)',
       calculation: 'V = 4924 L',
       steps: [
         'Loftbelgur með heitu lofti, við hátt hitastig',
@@ -218,7 +218,7 @@ export const questions: GasLawQuestion[] = [
     given: {
       V: { value: 50.0, unit: 'L' },
       T: { value: 298, unit: 'K' },
-      n: { value: 82.0, unit: 'mol' },
+      n: { value: 82.0, unit: 'mól' },
     },
     find: 'P',
     answer: 40.1,
@@ -231,7 +231,7 @@ export const questions: GasLawQuestion[] = [
     ],
     solution: {
       formula: 'P = nRT/V',
-      substitution: 'P = (82,0 mol)(0,08206 L·atm/mol·K)(298 K) / (50,0 L)',
+      substitution: 'P = (82,0 mól)(0,08206 L·atm/mól·K)(298 K) / (50,0 L)',
       calculation: 'P = 40,1 atm',
       steps: [
         'Gaskútur í iðnaði er undir miklum þrýstingi',
@@ -252,7 +252,7 @@ export const questions: GasLawQuestion[] = [
     given: {
       P: { value: 11.0, unit: 'atm' },
       V: { value: 3.0, unit: 'L' },
-      n: { value: 1.5, unit: 'mol' },
+      n: { value: 1.5, unit: 'mól' },
     },
     find: 'T',
     answer: 268,
@@ -265,7 +265,7 @@ export const questions: GasLawQuestion[] = [
     ],
     solution: {
       formula: 'T = PV/nR',
-      substitution: 'T = (11,0 atm)(3,0 L) / [(1,5 mol)(0,08206 L·atm/mol·K)]',
+      substitution: 'T = (11,0 atm)(3,0 L) / [(1,5 mól)(0,08206 L·atm/mól·K)]',
       calculation: 'T = 268 K',
       steps: [
         'Á 100 m dýpi er þrýstingurinn mjög hár (11 atm)',
@@ -297,18 +297,18 @@ export const questions: GasLawQuestion[] = [
       'Mikil hæð = lágur þrýstingur = minna loft í hverjum andardrætti',
       'Notaðu n = PV/RT',
       'Settu inn: n = (0,33)(5,0)/[(0,08206)(243)]',
-      'Reiknaðu: n = 0,083 mol (aðeins þriðjungur af því sem er við sjávarmál!)',
+      'Reiknaðu: n = 0,083 mól (aðeins þriðjungur af því sem er við sjávarmál!)',
     ],
     solution: {
       formula: 'n = PV/RT',
-      substitution: 'n = (0,33 atm)(5,0 L) / [(0,08206 L·atm/mol·K)(243 K)]',
-      calculation: 'n = 0,083 mol',
+      substitution: 'n = (0,33 atm)(5,0 L) / [(0,08206 L·atm/mól·K)(243 K)]',
+      calculation: 'n = 0,083 mól',
       steps: [
         'Í 8849 m hæð er loftþrýstingurinn aðeins 33 % af þrýstingnum við sjávarmál',
         'Hitastig á tindinum: um −30 °C = 243 K',
         'Einangra n í PV = nRT: n = PV/RT',
         'Setja inn gildi: n = (0,33)(5,0)/(0,08206 × 243)',
-        'Reikna: n = 0,083 mol (þess vegna þurfa fjallgöngumenn súrefni!)',
+        'Reikna: n = 0,083 mól (þess vegna þurfa fjallgöngumenn súrefni!)',
       ],
     },
   },
@@ -323,7 +323,7 @@ export const questions: GasLawQuestion[] = [
     given: {
       P: { value: 0.26, unit: 'atm' },
       T: { value: 223, unit: 'K' },
-      n: { value: 0.5, unit: 'mol' },
+      n: { value: 0.5, unit: 'mól' },
     },
     find: 'V',
     answer: 35.2,
@@ -336,7 +336,7 @@ export const questions: GasLawQuestion[] = [
     ],
     solution: {
       formula: 'V = nRT/P',
-      substitution: 'V = (0,50 mol)(0,08206 L·atm/mol·K)(223 K) / (0,26 atm)',
+      substitution: 'V = (0,50 mól)(0,08206 L·atm/mól·K)(223 K) / (0,26 atm)',
       calculation: 'V = 35,2 L',
       steps: [
         'Í farflugshæð (10 km) er þrýstingurinn mjög lágur',
@@ -357,7 +357,7 @@ export const questions: GasLawQuestion[] = [
     given: {
       V: { value: 2500, unit: 'L' },
       T: { value: 288, unit: 'K' },
-      n: { value: 100, unit: 'mol' },
+      n: { value: 100, unit: 'mól' },
     },
     find: 'P',
     answer: 0.945,
@@ -370,7 +370,7 @@ export const questions: GasLawQuestion[] = [
     ],
     solution: {
       formula: 'P = nRT/V',
-      substitution: 'P = (100 mol)(0,08206 L·atm/mol·K)(288 K) / (2500 L)',
+      substitution: 'P = (100 mól)(0,08206 L·atm/mól·K)(288 K) / (2500 L)',
       calculation: 'P = 0,945 atm',
       steps: [
         'Veðurbelgur ber mælitæki upp í lofthjúpinn',
@@ -401,18 +401,18 @@ export const questions: GasLawQuestion[] = [
       'Í geimförum er þrýstingurinn í farþegarýminu hafður lægri til að minnka álag á skrokkinn',
       'Notaðu n = PV/RT',
       'Settu inn: n = (0,7)(50,0)/[(0,08206)(295)]',
-      'Reiknaðu: n = 1,45 mol',
+      'Reiknaðu: n = 1,45 mól',
     ],
     solution: {
       formula: 'n = PV/RT',
-      substitution: 'n = (0,7 atm)(50,0 L) / [(0,08206 L·atm/mol·K)(295 K)]',
-      calculation: 'n = 1,45 mol',
+      substitution: 'n = (0,7 atm)(50,0 L) / [(0,08206 L·atm/mól·K)(295 K)]',
+      calculation: 'n = 1,45 mól',
       steps: [
         'Í geimförum er þrýstingurinn í farþegarýminu lægri (0,7 atm) af öryggisástæðum',
         'Geimfarar venjast honum eins og þeir væru í 3000 m hæð',
         'Nota n = PV/RT til að finna fjölda móla af lofti',
         'Setja inn gildi: n = (0,7)(50,0)/(0,08206 × 295)',
-        'Reikna: n = 1,45 mol af öndunarlofti',
+        'Reikna: n = 1,45 mól af öndunarlofti',
       ],
     },
   },
@@ -426,7 +426,7 @@ export const questions: GasLawQuestion[] = [
     given: {
       P: { value: 0.74, unit: 'atm' },
       V: { value: 10.0, unit: 'L' },
-      n: { value: 0.35, unit: 'mol' },
+      n: { value: 0.35, unit: 'mól' },
     },
     find: 'T',
     answer: 258,
@@ -439,7 +439,7 @@ export const questions: GasLawQuestion[] = [
     ],
     solution: {
       formula: 'T = PV/nR',
-      substitution: 'T = (0,74 atm)(10,0 L) / [(0,35 mol)(0,08206 L·atm/mol·K)]',
+      substitution: 'T = (0,74 atm)(10,0 L) / [(0,35 mól)(0,08206 L·atm/mól·K)]',
       calculation: 'T = 258 K',
       steps: [
         'Í 2500 m hæð fellur þrýstingurinn niður í um 74 % af þrýstingnum við sjávarmál',
@@ -746,27 +746,27 @@ export const questions: GasLawQuestion[] = [
     gasLaw: 'avogadro',
     given: {
       V: { value: 2.0, unit: 'L' },
-      n: { value: 0.1, unit: 'mol' },
+      n: { value: 0.1, unit: 'mól' },
     },
     find: 'V',
     answer: 6.0,
     tolerance: 0.12,
     hints: [
       'Lögmál Avogadros: V₁/n₁ = V₂/n₂ (þrýstingur og hitastig eru föst)',
-      'V₂ = V₁ × n₂/n₁ þar sem n₂ = 0,30 mol',
+      'V₂ = V₁ × n₂/n₁ þar sem n₂ = 0,30 mól',
       'V₂ = 2,0 × 0,30/0,10',
       'V₂ = 6,0 L',
     ],
     solution: {
       formula: 'V₂ = V₁ × n₂ / n₁',
-      substitution: 'V₂ = (2,0 L)(0,30 mol) / (0,10 mol)',
+      substitution: 'V₂ = (2,0 L)(0,30 mól) / (0,10 mól)',
       calculation: 'V₂ = 6,0 L',
       steps: [
         'Lögmál Avogadros: V₁/n₁ = V₂/n₂ (P og T föst)',
         'Einangra V₂: V₂ = V₁ × n₂/n₁',
-        'n₂ = 0,30 mol (gefið í verkefninu)',
+        'n₂ = 0,30 mól (gefið í verkefninu)',
         'Setja inn: V₂ = 2,0 × 0,30/0,10',
-        'L·mol / mol → L (mol styttist út)',
+        'L·mól / mól → L (mól styttist út)',
         'V₂ = 6,0 L (þrisvar meira gas = þrisvar meira rúmmál)',
       ],
     },
@@ -781,7 +781,7 @@ export const questions: GasLawQuestion[] = [
     gasLaw: 'avogadro',
     given: {
       V: { value: 5.0, unit: 'L' },
-      n: { value: 0.2, unit: 'mol' },
+      n: { value: 0.2, unit: 'mól' },
     },
     find: 'n',
     answer: 0.5,
@@ -790,19 +790,19 @@ export const questions: GasLawQuestion[] = [
       'Lögmál Avogadros: V₁/n₁ = V₂/n₂',
       'n₂ = n₁ × V₂/V₁ þar sem V₂ = 12,5 L',
       'n₂ = 0,20 × 12,5/5,0',
-      'n₂ = 0,50 mol',
+      'n₂ = 0,50 mól',
     ],
     solution: {
       formula: 'n₂ = n₁ × V₂ / V₁',
-      substitution: 'n₂ = (0,20 mol)(12,5 L) / (5,0 L)',
-      calculation: 'n₂ = 0,50 mol',
+      substitution: 'n₂ = (0,20 mól)(12,5 L) / (5,0 L)',
+      calculation: 'n₂ = 0,50 mól',
       steps: [
         'Lögmál Avogadros: V₁/n₁ = V₂/n₂',
         'Einangra n₂: n₂ = n₁ × V₂/V₁',
         'V₂ = 12,5 L (gefið í verkefninu)',
         'Setja inn: n₂ = 0,20 × 12,5/5,0',
-        'mol·L / L → mol (L styttist út)',
-        'n₂ = 0,50 mol (2,5× meira rúmmál = 2,5× fleiri mól)',
+        'mól·L / L → mól (L styttist út)',
+        'n₂ = 0,50 mól (2,5× meira rúmmál = 2,5× fleiri mól)',
       ],
     },
   },

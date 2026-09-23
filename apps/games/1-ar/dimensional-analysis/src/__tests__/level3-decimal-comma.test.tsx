@@ -145,7 +145,7 @@ describe('the "Gefnar upplýsingar" card', () => {
   });
 
   it('writes a fractional value with a comma, on both kinds of card', () => {
-    expect(card('L3-12')).toContain('58,5 g/mol'); // synthesis
+    expect(card('L3-12')).toContain('58,5 g/mól'); // synthesis
     expect(card('L3-5')).toContain('2,0 L'); // real world
   });
 });

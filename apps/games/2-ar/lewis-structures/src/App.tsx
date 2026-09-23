@@ -238,7 +238,7 @@ function App() {
                     Byggja Lewis-formúlur skref fyrir skref
                   </div>
                   <div className="text-xs text-warm-600 mt-2">
-                    Settu miðatóm, teiknaðu tengsl og einstæð rafeindapör.
+                    Settu miðatóm, teiknaðu tengsl og stök rafeindapör.
                   </div>
                 </div>
               </div>

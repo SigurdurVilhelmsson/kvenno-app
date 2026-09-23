@@ -55,10 +55,10 @@ const challenges: Challenge[] = [
     hints: [
       'H getur aðeins myndað 1 tengi, þannig að O verður að vera miðatómið.',
       'Súrefni myndar 2 einföld tengsl við vetni.',
-      'O hefur 2 einstæð rafeindapör (8 - 4 í tengslum = 4 óbundnar = 2 pör).',
+      'O hefur 2 stök rafeindapör (8 - 4 í tengslum = 4 óbundnar = 2 pör).',
     ],
     finalExplanation:
-      'H₂O: O í miðju með 2 H tengd og 2 einstæð rafeindapör. Þetta gefur 4 rafeindapör í kringum O.',
+      'H₂O: O í miðju með 2 H tengd og 2 stök rafeindapör. Þetta gefur 4 rafeindapör í kringum O.',
   },
   {
     id: 2,
@@ -77,10 +77,10 @@ const challenges: Challenge[] = [
     hints: [
       'N hefur 5 gildisrafeindir og getur myndað 3 tengsl.',
       'Þrjú einföld N-H tengsl nota 6 rafeindir.',
-      'N hefur 1 einstætt par (8 - 6 = 2 óbundnar = 1 par).',
+      'N hefur 1 stakt par (8 - 6 = 2 óbundnar = 1 par).',
     ],
     finalExplanation:
-      'NH₃: N í miðju með 3 H tengd og 1 einstætt rafeindapar. Þetta gerir N ferflötungslaga en sameindina pýramídalaga.',
+      'NH₃: N í miðju með 3 H tengd og 1 stakt rafeindapar. Þetta gerir N ferflötungslaga en sameindina pýramídalaga.',
   },
   {
     id: 3,
@@ -98,10 +98,10 @@ const challenges: Challenge[] = [
     hints: [
       'C þarf 4 tengsl og hvert O þarf 2 tengsl (fyrir áttu).',
       'Prófaðu tvöföld tengsl milli C og beggja O.',
-      'Hvert O hefur 2 einstæð rafeindapör. C hefur engin.',
+      'Hvert O hefur 2 stök rafeindapör. C hefur engin.',
     ],
     finalExplanation:
-      'CO₂: O=C=O með tvöföldum tengslum. Hvert O hefur 2 einstæð pör. Þetta er línuleg sameind.',
+      'CO₂: O=C=O með tvöföldum tengslum. Hvert O hefur 2 stök pör. Þetta er línuleg sameind.',
   },
   {
     id: 4,
@@ -121,10 +121,10 @@ const challenges: Challenge[] = [
     hints: [
       'C myndar 4 tengsl og H myndar 1.',
       '4 einföld C-H tengsl nota allar 8 rafeindirnar.',
-      'Engin einstæð pör á neinu atómi.',
+      'Engin stök pör á neinu atómi.',
     ],
     finalExplanation:
-      'CH₄: C í miðju með 4 H tengd. Engin einstæð rafeindapör. Þetta er ferflötungslaga sameind.',
+      'CH₄: C í miðju með 4 H tengd. Engin stök rafeindapör. Þetta er ferflötungslaga sameind.',
   },
   {
     id: 5,
@@ -139,8 +139,8 @@ const challenges: Challenge[] = [
     },
     hints: [
       'Sameindir með oddatölu rafeinda eru stakeindir.',
-      'N=O tvöfalt tengi. O hefur 2 einstæð pör.',
-      'N hefur 1 einstætt par + 1 óparaða rafeind (alls 11 rafeindir).',
+      'N=O tvöfalt tengi. O hefur 2 stök pör.',
+      'N hefur 1 stakt par + 1 óparaða rafeind (alls 11 rafeindir).',
     ],
     finalExplanation:
       'NO: Tvöföld tengsl N=O með óparaðri rafeind á N. Þetta er stakeind og hún er mjög hvarfgjörn.',
@@ -158,10 +158,10 @@ const challenges: Challenge[] = [
     hints: [
       'Cl þarf aðeins 1 rafeind til að ná áttureglunni.',
       'Eitt einfalt H-Cl tengi.',
-      'Cl hefur 3 einstæð pör (7 gildisrafeindir - 1 í tengi = 6 = 3 pör).',
+      'Cl hefur 3 stök pör (7 gildisrafeindir - 1 í tengi = 6 = 3 pör).',
     ],
     finalExplanation:
-      'HCl: Einfalt H-Cl tengi. Cl hefur 3 einstæð rafeindapör. Bæði H og Cl hafa fullt ysta hvolf.',
+      'HCl: Einfalt H-Cl tengi. Cl hefur 3 stök rafeindapör. Bæði H og Cl hafa fullt ysta hvolf.',
   },
   // === OCTET RULE EXCEPTIONS ===
   {
@@ -182,7 +182,7 @@ const challenges: Challenge[] = [
     },
     hints: [
       'B er í hópi 13 og myndar venjulega 3 tengsl.',
-      '3 einföld B-F tengsl. Hvert F hefur 3 einstæð pör.',
+      '3 einföld B-F tengsl. Hvert F hefur 3 stök pör.',
       'B hefur aðeins 6 rafeindir — undantekning frá áttureglunni!',
     ],
     finalExplanation:
@@ -208,7 +208,7 @@ const challenges: Challenge[] = [
     },
     hints: [
       'P er á 3. lotu og getur haft fleiri en 8 rafeindir.',
-      '5 einföld P-Cl tengsl. Hvert Cl hefur 3 einstæð pör.',
+      '5 einföld P-Cl tengsl. Hvert Cl hefur 3 stök pör.',
       'P hefur 10 rafeindir — stækkuð átta.',
     ],
     finalExplanation:
@@ -235,7 +235,7 @@ const challenges: Challenge[] = [
     },
     hints: [
       'S er á 3. lotu og getur haft meira en 8 rafeindir.',
-      '6 einföld S-F tengsl. Hvert F hefur 3 einstæð pör.',
+      '6 einföld S-F tengsl. Hvert F hefur 3 stök pör.',
       'S hefur 12 rafeindir — tvöfalt meira en áttureglan!',
     ],
     finalExplanation:
@@ -469,7 +469,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                           <div className="w-1.5 h-1.5 rounded-full bg-blue-600" />
                           <div className="w-1.5 h-1.5 rounded-full bg-blue-600" />
                         </div>
-                        <span>Einstætt par</span>
+                        <span>Stakt par</span>
                       </div>
                     </div>
 
@@ -570,7 +570,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           <ol className="text-sm text-warm-600 space-y-1 list-decimal list-inside">
             <li>Finndu miðatóm (oftast það sem hefur flest tengsl, aldrei H)</li>
             <li>Teiknaðu tengsl til allra ytri atóma (smelltu á strikin)</li>
-            <li>Dreifðu eftirstandandi rafeindum sem einstæð pör</li>
+            <li>Dreifðu eftirstandandi rafeindum sem stök pör</li>
             <li>Breyttu í tvöföld/þreföld tengsl ef þarf til að uppfylla átturegluna</li>
           </ol>
         </div>

@@ -46,7 +46,7 @@ const GEOMETRIES: GeometryConfig[] = [
   },
   {
     id: 'tetrahedral',
-    name: 'Fjórflötungur',
+    name: 'Ferflötungur',
     domains: 4,
     lonePairs: 0,
     positions: [
@@ -68,7 +68,7 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.8, y: 0.55 },
       { x: 0.5, y: 0.85 },
     ],
-    description: 'Einstætt par hrindur bindandi pörum niður á við',
+    description: 'Stakt par hrindur bindandi pörum niður á við',
   },
   {
     id: 'bent',
@@ -81,7 +81,7 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.2, y: 0.7 },
       { x: 0.8, y: 0.7 },
     ],
-    description: '2 einstæð pör ýta bindandi pörum nær saman',
+    description: '2 stök pör ýta bindandi pörum nær saman',
   },
   {
     id: 'octahedral',
@@ -502,7 +502,7 @@ export function ElectronRepulsionAnimation({
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-4 h-4 rounded-full bg-yellow-400 border-2 border-yellow-500" />
-          <span>Einstætt par</span>
+          <span>Stakt par</span>
         </div>
         {showForces && (
           <div className="flex items-center gap-1.5">

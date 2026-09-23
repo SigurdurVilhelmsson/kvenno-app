@@ -67,7 +67,7 @@ export function getUnit(variable: Variable): string {
     P: 'atm',
     V: 'L',
     T: 'K',
-    n: 'mol',
+    n: 'mól',
   };
   return units[variable];
 }

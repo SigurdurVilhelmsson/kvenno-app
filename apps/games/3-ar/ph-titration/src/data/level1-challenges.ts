@@ -191,7 +191,7 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
       solution: 'pH 2 < 3,1, svo metýlappelsínugult er RAUTT.',
     },
     explanationIs:
-      'Við pH 2 er lausnin mjög súr (undir 3,1), svo metýlappelsínugult sýnir RAUÐAN lit. Í sýru er vísirinn í prótónformi sínu.',
+      'Við pH 2 er lausnin mjög súr (undir 3,1), svo metýlappelsínugult sýnir RAUÐAN lit. Í sýru hefur vísirinn tekið við róteind.',
     explanation:
       'At pH 2, the solution is very acidic (below 3.1), so methyl orange shows RED color. In acid, the indicator is in its protonated form.',
   },

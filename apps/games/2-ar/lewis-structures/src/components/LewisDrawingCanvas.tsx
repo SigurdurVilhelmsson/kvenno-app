@@ -559,14 +559,14 @@ export function LewisDrawingCanvas({
         )}
         {remaining < 0 && (
           <div className="text-xs text-red-700 bg-red-50 rounded px-2 py-1 mt-2 text-center">
-            Of margar rafeindir notaðar! Fjarlægðu tengsl eða einstæð pör.
+            Of margar rafeindir notaðar! Fjarlægðu tengsl eða stök pör.
           </div>
         )}
       </div>
 
       {/* Lone pair controls */}
       <div className="bg-white rounded-lg p-3 sm:p-4 shadow-xs space-y-3">
-        <div className="text-sm font-semibold text-warm-700">Einstæð rafeindapör:</div>
+        <div className="text-sm font-semibold text-warm-700">Stök rafeindapör:</div>
 
         {/* Central atom. Below 360 px the round symbol badge is dropped to leave the
             label room beside 44 px steppers; the label names the atom anyway. */}
@@ -585,7 +585,7 @@ export function LewisDrawingCanvas({
             <button
               onClick={() => adjustLP(-1, -1)}
               disabled={centralLP === 0 || !canInteract}
-              aria-label={`Taka einstætt par af ${centralAtom} (miðatóm)`}
+              aria-label={`Taka stakt par af ${centralAtom} (miðatóm)`}
               className={`${STEP_BTN} bg-warm-200 hover:bg-warm-300 text-warm-700`}
             >
               −
@@ -594,7 +594,7 @@ export function LewisDrawingCanvas({
             <button
               onClick={() => adjustLP(-1, 1)}
               disabled={remaining < 2 || !canInteract}
-              aria-label={`Bæta einstæðu pari við ${centralAtom} (miðatóm)`}
+              aria-label={`Bæta stöku pari við ${centralAtom} (miðatóm)`}
               className={`${STEP_BTN} bg-blue-200 hover:bg-blue-300 text-blue-700`}
             >
               +
@@ -623,7 +623,7 @@ export function LewisDrawingCanvas({
                 <button
                   onClick={() => adjustLP(i, -1)}
                   disabled={surroundingLP[i] === 0 || !canInteract}
-                  aria-label={`Taka einstætt par af ${atomLabel(i)} (ytri)`}
+                  aria-label={`Taka stakt par af ${atomLabel(i)} (ytri)`}
                   className={`${STEP_BTN} bg-warm-200 hover:bg-warm-300 text-warm-700`}
                 >
                   −
@@ -632,7 +632,7 @@ export function LewisDrawingCanvas({
                 <button
                   onClick={() => adjustLP(i, 1)}
                   disabled={remaining < 2 || !canInteract}
-                  aria-label={`Bæta einstæðu pari við ${atomLabel(i)} (ytri)`}
+                  aria-label={`Bæta stöku pari við ${atomLabel(i)} (ytri)`}
                   className={`${STEP_BTN} bg-green-200 hover:bg-green-300 text-green-700`}
                 >
                   +
@@ -644,7 +644,7 @@ export function LewisDrawingCanvas({
 
         {!hasNonH && (
           <div className="text-xs text-warm-500 italic">
-            Vetni (H) hefur ekki einstæð pör í þessum sameindum.
+            Vetni (H) hefur ekki stök pör í þessum sameindum.
           </div>
         )}
       </div>

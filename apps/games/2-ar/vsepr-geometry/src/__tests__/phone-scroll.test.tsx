@@ -91,7 +91,7 @@ describe('Level 2 keeps the geometry feedback in view on a phone', () => {
     const { ui, container } = startLevel();
     answerCountStep(ui, container);
 
-    fireEvent.click(ui.getByRole('button', { name: /Fjórflötungur/ }));
+    fireEvent.click(ui.getByRole('button', { name: /Ferflötungur/ }));
     fireEvent.click(ui.getByRole('button', { name: 'Athuga svar' }));
 
     expect(ui.getByText(/Rangt/)).toBeTruthy();

@@ -186,8 +186,8 @@ describe('getUnit', () => {
     expect(getUnit('T')).toBe('K');
   });
 
-  it('returns mol for n', () => {
-    expect(getUnit('n')).toBe('mol');
+  it('returns mól for n', () => {
+    expect(getUnit('n')).toBe('mól');
   });
 });
 

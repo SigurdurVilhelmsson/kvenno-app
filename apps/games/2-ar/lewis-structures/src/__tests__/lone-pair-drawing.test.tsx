@@ -169,17 +169,13 @@ describe('controls and feedback name the atom they are about', () => {
   it('gives every stepper an accessible name with its atom', () => {
     const board = renderBoard('BF₃', 24, BF3);
     // Before the fix all eight were announced as a bare "+" or "−".
-    expect(
-      board.ui.getByRole('button', { name: 'Bæta einstæðu pari við B (miðatóm)' })
-    ).toBeTruthy();
-    expect(board.ui.getByRole('button', { name: 'Taka einstætt par af B (miðatóm)' })).toBeTruthy();
+    expect(board.ui.getByRole('button', { name: 'Bæta stöku pari við B (miðatóm)' })).toBeTruthy();
+    expect(board.ui.getByRole('button', { name: 'Taka stakt par af B (miðatóm)' })).toBeTruthy();
     for (const f of ['F₁', 'F₂', 'F₃']) {
       expect(
-        board.ui.getByRole('button', { name: `Bæta einstæðu pari við ${f} (ytri)` })
+        board.ui.getByRole('button', { name: `Bæta stöku pari við ${f} (ytri)` })
       ).toBeTruthy();
-      expect(
-        board.ui.getByRole('button', { name: `Taka einstætt par af ${f} (ytri)` })
-      ).toBeTruthy();
+      expect(board.ui.getByRole('button', { name: `Taka stakt par af ${f} (ytri)` })).toBeTruthy();
     }
   });
 

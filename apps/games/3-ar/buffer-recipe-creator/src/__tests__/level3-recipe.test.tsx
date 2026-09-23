@@ -58,8 +58,8 @@ describe('Level 3 hints agree with the grader', () => {
       });
 
       it('reveals moles the level then accepts', () => {
-        const [acid] = numbersAfter(all, /Sýra: (\d+,\d+) mol/g);
-        const [base] = numbersAfter(all, /Basi: (\d+,\d+) mol/g);
+        const [acid] = numbersAfter(all, /Sýra: (\d+,\d+) mól/g);
+        const [base] = numbersAfter(all, /Basi: (\d+,\d+) mól/g);
         // Three significant figures: within 0,5 %, far inside the level's 10 %.
         expect(Math.abs(acid - r.acidMoles) / r.acidMoles).toBeLessThan(0.005);
         expect(Math.abs(base - r.baseMoles) / r.baseMoles).toBeLessThan(0.005);
@@ -188,7 +188,7 @@ describe('Level 3 grades volumes against the derived recipe', () => {
 
       const text = container.textContent ?? '';
       const lines = [
-        ...text.matchAll(/(\d+,\d+) mol \/ (\d+(?:,\d+)?) M = (\d+,\d+) L = (\d+,\d+) mL/g),
+        ...text.matchAll(/(\d+,\d+) mól \/ (\d+(?:,\d+)?) M = (\d+,\d+) L = (\d+,\d+) mL/g),
       ];
       expect(lines, `puzzle ${puzzle.id}`).toHaveLength(2);
       for (const [, mol, conc, litres, ml] of lines) {

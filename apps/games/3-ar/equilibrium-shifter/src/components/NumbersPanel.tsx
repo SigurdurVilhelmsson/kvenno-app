@@ -158,7 +158,7 @@ export function NumbersPanel({ outcome, constant, order }: Props) {
               <>
                 {' '}
                 ΔH° = <span className="font-mono">{show(outcome.deltaH)}</span> kJ/mól, leitt út úr
-                myndunarvörmum bókarinnar.
+                myndunarvermum bókarinnar.
               </>
             )}
           </>
@@ -166,7 +166,7 @@ export function NumbersPanel({ outcome, constant, order }: Props) {
           <>
             <strong>Hitabreyting færir K, ekki Q.</strong> Áttin er þekkt — {constant.kind} hækkar
             við hærri hita fyrir innvermið hvarf og lækkar fyrir útvermið — en hér vantar annaðhvort
-            viðmiðunarhita fyrir fastann eða myndunarvarma fyrir öll efnin, svo talan sjálf fæst
+            viðmiðunarhita fyrir fastann eða myndunarvermi fyrir öll efnin, svo talan sjálf fæst
             ekki. Hún er ekki núll; hún er ómæld.
           </>
         ) : inert ? (

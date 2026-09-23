@@ -66,9 +66,9 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
     explanationIs: 'Við jafngildispunkt: n(HCl) = n(NaOH). Þannig: M₁V₁ = M₂V₂.',
     explanation: 'At equivalence: n(HCl) = n(NaOH). Thus: M₁V₁ = M₂V₂.',
     solutionStepsIs: [
-      'n(NaOH) = M × V = 0,100 mol/L × 0,0325 L = 0,00325 mol',
-      'n(HCl) = n(NaOH) = 0,00325 mol (1:1 hlutfall)',
-      'M(HCl) = n / V = 0,00325 mol / 0,025 L = 0,130 M',
+      'n(NaOH) = M × V = 0,100 mól/L × 0,0325 L = 0,00325 mól',
+      'n(HCl) = n(NaOH) = 0,00325 mól (1:1 hlutfall)',
+      'M(HCl) = n / V = 0,00325 mól / 0,025 L = 0,130 M',
     ],
     solutionSteps: [
       'n(NaOH) = M × V = 0.100 mol/L × 0.0325 L = 0.00325 mol',
@@ -102,9 +102,9 @@ export const LEVEL3_CHALLENGES: Level3Challenge[] = [
     explanation:
       'Whether the acid is strong or weak, moles of acid and base are equal at equivalence.',
     solutionStepsIs: [
-      'n(NaOH) = 0,150 mol/L × 0,028 L = 0,0042 mol',
-      'n(CH₃COOH) = n(NaOH) = 0,0042 mol',
-      'M(CH₃COOH) = 0,0042 mol / 0,050 L = 0,084 M',
+      'n(NaOH) = 0,150 mól/L × 0,028 L = 0,0042 mól',
+      'n(CH₃COOH) = n(NaOH) = 0,0042 mól',
+      'M(CH₃COOH) = 0,0042 mól / 0,050 L = 0,084 M',
     ],
     solutionSteps: [
       'n(NaOH) = 0.150 mol/L × 0.028 L = 0.0042 mol',

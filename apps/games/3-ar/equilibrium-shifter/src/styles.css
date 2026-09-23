@@ -536,10 +536,6 @@
       #fff;
   }
 
-  .high-contrast .table-scroll-cue {
-    background: #1a1a1a;
-  }
-
   /* The species column stays put while the numbers scroll under it. It needs
      a background of its own to hide them, and the gutter that separates it
      from the first number lives here rather than on that number, so the
@@ -549,10 +545,6 @@
     left: 0;
     padding-right: 0.5rem;
     background: #fff;
-  }
-
-  .high-contrast .table-pin {
-    background: #1a1a1a;
   }
 
   .timer-display {
@@ -574,4 +566,72 @@
     padding: 12px 4px;
     font-size: 0.875rem;
   }
+}
+
+/* ==================== HÁ BIRTUSKIL (HIGH CONTRAST) ====================
+   This game is the only one with a high-contrast switch, and the shared
+   theme's `.high-contrast` block did half a job on it: it turns `bg-white` and
+   `bg-warm-50/100` dark and warm text light, and leaves every other surface as
+   it was. Most of this game's text sits on surfaces that block does not know —
+   the page gradient, the tinted panels, the molecule containers — so the stress
+   box, the Hvarfefni/Myndefni labels and the footer came out light on light,
+   and the white Q-vs-K card inside the indigo intro came out dark indigo on
+   near-black.
+
+   Here high contrast goes one way only: every surface keeps its normal light
+   colour and the text and borders get darker. With one direction there is no
+   nesting of panels that can invert it. The `!important`s match the theme's,
+   and these rules come after it in the cascade, so they win. */
+.high-contrast {
+  --border-color: var(--color-warm-900);
+  --focus-color: var(--color-warm-900);
+}
+
+.high-contrast body {
+  background-color: #fff;
+  color: var(--color-warm-900);
+}
+
+.high-contrast .bg-white,
+.high-contrast .bg-surface-raised {
+  background-color: #fff !important;
+  color: inherit !important;
+}
+
+.high-contrast .bg-warm-50,
+.high-contrast .bg-surface-page {
+  background-color: var(--color-warm-50) !important;
+  color: inherit !important;
+}
+
+.high-contrast .bg-warm-100,
+.high-contrast .bg-surface-sunken {
+  background-color: var(--color-warm-100) !important;
+  color: inherit !important;
+}
+
+.high-contrast .bg-gray-50,
+.high-contrast .bg-slate-50 {
+  background-color: var(--color-gray-50) !important;
+  color: inherit !important;
+}
+
+.high-contrast .bg-gray-100,
+.high-contrast .bg-slate-100 {
+  background-color: var(--color-gray-100) !important;
+  color: inherit !important;
+}
+
+.high-contrast .text-warm-400,
+.high-contrast .text-warm-500,
+.high-contrast .text-warm-600,
+.high-contrast .text-warm-700,
+.high-contrast .text-warm-800,
+.high-contrast .text-gray-600,
+.high-contrast .text-gray-700,
+.high-contrast .text-gray-800,
+.high-contrast .text-slate-600,
+.high-contrast .text-slate-700,
+.high-contrast .text-slate-800 {
+  color: var(--color-warm-900) !important;
 }

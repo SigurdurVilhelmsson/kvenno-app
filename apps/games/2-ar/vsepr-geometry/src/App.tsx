@@ -129,13 +129,13 @@ function App() {
                 ✓ <strong>VSEPR:</strong> Rafeindasvið hrinda hvert öðru frá — ákvarðar lögun
               </li>
               <li>
-                ✓ <strong>Rafeindasvið:</strong> Bindandi pör + einstæð pör = rafeindasvið
+                ✓ <strong>Rafeindasvið:</strong> Bindandi pör + stök pör = rafeindasvið
               </li>
               <li>
-                ✓ <strong>Sameindarlögun:</strong> Einstæð pör „fela sig" en hafa áhrif á horn
+                ✓ <strong>Sameindarlögun:</strong> Stök pör „fela sig" en hafa áhrif á horn
               </li>
               <li>
-                ✓ <strong>Blendni:</strong> sp (línuleg), sp² (þríhyrnd), sp³ (fjórflötungur)...
+                ✓ <strong>Blendni:</strong> sp (línuleg), sp² (þríhyrnd), sp³ (ferflötungur)...
               </li>
               <li>
                 ✓ <strong>Skautun:</strong> Ósamhverf lögun = sameind skautuð
@@ -186,7 +186,7 @@ function App() {
             </p>
             <div className="bg-white p-3 rounded-lg border border-teal-200">
               <p className="text-sm text-teal-800 font-mono text-center">
-                Rafeindasvið = Bindandi pör + Einstæð pör
+                Rafeindasvið = Bindandi pör + Stök pör
               </p>
             </div>
           </div>
@@ -325,7 +325,7 @@ function App() {
               </div>
               <div className="bg-white p-2 rounded border text-center">
                 <div className="text-lg mb-1">◇</div>
-                <div className="font-bold text-warm-800">Fjórflötungur</div>
+                <div className="font-bold text-warm-800">Ferflötungur</div>
                 <div className="text-xs text-warm-500">109,5°</div>
               </div>
               <div className="bg-white p-2 rounded border text-center">

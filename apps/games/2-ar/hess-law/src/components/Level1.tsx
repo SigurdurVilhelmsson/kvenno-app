@@ -176,13 +176,13 @@ function EquationDisplay({
       {/* ΔH value */}
       <div className="text-center mb-4">
         {hideDeltaH ? (
-          <span className="font-bold text-xl text-purple-600">ΔH = ? kJ/mol</span>
+          <span className="font-bold text-xl text-purple-600">ΔH = ? kJ/mól</span>
         ) : (
           <span
             className={`font-bold text-xl ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}
           >
             ΔH = {effectiveDeltaH > 0 ? '+' : ''}
-            {effectiveDeltaH} kJ/mol
+            {effectiveDeltaH} kJ/mól
           </span>
         )}
       </div>

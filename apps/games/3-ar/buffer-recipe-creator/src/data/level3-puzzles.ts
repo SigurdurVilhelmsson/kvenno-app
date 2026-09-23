@@ -148,8 +148,8 @@ const SOURCES: Level3PuzzleSource[] = [
     hintsIs: (n) => ({
       topic: 'Þetta snýst um þynningu birgðalausna og Henderson-Hasselbalch jöfnuna.',
       strategy: `Fyrst: Reiknaðu hlutfall [Basi]/[Sýra] fyrir pH ${n.pH} með pKa = ${n.pKa}. Síðan: Reiknaðu mól og þá rúmmál.`,
-      method: `Hlutfall = 10^(${n.pH}-${n.pKa}) = ${n.ratio}. Heildarmól = ${n.conc} M × ${n.volumeL} L = ${n.totalMoles} mol. Skiptu í sýru og basa.`,
-      solution: `Sýra: ${n.acidMoles} mol, Basi: ${n.baseMoles} mol. Úr ${n.stock} M birgð: Sýra = ${n.acidVolume} mL, Basi = ${n.baseVolume} mL.`,
+      method: `Hlutfall = 10^(${n.pH}-${n.pKa}) = ${n.ratio}. Heildarmól = ${n.conc} M × ${n.volumeL} L = ${n.totalMoles} mól. Skiptu í sýru og basa.`,
+      solution: `Sýra: ${n.acidMoles} mól, Basi: ${n.baseMoles} mól. Úr ${n.stock} M birgð: Sýra = ${n.acidVolume} mL, Basi = ${n.baseVolume} mL.`,
     }),
     explanationIs: (n) =>
       `Til að búa til ${n.targetVolume} mL af ${n.conc} M fosfatstuðpúða við pH ${n.pH}, þarftu ${n.acidVolume} mL af ${n.stockAcid} M NaH₂PO₄ og ${n.baseVolume} mL af ${n.stockBase} M Na₂HPO₄, fyllt upp í ${n.targetVolume} mL með vatni.`,
@@ -168,7 +168,7 @@ const SOURCES: Level3PuzzleSource[] = [
     hintsIs: (n) => ({
       topic: `Asetatstuðpúði með pKa = ${n.pKa} og markmiðs-pH = ${n.pH}.`,
       strategy: `Hlutfall = 10^(${n.pH}-${n.pKa}) = 10^${n.diff} ≈ ${n.ratio}. Meira af basa en sýru.`,
-      method: `Heildarmól = ${n.conc} × ${n.volumeL} = ${n.totalMoles} mol. Sýra: ${n.acidMoles} mol, Basi: ${n.baseMoles} mol.`,
+      method: `Heildarmól = ${n.conc} × ${n.volumeL} = ${n.totalMoles} mól. Sýra: ${n.acidMoles} mól, Basi: ${n.baseMoles} mól.`,
       solution: `Úr ${n.stock} M birgð: Sýra = ${n.acidVolume} mL, Basi = ${n.baseVolume} mL, Vatn = ${n.waterVolume} mL.`,
     }),
     explanationIs: (n) =>
@@ -188,7 +188,7 @@ const SOURCES: Level3PuzzleSource[] = [
     hintsIs: (n) => ({
       topic: `Fosfatstuðpúði við pH ${n.pH}, sem er UNDIR pKa (${n.pKa}).`,
       strategy: `Hlutfall = 10^(${n.pH}-${n.pKa}) = 10^(${n.diff}) = ${n.ratio}. Meira af sýru.`,
-      method: `Heildarmól = ${n.conc} × ${n.volumeL} = ${n.totalMoles} mol. Sýra: ${n.acidMoles} mol, Basi: ${n.baseMoles} mol.`,
+      method: `Heildarmól = ${n.conc} × ${n.volumeL} = ${n.totalMoles} mól. Sýra: ${n.acidMoles} mól, Basi: ${n.baseMoles} mól.`,
       solution: `Úr ${n.stock} M birgð: Sýra = ${n.acidVolume} mL, Basi = ${n.baseVolume} mL, Vatn = ${n.waterVolume} mL.`,
     }),
     explanationIs: (n) =>
@@ -208,7 +208,7 @@ const SOURCES: Level3PuzzleSource[] = [
     hintsIs: (n) => ({
       topic: `Ammóníustuðpúði með pKa = ${n.pKa} og markmiðs-pH = ${n.pH}.`,
       strategy: `pH > pKa þannig að hlutfall > 1. Hlutfall = 10^(${n.diff}) = ${n.ratio}.`,
-      method: `Heildarmól = ${n.conc} × ${n.volumeL} = ${n.totalMoles} mol. Sýra: ${n.acidMoles} mol, Basi: ${n.baseMoles} mol.`,
+      method: `Heildarmól = ${n.conc} × ${n.volumeL} = ${n.totalMoles} mól. Sýra: ${n.acidMoles} mól, Basi: ${n.baseMoles} mól.`,
       solution: `Úr ${n.stock} M birgð: Sýra = ${n.acidVolume} mL, Basi = ${n.baseVolume} mL, Vatn = ${n.waterVolume} mL.`,
     }),
     explanationIs: (n) =>
@@ -228,7 +228,7 @@ const SOURCES: Level3PuzzleSource[] = [
     hintsIs: (n) => ({
       topic: `Fosfatstuðpúði við pH ${n.pH}, sem er töluvert undir pKa (${n.pKa}).`,
       strategy: `Hlutfall = 10^(${n.pH}-${n.pKa}) = 10^(${n.diff}) = ${n.ratio}. Miklu meira af sýru.`,
-      method: `Heildarmól = ${n.conc} × ${n.volumeL} = ${n.totalMoles} mol. Sýra: ${n.acidMoles} mol, Basi: ${n.baseMoles} mol.`,
+      method: `Heildarmól = ${n.conc} × ${n.volumeL} = ${n.totalMoles} mól. Sýra: ${n.acidMoles} mól, Basi: ${n.baseMoles} mól.`,
       solution: `Úr ${n.stock} M birgð: Sýra = ${n.acidVolume} mL, Basi = ${n.baseVolume} mL, Vatn = ${n.waterVolume} mL.`,
     }),
     explanationIs: (n) =>

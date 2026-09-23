@@ -140,7 +140,7 @@ export function CollisionDemo({
         >
           {showLabels && (
             <div className="absolute bottom-1 right-2 text-xs text-red-400/70">
-              Ea = {activationEnergy} kJ/mol
+              Ea = {activationEnergy} kJ/mól
             </div>
           )}
         </div>

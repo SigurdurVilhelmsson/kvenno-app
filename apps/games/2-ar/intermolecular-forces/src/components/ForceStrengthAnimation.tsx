@@ -317,11 +317,11 @@ export function ForceStrengthAnimation({
                       <>
                         <tspan x={centerX}>{formatRange(force.energyRange)}</tspan>
                         <tspan x={centerX} dy="1.2em">
-                          kJ/mol
+                          kJ/mól
                         </tspan>
                       </>
                     ) : (
-                      `${formatRange(force.energyRange)} kJ/mol`
+                      `${formatRange(force.energyRange)} kJ/mól`
                     )}
                   </text>
                 </g>
@@ -441,7 +441,7 @@ export function ForceStrengthAnimation({
                     textAnchor="middle"
                     className="fill-warm-300 text-[11px] pointer-coarse:text-xs"
                   >
-                    {formatRange(force.energyRange)} kJ/mol
+                    {formatRange(force.energyRange)} kJ/mól
                   </text>
                 </g>
               );
@@ -518,7 +518,7 @@ export function ForceStrengthAnimation({
             <div>
               <span className="text-warm-400">Styrkssvið:</span>
               <span className="text-white ml-1">
-                {formatRange(selectedData.energyRange)} kJ/mol
+                {formatRange(selectedData.energyRange)} kJ/mól
               </span>
             </div>
             <div>

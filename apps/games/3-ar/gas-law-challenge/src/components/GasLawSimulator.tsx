@@ -264,7 +264,7 @@ function EquationDisplay({
         {varSpan('T', units.T, 'T')}
       </div>
       <div className="text-center text-warm-500 mt-1 text-[10px] pointer-coarse:text-xs">
-        R = {formatDecimal(R)} L·atm/(mol·K)
+        R = {formatDecimal(R)} L·atm/(mól·K)
       </div>
     </div>
   );

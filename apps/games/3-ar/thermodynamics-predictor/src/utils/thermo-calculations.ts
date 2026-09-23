@@ -47,7 +47,7 @@ export const DELTA_G_TOLERANCE_MAX = 3;
  * How far (kJ/mol) a typed ΔG° may sit from the true value and still be right.
  *
  * ±3 kJ/mol, as the game has always graded — but never more than a quarter of |ΔG°|,
- * because a fixed ±3 swallows small answers whole: Demant → Grafít has ΔG° = −2,9 kJ/mol at
+ * because a fixed ±3 swallows small answers whole: Demant → Grafít has ΔG° = −2,9 kJ/mól at
  * 298 K, so a flat ±3 marked `0`, half the answer and double it all right. A quarter keeps
  * every such guess out (half is off by a half, `0` by the whole), while an answer rounded to
  * a whole number still passes wherever |ΔG°| ≥ 2. The 0,1 floor is for answers at

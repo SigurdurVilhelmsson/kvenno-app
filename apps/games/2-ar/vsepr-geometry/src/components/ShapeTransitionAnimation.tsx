@@ -45,7 +45,7 @@ const GEOMETRY_CONFIGS: Record<number, GeometryConfig> = {
     example: 'BF₃',
   },
   4: {
-    name: 'Fjórflötungur',
+    name: 'Ferflötungur',
     nameEn: 'Tetrahedral',
     bondAngle: '109,5°',
     positions: [

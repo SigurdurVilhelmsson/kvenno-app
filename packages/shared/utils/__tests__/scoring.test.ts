@@ -1,11 +1,10 @@
 import { describe, it, expect } from 'vitest';
 
+import * as scoring from '../scoring';
 import {
   calculateCompositeScore,
   isPassing,
   calculateAverage,
-  countSignificantFigures,
-  validateSignificantFigures,
   calculateEfficiencyScore,
   scoreExplanation,
   DEFAULT_SCORING_CONFIG,
@@ -79,64 +78,14 @@ describe('calculateAverage', () => {
   });
 });
 
-describe('countSignificantFigures', () => {
-  it('should count sig figs for integers', () => {
-    expect(countSignificantFigures('123')).toBe(3);
-    expect(countSignificantFigures('1')).toBe(1);
-  });
-
-  it('should count sig figs for decimals with whole part', () => {
-    expect(countSignificantFigures('1.23')).toBe(3);
-    expect(countSignificantFigures('12.345')).toBe(5);
-  });
-
-  it('should count sig figs for decimals starting with 0 (leading zeros not significant)', () => {
-    expect(countSignificantFigures('0.123')).toBe(3);
-    expect(countSignificantFigures('0.00123')).toBe(3); // leading zeros are not significant
-    expect(countSignificantFigures('0.0050')).toBe(2); // trailing zeros after decimal ARE significant
-  });
-
-  it('should return 1 for zero', () => {
-    expect(countSignificantFigures('0')).toBe(1);
-    expect(countSignificantFigures('00')).toBe(1);
-  });
-
-  it('should handle trailing zeros after decimal with zero whole part', () => {
-    expect(countSignificantFigures('0.0')).toBe(1);
-    expect(countSignificantFigures('0.00')).toBe(1);
-    expect(countSignificantFigures('-0.0')).toBe(1);
-  });
-
-  it('should handle scientific notation', () => {
-    expect(countSignificantFigures('1.23e5')).toBe(3);
-    expect(countSignificantFigures('1.0E-3')).toBe(2);
-  });
-
-  it('should handle negative numbers', () => {
-    expect(countSignificantFigures('-123')).toBe(3);
-    expect(countSignificantFigures('-1.23')).toBe(3);
-  });
-
-  it('should handle leading zeros in integers', () => {
-    expect(countSignificantFigures('00123')).toBe(3);
-  });
-});
-
-describe('validateSignificantFigures', () => {
-  it('should validate exact match', () => {
-    expect(validateSignificantFigures('123', 3)).toBe(true);
-    expect(validateSignificantFigures('1.23', 3)).toBe(true);
-  });
-
-  it('should reject incorrect sig fig count', () => {
-    expect(validateSignificantFigures('123', 2)).toBe(false);
-    expect(validateSignificantFigures('1.2', 3)).toBe(false);
-  });
-
-  it('should allow tolerance', () => {
-    expect(validateSignificantFigures('123', 2, 1)).toBe(true);
-    expect(validateSignificantFigures('123', 4, 1)).toBe(true);
-    expect(validateSignificantFigures('123', 5, 1)).toBe(false);
+describe('significant figures', () => {
+  it('are not counted here', () => {
+    // This module shipped a counter that read only the full stop, so the
+    // Icelandic `0,125` came out as four figures. Nothing called it; the
+    // counter that reads the comma is dimensional-analysis's utils/sigfigs.ts.
+    // A second one here is how a game ends up importing the wrong one.
+    expect(Object.keys(scoring)).not.toContain('countSignificantFigures');
+    expect(Object.keys(scoring)).not.toContain('validateSignificantFigures');
   });
 });
 

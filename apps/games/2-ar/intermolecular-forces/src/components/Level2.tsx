@@ -578,11 +578,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     <td className="p-2 font-bold">
                       {compound.formula}
                       <div className="sm:hidden text-xs font-normal text-warm-600 whitespace-nowrap">
-                        M = {formatDecimal(compound.molarMass)} g/mol
+                        M = {formatDecimal(compound.molarMass)} g/mól
                       </div>
                     </td>
                     <td className="hidden sm:table-cell p-2 whitespace-nowrap">
-                      {formatDecimal(compound.molarMass)} g/mol
+                      {formatDecimal(compound.molarMass)} g/mól
                     </td>
                     <td className="p-2">
                       <div className="flex flex-wrap gap-1">

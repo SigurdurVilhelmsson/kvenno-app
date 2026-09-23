@@ -34,7 +34,7 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
       },
       {
         title: 'Lotukerfið',
-        description: 'Kynntu þér lotukerfið, frumefni og sameindagerð',
+        description: 'Kynntu þér lotukerfið, frumefni og atómbyggingu',
         slug: 'lotukerfid',
       },
       {
@@ -90,7 +90,7 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
       },
       {
         title: 'Hvarfhraði',
-        description: 'Lærðu um hvarfhraða, hraðalögmál og hvarfgangshátt í efnahvörfum',
+        description: 'Lærðu um hvarfhraða, hraðalögmál og hvarfgang í efnahvörfum',
         slug: 'kinetics',
       },
       {
@@ -110,17 +110,17 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
       },
       {
         title: 'Lífræn nafnagift',
-        description: 'Lærðu IUPAC nafnakerfið fyrir alkanar, alkenar og alkynar',
+        description: 'Lærðu IUPAC nafnakerfið fyrir alkana, alkena og alkýna',
         slug: 'organic-nomenclature',
       },
       {
         title: 'Oxun og afoxun',
-        description: 'Lærðu um oxunartölur, rafeindiflutning og jafnvægi redox-hvörfum',
+        description: 'Lærðu um oxunartölur, rafeindaflutning og hvernig redox-hvörf eru stillt',
         slug: 'redox-reactions',
       },
       {
         title: 'Rafeindabygging',
-        description: 'Skammtatölur, svigrúm og rafeindauppsetning (Kafli 6)',
+        description: 'Skammtatölur, svigrúm og rafeindaskipan (Kafli 6)',
         slug: 'rafeindabygging',
       },
     ],
@@ -151,7 +151,7 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
       },
       {
         title: 'Sýrufastinn',
-        description: 'Hvað Ka er, hvaðan hann kemur og hvenær nálgunin má nota',
+        description: 'Hvað Ka er, hvaðan hann kemur og hvenær nálgunina má nota',
         slug: 'syrufastinn',
       },
       {

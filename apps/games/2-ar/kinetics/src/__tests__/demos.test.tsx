@@ -78,10 +78,10 @@ describe('CatalystEffectDemo', () => {
     fireEvent.change(base, { target: { value: '30' } });
 
     const text = container.textContent ?? '';
-    const shown = Number(/Ea' = (\d+) kJ\/mol/.exec(text)?.[1]);
+    const shown = Number(/Ea' = (\d+) kJ\/mól/.exec(text)?.[1]);
     expect(shown).toBe(Number(cat.value));
     expect(shown).toBeLessThan(30);
-    expect(text).toMatch(/Hvati lækkar Ea um 5 kJ\/mol/);
+    expect(text).toMatch(/Hvati lækkar Ea um 5 kJ\/mól/);
     expect(text).not.toMatch(/lækkar Ea um -/);
     unmount();
   });

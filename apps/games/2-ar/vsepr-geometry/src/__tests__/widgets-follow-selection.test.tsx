@@ -74,7 +74,7 @@ describe('the Stig 1 widgets follow the shape the student picks', () => {
     // The four-domain bent shape is drawn by the animation as well.
     pick(ui, /Trigonal Pyramidal/);
     pick(ui, /^Beygð \(2 lp\)/);
-    expect(container.textContent).toContain('2 einstæð pör ýta bindandi pörum nær saman');
+    expect(container.textContent).toContain('2 stök pör ýta bindandi pörum nær saman');
   });
 
   it('the shape-transition animation moves to the new domain count', () => {
@@ -114,15 +114,15 @@ describe('the shape-transition animation', () => {
 
 describe('the compact bond-angle tool', () => {
   it('names one lone pair in the singular', () => {
-    // Level 2's count phrases were fixed for "1 einstæð pör"; the compact
+    // Level 2's count phrases were fixed for "1 stök pör"; the compact
     // angle tool printed the same plural after a count of 1.
     const one = render(<BondAngleMeasurement compact geometryId="trigonal-pyramidal" />);
-    expect(one.container.textContent).toContain('1 einstætt par → -2,5°');
-    expect(one.container.textContent).not.toContain('einstæð pör');
+    expect(one.container.textContent).toContain('1 stakt par → -2,5°');
+    expect(one.container.textContent).not.toContain('stök pör');
     one.unmount();
 
     const two = render(<BondAngleMeasurement compact geometryId="bent-4" />);
-    expect(two.container.textContent).toContain('2 einstæð pör → -5°');
+    expect(two.container.textContent).toContain('2 stök pör → -5°');
     two.unmount();
   });
 });

@@ -277,7 +277,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             />
           </div>
 
-          {/* Athuga button above Visbending */}
+          {/* Athuga button above Vísbending */}
           {!answered && (
             <button
               onClick={handleCheck}

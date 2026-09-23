@@ -52,11 +52,11 @@ const BOND_ANGLES: Record<string, BondAngleData> = {
     lonePairs: 1,
     bondingPairs: 2,
     example: 'SO₂',
-    explanation: 'Einstætt par þrýstir bindandi pörum saman.',
+    explanation: 'Stakt par þrýstir bindandi pörum saman.',
   },
   tetrahedral: {
     geometry: 'tetrahedral',
-    geometryName: 'Fjórflötungur',
+    geometryName: 'Ferflötungur',
     idealAngle: 109.5,
     actualAngle: 109.5,
     lonePairs: 0,
@@ -72,7 +72,7 @@ const BOND_ANGLES: Record<string, BondAngleData> = {
     lonePairs: 1,
     bondingPairs: 3,
     example: 'NH₃',
-    explanation: 'Einstætt par minnkar hornið úr 109,5° í ~107°.',
+    explanation: 'Stakt par minnkar hornið úr 109,5° í ~107°.',
   },
   'bent-4': {
     geometry: 'bent-4',
@@ -82,7 +82,7 @@ const BOND_ANGLES: Record<string, BondAngleData> = {
     lonePairs: 2,
     bondingPairs: 2,
     example: 'H₂O',
-    explanation: 'Tvö einstæð pör þrýsta horninu niður í 104,5°.',
+    explanation: 'Tvö stök pör þrýsta horninu niður í 104,5°.',
   },
   'trigonal-bipyramidal': {
     geometry: 'trigonal-bipyramidal',
@@ -182,7 +182,7 @@ export function BondAngleMeasurement({
   // Geometries grouped by base shape for comparison
   const comparisonGroups = useMemo(() => {
     return {
-      'Úr fjórflötungi (109,5°)': ['tetrahedral', 'trigonal-pyramidal', 'bent-4'],
+      'Úr ferflötungi (109,5°)': ['tetrahedral', 'trigonal-pyramidal', 'bent-4'],
       'Úr þríhyrndri sléttri (120°)': ['trigonal-planar', 'bent-2'],
     };
   }, []);
@@ -252,10 +252,8 @@ export function BondAngleMeasurement({
             <div className="text-sm text-warm-400">{angleData.example}</div>
             {angleData.lonePairs > 0 && (
               <div className="text-xs text-yellow-400 mt-1">
-                {angleData.lonePairs === 1
-                  ? '1 einstætt par'
-                  : `${angleData.lonePairs} einstæð pör`}{' '}
-                → -{formatDecimal(angleDifference)}°
+                {angleData.lonePairs === 1 ? '1 stakt par' : `${angleData.lonePairs} stök pör`} → -
+                {formatDecimal(angleDifference)}°
               </div>
             )}
           </div>
@@ -496,7 +494,7 @@ export function BondAngleMeasurement({
               <div className="text-xl font-bold text-blue-400">{angleData.bondingPairs}</div>
             </div>
             <div className="bg-warm-700/50 rounded-lg p-3 text-center">
-              <div className="text-xs text-warm-400">Einstæð pör</div>
+              <div className="text-xs text-warm-400">Stök pör</div>
               <div className="text-xl font-bold text-yellow-400">{angleData.lonePairs}</div>
             </div>
           </div>
@@ -511,7 +509,7 @@ export function BondAngleMeasurement({
               </div>
               {angleDifference > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-yellow-400">Áhrif einstæðra para:</span>
+                  <span className="text-yellow-400">Áhrif stakra para:</span>
                   <span className="text-yellow-300">-{formatDecimal(angleDifference)}°</span>
                 </div>
               )}
@@ -535,7 +533,7 @@ export function BondAngleMeasurement({
       {/* Comparison section */}
       {showComparison && (
         <div className="mt-4 pt-4 border-t border-warm-700">
-          <div className="text-xs text-warm-400 mb-3">Samanburður: Áhrif einstæðra para</div>
+          <div className="text-xs text-warm-400 mb-3">Samanburður: Áhrif stakra para</div>
           <div className="space-y-3">
             {Object.entries(comparisonGroups).map(([groupName, geometries]) => (
               <div key={groupName}>
@@ -577,7 +575,7 @@ export function BondAngleMeasurement({
         </div>
         <div className="flex items-center gap-1">
           <div className="w-4 h-4 rounded-full bg-yellow-400/50 border border-yellow-400" />
-          <span className="text-warm-400">Einstætt par</span>
+          <span className="text-warm-400">Stakt par</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-4 h-4 rounded-xs bg-teal-400/30 border border-teal-400" />

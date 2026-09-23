@@ -20,8 +20,8 @@ import {
  *    correct count anywhere;
  *  - the count hint derived valence electrons as bonding pairs + 2 × lone
  *    pairs, which told the student carbon in CO₂ has 2;
- *  - a single lone pair was "1 einstæð pör", and `með` took the accusative;
- *  - the explanation prompt read "hefur fjórflötungur lögun";
+ *  - a single lone pair was "1 stök pör", and `með` took the accusative;
+ *  - the explanation prompt read "hefur ferflötungur lögun";
  *  - XeF₄ said its lone pairs shrink the angle, where the two sit opposite and
  *    the angle stays 90°;
  *  - three Lewis sketches joined a lone pair to the atom with a bond stroke,
@@ -59,7 +59,7 @@ describe('the count step', () => {
     const { ui, container } = start();
     answerCount(ui, container, 2, 1); // H₂O has 2 lone pairs
     expect(ui.getByText(/Rangt/)).toBeTruthy();
-    expect(ui.getByText(/Rétt svar: 2 bindandi pör og 2 einstæð pör/)).toBeTruthy();
+    expect(ui.getByText(/Rétt svar: 2 bindandi pör og 2 stök pör/)).toBeTruthy();
     expect(container.textContent).toContain('Samtals rafeindasvið: 4');
   });
 
@@ -67,7 +67,7 @@ describe('the count step', () => {
     const { ui, container } = start();
     advanceTo(ui, container, at('NH₃'));
     answerCount(ui, container, 3, 0);
-    expect(ui.getByText(/Rétt svar: 3 bindandi pör og 1 einstætt par/)).toBeTruthy();
+    expect(ui.getByText(/Rétt svar: 3 bindandi pör og 1 stakt par/)).toBeTruthy();
   });
 
   it("gives carbon's real valence electron count for CO₂", () => {
@@ -107,17 +107,17 @@ describe('the geometry step', () => {
     advanceTo(ui, container, at('NH₃'));
     answerCount(ui, container, 3, 1);
     next(ui);
-    expect(container.textContent).toContain('3 bindandi + 1 einstætt par');
-    expect(container.textContent).toContain('Með 1 einstæðu pari, hvaða');
+    expect(container.textContent).toContain('3 bindandi + 1 stakt par');
+    expect(container.textContent).toContain('Með 1 stöku pari, hvaða');
     fireEvent.click(ui.getByRole('button', { name: hintButton }));
-    expect(container.textContent).toContain('Hversu mikil áhrif hefur 1 einstætt par?');
+    expect(container.textContent).toContain('Hversu mikil áhrif hefur 1 stakt par?');
   });
 
   it('declines several lone pairs after "með"', () => {
     const { ui, container } = start();
     answerCount(ui, container, 2, 2);
     next(ui);
-    expect(container.textContent).toContain('Með 2 einstæðum pörum, hvaða');
+    expect(container.textContent).toContain('Með 2 stökum pörum, hvaða');
   });
 });
 
@@ -140,7 +140,7 @@ describe('the angle and explanation steps', () => {
     answerAngle(ui, container, m.angle);
     next(ui);
     expect(container.textContent).toContain(
-      'Útskýrðu af hverju sameindarlögun CH₄ er fjórflötungur:'
+      'Útskýrðu af hverju sameindarlögun CH₄ er ferflötungur:'
     );
   });
 

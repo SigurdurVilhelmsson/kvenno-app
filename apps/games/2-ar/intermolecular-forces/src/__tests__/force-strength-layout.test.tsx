@@ -53,14 +53,14 @@ describe('ForceStrengthAnimation layout', () => {
     const narrowTspans = [...narrow.svg.querySelectorAll('tspan')].map((t) => t.textContent);
     expect(narrowTspans).toContain('Tvískauts-');
     expect(narrowTspans).toContain('tvískauts');
-    expect(narrowTspans.filter((t) => t === 'kJ/mol')).toHaveLength(3);
+    expect(narrowTspans.filter((t) => t === 'kJ/mól')).toHaveLength(3);
 
     const wide = renderAt(800);
     fireEvent.click(within(wide.container).getByRole('button', { name: 'Bera saman' }));
     expect(wide.svg.querySelectorAll('tspan')).toHaveLength(0);
     const texts = [...wide.svg.querySelectorAll('text')].map((t) => t.textContent);
     expect(texts).toContain('Tvískauts-tvískauts');
-    expect(texts).toContain('0,05 - 40 kJ/mol');
+    expect(texts).toContain('0,05 - 40 kJ/mól');
   });
 
   it('keeps every comparison molecule pair inside its own column when narrow', () => {

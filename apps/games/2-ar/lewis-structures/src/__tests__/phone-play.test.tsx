@@ -149,7 +149,7 @@ describe('moving on shows the next molecule', () => {
     for (const bond of ui.getAllByRole('button', { name: /^Tengi \d af 2/ })) {
       fireEvent.click(bond);
     }
-    const plus = ui.getByRole('button', { name: 'Bæta einstæðu pari við O (miðatóm)' });
+    const plus = ui.getByRole('button', { name: 'Bæta stöku pari við O (miðatóm)' });
     fireEvent.click(plus);
     fireEvent.click(plus);
     fireEvent.click(ui.getByRole('button', { name: 'Athuga' }));

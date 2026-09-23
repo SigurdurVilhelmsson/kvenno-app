@@ -272,7 +272,7 @@ export function GameScreen({
                     )}
                   </div>
                   <div className="mt-2 text-xs text-blue-800 font-mono bg-white px-2 py-1 rounded">
-                    PV = nRT þar sem R = 0,08206 L·atm/(mol·K)
+                    PV = nRT þar sem R = 0,08206 L·atm/(mól·K)
                   </div>
                 </div>
               </div>

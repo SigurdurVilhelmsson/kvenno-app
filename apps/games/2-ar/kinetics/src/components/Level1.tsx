@@ -283,7 +283,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 <span className="flex items-center gap-1">
                   <span>⚡</span> Virkjunarorka (Ea)
                 </span>
-                <span className="font-mono font-bold text-red-600">{activationEnergy} kJ/mol</span>
+                <span className="font-mono font-bold text-red-600">{activationEnergy} kJ/mól</span>
               </label>
               <input
                 type="range"
@@ -297,8 +297,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 className="w-full h-2 bg-warm-200 rounded-lg appearance-none cursor-pointer accent-red-500 pointer-coarse:h-11 pointer-coarse:rounded-none pointer-coarse:bg-transparent pointer-coarse:bg-[linear-gradient(var(--color-warm-200),var(--color-warm-200))] pointer-coarse:bg-[length:100%_8px] pointer-coarse:bg-center pointer-coarse:bg-no-repeat"
               />
               <div className="flex justify-between text-xs text-warm-400 mt-1">
-                <span>20 kJ/mol</span>
-                <span>80 kJ/mol</span>
+                <span>20 kJ/mól</span>
+                <span>80 kJ/mól</span>
               </div>
             </div>
           </div>

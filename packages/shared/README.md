@@ -427,16 +427,6 @@ isPassing(score: number, config?: ScoringConfig): boolean
 // Calculate average from array
 calculateAverage(scores: number[]): number
 
-// Count significant figures
-countSignificantFigures(numStr: string): number
-
-// Validate significant figures
-validateSignificantFigures(
-  answer: string,
-  expected: number,
-  tolerance?: number
-): boolean
-
 // Calculate efficiency score
 calculateEfficiencyScore(stepsTaken: number, optimalSteps: number): number
 
@@ -452,11 +442,7 @@ scoreExplanation(
 **Example:**
 
 ```typescript
-import {
-  calculateCompositeScore,
-  countSignificantFigures,
-  validateSignificantFigures,
-} from '@shared/utils/scoring';
+import { calculateCompositeScore } from '@shared/utils/scoring';
 
 // Calculate composite score
 const finalScore = calculateCompositeScore(
@@ -466,14 +452,11 @@ const finalScore = calculateCompositeScore(
   0.9 // efficient solution
 );
 // Result: 0.83 (weighted average)
-
-// Validate significant figures
-const isValid = validateSignificantFigures('1.23', 3, 0);
-// Result: true (3 sig figs)
-
-const count = countSignificantFigures('0.00123');
-// Result: 3
 ```
+
+There is no significant-figure counter here any more. The one this module had
+read only the full stop, so an Icelandic `0,125` counted as four figures; the
+counter that reads the comma is `apps/games/1-ar/dimensional-analysis/src/utils/sigfigs.ts`.
 
 ---
 
@@ -743,15 +726,13 @@ const progress = JSON.parse(localStorage.getItem('progress'));
 ✅ **Good:**
 
 ```typescript
-const isValid = validateSignificantFigures(answer, 3);
+const value = parseStudentNumber(answer); // reads the Icelandic decimal comma
 ```
 
 ❌ **Bad:**
 
 ```typescript
-const countSigFigs = (num) => {
-  /* reimplementing the wheel */
-};
+const value = parseFloat(answer.replace(',', '.')); /* reimplementing the wheel */
 ```
 
 ### 4. Export Types for Type Safety

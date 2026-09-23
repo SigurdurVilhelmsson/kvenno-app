@@ -266,7 +266,7 @@ export function MaxwellBoltzmann({
             className="fill-warm-400 text-xs"
             style={{ fontSize: fontSize.xAxis }}
           >
-            Orka (kJ/mol)
+            Orka (kJ/mól)
           </text>
 
           {/* Y-axis label */}
@@ -359,7 +359,7 @@ export function MaxwellBoltzmann({
           </span>
         </div>
         <div className="text-xs text-warm-400 whitespace-nowrap">
-          Ea = {activationEnergy} kJ/mol
+          Ea = {activationEnergy} kJ/mól
         </div>
       </div>
 
