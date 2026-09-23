@@ -1004,6 +1004,9 @@ Found on the way, no ruling needed, not done in this pass.
 - `2-ar/vsepr-geometry` `BondAngleMeasurement.tsx`: tick labels measure the half-angle, so a 90°
   bond sits near `60°`. Drop the numbers.
 - `2-ar/lewis-structures` `Level3.tsx`: a formal charge of 0 prints as `+0`.
+- `packages/shared/components/AnimatedMolecule` (Lewis mode): a +1 formal-charge badge is drawn in
+  the `formalChargePositive` red on a red O atom (CO's O), so its edge barely shows. The `+1` text
+  stays readable; the badge needs an outline or a contrasting fill.
 - `packages/shared/utils/scientific.ts` `gradeScientific` compares the typed mantissa as written,
   not normalised: `13,4` with `-5` against 1,34 × 10⁻⁵ (right digits, 10× too big) grades
   `tolustafir`, not `veldisvisir`, and a slip across the mantissa-10 boundary does too. Comparing
