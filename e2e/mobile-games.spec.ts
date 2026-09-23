@@ -21,6 +21,16 @@ import { GAME_SCREENS, type ScreenStep } from './mobile-game-screens';
 
 const PHONE = { width: 360, height: 740 };
 
+/**
+ * CI time: replaying all ~290 paths in both browsers took the E2E job from
+ * about 2 minutes to 14. Chromium replays every path; Firefox replays each
+ * game's menu and every fourth path, spread across all levels rather than only
+ * the first screens. Firefox is here for its different text metrics, and a
+ * sample on every level still exercises them.
+ */
+const FIREFOX_EVERY = 4;
+const CHROMIUM_ONLY = '@chromium-only';
+
 async function runStep(page: Page, step: ScreenStep): Promise<void> {
   if ('click' in step) {
     await page
@@ -78,8 +88,11 @@ test.describe('Games at phone width', () => {
       expect(back.height).toBeGreaterThanOrEqual(44);
     });
 
-    for (const screen of screens) {
-      test(`${game}: ${screen.name}`, async ({ page }) => {
+    for (const [i, screen] of screens.entries()) {
+      // Firefox replays every FIREFOX_EVERY-th path (and every menu), Chromium
+      // all of them: see the firefox project's grepInvert in playwright.config.ts.
+      const tag = i % FIREFOX_EVERY === 0 ? [] : [CHROMIUM_ONLY];
+      test(`${game}: ${screen.name}`, { tag }, async ({ page }) => {
         await page.goto(url);
         await page.waitForLoadState('networkidle');
         for (const step of screen.steps) await runStep(page, step);

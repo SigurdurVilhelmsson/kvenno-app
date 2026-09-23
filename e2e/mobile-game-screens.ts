@@ -293,7 +293,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 2 — kennsla',
       steps: [
         {
-          clickRole: ['button', 'Stig 2: Flokkar og lotubundnar sveiflur'],
+          clickRole: ['button', 'Stig 2: Flokkar og lotubundnir eiginleikar'],
         },
         {
           wait: 300,
@@ -304,7 +304,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 2 — spurning með vísbendingu',
       steps: [
         {
-          clickRole: ['button', 'Stig 2: Flokkar og lotubundnar sveiflur'],
+          clickRole: ['button', 'Stig 2: Flokkar og lotubundnir eiginleikar'],
         },
         {
           clickRole: ['button', 'Byrja æfingar →'],
@@ -321,7 +321,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 2 — endurgjöf',
       steps: [
         {
-          clickRole: ['button', 'Stig 2: Flokkar og lotubundnar sveiflur'],
+          clickRole: ['button', 'Stig 2: Flokkar og lotubundnir eiginleikar'],
         },
         {
           clickRole: ['button', 'Byrja æfingar →'],
@@ -727,7 +727,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           click: 'Stig 3: Samþætt æfing',
         },
         {
-          fill: ['input[placeholder^="t.d. 1,2e24"]', 'abc'],
+          fill: ['input[placeholder^="t.d. 2,5e20"]', 'abc'],
         },
         {
           clickRole: ['button', 'Svara'],
@@ -741,7 +741,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           click: 'Stig 3: Samþætt æfing',
         },
         {
-          fill: ['input[placeholder^="t.d. 1,2e24"]', '99999'],
+          fill: ['input[placeholder^="t.d. 2,5e20"]', '99999'],
         },
         {
           clickRole: ['button', 'Svara'],
@@ -1031,6 +1031,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
         {
           clickRole: ['button', 'Áfram í Skilja'],
+        },
+        {
+          clickRole: ['button', 'Til baka'],
         },
       ],
     },
@@ -1352,7 +1355,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           click: 'Byrja æfingar',
         },
         {
-          css: 'button:has-text("sameindur")',
+          css: 'button:has-text("sameindir")',
         },
         {
           wait: 400,
@@ -2183,7 +2186,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Stig 1: Hraðahugtök'],
         },
         {
-          clickRole: ['button', 'Kyrrt'],
+          clickRole: ['button', 'Sýna hreyfingu'],
         },
         {
           wait: 400,
@@ -2245,7 +2248,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 3 — kynning',
       steps: [
         {
-          clickRole: ['button', 'Stig 3: Hvarfgangsháttur'],
+          clickRole: ['button', 'Stig 3: Hvarfgangur'],
         },
         {
           wait: 300,
@@ -2256,7 +2259,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 3 — spurning',
       steps: [
         {
-          clickRole: ['button', 'Stig 3: Hvarfgangsháttur'],
+          clickRole: ['button', 'Stig 3: Hvarfgangur'],
         },
         {
           clickRole: ['button', 'Byrja æfingar'],
@@ -2273,7 +2276,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       name: 'Stig 3 — endurgjöf',
       steps: [
         {
-          clickRole: ['button', 'Stig 3: Hvarfgangsháttur'],
+          clickRole: ['button', 'Stig 3: Hvarfgangur'],
         },
         {
           clickRole: ['button', 'Byrja æfingar'],
@@ -2419,10 +2422,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           css: 'svg g[role=button]:nth-of-type(2)',
         },
         {
-          clickRole: ['button', '+'],
+          clickRole: ['button', 'Bæta einstæðu pari við O (miðatóm)'],
         },
         {
-          clickRole: ['button', '+'],
+          clickRole: ['button', 'Bæta einstæðu pari við O (miðatóm)'],
         },
         {
           click: 'Athuga',
@@ -2442,10 +2445,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           css: 'svg g[role=button]:nth-of-type(2)',
         },
         {
-          clickRole: ['button', '+'],
+          clickRole: ['button', 'Bæta einstæðu pari við O (miðatóm)'],
         },
         {
-          clickRole: ['button', '+'],
+          clickRole: ['button', 'Bæta einstæðu pari við O (miðatóm)'],
         },
         {
           click: 'Athuga',
@@ -3004,7 +3007,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Næsta →'],
         },
         {
-          clickRole: ['button', 'Viðskeytir →'],
+          clickRole: ['button', 'Viðskeyti →'],
         },
       ],
     },
@@ -3112,16 +3115,16 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Byggja sameindir'],
         },
         {
-          clickRole: ['button', '+'],
+          clickRole: ['button', 'Bæta við kolefni'],
         },
         {
-          clickRole: ['button', '+'],
+          clickRole: ['button', 'Bæta við kolefni'],
         },
         {
-          clickRole: ['button', '+'],
+          clickRole: ['button', 'Bæta við kolefni'],
         },
         {
-          clickRole: ['button', '+'],
+          clickRole: ['button', 'Bæta við kolefni'],
         },
       ],
     },
@@ -3761,7 +3764,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Staðfesta:'],
         },
         {
-          clickRole: ['button', 'Brómtýmolblátt'],
+          clickRole: ['button', 'Brómþýmólblátt'],
         },
         {
           wait: 400,
@@ -3799,7 +3802,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Staðfesta:'],
         },
         {
-          clickRole: ['button', 'Brómtýmolblátt'],
+          clickRole: ['button', 'Brómþýmólblátt'],
         },
         {
           clickRole: ['button', 'Staðfesta val'],
@@ -5248,22 +5251,46 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Æfa'],
         },
         {
-          clickRole: ['button', 'Athuga'],
+          fill: ['input[aria-label="Tala"]', '9'],
         },
         {
-          clickRole: ['button', 'Næsta dæmi'],
-        },
-        {
-          clickRole: ['button', 'Athuga'],
-        },
-        {
-          clickRole: ['button', 'Næsta dæmi'],
+          fill: ['input[aria-label="Veldisvísir"]', '-1'],
         },
         {
           clickRole: ['button', 'Athuga'],
         },
         {
           clickRole: ['button', 'Næsta dæmi'],
+        },
+        {
+          fill: ['input[aria-label="Tala"]', '9'],
+        },
+        {
+          fill: ['input[aria-label="Veldisvísir"]', '-1'],
+        },
+        {
+          clickRole: ['button', 'Athuga'],
+        },
+        {
+          clickRole: ['button', 'Næsta dæmi'],
+        },
+        {
+          fill: ['input[aria-label="Tala"]', '9'],
+        },
+        {
+          fill: ['input[aria-label="Veldisvísir"]', '-1'],
+        },
+        {
+          clickRole: ['button', 'Athuga'],
+        },
+        {
+          clickRole: ['button', 'Næsta dæmi'],
+        },
+        {
+          fill: ['input[aria-label="Tala"]', '9'],
+        },
+        {
+          fill: ['input[aria-label="Veldisvísir"]', '-1'],
         },
         {
           clickRole: ['button', 'Athuga'],
