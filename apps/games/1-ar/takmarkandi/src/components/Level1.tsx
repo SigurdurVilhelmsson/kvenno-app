@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
@@ -58,6 +58,20 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const [showIntro, setShowIntro] = useState(true);
   useEscapeKey(onBack, showIntro);
 
+  // Phones keep the old scroll offset across screens, which would open the
+  // next question below its own equation; start every new screen at the top.
+  const topRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    topRef.current?.scrollIntoView?.({ block: 'start' });
+  }, [index, showIntro, done]);
+
+  // On a phone the two reactant cards fill the screen, so the verdict lands
+  // below the fold; bring it (and the "next" button) into view once answered.
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (answered) feedbackRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+  }, [answered]);
+
   const q = questions[index];
   const timesR1 = q.r1Count / q.reaction.reactant1.coeff;
   const timesR2 = q.r2Count / q.reaction.reactant2.coeff;
@@ -88,8 +102,11 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   // --- Summary screen ---
   if (done) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-4 flex items-center justify-center">
-        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center space-y-6">
+      <div
+        ref={topRef}
+        className="min-h-screen bg-gradient-to-b from-green-50 to-white p-4 flex items-center justify-center"
+      >
+        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-6 sm:p-8 text-center space-y-6">
           <div className="text-5xl">{score >= 60 ? '🎉' : score >= 40 ? '👍' : '📚'}</div>
           <h2 className="text-2xl font-bold text-warm-800">Niðurstöður</h2>
           <p className="text-lg text-warm-700">
@@ -123,7 +140,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               Ljúka stigi
             </button>
           </div>
-          <button onClick={onBack} className="text-warm-500 hover:text-warm-700 text-sm">
+          <button
+            onClick={onBack}
+            className="text-warm-500 hover:text-warm-700 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
+          >
             Til baka í valmynd
           </button>
         </div>
@@ -134,9 +154,12 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   // --- Teaching intro ---
   if (showIntro) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white p-4 flex items-center justify-center">
+      <div
+        ref={topRef}
+        className="min-h-screen bg-gradient-to-b from-orange-50 to-white p-4 flex items-center justify-center"
+      >
         <div className="max-w-lg w-full space-y-6">
-          <div className="bg-white rounded-xl shadow-lg p-8">
+          <div className="bg-white rounded-xl shadow-lg p-5 sm:p-8">
             <h1 className="text-2xl font-bold text-warm-800 mb-2">Takmarkandi hvarfefni</h1>
             <p className="text-warm-600 mb-6">
               Af hverju skiptir maxi hvaða hvarfefni er takmarkandi?
@@ -178,7 +201,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   O₂: 2 ÷ 1 = <strong>2</strong> skipti
                 </div>
                 <div className="mt-2 text-kvenno-orange font-bold">
-                  O₂ er takmarkandi (2 &lt; 3)
+                  O₂ er takmarkandi <span className="whitespace-nowrap">(2 &lt; 3)</span>
                 </div>
               </div>
             </div>
@@ -192,7 +215,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           </button>
           <button
             onClick={onBack}
-            className="w-full text-warm-500 hover:text-warm-700 text-sm py-2"
+            className="w-full text-warm-500 hover:text-warm-700 text-sm py-2 pointer-coarse:py-3"
           >
             ← Til baka í valmynd
           </button>
@@ -220,7 +243,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         key={reactant.formula}
         onClick={() => handleSelect(reactant.formula)}
         disabled={answered}
-        className={`p-6 rounded-xl border-4 transition-all ${border}`}
+        className={`p-3 sm:p-6 rounded-xl border-4 transition-all ${border}`}
       >
         <div className="text-center mb-3">
           <div className="text-2xl font-bold">{reactant.formula}</div>
@@ -239,18 +262,21 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
   // --- Main gameplay ---
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white p-4">
+    <div ref={topRef} className="min-h-screen bg-gradient-to-b from-orange-50 to-white p-4">
       <div className="max-w-lg mx-auto">
         {/* Header */}
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-          <div className="flex justify-between items-center">
+          {/* Phones: back link and counter share the top row, the title gets its own. */}
+          <div className="flex flex-wrap sm:flex-nowrap justify-between items-center gap-x-2 gap-y-1">
             <button
               onClick={onBack}
-              className="text-warm-500 hover:text-warm-700 font-semibold text-sm"
+              className="text-warm-500 hover:text-warm-700 font-semibold text-sm whitespace-nowrap pointer-coarse:min-h-11"
             >
               ← Til baka
             </button>
-            <h1 className="text-lg font-bold text-warm-800">Sjonraen greining – Stig 1</h1>
+            <h1 className="order-last basis-full sm:order-none sm:basis-auto text-lg font-bold text-warm-800">
+              Sjonraen greining – <span className="whitespace-nowrap">Stig 1</span>
+            </h1>
             <span className="text-sm font-semibold text-warm-600">
               {index + 1}/{TOTAL}
             </span>
@@ -271,13 +297,13 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         </div>
 
         {/* Question */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4">
           <h2 className="text-xl font-bold text-warm-800 mb-2">Hvort hvarfefnið eyðist fyrst?</h2>
           <p className="text-warm-600 mb-6">
             Skoðaðu stuðlana og fjölda sameinda. Hvort hvarfefnið mun klarast fyrst?
           </p>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             {reactantBtn(q.reaction.reactant1, q.r1Count)}
             {reactantBtn(q.reaction.reactant2, q.r2Count)}
           </div>
@@ -285,7 +311,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
         {/* Feedback */}
         {answered && (
-          <div className="space-y-4 mb-4">
+          <div ref={feedbackRef} className="space-y-4 mb-4">
             <FeedbackPanel
               feedback={{
                 isCorrect,
