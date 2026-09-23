@@ -43,7 +43,7 @@ function buildQuestions(): Question[] {
 }
 
 export function Level2({ onComplete, onBack }: Level2Props) {
-  const [questions] = useState(buildQuestions);
+  const [questions, setQuestions] = useState(buildQuestions);
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [input, setInput] = useState('');
@@ -118,6 +118,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           <div className="flex gap-3">
             <button
               onClick={() => {
+                // A new set: the worked solution to every question in the old
+                // one has just been shown, so replaying it would test memory.
+                setQuestions(buildQuestions());
                 setIndex(0);
                 setScore(0);
                 setInput('');
@@ -169,8 +172,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   // --- Question text ---
   const questionTitle =
     q.type === 'times'
-      ? 'Hversu oft getur hvarfid att ser stad?'
-      : `Hversu mikid myndast af ${q.reaction.products[0].formula}?`;
+      ? 'Hversu oft getur hvarfið átt sér stað?'
+      : `Hversu mikið myndast af ${q.reaction.products[0].formula}?`;
 
   const questionHint =
     q.type === 'times'
@@ -229,7 +232,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               {q.r1Count > 8 && <span className="text-warm-500 text-sm">+{q.r1Count - 8}</span>}
             </div>
             <div className="text-sm text-warm-600">
-              {q.r1Count} sameindur (stuðull: {q.reaction.reactant1.coeff})
+              {q.r1Count} sameindir (stuðull: {q.reaction.reactant1.coeff})
             </div>
           </div>
           <div className="bg-white rounded-xl shadow-md p-4 text-center">
@@ -246,7 +249,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               {q.r2Count > 8 && <span className="text-warm-500 text-sm">+{q.r2Count - 8}</span>}
             </div>
             <div className="text-sm text-warm-600">
-              {q.r2Count} sameindur (stuðull: {q.reaction.reactant2.coeff})
+              {q.r2Count} sameindir (stuðull: {q.reaction.reactant2.coeff})
             </div>
           </div>
         </div>
@@ -318,7 +321,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 </div>
                 <div>
                   Takmarkandi:{' '}
-                  <strong className="text-kvenno-orange">{answer.limitingReactant}</strong> (faerri
+                  <strong className="text-kvenno-orange">{answer.limitingReactant}</strong> (færri
                   skipti)
                 </div>
                 <div>

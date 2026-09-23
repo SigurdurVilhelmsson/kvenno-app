@@ -28,14 +28,18 @@ function buildQuestions(): Question[] {
   const pool = shuffleArray(easy);
   const questions: Question[] = [];
 
+  // Which reactant is limiting: half the questions each way, in a shuffled
+  // order. It used to alternate left, right, left, … so the level could be
+  // scored in full without reading a question (CURRICULUM_REVIEW.md:198).
+  const firstIsLimiting = shuffleArray(Array.from({ length: TOTAL }, (_, i) => i < TOTAL / 2));
+
   for (let i = 0; i < TOTAL; i++) {
     const reaction = pool[i % pool.length];
     const c1 = reaction.reactant1.coeff;
     const c2 = reaction.reactant2.coeff;
 
-    // Alternate which reactant is limiting
     let r1Count: number, r2Count: number;
-    if (i % 2 === 0) {
+    if (firstIsLimiting[i]) {
       r1Count = c1 * 2;
       r2Count = c2 * 4;
     } else {
@@ -48,7 +52,7 @@ function buildQuestions(): Question[] {
 }
 
 export function Level1({ onComplete, onBack }: Level1Props) {
-  const [questions] = useState(buildQuestions);
+  const [questions, setQuestions] = useState(buildQuestions);
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [answered, setAnswered] = useState(false);
@@ -122,6 +126,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           <div className="flex gap-3">
             <button
               onClick={() => {
+                // A new set: every answer in the old one has just been shown,
+                // so replaying it would test memory, not the method.
+                setQuestions(buildQuestions());
                 setIndex(0);
                 setScore(0);
                 setAnswered(false);
@@ -162,7 +169,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           <div className="bg-white rounded-xl shadow-lg p-5 sm:p-8">
             <h1 className="text-2xl font-bold text-warm-800 mb-2">Takmarkandi hvarfefni</h1>
             <p className="text-warm-600 mb-6">
-              Af hverju skiptir maxi hvaða hvarfefni er takmarkandi?
+              Af hverju skiptir máli hvaða hvarfefni er takmarkandi?
             </p>
 
             {/* Core principle */}
@@ -247,8 +254,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       >
         <div className="text-center mb-3">
           <div className="text-2xl font-bold">{reactant.formula}</div>
-          <div className="text-sm text-warm-600">{count} sameindur</div>
-          <div className="text-xs text-warm-500">Studull: {reactant.coeff}</div>
+          <div className="text-sm text-warm-600">{count} sameindir</div>
+          <div className="text-xs text-warm-500">Stuðull: {reactant.coeff}</div>
         </div>
         <div className="flex flex-wrap justify-center gap-1">
           {Array.from({ length: Math.min(count, 8) }).map((_, i) => (
@@ -275,7 +282,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               ← Til baka
             </button>
             <h1 className="order-last basis-full sm:order-none sm:basis-auto text-lg font-bold text-warm-800">
-              Sjonraen greining – <span className="whitespace-nowrap">Stig 1</span>
+              Sjónræn greining – <span className="whitespace-nowrap">Stig 1</span>
             </h1>
             <span className="text-sm font-semibold text-warm-600">
               {index + 1}/{TOTAL}
@@ -300,7 +307,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4">
           <h2 className="text-xl font-bold text-warm-800 mb-2">Hvort hvarfefnið eyðist fyrst?</h2>
           <p className="text-warm-600 mb-6">
-            Skoðaðu stuðlana og fjölda sameinda. Hvort hvarfefnið mun klarast fyrst?
+            Skoðaðu stuðlana og fjölda sameinda. Hvort hvarfefnið mun klárast fyrst?
           </p>
 
           <div className="grid grid-cols-2 gap-3 sm:gap-4">
@@ -320,7 +327,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   : `Rétt svar: ${limiting}. ${q.reaction.reactant1.formula}: ${q.r1Count}÷${q.reaction.reactant1.coeff}=${timesR1}. ${q.reaction.reactant2.formula}: ${q.r2Count}÷${q.reaction.reactant2.coeff}=${timesR2}.`,
                 misconception: isCorrect
                   ? undefined
-                  : 'Þad er ekki alltaf þad sem er minna af — stuðlarnir skipta mali.',
+                  : 'Það er ekki alltaf það sem er minna af — stuðlarnir skipta máli.',
               }}
               config={{ showExplanation: true, showMisconceptions: !isCorrect }}
             />

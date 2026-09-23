@@ -50,7 +50,7 @@ describe('Stig 1', () => {
 
     const [card] = screen
       .getAllByRole('button')
-      .filter((b) => /sameindur/.test(b.textContent ?? ''));
+      .filter((b) => /sameindir/.test(b.textContent ?? ''));
     fireEvent.click(card);
     const reveal = calls().filter((c) => c.options?.block === 'nearest');
     expect(reveal).toHaveLength(1);

@@ -1,7 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
-import { DECIMAL_INPUT_PROPS, parseStudentNumber, shuffleArray } from '@shared/utils';
+import {
+  DECIMAL_INPUT_PROPS,
+  formatDecimal,
+  parseStudentNumber,
+  shuffleArray,
+} from '@shared/utils';
 
 import { molarMassTable, YIELD_PROBLEMS, type YieldProblem } from '../data/yieldProblems';
 
@@ -33,7 +38,7 @@ const PERCENT_TOLERANCE = 1;
 
 type Step = 'limiting' | 'theoretical' | 'percent' | 'review';
 
-const decimals = (value: number, places = 2) => value.toFixed(places).replace('.', ',');
+const decimals = (value: number, places = 2) => formatDecimal(value, places);
 
 export function Level3({
   onComplete,
@@ -42,7 +47,7 @@ export function Level3({
   onComplete: (score: number) => void;
   onBack: () => void;
 }) {
-  const problems = useMemo(() => shuffleArray(YIELD_PROBLEMS), []);
+  const [problems, setProblems] = useState(() => shuffleArray(YIELD_PROBLEMS));
   const [index, setIndex] = useState(0);
   const [step, setStep] = useState<Step>('limiting');
   const [score, setScore] = useState(0);
@@ -86,18 +91,27 @@ export function Level3({
     setProblemScore(0);
   };
 
+  // Nothing chosen or typed yet is not an answer. Grading it marked the step
+  // wrong and printed the correct answer, one accidental tap on "Athuga" away.
+  const canCheck =
+    step === 'limiting'
+      ? selectedLimiting !== null
+      : (step === 'theoretical' ? theoreticalInput : percentInput).trim() !== '';
+
   const checkStep = () => {
+    if (stepAnswered || !canCheck) return;
     let correct = false;
     if (step === 'limiting') {
       correct = selectedLimiting === result.limitingFormula;
     } else if (step === 'theoretical') {
+      // parseStudentNumber returns NaN, not null, for what it cannot read.
       const entered = parseStudentNumber(theoreticalInput);
       correct =
-        entered !== null &&
+        Number.isFinite(entered) &&
         Math.abs(entered - result.theoreticalGrams) / result.theoreticalGrams <= MASS_TOLERANCE;
     } else if (step === 'percent') {
       const entered = parseStudentNumber(percentInput);
-      correct = entered !== null && Math.abs(entered - result.percent) <= PERCENT_TOLERANCE;
+      correct = Number.isFinite(entered) && Math.abs(entered - result.percent) <= PERCENT_TOLERANCE;
     }
     setStepCorrect(correct);
     setStepAnswered(true);
@@ -187,6 +201,7 @@ export function Level3({
           <div className="flex gap-3">
             <button
               onClick={() => {
+                setProblems(shuffleArray(YIELD_PROBLEMS));
                 setIndex(0);
                 setScore(0);
                 resetProblemState();
@@ -398,6 +413,7 @@ export function Level3({
                   {...DECIMAL_INPUT_PROPS}
                   value={theoreticalInput}
                   onChange={(e) => setTheoreticalInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && checkStep()}
                   disabled={stepAnswered}
                   placeholder="0,00"
                   aria-label="Fræðilegar heimtur í grömmum"
@@ -420,6 +436,7 @@ export function Level3({
                   {...DECIMAL_INPUT_PROPS}
                   value={percentInput}
                   onChange={(e) => setPercentInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && checkStep()}
                   disabled={stepAnswered}
                   placeholder="0,0"
                   aria-label="Prósentuheimtur"
@@ -433,7 +450,8 @@ export function Level3({
           {!stepAnswered ? (
             <button
               onClick={checkStep}
-              className="mt-4 w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+              disabled={!canCheck}
+              className="mt-4 w-full bg-kvenno-orange hover:bg-kvenno-orange-dark disabled:bg-warm-300 text-white font-bold py-3 rounded-xl transition-colors"
             >
               Athuga
             </button>
