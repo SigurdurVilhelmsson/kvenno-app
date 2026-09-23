@@ -22,23 +22,23 @@ import { GAME_SCREENS, type ScreenStep } from './mobile-game-screens';
 const PHONE = { width: 360, height: 740 };
 
 async function runStep(page: Page, step: ScreenStep): Promise<void> {
-  if (step.click !== undefined) {
+  if ('click' in step) {
     await page
       .getByRole('button', { name: step.click })
       .or(page.getByRole('link', { name: step.click }))
       .or(page.getByText(step.click, { exact: false }))
       .first()
       .click();
-  } else if (step.clickRole) {
+  } else if ('clickRole' in step) {
     const [role, name] = step.clickRole;
     await page.getByRole(role, { name }).first().click();
-  } else if (step.css !== undefined) {
+  } else if ('css' in step) {
     await page.locator(step.css).first().click();
-  } else if (step.fill) {
+  } else if ('fill' in step) {
     await page.locator(step.fill[0]).first().fill(step.fill[1]);
-  } else if (step.press !== undefined) {
+  } else if ('press' in step) {
     await page.keyboard.press(step.press);
-  } else if (step.wait !== undefined) {
+  } else {
     await page.waitForTimeout(step.wait);
   }
   await page.waitForTimeout(200);
