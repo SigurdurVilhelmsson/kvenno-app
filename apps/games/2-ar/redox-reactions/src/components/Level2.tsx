@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
+import { shuffleArray } from '@shared/utils';
 
 import { ElectrochemicalCell } from './ElectrochemicalCell';
 import { HalfReactionBalancer } from './HalfReactionBalancer';
@@ -191,13 +192,35 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
     }
   };
 
-  const getOptions = (): string[] => {
-    const baseOptions = reaction.species.map((s) => s.name);
-    if (question.type === 'oxidizing-agent' || question.type === 'reducing-agent') {
-      return [reaction.oxidizingAgent, reaction.reducingAgent].sort();
-    }
-    return baseOptions;
-  };
+  // In the data the species that is oxidised comes first in six of the eight reactions, so
+  // "Hvað oxast?" was answered by the left button three times in four. Shuffle per question;
+  // grading compares the option's text, so no answer key moves.
+  const options = useMemo(() => {
+    const r = reactions[currentReaction];
+    const q = questionTypes[currentQuestion];
+    const base =
+      q.type === 'oxidizing-agent' || q.type === 'reducing-agent'
+        ? [r.oxidizingAgent, r.reducingAgent]
+        : r.species.map((s) => s.name);
+    return shuffleArray(base);
+  }, [currentReaction, currentQuestion]);
+
+  // Built once per reaction: an inline array is new on every render, and the diagram replayed
+  // its animation each time the student asked for a hint.
+  const changes = useMemo(
+    () =>
+      reactions[currentReaction].species.map((s) => ({
+        element: s.name,
+        before: s.before,
+        after: s.after,
+      })),
+    [currentReaction]
+  );
+
+  // The diagram labels which species is oxidised and which reduced, so it must not do that while
+  // "Hvað oxast?" is on screen. From the first answer on the student has been told, and the
+  // labels are what the oxidising- and reducing-agent questions reason from.
+  const verdictShown = showFeedback || currentQuestion > 0;
 
   const handleAnswer = (answer: string) => {
     const correct = answer === getCorrectAnswer();
@@ -236,7 +259,7 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
               onClick={onBack}
               className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
             >
-              {t('common.back', '← Til baka')}
+              ← {t('common.back', 'Til baka')}
             </button>
             <h1 className="text-lg font-bold text-warm-800 order-last w-full sm:order-none sm:w-auto">
               Oxun & Afoxun — Kennsla
@@ -245,7 +268,7 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
           </div>
 
           <div className="bg-teal-50 border-l-4 border-teal-500 rounded-lg p-4">
-            <h2 className="font-bold text-teal-900 mb-2">Hvað er hálfhvörf?</h2>
+            <h2 className="font-bold text-teal-900 mb-2">Hvað eru hálfhvörf?</h2>
             <p className="text-warm-700 text-sm leading-relaxed">
               <strong>Redoxhvarf er alltaf tvö hálfhvörf.</strong> Ein tegund <strong>tapar</strong>{' '}
               rafeindum (oxast), önnur <strong>öðlast</strong> rafeindir (afoxast). Þetta gerist
@@ -286,7 +309,7 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
               </li>
             </ul>
             <p className="text-xs text-amber-700 mt-2">
-              Munaðu: tegundin sem „oxast“ og „afoxunarefni“ er sama tegundin — bara tvö ólík
+              Mundu: tegundin sem „oxast“ og „afoxunarefni“ er sama tegundin — bara tvö ólík
               sjónarhorn á sama hlutverkið.
             </p>
           </div>
@@ -310,7 +333,7 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
             onClick={onBack}
             className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
           >
-            {t('common.back', '← Til baka')}
+            ← {t('common.back', 'Til baka')}
           </button>
           <div className="flex items-center gap-2 sm:gap-4">
             <div className="text-sm text-warm-500 whitespace-nowrap">
@@ -338,12 +361,10 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
 
           {/* Enhanced Oxidation State Display with Electron Transfer Animation */}
           <OxidationStateDisplay
-            changes={reaction.species.map((s) => ({
-              element: s.name,
-              before: s.before,
-              after: s.after,
-            }))}
-            animate={!showFeedback}
+            key={reaction.id}
+            changes={changes}
+            animate={verdictShown}
+            revealVerdict={verdictShown}
             showElectrons={true}
             size="medium"
           />
@@ -365,9 +386,9 @@ export function Level2({ onComplete, onBack, t }: Level2Props) {
         {!showFeedback ? (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              {getOptions().map((option, idx) => (
+              {options.map((option) => (
                 <button
-                  key={idx}
+                  key={option}
                   onClick={() => handleAnswer(option)}
                   className="p-4 rounded-xl border-2 border-green-300 bg-white hover:bg-green-50 hover:border-green-400 text-lg font-bold text-warm-800 transition-all"
                 >

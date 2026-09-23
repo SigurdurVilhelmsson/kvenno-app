@@ -39,31 +39,38 @@ function App() {
     DEFAULT_PROGRESS
   );
 
+  // The closing screen says "Þú hefur lokið öllum stigum!", so it follows whichever level
+  // completes the set. Levels are not gated, and sending Stig 3 there unconditionally told a
+  // student who had played only Stig 3 that they had finished all three.
+  const finishLevel = (update: Partial<Progress>) => {
+    const next = { ...progress, ...update };
+    updateProgress(update);
+    const allDone = next.level1Completed && next.level2Completed && next.level3Completed;
+    setActiveLevel(allDone ? 'complete' : 'menu');
+  };
+
   const handleLevel1Complete = (score: number) => {
-    updateProgress({
+    finishLevel({
       level1Completed: true,
       level1Score: Math.max(progress.level1Score, score),
       totalGamesPlayed: progress.totalGamesPlayed + 1,
     });
-    setActiveLevel('menu');
   };
 
   const handleLevel2Complete = (score: number) => {
-    updateProgress({
+    finishLevel({
       level2Completed: true,
       level2Score: Math.max(progress.level2Score, score),
       totalGamesPlayed: progress.totalGamesPlayed + 1,
     });
-    setActiveLevel('menu');
   };
 
   const handleLevel3Complete = (score: number) => {
-    updateProgress({
+    finishLevel({
       level3Completed: true,
       level3Score: Math.max(progress.level3Score, score),
       totalGamesPlayed: progress.totalGamesPlayed + 1,
     });
-    setActiveLevel('complete');
   };
 
   if (activeLevel === 'level1') {
@@ -298,7 +305,7 @@ function App() {
             <h3 className="font-semibold text-amber-800 mb-2">Af hverju oxun og afoxun?</h3>
             <p className="text-sm text-amber-700">
               Rafhlöður, ryð, rafgreining og ljóstillífun — allt eru redox-hvörf. Skilningur á
-              rafeindiflutningi er lykillinn að orkutækni og efnafræði lífsins.
+              rafeindaflutningi er lykillinn að orkutækni og efnafræði lífsins.
             </p>
           </div>
           <div className="mt-3 text-center text-xs text-warm-500">

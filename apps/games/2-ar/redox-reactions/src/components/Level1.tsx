@@ -3,18 +3,19 @@ import { useState } from 'react';
 import { FeedbackPanel } from '@shared/components';
 
 import { L1_SCORING } from '../config/scoring';
+import { parseWholeNumber } from '../utils/answers';
 
 // Misconceptions for oxidation states
 const OXIDATION_MISCONCEPTIONS: Record<string, string> = {
   element: 'Hreint frumefni (ekki bundið við annað) hefur alltaf oxunartölu 0.',
   hydrogen: 'Vetni er yfirleitt +1, NEMA í málmhýdríðum (t.d. NaH) þar sem það er -1.',
   oxygen: 'Súrefni er yfirleitt -2, NEMA í peroxíðum (-1) og OF₂ (+2).',
-  halogen: 'Halógenar (F, Cl, Br, I) eru -1 þegar bundnar við málma eða vetni.',
+  halogen: 'Halógenar (F, Cl, Br, I) eru -1 þegar bundnir við málma eða vetni.',
   sum: 'Summa oxunartalna í sameind = 0 (hlutlaust) eða = heildarhleðsla (jón).',
 };
 
 // Related concepts for redox
-const OXIDATION_RELATED: string[] = ['Oxunartölur', 'Redox hvörf', 'Rafeindasameignir'];
+const OXIDATION_RELATED: string[] = ['Oxunartölur', 'Redox-hvörf', 'Rafeindasameignir'];
 
 interface Level1Props {
   t: (key: string, fallback?: string) => string;
@@ -148,7 +149,7 @@ const problems: OxidationProblem[] = [
     compoundDisplay: 'CuSO₄',
     targetElement: 'Cu',
     correctAnswer: 2,
-    hint: 'SO₄ er -2 (sulfat jón)',
+    hint: 'SO₄ er -2 (súlfatjón)',
   },
   {
     id: 10,
@@ -187,7 +188,7 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
   };
 
   const handleSubmit = () => {
-    const answer = parseInt(userAnswer, 10);
+    const answer = parseWholeNumber(userAnswer);
     const correct = answer === problems[currentProblem].correctAnswer;
     setIsCorrect(correct);
     setShowFeedback(true);

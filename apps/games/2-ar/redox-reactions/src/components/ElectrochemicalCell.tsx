@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 import { useContainerWidth } from '@shared/components/ResponsiveContainer';
+import { formatDecimal } from '@shared/utils';
 
 /**
  * ElectrochemicalCell
@@ -35,7 +36,7 @@ interface CellPair {
 const CELL_PAIRS: CellPair[] = [
   {
     id: 'zn-cu',
-    name: 'Daniell Cell (Zn-Cu)',
+    name: 'Zn–Cu galvaníhlað (Daniell)',
     anode: {
       metal: 'Sink',
       metalSymbol: 'Zn',
@@ -58,7 +59,7 @@ const CELL_PAIRS: CellPair[] = [
   },
   {
     id: 'mg-cu',
-    name: 'Mg-Cu Cell',
+    name: 'Mg–Cu galvaníhlað',
     anode: {
       metal: 'Magnesíum',
       metalSymbol: 'Mg',
@@ -81,7 +82,7 @@ const CELL_PAIRS: CellPair[] = [
   },
   {
     id: 'fe-cu',
-    name: 'Fe-Cu Cell',
+    name: 'Fe–Cu galvaníhlað',
     anode: {
       metal: 'Járn',
       metalSymbol: 'Fe',
@@ -104,7 +105,7 @@ const CELL_PAIRS: CellPair[] = [
   },
   {
     id: 'zn-ag',
-    name: 'Zn-Ag Cell',
+    name: 'Zn–Ag galvaníhlað',
     anode: {
       metal: 'Sink',
       metalSymbol: 'Zn',
@@ -135,6 +136,23 @@ interface Particle {
   vy: number;
   type: 'electron' | 'cation' | 'anion';
   side: 'anode' | 'cathode' | 'bridge';
+}
+
+/** Electrons one ion of this half-cell gains or loses: '2+' → 2, '+' → 1. */
+export function electronsPerIon(half: Pick<HalfCell, 'ionCharge'>): number {
+  const digits = half.ionCharge.replace(/[+-]/g, '');
+  return digits === '' ? 1 : Number(digits);
+}
+
+/** "2e⁻", or "e⁻" for one electron — the way the game writes a half-equation elsewhere. */
+function electronTerm(half: Pick<HalfCell, 'ionCharge'>): string {
+  const n = electronsPerIon(half);
+  return n === 1 ? 'e⁻' : `${n}e⁻`;
+}
+
+/** An electrode potential in volts, to two decimals with the Icelandic decimal comma. */
+export function formatVolts(value: number): string {
+  return formatDecimal(value, 2);
 }
 
 /** Smallest on-screen size, in CSS px, a diagram label may shrink to on a narrow screen. */
@@ -447,7 +465,7 @@ export function ElectrochemicalCell({
             fontWeight="bold"
             fill="#424242"
           >
-            {cellPotential.toFixed(2)}V
+            {formatVolts(cellPotential)}V
           </text>
 
           {/* Anode beaker */}
@@ -534,7 +552,7 @@ export function ElectrochemicalCell({
               {/* This line and its cathode twin sit below the viewBox and have never shown.
                   They keep their desktop size: enlarged, their tops would peek in, clipped. */}
               <text x="90" y={compact ? 258 : 260} textAnchor="middle" fontSize="10" fill="#616161">
-                {pair.anode.metalSymbol} → {pair.anode.ion} + e⁻
+                {pair.anode.metalSymbol} → {pair.anode.ion} + {electronTerm(pair.anode)}
               </text>
 
               {/* Cathode label */}
@@ -555,7 +573,7 @@ export function ElectrochemicalCell({
                 fontSize="10"
                 fill="#616161"
               >
-                {pair.cathode.ion} + e⁻ → {pair.cathode.metalSymbol}
+                {pair.cathode.ion} + {electronTerm(pair.cathode)} → {pair.cathode.metalSymbol}
               </text>
 
               {/* Salt bridge label */}
@@ -639,19 +657,19 @@ export function ElectrochemicalCell({
           <div className="bg-red-50 p-2 rounded border border-red-200">
             <div className="font-medium text-red-700">Anóða (oxun)</div>
             <div className="text-xs text-red-600">
-              {pair.anode.metalSymbol} → {pair.anode.ion} + 2e⁻
+              {pair.anode.metalSymbol} → {pair.anode.ion} + {electronTerm(pair.anode)}
             </div>
             <div className="text-xs text-warm-500">
-              E° = {pair.anode.standardPotential.toFixed(2)} V
+              E° = {formatVolts(pair.anode.standardPotential)} V
             </div>
           </div>
           <div className="bg-blue-50 p-2 rounded border border-blue-200">
             <div className="font-medium text-blue-700">Katóða (afoxun)</div>
             <div className="text-xs text-blue-600">
-              {pair.cathode.ion} + 2e⁻ → {pair.cathode.metalSymbol}
+              {pair.cathode.ion} + {electronTerm(pair.cathode)} → {pair.cathode.metalSymbol}
             </div>
             <div className="text-xs text-warm-500">
-              E° = {pair.cathode.standardPotential.toFixed(2)} V
+              E° = {formatVolts(pair.cathode.standardPotential)} V
             </div>
           </div>
         </div>
@@ -659,12 +677,13 @@ export function ElectrochemicalCell({
         <div className="text-center p-2 bg-amber-100 rounded-lg">
           <div className="text-sm text-amber-700">
             <strong>
-              E°<sub className="max-sm:text-[12px] pointer-coarse:text-[12px]">cell</sub>
+              E°<sub className="max-sm:text-[12px] pointer-coarse:text-[12px]">ker</sub>
             </strong>{' '}
             = E°<sub className="max-sm:text-[12px] pointer-coarse:text-[12px]">katóða</sub> - E°
             <sub className="max-sm:text-[12px] pointer-coarse:text-[12px]">anóða</sub> ={' '}
-            {pair.cathode.standardPotential.toFixed(2)} - ({pair.anode.standardPotential.toFixed(2)}
-            ) = <strong>{cellPotential.toFixed(2)} V</strong>
+            {formatVolts(pair.cathode.standardPotential)} - (
+            {formatVolts(pair.anode.standardPotential)}) ={' '}
+            <strong>{formatVolts(cellPotential)} V</strong>
           </div>
         </div>
 

@@ -27,7 +27,7 @@ export interface RedoxProblem {
 export const problems: RedoxProblem[] = [
   {
     id: 1,
-    description: 'Zink í kopar(II) lausn',
+    description: 'Sink í kopar(II) lausn',
     overallReaction: 'Zn + Cu²⁺ → Zn²⁺ + Cu',
     overallDisplay: 'Zn + Cu²⁺ → Zn²⁺ + Cu',
     oxidationHalf: {
@@ -56,7 +56,7 @@ export const problems: RedoxProblem[] = [
     multiplierRed: 1,
     finalEquation: 'Zn + Cu²⁺ → Zn²⁺ + Cu',
     finalDisplay: 'Zn + Cu²⁺ → Zn²⁺ + Cu',
-    hint: 'Báðar hálf-hvörf nota 2 rafeindir, svo margfaldarinn er 1',
+    hint: 'Bæði hálfhvörfin nota 2 rafeindir, svo margfaldarinn er 1',
   },
   {
     id: 2,
@@ -159,7 +159,7 @@ export const problems: RedoxProblem[] = [
   },
   {
     id: 5,
-    description: 'Klór og kalíum bróm',
+    description: 'Klór og kalíumbrómíð',
     overallReaction: 'Cl₂ + Br⁻ → Cl⁻ + Br₂',
     overallDisplay: 'Cl₂ + Br⁻ → Cl⁻ + Br₂',
     oxidationHalf: {
@@ -188,7 +188,7 @@ export const problems: RedoxProblem[] = [
     multiplierRed: 1,
     finalEquation: 'Cl₂ + 2Br⁻ → 2Cl⁻ + Br₂',
     finalDisplay: 'Cl₂ + 2Br⁻ → 2Cl⁻ + Br₂',
-    hint: 'Báðar hálf-hvörf nota 2e⁻',
+    hint: 'Bæði hálfhvörfin nota 2e⁻',
   },
   {
     id: 6,

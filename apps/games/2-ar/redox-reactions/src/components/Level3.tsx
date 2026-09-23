@@ -4,6 +4,7 @@ import { useEscapeKey } from '@shared/hooks';
 
 import { L3_SCORING } from '../config/scoring';
 import { problems } from '../data/half-reactions';
+import { matchesSpecies, parseWholeNumber } from '../utils/answers';
 
 interface Level3Props {
   t: (key: string, fallback?: string) => string;
@@ -48,12 +49,8 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
   const problem = problems[currentProblem];
 
   const checkIdentify = () => {
-    const oxCorrect =
-      answers.oxidized.toLowerCase() ===
-      problem.oxidationHalf.species.toLowerCase().replace(/[⁺⁻²³⁴₂]/g, '');
-    const redCorrect =
-      answers.reduced.toLowerCase() ===
-      problem.reductionHalf.species.toLowerCase().replace(/[⁺⁻²³⁴₂]/g, '');
+    const oxCorrect = matchesSpecies(answers.oxidized, problem.oxidationHalf.species);
+    const redCorrect = matchesSpecies(answers.reduced, problem.reductionHalf.species);
 
     if (oxCorrect && redCorrect) {
       setScore((prev) => prev + L3_SCORING.IDENTIFY);
@@ -72,8 +69,8 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
   };
 
   const checkMultipliers = () => {
-    const oxM = parseInt(answers.oxMultiplier, 10);
-    const redM = parseInt(answers.redMultiplier, 10);
+    const oxM = parseWholeNumber(answers.oxMultiplier);
+    const redM = parseWholeNumber(answers.redMultiplier);
 
     if (oxM === problem.multiplierOx && redM === problem.multiplierRed) {
       setScore((prev) => prev + L3_SCORING.BALANCE);
@@ -93,7 +90,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
 
   const checkOxElectrons = () => {
     if (feedback.show || !answers.oxElectrons) return;
-    const correct = parseInt(answers.oxElectrons, 10) === problem.oxidationHalf.electrons;
+    const correct = parseWholeNumber(answers.oxElectrons) === problem.oxidationHalf.electrons;
     if (correct) {
       setScore((prev) => prev + L3_SCORING.OXIDATION_HALF);
       setFeedback({ show: true, correct: true, message: t('common.correct', 'Rétt!') });
@@ -108,7 +105,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
 
   const checkRedElectrons = () => {
     if (feedback.show || !answers.redElectrons) return;
-    const correct = parseInt(answers.redElectrons, 10) === problem.reductionHalf.electrons;
+    const correct = parseWholeNumber(answers.redElectrons) === problem.reductionHalf.electrons;
     if (correct) {
       setScore((prev) => prev + L3_SCORING.REDUCTION_HALF);
       setFeedback({ show: true, correct: true, message: t('common.correct', 'Rétt!') });
@@ -151,6 +148,19 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
     }
   };
 
+  const nextButton = (
+    <button
+      onClick={handleNext}
+      className="w-full mt-4 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl"
+    >
+      {step === 'complete'
+        ? currentProblem < problems.length - 1
+          ? t('level3.nextProblem', 'Næsta dæmi') + ' →'
+          : t('level3.completeLevel', 'Ljúka stigi') + ' →'
+        : t('common.next', 'Halda áfram') + ' →'}
+    </button>
+  );
+
   const renderStep = () => {
     switch (step) {
       case 'identify':
@@ -188,7 +198,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                       checkIdentify();
                     }
                   }}
-                  placeholder={t('level3.examplePlaceholder', 't.d. Zn')}
+                  placeholder={t('level3.examplePlaceholder', 't.d. Na')}
                   autoComplete="off"
                   autoCorrect="off"
                   spellCheck={false}
@@ -217,7 +227,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                       checkIdentify();
                     }
                   }}
-                  placeholder={t('level3.examplePlaceholder', 't.d. Zn')}
+                  placeholder={t('level3.examplePlaceholder', 't.d. Na')}
                   autoComplete="off"
                   autoCorrect="off"
                   spellCheck={false}
@@ -247,7 +257,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           <div className="space-y-4">
             <div className="bg-blue-50 p-4 rounded-xl">
               <h3 className="font-bold text-blue-800 mb-2">
-                {t('level3.step2Title', 'Skref 2: Oxunar hálf-hvarf')}
+                {t('level3.step2Title', 'Skref 2: Oxunarhálfhvarf')}
               </h3>
               <div className="text-blue-600">
                 {problem.oxidationHalf.speciesDisplay} → {problem.oxidationHalf.productDisplay} +
@@ -294,7 +304,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           <div className="space-y-4">
             <div className="bg-red-50 p-4 rounded-xl">
               <h3 className="font-bold text-red-800 mb-2">
-                {t('level3.step3Title', 'Skref 3: Afoxunar hálf-hvarf')}
+                {t('level3.step3Title', 'Skref 3: Afoxunarhálfhvarf')}
               </h3>
               <div className="text-red-600">
                 {problem.reductionHalf.speciesDisplay} + ?e⁻ →{' '}
@@ -346,7 +356,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               <p className="text-amber-600 text-sm mb-3">
                 {t(
                   'level3.step4Hint',
-                  'Margfaldaðu hálf-hvörfin svo rafeindir sem tapast = rafeindir sem öðlast'
+                  'Margfaldaðu hálfhvörfin svo rafeindir sem ein tegund tapar = rafeindir sem önnur öðlast'
                 )}
               </p>
               <div className="grid grid-cols-2 gap-4 text-sm">
@@ -480,7 +490,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               ← {t('common.back', 'Til baka')}
             </button>
             <h1 className="text-lg font-bold text-warm-800 order-last w-full sm:order-none sm:w-auto">
-              Hálfhvarfaaðferðin — Kennsla
+              Hálfhvarfsaðferðin — Kennsla
             </h1>
             <span className="text-sm text-warm-500 whitespace-nowrap">Stig 3</span>
           </div>
@@ -512,9 +522,8 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm">
               <p className="font-bold text-amber-800 mb-1">Skref 3 — Stilla rafeindir</p>
               <p className="text-warm-700">
-                Oxun gefur <strong>3 rafeindir</strong>, afoxun þarfnast{' '}
-                <strong>2 rafeindir</strong>. Minnsta samþakning er 6. Margföldum oxun með 2 og
-                afoxun með 3.
+                Oxun gefur <strong>3 rafeindir</strong>, afoxun þarfnast <strong>2 rafeinda</strong>
+                . Minnsta samþakning er 6. Margföldum oxun með 2 og afoxun með 3.
               </p>
               <p className="font-mono text-warm-800 mt-1">
                 2 × (Al → Al³⁺ + 3e⁻) = 2Al → 2Al³⁺ + 6e⁻
@@ -567,7 +576,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           {t('levels.level3.name', 'Stilla redox-jöfnur')}
         </h1>
         <p className="text-center text-warm-600 mb-4">
-          {t('level3.subtitle', 'Hálfhvarfaaðferðin')}
+          {t('level3.subtitle', 'Hálfhvarfsaðferðin')}
         </p>
 
         <div className="bg-warm-50 p-4 rounded-xl mb-6 text-center">
@@ -611,18 +620,13 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               </div>
             </div>
 
-            <button
-              onClick={handleNext}
-              className="w-full mt-4 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl"
-            >
-              {step === 'complete'
-                ? currentProblem < problems.length - 1
-                  ? t('level3.nextProblem', 'Næsta dæmi') + ' →'
-                  : t('level3.completeLevel', 'Ljúka stigi') + ' →'
-                : t('common.next', 'Halda áfram') + ' →'}
-            </button>
+            {nextButton}
           </div>
         )}
+
+        {/* The balanced equation has no verdict above it, so it needs its own way on:
+            without this the level stopped at the first problem. */}
+        {step === 'complete' && nextButton}
 
         {showHint && (
           <div className="mt-4 bg-yellow-50 p-4 rounded-xl border border-yellow-200">
@@ -641,7 +645,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
             }}
             className="w-full mt-4 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-2 px-4 rounded-xl text-sm pointer-coarse:min-h-11"
           >
-            {t('common.hint', 'Syna visbendingu')}
+            {t('common.hint', 'Sýna vísbendingu')}
           </button>
         )}
 

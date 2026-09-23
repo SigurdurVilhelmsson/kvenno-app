@@ -34,9 +34,9 @@ const HALF_REACTIONS: HalfReaction[] = [
     type: 'oxidation',
     steps: [
       {
-        instruction: '1. Skrifaðu óstillta helmingshvarfið',
+        instruction: '1. Skrifaðu óstillta hálfhvarfið',
         result: 'Fe → Fe³⁺',
-        hint: 'Byrjaðu með hvarfefnið og myndafnið',
+        hint: 'Byrjaðu með hvarfefnið og myndefnið',
       },
       {
         instruction: '2. Stilltu aðrar frumeindir (ekki O eða H)',
@@ -60,7 +60,7 @@ const HALF_REACTIONS: HalfReaction[] = [
         addedSpecies: '3e⁻',
       },
     ],
-    explanation: 'Fe tapar 3 rafeindum og oxast í Fe³⁺. Þetta er oxunarhelmingshvarf.',
+    explanation: 'Fe tapar 3 rafeindum og oxast í Fe³⁺. Þetta er oxunarhálfhvarf.',
   },
   {
     id: 'mno4-reduction',
@@ -69,9 +69,9 @@ const HALF_REACTIONS: HalfReaction[] = [
     type: 'reduction',
     steps: [
       {
-        instruction: '1. Skrifaðu óstillta helmingshvarfið',
+        instruction: '1. Skrifaðu óstillta hálfhvarfið',
         result: 'MnO₄⁻ → Mn²⁺',
-        hint: 'Permanganat jónin afoxast í manganjón',
+        hint: 'Permanganatjónin afoxast í manganjón',
       },
       {
         instruction: '2. Stilltu aðrar frumeindir (ekki O eða H)',
@@ -98,7 +98,7 @@ const HALF_REACTIONS: HalfReaction[] = [
       },
     ],
     explanation:
-      'MnO₄⁻ öðlast 5 rafeindir og afoxast í Mn²⁺. Þetta er afoxunarhelmingshvarf í súru umhverfi.',
+      'MnO₄⁻ öðlast 5 rafeindir og afoxast í Mn²⁺. Þetta er afoxunarhálfhvarf í súru umhverfi.',
   },
   {
     id: 'cr-oxidation',
@@ -107,7 +107,7 @@ const HALF_REACTIONS: HalfReaction[] = [
     type: 'oxidation',
     steps: [
       {
-        instruction: '1. Skrifaðu óstillta helmingshvarfið',
+        instruction: '1. Skrifaðu óstillta hálfhvarfið',
         result: 'Cr → Cr³⁺',
         hint: 'Króm oxast í Cr³⁺ jón',
       },
@@ -142,9 +142,9 @@ const HALF_REACTIONS: HalfReaction[] = [
     type: 'reduction',
     steps: [
       {
-        instruction: '1. Skrifaðu óstillta helmingshvarfið',
+        instruction: '1. Skrifaðu óstillta hálfhvarfið',
         result: 'Cu²⁺ → Cu',
-        hint: 'Koparjón afoxast í koparmal',
+        hint: 'Koparjón afoxast í koparmálm',
       },
       {
         instruction: '2. Stilltu aðrar frumeindir',
@@ -168,7 +168,7 @@ const HALF_REACTIONS: HalfReaction[] = [
         addedSpecies: '2e⁻',
       },
     ],
-    explanation: 'Cu²⁺ öðlast 2 rafeindir og afoxast í Cu. Þetta er afoxunarhelmingshvarf.',
+    explanation: 'Cu²⁺ öðlast 2 rafeindir og afoxast í Cu. Þetta er afoxunarhálfhvarf.',
   },
 ];
 
@@ -237,7 +237,7 @@ export function HalfReactionBalancer({
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-white font-bold text-sm flex items-center gap-2">
           <span className="text-lg">⚖️</span>
-          Stilling helmingshvarfa
+          Stilling hálfhvarfa
         </h3>
         <div
           className={`px-2 py-1 rounded text-xs font-medium ${
@@ -357,7 +357,7 @@ export function HalfReactionBalancer({
         <div className="mt-4 bg-green-500/20 border border-green-500/40 rounded-lg p-4">
           <div className="text-green-400 font-bold mb-2 flex items-center gap-2">
             <span>✓</span>
-            Stillt helmingshvarf!
+            Stillt hálfhvarf!
           </div>
           <div className="text-center bg-warm-900 p-3 rounded-lg mb-2">
             <div className="text-lg sm:text-xl font-mono text-white">
