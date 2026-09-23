@@ -5,6 +5,7 @@ import { useGameI18n } from '@shared/hooks';
 
 import { configPuzzles, normalizeConfig } from '../data/electron-configs';
 import { gameTranslations } from '../i18n';
+import { countElectrons, hundFilling, rafeindir } from '../utils/electrons';
 
 interface Level2Props {
   onComplete: (score: number) => void;
@@ -41,18 +42,6 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     if (submitted) feedbackRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
   }, [submitted]);
 
-  /** Sum the electron-count exponents in a config string like "1s2 2s2 2p4" → 8. */
-  const countElectrons = (config: string): number | null => {
-    const matches = config.matchAll(/[1-7][spdf](\d+)/g);
-    let total = 0;
-    let saw = false;
-    for (const m of matches) {
-      saw = true;
-      total += parseInt(m[1], 10);
-    }
-    return saw ? total : null;
-  };
-
   const handleSubmit = () => {
     if (submitted || !userInput.trim()) return;
 
@@ -66,17 +55,19 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       setScore((s) => s + 1);
       setDiagnostic(null);
     } else {
-      const userCount = countElectrons(userNorm);
-      const correctCount = countElectrons(correctNorm);
+      // Counted from what the student typed, not from userNorm: normalizing
+      // strips the spaces, and `1s2 2s2` would then read as 22 electrons.
+      const userCount = countElectrons(userInput);
+      const correctCount = countElectrons(puzzle.correctConfig);
       if (userCount !== null && correctCount !== null && userCount !== correctCount) {
         const diff = correctCount - userCount;
         if (diff > 0) {
           setDiagnostic(
-            `Þú vantar ${diff} rafeind${diff === 1 ? '' : 'ir'} (heild: ${userCount}, ætti að vera ${correctCount}).`
+            `Þig vantar ${diff} ${rafeindir(diff)} (heild: ${userCount}, ætti að vera ${correctCount}).`
           );
         } else {
           setDiagnostic(
-            `Þú ert með ${-diff} rafeind${-diff === 1 ? '' : 'ir'} of mörg (heild: ${userCount}, ætti að vera ${correctCount}).`
+            `Þú ert með ${-diff} ${rafeindir(-diff)} aukalega (heild: ${userCount}, ætti að vera ${correctCount}).`
           );
         }
       } else {
@@ -109,8 +100,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           return (
             <div key={orbital} className="text-center">
               <div className="flex gap-0.5 justify-center mb-1">
-                {Array.from({ length: numBoxes }, (_, boxIdx) => {
-                  const electronsInBox = Math.min(2, Math.max(0, count - boxIdx * 2));
+                {/* Hund's rule, which this level teaches: one electron in every
+                    orbital before any pairs. Filling box by box drew carbon's 2p²
+                    as one pair and two empty boxes. */}
+                {hundFilling(count, numBoxes).map((electronsInBox, boxIdx) => {
                   const boxClass =
                     electronsInBox === 2
                       ? 'orbital-box filled'
@@ -180,7 +173,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               <div className="my-3 text-xs font-mono">
                 <div className="text-right text-indigo-700">
                   <div>5s 5p 4d ────────────</div>
-                  <div className="mt-1">4s 4p ────</div>
+                  <div className="mt-1">4p ────</div>
                   <div className="mt-1">3d ───</div>
                   <div className="mt-1">4s ──</div>
                   <div className="mt-1">3s 3p ──</div>
@@ -190,17 +183,17 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 <p className="text-indigo-700 text-center mt-2">↑ hærri orka · neðst = lægri</p>
               </div>
               <p className="text-sm text-indigo-700">
-                4s-svigrúmið liggur <strong>innar</strong> (nær kjarnanum) en 3d vegna skörpari
-                kjarnaáhrifa. Því er 4s-orkan aðeins lægri — og rafeindir fylla það fyrst.
+                3d-svigrúmið er <strong>minna ígengt</strong> og meira skýlt fyrir kjarnanum en
+                4s-svigrúmið. Því er 4s-orkan aðeins lægri — og rafeindir fylla það fyrst.
               </p>
             </div>
 
             <div className="bg-purple-50 p-4 rounded-lg">
-              <h3 className="font-bold text-purple-800 mb-2">Útilokunarregla Paulis</h3>
+              <h3 className="font-bold text-purple-800 mb-2">Einsetulögmál Paulis</h3>
               <p className="text-sm text-purple-700">
-                Engar tvær rafeindir í sama atómi mega hafa öll fjögur skammtatölur eins — þar með
+                Engar tvær rafeindir í sama atómi mega hafa allar fjórar skammtatölur eins — þar með
                 er ljóst að í hverju svigrúmi (sömu n, l, m<sub className="text-[0.875em]">l</sub>)
-                rúmast að hámarki <strong>tvær rafeindir</strong> með gagnstæða spinna (m
+                rúmast að hámarki <strong>tvær rafeindir</strong> með gagnstæðan spuna (m
                 <sub className="text-[0.875em]">s</sub> = +½ og −½).
               </p>
             </div>
@@ -208,26 +201,26 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             <div className="bg-green-50 p-4 rounded-lg">
               <h3 className="font-bold text-green-800 mb-2">Dæmi: Súrefni (O, Z=8)</h3>
               <div className="text-sm text-green-700 font-mono space-y-1">
-                <p>1s² → 2 rafeindir (2 eftir af 8)</p>
-                <p>2s² → 2 rafeindir (4 eftir af 8)</p>
-                <p>2p⁴ → 4 rafeindir (8 eftir af 8) ✓</p>
+                <p>1s² → 2 rafeindir (samtals 2 af 8)</p>
+                <p>2s² → 2 rafeindir (samtals 4 af 8)</p>
+                <p>2p⁴ → 4 rafeindir (samtals 8 af 8) ✓</p>
               </div>
               <p className="text-sm text-green-700 mt-2">
-                Uppsetning: <strong>1s² 2s² 2p⁴</strong>
+                Rafeindaskipan: <strong>1s² 2s² 2p⁴</strong>
               </p>
             </div>
 
             <div className="bg-amber-50 p-4 rounded-lg">
               <h3 className="font-bold text-amber-800 mb-2">Regla Hunds</h3>
               <p className="text-sm text-amber-700">
-                Rafeindir dreifastar fyrst einar (↑) í öll svigrúm undirhvolfs áður en þær byrja að
-                parast (↑↓). Þetta lágmarkar fráhrun.
+                Rafeindir dreifast fyrst einar (↑) í öll svigrúm undirhvolfs áður en þær byrja að
+                parast (↑↓). Þetta lágmarkar fráhrindingu.
               </p>
             </div>
 
             <div className="bg-warm-50 p-3 rounded-lg text-sm text-warm-700">
-              <strong>Skrifaðu svona:</strong> 1s2 eða 1s² — bæði virka. Biltu milli undirhvolfa:
-              1s2 2s2 2p4
+              <strong>Skrifaðu svona:</strong> 1s2 eða 1s² — bæði virka. Hafðu bil milli
+              undirhvolfa: 1s2 2s2 2p4
             </div>
 
             <button
@@ -278,22 +271,25 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 <div className="text-lg font-semibold text-warm-800">
                   {language === 'is' ? puzzle.elementName_is : puzzle.elementName_en}
                 </div>
-                <div className="text-sm text-warm-600">{puzzle.atomicNumber} rafeindir</div>
+                <div className="text-sm text-warm-600">
+                  {puzzle.atomicNumber} {rafeindir(puzzle.atomicNumber)}
+                </div>
               </div>
             </div>
           </div>
 
           {/* Aufbau reminder */}
           <div className="bg-blue-50 p-3 rounded-lg mb-6 text-sm text-blue-800">
-            <strong>Aufbau röð:</strong> 1s → 2s → 2p → 3s → 3p → 4s → 3d → 4p → 5s → 4d → 5p
+            <strong>Aufbau-röð:</strong> 1s → 2s → 2p → 3s → 3p → 4s → 3d → 4p → 5s → 4d → 5p
           </div>
 
           {/* Input */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-warm-700 mb-2">
-              Sláðu inn rafeindauppsetningu (t.d. 1s2 2s2 2p4):
+            <label htmlFor="config-input" className="block text-sm font-medium text-warm-700 mb-2">
+              Sláðu inn rafeindaskipan (t.d. 1s2 2s2 2p4):
             </label>
             <input
+              id="config-input"
               type="text"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
@@ -307,7 +303,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
             />
             <p className="text-xs text-warm-500 mt-1">
-              Notuðu tölustafi (1s2) eða yfirskrift (1s²) — bæði virka.
+              Notaðu tölustafi (1s2) eða yfirskrift (1s²) — bæði virka.
             </p>
           </div>
 

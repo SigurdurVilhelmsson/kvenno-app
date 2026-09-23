@@ -41,8 +41,8 @@ export const puzzles: QuantumNumberPuzzle[] = [
   {
     id: 3,
     n: 2,
-    description_is: 'Hvaða samsetningar eru gildar fyrir 2p svigrúmið (l = 1)?',
-    description_en: 'Which combinations are valid for the 2p orbital (l = 1)?',
+    description_is: 'Hvaða samsetningar eru gildar fyrir 2p-svigrúmin (l = 1)?',
+    description_en: 'Which combinations are valid for the 2p orbitals (l = 1)?',
     options: [
       { l: 1, ml: 1, ms: 0.5, isValid: true },
       { l: 1, ml: 0, ms: -0.5, isValid: true },
@@ -71,8 +71,8 @@ export const puzzles: QuantumNumberPuzzle[] = [
   {
     id: 5,
     n: 3,
-    description_is: 'Hvaða samsetningar eru gildar fyrir 3d svigrúmið (l = 2)?',
-    description_en: 'Which combinations are valid for the 3d orbital (l = 2)?',
+    description_is: 'Hvaða samsetningar eru gildar fyrir 3d-svigrúmin (l = 2)?',
+    description_en: 'Which combinations are valid for the 3d orbitals (l = 2)?',
     options: [
       { l: 2, ml: -2, ms: 0.5, isValid: true },
       { l: 2, ml: 0, ms: -0.5, isValid: true },
@@ -110,14 +110,14 @@ export const puzzles: QuantumNumberPuzzle[] = [
       { l: 0, ml: 0, ms: 0, isValid: false }, // ms cannot be 0
     ],
     explanation_is:
-      'mₛ (spunaskammtatala) getur aðeins verið +½ eða -½. Þetta táknar snúning rafeindanna.',
+      'mₛ (spunaskammtatala) getur aðeins verið +½ eða -½. Þetta táknar spuna rafeindanna.',
     explanation_en: 'mₛ (spin quantum number) can only be +½ or -½. This represents electron spin.',
   },
   {
     id: 8,
     n: 4,
-    description_is: 'Hvaða samsetningar eru gildar fyrir 4f svigrúmið (l = 3)?',
-    description_en: 'Which combinations are valid for the 4f orbital (l = 3)?',
+    description_is: 'Hvaða samsetningar eru gildar fyrir 4f-svigrúmin (l = 3)?',
+    description_en: 'Which combinations are valid for the 4f orbitals (l = 3)?',
     options: [
       { l: 3, ml: -3, ms: 0.5, isValid: true },
       { l: 3, ml: 0, ms: -0.5, isValid: true },

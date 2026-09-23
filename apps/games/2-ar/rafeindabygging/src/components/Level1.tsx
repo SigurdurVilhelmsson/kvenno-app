@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { Header, LanguageSwitcher } from '@shared/components';
 import { useGameI18n } from '@shared/hooks';
+import { shuffleArray } from '@shared/utils';
 
 import { puzzles } from '../data/quantum-numbers';
 import { gameTranslations } from '../i18n';
+import { formatQuantum } from '../utils/electrons';
 
 interface Level1Props {
   onComplete: (score: number) => void;
@@ -22,6 +24,14 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
   const puzzle = puzzles[currentIndex];
   const isLast = currentIndex >= puzzles.length - 1;
+
+  // The data lists every valid combination before every invalid one, so in data
+  // order "tick the top two or three" passed all eight questions. Shuffle once
+  // per question (keyed on `puzzle`, so the order holds while the student reads
+  // it). `selected` holds positions in this shuffled list, so grading and the
+  // verdict below read it too, never `puzzle.options`.
+  const displayedOptions = useMemo(() => shuffleArray(puzzle.options), [puzzle]);
+  const allRight = displayedOptions.every((opt, idx) => opt.isValid === selected.has(idx));
 
   const feedbackRef = useRef<HTMLDivElement>(null);
 
@@ -52,14 +62,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     if (submitted || selected.size === 0) return;
     setSubmitted(true);
 
-    // Check: each selected option should be valid, each unselected should be invalid
-    let correct = true;
-    puzzle.options.forEach((opt, idx) => {
-      const wasSelected = selected.has(idx);
-      if (opt.isValid !== wasSelected) correct = false;
-    });
-
-    if (correct) setScore((s) => s + 1);
+    // Every valid option ticked and every invalid one left alone.
+    if (allRight) setScore((s) => s + 1);
   };
 
   const handleNext = () => {
@@ -71,8 +75,6 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     setSelected(new Set());
     setSubmitted(false);
   };
-
-  const formatMs = (ms: number) => (ms > 0 ? `+${ms}` : `${ms}`);
 
   // ==================== TEACHING PHASE ====================
   if (phase === 'teach') {
@@ -105,7 +107,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 space-y-4 animate-slide-in">
               <h2 className="text-xl font-bold text-warm-800">Hvað eru skammtatölur?</h2>
               <p className="text-warm-700">
-                Hvert rafeind í atómi hefur fjórar <strong>skammtatölur</strong> sem lýsa stöðu
+                Hver rafeind í atómi hefur fjórar <strong>skammtatölur</strong> sem lýsa stöðu
                 hennar og hegðun. Saman virka þær eins og „heimilisfang" rafeindarinnar.
               </p>
               <div className="space-y-3">
@@ -135,7 +137,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   <strong className="text-amber-800">mₛ</strong>{' '}
                   <span className="text-amber-600">(spunaskammtatala)</span>
                   <p className="text-sm text-amber-700 mt-1">
-                    Snúningur rafeindarinnar. mₛ = +½ eða −½
+                    Spuni rafeindarinnar. mₛ = +½ eða −½
                   </p>
                 </div>
               </div>
@@ -170,7 +172,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 <div>
                   <p className="font-semibold text-warm-800">mₛ = +½ eða −½ alltaf</p>
                   <p className="text-sm text-warm-600 ml-4">
-                    Tvær rafeindir í hverju svigrúmi (gagnstæður snúningur)
+                    Tvær rafeindir í hverju svigrúmi (gagnstæður spuni)
                   </p>
                 </div>
               </div>
@@ -274,7 +276,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
           {/* Options */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-            {puzzle.options.map((opt, idx) => {
+            {displayedOptions.map((opt, idx) => {
               const isSelected = selected.has(idx);
               let className = 'quantum-card';
               if (isSelected && !submitted) className += ' selected';
@@ -289,11 +291,14 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   onClick={() => handleToggle(idx)}
                   className={className}
                   disabled={submitted}
+                  aria-pressed={isSelected}
                 >
                   <div className="font-mono text-lg text-center">
                     <span className="whitespace-nowrap">l = {opt.l},</span>{' '}
-                    <span className="whitespace-nowrap">mₗ = {opt.ml},</span>{' '}
-                    <span className="whitespace-nowrap">mₛ = {formatMs(opt.ms)}</span>
+                    <span className="whitespace-nowrap">mₗ = {formatQuantum(opt.ml)},</span>{' '}
+                    <span className="whitespace-nowrap">
+                      mₛ = {formatQuantum(opt.ms, { signed: true })}
+                    </span>
                   </div>
                   {submitted && (
                     <div className="text-center mt-2 text-sm">
@@ -318,15 +323,13 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <div ref={feedbackRef} className="scroll-mb-4">
               <div
                 className={`p-4 rounded-xl mb-2 ${
-                  puzzle.options.every((opt, idx) => opt.isValid === selected.has(idx))
+                  allRight
                     ? 'bg-green-50 border-2 border-green-300'
                     : 'bg-red-50 border-2 border-red-300'
                 }`}
               >
                 <div className="text-lg font-bold mb-2">
-                  {puzzle.options.every((opt, idx) => opt.isValid === selected.has(idx))
-                    ? '✅ Rétt!'
-                    : '❌ Ekki rétt'}
+                  {allRight ? '✅ Rétt!' : '❌ Ekki rétt'}
                 </div>
                 <p className="text-sm text-warm-700">
                   {language === 'is' ? puzzle.explanation_is : puzzle.explanation_en}

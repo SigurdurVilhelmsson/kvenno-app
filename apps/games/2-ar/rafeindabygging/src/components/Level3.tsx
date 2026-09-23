@@ -6,6 +6,7 @@ import { shuffleArray } from '@shared/utils';
 
 import { periodicPuzzles } from '../data/periodic-configs';
 import { gameTranslations } from '../i18n';
+import { valenceOf } from '../utils/electrons';
 
 interface Level3Props {
   onComplete: (score: number) => void;
@@ -23,6 +24,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const puzzle = periodicPuzzles[currentIndex];
   const isLast = currentIndex >= periodicPuzzles.length - 1;
   const isCorrect = selectedOption === puzzle.fullShorthand;
+  // Derived, not stored: the stored line called bromine's full 3d¹⁰ valence.
+  const valence = valenceOf(puzzle.fullShorthand);
 
   // Shuffle per question, not per render: keying the memo on `puzzle` keeps the
   // order stable while a student reads it and changes it only when the question
@@ -82,16 +85,16 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 space-y-4 animate-slide-in">
             <h2 className="text-xl font-bold text-warm-800">Eðalgasstytting</h2>
             <p className="text-warm-700">
-              Í stað þess að skrifa alla rafeindauppsetninguna frá 1s² getum við notað
-              <strong> eðalgasstyttingu</strong> — byrjum á nánasta eðalgasi og skrifum aðeins
-              gildisrafeindir.
+              Í stað þess að skrifa alla rafeindaskipanina frá 1s² getum við notað
+              <strong> eðalgasstyttingu</strong> — byrjum á eðalgasinu á undan frumefninu í
+              lotukerfinu og skrifum aðeins rafeindirnar sem bætast við eftir það.
             </p>
 
             <div className="bg-blue-50 p-4 rounded-lg">
               <h3 className="font-bold text-blue-800 mb-2">Dæmi: Járn (Fe, Z=26)</h3>
               <div className="text-sm text-blue-700 space-y-1">
-                <p>Full uppsetning: 1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁶</p>
-                <p>Nánasta eðalgas: Argon (Ar, Z=18) = 1s² 2s² 2p⁶ 3s² 3p⁶</p>
+                <p>Full rafeindaskipan: 1s² 2s² 2p⁶ 3s² 3p⁶ 4s² 3d⁶</p>
+                <p>Eðalgasið á undan: Argon (Ar, Z=18) = 1s² 2s² 2p⁶ 3s² 3p⁶</p>
                 <p>
                   Stytting: <strong className="text-lg">[Ar] 4s² 3d⁶</strong>
                 </p>
@@ -101,15 +104,15 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             <div className="bg-amber-50 border-2 border-amber-200 p-4 rounded-lg">
               <h3 className="font-bold text-amber-800 mb-2">⚠️ Undantekningar</h3>
               <p className="text-sm text-amber-700 mb-2">
-                Sumir d-blokkarmálmar hafa óvænta uppsetningu vegna stöðugleika hálf- eða fullfyllts
-                d-hvolfs:
+                Sumir d-blokkarmálmar hafa óvænta rafeindaskipan vegna stöðugleika hálf- eða
+                fullfyllts d-undirhvolfs:
               </p>
               <div className="text-sm text-amber-700 font-mono space-y-1">
                 <p>
                   <strong>Cr (Z=24):</strong> [Ar] 4s¹ 3d⁵ (EKKI 4s² 3d⁴) — hálffyllt d
                 </p>
                 <p>
-                  <strong>Cu (Z=29):</strong> [Ar] 4s¹ 3d¹⁰ (EKKI 4s² 3d⁹) — full d
+                  <strong>Cu (Z=29):</strong> [Ar] 4s¹ 3d¹⁰ (EKKI 4s² 3d⁹) — fullfyllt d
                 </p>
               </div>
             </div>
@@ -200,6 +203,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                   onClick={() => !submitted && setSelectedOption(option)}
                   className={className}
                   disabled={submitted}
+                  aria-pressed={option === selectedOption}
                 >
                   {option}
                 </button>
@@ -236,8 +240,15 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                   Rétt svar: {puzzle.fullShorthand}
                 </p>
                 <p className="text-xs text-warm-600">
-                  Eðalgasgrunnur: {puzzle.nobleGasCore}, Gildisrafeindir: {puzzle.valenceConfig}
+                  Eðalgasgrunnur: {puzzle.nobleGasCore}, Gildisrafeindir:{' '}
+                  <span className="whitespace-nowrap">{valence.valence}</span>
                 </p>
+                {valence.core.length > 0 && (
+                  <p className="text-xs text-warm-600 mt-1">
+                    {valence.core.join(' ')} er alveg fyllt og telst til kjarnarafeinda, ekki
+                    gildisrafeinda.
+                  </p>
+                )}
               </div>
 
               <button

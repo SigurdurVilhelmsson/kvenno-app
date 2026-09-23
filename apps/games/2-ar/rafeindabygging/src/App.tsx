@@ -7,18 +7,9 @@ import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
 import { gameTranslations } from './i18n';
+import { screenAfterLevel, type Progress } from './utils/progress';
 
 type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'complete';
-
-interface Progress {
-  level1Completed: boolean;
-  level1Score: number;
-  level2Completed: boolean;
-  level2Score: number;
-  level3Completed: boolean;
-  level3Score: number;
-  totalGamesPlayed: number;
-}
 
 const DEFAULT_PROGRESS: Progress = {
   level1Completed: false,
@@ -50,32 +41,20 @@ function App() {
     }
   }, [activeLevel]);
 
-  const handleLevel1Complete = (score: number) => {
-    updateProgress({
-      level1Completed: true,
-      level1Score: Math.max(progress.level1Score, score),
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
-    });
-    setActiveLevel('menu');
+  const finishLevel = (level: 1 | 2 | 3, update: Partial<Progress>) => {
+    const next = { ...progress, ...update, totalGamesPlayed: progress.totalGamesPlayed + 1 };
+    updateProgress(next);
+    setActiveLevel(screenAfterLevel(level, progress, next));
   };
 
-  const handleLevel2Complete = (score: number) => {
-    updateProgress({
-      level2Completed: true,
-      level2Score: Math.max(progress.level2Score, score),
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
-    });
-    setActiveLevel('menu');
-  };
+  const handleLevel1Complete = (score: number) =>
+    finishLevel(1, { level1Completed: true, level1Score: Math.max(progress.level1Score, score) });
 
-  const handleLevel3Complete = (score: number) => {
-    updateProgress({
-      level3Completed: true,
-      level3Score: Math.max(progress.level3Score, score),
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
-    });
-    setActiveLevel('complete');
-  };
+  const handleLevel2Complete = (score: number) =>
+    finishLevel(2, { level2Completed: true, level2Score: Math.max(progress.level2Score, score) });
+
+  const handleLevel3Complete = (score: number) =>
+    finishLevel(3, { level3Completed: true, level3Score: Math.max(progress.level3Score, score) });
 
   if (activeLevel === 'level1') {
     return <Level1 onComplete={handleLevel1Complete} onBack={() => setActiveLevel('menu')} />;
@@ -126,8 +105,8 @@ function App() {
 
             <div className="bg-purple-50 p-4 rounded-xl flex justify-between items-center gap-3">
               <div className="min-w-0">
-                <div className="font-bold text-purple-800">Stig 3: Eðalgasstytting</div>
-                <div className="text-sm text-purple-600">Lotukerfi og rafeindir</div>
+                <div className="font-bold text-purple-800">Stig 3: Lotukerfi og rafeindir</div>
+                <div className="text-sm text-purple-600">Eðalgasstytting</div>
               </div>
               <div className="text-2xl font-bold text-purple-600">{progress.level3Score}</div>
             </div>
@@ -145,13 +124,15 @@ function App() {
                 ✓ <strong>Skammtatölur:</strong> n, l, mₗ og mₛ lýsa hverri rafeind
               </li>
               <li>
-                ✓ <strong>Aufbau reglan:</strong> Rafeindir fylla svigrúm í orkuröð
+                ✓ <strong>Aufbau-reglan:</strong> Rafeindir fylla svigrúm í orkuröð
               </li>
               <li>
-                ✓ <strong>Regla Hunds:</strong> Rafeindir dreifastar fyrst einar í svigrúm
+                ✓ <strong>Regla Hunds:</strong> Rafeindir dreifast fyrst einar í svigrúm
               </li>
               <li>
-                ✓ <strong>Undantekningar:</strong> Cr ([Ar] 4s¹3d⁵) og Cu ([Ar] 4s¹3d¹⁰)
+                ✓ <strong>Undantekningar:</strong> Cr{' '}
+                <span className="whitespace-nowrap">([Ar] 4s¹ 3d⁵)</span> og Cu{' '}
+                <span className="whitespace-nowrap">([Ar] 4s¹ 3d¹⁰)</span>
               </li>
             </ul>
           </div>
@@ -188,7 +169,7 @@ function App() {
       <div className="min-h-screen flex items-center justify-center p-4 md:p-8">
         <div className="max-w-3xl w-full mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <p className="text-warm-600 mb-4">
-            Lærðu um rafeindabyggingu atóma — skammtatölur, svigrúm og rafeindauppsetningu
+            Lærðu um rafeindabyggingu atóma — skammtatölur, svigrúm og rafeindaskipan
           </p>
 
           {/* Pedagogical explanation */}
@@ -254,7 +235,7 @@ function App() {
                     Fylltu í svigrúm samkvæmt Aufbau og Hund
                   </div>
                   <div className="text-xs text-warm-600 mt-2">
-                    Skrifaðu rafeindauppsetningu frumefna (t.d. 1s² 2s² 2p⁴ fyrir súrefni).
+                    Skrifaðu rafeindaskipan frumefna (t.d. 1s² 2s² 2p⁴ fyrir súrefni).
                   </div>
                 </div>
               </div>
@@ -279,7 +260,7 @@ function App() {
                     )}
                   </div>
                   <div className="text-sm text-purple-600 mt-1">
-                    Tengdu sæti í lotukerfinu við rafeindauppsetningu
+                    Tengdu sæti í lotukerfinu við rafeindaskipan
                   </div>
                   <div className="text-xs text-warm-600 mt-2">
                     Þekktu eðalgasstyttinguna og undantekningar Cr og Cu.
@@ -308,7 +289,7 @@ function App() {
                 </div>
                 <div className="bg-green-50 rounded-lg px-1 py-3 sm:p-3">
                   <div className="text-2xl font-bold text-green-600">{totalScore}</div>
-                  <div className="text-xs text-warm-600">Heildar stig</div>
+                  <div className="text-xs text-warm-600">Heildarstig</div>
                 </div>
                 <div className="bg-purple-50 rounded-lg px-1 py-3 sm:p-3">
                   <div className="text-2xl font-bold text-purple-600">
@@ -334,7 +315,7 @@ function App() {
                 <strong>mₗ</strong> (segulskammtatala): -l til +l — stefna svigrúmsins
               </p>
               <p>
-                <strong>mₛ</strong> (spunaskammtatala): +½ eða -½ — snúningur rafeindarinnar
+                <strong>mₛ</strong> (spunaskammtatala): +½ eða -½ — spuni rafeindarinnar
               </p>
             </div>
           </div>
@@ -343,8 +324,8 @@ function App() {
           <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
             <h3 className="font-semibold text-amber-800 mb-2">Af hverju rafeindabygging?</h3>
             <p className="text-sm text-amber-700">
-              Rafeindauppsetning ákvarðar hvernig frumefni tengjast — hún útskýrir af hverju natríum
-              er hvarfgjarnt en argon er stöðugt. Undirstaða efnatengsla og lotukerfisins.
+              Rafeindaskipan ákvarðar hvernig frumefni tengjast — hún útskýrir af hverju natríum er
+              hvarfgjarnt en argon er stöðugt. Undirstaða efnatengsla og lotukerfisins.
             </p>
           </div>
           <div className="mt-3 text-center text-xs text-warm-500">

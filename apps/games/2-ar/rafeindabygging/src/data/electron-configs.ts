@@ -37,7 +37,7 @@ export const configPuzzles: ElectronConfigPuzzle[] = [
     electronCounts: [2, 2, 2],
     maxElectrons: [2, 2, 6],
     explanation_is:
-      'Kolefni: 6 rafeindir. Aufbau: 1s² → 2s² → 2p². Regla Hunds: 2p rafeindir dreifastar í aðskilin svigrúm.',
+      'Kolefni: 6 rafeindir. Aufbau: 1s² → 2s² → 2p². Regla Hunds: 2p rafeindir dreifast í aðskilin svigrúm.',
     explanation_en:
       "Carbon: 6 electrons. Aufbau: 1s² → 2s² → 2p². Hund's rule: 2p electrons spread across separate orbitals.",
   },
@@ -66,21 +66,21 @@ export const configPuzzles: ElectronConfigPuzzle[] = [
     electronCounts: [2, 2, 4],
     maxElectrons: [2, 2, 6],
     explanation_is:
-      'Súrefni: 8 rafeindir. 2p⁴ — eitt 2p svigrúm hefur rafeindarapar, hin tvö hafa einstaka rafeind.',
+      'Súrefni: 8 rafeindir. 2p⁴ — eitt 2p svigrúm hefur rafeindapar, hin tvö hafa einstaka rafeind.',
     explanation_en:
       'Oxygen: 8 electrons. 2p⁴ — one 2p orbital has a pair, the other two have single electrons.',
   },
   {
     id: 5,
     element: 'Na',
-    elementName_is: 'Natrín',
+    elementName_is: 'Natríum',
     elementName_en: 'Sodium',
     atomicNumber: 11,
     correctConfig: '1s² 2s² 2p⁶ 3s¹',
     orbitalOrder: ['1s', '2s', '2p', '3s'],
     electronCounts: [2, 2, 6, 1],
     maxElectrons: [2, 2, 6, 2],
-    explanation_is: 'Natrín: 11 rafeindir. Eftir að 2. hvolf fyllist (2s²2p⁶) fer 1 rafeind í 3s.',
+    explanation_is: 'Natríum: 11 rafeindir. Eftir að 2. hvolf fyllist (2s²2p⁶) fer 1 rafeind í 3s.',
     explanation_en:
       'Sodium: 11 electrons. After the 2nd shell fills (2s²2p⁶), 1 electron goes to 3s.',
   },
@@ -94,7 +94,7 @@ export const configPuzzles: ElectronConfigPuzzle[] = [
     orbitalOrder: ['1s', '2s', '2p', '3s', '3p'],
     electronCounts: [2, 2, 6, 2, 5],
     maxElectrons: [2, 2, 6, 2, 6],
-    explanation_is: 'Klór: 17 rafeindir. 3p⁵ — vantar eina rafeind til að fylla 3p-hvolfið.',
+    explanation_is: 'Klór: 17 rafeindir. 3p⁵ — vantar eina rafeind til að fylla 3p-undirhvolfið.',
     explanation_en: 'Chlorine: 17 electrons. 3p⁵ — one electron short of filling the 3p subshell.',
   },
   {
@@ -107,7 +107,7 @@ export const configPuzzles: ElectronConfigPuzzle[] = [
     orbitalOrder: ['1s', '2s', '2p', '3s', '3p', '4s', '3d'],
     electronCounts: [2, 2, 6, 2, 6, 2, 6],
     maxElectrons: [2, 2, 6, 2, 6, 2, 10],
-    explanation_is: 'Járn: 26 rafeindir. Aufbau: 4s fyllist FYRIR 3d. Uppsetning: ...4s² 3d⁶.',
+    explanation_is: 'Járn: 26 rafeindir. Aufbau: 4s fyllist FYRIR 3d. Rafeindaskipan: ...4s² 3d⁶.',
     explanation_en: 'Iron: 26 electrons. Aufbau: 4s fills BEFORE 3d. Configuration: ...4s² 3d⁶.',
   },
   {
