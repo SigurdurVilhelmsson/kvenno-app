@@ -96,7 +96,9 @@ describe('rounding practice', () => {
     const r3 = ROUND_ITEMS.find((i) => i.id === 'r3')!;
     expect(r3.answer).toBe('2,50'); // dropping the zero understates it
     const r5 = ROUND_ITEMS.find((i) => i.id === 'r5')!;
-    expect(r5.answer).toContain('×'); // 60 cannot claim two figures in plain decimal
+    // `60` claims one figure by rule 4; written plainly it needs a trailing
+    // comma, so the printed answer uses the power of ten.
+    expect(r5.answer).toContain('×');
   });
 });
 
@@ -143,44 +145,127 @@ describe('the arithmetic rules', () => {
   });
 });
 
+/** Digits and an optional power of ten, as the two fields submit them. */
+const w = (mantissa: string, exponent = '') => ({ mantissa, exponent });
+const item = (id: string) => ROUND_ITEMS.find((i) => i.id === id)!;
+const R3 = { value: 2.5, figures: 3 }; // answer 2,50
+
 describe('checkWritten — grading a written answer', () => {
   it('accepts the exact written form', () => {
-    expect(checkWritten('2,50', '2,50')).toBe('rett');
-    expect(checkWritten('2.50', '2,50')).toBe('rett'); // a dot is fine
+    expect(checkWritten(w('2,50'), R3)).toBe('rett');
+    expect(checkWritten(w('2.50'), R3)).toBe('rett'); // a dot is fine
   });
 
   it('rejects the right value written to the wrong precision', () => {
     // The whole reason this step exists. `2,5` is the same number and a
     // different claim, and grading on value alone would accept it.
-    expect(checkWritten('2,5', '2,50')).toBe('stafir');
-    expect(checkWritten('2,500', '2,50')).toBe('stafir');
+    expect(checkWritten(w('2,5'), R3)).toBe('stafir');
+    expect(checkWritten(w('2,500'), R3)).toBe('stafir');
   });
 
   it('rejects a wrong value', () => {
-    expect(checkWritten('2,60', '2,50')).toBe('gildi');
-    expect(checkWritten('25,0', '2,50')).toBe('gildi');
+    expect(checkWritten(w('2,60'), R3)).toBe('gildi');
+    // Right digits, comma in the wrong place: its own diagnosis, still wrong.
+    expect(checkWritten(w('25,0'), R3)).toBe('veldi');
   });
 
   it('rejects 0, double, half and nonsense on every rounding item', () => {
     // The general rule this repo encoded after Sýrufastinn: assert the
-    // property, do not trust the comparison mode.
-    for (const item of ROUND_ITEMS) {
-      expect(checkWritten('0', item.answer), `${item.id} accepts 0`).not.toBe('rett');
-      expect(
-        checkWritten(String(item.value * 2), item.answer),
-        `${item.id} accepts double`
-      ).not.toBe('rett');
-      expect(checkWritten(String(item.value / 2), item.answer), `${item.id} accepts half`).not.toBe(
-        'rett'
-      );
-      expect(checkWritten('', item.answer), `${item.id} accepts empty`).not.toBe('rett');
-      expect(checkWritten('abc', item.answer), `${item.id} accepts letters`).not.toBe('rett');
+    // property, do not trust the comparison mode. Double and half are of the
+    // ROUNDED answer and written to the asked-for precision, so only the value
+    // can fail them. The shipped version of this test doubled the raw value,
+    // which is wrong on rounding alone and so proved nothing.
+    for (const it of ROUND_ITEMS) {
+      const wanted = Number(it.value.toPrecision(it.figures));
+      const as = (v: number) => {
+        const [digits, power] = v.toExponential(it.figures - 1).split('e');
+        return w(digits.replace('.', ','), power);
+      };
+      expect(checkWritten(w('0'), it), `${it.id} accepts 0`).not.toBe('rett');
+      expect(checkWritten(as(wanted * 2), it), `${it.id} accepts double`).not.toBe('rett');
+      expect(checkWritten(as(wanted / 2), it), `${it.id} accepts half`).not.toBe('rett');
+      expect(checkWritten(w(''), it), `${it.id} accepts empty`).not.toBe('rett');
+      expect(checkWritten(w('abc'), it), `${it.id} accepts letters`).not.toBe('rett');
+      expect(checkWritten(w('NaN'), it), `${it.id} accepts NaN`).not.toBe('rett');
+      // And the right answer, written the same way, is accepted — so the
+      // rejections above are the value's doing and not the format's.
+      expect(checkWritten(as(wanted), it), `${it.id} rejects its own answer`).toBe('rett');
     }
   });
 
-  it('accepts every item own answer, so the set is playable to the end', () => {
-    for (const item of ROUND_ITEMS) {
-      expect(checkWritten(item.answer, item.answer), item.id).toBe('rett');
+  it('accepts every item own answer, typed the way the screen asks', () => {
+    // The digits in one field, the power in the other. The shipped test fed
+    // the printed `6,0 × 10¹` back into itself as one string, and both sides
+    // read it as 6 — which is exactly the defect it was there to catch.
+    for (const it of ROUND_ITEMS) {
+      const [digits, power] = it.answer.includes('×')
+        ? [it.answer.split('×')[0].trim(), String(Math.floor(Math.log10(it.value)))]
+        : [it.answer, ''];
+      expect(checkWritten(w(digits, power), it), it.id).toBe('rett');
     }
+  });
+});
+
+describe('r5 — sixty to two significant figures', () => {
+  const r5 = item('r5');
+
+  it('marks the digits alone wrong: 6,0 is a tenth of the answer', () => {
+    // The shipped grader read the expected `6,0 × 10¹` with parseStudentNumber,
+    // which stops at the `×`, and so marked `6,0` correct for sixty.
+    expect(checkWritten(w('6,0'), r5)).toBe('veldi');
+    expect(checkWritten(w('6'), r5)).not.toBe('rett');
+  });
+
+  it('accepts every correct form a phone decimal keypad can type', () => {
+    expect(checkWritten(w('6,0', '1'), r5)).toBe('rett');
+    expect(checkWritten(w('6.0', '1'), r5)).toBe('rett');
+    expect(checkWritten(w('0,60', '2'), r5)).toBe('rett');
+    // Rule 4, which the game teaches with 1200, and 4500, — a written comma
+    // makes the trailing zero count, so this is two figures and sixty.
+    expect(checkWritten(w('60,'), r5)).toBe('rett');
+    expect(checkWritten(w('60.'), r5)).toBe('rett');
+  });
+
+  it('accepts e notation typed on a full keyboard', () => {
+    expect(checkWritten(w('6,0e1'), r5)).toBe('rett');
+    expect(checkWritten(w('6.0E1'), r5)).toBe('rett');
+  });
+
+  it('names the precision mistake, not the rounding, for sixty to one or three figures', () => {
+    expect(checkWritten(w('60'), r5)).toBe('stafir'); // rule 4: one figure
+    expect(checkWritten(w('60,0'), r5)).toBe('stafir');
+    expect(checkWritten(w('6', '1'), r5)).toBe('stafir');
+    expect(checkWritten(w('6,00', '1'), r5)).toBe('stafir');
+  });
+
+  it('refuses a power typed into the digits field instead of half-reading it', () => {
+    // parseFloat would read `6,0 × 10²` as 6, and with a 1 in the power field
+    // that is sixty — a wrong answer graded right.
+    expect(checkWritten(w('6,0 × 10²', '1'), r5)).toBe('ogilt');
+    expect(checkWritten(w('6,0x10^1'), r5)).toBe('ogilt');
+    expect(checkWritten(w('6,0', '1,5'), r5)).toBe('ogilt');
+    expect(checkWritten(w('6,0e1', '1'), r5)).toBe('ogilt'); // a power in both fields
+  });
+});
+
+describe('the other items take scientific notation too', () => {
+  it('accepts each answer written as digits and a power of ten', () => {
+    expect(checkWritten(w('1,2', '3'), item('r1'))).toBe('rett');
+    expect(checkWritten(w('4,57', '-3'), item('r2'))).toBe('rett');
+    expect(checkWritten(w('4,57', '\u22123'), item('r2'))).toBe('rett'); // a typographic minus
+    expect(checkWritten(w('2,50', '0'), item('r3'))).toBe('rett');
+    expect(checkWritten(w('9,88', '4'), item('r4'))).toBe('rett');
+  });
+
+  it('still counts the figures on the digits', () => {
+    expect(checkWritten(w('1,20', '3'), item('r1'))).toBe('stafir');
+    expect(checkWritten(w('4,6', '-3'), item('r2'))).toBe('gildi'); // wrong rounding
+  });
+
+  it('rejects a near-miss rounding that a tolerance would accept', () => {
+    // Why gradeScientific's value check is not reused: its 2 % default would
+    // accept 0,00456 for 0,00457.
+    expect(checkWritten(w('0,00456'), item('r2'))).toBe('gildi');
+    expect(checkWritten(w('98700'), item('r4'))).toBe('gildi');
   });
 });

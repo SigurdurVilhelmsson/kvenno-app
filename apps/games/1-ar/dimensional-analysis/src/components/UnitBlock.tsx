@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 interface UnitBlockProps {
   value: number;
   unit: string;
@@ -122,7 +124,7 @@ export function UnitBlock({
             }
           }}
         >
-          {showValue && <span className="mr-1">{value}</span>}
+          {showValue && <span className="mr-1">{formatDecimal(value)}</span>}
           <span>{unit}</span>
         </div>
         {/* Strikethrough line */}
@@ -146,7 +148,7 @@ export function UnitBlock({
         }
       }}
     >
-      {showValue && <span className="mr-1">{value}</span>}
+      {showValue && <span className="mr-1">{formatDecimal(value)}</span>}
       <span>{unit}</span>
     </div>
   );
@@ -161,6 +163,8 @@ interface ConversionFactorBlockProps {
   isCorrect?: boolean | null;
   onClick?: () => void;
   size?: 'small' | 'medium' | 'large';
+  /** Set when the block is an on/off toggle, to announce its state (`aria-pressed`). */
+  pressed?: boolean;
 }
 
 /**
@@ -175,6 +179,7 @@ export function ConversionFactorBlock({
   isCorrect = null,
   onClick,
   size = 'medium',
+  pressed,
 }: ConversionFactorBlockProps) {
   const borderColor =
     isCorrect === true
@@ -203,13 +208,14 @@ export function ConversionFactorBlock({
         ${isSelected ? 'ring-4 ring-yellow-400' : ''}
       `}
       disabled={!onClick}
+      aria-pressed={pressed}
     >
       <div className={`font-bold text-blue-600 ${sizeStyles[size].text}`}>
-        {numeratorValue} {numeratorUnit}
+        {formatDecimal(numeratorValue)} {numeratorUnit}
       </div>
       <div className="w-full h-0.5 bg-warm-800 my-1" />
       <div className={`font-bold text-green-600 ${sizeStyles[size].text}`}>
-        {denominatorValue} {denominatorUnit}
+        {formatDecimal(denominatorValue)} {denominatorUnit}
       </div>
     </button>
   );

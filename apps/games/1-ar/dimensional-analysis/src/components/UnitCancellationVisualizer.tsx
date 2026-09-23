@@ -1,6 +1,77 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 
 import { UnitBlock } from './UnitBlock';
+
+/**
+ * A unit written as one string, split across the fraction bar: `km/klst` is km
+ * over klst. Written whole, a compound unit could never cancel against a factor
+ * — no factor carries `km/klst` — so on the three Level-2 problems that start
+ * from one (km/klst, m/s, g/mL) the right chain drew no cancellation at all.
+ */
+export function splitUnit(unit: string): { numerator: string[]; denominator: string[] } {
+  const [top, ...bottom] = unit
+    .split('/')
+    .map((part) => part.trim())
+    .filter((part) => part !== '');
+  return { numerator: top ? [top] : [], denominator: bottom };
+}
+
+/**
+ * Every unit in a chain, on the side of the bar it sits on: the start unit, then
+ * each `"num unit / den unit"` factor's two units.
+ */
+export function chainUnits(
+  startUnit: string,
+  factors: string[]
+): { numerator: string[]; denominator: string[] } {
+  const numerator: string[] = [];
+  const denominator: string[] = [];
+  const add = (unit: string, flip: boolean) => {
+    const parts = splitUnit(unit);
+    numerator.push(...(flip ? parts.denominator : parts.numerator));
+    denominator.push(...(flip ? parts.numerator : parts.denominator));
+  };
+  add(startUnit, false);
+  for (const factor of factors) {
+    const [num, den] = factor.split(' / ');
+    add(num.split(' ').slice(1).join(' '), false);
+    add(den.split(' ').slice(1).join(' '), true);
+  }
+  return { numerator, denominator };
+}
+
+export interface UnitPair {
+  numIdx: number;
+  denIdx: number;
+  unit: string;
+}
+
+/**
+ * Which units cancel, one numerator unit against one denominator unit. A unit
+ * cancels as many times as it appears on both sides and no more: mg·mg / mg
+ * leaves mg. Matching by name alone cancelled every copy at once, so a chain
+ * carrying a factor and its inverse was shown as unitless when it was not.
+ */
+export function pairUnits(
+  numeratorUnits: string[],
+  denominatorUnits: string[]
+): { pairs: UnitPair[]; numerator: string[]; denominator: string[] } {
+  const pairs: UnitPair[] = [];
+  const usedDen = new Set<number>();
+  numeratorUnits.forEach((unit, numIdx) => {
+    const denIdx = denominatorUnits.findIndex((d, idx) => d === unit && !usedDen.has(idx));
+    if (denIdx !== -1) {
+      usedDen.add(denIdx);
+      pairs.push({ numIdx, denIdx, unit });
+    }
+  });
+  const pairedNum = new Set(pairs.map((p) => p.numIdx));
+  return {
+    pairs,
+    numerator: numeratorUnits.filter((_, idx) => !pairedNum.has(idx)),
+    denominator: denominatorUnits.filter((_, idx) => !usedDen.has(idx)),
+  };
+}
 
 interface UnitCancellationVisualizerProps {
   numeratorUnits: string[];
@@ -9,7 +80,7 @@ interface UnitCancellationVisualizerProps {
   showCancelButton?: boolean;
   /** Enable enhanced animations with strikethrough and connecting lines */
   enhancedAnimation?: boolean;
-  /** Auto-animate cancellation on mount */
+  /** Start cancelling the matching pairs on their own, one after another */
   autoAnimate?: boolean;
 }
 
@@ -26,91 +97,91 @@ export function UnitCancellationVisualizer({
   enhancedAnimation = true,
   autoAnimate = false,
 }: UnitCancellationVisualizerProps) {
-  const [cancellingUnit, setCancellingUnit] = useState<string | null>(null);
-  const [cancelledUnits, setCancelledUnits] = useState<Set<string>>(new Set());
-  const [connectingLines, setConnectingLines] = useState<
-    Array<{ numIdx: number; denIdx: number; unit: string }>
-  >([]);
+  // Pairs are tracked by index, not by unit name, so two copies of one unit are
+  // two separate cancellations.
+  const [cancellingPair, setCancellingPair] = useState<number | null>(null);
+  const [cancelledPairs, setCancelledPairs] = useState<Set<number>>(new Set());
+  const [connectingLines, setConnectingLines] = useState<UnitPair[]>([]);
   const [animatingLine, setAnimatingLine] = useState<number | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const numRefs = useRef<(HTMLDivElement | null)[]>([]);
   const denRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const cancelTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Find matching units that can be cancelled
-  const matchingUnits = numeratorUnits.filter(
-    (u) => denominatorUnits.includes(u) && !cancelledUnits.has(u)
+  // The parent hands over fresh arrays on every render; key the pairing on
+  // their contents so a keystroke elsewhere does not restart the animation.
+  const numKey = numeratorUnits.join('\u0000');
+  const denKey = denominatorUnits.join('\u0000');
+  const {
+    pairs,
+    numerator: leftNumerator,
+    denominator: leftDenominator,
+  } = useMemo(
+    () => pairUnits(numeratorUnits, denominatorUnits),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- keyed on contents, see above
+    [numKey, denKey]
   );
-  const hasMatchingUnits = matchingUnits.length > 0;
 
-  // Calculate connecting lines between matching units
-  const updateConnectingLines = useCallback(() => {
+  // Pairs still waiting to cancel, and their units once each for the message.
+  const pendingPairs = pairs.map((_, idx) => idx).filter((idx) => !cancelledPairs.has(idx));
+  const matchingUnits = [...new Set(pendingPairs.map((idx) => pairs[idx].unit))];
+  const hasMatchingUnits = pendingPairs.length > 0;
+
+  // Connecting lines between the pairs that have not cancelled yet. Set after
+  // mount, when the unit refs they are drawn between exist.
+  useEffect(() => {
     if (!enhancedAnimation) return;
+    setConnectingLines(pairs);
+  }, [pairs, enhancedAnimation]);
 
-    const lines: Array<{ numIdx: number; denIdx: number; unit: string }> = [];
-    const usedDenIndices = new Set<number>();
+  useEffect(
+    () => () => {
+      if (cancelTimer.current) clearTimeout(cancelTimer.current);
+    },
+    []
+  );
 
-    numeratorUnits.forEach((unit, numIdx) => {
-      if (cancelledUnits.has(unit)) return;
+  const handleCancel = (pairIdx: number) => {
+    setCancellingPair(pairIdx);
+    setAnimatingLine(pairIdx);
 
-      const denIdx = denominatorUnits.findIndex(
-        (d, idx) => d === unit && !usedDenIndices.has(idx) && !cancelledUnits.has(d)
-      );
-
-      if (denIdx !== -1) {
-        lines.push({ numIdx, denIdx, unit });
-        usedDenIndices.add(denIdx);
-      }
-    });
-
-    setConnectingLines(lines);
-  }, [numeratorUnits, denominatorUnits, cancelledUnits, enhancedAnimation]);
-
-  useEffect(() => {
-    updateConnectingLines();
-  }, [updateConnectingLines]);
-
-  // Auto-animate when enabled and there are matching units
-  useEffect(() => {
-    if (autoAnimate && hasMatchingUnits && matchingUnits.length > 0 && !cancellingUnit) {
-      const timer = setTimeout(() => {
-        handleCancel(matchingUnits[0]);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [autoAnimate, hasMatchingUnits, matchingUnits.length]);
-
-  const handleCancel = (unit: string) => {
-    setCancellingUnit(unit);
-
-    // Find and animate the connecting line
-    const lineIdx = connectingLines.findIndex((l) => l.unit === unit);
-    if (lineIdx !== -1) {
-      setAnimatingLine(lineIdx);
-    }
-
-    setTimeout(
+    cancelTimer.current = setTimeout(
       () => {
-        if (onCancel) onCancel(unit);
-        setCancellingUnit(null);
-        setCancelledUnits((prev) => new Set([...prev, unit]));
+        if (onCancel) onCancel(pairs[pairIdx].unit);
+        setCancellingPair(null);
+        setCancelledPairs((prev) => new Set([...prev, pairIdx]));
         setAnimatingLine(null);
       },
       enhancedAnimation ? 800 : 600
     );
   };
 
-  // Determine which units are matching and should be highlighted
-  const getUnitStatus = (unit: string, position: 'numerator' | 'denominator') => {
-    if (cancellingUnit === unit) return 'cancelling';
-    if (cancelledUnits.has(unit)) return 'cancelled';
+  // Auto-animate: cancel every pair, one after another. Once started it runs to
+  // the end — a two-step chain has two pairs, and the parent's flag drops
+  // before the second one begins, which used to leave it half-cancelled with
+  // no final unit shown.
+  const autoRunning = useRef(false);
+  const nextPending = pendingPairs.length > 0 ? pendingPairs[0] : null;
+  useEffect(() => {
+    if (!(autoAnimate || autoRunning.current)) return;
+    if (cancellingPair !== null || nextPending === null) return;
+    autoRunning.current = true;
+    const timer = setTimeout(() => handleCancel(nextPending), 500);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- handleCancel is recreated each render
+  }, [autoAnimate, cancellingPair, nextPending]);
 
-    // Check if this unit has a match in the other position
-    const otherUnits = position === 'numerator' ? denominatorUnits : numeratorUnits;
-    if (otherUnits.includes(unit) && !cancelledUnits.has(unit)) return 'matching';
-
-    return 'normal';
+  // Where a unit stands: part of a pair that is cancelling, has cancelled or
+  // is waiting to, or on its own.
+  const getUnitStatus = (idx: number, position: 'numerator' | 'denominator') => {
+    const pairIdx = pairs.findIndex((p) =>
+      position === 'numerator' ? p.numIdx === idx : p.denIdx === idx
+    );
+    if (pairIdx === -1) return 'normal';
+    if (cancellingPair === pairIdx) return 'cancelling';
+    if (cancelledPairs.has(pairIdx)) return 'cancelled';
+    return 'matching';
   };
 
   const getUnitColor = (
@@ -157,7 +228,7 @@ export function UnitCancellationVisualizer({
         >
           {connectingLines.map((line, idx) => {
             const isAnimating = animatingLine === idx;
-            const isCancelled = cancelledUnits.has(line.unit);
+            const isCancelled = cancelledPairs.has(idx);
             if (isCancelled) return null;
 
             return (
@@ -168,7 +239,7 @@ export function UnitCancellationVisualizer({
                 stroke={isAnimating ? '#ef4444' : '#f97316'}
                 strokeWidth={isAnimating ? 3 : 2}
                 strokeDasharray={isAnimating ? '8,4' : '4,4'}
-                className={`connect-line ${isAnimating ? 'animate-draw' : ''} ${cancellingUnit === line.unit ? 'animate-fade' : ''}`}
+                className={`connect-line ${isAnimating ? 'animate-draw' : ''} ${cancellingPair === idx ? 'animate-fade' : ''}`}
                 opacity={0.7}
               />
             );
@@ -194,7 +265,7 @@ export function UnitCancellationVisualizer({
             <span className="text-warm-400 text-sm italic">Engar einingar</span>
           ) : (
             numeratorUnits.map((unit, idx) => {
-              const status = getUnitStatus(unit, 'numerator');
+              const status = getUnitStatus(idx, 'numerator');
               return (
                 <div
                   key={`num-${idx}`}
@@ -226,7 +297,7 @@ export function UnitCancellationVisualizer({
         {hasMatchingUnits && (
           <div className="absolute -top-1 left-1/2 transform -translate-x-1/2">
             <div
-              className={`w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center ${cancellingUnit ? 'animate-ping' : 'animate-pulse'}`}
+              className={`w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center ${cancellingPair !== null ? 'animate-ping' : 'animate-pulse'}`}
             >
               <span className="text-white text-lg">×</span>
             </div>
@@ -246,7 +317,7 @@ export function UnitCancellationVisualizer({
             <span className="text-warm-400 text-sm italic">Engar einingar</span>
           ) : (
             denominatorUnits.map((unit, idx) => {
-              const status = getUnitStatus(unit, 'denominator');
+              const status = getUnitStatus(idx, 'denominator');
               return (
                 <div
                   key={`denom-${idx}`}
@@ -276,8 +347,8 @@ export function UnitCancellationVisualizer({
       {hasMatchingUnits && (
         <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-xl text-center">
           <p className="text-sm text-orange-700">
-            <span className="font-bold">{matchingUnits.join(', ')}</span> er í bæði teljara og
-            nefnara og strikast út!
+            <span className="font-bold">{matchingUnits.join(', ')}</span>{' '}
+            {matchingUnits.length > 1 ? 'eru' : 'er'} í bæði teljara og nefnara og strikast út!
           </p>
         </div>
       )}
@@ -285,11 +356,11 @@ export function UnitCancellationVisualizer({
       {/* Cancel button */}
       {showCancelButton && hasMatchingUnits && (
         <button
-          onClick={() => handleCancel(matchingUnits[0])}
+          onClick={() => handleCancel(pendingPairs[0])}
           className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-4 rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98]"
-          disabled={cancellingUnit !== null}
+          disabled={cancellingPair !== null}
         >
-          Strika út {matchingUnits[0]}
+          Strika út {pairs[pendingPairs[0]].unit}
         </button>
       )}
 
@@ -297,12 +368,8 @@ export function UnitCancellationVisualizer({
       {!hasMatchingUnits && numeratorUnits.length > 0 && (
         <div className="p-3 bg-green-50 border border-green-200 rounded-xl text-center">
           <p className="text-sm text-green-700 font-semibold">
-            Lokaeining:{' '}
-            {numeratorUnits.filter((u) => !denominatorUnits.includes(u)).join(' · ') ||
-              '(einingalaust)'}
-            {denominatorUnits.filter((u) => !numeratorUnits.includes(u)).length > 0 && (
-              <> / {denominatorUnits.filter((u) => !numeratorUnits.includes(u)).join(' · ')}</>
-            )}
+            Lokaeining: {leftNumerator.join(' · ') || '(einingalaust)'}
+            {leftDenominator.length > 0 && <> / {leftDenominator.join(' · ')}</>}
           </p>
         </div>
       )}

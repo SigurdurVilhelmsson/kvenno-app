@@ -9,18 +9,50 @@ import type {
   DetailedFeedback,
 } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
-import { DECIMAL_INPUT_PROPS, shuffleArray } from '@shared/utils';
+import { DECIMAL_INPUT_PROPS, formatDecimal, shuffleArray } from '@shared/utils';
 
 import { UnitBlock, ConversionFactorBlock } from './UnitBlock';
-import { UnitCancellationVisualizer } from './UnitCancellationVisualizer';
+import { UnitCancellationVisualizer, chainUnits } from './UnitCancellationVisualizer';
 import { level2Problems } from '../data/problems';
 import { applyFactorPath, isAnswerCorrect, parseStudentNumber } from '../utils/grading';
 import { revealTop, useRevealTopOnChange } from '../utils/reveal';
 
+// The one drop zone. Its contents are the chain — see `selectedFactors` below.
+const CHAIN_ZONE = 'conversion-chain';
+
+// Every count, bar and score on this level is out of the problem set itself, so
+// adding or removing a problem cannot leave a stale "/ 15" behind.
+const PROBLEM_COUNT = level2Problems.length;
+
+/** Print a computed value as a student reads it: decimal comma, no float noise. */
+function printNumber(value: number): string {
+  return formatDecimal(Number(value.toPrecision(12)));
+}
+
+/** `"1000 mg / 1 g"` read backwards: `"1 g / 1000 mg"`. */
+function invertFactor(factor: string): string {
+  const [num, den] = factor.split(' / ');
+  return `${den} / ${num}`;
+}
+
+/**
+ * Is the chain built from exactly the right factors? In any order: multiplying
+ * commutes, so the order cannot change the value or the unit that is left. B11
+ * (`CURRICULUM_REVIEW.md`): comparing position by position marked a reordered
+ * right chain wrong — on L2-8, 90 km/klst × (1 klst / 3600 s) × (1000 m / 1 km)
+ * is 25 m/s all the same.
+ */
+function usesRightFactors(chain: string[], correctPath: string[]): boolean {
+  if (chain.length !== correctPath.length) return false;
+  const left = [...chain].sort();
+  const right = [...correctPath].sort();
+  return left.every((factor, idx) => factor === right[idx]);
+}
+
 // Misconceptions for common errors
 const MISCONCEPTIONS: Record<string, string> = {
   wrong_direction:
-    'Stuðullinn er rangur snúinn - einingin sem þú vilt losna við þarf að vera á gagnstæðri hlið (ef þú hefur g, settu g í nefnara).',
+    'Stuðullinn er rangt snúinn - einingin sem þú vilt losna við þarf að vera á gagnstæðri hlið (ef þú hefur g, settu g í nefnara).',
   missing_step:
     'Þú gætir þurft fleiri umbreytingarstuðla til að komast frá upphafseiningu til markeiningar.',
   extra_step: 'Þú gætir notað of marga stuðla. Reyndu að finna beina leið.',
@@ -30,7 +62,7 @@ const MISCONCEPTIONS: Record<string, string> = {
 const RELATED_CONCEPTS = [
   'Umbreytingarstuðlar',
   'Strikun eininga',
-  'Víddargreining',
+  'Víddagreining',
   'Factor-label aðferð',
 ];
 
@@ -113,7 +145,6 @@ export function Level2({
     }
   );
 
-  const [selectedFactors, setSelectedFactors] = useState<string[]>([]);
   const [userAnswer, setUserAnswer] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
@@ -122,7 +153,6 @@ export function Level2({
   const [totalHintsUsed, setTotalHintsUsed] = useState(0);
   const [zoneState, setZoneState] = useState<ZoneState>({});
   const [useDragDrop, setUseDragDrop] = useState(true);
-  const [animationKey, setAnimationKey] = useState(0);
   const [showCancellationAnimation, setShowCancellationAnimation] = useState(false);
 
   // After submitting, the answer form collapses and the page gets shorter. On a
@@ -141,17 +171,19 @@ export function Level2({
   const problem = level2Problems[currentProblemIndex];
 
   // Generate draggable items for DragDropBuilder
-  const { draggableItems, dropZones, availableFactors } = useMemo(() => {
-    if (!problem) return { draggableItems: [], dropZones: [], availableFactors: [] };
+  const { draggableItems, dropZones, options } = useMemo(() => {
+    if (!problem) return { draggableItems: [], dropZones: [], options: [] };
 
-    // Combine correct path with distractors and shuffle
+    // Combine correct path with distractors and shuffle. Both modes offer the
+    // same factors under the same ids, so a chain built in one reads in the other.
     const distractors = generateDistractors(problem);
     const shuffled = shuffleArray([...problem.correctPath, ...distractors]);
+    const opts = shuffled.map((factor, idx) => ({ id: `factor-${idx}`, factor }));
 
-    const items: DraggableItemData[] = shuffled.map((factor, idx) => {
+    const items: DraggableItemData[] = opts.map(({ id, factor }) => {
       const [numPart, denPart] = factor.split(' / ');
       return {
-        id: `factor-${idx}`,
+        id,
         content: (
           <div className="flex flex-col items-center p-2 min-w-[88px] sm:min-w-[100px]">
             <div className="font-bold text-blue-600 text-sm">{numPart}</div>
@@ -165,20 +197,36 @@ export function Level2({
 
     const zones: DropZoneData[] = [
       {
-        id: 'conversion-chain',
+        id: CHAIN_ZONE,
         label: 'Dragðu stuðla hingað til að byggja umbreytingakeðju',
         maxItems: 5,
-        placeholder: '← Dragðu umbreytingarstuðla hingað',
+        // The pool sits above the zone at every width (the builder is a column).
+        placeholder: '↑ Dragðu umbreytingarstuðla hingað',
       },
     ];
 
-    return { draggableItems: items, dropZones: zones, availableFactors: shuffled };
+    return { draggableItems: items, dropZones: zones, options: opts };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: reset memoized items when problem index changes
   }, [currentProblemIndex, problem]);
 
+  // The chain is `zoneState[CHAIN_ZONE]`, and nothing else records it. Drag
+  // mode writes it through the builder's onDrop/onReorder/onRemove; click mode
+  // through `toggleFactor`. The builder keeps its own copy, seeded from
+  // `zoneState` when it mounts — and it mounts on every switch into drag mode,
+  // since click mode renders something else in its place, and on every problem,
+  // since the feedback view does not render it. So whichever mode the student is
+  // in, the chain on screen is the path `selectedFactors` grades.
+  const selectedFactors = useMemo(
+    () =>
+      (zoneState[CHAIN_ZONE] ?? [])
+        .map((id) => options.find((o) => o.id === id)?.factor)
+        .filter((f): f is string => typeof f === 'string'),
+    [zoneState, options]
+  );
+  const chainKey = selectedFactors.join(' × ');
+
   useEffect(() => {
     if (problem) {
-      setSelectedFactors([]);
       setUserAnswer('');
       setShowFeedback(false);
       setZoneState({});
@@ -187,9 +235,18 @@ export function Level2({
     }
   }, [currentProblemIndex, problem]);
 
-  const handleFactorSelect = (factor: string) => {
-    // Add factor directly — no prediction prompt
-    setSelectedFactors((prev) => [...prev, factor]);
+  // Click mode: a factor's button adds it to the end of the chain, and takes it
+  // back out if it is already there.
+  const toggleFactor = (itemId: string) => {
+    setZoneState((prev) => {
+      const current = prev[CHAIN_ZONE] ?? [];
+      return {
+        ...prev,
+        [CHAIN_ZONE]: current.includes(itemId)
+          ? current.filter((id) => id !== itemId)
+          : [...current, itemId],
+      };
+    });
   };
 
   // Handle drag-drop events
@@ -210,13 +267,6 @@ export function Level2({
       newState[zoneId].splice(index, 0, itemId);
       return newState;
     });
-
-    // Get the factor from the dropped item
-    const item = draggableItems.find((i) => i.id === itemId);
-    const factor = item?.data?.factor;
-    if (zoneId === 'conversion-chain' && typeof factor === 'string') {
-      setSelectedFactors((prev) => [...prev, factor]);
-    }
   };
 
   // Handle reordering within a zone
@@ -228,8 +278,8 @@ export function Level2({
   };
 
   // A factor sent back to the pool (dragged, or tapped and then the pool
-  // tapped) has to leave the chain too. `selectedFactors` is synced from
-  // `zoneState` below, so taking it out here takes it out of the graded path.
+  // tapped) has to leave the chain too. `selectedFactors` is derived from
+  // `zoneState`, so taking it out here takes it out of the graded path.
   const handleRemove = (itemId: string, fromZoneId: string) => {
     setZoneState((prev) => ({
       ...prev,
@@ -237,18 +287,8 @@ export function Level2({
     }));
   };
 
-  // Sync selectedFactors with zone state
-  useEffect(() => {
-    const chainItems = zoneState['conversion-chain'] || [];
-    const factors = chainItems
-      .map((itemId) => draggableItems.find((i) => i.id === itemId)?.data?.factor)
-      .filter((f): f is string => typeof f === 'string');
-    setSelectedFactors(factors);
-  }, [zoneState, draggableItems]);
-
   // Trigger cancellation animation when factors change
   const triggerCancellationAnimation = useCallback(() => {
-    setAnimationKey((prev) => prev + 1);
     setShowCancellationAnimation(true);
     // Reset animation flag after animation completes
     const timer = setTimeout(() => {
@@ -257,17 +297,18 @@ export function Level2({
     return () => clearTimeout(timer);
   }, []);
 
-  // Auto-trigger animation when a new factor is added
+  // Auto-trigger animation whenever the chain changes. The visualiser below is
+  // keyed on the chain, so each new chain is drawn, and cancelled, from scratch.
   useEffect(() => {
     if (selectedFactors.length > 0) {
       triggerCancellationAnimation();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only re-run animation when factor count changes
-  }, [selectedFactors.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only re-run animation when the chain changes
+  }, [chainKey]);
 
   // Generate feedback for FeedbackPanel
   const getDetailedFeedback = (): DetailedFeedback => {
-    const pathCorrect = problem.correctPath.every((step, idx) => selectedFactors[idx] === step);
+    const pathCorrect = usesRightFactors(selectedFactors, problem.correctPath);
     const userNum = parseStudentNumber(userAnswer);
     const expectedAnswer = applyFactorPath(problem.startValue, problem.correctPath);
     const answerCorrect = isAnswerCorrect(userNum, expectedAnswer);
@@ -275,17 +316,23 @@ export function Level2({
     if (pathCorrect && answerCorrect) {
       return {
         isCorrect: true,
-        explanation: `Rétt! ${problem.startValue} ${problem.startUnit} = ${expectedAnswer} ${problem.targetUnit}`,
+        explanation: `Rétt! ${printNumber(problem.startValue)} ${problem.startUnit} = ${printNumber(expectedAnswer)} ${problem.targetUnit}`,
         relatedConcepts: RELATED_CONCEPTS,
         nextSteps: 'Þú getur nú prófað flóknari umbreytingar með fleiri skrefum.',
       };
     }
 
-    let misconception = MISCONCEPTIONS.wrong_direction;
+    // Name a misconception only where the chain shows one. It used to default to
+    // an inverted factor, so a student who built exactly the right chain and
+    // slipped on the arithmetic was told a factor was upside down. Where no
+    // diagnosis fits, the slot stays empty and the right chain is shown instead.
+    let misconception: string | undefined;
     if (selectedFactors.length < problem.correctPath.length) {
       misconception = MISCONCEPTIONS.missing_step;
     } else if (selectedFactors.length > problem.correctPath.length) {
       misconception = MISCONCEPTIONS.extra_step;
+    } else if (problem.correctPath.some((step) => selectedFactors.includes(invertFactor(step)))) {
+      misconception = MISCONCEPTIONS.wrong_direction;
     }
 
     return {
@@ -298,8 +345,8 @@ export function Level2({
   };
 
   const handleSubmit = () => {
-    // Check if path matches correct path
-    const pathCorrect = problem.correctPath.every((step, idx) => selectedFactors[idx] === step);
+    // Check the chain uses the right factors, in whatever order
+    const pathCorrect = usesRightFactors(selectedFactors, problem.correctPath);
 
     // Check final answer
     const userNum = parseStudentNumber(userAnswer);
@@ -330,8 +377,8 @@ export function Level2({
       problemsCompleted: progress.problemsCompleted + 1,
     };
 
-    // Check mastery after 15 problems
-    if (newProgress.problemsCompleted >= 15) {
+    // Check mastery once every problem has been done
+    if (newProgress.problemsCompleted >= PROBLEM_COUNT) {
       const answerAccuracy =
         newProgress.problemsCompleted > 0
           ? newProgress.finalAnswersCorrect / newProgress.problemsCompleted
@@ -341,22 +388,30 @@ export function Level2({
 
     setProgress(newProgress);
 
-    if (currentProblemIndex < level2Problems.length - 1) {
+    if (currentProblemIndex < PROBLEM_COUNT - 1) {
+      // Clear the chain in the same render that changes the problem. The chain
+      // holds ids, and ids are only meaningful against one problem's options, so
+      // a render pairing the next problem with this chain would read nonsense.
+      setZoneState({});
+      setUserAnswer('');
+      setShowFeedback(false);
+      setHintUsed(false);
+      setShowHint(false);
       setCurrentProblemIndex(currentProblemIndex + 1);
     } else {
-      // Max score is 100 per problem x 15 problems = 1500
-      onComplete(newProgress, 1500, totalHintsUsed);
+      // Max score is 100 per problem
+      onComplete(newProgress, 100 * PROBLEM_COUNT, totalHintsUsed);
     }
   };
 
   if (!problem && !showIntro) return null;
 
-  // Calculate current units for visualization
-  const numeratorUnits = [
-    ...(problem ? [problem.startUnit] : []),
-    ...selectedFactors.map((f) => f.split(' / ')[0].split(' ')[1]),
-  ];
-  const denominatorUnits = selectedFactors.map((f) => f.split(' / ')[1].split(' ')[1]);
+  // Units for the visualiser. A compound start unit such as km/klst is split
+  // across the fraction bar, or its parts could never cancel against a factor.
+  const { numerator: numeratorUnits, denominator: denominatorUnits } = chainUnits(
+    problem?.startUnit ?? '',
+    selectedFactors
+  );
 
   if (showIntro) {
     return (
@@ -476,7 +531,9 @@ export function Level2({
             <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-semibold">
               Stig 2: Beiting
             </span>
-            <span>Verkefni {progress.problemsCompleted + 1} / 15</span>
+            <span>
+              Verkefni {progress.problemsCompleted + 1} / {PROBLEM_COUNT}
+            </span>
           </div>
         </div>
 
@@ -484,7 +541,7 @@ export function Level2({
         <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
           <div
             className="bg-blue-500 h-2 rounded-full transition-all duration-500"
-            style={{ width: `${(progress.problemsCompleted / 15) * 100}%` }}
+            style={{ width: `${(progress.problemsCompleted / PROBLEM_COUNT) * 100}%` }}
           />
         </div>
 
@@ -518,47 +575,6 @@ export function Level2({
               </span>
             </div>
           </div>
-
-          {/* Unit visualization with animated cancellation */}
-          <div className="mb-6">
-            <UnitCancellationVisualizer
-              key={animationKey}
-              numeratorUnits={numeratorUnits}
-              denominatorUnits={denominatorUnits}
-              showCancelButton={showCancellationAnimation}
-              enhancedAnimation={true}
-              autoAnimate={showCancellationAnimation}
-            />
-          </div>
-
-          {selectedFactors.length > 0 && (
-            <div className="mb-6 p-4 bg-warm-50 rounded-xl">
-              <p className="text-sm font-semibold mb-3 text-warm-700">Stuðlar notaðir:</p>
-              <div className="flex flex-wrap justify-center gap-3">
-                {selectedFactors.map((factor, idx) => {
-                  const [numPart, denPart] = factor.split(' / ');
-                  const numValue = parseFloat(numPart.split(' ')[0]);
-                  const numUnit = numPart.split(' ').slice(1).join(' ');
-                  const denValue = parseFloat(denPart.split(' ')[0]);
-                  const denUnit = denPart.split(' ').slice(1).join(' ');
-
-                  return (
-                    <div key={idx} className="flex items-center gap-2">
-                      {idx > 0 && <span className="text-xl text-warm-400">×</span>}
-                      <ConversionFactorBlock
-                        numeratorValue={numValue}
-                        numeratorUnit={numUnit}
-                        denominatorValue={denValue}
-                        denominatorUnit={denUnit}
-                        isCorrect={true}
-                        size="small"
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
 
           {!showFeedback && (
             <>
@@ -607,36 +623,86 @@ export function Level2({
               ) : (
                 /* Classic button-based factor selection */
                 <div className="mb-6">
-                  <p className="text-sm font-semibold mb-3">Veldu umbreytingarstuðul:</p>
+                  <p className="text-sm font-semibold mb-3">
+                    Smelltu á umbreytingarstuðla til að byggja keðju, og aftur til að taka þá út:
+                  </p>
                   <div className="flex flex-wrap justify-center gap-4">
-                    {availableFactors
-                      .slice(0, Math.min(6, problem.correctPath.length + 3))
-                      .map((factor, idx) => {
-                        // Parse factor string like "1 L / 1000 mL"
-                        const [numPart, denPart] = factor.split(' / ');
-                        const numValue = parseFloat(numPart.split(' ')[0]);
-                        const numUnit = numPart.split(' ').slice(1).join(' ');
-                        const denValue = parseFloat(denPart.split(' ')[0]);
-                        const denUnit = denPart.split(' ').slice(1).join(' ');
-                        const isUsed = selectedFactors.includes(factor);
+                    {options.map(({ id, factor }) => {
+                      // Parse factor string like "1 L / 1000 mL"
+                      const [numPart, denPart] = factor.split(' / ');
+                      const numValue = parseFloat(numPart.split(' ')[0]);
+                      const numUnit = numPart.split(' ').slice(1).join(' ');
+                      const denValue = parseFloat(denPart.split(' ')[0]);
+                      const denUnit = denPart.split(' ').slice(1).join(' ');
+                      const isUsed = (zoneState[CHAIN_ZONE] ?? []).includes(id);
 
-                        return (
-                          <ConversionFactorBlock
-                            key={idx}
-                            numeratorValue={numValue}
-                            numeratorUnit={numUnit}
-                            denominatorValue={denValue}
-                            denominatorUnit={denUnit}
-                            onClick={isUsed ? undefined : () => handleFactorSelect(factor)}
-                            size="medium"
-                            isSelected={isUsed}
-                          />
-                        );
-                      })}
+                      return (
+                        <ConversionFactorBlock
+                          key={id}
+                          numeratorValue={numValue}
+                          numeratorUnit={numUnit}
+                          denominatorValue={denValue}
+                          denominatorUnit={denUnit}
+                          onClick={() => toggleFactor(id)}
+                          size="medium"
+                          isSelected={isUsed}
+                          pressed={isUsed}
+                        />
+                      );
+                    })}
                   </div>
                 </div>
               )}
+            </>
+          )}
 
+          {/* The chain and its units sit BELOW the controls that build it. Above
+              them, the panel appearing on the first factor pushed the button
+              just tapped 170 px down under a phone user's finger. */}
+          {selectedFactors.length > 0 && (
+            <div className="mb-6 p-4 bg-warm-50 rounded-xl">
+              <p className="text-sm font-semibold mb-3 text-warm-700">Stuðlar notaðir:</p>
+              <div className="flex flex-wrap justify-center gap-3">
+                {selectedFactors.map((factor, idx) => {
+                  const [numPart, denPart] = factor.split(' / ');
+                  const numValue = parseFloat(numPart.split(' ')[0]);
+                  const numUnit = numPart.split(' ').slice(1).join(' ');
+                  const denValue = parseFloat(denPart.split(' ')[0]);
+                  const denUnit = denPart.split(' ').slice(1).join(' ');
+
+                  // Neutral: this is the student's chain, not a verdict on it.
+                  // Green is kept for the right path, shown after submitting.
+                  return (
+                    <div key={idx} className="flex items-center gap-2">
+                      {idx > 0 && <span className="text-xl text-warm-400">×</span>}
+                      <ConversionFactorBlock
+                        numeratorValue={numValue}
+                        numeratorUnit={numUnit}
+                        denominatorValue={denValue}
+                        denominatorUnit={denUnit}
+                        size="small"
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Unit visualization with animated cancellation, redrawn per chain */}
+          <div className="mb-6">
+            <UnitCancellationVisualizer
+              key={`${problem.id}|${chainKey}`}
+              numeratorUnits={numeratorUnits}
+              denominatorUnits={denominatorUnits}
+              showCancelButton={showCancellationAnimation}
+              enhancedAnimation={true}
+              autoAnimate={showCancellationAnimation}
+            />
+          </div>
+
+          {!showFeedback && (
+            <>
               {/* Answer input */}
               <div className="mb-6 p-3 sm:p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl border-2 border-orange-200">
                 <label className="block font-semibold mb-3 text-warm-800">
@@ -717,9 +783,7 @@ export function Level2({
                     : 'bg-blue-600 hover:bg-blue-700 text-white'
                 }`}
               >
-                {currentProblemIndex < level2Problems.length - 1
-                  ? 'Næsta verkefni →'
-                  : 'Ljúka stigi'}
+                {currentProblemIndex < PROBLEM_COUNT - 1 ? 'Næsta verkefni →' : 'Ljúka stigi'}
               </button>
             </div>
           )}

@@ -18,7 +18,7 @@ export const gameTranslations = createGameTranslations({
     levels: {
       level1: {
         name: 'Hugtök',
-        description: 'Sjónræn lærdómur - engar útreikninga',
+        description: 'Sjónrænn lærdómur – engir útreikningar',
       },
       level2: {
         name: 'Beiting',

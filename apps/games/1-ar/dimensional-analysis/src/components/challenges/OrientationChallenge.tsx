@@ -26,8 +26,10 @@ export function OrientationChallenge({ onComplete, onAttempt }: OrientationChall
     if (type === 'wrong') {
       setTriedWrong(true);
     } else {
+      // Both factors stay clickable — the instruction is to try both — but only
+      // the first correct try reports success.
+      if (!triedCorrect) setTimeout(() => onComplete(), 1200);
       setTriedCorrect(true);
-      setTimeout(() => onComplete(), 1200);
     }
   };
 

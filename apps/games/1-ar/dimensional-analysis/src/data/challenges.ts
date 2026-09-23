@@ -219,8 +219,8 @@ export const level3Challenges: Level3Challenge[] = [
     id: 'L3-1',
     type: 'reverse',
     prompt:
-      'Nemandi byrjaði með 5000 mg og endaði með 0.005 kg. Hvaða umbreytingarstuðla notaði hann líklega?',
-    setup: { start: '5000 mg', end: '0.005 kg', startValue: 5000, endValue: 0.005 },
+      'Nemandi byrjaði með 5000 mg og endaði með 0,005 kg. Hvaða umbreytingarstuðla notaði hann líklega?',
+    setup: { start: '5000 mg', end: '0,005 kg', startValue: 5000, endValue: 0.005 },
     options: [
       {
         text: '1 g / 1000 mg, síðan 1 kg / 1000 g',
@@ -257,7 +257,7 @@ export const level3Challenges: Level3Challenge[] = [
   {
     id: 'L3-3',
     type: 'efficiency',
-    prompt: 'Breyttu 0.000005 km í mm. Finndu skilvirkustu leiðina (fæst skref).',
+    prompt: 'Breyttu 0,000005 km í mm. Finndu skilvirkustu leiðina (fæst skref).',
     startValue: 0.000005,
     startUnit: 'km',
     targetUnit: 'mm',
@@ -272,7 +272,7 @@ export const level3Challenges: Level3Challenge[] = [
     id: 'L3-4',
     type: 'synthesis',
     prompt:
-      'Þú mælir 50.0 mL af lausn með eðlismassa 2.50 g/mL. Hversu mörg kg er þetta? Gefðu svar í 3 markverðum stöfum.',
+      'Þú mælir 50,0 mL af lausn með eðlismassa 2,50 g/mL. Hversu mörg kg er þetta? Gefðu svar í 3 markverðum stöfum.',
     startValue: 50.0,
     startUnit: 'mL',
     density: 2.5,
@@ -286,7 +286,7 @@ export const level3Challenges: Level3Challenge[] = [
     id: 'L3-5',
     type: 'real_world',
     prompt:
-      'Þú átt 2.0 L af stofnlausn og þarft að útbúa 150 mL skammta. Hversu marga skammta getur þú útbúið?',
+      'Þú átt 2,0 L af stofnlausn og þarft að útbúa 150 mL skammta. Hversu marga skammta getur þú útbúið?',
     startValue: 2.0,
     startUnit: 'L',
     portionSize: 150,
@@ -299,7 +299,7 @@ export const level3Challenges: Level3Challenge[] = [
   {
     id: 'L3-6',
     type: 'derivation',
-    prompt: 'Hraði ljóss er 3.00 × 10⁸ m/s. Birtu svarið í km/klst.',
+    prompt: 'Hraði ljóss er 3,00 × 10⁸ m/s. Birtu svarið í km/klst.',
     startValue: 3.0e8,
     startUnit: 'm/s',
     targetUnit: 'km/klst',
@@ -331,7 +331,7 @@ export const level3Challenges: Level3Challenge[] = [
   {
     id: 'L3-8',
     type: 'synthesis',
-    prompt: 'Eðlismassi kopar er 8.96 g/cm³. Breyttu þessu í kg/m³.',
+    prompt: 'Eðlismassi kopar er 8,96 g/cm³. Breyttu þessu í kg/m³.',
     startValue: 8.96,
     startUnit: 'g/cm³',
     startLabel: 'Eðlismassi',
@@ -396,7 +396,7 @@ export const level3Challenges: Level3Challenge[] = [
     id: 'L3-12',
     type: 'synthesis',
     prompt:
-      '🔬 Þú ert að undirbúa tilraun sem krefst 0.5 mol af NaCl. Mólmassi NaCl er 58.5 g/mol. Hversu mörg grömm þarftu?',
+      '🔬 Þú ert að undirbúa tilraun sem krefst 0,5 mol af NaCl. Mólmassi NaCl er 58,5 g/mol. Hversu mörg grömm þarftu?',
     startValue: 0.5,
     startUnit: 'mol',
     startLabel: 'Efnismagn',
@@ -412,19 +412,19 @@ export const level3Challenges: Level3Challenge[] = [
     id: 'L3-13',
     type: 'real_world',
     prompt:
-      '💊 Lyf inniheldur 250 mg af virka efninu per töflu. Sjúklingur þarf 1.5 g á dag. Hversu margar töflur þarf hann?',
+      '💊 Lyf inniheldur 250 mg af virka efninu per töflu. Sjúklingur þarf 1,5 g á dag. Hversu margar töflur þarf hann?',
     startValue: 1.5,
     startUnit: 'g',
     portionSize: 250,
     portionUnit: 'mg',
     expectedAnswer: 6,
     requireInteger: true,
-    explanation: 'Fyrst breyta g í mg (1.5 g = 1500 mg), síðan deila með 250 mg/töflu = 6 töflur',
+    explanation: 'Fyrst breyta g í mg (1,5 g = 1500 mg), síðan deila með 250 mg/töflu = 6 töflur',
   },
   {
     id: 'L3-14',
     type: 'synthesis',
-    prompt: '⚗️ Þú mælir 75.0 mL af etanóli með eðlismassa 0.789 g/mL. Hvað vegur þetta í grömm?',
+    prompt: '⚗️ Þú mælir 75,0 mL af etanóli með eðlismassa 0,789 g/mL. Hvað vegur þetta í grömm?',
     startValue: 75.0,
     startUnit: 'mL',
     density: 0.789,
@@ -438,26 +438,26 @@ export const level3Challenges: Level3Challenge[] = [
     id: 'L3-17',
     type: 'error_analysis',
     prompt:
-      '🔴 Nemandi reyndi að reikna massa úr rúmmáli. Hann hafði 50 mL og eðlismassa 2.7 g/mL en fékk 18.5 g. Hvað fór úrskeiðis?',
-    incorrectWork: '50 mL ÷ 2.7 g/mL = 18.5 g',
+      '🔴 Nemandi reyndi að reikna massa úr rúmmáli. Hann hafði 50 mL og eðlismassa 2,7 g/mL en fékk 18,5 g. Hvað fór úrskeiðis?',
+    incorrectWork: '50 mL ÷ 2,7 g/mL = 18,5 g',
     correctAnswer: 135,
     correctUnit: 'g',
     errorExplanation:
-      'Nemandinn deildi í stað þess að margfalda. Rétt: m = ρ × V = 2.7 g/mL × 50 mL = 135 g',
-    correctMethod: ['2.7 g/mL × 50 mL'],
+      'Nemandinn deildi í stað þess að margfalda. Rétt: m = ρ × V = 2,7 g/mL × 50 mL = 135 g',
+    correctMethod: ['2,7 g/mL × 50 mL'],
   },
   {
     id: 'L3-18',
     type: 'real_world',
     prompt:
-      '💧 Efnafræðitilraun þarf 2.5 L af vatni. Þú hefur 250 mL flöskur. Hversu margar flöskur þarftu?',
+      '💧 Efnafræðitilraun þarf 2,5 L af vatni. Þú hefur 250 mL flöskur. Hversu margar flöskur þarftu?',
     startValue: 2.5,
     startUnit: 'L',
     portionSize: 250,
     portionUnit: 'mL',
     expectedAnswer: 10,
     requireInteger: true,
-    explanation: 'Umbreyta 2.5 L í mL: 2500 mL. Síðan 2500 ÷ 250 = 10 flöskur',
+    explanation: 'Umbreyta 2,5 L í mL: 2500 mL. Síðan 2500 ÷ 250 = 10 flöskur',
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -495,7 +495,7 @@ export const level3Challenges: Level3Challenge[] = [
     type: 'synthesis',
     context: 'eldhús',
     prompt:
-      '🥧 Uppskrift þarf 4 oz af smjöri en pakkningin er merkt í grömmum. Hversu mörg g þarftu? (1 oz = 28.35 g)',
+      '🥧 Uppskrift þarf 4 oz af smjöri en pakkningin er merkt í grömmum. Hversu mörg g þarftu? (1 oz = 28,35 g)',
     startValue: 4,
     startUnit: 'oz',
     startLabel: 'Magn',
@@ -505,14 +505,14 @@ export const level3Challenges: Level3Challenge[] = [
     targetUnit: 'g',
     expectedAnswer: 113.4,
     significantFigures: 4,
-    requiredSteps: ['⚖️ 28.35 g / 1 oz'],
+    requiredSteps: ['⚖️ 28,35 g / 1 oz'],
   },
   {
     id: 'L3-COOK-3',
     type: 'derivation',
     context: 'eldhús',
     prompt:
-      '🍰 Þú þrefaldar uppskrift sem þarf 1.5 dl af sykri. Hversu marga mL af sykri þarftu alls? (1 dl = 100 mL)',
+      '🍰 Þú þrefaldar uppskrift sem þarf 1,5 dl af sykri. Hversu marga mL af sykri þarftu alls? (1 dl = 100 mL)',
     startValue: 1.5,
     startUnit: 'dl',
     targetUnit: 'mL',
@@ -572,7 +572,7 @@ export const level3Challenges: Level3Challenge[] = [
     type: 'synthesis',
     context: 'apótek',
     prompt:
-      '💉 Lyfjaskammtur er 0.5 mL/kg líkamsþyngdar. Sjúklingur vegur 70 kg. Hversu marga mL þarf sjúklingurinn?',
+      '💉 Lyfjaskammtur er 0,5 mL/kg líkamsþyngdar. Sjúklingur vegur 70 kg. Hversu marga mL þarf sjúklingurinn?',
     startValue: 70,
     startUnit: 'kg',
     startLabel: 'Líkamsþyngd',
@@ -604,14 +604,14 @@ export const level3Challenges: Level3Challenge[] = [
     type: 'real_world',
     context: 'apótek',
     prompt:
-      '💊 Hvert hylki inniheldur 200 mg. Daglegur skammtur er 0.6 g. Hversu mörg hylki þarf á dag?',
+      '💊 Hvert hylki inniheldur 200 mg. Daglegur skammtur er 0,6 g. Hversu mörg hylki þarf á dag?',
     startValue: 0.6,
     startUnit: 'g',
     portionSize: 200,
     portionUnit: 'mg',
     expectedAnswer: 3,
     requireInteger: true,
-    explanation: '0.6 g = 600 mg. 600 mg ÷ 200 mg/hylki = 3 hylki.',
+    explanation: '0,6 g = 600 mg. 600 mg ÷ 200 mg/hylki = 3 hylki.',
   },
   {
     id: 'L3-PHARM-5',
@@ -633,7 +633,7 @@ export const level3Challenges: Level3Challenge[] = [
     type: 'synthesis',
     context: 'verkfræði',
     prompt:
-      '🏗️ Steypa hefur eðlismassann 2400 kg/m³. Þú steypir 0.50 m³. Hversu mörg kg vegur steypan?',
+      '🏗️ Steypa hefur eðlismassann 2400 kg/m³. Þú steypir 0,50 m³. Hversu mörg kg vegur steypan?',
     startValue: 0.5,
     startUnit: 'm³',
     density: 2400,
@@ -656,13 +656,13 @@ export const level3Challenges: Level3Challenge[] = [
     expectedAnswer: 7,
     requireInteger: true,
     explanation:
-      '325 ÷ 50 = 6.5 pakkar. Þú getur ekki keypt hálfan pakka, svo það þarf að kaupa 7 — hér er námundað upp.',
+      '325 ÷ 50 = 6,5 pakkar. Þú getur ekki keypt hálfan pakka, svo það þarf að kaupa 7 — hér er námundað upp.',
   },
   {
     id: 'L3-ENG-3',
     type: 'synthesis',
     context: 'verkfræði',
-    prompt: '🪨 Sandur hefur eðlismassann 1.6 g/cm³. Breyttu því í kg/m³.',
+    prompt: '🪨 Sandur hefur eðlismassann 1,6 g/cm³. Breyttu því í kg/m³.',
     startValue: 1.6,
     startUnit: 'g/cm³',
     startLabel: 'Eðlismassi',
@@ -676,14 +676,14 @@ export const level3Challenges: Level3Challenge[] = [
     type: 'real_world',
     context: 'verkfræði',
     prompt:
-      '🧱 Múrsteinn vegur 2.5 kg. Flutningabíll ber 2 tonn. Hversu marga steina getur hann flutt?',
+      '🧱 Múrsteinn vegur 2,5 kg. Flutningabíll ber 2 tonn. Hversu marga steina getur hann flutt?',
     startValue: 2,
     startUnit: 'tonn',
     portionSize: 2.5,
     portionUnit: 'kg',
     expectedAnswer: 800,
     requireInteger: true,
-    explanation: '2 tonn = 2000 kg. 2000 kg ÷ 2.5 kg/stein = 800 steinar.',
+    explanation: '2 tonn = 2000 kg. 2000 kg ÷ 2,5 kg/stein = 800 steinar.',
   },
   {
     id: 'L3-ENG-5',
@@ -717,7 +717,7 @@ export const level3Challenges: Level3Challenge[] = [
     id: 'L3-SPORT-2',
     type: 'synthesis',
     context: 'íþróttir',
-    prompt: '🚴 Hjólreiðamaður hjólar á 25.0 km/klst. Breyttu hraðanum í m/s.',
+    prompt: '🚴 Hjólreiðamaður hjólar á 25,0 km/klst. Breyttu hraðanum í m/s.',
     startValue: 25.0,
     startUnit: 'km/klst',
     startLabel: 'Hraði',
@@ -759,14 +759,14 @@ export const level3Challenges: Level3Challenge[] = [
     type: 'synthesis',
     context: 'íþróttir',
     prompt:
-      '🎿 Skíðamaður fer á 45.0 km/klst. Hversu margar mínútur tekur það hann að fara einn km?',
+      '🎿 Skíðamaður fer á 45,0 km/klst. Hversu margar mínútur tekur það hann að fara einn km?',
     startValue: 45.0,
     startUnit: 'km/klst',
     startLabel: 'Hraði',
     targetUnit: 'mín/km',
     expectedAnswer: 1.33,
     significantFigures: 3,
-    requiredSteps: ['↔️ Snúðu hraðanum við: 1 klst / 45.0 km', '⏱️ 60 mín / 1 klst'],
+    requiredSteps: ['↔️ Snúðu hraðanum við: 1 klst / 45,0 km', '⏱️ 60 mín / 1 klst'],
   },
 
   // ─── FERÐALÖG ──────────────────────────────────────────────────────────────
@@ -774,7 +774,7 @@ export const level3Challenges: Level3Challenge[] = [
     id: 'L3-TRAVEL-1',
     type: 'synthesis',
     context: 'ferðalög',
-    prompt: '✈️ Flugið tekur 8.5 klst. Hversu margar mínútur eru það?',
+    prompt: '✈️ Flugið tekur 8,5 klst. Hversu margar mínútur eru það?',
     startValue: 8.5,
     startUnit: 'klst',
     startLabel: 'Tími',
@@ -787,7 +787,7 @@ export const level3Challenges: Level3Challenge[] = [
     id: 'L3-TRAVEL-2',
     type: 'synthesis',
     context: 'ferðalög',
-    prompt: '⛽ Bíll eyðir 7.0 L á hverja 100 km. Ferðin er 350 km. Hversu marga lítra þarftu?',
+    prompt: '⛽ Bíll eyðir 7,0 L á hverja 100 km. Ferðin er 350 km. Hversu marga lítra þarftu?',
     startValue: 350,
     startUnit: 'km',
     startLabel: 'Vegalengd',
@@ -796,13 +796,13 @@ export const level3Challenges: Level3Challenge[] = [
     factorLabel: 'Eyðsla',
     targetUnit: 'L',
     expectedAnswer: 24.5,
-    requiredSteps: ['⛽ Margfaldaðu vegalengdina með 7.0 L / 100 km'],
+    requiredSteps: ['⛽ Margfaldaðu vegalengdina með 7,0 L / 100 km'],
   },
   {
     id: 'L3-TRAVEL-3',
     type: 'efficiency',
     context: 'ferðalög',
-    prompt: '🌍 Breyttu 100 km í mílur. (1 míla = 1.609 km)',
+    prompt: '🌍 Breyttu 100 km í mílur. (1 míla = 1,609 km)',
     startValue: 100,
     startUnit: 'km',
     targetUnit: 'mílur',
@@ -830,7 +830,7 @@ export const level3Challenges: Level3Challenge[] = [
     type: 'real_world',
     context: 'ferðalög',
     prompt:
-      '🛫 Flugvélin er 73 m löng. Flugbrautin er 3.5 km. Hversu margar flugvélar komast fyrir á brautinni?',
+      '🛫 Flugvélin er 73 m löng. Flugbrautin er 3,5 km. Hversu margar flugvélar komast fyrir á brautinni?',
     startValue: 3.5,
     startUnit: 'km',
     portionSize: 73,
@@ -838,6 +838,6 @@ export const level3Challenges: Level3Challenge[] = [
     expectedAnswer: 47,
     requireInteger: true,
     explanation:
-      '3.5 km = 3500 m. 3500 m ÷ 73 m/flugvél = 47.9 — hér er námundað niður, því hálf flugvél kemst ekki fyrir.',
+      '3,5 km = 3500 m. 3500 m ÷ 73 m/flugvél = 47,9 — hér er námundað niður, því hálf flugvél kemst ekki fyrir.',
   },
 ];

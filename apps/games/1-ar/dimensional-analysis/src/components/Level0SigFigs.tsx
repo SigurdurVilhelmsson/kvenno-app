@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { DECIMAL_INPUT_PROPS, parseStudentNumber } from '@shared/utils';
+import { DECIMAL_INPUT_PROPS, formatDecimal, type ScientificEntry } from '@shared/utils';
 
 import {
   ARITHMETIC_ITEMS,
@@ -11,7 +11,7 @@ import {
   type CountItem,
   type RoundItem,
 } from '../data/sigfig-items';
-import { countSigFigs } from '../utils/sigfigs';
+import { countSigFigs, readWritten, toggleSign } from '../utils/sigfigs';
 
 /**
  * Stig 0 — Markverðir stafir.
@@ -42,24 +42,116 @@ interface Props {
 }
 
 /**
+ * `rett` right; `stafir` the right number to the wrong precision; `veldi` the
+ * right digits a power of ten out; `gildi` a wrong rounding; `ogilt` not
+ * readable as a number, which does not use up the question.
+ */
+export type WrittenVerdict = 'rett' | 'stafir' | 'veldi' | 'gildi' | 'ogilt';
+
+/**
  * Is the written answer right?
  *
  * **Both halves have to match**, and that is the lesson: `2,5` and `2,50` are
  * the same number and different answers. Comparing only the value would accept
  * the very mistake the step exists to correct.
+ *
+ * The answer arrives as digits and an optional power of ten (`readWritten`).
+ * The value it is compared against comes from the item's number, never from
+ * reading back the printed answer: `6,0 × 10¹` read with `parseStudentNumber`
+ * is 6, which is how `6,0` came to be graded correct for sixty. The comparison
+ * is exact, not within a tolerance — a tolerance would accept `0,00456` for
+ * `0,00457`, which is a wrong rounding and the thing this step grades.
+ *
+ * The significant figures are counted on the digits as written. The power of
+ * ten carries none, so `6,0` × 10¹ is two figures, and so is `60,` (rule 4).
  */
-export function checkWritten(entry: string, expected: string): 'rett' | 'gildi' | 'stafir' {
-  const wanted = parseStudentNumber(expected);
-  const got = parseStudentNumber(entry);
-  if (!Number.isFinite(got) || Math.abs(got - wanted) > Math.abs(wanted) * 1e-9) return 'gildi';
-  let figures: number;
-  try {
-    figures = countSigFigs(entry);
-  } catch {
-    return 'gildi';
+export function checkWritten(
+  entry: ScientificEntry,
+  item: { value: number; figures: number }
+): WrittenVerdict {
+  const written = readWritten(entry);
+  if (written === null) return 'ogilt';
+
+  const wanted = Number(item.value.toPrecision(item.figures));
+  if (!(written.value > 0)) return 'gildi';
+
+  // How many powers of ten apart the two are. Zero is the right value; a
+  // whole number is the right digits with the comma or the power misplaced —
+  // `6,0` for sixty — which is a different mistake from a wrong rounding.
+  const shift = Math.log10(written.value / wanted);
+  if (Math.abs(shift) > 1e-9) {
+    return Math.abs(shift - Math.round(shift)) < 1e-9 ? 'veldi' : 'gildi';
   }
-  return figures === countSigFigs(expected) ? 'rett' : 'stafir';
+  return countSigFigs(written.digits) === item.figures ? 'rett' : 'stafir';
 }
+
+/**
+ * A written number as two fields: the digits, `× 10`, and a power of ten.
+ *
+ * Stig 3 uses this row too, for the one kind of item that asks for scientific
+ * notation, so the game has one way of writing it and not two. Both fields
+ * raise the decimal keypad; that keypad has no minus key on an iPhone, so the
+ * `±` button flips the sign of the power. It shows only on a touch screen — a
+ * desktop keyboard has a minus key.
+ *
+ * Neither field carries a numeric placeholder. Stig 0's old one, `t.d. 2,50`,
+ * was the answer to its own third item.
+ */
+export function WrittenNumberRow({
+  entry,
+  onChange,
+  disabled = false,
+  digitsLabel,
+  fieldClassName = 'rounded-lg border-2 border-warm-300 py-2 text-lg',
+}: {
+  entry: ScientificEntry;
+  onChange: (patch: Partial<ScientificEntry>) => void;
+  disabled?: boolean;
+  /** The accessible name of the digits field. */
+  digitsLabel: string;
+  /** Border, padding and type size, so each level keeps its own look. */
+  fieldClassName?: string;
+}) {
+  return (
+    <div className="flex w-full min-w-0 items-center gap-1.5 sm:w-auto sm:gap-2">
+      <input
+        {...DECIMAL_INPUT_PROPS}
+        value={entry.mantissa}
+        onChange={(e) => onChange({ mantissa: e.target.value })}
+        disabled={disabled}
+        autoComplete="off"
+        aria-label={digitsLabel}
+        className={`w-0 min-w-0 flex-1 px-3 sm:w-40 sm:flex-none ${fieldClassName}`}
+      />
+      <span className="shrink-0 whitespace-nowrap font-mono text-lg text-warm-700">× 10</span>
+      <input
+        {...DECIMAL_INPUT_PROPS}
+        value={entry.exponent}
+        onChange={(e) => onChange({ exponent: e.target.value })}
+        disabled={disabled}
+        autoComplete="off"
+        aria-label="Veldisvísir"
+        className={`w-14 shrink-0 px-1 text-center font-mono sm:w-20 ${fieldClassName}`}
+      />
+      <button
+        type="button"
+        onClick={() => onChange({ exponent: toggleSign(entry.exponent) })}
+        disabled={disabled}
+        aria-label="Skipta um formerki á veldisvísi"
+        className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-warm-300 bg-white font-mono text-lg text-warm-700 disabled:opacity-60 pointer-coarse:inline-flex"
+      >
+        ±
+      </button>
+    </div>
+  );
+}
+
+/** Under the row: the power is optional, so a plainly written number is fine. */
+export const WRITTEN_NUMBER_HELP = 'Skildu veldisvísinn eftir auðan ef þú skrifar töluna beint.';
+
+/** When `readWritten` cannot read what was typed. */
+export const WRITTEN_NUMBER_UNREADABLE =
+  'Þetta er ekki hægt að lesa sem tölu. Skrifaðu aðeins tölustafi og kommu í fyrri reitinn og veldisvísinn í þann seinni.';
 
 function ChoiceRow({
   options,
@@ -120,12 +212,20 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
   const [step, setStep] = useState<Step>('reglur');
   const [index, setIndex] = useState(0);
   const [chosen, setChosen] = useState<number | null>(null);
-  const [entry, setEntry] = useState('');
-  const [verdict, setVerdict] = useState<'rett' | 'gildi' | 'stafir' | null>(null);
+  const [entry, setEntry] = useState<ScientificEntry>({ mantissa: '', exponent: '' });
+  const [verdict, setVerdict] = useState<WrittenVerdict | null>(null);
+  // An unreadable entry is not an answer: it is sent back for editing, and
+  // editing clears the prompt.
+  const answered = verdict !== null && verdict !== 'ogilt';
+
+  const edit = (patch: Partial<ScientificEntry>) => {
+    setEntry((current) => ({ ...current, ...patch }));
+    setVerdict((current) => (current === 'ogilt' ? null : current));
+  };
 
   const advance = (list: unknown[], next: Step) => {
     setChosen(null);
-    setEntry('');
+    setEntry({ mantissa: '', exponent: '' });
     setVerdict(null);
     if (index + 1 < list.length) setIndex(index + 1);
     else {
@@ -255,27 +355,31 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
             <p className="mb-4 text-warm-700">
               Skrifaðu töluna með <strong>{roundItem.figures}</strong> markverðum stöfum.
             </p>
-            <input
-              {...DECIMAL_INPUT_PROPS}
-              value={entry}
-              onChange={(e) => setEntry(e.target.value)}
-              disabled={verdict !== null}
-              placeholder="t.d. 2,50"
-              autoComplete="off"
-              aria-label="Svarið þitt"
-              className="w-36 rounded-lg border-2 border-warm-300 px-4 py-2 text-lg sm:w-48"
-            />
-            {verdict === null && (
-              <button
-                onClick={() => setVerdict(checkWritten(entry, roundItem.answer))}
-                disabled={entry.trim() === ''}
-                className="game-btn ml-3 rounded-lg px-5 py-2 font-semibold text-white disabled:opacity-40"
-                style={{ backgroundColor: '#f36b22' }}
-              >
-                Svara
-              </button>
+            {/* The same row on every item, so its shape says nothing about which
+                one wants a power of ten. */}
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-3">
+              <WrittenNumberRow
+                entry={entry}
+                onChange={edit}
+                disabled={answered}
+                digitsLabel="Svarið þitt"
+              />
+              {!answered && (
+                <button
+                  onClick={() => setVerdict(checkWritten(entry, roundItem))}
+                  disabled={entry.mantissa.trim() === ''}
+                  className="game-btn rounded-lg px-5 py-2 font-semibold text-white disabled:opacity-40"
+                  style={{ backgroundColor: '#f36b22' }}
+                >
+                  Svara
+                </button>
+              )}
+            </div>
+            <p className="mt-2 text-xs text-warm-500">{WRITTEN_NUMBER_HELP}</p>
+            {verdict === 'ogilt' && (
+              <p className="mt-2 text-sm text-amber-800">{WRITTEN_NUMBER_UNREADABLE}</p>
             )}
-            {verdict !== null && (
+            {answered && (
               <Verdict ok={verdict === 'rett'}>
                 <p>
                   Svarið er <strong>{roundItem.answer}</strong>.
@@ -286,17 +390,32 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
                     stöfum. Núll aftast er ekki skraut — það er hluti af fullyrðingunni um nákvæmni.
                   </p>
                 )}
+                {verdict === 'veldi' && (
+                  <p className="mt-2">
+                    Talan er ekki af réttri stærð. Athugaðu veldisvísinn og hvar komman stendur.
+                  </p>
+                )}
                 {verdict === 'gildi' && <p className="mt-2">Námundunin sjálf stemmir ekki.</p>}
+                {/* The notation is shown, not named. The old note's word had no
+                    hits in the course's textbook, which itself uses two, and
+                    which one the course uses is an open terminology ruling
+                    (`docs/FEBRUARY-DECISIONS-RECOVERED.md`, item 7). */}
                 {roundItem.answer.includes('×') && (
                   <p className="mt-2">
-                    Þessa tölu er ekki hægt að skrifa með {roundItem.figures} markverðum stöfum án
-                    veldisritháttar: skrifuð beint yrði hún lesin með færri stöfum. Það er einmitt
-                    ástæðan fyrir veldisrithætti.
+                    Skrifuð sem{' '}
+                    <code>
+                      {formatDecimal(Number(roundItem.value.toPrecision(roundItem.figures)))}
+                    </code>{' '}
+                    yrði talan lesin með færri markverðum stöfum, því núll aftast telja ekki nema
+                    komma sé skrifuð (regla 4). Skýrast er að skrifa hana sem{' '}
+                    <code className="whitespace-nowrap">{roundItem.answer}</code>, þar sem allir
+                    tölustafirnir framan við <span className="whitespace-nowrap">× 10</span> eru
+                    markverðir.
                   </p>
                 )}
               </Verdict>
             )}
-            {verdict !== null && (
+            {answered && (
               <div>
                 <button
                   onClick={() => advance(ROUND_ITEMS, 'reikna')}

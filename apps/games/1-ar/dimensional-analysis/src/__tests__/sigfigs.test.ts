@@ -4,8 +4,10 @@ import {
   countDecimalPlaces,
   countSigFigs,
   decimalPlacesAfterAdd,
+  readWritten,
   roundToSigFigs,
   sigFigsAfterMultiply,
+  toggleSign,
 } from '../utils/sigfigs';
 
 /**
@@ -134,7 +136,7 @@ describe('roundToSigFigs', () => {
   it('prefers plain decimal, and only goes scientific when plain would lie', () => {
     // 1234 to two figures is `1200`, which rule 4 already reads as two — plain
     // is fine and is what a student writes. 60,221 to two cannot be written
-    // plainly at all: `60` claims one figure.
+    // plainly without a trailing comma: `60` claims one figure.
     expect(roundToSigFigs(1234, 2)).toBe('1200');
     expect(roundToSigFigs(60.221, 2)).toBe('6,0 × 10¹');
   });
@@ -173,5 +175,43 @@ describe('the two arithmetic rules', () => {
     const inputs = ['100', '1.234'];
     expect(decimalPlacesAfterAdd(inputs)).toBe(0);
     expect(sigFigsAfterMultiply(inputs)).toBe(1);
+  });
+});
+
+describe('readWritten — an answer typed as digits and a power of ten', () => {
+  const w = (mantissa: string, exponent = '') => ({ mantissa, exponent });
+
+  it('reads the whole number, power included, and keeps the digits as written', () => {
+    expect(readWritten(w('6,0', '1'))).toEqual({ digits: '6,0', value: 60 });
+    expect(readWritten(w('1,08', '9'))).toEqual({ digits: '1,08', value: 1.08e9 });
+    expect(readWritten(w('4,57', '-3'))?.value).toBe(0.00457);
+    expect(readWritten(w('4,57', '\u22123'))?.value).toBe(0.00457); // typographic minus
+    expect(readWritten(w(' 2,50 ', ''))).toEqual({ digits: '2,50', value: 2.5 });
+    expect(readWritten(w('60,'))?.value).toBe(60);
+    expect(readWritten(w('6.0e1'))?.value).toBe(60);
+  });
+
+  it('refuses what the two fields cannot hold, rather than half-reading it', () => {
+    // parseFloat reads each of these as a fragment of the number meant.
+    expect(readWritten(w('6,0 × 10¹'))).toBeNull();
+    expect(readWritten(w('1,08×10^9'))).toBeNull();
+    expect(readWritten(w('6,0', '1,5'))).toBeNull();
+    expect(readWritten(w('6,0e1', '1'))).toBeNull();
+    expect(readWritten(w('12 kg'))).toBeNull();
+    expect(readWritten(w(''))).toBeNull();
+    expect(readWritten(w('-'))).toBeNull();
+    expect(readWritten(w('NaN'))).toBeNull();
+    expect(readWritten(w('5', '-'))).toBeNull(); // the sign button pressed first
+  });
+});
+
+describe('toggleSign — the power of ten on a keypad with no minus key', () => {
+  it('flips the sign either way, and starts a negative power on an empty field', () => {
+    expect(toggleSign('5')).toBe('-5');
+    expect(toggleSign('-5')).toBe('5');
+    expect(toggleSign('\u22125')).toBe('5');
+    expect(toggleSign('')).toBe('-');
+    expect(toggleSign('-')).toBe('');
+    expect(toggleSign('+5')).toBe('-5'); // not `-+5`, which reads as nothing
   });
 });

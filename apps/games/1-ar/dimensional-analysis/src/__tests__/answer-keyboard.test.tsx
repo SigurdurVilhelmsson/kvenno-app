@@ -4,11 +4,10 @@
  *
  * Every answer in Levels 2 and 3 is a number, often with an Icelandic decimal
  * comma, so the fields ask for the decimal keypad (`inputMode="decimal"`) on a
- * `type="text"` field that keeps the comma. The one exception is the Level 3
- * item that asks for scientific notation (`t.d. 4.2e5`): a decimal keypad has
- * no `e`, so that field keeps the full keyboard, with autocorrect and
- * autocapitalisation off so a phone does not rewrite `4.2e5` as `4.2E5` or a
- * word.
+ * `type="text"` field that keeps the comma. That includes the Level 3 item that
+ * asks for scientific notation: it takes the digits and the power of ten in two
+ * fields, Stig 0's row, so the decimal keypad serves both — a single field on
+ * the full keyboard could hold `1,08 × 10⁹` but was graded as 1,08.
  */
 
 import { render, screen, cleanup } from '@testing-library/react';
@@ -57,16 +56,15 @@ describe('answer fields raise the right keyboard', () => {
     expect(field.getAttribute('inputmode')).toBe('decimal');
   });
 
-  it('Level 3 keeps the full keyboard where the answer is in scientific notation', () => {
+  it('Level 3 takes scientific notation in two decimal-keypad fields', () => {
     const sci = level3Challenges.find((c) => c.type === 'derivation' && c.scientificNotation);
     expect(sci, 'the pool still has a scientific-notation item').toBeDefined();
     run.current = [sci!];
     render(<Level3 onComplete={vi.fn()} onBack={vi.fn()} initialProgress={{ ...L3_STARTED }} />);
-    const field = screen.getByPlaceholderText('t.d. 4.2e5');
-    expect(field.getAttribute('type')).toBe('text');
-    expect(field.getAttribute('inputmode')).toBeNull();
-    expect(field.getAttribute('autocapitalize')).toBe('none');
-    expect(field.getAttribute('autocorrect')).toBe('off');
-    expect(field.getAttribute('spellcheck')).toBe('false');
+    for (const label of ['Þitt svar', 'Veldisvísir']) {
+      const field = screen.getByLabelText(label);
+      expect(field.getAttribute('type')).toBe('text');
+      expect(field.getAttribute('inputmode')).toBe('decimal');
+    }
   });
 });
