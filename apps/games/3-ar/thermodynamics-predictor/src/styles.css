@@ -44,6 +44,52 @@ input[type='range']::-moz-range-thumb {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+/*
+ * On a touch screen the 8 px track was the whole target: a finger had to land on it to move
+ * the temperature. The slider becomes 44 px tall there, all of it content box, with the 8 px
+ * track drawn by the track pseudo-element in the middle and a larger thumb. Not by padding: a
+ * drag that starts in an input's padding does not move the thumb. A mouse-driven desktop keeps
+ * the slider exactly as above.
+ */
+@media (pointer: coarse) {
+  input[type='range'] {
+    height: 44px;
+    background: transparent;
+  }
+
+  input[type='range']::-webkit-slider-runnable-track {
+    height: 8px;
+    border-radius: 5px;
+    background: #e5e7eb;
+  }
+
+  input[type='range']::-webkit-slider-thumb {
+    width: 28px;
+    height: 28px;
+    /* centre the thumb on the 8 px track: (8 − 28) / 2 */
+    margin-top: -10px;
+  }
+
+  input[type='range']::-moz-range-track {
+    height: 8px;
+    border-radius: 5px;
+    background: #e5e7eb;
+  }
+
+  input[type='range']::-moz-range-thumb {
+    width: 28px;
+    height: 28px;
+  }
+
+  /*
+   * The T_cross subscripts sit in 12 and 14 px text, and the default 75 % made them 9 and
+   * 10,5 px. On touch screens they get a 12 px floor.
+   */
+  sub {
+    font-size: max(12px, 0.75em);
+  }
+}
+
 /* Scenario Badge Colors */
 .scenario-1 {
   background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);

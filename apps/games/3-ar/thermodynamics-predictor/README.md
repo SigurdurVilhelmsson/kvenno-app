@@ -1,6 +1,6 @@
 # Varmafræði spámaður
 
-Year 3, chain position 5 of 8, between Sýrufastinn and pH Títrun (`src/App.tsx:447-448`):
+Year 3, chain position 5 of 8, between Sýrufastinn and pH Títrun (`src/App.tsx:493-494`):
 Gaslögmál → Jafnvægisfastinn → Hliðrun jafnvægis → Sýrufastinn → **Varmafræði** → pH Títrun →
 Stuðpúðar → Leysnijafnvægi. The chain string is enforced across all Y3 games by
 `3-ar/syrufastinn/src/__tests__/chain-string.test.ts`.
@@ -25,9 +25,9 @@ One screen per mode, all in `src/App.tsx`; there are no level components.
 | Æfingarhamur (`learning`)  | A random problem from the chosen difficulty. Enter ΔG° (kJ/mol) and pick one of three verdicts; the solution then shows the steps and, for scenarios 3–4, the crossover temperature |
 | Keppnishamur (`challenge`) | The same problems with a 90-second timer, a score and a streak                                                                                                                      |
 
-Grading (`checkAnswer`, `src/App.tsx:116`): ΔG° is right within **±3 kJ/mol absolute**
-(`:121`), parsed with `parseStudentNumber`, so the decimal comma works (`type="text"` +
-`inputMode="decimal"`, `:839-840`). The verdict comes from `getSpontaneity`
+Grading (`checkAnswer`, `src/App.tsx:158`): ΔG° is right within **±3 kJ/mol absolute**
+(`:163`), parsed with `parseStudentNumber`, so the decimal comma works (`type="text"` +
+`inputMode="decimal"`, `:893-894`). The verdict comes from `getSpontaneity`
 (`src/utils/thermo-calculations.ts`), which calls |ΔG| < 1 kJ/mol `jafnvægi`. Both must be right.
 Wrong answers get `buildSpontaneityReasoning()`, a scenario-specific explanation of which term wins.
 
@@ -64,8 +64,32 @@ src/data/problems.ts                 30 problems: reaction, ΔH, ΔS, default T,
 src/data/index.ts                    re-export
 src/types.ts                         Problem, GameMode, Spontaneity
 src/utils/thermo-calculations.ts     calculateDeltaG, getSpontaneity
-src/__tests__/                       data-integrity, thermo-calculations
+src/utils/sign.ts                    toggleSign, behind the ± button (see Phones)
+src/__tests__/                       data-integrity, thermo-calculations, co-enthalpy, phone-play
 ```
+
+## Phones
+
+**The `±` button is what makes a negative ΔG° typeable on an iPhone.** The ΔG° field raises the
+decimal keypad, as the decimal-comma rule requires, and on an iPhone that keypad has no minus key —
+while 18 of the 30 problems have a negative ΔG° at their default temperature. The button flips the
+sign of whatever is in the field. It shows only on touch screens (`pointer-coarse`); a desktop
+keyboard has a minus key and the desktop row is unchanged. `phone-play.test.tsx` plays a negative
+answer through it.
+
+Where the screen lands, since the menu and the solution are long on a phone: a new mode and
+"Næsta spurning" open at the top, and once an answer is checked — or the challenge timer runs out —
+the verdict box is scrolled into view when its first line is off screen, after the answer card has
+left. It does nothing when the verdict is already visible.
+
+On touch screens the temperature sliders are 44 px tall, all of it draggable (the 8 px track is the
+track pseudo-element, drawn in the middle; padding would not do, since a drag that starts in an
+input's padding does not move the thumb), with a 28 px thumb, and `<sub>` has a 12 px floor, both in
+`src/styles.css` under `(pointer: coarse)`. The rest is
+layout, each piece restoring the desktop look at `sm`: cards lose padding; the ΔH and ΔS cards stack
+in Könnun and in the problem card; the progress stats become rows; the graph legend is one column;
+the entropy before/after panels stack at full size instead of shrinking side by side; the challenge
+stats take a row of their own; and Könnun's two buttons stack.
 
 ## Fixed
 
@@ -85,7 +109,7 @@ src/__tests__/                       data-integrity, thermo-calculations
   sourced anywhere on the platform, so the ΔS values are unchecked. (A third, id 25, is fixed —
   see below.)
 - **The answer is on screen before the student answers.** The "Við núverandi hitastig" panel
-  (`src/App.tsx:742-759`) prints the computed ΔG° and the verdict beside the question, and the graph
+  (`src/App.tsx:794-811`) prints the computed ΔG° and the verdict beside the question, and the graph
   marker labels ΔG° at the current T. `REVIEW_TRACKER.md` raised this in iteration 1 and it was
   never resolved. Removing it removes the live feedback the slider exists for, so it is a design
   question, not a deletion.
@@ -95,9 +119,9 @@ src/__tests__/                       data-integrity, thermo-calculations
   reason, but the prompts asking for K remain.
 - **Terminology the glossary settles but the game does not follow.** Entropy is named four ways in
   one game (the glossary's `óreiða`, plus `óregla`, and two spellings of the loanword); enthalpy
-  appears as a t-spelled loanword at `:316` and `:673` and as `varmamismunur` at `:490`, never as
+  appears as a t-spelled loanword at `:362` and `:725` and as `varmamismunur` at `:539`, never as
   `vermi`; the menu says `Gibbs frjálsa orku` where `ordabok.md` has `Gibbs fríorka`; and the
-  exo/endothermic tags at `:687` are not the glossary's `útvermið` / `innvermið`. The roadmap
+  exo/endothermic tags at `:739` are not the glossary's `útvermið` / `innvermið`. The roadmap
   listed this game among the three that contradict themselves, and for entropy it still does.
 - **Score and streak accrue in Æfingarhamur too.** `checkAnswer` updates `score`, `highScore` and
   `bestStreak` in both modes, and the menu shows them, though only Keppnishamur displays them in

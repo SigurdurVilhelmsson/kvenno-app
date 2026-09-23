@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 
 import {
   Header,
@@ -20,7 +20,17 @@ import { parseStudentNumber } from '@shared/utils';
 import { EntropyVisualization } from './components/EntropyVisualization';
 import { PROBLEMS } from './data';
 import type { Difficulty, GameMode, Spontaneity, Problem } from './types';
+import { toggleSign } from './utils/sign';
 import { calculateDeltaG, getSpontaneity } from './utils/thermo-calculations';
+
+/** How long the answer card takes to leave once an answer is checked (its Presence exit). */
+const ANSWER_CARD_EXIT_MS = 250;
+
+/**
+ * Height of the feedback box's first line of text (border, padding and the verdict) —
+ * if that much of it is not on screen, the student cannot see whether they were right.
+ */
+const FEEDBACK_VERDICT_PX = 60;
 
 interface ThermoProgress {
   score: number;
@@ -52,6 +62,36 @@ function App() {
   } = useGameProgress<ThermoProgress>('thermodynamics-predictor-progress', DEFAULT_PROGRESS);
   const [streak, setStreak] = useState(0);
   const [timeLeft, setTimeLeft] = useState(90);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const shownMode = useRef(mode);
+
+  // Each mode is its own screen: open it at the top. The menu is long on a phone, so without
+  // this a student who taps a mode at its foot lands in the middle of the next screen.
+  // Only on a change of mode, so loading the page leaves the browser's own scrolling alone.
+  useEffect(() => {
+    if (shownMode.current === mode) return;
+    shownMode.current = mode;
+    window.scrollTo(0, 0);
+  }, [mode]);
+
+  // Once an answer is checked the solution takes the answer card's place and the verdict sits
+  // below it; on a phone that is below the fold, so tapping "Athuga svar" would seem to show a
+  // solution without saying whether the answer was right. When the challenge timer runs out the
+  // student may be scrolled down to the graph instead, with the verdict above the screen. Bring
+  // the verdict into view — only when it is not already — after the answer card has left and
+  // the layout has settled.
+  useEffect(() => {
+    if (!showSolution || !feedback) return;
+    const timer = window.setTimeout(() => {
+      const el = feedbackRef.current;
+      if (!el) return;
+      const { top } = el.getBoundingClientRect();
+      if (top < 0 || top + FEEDBACK_VERDICT_PX > window.innerHeight) {
+        el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }, ANSWER_CARD_EXIT_MS + 50);
+    return () => window.clearTimeout(timer);
+  }, [showSolution, feedback]);
 
   const resetProgress = () => {
     resetStoredProgress();
@@ -71,6 +111,8 @@ function App() {
     if (mode === 'challenge') {
       setTimeLeft(90);
     }
+    // "Næsta spurning" sits at the foot of the solution; the new problem starts at the top.
+    window.scrollTo(0, 0);
   };
 
   // Calculate ΔG for the current problem at a given temperature
@@ -264,7 +306,7 @@ function App() {
             Fara í efni
           </a>
           <div className="max-w-4xl mx-auto px-4">
-            <div className="bg-white rounded-lg shadow-lg p-8" id="game-content">
+            <div className="bg-white rounded-lg shadow-lg p-4 sm:p-8" id="game-content">
               <p className="text-warm-600 mb-4">
                 Lærðu um Gibbs frjálsa orku og sjálfgengi efnahvarfa
               </p>
@@ -276,35 +318,39 @@ function App() {
                     <h3 className="font-semibold text-warm-700">Framvinda</h3>
                     <button
                       onClick={resetProgress}
-                      className="text-sm text-warm-500 hover:text-red-500 transition-colors"
+                      className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3"
                     >
                       Endurstilla
                     </button>
                   </div>
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div className="bg-yellow-50 rounded-lg p-3">
+                  {/* Below sm each stat is a row (label left, number right): three columns of a
+                      phone's width split "Spurningar" and a three-digit score mid-word. */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-center">
+                    <div className="bg-yellow-50 rounded-lg p-3 flex flex-row-reverse items-center justify-between sm:block">
                       <div className="text-2xl font-bold text-yellow-600">{progress.highScore}</div>
-                      <div className="text-xs text-warm-600">Hæsta stig</div>
+                      <div className="text-sm sm:text-xs text-warm-600">Hæsta stig</div>
                     </div>
-                    <div className="bg-green-50 rounded-lg p-3">
+                    <div className="bg-green-50 rounded-lg p-3 flex flex-row-reverse items-center justify-between sm:block">
                       <div className="text-2xl font-bold text-green-600">
                         {progress.problemsCompleted}
                       </div>
-                      <div className="text-xs text-warm-600">Spurningar</div>
+                      <div className="text-sm sm:text-xs text-warm-600">Spurningar</div>
                     </div>
-                    <div className="bg-orange-50 rounded-lg p-3">
+                    <div className="bg-orange-50 rounded-lg p-3 flex flex-row-reverse items-center justify-between sm:block">
                       <div className="text-2xl font-bold text-orange-600">
                         {progress.bestStreak}
                       </div>
-                      <div className="text-xs text-warm-600">Besta röð</div>
+                      <div className="text-sm sm:text-xs text-warm-600">Besta röð</div>
                     </div>
                   </div>
                 </div>
               )}
 
               {/* Conceptual derivation of ΔG = ΔH - TΔS */}
-              <div className="mb-8 p-6 bg-blue-50 rounded-lg space-y-4">
-                <h2 className="text-xl font-bold text-blue-800">Af hverju ΔG = ΔH − TΔS?</h2>
+              <div className="mb-8 p-4 sm:p-6 bg-blue-50 rounded-lg space-y-4">
+                <h2 className="text-xl font-bold text-blue-800">
+                  Af hverju <span className="whitespace-nowrap">ΔG = ΔH − TΔS?</span>
+                </h2>
 
                 <p className="text-sm text-blue-700">
                   Til að spá fyrir um hvort hvörf gerist sjálfkrafa (sjálfgengt) þurfum við að skoða{' '}
@@ -469,11 +515,13 @@ function App() {
     const demoSpontaneous = demoDeltaG < 0;
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100 p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 space-y-5">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 space-y-5">
           <button
             onClick={() => setMode('menu')}
-            className="text-warm-600 hover:text-warm-800 text-sm"
+            className="text-warm-600 hover:text-warm-800 text-sm pointer-coarse:py-3 pointer-coarse:-mt-3 pointer-coarse:mb-2"
           >
+            {/* 44 px tall on touch. Only the top padding is pulled back: a bottom -my-3 would also
+                cancel space-y-5's gap and seat the heading against this link. */}
             ← Til baka í valmynd
           </button>
           <h2 className="text-2xl font-bold text-indigo-700">
@@ -484,8 +532,9 @@ function App() {
             −200 J/(mol·K)). Dragðu hitastigs-sleðann og sjáðu hvernig ΔG breytist.
           </p>
 
-          <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-6 rounded-xl border border-indigo-200">
-            <div className="grid grid-cols-2 gap-4 mb-4 text-center">
+          <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-6 rounded-xl border border-indigo-200">
+            {/* One column below sm: side by side, "(varmamismunur)" and "J/(mol·K)" split mid-word. */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 text-center">
               <div className="bg-red-50 p-3 rounded-lg border border-red-200">
                 <div className="text-xs text-red-700 font-semibold">ΔH° (varmamismunur)</div>
                 <div className="text-2xl font-bold text-red-800">{demoDeltaH} kJ/mol</div>
@@ -525,7 +574,7 @@ function App() {
             >
               <div className="font-bold text-sm">
                 ΔG° = ΔH° − TΔS° = {demoDeltaH} − ({demoT})({(demoDeltaS / 1000).toFixed(3)}) ={' '}
-                <span className="text-xl">{demoDeltaG.toFixed(1)} kJ/mol</span>
+                <span className="text-xl whitespace-nowrap">{demoDeltaG.toFixed(1)} kJ/mol</span>
               </div>
               <div className="mt-1 text-sm">
                 {demoSpontaneous ? (
@@ -560,7 +609,8 @@ function App() {
             </ul>
           </div>
 
-          <div className="flex gap-3">
+          {/* Stacked below sm: two half-width buttons leave "æfingarhamur" no room at 320 px. */}
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={() => setMode('menu')}
               className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-700 font-bold py-3 rounded-xl"
@@ -612,26 +662,26 @@ function App() {
                 ← Til baka
               </button>
 
-              <div className="flex gap-4 items-center">
-                {mode === 'challenge' && (
-                  <>
-                    <div className="text-center">
-                      <div className="text-sm text-warm-600">Stig</div>
-                      <div className="text-xl font-bold">{progress.score}</div>
+              {/* Below sm the challenge stats take a row of their own, under the back button and
+                  question count, rather than pushing the count onto a line by itself. */}
+              {mode === 'challenge' && (
+                <div className="flex gap-4 items-center order-last w-full justify-around sm:order-none sm:w-auto sm:justify-start">
+                  <div className="text-center">
+                    <div className="text-sm text-warm-600">Stig</div>
+                    <div className="text-xl font-bold">{progress.score}</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-sm text-warm-600">Runa</div>
+                    <div className="text-xl font-bold">{streak}🔥</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-sm text-warm-600">Tími</div>
+                    <div className={`text-xl font-bold ${timeLeft < 20 ? 'text-red-500' : ''}`}>
+                      {timeLeft}s
                     </div>
-                    <div className="text-center">
-                      <div className="text-sm text-warm-600">Runa</div>
-                      <div className="text-xl font-bold">{streak}🔥</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-sm text-warm-600">Tími</div>
-                      <div className={`text-xl font-bold ${timeLeft < 20 ? 'text-red-500' : ''}`}>
-                        {timeLeft}s
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
+                  </div>
+                </div>
+              )}
 
               <div className="flex gap-4 items-center">
                 <div className="text-center">
@@ -646,7 +696,7 @@ function App() {
             {/* Left Column - Problem & Controls */}
             <div className="space-y-4">
               {/* Problem Display */}
-              <div className="bg-white rounded-lg shadow-lg p-6" id="problem-display">
+              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6" id="problem-display">
                 <div className="mb-4">
                   <span
                     className={`inline-block px-3 py-1 rounded-full text-white text-sm scenario-${currentProblem.scenario}`}
@@ -668,7 +718,9 @@ function App() {
                   {currentProblem.reaction}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                {/* One column below sm: at 320 px half a card splits "J/(mol·K)" and the
+                    endothermic tag mid-word. */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
                   <div className="bg-red-50 p-3 rounded-lg">
                     <div className="text-sm text-warm-600">Entalpía (ΔH°)</div>
                     <div
@@ -717,7 +769,7 @@ function App() {
               </div>
 
               {/* Temperature Slider */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
+              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
                 <h3 className="font-bold mb-3">🌡️ Hitastig</h3>
                 <div className="mb-4">
                   <input
@@ -827,22 +879,36 @@ function App() {
               </div>
 
               {/* Answer Input / Solution */}
-              <Presence show={!showSolution} exitDuration={250}>
-                <div className="bg-white rounded-lg shadow-lg p-6">
+              <Presence show={!showSolution} exitDuration={ANSWER_CARD_EXIT_MS}>
+                <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
                   <h3 className="font-bold mb-4">Svarið þitt:</h3>
 
                   <div className="mb-4">
-                    <label className="block text-sm font-medium mb-2">
+                    <label htmlFor="thermo-delta-g" className="block text-sm font-medium mb-2">
                       ΔG° við {temperature} K (kJ/mol):
                     </label>
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      value={userDeltaG}
-                      onChange={(e) => setUserDeltaG(e.target.value)}
-                      className="w-full px-4 py-2 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-none"
-                      placeholder="t.d. -33.5"
-                    />
+                    <div className="flex items-center gap-2">
+                      <input
+                        id="thermo-delta-g"
+                        type="text"
+                        inputMode="decimal"
+                        autoComplete="off"
+                        value={userDeltaG}
+                        onChange={(e) => setUserDeltaG(e.target.value)}
+                        className="w-full px-4 py-2 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-none"
+                        placeholder="t.d. -33.5"
+                      />
+                      {/* The decimal keypad has no minus key on an iPhone, and most ΔG° answers
+                          here are negative. Touch screens only; a desktop keyboard has one. */}
+                      <button
+                        type="button"
+                        onClick={() => setUserDeltaG(toggleSign(userDeltaG))}
+                        aria-label="Skipta um formerki"
+                        className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-lg border-2 border-warm-300 bg-white font-mono text-lg text-warm-700 pointer-coarse:inline-flex"
+                      >
+                        ±
+                      </button>
+                    </div>
                   </div>
 
                   <div className="mb-4" role="radiogroup" aria-label="Sjálfgengi">
@@ -900,7 +966,7 @@ function App() {
 
               {/* Solution */}
               <Presence show={showSolution} exitDuration={250}>
-                <div className="bg-white rounded-lg shadow-lg p-6">
+                <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
                   <h3 className="font-bold text-lg mb-4">📝 Lausn:</h3>
                   <div className="space-y-3 text-sm">
                     <div>
@@ -978,9 +1044,10 @@ function App() {
               {/* Feedback */}
               <Presence show={!!feedback} exitDuration={250}>
                 <div
+                  ref={feedbackRef}
                   role="alert"
                   aria-live="polite"
-                  className={`rounded-lg shadow-lg p-6 ${
+                  className={`rounded-lg shadow-lg p-4 sm:p-6 ${
                     feedback?.includes('Rétt')
                       ? 'bg-green-50 border-2 border-green-500'
                       : 'bg-red-50 border-2 border-red-500'
@@ -990,7 +1057,7 @@ function App() {
                   {showSolution && (
                     <button
                       onClick={startNewProblem}
-                      className="mt-4 w-full py-2 rounded-lg text-white font-bold"
+                      className="mt-4 w-full py-2 rounded-lg text-white font-bold pointer-coarse:min-h-11"
                       style={{ background: '#f36b22' }}
                     >
                       Næsta spurning →
@@ -1003,7 +1070,7 @@ function App() {
             {/* Right Column - Visualizations */}
             <div className="space-y-4">
               {/* Graph */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
+              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
                 <h3 className="font-bold mb-3">📊 ΔG° vs Hitastig</h3>
                 {graphData && (
                   <InteractiveGraph
@@ -1026,12 +1093,12 @@ function App() {
                     ariaLabel="ΔG vs Hitastig graf"
                   />
                 )}
-                <div className="mt-3 text-xs text-warm-600 grid grid-cols-2 gap-2">
+                <div className="mt-3 text-xs text-warm-600 grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>🟠 Línuhalli: -ΔS°</div>
                   <div>🟢 Sjálfgengt: ΔG° &lt; 0</div>
                   <div>🔵 Y-skurður: ΔH°</div>
                   <div>🔴 Ekki sjálfgengt: ΔG° &gt; 0</div>
-                  <div className="col-span-2">
+                  <div className="sm:col-span-2">
                     <span className="inline-block w-3 h-3 rounded-full bg-purple-500 mr-1"></span>T
                     <sub>cross</sub>: Umbreytingarhitastig (ΔG° = 0)
                   </div>
@@ -1039,7 +1106,7 @@ function App() {
               </div>
 
               {/* Entropy Visualization */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
+              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
                 <h3 className="font-bold mb-3">🎲 Óreiða (Entropy)</h3>
                 <EntropyVisualization deltaS={currentProblem.deltaS} />
                 <div className="mt-4 text-sm">
@@ -1072,7 +1139,7 @@ function App() {
               </div>
 
               {/* Scenario Guide */}
-              <div className="bg-white rounded-lg shadow-lg p-6">
+              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
                 <h3 className="font-bold mb-3">🎯 Fjögur Atburðarás</h3>
                 <div className="space-y-2 text-xs">
                   <div className="p-2 rounded scenario-1 text-white">
@@ -1091,7 +1158,7 @@ function App() {
               </div>
 
               {/* Formula Reference */}
-              <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-lg shadow-lg p-6">
+              <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-lg shadow-lg p-4 sm:p-6">
                 <h3 className="font-bold mb-3">📐 Formúlur</h3>
                 <div className="space-y-2 text-sm font-mono">
                   <div className="bg-white p-2 rounded">ΔG° = ΔH° - TΔS°</div>
