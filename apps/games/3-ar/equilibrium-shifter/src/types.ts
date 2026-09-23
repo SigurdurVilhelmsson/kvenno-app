@@ -67,8 +67,10 @@ export interface ShiftResult {
   direction: ShiftDirection;
   explanation: string; // English explanation
   explanationIs: string; // Icelandic explanation
-  reasoning: string[]; // Step-by-step reasoning
-  molecularView: string; // Description of molecular changes
+  reasoning: string[]; // Step-by-step reasoning (English)
+  reasoningIs: string[]; // Step-by-step reasoning (Icelandic)
+  molecularView: string; // Description of molecular changes (English)
+  molecularViewIs: string; // Description of molecular changes (Icelandic)
 }
 
 export interface GameStats {

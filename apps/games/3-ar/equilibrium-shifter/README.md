@@ -1,7 +1,7 @@
 # Jafnvægisstjóri
 
 Chain position 3 of 8 in Year 3, between Jafnvægisfastinn and Sýrufastinn. The node is labelled
-**Hliðrun jafnvægis** in the `Námsleiðin` string (`src/App.tsx:469-470`), not by the game's title,
+**Hliðrun jafnvægis** in the `Námsleiðin` string (`src/App.tsx:568-569`), not by the game's title,
 because two adjacent nodes are now about equilibrium. The game teaches Le Chatelier's principle: a
 student applies a stress to an equilibrium and predicts which way it shifts, and — since
 2026-09-20 — sees the arithmetic behind the answer.
@@ -19,10 +19,11 @@ intermediate, 8 advanced); the tag only sets the points a correct answer is wort
 | Mode             | What it asks                                                                                                                                   |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Lærdómshamur** | The student picks a stress, predicts left / none / right, and gets the explanation, the Q vs K panel, the numbers panel and the reasoning list |
-| **Keppnishamur** | 10 questions, a random stress each, 20 seconds per question (`CHALLENGE_SECONDS`, `App.tsx:34`), points, streaks and a speed bonus             |
+| **Keppnishamur** | 10 questions, a random stress each, 20 seconds per question (`CHALLENGE_SECONDS`, `App.tsx:36`), points, streaks and a speed bonus             |
 
 The Q vs K and numbers panels render in learning mode and after any wrong answer in challenge mode
-(`App.tsx:704-746`). Hints are free: `HintSystem` is passed `showPointCost={false}`.
+(`App.tsx:828-869`). Hints are free: `HintSystem` is passed `showPointCost={false}`. Points and
+streaks are shown in Keppnishamur only.
 
 ## What matters before touching it
 
@@ -114,29 +115,52 @@ The shared pieces it depends on: `packages/shared/engine/equilibrium.ts`,
 `packages/shared/data/thermo.ts`, `packages/shared/data/appendix-d.ts`. `MIGRATION-SUMMARY.md` is a
 historical record of the port from the old HTML game and is out of date on most specifics.
 
+## Fixed 2026-09-23 (after the phone pass)
+
+Each has a test that fails against the version before it.
+
+- **Keppnishamur skipped questions.** The automatic advance (six seconds after an answer, three
+  after a timeout) was a bare `setTimeout` that nothing cancelled, so «Næsta strax →» moved on and
+  the timer moved on again, unanswered; «← Til baka» did not stop it either, so it later fired into
+  Lærdómshamur. It also ran a stale handler, so a round ended by the timer saved one correct answer
+  too few. The advance is now one cancellable timer (`scheduleAdvance`/`cancelAdvance` in
+  `App.tsx`) that calls the latest handler, and the countdown text names the delay that applies.
+  `challenge-advance.test.tsx`.
+- **«+N stig!» disagreed with the score** by the streak bonus of the answer itself; it now shows the
+  points that were added.
+- **Lærdómshamur showed points and a streak**, against the no-scoring-during-learning rule. They now
+  appear in Keppnishamur only. `learning-feedback.test.tsx`.
+- **English inside the Icelandic feedback.** `calculateShift` now returns `reasoningIs` and
+  `molecularViewIs` beside the English ones, and the Icelandic screen reads them.
+- **ΔH** is printed with a decimal comma and `kJ/mól` in the pill and in the explanations, as the
+  numbers panel already did, and the acetic-acid buffer's ΔH of 0 is no longer labelled exothermic.
+- **Terms settled by `ordabok.md`** replaced ungoverned ones across the game: `útvermið`/`innvermið`
+  (was `varmalosandi`/`varmabindandi`), `varmi` for heat, `virkjunarorka`, `sameind`, `framhvarf`/
+  `bakhvarf`, `sjálfjónun`, `klofnun`, `niðurbrot`, `útfelling`, `botnfall`, `flókajón`,
+  `misleit hvötun`, `stuðpúðakerfi` (the id-21 description said `blóðpufferkerfi`, which escapes
+  the platform ban because it has no accent), and `brennisteinsvetni` from the corpus. Grammar and
+  spelling fixes with them. `icelandic-text.test.ts` holds every one.
+
 ## Open
 
 - **The Keppnishamur gate cannot be opened.** It requires `progress.problemsCompleted >= 5`
-  (`App.tsx:422-424`), but the only write to `problemsCompleted` is at the end of a challenge round
-  (`App.tsx:336-337`). Learning mode never updates it, so a new student can never reach challenge
-  mode. The gate itself was already flagged as needing a ruling (a mode gate, outside the
+  (`App.tsx:521-522`), but the only write to `problemsCompleted` is at the end of a challenge round
+  (`App.tsx:427`). Learning mode never updates it, so a new student can never reach challenge
+  mode, and «Framvinda þín: Verkefni kláruð» on the menu stays at 0 however much Lærdómshamur a
+  student plays. The gate itself was already flagged as needing a ruling (a mode gate, outside the
   2026-08-29 level-gating ruling); it now also needs fixing or removing, whichever the ruling is.
-- **Learning mode shows points.** A correct answer prints `+N stig!` with a streak bonus in both
-  modes (`App.tsx:764-770`), against the no-scoring-during-learning rule.
 - **The ten unsourced systems** would need the Icelandic book's complex-ion formation constants
   (`m68869`) or another new source — Siggi's call.
 - **Aqueous temperature stresses stay directional.** They have a constant but no derivable ΔH,
-  because `thermo.ts` carries no dissolved ions, so the numbers panel reports K as unknown.
+  because `thermo.ts` carries no dissolved ions, so the numbers panel reports K as unknown. Their
+  stored ΔH values are unsourced, and two describe the same chemistry differently: acetic acid is
+  +5 (endothermic, id 8, offered a heating stress) and the acetic-acid buffer is 0 (id 24).
 - **Water-gas naming** — `Vatnsgashvarfið` matches `jafnvaegisfasti`, but that is a spelling
   harmonisation; the corpus has no hits for either form, so it is Siggi's call.
+- **Names that need a naming ruling.** Id 1 is called `Díköfnunarefnisoxíð`, which names N₂O, not
+  N₂O₄; `1-ar/nafnakerfid` says `Díniturtetroxíð` and the textbook `tvíköfnunarefnistetraoxíð`.
+  Ids 6 and 22 say `komplex` and `ligandskipti` where `ordabok.md` has `flóki`/`flókajón` and
+  `tengill`; id 17's `Gufuumbrot` (steam reforming) has no corpus support; the principle is called
+  `Le Chatelier meginreglan` where the book's one use is `lögmál Le Chateliers`; and the menu's
+  `Veltudæmi` bullet is not a word anyone could source.
 - **i18n is partial** — 7 `t()` calls, the rest hardcoded Icelandic; see `docs/i18n-coverage.md`.
-- **Keppnishamur skips questions.** An answer schedules an automatic advance six seconds later,
-  and «Næsta strax →» does not cancel it, so tapping it moves to the next question and six seconds
-  later the game moves on again, unanswered. A round then ends with fewer than 10 questions
-  answered. The three-second advance after a timeout has the same shape. Found 2026-09-23 while
-  making the game work on phones; not fixed, since it is a behaviour change, not a layout one.
-- **English inside the Icelandic feedback.** The reasoning list and the molecular view under the
-  explanation (`reasoning` and `molecularView` in `src/utils/le-chatelier.ts`) are English
-  strings, shown as they are in the Icelandic UI.
-- **ΔH is printed with a decimal point** (`-91.8 kJ/mol`) in the equation's ΔH pill and in the
-  explanations built in `le-chatelier.ts`, where the numbers panel prints `-91,8 kJ/mól`.

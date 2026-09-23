@@ -105,7 +105,7 @@ describe('calculateShift - temperature changes', () => {
     const result = calculateShift(endothermicEq, stress);
     expect(result.direction).toBe('right');
     expect(result.explanation).toContain('ENDOTHERMIC');
-    expect(result.explanationIs).toContain('VARMABINDANDI');
+    expect(result.explanationIs).toContain('INNVERMIÐ');
   });
 
   it('shifts left when temperature increases in an exothermic reaction', () => {
@@ -113,7 +113,7 @@ describe('calculateShift - temperature changes', () => {
     const result = calculateShift(exothermicEq, stress);
     expect(result.direction).toBe('left');
     expect(result.explanation).toContain('EXOTHERMIC');
-    expect(result.explanationIs).toContain('VARMALOSANDI');
+    expect(result.explanationIs).toContain('ÚTVERMIÐ');
   });
 
   it('shifts left when temperature decreases in an endothermic reaction', () => {

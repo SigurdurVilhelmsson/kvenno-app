@@ -104,6 +104,11 @@
   color: #1e3a8a;
 }
 
+.thermo-indicator.neutral {
+  background: #e7e5e4;
+  color: #44403c;
+}
+
 /* Stress Buttons */
 .stress-btn {
   background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);

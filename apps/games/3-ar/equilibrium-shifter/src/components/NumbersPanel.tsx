@@ -165,9 +165,9 @@ export function NumbersPanel({ outcome, constant, order }: Props) {
         ) : kUnknown ? (
           <>
             <strong>Hitabreyting færir K, ekki Q.</strong> Áttin er þekkt — {constant.kind} hækkar
-            við hærri hita fyrir varmabindandi hvarf og lækkar fyrir varmalosandi — en hér vantar
-            annaðhvort viðmiðunarhita fyrir fastann eða myndunarvarma fyrir öll efnin, svo talan
-            sjálf fæst ekki. Hún er ekki núll; hún er ómæld.
+            við hærri hita fyrir innvermið hvarf og lækkar fyrir útvermið — en hér vantar annaðhvort
+            viðmiðunarhita fyrir fastann eða myndunarvarma fyrir öll efnin, svo talan sjálf fæst
+            ekki. Hún er ekki núll; hún er ómæld.
           </>
         ) : inert ? (
           <>

@@ -7,7 +7,8 @@ interface ParticleEquilibriumProps {
   reactantCount: number;
   productCount: number;
   shiftDirection?: 'left' | 'right' | 'none' | null;
-  isExothermic?: boolean;
+  /** null where ΔH is zero: the reaction is neither útvermið nor innvermið. */
+  isExothermic?: boolean | null;
   running?: boolean;
   className?: string;
 }
@@ -118,15 +119,17 @@ export function ParticleEquilibrium({
           temperature={300}
           running={running}
           showLabels={false}
-          ariaLabel={`Dynamic equilibrium simulation with ${adjustedReactants} reactant and ${adjustedProducts} product particles`}
+          ariaLabel={`Kvikt jafnvægi: ${adjustedReactants} eindir hvarfefna og ${adjustedProducts} eindir myndefna`}
         />
 
         {/* Thermodynamics indicator */}
-        <div className="absolute top-2 right-2 text-xs">
-          <span className={isExothermic ? 'text-red-400' : 'text-blue-400'}>
-            {isExothermic ? '🔥 Varmalosandi' : '❄️ Varmabindandi'}
-          </span>
-        </div>
+        {isExothermic !== null && (
+          <div className="absolute top-2 right-2 text-xs">
+            <span className={isExothermic ? 'text-red-400' : 'text-blue-400'}>
+              {isExothermic ? '🔥 Útvermið' : '❄️ Innvermið'}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Legend */}

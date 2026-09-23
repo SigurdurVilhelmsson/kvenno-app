@@ -10,6 +10,7 @@ import {
 } from '@shared/components';
 import { useProgress, useAccessibility, useGameI18n } from '@shared/hooks';
 import type { TieredHints } from '@shared/types';
+import { formatDecimal } from '@shared/utils';
 
 import { NumbersPanel } from './components/NumbersPanel';
 import { ParticleEquilibrium } from './components/ParticleEquilibrium';
@@ -36,6 +37,25 @@ const CHALLENGE_SECONDS = 20;
 
 /** How long the outgoing screen fades before it unmounts. */
 const SCREEN_FADE_MS = 200;
+
+/**
+ * How long Keppnishamur waits before it moves on by itself: after an answer
+ * (long enough to read the explanation) and after the clock runs out.
+ */
+const ADVANCE_AFTER_ANSWER_MS = 6000;
+const ADVANCE_AFTER_TIMEOUT_MS = 3000;
+
+/**
+ * ΔH as the student reads it: decimal comma, `kJ/mól`, and útvermið or
+ * innvermið only where ΔH has a sign. A ΔH of zero is neither, and one system
+ * (the acetic-acid buffer) is stored at exactly zero.
+ */
+function heatLabel(deltaH: number): string {
+  const value = `ΔH = ${formatDecimal(deltaH)} kJ/mól`;
+  if (deltaH < 0) return `${value} (Útvermið)`;
+  if (deltaH > 0) return `${value} (Innvermið)`;
+  return value;
+}
 
 function App() {
   const { progress, updateProgress } = useProgress({
@@ -87,8 +107,39 @@ function App() {
   const [totalQuestions] = useState(10);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
+  const [lastPoints, setLastPoints] = useState(0);
+
   // Ref to track if timeout has been handled for current question
   const timeoutHandledRef = useRef(false);
+
+  // Keppnishamur's automatic advance. It is held here so that anything else
+  // that moves on — «Næsta strax →», «← Til baka», a new round — cancels it.
+  // Left running, it fired on whatever question was showing six seconds later,
+  // so tapping «Næsta strax →» skipped the next question unanswered and a
+  // round ended with fewer than ten answered.
+  const advanceTimerRef = useRef<number | null>(null);
+  const [advanceSeconds, setAdvanceSeconds] = useState(ADVANCE_AFTER_ANSWER_MS / 1000);
+  // The timer calls the latest handleNextQuestion, not the one from the render
+  // that scheduled it: that one still held the score from before the answer.
+  const nextQuestionRef = useRef<() => void>(() => {});
+
+  const cancelAdvance = () => {
+    if (advanceTimerRef.current !== null) {
+      window.clearTimeout(advanceTimerRef.current);
+      advanceTimerRef.current = null;
+    }
+  };
+
+  const scheduleAdvance = (ms: number) => {
+    cancelAdvance();
+    setAdvanceSeconds(ms / 1000);
+    advanceTimerRef.current = window.setTimeout(() => {
+      advanceTimerRef.current = null;
+      nextQuestionRef.current();
+    }, ms);
+  };
+
+  useEffect(() => cancelAdvance, []);
 
   // The top of each screen, so a new screen or a new question can be brought
   // back into view (see utils/reveal.ts for why).
@@ -143,15 +194,14 @@ function App() {
         streak: 0,
       }));
 
-      setTimeout(() => {
-        handleNextQuestion();
-      }, 3000);
+      scheduleAdvance(ADVANCE_AFTER_TIMEOUT_MS);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only trigger on screen/mode/timer/explanation state changes
   }, [screen, gameMode, timeRemaining, showExplanation]);
 
   // Start game flow
   const startGame = (mode: GameMode) => {
+    cancelAdvance();
     setGameMode(mode);
     setScreen('game');
     setStats({
@@ -221,8 +271,7 @@ function App() {
     // Topic hint - general concept area
     let topic: string;
     if (stress.type.includes('temp')) {
-      topic =
-        'Þetta snýst um áhrif hitastigsbreytinga á jafnvægi og varmalosandi eða varmabindandi hvörf.';
+      topic = 'Þetta snýst um áhrif hitastigsbreytinga á jafnvægi og útvermin eða innvermin hvörf.';
     } else if (stress.type.includes('pressure')) {
       topic = 'Þetta snýst um áhrif þrýstingsbreytinga á gasjafnvægi og fjölda móla.';
     } else if (stress.type.includes('catalyst')) {
@@ -233,18 +282,23 @@ function App() {
 
     // Strategy hint - approach to solve
     let strategy = 'Hugsaðu um hvernig kerfið reynir að minnka áhrif álagsins.';
-    if (stress.type.includes('temp')) {
+    if (stress.type === 'increase-temp') {
       strategy = isExothermic
-        ? 'Hvarf sem losar varma (varmalosandi) mun hliðrast í áttina sem „eyðir" viðbættu varmanum.'
-        : 'Hvarf sem bindur varma (varmabindandi) mun hliðrast í áttina sem „nýtir" viðbættu varmanum.';
+        ? 'Hvarf sem losar varma (útvermið) mun hliðrast í áttina sem „eyðir" viðbætta varmanum.'
+        : 'Hvarf sem bindur varma (innvermið) mun hliðrast í áttina sem „nýtir" viðbætta varmann.';
+    } else if (stress.type === 'decrease-temp') {
+      // Cooling adds no heat, so the heating sentence above does not apply.
+      strategy = isExothermic
+        ? 'Hvarf sem losar varma (útvermið) mun hliðrast í áttina sem „myndar" varma í stað þess sem var tekinn burt.'
+        : 'Hvarf sem bindur varma (innvermið) mun hliðrast í áttina sem „myndar" varma í stað þess sem var tekinn burt.';
     } else if (stress.type === 'increase-pressure') {
-      strategy = 'Hærri þrýstingur mun hliðra jafnvæginu í áttina með FÆRRI móla af gasi.';
+      strategy = 'Hærri þrýstingur mun hliðra jafnvæginu í áttina með FÆRRI mólum af gasi.';
     } else if (stress.type === 'decrease-pressure') {
-      strategy = 'Lægri þrýstingur mun hliðra jafnvæginu í áttina með FLEIRI móla af gasi.';
+      strategy = 'Lægri þrýstingur mun hliðra jafnvæginu í áttina með FLEIRI mólum af gasi.';
     } else if (stress.type === 'add-catalyst') {
       strategy = 'Hvatar flýta fyrir bæði fram- og bakhvarfi jafnt mikið.';
     } else if (stress.type.includes('add')) {
-      strategy = 'Að bæta við efni veldur hliðrun BURTfrá þeirri hlið.';
+      strategy = 'Að bæta við efni veldur hliðrun BURT frá þeirri hlið.';
     } else if (stress.type.includes('remove')) {
       strategy = 'Að fjarlægja efni veldur hliðrun Í ÁTTINA að þeirri hlið.';
     }
@@ -253,12 +307,12 @@ function App() {
     let method = '';
     if (stress.type === 'increase-temp') {
       method = isExothermic
-        ? 'Varmalosandi hvarf: Varmi er „myndefni". Meira varma → hliðrun til vinstri.'
-        : 'Varmabindandi hvarf: Varmi er „hvarfefni". Meira varma → hliðrun til hægri.';
+        ? 'Útvermið hvarf: Varmi er „myndefni". Meiri varmi → hliðrun til vinstri.'
+        : 'Innvermið hvarf: Varmi er „hvarfefni". Meiri varmi → hliðrun til hægri.';
     } else if (stress.type === 'decrease-temp') {
       method = isExothermic
-        ? 'Varmalosandi hvarf: Minna varma → hliðrun til hægri til að framleiða varma.'
-        : 'Varmabindandi hvarf: Minna varma → hliðrun til vinstri.';
+        ? 'Útvermið hvarf: Minni varmi → hliðrun til hægri til að framleiða varma.'
+        : 'Innvermið hvarf: Minni varmi → hliðrun til vinstri.';
     } else if (stress.type === 'increase-pressure') {
       if (moreGasOnRight) {
         method = `Hvarfefni: ${eq.gasMoles?.reactants} mól gas. Myndefni: ${eq.gasMoles?.products} mól gas. Hliðrun til vinstri (færri mól).`;
@@ -326,6 +380,10 @@ function App() {
 
     // No hint penalty — hints are free for learning
     const points = calculatePoints(correct, currentEquilibrium.difficulty);
+    // What the feedback shows is what was added. Recomputing it after the
+    // answer counted the streak bonus of the streak this answer had just
+    // extended, five points more than the score received.
+    setLastPoints(points);
 
     setStats((prev) => ({
       ...prev,
@@ -343,11 +401,9 @@ function App() {
     }));
 
     // In challenge mode, auto-advance after 6 seconds (was 3 — too fast to read explanation).
-    // Manual "Næsta →" button is rendered alongside so users can advance immediately if they want.
+    // «Næsta strax →» is rendered alongside so users can advance immediately if they want.
     if (gameMode === 'challenge') {
-      setTimeout(() => {
-        handleNextQuestion();
-      }, 6000);
+      scheduleAdvance(ADVANCE_AFTER_ANSWER_MS);
     }
   };
 
@@ -362,6 +418,7 @@ function App() {
   };
 
   const handleNextQuestion = () => {
+    cancelAdvance();
     if (gameMode === 'challenge') {
       if (questionNumber >= totalQuestions) {
         // Game over - show results
@@ -379,6 +436,15 @@ function App() {
       // Learning mode - load new question
       loadNewQuestion(gameMode);
     }
+  };
+
+  useEffect(() => {
+    nextQuestionRef.current = handleNextQuestion;
+  });
+
+  const goToMenu = () => {
+    cancelAdvance();
+    setScreen('menu');
   };
 
   // Handle hint usage from HintSystem
@@ -403,7 +469,7 @@ function App() {
           <h2 className="font-bold text-indigo-800 mb-3">Af hverju hliðrast jafnvægi?</h2>
           <p className="text-sm text-indigo-700 mb-3">
             Þegar efnahvörf ná <strong>jafnvægi</strong> er hraði framhvarfsins jafn hraða
-            bakhvarfsins. Ef við trufum kerfið (bætum við efni, breytum hitastigi eða þrýstingi) er
+            bakhvarfsins. Ef við truflum kerfið (bætum við efni, breytum hitastigi eða þrýstingi) er
             jafnvægið rofið.
           </p>
 
@@ -444,7 +510,7 @@ function App() {
               Taktu þér tíma, notaðu vísbendingar og lærðu á þínum hraða
             </p>
             <ul className="text-sm text-warm-500 space-y-1">
-              <li>✓ Enginn tímatakmörkun</li>
+              <li>✓ Engin tímatakmörkun</li>
               <li>✓ Ítarlegar útskýringar</li>
               <li>✓ Vísbendingakerfi</li>
               <li>✓ Veltudæmi</li>
@@ -515,7 +581,7 @@ function App() {
         <div className="bg-white rounded-lg shadow-md p-4 mb-4">
           <div className="flex justify-between items-center flex-wrap gap-4">
             <button
-              onClick={() => setScreen('menu')}
+              onClick={goToMenu}
               className="pointer-coarse:min-h-11 bg-warm-500 hover:bg-warm-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warm-700 text-white rounded-lg px-4 py-2 transition-colors"
             >
               ← Til baka
@@ -534,8 +600,15 @@ function App() {
                   </div>
                 </>
               )}
-              <div className="score-display">Stig: {stats.score}</div>
-              {stats.streak > 0 && <div className="streak-indicator">🔥 {stats.streak} röð</div>}
+              {/* Points and streaks belong to Keppnishamur: no scoring during learning. */}
+              {gameMode === 'challenge' && (
+                <>
+                  <div className="score-display">Stig: {stats.score}</div>
+                  {stats.streak > 0 && (
+                    <div className="streak-indicator">🔥 {stats.streak} röð</div>
+                  )}
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -550,14 +623,18 @@ function App() {
             <div className="text-lg text-warm-600 mb-2">
               {language === 'is' ? currentEquilibrium.nameIs : currentEquilibrium.name}
             </div>
-            <div className={`thermo-indicator ${currentEquilibrium.thermodynamics.type}`}>
-              {currentEquilibrium.thermodynamics.type === 'exothermic' ? '🔥' : '❄️'}
-              ΔH = {currentEquilibrium.thermodynamics.deltaH} kJ/mol (
-              {currentEquilibrium.thermodynamics.type === 'exothermic'
-                ? 'Varmalosandi'
-                : 'Varmabindandi'}
-              )
-            </div>
+            {(() => {
+              const { deltaH, type } = currentEquilibrium.thermodynamics;
+              // A ΔH of zero is neither útvermið nor innvermið, so it gets
+              // neither colour nor icon.
+              const kind = deltaH === 0 ? 'neutral' : type;
+              return (
+                <div className={`thermo-indicator ${kind}`}>
+                  {kind === 'exothermic' ? '🔥' : kind === 'endothermic' ? '❄️' : null}
+                  {heatLabel(deltaH)}
+                </div>
+              );
+            })()}
           </div>
 
           {/* Visual Equilibrium Display */}
@@ -623,7 +700,11 @@ function App() {
               reactantCount={20}
               productCount={20}
               shiftDirection={showExplanation ? correctShift?.direction : null}
-              isExothermic={currentEquilibrium.thermodynamics.type === 'exothermic'}
+              isExothermic={
+                currentEquilibrium.thermodynamics.deltaH === 0
+                  ? null
+                  : currentEquilibrium.thermodynamics.type === 'exothermic'
+              }
               running={screen === 'game'}
             />
           </div>
@@ -791,7 +872,10 @@ function App() {
                     <div className="mb-4">
                       <div className="font-semibold mb-2">Rökstuðningur:</div>
                       <ul className="list-disc list-inside space-y-1 text-sm text-warm-700">
-                        {correctShift.reasoning.map((r, idx) => (
+                        {(language === 'is'
+                          ? correctShift.reasoningIs
+                          : correctShift.reasoning
+                        ).map((r, idx) => (
                           <li key={idx}>{r}</li>
                         ))}
                       </ul>
@@ -799,16 +883,18 @@ function App() {
                   )}
 
                   <div className="mb-4">
-                    <div className="font-semibold mb-2">Sameinda sjónarhorn:</div>
-                    <p className="text-sm text-warm-700 italic">{correctShift.molecularView}</p>
+                    <div className="font-semibold mb-2">Sameindasjónarhorn:</div>
+                    <p className="text-sm text-warm-700 italic">
+                      {language === 'is'
+                        ? correctShift.molecularViewIs
+                        : correctShift.molecularView}
+                    </p>
                   </div>
 
-                  {/* Points Earned */}
-                  {isCorrect && (
+                  {/* Points Earned (Keppnishamur only: no scoring during learning) */}
+                  {gameMode === 'challenge' && isCorrect && (
                     <div className="bg-green-100 rounded-lg p-3 mt-4">
-                      <div className="font-semibold text-green-800">
-                        +{calculatePoints(true, currentEquilibrium.difficulty)} stig!
-                      </div>
+                      <div className="font-semibold text-green-800">+{lastPoints} stig!</div>
                     </div>
                   )}
 
@@ -838,7 +924,7 @@ function App() {
                   {gameMode === 'challenge' && (
                     <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3 text-sm text-warm-600">
                       <span className="text-center">
-                        Næsta spurning birtist sjálfkrafa (6 sek)...
+                        Næsta spurning birtist sjálfkrafa ({advanceSeconds} sek)...
                       </span>
                       <button
                         onClick={handleNextQuestion}
@@ -865,14 +951,14 @@ function App() {
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
             <div className="text-3xl font-bold text-purple-800 mb-2">{stats.score}</div>
-            <div className="text-sm text-purple-600">Heildar stig</div>
+            <div className="text-sm text-purple-600">Heildarstig</div>
           </div>
 
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6">
             <div className="text-3xl font-bold text-blue-800 mb-2">
               {stats.correctAnswers} / {stats.questionsAnswered}
             </div>
-            <div className="text-sm text-blue-600">Réttar svör</div>
+            <div className="text-sm text-blue-600">Rétt svör</div>
           </div>
 
           <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-6">
@@ -921,7 +1007,7 @@ function App() {
             🔄 Spila aftur
           </button>
           <button
-            onClick={() => setScreen('menu')}
+            onClick={goToMenu}
             className="flex-1 bg-warm-500 hover:bg-warm-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warm-700 text-white rounded-lg px-6 py-3 transition-colors"
           >
             📋 Aðalvalmynd

@@ -72,14 +72,14 @@ export function QKComparison({
       if (isExothermic) {
         return {
           qEffect: 'Q er óbreytt',
-          kEffect: 'K minnkar við hærra hita',
-          reason: 'Fyrir varmalosandi hvörf lækkar K við hækkun hitastigs',
+          kEffect: 'K minnkar við hærra hitastig',
+          reason: 'Fyrir útvermin hvörf lækkar K við hækkun hitastigs',
         };
       } else {
         return {
           qEffect: 'Q er óbreytt',
-          kEffect: 'K eykst við hærra hita',
-          reason: 'Fyrir varmabindandi hvörf hækkar K við hækkun hitastigs',
+          kEffect: 'K eykst við hærra hitastig',
+          reason: 'Fyrir innvermin hvörf hækkar K við hækkun hitastigs',
         };
       }
     }
@@ -88,14 +88,14 @@ export function QKComparison({
       if (isExothermic) {
         return {
           qEffect: 'Q er óbreytt',
-          kEffect: 'K eykst við lægra hita',
-          reason: 'Fyrir varmalosandi hvörf hækkar K við lækkun hitastigs',
+          kEffect: 'K eykst við lægra hitastig',
+          reason: 'Fyrir útvermin hvörf hækkar K við lækkun hitastigs',
         };
       } else {
         return {
           qEffect: 'Q er óbreytt',
-          kEffect: 'K minnkar við lægra hita',
-          reason: 'Fyrir varmabindandi hvörf lækkar K við lækkun hitastigs',
+          kEffect: 'K minnkar við lægra hitastig',
+          reason: 'Fyrir innvermin hvörf lækkar K við lækkun hitastigs',
         };
       }
     }
@@ -154,7 +154,7 @@ export function QKComparison({
     return {
       qEffect: 'Q breytist',
       kEffect: 'K er óbreytt',
-      reason: 'Kerfið leitast við að jafnvægi',
+      reason: 'Kerfið leitast við að ná jafnvægi',
     };
   }, [stress, isExothermic, gasMoles]);
 
