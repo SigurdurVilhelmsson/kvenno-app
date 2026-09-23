@@ -2113,6 +2113,11 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           clickRole: ['button', 'Athuga svar'],
         },
+        // Næsta / Ljúka stigi ignores a press within 400 ms of appearing (P3's
+        // double-tap guard); a student never reaches it that fast.
+        {
+          wait: 300,
+        },
         {
           clickRole: ['button', 'Ljúka stigi'],
         },
@@ -2190,6 +2195,75 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Athuga'],
         },
       ],
+    },
+    {
+      name: 'Stig 1 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 1: Skilningur'],
+        },
+        {
+          clickRole: ['button', 'Byrja'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [{ css: 'div.space-y-3 > button' }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta verkefni' },
+        viewports: ['android', 'iphone', 'se'],
+        scrollsToAction: 1,
+      },
+    },
+    {
+      name: 'Stig 2 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 2: Þrautir'],
+        },
+        {
+          css: 'div[role=button] div.font-mono',
+        },
+      ],
+      loop: {
+        prompt: { text: 'Markmiðsjafna' },
+        action: { role: 'button', name: 'Athuga lausn' },
+        answer: [],
+        verdict: { css: '#hess-l2-result' },
+        next: { role: 'button', name: 'Næsta þraut' },
+        // The target and the running ΔH on screen together: the target pinned
+        // at the top, the running ΔH in the pinned action bar (portrait only).
+        together: [
+          [
+            { text: 'Markmiðsjafna' },
+            { css: '[data-pinned-bottom] > [aria-hidden="true"]' },
+            { role: 'button', name: 'Athuga lausn' },
+          ],
+        ],
+      },
+    },
+    {
+      name: 'Stig 3 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 3: Útreikningar'],
+        },
+        {
+          clickRole: ['button', 'Byrja æfingar'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ fill: ['#hess-l3-answer', '5'] }],
+        verdict: { css: '#hess-l3-verdict' },
+        next: { role: 'button', name: 'Næsta þraut' },
+        together: [[{ text: 'Samtals hvarfefni' }, { css: '#hess-l3-answer' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        scrollsToAction: 1,
+        typed: true,
+      },
     },
   ],
   '2-ar/kinetics': [

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { render, fireEvent, cleanup, within } from '@testing-library/react';
-import { describe, it, expect, afterEach } from 'vitest';
+import { describe, it, expect, afterEach, beforeEach, vi } from 'vitest';
 
 import { Level3 } from '../components/Level3';
 import { gameTranslations } from '../i18n';
@@ -12,7 +12,17 @@ import { gameTranslations } from '../i18n';
  * tolerance beside a 2 % grader, and a "find ΔH°f(SO₂)" challenge whose table printed it.
  */
 
-afterEach(cleanup);
+// Næsta ignores a press within 400 ms of appearing (the P3 double-tap guard,
+// `useArmedAfter`), so the clock is driven by hand: `advanceTo` waits it out.
+let clock = 1000;
+beforeEach(() => {
+  clock = 1000;
+  vi.spyOn(performance, 'now').mockImplementation(() => clock);
+});
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+});
 
 const IS = (gameTranslations as unknown as { is: Record<string, unknown> }).is;
 const SHARED: Record<string, string> = {
@@ -46,6 +56,7 @@ function answer(page: ReturnType<typeof within>, value: string) {
 function advanceTo(page: ReturnType<typeof within>, index: number) {
   for (let i = 0; i < index; i++) {
     answer(page, ANSWERS[i]);
+    clock += 500;
     fireEvent.click(page.getByRole('button', { name: 'Næsta þraut' }));
   }
 }
@@ -102,4 +113,17 @@ describe('hess-law level 3 notation', () => {
       expect(text).not.toMatch(/[A-Z][a-z]?\d+(?=[A-Z(])/);
     }
   );
+});
+
+describe('hess-law level 3 Næsta guard', () => {
+  it('drops a Næsta press within 400 ms of the verdict, so a double tap cannot skip it', () => {
+    const { page } = start();
+    answer(page, '-800');
+    clock += 150;
+    fireEvent.click(page.getByRole('button', { name: 'Næsta þraut' }));
+    expect(page.getByText(/Rétt svar:/)).toBeTruthy();
+    clock += 400;
+    fireEvent.click(page.getByRole('button', { name: 'Næsta þraut' }));
+    expect(page.queryByText(/Rétt svar:/)).toBeNull();
+  });
 });

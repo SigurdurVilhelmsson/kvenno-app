@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Header, LanguageSwitcher, ErrorBoundary } from '@shared/components';
 import { useGameI18n } from '@shared/hooks';
 import { useGameProgress } from '@shared/hooks';
+import { useScreenTop } from '@shared/utils';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
@@ -38,6 +39,24 @@ function App() {
     'hess-law-progress',
     DEFAULT_PROGRESS
   );
+
+  // Each screen swap starts the new screen at its top with its heading focused
+  // (on a phone the page would otherwise stay at the old offset, and focus
+  // would fall to <body> with the button that caused the swap). Back on the
+  // menu, the next unfinished level card is revealed and focused instead.
+  const nextLevel = !progress.level1Completed
+    ? 'level1'
+    : !progress.level2Completed
+      ? 'level2'
+      : !progress.level3Completed
+        ? 'level3'
+        : null;
+  useScreenTop(activeLevel, {
+    target: () =>
+      activeLevel === 'menu' && nextLevel
+        ? document.querySelector(`[data-level-card="${nextLevel}"]`)
+        : null,
+  });
 
   const handleLevel1Complete = (score: number) => {
     updateProgress({
@@ -203,6 +222,7 @@ function App() {
           <div className="space-y-4">
             {/* Level 1 */}
             <button
+              data-level-card="level1"
               onClick={() => setActiveLevel('level1')}
               className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
             >
@@ -228,6 +248,7 @@ function App() {
 
             {/* Level 2 */}
             <button
+              data-level-card="level2"
               onClick={() => setActiveLevel('level2')}
               className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
             >
@@ -254,6 +275,7 @@ function App() {
 
             {/* Level 3 */}
             <button
+              data-level-card="level3"
               onClick={() => setActiveLevel('level3')}
               className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
             >

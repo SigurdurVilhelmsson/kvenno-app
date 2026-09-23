@@ -1,3 +1,7 @@
+/// <reference types="vite/client" />
+// `import.meta.env` below: a game compiles this file from its own tsconfig,
+// which does not include packages/shared/env.d.ts.
+
 import { useLayoutEffect, useRef, useState, useSyncExternalStore, type RefObject } from 'react';
 
 import {

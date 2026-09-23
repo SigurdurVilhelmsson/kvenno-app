@@ -31,7 +31,23 @@ describeVerticalLoops(GAME_SCREENS);
  * file (and so the game and screen) and the measurement that justified it; the
  * list only shrinks, or grows in the same change as that measurement.
  */
-const PIN_USES: { file: string; component: 'TaskStrip' | 'PinnedActions'; measured: string }[] = [];
+const PIN_USES: { file: string; component: 'TaskStrip' | 'PinnedActions'; measured: string }[] = [
+  {
+    file: 'apps/games/2-ar/hess-law/src/components/Level2.tsx',
+    component: 'TaskStrip',
+    measured:
+      'Stig 2, after compaction and anchoring, 360x640 touch, one equation chosen: the ' +
+      'Markmiðsjafna box at y 234 and Athuga lausn at y 1230, about 1 000 px apart. The ' +
+      'target and the running ΔH were never on screen together (design §1.2, §4 Phase 1).',
+  },
+  {
+    file: 'apps/games/2-ar/hess-law/src/components/Level2.tsx',
+    component: 'PinnedActions',
+    measured:
+      'Stig 2, same measurement: Athuga lausn about 1 000 px below the target, more than a ' +
+      'screen. No text input, and the verdict is one short line. Carries Heildar-ΔH as status.',
+  },
+];
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 

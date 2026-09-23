@@ -1,7 +1,13 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
-import { shuffleArray } from '@shared/utils';
+import {
+  shuffleArray,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+  useScreenTop,
+} from '@shared/utils';
 
 import { StatePathComparison } from './StatePathComparison';
 import { CHALLENGES } from '../data/challenges';
@@ -58,7 +64,10 @@ function EnergyDiagram({
   const productLevel = isExothermic ? 50 + clampedGap : 50 - clampedGap;
 
   return (
-    <div className="relative bg-gradient-to-b from-red-50 via-white to-blue-50 rounded-xl p-4 sm:p-6 h-64 border-2 border-warm-200">
+    // The labels switch layout on the diagram's own width (`@sm:`), not the
+    // viewport's: in landscape the diagram sits in half the screen. From 640 px
+    // up the diagram is always wider than `@sm` (384 px), so desktop is unchanged.
+    <div className="@container relative bg-gradient-to-b from-red-50 via-white to-blue-50 rounded-xl p-4 sm:p-6 h-64 phone:h-44 border-2 border-warm-200">
       {/* Y-axis label */}
       <div className="absolute left-2 top-1/2 -translate-y-1/2 -rotate-90 text-xs text-warm-500 font-semibold">
         Orka
@@ -72,7 +81,7 @@ function EnergyDiagram({
           style={{ top: `${reactantLevel}%` }}
         >
           <span
-            className={`absolute left-0 sm:left-auto sm:-top-6 whitespace-nowrap text-xs font-semibold text-blue-700 ${
+            className={`absolute left-0 @sm:left-auto @sm:-top-6 whitespace-nowrap text-xs font-semibold text-blue-700 ${
               reactantLevel > productLevel ? 'top-4' : '-top-6'
             }`}
           >
@@ -86,7 +95,7 @@ function EnergyDiagram({
           style={{ top: `${productLevel}%` }}
         >
           <span
-            className={`absolute right-0 sm:right-auto sm:-top-6 whitespace-nowrap text-xs font-semibold text-green-700 ${
+            className={`absolute right-0 @sm:right-auto @sm:-top-6 whitespace-nowrap text-xs font-semibold text-green-700 ${
               productLevel > reactantLevel ? 'top-4' : '-top-6'
             }`}
           >
@@ -156,7 +165,7 @@ function EquationDisplay({
 
   return (
     <div
-      className={`p-4 rounded-xl border-2 transition-all ${
+      className={`p-4 phone:p-3 rounded-xl border-2 transition-all ${
         equation.isReversed
           ? 'bg-red-50 border-red-300'
           : equation.multiplier !== 1
@@ -165,7 +174,7 @@ function EquationDisplay({
       }`}
     >
       {/* Equation */}
-      <div className="text-center mb-3">
+      <div className="text-center mb-3 phone:mb-1">
         <span className="font-mono text-lg">
           <span className="text-blue-700">{displayReactants}</span>
           <span className="mx-2 text-warm-600">→</span>
@@ -174,7 +183,7 @@ function EquationDisplay({
       </div>
 
       {/* ΔH value */}
-      <div className="text-center mb-4">
+      <div className="text-center mb-4 phone:mb-2">
         {hideDeltaH ? (
           <span className="font-bold text-xl text-purple-600">ΔH = ? kJ/mól</span>
         ) : (
@@ -189,10 +198,11 @@ function EquationDisplay({
 
       {/* Controls */}
       {showControls && (
-        <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+        // One row on a phone: Snúa við beside ×1/2/3.
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-4 phone:flex-nowrap phone:gap-2">
           <button
             onClick={onReverse}
-            className={`px-4 py-2 whitespace-nowrap pointer-coarse:min-h-11 rounded-lg font-semibold transition-colors ${
+            className={`px-4 phone:px-3 py-2 whitespace-nowrap pointer-coarse:min-h-11 rounded-lg font-semibold transition-colors ${
               equation.isReversed
                 ? 'bg-red-500 text-white'
                 : 'bg-warm-200 hover:bg-red-100 text-warm-700'
@@ -201,7 +211,7 @@ function EquationDisplay({
             🔄 Snúa við
           </button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 phone:gap-1">
             <span className="text-sm text-warm-600">×</span>
             {[1, 2, 3].map((n) => (
               <button
@@ -240,6 +250,29 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const [completed, setCompleted] = useState<number[]>([]);
 
   const challenge = CHALLENGES[currentChallenge];
+
+  // Intro → play starts the play screen at its top, heading focused; each new
+  // challenge brings the card's top back and focuses the challenge pill.
+  useScreenTop(showIntro);
+  const cardRef = useItemTop<HTMLDivElement>(currentChallenge);
+  const questionRef = useRef<HTMLHeadingElement>(null);
+  const optionsRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  // After Athuga: show the question through Næsta if it fits (else the chosen
+  // option, else the verdict at the top) and move focus to the feedback, not
+  // to Næsta, so a second Enter lands on nothing (design P3).
+  useRevealAfterCommit(showResult, () => ({
+    bottom: nextRef.current,
+    tops: [
+      questionRef.current,
+      selectedAnswer === null ? null : (optionsRef.current?.children[selectedAnswer] ?? null),
+      feedbackRef.current,
+    ],
+    focus: feedbackRef.current,
+  }));
+  // A double tap on Athuga must not land on Næsta, which renders in its place.
+  const armed = useArmedAfter(400, `${currentChallenge}:${showResult}`);
 
   // Shuffle options for current challenge - memoize to keep stable during challenge
   const shuffledOptions = useMemo(() => {
@@ -365,16 +398,18 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-lg p-4 mb-6">
-          <div className="flex justify-between items-center flex-wrap gap-4">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-blue-600">
+        {/* On a phone the header folds to one row (P4). Til baka keeps its DOM
+            place after the title, so focus order matches what is seen. */}
+        <div className="bg-white rounded-2xl shadow-lg p-4 mb-6 phone:px-3 phone:py-2 phone:mb-3">
+          <div className="flex justify-between items-center flex-wrap gap-4 phone:flex-nowrap phone:gap-3">
+            <div className="phone:flex-1 phone:min-w-0">
+              <h1 className="text-2xl md:text-3xl font-bold text-blue-600 phone:text-base">
                 Lögmál Hess - Stig&nbsp;1
               </h1>
-              <p className="text-sm text-warm-600">Skildu hugtökin - byggðu innsæi</p>
+              <p className="text-sm text-warm-600 phone:sr-only">Skildu hugtökin - byggðu innsæi</p>
             </div>
 
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-4 items-center phone:contents">
               <button
                 onClick={onBack}
                 className="text-warm-600 hover:text-warm-800 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
@@ -382,11 +417,11 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 ← Til baka
               </button>
               <div className="text-center">
-                <div className="text-xl font-bold text-blue-600">{score}</div>
+                <div className="text-xl font-bold text-blue-600 phone:text-base">{score}</div>
                 <div className="text-xs text-warm-600">Stig</div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold text-green-600">
+                <div className="text-xl font-bold text-green-600 phone:text-base">
                   {completed.length}/{CHALLENGES.length}
                 </div>
                 <div className="text-xs text-warm-600">Lokið</div>
@@ -395,158 +430,191 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           </div>
 
           {/* Progress bar */}
-          <div className="mt-4 bg-warm-200 rounded-full h-2">
+          <div className="mt-4 bg-warm-200 rounded-full h-2 phone:mt-2 phone:h-1.5">
             <div
-              className="bg-blue-500 h-2 rounded-full transition-all duration-500"
+              className="bg-blue-500 h-2 phone:h-1.5 rounded-full transition-all duration-500"
               style={{ width: `${(completed.length / CHALLENGES.length) * 100}%` }}
             />
           </div>
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+        <div ref={cardRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3">
           {/* Challenge header */}
-          <div className="mb-6">
-            <div className="inline-block bg-blue-100 px-4 py-2 rounded-full text-sm font-semibold text-blue-800 mb-2">
+          <div className="mb-6 phone:mb-3">
+            <div
+              data-item-start
+              className="inline-block bg-blue-100 px-4 py-2 rounded-full text-sm font-semibold text-blue-800 mb-2 phone:py-1 phone:mb-1"
+            >
               {currentChallenge + 1}. {challenge.title}
             </div>
             <p className="text-warm-700 mb-2">{challenge.description}</p>
-            <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
+            <div className="bg-purple-50 p-3 rounded-lg border border-purple-200 phone:p-2">
               <p className="text-sm text-purple-800">
                 <strong>Lykilhugtak:</strong> {challenge.concept}
               </p>
             </div>
           </div>
 
-          {/* Energy diagram */}
-          <div className="mb-6">
-            <EnergyDiagram equation={equation} hideDeltaH={hideDeltaH} />
-          </div>
+          {/* A phone on its side: diagram and equation | question and options.
+              The two groups are plain blocks, so desktop margins are unchanged. */}
+          <div className="phone-land:grid phone-land:grid-cols-2 phone-land:gap-4">
+            <div>
+              {/* Energy diagram */}
+              <div className="mb-6 phone:mb-3">
+                <EnergyDiagram equation={equation} hideDeltaH={hideDeltaH} />
+              </div>
 
-          {/* Equation with optional controls */}
-          <div className="mb-6">
-            <EquationDisplay
-              equation={equation}
-              onReverse={handleReverse}
-              onMultiply={handleMultiply}
-              showControls={showEquationControls && !showResult}
-              hideDeltaH={hideDeltaH}
-            />
-          </div>
-
-          {/* Question */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-warm-800 mb-4">{challenge.question}</h3>
-
-            <div className="space-y-3">
-              {shuffledOptions.map((option, index) => (
-                <button
-                  key={index}
-                  onClick={() => !showResult && setSelectedAnswer(index)}
-                  disabled={showResult}
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                    showResult
-                      ? option.correct
-                        ? 'bg-green-100 border-green-500'
-                        : selectedAnswer === index
-                          ? 'bg-red-100 border-red-500'
-                          : 'bg-warm-50 border-warm-200'
-                      : selectedAnswer === index
-                        ? 'bg-blue-100 border-blue-500'
-                        : 'bg-white border-warm-200 hover:border-blue-300 hover:bg-blue-50'
-                  }`}
+              {/* Equation with optional controls */}
+              <div className="mb-6 phone:mb-3">
+                <EquationDisplay
+                  equation={equation}
+                  onReverse={handleReverse}
+                  onMultiply={handleMultiply}
+                  showControls={showEquationControls && !showResult}
+                  hideDeltaH={hideDeltaH}
+                />
+              </div>
+            </div>
+            <div>
+              {/* Question */}
+              <div className="mb-6 phone:mb-3">
+                <h3
+                  ref={questionRef}
+                  className="text-lg font-semibold text-warm-800 mb-4 phone:mb-2"
                 >
-                  <div className="flex items-start gap-2 font-semibold">
-                    {showResult && option.correct && (
-                      <span aria-label="Rétt svar" className="text-green-700 font-bold">
-                        ✓
-                      </span>
-                    )}
-                    {showResult && !option.correct && selectedAnswer === index && (
-                      <span aria-label="Rangt svar" className="text-red-700 font-bold">
-                        ✗
-                      </span>
-                    )}
-                    <span>{option.text}</span>
-                  </div>
-                  {showResult && (selectedAnswer === index || option.correct) && (
-                    <div
-                      className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}
+                  {challenge.question}
+                </h3>
+
+                <div ref={optionsRef} className="space-y-3 phone:space-y-2">
+                  {shuffledOptions.map((option, index) => (
+                    <button
+                      key={index}
+                      onClick={() => !showResult && setSelectedAnswer(index)}
+                      disabled={showResult}
+                      className={`w-full p-4 phone:p-3 rounded-xl border-2 text-left transition-all ${
+                        showResult
+                          ? option.correct
+                            ? 'bg-green-100 border-green-500'
+                            : selectedAnswer === index
+                              ? 'bg-red-100 border-red-500'
+                              : 'bg-warm-50 border-warm-200'
+                          : selectedAnswer === index
+                            ? 'bg-blue-100 border-blue-500'
+                            : 'bg-white border-warm-200 hover:border-blue-300 hover:bg-blue-50'
+                      }`}
                     >
-                      {option.explanation}
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Hint */}
-          {!showResult && (
-            <div className="mb-6">
-              {showHint ? (
-                <div className="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl">
-                  <h4 className="font-semibold text-yellow-800 mb-2">💡 Vísbending:</h4>
-                  <p className="text-yellow-900">{challenge.hints?.method || ''}</p>
+                      <div className="flex items-start gap-2 font-semibold">
+                        {showResult && option.correct && (
+                          <span aria-label="Rétt svar" className="text-green-700 font-bold">
+                            ✓
+                          </span>
+                        )}
+                        {showResult && !option.correct && selectedAnswer === index && (
+                          <span aria-label="Rangt svar" className="text-red-700 font-bold">
+                            ✗
+                          </span>
+                        )}
+                        <span>{option.text}</span>
+                      </div>
+                      {/* A wrong choice's explanation is the very string the
+                      FeedbackPanel below shows, so a phone draws it once, there.
+                      The correct option's explanation is not repeated anywhere
+                      after a wrong answer and always stays. */}
+                      {showResult && (selectedAnswer === index || option.correct) && (
+                        <div
+                          className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700 phone:hidden'}`}
+                        >
+                          {option.explanation}
+                        </div>
+                      )}
+                    </button>
+                  ))}
                 </div>
-              ) : (
-                <button
-                  onClick={handleShowHint}
-                  className="text-yellow-600 hover:text-yellow-700 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
-                >
-                  💡 Sýna vísbendingu
-                </button>
+              </div>
+
+              {/* Hint */}
+              {!showResult && (
+                <div className="mb-6 phone:mb-3">
+                  {showHint ? (
+                    <div className="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl">
+                      <h4 className="font-semibold text-yellow-800 mb-2">💡 Vísbending:</h4>
+                      <p className="text-yellow-900">{challenge.hints?.method || ''}</p>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleShowHint}
+                      className="text-yellow-600 hover:text-yellow-700 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
+                    >
+                      💡 Sýna vísbendingu
+                    </button>
+                  )}
+                </div>
               )}
-            </div>
-          )}
 
-          {/* Detailed Feedback Panel */}
-          {showResult && (
-            <div className="mb-6">
-              <FeedbackPanel
-                feedback={{
-                  isCorrect: shuffledOptions[selectedAnswer!]?.correct || false,
-                  explanation: shuffledOptions[selectedAnswer!]?.explanation || '',
-                  misconception: shuffledOptions[selectedAnswer!]?.correct
-                    ? undefined
-                    : MISCONCEPTIONS[challenge.id],
-                  relatedConcepts: RELATED_CONCEPTS[challenge.id],
-                  nextSteps: shuffledOptions[selectedAnswer!]?.correct
-                    ? 'Frábært! Þú skilur þetta hugtak vel. Haltu áfram.'
-                    : 'Skoðaðu útskýringuna og reyndu að muna regluna.',
-                }}
-                config={{
-                  showExplanation: true,
-                  showMisconceptions: !shuffledOptions[selectedAnswer!]?.correct,
-                  showRelatedConcepts: true,
-                  showNextSteps: true,
-                }}
-              />
-            </div>
-          )}
+              {/* Detailed Feedback Panel */}
+              {/* The feedback region focus moves to after Athuga (P3). FeedbackPanel
+              is itself role=alert and announces the verdict. */}
+              {showResult && (
+                <div
+                  ref={feedbackRef}
+                  tabIndex={-1}
+                  role="group"
+                  className="mb-6 phone:mb-3 focus:outline-none"
+                >
+                  <FeedbackPanel
+                    feedback={{
+                      isCorrect: shuffledOptions[selectedAnswer!]?.correct || false,
+                      explanation: shuffledOptions[selectedAnswer!]?.explanation || '',
+                      misconception: shuffledOptions[selectedAnswer!]?.correct
+                        ? undefined
+                        : MISCONCEPTIONS[challenge.id],
+                      relatedConcepts: RELATED_CONCEPTS[challenge.id],
+                      nextSteps: shuffledOptions[selectedAnswer!]?.correct
+                        ? 'Frábært! Þú skilur þetta hugtak vel. Haltu áfram.'
+                        : 'Skoðaðu útskýringuna og reyndu að muna regluna.',
+                    }}
+                    config={{
+                      showExplanation: true,
+                      showMisconceptions: !shuffledOptions[selectedAnswer!]?.correct,
+                      showRelatedConcepts: true,
+                      showNextSteps: true,
+                    }}
+                  />
+                </div>
+              )}
 
-          {/* Action buttons */}
-          <div className="flex gap-4">
-            {!showResult ? (
-              <button
-                onClick={checkAnswer}
-                disabled={selectedAnswer === null}
-                className={`flex-1 py-3 px-6 rounded-xl font-bold transition-colors ${
-                  selectedAnswer !== null
-                    ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                    : 'bg-warm-300 text-warm-500 cursor-not-allowed'
-                }`}
-              >
-                Athuga svar
-              </button>
-            ) : (
-              <button
-                onClick={nextChallenge}
-                className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl transition-colors"
-              >
-                {currentChallenge < CHALLENGES.length - 1 ? 'Næsta verkefni →' : 'Ljúka stigi →'}
-              </button>
-            )}
+              {/* Action buttons */}
+              {/* Athuga and Næsta are separate elements (keyed), never one button
+              relabelled, and Næsta ignores a press within 400 ms of appearing. */}
+              <div className="flex gap-4">
+                {!showResult ? (
+                  <button
+                    key="check"
+                    onClick={checkAnswer}
+                    disabled={selectedAnswer === null}
+                    className={`flex-1 py-3 px-6 rounded-xl font-bold transition-colors ${
+                      selectedAnswer !== null
+                        ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                        : 'bg-warm-300 text-warm-500 cursor-not-allowed'
+                    }`}
+                  >
+                    Athuga svar
+                  </button>
+                ) : (
+                  <button
+                    key="next"
+                    ref={nextRef}
+                    onClick={armed(nextChallenge)}
+                    className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl transition-colors"
+                  >
+                    {currentChallenge < CHALLENGES.length - 1
+                      ? 'Næsta verkefni →'
+                      : 'Ljúka stigi →'}
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
