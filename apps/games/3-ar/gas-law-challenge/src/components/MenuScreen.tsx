@@ -23,8 +23,8 @@ export function MenuScreen({
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
         <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="Gaslögmál" />
         <div className="min-h-screen">
-          <main className="max-w-5xl mx-auto px-4 py-8">
-            <div className="bg-white rounded-xl shadow-lg p-8">
+          <main className="max-w-5xl mx-auto px-4 py-6 sm:py-8">
+            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8">
               <div className="text-center mb-8">
                 <p className="text-lg text-warm-600 mb-2">
                   Lærðu að leysa verkefni um kjörgaslögmálið: PV = nRT
@@ -52,7 +52,7 @@ export function MenuScreen({
                     </div>
                     <button
                       onClick={resetStats}
-                      className="mt-3 text-sm text-warm-500 hover:text-red-500 transition-colors"
+                      className="mt-3 text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:min-h-11 pointer-coarse:px-3"
                     >
                       Endurstilla framvindu
                     </button>
@@ -61,13 +61,13 @@ export function MenuScreen({
               </div>
 
               {/* Conceptual intro — WHY does PV=nRT? */}
-              <div className="bg-purple-50 p-6 rounded-xl mb-8 border border-purple-200">
+              <div className="bg-purple-50 p-4 sm:p-6 rounded-xl mb-8 border border-purple-200">
                 <h2 className="font-bold text-purple-800 mb-3">Af hverju PV = nRT?</h2>
                 <p className="text-sm text-purple-700 mb-3">
                   Gasagnir (sameindir) eru á stöðugri hreyfingu. Þegar þær rekast á veggi ílátsins
                   skapa þær <strong>þrýsting</strong>. Þetta tengir saman fjórar stærðir:
                 </p>
-                <div className="grid grid-cols-2 gap-3 text-sm mb-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm mb-3">
                   <div className="bg-white p-2 rounded">
                     <strong className="text-blue-700">P (þrýstingur)</strong> — fleiri árekstur =
                     meiri þrýstingur
@@ -151,7 +151,7 @@ export function MenuScreen({
 
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Practice Mode */}
-                <div className="game-card bg-blue-50 p-6 rounded-lg border-2 border-blue-200">
+                <div className="game-card bg-blue-50 p-4 sm:p-6 rounded-lg border-2 border-blue-200">
                   <h2 className="text-2xl font-bold mb-3 text-blue-900">Æfingahamur</h2>
                   <ul className="text-warm-700 mb-4 space-y-2 text-sm">
                     <li>✓ Engin tímatakmörk</li>
@@ -169,7 +169,7 @@ export function MenuScreen({
                 </div>
 
                 {/* Challenge Mode */}
-                <div className="game-card bg-orange-50 p-6 rounded-lg border-2 border-orange-200">
+                <div className="game-card bg-orange-50 p-4 sm:p-6 rounded-lg border-2 border-orange-200">
                   <h2 className="text-2xl font-bold mb-3 text-orange-900">Keppnishamur</h2>
                   <ul className="text-warm-700 mb-4 space-y-2 text-sm">
                     <li>⏱️ 90 sekúndur á spurningu</li>

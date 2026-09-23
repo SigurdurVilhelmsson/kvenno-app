@@ -181,6 +181,13 @@ function App() {
     setScreen('feedback');
   };
 
+  // Each screen opens at its top. On a phone "Athuga Svar" and "Næsta spurning" sit far down
+  // a long page, and the next screen used to open at that same scroll offset: past the
+  // verdict banner, or past the new question's scenario.
+  useEffect(() => {
+    if (window.scrollY > 0) window.scrollTo({ top: 0 });
+  }, [screen, currentQuestion]);
+
   const getHint = () => {
     if (!currentQuestion || showHint >= currentQuestion.hints.length) return;
     setShowHint(showHint + 1);
