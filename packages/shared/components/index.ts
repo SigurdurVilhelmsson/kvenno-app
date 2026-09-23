@@ -120,5 +120,9 @@ export type {
   UseScorePopupsReturn,
 } from './AnimatedCounter';
 
+// PhoneDisclosure - reference content that starts closed on a phone, always open elsewhere
+export { PhoneDisclosure } from './PhoneDisclosure';
+export type { PhoneDisclosureProps } from './PhoneDisclosure';
+
 // Transition - lightweight AnimatePresence replacement
 export { Presence, FadePresence } from './Transition';

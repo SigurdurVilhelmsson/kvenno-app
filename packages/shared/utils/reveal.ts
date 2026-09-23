@@ -28,7 +28,7 @@
  *  - Minimal: an element already where it needs to be never moves the page.
  *  - `prefers-reduced-motion` gets an instant jump instead of a smooth one.
  */
-import { useEffect, useLayoutEffect, useRef, type RefObject } from 'react';
+import { useEffect, useLayoutEffect, useRef, useSyncExternalStore, type RefObject } from 'react';
 
 /**
  * What "phone" means, for scripts. The same two queries as the `phone:` Tailwind
@@ -64,6 +64,32 @@ function matches(query: string): boolean {
 /** True on a phone layout. False wherever `matchMedia` is missing (jsdom, SSR). */
 export function isPhone(): boolean {
   return matches(PHONE_QUERY);
+}
+
+function subscribePhone(onChange: () => void): () => void {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+    return () => {};
+  }
+  const list = window.matchMedia(PHONE_QUERY);
+  if (typeof list.addEventListener === 'function') {
+    list.addEventListener('change', onChange);
+    return () => list.removeEventListener('change', onChange);
+  }
+  // Safari before 14 has only the deprecated pair.
+  list.addListener?.(onChange);
+  return () => list.removeListener?.(onChange);
+}
+
+/**
+ * `isPhone()` as React state: true on a phone layout, and it re-renders the
+ * component when the answer changes (a phone turned on its side, a desktop
+ * window dragged narrow). For phone-only markup that CSS cannot express — an
+ * element that must not exist at all on desktop, or an SVG attribute. Like
+ * `isPhone()` it is false wherever `matchMedia` is missing, so jsdom and
+ * desktop never see the phone-only branch.
+ */
+export function useIsPhone(): boolean {
+  return useSyncExternalStore(subscribePhone, isPhone, () => false);
 }
 
 export function prefersReducedMotion(): boolean {

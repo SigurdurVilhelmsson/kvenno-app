@@ -189,6 +189,121 @@ describe('FeedbackPanel', () => {
     });
   });
 
+  describe('phone density (design P5)', () => {
+    // jsdom computes no Tailwind, so the phone layout is asserted through its classes: every
+    // change is a `phone:` class (or an element that is display:none until `phone:`), which
+    // is what leaves desktop untouched. The phone-variant test holds `phone:` itself to the
+    // right media queries.
+    const CONCEPTS = ['Mólmassi', 'Atómmassi', 'Mól'];
+    const MISCONCEPTION = 'Undirvísitalan gildir aðeins um eitt frumefni.';
+
+    function classesOf(el: Element | null | undefined): string[] {
+      return (el?.getAttribute('class') ?? '').split(/\s+/).filter(Boolean);
+    }
+
+    it('runs labels nobody can tap on as one line of words separated by middle dots', () => {
+      const { container } = render(
+        <FeedbackPanel
+          feedback={{ isCorrect: false, explanation: EXPLANATION, relatedConcepts: CONCEPTS }}
+        />
+      );
+
+      const row = screen.getByText('Mólmassi').parentElement!;
+      // The desktop flex row is all still there; on a phone it becomes inline text that
+      // follows "Tengd efni:" on the same line.
+      expect(classesOf(row)).toEqual(
+        expect.arrayContaining(['flex', 'flex-wrap', 'gap-2', 'mt-1', 'phone:inline'])
+      );
+      for (const concept of CONCEPTS) {
+        // Every word stays visible: the pill is only unstyled, never hidden or clipped.
+        const word = classesOf(screen.getByText(concept));
+        expect(word).toEqual(
+          expect.arrayContaining(['px-2', 'py-1', 'rounded-full', 'bg-white/70', 'phone:p-0'])
+        );
+        expect(word).not.toContain('hidden');
+      }
+
+      // One dot after each word but the last, all aria-hidden and display:none until the
+      // phone variant turns them on. Each dot is glued to the word before it, so a wrapped
+      // line never starts with one.
+      const dots = Array.from(row.querySelectorAll('[aria-hidden="true"]'));
+      expect(dots).toHaveLength(CONCEPTS.length - 1);
+      for (const dot of dots) {
+        expect(dot.textContent).toBe('·');
+        expect(dot.previousSibling?.textContent).toMatch(/^[^\s]+.*[^\s]$/);
+        // The break is a plain space after the dot, outside aria-hidden, so the words
+        // are read apart and not run together.
+        expect(dot.nextSibling?.nodeType).toBe(Node.TEXT_NODE);
+        expect(dot.nextSibling?.textContent).toBe(' ');
+        expect(classesOf(dot)).toEqual(expect.arrayContaining(['hidden', 'phone:inline']));
+      }
+      expect(row.firstElementChild?.textContent).toBe('Mólmassi');
+
+      // A screen reader still hears the words and not the dots; the verdict text is unchanged.
+      expect(container.querySelector('.feedback-panel')?.textContent).toMatch(/^✗Rangt/);
+      const spoken = Array.from(row.childNodes)
+        .filter((n) => !(n instanceof Element && n.getAttribute('aria-hidden') === 'true'))
+        .map((n) => n.textContent)
+        .join('');
+      expect(spoken).toBe(CONCEPTS.join(' '));
+    });
+
+    it('leaves tappable chips as 44 px pills, with no dots', () => {
+      render(
+        <FeedbackPanel
+          feedback={{ isCorrect: false, explanation: EXPLANATION, relatedConcepts: CONCEPTS }}
+          onConceptClick={vi.fn()}
+        />
+      );
+
+      const chip = screen.getByRole('button', { name: 'Mólmassi' });
+      const row = chip.parentElement!;
+      expect(classesOf(row).some((c) => c.startsWith('phone:'))).toBe(false);
+      expect(row.querySelector('[aria-hidden="true"]')).toBeNull();
+      for (const concept of CONCEPTS) {
+        const classes = classesOf(screen.getByRole('button', { name: concept }));
+        expect(classes).toContain('pointer-coarse:min-h-11');
+        expect(classes.some((c) => c.startsWith('phone:'))).toBe(false);
+      }
+    });
+
+    it('keeps "Af hverju?" open and the misconception outside the collapse', () => {
+      render(
+        <FeedbackPanel
+          feedback={{
+            isCorrect: false,
+            explanation: EXPLANATION,
+            misconception: MISCONCEPTION,
+            relatedConcepts: CONCEPTS,
+          }}
+        />
+      );
+
+      expect(screen.getByRole('button', { name: /Af hverju/ }).getAttribute('aria-expanded')).toBe(
+        'true'
+      );
+      expect(screen.getByText(EXPLANATION)).toBeDefined();
+      expect(screen.getByText(MISCONCEPTION)).toBeDefined();
+      // Nothing density added hides either of them on a phone.
+      for (const text of [EXPLANATION, MISCONCEPTION]) {
+        const classes = classesOf(screen.getByText(text));
+        expect(classes.filter((c) => c.startsWith('phone:'))).toEqual([]);
+      }
+    });
+
+    it("draws the icon on the verdict's own line on a phone", () => {
+      const { container } = render(
+        <FeedbackPanel feedback={{ isCorrect: true, explanation: EXPLANATION }} />
+      );
+      const icon = container.querySelector('.feedback-panel [aria-hidden="true"]');
+
+      // Desktop keeps text-2xl; a phone draws it at the verdict's 24 px line height.
+      expect(classesOf(icon)).toEqual(
+        expect.arrayContaining(['text-2xl', 'phone:text-xl', 'phone:leading-6'])
+      );
+    });
+  });
+
   it('grows the "Af hverju?" toggle to a 44 px target on touch without moving the panel', () => {
     render(<FeedbackPanel feedback={{ isCorrect: false, explanation: EXPLANATION }} />);
 

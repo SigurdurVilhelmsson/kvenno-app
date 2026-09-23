@@ -12,6 +12,7 @@ import {
   revealSpan,
   revealTop,
   usableArea,
+  useIsPhone,
   useItemTop,
   useRevealAfterCommit,
   useScreenTop,
@@ -596,5 +597,56 @@ describe('useRevealAfterCommit', () => {
     act(() => vi.advanceTimersByTime(1));
     expect(document.activeElement).toBe(getByTestId('feedback'));
     expect(scrollBy).toHaveBeenCalled();
+  });
+});
+
+describe('useIsPhone', () => {
+  function Probe() {
+    return createElement('span', { 'data-testid': 'probe' }, useIsPhone() ? 'phone' : 'desk');
+  }
+
+  it('is false wherever matchMedia is missing (jsdom, SSR)', () => {
+    // @ts-expect-error -- simulate an environment without matchMedia
+    window.matchMedia = undefined;
+    const { getByTestId } = render(createElement(Probe));
+    expect(getByTestId('probe').textContent).toBe('desk');
+  });
+
+  it('follows the phone query, and re-renders when it changes', () => {
+    let matchesNow = true;
+    const listeners = new Set<() => void>();
+    window.matchMedia = vi.fn((query: string) => ({
+      get matches() {
+        return query === PHONE_QUERY && matchesNow;
+      },
+      media: query,
+      addEventListener: (_: string, fn: () => void) => listeners.add(fn),
+      removeEventListener: (_: string, fn: () => void) => listeners.delete(fn),
+    })) as unknown as typeof window.matchMedia;
+
+    const { getByTestId, unmount } = render(createElement(Probe));
+    expect(getByTestId('probe').textContent).toBe('phone');
+
+    matchesNow = false;
+    act(() => listeners.forEach((fn) => fn()));
+    expect(getByTestId('probe').textContent).toBe('desk');
+
+    unmount();
+    expect(listeners.size).toBe(0);
+  });
+
+  it('uses the deprecated listener pair where addEventListener is missing', () => {
+    const addListener = vi.fn();
+    const removeListener = vi.fn();
+    window.matchMedia = vi.fn(() => ({
+      matches: false,
+      addListener,
+      removeListener,
+    })) as unknown as typeof window.matchMedia;
+
+    const { unmount } = render(createElement(Probe));
+    expect(addListener).toHaveBeenCalled();
+    unmount();
+    expect(removeListener).toHaveBeenCalled();
   });
 });
