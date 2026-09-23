@@ -23,7 +23,8 @@ function Level1Intro() {
           </p>
           <p className="text-xs text-warm-500">Óstillt efnajafna</p>
         </div>
-        <div className="space-y-3 text-sm text-warm-700">
+        {/* At text-sm a subscript renders at 10.5px; keep the digits legible on a phone. */}
+        <div className="space-y-3 text-sm text-warm-700 pointer-coarse:[&_sub]:text-[12px]">
           <div className="flex items-start gap-2">
             <span className="bg-blue-100 text-blue-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shrink-0">
               1
