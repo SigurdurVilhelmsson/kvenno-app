@@ -3579,6 +3579,174 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    {
+      name: 'Stig 1 — próf, leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 1: Grunnreglur'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Viðskeyti →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Sameindasmiður →'],
+        },
+        {
+          clickRole: ['button', 'Byrja próf'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        // An option is the commit: tapping one answers.
+        action: { css: 'button.border-emerald-300' },
+        answer: [],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        // In landscape the verdict comes to the top and Næsta is one short
+        // scroll below the feedback (§5 residual); §6.2.10 still runs.
+        viewports: ['android', 'iphone', 'se'],
+      },
+    },
+    {
+      name: 'Stig 2 — nafnasmiður, leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 2: Nefna sameindir'],
+        },
+        {
+          clickRole: ['button', 'Nefna sameindir'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        // Pinned to the bottom of a portrait phone (PIN_USES in mobile-vertical.spec.ts).
+        action: { role: 'button', name: 'Athuga svar' },
+        // A wrong name, prop- + -en for etan: the longest feedback.
+        answer: [
+          { css: '[data-drop-pool] [data-item-id="prefix-prop"]' },
+          { css: '[data-zone-id="zone-prefix"]' },
+          { css: '[data-drop-pool] [data-item-id="suffix-en"]' },
+          { css: '[data-zone-id="zone-suffix"]' },
+        ],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Halda áfram' },
+        // The molecule and the pinned Athuga on screen together on arrival.
+        together: [[{ css: '[data-item-start]' }, { role: 'button', name: 'Athuga svar' }]],
+        viewports: ['android', 'iphone', 'se'],
+      },
+    },
+    {
+      name: 'Stig 2 — skrifa-hamur, leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 2: Nefna sameindir'],
+        },
+        {
+          clickRole: ['button', 'Nefna sameindir'],
+        },
+        {
+          clickRole: ['button', 'Skipta í skrifa-ham'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [{ fill: ['input[type=text]', 'x'] }],
+        verdict: { css: '#organic-l2-verdict' },
+        next: { role: 'button', name: 'Halda áfram' },
+        // The formula being named sits close above the field.
+        together: [[{ text: 'C₂H₆' }, { css: 'input[type=text]' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+      },
+    },
+    {
+      name: 'Stig 2 — byggja sameind, leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 2: Nefna sameindir'],
+        },
+        {
+          clickRole: ['button', 'Byggja sameindir'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        // Four carbons, as the chain starts, for própan: wrong.
+        answer: [],
+        // The verdict line itself. In landscape the whole panel is taller than
+        // the half-screen revealSpan leaves a verdict in, so the panel's foot
+        // can sit under the bottom edge while its verdict is being read.
+        verdict: { css: '.feedback-panel p' },
+        next: { role: 'button', name: 'Næsta áskorun' },
+        viewports: ['android', 'iphone', 'se'],
+        // None at 360x640 and 390x664; the SE needs one.
+        scrollsToAction: 1,
+      },
+    },
+    {
+      name: 'Stig 3 — áskorun, leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 3: Hagnýtar sameindir'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Næsta →'],
+        },
+        {
+          clickRole: ['button', 'Byrja áskoranir'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        // An option is the commit: tapping one answers.
+        action: { css: 'button.border-purple-300' },
+        answer: [],
+        verdict: { css: '#organic-l3-verdict' },
+        next: { role: 'button', name: 'Næsta áskorun' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
   ],
   '2-ar/redox-reactions': [
     {

@@ -47,6 +47,17 @@ const PIN_USES: { file: string; component: 'TaskStrip' | 'PinnedActions'; measur
       'Stig 2, same measurement: Athuga lausn about 1 000 px below the target, more than a ' +
       'screen. No text input, and the verdict is one short line. Carries Heildar-ΔH as status.',
   },
+  {
+    file: 'apps/games/2-ar/organic-nomenclature/src/components/Level2.tsx',
+    component: 'PinnedActions',
+    measured:
+      'Stig 2 name builder, drag mode, after compaction, the fitted molecule and anchoring, ' +
+      '360x640 touch, the first seven molecules: the screen opens at its heading with the ' +
+      'molecule at y 152 and Athuga svar, unpinned, 625-747 px below it (its bottom at y ' +
+      '777-899), so the molecule and its action are never on screen together without a ' +
+      'scroll. No text input: the typed mode renders the same row unpinned. The bar holds ' +
+      'Vísbending | Athuga only and leaves with them on commit, so it never sits over feedback.',
+  },
 ];
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));

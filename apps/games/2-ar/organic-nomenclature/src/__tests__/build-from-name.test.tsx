@@ -2,7 +2,11 @@
 import { fireEvent, render, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level2 } from '../components/Level2';
+
+// The buttons that follow an answer ignore a press within 400 ms of appearing.
+clockPastNextGuard();
 
 /**
  * Stig 2's Byggja mode: the student reads a name and builds the chain.
