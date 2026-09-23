@@ -16,7 +16,7 @@ const MISCONCEPTIONS: Record<ChallengeType, string> = {
     'Algeng villa er að halda að sameindir hverfi við útþynningu. Sameindir haldast óbreyttar - þær dreifast bara á stærra svæði.',
   mixing:
     'Þegar lausnir blandast, þarf að taka tillit til rúmmáls beggja lausnanna og fjölda sameinda í hvorum.',
-  buildSolution: 'Mundu að styrkur = sameindir/rúmmál. Bæði breyturnar hafa áhrif á lokastyrkinn.',
+  buildSolution: 'Mundu að styrkur = sameindir/rúmmál. Báðar breyturnar hafa áhrif á lokastyrkinn.',
   concentrationMatch:
     'Til að auka styrk með föstu rúmmáli, verður þú að bæta við sameindum. Fleiri sameindir = hærri styrkur.',
 };
@@ -124,7 +124,7 @@ const CHALLENGES: Challenge[] = [
       canChangeVolume: true,
     },
     hints: {
-      topic: 'Þetta snýst um útþynningu sterkar lausnar.',
+      topic: 'Þetta snýst um útþynningu sterkrar lausnar.',
       strategy: 'Sameindir haldast óbreyttar. Aðeins rúmmálið breytist!',
       method: 'Styrkur = (sameindir × 0,01) / rúmmál í lítrum. Leysðu fyrir rúmmál.',
       solution: '40 × 0,01 = 0,4 mól. 0,4 mól / 0,8 M = 0,5 L = 500 mL',
@@ -204,7 +204,7 @@ const CHALLENGES: Challenge[] = [
       method: 'Styrkur = (sameindir × 0,01) / rúmmál í lítrum. Prófaðu auðveldar tölur.',
       solution: 'Til dæmis: 50 sameindir í 200 mL: 0,5 mól / 0,2 L = 2,5 M',
     },
-    conceptMessage: 'Sama styrkur getur orðið með mismunandi magni',
+    conceptMessage: 'Sami styrkur getur orðið með mismunandi magni',
   },
 ];
 
@@ -302,9 +302,11 @@ function getPredictionQuestion(challenge: Challenge): PredictionQuestion {
       explanation: 'Rétt! Fleiri sameindir í sama rúmmáli þýðir HÆRRI styrk.',
     };
   } else {
-    // buildSolution
+    // buildSolution. The question has to be one that "Eykst / Minnkar /
+    // Óbreytt" answers: it used to ask what the student could do to raise the
+    // concentration, which none of the three options is.
     return {
-      question: 'Til að auka styrk, hvað getur þú gert?',
+      question: 'Ef þú bætir við sameindum eða minnkar rúmmálið, hvað gerist við styrkinn?',
       correctAnswer: 'increase',
       explanation: 'Rétt! Þú getur bætt við sameindum EÐA minnkað rúmmálið til að auka styrk.',
     };
@@ -497,8 +499,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         <div className="bg-white rounded-2xl shadow-lg p-4 mb-6">
           <div className="flex justify-between items-center flex-wrap gap-4">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-blue-600">Lausnir - Stigur 1</h1>
-              <p className="text-sm text-warm-600">Skildu hugtökin - ENGIN útreikningar!</p>
+              <h1 className="text-2xl md:text-3xl font-bold text-blue-600">Lausnir - Stig 1</h1>
+              <p className="text-sm text-warm-600">Skildu hugtökin - ENGIR útreikningar!</p>
             </div>
 
             <div className="flex gap-4 items-center">
@@ -539,7 +541,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <div className="text-center mb-6">
               <div className="text-4xl mb-2">🤔</div>
               <h2 className="text-2xl font-bold text-blue-800">Hugsaðu fyrst!</h2>
-              <p className="text-warm-600 mt-2">Áður en þú byrjar, spáðu fyrir um útkomunna</p>
+              <p className="text-warm-600 mt-2">Áður en þú byrjar, spáðu fyrir um útkomuna</p>
             </div>
 
             {/* Bridging note: connect abstract units to real chemistry (shown on first challenge) */}
@@ -826,7 +828,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   onClick={() => setShowHint(true)}
                   className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
                 >
-                  Syna visbendingu
+                  Sýna vísbendingu
                 </button>
               )}
 
@@ -841,7 +843,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                       : 'bg-blue-500 hover:bg-blue-600 text-white'
                 }`}
               >
-                {showConcept ? 'Hleð næsta verkefni...' : 'Athuga lausn ✓'}
+                {showConcept ? 'Sæki næsta verkefni...' : 'Athuga lausn ✓'}
               </button>
             </div>
           </div>

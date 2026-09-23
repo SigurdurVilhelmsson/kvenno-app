@@ -29,18 +29,20 @@ interface BaseScenario {
   concept: string;
 }
 
+/**
+ * A beaker in a concentration scenario: its volume and the molarity the prose
+ * states. The particles drawn in it are derived, never stored — see
+ * `particlesIn`.
+ */
+interface SolutionState {
+  volumeML: number;
+  concentration: number;
+}
+
 interface ConcentrationScenario extends BaseScenario {
   type: 'concentration';
-  visualBefore: {
-    molecules: number;
-    volumeML: number;
-    concentration: number;
-  };
-  visualAfter: {
-    molecules: number;
-    volumeML: number;
-    concentration: number;
-  };
+  visualBefore: SolutionState;
+  visualAfter: SolutionState;
 }
 
 interface TemperatureScenario extends BaseScenario {
@@ -51,6 +53,22 @@ interface TemperatureScenario extends BaseScenario {
 }
 
 type Scenario = ConcentrationScenario | TemperatureScenario;
+
+/** Moles one drawn particle stands for — the same scale Stig 1 teaches. */
+const MOL_PER_PARTICLE = 0.01;
+
+/**
+ * How many particles a beaker holds: M × V ÷ 0,01 mól.
+ *
+ * Derived from the molarity and volume the scenario states, because the
+ * "Samantekt á breytingum" panel turns the count back into a molarity. It used
+ * to be stored beside them, and scenario 1 stored 40 particles in 100 mL of a
+ * 2,0 M solution — so the summary told the student the beaker held 4,00 M,
+ * and 2,00 M after the dilution whose answer the options give as 1,0 M.
+ */
+export function particlesIn({ volumeML, concentration }: SolutionState): number {
+  return Math.round((concentration * volumeML) / 1000 / MOL_PER_PARTICLE);
+}
 
 /**
  * Get compound data by formula.
@@ -102,8 +120,8 @@ export const SCENARIOS: Scenario[] = [
       },
     ],
     concept: 'Við útþynningu: sameindir haldast, rúmmál eykst → styrkur minnkar í réttu hlutfalli.',
-    visualBefore: { molecules: 40, volumeML: 100, concentration: 2.0 },
-    visualAfter: { molecules: 40, volumeML: 200, concentration: 1.0 },
+    visualBefore: { volumeML: 100, concentration: 2.0 },
+    visualAfter: { volumeML: 200, concentration: 1.0 },
   },
   {
     id: 2,
@@ -111,7 +129,7 @@ export const SCENARIOS: Scenario[] = [
     title: 'Bæta við leysiefni',
     setup: 'Þú ert með 200 mL af 1,5 M glúkósalausn.',
     question:
-      'Þú leysir upp meira af glúkósu í lausninni (án þess að breyta rúmmáli). Hvað gerist?',
+      'Þú leysir upp meira af glúkósa í lausninni (án þess að breyta rúmmáli). Hvað gerist?',
     hint: 'Rúmmálið helst óbreytt en fjöldi sameinda eykst.',
     options: [
       {
@@ -140,8 +158,8 @@ export const SCENARIOS: Scenario[] = [
       },
     ],
     concept: 'Styrkur = sameindir/rúmmál. Fleiri sameindir í sama rúmmáli = hærri styrkur.',
-    visualBefore: { molecules: 30, volumeML: 200, concentration: 1.5 },
-    visualAfter: { molecules: 50, volumeML: 200, concentration: 2.5 },
+    visualBefore: { volumeML: 200, concentration: 1.5 },
+    visualAfter: { volumeML: 200, concentration: 2.5 },
   },
   {
     id: 3,
@@ -177,15 +195,15 @@ export const SCENARIOS: Scenario[] = [
       },
     ],
     concept: 'Við blöndun: heildarsameindir / heildarrúmmál = lokastyrkur. Jöfn rúmmál → meðaltal.',
-    visualBefore: { molecules: 30, volumeML: 100, concentration: 3.0 },
-    visualAfter: { molecules: 40, volumeML: 200, concentration: 2.0 },
+    visualBefore: { volumeML: 100, concentration: 3.0 },
+    visualAfter: { volumeML: 200, concentration: 2.0 },
   },
   // Temperature scenarios (new)
   {
     id: 4,
     type: 'temperature',
     title: 'Hitun á saltlausn',
-    setup: 'Þú ert með mettuð NaCl (borðsalt) lausn við 20°C.',
+    setup: 'Þú ert með mettaða NaCl (borðsalt) lausn við 20°C.',
     question: 'Þú hitar lausnina upp í 80°C. Hvað gerist við leysni saltsins?',
     hint: 'NaCl er þekkt sem undantekning — skoðaðu leysniferilinn.',
     options: [
@@ -225,9 +243,9 @@ export const SCENARIOS: Scenario[] = [
     id: 5,
     type: 'temperature',
     title: 'Hitun á KNO₃ lausn',
-    setup: 'Þú ert með mettuð kalíumnítrat (KNO₃) lausn við 20°C.',
+    setup: 'Þú ert með mettaða kalíumnítrat (KNO₃) lausn við 20°C.',
     question: 'Þú hitar lausnina upp í 60°C. Hvað gerist við leysni KNO₃?',
-    hint: 'KNO₃ hefur eitt hæsta hitaháðni meðal salta.',
+    hint: 'KNO₃ hefur eina hæstu hitaháðni meðal salta.',
     options: [
       {
         id: 'a',
@@ -336,8 +354,8 @@ export const SCENARIOS: Scenario[] = [
     ],
     concept:
       'Uppgufun er andstæða útþynningar: rúmmál minnkar en sameindir haldast → styrkur eykst.',
-    visualBefore: { molecules: 25, volumeML: 500, concentration: 0.5 },
-    visualAfter: { molecules: 25, volumeML: 250, concentration: 1.0 },
+    visualBefore: { volumeML: 500, concentration: 0.5 },
+    visualAfter: { volumeML: 250, concentration: 1.0 },
   },
   {
     id: 8,
@@ -384,7 +402,7 @@ export const SCENARIOS: Scenario[] = [
     title: 'Þríföld útþynning',
     setup: 'Þú þarft að þynna 6,0 M sýru niður í 2,0 M.',
     question: 'Hversu mikið þarftu að auka rúmmálið?',
-    hint: 'C₁V₁ = C₂V₂. Hver er nýja rúmmálið?',
+    hint: 'C₁V₁ = C₂V₂. Hvert er nýja rúmmálið?',
     options: [
       {
         id: 'a',
@@ -412,14 +430,14 @@ export const SCENARIOS: Scenario[] = [
       },
     ],
     concept: 'Til að þynna um ákveðið hlutfall þarftu að margfalda rúmmálið um sama hlutfall.',
-    visualBefore: { molecules: 60, volumeML: 100, concentration: 6.0 },
-    visualAfter: { molecules: 60, volumeML: 300, concentration: 2.0 },
+    visualBefore: { volumeML: 100, concentration: 6.0 },
+    visualAfter: { volumeML: 300, concentration: 2.0 },
   },
   {
     id: 10,
     type: 'temperature',
     title: 'Sykurlausn',
-    setup: 'Þú ert að búa til karamellulausn. Þú hefur mettuð sykurlausn við 20°C.',
+    setup: 'Þú ert að búa til karamellulausn. Þú hefur mettaða sykurlausn við 20°C.',
     question: 'Þú hitar lausnina upp í 80°C. Getur þú nú bætt við meiri sykri?',
     hint: 'Sykur er dæmi um efni með mikla hitaháðni í leysni.',
     options: [
@@ -564,14 +582,14 @@ function BeforeAfterVisual({
   after,
   showAfter,
 }: {
-  before: { molecules: number; volumeML: number; concentration: number };
-  after: { molecules: number; volumeML: number; concentration: number };
+  before: SolutionState;
+  after: SolutionState;
   showAfter: boolean;
 }) {
   const maxVolume = Math.max(before.volumeML, after.volumeML);
 
   const renderBeaker = (
-    data: { molecules: number; volumeML: number; concentration: number },
+    data: SolutionState,
     label: string,
     { revealed = true }: { revealed?: boolean } = {}
   ) => {
@@ -600,7 +618,7 @@ function BeforeAfterVisual({
     }
 
     const fillPercent = (data.volumeML / maxVolume) * 80;
-    const displayMolecules = Math.min(data.molecules, 50);
+    const displayMolecules = Math.min(particlesIn(data), 50);
 
     // Beaker boundaries in SVG coordinates (viewBox 0 0 80 120)
     // Beaker inner walls: x=11 to x=69, liquid bottom at y=98
@@ -757,10 +775,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       setSelectedAnswer(null);
       setShowResult(false);
     } else {
-      const finalScore = score + (isCorrect ? 100 : 0);
-      onComplete(finalScore);
+      // `score` already holds this scenario's points: handleSubmit added them
+      // when the answer was checked. Adding them again here reported 1300 for a
+      // perfect 12 of 12.
+      onComplete(score);
     }
-  }, [currentScenario, score, isCorrect, onComplete]);
+  }, [currentScenario, score, onComplete]);
 
   const allComplete = currentScenario === SCENARIOS.length - 1 && showResult;
 
@@ -771,9 +791,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         <div className="bg-white rounded-2xl shadow-lg p-4 mb-6">
           <div className="flex justify-between items-center flex-wrap gap-4">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-green-600">Lausnir - Stigur 2</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-green-600">Lausnir - Stig 2</h1>
               <p className="text-sm text-warm-600">
-                Spáðu fyrir um breytingar - ENGIN útreikningar!
+                Spáðu fyrir um breytingar - ENGIR útreikningar!
               </p>
             </div>
 
@@ -921,8 +941,14 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 </div>
                 {scenario.type === 'concentration' ? (
                   <ConcentrationComparison
-                    before={scenario.visualBefore}
-                    after={scenario.visualAfter}
+                    before={{
+                      molecules: particlesIn(scenario.visualBefore),
+                      volumeML: scenario.visualBefore.volumeML,
+                    }}
+                    after={{
+                      molecules: particlesIn(scenario.visualAfter),
+                      volumeML: scenario.visualAfter.volumeML,
+                    }}
                     showParticles={true}
                     animate={false}
                   />

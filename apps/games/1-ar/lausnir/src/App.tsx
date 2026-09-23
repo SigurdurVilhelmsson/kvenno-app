@@ -66,13 +66,15 @@ function App() {
     setActiveLevel('menu');
   };
 
+  // Stig 1's last screen says "Áfram í Stig 2 →", so it goes there. It used to
+  // drop the student back on the menu instead.
   const handleLevel1Complete = (score: number) => {
     updateProgress({
       level1Score: Math.max(progress.level1Score || 0, score),
       level1Completed: true,
       totalGamesPlayed: progress.totalGamesPlayed + 1,
     });
-    setActiveLevel('menu');
+    setActiveLevel('level2');
   };
 
   const handleLevel2Complete = (score: number) => {
@@ -363,14 +365,16 @@ function App() {
               <div className="grid grid-cols-3 gap-3 text-center text-sm">
                 <div className="bg-blue-50 rounded-lg p-2">
                   <div className="text-lg font-bold text-blue-600">
+                    {/* Four levels since Stig 0 landed; this counted three. */}
                     {
                       [
+                        progress.level0Completed,
                         progress.level1Completed,
                         progress.level2Completed,
                         progress.level3Completed,
                       ].filter(Boolean).length
                     }
-                    /3
+                    /4
                   </div>
                   <div className="text-xs text-warm-600">{t('menu.levelsCompleted')}</div>
                 </div>

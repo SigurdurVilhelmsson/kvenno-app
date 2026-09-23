@@ -2,6 +2,7 @@ import { formatDecimal } from '@shared/utils';
 
 import { CHEMICALS } from '../data';
 import { Problem, Difficulty, ProblemType, Chemical } from '../types';
+import { formatAnswer } from './validation';
 
 export function generateProblem(difficulty: Difficulty): Problem {
   const problemTypes: ProblemType[] = [
@@ -107,15 +108,18 @@ function floorQuantity(value: number): number {
 }
 
 /**
- * Format a quantity for a hint line without rounding a small one away to 0,000.
- * Written with the Icelandic decimal comma, like every number in this file that
- * reaches a student — the answer field reads a comma, so the question has to
- * write one.
+ * Format an intermediate quantity for a hint line without rounding a small one
+ * away to 0,000. Written with the Icelandic decimal comma, like every number in
+ * this file that reaches a student — the answer field reads a comma, so the
+ * question has to write one.
+ *
+ * Below 1 it prints three significant figures, because the next hint line
+ * computes from the value printed here and has to land inside the 2 %
+ * tolerance. Three decimals did not: `mól = 1,1 / 53,5 = 0,021` was followed by
+ * `M = 0,021 / 0,099 = 0,208 M`, and 0,021 / 0,099 is 0,212 — marked wrong.
  */
 function fmt(value: number): string {
-  if (value === 0) return '0';
-  if (Math.abs(value) < 0.01) return value.toPrecision(2).replace('.', ',');
-  if (Math.abs(value) < 1) return formatDecimal(parseFloat(value.toFixed(3)));
+  if (Math.abs(value) < 1) return formatAnswer(value);
   if (Math.abs(value) < 10) return formatDecimal(parseFloat(value.toFixed(2)));
   return formatDecimal(parseFloat(value.toFixed(1)));
 }
@@ -144,7 +148,7 @@ function generateDilutionProblem(difficulty: Difficulty, chemical: Chemical): Pr
     const M1 = drawMolarity(chemical, 1, 5);
     const V1 = Math.round(Math.random() * 90 + 10);
     const V2 = Math.round(Math.random() * 400 + 100);
-    const M2 = parseFloat(((M1 * V1) / V2).toFixed(3));
+    const M2 = (M1 * V1) / V2;
 
     return {
       id: crypto.randomUUID(),
@@ -159,14 +163,20 @@ function generateDilutionProblem(difficulty: Difficulty, chemical: Chemical): Pr
       hints: [
         'Notaðu M₁V₁ = M₂V₂',
         `M₂ = (M₁ × V₁) / V₂ = (${n(M1)} × ${V1}) / ${V2}`,
-        `M₂ = ${formatDecimal(M2, 3)} M`,
+        `M₂ = ${formatAnswer(M2)} M`,
       ],
     };
   } else {
     const M1 = drawMolarity(chemical, 0.5, 5);
     const V1 = Math.round(Math.random() * 45 + 5);
     const V2 = Math.round(Math.random() * 450 + 50);
-    const M2 = parseFloat(((M1 * V1) / V2).toFixed(4));
+    // The question prints M₂ rounded, so the answer is worked back from the
+    // printed value. Grading against the V₁ it was drawn from marked a correct
+    // calculation wrong whenever the rounding moved it past 2 %. Three
+    // significant figures rather than three decimals, which printed a sparingly
+    // soluble substance's M₂ as 0,000.
+    const M2 = parseFloat(((M1 * V1) / V2).toPrecision(3));
+    const volume1 = (M2 * V2) / M1;
 
     return {
       id: crypto.randomUUID(),
@@ -174,14 +184,14 @@ function generateDilutionProblem(difficulty: Difficulty, chemical: Chemical): Pr
       chemical,
       description: 'Nákvæm útþynning',
       given: { M1, V1, V2 },
-      question: `Þú þarft að útbúa ${V2} mL af ${formatDecimal(M2, 3)} M ${chemical.name} lausn með því að þynna ${n(M1)} M stofnlausn. Hversu mikið þarftu af stofnlausninni?`,
-      answer: V1,
+      question: `Þú þarft að útbúa ${V2} mL af ${n(M2)} M ${chemical.name} lausn með því að þynna ${n(M1)} M stofnlausn. Hversu mikið þarftu af stofnlausninni?`,
+      answer: volume1,
       unit: 'mL',
       difficulty: difficulty,
       hints: [
         'V₁ = (M₂ × V₂) / M₁',
-        `V₁ = (${formatDecimal(M2, 3)} × ${V2}) / ${n(M1)}`,
-        `V₁ = ${V1} mL`,
+        `V₁ = (${n(M2)} × ${V2}) / ${n(M1)}`,
+        `V₁ = ${formatAnswer(volume1)} mL`,
       ],
     };
   }
@@ -190,7 +200,7 @@ function generateDilutionProblem(difficulty: Difficulty, chemical: Chemical): Pr
 function generateMolarityProblem(difficulty: Difficulty, chemical: Chemical): Problem {
   const volume = parseFloat((Math.random() * 0.9 + 0.1).toFixed(2));
   const moles = floorQuantity(drawMolarity(chemical, 0.1, 5) * volume);
-  const molarity = parseFloat((moles / volume).toFixed(3));
+  const molarity = moles / volume;
 
   return {
     id: crypto.randomUUID(),
@@ -205,7 +215,7 @@ function generateMolarityProblem(difficulty: Difficulty, chemical: Chemical): Pr
     hints: [
       'Mólstyrkur (M) = mól / lítrar',
       `M = ${n(moles)} / ${n(volume)}`,
-      `M = ${formatDecimal(molarity, 3)} M`,
+      `M = ${formatAnswer(molarity)} M`,
     ],
   };
 }
@@ -217,7 +227,7 @@ function generateMolarityFromMassProblem(difficulty: Difficulty, chemical: Chemi
     drawMolarity(chemical, 0.2, 4) * volumeInL * chemical.molarMass
   );
   const moles = massInGrams / chemical.molarMass;
-  const molarity = parseFloat((moles / volumeInL).toFixed(3));
+  const molarity = moles / volumeInL;
 
   return {
     id: crypto.randomUUID(),
@@ -232,7 +242,7 @@ function generateMolarityFromMassProblem(difficulty: Difficulty, chemical: Chemi
     hints: [
       'Fyrst reiknaðu mól = g / (g/mol), síðan M = mól / L',
       `mól = ${n(massInGrams)} / ${n(chemical.molarMass)} = ${fmt(moles)}; L = ${volumeInML}/1000 = ${formatDecimal(volumeInL, 3)}`,
-      `M = ${fmt(moles)} / ${formatDecimal(volumeInL, 3)} = ${fmt(molarity)} M`,
+      `M = ${fmt(moles)} / ${formatDecimal(volumeInL, 3)} = ${formatAnswer(molarity)} M`,
     ],
   };
 }
@@ -242,7 +252,10 @@ function generateMassFromMolarityProblem(difficulty: Difficulty, chemical: Chemi
   const volumeInML = Math.round(Math.random() * 400 + 100);
   const volumeInL = volumeInML / 1000;
   const moles = molarity * volumeInL;
-  const mass = roundQuantity(moles * chemical.molarMass);
+  // Unrounded. It used to be rounded to two significant figures — up to 5 %
+  // from the value — and graded at 2 %, so about one massFromMolarity problem
+  // in eight marked the exact answer wrong.
+  const mass = moles * chemical.molarMass;
 
   return {
     id: crypto.randomUUID(),
@@ -257,7 +270,7 @@ function generateMassFromMolarityProblem(difficulty: Difficulty, chemical: Chemi
     hints: [
       'Fyrst reiknaðu mól = M × L, síðan massi = mól × mólmassi',
       `mól = ${n(molarity)} × ${formatDecimal(volumeInL, 3)} = ${fmt(moles)}`,
-      `massi = ${fmt(moles)} × ${n(chemical.molarMass)} = ${fmt(mass)} g`,
+      `massi = ${fmt(moles)} × ${n(chemical.molarMass)} = ${formatAnswer(mass)} g`,
     ],
   };
 }
@@ -270,7 +283,7 @@ function generateMixingProblem(difficulty: Difficulty, chemical: Chemical): Prob
 
   const totalMoles = (M1 * V1 + M2 * V2) / 1000;
   const totalVolume = (V1 + V2) / 1000;
-  const finalMolarity = parseFloat((totalMoles / totalVolume).toFixed(3));
+  const finalMolarity = totalMoles / totalVolume;
 
   return {
     id: crypto.randomUUID(),
@@ -285,7 +298,7 @@ function generateMixingProblem(difficulty: Difficulty, chemical: Chemical): Prob
     hints: [
       'M_lokal = (M₁V₁ + M₂V₂) / (V₁ + V₂)',
       `M = (${n(M1)}×${V1} + ${n(M2)}×${V2}) / (${V1}+${V2})`,
-      `M = ${formatDecimal(finalMolarity, 3)} M`,
+      `M = ${formatAnswer(finalMolarity)} M`,
     ],
   };
 }

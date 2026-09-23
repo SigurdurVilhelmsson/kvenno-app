@@ -18,7 +18,7 @@ export const gameTranslations = createGameTranslations({
       progress: 'Framvinda',
       reset: 'Endurstilla',
       levelsCompleted: 'Stig lokið',
-      totalPoints: 'Heildar stig',
+      totalPoints: 'Heildarstig',
       games: 'Leikir',
       formulas: 'Formúlur (Stig 3)',
       backToGames: 'Til baka í leikjayfirlit',
@@ -26,16 +26,14 @@ export const gameTranslations = createGameTranslations({
     levels: {
       level1: {
         name: 'Stig 1: Hugtök',
-        description: 'Sjónræn meðhöndlun - ENGIN útreikningar',
+        description: 'Sjónræn meðhöndlun - ENGIR útreikningar',
         details:
           'Dragðu, smelltu og sjáðu hvernig styrkur breytist í rauntíma. Byggðu innsæi fyrir M = n/V.',
-        needScore: 'Þarft {score} stig til að opna Stig 2. Reyndu aftur!',
       },
       level2: {
         name: 'Stig 2: Rökstuðningur',
         description: 'Spáðu fyrir um breytingar - fjölval',
         details: '"Hvað gerist ef...?" spurningar. Notaðu hugtökin sem þú lærðir.',
-        needScore: 'Þarft {score} stig til að opna Stig 3. Reyndu aftur!',
       },
       level3: {
         name: 'Stig 3: Útreikningar',
@@ -97,13 +95,11 @@ export const gameTranslations = createGameTranslations({
         description: 'Visual manipulation - NO calculations',
         details:
           'Drag, click and see how concentration changes in real time. Build intuition for M = n/V.',
-        needScore: 'Need {score} points to unlock Level 2. Try again!',
       },
       level2: {
         name: 'Level 2: Reasoning',
         description: 'Predict changes - multiple choice',
         details: '"What happens if...?" questions. Use the concepts you learned.',
-        needScore: 'Need {score} points to unlock Level 3. Try again!',
       },
       level3: {
         name: 'Level 3: Calculations',
@@ -164,13 +160,11 @@ export const gameTranslations = createGameTranslations({
         description: 'Manipulacja wizualna - BEZ obliczen',
         details:
           'Przeciagaj, klikaj i obserwuj jak stezenie zmienia sie w czasie rzeczywistym. Zbuduj intuicje dla M = n/V.',
-        needScore: 'Potrzebujesz {score} punktow, aby odblokowac Poziom 2. Sprobuj ponownie!',
       },
       level2: {
         name: 'Poziom 2: Rozumowanie',
         description: 'Przewiduj zmiany - wielokrotny wybor',
         details: 'Pytania "Co sie stanie, jesli...?". Uzyj pojec, ktorych sie nauczyles.',
-        needScore: 'Potrzebujesz {score} punktow, aby odblokowac Poziom 3. Sprobuj ponownie!',
       },
       level3: {
         name: 'Poziom 3: Obliczenia',

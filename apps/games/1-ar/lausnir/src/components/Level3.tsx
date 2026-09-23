@@ -1,14 +1,19 @@
 import { useEffect, useState, useRef } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
-import { formatDecimal, parseStudentNumber, shuffleArray } from '@shared/utils';
+import { parseStudentNumber, shuffleArray } from '@shared/utils';
 
 import { Problem, ProblemType } from '../types';
 import { FormulaCard } from './FormulaCard';
 import { StepBySolution } from './StepBySolution';
 import { generateProblem } from '../utils/problem-generator';
 import { revealTop } from '../utils/reveal';
-import { validateInput, checkAnswer, getContextualFeedback } from '../utils/validation';
+import {
+  validateInput,
+  checkAnswer,
+  formatAnswer,
+  getContextualFeedback,
+} from '../utils/validation';
 
 const TOTAL = 8;
 const THEME = '#8b5cf6';
@@ -37,7 +42,7 @@ function generateAllProblems(): Problem[] {
 }
 
 export function Level3({ onComplete, onBack }: Level3Props) {
-  const [problems] = useState<Problem[]>(generateAllProblems);
+  const [problems, setProblems] = useState<Problem[]>(generateAllProblems);
   const [idx, setIdx] = useState(0);
   const [input, setInput] = useState('');
   const [inputError, setInputError] = useState<string | null>(null);
@@ -93,7 +98,10 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
   if (done) {
     const passed = correctCount >= 5;
+    // A new set: the worked solution to every problem in the old one has
+    // just been shown, so replaying it would test copying, not calculating.
     const retry = () => {
+      setProblems(generateAllProblems());
       setIdx(0);
       setInput('');
       setCorrectCount(0);
@@ -161,7 +169,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
           <div className="flex justify-between items-center gap-3">
             <div className="min-w-0">
-              <h1 className="text-xl font-bold text-warm-800">Reikna styrk - Stigur 3</h1>
+              <h1 className="text-xl font-bold text-warm-800">Reikna styrk - Stig 3</h1>
               <p className="text-sm text-warm-600">Notaðu formúlurnar til að reikna</p>
             </div>
             <div className="text-center">
@@ -246,7 +254,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 <button
                   onClick={submit}
                   disabled={!input.trim()}
-                  className="flex-1 text-white font-bold py-3 px-4 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="flex-1 text-white font-bold py-3 px-4 rounded-lg transition-colors disabled:bg-warm-200 disabled:text-warm-500 disabled:cursor-not-allowed"
                   style={{ backgroundColor: input.trim() ? THEME : undefined }}
                 >
                   Athuga
@@ -260,7 +268,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               <FeedbackPanel
                 feedback={{
                   isCorrect: correct,
-                  explanation: `Rétt svar: ${formatDecimal(problem.answer, 3)} ${problem.unit}`,
+                  explanation: `Rétt svar: ${formatAnswer(problem.answer)} ${problem.unit}`,
                   misconception: correct
                     ? undefined
                     : getContextualFeedback(parseStudentNumber(input), problem.answer),

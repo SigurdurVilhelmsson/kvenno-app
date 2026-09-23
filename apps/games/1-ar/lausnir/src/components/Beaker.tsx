@@ -47,9 +47,9 @@ export function Beaker({
         overflow="visible"
         className="mx-auto"
         role="img"
-        aria-label={`Biker: ${volume} mL${concentration ? `, ${formatDecimal(concentration)} M` : ''}${label ? `, ${label}` : ''}`}
+        aria-label={`Bikarglas: ${volume} mL${concentration ? `, ${formatDecimal(concentration, 2)} M` : ''}${label ? `, ${label}` : ''}`}
       >
-        <title>{`Biker með ${volume} mL lausn${concentration ? ` af styrk ${formatDecimal(concentration)} M` : ''}`}</title>
+        <title>{`Bikarglas með ${volume} mL lausn${concentration ? ` af styrk ${formatDecimal(concentration, 2)} M` : ''}`}</title>
         {/* Beaker outline */}
         <path
           d={`M 20 20 L 20 170 L 30 180 L 90 180 L 100 170 L 100 20`}
