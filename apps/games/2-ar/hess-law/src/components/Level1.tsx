@@ -50,20 +50,24 @@ function EnergyDiagram({ equation, showPath = true }: { equation: Equation; show
   const productLevel = isExothermic ? 50 + clampedGap : 50 - clampedGap;
 
   return (
-    <div className="relative bg-gradient-to-b from-red-50 via-white to-blue-50 rounded-xl p-6 h-64 border-2 border-warm-200">
+    <div className="relative bg-gradient-to-b from-red-50 via-white to-blue-50 rounded-xl p-4 sm:p-6 h-64 border-2 border-warm-200">
       {/* Y-axis label */}
       <div className="absolute left-2 top-1/2 -translate-y-1/2 -rotate-90 text-xs text-warm-500 font-semibold">
         Orka
       </div>
 
       {/* Energy levels */}
-      <div className="relative h-full ml-8">
+      <div className="relative h-full ml-6 sm:ml-8">
         {/* Reactants level */}
         <div
           className="absolute left-0 w-1/3 h-3 bg-blue-500 rounded-full flex items-center justify-center transition-all duration-500"
           style={{ top: `${reactantLevel}%` }}
         >
-          <span className="absolute -top-6 text-xs font-semibold text-blue-700">
+          <span
+            className={`absolute left-0 sm:left-auto sm:-top-6 whitespace-nowrap text-xs font-semibold text-blue-700 ${
+              reactantLevel > productLevel ? 'top-4' : '-top-6'
+            }`}
+          >
             {equation.isReversed ? equation.products : equation.reactants}
           </span>
         </div>
@@ -73,7 +77,11 @@ function EnergyDiagram({ equation, showPath = true }: { equation: Equation; show
           className="absolute right-0 w-1/3 h-3 bg-green-500 rounded-full flex items-center justify-center transition-all duration-500"
           style={{ top: `${productLevel}%` }}
         >
-          <span className="absolute -top-6 text-xs font-semibold text-green-700">
+          <span
+            className={`absolute right-0 sm:right-auto sm:-top-6 whitespace-nowrap text-xs font-semibold text-green-700 ${
+              productLevel > reactantLevel ? 'top-4' : '-top-6'
+            }`}
+          >
             {equation.isReversed ? equation.reactants : equation.products}
           </span>
         </div>
@@ -95,9 +103,9 @@ function EnergyDiagram({ equation, showPath = true }: { equation: Equation; show
         )}
 
         {/* ΔH label */}
-        <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-white px-3 py-1 rounded-lg border-2 border-warm-300 shadow-sm">
+        <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 whitespace-nowrap bg-white px-2 sm:px-3 py-1 rounded-lg border-2 border-warm-300 shadow-sm">
           <span
-            className={`font-bold text-lg ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}
+            className={`font-bold text-base sm:text-lg ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}
           >
             ΔH = {effectiveDeltaH > 0 ? '+' : ''}
             {effectiveDeltaH} kJ
@@ -163,10 +171,10 @@ function EquationDisplay({
 
       {/* Controls */}
       {showControls && (
-        <div className="flex justify-center gap-4">
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
           <button
             onClick={onReverse}
-            className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+            className={`px-4 py-2 whitespace-nowrap pointer-coarse:min-h-11 rounded-lg font-semibold transition-colors ${
               equation.isReversed
                 ? 'bg-red-500 text-white'
                 : 'bg-warm-200 hover:bg-red-100 text-warm-700'
@@ -181,7 +189,7 @@ function EquationDisplay({
               <button
                 key={n}
                 onClick={() => onMultiply?.(n)}
-                className={`w-10 h-10 rounded-lg font-bold transition-colors ${
+                className={`w-10 h-10 pointer-coarse:w-11 pointer-coarse:h-11 rounded-lg font-bold transition-colors ${
                   equation.multiplier === n
                     ? 'bg-blue-500 text-white'
                     : 'bg-warm-200 hover:bg-blue-100 text-warm-700'
@@ -279,7 +287,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-lg mx-auto">
-          <button onClick={onBack} className="text-warm-600 hover:text-warm-800 mb-4">
+          <button
+            onClick={onBack}
+            className="text-warm-600 hover:text-warm-800 mb-4 pointer-coarse:min-h-11"
+          >
             ← Til baka
           </button>
           <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4 animate-slide-in">
@@ -338,12 +349,17 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         <div className="bg-white rounded-2xl shadow-lg p-4 mb-6">
           <div className="flex justify-between items-center flex-wrap gap-4">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-blue-600">Lögmál Hess - Stig 1</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-blue-600">
+                Lögmál Hess - Stig&nbsp;1
+              </h1>
               <p className="text-sm text-warm-600">Skildu hugtökin - byggðu innsæi</p>
             </div>
 
             <div className="flex gap-4 items-center">
-              <button onClick={onBack} className="text-warm-600 hover:text-warm-800 text-sm">
+              <button
+                onClick={onBack}
+                className="text-warm-600 hover:text-warm-800 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
+              >
                 ← Til baka
               </button>
               <div className="text-center">
@@ -369,7 +385,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           {/* Challenge header */}
           <div className="mb-6">
             <div className="inline-block bg-blue-100 px-4 py-2 rounded-full text-sm font-semibold text-blue-800 mb-2">
@@ -456,7 +472,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               ) : (
                 <button
                   onClick={handleShowHint}
-                  className="text-yellow-600 hover:text-yellow-700 text-sm"
+                  className="text-yellow-600 hover:text-yellow-700 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
                 >
                   💡 Sýna vísbendingu
                 </button>
@@ -520,12 +536,12 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         </div>
 
         {/* Challenge navigation */}
-        <div className="mt-6 flex justify-center gap-2">
+        <div className="mt-6 flex flex-wrap justify-center gap-1 min-[360px]:gap-2">
           {CHALLENGES.map((c, i) => (
             <button
               key={c.id}
               onClick={() => setCurrentChallenge(i)}
-              className={`w-10 h-10 rounded-full font-bold transition-colors ${
+              className={`w-10 h-10 pointer-coarse:w-11 pointer-coarse:h-11 rounded-full font-bold transition-colors ${
                 completed.includes(c.id)
                   ? 'bg-green-500 text-white'
                   : i === currentChallenge

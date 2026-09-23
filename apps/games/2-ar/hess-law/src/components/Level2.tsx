@@ -311,7 +311,7 @@ function EquationBlock({
       </div>
 
       {/* Controls */}
-      <div className="flex justify-center gap-3">
+      <div className="flex flex-wrap justify-center gap-3">
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -319,7 +319,7 @@ function EquationBlock({
           }}
           aria-label="Snúa við jöfnu"
           aria-pressed={equation.isReversed}
-          className={`px-3 py-1 rounded-lg text-sm font-semibold transition-colors ${
+          className={`px-3 py-1 pointer-coarse:min-h-11 whitespace-nowrap rounded-lg text-sm font-semibold transition-colors ${
             equation.isReversed ? 'bg-red-500 text-white' : 'bg-warm-200 hover:bg-red-100'
           }`}
         >
@@ -336,7 +336,7 @@ function EquationBlock({
               }}
               aria-label={`Margfalda með ${n}`}
               aria-pressed={equation.multiplier === n}
-              className={`w-8 h-8 rounded-lg text-sm font-bold transition-colors ${
+              className={`w-8 h-8 pointer-coarse:w-11 pointer-coarse:h-11 rounded-lg text-sm font-bold transition-colors ${
                 equation.multiplier === n
                   ? 'bg-blue-500 text-white'
                   : 'bg-warm-200 hover:bg-blue-100'
@@ -464,13 +464,16 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           <div className="flex justify-between items-center flex-wrap gap-4">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-green-600">
-                Lögmál Hess - Stig 2
+                Lögmál Hess - Stig&nbsp;2
               </h1>
               <p className="text-sm text-warm-600">Þrautir - sameinaðu jöfnur</p>
             </div>
 
             <div className="flex gap-4 items-center">
-              <button onClick={onBack} className="text-warm-600 hover:text-warm-800 text-sm">
+              <button
+                onClick={onBack}
+                className="text-warm-600 hover:text-warm-800 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
+              >
                 ← Til baka
               </button>
               <div className="text-center">
@@ -496,7 +499,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           {/* Puzzle header */}
           <div className="mb-6">
             <div className="inline-block bg-green-100 px-4 py-2 rounded-full text-sm font-semibold text-green-800 mb-2">
@@ -587,7 +590,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               ) : (
                 <button
                   onClick={handleShowHint}
-                  className="text-yellow-600 hover:text-yellow-700 text-sm"
+                  className="text-yellow-600 hover:text-yellow-700 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
                 >
                   💡 Sýna vísbendingu
                 </button>
@@ -596,7 +599,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           )}
 
           {/* Action buttons */}
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <button
               onClick={() => resetPuzzle(currentPuzzle)}
               className="px-6 py-3 bg-warm-200 hover:bg-warm-300 rounded-xl font-semibold transition-colors"
@@ -628,7 +631,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         </div>
 
         {/* Puzzle navigation */}
-        <div className="mt-6 flex justify-center gap-2">
+        <div className="mt-6 flex flex-wrap justify-center gap-1 min-[360px]:gap-2">
           {PUZZLES.map((p, i) => (
             <button
               key={p.id}
@@ -636,7 +639,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 setCurrentPuzzle(i);
                 resetPuzzle(i);
               }}
-              className={`w-10 h-10 rounded-full font-bold transition-colors ${
+              className={`w-10 h-10 pointer-coarse:w-11 pointer-coarse:h-11 rounded-full font-bold transition-colors ${
                 completed.includes(p.id)
                   ? 'bg-green-500 text-white'
                   : i === currentPuzzle

@@ -7,6 +7,7 @@ import {
   FORMATION_ENTHALPIES,
   checkAnswer as checkAnswerTolerance,
 } from '../utils/hess-calculations';
+import { toggleSign } from '../utils/sign';
 
 interface Level3Props {
   t: (key: string, fallback?: string) => string;
@@ -194,12 +195,17 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
   if (showIntro) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 space-y-5">
-          <div className="flex justify-between items-center">
-            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 space-y-5">
+          <div className="flex flex-wrap sm:flex-nowrap justify-between items-center gap-y-1">
+            <button
+              onClick={onBack}
+              className="text-warm-500 hover:text-warm-700 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+            >
               ← {t('common.back', 'Til baka')}
             </button>
-            <h1 className="text-lg font-bold text-warm-800">Myndunarvarmar — Kennsla</h1>
+            <h1 className="order-last w-full sm:order-none sm:w-auto text-lg font-bold text-warm-800">
+              Myndunarvarmar — Kennsla
+            </h1>
             <span className="text-sm text-warm-500">Stig 3</span>
           </div>
 
@@ -221,7 +227,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
             </p>
             <div className="bg-teal-50 border border-teal-200 rounded-lg p-3 text-center">
               <p className="font-mono text-teal-900 text-base">
-                ΔH°<sub>rxn</sub> = Σ n·ΔH°f(myndefni) − Σ n·ΔH°f(hvarfefni)
+                ΔH°<sub>rxn</sub> = Σ&nbsp;n·ΔH°f(myndefni) − Σ&nbsp;n·ΔH°f(hvarfefni)
               </p>
             </div>
             <p className="text-xs text-warm-600">
@@ -231,12 +237,15 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           </div>
 
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm">
-            <h3 className="font-bold text-amber-800 mb-2">Dæmi: CH₄ + 2 O₂ → CO₂ + 2 H₂O</h3>
+            <h3 className="font-bold text-amber-800 mb-2">
+              Dæmi: CH₄ + 2&nbsp;O₂ → CO₂ + 2&nbsp;H₂O
+            </h3>
             <p className="text-warm-700 mb-2">
               Gefið: ΔH°f CH₄ = −75, CO₂ = −394, H₂O = −286 kJ/mól.
             </p>
             <p className="font-mono text-warm-800">
-              ΔH°rxn = [(1)(−394) + (2)(−286)] − [(1)(−75) + (2)(0)]
+              ΔH°rxn = <span className="whitespace-nowrap">[(1)(−394) + (2)(−286)]</span> −{' '}
+              <span className="whitespace-nowrap">[(1)(−75) + (2)(0)]</span>
             </p>
             <p className="font-mono text-warm-800">
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = (−966) − (−75) = <strong>−891 kJ</strong>
@@ -265,7 +274,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
           >
             <span>&larr;</span> {t('common.back')}
           </button>
@@ -288,28 +297,28 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <h2 className="text-2xl font-bold text-purple-800 mb-2">{t(challenge.titleKey)}</h2>
           <p className="text-warm-600 mb-6">{t(challenge.descKey)}</p>
 
           {/* Chemical equation display */}
           <div className="bg-purple-50 p-4 rounded-xl mb-6">
-            <div className="text-center font-mono text-xl">{challenge.equation}</div>
+            <div className="text-center font-mono text-lg sm:text-xl">{challenge.equation}</div>
           </div>
 
           {/* Toggle formation enthalpy table */}
           <button
             onClick={() => setShowTable(!showTable)}
-            className="mb-4 text-purple-600 hover:text-purple-800 underline text-sm"
+            className="mb-4 text-purple-600 hover:text-purple-800 underline text-sm pointer-coarse:py-3 pointer-coarse:-mt-3 pointer-coarse:mb-1"
           >
             {showTable ? t('level3.hideTable') : t('level3.showTable')}
           </button>
 
           {/* Formation enthalpy table */}
           {showTable && (
-            <div className="bg-warm-50 p-4 rounded-xl mb-6 max-h-64 overflow-y-auto">
+            <div className="bg-warm-50 p-4 rounded-xl mb-6 md:max-h-64 md:overflow-y-auto">
               <h3 className="font-bold text-warm-700 mb-3">{t('level3.tableTitle')}</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+              <div className="grid grid-cols-1 min-[400px]:grid-cols-2 md:grid-cols-3 gap-2 text-sm">
                 {Object.entries(FORMATION_ENTHALPIES)
                   .filter(
                     ([formula]) =>
@@ -349,10 +358,12 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               <div className="space-y-1 text-sm font-mono">
                 {challenge.products.map((p, i) => (
                   <div key={i} className="flex items-center gap-2">
-                    <span>
+                    <span className="min-w-0">
                       {p.coefficient} × ΔH°f({p.formula}) = {p.coefficient} × ({p.deltaHf}) ={' '}
                     </span>
-                    <span className="font-bold">{(p.coefficient * p.deltaHf).toFixed(1)} kJ</span>
+                    <span className="shrink-0 whitespace-nowrap font-bold">
+                      {(p.coefficient * p.deltaHf).toFixed(1)} kJ
+                    </span>
                   </div>
                 ))}
                 <div className="border-t pt-1 font-bold">
@@ -367,10 +378,12 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               <div className="space-y-1 text-sm font-mono">
                 {challenge.reactants.map((r, i) => (
                   <div key={i} className="flex items-center gap-2">
-                    <span>
+                    <span className="min-w-0">
                       {r.coefficient} × ΔH°f({r.formula}) = {r.coefficient} × ({r.deltaHf}) ={' '}
                     </span>
-                    <span className="font-bold">{(r.coefficient * r.deltaHf).toFixed(1)} kJ</span>
+                    <span className="shrink-0 whitespace-nowrap font-bold">
+                      {(r.coefficient * r.deltaHf).toFixed(1)} kJ
+                    </span>
                   </div>
                 ))}
                 <div className="border-t pt-1 font-bold">
@@ -383,21 +396,37 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           {/* Answer input */}
           <div className="flex flex-col md:flex-row gap-4 items-center mb-6">
             <div className="flex-1 w-full">
-              <label className="block text-sm font-medium text-warm-700 mb-2">
+              <label
+                htmlFor="hess-l3-answer"
+                className="block text-sm font-medium text-warm-700 mb-2"
+              >
                 {challenge.type === 'reverse'
                   ? `ΔH°f(${challenge.unknownCompound}) = `
                   : 'ΔH°rxn = '}
               </label>
               <div className="flex gap-2">
                 <input
+                  id="hess-l3-answer"
                   type="text"
                   inputMode="decimal"
+                  autoComplete="off"
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
                   className="flex-1 p-3 border-2 border-warm-300 rounded-xl focus:border-purple-500 focus:outline-none text-lg font-mono"
                   placeholder={t('level3.placeholder')}
                   disabled={isCorrect !== null}
                 />
+                {/* The decimal keypad has no minus key on an iPhone, and five of the six answers
+                    here are negative. Touch screens only; a desktop keyboard has one. */}
+                <button
+                  type="button"
+                  onClick={() => setUserAnswer(toggleSign(userAnswer))}
+                  disabled={isCorrect !== null}
+                  aria-label="Skipta um formerki"
+                  className="hidden h-11 w-11 shrink-0 self-center items-center justify-center rounded-lg border-2 border-warm-300 bg-white font-mono text-lg text-warm-700 disabled:opacity-50 pointer-coarse:inline-flex"
+                >
+                  ±
+                </button>
                 <span className="flex items-center text-warm-600 font-mono">{challenge.unit}</span>
               </div>
             </div>
@@ -406,7 +435,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               <button
                 onClick={checkAnswer}
                 disabled={!userAnswer}
-                className="bg-purple-500 hover:bg-purple-600 disabled:bg-warm-300 text-white font-bold py-3 px-8 rounded-xl transition-colors"
+                className="w-full md:w-auto bg-purple-500 hover:bg-purple-600 disabled:bg-warm-300 text-white font-bold py-3 px-8 rounded-xl transition-colors"
               >
                 {t('level3.check')}
               </button>
@@ -417,7 +446,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           {isCorrect === null && !showHint && (
             <button
               onClick={handleShowHint}
-              className="text-purple-600 hover:text-purple-800 text-sm underline mb-4"
+              className="text-purple-600 hover:text-purple-800 text-sm underline mb-4 pointer-coarse:py-3 pointer-coarse:-mt-3 pointer-coarse:mb-1"
             >
               {t('level3.showHint')}
             </button>
