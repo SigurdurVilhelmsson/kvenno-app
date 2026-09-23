@@ -11,6 +11,8 @@
  * other.
  */
 
+import { normaliseMinus } from './numbers';
+
 const SUPERSCRIPTS = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 
 /**
@@ -23,8 +25,16 @@ const SUPERSCRIPTS = '⁰¹²³⁴⁵⁶⁷⁸⁹';
  */
 export function formatScientific(value: number, figures = 2): string {
   if (value === 0) return '0';
-  const exponent = Math.floor(Math.log10(Math.abs(value)));
-  const mantissa = value / Math.pow(10, exponent);
+  let exponent = Math.floor(Math.log10(Math.abs(value)));
+  let mantissa = value / Math.pow(10, exponent);
+  // Rounding can carry the mantissa up to 10: 9,96 × 10⁻⁵ to two figures is
+  // 10,0 × 10⁻⁵, which is not scientific notation and claims a third figure.
+  // It belongs in the next power, as 1,0 × 10⁻⁴. `2-ar/kinetics` met exactly
+  // this in its catalyst demo and rounded before calling here to avoid it.
+  if (Math.abs(Number(mantissa.toFixed(figures - 1))) >= 10) {
+    exponent += 1;
+    mantissa = value / Math.pow(10, exponent);
+  }
   // toFixed rather than String(Number(...)): a trailing zero is a significant
   // figure, so 1,0 × 10⁻⁸ and 1 × 10⁻⁸ are different claims about precision.
   // This is the same rule `1-ar/dimensional-analysis`'s Stig 0 teaches.
@@ -53,6 +63,37 @@ export interface ScientificEntry {
 export type GradeOutcome = 'rett' | 'veldisvisir' | 'tolustafir' | 'baedi' | 'ogilt';
 
 /**
+ * The mantissa field takes a written number and nothing else: digits, at most
+ * one decimal comma or point, and a sign. No `×`, no `e`, no superscript — the
+ * power of ten has a field of its own.
+ */
+const PLAIN_MANTISSA = /^[+-]?(\d+([.,]\d*)?|[.,]\d+)$/;
+
+/** The exponent field takes a whole number, signed or not. */
+const INTEGER_EXPONENT = /^[+-]?\d+$/;
+
+/**
+ * Read both fields, or `null` if either holds something other than what it
+ * asks for.
+ *
+ * **Strict, because `parseFloat` and `parseInt` are not.** Both read the
+ * longest prefix they can and ignore the rest, so the old reader half-read
+ * whatever did not fit: `8,3 × 10²` in the mantissa field read as `8,3`, and
+ * with `-17` beside it graded `rett` against 8,3 × 10⁻¹⁷, though the student
+ * had written a hundred times that. An exponent of `1,5` read as `1`. A field that
+ * holds a fragment of an answer is not an answer, so it grades `ogilt` and the
+ * caller asks again, the same rule `1-ar/dimensional-analysis`'s `readWritten`
+ * applies to its own two fields.
+ */
+function readEntry(entry: ScientificEntry): { mantissa: number; exponent: number } | null {
+  const mantissa = normaliseMinus(entry.mantissa.replace(/\s/g, ''));
+  const exponent = normaliseMinus(entry.exponent.replace(/\s/g, ''));
+  if (mantissa === null || exponent === null) return null;
+  if (!PLAIN_MANTISSA.test(mantissa) || !INTEGER_EXPONENT.test(exponent)) return null;
+  return { mantissa: Number(mantissa.replace(',', '.')), exponent: Number(exponent) };
+}
+
+/**
  * Grade an answer given as mantissa and exponent.
  *
  * **Two fields, not one, and that is the whole design.** In `leysnijafnvaegi` every answer lives
@@ -65,23 +106,30 @@ export type GradeOutcome = 'rett' | 'veldisvisir' | 'tolustafir' | 'baedi' | 'og
  * form parsed to 0, and an Icelandic comma parsed to 1
  * (`ORPHANED_GAMES_ASSESSMENT.md`).
  *
- * Splitting the field also buys the diagnosis that matters. The commonest real
- * error here is a right mantissa with the power of ten out by one — from
- * forgetting the `4` in `4s³`, or taking a square root where a cube root
- * belonged. `veldisvisir` says exactly that, where a single merged box could
- * only say "wrong".
+ * Splitting the field also buys a diagnosis a single merged box cannot make:
+ * right digits with the power of ten wrong (`veldisvisir`) against wrong
+ * digits (`tolustafir`). Only a mistake that multiplies the answer by a power
+ * of ten and by nothing else lands on `veldisvisir`: a mantissa normalised
+ * without moving the power with it (13,4 × 10⁻⁶ written as 1,34 × 10⁻⁶), a
+ * dropped minus sign on the power, a unit slip of a thousand (mL for L).
+ *
+ * **Forgetting the `4` in `4s³` is not one of them** — this comment used to say
+ * it was. It multiplies s by ∛4 ≈ 1,59, which is no power of ten, so it always
+ * changes the digits and lands on `tolustafir` or `baedi`. **Nor, as a rule, is
+ * taking a square root where a cube root belonged**, which this comment also
+ * named. That factor depends on Ksp, so it is a power of ten only by
+ * coincidence — √Ksp against ∛(Ksp / 4) at a Ksp near 6,25 × 10⁻¹⁴ — and no
+ * salt in `3-ar/leysnijafnvaegi`'s pool comes near one. A caller's
+ * `veldisvisir` message should name the power, not the chemistry.
  */
 export function gradeScientific(
   entry: ScientificEntry,
   expected: number,
   tolerance = 0.02
 ): { outcome: GradeOutcome; value: number } {
-  const mantissa = Number.parseFloat(entry.mantissa.replace(/\s/g, '').replace(',', '.'));
-  const exponent = Number.parseInt(entry.exponent.replace(/\s/g, '').replace('−', '-'), 10);
-
-  if (!Number.isFinite(mantissa) || !Number.isInteger(exponent)) {
-    return { outcome: 'ogilt', value: Number.NaN };
-  }
+  const read = readEntry(entry);
+  if (read === null) return { outcome: 'ogilt', value: Number.NaN };
+  const { mantissa, exponent } = read;
 
   const value = mantissa * Math.pow(10, exponent);
   if (value <= 0) return { outcome: 'ogilt', value };
