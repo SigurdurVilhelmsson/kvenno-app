@@ -307,6 +307,24 @@ describe('revealTop', () => {
     expect(scrollBy).toHaveBeenCalledWith({ top: 612, behavior: 'smooth' });
   });
 
+  it("lands at an element's own scroll-margin-top, as scrollIntoView did", () => {
+    stickyHeader();
+    const el = add();
+    el.style.scrollMarginTop = '56px';
+    rect(el, -300, 100);
+    revealTop(el);
+    expect(scrollBy).toHaveBeenCalledWith({ top: -356, behavior: 'smooth' });
+  });
+
+  it('never lands an element under the header, whatever its scroll margin', () => {
+    stickyHeader();
+    const el = add();
+    el.style.scrollMarginTop = '20px';
+    rect(el, -300, 100);
+    revealTop(el);
+    expect(scrollBy).toHaveBeenCalledWith({ top: -356, behavior: 'smooth' });
+  });
+
   it('leaves a visible top alone unless always is set', () => {
     const el = add();
     rect(el, 200, 300);
@@ -515,6 +533,23 @@ describe('useItemTop', () => {
     act(() => getByText('Næsta').click());
     expect(scrollBy).not.toHaveBeenCalled();
     expect(document.activeElement).toBe(getByText('Dæmi 2'));
+  });
+
+  it('with anyWidth, brings the item top back on desktop too', () => {
+    phone = false;
+    function Wide() {
+      const [i, setI] = useState(0);
+      const ref = useItemTop<HTMLDivElement>(i, { anyWidth: true });
+      return createElement(
+        'div',
+        { ref, 'data-testid': 'item' },
+        createElement('button', { onClick: () => setI(i + 1) }, 'Næsta')
+      );
+    }
+    const { getByText, getByTestId } = render(createElement(Wide));
+    rect(getByTestId('item'), -400, 900);
+    act(() => getByText('Næsta').click());
+    expect(scrollBy).toHaveBeenCalledWith({ top: -408, behavior: 'smooth' });
   });
 
   it('falls back to the container when nothing is marked', () => {

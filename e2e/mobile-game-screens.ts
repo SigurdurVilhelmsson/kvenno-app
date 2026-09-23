@@ -239,8 +239,11 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           css: 'main button.text-left, main label',
         },
+        // The first problem is drawn at random, and a route-choice item has no
+        // number field: then this fills the explanation, which the next step
+        // overwrites.
         {
-          fill: ['main input', '999'],
+          fill: ['main input, main textarea', '999'],
         },
         {
           fill: ['main textarea', 'Ég umbreytti einingunum með stuðli.'],
@@ -249,6 +252,187 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           click: 'Senda inn',
         },
       ],
+    },
+    {
+      name: 'Stig 0 — talning, leikur',
+      steps: [
+        {
+          click: 'Markverðir stafir',
+        },
+        {
+          click: 'Áfram í æfingu',
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { css: 'button[aria-label="1"]' },
+        answer: [],
+        verdict: { css: '#da-l0-verdict' },
+        next: { role: 'button', name: 'Næsta' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Stig 0 — námundun, leikur',
+      steps: [
+        {
+          click: 'Markverðir stafir',
+        },
+        {
+          click: 'Áfram í æfingu',
+        },
+        {
+          css: 'button[aria-label="1"]',
+        },
+        // "Næsta" ignores a press within 400 ms of appearing (P3's double-tap guard).
+        {
+          wait: 300,
+        },
+        {
+          clickRole: ['button', 'Næsta'],
+        },
+        {
+          css: 'button[aria-label="1"]',
+        },
+        {
+          wait: 300,
+        },
+        {
+          clickRole: ['button', 'Næsta'],
+        },
+        {
+          css: 'button[aria-label="1"]',
+        },
+        {
+          wait: 300,
+        },
+        {
+          clickRole: ['button', 'Næsta'],
+        },
+        {
+          css: 'button[aria-label="1"]',
+        },
+        {
+          wait: 300,
+        },
+        {
+          clickRole: ['button', 'Næsta'],
+        },
+        {
+          css: 'button[aria-label="1"]',
+        },
+        {
+          wait: 300,
+        },
+        {
+          clickRole: ['button', 'Næsta'],
+        },
+        {
+          css: 'button[aria-label="1"]',
+        },
+        {
+          wait: 300,
+        },
+        {
+          clickRole: ['button', 'Áfram'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Svara' },
+        answer: [{ fill: ['input[aria-label="Svarið þitt"]', '1200'] }],
+        verdict: { css: '#da-l0-verdict' },
+        next: { role: 'button', name: 'Næsta' },
+        together: [[{ css: '[data-item-start]' }, { css: 'input[aria-label="Svarið þitt"]' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+      },
+    },
+    {
+      name: 'Stig 1 — vogin (C1), leikur',
+      steps: [
+        {
+          click: 'Hugtök',
+        },
+        {
+          click: 'Byrja!',
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { css: 'button[aria-label="Bæta við 1 lítra"]' },
+        answer: [],
+        verdict: { css: '#da-l1-verdict' },
+        next: { role: 'button', name: 'Næsta áskorun' },
+        viewports: ['android', 'iphone', 'se'],
+        // None at 360x640 and 390x664; the SE needs one.
+        scrollsToAction: 1,
+      },
+    },
+    {
+      name: 'Stig 2 — verkefni, leikur',
+      steps: [
+        {
+          click: 'Beiting',
+        },
+        {
+          click: 'Byrja æfingar',
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        // Drag mode, the default: a factor tapped in the pool, then the chain.
+        // The units then cancel on their own for 1,5 s, and the visualiser
+        // changes height while they do; a student reads the result before
+        // typing a value, so the loop does too.
+        answer: [
+          { css: '.items-pool [data-item-id]' },
+          { css: '[data-zone-id="conversion-chain"]' },
+          { wait: 1600 },
+          { fill: ['input[placeholder="Sláðu inn svar"]', '999'] },
+        ],
+        // The verdict line itself. In landscape the whole panel is taller than
+        // the half-screen revealSpan leaves a verdict in, so the panel's foot
+        // can sit under the bottom edge while its verdict is being read.
+        verdict: { css: '.feedback-panel p' },
+        next: { role: 'button', name: 'Næsta verkefni' },
+        viewports: ['android', 'iphone', 'se'],
+        // The factors, the chain and the unit visualiser all sit above the
+        // answer row: one scroll at 360x640 and 390x664, two on the SE.
+        scrollsToAction: 2,
+        typed: true,
+      },
+    },
+    {
+      name: 'Stig 3 — áskorun, leikur',
+      steps: [
+        {
+          click: 'Fullir útreikningar',
+        },
+        {
+          click: 'Byrja áskoranir',
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Senda inn' },
+        // With the seeded shuffle the first problem is a reverse item: a route
+        // to choose, and no number to type.
+        answer: [
+          { css: 'main button.text-left' },
+          { fill: ['main textarea', 'Ég umbreytti einingunum með stuðli.'] },
+        ],
+        verdict: { css: '#da-l3-verdict' },
+        next: { role: 'button', name: 'Næsta áskorun' },
+        viewports: ['android', 'iphone', 'se'],
+        // One at 360x640 and 390x664, two on the shorter SE screen. Where
+        // "Sýna vísbendingu" and "Senda inn" do not fit one line, "Senda inn"
+        // wraps under the hint rather than squeezing, which costs a row.
+        scrollsToAction: 2,
+        // The feedback is the worked solution, read in full (§3 Feedback).
+        teachingFeedback: true,
+      },
     },
   ],
   '1-ar/lotukerfid': [

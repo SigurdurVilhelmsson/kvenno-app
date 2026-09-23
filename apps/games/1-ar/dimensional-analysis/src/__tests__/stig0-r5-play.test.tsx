@@ -16,8 +16,11 @@
 import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level0SigFigs } from '../components/Level0SigFigs';
 import { COUNT_ITEMS, ROUND_ITEMS } from '../data/sigfig-items';
+
+clockPastNextGuard();
 
 afterEach(cleanup);
 

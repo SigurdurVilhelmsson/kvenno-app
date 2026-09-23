@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import { formatDecimal } from '@shared/utils';
+import { formatDecimal, revealSpan } from '@shared/utils';
 
 interface FactorBuildingChallengeProps {
   onComplete: () => void;
@@ -61,10 +61,26 @@ export function FactorBuildingChallenge({ onComplete, onAttempt }: FactorBuildin
     }
   };
 
+  // On a phone this is a column with the error panel after the block tray (CSS
+  // order; the panel holds no control), so a verdict appearing on the second
+  // tap does not push the blocks down under the finger that is using them.
+  // After the tray the panel opens below the fold of a portrait phone, so it is
+  // then brought into view — with the fraction above it where both fit. Phone
+  // only; focus stays on the block just tapped.
+  const fractionRef = useRef<HTMLDivElement>(null);
+  const errorRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (errorType === 'none') return;
+    revealSpan(errorRef.current, [fractionRef.current, errorRef.current]);
+  }, [errorType]);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 phone:flex phone:flex-col phone:gap-4 phone:space-y-0">
       {/* Fraction display */}
-      <div className="flex flex-col items-center p-6 sm:p-8 bg-warm-50 rounded-xl">
+      <div
+        ref={fractionRef}
+        className="flex flex-col items-center p-6 sm:p-8 bg-warm-50 rounded-xl phone:p-4"
+      >
         {/* Numerator slot */}
         <div
           className={`
@@ -102,7 +118,10 @@ export function FactorBuildingChallenge({ onComplete, onAttempt }: FactorBuildin
 
       {/* Error explanations */}
       {errorType === 'same_unit' && (
-        <div className="p-4 bg-red-50 rounded-lg border border-red-200 text-center">
+        <div
+          ref={errorRef}
+          className="p-4 bg-red-50 rounded-lg border border-red-200 text-center phone:order-last"
+        >
           <p className="text-red-800 font-semibold mb-1">Sömu einingarnar!</p>
           <p className="text-red-600 text-sm">
             {blockLabel(numerator)} / {blockLabel(denominator)} ={' '}
@@ -115,7 +134,10 @@ export function FactorBuildingChallenge({ onComplete, onAttempt }: FactorBuildin
       )}
 
       {errorType === 'wrong_ratio' && (
-        <div className="p-4 bg-red-50 rounded-lg border border-red-200 text-center">
+        <div
+          ref={errorRef}
+          className="p-4 bg-red-50 rounded-lg border border-red-200 text-center phone:order-last"
+        >
           <p className="text-red-800 font-semibold mb-1">Ekki sama rúmmálið!</p>
           <p className="text-red-600 text-sm">
             {blockLabel(numerator)} ≠ {blockLabel(denominator)}
@@ -128,8 +150,8 @@ export function FactorBuildingChallenge({ onComplete, onAttempt }: FactorBuildin
 
       {/* Available blocks */}
       {!isCorrect && (
-        <div className="p-4 bg-white rounded-xl border-2 border-warm-200">
-          <p className="text-sm text-warm-600 mb-3 text-center">
+        <div className="p-4 bg-white rounded-xl border-2 border-warm-200 phone:p-3">
+          <p className="text-sm text-warm-600 mb-3 text-center phone:mb-2">
             Veldu tvær einingar sem tákna <strong>sama rúmmál</strong>:
           </p>
           <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">

@@ -230,6 +230,13 @@ export interface RevealTopOptions extends RevealOptions {
  * usable area (scrolled past, under the header) or below it (a new step that
  * opened off the bottom of the screen). A top already on screen stays put
  * unless `always` is set.
+ *
+ * It lands `MARGIN` below the header, unless the element declares its own
+ * `scroll-margin-top` (a `scroll-mt-*` class): then it lands that far from the
+ * top of the viewport, where `scrollIntoView` would put it — never under the
+ * header. That is for a game migrating from a helper that used
+ * `scrollIntoView`, so an `anyWidth` reveal lands on desktop exactly where it
+ * did.
  */
 export function revealTop(el: Target, opts?: RevealTopOptions): void {
   if (!el || !allowed(opts)) return;
@@ -238,7 +245,8 @@ export function revealTop(el: Target, opts?: RevealTopOptions): void {
     const { top: lo, bottom: hi } = usableArea();
     const top = el.getBoundingClientRect().top;
     if (!opts?.always && top >= lo && top <= hi - MIN_VISIBLE) return;
-    scrollByY(top - lo - MARGIN);
+    const declared = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+    scrollByY(top - (declared > 0 ? Math.max(lo, declared) : lo + MARGIN));
   }, opts?.afterExit);
 }
 
@@ -360,16 +368,24 @@ export function useScreenTop(key: unknown, opts: ScreenTopOptions = {}): void {
  * container's top back under the header if it is off screen, and focus moves
  * to the `[data-item-start]` element inside it (the new challenge's own
  * heading, not the level's h1), or to the container when none is marked.
+ *
+ * `opts` goes to `revealTop`: `{ anyWidth: true }` for a game whose own helper
+ * already revealed each new item at any width, so a desktop window keeps that.
  */
-export function useItemTop<T extends HTMLElement>(key: unknown): RefObject<T | null> {
+export function useItemTop<T extends HTMLElement>(
+  key: unknown,
+  opts?: RevealTopOptions
+): RefObject<T | null> {
   const ref = useRef<T>(null);
   const shown = useRef(key);
+  const latest = useRef(opts);
+  latest.current = opts;
   useLayoutEffect(() => {
     if (Object.is(shown.current, key)) return;
     shown.current = key;
     const box = ref.current;
     if (!box) return;
-    revealTop(box);
+    revealTop(box, latest.current);
     const start = box.matches('[data-item-start]')
       ? box
       : box.querySelector<HTMLElement>('[data-item-start]');

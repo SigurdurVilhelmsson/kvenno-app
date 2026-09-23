@@ -17,9 +17,12 @@
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level3 } from '../components/Level3';
 import { level3Challenges, type Level3Challenge } from '../data/challenges';
 import { LEVEL_3_RUN_LENGTH } from '../utils/level3Run';
+
+clockPastNextGuard();
 
 // `null` draws the real run, so the first test sees exactly what a student sees.
 const run = vi.hoisted(() => ({ current: null as Level3Challenge[] | null }));

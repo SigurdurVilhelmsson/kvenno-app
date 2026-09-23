@@ -9,13 +9,21 @@ import type {
   DetailedFeedback,
 } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
-import { DECIMAL_INPUT_PROPS, formatDecimal, shuffleArray } from '@shared/utils';
+import {
+  DECIMAL_INPUT_PROPS,
+  formatDecimal,
+  isPhone,
+  revealTop,
+  shuffleArray,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+} from '@shared/utils';
 
 import { UnitBlock, ConversionFactorBlock } from './UnitBlock';
 import { UnitCancellationVisualizer, chainUnits } from './UnitCancellationVisualizer';
 import { level2Problems } from '../data/problems';
 import { applyFactorPath, isAnswerCorrect, parseStudentNumber } from '../utils/grading';
-import { revealTop, useRevealTopOnChange } from '../utils/reveal';
 
 // The one drop zone. Its contents are the chain — see `selectedFactors` below.
 const CHAIN_ZONE = 'conversion-chain';
@@ -155,18 +163,37 @@ export function Level2({
   const [useDragDrop, setUseDragDrop] = useState(true);
   const [showCancellationAnimation, setShowCancellationAnimation] = useState(false);
 
-  // After submitting, the answer form collapses and the page gets shorter. On a
-  // short screen (a phone on its side) that leaves the verdict scrolled off the
-  // top, so the student sees only the tail of the feedback. Bring its top back.
-  const feedbackRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (showFeedback) revealTop(feedbackRef.current);
-  }, [showFeedback]);
-
   // The button that moves on sits at the foot of a screen taller than a phone,
   // so the intro's "Byrja" and each "Næsta" used to open the next problem with
-  // its context already scrolled past. Open it at its top instead.
-  const topRef = useRevealTopOnChange<HTMLDivElement>(showIntro ? 'intro' : currentProblemIndex);
+  // its context already scrolled past. Open it at its top, with focus on the
+  // problem's context. This scrolled at any width before it moved to the
+  // shared helper, so it still does (`anyWidth`).
+  const topRef = useItemTop<HTMLDivElement>(showIntro ? 'intro' : currentProblemIndex, {
+    anyWidth: true,
+  });
+
+  // After "Athuga": on a phone, the student's chain through "Næsta" if it fits,
+  // else the verdict at the top; focus moves to the feedback, not to "Næsta",
+  // so a second Enter lands on nothing (design P3).
+  const chainRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(showFeedback, () => ({
+    bottom: nextRef.current,
+    tops: [chainRef.current, feedbackRef.current],
+    focus: feedbackRef.current,
+  }));
+  // A desktop window keeps what the old helper did there: the answer form
+  // collapses and the page gets shorter, so a verdict left above the screen is
+  // brought back.
+  useEffect(() => {
+    const el = feedbackRef.current;
+    if (showFeedback && el && !isPhone() && el.getBoundingClientRect().top < 0) {
+      revealTop(el, { anyWidth: true });
+    }
+  }, [showFeedback]);
+  // A double tap on "Athuga" must not press "Næsta" in its place.
+  const armed = useArmedAfter(400, `${currentProblemIndex}:${showFeedback}`);
 
   const problem = level2Problems[currentProblemIndex];
 
@@ -185,7 +212,7 @@ export function Level2({
       return {
         id,
         content: (
-          <div className="flex flex-col items-center p-2 min-w-[88px] sm:min-w-[100px]">
+          <div className="flex flex-col items-center p-2 min-w-[88px] sm:min-w-[100px] phone:p-0 phone:min-w-[64px]">
             <div className="font-bold text-blue-600 text-sm">{numPart}</div>
             <div className="w-full h-0.5 bg-warm-800 my-1" />
             <div className="font-bold text-green-600 text-sm">{denPart}</div>
@@ -345,6 +372,7 @@ export function Level2({
   };
 
   const handleSubmit = () => {
+    if (showFeedback) return;
     // Check the chain uses the right factors, in whatever order
     const pathCorrect = usesRightFactors(selectedFactors, problem.correctPath);
 
@@ -417,7 +445,7 @@ export function Level2({
     return (
       <div
         ref={topRef}
-        className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+        className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-4 sm:p-4 scroll-mt-14 phone:scroll-mt-0"
       >
         <div className="max-w-3xl mx-auto">
           <div className="mb-4">
@@ -516,19 +544,19 @@ export function Level2({
   return (
     <div
       ref={topRef}
-      className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+      className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-4 sm:p-4 phone:py-2 scroll-mt-14 phone:scroll-mt-0"
     >
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
+        {/* Header: one row on a phone */}
+        <div className="mb-4 flex items-center justify-between flex-wrap gap-2 phone:mb-2 phone:flex-nowrap">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 text-lg"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 text-lg phone:text-base phone:shrink-0"
           >
             ← Til baka
           </button>
-          <div className="text-sm text-warm-600 flex items-center gap-2 sm:gap-4 flex-wrap">
-            <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-semibold">
+          <div className="text-sm text-warm-600 flex items-center gap-2 sm:gap-4 flex-wrap phone:min-w-0 phone:justify-end phone:gap-x-2 phone:gap-y-0.5 phone:whitespace-nowrap">
+            <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-semibold phone:px-2 phone:py-0.5">
               Stig 2: Beiting
             </span>
             <span>
@@ -538,29 +566,29 @@ export function Level2({
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6 phone:mb-2 phone:h-1.5">
           <div
-            className="bg-blue-500 h-2 rounded-full transition-all duration-500"
+            className="bg-blue-500 h-2 phone:h-1.5 rounded-full transition-all duration-500"
             style={{ width: `${(progress.problemsCompleted / PROBLEM_COUNT) * 100}%` }}
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
-          <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-            <p className="text-sm text-warm-600 mb-1">Samhengi:</p>
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 phone:p-3">
+          <div data-item-start className="mb-6 p-4 bg-blue-50 rounded-lg phone:mb-3 phone:p-3">
+            <p className="text-sm text-warm-600 mb-1 phone:mb-0">Samhengi:</p>
             <p className="font-semibold">{problem.context}</p>
           </div>
 
           {showHint && (
-            <div className="mb-4 bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl">
+            <div className="mb-4 bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl phone:mb-3 phone:p-3">
               <h4 className="font-semibold text-yellow-800 mb-1">💡 Vísbending:</h4>
               <p className="text-yellow-900">{problem.hint}</p>
             </div>
           )}
 
-          <div className="mb-6 p-4 sm:p-6 bg-gradient-to-b from-warm-50 to-warm-100 rounded-xl text-center">
-            <p className="text-sm text-warm-600 mb-3">Byrja með:</p>
-            <div className="flex justify-center mb-4">
+          <div className="mb-6 p-4 sm:p-6 bg-gradient-to-b from-warm-50 to-warm-100 rounded-xl text-center phone:flex phone:flex-wrap phone:items-center phone:justify-center phone:gap-x-3 phone:gap-y-1 phone:p-2 phone:mb-3">
+            <p className="text-sm text-warm-600 mb-3 phone:mb-0">Byrja með:</p>
+            <div className="flex justify-center mb-4 phone:mb-0">
               <UnitBlock
                 value={problem.startValue}
                 unit={problem.startUnit}
@@ -576,208 +604,255 @@ export function Level2({
             </div>
           </div>
 
-          {!showFeedback && (
-            <>
-              {/* Hint button */}
-              {!hintUsed && !showFeedback && (
-                <div className="mb-4 flex justify-start">
-                  <button
-                    onClick={() => {
-                      setShowHint(true);
-                      setHintUsed(true);
-                      setTotalHintsUsed((prev) => prev + 1);
-                    }}
-                    className="text-sm px-4 py-2 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-700 font-medium transition-colors"
-                  >
-                    💡 Vísbending
-                  </button>
-                </div>
+          {/* A phone on its side: the factors left, the units they cancel right. */}
+          <div
+            className={
+              showFeedback
+                ? ''
+                : 'phone-land:grid phone-land:grid-cols-2 phone-land:gap-3 phone-land:items-start'
+            }
+          >
+            <div>
+              {!showFeedback && (
+                <>
+                  <div className="phone:flex phone:items-center phone:justify-between phone:gap-2 phone:mb-2">
+                    {/* Hint button */}
+                    {!hintUsed && !showFeedback && (
+                      <div className="mb-4 flex justify-start phone:mb-0">
+                        <button
+                          onClick={() => {
+                            setShowHint(true);
+                            setHintUsed(true);
+                            setTotalHintsUsed((prev) => prev + 1);
+                          }}
+                          className="text-sm px-4 py-2 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-700 font-medium transition-colors"
+                        >
+                          💡 Vísbending
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Mode toggle */}
+                    <div className="mb-4 flex justify-end phone:mb-0 phone:ml-auto">
+                      <button
+                        onClick={() => setUseDragDrop(!useDragDrop)}
+                        className="text-xs px-3 py-1 rounded-full bg-warm-100 hover:bg-warm-200 text-warm-600"
+                      >
+                        {useDragDrop ? '🖱️ Skipta í smella-ham' : '✋ Skipta í draga-ham'}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Drag-and-drop factor selection */}
+                  {useDragDrop ? (
+                    <div className="mb-6 phone:mb-3">
+                      <p className="text-sm font-semibold mb-3 phone:mb-2">
+                        Dragðu eða smelltu á umbreytingarstuðla til að byggja keðju:
+                      </p>
+                      <DragDropBuilder
+                        items={draggableItems}
+                        zones={dropZones}
+                        initialState={zoneState}
+                        onDrop={handleDrop}
+                        onReorder={handleReorder}
+                        onRemove={handleRemove}
+                        orientation="horizontal"
+                        itemsPoolClassName="phone:p-3"
+                        compact
+                      />
+                    </div>
+                  ) : (
+                    /* Classic button-based factor selection */
+                    <div className="mb-6 phone:mb-3">
+                      <p className="text-sm font-semibold mb-3 phone:mb-2">
+                        Smelltu á umbreytingarstuðla til að byggja keðju, og aftur til að taka þá
+                        út:
+                      </p>
+                      <div className="flex flex-wrap justify-center gap-4 phone:gap-2">
+                        {options.map(({ id, factor }) => {
+                          // Parse factor string like "1 L / 1000 mL"
+                          const [numPart, denPart] = factor.split(' / ');
+                          const numValue = parseFloat(numPart.split(' ')[0]);
+                          const numUnit = numPart.split(' ').slice(1).join(' ');
+                          const denValue = parseFloat(denPart.split(' ')[0]);
+                          const denUnit = denPart.split(' ').slice(1).join(' ');
+                          const isUsed = (zoneState[CHAIN_ZONE] ?? []).includes(id);
+
+                          return (
+                            <ConversionFactorBlock
+                              key={id}
+                              numeratorValue={numValue}
+                              numeratorUnit={numUnit}
+                              denominatorValue={denValue}
+                              denominatorUnit={denUnit}
+                              onClick={() => toggleFactor(id)}
+                              size="medium"
+                              isSelected={isUsed}
+                              pressed={isUsed}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
-
-              {/* Mode toggle */}
-              <div className="mb-4 flex justify-end">
-                <button
-                  onClick={() => setUseDragDrop(!useDragDrop)}
-                  className="text-xs px-3 py-1 rounded-full bg-warm-100 hover:bg-warm-200 text-warm-600"
+            </div>
+            <div>
+              {/* The chain and its units sit BELOW the controls that build it. Above
+              them, the panel appearing on the first factor pushed the button
+              just tapped 170 px down under a phone user's finger. */}
+              {selectedFactors.length > 0 && (
+                <div
+                  ref={chainRef}
+                  className="mb-6 p-4 bg-warm-50 rounded-xl phone:mb-3 phone:p-2 phone:flex phone:flex-wrap phone:items-center phone:gap-x-3 phone:gap-y-1"
                 >
-                  {useDragDrop ? '🖱️ Skipta í smella-ham' : '✋ Skipta í draga-ham'}
-                </button>
-              </div>
-
-              {/* Drag-and-drop factor selection */}
-              {useDragDrop ? (
-                <div className="mb-6">
-                  <p className="text-sm font-semibold mb-3">
-                    Dragðu eða smelltu á umbreytingarstuðla til að byggja keðju:
+                  {/* On a phone the label and the chain share a row. */}
+                  <p className="text-sm font-semibold mb-3 text-warm-700 phone:mb-0">
+                    Stuðlar notaðir:
                   </p>
-                  <DragDropBuilder
-                    items={draggableItems}
-                    zones={dropZones}
-                    initialState={zoneState}
-                    onDrop={handleDrop}
-                    onReorder={handleReorder}
-                    onRemove={handleRemove}
-                    orientation="horizontal"
-                  />
-                </div>
-              ) : (
-                /* Classic button-based factor selection */
-                <div className="mb-6">
-                  <p className="text-sm font-semibold mb-3">
-                    Smelltu á umbreytingarstuðla til að byggja keðju, og aftur til að taka þá út:
-                  </p>
-                  <div className="flex flex-wrap justify-center gap-4">
-                    {options.map(({ id, factor }) => {
-                      // Parse factor string like "1 L / 1000 mL"
+                  <div className="flex flex-wrap justify-center gap-3 phone:gap-2">
+                    {selectedFactors.map((factor, idx) => {
                       const [numPart, denPart] = factor.split(' / ');
                       const numValue = parseFloat(numPart.split(' ')[0]);
                       const numUnit = numPart.split(' ').slice(1).join(' ');
                       const denValue = parseFloat(denPart.split(' ')[0]);
                       const denUnit = denPart.split(' ').slice(1).join(' ');
-                      const isUsed = (zoneState[CHAIN_ZONE] ?? []).includes(id);
 
+                      // Neutral: this is the student's chain, not a verdict on it.
+                      // Green is kept for the right path, shown after submitting.
                       return (
-                        <ConversionFactorBlock
-                          key={id}
-                          numeratorValue={numValue}
-                          numeratorUnit={numUnit}
-                          denominatorValue={denValue}
-                          denominatorUnit={denUnit}
-                          onClick={() => toggleFactor(id)}
-                          size="medium"
-                          isSelected={isUsed}
-                          pressed={isUsed}
-                        />
+                        <div key={idx} className="flex items-center gap-2">
+                          {idx > 0 && <span className="text-xl text-warm-400">×</span>}
+                          <ConversionFactorBlock
+                            numeratorValue={numValue}
+                            numeratorUnit={numUnit}
+                            denominatorValue={denValue}
+                            denominatorUnit={denUnit}
+                            size="small"
+                          />
+                        </div>
                       );
                     })}
                   </div>
                 </div>
               )}
-            </>
-          )}
 
-          {/* The chain and its units sit BELOW the controls that build it. Above
-              them, the panel appearing on the first factor pushed the button
-              just tapped 170 px down under a phone user's finger. */}
-          {selectedFactors.length > 0 && (
-            <div className="mb-6 p-4 bg-warm-50 rounded-xl">
-              <p className="text-sm font-semibold mb-3 text-warm-700">Stuðlar notaðir:</p>
-              <div className="flex flex-wrap justify-center gap-3">
-                {selectedFactors.map((factor, idx) => {
-                  const [numPart, denPart] = factor.split(' / ');
-                  const numValue = parseFloat(numPart.split(' ')[0]);
-                  const numUnit = numPart.split(' ').slice(1).join(' ');
-                  const denValue = parseFloat(denPart.split(' ')[0]);
-                  const denUnit = denPart.split(' ').slice(1).join(' ');
-
-                  // Neutral: this is the student's chain, not a verdict on it.
-                  // Green is kept for the right path, shown after submitting.
-                  return (
-                    <div key={idx} className="flex items-center gap-2">
-                      {idx > 0 && <span className="text-xl text-warm-400">×</span>}
-                      <ConversionFactorBlock
-                        numeratorValue={numValue}
-                        numeratorUnit={numUnit}
-                        denominatorValue={denValue}
-                        denominatorUnit={denUnit}
-                        size="small"
-                      />
-                    </div>
-                  );
-                })}
+              {/* Unit visualization with animated cancellation, redrawn per chain */}
+              <div className="mb-6 phone:mb-3">
+                <UnitCancellationVisualizer
+                  key={`${problem.id}|${chainKey}`}
+                  numeratorUnits={numeratorUnits}
+                  denominatorUnits={denominatorUnits}
+                  showCancelButton={showCancellationAnimation}
+                  enhancedAnimation={true}
+                  autoAnimate={showCancellationAnimation}
+                />
               </div>
             </div>
-          )}
-
-          {/* Unit visualization with animated cancellation, redrawn per chain */}
-          <div className="mb-6">
-            <UnitCancellationVisualizer
-              key={`${problem.id}|${chainKey}`}
-              numeratorUnits={numeratorUnits}
-              denominatorUnits={denominatorUnits}
-              showCancelButton={showCancellationAnimation}
-              enhancedAnimation={true}
-              autoAnimate={showCancellationAnimation}
-            />
           </div>
 
           {!showFeedback && (
             <>
-              {/* Answer input */}
-              <div className="mb-6 p-3 sm:p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl border-2 border-orange-200">
-                <label className="block font-semibold mb-3 text-warm-800">
-                  Hvað er lokagildið?
-                </label>
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <input
-                    {...DECIMAL_INPUT_PROPS}
-                    autoComplete="off"
-                    value={userAnswer}
-                    onChange={(e) => setUserAnswer(e.target.value)}
-                    placeholder="Sláðu inn svar"
-                    className="flex-1 p-3 sm:p-4 border-2 border-warm-300 rounded-xl font-mono text-lg sm:text-xl focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-hidden transition-all"
-                  />
-                  <div className="shrink-0 whitespace-nowrap px-3 sm:px-4 py-2 sm:py-3 bg-green-100 text-green-800 rounded-xl font-bold text-base sm:text-lg">
-                    {problem.targetUnit}
+              {/* On a phone the answer and "Athuga" share a row where both fit — a
+                  phone on its side. A portrait phone is too narrow for the label,
+                  the field and a unit such as km/klst beside the button (the field
+                  shrank to 14 px, and at 320 px the label broke mid-word), so there
+                  the button wraps under the answer. */}
+              <div className="phone:flex phone:flex-wrap phone:items-end phone:gap-2">
+                {/* Answer input */}
+                <div className="mb-6 p-3 sm:p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl border-2 border-orange-200 phone:mb-0 phone:p-2 phone:flex-[1_1_14rem] phone:min-w-0">
+                  <label className="block font-semibold mb-3 text-warm-800 phone:mb-1">
+                    Hvað er lokagildið?
+                  </label>
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <input
+                      {...DECIMAL_INPUT_PROPS}
+                      autoComplete="off"
+                      value={userAnswer}
+                      onChange={(e) => setUserAnswer(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key !== 'Enter') return;
+                        e.preventDefault();
+                        if (selectedFactors.length > 0 && userAnswer.trim()) handleSubmit();
+                      }}
+                      enterKeyHint="done"
+                      placeholder="Sláðu inn svar"
+                      className="flex-1 min-w-0 p-3 sm:p-4 border-2 border-warm-300 rounded-xl font-mono text-lg sm:text-xl focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-hidden transition-all"
+                    />
+                    <div className="shrink-0 whitespace-nowrap px-3 sm:px-4 py-2 sm:py-3 bg-green-100 text-green-800 rounded-xl font-bold text-base sm:text-lg">
+                      {problem.targetUnit}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <button
-                onClick={handleSubmit}
-                disabled={selectedFactors.length === 0 || !userAnswer.trim()}
-                className="w-full py-4 rounded-xl font-bold text-lg transition-all disabled:bg-warm-300 disabled:cursor-not-allowed disabled:text-warm-500 bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                Athuga svar →
-              </button>
+                <button
+                  key="check"
+                  onClick={handleSubmit}
+                  disabled={selectedFactors.length === 0 || !userAnswer.trim()}
+                  className="w-full py-4 rounded-xl font-bold text-lg transition-all disabled:bg-warm-300 disabled:cursor-not-allowed disabled:text-warm-500 bg-blue-600 hover:bg-blue-700 text-white phone:w-auto phone:shrink-0 phone:grow phone:px-4 phone:py-3 phone:text-base"
+                >
+                  Athuga svar →
+                </button>
+              </div>
             </>
           )}
 
           {showFeedback && (
-            <div
-              ref={feedbackRef}
-              className="space-y-4 scroll-mt-16 [@media(max-height:500px)]:scroll-mt-2"
-            >
-              <FeedbackPanel
-                feedback={getDetailedFeedback()}
-                config={{
-                  showExplanation: true,
-                  showMisconceptions: !isCorrect,
-                  showRelatedConcepts: true,
-                  showNextSteps: true,
-                }}
-              />
+            <div className="space-y-4 phone:space-y-3">
+              {/* The feedback region focus moves to after "Athuga" (P3).
+                  FeedbackPanel is itself role=alert and announces the verdict. */}
+              <div
+                ref={feedbackRef}
+                tabIndex={-1}
+                role="group"
+                className="space-y-4 phone:space-y-3 focus:outline-none"
+              >
+                <FeedbackPanel
+                  feedback={getDetailedFeedback()}
+                  config={{
+                    showExplanation: true,
+                    showMisconceptions: !isCorrect,
+                    showRelatedConcepts: true,
+                    showNextSteps: true,
+                  }}
+                />
 
-              <div className="p-4 bg-white rounded-lg border border-warm-200">
-                <p className="text-sm text-warm-600 mb-2">Rétt umbreytingarleið:</p>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {problem.correctPath.map((factor, idx) => {
-                    const [numPart, denPart] = factor.split(' / ');
-                    const numValue = parseFloat(numPart.split(' ')[0]);
-                    const numUnit = numPart.split(' ').slice(1).join(' ');
-                    const denValue = parseFloat(denPart.split(' ')[0]);
-                    const denUnit = denPart.split(' ').slice(1).join(' ');
+                <div className="p-4 bg-white rounded-lg border border-warm-200 phone:p-3">
+                  <p className="text-sm text-warm-600 mb-2">Rétt umbreytingarleið:</p>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {problem.correctPath.map((factor, idx) => {
+                      const [numPart, denPart] = factor.split(' / ');
+                      const numValue = parseFloat(numPart.split(' ')[0]);
+                      const numUnit = numPart.split(' ').slice(1).join(' ');
+                      const denValue = parseFloat(denPart.split(' ')[0]);
+                      const denUnit = denPart.split(' ').slice(1).join(' ');
 
-                    return (
-                      <div key={idx} className="flex items-center gap-1">
-                        {idx > 0 && <span className="text-warm-400 mx-1">×</span>}
-                        <ConversionFactorBlock
-                          numeratorValue={numValue}
-                          numeratorUnit={numUnit}
-                          denominatorValue={denValue}
-                          denominatorUnit={denUnit}
-                          isCorrect={true}
-                          size="small"
-                        />
-                      </div>
-                    );
-                  })}
+                      return (
+                        <div key={idx} className="flex items-center gap-1">
+                          {idx > 0 && <span className="text-warm-400 mx-1">×</span>}
+                          <ConversionFactorBlock
+                            numeratorValue={numValue}
+                            numeratorUnit={numUnit}
+                            denominatorValue={denValue}
+                            denominatorUnit={denUnit}
+                            isCorrect={true}
+                            size="small"
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
+              {/* A separate element from "Athuga", and it ignores a press within
+                  400 ms of appearing. */}
               <button
-                onClick={handleContinue}
-                className={`w-full py-4 rounded-xl font-bold text-lg transition-colors ${
+                key="next"
+                ref={nextRef}
+                onClick={armed(handleContinue)}
+                className={`w-full py-4 phone:py-3 rounded-xl font-bold text-lg transition-colors ${
                   isCorrect
                     ? 'bg-green-600 hover:bg-green-700 text-white'
                     : 'bg-blue-600 hover:bg-blue-700 text-white'
