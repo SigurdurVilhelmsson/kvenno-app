@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { SOLUBILITY_RULES } from '../data/ions';
 import { SCENARIOS } from '../data/problems';
 import { renderEquation, renderSide } from '../engine/precipitation';
+import { reveal } from '../utils/reveal';
 
 /**
  * Skilja — the three-equation ladder, revealed one rung at a time.
@@ -56,12 +57,27 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
   const { reaction } = WORKED;
   const spectators = new Set(reaction.spectators.map((s) => s.formula));
 
+  // "Næsta skref" opens the next rung above the button. On a phone that rung
+  // can end below the screen, so bring the one just opened into view.
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const shownStep = useRef(step);
+  useEffect(() => {
+    if (step === shownStep.current) return;
+    shownStep.current = step;
+    reveal(stepRefs.current[step]);
+  }, [step]);
+
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-6 shadow-md md:p-8">
-        <div className="mb-6 flex items-baseline justify-between">
-          <h2 className="text-2xl font-bold text-warm-800">Skilja — þrjár jöfnur, ein saga</h2>
-          <button onClick={onBack} className="text-sm text-warm-500 underline">
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
+        <div className="mb-6 flex items-baseline justify-between gap-3">
+          <h2 className="text-xl font-bold text-warm-800 sm:text-2xl">
+            Skilja — þrjár jöfnur, ein saga
+          </h2>
+          <button
+            onClick={onBack}
+            className="shrink-0 whitespace-nowrap text-sm text-warm-500 underline pointer-coarse:-my-3 pointer-coarse:py-3"
+          >
             Til baka
           </button>
         </div>
@@ -79,6 +95,9 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
           {STEPS.map((s, i) => (
             <div
               key={s.title}
+              ref={(el) => {
+                stepRefs.current[i] = el;
+              }}
               className={`rounded-lg border-2 p-4 transition-opacity ${
                 i <= step ? 'border-orange-300 bg-orange-50' : 'border-warm-200 bg-white opacity-40'
               }`}
@@ -121,7 +140,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
             <button
               type="button"
               onClick={() => setStep(step + 1)}
-              className="game-btn rounded-lg bg-kvenno-orange px-4 py-2 font-semibold text-white hover:bg-kvenno-orange-dark"
+              className="game-btn rounded-lg bg-kvenno-orange px-4 py-2 font-semibold text-white hover:bg-kvenno-orange-dark pointer-coarse:min-h-11"
             >
               Næsta skref
             </button>
@@ -129,7 +148,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
             <button
               type="button"
               onClick={onComplete}
-              className="game-btn rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700"
+              className="game-btn rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 pointer-coarse:min-h-11"
             >
               Áfram í Æfa
             </button>
@@ -137,7 +156,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
         </div>
 
         <details className="mt-8 rounded-lg border border-warm-200 bg-white p-4">
-          <summary className="cursor-pointer font-semibold text-warm-800">
+          <summary className="cursor-pointer font-semibold text-warm-800 pointer-coarse:-my-2.5 pointer-coarse:py-2.5">
             Leysnireglurnar — hafðu þær opnar
           </summary>
           <ul className="mt-3 space-y-2 text-sm text-warm-700">
