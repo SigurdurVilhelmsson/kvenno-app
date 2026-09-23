@@ -13,10 +13,27 @@ export interface RateLawChallenge {
   data: ExperimentData[];
   correctOrderA: number;
   correctOrderB: number;
-  correctRateConstant: number;
   rateConstantUnit: string;
   hint: string;
   explanation: string;
+}
+
+/**
+ * k, derived from the challenge's own first experiment and its rate law.
+ *
+ * It used to be stored beside the table as `correctRateConstant`, and nothing held the two
+ * together: "Flóknari tilfelli" stored 50 M⁻²s⁻¹ while its rows give
+ * 0,005 / (0,1 × 0,1²) = 5 M⁻²s⁻¹. Deriving it makes that disagreement unwritable — the same
+ * cure `1-ar/molmassi` and `3-ar/buffer-recipe-creator` got for their stored arithmetic.
+ * `rate-constants.test.tsx` checks the result against every row, not just the first.
+ */
+export function rateConstantOf(challenge: RateLawChallenge): number {
+  const row = challenge.data[0];
+  const hasB = challenge.data.some((d) => d.concentrationB > 0);
+  const denominator =
+    row.concentrationA ** challenge.correctOrderA *
+    (hasB ? row.concentrationB ** challenge.correctOrderB : 1);
+  return row.initialRate / denominator;
 }
 
 export const challenges: RateLawChallenge[] = [
@@ -24,7 +41,7 @@ export const challenges: RateLawChallenge[] = [
     id: 1,
     title: 'Einföld hvörf',
     description: 'Finndu röð hvörfunar fyrir A og B með því að bera saman tilraunir.',
-    equation: 'A + B → Products',
+    equation: 'A + B → myndefni',
     data: [
       { experiment: 1, concentrationA: 0.1, concentrationB: 0.1, initialRate: 0.015 },
       { experiment: 2, concentrationA: 0.2, concentrationB: 0.1, initialRate: 0.03 },
@@ -32,16 +49,15 @@ export const challenges: RateLawChallenge[] = [
     ],
     correctOrderA: 1,
     correctOrderB: 2,
-    correctRateConstant: 15,
     rateConstantUnit: 'M⁻²s⁻¹',
     hint: 'Berðu saman tilraunir þar sem aðeins einn styrkur breytist',
     explanation:
-      'Tilraun 1→2: [A] tvöfaldast, Rate tvöfaldast → 1. stig í A. Tilraun 1→3: [B] tvöfaldast, Rate fjórfaldast → 2. stig í B.',
+      'Tilraun 1→2: [A] tvöfaldast, hraðinn tvöfaldast → 1. stig í A. Tilraun 1→3: [B] tvöfaldast, hraðinn fjórfaldast → 2. stig í B.',
   },
   {
     id: 2,
     title: 'Núllta stigs hvörf',
-    description: 'Þegar ensím eru mettað virkar hvörf oft á 0. stigi.',
+    description: 'Þegar ensím eru mettuð virka hvörf oft á 0. stigi.',
     equation: 'S → P (ensímhvörf)',
     data: [
       { experiment: 1, concentrationA: 0.5, concentrationB: 0, initialRate: 0.02 },
@@ -50,16 +66,15 @@ export const challenges: RateLawChallenge[] = [
     ],
     correctOrderA: 0,
     correctOrderB: 0,
-    correctRateConstant: 0.02,
     rateConstantUnit: 'M·s⁻¹',
     hint: 'Ef hraðinn breytist ekki þegar styrkur breytist, hver er röðin?',
     explanation:
-      'Styrkur tvöfaldast en hraðinn helst sá sami → 0. stigs hvörf. Rate = k = 0.020 M·s⁻¹ (eining: styrkur/tími fyrir 0. stigs hvörf).',
+      'Styrkur tvöfaldast en hraðinn helst sá sami → 0. stigs hvörf, svo hraði = k = 0,020 M·s⁻¹ (eining: styrkur/tími fyrir 0. stigs hvörf).',
   },
   {
     id: 3,
     title: 'Annars stigs hvörf',
-    description: 'Finndu hraðalögmálið fyrir þetta hvörf.',
+    description: 'Finndu hraðalögmálið fyrir þetta hvarf.',
     equation: '2NO₂ → 2NO + O₂',
     data: [
       { experiment: 1, concentrationA: 0.01, concentrationB: 0, initialRate: 0.001 },
@@ -68,11 +83,10 @@ export const challenges: RateLawChallenge[] = [
     ],
     correctOrderA: 2,
     correctOrderB: 0,
-    correctRateConstant: 10,
     rateConstantUnit: 'M⁻¹s⁻¹',
     hint: 'Hvað gerist við hraðann þegar styrkur tvöfaldast? Þrefaldast?',
     explanation:
-      'Tilraun 1→2: [NO₂] tvöfaldast (×2), Rate fjórfaldast (×4 = 2²) → 2. stigs. k = Rate/[A]² = 0.001/0.01² = 10 M⁻¹s⁻¹.',
+      'Tilraun 1→2: [NO₂] tvöfaldast (×2), hraðinn fjórfaldast (×4 = 2²) → 2. stigs. k = hraði/[A]² = 0,001/0,01² = 10 M⁻¹s⁻¹.',
   },
   {
     id: 4,
@@ -86,11 +100,10 @@ export const challenges: RateLawChallenge[] = [
     ],
     correctOrderA: 1,
     correctOrderB: 1,
-    correctRateConstant: 80,
     rateConstantUnit: 'M⁻¹s⁻¹',
     hint: 'A = BrO₃⁻, B = Br⁻ (H⁺ er stöðugur)',
     explanation:
-      'Tilraun 1→2: [A] tvöfaldast → Rate tvöfaldast → 1. stig í A. Tilraun 1→3: [B] þrefaldast → Rate þrefaldast → 1. stig í B.',
+      'Tilraun 1→2: [A] tvöfaldast → hraðinn tvöfaldast → 1. stig í A. Tilraun 1→3: [B] þrefaldast → hraðinn þrefaldast → 1. stig í B.',
   },
   {
     id: 5,
@@ -104,7 +117,6 @@ export const challenges: RateLawChallenge[] = [
     ],
     correctOrderA: 1,
     correctOrderB: 2,
-    correctRateConstant: 50,
     rateConstantUnit: 'M⁻²s⁻¹',
     hint: 'A = H₂, B = NO. Heildarröð = m + n',
     explanation: 'H₂ er 1. stigs, NO er 2. stigs. Heildarröð = 1 + 2 = 3. stigs hvörf.',
@@ -121,10 +133,9 @@ export const challenges: RateLawChallenge[] = [
     ],
     correctOrderA: 1,
     correctOrderB: 2,
-    correctRateConstant: 2.0,
     rateConstantUnit: 'M⁻²s⁻¹',
-    hint: 'k = Rate / ([A]^m × [B]^n)',
+    hint: 'k = hraði / ([A]^m × [B]^n)',
     explanation:
-      'Rate = k[A][B]². Notum tilraun 1: k = 0.250 / (0.50 × 0.50²) = 0.250 / 0.125 = 2.0 M⁻²s⁻¹.',
+      'hraði = k[A][B]². Notum tilraun 1: k = 0,250 / (0,50 × 0,50²) = 0,250 / 0,125 = 2,0 M⁻²s⁻¹.',
   },
 ];

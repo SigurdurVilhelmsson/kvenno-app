@@ -169,7 +169,7 @@ export function CollisionDemo({
           running={true}
           showLabels={showLabels}
           onCollisionCount={handleCollisionCount}
-          ariaLabel="Collision theory simulation showing particles reacting when they have sufficient energy"
+          ariaLabel="Árekstrarhermun: agnir A og B hvarfast í myndefni AB þegar árekstur hefur næga orku (E ≥ Ea)"
         />
       </div>
 

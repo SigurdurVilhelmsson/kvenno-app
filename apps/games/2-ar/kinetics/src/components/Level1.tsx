@@ -12,9 +12,9 @@ import { calculateScore } from '../utils/kinetics-scoring';
 // Misconceptions for kinetics concepts
 const MISCONCEPTIONS: Record<number, string> = {
   1: 'Hvarfhraði = Δ[styrk]/Δtími. Mundu að deila, ekki margfalda!',
-  2: 'Í 1. stigs hvörf (order=1) tvöfaldast hraðinn þegar styrkur tvöfaldast. Í 2. stigs (order=2) fjórfaldast hann.',
+  2: 'Í 1. stigs hvörfum tvöfaldast hraðinn þegar styrkur tvöfaldast. Í 2. stigs hvörfum fjórfaldast hann.',
   3: 'Hitastig breytir EKKI virkjunarorku (Ea). Það eykur hlutfall sameinda sem hafa E ≥ Ea.',
-  4: 'Hvatar lækka Ea með öðrum hvarfgangshátt - þeir hita EKKI hvörfin upp.',
+  4: 'Hvatar lækka Ea með öðrum hvarfgangi - þeir hita EKKI hvörfin upp.',
   5: 'Yfirborð skiptir máli vegna fjölda árekstrarstaða, ekki efnaformúlu eða massa.',
   6: 'Ekki nóg að árekstur hafi orku - stefna (orientation) skiptir líka máli!',
 };
@@ -24,9 +24,9 @@ const RELATED_CONCEPTS: Record<number, string[]> = {
   1: ['Hvarfhraði', 'Styrkbreyting', 'M/s'],
   2: ['Hvörfunarröð', 'Hraðajafna', 'k[A]^n'],
   3: ['Maxwell-Boltzmann', 'Arrhenius', 'Ea og T'],
-  4: ['Hvatar', 'Virkjunarorka', 'Hvarfgangsháttur'],
-  5: ['Yfirborð', 'Árekstur', 'Heterogens hvörf'],
-  6: ['Árekstrarkennning', 'Orka og stefna', 'Árekstrartíðni'],
+  4: ['Hvatar', 'Virkjunarorka', 'Hvarfgangur'],
+  5: ['Yfirborð', 'Árekstur', 'Misleit hvörf'],
+  6: ['Árekstrakenning', 'Orka og stefna', 'Árekstrartíðni'],
 };
 
 interface Level1Props {
@@ -70,7 +70,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
     const selectedOption = shuffledOptions.find((opt) => opt.id === selectedAnswer);
     const isCorrect = selectedOption?.correct ?? false;
-    const points = calculateScore(isCorrect, showHint);
+    const points = calculateScore(isCorrect);
     if (isCorrect) {
       setScore((prev) => prev + points);
     }
@@ -210,7 +210,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 feedback={{
                   isCorrect:
                     shuffledOptions.find((opt) => opt.id === selectedAnswer)?.correct || false,
-                  explanation: `${shuffledOptions.find((opt) => opt.id === selectedAnswer)?.explanation || ''}\n\n**Hugtak:** ${challenge.conceptExplanation}`,
+                  // Plain text: the panel renders it as-is, so markdown here showed up as
+                  // literal asterisks. The concept gets its own box below, as in Stig 3.
+                  explanation:
+                    shuffledOptions.find((opt) => opt.id === selectedAnswer)?.explanation || '',
                   misconception: shuffledOptions.find((opt) => opt.id === selectedAnswer)?.correct
                     ? undefined
                     : MISCONCEPTIONS[challenge.id],
@@ -227,6 +230,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   showNextSteps: true,
                 }}
               />
+              <div className="bg-blue-50 p-4 rounded-xl mt-4">
+                <div className="font-bold text-blue-800 mb-2">Hugtak:</div>
+                <div className="text-blue-900 text-sm">{challenge.conceptExplanation}</div>
+              </div>
             </div>
           )}
 

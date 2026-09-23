@@ -23,53 +23,53 @@ export const challenges: KineticsChallenge[] = [
     id: 1,
     title: 'Hvað er hvarfhraði?',
     question:
-      'Hvörf A → B tekur 10 sekúndur og styrkur A breytist úr 1.0 M í 0.5 M. Hver er meðalhraðinn?',
+      'Hvarfið A → B tekur 10 sekúndur og styrkur A breytist úr 1,0 M í 0,5 M. Hver er meðalhraðinn?',
     type: 'multiple_choice',
     options: [
       {
         id: 'a',
-        text: '0.05 M/s',
+        text: '0,05 M/s',
         correct: true,
-        explanation: 'Rate = Δ[A]/Δt = (1.0 - 0.5)/10 = 0.05 M/s',
+        explanation: 'hraði = −Δ[A]/Δt = (1,0 − 0,5)/10 = 0,05 M/s',
       },
       {
         id: 'b',
-        text: '0.5 M/s',
+        text: '0,5 M/s',
         correct: false,
         explanation: 'Þetta er styrkbreytingin, ekki hraðinn (vantar /Δt)',
       },
       {
         id: 'c',
-        text: '5.0 M/s',
+        text: '5,0 M/s',
         correct: false,
         explanation: 'Þú margfaldaðir í stað þess að deila',
       },
       {
         id: 'd',
-        text: '0.1 M/s',
+        text: '0,1 M/s',
         correct: false,
-        explanation: 'Athugaðu útreikninginn aftur: 0.5/10 = 0.05',
+        explanation: 'Athugaðu útreikninginn aftur: 0,5/10 = 0,05',
       },
     ],
     hints: {
       topic: 'Þetta snýst um hvarfhraða og styrkbreytingu',
       strategy: 'Reiknaðu breytingu á styrk og deildu með tíma',
-      method: 'Rate = Δ[styrk]/Δ[tími]',
-      solution: 'Rate = (1.0 - 0.5) M / 10 s = 0.5/10 = 0.05 M/s',
+      method: 'hraði = Δ[styrk]/Δtími',
+      solution: 'hraði = (1,0 − 0,5) M / 10 s = 0,5/10 = 0,05 M/s',
     },
     conceptExplanation: 'Hvarfhraði mælist í styrkbreytingu á tímaeiningu (M/s eða mol/L·s).',
   },
   {
     id: 2,
     title: 'Áhrif styrks',
-    question: 'Ef styrkur hvarfefnis tvöfaldast, hvað gerist við hraðann í 1. stigs hvörf?',
+    question: 'Ef styrkur hvarfefnis tvöfaldast, hvað gerist við hraðann í 1. stigs hvarfi?',
     type: 'multiple_choice',
     options: [
       {
         id: 'a',
         text: 'Hraðinn tvöfaldast',
         correct: true,
-        explanation: 'Í 1. stigs hvörf: Rate = k[A]. Ef [A] tvöfaldast, tvöfaldast Rate.',
+        explanation: 'Í 1. stigs hvarfi: hraði = k[A]. Ef [A] tvöfaldast, tvöfaldast hraðinn.',
       },
       {
         id: 'b',
@@ -93,8 +93,9 @@ export const challenges: KineticsChallenge[] = [
     hints: {
       topic: 'Þetta snýst um hvörfunarröð (reaction order)',
       strategy: 'Hugsaðu um sambandið milli styrks og hraða í hvarfhraðajöfnu',
-      method: 'Í 1. stigs hvörf er veldisvísir = 1, þ.e. Rate = k[A]^1',
-      solution: 'Rate = k[A]. Ef [A] tvöfaldast: Rate_new = k(2[A]) = 2k[A] = 2 x Rate_old',
+      method: 'Í 1. stigs hvarfi er veldisvísir = 1, þ.e. hraði = k[A]^1',
+      solution:
+        'hraði = k[A]. Ef [A] tvöfaldast: nýr hraði = k(2[A]) = 2k[A] = 2 × upphaflegur hraði',
     },
     conceptExplanation:
       'Röð hvörfunar (order) segir til um hversu mikið styrkur hefur áhrif. 1. stig: línuleg, 2. stig: ferning.',
@@ -107,15 +108,15 @@ export const challenges: KineticsChallenge[] = [
     options: [
       {
         id: 'a',
-        text: 'Fleiri sameidir hafa nógu mikla orku til að komast yfir virkjunarorku',
+        text: 'Fleiri sameindir hafa nógu mikla orku til að komast yfir virkjunarorku',
         correct: true,
-        explanation: 'Rétt! Hærra hitastig = fleiri sameidir með E ≥ Ea.',
+        explanation: 'Rétt! Hærra hitastig = fleiri sameindir með E ≥ Ea.',
       },
       {
         id: 'b',
         text: 'Virkjunarorkan minnkar',
         correct: false,
-        explanation: 'Ea breytist ekki með hitastigi (aðeins hvatar breytir Ea).',
+        explanation: 'Ea breytist ekki með hitastigi (aðeins hvatar breyta Ea).',
       },
       {
         id: 'c',
@@ -125,7 +126,7 @@ export const challenges: KineticsChallenge[] = [
       },
       {
         id: 'd',
-        text: 'Sameidir verða stærri',
+        text: 'Sameindir verða stærri',
         correct: false,
         explanation: 'Hitastig breytir hreyfiorku, ekki stærð sameinda.',
       },
@@ -134,14 +135,14 @@ export const challenges: KineticsChallenge[] = [
       topic: 'Þetta snýst um hitastig og hvarfhraða',
       strategy: 'Hugsaðu um orkudreifingu Maxwell-Boltzmann',
       method: 'Arrhenius jafnan: k = Ae^(-Ea/RT) - hærra T hækkar k',
-      solution: 'Hærra hitastig eykur hreyfiorku, þannig fleiri sameidir hafa E ≥ Ea',
+      solution: 'Hærra hitastig eykur hreyfiorku, þannig fleiri sameindir hafa E ≥ Ea',
     },
     conceptExplanation:
       'Arrhenius jafnan: k = Ae^(-Ea/RT). Þegar T hækkar, hækkar k veldisvísislega.',
   },
   {
     id: 4,
-    title: 'Hvatar (catalysts)',
+    title: 'Hvatar',
     question: 'Hvernig hraðar hvati efnahvörf?',
     type: 'multiple_choice',
     options: [
@@ -149,7 +150,7 @@ export const challenges: KineticsChallenge[] = [
         id: 'a',
         text: 'Hvati lækkar virkjunarorkuna (Ea)',
         correct: true,
-        explanation: 'Hvati býður upp á annan hvarfgangshátt með lægri Ea.',
+        explanation: 'Hvati býður upp á annan hvarfgang með lægri Ea.',
       },
       {
         id: 'b',
@@ -167,15 +168,15 @@ export const challenges: KineticsChallenge[] = [
         id: 'd',
         text: 'Hvati breytir jafnvæginu til hægri',
         correct: false,
-        explanation: 'Hvatar hraðar bæði fram- og bakhvörf jafnt.',
+        explanation: 'Hvatar hraða bæði fram- og bakhvörf jafnt.',
       },
     ],
     hints: {
       topic: 'Þetta snýst um hvata (catalysts)',
       strategy: 'Hvatar taka þátt en myndast aftur í lok hvarfsins',
-      method: 'Hvati lækkar virkjunarorku (Ea) með öðrum hvarfgangshátt',
+      method: 'Hvati lækkar virkjunarorku (Ea) með öðrum hvarfgangi',
       solution:
-        'Hvati býður upp á annan hvarfgangshátt með lægri Ea, þannig fleiri árekstur hafa nóga orku',
+        'Hvati býður upp á annan hvarfgang með lægri Ea, þannig hafa fleiri árekstrar nóga orku',
     },
     conceptExplanation:
       'Hvati lækkar Ea en breytir ekki ΔH eða jafnvægi. Hann hraðar bara leiðina að jafnvægi.',
@@ -190,7 +191,7 @@ export const challenges: KineticsChallenge[] = [
         id: 'a',
         text: 'Meira yfirborð er í snertingu við O₂',
         correct: true,
-        explanation: 'Fleiri árekstur við súrefni = hraðari hvörf.',
+        explanation: 'Fleiri árekstrar við súrefni = hraðari hvörf.',
       },
       {
         id: 'b',
@@ -202,7 +203,7 @@ export const challenges: KineticsChallenge[] = [
         id: 'c',
         text: 'Járnduft hefur aðra efnaformúlu',
         correct: false,
-        explanation: 'Báðar eru Fe - sama efnið.',
+        explanation: 'Bæði eru Fe - sama efnið.',
       },
       {
         id: 'd',
@@ -216,15 +217,15 @@ export const challenges: KineticsChallenge[] = [
       strategy: 'Hvörf gerast á yfirborði fastra efna',
       method: 'Meira yfirborð = fleiri árekstrarmöguleikar með hvarfefni',
       solution:
-        'Járnduft hefur miklu meira yfirborð en kubbur, þannig fleiri árekstur við O2 = hraðari hvörf',
+        'Járnduft hefur miklu meira yfirborð en kubbur, þannig fleiri árekstrar við O₂ = hraðari hvörf',
     },
     conceptExplanation:
-      'Meira yfirborð = fleiri árekstrar = hraðari hvörf. Þess vegna eru lítil agnir hættulegri.',
+      'Meira yfirborð = fleiri árekstrar = hraðari hvörf. Þess vegna eru litlar agnir hættulegri.',
   },
   {
     id: 6,
-    title: 'Árekstrarkennningin',
-    question: 'Samkvæmt árekstrarkenningu, hvað þarf til að hvörf eigi sér stað?',
+    title: 'Árekstrakenningin',
+    question: 'Samkvæmt árekstrakenningu, hvað þarf til að hvörf eigi sér stað?',
     type: 'multiple_choice',
     options: [
       {
@@ -237,7 +238,7 @@ export const challenges: KineticsChallenge[] = [
         id: 'b',
         text: 'Aðeins nógu mikil orka',
         correct: false,
-        explanation: 'Stefna skiptir líka máli - sameidir þurfa að snerta á "réttum" stað.',
+        explanation: 'Stefna skiptir líka máli - sameindir þurfa að snerta á "réttum" stað.',
       },
       {
         id: 'c',
@@ -253,13 +254,13 @@ export const challenges: KineticsChallenge[] = [
       },
     ],
     hints: {
-      topic: 'Þetta snýst um árekstrarkenningu (collision theory)',
+      topic: 'Þetta snýst um árekstrakenningu (collision theory)',
       strategy: 'Hugsaðu um bílárekstur - stefna og hraði skipta báðir máli',
       method: 'Tveir þættir: orka ≥ Ea OG rétt stefna (orientation)',
       solution:
-        'Árekstur verður að hafa nógu mikla orku til að rjúfa tengsl OG sameidir þurfa að snerta á réttum stað',
+        'Árekstur verður að hafa nógu mikla orku til að rjúfa tengsl OG sameindir þurfa að snerta á réttum stað',
     },
     conceptExplanation:
-      'Árekstrartíðni ákvarðar hversu oft sameidir mætast. En aðeins brot þeirra hefur nóga orku og rétta stefnu.',
+      'Árekstrartíðni ákvarðar hversu oft sameindir mætast. En aðeins brot þeirra hefur nóga orku og rétta stefnu.',
   },
 ];

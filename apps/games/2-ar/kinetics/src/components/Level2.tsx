@@ -1,7 +1,10 @@
 import { useState } from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 import { ConcentrationTimeGraph } from './ConcentrationTimeGraph';
-import { challenges } from '../data/level2-questions';
+import { challenges, rateConstantOf } from '../data/level2-questions';
+import { formatSignificant } from '../utils/format';
 
 interface Level2Props {
   onComplete: (score: number) => void;
@@ -65,7 +68,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             <h2 className="text-xl font-bold text-warm-800">Hvernig finna röð hvörfunar?</h2>
 
             <p className="text-warm-700">
-              Hraðalögmálið er: <strong className="font-mono">Rate = k[A]ᵐ[B]ⁿ</strong>.
+              Hraðalögmálið er: <strong className="font-mono">hraði = k[A]ᵐ[B]ⁿ</strong>.
               Veldisvísarnir m og n (röð hvörfunar) segja hversu mikil áhrif styrkur hefur á
               hraðann.
             </p>
@@ -78,7 +81,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   breytist (hitt er fast).
                 </p>
                 <p>
-                  <strong>2.</strong> Reiknaðu hlutfall: Rate₂/Rate₁ og [A]₂/[A]₁
+                  <strong>2.</strong> Reiknaðu hlutfall: hraði₂/hraði₁ og [A]₂/[A]₁
                 </p>
                 <p>
                   <strong>3.</strong> Ef styrkur tvöfaldaðist og hraðinn tvöfaldaðist → m = 1.
@@ -93,8 +96,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             <div className="bg-green-50 p-4 rounded-lg">
               <h3 className="font-bold text-green-800 mb-2">Dæmi</h3>
               <div className="text-sm text-green-700 space-y-1">
-                <p>Tilraun 1: [A]=0.1, Rate=2.0</p>
-                <p>Tilraun 2: [A]=0.2, Rate=8.0 (styrkur × 2, hraði × 4)</p>
+                <p>Tilraun 1: [A] = 0,1; hraði = 2,0</p>
+                <p>Tilraun 2: [A] = 0,2; hraði = 8,0 (styrkur × 2, hraði × 4)</p>
                 <p className="font-mono mt-2">2ᵐ = 4 → m = 2 (annars stigs)</p>
               </div>
             </div>
@@ -164,15 +167,15 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-warm-50'}>
                     <td className="px-1.5 py-2 sm:p-3 font-bold">{row.experiment}</td>
                     <td className="px-1.5 py-2 sm:p-3 text-center font-mono">
-                      {row.concentrationA.toFixed(2)}
+                      {formatDecimal(row.concentrationA, 2)}
                     </td>
                     {hasSecondReactant && (
                       <td className="px-1.5 py-2 sm:p-3 text-center font-mono">
-                        {row.concentrationB.toFixed(2)}
+                        {formatDecimal(row.concentrationB, 2)}
                       </td>
                     )}
                     <td className="px-1.5 py-2 sm:p-3 text-center font-mono">
-                      {row.initialRate.toFixed(4)}
+                      {formatDecimal(row.initialRate, 4)}
                     </td>
                   </tr>
                 ))}
@@ -260,7 +263,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             {(orderA !== null || orderB !== null) && (
               <div className="mt-4 p-3 bg-white rounded-lg border border-green-200">
                 <div className="font-mono text-center text-lg">
-                  Rate = k[A]<sup>{orderA ?? '?'}</sup>
+                  hraði = k[A]<sup>{orderA ?? '?'}</sup>
                   {hasSecondReactant && (
                     <>
                       [B]<sup>{orderB ?? '?'}</sup>
@@ -314,14 +317,14 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               </div>
               <div className="text-sm text-warm-700 mb-2">{challenge.explanation}</div>
               <div className="font-mono text-sm bg-white p-2 rounded border">
-                <strong>Hraðalögmál:</strong> Rate = k[A]<sup>{challenge.correctOrderA}</sup>
+                <strong>Hraðalögmál:</strong> hraði = k[A]<sup>{challenge.correctOrderA}</sup>
                 {hasSecondReactant && (
                   <>
                     [B]<sup>{challenge.correctOrderB}</sup>
                   </>
                 )}
                 <br />
-                <strong>Hraðafasti:</strong> k = {challenge.correctRateConstant}{' '}
+                <strong>Hraðafasti:</strong> k = {formatSignificant(rateConstantOf(challenge))}{' '}
                 {challenge.rateConstantUnit}
               </div>
             </div>
@@ -344,11 +347,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           <ol className="text-sm text-warm-600 space-y-1 list-decimal list-inside">
             <li>Finndu tvær tilraunir þar sem aðeins EINN styrkur breytist</li>
             <li>
-              Reiknaðu hlutfallið: (Rate₂/Rate₁) = ([A]₂/[A]₁)<sup>m</sup>
+              Reiknaðu hlutfallið: (hraði₂/hraði₁) = ([A]₂/[A]₁)<sup>m</sup>
             </li>
-            <li>Ef styrkur tvöfaldast og Rate tvöfaldast → m = 1</li>
-            <li>Ef styrkur tvöfaldast og Rate fjórfaldast → m = 2</li>
-            <li>Ef styrkur breytist en Rate helst sama → m = 0</li>
+            <li>Ef styrkur tvöfaldast og hraðinn tvöfaldast → m = 1</li>
+            <li>Ef styrkur tvöfaldast og hraðinn fjórfaldast → m = 2</li>
+            <li>Ef styrkur breytist en hraðinn helst sá sami → m = 0</li>
           </ol>
         </div>
 

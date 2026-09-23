@@ -1,6 +1,7 @@
-import { useState, useMemo, useRef } from 'react';
+import { useId, useState, useMemo, useRef } from 'react';
 
 import { useContainerWidth } from '@shared/components/ResponsiveContainer';
+import { formatDecimal } from '@shared/utils';
 
 interface ConcentrationTimeGraphProps {
   /** Initial concentration [A]₀ in M */
@@ -58,28 +59,28 @@ function calculateHalfLife(A0: number, k: number, order: 0 | 1 | 2): number {
 
 const ORDER_INFO = {
   0: {
-    name: '0. stig (Zero Order)',
+    name: '0. stig',
     equation: '[A] = [A]₀ - kt',
-    linearPlot: '[A] vs t',
+    linearPlot: '[A] á móti t',
     halfLifeEq: 't₁/₂ = [A]₀/(2k)',
     color: '#ef4444', // red
     description: 'Styrkur minnkar línulega með tíma. Hraðinn er stöðugur.',
   },
   1: {
-    name: '1. stig (First Order)',
+    name: '1. stig',
     equation: '[A] = [A]₀·e^(-kt)',
-    linearPlot: 'ln[A] vs t',
+    linearPlot: 'ln[A] á móti t',
     halfLifeEq: 't₁/₂ = ln(2)/k',
     color: '#22c55e', // green
     description: 'Styrkur minnkar veldisfallslega. Hraðinn fer lækkandi.',
   },
   2: {
-    name: '2. stig (Second Order)',
+    name: '2. stig',
     equation: '[A] = [A]₀/(1+kt[A]₀)',
-    linearPlot: '1/[A] vs t',
+    linearPlot: '1/[A] á móti t',
     halfLifeEq: 't₁/₂ = 1/(k[A]₀)',
     color: '#3b82f6', // blue
-    description: 'Styrkur minnkar hægar en 1. stig. Langt "hali" á graf.',
+    description: 'Styrkur minnkar hægar en í 1. stigi. Langur „hali“ á grafinu.',
   },
 };
 
@@ -101,6 +102,8 @@ export function ConcentrationTimeGraph({
   const [k, setK] = useState(rateConstant);
   const [selectedOrder, setSelectedOrder] = useState<0 | 1 | 2>(order);
   const [showHalfLife, setShowHalfLife] = useState(true);
+  const a0Id = useId();
+  const kId = useId();
 
   // On a phone the 400-wide graph was drawn at about 0.6x inside a box still 240 px tall, so
   // its tick labels came out at 6 px with a band of empty space above and below. Below 400 px
@@ -181,7 +184,7 @@ export function ConcentrationTimeGraph({
       <div className="flex flex-wrap justify-between items-center gap-2 mb-3">
         <h3 className="text-white font-bold text-sm flex items-center gap-2">
           <span className="text-lg">📈</span>
-          Styrkur vs Tími
+          Styrkur á móti tíma
         </h3>
         {interactive && (
           <div className="flex gap-2">
@@ -209,9 +212,12 @@ export function ConcentrationTimeGraph({
       {interactive && !compact && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 p-3 bg-warm-700/50 rounded-lg">
           <div>
-            <label className="text-xs text-warm-400 block mb-1">[A]₀ (M)</label>
+            <label htmlFor={a0Id} className="text-xs text-warm-400 block mb-1">
+              [A]₀ (M)
+            </label>
             <div className="flex items-center gap-2">
               <input
+                id={a0Id}
                 type="range"
                 min="0.5"
                 max="2.0"
@@ -220,13 +226,16 @@ export function ConcentrationTimeGraph({
                 onChange={(e) => setA0(Number(e.target.value))}
                 className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-purple-500 pointer-coarse:h-11 pointer-coarse:rounded-none pointer-coarse:bg-transparent pointer-coarse:bg-[linear-gradient(var(--color-warm-600),var(--color-warm-600))] pointer-coarse:bg-[length:100%_6px] pointer-coarse:bg-center pointer-coarse:bg-no-repeat"
               />
-              <span className="text-xs font-mono text-purple-400 w-10">{A0.toFixed(1)}</span>
+              <span className="text-xs font-mono text-purple-400 w-10">{formatDecimal(A0, 1)}</span>
             </div>
           </div>
           <div>
-            <label className="text-xs text-warm-400 block mb-1">k (hraðafasti)</label>
+            <label htmlFor={kId} className="text-xs text-warm-400 block mb-1">
+              k (hraðafasti)
+            </label>
             <div className="flex items-center gap-2">
               <input
+                id={kId}
                 type="range"
                 min="0.05"
                 max="0.5"
@@ -235,7 +244,7 @@ export function ConcentrationTimeGraph({
                 onChange={(e) => setK(Number(e.target.value))}
                 className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-orange-500 pointer-coarse:h-11 pointer-coarse:rounded-none pointer-coarse:bg-transparent pointer-coarse:bg-[linear-gradient(var(--color-warm-600),var(--color-warm-600))] pointer-coarse:bg-[length:100%_6px] pointer-coarse:bg-center pointer-coarse:bg-no-repeat"
               />
-              <span className="text-xs font-mono text-orange-400 w-12">{k.toFixed(2)}</span>
+              <span className="text-xs font-mono text-orange-400 w-12">{formatDecimal(k, 2)}</span>
             </div>
           </div>
         </div>
@@ -252,7 +261,7 @@ export function ConcentrationTimeGraph({
           preserveAspectRatio="xMidYMid meet"
           className={`bg-warm-950 rounded-lg${narrow ? ' block h-auto' : ''}`}
           role="img"
-          aria-label={`Styrkur vs tími graf fyrir ${info.name}`}
+          aria-label={`Graf af styrk á móti tíma fyrir ${info.name}`}
         >
           {/* Grid */}
           <defs>
@@ -311,7 +320,7 @@ export function ConcentrationTimeGraph({
           {/* Y-axis ticks */}
           {yTicks.map((ratio) => {
             const y = scaleY(ratio * A0);
-            const label = (ratio * A0).toFixed(2);
+            const label = formatDecimal(ratio * A0, 2);
             return (
               <g key={ratio}>
                 <line x1={margin.left - 5} y1={y} x2={margin.left} y2={y} stroke="#6b7280" />
@@ -331,7 +340,7 @@ export function ConcentrationTimeGraph({
           {/* X-axis ticks */}
           {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
             const x = scaleX(ratio * maxTime);
-            const label = (ratio * maxTime).toFixed(0);
+            const label = formatDecimal(ratio * maxTime, 0);
             return (
               <g key={ratio}>
                 <line
@@ -386,7 +395,7 @@ export function ConcentrationTimeGraph({
                 style={{ fontSize: labelSize('9px') }}
                 {...halo}
               >
-                t₁/₂ = {halfLife.toFixed(1)}s
+                t₁/₂ = {formatDecimal(halfLife, 1)} s
               </text>
               {/* Half concentration label */}
               <text
@@ -505,7 +514,7 @@ export function ConcentrationTimeGraph({
           </button>
 
           <div className="text-xs text-warm-400">
-            t₁/₂ = <span className="font-mono text-yellow-400">{halfLife.toFixed(2)} s</span>
+            t₁/₂ = <span className="font-mono text-yellow-400">{formatDecimal(halfLife, 2)} s</span>
           </div>
         </div>
       )}
@@ -517,7 +526,9 @@ export function ConcentrationTimeGraph({
           <ul className="text-warm-300 text-xs space-y-1">
             <li className="flex items-start gap-2">
               <span style={{ color: ORDER_INFO[0].color }}>●</span>
-              <span>0. stig: t₁/₂ fer eftir [A]₀ - lengist þegar styrkur minnkar</span>
+              {/* t₁/₂ = [A]₀/(2k) is proportional to [A]₀, so it SHORTENS as the concentration
+                  falls. This line said "lengist" — the second-order behaviour, two lines down. */}
+              <span>0. stig: t₁/₂ fer eftir [A]₀ - styttist þegar styrkur minnkar</span>
             </li>
             <li className="flex items-start gap-2">
               <span style={{ color: ORDER_INFO[1].color }}>●</span>

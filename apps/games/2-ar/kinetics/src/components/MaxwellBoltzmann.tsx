@@ -2,6 +2,8 @@ import { useMemo, useRef } from 'react';
 
 import { useContainerWidth } from '@shared/components/ResponsiveContainer';
 
+import { formatPercent } from '../utils/format';
+
 interface MaxwellBoltzmannProps {
   temperature: number;
   activationEnergy: number;
@@ -116,7 +118,9 @@ export function MaxwellBoltzmann({
     return calculateFractionAboveEa(temperature, activationEnergy);
   }, [temperature, activationEnergy]);
 
-  const percentAboveEa = (fractionAboveEa * 100).toFixed(1);
+  // Below 0,05 % across every setting of Level 1's sliders, so one decimal place printed
+  // "0.0%" everywhere and the readout never moved with temperature — the thing it is for.
+  const percentAboveEa = formatPercent(fractionAboveEa * 100);
 
   // On a phone the graph is drawn at 0.7-0.8x, which took its 10-11 unit labels down to
   // 7-8 px. Below the width it was designed for it switches to a compact drawing: the same
@@ -206,7 +210,7 @@ export function MaxwellBoltzmann({
           className="bg-warm-950 rounded-lg w-full"
           style={responsive ? { aspectRatio: `${width}/${height}` } : undefined}
           role="img"
-          aria-label={`Maxwell-Boltzmann dreifing við ${temperature} K. ${percentAboveEa}% sameinda hafa orku yfir virkjunarorku.`}
+          aria-label={`Maxwell-Boltzmann dreifing við ${temperature} K. ${percentAboveEa} % sameinda hafa orku yfir virkjunarorku.`}
         >
           {/* Grid lines */}
           <g className="text-warm-700">
@@ -351,7 +355,7 @@ export function MaxwellBoltzmann({
         <div className="flex items-center gap-2">
           <div className="w-4 h-3 rounded" style={{ backgroundColor: '#22c55e', opacity: 0.5 }} />
           <span className="text-green-400 text-sm font-semibold">
-            {percentAboveEa}% sameinda með E ≥ Ea
+            {percentAboveEa} % sameinda með E ≥ Ea
           </span>
         </div>
         <div className="text-xs text-warm-400 whitespace-nowrap">
@@ -361,7 +365,7 @@ export function MaxwellBoltzmann({
 
       {/* Educational note */}
       <div className="mt-2 text-xs text-warm-400 text-center">
-        Hærra hitastig → fleiri sameidir með nóga orku
+        Hærra hitastig → fleiri sameindir með nóga orku
       </div>
     </div>
   );

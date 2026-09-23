@@ -1,6 +1,8 @@
-import { useState, useMemo, useRef } from 'react';
+import { useId, useState, useMemo, useRef } from 'react';
 
 import { useContainerWidth } from '@shared/components/ResponsiveContainer';
+
+import { formatFactor, formatPercent } from '../utils/format';
 
 interface CatalystEffectDemoProps {
   /** Temperature in Kelvin */
@@ -17,6 +19,9 @@ interface CatalystEffectDemoProps {
 
 // Gas constant in kJ/(mol·K)
 const R = 8.314e-3;
+
+/** The top of the "Ea (án hvata)" slider, which the energy axis has to leave room for. */
+const BASE_EA_MAX = 100;
 
 /**
  * Calculate fraction of molecules with energy >= Ea using Arrhenius
@@ -44,8 +49,16 @@ export function CatalystEffectDemo({
 }: CatalystEffectDemoProps) {
   const [temp, setTemp] = useState(temperature);
   const [baseEa, setBaseEa] = useState(baseActivationEnergy);
-  const [catEa, setCatEa] = useState(catalyzedActivationEnergy);
+  const [catEaChosen, setCatEa] = useState(catalyzedActivationEnergy);
+  // The "með hvata" slider stops 5 kJ/mol below the uncatalysed Ea, and lowering "án hvata"
+  // moves that stop. Everything shown reads this capped value: it used to read the value chosen
+  // before the stop moved, so the demo could show Ea' above Ea and a catalyst that slowed the
+  // reaction, beside a slider thumb sitting at the cap.
+  const catEa = Math.min(catEaChosen, baseEa - 5);
   const [showAnimation, setShowAnimation] = useState(false);
+  const tempId = useId();
+  const baseEaId = useId();
+  const catEaId = useId();
 
   // Calculate reaction rates using Arrhenius equation (relative)
   const rates = useMemo(() => {
@@ -91,17 +104,20 @@ export function CatalystEffectDemo({
   // Narrow: centred on the plot, which is what the rotated title labels
   const yTitleY = narrow ? margin.top + plotHeight / 2 : height / 2;
 
-  // Energy scale (0 to 100 kJ/mol)
-  const maxEnergy = 80;
+  // Baseline energy levels
   const deltaH = -20; // Exothermic reaction
+  const reactantEnergy = 50;
+  const productEnergy = reactantEnergy + deltaH;
+
+  // Energy scale: fixed, and tall enough for the highest peak the slider can make, so moving
+  // Ea moves the peak rather than the axis. It used to stop at 80 kJ/mol, which put the
+  // uncatalysed peak (reactants + Ea) off the top for any Ea above 30 — including the 40
+  // Level 1 starts on.
+  const maxEnergy = reactantEnergy + Math.max(BASE_EA_MAX, baseEa) + 10;
 
   // Reaction progress scale
   const scaleX = (progress: number) => margin.left + progress * plotWidth;
   const scaleY = (energy: number) => margin.top + (1 - energy / maxEnergy) * plotHeight;
-
-  // Baseline energy levels
-  const reactantEnergy = 50;
-  const productEnergy = reactantEnergy + deltaH;
 
   // Generate smooth curve for energy pathway
   const generatePathway = (Ea: number) => {
@@ -153,7 +169,7 @@ export function CatalystEffectDemo({
       <div className="flex justify-between items-center gap-2 mb-3">
         <h3 className="text-white font-bold text-sm flex items-center gap-2">
           <span className="text-lg">⚗️</span>
-          Hvataáhrif (Catalyst Effect)
+          Hvataáhrif
         </h3>
         {interactive && (
           <button
@@ -164,7 +180,9 @@ export function CatalystEffectDemo({
                 : 'bg-warm-600 text-warm-200 hover:bg-warm-500'
             }`}
           >
-            {showAnimation ? 'Sýna hreyfingu' : 'Kyrrt'}
+            {/* Names what pressing it does. It read "Kyrrt" while still and "Sýna hreyfingu"
+                while already moving. */}
+            {showAnimation ? 'Stöðva hreyfingu' : 'Sýna hreyfingu'}
           </button>
         )}
       </div>
@@ -173,9 +191,12 @@ export function CatalystEffectDemo({
       {interactive && !compact && (
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 p-3 bg-warm-700/50 rounded-lg">
           <div>
-            <label className="text-xs text-warm-400 block mb-1">Hitastig</label>
+            <label htmlFor={tempId} className="text-xs text-warm-400 block mb-1">
+              Hitastig
+            </label>
             <div className="flex items-center gap-2">
               <input
+                id={tempId}
                 type="range"
                 min="250"
                 max="500"
@@ -188,12 +209,15 @@ export function CatalystEffectDemo({
             </div>
           </div>
           <div>
-            <label className="text-xs text-warm-400 block mb-1">Ea (án hvata)</label>
+            <label htmlFor={baseEaId} className="text-xs text-warm-400 block mb-1">
+              Ea (án hvata)
+            </label>
             <div className="flex items-center gap-2">
               <input
+                id={baseEaId}
                 type="range"
                 min="30"
-                max="100"
+                max={BASE_EA_MAX}
                 step="5"
                 value={baseEa}
                 onChange={(e) => setBaseEa(Number(e.target.value))}
@@ -203,14 +227,17 @@ export function CatalystEffectDemo({
             </div>
           </div>
           <div>
-            <label className="text-xs text-warm-400 block mb-1">Ea (með hvata)</label>
+            <label htmlFor={catEaId} className="text-xs text-warm-400 block mb-1">
+              Ea (með hvata)
+            </label>
             <div className="flex items-center gap-2">
               <input
+                id={catEaId}
                 type="range"
                 min="10"
                 max={baseEa - 5}
                 step="5"
-                value={Math.min(catEa, baseEa - 5)}
+                value={catEa}
                 onChange={(e) => setCatEa(Number(e.target.value))}
                 className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-green-500 pointer-coarse:h-11 pointer-coarse:rounded-none pointer-coarse:bg-transparent pointer-coarse:bg-[linear-gradient(var(--color-warm-600),var(--color-warm-600))] pointer-coarse:bg-[length:100%_6px] pointer-coarse:bg-center pointer-coarse:bg-no-repeat"
               />
@@ -317,7 +344,7 @@ export function CatalystEffectDemo({
             className="fill-warm-400"
             style={{ fontSize: labelSize('10px') }}
           >
-            Hvarfgangur
+            Framvinda efnahvarfs
           </text>
 
           {/* Energy level lines */}
@@ -351,9 +378,12 @@ export function CatalystEffectDemo({
             strokeDasharray="4,2"
           />
           <text
-            x={narrow ? width - margin.right : width - margin.right - 40}
-            y={scaleY(productEnergy) + (narrow ? 17 : -5)}
-            textAnchor={narrow ? 'end' : undefined}
+            // Under the product level in both drawings, where no curve or ΔH line runs. Above it,
+            // the wide drawing's label ran into the ΔH line, and once the taller energy axis
+            // flattened the descent, into both curves as well.
+            x={width - margin.right}
+            y={scaleY(productEnergy) + (narrow ? 17 : 13)}
+            textAnchor="end"
             className="fill-blue-400"
             style={{ fontSize: labelSize('9px') }}
           >
@@ -501,7 +531,7 @@ export function CatalystEffectDemo({
           <div className="text-red-400 text-xs font-medium mb-1">Án hvata</div>
           <div className="text-white text-lg font-bold">Ea = {baseEa} kJ/mol</div>
           <div className="text-warm-400 text-xs mt-1">
-            {(rates.withoutCatalyst * 100).toExponential(1)}% sameinda geta hvarfast
+            {formatPercent(rates.withoutCatalyst * 100)} % sameinda geta hvarfast
           </div>
         </div>
 
@@ -509,7 +539,7 @@ export function CatalystEffectDemo({
           <div className="text-green-400 text-xs font-medium mb-1">Með hvata</div>
           <div className="text-white text-lg font-bold">Ea' = {catEa} kJ/mol</div>
           <div className="text-warm-400 text-xs mt-1">
-            {(rates.withCatalyst * 100).toExponential(1)}% sameinda geta hvarfast
+            {formatPercent(rates.withCatalyst * 100)} % sameinda geta hvarfast
           </div>
         </div>
       </div>
@@ -517,7 +547,7 @@ export function CatalystEffectDemo({
       {/* Speedup indicator */}
       <div className="mt-3 bg-warm-700/50 rounded-lg p-3 text-center">
         <div className="text-warm-400 text-xs mb-1">Hvörf hraðar um</div>
-        <div className="text-2xl font-bold text-yellow-400">{rates.speedup.toExponential(1)}×</div>
+        <div className="text-2xl font-bold text-yellow-400">{formatFactor(rates.speedup)} ×</div>
         <div className="text-warm-500 text-xs mt-1">Hvati lækkar Ea um {baseEa - catEa} kJ/mol</div>
       </div>
 
@@ -528,7 +558,7 @@ export function CatalystEffectDemo({
           <ul className="text-warm-300 text-xs space-y-1">
             <li className="flex items-start gap-2">
               <span className="text-green-400">✓</span>
-              <span>Hvati lækkar virkjunarorku (Ea) með öðrum hvarfgangshátt</span>
+              <span>Hvati lækkar virkjunarorku (Ea) með öðrum hvarfgangi</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-blue-400">→</span>
