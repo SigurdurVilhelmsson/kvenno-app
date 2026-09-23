@@ -38,6 +38,38 @@
   }
 }
 
+/*
+ * `pin:` — a portrait phone only: narrower than `sm` and taller than the
+ * 500 px line. The one layout in which the shared PinnedTask components
+ * (TaskStrip, PinnedActions) stick to an edge; a phone on its side has no
+ * height to spare, so nothing is ever pinned in landscape. `PIN_QUERY` in
+ * `@shared/utils` is the same query for scripts. Block form, like the two
+ * above. The components apply `pin:` classes only while they are actually
+ * pinned (their own JS decision), so the variant is the second lock: turning
+ * the phone un-sticks them before React re-renders.
+ */
+@custom-variant pin {
+  @media (max-width: 639.98px) and (min-height: 501px) {
+    @slot;
+  }
+}
+
+/*
+ * While something is pinned, the browser's own scrolling (Tab focus, find in
+ * page, anchor jumps) keeps the focused element out from under it
+ * (WCAG 2.4.11). The PinnedTask components publish these heights on <html>
+ * only while pinned and remove them when they unpin. No fallbacks, on
+ * purpose: with the properties unset the declarations are invalid at
+ * computed-value time and fall back to the initial `auto`, so a page with
+ * nothing pinned computes exactly what it did before this rule existed.
+ */
+html {
+  @variant pin {
+    scroll-padding-top: calc(var(--pin-header-h) + var(--pin-strip-h));
+    scroll-padding-bottom: var(--pin-bar-h);
+  }
+}
+
 @theme {
   /* ===== Brand Orange Scale ===== */
   --color-kvenno-orange-50: #fff7f0;

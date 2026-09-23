@@ -47,6 +47,12 @@ export const PHONE_QUERY = '(max-width: 639.98px), (max-height: 500px)';
 /** The `phone-land:` variant's query: a phone on its side. */
 export const PHONE_LAND_QUERY = '(orientation: landscape) and (max-height: 500px)';
 
+/**
+ * The `pin:` variant's query: a portrait phone, narrower than `sm` and taller
+ * than 500 px. The only layout in which `TaskStrip` and `PinnedActions` stick.
+ */
+export const PIN_QUERY = '(max-width: 639.98px) and (min-height: 501px)';
+
 /** Gap left between a revealed element and the edge of the usable area. */
 const MARGIN = 8;
 

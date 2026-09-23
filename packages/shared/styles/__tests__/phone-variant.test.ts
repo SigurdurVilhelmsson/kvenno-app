@@ -6,7 +6,7 @@ import { dirname, join } from 'node:path';
 import { compile } from 'tailwindcss';
 import { beforeAll, describe, expect, it } from 'vitest';
 
-import { PHONE_LAND_QUERY, PHONE_QUERIES, PHONE_QUERY } from '../../utils/reveal';
+import { PHONE_LAND_QUERY, PHONE_QUERIES, PHONE_QUERY, PIN_QUERY } from '../../utils/reveal';
 
 /**
  * The `phone:` and `phone-land:` variants in `theme.css`, compiled with the
@@ -37,6 +37,7 @@ const sel = (name: string) => '.' + name.replace(':', '\\:');
 
 const PHONE_HIDDEN = cls('phone', 'hidden');
 const LAND_BLOCK = cls('phone-land', 'block');
+const PIN_STICKY = cls('pin', 'sticky');
 const BUILT_IN = [
   cls('sm', 'flex'),
   cls('md', 'grid'),
@@ -65,7 +66,7 @@ beforeAll(async () => {
       return { path, base: dirname(path), content: readFileSync(path, 'utf8') };
     },
   });
-  css = compiler.build([...BUILT_IN, PHONE_HIDDEN, LAND_BLOCK]);
+  css = compiler.build([...BUILT_IN, PHONE_HIDDEN, LAND_BLOCK, PIN_STICKY]);
 });
 
 /** The media query of every `@media` block that contains `selector`, in output order. */
@@ -108,6 +109,31 @@ describe('phone-land: variant', () => {
     for (const name of BUILT_IN.filter((n) => n.startsWith('max-'))) {
       expect(css.indexOf(sel(name)), name).toBeLessThan(land);
     }
+  });
+});
+
+describe('pin: variant', () => {
+  it('is one portrait-phone query that agrees with PIN_QUERY', () => {
+    expect(mediaFor(sel(PIN_STICKY))).toEqual([PIN_QUERY]);
+  });
+
+  it('is emitted after phone-land:, so a pinned class wins over both', () => {
+    expect(css.indexOf(sel(PIN_STICKY))).toBeGreaterThan(css.indexOf(sel(LAND_BLOCK)));
+    expect(css.indexOf(sel(PIN_STICKY))).toBeGreaterThan(css.indexOf(sel(PHONE_HIDDEN)));
+  });
+
+  it('carries the pinned heights into scroll-padding on <html>, under pin: only', () => {
+    // Tailwind nests the @variant block as `html { @media … { … } }` or hoists
+    // it; either way the declarations must sit inside the pin: query.
+    const at = css.indexOf('scroll-padding-bottom: var(--pin-bar-h)');
+    expect(at).toBeGreaterThan(-1);
+    const before = css.slice(0, at);
+    const media = before.lastIndexOf('@media');
+    expect(before.slice(media)).toContain(PIN_QUERY);
+    expect(before.slice(media)).toMatch(/html/);
+    expect(css).toContain('scroll-padding-top: calc(var(--pin-header-h) + var(--pin-strip-h))');
+    // Nowhere outside it.
+    expect(css.match(/scroll-padding/g)).toHaveLength(2);
   });
 });
 

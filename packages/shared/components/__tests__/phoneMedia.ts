@@ -3,23 +3,24 @@ import { act } from '@testing-library/react';
 import { PHONE_QUERY } from '../../utils/reveal';
 
 /**
- * A `window.matchMedia` stub whose phone query can be flipped mid-test, firing `change`
+ * A `window.matchMedia` stub whose phone query (`PHONE_QUERY` unless another is
+ * given, e.g. `PIN_QUERY`) can be flipped mid-test, firing `change`
  * the way a browser does when a phone is turned. jsdom has no `matchMedia` at all, which
  * is the desktop branch of every phone-gated component; `restore()` puts that back.
  */
-export function stubPhoneMedia(initial: boolean) {
+export function stubPhoneMedia(initial: boolean, phoneQuery: string = PHONE_QUERY) {
   let phone = initial;
   const listeners = new Set<() => void>();
   const original = window.matchMedia;
 
   window.matchMedia = ((query: string) => ({
     get matches() {
-      return query === PHONE_QUERY && phone;
+      return query === phoneQuery && phone;
     },
     media: query,
     onchange: null,
     addEventListener: (_: string, fn: () => void) => {
-      if (query === PHONE_QUERY) listeners.add(fn);
+      if (query === phoneQuery) listeners.add(fn);
     },
     removeEventListener: (_: string, fn: () => void) => {
       listeners.delete(fn);
