@@ -268,6 +268,22 @@ describe('revealSpan', () => {
     expect(scrollBy).toHaveBeenCalledWith({ top: 112, behavior: 'smooth' });
   });
 
+  it("with gap 0, lands flush with the edge, where scrollIntoView's 'nearest' did", () => {
+    phone = false;
+    const result = add();
+    rect(result, 400, 500);
+    // The block ends at 900 in a 640 px viewport: 260 px to bring its bottom to the edge.
+    revealSpan(result, [], { anyWidth: true, gap: 0 });
+    expect(scrollBy).toHaveBeenCalledWith({ top: 260, behavior: 'smooth' });
+    scrollBy.mockClear();
+    // A block already flush with an edge does not move, where the default 8 px gap would.
+    rect(result, 140, 500);
+    revealSpan(result, [], { anyWidth: true, gap: 0 });
+    expect(scrollBy).not.toHaveBeenCalled();
+    revealSpan(result, [], { anyWidth: true });
+    expect(scrollBy).toHaveBeenCalledWith({ top: 8, behavior: 'smooth' });
+  });
+
   it('skips missing tops', () => {
     const { verdict, next } = loop(0, 400, 700);
     revealSpan(next, [null, undefined, verdict]);
@@ -569,7 +585,15 @@ describe('useItemTop', () => {
 });
 
 describe('useRevealAfterCommit', () => {
-  function Loop({ afterExit, anyWidth }: { afterExit?: number; anyWidth?: boolean }) {
+  function Loop({
+    afterExit,
+    anyWidth,
+    gap,
+  }: {
+    afterExit?: number;
+    anyWidth?: boolean;
+    gap?: number;
+  }) {
     const [done, setDone] = useState(false);
     const verdict = useRef<HTMLHeadingElement>(null);
     const group = useRef<HTMLDivElement>(null);
@@ -577,7 +601,7 @@ describe('useRevealAfterCommit', () => {
     useRevealAfterCommit(
       done,
       () => ({ bottom: next.current, tops: [verdict.current], focus: group.current }),
-      { afterExit, anyWidth }
+      { afterExit, anyWidth, gap }
     );
     if (!done) return createElement('button', { onClick: () => setDone(true) }, 'Athuga');
     return createElement(
@@ -620,6 +644,15 @@ describe('useRevealAfterCommit', () => {
     stubLoopRects();
     await act(() => new Promise((r) => requestAnimationFrame(() => r(undefined))));
     expect(scrollBy).toHaveBeenCalled();
+  });
+
+  it('passes gap on to revealSpan', async () => {
+    const { getByText } = render(createElement(Loop, { gap: 0 }));
+    act(() => getByText('Athuga').click());
+    stubLoopRects();
+    await act(() => new Promise((r) => requestAnimationFrame(() => r(undefined))));
+    // Næsta ends at 700: flush with the 640 px edge is 60, where the default gap moves 68.
+    expect(scrollBy).toHaveBeenCalledWith({ top: 60, behavior: 'smooth' });
   });
 
   it('with afterExit, waits for the exit animation first', () => {

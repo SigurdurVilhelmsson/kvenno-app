@@ -3158,6 +3158,30 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Stig 1 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 1: Greina IMF tegundir'],
+        },
+        {
+          clickRole: ['button', 'Hefja æfingar'],
+        },
+      ],
+      loop: {
+        prompt: { text: 'Hvaða millisameindakraftar eru til staðar' },
+        action: { role: 'button', name: 'Athuga svar' },
+        // H₂O comes first, and London alone is wrong for it: the longest feedback, with
+        // the misconception note.
+        answer: [{ clickRole: ['button', 'London dreifikraftar'] }],
+        verdict: { css: '.feedback-panel p' },
+        next: { role: 'button', name: 'Næsta sameind' },
+        // In landscape the feedback is taller than the screen, so Næsta is one scroll
+        // below the verdict there (design §5); §6.2.10 still holds the loop usable.
+        viewports: ['android', 'iphone', 'se'],
+        scrollsToAction: 1,
+      },
+    },
+    {
       name: 'Stig 2 — röðun',
       steps: [
         {
@@ -3173,6 +3197,30 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           css: 'div:has(> div:text-is("Tiltæk efni:")) button',
         },
       ],
+    },
+    {
+      name: 'Stig 2 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 2: Raða eftir eiginleikum'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga röðun' },
+        // Each tap moves the first compound left in the pool into the next slot.
+        answer: [
+          { css: 'div:has(> div:text-is("Tiltæk efni:")) button' },
+          { css: 'div:has(> div:text-is("Tiltæk efni:")) button' },
+          { css: 'div:has(> div:text-is("Tiltæk efni:")) button' },
+        ],
+        verdict: { css: '#imf-l2-verdict' },
+        next: { role: 'button', name: 'Næsta verkefni' },
+        // In landscape the feedback is taller than the screen, so Næsta is one scroll
+        // below the verdict there (design §5); §6.2.10 still holds the loop usable.
+        viewports: ['android', 'iphone', 'se'],
+        scrollsToAction: 1,
+      },
     },
     {
       name: 'Stig 2 — endurgjöf',
@@ -3221,6 +3269,15 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Stig 3: Flókin greining'],
         },
       ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [{ css: '.space-y-3 > button' }],
+        verdict: { css: '#imf-l3-verdict' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        scrollsToAction: 1,
+      },
     },
     {
       name: 'Stig 3 — endurgjöf og dýpri skilningur',

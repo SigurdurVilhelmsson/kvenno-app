@@ -178,6 +178,15 @@ function scrollByY(dy: number): void {
   window.scrollBy({ top: dy, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
 }
 
+export interface RevealSpanOptions extends RevealOptions {
+  /**
+   * Gap left between the span and the edge of the usable area, in px; 8 by
+   * default. A call site replacing `scrollIntoView({ block: 'nearest' })` with
+   * `anyWidth` passes 0, so a desktop page lands exactly where it did.
+   */
+  gap?: number;
+}
+
 /**
  * Bring `bottom` (usually Næsta) into view together with as much context above
  * it as fits.
@@ -194,13 +203,14 @@ function scrollByY(dy: number): void {
  * With no `tops`, `bottom` itself is the span: shown whole if it fits, from its
  * top edge if not.
  */
-export function revealSpan(bottom: Target, tops: Target[] = [], opts?: RevealOptions): void {
+export function revealSpan(bottom: Target, tops: Target[] = [], opts?: RevealSpanOptions): void {
   if (!bottom || !allowed(opts)) return;
   later(() => {
     if (!bottom.isConnected) return;
     const { top: areaTop, bottom: areaBottom } = usableArea();
-    const lo = areaTop + MARGIN;
-    const hi = areaBottom - MARGIN;
+    const gap = opts?.gap ?? MARGIN;
+    const lo = areaTop + gap;
+    const hi = areaBottom - gap;
     const b = bottom.getBoundingClientRect();
     const present = tops.filter((t): t is Element => !!t && t.isConnected);
     const candidates = present.length ? present : [bottom];
@@ -406,13 +416,13 @@ export interface CommitTargets {
 /**
  * After a commit: once `when` turns true, and after the feedback has painted
  * (or after `afterExit` ms), `revealSpan` the targets and focus the feedback
- * region. The scroll follows `opts` (phone-only unless `anyWidth`); the focus
- * moves at every width.
+ * region. The scroll follows `opts` (phone-only unless `anyWidth`; `gap` as in
+ * `revealSpan`); the focus moves at every width.
  */
 export function useRevealAfterCommit(
   when: boolean,
   get: () => CommitTargets,
-  opts?: RevealOptions
+  opts?: RevealSpanOptions
 ): void {
   const latest = useRef({ get, opts });
   latest.current = { get, opts };
@@ -421,7 +431,7 @@ export function useRevealAfterCommit(
     const run = () => {
       const { get: read, opts: o } = latest.current;
       const t = read();
-      revealSpan(t.bottom, t.tops, { anyWidth: o?.anyWidth });
+      revealSpan(t.bottom, t.tops, { anyWidth: o?.anyWidth, gap: o?.gap });
       focusTarget(t.focus);
     };
     const wait = latest.current.opts?.afterExit;

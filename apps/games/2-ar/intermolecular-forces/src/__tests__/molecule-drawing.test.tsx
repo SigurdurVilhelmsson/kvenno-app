@@ -2,6 +2,7 @@
 import { fireEvent, render, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level1 } from '../components/Level1';
 
 /**
@@ -66,6 +67,9 @@ function centroid(atoms: DrawnAtom[]) {
     y: atoms.reduce((s, a) => s + a.y, 0) / atoms.length,
   };
 }
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 describe('Stig 1 molecule drawings', () => {
   it('draws every molecule with the right atom in the middle and the dipole toward δ−', () => {

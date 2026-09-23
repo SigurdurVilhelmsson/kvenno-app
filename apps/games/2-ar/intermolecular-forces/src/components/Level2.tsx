@@ -1,6 +1,12 @@
-import { Fragment, useMemo, useState } from 'react';
+import { Fragment, useMemo, useRef, useState } from 'react';
 
-import { formatDecimal, shuffleArray } from '@shared/utils';
+import {
+  formatDecimal,
+  shuffleArray,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+} from '@shared/utils';
 
 import { SolubilityPrediction } from './SolubilityPrediction';
 
@@ -400,6 +406,31 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const compoundsShown = useMemo(() => shuffleArray(problem.compounds), [problem]);
   const unplacedCompounds = compoundsShown.filter((c) => !userOrder.includes(c.id));
 
+  // Each new problem brings the card's top back on a phone and focuses its question.
+  const cardRef = useItemTop<HTMLDivElement>(currentProblem);
+  const slotsRef = useRef<HTMLDivElement>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  // After Athuga: the student's ranking through Næsta if it fits, else the verdict at the
+  // top; focus moves to the verdict, not to Næsta (design P3).
+  useRevealAfterCommit(showResult, () => ({
+    bottom: nextRef.current,
+    tops: [slotsRef.current, resultRef.current],
+    focus: resultRef.current,
+  }));
+  // A double tap on Athuga must not land on Næsta, which renders in its place.
+  const armed = useArmedAfter(400, `${currentProblem}:${showResult}`);
+  // Opening the hint replaces its link with the hint, which pushed Athuga below a phone's
+  // screen and dropped focus to <body> with the link: bring the hint through Athuga into
+  // view on a phone, and move focus to the hint (design §3, hints).
+  const hintRef = useRef<HTMLDivElement>(null);
+  const checkRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(showHint, () => ({
+    bottom: checkRef.current,
+    tops: [hintRef.current],
+    focus: hintRef.current,
+  }));
+
   const addToOrder = (id: string) => {
     if (showResult) return;
     setUserOrder([...userOrder, id]);
@@ -439,47 +470,53 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
+        {/* On a phone the counters share one line (P4), so the row is one line tall. */}
+        <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+            className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5 phone:shrink-0"
           >
             ← Til baka
           </button>
-          <div className="text-right">
+          <div className="text-right phone:flex phone:flex-wrap phone:items-baseline phone:justify-end phone:gap-x-2 phone:min-w-0">
             <div className="text-sm text-warm-600">
               Verkefni {currentProblem + 1} af {problems.length}
             </div>
-            <div className="text-lg font-bold text-indigo-600">{score} stig</div>
+            <div className="text-lg font-bold text-indigo-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 
-        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6 phone:h-1.5 phone:mb-3">
           <div
-            className="bg-indigo-500 h-2 rounded-full transition-all"
+            className="bg-indigo-500 h-2 phone:h-1.5 rounded-full transition-all"
             style={{ width: `${((currentProblem + 1) / problems.length) * 100}%` }}
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-          <div className="mb-4">
+        <div ref={cardRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3">
+          <div className="mb-4 phone:mb-2">
             <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
               {problem.propertyName}
             </span>
           </div>
 
-          <h2 className="text-xl font-bold text-warm-800 mb-6">{problem.question}</h2>
+          <h2
+            data-item-start
+            className="text-xl font-bold text-warm-800 mb-6 phone:text-lg phone:mb-3"
+          >
+            {problem.question}
+          </h2>
 
           {/* Available compounds */}
-          <div className="mb-6">
-            <div className="text-sm font-medium text-warm-600 mb-2">Tiltæk efni:</div>
+          <div className="mb-6 phone:mb-3">
+            <div className="text-sm font-medium text-warm-600 mb-2 phone:mb-1">Tiltæk efni:</div>
             <div className="flex flex-wrap gap-2">
               {unplacedCompounds.map((compound) => (
                 <button
                   key={compound.id}
                   onClick={() => addToOrder(compound.id)}
                   disabled={showResult}
-                  className="bg-white border-2 border-warm-300 hover:border-indigo-400 px-4 py-3 rounded-xl transition-all"
+                  className="bg-white border-2 border-warm-300 hover:border-indigo-400 px-4 py-3 phone:px-3 phone:py-2 rounded-xl transition-all"
                 >
                   <div className="font-bold text-warm-800">{compound.formula}</div>
                   <div className="text-xs text-warm-500">{compound.name}</div>
@@ -495,14 +532,15 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           </div>
 
           {/* Ranking slots */}
-          <div className="mb-6">
-            <div className="text-sm font-medium text-warm-600 mb-2">
+          <div ref={slotsRef} className="mb-6 phone:mb-3">
+            <div className="text-sm font-medium text-warm-600 mb-2 phone:mb-1">
               Röðunin þín (
               {problem.orderDirection === 'lowestFirst' ? 'lægst → hæst' : 'hæst → lægst'}):
             </div>
             {/* Phones: the slots run top to bottom. Side by side, three or four slots are wider
-                than the screen. */}
-            <div className="flex flex-col gap-1 sm:flex-row sm:gap-2 sm:items-center">
+                than the screen. Each ↓ sits in the gap between two slots, on their borders,
+                rather than on a line of its own. */}
+            <div className="flex flex-col gap-1 sm:flex-row sm:gap-2 sm:items-center max-sm:gap-2">
               {problem.compounds.map((_, idx) => {
                 const placedId = userOrder[idx];
                 const placedCompound = placedId
@@ -510,7 +548,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   : null;
                 const correctId = problem.correctOrder[idx];
 
-                const slotClasses = `w-full sm:w-auto min-w-24 p-3 rounded-xl border-2 text-center flex items-baseline justify-center gap-2 sm:block ${
+                const slotClasses = `w-full sm:w-auto min-w-24 p-3 phone:p-2 rounded-xl border-2 text-center flex items-baseline justify-center gap-2 sm:block ${
                   showResult
                     ? placedId === correctId
                       ? 'border-green-500 bg-green-50'
@@ -520,9 +558,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       : 'border-dashed border-warm-300'
                 }`;
                 return (
-                  <div key={idx} className="flex flex-col items-center gap-1 sm:flex-row sm:gap-2">
+                  <div
+                    key={idx}
+                    className="flex flex-col items-center gap-1 sm:flex-row sm:gap-2 max-sm:relative"
+                  >
                     {idx > 0 && (
-                      <span className="text-warm-400 max-sm:leading-none">
+                      <span className="text-warm-400 max-sm:leading-none max-sm:absolute max-sm:-top-1 max-sm:left-1/2 max-sm:-translate-x-1/2 max-sm:-translate-y-1/2 max-sm:z-10 max-sm:rounded max-sm:bg-white max-sm:px-1 max-sm:text-xs">
                         <span className="sm:hidden">↓</span>
                         <span className="hidden sm:inline">→</span>
                       </span>
@@ -554,7 +595,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               })}
             </div>
             {!showResult && userOrder.length > 0 && (
-              <div className="text-xs text-warm-500 mt-2">
+              <div className="text-xs text-warm-500 mt-2 phone:mt-1">
                 Smelltu á efni til að fjarlægja úr röð
               </div>
             )}
@@ -563,28 +604,28 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           {/* Compound info table. Below sm the molar mass moves under the formula: three
               columns did not fit 320 px when the formula is CH₃CH₂CH₂CH₃, and the table
               scrolled with its last badge cut off. */}
-          <div className="mb-6 overflow-x-auto">
+          <div className="mb-6 phone:mb-3 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-warm-100">
-                  <th className="p-2 text-left">Efni</th>
-                  <th className="hidden sm:table-cell p-2 text-left">Mólmassi</th>
-                  <th className="p-2 text-left">IMF</th>
+                  <th className="p-2 phone:py-1 text-left">Efni</th>
+                  <th className="hidden sm:table-cell p-2 phone:py-1 text-left">Mólmassi</th>
+                  <th className="p-2 phone:py-1 text-left">IMF</th>
                 </tr>
               </thead>
               <tbody>
                 {compoundsShown.map((compound) => (
                   <tr key={compound.id} className="border-t">
-                    <td className="p-2 font-bold">
+                    <td className="p-2 phone:py-1 font-bold">
                       {compound.formula}
                       <div className="sm:hidden text-xs font-normal text-warm-600 whitespace-nowrap">
                         M = {formatDecimal(compound.molarMass)} g/mól
                       </div>
                     </td>
-                    <td className="hidden sm:table-cell p-2 whitespace-nowrap">
+                    <td className="hidden sm:table-cell p-2 phone:py-1 whitespace-nowrap">
                       {formatDecimal(compound.molarMass)} g/mól
                     </td>
-                    <td className="p-2">
+                    <td className="p-2 phone:py-1">
                       <div className="flex flex-wrap gap-1">
                         {compound.imfs.map((imf) => (
                           <span
@@ -619,14 +660,21 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           )}
 
           {showHint && !showResult && (
-            <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4">
+            <div
+              ref={hintRef}
+              className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4 phone:p-3 phone:mb-3"
+            >
               <span className="font-bold text-yellow-800">Vísbending: </span>
               <span className="text-yellow-900">{problem.hint}</span>
             </div>
           )}
 
+          {/* Athuga and Næsta are separate elements (keyed), never one button relabelled, and
+              Næsta ignores a press within 400 ms of appearing. */}
           {!showResult ? (
             <button
+              key="check"
+              ref={checkRef}
               onClick={checkAnswer}
               disabled={userOrder.length !== problem.compounds.length}
               className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl"
@@ -635,10 +683,18 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             </button>
           ) : (
             <>
+              {/* The feedback region focus moves to after Athuga (P3). */}
               <div
-                className={`p-4 rounded-xl mb-4 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
+                ref={resultRef}
+                tabIndex={-1}
+                role="group"
+                aria-labelledby="imf-l2-verdict"
+                className={`p-4 rounded-xl mb-4 phone:p-3 phone:mb-3 focus:outline-none ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
               >
-                <div className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                <div
+                  id="imf-l2-verdict"
+                  className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
+                >
                   {isCorrect ? 'Rétt röðun!' : 'Ekki rétt röðun'}
                 </div>
                 {!isCorrect && (
@@ -654,8 +710,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
               {/* Real boiling point data visualization */}
               {problem.property === 'boilingPoint' && (
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl mb-4 border border-blue-200">
-                  <div className="font-bold text-indigo-800 mb-3 flex items-center gap-2">
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl mb-4 border border-blue-200 phone:p-3 phone:mb-3">
+                  <div className="font-bold text-indigo-800 mb-3 flex items-center gap-2 phone:mb-2">
                     <span className="text-lg">📊</span> Raunveruleg suðumörk
                   </div>
                   {/* A grid, so every bar starts at the same x even when one formula is long
@@ -701,14 +757,16 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       );
                     })}
                   </div>
-                  <div className="mt-3 text-xs text-warm-500 text-center">
+                  <div className="mt-3 text-xs text-warm-500 text-center phone:mt-2">
                     Blár = lægst | Fjólublár = miðja | Rauður = hæst
                   </div>
                 </div>
               )}
 
               <button
-                onClick={nextProblem}
+                key="next"
+                ref={nextRef}
+                onClick={armed(nextProblem)}
                 className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-6 rounded-xl"
               >
                 {currentProblem < problems.length - 1 ? 'Næsta verkefni' : 'Ljúka stigi 2'}

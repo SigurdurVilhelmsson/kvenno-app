@@ -46,7 +46,6 @@ const ALLOWED: Record<string, number> = {
   '1-ar/takmarkandi/src/components/Level2.tsx': 2,
   '1-ar/takmarkandi/src/components/Level3.tsx': 2,
   '1-ar/utfellingarhvorf/src/utils/reveal.ts': 3,
-  '2-ar/intermolecular-forces/src/components/SolubilityPrediction.tsx': 1,
   '2-ar/lewis-structures/src/App.tsx': 1,
   '2-ar/lewis-structures/src/utils/useRevealOnChange.ts': 1,
   '2-ar/organic-nomenclature/src/hooks/useRevealWhenShown.ts': 3,
