@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 import { HintSystem, Presence } from '@shared/components';
-import { parseStudentNumber } from '@shared/utils';
+import { parseStudentNumber, formatDecimal } from '@shared/utils';
 
 import { BufferCapacityVisualization } from './BufferCapacityVisualization';
 import FlaskComparison from './FlaskComparison';
@@ -109,10 +109,10 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
       const correctDir = getCorrectDirection();
       setDirectionFeedback(
         selectedDirection === 'higher'
-          ? `Ekki rétt. Markmiðs-pH (${problem.targetPH.toFixed(2)}) er ${correctDir === 'lower' ? 'minna' : 'jafnt'} pKa (${problem.pKa.toFixed(2)}), þannig að svarið er ekki "hærra".`
+          ? `Ekki rétt. Markmiðs-pH (${formatDecimal(problem.targetPH, 2)}) er ${correctDir === 'lower' ? 'minna' : 'jafnt'} pKa (${formatDecimal(problem.pKa, 2)}), þannig að svarið er ekki "hærra".`
           : selectedDirection === 'lower'
-            ? `Ekki rétt. Markmiðs-pH (${problem.targetPH.toFixed(2)}) er ${correctDir === 'higher' ? 'stærra' : 'jafnt'} pKa (${problem.pKa.toFixed(2)}), þannig að svarið er ekki "lægra".`
-            : `Ekki rétt. Markmiðs-pH (${problem.targetPH.toFixed(2)}) er ${correctDir === 'higher' ? 'stærra en' : correctDir === 'lower' ? 'minna en' : 'jafnt'} pKa (${problem.pKa.toFixed(2)}).`
+            ? `Ekki rétt. Markmiðs-pH (${formatDecimal(problem.targetPH, 2)}) er ${correctDir === 'higher' ? 'stærra' : 'jafnt'} pKa (${formatDecimal(problem.pKa, 2)}), þannig að svarið er ekki "lægra".`
+            : `Ekki rétt. Markmiðs-pH (${formatDecimal(problem.targetPH, 2)}) er ${correctDir === 'higher' ? 'stærra en' : correctDir === 'lower' ? 'minna en' : 'jafnt'} pKa (${formatDecimal(problem.pKa, 2)}).`
       );
     }
   };
@@ -131,11 +131,13 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
 
     if (relativeError <= tolerance) {
       setRatioCorrect(true);
-      setRatioFeedback(`Rétt! Hlutfall = ${correctRatio.toFixed(2)}. Nú skaltu reikna massa.`);
+      setRatioFeedback(
+        `Rétt! Hlutfall = ${formatDecimal(correctRatio, 2)}. Nú skaltu reikna massa.`
+      );
       setStep('mass');
     } else {
       setRatioFeedback(
-        `Ekki rétt. Mundu: hlutfall = 10^(pH - pKa) = 10^(${problem.targetPH.toFixed(2)} - ${problem.pKa.toFixed(2)})`
+        `Ekki rétt. Mundu: hlutfall = 10^(pH - pKa) = 10^(${formatDecimal(problem.targetPH, 2)} - ${formatDecimal(problem.pKa, 2)})`
       );
     }
   };
@@ -255,19 +257,25 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
             <div className="bg-warm-50 p-3 rounded-lg text-center">
               <div className="text-xs text-warm-500">pKa</div>
-              <div className="text-lg font-bold text-warm-800">{problem.pKa}</div>
+              <div className="text-lg font-bold text-warm-800">{formatDecimal(problem.pKa)}</div>
             </div>
             <div className="bg-warm-50 p-3 rounded-lg text-center">
               <div className="text-xs text-warm-500">Markmið pH</div>
-              <div className="text-lg font-bold text-kvenno-orange">{problem.targetPH}</div>
+              <div className="text-lg font-bold text-kvenno-orange">
+                {formatDecimal(problem.targetPH)}
+              </div>
             </div>
             <div className="bg-warm-50 p-3 rounded-lg text-center">
               <div className="text-xs text-warm-500">Rúmmál</div>
-              <div className="text-lg font-bold text-warm-800">{problem.volume} L</div>
+              <div className="text-lg font-bold text-warm-800">
+                {formatDecimal(problem.volume)} L
+              </div>
             </div>
             <div className="bg-warm-50 p-3 rounded-lg text-center">
               <div className="text-xs text-warm-500">Heildarstyrkur</div>
-              <div className="text-lg font-bold text-warm-800">{problem.totalConcentration} M</div>
+              <div className="text-lg font-bold text-warm-800">
+                {formatDecimal(problem.totalConcentration)} M
+              </div>
             </div>
           </div>
 
@@ -276,12 +284,16 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
             <div className="bg-red-50 p-3 rounded-lg">
               <div className="text-xs text-red-600 font-semibold">Sýra</div>
               <div className="font-bold text-red-800">{problem.acidName}</div>
-              <div className="text-xs text-red-600">M = {problem.acidMolarMass} g/mol</div>
+              <div className="text-xs text-red-600">
+                M = {formatDecimal(problem.acidMolarMass)} g/mol
+              </div>
             </div>
             <div className="bg-blue-50 p-3 rounded-lg">
               <div className="text-xs text-blue-600 font-semibold">Basi</div>
               <div className="font-bold text-blue-800">{problem.baseName}</div>
-              <div className="text-xs text-blue-600">M = {problem.baseMolarMass} g/mol</div>
+              <div className="text-xs text-blue-600">
+                M = {formatDecimal(problem.baseMolarMass)} g/mol
+              </div>
             </div>
           </div>
 
@@ -455,8 +467,9 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                   <strong>Formúla:</strong> pH = pKa + log(hlutfall) → hlutfall = 10^(pH - pKa)
                 </p>
                 <p className="text-sm text-blue-800 mt-1">
-                  hlutfall = 10^({problem.targetPH} - {problem.pKa}) = 10^
-                  {(problem.targetPH - problem.pKa).toFixed(2)}
+                  hlutfall = 10^({formatDecimal(problem.targetPH)} - {formatDecimal(problem.pKa)}) =
+                  10^
+                  {formatDecimal(problem.targetPH - problem.pKa, 2)}
                 </p>
               </div>
 
@@ -505,8 +518,9 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
               <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
                 <p className="text-sm text-green-800">
                   <strong>Útreikningur:</strong> Notaðu heildarstyrkinn (
-                  {problem.totalConcentration} M) og rúmmálið ({problem.volume} L) til að finna
-                  heildar mól. Skiptu síðan á milli sýru og basa samkvæmt hlutfallinu.
+                  {formatDecimal(problem.totalConcentration)} M) og rúmmálið (
+                  {formatDecimal(problem.volume)} L) til að finna heildar mól. Skiptu síðan á milli
+                  sýru og basa samkvæmt hlutfallinu.
                 </p>
                 <p className="text-sm text-green-800 mt-1">massi = mól × mólmassi</p>
               </div>
@@ -573,24 +587,27 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                   <h4 className="font-semibold text-warm-700 mb-2">Útreikningur:</h4>
                   <ul className="text-sm text-warm-600 space-y-1">
                     <li>
-                      • pH - pKa = {problem.targetPH} - {problem.pKa} ={' '}
-                      {(problem.targetPH - problem.pKa).toFixed(2)}
+                      • pH - pKa = {formatDecimal(problem.targetPH)} - {formatDecimal(problem.pKa)}{' '}
+                      = {formatDecimal(problem.targetPH - problem.pKa, 2)}
                     </li>
                     <li>
-                      • Hlutfall = 10^{(problem.targetPH - problem.pKa).toFixed(2)} ={' '}
-                      {solution.ratio.toFixed(2)}
+                      • Hlutfall = 10^{formatDecimal(problem.targetPH - problem.pKa, 2)} ={' '}
+                      {formatDecimal(solution.ratio, 2)}
                     </li>
                     <li>
-                      • Heildar mól = {problem.totalConcentration} M × {problem.volume} L ={' '}
-                      {(problem.totalConcentration * problem.volume).toFixed(4)} mol
+                      • Heildar mól = {formatDecimal(problem.totalConcentration)} M ×{' '}
+                      {formatDecimal(problem.volume)} L ={' '}
+                      {formatDecimal(problem.totalConcentration * problem.volume, 4)} mol
                     </li>
                     <li>
-                      • Sýra: {solution.acidMoles.toFixed(4)} mol × {problem.acidMolarMass} g/mol ={' '}
-                      {solution.acidMass.toFixed(2)} g
+                      • Sýra: {formatDecimal(solution.acidMoles, 4)} mol ×{' '}
+                      {formatDecimal(problem.acidMolarMass)} g/mol ={' '}
+                      {formatDecimal(solution.acidMass, 2)} g
                     </li>
                     <li>
-                      • Basi: {solution.baseMoles.toFixed(4)} mol × {problem.baseMolarMass} g/mol ={' '}
-                      {solution.baseMass.toFixed(2)} g
+                      • Basi: {formatDecimal(solution.baseMoles, 4)} mol ×{' '}
+                      {formatDecimal(problem.baseMolarMass)} g/mol ={' '}
+                      {formatDecimal(solution.baseMass, 2)} g
                     </li>
                   </ul>
                 </div>

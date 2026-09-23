@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 import { HintSystem, Presence } from '@shared/components';
-import { parseStudentNumber } from '@shared/utils';
+import { parseStudentNumber, formatDecimal } from '@shared/utils';
 
 import { BufferCapacityVisualization } from './BufferCapacityVisualization';
 import { LEVEL3_PUZZLES } from '../data/level3-puzzles';
@@ -107,11 +107,11 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
 
     if (relativeError <= tolerance) {
       setRatioCorrect(true);
-      setRatioFeedback(`Rétt! Hlutfall = ${correctRatio.toFixed(2)}. Nú skaltu reikna mól.`);
+      setRatioFeedback(`Rétt! Hlutfall = ${formatDecimal(correctRatio, 2)}. Nú skaltu reikna mól.`);
       setStep('moles');
     } else {
       setRatioFeedback(
-        `Ekki rétt. Hlutfall = 10^(pH - pKa) = 10^(${problem.targetPH.toFixed(2)} - ${problem.pKa.toFixed(2)}) = 10^${(problem.targetPH - problem.pKa).toFixed(2)}`
+        `Ekki rétt. Hlutfall = 10^(pH - pKa) = 10^(${formatDecimal(problem.targetPH, 2)} - ${formatDecimal(problem.pKa, 2)}) = 10^${formatDecimal(problem.targetPH - problem.pKa, 2)}`
       );
     }
   };
@@ -136,8 +136,8 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
       setStep('volumes');
     } else {
       let feedback = 'Ekki rétt. ';
-      feedback += `Heildar mól = ${puzzle.targetConcentration} M × ${puzzle.targetVolume / 1000} L = ${targetMoles.toFixed(4)} mol. `;
-      feedback += `Skiptu samkvæmt hlutfalli ${correctRatio.toFixed(2)}.`;
+      feedback += `Heildar mól = ${formatDecimal(puzzle.targetConcentration)} M × ${formatDecimal(puzzle.targetVolume / 1000)} L = ${formatDecimal(targetMoles, 4)} mol. `;
+      feedback += `Skiptu samkvæmt hlutfalli ${formatDecimal(correctRatio, 2)}.`;
       setMolesFeedback(feedback);
     }
   };
@@ -308,19 +308,25 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
             <div className="bg-warm-50 p-3 rounded-lg text-center">
               <div className="text-xs text-warm-500">pKa</div>
-              <div className="text-lg font-bold text-warm-800">{problem.pKa}</div>
+              <div className="text-lg font-bold text-warm-800">{formatDecimal(problem.pKa)}</div>
             </div>
             <div className="bg-warm-50 p-3 rounded-lg text-center">
               <div className="text-xs text-warm-500">Markmið pH</div>
-              <div className="text-lg font-bold text-green-600">{problem.targetPH}</div>
+              <div className="text-lg font-bold text-green-600">
+                {formatDecimal(problem.targetPH)}
+              </div>
             </div>
             <div className="bg-warm-50 p-3 rounded-lg text-center">
               <div className="text-xs text-warm-500">Lokarúmmál</div>
-              <div className="text-lg font-bold text-warm-800">{puzzle.targetVolume} mL</div>
+              <div className="text-lg font-bold text-warm-800">
+                {formatDecimal(puzzle.targetVolume)} mL
+              </div>
             </div>
             <div className="bg-warm-50 p-3 rounded-lg text-center">
               <div className="text-xs text-warm-500">Lokastyrkur</div>
-              <div className="text-lg font-bold text-warm-800">{puzzle.targetConcentration} M</div>
+              <div className="text-lg font-bold text-warm-800">
+                {formatDecimal(puzzle.targetConcentration)} M
+              </div>
             </div>
           </div>
 
@@ -331,14 +337,18 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                 <span className="text-lg">🧪</span> Sýrubirgð
               </div>
               <div className="font-bold text-red-800">{problem.acidName}</div>
-              <div className="text-sm text-red-600">{puzzle.stockAcidConc} M birgðalausn</div>
+              <div className="text-sm text-red-600">
+                {formatDecimal(puzzle.stockAcidConc)} M birgðalausn
+              </div>
             </div>
             <div className="bg-blue-50 p-3 rounded-lg border-2 border-blue-200">
               <div className="text-xs text-blue-600 font-semibold flex items-center gap-1">
                 <span className="text-lg">🧪</span> Basabirgð
               </div>
               <div className="font-bold text-blue-800">{problem.baseName}</div>
-              <div className="text-sm text-blue-600">{puzzle.stockBaseConc} M birgðalausn</div>
+              <div className="text-sm text-blue-600">
+                {formatDecimal(puzzle.stockBaseConc)} M birgðalausn
+              </div>
             </div>
           </div>
 
@@ -426,7 +436,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                 <p className="text-sm text-yellow-800">
                   <strong>Formúla:</strong> Hlutfall = 10<sup>(pH - pKa)</sup> = 10
                   <sup>
-                    ({problem.targetPH} - {problem.pKa})
+                    ({formatDecimal(problem.targetPH)} - {formatDecimal(problem.pKa)})
                   </sup>
                 </p>
               </div>
@@ -475,12 +485,14 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
               </h3>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
                 <p className="text-sm text-blue-800">
-                  <strong>Heildar mól:</strong> n = C × V = {puzzle.targetConcentration} M ×{' '}
-                  {puzzle.targetVolume / 1000} L = {targetMoles.toFixed(4)} mol
+                  <strong>Heildar mól:</strong> n = C × V ={' '}
+                  {formatDecimal(puzzle.targetConcentration)} M ×{' '}
+                  {formatDecimal(puzzle.targetVolume / 1000)} L = {formatDecimal(targetMoles, 4)}{' '}
+                  mol
                 </p>
                 <p className="text-sm text-blue-800 mt-1">
-                  <strong>Skipting:</strong> Notaðu hlutfallið {correctRatio.toFixed(2)} til að
-                  skipta mólum.
+                  <strong>Skipting:</strong> Notaðu hlutfallið {formatDecimal(correctRatio, 2)} til
+                  að skipta mólum.
                 </p>
               </div>
 
@@ -542,7 +554,8 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                   <strong>Formúla:</strong> V = n / C (rúmmál = mól / styrkur birgðalausnar)
                 </p>
                 <p className="text-sm text-green-800 mt-1">
-                  Sýrubirgð er {puzzle.stockAcidConc} M, basabirgð er {puzzle.stockBaseConc} M
+                  Sýrubirgð er {formatDecimal(puzzle.stockAcidConc)} M, basabirgð er{' '}
+                  {formatDecimal(puzzle.stockBaseConc)} M
                 </p>
               </div>
 
@@ -608,24 +621,29 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                   <h4 className="font-semibold text-warm-700 mb-2">Útreikningur:</h4>
                   <ul className="text-sm text-warm-600 space-y-1">
                     <li>
-                      • Hlutfall = 10^({problem.targetPH} - {problem.pKa}) ={' '}
-                      {correctRatio.toFixed(2)}
+                      • Hlutfall = 10^({formatDecimal(problem.targetPH)} -{' '}
+                      {formatDecimal(problem.pKa)}) = {formatDecimal(correctRatio, 2)}
                     </li>
                     <li>
-                      • Heildar mól = {puzzle.targetConcentration} M × {puzzle.targetVolume / 1000}{' '}
-                      L = {targetMoles.toFixed(4)} mol
+                      • Heildar mól = {formatDecimal(puzzle.targetConcentration)} M ×{' '}
+                      {formatDecimal(puzzle.targetVolume / 1000)} L ={' '}
+                      {formatDecimal(targetMoles, 4)} mol
                     </li>
                     <li>
-                      • Sýra: {correctAcidMoles.toFixed(4)} mol / {puzzle.stockAcidConc} M ={' '}
-                      {puzzle.correctAcidVolume} mL
+                      • Sýra: {formatDecimal(correctAcidMoles, 4)} mol /{' '}
+                      {formatDecimal(puzzle.stockAcidConc)} M ={' '}
+                      {formatDecimal(puzzle.correctAcidVolume)} mL
                     </li>
                     <li>
-                      • Basi: {correctBaseMoles.toFixed(4)} mol / {puzzle.stockBaseConc} M ={' '}
-                      {puzzle.correctBaseVolume} mL
+                      • Basi: {formatDecimal(correctBaseMoles, 4)} mol /{' '}
+                      {formatDecimal(puzzle.stockBaseConc)} M ={' '}
+                      {formatDecimal(puzzle.correctBaseVolume)} mL
                     </li>
                     <li>
-                      • Vatn: {puzzle.targetVolume} - {puzzle.correctAcidVolume} -{' '}
-                      {puzzle.correctBaseVolume} ≈ {puzzle.correctWaterVolume} mL
+                      • Vatn: {formatDecimal(puzzle.targetVolume)} -{' '}
+                      {formatDecimal(puzzle.correctAcidVolume)} -{' '}
+                      {formatDecimal(puzzle.correctBaseVolume)} ≈{' '}
+                      {formatDecimal(puzzle.correctWaterVolume)} mL
                     </li>
                   </ul>
                 </div>
@@ -641,8 +659,8 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                         1
                       </span>
                       <span>
-                        Bættu <strong>{puzzle.correctAcidVolume} mL</strong> af{' '}
-                        {puzzle.stockAcidConc} M {problem.acidName}
+                        Bættu <strong>{formatDecimal(puzzle.correctAcidVolume)} mL</strong> af{' '}
+                        {formatDecimal(puzzle.stockAcidConc)} M {problem.acidName}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -650,8 +668,8 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                         2
                       </span>
                       <span>
-                        Bættu <strong>{puzzle.correctBaseVolume} mL</strong> af{' '}
-                        {puzzle.stockBaseConc} M {problem.baseName}
+                        Bættu <strong>{formatDecimal(puzzle.correctBaseVolume)} mL</strong> af{' '}
+                        {formatDecimal(puzzle.stockBaseConc)} M {problem.baseName}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
@@ -659,7 +677,8 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                         3
                       </span>
                       <span>
-                        Fylltu upp í <strong>{puzzle.targetVolume} mL</strong> með eimuðu vatni
+                        Fylltu upp í <strong>{formatDecimal(puzzle.targetVolume)} mL</strong> með
+                        eimuðu vatni
                       </span>
                     </div>
                   </div>

@@ -1,5 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 interface BufferCapacityVisualizationProps {
   /** pKa of the buffer system */
   pKa: number;
@@ -210,7 +212,7 @@ export function BufferCapacityVisualization({
           viewBox={`0 0 ${svgWidth} ${svgHeight}`}
           className="overflow-visible"
           role="img"
-          aria-label={`Stuðpúðageta graf: pH ${adjustedState.pH.toFixed(2)}, pKa ${pKa.toFixed(1)}. Besta stuðpúðasvæði er pH ${(pKa - 1).toFixed(1)} til ${(pKa + 1).toFixed(1)}.`}
+          aria-label={`Stuðpúðageta graf: pH ${formatDecimal(adjustedState.pH, 2)}, pKa ${formatDecimal(pKa, 1)}. Besta stuðpúðasvæði er pH ${formatDecimal(pKa - 1, 1)} til ${formatDecimal(pKa + 1, 1)}.`}
         >
           <title>Stuðpúðageta (β) sem fall af pH</title>
           {/* Grid lines */}
@@ -274,7 +276,7 @@ export function BufferCapacityVisualization({
             fontSize="10"
             fontWeight="bold"
           >
-            pKa = {pKa.toFixed(1)}
+            pKa = {formatDecimal(pKa, 1)}
           </text>
 
           {/* Current pH marker */}
@@ -297,7 +299,7 @@ export function BufferCapacityVisualization({
               fill="#9ca3af"
               fontSize="9"
             >
-              {pH.toFixed(1)}
+              {formatDecimal(pH, 1)}
             </text>
           ))}
 
@@ -325,12 +327,12 @@ export function BufferCapacityVisualization({
         <div className="bg-warm-700 rounded-lg p-2 text-center">
           <div className="text-xs text-warm-400">Núverandi pH</div>
           <div className="text-xl font-bold" style={{ color: getPhColor(adjustedState.pH) }}>
-            {adjustedState.pH.toFixed(2)}
+            {formatDecimal(adjustedState.pH, 2)}
           </div>
         </div>
         <div className="bg-warm-700 rounded-lg p-2 text-center">
           <div className="text-xs text-warm-400">Upphafs pH</div>
-          <div className="text-lg font-semibold text-warm-300">{initialPH.toFixed(2)}</div>
+          <div className="text-lg font-semibold text-warm-300">{formatDecimal(initialPH, 2)}</div>
         </div>
         <div className="bg-warm-700 rounded-lg p-2 text-center">
           <div className="text-xs text-warm-400">ΔpH</div>
@@ -339,7 +341,7 @@ export function BufferCapacityVisualization({
               Math.abs(adjustedState.pH - initialPH) < 0.5 ? 'text-green-400' : 'text-orange-400'
             }`}
           >
-            {(adjustedState.pH - initialPH).toFixed(2)}
+            {formatDecimal(adjustedState.pH - initialPH, 2)}
           </div>
         </div>
       </div>
@@ -358,7 +360,7 @@ export function BufferCapacityVisualization({
                 {acidName}
               </div>
               <div className="text-xs text-warm-400 mt-1">
-                {adjustedState.acidConc.toFixed(3)} M
+                {formatDecimal(adjustedState.acidConc, 3)} M
               </div>
             </div>
             <div className="text-warm-400 text-2xl">⇌</div>
@@ -367,7 +369,7 @@ export function BufferCapacityVisualization({
                 {baseName}
               </div>
               <div className="text-xs text-warm-400 mt-1">
-                {adjustedState.baseConc.toFixed(3)} M
+                {formatDecimal(adjustedState.baseConc, 3)} M
               </div>
             </div>
           </div>
@@ -395,7 +397,7 @@ export function BufferCapacityVisualization({
                 </button>
               </div>
               <div className="text-xs text-warm-500 mt-1 text-center">
-                Bætt við: {acidAdded.toFixed(3)} M
+                Bætt við: {formatDecimal(acidAdded, 3)} M
               </div>
             </div>
 
@@ -420,7 +422,7 @@ export function BufferCapacityVisualization({
                 </button>
               </div>
               <div className="text-xs text-warm-500 mt-1 text-center">
-                Bætt við: {baseAdded.toFixed(3)} M
+                Bætt við: {formatDecimal(baseAdded, 3)} M
               </div>
             </div>
           </div>
@@ -458,10 +460,10 @@ export function BufferCapacityVisualization({
                 className="h-24 rounded-lg flex items-center justify-center text-white font-bold text-lg transition-colors"
                 style={{ backgroundColor: getPhColor(adjustedState.pH) }}
               >
-                pH {adjustedState.pH.toFixed(2)}
+                pH {formatDecimal(adjustedState.pH, 2)}
               </div>
               <div className="text-xs text-warm-400 mt-1">
-                ΔpH = {Math.abs(adjustedState.pH - 7).toFixed(2)}
+                ΔpH = {formatDecimal(Math.abs(adjustedState.pH - 7), 2)}
               </div>
             </div>
 
@@ -472,10 +474,10 @@ export function BufferCapacityVisualization({
                 className="h-24 rounded-lg flex items-center justify-center text-white font-bold text-lg transition-colors"
                 style={{ backgroundColor: getPhColor(unbufferedPH) }}
               >
-                pH {unbufferedPH.toFixed(2)}
+                pH {formatDecimal(unbufferedPH, 2)}
               </div>
               <div className="text-xs text-warm-400 mt-1">
-                ΔpH = {Math.abs(unbufferedPH - 7).toFixed(2)}
+                ΔpH = {formatDecimal(Math.abs(unbufferedPH - 7), 2)}
               </div>
             </div>
           </div>

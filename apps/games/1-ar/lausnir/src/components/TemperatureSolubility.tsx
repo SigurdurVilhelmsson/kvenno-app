@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 /**
  * Temperature-Solubility Visualization Component
  * Shows how temperature affects solubility with an interactive slider
@@ -80,14 +82,14 @@ const TEMPERATURES = [0, 20, 40, 60, 80, 100];
 /**
  * Render a solubility figure with enough digits to be readable at both ends of
  * the range: sucrose reaches 487 g/100g, oxygen sits at 0.0069. A flat
- * toFixed(1) prints the gases as "0.0".
+ * toFixed(1) prints the gases as "0,0". Written with the decimal comma.
  */
 export function formatSolubility(value: number): string {
   if (value === 0) return '0';
-  if (value < 0.1) return value.toFixed(4).replace(/0+$/, '');
-  if (value < 10) return value.toFixed(2).replace(/\.?0+$/, '');
-  if (value < 100) return value.toFixed(1);
-  return value.toFixed(0);
+  if (value < 0.1) return formatDecimal(value, 4).replace(/0+$/, '');
+  if (value < 10) return formatDecimal(value, 2).replace(/,?0+$/, '');
+  if (value < 100) return formatDecimal(value, 1);
+  return formatDecimal(value, 0);
 }
 
 // Interpolate solubility at any temperature
@@ -491,7 +493,7 @@ export function TemperatureComparison({
           <div className={solAfter > solBefore ? 'text-green-600' : 'text-red-600'}>
             {formatSolubility(solBefore)} → {formatSolubility(solAfter)} g/100g
             <br />({solAfter > solBefore ? '+' : ''}
-            {(((solAfter - solBefore) / solBefore) * 100).toFixed(0)}%)
+            {formatDecimal(((solAfter - solBefore) / solBefore) * 100, 0)}%)
           </div>
         </div>
       )}

@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 
-import { shuffleArray } from '@shared/utils';
+import { formatDecimal, shuffleArray } from '@shared/utils';
 
 import { ConcentrationComparison } from './StoichiometryVisualization';
 import {
@@ -71,25 +71,25 @@ export const SCENARIOS: Scenario[] = [
     id: 1,
     type: 'concentration',
     title: 'Útþynning með vatni',
-    setup: 'Þú ert með 100 mL af 2.0 M NaCl lausn.',
+    setup: 'Þú ert með 100 mL af 2,0 M NaCl lausn.',
     question: 'Hvað gerist við styrkinn ef þú bætir við 100 mL af vatni?',
     hint: 'Fjöldi sameinda breytist ekki, en rúmmálið tvöfaldast.',
     options: [
       {
         id: 'a',
-        text: 'Styrkurinn tvöfaldast (4.0 M)',
+        text: 'Styrkurinn tvöfaldast (4,0 M)',
         isCorrect: false,
         explanation: 'Nei - að bæta við vatni þynnir lausnina, eykur hana ekki.',
       },
       {
         id: 'b',
-        text: 'Styrkurinn helst óbreyttur (2.0 M)',
+        text: 'Styrkurinn helst óbreyttur (2,0 M)',
         isCorrect: false,
         explanation: 'Nei - þegar rúmmál eykst en sameindir haldast, lækkar styrkur.',
       },
       {
         id: 'c',
-        text: 'Styrkurinn helmingast (1.0 M)',
+        text: 'Styrkurinn helmingast (1,0 M)',
         isCorrect: true,
         explanation: 'Rétt! Tvöfalt rúmmál með sama fjölda sameinda = helmingur styrks.',
       },
@@ -108,7 +108,7 @@ export const SCENARIOS: Scenario[] = [
     id: 2,
     type: 'concentration',
     title: 'Bæta við leysiefni',
-    setup: 'Þú ert með 200 mL af 1.5 M glúkósalausn.',
+    setup: 'Þú ert með 200 mL af 1,5 M glúkósalausn.',
     question:
       'Þú leysir upp meira af glúkósu í lausninni (án þess að breyta rúmmáli). Hvað gerist?',
     hint: 'Rúmmálið helst óbreytt en fjöldi sameinda eykst.',
@@ -146,31 +146,31 @@ export const SCENARIOS: Scenario[] = [
     id: 3,
     type: 'concentration',
     title: 'Blanda tveggja lausna',
-    setup: 'Þú blandar 100 mL af 3.0 M lausn við 100 mL af 1.0 M lausn (sama efni).',
+    setup: 'Þú blandar 100 mL af 3,0 M lausn við 100 mL af 1,0 M lausn (sama efni).',
     question: 'Hver verður endanlegur styrkur blöndunnar?',
     hint: 'Heildarfjöldi sameinda er summa beggja lausna.',
     options: [
       {
         id: 'a',
-        text: 'Nákvæmlega 2.0 M (meðaltal)',
+        text: 'Nákvæmlega 2,0 M (meðaltal)',
         isCorrect: true,
         explanation: 'Rétt! Þegar rúmmálin eru jöfn er lokastyrkur meðaltal beggja.',
       },
       {
         id: 'b',
-        text: 'Nákvæmlega 4.0 M (summa)',
+        text: 'Nákvæmlega 4,0 M (summa)',
         isCorrect: false,
         explanation: 'Nei - styrkur legst ekki saman svona. Sameindir dreifast á heildarrúmmálið.',
       },
       {
         id: 'c',
-        text: 'Nákvæmlega 3.0 M (hærri styrkurinn)',
+        text: 'Nákvæmlega 3,0 M (hærri styrkurinn)',
         isCorrect: false,
         explanation: 'Nei - veikari lausnin þynnir þá sterkari.',
       },
       {
         id: 'd',
-        text: 'Nákvæmlega 1.0 M (lægri styrkurinn)',
+        text: 'Nákvæmlega 1,0 M (lægri styrkurinn)',
         isCorrect: false,
         explanation: 'Nei - sterkari lausnin hækkar heildarstyrk.',
       },
@@ -215,7 +215,7 @@ export const SCENARIOS: Scenario[] = [
       },
     ],
     concept:
-      'NaCl er sérstakt: leysni þess breytist mjög lítið með hitastigi (35.7-39.2 g/100g frá 0°C til 100°C).',
+      'NaCl er sérstakt: leysni þess breytist mjög lítið með hitastigi (35,7–39,2 g/100g frá 0°C til 100°C).',
     compound: getCompound('NaCl'),
     tempBefore: 20,
     tempAfter: 80,
@@ -304,19 +304,19 @@ export const SCENARIOS: Scenario[] = [
     id: 7,
     type: 'concentration',
     title: 'Uppgufun',
-    setup: 'Þú hefur 500 mL af 0.5 M saltlausn í opinni skál. Helmingur vatnsins gufar upp.',
+    setup: 'Þú hefur 500 mL af 0,5 M saltlausn í opinni skál. Helmingur vatnsins gufar upp.',
     question: 'Hvað gerist við styrkinn?',
     hint: 'Sameindir hverfa ekki — rúmmálið minnkar.',
     options: [
       {
         id: 'a',
-        text: 'Styrkurinn helmingast (0.25 M)',
+        text: 'Styrkurinn helmingast (0,25 M)',
         isCorrect: false,
         explanation: 'Nei - minna rúmmál með sama fjölda sameinda = hærri styrkur.',
       },
       {
         id: 'b',
-        text: 'Styrkurinn tvöfaldast (1.0 M)',
+        text: 'Styrkurinn tvöfaldast (1,0 M)',
         isCorrect: true,
         explanation: 'Rétt! Helmingur rúmmáls með sama fjölda sameinda = tvöfaldur styrkur.',
       },
@@ -381,7 +381,7 @@ export const SCENARIOS: Scenario[] = [
     id: 9,
     type: 'concentration',
     title: 'Þríföld útþynning',
-    setup: 'Þú þarft að þynna 6.0 M sýru niður í 2.0 M.',
+    setup: 'Þú þarft að þynna 6,0 M sýru niður í 2,0 M.',
     question: 'Hversu mikið þarftu að auka rúmmálið?',
     hint: 'C₁V₁ = C₂V₂. Hver er nýja rúmmálið?',
     options: [
@@ -389,25 +389,25 @@ export const SCENARIOS: Scenario[] = [
         id: 'a',
         text: 'Tvöfalda rúmmálið',
         isCorrect: false,
-        explanation: 'Nei - tvöfalt rúmmál gefur 3.0 M (helmingur), ekki 2.0 M.',
+        explanation: 'Nei - tvöfalt rúmmál gefur 3,0 M (helmingur), ekki 2,0 M.',
       },
       {
         id: 'b',
         text: 'Þrífalda rúmmálið',
         isCorrect: true,
-        explanation: 'Rétt! 6.0 M ÷ 3 = 2.0 M. Þrefalda rúmmálið = þriðjungur styrks.',
+        explanation: 'Rétt! 6,0 M ÷ 3 = 2,0 M. Þrefalda rúmmálið = þriðjungur styrks.',
       },
       {
         id: 'c',
         text: 'Sexfalda rúmmálið',
         isCorrect: false,
-        explanation: 'Nei - það myndi gefa 1.0 M (of þunnt).',
+        explanation: 'Nei - það myndi gefa 1,0 M (of þunnt).',
       },
       {
         id: 'd',
         text: 'Bæta við jafn miklu vatni',
         isCorrect: false,
-        explanation: 'Nei - það tvöfaldar rúmmálið og gefur 3.0 M.',
+        explanation: 'Nei - það tvöfaldar rúmmálið og gefur 3,0 M.',
       },
     ],
     concept: 'Til að þynna um ákveðið hlutfall þarftu að margfalda rúmmálið um sama hlutfall.',
@@ -515,7 +515,7 @@ export const SCENARIOS: Scenario[] = [
         text: 'Hluti þess fellur út og sest sem skán á heitasta flötinn',
         isCorrect: true,
         explanation:
-          'Rétt! Leysni CaSO₄ minnkar við hitun, úr 0.21 g/100g við 40°C í 0.16 g/100g við 80°C. Umframefnið sest þar sem heitast er — þess vegna kalkar á hitaelementum.',
+          'Rétt! Leysni CaSO₄ minnkar við hitun, úr 0,21 g/100g við 40°C í 0,16 g/100g við 80°C. Umframefnið sest þar sem heitast er — þess vegna kalkar á hitaelementum.',
       },
       {
         id: 'b',
@@ -529,7 +529,7 @@ export const SCENARIOS: Scenario[] = [
         text: 'Ekkert breytist',
         isCorrect: false,
         explanation:
-          'Nei - leysnin fer úr 0.21 í 0.16 g/100g. Munurinn er lítill í grömmum en hann er raunverulegur og safnast upp með tímanum.',
+          'Nei - leysnin fer úr 0,21 í 0,16 g/100g. Munurinn er lítill í grömmum en hann er raunverulegur og safnast upp með tímanum.',
       },
       {
         id: 'd',
@@ -684,7 +684,7 @@ function BeforeAfterVisual({
         </svg>
         <div className="text-xs text-warm-600 mt-1">
           <div>{data.volumeML} mL</div>
-          <div className="font-bold text-blue-600">{data.concentration.toFixed(1)} M</div>
+          <div className="font-bold text-blue-600">{formatDecimal(data.concentration, 1)} M</div>
         </div>
       </div>
     );

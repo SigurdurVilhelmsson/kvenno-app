@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
-import { parseStudentNumber, DECIMAL_INPUT_PROPS } from '../numbers';
+import { parseStudentNumber, formatDecimal, DECIMAL_INPUT_PROPS } from '../numbers';
 
 describe('parseStudentNumber', () => {
   it('reads the Icelandic decimal comma', () => {
@@ -40,5 +40,24 @@ describe('parseStudentNumber', () => {
     // of normalising downstream can recover it.
     expect(DECIMAL_INPUT_PROPS.type).toBe('text');
     expect(DECIMAL_INPUT_PROPS.inputMode).toBe('decimal');
+  });
+});
+
+describe('formatDecimal', () => {
+  it('writes the Icelandic decimal comma', () => {
+    expect(formatDecimal(4.6421, 2)).toBe('4,64');
+    expect(formatDecimal(0.1, 3)).toBe('0,100');
+    expect(formatDecimal(-0.2, 2)).toBe('-0,20');
+  });
+
+  it('prints the value as written when no precision is given', () => {
+    expect(formatDecimal(7.4)).toBe('7,4');
+    expect(formatDecimal(200)).toBe('200');
+  });
+
+  it('round-trips through parseStudentNumber', () => {
+    for (const x of [0.0355, 1.82, -0.26, 119.98, 9.26]) {
+      expect(parseStudentNumber(formatDecimal(x, 4))).toBeCloseTo(x, 4);
+    }
   });
 });

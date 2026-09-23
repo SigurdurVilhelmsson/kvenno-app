@@ -1,4 +1,5 @@
 import { Presence } from '@shared/components';
+import { formatDecimal } from '@shared/utils';
 
 import type { Level } from '../data';
 import { GasLawQuestion, GameMode, GameStats, GasLaw, GAS_LAW_INFO } from '../types';
@@ -132,25 +133,29 @@ export function GameScreen({
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4 text-xs">
                     {currentQuestion.given.P && (
                       <div className="bg-blue-50 px-2 py-1 rounded text-center">
-                        <span className="font-semibold">P:</span> {currentQuestion.given.P.value}{' '}
+                        <span className="font-semibold">P:</span>{' '}
+                        {formatDecimal(currentQuestion.given.P.value)}{' '}
                         {currentQuestion.given.P.unit}
                       </div>
                     )}
                     {currentQuestion.given.V && (
                       <div className="bg-blue-50 px-2 py-1 rounded text-center">
-                        <span className="font-semibold">V:</span> {currentQuestion.given.V.value}{' '}
+                        <span className="font-semibold">V:</span>{' '}
+                        {formatDecimal(currentQuestion.given.V.value)}{' '}
                         {currentQuestion.given.V.unit}
                       </div>
                     )}
                     {currentQuestion.given.T && (
                       <div className="bg-blue-50 px-2 py-1 rounded text-center">
-                        <span className="font-semibold">T:</span> {currentQuestion.given.T.value}{' '}
+                        <span className="font-semibold">T:</span>{' '}
+                        {formatDecimal(currentQuestion.given.T.value)}{' '}
                         {currentQuestion.given.T.unit}
                       </div>
                     )}
                     {currentQuestion.given.n && (
                       <div className="bg-blue-50 px-2 py-1 rounded text-center">
-                        <span className="font-semibold">n:</span> {currentQuestion.given.n.value}{' '}
+                        <span className="font-semibold">n:</span>{' '}
+                        {formatDecimal(currentQuestion.given.n.value)}{' '}
                         {currentQuestion.given.n.unit}
                       </div>
                     )}
@@ -236,25 +241,29 @@ export function GameScreen({
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     {currentQuestion.given.P && (
                       <div className="bg-white px-3 py-2 rounded">
-                        <span className="font-semibold">P:</span> {currentQuestion.given.P.value}{' '}
+                        <span className="font-semibold">P:</span>{' '}
+                        {formatDecimal(currentQuestion.given.P.value)}{' '}
                         {currentQuestion.given.P.unit}
                       </div>
                     )}
                     {currentQuestion.given.V && (
                       <div className="bg-white px-3 py-2 rounded">
-                        <span className="font-semibold">V:</span> {currentQuestion.given.V.value}{' '}
+                        <span className="font-semibold">V:</span>{' '}
+                        {formatDecimal(currentQuestion.given.V.value)}{' '}
                         {currentQuestion.given.V.unit}
                       </div>
                     )}
                     {currentQuestion.given.T && (
                       <div className="bg-white px-3 py-2 rounded">
-                        <span className="font-semibold">T:</span> {currentQuestion.given.T.value}{' '}
+                        <span className="font-semibold">T:</span>{' '}
+                        {formatDecimal(currentQuestion.given.T.value)}{' '}
                         {currentQuestion.given.T.unit}
                       </div>
                     )}
                     {currentQuestion.given.n && (
                       <div className="bg-white px-3 py-2 rounded">
-                        <span className="font-semibold">n:</span> {currentQuestion.given.n.value}{' '}
+                        <span className="font-semibold">n:</span>{' '}
+                        {formatDecimal(currentQuestion.given.n.value)}{' '}
                         {currentQuestion.given.n.unit}
                       </div>
                     )}
@@ -389,7 +398,8 @@ export function GameScreen({
                           {currentQuestion.solution.calculation}
                         </div>
                         <div className="bg-green-50 px-3 py-2 rounded border border-green-300 font-bold text-green-800">
-                          Svar: {currentQuestion.answer.toFixed(2)} {answerUnit(currentQuestion)}
+                          Svar: {formatDecimal(currentQuestion.answer, 2)}{' '}
+                          {answerUnit(currentQuestion)}
                         </div>
                       </div>
                     </Presence>

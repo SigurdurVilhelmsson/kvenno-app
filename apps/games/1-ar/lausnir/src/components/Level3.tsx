@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
-import { shuffleArray, parseStudentNumber } from '@shared/utils';
+import { formatDecimal, parseStudentNumber, shuffleArray } from '@shared/utils';
 
 import { Problem, ProblemType } from '../types';
 import { FormulaCard } from './FormulaCard';
@@ -208,7 +208,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                       setInputError(null);
                     }}
                     onKeyDown={(e) => e.key === 'Enter' && submit()}
-                    placeholder="0.000"
+                    placeholder="0,000"
                     autoFocus
                     className={`w-full border-2 rounded-lg px-4 py-3 text-lg text-center font-bold outline-none transition-colors ${
                       inputError ? 'border-red-500' : 'border-purple-300 focus:border-purple-500'
@@ -244,7 +244,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               <FeedbackPanel
                 feedback={{
                   isCorrect: correct,
-                  explanation: `Rétt svar: ${problem.answer.toFixed(3)} ${problem.unit}`,
+                  explanation: `Rétt svar: ${formatDecimal(problem.answer, 3)} ${problem.unit}`,
                   misconception: correct
                     ? undefined
                     : getContextualFeedback(parseStudentNumber(input), problem.answer),

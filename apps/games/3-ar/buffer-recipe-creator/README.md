@@ -79,7 +79,7 @@ src/engine/buffer.ts                      solveBuffer, bufferRange
 src/types.ts                              BufferProblem (no stored answers)
 src/data/problems.ts                      28 problems: the pool Stig 2 and 3 draw from
 src/data/level1-challenges.ts             6 ratio-band challenges
-src/data/level2-puzzles.ts                5 puzzles, each a problemId plus tolerances and hints
+src/data/level2-puzzles.ts                5 puzzles; hint and explanation numbers derived from solveBuffer
 src/data/level3-puzzles.ts                5 puzzles, with stock concentrations and stored volumes
 src/components/                           Level1, Level2, Level3, FlaskComparison,
                                           BufferCapacityVisualization
@@ -88,23 +88,38 @@ LEVEL1_README.md, PROTOTYPE_SUMMARY.md,   historical notes from the Level 1 prot
 TEST_LEVEL1.md, VISUAL_COMPARISON.md      they describe files and plans that no longer match
 ```
 
+## Stig 2's hints are derived, like its grading
+
+**Fixed 2026-09-22.** The four hint tiers and the explanation were hand-typed and were not
+re-derived when grading moved to `engine/buffer.ts` or when Appendix D moved ammonium to 9,26. On
+three of the five puzzles a student who copied the revealed worked solution was marked wrong by
+the level that had just revealed it — the formate puzzle (#19) gave ratio 1,78 and acid mass
+2,58 g against a grader wanting 1,82 and 1,63 g, with the acid and base moles swapped. Now only
+the prose is authored (`topicIs`, `noteIs`); every number comes from the `solveBuffer` the grader
+calls. `level2-hints.test.ts` reads the masses, ratios and pKa back out of the text and puts them
+through the level's own comparison. A puzzle pointing at a `phAdjustment` or `rangeQuestion`
+problem throws on import, since the derived sentences describe mixing two salts.
+
+The dead English and Polish copies of Stig 2's hints went with it — nothing in this game renders
+them, and they carried the same wrong numbers. The stale **9,25** in Stig 1 challenge 6 and Stig 3
+puzzle 5 hint text is corrected to 9,26 too, and `appendix-d-conformance.test.ts` now reads hint
+and explanation text for superseded values, not only the numeric fields.
+
+## Decimal comma, everywhere a student reads a number
+
+**Fixed 2026-09-22.** Task text, hints, worked solutions and every number a component formatted
+with `toFixed` printed a full stop, beside answer fields that teach the comma. Components now
+format through `formatDecimal` from `@shared/utils` (the printing half of `parseStudentNumber`),
+and the Icelandic and Polish data strings use the comma; English fields keep their full stop.
+`decimal-comma.test.ts` fails on a decimal point in any Icelandic data string and on any
+`toFixed` in a component other than the SVG path geometry in `BufferCapacityVisualization`,
+where a comma would break the path.
+
 ## Open
 
-- **Stig 2's worked-solution hints still carry the pre-fix numbers.** The `solution` tier in
-  `data/level2-puzzles.ts` is hand-typed text and was not derived when the grader was. For problems
-  #14, #17 and #19 its masses disagree with `solveBuffer` by more than the ±5 % tolerance (base
-  5.98 g against 5.29 g; base 1.21 g against 1.08 g; 2.58 g / 4.80 g against 1.63 g / 4.39 g), so a
-  student who copies the revealed solution is marked wrong. The #19 hint also gives ratio 1.78 in
-  its solution tier and 1.82 in its method tier.
-- **The ammonium hint text still says pKa 9.25** in all three levels (Stig 1 challenge 6, Stig 2
-  puzzle id 3, Stig 3 puzzle id 5), while every numeric `pKa` field is 9.26. The conformance test reads
-  fields, not prose.
 - **Stig 3 is only half derived.** Its ratio and mole steps are computed at runtime
   (`Level3.tsx:86-89`), but the volume step grades against stored `correctAcidVolume` /
   `correctBaseVolume` (`Level3.tsx:160-166`) and prints them in the explanation. They currently
   agree with derivation within tolerance — the ammonium puzzle is off by about 3 % (7.1 mL stored,
   7.31 mL derived) — but nothing tests them.
 - **Hint cost** — whether this game should follow the platform's free-hints policy is Siggi's call.
-- **Decimal points in Icelandic text.** Task strings, hints and explanations write `7.40`, `0.100 M`
-  and so on with a decimal point, where Icelandic writes a comma. Input parsing already accepts
-  both (`parseStudentNumber`); the displayed text does not follow it.

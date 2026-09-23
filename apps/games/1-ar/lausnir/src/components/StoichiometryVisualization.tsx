@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 interface StoichiometryProps {
   /** Number of moles of each component */
   quantities: Array<{ symbol: string; moles: number; color: string }>;
@@ -119,7 +121,7 @@ export function StoichiometryVisualization({
             />
 
             {/* Moles value */}
-            <div className="text-xs text-warm-600 mt-2">{q.moles.toFixed(2)} mól</div>
+            <div className="text-xs text-warm-600 mt-2">{formatDecimal(q.moles, 2)} mól</div>
 
             {/* Ratio number */}
             {ratio && <div className="text-lg font-bold text-warm-800 mt-1">{ratio[i]}</div>}
@@ -181,7 +183,9 @@ export function ConcentrationComparison({
           )}
           <div className="text-xs text-warm-500">{before.molecules} agnir</div>
           <div className="text-xs text-warm-500">{before.volumeML} mL</div>
-          <div className="text-lg font-bold text-blue-600 mt-1">{beforeConc.toFixed(2)} M</div>
+          <div className="text-lg font-bold text-blue-600 mt-1">
+            {formatDecimal(beforeConc, 2)} M
+          </div>
         </div>
       </div>
 
@@ -208,7 +212,9 @@ export function ConcentrationComparison({
           )}
           <div className="text-xs text-warm-500">{after.molecules} agnir</div>
           <div className="text-xs text-warm-500">{after.volumeML} mL</div>
-          <div className="text-lg font-bold text-green-600 mt-1">{afterConc.toFixed(2)} M</div>
+          <div className="text-lg font-bold text-green-600 mt-1">
+            {formatDecimal(afterConc, 2)} M
+          </div>
         </div>
       </div>
     </div>
@@ -264,7 +270,7 @@ export function MixingVisualization({
           />
           <div className="text-xs text-warm-500 mt-2">{solution1.volumeML} mL</div>
           <div className="text-sm font-bold" style={{ color: solution1.color }}>
-            {calcConcentration(solution1.molecules, solution1.volumeML).toFixed(2)} M
+            {formatDecimal(calcConcentration(solution1.molecules, solution1.volumeML), 2)} M
           </div>
         </div>
       </div>
@@ -292,7 +298,7 @@ export function MixingVisualization({
           />
           <div className="text-xs text-warm-500 mt-2">{solution2.volumeML} mL</div>
           <div className="text-sm font-bold" style={{ color: solution2.color }}>
-            {calcConcentration(solution2.molecules, solution2.volumeML).toFixed(2)} M
+            {formatDecimal(calcConcentration(solution2.molecules, solution2.volumeML), 2)} M
           </div>
         </div>
       </div>
@@ -320,7 +326,7 @@ export function MixingVisualization({
           />
           <div className="text-xs text-warm-500 mt-2">{resultState.volumeML} mL</div>
           <div className="text-sm font-bold" style={{ color: resultState.color }}>
-            {calcConcentration(resultState.molecules, resultState.volumeML).toFixed(2)} M
+            {formatDecimal(calcConcentration(resultState.molecules, resultState.volumeML), 2)} M
           </div>
         </div>
       </div>
@@ -370,7 +376,9 @@ export function DilutionVisualization({
               size="medium"
             />
             <div className="text-xs text-warm-500 mt-2">{initial.volumeML} mL</div>
-            <div className="text-lg font-bold text-orange-600">{initialConc.toFixed(2)} M</div>
+            <div className="text-lg font-bold text-orange-600">
+              {formatDecimal(initialConc, 2)} M
+            </div>
           </div>
         </div>
 
@@ -406,7 +414,7 @@ export function DilutionVisualization({
               size="medium"
             />
             <div className="text-xs text-warm-500 mt-2">{finalVolumeML} mL</div>
-            <div className="text-lg font-bold text-green-600">{finalConc.toFixed(3)} M</div>
+            <div className="text-lg font-bold text-green-600">{formatDecimal(finalConc, 3)} M</div>
           </div>
         </div>
       </div>

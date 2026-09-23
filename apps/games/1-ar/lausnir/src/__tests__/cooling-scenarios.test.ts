@@ -98,8 +98,8 @@ describe('öfug leysni (CaSO₄, 40°C → 80°C)', () => {
   it('quotes both figures to the precision the curve supports', () => {
     expect(solubilityAt('CaSO₄', 40).toFixed(2)).toBe('0.21');
     expect(solubilityAt('CaSO₄', 80).toFixed(2)).toBe('0.16');
-    expect(correctOption(12).explanation).toContain('0.21');
-    expect(correctOption(12).explanation).toContain('0.16');
+    expect(correctOption(12).explanation).toContain('0,21');
+    expect(correctOption(12).explanation).toContain('0,16');
   });
 });
 

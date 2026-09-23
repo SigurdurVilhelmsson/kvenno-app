@@ -1144,7 +1144,7 @@ specifics — read the README, not them.
   text moved to the decimal comma, and the law renamed `Kjörgaslögmálið` per `ordabok.md`; guarded by
   `icelandic-text.test.ts` and a `governed-terms` row. Question 14's mL answer was labelled `L`; fixed the
   same day by `answerUnit`, which takes the unit the question states the variable in, guarded by
-  `answer-unit.test.ts`. **Still open there:** `toFixed` output still prints a decimal point.
+  `answer-unit.test.ts`. Numbers formatted on screen moved to `formatDecimal` the same day, guarded by its `decimal-comma.test.ts`.
 - **`3-ar/equilibrium-shifter`'s Keppnishamur can never be unlocked.** The gate needs
   `problemsCompleted >= 5`, and that count is written only at the end of a challenge round. The
   mode-gate ruling this file already asked for is now also a fix.
@@ -1153,14 +1153,24 @@ specifics — read the README, not them.
   −137,2. Now −110,5, guarded by `co-enthalpy.test.ts`, which also checks the game's ΔG° at 298 K
   lands on ΔG°f(CO). **Still open:** the game keeps its own ΔH/ΔS and does not use
   `packages/shared/data/thermo.ts`; ids 12 and 21 disagree with it, without changing a sign.
-- **`3-ar/buffer-recipe-creator` Level 2's hint tiers were not derived with the rest** — they still
-  quote the pre-Appendix-D ammonium pKa 9,25 and the old stored numbers.
+- **`3-ar/buffer-recipe-creator` Level 2's hint tiers were not derived with the rest — fixed
+  2026-09-22.** On three of five puzzles a student who copied the revealed solution was marked
+  wrong. Every number in the hints and explanation now comes from `solveBuffer`, guarded by
+  `level2-hints.test.ts`; the stale ammonium 9,25 is gone from all three levels' text, and
+  `appendix-d-conformance.test.ts` now scans hint text as well as numeric fields.
 - **`1-ar/nafnakerfid` Level 2 strips accents before comparing**, so the recorded claim that it
   graded the corrected `Fosfór` spelling wrong is overstated — it accepted both, and accepts any
   accentless name.
 
-Reported by the audit and recorded in the READMEs, not independently re-verified: decimal points
-and float noise in displayed numbers (`molmassi` Stig 2, `gas-law-challenge`, `lausnir` Stig 3); points
+**`formatDecimal` now exists in `@shared/utils`, beside `parseStudentNumber`** — the printing half
+of the decimal-comma pass, added 2026-09-22. Four games now print every number a student reads with
+a comma, each guarded by its own `decimal-comma.test.ts`: `3-ar/buffer-recipe-creator`,
+`3-ar/gas-law-challenge`, `1-ar/molmassi` (which also lost its float noise — HCl's molar mass had
+shown as `36.458000000000006 g` — and prints Avogadro-scale values through `formatScientific`) and
+`1-ar/lausnir`. Other games were not audited for this; use `formatDecimal` rather than a local
+`fmt` when you find one.
+
+Reported by the audit and recorded in the READMEs, not independently re-verified: points
 and streaks shown in practice modes (`equilibrium-shifter`, `gas-law-challenge`,
 `thermodynamics-predictor`); ungoverned terms in `thermodynamics-predictor` (enthalpy loanword in
 t-spelling, four names for entropy); dead `needScore`

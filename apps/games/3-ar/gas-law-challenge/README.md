@@ -50,7 +50,11 @@ Feedback shows the student's and the correct answer, the step-by-step solution, 
   and `nameEn` fields with them), and `src/__tests__/icelandic-text.test.ts` fails on English
   vocabulary or a decimal point in any question string or `GAS_LAW_INFO` field. The law is
   `Kjörgaslögmálið`, as `ordabok.md` has it; `governed-terms.test.ts` bans the old
-  `lofttegundalögmál` compound.
+  `lofttegundalögmál` compound. Numbers formatted at render time — the given values, the revealed
+  answer, the feedback screen and the simulator's readouts — go through `formatDecimal` from
+  `@shared/utils` since 2026-09-22 (they printed a full stop until then);
+  `src/__tests__/decimal-comma.test.ts` fails on a `toFixed`, a raw `{….value}` or a raw `{R}` in
+  `App.tsx` or any component.
 - **The `Námsleiðin` chain lives in `src/components/MenuScreen.tsx`**, not `App.tsx` as in the
   sibling games. `3-ar/syrufastinn/src/__tests__/chain-string.test.ts` reads it from there.
 - **`andhverfu hlutfalli` is correct here.** Boyle's law really is an inverse proportion, and the
@@ -85,14 +89,11 @@ src/__tests__/answer-unit.test.ts
 
 ## Open
 
-- **Computed numbers still print with a decimal point.** The question text — scenarios, hints and
-  worked solutions — has written the comma since 2026-09-22, but numbers formatted at render time
-  (`toFixed` in `FeedbackScreen.tsx`, `GameScreen.tsx`'s revealed answer, and `GasLawSimulator.tsx`)
-  do not. The input already accepts the comma.
 - **Score, streak and "Besta röð" are shown in both modes**, including practice, and a correct
   practice answer still awards points. That sits uneasily with the no-scoring-while-learning rule;
   whether practice should keep them is a ruling, not a code fix.
 - **No Explore phase.** The first thing after the menu is a graded question; the review cycle
   deferred a manipulable pre-game simulator.
-- **The test covers only the calculation helpers.** Nothing checks that each stored `answer` follows
-  from its givens, as `1-ar/reynsluformulur` and `3-ar/buffer-recipe-creator` now do by deriving.
+- **No test checks that each stored `answer` follows from its givens.** The tests cover the
+  calculation helpers, the Icelandic text, the answer units and the decimal comma, but not the
+  answers themselves, as `1-ar/reynsluformulur` and `3-ar/buffer-recipe-creator` now do by deriving.

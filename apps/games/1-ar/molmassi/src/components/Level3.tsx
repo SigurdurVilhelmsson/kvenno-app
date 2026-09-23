@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
-import { shuffleArray } from '@shared/utils';
+import { formatDecimal, formatScientific, shuffleArray } from '@shared/utils';
 
 import { PeriodicTable } from './PeriodicTable';
 import { COMPOUNDS, type Compound } from '../data/compounds';
@@ -46,7 +46,7 @@ type Desc =
       atomCount: number;
     };
 
-const DESCRIPTORS: Desc[] = [
+export const DESCRIPTORS: Desc[] = [
   // mass -> particles (6)
   {
     type: 'mass-to-particles',
@@ -173,13 +173,20 @@ function find(formula: string): Compound {
   return c;
 }
 
+/**
+ * A result to three significant figures, as a student reads it: Icelandic
+ * decimal comma, and Avogadro-scale values as `1,20 × 10²⁴` rather than
+ * `× 10^24` — which `parseScientificAnswer` reads back, superscripts and all.
+ */
 function fmtSci(n: number): string {
-  if (Math.abs(n) < 1000 && Math.abs(n) >= 0.01) return n.toPrecision(3);
-  const exp = Math.floor(Math.log10(Math.abs(n)));
-  return `${(n / 10 ** exp).toFixed(2)} \u00d7 10^${exp}`;
+  if (Math.abs(n) < 1000 && Math.abs(n) >= 0.01) {
+    // Three significant figures, trailing zeros kept (`36,0`), as toPrecision.
+    return formatDecimal(n, Math.max(0, 2 - Math.floor(Math.log10(Math.abs(n)))));
+  }
+  return formatScientific(n, 3);
 }
 
-function buildProblem(d: Desc): Problem {
+export function buildProblem(d: Desc): Problem {
   const c = find(d.formula);
   const M = c.molarMass;
   if (d.type === 'mass-to-particles') {
@@ -191,9 +198,9 @@ function buildProblem(d: Desc): Problem {
       answer: N,
       unit: d.particleWord,
       steps: [
-        `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${M.toFixed(3)} g/mol`,
-        `Skref 2: g → mól (einingagreining)\n  ${d.mass} g × (1 mól / ${M.toFixed(3)} g) = ${n.toFixed(3)} mól\n  Einingin g strikast út.`,
-        `Skref 3: mól → ${d.particleWord} (einingagreining)\n  ${n.toFixed(3)} mól × (6,022 × 10²³ / 1 mól) = ${fmtSci(N)} ${d.particleWord}\n  Einingin mól strikast út.`,
+        `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${formatDecimal(M, 3)} g/mol`,
+        `Skref 2: g → mól (einingagreining)\n  ${d.mass} g × (1 mól / ${formatDecimal(M, 3)} g) = ${formatDecimal(n, 3)} mól\n  Einingin g strikast út.`,
+        `Skref 3: mól → ${d.particleWord} (einingagreining)\n  ${formatDecimal(n, 3)} mól × (6,022 × 10²³ / 1 mól) = ${fmtSci(N)} ${d.particleWord}\n  Einingin mól strikast út.`,
       ],
     };
   }
@@ -206,9 +213,9 @@ function buildProblem(d: Desc): Problem {
       answer: m,
       unit: 'g',
       steps: [
-        `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${M.toFixed(3)} g/mol`,
-        `Skref 2: ${d.particleWord} → mól (einingagreining)\n  ${d.countLabel} × (1 mól / 6,022 × 10²³) = ${n.toFixed(3)} mól\n  Einingin ${d.particleWord} strikast út.`,
-        `Skref 3: mól → g (einingagreining)\n  ${n.toFixed(3)} mól × (${M.toFixed(3)} g / 1 mól) = ${m.toFixed(2)} g\n  Einingin mól strikast út.`,
+        `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${formatDecimal(M, 3)} g/mol`,
+        `Skref 2: ${d.particleWord} → mól (einingagreining)\n  ${d.countLabel} × (1 mól / 6,022 × 10²³) = ${formatDecimal(n, 3)} mól\n  Einingin ${d.particleWord} strikast út.`,
+        `Skref 3: mól → g (einingagreining)\n  ${formatDecimal(n, 3)} mól × (${formatDecimal(M, 3)} g / 1 mól) = ${formatDecimal(m, 2)} g\n  Einingin mól strikast út.`,
       ],
     };
   }
@@ -221,9 +228,9 @@ function buildProblem(d: Desc): Problem {
     answer: nAtom,
     unit: 'mól',
     steps: [
-      `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${M.toFixed(2)} g/mol`,
-      `Skref 2: g → mól (einingagreining)\n  ${d.mass} g × (1 mól / ${M.toFixed(2)} g) = ${n.toFixed(3)} mól ${c.formula}\n  Einingin g strikast út.`,
-      `Skref 3: Nota hlutfallið úr efnaformúlunni\n  Í hverju móli af ${c.formula} eru ${d.atomCount} mól af ${d.element}\n  ${n.toFixed(3)} mól ${c.formula} × (${d.atomCount} mól ${d.element} / 1 mól ${c.formula}) = ${nAtom.toFixed(2)} mól ${d.element}`,
+      `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${formatDecimal(M, 2)} g/mol`,
+      `Skref 2: g → mól (einingagreining)\n  ${d.mass} g × (1 mól / ${formatDecimal(M, 2)} g) = ${formatDecimal(n, 3)} mól ${c.formula}\n  Einingin g strikast út.`,
+      `Skref 3: Nota hlutfallið úr efnaformúlunni\n  Í hverju móli af ${c.formula} eru ${d.atomCount} mól af ${d.element}\n  ${formatDecimal(n, 3)} mól ${c.formula} × (${d.atomCount} mól ${d.element} / 1 mól ${c.formula}) = ${formatDecimal(nAtom, 2)} mól ${d.element}`,
     ],
   };
 }
@@ -261,7 +268,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
     if (!p || !input.trim()) return;
     const val = parseScientificAnswer(input);
     if (val === null) {
-      setError('Ógilt gildi. Notaðu t.d. 1.2e24 eða 1.2x10^24');
+      setError('Ógilt gildi. Notaðu t.d. 1,2e24 eða 1,2 × 10^24');
       return;
     }
     const ok = withinTolerance(val, p.answer);
@@ -405,6 +412,9 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                 Svar ({p.unit}):
               </label>
               <div className="flex gap-2">
+                {/* No inputMode="decimal" here, deliberately: most answers in this
+                    level are Avogadro-scale, and a phone's decimal keypad has no
+                    `e`, `×` or `^` to write them with. type="text" keeps the comma. */}
                 <input
                   type="text"
                   value={input}
@@ -419,7 +429,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                     }
                   }}
                   disabled={submitted}
-                  placeholder="t.d. 1.2e24 eða 22.0"
+                  placeholder="t.d. 1,2e24 eða 22,0"
                   className={`flex-1 px-4 py-3 text-lg border-2 rounded-xl focus:outline-none ${error ? 'border-red-400' : 'border-warm-300 focus:border-kvenno-orange'}`}
                 />
                 {!submitted ? (
@@ -441,7 +451,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
               </div>
               {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
               <p className="text-xs text-warm-400 mt-1">
-                Hægt að nota vísisrithátt: 1.2e24, 1.2x10^24, eða venjulega tölu
+                Hægt að nota vísisrithátt: 1,2e24, 1,2 × 10^24, eða venjulega tölu
               </p>
             </div>
 

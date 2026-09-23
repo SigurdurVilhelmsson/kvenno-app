@@ -91,12 +91,19 @@ LEVEL1_README.md, VISUAL_COMPARISON.md   prototype notes; describe a Level 1 tha
 - **`Saltsýra` for HCl.** The name is HCl(aq), a solution, while the game quotes 36,46 g/mól, the
   molar mass of the compound `vetnisklóríð`. HCl is excluded from molar-volume questions rather than
   renamed; the naming is Siggi's call.
-- **Worked solutions print numbers with a decimal point**, and Stig 1 and 3 write the unit `g/mol`
-  where the Stig 2 intro writes `g/mól`. Stig 2's `solutionSteps` interpolate the raw derived molar
-  mass, so six compounds show floating-point noise (HCl as `36.458000000000006 g`); `fmt` writes
-  large values as `1.204e+24`; Stig 3's `fmtSci` writes `× 10^22`. Parsing is unaffected — the
-  display is not.
+- **Unit spelling.** Stig 1 and 3 write the unit `g/mol` where the Stig 2 intro writes `g/mól`.
+- **Stig 2's input has `inputMode="decimal"`** while two of its seven question types
+  (molecules, atoms) have Avogadro-scale answers; a phone's decimal keypad has no `e`, `×` or `^`. Stig 3 deliberately
+  omits it for that reason.
+
 - **Percent composition** is recorded in the roadmap as "a fourth `molmassi` level", which the
   2026-08-29 no-Level-4 ruling does not allow. Where it goes is not decided.
 - **i18n.** Menu text uses `t()`; the level components are hardcoded Icelandic. Part of the
   platform-wide undecided `useGameI18n` question.
+
+**Fixed 2026-09-22 — decimal comma.** Every number the game prints goes through `formatDecimal` or
+`formatScientific` from `@shared/utils`: Stig 2's worked solutions (molar mass to two decimals, so
+HCl no longer shows as `36.458000000000006 g`; `fmt` now writes `1,204 × 10²⁴`), Stig 3's steps
+and `fmtSci` (`× 10²²` in superscripts, which `parseScientificAnswer` reads back), the Stig 1
+feedback, breakdown and periodic table, and the placeholders and hints. Guarded by
+`src/__tests__/decimal-comma.test.ts`.

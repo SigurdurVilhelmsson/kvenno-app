@@ -1,6 +1,8 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 
+import { formatDecimal } from '@shared/utils';
+
 import { Level2, SCENARIOS } from '../components/Level2';
 
 /**
@@ -53,8 +55,8 @@ describe('Lausnir Level 2 does not show the answer before the student answers', 
 
         expect(
           text,
-          `the resulting molarity ${after.concentration.toFixed(1)} M is on screen before the student answers`
-        ).not.toContain(`${after.concentration.toFixed(1)} M`);
+          `the resulting molarity ${formatDecimal(after.concentration, 1)} M is on screen before the student answers`
+        ).not.toContain(`${formatDecimal(after.concentration, 1)} M`);
         if (after.volumeML !== scenario.visualBefore.volumeML) {
           // Where the volume does not change it is part of the setup, not the
           // answer, and the before beaker legitimately shows it.
@@ -73,7 +75,7 @@ describe('Lausnir Level 2 does not show the answer before the student answers', 
         const after = scenario.visualAfter;
         const text = visual().textContent ?? '';
         // Revealed once committed — that is where the checking happens.
-        expect(text).toContain(`${after.concentration.toFixed(1)} M`);
+        expect(text).toContain(`${formatDecimal(after.concentration, 1)} M`);
         expect(text).toContain(`${after.volumeML} mL`);
         expect(screen.queryByLabelText('Óþekkt')).toBeNull();
       }
