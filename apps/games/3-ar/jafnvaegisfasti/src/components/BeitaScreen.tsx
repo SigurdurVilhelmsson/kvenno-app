@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { APPROXIMATION_THRESHOLD, equationOf } from '@shared/engine/equilibrium';
-import { DECIMAL_INPUT_PROPS, formatScientific, gradeScientific } from '@shared/utils';
+import { formatScientific, gradeScientific } from '@shared/utils';
 
+import { ScientificInput } from './ScientificInput';
 import { BEITA_PROBLEMS } from '../data/problems';
+import { revealBottom, useRevealTopOnChange } from '../utils/reveal';
 
 /**
  * Beita — the ICE table, filled in one column at a time.
@@ -42,6 +44,16 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
   const [exponent, setExponent] = useState('');
   const [extentOutcome, setExtentOutcome] = useState<string | null>(null);
   const [ruleAnswer, setRuleAnswer] = useState<boolean | null>(null);
+  // Counts every check, so a repeat check that fails the same way still
+  // brings its feedback into view.
+  const [checks, setChecks] = useState(0);
+  const problemRef = useRef<HTMLParagraphElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+
+  useRevealTopOnChange(problemRef, index);
+  useEffect(() => {
+    if (checks > 0) revealBottom(feedbackRef.current);
+  }, [checks]);
 
   const problem = BEITA_PROBLEMS[index];
   const { result, unit, constantSymbol, totals } = problem;
@@ -71,6 +83,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
     const graded = gradeScientific({ mantissa, exponent }, result.extent, 0.03);
     setExtentOutcome(graded.outcome);
     if (graded.outcome === 'rett') setStage('approximation');
+    setChecks((n) => n + 1);
   };
 
   const decimals = (value: number) =>
@@ -78,23 +91,28 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-6 shadow-md md:p-8">
-        <div className="mb-6 flex items-baseline justify-between">
-          <h2 className="text-2xl font-bold text-warm-800">Beita — ICE-taflan</h2>
-          <button onClick={onBack} className="text-sm text-warm-500 underline">
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
+        <div className="mb-4 flex items-baseline justify-between gap-3 sm:mb-6">
+          <h2 className="min-w-0 text-xl font-bold text-warm-800 sm:text-2xl">
+            Beita — ICE-taflan
+          </h2>
+          <button
+            onClick={onBack}
+            className="shrink-0 whitespace-nowrap text-sm text-warm-500 underline pointer-coarse:-my-3 pointer-coarse:-mr-3 pointer-coarse:px-3 pointer-coarse:py-3"
+          >
             Til baka
           </button>
         </div>
 
-        <p className="mb-4 text-sm text-warm-600">
+        <p ref={problemRef} className="mb-4 text-sm text-warm-600">
           Dæmi {index + 1} af {BEITA_PROBLEMS.length}
         </p>
 
-        <div className="mb-6 rounded-xl border-2 border-warm-200 bg-warm-50 p-5">
+        <div className="mb-6 rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
           <p className="mb-2 font-mono text-lg text-warm-800">{equationOf(problem.reaction)}</p>
           <p className="mb-1 font-mono text-sm text-warm-700">{problem.expression}</p>
           <p className="font-mono text-sm text-warm-700">
-            {constantSymbol} = {formatScientific(k, 3)}
+            {constantSymbol} = <span className="whitespace-nowrap">{formatScientific(k, 3)}</span>
           </p>
           {totals !== null && (
             <p className="mt-2 text-sm text-warm-600">
@@ -105,43 +123,48 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
         </div>
 
         {/* The table. The change and equilibrium columns stay blank until the
-            student has committed to a direction, then to a value for x. */}
-        <table className="mb-6 w-full border-collapse text-sm">
-          <thead>
-            <tr className="border-b-2 border-warm-300 text-left text-warm-700">
-              <th className="py-2">Efni</th>
-              <th className="py-2 text-right">Upphaf ({unit})</th>
-              <th className="py-2 text-right">Breyting</th>
-              <th className="py-2 text-right">Jafnvægi ({unit})</th>
-            </tr>
-          </thead>
-          <tbody className="font-mono">
-            {result.rows.map((row) => (
-              <tr key={`${row.formula}-${row.side}`} className="border-b border-warm-200">
-                <td className="py-2 text-warm-800">{row.formula}</td>
-                <td className="py-2 text-right text-warm-800">
-                  {row.initial.toString().replace('.', ',')}
-                </td>
-                <td className="py-2 text-right text-warm-600">
-                  {stage === 'direction'
-                    ? '—'
-                    : `${row.side === 'hvarfefni' ? '−' : '+'}${
-                        row.coefficient === 1 ? '' : row.coefficient
-                      }x`}
-                </td>
-                <td className="py-2 text-right text-warm-800">
-                  {stage === 'direction'
-                    ? '—'
-                    : stage === 'extent'
-                      ? `${row.initial.toString().replace('.', ',')} ${
-                          row.side === 'hvarfefni' ? '−' : '+'
-                        } ${row.coefficient === 1 ? '' : row.coefficient}x`
-                      : decimals(row.equilibrium)}
-                </td>
+            student has committed to a direction, then to a value for x.
+            On a phone the cells get space between them and do not wrap, so
+            `0,5 − 2x` never splits across two lines; the scroll wrapper is a
+            safety net that only shows if a row is ever wider than the screen. */}
+        <div className="mb-6 overflow-x-auto">
+          <table className="w-full border-collapse text-[13px] min-[360px]:text-sm">
+            <thead>
+              <tr className="border-b-2 border-warm-300 text-left text-warm-700">
+                <th className="py-2">Efni</th>
+                <th className="py-2 pl-2 text-right sm:pl-0">Upphaf ({unit})</th>
+                <th className="py-2 pl-2 text-right sm:pl-0">Breyting</th>
+                <th className="py-2 pl-2 text-right sm:pl-0">Jafnvægi ({unit})</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="font-mono">
+              {result.rows.map((row) => (
+                <tr key={`${row.formula}-${row.side}`} className="border-b border-warm-200">
+                  <td className="whitespace-nowrap py-2 text-warm-800">{row.formula}</td>
+                  <td className="whitespace-nowrap py-2 pl-2 text-right text-warm-800 sm:pl-0">
+                    {row.initial.toString().replace('.', ',')}
+                  </td>
+                  <td className="whitespace-nowrap py-2 pl-2 text-right text-warm-600 sm:pl-0">
+                    {stage === 'direction'
+                      ? '—'
+                      : `${row.side === 'hvarfefni' ? '−' : '+'}${
+                          row.coefficient === 1 ? '' : row.coefficient
+                        }x`}
+                  </td>
+                  <td className="whitespace-nowrap py-2 pl-2 text-right text-warm-800 sm:pl-0">
+                    {stage === 'direction'
+                      ? '—'
+                      : stage === 'extent'
+                        ? `${row.initial.toString().replace('.', ',')} ${
+                            row.side === 'hvarfefni' ? '−' : '+'
+                          } ${row.coefficient === 1 ? '' : row.coefficient}x`
+                        : decimals(row.equilibrium)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {stage === 'direction' && (
           <div>
@@ -171,37 +194,30 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
           <div>
             <div className="mb-4 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900">
               Q ={' '}
-              {Number.isFinite(result.initialQuotient)
-                ? formatScientific(result.initialQuotient, 3)
-                : '∞'}{' '}
-              og {constantSymbol} = {formatScientific(k, 3)}, svo hvarfið gengur{' '}
-              <strong>{result.direction === 'afram' ? 'áfram' : 'afturábak'}</strong>. Breytingarnar
-              í töflunni fylgja stuðlunum.
+              <span className="whitespace-nowrap">
+                {Number.isFinite(result.initialQuotient)
+                  ? formatScientific(result.initialQuotient, 3)
+                  : '∞'}
+              </span>{' '}
+              og {constantSymbol} ={' '}
+              <span className="whitespace-nowrap">{formatScientific(k, 3)}</span>, svo hvarfið
+              gengur <strong>{result.direction === 'afram' ? 'áfram' : 'afturábak'}</strong>.
+              Breytingarnar í töflunni fylgja stuðlunum.
             </div>
             <p className="mb-3 text-warm-700">
               Settu {unit === 'M' ? 'jafnvægisstyrkina' : 'jafnvægisþrýstingana'} inn í stæðuna,
               leystu fyrir x og sláðu svarið inn.
             </p>
-            <div className="mb-4 flex items-center gap-2">
-              <span className="font-mono text-lg text-warm-700">x =</span>
-              <input
-                {...DECIMAL_INPUT_PROPS}
-                value={mantissa}
-                onChange={(e) => setMantissa(e.target.value)}
-                placeholder="1,35"
-                aria-label="Tala"
-                className="w-28 rounded-lg border-2 border-warm-300 px-3 py-2 text-center font-mono text-lg"
-              />
-              <span className="font-mono text-lg text-warm-700">× 10</span>
-              <input
-                {...DECIMAL_INPUT_PROPS}
-                value={exponent}
-                onChange={(e) => setExponent(e.target.value)}
-                placeholder="-1"
-                aria-label="Veldisvísir"
-                className="w-20 rounded-lg border-2 border-warm-300 px-3 py-2 text-center font-mono text-lg"
-              />
-            </div>
+            <ScientificInput
+              prefix="x ="
+              mantissa={mantissa}
+              exponent={exponent}
+              onMantissaChange={setMantissa}
+              onExponentChange={setExponent}
+              mantissaPlaceholder="1,35"
+              exponentPlaceholder="-1"
+              className="mb-4"
+            />
             <button
               type="button"
               onClick={checkExtent}
@@ -210,7 +226,10 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
               Athuga
             </button>
             {extentOutcome !== null && extentOutcome !== 'rett' && (
-              <div className="mt-4 rounded-lg border-2 border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+              <div
+                ref={feedbackRef}
+                className="mt-4 rounded-lg border-2 border-amber-300 bg-amber-50 p-4 text-sm text-amber-900"
+              >
                 {extentOutcome === 'veldisvisir' &&
                   'Tölustafirnir stemma en veldisvísirinn ekki. Athugaðu hvort stuðull hafi fallið úr veldisvísi í stæðunni.'}
                 {extentOutcome === 'tolustafir' &&
@@ -220,7 +239,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                 <button
                   type="button"
                   onClick={() => setStage('approximation')}
-                  className="mt-3 block text-xs underline"
+                  className="mt-3 block text-xs underline pointer-coarse:-mt-0.5 pointer-coarse:-mb-3.5 pointer-coarse:py-3.5 pointer-coarse:pr-4"
                 >
                   Sýna svarið og halda áfram
                 </button>
@@ -232,7 +251,9 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
         {(stage === 'approximation' || stage === 'done') && (
           <div>
             <div className="mb-4 rounded-lg border-2 border-green-300 bg-green-50 p-4">
-              <p className="font-mono text-green-900">x = {formatScientific(result.extent, 3)}</p>
+              <p className="font-mono text-green-900">
+                x = <span className="whitespace-nowrap">{formatScientific(result.extent, 3)}</span>
+              </p>
             </div>
 
             {/* The manometer. Δn ≠ 0 and the reading moves with the extent;
@@ -263,7 +284,11 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
               <div>
                 <p className="mb-3 text-warm-700">
                   Síðasta skrefið: mátti sleppa x í nefnaranum? Reglan er að breytingin verði að
-                  vera minni en {Math.round(APPROXIMATION_THRESHOLD * 100)} % af {startingAmount}.
+                  vera minni en{' '}
+                  <span className="whitespace-nowrap">
+                    {Math.round(APPROXIMATION_THRESHOLD * 100)} %
+                  </span>{' '}
+                  af {startingAmount}.
                 </p>
                 <div className="grid gap-2">
                   <button
@@ -271,6 +296,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                     onClick={() => {
                       setRuleAnswer(true);
                       setStage('done');
+                      setChecks((n) => n + 1);
                     }}
                     className="rounded-lg border-2 border-warm-300 bg-white px-4 py-3 text-left text-warm-700 hover:border-kvenno-orange"
                   >
@@ -281,6 +307,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                     onClick={() => {
                       setRuleAnswer(false);
                       setStage('done');
+                      setChecks((n) => n + 1);
                     }}
                     className="rounded-lg border-2 border-warm-300 bg-white px-4 py-3 text-left text-warm-700 hover:border-kvenno-orange"
                   >
@@ -290,6 +317,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
               </div>
             ) : (
               <div
+                ref={feedbackRef}
                 className={`rounded-lg border-2 p-4 ${
                   ruleAnswer === result.approximationSafe
                     ? 'border-green-300 bg-green-50'
@@ -301,26 +329,33 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                 </p>
                 <p className="mb-2 text-sm text-warm-800">
                   Stærsta breytingin er{' '}
-                  <span className="font-mono">
+                  <span className="whitespace-nowrap font-mono">
                     {(result.relativeChange * 100).toFixed(2).replace('.', ',')} %
                   </span>{' '}
                   af {startingAmount}, sem er {result.approximationSafe ? 'undir' : 'yfir'}{' '}
-                  {Math.round(APPROXIMATION_THRESHOLD * 100)} %.{' '}
+                  <span className="whitespace-nowrap">
+                    {Math.round(APPROXIMATION_THRESHOLD * 100)} %.
+                  </span>{' '}
                   {result.approximationSafe
                     ? 'Nálgunin hefði gefið sama svar.'
                     : 'Nálgunin hefði gefið rangt svar hér.'}
                 </p>
                 {result.approximateExtent !== null && (
                   <p className="mb-2 font-mono text-sm text-warm-700">
-                    Nálgun: x ≈ {formatScientific(result.approximateExtent, 3)} · Nákvæmt: x ={' '}
-                    {formatScientific(result.extent, 3)}
+                    <span className="whitespace-nowrap">
+                      Nálgun: x ≈ {formatScientific(result.approximateExtent, 3)}
+                    </span>{' '}
+                    ·{' '}
+                    <span className="whitespace-nowrap">
+                      Nákvæmt: x = {formatScientific(result.extent, 3)}
+                    </span>
                   </p>
                 )}
                 <p className="text-sm text-warm-700">{problem.context}</p>
                 <button
                   type="button"
                   onClick={next}
-                  className="game-btn mt-4 rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700"
+                  className="game-btn mt-4 rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 pointer-coarse:py-2.5"
                 >
                   {index + 1 >= BEITA_PROBLEMS.length ? 'Ljúka' : 'Næsta dæmi'}
                 </button>

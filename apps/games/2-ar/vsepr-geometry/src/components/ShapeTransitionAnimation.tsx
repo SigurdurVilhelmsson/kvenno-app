@@ -284,12 +284,12 @@ export function ShapeTransitionAnimation({
           Lögunarbreyting
         </h3>
         <div className="flex items-center gap-2">
-          <label className="flex items-center gap-1.5 text-xs text-warm-600 cursor-pointer">
+          <label className="flex items-center gap-1.5 text-xs text-warm-600 cursor-pointer pointer-coarse:min-h-11">
             <input
               type="checkbox"
               checked={showTrail}
               onChange={(e) => setShowTrail(e.target.checked)}
-              className="rounded border-warm-300"
+              className="rounded border-warm-300 shrink-0 pointer-coarse:size-6"
             />
             Sýna slóð
           </label>
@@ -302,7 +302,7 @@ export function ShapeTransitionAnimation({
           width={size}
           height={size}
           viewBox={`0 0 ${size} ${size}`}
-          className="bg-warm-900 rounded-xl"
+          className="bg-warm-900 rounded-xl max-w-full h-auto"
           role="img"
           aria-label="Hreyfimynd sem sýnir umbreytingu milli VSEPR löguna"
         >
@@ -483,7 +483,7 @@ export function ShapeTransitionAnimation({
             key={n}
             onClick={() => changeDomains(n)}
             disabled={isAnimating}
-            className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${
+            className={`w-8 h-8 rounded-lg text-sm font-medium transition-all pointer-coarse:h-11 pointer-coarse:flex-1 pointer-coarse:max-w-11 ${
               n === domainCount
                 ? 'bg-indigo-500 text-white'
                 : 'bg-warm-100 text-warm-600 hover:bg-indigo-100'

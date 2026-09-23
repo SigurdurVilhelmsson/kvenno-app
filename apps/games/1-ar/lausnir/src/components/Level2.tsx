@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { formatDecimal, shuffleArray } from '@shared/utils';
 
@@ -9,6 +9,7 @@ import {
   SOLUBILITY_DATA,
   SolubilityData,
 } from './TemperatureSolubility';
+import { revealTop } from '../utils/reveal';
 
 // Level 2: Application/Reasoning - "What happens when..." questions
 // Students predict outcomes without calculating
@@ -716,6 +717,14 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [selectedCompounds, setSelectedCompounds] = useState<string[]>(['KNO₃', 'NaCl', 'CO₂']);
 
   const scenario = SCENARIOS[currentScenario];
+  const scenarioRef = useRef<HTMLDivElement>(null);
+
+  // "Næsta spurning" is at the bottom of a card that, with every option's
+  // explanation open, is two phone screens tall. The next scenario's setup
+  // and picture would otherwise start above the screen.
+  useEffect(() => {
+    revealTop(scenarioRef.current);
+  }, [currentScenario]);
 
   // Shuffle options for current scenario - memoize to keep stable during scenario
   const shuffledOptions = useMemo(() => {
@@ -768,13 +777,16 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               </p>
             </div>
 
-            <div className="flex gap-4 items-center">
-              <button onClick={onBack} className="text-warm-600 hover:text-warm-800 text-sm">
+            <div className="flex flex-wrap gap-x-3 gap-y-2 sm:gap-4 items-center">
+              <button
+                onClick={onBack}
+                className="whitespace-nowrap text-warm-600 hover:text-warm-800 text-sm pointer-coarse:py-3 pointer-coarse:-my-3 pointer-coarse:px-2 pointer-coarse:-mx-2"
+              >
                 ← Til baka
               </button>
               <button
                 onClick={() => setShowExplorer(true)}
-                className="bg-purple-100 hover:bg-purple-200 text-purple-700 px-3 py-1 rounded-lg text-sm font-medium transition-colors"
+                className="whitespace-nowrap bg-purple-100 hover:bg-purple-200 text-purple-700 px-3 py-1 rounded-lg text-sm font-medium transition-colors pointer-coarse:min-h-11"
                 title="Kanna leysni"
               >
                 🔬 Kanna
@@ -804,7 +816,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         </div>
 
         {/* Scenario card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div ref={scenarioRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <div className="mb-6">
             <div className="inline-block bg-green-100 px-4 py-2 rounded-full text-sm font-semibold text-green-800 mb-2">
               Atburðarás {currentScenario + 1}: {scenario.title}
@@ -893,7 +905,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           {/* Result and concept */}
           {showResult && (
             <div
-              className={`p-4 rounded-xl mb-6 ${isCorrect ? 'bg-green-50 border-2 border-green-400' : 'bg-yellow-50 border-2 border-yellow-400'}`}
+              className={`p-3 sm:p-4 rounded-xl mb-6 ${isCorrect ? 'bg-green-50 border-2 border-green-400' : 'bg-yellow-50 border-2 border-yellow-400'}`}
             >
               <div className="text-xl font-bold mb-2">
                 {isCorrect ? '✓ Rétt!' : '✗ Ekki alveg rétt'}
@@ -903,7 +915,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               </div>
 
               {/* Visual comparison - depends on scenario type */}
-              <div className="mt-4 p-4 bg-white rounded-xl">
+              <div className="mt-4 p-3 sm:p-4 bg-white rounded-xl">
                 <div className="text-sm font-semibold text-warm-600 text-center mb-3">
                   Samantekt á breytingum:
                 </div>
@@ -953,7 +965,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 {!showHint && (
                   <button
                     onClick={() => setShowHint(true)}
-                    className="mb-3 text-sm px-4 py-2 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-700 font-medium transition-colors"
+                    className="mb-3 text-sm px-4 py-2 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-700 font-medium transition-colors pointer-coarse:min-h-11"
                   >
                     💡 Vísbending
                   </button>
@@ -982,11 +994,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         </div>
 
         {/* Scenario navigation */}
-        <div className="mt-6 flex justify-center gap-2">
+        {/* Twelve 32 px dots need 472 px; on a phone they wrap into two rows
+            of six instead of being squeezed. */}
+        <div className="mt-6 mx-auto max-w-60 sm:max-w-none flex flex-wrap justify-center gap-2">
           {SCENARIOS.map((s, i) => (
             <div
               key={s.id}
-              className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+              className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
                 completed.includes(s.id)
                   ? 'bg-green-500 text-white'
                   : i === currentScenario
@@ -1004,14 +1018,15 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
       {/* Temperature Explorer Modal */}
       {showExplorer && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 sm:p-4 z-50">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90dvh] overflow-y-auto">
+            <div className="p-4 sm:p-6">
+              <div className="flex justify-between items-center gap-2 mb-4">
                 <h2 className="text-2xl font-bold text-purple-700">🔬 Könnun á leysni</h2>
                 <button
                   onClick={() => setShowExplorer(false)}
-                  className="text-warm-500 hover:text-warm-700 text-2xl"
+                  aria-label="Loka"
+                  className="shrink-0 text-warm-500 hover:text-warm-700 text-2xl pointer-coarse:min-w-11 pointer-coarse:min-h-11"
                 >
                   ×
                 </button>
@@ -1038,7 +1053,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                             : [...prev, compound.formula]
                         );
                       }}
-                      className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                      className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors pointer-coarse:min-h-11 ${
                         selectedCompounds.includes(compound.formula)
                           ? 'text-white'
                           : 'bg-warm-100 text-warm-700 hover:bg-warm-200'

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 
 import { AnimatedMolecule, FeedbackPanel } from '@shared/components';
 import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
@@ -8,6 +8,7 @@ import { shuffleArray } from '@shared/utils';
 import { BondAngleMeasurement } from './BondAngleMeasurement';
 import { ElectronRepulsionAnimation } from './ElectronRepulsionAnimation';
 import { ShapeTransitionAnimation } from './ShapeTransitionAnimation';
+import { useScrollTopOnChange } from '../utils/phoneScroll';
 import { geometryToMolecule } from '../utils/vseprConverter';
 
 // Misconceptions for VSEPR geometry
@@ -484,6 +485,21 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
   const challenge = challenges[currentChallenge];
 
+  // Starting the questions, going back, and each new question replace the
+  // screen; on a phone start it at the top rather than part-way down.
+  useScrollTopOnChange(phase);
+  useScrollTopOnChange(currentChallenge);
+
+  // The details panel opens below the shape grid. On a phone that is below the
+  // fold, so a tap on a shape would only change the card's border; bring the
+  // panel into view. From md up it opens in view, so the page is left alone.
+  const detailsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!selectedGeometry) return;
+    if (window.matchMedia?.('(min-width: 48rem)').matches) return;
+    detailsRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+  }, [selectedGeometry]);
+
   // Shuffle options for current challenge - memoize to keep stable during challenge
   const shuffledOptions = useMemo(() => {
     const shuffled = shuffleArray(challenge.options);
@@ -535,14 +551,14 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           <div className="flex items-center justify-between mb-6">
             <button
               onClick={onBack}
-              className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+              className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
             >
               <span>&larr;</span> Til baka
             </button>
             <div className="text-sm text-warm-600">Stig 1: Könnun</div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 mb-6">
+          <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 mb-6">
             <h2 className="text-2xl font-bold text-teal-800 mb-4">
               Kannaðu mismunandi sameindarlögun
             </h2>
@@ -568,18 +584,18 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               />
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-1 min-[360px]:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-8">
               {GEOMETRIES.map((geo) => (
                 <button
                   key={geo.id}
                   onClick={() => setSelectedGeometry(geo)}
-                  className={`p-4 rounded-xl border-2 transition-all text-center ${
+                  className={`p-2 sm:p-4 rounded-xl border-2 transition-all text-center ${
                     selectedGeometry?.id === geo.id
                       ? 'border-teal-500 bg-teal-50 shadow-lg'
                       : 'border-warm-200 hover:border-teal-300 hover:bg-teal-50/50'
                   }`}
                 >
-                  <div className="text-lg font-bold text-warm-800">{geo.name}</div>
+                  <div className="text-base sm:text-lg font-bold text-warm-800">{geo.name}</div>
                   <div className="text-xs text-warm-500">{geo.nameEn}</div>
                   <div className="text-sm text-teal-600 mt-1">{geo.example}</div>
                 </button>
@@ -587,7 +603,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             </div>
 
             {selectedGeometry && (
-              <div className="bg-teal-50 rounded-xl p-6 animate-slide-in">
+              <div ref={detailsRef} className="bg-teal-50 rounded-xl p-3 sm:p-6 animate-slide-in">
                 <div className="flex flex-col md:flex-row gap-6">
                   {/* Visual representation */}
                   <div className="flex-1">
@@ -595,7 +611,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                     <div className="flex justify-center gap-2 mb-3">
                       <button
                         onClick={() => setViewMode('2d')}
-                        className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                        className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors pointer-coarse:min-h-11 ${
                           viewMode === '2d'
                             ? 'bg-teal-600 text-white'
                             : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
@@ -605,7 +621,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                       </button>
                       <button
                         onClick={() => setViewMode('3d')}
-                        className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                        className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors pointer-coarse:min-h-11 ${
                           viewMode === '3d'
                             ? 'bg-teal-600 text-white'
                             : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
@@ -615,7 +631,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                       </button>
                     </div>
 
-                    <div className="bg-warm-900 rounded-xl p-6 flex items-center justify-center min-h-48">
+                    <div className="bg-warm-900 rounded-xl p-3 sm:p-6 flex items-center justify-center min-h-48">
                       <div className="text-center w-full">
                         {viewMode === '2d' ? (
                           <AnimatedMolecule
@@ -655,7 +671,13 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                         <div className="text-warm-400">{selectedGeometry.exampleName}</div>
                         {viewMode === '3d' && (
                           <div className="text-xs text-warm-500 mt-2">
-                            Dragðu til að snúa, skrollaðu til að stækka
+                            {/* A wheel does not exist on a phone: zoom there is a pinch. */}
+                            <span className="pointer-coarse:hidden">
+                              Dragðu til að snúa, skrollaðu til að stækka
+                            </span>
+                            <span className="hidden pointer-coarse:inline">
+                              Dragðu til að snúa, notaðu tvo fingur til að stækka
+                            </span>
                           </div>
                         )}
                       </div>
@@ -733,7 +755,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => setPhase('explore')}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
           >
             <span>&larr;</span> Til baka
           </button>
@@ -752,7 +774,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <p className="text-warm-700 text-lg mb-6">{challenge.question}</p>
 
           {/* Show relevant geometry visual if available */}
@@ -761,7 +783,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               const geo = GEOMETRIES.find((g) => g.id === challenge.geometryId);
               if (!geo) return null;
               return (
-                <div className="bg-warm-900 p-4 rounded-xl mb-6 flex flex-col items-center">
+                <div className="bg-warm-900 p-3 sm:p-4 rounded-xl mb-6 flex flex-col items-center">
                   <AnimatedMolecule
                     molecule={geometryToMolecule({
                       id: geo.id,
@@ -820,7 +842,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 setShowHint(true);
                 setTotalHintsUsed((prev) => prev + 1);
               }}
-              className="text-teal-600 hover:text-teal-800 text-sm underline mb-4"
+              className="text-teal-600 hover:text-teal-800 text-sm underline mb-4 pointer-coarse:min-h-11"
             >
               Syna visbendingu
             </button>

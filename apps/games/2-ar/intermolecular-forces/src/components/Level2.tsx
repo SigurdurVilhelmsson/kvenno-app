@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import { SolubilityPrediction } from './SolubilityPrediction';
 
@@ -440,7 +440,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <button onClick={onBack} className="text-warm-600 hover:text-warm-800">
+          <button
+            onClick={onBack}
+            className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+          >
             ← Til baka
           </button>
           <div className="text-right">
@@ -458,7 +461,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <div className="mb-4">
             <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
               {problem.propertyName}
@@ -495,7 +498,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               Röðunin þín (
               {problem.orderDirection === 'lowestFirst' ? 'lægst → hæst' : 'hæst → lægst'}):
             </div>
-            <div className="flex gap-2 items-center">
+            {/* Phones: the slots run top to bottom. Side by side, three or four slots are wider
+                than the screen. */}
+            <div className="flex flex-col gap-1 sm:flex-row sm:gap-2 sm:items-center">
               {problem.compounds.map((_, idx) => {
                 const placedId = userOrder[idx];
                 const placedCompound = placedId
@@ -503,7 +508,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   : null;
                 const correctId = problem.correctOrder[idx];
 
-                const slotClasses = `min-w-24 p-3 rounded-xl border-2 text-center ${
+                const slotClasses = `w-full sm:w-auto min-w-24 p-3 rounded-xl border-2 text-center flex items-baseline justify-center gap-2 sm:block ${
                   showResult
                     ? placedId === correctId
                       ? 'border-green-500 bg-green-50'
@@ -513,8 +518,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       : 'border-dashed border-warm-300'
                 }`;
                 return (
-                  <div key={idx} className="flex items-center gap-2">
-                    {idx > 0 && <span className="text-warm-400">→</span>}
+                  <div key={idx} className="flex flex-col items-center gap-1 sm:flex-row sm:gap-2">
+                    {idx > 0 && (
+                      <span className="text-warm-400 max-sm:leading-none">
+                        <span className="sm:hidden">↓</span>
+                        <span className="hidden sm:inline">→</span>
+                      </span>
+                    )}
                     {placedCompound && !showResult ? (
                       <button
                         type="button"
@@ -548,21 +558,30 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             )}
           </div>
 
-          {/* Compound info table */}
+          {/* Compound info table. Below sm the molar mass moves under the formula: three
+              columns did not fit 320 px when the formula is CH₃CH₂CH₂CH₃, and the table
+              scrolled with its last badge cut off. */}
           <div className="mb-6 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-warm-100">
                   <th className="p-2 text-left">Efni</th>
-                  <th className="p-2 text-left">Mólmassi</th>
+                  <th className="hidden sm:table-cell p-2 text-left">Mólmassi</th>
                   <th className="p-2 text-left">IMF</th>
                 </tr>
               </thead>
               <tbody>
                 {problem.compounds.map((compound) => (
                   <tr key={compound.id} className="border-t">
-                    <td className="p-2 font-bold">{compound.formula}</td>
-                    <td className="p-2">{compound.molarMass} g/mol</td>
+                    <td className="p-2 font-bold">
+                      {compound.formula}
+                      <div className="sm:hidden text-xs font-normal text-warm-600 whitespace-nowrap">
+                        M = {compound.molarMass} g/mol
+                      </div>
+                    </td>
+                    <td className="hidden sm:table-cell p-2 whitespace-nowrap">
+                      {compound.molarMass} g/mol
+                    </td>
                     <td className="p-2">
                       <div className="flex flex-wrap gap-1">
                         {compound.imfs.map((imf) => (
@@ -591,7 +610,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           {!showResult && !showHint && (
             <button
               onClick={handleShowHint}
-              className="text-indigo-600 hover:text-indigo-800 text-sm underline mb-4"
+              className="text-indigo-600 hover:text-indigo-800 text-sm underline mb-4 pointer-coarse:py-3 pointer-coarse:-mt-3 pointer-coarse:mb-1"
             >
               Sýna vísbendingu
             </button>
@@ -637,7 +656,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   <div className="font-bold text-indigo-800 mb-3 flex items-center gap-2">
                     <span className="text-lg">📊</span> Raunveruleg suðumörk
                   </div>
-                  <div className="space-y-2">
+                  {/* A grid, so every bar starts at the same x even when one formula is long
+                      (CH₃CH₂CH₂CH₃ no longer fits a fixed 4rem label). Below lg the
+                      temperature sits in its own column: inside a short bar it was clipped,
+                      and '-161°C' read as 'C' and '-85°C' as '85°C' on a phone, and '-188°C'
+                      as '8°C' in landscape (740 px), where the track is still only ~550 px. */}
+                  <div className="grid grid-cols-[auto_1fr_auto] lg:grid-cols-[minmax(4rem,auto)_1fr] items-center gap-x-3 gap-y-2">
                     {problem.correctOrder.map((id, idx) => {
                       const compound = problem.compounds.find((c) => c.id === id)!;
                       // Calculate bar width (scale from -200 to 300 for visualization)
@@ -648,11 +672,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       const barWidth = Math.max(5, Math.min(100, normalized));
 
                       return (
-                        <div key={id} className="flex items-center gap-3">
-                          <div className="w-16 text-sm font-bold text-warm-700">
+                        <Fragment key={id}>
+                          <div className="text-sm font-bold text-warm-700 whitespace-nowrap">
                             {compound.formula}
                           </div>
-                          <div className="flex-1 bg-warm-200 rounded-full h-6 relative overflow-hidden">
+                          <div className="bg-warm-200 rounded-full h-6 relative overflow-hidden">
                             <div
                               className={`h-full rounded-full transition-all duration-500 flex items-center justify-end pr-2 ${
                                 idx === 0
@@ -663,12 +687,15 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                               }`}
                               style={{ width: `${barWidth}%` }}
                             >
-                              <span className="text-xs font-bold text-white drop-shadow">
+                              <span className="hidden lg:inline text-xs font-bold text-white drop-shadow">
                                 {compound.boilingPoint}°C
                               </span>
                             </div>
                           </div>
-                        </div>
+                          <div className="lg:hidden text-xs font-bold text-warm-700 text-right whitespace-nowrap">
+                            {compound.boilingPoint}°C
+                          </div>
+                        </Fragment>
                       );
                     })}
                   </div>

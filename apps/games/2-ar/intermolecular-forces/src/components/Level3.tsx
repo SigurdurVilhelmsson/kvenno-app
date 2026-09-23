@@ -473,7 +473,10 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <button onClick={onBack} className="text-warm-600 hover:text-warm-800">
+          <button
+            onClick={onBack}
+            className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+          >
             ← Til baka
           </button>
           <div className="text-right">
@@ -491,7 +494,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           {/* Type badge and title */}
           <div className="mb-4">
             <span
@@ -510,10 +513,14 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
           {/* Compounds comparison if available */}
           {challenge.compounds && (
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
               {challenge.compounds.map((compound) => (
-                <div key={compound.formula} className="bg-warm-900 p-4 rounded-xl text-center">
-                  <div className="text-xl font-bold text-white">{compound.formula}</div>
+                <div
+                  key={compound.formula}
+                  className="bg-warm-900 px-2 py-3 sm:p-4 rounded-xl text-center min-w-0"
+                >
+                  {/* Sized to fit a phone column whole: CH₃CH₂OH must not break mid-formula. */}
+                  <div className="text-lg sm:text-xl font-bold text-white">{compound.formula}</div>
                   <div className="text-warm-400 text-sm">{compound.name}</div>
                   <div className="text-indigo-400 text-sm mt-1">{compound.info}</div>
                 </div>
@@ -562,7 +569,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           {!showResult && !showHint && (
             <button
               onClick={handleShowHint}
-              className="text-indigo-600 hover:text-indigo-800 text-sm underline mb-4"
+              className="text-indigo-600 hover:text-indigo-800 text-sm underline mb-4 pointer-coarse:py-3 pointer-coarse:-mt-3 pointer-coarse:mb-1"
             >
               Sýna vísbendingu
             </button>

@@ -36,10 +36,16 @@ export function Beaker({
 
   return (
     <div className="beaker" style={{ textAlign: 'center' }}>
+      {/* Overflow is visible so the graduation labels, which are anchored at
+          x = 10 and run left past the edge, show as "100" and not "00". Marks
+          above maxVolume would then draw above the beaker, so they are left
+          out; they were clipped away before. */}
       <svg
         width={width}
         height={height}
         viewBox={`0 0 ${width} ${height}`}
+        overflow="visible"
+        className="mx-auto"
         role="img"
         aria-label={`Biker: ${volume} mL${concentration ? `, ${formatDecimal(concentration)} M` : ''}${label ? `, ${label}` : ''}`}
       >
@@ -53,17 +59,26 @@ export function Beaker({
         />
 
         {/* Graduation marks */}
-        {[100, 200, 300, 400, 500].map((vol) => {
-          const y = 180 - (vol / maxVolume) * 150;
-          return (
-            <g key={vol}>
-              <line x1="20" y1={y} x2="15" y2={y} stroke="#6b7280" strokeWidth="1" />
-              <text x="10" y={y + 3} fontSize="8" fill="#6b7280" textAnchor="end">
-                {vol}
-              </text>
-            </g>
-          );
-        })}
+        {[100, 200, 300, 400, 500]
+          .filter((vol) => vol <= maxVolume)
+          .map((vol) => {
+            const y = 180 - (vol / maxVolume) * 150;
+            return (
+              <g key={vol}>
+                <line x1="20" y1={y} x2="15" y2={y} stroke="#6b7280" strokeWidth="1" />
+                <text
+                  x="10"
+                  y={y + 3}
+                  fontSize="8"
+                  fill="#6b7280"
+                  textAnchor="end"
+                  className="text-[8px] max-sm:text-[13px] pointer-coarse:text-[13px]"
+                >
+                  {vol}
+                </text>
+              </g>
+            );
+          })}
 
         {/* Solution fill */}
         <path
@@ -91,6 +106,7 @@ export function Beaker({
             y={180 - fillHeight / 2}
             fontSize="11"
             fontWeight="700"
+            className="text-[11px] max-sm:text-[13px] pointer-coarse:text-[13px]"
             fill="#1f2937"
             textAnchor="middle"
             style={{ paintOrder: 'stroke', stroke: 'white', strokeWidth: 3 }}

@@ -1,9 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 
 import { AnimatedMolecule } from '@shared/components';
 import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
 
 import { ElectronRepulsionAnimation } from './ElectronRepulsionAnimation';
+import { useScrollTopOnChange } from '../utils/phoneScroll';
 import { vseprToMolecule } from '../utils/vseprConverter';
 
 interface Level2Props {
@@ -298,6 +299,22 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const molecule = molecules[currentMolecule];
   const step = STEPS[currentStep];
 
+  // A new molecule replaces the screen; on a phone start it at the top, where
+  // the molecule is, rather than on the empty count inputs part-way down.
+  useScrollTopOnChange(currentMolecule);
+
+  // Below md the two panels stack, so a correct geometry prediction inserts the
+  // molecule and the repulsion animation above the step panel and pushes the
+  // feedback and the next button off-screen. Bring the button back into view.
+  // From md up the panels sit side by side and the feedback stays where the
+  // student is looking, so the page is left alone there.
+  const nextButtonRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!geometryRevealed || step.id !== 'geometry') return;
+    if (window.matchMedia?.('(min-width: 48rem)').matches) return;
+    nextButtonRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+  }, [geometryRevealed, step.id]);
+
   // Get constrained geometry options for the current molecule's domain count
   const geometryOptions = useMemo(
     () => GEOMETRIES_BY_DOMAINS[molecule.electronDomains] || GEOMETRY_OPTIONS,
@@ -400,7 +417,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
           >
             <span>&larr;</span> Til baka
           </button>
@@ -423,7 +440,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         </div>
 
         {/* Steps indicator */}
-        <div className="flex gap-2 mb-6">
+        <div className="grid grid-cols-2 gap-2 sm:flex mb-6">
           {STEPS.map((s, idx) => (
             <div
               key={s.id}
@@ -440,7 +457,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           ))}
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           {/* Molecule display */}
           <div className="flex flex-col md:flex-row gap-6 mb-8">
             <div className="flex-1">
@@ -450,7 +467,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   <div className="flex justify-center gap-2 mb-3">
                     <button
                       onClick={() => setViewMode('2d')}
-                      className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                      className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors pointer-coarse:min-h-11 ${
                         viewMode === '2d'
                           ? 'bg-teal-600 text-white'
                           : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
@@ -460,7 +477,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     </button>
                     <button
                       onClick={() => setViewMode('3d')}
-                      className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                      className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors pointer-coarse:min-h-11 ${
                         viewMode === '3d'
                           ? 'bg-teal-600 text-white'
                           : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
@@ -470,7 +487,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     </button>
                   </div>
 
-                  <div className="bg-warm-900 rounded-xl p-6">
+                  <div className="bg-warm-900 rounded-xl p-4 sm:p-6">
                     <div className="text-center">
                       <div className="text-3xl font-bold text-white mb-2">{molecule.formula}</div>
                       <div className="text-warm-400 mb-4">{molecule.name}</div>
@@ -517,7 +534,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       </div>
                       {viewMode === '3d' && (
                         <div className="text-xs text-warm-500 mt-2">
-                          Dragðu til að snúa, skrollaðu til að stækka
+                          {/* A wheel does not exist on a phone: zoom there is a pinch. */}
+                          <span className="pointer-coarse:hidden">
+                            Dragðu til að snúa, skrollaðu til að stækka
+                          </span>
+                          <span className="hidden pointer-coarse:inline">
+                            Dragðu til að snúa, notaðu tvo fingur til að stækka
+                          </span>
                         </div>
                       )}
                     </div>
@@ -525,7 +548,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
                   {/* Repulsion animation — show why the geometry forms */}
                   {ANIMATED_GEOMETRIES.has(molecule.correctGeometryId) && (
-                    <div className="mt-4 bg-indigo-50 rounded-xl p-4 border border-indigo-200">
+                    <div className="mt-4 bg-indigo-50 rounded-xl p-3 sm:p-4 border border-indigo-200">
                       <div className="text-sm font-bold text-indigo-800 mb-2">
                         Hvers vegna þessi lögun?
                       </div>
@@ -540,7 +563,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 </>
               ) : (
                 /* Before geometry predicted — show Lewis structure + domain info */
-                <div className="bg-warm-900 rounded-xl p-6">
+                <div className="bg-warm-900 rounded-xl p-4 sm:p-6">
                   <div className="text-center">
                     <div className="text-3xl font-bold text-white mb-2">{molecule.formula}</div>
                     <div className="text-warm-400 mb-2">{molecule.name}</div>
@@ -553,7 +576,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               )}
             </div>
 
-            <div className="flex-1 bg-warm-50 rounded-xl p-6">
+            <div className="flex-1 bg-warm-50 rounded-xl p-4 sm:p-6">
               <h3 className="font-bold text-warm-700 mb-4">Miðatóm: {molecule.centralAtom}</h3>
 
               {/* Step content */}
@@ -673,6 +696,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     onChange={(e) => setSelectedAngle(e.target.value)}
                     disabled={stepResult !== null}
                     placeholder="t.d. 109.5° eða 90° og 120°"
+                    autoComplete="off"
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
                     className="w-full p-3 border-2 border-warm-300 rounded-xl"
                   />
                   {stepResult === 'correct' && (
@@ -693,7 +720,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                         <span className="text-lg">📐</span> Tengihorn í {molecule.molecularGeometry}
                       </div>
                       <div className="flex items-center justify-center py-4">
-                        <svg width="180" height="120" viewBox="0 0 180 120" className="drop-shadow">
+                        <svg
+                          width="180"
+                          height="120"
+                          viewBox="0 0 180 120"
+                          className="drop-shadow max-w-full h-auto"
+                        >
                           {/* Central atom */}
                           <circle
                             cx="90"
@@ -1107,7 +1139,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 setShowHint(true);
                 setTotalHintsUsed((prev) => prev + 1);
               }}
-              className="text-teal-600 hover:text-teal-800 text-sm underline mb-4"
+              className="text-teal-600 hover:text-teal-800 text-sm underline mb-4 pointer-coarse:min-h-11"
             >
               Syna visbendingu
             </button>
@@ -1151,6 +1183,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             </button>
           ) : (
             <button
+              ref={nextButtonRef}
               onClick={nextStep}
               className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
             >
@@ -1164,92 +1197,92 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         </div>
 
         {/* Reference table */}
-        <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
+        <div className="mt-6 bg-white rounded-xl p-3 sm:p-4 shadow-sm">
           <h3 className="font-bold text-warm-700 mb-3">Lögunartafla</h3>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-xs sm:text-sm">
               <thead>
                 <tr className="bg-warm-50">
-                  <th className="p-2 text-left">Rafeinasvið</th>
-                  <th className="p-2 text-left">BP</th>
-                  <th className="p-2 text-left">LP</th>
-                  <th className="p-2 text-left">Lögun</th>
-                  <th className="p-2 text-left">Horn</th>
+                  <th className="p-1 sm:p-2 text-left">Rafeinasvið</th>
+                  <th className="p-1 sm:p-2 text-left">BP</th>
+                  <th className="p-1 sm:p-2 text-left">LP</th>
+                  <th className="p-1 sm:p-2 text-left">Lögun</th>
+                  <th className="p-1 sm:p-2 text-left">Horn</th>
                 </tr>
               </thead>
               <tbody>
                 <tr className="border-t">
-                  <td className="p-2">2</td>
+                  <td className="p-1 sm:p-2">2</td>
                   <td>2</td>
                   <td>0</td>
                   <td>Línuleg</td>
                   <td>180°</td>
                 </tr>
                 <tr className="border-t">
-                  <td className="p-2">3</td>
+                  <td className="p-1 sm:p-2">3</td>
                   <td>3</td>
                   <td>0</td>
                   <td>Þríhyrnd slétt</td>
                   <td>120°</td>
                 </tr>
                 <tr className="border-t">
-                  <td className="p-2">3</td>
+                  <td className="p-1 sm:p-2">3</td>
                   <td>2</td>
                   <td>1</td>
                   <td>Beygð</td>
                   <td>&lt;120°</td>
                 </tr>
                 <tr className="border-t">
-                  <td className="p-2">4</td>
+                  <td className="p-1 sm:p-2">4</td>
                   <td>4</td>
                   <td>0</td>
                   <td>Fjórflötungur</td>
                   <td>109.5°</td>
                 </tr>
                 <tr className="border-t">
-                  <td className="p-2">4</td>
+                  <td className="p-1 sm:p-2">4</td>
                   <td>3</td>
                   <td>1</td>
                   <td>Þríhyrnd pýramída</td>
                   <td>107°</td>
                 </tr>
                 <tr className="border-t">
-                  <td className="p-2">4</td>
+                  <td className="p-1 sm:p-2">4</td>
                   <td>2</td>
                   <td>2</td>
                   <td>Beygð</td>
                   <td>104.5°</td>
                 </tr>
                 <tr className="border-t bg-purple-50">
-                  <td className="p-2">5</td>
+                  <td className="p-1 sm:p-2">5</td>
                   <td>5</td>
                   <td>0</td>
                   <td>Þríhyrnd tvípýramída</td>
                   <td>90°, 120°</td>
                 </tr>
                 <tr className="border-t bg-purple-50">
-                  <td className="p-2">5</td>
+                  <td className="p-1 sm:p-2">5</td>
                   <td>4</td>
                   <td>1</td>
                   <td>Sjáldruslögun</td>
                   <td>~90°, ~120°</td>
                 </tr>
                 <tr className="border-t bg-purple-50">
-                  <td className="p-2">5</td>
+                  <td className="p-1 sm:p-2">5</td>
                   <td>3</td>
                   <td>2</td>
                   <td>T-lögun</td>
                   <td>90°</td>
                 </tr>
                 <tr className="border-t bg-indigo-50">
-                  <td className="p-2">6</td>
+                  <td className="p-1 sm:p-2">6</td>
                   <td>6</td>
                   <td>0</td>
                   <td>Áttflötungur</td>
                   <td>90°</td>
                 </tr>
                 <tr className="border-t bg-indigo-50">
-                  <td className="p-2">6</td>
+                  <td className="p-1 sm:p-2">6</td>
                   <td>4</td>
                   <td>2</td>
                   <td>Ferningsslétt</td>

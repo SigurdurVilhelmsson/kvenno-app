@@ -554,14 +554,17 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <button onClick={onBack} className="text-warm-600 hover:text-warm-800">
+            <button
+              onClick={onBack}
+              className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+            >
               ← Til baka
             </button>
             <div className="text-sm text-warm-600">Stig 1: Kynning</div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 mb-6">
-            <h2 className="text-2xl font-bold text-indigo-800 mb-6">
+          <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-indigo-800 mb-6">
               Tegundir millisameindakrafta (IMF)
             </h2>
 
@@ -569,7 +572,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               {IMF_TYPES.map((imf) => (
                 <div
                   key={imf.id}
-                  className={`p-6 rounded-xl border-2 ${
+                  className={`p-4 sm:p-6 rounded-xl border-2 ${
                     imf.id === 'london'
                       ? 'bg-purple-50 border-purple-200'
                       : imf.id === 'dipole'
@@ -577,9 +580,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                         : 'bg-red-50 border-red-200'
                   }`}
                 >
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-3 sm:gap-4">
                     <div
-                      className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl ${
+                      className={`w-12 h-12 sm:w-16 sm:h-16 shrink-0 rounded-full flex items-center justify-center text-xl sm:text-2xl ${
                         imf.id === 'london'
                           ? 'bg-purple-200'
                           : imf.id === 'dipole'
@@ -589,11 +592,11 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                     >
                       {imf.id === 'london' ? '🌫️' : imf.id === 'dipole' ? '⚡' : '🔗'}
                     </div>
-                    <div className="flex-1">
-                      <h3 className="text-xl font-bold text-warm-800">{imf.name}</h3>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg sm:text-xl font-bold text-warm-800">{imf.name}</h3>
                       <div className="text-sm text-warm-500 mb-2">{imf.nameEn}</div>
                       <p className="text-warm-700 mb-3">{imf.description}</p>
-                      <div className="flex items-center gap-4">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                         <span
                           className={`px-3 py-1 rounded-full text-sm font-medium ${
                             imf.id === 'london'
@@ -660,7 +663,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <button onClick={() => setPhase('learn')} className="text-warm-600 hover:text-warm-800">
+          <button
+            onClick={() => setPhase('learn')}
+            className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+          >
             ← Skoða kennslu
           </button>
           <div className="text-right">
@@ -678,9 +684,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           {/* Molecule display with visualization */}
-          <div className="bg-warm-900 rounded-xl p-6 mb-6">
+          <div className="bg-warm-900 rounded-xl p-4 sm:p-6 mb-6">
             <div className="text-center mb-4">
               <div className="text-4xl font-bold text-white mb-1">{molecule.formula}</div>
               <div className="text-warm-400">{molecule.name}</div>
@@ -697,7 +703,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 role="radio"
                 aria-checked={viewMode === '2d'}
                 aria-label="Tvívíð birting"
-                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                className={`px-4 py-1.5 pointer-coarse:py-3 rounded-lg text-sm font-medium transition-colors ${
                   viewMode === '2d'
                     ? 'bg-indigo-600 text-white'
                     : 'bg-warm-700 text-warm-300 hover:bg-warm-600'
@@ -710,7 +716,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 role="radio"
                 aria-checked={viewMode === '3d'}
                 aria-label="Þrívíð birting"
-                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                className={`px-4 py-1.5 pointer-coarse:py-3 rounded-lg text-sm font-medium transition-colors ${
                   viewMode === '3d'
                     ? 'bg-indigo-600 text-white'
                     : 'bg-warm-700 text-warm-300 hover:bg-warm-600'
@@ -722,7 +728,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
             {/* Molecular structure visualization */}
             {molecule.visualization && (
-              <div className="bg-warm-800 rounded-lg p-4 mb-4">
+              <div className="bg-warm-800 rounded-lg p-3 sm:p-4 mb-4">
                 <div className="flex justify-center py-2">
                   {viewMode === '2d' ? (
                     <AnimatedMolecule
@@ -763,7 +769,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 </div>
                 {/* Legend for partial charges */}
                 {molecule.isPolar && viewMode === '2d' && (
-                  <div className="flex justify-center gap-4 mt-3 text-xs">
+                  <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-xs">
                     <span className="text-red-400">δ+ = Jákvætt skautað</span>
                     <span className="text-blue-400">δ− = Neikvætt skautað</span>
                   </div>
@@ -811,7 +817,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   key={imf.id}
                   onClick={() => toggleIMF(imf.id)}
                   disabled={showResult}
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
+                  className={`w-full px-3 py-4 sm:p-4 rounded-xl border-2 text-left transition-all ${
                     showResult
                       ? isCorrectChoice
                         ? 'border-green-500 bg-green-50'
@@ -829,9 +835,11 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                         : 'border-warm-300 hover:border-warm-400'
                   }`}
                 >
-                  <div className="flex items-center gap-3">
+                  {/* At 320 px the name, the tick box and the strength badge only just fit side
+                      by side: tighter padding and gap below sm, and the box never shrinks. */}
+                  <div className="flex items-center gap-2 sm:gap-3">
                     <div
-                      className={`w-6 h-6 rounded border-2 flex items-center justify-center ${
+                      className={`w-6 h-6 shrink-0 rounded border-2 flex items-center justify-center ${
                         isSelected
                           ? 'bg-indigo-500 border-indigo-500 text-white'
                           : 'border-warm-400'
@@ -864,7 +872,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           {!showResult && !showHint && (
             <button
               onClick={handleShowHint}
-              className="text-indigo-600 hover:text-indigo-800 text-sm underline mb-4"
+              className="text-indigo-600 hover:text-indigo-800 text-sm underline mb-4 pointer-coarse:py-3 pointer-coarse:-mt-3 pointer-coarse:mb-1"
             >
               Sýna vísbendingu
             </button>
@@ -936,16 +944,17 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         {/* Quick reference with IMF strength scale */}
         <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
           <h3 className="font-bold text-warm-700 mb-2">Flýtileiðbeiningar</h3>
-          <div className="grid grid-cols-3 gap-2 text-xs mb-3">
-            <div className="bg-purple-50 p-2 rounded text-center">
+          {/* Phones: one row per force; three columns split 'Vetnistengi' mid-word. */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs mb-3">
+            <div className="bg-purple-50 p-2 rounded flex items-center justify-between gap-2 text-right sm:block sm:text-center">
               <div className="font-bold text-purple-700">London</div>
               <div className="text-purple-600">ALLTAF til staðar</div>
             </div>
-            <div className="bg-blue-50 p-2 rounded text-center">
+            <div className="bg-blue-50 p-2 rounded flex items-center justify-between gap-2 text-right sm:block sm:text-center">
               <div className="font-bold text-blue-700">Tvípól-tvípól</div>
               <div className="text-blue-600">Skautaðar sameindir</div>
             </div>
-            <div className="bg-red-50 p-2 rounded text-center">
+            <div className="bg-red-50 p-2 rounded flex items-center justify-between gap-2 text-right sm:block sm:text-center">
               <div className="font-bold text-red-700">Vetnistengi</div>
               <div className="text-red-600">H-F, H-O, H-N</div>
             </div>

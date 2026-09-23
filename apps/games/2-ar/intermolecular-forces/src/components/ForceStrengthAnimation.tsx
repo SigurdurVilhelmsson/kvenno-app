@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+
+import { useContainerWidth } from '@shared/components/ResponsiveContainer';
 
 interface ForceStrengthAnimationProps {
   /** Selected force type to highlight */
@@ -88,10 +90,20 @@ export function ForceStrengthAnimation({
     return () => clearInterval(interval);
   }, [animate]);
 
-  // SVG dimensions
-  const width = compact ? 280 : 380;
+  // SVG dimensions. The drawing is laid out at its preferred width; when the container is
+  // narrower (a phone), it is laid out at the container's width instead of being scaled down,
+  // so its labels keep their size rather than shrinking to 6 px.
+  const svgWrapRef = useRef<HTMLDivElement>(null);
+  const containerWidth = useContainerWidth(svgWrapRef);
+  const preferredWidth = compact ? 280 : 380;
+  const narrow = containerWidth !== null && containerWidth < preferredWidth;
+  const width = narrow ? Math.max(200, Math.floor(containerWidth)) : preferredWidth;
   const height = compact ? 200 : 280;
-  const margin = { top: 20, right: 20, bottom: 40, left: 20 };
+  const margin = narrow
+    ? { top: 20, right: 8, bottom: 40, left: 8 }
+    : { top: 20, right: 20, bottom: 40, left: 20 };
+  // Molecule pairs in the three-column comparison shrink with their column.
+  const comparisonScale = Math.min(1, (width - margin.left - margin.right) / 3 / ((380 - 40) / 3));
 
   // Calculate animated oscillation for molecule pairs
   const getOscillation = (baseOffset: number, strength: number) => {
@@ -122,16 +134,17 @@ export function ForceStrengthAnimation({
   const selectedData = selectedForce ? FORCES.find((f) => f.id === selectedForce) : null;
 
   return (
-    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-4 shadow-lg">
-      <div className="flex justify-between items-center mb-3">
-        <h3 className="text-white font-bold text-sm flex items-center gap-2">
+    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-3 sm:p-4 shadow-lg">
+      {/* Wraps on a phone: the title's long word and the toggle do not fit on one line. */}
+      <div className="flex flex-wrap justify-between items-center gap-2 mb-3">
+        <h3 className="text-white font-bold text-sm flex items-center gap-2 min-w-0">
           <span className="text-lg">💪</span>
           Styrkur millisameindakrafta
         </h3>
         {interactive && (
           <button
             onClick={() => setShowComparison(!showComparison)}
-            className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+            className={`px-3 py-1 pointer-coarse:min-h-11 shrink-0 whitespace-nowrap rounded text-xs font-medium transition-colors ${
               showComparison
                 ? 'bg-yellow-500 text-white'
                 : 'bg-warm-600 text-warm-200 hover:bg-warm-500'
@@ -171,297 +184,319 @@ export function ForceStrengthAnimation({
               }}
             >
               <div className="text-lg mb-1">{force.icon}</div>
-              <div className="truncate">{force.name.split(' ')[0]}</div>
+              <div>{force.name.split(' ')[0]}</div>
             </button>
           ))}
         </div>
       )}
 
       {/* Animated visualization */}
-      <svg
-        width="100%"
-        height={height}
-        viewBox={`0 0 ${width} ${height}`}
-        preserveAspectRatio="xMidYMid meet"
-        className="bg-warm-950 rounded-lg"
-        role="img"
-        aria-label="Styrkur millisameindakrafta samanburður"
-      >
-        <defs>
-          {/* Gradients for molecules */}
-          <radialGradient id="moleculeGrad" cx="30%" cy="30%">
-            <stop offset="0%" stopColor="#fff" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="#666" stopOpacity="0.1" />
-          </radialGradient>
+      <div ref={svgWrapRef}>
+        <svg
+          width="100%"
+          height={height}
+          viewBox={`0 0 ${width} ${height}`}
+          preserveAspectRatio="xMidYMid meet"
+          className="bg-warm-950 rounded-lg"
+          role="img"
+          aria-label="Styrkur millisameindakrafta samanburður"
+        >
+          <defs>
+            {/* Gradients for molecules */}
+            <radialGradient id="moleculeGrad" cx="30%" cy="30%">
+              <stop offset="0%" stopColor="#fff" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="#666" stopOpacity="0.1" />
+            </radialGradient>
 
-          {/* Glow filter */}
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="3" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
+            {/* Glow filter */}
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+              <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
 
-        {/* Background grid */}
-        <pattern id="forceGrid" width="20" height="20" patternUnits="userSpaceOnUse">
-          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#374151" strokeWidth="0.5" />
-        </pattern>
-        <rect x="0" y="0" width={width} height={height} fill="url(#forceGrid)" opacity="0.3" />
+          {/* Background grid */}
+          <pattern id="forceGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#374151" strokeWidth="0.5" />
+          </pattern>
+          <rect x="0" y="0" width={width} height={height} fill="url(#forceGrid)" opacity="0.3" />
 
-        {/* Force comparison or single force display */}
-        {showComparison ? (
-          // Show all three forces side by side
-          FORCES.map((force, index) => {
-            const sectionWidth = (width - margin.left - margin.right) / 3;
-            const centerX = margin.left + sectionWidth * index + sectionWidth / 2;
-            const centerY = height / 2;
-            const oscillation = getOscillation(index * 33, force.strength);
+          {/* Force comparison or single force display */}
+          {showComparison ? (
+            // Show all three forces side by side
+            FORCES.map((force, index) => {
+              const sectionWidth = (width - margin.left - margin.right) / 3;
+              const centerX = margin.left + sectionWidth * index + sectionWidth / 2;
+              const centerY = height / 2;
+              const oscillation = getOscillation(index * 33, force.strength);
 
-            return (
-              <g key={force.id}>
-                {/* Section label */}
-                <text
-                  x={centerX}
-                  y={30}
-                  textAnchor="middle"
-                  className="fill-warm-400"
-                  style={{ fontSize: '10px' }}
-                >
-                  {force.name.split(' ')[0]}
-                </text>
+              return (
+                <g key={force.id}>
+                  {/* Section label */}
+                  <text
+                    x={centerX}
+                    y={30}
+                    textAnchor="middle"
+                    className="fill-warm-400 text-[10px] pointer-coarse:text-xs"
+                  >
+                    {narrow && force.name.split(' ')[0].includes('-') ? (
+                      // 'Tvípól-tvípól' is wider than a phone column: break it at the hyphen.
+                      <>
+                        <tspan x={centerX}>{force.name.split(' ')[0].split('-')[0]}-</tspan>
+                        <tspan x={centerX} dy="1.2em">
+                          {force.name.split(' ')[0].split('-')[1]}
+                        </tspan>
+                      </>
+                    ) : (
+                      force.name.split(' ')[0]
+                    )}
+                  </text>
 
-                {/* Molecule pair */}
-                <circle
-                  cx={centerX - 25 + oscillation}
-                  cy={centerY}
-                  r={15}
-                  fill={force.color}
-                  opacity="0.7"
-                />
-                <circle
-                  cx={centerX + 25 - oscillation}
-                  cy={centerY}
-                  r={15}
-                  fill={force.color}
-                  opacity="0.7"
-                />
-
-                {/* Force connection line */}
-                <path
-                  d={getSpringPath(
-                    centerX - 10 + oscillation,
-                    centerY,
-                    centerX + 10 - oscillation,
-                    centerY,
-                    force.strength
-                  )}
-                  fill="none"
-                  stroke={force.color}
-                  strokeWidth="2"
-                  strokeDasharray={force.strength > 5 ? 'none' : '4,2'}
-                />
-
-                {/* Strength bar */}
-                <rect
-                  x={centerX - 20}
-                  y={height - 50}
-                  width={40}
-                  height={10}
-                  rx={5}
-                  fill="#374151"
-                />
-                <rect
-                  x={centerX - 20}
-                  y={height - 50}
-                  width={(force.strength / 10) * 40}
-                  height={10}
-                  rx={5}
-                  fill={force.color}
-                />
-
-                {/* Strength label */}
-                <text
-                  x={centerX}
-                  y={height - 30}
-                  textAnchor="middle"
-                  className="fill-warm-400"
-                  style={{ fontSize: '9px' }}
-                >
-                  {force.energyRange} kJ/mol
-                </text>
-              </g>
-            );
-          })
-        ) : selectedForce ? (
-          // Show selected force in detail
-          (() => {
-            const force = FORCES.find((f) => f.id === selectedForce)!;
-            const centerX = width / 2;
-            const centerY = height / 2 - 20;
-            const oscillation = getOscillation(0, force.strength);
-
-            return (
-              <g>
-                {/* Large animated molecule pair */}
-                <g filter="url(#glow)">
+                  {/* Molecule pair */}
                   <circle
-                    cx={centerX - 50 + oscillation}
+                    cx={centerX + (-25 + oscillation) * comparisonScale}
                     cy={centerY}
-                    r={30}
+                    r={15 * comparisonScale}
                     fill={force.color}
-                    opacity="0.8"
+                    opacity="0.7"
                   />
                   <circle
-                    cx={centerX + 50 - oscillation}
+                    cx={centerX + (25 - oscillation) * comparisonScale}
                     cy={centerY}
-                    r={30}
+                    r={15 * comparisonScale}
                     fill={force.color}
-                    opacity="0.8"
+                    opacity="0.7"
                   />
+
+                  {/* Force connection line */}
+                  <path
+                    d={getSpringPath(
+                      centerX + (-10 + oscillation) * comparisonScale,
+                      centerY,
+                      centerX + (10 - oscillation) * comparisonScale,
+                      centerY,
+                      force.strength
+                    )}
+                    fill="none"
+                    stroke={force.color}
+                    strokeWidth="2"
+                    strokeDasharray={force.strength > 5 ? 'none' : '4,2'}
+                  />
+
+                  {/* Strength bar */}
+                  <rect
+                    x={centerX - 20}
+                    y={height - 50}
+                    width={40}
+                    height={10}
+                    rx={5}
+                    fill="#374151"
+                  />
+                  <rect
+                    x={centerX - 20}
+                    y={height - 50}
+                    width={(force.strength / 10) * 40}
+                    height={10}
+                    rx={5}
+                    fill={force.color}
+                  />
+
+                  {/* Strength label */}
+                  <text
+                    x={centerX}
+                    y={height - 30}
+                    textAnchor="middle"
+                    className="fill-warm-400 text-[9px] pointer-coarse:text-xs"
+                  >
+                    {narrow ? (
+                      <>
+                        <tspan x={centerX}>{force.energyRange}</tspan>
+                        <tspan x={centerX} dy="1.2em">
+                          kJ/mol
+                        </tspan>
+                      </>
+                    ) : (
+                      `${force.energyRange} kJ/mol`
+                    )}
+                  </text>
                 </g>
+              );
+            })
+          ) : selectedForce ? (
+            // Show selected force in detail
+            (() => {
+              const force = FORCES.find((f) => f.id === selectedForce)!;
+              const centerX = width / 2;
+              const centerY = height / 2 - 20;
+              const oscillation = getOscillation(0, force.strength);
 
-                {/* Partial charge labels */}
-                {force.id !== 'london' && (
-                  <>
-                    <text
-                      x={centerX - 50 + oscillation}
-                      y={centerY + 5}
-                      textAnchor="middle"
-                      className="fill-white font-bold"
-                      style={{ fontSize: '14px' }}
-                    >
-                      δ+
-                    </text>
-                    <text
-                      x={centerX + 50 - oscillation}
-                      y={centerY + 5}
-                      textAnchor="middle"
-                      className="fill-white font-bold"
-                      style={{ fontSize: '14px' }}
-                    >
-                      δ−
-                    </text>
-                  </>
-                )}
-
-                {/* Force visualization - spring or dotted line */}
-                <path
-                  d={getSpringPath(
-                    centerX - 20 + oscillation,
-                    centerY,
-                    centerX + 20 - oscillation,
-                    centerY,
-                    force.strength
-                  )}
-                  fill="none"
-                  stroke={force.color}
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                />
-
-                {/* Force arrows */}
-                <path
-                  d={`M ${centerX - 25 + oscillation} ${centerY} L ${centerX - 15 + oscillation} ${centerY - 5} L ${centerX - 15 + oscillation} ${centerY + 5} Z`}
-                  fill={force.color}
-                />
-                <path
-                  d={`M ${centerX + 25 - oscillation} ${centerY} L ${centerX + 15 - oscillation} ${centerY - 5} L ${centerX + 15 - oscillation} ${centerY + 5} Z`}
-                  fill={force.color}
-                />
-
-                {/* Force name */}
-                <text
-                  x={centerX}
-                  y={40}
-                  textAnchor="middle"
-                  className="fill-white font-bold"
-                  style={{ fontSize: '14px' }}
-                >
-                  {force.icon} {force.name}
-                </text>
-
-                {/* Energy range bar */}
-                <rect
-                  x={centerX - 80}
-                  y={height - 60}
-                  width={160}
-                  height={15}
-                  rx={7.5}
-                  fill="#374151"
-                />
-                <rect
-                  x={centerX - 80}
-                  y={height - 60}
-                  width={(force.strength / 10) * 160}
-                  height={15}
-                  rx={7.5}
-                  fill={force.color}
-                  className={animate ? 'animate-pulse' : ''}
-                />
-
-                {/* Energy label */}
-                <text
-                  x={centerX}
-                  y={height - 35}
-                  textAnchor="middle"
-                  className="fill-warm-300"
-                  style={{ fontSize: '11px' }}
-                >
-                  {force.energyRange} kJ/mol
-                </text>
-              </g>
-            );
-          })()
-        ) : (
-          // Default: show strength hierarchy
-          <g>
-            <text
-              x={width / 2}
-              y={height / 2}
-              textAnchor="middle"
-              className="fill-warm-400"
-              style={{ fontSize: '12px' }}
-            >
-              Veldu kraft til að sjá hermun
-            </text>
-
-            {/* Horizontal strength scale */}
-            <g transform={`translate(${margin.left}, ${height - 70})`}>
-              {FORCES.map((force, i) => {
-                const barWidth = ((width - margin.left - margin.right) / 10) * force.strength;
-                const y = i * 20;
-
-                return (
-                  <g key={force.id}>
-                    <text x={0} y={y + 12} className="fill-warm-400" style={{ fontSize: '9px' }}>
-                      {force.icon}
-                    </text>
-                    <rect
-                      x={20}
-                      y={y}
-                      width={width - margin.left - margin.right - 30}
-                      height={15}
-                      rx={4}
-                      fill="#374151"
-                    />
-                    <rect
-                      x={20}
-                      y={y}
-                      width={barWidth}
-                      height={15}
-                      rx={4}
+              return (
+                <g>
+                  {/* Large animated molecule pair */}
+                  <g filter="url(#glow)">
+                    <circle
+                      cx={centerX - 50 + oscillation}
+                      cy={centerY}
+                      r={30}
                       fill={force.color}
-                      className={animate ? 'transition-all duration-500' : ''}
+                      opacity="0.8"
+                    />
+                    <circle
+                      cx={centerX + 50 - oscillation}
+                      cy={centerY}
+                      r={30}
+                      fill={force.color}
+                      opacity="0.8"
                     />
                   </g>
-                );
-              })}
+
+                  {/* Partial charge labels */}
+                  {force.id !== 'london' && (
+                    <>
+                      <text
+                        x={centerX - 50 + oscillation}
+                        y={centerY + 5}
+                        textAnchor="middle"
+                        className="fill-white font-bold"
+                        style={{ fontSize: '14px' }}
+                      >
+                        δ+
+                      </text>
+                      <text
+                        x={centerX + 50 - oscillation}
+                        y={centerY + 5}
+                        textAnchor="middle"
+                        className="fill-white font-bold"
+                        style={{ fontSize: '14px' }}
+                      >
+                        δ−
+                      </text>
+                    </>
+                  )}
+
+                  {/* Force visualization - spring or dotted line */}
+                  <path
+                    d={getSpringPath(
+                      centerX - 20 + oscillation,
+                      centerY,
+                      centerX + 20 - oscillation,
+                      centerY,
+                      force.strength
+                    )}
+                    fill="none"
+                    stroke={force.color}
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                  />
+
+                  {/* Force arrows */}
+                  <path
+                    d={`M ${centerX - 25 + oscillation} ${centerY} L ${centerX - 15 + oscillation} ${centerY - 5} L ${centerX - 15 + oscillation} ${centerY + 5} Z`}
+                    fill={force.color}
+                  />
+                  <path
+                    d={`M ${centerX + 25 - oscillation} ${centerY} L ${centerX + 15 - oscillation} ${centerY - 5} L ${centerX + 15 - oscillation} ${centerY + 5} Z`}
+                    fill={force.color}
+                  />
+
+                  {/* Force name */}
+                  <text
+                    x={centerX}
+                    y={40}
+                    textAnchor="middle"
+                    className="fill-white font-bold"
+                    style={{ fontSize: '14px' }}
+                  >
+                    {force.icon} {force.name}
+                  </text>
+
+                  {/* Energy range bar */}
+                  <rect
+                    x={centerX - 80}
+                    y={height - 60}
+                    width={160}
+                    height={15}
+                    rx={7.5}
+                    fill="#374151"
+                  />
+                  <rect
+                    x={centerX - 80}
+                    y={height - 60}
+                    width={(force.strength / 10) * 160}
+                    height={15}
+                    rx={7.5}
+                    fill={force.color}
+                    className={animate ? 'animate-pulse' : ''}
+                  />
+
+                  {/* Energy label */}
+                  <text
+                    x={centerX}
+                    y={height - 35}
+                    textAnchor="middle"
+                    className="fill-warm-300 text-[11px] pointer-coarse:text-xs"
+                  >
+                    {force.energyRange} kJ/mol
+                  </text>
+                </g>
+              );
+            })()
+          ) : (
+            // Default: show strength hierarchy
+            <g>
+              <text
+                x={width / 2}
+                y={height / 2}
+                textAnchor="middle"
+                className="fill-warm-400"
+                style={{ fontSize: '12px' }}
+              >
+                Veldu kraft til að sjá hermun
+              </text>
+
+              {/* Horizontal strength scale */}
+              <g transform={`translate(${margin.left}, ${height - 70})`}>
+                {FORCES.map((force, i) => {
+                  const barWidth = ((width - margin.left - margin.right) / 10) * force.strength;
+                  const y = i * 20;
+
+                  return (
+                    <g key={force.id}>
+                      <text
+                        x={0}
+                        y={y + 12}
+                        className="fill-warm-400 text-[9px] pointer-coarse:text-xs"
+                      >
+                        {force.icon}
+                      </text>
+                      <rect
+                        x={20}
+                        y={y}
+                        width={width - margin.left - margin.right - 30}
+                        height={15}
+                        rx={4}
+                        fill="#374151"
+                      />
+                      <rect
+                        x={20}
+                        y={y}
+                        width={barWidth}
+                        height={15}
+                        rx={4}
+                        fill={force.color}
+                        className={animate ? 'transition-all duration-500' : ''}
+                      />
+                    </g>
+                  );
+                })}
+              </g>
             </g>
-          </g>
-        )}
-      </svg>
+          )}
+        </svg>
+      </div>
 
       {/* Selected force details */}
       {selectedData && !showComparison && (
@@ -480,7 +515,7 @@ export function ForceStrengthAnimation({
             </div>
           </div>
           <div className="text-warm-300 text-sm mb-2">{selectedData.description}</div>
-          <div className="flex gap-4 text-xs">
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
             <div>
               <span className="text-warm-400">Styrkssvið:</span>
               <span className="text-white ml-1">{selectedData.energyRange} kJ/mol</span>

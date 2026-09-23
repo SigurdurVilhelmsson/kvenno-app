@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { formatDecimal, parseStudentNumber, shuffleArray } from '@shared/utils';
@@ -7,6 +7,7 @@ import { Problem, ProblemType } from '../types';
 import { FormulaCard } from './FormulaCard';
 import { StepBySolution } from './StepBySolution';
 import { generateProblem } from '../utils/problem-generator';
+import { revealTop } from '../utils/reveal';
 import { validateInput, checkAnswer, getContextualFeedback } from '../utils/validation';
 
 const TOTAL = 8;
@@ -46,8 +47,15 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const [correct, setCorrect] = useState(false);
   const [done, setDone] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const problem = problems[idx];
+
+  // "Næsta dæmi" is below the worked solution, so on a phone the next
+  // question would otherwise start above the screen.
+  useEffect(() => {
+    revealTop(cardRef.current);
+  }, [idx]);
 
   const submit = () => {
     if (feedback) return;
@@ -96,7 +104,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white p-4">
         <div className="max-w-lg mx-auto">
-          <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+          <div className="bg-white rounded-xl shadow-lg p-6 sm:p-8 text-center">
             <div className="text-5xl mb-4">{passed ? '🎉' : '📚'}</div>
             <h2 className="text-2xl font-bold text-warm-800 mb-2">
               {passed ? 'Vel gert!' : 'Haltu áfram að æfa!'}
@@ -110,7 +118,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 style={{ width: `${(correctCount / TOTAL) * 100}%` }}
               />
             </div>
-            <div className="flex gap-3 justify-center">
+            <div className="flex flex-wrap gap-3 justify-center">
               <button
                 onClick={retry}
                 className="bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 px-6 rounded-xl transition-colors"
@@ -128,7 +136,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             </div>
             <button
               onClick={onBack}
-              className="mt-4 text-warm-500 hover:text-warm-700 font-semibold py-2"
+              className="mt-4 text-warm-500 hover:text-warm-700 font-semibold py-2 pointer-coarse:min-h-11"
             >
               ← Til baka í valmynd
             </button>
@@ -140,11 +148,19 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white p-4">
-      <div className="max-w-lg mx-auto">
+      {/* Flex column so the order can differ: below 1184 px the formula card is
+          in the flow (styles.css), and above the question it pushed the
+          question and the answer field off a phone's first screen, so there it
+          follows the question card instead. Wider, it is fixed to the side.
+          Scroll anchoring is off because, with the formula card below the
+          question, the browser anchored on it and scrolled the page down by
+          the height of the worked solution the moment it appeared, leaving
+          the student looking at the formulas instead of the feedback. */}
+      <div className="max-w-lg mx-auto flex flex-col [overflow-anchor:none]">
         {/* Header */}
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-          <div className="flex justify-between items-center">
-            <div>
+          <div className="flex justify-between items-center gap-3">
+            <div className="min-w-0">
               <h1 className="text-xl font-bold text-warm-800">Reikna styrk - Stigur 3</h1>
               <p className="text-sm text-warm-600">Notaðu formúlurnar til að reikna</p>
             </div>
@@ -169,12 +185,12 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         </div>
 
         {/* Formula reference -- always visible */}
-        <div className="bg-white/80 border border-warm-200 rounded-xl p-3 mb-4">
+        <div className="order-1 min-[1184px]:order-none bg-white/80 border border-warm-200 rounded-xl p-3 mb-4">
           <FormulaCard themeColor={THEME} />
         </div>
 
         {/* Question card */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-4" key={idx}>
+        <div ref={cardRef} className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4" key={idx}>
           <div
             className="inline-block bg-purple-100 px-3 py-1 rounded-full text-sm font-semibold mb-3"
             style={{ color: THEME }}
@@ -271,7 +287,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
         <button
           onClick={onBack}
-          className="w-full text-warm-500 hover:text-warm-700 font-semibold py-2"
+          className="order-2 min-[1184px]:order-none w-full text-warm-500 hover:text-warm-700 font-semibold py-2 pointer-coarse:min-h-11"
         >
           ← Til baka í valmynd
         </button>

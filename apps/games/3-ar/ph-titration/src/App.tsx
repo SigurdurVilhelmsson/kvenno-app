@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Header, ErrorBoundary, FadePresence, Presence } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
@@ -35,6 +35,18 @@ function App() {
     'ph-titration-progress',
     DEFAULT_PROGRESS
   );
+
+  // Each screen replaces the last in place, so without this a student who
+  // scrolled down the menu to a level card starts that level a screen or more
+  // below its top (on a phone, past the whole intro).
+  const firstScreen = useRef(true);
+  useEffect(() => {
+    if (firstScreen.current) {
+      firstScreen.current = false;
+      return;
+    }
+    window.scrollTo(0, 0);
+  }, [activeLevel]);
 
   const applyLevelResult = (
     levelKey: 'level1' | 'level2' | 'level3',
@@ -158,13 +170,13 @@ function App() {
         <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
           <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="pH Títrun" />
           <div className="min-h-screen p-4 md:p-8">
-            <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+            <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
               <p className="text-warm-600 mb-4">
                 Lærðu um sýru-basa títranir, títrunarkúrfur og vísa
               </p>
 
               {/* Pedagogical explanation */}
-              <div className="bg-purple-50 p-6 rounded-xl mb-8">
+              <div className="bg-purple-50 p-4 sm:p-6 rounded-xl mb-8">
                 <h2 className="font-bold text-purple-800 mb-3">Hvað er títrun?</h2>
                 <p className="text-purple-900 text-sm mb-4">
                   <strong>Títrun</strong> er aðferð til að ákvarða styrk óþekkts efnis með því að
@@ -172,8 +184,14 @@ function App() {
                   tímann og finnum <em>jafngildispunktinn</em> þar sem öll sýra/basi hefur hvarfast.
                 </p>
                 <div className="bg-white p-3 rounded-lg border border-purple-200">
-                  <p className="text-sm text-purple-800 font-mono text-center">
-                    V<sub>sýra</sub> × M<sub>sýra</sub> = V<sub>basa</sub> × M<sub>basa</sub>
+                  <p className="text-base md:text-sm text-purple-800 font-mono text-center">
+                    {/* Each side kept whole, so a narrow phone breaks at the = */}
+                    <span className="whitespace-nowrap">
+                      V<sub>sýra</sub> × M<sub>sýra</sub>
+                    </span>{' '}
+                    <span className="whitespace-nowrap">
+                      = V<sub>basa</sub> × M<sub>basa</sub>
+                    </span>
                   </p>
                 </div>
               </div>
@@ -183,15 +201,15 @@ function App() {
                 {/* Level 1 */}
                 <button
                   onClick={() => setActiveLevel('level1')}
-                  className="game-card w-full p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
+                  className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="text-4xl">📈</div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="text-3xl sm:text-4xl">📈</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                         <span className="text-xl font-bold text-blue-800">Stig 1: Skilningur</span>
                         {progress.level1Completed && (
-                          <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                          <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
                             ✓ {progress.level1Score} stig
                           </span>
                         )}
@@ -208,15 +226,15 @@ function App() {
                 {/* Level 2 */}
                 <button
                   onClick={() => setActiveLevel('level2')}
-                  className="game-card w-full p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
+                  className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="text-4xl">🧪</div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="text-3xl sm:text-4xl">🧪</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                         <span className="text-xl font-bold text-green-800">Stig 2: Framkvæmd</span>
                         {progress.level2Completed && (
-                          <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                          <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
                             ✓ {progress.level2Score} stig
                           </span>
                         )}
@@ -235,17 +253,17 @@ function App() {
                 {/* Level 3 */}
                 <button
                   onClick={() => setActiveLevel('level3')}
-                  className="game-card w-full p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
+                  className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="text-4xl">📐</div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="text-3xl sm:text-4xl">📐</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                         <span className="text-xl font-bold text-purple-800">
                           Stig 3: Útreikningar
                         </span>
                         {progress.level3Completed && (
-                          <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                          <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
                             ✓ {progress.level3Score} stig
                           </span>
                         )}
@@ -269,22 +287,26 @@ function App() {
                     <h3 className="font-semibold text-warm-700">Framvinda</h3>
                     <button
                       onClick={resetProgress}
-                      className="text-sm text-warm-500 hover:text-red-500 transition-colors"
+                      className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3"
                     >
                       Endurstilla
                     </button>
                   </div>
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div className="bg-blue-50 rounded-lg p-3">
-                      <div className="text-2xl font-bold text-blue-600">{levelsCompleted}/3</div>
+                  <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
+                    <div className="bg-blue-50 rounded-lg p-2 sm:p-3">
+                      <div className="text-xl sm:text-2xl font-bold text-blue-600">
+                        {levelsCompleted}/3
+                      </div>
                       <div className="text-xs text-warm-600">Stig lokið</div>
                     </div>
-                    <div className="bg-green-50 rounded-lg p-3">
-                      <div className="text-2xl font-bold text-green-600">{totalScore}</div>
+                    <div className="bg-green-50 rounded-lg p-2 sm:p-3">
+                      <div className="text-xl sm:text-2xl font-bold text-green-600">
+                        {totalScore}
+                      </div>
                       <div className="text-xs text-warm-600">Heildar stig</div>
                     </div>
-                    <div className="bg-purple-50 rounded-lg p-3">
-                      <div className="text-2xl font-bold text-purple-600">
+                    <div className="bg-purple-50 rounded-lg p-2 sm:p-3">
+                      <div className="text-xl sm:text-2xl font-bold text-purple-600">
                         {progress.totalGamesPlayed}
                       </div>
                       <div className="text-xs text-warm-600">Leikir spilaðir</div>
@@ -296,16 +318,24 @@ function App() {
               {/* Formula reference */}
               <div className="mt-6 bg-warm-50 p-4 rounded-xl">
                 <h3 className="font-semibold text-warm-700 mb-2">📐 Lykilformúlur</h3>
-                <div className="font-mono text-sm space-y-2 text-warm-600">
+                <div className="font-mono text-base md:text-sm space-y-2 text-warm-600">
                   <p>
-                    <strong>Títrunarjafna:</strong> V<sub>sýra</sub> × M<sub>sýra</sub> = V
-                    <sub>basa</sub> × M<sub>basa</sub>
+                    <strong>Títrunarjafna:</strong>{' '}
+                    <span className="whitespace-nowrap">
+                      V<sub>sýra</sub> × M<sub>sýra</sub>
+                    </span>{' '}
+                    <span className="whitespace-nowrap">
+                      = V<sub>basa</sub> × M<sub>basa</sub>
+                    </span>
                   </p>
                   <p>
                     <strong>Henderson-Hasselbalch:</strong> pH = pK<sub>a</sub> + log([A⁻]/[HA])
                   </p>
                   <p>
-                    <strong>Stuðpúðasvæði:</strong> pH = pK<sub>a</sub> ± 1
+                    <strong>Stuðpúðasvæði:</strong>{' '}
+                    <span className="whitespace-nowrap">
+                      pH = pK<sub>a</sub> ± 1
+                    </span>
                   </p>
                   <p>
                     <strong>Fjölprótón:</strong> Mörg jafngildispunkt fyrir H₂SO₃, H₃PO₄

@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { CLASSES, KIND_NAMES, SOLUTES, classOf, type ElectrolyteClass } from '../data/electrolytes';
+import { revealTop } from '../utils/reveal';
 
 /**
  * Stig 0 — Rafkleyfi.
@@ -51,6 +52,13 @@ export function Level0Electrolytes({ onComplete, onBack }: Props) {
   const [correct, setCorrect] = useState(0);
 
   const items = useMemo(() => shuffle(SOLUTES), []);
+  const progressRef = useRef<HTMLParagraphElement>(null);
+
+  // "Næsta" sits below the feedback, so on a short (landscape) phone screen
+  // the next solute's formula and name would otherwise start above the fold.
+  useEffect(() => {
+    revealTop(progressRef.current);
+  }, [index]);
   const item = items[index];
   const truth = item ? classOf(item) : 'sterkur';
   const isRight = answer === truth;
@@ -74,7 +82,7 @@ export function Level0Electrolytes({ onComplete, onBack }: Props) {
           það leysist.
         </p>
 
-        <div className="mb-6 grid gap-4 md:grid-cols-3">
+        <div className="mb-6 grid gap-4 sm:grid-cols-3">
           {ORDER.map((id) => (
             <div key={id} className="rounded-xl border-2 border-warm-200 bg-white p-4 text-center">
               <Bulb state={CLASSES[id].bulb} />
@@ -149,7 +157,7 @@ export function Level0Electrolytes({ onComplete, onBack }: Props) {
 
   return (
     <Shell title="Stig 0 — Rafkleyfi" onBack={onBack}>
-      <p className="mb-2 text-sm text-warm-600">
+      <p ref={progressRef} className="mb-2 text-sm text-warm-600">
         Efni {index + 1} af {items.length} · {correct} rétt
       </p>
 
@@ -168,7 +176,7 @@ export function Level0Electrolytes({ onComplete, onBack }: Props) {
       </div>
 
       {answer === null ? (
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-3">
           {ORDER.map((id) => (
             <button
               key={id}
@@ -208,7 +216,7 @@ export function Level0Electrolytes({ onComplete, onBack }: Props) {
           <button
             type="button"
             onClick={next}
-            className="game-btn mt-4 rounded-xl bg-green-600 px-4 py-2 font-bold text-white hover:bg-green-700"
+            className="game-btn mt-4 rounded-xl bg-green-600 px-4 py-2 font-bold text-white hover:bg-green-700 pointer-coarse:min-h-11"
           >
             {index + 1 >= items.length ? 'Ljúka' : 'Næsta'}
           </button>
@@ -229,10 +237,13 @@ function Shell({
 }) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white p-4 md:p-8">
-      <div className="mx-auto max-w-3xl rounded-2xl bg-white p-6 shadow-2xl md:p-8">
-        <div className="mb-6 flex items-baseline justify-between">
+      <div className="mx-auto max-w-3xl rounded-2xl bg-white p-4 shadow-2xl sm:p-6 md:p-8">
+        <div className="mb-6 flex items-baseline justify-between gap-3">
           <h2 className="text-2xl font-bold text-warm-800">{title}</h2>
-          <button onClick={onBack} className="text-sm text-warm-500 underline">
+          <button
+            onClick={onBack}
+            className="shrink-0 whitespace-nowrap text-sm text-warm-500 underline pointer-coarse:-mx-2 pointer-coarse:-my-3 pointer-coarse:px-2 pointer-coarse:py-3"
+          >
             Til baka
           </button>
         </div>

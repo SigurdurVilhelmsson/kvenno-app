@@ -259,7 +259,7 @@ export function ElectronRepulsionAnimation({
 
   return (
     <div
-      className={`bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border border-purple-200 ${compact ? 'p-4' : 'p-6'}`}
+      className={`bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border border-purple-200 ${compact ? 'p-3 sm:p-4' : 'p-4 sm:p-6'}`}
     >
       <div className="flex items-center justify-between mb-4">
         <h3
@@ -286,7 +286,7 @@ export function ElectronRepulsionAnimation({
           <button
             key={geo.id}
             onClick={() => handleGeometryChange(geo)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all pointer-coarse:min-h-11 ${
               selectedGeometry.id === geo.id
                 ? 'bg-purple-600 text-white'
                 : 'bg-white text-warm-700 hover:bg-purple-100 border border-warm-200'
@@ -299,12 +299,12 @@ export function ElectronRepulsionAnimation({
       </div>
 
       {/* Animation canvas */}
-      <div className="bg-white rounded-xl p-4 mb-4 shadow-inner">
+      <div className="bg-white rounded-xl p-2 sm:p-4 mb-4 shadow-inner">
         <svg
           width={width}
           height={height}
           viewBox="0 0 1 1"
-          className="mx-auto"
+          className="mx-auto max-w-full h-auto"
           style={{ overflow: 'visible' }}
           role="img"
           aria-label="Hreyfimynd sem sýnir fráhrindingu rafeindapara og VSEPR lögun sameindar"
@@ -419,6 +419,7 @@ export function ElectronRepulsionAnimation({
                   fill="white"
                   fontSize="0.04"
                   fontWeight="bold"
+                  className="max-sm:text-[0.06px]"
                 >
                   {i - selectedGeometry.lonePairs + 1}
                 </text>
@@ -459,14 +460,14 @@ export function ElectronRepulsionAnimation({
       <div className="flex gap-3">
         <button
           onClick={initializeDomains}
-          className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-700 font-medium py-2 px-4 rounded-lg transition-all"
+          className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-700 font-medium py-2 px-4 rounded-lg transition-all pointer-coarse:min-h-11"
         >
           Endurstilla
         </button>
         <button
           onClick={startAnimation}
           disabled={isAnimating}
-          className="flex-1 bg-purple-500 hover:bg-purple-600 disabled:bg-purple-300 text-white font-bold py-2 px-4 rounded-lg transition-all"
+          className="flex-1 bg-purple-500 hover:bg-purple-600 disabled:bg-purple-300 text-white font-bold py-2 px-4 rounded-lg transition-all pointer-coarse:min-h-11"
         >
           {isAnimating ? 'Hrinda...' : 'Hrinda rafeindum'}
         </button>

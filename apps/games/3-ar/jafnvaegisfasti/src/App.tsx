@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { ErrorBoundary, Header } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
@@ -7,6 +7,7 @@ import { AefaScreen } from './components/AefaScreen';
 import { BeitaScreen } from './components/BeitaScreen';
 import { KannaScreen } from './components/KannaScreen';
 import { SkiljaScreen } from './components/SkiljaScreen';
+import { useRevealTopOnChange } from './utils/reveal';
 import './styles.css';
 
 type Screen = 'menu' | 'kanna' | 'skilja' | 'aefa' | 'beita';
@@ -48,6 +49,11 @@ const PHASES: { id: Screen; number: string; name: string; description: string; t
 
 function App() {
   const [screen, setScreen] = useState<Screen>('menu');
+  const mainRef = useRef<HTMLElement>(null);
+
+  // A phase opened from low down the menu, or the menu returned to from the
+  // foot of a phase, would otherwise open at the old scroll position.
+  useRevealTopOnChange(mainRef, screen);
   const { progress, updateProgress } = useGameProgress<Progress>('jafnvaegisfasti-progress', {
     completed: [],
   });
@@ -74,15 +80,15 @@ function App() {
         Fara beint í efni
       </a>
 
-      <main id="main-content" className="container mx-auto px-4 py-8">
+      <main ref={mainRef} id="main-content" className="container mx-auto px-4 py-4 sm:py-8">
         {screen === 'menu' && (
           <div className="mx-auto max-w-4xl">
-            <p className="mb-8 text-center text-lg text-warm-600">
+            <p className="mb-6 text-center text-lg text-warm-600 sm:mb-8">
               Ein tala segir hvar hvarfið stöðvast — og hvaða leið blandan þarf að fara til að
               komast þangað
             </p>
 
-            <div className="rounded-lg bg-white p-8 shadow-md">
+            <div className="rounded-lg bg-white p-5 shadow-md sm:p-8">
               <h2 className="mb-2 text-2xl font-bold text-warm-800">Fjórir áfangar</h2>
               <p className="mb-6 text-warm-600">
                 Þú hefur séð efnajafnvægi hliðrast til hægri og vinstri. Hér kemur talan á bak við
@@ -96,7 +102,7 @@ function App() {
                     key={phase.id}
                     type="button"
                     onClick={() => setScreen(phase.id)}
-                    className={`game-card rounded-lg p-6 text-left text-white transition-colors ${phase.tone}`}
+                    className={`game-card rounded-lg p-5 text-left text-white transition-colors sm:p-6 ${phase.tone}`}
                   >
                     <div className="mb-2 flex items-center gap-2">
                       <span className="text-2xl">{phase.number}</span>
@@ -137,8 +143,8 @@ function App() {
                   <li className="flex items-start gap-2">
                     <span className="mt-0.5 text-orange-500">✓</span>
                     <span>
-                      Að reikna jafnvægisstyrki með ICE-töflu, og hvenær 5 % reglan leyfir styttri
-                      leiðina
+                      Að reikna jafnvægisstyrki með ICE-töflu, og hvenær{' '}
+                      <span className="whitespace-nowrap">5 % reglan</span> leyfir styttri leiðina
                     </span>
                   </li>
                 </ul>
@@ -154,12 +160,13 @@ function App() {
                     <strong>Hvarfstuðullinn:</strong> Q = sama stæða, hvenær sem er
                   </p>
                   <p>
-                    <strong>Kc og Kp:</strong> Kp = Kc · (R·T)<sup>Δn</sup>, Δn = mól gass í
-                    myndefnum − í hvarfefnum
+                    <strong>Kc og Kp:</strong> Kp = Kc · (R·T)
+                    <sup className="pointer-coarse:text-[12px]">Δn</sup>, Δn = mól gass í myndefnum
+                    − í hvarfefnum
                   </p>
                   <p>
-                    <strong>Nálgunin:</strong> sleppa x ef breytingin er undir 5 % af
-                    upphafsstyrknum
+                    <strong>Nálgunin:</strong> sleppa x ef breytingin er undir{' '}
+                    <span className="whitespace-nowrap">5 %</span> af upphafsstyrknum
                   </p>
                 </div>
               </div>

@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { useScrollTopOnChange } from '../utils/phoneScroll';
+
 interface Level3Props {
   onComplete: (score: number) => void;
   onBack: () => void;
@@ -411,17 +413,117 @@ const challenges: Challenge[] = [
   },
 ];
 
+const HYBRIDIZATION_CONFIGS: Record<
+  number,
+  { label: string; orbitals: string; angle: string; shape: string }
+> = {
+  2: { label: 'sp', orbitals: '1s + 1p', angle: '180°', shape: 'Línuleg' },
+  3: { label: 'sp²', orbitals: '1s + 2p', angle: '120°', shape: 'Þríhyrnd' },
+  4: { label: 'sp³', orbitals: '1s + 3p', angle: '109.5°', shape: 'Fjórflötungur' },
+  5: { label: 'sp³d', orbitals: '1s + 3p + 1d', angle: '90°/120°', shape: 'Tvípýramída' },
+  6: { label: 'sp³d²', orbitals: '1s + 3p + 2d', angle: '90°', shape: 'Áttflötungur' },
+};
+
+// Orbital glyphs fed into the mixing, in the order the wide diagram draws them
+function inputOrbitals(domains: number): { kind: 's' | 'p' | 'd'; rotate: number }[] {
+  const glyphs: { kind: 's' | 'p' | 'd'; rotate: number }[] = [{ kind: 's', rotate: 0 }];
+  const pRotations = [0, 90, 45];
+  for (let i = 0; i < Math.min(domains - 1, 3); i++)
+    glyphs.push({ kind: 'p', rotate: pRotations[i] });
+  const dRotations = [0, 90];
+  for (let i = 0; i < Math.max(domains - 4, 0); i++)
+    glyphs.push({ kind: 'd', rotate: dRotations[i] });
+  return glyphs;
+}
+
+// The same diagram laid out top to bottom for phones: the wide one shrinks to
+// ~250 px there and its labels fall to 5-9 px.
+function HybridizationDiagramStacked({ domains }: { domains: number }) {
+  const c = HYBRIDIZATION_CONFIGS[domains];
+  if (!c) return null;
+  const glyphs = inputOrbitals(domains);
+  const cx = 110;
+  const cy = 150;
+  const lobeDist = 34;
+  const lobeAngles = Array.from({ length: domains }, (_, i) => (i / domains) * 360 - 90);
+
+  return (
+    <svg viewBox="0 0 220 244" className="sm:hidden w-full max-w-[320px] mx-auto">
+      <text x={cx} y="18" textAnchor="middle" fontSize="12">
+        <tspan fill="#7c3aed" fontWeight="bold">
+          Atómbrautar:
+        </tspan>
+        <tspan fill="#6b7280"> {c.orbitals}</tspan>
+      </text>
+      {glyphs.map((g, i) => {
+        const x = cx + (i - (glyphs.length - 1) / 2) * 30;
+        const isD = g.kind === 'd';
+        return (
+          <g key={i} transform={`translate(${x},52)`}>
+            {g.kind === 's' ? (
+              <circle r="12" fill="#c4b5fd" stroke="#7c3aed" strokeWidth="1.5" />
+            ) : (
+              <ellipse
+                rx={isD ? 7 : 8}
+                ry={isD ? 14 : 15}
+                fill={isD ? '#fbbf24' : '#a78bfa'}
+                stroke={isD ? '#d97706' : '#7c3aed'}
+                strokeWidth="1"
+                transform={`rotate(${g.rotate})`}
+              />
+            )}
+            <text
+              y="4"
+              textAnchor="middle"
+              fill={isD ? '#92400e' : '#7c3aed'}
+              fontSize="11"
+              fontWeight="bold"
+            >
+              {g.kind}
+            </text>
+          </g>
+        );
+      })}
+      <text x={cx} y="86" textAnchor="middle" fill="#374151" fontSize="16">
+        ↓
+      </text>
+      <text x={cx} y="98" textAnchor="middle" fill="#7c3aed" fontSize="12" fontWeight="bold">
+        {domains}× {c.label}
+      </text>
+      <circle cx={cx} cy={cy} r="4" fill="#7c3aed" />
+      {lobeAngles.map((deg, i) => {
+        const rad = (deg * Math.PI) / 180;
+        const ex = cx + Math.cos(rad) * lobeDist;
+        const ey = cy + Math.sin(rad) * lobeDist;
+        return (
+          <g key={i}>
+            <line x1={cx} y1={cy} x2={ex} y2={ey} stroke="#8b5cf6" strokeWidth="2" />
+            <ellipse
+              cx={ex}
+              cy={ey}
+              rx="10"
+              ry="6"
+              fill="#c4b5fd"
+              stroke="#7c3aed"
+              strokeWidth="1"
+              transform={`rotate(${deg},${ex},${ey})`}
+            />
+          </g>
+        );
+      })}
+      <text x={cx} y="216" textAnchor="middle" fill="#059669" fontSize="13" fontWeight="bold">
+        {c.shape}
+      </text>
+      <text x={cx} y="234" textAnchor="middle" fill="#6b7280" fontSize="12">
+        {c.angle}
+      </text>
+    </svg>
+  );
+}
+
 // Simple SVG hybridization diagram showing orbital mixing
 function HybridizationDiagram({ domains }: { domains: number }) {
-  const configs: Record<number, { label: string; orbitals: string; angle: string; shape: string }> =
-    {
-      2: { label: 'sp', orbitals: '1s + 1p', angle: '180°', shape: 'Línuleg' },
-      3: { label: 'sp²', orbitals: '1s + 2p', angle: '120°', shape: 'Þríhyrnd' },
-      4: { label: 'sp³', orbitals: '1s + 3p', angle: '109.5°', shape: 'Fjórflötungur' },
-      5: { label: 'sp³d', orbitals: '1s + 3p + 1d', angle: '90°/120°', shape: 'Tvípýramída' },
-      6: { label: 'sp³d²', orbitals: '1s + 3p + 2d', angle: '90°', shape: 'Áttflötungur' },
-    };
-  const c = configs[domains];
+  const c = HYBRIDIZATION_CONFIGS[domains];
   if (!c) return null;
 
   // Orbital lobe angles for the result
@@ -431,9 +533,17 @@ function HybridizationDiagram({ domains }: { domains: number }) {
     cy = 55;
 
   return (
-    <div className="bg-purple-50 rounded-xl p-4 border border-purple-200">
+    <div className="bg-purple-50 rounded-xl p-3 sm:p-4 border border-purple-200">
       <div className="text-sm font-bold text-purple-800 mb-3">Blendni: {c.label}</div>
-      <svg viewBox="0 0 280 110" className="w-full max-w-[360px] mx-auto">
+      <HybridizationDiagramStacked domains={domains} />
+      {/* The wide layout, from sm up. Its right-hand shape label is wider than
+          the viewBox for the longer names, so it is allowed to spill into the
+          box's padding instead of being cut off. */}
+      <svg
+        viewBox="0 0 280 110"
+        className="hidden sm:block w-full max-w-[360px] mx-auto"
+        style={{ overflow: 'visible' }}
+      >
         {/* Input orbitals */}
         <text x="10" y="20" fill="#7c3aed" fontSize="11" fontWeight="bold">
           Atómbrautar:
@@ -574,6 +684,9 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
   const challenge = challenges[currentChallenge];
 
+  // A new question replaces the screen; on a phone start it at the top.
+  useScrollTopOnChange(currentChallenge);
+
   const checkAnswer = () => {
     const selected = challenge.options.find((opt) => opt.id === selectedOption);
     const correct = selected?.correct ?? false;
@@ -634,7 +747,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
           >
             <span>&larr;</span> Til baka
           </button>
@@ -654,7 +767,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           {/* Type badge */}
           <div className="mb-4">
             <span
@@ -665,7 +778,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           </div>
 
           {/* Molecule info */}
-          <div className="bg-warm-900 rounded-xl p-4 mb-6 text-center">
+          <div className="bg-warm-900 rounded-xl p-3 sm:p-4 mb-6 text-center">
             <div className="text-3xl font-bold text-white">{challenge.formula}</div>
             <div className="text-warm-400">{challenge.name}</div>
             {challenge.lewisStructure && (
@@ -719,7 +832,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 setShowHint(true);
                 setTotalHintsUsed((prev) => prev + 1);
               }}
-              className="text-teal-600 hover:text-teal-800 text-sm underline mb-4"
+              className="text-teal-600 hover:text-teal-800 text-sm underline mb-4 pointer-coarse:min-h-11"
             >
               Syna visbendingu
             </button>

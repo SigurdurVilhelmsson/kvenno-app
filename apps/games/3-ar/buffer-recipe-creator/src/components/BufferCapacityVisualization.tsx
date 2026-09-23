@@ -1,6 +1,16 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 
+import { useContainerWidth } from '@shared/components/ResponsiveContainer';
 import { formatDecimal } from '@shared/utils';
+
+import { revealNearest } from '../utils/reveal';
+
+/**
+ * Below this rendered width the curve is drawn in a compact layout whose viewBox matches the
+ * screen pixel for pixel, so its labels keep a legible size. Scaling the 320-unit desktop
+ * drawing down to a phone column shrank them to 6-8 px. At and above it nothing changes.
+ */
+const COMPACT_BELOW_PX = 420;
 
 interface BufferCapacityVisualizationProps {
   /** pKa of the buffer system */
@@ -43,6 +53,13 @@ export function BufferCapacityVisualization({
   const [acidAdded, setAcidAdded] = useState(0); // mmol of strong acid added
   const [baseAdded, setBaseAdded] = useState(0); // mmol of strong base added
   const [showComparison, setShowComparison] = useState(false);
+  const comparisonRef = useRef<HTMLDivElement>(null);
+
+  // The comparison opens below its toggle, which a phone user taps at the bottom edge of the
+  // screen, so it rendered wholly below the fold. Nothing moves when it already fits.
+  useEffect(() => {
+    if (showComparison) revealNearest(comparisonRef.current);
+  }, [showComparison]);
 
   // Calculate current pH from Henderson-Hasselbalch
   const calculatePH = useCallback(
@@ -164,9 +181,16 @@ export function BufferCapacityVisualization({
   };
 
   // SVG dimensions for capacity curve
-  const svgWidth = 320;
-  const svgHeight = 160;
-  const padding = { top: 20, right: 20, bottom: 30, left: 40 };
+  const curveBoxRef = useRef<HTMLDivElement>(null);
+  const measuredWidth = useContainerWidth(curveBoxRef);
+  const compact = measuredWidth !== null && measuredWidth < COMPACT_BELOW_PX;
+  const svgWidth = compact ? Math.round(measuredWidth) : 320;
+  const svgHeight = compact ? 194 : 160;
+  const padding = compact
+    ? { top: 30, right: 14, bottom: 48, left: 22 }
+    : { top: 20, right: 20, bottom: 30, left: 40 };
+  const fontSize = compact ? { tick: 12, label: 13 } : { tick: 9, label: 10 };
+  const graphBottom = svgHeight - padding.bottom;
   const graphWidth = svgWidth - padding.left - padding.right;
   const graphHeight = svgHeight - padding.top - padding.bottom;
 
@@ -198,7 +222,7 @@ export function BufferCapacityVisualization({
   };
 
   return (
-    <div className="bg-gradient-to-b from-warm-800 to-warm-900 rounded-xl p-4 shadow-lg">
+    <div className="bg-gradient-to-b from-warm-800 to-warm-900 rounded-xl p-3 sm:p-4 shadow-lg">
       <h3 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
         <span className="text-lg">🛡️</span>
         Stuðpúðageta (Buffer Capacity)
@@ -207,134 +231,155 @@ export function BufferCapacityVisualization({
       {/* Buffer Capacity Curve */}
       <div className="bg-warm-700/50 rounded-lg p-3 mb-4">
         <div className="text-xs text-warm-400 mb-2 text-center">β (stuðpúðageta) vs pH</div>
-        <svg
-          width="100%"
-          viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-          className="overflow-visible"
-          role="img"
-          aria-label={`Stuðpúðageta graf: pH ${formatDecimal(adjustedState.pH, 2)}, pKa ${formatDecimal(pKa, 1)}. Besta stuðpúðasvæði er pH ${formatDecimal(pKa - 1, 1)} til ${formatDecimal(pKa + 1, 1)}.`}
-        >
-          <title>Stuðpúðageta (β) sem fall af pH</title>
-          {/* Grid lines */}
-          <defs>
-            <pattern id="grid-capacity" width="20" height="20" patternUnits="userSpaceOnUse">
-              <path
-                d="M 20 0 L 0 0 0 20"
-                fill="none"
-                stroke="#374151"
-                strokeWidth="0.5"
-                opacity="0.3"
-              />
-            </pattern>
-          </defs>
-          <rect
-            x={padding.left}
-            y={padding.top}
-            width={graphWidth}
-            height={graphHeight}
-            fill="url(#grid-capacity)"
-          />
-
-          {/* Optimal buffer range (pKa ± 1) shaded region */}
-          <rect
-            x={xScale(pKa - 1)}
-            y={padding.top}
-            width={xScale(pKa + 1) - xScale(pKa - 1)}
-            height={graphHeight}
-            fill="#22c55e"
-            opacity="0.2"
-          />
-          <text
-            x={xScale(pKa)}
-            y={padding.top + 12}
-            textAnchor="middle"
-            fill="#22c55e"
-            fontSize="9"
-            fontWeight="bold"
+        <div ref={curveBoxRef}>
+          <svg
+            width="100%"
+            viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+            className="overflow-visible"
+            role="img"
+            aria-label={`Stuðpúðageta graf: pH ${formatDecimal(adjustedState.pH, 2)}, pKa ${formatDecimal(pKa, 1)}. Besta stuðpúðasvæði er pH ${formatDecimal(pKa - 1, 1)} til ${formatDecimal(pKa + 1, 1)}.`}
           >
-            Besta svæði
-          </text>
+            <title>Stuðpúðageta (β) sem fall af pH</title>
+            {/* Grid lines */}
+            <defs>
+              <pattern id="grid-capacity" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path
+                  d="M 20 0 L 0 0 0 20"
+                  fill="none"
+                  stroke="#374151"
+                  strokeWidth="0.5"
+                  opacity="0.3"
+                />
+              </pattern>
+            </defs>
+            <rect
+              x={padding.left}
+              y={padding.top}
+              width={graphWidth}
+              height={graphHeight}
+              fill="url(#grid-capacity)"
+            />
 
-          {/* Buffer capacity curve */}
-          <path d={pathD} fill="none" stroke="#60a5fa" strokeWidth="2.5" strokeLinecap="round" />
-
-          {/* pKa marker */}
-          <line
-            x1={xScale(pKa)}
-            y1={padding.top}
-            x2={xScale(pKa)}
-            y2={svgHeight - padding.bottom}
-            stroke="#f59e0b"
-            strokeWidth="1.5"
-            strokeDasharray="4,3"
-          />
-          <text
-            x={xScale(pKa)}
-            y={svgHeight - padding.bottom + 20}
-            textAnchor="middle"
-            fill="#f59e0b"
-            fontSize="10"
-            fontWeight="bold"
-          >
-            pKa = {formatDecimal(pKa, 1)}
-          </text>
-
-          {/* Current pH marker */}
-          <circle
-            cx={xScale(adjustedState.pH)}
-            cy={yScale(bufferCapacity)}
-            r="6"
-            fill={getPhColor(adjustedState.pH)}
-            stroke="#fff"
-            strokeWidth="2"
-          />
-
-          {/* X-axis labels */}
-          {[pKa - 2, pKa - 1, pKa, pKa + 1, pKa + 2].map((pH) => (
+            {/* Optimal buffer range (pKa ± 1) shaded region */}
+            <rect
+              x={xScale(pKa - 1)}
+              y={padding.top}
+              width={xScale(pKa + 1) - xScale(pKa - 1)}
+              height={graphHeight}
+              fill="#22c55e"
+              opacity="0.2"
+            />
+            {/* Compact: above the plot, where neither the curve nor its pH marker can reach */}
             <text
-              key={pH}
-              x={xScale(pH)}
-              y={svgHeight - padding.bottom + 12}
+              x={xScale(pKa)}
+              y={compact ? padding.top - 10 : padding.top + 12}
               textAnchor="middle"
-              fill="#9ca3af"
-              fontSize="9"
+              fill="#22c55e"
+              fontSize={fontSize.tick}
+              fontWeight="bold"
             >
-              {formatDecimal(pH, 1)}
+              Besta svæði
             </text>
-          ))}
 
-          {/* Y-axis label */}
-          <text
-            x="10"
-            y={svgHeight / 2}
-            textAnchor="middle"
-            fill="#9ca3af"
-            fontSize="9"
-            transform={`rotate(-90, 10, ${svgHeight / 2})`}
-          >
-            β
-          </text>
+            {/* Buffer capacity curve */}
+            <path d={pathD} fill="none" stroke="#60a5fa" strokeWidth="2.5" strokeLinecap="round" />
 
-          {/* X-axis label */}
-          <text x={svgWidth / 2} y={svgHeight - 2} textAnchor="middle" fill="#9ca3af" fontSize="10">
-            pH
-          </text>
-        </svg>
+            {/* pKa marker */}
+            <line
+              x1={xScale(pKa)}
+              y1={padding.top}
+              x2={xScale(pKa)}
+              y2={graphBottom}
+              stroke="#f59e0b"
+              strokeWidth="1.5"
+              strokeDasharray="4,3"
+            />
+            <text
+              x={xScale(pKa)}
+              y={graphBottom + (compact ? 34 : 20)}
+              textAnchor="middle"
+              fill="#f59e0b"
+              fontSize={fontSize.label}
+              fontWeight="bold"
+            >
+              pKa = {formatDecimal(pKa, 1)}
+            </text>
+
+            {/* Current pH marker */}
+            <circle
+              cx={xScale(adjustedState.pH)}
+              cy={yScale(bufferCapacity)}
+              r="6"
+              fill={getPhColor(adjustedState.pH)}
+              stroke="#fff"
+              strokeWidth="2"
+            />
+
+            {/* X-axis labels */}
+            {[pKa - 2, pKa - 1, pKa, pKa + 1, pKa + 2].map((pH) => (
+              <text
+                key={pH}
+                x={xScale(pH)}
+                y={graphBottom + (compact ? 15 : 12)}
+                textAnchor="middle"
+                fill="#9ca3af"
+                fontSize={fontSize.tick}
+              >
+                {formatDecimal(pH, 1)}
+              </text>
+            ))}
+
+            {/* Y-axis label (a single glyph, so the compact layout does not rotate it) */}
+            {compact ? (
+              <text
+                x="8"
+                y={padding.top + graphHeight / 2 + 4}
+                textAnchor="middle"
+                fill="#9ca3af"
+                fontSize={fontSize.label}
+              >
+                β
+              </text>
+            ) : (
+              <text
+                x="10"
+                y={svgHeight / 2}
+                textAnchor="middle"
+                fill="#9ca3af"
+                fontSize="9"
+                transform={`rotate(-90, 10, ${svgHeight / 2})`}
+              >
+                β
+              </text>
+            )}
+
+            {/* X-axis label; compact moves it to the right end, off the centred pKa label */}
+            <text
+              x={compact ? svgWidth - 2 : svgWidth / 2}
+              y={compact ? graphBottom + 34 : svgHeight - 2}
+              textAnchor={compact ? 'end' : 'middle'}
+              fill="#9ca3af"
+              fontSize={fontSize.label}
+            >
+              pH
+            </text>
+          </svg>
+        </div>
       </div>
 
       {/* Current State Display */}
-      <div className="grid grid-cols-3 gap-2 mb-4">
-        <div className="bg-warm-700 rounded-lg p-2 text-center">
+      <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mb-4">
+        <div className="bg-warm-700 rounded-lg px-1 py-2 sm:p-2 text-center">
           <div className="text-xs text-warm-400">Núverandi pH</div>
           <div className="text-xl font-bold" style={{ color: getPhColor(adjustedState.pH) }}>
             {formatDecimal(adjustedState.pH, 2)}
           </div>
         </div>
-        <div className="bg-warm-700 rounded-lg p-2 text-center">
+        <div className="bg-warm-700 rounded-lg px-1 py-2 sm:p-2 text-center">
           <div className="text-xs text-warm-400">Upphafs pH</div>
           <div className="text-lg font-semibold text-warm-300">{formatDecimal(initialPH, 2)}</div>
         </div>
-        <div className="bg-warm-700 rounded-lg p-2 text-center">
+        <div className="bg-warm-700 rounded-lg px-1 py-2 sm:p-2 text-center">
           <div className="text-xs text-warm-400">ΔpH</div>
           <div
             className={`text-lg font-semibold ${
@@ -375,7 +420,7 @@ export function BufferCapacityVisualization({
           </div>
 
           {/* Addition controls */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <div className="text-xs text-red-400 font-semibold mb-1 text-center">
                 + Sterk sýra (H⁺)
@@ -384,14 +429,14 @@ export function BufferCapacityVisualization({
                 <button
                   onClick={() => handleAddAcid(0.01)}
                   aria-label="Bæta við 0,01 M sterkri sýru"
-                  className="flex-1 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition-colors"
+                  className="flex-1 py-1.5 pointer-coarse:min-h-11 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition-colors"
                 >
                   +0.01 M
                 </button>
                 <button
                   onClick={() => handleAddAcid(0.05)}
                   aria-label="Bæta við 0,05 M sterkri sýru"
-                  className="flex-1 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition-colors"
+                  className="flex-1 py-1.5 pointer-coarse:min-h-11 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition-colors"
                 >
                   +0.05 M
                 </button>
@@ -409,14 +454,14 @@ export function BufferCapacityVisualization({
                 <button
                   onClick={() => handleAddBase(0.01)}
                   aria-label="Bæta við 0,01 M sterkum basa"
-                  className="flex-1 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
+                  className="flex-1 py-1.5 pointer-coarse:min-h-11 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
                 >
                   +0.01 M
                 </button>
                 <button
                   onClick={() => handleAddBase(0.05)}
                   aria-label="Bæta við 0,05 M sterkum basa"
-                  className="flex-1 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
+                  className="flex-1 py-1.5 pointer-coarse:min-h-11 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
                 >
                   +0.05 M
                 </button>
@@ -447,7 +492,7 @@ export function BufferCapacityVisualization({
 
       {/* Comparison: Buffer vs Water */}
       {showComparison && (acidAdded > 0 || baseAdded > 0) && (
-        <div className="bg-warm-700/50 rounded-lg p-3">
+        <div ref={comparisonRef} className="bg-warm-700/50 rounded-lg p-3">
           <div className="text-xs text-warm-400 mb-2 text-center font-semibold">
             Samanburður: Stuðpúði vs Hreint vatn
           </div>

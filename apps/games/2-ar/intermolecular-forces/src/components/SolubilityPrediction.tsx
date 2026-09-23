@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface Solvent {
   id: string;
@@ -135,6 +135,14 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
     }
   }, [animationPhase, userPrediction, actualResult, onPrediction]);
 
+  // The verdict renders below the prediction buttons, which a phone has usually scrolled to
+  // the bottom of the screen: without this the student taps and sees only the top of a
+  // beaker. 'nearest' does nothing when the result is already in view.
+  const resultRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (showResult) resultRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+  }, [showResult]);
+
   const reset = () => {
     setSelectedSolute(null);
     setSelectedSolvent(null);
@@ -153,9 +161,9 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
 
   return (
     <div
-      className={`bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl border border-cyan-200 ${compact ? 'p-4' : 'p-6'}`}
+      className={`bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl border border-cyan-200 ${compact ? 'p-4' : 'p-4 sm:p-6'}`}
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between gap-2 mb-4">
         <div>
           <h3
             className={`font-bold text-cyan-800 flex items-center gap-2 ${compact ? 'text-base' : 'text-lg'}`}
@@ -167,7 +175,7 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
           </span>
         </div>
         {stats.total > 0 && (
-          <div className="text-sm text-cyan-700 bg-cyan-100 px-3 py-1 rounded-full">
+          <div className="text-sm text-cyan-700 bg-cyan-100 px-3 py-1 rounded-full shrink-0 whitespace-nowrap">
             {stats.correct}/{stats.total} rétt
           </div>
         )}
@@ -322,7 +330,7 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
 
       {/* Result */}
       {showResult && selectedSolute && selectedSolvent && (
-        <div className="space-y-4">
+        <div ref={resultRef} className="space-y-4">
           {/* Result visualization */}
           <div className="flex justify-center">
             <div className="relative w-40 h-48">

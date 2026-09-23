@@ -240,9 +240,30 @@ packages/shared/engine/equilibrium.ts   the maths; no React, no Icelandic
 src/data/reactions.ts       24 reactions, every constant cited to a module
 src/data/problems.ts        7 expression · 6 direction · 8 Kc→Kp · 6 ICE (M) · 4 ICE (atm)
 src/data/coupled.ts         5 coupled: 3 single-rule, then the book's 2 combinations
-src/components/             KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen
-src/__tests__/              114 tests
+src/components/             KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen,
+                            ScientificInput (the `× 10` answer row, with a ± sign button on touch)
+src/utils/reveal.ts         keeps the next step's start and a checked answer's feedback on screen
+src/__tests__/              128 tests
 ```
+
+## Phones
+
+**The `±` button is what makes the answers typeable on an iPhone.** Every scientific-notation
+answer — Kp, the coupled constant, every Beita extent — is a number field and a power-of-ten field,
+both on the decimal keypad, and on iOS that keypad has no minus key. Nine of the ten Beita extents
+and five of the eight Kp answers have a negative power, so without the button a student on an
+iPhone could not type the power the field asks for — the only way round was to write the whole
+plain decimal into the number field with a power of 0, which nothing on screen suggests.
+It shows only on touch screens (`pointer-coarse`); a desktop keyboard has a minus key and the
+desktop row is unchanged. `phone-play.test.tsx` plays an answer through it.
+
+The rest is layout, each piece restoring the desktop look at `sm`: phase cards and boxes lose
+padding below `sm`; Kanna keeps its start and equilibrium panels side by side so a preset's result
+lands in view; Skilja names only the current step in its progress chips (below `md`, so a phone
+held sideways gets one row of chips rather than three); the ICE table's cells do not wrap (so
+`0,5 − 2x` never splits) and drop to 13 px below 360 px; and `revealTop` / `revealBottom` scroll
+the next problem's start and a checked answer's feedback into view when they are off screen, doing
+nothing when they are not.
 
 ## Open
 

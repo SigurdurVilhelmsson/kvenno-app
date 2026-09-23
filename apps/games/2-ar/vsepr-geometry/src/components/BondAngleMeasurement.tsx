@@ -253,7 +253,7 @@ export function BondAngleMeasurement({
   }
 
   return (
-    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-5 shadow-lg">
+    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-3 sm:p-5 shadow-lg">
       <h3 className="text-white font-bold text-sm mb-4 flex items-center gap-2">
         <span className="text-lg">📐</span>
         Tengjahornamælir (Bond Angle Tool)
@@ -265,7 +265,7 @@ export function BondAngleMeasurement({
           <button
             key={id}
             onClick={() => setSelectedGeometry(id)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors pointer-coarse:min-h-11 pointer-coarse:min-w-11 ${
               selectedGeometry === id
                 ? 'bg-teal-500 text-white'
                 : 'bg-warm-700 text-warm-300 hover:bg-warm-600'
@@ -283,6 +283,8 @@ export function BondAngleMeasurement({
           <svg
             width={svgSize}
             height={svgSize}
+            viewBox={`0 0 ${svgSize} ${svgSize}`}
+            className="self-start max-w-full h-auto"
             role="img"
             aria-label={`Tengihornarit: ${angleData.actualAngle}° horn milli tengja`}
           >
@@ -340,6 +342,7 @@ export function BondAngleMeasurement({
                       textAnchor="middle"
                       fill="#6b7280"
                       fontSize="10"
+                      className="max-sm:text-[12px] pointer-coarse:text-[12px]"
                     >
                       {deg}°
                     </text>
@@ -531,7 +534,7 @@ export function BondAngleMeasurement({
                       <button
                         key={geoId}
                         onClick={() => setSelectedGeometry(geoId)}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-colors ${
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-colors pointer-coarse:min-h-11 ${
                           selectedGeometry === geoId
                             ? 'bg-teal-500/30 border border-teal-500'
                             : 'bg-warm-700/50 hover:bg-warm-600/50'

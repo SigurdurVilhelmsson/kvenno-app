@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import type { TieredHints } from '@shared/types';
 import { formatDecimal } from '@shared/utils';
 
 import { Beaker } from './Beaker';
+import { revealTop } from '../utils/reveal';
 
 // Challenge types for categorizing feedback
 type ChallengeType = 'dilution' | 'mixing' | 'buildSolution' | 'concentrationMatch';
@@ -330,6 +331,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const challenge = CHALLENGES[currentChallenge];
   const predictionQuestion = getPredictionQuestion(challenge);
 
+  const predictionRef = useRef<HTMLDivElement>(null);
+  const challengeRef = useRef<HTMLDivElement>(null);
+
   // Calculate current concentration (molecules per liter)
   // Using a scale where 10 molecules = 0.1 mol for simplicity
   const moleFactor = 0.01; // Each "molecule" represents 0.01 mol
@@ -356,6 +360,13 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       setPredictionComplete(false);
     }
   }, [currentChallenge, challenge]);
+
+  // A new challenge, or the step from prediction to challenge, replaces a card
+  // the student had scrolled to the bottom of. On a phone that leaves the new
+  // card's title and description above the screen.
+  useEffect(() => {
+    revealTop(showPrediction ? predictionRef.current : challengeRef.current);
+  }, [showPrediction, currentChallenge]);
 
   // Handle prediction submission
   const handlePredictionSubmit = () => {
@@ -491,7 +502,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             </div>
 
             <div className="flex gap-4 items-center">
-              <button onClick={onBack} className="text-warm-600 hover:text-warm-800 text-sm">
+              <button
+                onClick={onBack}
+                className="whitespace-nowrap text-warm-600 hover:text-warm-800 text-sm pointer-coarse:py-3 pointer-coarse:-my-3 pointer-coarse:px-2 pointer-coarse:-mx-2"
+              >
                 ← Til baka
               </button>
               <div className="text-center">
@@ -518,7 +532,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
         {/* Prediction Phase */}
         {showPrediction && (
-          <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 mb-6">
+          <div
+            ref={predictionRef}
+            className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 mb-6"
+          >
             <div className="text-center mb-6">
               <div className="text-4xl mb-2">🤔</div>
               <h2 className="text-2xl font-bold text-blue-800">Hugsaðu fyrst!</h2>
@@ -639,7 +656,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
         {/* Challenge area */}
         {!showPrediction && (
-          <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+          <div ref={challengeRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
             {/* Challenge header */}
             <div className="mb-6">
               <div className="inline-block bg-blue-100 px-4 py-2 rounded-full text-sm font-semibold text-blue-800 mb-2">
@@ -648,10 +665,15 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               <p className="text-lg text-warm-700">{challenge.description}</p>
             </div>
 
-            {/* Main interaction area */}
-            <div className="grid md:grid-cols-2 gap-8 mb-6">
+            {/* Main interaction area. On a phone the two columns dissolve
+                (`contents`) into one list so the worked formula can drop
+                below the controls: the beaker, the concentration and the
+                slider then sit together on one screen while the student
+                drags. From `sm` the two columns are restored, which also
+                puts the beaker beside the controls on a landscape phone. */}
+            <div className="grid gap-4 sm:grid-cols-2 sm:gap-8 mb-6">
               {/* Static labeled beaker */}
-              <div className="flex flex-col items-center">
+              <div className="contents sm:flex sm:flex-col sm:items-center">
                 <Beaker
                   volume={volumeML}
                   maxVolume={challenge.constraints.maxVolume}
@@ -660,11 +682,11 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   label={`${molecules} sameindir\n${volumeML} mL\n${formatDecimal(currentConcentration, 2)} M`}
                 />
 
-                <div className="mt-4 bg-warm-50 rounded-lg p-3 text-center w-full">
+                <div className="order-last sm:order-none sm:mt-4 bg-warm-50 rounded-lg p-3 text-center w-full">
                   <div className="text-xs text-warm-500 mb-1">Styrkur = sameindir ÷ rúmmál</div>
                   <div className="font-mono text-sm text-warm-700">
                     {molecules} × 0,01 mol ÷ {formatDecimal(volumeML / 1000, 3)} L ={' '}
-                    <span className="font-bold text-blue-600">
+                    <span className="whitespace-nowrap font-bold text-blue-600">
                       {formatDecimal(currentConcentration, 2)} M
                     </span>
                   </div>
@@ -672,7 +694,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               </div>
 
               {/* Controls and feedback */}
-              <div className="space-y-6">
+              <div className="contents sm:block sm:space-y-6">
                 <ConcentrationIndicator
                   current={currentConcentration}
                   target={challenge.targetConcentration}
@@ -683,7 +705,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 {challenge.constraints.canChangeMolecules && (
                   <div className="bg-orange-50 p-4 rounded-xl">
                     <div className="text-sm font-semibold text-warm-700 mb-2">Sameindir</div>
-                    <div className="flex items-center justify-center gap-4">
+                    {/* Below lg the count sits on its own line above the four
+                        buttons: the one-row stepper is 304 px wide and fits
+                        neither a phone nor a half-width column. */}
+                    <div className="flex flex-wrap items-center justify-center gap-2 lg:flex-nowrap lg:gap-4">
                       <button
                         onClick={() => changeMolecules(-10)}
                         className="bg-orange-500 hover:bg-orange-600 text-white font-bold w-12 h-12 rounded-lg text-xl transition-colors"
@@ -693,15 +718,17 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                       </button>
                       <button
                         onClick={() => changeMolecules(-1)}
-                        className="bg-orange-400 hover:bg-orange-500 text-white font-bold w-10 h-10 rounded-lg transition-colors"
+                        className="bg-orange-400 hover:bg-orange-500 text-white font-bold w-11 h-11 lg:w-10 lg:h-10 rounded-lg transition-colors"
                         disabled={molecules <= challenge.constraints.minMolecules}
                       >
                         -1
                       </button>
-                      <span className="text-2xl font-bold w-16 text-center">{molecules}</span>
+                      <span className="order-first basis-full lg:order-none lg:basis-auto text-2xl font-bold w-16 text-center">
+                        {molecules}
+                      </span>
                       <button
                         onClick={() => changeMolecules(1)}
-                        className="bg-orange-400 hover:bg-orange-500 text-white font-bold w-10 h-10 rounded-lg transition-colors"
+                        className="bg-orange-400 hover:bg-orange-500 text-white font-bold w-11 h-11 lg:w-10 lg:h-10 rounded-lg transition-colors"
                         disabled={molecules >= challenge.constraints.maxMolecules}
                       >
                         +1
@@ -721,6 +748,11 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 {challenge.constraints.canChangeVolume && (
                   <div className="bg-blue-50 p-4 rounded-xl">
                     <div className="text-sm font-semibold text-warm-700 mb-2">Rúmmál (mL)</div>
+                    {/* On touch the track itself is 44 px tall, with the thin
+                        bar painted as a background stripe. Padding would not
+                        do: a drag that starts in a range input's padding does
+                        not move the thumb, and a sideways swipe there can
+                        become the browser's back gesture. */}
                     <input
                       type="range"
                       min={challenge.constraints.minVolume}
@@ -729,7 +761,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                       onChange={(e) => changeVolume(parseInt(e.target.value, 10))}
                       aria-label="Rúmmál lausnar í millilítrum"
                       aria-valuetext={`${volumeML} millilítrar af ${challenge.constraints.maxVolume}`}
-                      className="w-full h-3 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                      className="w-full h-3 bg-blue-200 rounded-lg appearance-none cursor-pointer accent-blue-600 pointer-coarse:h-11 pointer-coarse:rounded-none pointer-coarse:bg-transparent pointer-coarse:bg-[linear-gradient(var(--color-blue-200),var(--color-blue-200))] pointer-coarse:bg-[length:100%_12px] pointer-coarse:bg-center pointer-coarse:bg-no-repeat"
                     />
                     <div className="flex justify-between text-sm text-warm-600 mt-1">
                       <span>{challenge.constraints.minVolume} mL</span>
@@ -816,7 +848,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         )}
 
         {/* Challenge navigation */}
-        <div className="mt-6 flex justify-center gap-2">
+        <div className="mt-6 flex justify-center gap-2 pointer-coarse:gap-1">
           {CHALLENGES.map((c, i) => (
             <button
               key={c.id}
@@ -830,7 +862,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                     1 &&
                 setCurrentChallenge(i)
               }
-              className={`w-10 h-10 rounded-full font-bold transition-colors ${
+              className={`w-10 h-10 pointer-coarse:w-11 pointer-coarse:h-11 rounded-full font-bold transition-colors ${
                 completed.includes(c.id)
                   ? 'bg-green-500 text-white'
                   : i === currentChallenge

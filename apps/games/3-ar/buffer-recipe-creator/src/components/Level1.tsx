@@ -5,6 +5,7 @@ import { formatDecimal } from '@shared/utils';
 
 import { LEVEL1_CHALLENGES, type Level1Challenge } from '../data';
 import { BufferCapacityVisualization } from './BufferCapacityVisualization';
+import { revealNearest, revealTop } from '../utils/reveal';
 
 /** Maximum molecules per species in the interactive mixer */
 const MAX_MOLECULES = 30;
@@ -55,6 +56,19 @@ export default function Level1({ onLevelComplete }: Level1Props) {
   const [, setHintsUsedTier] = useState(0);
   const [hintResetKey, setHintResetKey] = useState(0);
   const levelCompleteReported = useRef(false);
+  const challengeCardRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+
+  // The feedback opens below "Athuga stuðpúða", which on a phone is usually tapped at the
+  // bottom edge of the screen, so the answer landed wholly below the fold and the tap looked
+  // like it did nothing. Presence mounts the panel a frame after `feedback` is set, hence the
+  // short delay. The last challenge hands straight back to the menu, which scrolls to its own
+  // top, so it must not be pulled back down to this panel while the level fades out.
+  useEffect(() => {
+    if (!feedback || challengesCompleted >= LEVEL1_CHALLENGES.length) return;
+    const timer = window.setTimeout(() => revealNearest(feedbackRef.current), 60);
+    return () => window.clearTimeout(timer);
+  }, [feedback, challengesCompleted]);
 
   // Calculate current ratio [Base]/[Acid]
   const currentRatio = acidCount > 0 ? baseCount / acidCount : 0;
@@ -154,6 +168,9 @@ export default function Level1({ onLevelComplete }: Level1Props) {
     setHintMultiplier(1.0);
     setHintsUsedTier(0);
     setHintResetKey((prev) => prev + 1);
+    // "Næsta verkefni" sits below the flask, so on a phone the new challenge's card is far
+    // above the viewport.
+    revealTop(challengeCardRef.current);
   };
 
   // Track level completion when all challenges are done
@@ -165,24 +182,26 @@ export default function Level1({ onLevelComplete }: Level1Props) {
   }, [challengesCompleted, score, onLevelComplete]);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto px-4 pt-4 pb-8 md:py-8">
       {/* Header */}
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-2 text-kvenno-orange">Stuðpúðasmíði - Stig 1</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-kvenno-orange">
+          Stuðpúðasmíði - Stig 1
+        </h1>
         <p className="text-lg text-warm-600">Skildu hvernig hlutfall sýru/basa hefur áhrif á pH</p>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow-sm p-4 text-center">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
+        <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 text-center">
           <div className="text-2xl font-bold text-orange-600">{score}</div>
           <div className="text-sm text-warm-600">Stig</div>
         </div>
-        <div className="bg-white rounded-lg shadow-sm p-4 text-center">
+        <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 text-center">
           <div className="text-2xl font-bold text-green-600">{challengesCompleted}</div>
           <div className="text-sm text-warm-600">Kláruð</div>
         </div>
-        <div className="bg-white rounded-lg shadow-sm p-4 text-center">
+        <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 text-center">
           <div className="text-2xl font-bold text-blue-600">{LEVEL1_CHALLENGES.length}</div>
           <div className="text-sm text-warm-600">Samtals</div>
         </div>
@@ -193,7 +212,10 @@ export default function Level1({ onLevelComplete }: Level1Props) {
         {/* Left: Challenge & Instructions */}
         <div className="space-y-6">
           {/* Challenge Card */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
+          <div
+            ref={challengeCardRef}
+            className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:scroll-mt-16"
+          >
             <div className="mb-4">
               <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
                 Verkefni #{currentChallenge.id}
@@ -246,7 +268,7 @@ export default function Level1({ onLevelComplete }: Level1Props) {
         {/* Right: Visual Flask & Controls */}
         <div className="space-y-6">
           {/* Flask Visualization */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
             <h3 className="text-xl font-bold mb-4 text-center">Þinn stuðpúði</h3>
 
             {/* pH Indicator */}
@@ -294,7 +316,7 @@ export default function Level1({ onLevelComplete }: Level1Props) {
 
             {/* Molecule Display */}
             <div
-              className={`border-4 rounded-lg p-6 mb-6 transition-colors duration-300 bg-slate-50 min-h-[280px] ${isCorrect ? 'border-green-500' : 'border-warm-300'}`}
+              className={`border-4 rounded-lg p-3 sm:p-6 mb-6 transition-colors duration-300 bg-slate-50 min-h-[280px] ${isCorrect ? 'border-green-500' : 'border-warm-300'}`}
             >
               {/* Acid Molecules */}
               <div className="mb-6">
@@ -358,10 +380,10 @@ export default function Level1({ onLevelComplete }: Level1Props) {
             </div>
 
             {/* Control Buttons */}
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
               <div>
                 <div className="text-center font-bold text-red-600 mb-2">Sýra</div>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <button
                     onClick={removeAcid}
                     disabled={acidCount === 0}
@@ -383,7 +405,7 @@ export default function Level1({ onLevelComplete }: Level1Props) {
 
               <div>
                 <div className="text-center font-bold text-blue-600 mb-2">Basi</div>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <button
                     onClick={removeBase}
                     disabled={baseCount === 0}
@@ -414,7 +436,7 @@ export default function Level1({ onLevelComplete }: Level1Props) {
 
             {/* Feedback */}
             <Presence show={!!feedback} exitDuration={250}>
-              <div className="mb-3">
+              <div ref={feedbackRef} className="mb-3">
                 <FeedbackPanel
                   feedback={{
                     isCorrect: feedback?.includes('Frábært') ?? false,

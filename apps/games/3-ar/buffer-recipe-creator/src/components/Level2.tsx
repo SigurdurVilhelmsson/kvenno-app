@@ -8,6 +8,7 @@ import FlaskComparison from './FlaskComparison';
 import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
 import { solveBuffer } from '../engine/buffer';
+import { revealTop } from '../utils/reveal';
 
 interface Level2Props {
   onComplete: (score: number) => void;
@@ -39,6 +40,8 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
   const [hintResetKey, setHintResetKey] = useState(0);
   const [completed, setCompleted] = useState(0);
   const levelCompleteReported = useRef(false);
+  const levelTopRef = useRef<HTMLDivElement>(null);
+  const stepCardRef = useRef<HTMLDivElement>(null);
 
   // Step 1: Direction
   const [selectedDirection, setSelectedDirection] = useState<Direction>(null);
@@ -71,6 +74,16 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
       onComplete(score);
     }
   }, [completed, score, onComplete]);
+
+  // Finishing a puzzle hides the hint tiers above this card and, 250 ms later, the step just
+  // answered. A student who opened the hints therefore landed in the middle of the worked
+  // solution on a phone, with "Rétt svar!" scrolled past. Bring the card's top back once both
+  // have gone; revealTop leaves a screen that still shows it alone.
+  useEffect(() => {
+    if (step !== 'complete') return;
+    const timer = window.setTimeout(() => revealTop(stepCardRef.current), 300);
+    return () => window.clearTimeout(timer);
+  }, [step]);
 
   // Safety check - should never happen with valid data
   if (!problem || !solution) {
@@ -186,6 +199,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
     if (currentIndex < LEVEL2_PUZZLES.length - 1) {
       setCurrentIndex((prev) => prev + 1);
       resetPuzzleState();
+      revealTop(levelTopRef.current);
     }
   };
 
@@ -211,11 +225,11 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-xl p-4 mb-4">
+        <div ref={levelTopRef} className="bg-white rounded-2xl shadow-xl p-4 mb-4">
           <div className="flex justify-between items-center">
             <button
               onClick={onBack}
-              className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+              className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
             >
               ← Til baka
             </button>
@@ -242,7 +256,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
         </div>
 
         {/* Task Card */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-4 border-t-4 border-kvenno-orange">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4 border-t-4 border-kvenno-orange">
           <div className="flex items-start gap-3 mb-4">
             <span className="text-white text-sm font-bold px-3 py-1 rounded-full bg-kvenno-orange">
               #{puzzle.id}
@@ -381,7 +395,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
         </div>
 
         {/* Step Content */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
+        <div ref={stepCardRef} className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
           {/* Step 1: Direction */}
           <Presence show={step === 'direction'} exitDuration={250}>
             <div>
@@ -395,10 +409,10 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                 </p>
               </div>
 
-              <div className="grid grid-cols-3 gap-3 mb-4">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4">
                 <button
                   onClick={() => setSelectedDirection('higher')}
-                  className={`p-4 rounded-lg border-2 transition-all ${
+                  className={`px-1 py-4 sm:p-4 rounded-lg border-2 transition-all ${
                     selectedDirection === 'higher'
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-warm-200 hover:border-warm-300'
@@ -406,11 +420,11 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                 >
                   <div className="text-2xl mb-1">📈</div>
                   <div className="font-semibold">Hærra</div>
-                  <div className="text-xs text-warm-500">pH {'>'} pKa</div>
+                  <div className="text-xs text-warm-500 whitespace-nowrap">pH {'>'} pKa</div>
                 </button>
                 <button
                   onClick={() => setSelectedDirection('equal')}
-                  className={`p-4 rounded-lg border-2 transition-all ${
+                  className={`px-1 py-4 sm:p-4 rounded-lg border-2 transition-all ${
                     selectedDirection === 'equal'
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-warm-200 hover:border-warm-300'
@@ -418,11 +432,11 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                 >
                   <div className="text-2xl mb-1">⚖️</div>
                   <div className="font-semibold">Jafnt</div>
-                  <div className="text-xs text-warm-500">pH = pKa</div>
+                  <div className="text-xs text-warm-500 whitespace-nowrap">pH = pKa</div>
                 </button>
                 <button
                   onClick={() => setSelectedDirection('lower')}
-                  className={`p-4 rounded-lg border-2 transition-all ${
+                  className={`px-1 py-4 sm:p-4 rounded-lg border-2 transition-all ${
                     selectedDirection === 'lower'
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-warm-200 hover:border-warm-300'
@@ -430,7 +444,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                 >
                   <div className="text-2xl mb-1">📉</div>
                   <div className="font-semibold">Lægra</div>
-                  <div className="text-xs text-warm-500">pH {'<'} pKa</div>
+                  <div className="text-xs text-warm-500 whitespace-nowrap">pH {'<'} pKa</div>
                 </button>
               </div>
 

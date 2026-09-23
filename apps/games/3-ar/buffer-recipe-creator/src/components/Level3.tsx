@@ -6,6 +6,7 @@ import { parseStudentNumber, formatDecimal } from '@shared/utils';
 import { BufferCapacityVisualization } from './BufferCapacityVisualization';
 import { LEVEL3_PUZZLES } from '../data/level3-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
+import { revealTop } from '../utils/reveal';
 
 interface Level3Props {
   onComplete: (score: number) => void;
@@ -37,6 +38,8 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
   const [hintResetKey, setHintResetKey] = useState(0);
   const [completed, setCompleted] = useState(0);
   const levelCompleteReported = useRef(false);
+  const levelTopRef = useRef<HTMLDivElement>(null);
+  const stepCardRef = useRef<HTMLDivElement>(null);
 
   // Step 1: Ratio
   const [ratioInput, setRatioInput] = useState('');
@@ -68,6 +71,16 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
       onComplete(score);
     }
   }, [completed, score, onComplete]);
+
+  // Finishing a puzzle hides the hint tiers above this card and, 250 ms later, the step just
+  // answered. A student who opened the hints therefore landed in the middle of the worked
+  // solution on a phone, with "Rétt svar!" scrolled past. Bring the card's top back once both
+  // have gone; revealTop leaves a screen that still shows it alone.
+  useEffect(() => {
+    if (step !== 'complete') return;
+    const timer = window.setTimeout(() => revealTop(stepCardRef.current), 300);
+    return () => window.clearTimeout(timer);
+  }, [step]);
 
   // Safety check
   if (!problem) {
@@ -190,6 +203,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
     if (currentIndex < LEVEL3_PUZZLES.length - 1) {
       setCurrentIndex((prev) => prev + 1);
       resetPuzzleState();
+      revealTop(levelTopRef.current);
     }
   };
 
@@ -216,7 +230,10 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-teal-100 p-4 md:p-8">
         <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 space-y-4">
-          <button onClick={onBack} className="text-warm-600 hover:text-warm-800 text-sm">
+          <button
+            onClick={onBack}
+            className="text-warm-600 hover:text-warm-800 text-sm pointer-coarse:py-3 pointer-coarse:-mt-3"
+          >
             ← Til baka
           </button>
           <h2 className="text-2xl font-bold text-green-700">Stig 3 — frá massa til rúmmála</h2>
@@ -248,7 +265,12 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
             </ol>
           </div>
           <button
-            onClick={() => setShowIntro(false)}
+            onClick={() => {
+              setShowIntro(false);
+              // "Byrja" ends the intro, so on a phone it is tapped part-way down the page;
+              // open the first task from its top rather than at that offset.
+              window.scrollTo({ top: 0, left: 0 });
+            }}
             className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl"
           >
             Byrja →
@@ -262,11 +284,11 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-teal-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-xl p-4 mb-4">
+        <div ref={levelTopRef} className="bg-white rounded-2xl shadow-xl p-4 mb-4">
           <div className="flex justify-between items-center">
             <button
               onClick={onBack}
-              className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+              className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
             >
               ← Til baka
             </button>
@@ -293,7 +315,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
         </div>
 
         {/* Task Card */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-4 border-t-4 border-green-500">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4 border-t-4 border-green-500">
           <div className="flex items-start gap-3 mb-4">
             <span className="text-white text-sm font-bold px-3 py-1 rounded-full bg-green-600">
               #{puzzle.id}
@@ -330,9 +352,9 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
             </div>
           </div>
 
-          {/* Stock Solution Info */}
+          {/* Stock Solution Info (p-2 below sm, or CH₃COONa splits mid-formula at 320 px) */}
           <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="bg-red-50 p-3 rounded-lg border-2 border-red-200">
+            <div className="bg-red-50 p-2 sm:p-3 rounded-lg border-2 border-red-200">
               <div className="text-xs text-red-600 font-semibold flex items-center gap-1">
                 <span className="text-lg">🧪</span> Sýrubirgð
               </div>
@@ -341,7 +363,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                 {formatDecimal(puzzle.stockAcidConc)} M birgðalausn
               </div>
             </div>
-            <div className="bg-blue-50 p-3 rounded-lg border-2 border-blue-200">
+            <div className="bg-blue-50 p-2 sm:p-3 rounded-lg border-2 border-blue-200">
               <div className="text-xs text-blue-600 font-semibold flex items-center gap-1">
                 <span className="text-lg">🧪</span> Basabirgð
               </div>
@@ -425,7 +447,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
         </div>
 
         {/* Step Content */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
+        <div ref={stepCardRef} className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
           {/* Step 1: Ratio */}
           <Presence show={step === 'ratio'} exitDuration={250}>
             <div>
@@ -655,7 +677,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                   </h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs">
+                      <span className="w-6 h-6 shrink-0 rounded-full bg-red-500 text-white flex items-center justify-center text-xs">
                         1
                       </span>
                       <span>
@@ -664,7 +686,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs">
+                      <span className="w-6 h-6 shrink-0 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs">
                         2
                       </span>
                       <span>
@@ -673,7 +695,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-warm-500 text-white flex items-center justify-center text-xs">
+                      <span className="w-6 h-6 shrink-0 rounded-full bg-warm-500 text-white flex items-center justify-center text-xs">
                         3
                       </span>
                       <span>

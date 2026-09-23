@@ -18,7 +18,7 @@ export const IndicatorSelector: React.FC<IndicatorSelectorProps> = ({
   disabled = false,
 }) => {
   return (
-    <div className="bg-white rounded-lg p-4 shadow-md border-2 border-warm-200">
+    <div className="bg-white rounded-lg p-3 sm:p-4 shadow-md border-2 border-warm-200">
       <h3 className="text-lg font-bold text-warm-800 mb-3">Veldu Vísi</h3>
       <div className="grid grid-cols-1 gap-2">
         {indicators.map((indicator) => (
@@ -39,14 +39,14 @@ export const IndicatorSelector: React.FC<IndicatorSelectorProps> = ({
                   pH {indicator.pHRange[0].toFixed(1)} - {indicator.pHRange[1].toFixed(1)}
                 </p>
               </div>
-              <div className="flex gap-2 ml-2">
+              <div className="flex gap-1 sm:gap-2 ml-2">
                 <div className="flex flex-col items-center">
                   <div
                     className="w-6 h-6 rounded border border-warm-400"
                     style={{ backgroundColor: indicator.colorAcidic }}
                     aria-label="Litur í sýrri lausn"
                   />
-                  <span className="text-[10px] text-warm-600 mt-0.5">Súr</span>
+                  <span className="text-[10px] max-lg:text-xs text-warm-600 mt-0.5">Súr</span>
                 </div>
                 <div className="flex flex-col items-center">
                   <div
@@ -54,7 +54,7 @@ export const IndicatorSelector: React.FC<IndicatorSelectorProps> = ({
                     style={{ backgroundColor: indicator.colorBasic }}
                     aria-label="Litur í basískri lausn"
                   />
-                  <span className="text-[10px] text-warm-600 mt-0.5">Basísk</span>
+                  <span className="text-[10px] max-lg:text-xs text-warm-600 mt-0.5">Basísk</span>
                 </div>
               </div>
             </div>

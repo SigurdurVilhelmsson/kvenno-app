@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 
 import { Presence } from '@shared/components';
+import { parseStudentNumber } from '@shared/utils';
 
 import { LEVEL3_CHALLENGES } from '../data/level3-challenges';
+import { revealTop } from '../utils/reveal';
 
 interface Level3Props {
   onComplete: (score: number) => void;
@@ -15,6 +17,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const [, setHintsUsed] = useState(0);
   const [completed, setCompleted] = useState(0);
   const levelCompleteReported = useRef(false);
+  const levelRef = useRef<HTMLDivElement>(null);
+  const [revealKey, setRevealKey] = useState(0);
 
   // Answer state
   const [userAnswer, setUserAnswer] = useState('');
@@ -34,6 +38,10 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     setIsCorrect(false);
   }, [currentIndex]);
 
+  useEffect(() => {
+    if (revealKey > 0) revealTop(levelRef.current);
+  }, [revealKey]);
+
   // Check completion
   useEffect(() => {
     if (completed >= LEVEL3_CHALLENGES.length && !levelCompleteReported.current) {
@@ -45,7 +53,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const handleSubmit = () => {
     if (!userAnswer.trim()) return;
 
-    const numericAnswer = parseFloat(userAnswer.replace(',', '.'));
+    const numericAnswer = parseStudentNumber(userAnswer);
     if (isNaN(numericAnswer)) return;
 
     const relativeError =
@@ -73,6 +81,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
     if (currentIndex < LEVEL3_CHALLENGES.length - 1) {
       setCurrentIndex((prev) => prev + 1);
+      setRevealKey((prev) => prev + 1);
     }
   };
 
@@ -116,11 +125,11 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-xl p-4 mb-4">
+        <div ref={levelRef} className="bg-white rounded-2xl shadow-xl p-4 mb-4 scroll-mt-4">
           <div className="flex justify-between items-center">
             <button
               onClick={onBack}
-              className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+              className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:py-3 pointer-coarse:-my-3"
             >
               ← Til baka
             </button>
@@ -146,8 +155,10 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         </div>
 
         {/* Challenge card */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 mb-4">
-          <div className="flex items-start gap-3 mb-4">
+        <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 mb-4">
+          {/* Wraps on a phone: titles like "Finndu jafngildisrúmmál" hold a
+              word too long to sit beside the badge at 320 px. */}
+          <div className="flex flex-wrap items-start gap-x-3 gap-y-2 mb-4">
             <span
               className={`${getChallengeTypeColor(challenge.type)} text-white text-xs font-bold px-3 py-1 rounded-full`}
             >
@@ -163,7 +174,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           {/* Given data */}
           <div className="bg-warm-50 rounded-xl p-4 mb-4">
             <h3 className="font-bold text-warm-700 mb-2">Gefið:</h3>
-            <div className="grid grid-cols-2 gap-2 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
               {challenge.givenData.analyteVolume && (
                 <div>
                   <span className="font-semibold">Rúmmál sýnis:</span>{' '}
@@ -231,6 +242,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               <input
                 id="ph-titration-l3-answer"
                 type="text"
+                inputMode="decimal"
+                autoComplete="off"
                 value={userAnswer}
                 onChange={(e) => setUserAnswer(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -266,7 +279,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               ) : (
                 <button
                   onClick={handleShowHint}
-                  className="text-yellow-600 hover:text-yellow-800 text-sm flex items-center gap-2"
+                  className="text-yellow-600 hover:text-yellow-800 text-sm flex items-center gap-2 pointer-coarse:min-h-11"
                 >
                   💡 Sýna vísbendingu
                 </button>
@@ -314,7 +327,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               {!showSolution && (
                 <button
                   onClick={() => setShowSolution(true)}
-                  className="mt-3 text-purple-600 hover:text-purple-800 text-sm font-semibold"
+                  className="mt-3 text-purple-600 hover:text-purple-800 text-sm font-semibold pointer-coarse:min-h-11"
                 >
                   📝 Sýna útreikningsgang
                 </button>
