@@ -15,13 +15,20 @@ import type {
   VerticalLineConfig,
 } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
-import { parseStudentNumber } from '@shared/utils';
+import { formatDecimal } from '@shared/utils';
 
 import { EntropyVisualization } from './components/EntropyVisualization';
 import { PROBLEMS } from './data';
 import type { Difficulty, GameMode, Spontaneity, Problem } from './types';
+import { formatRounded } from './utils/format';
 import { toggleSign } from './utils/sign';
-import { calculateDeltaG, getSpontaneity } from './utils/thermo-calculations';
+import {
+  calculateDeltaG,
+  crossoverTemperature,
+  deltaGAxisHalfRange,
+  getSpontaneity,
+  isDeltaGCorrect,
+} from './utils/thermo-calculations';
 
 /** How long the answer card takes to leave once an answer is checked (its Presence exit). */
 const ANSWER_CARD_EXIT_MS = 250;
@@ -55,6 +62,13 @@ function App() {
   const [userSpontaneity, setUserSpontaneity] = useState<Spontaneity | ''>('');
   const [showSolution, setShowSolution] = useState(false);
   const [feedback, setFeedback] = useState('');
+  // Whether the checked answer was right. The feedback box took its colour from
+  // `feedback.includes('Rétt')`, and the half-right messages say "Rétt svar: …", so a wrong
+  // answer was boxed in the green of a right one.
+  const [answeredCorrectly, setAnsweredCorrectly] = useState(false);
+  // Which question of this run is on screen. This was the stored count of correct answers
+  // plus one, which neither rose on a wrong answer nor started at 1 on a return visit.
+  const [questionNumber, setQuestionNumber] = useState(0);
   const {
     progress,
     updateProgress,
@@ -108,11 +122,23 @@ function App() {
     setUserSpontaneity('');
     setShowSolution(false);
     setFeedback('');
-    if (mode === 'challenge') {
-      setTimeLeft(90);
-    }
+    setAnsweredCorrectly(false);
+    setQuestionNumber((n) => n + 1);
+    // Every new problem gets a full clock. This was reset only when `mode` read 'challenge',
+    // but entering a mode calls this in the same click as `setMode`, while `mode` still reads
+    // the screen being left — so a new Keppnishamur run kept the old run's remaining seconds,
+    // and a run that had timed out started at 0. The clock only runs in Keppnishamur.
+    setTimeLeft(90);
     // "Næsta spurning" sits at the foot of the solution; the new problem starts at the top.
     window.scrollTo(0, 0);
+  };
+
+  /** Open Æfingarhamur or Keppnishamur at its first question. */
+  const startRun = (next: 'learning' | 'challenge') => {
+    setMode(next);
+    if (next === 'challenge') setStreak(0);
+    setQuestionNumber(0);
+    startNewProblem();
   };
 
   // Calculate ΔG for the current problem at a given temperature
@@ -142,13 +168,13 @@ function App() {
     const TdeltaS = (temperature * deltaS) / 1000;
     switch (scenario) {
       case 1:
-        return `ΔH er neikvætt (efnahvarfið losar varma) og ΔS er jákvætt (entrópía eykst). Báðir þættir styðja sjálfgengi — þess vegna er þetta hvarf alltaf sjálfgengt óháð hitastigi.`;
+        return `ΔH er neikvætt (efnahvarfið losar varma) og ΔS er jákvætt (óreiða eykst). Báðir þættir styðja sjálfgengi — þess vegna er þetta hvarf alltaf sjálfgengt óháð hitastigi.`;
       case 2:
-        return `ΔH er jákvætt (efnahvarfið þarf varma) og ΔS er neikvætt (entrópía minnkar). Báðir þættir andmæla sjálfgengi — þess vegna er þetta hvarf aldrei sjálfgengt óháð hitastigi.`;
+        return `ΔH er jákvætt (efnahvarfið þarf varma) og ΔS er neikvætt (óreiða minnkar). Báðir þættir andmæla sjálfgengi — þess vegna er þetta hvarf aldrei sjálfgengt óháð hitastigi.`;
       case 3:
-        return `ΔH er neikvætt (styður sjálfgengi) en ΔS er neikvætt (andmælir). Við ${temperature} K vegur TΔS = ${TdeltaS.toFixed(1)} kJ/mol. Ef |ΔH| > |TΔS|, þá vinnur varminn og hvarfið er sjálfgengt. Þess vegna eru svona hvörf sjálfgeng við lágt hitastig en ekki við hátt.`;
+        return `ΔH er neikvætt (styður sjálfgengi) en ΔS er neikvætt (andmælir). Við ${temperature} K vegur TΔS = ${formatRounded(TdeltaS, 1)} kJ/mol. Ef |ΔH| > |TΔS|, þá vinnur varminn og hvarfið er sjálfgengt. Þess vegna eru svona hvörf sjálfgeng við lágt hitastig en ekki við hátt.`;
       case 4:
-        return `ΔH er jákvætt (andmælir sjálfgengi) en ΔS er jákvætt (styður). Við ${temperature} K vegur TΔS = ${TdeltaS.toFixed(1)} kJ/mol. Ef TΔS > ΔH, þá vinnur entrópía og hvarfið er sjálfgengt. Þess vegna eru svona hvörf ekki sjálfgeng við lágt hitastig en verða sjálfgeng við nógu hátt.`;
+        return `ΔH er jákvætt (andmælir sjálfgengi) en ΔS er jákvætt (styður). Við ${temperature} K vegur TΔS = ${formatRounded(TdeltaS, 1)} kJ/mol. Ef TΔS > ΔH, þá vinnur óreiða og hvarfið er sjálfgengt. Þess vegna eru svona hvörf ekki sjálfgeng við lágt hitastig en verða sjálfgeng við nógu hátt.`;
       default:
         return '';
     }
@@ -159,9 +185,9 @@ function App() {
     const calculatedDeltaG = calcDeltaGForProblem(temperature);
     const correctSpontaneity = getSpontaneity(calculatedDeltaG);
 
-    const deltaGDiff = Math.abs(parseStudentNumber(userDeltaG) - calculatedDeltaG);
-    const deltaGCorrect = deltaGDiff <= 3;
+    const deltaGCorrect = isDeltaGCorrect(userDeltaG, calculatedDeltaG);
     const spontaneityCorrect = userSpontaneity === correctSpontaneity;
+    setAnsweredCorrectly(deltaGCorrect && spontaneityCorrect);
 
     if (deltaGCorrect && spontaneityCorrect) {
       const points = 100 + streak * 10;
@@ -182,7 +208,7 @@ function App() {
         setFeedback(`Rangt. Bæði ΔG útreikningur og sjálfgengi eru röng. ${reasoning}`);
       } else if (!deltaGCorrect) {
         setFeedback(
-          `Sjálfgengi er rétt en ΔG er rangt. Rétt svar: ${calculatedDeltaG.toFixed(1)} kJ/mol`
+          `Sjálfgengi er rétt en ΔG er rangt. Rétt svar: ${formatRounded(calculatedDeltaG, 1)} kJ/mol`
         );
       } else {
         const spontaneityText =
@@ -206,6 +232,12 @@ function App() {
     const deltaH = currentProblem.deltaH;
     const deltaS = currentProblem.deltaS / 1000;
     const tempRange = { min: 200, max: 1200 };
+    const yHalf = deltaGAxisHalfRange(
+      currentProblem.deltaH,
+      currentProblem.deltaS,
+      tempRange.min,
+      tempRange.max
+    );
 
     // Generate curve data points
     const dataPoints: DataPoint[] = [];
@@ -227,7 +259,7 @@ function App() {
     // Spontaneity regions
     const regions: RegionConfig[] = [
       {
-        yMin: -500,
+        yMin: -yHalf,
         yMax: 0,
         color: 'rgba(34, 197, 94, 0.1)',
         label: 'Sjálfgengt',
@@ -235,7 +267,7 @@ function App() {
       },
       {
         yMin: 0,
-        yMax: 500,
+        yMax: yHalf,
         color: 'rgba(239, 68, 68, 0.1)',
         label: 'Ekki sjálfgengt',
         labelPosition: 'left',
@@ -250,48 +282,48 @@ function App() {
         y: currentDeltaG,
         color: currentDeltaG < 0 ? '#22c55e' : '#ef4444',
         radius: 6,
-        label: `${currentDeltaG.toFixed(0)} kJ/mol`,
+        label: `${formatRounded(currentDeltaG, 0)} kJ/mol`,
       },
     ];
 
     // Crossover temperature line
     const verticalLines: VerticalLineConfig[] = [];
-    if (deltaS !== 0) {
-      const crossTemp = Math.abs(deltaH / deltaS);
-      if (crossTemp >= tempRange.min && crossTemp <= tempRange.max) {
-        verticalLines.push({
-          x: crossTemp,
-          color: '#8b5cf6',
-          lineDash: [5, 5],
-          label: `T_cross = ${crossTemp.toFixed(0)} K`,
-          labelPosition: 'bottom',
-        });
-        // Add crossover point marker
-        markers.push({
-          x: crossTemp,
-          y: 0,
-          color: '#8b5cf6',
-          radius: 8,
-          label: 'ΔG = 0',
-        });
-      }
+    const crossTemp = crossoverTemperature(currentProblem.deltaH, currentProblem.deltaS);
+    if (crossTemp !== null && crossTemp >= tempRange.min && crossTemp <= tempRange.max) {
+      verticalLines.push({
+        x: crossTemp,
+        color: '#8b5cf6',
+        lineDash: [5, 5],
+        label: `T_cross = ${formatRounded(crossTemp, 0)} K`,
+        labelPosition: 'bottom',
+      });
+      // Add crossover point marker
+      markers.push({
+        x: crossTemp,
+        y: 0,
+        color: '#8b5cf6',
+        radius: 8,
+        label: 'ΔG = 0',
+      });
     }
 
-    return { series, regions, markers, verticalLines };
+    return { series, regions, markers, verticalLines, yHalf };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: calcDeltaGForProblem is derived from currentProblem
   }, [currentProblem, temperature]);
 
-  // Timer for challenge mode
+  // Timer for challenge mode. Only Keppnishamur runs out of time: this used to fire in any
+  // mode once the clock read 0, so after one timed-out challenge every Æfingarhamur problem
+  // opened already marked "Tíminn rann út!".
   useEffect(() => {
-    if (mode === 'challenge' && timeLeft > 0 && !showSolution) {
+    if (mode !== 'challenge' || showSolution) return;
+    if (timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
     }
-    if (timeLeft === 0 && !showSolution) {
-      setFeedback('Tíminn rann út!');
-      setShowSolution(true);
-      setStreak(0);
-    }
+    setFeedback('Tíminn rann út!');
+    setAnsweredCorrectly(false);
+    setShowSolution(true);
+    setStreak(0);
   }, [mode, timeLeft, showSolution]);
 
   const renderMenu = () => (
@@ -354,12 +386,12 @@ function App() {
 
                 <p className="text-sm text-blue-700">
                   Til að spá fyrir um hvort hvörf gerist sjálfkrafa (sjálfgengt) þurfum við að skoða{' '}
-                  <strong>tvær drifkraftir</strong>:
+                  <strong>tvo drifkrafta</strong>:
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div className="bg-white p-3 rounded-lg">
-                    <strong className="text-red-700">ΔH (entalpía)</strong>
+                    <strong className="text-red-700">ΔH (vermi)</strong>
                     <p className="text-sm text-warm-700 mt-1">
                       Efni vilja losa orku → ΔH &lt; 0 er hagstætt.
                       <br />
@@ -367,9 +399,9 @@ function App() {
                     </p>
                   </div>
                   <div className="bg-white p-3 rounded-lg">
-                    <strong className="text-purple-700">ΔS (óregla/entrópia)</strong>
+                    <strong className="text-purple-700">ΔS (óreiða)</strong>
                     <p className="text-sm text-warm-700 mt-1">
-                      Náttúran stefnir í meiri óreglu → ΔS &gt; 0 er hagstætt.
+                      Náttúran stefnir í meiri óreiðu → ΔS &gt; 0 er hagstætt.
                       <br />
                       (Eins og herbergi sem verður alltaf ósnyrtilegra)
                     </p>
@@ -397,7 +429,7 @@ function App() {
 
                 <div className="bg-amber-50 p-3 rounded-lg text-sm text-amber-800">
                   <strong>Hlutverk hitastigs:</strong> T margfaldar ΔS. Við hátt hitastig ráða
-                  óreguáhrif meiru (TΔS stórt). Við lágt hitastig ræður orkuáhrifin (ΔH). Þess vegna
+                  óreiðuáhrif meiru (TΔS stórt). Við lágt hitastig ráða orkuáhrifin (ΔH). Þess vegna
                   geta sum hvörf verið sjálfgeng aðeins við ákveðið hitastig.
                 </div>
               </div>
@@ -455,22 +487,15 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <button
-                  onClick={() => {
-                    setMode('learning');
-                    startNewProblem();
-                  }}
+                  onClick={() => startRun('learning')}
                   className="game-card p-6 rounded-lg text-white font-bold text-lg transition"
                   style={{ background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' }}
                 >
                   📖 Æfingarhamur
-                  <div className="text-sm font-normal mt-1">Ótakmarkaður tími, vísbendingar</div>
+                  <div className="text-sm font-normal mt-1">Ótakmarkaður tími</div>
                 </button>
                 <button
-                  onClick={() => {
-                    setMode('challenge');
-                    setStreak(0);
-                    startNewProblem();
-                  }}
+                  onClick={() => startRun('challenge')}
                   className="game-card p-6 rounded-lg text-white font-bold text-lg transition"
                   style={{ background: 'linear-gradient(135deg, #f36b22 0%, #d95a1a 100%)' }}
                 >
@@ -512,7 +537,10 @@ function App() {
     const demoT = temperature;
     const demoDeltaG = demoDeltaH - (demoT * demoDeltaS) / 1000;
     const demoCrossover = Math.abs(demoDeltaH / (demoDeltaS / 1000));
-    const demoSpontaneous = demoDeltaG < 0;
+    // The same verdict the graded problems use, so ΔG = 0 at 500 K reads as equilibrium: a
+    // plain `< 0` test called it "Ekki sjálfgengt — ΔG > 0" at the one temperature the
+    // "Hvað sést?" list below says is equilibrium.
+    const demoSpontaneity = getSpontaneity(demoDeltaG);
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100 p-4 md:p-8">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 space-y-5">
@@ -528,27 +556,27 @@ function App() {
             🔬 Könnun: hvernig hitastig hefur áhrif á ΔG
           </h2>
           <p className="text-warm-700">
-            Hér er dæmi um efnahvarf sem losar varma (ΔH = −100 kJ/mol) en entrópía minnkar (ΔS =
-            −200 J/(mol·K)). Dragðu hitastigs-sleðann og sjáðu hvernig ΔG breytist.
+            Hér er dæmi um efnahvarf sem losar varma (ΔH = −100 kJ/mol) en óreiða minnkar (ΔS = −200
+            J/(mol·K)). Dragðu hitastigs-sleðann og sjáðu hvernig ΔG breytist.
           </p>
 
           <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-6 rounded-xl border border-indigo-200">
-            {/* One column below sm: side by side, "(varmamismunur)" and "J/(mol·K)" split mid-word. */}
+            {/* One column below sm: side by side, "(vermibreyting)" and "J/(mol·K)" split mid-word. */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 text-center">
               <div className="bg-red-50 p-3 rounded-lg border border-red-200">
-                <div className="text-xs text-red-700 font-semibold">ΔH° (varmamismunur)</div>
+                <div className="text-xs text-red-700 font-semibold">ΔH° (vermibreyting)</div>
                 <div className="text-2xl font-bold text-red-800">{demoDeltaH} kJ/mol</div>
                 <div className="text-xs text-red-600 mt-1">Losun varma → styður sjálfgengi</div>
               </div>
               <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
-                <div className="text-xs text-purple-700 font-semibold">ΔS° (óreiðumismunur)</div>
+                <div className="text-xs text-purple-700 font-semibold">ΔS° (óreiðubreyting)</div>
                 <div className="text-2xl font-bold text-purple-800">{demoDeltaS} J/(mol·K)</div>
                 <div className="text-xs text-purple-600 mt-1">Minni óreiða → andmælir</div>
               </div>
             </div>
 
             <label htmlFor="thermo-discover-temp" className="block font-semibold mb-2">
-              🌡️ Hitastig: {demoT} K ({(demoT - 273).toFixed(0)}°C)
+              🌡️ Hitastig: {demoT} K ({demoT - 273}°C)
             </label>
             <input
               id="thermo-discover-temp"
@@ -567,21 +595,31 @@ function App() {
 
             <div
               className={`mt-4 p-4 rounded-lg border-2 ${
-                demoSpontaneous
+                demoSpontaneity === 'spontaneous'
                   ? 'bg-green-50 border-green-500 text-green-900'
-                  : 'bg-red-50 border-red-500 text-red-900'
+                  : demoSpontaneity === 'equilibrium'
+                    ? 'bg-yellow-50 border-yellow-500 text-yellow-900'
+                    : 'bg-red-50 border-red-500 text-red-900'
               }`}
             >
               <div className="font-bold text-sm">
-                ΔG° = ΔH° − TΔS° = {demoDeltaH} − ({demoT})({(demoDeltaS / 1000).toFixed(3)}) ={' '}
-                <span className="text-xl whitespace-nowrap">{demoDeltaG.toFixed(1)} kJ/mol</span>
+                ΔG° = ΔH° − TΔS° = {demoDeltaH} − ({demoT})({formatDecimal(demoDeltaS / 1000)}) ={' '}
+                <span className="text-xl whitespace-nowrap">
+                  {formatRounded(demoDeltaG, 1)} kJ/mol
+                </span>
               </div>
               <div className="mt-1 text-sm">
-                {demoSpontaneous ? (
+                {demoSpontaneity === 'spontaneous' && (
                   <>
                     ✓ <strong>Sjálfgengt</strong> — ΔG &lt; 0
                   </>
-                ) : (
+                )}
+                {demoSpontaneity === 'equilibrium' && (
+                  <>
+                    ⚖️ <strong>Jafnvægi</strong> — ΔG ≈ 0
+                  </>
+                )}
+                {demoSpontaneity === 'non-spontaneous' && (
                   <>
                     ✗ <strong>Ekki sjálfgengt</strong> — ΔG &gt; 0
                   </>
@@ -602,8 +640,8 @@ function App() {
                 stórt jákvætt tillag til ΔG.
               </li>
               <li>
-                Við <strong>þveragahitastig T = ΔH/ΔS ≈ {demoCrossover.toFixed(0)} K</strong> verða
-                liðurnir jafnir og hvarfið nær jafnvægi.
+                Við <strong>þveragahitastig T = ΔH/ΔS ≈ {formatRounded(demoCrossover, 0)} K</strong>{' '}
+                verða liðurnir jafnir og hvarfið nær jafnvægi.
               </li>
               <li>Ofan við þveragahitastigið verður hvarfið ekki sjálfgengt.</li>
             </ul>
@@ -618,13 +656,10 @@ function App() {
               ← Valmynd
             </button>
             <button
-              onClick={() => {
-                setMode('learning');
-                startNewProblem();
-              }}
+              onClick={() => startRun('learning')}
               className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl"
             >
-              Byrja æfingarhamur →
+              Byrja æfingarham →
             </button>
           </div>
         </div>
@@ -637,10 +672,7 @@ function App() {
 
     const currentDeltaG = calcDeltaGForProblem(temperature);
     const currentSpontaneity = getSpontaneity(currentDeltaG);
-    const crossoverTemp =
-      currentProblem.deltaS !== 0
-        ? Math.abs(currentProblem.deltaH / (currentProblem.deltaS / 1000))
-        : null;
+    const crossoverTemp = crossoverTemperature(currentProblem.deltaH, currentProblem.deltaS);
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-6">
@@ -686,7 +718,7 @@ function App() {
               <div className="flex gap-4 items-center">
                 <div className="text-center">
                   <div className="text-sm text-warm-600">Spurning</div>
-                  <div className="text-xl font-bold">{progress.problemsCompleted + 1}</div>
+                  <div className="text-xl font-bold">{questionNumber}</div>
                 </div>
               </div>
             </div>
@@ -722,7 +754,7 @@ function App() {
                     endothermic tag mid-word. */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
                   <div className="bg-red-50 p-3 rounded-lg">
-                    <div className="text-sm text-warm-600">Entalpía (ΔH°)</div>
+                    <div className="text-sm text-warm-600">Vermi (ΔH°)</div>
                     <div
                       className="text-xl font-bold"
                       style={{
@@ -733,10 +765,10 @@ function App() {
                       }}
                     >
                       {currentProblem.deltaH > 0 ? '+' : ''}
-                      {currentProblem.deltaH} kJ/mol
+                      {formatDecimal(currentProblem.deltaH)} kJ/mol
                     </div>
                     <div className="text-xs mt-1">
-                      {currentProblem.deltaH < 0 ? '🔥 Varmalosandi' : '❄️ Varmabindandi'}
+                      {currentProblem.deltaH < 0 ? '🔥 Útvermið' : '❄️ Innvermið'}
                     </div>
                   </div>
 
@@ -752,7 +784,7 @@ function App() {
                       }}
                     >
                       {currentProblem.deltaS > 0 ? '+' : ''}
-                      {currentProblem.deltaS} J/(mol·K)
+                      {formatDecimal(currentProblem.deltaS)} J/(mol·K)
                     </div>
                     <div className="text-xs mt-1">
                       {currentProblem.deltaS > 0 ? '↑ Óreiða eykst' : '↓ Óreiða minnkar'}
@@ -780,12 +812,12 @@ function App() {
                     onChange={(e) => setTemperature(parseInt(e.target.value, 10))}
                     className="w-full"
                     aria-label="Hitastig í Kelvinum"
-                    aria-valuetext={`${temperature} Kelvin (${(temperature - 273).toFixed(0)} gráður á Celsíus)`}
+                    aria-valuetext={`${temperature} Kelvin (${temperature - 273} gráður á Celsíus)`}
                   />
                   <div className="flex justify-between text-sm text-warm-600 mt-2">
                     <span>200 K</span>
                     <span className="text-xl font-bold" style={{ color: '#f36b22' }}>
-                      {temperature} K ({(temperature - 273).toFixed(0)}°C)
+                      {temperature} K ({temperature - 273}°C)
                     </span>
                     <span>1200 K</span>
                   </div>
@@ -797,10 +829,12 @@ function App() {
                   <div className="font-mono text-sm mb-2">
                     ΔG° = ΔH° - TΔS°
                     <br />
-                    ΔG° = ({currentProblem.deltaH}) - ({temperature})(
-                    {(currentProblem.deltaS / 1000).toFixed(3)})<br />
+                    ΔG° = ({formatDecimal(currentProblem.deltaH)}) - ({temperature})(
+                    {formatDecimal(currentProblem.deltaS / 1000)})<br />
                     ΔG° ={' '}
-                    <span className="font-bold text-lg">{currentDeltaG.toFixed(1)} kJ/mol</span>
+                    <span className="font-bold text-lg">
+                      {formatRounded(currentDeltaG, 1)} kJ/mol
+                    </span>
                   </div>
                   <div
                     className={`text-lg font-bold ${currentSpontaneity === 'spontaneous' ? 'text-green-600' : currentSpontaneity === 'equilibrium' ? 'text-yellow-600' : 'text-red-600'}`}
@@ -826,10 +860,10 @@ function App() {
                           Umbreytingarhitastig (T<sub>cross</sub>):
                         </strong>
                         <span className="ml-2 font-mono font-bold">
-                          {crossoverTemp.toFixed(0)} K
+                          {formatRounded(crossoverTemp, 0)} K
                         </span>
                         <span className="text-warm-500 ml-1">
-                          ({(crossoverTemp - 273).toFixed(0)}°C)
+                          ({formatRounded(crossoverTemp - 273, 0)}°C)
                         </span>
                       </div>
                     </div>
@@ -896,7 +930,7 @@ function App() {
                         value={userDeltaG}
                         onChange={(e) => setUserDeltaG(e.target.value)}
                         className="w-full px-4 py-2 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-none"
-                        placeholder="t.d. -33.5"
+                        placeholder="t.d. -33,5"
                       />
                       {/* The decimal keypad has no minus key on an iPhone, and most ΔG° answers
                           here are negative. Touch screens only; a desktop keyboard has one. */}
@@ -972,27 +1006,32 @@ function App() {
                     <div>
                       <strong>Skref 1:</strong> Umbreyta ΔS° í kJ/(mol·K)
                       <br />
-                      ΔS° = {currentProblem.deltaS} J/(mol·K) × (1 kJ / 1000 J) ={' '}
-                      {(currentProblem.deltaS / 1000).toFixed(3)} kJ/(mol·K)
+                      ΔS° = {formatDecimal(currentProblem.deltaS)} J/(mol·K) × (1 kJ / 1000 J) ={' '}
+                      {formatDecimal(currentProblem.deltaS / 1000)} kJ/(mol·K)
                     </div>
                     <div>
                       <strong>Skref 2:</strong> Beita Gibbs jöfnunni
                       <br />
                       ΔG° = ΔH° - TΔS°
                       <br />
-                      ΔG° = ({currentProblem.deltaH}) - ({temperature})(
-                      {(currentProblem.deltaS / 1000).toFixed(3)})<br />
-                      ΔG° = {currentProblem.deltaH} -{' '}
-                      {((temperature * currentProblem.deltaS) / 1000).toFixed(1)}
+                      ΔG° = ({formatDecimal(currentProblem.deltaH)}) - ({temperature})(
+                      {formatDecimal(currentProblem.deltaS / 1000)})<br />
+                      {/* TΔS in brackets, as on the line above: bare, a negative TΔS printed
+                          as "-283 - -25,9". */}
+                      ΔG° = ({formatDecimal(currentProblem.deltaH)}) - (
+                      {formatRounded((temperature * currentProblem.deltaS) / 1000, 1)})
                       <br />
-                      <strong>ΔG° = {currentDeltaG.toFixed(1)} kJ/mol</strong>
+                      <strong>ΔG° = {formatRounded(currentDeltaG, 1)} kJ/mol</strong>
                     </div>
                     <div>
                       <strong>Skref 3:</strong> Túlka niðurstöðu
                       <br />
-                      {currentDeltaG < -1 && 'ΔG° < 0 → SJÁLFGENGT ✓'}
-                      {Math.abs(currentDeltaG) <= 1 && 'ΔG° ≈ 0 → JAFNVÆGI ⚖️'}
-                      {currentDeltaG > 1 && 'ΔG° > 0 → EKKI SJÁLFGENGT ✗'}
+                      {/* The grader's own verdict. This tested |ΔG°| ≤ 1 where the grader tests
+                          < 1, so at exactly 1 (protein unfolding at 332 K) the solution said
+                          JAFNVÆGI while the grader wanted "Ekki sjálfgengt". */}
+                      {currentSpontaneity === 'spontaneous' && 'ΔG° < 0 → SJÁLFGENGT ✓'}
+                      {currentSpontaneity === 'equilibrium' && 'ΔG° ≈ 0 → JAFNVÆGI ⚖️'}
+                      {currentSpontaneity === 'non-spontaneous' && 'ΔG° > 0 → EKKI SJÁLFGENGT ✗'}
                     </div>
                     {/* Crossover temperature explanation for scenarios 3 & 4 */}
                     {(currentProblem.scenario === 3 || currentProblem.scenario === 4) &&
@@ -1004,28 +1043,30 @@ function App() {
                           <div className="font-mono mt-1">
                             Þegar ΔG° = 0: ΔH° = TΔS°
                             <br />T<sub>cross</sub> = ΔH° / ΔS°
-                            <br />T<sub>cross</sub> = {currentProblem.deltaH} /{' '}
-                            {(currentProblem.deltaS / 1000).toFixed(3)}
+                            <br />T<sub>cross</sub> = {formatDecimal(currentProblem.deltaH)} /{' '}
+                            {formatDecimal(currentProblem.deltaS / 1000)}
                             <br />
                             <strong>
-                              T<sub>cross</sub> = {crossoverTemp.toFixed(0)} K (
-                              {(crossoverTemp - 273).toFixed(0)}°C)
+                              T<sub>cross</sub> = {formatRounded(crossoverTemp, 0)} K (
+                              {formatRounded(crossoverTemp - 273, 0)}°C)
                             </strong>
                           </div>
                           <div className="mt-2 text-sm">
                             {currentProblem.scenario === 3 ? (
                               <>
-                                🔹 Við T &lt; {crossoverTemp.toFixed(0)} K: ΔG° &lt; 0 (sjálfgengt)
+                                🔹 Við T &lt; {formatRounded(crossoverTemp, 0)} K: ΔG° &lt; 0
+                                (sjálfgengt)
                                 <br />
-                                🔹 Við T &gt; {crossoverTemp.toFixed(0)} K: ΔG° &gt; 0 (ekki
+                                🔹 Við T &gt; {formatRounded(crossoverTemp, 0)} K: ΔG° &gt; 0 (ekki
                                 sjálfgengt)
                               </>
                             ) : (
                               <>
-                                🔹 Við T &lt; {crossoverTemp.toFixed(0)} K: ΔG° &gt; 0 (ekki
+                                🔹 Við T &lt; {formatRounded(crossoverTemp, 0)} K: ΔG° &gt; 0 (ekki
                                 sjálfgengt)
                                 <br />
-                                🔹 Við T &gt; {crossoverTemp.toFixed(0)} K: ΔG° &lt; 0 (sjálfgengt)
+                                🔹 Við T &gt; {formatRounded(crossoverTemp, 0)} K: ΔG° &lt; 0
+                                (sjálfgengt)
                               </>
                             )}
                           </div>
@@ -1048,7 +1089,7 @@ function App() {
                   role="alert"
                   aria-live="polite"
                   className={`rounded-lg shadow-lg p-4 sm:p-6 ${
-                    feedback?.includes('Rétt')
+                    answeredCorrectly
                       ? 'bg-green-50 border-2 border-green-500'
                       : 'bg-red-50 border-2 border-red-500'
                   }`}
@@ -1078,7 +1119,12 @@ function App() {
                     height={300}
                     series={graphData.series}
                     xAxis={{ min: 200, max: 1200, label: 'T (K)', tickInterval: 200 }}
-                    yAxis={{ min: -500, max: 500, label: 'ΔG (kJ/mol)', tickInterval: 100 }}
+                    yAxis={{
+                      min: -graphData.yHalf,
+                      max: graphData.yHalf,
+                      label: 'ΔG (kJ/mol)',
+                      tickInterval: graphData.yHalf / 5,
+                    }}
                     regions={graphData.regions}
                     markers={graphData.markers}
                     verticalLines={graphData.verticalLines}
@@ -1107,7 +1153,7 @@ function App() {
 
               {/* Entropy Visualization */}
               <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
-                <h3 className="font-bold mb-3">🎲 Óreiða (Entropy)</h3>
+                <h3 className="font-bold mb-3">🎲 Óreiða</h3>
                 <EntropyVisualization deltaS={currentProblem.deltaS} />
                 <div className="mt-4 text-sm">
                   <div
@@ -1119,7 +1165,7 @@ function App() {
                         <div className="text-xs font-normal mt-1">Eftirfarandi gerist:</div>
                         <ul className="text-xs font-normal list-disc list-inside mt-1">
                           <li>Lofttegundir myndast</li>
-                          <li>Fasaskipti: solid → liquid → gas</li>
+                          <li>Fasaskipti: fast efni → vökvi → gas</li>
                           <li>Uppleysingarferli</li>
                         </ul>
                       </>
@@ -1128,8 +1174,8 @@ function App() {
                         ↓ Óreiða minnkar (ΔS° &lt; 0)
                         <div className="text-xs font-normal mt-1">Eftirfarandi gerist:</div>
                         <ul className="text-xs font-normal list-disc list-inside mt-1">
-                          <li>Lofttegundir hvarf</li>
-                          <li>Fasaskipti: gas → liquid → solid</li>
+                          <li>Lofttegundir hverfa</li>
+                          <li>Fasaskipti: gas → vökvi → fast efni</li>
                           <li>Útfelling</li>
                         </ul>
                       </>
@@ -1140,7 +1186,7 @@ function App() {
 
               {/* Scenario Guide */}
               <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
-                <h3 className="font-bold mb-3">🎯 Fjögur Atburðarás</h3>
+                <h3 className="font-bold mb-3">🎯 Fjórar atburðarásir</h3>
                 <div className="space-y-2 text-xs">
                   <div className="p-2 rounded scenario-1 text-white">
                     <strong>1: ΔH&lt;0, ΔS&gt;0</strong> → Alltaf sjálfgengt
@@ -1167,7 +1213,7 @@ function App() {
                   </div>
                 </div>
                 <div className="mt-3 text-xs text-warm-600">
-                  R = 8.314 J/(mol·K)
+                  R = 8,314 J/(mol·K)
                   <br />T í Kelvin (K = °C + 273)
                   <br />
                   ΔG° &lt; 0 → sjálfgengt

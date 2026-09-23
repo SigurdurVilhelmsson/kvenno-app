@@ -225,8 +225,8 @@ export function EntropyVisualization({ deltaS }: EntropyVisualizationProps) {
             regions={afterRegions}
             ariaLabel={
               isIncreasing
-                ? 'Eftir: agnir dreifðar um allt ílátið — fleiri örstaður'
-                : 'Eftir: agnir skipulagðar í miðju — færri örstaður'
+                ? 'Eftir: agnir dreifðar um allt ílátið — fleiri örástönd'
+                : 'Eftir: agnir skipulagðar í miðju — færri örástönd'
             }
           />
         </div>
@@ -238,7 +238,7 @@ export function EntropyVisualization({ deltaS }: EntropyVisualizationProps) {
           isIncreasing ? 'text-green-600' : 'text-amber-600'
         }`}
       >
-        {isIncreasing ? '↑ Fleiri örstaður (ΔS > 0)' : '↓ Færri örstaður (ΔS < 0)'}
+        {isIncreasing ? '↑ Fleiri örástönd (ΔS > 0)' : '↓ Færri örástönd (ΔS < 0)'}
       </div>
     </div>
   );

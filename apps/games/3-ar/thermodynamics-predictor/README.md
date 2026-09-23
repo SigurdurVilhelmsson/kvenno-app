@@ -1,6 +1,6 @@
 # Varmafræði spámaður
 
-Year 3, chain position 5 of 8, between Sýrufastinn and pH Títrun (`src/App.tsx:493-494`):
+Year 3, chain position 5 of 8, between Sýrufastinn and pH Títrun (`src/App.tsx:518-519`):
 Gaslögmál → Jafnvægisfastinn → Hliðrun jafnvægis → Sýrufastinn → **Varmafræði** → pH Títrun →
 Stuðpúðar → Leysnijafnvægi. The chain string is enforced across all Y3 games by
 `3-ar/syrufastinn/src/__tests__/chain-string.test.ts`.
@@ -25,11 +25,16 @@ One screen per mode, all in `src/App.tsx`; there are no level components.
 | Æfingarhamur (`learning`)  | A random problem from the chosen difficulty. Enter ΔG° (kJ/mol) and pick one of three verdicts; the solution then shows the steps and, for scenarios 3–4, the crossover temperature |
 | Keppnishamur (`challenge`) | The same problems with a 90-second timer, a score and a streak                                                                                                                      |
 
-Grading (`checkAnswer`, `src/App.tsx:158`): ΔG° is right within **±3 kJ/mol absolute**
-(`:163`), parsed with `parseStudentNumber`, so the decimal comma works (`type="text"` +
-`inputMode="decimal"`, `:893-894`). The verdict comes from `getSpontaneity`
-(`src/utils/thermo-calculations.ts`), which calls |ΔG| < 1 kJ/mol `jafnvægi`. Both must be right.
-Wrong answers get `buildSpontaneityReasoning()`, a scenario-specific explanation of which term wins.
+Grading (`checkAnswer`, `src/App.tsx:184`): ΔG° goes through `isDeltaGCorrect`
+(`src/utils/thermo-calculations.ts`), parsed with `parseStudentNumber`, so the decimal comma works
+(`type="text"` + `inputMode="decimal"`, `src/App.tsx:927-928`). It is right within **±3 kJ/mol,
+but never more than a quarter of |ΔG°|, and never less than 0,1** (`deltaGTolerance`). The quarter
+was added on 2026-09-23: a flat ±3 marked `0`, half and double right wherever |ΔG°| < 6, e.g.
+Demant → Grafít (−2,9 kJ/mol at 298 K). It bites only below |ΔG°| = 12; a whole-number answer
+still passes wherever |ΔG°| ≥ 2. The verdict comes from `getSpontaneity`, which calls
+|ΔG| < 1 kJ/mol `jafnvægi`, and the worked solution and Könnun now use the same function, so none
+of the three can disagree about a borderline value. Both must be right. Wrong answers get
+`buildSpontaneityReasoning()`, a scenario-specific explanation of which term wins.
 
 The temperature slider is live during a problem, so the student can change T and is graded at
 whatever T it is set to.
@@ -40,16 +45,23 @@ whatever T it is set to.
   `src/data/problems.ts` carries a hand-typed `deltaH` and `deltaS`. The game does **not** use
   `packages/shared/data/thermo.ts`. Where that file can derive ΔH° (it transcribes the Icelandic
   book's appendix `m68865`), most stored values agree within rounding — methane, water, CO, NO,
-  Haber, contact, steam reforming, PCl₅, vaporisation of water. Three do not; see **Open**.
+  Haber, contact, steam reforming, PCl₅, vaporisation of water. Three did not: one is fixed
+  (see **Fixed**), two are **Open**.
 - **What the tests check.** `data-integrity.test.ts` checks required fields, unique ids, and that
   each problem's `scenario` (1–4) matches the signs of its ΔH and ΔS. `thermo-calculations.test.ts`
-  checks the formula and the ±1 kJ/mol equilibrium band. **Nothing checks a value against a
-  source**, so a wrong number with the right sign passes.
+  checks the formula and the ±1 kJ/mol equilibrium band. `grading.test.ts` asserts the ΔG°
+  grader rejects `0`, half, double and `NaN` for every problem at every slider temperature.
+  `decimal-comma.test.tsx` plays all 30 problems to their solution and reads the whole screen for a
+  decimal point, a `-0` or a double minus. **Nothing checks a value against a source**, so a wrong
+  number with the right sign passes.
 - **The i18n switcher was stripped on 2026-09-19** (`docs/i18n-coverage.md`); there is no
   `i18n.ts` and no `useGameI18n`. The Icelandic is hardcoded in `App.tsx`.
 - **Terminology** is governed by `packages/shared/i18n/ordabok.md` and the table in `CLAUDE.md`
-  (`vermi`, `sjálfgengur`, `sjálfgengi`). The spontaneity vocabulary is clean. The rest is not —
-  see **Open** — and `governed-terms.test.ts` matches strings only, so it cannot catch agreement.
+  (`vermi`, `sjálfgengur`, `sjálfgengi`). Since 2026-09-23 the game follows it for enthalpy
+  (`vermi`, `vermibreyting`), entropy (`óreiða`, and the textbook's `óreiðubreyting`), and
+  exo/endothermic (`útvermið` / `innvermið`); `icelandic-text.test.tsx` holds those. Five names
+  are still Siggi's call — see **Open** — and `governed-terms.test.ts` matches strings only, so it
+  cannot catch agreement.
 - **Some reactions repeat:** water vaporisation at 298 K and 373 K (ids 5, 13), the Haber process
   three times (11, 23, 24) and the contact process twice (16, 30), each with a different default
   temperature or task. Nothing records whether that was intended.
@@ -63,9 +75,14 @@ src/components/EntropyVisualization.tsx   before/after particle picture of ΔS, 
 src/data/problems.ts                 30 problems: reaction, ΔH, ΔS, default T, scenario, difficulty
 src/data/index.ts                    re-export
 src/types.ts                         Problem, GameMode, Spontaneity
-src/utils/thermo-calculations.ts     calculateDeltaG, getSpontaneity
+src/utils/thermo-calculations.ts     calculateDeltaG, getSpontaneity, crossoverTemperature,
+                                     isDeltaGCorrect, deltaGAxisHalfRange
 src/utils/sign.ts                    toggleSign, behind the ± button (see Phones)
-src/__tests__/                       data-integrity, thermo-calculations, co-enthalpy, phone-play
+src/utils/format.ts                  formatRounded: formatDecimal that never prints -0
+src/__tests__/                       data-integrity, thermo-calculations, co-enthalpy, phone-play,
+                                     grading, answer-checking, decimal-comma, graph-range,
+                                     crossover, icelandic-text (play-helpers.tsx drives the game
+                                     for them)
 ```
 
 ## Phones
@@ -99,6 +116,42 @@ stats take a row of their own; and Könnun's two buttons stack.
   showed ΔG° = −163,8 at 298 K. The verdict was right by luck — ΔH < 0 and ΔS > 0 make it
   spontaneous at every temperature — but every number was wrong. `co-enthalpy.test.ts` holds ΔH to
   `thermo.ts` and checks that the game's own ΔG° at 298 K lands on ΔG°f(CO), −137,2.
+- **Fixed 2026-09-23, each guarded by a test that failed against the code before it:**
+  - **Practice mode became unplayable after one timed-out challenge.** Entering a mode calls
+    `startNewProblem` in the same click as `setMode`, so its `mode === 'challenge'` check read the
+    screen being left and never reset the clock; the time-out did not check the mode either. So
+    the clock stayed at 0 and every Æfingarhamur problem opened already marked "Tíminn rann út!",
+    and a second Keppnishamur run inherited the first run's remaining seconds. Now every new
+    problem gets 90 s and only Keppnishamur can time out (`answer-checking.test.tsx`).
+  - **A half-right answer was boxed in green.** The box looked for `Rétt` in the message, and
+    both half-right messages say "Rétt svar: …". It now reads whether the answer was right.
+  - **"Spurning N" was the stored count of correct answers plus one**, so it stood still on a
+    wrong answer and opened at "Spurning 8" on a return visit. It now counts this run's questions.
+  - **The ΔG° grader accepted `0`, half and double** for small ΔG° — see Grading above.
+  - **The worked solution disagreed with the grader at |ΔG°| = 1** (`≤ 1` against `< 1`): protein
+    unfolding at 332 K was "JAFNVÆGI" in Skref 3 and "Ekki sjálfgengt" in the feedback. And Könnun
+    called ΔG = 0 at 500 K "Ekki sjálfgengt — ΔG > 0", at the one temperature its own "Hvað sést?"
+    list calls equilibrium. Both now use `getSpontaneity`.
+  - **A crossover temperature was shown where there is none.** The game took T = |ΔH°/ΔS°| for
+    every problem, so the absolute value invented one wherever ΔH° and ΔS° have opposite signs
+    and ΔG° never reaches 0. Demant → Grafít (id 15) was given an `Umbreytingarhitastig` of 576 K
+    and told in red that 298 K was "undir T_cross", and its graph drew a "ΔG = 0" point at 576 K,
+    3,8 kJ/mol off its own line; the ATP problem (id 27) had the same at 571 K. Now
+    `crossoverTemperature` returns nothing unless the quotient is positive
+    (`crossover.test.tsx`).
+  - **The ΔG° graph was empty for methane combustion and photosynthesis**, whose lines lie outside
+    the fixed ±500 kJ/mol axis (ΔG° ≈ −800 and +2870). The axis now widens to ±1000, ±2000, ±5000 …
+    only when the line needs it (`deltaGAxisHalfRange`, `graph-range.test.tsx`).
+  - **Every number printed a full stop** — the placeholder, stored ΔH°/ΔS°, the live panel, the
+    solution, the feedback, `R` and `E°`. Rounding printed `273 K (-0°C)`; Skref 2 printed a negative
+    TΔS bare (`-283 - -25.9`); and ΔS° = 3,3 J/(mol·K) was converted to `0.003` kJ/(mol·K), so the
+    steps did not reproduce their own total.
+  - **Icelandic:** English (`Óreiða (Entropy)`, `solid → liquid → gas`), grammar (`tvær
+drifkraftir`, `ræður orkuáhrifin`, `Byrja æfingarhamur`, `Fjögur Atburðarás`, `Lofttegundir
+hvarf`, `Bræðsla ís`, `Próteín (felltur)`, `við háum hita`), spelling (`óreguáhrif`,
+    `vetnisproxíðs`, `örstaður`, which the textbook calls `örástand`), the name `Dímun NO₂`, which
+    is in neither the glossary nor the textbook (the book writes `tvíliðun NO₂` for this very
+    reaction), and the menu's promise of `vísbendingar` in a mode that has no hints.
 
 ## Open
 
@@ -106,23 +159,27 @@ stats take a row of their own; and Könnun's two buttons stack.
   stores 178 against a derived 191,6, and NO₂ dimerisation (id 21) −57 against −55,3 — the same two
   divergences `thermo.ts`'s header records for `equilibrium-shifter`. Neither changes a sign, and
   `thermo.ts` is the Icelandic book, not Brown, so which value is right is not settled. No ΔS° is
-  sourced anywhere on the platform, so the ΔS values are unchecked. (A third, id 25, is fixed —
-  see below.)
+  sourced anywhere on the platform, so the ΔS values are unchecked.
 - **The answer is on screen before the student answers.** The "Við núverandi hitastig" panel
-  (`src/App.tsx:794-811`) prints the computed ΔG° and the verdict beside the question, and the graph
+  (`src/App.tsx:826-846`) prints the computed ΔG° and the verdict beside the question, and the graph
   marker labels ΔG° at the current T. `REVIEW_TRACKER.md` raised this in iteration 1 and it was
   never resolved. Removing it removes the live feedback the slider exists for, so it is a design
-  question, not a deletion.
+  question, not a deletion. Because the student is graded at whatever T the slider is set to, it
+  also lets a Keppnishamur player slide any scenario 3 or 4 problem to the printed T_cross and
+  answer `0` / Jafnvægi for full points.
 - **The Erfitt `advancedTask` prompts are not graded.** Ids 23, 24 and 27 ask for K, 28 for
   ΔG° = −nFE°, 25 for Hess's law, 29 for a melting point, 30 for an optimum temperature; the grader
   still checks only ΔG° and the verdict. `ΔG° = −RT ln K` was removed from the formula card for this
   reason, but the prompts asking for K remain.
-- **Terminology the glossary settles but the game does not follow.** Entropy is named four ways in
-  one game (the glossary's `óreiða`, plus `óregla`, and two spellings of the loanword); enthalpy
-  appears as a t-spelled loanword at `:362` and `:725` and as `varmamismunur` at `:539`, never as
-  `vermi`; the menu says `Gibbs frjálsa orku` where `ordabok.md` has `Gibbs fríorka`; and the
-  exo/endothermic tags at `:739` are not the glossary's `útvermið` / `innvermið`. The roadmap
-  listed this game among the three that contradict themselves, and for entropy it still does.
+- **Five names are unsettled, so they were left as they are.** The menu's `Gibbs frjálsa orku`:
+  `ordabok.md` says `Gibbs fríorka`, the textbook says `Gibbs frjáls orka` (and `fríork-` has zero
+  corpus hits) — they disagree. The crossover temperature is `þveragahitastig` in Könnun and
+  `Umbreytingarhitastig` (with an English `T_cross`) in the game; neither source names it. And id 16
+  is `Contact aðferðin`, English, where `equilibrium-shifter` says `Snertiaðferð`, a name neither
+  source has. Two more problem names have no source term either: id 17 `Gufumyndun` (steam
+  reforming, CH₄ + H₂O → CO + 3H₂, where the word reads as vapour formation) and id 27
+  `ATP vatnsrofhvarfun` (the glossary has `vatnsrof` for hydrolysis, but not this compound).
 - **Score and streak accrue in Æfingarhamur too.** `checkAnswer` updates `score`, `highScore` and
-  `bestStreak` in both modes, and the menu shows them, though only Keppnishamur displays them in
-  play.
+  `bestStreak` in both modes, and practice feedback says "Rétt! +100 stig". The score is never reset,
+  so Keppnishamur's "Stig" is a lifetime total including practice, `Hæsta stig` always equals it, and
+  the menu's `Spurningar` counts correct answers only.
