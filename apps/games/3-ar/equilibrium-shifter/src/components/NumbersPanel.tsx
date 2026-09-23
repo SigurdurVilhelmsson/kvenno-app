@@ -57,6 +57,27 @@ function widths(q: number, k: number): { qWidth: number; kWidth: number } {
   };
 }
 
+/**
+ * The value printed inside a bar.
+ *
+ * On a phone the track is narrow enough that a bar can be shorter than its own
+ * number, so the bar is never allowed below the width of its label
+ * (`min-w-fit` on the bar). Both bars carry both labels — their own visible,
+ * the other one invisible in the same grid cell — so that floor is the wider
+ * of the two for both of them: a pinned bar can come out level with the
+ * other, never longer than a bar whose value is larger.
+ */
+function BarValue({ own, other }: { own: string; other: string }) {
+  return (
+    <span className="grid font-mono text-xs font-semibold text-white">
+      <span className="col-start-1 row-start-1 justify-self-end">{own}</span>
+      <span aria-hidden="true" className="invisible col-start-1 row-start-1">
+        {other}
+      </span>
+    </span>
+  );
+}
+
 export function NumbersPanel({ outcome, constant, order }: Props) {
   const { q, kBefore, kAfter, before, afterStress, afterEquilibrium, inert, kUnknown } = outcome;
   const temperatureMoved = kAfter !== kBefore;
@@ -65,7 +86,7 @@ export function NumbersPanel({ outcome, constant, order }: Props) {
   const species = order.filter((f) => before[f] !== undefined);
 
   return (
-    <div className="rounded-xl border border-indigo-200 bg-gradient-to-r from-indigo-50 to-purple-50 p-4">
+    <div className="rounded-xl border border-indigo-200 bg-gradient-to-r from-indigo-50 to-purple-50 p-2 sm:p-4">
       <div className="mb-3 flex items-center gap-2 font-bold text-indigo-800">
         <span className="text-lg">🔢</span> Tölurnar á bak við hliðrunina
       </div>
@@ -89,27 +110,31 @@ export function NumbersPanel({ outcome, constant, order }: Props) {
       </div>
 
       {/* The comparison itself. */}
-      <div className="mb-4 rounded-lg bg-white p-4">
+      <div className="mb-4 rounded-lg bg-white p-3 sm:p-4">
         <div className="space-y-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 shrink-0 text-right font-mono font-bold text-purple-700">K</div>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-6 shrink-0 text-right font-mono font-bold text-purple-700 sm:w-10">
+              K
+            </div>
             <div className="h-6 flex-1 overflow-hidden rounded-full bg-warm-200">
               <div
-                className="flex h-full items-center justify-end rounded-full bg-purple-700 pr-2 transition-all duration-700"
+                className="flex h-full min-w-fit items-center justify-end rounded-full bg-purple-700 pr-2 pl-2 transition-all duration-700"
                 style={{ width: `${kWidth}%` }}
               >
-                <span className="font-mono text-xs font-semibold text-white">{show(kAfter)}</span>
+                <BarValue own={show(kAfter)} other={show(q)} />
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="w-10 shrink-0 text-right font-mono font-bold text-blue-700">Q</div>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-6 shrink-0 text-right font-mono font-bold text-blue-700 sm:w-10">
+              Q
+            </div>
             <div className="h-6 flex-1 overflow-hidden rounded-full bg-warm-200">
               <div
-                className="flex h-full items-center justify-end rounded-full bg-blue-700 pr-2 transition-all duration-700"
+                className="flex h-full min-w-fit items-center justify-end rounded-full bg-blue-700 pr-2 pl-2 transition-all duration-700"
                 style={{ width: `${qWidth}%` }}
               >
-                <span className="font-mono text-xs font-semibold text-white">{show(q)}</span>
+                <BarValue own={show(q)} other={show(kAfter)} />
               </div>
             </div>
           </div>
@@ -158,37 +183,45 @@ export function NumbersPanel({ outcome, constant, order }: Props) {
         )}
       </div>
 
-      {/* The mixture, before, disturbed, and settled again. */}
+      {/* The mixture, before, disturbed, and settled again. On a phone the
+          numbers keep whole (a value never splits across lines) and the
+          columns get a gutter; if the table is still wider than the card it
+          scrolls inside its own box, with the species column pinned and a
+          shadow at the right edge while more of it is out of view. The note
+          under it sits outside that box, so scrolling the table does not
+          carry the note out of view with it. */}
       {species.length > 0 && (
-        <div className="overflow-x-auto rounded-lg bg-white p-3">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-warm-200 text-left text-xs text-warm-600">
-                <th className="py-1">Efni</th>
-                <th className="py-1 text-right">Í jafnvægi</th>
-                <th className="py-1 text-right">Eftir álag</th>
-                <th className="py-1 text-right">Nýtt jafnvægi</th>
-              </tr>
-            </thead>
-            <tbody className="font-mono text-warm-800">
-              {species.map((formula) => (
-                <tr key={formula} className="border-b border-warm-100 last:border-0">
-                  <td className="py-1">{formula}</td>
-                  <td className="py-1 text-right">{show(before[formula])}</td>
-                  <td className="py-1 text-right">
-                    {afterStress[formula] === before[formula] ? (
-                      <span className="text-warm-400">óbreytt</span>
-                    ) : (
-                      show(afterStress[formula])
-                    )}
-                  </td>
-                  <td className="py-1 text-right font-semibold">
-                    {afterEquilibrium ? show(afterEquilibrium[formula]) : '—'}
-                  </td>
+        <div className="rounded-lg bg-white px-1.5 py-2 sm:p-3">
+          <div className="table-scroll-cue overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-warm-200 text-left text-xs text-warm-600">
+                  <th className="table-pin py-1">Efni</th>
+                  <th className="py-1 text-right">Í jafnvægi</th>
+                  <th className="py-1 pl-2 text-right sm:pl-0">Eftir álag</th>
+                  <th className="py-1 pl-2 text-right sm:pl-0">Nýtt jafnvægi</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="font-mono text-warm-800">
+                {species.map((formula) => (
+                  <tr key={formula} className="border-b border-warm-100 last:border-0">
+                    <td className="table-pin py-1 whitespace-nowrap">{formula}</td>
+                    <td className="py-1 text-right whitespace-nowrap">{show(before[formula])}</td>
+                    <td className="py-1 pl-2 text-right sm:pl-0 whitespace-nowrap">
+                      {afterStress[formula] === before[formula] ? (
+                        <span className="text-warm-400">óbreytt</span>
+                      ) : (
+                        show(afterStress[formula])
+                      )}
+                    </td>
+                    <td className="py-1 pl-2 text-right sm:pl-0 font-semibold whitespace-nowrap">
+                      {afterEquilibrium ? show(afterEquilibrium[formula]) : '—'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <p className="mt-2 text-xs text-warm-500">
             Styrkur í mól/L. Álagið breytir einu efni um {50} %, og hitabreyting er{' '}
             {TEMPERATURE_STEP_C} °C.

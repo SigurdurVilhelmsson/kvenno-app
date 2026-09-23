@@ -86,8 +86,29 @@ src/components/QKComparison.tsx   the Q vs K bars, drawn from the shift directio
 src/components/NumbersPanel.tsx   the same comparison in computed numbers
 src/components/ParticleEquilibrium.tsx  particle picture
 src/types.ts, src/i18n.ts, src/styles.css, src/main.tsx
-src/__tests__/                    le-chatelier, numbers, numbers-panel, qk-pressure
+src/utils/reveal.ts               brings a new screen or question back into view
+src/__tests__/                    le-chatelier, numbers, numbers-panel, qk-pressure,
+                                  reveal-top, bar-labels
 ```
+
+**On a phone (2026-09-23).** Everything below `sm` is a phone layout and `sm:`/`md:` restore the
+desktop one, which was checked pixel-identical at 1280 and 768. Four choices are not obvious:
+
+- **Reactants and products stay side by side at every width.** Stacking them put "left" above
+  "right", and the whole game is about which way the equilibrium moves. Below `md` each molecule is
+  an inline-block so a long side wraps between molecules.
+- **`revealTop` (`src/utils/reveal.ts`).** Every screen is two to three phone screens tall and the
+  buttons that move on sit at the bottom, so the next equilibrium used to open with its equation,
+  ΔH and (in Keppnishamur) the running timer scrolled past. A new screen or question now scrolls
+  its top back into view, only when that top is above the viewport.
+- **The numbers table scrolls sideways inside its own box** where a row of scientific notation is
+  wider than the phone (the weak acids at 360 px, most systems at 320 px). The species column is
+  pinned (`.table-pin`, which also carries its high-contrast background) and a shadow marks the
+  hidden right edge (`.table-scroll-cue`), both in `styles.css`. The note under the table sits
+  outside the scrolling box, so it does not scroll out of view with the numbers.
+- **A K or Q bar is never narrower than its label, and both share the wider label's floor**
+  (`BarValue` in `NumbersPanel.tsx`), so a pinned bar can come out level with the other but never
+  longer than a bar whose value is larger.
 
 The shared pieces it depends on: `packages/shared/engine/equilibrium.ts`,
 `packages/shared/data/thermo.ts`, `packages/shared/data/appendix-d.ts`. `MIGRATION-SUMMARY.md` is a
@@ -109,3 +130,13 @@ historical record of the port from the old HTML game and is out of date on most 
 - **Water-gas naming** — `Vatnsgashvarfið` matches `jafnvaegisfasti`, but that is a spelling
   harmonisation; the corpus has no hits for either form, so it is Siggi's call.
 - **i18n is partial** — 7 `t()` calls, the rest hardcoded Icelandic; see `docs/i18n-coverage.md`.
+- **Keppnishamur skips questions.** An answer schedules an automatic advance six seconds later,
+  and «Næsta strax →» does not cancel it, so tapping it moves to the next question and six seconds
+  later the game moves on again, unanswered. A round then ends with fewer than 10 questions
+  answered. The three-second advance after a timeout has the same shape. Found 2026-09-23 while
+  making the game work on phones; not fixed, since it is a behaviour change, not a layout one.
+- **English inside the Icelandic feedback.** The reasoning list and the molecular view under the
+  explanation (`reasoning` and `molecularView` in `src/utils/le-chatelier.ts`) are English
+  strings, shown as they are in the Icelandic UI.
+- **ΔH is printed with a decimal point** (`-91.8 kJ/mol`) in the equation's ΔH pill and in the
+  explanations built in `le-chatelier.ts`, where the numbers panel prints `-91,8 kJ/mól`.

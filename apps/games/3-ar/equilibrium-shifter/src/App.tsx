@@ -28,10 +28,14 @@ import {
   DifficultyLevel,
 } from './types';
 import { calculateShift, getStressDescriptionIs } from './utils/le-chatelier';
+import { prefersSmoothScroll, revealTop } from './utils/reveal';
 import './styles.css';
 
 /** Time limit per question in challenge mode */
 const CHALLENGE_SECONDS = 20;
+
+/** How long the outgoing screen fades before it unmounts. */
+const SCREEN_FADE_MS = 200;
 
 function App() {
   const { progress, updateProgress } = useProgress({
@@ -85,6 +89,35 @@ function App() {
 
   // Ref to track if timeout has been handled for current question
   const timeoutHandledRef = useRef(false);
+
+  // The top of each screen, so a new screen or a new question can be brought
+  // back into view (see utils/reveal.ts for why).
+  const menuTopRef = useRef<HTMLDivElement>(null);
+  const gameTopRef = useRef<HTMLDivElement>(null);
+  const resultsTopRef = useRef<HTMLDivElement>(null);
+  const shownRef = useRef({ screen, question: hintResetKey });
+
+  useEffect(() => {
+    const prev = shownRef.current;
+    shownRef.current = { screen, question: hintResetKey };
+    if (prev.screen === screen && prev.question === hintResetKey) return;
+    // A screen change waits for the old screen to fade out: until it unmounts
+    // it still sits above the new one. A new question inside the game screen
+    // has nothing to wait for.
+    const delay = prev.screen === screen ? 0 : SCREEN_FADE_MS + 20;
+    const id = window.setTimeout(() => {
+      const smooth = prefersSmoothScroll(settings.reducedMotion);
+      if (screen === 'menu') {
+        // The menu opens at the very top, header included.
+        const top = menuTopRef.current?.getBoundingClientRect().top ?? 0;
+        if (top < 0) window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
+      } else {
+        revealTop(screen === 'game' ? gameTopRef.current : resultsTopRef.current, smooth);
+      }
+    }, delay);
+    return () => window.clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only a new screen or a new question moves the page
+  }, [screen, hintResetKey]);
 
   // Timer for challenge mode
   useEffect(() => {
@@ -189,7 +222,7 @@ function App() {
     let topic: string;
     if (stress.type.includes('temp')) {
       topic =
-        'Þetta snýst um áhrif hitastigsbreytinga á jafnvægi og varmalosandi/varmabindandi hvörf.';
+        'Þetta snýst um áhrif hitastigsbreytinga á jafnvægi og varmalosandi eða varmabindandi hvörf.';
     } else if (stress.type.includes('pressure')) {
       topic = 'Þetta snýst um áhrif þrýstingsbreytinga á gasjafnvægi og fjölda móla.';
     } else if (stress.type.includes('catalyst')) {
@@ -359,14 +392,14 @@ function App() {
 
   // Render functions
   const renderMenu = () => (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-white rounded-lg shadow-md p-8">
+    <div ref={menuTopRef} className="max-w-4xl mx-auto">
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-8">
         <p className="text-lg text-warm-600 mb-6 text-center">
           Lærðu Le Chatelier meginregluna í gegnum gagnvirkar æfingar
         </p>
 
         {/* Conceptual intro — WHY does Le Chatelier work? */}
-        <div className="bg-indigo-50 p-6 rounded-xl mb-8 border border-indigo-200">
+        <div className="bg-indigo-50 p-4 sm:p-6 rounded-xl mb-8 border border-indigo-200">
           <h2 className="font-bold text-indigo-800 mb-3">Af hverju hliðrast jafnvægi?</h2>
           <p className="text-sm text-indigo-700 mb-3">
             Þegar efnahvörf ná <strong>jafnvægi</strong> er hraði framhvarfsins jafn hraða
@@ -403,7 +436,7 @@ function App() {
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           <button
             onClick={() => startGame('learning')}
-            className="game-card mode-card bg-white border-2 border-blue-200 hover:border-blue-400 rounded-lg p-6 text-left transition-all"
+            className="game-card mode-card bg-white border-2 border-blue-200 hover:border-blue-400 rounded-lg p-4 sm:p-6 text-left transition-all"
           >
             <div className="text-3xl mb-3">📚</div>
             <h3 className="text-xl font-bold text-warm-800 mb-2">Lærdómshamur</h3>
@@ -427,7 +460,7 @@ function App() {
                 onClick={() => challengeUnlocked && startGame('challenge')}
                 disabled={!challengeUnlocked}
                 aria-disabled={!challengeUnlocked}
-                className={`game-card mode-card bg-white border-2 rounded-lg p-6 text-left transition-all ${
+                className={`game-card mode-card bg-white border-2 rounded-lg p-4 sm:p-6 text-left transition-all ${
                   challengeUnlocked
                     ? 'border-orange-200 hover:border-orange-400 cursor-pointer'
                     : 'border-warm-200 opacity-60 cursor-not-allowed'
@@ -477,21 +510,21 @@ function App() {
     if (!currentEquilibrium) return null;
 
     return (
-      <div className="max-w-6xl mx-auto">
+      <div ref={gameTopRef} className="max-w-6xl mx-auto scroll-mt-4">
         {/* Header with stats */}
         <div className="bg-white rounded-lg shadow-md p-4 mb-4">
           <div className="flex justify-between items-center flex-wrap gap-4">
             <button
               onClick={() => setScreen('menu')}
-              className="bg-warm-500 hover:bg-warm-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warm-700 text-white rounded-lg px-4 py-2 transition-colors"
+              className="pointer-coarse:min-h-11 bg-warm-500 hover:bg-warm-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warm-700 text-white rounded-lg px-4 py-2 transition-colors"
             >
               ← Til baka
             </button>
 
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4">
               {gameMode === 'challenge' && (
                 <>
-                  <div className="text-sm text-warm-600">
+                  <div className="text-sm text-warm-600 whitespace-nowrap">
                     Spurning {questionNumber} / {totalQuestions}
                   </div>
                   <div
@@ -508,10 +541,10 @@ function App() {
         </div>
 
         {/* Main game area */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-4">
+        <div className="bg-white rounded-lg shadow-md p-3 sm:p-6 mb-4">
           {/* Chemical Equation */}
           <div className="text-center mb-6">
-            <div className="text-3xl md:text-4xl font-bold text-warm-800 mb-3">
+            <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-warm-800 mb-3">
               {currentEquilibrium.equation}
             </div>
             <div className="text-lg text-warm-600 mb-2">
@@ -528,18 +561,25 @@ function App() {
           </div>
 
           {/* Visual Equilibrium Display */}
-          <div className="grid md:grid-cols-3 gap-4 items-center mb-6">
+          {/* Side by side at every width: the game is about "left" and "right",
+              so the reactants must stay on the left and the products on the right.
+              Below md each molecule is an inline-block, so a long side (Ostwald's
+              four NH₃ and five O₂) wraps between molecules instead of running out
+              of its half-width box. */}
+          <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:grid-cols-3 gap-2 md:gap-4 items-center mb-6">
             {/* Reactants */}
             <div
               className={`molecule-container reactants-side ${isCorrect !== null && correctShift?.direction === 'left' ? 'glowing' : ''}`}
             >
-              <div className="text-center">
+              <div className="text-center min-w-0 md:min-w-auto">
                 <div className="text-sm text-warm-600 mb-2 font-semibold">Hvarfefni</div>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {currentEquilibrium.reactants.map((r, idx) => (
                     <div key={idx} className="molecule">
                       {Array.from({ length: r.coefficient }, (_, i) => (
-                        <span key={i}>{r.display}</span>
+                        <span key={i} className="inline-block md:inline">
+                          {r.display}
+                        </span>
                       ))}
                     </div>
                   ))}
@@ -560,13 +600,15 @@ function App() {
             <div
               className={`molecule-container products-side ${isCorrect !== null && correctShift?.direction === 'right' ? 'glowing' : ''}`}
             >
-              <div className="text-center">
+              <div className="text-center min-w-0 md:min-w-auto">
                 <div className="text-sm text-warm-600 mb-2 font-semibold">Myndefni</div>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {currentEquilibrium.products.map((p, idx) => (
                     <div key={idx} className="molecule">
                       {Array.from({ length: p.coefficient }, (_, i) => (
-                        <span key={i}>{p.display}</span>
+                        <span key={i} className="inline-block md:inline">
+                          {p.display}
+                        </span>
                       ))}
                     </div>
                   ))}
@@ -587,7 +629,7 @@ function App() {
           </div>
 
           {/* Context/Description */}
-          <div className="bg-warm-50 rounded-lg p-4 mb-6">
+          <div className="bg-warm-50 rounded-lg px-2 py-4 sm:p-4 mb-6">
             <p className="text-sm text-warm-700 text-center">
               {language === 'is'
                 ? currentEquilibrium.descriptionIs
@@ -601,7 +643,7 @@ function App() {
               <h3 className="text-lg font-semibold text-warm-800 mb-3">
                 Veldu álag sem þú vilt beita:
               </h3>
-              <div className="grid md:grid-cols-3 gap-3">
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {currentEquilibrium.possibleStresses.map((stress, idx) => (
                   <button
                     key={idx}
@@ -632,7 +674,7 @@ function App() {
                 <h3 className="text-lg font-semibold text-warm-800 mb-3">
                   Hvert mun jafnvægið hliðrast?
                 </h3>
-                <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-4">
                   <button
                     onClick={() => handlePrediction('left')}
                     className="predict-btn left"
@@ -772,7 +814,7 @@ function App() {
 
                   {/* Next Button (Learning Mode) */}
                   {gameMode === 'learning' && (
-                    <div className="mt-6 flex gap-3">
+                    <div className="mt-6 flex flex-col sm:flex-row gap-3">
                       <button
                         onClick={() => {
                           setAppliedStress(null);
@@ -794,11 +836,13 @@ function App() {
 
                   {/* Challenge Mode - Auto advance message + manual continue */}
                   {gameMode === 'challenge' && (
-                    <div className="mt-4 flex items-center justify-center gap-3 text-sm text-warm-600">
-                      <span>Næsta spurning birtist sjálfkrafa (6 sek)...</span>
+                    <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3 text-sm text-warm-600">
+                      <span className="text-center">
+                        Næsta spurning birtist sjálfkrafa (6 sek)...
+                      </span>
                       <button
                         onClick={handleNextQuestion}
-                        className="bg-orange-500 hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700 text-white rounded-lg px-4 py-2 transition-colors text-sm font-semibold"
+                        className="shrink-0 whitespace-nowrap pointer-coarse:min-h-11 bg-orange-500 hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700 text-white rounded-lg px-4 py-2 transition-colors text-sm font-semibold"
                       >
                         Næsta strax →
                       </button>
@@ -814,8 +858,8 @@ function App() {
   };
 
   const renderResults = () => (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-white rounded-lg shadow-md p-8">
+    <div ref={resultsTopRef} className="max-w-4xl mx-auto scroll-mt-4">
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-8">
         <h2 className="text-3xl font-bold text-warm-800 mb-6 text-center">🏆 Niðurstöður</h2>
 
         <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -869,7 +913,7 @@ function App() {
           </div>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <button
             onClick={() => startGame(gameMode)}
             className="flex-1 bg-primary-orange hover:bg-dark-orange focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700 text-white rounded-lg px-6 py-3 transition-colors"
@@ -918,13 +962,15 @@ function App() {
             <h2 className="text-sm font-semibold text-warm-700 mb-3">
               {t('accessibility.menuTitle', 'Aðgengisval')}
             </h2>
-            <div className="flex flex-wrap gap-4">
-              <label className="flex items-center gap-2">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 sm:gap-4">
+              {/* On touch the whole label is a 44 px row and the box is 24 px;
+                  the pointer-coarse variants leave the desktop panel as it was. */}
+              <label className="flex items-center gap-2 pointer-coarse:min-h-11">
                 <input
                   type="checkbox"
                   checked={settings.highContrast}
                   onChange={toggleHighContrast}
-                  className="rounded"
+                  className="rounded shrink-0 pointer-coarse:h-6 pointer-coarse:w-6"
                 />
                 <span className="text-sm">{t('accessibility.highContrast', 'Há birtuskil')}</span>
               </label>
@@ -934,7 +980,7 @@ function App() {
                 <select
                   value={settings.textSize}
                   onChange={(e) => setTextSize(e.target.value as 'small' | 'medium' | 'large')}
-                  className="text-sm border rounded px-2 py-1"
+                  className="text-sm border rounded px-2 py-1 pointer-coarse:min-h-11"
                 >
                   <option value="small">{t('accessibility.textSizeSmall', 'Lítil')}</option>
                   <option value="medium">{t('accessibility.textSizeMedium', 'Miðlungs')}</option>
@@ -947,7 +993,7 @@ function App() {
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value as 'is' | 'en' | 'pl')}
-                  className="text-sm border rounded px-2 py-1"
+                  className="text-sm border rounded px-2 py-1 pointer-coarse:min-h-11"
                 >
                   <option value="is">Íslenska</option>
                   <option value="en">English</option>
@@ -958,13 +1004,13 @@ function App() {
           </div>
 
           {/* Screen Routing */}
-          <FadePresence show={screen === 'menu'} exitDuration={200}>
+          <FadePresence show={screen === 'menu'} exitDuration={SCREEN_FADE_MS}>
             {renderMenu()}
           </FadePresence>
-          <FadePresence show={screen === 'game'} exitDuration={200}>
+          <FadePresence show={screen === 'game'} exitDuration={SCREEN_FADE_MS}>
             {renderGame()}
           </FadePresence>
-          <FadePresence show={screen === 'results'} exitDuration={200}>
+          <FadePresence show={screen === 'results'} exitDuration={SCREEN_FADE_MS}>
             {renderResults()}
           </FadePresence>
         </main>

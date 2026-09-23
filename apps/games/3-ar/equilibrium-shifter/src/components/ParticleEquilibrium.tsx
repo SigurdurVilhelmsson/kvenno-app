@@ -70,9 +70,12 @@ export function ParticleEquilibrium({
   }, [shiftDirection]);
 
   return (
-    <div className={`relative ${className}`}>
+    // min-w-0 lets the canvas shrink to a phone-width card (it is a flex item).
+    // Below sm the direction arrows sit just inside the canvas edges instead of
+    // 32 px outside them, where they pushed the page sideways.
+    <div className={`relative min-w-0 max-w-full ${className}`}>
       {/* Direction indicators */}
-      <div className="absolute -left-8 top-1/2 -translate-y-1/2 z-10">
+      <div className="absolute left-2 sm:-left-8 top-1/2 -translate-y-1/2 z-10">
         <div
           className={`text-2xl transition-all duration-300 ${
             shiftDirection === 'left' ? 'text-red-500 scale-150' : 'text-warm-400'
@@ -82,7 +85,7 @@ export function ParticleEquilibrium({
         </div>
       </div>
 
-      <div className="absolute -right-8 top-1/2 -translate-y-1/2 z-10">
+      <div className="absolute right-2 sm:-right-8 top-1/2 -translate-y-1/2 z-10">
         <div
           className={`text-2xl transition-all duration-300 ${
             shiftDirection === 'right' ? 'text-green-500 scale-150' : 'text-warm-400'
