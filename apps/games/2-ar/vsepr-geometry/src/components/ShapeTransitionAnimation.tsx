@@ -47,7 +47,7 @@ const GEOMETRY_CONFIGS: Record<number, GeometryConfig> = {
   4: {
     name: 'Fjórflötungur',
     nameEn: 'Tetrahedral',
-    bondAngle: '109.5°',
+    bondAngle: '109,5°',
     positions: [
       { x: 0, y: -70, isLonePair: false },
       { x: -60, y: 0, isLonePair: false },
@@ -60,11 +60,14 @@ const GEOMETRY_CONFIGS: Record<number, GeometryConfig> = {
     name: 'Þríhyrnd tvípýramída',
     nameEn: 'Trigonal Bipyramidal',
     bondAngle: '90°/120°',
+    // Two axial domains, and the equatorial three as a triangle seen at a
+    // slant. The third equatorial domain used to sit at (0, 0), drawn on top
+    // of the central atom.
     positions: [
       { x: 0, y: -80, isLonePair: false },
-      { x: -55, y: 0, isLonePair: false },
-      { x: 55, y: 0, isLonePair: false },
-      { x: 0, y: 0, isLonePair: false }, // equatorial
+      { x: -35, y: -34, isLonePair: false },
+      { x: 70, y: 0, isLonePair: false },
+      { x: -35, y: 34, isLonePair: false },
       { x: 0, y: 80, isLonePair: false },
     ],
     example: 'PCl₅',
@@ -96,6 +99,20 @@ interface AnimatedDomain {
   opacity: number;
 }
 
+/** Domains at rest in the shape for `count` domains, with nothing moving. */
+function restingDomains(count: number): AnimatedDomain[] {
+  return GEOMETRY_CONFIGS[count].positions.map((pos, i) => ({
+    id: i,
+    x: pos.x,
+    y: pos.y,
+    targetX: pos.x,
+    targetY: pos.y,
+    isNew: false,
+    isRemoving: false,
+    opacity: 1,
+  }));
+}
+
 interface ShapeTransitionAnimationProps {
   compact?: boolean;
   showControls?: boolean;
@@ -118,17 +135,7 @@ export function ShapeTransitionAnimation({
 
   // Initialize domains
   useEffect(() => {
-    const initial = config.positions.map((pos, i) => ({
-      id: i,
-      x: pos.x,
-      y: pos.y,
-      targetX: pos.x,
-      targetY: pos.y,
-      isNew: false,
-      isRemoving: false,
-      opacity: 1,
-    }));
-    setDomains(initial);
+    setDomains(restingDomains(domainCount));
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only initialize positions once on mount
   }, []);
 
@@ -269,6 +276,24 @@ export function ShapeTransitionAnimation({
       setDomains(newDomains);
     }
   };
+
+  // Follow the parent when its domain count changes. Copying the prop into
+  // state only once left Stig 1's shape on four domains whatever the student
+  // chose. Mid-animation the shape is set at rest rather than dropped.
+  const lastInitialDomains = useRef(initialDomains);
+  useEffect(() => {
+    if (lastInitialDomains.current === initialDomains) return;
+    lastInitialDomains.current = initialDomains;
+    if (!GEOMETRY_CONFIGS[initialDomains] || initialDomains === domainCount) return;
+    if (isAnimating) {
+      setIsAnimating(false);
+      setDomainCount(initialDomains);
+      setDomains(restingDomains(initialDomains));
+    } else {
+      changeDomains(initialDomains);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: react to a new prop only; changeDomains reads this render's state
+  }, [initialDomains]);
 
   const size = compact ? 220 : 300;
   const center = size / 2;
@@ -451,14 +476,14 @@ export function ShapeTransitionAnimation({
                 ? 'bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-xl'
                 : 'bg-warm-200 text-warm-400 cursor-not-allowed'
             }`}
-            aria-label="Fjarlægja rafeinasvið"
+            aria-label="Fjarlægja rafeindasvið"
           >
             -
           </button>
 
           <div className="text-center px-4">
             <div className="text-2xl font-bold text-indigo-700">{domainCount}</div>
-            <div className="text-xs text-warm-500">rafeinasvið</div>
+            <div className="text-xs text-warm-500">rafeindasvið</div>
           </div>
 
           <button
@@ -469,7 +494,7 @@ export function ShapeTransitionAnimation({
                 ? 'bg-green-500 hover:bg-green-600 text-white shadow-lg hover:shadow-xl'
                 : 'bg-warm-200 text-warm-400 cursor-not-allowed'
             }`}
-            aria-label="Bæta við rafeinasviði"
+            aria-label="Bæta við rafeindasviði"
           >
             +
           </button>
@@ -497,7 +522,7 @@ export function ShapeTransitionAnimation({
       {/* Educational note */}
       <div className={`mt-4 text-center ${compact ? 'text-xs' : 'text-sm'} text-warm-600`}>
         <p>
-          <strong>VSEPR:</strong> Rafeinasvið hrinda hvort öðru frá og finna jafnvægisstöðu.
+          <strong>VSEPR:</strong> Rafeindasvið hrinda hvort öðru frá og finna jafnvægisstöðu.
         </p>
         <p className="text-xs text-warm-500 mt-1">
           Smelltu á + eða - til að sjá hvernig lögunin breytist.

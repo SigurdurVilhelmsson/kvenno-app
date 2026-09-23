@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+
+import { shuffleArray } from '@shared/utils';
 
 import { useScrollTopOnChange } from '../utils/phoneScroll';
 
@@ -44,13 +46,13 @@ const challenges: Challenge[] = [
         id: 'c',
         text: 'sp³',
         correct: true,
-        explanation: 'Rétt! 4 rafeinasvið = sp³ blendni = fjórflötungur.',
+        explanation: 'Rétt! 4 rafeindasvið = sp³ blendni = fjórflötungur.',
       },
-      { id: 'd', text: 'sp³d', correct: false, explanation: 'sp³d krefst 5 rafeinasviða.' },
+      { id: 'd', text: 'sp³d', correct: false, explanation: 'sp³d krefst 5 rafeindasviða.' },
     ],
-    hint: 'Fjöldi rafeinasviða ákvarðar blendnina: 2=sp, 3=sp², 4=sp³...',
+    hint: 'Fjöldi rafeindasviða ákvarðar blendnina: 2=sp, 3=sp², 4=sp³...',
     conceptExplanation:
-      'Blendni lýsir hvernig atómbreytir (orbitals) blandast saman. Fjöldi blandaðra breyti = fjöldi rafeinasviða.',
+      'Blendni lýsir hvernig svigrúm atómsins blandast saman. Fjöldi blandaðra svigrúma = fjöldi rafeindasviða.',
   },
   {
     id: 2,
@@ -63,9 +65,9 @@ const challenges: Challenge[] = [
         id: 'a',
         text: 'sp',
         correct: true,
-        explanation: 'Rétt! 2 rafeinasvið (2 tvöfald tengingar) = sp blendni = línuleg.',
+        explanation: 'Rétt! 2 rafeindasvið (2 tvöfaldar tengingar) = sp blendni = línuleg.',
       },
-      { id: 'b', text: 'sp²', correct: false, explanation: 'sp² gefur þríhyrnd sléttu lögun.' },
+      { id: 'b', text: 'sp²', correct: false, explanation: 'sp² gefur þríhyrnda slétta lögun.' },
       { id: 'c', text: 'sp³', correct: false, explanation: 'sp³ gefur fjórflötung.' },
       {
         id: 'd',
@@ -74,9 +76,9 @@ const challenges: Challenge[] = [
         explanation: 'Kolefni notar alltaf blendni í efnatengsli.',
       },
     ],
-    hint: 'Tvöfald tenging telst sem EITT rafeinasvið.',
+    hint: 'Tvöföld tenging telst sem EITT rafeindasvið.',
     conceptExplanation:
-      'Í CO₂ hefur kolefni 2 tvöfalt tengingar við súrefni. Hver tvöfald tenging telur sem eitt rafeinasvið, svo C hefur 2 rafeinasvið og sp blendni.',
+      'Í CO₂ hefur kolefni 2 tvöfaldar tengingar við súrefni. Hver tvöföld tenging telur sem eitt rafeindasvið, svo C hefur 2 rafeindasvið og sp blendni.',
   },
   {
     id: 3,
@@ -85,45 +87,45 @@ const challenges: Challenge[] = [
     name: 'Ammóníak',
     question: 'Hvaða blendni hefur nitrið í NH₃?',
     options: [
-      { id: 'a', text: 'sp', correct: false, explanation: 'sp hefur aðeins 2 rafeinasvið.' },
-      { id: 'b', text: 'sp²', correct: false, explanation: 'sp² hefur 3 rafeinasvið.' },
+      { id: 'a', text: 'sp', correct: false, explanation: 'sp hefur aðeins 2 rafeindasvið.' },
+      { id: 'b', text: 'sp²', correct: false, explanation: 'sp² hefur 3 rafeindasvið.' },
       {
         id: 'c',
         text: 'sp³',
         correct: true,
-        explanation: 'Rétt! 3 tengsl + 1 einstætt par = 4 rafeinasvið = sp³.',
+        explanation: 'Rétt! 3 tengsl + 1 einstætt par = 4 rafeindasvið = sp³.',
       },
-      { id: 'd', text: 'sp³d', correct: false, explanation: 'sp³d krefst 5 rafeinasviða.' },
+      { id: 'd', text: 'sp³d', correct: false, explanation: 'sp³d krefst 5 rafeindasviða.' },
     ],
-    hint: 'Mundu að telja EINSTÆÐ PÖR sem rafeinasvið líka!',
+    hint: 'Mundu að telja EINSTÆÐ PÖR sem rafeindasvið líka!',
     conceptExplanation:
-      'NH₃ hefur 3 N-H tengsl og 1 einstætt par á nitri = 4 rafeinasvið = sp³ blendni. Þó sameindarlögunin sé þríhyrnd pýramída er blendnin enn sp³.',
+      'NH₃ hefur 3 N-H tengsl og 1 einstætt par á nitri = 4 rafeindasvið = sp³ blendni. Þó sameindarlögunin sé þríhyrnd pýramída er blendnin enn sp³.',
   },
   {
     id: 4,
     type: 'hybridization',
     formula: 'SF₆',
     name: 'Brennisteinshexaflúoríð',
-    question: 'Hvaða blendni hefur brennisteinið í SF₆?',
+    question: 'Hvaða blendni hefur brennisteinninn í SF₆?',
     options: [
-      { id: 'a', text: 'sp³', correct: false, explanation: 'sp³ hefur aðeins 4 rafeinasvið.' },
-      { id: 'b', text: 'sp³d', correct: false, explanation: 'sp³d hefur 5 rafeinasvið.' },
+      { id: 'a', text: 'sp³', correct: false, explanation: 'sp³ hefur aðeins 4 rafeindasvið.' },
+      { id: 'b', text: 'sp³d', correct: false, explanation: 'sp³d hefur 5 rafeindasvið.' },
       {
         id: 'c',
         text: 'sp³d²',
         correct: true,
-        explanation: 'Rétt! 6 tengsl = 6 rafeinasvið = sp³d² blendni = áttflötungur.',
+        explanation: 'Rétt! 6 tengsl = 6 rafeindasvið = sp³d² blendni = áttflötungur.',
       },
       {
         id: 'd',
         text: 'd²sp³',
         correct: false,
-        explanation: 'Þetta er sama og sp³d², en sp³d² er algengari ritháttður.',
+        explanation: 'Þetta er sama og sp³d², en sp³d² er algengari ritháttur.',
       },
     ],
-    hint: 'S hefur 6 F tengingar = 6 rafeinasvið. Þetta krefst d-breytu.',
+    hint: 'S hefur 6 F tengingar = 6 rafeindasvið. Þetta krefst d-svigrúma.',
     conceptExplanation:
-      'Fyrir 5+ rafeinasvið þarf að nota d-breytir (orbitals). 5 svið = sp³d, 6 svið = sp³d². Þetta er mögulegt fyrir frumefni í 3. röð og neðar.',
+      'Fyrir 5+ rafeindasvið þarf að nota d-svigrúm. 5 svið = sp³d, 6 svið = sp³d². Þetta er mögulegt fyrir frumefni í 3. röð og neðar.',
   },
   // Polarity questions
   {
@@ -160,7 +162,7 @@ const challenges: Challenge[] = [
     ],
     hint: 'Hugsaðu um lögunina — ef O-H tvískautsvægin benda í mismunandi áttir, hvað gerist?',
     conceptExplanation:
-      'Í H₂O eru tvö skautuð O-H tengisl sem benda í mismunandi áttir (104.5° horn). Tvískautsvægin jafnast ekki út → skautuð sameind.',
+      'Í H₂O eru tvö skautuð O-H tengisl sem benda í mismunandi áttir (104,5° horn). Tvískautsvægin jafnast ekki út → skautuð sameind.',
   },
   {
     id: 6,
@@ -185,7 +187,7 @@ const challenges: Challenge[] = [
         id: 'c',
         text: 'Lítillega skautuð',
         correct: false,
-        explanation: 'Skautun er annaðhvort til staðar eða ekki í þessari samhengi.',
+        explanation: 'Skautun er annaðhvort til staðar eða ekki í þessu samhengi.',
       },
       {
         id: 'd',
@@ -251,7 +253,7 @@ const challenges: Challenge[] = [
         id: 'b',
         text: 'Skautuð vegna ósamhverfu',
         correct: true,
-        explanation: 'Rétt! C-H og C-Cl hafa mismunandi skautun — ósamhverft dreifing.',
+        explanation: 'Rétt! C-H og C-Cl hafa mismunandi skautun — ósamhverf dreifing.',
       },
       {
         id: 'c',
@@ -289,13 +291,13 @@ const challenges: Challenge[] = [
         id: 'b',
         text: 'sp²',
         correct: true,
-        explanation: 'Rétt! Hvert C hefur 3 rafeinasvið (2 C-H + 1 C=C) = sp² blendni.',
+        explanation: 'Rétt! Hvert C hefur 3 rafeindasvið (2 C-H + 1 C=C) = sp² blendni.',
       },
       {
         id: 'c',
         text: 'sp³',
         correct: false,
-        explanation: 'sp³ krefst 4 rafeinasviða, en hvert C hefur aðeins 3.',
+        explanation: 'sp³ krefst 4 rafeindasviða, en hvert C hefur aðeins 3.',
       },
       {
         id: 'd',
@@ -304,9 +306,9 @@ const challenges: Challenge[] = [
         explanation: 'Bæði kolefnin eru í nákvæmlega sömu stöðu.',
       },
     ],
-    hint: 'Tvöfald C=C tenging telur sem EITT rafeinasvið. Teldu svið í kringum hvort C.',
+    hint: 'Tvöföld C=C tenging telur sem EITT rafeindasvið. Teldu svið í kringum hvort C.',
     conceptExplanation:
-      'Í C₂H₄ hefur hvert C: 2 tengsl við H + 1 tengsl við hitt C (tvöfalt tengi). = 3 rafeinasvið = sp² blendni. Öll atóm liggja í einni slétti.',
+      'Í C₂H₄ hefur hvert C: 2 tengsl við H + 1 tengsl við hitt C (tvöfalt tengi). = 3 rafeindasvið = sp² blendni. Öll atóm liggja í einni sléttu.',
   },
   {
     id: 10,
@@ -320,10 +322,10 @@ const challenges: Challenge[] = [
         id: 'a',
         text: 'sp',
         correct: true,
-        explanation: 'Rétt! Hvert C hefur 2 rafeinasvið (1 C-H + 1 C≡C) = sp blendni = línuleg.',
+        explanation: 'Rétt! Hvert C hefur 2 rafeindasvið (1 C-H + 1 C≡C) = sp blendni = línuleg.',
       },
-      { id: 'b', text: 'sp²', correct: false, explanation: 'sp² krefst 3 rafeinasviða.' },
-      { id: 'c', text: 'sp³', correct: false, explanation: 'sp³ krefst 4 rafeinasviða.' },
+      { id: 'b', text: 'sp²', correct: false, explanation: 'sp² krefst 3 rafeindasviða.' },
+      { id: 'c', text: 'sp³', correct: false, explanation: 'sp³ krefst 4 rafeindasviða.' },
       {
         id: 'd',
         text: 'Engin blendni',
@@ -331,9 +333,9 @@ const challenges: Challenge[] = [
         explanation: 'Kolefni notar alltaf blendni í sameindum.',
       },
     ],
-    hint: 'Þreföld tenging telur einnig sem EITT rafeinasvið.',
+    hint: 'Þreföld tenging telur einnig sem EITT rafeindasvið.',
     conceptExplanation:
-      'Í C₂H₂ er þreföld tenging milli kolefnanna. Hvert C hefur aðeins 2 rafeinasvið (C-H + C≡C) = sp blendni. Sameindin er línuleg (180°).',
+      'Í C₂H₂ er þreföld tenging milli kolefnanna. Hvert C hefur aðeins 2 rafeindasvið (C-H + C≡C) = sp blendni. Sameindin er línuleg (180°).',
   },
   // Dipole moment questions
   {
@@ -372,7 +374,7 @@ const challenges: Challenge[] = [
     ],
     hint: 'Hugsaðu um fjórflötunginn — ef þú dregur í allar 4 áttir jafnt...',
     conceptExplanation:
-      'Þetta er klassískt dæmi um SAMHVERFU. Þó hvert C-Cl tengi sé skautað, þá eru þau SAMHVERF dreifð í rúminu (fjórflötungur). Kraftarnir jafnast út → enginn nettó tvískautsvægi.',
+      'Þetta er klassískt dæmi um SAMHVERFU. Þó hvert C-Cl tengi sé skautað, þá eru þau SAMHVERF dreifð í rúminu (fjórflötungur). Kraftarnir jafnast út → ekkert nettó tvískautsvægi.',
   },
   {
     id: 12,
@@ -396,7 +398,7 @@ const challenges: Challenge[] = [
       },
       {
         id: 'c',
-        text: 'Þær eru jafn skatuaðar',
+        text: 'Þær eru jafn skautaðar',
         correct: false,
         explanation: 'Stefna tvískautsvægis skiptir máli.',
       },
@@ -404,7 +406,7 @@ const challenges: Challenge[] = [
         id: 'd',
         text: 'Hvorug er skautuð',
         correct: false,
-        explanation: 'Báðar eru skatuaðar, en misjafnlega.',
+        explanation: 'Báðar eru skautaðar, en misjafnlega.',
       },
     ],
     hint: 'Hugsaðu um einstæða parið á N — hvert bendir það? Og hvert benda tengslin?',
@@ -413,13 +415,23 @@ const challenges: Challenge[] = [
   },
 ];
 
+// The polarity card's worked examples. Three of the four are molecules the
+// polarity questions ask about, so the one on screen is held back until the
+// question is answered — otherwise the card below it gives the answer.
+const POLARITY_EXAMPLES: { formula: string; text: string }[] = [
+  { formula: 'CO₂', text: 'CO₂ (línuleg) → óskautuð' },
+  { formula: 'H₂O', text: 'H₂O (beygð) → skautuð' },
+  { formula: 'CCl₄', text: 'CCl₄ (fjórflötungur) → óskautuð' },
+  { formula: 'CHCl₃', text: 'CHCl₃ (fjórflötungur) → skautuð' },
+];
+
 const HYBRIDIZATION_CONFIGS: Record<
   number,
   { label: string; orbitals: string; angle: string; shape: string }
 > = {
   2: { label: 'sp', orbitals: '1s + 1p', angle: '180°', shape: 'Línuleg' },
   3: { label: 'sp²', orbitals: '1s + 2p', angle: '120°', shape: 'Þríhyrnd' },
-  4: { label: 'sp³', orbitals: '1s + 3p', angle: '109.5°', shape: 'Fjórflötungur' },
+  4: { label: 'sp³', orbitals: '1s + 3p', angle: '109,5°', shape: 'Fjórflötungur' },
   5: { label: 'sp³d', orbitals: '1s + 3p + 1d', angle: '90°/120°', shape: 'Tvípýramída' },
   6: { label: 'sp³d²', orbitals: '1s + 3p + 2d', angle: '90°', shape: 'Áttflötungur' },
 };
@@ -451,7 +463,7 @@ function HybridizationDiagramStacked({ domains }: { domains: number }) {
     <svg viewBox="0 0 220 244" className="sm:hidden w-full max-w-[320px] mx-auto">
       <text x={cx} y="18" textAnchor="middle" fontSize="12">
         <tspan fill="#7c3aed" fontWeight="bold">
-          Atómbrautar:
+          Svigrúm:
         </tspan>
         <tspan fill="#6b7280"> {c.orbitals}</tspan>
       </text>
@@ -546,7 +558,7 @@ function HybridizationDiagram({ domains }: { domains: number }) {
       >
         {/* Input orbitals */}
         <text x="10" y="20" fill="#7c3aed" fontSize="11" fontWeight="bold">
-          Atómbrautar:
+          Svigrúm:
         </text>
         <text x="10" y="42" fill="#6b7280" fontSize="12">
           {c.orbitals}
@@ -687,8 +699,20 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   // A new question replaces the screen; on a phone start it at the top.
   useScrollTopOnChange(currentChallenge);
 
+  // The data lists the answer at b in half the questions and never at d, so
+  // shuffle per question. The ids double as the visible letters and are
+  // reassigned by position, so grading must look them up here too.
+  const shuffledOptions = useMemo(
+    () =>
+      shuffleArray(challenge.options).map((opt, idx) => ({
+        ...opt,
+        id: String.fromCharCode(97 + idx), // 'a', 'b', 'c', 'd'
+      })),
+    [challenge]
+  );
+
   const checkAnswer = () => {
-    const selected = challenge.options.find((opt) => opt.id === selectedOption);
+    const selected = shuffledOptions.find((opt) => opt.id === selectedOption);
     const correct = selected?.correct ?? false;
     setIsCorrect(correct);
     if (correct) {
@@ -793,7 +817,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
           {/* Options */}
           <div className="space-y-3 mb-6">
-            {challenge.options.map((option) => (
+            {shuffledOptions.map((option) => (
               <button
                 key={option.id}
                 onClick={() => !showResult && setSelectedOption(option.id)}
@@ -834,7 +858,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               }}
               className="text-teal-600 hover:text-teal-800 text-sm underline mb-4 pointer-coarse:min-h-11"
             >
-              Syna visbendingu
+              Sýna vísbendingu
             </button>
           )}
 
@@ -972,14 +996,11 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               </div>
               <div className="text-warm-600 mt-2">
                 <strong>Dæmi:</strong>
-                <br />
-                CO₂ (línuleg) → óskautuð
-                <br />
-                H₂O (beygð) → skautuð
-                <br />
-                CCl₄ (fjórflötungur) → óskautuð
-                <br />
-                CHCl₃ (fjórflötungur) → skautuð
+                {POLARITY_EXAMPLES.filter(
+                  (ex) => showResult || ex.formula !== challenge.formula
+                ).map((ex) => (
+                  <div key={ex.formula}>{ex.text}</div>
+                ))}
               </div>
             </div>
           </div>

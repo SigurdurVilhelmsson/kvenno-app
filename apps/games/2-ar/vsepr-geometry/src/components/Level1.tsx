@@ -14,16 +14,27 @@ import { geometryToMolecule } from '../utils/vseprConverter';
 // Misconceptions for VSEPR geometry
 const VSEPR_MISCONCEPTIONS: Record<string, string> = {
   electron_domains:
-    'Rafeinasvið = bindandi pör + einstæð pör. Tvítengi og þrítengi telja sem EITT svið.',
+    'Rafeindasvið = bindandi pör + einstæð pör. Tvítengi og þrítengi telja sem EITT svið.',
   lone_pairs: 'Einstæð pör taka meira pláss en bindandi pör og ýta horninu niður.',
   geometry:
     'Rafeindaröðun (electron geometry) vs sameindaröðun (molecular geometry) - einstæð pör sjást ekki í sameindaröðun.',
   bond_angle:
-    'Einstæð pör minnka hornið: fjórflötungur (109.5°) → pýramída (107°) → beygð (104.5°).',
+    'Einstæð pör minnka hornið: fjórflötungur (109,5°) → pýramída (107°) → beygð (104,5°).',
+};
+
+// The misconception each kind of question tests. Every wrong answer used to
+// get the electron-versus-molecular-geometry note, including a wrong bond
+// angle and a wrong domain count, which have notes of their own above.
+const MISCONCEPTION_FOR: Record<Challenge['type'], string> = {
+  identify: VSEPR_MISCONCEPTIONS.geometry,
+  molecular_vs_electron: VSEPR_MISCONCEPTIONS.geometry,
+  electron_domains: VSEPR_MISCONCEPTIONS.electron_domains,
+  angle: VSEPR_MISCONCEPTIONS.bond_angle,
+  lone_pair_effect: VSEPR_MISCONCEPTIONS.lone_pairs,
 };
 
 // Related concepts for VSEPR
-const VSEPR_RELATED: string[] = ['VSEPR kenningin', 'Rafeinasvið', 'Sameindaröðun', 'Tengjahorn'];
+const VSEPR_RELATED: string[] = ['VSEPR kenningin', 'Rafeindasvið', 'Sameindaröðun', 'Tengihorn'];
 
 interface Level1Props {
   onComplete: (score: number) => void;
@@ -59,7 +70,7 @@ const GEOMETRIES: Geometry[] = [
     bondAngle: '180°',
     example: 'CO₂',
     exampleName: 'Koldíoxíð',
-    description: 'Tvö rafeinasvið staðsetjast á sitthvora hlið miðatómsins.',
+    description: 'Tvö rafeindasvið staðsetjast á sitthvora hlið miðatómsins.',
     visual: '○—●—○',
   },
   {
@@ -74,7 +85,7 @@ const GEOMETRIES: Geometry[] = [
     bondAngle: '120°',
     example: 'BF₃',
     exampleName: 'Bórþríflúoríð',
-    description: 'Þrjú rafeinasvið dreifist jafnt í sléttu þríhyrningsformi.',
+    description: 'Þrjú rafeindasvið dreifast jafnt í sléttu þríhyrningsformi.',
     visual: '○╲\n  ●\n○╱ ╲○',
   },
   {
@@ -88,7 +99,7 @@ const GEOMETRIES: Geometry[] = [
     molecularGeometry: 'Beygð',
     bondAngle: '<120°',
     example: 'SO₂',
-    exampleName: 'Brennisteinstvísýringur',
+    exampleName: 'Brennisteinsdíoxíð',
     description: 'Einstætt par ýtir bindandi pörum saman — lægra horn.',
     visual: '○╲  ::\n  ●\n○╱',
   },
@@ -101,10 +112,10 @@ const GEOMETRIES: Geometry[] = [
     lonePairs: 0,
     electronGeometry: 'Fjórflötungur',
     molecularGeometry: 'Fjórflötungur',
-    bondAngle: '109.5°',
+    bondAngle: '109,5°',
     example: 'CH₄',
     exampleName: 'Metan',
-    description: 'Fjögur rafeinasvið í þrívíð fjórflötungsröðun.',
+    description: 'Fjögur rafeindasvið í þrívíðri fjórflötungsröðun.',
     visual: '    ○\n    |\n○—●—○\n    |\n    ○',
   },
   {
@@ -131,7 +142,7 @@ const GEOMETRIES: Geometry[] = [
     lonePairs: 2,
     electronGeometry: 'Fjórflötungur',
     molecularGeometry: 'Beygð',
-    bondAngle: '104.5°',
+    bondAngle: '104,5°',
     example: 'H₂O',
     exampleName: 'Vatn',
     description: 'Tvö einstæð pör þrýsta bindandi pörum saman.',
@@ -149,7 +160,7 @@ const GEOMETRIES: Geometry[] = [
     bondAngle: '90° og 120°',
     example: 'PCl₅',
     exampleName: 'Fosfórpentaklóríð',
-    description: 'Fimm rafeinasvið — þrjú í miðsléttunni (120°), tvö lóðrétt (90°).',
+    description: 'Fimm rafeindasvið — þrjú í miðsléttunni (120°), tvö lóðrétt (90°).',
     visual: '    ○\n    |\n○-●-○\n   /|\\\n  ○ ○',
   },
   {
@@ -164,7 +175,7 @@ const GEOMETRIES: Geometry[] = [
     bondAngle: '90°',
     example: 'SF₆',
     exampleName: 'Brennisteinshexaflúoríð',
-    description: 'Sex rafeinasvið í samhverfri áttflötungsröðun.',
+    description: 'Sex rafeindasvið í samhverfri áttflötungsröðun.',
     visual: '    ○\n    |\n○-●-○\n   /|\n  ○ ○\n    |\n    ○',
   },
 ];
@@ -187,13 +198,13 @@ const challenges: Challenge[] = [
     options: [
       {
         id: 'a',
-        text: 'Línuleg (Linear)',
+        text: 'Línuleg',
         correct: true,
-        explanation: 'CO₂ hefur 2 rafeinasvið sem staðsetjast 180° í sundur.',
+        explanation: 'CO₂ hefur 2 rafeindasvið sem staðsetjast 180° í sundur.',
       },
       {
         id: 'b',
-        text: 'Beygð (Bent)',
+        text: 'Beygð',
         correct: false,
         explanation: 'Beygð lögun krefst einstæðra para á miðatómi.',
       },
@@ -201,64 +212,64 @@ const challenges: Challenge[] = [
         id: 'c',
         text: 'Þríhyrnd slétt',
         correct: false,
-        explanation: 'Þríhyrnd slétt hefur 3 rafeinasvið, ekki 2.',
+        explanation: 'Þríhyrnd slétt hefur 3 rafeindasvið, ekki 2.',
       },
       {
         id: 'd',
         text: 'Fjórflötungur',
         correct: false,
-        explanation: 'Fjórflötungur hefur 4 rafeinasvið.',
+        explanation: 'Fjórflötungur hefur 4 rafeindasvið.',
       },
     ],
     hints: {
-      topic: 'Þetta snýst um VSEPR lögun miðað við fjölda rafeinasviða.',
-      strategy: 'Teldu rafeinasvið á miðatóminu (C). Tvöföldar tengingar telja sem eitt svið.',
-      method: 'CO₂ hefur tvöföld tenging við hvort súrefnisatóm = 2 rafeinasvið.',
-      solution: '2 rafeinasvið staðsetjast 180° í sundur = línuleg lögun.',
+      topic: 'Þetta snýst um VSEPR lögun miðað við fjölda rafeindasviða.',
+      strategy: 'Teldu rafeindasvið á miðatóminu (C). Tvöföldar tengingar telja sem eitt svið.',
+      method: 'CO₂ hefur tvöfalda tengingu við hvort súrefnisatóm = 2 rafeindasvið.',
+      solution: '2 rafeindasvið staðsetjast 180° í sundur = línuleg lögun.',
     },
   },
   {
     id: 2,
     type: 'electron_domains',
-    question: 'Hversu mörg rafeinasvið (electron domains) hefur vatn (H₂O)?',
+    question: 'Hversu mörg rafeindasvið (electron domains) hefur vatn (H₂O)?',
     geometryId: 'bent-4',
     options: [
       {
         id: 'a',
-        text: '2 rafeinasvið',
+        text: '2 rafeindasvið',
         correct: false,
         explanation: 'Þú telur aðeins bindandi pörin.',
       },
       {
         id: 'b',
-        text: '3 rafeinasvið',
+        text: '3 rafeindasvið',
         correct: false,
-        explanation: 'Þú vantar eitt einstætt par.',
+        explanation: 'Þig vantar eitt einstætt par.',
       },
       {
         id: 'c',
-        text: '4 rafeinasvið',
+        text: '4 rafeindasvið',
         correct: true,
-        explanation: 'Rétt! 2 bindandi pör + 2 einstæð pör = 4 rafeinasvið.',
+        explanation: 'Rétt! 2 bindandi pör + 2 einstæð pör = 4 rafeindasvið.',
       },
       {
         id: 'd',
-        text: '6 rafeinasvið',
+        text: '6 rafeindasvið',
         correct: false,
-        explanation: 'Það eru aðeins 4 rafeinapör í ysta hvolfi súrefnis.',
+        explanation: 'Það eru aðeins 4 rafeindapör í ysta hvolfi súrefnis.',
       },
     ],
     hints: {
       topic: 'Mundu að telja bæði bindandi og einstæð pör.',
-      strategy: 'Rafeinasvið = bindandi pör + einstæð pör á miðatóminu.',
+      strategy: 'Rafeindasvið = bindandi pör + einstæð pör á miðatóminu.',
       method: 'Súrefni hefur 6 gildisrafeindir. 2 fara í O-H tengingar, 4 mynda 2 einstæð pör.',
-      solution: '2 bindandi pör + 2 einstæð pör = 4 rafeinasvið.',
+      solution: '2 bindandi pör + 2 einstæð pör = 4 rafeindasvið.',
     },
   },
   {
     id: 3,
     type: 'molecular_vs_electron',
-    question: 'NH₃ (ammóníak) hefur fjórflötungs RAFEINALÖGUN en hvaða SAMEINDARLÖGUN?',
+    question: 'NH₃ (ammóníak) hefur fjórflötungs RAFEINDALÖGUN en hvaða SAMEINDARLÖGUN?',
     geometryId: 'trigonal-pyramidal',
     options: [
       {
@@ -283,13 +294,13 @@ const challenges: Challenge[] = [
         id: 'd',
         text: 'Línuleg',
         correct: false,
-        explanation: 'Línuleg hefur aðeins 2 rafeinasvið.',
+        explanation: 'Línuleg hefur aðeins 2 rafeindasvið.',
       },
     ],
     hints: {
-      topic: 'Munurinn á rafeinalögun og sameindarlögun.',
+      topic: 'Munurinn á rafeindalögun og sameindarlögun.',
       strategy: 'Sameindarlögun lýsir aðeins stöðu atóma, ekki einstæðra para.',
-      method: 'NH₃: 4 rafeinasvið (3 bp + 1 lp). Sameindarlögun sýnir aðeins 3 bindandi pörin.',
+      method: 'NH₃: 4 rafeindasvið (3 bp + 1 lp). Sameindarlögun sýnir aðeins 3 bindandi pörin.',
       solution: 'Þríhyrnd pýramída - 3 H atóm í botninum, N á toppnum, einstætt par ósýnilegt.',
     },
   },
@@ -307,29 +318,29 @@ const challenges: Challenge[] = [
       },
       {
         id: 'b',
-        text: '109.5°',
+        text: '109,5°',
         correct: true,
-        explanation: 'Rétt! Þetta er hornið sem hámarkar fjarlægð milli 4 rafeinasviða.',
+        explanation: 'Rétt! Þetta er hornið sem hámarkar fjarlægð milli 4 rafeindasviða.',
       },
       {
         id: 'c',
         text: '120°',
         correct: false,
-        explanation: '120° er fyrir þríhyrnd slétta lögun.',
+        explanation: '120° er fyrir þríhyrnda slétta lögun.',
       },
       { id: 'd', text: '180°', correct: false, explanation: '180° er fyrir línulega lögun.' },
     ],
     hints: {
-      topic: 'Tengihorn ákvarðast af fjölda rafeinasviða.',
-      strategy: 'Hornið hámarkar fjarlægð milli rafeinasviða í þrívíðri röðun.',
-      method: '4 rafeinasvið í þrívídd = fjórflötungur. Hornið er milli 90° og 120°.',
-      solution: '109.5° - þetta er nákvæmt fjórflötungshorn.',
+      topic: 'Tengihorn ákvarðast af fjölda rafeindasviða.',
+      strategy: 'Hornið hámarkar fjarlægð milli rafeindasviða í þrívíðri röðun.',
+      method: '4 rafeindasvið í þrívídd = fjórflötungur. Hornið er milli 90° og 120°.',
+      solution: '109,5° - þetta er nákvæmt fjórflötungshorn.',
     },
   },
   {
     id: 5,
     type: 'lone_pair_effect',
-    question: 'Af hverju er tengihorn í H₂O (104.5°) minna en í CH₄ (109.5°)?',
+    question: 'Af hverju er tengihorn í H₂O (104,5°) minna en í CH₄ (109,5°)?',
     options: [
       {
         id: 'a',
@@ -386,11 +397,11 @@ const challenges: Challenge[] = [
         id: 'd',
         text: 'Fjórflötungur',
         correct: false,
-        explanation: 'Fjórflötungur hefur 4 rafeinasvið, ekki 3.',
+        explanation: 'Fjórflötungur hefur 4 rafeindasvið, ekki 3.',
       },
     ],
     hints: {
-      topic: 'VSEPR lögun með 3 rafeinasvið.',
+      topic: 'VSEPR lögun með 3 rafeindasvið.',
       strategy: 'Athugaðu hvort miðatómið hefur einstæð pör.',
       method: 'Bór hefur aðeins 3 gildisrafeindir og myndar ekki einstæð pör.',
       solution: '3 bindandi pör, 0 einstæð = þríhyrnd slétt lögun (120°).',
@@ -399,7 +410,7 @@ const challenges: Challenge[] = [
   {
     id: 7,
     type: 'molecular_vs_electron',
-    question: 'SF₆ hefur 6 rafeinasvið. Hvað heitir þessi lögun?',
+    question: 'SF₆ hefur 6 rafeindasvið. Hvað heitir þessi lögun?',
     geometryId: 'octahedral',
     options: [
       {
@@ -410,29 +421,29 @@ const challenges: Challenge[] = [
       },
       {
         id: 'b',
-        text: 'Áttflötungur (Octahedral)',
+        text: 'Áttflötungur',
         correct: true,
-        explanation: 'Rétt! 6 rafeinasvið í 90° sundur — áttflötungur.',
+        explanation: 'Rétt! 6 rafeindasvið í 90° sundur — áttflötungur.',
       },
       {
         id: 'c',
         text: 'Þríhyrnd tvípýramída',
         correct: false,
-        explanation: 'Þríhyrnd tvípýramída hefur 5 rafeinasvið.',
+        explanation: 'Þríhyrnd tvípýramída hefur 5 rafeindasvið.',
       },
       { id: 'd', text: 'Kúla', correct: false, explanation: 'Kúla er ekki VSEPR lögun.' },
     ],
     hints: {
-      topic: 'VSEPR lögun með 6 rafeinasvið.',
+      topic: 'VSEPR lögun með 6 rafeindasvið.',
       strategy: 'Nafnið kemur frá fjölda flata á fasta efninu sem lýsir þessari röðun.',
-      method: '6 rafeinasvið í samhverfri röðun, öll 90° frá hvoru öðru.',
-      solution: 'Áttflötungur (octahedral) - fasti efnið hefur 8 fleti.',
+      method: '6 rafeindasvið í samhverfri röðun, öll 90° frá hvoru öðru.',
+      solution: 'Áttflötungur (octahedral) - fasta efnið hefur 8 fleti.',
     },
   },
   {
     id: 8,
     type: 'electron_domains',
-    question: 'PCl₅ hefur 5 rafeinasvið. Hvað heitir þessi rafeinalögun?',
+    question: 'PCl₅ hefur 5 rafeindasvið. Hvað heitir þessi rafeindalögun?',
     geometryId: 'trigonal-bipyramidal',
     options: [
       {
@@ -445,7 +456,7 @@ const challenges: Challenge[] = [
         id: 'b',
         text: 'Áttflötungur',
         correct: false,
-        explanation: 'Áttflötungur hefur 6 rafeinasvið.',
+        explanation: 'Áttflötungur hefur 6 rafeindasvið.',
       },
       {
         id: 'c',
@@ -457,11 +468,11 @@ const challenges: Challenge[] = [
         id: 'd',
         text: 'Fjórflötungur',
         correct: false,
-        explanation: 'Fjórflötungur hefur 4 rafeinasvið.',
+        explanation: 'Fjórflötungur hefur 4 rafeindasvið.',
       },
     ],
     hints: {
-      topic: 'VSEPR lögun með 5 rafeinasvið.',
+      topic: 'VSEPR lögun með 5 rafeindasvið.',
       strategy: 'Hugsaðu um tvær mismunandi stöður - miðslétta og ás.',
       method: '3 stöður á miðsléttu (120°) + 2 stöður lóðrétt á ásnum (90°).',
       solution: 'Þríhyrnd tvípýramída - trigonal bipyramidal.',
@@ -691,7 +702,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div className="bg-white p-3 rounded-lg">
-                        <div className="text-warm-500">Rafeinasvið</div>
+                        <div className="text-warm-500">Rafeindasvið</div>
                         <div className="font-bold text-warm-800">
                           {selectedGeometry.electronDomains}
                         </div>
@@ -715,7 +726,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                     </div>
 
                     <div className="bg-white p-3 rounded-lg">
-                      <div className="text-warm-500 text-sm">Rafeinalögun</div>
+                      <div className="text-warm-500 text-sm">Rafeindalögun</div>
                       <div className="font-bold text-purple-600">
                         {selectedGeometry.electronGeometry}
                       </div>
@@ -796,7 +807,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                     size="md"
                     animation="fade-in"
                     showLonePairs={true}
-                    ariaLabel={`${geo.name} lögun`}
+                    // Not the shape's name: several questions ask for it.
+                    ariaLabel={`Sameindin ${geo.example}`}
                   />
                   <div className="text-warm-300 text-sm mt-2 font-medium">{geo.example}</div>
                 </div>
@@ -844,7 +856,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               }}
               className="text-teal-600 hover:text-teal-800 text-sm underline mb-4 pointer-coarse:min-h-11"
             >
-              Syna visbendingu
+              Sýna vísbendingu
             </button>
           )}
 
@@ -868,20 +880,21 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           {showResult &&
             (() => {
               const correctOption = shuffledOptions.find((opt) => opt.correct);
+              // The panel heads itself Rétt!/Rangt, and several explanations open
+              // with their own "Rétt!", which a wrong answer must not be shown.
+              const why = (correctOption?.explanation ?? '').replace(/^Rétt!\s*/, '');
               return (
                 <>
                   <div className="mb-4">
                     <FeedbackPanel
                       feedback={{
                         isCorrect,
-                        explanation: isCorrect
-                          ? `Rétt! ${correctOption?.explanation || ''}`
-                          : `${correctOption?.explanation || ''}`,
-                        misconception: isCorrect ? undefined : VSEPR_MISCONCEPTIONS.geometry,
+                        explanation: why,
+                        misconception: isCorrect ? undefined : MISCONCEPTION_FOR[challenge.type],
                         relatedConcepts: VSEPR_RELATED,
                         nextSteps: isCorrect
                           ? 'Frábært! Þú skilur VSEPR vel. Haltu áfram.'
-                          : 'Mundu: Teldu rafeinasvið fyrst, síðan athugaðu einstæð pör.',
+                          : 'Mundu: Teldu rafeindasvið fyrst, síðan athugaðu einstæð pör.',
                       }}
                       config={{
                         showExplanation: true,

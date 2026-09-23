@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 interface Domain {
   id: string;
@@ -30,7 +30,7 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.2, y: 0.5 },
       { x: 0.8, y: 0.5 },
     ],
-    description: '2 rafeinasvið hrinda hvort öðru 180° í sundur',
+    description: '2 rafeindasvið hrinda hvort öðru 180° í sundur',
   },
   {
     id: 'trigonal-planar',
@@ -42,7 +42,7 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.2, y: 0.75 },
       { x: 0.8, y: 0.75 },
     ],
-    description: '3 rafeinasvið raðast í 120° hornin',
+    description: '3 rafeindasvið raðast í 120° hornin',
   },
   {
     id: 'tetrahedral',
@@ -55,7 +55,7 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.8, y: 0.55 },
       { x: 0.5, y: 0.85 },
     ],
-    description: '4 rafeinasvið raðast í 109.5° hornin',
+    description: '4 rafeindasvið raðast í 109,5° hornin',
   },
   {
     id: 'trigonal-pyramidal',
@@ -96,9 +96,18 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.3, y: 0.3 },
       { x: 0.7, y: 0.7 },
     ],
-    description: '6 rafeinasvið raðast í 90° hornin',
+    description: '6 rafeindasvið raðast í 90° hornin',
   },
 ];
+
+/**
+ * The configuration for a geometry id, or undefined when this animation has
+ * none. Level 1 names the two bent shapes `bent-2` and `bent-4`; only the
+ * second (four domains, two lone pairs) is drawn here, as `bent`.
+ */
+function configFor(id: string): GeometryConfig | undefined {
+  return GEOMETRIES.find((g) => g.id === (id === 'bent-4' ? 'bent' : id));
+}
 
 interface ElectronRepulsionAnimationProps {
   geometryId?: string;
@@ -113,9 +122,7 @@ export function ElectronRepulsionAnimation({
   showForces = true,
   compact = false,
 }: ElectronRepulsionAnimationProps) {
-  const [selectedGeometry, setSelectedGeometry] = useState(
-    GEOMETRIES.find((g) => g.id === geometryId) || GEOMETRIES[2]
-  );
+  const [selectedGeometry, setSelectedGeometry] = useState(configFor(geometryId) || GEOMETRIES[2]);
   const [domains, setDomains] = useState<Domain[]>([]);
   const [isAnimating, setIsAnimating] = useState(false);
   const [phase, setPhase] = useState<'initial' | 'repelling' | 'settled'>('initial');
@@ -254,6 +261,20 @@ export function ElectronRepulsionAnimation({
     setPhase('initial');
   };
 
+  // Follow the parent's selection when it changes. Copying the prop into state
+  // only once left Stig 1's animation on its first shape whatever the student
+  // chose below it. A shape this animation cannot draw leaves it where it is.
+  const lastGeometryId = useRef(geometryId);
+  useEffect(() => {
+    if (lastGeometryId.current === geometryId) return;
+    lastGeometryId.current = geometryId;
+    const geo = configFor(geometryId);
+    if (!geo) return;
+    setSelectedGeometry(geo);
+    setIsAnimating(false);
+    setPhase('initial');
+  }, [geometryId]);
+
   const width = compact ? 200 : 300;
   const height = compact ? 200 : 300;
 
@@ -265,7 +286,7 @@ export function ElectronRepulsionAnimation({
         <h3
           className={`font-bold text-purple-800 flex items-center gap-2 ${compact ? 'text-base' : 'text-lg'}`}
         >
-          <span>⚡</span> Rafeindahrun
+          <span>⚡</span> Fráhrinding
         </h3>
         <div
           className={`text-xs px-2 py-1 rounded-full ${
@@ -276,7 +297,7 @@ export function ElectronRepulsionAnimation({
                 : 'bg-green-100 text-green-700'
           }`}
         >
-          {phase === 'initial' ? 'Tilbúið' : phase === 'repelling' ? 'Hrundur...' : 'Stöðugt'}
+          {phase === 'initial' ? 'Tilbúið' : phase === 'repelling' ? 'Hrindast...' : 'Stöðugt'}
         </div>
       </div>
 
@@ -486,7 +507,7 @@ export function ElectronRepulsionAnimation({
         {showForces && (
           <div className="flex items-center gap-1.5">
             <div className="w-4 h-0.5 bg-red-500" />
-            <span>Frávísunarkraftur</span>
+            <span>Fráhrindikraftur</span>
           </div>
         )}
       </div>

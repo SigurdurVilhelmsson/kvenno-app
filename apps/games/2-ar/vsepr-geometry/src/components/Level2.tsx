@@ -4,6 +4,7 @@ import { AnimatedMolecule } from '@shared/components';
 import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
 
 import { ElectronRepulsionAnimation } from './ElectronRepulsionAnimation';
+import { gradeBondAngle } from '../utils/bondAngles';
 import { useScrollTopOnChange } from '../utils/phoneScroll';
 import { vseprToMolecule } from '../utils/vseprConverter';
 
@@ -20,10 +21,10 @@ interface GeometryOption {
 
 const GEOMETRY_OPTIONS: GeometryOption[] = [
   { id: 'linear', name: 'Línuleg', bondAngle: '180°' },
-  { id: 'bent', name: 'Beygð', bondAngle: '<120° eða <109.5°' },
+  { id: 'bent', name: 'Beygð', bondAngle: '<120° eða <109,5°' },
   { id: 'trigonal-planar', name: 'Þríhyrnd slétt', bondAngle: '120°' },
   { id: 'trigonal-pyramidal', name: 'Þríhyrnd pýramída', bondAngle: '107°' },
-  { id: 'tetrahedral', name: 'Fjórflötungur', bondAngle: '109.5°' },
+  { id: 'tetrahedral', name: 'Fjórflötungur', bondAngle: '109,5°' },
   { id: 'seesaw', name: 'Sjáldruslögun', bondAngle: '90° og 120°' },
   { id: 't-shaped', name: 'T-lögun', bondAngle: '90°' },
   { id: 'trigonal-bipyramidal', name: 'Þríhyrnd tvípýramída', bondAngle: '90° og 120°' },
@@ -53,7 +54,7 @@ const molecules: Molecule[] = [
     id: 1,
     formula: 'H₂O',
     name: 'Vatn',
-    lewisStructure: '  ::  ::\n   \\ /\nH — O — H',
+    lewisStructure: '::\nH — O — H\n::',
     centralAtom: 'O',
     bondingPairs: 2,
     lonePairs: 2,
@@ -61,16 +62,16 @@ const molecules: Molecule[] = [
     electronGeometry: 'Fjórflötungur',
     molecularGeometry: 'Beygð',
     correctGeometryId: 'bent',
-    bondAngle: '104.5°',
+    bondAngle: '104,5°',
     isPolar: true,
     explanation:
-      'Súrefni hefur 6 gildisrafeindir. 2 fara í tengsl við H, 4 mynda 2 einstæð pör. 4 rafeinasvið = fjórflötungs rafeinalögun, en 2 einstæð pör gera sameindarlögunina beygða.',
+      'Súrefni hefur 6 gildisrafeindir. 2 fara í tengsl við H, 4 mynda 2 einstæð pör. 4 rafeindasvið = fjórflötungs rafeindalögun, en 2 einstæð pör gera sameindarlögunina beygða.',
   },
   {
     id: 2,
     formula: 'NH₃',
     name: 'Ammóníak',
-    lewisStructure: '    ::\n    |\nH — N — H\n    |\n    H',
+    lewisStructure: '::\nH — N — H\n|\nH',
     centralAtom: 'N',
     bondingPairs: 3,
     lonePairs: 1,
@@ -81,7 +82,7 @@ const molecules: Molecule[] = [
     bondAngle: '107°',
     isPolar: true,
     explanation:
-      'Nitur hefur 5 gildisrafeindir. 3 fara í tengsl við H, 2 mynda einstætt par. 4 rafeinasvið gefa fjórflötungs rafeinalögun, en 1 einstætt par gerir sameindarlögunina þríhyrnda pýramídu.',
+      'Nitur hefur 5 gildisrafeindir. 3 fara í tengsl við H, 2 mynda einstætt par. 4 rafeindasvið gefa fjórflötungs rafeindalögun, en 1 einstætt par gerir sameindarlögunina þríhyrnda pýramídu.',
   },
   {
     id: 3,
@@ -95,10 +96,10 @@ const molecules: Molecule[] = [
     electronGeometry: 'Fjórflötungur',
     molecularGeometry: 'Fjórflötungur',
     correctGeometryId: 'tetrahedral',
-    bondAngle: '109.5°',
+    bondAngle: '109,5°',
     isPolar: false,
     explanation:
-      'Kolefni hefur 4 gildisrafeindir sem allar fara í tengsl við H. 4 rafeinasvið, engin einstæð pör — fullkomin fjórflötungs lögun.',
+      'Kolefni hefur 4 gildisrafeindir sem allar fara í tengsl við H. 4 rafeindasvið, engin einstæð pör — fullkomin fjórflötungs lögun.',
   },
   {
     id: 4,
@@ -115,7 +116,7 @@ const molecules: Molecule[] = [
     bondAngle: '180°',
     isPolar: false,
     explanation:
-      'Tvöfaldar tengingar telja sem eitt rafeinasvið hvor. 2 rafeinasvið = línuleg lögun með 180° horn.',
+      'Tvöfaldar tengingar telja sem eitt rafeindasvið hvor. 2 rafeindasvið = línuleg lögun með 180° horn.',
   },
   {
     id: 5,
@@ -132,13 +133,13 @@ const molecules: Molecule[] = [
     bondAngle: '120°',
     isPolar: false,
     explanation:
-      'Bór hefur aðeins 3 gildisrafeindir og myndar 3 tengsl án einstæðra para. 3 rafeinasvið = þríhyrnd slétt lögun.',
+      'Bór hefur aðeins 3 gildisrafeindir og myndar 3 tengsl án einstæðra para. 3 rafeindasvið = þríhyrnd slétt lögun.',
   },
   {
     id: 6,
     formula: 'PCl₅',
     name: 'Fosfórpentaklóríð',
-    lewisStructure: '    Cl\n    |\nCl-P-Cl\n   /|\\\n Cl Cl',
+    lewisStructure: '    Cl\n    |\nCl-P-Cl\n   / \\\n Cl Cl',
     centralAtom: 'P',
     bondingPairs: 5,
     lonePairs: 0,
@@ -149,13 +150,13 @@ const molecules: Molecule[] = [
     bondAngle: '90° og 120°',
     isPolar: false,
     explanation:
-      'Fosfór getur rúmað 5 tengsl vegna d-hvolfa. 5 rafeinasvið = þríhyrnd tvípýramída með 3 á miðsléttunni (120°) og 2 á ásnum (90°).',
+      'Fosfór getur rúmað 5 tengsl vegna d-hvolfa. 5 rafeindasvið = þríhyrnd tvípýramída með 3 á miðsléttunni (120°) og 2 á ásnum (90°).',
   },
   {
     id: 7,
     formula: 'SF₄',
     name: 'Brennisteinstetraflúoríð',
-    lewisStructure: '  :: F\n   \\|\nF-S-F\n   /\n  F',
+    lewisStructure: '::\nF — S — F\n/ \\\nF   F',
     centralAtom: 'S',
     bondingPairs: 4,
     lonePairs: 1,
@@ -166,7 +167,7 @@ const molecules: Molecule[] = [
     bondAngle: '90° og 120°',
     isPolar: true,
     explanation:
-      'Brennisteinn hefur 6 gildisrafeindir. 4 í tengsl, 2 mynda einstætt par. 5 rafeinasvið = þríhyrnd tvípýramída en einstæða parið veldur sjáldruslögun.',
+      'Brennisteinn hefur 6 gildisrafeindir. 4 í tengsl, 2 mynda einstætt par. 5 rafeindasvið = þríhyrnd tvípýramída en einstæða parið veldur sjáldruslögun.',
   },
   {
     id: 8,
@@ -183,7 +184,7 @@ const molecules: Molecule[] = [
     bondAngle: '90°',
     isPolar: false,
     explanation:
-      'Brennisteinn getur rúmað 6 tengsl vegna d-hvolfa. 6 rafeinasvið í samhverfri áttflötungsröðun með öll horn 90°.',
+      'Brennisteinn getur rúmað 6 tengsl vegna d-hvolfa. 6 rafeindasvið í samhverfri áttflötungsröðun með öll horn 90°.',
   },
   {
     id: 9,
@@ -200,7 +201,7 @@ const molecules: Molecule[] = [
     bondAngle: '90°',
     isPolar: false,
     explanation:
-      'Xenon hefur 8 gildisrafeindir. 4 í tengsl, 4 mynda 2 einstæð pör. 6 rafeinasvið = áttflötungs rafeinalögun, en 2 einstæð pör (í andstæðum stöðum) gefa ferningssléttu lögun.',
+      'Xenon hefur 8 gildisrafeindir. 4 í tengsl, 4 mynda 2 einstæð pör. 6 rafeindasvið = áttflötungs rafeindalögun, en 2 einstæð pör (í andstæðum stöðum) gefa ferningsslétta lögun.',
   },
   {
     id: 10,
@@ -217,7 +218,7 @@ const molecules: Molecule[] = [
     bondAngle: '90°',
     isPolar: true,
     explanation:
-      'Klór hefur 7 gildisrafeindir. 3 í tengsl, 4 mynda 2 einstæð pör. 5 rafeinasvið = þríhyrnd tvípýramída en 2 einstæð pör á miðsléttunni gefa T-lögun.',
+      'Klór hefur 7 gildisrafeindir. 3 í tengsl, 4 mynda 2 einstæð pör. 5 rafeindasvið = þríhyrnd tvípýramída en 2 einstæð pör á miðsléttunni gefa T-lögun.',
   },
 ];
 
@@ -253,6 +254,36 @@ const ELECTRON_GEOMETRY_NAME: Record<number, string> = {
   6: 'Áttflötungur',
 };
 
+// Valence electrons of each central atom in the pool, by its group. The count
+// hint used to derive this as bonding pairs + 2 × lone pairs, which holds only
+// for single bonds: it told the student carbon in CO₂ has 2 valence electrons.
+const VALENCE_ELECTRONS: Record<string, number> = {
+  B: 3,
+  C: 4,
+  N: 5,
+  P: 5,
+  O: 6,
+  S: 6,
+  Cl: 7,
+  Xe: 8,
+};
+
+// The noun and its adjective agree with the count: 1 takes the singular.
+function bondingPairsPhrase(n: number): string {
+  return n === 1 ? '1 bindandi par' : `${n} bindandi pör`;
+}
+function lonePairsPhrase(n: number): string {
+  return n === 1 ? '1 einstætt par' : `${n} einstæð pör`;
+}
+/** After `með`, which takes the dative. */
+function lonePairsDative(n: number): string {
+  return n === 1 ? '1 einstæðu pari' : `${n} einstæðum pörum`;
+}
+/** A shape name inside a sentence: lower-case, except the T of T-lögun. */
+function inSentence(name: string): string {
+  return name.startsWith('T-') ? name : name.charAt(0).toLowerCase() + name.slice(1);
+}
+
 // Geometry IDs that have repulsion animations available
 const ANIMATED_GEOMETRIES = new Set([
   'linear',
@@ -269,7 +300,7 @@ interface Step {
 }
 
 const STEPS: Step[] = [
-  { id: 'count', label: 'Telja rafeinasvið' },
+  { id: 'count', label: 'Telja rafeindasvið' },
   { id: 'geometry', label: 'Velja lögun' },
   { id: 'angle', label: 'Tengihorn' },
   { id: 'explanation', label: 'Útskýra' },
@@ -331,31 +362,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     } else if (step.id === 'geometry') {
       correct = selectedGeometry === molecule.correctGeometryId;
     } else if (step.id === 'angle') {
-      // Accept approximate answers — parse numeric values with ±2° tolerance
-      const normalizedAnswer = selectedAngle.replace(/\s/g, '').toLowerCase();
-      const normalizedCorrect = molecule.bondAngle.replace(/\s/g, '').toLowerCase();
-
-      // Extract numeric values from the correct answer (e.g. "109.5°" → [109.5], "90° og 120°" → [90, 120])
-      const correctNums = normalizedCorrect.match(/[\d.]+/g)?.map(Number) || [];
-      const answerNums = normalizedAnswer.match(/[\d.]+/g)?.map(Number) || [];
-
-      if (correctNums.length === 1 && answerNums.length >= 1) {
-        // Single-angle geometry: accept if any entered number is within ±2°
-        correct = answerNums.some((a) => Math.abs(a - correctNums[0]) <= 2);
-      } else if (correctNums.length >= 2 && answerNums.length >= 2) {
-        // Multi-angle geometry (e.g. "90° og 120°"): all correct angles must be matched within ±2°
-        correct = correctNums.every((c) => answerNums.some((a) => Math.abs(a - c) <= 2));
-      } else {
-        // Fallback to string matching
-        correct =
-          normalizedAnswer === normalizedCorrect ||
-          normalizedAnswer.includes(normalizedCorrect.replace('°', ''));
-      }
-
-      // Special case: bent geometry accepts ~104-105°
-      if (!correct && molecule.correctGeometryId === 'bent') {
-        correct = answerNums.some((a) => a >= 103 && a <= 106);
-      }
+      // Approximate answers within ±2°, read with the decimal comma
+      correct = gradeBondAngle(selectedAngle, molecule.bondAngle, molecule.correctGeometryId);
     } else if (step.id === 'explanation') {
       // Always correct for explanation step - it's about learning
       correct = explanation.length > 20;
@@ -401,13 +409,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   const getHint = () => {
     if (step.id === 'count') {
-      return `${molecule.centralAtom} hefur ${molecule.bondingPairs + molecule.lonePairs * 2} gildisrafeindir. Hversu margar fara í tengsl?`;
+      return `${molecule.centralAtom} hefur ${VALENCE_ELECTRONS[molecule.centralAtom]} gildisrafeindir. Hversu margar fara í tengsl?`;
     } else if (step.id === 'geometry') {
-      return `Einstæð pör taka meira pláss en bindandi pör og hrinda þeim saman. ${molecule.lonePairs === 0 ? 'Engin einstæð pör — rafeinalögun = sameindarlögun.' : 'Hversu mikil áhrif hafa ' + molecule.lonePairs + ' einstæð pör?'}`;
+      return `Einstæð pör taka meira pláss en bindandi pör og hrinda þeim saman. ${molecule.lonePairs === 0 ? 'Engin einstæð pör — rafeindalögun = sameindarlögun.' : `Hversu mikil áhrif ${molecule.lonePairs === 1 ? 'hefur' : 'hafa'} ${lonePairsPhrase(molecule.lonePairs)}?`}`;
     } else if (step.id === 'angle') {
       return `Þessi lögun hefur venjulega horn nálægt ${molecule.bondAngle}.`;
     }
-    return 'Útskýrðu af hverju þessi lögun myndast út frá fjölda rafeinasviða.';
+    return 'Útskýrðu af hverju þessi lögun myndast út frá fjölda rafeindasviða.';
   };
 
   return (
@@ -582,7 +590,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               {/* Step content */}
               {step.id === 'count' && (
                 <div className="space-y-4">
-                  <p className="text-warm-600">Teldu rafeinasvið í kringum miðatómið:</p>
+                  <p className="text-warm-600">Teldu rafeindasvið í kringum miðatómið:</p>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-warm-600 mb-1">
@@ -613,9 +621,15 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       />
                     </div>
                   </div>
-                  {stepResult === 'correct' && (
+                  {stepResult === 'incorrect' && (
+                    <div className="bg-red-50 p-3 rounded-lg text-red-700">
+                      Rétt svar: {bondingPairsPhrase(molecule.bondingPairs)} og{' '}
+                      {lonePairsPhrase(molecule.lonePairs)}
+                    </div>
+                  )}
+                  {stepResult !== null && (
                     <div className="bg-teal-50 p-3 rounded-lg">
-                      <span className="font-bold text-teal-700">Samtals rafeinasvið: </span>
+                      <span className="font-bold text-teal-700">Samtals rafeindasvið: </span>
                       <span className="text-teal-600">{molecule.electronDomains}</span>
                     </div>
                   )}
@@ -626,15 +640,15 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 <div className="space-y-4">
                   <div className="bg-teal-50 p-3 rounded-lg mb-2">
                     <div className="text-sm text-teal-800">
-                      <strong>{molecule.electronDomains} rafeinasvið</strong> → rafeinalögun:{' '}
+                      <strong>{molecule.electronDomains} rafeindasvið</strong> → rafeindalögun:{' '}
                       <strong>{ELECTRON_GEOMETRY_NAME[molecule.electronDomains]}</strong>
                     </div>
                     <div className="text-sm text-teal-700 mt-1">
-                      {molecule.bondingPairs} bindandi + {molecule.lonePairs} einstæð pör
+                      {molecule.bondingPairs} bindandi + {lonePairsPhrase(molecule.lonePairs)}
                     </div>
                   </div>
                   <p className="text-warm-600">
-                    Með {molecule.lonePairs} einstæð pör, hvaða <strong>sameindarlögun</strong>{' '}
+                    Með {lonePairsDative(molecule.lonePairs)}, hvaða <strong>sameindarlögun</strong>{' '}
                     myndast?
                   </p>
                   <div className="space-y-2">
@@ -678,8 +692,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   </div>
                   {stepResult === 'correct' && (
                     <div className="bg-green-50 p-3 rounded-lg text-green-700 text-sm">
-                      Rétt! {molecule.electronGeometry} rafeinalögun → {molecule.molecularGeometry}{' '}
-                      sameindarlögun.
+                      Rétt! Rafeindalögun: {molecule.electronGeometry} → sameindarlögun:{' '}
+                      {inSentence(molecule.molecularGeometry)}.
                     </div>
                   )}
                 </div>
@@ -695,7 +709,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     value={selectedAngle}
                     onChange={(e) => setSelectedAngle(e.target.value)}
                     disabled={stepResult !== null}
-                    placeholder="t.d. 109.5° eða 90° og 120°"
+                    placeholder="Horn í gráðum"
                     autoComplete="off"
                     autoCapitalize="none"
                     autoCorrect="off"
@@ -717,7 +731,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   {stepResult !== null && (
                     <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-200">
                       <div className="font-bold text-indigo-800 mb-3 flex items-center gap-2">
-                        <span className="text-lg">📐</span> Tengihorn í {molecule.molecularGeometry}
+                        <span className="text-lg">📐</span> Tengihorn í {molecule.formula} (
+                        {inSentence(molecule.molecularGeometry)})
                       </div>
                       <div className="flex items-center justify-center py-4">
                         <svg
@@ -1096,11 +1111,14 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                         </svg>
                       </div>
                       <div className="text-xs text-indigo-600 text-center">
-                        {molecule.lonePairs > 0 && (
-                          <span>
-                            ⚠️ Einstæð pör (ekki sýnd) minnka hornið frá fullkominni röðun
-                          </span>
-                        )}
+                        {/* Square planar keeps its 90°: its two lone pairs sit opposite
+                            each other, and the diagram draws them. */}
+                        {molecule.lonePairs > 0 &&
+                          molecule.correctGeometryId !== 'square-planar' && (
+                            <span>
+                              ⚠️ Einstæð pör (ekki sýnd) minnka hornið frá fullkominni röðun
+                            </span>
+                          )}
                       </div>
                     </div>
                   )}
@@ -1110,8 +1128,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               {step.id === 'explanation' && (
                 <div className="space-y-4">
                   <p className="text-warm-600">
-                    Útskýrðu af hverju {molecule.formula} hefur{' '}
-                    {molecule.molecularGeometry.toLowerCase()} lögun:
+                    Útskýrðu af hverju sameindarlögun {molecule.formula} er{' '}
+                    {inSentence(molecule.molecularGeometry)}:
                   </p>
                   <textarea
                     value={explanation}
@@ -1141,7 +1159,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               }}
               className="text-teal-600 hover:text-teal-800 text-sm underline mb-4 pointer-coarse:min-h-11"
             >
-              Syna visbendingu
+              Sýna vísbendingu
             </button>
           )}
 
@@ -1203,7 +1221,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             <table className="w-full text-xs sm:text-sm">
               <thead>
                 <tr className="bg-warm-50">
-                  <th className="p-1 sm:p-2 text-left">Rafeinasvið</th>
+                  <th className="p-1 sm:p-2 text-left">Rafeindasvið</th>
                   <th className="p-1 sm:p-2 text-left">BP</th>
                   <th className="p-1 sm:p-2 text-left">LP</th>
                   <th className="p-1 sm:p-2 text-left">Lögun</th>
@@ -1237,7 +1255,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   <td>4</td>
                   <td>0</td>
                   <td>Fjórflötungur</td>
-                  <td>109.5°</td>
+                  <td>109,5°</td>
                 </tr>
                 <tr className="border-t">
                   <td className="p-1 sm:p-2">4</td>
@@ -1251,7 +1269,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   <td>2</td>
                   <td>2</td>
                   <td>Beygð</td>
-                  <td>104.5°</td>
+                  <td>104,5°</td>
                 </tr>
                 <tr className="border-t bg-purple-50">
                   <td className="p-1 sm:p-2">5</td>

@@ -134,7 +134,7 @@ describe('Level 1 brings the shape details into view on a phone', () => {
 
     expect(scrollIntoView).toHaveBeenCalledTimes(1);
     const panel = scrollIntoView.mock.contexts[0] as HTMLElement;
-    expect(panel.textContent).toContain('Rafeinalögun');
+    expect(panel.textContent).toContain('Rafeindalögun');
     expect(scrollIntoView.mock.calls[0][0]).toMatchObject({ block: 'nearest' });
 
     fireEvent.click(ui.getByRole('button', { name: /Áttflötungur Octahedral/ }));
@@ -147,7 +147,7 @@ describe('Level 1 brings the shape details into view on a phone', () => {
 
     fireEvent.click(ui.getByRole('button', { name: /Línuleg Linear/ }));
 
-    expect(ui.getByText('Rafeinalögun')).toBeTruthy();
+    expect(ui.getByText('Rafeindalögun')).toBeTruthy();
     expect(scrollIntoView).not.toHaveBeenCalled();
   });
 });

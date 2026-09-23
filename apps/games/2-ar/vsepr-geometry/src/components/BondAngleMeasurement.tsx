@@ -1,4 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+
+import { formatDecimal } from '@shared/utils';
 
 interface BondAngleData {
   geometry: string;
@@ -30,7 +32,7 @@ const BOND_ANGLES: Record<string, BondAngleData> = {
     lonePairs: 0,
     bondingPairs: 2,
     example: 'CO₂',
-    explanation: 'Tvö rafeinasvið staðsetjast beint á móti hvoru öðru.',
+    explanation: 'Tvö rafeindasvið staðsetjast beint á móti hvoru öðru.',
   },
   'trigonal-planar': {
     geometry: 'trigonal-planar',
@@ -40,7 +42,7 @@ const BOND_ANGLES: Record<string, BondAngleData> = {
     lonePairs: 0,
     bondingPairs: 3,
     example: 'BF₃',
-    explanation: 'Þrjú rafeinasvið dreifast jafnt í sléttu, 120° sundur.',
+    explanation: 'Þrjú rafeindasvið dreifast jafnt í sléttu, 120° sundur.',
   },
   'bent-2': {
     geometry: 'bent-2',
@@ -60,7 +62,7 @@ const BOND_ANGLES: Record<string, BondAngleData> = {
     lonePairs: 0,
     bondingPairs: 4,
     example: 'CH₄',
-    explanation: 'Fjögur rafeinasvið í fullkominni þrívíðri röðun.',
+    explanation: 'Fjögur rafeindasvið í fullkominni þrívíðri röðun.',
   },
   'trigonal-pyramidal': {
     geometry: 'trigonal-pyramidal',
@@ -70,7 +72,7 @@ const BOND_ANGLES: Record<string, BondAngleData> = {
     lonePairs: 1,
     bondingPairs: 3,
     example: 'NH₃',
-    explanation: 'Einstætt par minnkar hornið úr 109.5° í ~107°.',
+    explanation: 'Einstætt par minnkar hornið úr 109,5° í ~107°.',
   },
   'bent-4': {
     geometry: 'bent-4',
@@ -80,7 +82,7 @@ const BOND_ANGLES: Record<string, BondAngleData> = {
     lonePairs: 2,
     bondingPairs: 2,
     example: 'H₂O',
-    explanation: 'Tvö einstæð pör þrýsta horninu niður í 104.5°.',
+    explanation: 'Tvö einstæð pör þrýsta horninu niður í 104,5°.',
   },
   'trigonal-bipyramidal': {
     geometry: 'trigonal-bipyramidal',
@@ -90,7 +92,7 @@ const BOND_ANGLES: Record<string, BondAngleData> = {
     lonePairs: 0,
     bondingPairs: 5,
     example: 'PCl₅',
-    explanation: 'Ás-horn 90°, miðsléttuhhorn 120°.',
+    explanation: 'Ás-horn 90°, miðsléttuhorn 120°.',
   },
   octahedral: {
     geometry: 'octahedral',
@@ -119,7 +121,14 @@ export function BondAngleMeasurement({
 }: BondAngleMeasurementProps) {
   const [selectedGeometry, setSelectedGeometry] = useState(geometryId || 'tetrahedral');
 
-  const angleData = BOND_ANGLES[selectedGeometry];
+  // Follow the parent's selection. Copying the prop into state only once left
+  // the tool on the first shape the student picked: choose CH₄, then SF₆, and
+  // it still measured CH₄. The tool's own buttons still choose freely.
+  useEffect(() => {
+    if (geometryId && BOND_ANGLES[geometryId]) setSelectedGeometry(geometryId);
+  }, [geometryId]);
+
+  const angleData = BOND_ANGLES[selectedGeometry] ?? BOND_ANGLES.tetrahedral;
 
   // Calculate angle difference due to lone pairs
   const angleDifference = angleData.idealAngle - angleData.actualAngle;
@@ -173,8 +182,8 @@ export function BondAngleMeasurement({
   // Geometries grouped by base shape for comparison
   const comparisonGroups = useMemo(() => {
     return {
-      'Úr fjórflötungi (109.5°)': ['tetrahedral', 'trigonal-pyramidal', 'bent-4'],
-      'Úr þríhyrnd sléttri (120°)': ['trigonal-planar', 'bent-2'],
+      'Úr fjórflötungi (109,5°)': ['tetrahedral', 'trigonal-pyramidal', 'bent-4'],
+      'Úr þríhyrndri sléttri (120°)': ['trigonal-planar', 'bent-2'],
     };
   }, []);
 
@@ -187,7 +196,7 @@ export function BondAngleMeasurement({
             height={svgSize}
             className="flex-shrink-0"
             role="img"
-            aria-label={`Tengihorn: ${angleData.actualAngle}°`}
+            aria-label={`Tengihorn: ${formatDecimal(angleData.actualAngle)}°`}
           >
             <title>Mæling á tengihorni</title>
             {/* Angle arc */}
@@ -234,7 +243,7 @@ export function BondAngleMeasurement({
               fontSize="14"
               fontWeight="bold"
             >
-              {angleData.actualAngle}°
+              {formatDecimal(angleData.actualAngle)}°
             </text>
           </svg>
 
@@ -243,7 +252,10 @@ export function BondAngleMeasurement({
             <div className="text-sm text-warm-400">{angleData.example}</div>
             {angleData.lonePairs > 0 && (
               <div className="text-xs text-yellow-400 mt-1">
-                {angleData.lonePairs} einstæð pör → -{angleDifference}°
+                {angleData.lonePairs === 1
+                  ? '1 einstætt par'
+                  : `${angleData.lonePairs} einstæð pör`}{' '}
+                → -{formatDecimal(angleDifference)}°
               </div>
             )}
           </div>
@@ -256,7 +268,7 @@ export function BondAngleMeasurement({
     <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-3 sm:p-5 shadow-lg">
       <h3 className="text-white font-bold text-sm mb-4 flex items-center gap-2">
         <span className="text-lg">📐</span>
-        Tengjahornamælir (Bond Angle Tool)
+        Tengihornamælir
       </h3>
 
       {/* Geometry selector */}
@@ -286,7 +298,7 @@ export function BondAngleMeasurement({
             viewBox={`0 0 ${svgSize} ${svgSize}`}
             className="self-start max-w-full h-auto"
             role="img"
-            aria-label={`Tengihornarit: ${angleData.actualAngle}° horn milli tengja`}
+            aria-label={`Tengihornarit: ${formatDecimal(angleData.actualAngle)}° horn milli tengja`}
           >
             <title>Tengihornarit</title>
             {/* Background circle for reference */}
@@ -452,7 +464,7 @@ export function BondAngleMeasurement({
               fontSize="18"
               fontWeight="bold"
             >
-              {angleData.actualAngle}°
+              {formatDecimal(angleData.actualAngle)}°
             </text>
 
             {/* Ideal angle label (if different) */}
@@ -464,7 +476,7 @@ export function BondAngleMeasurement({
                 fill="#9ca3af"
                 fontSize="12"
               >
-                (kjörhorn: {angleData.idealAngle}°)
+                (kjörhorn: {formatDecimal(angleData.idealAngle)}°)
               </text>
             )}
           </svg>
@@ -495,17 +507,19 @@ export function BondAngleMeasurement({
             <div className="space-y-1 text-sm">
               <div className="flex justify-between">
                 <span className="text-warm-400">Kjörhorn:</span>
-                <span className="text-warm-300">{angleData.idealAngle}°</span>
+                <span className="text-warm-300">{formatDecimal(angleData.idealAngle)}°</span>
               </div>
               {angleDifference > 0 && (
                 <div className="flex justify-between">
                   <span className="text-yellow-400">Áhrif einstæðra para:</span>
-                  <span className="text-yellow-300">-{angleDifference}°</span>
+                  <span className="text-yellow-300">-{formatDecimal(angleDifference)}°</span>
                 </div>
               )}
               <div className="flex justify-between border-t border-warm-600 pt-1 mt-1">
                 <span className="text-teal-400 font-bold">Raunhorn:</span>
-                <span className="text-teal-300 font-bold">{angleData.actualAngle}°</span>
+                <span className="text-teal-300 font-bold">
+                  {formatDecimal(angleData.actualAngle)}°
+                </span>
               </div>
             </div>
           </div>
@@ -541,7 +555,7 @@ export function BondAngleMeasurement({
                         }`}
                       >
                         <span className="text-white font-medium">{data.example}</span>
-                        <span className="text-teal-400">{data.actualAngle}°</span>
+                        <span className="text-teal-400">{formatDecimal(data.actualAngle)}°</span>
                         {diff > 0 && (
                           <span className="text-yellow-400 text-xs">({data.lonePairs} lp)</span>
                         )}
