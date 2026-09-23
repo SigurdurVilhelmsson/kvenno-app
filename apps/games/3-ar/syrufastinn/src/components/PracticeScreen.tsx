@@ -14,15 +14,17 @@
  * No scoring, no timer, and hints cost nothing — the April restructure's rule.
  */
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { DECIMAL_INPUT_PROPS, parseStudentNumber } from '@shared/utils';
 
 import { KlofnunBar } from './KlofnunBar';
+import { ScientificKeys } from './ScientificKeys';
 import { PRACTICE_PROBLEMS } from '../data/problems';
 import { PH_TOLERANCE, isRelativelyClose, isAbsolutelyClose } from '../engine/grade';
 import { solveWeakAcid } from '../engine/ka';
+import { revealIfBelowFold } from '../utils/reveal';
 
 const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');
 const sciText = (n: number) => n.toExponential(2).replace('.', ',');
@@ -40,6 +42,12 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
   const [entry, setEntry] = useState('');
   const [verdict, setVerdict] = useState<boolean | null>(null);
   const [hintsOpen, setHintsOpen] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (verdict !== null) revealIfBelowFold(feedbackRef.current);
+  }, [verdict]);
 
   const problem = PRACTICE_PROBLEMS[index];
   const s = solveWeakAcid(problem.acid.ka, problem.concentration);
@@ -99,11 +107,15 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <button type="button" onClick={onBack} className="mb-4 text-warm-600 hover:text-warm-800">
+      <button
+        type="button"
+        onClick={onBack}
+        className="mb-4 text-warm-600 hover:text-warm-800 pointer-coarse:-my-2.5 pointer-coarse:py-2.5"
+      >
         ← Til baka
       </button>
 
-      <div className="rounded-lg bg-white p-6 shadow-md md:p-8">
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
         <div className="mb-4 flex items-baseline justify-between">
           <h2 className="text-2xl font-bold text-warm-800">Æfa</h2>
           <span className="text-sm text-warm-500">
@@ -149,6 +161,7 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
               </label>
               <input
                 id="answer"
+                ref={inputRef}
                 {...DECIMAL_INPUT_PROPS}
                 value={entry}
                 onChange={(e) => setEntry(e.target.value)}
@@ -157,8 +170,11 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
                 }}
                 disabled={verdict !== null}
                 placeholder={step === 'x' ? 't.d. 1,3e-3' : 't.d. 2,87'}
-                className="w-44 rounded-lg border border-warm-300 p-3 font-mono text-warm-800 disabled:bg-warm-50"
+                className="w-36 rounded-lg border border-warm-300 p-3 font-mono text-warm-800 disabled:bg-warm-50 sm:w-44"
               />
+              {step === 'x' && verdict === null && (
+                <ScientificKeys inputRef={inputRef} value={entry} onChange={setEntry} />
+              )}
               <span className="text-sm text-warm-600">
                 {step === 'x' ? 'mól/L' : 'pH, tveir aukastafir'}
               </span>
@@ -179,7 +195,7 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
                   <button
                     type="button"
                     onClick={() => setHintsOpen((v) => v + 1)}
-                    className="text-sm text-kvenno-orange hover:underline"
+                    className="text-sm text-kvenno-orange hover:underline pointer-coarse:-my-3 pointer-coarse:py-3"
                   >
                     Vísbending {hintsOpen + 1} af {HINTS[step].length}
                   </button>
@@ -198,7 +214,7 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
             )}
 
             {verdict !== null && (
-              <div className="fade-in mt-4">
+              <div ref={feedbackRef} className="fade-in mt-4">
                 <FeedbackPanel
                   feedback={{
                     isCorrect: verdict,

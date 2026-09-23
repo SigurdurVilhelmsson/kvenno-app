@@ -15,14 +15,16 @@
  * itself about the same answer.
  */
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { DECIMAL_INPUT_PROPS, parseStudentNumber } from '@shared/utils';
 
 import { KlofnunBar } from './KlofnunBar';
+import { ScientificKeys } from './ScientificKeys';
 import { APPLY_PROBLEMS, gradeApply } from '../data/problems';
 import { percentDissociation } from '../engine/grade';
+import { revealIfBelowFold } from '../utils/reveal';
 
 const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');
 
@@ -35,9 +37,18 @@ export function ApplyScreen({ onComplete, onBack }: ApplyScreenProps) {
   const [index, setIndex] = useState(0);
   const [entry, setEntry] = useState('');
   const [verdict, setVerdict] = useState<boolean | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const verdictRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (verdict !== null) revealIfBelowFold(verdictRef.current, feedbackRef.current);
+  }, [verdict]);
 
   const problem = APPLY_PROBLEMS[index];
   const last = index + 1 === APPLY_PROBLEMS.length;
+  // Ka and Kb are answered in scientific notation; pH and percent are not.
+  const scientific = problem.kind === 'ka' || problem.kind === 'kb';
 
   const submit = () => setVerdict(gradeApply(problem, parseStudentNumber(entry)));
 
@@ -53,11 +64,15 @@ export function ApplyScreen({ onComplete, onBack }: ApplyScreenProps) {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <button type="button" onClick={onBack} className="mb-4 text-warm-600 hover:text-warm-800">
+      <button
+        type="button"
+        onClick={onBack}
+        className="mb-4 text-warm-600 hover:text-warm-800 pointer-coarse:-my-2.5 pointer-coarse:py-2.5"
+      >
         ← Til baka
       </button>
 
-      <div className="rounded-lg bg-white p-6 shadow-md md:p-8">
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
         <div className="mb-4 flex items-baseline justify-between">
           <h2 className="text-2xl font-bold text-warm-800">Beita</h2>
           <span className="text-sm text-warm-500">
@@ -79,6 +94,7 @@ export function ApplyScreen({ onComplete, onBack }: ApplyScreenProps) {
           </label>
           <input
             id="apply-answer"
+            ref={inputRef}
             {...DECIMAL_INPUT_PROPS}
             value={entry}
             onChange={(e) => setEntry(e.target.value)}
@@ -86,8 +102,11 @@ export function ApplyScreen({ onComplete, onBack }: ApplyScreenProps) {
               if (e.key === 'Enter' && verdict === null) submit();
             }}
             disabled={verdict !== null}
-            className="w-48 rounded-lg border border-warm-300 p-3 font-mono text-warm-800 disabled:bg-warm-50"
+            className="w-36 rounded-lg border border-warm-300 p-3 font-mono text-warm-800 disabled:bg-warm-50 sm:w-48"
           />
+          {scientific && verdict === null && (
+            <ScientificKeys inputRef={inputRef} value={entry} onChange={setEntry} />
+          )}
           <span className="text-sm text-warm-600">{problem.answerHint}</span>
           {verdict === null && (
             <button
@@ -101,7 +120,7 @@ export function ApplyScreen({ onComplete, onBack }: ApplyScreenProps) {
         </div>
 
         {verdict !== null && (
-          <div className="fade-in mt-5">
+          <div ref={feedbackRef} className="fade-in mt-5">
             {/* The bar shows the solution the question is about, so the 5 %
                 verdict is visible next to the answer. Kb is a property of the
                 conjugate base rather than of a solution, so it gets no bar. */}
@@ -114,13 +133,15 @@ export function ApplyScreen({ onComplete, onBack }: ApplyScreenProps) {
               </div>
             )}
 
-            <FeedbackPanel
-              feedback={{
-                isCorrect: verdict,
-                explanation: problem.explanation,
-                misconception: verdict ? undefined : problem.misconception,
-              }}
-            />
+            <div ref={verdictRef}>
+              <FeedbackPanel
+                feedback={{
+                  isCorrect: verdict,
+                  explanation: problem.explanation,
+                  misconception: verdict ? undefined : problem.misconception,
+                }}
+              />
+            </div>
 
             <button
               type="button"

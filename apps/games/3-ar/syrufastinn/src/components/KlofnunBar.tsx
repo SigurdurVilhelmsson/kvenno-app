@@ -37,13 +37,16 @@ export function KlofnunBar({ percent, valid }: KlofnunBarProps) {
         />
         <div className="klofnun-bar__threshold" style={{ left: `${(5 / SCALE_MAX) * 100}%` }} />
       </div>
-      <div className="mt-1 flex justify-between text-xs text-warm-600">
-        <span>0 %</span>
-        <span className={valid ? 'text-green-700' : 'font-semibold text-red-700'}>
-          {label.replace('.', ',')} % klofnar
+      {/* Three columns rather than justify-between: the middle label centres on
+          the same point either way, but here it wraps inside its own column on a
+          phone instead of running into the two scale ends. */}
+      <div className="mt-1 grid grid-cols-[auto_1fr_auto] gap-x-2 text-xs text-warm-600">
+        <span className="whitespace-nowrap">0 %</span>
+        <span className={`text-center ${valid ? 'text-green-700' : 'font-semibold text-red-700'}`}>
+          <span className="whitespace-nowrap">{label.replace('.', ',')} %</span> klofnar
           {valid ? '' : ' — yfir mörkunum'}
         </span>
-        <span>{SCALE_MAX} %</span>
+        <span className="whitespace-nowrap">{SCALE_MAX} %</span>
       </div>
       <p className="mt-1 text-center text-xs text-warm-500">
         Strikið er við 5 %. Kvarðinn er 0–10 %, ekki hlutfall af glasinu — annars sæist súlan ekki.

@@ -14,12 +14,13 @@
  * replace.
  */
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { KlofnunBar } from './KlofnunBar';
 import { MONOPROTIC_ACIDS } from '../data/acids';
 import { percentDissociation } from '../engine/grade';
 import { solveWeakAcid } from '../engine/ka';
+import { revealTopIfAbove } from '../utils/reveal';
 
 const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');
 
@@ -32,6 +33,16 @@ interface UnderstandScreenProps {
 
 export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) {
   const [step, setStep] = useState(0);
+  const stepRef = useRef<HTMLDivElement>(null);
+  const shownStep = useRef(step);
+
+  // A step change from the buttons under the step would otherwise open the
+  // next one already scrolled past its heading on a phone.
+  useEffect(() => {
+    if (shownStep.current === step) return;
+    shownStep.current = step;
+    revealTopIfAbove(stepRef.current);
+  }, [step]);
 
   // The worked example throughout: the one the whole platform already uses.
   const acid = MONOPROTIC_ACIDS.find((a) => a.id === 'ediksyra')!;
@@ -47,11 +58,15 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
 
   return (
     <div className="mx-auto max-w-3xl">
-      <button type="button" onClick={onBack} className="mb-4 text-warm-600 hover:text-warm-800">
+      <button
+        type="button"
+        onClick={onBack}
+        className="mb-4 text-warm-600 hover:text-warm-800 pointer-coarse:-my-2.5 pointer-coarse:py-2.5"
+      >
         ← Til baka
       </button>
 
-      <div className="rounded-lg bg-white p-6 shadow-md md:p-8">
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
         <h2 className="mb-2 text-2xl font-bold text-warm-800">Skilja: hvaðan jafnan kemur</h2>
         <p className="mb-6 text-warm-600">
           Dæmið í gegn er 0,100 M ediksýra — sama lausn og pH Títrun byrjar á.
@@ -64,7 +79,7 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
                 type="button"
                 onClick={() => setStep(i)}
                 aria-current={i === step ? 'step' : undefined}
-                className={`rounded-full px-3 py-1 text-xs transition-colors ${
+                className={`rounded-full px-3 py-1 text-xs transition-colors pointer-coarse:min-h-11 pointer-coarse:px-4 pointer-coarse:text-sm ${
                   i === step
                     ? 'bg-kvenno-orange text-white'
                     : i < step
@@ -78,11 +93,11 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
           ))}
         </ol>
 
-        <div className="fade-in min-h-[18rem]">
+        <div ref={stepRef} className="fade-in min-h-[18rem]">
           {step === 0 && (
             <div>
               <h3 className="mb-3 text-lg font-semibold text-warm-800">Sýran klofnar — að hluta</h3>
-              <div className="mb-4 rounded-lg bg-warm-50 p-4 text-center font-mono text-lg text-warm-800">
+              <div className="mb-4 rounded-lg bg-warm-50 p-4 text-center font-mono text-base text-warm-800 sm:text-lg">
                 CH₃COOH ⇌ H⁺ + CH₃COO⁻
               </div>
               <p className="mb-3 text-warm-700">
@@ -159,8 +174,12 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
               <h3 className="mb-3 text-lg font-semibold text-warm-800">
                 Sýrufastinn er neðsta línan, sett í jöfnu
               </h3>
+              {/* Each side of an = stays whole, so a phone breaks the chain at an
+                  equals sign rather than inside a fraction. */}
               <div className="mb-4 rounded-lg bg-warm-50 p-4 text-center font-mono text-warm-800">
-                Ka = [H⁺][A⁻] / [HA] = x · x / (C − x) = x² / (C − x)
+                <span className="whitespace-nowrap">Ka = [H⁺][A⁻] / [HA]</span>{' '}
+                <span className="whitespace-nowrap">= x · x / (C − x)</span>{' '}
+                <span className="whitespace-nowrap">= x² / (C − x)</span>
               </div>
               <p className="mb-3 text-warm-700">
                 Þetta er sama jafnan og þú notaðir í Kanna til að reikna Ka út frá mældu pH — bara
@@ -172,8 +191,11 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
               </div>
               <p className="text-warm-700">
                 Umraðað er þetta venjuleg annars stigs jafna, og hún er alltaf rétt. Fyrir 0,100 M
-                ediksýru gefur hún x = {s.hExact.toExponential(3).replace('.', ',')} M, sem er pH{' '}
-                <strong>{fmt(s.pH, 4)}</strong>.
+                ediksýru gefur hún{' '}
+                <span className="whitespace-nowrap">
+                  x = {s.hExact.toExponential(3).replace('.', ',')} M
+                </span>
+                , sem er pH <strong>{fmt(s.pH, 4)}</strong>.
               </p>
             </div>
           )}
@@ -194,7 +216,8 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
               </div>
               <p className="mb-3 text-warm-700">Gefi maður sér það styttist allt saman:</p>
               <div className="mb-4 rounded-lg bg-warm-50 p-4 text-center font-mono text-warm-800">
-                Ka ≈ x² / C &nbsp;→&nbsp; x ≈ √(Ka · C)
+                <span className="whitespace-nowrap">Ka ≈ x² / C &nbsp;→&nbsp;</span>{' '}
+                <span className="whitespace-nowrap">x ≈ √(Ka · C)</span>
               </div>
               <p className="text-warm-700">
                 Fyrir 0,100 M ediksýru gefur nálgunin pH <strong>{fmt(s.pHApprox, 4)}</strong> á
@@ -257,12 +280,12 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
           )}
         </div>
 
-        <div className="mt-6 flex justify-between border-t border-warm-200 pt-4">
+        <div className="mt-6 flex justify-between gap-2 border-t border-warm-200 pt-4">
           <button
             type="button"
             onClick={() => setStep((v) => Math.max(0, v - 1))}
             disabled={step === 0}
-            className="rounded-lg px-4 py-2 text-warm-600 hover:text-warm-800 disabled:opacity-40"
+            className="whitespace-nowrap rounded-lg px-2 py-2 text-sm text-warm-600 hover:text-warm-800 disabled:opacity-40 pointer-coarse:min-h-11 sm:px-4 sm:text-base"
           >
             ← Fyrra skref
           </button>
@@ -270,7 +293,7 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
             type="button"
             onClick={() => setStep((v) => Math.min(STEPS.length - 1, v + 1))}
             disabled={step === STEPS.length - 1}
-            className="rounded-lg px-4 py-2 text-warm-600 hover:text-warm-800 disabled:opacity-40"
+            className="whitespace-nowrap rounded-lg px-2 py-2 text-sm text-warm-600 hover:text-warm-800 disabled:opacity-40 pointer-coarse:min-h-11 sm:px-4 sm:text-base"
           >
             Næsta skref →
           </button>

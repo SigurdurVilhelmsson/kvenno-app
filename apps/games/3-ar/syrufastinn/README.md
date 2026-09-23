@@ -188,9 +188,31 @@ src/engine/ka.ts              equilibrium maths; no React, no Icelandic
 src/engine/grade.ts           the grading ruling, and the tolerances it implies
 src/data/acids.ts             acids, with protons / nameEstablished / answerability guards
 src/data/problems.ts          the Æfa and Beita sets, generated from the engine
-src/components/               ExploreScreen, UnderstandScreen, PracticeScreen, ApplyScreen, KlofnunBar
-src/__tests__/                76 tests across ka, grade, problems, chain-string
+src/components/               ExploreScreen, UnderstandScreen, PracticeScreen, ApplyScreen, KlofnunBar,
+                              ScientificKeys
+src/utils/reveal.ts           brings a verdict, a first measurement or a new Skilja step on screen, only when off it
+src/__tests__/                ka, grade, problems, chain-string, phone-input
 ```
+
+## Playing on a phone
+
+**The answer fields keep the decimal keypad, and two keys make up what it lacks.** Æfa's first
+step and Beita's Ka and Kb are answered in scientific notation — the placeholder and the hints
+show `1,3e-3` and `1,8e-5`, which is what `parseStudentNumber` reads — but a phone's decimal
+keypad has no `e`, and an iPhone's has no minus either. Without them the only route to Beita's Kb
+(5,6 × 10⁻¹⁰) was typing nine zeros. `ScientificKeys` puts an `e` key and a `−` key beside those
+fields on touch screens only (`pointer-coarse:`), inserting at the caret without taking focus from
+the field, so the keypad stays up. Desktop is unchanged. `phone-input.test.tsx` plays Æfa's x and
+Beita's Ka and Kb through the keys, and asserts that every scientific answer in the game can be
+keyed with keypad characters plus those two.
+
+`revealIfBelowFold` exists because Beita's verdict renders under the klofnun bar: on a phone held
+sideways and at 320 × 568 it landed below the bottom edge, so tapping "Svara" appeared to do
+nothing. It scrolls only when the verdict is off screen and allows for the sticky header. Kanna
+uses it for the first measurement, whose table row opens under the concentration buttons.
+`revealTopIfAbove` is the same guard for Skilja: its step buttons sit under the step, so on a phone
+the next step opened with its heading already scrolled past. It scrolls back to the heading only
+when the heading is above the visible area.
 
 ## Tests
 
