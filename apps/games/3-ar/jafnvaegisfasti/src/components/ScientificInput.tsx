@@ -23,6 +23,13 @@ import { DECIMAL_INPUT_PROPS } from '@shared/utils';
 interface Props {
   /** Written before the number, e.g. `K =` or `x =`. */
   prefix?: string;
+  /**
+   * What the two fields are an answer for, read out by a screen reader as the
+   * name of the row. Defaults to `prefix`; pass it where the name sits outside
+   * the row instead, as Æfa's Kp heading does. Without it the fields are only
+   * "Tala" and "Veldisvísir", with nothing saying which quantity they are.
+   */
+  label?: string;
   mantissa: string;
   exponent: string;
   onMantissaChange: (value: string) => void;
@@ -42,6 +49,7 @@ export function toggleSign(value: string): string {
 
 export function ScientificInput({
   prefix,
+  label,
   mantissa,
   exponent,
   onMantissaChange,
@@ -51,8 +59,13 @@ export function ScientificInput({
   disabled = false,
   className = '',
 }: Props) {
+  const name = label ?? prefix;
   return (
-    <div className={`flex items-center gap-1.5 sm:gap-2 ${className}`}>
+    <div
+      role={name ? 'group' : undefined}
+      aria-label={name}
+      className={`flex items-center gap-1.5 sm:gap-2 ${className}`}
+    >
       {prefix && (
         <span className="shrink-0 whitespace-nowrap font-mono text-lg text-warm-700">{prefix}</span>
       )}

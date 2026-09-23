@@ -41,7 +41,10 @@ const SPECIES = ['CO', 'H₂O', 'CO₂', 'H₂'] as const;
 
 export function KannaScreen({ onComplete, onBack }: Props) {
   const [amounts, setAmounts] = useState<Record<string, number>>(PRESETS[0].amounts);
-  const [seen, setSeen] = useState<number[]>([]);
+  // The first mixture is on screen from the start, highlighted as the one
+  // chosen, so it counts as tried: otherwise the counter reads 0/4 beside its
+  // result, and a student who taps the other three is left at 3/4.
+  const [seen, setSeen] = useState<number[]>([0]);
 
   const q = reactionQuotient(reaction, amounts);
   const direction = directionFromQ(q, K);
@@ -91,6 +94,7 @@ export function KannaScreen({ onComplete, onBack }: Props) {
             <button
               key={preset.label}
               type="button"
+              aria-pressed={amounts === preset.amounts}
               onClick={() => choose(index)}
               className={`game-btn rounded-lg border-2 px-2 py-3 text-sm font-semibold transition-colors sm:px-4 ${
                 amounts === preset.amounts

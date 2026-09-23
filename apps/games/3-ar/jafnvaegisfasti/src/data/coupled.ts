@@ -84,7 +84,7 @@ const ORDER: Omit<CoupledProblem, 'route' | 'result'>[] = [
     ),
     rules: ['snua'],
     context:
-      'Sama aðgerð á kerfi sem þú hittir aftur í Hliðrun jafnvægis. Takið eftir hvað stór K verður lítið þegar honum er snúið við: 1,6 × 10² verður 6,3 × 10⁻³, og hvorug talan segir neitt annað en hin.',
+      'Sama aðgerð á kerfi sem þú hittir aftur í Hliðrun jafnvægis. Taktu eftir hvað stór K verður lítill þegar honum er snúið við: 1,6 × 10² verður 6,3 × 10⁻³, og hvorug talan segir neitt annað en hin.',
   },
   {
     id: 'margfalda-vetnisjodid',

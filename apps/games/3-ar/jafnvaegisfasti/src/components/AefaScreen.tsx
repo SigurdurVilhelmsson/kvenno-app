@@ -7,11 +7,12 @@ import {
   equationOf,
   kcExpression,
   omittedFromK,
+  R_GAS,
   sameEquation,
   type CoupledStep,
   type Direction,
 } from '@shared/engine/equilibrium';
-import { formatScientific, gradeScientific } from '@shared/utils';
+import { formatDecimal, formatScientific, gradeScientific } from '@shared/utils';
 
 import { ScientificInput } from './ScientificInput';
 import { COUPLED_PROBLEMS } from '../data/coupled';
@@ -176,6 +177,7 @@ function ExpressionTask({ onDone }: { onDone: () => void }) {
             <button
               key={k}
               type="button"
+              aria-pressed={on}
               disabled={checked}
               onClick={() => setPicked(on ? picked.filter((p) => p !== k) : [...picked, k])}
               className={`rounded-lg border-2 px-4 py-2 font-mono transition-colors ${
@@ -343,15 +345,22 @@ function KpTask({ onDone }: { onDone: () => void }) {
   const [mantissa, setMantissa] = useState('');
   const [exponent, setExponent] = useState('');
   const [outcome, setOutcome] = useState<string | null>(null);
+  // Counts every check, so a repeated empty check still brings its message
+  // into view.
+  const [checks, setChecks] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
 
   useRevealTopOnChange(rootRef, index);
   useEffect(() => {
-    if (outcome !== null) revealBottom(feedbackRef.current);
-  }, [outcome]);
+    if (checks > 0) revealBottom(feedbackRef.current);
+  }, [checks]);
 
   const problem = KP_PROBLEMS[index];
+  // One attempt, then the answer — but an empty or unreadable check is not an
+  // attempt. It used to be: the fields locked and Kp was printed under a
+  // message asking the student to fill in the fields it had just locked.
+  const graded = outcome !== null && outcome !== 'ogilt';
 
   const MESSAGE: Record<string, string> = {
     rett: 'Rétt.',
@@ -359,11 +368,12 @@ function KpTask({ onDone }: { onDone: () => void }) {
       'Tölustafirnir stemma en veldisvísirinn ekki. Athugaðu formerkið á Δn — myndefni mínus hvarfefni — og að hitastigið fari í kelvin.',
     tolustafir: 'Rétt stærðarþrep en tölurnar stemma ekki. Reiknaðu (R·T) aftur.',
     baedi: 'Hvorugt stemmir. Byrjaðu á Δn og skrifaðu svo (R·T) í rétt veldi.',
-    ogilt: 'Fylltu í báða reitina — tölu og veldisvísi, t.d. 6,5 og 0.',
+    ogilt: 'Fylltu í báða reitina — tölu og veldisvísi, t.d. 2,8 og -3.',
   };
 
   const check = () => {
     setOutcome(gradeScientific({ mantissa, exponent }, problem.kp).outcome);
+    setChecks((n) => n + 1);
   };
 
   const next = () => {
@@ -390,35 +400,48 @@ function KpTask({ onDone }: { onDone: () => void }) {
         </p>
         <p className="mt-3 text-sm text-warm-600">
           Hvert er Kp? Notaðu Kp = Kc · (R·T)
-          <sup className="pointer-coarse:text-[12px]">Δn</sup> með R = {0.0821} og hitastigið í
-          kelvin.
+          <sup className="pointer-coarse:text-[12px]">Δn</sup> með R = {formatDecimal(R_GAS)} og
+          hitastigið í kelvin.
         </p>
       </div>
 
       <div className="mb-4">
-        <label className="mb-2 block text-sm font-semibold text-warm-700">Kp</label>
+        <p aria-hidden="true" className="mb-2 block text-sm font-semibold text-warm-700">
+          Kp
+        </p>
         <ScientificInput
+          label="Kp"
           mantissa={mantissa}
           exponent={exponent}
           onMantissaChange={setMantissa}
           onExponentChange={setExponent}
-          mantissaPlaceholder="6,5"
-          exponentPlaceholder="0"
-          disabled={outcome !== null}
+          mantissaPlaceholder="2,8"
+          exponentPlaceholder="-3"
+          disabled={graded}
         />
         <p className="mt-2 text-xs text-warm-500">
           Tvær tölur: fyrst talan, svo veldisvísirinn. Bæði komma og punktur virka.
         </p>
       </div>
 
-      {outcome === null ? (
-        <button
-          type="button"
-          onClick={check}
-          className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark"
-        >
-          Athuga
-        </button>
+      {!graded ? (
+        <div>
+          <button
+            type="button"
+            onClick={check}
+            className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark"
+          >
+            Athuga
+          </button>
+          {outcome === 'ogilt' && (
+            <div
+              ref={feedbackRef}
+              className="mt-4 rounded-lg border-2 border-amber-300 bg-amber-50 p-4 text-sm text-amber-900"
+            >
+              {MESSAGE.ogilt}
+            </div>
+          )}
+        </div>
       ) : (
         <div
           ref={feedbackRef}
@@ -563,6 +586,7 @@ function CoupledTask({ onDone }: { onDone: () => void }) {
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
+              aria-pressed={current[i].reversed}
               disabled={stage !== 'operations'}
               onClick={() => set(i, { reversed: !current[i].reversed })}
               className={`rounded-lg border-2 px-3 py-1.5 text-sm transition-colors disabled:opacity-60 pointer-coarse:min-h-11 ${
@@ -575,11 +599,12 @@ function CoupledTask({ onDone }: { onDone: () => void }) {
             </button>
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm text-warm-600">Margfalda með</span>
-              <div className="flex gap-2">
+              <div role="group" aria-label="Margfalda með" className="flex gap-2">
                 {[1, 2, 3].map((f) => (
                   <button
                     key={f}
                     type="button"
+                    aria-pressed={current[i].factor === f}
                     disabled={stage !== 'operations'}
                     onClick={() => set(i, { factor: f })}
                     className={`h-9 w-9 rounded-lg border-2 text-sm transition-colors disabled:opacity-60 pointer-coarse:h-11 pointer-coarse:w-11 ${
@@ -640,8 +665,8 @@ function CoupledTask({ onDone }: { onDone: () => void }) {
                 exponent={exponent}
                 onMantissaChange={setMantissa}
                 onExponentChange={setExponent}
-                mantissaPlaceholder="2,5"
-                exponentPlaceholder="5"
+                mantissaPlaceholder="3,7"
+                exponentPlaceholder="4"
                 className="mb-4"
               />
               <button

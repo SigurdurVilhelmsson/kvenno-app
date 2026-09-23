@@ -243,7 +243,7 @@ src/data/coupled.ts         5 coupled: 3 single-rule, then the book's 2 combinat
 src/components/             KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen,
                             ScientificInput (the `× 10` answer row, with a ± sign button on touch)
 src/utils/reveal.ts         keeps the next step's start and a checked answer's feedback on screen
-src/__tests__/              128 tests
+src/__tests__/              144 tests
 ```
 
 ## Phones
@@ -278,3 +278,16 @@ nothing when they are not.
   said `Vatnsgas hvarfið` and was harmonised to match, because a genitive compound
   (`bakhvarf vatnsgashvarfsins`) cannot be split and one of the two had to give. That is a spelling
   harmonisation, not a ruling — Siggi's to confirm or reverse.
+- **Tengd jafnvægi's first stage has no way out.** Stage two offers a "show the answer" button
+  after a wrong constant; stage one, the operations, offers nothing, so a student who cannot find
+  them can only try combinations until the equation matches. Whether to add the same escape
+  there is a teaching call.
+- **Beita's direction step is not graded, and its answer is always `Áfram`.** Both buttons move on
+  and the next panel states the true direction from Q (`beita-units.test.tsx` documents this), and
+  all ten problems start with no products, so Q = 0 every time. Grading the step, or adding a
+  problem that runs backwards, is a teaching call.
+- **The NH₄Cl problem asks a 5 % question it has no answer to.** Kp = P(NH₃)·P(HCl) has no
+  denominator and both gases start at 0 atm, so the step asks whether x may be dropped from a
+  denominator that does not exist, reports the change as `0,00 %` of a starting pressure of zero,
+  and marks `Nei — það verður að leysa nákvæmlega` wrong. The likely fix is to skip that step where
+  no reactant is in K, but it needs a sentence to replace it, which is wording for Siggi.

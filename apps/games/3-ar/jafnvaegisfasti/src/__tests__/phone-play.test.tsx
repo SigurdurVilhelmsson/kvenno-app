@@ -96,6 +96,10 @@ describe('a negative power can be entered without a minus key', () => {
   it('is locked with the fields once a Kp answer has been checked', () => {
     render(<AefaScreen onComplete={() => {}} onBack={() => {}} />);
     fireEvent.click(screen.getByText('Kc yfir í Kp'));
+    // A real answer, wrong on purpose: an empty check is not an attempt and
+    // leaves the row open (answer-fields.test.tsx).
+    fireEvent.change(screen.getByLabelText('Tala'), { target: { value: '9,9' } });
+    fireEvent.change(screen.getByLabelText('Veldisvísir'), { target: { value: '9' } });
     fireEvent.click(screen.getByText('Athuga'));
     expect(screen.getByRole('button', { name: SIGN }).hasAttribute('disabled')).toBe(true);
   });

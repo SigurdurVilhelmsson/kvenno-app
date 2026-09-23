@@ -214,8 +214,8 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
               exponent={exponent}
               onMantissaChange={setMantissa}
               onExponentChange={setExponent}
-              mantissaPlaceholder="1,35"
-              exponentPlaceholder="-1"
+              mantissaPlaceholder="2,6"
+              exponentPlaceholder="-2"
               className="mb-4"
             />
             <button

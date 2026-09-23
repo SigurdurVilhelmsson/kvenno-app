@@ -11,7 +11,7 @@ import {
   R_GAS,
   scaleReaction,
 } from '@shared/engine/equilibrium';
-import { formatScientific } from '@shared/utils';
+import { formatDecimal, formatScientific } from '@shared/utils';
 
 import { reactionBy } from '../data/reactions';
 import { useRevealTopOnChange } from '../utils/reveal';
@@ -113,8 +113,8 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               </p>
             </div>
             <p className="text-sm text-warm-600">
-              Stuðullinn 3 á vetninu gerir það að verkum að tvöföldun á [H₂] áttfaldar Q. Þetta er
-              ástæðan fyrir því að lítil breyting á vetnisstyrk hefur svona mikil áhrif í
+              Stuðullinn 3 á vetninu gerir það að verkum að tvöföldun á [H₂] deilir Q með átta.
+              Þetta er ástæðan fyrir því að lítil breyting á vetnisstyrk hefur svona mikil áhrif í
               Haber-ferlinu.
             </p>
           </section>
@@ -168,7 +168,8 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               </p>
               <p className="text-sm text-warm-600">
                 Δn er <strong>mól af gasi</strong> í myndefnum mínus mól af gasi í hvarfefnum.
-                Aðeins gas telur — uppleyst efni er í K en ekki í Δn. R = {R_GAS} L·atm/(mól·K).
+                Aðeins gas telur — uppleyst efni er í K en ekki í Δn. R = {formatDecimal(R_GAS)}{' '}
+                L·atm/(mól·K).
               </p>
             </div>
             <div className="rounded-xl border-2 border-warm-200 p-4 sm:p-5">
