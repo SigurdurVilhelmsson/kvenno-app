@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+import { revealNearest, revealTop } from '../utils/reveal';
 
 interface Level2Props {
   t: (key: string, fallback?: string) => string;
@@ -300,6 +302,27 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   const typeInfo = typeNames[challenge.type];
   const support = SUPPORT[currentChallenge];
 
+  // Each step replaces the panel under the step dots, and the buttons that move
+  // on sit at its bottom — on a phone, screens below where the next panel
+  // starts. Bring the new panel (and, per item, the new formula) into view, and
+  // the Step 1 verdict too, which lands below the four type cards.
+  const formulaRef = useRef<HTMLDivElement>(null);
+  const stepRef = useRef<HTMLDivElement>(null);
+  const typeFeedbackRef = useRef<HTMLDivElement>(null);
+  // A new compound changes both the item and the step at once. Its formula
+  // must win: Step 1 asks about it, and a second scroll to the step panel
+  // would carry it back above the viewport.
+  const revealedChallenge = useRef(currentChallenge);
+  useEffect(() => {
+    if (revealedChallenge.current !== currentChallenge) {
+      revealedChallenge.current = currentChallenge;
+      revealTop(formulaRef.current);
+    } else {
+      revealTop(stepRef.current);
+    }
+  }, [currentChallenge, step]);
+  useEffect(() => revealNearest(typeFeedbackRef.current), [typeCorrect]);
+
   const normalizeAnswer = (answer: string): string => {
     return answer
       .toLowerCase()
@@ -393,19 +416,22 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-        <div className="flex justify-between items-center mb-6">
-          <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-2 sm:p-4 md:p-8">
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+        <div className="flex flex-wrap justify-between items-center gap-2 mb-6">
+          <button
+            onClick={onBack}
+            className="whitespace-nowrap text-warm-500 hover:text-warm-700 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+          >
             ← {t('common.back', 'Til baka')}
           </button>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-warm-500">
+          <div className="ml-auto flex items-center gap-2 sm:gap-4">
+            <div className="whitespace-nowrap text-sm text-warm-500">
               {t('level2.ui.compoundNOfM', 'Efnasamband {n} af {m}')
                 .replace('{n}', String(currentChallenge + 1))
                 .replace('{m}', String(challenges.length))}
             </div>
-            <div className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full font-bold">
+            <div className="whitespace-nowrap bg-teal-100 text-teal-800 px-3 py-1 rounded-full font-bold">
               {t('common.score', 'Stig')}: {score}
             </div>
           </div>
@@ -419,7 +445,10 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
         </p>
 
         {/* Formula display */}
-        <div className="bg-warm-100 rounded-2xl p-6 md:p-8 mb-6 text-center">
+        <div
+          ref={formulaRef}
+          className="bg-warm-100 rounded-2xl p-4 sm:p-6 md:p-8 mb-6 text-center"
+        >
           <div className="text-4xl md:text-6xl font-mono font-bold text-warm-800">
             {challenge.formula}
           </div>
@@ -440,14 +469,14 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               >
                 {idx + 1}
               </div>
-              {idx < 3 && <div className="w-8 h-0.5 bg-warm-300" />}
+              {idx < 3 && <div className="w-5 sm:w-8 h-0.5 bg-warm-300" />}
             </div>
           ))}
         </div>
 
         {/* Step 1: Identify type */}
         {step === 'identify' && (
-          <div className="space-y-4">
+          <div ref={stepRef} className="space-y-4">
             <h2 className="text-lg font-bold text-warm-700 text-center mb-4">
               {t('level2.ui.step1Title', 'Skref 1: Hvaða tegund efnasambands er þetta?')}
             </h2>
@@ -479,6 +508,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
             {typeCorrect !== null && (
               <div
+                ref={typeFeedbackRef}
                 className={`p-4 rounded-xl text-center ${
                   typeCorrect ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
                 }`}
@@ -493,7 +523,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
         {/* Step 2: Build the name */}
         {step === 'build' && (
-          <div className="space-y-4">
+          <div ref={stepRef} className="space-y-4">
             <h2 className="text-lg font-bold text-warm-700 text-center mb-4">
               {t('level2.ui.step2Title', 'Skref 2: Hvernig er nafnið byggt upp?')}
             </h2>
@@ -538,7 +568,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                 <div className="font-bold text-orange-800 mb-2">
                   {t('level2.ui.greekPrefixes', 'Grísk forskeyti:')}
                 </div>
-                <div className="grid grid-cols-4 gap-2 text-sm">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm">
                   {greekPrefixes.slice(0, 8).map((p) => (
                     <div key={p.count} className="bg-white p-2 rounded text-center">
                       <span className="font-bold">{p.count}</span> = {p.prefix.replace('-', '')}
@@ -559,7 +589,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
         {/* Step 3: Enter answer */}
         {step === 'answer' && (
-          <div className="space-y-4">
+          <div ref={stepRef} className="space-y-4">
             <h2 className="text-lg font-bold text-warm-700 text-center mb-4">
               {t('level2.ui.step3Title', 'Skref 3: Skrifaðu nafnið')}
             </h2>
@@ -576,9 +606,15 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               value={userAnswer}
               onChange={(e) => setUserAnswer(e.target.value)}
               placeholder={t('level2.ui.typeHere', 'Skrifaðu nafnið hér...')}
-              className="w-full text-center text-2xl font-bold p-4 border-2 border-teal-300 rounded-xl focus:border-teal-500 focus:outline-none"
+              className="w-full text-center text-lg sm:text-2xl font-bold p-3 sm:p-4 border-2 border-teal-300 rounded-xl focus:border-teal-500 focus:outline-none"
               onKeyPress={(e) => e.key === 'Enter' && userAnswer && handleSubmitAnswer()}
               autoFocus
+              // A phone keyboard would otherwise "correct" a compound name it
+              // does not know into some other word.
+              autoCapitalize="none"
+              autoCorrect="off"
+              autoComplete="off"
+              spellCheck={false}
             />
 
             {showHint && (
@@ -590,14 +626,14 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               </div>
             )}
 
-            <div className="flex gap-4">
+            <div className="flex gap-3 sm:gap-4">
               {!showHint && (
                 <button
                   onClick={() => {
                     setShowHint(true);
                     setTotalHintsUsed((prev) => prev + 1);
                   }}
-                  className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-3 px-6 rounded-xl"
+                  className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-3 px-3 sm:px-6 rounded-xl"
                 >
                   💡 {t('common.hint', 'Vísbending')}
                 </button>
@@ -605,7 +641,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               <button
                 onClick={handleSubmitAnswer}
                 disabled={!userAnswer.trim()}
-                className={`flex-1 font-bold py-3 px-6 rounded-xl ${
+                className={`flex-1 font-bold py-3 px-3 sm:px-6 rounded-xl ${
                   !userAnswer.trim()
                     ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
                     : 'bg-teal-500 hover:bg-teal-600 text-white'
@@ -619,9 +655,9 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
         {/* Step 4: Feedback */}
         {step === 'feedback' && (
-          <div className="space-y-4">
+          <div ref={stepRef} className="space-y-4">
             <div
-              className={`p-6 rounded-xl text-center ${
+              className={`p-3 sm:p-6 rounded-xl text-center ${
                 isAnswerCorrect
                   ? 'bg-green-100 border-2 border-green-400'
                   : 'bg-red-100 border-2 border-red-400'
@@ -647,14 +683,14 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                 </div>
               )}
               {isAnswerCorrect && (
-                <div className="mt-2 text-green-700 text-2xl font-bold">
+                <div className="mt-2 text-green-700 text-lg sm:text-2xl font-bold">
                   {challenge.correctName}
                 </div>
               )}
             </div>
 
             {/* Summary */}
-            <div className={`${getColorClasses(typeInfo.color).light} rounded-xl p-4`}>
+            <div className={`${getColorClasses(typeInfo.color).light} rounded-xl p-3 sm:p-4`}>
               <div className={`font-bold ${getColorClasses(typeInfo.color).text} mb-2`}>
                 {t('level2.ui.summary', 'Samantekt:')} {typeInfo.name}
               </div>

@@ -1,10 +1,11 @@
-import { useState, useCallback, useMemo, type ReactNode } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef, Fragment, type ReactNode } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 
 import { type Compound } from '../data/compounds';
 import { type MorphemeKind } from '../data/naming';
 import { generateParts, selectCompounds, type NamePart } from '../utils/nameParts';
+import { revealTop } from '../utils/reveal';
 
 /** Levenshtein edit distance — used to classify typo vs. conceptual error. */
 function editDistance(a: string, b: string): number {
@@ -92,6 +93,11 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   const builtName = selected.map((p) => p.text).join('');
   const displayName = builtName.charAt(0).toUpperCase() + builtName.slice(1);
 
+  // "Næsta efni" sits below the tray; on a phone the next formula would start
+  // above the viewport.
+  const formulaRef = useRef<HTMLDivElement>(null);
+  useEffect(() => revealTop(formulaRef.current), [idx]);
+
   const selectPart = useCallback(
     (part: NamePart) => {
       if (answered) return;
@@ -143,30 +149,34 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   }, [idx, total, compounds, score, maxScore, onComplete]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white p-4">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white p-3 sm:p-4">
       <div className="max-w-lg mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-          <div className="flex justify-between items-center">
+        <div className="bg-white rounded-xl shadow-md p-3 sm:p-4 mb-4">
+          <div className="flex flex-wrap justify-between items-center gap-x-2 gap-y-1">
             <button
               onClick={onBack}
-              className="text-warm-500 hover:text-warm-700 font-semibold text-sm"
+              className="whitespace-nowrap text-warm-500 hover:text-warm-700 font-semibold text-sm pointer-coarse:py-3 pointer-coarse:-my-3 pointer-coarse:px-2 pointer-coarse:-mx-2"
             >
               {t('common.back', 'Til baka')}
             </button>
-            <h1 className="text-lg font-bold text-warm-800">
+            <h1 className="whitespace-nowrap text-base sm:text-lg font-bold text-warm-800">
               {t('level3.ui.title', 'Byggja nöfn')}
             </h1>
             <div className="flex gap-3 text-center">
               <div>
                 <div className="text-lg font-bold text-kvenno-orange">{score}</div>
-                <div className="text-[10px] text-warm-500">{t('common.score', 'Stig')}</div>
+                <div className="text-[10px] pointer-coarse:text-xs text-warm-500">
+                  {t('common.score', 'Stig')}
+                </div>
               </div>
               <div>
                 <div className="text-lg font-bold text-warm-700">
                   {idx + 1}/{total}
                 </div>
-                <div className="text-[10px] text-warm-500">{t('level3.ui.compounds', 'Efni')}</div>
+                <div className="text-[10px] pointer-coarse:text-xs text-warm-500">
+                  {t('level3.ui.compounds', 'Efni')}
+                </div>
               </div>
             </div>
           </div>
@@ -208,7 +218,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
         </button>
 
         {/* Formula display */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
+        <div ref={formulaRef} className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4">
           <div className="text-center mb-4">
             <div className="text-xs text-warm-500 mb-1">
               {t('level3.ui.formulaLabel', 'Efnaformúla:')}
@@ -249,8 +259,17 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                 ))
               )}
             </div>
-            <div className="text-center mt-2 text-xl font-bold text-warm-800">
-              {displayName || '???'}
+            {/* A line break, if the built name needs one, goes between two
+                parts rather than at an arbitrary letter. */}
+            <div className="text-center mt-2 text-lg sm:text-xl font-bold text-warm-800">
+              {selected.length === 0
+                ? '???'
+                : selected.map((part, i) => (
+                    <Fragment key={part.id}>
+                      {i > 0 && <wbr />}
+                      {i === 0 ? part.text.charAt(0).toUpperCase() + part.text.slice(1) : part.text}
+                    </Fragment>
+                  ))}
             </div>
           </div>
 
@@ -290,7 +309,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             <div className="text-xs text-warm-600 mb-1">
               {t('level3.ui.availableParts', 'Tiltækir partar:')}
             </div>
-            <div className="mb-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-warm-500">
+            <div className="mb-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px] pointer-coarse:text-xs text-warm-500">
               <span className="flex items-center gap-1">
                 <span className="inline-block h-2.5 w-2.5 rounded-sm bg-blue-200" /> forskeyti
               </span>
@@ -361,7 +380,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
         <button
           onClick={onBack}
-          className="mt-4 w-full text-warm-500 hover:text-warm-700 font-semibold py-2 text-sm"
+          className="mt-4 w-full text-warm-500 hover:text-warm-700 font-semibold py-2 text-sm pointer-coarse:py-3"
         >
           {t('level3.ui.backToMenu', 'Til baka í valmynd')}
         </button>

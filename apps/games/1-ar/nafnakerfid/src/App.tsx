@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
 import { useGameI18n } from '@shared/hooks/useGameI18n';
@@ -8,6 +8,7 @@ import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
 import { gameTranslations } from './i18n';
+import { scrollPageToTop } from './utils/reveal';
 
 type Screen = 'menu' | 'level1' | 'level2' | 'level3';
 
@@ -38,6 +39,13 @@ function App() {
     'nafnakerfidProgress',
     DEFAULT_PROGRESS
   );
+
+  // Each screen replaces the whole page. Without this a level opened from a
+  // scrolled phone menu starts part-way down, and finishing a level lands
+  // mid-menu.
+  useEffect(() => {
+    scrollPageToTop();
+  }, [screen]);
 
   const handleLevel1Complete = (score: number, _maxScore: number, _hintsUsed: number) => {
     updateProgress({
@@ -92,31 +100,33 @@ function App() {
       />
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="max-w-2xl w-full">
-          <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8 mb-6">
             <p className="text-center text-warm-600 mb-4">{t('game.subtitle')}</p>
 
             <div className="space-y-4">
               {/* Level 1 */}
               <button
                 onClick={() => setScreen('level1')}
-                className="game-card w-full bg-white border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-6 text-left transition-all"
+                className="game-card w-full bg-white border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-4 sm:p-6 text-left transition-all"
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
+                      <span className="shrink-0 whitespace-nowrap bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full">
                         {t('levels.level1.name')}
                       </span>
-                      <h3 className="text-xl font-bold text-warm-800">
+                      <h3 className="min-w-0 text-base min-[360px]:text-lg sm:text-xl font-bold text-warm-800">
                         {t('levels.level1.title')}
                       </h3>
                     </div>
                     <p className="text-warm-600 text-sm">{t('levels.level1.description')}</p>
                   </div>
-                  <div className="text-right">
+                  <div className="shrink-0 text-right">
                     {progress.level1Completed ? (
                       <div className="text-green-600">
-                        <div className="text-2xl font-bold">{progress.level1Score}/10</div>
+                        <div className="text-lg min-[360px]:text-xl sm:text-2xl font-bold">
+                          {progress.level1Score}/10
+                        </div>
                         <div className="text-xs">{t('menu.completed')}</div>
                       </div>
                     ) : (
@@ -129,24 +139,26 @@ function App() {
               {/* Level 2 */}
               <button
                 onClick={() => setScreen('level2')}
-                className="game-card w-full bg-white border-2 border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50 rounded-xl p-6 text-left transition-all"
+                className="game-card w-full bg-white border-2 border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50 rounded-xl p-4 sm:p-6 text-left transition-all"
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="bg-yellow-500 text-white text-sm font-bold px-3 py-1 rounded-full">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
+                      <span className="shrink-0 whitespace-nowrap bg-yellow-500 text-white text-sm font-bold px-3 py-1 rounded-full">
                         {t('levels.level2.name')}
                       </span>
-                      <h3 className="text-xl font-bold text-warm-800">
+                      <h3 className="min-w-0 text-base min-[360px]:text-lg sm:text-xl font-bold text-warm-800">
                         {t('levels.level2.title')}
                       </h3>
                     </div>
                     <p className="text-warm-600 text-sm">{t('levels.level2.description')}</p>
                   </div>
-                  <div className="text-right">
+                  <div className="shrink-0 text-right">
                     {progress.level2Completed ? (
                       <div className="text-green-600">
-                        <div className="text-2xl font-bold">{progress.level2Score}/12</div>
+                        <div className="text-lg min-[360px]:text-xl sm:text-2xl font-bold">
+                          {progress.level2Score}/12
+                        </div>
                         <div className="text-xs">{t('menu.completed')}</div>
                       </div>
                     ) : (
@@ -159,24 +171,26 @@ function App() {
               {/* Level 3 */}
               <button
                 onClick={() => setScreen('level3')}
-                className="game-card w-full bg-white border-2 border-red-200 hover:border-red-400 hover:bg-red-50 rounded-xl p-6 text-left transition-all"
+                className="game-card w-full bg-white border-2 border-red-200 hover:border-red-400 hover:bg-red-50 rounded-xl p-4 sm:p-6 text-left transition-all"
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
+                      <span className="shrink-0 whitespace-nowrap bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full">
                         {t('levels.level3.name')}
                       </span>
-                      <h3 className="text-xl font-bold text-warm-800">
+                      <h3 className="min-w-0 text-base min-[360px]:text-lg sm:text-xl font-bold text-warm-800">
                         {t('levels.level3.title')}
                       </h3>
                     </div>
                     <p className="text-warm-600 text-sm">{t('levels.level3.description')}</p>
                   </div>
-                  <div className="text-right">
+                  <div className="shrink-0 text-right">
                     {progress.level3Completed ? (
                       <div className="text-green-600">
-                        <div className="text-2xl font-bold">{progress.level3Score}</div>
+                        <div className="text-lg min-[360px]:text-xl sm:text-2xl font-bold">
+                          {progress.level3Score}
+                        </div>
                         <div className="text-xs">{t('menu.completed')}</div>
                       </div>
                     ) : (
@@ -190,18 +204,18 @@ function App() {
 
           {/* Progress Summary */}
           {progress.totalGamesPlayed > 0 && (
-            <div className="bg-white rounded-xl shadow-lg p-6">
+            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-semibold text-warm-700">{t('menu.progress')}</h3>
                 <button
                   onClick={resetProgress}
-                  className="text-sm text-warm-500 hover:text-red-500 transition-colors"
+                  className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3 pointer-coarse:px-2 pointer-coarse:-mx-2"
                 >
                   {t('menu.reset')}
                 </button>
               </div>
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="bg-blue-50 rounded-lg p-3">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
+                <div className="bg-blue-50 rounded-lg px-1 py-2 sm:p-3">
                   <div className="text-2xl font-bold text-blue-600">
                     {
                       [
@@ -214,13 +228,13 @@ function App() {
                   </div>
                   <div className="text-xs text-warm-600">{t('menu.levelsCompleted')}</div>
                 </div>
-                <div className="bg-green-50 rounded-lg p-3">
+                <div className="bg-green-50 rounded-lg px-1 py-2 sm:p-3">
                   <div className="text-2xl font-bold text-green-600">
                     {progress.level1Score + progress.level2Score + progress.level3Score}
                   </div>
                   <div className="text-xs text-warm-600">{t('menu.totalPoints')}</div>
                 </div>
-                <div className="bg-purple-50 rounded-lg p-3">
+                <div className="bg-purple-50 rounded-lg px-1 py-2 sm:p-3">
                   <div className="text-2xl font-bold text-purple-600">
                     {progress.totalGamesPlayed}
                   </div>

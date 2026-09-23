@@ -1,8 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import type { TieredHints, DetailedFeedback } from '@shared/types';
 import { shuffleArray } from '@shared/utils';
+
+import { revealTop } from '../utils/reveal';
 
 // Rule IDs for categorizing questions
 type RuleId = 'ionic-simple' | 'ionic-variable' | 'ionic-polyatomic' | 'molecular';
@@ -356,6 +358,17 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   const question = quizQuestions[currentQuestion];
   const warmupQ = warmupQuestions[currentWarmup];
 
+  // On a phone the "next" buttons sit screens below the content they replace,
+  // so bring the new rule / element / question back into view.
+  const cardRef = useRef<HTMLDivElement>(null);
+  const ruleRef = useRef<HTMLDivElement>(null);
+  const warmupRef = useRef<HTMLDivElement>(null);
+  const questionRef = useRef<HTMLDivElement>(null);
+  useEffect(() => revealTop(cardRef.current), [phase]);
+  useEffect(() => revealTop(ruleRef.current), [currentRule]);
+  useEffect(() => revealTop(warmupRef.current), [currentWarmup]);
+  useEffect(() => revealTop(questionRef.current), [currentQuestion]);
+
   // Shuffle options for current question - memoize to keep stable during question
   const shuffledOptions = useMemo(() => {
     const indices = question.options.map((_, i) => i);
@@ -468,12 +481,15 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     const colors = getColorClasses(rule.color);
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-4 md:p-8">
-        <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-2 sm:p-4 md:p-8">
+        <div
+          ref={cardRef}
+          className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8"
+        >
           <div className="flex justify-between items-center mb-6">
             <button
               onClick={onBack}
-              className="text-warm-500 hover:text-warm-700 flex items-center gap-2"
+              className="text-warm-500 hover:text-warm-700 flex items-center gap-2 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
             >
               <span>←</span> {t('common.back', 'Til baka')}
             </button>
@@ -492,39 +508,48 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           </p>
 
           {/* Progress dots */}
-          <div className="flex justify-center gap-2 mb-8">
+          {/* Progress dots. The dot is drawn inside the button so that on touch
+              the button can grow to a 44 px target while the dot stays 16 px. */}
+          <div className="flex justify-center gap-2 mb-8 pointer-coarse:gap-0 pointer-coarse:mb-5">
             {namingRules.map((r, idx) => (
               <button
                 key={r.id}
                 onClick={() => setCurrentRule(idx)}
-                className={`w-4 h-4 rounded-full transition-all ${
-                  idx === currentRule
-                    ? `${getColorClasses(r.color).bg} scale-125`
-                    : idx < currentRule
-                      ? 'bg-green-500'
-                      : 'bg-warm-300 hover:bg-warm-400'
-                }`}
+                className="group flex items-center justify-center w-4 h-4 rounded-full pointer-coarse:w-11 pointer-coarse:h-11"
                 aria-label={`Regla ${idx + 1}: ${r.title}`}
-              />
+              >
+                <span
+                  className={`block w-4 h-4 shrink-0 rounded-full transition-all ${
+                    idx === currentRule
+                      ? `${getColorClasses(r.color).bg} scale-125`
+                      : idx < currentRule
+                        ? 'bg-green-500'
+                        : 'bg-warm-300 group-hover:bg-warm-400'
+                  }`}
+                />
+              </button>
             ))}
           </div>
 
           {/* Rule card */}
-          <div className={`${colors.light} border-2 ${colors.border} rounded-2xl p-6 mb-6`}>
+          <div
+            ref={ruleRef}
+            className={`${colors.light} border-2 ${colors.border} rounded-2xl p-3 sm:p-6 mb-6`}
+          >
             <div className="flex items-center gap-3 mb-4">
               <div
-                className={`${colors.bg} text-white w-10 h-10 rounded-full flex items-center justify-center font-bold`}
+                className={`${colors.bg} text-white w-10 h-10 shrink-0 rounded-full flex items-center justify-center font-bold`}
               >
                 {currentRule + 1}
               </div>
-              <div>
-                <h2 className={`text-xl font-bold ${colors.text}`}>{rule.title}</h2>
+              <div className="min-w-0">
+                <h2 className={`text-lg sm:text-xl font-bold ${colors.text}`}>{rule.title}</h2>
                 <p className="text-warm-600 text-sm">{rule.description}</p>
               </div>
             </div>
 
             {/* Rules list */}
-            <div className="bg-white rounded-xl p-4 mb-4">
+            <div className="bg-white rounded-xl p-3 sm:p-4 mb-4">
               <h3 className="font-semibold text-warm-700 mb-2">
                 {t('level1.ui.rulesLabel', 'Reglur:')}
               </h3>
@@ -539,19 +564,29 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             </div>
 
             {/* Examples */}
-            <div className="bg-white rounded-xl p-4">
+            <div className="bg-white rounded-xl p-3 sm:p-4">
               <h3 className="font-semibold text-warm-700 mb-3">
                 {t('level1.ui.examplesLabel', 'Dæmi:')}
               </h3>
               <div className="grid gap-3">
                 {rule.examples.map((ex, idx) => (
-                  <div key={idx} className="flex items-center gap-4 p-3 bg-warm-50 rounded-lg">
-                    <div className="text-2xl font-mono font-bold text-warm-800 min-w-[80px]">
-                      {ex.formula}
+                  // Phones: formula and arrow on one line, the name under them,
+                  // since a name like Brennisteinshexaflúoríð needs the full row.
+                  // From sm the wrapper dissolves (`contents`) back into one row.
+                  <div
+                    key={idx}
+                    className="flex flex-col gap-1 p-2 bg-warm-50 rounded-lg sm:flex-row sm:items-center sm:gap-4 sm:p-3"
+                  >
+                    <div className="flex items-center gap-4 sm:contents">
+                      <div className="text-2xl font-mono font-bold text-warm-800 min-w-[80px]">
+                        {ex.formula}
+                      </div>
+                      <div className="text-2xl text-warm-400">→</div>
                     </div>
-                    <div className="text-2xl text-warm-400">→</div>
-                    <div className="flex-1">
-                      <div className={`font-bold ${colors.text}`}>{ex.name}</div>
+                    <div className="min-w-0 sm:flex-1">
+                      <div className={`font-bold text-sm min-[360px]:text-base ${colors.text}`}>
+                        {ex.name}
+                      </div>
                       <div className="text-sm text-warm-600">{ex.explanation}</div>
                     </div>
                   </div>
@@ -561,11 +596,11 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           </div>
 
           {/* Navigation buttons */}
-          <div className="flex gap-4">
+          <div className="flex gap-3 sm:gap-4">
             <button
               onClick={handlePrevRule}
               disabled={currentRule === 0}
-              className={`flex-1 py-3 px-6 rounded-xl font-bold transition-all ${
+              className={`flex-1 py-3 px-3 sm:px-6 rounded-xl font-bold transition-all ${
                 currentRule === 0
                   ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
                   : 'bg-warm-500 hover:bg-warm-600 text-white'
@@ -575,7 +610,7 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             </button>
             <button
               onClick={handleNextRule}
-              className={`flex-1 ${colors.bg} hover:opacity-90 text-white font-bold py-3 px-6 rounded-xl transition-all`}
+              className={`flex-1 ${colors.bg} hover:opacity-90 text-white font-bold py-3 px-3 sm:px-6 rounded-xl transition-all`}
             >
               {currentRule === namingRules.length - 1
                 ? t('level1.ui.startQuiz', 'Hefja próf') + ' →'
@@ -588,7 +623,7 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             <h3 className="font-semibold text-warm-700 mb-2">
               {t('level1.ui.ruleOverview', 'Yfirlit yfir reglur:')}
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 text-sm">
               {namingRules.map((r, idx) => (
                 <div
                   key={r.id}
@@ -609,12 +644,15 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   // Warmup phase - metal/nonmetal classification
   if (phase === 'warmup') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-4 md:p-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-2 sm:p-4 md:p-8">
+        <div
+          ref={cardRef}
+          className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8"
+        >
           <div className="flex justify-between items-center mb-6">
             <button
               onClick={() => setPhase('learn')}
-              className="text-warm-500 hover:text-warm-700 flex items-center gap-2"
+              className="text-warm-500 hover:text-warm-700 flex items-center gap-2 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
             >
               <span>←</span> {t('level1.ui.backToRules', 'Til baka í reglur')}
             </button>
@@ -642,17 +680,22 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           </div>
 
           {/* Question card */}
-          <div className="bg-indigo-50 border-2 border-indigo-200 rounded-xl p-6 mb-6 text-center">
+          <div
+            ref={warmupRef}
+            className="bg-indigo-50 border-2 border-indigo-200 rounded-xl p-4 sm:p-6 mb-6 text-center"
+          >
             <div className="text-6xl font-mono font-bold text-warm-800 mb-2">{warmupQ.symbol}</div>
             <div className="text-xl text-warm-600">{warmupQ.name}</div>
           </div>
 
           {/* Answer buttons */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          {/* Phones: one full-width row per choice, since "Málmleysingi" does not
+              fit a half-width card at 320-360 px. From sm, the two cards again. */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
             <button
               onClick={() => handleWarmupAnswer(true)}
               disabled={warmupFeedback !== null}
-              className={`p-6 rounded-xl border-3 transition-all ${
+              className={`flex items-center gap-4 p-4 text-left sm:block sm:p-6 sm:text-center rounded-xl border-3 transition-all ${
                 warmupFeedback !== null && warmupAnswer === true
                   ? warmupQ.isMetal
                     ? 'bg-green-100 border-green-500 text-green-800'
@@ -662,18 +705,20 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                     : 'bg-blue-50 border-blue-300 hover:border-blue-500 hover:bg-blue-100'
               }`}
             >
-              <div className="text-3xl mb-2" aria-hidden="true">
+              <div className="text-3xl sm:mb-2" aria-hidden="true">
                 ⚙️
               </div>
-              <div className="font-bold text-lg">{t('level1.ui.metal', 'Málmur')}</div>
-              <div className="text-xs text-warm-500">
-                {t('level1.ui.metalHint', '(gefur rafeindir)')}
+              <div>
+                <div className="font-bold text-lg">{t('level1.ui.metal', 'Málmur')}</div>
+                <div className="text-xs text-warm-500">
+                  {t('level1.ui.metalHint', '(gefur rafeindir)')}
+                </div>
               </div>
             </button>
             <button
               onClick={() => handleWarmupAnswer(false)}
               disabled={warmupFeedback !== null}
-              className={`p-6 rounded-xl border-3 transition-all ${
+              className={`flex items-center gap-4 p-4 text-left sm:block sm:p-6 sm:text-center rounded-xl border-3 transition-all ${
                 warmupFeedback !== null && warmupAnswer === false
                   ? !warmupQ.isMetal
                     ? 'bg-green-100 border-green-500 text-green-800'
@@ -683,12 +728,14 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                     : 'bg-orange-50 border-orange-300 hover:border-orange-500 hover:bg-orange-100'
               }`}
             >
-              <div className="text-3xl mb-2" aria-hidden="true">
+              <div className="text-3xl sm:mb-2" aria-hidden="true">
                 💨
               </div>
-              <div className="font-bold text-lg">{t('level1.ui.nonmetal', 'Málmleysingi')}</div>
-              <div className="text-xs text-warm-500">
-                {t('level1.ui.nonmetalHint', '(tekur rafeindir)')}
+              <div>
+                <div className="font-bold text-lg">{t('level1.ui.nonmetal', 'Málmleysingi')}</div>
+                <div className="text-xs text-warm-500">
+                  {t('level1.ui.nonmetalHint', '(tekur rafeindir)')}
+                </div>
               </div>
             </button>
           </div>
@@ -729,7 +776,7 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             <h3 className="font-semibold text-warm-700 mb-2 text-sm">
               {t('level1.ui.remember', 'Mundu:')}
             </h3>
-            <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
               <div className="bg-blue-50 p-2 rounded">
                 <span className="font-bold text-blue-700">
                   {t('level1.ui.metalsGroups', 'Málmar:')}
@@ -756,19 +803,25 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     : getColorClasses('blue');
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-4 md:p-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-        <div className="flex justify-between items-center mb-6">
-          <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-2 sm:p-4 md:p-8">
+      <div
+        ref={cardRef}
+        className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8"
+      >
+        <div className="flex flex-wrap justify-between items-center gap-2 mb-6">
+          <button
+            onClick={onBack}
+            className="whitespace-nowrap text-warm-500 hover:text-warm-700 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+          >
             ← {t('common.back', 'Til baka')}
           </button>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-warm-500">
+          <div className="ml-auto flex items-center gap-2 sm:gap-4">
+            <div className="whitespace-nowrap text-sm text-warm-500">
               {t('level1.ui.questionNOfM', 'Spurning {n} af {m}')
                 .replace('{n}', String(currentQuestion + 1))
                 .replace('{m}', String(quizQuestions.length))}
             </div>
-            <div className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-bold">
+            <div className="whitespace-nowrap bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-bold">
               {t('common.score', 'Stig')}: {score}
             </div>
           </div>
@@ -780,7 +833,8 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
         {/* Question */}
         <div
-          className={`${questionColors.light} border-2 ${questionColors.border} rounded-xl p-6 mb-6`}
+          ref={questionRef}
+          className={`${questionColors.light} border-2 ${questionColors.border} rounded-xl p-4 sm:p-6 mb-6`}
         >
           <div className="text-sm font-medium text-warm-500 mb-2">{ruleForQuestion?.title}</div>
           <div className="text-xl font-bold text-warm-800 mb-4">{question.question}</div>
@@ -875,23 +929,23 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             {t('level1.ui.cheatSheet', 'Minnisblað:')}
           </h3>
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="bg-blue-50 p-2 rounded">
+            <div className="bg-blue-50 px-1 py-2 sm:p-2 rounded">
               <span className="font-bold text-blue-700">{t('level1.ui.refIonic', 'Jónefni:')}</span>{' '}
               málmur + -íð
             </div>
-            <div className="bg-purple-50 p-2 rounded">
+            <div className="bg-purple-50 px-1 py-2 sm:p-2 rounded">
               <span className="font-bold text-purple-700">
                 {t('level1.ui.refVariable', 'Breytileg:')}
               </span>{' '}
               rómverskar tölur
             </div>
-            <div className="bg-green-50 p-2 rounded">
+            <div className="bg-green-50 px-1 py-2 sm:p-2 rounded">
               <span className="font-bold text-green-700">
                 {t('level1.ui.refPolyatomic', 'Fjölatóma:')}
               </span>{' '}
               sérstök nöfn
             </div>
-            <div className="bg-orange-50 p-2 rounded">
+            <div className="bg-orange-50 px-1 py-2 sm:p-2 rounded">
               <span className="font-bold text-orange-700">
                 {t('level1.ui.refMolecular', 'Sameindir:')}
               </span>{' '}
