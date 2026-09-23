@@ -1,6 +1,6 @@
 # Reynsluformúlur
 
-**Status: complete and registered.** Four phases, 36 tests of its own, in `build-games.mjs`, on the hub, and
+**Status: complete and registered.** Four phases, 53 tests of its own, in `build-games.mjs`, on the hub, and
 in the Y1 `Námsleiðin` chain between Mólmassi and Stilla efnajöfnur.
 
 Phase 5 of the games roadmap, first of the four confirmed curriculum gaps to be built after
@@ -97,7 +97,8 @@ src/engine/empirical.ts       the four columns; no React, no Icelandic
 src/data/elements.ts          atomic masses, held to molmassi's by test
 src/data/problems.ts          compounds as formulas; percentages and keys derived
 src/components/               KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen
-src/__tests__/                36 tests across empirical and problems
+src/utils/reveal.ts           keeps what a tap changed on screen on a phone
+src/__tests__/                53 tests across empirical, problems and phone-reveal
 ```
 
 ## Open
@@ -108,3 +109,18 @@ src/__tests__/                36 tests across empirical and problems
   composition but does not drill it.
 - **Combustion analysis** — the other route into an empirical formula, and the one a lab actually
   uses — is not covered.
+
+## On a phone
+
+Built for 360 × 740 first; from `sm` up every screen keeps its desktop layout.
+
+- **Skilja's table scrolls sideways from the fourth column at 360 px** (the third at 320 px). Five
+  numeric columns do not fit a phone, and no narrower wording exists. The element column is pinned
+  while it scrolls, and "Næsta súla" scrolls the table to the column it just added, so the new
+  column is on screen with the element it belongs to.
+- **Kanna's mass bar sits under the percentage below `sm`.** Beside it, the atom-count column — the
+  one the screen is about — was pushed out of a clipping box and never seen on a phone.
+- **`src/utils/reveal.ts` scrolls only when a change lands off screen**: the table after a compound
+  is chosen, the verdict after "Athuga" / "Svara", the new compound after "Næsta súla" /
+  "Næsta efni" / "Næsta dæmi", and the top of the page on every phase change. It is a copy of
+  `1-ar/utfellingarhvorf`'s, because each game is its own Vite build.

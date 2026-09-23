@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { DECIMAL_INPUT_PROPS, parseStudentNumber } from '@shared/utils';
 
 import { MOLECULAR_PROBLEMS } from '../data/problems';
 import { formatFormula } from '../engine/empirical';
+import { reveal } from '../utils/reveal';
 
 /**
  * Beita — empirical formula plus a measured molar mass gives the molecular one.
@@ -36,6 +37,23 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
   const given = parseStudentNumber(entry);
   const correct = answered && Math.abs(given - problem.n) < 0.01;
 
+  // "Svara" puts the verdict under the input, below the fold of a landscape
+  // phone; "Næsta dæmi" swaps in a new problem at the top of a card the student
+  // has scrolled past. Bring each into view — nothing moves when it already is.
+  const problemRef = useRef<HTMLDivElement>(null);
+  const inputRowRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const indexBefore = useRef(index);
+  useEffect(() => {
+    if (answered) {
+      reveal(feedbackRef.current, nextRef.current);
+    } else if (index !== indexBefore.current) {
+      reveal(problemRef.current, inputRowRef.current);
+    }
+    indexBefore.current = index;
+  }, [answered, index]);
+
   const next = () => {
     setEntry('');
     setAnswered(false);
@@ -45,15 +63,20 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-6 shadow-md md:p-8">
-        <div className="mb-4 flex items-baseline justify-between">
-          <h2 className="text-2xl font-bold text-warm-800">Beita — frá reynslu að sameind</h2>
-          <button onClick={onBack} className="text-sm text-warm-500 underline">
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
+        <div className="mb-4 flex items-baseline justify-between gap-3">
+          <h2 className="text-xl font-bold text-warm-800 sm:text-2xl">
+            Beita — frá reynslu að sameind
+          </h2>
+          <button
+            onClick={onBack}
+            className="shrink-0 whitespace-nowrap text-sm text-warm-500 underline pointer-coarse:-my-3 pointer-coarse:py-3"
+          >
             Til baka
           </button>
         </div>
 
-        <p className="mb-4 text-sm text-warm-500">
+        <p ref={problemRef} className="mb-4 text-sm text-warm-500">
           Dæmi {index + 1} af {MOLECULAR_PROBLEMS.length}
         </p>
 
@@ -62,7 +85,10 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
             Reynsluformúla efnisins er{' '}
             <strong className="font-mono text-lg">{formatFormula(problem.empirical)}</strong>, og
             mældur mólmassi þess er{' '}
-            <strong className="font-mono text-lg">{fmt(problem.molarMass, 2)} g/mól</strong>.
+            <strong className="whitespace-nowrap font-mono text-lg">
+              {fmt(problem.molarMass, 2)} g/mól
+            </strong>
+            .
           </p>
           <p className="mt-2 text-sm text-warm-600">
             Hversu mörgum sinnum passar reynsluformúlan inn í sameindina? Þessi tala heitir{' '}
@@ -70,7 +96,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
           </p>
         </div>
 
-        <div className="mb-4 flex items-center gap-3">
+        <div ref={inputRowRef} className="mb-4 flex flex-wrap items-center gap-3">
           <label htmlFor="n-input" className="font-semibold text-warm-700">
             n =
           </label>
@@ -80,13 +106,14 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
             value={entry}
             onChange={(e) => setEntry(e.target.value)}
             disabled={answered}
+            autoComplete="off"
             className="w-28 rounded-lg border-2 border-warm-300 px-3 py-2 text-lg"
           />
           {!answered && (
             <button
               onClick={() => setAnswered(true)}
               disabled={entry.trim() === ''}
-              className="game-btn rounded-lg bg-kvenno-orange px-5 py-2 font-semibold text-white disabled:opacity-40"
+              className="game-btn rounded-lg bg-kvenno-orange px-5 py-2 font-semibold text-white disabled:opacity-40 pointer-coarse:min-h-11"
             >
               Svara
             </button>
@@ -95,6 +122,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
 
         {answered && (
           <div
+            ref={feedbackRef}
             className={`mb-4 rounded-lg border p-4 text-sm ${
               correct
                 ? 'border-green-200 bg-green-50 text-green-900'
@@ -103,7 +131,8 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
           >
             <p className="mb-1 font-semibold">{correct ? 'Rétt' : 'Ekki alveg'}</p>
             <p>
-              Massi reynsluformúlunnar er {fmt(problem.empiricalMass, 2)} g/mól. n ={' '}
+              Massi reynsluformúlunnar er{' '}
+              <span className="whitespace-nowrap">{fmt(problem.empiricalMass, 2)} g/mól</span>. n ={' '}
               {fmt(problem.molarMass, 2)} ÷ {fmt(problem.empiricalMass, 2)} ={' '}
               <strong>{problem.n}</strong>.
             </p>
@@ -122,8 +151,10 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                   )}
                 </span>
                 , sem hefur mólmassa{' '}
-                {fmt(problem.empiricalMass * Math.max(Math.round(given), 1), 2)} g/mól — ekki þann
-                sem var mældur.
+                <span className="whitespace-nowrap">
+                  {fmt(problem.empiricalMass * Math.max(Math.round(given), 1), 2)} g/mól
+                </span>{' '}
+                — ekki þann sem var mældur.
               </p>
             )}
             <p className="mt-2 text-warm-600">{problem.context}</p>
@@ -132,6 +163,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
 
         {answered && (
           <button
+            ref={nextRef}
             onClick={next}
             className="game-btn rounded-lg bg-kvenno-orange px-6 py-3 font-semibold text-white"
           >

@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { DECIMAL_INPUT_PROPS, parseStudentNumber } from '@shared/utils';
 
 import { PROBLEMS } from '../data/problems';
 import { deriveEmpirical, type Derivation } from '../engine/empirical';
+import { reveal } from '../utils/reveal';
 
 /**
  * Æfa — the student fills the table, one column at a time.
@@ -90,33 +91,70 @@ export function AefaScreen({ onComplete, onBack }: Props) {
 
   const decimals = column === 'moles' ? 3 : column === 'ratio' ? 2 : 0;
 
+  // On a phone the buttons sit below the fold of a landscape screen, and the
+  // verdict box opens between the inputs and them. After "Athuga", bring the
+  // verdict into view; after "Næsta súla" / "Næsta efni", bring the compound
+  // and its empty inputs back from above the fold. Nothing moves when they are
+  // already on screen, which is the desktop case.
+  const problemRef = useRef<HTMLDivElement>(null);
+  const rowsRef = useRef<HTMLDivElement>(null);
+  const verdictRef = useRef<HTMLDivElement>(null);
+  const buttonsRef = useRef<HTMLDivElement>(null);
+  const step = `${index}-${column}`;
+  const stepBefore = useRef(step);
+  useEffect(() => {
+    if (step === stepBefore.current) return;
+    stepBefore.current = step;
+    reveal(problemRef.current, rowsRef.current);
+  }, [step]);
+  useEffect(() => {
+    if (verdict) reveal(verdictRef.current, buttonsRef.current);
+  }, [verdict]);
+
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-6 shadow-md md:p-8">
-        <div className="mb-4 flex items-baseline justify-between">
-          <h2 className="text-2xl font-bold text-warm-800">Æfa</h2>
-          <button onClick={onBack} className="text-sm text-warm-500 underline">
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
+        <div className="mb-4 flex items-baseline justify-between gap-3">
+          <h2 className="text-xl font-bold text-warm-800 sm:text-2xl">Æfa</h2>
+          <button
+            onClick={onBack}
+            className="shrink-0 whitespace-nowrap text-sm text-warm-500 underline pointer-coarse:-my-3 pointer-coarse:py-3"
+          >
             Til baka
           </button>
         </div>
 
-        <p className="mb-1 text-sm text-warm-500">
-          Efni {index + 1} af {PROBLEMS.length} · súla {COLUMN_LABEL[column]}
-        </p>
-        <p className="mb-4 text-warm-700">
-          <strong>{problem.name}</strong> —{' '}
-          {problem.percentages.map((p) => `${p.element} ${fmt(p.percent, 2)} %`).join(', ')}
-        </p>
-        <p className="mb-4 text-sm text-warm-600">{PROMPT[column]}</p>
+        <div ref={problemRef}>
+          <p className="mb-1 text-sm text-warm-500">
+            Efni {index + 1} af {PROBLEMS.length} · súla {COLUMN_LABEL[column]}
+          </p>
+          <p className="mb-4 text-warm-700">
+            <strong>{problem.name}</strong> —{' '}
+            {problem.percentages.map((p, i) => (
+              <span key={p.element}>
+                {i > 0 && ', '}
+                <span className="whitespace-nowrap">{`${p.element} ${fmt(p.percent, 2)} %`}</span>
+              </span>
+            ))}
+          </p>
+          <p className="mb-4 text-sm text-warm-600">{PROMPT[column]}</p>
+        </div>
 
-        <div className="mb-4 space-y-2">
+        {/* Narrower columns below `sm` so a row fits a 360 px phone; below
+            that the verdict drops under the input rather than squeezing it. */}
+        <div ref={rowsRef} className="mb-4 space-y-2">
           {derived.rows.map((r) => {
             const isWrong = verdict?.wrong.includes(r.element);
             return (
-              <div key={r.element} className="flex items-center gap-3">
-                <span className="w-10 font-mono font-semibold text-warm-800">{r.element}</span>
+              <div
+                key={r.element}
+                className="flex flex-wrap items-center gap-x-2 gap-y-1 sm:flex-nowrap sm:gap-3"
+              >
+                <span className="w-8 font-mono font-semibold text-warm-800 sm:w-10">
+                  {r.element}
+                </span>
                 {column !== 'moles' && (
-                  <span className="w-28 text-right font-mono text-sm text-warm-500">
+                  <span className="w-14 text-right font-mono text-sm text-warm-500 sm:w-28">
                     {column === 'ratio' ? fmt(r.moles, 3) : fmt(r.ratio, 2)}
                   </span>
                 )}
@@ -125,8 +163,9 @@ export function AefaScreen({ onComplete, onBack }: Props) {
                   value={entries[r.element] ?? ''}
                   onChange={(e) => setEntries({ ...entries, [r.element]: e.target.value })}
                   disabled={verdict?.ok}
+                  autoComplete="off"
                   aria-label={`${COLUMN_LABEL[column]} fyrir ${r.element}`}
-                  className={`w-32 rounded-lg border-2 px-3 py-2 text-right font-mono ${
+                  className={`w-24 rounded-lg border-2 px-3 py-2 text-right font-mono sm:w-32 ${
                     verdict === null
                       ? 'border-warm-300'
                       : isWrong
@@ -135,7 +174,7 @@ export function AefaScreen({ onComplete, onBack }: Props) {
                   }`}
                 />
                 {verdict && (
-                  <span className="text-sm text-warm-500">
+                  <span className="ml-auto whitespace-nowrap text-sm text-warm-500 sm:ml-0">
                     {isWrong ? `rétt: ${fmt(expected(r.element), decimals)}` : '✓'}
                   </span>
                 )}
@@ -145,7 +184,10 @@ export function AefaScreen({ onComplete, onBack }: Props) {
         </div>
 
         {verdict && !verdict.ok && (
-          <div className="mb-4 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+          <div
+            ref={verdictRef}
+            className="mb-4 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900"
+          >
             <p className="font-semibold">Ekki alveg — {COLUMN_LABEL[column]}súlan</p>
             {column === 'moles' && (
               <p className="mt-1">
@@ -170,7 +212,10 @@ export function AefaScreen({ onComplete, onBack }: Props) {
         )}
 
         {verdict?.ok && column === 'subscript' && (
-          <div className="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-900">
+          <div
+            ref={verdictRef}
+            className="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-900"
+          >
             <p>
               Reynsluformúlan er <strong className="font-mono text-base">{problem.answer}</strong>
               {problem.multiplier > 1 &&
@@ -180,7 +225,7 @@ export function AefaScreen({ onComplete, onBack }: Props) {
           </div>
         )}
 
-        <div className="flex gap-3">
+        <div ref={buttonsRef} className="flex flex-wrap gap-3">
           {!verdict?.ok ? (
             <button
               onClick={submit}

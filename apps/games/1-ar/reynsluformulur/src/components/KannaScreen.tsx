@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { COMPOUNDS } from '../data/problems';
 import { percentComposition } from '../engine/empirical';
+import { reveal } from '../utils/reveal';
 
 /**
  * Kanna — the discovery phase. No right or wrong.
@@ -32,12 +33,30 @@ export function KannaScreen({ onComplete, onBack }: Props) {
   const mostAtoms = [...compound.counts].sort((a, b) => b.subscript - a.subscript)[0];
   const theyDisagree = heaviestShare.element !== mostAtoms.element;
 
+  // The table and the sentence that reads it sit below the list of compounds,
+  // under the fold of a phone once a student has scrolled to the lower
+  // buttons. Choosing a compound brings them into view; nothing moves when they
+  // already are, which is the desktop case.
+  const tableRef = useRef<HTMLDivElement>(null);
+  const noteRef = useRef<HTMLDivElement>(null);
+  const idBefore = useRef(id);
+  useEffect(() => {
+    if (id === idBefore.current) return;
+    idBefore.current = id;
+    reveal(tableRef.current, noteRef.current);
+  }, [id]);
+
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-6 shadow-md md:p-8">
-        <div className="mb-6 flex items-baseline justify-between">
-          <h2 className="text-2xl font-bold text-warm-800">Kanna — massi er ekki fjöldi</h2>
-          <button onClick={onBack} className="text-sm text-warm-500 underline">
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
+        <div className="mb-6 flex items-baseline justify-between gap-3">
+          <h2 className="text-xl font-bold text-warm-800 sm:text-2xl">
+            Kanna — massi er ekki fjöldi
+          </h2>
+          <button
+            onClick={onBack}
+            className="shrink-0 whitespace-nowrap text-sm text-warm-500 underline pointer-coarse:-my-3 pointer-coarse:py-3"
+          >
             Til baka
           </button>
         </div>
@@ -54,7 +73,7 @@ export function KannaScreen({ onComplete, onBack }: Props) {
               key={c.id}
               type="button"
               onClick={() => setId(c.id)}
-              className={`game-btn rounded-lg border-2 px-3 py-2 text-sm ${
+              className={`game-btn rounded-lg border-2 px-3 py-2 text-sm pointer-coarse:min-h-11 ${
                 c.id === id
                   ? 'border-orange-400 bg-orange-50 font-semibold text-orange-900'
                   : 'border-warm-200 bg-white text-warm-700 hover:bg-warm-50'
@@ -65,13 +84,16 @@ export function KannaScreen({ onComplete, onBack }: Props) {
           ))}
         </div>
 
-        <div className="mb-6 overflow-hidden rounded-lg border border-warm-200">
+        {/* On a phone the bar goes under the percentage rather than beside it:
+            beside it, the atom-count column — the one this screen is about —
+            was pushed out of the box and cut off. */}
+        <div ref={tableRef} className="mb-6 overflow-x-auto rounded-lg border border-warm-200">
           <table className="w-full text-sm">
             <thead className="bg-warm-50 text-warm-700">
               <tr>
-                <th className="p-3 text-left">Frumefni</th>
-                <th className="p-3 text-right">Hlutfall massa</th>
-                <th className="p-3 text-right">Fjöldi frumeinda</th>
+                <th className="px-2 py-3 text-left sm:p-3">Frumefni</th>
+                <th className="px-1.5 py-3 text-right sm:p-3">Hlutfall massa</th>
+                <th className="px-1.5 py-3 text-right sm:p-3">Fjöldi frumeinda</th>
               </tr>
             </thead>
             <tbody>
@@ -79,21 +101,23 @@ export function KannaScreen({ onComplete, onBack }: Props) {
                 const count = compound.counts.find((c) => c.element === p.element)!;
                 return (
                   <tr key={p.element} className="border-t border-warm-100">
-                    <td className="p-3 font-mono font-semibold text-warm-800">{p.element}</td>
-                    <td className="p-3 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <div className="h-2 w-32 overflow-hidden rounded-full bg-warm-100">
+                    <td className="px-2 py-3 font-mono font-semibold text-warm-800 sm:p-3">
+                      {p.element}
+                    </td>
+                    <td className="px-1.5 py-3 text-right sm:p-3">
+                      <div className="flex flex-col-reverse items-end gap-1 sm:flex-row sm:items-center sm:justify-end sm:gap-2">
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-warm-100 sm:w-32">
                           <div
                             className="h-full rounded-full bg-orange-400"
                             style={{ width: `${p.percent}%` }}
                           />
                         </div>
-                        <span className="w-16 text-right font-mono">
+                        <span className="whitespace-nowrap text-right font-mono sm:w-16">
                           {p.percent.toFixed(2).replace('.', ',')} %
                         </span>
                       </div>
                     </td>
-                    <td className="p-3 text-right font-mono">{count.subscript}</td>
+                    <td className="px-1.5 py-3 text-right font-mono sm:p-3">{count.subscript}</td>
                   </tr>
                 );
               })}
@@ -102,6 +126,7 @@ export function KannaScreen({ onComplete, onBack }: Props) {
         </div>
 
         <div
+          ref={noteRef}
           className={`mb-6 rounded-lg border p-4 text-sm ${
             theyDisagree
               ? 'border-amber-300 bg-amber-50 text-amber-900'
