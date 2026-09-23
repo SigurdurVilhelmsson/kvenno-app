@@ -181,15 +181,15 @@ export function LewisGuidedMode({
 
   return (
     <div
-      className={`bg-gradient-to-br from-green-50 to-teal-50 rounded-xl border border-green-200 ${compact ? 'p-4' : 'p-6'}`}
+      className={`bg-gradient-to-br from-green-50 to-teal-50 rounded-xl border border-green-200 ${compact ? 'p-4' : 'p-4 sm:p-6'}`}
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between gap-2 mb-4">
         <h3
           className={`font-bold text-green-800 flex items-center gap-2 ${compact ? 'text-base' : 'text-lg'}`}
         >
           <span>📝</span> Leiðsögn: {molecule}
         </h3>
-        <div className="text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full">
+        <div className="text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full whitespace-nowrap shrink-0">
           Skref {currentStep + 1}/{steps.length}
         </div>
       </div>
@@ -227,7 +227,7 @@ export function LewisGuidedMode({
       </div>
 
       {/* Step content */}
-      <div className="bg-white rounded-lg p-5 mb-4 shadow-xs">
+      <div className="bg-white rounded-lg p-4 sm:p-5 mb-4 shadow-xs">
         <div className="flex items-center gap-2 mb-3">
           <div
             className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold ${
@@ -316,7 +316,7 @@ export function LewisGuidedMode({
           <div className="space-y-4">
             {/* Visual of bonds being drawn */}
             <div className="flex justify-center py-4">
-              <svg width="250" height="180" viewBox="0 0 250 180">
+              <svg viewBox="0 0 250 180" className="w-full max-w-[250px] h-auto">
                 {/* Central atom */}
                 <circle cx="125" cy="90" r="25" fill="#3b82f6" />
                 <text
@@ -406,12 +406,12 @@ export function LewisGuidedMode({
             </div>
 
             {/* Interactive lone pair placement */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {/* Central atom */}
               <div className="p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
-                <div className="font-bold text-blue-800 mb-2 flex items-center justify-between">
+                <div className="font-bold text-blue-800 mb-2 flex items-center justify-between gap-2">
                   <span>{centralAtom?.symbol} (miðatóm)</span>
-                  <span className="text-sm bg-blue-100 px-2 py-0.5 rounded">
+                  <span className="text-sm bg-blue-100 px-2 py-0.5 rounded whitespace-nowrap">
                     {getAtomLonePairs(centralAtom?.symbol || '')} pör
                   </span>
                 </div>
@@ -419,14 +419,14 @@ export function LewisGuidedMode({
                   <button
                     onClick={() => handleAddLonePair(centralAtom?.symbol || '')}
                     disabled={electronsRemaining < 2}
-                    className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white py-2 rounded"
+                    className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white py-2 rounded pointer-coarse:min-h-11"
                   >
                     + Par
                   </button>
                   <button
                     onClick={() => handleRemoveLonePair(centralAtom?.symbol || '')}
                     disabled={getAtomLonePairs(centralAtom?.symbol || '') === 0}
-                    className="flex-1 bg-warm-300 hover:bg-warm-400 disabled:bg-warm-200 text-warm-700 py-2 rounded"
+                    className="flex-1 bg-warm-300 hover:bg-warm-400 disabled:bg-warm-200 text-warm-700 py-2 rounded pointer-coarse:min-h-11"
                   >
                     − Par
                   </button>
@@ -441,9 +441,9 @@ export function LewisGuidedMode({
                     key={atom.symbol}
                     className="p-4 bg-green-50 rounded-lg border-2 border-green-200"
                   >
-                    <div className="font-bold text-green-800 mb-2 flex items-center justify-between">
+                    <div className="font-bold text-green-800 mb-2 flex items-center justify-between gap-2">
                       <span>{atom.symbol} (ytri)</span>
-                      <span className="text-sm bg-green-100 px-2 py-0.5 rounded">
+                      <span className="text-sm bg-green-100 px-2 py-0.5 rounded whitespace-nowrap">
                         {getAtomLonePairs(atom.symbol)} pör
                       </span>
                     </div>
@@ -451,14 +451,14 @@ export function LewisGuidedMode({
                       <button
                         onClick={() => handleAddLonePair(atom.symbol)}
                         disabled={electronsRemaining < 2}
-                        className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-warm-300 text-white py-2 rounded"
+                        className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-warm-300 text-white py-2 rounded pointer-coarse:min-h-11"
                       >
                         + Par
                       </button>
                       <button
                         onClick={() => handleRemoveLonePair(atom.symbol)}
                         disabled={getAtomLonePairs(atom.symbol) === 0}
-                        className="flex-1 bg-warm-300 hover:bg-warm-400 disabled:bg-warm-200 text-warm-700 py-2 rounded"
+                        className="flex-1 bg-warm-300 hover:bg-warm-400 disabled:bg-warm-200 text-warm-700 py-2 rounded pointer-coarse:min-h-11"
                       >
                         − Par
                       </button>
@@ -479,14 +479,14 @@ export function LewisGuidedMode({
 
         {step.action === 'check-octet' && !showFeedback && (
           <div className="space-y-4">
-            <div className="bg-white p-4 rounded-lg border">
+            <div className="bg-white p-3 sm:p-4 rounded-lg border">
               <div className="text-sm font-medium text-warm-600 mb-3">Athugun á áttureglunni:</div>
 
               {/* Central atom */}
               <div className="mb-3 p-3 bg-blue-50 rounded">
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center gap-3">
                   <span className="font-bold text-blue-800">{centralAtom?.symbol}</span>
-                  <span className="text-sm">
+                  <span className="text-sm text-right">
                     {bondsDrawn.length * 2} (tengsl) +{' '}
                     {getAtomLonePairs(centralAtom?.symbol || '') * 2} (pör) ={' '}
                     <span
@@ -507,9 +507,9 @@ export function LewisGuidedMode({
               {/* Surrounding atoms */}
               {surroundingAtoms.map((atom, idx) => (
                 <div key={idx} className="mb-2 p-3 bg-green-50 rounded">
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center gap-3">
                     <span className="font-bold text-green-800">{atom.symbol}</span>
-                    <span className="text-sm">
+                    <span className="text-sm text-right">
                       2 (tengi) + {getAtomLonePairs(atom.symbol) * 2} (pör) ={' '}
                       <span
                         className={`font-bold ${
@@ -569,7 +569,7 @@ export function LewisGuidedMode({
             {isCorrect && (
               <button
                 onClick={handleNextStep}
-                className="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-all"
+                className="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-all pointer-coarse:min-h-11"
               >
                 Næsta skref →
               </button>

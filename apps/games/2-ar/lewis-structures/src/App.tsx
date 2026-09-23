@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Header, ErrorBoundary } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
@@ -31,6 +31,15 @@ const DEFAULT_PROGRESS: Progress = {
 
 function App() {
   const [activeLevel, setActiveLevel] = useState<ActiveLevel>('menu');
+  // Each screen replaces the one before it in place, so a level tapped from a
+  // scrolled-down menu opened at that same offset: on a phone, deep inside the
+  // level. Start every screen switch at the top; the first render is skipped.
+  const previousLevel = useRef(activeLevel);
+  useEffect(() => {
+    if (previousLevel.current === activeLevel) return;
+    previousLevel.current = activeLevel;
+    window.scrollTo({ top: 0, left: 0 });
+  }, [activeLevel]);
   const { progress, updateProgress, resetProgress } = useGameProgress<Progress>(
     'lewis-structures-progress',
     DEFAULT_PROGRESS
@@ -157,13 +166,13 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100">
       <Header variant="game" backHref="/efnafraedi/2-ar/" gameTitle="Lewis-formúlur" />
       <div className="min-h-screen flex items-center justify-center p-4 md:p-8">
-        <div className="max-w-3xl w-full mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="max-w-3xl w-full mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <p className="text-center text-warm-600 mb-8">
             Lærðu að teikna rafeindasamsetningu sameinda
           </p>
 
           {/* Pedagogical explanation */}
-          <div className="bg-teal-50 p-6 rounded-xl mb-8">
+          <div className="bg-teal-50 p-4 sm:p-6 rounded-xl mb-8">
             <h2 className="font-bold text-teal-800 mb-3">Hvað eru Lewis-formúlur?</h2>
             <p className="text-teal-900 text-sm mb-4">
               <strong>Lewis-formúlur</strong> (eða rafeinapunktaformúlur) sýna hvernig
@@ -182,15 +191,17 @@ function App() {
             {/* Level 1 */}
             <button
               onClick={() => setActiveLevel('level1')}
-              className="game-card w-full p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
+              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
             >
-              <div className="flex items-center gap-4">
-                <div className="text-4xl">🔢</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl font-bold text-blue-800">Stig 1: Gildisrafeindir</span>
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="text-3xl sm:text-4xl">🔢</div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <span className="text-lg min-[360px]:text-xl font-bold text-blue-800">
+                      Stig 1: Gildisrafeindir
+                    </span>
                     {progress.level1Completed && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
                         ✓ {progress.level1Score} stig
                       </span>
                     )}
@@ -208,17 +219,17 @@ function App() {
             {/* Level 2 */}
             <button
               onClick={() => setActiveLevel('level2')}
-              className="game-card w-full p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
+              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
             >
-              <div className="flex items-center gap-4">
-                <div className="text-4xl">✏️</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl font-bold text-green-800">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="text-3xl sm:text-4xl">✏️</div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <span className="text-lg min-[360px]:text-xl font-bold text-green-800">
                       Stig 2: Teikna Lewis-formúlur
                     </span>
                     {progress.level2Completed && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
                         ✓ {progress.level2Score} stig
                       </span>
                     )}
@@ -236,17 +247,17 @@ function App() {
             {/* Level 3 */}
             <button
               onClick={() => setActiveLevel('level3')}
-              className="game-card w-full p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
+              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
             >
-              <div className="flex items-center gap-4">
-                <div className="text-4xl">⚖️</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl font-bold text-purple-800">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="text-3xl sm:text-4xl">⚖️</div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <span className="text-lg min-[360px]:text-xl font-bold text-purple-800">
                       Stig 3: Formhleðsla og samsvörun
                     </span>
                     {progress.level3Completed && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
                         ✓ {progress.level3Score} stig
                       </span>
                     )}
@@ -264,26 +275,28 @@ function App() {
 
           {/* Progress Summary */}
           {progress.totalGamesPlayed > 0 && (
-            <div className="mt-8 bg-warm-50 p-4 rounded-xl">
+            <div className="mt-8 bg-warm-50 p-3 sm:p-4 rounded-xl">
               <div className="flex justify-between items-center mb-3">
                 <h3 className="font-semibold text-warm-700">Framvinda</h3>
                 <button
                   onClick={resetProgress}
-                  className="text-sm text-warm-500 hover:text-red-500 transition-colors"
+                  className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3"
                 >
                   Endurstilla
                 </button>
               </div>
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="bg-blue-50 rounded-lg p-3">
-                  <div className="text-2xl font-bold text-blue-600">{levelsCompleted}/3</div>
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
+                <div className="bg-blue-50 rounded-lg p-2 sm:p-3">
+                  <div className="text-2xl font-bold text-blue-600 whitespace-nowrap">
+                    {levelsCompleted}/3
+                  </div>
                   <div className="text-xs text-warm-600">Stig lokið</div>
                 </div>
-                <div className="bg-green-50 rounded-lg p-3">
+                <div className="bg-green-50 rounded-lg p-2 sm:p-3">
                   <div className="text-2xl font-bold text-green-600">{totalScore}</div>
                   <div className="text-xs text-warm-600">Heildar stig</div>
                 </div>
-                <div className="bg-purple-50 rounded-lg p-3">
+                <div className="bg-purple-50 rounded-lg p-2 sm:p-3">
                   <div className="text-2xl font-bold text-purple-600">
                     {progress.totalGamesPlayed}
                   </div>

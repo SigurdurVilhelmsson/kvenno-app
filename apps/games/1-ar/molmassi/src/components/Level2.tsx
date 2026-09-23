@@ -227,6 +227,16 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
   };
 }
 
+/**
+ * The keyboard a phone should open for an answer. Molecule and atom counts are
+ * Avogadro-scale, and a decimal keypad has no `e`, `×` or `^` to write them with,
+ * so those questions get the full keyboard; everything else keeps the keypad.
+ * `parseScientificAnswer` reads `1,2e24` and `1,2 x 10^24` alike.
+ */
+export function answerInputMode(correctAnswer: number): 'decimal' | 'text' {
+  return Math.abs(correctAnswer) >= 1e6 ? 'text' : 'decimal';
+}
+
 function withinTolerance(user: number, correct: number): boolean {
   if (correct === 0) return Math.abs(user) < 0.001;
   return Math.abs(user - correct) / Math.abs(correct) <= 0.05;
@@ -250,6 +260,7 @@ export function Level2({
   const [done, setDone] = useState(false);
 
   const problem = problems[idx];
+  const inputMode = answerInputMode(problem.correctAnswer);
 
   const submit = () => {
     if (feedback) return;
@@ -291,15 +302,17 @@ export function Level2({
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
         <div className="max-w-lg mx-auto">
           <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-wrap sm:flex-nowrap justify-between items-center">
               <button
                 onClick={onBack}
-                className="text-warm-500 hover:text-warm-700 font-semibold text-sm"
+                className="text-warm-500 hover:text-warm-700 font-semibold text-sm whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
               >
                 ← Til baka
               </button>
-              <h1 className="text-lg font-bold text-warm-800">Mól-umbreytingar — Kennsla</h1>
-              <span className="text-sm text-warm-500">Stig 2</span>
+              <h1 className="order-last basis-full mt-1 sm:order-none sm:basis-auto sm:mt-0 text-lg font-bold text-warm-800">
+                Mól-umbreytingar — Kennsla
+              </h1>
+              <span className="text-sm text-warm-500 whitespace-nowrap">Stig 2</span>
             </div>
           </div>
 
@@ -414,7 +427,7 @@ export function Level2({
                 style={{ width: `${(score / (TOTAL * 10)) * 100}%` }}
               />
             </div>
-            <div className="flex gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={retry}
                 className="bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 px-6 rounded-xl transition-colors"
@@ -432,7 +445,7 @@ export function Level2({
             </div>
             <button
               onClick={onBack}
-              className="mt-4 text-warm-500 hover:text-warm-700 font-semibold py-2"
+              className="mt-4 text-warm-500 hover:text-warm-700 font-semibold py-2 pointer-coarse:min-h-11"
             >
               ← Til baka í valmynd
             </button>
@@ -449,7 +462,9 @@ export function Level2({
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-xl font-bold text-warm-800">Mól-umbreytingar - Stig 2</h1>
+              <h1 className="text-lg sm:text-xl font-bold text-warm-800">
+                Mól-umbreytingar - Stig 2
+              </h1>
               <p className="text-sm text-warm-600">Massi, mól og sameindir</p>
             </div>
             <div className="text-center">
@@ -482,14 +497,16 @@ export function Level2({
           </div>
           <div className="text-sm font-mono text-warm-700 space-y-1 text-center">
             <div>
-              g → mól: margfaldaðu með <span className="font-bold">(1 mól / M g)</span>
+              g → mól: margfaldaðu með{' '}
+              <span className="font-bold whitespace-nowrap">(1 mól / M g)</span>
             </div>
             <div>
-              mól → g: margfaldaðu með <span className="font-bold">(M g / 1 mól)</span>
+              mól → g: margfaldaðu með{' '}
+              <span className="font-bold whitespace-nowrap">(M g / 1 mól)</span>
             </div>
             <div>
               mól → sameindir: margfaldaðu með{' '}
-              <span className="font-bold">(6,022×10²³ / 1 mól)</span>
+              <span className="font-bold whitespace-nowrap">(6,022×10²³ / 1 mól)</span>
             </div>
           </div>
           <div className="text-center text-xs text-warm-400 mt-2">
@@ -498,18 +515,22 @@ export function Level2({
         </div>
 
         {/* Question card */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-4" key={idx}>
+        <div className="bg-white rounded-xl shadow-lg p-3 min-[360px]:p-4 sm:p-6 mb-4" key={idx}>
           <p className="text-lg text-warm-800 font-medium mb-6">{problem.questionText}</p>
 
           {!feedback && (
             <div className="flex gap-3">
               <input
                 type="text"
-                inputMode="decimal"
+                inputMode={inputMode}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && submit()}
                 placeholder="Svar..."
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="none"
+                spellCheck={false}
                 autoFocus
                 className="flex-1 border-2 border-warm-200 focus:border-kvenno-orange rounded-xl px-4 py-3 text-lg outline-none transition-colors"
               />
@@ -521,6 +542,11 @@ export function Level2({
                 Svara
               </button>
             </div>
+          )}
+          {!feedback && inputMode === 'text' && (
+            <p className="text-xs text-warm-500 mt-2">
+              Hægt að nota vísisrithátt: 1,2e24, 1,2 × 10^24, eða venjulega tölu
+            </p>
           )}
 
           {feedback && (
@@ -557,7 +583,7 @@ export function Level2({
 
         <button
           onClick={onBack}
-          className="w-full text-warm-500 hover:text-warm-700 font-semibold py-2"
+          className="w-full text-warm-500 hover:text-warm-700 font-semibold py-2 pointer-coarse:min-h-11"
         >
           ← Til baka í valmynd
         </button>

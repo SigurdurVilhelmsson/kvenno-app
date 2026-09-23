@@ -50,13 +50,13 @@ function App() {
         </a>
 
         {/* Main Content */}
-        <main id="main-content" className="container mx-auto px-4 py-8">
-          <p className="text-lg text-warm-600 text-center mb-8">{t('game.subtitle')}</p>
+        <main id="main-content" className="container mx-auto px-4 py-4 sm:py-8">
+          <p className="text-lg text-warm-600 text-center mb-4 sm:mb-8">{t('game.subtitle')}</p>
 
           {/* Main Menu */}
           {screen === 'menu' && (
             <div className="max-w-4xl mx-auto">
-              <div className="bg-white rounded-lg shadow-md p-8">
+              <div className="bg-white rounded-lg shadow-md p-5 sm:p-8">
                 <h2 className="text-2xl font-bold text-warm-800 mb-6">
                   {t('mainMenu.selectLevel', 'Veldu stig')}
                 </h2>
@@ -69,7 +69,7 @@ function App() {
                       it. */}
                   <button
                     onClick={() => setScreen('level0')}
-                    className="game-card bg-warm-600 hover:bg-warm-700 text-white rounded-lg p-6 text-left transition-colors"
+                    className="game-card bg-warm-600 hover:bg-warm-700 text-white rounded-lg p-5 sm:p-6 text-left transition-colors"
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-2xl">0</span>
@@ -86,7 +86,7 @@ function App() {
                   {/* Level 1 - Conceptual (Visual Learning) */}
                   <button
                     onClick={() => setScreen('level1')}
-                    className="game-card bg-green-500 hover:bg-green-600 text-white rounded-lg p-6 text-left transition-colors"
+                    className="game-card bg-green-500 hover:bg-green-600 text-white rounded-lg p-5 sm:p-6 text-left transition-colors"
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-2xl">1</span>
@@ -103,7 +103,7 @@ function App() {
                   {/* Level 2 - Application (Predict & Reason) */}
                   <button
                     onClick={() => setScreen('level2')}
-                    className="game-card bg-blue-500 hover:bg-blue-600 text-white rounded-lg p-6 text-left transition-colors"
+                    className="game-card bg-blue-500 hover:bg-blue-600 text-white rounded-lg p-5 sm:p-6 text-left transition-colors"
                   >
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-2xl">2</span>
@@ -122,7 +122,7 @@ function App() {
                   {/* Level 3 - Calculation (Full Problems) */}
                   <button
                     onClick={() => setScreen('level3')}
-                    className="game-card bg-orange-500 hover:bg-orange-600 text-white rounded-lg p-6 text-left transition-colors"
+                    className="game-card bg-orange-500 hover:bg-orange-600 text-white rounded-lg p-5 sm:p-6 text-left transition-colors"
                     style={{ backgroundColor: '#f36b22' }}
                   >
                     <div className="flex items-center gap-2 mb-2">

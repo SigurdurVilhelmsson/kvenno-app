@@ -82,6 +82,18 @@ function getTolerance(difficulty: Compound['difficulty']): number {
 
 const TOTAL = 10;
 
+/**
+ * Font size for the formula headline. At text-5xl the hydrates are wider than a
+ * phone (Na₂CO₃·10H₂O is ~380px) and split mid-formula, so longer formulas start
+ * smaller and grow back to text-5xl by sm. Exported for its test.
+ */
+export function formulaSizeClass(formula: string): string {
+  const length = [...formula].length;
+  if (length >= 10) return 'text-3xl min-[360px]:text-4xl sm:text-5xl';
+  if (length >= 7) return 'text-4xl min-[360px]:text-5xl';
+  return 'text-5xl';
+}
+
 export function Level1({ onBack, onComplete }: Level1Props) {
   // Teaching phase state
   const [phase, setPhase] = useState<'teach' | 'practice'>('teach');
@@ -145,14 +157,16 @@ export function Level1({ onBack, onComplete }: Level1Props) {
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
         <div className="max-w-lg mx-auto">
           <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-wrap sm:flex-nowrap justify-between items-center">
               <button
                 onClick={onBack}
-                className="text-warm-500 hover:text-warm-700 font-semibold text-sm"
+                className="text-warm-500 hover:text-warm-700 font-semibold text-sm whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
               >
                 ← Til baka
               </button>
-              <h1 className="text-lg font-bold text-warm-800">Mólmassi — Hvernig reikna?</h1>
+              <h1 className="order-last basis-full mt-1 sm:order-none sm:basis-auto sm:mt-0 text-lg font-bold text-warm-800">
+                Mólmassi — Hvernig reikna?
+              </h1>
               <span className="text-sm text-warm-500">Kennsla</span>
             </div>
           </div>
@@ -201,15 +215,22 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                 </div>
                 <div>
                   <p className="font-semibold text-warm-800">Skref 2: Flettu upp atómmassa</p>
-                  <p className="text-warm-600 ml-4">H ≈ 1,008 g/mol &bull; O ≈ 16,00 g/mol</p>
+                  <p className="text-warm-600 ml-4">
+                    <span className="whitespace-nowrap">H ≈ 1,008 g/mol</span> &bull;{' '}
+                    <span className="whitespace-nowrap">O ≈ 16,00 g/mol</span>
+                  </p>
                 </div>
                 <div>
                   <p className="font-semibold text-warm-800">
                     Skref 3: Margfaldaðu og leggðu saman
                   </p>
                   <div className="ml-4 font-mono text-warm-700 space-y-1">
-                    <p>H: 2 × 1,008 = 2,016 g/mol</p>
-                    <p>O: 1 × 16,00 = 16,00 g/mol</p>
+                    <p>
+                      H: 2 × 1,008 <span className="whitespace-nowrap">= 2,016 g/mol</span>
+                    </p>
+                    <p>
+                      O: 1 × 16,00 <span className="whitespace-nowrap">= 16,00 g/mol</span>
+                    </p>
                   </div>
                 </div>
               </div>
@@ -247,13 +268,20 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                 </div>
                 <div>
                   <p className="font-semibold text-warm-800">Skref 2: Atómmassi</p>
-                  <p className="text-warm-600 ml-4">C ≈ 12,01 g/mol &bull; O ≈ 16,00 g/mol</p>
+                  <p className="text-warm-600 ml-4">
+                    <span className="whitespace-nowrap">C ≈ 12,01 g/mol</span> &bull;{' '}
+                    <span className="whitespace-nowrap">O ≈ 16,00 g/mol</span>
+                  </p>
                 </div>
                 <div>
                   <p className="font-semibold text-warm-800">Skref 3: Reiknaðu</p>
                   <div className="ml-4 font-mono text-warm-700 space-y-1">
-                    <p>C: 1 × 12,01 = 12,01 g/mol</p>
-                    <p>O: 2 × 16,00 = 32,00 g/mol</p>
+                    <p>
+                      C: 1 × 12,01 <span className="whitespace-nowrap">= 12,01 g/mol</span>
+                    </p>
+                    <p>
+                      O: 2 × 16,00 <span className="whitespace-nowrap">= 32,00 g/mol</span>
+                    </p>
                   </div>
                 </div>
               </div>
@@ -272,7 +300,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
 
               <button
                 onClick={() => setPhase('practice')}
-                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold px-4 py-3 rounded-xl transition-colors"
               >
                 Ég er tilbúin/n — byrja æfingar →
               </button>
@@ -299,7 +327,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
               style={{ width: `${(correctCount / TOTAL) * 100}%` }}
             />
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-col min-[360px]:flex-row gap-3">
             <button
               onClick={handleRetry}
               className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-800 font-bold py-3 rounded-xl transition-colors"
@@ -313,7 +341,10 @@ export function Level1({ onBack, onComplete }: Level1Props) {
               Ljúka stigi
             </button>
           </div>
-          <button onClick={onBack} className="text-warm-500 hover:text-warm-700 text-sm">
+          <button
+            onClick={onBack}
+            className="text-warm-500 hover:text-warm-700 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
+          >
             Til baka í valmynd
           </button>
         </div>
@@ -327,14 +358,16 @@ export function Level1({ onBack, onComplete }: Level1Props) {
       <div className="max-w-lg mx-auto">
         {/* Header */}
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-wrap sm:flex-nowrap justify-between items-center">
             <button
               onClick={onBack}
-              className="text-warm-500 hover:text-warm-700 font-semibold text-sm"
+              className="text-warm-500 hover:text-warm-700 font-semibold text-sm whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
             >
               ← Til baka
             </button>
-            <h1 className="text-lg font-bold text-warm-800">Mólmassi – Stig 1</h1>
+            <h1 className="order-last basis-full mt-1 sm:order-none sm:basis-auto sm:mt-0 text-lg font-bold text-warm-800">
+              Mólmassi – Stig 1
+            </h1>
             <span className="text-sm font-semibold text-warm-600">
               {index + 1}/{TOTAL}
             </span>
@@ -353,9 +386,11 @@ export function Level1({ onBack, onComplete }: Level1Props) {
         </div>
 
         {/* Compound card */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-4 text-center" key={index}>
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4 text-center" key={index}>
           <p className="text-sm text-warm-500 mb-1">Reiknaðu mólmassa:</p>
-          <div className="text-5xl font-bold text-warm-800 mb-2">{compound.formula}</div>
+          <div className={`${formulaSizeClass(compound.formula)} font-bold text-warm-800 mb-2`}>
+            {compound.formula}
+          </div>
           <p className="text-warm-600">{compound.name}</p>
           <span
             className={`inline-block mt-2 px-2 py-0.5 rounded-full text-xs font-medium ${
@@ -387,6 +422,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
                 placeholder="t.d. 18,02"
+                autoComplete="off"
                 className="flex-1 px-4 py-3 border-2 border-warm-300 rounded-xl focus:border-kvenno-orange focus:outline-none text-lg font-mono"
                 autoFocus
               />
@@ -406,7 +442,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
           <div className="flex gap-3 mb-4">
             <button
               onClick={() => setShowPeriodicTable(true)}
-              className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors"
+              className="flex-1 px-4 py-2.5 pointer-coarse:min-h-11 rounded-xl text-sm font-semibold bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors"
             >
               Lotukerfið
             </button>
@@ -416,7 +452,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                   setShowHint(true);
                   setHintsUsed((prev) => prev + 1);
                 }}
-                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold bg-yellow-100 text-yellow-800 hover:bg-yellow-200 transition-colors"
+                className="flex-1 px-4 py-2.5 pointer-coarse:min-h-11 rounded-xl text-sm font-semibold bg-yellow-100 text-yellow-800 hover:bg-yellow-200 transition-colors"
               >
                 Vísbending
               </button>

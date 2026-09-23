@@ -1,8 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 
 import { FeedbackPanel, HintSystem } from '@shared/components';
 import type { TieredHints } from '@shared/types';
 import { shuffleArray } from '@shared/utils';
+
+import { useRevealOnChange } from '../utils/useRevealOnChange';
 
 // Misconceptions for Lewis structure concepts
 const MISCONCEPTIONS: Record<string, string> = {
@@ -251,6 +253,12 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const [score, setScore] = useState(0);
 
   const challenge = challenges[currentChallenge];
+  const cardRef = useRef<HTMLDivElement>(null);
+  useRevealOnChange(cardRef, currentChallenge);
+  // The hints above the answer vanish once it is checked, so with several open
+  // the feedback opened with its verdict above the top of a phone screen.
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  useRevealOnChange(feedbackRef, showResult);
   const basePoints = 15;
 
   // Shuffle options for current challenge - memoize to keep stable during challenge
@@ -305,7 +313,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
           >
             <span>&larr;</span> Til baka
           </button>
@@ -326,7 +334,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div ref={cardRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <h2 className="text-2xl font-bold text-blue-800 mb-4">{challenge.title}</h2>
 
           {/* Molecule display if applicable */}
@@ -442,7 +450,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
           {/* Result feedback */}
           {showResult && (
-            <div className="mb-4">
+            <div ref={feedbackRef} className="mb-4">
               <FeedbackPanel
                 feedback={{
                   isCorrect,

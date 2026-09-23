@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 
 import { AnimatedMolecule } from '@shared/components';
 import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
@@ -6,6 +6,7 @@ import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
 import { LewisDrawingCanvas } from './LewisDrawingCanvas';
 import { LewisGuidedMode } from './LewisGuidedMode';
 import { lewisToMolecule } from '../utils/lewisConverter';
+import { useRevealOnChange } from '../utils/useRevealOnChange';
 
 interface Level2Props {
   onComplete: (score: number) => void;
@@ -257,6 +258,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   const challenge = challenges[currentChallenge];
   const isLastChallenge = currentChallenge === challenges.length - 1;
+  // Also when the tutorial closes: its last button sits far below the board.
+  const cardRef = useRef<HTMLDivElement>(null);
+  useRevealOnChange(cardRef, `${currentChallenge}-${showTutorial}`);
+  // A correct drawing swaps the tall board for a shorter result, so on a small
+  // or landscape screen the "Rétt!" landed above the top of the page.
+  const successRef = useRef<HTMLDivElement>(null);
+  useRevealOnChange(successRef, drawingCorrect);
 
   const molecule = useMemo(() => {
     return lewisToMolecule(challenge.correctStructure, challenge.molecule, challenge.title);
@@ -295,7 +303,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
           >
             <span>&larr;</span> Til baka
           </button>
@@ -320,7 +328,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         {/* Tutorial toggle */}
         {!showTutorial && currentChallenge === 0 && !drawingCorrect && (
           <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl p-4 mb-6 border border-blue-200">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-0">
               <div className="flex items-center gap-3">
                 <span className="text-2xl">📝</span>
                 <div>
@@ -332,7 +340,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               </div>
               <button
                 onClick={() => setShowTutorial(true)}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-all"
+                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-all pointer-coarse:min-h-11"
               >
                 Opna leiðsögn
               </button>
@@ -358,7 +366,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             />
             <button
               onClick={() => setShowTutorial(false)}
-              className="mt-4 w-full bg-warm-200 hover:bg-warm-300 text-warm-700 font-medium py-2 px-4 rounded-lg transition-all"
+              className="mt-4 w-full bg-warm-200 hover:bg-warm-300 text-warm-700 font-medium py-2 px-4 rounded-lg transition-all pointer-coarse:min-h-11"
             >
               Sleppa leiðsögn
             </button>
@@ -367,9 +375,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
         {/* Main content */}
         {!showTutorial && (
-          <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-            <h2 className="text-2xl font-bold text-green-800 mb-2">{challenge.title}</h2>
-            <div className="flex items-center gap-4 mb-6">
+          <div ref={cardRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+            <h2 className="text-lg min-[360px]:text-xl sm:text-2xl font-bold text-green-800 mb-2">
+              {challenge.title}
+            </h2>
+            <div className="flex flex-wrap items-center gap-x-4 mb-6">
               <span className="font-mono text-3xl font-bold text-indigo-600">
                 {challenge.molecule}
               </span>
@@ -386,7 +396,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   <div className="flex justify-center gap-2 mb-3">
                     <button
                       onClick={() => setViewMode('2d')}
-                      className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                      className={`px-4 py-1.5 pointer-coarse:min-h-11 rounded-lg text-sm font-medium transition-colors ${
                         viewMode === '2d'
                           ? 'bg-green-600 text-white'
                           : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
@@ -396,7 +406,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     </button>
                     <button
                       onClick={() => setViewMode('3d')}
-                      className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                      className={`px-4 py-1.5 pointer-coarse:min-h-11 rounded-lg text-sm font-medium transition-colors ${
                         viewMode === '3d'
                           ? 'bg-green-600 text-white'
                           : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
@@ -430,7 +440,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                           backgroundColor="#f9fafb"
                         />
                         <div className="text-xs text-warm-500 text-center mt-2">
-                          Dragðu til að snúa, skrollaðu til að stækka
+                          {/* A wheel does not exist on a phone: zoom there is a pinch. */}
+                          <span className="pointer-coarse:hidden">
+                            Dragðu til að snúa, skrollaðu til að stækka
+                          </span>
+                          <span className="hidden pointer-coarse:inline">
+                            Dragðu til að snúa, notaðu tvo fingur til að stækka
+                          </span>
                         </div>
                       </div>
                     )}
@@ -488,7 +504,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 </div>
 
                 {/* Success + explanation */}
-                <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-4">
+                <div
+                  ref={successRef}
+                  className="bg-green-50 border border-green-200 rounded-xl p-4 mb-4"
+                >
                   <div className="font-bold text-green-800 mb-1">Rétt!</div>
                   <p className="text-sm text-green-900">+15 stig</p>
                 </div>
@@ -534,7 +553,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   {hintsRevealed < challenge.hints.length && (
                     <button
                       onClick={revealHint}
-                      className="text-green-600 hover:text-green-800 text-sm underline"
+                      className="text-green-600 hover:text-green-800 text-sm underline pointer-coarse:min-h-11"
                     >
                       {hintsRevealed === 0 ? 'Sýna vísbendingu' : 'Sýna fleiri vísbendingar'}
                     </button>

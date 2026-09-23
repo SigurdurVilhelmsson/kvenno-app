@@ -50,7 +50,7 @@ export function EquivalenceChallenge({ onComplete, onAttempt }: EquivalenceChall
       />
 
       {!isCorrect && (
-        <div className="flex flex-col items-center gap-4 p-6 bg-warm-50 rounded-xl">
+        <div className="flex flex-col items-center gap-4 p-4 sm:p-6 bg-warm-50 rounded-xl">
           <p className="text-warm-700 font-semibold">Hversu margir lítrar jafngilda 1000 mL?</p>
 
           <div className="flex items-center gap-3">
@@ -64,7 +64,7 @@ export function EquivalenceChallenge({ onComplete, onAttempt }: EquivalenceChall
             </p>
           )}
 
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+          <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:justify-center sm:gap-3">
             {[-1, -0.5, -0.1, 0.1, 0.5, 1].map((delta) => {
               const isNegative = delta < 0;
               const sizeClass = Math.abs(delta) === 1 ? 'text-lg' : '';
@@ -76,7 +76,7 @@ export function EquivalenceChallenge({ onComplete, onAttempt }: EquivalenceChall
                   key={delta}
                   onClick={() => adjustValue(delta)}
                   aria-label={`${delta > 0 ? 'Bæta við' : 'Draga frá'} ${Math.abs(delta)} lítra`}
-                  className={`min-h-[44px] min-w-[44px] px-4 py-3 rounded-lg font-bold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${colorClass} ${sizeClass}`}
+                  className={`min-h-[44px] min-w-[44px] px-2 sm:px-4 py-3 rounded-lg font-bold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${colorClass} ${sizeClass}`}
                 >
                   {delta > 0 ? `+${delta}` : delta}
                 </button>

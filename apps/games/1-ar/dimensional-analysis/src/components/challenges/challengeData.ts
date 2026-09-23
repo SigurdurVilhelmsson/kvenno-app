@@ -29,7 +29,7 @@ export const challenges: Challenge[] = [
     id: 'C2',
     type: 'factor_building',
     title: 'Byggja umbreytingarstuðul',
-    instruction: 'Dragðu einingar í brotið til að búa til stuðul sem jafngildir 1.',
+    instruction: 'Smelltu á einingar til að setja þær í brotið og búa til stuðul sem jafngildir 1.',
     hints: {
       topic: 'Þetta snýst um umbreytingarstuðla og hvernig þeir virka.',
       strategy: 'Stuðull jafngildir 1 þegar teljari og nefnari tákna sama magn.',

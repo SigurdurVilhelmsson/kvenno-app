@@ -358,17 +358,18 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
               Spurning {idx + 1} af {TOTAL_QUESTIONS}
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          {/* At 320px the three only fit on one row with a narrower gap. */}
+          <div className="flex items-center gap-2 min-[360px]:gap-3 whitespace-nowrap">
             <span className="text-sm font-semibold text-green-600">{score} rétt</span>
             <button
               onClick={() => setShowPT(true)}
-              className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-2 px-3 rounded-lg transition-colors"
+              className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-2 px-3 pointer-coarse:min-h-11 rounded-lg transition-colors"
             >
               Lotukerfið
             </button>
             <button
               onClick={onBack}
-              className="bg-warm-200 hover:bg-warm-300 text-warm-700 text-sm font-semibold py-2 px-3 rounded-lg transition-colors"
+              className="bg-warm-200 hover:bg-warm-300 text-warm-700 text-sm font-semibold py-2 px-3 pointer-coarse:min-h-11 rounded-lg transition-colors"
             >
               Til baka
             </button>
@@ -430,6 +431,10 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                   }}
                   disabled={submitted}
                   placeholder="t.d. 1,2e24 eða 22,0"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
                   className={`flex-1 px-4 py-3 text-lg border-2 rounded-xl focus:outline-none ${error ? 'border-red-400' : 'border-warm-300 focus:border-kvenno-orange'}`}
                 />
                 {!submitted ? (

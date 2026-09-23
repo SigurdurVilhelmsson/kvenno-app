@@ -88,7 +88,7 @@ function App() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-green-100 flex items-center justify-center text-2xl">
+                  <div className="w-14 h-14 shrink-0 rounded-xl bg-green-100 flex items-center justify-center text-2xl">
                     ⚖️
                   </div>
                   <div>
@@ -123,7 +123,7 @@ function App() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center text-2xl">
+                  <div className="w-14 h-14 shrink-0 rounded-xl bg-blue-100 flex items-center justify-center text-2xl">
                     🔄
                   </div>
                   <div>
@@ -158,7 +158,7 @@ function App() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-purple-100 flex items-center justify-center text-2xl">
+                  <div className="w-14 h-14 shrink-0 rounded-xl bg-purple-100 flex items-center justify-center text-2xl">
                     🧪
                   </div>
                   <div>
@@ -196,7 +196,7 @@ function App() {
                 return (
                   <div key={step} className="flex items-start gap-3">
                     <div
-                      className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                      className={`w-6 h-6 shrink-0 rounded-full flex items-center justify-center text-xs font-bold ${
                         completed ? 'bg-green-500 text-white' : 'bg-warm-200 text-warm-600'
                       }`}
                     >
@@ -238,7 +238,7 @@ function App() {
                     resetProgress();
                   }
                 }}
-                className="text-xs text-warm-400 hover:text-warm-600 underline"
+                className="text-xs text-warm-400 hover:text-warm-600 underline pointer-coarse:py-3.5 pointer-coarse:-my-3.5"
               >
                 {t('menu.resetProgress')}
               </button>

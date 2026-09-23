@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useRef } from 'react';
+import { useState, useMemo, useCallback, useRef, useSyncExternalStore } from 'react';
 
 type BondType = 'none' | 'single' | 'double' | 'triple';
 
@@ -44,6 +44,29 @@ const BOND_LABEL: Record<BondType, string> = {
   triple: 'Þrefalt',
 };
 
+/**
+ * Phones: narrower than `sm`, or a landscape phone (500 px tall or less). The
+ * molecule then fills the board instead of floating in the middle of it —
+ * at 360 px the full 350-unit board drew the bonds 23 px long and the outer
+ * atoms' letters at 10 px — and the board is capped to the screen height.
+ */
+export const COMPACT_BOARD_QUERY = '(max-width: 639px), (max-height: 500px)';
+
+function subscribeCompactBoard(onChange: () => void): () => void {
+  if (typeof window.matchMedia !== 'function') return () => {};
+  const mql = window.matchMedia(COMPACT_BOARD_QUERY);
+  mql.addEventListener('change', onChange);
+  return () => mql.removeEventListener('change', onChange);
+}
+
+function isCompactBoard(): boolean {
+  return typeof window.matchMedia === 'function' && window.matchMedia(COMPACT_BOARD_QUERY).matches;
+}
+
+// The +/− lone-pair steppers: 32 px with a mouse, 44 px under a finger.
+const STEP_BTN =
+  'w-8 h-8 pointer-coarse:w-11 pointer-coarse:h-11 rounded-full disabled:opacity-40 font-bold transition-colors';
+
 export function LewisDrawingCanvas({
   molecule,
   totalElectrons,
@@ -81,6 +104,38 @@ export function LewisDrawingCanvas({
   const orbitR = n <= 2 ? 78 : n <= 4 ? 85 : 82;
   const cR = 26,
     sR = 22;
+  // Every atom and lone-pair dot lies within 118 units of the centre (outer
+  // atom at orbitR ≤ 85, its dots 30 further out), so the compact board crops
+  // to that square. Its bond hit strip is wider too, so a fingertip on a short
+  // bond lands on it: 36 units is about 42 px on a 360 px phone.
+  const compact = useSyncExternalStore(subscribeCompactBoard, isCompactBoard, () => false);
+  const cropR = 120;
+  const viewBox = compact
+    ? `${cx - cropR} ${cy - cropR} ${cropR * 2} ${cropR * 2}`
+    : `0 0 ${W} ${H}`;
+  const hitWidth = compact ? 36 : 24;
+  // The invisible strip a tap or click lands on. A filled polygon rather than a
+  // thick transparent stroke, so the bond's box is as big as what it catches: a
+  // vertical line's box has no width, which hid H₂O's bonds from box-based
+  // hit-testing (and from tools that measure touch targets) entirely.
+  const hitStrip = (
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    perpX: number,
+    perpY: number
+  ): string => {
+    const h = hitWidth / 2;
+    return [
+      [x1 + perpX * h, y1 + perpY * h],
+      [x2 + perpX * h, y2 + perpY * h],
+      [x2 - perpX * h, y2 - perpY * h],
+      [x1 - perpX * h, y1 - perpY * h],
+    ]
+      .map(([x, y]) => `${x},${y}`)
+      .join(' ');
+  };
 
   const positions = useMemo(
     () =>
@@ -272,7 +327,7 @@ export function LewisDrawingCanvas({
             opacity={0.3}
           />
         )}
-        <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="transparent" strokeWidth={24} />
+        <polygon points={hitStrip(x1, y1, x2, y2, perpX, perpY)} fill="transparent" />
         {bt === 'none' && (
           <line
             x1={x1}
@@ -379,10 +434,10 @@ export function LewisDrawingCanvas({
   return (
     <div className="space-y-4">
       {/* SVG Canvas */}
-      <div className="bg-warm-50 rounded-xl p-2 flex justify-center">
+      <div className="bg-warm-50 rounded-xl p-2 flex flex-col items-center">
         <svg
-          viewBox={`0 0 ${W} ${H}`}
-          className="w-full max-w-[420px]"
+          viewBox={viewBox}
+          className={compact ? 'w-full max-w-[420px] max-h-[70dvh]' : 'w-full max-w-[420px]'}
           role="img"
           aria-label={`Teikniborð fyrir Lewis-formúlu ${molecule}`}
         >
@@ -437,8 +492,8 @@ export function LewisDrawingCanvas({
             </g>
           ))}
 
-          {/* Instruction */}
-          {canInteract && (
+          {/* Instruction (drawn as HTML below the compact board, where 11 units would be too small to read) */}
+          {canInteract && !compact && (
             <text
               x={W / 2}
               y={H - 8}
@@ -451,6 +506,17 @@ export function LewisDrawingCanvas({
             </text>
           )}
         </svg>
+        {canInteract && compact && (
+          <p className="text-xs text-warm-500 text-center pb-1">
+            {/* No Tab key on a phone: say what a finger does. */}
+            <span className="pointer-coarse:hidden">
+              Smelltu eða notaðu Tab + Enter til að breyta tengjum
+            </span>
+            <span className="hidden pointer-coarse:inline">
+              Smelltu á strikin til að breyta tengjum
+            </span>
+          </p>
+        )}
       </div>
 
       {/* Electron counter */}
@@ -496,26 +562,27 @@ export function LewisDrawingCanvas({
       </div>
 
       {/* Lone pair controls */}
-      <div className="bg-white rounded-lg p-4 shadow-xs space-y-3">
+      <div className="bg-white rounded-lg p-3 sm:p-4 shadow-xs space-y-3">
         <div className="text-sm font-semibold text-warm-700">Einstæð rafeindarapör:</div>
 
-        {/* Central atom */}
+        {/* Central atom. Below 360 px the round symbol badge is dropped to leave the
+            label room beside 44 px steppers; the label names the atom anyway. */}
         <div
-          className={`flex items-center justify-between p-2 rounded-lg ${
+          className={`flex items-center justify-between gap-2 p-2 rounded-lg ${
             feedback?.centralLPError ? 'bg-red-50 border border-red-200' : 'bg-blue-50'
           }`}
         >
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center shrink-0 max-[360px]:hidden">
               <span className="text-white text-xs font-bold">{centralAtom}</span>
             </div>
             <span className="text-sm font-medium text-warm-700">{centralAtom} (miðatóm)</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <button
               onClick={() => adjustLP(-1, -1)}
               disabled={centralLP === 0 || !canInteract}
-              className="w-8 h-8 rounded-full bg-warm-200 hover:bg-warm-300 disabled:opacity-40 text-warm-700 font-bold transition-colors"
+              className={`${STEP_BTN} bg-warm-200 hover:bg-warm-300 text-warm-700`}
             >
               −
             </button>
@@ -523,7 +590,7 @@ export function LewisDrawingCanvas({
             <button
               onClick={() => adjustLP(-1, 1)}
               disabled={remaining < 2 || !canInteract}
-              className="w-8 h-8 rounded-full bg-blue-200 hover:bg-blue-300 disabled:opacity-40 text-blue-700 font-bold transition-colors"
+              className={`${STEP_BTN} bg-blue-200 hover:bg-blue-300 text-blue-700`}
             >
               +
             </button>
@@ -537,21 +604,21 @@ export function LewisDrawingCanvas({
           return (
             <div
               key={i}
-              className={`flex items-center justify-between p-2 rounded-lg ${
+              className={`flex items-center justify-between gap-2 p-2 rounded-lg ${
                 hasErr ? 'bg-red-50 border border-red-200' : 'bg-green-50'
               }`}
             >
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center shrink-0 max-[360px]:hidden">
                   <span className="text-white text-xs font-bold">{atom.symbol}</span>
                 </div>
                 <span className="text-sm font-medium text-warm-700">{atomLabel(i)} (ytri)</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2 shrink-0">
                 <button
                   onClick={() => adjustLP(i, -1)}
                   disabled={surroundingLP[i] === 0 || !canInteract}
-                  className="w-8 h-8 rounded-full bg-warm-200 hover:bg-warm-300 disabled:opacity-40 text-warm-700 font-bold transition-colors"
+                  className={`${STEP_BTN} bg-warm-200 hover:bg-warm-300 text-warm-700`}
                 >
                   −
                 </button>
@@ -559,7 +626,7 @@ export function LewisDrawingCanvas({
                 <button
                   onClick={() => adjustLP(i, 1)}
                   disabled={remaining < 2 || !canInteract}
-                  className="w-8 h-8 rounded-full bg-green-200 hover:bg-green-300 disabled:opacity-40 text-green-700 font-bold transition-colors"
+                  className={`${STEP_BTN} bg-green-200 hover:bg-green-300 text-green-700`}
                 >
                   +
                 </button>

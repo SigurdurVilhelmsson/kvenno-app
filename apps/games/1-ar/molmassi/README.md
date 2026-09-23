@@ -59,7 +59,10 @@ parser could read a superscript back — Stig 2 graded `3,5 × 10²³` as 3,5, a
 scientific-notation branch was unreachable. Both now use `src/utils/parseAnswer.ts`, which accepts a
 decimal comma, superscripts and a trailing unit, and returns `null` rather than a mantissa when part
 of the number is not understood. Guarded by `parse-answer.test.ts`. All three answer fields are
-`type="text"`; Stig 1 and 2 also set `inputMode="decimal"`, Stig 3 does not.
+`type="text"`. Stig 1 sets `inputMode="decimal"`; Stig 3 does not; Stig 2 chooses per question
+(`answerInputMode` in `Level2.tsx`): the decimal keypad, except for the Avogadro-scale molecule and
+atom counts, which get the full keyboard and Stig 3's line on how to write `1,2e24`. Guarded by
+`phone-input.test.ts`.
 
 The full history of the Phase 3 harvest is in `HARVEST.md`; the rulings are in the repo's
 `CLAUDE.md` and `docs/README.md`.
@@ -81,7 +84,7 @@ src/data/index.ts                  empty
 src/utils/calculations.ts          breakdown generator, including hydrates
 src/utils/parseAnswer.ts           parseScientificAnswer
 src/__tests__/                     breakdown-sums, compound-names, element-atoms,
-                                   gas-volume, parse-answer, utils
+                                   gas-volume, parse-answer, phone-input, utils
 HARVEST.md                         the 2026-08-27 harvest and the parser defect
 LEVEL1_README.md, VISUAL_COMPARISON.md   prototype notes; describe a Level 1 that did not ship
 ```
@@ -92,14 +95,17 @@ LEVEL1_README.md, VISUAL_COMPARISON.md   prototype notes; describe a Level 1 tha
   molar mass of the compound `vetnisklóríð`. HCl is excluded from molar-volume questions rather than
   renamed; the naming is Siggi's call.
 - **Unit spelling.** Stig 1 and 3 write the unit `g/mol` where the Stig 2 intro writes `g/mól`.
-- **Stig 2's input has `inputMode="decimal"`** while two of its seven question types
-  (molecules, atoms) have Avogadro-scale answers; a phone's decimal keypad has no `e`, `×` or `^`. Stig 3 deliberately
-  omits it for that reason.
-
 - **Percent composition** is recorded in the roadmap as "a fourth `molmassi` level", which the
   2026-08-29 no-Level-4 ruling does not allow. Where it goes is not decided.
 - **i18n.** Menu text uses `t()`; the level components are hardcoded Icelandic. Part of the
   platform-wide undecided `useGameI18n` question.
+
+**Fixed 2026-09-23 — phones.** Stig 2's decimal keypad could not write the Avogadro-scale answers
+two of its seven question types ask for (see above). The periodic table keeps 56px cells below `md`
+and scrolls sideways inside its own box, with the whole modal scrolling and the header and element
+detail pinned; at 360px the 18-column grid had been 16px-wide cells with 8px masses. Stig 1's
+formula headline starts smaller for long formulas (`formulaSizeClass`), since at `text-5xl` every
+hydrate split mid-formula.
 
 **Fixed 2026-09-22 — decimal comma.** Every number the game prints goes through `formatDecimal` or
 `formatScientific` from `@shared/utils`: Stig 2's worked solutions (molar mass to two decimals, so

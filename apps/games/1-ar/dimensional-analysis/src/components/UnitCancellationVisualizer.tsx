@@ -147,7 +147,7 @@ export function UnitCancellationVisualizer({
   return (
     <div
       ref={containerRef}
-      className="bg-gradient-to-b from-warm-50 to-white p-6 rounded-2xl shadow-lg border-2 border-warm-200 relative"
+      className="bg-gradient-to-b from-warm-50 to-white p-4 sm:p-6 rounded-2xl shadow-lg border-2 border-warm-200 relative"
     >
       {/* SVG overlay for connecting lines */}
       {enhancedAnimation && connectingLines.length > 0 && (

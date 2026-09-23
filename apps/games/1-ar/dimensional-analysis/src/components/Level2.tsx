@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 
 import { DragDropBuilder, FeedbackPanel } from '@shared/components';
 import type {
@@ -9,12 +9,13 @@ import type {
   DetailedFeedback,
 } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
-import { shuffleArray } from '@shared/utils';
+import { DECIMAL_INPUT_PROPS, shuffleArray } from '@shared/utils';
 
 import { UnitBlock, ConversionFactorBlock } from './UnitBlock';
 import { UnitCancellationVisualizer } from './UnitCancellationVisualizer';
 import { level2Problems } from '../data/problems';
 import { applyFactorPath, isAnswerCorrect, parseStudentNumber } from '../utils/grading';
+import { revealTop, useRevealTopOnChange } from '../utils/reveal';
 
 // Misconceptions for common errors
 const MISCONCEPTIONS: Record<string, string> = {
@@ -124,6 +125,19 @@ export function Level2({
   const [animationKey, setAnimationKey] = useState(0);
   const [showCancellationAnimation, setShowCancellationAnimation] = useState(false);
 
+  // After submitting, the answer form collapses and the page gets shorter. On a
+  // short screen (a phone on its side) that leaves the verdict scrolled off the
+  // top, so the student sees only the tail of the feedback. Bring its top back.
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (showFeedback) revealTop(feedbackRef.current);
+  }, [showFeedback]);
+
+  // The button that moves on sits at the foot of a screen taller than a phone,
+  // so the intro's "Byrja" and each "Næsta" used to open the next problem with
+  // its context already scrolled past. Open it at its top instead.
+  const topRef = useRevealTopOnChange<HTMLDivElement>(showIntro ? 'intro' : currentProblemIndex);
+
   const problem = level2Problems[currentProblemIndex];
 
   // Generate draggable items for DragDropBuilder
@@ -139,7 +153,7 @@ export function Level2({
       return {
         id: `factor-${idx}`,
         content: (
-          <div className="flex flex-col items-center p-2 min-w-[100px]">
+          <div className="flex flex-col items-center p-2 min-w-[88px] sm:min-w-[100px]">
             <div className="font-bold text-blue-600 text-sm">{numPart}</div>
             <div className="w-full h-0.5 bg-warm-800 my-1" />
             <div className="font-bold text-green-600 text-sm">{denPart}</div>
@@ -210,6 +224,16 @@ export function Level2({
     setZoneState((prev) => ({
       ...prev,
       [zoneId]: newOrder,
+    }));
+  };
+
+  // A factor sent back to the pool (dragged, or tapped and then the pool
+  // tapped) has to leave the chain too. `selectedFactors` is synced from
+  // `zoneState` below, so taking it out here takes it out of the graded path.
+  const handleRemove = (itemId: string, fromZoneId: string) => {
+    setZoneState((prev) => ({
+      ...prev,
+      [fromZoneId]: (prev[fromZoneId] || []).filter((id) => id !== itemId),
     }));
   };
 
@@ -336,7 +360,10 @@ export function Level2({
 
   if (showIntro) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
+      <div
+        ref={topRef}
+        className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+      >
         <div className="max-w-3xl mx-auto">
           <div className="mb-4">
             <button
@@ -347,13 +374,13 @@ export function Level2({
             </button>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
-            <h2 className="text-2xl font-bold text-warm-800 text-center">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 space-y-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-warm-800 text-center">
               Af hverju virkar einingagreining?
             </h2>
 
             {/* Core principle: WHY */}
-            <div className="bg-blue-50 rounded-xl p-6 border-l-4 border-blue-500">
+            <div className="bg-blue-50 rounded-xl p-4 sm:p-6 border-l-4 border-blue-500">
               <h3 className="font-bold text-blue-800 mb-3">Lykilhugmyndin</h3>
               <p className="text-warm-700 mb-3">
                 Umbreytingarstuðull er <strong>brot sem jafngildir 1</strong>. Til dæmis:
@@ -374,7 +401,7 @@ export function Level2({
             </div>
 
             {/* HOW: Unit cancellation */}
-            <div className="bg-green-50 rounded-xl p-6 border-l-4 border-green-500">
+            <div className="bg-green-50 rounded-xl p-4 sm:p-6 border-l-4 border-green-500">
               <h3 className="font-bold text-green-800 mb-3">Hvernig einingar styttast út</h3>
               <p className="text-warm-700 mb-3">
                 Einingar hegða sér eins og breytur í stærðfræði. Sama einingin í teljara og nefnara
@@ -401,7 +428,7 @@ export function Level2({
             </div>
 
             {/* Connection to other subjects */}
-            <div className="bg-amber-50 rounded-xl p-6 border-l-4 border-amber-500">
+            <div className="bg-amber-50 rounded-xl p-4 sm:p-6 border-l-4 border-amber-500">
               <h3 className="font-bold text-amber-800 mb-3">Stærðfræði og eðlisfræði</h3>
               <p className="text-warm-700">
                 Þetta er nákvæmlega sama regla og þegar þú styttir brot í stærðfræði. Í eðlisfræði
@@ -411,7 +438,7 @@ export function Level2({
             </div>
 
             {/* What they'll practice */}
-            <div className="bg-warm-50 rounded-xl p-6">
+            <div className="bg-warm-50 rounded-xl p-4 sm:p-6">
               <h3 className="font-bold text-warm-800 mb-2">Hvað gerist á þessu stigi?</h3>
               <p className="text-warm-700">
                 Þú velur umbreytingarstuðla og byggir keðjur til að breyta einingum. Byrjað er á
@@ -432,7 +459,10 @@ export function Level2({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
+    <div
+      ref={topRef}
+      className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+    >
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
@@ -458,7 +488,7 @@ export function Level2({
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
           <div className="mb-6 p-4 bg-blue-50 rounded-lg">
             <p className="text-sm text-warm-600 mb-1">Samhengi:</p>
             <p className="font-semibold">{problem.context}</p>
@@ -471,7 +501,7 @@ export function Level2({
             </div>
           )}
 
-          <div className="mb-6 p-6 bg-gradient-to-b from-warm-50 to-warm-100 rounded-xl text-center">
+          <div className="mb-6 p-4 sm:p-6 bg-gradient-to-b from-warm-50 to-warm-100 rounded-xl text-center">
             <p className="text-sm text-warm-600 mb-3">Byrja með:</p>
             <div className="flex justify-center mb-4">
               <UnitBlock
@@ -562,7 +592,7 @@ export function Level2({
               {useDragDrop ? (
                 <div className="mb-6">
                   <p className="text-sm font-semibold mb-3">
-                    Dragðu umbreytingarstuðla til að byggja keðju:
+                    Dragðu eða smelltu á umbreytingarstuðla til að byggja keðju:
                   </p>
                   <DragDropBuilder
                     items={draggableItems}
@@ -570,6 +600,7 @@ export function Level2({
                     initialState={zoneState}
                     onDrop={handleDrop}
                     onReorder={handleReorder}
+                    onRemove={handleRemove}
                     orientation="horizontal"
                   />
                 </div>
@@ -607,19 +638,20 @@ export function Level2({
               )}
 
               {/* Answer input */}
-              <div className="mb-6 p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl border-2 border-orange-200">
+              <div className="mb-6 p-3 sm:p-4 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl border-2 border-orange-200">
                 <label className="block font-semibold mb-3 text-warm-800">
                   Hvað er lokagildið?
                 </label>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
                   <input
-                    type="text"
+                    {...DECIMAL_INPUT_PROPS}
+                    autoComplete="off"
                     value={userAnswer}
                     onChange={(e) => setUserAnswer(e.target.value)}
                     placeholder="Sláðu inn svar"
-                    className="flex-1 p-4 border-2 border-warm-300 rounded-xl font-mono text-xl focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-hidden transition-all"
+                    className="flex-1 p-3 sm:p-4 border-2 border-warm-300 rounded-xl font-mono text-lg sm:text-xl focus:border-orange-400 focus:ring-2 focus:ring-orange-200 outline-hidden transition-all"
                   />
-                  <div className="px-4 py-3 bg-green-100 text-green-800 rounded-xl font-bold text-lg">
+                  <div className="shrink-0 whitespace-nowrap px-3 sm:px-4 py-2 sm:py-3 bg-green-100 text-green-800 rounded-xl font-bold text-base sm:text-lg">
                     {problem.targetUnit}
                   </div>
                 </div>
@@ -636,7 +668,10 @@ export function Level2({
           )}
 
           {showFeedback && (
-            <div className="space-y-4">
+            <div
+              ref={feedbackRef}
+              className="space-y-4 scroll-mt-16 [@media(max-height:500px)]:scroll-mt-2"
+            >
               <FeedbackPanel
                 feedback={getDetailedFeedback()}
                 config={{

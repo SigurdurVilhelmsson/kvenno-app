@@ -73,7 +73,7 @@ function ChoiceRow({
   onChoose: (n: number) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="grid grid-cols-5 gap-2 sm:flex sm:flex-wrap">
       {options.map((n) => {
         const picked = chosen === n;
         const shade =
@@ -90,7 +90,7 @@ function ChoiceRow({
             type="button"
             disabled={chosen !== null}
             onClick={() => onChoose(n)}
-            className={`game-btn w-14 h-14 rounded-lg border-2 text-lg font-semibold ${shade}`}
+            className={`game-btn h-14 w-full rounded-lg border-2 text-lg font-semibold sm:w-14 ${shade}`}
             aria-label={`${n}`}
           >
             {n}
@@ -140,10 +140,15 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-6 shadow-md md:p-8">
-        <div className="mb-6 flex items-baseline justify-between">
-          <h2 className="text-2xl font-bold text-warm-800">Stig 0 — Markverðir stafir</h2>
-          <button onClick={onBack} className="text-sm text-warm-500 underline">
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
+        <div className="mb-6 flex items-baseline justify-between gap-3">
+          <h2 className="text-xl font-bold text-warm-800 sm:text-2xl">
+            Stig 0 — Markverðir stafir
+          </h2>
+          <button
+            onClick={onBack}
+            className="shrink-0 whitespace-nowrap text-sm text-warm-500 underline"
+          >
             Til baka
           </button>
         </div>
@@ -256,8 +261,9 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
               onChange={(e) => setEntry(e.target.value)}
               disabled={verdict !== null}
               placeholder="t.d. 2,50"
+              autoComplete="off"
               aria-label="Svarið þitt"
-              className="w-48 rounded-lg border-2 border-warm-300 px-4 py-2 text-lg"
+              className="w-36 rounded-lg border-2 border-warm-300 px-4 py-2 text-lg sm:w-48"
             />
             {verdict === null && (
               <button

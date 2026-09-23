@@ -203,7 +203,7 @@ function SingleStepCancellation({
       {/* Cancellation explanation */}
       {animationPhase === 'done' && isCorrect && (
         <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-          <div className="flex items-center justify-center gap-2 mb-3">
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
             <span className="text-red-400 line-through">mL</span>
             <span className="text-warm-600">og</span>
             <span className="text-red-400 line-through">mL</span>

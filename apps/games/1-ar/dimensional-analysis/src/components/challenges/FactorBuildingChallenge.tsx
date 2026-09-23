@@ -136,7 +136,7 @@ export function FactorBuildingChallenge({ onComplete, onAttempt }: FactorBuildin
               <button
                 key={idx}
                 onClick={() => handleBlockClick(block)}
-                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-bold transition-colors border-2 text-sm sm:text-base ${
+                className={`px-4 sm:px-6 py-3 rounded-lg font-bold transition-colors border-2 text-sm sm:text-base ${
                   (numerator?.value === block.value && numerator?.unit === block.unit) ||
                   (denominator?.value === block.value && denominator?.unit === block.unit)
                     ? 'bg-orange-200 border-orange-400 text-orange-800'

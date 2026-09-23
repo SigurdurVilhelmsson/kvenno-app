@@ -1,10 +1,12 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
+import { DECIMAL_INPUT_PROPS } from '@shared/utils';
 
 import { level3Challenges } from '../data/challenges';
 import { isAnswerCorrect, parseStudentNumber } from '../utils/grading';
 import { buildLevel3Run } from '../utils/level3Run';
+import { revealTop, useRevealTopOnChange } from '../utils/reveal';
 import {
   scoreExplanation,
   calculateCompositeScore,
@@ -76,6 +78,19 @@ export function Level3({
   const [scores, setScores] = useState<ScoreResult | null>(null);
   const [, setHintUsed] = useState(false);
   const [showHint, setShowHint] = useState(false);
+
+  // After submitting, the answer form collapses and the page gets shorter. On a
+  // short screen (a phone on its side) that leaves the verdict scrolled off the
+  // top, so the student sees only the tail of the feedback. Bring its top back.
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (showFeedback) revealTop(feedbackRef.current);
+  }, [showFeedback]);
+
+  // The button that moves on sits at the foot of a screen taller than a phone,
+  // so the intro's "Byrja" and each "Næsta" used to open the next problem with
+  // its context already scrolled past. Open it at its top instead.
+  const topRef = useRevealTopOnChange<HTMLDivElement>(showIntro ? 'intro' : currentProblemIndex);
 
   // A run drawn from the pool, not the whole pool: see `buildLevel3Run`.
   // Drawn once per mount, so returning to the level mid-run keeps the run.
@@ -255,7 +270,10 @@ export function Level3({
 
   if (showIntro) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white p-4">
+      <div
+        ref={topRef}
+        className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+      >
         <div className="max-w-3xl mx-auto">
           <div className="mb-4">
             <button
@@ -266,12 +284,12 @@ export function Level3({
             </button>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
-            <h2 className="text-2xl font-bold text-warm-800 text-center">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 space-y-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-warm-800 text-center">
               Einingagreining í raunveruleikanum
             </h2>
 
-            <div className="bg-purple-50 rounded-xl p-6 border-l-4 border-purple-500">
+            <div className="bg-purple-50 rounded-xl p-4 sm:p-6 border-l-4 border-purple-500">
               <h3 className="font-bold text-purple-800 mb-3">Af hverju þetta stig?</h3>
               <p className="text-warm-700">
                 Þú hefur lært <strong>hvernig</strong> einingar styttast út og hvernig
@@ -310,7 +328,7 @@ export function Level3({
               </div>
             </div>
 
-            <div className="bg-amber-50 rounded-xl p-6 border-l-4 border-amber-500">
+            <div className="bg-amber-50 rounded-xl p-4 sm:p-6 border-l-4 border-amber-500">
               <h3 className="font-bold text-amber-800 mb-2">Vísbendingar alltaf í boði</h3>
               <p className="text-warm-700 text-sm">
                 Þú getur alltaf beðið um vísbendingu án þess að það hafi áhrif á einkunn. Skrifaðu
@@ -348,7 +366,10 @@ export function Level3({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white p-4">
+    <div
+      ref={topRef}
+      className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+    >
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
@@ -374,14 +395,14 @@ export function Level3({
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6 overflow-hidden">
           <div
             className="bg-purple-500 h-2 rounded-full transition-all duration-500"
             style={{ width: `${(progress.problemsCompleted / 10) * 100}%` }}
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
           {/* Problem type badge */}
           <div className="mb-4 flex items-center gap-3">
             <span className="px-4 py-2 bg-purple-100 text-purple-800 rounded-xl text-sm font-bold">
@@ -397,17 +418,19 @@ export function Level3({
             </span>
           </div>
 
-          <h2 className="text-2xl font-bold mb-6 text-warm-800">{problem.prompt}</h2>
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-warm-800">
+            {problem.prompt}
+          </h2>
 
           {/* Display problem-specific context */}
           {problem.type === 'synthesis' && problem.density && (
-            <div className="mb-6 p-5 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200">
+            <div className="mb-6 p-4 sm:p-5 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200">
               <p className="text-sm font-bold text-purple-800 mb-3 flex items-center gap-2">
                 <span className="text-lg">📊</span> Gefnar upplýsingar:
               </p>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
                 {problem.startValue && problem.startUnit && (
-                  <div className="bg-white p-3 rounded-lg">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
                     <p className="text-xs text-warm-500">{problem.startLabel ?? 'Rúmmál'}</p>
                     <p className="font-bold text-purple-700">
                       {problem.startValue} {problem.startUnit}
@@ -415,7 +438,7 @@ export function Level3({
                   </div>
                 )}
                 {problem.density && problem.densityUnit && (
-                  <div className="bg-white p-3 rounded-lg">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
                     <p className="text-xs text-warm-500">{problem.factorLabel ?? 'Eðlismassi'}</p>
                     <p className="font-bold text-purple-700">
                       {problem.density} {problem.densityUnit}
@@ -423,13 +446,13 @@ export function Level3({
                   </div>
                 )}
                 {problem.targetUnit && (
-                  <div className="bg-white p-3 rounded-lg">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
                     <p className="text-xs text-warm-500">Markeining</p>
                     <p className="font-bold text-green-700">{problem.targetUnit}</p>
                   </div>
                 )}
                 {problem.significantFigures && (
-                  <div className="bg-white p-3 rounded-lg">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
                     <p className="text-xs text-warm-500">Markverðir stafir</p>
                     <p className="font-bold text-blue-700">{problem.significantFigures}</p>
                   </div>
@@ -439,13 +462,13 @@ export function Level3({
           )}
 
           {problem.type === 'real_world' && (problem.startValue || problem.portionSize) && (
-            <div className="mb-6 p-5 bg-gradient-to-r from-green-50 to-teal-50 rounded-xl border border-green-200">
+            <div className="mb-6 p-4 sm:p-5 bg-gradient-to-r from-green-50 to-teal-50 rounded-xl border border-green-200">
               <p className="text-sm font-bold text-green-800 mb-3 flex items-center gap-2">
                 <span className="text-lg">📊</span> Gefnar upplýsingar:
               </p>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
                 {problem.startValue && problem.startUnit && (
-                  <div className="bg-white p-3 rounded-lg">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
                     <p className="text-xs text-warm-500">{problem.startLabel ?? 'Heildarmagn'}</p>
                     <p className="font-bold text-green-700">
                       {problem.startValue} {problem.startUnit}
@@ -453,7 +476,7 @@ export function Level3({
                   </div>
                 )}
                 {problem.portionSize && problem.portionUnit && (
-                  <div className="bg-white p-3 rounded-lg">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
                     <p className="text-xs text-warm-500">
                       {problem.portionLabel ?? 'Skammtastærð'}
                     </p>
@@ -467,12 +490,14 @@ export function Level3({
           )}
 
           {problem.type === 'error_analysis' && problem.incorrectWork && (
-            <div className="mb-6 p-5 bg-gradient-to-r from-red-50 to-orange-50 rounded-xl border border-red-200">
+            <div className="mb-6 p-4 sm:p-5 bg-gradient-to-r from-red-50 to-orange-50 rounded-xl border border-red-200">
               <p className="text-sm font-bold text-red-800 mb-2 flex items-center gap-2">
                 <span className="text-lg">⚠️</span> Röng vinna:
               </p>
               <div className="bg-white p-4 rounded-lg border-2 border-red-200">
-                <p className="font-mono text-red-700 text-lg">{problem.incorrectWork}</p>
+                <p className="font-mono text-red-700 text-base sm:text-lg">
+                  {problem.incorrectWork}
+                </p>
               </div>
             </div>
           )}
@@ -487,16 +512,16 @@ export function Level3({
                     <button
                       key={idx}
                       onClick={() => setSelectedOption(idx)}
-                      className={`w-full p-5 rounded-xl border-2 text-left transition-all ${
+                      className={`w-full p-4 sm:p-5 rounded-xl border-2 text-left transition-all ${
                         selectedOption === idx
                           ? 'border-purple-500 bg-purple-50 shadow-md'
                           : 'border-warm-200 hover:border-purple-300 hover:bg-warm-50'
                       }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium">{option.text}</span>
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="font-medium min-w-0">{option.text}</span>
                         <span
-                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                          className={`shrink-0 whitespace-nowrap px-3 py-1 rounded-full text-sm font-semibold ${
                             selectedOption === idx
                               ? 'bg-purple-200 text-purple-800'
                               : 'bg-warm-100 text-warm-600'
@@ -525,7 +550,7 @@ export function Level3({
                     <button
                       key={idx}
                       onClick={() => setSelectedPath(idx)}
-                      className={`w-full p-5 rounded-xl border-2 text-left transition-all ${
+                      className={`w-full p-4 sm:p-5 rounded-xl border-2 text-left transition-all ${
                         selectedPath === idx
                           ? 'border-purple-500 bg-purple-50 shadow-md'
                           : 'border-warm-200 hover:border-purple-300 hover:bg-warm-50'
@@ -548,13 +573,21 @@ export function Level3({
               )}
 
               {/* Answer input */}
-              <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl border-2 border-purple-200">
+              <div className="p-3 sm:p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl border-2 border-purple-200">
                 <label className="block font-bold mb-3 text-warm-800">
                   {problem.type === 'error_analysis' ? 'Hvað er rétta svarið?' : 'Þitt svar:'}
                 </label>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
                   <input
-                    type="text"
+                    {...(problem.type === 'derivation' && problem.scientificNotation
+                      ? {
+                          type: 'text',
+                          autoCapitalize: 'none',
+                          autoCorrect: 'off',
+                          spellCheck: false,
+                        }
+                      : DECIMAL_INPUT_PROPS)}
+                    autoComplete="off"
                     value={userAnswer}
                     onChange={(e) => setUserAnswer(e.target.value)}
                     placeholder={
@@ -562,13 +595,13 @@ export function Level3({
                         ? 't.d. 4.2e5'
                         : 'Sláðu inn svar'
                     }
-                    className="flex-1 p-4 border-2 border-warm-300 rounded-xl font-mono text-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden transition-all"
+                    className="flex-1 p-3 sm:p-4 border-2 border-warm-300 rounded-xl font-mono text-lg sm:text-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden transition-all"
                   />
                   {problem.type !== 'reverse' &&
                     problem.type !== 'error_analysis' &&
                     'targetUnit' in problem &&
                     problem.targetUnit && (
-                      <div className="px-4 py-3 bg-green-100 text-green-800 rounded-xl font-bold text-lg">
+                      <div className="shrink-0 whitespace-nowrap px-3 sm:px-4 py-2 sm:py-3 bg-green-100 text-green-800 rounded-xl font-bold text-base sm:text-lg">
                         {problem.targetUnit}
                       </div>
                     )}
@@ -634,7 +667,8 @@ export function Level3({
           {/* Feedback */}
           {showFeedback && scores && (
             <div
-              className={`p-6 rounded-xl border-2 ${
+              ref={feedbackRef}
+              className={`p-4 sm:p-6 rounded-xl border-2 scroll-mt-16 [@media(max-height:500px)]:scroll-mt-2 ${
                 scores.composite >= 0.75
                   ? 'bg-green-100 border-green-300'
                   : 'bg-yellow-100 border-yellow-300'
@@ -663,7 +697,7 @@ export function Level3({
               </div>
 
               {/* Simple feedback — no weighted scoring grid */}
-              <div className="bg-white p-5 rounded-xl text-center mb-6">
+              <div className="bg-white p-4 sm:p-5 rounded-xl text-center mb-6">
                 <p className="text-sm text-warm-600 mb-1">
                   {scores.answer >= 0.75 ? 'Svarið er rétt!' : 'Svarið er ekki alveg rétt'}
                 </p>
@@ -688,7 +722,7 @@ export function Level3({
                     {problem.possiblePaths.map((path, idx) => (
                       <div
                         key={idx}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-lg border ${
+                        className={`flex flex-wrap items-center gap-2 px-3 py-2 rounded-lg border ${
                           path.efficient
                             ? 'bg-green-50 border-green-300'
                             : 'bg-warm-50 border-warm-200'

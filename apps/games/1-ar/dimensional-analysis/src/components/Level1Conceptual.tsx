@@ -7,6 +7,7 @@ import { challenges, cancellationVariants, successMessages } from './challenges/
 import { EquivalenceChallenge } from './challenges/EquivalenceChallenge';
 import { FactorBuildingChallenge } from './challenges/FactorBuildingChallenge';
 import { OrientationChallenge } from './challenges/OrientationChallenge';
+import { useRevealTopOnChange } from '../utils/reveal';
 
 interface Level1Progress {
   questionsAnswered: number;
@@ -58,6 +59,12 @@ export function Level1Conceptual({
 
   const challenge = challenges[currentChallengeIndex];
 
+  // "Byrja!" and "Næsta áskorun" sit at the foot of a screen taller than a
+  // phone, so each new challenge opens at its top rather than mid-way down.
+  const topRef = useRevealTopOnChange<HTMLDivElement>(
+    showIntro ? 'intro' : showSummary ? 'summary' : currentChallengeIndex
+  );
+
   useEffect(() => {
     setShowSuccess(false);
     setHintTier(0);
@@ -104,12 +111,15 @@ export function Level1Conceptual({
 
   if (showIntro) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-4">
+      <div
+        ref={topRef}
+        className="min-h-screen bg-gradient-to-b from-green-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+      >
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-lg p-8 mt-8">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 mt-2 sm:mt-8">
             <div className="text-center mb-8">
               <div className="text-6xl mb-4">🔬</div>
-              <h1 className="text-3xl font-bold text-warm-800 mb-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-warm-800 mb-2">
                 Velkomin í Einingagreiningu!
               </h1>
               <p className="text-lg text-warm-600">Stig 1: Hugtök</p>
@@ -158,12 +168,15 @@ export function Level1Conceptual({
   if (showSummary) {
     const mastered = progress.questionsCorrect >= 5;
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-4">
+      <div
+        ref={topRef}
+        className="min-h-screen bg-gradient-to-b from-green-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+      >
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-lg p-8 mt-8">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 mt-2 sm:mt-8">
             <div className="text-center mb-8">
               <div className="text-6xl mb-4">{mastered ? '🎉' : '📚'}</div>
-              <h1 className="text-3xl font-bold text-warm-800 mb-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-warm-800 mb-2">
                 {mastered ? 'Frábært!' : 'Vel gert!'}
               </h1>
               <p className="text-lg text-warm-600">
@@ -236,7 +249,10 @@ export function Level1Conceptual({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-4">
+    <div
+      ref={topRef}
+      className="min-h-screen bg-gradient-to-b from-green-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+    >
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
@@ -265,9 +281,9 @@ export function Level1Conceptual({
         </div>
 
         {/* Main challenge card */}
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-warm-800 mb-2">{challenge.title}</h2>
-          <p className="text-lg text-warm-600 mb-6">{challenge.instruction}</p>
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-warm-800 mb-2">{challenge.title}</h2>
+          <p className="text-base sm:text-lg text-warm-600 mb-6">{challenge.instruction}</p>
 
           {/* Challenge content */}
           <div className="mb-6">
@@ -316,7 +332,7 @@ export function Level1Conceptual({
           {/* Success message with "Af hverju?" card */}
           {showSuccess && (
             <div className="mb-6 space-y-4">
-              <div className="p-6 bg-green-100 rounded-xl border-2 border-green-300">
+              <div className="p-4 sm:p-6 bg-green-100 rounded-xl border-2 border-green-300">
                 <h3 className="text-xl font-bold text-green-800 mb-2">Rétt!</h3>
                 <p className="text-green-700 mb-4">{successMessages[challenge.type]}</p>
               </div>

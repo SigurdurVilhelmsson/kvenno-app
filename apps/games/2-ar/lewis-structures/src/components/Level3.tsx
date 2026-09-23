@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+
+import { useRevealOnChange } from '../utils/useRevealOnChange';
 
 interface Level3Props {
   onComplete: (score: number) => void;
@@ -355,6 +357,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const [, setTotalHintsUsed] = useState(0);
 
   const challenge = challenges[currentChallenge];
+  const cardRef = useRef<HTMLDivElement>(null);
+  useRevealOnChange(cardRef, currentChallenge);
 
   const checkAnswer = () => {
     const correct = challenge.options?.find((opt) => opt.id === selectedAnswer)?.correct ?? false;
@@ -447,13 +451,13 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     return (
       <div className="flex items-center justify-center gap-2 py-4">
         {/* Bonding electrons on left */}
-        <div className="flex items-center">
+        <div className="flex items-center shrink-0">
           <div className="text-xs text-warm-500 mr-2">tengsl</div>
           {renderBonds(atom.bondingElectrons)}
         </div>
 
         {/* Atom with lone pairs */}
-        <div className="relative mx-4">
+        <div className="relative mx-2 sm:mx-4 shrink-0">
           <div className="w-16 h-16 rounded-full border-4 border-purple-500 bg-purple-100 flex items-center justify-center font-bold text-xl text-purple-800">
             {atom.symbol}
           </div>
@@ -465,7 +469,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         </div>
 
         {/* Electron count summary */}
-        <div className="text-xs text-warm-600 ml-4 text-left">
+        <div className="text-xs text-warm-600 ml-2 sm:ml-4 text-left whitespace-nowrap">
           <div>V = {atom.valenceElectrons}</div>
           <div>L = {atom.lonePairElectrons}</div>
           <div>B = {atom.bondingElectrons}</div>
@@ -579,7 +583,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
           >
             <span>&larr;</span> Til baka
           </button>
@@ -600,8 +604,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <h2 className="text-2xl font-bold text-purple-800 mb-2">{challenge.title}</h2>
+        <div ref={cardRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-purple-800 mb-2">{challenge.title}</h2>
 
           {challenge.molecule && (
             <div className="inline-block bg-purple-50 px-4 py-2 rounded-lg mb-4">
@@ -709,7 +713,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 setShowHint(true);
                 setTotalHintsUsed((prev) => prev + 1);
               }}
-              className="text-purple-600 hover:text-purple-800 text-sm underline mb-4"
+              className="text-purple-600 hover:text-purple-800 text-sm underline mb-4 pointer-coarse:min-h-11"
             >
               Sýna vísbendingu
             </button>
