@@ -55,10 +55,12 @@ function App() {
 
   const completed = useMemo(() => progress.completed ?? [], [progress.completed]);
 
+  // Kanna and Skilja end on "Áfram í Skilja" / "Áfram í Æfa", so those two go
+  // on to the phase they name; they used to drop the student on the menu.
   const markCompleted = useCallback(
-    (phase: Screen) => {
+    (phase: Screen, next: Screen = 'menu') => {
       if (!completed.includes(phase)) updateProgress({ completed: [...completed, phase] });
-      setScreen('menu');
+      setScreen(next);
     },
     [completed, updateProgress]
   );
@@ -92,7 +94,7 @@ function App() {
               <p className="mb-6 text-warm-600">
                 Þú kannt að stilla efnajöfnur. Hér bætist við spurningin sem efnajafnan svarar ekki:
                 hvað af því sem stendur í jöfnunni tók raunverulega þátt? Uppleyst jónaefni er ekki
-                heilt í vatninu — það er sundrað í lausar jónir — og oft er það aðeins tvær þeirra
+                heilt í vatninu — það er sundrað í lausar jónir — og oft eru það aðeins tvær þeirra
                 sem gera nokkuð.
               </p>
 
@@ -188,11 +190,11 @@ function App() {
         )}
 
         {screen === 'kanna' && (
-          <KannaScreen onComplete={() => markCompleted('kanna')} onBack={backToMenu} />
+          <KannaScreen onComplete={() => markCompleted('kanna', 'skilja')} onBack={backToMenu} />
         )}
 
         {screen === 'skilja' && (
-          <SkiljaScreen onComplete={() => markCompleted('skilja')} onBack={backToMenu} />
+          <SkiljaScreen onComplete={() => markCompleted('skilja', 'aefa')} onBack={backToMenu} />
         )}
 
         {screen === 'aefa' && (

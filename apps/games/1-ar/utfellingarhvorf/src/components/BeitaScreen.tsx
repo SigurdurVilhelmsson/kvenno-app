@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import { shuffleArray } from '@shared/utils';
+
 import { SCENARIOS } from '../data/problems';
 import { renderEquation, type Term } from '../engine/precipitation';
 import { reveal } from '../utils/reveal';
@@ -62,6 +64,12 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
       ].map((i) => i.formula),
     [reaction]
   );
+
+  // Every precipitating scenario is written with the precipitating cation in
+  // the first bottle, so in data order the answer to "Hvort efnið fellur út?"
+  // was always the left-hand button. Shuffle once per scenario; grading
+  // compares formulas, so nothing else depends on the order.
+  const productOptions = useMemo(() => shuffleArray(reaction.products), [reaction]);
 
   const expectedLeft = useMemo(() => {
     const map: Record<string, number> = {};
@@ -184,7 +192,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
           <div ref={stageRef}>
             <p className="mb-3 font-semibold text-warm-800">Hvort efnið fellur út?</p>
             <div className="flex gap-2 sm:gap-3">
-              {reaction.products.map((p) => (
+              {productOptions.map((p) => (
                 <button
                   key={p.formula}
                   type="button"

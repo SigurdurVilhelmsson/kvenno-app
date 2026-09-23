@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { SOLUBILITY_RULES } from '../data/ions';
 import { DRILL_ITEMS } from '../data/problems';
+import { decidingRules } from '../engine/precipitation';
 import { reveal } from '../utils/reveal';
 
 /**
@@ -11,6 +12,10 @@ import { reveal } from '../utils/reveal';
  * alone is a coin flip a student can win half the time; naming the rule is what
  * shows they read the anion and checked the exception list. The feedback
  * therefore names the rule whether they got the verdict right or wrong.
+ *
+ * Some compounds are settled by two rows at once — NaNO₃ by the group-1 row
+ * and by the nitrate row — and either is a right answer; `decidingRules` says
+ * which, and the feedback prints every one of them.
  *
  * The order is shuffled once per session rather than fixed. Four games on the
  * platform ship option arrays that look constant but shuffle at render, and two
@@ -59,8 +64,9 @@ export function AefaScreen({ onComplete, onBack }: Props) {
   const [correct, setCorrect] = useState(0);
 
   const item = items[index];
+  const rules = useMemo(() => decidingRules(item.salt), [item]);
   const verdictRight = answer === item.verdict.soluble;
-  const ruleRight = ruleId === item.verdict.rule.id;
+  const ruleRight = rules.some((r) => r.id === ruleId);
   const bothRight = verdictRight && ruleRight;
 
   const check = () => {
@@ -194,8 +200,8 @@ export function AefaScreen({ onComplete, onBack }: Props) {
             </p>
             <p className="text-sm text-warm-800">
               {item.salt.formula} er{' '}
-              <strong>{item.verdict.soluble ? 'leysanlegt' : 'óleysanlegt'}</strong>.{' '}
-              {item.verdict.rule.text} {item.verdict.rule.exceptionText}
+              <strong>{item.verdict.soluble ? 'leysanlegt' : 'óleysanlegt'}</strong>.
+              {rules.map((r) => ` ${r.text} ${r.exceptionText}`).join('')}
             </p>
             {item.verdict.byException && (
               <p className="mt-2 rounded border border-amber-300 bg-white p-2 text-sm text-amber-900">

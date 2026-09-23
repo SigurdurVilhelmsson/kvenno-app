@@ -15,7 +15,7 @@
  *
  * Nothing here stores a compound's solubility. `solubility()` in the engine
  * derives it from this table, so a verdict cannot disagree with the rule printed
- * beside it, and `rules.test.ts` asserts every anion in `IONS` is covered by
+ * beside it, and `precipitation.test.ts` asserts every anion in `ANIONS` is covered by
  * some rule — which is the Ag₂CrO₄ defect made structurally impossible rather
  * than patched.
  */
@@ -36,8 +36,8 @@ export interface Ion {
 }
 
 /**
- * Group-1 cations plus ammonium — the one row of the table with no exceptions
- * anywhere, and the reason `Na₂CO₃` is soluble while `CaCO₃` is not.
+ * Group-1 cations plus ammonium — the cation row of the table, which has no
+ * exceptions, and the reason `Na₂CO₃` is soluble while `CaCO₃` is not.
  */
 export const ALWAYS_SOLUBLE_CATIONS = ['Li⁺', 'Na⁺', 'K⁺', 'Rb⁺', 'Cs⁺', 'NH₄⁺'] as const;
 
@@ -99,10 +99,12 @@ export interface SolubilityRule {
  * The table, in the book's own order: the soluble rows first, then the
  * insoluble ones.
  *
- * The cation row comes first and is checked first, because it is the row with
- * no exceptions — every other row lists group 1 and ammonium among its own
- * exceptions, so putting it first makes those redundant rather than
- * contradictory.
+ * The cation row comes first and is checked first, because it has no
+ * exceptions — the two insoluble rows list group 1 and ammonium among their own
+ * exceptions, so putting it first makes those entries redundant rather than
+ * contradictory. That is a precedence, not the only right answer: where a
+ * soluble anion row settles a group-1 salt as well (NaNO₃, KCl, NaF), both rows
+ * are right, and `decidingRules()` in the engine returns both.
  */
 export const SOLUBILITY_RULES: SolubilityRule[] = [
   {

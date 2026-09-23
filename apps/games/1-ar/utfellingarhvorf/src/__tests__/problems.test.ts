@@ -63,6 +63,16 @@ describe('the scenario set teaches rather than just works', () => {
     expect(withCoefficients.length).toBeGreaterThanOrEqual(4);
   });
 
+  it('puts strontium and barium in the same group, not the same period', () => {
+    // Sr is period 5 and Ba period 6; they share group 2. `lota` is a period
+    // (a row) and `flokkur` a group (a column), as `ordabok.md` and the book
+    // both have it, so the sentence explaining why SrSO₄ behaves like BaSO₄
+    // has to say `flokki`.
+    const context = SCENARIOS.find((s) => s.id === 'srcl2-na2so4')!.context;
+    expect(context).toMatch(/í sama flokki og baríum/);
+    expect(context).not.toMatch(/lotu/);
+  });
+
   it('every scenario names where a student meets it', () => {
     for (const s of SCENARIOS) {
       expect(s.context.length, `${s.id} has no context`).toBeGreaterThan(40);

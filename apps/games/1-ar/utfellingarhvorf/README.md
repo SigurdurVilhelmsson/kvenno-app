@@ -1,6 +1,6 @@
 # Útfellingarhvörf
 
-**Status: complete and registered.** Four phases, 60 tests of its own, in `build-games.mjs`, on the
+**Status: complete and registered.** Four phases, 87 tests of its own, in `build-games.mjs`, on the
 hub, and in the Y1 `Námsleiðin` chain between Stilla efnajöfnur and Takmarkandi.
 
 Phase 5 of the games roadmap. The third of the four confirmed curriculum gaps to close, after
@@ -135,7 +135,7 @@ src/data/ions.ts               ions, charges, and the school's solubility table
 src/engine/precipitation.ts    formulas, verdicts, balancing, the three equations
 src/data/problems.ts           17 scenarios as ion pairs; 24 drill compounds
 src/components/                KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen
-src/__tests__/                 60 tests across precipitation and problems
+src/__tests__/                 the engine, the data, the graders, and the screens played through
 ```
 
 The engine is exercised over **every** soluble pairing in the pool, not just the shipped scenarios —
@@ -143,15 +143,28 @@ several hundred reactions, each checked for atom balance, charge balance, reduce
 a net ionic equation containing no spectator. A new ion is therefore tested the moment it is
 declared.
 
+## Its Year-3 sibling
+
+Ksp was the sibling gap, and `3-ar/leysnijafnvaegi` closed it on 2026-09-20. This game asks the
+qualitative question ("does a precipitate form, by rule?", Brown 4.2); that one asks the
+quantitative one ("by Q vs Ksp?", 17.6), and the two share anchor compounds on purpose. One anchor
+does not cross: PbI₂, this game's worked example, has no Appendix D row, so Leysnijafnvægi carries
+no Ksp for it — see its README.
+
 ## Open
 
-- **Ksp is the sibling gap and is still unbuilt.** This game is the qualitative question ("does a
-  precipitate form, by rule?", Brown 4.2); `solubility-equilibrium` in the frozen repo is the
-  quantitative one ("by Q vs Ksp?", 17.6), and they share anchor compounds. The Ksp terminology is
-  already ruled and unused: `leysnimargfeldi`, `samjónahrif`, `mólarleysni`, `hlutfelling`.
 - **Precipitate colours are named in prose, not rendered.** The beaker has three states. The colours
   a student actually sees are in the context sentences instead;
-  `solubility-equilibrium/src/data/compounds.ts` has colour data for twenty compounds if that is
-  ever wanted.
+  `solubility-equilibrium/src/data/compounds.ts` in the frozen `namsbokasafn-leikir` repo has colour
+  data for twenty compounds if that is ever wanted.
 - **Acetate, bicarbonate and chlorate are in the book's table but not in the ion pool.** Nothing
   needs them yet, and each would need a name ruling before it could be rendered.
+- **Which rule "decides" a group-1 carbonate, chromate, phosphate or sulfide is Siggi's call.**
+  Æfa asks "Hvaða regla ræður því?" and accepts every row whose own statement settles the compound
+  (`decidingRules` in `src/engine/precipitation.ts`) — so NaNO₃ takes the group-1 row or the nitrate
+  row, and KCl and NaF likewise. Until 2026-09-23 only the group-1 row was accepted, and the
+  student who chose the nitrate row was told another rule decided it. Still rejected: the carbonate
+  row for Na₂CO₃ (and the same for K₂CrO₄, Na₃PO₄ and (NH₄)₂S), which reaches the right answer only
+  through its exception clause while the group-1 row settles it directly. BaSO₄ is already graded
+  right through the sulfate row's exception, so there is a case for accepting the carbonate row
+  too; `aefa-rule-grading.test.tsx` pins the current line.
