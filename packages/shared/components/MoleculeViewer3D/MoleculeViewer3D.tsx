@@ -383,7 +383,8 @@ function MoleculeScene({
 /**
  * Loading fallback component
  */
-function LoadingFallback({ text = 'Loading 3D viewer...' }: { text?: string }) {
+// Same wording as MoleculeViewer3DLazy's placeholder ("Sæki", not "Hleð" — see there).
+function LoadingFallback({ text = 'Sæki þrívíddarsýn…' }: { text?: string }) {
   return (
     <Html center>
       <div className="text-gray-500 text-sm">{text}</div>
@@ -514,6 +515,12 @@ export function MoleculeViewer3D({
       style={{
         width: typeof width === 'number' ? `${width}px` : width,
         height: typeof height === 'number' ? `${height}px` : height,
+        // On a phone the canvas takes every one-finger drag for rotation (OrbitControls sets
+        // touch-action: none), so the page can only be scrolled from outside it. Never wider
+        // than its container, and never taller than 60% of the viewport, so there is always
+        // page left to scroll by — in landscape (360 px tall) that caps it near 216 px.
+        maxWidth: '100%',
+        maxHeight: '60vh',
         backgroundColor,
       }}
     >
@@ -536,6 +543,13 @@ export function MoleculeViewer3D({
           enablePan={true}
           enableZoom={true}
           enableRotate={true}
+          // Touch: one finger rotates, two fingers pinch-zoom (and twist). The default two-finger
+          // gesture also pans, which on a phone slides the molecule out of view with no way back
+          // (the R reset key needs a keyboard). Mouse right-drag panning is unchanged.
+          touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE }}
+          // A pinch overshoots easily; keep the molecule between filling the view and a speck.
+          minDistance={2}
+          maxDistance={15}
         />
       </Canvas>
     </div>

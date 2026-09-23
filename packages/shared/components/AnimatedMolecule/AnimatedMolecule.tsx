@@ -9,7 +9,7 @@
  * - Size variants
  */
 
-import { useMemo } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import type { AnimatedMoleculeProps } from '@shared/types';
 
@@ -39,6 +39,44 @@ import {
 } from './MoleculeLonePair';
 import { useMoleculeAnimation, MOLECULE_KEYFRAMES } from './useMoleculeAnimation';
 
+/**
+ * Largest boost applied to label text when the drawing is shrunk to fit a narrow container.
+ * A `lg` molecule squeezed into a 320 px phone renders at ~0.78×, which takes its 11 px carbon
+ * numbering down to ~8.7 px; 1.3× brings it back while staying inside the atom circles.
+ */
+const MAX_FONT_BOOST = 1.3;
+
+/**
+ * Text scale that cancels out how far CSS has shrunk the drawing: 1 when it renders at its
+ * natural width (so desktop is untouched), up to MAX_FONT_BOOST when it is squeezed.
+ */
+export function fontBoostFor(renderedWidth: number, naturalWidth: number): number {
+  if (!(renderedWidth > 0) || renderedWidth >= naturalWidth) return 1;
+  return Math.min(naturalWidth / renderedWidth, MAX_FONT_BOOST);
+}
+
+/** Tracks the rendered width of the SVG, which `max-width: 100%` may make narrower than its viewBox. */
+function useRenderedWidth(ref: React.RefObject<SVGSVGElement | null>): number {
+  const [renderedWidth, setRenderedWidth] = useState(0);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const measure = () => {
+      const next = el.getBoundingClientRect().width;
+      setRenderedWidth((prev) => (Math.abs(prev - next) < 0.5 ? prev : next));
+    };
+    measure();
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', measure);
+      return () => window.removeEventListener('resize', measure);
+    }
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [ref]);
+  return renderedWidth;
+}
+
 export function AnimatedMolecule({
   molecule,
   mode = 'simple',
@@ -62,7 +100,13 @@ export function AnimatedMolecule({
 }: AnimatedMoleculeProps) {
   // Get size configuration
   const sizeConfig = getSizeConfig(size);
-  const { width, height, atomRadius, bondWidth, fontSize } = sizeConfig;
+  const { width, height, atomRadius, bondWidth } = sizeConfig;
+
+  // The SVG scales down to fit a phone (max-width: 100%); its label text is boosted by the
+  // same factor so it stays legible. Geometry keeps using the unboosted size.
+  const svgRef = useRef<SVGSVGElement>(null);
+  const renderedWidth = useRenderedWidth(svgRef);
+  const fontSize = sizeConfig.fontSize * fontBoostFor(renderedWidth, width);
 
   // Ensure all atoms have IDs
   const atomsWithIds = useMemo(() => ensureAtomIds(molecule.atoms), [molecule.atoms]);
@@ -285,9 +329,12 @@ export function AnimatedMolecule({
 
   return (
     <svg
+      ref={svgRef}
       width={width}
       height={height}
       viewBox={`0 0 ${width} ${height}`}
+      // Shrinks to a narrow container instead of overflowing it; height follows the viewBox.
+      style={{ maxWidth: '100%', height: 'auto' }}
       className={`animated-molecule ${className}`}
       role="img"
       aria-label={accessibleLabel}

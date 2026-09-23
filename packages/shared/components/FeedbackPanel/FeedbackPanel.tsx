@@ -169,12 +169,16 @@ export function FeedbackPanel({
           {/* Expandable explanation */}
           {config.showExplanation && feedback.explanation && (
             <div className="mt-2">
+              {/* On touch the padding grows the target to 44 px and the equal
+                  negative margin gives the space back, so the panel does not
+                  move. */}
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 className={`
                   text-sm ${classes.text} opacity-75
                   hover:opacity-100 transition-opacity
                   flex items-center gap-1
+                  pointer-coarse:py-3 pointer-coarse:-my-3
                 `}
                 type="button"
                 aria-expanded={isExpanded}
@@ -219,21 +223,36 @@ export function FeedbackPanel({
               <div className="mt-3">
                 <span className={`text-xs ${classes.text} opacity-75`}>Tengd efni:</span>
                 <div className="flex flex-wrap gap-2 mt-1">
-                  {feedback.relatedConcepts.map((concept) => (
-                    <button
-                      key={concept}
-                      onClick={() => handleConceptClick(concept)}
-                      className={`
-                        px-2 py-1 rounded-full
-                        text-xs font-medium
-                        bg-white/70 ${classes.text}
-                        hover:bg-white transition-colors
-                      `}
-                      type="button"
-                    >
-                      {concept}
-                    </button>
-                  ))}
+                  {feedback.relatedConcepts.map((concept) =>
+                    // A chip is a button only when tapping it does something.
+                    onConceptClick ? (
+                      <button
+                        key={concept}
+                        onClick={() => handleConceptClick(concept)}
+                        className={`
+                          px-2 py-1 rounded-full
+                          text-xs font-medium
+                          bg-white/70 ${classes.text}
+                          hover:bg-white transition-colors
+                          pointer-coarse:min-h-11
+                        `}
+                        type="button"
+                      >
+                        {concept}
+                      </button>
+                    ) : (
+                      <span
+                        key={concept}
+                        className={`
+                          px-2 py-1 rounded-full
+                          text-xs font-medium text-center
+                          bg-white/70 ${classes.text}
+                        `}
+                      >
+                        {concept}
+                      </span>
+                    )
+                  )}
                 </div>
               </div>
             )}
@@ -260,6 +279,7 @@ export function FeedbackPanel({
               ${classes.text} opacity-50
               hover:opacity-100 transition-opacity
               flex-shrink-0 p-1
+              pointer-coarse:min-w-11 pointer-coarse:min-h-11 pointer-coarse:-mt-2 pointer-coarse:-mr-2
             `}
             type="button"
             aria-label="Loka"

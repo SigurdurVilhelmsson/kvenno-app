@@ -85,7 +85,9 @@ export class ErrorBoundary extends Component<Props, State> {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '2rem',
+            // 2rem from 640 px up, as before; less on a phone, where two
+            // 2rem paddings left the buttons 190 px to sit side by side in.
+            padding: 'clamp(1rem, 5vw, 2rem)',
             backgroundColor: '#f8f9fa',
           }}
         >
@@ -95,7 +97,7 @@ export class ErrorBoundary extends Component<Props, State> {
               width: '100%',
               backgroundColor: 'white',
               borderRadius: '0.5rem',
-              padding: '2rem',
+              padding: 'clamp(1rem, 5vw, 2rem)',
               boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
             }}
           >
@@ -156,7 +158,7 @@ export class ErrorBoundary extends Component<Props, State> {
               </details>
             )}
 
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
               <button
                 onClick={() => window.location.reload()}
                 style={{

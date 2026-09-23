@@ -43,7 +43,7 @@ export function ChemistryHub() {
   return (
     <>
       {/* Breadcrumbs */}
-      <div className="py-4">
+      <div className="py-3 md:py-4">
         <Breadcrumbs items={breadcrumbItems} />
       </div>
 
@@ -52,32 +52,35 @@ export function ChemistryHub() {
         as="a"
         href="/"
         variant="secondary"
-        className="mb-8 no-underline"
+        className="mb-6 md:mb-8 no-underline"
         aria-label="Fara til baka á heimasíðu"
       >
         &larr; Til baka
       </Button>
 
       {/* Intro Section */}
-      <Card variant="elevated" padding="lg" className="text-center mb-12">
-        <h1 className="font-heading text-kvenno-orange text-4xl md:text-[2.5rem] font-bold mb-4">
+      <Card variant="elevated" padding="none" className="text-center p-6 md:p-8 mb-8 md:mb-12">
+        <h1 className="font-heading text-kvenno-orange text-3xl md:text-[2.5rem] md:leading-[calc(2.5/2.25)] font-bold mb-4">
           Efnafræði
         </h1>
-        <p className="text-lg text-warm-500 max-w-[800px] mx-auto">
+        <p className="text-base md:text-lg text-warm-500 max-w-[800px] mx-auto">
           Safn af gagnvirkum verkfærum fyrir efnafræðikennslu við Kvennaskólann í Reykjavík. Veldu
           áfanga hér að neðan til að skoða tiltæk verkfæri.
         </p>
       </Card>
 
-      {/* Navigation Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-8 mb-12">
+      {/* Navigation Grid. Shorter tiles on phones and two columns on a phone held
+          sideways (sm:); md: restores the desktop grid and tile size. */}
+      <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4 md:gap-8 mb-12">
         {navTiles.map((tile) => (
           <Link
             key={tile.to}
             to={tile.to}
-            className="bg-surface-raised border-2 border-kvenno-orange rounded-card py-12 px-8 text-center no-underline text-warm-800 shadow-md cursor-pointer transition-all duration-200 ease-out hover:bg-kvenno-orange hover:text-white hover:-translate-y-0.5 hover:shadow-orange group"
+            className="bg-surface-raised border-2 border-kvenno-orange rounded-card py-8 px-5 md:py-12 md:px-8 text-center no-underline text-warm-800 shadow-md cursor-pointer transition-all duration-200 ease-out hover:bg-kvenno-orange hover:text-white hover:-translate-y-0.5 hover:shadow-orange group"
           >
-            <h2 className="font-heading text-[2rem] font-bold mb-2">{tile.title}</h2>
+            <h2 className="font-heading text-[1.75rem] md:text-[2rem] font-bold mb-2">
+              {tile.title}
+            </h2>
             <p className="text-base opacity-80">{tile.description}</p>
           </Link>
         ))}

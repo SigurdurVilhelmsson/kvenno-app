@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 import { FeedbackPanel } from '../FeedbackPanel';
 
@@ -62,5 +62,42 @@ describe('FeedbackPanel', () => {
 
     expect(screen.queryByText(EXPLANATION)).toBeNull();
     expect(screen.getByText(/Undirvísitalan gildir aðeins/)).toBeDefined();
+  });
+
+  it('shows related concepts as plain labels when tapping them does nothing', () => {
+    // No game passes onConceptClick, and a button that does nothing is a dead
+    // tap target on a phone and a false promise to a screen reader.
+    render(
+      <FeedbackPanel
+        feedback={{ isCorrect: true, explanation: EXPLANATION, relatedConcepts: ['Mólmassi'] }}
+      />
+    );
+
+    expect(screen.getByText('Mólmassi').tagName).toBe('SPAN');
+    expect(screen.queryByRole('button', { name: 'Mólmassi' })).toBeNull();
+  });
+
+  it('makes related concepts buttons when a call site handles them', () => {
+    const onConceptClick = vi.fn();
+    render(
+      <FeedbackPanel
+        feedback={{ isCorrect: true, explanation: EXPLANATION, relatedConcepts: ['Mólmassi'] }}
+        onConceptClick={onConceptClick}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Mólmassi' }));
+
+    expect(onConceptClick).toHaveBeenCalledWith('mólmassi');
+  });
+
+  it('grows the "Af hverju?" toggle to a 44 px target on touch without moving the panel', () => {
+    render(<FeedbackPanel feedback={{ isCorrect: false, explanation: EXPLANATION }} />);
+
+    const toggle = screen.getByRole('button', { name: /Af hverju/ });
+    // 20 px of text + 2 × 12 px padding = 44 px; the equal negative margin
+    // hands the added space back, so the layout is the same as on desktop.
+    expect(toggle.className).toContain('pointer-coarse:py-3');
+    expect(toggle.className).toContain('pointer-coarse:-my-3');
   });
 });

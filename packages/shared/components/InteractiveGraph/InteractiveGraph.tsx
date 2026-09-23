@@ -1,8 +1,57 @@
-import React, { useRef, useEffect, useCallback, useState } from 'react';
+import React, { useRef, useEffect, useCallback, useState, useMemo } from 'react';
 
 import type { InteractiveGraphProps, DataPoint, DataSeries, Margin } from './types';
+import { canvasPixelRatio, useContainerWidth } from '../ResponsiveContainer/ResponsiveContainer';
 
 const DEFAULT_MARGIN: Margin = { top: 30, right: 30, bottom: 50, left: 60 };
+
+/** The canvas has a 2px CSS border (`border-2`) outside its drawing area. */
+const CANVAS_BORDER = 2;
+/**
+ * When the graph has to shrink to fit a phone, its height shrinks with it only down to this
+ * floor. A 500×300 graph scaled to 210 px wide would otherwise be 126 px tall, leaving a pH axis
+ * about 45 px high for fourteen units.
+ */
+const NARROW_MIN_HEIGHT = 260;
+/** Below this width the margins are fitted to the labels instead of the desktop defaults. */
+const COMPACT_WIDTH = 420;
+/** How close (CSS px) a pointer must be to a data point to pick it: a fingertip is not a cursor. */
+const HOVER_RADIUS_MOUSE = 20;
+const HOVER_RADIUS_TOUCH = 32;
+
+/**
+ * Draw every n-th tick label so neighbours never overlap when a narrow graph packs the ticks
+ * closer than the labels are wide. Grid lines are still drawn at every tick. Returns 1 (every
+ * label) whenever there is room, so a desktop-sized graph is unchanged.
+ */
+export function labelEvery(pixelsPerTick: number, labelExtent: number): number {
+  if (!(pixelsPerTick > 0)) return 1;
+  return Math.max(1, Math.ceil(labelExtent / pixelsPerTick));
+}
+
+/**
+ * The size the graph is drawn at. `width`/`height` are the preferred size; in a narrower
+ * container the graph is drawn at the width it actually has — never CSS-scaled, which would
+ * shrink the labels with it — and its height keeps the aspect ratio down to a readable floor.
+ */
+export function fitGraphSize(
+  requestedWidth: number,
+  requestedHeight: number,
+  availableWidth: number | null
+): { width: number; height: number } {
+  // A container that fits the requested drawing width keeps the requested size exactly, as
+  // before this component was responsive (its 2px border was always allowed to sit just
+  // outside). Only a narrower container shrinks the graph, and then border included.
+  if (availableWidth === null || availableWidth >= requestedWidth) {
+    return { width: requestedWidth, height: requestedHeight };
+  }
+  const width = Math.max(120, Math.floor(availableWidth - 2 * CANVAS_BORDER));
+  const height = Math.max(
+    Math.round((requestedHeight * width) / requestedWidth),
+    Math.min(requestedHeight, NARROW_MIN_HEIGHT)
+  );
+  return { width, height };
+}
 
 /**
  * InteractiveGraph - A reusable canvas-based graph component
@@ -26,8 +75,8 @@ const DEFAULT_MARGIN: Margin = { top: 30, right: 30, bottom: 50, left: 60 };
  * ```
  */
 export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
-  width = 600,
-  height = 400,
+  width: requestedWidth = 600,
+  height: requestedHeight = 400,
   series,
   xAxis,
   yAxis,
@@ -45,6 +94,8 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
   ariaLabel = 'Graf',
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const availableWidth = useContainerWidth(rootRef);
   const [hoveredPoint, setHoveredPoint] = useState<{
     point: DataPoint;
     series: DataSeries;
@@ -52,7 +103,33 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
     screenY: number;
   } | null>(null);
 
-  const margin = DEFAULT_MARGIN;
+  const { width, height } = fitGraphSize(requestedWidth, requestedHeight, availableWidth);
+  const pixelRatio = canvasPixelRatio();
+
+  const margin = useMemo<Margin>(() => {
+    if (width >= COMPACT_WIDTH) return DEFAULT_MARGIN;
+    // Fit the left margin to the widest y tick label (plus the rotated axis title), and give
+    // the right margin back to the plot. Measured in the font the labels are drawn in.
+    const yInterval = yAxis.tickInterval || (yAxis.max - yAxis.min) / 10;
+    const yFormat = yAxis.tickFormat || ((v: number) => v.toString());
+    const ctx = document.createElement('canvas').getContext('2d');
+    let widest = 28;
+    if (ctx) {
+      ctx.font = '12px sans-serif';
+      widest = 0;
+      for (let y = yAxis.min; y <= yAxis.max; y += yInterval) {
+        widest = Math.max(widest, ctx.measureText(yFormat(y)).width);
+      }
+    }
+    return {
+      top: DEFAULT_MARGIN.top,
+      right: 16,
+      bottom: DEFAULT_MARGIN.bottom,
+      // 34 = the 8px tick gap + the rotated title, which reaches x ≈ 19 with its descenders
+      // (it is drawn on x = 15), + a few px of air so "(kJ/mol)" does not touch "-500".
+      left: Math.min(DEFAULT_MARGIN.left, Math.max(40, Math.ceil(widest + 34))),
+    };
+  }, [width, yAxis]);
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
 
@@ -73,11 +150,14 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
 
   // Find nearest point to cursor
   const findNearestPoint = useCallback(
-    (mouseX: number, mouseY: number): { point: DataPoint; series: DataSeries } | null => {
+    (
+      mouseX: number,
+      mouseY: number,
+      maxDistance: number = HOVER_RADIUS_MOUSE
+    ): { point: DataPoint; series: DataSeries } | null => {
       let nearestPoint: DataPoint | null = null;
       let nearestSeries: DataSeries | null = null;
       let nearestDistance = Infinity;
-      const maxDistance = 20; // pixels
 
       series.forEach((s) => {
         s.data.forEach((point) => {
@@ -105,6 +185,9 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
+    // Draw in CSS px on a devicePixelRatio-sized bitmap (crisp on phone screens).
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
     // Clear canvas
     ctx.clearRect(0, 0, width, height);
@@ -210,7 +293,10 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
         ctx.fillStyle = line.color;
         ctx.font = 'bold 11px sans-serif';
         const labelY = line.labelPosition === 'top' ? margin.top + 15 : height - margin.bottom - 5;
-        ctx.fillText(line.label, screenX - ctx.measureText(line.label).width / 2, labelY);
+        const labelWidth = ctx.measureText(line.label).width;
+        // Kept inside the canvas: near an edge of a narrow graph a centred label is cut off.
+        const labelX = Math.min(Math.max(screenX - labelWidth / 2, 2), width - labelWidth - 2);
+        ctx.fillText(line.label, labelX, labelY);
       }
     });
 
@@ -243,7 +329,14 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
     ctx.font = '12px sans-serif';
     const xTickInterval = xAxis.tickInterval || (xAxis.max - xAxis.min) / 10;
     const xFormat = xAxis.tickFormat || ((v) => v.toString());
+    let widestX = 0;
     for (let x = xAxis.min; x <= xAxis.max; x += xTickInterval) {
+      widestX = Math.max(widestX, ctx.measureText(xFormat(x)).width);
+    }
+    const xEvery = labelEvery((plotWidth * xTickInterval) / (xAxis.max - xAxis.min), widestX + 8);
+    let xIndex = 0;
+    for (let x = xAxis.min; x <= xAxis.max; x += xTickInterval, xIndex++) {
+      if (xIndex % xEvery !== 0) continue;
       const screenX = toScreenX(x);
       const label = xFormat(x);
       ctx.fillText(label, screenX - ctx.measureText(label).width / 2, height - margin.bottom + 20);
@@ -251,7 +344,10 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
 
     const yTickInterval = yAxis.tickInterval || (yAxis.max - yAxis.min) / 10;
     const yFormat = yAxis.tickFormat || ((v) => v.toString());
-    for (let y = yAxis.min; y <= yAxis.max; y += yTickInterval) {
+    const yEvery = labelEvery((plotHeight * yTickInterval) / (yAxis.max - yAxis.min), 16);
+    let yIndex = 0;
+    for (let y = yAxis.min; y <= yAxis.max; y += yTickInterval, yIndex++) {
+      if (yIndex % yEvery !== 0) continue;
       const screenY = toScreenY(y);
       const label = yFormat(y);
       ctx.fillText(label, margin.left - ctx.measureText(label).width - 8, screenY + 4);
@@ -427,11 +523,32 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
         ctx.stroke();
       }
 
-      // Label
+      // Label — to the right of the marker; where a narrow graph would cut that off, to its
+      // left if that stays clear of the y axis, and otherwise centred above it on a white halo.
       if (marker.label) {
         ctx.fillStyle = marker.color;
         ctx.font = 'bold 11px sans-serif';
-        ctx.fillText(marker.label, screenX + radius + 5, screenY + 4);
+        const labelWidth = ctx.measureText(marker.label).width;
+        const rightX = screenX + radius + 5;
+        const leftX = screenX - radius - 5 - labelWidth;
+        if (rightX + labelWidth <= width - 2) {
+          ctx.fillText(marker.label, rightX, screenY + 4);
+        } else if (leftX >= margin.left + 2) {
+          ctx.fillText(marker.label, leftX, screenY + 4);
+        } else {
+          const aboveX = Math.min(
+            Math.max(screenX - labelWidth / 2, margin.left + 2),
+            width - labelWidth - 2
+          );
+          const aboveY = Math.max(screenY - radius - 6, margin.top + 10);
+          ctx.save();
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+          ctx.lineWidth = 3;
+          ctx.lineJoin = 'round';
+          ctx.strokeText(marker.label, aboveX, aboveY);
+          ctx.restore();
+          ctx.fillText(marker.label, aboveX, aboveY);
+        }
       }
     });
 
@@ -475,7 +592,7 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
       ctx.font = 'bold 12px sans-serif';
       const tooltipWidth = ctx.measureText(tooltipText).width + 20;
       const tooltipHeight = 28;
-      const tooltipX = Math.min(screenX + 12, width - tooltipWidth - 10);
+      const tooltipX = Math.max(4, Math.min(screenX + 12, width - tooltipWidth - 10));
       const tooltipY = Math.max(screenY - tooltipHeight - 12, 10);
 
       // Shadow
@@ -518,19 +635,28 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
     toScreenX,
     toScreenY,
     margin,
+    plotWidth,
+    plotHeight,
+    pixelRatio,
   ]);
 
-  // Handle mouse move
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLCanvasElement>) => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
+  // Pointer position in drawing coordinates (inside the canvas border).
+  const toCanvasPoint = useCallback((clientX: number, clientY: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return null;
+    const rect = canvas.getBoundingClientRect();
+    return { x: clientX - rect.left - CANVAS_BORDER, y: clientY - rect.top - CANVAS_BORDER };
+  }, []);
 
-      const rect = canvas.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
+  // Hover (mouse) and tap / touch-drag (finger) share one handler, so what a desktop user sees
+  // by hovering a phone user sees by tapping. Touch keeps the page scrollable: nothing here
+  // prevents the default gesture.
+  const showNearest = useCallback(
+    (clientX: number, clientY: number, radius: number) => {
+      const pt = toCanvasPoint(clientX, clientY);
+      if (!pt) return;
 
-      const nearest = findNearestPoint(mouseX, mouseY);
+      const nearest = findNearestPoint(pt.x, pt.y, radius);
       if (nearest) {
         setHoveredPoint({
           point: nearest.point,
@@ -544,42 +670,69 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
         onPointHover?.(null, null);
       }
     },
-    [findNearestPoint, toScreenX, toScreenY, onPointHover]
+    [toCanvasPoint, findNearestPoint, toScreenX, toScreenY, onPointHover]
   );
 
-  // Handle mouse leave
-  const handleMouseLeave = useCallback(() => {
-    setHoveredPoint(null);
-    onPointHover?.(null, null);
-  }, [onPointHover]);
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent<HTMLCanvasElement>) => {
+      if (e.pointerType === 'mouse') {
+        showNearest(e.clientX, e.clientY, HOVER_RADIUS_MOUSE);
+      } else if (e.buttons) {
+        showNearest(e.clientX, e.clientY, HOVER_RADIUS_TOUCH);
+      }
+    },
+    [showNearest]
+  );
 
-  // Handle click
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent<HTMLCanvasElement>) => {
+      if (e.pointerType !== 'mouse') showNearest(e.clientX, e.clientY, HOVER_RADIUS_TOUCH);
+    },
+    [showNearest]
+  );
+
+  // A finger "leaves" the canvas the moment it lifts, which would hide the tooltip it just
+  // opened; only a mouse leaving clears it. A tap away from the curve clears it on touch.
+  const handlePointerLeave = useCallback(
+    (e: React.PointerEvent<HTMLCanvasElement>) => {
+      if (e.pointerType !== 'mouse') return;
+      setHoveredPoint(null);
+      onPointHover?.(null, null);
+    },
+    [onPointHover]
+  );
+
+  // Handle click (also fired by a tap)
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLCanvasElement>) => {
-      const canvas = canvasRef.current;
-      if (!canvas || !onPointClick) return;
+      if (!onPointClick) return;
+      const pt = toCanvasPoint(e.clientX, e.clientY);
+      if (!pt) return;
 
-      const rect = canvas.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-
-      const nearest = findNearestPoint(mouseX, mouseY);
+      const pointerType = (e.nativeEvent as PointerEvent).pointerType;
+      const radius =
+        pointerType && pointerType !== 'mouse' ? HOVER_RADIUS_TOUCH : HOVER_RADIUS_MOUSE;
+      const nearest = findNearestPoint(pt.x, pt.y, radius);
       if (nearest) {
         onPointClick(nearest.point, nearest.series);
       }
     },
-    [findNearestPoint, onPointClick]
+    [toCanvasPoint, findNearestPoint, onPointClick]
   );
 
   return (
-    <div className="flex flex-col items-center">
+    // Block-level and max-w-full so its measured width is the space the container offers.
+    <div ref={rootRef} className="flex flex-col items-center max-w-full min-w-0">
       <canvas
         ref={canvasRef}
-        width={width}
-        height={height}
+        width={Math.round(width * pixelRatio)}
+        height={Math.round(height * pixelRatio)}
+        // content-box: the 2px border sits outside the drawing area, as it did at 1x.
+        style={{ width: `${width}px`, height: `${height}px`, boxSizing: 'content-box' }}
         className="border-2 border-gray-300 rounded-lg shadow-md bg-white cursor-crosshair"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
+        onPointerMove={handlePointerMove}
+        onPointerDown={handlePointerDown}
+        onPointerLeave={handlePointerLeave}
         onClick={handleClick}
         role="img"
         aria-label={ariaLabel}

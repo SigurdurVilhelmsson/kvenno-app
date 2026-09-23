@@ -65,6 +65,11 @@ export interface DraggableItemProps {
   item: DraggableItemData;
   /** Whether the item is currently being dragged */
   isDragging?: boolean;
+  /**
+   * Whether the item has been picked up by a tap, click or Enter/Space and is waiting for the
+   * student to choose where it goes — the drag-free way to move it.
+   */
+  isSelected?: boolean;
   /** Callback when drag starts */
   onDragStart?: (itemId: string) => void;
   /** Callback when drag ends */
@@ -77,6 +82,13 @@ export interface DraggableItemProps {
    * DragDropBuilder wires this to its internal drop handler.
    */
   onTouchDrop?: (itemId: string, zoneId: string) => void;
+  /**
+   * Called while a touch drag moves, with the id of the zone under the finger (the pool reports
+   * `POOL_TARGET_ID`), or null over neither — so the target can be highlighted before release.
+   */
+  onTouchOver?: (targetId: string | null) => void;
+  /** Tap, click, Enter or Space on the item: pick it up, or put it down again. */
+  onActivate?: (itemId: string) => void;
   /** Additional CSS classes */
   className?: string;
 }
@@ -99,6 +111,19 @@ export interface DropZoneProps {
   onReorder?: (newOrder: string[]) => void;
   /** Forwarded to child DraggableItems so items already placed can be touch-dragged between zones. */
   onTouchDrop?: (itemId: string, zoneId: string) => void;
+  /** Forwarded to child DraggableItems (see DraggableItemProps.onTouchOver). */
+  onTouchOver?: (targetId: string | null) => void;
+  /** Id of the item currently picked up by tap/click/keyboard, if any. */
+  selectedId?: string | null;
+  /** The picked-up item may be placed here: the zone is highlighted and tapping it places it. */
+  isTarget?: boolean;
+  /** Tap/click/Enter on the zone while an item is picked up. */
+  onActivate?: () => void;
+  /** Tap/click/Enter on one of the zone's items (see DraggableItemProps.onActivate). */
+  onActivateItem?: (itemId: string) => void;
+  /** Told when one of the zone's items starts/stops being dragged. */
+  onItemDragStart?: (itemId: string) => void;
+  onItemDragEnd?: () => void;
   /** Orientation of items in the zone */
   orientation?: 'horizontal' | 'vertical';
   /** Additional CSS classes */
@@ -121,6 +146,12 @@ export interface DragDropBuilderProps {
   onDrop?: (result: DropResult) => void;
   /** Callback when items are reordered within a zone */
   onReorder?: (zoneId: string, newOrder: string[]) => void;
+  /**
+   * Callback when an item leaves a zone for the pool — dragged or tapped back, or displaced
+   * when another item is placed in a full single-item zone. A consumer mirroring the zone
+   * contents from `onDrop` needs this too, or it keeps showing an item the student removed.
+   */
+  onRemove?: (itemId: string, fromZoneId: string) => void;
   /** Validation function for drops */
   validateDrop?: (itemId: string, zoneId: string) => boolean;
   /** Orientation of items in zones */

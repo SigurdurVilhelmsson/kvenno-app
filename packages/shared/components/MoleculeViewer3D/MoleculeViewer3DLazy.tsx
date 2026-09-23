@@ -45,6 +45,9 @@ function DefaultLoadingPlaceholder({
       style={{
         width: typeof width === 'number' ? `${width}px` : width || '100%',
         height: typeof height === 'number' ? `${height}px` : height || '300px',
+        // Same size limits as the viewer it stands in for, so nothing jumps when it loads.
+        maxWidth: '100%',
+        maxHeight: '60vh',
       }}
     >
       <div className="text-center">
@@ -70,6 +73,9 @@ function ErrorFallback({ width, height }: { width?: string | number; height?: st
       style={{
         width: typeof width === 'number' ? `${width}px` : width || '100%',
         height: typeof height === 'number' ? `${height}px` : height || '300px',
+        // Same size limits as the viewer it stands in for, so nothing jumps when it loads.
+        maxWidth: '100%',
+        maxHeight: '60vh',
       }}
     >
       <div className="text-center p-4">

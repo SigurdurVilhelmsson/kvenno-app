@@ -109,6 +109,15 @@ describe('LanguageSwitcher', () => {
       expect(isButton.getAttribute('title')).toBe('Íslenska');
     });
 
+    it('makes every flag a 44 px target on a touch screen', () => {
+      render(<LanguageSwitcher {...defaultProps} variant="compact" />);
+
+      for (const button of screen.getAllByRole('button')) {
+        expect(button.className).toContain('pointer-coarse:min-w-11');
+        expect(button.className).toContain('pointer-coarse:min-h-11');
+      }
+    });
+
     it('marks current language as pressed', () => {
       render(<LanguageSwitcher {...defaultProps} language="pl" variant="compact" />);
 

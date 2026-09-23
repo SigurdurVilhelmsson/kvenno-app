@@ -57,20 +57,27 @@ export const Header: React.FC<HeaderProps> = ({
   gameTitle,
 }) => {
   if (variant === 'game') {
+    // Phone notes. On a short landscape screen the header scrolls away rather
+    // than holding 56 of ~360 px. Below `sm` the back link is the bare arrow,
+    // so it is widened to a 44 px target and pulled left by the added
+    // padding, which leaves the arrow exactly where it was; that padding
+    // already spaces the title from the arrow, so the title's own is 4 px.
+    // The title drops to 16 px. Together these keep every title that fitted
+    // at 320 px beside the three 44 px flags fitting, e.g. Mólhugtakið.
     return (
-      <header className="sticky top-0 z-50 bg-surface-raised shadow-sm">
+      <header className="sticky top-0 z-50 bg-surface-raised shadow-sm [@media(max-height:500px)]:static">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14">
             <a
               href={backHref ?? '/'}
-              className="flex items-center gap-2 text-sm font-medium text-warm-600 hover:text-kvenno-orange transition-colors min-h-[44px]"
+              className="flex items-center justify-center gap-2 text-sm font-medium text-warm-600 hover:text-kvenno-orange transition-colors min-h-[44px] min-w-[44px] -ml-[13px] sm:ml-0"
               aria-label={backLabel}
             >
               <ArrowLeft size={18} />
               <span className="hidden sm:inline">{backLabel}</span>
             </a>
             {gameTitle && (
-              <h1 className="font-heading text-lg font-semibold text-warm-800 truncate px-4">
+              <h1 className="font-heading text-base sm:text-lg font-semibold text-warm-800 truncate px-1 sm:px-4">
                 {gameTitle}
               </h1>
             )}

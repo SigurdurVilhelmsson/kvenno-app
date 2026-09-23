@@ -1,2 +1,7 @@
-export { ResponsiveContainer, useResponsiveSize } from './ResponsiveContainer';
+export {
+  ResponsiveContainer,
+  useResponsiveSize,
+  useContainerWidth,
+  canvasPixelRatio,
+} from './ResponsiveContainer';
 export type { ResponsiveContainerProps } from './ResponsiveContainer';
