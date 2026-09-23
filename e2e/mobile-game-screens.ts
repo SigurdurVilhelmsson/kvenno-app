@@ -1758,7 +1758,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,3 g MgO"]',
         },
         {
-          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*="2 mol Mg jafngildir 2 mol MgO"]',
+          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*="2 mól Mg jafngildir 2 mól MgO"]',
         },
         {
           css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 1000 g jafngildir"]',
@@ -1913,7 +1913,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           css: 'button[aria-label="Snúa við hlutfalli númer 1"]',
         },
         {
-          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*="2 mol Mg jafngildir 2 mol MgO"]',
+          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*="2 mól Mg jafngildir 2 mól MgO"]',
         },
         {
           css: 'button[aria-label="Snúa við hlutfalli númer 2"]',
@@ -1945,7 +1945,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           css: 'button[aria-label="Snúa við hlutfalli númer 1"]',
         },
         {
-          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*="2 mol Mg jafngildir 2 mol MgO"]',
+          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*="2 mól Mg jafngildir 2 mól MgO"]',
         },
         {
           css: 'button[aria-label="Snúa við hlutfalli númer 2"]',
@@ -2422,10 +2422,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           css: 'svg g[role=button]:nth-of-type(2)',
         },
         {
-          clickRole: ['button', 'Bæta einstæðu pari við O (miðatóm)'],
+          clickRole: ['button', 'Bæta stöku pari við O (miðatóm)'],
         },
         {
-          clickRole: ['button', 'Bæta einstæðu pari við O (miðatóm)'],
+          clickRole: ['button', 'Bæta stöku pari við O (miðatóm)'],
         },
         {
           click: 'Athuga',
@@ -2445,10 +2445,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           css: 'svg g[role=button]:nth-of-type(2)',
         },
         {
-          clickRole: ['button', 'Bæta einstæðu pari við O (miðatóm)'],
+          clickRole: ['button', 'Bæta stöku pari við O (miðatóm)'],
         },
         {
-          clickRole: ['button', 'Bæta einstæðu pari við O (miðatóm)'],
+          clickRole: ['button', 'Bæta stöku pari við O (miðatóm)'],
         },
         {
           click: 'Athuga',
