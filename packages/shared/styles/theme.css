@@ -5,6 +5,39 @@
  * Design system: DESIGN_SYSTEM.md at repo root.
  */
 
+/*
+ * Phone variants (vertical-scroll pass).
+ *
+ * `phone:` — a portrait phone (narrower than `sm`) or any phone on its side
+ * (at most 500 px tall, the line at which the shared Header stops being
+ * sticky). It is the one place the platform decides what "phone" means;
+ * `PHONE_QUERY` in `@shared/utils` is the same pair of queries for scripts,
+ * and `styles/__tests__/phone-variant.test.ts` holds the two together. A
+ * desktop window (>= 640 px wide and > 500 px tall) never matches it, so a
+ * `phone:` class cannot change a desktop layout. Tailwind emits custom
+ * variants after the built-in breakpoints, so at 740x340, where `sm:` also
+ * matches, the `phone:` value wins.
+ *
+ * `phone-land:` — only a phone on its side: wide but short, where a desktop
+ * two-column layout is worth switching on early.
+ *
+ * Keep the BLOCK form below. The comma shorthand `(@media a, b)` silently
+ * drops the second query; the test fails if that happens.
+ */
+@custom-variant phone {
+  @media (max-width: 639.98px) {
+    @slot;
+  }
+  @media (max-height: 500px) {
+    @slot;
+  }
+}
+@custom-variant phone-land {
+  @media (orientation: landscape) and (max-height: 500px) {
+    @slot;
+  }
+}
+
 @theme {
   /* ===== Brand Orange Scale ===== */
   --color-kvenno-orange-50: #fff7f0;
@@ -386,4 +419,17 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/*
+ * Programmatic focus targets (vertical-scroll pass, P3).
+ *
+ * `focusTarget()` in `@shared/utils` moves focus to a heading or a feedback
+ * group after a screen swap or a commit, so it never falls to <body>. Those
+ * targets are not operable controls (they carry tabindex="-1" and are never in
+ * the Tab order), so they get no focus ring: focus moves, nothing is painted.
+ * Interactive controls keep their rings.
+ */
+[data-focus-target]:focus {
+  outline: none;
 }
