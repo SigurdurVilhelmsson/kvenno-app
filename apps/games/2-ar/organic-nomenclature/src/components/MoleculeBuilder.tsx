@@ -1,4 +1,12 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
+
+import {
+  canAddBranch,
+  molecularFormula,
+  nameChain,
+  nextBondType,
+  type BondType,
+} from '../utils/naming';
 
 /**
  * MoleculeBuilder
@@ -10,38 +18,10 @@ import { useState, useCallback } from 'react';
  * 4. Auto-generating IUPAC names based on structure
  */
 
-type BondType = 'single' | 'double' | 'triple';
-
 interface Bond {
   position: number; // Position in chain (1-indexed, bond between C(position) and C(position+1))
   type: BondType;
 }
-
-// Prefix map for carbon count
-const PREFIXES: Record<number, string> = {
-  1: 'meth',
-  2: 'eth',
-  3: 'prop',
-  4: 'but',
-  5: 'pent',
-  6: 'hex',
-  7: 'hept',
-  8: 'oct',
-  9: 'non',
-  10: 'dec',
-};
-
-// Multiplier prefixes for branch count
-const BRANCH_MULTIPLIERS: Record<number, string> = {
-  1: '',
-  2: 'dí',
-  3: 'trí',
-  4: 'tetra',
-  5: 'penta',
-  6: 'hexa',
-  7: 'hepta',
-  8: 'okta',
-};
 
 interface MoleculeBuilderProps {
   onNameGenerated?: (name: string, formula: string) => void;
@@ -67,14 +47,15 @@ export function MoleculeBuilder({
   const [branches, setBranches] = useState<number[]>([]);
   const [showFormula, setShowFormula] = useState(true);
 
-  // Check if a carbon position is eligible for a branch (interior carbons only)
-  const canHaveBranch = (position: number): boolean => {
-    return position >= 2 && position <= carbonCount - 1;
-  };
+  const chain = { carbons: carbonCount, bonds, branches };
+
+  // A branch goes on an interior carbon that still has a bond to spare: a carbon already in a
+  // triple bond, or between two double bonds, cannot take a fifth.
+  const canHaveBranch = (position: number): boolean => canAddBranch(chain, position);
 
   // Toggle a methyl branch at a given carbon position
   const toggleBranch = (position: number) => {
-    if (!canHaveBranch(position)) return;
+    if (!branches.includes(position) && !canHaveBranch(position)) return;
 
     setBranches((prev) => {
       if (prev.includes(position)) {
@@ -106,122 +87,14 @@ export function MoleculeBuilder({
     setBranches((prev) => prev.filter((p) => p >= 2 && p <= newCount - 1));
   };
 
-  // Cycle bond type: single → double → triple → single
+  // Cycle bond type: single → double → triple → single, skipping a type that would give
+  // either carbon a fifth bond (the builder used to draw C≡C≡C and print a negative H count)
   const cycleBond = (position: number) => {
+    const nextType = nextBondType(chain, position);
     setBonds((prev) =>
-      prev.map((bond) => {
-        if (bond.position !== position) return bond;
-
-        const nextType: BondType =
-          bond.type === 'single' ? 'double' : bond.type === 'double' ? 'triple' : 'single';
-
-        return { ...bond, type: nextType };
-      })
+      prev.map((bond) => (bond.position === position ? { ...bond, type: nextType } : bond))
     );
   };
-
-  // Helper for subscript numbers
-  const subscript = (n: number): string => {
-    const subscripts: Record<string, string> = {
-      '0': '₀',
-      '1': '₁',
-      '2': '₂',
-      '3': '₃',
-      '4': '₄',
-      '5': '₅',
-      '6': '₆',
-      '7': '₇',
-      '8': '₈',
-      '9': '₉',
-    };
-    return String(n)
-      .split('')
-      .map((d) => subscripts[d] || d)
-      .join('');
-  };
-
-  // Helper to get bond order value
-  const bondValue = (bondType: BondType): number => {
-    return bondType === 'single' ? 1 : bondType === 'double' ? 2 : 3;
-  };
-
-  // Calculate molecular formula
-  const calculateFormula = useCallback(() => {
-    // Total carbons = main chain + branches
-    const totalCarbons = carbonCount + branches.length;
-
-    // Count hydrogen atoms on the main chain
-    let hydrogenCount = 0;
-
-    // First carbon
-    const firstBond = bonds.find((b) => b.position === 1);
-    const firstBondVal = firstBond ? bondValue(firstBond.type) : 0;
-    const firstHasBranch = branches.includes(1); // Should never happen, but guard
-    hydrogenCount += 4 - firstBondVal - (firstHasBranch ? 1 : 0);
-
-    // Middle carbons
-    for (let i = 2; i < carbonCount; i++) {
-      const leftBond = bonds.find((b) => b.position === i - 1);
-      const rightBond = bonds.find((b) => b.position === i);
-
-      const leftVal = leftBond ? bondValue(leftBond.type) : 0;
-      const rightVal = rightBond ? bondValue(rightBond.type) : 0;
-      const hasBranch = branches.includes(i);
-
-      // A branch takes one bond slot (single bond to CH₃)
-      hydrogenCount += 4 - leftVal - rightVal - (hasBranch ? 1 : 0);
-    }
-
-    // Last carbon
-    const lastBond = bonds.find((b) => b.position === carbonCount - 1);
-    const lastBondVal = lastBond ? bondValue(lastBond.type) : 0;
-    const lastHasBranch = branches.includes(carbonCount); // Should never happen
-    hydrogenCount += 4 - lastBondVal - (lastHasBranch ? 1 : 0);
-
-    // Each branch CH₃ contributes 3 hydrogens
-    hydrogenCount += branches.length * 3;
-
-    return `C${totalCarbons > 1 ? '₋' + subscript(totalCarbons) : ''}H${subscript(hydrogenCount)}`;
-  }, [carbonCount, bonds, branches]);
-
-  // Generate IUPAC name
-  const generateName = useCallback(() => {
-    const prefix = PREFIXES[carbonCount] || `C${carbonCount}`;
-
-    // Find unsaturated bonds
-    const doubleBonds = bonds.filter((b) => b.type === 'double');
-    const tripleBonds = bonds.filter((b) => b.type === 'triple');
-
-    // Build base name (suffix)
-    let baseName: string;
-    if (tripleBonds.length > 0) {
-      const position = tripleBonds[0].position;
-      if (carbonCount >= 4) {
-        baseName = `${position}-${prefix}yn`;
-      } else {
-        baseName = `${prefix}yn`;
-      }
-    } else if (doubleBonds.length > 0) {
-      const position = doubleBonds[0].position;
-      if (carbonCount >= 4) {
-        baseName = `${position}-${prefix}en`;
-      } else {
-        baseName = `${prefix}en`;
-      }
-    } else {
-      baseName = `${prefix}an`;
-    }
-
-    // Add branch prefix if branches exist
-    if (branches.length > 0) {
-      const sortedPositions = [...branches].sort((a, b) => a - b);
-      const positionStr = sortedPositions.join(',');
-      const multiplier = BRANCH_MULTIPLIERS[branches.length] || '';
-      return `${positionStr}-${multiplier}metýl${baseName}`;
-    }
-
-    return baseName;
-  }, [carbonCount, bonds, branches]);
 
   // Get compound type
   const getCompoundType = () => {
@@ -232,12 +105,13 @@ export function MoleculeBuilder({
     if (hasTriple)
       return { type: 'alkyne', label: hasBranches ? 'Greinótt alkýn' : 'Alkýn', color: 'purple' };
     if (hasDouble)
-      return { type: 'alkene', label: hasBranches ? 'Greinótt alkén' : 'Alkén', color: 'green' };
+      return { type: 'alkene', label: hasBranches ? 'Greinótt alken' : 'Alken', color: 'green' };
     return { type: 'alkane', label: hasBranches ? 'Greinótt alkan' : 'Alkan', color: 'gray' };
   };
 
-  const name = generateName();
-  const formula = calculateFormula();
+  const chainName = nameChain(chain);
+  const name = chainName.name;
+  const formula = molecularFormula(chain);
   const compound = getCompoundType();
 
   // Notify parent of name changes
@@ -477,6 +351,7 @@ export function MoleculeBuilder({
       <div className="flex justify-center items-center gap-4 mb-4">
         <button
           onClick={() => updateCarbonCount(carbonCount - 1)}
+          aria-label="Fjarlægja kolefni"
           disabled={carbonCount <= 2}
           className={`w-12 h-12 rounded-full font-bold text-xl transition-all ${
             carbonCount > 2
@@ -494,6 +369,7 @@ export function MoleculeBuilder({
 
         <button
           onClick={() => updateCarbonCount(carbonCount + 1)}
+          aria-label="Bæta við kolefni"
           disabled={carbonCount >= maxCarbons}
           className={`w-12 h-12 rounded-full font-bold text-xl transition-all ${
             carbonCount < maxCarbons
@@ -549,11 +425,11 @@ export function MoleculeBuilder({
               {' • '}
             </span>
           )}
-          {bonds.some((b) => b.type === 'double')
-            ? `Tvítengi á stað ${bonds.find((b) => b.type === 'double')?.position}`
-            : bonds.some((b) => b.type === 'triple')
-              ? `Þrítengi á stað ${bonds.find((b) => b.type === 'triple')?.position}`
-              : 'Öll tengi eru einföld'}
+          {chainName.principal
+            ? `${chainName.principal.type === 'double' ? 'Tvítengi' : 'Þrítengi'} á stað ${chainName.principal.locant}${
+                chainName.reversed ? ` (talið frá C${carbonCount})` : ''
+              }`
+            : 'Öll tengi eru einföld'}
         </div>
       </div>
 

@@ -84,21 +84,21 @@ function App() {
             <div className="bg-warm-50 p-4 rounded-xl flex justify-between items-center">
               <div>
                 <div className="font-bold text-warm-800">Stig 1: Grunnreglur</div>
-                <div className="text-sm text-warm-600">Forskeytir og viðskeytir</div>
+                <div className="text-sm text-warm-600">Forskeyti og viðskeyti</div>
               </div>
               <div className="text-2xl font-bold text-warm-600">{progress.level1Score}</div>
             </div>
             <div className="bg-green-50 p-4 rounded-xl flex justify-between items-center">
               <div>
                 <div className="font-bold text-green-800">Stig 2: Nefna sameindir</div>
-                <div className="text-sm text-green-600">Alkanar, alkenar, alkynar</div>
+                <div className="text-sm text-green-600">Alkanar, alkenar, alkýnar</div>
               </div>
               <div className="text-2xl font-bold text-green-600">{progress.level2Score}</div>
             </div>
             <div className="bg-purple-50 p-4 rounded-xl flex justify-between items-center">
               <div>
                 <div className="font-bold text-purple-800">Stig 3: Hagnýtar sameindir</div>
-                <div className="text-sm text-purple-600">Hóptengi og formúlur</div>
+                <div className="text-sm text-purple-600">Virknihópar og formúlur</div>
               </div>
               <div className="text-2xl font-bold text-purple-600">{progress.level3Score}</div>
             </div>
@@ -112,16 +112,16 @@ function App() {
             <h2 className="font-bold text-emerald-800 mb-3">Hvað lærðir þú?</h2>
             <ul className="space-y-2 text-emerald-900 text-sm">
               <li>
-                ✓ <strong>Forskeytir:</strong> meth-, eth-, prop-, but-, pent-...
+                ✓ <strong>Forskeyti:</strong> meth-, eth-, prop-, but-, pent-...
               </li>
               <li>
-                ✓ <strong>Viðskeytir:</strong> -an (eintengi), -en (tvítengi), -yn (þrítengi)
+                ✓ <strong>Viðskeyti:</strong> -an (eintengi), -en (tvítengi), -ýn (þrítengi)
               </li>
               <li>
                 ✓ <strong>Staðsetningartölur:</strong> Númer til að tilgreina staðsetningu
               </li>
               <li>
-                ✓ <strong>Hóptengi:</strong> -OH (alkóhól), -CHO (aldehýð), -COOH (karboxýlsýra)
+                ✓ <strong>Virknihópar:</strong> -OH (alkóhól), -CHO (aldehýð), -COOH (karboxýlsýra)
               </li>
             </ul>
           </div>
@@ -172,7 +172,7 @@ function App() {
               </div>
               <div className="bg-white p-3 rounded-lg text-center">
                 <div className="font-bold text-green-600">Viðskeyti</div>
-                <div className="text-warm-600">Hóptengi</div>
+                <div className="text-warm-600">Virknihópur</div>
               </div>
             </div>
           </div>
@@ -193,7 +193,7 @@ function App() {
                       </span>
                     )}
                   </div>
-                  <div className="text-sm text-warm-600 mt-1">Lærðu forskeytir og viðskeytir</div>
+                  <div className="text-sm text-warm-600 mt-1">Lærðu forskeyti og viðskeyti</div>
                 </div>
               </div>
             </button>
@@ -215,9 +215,7 @@ function App() {
                       </span>
                     )}
                   </div>
-                  <div className="text-sm text-green-600 mt-1">
-                    Nefndu alkanar, alkenar og alkynar
-                  </div>
+                  <div className="text-sm text-green-600 mt-1">Nefndu alkana, alkena og alkýna</div>
                 </div>
               </div>
             </button>
@@ -239,7 +237,9 @@ function App() {
                       </span>
                     )}
                   </div>
-                  <div className="text-sm text-purple-600 mt-1">Hóptengi og flóknari sameindir</div>
+                  <div className="text-sm text-purple-600 mt-1">
+                    Virknihópar og flóknari sameindir
+                  </div>
                 </div>
               </div>
             </button>
@@ -264,7 +264,7 @@ function App() {
                 </div>
                 <div className="bg-green-50 rounded-lg px-1 py-3 sm:p-3">
                   <div className="text-2xl font-bold text-green-600">{totalScore}</div>
-                  <div className="text-xs text-warm-600">Heildar stig</div>
+                  <div className="text-xs text-warm-600">Heildarstig</div>
                 </div>
                 <div className="bg-blue-50 rounded-lg px-1 py-3 sm:p-3">
                   <div className="text-2xl font-bold text-blue-600">
@@ -277,7 +277,7 @@ function App() {
           )}
 
           <div className="mt-6 bg-warm-50 p-4 rounded-xl">
-            <h3 className="font-semibold text-warm-700 mb-2">📋 Forskeytir (kolefnisfjöldi)</h3>
+            <h3 className="font-semibold text-warm-700 mb-2">📋 Forskeyti (kolefnisfjöldi)</h3>
             <div className="grid grid-cols-3 md:grid-cols-5 gap-2 text-sm text-center">
               <div className="bg-white px-1 py-2 sm:p-2 rounded border whitespace-nowrap">
                 <span className="font-bold">1</span> meth-

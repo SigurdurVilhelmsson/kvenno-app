@@ -9,7 +9,7 @@ import { Level2 } from '../components/Level2';
  * which is what the "Nafnið sem þú byggir" preview and the grader both read. It used to
  * update that mirror only on a drop, so a part taken back out — dragged or tapped back to
  * the pool — stayed in the built name: returning `-en` from prop- + -en still showed and
- * graded "propen". Phones made this the common case, because tap-to-place (tap the part, tap
+ * graded "própen". Phones made this the common case, because tap-to-place (tap the part, tap
  * the pool) is how a student undoes a choice there.
  *
  * The builder is driven with clicks, which is the tap-to-place path the shared component
@@ -41,14 +41,14 @@ describe('Stig 2 name builder: a part taken back out leaves the built name', () 
 
     place('prop-', 'zone-prefix');
     place('-en', 'zone-suffix');
-    expect(builtName()).toBe('propen');
+    expect(builtName()).toBe('própen');
 
     // Tap the placed part, then the pool: the tap-to-place way to take it back.
     fireEvent.click(within(zone('zone-suffix')).getByRole('button', { name: '-en' }));
     fireEvent.click(pool);
 
     expect(within(pool).getByRole('button', { name: '-en' })).toBeTruthy();
-    expect(builtName()).toBe('prop');
+    expect(builtName()).toBe('próp');
   });
 
   it('grades what is on screen, not a part that was removed', () => {
@@ -75,6 +75,6 @@ describe('Stig 2 name builder: a part taken back out leaves the built name', () 
     place('-an', 'zone-suffix');
 
     expect(within(zone('zone-suffix')).getByRole('button', { name: '-an' })).toBeTruthy();
-    expect(builtName()).toBe('propan');
+    expect(builtName()).toBe('própan');
   });
 });

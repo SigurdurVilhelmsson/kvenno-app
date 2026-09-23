@@ -10,7 +10,6 @@ interface Level3Props {
 }
 
 interface FunctionalGroup {
-  name: string;
   nameIcelandic: string;
   formula: string;
   suffix: string;
@@ -22,7 +21,6 @@ interface FunctionalGroup {
 
 const functionalGroups: FunctionalGroup[] = [
   {
-    name: 'Alcohol',
     nameIcelandic: 'Alkóhól',
     formula: '-OH',
     suffix: '-ól',
@@ -32,7 +30,6 @@ const functionalGroups: FunctionalGroup[] = [
     color: 'bg-blue-100 border-blue-400 text-blue-800',
   },
   {
-    name: 'Aldehyde',
     nameIcelandic: 'Aldehýð',
     formula: '-CHO',
     suffix: '-al',
@@ -42,7 +39,6 @@ const functionalGroups: FunctionalGroup[] = [
     color: 'bg-amber-100 border-amber-400 text-amber-800',
   },
   {
-    name: 'Ketone',
     nameIcelandic: 'Ketón',
     formula: 'C-CO-C',
     suffix: '-ón',
@@ -52,7 +48,6 @@ const functionalGroups: FunctionalGroup[] = [
     color: 'bg-orange-100 border-orange-400 text-orange-800',
   },
   {
-    name: 'Carboxylic Acid',
     nameIcelandic: 'Karboxýlsýra',
     formula: '-COOH',
     suffix: '-sýra',
@@ -79,7 +74,7 @@ const challenges: Challenge[] = [
   {
     id: 1,
     type: 'identify',
-    question: 'Hvaða hóptengi er í CH₃OH?',
+    question: 'Hvaða virknihópur er í CH₃OH?',
     formula: 'CH₃OH',
     correctAnswer: 'Alkóhól (-OH)',
     options: ['Alkóhól (-OH)', 'Aldehýð (-CHO)', 'Karboxýlsýra (-COOH)', 'Ketón (C=O)'],
@@ -88,7 +83,7 @@ const challenges: Challenge[] = [
   {
     id: 2,
     type: 'identify',
-    question: 'Hvaða hóptengi er í CH₃COOH?',
+    question: 'Hvaða virknihópur er í CH₃COOH?',
     formula: 'CH₃COOH',
     correctAnswer: 'Karboxýlsýra (-COOH)',
     options: ['Alkóhól (-OH)', 'Aldehýð (-CHO)', 'Karboxýlsýra (-COOH)', 'Ketón (C=O)'],
@@ -97,7 +92,7 @@ const challenges: Challenge[] = [
   {
     id: 3,
     type: 'identify',
-    question: 'Hvaða hóptengi er í CH₃CHO?',
+    question: 'Hvaða virknihópur er í CH₃CHO?',
     formula: 'CH₃CHO',
     correctAnswer: 'Aldehýð (-CHO)',
     options: ['Alkóhól (-OH)', 'Aldehýð (-CHO)', 'Karboxýlsýra (-COOH)', 'Ketón (C=O)'],
@@ -120,7 +115,7 @@ const challenges: Challenge[] = [
     question: 'Hvað heitir CH₃CH₂COOH?',
     formula: 'CH₃CH₂COOH',
     correctAnswer: 'própansýra',
-    options: ['etansýra', 'própansýra', 'propanól', 'propan'],
+    options: ['etansýra', 'própansýra', 'própanól', 'própan'],
     explanation: '3 kolefni (prop-) + karboxýlsýra (-sýra) = própansýra',
   },
   {
@@ -138,7 +133,7 @@ const challenges: Challenge[] = [
     question: 'Hvað heitir CH₃COCH₃?',
     formula: 'CH₃COCH₃',
     correctAnswer: 'própanón',
-    options: ['etanón', 'própanón', 'própanól', 'propan'],
+    options: ['etanón', 'própanón', 'própanól', 'própan'],
     explanation: '3 kolefni (prop-) + ketón (-ón) = própanón (einnig kallað asetón)',
   },
 
@@ -146,7 +141,7 @@ const challenges: Challenge[] = [
   {
     id: 8,
     type: 'structure',
-    question: 'Hvaða formúla á METANÓL?',
+    question: 'Hvaða formúlu hefur METANÓL?',
     correctAnswer: 'CH₃OH',
     options: ['CH₃OH', 'CH₃CHO', 'HCOOH', 'CH₄'],
     explanation: 'Metanól = 1 kolefni + alkóhól = CH₃ + OH = CH₃OH',
@@ -154,7 +149,7 @@ const challenges: Challenge[] = [
   {
     id: 9,
     type: 'structure',
-    question: 'Hvaða formúla á ETANSÝRA?',
+    question: 'Hvaða formúlu hefur ETANSÝRA?',
     correctAnswer: 'CH₃COOH',
     options: ['CH₃COOH', 'CH₃CHO', 'CH₃OH', 'C₂H₆'],
     explanation: 'Etansýra = 2 kolefni + karboxýlsýra = CH₃COOH (edik)',
@@ -162,7 +157,7 @@ const challenges: Challenge[] = [
   {
     id: 10,
     type: 'structure',
-    question: 'Hvaða formúla á PRÓPANÓL?',
+    question: 'Hvaða formúlu hefur PRÓPANÓL?',
     correctAnswer: 'CH₃CH₂CH₂OH',
     options: ['CH₃CH₂CH₂OH', 'CH₃CH₂CHO', 'CH₃CH₂COOH', 'C₃H₈'],
     explanation: 'Própanól = 3 kolefni + alkóhól = CH₃CH₂CH₂OH',
@@ -244,15 +239,15 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               ← Til baka
             </button>
             <div className="ml-auto text-sm text-warm-500 whitespace-nowrap">
-              Hóptengi {currentGroup + 1} af {functionalGroups.length}
+              Virknihópur {currentGroup + 1} af {functionalGroups.length}
             </div>
           </div>
 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-purple-600">
-            🔬 Hóptengi (Functional Groups)
+            🔬 Virknihópar
           </h1>
           <p className="text-center text-warm-600 mb-8">
-            Hóptengi ákvarða eiginleika og nafn sameindar
+            Virknihópar ákvarða eiginleika og nafn sameindar
           </p>
 
           <div className="flex justify-center gap-2 mb-6">
@@ -273,13 +268,12 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           <div className={`${group.color} p-4 sm:p-8 rounded-2xl border-2 animate-slide-in`}>
             <div className="text-center mb-6">
               <div className="text-2xl sm:text-4xl font-bold mb-2">{group.nameIcelandic}</div>
-              <div className="text-lg text-warm-600">({group.name})</div>
             </div>
 
             <div className="bg-white p-4 sm:p-6 rounded-xl mb-6">
               <div className="grid grid-cols-2 gap-3 sm:gap-6 text-center">
                 <div>
-                  <div className="text-sm text-warm-500 mb-1">Hóptengi</div>
+                  <div className="text-sm text-warm-500 mb-1">Virknihópur</div>
                   <div className="text-2xl sm:text-3xl font-mono font-bold whitespace-nowrap">
                     {group.formula}
                   </div>
@@ -331,7 +325,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           </div>
 
           <div className="mt-6 bg-warm-50 p-4 rounded-xl">
-            <h3 className="font-semibold text-warm-700 mb-2">📋 Öll hóptengi:</h3>
+            <h3 className="font-semibold text-warm-700 mb-2">📋 Allir virknihópar:</h3>
             <div className="grid grid-cols-2 gap-2 text-sm">
               {functionalGroups.map((fg, idx) => (
                 <div
@@ -356,7 +350,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const getTypeLabel = () => {
     switch (challenge.type) {
       case 'identify':
-        return '🔍 Þekkja hóptengi';
+        return '🔍 Þekkja virknihóp';
       case 'name':
         return '🏷️ Nefna sameind';
       case 'structure':
@@ -447,7 +441,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         )}
 
         <div className="mt-6 bg-warm-50 p-4 rounded-xl">
-          <h3 className="font-semibold text-warm-700 mb-2">📋 Hóptengi og viðskeytir:</h3>
+          <h3 className="font-semibold text-warm-700 mb-2">📋 Virknihópar og viðskeyti:</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-center">
             <div className="bg-blue-50 p-2 rounded border border-blue-200">
               <div className="font-bold">-OH</div>

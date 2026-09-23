@@ -5,16 +5,17 @@ import type { DraggableItemData, DropZoneData, DropResult, ZoneState } from '@sh
 
 import { StructureFromNameChallenge } from './StructureFromNameChallenge';
 import { useReturnToPrompt, useRevealWhenShown } from '../hooks/useRevealWhenShown';
+import { CHAIN_STEMS } from '../utils/naming';
 import { organicToMolecule, hasBranches, type OrganicBranch } from '../utils/organicConverter';
 
 // Misconceptions for organic nomenclature
 const NOMENCLATURE_MISCONCEPTIONS: Record<string, string> = {
   prefix: 'Forskeytið ákvarðast af fjölda kolefna: meth=1, eth=2, prop=3, but=4, pent=5, hex=6.',
-  suffix: 'Viðskeytið ákvarðast af tengjategund: -an (eintengi), -en (tvítengi), -yn (þrítengi).',
+  suffix: 'Viðskeytið ákvarðast af tengjategund: -an (eintengi), -en (tvítengi), -ýn (þrítengi).',
   position: 'Staðsetningartala þarf fyrir 4+ kolefni til að sýna hvar tvítengi/þrítengi er.',
 };
 
-const NOMENCLATURE_RELATED = ['IUPAC nafnakerfi', 'Kolefniskeðjur', 'Vetniskolefni', 'Hóptengi'];
+const NOMENCLATURE_RELATED = ['IUPAC nafnakerfi', 'Kolefniskeðjur', 'Vetniskolefni', 'Virknihópar'];
 
 interface Level2Props {
   onComplete: (score: number) => void;
@@ -81,7 +82,7 @@ const molecules: Molecule[] = [
     carbons: 3,
     structure: 'C=C-C',
     formula: 'C₃H₆',
-    correctName: 'propen',
+    correctName: 'própen',
     doublePosition: 1,
     hint: '3 kolefni + tvítengi = prop + en',
   },
@@ -113,9 +114,9 @@ const molecules: Molecule[] = [
     carbons: 2,
     structure: 'C≡C',
     formula: 'C₂H₂',
-    correctName: 'etyn',
+    correctName: 'etýn',
     triplePosition: 1,
-    hint: '2 kolefni + þrítengi = eth + yn',
+    hint: '2 kolefni + þrítengi = eth + ýn',
   },
   {
     id: 9,
@@ -123,9 +124,9 @@ const molecules: Molecule[] = [
     carbons: 3,
     structure: 'C≡C-C',
     formula: 'C₃H₄',
-    correctName: 'propyn',
+    correctName: 'própýn',
     triplePosition: 1,
-    hint: '3 kolefni + þrítengi = prop + yn',
+    hint: '3 kolefni + þrítengi = prop + ýn',
   },
   {
     id: 10,
@@ -133,7 +134,7 @@ const molecules: Molecule[] = [
     carbons: 4,
     structure: 'C≡C-C-C',
     formula: 'C₄H₆',
-    correctName: '1-bútyn',
+    correctName: '1-bútýn',
     triplePosition: 1,
     hint: '4+ kolefni þarf staðsetningartölu',
   },
@@ -143,7 +144,7 @@ const molecules: Molecule[] = [
     carbons: 5,
     structure: 'C-C≡C-C-C',
     formula: 'C₅H₈',
-    correctName: '2-pentyn',
+    correctName: '2-pentýn',
     triplePosition: 2,
     hint: 'Þrítengi byrjar á kolefni 2',
   },
@@ -223,7 +224,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   // Generate draggable items for building names
   const { nameItems, nameZones } = useMemo(() => {
-    // Prefixes for carbon counts
+    // Prefixes for carbon counts. The chip shows the prefix Stig 1 teaches; the built name
+    // uses the stem the answer is spelled with (eth- + -an builds `etan`, as the answer key and
+    // the textbook write it). Concatenating the chip label built `ethan`, which the grader
+    // then marked wrong, so etan, eten and etýn could not be answered in this mode at all.
     const prefixes = [
       { id: 'prefix-meth', label: 'meth-', carbons: 1 },
       { id: 'prefix-eth', label: 'eth-', carbons: 2 },
@@ -231,7 +235,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       { id: 'prefix-but', label: 'but-', carbons: 4 },
       { id: 'prefix-pent', label: 'pent-', carbons: 5 },
       { id: 'prefix-hex', label: 'hex-', carbons: 6 },
-    ];
+    ].map((p) => ({ ...p, stem: CHAIN_STEMS[p.carbons] }));
 
     // Position numbers (for molecules with 4+ carbons)
     const positions = [
@@ -244,7 +248,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     const suffixes = [
       { id: 'suffix-an', label: '-an', type: 'alkane' },
       { id: 'suffix-en', label: '-en', type: 'alkene' },
-      { id: 'suffix-yn', label: '-yn', type: 'alkyne' },
+      { id: 'suffix-yn', label: '-ýn', type: 'alkyne' },
     ];
 
     // The builder wraps each part in its own padded card, so on a phone the chips inside drop
@@ -261,7 +265,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           <div className={`${chip} bg-blue-100 border-blue-300 text-blue-700`}>{p.label}</div>
         ),
         category: 'prefix',
-        data: { label: p.label, carbons: p.carbons },
+        data: { label: p.label, stem: p.stem, carbons: p.carbons },
       });
     });
 
@@ -382,9 +386,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     const prefixItem = zoneState['zone-prefix']?.[0];
     if (prefixItem) {
       const item = nameItems.find((i) => i.id === prefixItem);
-      if (item?.data?.label) {
-        const label = item.data.label as string;
-        name += label.replace('-', '');
+      if (item?.data?.stem) {
+        name += item.data.stem as string;
       }
     }
 
@@ -430,16 +433,21 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       };
     }
 
-    // Determine what went wrong
-    let misconception = NOMENCLATURE_MISCONCEPTIONS.prefix;
-    const prefixItem = zoneState['zone-prefix']?.[0];
-    const suffixItem = zoneState['zone-suffix']?.[0];
+    // Name the part that is actually wrong. This used to go by which zones were filled, so
+    // eth- + -en for etan was told about prefixes, and any wrong build of 1-búten or 2-pentýn
+    // was told about the position number even when the prefix or the ending was the mistake.
+    const placed = (zoneId: string) =>
+      nameItems.find((i) => i.id === zoneState[zoneId]?.[0])?.data as
+        { carbons?: number; type?: string } | undefined;
+    const prefixPart = placed('zone-prefix');
+    const suffixPart = placed('zone-suffix');
 
-    if (!prefixItem) {
+    let misconception: string;
+    if (prefixPart?.carbons !== molecule.carbons) {
       misconception = NOMENCLATURE_MISCONCEPTIONS.prefix;
-    } else if (!suffixItem) {
+    } else if (suffixPart?.type !== molecule.type) {
       misconception = NOMENCLATURE_MISCONCEPTIONS.suffix;
-    } else if (molecule.carbons >= 4 && molecule.type !== 'alkane') {
+    } else {
       misconception = NOMENCLATURE_MISCONCEPTIONS.position;
     }
 
@@ -517,7 +525,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       case 'alkene':
         return 'Alken (tvítengi)';
       case 'alkyne':
-        return 'Alkyn (þrítengi)';
+        return 'Alkýn (þrítengi)';
     }
   };
 
@@ -666,7 +674,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               <p className="text-xs text-center mt-1 text-warm-500">
                 {molecule.type === 'alkene'
                   ? 'Viðskeytið -en gefur til kynna tvítengi (ómettað)'
-                  : 'Viðskeytið -yn gefur til kynna þrítengi (ómettað)'}
+                  : 'Viðskeytið -ýn gefur til kynna þrítengi (ómettað)'}
               </p>
             </div>
           )}
@@ -832,7 +840,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 </span>
                 <span className="text-warm-500"> ({molecule.carbons} kolefni) + </span>
                 <span className="text-green-600 font-bold">
-                  {molecule.type === 'alkane' ? 'an' : molecule.type === 'alkene' ? 'en' : 'yn'}
+                  {molecule.type === 'alkane' ? 'an' : molecule.type === 'alkene' ? 'en' : 'ýn'}
                 </span>
                 <span className="text-warm-500">
                   {' '}

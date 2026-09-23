@@ -11,13 +11,13 @@ import { useReturnToPrompt, useRevealWhenShown } from '../hooks/useRevealWhenSho
 const MISCONCEPTIONS: Record<string, string> = {
   prefix:
     'Forskeytið segir til um fjölda kolefna í keðjunni. meth=1, eth=2, prop=3, but=4, pent=5, hex=6...',
-  suffix: 'Viðskeytið segir til um tengjategund: -an (eintengi), -en (tvítengi), -yn (þrítengi).',
+  suffix: 'Viðskeytið segir til um tengjategund: -an (eintengi), -en (tvítengi), -ýn (þrítengi).',
   name: 'Nafnið er samsett úr forskeyti (fjöldi C) + viðskeyti (tengjategund). T.d. eth + en = eten.',
 };
 
 // Related concepts for organic nomenclature
 const RELATED_CONCEPTS: Record<string, string[]> = {
-  prefix: ['Kolefniskeðjur', 'Alkön', 'IUPAC nafnakerfi'],
+  prefix: ['Kolefniskeðjur', 'Alkanar', 'IUPAC nafnakerfi'],
   suffix: ['Mettaðar sameindir', 'Ómettaðar sameindir', 'Efnatengi'],
   name: ['Lífræn efni', 'Vetniskolefni', 'Formúlur'],
 };
@@ -44,13 +44,13 @@ interface SuffixRule {
 const prefixes: PrefixRule[] = [
   { carbons: 1, prefix: 'meth-', example: 'metan', formula: 'CH₄' },
   { carbons: 2, prefix: 'eth-', example: 'etan', formula: 'C₂H₆' },
-  { carbons: 3, prefix: 'prop-', example: 'propan', formula: 'C₃H₈' },
+  { carbons: 3, prefix: 'prop-', example: 'própan', formula: 'C₃H₈' },
   { carbons: 4, prefix: 'but-', example: 'bútan', formula: 'C₄H₁₀' },
   { carbons: 5, prefix: 'pent-', example: 'pentan', formula: 'C₅H₁₂' },
   { carbons: 6, prefix: 'hex-', example: 'hexan', formula: 'C₆H₁₄' },
   { carbons: 7, prefix: 'hept-', example: 'heptan', formula: 'C₇H₁₆' },
   { carbons: 8, prefix: 'oct-', example: 'oktan', formula: 'C₈H₁₈' },
-  { carbons: 9, prefix: 'non-', example: 'nonan', formula: 'C₉H₂₀' },
+  { carbons: 9, prefix: 'non-', example: 'nónan', formula: 'C₉H₂₀' },
   { carbons: 10, prefix: 'dec-', example: 'dekan', formula: 'C₁₀H₂₂' },
 ];
 
@@ -69,7 +69,7 @@ const suffixes: SuffixRule[] = [
   },
   {
     bondType: 'Þrítengi',
-    suffix: '-yn',
+    suffix: '-ýn',
     bondSymbol: 'C≡C',
     description: 'Eitt eða fleiri þrítengi (ómettað)',
   },
@@ -88,14 +88,14 @@ const quizQuestions: QuizQuestion[] = [
   {
     id: 1,
     type: 'prefix',
-    question: "Hvað táknar forskeyti 'meth-'?",
+    question: "Hvað táknar forskeytið 'meth-'?",
     correctAnswer: '1 kolefni',
     options: ['1 kolefni', '2 kolefni', '3 kolefni', '4 kolefni'],
   },
   {
     id: 2,
     type: 'prefix',
-    question: "Hvað táknar forskeyti 'prop-'?",
+    question: "Hvað táknar forskeytið 'prop-'?",
     correctAnswer: '3 kolefni',
     options: ['2 kolefni', '3 kolefni', '4 kolefni', '5 kolefni'],
   },
@@ -104,14 +104,14 @@ const quizQuestions: QuizQuestion[] = [
     type: 'suffix',
     question: "Hvað táknar viðskeytið '-an'?",
     correctAnswer: 'Eintengi',
-    options: ['Eintengi', 'Tvítengi', 'Þrítengi', 'Hóptengi'],
+    options: ['Eintengi', 'Tvítengi', 'Þrítengi', 'Virknihópur'],
   },
   {
     id: 4,
     type: 'suffix',
     question: "Hvað táknar viðskeytið '-en'?",
     correctAnswer: 'Tvítengi',
-    options: ['Eintengi', 'Tvítengi', 'Þrítengi', 'Hóptengi'],
+    options: ['Eintengi', 'Tvítengi', 'Þrítengi', 'Virknihópur'],
   },
   {
     id: 5,
@@ -123,7 +123,7 @@ const quizQuestions: QuizQuestion[] = [
   {
     id: 6,
     type: 'suffix',
-    question: "Hvað táknar viðskeytið '-yn'?",
+    question: "Hvað táknar viðskeytið '-ýn'?",
     correctAnswer: 'Þrítengi',
     options: ['Eintengi', 'Tvítengi', 'Þrítengi', 'Hringtengi'],
   },
@@ -132,14 +132,14 @@ const quizQuestions: QuizQuestion[] = [
     type: 'name',
     question: 'Hvað heitir C₂H₆?',
     correctAnswer: 'etan',
-    options: ['metan', 'etan', 'propan', 'bútan'],
+    options: ['metan', 'etan', 'própan', 'bútan'],
   },
   {
     id: 8,
     type: 'name',
     question: 'Hvað heitir C₃H₄ með þrítengi?',
-    correctAnswer: 'propyn',
-    options: ['propen', 'propyn', 'propan', 'propanal'],
+    correctAnswer: 'própýn',
+    options: ['própen', 'própýn', 'própan', 'própanal'],
   },
   {
     id: 9,
@@ -153,7 +153,7 @@ const quizQuestions: QuizQuestion[] = [
     type: 'name',
     question: 'Hvað heitir C₂H₄ með tvítengi?',
     correctAnswer: 'eten',
-    options: ['etan', 'eten', 'etyn', 'etanal'],
+    options: ['etan', 'eten', 'etýn', 'etanal'],
   },
 ];
 
@@ -246,7 +246,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           </div>
 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-warm-700">
-            📚 Forskeytir (kolefnisfjöldi)
+            📚 Forskeyti (kolefnisfjöldi)
           </h1>
           <p className="text-center text-warm-600 mb-8">
             Forskeytið segir hversu mörg kolefni eru í keðjunni
@@ -319,7 +319,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               onClick={handleNext}
               className="flex-1 bg-warm-700 hover:bg-warm-800 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
             >
-              {currentItem === prefixes.length - 1 ? 'Viðskeytir →' : 'Næsta →'}
+              {currentItem === prefixes.length - 1 ? 'Viðskeyti →' : 'Næsta →'}
             </button>
           </div>
         </div>
@@ -346,7 +346,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           </div>
 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-green-700">
-            🔗 Viðskeytir (tengjategund)
+            🔗 Viðskeyti (tengjategund)
           </h1>
           <p className="text-center text-warm-600 mb-8">
             Viðskeytið segir hvaða tegund af tengingu er milli kolefna
@@ -396,7 +396,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               <div
                 className={`p-3 rounded-lg text-center ${currentItem === 2 ? 'bg-purple-200' : 'bg-white'}`}
               >
-                <div className="font-bold">-yn</div>
+                <div className="font-bold">-ýn</div>
                 <div className="text-warm-500">C≡C</div>
               </div>
             </div>
@@ -505,7 +505,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         </div>
 
         <h1 className="text-2xl md:text-3xl font-bold text-center mb-8 text-emerald-600">
-          ✏️ Próf: Forskeytir og viðskeytir
+          ✏️ Próf: Forskeyti og viðskeyti
         </h1>
 
         <div
@@ -562,7 +562,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           <h3 className="font-semibold text-warm-700 mb-2">📋 Minnisblað:</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>
-              <div className="font-bold text-warm-700 mb-1">Forskeytir:</div>
+              <div className="font-bold text-warm-700 mb-1">Forskeyti:</div>
               <div className="grid grid-cols-3 sm:grid-cols-2 gap-1">
                 {prefixes.slice(0, 6).map((p, idx) => (
                   <div
@@ -575,7 +575,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               </div>
             </div>
             <div>
-              <div className="font-bold text-warm-700 mb-1">Viðskeytir:</div>
+              <div className="font-bold text-warm-700 mb-1">Viðskeyti:</div>
               <div className="space-y-1">
                 {suffixes.map((s, idx) => (
                   <div key={idx} className="bg-white p-1 rounded border text-center">

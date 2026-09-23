@@ -116,7 +116,7 @@ describe('Stig 1 and 3 quizzes: the next question is brought back on screen', ()
     const rendered = render(<Level1 onComplete={vi.fn()} onBack={vi.fn()} />);
     const ui = within(rendered.container);
     const next = () =>
-      fireEvent.click(ui.getAllByRole('button', { name: /Næsta →|Viðskeytir →/ })[0]);
+      fireEvent.click(ui.getAllByRole('button', { name: /Næsta →|Viðskeyti →/ })[0]);
     for (let i = 0; i < 12; i++) next();
     fireEvent.click(ui.getByRole('button', { name: /Sameindasmiður →/ }));
 

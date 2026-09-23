@@ -3,6 +3,12 @@ import { useState, useCallback, useRef } from 'react';
 import { FeedbackPanel } from '@shared/components';
 
 import { useReturnToPrompt, useRevealWhenShown } from '../hooks/useRevealWhenShown';
+import {
+  isSameUnbranchedChain,
+  nextBondType,
+  sameBondsAsDrawn,
+  type BondType,
+} from '../utils/naming';
 
 /**
  * StructureFromNameChallenge
@@ -14,8 +20,6 @@ import { useReturnToPrompt, useRevealWhenShown } from '../hooks/useRevealWhenSho
  *
  * Tests bidirectional understanding of nomenclature.
  */
-
-type BondType = 'single' | 'double' | 'triple';
 
 interface TargetStructure {
   carbons: number;
@@ -35,7 +39,7 @@ const CHALLENGES: Challenge[] = [
   // Easy - Alkanes
   {
     id: 1,
-    name: 'propan',
+    name: 'própan',
     formula: 'C₃H₈',
     target: { carbons: 3, bonds: [] }, // all single bonds
     hint: 'prop = 3 kolefni, an = eintengi',
@@ -60,7 +64,7 @@ const CHALLENGES: Challenge[] = [
   },
   {
     id: 4,
-    name: 'propen',
+    name: 'própen',
     formula: 'C₃H₆',
     target: { carbons: 3, bonds: [{ position: 1, type: 'double' }] },
     hint: 'prop = 3 kolefni, en = tvítengi',
@@ -69,7 +73,7 @@ const CHALLENGES: Challenge[] = [
   // Medium - Position numbers
   {
     id: 5,
-    name: '1-buten',
+    name: '1-búten',
     formula: 'C₄H₈',
     target: { carbons: 4, bonds: [{ position: 1, type: 'double' }] },
     hint: '1- = tvítengi á stað 1, but = 4 kolefni',
@@ -77,7 +81,7 @@ const CHALLENGES: Challenge[] = [
   },
   {
     id: 6,
-    name: '2-buten',
+    name: '2-búten',
     formula: 'C₄H₈',
     target: { carbons: 4, bonds: [{ position: 2, type: 'double' }] },
     hint: '2- = tvítengi á stað 2, but = 4 kolefni',
@@ -86,15 +90,15 @@ const CHALLENGES: Challenge[] = [
   // Medium - Alkynes
   {
     id: 7,
-    name: 'etyn',
+    name: 'etýn',
     formula: 'C₂H₂',
     target: { carbons: 2, bonds: [{ position: 1, type: 'triple' }] },
-    hint: 'eth = 2 kolefni, yn = þrítengi',
+    hint: 'eth = 2 kolefni, ýn = þrítengi',
     difficulty: 'medium',
   },
   {
     id: 8,
-    name: '1-butyn',
+    name: '1-bútýn',
     formula: 'C₄H₆',
     target: { carbons: 4, bonds: [{ position: 1, type: 'triple' }] },
     hint: '1- = þrítengi á stað 1, but = 4 kolefni',
@@ -103,7 +107,7 @@ const CHALLENGES: Challenge[] = [
   // Hard - More complex
   {
     id: 9,
-    name: '2-pentyn',
+    name: '2-pentýn',
     formula: 'C₅H₈',
     target: { carbons: 5, bonds: [{ position: 2, type: 'triple' }] },
     hint: '2- = þrítengi á stað 2, pent = 5 kolefni',
@@ -122,9 +126,9 @@ const CHALLENGES: Challenge[] = [
 // Misconceptions
 const MISCONCEPTIONS = {
   carbons: 'Forskeytið segir til um fjölda kolefna: meth=1, eth=2, prop=3, but=4, pent=5, hex=6.',
-  suffix: 'Viðskeytið segir til um tengjategund: -an (eintengi), -en (tvítengi), -yn (þrítengi).',
+  suffix: 'Viðskeytið segir til um tengjategund: -an (eintengi), -en (tvítengi), -ýn (þrítengi).',
   position:
-    'Staðsetningartalan segir hvar ómettuð tenging byrjar (t.d. 2-buten = tvítengi milli C2 og C3).',
+    'Staðsetningartalan segir hvar ómettuð tenging byrjar (t.d. 2-búten = tvítengi milli C2 og C3).',
 };
 
 interface StructureFromNameChallengeProps {
@@ -160,83 +164,64 @@ export function StructureFromNameChallenge({
     setBonds((prev) => prev.filter((b) => b.position < newCount));
   };
 
-  // Cycle bond type at position
+  // Cycle bond type at position: single → double → triple → single, skipping a type that
+  // would give either carbon a fifth bond
   const cycleBond = (position: number) => {
     setBonds((prev) => {
-      const existing = prev.find((b) => b.position === position);
-      if (!existing) {
-        // Add double bond
-        return [...prev, { position, type: 'double' as BondType }];
-      }
-      if (existing.type === 'double') {
-        // Change to triple
-        return prev.map((b) =>
-          b.position === position ? { ...b, type: 'triple' as BondType } : b
-        );
-      }
-      // Remove (back to single)
-      return prev.filter((b) => b.position !== position);
+      const next = nextBondType({ carbons: carbonCount, bonds: prev, branches: [] }, position);
+      const others = prev.filter((b) => b.position !== position);
+      return next === 'single' ? others : [...others, { position, type: next }];
     });
   };
 
   // Check if current structure matches target
   const checkAnswer = useCallback(() => {
-    const target = challenge.target;
+    const correct = isSameUnbranchedChain({ carbons: carbonCount, bonds }, challenge.target);
 
-    // Check carbon count
-    if (carbonCount !== target.carbons) {
-      setIsCorrect(false);
-      setShowFeedback(true);
-      return;
-    }
-
-    // Check bonds
-    const userUnsaturated = bonds.filter((b) => b.type !== 'single');
-    const targetUnsaturated = target.bonds;
-
-    // Same number of unsaturated bonds?
-    if (userUnsaturated.length !== targetUnsaturated.length) {
-      setIsCorrect(false);
-      setShowFeedback(true);
-      return;
-    }
-
-    // Check each bond matches
-    const allMatch = targetUnsaturated.every((tb) =>
-      userUnsaturated.some((ub) => ub.position === tb.position && ub.type === tb.type)
-    );
-
-    setIsCorrect(allMatch);
+    setIsCorrect(correct);
     setShowFeedback(true);
 
-    if (allMatch) {
+    if (correct) {
       const points = 15;
       setScore((prev) => prev + points);
     }
-  }, [carbonCount, bonds, challenge, showHint]);
+  }, [carbonCount, bonds, challenge]);
 
   // Get feedback details
   const getFeedback = () => {
     const target = challenge.target;
 
     if (isCorrect) {
+      // Built at the Cn end of the chain: say where it was put, so "á stað 1" does not
+      // contradict the C3–C4 the student can see
+      const placed = bonds.find((b) => b.type !== 'single');
+      const fromOtherEnd =
+        placed && !sameBondsAsDrawn(bonds, target.bonds)
+          ? ` Þú settir tengið milli C${placed.position} og C${placed.position + 1} — talið frá hinum enda keðjunnar er það á stað ${target.bonds[0].position}.`
+          : '';
       return {
         isCorrect: true,
         explanation: `Rétt! ${challenge.name} hefur ${target.carbons} kolefni${
           target.bonds.length > 0
             ? ` og ${target.bonds[0].type === 'double' ? 'tvítengi' : 'þrítengi'} á stað ${target.bonds[0].position}`
             : ' og eingöngu eintengi'
-        }.`,
+        }.${fromOtherEnd}`,
         relatedConcepts: ['IUPAC nafnakerfi', 'Kolefniskeðjur', 'Vetniskolefni'],
         nextSteps: 'Frábært! Þú getur greint byggingu sameindar út frá nafni.',
       };
     }
 
-    // Determine what went wrong
+    // Determine what went wrong. A double bond where the name asks for a triple is the ending
+    // misread, not the position: it used to be sent to the position note, because it only
+    // counted the multiple bonds and never compared their type.
+    const built = bonds.filter((b) => b.type !== 'single');
     let misconception: string;
     if (carbonCount !== target.carbons) {
       misconception = MISCONCEPTIONS.carbons;
-    } else if (bonds.length !== target.bonds.length) {
+    } else if (
+      built.length !== target.bonds.length ||
+      built.some((b) => !target.bonds.some((t) => t.type === b.type))
+    ) {
       misconception = MISCONCEPTIONS.suffix;
     } else {
       misconception = MISCONCEPTIONS.position;
@@ -376,6 +361,11 @@ export function StructureFromNameChallenge({
                           marginBlock: `calc((var(--atom) - ${bondBoxHeight}) / 2)`,
                         }}
                         title="Smelltu til að breyta tengingu"
+                        aria-label={`Tenging ${i + 1}–${i + 2}: ${
+                          { single: 'einföld', double: 'tvöföld', triple: 'þreföld' }[
+                            bonds.find((b) => b.position === i + 1)?.type ?? 'single'
+                          ]
+                        }. Smelltu til að breyta.`}
                       >
                         {(() => {
                           const bond = bonds.find((b) => b.position === i + 1);
@@ -459,6 +449,7 @@ export function StructureFromNameChallenge({
             <div className="flex flex-wrap justify-center items-center gap-4 mb-4">
               <button
                 onClick={() => updateCarbonCount(carbonCount - 1)}
+                aria-label="Fjarlægja kolefni"
                 disabled={carbonCount <= 2}
                 className={`w-12 h-12 shrink-0 rounded-full font-bold text-xl transition-all ${
                   carbonCount > 2
@@ -476,6 +467,7 @@ export function StructureFromNameChallenge({
 
               <button
                 onClick={() => updateCarbonCount(carbonCount + 1)}
+                aria-label="Bæta við kolefni"
                 disabled={carbonCount >= 8}
                 className={`w-12 h-12 shrink-0 rounded-full font-bold text-xl transition-all ${
                   carbonCount < 8
@@ -548,7 +540,7 @@ export function StructureFromNameChallenge({
           <h3 className="font-semibold text-warm-700 mb-2">📋 Minnisblað:</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>
-              <div className="font-bold text-warm-600 mb-1">Forskeytir:</div>
+              <div className="font-bold text-warm-600 mb-1">Forskeyti:</div>
               <div className="grid grid-cols-3 gap-1">
                 {['meth-1', 'eth-2', 'prop-3', 'but-4', 'pent-5', 'hex-6'].map((p) => {
                   const [prefix, count] = p.split('-');
@@ -564,14 +556,14 @@ export function StructureFromNameChallenge({
               </div>
             </div>
             <div>
-              <div className="font-bold text-warm-600 mb-1">Viðskeytir:</div>
+              <div className="font-bold text-warm-600 mb-1">Viðskeyti:</div>
               <div className="space-y-1">
                 <div className="bg-white p-1 rounded border text-center">-an = eintengi</div>
                 <div className="bg-green-50 p-1 rounded border border-green-200 text-center">
                   -en = tvítengi
                 </div>
                 <div className="bg-purple-50 p-1 rounded border border-purple-200 text-center">
-                  -yn = þrítengi
+                  -ýn = þrítengi
                 </div>
               </div>
             </div>
@@ -583,7 +575,7 @@ export function StructureFromNameChallenge({
           <div
             className="bg-emerald-500 h-2 rounded-full transition-all duration-300"
             style={{
-              width: `${((currentChallenge + (showFeedback && isCorrect ? 1 : 0)) / CHALLENGES.length) * 100}%`,
+              width: `${((currentChallenge + (showFeedback ? 1 : 0)) / CHALLENGES.length) * 100}%`,
             }}
           />
         </div>
