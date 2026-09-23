@@ -58,7 +58,14 @@ function App() {
   }
 
   if (mode === 'level3') {
-    return <Level3 onBack={() => setMode('menu')} onComplete={() => completeLevel(3)} />;
+    // Stig 3 reports completion as its summary opens, so recording it must not
+    // also leave for the menu: `completeLevel` did, and the summary never showed.
+    return (
+      <Level3
+        onBack={() => setMode('menu')}
+        onComplete={() => updateProgress({ level3Completed: true })}
+      />
+    );
   }
 
   // Main Menu
@@ -218,7 +225,7 @@ function App() {
           <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
             <h3 className="font-semibold text-amber-800 mb-2">Af hverju mólmassi?</h3>
             <p className="text-sm text-amber-700">
-              Lyfjafræðingar reikna skammta lyfa í mólum. Matvælafræðingar nota mólmassa til að
+              Lyfjafræðingar reikna skammta lyfja í mólum. Matvælafræðingar nota mólmassa til að
               skilja efnainnihald. Án mólmassans gætum við ekki umbreytt milli gramma og mólfjölda —
               undirstaða allrar magnefnafræði.
             </p>

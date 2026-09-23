@@ -4,6 +4,7 @@ import { FeedbackPanel } from '@shared/components';
 import { formatDecimal, formatScientific, shuffleArray } from '@shared/utils';
 
 import { PeriodicTable } from './PeriodicTable';
+import { atomWord } from '../data/atomWords';
 import { COMPOUNDS, type Compound } from '../data/compounds';
 import { parseScientificAnswer } from '../utils/parseAnswer';
 
@@ -18,6 +19,8 @@ interface Problem {
   answer: number;
   unit: string;
   steps: string[];
+  /** `sameindir`, or `formúlueiningar` for an ionic compound; names the badge. */
+  particles: string;
 }
 
 // --- Compact problem descriptors ---
@@ -27,14 +30,12 @@ type Desc =
       formula: string;
       mass: number;
       massLabel: string;
-      particleWord: string;
     }
   | {
       type: 'particles-to-mass';
       formula: string;
       count: number;
       countLabel: string;
-      particleWord: string;
     }
   | {
       type: 'mass-to-moles-of-atom';
@@ -42,7 +43,6 @@ type Desc =
       mass: number;
       massLabel: string;
       element: string;
-      elementName: string;
       atomCount: number;
     };
 
@@ -53,42 +53,36 @@ export const DESCRIPTORS: Desc[] = [
     formula: 'H\u2082O',
     mass: 36,
     massLabel: '36',
-    particleWord: 'sameindir',
   },
   {
     type: 'mass-to-particles',
     formula: 'CO\u2082',
     mass: 88,
     massLabel: '88',
-    particleWord: 'sameindir',
   },
   {
     type: 'mass-to-particles',
     formula: 'NaCl',
     mass: 117,
     massLabel: '117',
-    particleWord: 'formúlueiningar',
   },
   {
     type: 'mass-to-particles',
     formula: 'CH\u2084',
     mass: 8,
     massLabel: '8,0',
-    particleWord: 'sameindir',
   },
   {
     type: 'mass-to-particles',
     formula: 'NH\u2083',
     mass: 34,
     massLabel: '34',
-    particleWord: 'sameindir',
   },
   {
     type: 'mass-to-particles',
     formula: 'O\u2082',
     mass: 64,
     massLabel: '64',
-    particleWord: 'sameindir',
   },
   // particles -> mass (4)
   {
@@ -96,28 +90,24 @@ export const DESCRIPTORS: Desc[] = [
     formula: 'CO\u2082',
     count: 3.011e23,
     countLabel: '3,011 \u00d7 10\u00b2\u00b3',
-    particleWord: 'sameindir',
   },
   {
     type: 'particles-to-mass',
     formula: 'H\u2082O',
     count: 1.2044e24,
     countLabel: '1,204 \u00d7 10\u00b2\u2074',
-    particleWord: 'sameindir',
   },
   {
     type: 'particles-to-mass',
     formula: 'HCl',
     count: 6.022e23,
     countLabel: '6,022 \u00d7 10\u00b2\u00b3',
-    particleWord: 'sameindir',
   },
   {
     type: 'particles-to-mass',
     formula: 'NaOH',
     count: 1.8066e24,
     countLabel: '1,807 \u00d7 10\u00b2\u2074',
-    particleWord: 'formúlueiningar',
   },
   // mass -> moles of atom (5)
   {
@@ -126,7 +116,6 @@ export const DESCRIPTORS: Desc[] = [
     mass: 180,
     massLabel: '180',
     element: 'O',
-    elementName: 'súrefnisatómum',
     atomCount: 6,
   },
   {
@@ -135,7 +124,6 @@ export const DESCRIPTORS: Desc[] = [
     mass: 90,
     massLabel: '90',
     element: 'H',
-    elementName: 'vetni',
     atomCount: 2,
   },
   {
@@ -144,7 +132,6 @@ export const DESCRIPTORS: Desc[] = [
     mass: 196,
     massLabel: '196',
     element: 'O',
-    elementName: 'súrefnisatómum',
     atomCount: 4,
   },
   {
@@ -153,7 +140,6 @@ export const DESCRIPTORS: Desc[] = [
     mass: 200,
     massLabel: '200',
     element: 'O',
-    elementName: 'súrefnisatómum',
     atomCount: 3,
   },
   {
@@ -162,7 +148,6 @@ export const DESCRIPTORS: Desc[] = [
     mass: 46,
     massLabel: '46',
     element: 'C',
-    elementName: 'kolefnisatómum',
     atomCount: 2,
   },
 ];
@@ -189,18 +174,22 @@ function fmtSci(n: number): string {
 export function buildProblem(d: Desc): Problem {
   const c = find(d.formula);
   const M = c.molarMass;
+  // Molecules, or formula units for an ionic compound — derived from the
+  // compound rather than written beside each problem.
+  const particles = c.ionic ? 'formúlueiningar' : 'sameindir';
   if (d.type === 'mass-to-particles') {
     const n = d.mass / M;
     const N = n * AVOGADRO;
     return {
       type: d.type,
-      question: `Hversu margar ${d.particleWord} eru í ${d.massLabel} g af ${c.name.toLowerCase()} (${c.formula})?`,
+      question: `Hversu margar ${particles} eru í ${d.massLabel} g af ${c.nameDative} (${c.formula})?`,
       answer: N,
-      unit: d.particleWord,
+      unit: particles,
+      particles,
       steps: [
-        `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${formatDecimal(M, 3)} g/mol`,
+        `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${formatDecimal(M, 3)} g/mól`,
         `Skref 2: g → mól (einingagreining)\n  ${d.mass} g × (1 mól / ${formatDecimal(M, 3)} g) = ${formatDecimal(n, 3)} mól\n  Einingin g strikast út.`,
-        `Skref 3: mól → ${d.particleWord} (einingagreining)\n  ${formatDecimal(n, 3)} mól × (6,022 × 10²³ / 1 mól) = ${fmtSci(N)} ${d.particleWord}\n  Einingin mól strikast út.`,
+        `Skref 3: mól → ${particles} (einingagreining)\n  ${formatDecimal(n, 3)} mól × (6,022 × 10²³ / 1 mól) = ${fmtSci(N)} ${particles}\n  Einingin mól strikast út.`,
       ],
     };
   }
@@ -209,12 +198,13 @@ export function buildProblem(d: Desc): Problem {
     const m = n * M;
     return {
       type: d.type,
-      question: `Hvað vega ${d.countLabel} ${d.particleWord} af ${c.name.toLowerCase()} (${c.formula}) í grömmum?`,
+      question: `Hvað vega ${d.countLabel} ${particles} af ${c.nameDative} (${c.formula}) í grömmum?`,
       answer: m,
       unit: 'g',
+      particles,
       steps: [
-        `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${formatDecimal(M, 3)} g/mol`,
-        `Skref 2: ${d.particleWord} → mól (einingagreining)\n  ${d.countLabel} × (1 mól / 6,022 × 10²³) = ${formatDecimal(n, 3)} mól\n  Einingin ${d.particleWord} strikast út.`,
+        `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${formatDecimal(M, 3)} g/mól`,
+        `Skref 2: ${particles} → mól (einingagreining)\n  ${d.countLabel} × (1 mól / 6,022 × 10²³) = ${formatDecimal(n, 3)} mól\n  Einingin ${particles} strikast út.`,
         `Skref 3: mól → g (einingagreining)\n  ${formatDecimal(n, 3)} mól × (${formatDecimal(M, 3)} g / 1 mól) = ${formatDecimal(m, 2)} g\n  Einingin mól strikast út.`,
       ],
     };
@@ -224,15 +214,23 @@ export function buildProblem(d: Desc): Problem {
   const nAtom = n * d.atomCount;
   return {
     type: d.type,
-    question: `Hversu mörg mól af ${d.elementName} (${d.element}) eru í ${d.massLabel} g af ${c.name.toLowerCase()} (${c.formula})?`,
+    // `mól af súrefnisatómum`, dative plural, for every element alike: the
+    // hydrogen problem said `mól af vetni`, which a student can fairly read as
+    // moles of H₂ and so answer half the key.
+    question: `Hversu mörg mól af ${atomWord(d.element)}um (${d.element}) eru í ${d.massLabel} g af ${c.nameDative} (${c.formula})?`,
     answer: nAtom,
     unit: 'mól',
+    particles,
     steps: [
-      `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${formatDecimal(M, 2)} g/mol`,
+      `Skref 1: Finna mólmassa\n  M(${c.formula}) = ${formatDecimal(M, 2)} g/mól`,
       `Skref 2: g → mól (einingagreining)\n  ${d.mass} g × (1 mól / ${formatDecimal(M, 2)} g) = ${formatDecimal(n, 3)} mól ${c.formula}\n  Einingin g strikast út.`,
       `Skref 3: Nota hlutfallið úr efnaformúlunni\n  Í hverju móli af ${c.formula} eru ${d.atomCount} mól af ${d.element}\n  ${formatDecimal(n, 3)} mól ${c.formula} × (${d.atomCount} mól ${d.element} / 1 mól ${c.formula}) = ${formatDecimal(nAtom, 2)} mól ${d.element}`,
     ],
   };
+}
+
+function capitalize(word: string): string {
+  return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
 function withinTolerance(user: number, correct: number): boolean {
@@ -243,6 +241,11 @@ function withinTolerance(user: number, correct: number): boolean {
 // --- Props ---
 interface Level3Props {
   onBack: () => void;
+  /**
+   * Called as the last answer is left and the summary opens. It records the
+   * level and must not navigate: the summary is the screen it leads to, with
+   * its own buttons for trying again and going back.
+   */
   onComplete: (score: number, maxScore: number, hintsUsed: number) => void;
   onCorrectAnswer?: () => void;
   onIncorrectAnswer?: () => void;
@@ -268,7 +271,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
     if (!p || !input.trim()) return;
     const val = parseScientificAnswer(input);
     if (val === null) {
-      setError('Ógilt gildi. Notaðu t.d. 1,2e24 eða 1,2 × 10^24');
+      setError('Ógilt gildi. Notaðu t.d. 2,5e20 eða 2,5 × 10^20');
       return;
     }
     const ok = withinTolerance(val, p.answer);
@@ -286,6 +289,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
   const next = () => {
     const ni = idx + 1;
     if (ni >= TOTAL_QUESTIONS) {
+      // Shows the summary below; `onComplete` only records the level.
       setIdx(ni);
       onComplete(score, TOTAL_QUESTIONS, hintsUsed);
       return;
@@ -313,7 +317,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
     return (
       <div className="min-h-screen bg-gradient-to-b from-red-50 to-white flex items-center justify-center p-4">
         <div className="max-w-lg w-full bg-white rounded-xl shadow-lg p-8 animate-fade-in-up text-center">
-          <h2 className="text-3xl font-bold text-warm-800 mb-2">Æfing lokið!</h2>
+          <h2 className="text-3xl font-bold text-warm-800 mb-2">Æfingu lokið!</h2>
           <p className="text-warm-600 mb-6">Samþætt mól-æfing</p>
           <div className="grid grid-cols-2 gap-4 mb-8">
             <div className="bg-green-50 rounded-xl p-4">
@@ -398,9 +402,9 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                 }`}
               >
                 {p.type === 'mass-to-particles'
-                  ? 'Massi \u2192 Sameindir'
+                  ? `Massi \u2192 ${capitalize(p.particles)}`
                   : p.type === 'particles-to-mass'
-                    ? 'Sameindir \u2192 Massi'
+                    ? `${capitalize(p.particles)} \u2192 Massi`
                     : 'Massi \u2192 Mól af atómi'}
               </span>
             </div>
@@ -415,7 +419,11 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
               <div className="flex gap-2">
                 {/* No inputMode="decimal" here, deliberately: most answers in this
                     level are Avogadro-scale, and a phone's decimal keypad has no
-                    `e`, `×` or `^` to write them with. type="text" keeps the comma. */}
+                    `e`, `×` or `^` to write them with. type="text" keeps the comma.
+                    The examples here, in the line below and in the error must not
+                    be answers: they were `1,2e24` and `22,0`, and five of the six
+                    mass-to-molecules problems come to 1,20 × 10²⁴ while CO₂'s
+                    particles-to-mass one comes to 22,0 g. */}
                 <input
                   type="text"
                   value={input}
@@ -430,7 +438,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                     }
                   }}
                   disabled={submitted}
-                  placeholder="t.d. 1,2e24 eða 22,0"
+                  placeholder="t.d. 2,5e20 eða 12,5"
                   autoComplete="off"
                   autoCorrect="off"
                   autoCapitalize="none"
@@ -456,7 +464,7 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
               </div>
               {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
               <p className="text-xs text-warm-400 mt-1">
-                Hægt að nota vísisrithátt: 1,2e24, 1,2 × 10^24, eða venjulega tölu
+                Hægt að nota vísisrithátt: 2,5e20, 2,5 × 10^20, eða venjulega tölu
               </p>
             </div>
 

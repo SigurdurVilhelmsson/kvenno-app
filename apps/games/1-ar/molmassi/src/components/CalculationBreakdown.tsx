@@ -38,11 +38,11 @@ export function CalculationBreakdown({ compound }: CalculationBreakdownProps) {
                   <span className="font-semibold">{step.count}</span>
                   <span className="text-warm-600">×</span>
                   <span className="text-sm text-warm-600 whitespace-nowrap">
-                    {formatDecimal(step.atomicMass ?? 0, 3)} g/mol
+                    {formatDecimal(step.atomicMass ?? 0, 3)} g/mól
                   </span>
                 </div>
                 <span className="ml-auto font-semibold text-green-600 whitespace-nowrap">
-                  = {formatDecimal(step.total ?? 0, 3)} g/mol
+                  = {formatDecimal(step.total ?? 0, 3)} g/mól
                 </span>
               </div>
             )}
@@ -50,9 +50,9 @@ export function CalculationBreakdown({ compound }: CalculationBreakdownProps) {
         ))}
         <div className="border-t-2 border-warm-300 pt-2 mt-3">
           <div className="flex flex-wrap items-center justify-between gap-x-2 bg-green-100 rounded px-3 py-2">
-            <span className="font-bold text-warm-700">Heild mólmassi:</span>
+            <span className="font-bold text-warm-700">Heildarmólmassi:</span>
             <span className="ml-auto text-xl font-bold text-green-600 whitespace-nowrap">
-              {formatDecimal(compound.molarMass, 3)} g/mol
+              {formatDecimal(compound.molarMass, 3)} g/mól
             </span>
           </div>
         </div>

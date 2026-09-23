@@ -24,7 +24,8 @@ Levels are not gated; any can be opened from the menu.
 
 Stig 1 grades at an absolute tolerance by difficulty (0,5 / 1,0 / 2,0 g/mól) and, on a wrong answer,
 `diagnoseMistake` in `Level1.tsx` tries one extra or one missing atom of each element and names the
-likely miscount. Stig 2 and 3 grade at 5 % relative. Stig 2 marks itself complete only at 60 of 100.
+likely miscount. Stig 2 and 3 grade at 5 % relative. Stig 2 marks itself complete only at 60 of 100;
+Stig 3 marks itself complete on reaching its summary, whatever the score (see Open).
 A periodic table with atomic masses is available in Stig 1 and 3; it is the student's route to the
 answer, so do not mask it.
 
@@ -61,7 +62,7 @@ decimal comma, superscripts and a trailing unit, and returns `null` rather than 
 of the number is not understood. Guarded by `parse-answer.test.ts`. All three answer fields are
 `type="text"`. Stig 1 sets `inputMode="decimal"`; Stig 3 does not; Stig 2 chooses per question
 (`answerInputMode` in `Level2.tsx`): the decimal keypad, except for the Avogadro-scale molecule and
-atom counts, which get the full keyboard and Stig 3's line on how to write `1,2e24`. Guarded by
+atom counts, which get the full keyboard and Stig 3's line on how to write `2,5e20`. Guarded by
 `phone-input.test.ts`.
 
 The full history of the Phase 3 harvest is in `HARVEST.md`; the rulings are in the repo's
@@ -78,13 +79,18 @@ src/components/Level2.tsx          intro + seven conversion types
 src/components/Level3.tsx          fixed two-step problem pool
 src/components/CalculationBreakdown.tsx  per-element breakdown shown after Stig 1
 src/components/PeriodicTable.tsx   the lookup table
-src/data/compounds.ts              29 compounds; molar mass derived, state at STP
+src/data/compounds.ts              29 compounds; molar mass derived, state at STP, dative and
+                                   genitive name, ionic or molecular
+src/data/atomWords.ts              the stem each element takes in `-atóm` (`súrefnisatóm`)
 src/data/elements.ts               atomic masses, with period, group and category
 src/data/index.ts                  empty
 src/utils/calculations.ts          breakdown generator, including hydrates
 src/utils/parseAnswer.ts           parseScientificAnswer
 src/__tests__/                     breakdown-sums, compound-names, element-atoms,
-                                   gas-volume, parse-answer, phone-input, utils
+                                   gas-volume, parse-answer, phone-input, utils, and from
+                                   2026-09-23 ionic-particles, level1-teach-and-input,
+                                   level2-feedback, level3-summary, name-cases,
+                                   notation-examples, periodic-table, wording
 HARVEST.md                         the 2026-08-27 harvest and the parser defect
 LEVEL1_README.md, VISUAL_COMPARISON.md   prototype notes; describe a Level 1 that did not ship
 ```
@@ -94,11 +100,58 @@ LEVEL1_README.md, VISUAL_COMPARISON.md   prototype notes; describe a Level 1 tha
 - **`Saltsýra` for HCl.** The name is HCl(aq), a solution, while the game quotes 36,46 g/mól, the
   molar mass of the compound `vetnisklóríð`. HCl is excluded from molar-volume questions rather than
   renamed; the naming is Siggi's call.
-- **Unit spelling.** Stig 1 and 3 write the unit `g/mol` where the Stig 2 intro writes `g/mól`.
+- **Stig 3's completion threshold.** It records the level as complete on reaching the summary,
+  whatever the score — 0 of 8 included — while Stig 2 requires 60 of 100 and Stig 1 a press of
+  `Ljúka stigi`. Whether Stig 3 should have a threshold is a scoring decision; nothing was changed.
+- **`magnefnafræði`** in the menu's "Af hverju mólmassi?" card is in neither `ordabok.md` nor the
+  textbook. If it means stoichiometry the ruled word is `hlutfallaefnafræði`; if it means
+  quantitative chemistry, `magnbundin efnafræði`. Siggi's call.
+- **Periodic-table legend, two names.** `Eðallofttegundir`: `ordabok.md` says `eðalgas`, the textbook
+  prefers `eðallofttegund-` (54 to 25 in `02-mt-output`), so by the resolution order it is Siggi's call. `P-málmar`:
+  `ordabok.md` is silent and the textbook has one `eftirhliðarmálmar`.
+- **Stig 3's mass-to-molecules answers are nearly all the same number.** Five of its six problems
+  (36 g H₂O, 88 g CO₂, 117 g NaCl, 34 g NH₃, 64 g O₂) are two moles each, so all five come to
+  1,20 × 10²⁴; only CH₄ differs. A student who notices can answer without calculating. Varying the
+  masses (e.g. 1,5, 2,5 and 3 mól) would fix it, but choosing problem values is content, so nothing
+  was changed. The notation example that pointed straight at that number is fixed (below).
 - **Percent composition** is recorded in the roadmap as "a fourth `molmassi` level", which the
   2026-08-29 no-Level-4 ruling does not allow. Where it goes is not decided.
 - **i18n.** Menu text uses `t()`; the level components are hardcoded Icelandic. Part of the
   platform-wide undecided `useGameI18n` question.
+
+**Fixed 2026-09-23 — non-layout defects found in the phone pass.** Each has a test that failed
+against the previous commit.
+
+- **Stig 3's summary was unreachable.** The last `Sjá niðurstöðu` called `onComplete`, whose App
+  handler also switched to the menu. Level 3's `onComplete` now only records the level
+  (`level3-summary.test.tsx`).
+- **Names in sentences take their case from the data** — `nameDative` after `af`, `nameGenitive`
+  after `Mólmassi` — and atoms are compound words from `atomWords.ts`. The templates had read
+  `af Köfnunarefni`, `af vatn`, `Mólmassi Vatn er`, `Súrefni-atóm` and `súrefni-atómi`. Stig 3's
+  hydrogen problem said `mól af vetni`, which reads as moles of H₂; it now says `vetnisatómum` like
+  the others (`name-cases.test.tsx`).
+- **A salt is counted in formula units.** Stig 2 asked for the `sameindir` in a mole of NaCl. Every
+  compound now declares `ionic`, held to its formula by `ionic-particles.test.ts`, and Stig 3's
+  `particleWord` is derived from it rather than written per problem.
+- **Stig 2's atoms-of-an-element summary did not cancel**: `(atóm af frumefninu / 1 mól) × (atóm /
+1 mól)` leaves atoms squared. It is now `(mól af frumefninu / 1 mól)`, as the worked line was.
+- **Stig 2 printed each worked solution twice** — expanded under "Af hverju?" and in the
+  `Útreikningur` box. The panel now starts closed (CLAUDE.md's rule for text visible elsewhere),
+  and the box keeps the steps' line break. An unreadable answer now says `Ógilt gildi` instead of
+  doing nothing (`level2-feedback.test.tsx`).
+- **The unit is `g/mól` throughout**, as the textbook writes it (79 to 0). Also: the legend's
+  `Hliðarmálmar` and `Málmleysingjar` (`ordabok.md`), `atómmassaeiningum` for a non-word, and seven
+  grammar slips (`wording.test.ts`); and the detail panel's `×` is named `Loka nánari upplýsingum`
+  (`periodic-table.test.tsx`).
+- **The notation examples were answers.** Stig 3's field said `t.d. 1,2e24 eða 22,0`, and its help
+  line and error repeated `1,2e24` — the answer, within the 5 % tolerance, to five of its six
+  mass-to-molecules problems, while `22,0` g is CO₂'s particles-to-mass answer. Stig 2's help line
+  and error said `1,2e24` too, the key whenever a run drew 2 mól. Both levels now say `2,5e20` and
+  `12,5`, below every count either level asks for (`notation-examples.test.tsx`).
+- **Stig 1's water example did not add up**: `2,016 + 16,00 = 18,015` is the total with O at
+  15,999, not the 16,00 on the same screen. It now reads `18,02`, as the Stig 2 intro and the field's
+  placeholder do. And Stig 1, like Stig 2, ignored an answer it could not read (`≈ 18`); it now says
+  `Ógilt gildi` (`level1-teach-and-input.test.tsx`).
 
 **Fixed 2026-09-23 — phones.** Stig 2's decimal keypad could not write the Avogadro-scale answers
 two of its seven question types ask for (see above). The periodic table keeps 56px cells below `md`

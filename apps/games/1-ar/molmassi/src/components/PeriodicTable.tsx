@@ -130,10 +130,10 @@ export function PeriodicTable({
   const categories: { key: ElementCategory; label: string }[] = [
     { key: 'alkali-metal', label: 'Alkalímálmar' },
     { key: 'alkaline-earth', label: 'Jarðalkalímálmar' },
-    { key: 'transition-metal', label: 'Skiptimálmar' },
+    { key: 'transition-metal', label: 'Hliðarmálmar' },
     { key: 'post-transition-metal', label: 'P-málmar' },
     { key: 'metalloid', label: 'Hálfmálmar' },
-    { key: 'nonmetal', label: 'Ómálmar' },
+    { key: 'nonmetal', label: 'Málmleysingjar' },
     { key: 'halogen', label: 'Halógen' },
     { key: 'noble-gas', label: 'Eðallofttegundir' },
   ];
@@ -313,8 +313,8 @@ export function PeriodicTable({
                   <div className="text-sm text-warm-700">{element.name}</div>
                   <div className="text-sm font-mono text-warm-600 mt-1">
                     {showApprox
-                      ? `≈ ${APPROX_MASSES[element.symbol] || Math.round(element.atomicMass)} g/mol`
-                      : `${formatDecimal(element.atomicMass, 3)} g/mol`}
+                      ? `≈ ${APPROX_MASSES[element.symbol] || Math.round(element.atomicMass)} g/mól`
+                      : `${formatDecimal(element.atomicMass, 3)} g/mól`}
                   </div>
                 </button>
               ))}
@@ -352,7 +352,7 @@ export function PeriodicTable({
                   <div className="bg-white rounded-lg p-1.5 md:p-2 border">
                     <div className="text-warm-500 text-xs">Atómmassi (nákvæmt)</div>
                     <div className="font-bold font-mono">
-                      {formatDecimal(selectedElement.atomicMass, 3)} g/mol
+                      {formatDecimal(selectedElement.atomicMass, 3)} g/mól
                     </div>
                   </div>
                   <div className="bg-white rounded-lg p-1.5 md:p-2 border">
@@ -361,7 +361,7 @@ export function PeriodicTable({
                       ≈{' '}
                       {APPROX_MASSES[selectedElement.symbol] ||
                         Math.round(selectedElement.atomicMass)}{' '}
-                      g/mol
+                      g/mól
                     </div>
                   </div>
                   <div className="bg-white rounded-lg p-1.5 md:p-2 border">
@@ -374,6 +374,7 @@ export function PeriodicTable({
               </div>
               <button
                 onClick={() => setSelectedElement(null)}
+                aria-label="Loka nánari upplýsingum"
                 className="shrink-0 pointer-coarse:min-w-11 pointer-coarse:min-h-11 text-warm-400 hover:text-warm-600 text-xl"
               >
                 ×
@@ -386,8 +387,8 @@ export function PeriodicTable({
         <div className="bg-warm-100 p-3 text-center text-sm text-warm-600 shrink-0">
           <p>
             {showApprox
-              ? 'Sýnir námundaðan atómmassa (heil tölu) fyrir einfalda útreikninga'
-              : 'Sýnir nákvæman atómmassa í g/mol (atómeiningarmassi)'}
+              ? 'Sýnir námundaðan atómmassa (heila tölu) fyrir einfalda útreikninga'
+              : 'Sýnir nákvæman atómmassa í g/mól (atómmassaeiningum)'}
           </p>
         </div>
       </div>

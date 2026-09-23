@@ -11,6 +11,9 @@ describe('generateCalculationBreakdown', () => {
     const water: Compound = {
       formula: 'H₂O',
       name: 'Vatn',
+      nameDative: 'vatni',
+      nameGenitive: 'vatns',
+      ionic: false,
       elements: [
         { symbol: 'H', count: 2 },
         { symbol: 'O', count: 1 },
