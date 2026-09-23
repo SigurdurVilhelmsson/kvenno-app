@@ -19,7 +19,7 @@ import { useEffect, useRef, useState } from 'react';
 import { FeedbackPanel } from '@shared/components';
 import { DECIMAL_INPUT_PROPS, parseStudentNumber } from '@shared/utils';
 
-import { KlofnunBar } from './KlofnunBar';
+import { KlofnunBar, formatPercent } from './KlofnunBar';
 import { ScientificKeys } from './ScientificKeys';
 import { PRACTICE_PROBLEMS } from '../data/problems';
 import { PH_TOLERANCE, isRelativelyClose, isAbsolutelyClose } from '../engine/grade';
@@ -99,6 +99,30 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
     ],
   };
 
+  /**
+   * The panel already prints "Algeng villa:" in front of this, so the text
+   * starts after it. Each mistake is named only when the answer shows it, per
+   * CLAUDE.md: Ka · C and C are the two numbers the common slips produce, and
+   * leaving out the minus gives log₁₀[H⁺], which is negative. Any other wrong
+   * number — a rounding, a typo — is not diagnosable, so the slot stays empty.
+   */
+  const misconception = (): string | undefined => {
+    if (verdict) return undefined;
+    const value = parseStudentNumber(entry);
+    if (step === 'x') {
+      if (isRelativelyClose(value, problem.acid.ka * problem.concentration, 0.05)) {
+        return 'að gleyma kvaðratrótinni og skila Ka · C, sem er x² en ekki x.';
+      }
+      if (isRelativelyClose(value, problem.concentration, 0.05)) {
+        return 'að skila C sjálfu — en aðeins hluti sýrunnar klofnar, svo x er miklu minna en C.';
+      }
+      return undefined;
+    }
+    return value < 0
+      ? 'Svarið er neikvætt, svo mínusinn gleymdist: pH = −log₁₀[H⁺], og [H⁺] er minni en 1 svo lograrinn sjálfur er neikvæður.'
+      : undefined;
+  };
+
   const prompt: Record<StepId, string> = {
     x: 'Skref 1 af 3 — reiknaðu x = [H⁺] með nálguninni',
     check: 'Skref 2 af 3 — athugaðu forsenduna',
@@ -138,7 +162,11 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
           <div>
             <p className="mb-3 text-warm-700">
               Þú fékkst x = {sciText(s.hApprox)} M úr {fmt(problem.concentration, 3)} M lausn.
-              Klofnunarhlutfallið er {fmt(problem.percentDissociated, 2)} %.
+              Klofnunarhlutfallið er{' '}
+              <span className="whitespace-nowrap">
+                {formatPercent(problem.percentDissociated)} %
+              </span>
+              .
             </p>
             <KlofnunBar percent={problem.percentDissociated} valid={problem.approximationValid} />
             <p className="mt-4 text-warm-700">
@@ -225,11 +253,7 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
                             3
                           )}) = ${sciText(s.hApprox)} M.`
                         : `pH = −log₁₀(${sciText(s.hApprox)}) = ${fmt(problem.answer, 2)}.`,
-                    misconception: verdict
-                      ? undefined
-                      : step === 'x'
-                        ? 'Algeng villa er að gleyma kvaðratrótinni og skila Ka · C. Önnur er að skila C sjálfu — en aðeins hluti sýrunnar klofnar.'
-                        : 'Ef þú fékkst jákvæða tölu yfir 7 gleymdirðu mínusnum: pH = −log₁₀[H⁺], og [H⁺] er minni en 1 svo lograrinn er neikvæður.',
+                    misconception: misconception(),
                   }}
                 />
                 <button

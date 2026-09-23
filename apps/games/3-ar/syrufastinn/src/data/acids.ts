@@ -28,10 +28,9 @@
  *
  * **Every name here is either already shipping elsewhere on the platform or
  * carries the ruling that established it**, which is the other half of the same
- * discipline — `nameEstablished` records which. Three acids that would otherwise
- * belong were excluded because the platform contradicted itself about their
- * names; HF was one and is now in, so the README's "Names the platform cannot
- * agree on" is down to H₃PO₄ and the HNO₃ spellings.
+ * discipline — `nameEstablished` records which. Acids were once kept out because
+ * the platform spelled their names more than one way; every one of those names
+ * was ruled on 2026-09-19, and the README's table records how.
  *
  * **Names decline.** Icelandic needs the dative after `af` and the genitive after
  * `samoka basa`, so the nominative alone is not enough to build a sentence with:

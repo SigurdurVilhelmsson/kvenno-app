@@ -79,7 +79,7 @@ function App() {
           <div className="mx-auto max-w-4xl">
             <p className="mb-8 text-center text-lg text-warm-600">
               Ein tala lýsir sýrunni sjálfri — hvaðan hún kemur, hvað hún segir og hvenær styttri
-              leiðin að svarinu má nota
+              leiðina að svarinu má nota
             </p>
 
             <div className="rounded-lg bg-white p-5 shadow-md sm:p-8">
@@ -171,8 +171,8 @@ function App() {
                   Blóðið þitt heldur pH 7,4 af því að kolsýra og bíkarbónat sitja í jafnvægi sem
                   sýrufastinn ákveður. Sama tala ræður því hversu mikið af lyfi kemst gegnum
                   magavegginn, af hverju súrt regn leysir upp kalkstein, og hvers vegna edik
-                  bragðast súrt en er samt aðeins örfá prósent klofið. Ka er talan sem gerir „veik
-                  sýra“ að mælanlegri stærð í stað lýsingarorðs.
+                  bragðast súrt en er samt innan við eitt prósent klofið. Ka er talan sem gerir
+                  „veik sýra“ að mælanlegri stærð í stað lýsingarorðs.
                 </p>
               </div>
 

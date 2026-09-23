@@ -222,9 +222,9 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
               <p className="text-warm-700">
                 Fyrir 0,100 M ediksýru gefur nálgunin pH <strong>{fmt(s.pHApprox, 4)}</strong> á
                 móti {fmt(s.pH, 4)} úr nákvæmu jöfnunni. Munurinn er{' '}
-                {fmt(Math.abs(s.pH - s.pHApprox), 4)} — ósýnilegur þegar svarið er gefið upp með
-                tveimur aukastöfum. Þess vegna er <strong>{fmt(s.pHApprox, 2)}</strong> talan sem
-                stendur í bókinni.
+                {fmt(Math.abs(s.pH - s.pHApprox), 4)} — minni en síðasti aukastafurinn þegar svarið
+                er gefið upp með tveimur aukastöfum. Þess vegna er{' '}
+                <strong>{fmt(s.pHApprox, 2)}</strong> talan sem stendur í bókinni.
               </p>
             </div>
           )}
@@ -246,8 +246,11 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
                 </p>
                 <KlofnunBar percent={pct} valid />
                 <p className="mt-2 text-sm text-green-900">
-                  {fmt(pct, 2)} % klofnar. Nálgunin gefur {fmt(s.pHApprox, 2)}, nákvæma jafnan{' '}
-                  {fmt(s.pH, 2)} — sama svar.
+                  {/* Three decimals, not two: 0,100 M ediksýra sits on a rounding
+                      boundary, so to two decimals the roots print as 2,87 and 2,88,
+                      and a gap of 0,003 would read as 0,01. */}
+                  {fmt(pct, 2)} % klofnar. Nálgunin gefur {fmt(s.pHApprox, 3)}, nákvæma jafnan{' '}
+                  {fmt(s.pH, 3)} — munurinn er aðeins {fmt(Math.abs(s.pH - s.pHApprox), 3)}.
                 </p>
               </div>
 

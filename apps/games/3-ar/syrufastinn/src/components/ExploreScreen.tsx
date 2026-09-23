@@ -180,7 +180,7 @@ export function ExploreScreen({ onComplete, onBack }: ExploreScreenProps) {
 
             <div className="mt-4">
               <p className="mb-2 text-sm font-semibold text-warm-700">
-                Hversu mikið af sýrunni klofnaði í veikustu lausninni?
+                Hversu mikið af sýrunni klofnaði í þynnstu lausninni?
               </p>
               <KlofnunBar
                 percent={rows[rows.length - 1].pct}
