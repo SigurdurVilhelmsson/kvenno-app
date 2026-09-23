@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { BackButton } from './BackButton';
+import { Sci } from './Sci';
 import { saltBy } from '../data/salts';
 import {
   dissolutionEquation,
@@ -51,18 +53,26 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
     {
       title: '4. Leystu fyrir s',
       body: 'Þriðja rótin, ekki kvaðratrótin — og ekki gleyma fjarkanum.',
-      content: `s = ∛(Ksp / 4) = ∛(${formatScientific(SALT.ksp)} / 4) = ${formatScientific(s, 3)} M`,
+      // Held together in three pieces, so a phone breaks the line at an
+      // equals sign and never inside a number.
+      content: (
+        <>
+          <span className="whitespace-nowrap">s = ∛(Ksp / 4)</span>{' '}
+          <span className="whitespace-nowrap">= ∛({formatScientific(SALT.ksp)} / 4)</span>{' '}
+          <span className="whitespace-nowrap">= {formatScientific(s, 3)} M</span>
+        </>
+      ),
     },
   ];
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-6 shadow-md md:p-8">
-        <div className="mb-6 flex items-baseline justify-between">
-          <h2 className="text-2xl font-bold text-warm-800">Skilja — frá Ksp að mólarleysni</h2>
-          <button onClick={onBack} className="text-sm text-warm-500 underline">
-            Til baka
-          </button>
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
+        <div className="mb-6 flex items-baseline justify-between gap-3">
+          <h2 className="min-w-0 text-xl font-bold text-warm-800 sm:text-2xl">
+            Skilja — frá Ksp að mólarleysni
+          </h2>
+          <BackButton onClick={onBack} />
         </div>
 
         <p className="mb-6 text-warm-700">
@@ -93,23 +103,33 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
         </div>
 
         {step === steps.length - 1 && (
-          <div className="mt-6 rounded-lg border-2 border-amber-300 bg-amber-50 p-4">
+          <div className="mt-6 rounded-lg border-2 border-amber-300 bg-amber-50 p-3 sm:p-4">
             <h3 className="mb-2 font-semibold text-amber-900">Af hverju ekki bara kvaðratrótin?</h3>
-            <div className="mb-3 grid grid-cols-2 gap-4 text-sm">
+            {/* Side by side only where a whole number fits in each half; on a
+                phone the two stack, one above the other, rather than each
+                breaking at its × sign. */}
+            <div className="mb-3 grid grid-cols-1 gap-3 text-sm sm:grid-cols-2 sm:gap-4">
               <div className="rounded bg-white/70 p-3">
                 <p className="text-amber-800">√Ksp — röng aðferð</p>
-                <p className="font-mono text-lg text-amber-900">{formatScientific(naive, 3)} M</p>
+                <p className="font-mono text-lg text-amber-900">
+                  <Sci value={naive} figures={3} unit="M" />
+                </p>
               </div>
               <div className="rounded bg-white/70 p-3">
                 <p className="text-amber-800">∛(Ksp/4) — rétt</p>
-                <p className="font-mono text-lg text-amber-900">{formatScientific(s, 3)} M</p>
+                <p className="font-mono text-lg text-amber-900">
+                  <Sci value={s} figures={3} unit="M" />
+                </p>
               </div>
             </div>
             <p className="text-sm text-amber-900">
               Munurinn er <strong>{Math.round(s / naive)}-faldur</strong>. Kvaðratrótin á aðeins við
               þegar hlutfallið er 1:1, því þá — og aðeins þá — er Ksp = s². Almenna reglan er{' '}
-              <span className="font-mono">s = (Ksp / (xˣ · yʸ))^(1/(x+y))</span>, og hún gefur
-              kvaðratrótina sjálfkrafa þegar x = y = 1.
+              <span className="font-mono">
+                <span className="whitespace-nowrap">s =</span>{' '}
+                <span className="whitespace-nowrap">(Ksp / (xˣ · yʸ))^(1/(x+y))</span>
+              </span>
+              , og hún gefur kvaðratrótina sjálfkrafa þegar x = y = 1.
             </p>
           </div>
         )}
@@ -119,7 +139,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
             <button
               type="button"
               onClick={() => setStep(step + 1)}
-              className="game-btn rounded-lg bg-kvenno-orange px-4 py-2 font-semibold text-white hover:bg-kvenno-orange-dark"
+              className="game-btn rounded-lg bg-kvenno-orange px-4 py-2 font-semibold text-white hover:bg-kvenno-orange-dark pointer-coarse:min-h-11"
             >
               Næsta skref
             </button>
@@ -127,7 +147,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
             <button
               type="button"
               onClick={onComplete}
-              className="game-btn rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700"
+              className="game-btn rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 pointer-coarse:min-h-11"
             >
               Áfram í Æfa
             </button>
@@ -135,7 +155,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
         </div>
 
         <details className="mt-8 rounded-lg border border-warm-200 bg-white p-4">
-          <summary className="cursor-pointer font-semibold text-warm-800">
+          <summary className="cursor-pointer font-semibold text-warm-800 pointer-coarse:-my-3 pointer-coarse:py-3">
             Samjónahrif — af hverju leysnin fellur
           </summary>
           <p className="mt-3 text-sm text-warm-700">

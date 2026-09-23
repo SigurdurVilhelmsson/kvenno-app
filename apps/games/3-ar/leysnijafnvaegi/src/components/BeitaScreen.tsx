@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState, type Ref } from 'react';
 
+import { BackButton } from './BackButton';
+import { Sci } from './Sci';
 import { FRACTIONAL_PROBLEMS, MIXING_PROBLEMS } from '../data/problems';
 import { saltBy } from '../data/salts';
-import { formatScientific, kspExpression } from '../engine/ksp';
+import { kspExpression } from '../engine/ksp';
+import { revealBottom, useRevealTopOnChange } from '../utils/reveal';
 
 /**
  * Beita — will it precipitate, and which one first?
@@ -34,6 +37,16 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
   const [wrong, setWrong] = useState(false);
   const [solved, setSolved] = useState(0);
   const [ranking, setRanking] = useState<string[]>([]);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+
+  // The next problem starts at the top of the card, not where "Næsta dæmi" was.
+  useRevealTopOnChange(cardRef, index);
+  // The revealed working runs past the bottom edge on a phone, taking
+  // "Næsta dæmi" with it.
+  useEffect(() => {
+    if (stage === 'reveal') revealBottom(feedbackRef.current);
+  }, [stage]);
 
   const mixingCount = MIXING_PROBLEMS.length;
   const isMixing = index < mixingCount;
@@ -77,14 +90,12 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-6 shadow-md md:p-8">
-        <div className="mb-6 flex items-baseline justify-between">
-          <h2 className="text-2xl font-bold text-warm-800">
+      <div ref={cardRef} className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
+        <div className="mb-6 flex items-baseline justify-between gap-3">
+          <h2 className="min-w-0 text-xl font-bold text-warm-800 sm:text-2xl">
             {isMixing ? 'Beita — myndast botnfall?' : 'Beita — hvað fellur út fyrst?'}
           </h2>
-          <button onClick={onBack} className="text-sm text-warm-500 underline">
-            Til baka
-          </button>
+          <BackButton onClick={onBack} />
         </div>
 
         <p className="mb-4 text-sm text-warm-600">
@@ -93,22 +104,22 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
 
         {isMixing ? (
           <>
-            <div className="mb-6 rounded-xl border-2 border-warm-200 bg-warm-50 p-5">
+            <div className="mb-6 rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
               <p className="mb-3 text-warm-800">
                 Er <span className="font-mono">{salt(mixing.formula)}</span> látið falla út?
               </p>
               <ul className="space-y-1 font-mono text-sm text-warm-700">
                 <li>
                   {(mixing.cation.volume * 1000).toFixed(0)} mL af{' '}
-                  {formatScientific(mixing.cation.concentration)} M {mixing.cation.source}
+                  <Sci value={mixing.cation.concentration} unit="M" /> {mixing.cation.source}
                 </li>
                 <li>
                   {(mixing.anion.volume * 1000).toFixed(0)} mL af{' '}
-                  {formatScientific(mixing.anion.concentration)} M {mixing.anion.source}
+                  <Sci value={mixing.anion.concentration} unit="M" /> {mixing.anion.source}
                 </li>
               </ul>
               <p className="mt-3 font-mono text-sm text-warm-600">
-                {kspExpression(saltBy(mixing.formula))} = {formatScientific(mixing.ksp)}
+                {kspExpression(saltBy(mixing.formula))} = <Sci value={mixing.ksp} />
               </p>
               {stage === 'predict' && (
                 <p className="mt-3 rounded bg-white/70 p-2 text-xs text-warm-600">
@@ -119,35 +130,52 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
             </div>
 
             {stage === 'predict' ? (
+              // Each relation is held whole, so a narrow button breaks after
+              // "Já," or "Nei," and never between Q and Ksp.
               <div className="flex gap-3">
                 <button
                   type="button"
                   onClick={() => answerMixing(true)}
-                  className="game-btn flex-1 rounded-lg border-2 border-warm-200 bg-white px-4 py-3 font-semibold text-warm-700 hover:bg-warm-50"
+                  className="game-btn flex-1 rounded-lg border-2 border-warm-200 bg-white px-3 py-3 font-semibold text-warm-700 hover:bg-warm-50 sm:px-4"
                 >
-                  Já, Q &gt; Ksp
+                  Já, <span className="whitespace-nowrap">Q &gt; Ksp</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => answerMixing(false)}
-                  className="game-btn flex-1 rounded-lg border-2 border-warm-200 bg-white px-4 py-3 font-semibold text-warm-700 hover:bg-warm-50"
+                  className="game-btn flex-1 rounded-lg border-2 border-warm-200 bg-white px-3 py-3 font-semibold text-warm-700 hover:bg-warm-50 sm:px-4"
                 >
-                  Nei, Q &lt; Ksp
+                  Nei, <span className="whitespace-nowrap">Q &lt; Ksp</span>
                 </button>
               </div>
             ) : (
-              <Feedback wrong={wrong} onNext={advance} last={last}>
+              <Feedback ref={feedbackRef} wrong={wrong} onNext={advance} last={last}>
                 <p className="mb-2 font-semibold text-warm-900">
                   {mixing.precipitates ? 'Botnfall myndast.' : 'Ekkert botnfall myndast.'}
                 </p>
                 <dl className="mb-2 space-y-1 font-mono text-sm text-warm-800">
+                  {/* Each "[ion] = value" is held whole, so a phone breaks the
+                      line between the two concentrations rather than at an
+                      equals sign in the middle of one. */}
                   <div>
-                    Eftir þynningu: [{saltBy(mixing.formula).cation}] ={' '}
-                    {formatScientific(mixing.diluted.cation, 3)} M, [{saltBy(mixing.formula).anion}]
-                    = {formatScientific(mixing.diluted.anion, 3)} M
+                    Eftir þynningu:{' '}
+                    <span className="whitespace-nowrap">
+                      [{saltBy(mixing.formula).cation}] ={' '}
+                      <Sci value={mixing.diluted.cation} figures={3} unit="M" />,
+                    </span>{' '}
+                    <span className="whitespace-nowrap">
+                      [{saltBy(mixing.formula).anion}] ={' '}
+                      <Sci value={mixing.diluted.anion} figures={3} unit="M" />
+                    </span>
                   </div>
                   <div>
-                    Q = {formatScientific(mixing.q, 3)} · Ksp = {formatScientific(mixing.ksp)}
+                    <span className="whitespace-nowrap">
+                      Q = <Sci value={mixing.q} figures={3} />
+                    </span>{' '}
+                    ·{' '}
+                    <span className="whitespace-nowrap">
+                      Ksp = <Sci value={mixing.ksp} />
+                    </span>
                   </div>
                   <div>
                     Q / Ksp ={' '}
@@ -160,7 +188,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
           </>
         ) : (
           <>
-            <div className="mb-6 rounded-xl border-2 border-warm-200 bg-warm-50 p-5">
+            <div className="mb-6 rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
               <p className="mb-3 text-warm-800">
                 {fractional.sharedIonName} er bætt hægt út í. Raðaðu efnunum eftir því hvað fellur
                 út fyrst — smelltu í réttri röð.
@@ -168,7 +196,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
               <ul className="space-y-1 font-mono text-sm text-warm-700">
                 {fractional.candidates.map((c) => (
                   <li key={c.formula}>
-                    {c.formula} · Ksp = {formatScientific(saltBy(c.formula).ksp)}
+                    {c.formula} · Ksp = <Sci value={saltBy(c.formula).ksp} />
                   </li>
                 ))}
               </ul>
@@ -206,13 +234,16 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                 </button>
               </>
             ) : (
-              <Feedback wrong={wrong} onNext={advance} last={last}>
+              <Feedback ref={feedbackRef} wrong={wrong} onNext={advance} last={last}>
                 <p className="mb-2 font-semibold text-warm-900">Rétt röð:</p>
                 <ol className="mb-3 space-y-1 font-mono text-sm text-warm-800">
                   {fractional.order.map((o, i) => (
                     <li key={o.formula}>
-                      {i + 1}. {o.formula} — þarf [{fractional.sharedIonName}] ={' '}
-                      {formatScientific(o.threshold, 3)} M
+                      {i + 1}. {o.formula} — þarf{' '}
+                      <span className="whitespace-nowrap">
+                        [{fractional.sharedIonName}] ={' '}
+                        <Sci value={o.threshold} figures={3} unit="M" />
+                      </span>
                     </li>
                   ))}
                 </ol>
@@ -238,11 +269,13 @@ function salt(formula: string) {
 }
 
 function Feedback({
+  ref,
   wrong,
   onNext,
   last,
   children,
 }: {
+  ref: Ref<HTMLDivElement>;
   wrong: boolean;
   onNext: () => void;
   last: boolean;
@@ -250,6 +283,7 @@ function Feedback({
 }) {
   return (
     <div
+      ref={ref}
       className={`rounded-lg border-2 p-4 ${
         wrong ? 'border-amber-300 bg-amber-50' : 'border-green-300 bg-green-50'
       }`}
@@ -258,7 +292,7 @@ function Feedback({
       <button
         type="button"
         onClick={onNext}
-        className="game-btn mt-4 rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700"
+        className="game-btn mt-4 rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 pointer-coarse:min-h-11"
       >
         {last ? 'Ljúka' : 'Næsta dæmi'}
       </button>

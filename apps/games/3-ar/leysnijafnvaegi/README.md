@@ -1,6 +1,6 @@
 # Leysnijafnvægi
 
-**Status: complete and registered.** Four phases, 35 tests of its own, in `build-games.mjs`, on the
+**Status: complete and registered.** Four phases, 50 tests of its own, in `build-games.mjs`, on the
 hub, and at the end of the Y3 `Námsleiðin` chain after Stuðpúðar.
 
 The 25th game, and the **last of Phase 5's four confirmed curriculum gaps**. Ka/Kb closed with
@@ -130,9 +130,22 @@ names the concept and the international symbol names the constant — exactly th
 src/engine/ksp.ts              the maths; no React, no Icelandic
 src/data/salts.ts              14 salts, every constant read from Appendix D.3
 src/data/problems.ts           10 solubility · 6 common-ion · 6 mixing · 2 fractional
-src/components/                KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen
-src/__tests__/                 35 tests
+src/components/                KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen,
+                               ScientificInput (the answer row, with the `±` key),
+                               Sci (a number held on one line) and BackButton
+src/utils/reveal.ts            keeps a new screen, problem or feedback on a phone's screen
+src/__tests__/                 50 tests — ksp.test.ts, and phone-play.test.tsx
 ```
+
+## On a phone
+
+Æfa's answers are typed as a number and a power of ten, and every one has a **negative** power.
+Both fields raise the decimal keypad, and on an iPhone that keypad has no minus key — so until
+2026-09-23 a student on an iPhone could not enter a single Æfa answer. `ScientificInput` adds a
+`±` key beside the power on touch screens only, the same control and label as
+`3-ar/jafnvaegisfasti`'s; `phone-play.test.tsx` plays an answer through it. The rest of the phone
+pass was layout: scientific numbers are held on one line (`Sci`), so `1,8 × 10⁻¹⁰` never breaks
+at its `×`, and panels that set two numbers side by side stack below `sm`.
 
 ## Open
 
