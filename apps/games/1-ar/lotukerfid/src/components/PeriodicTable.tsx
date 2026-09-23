@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState, useCallback, type KeyboardEvent } from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 import {
   CATEGORY_COLORS,
   CATEGORY_LABELS,
@@ -43,10 +45,10 @@ interface PeriodicTableProps {
 const CATEGORY_ABBR: Record<ElementCategory, string> = {
   'alkali-metal': 'Al',
   'alkaline-earth': 'Jm',
-  'transition-metal': 'Sk',
+  'transition-metal': 'Hl',
   'post-transition-metal': 'Pm',
   metalloid: 'Hm',
-  nonmetal: 'Óm',
+  nonmetal: 'Ml',
   halogen: 'Ha',
   'noble-gas': 'Eð',
   lanthanide: 'La',
@@ -135,7 +137,7 @@ function ElementCell({
         className="text-xs md:text-[9px] font-mono leading-none"
         aria-hidden={showMass ? undefined : true}
       >
-        {showMass ? element.atomicMass.toFixed(1) : '\u00A0'}
+        {showMass ? formatDecimal(element.atomicMass, 1) : '\u00A0'}
       </span>
     </button>
   );
@@ -300,10 +302,10 @@ export function PeriodicTable({
   const categories: { key: ElementCategory; label: string }[] = [
     { key: 'alkali-metal', label: 'Al — Alkalímálmar' },
     { key: 'alkaline-earth', label: 'Jm — Jarðalkalímálmar' },
-    { key: 'transition-metal', label: 'Sk — Skiptimálmar' },
+    { key: 'transition-metal', label: 'Hl — Hliðarmálmar' },
     { key: 'post-transition-metal', label: 'Pm — P-málmar' },
     { key: 'metalloid', label: 'Hm — Hálfmálmar' },
-    { key: 'nonmetal', label: 'Óm — Ómálmar' },
+    { key: 'nonmetal', label: 'Ml — Málmleysingjar' },
     { key: 'halogen', label: 'Ha — Halógen' },
     { key: 'noble-gas', label: 'Eð — Eðallofttegundir' },
   ];

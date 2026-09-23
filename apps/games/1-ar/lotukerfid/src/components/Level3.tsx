@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
-import { shuffleArray } from '@shared/utils';
+import { parseStudentNumber, shuffleArray } from '@shared/utils';
 
 import { PeriodicTable } from './PeriodicTable';
-import { ELEMENTS, type Element } from '../data/elements';
+import { ELEMENTS, nameInSentence, type Element } from '../data/elements';
 import { particleMisconception } from '../utils/misconceptions';
 import { revealOnPhone, scrollTopOnPhone } from '../utils/phoneScroll';
 
@@ -16,7 +16,7 @@ interface Level3Props {
 
 type QuestionType = 'protons' | 'electrons' | 'neutrons' | 'identify-by-particles';
 
-interface Question {
+export interface Question {
   type: QuestionType;
   element: Element;
   text: string;
@@ -34,7 +34,18 @@ function neutronCount(el: Element): number {
   return el.massNumber - el.atomicNumber;
 }
 
-function generateQuestions(): Question[] {
+/**
+ * A count and its noun, agreeing the way Icelandic agrees them: a number that
+ * ends in 1, other than 11, takes the singular — `1 róteind`, `21 róteind`,
+ * `31 rafeind`, but `11 róteindir`. The pool reaches Z = 1, 21 and 31, so a
+ * template that always writes the plural is wrong for vetni, skandíum and gallíum.
+ */
+function particleCount(n: number, singular: string, plural: string): string {
+  return `${n} ${n % 10 === 1 && n % 100 !== 11 ? singular : plural}`;
+}
+
+/** Exported for tests: the level's whole question pool for one run. */
+export function generateQuestions(): Question[] {
   const pool = pickRandom(
     ELEMENTS.filter((e) => e.period <= 4),
     12
@@ -47,9 +58,11 @@ function generateQuestions(): Question[] {
     questions.push({
       type: 'protons',
       element: el,
-      text: `Hversu margar róteindir hefur ${el.name} (${el.symbol})?`,
+      text: `Hversu margar róteindir hefur ${nameInSentence(el)} (${el.symbol})?`,
       correctAnswer: el.atomicNumber,
-      explanation: `Sætistala ${el.name} er ${el.atomicNumber}, þannig að það hefur ${el.atomicNumber} róteindir. Fjöldi róteinda = sætistala.`,
+      // Written with the name as the subject: `Sætistala X` wants X in the
+      // genitive, and `það` fits only the neuter names.
+      explanation: `${el.name} hefur sætistöluna ${el.atomicNumber} og því ${particleCount(el.atomicNumber, 'róteind', 'róteindir')}. Fjöldi róteinda = sætistala.`,
     });
   }
 
@@ -59,9 +72,9 @@ function generateQuestions(): Question[] {
     questions.push({
       type: 'electrons',
       element: el,
-      text: `Hversu margar rafeindir hefur hlutlaust ${el.name} (${el.symbol}) atóm?`,
+      text: `Hversu margar rafeindir hefur ${nameInSentence(el)} (${el.symbol}) sem hlutlaust atóm?`,
       correctAnswer: el.atomicNumber,
-      explanation: `Hlutlaust atóm hefur jafn margar rafeindir og róteindir. ${el.name} hefur ${el.atomicNumber} rafeindir.`,
+      explanation: `Hlutlaust atóm hefur jafn margar rafeindir og róteindir. ${el.name} hefur ${particleCount(el.atomicNumber, 'rafeind', 'rafeindir')}.`,
     });
   }
 
@@ -72,7 +85,7 @@ function generateQuestions(): Question[] {
     questions.push({
       type: 'neutrons',
       element: el,
-      text: `Hversu margar nifteindir hefur ${el.name}-${el.massNumber} (${el.symbol}-${el.massNumber})?`,
+      text: `Hversu margar nifteindir hefur ${nameInSentence(el)}-${el.massNumber} (${el.symbol}-${el.massNumber})?`,
       correctAnswer: n,
       explanation: `Nifteindir = massatala - sætistala = ${el.massNumber} - ${el.atomicNumber} = ${n}.`,
     });
@@ -85,9 +98,9 @@ function generateQuestions(): Question[] {
     questions.push({
       type: 'identify-by-particles',
       element: el,
-      text: `Hvaða frumefni hefur ${el.atomicNumber} róteindir og ${n} nifteindir?`,
+      text: `Hvaða frumefni hefur ${particleCount(el.atomicNumber, 'róteind', 'róteindir')} og ${particleCount(n, 'nifteind', 'nifteindir')}?`,
       correctAnswer: el.atomicNumber,
-      explanation: `Frumefni með ${el.atomicNumber} róteindir er ${el.name} (${el.symbol}). Sætistalan ákvarðar hvaða frumefni það er.`,
+      explanation: `Frumefni með ${particleCount(el.atomicNumber, 'róteind', 'róteindir')} er ${nameInSentence(el)} (${el.symbol}). Sætistalan ákvarðar hvaða frumefni það er.`,
       requiresTableClick: true,
     });
   }
@@ -105,7 +118,7 @@ function hintFor(question: Question): string {
     return 'Hlutlaust atóm hefur jafnmargar rafeindir og róteindir (= sætistala).';
   }
   if (question.type === 'neutrons') {
-    return 'Nifteindir = massatala − sætistala. Massatalan er talan í heiti samsætunnar (t.d. 63 í Cu-63) — hún er ekki frumeindamassinn sem stendur á lotukerfinu.';
+    return 'Nifteindir = massatala − sætistala. Massatalan er talan í heiti samsætunnar (t.d. 63 í Cu-63) — hún er ekki meðalatómmassinn sem stendur á lotukerfinu.';
   }
   return 'Sætistalan (fjöldi róteinda) ákvarðar hvaða frumefni þetta er. Leitaðu að þeirri sætistölu í lotukerfinu.';
 }
@@ -133,11 +146,20 @@ export function Level3({ onBack, onComplete }: Level3Props) {
   }, [answered]);
 
   const question = questions[index];
+  // The cell the student tapped on an identify-by-particles question, marked
+  // red the way Stig 1 marks a wrong tap. `given` is its sætistala.
+  const wrongSymbol =
+    answered && !isCorrect && question.requiresTableClick && given !== null
+      ? (ELEMENTS.find((e) => e.atomicNumber === given)?.symbol ?? null)
+      : null;
 
   const handleSubmit = () => {
     if (question.requiresTableClick) return;
-    const value = parseInt(input, 10);
-    if (isNaN(value)) return;
+    // Read the whole number, not its integer prefix: `parseInt` took 6.5 as 6
+    // and marked it right. A count of particles that is not whole is wrong.
+    if (!input.trim()) return;
+    const value = parseStudentNumber(input);
+    if (Number.isNaN(value)) return;
     const correct = value === question.correctAnswer;
     setGiven(value);
     setIsCorrect(correct);
@@ -245,16 +267,16 @@ export function Level3({ onBack, onComplete }: Level3Props) {
           </div>
 
           <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 space-y-5 animate-fade-in-up">
-            <h2 className="text-xl font-bold text-warm-800">Prótónur, nifteindir og rafeindir</h2>
+            <h2 className="text-xl font-bold text-warm-800">Róteindir, nifteindir og rafeindir</h2>
 
             <div className="bg-blue-50 p-4 rounded-lg space-y-2">
               <p className="text-sm text-blue-800">
-                <strong>Prótónur (p⁺):</strong> Jákvætt hlaðnar agnir í kjarnanum. Fjöldi prótóna ={' '}
-                <strong>sætistala (Z)</strong>.
+                <strong>Róteindir (p⁺):</strong> Jákvætt hlaðnar agnir í kjarnanum. Fjöldi róteinda
+                = <strong>sætistala (Z)</strong>.
               </p>
               <p className="text-sm text-blue-800">
                 <strong>Rafeindir (e⁻):</strong> Neikvætt hlaðnar agnir utan kjarnans. Í hlutlausu
-                atómi: rafeindir = prótónur.
+                atómi: rafeindir = róteindir.
               </p>
               <p className="text-sm text-blue-800">
                 <strong>Nifteindir (n⁰):</strong> Hlutlausar agnir í kjarnanum. Fjöldi nifteinda ={' '}
@@ -266,7 +288,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
               <h3 className="font-bold text-green-800 mb-2">Dæmi: Kolefni-12 (C-12)</h3>
               <div className="text-sm text-green-700 space-y-1 font-mono">
                 <p>
-                  Sætistala (Z) = 6 → <strong>6 prótónur</strong>
+                  Sætistala (Z) = 6 → <strong>6 róteindir</strong>
                 </p>
                 <p>
                   Hlutlaust atóm → <strong>6 rafeindir</strong>
@@ -280,8 +302,8 @@ export function Level3({ onBack, onComplete }: Level3Props) {
             <div className="bg-amber-50 p-4 rounded-lg">
               <h3 className="font-bold text-amber-800 mb-2">Hvar finn ég upplýsingarnar?</h3>
               <p className="text-sm text-amber-700">
-                Í lotukerfinu: sætistalan er neðst (t.d. 6 fyrir C) og frumeindamassinn er efst
-                (t.d. 12,01 fyrir C). Frumeindamassinn er meðaltal allra samsæta frumefnisins og er
+                Í lotukerfinu: sætistalan er efst (t.d. 6 fyrir C) og meðalatómmassinn er neðst
+                (t.d. 12,01 fyrir C). Meðalatómmassinn er meðaltal allra samsæta frumefnisins og er
                 því ekki massatalan: massatalan á við eina tiltekna samsætu og er alltaf heiltala.
                 Hún stendur í heiti samsætunnar — 12 í kolefni-12 (C-12) — og spurningarnar hér gefa
                 hana því beint.
@@ -386,7 +408,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
               onElementClick={handleElementClick}
               highlightedElements={answered ? new Set([question.element.symbol]) : undefined}
               correctElement={answered && isCorrect ? question.element.symbol : null}
-              wrongElement={answered && !isCorrect ? undefined : undefined}
+              wrongElement={wrongSymbol}
               interactive={!answered}
             />
           </div>
@@ -426,19 +448,19 @@ export function Level3({ onBack, onComplete }: Level3Props) {
                 {question.element.name} ({question.element.symbol})
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-sm">
-                <div className="bg-white rounded-lg p-2 border">
+                <div className="bg-white rounded-lg p-2 border border-warm-200">
                   <div className="text-warm-500 text-xs">Róteindir</div>
                   <div className="font-bold text-lg">{question.element.atomicNumber}</div>
                 </div>
-                <div className="bg-white rounded-lg p-2 border">
+                <div className="bg-white rounded-lg p-2 border border-warm-200">
                   <div className="text-warm-500 text-xs">Rafeindir</div>
                   <div className="font-bold text-lg">{question.element.atomicNumber}</div>
                 </div>
-                <div className="bg-white rounded-lg p-2 border">
+                <div className="bg-white rounded-lg p-2 border border-warm-200">
                   <div className="text-warm-500 text-xs">Massatala</div>
                   <div className="font-bold text-lg">{question.element.massNumber}</div>
                 </div>
-                <div className="bg-white rounded-lg p-2 border">
+                <div className="bg-white rounded-lg p-2 border border-warm-200">
                   <div className="text-warm-500 text-xs">Nifteindir</div>
                   <div className="font-bold text-lg">{neutronCount(question.element)}</div>
                 </div>

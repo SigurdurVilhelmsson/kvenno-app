@@ -47,7 +47,7 @@ describe('particleMisconception', () => {
     const rounded = Math.round(copper.atomicMass);
     expect(rounded).not.toBe(copper.massNumber);
     expect(particleMisconception('neutrons', copper, rounded - copper.atomicNumber)).toMatch(
-      /frumeindamassann/
+      /meðalatómmassann/
     );
   });
 

@@ -45,7 +45,7 @@ export function particleMisconception(
         return 'Þú gafst upp fjölda nifteinda. Sætistalan telur róteindirnar; nifteindirnar eru massatalan mínus sætistalan.';
       }
       if (given === Math.round(element.atomicMass) && given !== z) {
-        return 'Talan neðst í reitnum í lotukerfinu er frumeindamassi — meðaltal yfir samsætur — ekki fjöldi agna. Sætistalan efst í reitnum er sú sem þú vilt.';
+        return 'Talan neðst í reitnum í lotukerfinu er meðalatómmassi — meðaltal yfir samsætur — ekki fjöldi agna. Sætistalan efst í reitnum er sú sem þú vilt.';
       }
       return undefined;
     }
@@ -61,7 +61,7 @@ export function particleMisconception(
         return `Hér er lagt saman þar sem á að draga frá. Massatalan inniheldur róteindirnar nú þegar, svo nifteindirnar eru ${a} − ${z}.`;
       }
       if (given === Math.round(element.atomicMass) - z && given !== n) {
-        return 'Þú notaðir frumeindamassann af lotukerfinu. Hann er meðaltal yfir samsætur og á ekki við um eina tiltekna samsætu — notaðu massatöluna sem stendur í heiti hennar.';
+        return 'Þú notaðir meðalatómmassann af lotukerfinu. Hann er meðaltal yfir samsætur og á ekki við um eina tiltekna samsætu — notaðu massatöluna sem stendur í heiti hennar.';
       }
       return undefined;
     }
@@ -115,10 +115,10 @@ export function level2Misconception(
     case 'classify':
       return 'Flokkun ræðst af staðsetningu, ekki af nafninu. Málmar eru vinstra megin, málmleysingjar hægra megin og efst, og hálfmálmarnir liggja á stiganum þarna á milli — B, Si, Ge, As, Sb, Te.';
     case 'order-by-mass':
-      return 'Frumeindamassi vex almennt með sætistölunni, svo röðin fylgir lestrarröðinni í lotukerfinu: frá vinstri til hægri eftir lotunni og svo niður í næstu.';
+      return 'Meðalatómmassi vex almennt með sætistölunni, svo röðin fylgir lestrarröðinni í lotukerfinu: frá vinstri til hægri eftir lotunni og svo niður í næstu.';
     case 'group-property':
       return 'Það er flokkurinn — lóðrétti dálkurinn — sem gefur frumefnum svipaða eiginleika, því hann ræður fjölda gildisrafeinda. Lotan, lárétta röðin, gerir það ekki.';
     case 'trend':
-      return 'Lotubundnar sveiflur eiga sér allar sömu skýringu: hversu fast kjarninn heldur í ystu rafeindirnar. Athugaðu fyrst hvort frumefnin tvö eru í sömu lotu eða sama flokki — reglan snýst við eftir því.';
+      return 'Lotubundnir eiginleikar eiga sér allir sömu skýringu: hversu fast kjarninn heldur í ystu rafeindirnar. Athugaðu fyrst hvort frumefnin tvö eru í sömu lotu eða sama flokki — reglan snýst við eftir því.';
   }
 }

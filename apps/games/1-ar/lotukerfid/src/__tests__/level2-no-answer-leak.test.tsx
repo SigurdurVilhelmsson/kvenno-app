@@ -1,6 +1,8 @@
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 
+import { formatDecimal } from '@shared/utils';
+
 import { Level2, generateQuestions } from '../components/Level2';
 import { ELEMENTS } from '../data/elements';
 
@@ -35,7 +37,7 @@ describe('Lotukerfið Level 2 does not answer its own questions', () => {
       const text = prompt();
       const isClassify = /málmur, málmleysingi eða hálfmálmur/.test(text);
       const isGroup = /Hvað er sameiginlegt/.test(text);
-      const orderMatch = text.match(/Raðaðu (.+) eftir vaxandi frumeindamassa/);
+      const orderMatch = text.match(/eftir vaxandi meðalatómmassa: (.+)\.$/);
 
       if (isClassify || isGroup) {
         seen.classify ||= isClassify;
@@ -48,10 +50,12 @@ describe('Lotukerfið Level 2 does not answer its own questions', () => {
 
       if (orderMatch) {
         seen.order = true;
-        for (const name of orderMatch[1].split(',').map((n) => n.trim())) {
-          const el = ELEMENTS.find((e) => e.name === name);
+        for (const name of orderMatch[1].split(/, | og /).map((n) => n.trim())) {
+          const el = ELEMENTS.find((e) => e.name.toLowerCase() === name);
           expect(el, `unknown element name in prompt: ${name}`).toBeDefined();
-          const mass = el!.atomicMass.toFixed(1);
+          // Exactly as the cell prints it — with the decimal comma. Searching
+          // for a full stop would find nothing and pass on a leaking table.
+          const mass = formatDecimal(el!.atomicMass, 1);
           expect(
             within(periodicGrid()).queryByText(mass),
             `mass ${mass} for ${el!.symbol} is readable before the student answers`

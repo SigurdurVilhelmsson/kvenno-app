@@ -55,14 +55,17 @@ export const CATEGORY_COLORS: Record<
   actinide: { bg: 'bg-rose-100', text: 'text-rose-800', border: 'border-rose-300' },
 };
 
-// Category labels in Icelandic
+// Category labels in Icelandic. Transition metals and nonmetals take the
+// glossary's words, `hliðarmálmur` and `málmleysingi` — the textbook uses no
+// other — so a category label and the classification Stig 2 grades against
+// are one word, not two.
 export const CATEGORY_LABELS: Record<ElementCategory, string> = {
   'alkali-metal': 'Alkalímálmur',
   'alkaline-earth': 'Jarðalkalímálmur',
-  'transition-metal': 'Skiptimálmur',
+  'transition-metal': 'Hliðarmálmur',
   'post-transition-metal': 'P-málmur',
   metalloid: 'Hálfmálmur',
-  nonmetal: 'Ómálmur',
+  nonmetal: 'Málmleysingi',
   halogen: 'Halógen',
   'noble-gas': 'Eðallofttegund',
   lanthanide: 'Lantaníð',
@@ -511,6 +514,18 @@ export const ELEMENTS: Element[] = [
     category: 'post-transition-metal',
   },
 ];
+
+/**
+ * An element's name as it reads inside a sentence.
+ *
+ * Icelandic writes element names as common nouns — `vetni`, `natríum`, the
+ * way the textbook and this game's own intros do. `name` is capitalised only
+ * because it also stands alone, as a button or a heading; a template that
+ * drops it mid-sentence has to lower it, or a question reads "hefur Natríum".
+ */
+export function nameInSentence(element: Element): string {
+  return element.name.toLowerCase();
+}
 
 // Helper to get element by symbol
 export function getElementBySymbol(symbol: string): Element | undefined {

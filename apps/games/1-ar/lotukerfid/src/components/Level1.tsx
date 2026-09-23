@@ -2,25 +2,41 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
-import { shuffleArray } from '@shared/utils';
+import { formatDecimal, shuffleArray } from '@shared/utils';
 
 import { PeriodicTable } from './PeriodicTable';
-import { ELEMENTS, CATEGORY_COLORS, CATEGORY_LABELS, type Element } from '../data/elements';
+import {
+  ELEMENTS,
+  CATEGORY_COLORS,
+  CATEGORY_LABELS,
+  nameInSentence,
+  type Element,
+} from '../data/elements';
 import { tableClickMisconception } from '../utils/misconceptions';
 import { revealOnPhone, scrollTopOnPhone } from '../utils/phoneScroll';
 
-/** Generate a one-line hint tailored to the question type. */
-function hintFor(question: Question): string {
+/** Generate a one-line hint tailored to the question type. Exported for tests. */
+export function hintFor(question: Question): string {
   const el = question.element;
-  const categoryLabel = CATEGORY_LABELS[el.category];
+  // Mid-sentence, so lower-case: a category is a common noun.
+  const categoryLabel = CATEGORY_LABELS[el.category].toLowerCase();
   if (question.type === 'find-by-name') {
-    return `${el.name} er ${categoryLabel}. Leitaðu á lotu ${el.period}.`;
+    return `${el.name} er ${categoryLabel}. Leitaðu í lotu ${el.period}.`;
   }
   if (question.type === 'find-by-position') {
     return `Lotan segir til um fjölda rafeindahvolfa og flokkurinn um gildisrafeindir. Fyrsti bókstafur nafnsins er "${el.name.charAt(0).toUpperCase()}".`;
   }
   // name-by-symbol
   return `Frumefnið er ${categoryLabel}. Nafnið byrjar á "${el.name.charAt(0).toUpperCase()}".`;
+}
+
+/** The feedback explanation after an answer. Exported for tests. */
+export function feedbackText(question: Question, isCorrect: boolean): string {
+  const el = question.element;
+  const where = `í lotu ${el.period}, flokki ${el.group}`;
+  return isCorrect
+    ? `Rétt! ${el.name} (${el.symbol}) er ${where}.`
+    : `Rangt. Rétt svar er ${nameInSentence(el)} (${el.symbol}), ${where}.`;
 }
 
 interface Level1Props {
@@ -30,7 +46,7 @@ interface Level1Props {
 
 type QuestionType = 'find-by-name' | 'find-by-position' | 'name-by-symbol';
 
-interface Question {
+export interface Question {
   type: QuestionType;
   element: Element;
   text: string;
@@ -44,8 +60,8 @@ function pickRandom<T>(arr: T[], n: number): T[] {
   return shuffleArray(arr).slice(0, n);
 }
 
-/** Generate 10 random questions across the 3 types */
-function generateQuestions(): Question[] {
+/** Generate 10 random questions across the 3 types. Exported for tests. */
+export function generateQuestions(): Question[] {
   const pool = pickRandom(ELEMENTS, 20);
   const questions: Question[] = [];
 
@@ -55,7 +71,7 @@ function generateQuestions(): Question[] {
     questions.push({
       type: 'find-by-name',
       element: el,
-      text: `Hvar er ${el.name} (${el.symbol}) í lotukerfinu?`,
+      text: `Hvar er ${nameInSentence(el)} (${el.symbol}) í lotukerfinu?`,
     });
   }
 
@@ -65,7 +81,7 @@ function generateQuestions(): Question[] {
     questions.push({
       type: 'find-by-position',
       element: el,
-      text: `Hvaða frumefni er á lotu ${el.period}, flokki ${el.group}?`,
+      text: `Hvaða frumefni er í lotu ${el.period}, flokki ${el.group}?`,
     });
   }
 
@@ -101,6 +117,8 @@ export function Level1({ onBack, onComplete }: Level1Props) {
   const [isCorrect, setIsCorrect] = useState(false);
   const [correctSymbol, setCorrectSymbol] = useState<string | null>(null);
   const [wrongSymbol, setWrongSymbol] = useState<string | null>(null);
+  /** The option the student picked on a name-by-symbol question. */
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showHint, setShowHint] = useState(false);
   const [done, setDone] = useState(false);
   const feedbackRef = useRef<HTMLDivElement>(null);
@@ -133,6 +151,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
   const handleOptionClick = (option: string) => {
     if (answered) return;
     const correct = option === question.correctOption;
+    setSelectedOption(option);
     setIsCorrect(correct);
     setCorrectSymbol(question.element.symbol);
     if (correct) setCorrectCount((prev) => prev + 1);
@@ -149,6 +168,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
     setIsCorrect(false);
     setCorrectSymbol(null);
     setWrongSymbol(null);
+    setSelectedOption(null);
     setShowHint(false);
   };
 
@@ -160,6 +180,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
     setIsCorrect(false);
     setCorrectSymbol(null);
     setWrongSymbol(null);
+    setSelectedOption(null);
     setShowHint(false);
     setDone(false);
   };
@@ -191,8 +212,8 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                 mörg rafeindahvolf frumefnið hefur.
               </p>
               <p className="text-warm-700 text-sm">
-                Dæmi: Vetni (H) er á <strong>lotu 1</strong> — það hefur 1 rafeindahvolf. Natríum
-                (Na) er á <strong>lotu 3</strong> — 3 rafeindahvolf.
+                Dæmi: Vetni (H) er í <strong>lotu 1</strong> — það hefur 1 rafeindahvolf. Natríum
+                (Na) er í <strong>lotu 3</strong> — 3 rafeindahvolf.
               </p>
             </div>
 
@@ -220,13 +241,13 @@ export function Level1({ onBack, onComplete }: Level1Props) {
             <div className="bg-amber-50 rounded-xl p-4 sm:p-6 border-l-4 border-amber-500">
               <h3 className="font-bold text-amber-800 mb-3">Hvernig finnur þú frumefni?</h3>
               <p className="text-warm-700 mb-2">
-                Hvert hólf sýnir: <strong>efnatáknið</strong> (t.d. Na),{' '}
-                <strong>sætistöluna</strong> (fjöldi róteinda), og <strong>litinn</strong> segir þér
-                tegund frumefnisins (málmur, málmleysingur, eða hálf-málmur).
+                Hvert hólf sýnir <strong>efnatáknið</strong> (t.d. Na) og{' '}
+                <strong>sætistöluna</strong> (fjöldi róteinda), og <strong>liturinn</strong> segir
+                þér tegund frumefnisins (málmur, málmleysingi eða hálfmálmur).
               </p>
               <p className="text-warm-700 text-sm">
                 Til dæmis: Ef þú leitar að kopar (Cu), veistu að hann er málmur — leitaðu í miðjunni
-                á lotukerfinu, á lotu 4.
+                á lotukerfinu, í lotu 4.
               </p>
             </div>
 
@@ -345,20 +366,25 @@ export function Level1({ onBack, onComplete }: Level1Props) {
         {question.type === 'name-by-symbol' && (
           <div className="grid grid-cols-2 gap-3 mb-3 max-w-lg mx-auto">
             {question.options!.map((option) => {
-              const isSelected = answered && option === question.correctOption;
-              const isWrongChoice = answered && !isCorrect && option !== question.correctOption;
+              // Marked the way Stig 2 marks its options: the right answer
+              // green, the student's own wrong pick red, the rest greyed.
+              let optionClass =
+                'bg-white border-warm-300 text-warm-700 hover:border-kvenno-orange hover:bg-orange-50';
+              if (answered) {
+                if (option === question.correctOption) {
+                  optionClass = 'bg-green-100 border-green-500 text-green-800';
+                } else if (option === selectedOption) {
+                  optionClass = 'bg-red-100 border-red-400 text-red-700';
+                } else {
+                  optionClass = 'bg-warm-100 border-warm-300 text-warm-400';
+                }
+              }
               return (
                 <button
                   key={option}
                   onClick={() => handleOptionClick(option)}
                   disabled={answered}
-                  className={`p-3 rounded-xl border-2 font-semibold text-sm sm:text-base transition-all ${
-                    isSelected
-                      ? 'bg-green-100 border-green-500 text-green-800'
-                      : isWrongChoice
-                        ? 'bg-warm-100 border-warm-300 text-warm-400'
-                        : 'bg-white border-warm-300 text-warm-700 hover:border-kvenno-orange hover:bg-orange-50'
-                  }`}
+                  className={`p-3 rounded-xl border-2 font-semibold text-sm sm:text-base transition-all ${optionClass}`}
                 >
                   {option}
                 </button>
@@ -386,9 +412,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
             <FeedbackPanel
               feedback={{
                 isCorrect,
-                explanation: isCorrect
-                  ? `Rétt! ${question.element.name} (${question.element.symbol}) er á lotu ${question.element.period}, flokki ${question.element.group}.`
-                  : `Rangt. Rétt svar er ${question.element.name} (${question.element.symbol}), á lotu ${question.element.period}, flokki ${question.element.group}.`,
+                explanation: feedbackText(question, isCorrect),
                 // Renders outside the collapsible explanation, so it is the one
                 // thing a student who reads nothing else still sees. Only a
                 // table click carries enough signal to diagnose; an option
@@ -414,8 +438,11 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                 <div className="text-sm">
                   <div className="font-bold text-warm-800">{elementInfo.name}</div>
                   <div className="text-warm-600">Sætistala: {elementInfo.atomicNumber}</div>
+                  {/* The number printed at the foot of each cell. The textbook
+                      calls it meðalatómmassi and gives it in amu; the unit of
+                      a mass per mole belongs to mólmassi, the next game. */}
                   <div className="text-warm-600">
-                    Atómmassi: {elementInfo.atomicMass.toFixed(3)} g/mol
+                    Meðalatómmassi: {formatDecimal(elementInfo.atomicMass)} amu
                   </div>
                   <div className="text-warm-600">
                     Lota {elementInfo.period}, Flokkur {elementInfo.group}

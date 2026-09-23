@@ -2,13 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
-import { shuffleArray } from '@shared/utils';
+import { formatDecimal, shuffleArray } from '@shared/utils';
 
 import { PeriodicTable } from './PeriodicTable';
 import {
   ELEMENTS,
   CATEGORY_LABELS,
   getClassification,
+  nameInSentence,
   type Element,
   type ElementClassification,
 } from '../data/elements';
@@ -44,16 +45,23 @@ function makeClassifyQuestion(el: Element): Question {
   const categoryLabel = CATEGORY_LABELS[el.category];
   return {
     type: 'classify',
-    text: `Er ${el.name} (${el.symbol}) málmur, málmleysingi eða hálfmálmur?`,
+    text: `Er ${nameInSentence(el)} (${el.symbol}) málmur, málmleysingi eða hálfmálmur?`,
     options,
     correctOption: correct,
-    explanation: `${el.name} er ${correct}. Flokkur: ${categoryLabel}.`,
+    // `Tegund`, not `Flokkur`: in this game a flokkur is a column of the
+    // table, and the intro defines it as exactly that. Left out where the
+    // tegund is the answer itself (a hálfmálmur, a málmleysingi), which would
+    // only say it twice.
+    explanation:
+      categoryLabel.toLowerCase() === correct
+        ? `${el.name} er ${correct}.`
+        : `${el.name} er ${correct}. Tegund: ${categoryLabel.toLowerCase()}.`,
     highlightSymbols: [el.symbol],
   };
 }
 
 /**
- * True where ordering by sætistala and ordering by frumeindamassi disagree.
+ * True where ordering by sætistala and ordering by meðalatómmassi disagree.
  *
  * The intro teaches that mass rises with the atomic number, and inside the
  * period<=4 pool that rule holds everywhere except Ar/K and Co/Ni, where the
@@ -85,97 +93,104 @@ function makeOrderQuestion(): Question {
   const correctOrder = elements.map((e) => e.symbol).join(' < ');
   const shuffled = shuffleArray(elements);
 
-  // Generate plausible wrong orderings
-  const allPerms = [
-    [0, 1, 2],
+  // The three wrong orderings are drawn from all five, not taken as the first
+  // three in a fixed list. That list never put the heaviest element first, so
+  // whichever element led no option was the heaviest, and half the answer was
+  // readable off the options alone.
+  const wrongPerms = [
     [0, 2, 1],
     [1, 0, 2],
     [1, 2, 0],
     [2, 0, 1],
     [2, 1, 0],
   ];
-  const options = allPerms
-    .map((perm) => perm.map((i) => elements[i].symbol).join(' < '))
-    .filter((v, i, arr) => arr.indexOf(v) === i)
-    .slice(0, 4);
+  const options = [
+    correctOrder,
+    ...pickRandom(wrongPerms, 3).map((perm) => perm.map((i) => elements[i].symbol).join(' < ')),
+  ];
 
-  if (!options.includes(correctOrder)) {
-    options[options.length - 1] = correctOrder;
-  }
-
+  const names = shuffled.map(nameInSentence);
   return {
     type: 'order-by-mass',
-    text: `Raðaðu ${shuffled.map((e) => e.name).join(', ')} eftir vaxandi frumeindamassa:`,
+    // `raða` governs the dative, which a masculine name does not share with
+    // its nominative (brennisteini, kísli); a list after the colon does not
+    // need the case.
+    text: `Raðaðu þessum frumefnum eftir vaxandi meðalatómmassa: ${names.slice(0, -1).join(', ')} og ${names[names.length - 1]}.`,
     options: shuffleArray(options),
     correctOption: correctOrder,
-    explanation: `Rétt röðun: ${elements.map((e) => `${e.name} (${e.atomicMass.toFixed(1)})`).join(' < ')}.`,
+    explanation: `Rétt röðun: ${elements.map((e) => `${nameInSentence(e)} (${formatDecimal(e.atomicMass, 1)})`).join(' < ')}.`,
     highlightSymbols: elements.map((e) => e.symbol),
   };
 }
 
-/** Group property questions */
-function makeGroupQuestion(): Question {
-  const groupQuestions: {
-    elements: string[];
-    question: string;
-    correct: string;
-    options: string[];
-    explanation: string;
-  }[] = [
-    {
-      elements: ['Na', 'K', 'Li'],
-      question: 'Hvað er sameiginlegt með Na, K og Li?',
-      correct: 'Þau eru öll alkalímálmar (flokkur 1)',
-      options: [
-        'Þau eru öll alkalímálmar (flokkur 1)',
-        'Þau eru öll eðallofttegundir',
-        'Þau eru öll halógen',
-        'Þau eru öll skiptimálmar',
-      ],
-      explanation:
-        'Na, K og Li eru öll í flokki 1 (alkalímálmar). Þau eiga sér eitt gildisrafeind.',
-    },
-    {
-      elements: ['F', 'Cl', 'Br'],
-      question: 'Hvað er sameiginlegt með F, Cl og Br?',
-      correct: 'Þau eru öll halógen (flokkur 17)',
-      options: [
-        'Þau eru öll halógen (flokkur 17)',
-        'Þau eru öll alkalímálmar',
-        'Þau eru öll ómálmar í flokki 16',
-        'Þau eru öll eðallofttegundir',
-      ],
-      explanation: 'F, Cl og Br eru öll halógen (flokkur 17). Þau eiga sér 7 gildisrafeindir.',
-    },
-    {
-      elements: ['He', 'Ne', 'Ar'],
-      question: 'Hvað er sameiginlegt með He, Ne og Ar?',
-      correct: 'Þau eru öll eðallofttegundir (flokkur 18)',
-      options: [
-        'Þau eru öll eðallofttegundir (flokkur 18)',
-        'Þau eru öll ómálmar í flokki 1',
-        'Þau eru öll halógen',
-        'Þau eru öll málmar',
-      ],
-      explanation:
-        'He, Ne og Ar eru eðallofttegundir (flokkur 18). Þau hafa fullt ysta rafeindahvolf og eru mjög stöðug.',
-    },
-    {
-      elements: ['Be', 'Mg', 'Ca'],
-      question: 'Hvað er sameiginlegt með Be, Mg og Ca?',
-      correct: 'Þau eru öll jarðalkalímálmar (flokkur 2)',
-      options: [
-        'Þau eru öll jarðalkalímálmar (flokkur 2)',
-        'Þau eru öll alkalímálmar (flokkur 1)',
-        'Þau eru öll hálfmálmar',
-        'Þau eru öll skiptimálmar',
-      ],
-      explanation:
-        'Be, Mg og Ca eru jarðalkalímálmar (flokkur 2). Þau eiga sér tvær gildisrafeindir.',
-    },
-  ];
+interface GroupQuestion {
+  elements: string[];
+  question: string;
+  correct: string;
+  options: string[];
+  explanation: string;
+}
 
-  const q = groupQuestions[Math.floor(Math.random() * groupQuestions.length)];
+/**
+ * Group property questions.
+ *
+ * The group number lives in the explanation, not in the options: it used to
+ * be appended to the right answer and to almost none of the wrong ones, so the
+ * one option carrying "(flokkur N)" was the answer.
+ */
+const GROUP_QUESTIONS: GroupQuestion[] = [
+  {
+    elements: ['Na', 'K', 'Li'],
+    question: 'Hvað er sameiginlegt með Na, K og Li?',
+    correct: 'Þau eru öll alkalímálmar',
+    options: [
+      'Þau eru öll alkalímálmar',
+      'Þau eru öll eðallofttegundir',
+      'Þau eru öll halógen',
+      'Þau eru öll hliðarmálmar',
+    ],
+    explanation: 'Na, K og Li eru öll í flokki 1 (alkalímálmar). Þau hafa eina gildisrafeind.',
+  },
+  {
+    elements: ['F', 'Cl', 'Br'],
+    question: 'Hvað er sameiginlegt með F, Cl og Br?',
+    correct: 'Þau eru öll halógen',
+    options: [
+      'Þau eru öll halógen',
+      'Þau eru öll alkalímálmar',
+      'Þau eru öll málmleysingjar í flokki 16',
+      'Þau eru öll eðallofttegundir',
+    ],
+    explanation: 'F, Cl og Br eru öll halógen (flokkur 17). Þau hafa 7 gildisrafeindir.',
+  },
+  {
+    elements: ['He', 'Ne', 'Ar'],
+    question: 'Hvað er sameiginlegt með He, Ne og Ar?',
+    correct: 'Þau eru öll eðallofttegundir',
+    options: [
+      'Þau eru öll eðallofttegundir',
+      'Þau eru öll málmleysingjar í flokki 1',
+      'Þau eru öll halógen',
+      'Þau eru öll málmar',
+    ],
+    explanation:
+      'He, Ne og Ar eru eðallofttegundir (flokkur 18). Þau hafa fullt ysta rafeindahvolf og eru mjög stöðug.',
+  },
+  {
+    elements: ['Be', 'Mg', 'Ca'],
+    question: 'Hvað er sameiginlegt með Be, Mg og Ca?',
+    correct: 'Þau eru öll jarðalkalímálmar',
+    options: [
+      'Þau eru öll jarðalkalímálmar',
+      'Þau eru öll alkalímálmar',
+      'Þau eru öll hálfmálmar',
+      'Þau eru öll hliðarmálmar',
+    ],
+    explanation: 'Be, Mg og Ca eru jarðalkalímálmar (flokkur 2). Þau hafa tvær gildisrafeindir.',
+  },
+];
+
+function makeGroupQuestion(q: GroupQuestion): Question {
   return {
     type: 'group-property',
     text: q.question,
@@ -230,8 +245,11 @@ export function generateQuestions(): Question[] {
   questions.push(makeOrderQuestion());
   questions.push(makeOrderQuestion());
 
-  questions.push(makeGroupQuestion());
-  questions.push(makeGroupQuestion());
+  // Two different groups: drawn independently, a run asked the same one twice
+  // a quarter of the time.
+  for (const q of pickRandom(GROUP_QUESTIONS, 2)) {
+    questions.push(makeGroupQuestion(q));
+  }
 
   // Two trends, drawn from different trend types so a run never asks the same
   // rule twice.
@@ -257,7 +275,7 @@ function hintFor(question: Question): string {
     return 'Skoðaðu hvar frumefnið er í lotukerfinu: málmar eru vinstra megin, hálfmálmar á landamærum, málmleysingjar hægra megin og efst.';
   }
   if (question.type === 'order-by-mass') {
-    return 'Frumeindamassi vex frá vinstri til hægri og niður eftir lotunum.';
+    return 'Meðalatómmassi vex frá vinstri til hægri og niður eftir lotunum.';
   }
   return 'Flokkurinn (dálkurinn) ákvarðar eiginleikana. Sjáðu hvar táknin eru í lotukerfinu fyrir neðan.';
 }
@@ -376,7 +394,7 @@ export function Level2({ onBack, onComplete }: Level2Props) {
                 ← Til baka
               </button>
               <h1 className="order-last basis-full md:order-none md:basis-auto text-base md:text-lg font-bold text-warm-800">
-                Flokkar og lotubundnar sveiflur — Kennsla
+                Flokkar og lotubundnir eiginleikar — Kennsla
               </h1>
               <span className="text-sm text-warm-500">Yfirlit</span>
             </div>
@@ -418,7 +436,7 @@ export function Level2({ onBack, onComplete }: Level2Props) {
             </div>
 
             <div className="bg-purple-50 p-4 rounded-lg">
-              <h3 className="font-bold text-purple-800 mb-2">Lotubundnar sveiflur</h3>
+              <h3 className="font-bold text-purple-800 mb-2">Lotubundnir eiginleikar</h3>
               <p className="text-sm text-purple-700 mb-2">
                 Þrír eiginleikar breytast eftir reglu þegar farið er um lotukerfið — og allir þrír
                 eiga sér sömu skýringu: hversu fast kjarninn heldur í ystu rafeindirnar.
@@ -437,14 +455,14 @@ export function Level2({ onBack, onComplete }: Level2Props) {
             </div>
 
             <div className="bg-warm-50 p-4 rounded-lg">
-              <h3 className="font-bold text-warm-800 mb-2">Frumeindamassi</h3>
+              <h3 className="font-bold text-warm-800 mb-2">Meðalatómmassi</h3>
               <p className="text-sm text-warm-700">
-                Frumeindamassi eykst almennt eftir því sem sætistalan hækkar. Frumefni í sama flokki
-                (lóðrétt) hafa svipuð efnaeiginleika en aukinn massa.
+                Meðalatómmassi eykst almennt eftir því sem sætistalan hækkar. Frumefni í sama flokki
+                (lóðrétt) hafa svipaða efnaeiginleika en aukinn massa.
               </p>
               <p className="text-sm text-warm-600 mt-2">
                 <strong>Almennt</strong> — ekki alltaf. Argon (18) er þyngra en kalíum (19), og
-                kóbalt (27) þyngra en nikkel (28), því frumeindamassi er meðaltal yfir samsætur.
+                kóbalt (27) þyngra en nikkel (28), því meðalatómmassi er meðaltal yfir samsætur.
                 Þess vegna er lotukerfinu raðað eftir sætistölu en ekki massa.
               </p>
             </div>
@@ -484,7 +502,7 @@ export function Level2({ onBack, onComplete }: Level2Props) {
               ← Til baka
             </button>
             <h1 className="min-w-0 text-center text-base sm:text-lg font-bold text-warm-800">
-              Flokkar og lotubundnar sveiflur
+              Flokkar og lotubundnir eiginleikar
             </h1>
             <span className="text-sm font-semibold text-warm-600">
               {index + 1}/{TOTAL}
@@ -554,7 +572,7 @@ export function Level2({ onBack, onComplete }: Level2Props) {
             {showCategories && showMasses
               ? 'Lotukerfið til hliðsjónar — staðsetningin segir þér mest.'
               : showCategories
-                ? 'Frumeindamassinn er falinn þangað til þú hefur svarað — notaðu regluna um sætistöluna.'
+                ? 'Meðalatómmassinn er falinn þangað til þú hefur svarað — notaðu regluna um sætistöluna.'
                 : 'Flokkalitirnir eru faldir þangað til þú hefur svarað — notaðu staðsetninguna.'}
           </p>
           <PeriodicTable
