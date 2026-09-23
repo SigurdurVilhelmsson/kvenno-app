@@ -148,7 +148,7 @@ export const REACTIONS: Reaction[] = [
       { formula: 'O₂', elements: { O: 2 }, coefficient: 3 },
     ],
     difficulty: 'medium',
-    hint: 'Stilltu K og Cl fyrst - þeir eru auðveldastir.',
+    hint: 'Stilltu K og Cl fyrst - þau eru auðveldust.',
   },
   {
     id: 12,

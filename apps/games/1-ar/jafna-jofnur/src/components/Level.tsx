@@ -125,6 +125,11 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
   const hintText = (): string => {
     if (config.hintSource === 'reaction-hint') return reaction.hint ?? '';
     const unbalanced = balanceResult.elements.filter((e) => !e.balanced);
+    // Balanced is not yet correct: handleCheck also requires the lowest whole
+    // numbers, so a doubled set must not be waved through to a one-shot Athuga.
+    if (unbalanced.length === 0 && !balanceResult.isReduced) {
+      return 'Atómin standast á, en stuðlarnir eru ekki í lægstu heilu tölum — þú getur deilt þeim öllum með sömu tölu.';
+    }
     if (unbalanced.length === 0) {
       return 'Efnajafnan lítur út fyrir að vera stillt — smelltu á Athuga!';
     }

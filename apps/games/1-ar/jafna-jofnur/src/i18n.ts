@@ -13,7 +13,7 @@ export const gameTranslations = createGameTranslations({
     menu: {
       level1: {
         title: 'Stig 1: Einfaldar jöfnur',
-        description: 'Jafna einfaldar efnajöfnur með litlum stuðlum',
+        description: 'Stilla einfaldar efnajöfnur með litlum stuðlum',
         tags: {
           simple: 'Einfaldar',
           smallCoeffs: 'Stuðlar 1-4',
@@ -31,10 +31,10 @@ export const gameTranslations = createGameTranslations({
       },
       level3: {
         title: 'Stig 3: Erfiðar jöfnur',
-        description: 'Brunajöfnur, tvíbótaviðbrögð og flóknari jöfnur',
+        description: 'Brunajöfnur, einföld skiptihvörf og flóknari jöfnur',
         tags: {
           combustion: 'Bruni',
-          displacement: 'Tvíbóta',
+          displacement: 'Einföld skiptihvörf',
           complex: 'Flóknar',
         },
       },
@@ -42,7 +42,7 @@ export const gameTranslations = createGameTranslations({
         title: 'Námsferillinn',
         step1: {
           title: 'Einfaldar jöfnur',
-          description: 'Byrja á einföldum jöfnum með 2 frumefnum',
+          description: 'Byrja á einföldum jöfnum með 2–3 frumefnum',
         },
         step2: {
           title: 'Miðlungs jöfnur',
@@ -122,7 +122,7 @@ export const gameTranslations = createGameTranslations({
         title: 'Learning Path',
         step1: {
           title: 'Simple Equations',
-          description: 'Start with simple 2-element equations',
+          description: 'Start with simple equations of 2–3 elements',
         },
         step2: {
           title: 'Medium Equations',
@@ -191,7 +191,7 @@ export const gameTranslations = createGameTranslations({
       },
       level3: {
         title: 'Poziom 3: Trudne równania',
-        description: 'Spalanie, wymiana podwójna i złożone równania',
+        description: 'Spalanie, wymiana i złożone równania',
         tags: {
           combustion: 'Spalanie',
           displacement: 'Wymiana',
@@ -202,7 +202,7 @@ export const gameTranslations = createGameTranslations({
         title: 'Ścieżka nauki',
         step1: {
           title: 'Proste równania',
-          description: 'Zacznij od prostych równań z 2 pierwiastkami',
+          description: 'Zacznij od prostych równań z 2–3 pierwiastkami',
         },
         step2: {
           title: 'Średnie równania',
