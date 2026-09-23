@@ -18,14 +18,14 @@ const BUFFER_MISCONCEPTIONS = {
     'Ef hlutfallið [Basi]/[Sýra] er of hátt, þá er of mikið af basa og pH verður hærra en markmiðið.',
   equal: 'Þegar [Basi] = [Sýra], þá er pH = pKa. Þetta er miðpunktur stuðpúðans.',
   concept:
-    'Stuðpúðar virka vegna þess að veika sýran og samoki basinn geta tekið við eða gefið frá sér H⁺ jónir.',
+    'Stuðpúðar virka vegna þess að veika sýran og samoka basinn geta tekið við eða gefið frá sér H⁺ jónir.',
 };
 
 // Related concepts for buffers
 const BUFFER_RELATED: string[] = [
   'Henderson-Hasselbalch',
   'pKa',
-  'Stuðpúðargeta',
+  'Stuðpúðageta',
   'Veik sýru-basa pör',
 ];
 
@@ -51,6 +51,10 @@ export default function Level1({ onLevelComplete }: Level1Props) {
   const [showExplanation, setShowExplanation] = useState(false);
   const [score, setScore] = useState(0);
   const [challengesCompleted, setChallengesCompleted] = useState(0);
+  // Whether the current challenge has been answered correctly. A correct mixture can be checked
+  // again, and before this each check added its points and its tick again: six taps on
+  // "Athuga stuðpúða" finished the level from challenge 1.
+  const [solved, setSolved] = useState(false);
   const [, setHintsUsedTotal] = useState(0);
   const [hintMultiplier, setHintMultiplier] = useState(1.0);
   const [, setHintsUsedTier] = useState(0);
@@ -62,23 +66,30 @@ export default function Level1({ onLevelComplete }: Level1Props) {
   // The feedback opens below "Athuga stuðpúða", which on a phone is usually tapped at the
   // bottom edge of the screen, so the answer landed wholly below the fold and the tap looked
   // like it did nothing. Presence mounts the panel a frame after `feedback` is set, hence the
-  // short delay. The last challenge hands straight back to the menu, which scrolls to its own
-  // top, so it must not be pulled back down to this panel while the level fades out.
+  // short delay. The last challenge now stays on screen until "Ljúka stigi", so its feedback
+  // is revealed like any other.
   useEffect(() => {
-    if (!feedback || challengesCompleted >= LEVEL1_CHALLENGES.length) return;
+    if (!feedback) return;
     const timer = window.setTimeout(() => revealNearest(feedbackRef.current), 60);
     return () => window.clearTimeout(timer);
-  }, [feedback, challengesCompleted]);
+  }, [feedback]);
+
+  const currentIndex = LEVEL1_CHALLENGES.findIndex((c) => c.id === currentChallenge.id);
+  const isLastChallenge = currentIndex === LEVEL1_CHALLENGES.length - 1;
 
   // Calculate current ratio [Base]/[Acid]
   const currentRatio = acidCount > 0 ? baseCount / acidCount : 0;
 
+  // With one of the pair missing the mixture is not a buffer and Henderson-Hasselbalch says
+  // nothing about its pH. This used to fall back to pKa, so a flask of acid alone read
+  // "pH 4,74 — Fullkomið!" on challenge 1 while the check said a buffer needs both.
+  const missingComponent = acidCount === 0 || baseCount === 0;
+
   // Estimate pH using simplified Henderson-Hasselbalch
   // pH = pKa + log([Base]/[Acid])
-  const estimatedPH =
-    acidCount > 0 && baseCount > 0
-      ? currentChallenge.pKa + Math.log10(currentRatio)
-      : currentChallenge.pKa;
+  const estimatedPH = missingComponent
+    ? currentChallenge.pKa
+    : currentChallenge.pKa + Math.log10(currentRatio);
 
   // Get pH color
   const getPhColor = (pH: number): string => {
@@ -88,6 +99,9 @@ export default function Level1({ onLevelComplete }: Level1Props) {
     if (pH < 10) return '#22c55e'; // green
     return '#3b82f6'; // blue
   };
+  const phColor = missingComponent
+    ? '#a69d93' /* warm-400: no pH to show */
+    : getPhColor(estimatedPH);
 
   // Check if ratio is within target range
   const isCorrect =
@@ -132,17 +146,22 @@ export default function Level1({ onLevelComplete }: Level1Props) {
 
   // Check answer
   const checkBuffer = () => {
-    if (acidCount === 0 || baseCount === 0) {
+    if (missingComponent) {
       setFeedback('Stuðpúði þarf BÆÐI sýru og basa!');
       return;
     }
 
     if (isCorrect) {
-      const basePoints = 100;
-      const points = Math.round(basePoints * hintMultiplier);
-      setScore(score + points);
-      setFeedback(`Frábært! Stuðpúðinn er tilbúinn! +${points} stig`);
-      setChallengesCompleted(challengesCompleted + 1);
+      if (solved) {
+        setFeedback('Frábært! Stuðpúðinn er tilbúinn!');
+      } else {
+        const basePoints = 100;
+        const points = Math.round(basePoints * hintMultiplier);
+        setScore(score + points);
+        setFeedback(`Frábært! Stuðpúðinn er tilbúinn! +${points} stig.`);
+        setChallengesCompleted(challengesCompleted + 1);
+        setSolved(true);
+      }
       setShowExplanation(true);
     } else {
       const phDiff = Math.abs(estimatedPH - currentChallenge.targetPH);
@@ -156,11 +175,21 @@ export default function Level1({ onLevelComplete }: Level1Props) {
     }
   };
 
-  // Next challenge
+  // Next challenge, or the end of the level. Completion used to be reported the moment the
+  // last check came back correct, which swapped straight to the menu, so the last challenge's
+  // "Frábært!" and explanation were never on screen. Stig 2 and 3 end on "Ljúka stigi"; so
+  // does this.
   const nextChallenge = () => {
-    const currentIndex = LEVEL1_CHALLENGES.findIndex((c) => c.id === currentChallenge.id);
-    const nextIndex = (currentIndex + 1) % LEVEL1_CHALLENGES.length;
-    setCurrentChallenge(LEVEL1_CHALLENGES[nextIndex]);
+    if (!solved) return;
+    if (isLastChallenge) {
+      if (!levelCompleteReported.current) {
+        levelCompleteReported.current = true;
+        onLevelComplete?.(score);
+      }
+      return;
+    }
+    setCurrentChallenge(LEVEL1_CHALLENGES[currentIndex + 1]);
+    setSolved(false);
     setAcidCount(5);
     setBaseCount(5);
     setFeedback(null);
@@ -172,14 +201,6 @@ export default function Level1({ onLevelComplete }: Level1Props) {
     // above the viewport.
     revealTop(challengeCardRef.current);
   };
-
-  // Track level completion when all challenges are done
-  useEffect(() => {
-    if (challengesCompleted >= LEVEL1_CHALLENGES.length && !levelCompleteReported.current) {
-      levelCompleteReported.current = true;
-      onLevelComplete?.(score);
-    }
-  }, [challengesCompleted, score, onLevelComplete]);
 
   return (
     <div className="max-w-6xl mx-auto px-4 pt-4 pb-8 md:py-8">
@@ -231,10 +252,10 @@ export default function Level1({ onLevelComplete }: Level1Props) {
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div className="bg-warm-50 p-3 rounded-lg">
                 <div className="text-sm text-warm-600">pKa</div>
-                <div className="text-xl font-bold">{currentChallenge.pKa}</div>
+                <div className="text-xl font-bold">{formatDecimal(currentChallenge.pKa)}</div>
               </div>
               <div className="bg-warm-50 p-3 rounded-lg">
-                <div className="text-sm text-warm-600">Markmið pH</div>
+                <div className="text-sm text-warm-600">Markmiðs-pH</div>
                 <div className="text-xl font-bold text-kvenno-orange">
                   {formatDecimal(currentChallenge.targetPH)}
                 </div>
@@ -275,18 +296,23 @@ export default function Level1({ onLevelComplete }: Level1Props) {
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm text-warm-600">Núverandi pH:</span>
-                <span className="text-2xl font-bold" style={{ color: getPhColor(estimatedPH) }}>
-                  {formatDecimal(estimatedPH, 2)}
+                <span className="text-2xl font-bold" style={{ color: phColor }}>
+                  {missingComponent ? '–' : formatDecimal(estimatedPH, 2)}
                 </span>
               </div>
               <div
                 className="h-8 rounded-full relative overflow-hidden"
-                style={{ background: getPhColor(estimatedPH) }}
+                style={{ background: phColor }}
               >
+                {/* The verdict is the grader's own: a ±0,1 pH window here once said "Fullkomið!"
+                    for 5 acid : 6 base on challenge 1, which the check then marked wrong. */}
                 <div className="absolute inset-0 flex items-center justify-center text-white font-bold">
-                  {estimatedPH < currentChallenge.targetPH - 0.1 && 'Of súrt'}
-                  {estimatedPH > currentChallenge.targetPH + 0.1 && 'Of basískt'}
-                  {Math.abs(estimatedPH - currentChallenge.targetPH) <= 0.1 && 'Fullkomið!'}
+                  {!missingComponent &&
+                    (isCorrect
+                      ? 'Fullkomið!'
+                      : estimatedPH < currentChallenge.targetPH
+                        ? 'Of súrt'
+                        : 'Of basískt')}
                 </div>
               </div>
             </div>
@@ -443,11 +469,16 @@ export default function Level1({ onLevelComplete }: Level1Props) {
                     explanation: showExplanation
                       ? `${feedback} ${currentChallenge.explanation}`
                       : (feedback ?? ''),
+                    // Diagnosed against this challenge's band, not against 1: on challenge 2
+                    // (band 1,6–2,0) a ratio of 1,2 has too little base, and comparing with 1
+                    // told the student there was too much.
                     misconception: feedback?.includes('Frábært')
                       ? undefined
-                      : currentRatio < 1
-                        ? BUFFER_MISCONCEPTIONS.ratio_low
-                        : BUFFER_MISCONCEPTIONS.ratio_high,
+                      : missingComponent
+                        ? BUFFER_MISCONCEPTIONS.concept
+                        : currentRatio < currentChallenge.targetRatioMin
+                          ? BUFFER_MISCONCEPTIONS.ratio_low
+                          : BUFFER_MISCONCEPTIONS.ratio_high,
                     relatedConcepts: BUFFER_RELATED,
                     nextSteps: feedback?.includes('Frábært')
                       ? 'Frábært! Þú skilur hvernig hlutfallið hefur áhrif á pH.'
@@ -469,7 +500,7 @@ export default function Level1({ onLevelComplete }: Level1Props) {
                 onClick={nextChallenge}
                 className="w-full py-3 px-6 bg-green-500 hover:bg-green-600 text-white font-bold text-lg rounded-lg transition-colors"
               >
-                Næsta verkefni →
+                {isLastChallenge ? 'Ljúka stigi →' : 'Næsta verkefni →'}
               </button>
             </Presence>
           </div>

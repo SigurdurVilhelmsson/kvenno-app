@@ -53,6 +53,64 @@ export function solveBuffer(problem: BufferProblem): HendersonHasselbalchResult 
   };
 }
 
+/** A Stig 3 recipe: how much of each stock solution to draw, and how much water. */
+export interface StockRecipeSpec {
+  /** Final volume of the buffer, mL. */
+  targetVolume: number;
+  /** Total buffer concentration, acid plus conjugate base, M. */
+  targetConcentration: number;
+  /** Concentration of the acid stock solution, M. */
+  stockAcidConc: number;
+  /** Concentration of the base stock solution, M. */
+  stockBaseConc: number;
+}
+
+export interface StockRecipe {
+  ratio: number;
+  totalMoles: number;
+  acidMoles: number;
+  baseMoles: number;
+  /** mL of acid stock. */
+  acidVolume: number;
+  /** mL of base stock. */
+  baseVolume: number;
+  /** mL of water to make up the final volume. */
+  waterVolume: number;
+}
+
+/**
+ * Derive a Stig 3 recipe: the Stig 2 split into acid and base moles, then
+ * V = n / C for each stock solution.
+ *
+ * **Why this exists.** Until 2026-09-23 Stig 3 derived its ratio and moles at
+ * runtime but graded the volumes against `correctAcidVolume` and
+ * `correctBaseVolume` typed into `data/level3-puzzles.ts`, and printed them in
+ * the worked solution beside the derived moles. The ammonium puzzle's volumes
+ * had been worked from pKa 9,25 and never redone for Appendix D's 9,26, so its
+ * explanation read `0,0146 mol / 2 M = 7,1 mL` — a division that gives 7,3 —
+ * and a student who entered 7,6 mL, 4 % from the true 7,3, was marked wrong.
+ * It is the same cure `solveBuffer` gave Stig 2.
+ */
+export function solveStockRecipe(problem: BufferProblem, spec: StockRecipeSpec): StockRecipe {
+  const volumeL = spec.targetVolume / 1000;
+  const r = solveBuffer({
+    ...problem,
+    volume: volumeL,
+    totalConcentration: spec.targetConcentration,
+  });
+  const acidVolume = (r.acidMoles / spec.stockAcidConc) * 1000;
+  const baseVolume = (r.baseMoles / spec.stockBaseConc) * 1000;
+  return {
+    ratio: r.ratio,
+    totalMoles: spec.targetConcentration * volumeL,
+    acidMoles: r.acidMoles,
+    baseMoles: r.baseMoles,
+    acidVolume,
+    baseVolume,
+    waterVolume: spec.targetVolume - acidVolume - baseVolume,
+  };
+}
+
 /**
  * The buffer's useful range, pKa ± 1 — what a `rangeQuestion` problem asks for.
  *

@@ -80,7 +80,7 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
         'Docelowe pH (4,74) = pKa (4,74). Dlatego potrzebujesz RÓWNYCH ilości kwasu i zasady. Dodaj po 5 → proporcja = 1,0.',
     },
     explanation:
-      'Þegar sýra og basi eru í jafnvægi (1:1), þá er pH nákvæmlega jafnt pKa. Þetta er miðpunktur stuðpúðans!',
+      'Þegar jafnt er af sýru og basa (1:1), þá er pH nákvæmlega jafnt pKa. Þetta er miðpunktur stuðpúðans!',
     explanationEn:
       'When acid and base are in equilibrium (1:1), the pH is exactly equal to pKa. This is the midpoint of the buffer!',
     explanationPl:
@@ -244,13 +244,13 @@ export const LEVEL1_CHALLENGES: Level1Challenge[] = [
     targetPH: 7.4,
     targetRatioMin: 1.4,
     targetRatioMax: 1.7,
-    context: 'Líffræðilegur stuðpúði við pH 7,4 (blóð pH)',
+    context: 'Líffræðilegur stuðpúði við pH 7,4 (blóð-pH)',
     contextEn: 'Biological buffer at pH 7.4 (blood pH)',
     contextPl: 'Bufor biologiczny o pH 7,4 (pH krwi)',
     hint: 'Þarftu meira af basa til að hækka pH yfir pKa',
     hints: {
       topic: 'Þetta snýst um blóðstuðpúða og hvernig líkaminn heldur pH stöðugu.',
-      strategy: 'Blóð pH (7,4) er aðeins HÆRRA en pKa (7,2), svo þú þarft aðeins meira af basa.',
+      strategy: 'Blóð-pH (7,4) er aðeins HÆRRA en pKa (7,2), svo þú þarft aðeins meira af basa.',
       method: 'pH = pKa + log([Basi]/[Sýra]). 7,4 = 7,2 + log([Basi]/[Sýra]). log = 0,2.',
       solution: 'Hlutfall [Basi]/[Sýra] ≈ 1,58. Til dæmis: 8 basi og 5 sýra → 8/5 = 1,6.',
     },

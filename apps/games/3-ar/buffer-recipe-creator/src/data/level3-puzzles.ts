@@ -3,6 +3,23 @@
 
 import type { TieredHints } from '@shared/types';
 
+import { solveStockRecipe } from '../engine/buffer';
+import type { BufferProblem } from '../types';
+import { BUFFER_PROBLEMS } from './problems';
+
+/**
+ * A Level 3 puzzle as the level renders it.
+ *
+ * **Every number in `hints` and `explanationIs` is derived, not written** — the
+ * same arrangement `level2-puzzles.ts` has had since 2026-09-22. Until
+ * 2026-09-23 this file stored `correctAcidVolume`, `correctBaseVolume` and
+ * `correctWaterVolume` and typed every hint by hand. The ammonium puzzle had been
+ * worked from pKa 9,25; when Appendix D moved it to 9,26 only the pKa in the
+ * text changed, so its hints went on teaching `10^(0,25) = 1,78` for a
+ * pH − pKa of 0,24, and the level graded volumes worked from the old ratio.
+ * The prose below is authored; the numbers it quotes come from the same
+ * `solveStockRecipe` the level grades with, so the two cannot disagree again.
+ */
 export interface Level3Puzzle {
   id: number;
   problemId: number; // Reference to BUFFER_PROBLEMS
@@ -15,18 +32,107 @@ export interface Level3Puzzle {
   targetConcentration: number; // Target buffer concentration (M)
   volumeTolerance: number; // Relative tolerance for volumes (e.g., 0.05 = +/-5%)
   hints: TieredHints;
-  hintsEn?: TieredHints;
-  hintsPl?: TieredHints;
   explanationIs: string;
-  explanationEn?: string;
-  explanationPl?: string;
-  // Pre-calculated correct answers
-  correctAcidVolume: number; // mL of acid stock
-  correctBaseVolume: number; // mL of base stock
-  correctWaterVolume: number; // mL of water to add
 }
 
-export const LEVEL3_PUZZLES: Level3Puzzle[] = [
+/** The numbers a puzzle's prose may quote, already written the way a student reads them. */
+interface RecipeText {
+  pH: string;
+  pKa: string;
+  /** pH − pKa, signed: 0,26 or −0,20. */
+  diff: string;
+  /** |pH − pKa|. */
+  absDiff: string;
+  ratio: string;
+  /** Final volume in mL, and in L. */
+  targetVolume: string;
+  volumeL: string;
+  conc: string;
+  totalMoles: string;
+  acidMoles: string;
+  baseMoles: string;
+  /** The stock concentration, for puzzles whose two stocks are equally strong. */
+  stock: string;
+  stockAcid: string;
+  stockBase: string;
+  acidVolume: string;
+  baseVolume: string;
+  waterVolume: string;
+}
+
+/** What a puzzle's author writes: the inputs and the prose, never a computed number. */
+type Level3PuzzleSource = Omit<Level3Puzzle, 'hints' | 'explanationIs'> & {
+  hintsIs: (n: RecipeText) => TieredHints;
+  explanationIs: (n: RecipeText) => string;
+};
+
+/** Icelandic decimal comma, which is what the answer fields accept. */
+const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');
+
+/** A plain value such as 0,025 or 250, without float noise. */
+const num = (n: number) => String(Number(n.toFixed(6))).replace('.', ',');
+
+/** Three significant figures, the precision the mole hints are written to. */
+const sig3 = (n: number) => String(Number(n.toPrecision(3))).replace('.', ',');
+
+/** A signed exponent the way the hints print it: 0,20 or −0,20. */
+const signed = (n: number) => (n < 0 ? `−${fmt(-n, 2)}` : fmt(n, 2));
+
+function findProblem(id: number): BufferProblem {
+  const problem = BUFFER_PROBLEMS.find((p) => p.id === id);
+  if (!problem) throw new Error(`Level 3 puzzle points at missing problem ${id}`);
+  return problem;
+}
+
+function build(source: Level3PuzzleSource): Level3Puzzle {
+  const problem = findProblem(source.problemId);
+
+  // The prose describes drawing an acid stock and a base stock and topping up
+  // with water. A pH-adjustment problem (#25) starts from the acid alone and a
+  // range question has no target pH, so neither can be described this way.
+  if (problem.phAdjustment || problem.rangeQuestion) {
+    throw new Error(
+      `Level 3 puzzle ${source.id} points at problem ${problem.id}, which is not a ` +
+        'two-stock recipe; its hints would need their own wording.'
+    );
+  }
+
+  const r = solveStockRecipe(problem, source);
+  const diff = problem.targetPH - problem.pKa;
+  const n: RecipeText = {
+    pH: fmt(problem.targetPH, 2),
+    pKa: fmt(problem.pKa, 2),
+    diff: signed(diff),
+    absDiff: fmt(Math.abs(diff), 2),
+    ratio: fmt(r.ratio, 2),
+    targetVolume: num(source.targetVolume),
+    volumeL: num(source.targetVolume / 1000),
+    conc: num(source.targetConcentration),
+    totalMoles: num(r.totalMoles),
+    acidMoles: sig3(r.acidMoles),
+    baseMoles: sig3(r.baseMoles),
+    // Quoting one strength for both stocks is only true when they match, so a
+    // puzzle whose prose does that with unequal stocks refuses to load.
+    get stock() {
+      if (source.stockAcidConc !== source.stockBaseConc) {
+        throw new Error(
+          `Level 3 puzzle ${source.id} quotes a single stock strength, but its two stocks differ.`
+        );
+      }
+      return fmt(source.stockAcidConc, 1);
+    },
+    stockAcid: fmt(source.stockAcidConc, 1),
+    stockBase: fmt(source.stockBaseConc, 1),
+    acidVolume: fmt(r.acidVolume, 2),
+    baseVolume: fmt(r.baseVolume, 2),
+    waterVolume: fmt(r.waterVolume, 1),
+  };
+
+  const { hintsIs, explanationIs, ...inputs } = source;
+  return { ...inputs, hints: hintsIs(n), explanationIs: explanationIs(n) };
+}
+
+const SOURCES: Level3PuzzleSource[] = [
   {
     id: 1,
     problemId: 11, // Phosphate pH 7.40 - Blood buffer
@@ -39,42 +145,14 @@ export const LEVEL3_PUZZLES: Level3Puzzle[] = [
     targetVolume: 100, // 100 mL final
     targetConcentration: 0.1, // 0.1 M total
     volumeTolerance: 0.05,
-    hints: {
+    hintsIs: (n) => ({
       topic: 'Þetta snýst um þynningu birgðalausna og Henderson-Hasselbalch jöfnuna.',
-      strategy:
-        'Fyrst: Reiknaðu hlutfall [Basi]/[Sýra] fyrir pH 7,40 með pKa = 7,20. Síðan: Reiknaðu mól og þá rúmmál.',
-      method:
-        'Hlutfall = 10^(7,40-7,20) = 1,58. Heildar mól = 0,1 M × 0,1 L = 0,01 mol. Skiptu í sýru og basa.',
-      solution:
-        'Sýra: 0,00388 mol, Basi: 0,00612 mol. Úr 0,5 M birgð: Sýra = 7,76 mL, Basi = 12,24 mL.',
-    },
-    hintsEn: {
-      topic: 'This is about diluting stock solutions and the Henderson-Hasselbalch equation.',
-      strategy:
-        'First: Calculate the [Base]/[Acid] ratio for pH 7.40 with pKa = 7.20. Then: Calculate moles and volumes.',
-      method:
-        'Ratio = 10^(7.40-7.20) = 1.58. Total moles = 0.1 M × 0.1 L = 0.01 mol. Split into acid and base.',
-      solution:
-        'Acid: 0.00388 mol, Base: 0.00612 mol. From 0.5 M stock: Acid = 7.76 mL, Base = 12.24 mL.',
-    },
-    hintsPl: {
-      topic: 'To dotyczy rozcieńczania roztworów podstawowych i równania Hendersona-Hasselbalcha.',
-      strategy:
-        'Najpierw: Oblicz proporcję [Zasada]/[Kwas] dla pH 7,40 z pKa = 7,20. Następnie: Oblicz mole i objętości.',
-      method:
-        'Proporcja = 10^(7,40-7,20) = 1,58. Łączne mole = 0,1 M × 0,1 L = 0,01 mol. Rozdziel na kwas i zasadę.',
-      solution:
-        'Kwas: 0,00388 mol, Zasada: 0,00612 mol. Z 0,5 M roztworu: Kwas = 7,76 mL, Zasada = 12,24 mL.',
-    },
-    explanationIs:
-      'Til að búa til 100 mL af 0,1 M fosfatstuðpúða við pH 7,40, þarftu 7,76 mL af 0,5 M NaH₂PO₄ og 12,24 mL af 0,5 M Na₂HPO₄, fyllt upp í 100 mL með vatni.',
-    explanationEn:
-      'To prepare 100 mL of 0.1 M phosphate buffer at pH 7.40, you need 7.76 mL of 0.5 M NaH₂PO₄ and 12.24 mL of 0.5 M Na₂HPO₄, filled up to 100 mL with water.',
-    explanationPl:
-      'Aby przygotować 100 mL 0,1 M buforu fosforanowego o pH 7,40, potrzebujesz 7,76 mL 0,5 M NaH₂PO₄ i 12,24 mL 0,5 M Na₂HPO₄, uzupełnionych wodą do 100 mL.',
-    correctAcidVolume: 7.76,
-    correctBaseVolume: 12.24,
-    correctWaterVolume: 80.0,
+      strategy: `Fyrst: Reiknaðu hlutfall [Basi]/[Sýra] fyrir pH ${n.pH} með pKa = ${n.pKa}. Síðan: Reiknaðu mól og þá rúmmál.`,
+      method: `Hlutfall = 10^(${n.pH}-${n.pKa}) = ${n.ratio}. Heildarmól = ${n.conc} M × ${n.volumeL} L = ${n.totalMoles} mol. Skiptu í sýru og basa.`,
+      solution: `Sýra: ${n.acidMoles} mol, Basi: ${n.baseMoles} mol. Úr ${n.stock} M birgð: Sýra = ${n.acidVolume} mL, Basi = ${n.baseVolume} mL.`,
+    }),
+    explanationIs: (n) =>
+      `Til að búa til ${n.targetVolume} mL af ${n.conc} M fosfatstuðpúða við pH ${n.pH}, þarftu ${n.acidVolume} mL af ${n.stockAcid} M NaH₂PO₄ og ${n.baseVolume} mL af ${n.stockBase} M Na₂HPO₄, fyllt upp í ${n.targetVolume} mL með vatni.`,
   },
   {
     id: 2,
@@ -87,33 +165,14 @@ export const LEVEL3_PUZZLES: Level3Puzzle[] = [
     targetVolume: 250, // 250 mL final
     targetConcentration: 0.1,
     volumeTolerance: 0.05,
-    hints: {
-      topic: 'Asetatstuðpúði með pKa = 4,74 og markmiðs-pH = 5,00.',
-      strategy: 'Hlutfall = 10^(5,00-4,74) = 10^0,26 ≈ 1,82. Meira af basa en sýru.',
-      method: 'Heildar mól = 0,1 × 0,25 = 0,025 mol. Sýra: 0,00888 mol, Basi: 0,01612 mol.',
-      solution: 'Úr 1,0 M birgð: Sýra = 8,88 mL, Basi = 16,12 mL, Vatn = 225,0 mL.',
-    },
-    hintsEn: {
-      topic: 'Acetate buffer with pKa = 4.74 and target pH = 5.00.',
-      strategy: 'Ratio = 10^(5.00-4.74) = 10^0.26 ≈ 1.82. More base than acid.',
-      method: 'Total moles = 0.1 × 0.25 = 0.025 mol. Acid: 0.00888 mol, Base: 0.01612 mol.',
-      solution: 'From 1.0 M stock: Acid = 8.88 mL, Base = 16.12 mL, Water = 225.0 mL.',
-    },
-    hintsPl: {
-      topic: 'Bufor octanowy z pKa = 4,74 i docelowym pH = 5,00.',
-      strategy: 'Proporcja = 10^(5,00-4,74) = 10^0,26 ≈ 1,82. Więcej zasady niż kwasu.',
-      method: 'Łączne mole = 0,1 × 0,25 = 0,025 mol. Kwas: 0,00888 mol, Zasada: 0,01612 mol.',
-      solution: 'Z 1,0 M roztworu: Kwas = 8,88 mL, Zasada = 16,12 mL, Woda = 225,0 mL.',
-    },
-    explanationIs:
-      'Fyrir 250 mL af 0,1 M asetatstuðpúða við pH 5,00 þarftu 8,88 mL af 1,0 M ediksýru og 16,12 mL af 1,0 M natríumasetati.',
-    explanationEn:
-      'For 250 mL of 0.1 M acetate buffer at pH 5.00, you need 8.88 mL of 1.0 M acetic acid and 16.12 mL of 1.0 M sodium acetate.',
-    explanationPl:
-      'Na 250 mL 0,1 M buforu octanowego o pH 5,00 potrzebujesz 8,88 mL 1,0 M kwasu octowego i 16,12 mL 1,0 M octanu sodu.',
-    correctAcidVolume: 8.88,
-    correctBaseVolume: 16.12,
-    correctWaterVolume: 225.0,
+    hintsIs: (n) => ({
+      topic: `Asetatstuðpúði með pKa = ${n.pKa} og markmiðs-pH = ${n.pH}.`,
+      strategy: `Hlutfall = 10^(${n.pH}-${n.pKa}) = 10^${n.diff} ≈ ${n.ratio}. Meira af basa en sýru.`,
+      method: `Heildarmól = ${n.conc} × ${n.volumeL} = ${n.totalMoles} mol. Sýra: ${n.acidMoles} mol, Basi: ${n.baseMoles} mol.`,
+      solution: `Úr ${n.stock} M birgð: Sýra = ${n.acidVolume} mL, Basi = ${n.baseVolume} mL, Vatn = ${n.waterVolume} mL.`,
+    }),
+    explanationIs: (n) =>
+      `Fyrir ${n.targetVolume} mL af ${n.conc} M asetatstuðpúða við pH ${n.pH} þarftu ${n.acidVolume} mL af ${n.stockAcid} M ediksýru og ${n.baseVolume} mL af ${n.stockBase} M natríumasetati.`,
   },
   {
     id: 4,
@@ -126,33 +185,14 @@ export const LEVEL3_PUZZLES: Level3Puzzle[] = [
     targetVolume: 500,
     targetConcentration: 0.05,
     volumeTolerance: 0.05,
-    hints: {
-      topic: 'Fosfatstuðpúði við pH 7,00, sem er UNDIR pKa (7,20).',
-      strategy: 'Hlutfall = 10^(7,00-7,20) = 10^(-0,20) = 0,63. Meira af sýru.',
-      method: 'Heildar mól = 0,05 × 0,5 = 0,025 mol. Sýra: 0,01534 mol, Basi: 0,00966 mol.',
-      solution: 'Úr 1,0 M birgð: Sýra = 15,34 mL, Basi = 9,66 mL, Vatn = 475,0 mL.',
-    },
-    hintsEn: {
-      topic: 'Phosphate buffer at pH 7.00, which is BELOW pKa (7.20).',
-      strategy: 'Ratio = 10^(7.00-7.20) = 10^(-0.20) = 0.63. More acid.',
-      method: 'Total moles = 0.05 × 0.5 = 0.025 mol. Acid: 0.01534 mol, Base: 0.00966 mol.',
-      solution: 'From 1.0 M stock: Acid = 15.34 mL, Base = 9.66 mL, Water = 475.0 mL.',
-    },
-    hintsPl: {
-      topic: 'Bufor fosforanowy o pH 7,00, które jest PONIŻEJ pKa (7,20).',
-      strategy: 'Proporcja = 10^(7,00-7,20) = 10^(-0,20) = 0,63. Więcej kwasu.',
-      method: 'Łączne mole = 0,05 × 0,5 = 0,025 mol. Kwas: 0,01534 mol, Zasada: 0,00966 mol.',
-      solution: 'Z 1,0 M roztworu: Kwas = 15,34 mL, Zasada = 9,66 mL, Woda = 475,0 mL.',
-    },
-    explanationIs:
-      'Við pH 7,00 (undir pKa) þarf meira af sýru. Hlutfall 0,63 þýðir um 60% meira sýra en basi.',
-    explanationEn:
-      'At pH 7.00 (below pKa) you need more acid. A ratio of 0.63 means about 60% more acid than base.',
-    explanationPl:
-      'Przy pH 7,00 (poniżej pKa) potrzebujesz więcej kwasu. Proporcja 0,63 oznacza około 60% więcej kwasu niż zasady.',
-    correctAcidVolume: 15.34,
-    correctBaseVolume: 9.66,
-    correctWaterVolume: 475.0,
+    hintsIs: (n) => ({
+      topic: `Fosfatstuðpúði við pH ${n.pH}, sem er UNDIR pKa (${n.pKa}).`,
+      strategy: `Hlutfall = 10^(${n.pH}-${n.pKa}) = 10^(${n.diff}) = ${n.ratio}. Meira af sýru.`,
+      method: `Heildarmól = ${n.conc} × ${n.volumeL} = ${n.totalMoles} mol. Sýra: ${n.acidMoles} mol, Basi: ${n.baseMoles} mol.`,
+      solution: `Úr ${n.stock} M birgð: Sýra = ${n.acidVolume} mL, Basi = ${n.baseVolume} mL, Vatn = ${n.waterVolume} mL.`,
+    }),
+    explanationIs: (n) =>
+      `Við pH ${n.pH} (undir pKa) þarf meira af sýru. Hlutfall ${n.ratio} þýðir um 60 % meira af sýru en basa.`,
   },
   {
     id: 5,
@@ -165,33 +205,14 @@ export const LEVEL3_PUZZLES: Level3Puzzle[] = [
     targetVolume: 200,
     targetConcentration: 0.2,
     volumeTolerance: 0.05,
-    hints: {
-      topic: 'Ammóníustuðpúði með pKa = 9,26 og markmiðs-pH = 9,50.',
-      strategy: 'pH > pKa þannig að hlutfall > 1. Hlutfall = 10^(0,25) = 1,78.',
-      method: 'Heildar mól = 0,2 × 0,2 = 0,04 mol. Sýra: 0,0142 mol, Basi: 0,0258 mol.',
-      solution: 'Úr 2,0 M birgð: Sýra = 7,10 mL, Basi = 12,90 mL, Vatn = 180,0 mL.',
-    },
-    hintsEn: {
-      topic: 'Ammonium buffer with pKa = 9.26 and target pH = 9.50.',
-      strategy: 'pH > pKa so the ratio > 1. Ratio = 10^(0.25) = 1.78.',
-      method: 'Total moles = 0.2 × 0.2 = 0.04 mol. Acid: 0.0142 mol, Base: 0.0258 mol.',
-      solution: 'From 2.0 M stock: Acid = 7.10 mL, Base = 12.90 mL, Water = 180.0 mL.',
-    },
-    hintsPl: {
-      topic: 'Bufor amonowy z pKa = 9,26 i docelowym pH = 9,50.',
-      strategy: 'pH > pKa, więc proporcja > 1. Proporcja = 10^(0,25) = 1,78.',
-      method: 'Łączne mole = 0,2 × 0,2 = 0,04 mol. Kwas: 0,0142 mol, Zasada: 0,0258 mol.',
-      solution: 'Z 2,0 M roztworu: Kwas = 7,10 mL, Zasada = 12,90 mL, Woda = 180,0 mL.',
-    },
-    explanationIs:
-      'Ammóníustuðpúði við pH 9,50 þarf hlutfall 1,78, sem þýðir næstum tvöfalt meira af NH₃ en NH₄Cl.',
-    explanationEn:
-      'An ammonium buffer at pH 9.50 requires a ratio of 1.78, meaning almost twice as much NH₃ as NH₄Cl.',
-    explanationPl:
-      'Bufor amonowy o pH 9,50 wymaga proporcji 1,78, co oznacza prawie dwukrotnie więcej NH₃ niż NH₄Cl.',
-    correctAcidVolume: 7.1,
-    correctBaseVolume: 12.9,
-    correctWaterVolume: 180.0,
+    hintsIs: (n) => ({
+      topic: `Ammóníustuðpúði með pKa = ${n.pKa} og markmiðs-pH = ${n.pH}.`,
+      strategy: `pH > pKa þannig að hlutfall > 1. Hlutfall = 10^(${n.diff}) = ${n.ratio}.`,
+      method: `Heildarmól = ${n.conc} × ${n.volumeL} = ${n.totalMoles} mol. Sýra: ${n.acidMoles} mol, Basi: ${n.baseMoles} mol.`,
+      solution: `Úr ${n.stock} M birgð: Sýra = ${n.acidVolume} mL, Basi = ${n.baseVolume} mL, Vatn = ${n.waterVolume} mL.`,
+    }),
+    explanationIs: (n) =>
+      `Ammóníustuðpúði við pH ${n.pH} þarf hlutfall ${n.ratio}, sem þýðir næstum tvöfalt meira af NH₃ en NH₄Cl.`,
   },
   {
     id: 6,
@@ -204,32 +225,15 @@ export const LEVEL3_PUZZLES: Level3Puzzle[] = [
     targetVolume: 1000,
     targetConcentration: 0.1,
     volumeTolerance: 0.05,
-    hints: {
-      topic: 'Fosfatstuðpúði við pH 6,80, sem er töluvert undir pKa (7,20).',
-      strategy: 'Hlutfall = 10^(6,80-7,20) = 10^(-0,40) = 0,40. Miklu meira af sýru.',
-      method: 'Heildar mól = 0,1 × 1,0 = 0,1 mol. Sýra: 0,0714 mol, Basi: 0,0286 mol.',
-      solution: 'Úr 0,5 M birgð: Sýra = 142,8 mL, Basi = 57,2 mL, Vatn = 800,0 mL.',
-    },
-    hintsEn: {
-      topic: 'Phosphate buffer at pH 6.80, which is considerably below pKa (7.20).',
-      strategy: 'Ratio = 10^(6.80-7.20) = 10^(-0.40) = 0.40. Much more acid.',
-      method: 'Total moles = 0.1 × 1.0 = 0.1 mol. Acid: 0.0714 mol, Base: 0.0286 mol.',
-      solution: 'From 0.5 M stock: Acid = 142.8 mL, Base = 57.2 mL, Water = 800.0 mL.',
-    },
-    hintsPl: {
-      topic: 'Bufor fosforanowy o pH 6,80, które jest znacznie poniżej pKa (7,20).',
-      strategy: 'Proporcja = 10^(6,80-7,20) = 10^(-0,40) = 0,40. Znacznie więcej kwasu.',
-      method: 'Łączne mole = 0,1 × 1,0 = 0,1 mol. Kwas: 0,0714 mol, Zasada: 0,0286 mol.',
-      solution: 'Z 0,5 M roztworu: Kwas = 142,8 mL, Zasada = 57,2 mL, Woda = 800,0 mL.',
-    },
-    explanationIs:
-      'Við pH 6,80 (0,40 undir pKa) er hlutfall aðeins 0,40, sem þýðir 2,5× meira af sýru en basa.',
-    explanationEn:
-      'At pH 6.80 (0.40 below pKa) the ratio is only 0.40, meaning 2.5× more acid than base.',
-    explanationPl:
-      'Przy pH 6,80 (0,40 poniżej pKa) proporcja wynosi zaledwie 0,40, co oznacza 2,5× więcej kwasu niż zasady.',
-    correctAcidVolume: 142.8,
-    correctBaseVolume: 57.2,
-    correctWaterVolume: 800.0,
+    hintsIs: (n) => ({
+      topic: `Fosfatstuðpúði við pH ${n.pH}, sem er töluvert undir pKa (${n.pKa}).`,
+      strategy: `Hlutfall = 10^(${n.pH}-${n.pKa}) = 10^(${n.diff}) = ${n.ratio}. Miklu meira af sýru.`,
+      method: `Heildarmól = ${n.conc} × ${n.volumeL} = ${n.totalMoles} mol. Sýra: ${n.acidMoles} mol, Basi: ${n.baseMoles} mol.`,
+      solution: `Úr ${n.stock} M birgð: Sýra = ${n.acidVolume} mL, Basi = ${n.baseVolume} mL, Vatn = ${n.waterVolume} mL.`,
+    }),
+    explanationIs: (n) =>
+      `Við pH ${n.pH} (${n.absDiff} undir pKa) er hlutfall aðeins ${n.ratio}, sem þýðir 2,5× meira af sýru en basa.`,
   },
 ];
+
+export const LEVEL3_PUZZLES: Level3Puzzle[] = SOURCES.map(build);

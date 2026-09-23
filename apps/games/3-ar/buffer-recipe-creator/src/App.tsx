@@ -256,7 +256,7 @@ function App() {
                       <div className="text-xl sm:text-2xl font-bold text-green-600">
                         {totalScore}
                       </div>
-                      <div className="text-xs text-warm-600">Heildar stig</div>
+                      <div className="text-xs text-warm-600">Heildarstig</div>
                     </div>
                     <div className="bg-purple-50 rounded-lg px-1 py-2 sm:p-3">
                       <div className="text-xl sm:text-2xl font-bold text-purple-600">

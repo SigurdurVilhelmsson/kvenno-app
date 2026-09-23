@@ -147,7 +147,7 @@ const SOURCES: Level2PuzzleSource[] = [
     massTolerance: 0.05,
     topicIs: (p) => `Ammóníustuðpúði virkar við hátt pH með pKa = ${fmt(p.pKa, 2)}.`,
     noteIs:
-      'Athugaðu að ammóníak (NH₃) hefur mjög lágan mólarmassa (17 g/mol) svo massinn er lítill.',
+      'Athugaðu að ammóníak (NH₃) hefur mjög lágan mólmassa (17 g/mol) svo massinn er lítill.',
   },
   {
     id: 5,

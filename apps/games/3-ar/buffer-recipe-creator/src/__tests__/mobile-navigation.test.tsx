@@ -130,7 +130,9 @@ describe('Stig 1 feedback opens below "Athuga stuðpúða"', () => {
     expect(nearestTargets()[1].textContent).toContain('Frábært');
   });
 
-  it('is not revealed on the last challenge, which hands back to the menu', async () => {
+  it('is revealed on the last challenge too, which now waits for "Ljúka stigi"', async () => {
+    // The last check used to hand straight back to the menu, so this reveal had to be skipped
+    // there. The level now ends on its own button, and the last feedback is read like the rest.
     const onLevelComplete = vi.fn();
     const { container } = render(<Level1 onLevelComplete={onLevelComplete} />);
     const tap = (name: string, times = 1) => {
@@ -146,9 +148,11 @@ describe('Stig 1 feedback opens below "Athuga stuðpúða"', () => {
       tap('Athuga stuðpúða');
       if (i < baseChange.length - 1) tap('Næsta verkefni →');
     });
-    expect(onLevelComplete).toHaveBeenCalledTimes(1);
+    expect(onLevelComplete).not.toHaveBeenCalled();
     await settle(150);
-    expect(nearestTargets()).toHaveLength(0);
+    expect(nearestTargets().at(-1)?.textContent).toContain('Frábært');
+    tap('Ljúka stigi →');
+    expect(onLevelComplete).toHaveBeenCalledTimes(1);
   });
 });
 

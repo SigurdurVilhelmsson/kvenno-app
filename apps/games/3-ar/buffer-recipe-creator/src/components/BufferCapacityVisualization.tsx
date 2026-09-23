@@ -50,8 +50,11 @@ export function BufferCapacityVisualization({
   onAddition,
 }: BufferCapacityVisualizationProps) {
   // State for acid/base addition simulation
-  const [acidAdded, setAcidAdded] = useState(0); // mmol of strong acid added
-  const [baseAdded, setBaseAdded] = useState(0); // mmol of strong base added
+  // Running totals of what the student has added, in M — the unit the buttons and the
+  // "Bætt við" readouts print. Neutralisation is worked out from the two totals below, so
+  // neither handler touches the other's total.
+  const [acidAdded, setAcidAdded] = useState(0); // M of strong acid added
+  const [baseAdded, setBaseAdded] = useState(0); // M of strong base added
   const [showComparison, setShowComparison] = useState(false);
   const comparisonRef = useRef<HTMLDivElement>(null);
 
@@ -76,12 +79,9 @@ export function BufferCapacityVisualization({
   const adjustedState = useMemo(() => {
     // Adding strong acid: A⁻ + H⁺ → HA
     // Adding strong base: HA + OH⁻ → A⁻ + H₂O
-    let adjustedAcid = acidConc - baseAdded + acidAdded;
-    let adjustedBase = baseConc + baseAdded - acidAdded;
-
     // Clamp to prevent negative values
-    adjustedAcid = Math.max(0.001, adjustedAcid);
-    adjustedBase = Math.max(0.001, adjustedBase);
+    const adjustedAcid = Math.max(0.001, acidConc - baseAdded + acidAdded);
+    const adjustedBase = Math.max(0.001, baseConc + baseAdded - acidAdded);
 
     const currentPH = calculatePH(adjustedAcid, adjustedBase);
 
@@ -92,23 +92,28 @@ export function BufferCapacityVisualization({
     };
   }, [acidConc, baseConc, acidAdded, baseAdded, calculatePH]);
 
-  // Calculate what pH would be in unbuffered water
+  // Calculate what pH would be in unbuffered water. The amounts are concentrations (M), so
+  // [H⁺] is the excess itself: 0,01 M strong acid gives pH 2. This divided by 1000 as if they
+  // were mmol, and showed water at pH 5 — a smaller change than the buffer's, under a tip
+  // saying the buffer changes less.
   const unbufferedPH = useMemo(() => {
     const netH = acidAdded - baseAdded;
     if (Math.abs(netH) < 0.001) return 7.0;
     if (netH > 0) {
       // Excess H⁺
-      return Math.max(0, -Math.log10(netH / 1000)); // Assuming 1L
+      return Math.max(0, -Math.log10(netH));
     } else {
       // Excess OH⁻
-      const pOH = Math.max(0, -Math.log10(-netH / 1000));
+      const pOH = Math.max(0, -Math.log10(-netH));
       return Math.min(14, 14 - pOH);
     }
   }, [acidAdded, baseAdded]);
 
-  // Initial pH
+  // Initial pH, clamped exactly as the current pH is, so that before anything is added the
+  // two agree and ΔpH reads 0. Unclamped, a mixture missing one component started at pH 0 or
+  // 14 while "Núverandi pH" read pKa ± 1,7.
   const initialPH = useMemo(
-    () => calculatePH(acidConc, baseConc),
+    () => calculatePH(Math.max(0.001, acidConc), Math.max(0.001, baseConc)),
     [acidConc, baseConc, calculatePH]
   );
 
@@ -140,11 +145,12 @@ export function BufferCapacityVisualization({
     return Math.max(...capacityCurve.map((p) => p.capacity));
   }, [capacityCurve]);
 
-  // Handle adding acid
+  // Handle adding acid. The base total is left alone: `adjustedState` already neutralises
+  // one against the other, and taking the amount off both totals as well counted it twice —
+  // 0,05 M acid then 0,01 M base read as 0,03 M net acid, and "Bætt við" showed 0,040.
   const handleAddAcid = (amount: number) => {
     const newAcidAdded = Math.max(0, acidAdded + amount);
     setAcidAdded(newAcidAdded);
-    setBaseAdded(Math.max(0, baseAdded - amount)); // Neutralize existing base first
 
     const newState = {
       acidConc: acidConc - baseAdded + newAcidAdded,
@@ -157,11 +163,10 @@ export function BufferCapacityVisualization({
     onAddition?.('acid', amount, newPH);
   };
 
-  // Handle adding base
+  // Handle adding base (see handleAddAcid)
   const handleAddBase = (amount: number) => {
     const newBaseAdded = Math.max(0, baseAdded + amount);
     setBaseAdded(newBaseAdded);
-    setAcidAdded(Math.max(0, acidAdded - amount)); // Neutralize existing acid first
 
     const newState = {
       acidConc: acidConc - newBaseAdded + acidAdded,
@@ -225,7 +230,7 @@ export function BufferCapacityVisualization({
     <div className="bg-gradient-to-b from-warm-800 to-warm-900 rounded-xl p-3 sm:p-4 shadow-lg">
       <h3 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
         <span className="text-lg">🛡️</span>
-        Stuðpúðageta (Buffer Capacity)
+        Stuðpúðageta
       </h3>
 
       {/* Buffer Capacity Curve */}
@@ -376,7 +381,7 @@ export function BufferCapacityVisualization({
           </div>
         </div>
         <div className="bg-warm-700 rounded-lg px-1 py-2 sm:p-2 text-center">
-          <div className="text-xs text-warm-400">Upphafs pH</div>
+          <div className="text-xs text-warm-400">Upphafs-pH</div>
           <div className="text-lg font-semibold text-warm-300">{formatDecimal(initialPH, 2)}</div>
         </div>
         <div className="bg-warm-700 rounded-lg px-1 py-2 sm:p-2 text-center">
@@ -431,14 +436,14 @@ export function BufferCapacityVisualization({
                   aria-label="Bæta við 0,01 M sterkri sýru"
                   className="flex-1 py-1.5 pointer-coarse:min-h-11 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition-colors"
                 >
-                  +0.01 M
+                  +0,01 M
                 </button>
                 <button
                   onClick={() => handleAddAcid(0.05)}
                   aria-label="Bæta við 0,05 M sterkri sýru"
                   className="flex-1 py-1.5 pointer-coarse:min-h-11 bg-red-600 hover:bg-red-700 text-white text-xs rounded transition-colors"
                 >
-                  +0.05 M
+                  +0,05 M
                 </button>
               </div>
               <div className="text-xs text-warm-500 mt-1 text-center">
@@ -456,14 +461,14 @@ export function BufferCapacityVisualization({
                   aria-label="Bæta við 0,01 M sterkum basa"
                   className="flex-1 py-1.5 pointer-coarse:min-h-11 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
                 >
-                  +0.01 M
+                  +0,01 M
                 </button>
                 <button
                   onClick={() => handleAddBase(0.05)}
                   aria-label="Bæta við 0,05 M sterkum basa"
                   className="flex-1 py-1.5 pointer-coarse:min-h-11 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
                 >
-                  +0.05 M
+                  +0,05 M
                 </button>
               </div>
               <div className="text-xs text-warm-500 mt-1 text-center">
@@ -490,8 +495,9 @@ export function BufferCapacityVisualization({
         {showComparison ? '▼ Fela samanburð' : '▶ Sýna samanburð við vatn'}
       </button>
 
-      {/* Comparison: Buffer vs Water */}
-      {showComparison && (acidAdded > 0 || baseAdded > 0) && (
+      {/* Comparison: Buffer vs Water. It opens whenever the toggle says it is open; it used to
+          stay empty until something was added, under a button already reading "Fela". */}
+      {showComparison && (
         <div ref={comparisonRef} className="bg-warm-700/50 rounded-lg p-3">
           <div className="text-xs text-warm-400 mb-2 text-center font-semibold">
             Samanburður: Stuðpúði vs Hreint vatn
@@ -507,8 +513,10 @@ export function BufferCapacityVisualization({
               >
                 pH {formatDecimal(adjustedState.pH, 2)}
               </div>
+              {/* From the buffer's own starting pH, as the ΔpH readout above measures it. This
+                  measured from 7, so an acetate buffer that moved 0,18 read 2,44. */}
               <div className="text-xs text-warm-400 mt-1">
-                ΔpH = {formatDecimal(Math.abs(adjustedState.pH - 7), 2)}
+                ΔpH = {formatDecimal(Math.abs(adjustedState.pH - initialPH), 2)}
               </div>
             </div>
 
@@ -527,9 +535,12 @@ export function BufferCapacityVisualization({
             </div>
           </div>
 
-          <div className="mt-3 text-xs text-center text-warm-400">
-            💡 Stuðpúðinn verndar pH - minni breyting en í vatni!
-          </div>
+          {/* Only when the numbers above bear it out: additions that cancel leave both at 0,00. */}
+          {Math.abs(unbufferedPH - 7) > Math.abs(adjustedState.pH - initialPH) && (
+            <div className="mt-3 text-xs text-center text-warm-400">
+              💡 Stuðpúðinn verndar pH - minni breyting en í vatni!
+            </div>
+          )}
         </div>
       )}
 

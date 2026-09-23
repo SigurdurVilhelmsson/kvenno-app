@@ -6,6 +6,7 @@ import { parseStudentNumber, formatDecimal } from '@shared/utils';
 import { BufferCapacityVisualization } from './BufferCapacityVisualization';
 import { LEVEL3_PUZZLES } from '../data/level3-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
+import { solveStockRecipe } from '../engine/buffer';
 import { revealTop } from '../utils/reveal';
 
 interface Level3Props {
@@ -96,11 +97,12 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
     );
   }
 
-  // Calculate correct values
-  const targetMoles = puzzle.targetConcentration * (puzzle.targetVolume / 1000);
-  const correctRatio = Math.pow(10, problem.targetPH - problem.pKa);
-  const correctBaseMoles = (targetMoles * correctRatio) / (1 + correctRatio);
-  const correctAcidMoles = targetMoles - correctBaseMoles;
+  // Every correct answer on this screen is derived, never stored — see engine/buffer.ts.
+  const recipe = solveStockRecipe(problem, puzzle);
+  const targetMoles = recipe.totalMoles;
+  const correctRatio = recipe.ratio;
+  const correctBaseMoles = recipe.baseMoles;
+  const correctAcidMoles = recipe.acidMoles;
 
   // Handle hint usage
   const handleHintUsed = () => {
@@ -108,7 +110,10 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
   };
 
   // Step 1: Check ratio answer
+  // A step fades out for 250 ms after it is answered and its button stays live
+  // meanwhile, so each check ignores a tap that arrives after its step is over.
   const checkRatio = () => {
+    if (step !== 'ratio') return;
     const userRatio = parseStudentNumber(ratioInput);
     if (isNaN(userRatio) || userRatio <= 0) {
       setRatioFeedback('Vinsamlegast sláðu inn jákvæða tölu.');
@@ -131,6 +136,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
 
   // Step 2: Check moles answer
   const checkMoles = () => {
+    if (step !== 'moles') return;
     const userAcidMoles = parseStudentNumber(acidMolesInput);
     const userBaseMoles = parseStudentNumber(baseMolesInput);
 
@@ -149,7 +155,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
       setStep('volumes');
     } else {
       let feedback = 'Ekki rétt. ';
-      feedback += `Heildar mól = ${formatDecimal(puzzle.targetConcentration)} M × ${formatDecimal(puzzle.targetVolume / 1000)} L = ${formatDecimal(targetMoles, 4)} mol. `;
+      feedback += `Heildarmól = ${formatDecimal(puzzle.targetConcentration)} M × ${formatDecimal(puzzle.targetVolume / 1000)} L = ${formatDecimal(targetMoles, 4)} mol. `;
       feedback += `Skiptu samkvæmt hlutfalli ${formatDecimal(correctRatio, 2)}.`;
       setMolesFeedback(feedback);
     }
@@ -157,6 +163,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
 
   // Step 3: Check volumes answer
   const checkVolumes = () => {
+    if (step !== 'volumes') return;
     const userAcidVolume = parseStudentNumber(acidVolumeInput);
     const userBaseVolume = parseStudentNumber(baseVolumeInput);
 
@@ -171,10 +178,8 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
     }
 
     const tolerance = puzzle.volumeTolerance;
-    const acidError =
-      Math.abs(userAcidVolume - puzzle.correctAcidVolume) / puzzle.correctAcidVolume;
-    const baseError =
-      Math.abs(userBaseVolume - puzzle.correctBaseVolume) / puzzle.correctBaseVolume;
+    const acidError = Math.abs(userAcidVolume - recipe.acidVolume) / recipe.acidVolume;
+    const baseError = Math.abs(userBaseVolume - recipe.baseVolume) / recipe.baseVolume;
 
     if (acidError <= tolerance && baseError <= tolerance) {
       setVolumeCorrect(true);
@@ -187,10 +192,10 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
       let feedback = 'Ekki rétt. ';
       feedback += `Muna: V = n / C (rúmmál = mól / styrkur birgðalausnar).`;
       if (acidError > tolerance) {
-        feedback += ` Sýrurúmmál er ${userAcidVolume > puzzle.correctAcidVolume ? 'of hátt' : 'of lágt'}.`;
+        feedback += ` Sýrurúmmál er ${userAcidVolume > recipe.acidVolume ? 'of hátt' : 'of lágt'}.`;
       }
       if (baseError > tolerance) {
-        feedback += ` Basarúmmál er ${userBaseVolume > puzzle.correctBaseVolume ? 'of hátt' : 'of lágt'}.`;
+        feedback += ` Basarúmmál er ${userBaseVolume > recipe.baseVolume ? 'of hátt' : 'of lágt'}.`;
       }
       setVolumeFeedback(feedback);
     }
@@ -198,6 +203,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
 
   // Next puzzle
   const nextPuzzle = () => {
+    if (step !== 'complete') return;
     setCompleted((prev) => prev + 1);
 
     if (currentIndex < LEVEL3_PUZZLES.length - 1) {
@@ -294,7 +300,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
             </button>
             <div className="flex items-center gap-4">
               <div className="text-sm text-warm-500">
-                {completed + 1} / {LEVEL3_PUZZLES.length}
+                {Math.min(completed + 1, LEVEL3_PUZZLES.length)} / {LEVEL3_PUZZLES.length}
               </div>
               <div className="text-lg font-bold text-green-600">Stig: {score}</div>
             </div>
@@ -333,7 +339,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
               <div className="text-lg font-bold text-warm-800">{formatDecimal(problem.pKa)}</div>
             </div>
             <div className="bg-warm-50 p-3 rounded-lg text-center">
-              <div className="text-xs text-warm-500">Markmið pH</div>
+              <div className="text-xs text-warm-500">Markmiðs-pH</div>
               <div className="text-lg font-bold text-green-600">
                 {formatDecimal(problem.targetPH)}
               </div>
@@ -472,7 +478,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                   inputMode="decimal"
                   value={ratioInput}
                   onChange={(e) => setRatioInput(e.target.value)}
-                  placeholder="t.d. 1.58"
+                  placeholder="0,00"
                   className="w-full p-3 border-2 border-warm-300 rounded-lg focus:border-green-500 focus:outline-none"
                 />
               </div>
@@ -507,7 +513,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
               </h3>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
                 <p className="text-sm text-blue-800">
-                  <strong>Heildar mól:</strong> n = C × V ={' '}
+                  <strong>Heildarmól:</strong> n = C × V ={' '}
                   {formatDecimal(puzzle.targetConcentration)} M ×{' '}
                   {formatDecimal(puzzle.targetVolume / 1000)} L = {formatDecimal(targetMoles, 4)}{' '}
                   mol
@@ -526,7 +532,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                     inputMode="decimal"
                     value={acidMolesInput}
                     onChange={(e) => setAcidMolesInput(e.target.value)}
-                    placeholder="t.d. 0.0039"
+                    placeholder="0,0000"
                     className="w-full p-3 border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-none"
                   />
                 </div>
@@ -537,7 +543,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                     inputMode="decimal"
                     value={baseMolesInput}
                     onChange={(e) => setBaseMolesInput(e.target.value)}
-                    placeholder="t.d. 0.0061"
+                    placeholder="0,0000"
                     className="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none"
                   />
                 </div>
@@ -591,7 +597,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                     inputMode="decimal"
                     value={acidVolumeInput}
                     onChange={(e) => setAcidVolumeInput(e.target.value)}
-                    placeholder="t.d. 7.76"
+                    placeholder="0,00"
                     className="w-full p-3 border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-none"
                   />
                 </div>
@@ -604,7 +610,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                     inputMode="decimal"
                     value={baseVolumeInput}
                     onChange={(e) => setBaseVolumeInput(e.target.value)}
-                    placeholder="t.d. 12.24"
+                    placeholder="0,00"
                     className="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none"
                   />
                 </div>
@@ -647,25 +653,26 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                       {formatDecimal(problem.pKa)}) = {formatDecimal(correctRatio, 2)}
                     </li>
                     <li>
-                      • Heildar mól = {formatDecimal(puzzle.targetConcentration)} M ×{' '}
+                      • Heildarmól = {formatDecimal(puzzle.targetConcentration)} M ×{' '}
                       {formatDecimal(puzzle.targetVolume / 1000)} L ={' '}
                       {formatDecimal(targetMoles, 4)} mol
                     </li>
                     <li>
-                      • Sýra: {formatDecimal(correctAcidMoles, 4)} mol /{' '}
+                      • Sýra: {formatDecimal(correctAcidMoles, 5)} mol /{' '}
                       {formatDecimal(puzzle.stockAcidConc)} M ={' '}
-                      {formatDecimal(puzzle.correctAcidVolume)} mL
+                      {formatDecimal(recipe.acidVolume / 1000, 5)} L ={' '}
+                      {formatDecimal(recipe.acidVolume, 2)} mL
                     </li>
                     <li>
-                      • Basi: {formatDecimal(correctBaseMoles, 4)} mol /{' '}
+                      • Basi: {formatDecimal(correctBaseMoles, 5)} mol /{' '}
                       {formatDecimal(puzzle.stockBaseConc)} M ={' '}
-                      {formatDecimal(puzzle.correctBaseVolume)} mL
+                      {formatDecimal(recipe.baseVolume / 1000, 5)} L ={' '}
+                      {formatDecimal(recipe.baseVolume, 2)} mL
                     </li>
                     <li>
                       • Vatn: {formatDecimal(puzzle.targetVolume)} -{' '}
-                      {formatDecimal(puzzle.correctAcidVolume)} -{' '}
-                      {formatDecimal(puzzle.correctBaseVolume)} ≈{' '}
-                      {formatDecimal(puzzle.correctWaterVolume)} mL
+                      {formatDecimal(recipe.acidVolume, 2)} - {formatDecimal(recipe.baseVolume, 2)}{' '}
+                      ≈ {formatDecimal(recipe.waterVolume, 1)} mL
                     </li>
                   </ul>
                 </div>
@@ -681,7 +688,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                         1
                       </span>
                       <span>
-                        Bættu <strong>{formatDecimal(puzzle.correctAcidVolume)} mL</strong> af{' '}
+                        Bættu <strong>{formatDecimal(recipe.acidVolume, 2)} mL</strong> af{' '}
                         {formatDecimal(puzzle.stockAcidConc)} M {problem.acidName}
                       </span>
                     </div>
@@ -690,7 +697,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                         2
                       </span>
                       <span>
-                        Bættu <strong>{formatDecimal(puzzle.correctBaseVolume)} mL</strong> af{' '}
+                        Bættu <strong>{formatDecimal(recipe.baseVolume, 2)} mL</strong> af{' '}
                         {formatDecimal(puzzle.stockBaseConc)} M {problem.baseName}
                       </span>
                     </div>

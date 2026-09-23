@@ -144,7 +144,9 @@ export default function FlaskComparison({
   const hasAddition = addedAcidMoles > 0 || addedBaseMoles > 0;
 
   return (
-    <div className="bg-warm-800/60 rounded-xl p-4">
+    // Opaque: at 60 % over the light page the panel came out mid-grey, and the warm-400 scale,
+    // legend and insight text on it fell to about 1,6 : 1 contrast.
+    <div className="bg-warm-800 rounded-xl p-4">
       <h4 className="text-sm font-bold text-warm-200 mb-3 text-center">
         Stuðpúðaður vs Óstuðpúðaður
       </h4>

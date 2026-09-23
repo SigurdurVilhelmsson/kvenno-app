@@ -111,8 +111,11 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
     setHintsUsedTotal((prev) => prev + 1);
   };
 
+  // A step fades out for 250 ms after it is answered and its button stays live
+  // meanwhile, so each check ignores a tap that arrives after its step is over.
   // Step 1: Check direction answer
   const checkDirection = () => {
+    if (step !== 'direction') return;
     const correct = getCorrectDirection();
     if (selectedDirection === correct) {
       setDirectionCorrect(true);
@@ -122,9 +125,9 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
       const correctDir = getCorrectDirection();
       setDirectionFeedback(
         selectedDirection === 'higher'
-          ? `Ekki rétt. Markmiðs-pH (${formatDecimal(problem.targetPH, 2)}) er ${correctDir === 'lower' ? 'minna' : 'jafnt'} pKa (${formatDecimal(problem.pKa, 2)}), þannig að svarið er ekki "hærra".`
+          ? `Ekki rétt. Markmiðs-pH (${formatDecimal(problem.targetPH, 2)}) er ${correctDir === 'lower' ? 'minna en' : 'jafnt'} pKa (${formatDecimal(problem.pKa, 2)}), þannig að svarið er ekki "hærra".`
           : selectedDirection === 'lower'
-            ? `Ekki rétt. Markmiðs-pH (${formatDecimal(problem.targetPH, 2)}) er ${correctDir === 'higher' ? 'stærra' : 'jafnt'} pKa (${formatDecimal(problem.pKa, 2)}), þannig að svarið er ekki "lægra".`
+            ? `Ekki rétt. Markmiðs-pH (${formatDecimal(problem.targetPH, 2)}) er ${correctDir === 'higher' ? 'stærra en' : 'jafnt'} pKa (${formatDecimal(problem.pKa, 2)}), þannig að svarið er ekki "lægra".`
             : `Ekki rétt. Markmiðs-pH (${formatDecimal(problem.targetPH, 2)}) er ${correctDir === 'higher' ? 'stærra en' : correctDir === 'lower' ? 'minna en' : 'jafnt'} pKa (${formatDecimal(problem.pKa, 2)}).`
       );
     }
@@ -132,6 +135,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
 
   // Step 2: Check ratio answer
   const checkRatio = () => {
+    if (step !== 'ratio') return;
     const userRatio = parseStudentNumber(ratioInput);
     if (isNaN(userRatio) || userRatio <= 0) {
       setRatioFeedback('Vinsamlegast sláðu inn jákvæða tölu.');
@@ -157,6 +161,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
 
   // Step 3: Check mass answers
   const checkMass = () => {
+    if (step !== 'mass') return;
     const userAcidMass = parseStudentNumber(acidMassInput);
     const userBaseMass = parseStudentNumber(baseMassInput);
 
@@ -194,6 +199,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
 
   // Next puzzle
   const nextPuzzle = () => {
+    if (step !== 'complete') return;
     setCompleted((prev) => prev + 1);
 
     if (currentIndex < LEVEL2_PUZZLES.length - 1) {
@@ -235,7 +241,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
             </button>
             <div className="flex items-center gap-4">
               <div className="text-sm text-warm-500">
-                {completed + 1} / {LEVEL2_PUZZLES.length}
+                {Math.min(completed + 1, LEVEL2_PUZZLES.length)} / {LEVEL2_PUZZLES.length}
               </div>
               <div className="text-lg font-bold text-kvenno-orange">Stig: {score}</div>
             </div>
@@ -274,7 +280,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
               <div className="text-lg font-bold text-warm-800">{formatDecimal(problem.pKa)}</div>
             </div>
             <div className="bg-warm-50 p-3 rounded-lg text-center">
-              <div className="text-xs text-warm-500">Markmið pH</div>
+              <div className="text-xs text-warm-500">Markmiðs-pH</div>
               <div className="text-lg font-bold text-kvenno-orange">
                 {formatDecimal(problem.targetPH)}
               </div>
@@ -496,7 +502,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                   inputMode="decimal"
                   value={ratioInput}
                   onChange={(e) => setRatioInput(e.target.value)}
-                  placeholder="t.d. 1.58"
+                  placeholder="0,00"
                   className="w-full p-3 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-none"
                 />
               </div>
@@ -533,7 +539,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                 <p className="text-sm text-green-800">
                   <strong>Útreikningur:</strong> Notaðu heildarstyrkinn (
                   {formatDecimal(problem.totalConcentration)} M) og rúmmálið (
-                  {formatDecimal(problem.volume)} L) til að finna heildar mól. Skiptu síðan á milli
+                  {formatDecimal(problem.volume)} L) til að finna heildarmól. Skiptu síðan á milli
                   sýru og basa samkvæmt hlutfallinu.
                 </p>
                 <p className="text-sm text-green-800 mt-1">massi = mól × mólmassi</p>
@@ -609,7 +615,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                       {formatDecimal(solution.ratio, 2)}
                     </li>
                     <li>
-                      • Heildar mól = {formatDecimal(problem.totalConcentration)} M ×{' '}
+                      • Heildarmól = {formatDecimal(problem.totalConcentration)} M ×{' '}
                       {formatDecimal(problem.volume)} L ={' '}
                       {formatDecimal(problem.totalConcentration * problem.volume, 4)} mol
                     </li>
