@@ -76,7 +76,12 @@ export interface EnhancedRenderingConfig {
 
 /** Container configuration */
 export interface ContainerConfig {
-  /** Width in pixels */
+  /**
+   * Width in pixels — the size the physics runs at. A container narrower than this shrinks the
+   * canvas by CSS with its aspect ratio kept, so it also gets shorter: a caller that wraps the
+   * simulation in a fixed-height box should pass the box's own inner size here (as
+   * gas-law-challenge's GasLawSimulator does), or the box shows an empty band under the canvas.
+   */
   width: number;
   /** Height in pixels */
   height: number;
@@ -177,6 +182,12 @@ export interface ParticleSimulationProps {
   onCollisionCount?: (count: number) => void;
   /** Show particle labels */
   showLabels?: boolean;
+  /**
+   * Show the built-in legend (one entry per particle type, with its live count) under the canvas
+   * when there is more than one type. Default true. Turn it off where the caller draws its own
+   * legend, so the page does not carry two.
+   */
+  showLegend?: boolean;
   /** Show velocity vectors */
   showVelocityVectors?: boolean;
   /** Enhanced visual rendering (gradients, trails, glow, collision flash) */

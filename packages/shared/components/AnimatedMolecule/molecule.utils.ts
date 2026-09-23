@@ -306,6 +306,12 @@ export function isPointInBounds(
 
 /**
  * Calculate positions for organic chain layout (linear carbon chain)
+ *
+ * Atoms that carry explicit positions are drawn where the data puts them, centred in the
+ * drawing. Only a molecule with no positions at all gets the straight-chain layout below: it
+ * lines up every carbon it finds, so a branch carbon would be drawn as one more link in the
+ * chain — 2-metýlprópan came out looking exactly like bútan.
+ *
  * @param carbonCount - Number of carbons in the chain
  * @param width - Container width
  * @param height - Container height
@@ -318,6 +324,14 @@ export function calculateOrganicChainPositions(
   height: number,
   atomRadius: number
 ): Map<string, Position2D> {
+  if (molecule.atoms.some((a) => a.position)) {
+    return centreInDrawing(
+      calculateAtomPositions(molecule, width, height, atomRadius),
+      width,
+      height
+    );
+  }
+
   const positions = new Map<string, Position2D>();
   const centerY = height / 2;
 
@@ -370,6 +384,66 @@ export function calculateOrganicChainPositions(
   }
 
   return positions;
+}
+
+/**
+ * Shift a layout so its bounding box sits in the middle of the drawing. Explicit organic
+ * positions put the main chain low so branches have room above it; an unbranched chain would
+ * otherwise sit below the middle with an empty band over it.
+ */
+function centreInDrawing(
+  positions: Map<string, Position2D>,
+  width: number,
+  height: number
+): Map<string, Position2D> {
+  if (positions.size === 0) return positions;
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
+  for (const p of positions.values()) {
+    minX = Math.min(minX, p.x);
+    maxX = Math.max(maxX, p.x);
+    minY = Math.min(minY, p.y);
+    maxY = Math.max(maxY, p.y);
+  }
+  const dx = width / 2 - (minX + maxX) / 2;
+  const dy = height / 2 - (minY + maxY) / 2;
+  const centred = new Map<string, Position2D>();
+  for (const [id, p] of positions) centred.set(id, { x: p.x + dx, y: p.y + dy });
+  return centred;
+}
+
+/**
+ * Share of each bond's length the two atom circles may cover between them, so every bond keeps a
+ * visible stretch of line. Organic chains show where a double or triple bond sits by the colour of
+ * that line; a chain drawn as touching circles has no line to colour.
+ */
+const ORGANIC_BOND_COVER = 0.62;
+
+/**
+ * The atom radius to draw an organic molecule with: the size's own radius, reduced only as far as
+ * the shortest bond needs. A hexane chain at size `lg` spaces its carbons 34 px apart while each
+ * circle is 52 px across, so the circles would overlap and hide every bond.
+ */
+export function fitOrganicAtomRadius(
+  molecule: Molecule,
+  positions: Map<string, Position2D>,
+  atomRadius: number
+): number {
+  let radius = atomRadius;
+  const symbolOf = new Map(molecule.atoms.map((a) => [a.id, a.symbol]));
+  for (const bond of molecule.bonds) {
+    const from = positions.get(bond.from);
+    const to = positions.get(bond.to);
+    if (!from || !to) continue;
+    const length = Math.hypot(to.x - from.x, to.y - from.y);
+    const scale =
+      getElementVisual(symbolOf.get(bond.from) ?? '').radius +
+      getElementVisual(symbolOf.get(bond.to) ?? '').radius;
+    if (length > 0 && scale > 0) radius = Math.min(radius, (ORGANIC_BOND_COVER * length) / scale);
+  }
+  return radius;
 }
 
 /**

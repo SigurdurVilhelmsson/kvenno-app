@@ -54,6 +54,7 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
   onFrame,
   onCollisionCount,
   showLabels = false,
+  showLegend = true,
   showVelocityVectors = false,
   enhancedRendering,
   ariaLabel = 'Particle simulation',
@@ -85,6 +86,7 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
   const borderColor = container.borderColor || getBorderColorFromPressure(container.pressure);
   const borderWidth = container.borderWidth || getBorderWidthFromPressure(container.pressure);
   const backgroundColor = container.backgroundColor || '#1e293b';
+  const legendInk = legendTextColor(backgroundColor);
 
   // Create particle type lookup
   const typeMap = useMemo(() => {
@@ -638,16 +640,24 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
         role="img"
         aria-label={ariaLabel}
       />
-      {/* Legend */}
-      {particleTypes.length > 1 && (
+      {/* Legend. It sits outside the canvas, on whatever the caller's background is, so each
+          entry carries the simulation's own background and a text colour chosen against it.
+          Its text used to be a fixed near-white (text-gray-100), which vanished on a light card.
+          Horizontal padding only: callers size overlays against this block's height. */}
+      {showLegend && particleTypes.length > 1 && (
         <div className="flex flex-wrap gap-3 mt-2">
           {particleTypes.map((type) => (
-            <div key={type.id} className="flex items-center gap-1.5 text-xs">
+            <div
+              key={type.id}
+              data-testid="particle-legend-entry"
+              className="flex items-center gap-1.5 text-xs rounded px-1.5"
+              style={{ backgroundColor, color: legendInk }}
+            >
               <div
                 className="w-3 h-3 rounded-full border border-white/20"
                 style={{ backgroundColor: type.color }}
               />
-              <span className="text-gray-100 font-medium">
+              <span className="font-medium">
                 {type.label || type.id}: {particleCounts[type.id] || 0}
               </span>
             </div>
@@ -659,6 +669,31 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
 };
 
 // Helper functions
+
+/**
+ * Legend text colour for a given background: near-white on a dark one, near-black on a light
+ * one. Colours it cannot parse are treated as dark, the component's default background.
+ */
+export function legendTextColor(background: string): string {
+  const hex = background.trim().match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  const rgb = background.match(/^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/i);
+  let channels: number[] | null = null;
+  if (hex) {
+    const h = hex[1].length === 3 ? [...hex[1]].map((c) => c + c).join('') : hex[1];
+    channels = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
+  } else if (rgb) {
+    channels = [rgb[1], rgb[2], rgb[3]].map(Number);
+  }
+  if (!channels) return '#f3f4f6';
+  const [r, g, b] = channels.map((c) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  });
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  // Whichever of the two reads better: white text wins below ~0.18 luminance.
+  return luminance > 0.18 ? '#1f2937' : '#f3f4f6';
+}
+
 function getBorderColorFromPressure(pressure?: 'low' | 'normal' | 'high'): string {
   switch (pressure) {
     case 'low':

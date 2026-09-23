@@ -52,8 +52,9 @@ function DefaultLoadingPlaceholder({
     >
       <div className="text-center">
         <div className="animate-spin w-6 h-6 border-2 border-gray-300 border-t-blue-500 rounded-full mx-auto mb-2" />
-        {/* "Sæki", not "Hleð" — in these games "hleðsla" is electric charge. */}
-        <span>Sæki þrívíddarsýn…</span>
+        {/* "Sæki", not "Hleð" — in these games "hleðsla" is electric charge. One line: it is
+            short enough for any phone, and it used to break after "Sæki" even on desktop. */}
+        <span className="whitespace-nowrap">Sæki þrívíddarsýn…</span>
       </div>
     </div>
   );

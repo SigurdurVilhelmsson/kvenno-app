@@ -1,5 +1,12 @@
 import React, { useRef, useEffect, useCallback, useState, useMemo } from 'react';
 
+import {
+  chooseLabelSpot,
+  readableInk,
+  textBox,
+  type LabelBox,
+  type LabelSpot,
+} from './labelLayout';
 import type { InteractiveGraphProps, DataPoint, DataSeries, Margin } from './types';
 import { formatDecimal } from '../../utils/numbers';
 import { canvasPixelRatio, useContainerWidth } from '../ResponsiveContainer/ResponsiveContainer';
@@ -19,6 +26,33 @@ const COMPACT_WIDTH = 420;
 /** How close (CSS px) a pointer must be to a data point to pick it: a fingertip is not a cursor. */
 const HOVER_RADIUS_MOUSE = 20;
 const HOVER_RADIUS_TOUCH = 32;
+/** Region, reference-line and marker labels. */
+const LABEL_FONT = 'bold 11px sans-serif';
+const LABEL_PX = 11;
+
+/** A label waiting for the placement pass: its text, ink, candidate spots and allowed area. */
+interface PendingLabel {
+  text: string;
+  ink: string;
+  spots: (textWidth: number) => LabelSpot[];
+  bounds: LabelBox;
+}
+
+/**
+ * Write a label on a white halo, so the grid, a reference line or the curve passing behind it
+ * cannot strike through it.
+ */
+function drawLabel(ctx: CanvasRenderingContext2D, text: string, spot: LabelSpot, ink: string) {
+  ctx.save();
+  ctx.font = LABEL_FONT;
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+  ctx.lineWidth = 3;
+  ctx.lineJoin = 'round';
+  ctx.strokeText(text, spot.x, spot.baseline);
+  ctx.fillStyle = ink;
+  ctx.fillText(text, spot.x, spot.baseline);
+  ctx.restore();
+}
 
 /**
  * Draw every n-th tick label so neighbours never overlap when a narrow graph packs the ticks
@@ -197,6 +231,17 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
     ctx.fillStyle = backgroundColor;
     ctx.fillRect(0, 0, width, height);
 
+    // Labels are collected as their elements are drawn and placed together at the end, on top
+    // of everything and clear of each other (see labelLayout.ts). In placement order:
+    const regionLabels: PendingLabel[] = [];
+    const lineLabels: PendingLabel[] = [];
+    const markerLabels: PendingLabel[] = [];
+    // Marker glyphs and the current point, which no label may cover.
+    const obstacles: LabelBox[] = [];
+    // Reference lines, which region and marker labels keep off rather than sit across: a
+    // marker on the pH 7 line used to have its label struck through by it.
+    const lineBands: LabelBox[] = [];
+
     // Draw regions (background shading)
     regions.forEach((region) => {
       const xStart = region.xMin !== undefined ? toScreenX(region.xMin) : margin.left;
@@ -207,17 +252,35 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
       ctx.fillStyle = region.color;
       ctx.fillRect(xStart, yTop, xEnd - xStart, yBottom - yTop);
 
-      // Region label
+      // Region label: its requested side first, then the other two, moving up or down inside
+      // the region before moving across it.
       if (region.label) {
-        ctx.fillStyle = region.color.replace(/[\d.]+\)$/, '1)'); // Make label opaque
-        ctx.font = 'bold 11px sans-serif';
-        const labelX =
-          region.labelPosition === 'left'
-            ? xStart + 5
-            : region.labelPosition === 'right'
-              ? xEnd - ctx.measureText(region.label).width - 5
-              : (xStart + xEnd) / 2 - ctx.measureText(region.label).width / 2;
-        ctx.fillText(region.label, labelX, (yTop + yBottom) / 2);
+        const preferred = region.labelPosition ?? 'center';
+        const sides = [
+          preferred,
+          ...(['left', 'center', 'right'] as const).filter((p) => p !== preferred),
+        ];
+        const middle = (yTop + yBottom) / 2;
+        regionLabels.push({
+          text: region.label,
+          ink: readableInk(region.color),
+          bounds: {
+            left: Math.max(xStart, margin.left),
+            top: Math.max(yTop, 2),
+            right: Math.min(xEnd, width - margin.right),
+            bottom: Math.min(yBottom, height - margin.bottom),
+          },
+          spots: (w) =>
+            sides.flatMap((side) => {
+              const x =
+                side === 'left'
+                  ? xStart + 5
+                  : side === 'right'
+                    ? xEnd - w - 5
+                    : (xStart + xEnd) / 2 - w / 2;
+              return [0, -14, 14, -28, 28].map((dy) => ({ x, baseline: middle + dy }));
+            }),
+        });
       }
     });
 
@@ -261,16 +324,35 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
       ctx.lineTo(width - margin.right, screenY);
       ctx.stroke();
       ctx.setLineDash([]);
+      const halfStroke = (line.lineWidth || 2) / 2 + 1;
+      lineBands.push({
+        left: margin.left,
+        right: width - margin.right,
+        top: screenY - halfStroke,
+        bottom: screenY + halfStroke,
+      });
 
-      // Label
+      // Label: above the line at its requested end, else below it, else at the other end.
       if (line.label) {
-        ctx.fillStyle = line.color;
-        ctx.font = 'bold 11px sans-serif';
-        const labelX =
-          line.labelPosition === 'left'
-            ? margin.left + 5
-            : width - margin.right - ctx.measureText(line.label).width - 5;
-        ctx.fillText(line.label, labelX, screenY - 5);
+        const ends = line.labelPosition === 'left' ? ['left', 'right'] : ['right', 'left'];
+        lineLabels.push({
+          text: line.label,
+          ink: readableInk(line.color),
+          bounds: {
+            left: margin.left,
+            top: 2,
+            right: width - margin.right,
+            bottom: height - margin.bottom,
+          },
+          spots: (w) =>
+            ends.flatMap((end) => {
+              const x = end === 'left' ? margin.left + 5 : width - margin.right - w - 5;
+              return [
+                { x, baseline: screenY - 5 },
+                { x, baseline: screenY + 5 + LABEL_PX * 0.8 },
+              ];
+            }),
+        });
       }
     });
 
@@ -288,16 +370,45 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
       ctx.lineTo(screenX, height - margin.bottom);
       ctx.stroke();
       ctx.setLineDash([]);
+      const halfStroke = (line.lineWidth || 2) / 2 + 1;
+      lineBands.push({
+        left: screenX - halfStroke,
+        right: screenX + halfStroke,
+        top: margin.top,
+        bottom: height - margin.bottom,
+      });
 
-      // Label
+      // Label: centred on the line at its requested end, else at the other end, else beside
+      // the line, else moved inward along it.
       if (line.label) {
-        ctx.fillStyle = line.color;
-        ctx.font = 'bold 11px sans-serif';
-        const labelY = line.labelPosition === 'top' ? margin.top + 15 : height - margin.bottom - 5;
-        const labelWidth = ctx.measureText(line.label).width;
-        // Kept inside the canvas: near an edge of a narrow graph a centred label is cut off.
-        const labelX = Math.min(Math.max(screenX - labelWidth / 2, 2), width - labelWidth - 2);
-        ctx.fillText(line.label, labelX, labelY);
+        const topY = margin.top + 15;
+        const bottomY = height - margin.bottom - 5;
+        const [endY, otherY, inward] =
+          line.labelPosition === 'top' ? [topY, bottomY, 1] : [bottomY, topY, -1];
+        lineLabels.push({
+          text: line.label,
+          ink: readableInk(line.color),
+          // Right of the y axis: a line near the left edge used to push its label out over the
+          // axis and the lowest tick value ("T_cross = 273 K" across "-500").
+          bounds: {
+            left: margin.left + 2,
+            top: 2,
+            right: width - 2,
+            bottom: height - margin.bottom,
+          },
+          spots: (w) => {
+            // Kept inside the canvas: near an edge of a narrow graph a centred label is cut off.
+            const centred = Math.min(Math.max(screenX - w / 2, margin.left + 2), width - w - 2);
+            return [
+              { x: centred, baseline: endY },
+              { x: centred, baseline: otherY },
+              { x: screenX + 4, baseline: endY },
+              { x: screenX - 4 - w, baseline: endY },
+              { x: centred, baseline: endY + inward * 14 },
+              { x: centred, baseline: endY + inward * 28 },
+            ];
+          },
+        });
       }
     });
 
@@ -509,11 +620,25 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
         ctx.setLineDash([]);
       }
 
-      // Marker point or icon
+      // Marker point or icon. An icon is centred on its point: it used to be drawn from one
+      // radius left of it on the text baseline, which set a star up and to the right of the
+      // curve it marks and under the start of its own label.
+      let glyph: LabelBox;
       if (marker.icon) {
+        ctx.save();
         ctx.fillStyle = marker.color;
         ctx.font = `bold ${radius * 3}px sans-serif`;
-        ctx.fillText(marker.icon, screenX - radius, screenY + radius / 2);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(marker.icon, screenX, screenY);
+        const half = Math.max(ctx.measureText(marker.icon).width / 2, radius);
+        ctx.restore();
+        glyph = {
+          left: screenX - half,
+          right: screenX + half,
+          top: screenY - radius * 1.4,
+          bottom: screenY + radius * 1.4,
+        };
       } else {
         ctx.fillStyle = marker.color;
         ctx.beginPath();
@@ -522,34 +647,48 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
         ctx.strokeStyle = '#fff';
         ctx.lineWidth = 2;
         ctx.stroke();
+        glyph = {
+          left: screenX - radius,
+          right: screenX + radius,
+          top: screenY - radius,
+          bottom: screenY + radius,
+        };
       }
+      obstacles.push(glyph);
 
-      // Label — to the right of the marker; where a narrow graph would cut that off, to its
-      // left if that stays clear of the y axis, and otherwise centred above it on a white halo.
+      // Label — to the right of the marker, else its left, above, below, the four corners, and
+      // further above or below; whichever first clears the y axis, the canvas edge, and every
+      // label and marker already there.
       if (marker.label) {
-        ctx.fillStyle = marker.color;
-        ctx.font = 'bold 11px sans-serif';
-        const labelWidth = ctx.measureText(marker.label).width;
-        const rightX = screenX + radius + 5;
-        const leftX = screenX - radius - 5 - labelWidth;
-        if (rightX + labelWidth <= width - 2) {
-          ctx.fillText(marker.label, rightX, screenY + 4);
-        } else if (leftX >= margin.left + 2) {
-          ctx.fillText(marker.label, leftX, screenY + 4);
-        } else {
-          const aboveX = Math.min(
-            Math.max(screenX - labelWidth / 2, margin.left + 2),
-            width - labelWidth - 2
-          );
-          const aboveY = Math.max(screenY - radius - 6, margin.top + 10);
-          ctx.save();
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
-          ctx.lineWidth = 3;
-          ctx.lineJoin = 'round';
-          ctx.strokeText(marker.label, aboveX, aboveY);
-          ctx.restore();
-          ctx.fillText(marker.label, aboveX, aboveY);
-        }
+        markerLabels.push({
+          text: marker.label,
+          ink: readableInk(marker.color),
+          bounds: {
+            left: margin.left + 2,
+            top: 2,
+            right: width - 2,
+            bottom: height - margin.bottom - 2,
+          },
+          spots: (w) => {
+            const centred = Math.min(Math.max(screenX - w / 2, margin.left + 2), width - w - 2);
+            const above = glyph.top - 6;
+            const below = glyph.bottom + 4 + LABEL_PX * 0.8;
+            return [
+              { x: glyph.right + 5, baseline: screenY + 4 },
+              { x: glyph.left - 5 - w, baseline: screenY + 4 },
+              { x: centred, baseline: above },
+              { x: centred, baseline: below },
+              { x: glyph.right + 3, baseline: glyph.top - 3 },
+              { x: glyph.left - 3 - w, baseline: glyph.top - 3 },
+              { x: glyph.right + 3, baseline: glyph.bottom + 3 + LABEL_PX * 0.8 },
+              { x: glyph.left - 3 - w, baseline: glyph.bottom + 3 + LABEL_PX * 0.8 },
+              ...[1, 2, 3].flatMap((k) => [
+                { x: centred, baseline: above - 14 * k },
+                { x: centred, baseline: below + 14 * k },
+              ]),
+            ];
+          },
+        });
       }
     });
 
@@ -565,7 +704,34 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
       ctx.strokeStyle = '#fff';
       ctx.lineWidth = 2;
       ctx.stroke();
+      obstacles.push({
+        left: screenX - 9,
+        right: screenX + 9,
+        top: screenY - 9,
+        bottom: screenY + 9,
+      });
     }
+
+    // Place and write every label, on top of the lines and points and clear of each other.
+    ctx.font = LABEL_FONT;
+    const taken = [...obstacles];
+    const place = (label: PendingLabel, avoidLines: boolean) => {
+      const textWidth = ctx.measureText(label.text).width;
+      const avoid = avoidLines ? [...taken, ...lineBands] : taken;
+      const spot = chooseLabelSpot(
+        label.spots(textWidth),
+        textWidth,
+        LABEL_PX,
+        avoid,
+        label.bounds
+      );
+      taken.push(textBox(spot, textWidth, LABEL_PX));
+      drawLabel(ctx, label.text, spot, label.ink);
+    };
+    regionLabels.forEach((label) => place(label, true));
+    // A line's own label sits against it by design, and a vertical line's is centred on it.
+    lineLabels.forEach((label) => place(label, false));
+    markerLabels.forEach((label) => place(label, true));
 
     // Draw hovered point tooltip
     if (hoveredPoint) {

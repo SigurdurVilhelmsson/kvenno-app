@@ -384,10 +384,13 @@ function MoleculeScene({
  * Loading fallback component
  */
 // Same wording as MoleculeViewer3DLazy's placeholder ("Sæki", not "Hleð" — see there).
-function LoadingFallback({ text = 'Sæki þrívíddarsýn…' }: { text?: string }) {
+// Exported for its test only; the barrel still does not re-export this module.
+export function LoadingFallback({ text = 'Sæki þrívíddarsýn…' }: { text?: string }) {
   return (
     <Html center>
-      <div className="text-gray-500 text-sm">{text}</div>
+      {/* drei's Html gives its box no width, so without nowrap the text broke at every space
+          and sat left-aligned on two lines. */}
+      <div className="text-gray-500 text-sm whitespace-nowrap text-center">{text}</div>
     </Html>
   );
 }
