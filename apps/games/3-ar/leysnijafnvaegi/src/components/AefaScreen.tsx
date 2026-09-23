@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 
 import { BackButton } from './BackButton';
 import { Sci } from './Sci';
@@ -24,9 +24,13 @@ import { revealBottom, useRevealTopOnChange } from '../utils/reveal';
  * itself advertised grade as its mantissa, the plain-decimal form grade as 0,
  * and an Icelandic comma grade as 1.
  *
- * Two fields also buy the diagnosis. "Right digits, wrong power of ten" is the
- * commonest real mistake in this topic — it is what forgetting the 4 in 4s³
- * looks like — and a merged box could only say "wrong".
+ * Two fields also let the feedback say which half is wrong: "right digits,
+ * wrong power of ten" is a different mistake from "wrong digits", and a merged
+ * box could only say "wrong". It is **not** what forgetting the 4 in 4s³ looks
+ * like, nor taking a square root for a cube root: both change the digits, so on
+ * this pool they grade as `tolustafir` or `baedi` and never as `veldisvisir`.
+ * The `veldisvisir` message used to name those two causes, which was false
+ * every time it was shown; a test now holds it to naming only what it can see.
  *
  * Both fields use `DECIMAL_INPUT_PROPS` (in `ScientificInput`, which also
  * carries the `±` key an iPhone's decimal keypad lacks). The exponent is an
@@ -49,13 +53,22 @@ interface Props {
 const ORDER = { ledd: 0, mid: 1, thung: 2 } as const;
 const RUN = [...SOLUBILITY_PROBLEMS].sort((a, b) => ORDER[a.difficulty] - ORDER[b.difficulty]);
 
+/**
+ * The example shown in the empty fields and in the fill-in-both message.
+ *
+ * It must not be an answer. It used to be 1,34 and −5, which is AgCl's molar
+ * solubility, 1,34 × 10⁻⁵ M — and AgCl is the first problem the phase serves,
+ * so the answer to it sat in the field before the student typed anything. A
+ * test holds this example against every problem's answer.
+ */
+const EXAMPLE = { mantissa: '2,5', exponent: '-7' } as const;
+
 const MESSAGE: Record<GradeOutcome, string> = {
   rett: 'Rétt.',
-  veldisvisir:
-    'Tölustafirnir eru réttir en veldisvísirinn ekki. Skoðaðu hvort þú hafir gleymt stuðlinum — 4s³ er ekki s³ — eða tekið ranga rót.',
+  veldisvisir: 'Tölustafirnir eru réttir en veldisvísirinn ekki.',
   tolustafir: 'Rétt stærðarþrep, en tölurnar stemma ekki. Reiknaðu aftur.',
   baedi: 'Hvorki tölustafirnir né veldisvísirinn stemma.',
-  ogilt: 'Fylltu í báða reitina — tölu og veldisvísi, t.d. 1,34 og −5.',
+  ogilt: `Fylltu í báða reitina — tölu og veldisvísi, t.d. ${EXAMPLE.mantissa} og ${EXAMPLE.exponent.replace('-', '−')}.`,
 };
 
 export function AefaScreen({ onComplete, onBack }: Props) {
@@ -64,6 +77,10 @@ export function AefaScreen({ onComplete, onBack }: Props) {
   const [exponent, setExponent] = useState('');
   const [outcome, setOutcome] = useState<GradeOutcome | null>(null);
   const [solved, setSolved] = useState(0);
+  // An empty or unreadable entry is not an attempt: the fields stay open and
+  // the answer stays hidden, so the student can do what the message asks.
+  const [invalid, setInvalid] = useState(false);
+  const answerLabelId = useId();
   const cardRef = useRef<HTMLDivElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
 
@@ -78,9 +95,18 @@ export function AefaScreen({ onComplete, onBack }: Props) {
   const problem = RUN[index];
   const salt = useMemo(() => saltBy(problem.formula), [problem.formula]);
   const pure = molarSolubility(salt);
+  // The pool's names are capitalised because Kanna shows them as labels; here
+  // one sits mid-sentence, where an Icelandic common noun is lower case.
+  // Only the first letter moves, so a Roman numeral such as (II) keeps its case.
+  const inSentence = salt.name.charAt(0).toLocaleLowerCase('is') + salt.name.slice(1);
 
   const check = () => {
     const result = gradeScientific({ mantissa, exponent }, problem.answer);
+    if (result.outcome === 'ogilt') {
+      setInvalid(true);
+      return;
+    }
+    setInvalid(false);
     setOutcome(result.outcome);
     if (result.outcome === 'rett') setSolved(solved + 1);
   };
@@ -94,6 +120,7 @@ export function AefaScreen({ onComplete, onBack }: Props) {
     setMantissa('');
     setExponent('');
     setOutcome(null);
+    setInvalid(false);
   };
 
   const asksForSolubility = problem.direction === 'kspToS';
@@ -117,12 +144,12 @@ export function AefaScreen({ onComplete, onBack }: Props) {
             {asksForSolubility ? (
               <>
                 Hver er mólarleysni <span className="font-mono font-semibold">{salt.formula}</span>{' '}
-                ({salt.name}) í hreinu vatni við <span className="whitespace-nowrap">25 °C</span>?
+                ({inSentence}) í hreinu vatni við <span className="whitespace-nowrap">25 °C</span>?
               </>
             ) : (
               <>
                 Mólarleysni <span className="font-mono font-semibold">{salt.formula}</span> (
-                {salt.name}) mælist <Sci value={pure} figures={3} unit="M" /> við{' '}
+                {inSentence}) mælist <Sci value={pure} figures={3} unit="M" /> við{' '}
                 <span className="whitespace-nowrap">25 °C</span>. Hvert er Ksp?
               </>
             )}
@@ -138,17 +165,19 @@ export function AefaScreen({ onComplete, onBack }: Props) {
           </dl>
         </div>
 
-        <div className="mb-4">
-          <label className="mb-2 block text-sm font-semibold text-warm-700">
+        {/* The two fields are named Tala and Veldisvísir; the group carries the
+            heading, unit included, so it is read out with them. */}
+        <div className="mb-4" role="group" aria-labelledby={answerLabelId}>
+          <p id={answerLabelId} className="mb-2 block text-sm font-semibold text-warm-700">
             Svar {asksForSolubility ? '(M)' : ''}
-          </label>
+          </p>
           <ScientificInput
             mantissa={mantissa}
             exponent={exponent}
             onMantissaChange={setMantissa}
             onExponentChange={setExponent}
-            mantissaPlaceholder="1,34"
-            exponentPlaceholder="-5"
+            mantissaPlaceholder={EXAMPLE.mantissa}
+            exponentPlaceholder={EXAMPLE.exponent}
             disabled={outcome !== null}
           />
           <p className="mt-2 text-xs text-warm-500">
@@ -157,13 +186,20 @@ export function AefaScreen({ onComplete, onBack }: Props) {
         </div>
 
         {outcome === null ? (
-          <button
-            type="button"
-            onClick={check}
-            className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark"
-          >
-            Athuga
-          </button>
+          <>
+            {invalid && (
+              <p role="alert" className="mb-3 text-sm font-semibold text-amber-800">
+                {MESSAGE.ogilt}
+              </p>
+            )}
+            <button
+              type="button"
+              onClick={check}
+              className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark"
+            >
+              Athuga
+            </button>
+          </>
         ) : (
           <div
             ref={feedbackRef}

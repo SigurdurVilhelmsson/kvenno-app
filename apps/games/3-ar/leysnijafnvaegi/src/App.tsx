@@ -175,11 +175,10 @@ function App() {
               <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4">
                 <h3 className="mb-2 font-semibold text-amber-800">Af hverju leysnijafnvægi?</h3>
                 <p className="text-sm text-amber-700">
-                  Baríumsúlfat er eitrað efni sem sjúklingur drekkur viljandi fyrir
-                  röntgenmyndatöku, og Ksp er nákvæmlega ástæðan fyrir því að það er óhætt.
-                  Nýrnasteinar eru kalsíumoxalat sem fór yfir mörkin. Kalkið í katlinum,
-                  þungmálmahreinsun í skólpi, og af hverju tannkrem með flúor virkar — allt sama
-                  jafnan.
+                  Sjúklingur drekkur baríumsúlfat viljandi fyrir röntgenmyndatöku þótt baríumjónir
+                  séu eitraðar, og Ksp er nákvæmlega ástæðan fyrir því að það er óhætt. Nýrnasteinar
+                  eru kalsíumoxalat sem fór yfir mörkin. Kalkið í katlinum, þungmálmahreinsun í
+                  skólpi, og af hverju tannkrem með flúor virkar — allt sama jafnan.
                 </p>
               </div>
 

@@ -166,7 +166,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
           </p>
           <p className="mt-2 text-sm text-warm-700">
             Þetta er Le Chatelier séð frá hinni hliðinni, og þú hefur reiknað sams konar dæmi í
-            Jafnvægi.
+            Hliðrun jafnvægis.
           </p>
         </details>
       </div>

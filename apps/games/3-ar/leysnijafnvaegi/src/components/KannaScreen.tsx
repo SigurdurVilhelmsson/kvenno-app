@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 import { BackButton } from './BackButton';
 import { Sci } from './Sci';
 import { SALTS, SALT_NOTES } from '../data/salts';
@@ -28,6 +30,17 @@ interface Props {
 
 const STEPS = [0, 0.0001, 0.001, 0.01, 0.05, 0.1];
 
+// The bar's log scale, taken from every solubility the screen can draw: each
+// salt in pure water and at each slider step. A fixed floor used to sit at
+// 10⁻⁹ M, and the slider takes AgI, AgBr, FeCO₃ and Mn(OH)₂ below it — so the
+// most suppressed cases, the ones the phase exists to show, drew an empty
+// bar, which reads as a solubility of zero.
+const LOG_SOLUBILITIES = SALTS.flatMap((s) =>
+  STEPS.map((c) => Math.log10(solubilityWithCommonIon(s, 'anion', c).exact))
+);
+const LOG_LO = Math.floor(Math.min(...LOG_SOLUBILITIES));
+const LOG_HI = Math.ceil(Math.max(...LOG_SOLUBILITIES));
+
 export function KannaScreen({ onComplete, onBack }: Props) {
   const [formula, setFormula] = useState('AgCl');
   const [stepIndex, setStepIndex] = useState(0);
@@ -40,13 +53,11 @@ export function KannaScreen({ onComplete, onBack }: Props) {
   const { exact } = solubilityWithCommonIon(salt, 'anion', concentration);
   const suppression = pure / exact;
 
-  // A log bar: solubilities here span 10⁻⁵ to 10⁻², so a linear bar would show
-  // one filled cell and eleven empty ones.
+  // A log bar: solubilities here span more than twelve powers of ten, so a
+  // linear bar would show one filled cell and the rest empty.
   const barWidth = (value: number) => {
-    const lo = -9;
-    const hi = -1;
-    const clamped = Math.min(Math.max(Math.log10(value), lo), hi);
-    return `${((clamped - lo) / (hi - lo)) * 100}%`;
+    const clamped = Math.min(Math.max(Math.log10(value), LOG_LO), LOG_HI);
+    return `${((clamped - LOG_LO) / (LOG_HI - LOG_LO)) * 100}%`;
   };
 
   return (
@@ -123,6 +134,7 @@ export function KannaScreen({ onComplete, onBack }: Props) {
             step={1}
             value={stepIndex}
             aria-label={`Styrkur af ${salt.anion}`}
+            aria-valuetext={`${formatDecimal(concentration)} M`}
             onChange={(e) => {
               setStepIndex(Number(e.target.value));
               setMoved(true);
@@ -131,7 +143,7 @@ export function KannaScreen({ onComplete, onBack }: Props) {
           />
           <div className="mb-4 flex justify-between font-mono text-xs text-sky-700">
             {STEPS.map((s) => (
-              <span key={s}>{s === 0 ? '0' : s}</span>
+              <span key={s}>{formatDecimal(s)}</span>
             ))}
           </div>
 
@@ -143,7 +155,11 @@ export function KannaScreen({ onComplete, onBack }: Props) {
               tone="bg-sky-400"
             />
             <Bar
-              label={concentration === 0 ? 'Sami mælikvarði' : `Í ${concentration} M ${salt.anion}`}
+              label={
+                concentration === 0
+                  ? 'Sami mælikvarði'
+                  : `Í ${formatDecimal(concentration)} M ${salt.anion}`
+              }
               width={barWidth(exact)}
               value={formatScientific(exact, 3)}
               tone="bg-orange-400"
@@ -153,7 +169,7 @@ export function KannaScreen({ onComplete, onBack }: Props) {
           {concentration > 0 && (
             <p className="mt-4 rounded-lg bg-white/70 p-3 text-sm text-sky-900">
               <strong>
-                {suppression < 10 ? suppression.toFixed(1) : Math.round(suppression)}-falt
+                {suppression < 10 ? formatDecimal(suppression, 1) : Math.round(suppression)}-falt
               </strong>{' '}
               minni leysni en í hreinu vatni. Þetta heita <strong>samjónahrif</strong>, og skýringin
               kemur í næsta áfanga.

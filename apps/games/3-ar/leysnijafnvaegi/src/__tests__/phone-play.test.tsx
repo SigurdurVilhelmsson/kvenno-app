@@ -37,6 +37,12 @@ function powerOf(value: number): number {
   return Math.floor(Math.log10(value));
 }
 
+/** Type an answer the grader can read and that is wrong for every problem. */
+function answerWrongly() {
+  fireEvent.change(screen.getByLabelText('Tala'), { target: { value: '9,9' } });
+  fireEvent.change(screen.getByLabelText('Veldisvísir'), { target: { value: '-30' } });
+}
+
 /** A `DOMRect` with only the edges these helpers read. */
 function rect(top: number, bottom: number): DOMRect {
   return { top, bottom, left: 0, right: 100, width: 100, height: bottom - top } as DOMRect;
@@ -101,6 +107,9 @@ describe('an Æfa answer can be entered without a minus key', () => {
 
   it('is locked with the fields once the answer has been checked', () => {
     render(<AefaScreen onComplete={() => {}} onBack={() => {}} />);
+    // A readable answer, so the check counts as an attempt; an empty one
+    // leaves the fields open.
+    answerWrongly();
     fireEvent.click(screen.getByText('Athuga'));
     expect(screen.getByRole('button', { name: SIGN }).hasAttribute('disabled')).toBe(true);
   });
@@ -189,6 +198,7 @@ describe('what the student sees after a tap', () => {
 
   it('the next Æfa problem opens at its start, not where "Næsta dæmi" was', () => {
     render(<AefaScreen onComplete={() => {}} onBack={() => {}} />);
+    answerWrongly();
     fireEvent.click(screen.getByText('Athuga'));
     const scroll = vi.spyOn(window, 'scrollBy').mockImplementation(() => {});
     // The card's top is scrolled far above the viewport by now.

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type Ref } from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 import { BackButton } from './BackButton';
 import { Sci } from './Sci';
 import { FRACTIONAL_PROBLEMS, MIXING_PROBLEMS } from '../data/problems';
@@ -179,7 +181,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                   </div>
                   <div>
                     Q / Ksp ={' '}
-                    {mixing.ratio < 10 ? mixing.ratio.toFixed(2) : Math.round(mixing.ratio)}
+                    {mixing.ratio < 10 ? formatDecimal(mixing.ratio, 2) : Math.round(mixing.ratio)}
                   </div>
                 </dl>
                 <p className="text-sm text-warm-700">{mixing.context}</p>
@@ -288,6 +290,9 @@ function Feedback({
         wrong ? 'border-amber-300 bg-amber-50' : 'border-green-300 bg-green-50'
       }`}
     >
+      {/* Said in words as well as by the panel's colour, which is all a
+          colour-blind student or a screen reader would otherwise have. */}
+      <p className="mb-2 font-semibold text-warm-900">{wrong ? 'Ekki rétt.' : 'Rétt.'}</p>
       {children}
       <button
         type="button"

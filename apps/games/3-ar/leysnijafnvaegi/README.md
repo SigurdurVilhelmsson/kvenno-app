@@ -1,6 +1,6 @@
 # Leysnijafnvægi
 
-**Status: complete and registered.** Four phases, 50 tests of its own, in `build-games.mjs`, on the
+**Status: complete and registered.** Four phases, 69 tests of its own, in `build-games.mjs`, on the
 hub, and at the end of the Y3 `Námsleiðin` chain after Stuðpúðar.
 
 The 25th game, and the **last of Phase 5's four confirmed curriculum gaps**. Ka/Kb closed with
@@ -81,9 +81,10 @@ argument.
 - **A grader that could not read its own output.** `Level2.tsx:48` did `.replace(/10/g, 'e')`, so
   the format the game advertised at `:279` parsed to its mantissa, the plain-decimal form parsed to
   0, and an Icelandic comma parsed to 1. Here the answer is entered as **mantissa and exponent in
-  two fields**, which is typeable on any keyboard — and which also buys the diagnosis that matters,
-  since "right digits, wrong power of ten" is what forgetting the 4 in 4s³ looks like and a merged
-  box could only say "wrong".
+  two fields**, which is typeable on any keyboard — and which also lets the feedback say which half
+  is wrong, where a merged box could only say "wrong". An earlier version of this line said "right
+  digits, wrong power of ten" is what forgetting the 4 in 4s³ looks like. It is not: dropping the 4
+  changes the digits (by ∛4 for a 1:2 or 2:1 salt), and so does a square root taken for a cube root.
 - **The dilution pre-computed away.** `Level3.tsx:92-98,244-249` did the mixing arithmetic on all six
   items and left a binary button, removing the only step students get wrong. Here the diluted
   concentrations appear only after the prediction is committed, and one problem mixes 25 mL with
@@ -134,7 +135,8 @@ src/components/                KannaScreen, SkiljaScreen, AefaScreen, BeitaScree
                                ScientificInput (the answer row, with the `±` key),
                                Sci (a number held on one line) and BackButton
 src/utils/reveal.ts            keeps a new screen, problem or feedback on a phone's screen
-src/__tests__/                 50 tests — ksp.test.ts, and phone-play.test.tsx
+src/__tests__/                 69 tests — ksp.test.ts, phone-play.test.tsx, decimal-comma.test.tsx,
+                               stated-claims.test.ts and screens.test.tsx
 ```
 
 ## On a phone
@@ -149,8 +151,15 @@ at its `×`, and panels that set two numbers side by side stack below `sm`.
 
 ## Open
 
-- **`equilibrium-shifter` is still entirely qualitative.** It remains the one Y3 node with no number
-  anywhere, and general Kc/Kp with ICE tables is still unbuilt — now the largest remaining Y3 gap.
+- **Æfa does not diagnose the two mistakes this topic is known for.** Forgetting the 4 in 4s³
+  grades as `tolustafir` or `baedi` over the pool, and a square root taken for a cube root as
+  `baedi`; both messages then say only that the numbers do not match. Until 2026-09-23 the
+  `veldisvisir` message named both causes — an outcome neither can produce, so the advice was false
+  every time it showed — and that clause was removed. Whether to add a real diagnosis (compare the
+  entry with ∛Ksp and √Ksp and say which mistake it is) is Siggi's call.
+- **The divergence notes in `salts.ts` are never shown.** BaSO₄'s says a student checking the
+  Icelandic appendix gets another answer and that it is worth telling them; nothing renders it.
+  Siggi's call whether students see a line about it.
 - **Selective precipitation is only posed as ordering, not as a separation yield.** "How much of the
   first ion is left when the second starts to come down" is the question a real separation asks, and
   it is not here.

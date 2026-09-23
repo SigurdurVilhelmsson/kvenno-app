@@ -165,7 +165,7 @@ const MIXING_ORDER: Omit<
     cation: { concentration: 6.0e-5, volume: 0.05, source: 'Sr(NO₃)₂' },
     anion: { concentration: 6.0e-5, volume: 0.05, source: 'Na₂CO₃' },
     context:
-      'Naumt: Q lendir rétt yfir Ksp. Svona dæmi er ekki hægt að giska á — það verður að reikna.',
+      'Naumt: Q lendir rétt undir Ksp. Svona dæmi er ekki hægt að giska á — það verður að reikna.',
   },
 ];
 
@@ -204,7 +204,7 @@ const FRACTIONAL_ORDER: Omit<FractionalProblem, 'order' | 'defeatsKspOrdering'>[
     sharedIonName: 'Ag⁺',
     difficulty: 'thung',
     context:
-      'Mohr-títrun. Lausnin inniheldur bæði klóríð og krómat í 0,010 M, og silfurnítrati er dreypt í. Silfurkrómat er með 150-falt lægra Ksp en silfurklóríð — og fellur samt út á eftir. Það er einmitt þess vegna sem rauði liturinn virkar sem ábendir: hann kemur ekki fyrr en klóríðið er uppurið.',
+      'Mohr-títrun. Lausnin inniheldur bæði klóríð og krómat í 0,010 M, og silfurnítrati er dreypt í. Silfurkrómat er með 150-falt lægra Ksp en silfurklóríð — og fellur samt út á eftir. Það er einmitt þess vegna sem rauði liturinn virkar sem litvísir: hann kemur ekki fyrr en klóríðið er uppurið.',
     candidates: [
       { formula: 'AgCl', otherIonConcentration: 0.01 },
       { formula: 'Ag₂CrO₄', otherIonConcentration: 0.01 },
