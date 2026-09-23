@@ -24,6 +24,10 @@ export default defineConfig({
       use: { ...devices['Desktop Firefox'] },
       // mobile-games.spec.ts tags most of its per-screen paths chromium-only
       // to keep CI time down; Firefox replays a spread-out sample.
+      // mobile-vertical.spec.ts does the same: Firefox cannot emulate touch or
+      // isMobile, so it replays one play loop per game (with the mouse) and
+      // leaves the per-viewport, anti-skip, typed, landscape and 844x390 runs
+      // to Chromium.
       grepInvert: /@chromium-only/,
     },
   ],

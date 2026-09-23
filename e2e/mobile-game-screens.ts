@@ -16,9 +16,62 @@ export type ScreenStep =
   | { press: string }
   | { wait: number };
 
+/**
+ * How a `LoopCheck` names an element: by role and accessible name, by CSS, or
+ * by visible text. Like the paths, use visible labels and accessible names —
+ * a rename (a terminology sweep included) updates the spec in the same change.
+ */
+export type LocatorSpec =
+  | { role: Parameters<import('@playwright/test').Page['getByRole']>[0]; name: string }
+  | { css: string }
+  | { text: string };
+
+/** The phone viewports mobile-vertical.spec.ts knows by name. */
+export type LoopViewport = 'android' | 'iphone' | 'se' | 'landscape';
+
+/**
+ * One play loop on a screen — prompt, control, commit, verdict, next — that
+ * mobile-vertical.spec.ts holds to the vertical-scroll guarantees
+ * (docs/plans/2026-09-23-vertical-scroll-design.md §6). Replayed after the
+ * screen's own `steps`, from the state those steps leave.
+ */
+export interface LoopCheck {
+  /** Accessible name / selector of the element that states the question or target. */
+  prompt: LocatorSpec;
+  /** The primary action before commit (Athuga/Svara/Staðfesta/Leysa…). */
+  action: LocatorSpec;
+  /** Steps that answer (any answer; wrong preferred, it yields the longest feedback). */
+  answer: ScreenStep[];
+  /** The verdict element that appears after commit. */
+  verdict: LocatorSpec;
+  /** The next action after commit (Næsta…). */
+  next: LocatorSpec;
+  /** Elements that must be co-visible for the loop to be playable (e.g. target + running sum). */
+  together?: LocatorSpec[][];
+  /** Viewports where the guarantees hold; default ['android','iphone']. SE/landscape opt in. */
+  viewports?: LoopViewport[];
+  /** Landscape always gets the weaker "usable" check (§6.2.10), opt-in or not. Default 3. */
+  landscapeScrollsToAction?: number;
+  /** Allowed manual scrolls before the action is reachable; default 0. */
+  scrollsToAction?: number;
+  /** Skips pinned assertions, adds keyboard ones. The answer must include a `fill` step. */
+  typed?: boolean;
+  /**
+   * The feedback is teaching-length (§3 Feedback: read in full), so `next` may
+   * be one scroll below the verdict after commit instead of on screen with it.
+   */
+  teachingFeedback?: boolean;
+  /**
+   * The screen deliberately passes FeedbackPanel `defaultExpanded: false`
+   * (molmassi Stig 2), so 'Af hverju?' is not required to open expanded.
+   */
+  collapsedWhy?: boolean;
+}
+
 export interface GameScreen {
   name: string;
   steps: ScreenStep[];
+  loop?: LoopCheck;
 }
 
 export const GAME_SCREENS: Record<string, GameScreen[]> = {
