@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 
 import { COMPOUNDS } from '../data/problems';
 import { percentComposition } from '../engine/empirical';
@@ -14,9 +14,10 @@ import { reveal } from '../utils/reveal';
  * mass and count are different questions and the molar mass is what separates
  * them.
  *
- * Glucose and formaldehyde sit in the pool deliberately: identical percentages,
- * different compounds. That is the fact the Beita phase later resolves with a
- * molar mass.
+ * Formaldehyde sits in the pool deliberately: its context line says glucose
+ * shares its empirical formula — identical percentages, different compounds.
+ * That is the fact the Beita phase later resolves with a molar mass, where
+ * glucose itself appears.
  */
 
 interface Props {
@@ -30,8 +31,13 @@ export function KannaScreen({ onComplete, onBack }: Props) {
   const pct = percentComposition(compound.counts);
 
   const heaviestShare = [...pct].sort((a, b) => b.percent - a.percent)[0];
-  const mostAtoms = [...compound.counts].sort((a, b) => b.subscript - a.subscript)[0];
-  const theyDisagree = heaviestShare.element !== mostAtoms.element;
+  // Every element with the largest count, not the first of them: in H₂O₂ and
+  // NaCl no element has the most atoms, and naming one as if it did states
+  // something false about the formula in the table right above.
+  const mostCount = Math.max(...compound.counts.map((c) => c.subscript));
+  const mostAtoms = compound.counts.filter((c) => c.subscript === mostCount);
+  const tied = mostAtoms.length > 1;
+  const theyDisagree = tied || heaviestShare.element !== mostAtoms[0].element;
 
   // The table and the sentence that reads it sit below the list of compounds,
   // under the fold of a phone once a student has scrolled to the lower
@@ -137,7 +143,21 @@ export function KannaScreen({ onComplete, onBack }: Props) {
             <p>
               <strong>{heaviestShare.element}</strong> á stærsta hlutann af massanum (
               {heaviestShare.percent.toFixed(1).replace('.', ',')} %), en{' '}
-              <strong>{mostAtoms.element}</strong> á flestar frumeindirnar ({mostAtoms.subscript}).
+              {tied ? (
+                <>
+                  {mostAtoms.map((c, i) => (
+                    <Fragment key={c.element}>
+                      {i > 0 && (i === mostAtoms.length - 1 ? ' og ' : ', ')}
+                      <strong>{c.element}</strong>
+                    </Fragment>
+                  ))}{' '}
+                  eiga jafnmargar frumeindir.
+                </>
+              ) : (
+                <>
+                  <strong>{mostAtoms[0].element}</strong> á flestar frumeindirnar ({mostCount}).
+                </>
+              )}{' '}
               Prósentan segir þér ekki fjöldann — til þess þarf að deila með mólmassanum.
             </p>
           ) : (

@@ -55,10 +55,12 @@ function App() {
 
   const completed = useMemo(() => progress.completed ?? [], [progress.completed]);
 
+  // Kanna and Skilja end on "Áfram í Skilja" / "Áfram í Æfa", so those two go
+  // on to the phase they name; they used to drop the student on the menu.
   const markCompleted = useCallback(
-    (phase: Screen) => {
+    (phase: Screen, next: Screen = 'menu') => {
       if (!completed.includes(phase)) updateProgress({ completed: [...completed, phase] });
-      setScreen('menu');
+      setScreen(next);
     },
     [completed, updateProgress]
   );
@@ -185,11 +187,11 @@ function App() {
         )}
 
         {screen === 'kanna' && (
-          <KannaScreen onComplete={() => markCompleted('kanna')} onBack={backToMenu} />
+          <KannaScreen onComplete={() => markCompleted('kanna', 'skilja')} onBack={backToMenu} />
         )}
 
         {screen === 'skilja' && (
-          <SkiljaScreen onComplete={() => markCompleted('skilja')} onBack={backToMenu} />
+          <SkiljaScreen onComplete={() => markCompleted('skilja', 'aefa')} onBack={backToMenu} />
         )}
 
         {screen === 'aefa' && (

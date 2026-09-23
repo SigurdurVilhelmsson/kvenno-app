@@ -1,6 +1,6 @@
 # Reynsluformúlur
 
-**Status: complete and registered.** Four phases, 53 tests of its own, in `build-games.mjs`, on the hub, and
+**Status: complete and registered.** Four phases, 69 tests of its own, in `build-games.mjs`, on the hub, and
 in the Y1 `Námsleiðin` chain between Mólmassi and Stilla efnajöfnur.
 
 Phase 5 of the games roadmap, first of the four confirmed curriculum gaps to be built after
@@ -81,9 +81,9 @@ the formula.
 - **`deriveEmpirical` throws** rather than returning a formula it cannot justify: fewer than two
   elements, percentages that do not sum to 100, no whole-number reduction up to ×6, or subscripts
   past 12.
-- **The atomic masses are held to `molmassi`'s.** A second copy exists because each game is its own
-  Vite build; `problems.test.ts` compares every shared symbol and fails on disagreement. Two copies
-  of the same numbers is how B4 happened.
+- **The atomic masses come from `@shared/data/elements`**, which `src/data/elements.ts` re-exports
+  under its old name. It used to be a second copy; `problems.test.ts` still compares `molmassi`'s
+  array against it and fails on disagreement. Two copies of the same numbers is how B4 happened.
 - **The Y1 chain test lives in `1-ar/einingakedjan/src/__tests__/chain-string.test.ts`**, not here,
   and was extended to nine games by this change. Worth knowing: CLAUDE.md said that test "does not
   exist yet" while it did, so a duplicate was written here before the full suite pointed at the
@@ -94,11 +94,11 @@ the formula.
 
 ```
 src/engine/empirical.ts       the four columns; no React, no Icelandic
-src/data/elements.ts          atomic masses, held to molmassi's by test
+src/data/elements.ts          atomic masses, re-exported from @shared/data/elements
 src/data/problems.ts          compounds as formulas; percentages and keys derived
 src/components/               KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen
 src/utils/reveal.ts           keeps what a tap changed on screen on a phone
-src/__tests__/                53 tests across empirical, problems and phone-reveal
+src/__tests__/                69 tests across empirical, problems, feedback-text, phase-flow and phone-reveal
 ```
 
 ## Open
@@ -109,6 +109,23 @@ src/__tests__/                53 tests across empirical, problems and phone-reve
   composition but does not drill it.
 - **Combustion analysis** — the other route into an empirical formula, and the one a lab actually
   uses — is not covered.
+- **Æfa shows `rétt: …` beside each wrong cell and leaves the inputs live**, so a student can submit
+  zeros and copy the values back. No score rides on it, but a column then unlocks without being
+  worked. Hiding the value until a second wrong try is one option; it is a teaching call.
+- **The subscript column is called `Vísitala`; the textbook says `lágstafur`** (`ch03/m68702`, the
+  empirical-formula module, and 200+ hits across the book). `ordabok.md` has no entry. Not changed.
+  A rename also changes the `Vísitala fyrir …` aria-labels, which `e2e/mobile-game-screens.ts` fills.
+- **The menu's "Lykilskref" uses `n` twice** — `n = m / M` for moles and, two lines down, for the
+  molecular multiplier.
+
+Fixed 2026-09-23, each held by `feedback-text.test.tsx`: Beita's "Þitt n gaf …" line called the
+right formula wrong for a fractional n (1,5 on HO rounded back to H₂O₂ at the measured mass) and now
+appears only for a whole n; Kanna named one element as having "the most atoms" in H₂O₂ and NaCl,
+where the counts tie; and Æfa's verdict built its column compounds by pasting `súlan` onto the
+label, which got the genitive of `vísitala` and `hlutfall` wrong. The same line in Beita also no
+longer names a formula for an n too large to write (`1e21` printed H₁₂₁O₁₂₁). And "Áfram í Skilja"
+and "Áfram í Æfa" now open the phase they name instead of the menu, as `1-ar/utfellingarhvorf`'s do;
+held by `phase-flow.test.tsx`.
 
 ## On a phone
 

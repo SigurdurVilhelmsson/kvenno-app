@@ -41,6 +41,18 @@ const COLUMN_LABEL: Record<Column, string> = {
   subscript: 'Vísitala',
 };
 
+/**
+ * The column as the verdict names it, the definite compound `…súlan`. It is
+ * not the label with `súlan` pasted on: `vísitala` compounds on its genitive
+ * `vísitölu-` and `hlutfall` on `hlutfalls-`, as `vatnssúla` and
+ * `kvikasilfurssúla` do in the textbook, so each form is written out here.
+ */
+const COLUMN_HEADING: Record<Column, string> = {
+  moles: 'Mólsúlan',
+  ratio: 'Hlutfallssúlan',
+  subscript: 'Vísitölusúlan',
+};
+
 const PROMPT: Record<Column, string> = {
   moles: 'Deildu hverju prósenti (sem grömmum) með mólmassa frumefnisins.',
   ratio: 'Deildu hverjum mólfjölda með þeim minnsta.',
@@ -188,7 +200,7 @@ export function AefaScreen({ onComplete, onBack }: Props) {
             ref={verdictRef}
             className="mb-4 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900"
           >
-            <p className="font-semibold">Ekki alveg — {COLUMN_LABEL[column]}súlan</p>
+            <p className="font-semibold">Ekki alveg — {COLUMN_HEADING[column]}</p>
             {column === 'moles' && (
               <p className="mt-1">
                 Mundu að deila, ekki margfalda: prósentan er grömm og mólmassinn er g/mól, svo grömm

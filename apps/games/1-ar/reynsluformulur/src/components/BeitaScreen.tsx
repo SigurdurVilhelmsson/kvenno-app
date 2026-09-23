@@ -37,6 +37,14 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
   const given = parseStudentNumber(entry);
   const correct = answered && Math.abs(given - problem.n) < 0.01;
 
+  // Only a whole n builds a formula whose mass can be set against the measured
+  // one. A fractional n builds none: rounding each subscript on its own can
+  // land back on the right formula — 1,5 on HO rounds to H₂O₂ at exactly the
+  // measured mass — which the line below would then call wrong. A safe integer,
+  // not merely an integer: `1e21` parses as a whole number, but it prints in
+  // exponent form, which the subscript writer turns into "undefined".
+  const givenWhole = Number.isSafeInteger(given) && given >= 1;
+
   // "Svara" puts the verdict under the input, below the fold of a landscape
   // phone; "Næsta dæmi" swaps in a new problem at the top of a card the student
   // has scrolled past. Bring each into view — nothing moves when it already is.
@@ -139,20 +147,17 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
             <p className="mt-2">
               Sameindaformúlan er <strong className="font-mono text-base">{problem.answer}</strong>.
             </p>
-            {!correct && Number.isFinite(given) && given > 0 && (
+            {!correct && givenWhole && (
               <p className="mt-2">
                 Þitt n gaf{' '}
                 <span className="font-mono">
                   {formatFormula(
-                    problem.empirical.map((e) => ({
-                      ...e,
-                      subscript: Math.max(Math.round(e.subscript * given), 1),
-                    }))
+                    problem.empirical.map((e) => ({ ...e, subscript: e.subscript * given }))
                   )}
                 </span>
                 , sem hefur mólmassa{' '}
                 <span className="whitespace-nowrap">
-                  {fmt(problem.empiricalMass * Math.max(Math.round(given), 1), 2)} g/mól
+                  {fmt(problem.empiricalMass * given, 2)} g/mól
                 </span>{' '}
                 — ekki þann sem var mældur.
               </p>
