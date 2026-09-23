@@ -18,13 +18,13 @@ const MISCONCEPTIONS: Record<RuleId, string> = {
   'ionic-polyatomic':
     'Fjölatóma jónir hafa föst nöfn sem þarf að læra. Súlfat er SO₄²⁻, ekki SO₃²⁻ (það er súlfít).',
   molecular:
-    'Í sameindum notum við grísk forskeyti (mono, dí, trí...) en fyrra frumefnið fær aldrei "mono-" forskeytið.',
+    'Í sameindum notum við grísk forskeyti (mónó, dí, trí...) en fyrra frumefnið fær aldrei "mónó-" forskeytið.',
 };
 
 // Related concepts for each rule type
 const RELATED_CONCEPTS: Record<RuleId, string[]> = {
   'ionic-simple': ['Jónabindingar', 'Málmar og málmleysingjar', 'Endingar (-íð)'],
-  'ionic-variable': ['Breytilegar hleðslur', 'Rómverskar tölur', 'Þróunarmálmar'],
+  'ionic-variable': ['Breytilegar hleðslur', 'Rómverskar tölur', 'Hliðarmálmar'],
   'ionic-polyatomic': ['Fjölatóma jónir', 'Hleðslujöfnun', 'Sérstök nöfn'],
   molecular: ['Samgild binding', 'Grísk forskeyti', 'Málmleysingjar'],
 };
@@ -107,9 +107,9 @@ const namingRules: NamingRule[] = [
     title: 'Sameindir (málmleysingjar)',
     description: 'Tveir eða fleiri málmleysingjar',
     rules: [
-      'Notaðu grískar forskeytir til að sýna fjölda atóma',
-      'Forskeytir: mono (1), dí (2), trí (3), tetra (4), penta (5), hexa (6)',
-      'Fyrra frumefnið fær ekki "mono-" en það síðara fær alltaf forsetið',
+      'Notaðu grísk forskeyti til að sýna fjölda atóma',
+      'Forskeyti: mónó (1), dí (2), trí (3), tetra (4), penta (5), hexa (6)',
+      'Fyrra frumefnið fær ekki "mónó-" en það síðara fær alltaf forskeyti',
       'Síðara frumefnið fær endinguna -íð',
     ],
     examples: [
@@ -163,7 +163,7 @@ const warmupQuestions: WarmupQuestion[] = [
     symbol: 'Cl',
     name: 'Klór',
     isMetal: false,
-    hint: 'Í hópi 17 (halógein) - alltaf málmleysingi!',
+    hint: 'Í hópi 17 (halógenar) - alltaf málmleysingi!',
   },
   {
     symbol: 'Mg',
@@ -172,13 +172,13 @@ const warmupQuestions: WarmupQuestion[] = [
     hint: 'Í hópi 2 (jarðalkalímálmar) - alltaf málmur!',
   },
   { symbol: 'O', name: 'Súrefni', isMetal: false, hint: 'Í hópi 16 - málmleysingi!' },
-  { symbol: 'Fe', name: 'Járn', isMetal: true, hint: 'Þróunarmálmur - einn þekktur málmanna!' },
+  { symbol: 'Fe', name: 'Járn', isMetal: true, hint: 'Hliðarmálmur - einn þekktur málmanna!' },
   { symbol: 'S', name: 'Brennisteinn', isMetal: false, hint: 'Í hópi 16 - málmleysingi!' },
   { symbol: 'Ca', name: 'Kalsíum', isMetal: true, hint: 'Í hópi 2 - jarðalkalímálmur!' },
   { symbol: 'N', name: 'Köfnunarefni', isMetal: false, hint: 'Í hópi 15 - málmleysingi!' },
 ];
 
-const quizQuestions: QuizQuestion[] = [
+export const quizQuestions: QuizQuestion[] = [
   {
     id: 1,
     question: 'Hvaða ending fær klór í jónefnum?',
@@ -212,7 +212,7 @@ const quizQuestions: QuizQuestion[] = [
     formula: 'FeCl₂',
     options: [
       'Járn getur haft mismunandi hleðslu',
-      'Það eru tvö klór atóm',
+      'Það eru tvö klóratóm',
       'Járn er í hópi 2',
       'Klór er tvígilt',
     ],
@@ -261,7 +261,7 @@ const quizQuestions: QuizQuestion[] = [
     hints: {
       topic: 'Þetta snýst um grísk forskeyti í sameindum.',
       strategy: 'Grísk forskeyti segja okkur fjölda atóma.',
-      method: 'Listi: mono=1, dí=2, trí=3, tetra=4, penta=5, hexa=6.',
+      method: 'Listi: mónó=1, dí=2, trí=3, tetra=4, penta=5, hexa=6.',
       solution: 'Dí þýðir 2. Dæmi: koldíoxíð hefur 2 súrefnisatóm.',
     },
     ruleId: 'molecular',
@@ -282,10 +282,10 @@ const quizQuestions: QuizQuestion[] = [
   },
   {
     id: 8,
-    question: 'Af hverju heitir CO₂ "koldíoxíð" en ekki "monokoldíoxíð"?',
+    question: 'Af hverju heitir CO₂ "koldíoxíð" en ekki "mónókoldíoxíð"?',
     formula: 'CO₂',
     options: [
-      'Fyrra frumefnið fær ekki "mono-"',
+      'Fyrra frumefnið fær ekki "mónó-"',
       'Kol er undantekning',
       'Það er aðeins eitt kol',
       'Dí þýðir líka eitt',
@@ -293,11 +293,11 @@ const quizQuestions: QuizQuestion[] = [
     correctIndex: 0,
     hints: {
       topic: 'Þetta snýst um notkun grísku forskeytanna í sameindum.',
-      strategy: 'Það er sérstök regla um hvenær við notum "mono-" forskeytið.',
+      strategy: 'Það er sérstök regla um hvenær við notum "mónó-" forskeytið.',
       method:
-        'Við sleppum "mono-" fyrir FYRRA frumefnið, en síðara frumefnið fær alltaf forskeyti.',
+        'Við sleppum "mónó-" fyrir FYRRA frumefnið, en síðara frumefnið fær alltaf forskeyti.',
       solution:
-        'Reglan: Fyrra frumefnið fær ekki "mono-". Þess vegna koldíoxíð en ekki monokoldíoxíð.',
+        'Reglan: Fyrra frumefnið fær ekki "mónó-". Þess vegna koldíoxíð en ekki mónókoldíoxíð.',
     },
     ruleId: 'molecular',
   },
@@ -331,12 +331,17 @@ const quizQuestions: QuizQuestion[] = [
       topic: 'Þetta snýst um fjölatóma jónir í jónefnum.',
       strategy: 'OH⁻ er fjölatóma jón með sérstakt nafn. Jónefni nota ekki grísk forskeyti.',
       method: 'Fjölatóma jónin: OH⁻ = hýdroxíð. Nafnið: málmur + nafn jónar.',
-      solution:
-        'OH⁻ er hýdroxíð jónin. Nafnið er kalsíumhýdroxíð. Ekki grísk forskeyti í jónefnum.',
+      solution: 'OH⁻ er hýdroxíðjónin. Nafnið er kalsíumhýdroxíð. Ekki grísk forskeyti í jónefnum.',
     },
     ruleId: 'ionic-polyatomic',
   },
 ];
+
+/** Points for a correct quiz answer. Hints are free, so there is no deduction. */
+const POINTS_PER_QUESTION = 10;
+
+/** What a perfect Level 1 scores; the menu shows the best score out of this. */
+export const LEVEL1_MAX_SCORE = quizQuestions.length * POINTS_PER_QUESTION;
 
 export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
   const [phase, setPhase] = useState<'learn' | 'warmup' | 'quiz'>('learn');
@@ -345,8 +350,6 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [score, setScore] = useState(0);
-  const [hintMultiplier, setHintMultiplier] = useState(1.0);
-  const [hintsUsedTier, setHintsUsedTier] = useState(0);
 
   // Warmup state
   const [currentWarmup, setCurrentWarmup] = useState(0);
@@ -427,8 +430,7 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     setShowFeedback(true);
 
     if (index === shuffledOptions.correctShuffledIndex) {
-      const points = Math.round(10 * hintMultiplier);
-      setScore((prev) => prev + points);
+      setScore((prev) => prev + POINTS_PER_QUESTION);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();
@@ -440,10 +442,9 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
       setCurrentQuestion((prev) => prev + 1);
       setSelectedAnswer(null);
       setShowFeedback(false);
-      setHintMultiplier(1.0);
-      setHintsUsedTier(0);
     } else {
-      onComplete(score, quizQuestions.length * 10, hintsUsedTier);
+      // The quiz shows no hints, so none are ever used.
+      onComplete(score, LEVEL1_MAX_SCORE, 0);
     }
   };
 

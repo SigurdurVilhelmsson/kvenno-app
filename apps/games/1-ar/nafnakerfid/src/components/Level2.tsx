@@ -31,7 +31,7 @@ interface NamingChallenge {
   hint: string;
 }
 
-const challenges: NamingChallenge[] = [
+export const challenges: NamingChallenge[] = [
   {
     id: 1,
     formula: 'KBr',
@@ -102,7 +102,7 @@ const challenges: NamingChallenge[] = [
       nameParts: ['Natríum (málmur)', 'SO₄²⁻ = súlfat (fjölatóma jón)'],
       finalName: 'Natríum + súlfat = Natríumsúlfat',
     },
-    hint: 'SO₄ er súlfat jónin - fjölatóma jón með fast nafn',
+    hint: 'SO₄ er súlfatjónin - fjölatóma jón með fast nafn',
   },
   {
     id: 6,
@@ -116,7 +116,7 @@ const challenges: NamingChallenge[] = [
       nameParts: ['Kalíum (málmur)', 'NO₃⁻ = nítrat (fjölatóma jón)'],
       finalName: 'Kalíum + nítrat = Kalíumnítrat',
     },
-    hint: 'NO₃ er nítrat jónin',
+    hint: 'NO₃ er nítratjónin',
   },
   {
     id: 7,
@@ -127,7 +127,7 @@ const challenges: NamingChallenge[] = [
     prefix2: 'dí',
     steps: {
       identifyType: 'Sameind (tveir málmleysingjar)',
-      nameParts: ['C: 1 atóm → (sleppum mono)', 'O: 2 atóm → dí', 'súrefni → oxíð'],
+      nameParts: ['C: 1 atóm → (sleppum mónó)', 'O: 2 atóm → dí', 'súrefni → oxíð'],
       finalName: 'Kol + dí + oxíð = Koldíoxíð',
     },
     hint: 'Bæði C og O eru málmleysingjar - þetta er sameind',
@@ -155,7 +155,7 @@ const challenges: NamingChallenge[] = [
     prefix2: 'hexa',
     steps: {
       identifyType: 'Sameind (tveir málmleysingjar)',
-      nameParts: ['S: 1 atóm → (sleppum mono)', 'F: 6 atóm → hexa', 'flúor → flúoríð'],
+      nameParts: ['S: 1 atóm → (sleppum mónó)', 'F: 6 atóm → hexa', 'flúor → flúoríð'],
       finalName: 'Brennisteinn + hexa + flúoríð = Brennisteinshexaflúoríð',
     },
     hint: 'S og F eru báðir málmleysingjar',
@@ -172,7 +172,7 @@ const challenges: NamingChallenge[] = [
       nameParts: ['Kalsíum (málmur)', 'NO₃⁻ = nítrat (×2 breytir ekki nafninu)'],
       finalName: 'Kalsíum + nítrat = Kalsíumnítrat',
     },
-    hint: 'Sviginn sýnir að það eru 2 nítrat jónir, en nafnið er samt bara nítrat',
+    hint: 'Sviginn sýnir að það eru 2 nítratjónir, en nafnið er samt bara nítrat',
   },
   {
     id: 11,
@@ -198,7 +198,7 @@ const challenges: NamingChallenge[] = [
     prefix2: 'penta',
     steps: {
       identifyType: 'Sameind (tveir málmleysingjar)',
-      nameParts: ['P: 1 atóm → (sleppum mono)', 'Cl: 5 atóm → penta', 'klór → klóríð'],
+      nameParts: ['P: 1 atóm → (sleppum mónó)', 'Cl: 5 atóm → penta', 'klór → klóríð'],
       finalName: 'Fosfór + penta + klóríð = Fosfórpentaklóríð',
     },
     hint: 'P og Cl eru báðir málmleysingjar',
@@ -219,7 +219,7 @@ const typeNames: Record<CompoundType, { name: string; color: string; description
   'ionic-polyatomic': {
     name: 'Jónefni (fjölatóma jón)',
     color: 'green',
-    description: 'Inniheldur fjölatóma jón eins og súlfat, nítrat, eða karbónat',
+    description: 'Inniheldur fjölatóma jón eins og súlfat, nítrat eða karbónat',
   },
   molecular: {
     name: 'Sameind',
@@ -273,8 +273,8 @@ const TYPE_PATTERNS: Record<CompoundType, string> = {
   molecular: 'grískt forskeyti + fyrra frumefni, forskeyti + seinna með -íð',
 };
 
-const greekPrefixes = [
-  { count: 1, prefix: 'mono-', note: '(sleppum fyrir fyrra frumefni)' },
+export const greekPrefixes = [
+  { count: 1, prefix: 'mónó-', note: '(sleppum fyrir fyrra frumefni)' },
   { count: 2, prefix: 'dí-', note: '' },
   { count: 3, prefix: 'trí-', note: '' },
   { count: 4, prefix: 'tetra-', note: '' },
@@ -285,6 +285,13 @@ const greekPrefixes = [
 ];
 
 type Step = 'identify' | 'build' | 'answer' | 'feedback';
+
+/** 5 for the compound type, 10 for the name. The hint is free. */
+const TYPE_POINTS = 5;
+const NAME_POINTS = 10;
+
+/** What a perfect Level 2 scores; the menu shows the best score out of this. */
+export const LEVEL2_MAX_SCORE = challenges.length * (TYPE_POINTS + NAME_POINTS);
 
 const SUPPORT = supportLadder(challenges);
 
@@ -324,20 +331,27 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   useEffect(() => revealNearest(typeFeedbackRef.current), [typeCorrect]);
 
   const normalizeAnswer = (answer: string): string => {
-    return answer
-      .toLowerCase()
-      .trim()
-      .replace(/í/g, 'i')
-      .replace(/ú/g, 'u')
-      .replace(/ý/g, 'y')
-      .replace(/ó/g, 'o')
-      .replace(/á/g, 'a')
-      .replace(/é/g, 'e')
-      .replace(/ð/g, 'd')
-      .replace(/æ/g, 'ae')
-      .replace(/ö/g, 'o')
-      .replace(/\s+/g, '')
-      .replace(/[()]/g, '');
+    return (
+      answer
+        .toLowerCase()
+        .trim()
+        .replace(/í/g, 'i')
+        .replace(/ú/g, 'u')
+        .replace(/ý/g, 'y')
+        .replace(/ó/g, 'o')
+        .replace(/á/g, 'a')
+        .replace(/é/g, 'e')
+        .replace(/ð/g, 'd')
+        .replace(/æ/g, 'ae')
+        .replace(/ö/g, 'o')
+        .replace(/\s+/g, '')
+        .replace(/[()]/g, '')
+        // A Greek prefix may keep or drop its last vowel before oxíð. The
+        // textbook (ch02/m68698) lets students write either, and Step 2 builds
+        // N₂O₄ as `dí + nitur + tetra + oxíð`, so the unelided form is exactly
+        // what following the steps produces.
+        .replace(/(mon|tetr|pent|hex|hept|okt|non|dek)[ao](?=ox)/g, '$1')
+    );
   };
 
   const handleTypeSelect = (type: CompoundType) => {
@@ -346,7 +360,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     setTypeCorrect(correct);
 
     if (correct) {
-      setScore((prev) => prev + 5);
+      setScore((prev) => prev + TYPE_POINTS);
     }
 
     // Move to build step after a short delay
@@ -361,7 +375,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     const normalizedCorrect = normalizeAnswer(challenge.correctName);
 
     if (normalizedUser === normalizedCorrect) {
-      setScore((prev) => prev + 10);
+      setScore((prev) => prev + NAME_POINTS);
       onCorrectAnswer?.();
     } else {
       onIncorrectAnswer?.();
@@ -377,9 +391,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
       setShowHint(false);
       setTypeCorrect(null);
     } else {
-      // Max score: 15 points per challenge (5 for type + 10 for answer without hint)
-      const maxScore = challenges.length * 15;
-      onComplete(score, maxScore, totalHintsUsed);
+      onComplete(score, LEVEL2_MAX_SCORE, totalHintsUsed);
     }
   };
 
@@ -607,7 +619,8 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               onChange={(e) => setUserAnswer(e.target.value)}
               placeholder={t('level2.ui.typeHere', 'Skrifaðu nafnið hér...')}
               className="w-full text-center text-lg sm:text-2xl font-bold p-3 sm:p-4 border-2 border-teal-300 rounded-xl focus:border-teal-500 focus:outline-none"
-              onKeyPress={(e) => e.key === 'Enter' && userAnswer && handleSubmitAnswer()}
+              // Same rule as the button: a blank field is not an answer.
+              onKeyPress={(e) => e.key === 'Enter' && userAnswer.trim() && handleSubmitAnswer()}
               autoFocus
               // A phone keyboard would otherwise "correct" a compound name it
               // does not know into some other word.

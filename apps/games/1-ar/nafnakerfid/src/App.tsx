@@ -4,8 +4,8 @@ import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
 import { useGameI18n } from '@shared/hooks/useGameI18n';
 import { useGameProgress } from '@shared/hooks/useGameProgress';
 
-import { Level1 } from './components/Level1';
-import { Level2 } from './components/Level2';
+import { LEVEL1_MAX_SCORE, Level1 } from './components/Level1';
+import { LEVEL2_MAX_SCORE, Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
 import { gameTranslations } from './i18n';
 import { scrollPageToTop } from './utils/reveal';
@@ -125,7 +125,7 @@ function App() {
                     {progress.level1Completed ? (
                       <div className="text-green-600">
                         <div className="text-lg min-[360px]:text-xl sm:text-2xl font-bold">
-                          {progress.level1Score}/10
+                          {progress.level1Score}/{LEVEL1_MAX_SCORE}
                         </div>
                         <div className="text-xs">{t('menu.completed')}</div>
                       </div>
@@ -157,7 +157,7 @@ function App() {
                     {progress.level2Completed ? (
                       <div className="text-green-600">
                         <div className="text-lg min-[360px]:text-xl sm:text-2xl font-bold">
-                          {progress.level2Score}/12
+                          {progress.level2Score}/{LEVEL2_MAX_SCORE}
                         </div>
                         <div className="text-xs">{t('menu.completed')}</div>
                       </div>

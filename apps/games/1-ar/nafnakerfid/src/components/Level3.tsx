@@ -7,12 +7,10 @@ import { type MorphemeKind } from '../data/naming';
 import { generateParts, selectCompounds, type NamePart } from '../utils/nameParts';
 import { revealTop } from '../utils/reveal';
 
-/** Levenshtein edit distance — used to classify typo vs. conceptual error. */
-function editDistance(a: string, b: string): number {
+/** Levenshtein table for `a` against `b`: cell [i][j] is the distance of their prefixes. */
+function distanceTable(a: string, b: string): number[][] {
   const m = a.length;
   const n = b.length;
-  if (m === 0) return n;
-  if (n === 0) return m;
   const dp = Array.from({ length: m + 1 }, () => new Array<number>(n + 1).fill(0));
   for (let i = 0; i <= m; i++) dp[i][0] = i;
   for (let j = 0; j <= n; j++) dp[0][j] = j;
@@ -22,28 +20,60 @@ function editDistance(a: string, b: string): number {
       dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
     }
   }
-  return dp[m][n];
+  return dp;
+}
+
+/** Levenshtein edit distance — used to classify typo vs. conceptual error. */
+function editDistance(a: string, b: string): number {
+  return distanceTable(a, b)[a.length][b.length];
+}
+
+/**
+ * The student's name aligned against the right one, one entry per character.
+ *
+ * `ok: false` marks a character that is wrong or extra, and a `·` stands where
+ * one is missing. This walks back through the edit-distance table rather than
+ * comparing position by position: one missing letter used to shift everything
+ * after it, so `Járn(II)nítrat` against `Járn(III)nítrat` marked `)nítrat` red
+ * — letters the student had right — under a note saying red shows what differs.
+ */
+export function alignNames(userName: string, correctName: string): { ch: string; ok: boolean }[] {
+  const a = userName.toLowerCase();
+  const b = correctName.toLowerCase();
+  const dp = distanceTable(a, b);
+  const out: { ch: string; ok: boolean }[] = [];
+  let i = a.length;
+  let j = b.length;
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && a[i - 1] === b[j - 1] && dp[i][j] === dp[i - 1][j - 1]) {
+      out.push({ ch: userName[i - 1], ok: true });
+      i--;
+      j--;
+    } else if (i > 0 && j > 0 && dp[i][j] === dp[i - 1][j - 1] + 1) {
+      out.push({ ch: userName[i - 1], ok: false });
+      i--;
+      j--;
+    } else if (i > 0 && dp[i][j] === dp[i - 1][j] + 1) {
+      out.push({ ch: userName[i - 1], ok: false });
+      i--;
+    } else {
+      out.push({ ch: '·', ok: false });
+      j--;
+    }
+  }
+  return out.reverse();
 }
 
 /** Render the student's attempt with mismatched characters highlighted. */
 function renderDiff(userName: string, correctName: string): ReactNode {
-  const correctLower = correctName.toLowerCase();
-  const userLower = userName.toLowerCase();
-  const output: ReactNode[] = [];
-  const len = Math.max(userLower.length, correctLower.length);
-  for (let i = 0; i < len; i++) {
-    const ch = userName[i] ?? '';
-    const match = userLower[i] === correctLower[i];
-    output.push(
-      <span
-        key={i}
-        className={match ? 'text-warm-700' : 'bg-red-100 text-red-700 font-bold rounded px-0.5'}
-      >
-        {ch || '·'}
-      </span>
-    );
-  }
-  return output;
+  return alignNames(userName, correctName).map(({ ch, ok }, i) => (
+    <span
+      key={i}
+      className={ok ? 'text-warm-700' : 'bg-red-100 text-red-700 font-bold rounded px-0.5'}
+    >
+      {ch}
+    </span>
+  ));
 }
 
 interface Level3Props {
@@ -66,13 +96,22 @@ const KIND_STYLES: Record<MorphemeKind, string> = {
   charge: 'bg-amber-100 text-amber-800 hover:bg-amber-200 focus-visible:ring-amber-400',
 };
 
-/** Naming rule explanation for a compound */
-function ruleFor(c: Compound): string {
+/**
+ * The polyatomic-ion caveat, which both ionic rules need: a variable-charge
+ * metal is as likely to sit beside súlfat or nítrat as beside an -íð anion
+ * (Kopar(II)súlfat, Járn(III)nítrat), and the rule shown after the answer has
+ * to describe the name just built.
+ */
+const POLYATOMIC_CAVEAT =
+  'Ef fjölatóma jón er til staðar (t.d. SO₄²⁻ = súlfat) heldur hún föstu nafni.';
+
+/** Naming rule explanation for a compound, shown after it is answered. */
+export function ruleFor(c: Compound): string {
   if (c.category === 'málmar-breytilega-hleðsla')
-    return 'Breytileg hleðsla: Málmur(rómversk tala) + málmleysingi-íð. Rómverska talan segir hvaða hleðslu málmurinn hefur — þetta þarf þegar málmur getur haft fleiri en eina hleðslu (t.d. járn: +2 eða +3).';
+    return `Breytileg hleðsla: Málmur(rómversk tala) + málmleysingi-íð. Rómverska talan segir hvaða hleðslu málmurinn hefur — þetta þarf þegar málmur getur haft fleiri en eina hleðslu (t.d. járn: +2 eða +3). ${POLYATOMIC_CAVEAT}`;
   if (c.type === 'molecular')
-    return 'Sameindaefni: Grísk forskeyti + frumefni-íð. Forskeytin segja hversu mörg atóm eru af hverri tegund (dí=2, trí=3, tetra=4...). Mono- er sleppt fyrir fyrra frumefnið.';
-  return 'Jónefni: Málmur + málmleysingi-íð. Málmurinn heldur nafni sínu, málmleysinginn fær endinguna -íð (t.d. klór → klóríð). Ef fjölatóma jón er til staðar (t.d. SO₄²⁻ = súlfat) heldur hún föstu nafni.';
+    return 'Sameindaefni: Grísk forskeyti + frumefni-íð. Forskeytin segja hversu mörg atóm eru af hverri tegund (dí=2, trí=3, tetra=4...). Mónó- er sleppt fyrir fyrra frumefnið.';
+  return `Jónefni: Málmur + málmleysingi-íð. Málmurinn heldur nafni sínu, málmleysinginn fær endinguna -íð (t.d. klór → klóríð). ${POLYATOMIC_CAVEAT}`;
 }
 
 export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
@@ -280,7 +319,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                 feedback={{
                   isCorrect,
                   explanation: isCorrect
-                    ? `${compound.name} -- ${ruleFor(compound)}`
+                    ? `${compound.name} — ${ruleFor(compound)}`
                     : `Rétt nafn: ${compound.name}. ${ruleFor(compound)}`,
                 }}
                 config={{ showExplanation: true }}
@@ -297,7 +336,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                       Rétt: <span className="text-green-700">{compound.name}</span>
                     </p>
                     <p className="text-amber-700 text-xs mt-2">
-                      Rautt sýnir stafina sem munu milli nafnanna.
+                      Rautt sýnir stafina sem eru ólíkir í nöfnunum tveimur.
                     </p>
                   </div>
                 )}
