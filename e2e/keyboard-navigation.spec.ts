@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 /**
  * Keyboard navigation E2E tests.
@@ -11,9 +11,20 @@ import { test, expect } from '@playwright/test';
  * The Playwright config starts a local server on port 4173 serving dist/.
  */
 
+/**
+ * Open a page and wait for the SPA to render before any key is pressed.
+ * `goto` resolves on the load event, which can come before React has drawn the
+ * page; a Tab pressed then focuses nothing, and a `:focus` locator waits out the
+ * whole test timeout. That race made these tests intermittently fail in CI.
+ */
+async function gotoRendered(page: Page, url: string): Promise<void> {
+  await page.goto(url);
+  await expect(page.locator('header a').first()).toBeVisible();
+}
+
 test.describe('Keyboard navigation - Landing page', () => {
   test('Tab through landing page focuses interactive elements in order', async ({ page }) => {
-    await page.goto('/');
+    await gotoRendered(page, '/');
 
     // The first Tab should land on the skip-to-content link (if visible on focus)
     // or the first interactive element in the header
@@ -32,7 +43,7 @@ test.describe('Keyboard navigation - Landing page', () => {
   });
 
   test('Enter/Space activates track card link', async ({ page }) => {
-    await page.goto('/');
+    await gotoRendered(page, '/');
 
     // Tab until we reach the Efnafraedi track card link
     let found = false;
@@ -54,7 +65,7 @@ test.describe('Keyboard navigation - Landing page', () => {
   });
 
   test('Focus is visible on all interactive elements', async ({ page }) => {
-    await page.goto('/');
+    await gotoRendered(page, '/');
 
     // Tab through the first several interactive elements and verify focus outline
     for (let i = 0; i < 8; i++) {
@@ -87,7 +98,7 @@ test.describe('Keyboard navigation - Landing page', () => {
 
 test.describe('Keyboard navigation - Chemistry hub', () => {
   test('Tab through year tiles on chemistry hub', async ({ page }) => {
-    await page.goto('/efnafraedi');
+    await gotoRendered(page, '/efnafraedi');
 
     // Tab to the year tile links
     const yearLabels = ['1. ár', '2. ár', '3. ár'];
@@ -111,7 +122,7 @@ test.describe('Keyboard navigation - Chemistry hub', () => {
 
 test.describe('Keyboard navigation - Skip link', () => {
   test('Skip link bypasses navigation and jumps to main content', async ({ page }) => {
-    await page.goto('/');
+    await gotoRendered(page, '/');
 
     // First Tab focuses the skip link
     await page.keyboard.press('Tab');
