@@ -8,6 +8,7 @@ import {
   HINT_TIER_LABELS,
   HINT_MULTIPLIERS,
 } from '../../types/hint.types';
+import { usePresenceExiting } from '../Transition/Transition';
 
 interface HintSystemProps {
   /** The 4-tier hints object */
@@ -18,7 +19,13 @@ interface HintSystemProps {
   onHintUsed?: (tier: 1 | 2 | 3 | 4, pointMultiplier: number) => void;
   /** Called when point multiplier changes */
   onPointsChange?: (multiplier: number) => void;
-  /** Hide the component (e.g., when showing feedback) */
+  /**
+   * Freeze the component once the question is answered (e.g. while feedback
+   * shows). No more tiers can be opened, but the ones already revealed stay
+   * visible, read-only. With none revealed, nothing renders — and nothing
+   * renders either while an enclosing Presence is fading the hints out, since
+   * they are leaving anyway.
+   */
   disabled?: boolean;
   /** Additional CSS classes */
   className?: string;
@@ -64,6 +71,7 @@ export function HintSystem({
 }: HintSystemProps) {
   const [revealedTiers, setRevealedTiers] = useState<HintTierKey[]>([]);
   const [currentTierIndex, setCurrentTierIndex] = useState(0);
+  const leaving = usePresenceExiting();
 
   // Reset state when resetKey changes
   useEffect(() => {
@@ -89,16 +97,28 @@ export function HintSystem({
     onPointsChange?.(multiplier);
   }, [currentTierIndex, allRevealed, nextTier, onHintUsed, onPointsChange]);
 
-  // Don't render if disabled
-  if (disabled) {
+  // Disabled means the question has been answered: no more tiers can be opened.
+  // The tiers the student already opened stay on screen, read-only. Removing
+  // them took away text the student had just been reading and pulled the
+  // feedback below up by their height. With nothing revealed there is nothing
+  // to keep, so the component renders nothing, as it always has.
+  //
+  // The one exception is a HintSystem whose own Presence is fading it out
+  // (ph-titration Stig 1 and equilibrium-shifter swap it for the feedback that
+  // way). The tiers are leaving regardless, and keeping them through the fade
+  // only lands the feedback below them and then jumps it up by their height
+  // when the fade ends. There they go at once, exactly as before.
+  if (disabled && (revealedTiers.length === 0 || leaving)) {
     return null;
   }
 
   return (
     <div className={`hint-system ${className}`}>
-      {/* Revealed hints */}
+      {/* Revealed hints. The element stays in the same place when `disabled`
+          flips, so React keeps the tiers mounted and their fade-in does not
+          replay. */}
       {revealedTiers.length > 0 && (
-        <div className="mb-3">
+        <div className={disabled ? undefined : 'mb-3'}>
           {revealedTiers.map((tierKey, index) => (
             <HintTier
               key={tierKey}
@@ -111,7 +131,7 @@ export function HintSystem({
       )}
 
       {/* Hint button */}
-      {!allRevealed && nextTier && (
+      {!disabled && !allRevealed && nextTier && (
         <button
           onClick={handleRevealHint}
           className="
@@ -131,12 +151,12 @@ export function HintSystem({
       )}
 
       {/* All hints used message */}
-      {allRevealed && (
+      {!disabled && allRevealed && (
         <div className="text-center text-gray-500 text-sm py-2">Allar vísbendingar notaðar</div>
       )}
 
       {/* Point indicator */}
-      {showPointCost && revealedTiers.length > 0 && (
+      {!disabled && showPointCost && revealedTiers.length > 0 && (
         <div className="text-center text-xs text-gray-400 mt-2">
           Stig: {Math.round(basePoints * HINT_MULTIPLIERS[currentTierIndex])} / {basePoints}
         </div>

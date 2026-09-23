@@ -44,11 +44,18 @@ export function HintTier({ tier, content, animationDelay = 0 }: HintTierProps) {
   const icon = HINT_TIER_ICONS[tier];
   const label = HINT_TIER_LABELS[tier];
 
+  // From `sm` up this is the desktop layout, unchanged: the icon in its own
+  // column beside the text, inside `p-3`. At 320 px that column and padding left
+  // the hint text narrow enough that `overflow-wrap: break-word` split long
+  // Icelandic compounds mid-word. So on a phone the padding shrinks and the hint
+  // text runs under the icon: the icon is pinned to `w-6` (and to the label's
+  // 24 px line, so the text below clears it), and `-ml-8` (24 px + the 8 px
+  // gap) takes exactly that column back. The label stays beside the icon.
   return (
     <div
       className={`
         ${styles.bg} ${styles.border} ${styles.text}
-        border-l-4 rounded-lg p-3 mb-2
+        border-l-4 rounded-lg p-2.5 sm:p-3 mb-2
         animate-fadeIn
       `}
       style={{
@@ -57,12 +64,16 @@ export function HintTier({ tier, content, animationDelay = 0 }: HintTierProps) {
       }}
     >
       <div className="flex items-start gap-2">
-        <span className="text-lg flex-shrink-0" role="img" aria-label={label}>
+        <span
+          className="text-lg flex-shrink-0 w-6 text-center leading-6 sm:w-auto sm:leading-7"
+          role="img"
+          aria-label={label}
+        >
           {icon}
         </span>
         <div className="flex-1 min-w-0">
           <span className="font-semibold text-xs uppercase tracking-wide opacity-70">{label}</span>
-          <p className="text-sm mt-0.5 leading-relaxed">{content}</p>
+          <p className="text-sm mt-0.5 -ml-8 sm:ml-0 leading-relaxed">{content}</p>
         </div>
       </div>
     </div>
