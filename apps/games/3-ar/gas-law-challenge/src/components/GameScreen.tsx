@@ -5,7 +5,7 @@ import type { Level } from '../data';
 import { GasLawQuestion, GameMode, GameStats, GasLaw, GAS_LAW_INFO } from '../types';
 import { FormulaText } from './FormulaText';
 import { GasLawSimulator } from './GasLawSimulator';
-import { answerUnit, getVariableName } from '../utils/gas-calculations';
+import { answerText, answerUnit, getVariableNameAccusative } from '../utils/gas-calculations';
 
 interface GameScreenProps {
   currentQuestion: GasLawQuestion;
@@ -301,7 +301,8 @@ export function GameScreen({
                   <h3 className="font-bold text-orange-900 mb-2 flex flex-wrap items-baseline justify-between gap-x-3 md:block">
                     <label htmlFor="gas-law-answer">
                       {gameMode === 'practice' && gameStep === 'select-law' && '(Skref 2) '}
-                      Finndu {getVariableName(currentQuestion.find)} ({currentQuestion.find}):
+                      Finndu {getVariableNameAccusative(currentQuestion.find)} (
+                      {currentQuestion.find}):
                     </label>
                     {/* In the one-column layout the timer at the top of the page is scrolled out
                         of sight by the time the student reaches this field, so it is repeated
@@ -333,7 +334,7 @@ export function GameScreen({
                         e.key === 'Enter' && gameStep === 'solve' && onCheckAnswer()
                       }
                       disabled={gameMode === 'practice' && gameStep === 'select-law'}
-                      aria-label={`Svar fyrir ${getVariableName(currentQuestion.find)} í einingunni ${answerUnit(currentQuestion)}`}
+                      aria-label={`Svar fyrir ${getVariableNameAccusative(currentQuestion.find)} í einingunni ${answerUnit(currentQuestion)}`}
                     />
                     <div className="bg-white px-4 py-3 rounded-lg border-2 border-warm-300 font-bold text-warm-700 shrink-0">
                       {answerUnit(currentQuestion)}
@@ -414,8 +415,7 @@ export function GameScreen({
                           <FormulaText text={currentQuestion.solution.calculation} />
                         </div>
                         <div className="bg-green-50 px-3 py-2 rounded border border-green-300 font-bold text-green-800">
-                          Svar: {formatDecimal(currentQuestion.answer, 2)}{' '}
-                          {answerUnit(currentQuestion)}
+                          Svar: {answerText(currentQuestion)} {answerUnit(currentQuestion)}
                         </div>
                       </div>
                     </Presence>

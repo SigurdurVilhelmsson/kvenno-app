@@ -2,7 +2,7 @@ import { formatDecimal } from '@shared/utils';
 
 import { GasLawQuestion, GameMode, GameStats, QuestionFeedback, GAS_LAW_INFO } from '../types';
 import { FormulaText } from './FormulaText';
-import { answerUnit } from '../utils/gas-calculations';
+import { answerText, answerUnit, formatDifference } from '../utils/gas-calculations';
 
 interface FeedbackScreenProps {
   feedback: QuestionFeedback;
@@ -55,7 +55,7 @@ export function FeedbackScreen({
                 <div className="text-3xl mb-1">🎉⭐</div>
                 <p className="font-bold text-yellow-800 text-lg">Þú hefur lokið Gaslögmálum!</p>
                 <p className="text-yellow-700 text-sm">
-                  15 spurningar svaraðar — þú getur haldið áfram til að bæta stigin þín.
+                  15 spurningum svarað — þú getur haldið áfram til að bæta stigin þín.
                 </p>
               </div>
             )}
@@ -64,23 +64,25 @@ export function FeedbackScreen({
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <h3 className="font-bold text-blue-900 mb-2">Þitt svar:</h3>
                 <p className="text-2xl font-bold text-blue-800">
-                  {formatDecimal(feedback.userAnswer, 2)} {answerUnit(currentQuestion)}
+                  {feedback.userAnswer === null
+                    ? '—'
+                    : `${formatDecimal(feedback.userAnswer)} ${answerUnit(currentQuestion)}`}
                 </p>
               </div>
               <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                 <h3 className="font-bold text-green-900 mb-2">Rétt svar:</h3>
                 <p className="text-2xl font-bold text-green-800">
-                  {formatDecimal(feedback.correctAnswer, 2)} {answerUnit(currentQuestion)}
+                  {answerText(currentQuestion)} {answerUnit(currentQuestion)}
                 </p>
               </div>
             </div>
 
-            {!feedback.isCorrect && (
+            {!feedback.isCorrect && feedback.userAnswer !== null && (
               <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200 mb-6">
                 <h3 className="font-bold text-yellow-900 mb-1">Mismunur:</h3>
                 <p className="text-lg text-yellow-800">
-                  {formatDecimal(feedback.difference, 2)} {answerUnit(currentQuestion)} frá réttum
-                  svari
+                  {formatDifference(feedback.userAnswer, currentQuestion.answer)}{' '}
+                  {answerUnit(currentQuestion)} frá réttu svari
                 </p>
               </div>
             )}

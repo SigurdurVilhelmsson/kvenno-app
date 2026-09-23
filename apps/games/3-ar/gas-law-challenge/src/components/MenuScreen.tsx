@@ -69,12 +69,12 @@ export function MenuScreen({
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm mb-3">
                   <div className="bg-white p-2 rounded">
-                    <strong className="text-blue-700">P (þrýstingur)</strong> — fleiri árekstur =
+                    <strong className="text-blue-700">P (þrýstingur)</strong> — fleiri árekstrar =
                     meiri þrýstingur
                   </div>
                   <div className="bg-white p-2 rounded">
                     <strong className="text-green-700">V (rúmmál)</strong> — minna ílát = fleiri
-                    árekstur
+                    árekstrar
                   </div>
                   <div className="bg-white p-2 rounded">
                     <strong className="text-red-700">T (hitastig)</strong> — hærra T = hraðari agnir
@@ -82,7 +82,7 @@ export function MenuScreen({
                   </div>
                   <div className="bg-white p-2 rounded">
                     <strong className="text-amber-700">n (mólfjöldi)</strong> — fleiri agnir =
-                    fleiri árekstur
+                    fleiri árekstrar
                   </div>
                 </div>
                 <div className="bg-white p-3 rounded-lg text-center">
@@ -93,7 +93,7 @@ export function MenuScreen({
                 </div>
                 <p className="text-xs text-purple-600 mt-3">
                   <strong>Mikilvægt:</strong> T verður alltaf að vera í Kelvin (K = °C + 273). Þetta
-                  lögmál gildir best fyrir gas við lágan þrýsting og hátt hitastig (tilvalið gas).
+                  lögmál gildir best fyrir gas við lágan þrýsting og hátt hitastig (kjörgas).
                 </p>
               </div>
 
@@ -130,7 +130,7 @@ export function MenuScreen({
                       Boyle / Charles / Gay-Lussac
                     </div>
                     <div className="text-xs text-warm-500 mt-2">
-                      Sjáðu hvað gerist þegar ein breyta er fastlagt.
+                      Sjáðu hvað gerist þegar ein breyta er föst.
                     </div>
                   </button>
                   <button
@@ -173,7 +173,7 @@ export function MenuScreen({
                   <h2 className="text-2xl font-bold mb-3 text-orange-900">Keppnishamur</h2>
                   <ul className="text-warm-700 mb-4 space-y-2 text-sm">
                     <li>⏱️ 90 sekúndur á spurningu</li>
-                    <li>🎯 Tíma bónus fyrir hraða</li>
+                    <li>🎯 Tímabónus fyrir hraða</li>
                     <li>💡 Vísbendingar í boði</li>
                     <li>📊 Stigatafla og röð</li>
                   </ul>

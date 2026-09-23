@@ -43,7 +43,7 @@ export const questions: GasLawQuestion[] = [
   {
     id: 2,
     emoji: '🚴',
-    scenario_is: 'Þú ert að athuga loftþrýsting í hjólbarða hjólreiðarinnar þinnar að morgni.',
+    scenario_is: 'Þú ert að athuga loftþrýsting í hjólbarða reiðhjólsins þíns að morgni.',
     difficulty: 'Auðvelt',
     gasLaw: 'ideal',
     given: {
@@ -52,23 +52,23 @@ export const questions: GasLawQuestion[] = [
       T: { value: 288, unit: 'K' },
     },
     find: 'n',
-    answer: 0.211,
+    answer: 0.212,
     tolerance: 0.004,
     hints: [
       'Finndu n (fjölda móla). Einangraðu n í PV = nRT',
       'Notaðu: n = PV/RT',
       'Settu inn: n = (2,5)(2,0)/[(0,08206)(288)]',
-      'Reiknaðu: n = 0,211 mol',
+      'Reiknaðu: n = 0,212 mol',
     ],
     solution: {
       formula: 'n = PV/RT',
       substitution: 'n = (2,5 atm)(2,0 L) / [(0,08206 L·atm/mol·K)(288 K)]',
-      calculation: 'n = 0,211 mol',
+      calculation: 'n = 0,212 mol',
       steps: [
         'Byrja á PV = nRT',
         'Einangra n: n = PV/RT',
         'Setja inn gildi: n = (2,5)(2,0)/(0,08206 × 288)',
-        'Reikna: n = 0,211 mol',
+        'Reikna: n = 0,212 mol',
       ],
     },
   },
@@ -109,7 +109,7 @@ export const questions: GasLawQuestion[] = [
   {
     id: 4,
     emoji: '🧪',
-    scenario_is: 'Í efnafræðistofu ertu að vinna með lofteinangrun við staðalskilyrði.',
+    scenario_is: 'Í efnafræðistofu ertu að vinna með gassýni.',
     difficulty: 'Auðvelt',
     gasLaw: 'ideal',
     given: {
@@ -177,7 +177,7 @@ export const questions: GasLawQuestion[] = [
   {
     id: 6,
     emoji: '🎈',
-    scenario_is: 'Loftbelgur er hitaður upp úr 300K í 400K við fast þrýsðing.',
+    scenario_is: 'Loftbelgur er hitaður upp úr 300K í 400K við fastan þrýsting.',
     difficulty: 'Miðlungs',
     gasLaw: 'ideal',
     given: {
@@ -317,7 +317,7 @@ export const questions: GasLawQuestion[] = [
     id: 10,
     emoji: '✈️',
     scenario_is:
-      'Farþegaflugvél flýgur á 10,000m hæð þar sem þrýstingur er 0,26 atm og hitastig -50°C.',
+      'Farþegaflugvél flýgur á 10 km hæð þar sem þrýstingur er 0,26 atm og hitastig -50°C.',
     difficulty: 'Miðlungs',
     gasLaw: 'ideal',
     given: {
@@ -351,8 +351,7 @@ export const questions: GasLawQuestion[] = [
   {
     id: 11,
     emoji: '🌡️',
-    scenario_is:
-      'Veðurspá: Lágþrýstingssvæði nálgast. Hvað gerist við loftþrýsting þegar hitastigið lækkar?',
+    scenario_is: 'Veðurspá: Lágþrýstingssvæði nálgast.',
     difficulty: 'Miðlungs',
     gasLaw: 'ideal',
     given: {
@@ -361,24 +360,24 @@ export const questions: GasLawQuestion[] = [
       n: { value: 100, unit: 'mol' },
     },
     find: 'P',
-    answer: 0.946,
+    answer: 0.945,
     tolerance: 0.019,
     hints: [
       'Veðurbelgir mæla ástand lofthjúpsins',
       'Notaðu P = nRT/V',
       'Settu inn: P = (100)(0,08206)(288)/(2500)',
-      'Reiknaðu: P = 0,946 atm (lágur þrýstingur = óveður!)',
+      'Reiknaðu: P = 0,945 atm (lágur þrýstingur = óveður!)',
     ],
     solution: {
       formula: 'P = nRT/V',
       substitution: 'P = (100 mol)(0,08206 L·atm/mol·K)(288 K) / (2500 L)',
-      calculation: 'P = 0,946 atm',
+      calculation: 'P = 0,945 atm',
       steps: [
         'Veðurbelgur ber mælitæki upp í lofthjúpinn',
         'Lægðum fylgja oft ský og rigning',
         'Nota PV = nRT og einangra P',
         'Setja inn gildi: P = (100)(0,08206)(288)/(2500)',
-        'Reikna: P = 0,946 atm (undir staðalþrýstingnum 1,0 atm = lægð)',
+        'Reikna: P = 0,945 atm (undir staðalþrýstingnum 1,0 atm = lægð)',
       ],
     },
   },
@@ -491,7 +490,7 @@ export const questions: GasLawQuestion[] = [
     id: 15,
     emoji: '🛥️',
     scenario_is:
-      'Kafbátur er á yfirborði sjávar þar sem þrýstingur er 1,0 atm og loftbólga hefur rúmmál 6,0 L. Kafbáturinn kafar og bólgan minnkar í 2,0 L. Hver er þrýstingurinn á þessu dýpi?',
+      'Kafbátur er á yfirborði sjávar þar sem þrýstingur er 1,0 atm og loftbóla hefur rúmmál 6,0 L. Kafbáturinn kafar og bólan minnkar í 2,0 L. Hver er þrýstingurinn á þessu dýpi?',
     difficulty: 'Miðlungs',
     gasLaw: 'boyles',
     given: {
@@ -527,7 +526,7 @@ export const questions: GasLawQuestion[] = [
     id: 16,
     emoji: '🎈',
     scenario_is:
-      'Loftbelgur hefur rúmmál 3,0 L við 300 K. Hann er hitaður upp í 450 K við fast þrýsðing. Hvert er nýja rúmmálið?',
+      'Loftbelgur hefur rúmmál 3,0 L við 300 K. Hann er hitaður upp í 450 K við fastan þrýsting. Hvert er nýja rúmmálið?',
     difficulty: 'Auðvelt',
     gasLaw: 'charles',
     given: {
@@ -562,7 +561,7 @@ export const questions: GasLawQuestion[] = [
     id: 17,
     emoji: '🚗',
     scenario_is:
-      'Hjólbarði bíls hefur rúmmál 8,0 L við 293 K (20°C). Eftir akstur er rúmmálið orðið 8,8 L við fast þrýsðing. Hvert er nýja hitastigið?',
+      'Hjólbarði bíls hefur rúmmál 8,0 L við 293 K (20°C). Eftir akstur er rúmmálið orðið 8,8 L við fastan þrýsting. Hvert er nýja hitastigið?',
     difficulty: 'Miðlungs',
     gasLaw: 'charles',
     given: {
@@ -681,7 +680,7 @@ export const questions: GasLawQuestion[] = [
     answer: 8.63,
     tolerance: 0.17,
     hints: [
-      'Sameinuð gaslögmál: P₁V₁/T₁ = P₂V₂/T₂ (n er fast)',
+      'Sameinaða gaslögmálið: P₁V₁/T₁ = P₂V₂/T₂ (n er fast)',
       'V₂ = V₁ × (P₁/P₂) × (T₂/T₁) þar sem P₂=0,5 atm, T₂=253 K',
       'V₂ = 5,0 × (1,0/0,5) × (253/293)',
       'V₂ = 5,0 × 2,0 × 0,8635 = 8,63 L',
@@ -691,7 +690,7 @@ export const questions: GasLawQuestion[] = [
       substitution: 'V₂ = (5,0 L)(1,0 atm / 0,5 atm)(253 K / 293 K)',
       calculation: 'V₂ = 8,63 L',
       steps: [
-        'Sameinuð gaslögmál: P₁V₁/T₁ = P₂V₂/T₂',
+        'Sameinaða gaslögmálið: P₁V₁/T₁ = P₂V₂/T₂',
         'Einangra V₂: V₂ = V₁ × (P₁/P₂) × (T₂/T₁)',
         'P₂ = 0,5 atm og T₂ = 253 K (gefin í verkefninu)',
         'Setja inn: V₂ = 5,0 × (1,0/0,5) × (253/293)',
@@ -717,7 +716,7 @@ export const questions: GasLawQuestion[] = [
     answer: 360,
     tolerance: 7,
     hints: [
-      'Sameinuð gaslögmál: P₁V₁/T₁ = P₂V₂/T₂',
+      'Sameinaða gaslögmálið: P₁V₁/T₁ = P₂V₂/T₂',
       'T₂ = T₁ × (P₂/P₁) × (V₂/V₁) þar sem P₂=6,0 atm, V₂=6,0 L',
       'T₂ = 300 × (6,0/3,0) × (6,0/10,0)',
       'T₂ = 300 × 2,0 × 0,6 = 360 K',
@@ -727,7 +726,7 @@ export const questions: GasLawQuestion[] = [
       substitution: 'T₂ = (300 K)(6,0 atm / 3,0 atm)(6,0 L / 10,0 L)',
       calculation: 'T₂ = 360 K',
       steps: [
-        'Sameinuð gaslögmál: P₁V₁/T₁ = P₂V₂/T₂',
+        'Sameinaða gaslögmálið: P₁V₁/T₁ = P₂V₂/T₂',
         'Einangra T₂: T₂ = T₁ × (P₂/P₁) × (V₂/V₁)',
         'P₂ = 6,0 atm og V₂ = 6,0 L (gefin í verkefninu)',
         'Setja inn: T₂ = 300 × (6,0/3,0) × (6,0/10,0)',
@@ -777,7 +776,7 @@ export const questions: GasLawQuestion[] = [
     id: 23,
     emoji: '⚗️',
     scenario_is:
-      'Gashylki inniheldur 5,0 L af gasi og 0,20 mól. Gasið þenst út í 12,5 L við fast þrýsðing og hitastig. Hversu mörg mól eru núna?',
+      'Gashylki inniheldur 5,0 L af gasi og 0,20 mól. Gasið þenst út í 12,5 L við fastan þrýsting og hitastig. Hversu mörg mól eru núna?',
     difficulty: 'Miðlungs',
     gasLaw: 'avogadro',
     given: {

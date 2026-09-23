@@ -201,7 +201,7 @@ describe('getVariableName', () => {
   });
 
   it('returns Icelandic name for T', () => {
-    expect(getVariableName('T')).toBe('Hiti');
+    expect(getVariableName('T')).toBe('Hitastig');
   });
 
   it('returns Icelandic name for n', () => {
