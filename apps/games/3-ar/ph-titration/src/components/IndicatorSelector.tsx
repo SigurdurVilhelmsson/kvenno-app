@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 import { indicators } from '../data/indicators';
 import { IndicatorType } from '../types';
 
@@ -19,7 +21,7 @@ export const IndicatorSelector: React.FC<IndicatorSelectorProps> = ({
 }) => {
   return (
     <div className="bg-white rounded-lg p-3 sm:p-4 shadow-md border-2 border-warm-200">
-      <h3 className="text-lg font-bold text-warm-800 mb-3">Veldu Vísi</h3>
+      <h3 className="text-lg font-bold text-warm-800 mb-3">Veldu vísi</h3>
       <div className="grid grid-cols-1 gap-2">
         {indicators.map((indicator) => (
           <button
@@ -36,7 +38,8 @@ export const IndicatorSelector: React.FC<IndicatorSelectorProps> = ({
               <div className="flex-1">
                 <p className="font-bold text-sm text-warm-900">{indicator.name}</p>
                 <p className="text-xs text-warm-600">
-                  pH {indicator.pHRange[0].toFixed(1)} - {indicator.pHRange[1].toFixed(1)}
+                  pH {formatDecimal(indicator.pHRange[0], 1)} -{' '}
+                  {formatDecimal(indicator.pHRange[1], 1)}
                 </p>
               </div>
               <div className="flex gap-1 sm:gap-2 ml-2">
@@ -44,7 +47,7 @@ export const IndicatorSelector: React.FC<IndicatorSelectorProps> = ({
                   <div
                     className="w-6 h-6 rounded border border-warm-400"
                     style={{ backgroundColor: indicator.colorAcidic }}
-                    aria-label="Litur í sýrri lausn"
+                    aria-label="Litur í súrri lausn"
                   />
                   <span className="text-[10px] max-lg:text-xs text-warm-600 mt-0.5">Súr</span>
                 </div>

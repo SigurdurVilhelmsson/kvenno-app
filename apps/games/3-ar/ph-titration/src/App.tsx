@@ -107,7 +107,7 @@ function App() {
                 <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center">
                   <div>
                     <div className="font-bold text-blue-800">Stig 1: Skilningur</div>
-                    <div className="text-sm text-blue-600">Títrunarkúrfur og vísar</div>
+                    <div className="text-sm text-blue-600">Títrunarferlar og vísar</div>
                   </div>
                   <div className="text-2xl font-bold text-blue-600">{progress.level1Score}</div>
                 </div>
@@ -138,7 +138,7 @@ function App() {
                 <h2 className="font-bold text-purple-800 mb-3">Hvað lærðir þú?</h2>
                 <ul className="space-y-2 text-purple-900 text-sm">
                   <li>
-                    ✓ <strong>Títrunarkúrfur:</strong> Munur á sterkum og veikum sýru-basa kúrfum
+                    ✓ <strong>Títrunarferlar:</strong> Munur á sterkum og veikum sýru-basa ferlum
                   </li>
                   <li>
                     ✓ <strong>Jafngildispunktur:</strong> Hvar öll sýra/basi hefur hvarfast
@@ -150,7 +150,7 @@ function App() {
                     ✓ <strong>Henderson-Hasselbalch:</strong> pH = pKₐ + log([A⁻]/[HA])
                   </li>
                   <li>
-                    ✓ <strong>Fjölprótón sýrur:</strong> Margar jafngildispunktar fyrir H₂SO₃, H₃PO₄
+                    ✓ <strong>Fjölvirkar sýrur:</strong> Margir jafngildispunktar fyrir H₂SO₃, H₃PO₄
                   </li>
                 </ul>
               </div>
@@ -172,7 +172,7 @@ function App() {
           <div className="min-h-screen p-4 md:p-8">
             <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
               <p className="text-warm-600 mb-4">
-                Lærðu um sýru-basa títranir, títrunarkúrfur og vísa
+                Lærðu um sýru-basa títranir, títrunarferla og vísa
               </p>
 
               {/* Pedagogical explanation */}
@@ -180,7 +180,7 @@ function App() {
                 <h2 className="font-bold text-purple-800 mb-3">Hvað er títrun?</h2>
                 <p className="text-purple-900 text-sm mb-4">
                   <strong>Títrun</strong> er aðferð til að ákvarða styrk óþekkts efnis með því að
-                  bæta við þekktu efni (títrant) þar til efnahvörfin er lokið. Við mælum pH allan
+                  bæta við þekktu efni (títrantur) þar til efnahvarfinu er lokið. Við mælum pH allan
                   tímann og finnum <em>jafngildispunktinn</em> þar sem öll sýra/basi hefur hvarfast.
                 </p>
                 <div className="bg-white p-3 rounded-lg border border-purple-200">
@@ -214,9 +214,9 @@ function App() {
                           </span>
                         )}
                       </div>
-                      <div className="text-sm text-blue-600 mt-1">Títrunarkúrfur og vísar</div>
+                      <div className="text-sm text-blue-600 mt-1">Títrunarferlar og vísar</div>
                       <div className="text-xs text-warm-600 mt-2">
-                        Skildu hvernig títrunarkúrfur líta út fyrir mismunandi sýru-basa
+                        Skildu hvernig títrunarferlar líta út fyrir mismunandi sýru-basa
                         samsetningar. Lærðu um vísa og litabreytingar.
                       </div>
                     </div>
@@ -269,10 +269,10 @@ function App() {
                         )}
                       </div>
                       <div className="text-sm text-purple-600 mt-1">
-                        Styrkreikningar og fjölprótón sýrur
+                        Styrkreikningar og fjölvirkar sýrur
                       </div>
                       <div className="text-xs text-warm-600 mt-2">
-                        Reiknaðu styrk, pH og rúmmál. Leystu fjölprótón sýruverkefni og notaðu
+                        Reiknaðu styrk, pH og rúmmál. Leystu verkefni um fjölvirkar sýrur og notaðu
                         Henderson-Hasselbalch jöfnuna.
                       </div>
                     </div>
@@ -303,7 +303,7 @@ function App() {
                       <div className="text-xl sm:text-2xl font-bold text-green-600">
                         {totalScore}
                       </div>
-                      <div className="text-xs text-warm-600">Heildar stig</div>
+                      <div className="text-xs text-warm-600">Heildarstig</div>
                     </div>
                     <div className="bg-purple-50 rounded-lg p-2 sm:p-3">
                       <div className="text-xl sm:text-2xl font-bold text-purple-600">
@@ -338,7 +338,7 @@ function App() {
                     </span>
                   </p>
                   <p>
-                    <strong>Fjölprótón:</strong> Mörg jafngildispunkt fyrir H₂SO₃, H₃PO₄
+                    <strong>Fjölvirkar sýrur:</strong> Margir jafngildispunktar fyrir H₂SO₃, H₃PO₄
                   </p>
                 </div>
               </div>

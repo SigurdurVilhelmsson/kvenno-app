@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 
 import { titrations } from '../data/titrations';
+import type { MonoproticTitration } from '../types';
 import {
   calculateStrongStrongPH,
   calculateWeakStrongPH,
@@ -183,5 +184,36 @@ describe('every titration starts where its data says it does', () => {
       .map((t) => [`${t.id} ${t.name}`, t] as const)
   )('%s does not yet start at its declared initialPH', (_label, t) => {
     expect(calculatePH(t, 0)).toBeCloseTo(t.initialPH, 1);
+  });
+});
+
+// Titrant only ever pushes the pH one way: base up, acid down. Until 2026-09-23
+// the weak-acid and weak-base buffer region used Henderson-Hasselbalch from the
+// very first drop, where it diverges, so one 0,05 mL drop of NaOH took HF from
+// pH 2,00 to 0,21 and a drop of HCl took ammonia from 11,13 up to 11,96. The
+// Level 2 flask showed those numbers and every weak-acid curve opened with a
+// hook downwards. Stepped at the Level 2 drop size, over the burette's 60 mL.
+describe('the pH moves only with the titrant', () => {
+  const monoprotic = titrations.filter((t): t is MonoproticTitration => 'equivalenceVolume' in t);
+
+  it.each(monoprotic.map((t) => [`${t.id} ${t.name}`, t] as const))(
+    '%s never moves against the titrant',
+    (_label, t) => {
+      const rising = t.type !== 'strong-weak'; // a base analyte falls
+      let previous = calculatePH(t, 0);
+      for (let step = 1; step <= 1200; step++) {
+        const volume = step * 0.05;
+        const pH = calculatePH(t, volume);
+        const moved = rising ? pH - previous : previous - pH;
+        expect(moved, `${volume.toFixed(2)} mL: ${previous} → ${pH}`).toBeGreaterThanOrEqual(-1e-9);
+        previous = pH;
+      }
+    }
+  );
+
+  it('still sits at pKa at half-equivalence', () => {
+    for (const t of monoprotic.filter((m) => m.type !== 'strong-strong')) {
+      expect(calculatePH(t, t.equivalenceVolume / 2), `${t.id}`).toBeCloseTo(t.pKa!, 1);
+    }
   });
 });

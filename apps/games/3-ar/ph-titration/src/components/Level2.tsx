@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 
 import { Presence } from '@shared/components';
+import { formatDecimal } from '@shared/utils';
 
 import { Burette } from './Burette';
 import { Flask } from './Flask';
@@ -252,7 +253,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             </button>
             <div className="flex items-center gap-4">
               <div className="text-sm text-warm-500">
-                {completed + 1} / {LEVEL2_PUZZLES.length}
+                {currentIndex + 1} / {LEVEL2_PUZZLES.length}
               </div>
               <div className="text-lg font-bold text-green-600">Stig: {score}</div>
             </div>
@@ -280,12 +281,24 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             <div className="flex-1">
               <h2 className="text-lg font-bold text-green-800 mb-1">{titration.name}</h2>
               <p className="text-green-900">{puzzle.taskIs}</p>
+              {/* The names are nominative, so they stand after the colon rather
+                  than after "af", which would need them in the dative. */}
               <p className="text-sm text-green-700 mt-2">
-                <span className="font-semibold">Sýni:</span> {titration.analyte.volume} mL af{' '}
-                {titration.analyte.molarity} M {titration.analyte.name}
+                <span className="font-semibold">Sýni:</span> {titration.analyte.name} (
+                {titration.analyte.formula}),{' '}
+                <span className="whitespace-nowrap">
+                  {formatDecimal(titration.analyte.volume, 1)} mL
+                </span>
+                ,{' '}
+                <span className="whitespace-nowrap">
+                  {formatDecimal(titration.analyte.molarity, 3)} M
+                </span>
                 <br />
-                <span className="font-semibold">Títrant:</span> {titration.titrant.molarity} M{' '}
-                {titration.titrant.name}
+                <span className="font-semibold">Títrantur:</span> {titration.titrant.name} (
+                {titration.titrant.formula}),{' '}
+                <span className="whitespace-nowrap">
+                  {formatDecimal(titration.titrant.molarity, 3)} M
+                </span>
               </p>
             </div>
           </div>
@@ -313,21 +326,21 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       <div className="flex gap-2">
                         <button
                           onClick={handleAddDrop}
-                          aria-label="Bæta við 0,05 mL títrant"
+                          aria-label="Bæta við 0,05 mL títrants"
                           className="flex-1 md:flex-none whitespace-nowrap px-3 py-2 pointer-coarse:py-3 bg-blue-100 hover:bg-blue-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
                         >
-                          +0.05 mL
+                          +0,05 mL
                         </button>
                         <button
                           onClick={handleAdd1mL}
-                          aria-label="Bæta við 1 mL títrant"
+                          aria-label="Bæta við 1 mL títrants"
                           className="flex-1 md:flex-none whitespace-nowrap px-3 py-2 pointer-coarse:py-3 bg-blue-200 hover:bg-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
                         >
                           +1 mL
                         </button>
                         <button
                           onClick={handleAdd5mL}
-                          aria-label="Bæta við 5 mL títrant"
+                          aria-label="Bæta við 5 mL títrants"
                           className="flex-1 md:flex-none whitespace-nowrap px-3 py-2 pointer-coarse:py-3 bg-blue-300 hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
                         >
                           +5 mL
@@ -354,7 +367,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                           }
                         }}
                         onBlur={() => setIsPouring(false)}
-                        aria-label="Halda inni til að hella títrant samfellt"
+                        aria-label="Halda inni til að hella títranti samfellt"
                         className="w-full px-4 py-3 bg-indigo-500 hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-700 text-white rounded-lg font-bold touch-none select-none"
                       >
                         Halda inni til að hella
@@ -399,7 +412,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               <div className="mt-4">
                 <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-3 mb-3">
                   <p className="text-sm text-indigo-800">
-                    <strong>Leiðbeiningar:</strong> Bættu við títrant þar til þú sérð{' '}
+                    <strong>Leiðbeiningar:</strong> Bættu við títranti þar til þú sérð{' '}
                     <strong>snögga pH-breytingu</strong> á ferilnum (brattur halli). Smelltu síðan á
                     hnappinn til að merkja jafngildispunktinn.
                   </p>
@@ -426,7 +439,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   Þetta er jafngildispunkturinn — þar sem mólfjöldi sýru = mólfjöldi basa.
                 </p>
                 <p className="text-xs text-orange-600 mb-4">
-                  Leyfilegt svigrúm: ±{puzzle.volumeTolerance.toFixed(1)} mL.
+                  Leyfilegt svigrúm: ±{formatDecimal(puzzle.volumeTolerance, 1)} mL.
                 </p>
                 <div className="space-y-3">
                   <input
@@ -449,10 +462,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     </button>
                     <div className="flex-1 min-w-0 text-center">
                       <span className="font-mono text-xl font-bold text-orange-800 whitespace-nowrap">
-                        {markedVolume.toFixed(1)} mL
+                        {formatDecimal(markedVolume, 1)} mL
                       </span>
                       <span className="text-sm text-orange-600 ml-2 whitespace-nowrap">
-                        (pH ≈ {titration ? calculatePH(titration, markedVolume).toFixed(1) : '?'})
+                        (pH ≈{' '}
+                        {titration ? formatDecimal(calculatePH(titration, markedVolume), 1) : '?'})
                       </span>
                     </div>
                     <button
@@ -476,7 +490,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       onClick={handleSubmitMarkedVolume}
                       className="flex-1 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold"
                     >
-                      Staðfesta: {markedVolume.toFixed(1)} mL →
+                      Staðfesta: {formatDecimal(markedVolume, 1)} mL →
                     </button>
                   </div>
                 </div>
@@ -539,10 +553,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 <div className="text-sm space-y-2">
                   <div>
                     <span className="font-semibold">Þitt rúmmál:</span>{' '}
-                    {submittedVolume?.toFixed(2)} mL
+                    {submittedVolume !== null ? formatDecimal(submittedVolume, 2) : '?'} mL
                     <br />
                     <span className="font-semibold">Jafngildisrúmmál:</span>{' '}
-                    {titration.equivalenceVolume.toFixed(2)} mL
+                    {formatDecimal(titration.equivalenceVolume, 2)} mL
                     <br />
                     <span
                       className={
@@ -555,7 +569,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     >
                       Skekkja: ±
                       {submittedVolume !== null
-                        ? Math.abs(submittedVolume - titration.equivalenceVolume).toFixed(2)
+                        ? formatDecimal(Math.abs(submittedVolume - titration.equivalenceVolume), 2)
                         : '?'}{' '}
                       mL
                       {submittedVolume !== null &&
@@ -583,13 +597,20 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       Jafngildispunktur ≠ Endapunktur
                     </div>
                     <div className="text-purple-700">
-                      <strong>Jafngildispunktur:</strong> {titration.equivalenceVolume.toFixed(1)}{' '}
-                      mL (pH {titration.equivalencePH.toFixed(1)}) — þar sem mólfjöldi sýru =
-                      mólfjöldi basa.
+                      {/* The pH is derived, as the flask's and the marking readout's
+                          are, so all three agree at the same volume. */}
+                      <strong>Jafngildispunktur:</strong>{' '}
+                      {formatDecimal(titration.equivalenceVolume, 1)} mL (pH{' '}
+                      {formatDecimal(calculatePH(titration, titration.equivalenceVolume), 1)}) — þar
+                      sem mólfjöldi sýru = mólfjöldi basa.
                       <br />
                       <strong>Endapunktur:</strong> þar sem vísirinn breytir um lit (
                       {indicators.find((i) => i.id === selectedIndicator)?.name} breytist við pH{' '}
-                      {indicators.find((i) => i.id === selectedIndicator)?.pHRange.join('–')}).
+                      {indicators
+                        .find((i) => i.id === selectedIndicator)
+                        ?.pHRange.map((pH) => formatDecimal(pH, 1))
+                        .join('–')}
+                      ).
                       <br />
                       Góður vísir hefur endapunkt nálægt jafngildispunktinum.
                     </div>

@@ -10,7 +10,7 @@ export const indicators: Indicator[] = [
     pHRange: [3.1, 4.4],
     colorAcidic: '#ef4444', // Red
     colorBasic: '#f97316', // Orange-yellow
-    description: 'Best for strong acid titrations',
+    description: 'Hentar best við títrun sterkrar sýru',
   },
   {
     id: 'methyl-red',
@@ -18,15 +18,15 @@ export const indicators: Indicator[] = [
     pHRange: [4.4, 6.2],
     colorAcidic: '#dc2626', // Red
     colorBasic: '#fbbf24', // Yellow
-    description: 'Good for weak base + strong acid titrations',
+    description: 'Hentar vel við títrun veiks basa með sterkri sýru',
   },
   {
     id: 'bromothymol-blue',
-    name: 'Brómtýmolblátt',
+    name: 'Brómþýmólblátt',
     pHRange: [6.0, 7.6],
     colorAcidic: '#fbbf24', // Yellow
     colorBasic: '#3b82f6', // Blue
-    description: 'Ideal for strong acid + strong base titrations',
+    description: 'Hentar best við títrun sterkrar sýru með sterkum basa',
   },
   {
     id: 'phenolphthalein',
@@ -34,15 +34,15 @@ export const indicators: Indicator[] = [
     pHRange: [8.3, 10.0],
     colorAcidic: 'transparent',
     colorBasic: '#ec4899', // Pink
-    description: 'Best for weak acid + strong base titrations',
+    description: 'Hentar best við títrun veikrar sýru með sterkum basa',
   },
   {
     id: 'thymol-blue',
-    name: 'Týmolblátt',
+    name: 'Þýmólblátt',
     pHRange: [8.0, 9.6],
     colorAcidic: '#fbbf24', // Yellow
     colorBasic: '#3b82f6', // Blue
-    description: 'Alternative for weak acid + strong base',
+    description: 'Annar kostur við títrun veikrar sýru með sterkum basa',
   },
 ];
 

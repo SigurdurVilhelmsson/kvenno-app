@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 import { getPHColor } from '../utils/ph-calculations';
 
 interface PHMeterProps {
@@ -18,14 +20,14 @@ export const PHMeter: React.FC<PHMeterProps> = ({ pH, isActive = true }) => {
       <div
         className="bg-warm-800 rounded-lg p-4 shadow-xl border-4 border-warm-700"
         role="meter"
-        aria-label={isActive ? `pH mælir: ${pH.toFixed(2)}` : 'pH mælir: í biðstöðu'}
+        aria-label={isActive ? `pH-mælir: ${formatDecimal(pH, 2)}` : 'pH-mælir: í biðstöðu'}
         aria-valuenow={isActive ? pH : undefined}
         aria-valuemin={0}
         aria-valuemax={14}
       >
         {/* Brand label */}
         <div className="text-center mb-2">
-          <p className="text-xs text-warm-400 font-bold">DIGITAL pH METER</p>
+          <p className="text-xs text-warm-400 font-bold">pH-MÆLIR</p>
         </div>
 
         {/* Display screen */}
@@ -45,14 +47,14 @@ export const PHMeter: React.FC<PHMeterProps> = ({ pH, isActive = true }) => {
                   textShadow: `0 0 8px ${pHColor}`,
                 }}
               >
-                {pH.toFixed(2)}
+                {formatDecimal(pH, 2)}
               </div>
               <div className="text-xs text-green-400 mt-1">pH</div>
             </div>
           ) : (
             <div className="text-center">
               <div className="text-4xl font-bold text-warm-600">---</div>
-              <div className="text-xs text-warm-600 mt-1">STANDBY</div>
+              <div className="text-xs text-warm-600 mt-1">BIÐSTAÐA</div>
             </div>
           )}
         </div>

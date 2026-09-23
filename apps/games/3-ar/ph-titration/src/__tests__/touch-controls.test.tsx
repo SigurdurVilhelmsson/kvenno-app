@@ -70,7 +70,7 @@ describe('ph-titration level 2 hold-to-pour', () => {
 describe('ph-titration level 2 marking nudges', () => {
   function startMarking() {
     renderLevel2();
-    const add5 = screen.getByRole('button', { name: 'Bæta við 5 mL títrant' });
+    const add5 = screen.getByRole('button', { name: 'Bæta við 5 mL títrants' });
     fireEvent.click(add5);
     fireEvent.click(add5);
     // 10 mL poured; the marker starts at half the poured volume.
@@ -89,7 +89,7 @@ describe('ph-titration level 2 marking nudges', () => {
     fireEvent.click(up);
     fireEvent.click(up);
     expect(slider()).toBe('5.2');
-    expect(screen.getByRole('button', { name: /Staðfesta: 5\.2 mL/ })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /Staðfesta: 5,2 mL/ })).toBeTruthy();
 
     fireEvent.click(down);
     fireEvent.click(down);
@@ -132,7 +132,7 @@ describe('ph-titration level 2 indicator step on a phone', () => {
 
   function confirmMarkedVolume() {
     renderLevel2();
-    const add5 = screen.getByRole('button', { name: 'Bæta við 5 mL títrant' });
+    const add5 = screen.getByRole('button', { name: 'Bæta við 5 mL títrants' });
     fireEvent.click(add5);
     fireEvent.click(add5);
     fireEvent.click(screen.getByRole('button', { name: /merkja jafngildispunkt/ }));
@@ -149,7 +149,7 @@ describe('ph-titration level 2 indicator step on a phone', () => {
     act(() => vi.advanceTimersByTime(100));
     expect(scrolled).toHaveBeenCalledTimes(1);
     expect(scrolled).toHaveBeenCalledWith({ block: 'start', behavior: 'smooth' });
-    expect((scrolled.mock.contexts[0] as HTMLElement).textContent).toContain('Veldu Vísi');
+    expect((scrolled.mock.contexts[0] as HTMLElement).textContent).toContain('Veldu vísi');
   });
 
   it('brings the confirm button up when it appears below the screen', () => {

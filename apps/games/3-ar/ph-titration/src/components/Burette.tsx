@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 interface BuretteProps {
   volumeAdded: number;
   maxVolume?: number;
@@ -69,7 +71,7 @@ export const Burette: React.FC<BuretteProps> = ({
         <div
           className={`relative ${widthClass} ${heightClass} rounded-t-lg rounded-b-sm border-4 border-indigo-700`}
           role="meter"
-          aria-label={`Büretta: ${volumeAdded.toFixed(2)} mL af ${maxVolume} mL bætt við`}
+          aria-label={`Búretta: ${formatDecimal(volumeAdded, 2)} mL af ${maxVolume} mL bætt við`}
           aria-valuenow={volumeAdded}
           aria-valuemin={0}
           aria-valuemax={maxVolume}
@@ -131,7 +133,7 @@ export const Burette: React.FC<BuretteProps> = ({
         <p className={`${config.volumeText} font-bold text-indigo-900`}>
           Rúmmál bætt við:{' '}
           <span className="whitespace-nowrap">
-            <span className="text-base md:text-lg">{volumeAdded.toFixed(2)}</span> mL
+            <span className="text-base md:text-lg">{formatDecimal(volumeAdded, 2)}</span> mL
           </span>
         </p>
       </div>

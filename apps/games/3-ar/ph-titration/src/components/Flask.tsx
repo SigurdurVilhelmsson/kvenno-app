@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 import { getIndicatorColor } from '../data/indicators';
 import { getPHColor } from '../utils/ph-calculations';
 
@@ -45,7 +47,7 @@ export const Flask: React.FC<FlaskProps> = ({
         {/* Flask body */}
         <div
           role="img"
-          aria-label={`Erlenmeyerkolbi: pH ${pH.toFixed(2)}, ${(volumeAnalyte + volumeTitrant).toFixed(1)} mL lausn — ${pH < 7 ? 'súr' : pH > 7 ? 'basísk' : 'hlutlaus'}`}
+          aria-label={`Erlenmeyerkolbi: pH ${formatDecimal(pH, 2)}, ${formatDecimal(volumeAnalyte + volumeTitrant, 1)} mL lausn — ${pH < 7 ? 'súr' : pH > 7 ? 'basísk' : 'hlutlaus'}`}
           className={`relative w-32 h-36 md:w-60 md:h-52 border-4 border-indigo-500 overflow-hidden ${isSwirling ? 'animate-pulse' : ''}`}
           style={{
             background:
@@ -89,7 +91,7 @@ export const Flask: React.FC<FlaskProps> = ({
       <div className="mt-4 flex gap-2 flex-wrap justify-center">
         <div className="bg-blue-100 px-2 md:px-3 py-1.5 rounded-lg border-2 border-blue-300 text-center">
           <p className="text-xs text-blue-700 font-semibold">Rúmmál</p>
-          <p className="text-sm font-bold text-blue-900">{totalVolume.toFixed(1)} mL</p>
+          <p className="text-sm font-bold text-blue-900">{formatDecimal(totalVolume, 1)} mL</p>
         </div>
         <div
           className="px-2 md:px-3 py-1.5 rounded-lg border-2 text-center"
@@ -99,7 +101,7 @@ export const Flask: React.FC<FlaskProps> = ({
           }}
         >
           <p className="text-xs text-warm-700 font-semibold">pH</p>
-          <p className="text-sm font-bold text-warm-900">{pH.toFixed(2)}</p>
+          <p className="text-sm font-bold text-warm-900">{formatDecimal(pH, 2)}</p>
         </div>
         <div className="bg-warm-100 px-2 md:px-3 py-1.5 rounded-lg border-2 border-warm-300 text-center">
           <p className="text-xs text-warm-700 font-semibold">Eðli</p>
