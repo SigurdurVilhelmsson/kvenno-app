@@ -12,8 +12,15 @@ function TokenList({ tokens, cancelled = [] }: TokenListProps) {
     <>
       {tokens.map((token, i) => (
         <span key={`${token.unit}-${token.species ?? ''}-${i}`}>
-          {i > 0 && <span aria-hidden="true">·</span>}
-          <span className={cancelled.includes(i) ? 'unit-cancelled' : undefined}>
+          {/* A long product of units may wrap on a phone, but only between two
+              units, never between a unit and its substance. */}
+          {i > 0 && (
+            <>
+              <span aria-hidden="true">·</span>
+              <wbr />
+            </>
+          )}
+          <span className={`whitespace-nowrap ${cancelled.includes(i) ? 'unit-cancelled' : ''}`}>
             {formatToken(token)}
           </span>
         </span>
@@ -56,9 +63,9 @@ export function UnitsDisplay({
   const hasDenominator = quantity.den.length > 0;
 
   return (
-    <span className={`inline-flex items-center gap-1.5 ${className ?? ''}`}>
+    <span className={`inline-flex flex-wrap items-center gap-1.5 ${className ?? ''}`}>
       {!unitsOnly && (
-        <span className="font-semibold tabular-nums">
+        <span className="font-semibold whitespace-nowrap tabular-nums">
           {valueLabel ?? formatNumber(quantity.value)}
         </span>
       )}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
 import { shuffleArray } from '@shared/utils';
@@ -16,6 +16,7 @@ import {
   type FixAction,
 } from '../engine/chain';
 import { flip, formatSignature, orient, type Orientation } from '../engine/units';
+import { reveal, scrollPageToTop } from '../utils/reveal';
 
 /** How long each step of the worked solution stays on screen before the next appears. */
 const STEP_REVEAL_MS = 1200;
@@ -51,6 +52,15 @@ export function ChainBuilder({
   const [chosenFix, setChosenFix] = useState<FixAction | null>(null);
 
   const problem = problems[index];
+
+  const chainBoxRef = useRef<HTMLDivElement>(null);
+  const chainRef = useRef<HTMLDivElement>(null);
+  const actionsRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const outcomeRef = useRef<HTMLDivElement>(null);
+  const predictionFeedbackRef = useRef<HTMLDivElement>(null);
+  const fixFeedbackRef = useRef<HTMLDivElement>(null);
+  const hintRef = useRef<HTMLParagraphElement>(null);
 
   // Shuffled once per problem: position in the pool must not hint at the answer.
   const pool = useMemo(
@@ -117,6 +127,65 @@ export function ChainBuilder({
     return () => clearTimeout(tick);
   }, [mode, revealed, result]);
 
+  // On a phone each of these changes lands a screen away from the finger that
+  // caused it. See utils/reveal.ts; every call is a no-op when already in view.
+
+  // A new problem replaces the statement at the top of the page.
+  const shownIndex = useRef(index);
+  useEffect(() => {
+    if (shownIndex.current === index) return;
+    shownIndex.current = index;
+    scrollPageToTop();
+  }, [index]);
+
+  // A pool card is added to the chain, which sits above the pool.
+  const shownSlotCount = useRef(slots.length);
+  useEffect(() => {
+    const added = slots.length > shownSlotCount.current;
+    shownSlotCount.current = slots.length;
+    if (!added || mode !== 'building') return;
+    const placed = chainRef.current?.querySelectorAll('[data-slot]');
+    reveal(placed?.[placed.length - 1], actionsRef.current);
+  }, [slots.length, mode]);
+
+  // The board is swapped for the prediction, the worked solution or its outcome,
+  // and back again.
+  // "Næsta dæmi" also returns to the board, but there the new statement at the
+  // top of the page is what to show, so the effect above has already scrolled.
+  const shownMode = useRef(mode);
+  const modeIndex = useRef(index);
+  useEffect(() => {
+    const sameProblem = modeIndex.current === index;
+    modeIndex.current = index;
+    if (shownMode.current === mode) return;
+    shownMode.current = mode;
+    if (!sameProblem) return;
+    if (mode === 'building') reveal(chainBoxRef.current);
+    else if (mode === 'predicting' || mode === 'tracing') reveal(panelRef.current);
+    else reveal(outcomeRef.current);
+  }, [mode, index]);
+
+  // The worked solution grows downwards one step at a time.
+  useEffect(() => {
+    if (mode !== 'tracing' || revealed === 0) return;
+    const shown = panelRef.current?.querySelectorAll('ol > li');
+    reveal(shown?.[shown.length - 1]);
+  }, [mode, revealed]);
+
+  useEffect(() => {
+    if (prediction !== null) reveal(predictionFeedbackRef.current);
+  }, [prediction]);
+
+  useEffect(() => {
+    if (chosenFix !== null) reveal(fixFeedbackRef.current);
+  }, [chosenFix]);
+
+  // The hint opens below the buttons, which on a phone are usually at the bottom
+  // edge of the screen when tapped, so the hint itself lands below the fold.
+  useEffect(() => {
+    if (showHint) reveal(hintRef.current);
+  }, [showHint]);
+
   const addRatio = (id: string) => {
     setSlots((current) => [...current, { equivalenceId: id, orientation: 'forward' }]);
   };
@@ -176,7 +245,7 @@ export function ChainBuilder({
         <button
           type="button"
           onClick={onBack}
-          className="game-btn rounded-lg border border-warm-300 px-3 py-1.5 text-sm text-warm-700 hover:bg-warm-50"
+          className="game-btn rounded-lg border border-warm-300 px-3 py-1.5 text-sm text-warm-700 hover:bg-warm-50 pointer-coarse:min-h-11"
         >
           ← Aftur í valmynd
         </button>
@@ -187,21 +256,23 @@ export function ChainBuilder({
 
       {/* Scenario */}
       <div className="mb-4 rounded-xl bg-white p-5 shadow-sm">
-        <div className="flex gap-4">
-          <span className="text-4xl" aria-hidden="true">
+        <div className="flex gap-3 sm:gap-4">
+          <span className="text-3xl sm:text-4xl" aria-hidden="true">
             {problem.icon}
           </span>
-          <div className="flex-1">
+          <div className="min-w-0 flex-1">
             <p className="text-warm-800">{problem.context}</p>
             <p className="mt-3 text-warm-800">
               <strong>Finndu {problem.goal}.</strong>
             </p>
-            <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
+            {/* Stacked on a phone, where the two chips never fit on one line and the
+                arrow was left dangling at the end of the first. */}
+            <div className="mt-3 flex flex-col items-start gap-2 text-sm sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
               <span className="rounded-lg bg-warm-100 px-3 py-1.5">
                 Þú ert með:{' '}
                 <UnitsDisplay quantity={problem.start} valueLabel={problem.startLabel} />
               </span>
-              <span aria-hidden="true" className="text-warm-400">
+              <span aria-hidden="true" className="ml-4 rotate-90 text-warm-400 sm:ml-0 sm:rotate-0">
                 →
               </span>
               <span className="rounded-lg bg-orange-100 px-3 py-1.5 text-orange-900">
@@ -220,16 +291,17 @@ export function ChainBuilder({
       {mode === 'building' && (
         <>
           {/* The chain under construction */}
-          <div className="mb-4 rounded-xl bg-white p-5 shadow-sm">
+          <div ref={chainBoxRef} className="mb-4 rounded-xl bg-white p-5 shadow-sm">
             <h3 className="mb-3 font-semibold text-warm-800">Keðjan þín</h3>
-            <div className="flex flex-wrap items-stretch gap-3">
+            <div ref={chainRef} className="flex flex-wrap items-stretch gap-3">
               <div className="flex items-center rounded-lg bg-warm-100 px-3 py-2">
                 <UnitsDisplay quantity={problem.start} valueLabel={problem.startLabel} />
               </div>
               {orientedSlots.map(({ ratio }, position) => (
                 <div
                   key={`${ratio.equivalence.id}-${position}`}
-                  className="flex items-center gap-3"
+                  data-slot
+                  className="flex min-w-0 items-center gap-3"
                 >
                   <span aria-hidden="true" className="text-warm-400">
                     ×
@@ -249,7 +321,7 @@ export function ChainBuilder({
               )}
             </div>
 
-            <div className="mt-4 flex flex-wrap gap-3">
+            <div ref={actionsRef} className="mt-4 flex flex-wrap gap-3">
               <button
                 type="button"
                 onClick={startSolving}
@@ -278,7 +350,10 @@ export function ChainBuilder({
             </div>
 
             {showHint && (
-              <p className="fade-in mt-3 rounded-lg bg-sky-50 p-3 text-sm text-sky-900">
+              <p
+                ref={hintRef}
+                className="fade-in mt-3 rounded-lg bg-sky-50 p-3 text-sm text-sky-900"
+              >
                 {problem.hint}
               </p>
             )}
@@ -305,7 +380,7 @@ export function ChainBuilder({
       )}
 
       {mode === 'predicting' && (
-        <div className="fade-in rounded-xl bg-white p-5 shadow-sm">
+        <div ref={panelRef} className="fade-in rounded-xl bg-white p-5 shadow-sm">
           <h3 className="mb-1 font-semibold text-warm-800">Áður en við reiknum</h3>
           <p className="mb-4 text-sm text-warm-600">
             Horfðu á keðjuna sem þú byggðir. Hvaða eining stendur eftir þegar allt hefur styst út?
@@ -336,7 +411,7 @@ export function ChainBuilder({
           </div>
 
           {prediction !== null && (
-            <div className="fade-in mt-4">
+            <div ref={predictionFeedbackRef} className="fade-in mt-4">
               <p className="text-sm text-warm-700">
                 {predictions.find((o) => o.label === prediction)?.correct
                   ? 'Rétt lesið úr keðjunni. Sjáum hana ganga upp skref fyrir skref.'
@@ -355,7 +430,7 @@ export function ChainBuilder({
       )}
 
       {(mode === 'tracing' || mode === 'correcting' || mode === 'solved') && (
-        <div className="rounded-xl bg-warm-50 p-5 shadow-sm">
+        <div ref={panelRef} className="rounded-xl bg-warm-50 p-5 shadow-sm">
           <SolveTrace
             start={problem.start}
             startLabel={problem.startLabel}
@@ -368,14 +443,17 @@ export function ChainBuilder({
             <button
               type="button"
               onClick={() => setRevealed(result.steps.length)}
-              className="game-btn mt-4 rounded-lg border border-warm-300 bg-white px-4 py-2 text-sm text-warm-700 hover:bg-warm-100"
+              className="game-btn mt-4 rounded-lg border border-warm-300 bg-white px-4 py-2 text-sm text-warm-700 hover:bg-warm-100 pointer-coarse:min-h-11"
             >
               Sýna öll skrefin strax
             </button>
           )}
 
           {mode === 'solved' && (
-            <div className="fade-in mt-4 rounded-lg border-2 border-green-400 bg-green-50 p-4">
+            <div
+              ref={outcomeRef}
+              className="fade-in mt-4 rounded-lg border-2 border-green-400 bg-green-50 p-4"
+            >
               <p className="font-semibold text-green-900">
                 Keðjan gengur upp. Allar einingar styttust út nema markið.
               </p>
@@ -405,7 +483,10 @@ export function ChainBuilder({
           )}
 
           {mode === 'correcting' && prompt && (
-            <div className="fade-in mt-4 rounded-lg border-2 border-amber-400 bg-amber-50 p-4">
+            <div
+              ref={outcomeRef}
+              className="fade-in mt-4 rounded-lg border-2 border-amber-400 bg-amber-50 p-4"
+            >
               <p className="text-amber-900">{prompt.problem}</p>
               <p className="mt-3 font-semibold text-amber-900">{prompt.question}</p>
               <div className="mt-3 grid gap-2">
@@ -431,7 +512,7 @@ export function ChainBuilder({
               </div>
 
               {chosenOption && (
-                <div className="fade-in mt-3">
+                <div ref={fixFeedbackRef} className="fade-in mt-3">
                   <p
                     className={`rounded-lg p-3 text-sm ${
                       chosenOption.correct
@@ -453,7 +534,7 @@ export function ChainBuilder({
                     <button
                       type="button"
                       onClick={() => setChosenFix(null)}
-                      className="game-btn mt-3 rounded-lg border border-warm-300 bg-white px-4 py-2 text-sm text-warm-700 hover:bg-warm-50"
+                      className="game-btn mt-3 rounded-lg border border-warm-300 bg-white px-4 py-2 text-sm text-warm-700 hover:bg-warm-50 pointer-coarse:min-h-11"
                     >
                       Velja aftur
                     </button>
