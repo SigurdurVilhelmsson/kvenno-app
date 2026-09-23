@@ -43,7 +43,13 @@ export function SolveTrace({ start, steps, revealed, failedStep, startLabel }: S
               Skref {index + 1}
             </span>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-base">
-              <UnitsDisplay quantity={step.before} marks={step.marks.quantity} />
+              {/* The first step starts from the measurement, trailing zeros and all:
+                  "5 g" under "Byrjun: 5,00 g" would be a second, different claim. */}
+              <UnitsDisplay
+                quantity={step.before}
+                marks={step.marks.quantity}
+                valueLabel={index === 0 ? startLabel : undefined}
+              />
               <span aria-hidden="true" className="text-warm-400">
                 ×
               </span>

@@ -284,6 +284,29 @@ export function formatNumber(value: number): string {
   return decimal(value, 4);
 }
 
+/**
+ * A value the data *states* — a molar mass, Avogadro's number, a coefficient —
+ * printed exactly as stored, never rounded.
+ *
+ * A card is a fact the engine multiplies by, so it must print that same number:
+ * rounded to four figures, `105,99` read as `106` and `6,022 × 10²³` as
+ * `6,02 × 10²³`, and a student checking a step by hand landed on a different
+ * last digit from the answer printed beside it. Computed results still go
+ * through {@link formatNumber}.
+ */
+export function formatStated(value: number): string {
+  if (!Number.isFinite(value)) return '—';
+  // toPrecision(12) strips binary noise (6.022e23 / 1e23 is 6.022000000000001).
+  const plain = (x: number): string => Number(x.toPrecision(12)).toString().replace('.', ',');
+
+  const abs = Math.abs(value);
+  if (abs !== 0 && (abs >= 1e5 || abs < 1e-3)) {
+    const exponent = Math.floor(Math.log10(abs));
+    return `${plain(value / 10 ** exponent)} × 10${superscript(exponent)}`;
+  }
+  return plain(value);
+}
+
 export const formatToken = (token: UnitToken): string =>
   token.species ? `${token.unit} ${token.species}` : token.unit;
 

@@ -6,6 +6,7 @@ import { shuffleArray } from '@shared/utils';
 import { ChainCard, PoolCard } from './RatioCard';
 import { SolveTrace } from './SolveTrace';
 import { UnitsDisplay } from './UnitsDisplay';
+import { UnitText } from './UnitText';
 import type { Problem } from '../data/problems';
 import { ratioById } from '../data/ratios';
 import {
@@ -82,10 +83,14 @@ export function ChainBuilder({
     [mode, problem, slots, pool]
   );
 
-  const prompt = useMemo(
-    () => (mode === 'correcting' ? correctionPrompt(result, problem.target) : null),
-    [mode, result, problem.target]
-  );
+  // Shuffled once per prompt, for the same reason as the pool: correctionPrompt
+  // lists the correct fix first in every branch, so in that order a student could
+  // learn to tap the top option without reading any of them.
+  const prompt = useMemo(() => {
+    if (mode !== 'correcting') return null;
+    const built = correctionPrompt(result, problem.target, [...pool]);
+    return built && { ...built, options: shuffleArray(built.options) };
+  }, [mode, result, problem.target, pool]);
 
   const resetProblem = useCallback(() => {
     setSlots([]);
@@ -239,6 +244,18 @@ export function ChainBuilder({
 
   const chosenOption = prompt?.options.find((o) => o.id === chosenFix) ?? null;
 
+  // Each half of the prediction feedback is said only where it is true of this
+  // chain. Predicting a broken chain's outcome is worth crediting, but that chain
+  // will not "ganga upp"; and a chain that works does not "sveigja af leið".
+  const predictedRight = predictions.find((o) => o.label === prediction)?.correct ?? false;
+  const predictionFeedback = predictedRight
+    ? `Rétt lesið úr keðjunni.${
+        result.status === 'solved' ? ' Sjáum hana ganga upp skref fyrir skref.' : ''
+      }`
+    : `Ekki alveg — keðjan þín endar á annarri einingu en þú bjóst við.${
+        result.failedSlot !== undefined ? ' Fylgstu með hvar hún sveigir af leið.' : ''
+      }`;
+
   return (
     <div className="mx-auto max-w-5xl">
       <div className="mb-4 flex items-center justify-between">
@@ -276,7 +293,7 @@ export function ChainBuilder({
                 →
               </span>
               <span className="rounded-lg bg-orange-100 px-3 py-1.5 text-orange-900">
-                Markið: {formatSignature(problem.target)}
+                Markið: <UnitText text={formatSignature(problem.target)} />
               </span>
             </div>
             {problem.equation && (
@@ -385,6 +402,28 @@ export function ChainBuilder({
           <p className="mb-4 text-sm text-warm-600">
             Horfðu á keðjuna sem þú byggðir. Hvaða eining stendur eftir þegar allt hefur styst út?
           </p>
+          {/* The chain that sentence is about. Read-only: once the options are on
+              screen it is too late to change it. */}
+          <div
+            role="group"
+            aria-label="Keðjan þín"
+            className="mb-4 flex flex-wrap items-stretch gap-3 rounded-lg bg-warm-50 p-3"
+          >
+            <div className="flex items-center rounded-lg bg-warm-100 px-3 py-2">
+              <UnitsDisplay quantity={problem.start} valueLabel={problem.startLabel} />
+            </div>
+            {orientedSlots.map(({ ratio }, position) => (
+              <div
+                key={`${ratio.equivalence.id}-${position}`}
+                className="flex min-w-0 items-center gap-3"
+              >
+                <span aria-hidden="true" className="text-warm-400">
+                  ×
+                </span>
+                <ChainCard ratio={ratio} position={position + 1} />
+              </div>
+            ))}
+          </div>
           <div className="grid gap-2 sm:grid-cols-2">
             {predictions.map((option) => {
               const chosen = prediction === option.label;
@@ -404,7 +443,7 @@ export function ChainBuilder({
                           : 'border-warm-200 opacity-50'
                   }`}
                 >
-                  {option.label}
+                  <UnitText text={option.label} />
                 </button>
               );
             })}
@@ -412,11 +451,7 @@ export function ChainBuilder({
 
           {prediction !== null && (
             <div ref={predictionFeedbackRef} className="fade-in mt-4">
-              <p className="text-sm text-warm-700">
-                {predictions.find((o) => o.label === prediction)?.correct
-                  ? 'Rétt lesið úr keðjunni. Sjáum hana ganga upp skref fyrir skref.'
-                  : 'Ekki alveg — keðjan þín endar á annarri einingu en þú bjóst við. Fylgstu með hvar hún sveigir af leið.'}
-              </p>
+              <p className="text-sm text-warm-700">{predictionFeedback}</p>
               <button
                 type="button"
                 onClick={() => setMode('tracing')}
@@ -487,7 +522,9 @@ export function ChainBuilder({
               ref={outcomeRef}
               className="fade-in mt-4 rounded-lg border-2 border-amber-400 bg-amber-50 p-4"
             >
-              <p className="text-amber-900">{prompt.problem}</p>
+              <p className="text-amber-900">
+                <UnitText text={prompt.problem} />
+              </p>
               <p className="mt-3 font-semibold text-amber-900">{prompt.question}</p>
               <div className="mt-3 grid gap-2">
                 {prompt.options.map((option) => {
@@ -520,7 +557,7 @@ export function ChainBuilder({
                         : 'bg-red-100 text-red-900'
                     }`}
                   >
-                    {chosenOption.explanation}
+                    <UnitText text={chosenOption.explanation} />
                   </p>
                   {chosenOption.correct ? (
                     <button

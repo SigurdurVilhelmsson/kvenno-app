@@ -7,7 +7,8 @@
  * inference in `engine/units.ts` relies on it.
  *
  * Molar masses are computed from IUPAC 2021 standard atomic weights and rounded
- * to four significant figures. NaCl is 58,44 here, matching `1-ar/molmassi`;
+ * to two decimal places (105,99 for Na₂CO₃, 100,09 for CaCO₃), and a card prints
+ * exactly the value stored here. NaCl is 58,44 here, matching `1-ar/molmassi`;
  * `lausnir` and the older `dimensional-analysis` use 58,5, which is a known
  * platform inconsistency (CURRICULUM_REVIEW.md:192) and not one to propagate.
  */

@@ -74,6 +74,7 @@ export function UnitsDisplay({
           <span className="px-1">
             <TokenList tokens={quantity.num} cancelled={marks?.num} />
           </span>
+          <span className="sr-only"> deilt með </span>
           <span className="w-full border-t border-current" aria-hidden="true" />
           <span className="px-1">
             <TokenList tokens={quantity.den} cancelled={marks?.den} />

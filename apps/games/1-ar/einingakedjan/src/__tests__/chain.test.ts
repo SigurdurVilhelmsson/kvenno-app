@@ -120,14 +120,15 @@ describe('solveChain', () => {
 describe('correctionPrompt', () => {
   it('returns nothing for a solved chain', () => {
     const result = solveChain(gramsOfMg, correctChain, allRatios, gramsOfOxide);
-    expect(correctionPrompt(result, gramsOfOxide)).toBeNull();
+    expect(correctionPrompt(result, gramsOfOxide, allRatios)).toBeNull();
   });
 
   it('offers flipping as the correct fix for an inverted ratio', () => {
     const chain = [slot('mm-Mg', 'forward')];
     const prompt = correctionPrompt(
       solveChain(gramsOfMg, chain, allRatios, gramsOfOxide),
-      gramsOfOxide
+      gramsOfOxide,
+      allRatios
     );
     const correct = prompt?.options.filter((o) => o.correct) ?? [];
     expect(correct).toHaveLength(1);
@@ -139,7 +140,8 @@ describe('correctionPrompt', () => {
   it('offers removal as the correct fix for an irrelevant ratio', () => {
     const prompt = correctionPrompt(
       solveChain(gramsOfMg, [slot('mm-O2', 'flipped')], allRatios, gramsOfOxide),
-      gramsOfOxide
+      gramsOfOxide,
+      allRatios
     );
     expect(prompt?.options.find((o) => o.correct)?.id).toBe('remove');
   });
@@ -147,7 +149,8 @@ describe('correctionPrompt', () => {
   it('offers adding a step as the correct fix for a chain that stops short', () => {
     const prompt = correctionPrompt(
       solveChain(gramsOfMg, correctChain.slice(0, 2), allRatios, gramsOfOxide),
-      gramsOfOxide
+      gramsOfOxide,
+      allRatios
     );
     expect(prompt?.options.find((o) => o.correct)?.id).toBe('addStep');
     expect(prompt?.problem).toContain('mol MgO');
@@ -162,7 +165,8 @@ describe('correctionPrompt', () => {
     for (const chain of chains) {
       const prompt = correctionPrompt(
         solveChain(gramsOfMg, chain, allRatios, gramsOfOxide),
-        gramsOfOxide
+        gramsOfOxide,
+        allRatios
       );
       expect(prompt?.options.filter((o) => o.correct)).toHaveLength(1);
       expect(prompt?.options.length).toBeGreaterThanOrEqual(3);

@@ -126,7 +126,11 @@ export function ExploreScreen({ onComplete, onBack }: ExploreScreenProps) {
           <span className="block text-xs font-semibold uppercase tracking-wide text-warm-500">
             Þú ert núna með
           </span>
-          <UnitsDisplay quantity={current} className="mt-1 text-xl" />
+          <UnitsDisplay
+            quantity={current}
+            valueLabel={lastStep ? undefined : START_LABEL}
+            className="mt-1 text-xl"
+          />
           {lastStep && (
             <p className="mt-2 text-sm text-warm-600">
               {lastStep.cancelCount > 0
