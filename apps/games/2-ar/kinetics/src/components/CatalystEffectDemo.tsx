@@ -1,4 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
+
+import { useContainerWidth } from '@shared/components/ResponsiveContainer';
 
 interface CatalystEffectDemoProps {
   /** Temperature in Kelvin */
@@ -58,12 +60,36 @@ export function CatalystEffectDemo({
     };
   }, [temp, baseEa, catEa]);
 
+  // On a phone the 380-wide diagram was drawn at about 0.7x inside a box still 220 px tall, so
+  // its labels came out at 5-6 px with a band of empty space above and below. Below 380 px it
+  // switches to a narrow drawing: a viewBox sized for a phone, 15-unit labels (11 px or more
+  // at 320 px wide), the reactant and product labels under their levels where the curve cannot
+  // run through them, and the legend moved out of the plot into a row above it. A wider
+  // container gets the original drawing unchanged.
+  const svgBoxRef = useRef<HTMLDivElement>(null);
+  const boxWidth = useContainerWidth(svgBoxRef);
+  const narrow = !compact && boxWidth !== null && boxWidth < 380;
+  const labelSize = (desktopSize: string) => (narrow ? '15px' : desktopSize);
+  // Text halo in the narrow drawing, where the Ea labels sit close to the curves
+  const halo = narrow
+    ? {
+        stroke: '#0c0a09',
+        strokeWidth: 4,
+        paintOrder: 'stroke' as const,
+        strokeLinejoin: 'round' as const,
+      }
+    : {};
+
   // SVG dimensions
-  const width = compact ? 280 : 380;
-  const height = compact ? 180 : 220;
-  const margin = { top: 30, right: 20, bottom: 30, left: 50 };
+  const width = narrow ? 300 : compact ? 280 : 380;
+  const height = narrow ? 240 : compact ? 180 : 220;
+  const margin = narrow
+    ? { top: 24, right: 12, bottom: 36, left: 30 }
+    : { top: 30, right: 20, bottom: 30, left: 50 };
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
+  // Narrow: centred on the plot, which is what the rotated title labels
+  const yTitleY = narrow ? margin.top + plotHeight / 2 : height / 2;
 
   // Energy scale (0 to 100 kJ/mol)
   const maxEnergy = 80;
@@ -123,8 +149,8 @@ export function CatalystEffectDemo({
   const peakX = scaleX(0.5);
 
   return (
-    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-4 shadow-lg">
-      <div className="flex justify-between items-center mb-3">
+    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-3 sm:p-4 shadow-lg">
+      <div className="flex justify-between items-center gap-2 mb-3">
         <h3 className="text-white font-bold text-sm flex items-center gap-2">
           <span className="text-lg">⚗️</span>
           Hvataáhrif (Catalyst Effect)
@@ -132,7 +158,7 @@ export function CatalystEffectDemo({
         {interactive && (
           <button
             onClick={() => setShowAnimation(!showAnimation)}
-            className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+            className={`px-3 py-1 rounded text-xs font-medium transition-colors whitespace-nowrap pointer-coarse:min-h-11 ${
               showAnimation
                 ? 'bg-green-500 text-white'
                 : 'bg-warm-600 text-warm-200 hover:bg-warm-500'
@@ -145,7 +171,7 @@ export function CatalystEffectDemo({
 
       {/* Interactive controls */}
       {interactive && !compact && (
-        <div className="grid grid-cols-3 gap-3 mb-4 p-3 bg-warm-700/50 rounded-lg">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 p-3 bg-warm-700/50 rounded-lg">
           <div>
             <label className="text-xs text-warm-400 block mb-1">Hitastig</label>
             <div className="flex items-center gap-2">
@@ -156,7 +182,7 @@ export function CatalystEffectDemo({
                 step="10"
                 value={temp}
                 onChange={(e) => setTemp(Number(e.target.value))}
-                className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-blue-500 pointer-coarse:h-11 pointer-coarse:rounded-none pointer-coarse:bg-transparent pointer-coarse:bg-[linear-gradient(var(--color-warm-600),var(--color-warm-600))] pointer-coarse:bg-[length:100%_6px] pointer-coarse:bg-center pointer-coarse:bg-no-repeat"
               />
               <span className="text-xs font-mono text-blue-400 w-12">{temp} K</span>
             </div>
@@ -171,7 +197,7 @@ export function CatalystEffectDemo({
                 step="5"
                 value={baseEa}
                 onChange={(e) => setBaseEa(Number(e.target.value))}
-                className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-red-500"
+                className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-red-500 pointer-coarse:h-11 pointer-coarse:rounded-none pointer-coarse:bg-transparent pointer-coarse:bg-[linear-gradient(var(--color-warm-600),var(--color-warm-600))] pointer-coarse:bg-[length:100%_6px] pointer-coarse:bg-center pointer-coarse:bg-no-repeat"
               />
               <span className="text-xs font-mono text-red-400 w-12">{baseEa}</span>
             </div>
@@ -186,7 +212,7 @@ export function CatalystEffectDemo({
                 step="5"
                 value={Math.min(catEa, baseEa - 5)}
                 onChange={(e) => setCatEa(Number(e.target.value))}
-                className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-green-500"
+                className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-green-500 pointer-coarse:h-11 pointer-coarse:rounded-none pointer-coarse:bg-transparent pointer-coarse:bg-[linear-gradient(var(--color-warm-600),var(--color-warm-600))] pointer-coarse:bg-[length:100%_6px] pointer-coarse:bg-center pointer-coarse:bg-no-repeat"
               />
               <span className="text-xs font-mono text-green-400 w-12">{catEa}</span>
             </div>
@@ -195,242 +221,279 @@ export function CatalystEffectDemo({
       )}
 
       {/* Energy diagram */}
-      <svg
-        width="100%"
-        height={height}
-        viewBox={`0 0 ${width} ${height}`}
-        preserveAspectRatio="xMidYMid meet"
-        className="bg-warm-950 rounded-lg"
-        role="img"
-        aria-label={`Orkurit: Án hvata Ea=${baseEa} kJ/mol, Með hvata Ea=${catEa} kJ/mol`}
-      >
-        {/* Grid lines */}
-        <defs>
-          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#374151" strokeWidth="0.5" />
-          </pattern>
+      {/* On a wide touch screen (a phone on its side) the box is capped so the narrow
+          drawing, with its larger labels, is used there too */}
+      <div ref={svgBoxRef} className="pointer-coarse:max-w-[360px] pointer-coarse:mx-auto">
+        {/* Legend, above the plot in the narrow drawing */}
+        {narrow && (
+          <div className="flex flex-wrap gap-x-4 gap-y-1 mb-2 text-xs text-warm-300">
+            <span className="flex items-center gap-1.5">
+              <span className="inline-block w-5 h-[3px] bg-red-500" />
+              Án hvata
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="inline-block w-5 h-[3px] bg-green-500" />
+              Með hvata
+            </span>
+          </div>
+        )}
 
-          {/* Gradient for uncatalyzed path */}
-          <linearGradient id="uncatGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#ef4444" />
-            <stop offset="50%" stopColor="#f97316" />
-            <stop offset="100%" stopColor="#ef4444" />
-          </linearGradient>
-
-          {/* Gradient for catalyzed path */}
-          <linearGradient id="catGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#22c55e" />
-            <stop offset="50%" stopColor="#10b981" />
-            <stop offset="100%" stopColor="#22c55e" />
-          </linearGradient>
-        </defs>
-
-        <rect
-          x={margin.left}
-          y={margin.top}
-          width={plotWidth}
-          height={plotHeight}
-          fill="url(#grid)"
-          opacity="0.3"
-        />
-
-        {/* Y-axis */}
-        <line
-          x1={margin.left}
-          y1={margin.top}
-          x2={margin.left}
-          y2={height - margin.bottom}
-          stroke="#6b7280"
-          strokeWidth="2"
-        />
-
-        {/* X-axis */}
-        <line
-          x1={margin.left}
-          y1={height - margin.bottom}
-          x2={width - margin.right}
-          y2={height - margin.bottom}
-          stroke="#6b7280"
-          strokeWidth="2"
-        />
-
-        {/* Y-axis label */}
-        <text
-          x={15}
-          y={height / 2}
-          textAnchor="middle"
-          transform={`rotate(-90, 15, ${height / 2})`}
-          className="fill-warm-400"
-          style={{ fontSize: '10px' }}
+        <svg
+          width="100%"
+          height={narrow ? undefined : height}
+          viewBox={`0 0 ${width} ${height}`}
+          preserveAspectRatio="xMidYMid meet"
+          className={`bg-warm-950 rounded-lg${narrow ? ' block h-auto' : ''}`}
+          role="img"
+          aria-label={`Orkurit: Án hvata Ea=${baseEa} kJ/mol, Með hvata Ea=${catEa} kJ/mol`}
         >
-          Orka (kJ/mol)
-        </text>
+          {/* Grid lines */}
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#374151" strokeWidth="0.5" />
+            </pattern>
 
-        {/* X-axis label */}
-        <text
-          x={width / 2}
-          y={height - 8}
-          textAnchor="middle"
-          className="fill-warm-400"
-          style={{ fontSize: '10px' }}
-        >
-          Hvarfgangur
-        </text>
+            {/* Gradient for uncatalyzed path */}
+            <linearGradient id="uncatGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#ef4444" />
+              <stop offset="50%" stopColor="#f97316" />
+              <stop offset="100%" stopColor="#ef4444" />
+            </linearGradient>
 
-        {/* Energy level lines */}
-        {/* Reactant level */}
-        <line
-          x1={margin.left}
-          y1={scaleY(reactantEnergy)}
-          x2={scaleX(0.2)}
-          y2={scaleY(reactantEnergy)}
-          stroke="#60a5fa"
-          strokeWidth="2"
-          strokeDasharray="4,2"
-        />
-        <text
-          x={margin.left + 5}
-          y={scaleY(reactantEnergy) - 5}
-          className="fill-blue-400"
-          style={{ fontSize: '9px' }}
-        >
-          Hvarfefni
-        </text>
+            {/* Gradient for catalyzed path */}
+            <linearGradient id="catGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#22c55e" />
+              <stop offset="50%" stopColor="#10b981" />
+              <stop offset="100%" stopColor="#22c55e" />
+            </linearGradient>
+          </defs>
 
-        {/* Product level */}
-        <line
-          x1={scaleX(0.8)}
-          y1={scaleY(productEnergy)}
-          x2={width - margin.right}
-          y2={scaleY(productEnergy)}
-          stroke="#60a5fa"
-          strokeWidth="2"
-          strokeDasharray="4,2"
-        />
-        <text
-          x={width - margin.right - 40}
-          y={scaleY(productEnergy) - 5}
-          className="fill-blue-400"
-          style={{ fontSize: '9px' }}
-        >
-          Myndefni
-        </text>
+          <rect
+            x={margin.left}
+            y={margin.top}
+            width={plotWidth}
+            height={plotHeight}
+            fill="url(#grid)"
+            opacity="0.3"
+          />
 
-        {/* Uncatalyzed pathway */}
-        <path
-          d={uncatalyzedPath}
-          fill="none"
-          stroke="url(#uncatGradient)"
-          strokeWidth="3"
-          strokeLinecap="round"
-          opacity="0.8"
-          className={showAnimation ? 'animate-pulse' : ''}
-        />
+          {/* Y-axis */}
+          <line
+            x1={margin.left}
+            y1={margin.top}
+            x2={margin.left}
+            y2={height - margin.bottom}
+            stroke="#6b7280"
+            strokeWidth="2"
+          />
 
-        {/* Catalyzed pathway */}
-        <path
-          d={catalyzedPath}
-          fill="none"
-          stroke="url(#catGradient)"
-          strokeWidth="3"
-          strokeLinecap="round"
-          className={showAnimation ? 'animate-pulse' : ''}
-        />
+          {/* X-axis */}
+          <line
+            x1={margin.left}
+            y1={height - margin.bottom}
+            x2={width - margin.right}
+            y2={height - margin.bottom}
+            stroke="#6b7280"
+            strokeWidth="2"
+          />
 
-        {/* Activation energy arrows */}
-        {/* Uncatalyzed Ea arrow */}
-        <line
-          x1={peakX - 30}
-          y1={scaleY(reactantEnergy)}
-          x2={peakX - 30}
-          y2={uncatPeakY}
-          stroke="#ef4444"
-          strokeWidth="2"
-          markerEnd="url(#arrowRed)"
-        />
-        <defs>
-          <marker id="arrowRed" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-            <path d="M0,0 L0,6 L9,3 z" fill="#ef4444" />
-          </marker>
-          <marker
-            id="arrowGreen"
-            markerWidth="10"
-            markerHeight="10"
-            refX="9"
-            refY="3"
-            orient="auto"
+          {/* Y-axis label */}
+          <text
+            x={narrow ? 12 : 15}
+            y={yTitleY}
+            textAnchor="middle"
+            transform={`rotate(-90, ${narrow ? 12 : 15}, ${yTitleY})`}
+            className="fill-warm-400"
+            style={{ fontSize: labelSize('10px') }}
           >
-            <path d="M0,0 L0,6 L9,3 z" fill="#22c55e" />
-          </marker>
-        </defs>
-
-        {/* Catalyzed Ea arrow */}
-        <line
-          x1={peakX + 30}
-          y1={scaleY(reactantEnergy)}
-          x2={peakX + 30}
-          y2={catPeakY}
-          stroke="#22c55e"
-          strokeWidth="2"
-          markerEnd="url(#arrowGreen)"
-        />
-
-        {/* Labels for Ea values */}
-        <text
-          x={peakX - 35}
-          y={(scaleY(reactantEnergy) + uncatPeakY) / 2}
-          textAnchor="end"
-          className="fill-red-400 font-bold"
-          style={{ fontSize: '10px' }}
-        >
-          Ea = {baseEa}
-        </text>
-        <text
-          x={peakX + 35}
-          y={(scaleY(reactantEnergy) + catPeakY) / 2}
-          textAnchor="start"
-          className="fill-green-400 font-bold"
-          style={{ fontSize: '10px' }}
-        >
-          Ea' = {catEa}
-        </text>
-
-        {/* ΔH arrow and label */}
-        <line
-          x1={width - margin.right - 15}
-          y1={scaleY(reactantEnergy)}
-          x2={width - margin.right - 15}
-          y2={scaleY(productEnergy)}
-          stroke="#60a5fa"
-          strokeWidth="1.5"
-        />
-        <text
-          x={width - margin.right - 5}
-          y={(scaleY(reactantEnergy) + scaleY(productEnergy)) / 2}
-          textAnchor="start"
-          className="fill-blue-400"
-          style={{ fontSize: '8px' }}
-        >
-          ΔH
-        </text>
-
-        {/* Transition state markers */}
-        <circle cx={peakX} cy={uncatPeakY} r="4" fill="#ef4444" stroke="#1f2937" strokeWidth="2" />
-        <circle cx={peakX} cy={catPeakY} r="4" fill="#22c55e" stroke="#1f2937" strokeWidth="2" />
-
-        {/* Legend */}
-        <g transform={`translate(${margin.left + 10}, ${margin.top + 5})`}>
-          <line x1="0" y1="0" x2="20" y2="0" stroke="#ef4444" strokeWidth="3" />
-          <text x="25" y="4" className="fill-warm-300" style={{ fontSize: '9px' }}>
-            Án hvata
+            Orka (kJ/mol)
           </text>
 
-          <line x1="0" y1="15" x2="20" y2="15" stroke="#22c55e" strokeWidth="3" />
-          <text x="25" y="19" className="fill-warm-300" style={{ fontSize: '9px' }}>
-            Með hvata
+          {/* X-axis label */}
+          <text
+            x={narrow ? margin.left + (width - margin.left - margin.right) / 2 : width / 2}
+            y={height - (narrow ? 10 : 8)}
+            textAnchor="middle"
+            className="fill-warm-400"
+            style={{ fontSize: labelSize('10px') }}
+          >
+            Hvarfgangur
           </text>
-        </g>
-      </svg>
+
+          {/* Energy level lines */}
+          {/* Reactant level */}
+          <line
+            x1={margin.left}
+            y1={scaleY(reactantEnergy)}
+            x2={scaleX(0.2)}
+            y2={scaleY(reactantEnergy)}
+            stroke="#60a5fa"
+            strokeWidth="2"
+            strokeDasharray="4,2"
+          />
+          <text
+            x={margin.left + 5}
+            y={scaleY(reactantEnergy) + (narrow ? 17 : -5)}
+            className="fill-blue-400"
+            style={{ fontSize: labelSize('9px') }}
+          >
+            Hvarfefni
+          </text>
+
+          {/* Product level */}
+          <line
+            x1={scaleX(0.8)}
+            y1={scaleY(productEnergy)}
+            x2={width - margin.right}
+            y2={scaleY(productEnergy)}
+            stroke="#60a5fa"
+            strokeWidth="2"
+            strokeDasharray="4,2"
+          />
+          <text
+            x={narrow ? width - margin.right : width - margin.right - 40}
+            y={scaleY(productEnergy) + (narrow ? 17 : -5)}
+            textAnchor={narrow ? 'end' : undefined}
+            className="fill-blue-400"
+            style={{ fontSize: labelSize('9px') }}
+          >
+            Myndefni
+          </text>
+
+          {/* Uncatalyzed pathway */}
+          <path
+            d={uncatalyzedPath}
+            fill="none"
+            stroke="url(#uncatGradient)"
+            strokeWidth="3"
+            strokeLinecap="round"
+            opacity="0.8"
+            className={showAnimation ? 'animate-pulse' : ''}
+          />
+
+          {/* Catalyzed pathway */}
+          <path
+            d={catalyzedPath}
+            fill="none"
+            stroke="url(#catGradient)"
+            strokeWidth="3"
+            strokeLinecap="round"
+            className={showAnimation ? 'animate-pulse' : ''}
+          />
+
+          {/* Activation energy arrows */}
+          {/* Uncatalyzed Ea arrow */}
+          <line
+            x1={peakX - 30}
+            y1={scaleY(reactantEnergy)}
+            x2={peakX - 30}
+            y2={uncatPeakY}
+            stroke="#ef4444"
+            strokeWidth="2"
+            markerEnd="url(#arrowRed)"
+          />
+          <defs>
+            <marker
+              id="arrowRed"
+              markerWidth="10"
+              markerHeight="10"
+              refX="9"
+              refY="3"
+              orient="auto"
+            >
+              <path d="M0,0 L0,6 L9,3 z" fill="#ef4444" />
+            </marker>
+            <marker
+              id="arrowGreen"
+              markerWidth="10"
+              markerHeight="10"
+              refX="9"
+              refY="3"
+              orient="auto"
+            >
+              <path d="M0,0 L0,6 L9,3 z" fill="#22c55e" />
+            </marker>
+          </defs>
+
+          {/* Catalyzed Ea arrow */}
+          <line
+            x1={peakX + 30}
+            y1={scaleY(reactantEnergy)}
+            x2={peakX + 30}
+            y2={catPeakY}
+            stroke="#22c55e"
+            strokeWidth="2"
+            markerEnd="url(#arrowGreen)"
+          />
+
+          {/* Labels for Ea values */}
+          <text
+            x={peakX - 35}
+            y={(scaleY(reactantEnergy) + uncatPeakY) / 2}
+            textAnchor="end"
+            className="fill-red-400 font-bold"
+            style={{ fontSize: labelSize('10px') }}
+            {...halo}
+          >
+            Ea = {baseEa}
+          </text>
+          <text
+            x={peakX + 35}
+            y={(scaleY(reactantEnergy) + catPeakY) / 2}
+            textAnchor="start"
+            className="fill-green-400 font-bold"
+            style={{ fontSize: labelSize('10px') }}
+            {...halo}
+          >
+            Ea' = {catEa}
+          </text>
+
+          {/* ΔH arrow and label (narrow: label left of the line, inside the plot) */}
+          <line
+            x1={width - margin.right - (narrow ? 4 : 15)}
+            y1={scaleY(reactantEnergy)}
+            x2={width - margin.right - (narrow ? 4 : 15)}
+            y2={scaleY(productEnergy)}
+            stroke="#60a5fa"
+            strokeWidth="1.5"
+          />
+          <text
+            x={width - margin.right - (narrow ? 9 : 5)}
+            y={(scaleY(reactantEnergy) + scaleY(productEnergy)) / 2 + (narrow ? 5 : 0)}
+            textAnchor={narrow ? 'end' : 'start'}
+            className="fill-blue-400"
+            style={{ fontSize: labelSize('8px') }}
+          >
+            ΔH
+          </text>
+
+          {/* Transition state markers */}
+          <circle
+            cx={peakX}
+            cy={uncatPeakY}
+            r="4"
+            fill="#ef4444"
+            stroke="#1f2937"
+            strokeWidth="2"
+          />
+          <circle cx={peakX} cy={catPeakY} r="4" fill="#22c55e" stroke="#1f2937" strokeWidth="2" />
+
+          {/* Legend (the narrow drawing has it above the plot instead) */}
+          {!narrow && (
+            <g transform={`translate(${margin.left + 10}, ${margin.top + 5})`}>
+              <line x1="0" y1="0" x2="20" y2="0" stroke="#ef4444" strokeWidth="3" />
+              <text x="25" y="4" className="fill-warm-300" style={{ fontSize: '9px' }}>
+                Án hvata
+              </text>
+
+              <line x1="0" y1="15" x2="20" y2="15" stroke="#22c55e" strokeWidth="3" />
+              <text x="25" y="19" className="fill-warm-300" style={{ fontSize: '9px' }}>
+                Með hvata
+              </text>
+            </g>
+          )}
+        </svg>
+      </div>
 
       {/* Statistics comparison */}
       <div className="mt-4 grid grid-cols-2 gap-4">

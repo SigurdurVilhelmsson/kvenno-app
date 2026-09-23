@@ -1,7 +1,7 @@
-@import "tailwindcss";
-@import "../../../../../packages/shared/styles/theme.css";
+@import 'tailwindcss';
+@import '../../../../../packages/shared/styles/theme.css';
 @source "../../../../../packages/shared";
-@import "../../../../../packages/shared/styles/game-base.css";
+@import '../../../../../packages/shared/styles/game-base.css';
 
 /* Rate graph styles */
 .rate-graph {
@@ -60,8 +60,10 @@
   @apply inline-flex items-center bg-white px-3 py-2 rounded-lg border-2 border-gray-300 cursor-pointer transition-all;
 }
 
-.rate-term:hover {
-  @apply border-orange-400 shadow-md;
+@media (hover: hover) and (pointer: fine) {
+  .rate-term:hover {
+    @apply border-orange-400 shadow-md;
+  }
 }
 
 .rate-term.selected {
@@ -77,8 +79,10 @@
   @apply w-10 h-10 rounded-full border-2 border-gray-300 flex items-center justify-center font-bold transition-all;
 }
 
-.order-button:hover {
-  @apply border-orange-400 bg-orange-50;
+@media (hover: hover) and (pointer: fine) {
+  .order-button:hover {
+    @apply border-orange-400 bg-orange-50;
+  }
 }
 
 .order-button.selected {
@@ -90,8 +94,10 @@
   @apply bg-white p-4 rounded-xl border-2 border-gray-200 transition-all;
 }
 
-.mechanism-step:hover {
-  @apply border-orange-400 shadow-md;
+@media (hover: hover) and (pointer: fine) {
+  .mechanism-step:hover {
+    @apply border-orange-400 shadow-md;
+  }
 }
 
 .mechanism-step.elementary {
@@ -113,18 +119,33 @@
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 @keyframes drawLine {
-  from { stroke-dashoffset: 1000; }
-  to { stroke-dashoffset: 0; }
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 .animate-fade-in {
@@ -146,6 +167,18 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/*
+ * Exponents carry the chemistry here (the orders m and n in Rate = k[A]^m[B]^n, E_a in
+ * Arrhenius), and the default 75 % made them 10.5 px, with the nested E_a subscript at 8 px.
+ * On touch screens they get a 12 px floor; a mouse-driven desktop keeps the 75 % it had.
+ */
+@media (pointer: coarse) {
+  sup,
+  sub {
+    font-size: max(12px, 0.75em);
   }
 }
 

@@ -113,7 +113,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
           >
             <span>&larr;</span> Til baka
           </button>
@@ -134,8 +134,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <h2 className="text-2xl font-bold text-blue-800 mb-2">{challenge.title}</h2>
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+          <h2 className="text-xl min-[360px]:text-2xl font-bold text-blue-800 mb-2">
+            {challenge.title}
+          </h2>
           <p className="text-warm-700 text-lg mb-6">{challenge.question}</p>
 
           {/* Multiple choice options */}
@@ -177,7 +179,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 setShowHint(true);
                 setTotalHintsUsed((prev) => prev + 1);
               }}
-              className="text-blue-600 hover:text-blue-800 text-sm underline mb-4"
+              className="text-blue-600 hover:text-blue-800 text-sm underline mb-4 pointer-coarse:min-h-11"
             >
               Sýna vísbendingu
             </button>
@@ -240,7 +242,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         </div>
 
         {/* Interactive Visualizations */}
-        <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
+        <div className="mt-6 bg-white rounded-xl p-3 sm:p-4 shadow-sm">
           <h3 className="font-bold text-warm-700 mb-4">Gagnvirk hermun</h3>
 
           {/* Shared Controls */}
@@ -261,7 +263,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 onChange={(e) => setTemperature(Number(e.target.value))}
                 aria-label="Hitastig í Kelvin"
                 aria-valuetext={`${temperature} Kelvin (250 til 500)`}
-                className="w-full h-2 bg-warm-200 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                className="w-full h-2 bg-warm-200 rounded-lg appearance-none cursor-pointer accent-blue-500 pointer-coarse:h-11 pointer-coarse:rounded-none pointer-coarse:bg-transparent pointer-coarse:bg-[linear-gradient(var(--color-warm-200),var(--color-warm-200))] pointer-coarse:bg-[length:100%_8px] pointer-coarse:bg-center pointer-coarse:bg-no-repeat"
               />
               <div className="flex justify-between text-xs text-warm-400 mt-1">
                 <span>250 K</span>
@@ -285,7 +287,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 onChange={(e) => setActivationEnergy(Number(e.target.value))}
                 aria-label="Virkjunarorka í kJ/mól"
                 aria-valuetext={`${activationEnergy} kJ á mól (20 til 80)`}
-                className="w-full h-2 bg-warm-200 rounded-lg appearance-none cursor-pointer accent-red-500"
+                className="w-full h-2 bg-warm-200 rounded-lg appearance-none cursor-pointer accent-red-500 pointer-coarse:h-11 pointer-coarse:rounded-none pointer-coarse:bg-transparent pointer-coarse:bg-[linear-gradient(var(--color-warm-200),var(--color-warm-200))] pointer-coarse:bg-[length:100%_8px] pointer-coarse:bg-center pointer-coarse:bg-no-repeat"
               />
               <div className="flex justify-between text-xs text-warm-400 mt-1">
                 <span>20 kJ/mol</span>

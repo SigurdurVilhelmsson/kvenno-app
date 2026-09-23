@@ -1,4 +1,6 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
+
+import { useContainerWidth } from '@shared/components/ResponsiveContainer';
 
 interface MaxwellBoltzmannProps {
   temperature: number;
@@ -116,12 +118,27 @@ export function MaxwellBoltzmann({
 
   const percentAboveEa = (fractionAboveEa * 100).toFixed(1);
 
+  // On a phone the graph is drawn at 0.7-0.8x, which took its 10-11 unit labels down to
+  // 7-8 px. Below the width it was designed for it switches to a compact drawing: the same
+  // curve, 16-unit labels (11 px or more at 320 px wide) and a taller plot so the rotated
+  // axis title still fits beside it. A wider container gets the original drawing unchanged.
+  const svgBoxRef = useRef<HTMLDivElement>(null);
+  const boxWidth = useContainerWidth(svgBoxRef);
+  const compact = responsive && boxWidth !== null && boxWidth < 320;
+  const fontSize = compact
+    ? { xAxis: '16px', yAxis: '16px', tick: '16px', ea: '16px' }
+    : { xAxis: '11px', yAxis: '10px', tick: '10px', ea: '10px' };
+
   // SVG dimensions
   const width = 320;
-  const height = 200;
-  const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+  const height = compact ? 224 : 200;
+  const margin = compact
+    ? { top: 20, right: 14, bottom: 52, left: 34 }
+    : { top: 20, right: 20, bottom: 40, left: 50 };
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
+  // Compact: centred on the plot rather than the whole drawing, which has a deeper bottom margin
+  const yLabel = compact ? { x: 14, y: margin.top + plotHeight / 2 } : { x: 12, y: height / 2 };
 
   // Scale functions
   const maxE = 120;
@@ -174,168 +191,172 @@ export function MaxwellBoltzmann({
   const curveColor = getTemperatureColor(temperature);
 
   return (
-    <div className={`bg-warm-900 rounded-xl p-4 ${className}`}>
-      <div className="mb-2 flex justify-between items-center">
+    <div className={`bg-warm-900 rounded-xl p-3 sm:p-4 ${className}`}>
+      <div className="mb-2 flex justify-between items-center gap-2">
         <h3 className="text-white font-semibold text-sm">Orkudreifing Maxwell-Boltzmann</h3>
-        <div className="text-xs text-warm-400">{temperature} K</div>
+        <div className="text-xs text-warm-400 whitespace-nowrap">{temperature} K</div>
       </div>
 
-      <svg
-        width={responsive ? '100%' : width}
-        height={responsive ? 'auto' : height}
-        viewBox={`0 0 ${width} ${height}`}
-        preserveAspectRatio="xMidYMid meet"
-        className="bg-warm-950 rounded-lg w-full"
-        style={responsive ? { aspectRatio: `${width}/${height}` } : undefined}
-        role="img"
-        aria-label={`Maxwell-Boltzmann dreifing við ${temperature} K. ${percentAboveEa}% sameinda hafa orku yfir virkjunarorku.`}
-      >
-        {/* Grid lines */}
-        <g className="text-warm-700">
-          {[0, 30, 60, 90, 120].map((x) => (
-            <line
-              key={`grid-x-${x}`}
-              x1={scaleX(x)}
-              y1={margin.top}
-              x2={scaleX(x)}
-              y2={height - margin.bottom}
-              stroke="#374151"
-              strokeWidth="1"
-              strokeDasharray="2,2"
-            />
-          ))}
-          {[0.25, 0.5, 0.75].map((ratio, i) => (
-            <line
-              key={`grid-y-${i}`}
-              x1={margin.left}
-              y1={margin.top + plotHeight * (1 - ratio)}
-              x2={width - margin.right}
-              y2={margin.top + plotHeight * (1 - ratio)}
-              stroke="#374151"
-              strokeWidth="1"
-              strokeDasharray="2,2"
-            />
-          ))}
-        </g>
-
-        {/* Axes */}
-        <line
-          x1={margin.left}
-          y1={height - margin.bottom}
-          x2={width - margin.right}
-          y2={height - margin.bottom}
-          stroke="#6b7280"
-          strokeWidth="2"
-        />
-        <line
-          x1={margin.left}
-          y1={margin.top}
-          x2={margin.left}
-          y2={height - margin.bottom}
-          stroke="#6b7280"
-          strokeWidth="2"
-        />
-
-        {/* X-axis label */}
-        <text
-          x={width / 2}
-          y={height - 8}
-          textAnchor="middle"
-          className="fill-warm-400 text-xs"
-          style={{ fontSize: '11px' }}
+      <div ref={svgBoxRef}>
+        <svg
+          width={responsive ? '100%' : width}
+          height={responsive ? undefined : height}
+          viewBox={`0 0 ${width} ${height}`}
+          preserveAspectRatio="xMidYMid meet"
+          className="bg-warm-950 rounded-lg w-full"
+          style={responsive ? { aspectRatio: `${width}/${height}` } : undefined}
+          role="img"
+          aria-label={`Maxwell-Boltzmann dreifing við ${temperature} K. ${percentAboveEa}% sameinda hafa orku yfir virkjunarorku.`}
         >
-          Orka (kJ/mol)
-        </text>
-
-        {/* Y-axis label */}
-        <text
-          x={12}
-          y={height / 2}
-          textAnchor="middle"
-          transform={`rotate(-90, 12, ${height / 2})`}
-          className="fill-warm-400 text-xs"
-          style={{ fontSize: '10px' }}
-        >
-          Fjöldi sameinda
-        </text>
-
-        {/* X-axis ticks */}
-        {[0, 30, 60, 90, 120].map((x) => (
-          <g key={`tick-${x}`}>
-            <line
-              x1={scaleX(x)}
-              y1={height - margin.bottom}
-              x2={scaleX(x)}
-              y2={height - margin.bottom + 5}
-              stroke="#6b7280"
-              strokeWidth="1"
-            />
-            <text
-              x={scaleX(x)}
-              y={height - margin.bottom + 16}
-              textAnchor="middle"
-              className="fill-warm-500"
-              style={{ fontSize: '10px' }}
-            >
-              {x}
-            </text>
+          {/* Grid lines */}
+          <g className="text-warm-700">
+            {[0, 30, 60, 90, 120].map((x) => (
+              <line
+                key={`grid-x-${x}`}
+                x1={scaleX(x)}
+                y1={margin.top}
+                x2={scaleX(x)}
+                y2={height - margin.bottom}
+                stroke="#374151"
+                strokeWidth="1"
+                strokeDasharray="2,2"
+              />
+            ))}
+            {[0.25, 0.5, 0.75].map((ratio, i) => (
+              <line
+                key={`grid-y-${i}`}
+                x1={margin.left}
+                y1={margin.top + plotHeight * (1 - ratio)}
+                x2={width - margin.right}
+                y2={margin.top + plotHeight * (1 - ratio)}
+                stroke="#374151"
+                strokeWidth="1"
+                strokeDasharray="2,2"
+              />
+            ))}
           </g>
-        ))}
 
-        {/* Shaded area above Ea */}
-        <path d={shadedPath} fill="#22c55e" fillOpacity="0.3" stroke="none" />
-
-        {/* Activation energy line */}
-        <line
-          x1={scaleX(activationEnergy)}
-          y1={margin.top}
-          x2={scaleX(activationEnergy)}
-          y2={height - margin.bottom}
-          stroke="#dc2626"
-          strokeWidth="2"
-          strokeDasharray="6,3"
-        />
-        <text
-          x={scaleX(activationEnergy) + 4}
-          y={margin.top + 12}
-          className="fill-red-400"
-          style={{ fontSize: '10px' }}
-        >
-          Ea
-        </text>
-
-        {/* Comparison curve (if provided) */}
-        {comparePathD && (
-          <path
-            d={comparePathD}
-            fill="none"
-            stroke={getTemperatureColor(compareTemperature!)}
+          {/* Axes */}
+          <line
+            x1={margin.left}
+            y1={height - margin.bottom}
+            x2={width - margin.right}
+            y2={height - margin.bottom}
+            stroke="#6b7280"
             strokeWidth="2"
-            strokeDasharray="4,2"
-            opacity="0.6"
           />
-        )}
+          <line
+            x1={margin.left}
+            y1={margin.top}
+            x2={margin.left}
+            y2={height - margin.bottom}
+            stroke="#6b7280"
+            strokeWidth="2"
+          />
 
-        {/* Main distribution curve */}
-        <path
-          d={pathD}
-          fill="none"
-          stroke={curveColor}
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+          {/* X-axis label */}
+          <text
+            x={width / 2}
+            y={height - 8}
+            textAnchor="middle"
+            className="fill-warm-400 text-xs"
+            style={{ fontSize: fontSize.xAxis }}
+          >
+            Orka (kJ/mol)
+          </text>
+
+          {/* Y-axis label */}
+          <text
+            x={yLabel.x}
+            y={yLabel.y}
+            textAnchor="middle"
+            transform={`rotate(-90, ${yLabel.x}, ${yLabel.y})`}
+            className="fill-warm-400 text-xs"
+            style={{ fontSize: fontSize.yAxis }}
+          >
+            Fjöldi sameinda
+          </text>
+
+          {/* X-axis ticks */}
+          {[0, 30, 60, 90, 120].map((x) => (
+            <g key={`tick-${x}`}>
+              <line
+                x1={scaleX(x)}
+                y1={height - margin.bottom}
+                x2={scaleX(x)}
+                y2={height - margin.bottom + 5}
+                stroke="#6b7280"
+                strokeWidth="1"
+              />
+              <text
+                x={scaleX(x)}
+                y={height - margin.bottom + (compact ? 20 : 16)}
+                textAnchor="middle"
+                className="fill-warm-500"
+                style={{ fontSize: fontSize.tick }}
+              >
+                {x}
+              </text>
+            </g>
+          ))}
+
+          {/* Shaded area above Ea */}
+          <path d={shadedPath} fill="#22c55e" fillOpacity="0.3" stroke="none" />
+
+          {/* Activation energy line */}
+          <line
+            x1={scaleX(activationEnergy)}
+            y1={margin.top}
+            x2={scaleX(activationEnergy)}
+            y2={height - margin.bottom}
+            stroke="#dc2626"
+            strokeWidth="2"
+            strokeDasharray="6,3"
+          />
+          <text
+            x={scaleX(activationEnergy) + 4}
+            y={margin.top + (compact ? 16 : 12)}
+            className="fill-red-400"
+            style={{ fontSize: fontSize.ea }}
+          >
+            Ea
+          </text>
+
+          {/* Comparison curve (if provided) */}
+          {comparePathD && (
+            <path
+              d={comparePathD}
+              fill="none"
+              stroke={getTemperatureColor(compareTemperature!)}
+              strokeWidth="2"
+              strokeDasharray="4,2"
+              opacity="0.6"
+            />
+          )}
+
+          {/* Main distribution curve */}
+          <path
+            d={pathD}
+            fill="none"
+            stroke={curveColor}
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
 
       {/* Percentage display */}
-      <div className="mt-3 flex justify-between items-center">
+      <div className="mt-3 flex flex-wrap justify-between items-center gap-x-3 gap-y-1">
         <div className="flex items-center gap-2">
           <div className="w-4 h-3 rounded" style={{ backgroundColor: '#22c55e', opacity: 0.5 }} />
           <span className="text-green-400 text-sm font-semibold">
             {percentAboveEa}% sameinda með E ≥ Ea
           </span>
         </div>
-        <div className="text-xs text-warm-400">Ea = {activationEnergy} kJ/mol</div>
+        <div className="text-xs text-warm-400 whitespace-nowrap">
+          Ea = {activationEnergy} kJ/mol
+        </div>
       </div>
 
       {/* Educational note */}

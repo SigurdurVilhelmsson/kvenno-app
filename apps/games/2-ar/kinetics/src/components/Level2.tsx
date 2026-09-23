@@ -55,7 +55,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-lg mx-auto">
-          <button onClick={onBack} className="text-warm-600 hover:text-warm-800 mb-4">
+          <button
+            onClick={onBack}
+            className="text-warm-600 hover:text-warm-800 mb-4 pointer-coarse:min-h-11"
+          >
             ← Til baka
           </button>
           <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4 animate-slide-in">
@@ -115,7 +118,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
           >
             <span>&larr;</span> Til baka
           </button>
@@ -136,7 +139,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <h2 className="text-2xl font-bold text-green-800 mb-2">{challenge.title}</h2>
           <p className="text-warm-600 mb-4">{challenge.description}</p>
 
@@ -149,22 +152,28 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           <div className="overflow-x-auto mb-6">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-warm-100">
-                  <th className="p-3 text-left">Tilraun</th>
-                  <th className="p-3 text-center">[A] (M)</th>
-                  {hasSecondReactant && <th className="p-3 text-center">[B] (M)</th>}
-                  <th className="p-3 text-center">Upphafshraði (M/s)</th>
+                <tr className="bg-warm-100 text-xs sm:text-sm">
+                  <th className="px-1.5 py-2 sm:p-3 text-left">Tilraun</th>
+                  <th className="px-1.5 py-2 sm:p-3 text-center">[A] (M)</th>
+                  {hasSecondReactant && <th className="px-1.5 py-2 sm:p-3 text-center">[B] (M)</th>}
+                  <th className="px-1.5 py-2 sm:p-3 text-center">Upphafshraði (M/s)</th>
                 </tr>
               </thead>
               <tbody>
                 {challenge.data.map((row, idx) => (
                   <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-warm-50'}>
-                    <td className="p-3 font-bold">{row.experiment}</td>
-                    <td className="p-3 text-center font-mono">{row.concentrationA.toFixed(2)}</td>
+                    <td className="px-1.5 py-2 sm:p-3 font-bold">{row.experiment}</td>
+                    <td className="px-1.5 py-2 sm:p-3 text-center font-mono">
+                      {row.concentrationA.toFixed(2)}
+                    </td>
                     {hasSecondReactant && (
-                      <td className="p-3 text-center font-mono">{row.concentrationB.toFixed(2)}</td>
+                      <td className="px-1.5 py-2 sm:p-3 text-center font-mono">
+                        {row.concentrationB.toFixed(2)}
+                      </td>
                     )}
-                    <td className="p-3 text-center font-mono">{row.initialRate.toFixed(4)}</td>
+                    <td className="px-1.5 py-2 sm:p-3 text-center font-mono">
+                      {row.initialRate.toFixed(4)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -172,13 +181,15 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           </div>
 
           {/* Order selection */}
-          <div className="bg-warm-50 p-4 rounded-xl mb-6">
+          <div className="bg-warm-50 p-3 sm:p-4 rounded-xl mb-6">
             <h3 className="font-bold text-warm-700 mb-4">Veldu röð hvörfunar:</h3>
 
             <div className="space-y-4">
               {/* Order for A */}
-              <div className="flex items-center gap-4">
-                <span className="font-mono font-bold w-32">Röð í [A]:</span>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 sm:flex-nowrap sm:gap-4">
+                <span className="font-mono font-bold whitespace-nowrap min-w-24 sm:w-32">
+                  Röð í [A]:
+                </span>
                 <div className="flex gap-2">
                   {[0, 1, 2].map((order) => (
                     <button
@@ -197,9 +208,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 </div>
                 {showResult && (
                   <span
-                    className={
+                    className={`whitespace-nowrap ${
                       orderA === challenge.correctOrderA ? 'text-green-600' : 'text-red-600'
-                    }
+                    }`}
                   >
                     {orderA === challenge.correctOrderA
                       ? '✓'
@@ -210,8 +221,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
               {/* Order for B (if applicable) */}
               {hasSecondReactant && (
-                <div className="flex items-center gap-4">
-                  <span className="font-mono font-bold w-32">Röð í [B]:</span>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-2 sm:flex-nowrap sm:gap-4">
+                  <span className="font-mono font-bold whitespace-nowrap min-w-24 sm:w-32">
+                    Röð í [B]:
+                  </span>
                   <div className="flex gap-2">
                     {[0, 1, 2].map((order) => (
                       <button
@@ -230,9 +243,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   </div>
                   {showResult && (
                     <span
-                      className={
+                      className={`whitespace-nowrap ${
                         orderB === challenge.correctOrderB ? 'text-green-600' : 'text-red-600'
-                      }
+                      }`}
                     >
                       {orderB === challenge.correctOrderB
                         ? '✓'
@@ -265,7 +278,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 setShowHint(true);
                 setTotalHintsUsed((prev) => prev + 1);
               }}
-              className="text-green-600 hover:text-green-800 text-sm underline mb-4"
+              className="text-green-600 hover:text-green-800 text-sm underline mb-4 pointer-coarse:min-h-11"
             >
               Sýna vísbendingu
             </button>
