@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useCallback, useState, useMemo } from 'react';
 
 import type { InteractiveGraphProps, DataPoint, DataSeries, Margin } from './types';
+import { formatDecimal } from '../../utils/numbers';
 import { canvasPixelRatio, useContainerWidth } from '../ResponsiveContainer/ResponsiveContainer';
 
 const DEFAULT_MARGIN: Margin = { top: 30, right: 30, bottom: 50, left: 60 };
@@ -588,7 +589,9 @@ export const InteractiveGraph: React.FC<InteractiveGraphProps> = ({
       ctx.stroke();
 
       // Tooltip with rounded corners and shadow
-      const tooltipText = point.label || `(${point.x.toFixed(1)}, ${point.y.toFixed(2)})`;
+      // Decimal comma, so the pair is separated by a semicolon: (21,5; 2,12).
+      const tooltipText =
+        point.label || `(${formatDecimal(point.x, 1)}; ${formatDecimal(point.y, 2)})`;
       ctx.font = 'bold 12px sans-serif';
       const tooltipWidth = ctx.measureText(tooltipText).width + 20;
       const tooltipHeight = 28;

@@ -88,14 +88,17 @@ export const Header: React.FC<HeaderProps> = ({
     );
   }
 
+  // As in the game variant: on a short landscape screen the header scrolls
+  // away rather than holding 64 of ~360 px, and on touch the logo link is a
+  // 44 px tall target (mouse users keep the snug box and focus ring).
   return (
-    <header className="sticky top-0 z-50 bg-surface-raised shadow-sm">
+    <header className="sticky top-0 z-50 bg-surface-raised shadow-sm [@media(max-height:500px)]:static">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo / Home link */}
           <a
             href="/"
-            className="font-heading text-xl font-bold text-kvenno-orange hover:text-kvenno-orange-600 transition-colors no-underline shrink-0"
+            className="font-heading text-xl font-bold text-kvenno-orange hover:text-kvenno-orange-600 transition-colors no-underline shrink-0 pointer-coarse:flex pointer-coarse:items-center pointer-coarse:min-h-11"
           >
             {title}
           </a>
