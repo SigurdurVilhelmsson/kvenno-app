@@ -1,9 +1,10 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 
 import { AnimatedMolecule, DragDropBuilder, FeedbackPanel } from '@shared/components';
 import type { DraggableItemData, DropZoneData, DropResult, ZoneState } from '@shared/components';
 
 import { StructureFromNameChallenge } from './StructureFromNameChallenge';
+import { useReturnToPrompt, useRevealWhenShown } from '../hooks/useRevealWhenShown';
 import { organicToMolecule, hasBranches, type OrganicBranch } from '../utils/organicConverter';
 
 // Misconceptions for organic nomenclature
@@ -202,6 +203,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [, setTotalHintsUsed] = useState(0);
   const [useDragDrop, setUseDragDrop] = useState(true);
   const [zoneState, setZoneState] = useState<ZoneState>({});
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const moleculeRef = useRef<HTMLDivElement>(null);
 
   const molecule = molecules[currentMolecule];
   const isBranched = hasBranches(molecule);
@@ -211,6 +214,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   useEffect(() => {
     if (isBranched && useDragDrop) setUseDragDrop(false);
   }, [isBranched, useDragDrop]);
+
+  useRevealWhenShown(feedbackRef, showFeedback);
+
+  // "Næsta sameind", "Halda áfram" and "Reyna aftur" bring the molecule back into view on a phone.
+  // The box is tall and the drawing sits in its middle, so only when half of it is off screen.
+  useReturnToPrompt(moleculeRef, !showFeedback, currentMolecule, 0.5);
 
   // Generate draggable items for building names
   const { nameItems, nameZones } = useMemo(() => {
@@ -238,6 +247,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       { id: 'suffix-yn', label: '-yn', type: 'alkyne' },
     ];
 
+    // The builder wraps each part in its own padded card, so on a phone the chips inside drop
+    // most of their padding: the pool holds more parts per row and the whole builder fits a
+    // phone screen with less scrolling between a part and its zone. sm and up are unchanged.
+    const chip = 'px-2 py-0.5 sm:px-3 sm:py-2 rounded-lg border-2 font-bold';
     const items: DraggableItemData[] = [];
 
     // Add prefix items
@@ -245,9 +258,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       items.push({
         id: p.id,
         content: (
-          <div className="px-3 py-2 bg-blue-100 rounded-lg border-2 border-blue-300 font-bold text-blue-700">
-            {p.label}
-          </div>
+          <div className={`${chip} bg-blue-100 border-blue-300 text-blue-700`}>{p.label}</div>
         ),
         category: 'prefix',
         data: { label: p.label, carbons: p.carbons },
@@ -261,9 +272,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         items.push({
           id: p.id,
           content: (
-            <div className="px-3 py-2 bg-red-100 rounded-lg border-2 border-red-300 font-bold text-red-700">
-              {p.label}
-            </div>
+            <div className={`${chip} bg-red-100 border-red-300 text-red-700`}>{p.label}</div>
           ),
           category: 'position',
           data: { label: p.label },
@@ -277,7 +286,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         id: s.id,
         content: (
           <div
-            className={`px-3 py-2 rounded-lg border-2 font-bold ${
+            className={`${chip} ${
               s.type === 'alkane'
                 ? 'bg-warm-100 border-warm-300 text-warm-700'
                 : s.type === 'alkene'
@@ -344,6 +353,16 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       newState[zoneId] = [itemId];
       return newState;
     });
+  };
+
+  // An item taken back out of a zone — dragged or tapped back to the pool, or displaced by a
+  // swap into a full zone. Without this the mirrored zoneState keeps it, and the built name
+  // (and the graded answer) still shows a part the student has already removed.
+  const handleRemove = (itemId: string, fromZoneId: string) => {
+    setZoneState((prev) => ({
+      ...prev,
+      [fromZoneId]: (prev[fromZoneId] || []).filter((id) => id !== itemId),
+    }));
   };
 
   // Build name from zone state
@@ -506,9 +525,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   if (mode === 'select') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <div className="flex justify-between items-center mb-6">
-            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+          <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+            <button
+              onClick={onBack}
+              className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+            >
               ← Til baka
             </button>
           </div>
@@ -521,7 +543,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           <div className="space-y-4">
             <button
               onClick={() => setMode('name')}
-              className="w-full p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left"
+              className="w-full p-4 sm:p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left"
             >
               <div className="flex items-center gap-4">
                 <div className="text-4xl">🏷️</div>
@@ -534,7 +556,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
             <button
               onClick={() => setMode('build')}
-              className="w-full p-6 rounded-xl border-4 border-emerald-400 bg-emerald-50 hover:bg-emerald-100 transition-all text-left"
+              className="w-full p-4 sm:p-6 rounded-xl border-4 border-emerald-400 bg-emerald-50 hover:bg-emerald-100 transition-all text-left"
             >
               <div className="flex items-center gap-4">
                 <div className="text-4xl">🔬</div>
@@ -570,16 +592,19 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   // Name mode - existing functionality
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-        <div className="flex justify-between items-center mb-6">
-          <button onClick={() => setMode('select')} className="text-warm-500 hover:text-warm-700">
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+        <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+          <button
+            onClick={() => setMode('select')}
+            className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+          >
             ← Til baka
           </button>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-warm-500">
+          <div className="ml-auto flex items-center gap-3 sm:gap-4">
+            <div className="text-sm text-warm-500 whitespace-nowrap">
               Sameind {currentMolecule + 1} af {molecules.length}
             </div>
-            <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-bold">
+            <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-bold whitespace-nowrap">
               Stig: {score}
             </div>
           </div>
@@ -592,7 +617,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           Notaðu IUPAC reglurnar til að nefna þessa sameind
         </p>
 
-        <div className={`bg-gradient-to-br ${getTypeColor()} p-6 rounded-xl border-2 mb-6`}>
+        <div
+          ref={moleculeRef}
+          className={`bg-gradient-to-br ${getTypeColor()} p-4 sm:p-6 rounded-xl border-2 mb-6 scroll-mt-4`}
+        >
           <div className="text-center mb-4">
             <span className="inline-block px-3 py-1 rounded-full text-sm font-bold bg-white">
               {getTypeName()}
@@ -623,7 +651,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   : 'bg-purple-50 border-purple-300'
               }`}
             >
-              <div className="flex items-center justify-center gap-2">
+              <div className="flex flex-wrap items-center justify-center gap-x-2">
                 <span
                   className={`text-lg font-bold ${
                     molecule.type === 'alkene' ? 'text-green-600' : 'text-purple-600'
@@ -656,11 +684,17 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         {!showFeedback ? (
           <div className="space-y-4">
             {/* Mode toggle — drag-drop builder has no substituent prefixes, so branched molecules require text entry. */}
-            <div className="flex justify-end">
+            <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1">
+              {/* The disabled toggle's title tooltip never shows on a touchscreen */}
+              {isBranched && (
+                <span className="hidden pointer-coarse:inline text-xs text-warm-500">
+                  Greinótt sameind — aðeins skrifa-hamur
+                </span>
+              )}
               <button
                 onClick={() => setUseDragDrop(!useDragDrop)}
                 disabled={isBranched}
-                className="text-xs px-3 py-1 rounded-full bg-warm-100 hover:bg-warm-200 text-warm-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="text-xs px-3 py-1 rounded-full bg-warm-100 hover:bg-warm-200 text-warm-600 disabled:opacity-50 disabled:cursor-not-allowed pointer-coarse:min-h-11 pointer-coarse:px-4 pointer-coarse:text-sm"
                 title={isBranched ? 'Greinótt sameind — aðeins skrifa-hamur' : undefined}
               >
                 {useDragDrop ? '⌨️ Skipta í skrifa-ham' : '✋ Skipta í draga-ham'}
@@ -679,7 +713,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   zones={nameZones}
                   initialState={zoneState}
                   onDrop={handleDrop}
+                  onRemove={handleRemove}
                   orientation="horizontal"
+                  zonesClassName="sm:flex-row"
                 />
 
                 {/* Preview of built name */}
@@ -699,6 +735,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
                   placeholder="Sláðu inn nafnið..."
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  autoComplete="off"
+                  spellCheck={false}
                   className="w-full text-center text-xl font-bold p-4 border-2 border-green-300 rounded-xl focus:border-green-500 focus:outline-none"
                   onKeyPress={(e) => e.key === 'Enter' && userAnswer && handleSubmit()}
                 />
@@ -712,7 +752,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     setShowHint(true);
                     setTotalHintsUsed((prev) => prev + 1);
                   }}
-                  className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-3 px-6 rounded-xl"
+                  className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-3 px-4 sm:px-6 rounded-xl"
                 >
                   💡 Vísbending
                 </button>
@@ -720,7 +760,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               <button
                 onClick={useDragDrop ? handleDragDropSubmit : handleSubmit}
                 disabled={useDragDrop ? !getBuiltName() : !userAnswer.trim()}
-                className={`flex-1 font-bold py-3 px-6 rounded-xl ${
+                className={`flex-1 font-bold py-3 px-4 sm:px-6 rounded-xl ${
                   (useDragDrop ? !getBuiltName() : !userAnswer.trim())
                     ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
                     : 'bg-green-500 hover:bg-green-600 text-white'
@@ -731,7 +771,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div ref={feedbackRef} className="space-y-4 scroll-mt-4">
             {useDragDrop ? (
               <FeedbackPanel
                 feedback={getDragDropFeedback()}
@@ -819,7 +859,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             {isCorrect ? (
               <button
                 onClick={handleNext}
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl"
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
               >
                 {currentMolecule < molecules.length - 1 ? 'Næsta sameind →' : 'Ljúka stigi →'}
               </button>
@@ -827,13 +867,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               <div className="flex gap-4">
                 <button
                   onClick={handleTryAgain}
-                  className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-xl"
+                  className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
                 >
                   Reyna aftur
                 </button>
                 <button
                   onClick={handleNext}
-                  className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-6 rounded-xl"
+                  className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
                 >
                   Halda áfram →
                 </button>

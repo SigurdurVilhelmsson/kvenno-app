@@ -1,6 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
+
+import { useReturnToPrompt, useRevealWhenShown } from '../hooks/useRevealWhenShown';
 
 /**
  * StructureFromNameChallenge
@@ -144,6 +146,11 @@ export function StructureFromNameChallenge({
   const [, setHintsUsed] = useState(0);
 
   const challenge = CHALLENGES[currentChallenge];
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const challengeRef = useRef<HTMLDivElement>(null);
+  useRevealWhenShown(feedbackRef, showFeedback);
+  // "Næsta áskorun" brings the next name to build back into view on a phone
+  useReturnToPrompt(challengeRef, !showFeedback, currentChallenge);
 
   // Initialize bonds when carbon count changes
   const updateCarbonCount = (newCount: number) => {
@@ -268,8 +275,13 @@ export function StructureFromNameChallenge({
     setBonds([]);
   };
 
-  const atomSize = 40;
-  const bondLength = 50;
+  // Chain dimensions as CSS custom properties: below md the atoms shrink and the chain wraps
+  // onto rows so a phone shows the whole molecule at once; from md up they are the original
+  // desktop sizes. `--hit` makes each bond button a 44 px touch target on coarse pointers,
+  // centred on the bond so nothing moves.
+  const chainVars =
+    '[--atom:30px] [--atom-font:12px] [--bond:44px] md:[--atom:40px] md:[--atom-font:14px] md:[--bond:50px] [--hit:0px] pointer-coarse:[--hit:44px]';
+  const bondBoxHeight = 'max(var(--hit), var(--atom))';
   const bondHeight = 5;
 
   const getDifficultyColor = () => {
@@ -285,17 +297,20 @@ export function StructureFromNameChallenge({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+        <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+          <button
+            onClick={onBack}
+            className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+          >
             ← Til baka
           </button>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-warm-500">
+          <div className="ml-auto flex items-center gap-3 sm:gap-4">
+            <div className="text-sm text-warm-500 whitespace-nowrap">
               Áskorun {currentChallenge + 1} af {CHALLENGES.length}
             </div>
-            <div className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold">
+            <div className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold whitespace-nowrap">
               Stig: {score}
             </div>
           </div>
@@ -307,7 +322,10 @@ export function StructureFromNameChallenge({
         <p className="text-center text-warm-600 mb-6">Lestu nafnið og byggðu rétta byggingu</p>
 
         {/* Challenge card */}
-        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 p-6 rounded-xl border-2 border-emerald-200 mb-6">
+        <div
+          ref={challengeRef}
+          className="bg-gradient-to-br from-emerald-50 to-teal-50 p-4 sm:p-6 rounded-xl border-2 border-emerald-200 mb-6 scroll-mt-4"
+        >
           <div className="flex items-center justify-between mb-4">
             <span
               className={`px-3 py-1 rounded-full text-sm font-medium border ${getDifficultyColor()}`}
@@ -331,14 +349,18 @@ export function StructureFromNameChallenge({
         {!showFeedback && (
           <div className="mb-6">
             {/* Carbon chain visualization */}
-            <div className="bg-warm-900 rounded-xl p-4 mb-4 overflow-x-auto">
-              <div className="flex items-center justify-center min-w-fit">
+            <div className={`bg-warm-900 rounded-xl p-4 mb-4 overflow-x-auto ${chainVars}`}>
+              <div className="flex flex-wrap md:flex-nowrap items-center justify-center gap-y-3 min-w-fit">
                 {Array.from({ length: carbonCount }).map((_, i) => (
                   <div key={i} className="flex items-center">
                     {/* Carbon atom */}
                     <div
                       className="flex items-center justify-center rounded-full bg-warm-700 border-2 border-warm-500 text-white font-bold select-none"
-                      style={{ width: atomSize, height: atomSize, fontSize: atomSize * 0.35 }}
+                      style={{
+                        width: 'var(--atom)',
+                        height: 'var(--atom)',
+                        fontSize: 'var(--atom-font)',
+                      }}
                     >
                       C{i + 1}
                     </div>
@@ -348,7 +370,11 @@ export function StructureFromNameChallenge({
                       <button
                         onClick={() => cycleBond(i + 1)}
                         className="relative flex flex-col justify-center items-center hover:scale-110 transition-transform cursor-pointer group"
-                        style={{ width: bondLength, height: atomSize }}
+                        style={{
+                          width: 'var(--bond)',
+                          height: bondBoxHeight,
+                          marginBlock: `calc((var(--atom) - ${bondBoxHeight}) / 2)`,
+                        }}
                         title="Smelltu til að breyta tengingu"
                       >
                         {(() => {
@@ -403,7 +429,7 @@ export function StructureFromNameChallenge({
               </div>
 
               {/* Legend */}
-              <div className="mt-3 flex justify-center gap-4 text-xs text-warm-400">
+              <div className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-warm-400">
                 <span className="flex items-center gap-1">
                   <span className="w-4 h-1 bg-warm-400 rounded" /> ein
                 </span>
@@ -423,14 +449,18 @@ export function StructureFromNameChallenge({
                   þrí
                 </span>
               </div>
+              {/* The bonds' title tooltip never shows on a touchscreen, so say it there */}
+              <p className="hidden pointer-coarse:block mt-2 text-center text-xs text-warm-300">
+                Smelltu á tengingu til að breyta
+              </p>
             </div>
 
             {/* Carbon controls */}
-            <div className="flex justify-center items-center gap-4 mb-4">
+            <div className="flex flex-wrap justify-center items-center gap-4 mb-4">
               <button
                 onClick={() => updateCarbonCount(carbonCount - 1)}
                 disabled={carbonCount <= 2}
-                className={`w-12 h-12 rounded-full font-bold text-xl transition-all ${
+                className={`w-12 h-12 shrink-0 rounded-full font-bold text-xl transition-all ${
                   carbonCount > 2
                     ? 'bg-red-500 hover:bg-red-600 text-white'
                     : 'bg-warm-200 text-warm-400 cursor-not-allowed'
@@ -447,7 +477,7 @@ export function StructureFromNameChallenge({
               <button
                 onClick={() => updateCarbonCount(carbonCount + 1)}
                 disabled={carbonCount >= 8}
-                className={`w-12 h-12 rounded-full font-bold text-xl transition-all ${
+                className={`w-12 h-12 shrink-0 rounded-full font-bold text-xl transition-all ${
                   carbonCount < 8
                     ? 'bg-green-500 hover:bg-green-600 text-white'
                     : 'bg-warm-200 text-warm-400 cursor-not-allowed'
@@ -458,7 +488,7 @@ export function StructureFromNameChallenge({
 
               <button
                 onClick={handleReset}
-                className="ml-4 px-3 py-1.5 text-sm bg-warm-200 hover:bg-warm-300 text-warm-700 rounded-lg"
+                className="sm:ml-4 px-3 py-1.5 text-sm bg-warm-200 hover:bg-warm-300 text-warm-700 rounded-lg pointer-coarse:min-h-11 pointer-coarse:px-4"
               >
                 Endurstilla
               </button>
@@ -471,7 +501,7 @@ export function StructureFromNameChallenge({
                   setShowHint(true);
                   setHintsUsed((prev) => prev + 1);
                 }}
-                className="w-full text-yellow-600 hover:text-yellow-700 text-sm mb-4"
+                className="w-full text-yellow-600 hover:text-yellow-700 text-sm mb-4 pointer-coarse:min-h-11"
               >
                 💡 Sýna vísbendingu
               </button>
@@ -493,7 +523,7 @@ export function StructureFromNameChallenge({
 
         {/* Feedback */}
         {showFeedback && (
-          <div className="space-y-4">
+          <div ref={feedbackRef} className="space-y-4 scroll-mt-4">
             <FeedbackPanel
               feedback={getFeedback()}
               config={{
@@ -516,14 +546,17 @@ export function StructureFromNameChallenge({
         {/* Reference */}
         <div className="mt-6 bg-warm-50 p-4 rounded-xl">
           <h3 className="font-semibold text-warm-700 mb-2">📋 Minnisblað:</h3>
-          <div className="grid grid-cols-2 gap-4 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>
               <div className="font-bold text-warm-600 mb-1">Forskeytir:</div>
               <div className="grid grid-cols-3 gap-1">
                 {['meth-1', 'eth-2', 'prop-3', 'but-4', 'pent-5', 'hex-6'].map((p) => {
                   const [prefix, count] = p.split('-');
                   return (
-                    <div key={p} className="bg-white p-1 rounded border text-center">
+                    <div
+                      key={p}
+                      className="bg-white p-1 rounded border text-center whitespace-nowrap"
+                    >
                       {count}: {prefix}
                     </div>
                   );

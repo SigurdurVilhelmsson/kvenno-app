@@ -245,36 +245,41 @@ export function MoleculeBuilder({
     onNameGenerated(name, formula);
   }
 
-  const atomSize = compact ? 32 : 44;
-  const bondLength = compact ? 40 : 56;
-  const bondHeight = compact ? 4 : 6;
-  const branchBondHeight = compact ? 24 : 36;
-  const branchAtomSize = compact ? 26 : 34;
+  // Chain dimensions live in CSS custom properties so the breakpoints can change them. Below
+  // md the atoms shrink and the chain wraps onto rows (a phone cannot show eight 44 px atoms
+  // side by side); from md up the sizes are the original desktop ones. `--hit` grows each bond
+  // button to a 44 px touch target on coarse pointers, centred on the bond so nothing moves.
+  const chainVars = compact
+    ? '[--atom:32px] [--atom-font:12.8px] [--bond:40px] [--bar:4px] [--branch-bond:24px] [--branch-atom:26px] [--branch-font:8.32px] [--chain-pt:58px]'
+    : '[--atom:30px] [--atom-font:12px] [--bond:44px] [--bar:5px] [--branch-bond:20px] [--branch-atom:34px] [--branch-font:12px] [--chain-pt:0px] md:[--atom:44px] md:[--atom-font:17.6px] md:[--bond:56px] md:[--bar:6px] md:[--branch-bond:36px] md:[--branch-font:10.88px] md:[--chain-pt:78px]';
+  const bondBoxHeight = 'max(var(--hit), var(--atom))';
 
   return (
     <div
-      className={`${compact ? 'p-3' : 'p-4'} bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl border border-emerald-200`}
+      className={`${compact ? 'p-3' : 'p-3 md:p-4'} bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl border border-emerald-200`}
     >
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 mb-3">
         <h3 className={`font-bold text-emerald-800 ${compact ? 'text-sm' : 'text-base'}`}>
           Sameindasmiður
         </h3>
-        <label className="flex items-center gap-1.5 text-xs text-warm-600 cursor-pointer">
+        <label className="flex items-center gap-1.5 text-xs text-warm-600 cursor-pointer whitespace-nowrap pointer-coarse:min-h-11 pointer-coarse:gap-2">
           <input
             type="checkbox"
             checked={showFormula}
             onChange={(e) => setShowFormula(e.target.checked)}
-            className="rounded border-warm-300"
+            className="rounded border-warm-300 shrink-0 pointer-coarse:size-6"
           />
           Sýna formúlu
         </label>
       </div>
 
       {/* Carbon chain visualization */}
-      <div className="bg-warm-900 rounded-xl p-4 mb-4 overflow-x-auto">
+      <div
+        className={`bg-warm-900 rounded-xl px-2 py-3 md:p-4 mb-4 overflow-x-auto [--hit:0px] pointer-coarse:[--hit:44px] ${chainVars}`}
+      >
         <div
-          className="flex items-end justify-center min-w-fit"
-          style={{ gap: 0, paddingTop: branchBondHeight + branchAtomSize + 8 }}
+          className="flex flex-wrap md:flex-nowrap items-end justify-center gap-y-3 min-w-fit"
+          style={{ paddingTop: 'var(--chain-pt)' }}
         >
           {Array.from({ length: carbonCount }).map((_, i) => {
             const carbonPosition = i + 1;
@@ -289,7 +294,7 @@ export function MoleculeBuilder({
                   <div
                     className="flex flex-col items-center"
                     style={{
-                      height: branchBondHeight + branchAtomSize + 8,
+                      height: 'calc(var(--branch-bond) + var(--branch-atom) + 8px)',
                       justifyContent: 'flex-end',
                     }}
                   >
@@ -300,9 +305,9 @@ export function MoleculeBuilder({
                           <div
                             className="flex items-center justify-center rounded-full bg-teal-700 border-2 border-teal-400 text-teal-100 font-bold select-none"
                             style={{
-                              width: branchAtomSize,
-                              height: branchAtomSize,
-                              fontSize: branchAtomSize * 0.32,
+                              width: 'var(--branch-atom)',
+                              height: 'var(--branch-atom)',
+                              fontSize: 'var(--branch-font)',
                             }}
                           >
                             CH₃
@@ -310,7 +315,7 @@ export function MoleculeBuilder({
                           {/* Remove branch button */}
                           <button
                             onClick={() => toggleBranch(carbonPosition)}
-                            className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 hover:bg-red-600 text-white text-[10px] flex items-center justify-center leading-none transition-colors"
+                            className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 hover:bg-red-600 text-white text-[10px] flex items-center justify-center leading-none transition-colors pointer-coarse:-top-2 pointer-coarse:-right-2 pointer-coarse:size-6 pointer-coarse:text-sm pointer-coarse:after:absolute pointer-coarse:after:-inset-2.5 pointer-coarse:after:content-['']"
                             aria-label="Fjarlægja grein"
                           >
                             ×
@@ -321,20 +326,24 @@ export function MoleculeBuilder({
                           className="bg-teal-400 rounded-full"
                           style={{
                             width: 3,
-                            height: branchBondHeight,
+                            height: 'var(--branch-bond)',
                           }}
                         />
                       </>
                     ) : isEligible ? (
-                      /* Add branch button */
+                      /* Add branch button: the visible circle stays 24 px; on touch the button
+                         around it is a 44 px target, with negative margins so the layout and the
+                         circle's position do not change. */
                       <button
                         onClick={() => toggleBranch(carbonPosition)}
-                        className="w-6 h-6 rounded-full bg-teal-600/40 hover:bg-teal-500/60 text-teal-300 text-sm font-bold flex items-center justify-center transition-colors mb-1"
+                        className="group/branch flex items-center justify-center rounded-full mb-1 pointer-coarse:size-11 pointer-coarse:-mx-2 pointer-coarse:-mb-1.5"
                         style={{ marginTop: 'auto' }}
                         aria-label={`Bæta við grein á C${carbonPosition}`}
                         title="Grein"
                       >
-                        +
+                        <span className="w-6 h-6 rounded-full bg-teal-600/40 group-hover/branch:bg-teal-500/60 text-teal-300 text-sm font-bold flex items-center justify-center transition-colors">
+                          +
+                        </span>
                       </button>
                     ) : null}
                   </div>
@@ -344,7 +353,11 @@ export function MoleculeBuilder({
                     className={`flex items-center justify-center rounded-full border-2 text-white font-bold select-none ${
                       hasBranch ? 'bg-warm-700 border-teal-400' : 'bg-warm-700 border-warm-500'
                     }`}
-                    style={{ width: atomSize, height: atomSize, fontSize: atomSize * 0.4 }}
+                    style={{
+                      width: 'var(--atom)',
+                      height: 'var(--atom)',
+                      fontSize: 'var(--atom-font)',
+                    }}
                   >
                     C{carbonPosition}
                   </div>
@@ -355,7 +368,11 @@ export function MoleculeBuilder({
                   <button
                     onClick={() => cycleBond(i + 1)}
                     className="relative flex flex-col justify-center items-center hover:scale-110 focus-visible:scale-110 focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:outline-none rounded transition-transform cursor-pointer group"
-                    style={{ width: bondLength, height: atomSize }}
+                    style={{
+                      width: 'var(--bond)',
+                      height: bondBoxHeight,
+                      marginBlock: `calc((var(--atom) - ${bondBoxHeight}) / 2)`,
+                    }}
                     aria-label={`Tenging ${i + 1}–${i + 2}: ${bonds.find((b) => b.position === i + 1)?.type === 'single' ? 'einföld' : bonds.find((b) => b.position === i + 1)?.type === 'double' ? 'tvöföld' : 'þreföld'}. Smelltu til að breyta.`}
                   >
                     {/* Bond lines */}
@@ -367,7 +384,7 @@ export function MoleculeBuilder({
                         return (
                           <div
                             className="bg-warm-400 group-hover:bg-warm-300 rounded-full"
-                            style={{ width: '100%', height: bondHeight }}
+                            style={{ width: '100%', height: 'var(--bar)' }}
                           />
                         );
                       }
@@ -377,11 +394,11 @@ export function MoleculeBuilder({
                           <>
                             <div
                               className="bg-green-400 group-hover:bg-green-300 rounded-full"
-                              style={{ width: '100%', height: bondHeight, marginBottom: 4 }}
+                              style={{ width: '100%', height: 'var(--bar)', marginBottom: 4 }}
                             />
                             <div
                               className="bg-green-400 group-hover:bg-green-300 rounded-full"
-                              style={{ width: '100%', height: bondHeight }}
+                              style={{ width: '100%', height: 'var(--bar)' }}
                             />
                           </>
                         );
@@ -392,15 +409,23 @@ export function MoleculeBuilder({
                         <>
                           <div
                             className="bg-purple-400 group-hover:bg-purple-300 rounded-full"
-                            style={{ width: '100%', height: bondHeight - 1, marginBottom: 2 }}
+                            style={{
+                              width: '100%',
+                              height: 'calc(var(--bar) - 1px)',
+                              marginBottom: 2,
+                            }}
                           />
                           <div
                             className="bg-purple-400 group-hover:bg-purple-300 rounded-full"
-                            style={{ width: '100%', height: bondHeight - 1, marginBottom: 2 }}
+                            style={{
+                              width: '100%',
+                              height: 'calc(var(--bar) - 1px)',
+                              marginBottom: 2,
+                            }}
                           />
                           <div
                             className="bg-purple-400 group-hover:bg-purple-300 rounded-full"
-                            style={{ width: '100%', height: bondHeight - 1 }}
+                            style={{ width: '100%', height: 'calc(var(--bar) - 1px)' }}
                           />
                         </>
                       );
@@ -422,7 +447,7 @@ export function MoleculeBuilder({
         </div>
 
         {/* Legend */}
-        <div className="mt-4 flex justify-center gap-4 text-xs text-warm-400">
+        <div className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-warm-400">
           <span className="flex items-center gap-1">
             <span className="w-4 h-1 bg-warm-400 rounded" /> ein
           </span>
@@ -490,7 +515,7 @@ export function MoleculeBuilder({
               : 'border-warm-300'
         }`}
       >
-        <div className="flex justify-between items-center mb-2">
+        <div className="flex flex-wrap justify-between items-center gap-x-2 gap-y-1 mb-2">
           <span
             className={`text-sm font-medium px-2 py-0.5 rounded ${
               compound.color === 'green'

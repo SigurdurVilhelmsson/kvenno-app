@@ -1,6 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 import { shuffleArray } from '@shared/utils';
+
+import { useReturnToPrompt, useRevealWhenShown } from '../hooks/useRevealWhenShown';
 
 interface Level3Props {
   onComplete: (score: number) => void;
@@ -203,6 +205,12 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     [currentChallenge]
   );
 
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const questionRef = useRef<HTMLDivElement>(null);
+  useRevealWhenShown(feedbackRef, showFeedback);
+  // "Byrja áskoranir" and "Næsta áskorun" bring the question back into view on a phone
+  useReturnToPrompt(questionRef, !showFeedback, `${phase}:${currentChallenge}`);
+
   const handleAnswer = (answer: string) => {
     const correct = answer === challenges[currentChallenge].correctAnswer;
     setIsCorrect(correct);
@@ -227,12 +235,15 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <div className="flex justify-between items-center mb-6">
-            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+          <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+            <button
+              onClick={onBack}
+              className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+            >
               ← Til baka
             </button>
-            <div className="text-sm text-warm-500">
+            <div className="ml-auto text-sm text-warm-500 whitespace-nowrap">
               Hóptengi {currentGroup + 1} af {functionalGroups.length}
             </div>
           </div>
@@ -259,31 +270,40 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             ))}
           </div>
 
-          <div className={`${group.color} p-8 rounded-2xl border-2 animate-slide-in`}>
+          <div className={`${group.color} p-4 sm:p-8 rounded-2xl border-2 animate-slide-in`}>
             <div className="text-center mb-6">
-              <div className="text-4xl font-bold mb-2">{group.nameIcelandic}</div>
+              <div className="text-2xl sm:text-4xl font-bold mb-2">{group.nameIcelandic}</div>
               <div className="text-lg text-warm-600">({group.name})</div>
             </div>
 
-            <div className="bg-white p-6 rounded-xl mb-6">
-              <div className="grid grid-cols-2 gap-6 text-center">
+            <div className="bg-white p-4 sm:p-6 rounded-xl mb-6">
+              <div className="grid grid-cols-2 gap-3 sm:gap-6 text-center">
                 <div>
                   <div className="text-sm text-warm-500 mb-1">Hóptengi</div>
-                  <div className="text-3xl font-mono font-bold">{group.formula}</div>
+                  <div className="text-2xl sm:text-3xl font-mono font-bold whitespace-nowrap">
+                    {group.formula}
+                  </div>
                 </div>
                 <div>
                   <div className="text-sm text-warm-500 mb-1">Viðskeyti</div>
-                  <div className="text-3xl font-bold text-green-600">{group.suffix}</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-green-600 whitespace-nowrap">
+                    {group.suffix}
+                  </div>
                 </div>
               </div>
             </div>
 
             <div className="bg-white p-4 rounded-xl mb-4">
               <div className="text-sm text-warm-500 mb-1">Dæmi:</div>
-              <div className="flex items-center justify-center gap-4">
-                <span className="text-2xl font-mono">{group.example}</span>
-                <span className="text-2xl text-warm-400">→</span>
-                <span className="text-2xl font-bold">{group.exampleName}</span>
+              <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-4">
+                <span className="text-xl sm:text-2xl font-mono whitespace-nowrap">
+                  {group.example}
+                </span>
+                {/* Arrow and name wrap together, so a narrow screen breaks before the arrow */}
+                <span className="flex items-center gap-x-3 sm:gap-x-4">
+                  <span className="text-xl sm:text-2xl text-warm-400">→</span>
+                  <span className="text-xl sm:text-2xl font-bold">{group.exampleName}</span>
+                </span>
               </div>
             </div>
 
@@ -294,7 +314,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             <button
               onClick={handlePrevGroup}
               disabled={currentGroup === 0}
-              className={`flex-1 py-3 px-6 rounded-xl font-bold ${
+              className={`flex-1 py-3 px-4 sm:px-6 rounded-xl font-bold ${
                 currentGroup === 0
                   ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
                   : 'bg-warm-500 hover:bg-warm-600 text-white'
@@ -304,7 +324,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             </button>
             <button
               onClick={handleNextGroup}
-              className="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl"
+              className="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
             >
               {currentGroup === functionalGroups.length - 1 ? 'Byrja áskoranir →' : 'Næsta →'}
             </button>
@@ -318,9 +338,9 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                   key={idx}
                   className={`p-2 rounded border ${idx === currentGroup ? fg.color : 'bg-white'}`}
                 >
-                  <span className="font-bold">{fg.formula}</span>
+                  <span className="font-bold whitespace-nowrap">{fg.formula}</span>
                   <span className="text-warm-500"> → </span>
-                  <span className="text-green-600">{fg.suffix}</span>
+                  <span className="text-green-600 whitespace-nowrap">{fg.suffix}</span>
                 </div>
               ))}
             </div>
@@ -346,16 +366,19 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-        <div className="flex justify-between items-center mb-6">
-          <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+        <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+          <button
+            onClick={onBack}
+            className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+          >
             ← Til baka
           </button>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-warm-500">
+          <div className="ml-auto flex items-center gap-3 sm:gap-4">
+            <div className="text-sm text-warm-500 whitespace-nowrap">
               Áskorun {currentChallenge + 1} af {challenges.length}
             </div>
-            <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold">
+            <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold whitespace-nowrap">
               Stig: {score}
             </div>
           </div>
@@ -365,7 +388,10 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           {getTypeLabel()}
         </h1>
 
-        <div className="bg-purple-50 p-6 rounded-xl mb-6 text-center border-2 border-purple-200">
+        <div
+          ref={questionRef}
+          className="bg-purple-50 p-4 sm:p-6 rounded-xl mb-6 text-center border-2 border-purple-200 scroll-mt-4"
+        >
           <div className="text-xl md:text-2xl font-bold text-warm-800 mb-2">
             {challenge.question}
           </div>
@@ -375,7 +401,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         </div>
 
         {!showFeedback ? (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {shuffledOptions.map((option) => (
               <button
                 key={option}
@@ -387,7 +413,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             ))}
           </div>
         ) : (
-          <div className="space-y-4">
+          <div ref={feedbackRef} className="space-y-4 scroll-mt-4">
             <div
               className={`p-6 rounded-xl text-center ${
                 isCorrect
@@ -413,7 +439,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
             <button
               onClick={handleNextChallenge}
-              className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl"
+              className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
             >
               {currentChallenge < challenges.length - 1 ? 'Næsta áskorun →' : 'Ljúka stigi →'}
             </button>
@@ -422,7 +448,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
         <div className="mt-6 bg-warm-50 p-4 rounded-xl">
           <h3 className="font-semibold text-warm-700 mb-2">📋 Hóptengi og viðskeytir:</h3>
-          <div className="grid grid-cols-4 gap-2 text-xs text-center">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-center">
             <div className="bg-blue-50 p-2 rounded border border-blue-200">
               <div className="font-bold">-OH</div>
               <div className="text-blue-600">-ól</div>
