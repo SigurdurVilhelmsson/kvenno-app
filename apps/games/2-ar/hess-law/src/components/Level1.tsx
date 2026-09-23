@@ -10,26 +10,34 @@ import { multiplyEquationCoefficients } from '../utils/equation-math';
 
 // Misconceptions for Hess's Law concepts
 const MISCONCEPTIONS: Record<number, string> = {
-  1: 'Neikvætt ΔH þýðir að orka fer ÚT úr kerfinu (exothermic), ekki inn. Jákvætt þýðir að orka fer inn (endothermic).',
+  1: 'Neikvætt ΔH þýðir að orka fer ÚT úr kerfinu (útvermið), ekki inn. Jákvætt þýðir að orka fer inn (innvermið).',
   2: 'Þegar þú snýrð við hvörfum, snýrðu við FORMERKINU á ΔH. Ef ΔH = -X, þá verður öfugt hvarf ΔH = +X.',
   3: 'Við margföldun breytist formerkið EKKI. Ef ΔH = -X, þá er 2×ΔH = -2X (enn neikvætt).',
-  4: 'Mundu röðina: snúðu fyrst við (breytir formerki), SÍÐAN margfaldaðu.',
+  4: 'Hér þarf hvort tveggja: snúa við (sundrun breytir formerkinu) OG margfalda (4 mól NH₃ = 2× jafnan). Röðin skiptir ekki máli.',
   5: 'Til að nota Hess, þarftu að stilla jöfnur þannig að hvarfefni og myndefni strikist út rétt.',
-  6: 'Orkubraut: leiðin skiptir ekki máli, aðeins upphafs- og lokastaða. Heildar ΔH er summa allra skrefa.',
+  6: 'Orkubraut: leiðin skiptir ekki máli, aðeins upphafs- og lokastaða. Heildar-ΔH er summa allra skrefa.',
 };
 
 // Related concepts for each challenge
 const RELATED_CONCEPTS: Record<number, string[]> = {
-  1: ['Exothermic', 'Endothermic', 'Vermi'],
+  1: ['Útvermið hvarf', 'Innvermið hvarf', 'Vermi'],
   2: ['Öfug hvörf', 'Formerkisbreyting', 'Hverfanleiki'],
   3: ['Hlutfallaefnafræði', 'Mólhlutföll', 'Hlutfallsleg orka'],
-  4: ['Samsett aðgerðir', 'Sundrun vs myndun', 'Margföldun'],
+  4: ['Samsettar aðgerðir', 'Sundrun vs myndun', 'Margföldun'],
   5: ['Lögmál Hess', 'Orkuvarðveisla', 'Hverfanleiki'],
-  6: ['Orkubraut', 'Ferlisstuðull', 'Heildar ΔH'],
+  6: ['Orkubraut', 'Ferlisstuðull', 'Heildar-ΔH'],
 };
 
 // Energy diagram component
-function EnergyDiagram({ equation, showPath = true }: { equation: Equation; showPath?: boolean }) {
+function EnergyDiagram({
+  equation,
+  showPath = true,
+  hideDeltaH = false,
+}: {
+  equation: Equation;
+  showPath?: boolean;
+  hideDeltaH?: boolean;
+}) {
   const effectiveDeltaH = equation.deltaH * equation.multiplier * (equation.isReversed ? -1 : 1);
   const isExothermic = effectiveDeltaH < 0;
 
@@ -104,12 +112,16 @@ function EnergyDiagram({ equation, showPath = true }: { equation: Equation; show
 
         {/* ΔH label */}
         <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 whitespace-nowrap bg-white px-2 sm:px-3 py-1 rounded-lg border-2 border-warm-300 shadow-sm">
-          <span
-            className={`font-bold text-base sm:text-lg ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}
-          >
-            ΔH = {effectiveDeltaH > 0 ? '+' : ''}
-            {effectiveDeltaH} kJ
-          </span>
+          {hideDeltaH ? (
+            <span className="font-bold text-base sm:text-lg text-purple-600">ΔH = ? kJ</span>
+          ) : (
+            <span
+              className={`font-bold text-base sm:text-lg ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}
+            >
+              ΔH = {effectiveDeltaH > 0 ? '+' : ''}
+              {effectiveDeltaH} kJ
+            </span>
+          )}
         </div>
       </div>
     </div>
@@ -122,11 +134,13 @@ function EquationDisplay({
   onReverse,
   onMultiply,
   showControls = true,
+  hideDeltaH = false,
 }: {
   equation: Equation;
   onReverse?: () => void;
   onMultiply?: (factor: number) => void;
   showControls?: boolean;
+  hideDeltaH?: boolean;
 }) {
   const effectiveDeltaH = equation.deltaH * equation.multiplier * (equation.isReversed ? -1 : 1);
 
@@ -161,12 +175,16 @@ function EquationDisplay({
 
       {/* ΔH value */}
       <div className="text-center mb-4">
-        <span
-          className={`font-bold text-xl ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}
-        >
-          ΔH = {effectiveDeltaH > 0 ? '+' : ''}
-          {effectiveDeltaH} kJ/mol
-        </span>
+        {hideDeltaH ? (
+          <span className="font-bold text-xl text-purple-600">ΔH = ? kJ/mol</span>
+        ) : (
+          <span
+            className={`font-bold text-xl ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}
+          >
+            ΔH = {effectiveDeltaH > 0 ? '+' : ''}
+            {effectiveDeltaH} kJ/mol
+          </span>
+        )}
       </div>
 
       {/* Controls */}
@@ -281,6 +299,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
   // Show interactive controls for challenges 2-4
   const showEquationControls = challenge.id >= 2 && challenge.id <= 4;
+  // Where the question asks for the drawn equation's ΔH, it stays "?" until answered.
+  const hideDeltaH = !!challenge.asksForShownDeltaH && !showResult;
 
   // --- Teaching intro ---
   if (showIntro) {
@@ -297,16 +317,15 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <h2 className="text-xl font-bold text-warm-800">Lögmál Hess — Af hverju?</h2>
 
             <p className="text-warm-700">
-              <strong>Vermi (ΔH)</strong> er <em>ástandsfall</em> — það þýðir að heildar
-              orkubreyting fer eftir upphafs- og lokaástandi,{' '}
-              <strong>ekki hvaða leið er farin</strong>.
+              <strong>Vermi (ΔH)</strong> er <em>ástandsfall</em> — það þýðir að heildarorkubreyting
+              fer eftir upphafs- og lokaástandi, <strong>ekki hvaða leið er farin</strong>.
             </p>
 
             <div className="bg-blue-50 p-4 rounded-lg">
               <h3 className="font-bold text-blue-800 mb-2">Hvað þýðir þetta?</h3>
               <p className="text-sm text-blue-700">
                 Ef þú ferð frá A til B, skiptir ekki máli hvort þú ferð beina leið eða í gegnum C og
-                D. Heildar ΔH er sú sama. Við getum því <em>sameinað</em> jöfnur til að finna ΔH sem
+                D. Heildar-ΔH er sú sama. Við getum því <em>sameinað</em> jöfnur til að finna ΔH sem
                 erfitt er að mæla beint.
               </p>
             </div>
@@ -315,7 +334,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               <h3 className="font-bold text-green-800 mb-2">Tvær reglur</h3>
               <div className="text-sm text-green-700 space-y-2">
                 <p>
-                  <strong>1. Snúa við hvörfum:</strong> Ef þú snýrð við jöfnunni, breytir formerkið
+                  <strong>1. Snúa við hvörfum:</strong> Ef þú snýrð við jöfnunni, breytist formerkið
                   á ΔH. (t.d. −286 → +286)
                 </p>
                 <p>
@@ -326,8 +345,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             </div>
 
             <div className="bg-warm-50 p-3 rounded-lg text-sm text-warm-700">
-              Í þessum stigi muntu sjá hvernig þessar reglur virka gagnvirkt — prófaðu að snúa við
-              og margfalda jöfnur og sjáðu hvað gerist.
+              Í þessu stigi muntu sjá hvernig þessar reglur virka gagnvirkt — prófaðu að snúa við og
+              margfalda jöfnur og sjáðu hvað gerist.
             </div>
 
             <button
@@ -394,14 +413,14 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <p className="text-warm-700 mb-2">{challenge.description}</p>
             <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
               <p className="text-sm text-purple-800">
-                <strong>Lykillhugtak:</strong> {challenge.concept}
+                <strong>Lykilhugtak:</strong> {challenge.concept}
               </p>
             </div>
           </div>
 
           {/* Energy diagram */}
           <div className="mb-6">
-            <EnergyDiagram equation={equation} />
+            <EnergyDiagram equation={equation} hideDeltaH={hideDeltaH} />
           </div>
 
           {/* Equation with optional controls */}
@@ -411,6 +430,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               onReverse={handleReverse}
               onMultiply={handleMultiply}
               showControls={showEquationControls && !showResult}
+              hideDeltaH={hideDeltaH}
             />
           </div>
 

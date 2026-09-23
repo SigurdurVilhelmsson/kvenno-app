@@ -39,7 +39,7 @@ function App() {
     DEFAULT_PROGRESS
   );
 
-  const handleLevel1Complete = (score: number, _maxScore: number = 600, _hintsUsed: number = 0) => {
+  const handleLevel1Complete = (score: number) => {
     updateProgress({
       level1Completed: true,
       level1Score: Math.max(progress.level1Score, score),
@@ -48,7 +48,7 @@ function App() {
     setActiveLevel('menu');
   };
 
-  const handleLevel2Complete = (score: number, _maxScore: number = 500, _hintsUsed: number = 0) => {
+  const handleLevel2Complete = (score: number) => {
     updateProgress({
       level2Completed: true,
       level2Score: Math.max(progress.level2Score, score),
@@ -57,7 +57,7 @@ function App() {
     setActiveLevel('menu');
   };
 
-  const handleLevel3Complete = (score: number, _maxScore: number = 500, _hintsUsed: number = 0) => {
+  const handleLevel3Complete = (score: number) => {
     updateProgress({
       level3Completed: true,
       level3Score: Math.max(progress.level3Score, score),
@@ -117,7 +117,7 @@ function App() {
             <div className="bg-purple-50 p-4 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-purple-800">Stig 3: Útreikningar</div>
-                <div className="text-sm text-purple-600">Myndunarvarminn</div>
+                <div className="text-sm text-purple-600">Myndunarvermi</div>
               </div>
               <div className="text-2xl font-bold text-purple-600">{progress.level3Score}</div>
             </div>
@@ -132,7 +132,7 @@ function App() {
             <h2 className="font-bold text-teal-800 mb-3">Hvað lærðir þú?</h2>
             <ul className="space-y-2 text-teal-900 text-sm">
               <li>
-                ✓ <strong>Lögmál Hess:</strong> ΔH fer sama leiðina óháð hvörfunarferlinu
+                ✓ <strong>Lögmál Hess:</strong> ΔH er það sama óháð leiðinni
               </li>
               <li>
                 ✓ <strong>Snúa við:</strong> Ef þú snýrð við hvörfum, snýrðu einnig formerki ΔH
@@ -141,7 +141,7 @@ function App() {
                 ✓ <strong>Margfalda:</strong> Ef þú margfaldar jöfnu, margfaldar þú einnig ΔH
               </li>
               <li>
-                ✓ <strong>Myndunarvarminn:</strong> ΔH°<sub>rxn</sub> = Σ&nbsp;ΔH°<sub>f</sub>
+                ✓ <strong>Myndunarvermi:</strong> ΔH°<sub>rxn</sub> = Σ&nbsp;ΔH°<sub>f</sub>
                 (myndefni) - Σ&nbsp;ΔH°<sub>f</sub>(hvarfefni)
               </li>
             </ul>
@@ -268,9 +268,7 @@ function App() {
                       </span>
                     )}
                   </div>
-                  <div className="text-sm text-purple-600 mt-1">
-                    Myndunarvarminn og flókin hvörf
-                  </div>
+                  <div className="text-sm text-purple-600 mt-1">Myndunarvermi og flókin hvörf</div>
                   <div className="text-xs text-warm-600 mt-2">
                     Notaðu ΔH°<sub>f</sub> töflur til að reikna ΔH°<sub>rxn</sub>. Leystu öfug
                     verkefni.
@@ -301,7 +299,12 @@ function App() {
                 </div>
                 <div className="bg-green-50 rounded-lg px-1 py-2 sm:p-3">
                   <div className="text-xl sm:text-2xl font-bold text-green-600">{totalScore}</div>
-                  <div className="text-xs text-warm-600">Heildar stig</div>
+                  {/* One word, but the tile is ~70 px wide at 320 px: let it break at the seam. */}
+                  <div className="text-xs text-warm-600">
+                    Heildar
+                    <wbr />
+                    stig
+                  </div>
                 </div>
                 <div className="bg-purple-50 rounded-lg px-1 py-2 sm:p-3">
                   <div className="text-xl sm:text-2xl font-bold text-purple-600">
@@ -327,7 +330,7 @@ function App() {
                 <strong>Margfalda jöfnu:</strong> n × jafna → n × ΔH
               </p>
               <p>
-                <strong>Myndunarvarminn:</strong> ΔH°<sub>rxn</sub> = Σ&nbsp;ΔH°<sub>f</sub>
+                <strong>Myndunarvermi:</strong> ΔH°<sub>rxn</sub> = Σ&nbsp;ΔH°<sub>f</sub>
                 (myndefni) - Σ&nbsp;ΔH°<sub>f</sub>(hvarfefni)
               </p>
             </div>
@@ -338,7 +341,7 @@ function App() {
             <h3 className="font-semibold text-amber-800 mb-2">Af hverju lögmál Hess?</h3>
             <p className="text-sm text-amber-700">
               Sum hvörf er ómögulegt að mæla beint í tilraunastofu. Lögmál Hess leyfir okkur að
-              reikna ΔH með því að sameina jöfnur sem VER GETUM mælt — undirstaða varmafræðinnar.
+              reikna ΔH með því að sameina jöfnur sem VIÐ GETUM mælt — undirstaða varmafræðinnar.
             </p>
           </div>
           <div className="mt-3 text-center text-xs text-warm-500">

@@ -359,11 +359,11 @@ export function EnergyPathwayDiagram({
       <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-xs">
         <div className="flex items-center gap-1 whitespace-nowrap">
           <div className="w-3 h-3 rounded-full bg-red-500" aria-hidden="true" />
-          <span className="text-warm-400">▼ Exóþermt (−ΔH)</span>
+          <span className="text-warm-400">▼ Útvermið (−ΔH)</span>
         </div>
         <div className="flex items-center gap-1 whitespace-nowrap">
           <div className="w-3 h-3 rounded-full bg-blue-500" aria-hidden="true" />
-          <span className="text-warm-400">▲ Endóþermt (+ΔH)</span>
+          <span className="text-warm-400">▲ Innvermið (+ΔH)</span>
         </div>
         <div className="flex items-center gap-1 whitespace-nowrap">
           <div className="w-3 h-0.5 bg-yellow-500" style={{ width: '12px' }} />

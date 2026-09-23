@@ -28,14 +28,14 @@ export const FORMATION_ENTHALPIES: Record<string, { value: number; name: string 
   'C6H12O6(s)': { value: -1274, name: 'Glúkósi' },
   'NH3(g)': { value: -46.1, name: 'Ammóníak' },
   'NO(g)': { value: 90.3, name: 'Nituroxíð' },
-  'NO2(g)': { value: 33.2, name: 'Niturtvíoxíð' },
+  'NO2(g)': { value: 33.2, name: 'Niturdíoxíð' },
   'SO2(g)': { value: -296.8, name: 'Brennisteinsdíoxíð' },
-  'SO3(g)': { value: -395.7, name: 'Brennisteinstrioxíð' },
-  'HCl(g)': { value: -92.3, name: 'Vetni klóríð' },
+  'SO3(g)': { value: -395.7, name: 'Brennisteinstríoxíð' },
+  'HCl(g)': { value: -92.3, name: 'Vetnisklóríð' },
   'NaCl(s)': { value: -411.2, name: 'Natríumklóríð' },
   'CaCO3(s)': { value: -1206.9, name: 'Kalsíumkarbónat' },
   'CaO(s)': { value: -635.1, name: 'Kalsíumoxíð' },
-  'Fe2O3(s)': { value: -824.2, name: 'Járnoxíð' },
+  'Fe2O3(s)': { value: -824.2, name: 'Járn(III)oxíð' },
   'Al2O3(s)': { value: -1675.7, name: 'Áloxíð' },
   // Elements in standard state = 0
   'O2(g)': { value: 0, name: 'Súrefni' },
@@ -56,13 +56,25 @@ interface CompoundEntry {
   deltaHf: number;
 }
 
+/** Level 3 grades on a relative tolerance: 2 % of the correct answer. */
+export const ANSWER_TOLERANCE = 0.02;
+
+/**
+ * How far an answer may be from `correctAnswer` and still be marked right, in the
+ * answer's own unit. The wrong-answer feedback prints this, so it quotes the rule the
+ * grader applies — it used to print a fixed "±2 kJ/mol" beside a 2 % grader, which is
+ * ±27 kJ/mol on the ethanol combustion.
+ */
+export function answerTolerance(correctAnswer: number): number {
+  return Math.abs(correctAnswer * ANSWER_TOLERANCE);
+}
+
 /**
  * Check if a user's answer is within tolerance of the correct answer.
  * Uses 2% relative tolerance.
  */
 export function checkAnswer(userAnswer: number, correctAnswer: number): boolean {
-  const tolerance = Math.abs(correctAnswer * 0.02); // 2% tolerance
-  return Math.abs(userAnswer - correctAnswer) <= tolerance;
+  return Math.abs(userAnswer - correctAnswer) <= answerTolerance(correctAnswer);
 }
 
 /**

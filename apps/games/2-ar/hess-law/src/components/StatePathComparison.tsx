@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef } from 'react';
 
 import { useContainerWidth } from '@shared/components/ResponsiveContainer';
+import { formatDecimal } from '@shared/utils';
 
 interface PathStep {
   label: string;
@@ -52,7 +53,7 @@ const EXAMPLES: PathExample[] = [
       },
     ],
     explanation:
-      'Hvort sem kolefni brennur beint í CO₂ eða fyrst í CO og síðan í CO₂, er heildarorkubreytingin sú sama: -393.5 kJ',
+      'Hvort sem kolefni brennur beint í CO₂ eða fyrst í CO og síðan í CO₂, er heildarorkubreytingin sú sama: -393,5 kJ',
   },
   {
     id: 'water-formation',
@@ -80,7 +81,7 @@ const EXAMPLES: PathExample[] = [
       },
     ],
     explanation:
-      'Vatn getur myndast beint sem vökvi eða fyrst sem gufa sem síðan þéttist. Heildarorkan er alltaf -285.8 kJ',
+      'Vatn getur myndast beint sem vökvi eða fyrst sem gufa sem síðan þéttist. Heildarorkan er alltaf -285,8 kJ',
   },
   {
     id: 'ammonia',
@@ -314,7 +315,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
           <span className="text-green-700">{selectedExample.products}</span>
         </div>
         <div className="text-lg font-bold text-indigo-600 mt-1">
-          ΔH = {selectedExample.totalDeltaH} kJ
+          ΔH = {formatDecimal(selectedExample.totalDeltaH)} kJ
         </div>
       </div>
 
@@ -348,7 +349,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
             role="img"
             aria-label="Samanburður á orkuleiðum: bein leið og óbein leið gefa sömu orkubreytingu"
           >
-            <title>Orkuleið samanburður (Lögmál Hess)</title>
+            <title>Samanburður orkuleiða (lögmál Hess)</title>
             {/* Grid */}
             <defs>
               <pattern id="state-grid" width="30" height="30" patternUnits="userSpaceOnUse">
@@ -402,7 +403,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
               textAnchor={narrow ? 'end' : 'start'}
               {...halo}
             >
-              {selectedExample.totalDeltaH}
+              {formatDecimal(selectedExample.totalDeltaH)}
             </text>
 
             {/* Draw each path */}
@@ -498,7 +499,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
               textAnchor="middle"
               transform={`rotate(-90, ${narrow ? 10 : 12}, ${height / 2})`}
             >
-              Entalpí (kJ)
+              Vermi (kJ)
             </text>
           </svg>
         </div>
@@ -545,7 +546,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
 
       {/* State function reminder */}
       <div className="mt-4 text-center text-xs text-warm-500">
-        Entalpí (H) er <strong>ástandsfall</strong> — gildi þess fer aðeins eftir upphafs- og
+        Vermi (H) er <strong>ástandsfall</strong> — gildi þess fer aðeins eftir upphafs- og
         lokaástandi, ekki leiðinni þar á milli.
       </div>
     </div>
