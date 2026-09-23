@@ -119,6 +119,9 @@ export function ParticleEquilibrium({
           temperature={300}
           running={running}
           showLabels={false}
+          // The game draws its own Icelandic legend (Hvarfefni / Myndefni)
+          // below; the component's built-in one would repeat it as 'R:'/'P:'.
+          showLegend={false}
           ariaLabel={`Kvikt jafnvægi: ${adjustedReactants} eindir hvarfefna og ${adjustedProducts} eindir myndefna`}
         />
 
