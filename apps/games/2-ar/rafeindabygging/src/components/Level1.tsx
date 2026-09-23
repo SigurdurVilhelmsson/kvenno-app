@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Header, LanguageSwitcher } from '@shared/components';
 import { useGameI18n } from '@shared/hooks';
@@ -22,6 +22,23 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
   const puzzle = puzzles[currentIndex];
   const isLast = currentIndex >= puzzles.length - 1;
+
+  const feedbackRef = useRef<HTMLDivElement>(null);
+
+  // A new screen (teaching step, or the next question) starts at its top: the
+  // browser keeps the old scroll offset, and on a phone that lands a student
+  // below the new question's n value. window.scrollTo rather than
+  // scrollIntoView, which would also send the keyboard's Tab back to the header.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [phase, teachStep, currentIndex]);
+
+  // On a phone the option cards fill the screen, so the verdict appears below
+  // the fold and "Athuga svar" looks as if it did nothing. `nearest` leaves the
+  // page alone where the verdict is already in view.
+  useEffect(() => {
+    if (submitted) feedbackRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+  }, [submitted]);
 
   const handleToggle = (idx: number) => {
     if (submitted) return;
@@ -75,14 +92,17 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         />
         <div className="max-w-lg mx-auto p-4 md:p-8">
           <div className="flex justify-between items-center mb-4">
-            <button onClick={onBack} className="text-warm-600 hover:text-warm-800">
+            <button
+              onClick={onBack}
+              className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+            >
               ← Til baka
             </button>
             <span className="text-sm text-warm-500">Kennsla {teachStep + 1}/3</span>
           </div>
 
           {teachStep === 0 && (
-            <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4 animate-slide-in">
+            <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 space-y-4 animate-slide-in">
               <h2 className="text-xl font-bold text-warm-800">Hvað eru skammtatölur?</h2>
               <p className="text-warm-700">
                 Hvert rafeind í atómi hefur fjórar <strong>skammtatölur</strong> sem lýsa stöðu
@@ -129,7 +149,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           )}
 
           {teachStep === 1 && (
-            <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4 animate-slide-in">
+            <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 space-y-4 animate-slide-in">
               <h2 className="text-xl font-bold text-warm-800">Dæmi: n = 2</h2>
               <p className="text-warm-700">Hvaða gildi eru leyfileg þegar n = 2?</p>
 
@@ -172,7 +192,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           )}
 
           {teachStep === 2 && (
-            <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4 animate-slide-in">
+            <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 space-y-4 animate-slide-in">
               <h2 className="text-xl font-bold text-warm-800">Dæmi: n = 3</h2>
 
               <div className="bg-warm-50 p-4 rounded-lg space-y-2">
@@ -224,7 +244,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       <div className="max-w-3xl mx-auto p-4 md:p-8">
         {/* Progress */}
         <div className="flex justify-between items-center mb-4">
-          <button onClick={onBack} className="text-warm-600 hover:text-warm-800">
+          <button
+            onClick={onBack}
+            className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+          >
             ← Til baka
           </button>
           <div className="text-sm text-warm-600">
@@ -232,7 +255,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 animate-slide-in">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 animate-slide-in">
           {/* Quantum number display */}
           <div className="text-center mb-6">
             <div className="inline-block bg-teal-100 px-6 py-3 rounded-xl">
@@ -268,7 +291,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   disabled={submitted}
                 >
                   <div className="font-mono text-lg text-center">
-                    l = {opt.l}, mₗ = {opt.ml}, mₛ = {formatMs(opt.ms)}
+                    <span className="whitespace-nowrap">l = {opt.l},</span>{' '}
+                    <span className="whitespace-nowrap">mₗ = {opt.ml},</span>{' '}
+                    <span className="whitespace-nowrap">mₛ = {formatMs(opt.ms)}</span>
                   </div>
                   {submitted && (
                     <div className="text-center mt-2 text-sm">
@@ -290,7 +315,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               Athuga svar
             </button>
           ) : (
-            <>
+            <div ref={feedbackRef} className="scroll-mb-4">
               <div
                 className={`p-4 rounded-xl mb-2 ${
                   puzzle.options.every((opt, idx) => opt.isValid === selected.has(idx))
@@ -313,7 +338,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               >
                 {isLast ? 'Ljúka stigi' : 'Næsta spurning →'}
               </button>
-            </>
+            </div>
           )}
         </div>
       </div>

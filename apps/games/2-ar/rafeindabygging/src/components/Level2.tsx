@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Header, LanguageSwitcher } from '@shared/components';
 import { useGameI18n } from '@shared/hooks';
@@ -23,6 +23,23 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const puzzle = configPuzzles[currentIndex];
   const isLast = currentIndex >= configPuzzles.length - 1;
   const [diagnostic, setDiagnostic] = useState<string | null>(null);
+
+  const feedbackRef = useRef<HTMLDivElement>(null);
+
+  // A new screen (the exercises, or the next element) starts at its top: the
+  // browser keeps the old scroll offset, which on a phone hides the new element.
+  // window.scrollTo rather than scrollIntoView, which would also send the
+  // keyboard's Tab back to the header.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [showIntro, currentIndex]);
+
+  // The orbital diagram is drawn above the verdict, so from sodium on the
+  // verdict lands entirely below the fold on a phone. `nearest` leaves the page
+  // alone where it is already in view.
+  useEffect(() => {
+    if (submitted) feedbackRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+  }, [submitted]);
 
   /** Sum the electron-count exponents in a config string like "1s2 2s2 2p4" → 8. */
   const countElectrons = (config: string): number | null => {
@@ -135,10 +152,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           }
         />
         <div className="max-w-lg mx-auto p-4 md:p-8">
-          <button onClick={onBack} className="text-warm-600 hover:text-warm-800 mb-4">
+          <button
+            onClick={onBack}
+            className="text-warm-600 hover:text-warm-800 mb-4 pointer-coarse:py-2.5 pointer-coarse:-mt-2.5 pointer-coarse:mb-1.5"
+          >
             ← Til baka
           </button>
-          <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4 animate-slide-in">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 space-y-4 animate-slide-in">
             <h2 className="text-xl font-bold text-warm-800">Hvernig fylla á í svigrúm?</h2>
             <p className="text-warm-700">
               Rafeindir fylla svigrúm í ákveðinni röð — frá lægstu orku til hæstu. Þetta kallast{' '}
@@ -179,8 +199,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               <h3 className="font-bold text-purple-800 mb-2">Útilokunarregla Paulis</h3>
               <p className="text-sm text-purple-700">
                 Engar tvær rafeindir í sama atómi mega hafa öll fjögur skammtatölur eins — þar með
-                er ljóst að í hverju svigrúmi (sömu n, l, m<sub>l</sub>) rúmast að hámarki{' '}
-                <strong>tvær rafeindir</strong> með gagnstæða spinna (m<sub>s</sub> = +½ og −½).
+                er ljóst að í hverju svigrúmi (sömu n, l, m<sub className="text-[0.875em]">l</sub>)
+                rúmast að hámarki <strong>tvær rafeindir</strong> með gagnstæða spinna (m
+                <sub className="text-[0.875em]">s</sub> = +½ og −½).
               </p>
             </div>
 
@@ -234,7 +255,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
       <div className="max-w-3xl mx-auto p-4 md:p-8">
         <div className="flex justify-between items-center mb-4">
-          <button onClick={onBack} className="text-warm-600 hover:text-warm-800">
+          <button
+            onClick={onBack}
+            className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+          >
             ← Til baka
           </button>
           <div className="text-sm text-warm-600">
@@ -242,7 +266,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 animate-slide-in">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 animate-slide-in">
           {/* Element display */}
           <div className="text-center mb-6">
             <div className="inline-flex items-center gap-4">
@@ -274,6 +298,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               placeholder="1s2 2s2 2p4..."
+              autoCapitalize="none"
+              autoCorrect="off"
+              autoComplete="off"
+              spellCheck={false}
               className="config-input"
               disabled={submitted}
               onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
@@ -302,36 +330,38 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 {renderOrbitalDiagram()}
               </div>
 
-              <div
-                className={`p-4 rounded-xl mb-2 ${isCorrect ? 'bg-green-50 border-2 border-green-300' : 'bg-red-50 border-2 border-red-300'}`}
-              >
-                <div className="text-lg font-bold mb-2">
-                  {isCorrect ? '✅ Rétt!' : '❌ Ekki rétt'}
-                </div>
-                {!isCorrect && (
-                  <>
-                    <p className="text-sm font-mono text-warm-800 mb-2">
-                      Rétt svar: {puzzle.correctConfig}
-                    </p>
-                    {diagnostic && (
-                      <p className="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded p-2 mb-2">
-                        <span className="font-semibold">Athugaðu: </span>
-                        {diagnostic}
+              <div ref={feedbackRef} className="scroll-mb-4">
+                <div
+                  className={`p-4 rounded-xl mb-2 ${isCorrect ? 'bg-green-50 border-2 border-green-300' : 'bg-red-50 border-2 border-red-300'}`}
+                >
+                  <div className="text-lg font-bold mb-2">
+                    {isCorrect ? '✅ Rétt!' : '❌ Ekki rétt'}
+                  </div>
+                  {!isCorrect && (
+                    <>
+                      <p className="text-sm font-mono text-warm-800 mb-2">
+                        Rétt svar: {puzzle.correctConfig}
                       </p>
-                    )}
-                  </>
-                )}
-                <p className="text-sm text-warm-700">
-                  {language === 'is' ? puzzle.explanation_is : puzzle.explanation_en}
-                </p>
-              </div>
+                      {diagnostic && (
+                        <p className="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded p-2 mb-2">
+                          <span className="font-semibold">Athugaðu: </span>
+                          {diagnostic}
+                        </p>
+                      )}
+                    </>
+                  )}
+                  <p className="text-sm text-warm-700">
+                    {language === 'is' ? puzzle.explanation_is : puzzle.explanation_en}
+                  </p>
+                </div>
 
-              <button
-                onClick={handleNext}
-                className="game-btn w-full mt-4 py-3 rounded-xl font-bold text-white bg-teal-500 hover:bg-teal-600 transition-colors"
-              >
-                {isLast ? 'Ljúka stigi' : 'Næsta frumefni →'}
-              </button>
+                <button
+                  onClick={handleNext}
+                  className="game-btn w-full mt-4 py-3 rounded-xl font-bold text-white bg-teal-500 hover:bg-teal-600 transition-colors"
+                >
+                  {isLast ? 'Ljúka stigi' : 'Næsta frumefni →'}
+                </button>
+              </div>
             </>
           )}
         </div>

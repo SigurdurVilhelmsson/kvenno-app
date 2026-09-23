@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { Header, LanguageSwitcher } from '@shared/components';
 import { useGameI18n } from '@shared/hooks';
@@ -30,6 +30,15 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   // this stops the pattern creeping back in. Grading compares the selected
   // string against fullShorthand, never an index, so reordering is safe.
   const displayedOptions = useMemo(() => shuffleArray(puzzle.options), [puzzle]);
+
+  // A new screen (the exercises, or the next element) starts at its top: the
+  // browser keeps the old scroll offset, which on a phone hides the new element.
+  // The verdict needs no help here -- it replaces "Athuga svar" in place, so it
+  // is already in view when it appears. window.scrollTo rather than
+  // scrollIntoView, which would also send the keyboard's Tab back to the header.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [showIntro, currentIndex]);
 
   const handleSubmit = () => {
     if (submitted || !selectedOption) return;
@@ -64,10 +73,13 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           }
         />
         <div className="max-w-lg mx-auto p-4 md:p-8">
-          <button onClick={onBack} className="text-warm-600 hover:text-warm-800 mb-4">
+          <button
+            onClick={onBack}
+            className="text-warm-600 hover:text-warm-800 mb-4 pointer-coarse:py-2.5 pointer-coarse:-mt-2.5 pointer-coarse:mb-1.5"
+          >
             ← Til baka
           </button>
-          <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4 animate-slide-in">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 space-y-4 animate-slide-in">
             <h2 className="text-xl font-bold text-warm-800">Eðalgasstytting</h2>
             <p className="text-warm-700">
               Í stað þess að skrifa alla rafeindauppsetninguna frá 1s² getum við notað
@@ -127,7 +139,10 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
       <div className="max-w-3xl mx-auto p-4 md:p-8">
         <div className="flex justify-between items-center mb-4">
-          <button onClick={onBack} className="text-warm-600 hover:text-warm-800">
+          <button
+            onClick={onBack}
+            className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+          >
             ← Til baka
           </button>
           <div className="text-sm text-warm-600">
@@ -135,7 +150,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8 animate-slide-in">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 animate-slide-in">
           {/* Element display */}
           <div className="text-center mb-6">
             <div className="inline-flex items-center gap-4">
