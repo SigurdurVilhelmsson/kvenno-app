@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { molarMassOf } from '@shared/utils';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { formatPercent } from '../components/KlofnunBar';
 import { PracticeScreen } from '../components/PracticeScreen';
 import { UnderstandScreen } from '../components/UnderstandScreen';
@@ -27,6 +28,8 @@ afterEach(() => {
   cleanup();
   document.body.innerHTML = '';
 });
+
+clockPastNextGuard();
 
 const gameRoot = join(__dirname, '../..');
 const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');

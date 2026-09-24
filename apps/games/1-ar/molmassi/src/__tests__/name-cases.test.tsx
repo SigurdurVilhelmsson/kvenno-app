@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, describe, it, expect, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level1 } from '../components/Level1';
 import { generateProblem, type ConvType } from '../components/Level2';
 import { buildProblem, DESCRIPTORS } from '../components/Level3';
@@ -26,6 +27,7 @@ import { ELEMENTS } from '../data/elements';
  */
 
 afterEach(cleanup);
+clockPastNextGuard();
 
 const ALL_TYPES: ConvType[] = [
   'mass_to_moles',

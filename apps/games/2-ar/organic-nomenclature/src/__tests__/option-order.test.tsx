@@ -2,7 +2,11 @@
 import { fireEvent, render, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level3 } from '../components/Level3';
+
+// The buttons that follow an answer ignore a press within 400 ms of appearing.
+clockPastNextGuard();
 
 /**
  * Level 3 rendered its four options in data order, and the correct answer sits

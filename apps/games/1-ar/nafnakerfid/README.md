@@ -81,14 +81,45 @@ src/i18n.ts                     is/en/pl strings for t()
 src/data/compounds.ts           59 compounds (21 easy, 18 medium, 20 hard)
 src/data/naming.ts              the naming morphemes and segmentName
 src/utils/nameParts.ts          Level 3 tray, distractors, pool selection
+src/utils/dropEarlyClicks.ts    drops a tap on fresh feedback (the second half of a double tap)
 src/components/Level1.tsx       rules, warm-up, quiz (hardcoded examples)
 src/components/Level2.tsx       guided practice, supportLadder (hardcoded examples)
 src/components/Level3.tsx       name builder
 src/__tests__/                  App, data, compound-names, name-builder, name-parts,
                                 level2-no-answer-leak, level3-answerable, level-max-score,
                                 level2-blank-answer, level2-prefix-elision, level3-rule-text,
-                                level3-near-miss, icelandic-text, mobile-interaction
+                                level3-near-miss, icelandic-text, mobile-interaction,
+                                phone-scroll
 ```
+
+## Phones: where the page lands and where focus goes (2026-09-24)
+
+The vertical-scroll pass (`docs/plans/2026-09-23-vertical-scroll-design.md`, §4 entry for this
+game). Every play loop fits one portrait phone screen: prompt, choice, verdict and the next button.
+The one exception is deliberate: Level 2's two worked molecular examples (CO₂ and N₂O₄) take one
+reading scroll to "Ég skil", because their Step 2 breakdown and the Greek-prefix table are a
+scaffold and stay in the flow. `phone-scroll.test.tsx` holds the behaviour;
+`e2e/mobile-game-screens.ts` carries a `loop` for the warm-up, the quiz, Level 2 Step 3 and Level 3.
+With every level done, returning to the menu focuses the first level: the menu has no heading of its
+own outside the site header, so focus would otherwise fall to the page.
+
+- **Scrolling goes through `@shared/utils`.** The game's own `src/utils/reveal.ts` is gone. Its
+  reveals scrolled at any width, and a desktop keeps them exactly: every screen swap starts at the top
+  (`useScreenTop` with `anyWidth`), and a new rule, element, question, compound or step whose top went
+  above the viewport is brought back to the very top (`revealTop`/`useItemTop` with `anyWidth` and
+  `gap: 0`, since these screens have no sticky header). The one reveal that is new, showing the
+  verdict with the next button after an answer, is phone-only.
+- **Focus moves at every width** (the one deliberate desktop change): to the screen's heading on a
+  screen swap, to the new item on "Næsta", to the feedback after an answer, to the hint when it
+  opens, and back on the menu to the first level not yet done. A rule dot keeps focus on itself.
+- **A double tap cannot skip or fold the feedback.** "Athuga" and "Næsta efni" are separate
+  elements; every post-answer "Næsta" ignores a press within 400 ms of appearing (`useArmedAfter`);
+  and within the same 400 ms a tap on the quiz or Level 3 feedback is dropped, because the page has
+  just moved it under the finger and it would land on 'Af hverju?'.
+- **Phone-only layout.** Warm-up: no emoji, the two choices side by side. Quiz: short options two to
+  a row (`shortOptions`). Level 2: one-row header, the four types 2 × 2, the hint after the buttons,
+  and on a phone on its side the field and its buttons on one row, so the formula stays in view.
+  Level 3: counters inline, and the spent tray hidden once answered ("Reyna aftur" brings it back).
 
 ## Fixed 2026-09-23
 

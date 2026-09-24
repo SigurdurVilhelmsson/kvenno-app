@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 
 import { DraggableItem, POOL_TARGET_ID } from './DraggableItem';
-import { DropZone } from './DropZone';
+import { COMPACT_ITEM, DropZone } from './DropZone';
 import { DragDropBuilderProps, DraggableItemData, ZoneState, DropResult } from './types';
 
 /**
@@ -20,6 +20,7 @@ import { DragDropBuilderProps, DraggableItemData, ZoneState, DropResult } from '
  * - Snap-to-zone with visual feedback
  * - Reorder capability within zones
  * - Validation callbacks
+ * - `compact`: denser items and zones on a phone only (see DragDropBuilderProps.compact)
  *
  * @example
  * ```tsx
@@ -48,6 +49,7 @@ export function DragDropBuilder({
   validateDrop,
   orientation = 'horizontal',
   disabled = false,
+  compact = false,
   className = '',
   itemsPoolClassName = '',
   zonesClassName = '',
@@ -383,6 +385,7 @@ export function DragDropBuilder({
               onTouchDrop={handleTouchDrop}
               onTouchOver={setOverZoneId}
               onActivate={handleItemActivate}
+              className={compact ? COMPACT_ITEM : ''}
             />
           ))}
         </div>
@@ -420,6 +423,7 @@ export function DragDropBuilder({
                 onItemDragStart={handleDragStart}
                 onItemDragEnd={handleDragEnd}
                 orientation={orientation}
+                compact={compact}
               />
             </div>
           );

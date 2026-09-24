@@ -14,6 +14,7 @@
 import { act, cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level1Conceptual } from '../components/Level1Conceptual';
 
 vi.mock('../components/challenges/challengeData', async (importOriginal) => {
@@ -28,6 +29,8 @@ afterEach(() => {
   cleanup();
   vi.useRealTimers();
 });
+// After the fake timers are installed, which replace `performance`.
+clockPastNextGuard();
 
 describe('a Stig 1 of three challenges', () => {
   it('says three, and a full run of three is mastered out of 300', () => {

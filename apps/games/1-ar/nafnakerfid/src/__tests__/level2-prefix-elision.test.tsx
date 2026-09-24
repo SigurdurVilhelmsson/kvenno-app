@@ -58,6 +58,10 @@ function answerN2O4(typed: string) {
       target: { value: i === N2O4 ? typed : challenge.correctName },
     });
     click(/^Athuga svar$/);
+    // "Næsta" ignores a press within 400 ms of appearing (the double-tap guard).
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
     if (i < N2O4) click(/Næsta efnasamband/);
   }
 

@@ -1,6 +1,7 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef } from 'react';
 
-import { formatDecimal } from '@shared/utils';
+import { PinnedActions, TaskStrip } from '@shared/components';
+import { formatDecimal, useArmedAfter, useItemTop, useRevealAfterCommit } from '@shared/utils';
 
 import { EnergyPathwayDiagram } from './EnergyPathwayDiagram';
 import type { Equation } from '../data/challenges';
@@ -42,7 +43,7 @@ function EquationBlock({
           onReverse();
         }
       }}
-      className={`p-4 rounded-xl border-3 cursor-pointer transition-all focus:outline-none focus-visible:ring-4 focus-visible:ring-orange-400/50 ${
+      className={`p-4 phone:p-3 rounded-xl border-3 cursor-pointer transition-all focus:outline-none focus-visible:ring-4 focus-visible:ring-orange-400/50 ${
         isSelected ? 'ring-4 ring-orange-400/50' : ''
       } ${
         equation.isReversed
@@ -53,7 +54,7 @@ function EquationBlock({
       }`}
     >
       {/* Equation display */}
-      <div className="text-center mb-3 font-mono">
+      <div className="text-center mb-3 phone:mb-1 font-mono">
         {displayMultiplier && (
           <span className="text-orange-600 font-bold">{displayMultiplier}</span>
         )}
@@ -69,7 +70,7 @@ function EquationBlock({
       </div>
 
       {/* ΔH */}
-      <div className="text-center mb-3">
+      <div className="text-center mb-3 phone:mb-2">
         <span className={`font-bold ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}>
           ΔH = {effectiveDeltaH > 0 ? '+' : ''}
           {formatDecimal(effectiveDeltaH, 1)} kJ
@@ -136,6 +137,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [, setTotalHintsUsed] = useState(0);
 
   const puzzle = PUZZLES[currentPuzzle];
+
+  // Each new puzzle brings the card's top back and focuses the puzzle pill.
+  const cardRef = useItemTop<HTMLDivElement>(currentPuzzle);
+  const resultRef = useRef<HTMLDivElement>(null);
+  const actionsRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
 
   // Calculate current sum of selected equations
   const calculateSelectedSum = useCallback(() => {
@@ -231,6 +238,21 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const currentSum = calculateSelectedSum();
   const isCorrect = reachesPuzzleTarget();
 
+  // After Athuga lausn: bring the result box into view with Næsta and move
+  // focus to it, not to Næsta (design P3). While the action row is pinned to
+  // the bottom of a portrait phone Næsta is already on screen, so only the
+  // result box has to be.
+  useRevealAfterCommit(showResult, () => {
+    const pinned = !!actionsRef.current?.closest('[data-pinned-bottom]');
+    return {
+      bottom: pinned ? resultRef.current : nextRef.current,
+      tops: [resultRef.current],
+      focus: resultRef.current,
+    };
+  });
+  // A double tap on Athuga lausn must not land on Næsta, which renders in its place.
+  const armed = useArmedAfter(400, `${currentPuzzle}:${showResult}`);
+
   // Calculate energy pathway steps for the diagram
   const energySteps = useMemo(() => {
     return equations
@@ -247,16 +269,18 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-lg p-4 mb-6">
-          <div className="flex justify-between items-center flex-wrap gap-4">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-green-600">
+        {/* On a phone the header folds to one row (P4). Til baka keeps its DOM
+            place after the title, so focus order matches what is seen. */}
+        <div className="bg-white rounded-2xl shadow-lg p-4 mb-6 phone:px-3 phone:py-2 phone:mb-3">
+          <div className="flex justify-between items-center flex-wrap gap-4 phone:flex-nowrap phone:gap-3">
+            <div className="phone:flex-1 phone:min-w-0">
+              <h1 className="text-2xl md:text-3xl font-bold text-green-600 phone:text-base">
                 Lögmál Hess - Stig&nbsp;2
               </h1>
-              <p className="text-sm text-warm-600">Þrautir - sameinaðu jöfnur</p>
+              <p className="text-sm text-warm-600 phone:sr-only">Þrautir - sameinaðu jöfnur</p>
             </div>
 
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-4 items-center phone:contents">
               <button
                 onClick={onBack}
                 className="text-warm-600 hover:text-warm-800 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
@@ -264,11 +288,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 ← Til baka
               </button>
               <div className="text-center">
-                <div className="text-xl font-bold text-green-600">{score}</div>
+                <div className="text-xl font-bold text-green-600 phone:text-base">{score}</div>
                 <div className="text-xs text-warm-600">Stig</div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold text-blue-600">
+                <div className="text-xl font-bold text-blue-600 phone:text-base">
                   {completed.length}/{PUZZLES.length}
                 </div>
                 <div className="text-xs text-warm-600">Lokið</div>
@@ -277,43 +301,51 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           </div>
 
           {/* Progress bar */}
-          <div className="mt-4 bg-warm-200 rounded-full h-2">
+          <div className="mt-4 bg-warm-200 rounded-full h-2 phone:mt-2 phone:h-1.5">
             <div
-              className="bg-green-500 h-2 rounded-full transition-all duration-500"
+              className="bg-green-500 h-2 phone:h-1.5 rounded-full transition-all duration-500"
               style={{ width: `${(completed.length / PUZZLES.length) * 100}%` }}
             />
           </div>
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+        <div ref={cardRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3">
           {/* Puzzle header */}
-          <div className="mb-6">
-            <div className="inline-block bg-green-100 px-4 py-2 rounded-full text-sm font-semibold text-green-800 mb-2">
+          <div className="mb-6 phone:mb-3">
+            <div
+              data-item-start
+              className="inline-block bg-green-100 px-4 py-2 rounded-full text-sm font-semibold text-green-800 mb-2 phone:py-1 phone:mb-1"
+            >
               Þraut {currentPuzzle + 1}: {puzzle.title}
             </div>
             <p className="text-warm-700">{puzzle.description}</p>
           </div>
 
-          {/* Target equation */}
-          <div className="mb-6 p-4 bg-orange-50 rounded-xl border-2 border-orange-300">
-            <h3 className="text-sm font-semibold text-orange-800 mb-2">🎯 Markmiðsjafna:</h3>
-            <div className="text-center font-mono text-lg">
-              <span className="text-blue-700">{puzzle.targetEquation.reactants}</span>
-              <span className="mx-2">→</span>
-              <span className="text-green-700">{puzzle.targetEquation.products}</span>
+          {/* Target equation: on a portrait phone it stays pinned under the
+              top edge while the student builds toward it (P7). */}
+          <TaskStrip>
+            <div className="mb-6 p-4 bg-orange-50 rounded-xl border-2 border-orange-300 phone:mb-3 phone:px-3 phone:py-2">
+              <h3 className="text-sm font-semibold text-orange-800 mb-2 phone:mb-0 phone:text-xs">
+                🎯 Markmiðsjafna:
+              </h3>
+              <div className="text-center font-mono text-lg phone:text-base">
+                <span className="text-blue-700">{puzzle.targetEquation.reactants}</span>
+                <span className="mx-2">→</span>
+                <span className="text-green-700">{puzzle.targetEquation.products}</span>
+              </div>
+              <div className="text-center mt-2 phone:mt-0 phone:text-sm">
+                <span className="font-bold text-orange-600">ΔH = ? kJ (finndu þetta!)</span>
+              </div>
             </div>
-            <div className="text-center mt-2">
-              <span className="font-bold text-orange-600">ΔH = ? kJ (finndu þetta!)</span>
-            </div>
-          </div>
+          </TaskStrip>
 
           {/* Available equations */}
-          <div className="mb-6">
-            <h3 className="text-sm font-semibold text-warm-700 mb-3">
+          <div className="mb-6 phone:mb-3">
+            <h3 className="text-sm font-semibold text-warm-700 mb-3 phone:mb-2">
               📦 Tiltækar jöfnur (smelltu til að velja):
             </h3>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 gap-4 phone:gap-2 phone-land:grid-cols-2">
               {equations.map((eq) => (
                 <EquationBlock
                   key={eq.id}
@@ -327,93 +359,138 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             </div>
           </div>
 
-          {/* Energy Pathway Diagram */}
-          {selectedEquations.length > 0 && (
-            <div className="mb-6">
-              <EnergyPathwayDiagram
-                steps={energySteps}
-                targetDeltaH={puzzle.targetDeltaH}
-                isCorrect={isCorrect && showResult}
-              />
-            </div>
-          )}
-
-          {/* Current sum */}
-          {selectedEquations.length > 0 && (
-            <div
-              className={`mb-6 p-4 rounded-xl border-2 ${
-                showResult
-                  ? isCorrect
-                    ? 'bg-green-100 border-green-400'
-                    : 'bg-red-100 border-red-400'
-                  : 'bg-warm-100 border-warm-300'
-              }`}
-            >
-              <h3 className="text-sm font-semibold text-warm-700 mb-2">📊 Heildar-ΔH:</h3>
-              <div className="text-center">
-                <span
-                  className={`text-2xl font-bold ${currentSum < 0 ? 'text-red-600' : 'text-blue-600'}`}
-                >
-                  ΔH = {currentSum > 0 ? '+' : ''}
-                  {formatDecimal(currentSum, 1)} kJ
-                </span>
-              </div>
-              {showResult && (
-                <div className={`mt-3 text-sm ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
-                  {isCorrect ? '✓ Rétt!' : '✗ Ekki rétt.'} {explanation}
+          {/* A phone on its side: the energy path | the running ΔH and the
+              actions. The wrappers are display:contents everywhere else, so
+              desktop is unchanged and on a portrait phone the pinned action bar
+              is still bounded by the whole card, not by a column. */}
+          <div
+            className={
+              selectedEquations.length > 0
+                ? 'contents phone-land:grid phone-land:grid-cols-2 phone-land:gap-4 phone-land:items-start'
+                : 'contents'
+            }
+          >
+            <div className="contents phone-land:block">
+              {/* Energy Pathway Diagram */}
+              {selectedEquations.length > 0 && (
+                <div className="mb-6 phone:mb-3">
+                  <EnergyPathwayDiagram
+                    steps={energySteps}
+                    targetDeltaH={puzzle.targetDeltaH}
+                    isCorrect={isCorrect && showResult}
+                  />
                 </div>
               )}
             </div>
-          )}
-
-          {/* Hint */}
-          {!showResult && (
-            <div className="mb-6">
-              {showHint ? (
-                <div className="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl">
-                  <h4 className="font-semibold text-yellow-800 mb-2">💡 Vísbending:</h4>
-                  <p className="text-yellow-900">{puzzle.hint}</p>
-                </div>
-              ) : (
-                <button
-                  onClick={handleShowHint}
-                  className="text-yellow-600 hover:text-yellow-700 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
+            <div className="contents phone-land:block">
+              {/* Current sum */}
+              {/* After Athuga lausn this box holds the verdict, and focus moves to it (P3). */}
+              {selectedEquations.length > 0 && (
+                <div
+                  ref={resultRef}
+                  tabIndex={showResult ? -1 : undefined}
+                  role={showResult ? 'group' : undefined}
+                  aria-labelledby={showResult ? 'hess-l2-result' : undefined}
+                  className={`mb-6 p-4 phone:mb-3 phone:p-3 rounded-xl border-2 focus:outline-none ${
+                    showResult
+                      ? isCorrect
+                        ? 'bg-green-100 border-green-400'
+                        : 'bg-red-100 border-red-400'
+                      : 'bg-warm-100 border-warm-300'
+                  }`}
                 >
-                  💡 Sýna vísbendingu
-                </button>
+                  <h3 className="text-sm font-semibold text-warm-700 mb-2 phone:mb-1">
+                    📊 Heildar-ΔH:
+                  </h3>
+                  <div className="text-center">
+                    <span
+                      className={`text-2xl font-bold ${currentSum < 0 ? 'text-red-600' : 'text-blue-600'}`}
+                    >
+                      ΔH = {currentSum > 0 ? '+' : ''}
+                      {formatDecimal(currentSum, 1)} kJ
+                    </span>
+                  </div>
+                  {showResult && (
+                    <div
+                      id="hess-l2-result"
+                      className={`mt-3 phone:mt-2 text-sm ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
+                    >
+                      {isCorrect ? '✓ Rétt!' : '✗ Ekki rétt.'} {explanation}
+                    </div>
+                  )}
+                </div>
               )}
+
+              {/* Hint */}
+              {!showResult && (
+                <div className="mb-6 phone:mb-3">
+                  {showHint ? (
+                    <div className="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl">
+                      <h4 className="font-semibold text-yellow-800 mb-2">💡 Vísbending:</h4>
+                      <p className="text-yellow-900">{puzzle.hint}</p>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleShowHint}
+                      className="text-yellow-600 hover:text-yellow-700 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
+                    >
+                      💡 Sýna vísbendingu
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* Action buttons: one row on a phone, pinned to the bottom of a
+              portrait phone with the running ΔH beside the target (P8). Athuga
+              lausn and Næsta are separate (keyed) elements, and Næsta ignores a
+              press within 400 ms of appearing. */}
+              <PinnedActions
+                status={
+                  selectedEquations.length > 0 ? (
+                    <>
+                      Heildar-ΔH: {currentSum > 0 ? '+' : ''}
+                      {formatDecimal(currentSum, 1)} kJ
+                    </>
+                  ) : undefined
+                }
+              >
+                <div
+                  ref={actionsRef}
+                  className="flex flex-col sm:flex-row gap-3 sm:gap-4 phone:flex-row phone:gap-2"
+                >
+                  <button
+                    onClick={() => resetPuzzle(currentPuzzle)}
+                    className="px-6 phone:px-3 py-3 phone:py-2 pointer-coarse:min-h-11 phone:whitespace-nowrap bg-warm-200 hover:bg-warm-300 rounded-xl font-semibold transition-colors"
+                  >
+                    🔄 Byrja aftur
+                  </button>
+
+                  {!showResult ? (
+                    <button
+                      key="check"
+                      onClick={checkSolution}
+                      disabled={selectedEquations.length === 0}
+                      className={`flex-1 py-3 px-6 phone:py-2 phone:px-3 pointer-coarse:min-h-11 phone:min-w-0 rounded-xl font-bold transition-colors ${
+                        selectedEquations.length > 0
+                          ? 'bg-green-500 hover:bg-green-600 text-white'
+                          : 'bg-warm-300 text-warm-500 cursor-not-allowed'
+                      }`}
+                    >
+                      Athuga lausn
+                    </button>
+                  ) : (
+                    <button
+                      key="next"
+                      ref={nextRef}
+                      onClick={armed(nextPuzzle)}
+                      className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 phone:py-2 phone:px-3 pointer-coarse:min-h-11 phone:min-w-0 rounded-xl transition-colors"
+                    >
+                      {currentPuzzle < PUZZLES.length - 1 ? 'Næsta þraut →' : 'Ljúka stigi →'}
+                    </button>
+                  )}
+                </div>
+              </PinnedActions>
             </div>
-          )}
-
-          {/* Action buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-            <button
-              onClick={() => resetPuzzle(currentPuzzle)}
-              className="px-6 py-3 bg-warm-200 hover:bg-warm-300 rounded-xl font-semibold transition-colors"
-            >
-              🔄 Byrja aftur
-            </button>
-
-            {!showResult ? (
-              <button
-                onClick={checkSolution}
-                disabled={selectedEquations.length === 0}
-                className={`flex-1 py-3 px-6 rounded-xl font-bold transition-colors ${
-                  selectedEquations.length > 0
-                    ? 'bg-green-500 hover:bg-green-600 text-white'
-                    : 'bg-warm-300 text-warm-500 cursor-not-allowed'
-                }`}
-              >
-                Athuga lausn
-              </button>
-            ) : (
-              <button
-                onClick={nextPuzzle}
-                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-xl transition-colors"
-              >
-                {currentPuzzle < PUZZLES.length - 1 ? 'Næsta þraut →' : 'Ljúka stigi →'}
-              </button>
-            )}
           </div>
         </div>
 

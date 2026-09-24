@@ -1,6 +1,6 @@
 # Reynsluformúlur
 
-**Status: complete and registered.** Four phases, 69 tests of its own, in `build-games.mjs`, on the hub, and
+**Status: complete and registered.** Four phases, 86 tests of its own, in `build-games.mjs`, on the hub, and
 in the Y1 `Námsleiðin` chain between Mólmassi and Stilla efnajöfnur.
 
 Phase 5 of the games roadmap, first of the four confirmed curriculum gaps to be built after
@@ -97,8 +97,8 @@ src/engine/empirical.ts       the four columns; no React, no Icelandic
 src/data/elements.ts          atomic masses, re-exported from @shared/data/elements
 src/data/problems.ts          compounds as formulas; percentages and keys derived
 src/components/               KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen
-src/utils/reveal.ts           keeps what a tap changed on screen on a phone
-src/__tests__/                69 tests across empirical, problems, feedback-text, phase-flow and phone-reveal
+src/utils/desktopReveal.ts    a desktop window's reveals, kept as they were before the phone pass
+src/__tests__/                86 tests across empirical, problems, feedback-text, phase-flow and phone-reveal
 ```
 
 ## Open
@@ -129,15 +129,38 @@ held by `phase-flow.test.tsx`.
 
 ## On a phone
 
-Built for 360 × 740 first; from `sm` up every screen keeps its desktop layout.
+Built for 360 × 740 first; from `sm` up every screen keeps its desktop layout. The vertical-scroll
+pass (`docs/plans/2026-09-23-vertical-scroll-design.md` §4) then fitted each play loop to one screen
+at 360 × 640 and 390 × 664, with every change behind `phone:` or `phone-land:`:
 
+- **The menu shows all four phases on the first screen.** The cards are compacted, `Lokið` is a
+  corner badge, and the overview paragraph follows the phases on a phone — it says where they go
+  rather than teaching, and holds nothing focusable. On a phone on its side the phases are 2 × 2.
+  Back from a phase, the next one not yet done is focused, and on a phone brought into view.
+- **Kanna: choosing a compound shows the list, the table and its sentence together**, so the next
+  compound is a tap away with no scroll. On the SE only the table and the sentence fit, and the
+  list's first rows are one scroll up. On a phone on its side the table and the sentence sit side
+  by side under the list. Focus moves to the sentence, so a screen reader hears the finding.
+- **Kanna's mass bar sits under the percentage below `sm`**, and in that half-width column on its
+  side. Beside it, the atom-count column — the one the screen is about — was pushed out of a
+  clipping box and never seen on a phone.
 - **Skilja's table scrolls sideways from the fourth column at 360 px** (the third at 320 px). Five
   numeric columns do not fit a phone, and no narrower wording exists. The element column is pinned
   while it scrolls, and "Næsta súla" scrolls the table to the column it just added, so the new
-  column is on screen with the element it belongs to.
-- **Kanna's mass bar sits under the percentage below `sm`.** Beside it, the atom-count column — the
-  one the screen is about — was pushed out of a clipping box and never seen on a phone.
-- **`src/utils/reveal.ts` scrolls only when a change lands off screen**: the table after a compound
-  is chosen, the verdict after "Athuga" / "Svara", the new compound after "Næsta súla" /
-  "Næsta efni" / "Næsta dæmi", and the top of the page on every phase change. It is a copy of
-  `1-ar/utfellingarhvorf`'s, because each game is its own Vite build.
+  column is on screen with the element it belongs to. On a phone the page shows the new column,
+  its caption and any note down to the button; focus moves to the caption. Skilja keeps one column
+  on its side: after compaction each step fits there as it is, and in a half-width column the table
+  would scroll sideways as it does in portrait.
+- **Æfa keeps its layout** — one column per step is the model the design holds the other games
+  to. On a phone on its side the compound sits beside the table being filled.
+- **After a check, focus goes to the feedback, never to the button that follows it**: Æfa's verdict
+  box (or, when a right column opens no box, the fields with their ticks), Beita's feedback. That
+  button is a new element, not "Athuga" relabelled, and "Næsta súla", "Næsta efni", "Næsta dæmi",
+  "Áfram í Æfa" and "Reyna aftur" ignore a press within 400 ms of appearing, so a double tap cannot
+  skip what the check just said. "Reyna aftur" puts focus back in the first field that was wrong.
+- **Enter answers**: in Beita's field, and in Æfa's last field (the fields before it move on to the
+  next). The phone keyboard's key reads "next" or "done" to match.
+- **Scrolling goes through `@shared/utils`.** The game's own `src/utils/reveal.ts` is gone. A
+  desktop window keeps exactly what it did — the same trigger and the same landing, at any width —
+  through `src/utils/desktopReveal.ts`, which only decides and leaves the scrolling to the shared
+  helpers. `phone-reveal.test.tsx` holds both.

@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
 import { useGameI18n, useGameProgress } from '@shared/hooks';
+import { useScreenTop } from '@shared/utils';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
@@ -36,6 +37,23 @@ function App() {
   );
 
   const { t, language, setLanguage } = useGameI18n({ gameTranslations });
+
+  // Each screen swap starts the new screen at its top on a phone, with its
+  // heading focused (the button that caused the swap has unmounted, and focus
+  // would otherwise fall to <body>). A level that opens straight on a typed
+  // question keeps the answer field it autofocused (Stig 2 on a replay) —
+  // that field is the screen's start. Back on the menu, the first level not
+  // yet done is revealed and focused instead, or Stig 1 once all are done.
+  const nextLevel = ([1, 2, 3] as const).find((level) => !progress[LEVEL_KEYS[level]]) ?? 1;
+  useScreenTop(mode, {
+    target: () =>
+      mode === 'menu' ? document.querySelector(`[data-level-card="${nextLevel}"]`) : null,
+    focus: {
+      get current() {
+        return document.querySelector<HTMLElement>('input[data-item-start]');
+      },
+    },
+  });
 
   const completeLevel = (level: 1 | 2 | 3) => {
     updateProgress({ [LEVEL_KEYS[level]]: true } as Partial<Progress>);
@@ -82,25 +100,30 @@ function App() {
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="max-w-lg w-full">
           {/* Title */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 phone:mb-4">
             <p className="text-warm-600">{t('game.subtitle')}</p>
           </div>
 
-          {/* Level Cards */}
-          <div className="space-y-4">
+          {/* Level Cards. On a phone the tiles are tighter, the icons smaller
+              and the tag chips, which restate each description, are hidden, so
+              all three levels show on first load. */}
+          <div className="space-y-4 phone:space-y-3">
             {/* Level 1: Molar Mass */}
             <button
+              data-level-card={1}
               onClick={() => setMode('level1')}
-              className="game-card w-full bg-white rounded-2xl shadow-lg p-6 text-left hover:shadow-xl transition-all transform hover:scale-[1.02]"
+              className="game-card w-full bg-white rounded-2xl shadow-lg p-6 phone:p-4 text-left hover:shadow-xl transition-all transform hover:scale-[1.02]"
             >
               <div className="flex items-start justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 shrink-0 rounded-xl bg-green-100 flex items-center justify-center text-2xl">
+                <div className="flex items-center gap-4 phone:gap-3">
+                  <div className="w-14 h-14 phone:w-11 phone:h-11 shrink-0 rounded-xl bg-green-100 flex items-center justify-center text-2xl phone:text-xl">
                     ⚖️
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h2 className="text-xl font-bold text-warm-800">{t('menu.level1.title')}</h2>
+                      <h2 className="text-xl phone:text-lg font-bold text-warm-800">
+                        {t('menu.level1.title')}
+                      </h2>
                       {progress.level1Completed && (
                         <span className="text-green-500 text-lg">✓</span>
                       )}
@@ -110,7 +133,7 @@ function App() {
                 </div>
                 <span className="text-warm-400 text-2xl">→</span>
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2 phone:hidden">
                 <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
                   {t('menu.level1.tags.calculate')}
                 </span>
@@ -125,17 +148,20 @@ function App() {
 
             {/* Level 2: Mole Conversions */}
             <button
+              data-level-card={2}
               onClick={() => setMode('level2')}
-              className="game-card w-full bg-white rounded-2xl shadow-lg p-6 text-left hover:shadow-xl transition-all transform hover:scale-[1.02]"
+              className="game-card w-full bg-white rounded-2xl shadow-lg p-6 phone:p-4 text-left hover:shadow-xl transition-all transform hover:scale-[1.02]"
             >
               <div className="flex items-start justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 shrink-0 rounded-xl bg-blue-100 flex items-center justify-center text-2xl">
+                <div className="flex items-center gap-4 phone:gap-3">
+                  <div className="w-14 h-14 phone:w-11 phone:h-11 shrink-0 rounded-xl bg-blue-100 flex items-center justify-center text-2xl phone:text-xl">
                     🔄
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h2 className="text-xl font-bold text-warm-800">{t('menu.level2.title')}</h2>
+                      <h2 className="text-xl phone:text-lg font-bold text-warm-800">
+                        {t('menu.level2.title')}
+                      </h2>
                       {progress.level2Completed && (
                         <span className="text-green-500 text-lg">✓</span>
                       )}
@@ -145,7 +171,7 @@ function App() {
                 </div>
                 <span className="text-warm-400 text-2xl">→</span>
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2 phone:hidden">
                 <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
                   {t('menu.level2.tags.massToMoles')}
                 </span>
@@ -160,17 +186,20 @@ function App() {
 
             {/* Level 3: Combined Practice */}
             <button
+              data-level-card={3}
               onClick={() => setMode('level3')}
-              className="game-card w-full bg-white rounded-2xl shadow-lg p-6 text-left hover:shadow-xl transition-all transform hover:scale-[1.02]"
+              className="game-card w-full bg-white rounded-2xl shadow-lg p-6 phone:p-4 text-left hover:shadow-xl transition-all transform hover:scale-[1.02]"
             >
               <div className="flex items-start justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 shrink-0 rounded-xl bg-purple-100 flex items-center justify-center text-2xl">
+                <div className="flex items-center gap-4 phone:gap-3">
+                  <div className="w-14 h-14 phone:w-11 phone:h-11 shrink-0 rounded-xl bg-purple-100 flex items-center justify-center text-2xl phone:text-xl">
                     🧪
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h2 className="text-xl font-bold text-warm-800">{t('menu.level3.title')}</h2>
+                      <h2 className="text-xl phone:text-lg font-bold text-warm-800">
+                        {t('menu.level3.title')}
+                      </h2>
                       {progress.level3Completed && (
                         <span className="text-green-500 text-lg">✓</span>
                       )}
@@ -180,7 +209,7 @@ function App() {
                 </div>
                 <span className="text-warm-400 text-2xl">→</span>
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2 phone:hidden">
                 <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
                   {t('menu.level3.tags.multiStep')}
                 </span>

@@ -13,10 +13,12 @@ export function CalculationBreakdown({ compound }: CalculationBreakdownProps) {
   const isHydrate = compound.formula.includes('·');
 
   return (
-    <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 animate-slide-down">
-      <h3 className="text-lg font-bold text-blue-800 mb-3">📋 Útreikningur:</h3>
+    <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 animate-slide-down phone:px-2 phone:py-3">
+      <h3 className="text-lg font-bold text-blue-800 mb-3 phone:mb-2 phone:px-1">
+        📋 Útreikningur:
+      </h3>
       {isHydrate && (
-        <div className="bg-blue-100 rounded-lg p-3 mb-3 text-sm text-blue-800">
+        <div className="bg-blue-100 rounded-lg p-3 mb-3 text-sm text-blue-800 phone:p-2 phone:mb-2">
           <span className="font-semibold">💧 Hýdrat:</span> Punkturinn (·) táknar kristalvatn.
           Reiknaðu mólmassa aðalefnis og vatns sitt í hvoru lagi og leggðu síðan saman.
         </div>
@@ -25,12 +27,15 @@ export function CalculationBreakdown({ compound }: CalculationBreakdownProps) {
         {breakdown.map((step, index) => (
           <div key={index}>
             {step.type === 'section' ? (
-              <h4 className="font-semibold text-warm-700 mt-3 mb-1">{step.label}</h4>
+              <h4 className="font-semibold text-warm-700 mt-3 mb-1 phone:mt-2 phone:px-1">
+                {step.label}
+              </h4>
             ) : (
-              // On a phone the product drops to its own line, right-aligned, rather
-              // than splitting every number from its unit.
-              <div className="flex flex-wrap items-center justify-between gap-x-2 bg-white rounded px-3 py-2">
-                <div className="flex items-center gap-2">
+              // On a narrow phone the product drops to its own line, right-aligned,
+              // rather than splitting every number from its unit. From 360 px the
+              // tighter phone spacing keeps the row on one line.
+              <div className="flex flex-wrap items-center justify-between gap-x-2 bg-white rounded px-3 py-2 phone:px-2">
+                <div className="flex items-center gap-2 phone:gap-1">
                   <span className="font-mono text-lg font-bold text-kvenno-orange">
                     {step.symbol}
                   </span>
@@ -41,15 +46,15 @@ export function CalculationBreakdown({ compound }: CalculationBreakdownProps) {
                     {formatDecimal(step.atomicMass ?? 0, 3)} g/mól
                   </span>
                 </div>
-                <span className="ml-auto font-semibold text-green-600 whitespace-nowrap">
+                <span className="ml-auto font-semibold text-green-600 whitespace-nowrap phone:text-sm">
                   = {formatDecimal(step.total ?? 0, 3)} g/mól
                 </span>
               </div>
             )}
           </div>
         ))}
-        <div className="border-t-2 border-warm-300 pt-2 mt-3">
-          <div className="flex flex-wrap items-center justify-between gap-x-2 bg-green-100 rounded px-3 py-2">
+        <div className="border-t-2 border-warm-300 pt-2 mt-3 phone:mt-2">
+          <div className="flex flex-wrap items-center justify-between gap-x-2 bg-green-100 rounded px-3 py-2 phone:px-2">
             <span className="font-bold text-warm-700">Heildarmólmassi:</span>
             <span className="ml-auto text-xl font-bold text-green-600 whitespace-nowrap">
               {formatDecimal(compound.molarMass, 3)} g/mól

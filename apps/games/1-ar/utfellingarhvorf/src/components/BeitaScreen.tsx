@@ -1,10 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { shuffleArray } from '@shared/utils';
+import {
+  focusTarget,
+  isPhone,
+  revealSpan,
+  shuffleArray,
+  useArmedAfter,
+  useItemTop,
+} from '@shared/utils';
 
 import { SCENARIOS } from '../data/problems';
 import { renderEquation, type Term } from '../engine/precipitation';
-import { reveal } from '../utils/reveal';
+import { revealOnDesktop } from '../utils/desktopReveal';
 
 /**
  * Beita — the whole prediction, start to finish, on a scenario the student has
@@ -77,19 +84,46 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
     return map;
   }, [reaction]);
 
-  // On a phone each commit swaps the question below the scenario card, and the
-  // button that did it can be a screen further down. Bring each new question
-  // into view; on "Næsta dæmi" bring the new scenario back with its first
-  // question, since the card has scrolled off the top.
+  // Each commit swaps the question below the scenario card, and the button that
+  // did it has gone. Focus moves to the new question (or, once the scenario is
+  // done, to the feedback, not to "Næsta dæmi": design P3). On a phone the
+  // scenario card comes into view with the new question and its buttons where
+  // they fit; the feedback likewise, down to "Næsta dæmi", and where that does
+  // not fit the verdict at the top, read down to the button. "Næsta dæmi"
+  // brings the card's top back under the header and focuses the new scenario.
+  // A desktop window keeps what the game's own helper did there.
   const counterRef = useRef<HTMLParagraphElement>(null);
+  const scenarioRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const questionRef = useRef<HTMLParagraphElement>(null);
+  const verdictRef = useRef<HTMLParagraphElement>(null);
+  const cardRef = useItemTop<HTMLDivElement>(index);
   const shown = useRef({ index, stage });
   useEffect(() => {
     const before = shown.current;
     shown.current = { index, stage };
-    if (index !== before.index) reveal(counterRef.current, stageRef.current);
-    else if (stage !== before.stage) reveal(stageRef.current);
+    if (index !== before.index) {
+      if (!isPhone()) revealOnDesktop(counterRef.current, stageRef.current);
+      return;
+    }
+    if (stage === before.stage) return;
+    if (isPhone()) {
+      const done = stage === 'done';
+      revealSpan(stageRef.current, [
+        scenarioRef.current,
+        done ? stageRef.current : questionRef.current,
+        done ? verdictRef.current : null,
+      ]);
+    } else {
+      revealOnDesktop(stageRef.current);
+    }
+    focusTarget(stage === 'done' ? stageRef.current : questionRef.current);
   }, [index, stage]);
+
+  // A new question's buttons, and "Næsta dæmi", take no press within 400 ms of
+  // appearing where the last button was: a double tap cannot answer the next
+  // question, or leave the scenario, unread.
+  const armed = useArmedAfter(400, `${index}:${stage}`);
 
   const reset = (nextIndex: number) => {
     setIndex(nextIndex);
@@ -140,9 +174,9 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
-        <div className="mb-6 flex items-baseline justify-between gap-3">
-          <h2 className="text-xl font-bold text-warm-800 sm:text-2xl">
+      <div ref={cardRef} className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8 phone:p-3">
+        <div className="mb-6 flex items-baseline justify-between gap-3 phone:mb-2">
+          <h2 className="text-xl font-bold text-warm-800 sm:text-2xl phone:min-w-0 phone:text-base">
             Beita — spáðu fyrir um hvarfið
           </h2>
           <button
@@ -153,33 +187,39 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
           </button>
         </div>
 
-        <p ref={counterRef} className="mb-4 text-sm text-warm-600">
+        <p ref={counterRef} className="mb-4 text-sm text-warm-600 phone:mb-1">
           Dæmi {index + 1} af {RUN.length} · {solved} leyst
         </p>
 
-        <div className="mb-6 rounded-lg border-2 border-warm-200 bg-warm-50 p-5 text-center">
-          <p className="font-mono text-xl text-warm-900">
+        <div
+          ref={scenarioRef}
+          data-item-start
+          className="mb-6 rounded-lg border-2 border-warm-200 bg-warm-50 p-5 text-center phone:mb-3 phone:p-3"
+        >
+          <p className="font-mono text-xl text-warm-900 phone:text-lg">
             {reaction.reactants[0].formula}(aq) + {reaction.reactants[1].formula}(aq)
           </p>
-          <p className="mt-2 text-sm text-warm-600">
+          <p className="mt-2 text-sm text-warm-600 phone:mt-1">
             Jónir í glasinu: <span className="font-mono">{tray.join(', ')}</span>
           </p>
         </div>
 
         {stage === 'predict' && (
           <div ref={stageRef}>
-            <p className="mb-3 font-semibold text-warm-800">Myndast botnfall?</p>
+            <p ref={questionRef} className="mb-3 font-semibold text-warm-800 phone:mb-2">
+              Myndast botnfall?
+            </p>
             <div className="flex gap-2 sm:gap-3">
               <button
                 type="button"
-                onClick={() => submitPrediction(true)}
+                onClick={armed(() => submitPrediction(true))}
                 className="game-btn flex-1 rounded-lg border-2 border-warm-200 bg-white px-2 py-3 font-semibold text-warm-700 hover:bg-warm-50 sm:px-4"
               >
                 Já, botnfall myndast
               </button>
               <button
                 type="button"
-                onClick={() => submitPrediction(false)}
+                onClick={armed(() => submitPrediction(false))}
                 className="game-btn flex-1 rounded-lg border-2 border-warm-200 bg-white px-2 py-3 font-semibold text-warm-700 hover:bg-warm-50 sm:px-4"
               >
                 Nei, ekkert gerist
@@ -190,13 +230,15 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
 
         {stage === 'identify' && (
           <div ref={stageRef}>
-            <p className="mb-3 font-semibold text-warm-800">Hvort efnið fellur út?</p>
+            <p ref={questionRef} className="mb-3 font-semibold text-warm-800 phone:mb-2">
+              Hvort efnið fellur út?
+            </p>
             <div className="flex gap-2 sm:gap-3">
               {productOptions.map((p) => (
                 <button
                   key={p.formula}
                   type="button"
-                  onClick={() => submitIdentity(p.formula)}
+                  onClick={armed(() => submitIdentity(p.formula))}
                   className="game-btn flex-1 rounded-lg border-2 border-warm-200 bg-white px-2 py-3 font-mono text-lg text-warm-800 hover:bg-warm-50 sm:px-4"
                 >
                   {p.formula}
@@ -208,24 +250,28 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
 
         {stage === 'build' && (
           <div ref={stageRef}>
-            <p className="mb-1 font-semibold text-warm-800">Byggðu nettójónajöfnuna.</p>
-            <p className="mb-4 text-sm text-warm-600">
+            <p ref={questionRef} className="mb-1 font-semibold text-warm-800">
+              Byggðu nettójónajöfnuna.
+            </p>
+            <p className="mb-4 text-sm text-warm-600 phone:mb-2">
               Veldu jónirnar sem taka raunverulega þátt og settu réttan stuðul á hverja.
               Áhorfendajónirnar skilurðu eftir á núlli.
             </p>
 
-            <div className="mb-4 space-y-2">
+            {/* On a phone two ions to a row, so the four rows are two; on a
+                portrait phone each stepper goes under its ion to fit. */}
+            <div className="mb-4 space-y-2 phone:mb-2 phone:grid phone:grid-cols-2 phone:gap-2 phone:space-y-0">
               {tray.map((species) => (
                 <div
                   key={species}
-                  className="flex items-center justify-between gap-2 rounded-lg border-2 border-warm-200 bg-white px-2 py-2 sm:px-3"
+                  className="flex items-center justify-between gap-2 rounded-lg border-2 border-warm-200 bg-white px-2 py-2 sm:px-3 max-sm:min-w-0 max-sm:flex-col max-sm:gap-1 max-sm:px-1 max-sm:py-1.5"
                 >
                   <span className="min-w-0 font-mono text-lg text-warm-800">{species}(aq)</span>
                   <div className="flex shrink-0 items-center gap-2">
                     <button
                       type="button"
                       aria-label={`Fækka ${species}`}
-                      onClick={() => bump(species, -1)}
+                      onClick={armed(() => bump(species, -1))}
                       className="game-btn h-8 w-8 rounded border border-warm-300 text-warm-700 hover:bg-warm-100 pointer-coarse:h-11 pointer-coarse:w-11"
                     >
                       −
@@ -234,7 +280,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                     <button
                       type="button"
                       aria-label={`Fjölga ${species}`}
-                      onClick={() => bump(species, 1)}
+                      onClick={armed(() => bump(species, 1))}
                       className="game-btn h-8 w-8 rounded border border-warm-300 text-warm-700 hover:bg-warm-100 pointer-coarse:h-11 pointer-coarse:w-11"
                     >
                       +
@@ -244,13 +290,13 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
               ))}
             </div>
 
-            <div className="mb-4 rounded-lg bg-warm-50 p-3 font-mono text-sm text-warm-800">
+            <div className="mb-4 rounded-lg bg-warm-50 p-3 font-mono text-sm text-warm-800 phone:mb-3 phone:p-2">
               {preview(picks)} → {chosen}(s)
             </div>
 
             <button
               type="button"
-              onClick={submitEquation}
+              onClick={armed(submitEquation)}
               className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark"
             >
               Athuga jöfnuna
@@ -261,11 +307,13 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
         {stage === 'done' && (
           <div
             ref={stageRef}
-            className={`rounded-lg border-2 p-4 ${
+            role="group"
+            aria-labelledby="beita-verdict"
+            className={`rounded-lg border-2 p-4 phone:p-3 ${
               wrongAt ? 'border-amber-300 bg-amber-50' : 'border-green-300 bg-green-50'
             }`}
           >
-            <p className="mb-2 font-semibold text-warm-900">
+            <p ref={verdictRef} id="beita-verdict" className="mb-2 font-semibold text-warm-900">
               {wrongAt === 'predict' &&
                 (reaction.formsPrecipitate
                   ? 'Það myndast botnfall hér.'
@@ -295,11 +343,12 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
               </p>
             )}
 
-            <p className="mt-3 text-sm text-warm-700">{scenario.context}</p>
+            <p className="mt-3 text-sm text-warm-700 phone:mt-2">{scenario.context}</p>
 
             <button
+              key="naesta"
               type="button"
-              onClick={() => (last ? onComplete() : reset(index + 1))}
+              onClick={armed(() => (last ? onComplete() : reset(index + 1)))}
               className="game-btn mt-4 rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 pointer-coarse:min-h-11"
             >
               {last ? 'Ljúka' : 'Næsta dæmi'}

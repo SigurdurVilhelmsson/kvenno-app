@@ -1,7 +1,14 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
-import { formatDecimal, parseStudentNumber } from '@shared/utils';
+import {
+  formatDecimal,
+  parseStudentNumber,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+  useScreenTop,
+} from '@shared/utils';
 
 import { toSubscripts } from '../utils/formula-display';
 import {
@@ -157,7 +164,24 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
 
   const challenge = challenges[currentChallenge];
 
+  // Intro → play starts at the top with the heading focused; each new
+  // challenge brings the card's top back and focuses its title.
+  useScreenTop(showIntro);
+  const cardRef = useItemTop<HTMLDivElement>(currentChallenge);
+  const answerRowRef = useRef<HTMLDivElement>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  // After Athuga: the answer row through Næsta if it fits, else the verdict at
+  // the top; focus moves to the verdict, not to Næsta (design P3).
+  useRevealAfterCommit(isCorrect !== null, () => ({
+    bottom: nextRef.current,
+    tops: [answerRowRef.current, resultRef.current],
+    focus: resultRef.current,
+  }));
+  const armed = useArmedAfter(400, `${currentChallenge}:${isCorrect !== null}`);
+
   const checkAnswer = () => {
+    if (!userAnswer || isCorrect !== null) return;
     const userNum = parseStudentNumber(userAnswer);
     const correct = checkAnswerTolerance(userNum, challenge.correctAnswer);
 
@@ -281,7 +305,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 phone:mb-2">
           <button
             onClick={onBack}
             className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
@@ -292,27 +316,32 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
             <div className="text-sm text-warm-600">
               {t('levels.level3.name')} / {currentChallenge + 1} / {challenges.length}
             </div>
-            <div className="text-lg font-bold text-purple-600">
+            <div className="text-lg font-bold text-purple-600 phone:text-base">
               {score} {t('progress.points')}
             </div>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6 phone:h-1.5 phone:mb-3">
           <div
-            className="bg-purple-500 h-2 rounded-full transition-all duration-300"
+            className="bg-purple-500 h-2 phone:h-1.5 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
           />
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-          <h2 className="text-2xl font-bold text-purple-800 mb-2">{t(challenge.titleKey)}</h2>
-          <p className="text-warm-600 mb-6">{t(challenge.descKey)}</p>
+        <div ref={cardRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3">
+          <h2
+            data-item-start
+            className="text-2xl font-bold text-purple-800 mb-2 phone:text-lg phone:mb-1"
+          >
+            {t(challenge.titleKey)}
+          </h2>
+          <p className="text-warm-600 mb-6 phone:mb-3">{t(challenge.descKey)}</p>
 
           {/* Chemical equation display */}
-          <div className="bg-purple-50 p-4 rounded-xl mb-6">
+          <div className="bg-purple-50 p-4 rounded-xl mb-6 phone:p-2 phone:mb-3">
             <div className="text-center font-mono text-lg sm:text-xl">{challenge.equation}</div>
           </div>
 
@@ -326,9 +355,10 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
 
           {/* Formation enthalpy table */}
           {showTable && (
-            <div className="bg-warm-50 p-4 rounded-xl mb-6 md:max-h-64 md:overflow-y-auto">
-              <h3 className="font-bold text-warm-700 mb-3">{t('level3.tableTitle')}</h3>
-              <div className="grid grid-cols-1 min-[400px]:grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+            <div className="bg-warm-50 p-4 rounded-xl mb-6 md:max-h-64 md:overflow-y-auto phone:p-3 phone:mb-3">
+              <h3 className="font-bold text-warm-700 mb-3 phone:mb-2">{t('level3.tableTitle')}</h3>
+              {/* On a phone each compound is one line: formula, name, value. */}
+              <div className="grid grid-cols-1 min-[400px]:grid-cols-2 md:grid-cols-3 gap-2 text-sm phone:grid-cols-1 phone:gap-1 phone-land:grid-cols-2">
                 {Object.entries(FORMATION_ENTHALPIES)
                   .filter(
                     ([formula]) =>
@@ -336,14 +366,21 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                       challenge.products.some((p) => p.formula === formula)
                   )
                   .map(([formula, { value, name }]) => (
-                    <div key={formula} className="bg-white p-2 rounded border">
-                      <div className="font-mono font-bold">{toSubscripts(formula)}</div>
-                      <div className="text-warm-600 text-xs">{name}</div>
+                    <div
+                      key={formula}
+                      className="bg-white p-2 rounded border phone:flex phone:items-baseline phone:gap-2 phone:px-2 phone:py-1"
+                    >
+                      <div className="font-mono font-bold phone:shrink-0">
+                        {toSubscripts(formula)}
+                      </div>
+                      <div className="text-warm-600 text-xs phone:flex-1 phone:min-w-0">{name}</div>
                       {isHidden(formula) ? (
-                        <div className="font-bold text-purple-600">? kJ/mól</div>
+                        <div className="font-bold text-purple-600 phone:shrink-0 phone:whitespace-nowrap">
+                          ? kJ/mól
+                        </div>
                       ) : (
                         <div
-                          className={`font-bold ${value < 0 ? 'text-blue-600' : value > 0 ? 'text-red-600' : 'text-warm-600'}`}
+                          className={`font-bold phone:shrink-0 phone:whitespace-nowrap ${value < 0 ? 'text-blue-600' : value > 0 ? 'text-red-600' : 'text-warm-600'}`}
                         >
                           {formatDecimal(value)} kJ/mól
                         </div>
@@ -355,11 +392,11 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           )}
 
           {/* Calculation workspace */}
-          <div className="bg-warm-50 p-4 rounded-xl mb-6">
-            <h3 className="font-bold text-warm-700 mb-3">{t('level3.calculation')}</h3>
+          <div className="bg-warm-50 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
+            <h3 className="font-bold text-warm-700 mb-3 phone:mb-2">{t('level3.calculation')}</h3>
 
             {/* Formula reminder */}
-            <div className="bg-white p-3 rounded-lg border border-purple-200 mb-4">
+            <div className="bg-white p-3 rounded-lg border border-purple-200 mb-4 phone:p-2 phone:mb-2">
               <p className="font-mono text-sm text-center text-purple-800">
                 ΔH°<sub>rxn</sub> = Σ(n × ΔH°<sub>f</sub> {t('level3.products').replace(':', '')}) -
                 Σ(n × ΔH°<sub>f</sub> {t('level3.reactants').replace(':', '')})
@@ -367,8 +404,10 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
             </div>
 
             {/* Products calculation */}
-            <div className="mb-4">
-              <div className="font-semibold text-green-700 mb-2">{t('level3.products')}</div>
+            <div className="mb-4 phone:mb-2">
+              <div className="font-semibold text-green-700 mb-2 phone:mb-1">
+                {t('level3.products')}
+              </div>
               <div className="space-y-1 text-sm font-mono">
                 {challenge.products.map((p, i) =>
                   isHidden(p.formula) ? (
@@ -400,8 +439,10 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
             </div>
 
             {/* Reactants calculation */}
-            <div className="mb-4">
-              <div className="font-semibold text-blue-700 mb-2">{t('level3.reactants')}</div>
+            <div className="mb-4 phone:mb-0">
+              <div className="font-semibold text-blue-700 mb-2 phone:mb-1">
+                {t('level3.reactants')}
+              </div>
               <div className="space-y-1 text-sm font-mono">
                 {challenge.reactants.map((r, i) =>
                   isHidden(r.formula) ? (
@@ -434,17 +475,23 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           </div>
 
           {/* Answer input */}
-          <div className="flex flex-col md:flex-row gap-4 items-center mb-6">
-            <div className="flex-1 w-full">
+          {/* On a phone the input, ±, unit and Athuga share one row; Enter checks.
+              The field keeps room for a full answer (-1 234,5): below ~340 px Athuga
+              wraps to its own line rather than squeezing the field to a few digits. */}
+          <div
+            ref={answerRowRef}
+            className="flex flex-col md:flex-row gap-4 items-center mb-6 phone:flex-row phone:flex-wrap phone:items-end phone:gap-2 phone:mb-3"
+          >
+            <div className="flex-1 w-full phone:min-w-[11.5rem]">
               <label
                 htmlFor="hess-l3-answer"
-                className="block text-sm font-medium text-warm-700 mb-2"
+                className="block text-sm font-medium text-warm-700 mb-2 phone:mb-1"
               >
                 {challenge.type === 'reverse'
                   ? `ΔH°f(${toSubscripts(challenge.unknownCompound ?? '')}) = `
                   : 'ΔH°rxn = '}
               </label>
-              <div className="flex gap-2">
+              <div className="flex gap-2 phone:gap-1.5">
                 <input
                   id="hess-l3-answer"
                   type="text"
@@ -452,7 +499,14 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                   autoComplete="off"
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
-                  className="flex-1 p-3 border-2 border-warm-300 rounded-xl focus:border-purple-500 focus:outline-none text-lg font-mono"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      checkAnswer();
+                    }
+                  }}
+                  enterKeyHint="done"
+                  className="flex-1 phone:min-w-0 p-3 phone:px-2 border-2 border-warm-300 rounded-xl focus:border-purple-500 focus:outline-none text-lg font-mono"
                   placeholder={t('level3.placeholder')}
                   disabled={isCorrect !== null}
                 />
@@ -475,7 +529,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               <button
                 onClick={checkAnswer}
                 disabled={!userAnswer}
-                className="w-full md:w-auto bg-purple-500 hover:bg-purple-600 disabled:bg-warm-300 text-white font-bold py-3 px-8 rounded-xl transition-colors"
+                className="w-full md:w-auto phone:w-auto phone:shrink-0 phone:px-4 bg-purple-500 hover:bg-purple-600 disabled:bg-warm-300 text-white font-bold py-3 px-8 rounded-xl transition-colors"
               >
                 {t('level3.check')}
               </button>
@@ -500,9 +554,14 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           )}
 
           {/* Result feedback */}
+          {/* The feedback region focus moves to after Athuga (P3). */}
           {isCorrect !== null && (
             <div
-              className={`p-4 rounded-xl mb-4 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
+              ref={resultRef}
+              tabIndex={-1}
+              role="group"
+              aria-labelledby="hess-l3-verdict"
+              className={`p-4 rounded-xl mb-4 phone:p-3 phone:mb-3 focus:outline-none ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
             >
               <div
                 className={`flex items-center gap-2 font-bold text-lg mb-2 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
@@ -510,7 +569,9 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                 <span aria-label={isCorrect ? 'Rétt svar' : 'Rangt svar'}>
                   {isCorrect ? '✓' : '✗'}
                 </span>
-                <span>{isCorrect ? t('common.correct') : t('common.incorrect')}</span>
+                <span id="hess-l3-verdict">
+                  {isCorrect ? t('common.correct') : t('common.incorrect')}
+                </span>
               </div>
               <div className={`font-mono ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
                 {t('level3.correctAnswer')} {formatDecimal(challenge.correctAnswer)}{' '}
@@ -539,8 +600,10 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
 
           {/* Explanation */}
           {showExplanation && (
-            <div className="bg-purple-50 p-4 rounded-xl mb-6">
-              <div className="font-bold text-purple-800 mb-2">{t('level3.explanationLabel')}</div>
+            <div className="bg-purple-50 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
+              <div className="font-bold text-purple-800 mb-2 phone:mb-1">
+                {t('level3.explanationLabel')}
+              </div>
               <div className="text-purple-900 font-mono text-sm">{t(challenge.explanationKey)}</div>
             </div>
           )}
@@ -548,7 +611,8 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           {/* Next button */}
           {isCorrect !== null && (
             <button
-              onClick={nextChallenge}
+              ref={nextRef}
+              onClick={armed(nextChallenge)}
               className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
             >
               {currentChallenge < challenges.length - 1

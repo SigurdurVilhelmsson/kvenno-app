@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, describe, it, expect, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import {
   Level2,
   answerInputMode,
@@ -25,6 +26,7 @@ import { parseScientificAnswer } from '../utils/parseAnswer';
  */
 
 afterEach(cleanup);
+clockPastNextGuard();
 
 /** Every number written in a line of help text, as the grader reads it. */
 function examplesIn(text: string): number[] {

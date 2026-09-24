@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
+import { useRevealAfterCommit } from '@shared/utils';
+
 interface Solvent {
   id: string;
   name: string;
@@ -137,11 +139,18 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
 
   // The verdict renders below the prediction buttons, which a phone has usually scrolled to
   // the bottom of the screen: without this the student taps and sees only the top of a
-  // beaker. 'nearest' does nothing when the result is already in view.
+  // beaker. The whole result is brought into view by the least move, and nothing moves when
+  // it is already in view. This used `scrollIntoView({ block: 'nearest' })` at every width
+  // before the shared helper existed, so it still scrolls at every width (`anyWidth`) and
+  // lands flush with the edge as that did (`gap: 0`). Focus moves to the verdict: the Já/Nei
+  // button that was pressed is gone, and focus would otherwise fall to <body>.
   const resultRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (showResult) resultRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
-  }, [showResult]);
+  const verdictRef = useRef<HTMLDivElement>(null);
+  useRevealAfterCommit(
+    showResult,
+    () => ({ bottom: resultRef.current, tops: [], focus: verdictRef.current }),
+    { anyWidth: true, gap: 0 }
+  );
 
   const reset = () => {
     setSelectedSolute(null);
@@ -395,11 +404,18 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
             </div>
           </div>
 
-          {/* Feedback */}
+          {/* Feedback: the region focus moves to once the verdict shows (P3). */}
           <div
-            className={`p-4 rounded-lg ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
+            ref={verdictRef}
+            tabIndex={-1}
+            role="group"
+            aria-labelledby="imf-solubility-verdict"
+            className={`p-4 rounded-lg focus:outline-none ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
           >
-            <div className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+            <div
+              id="imf-solubility-verdict"
+              className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
+            >
               {isCorrect ? '✓ Rétt spáð!' : '✗ Ekki rétt'}
             </div>
             <p className="text-sm text-warm-700 mt-2">{selectedSolute.explanation}</p>

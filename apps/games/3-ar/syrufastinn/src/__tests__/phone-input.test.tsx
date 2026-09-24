@@ -3,13 +3,13 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { parseStudentNumber } from '@shared/utils';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { ApplyScreen } from '../components/ApplyScreen';
 import { PracticeScreen } from '../components/PracticeScreen';
 import { insertAtCaret } from '../components/ScientificKeys';
 import { APPLY_PROBLEMS, PRACTICE_PROBLEMS, gradeApply } from '../data/problems';
 import { isRelativelyClose } from '../engine/grade';
 import { solveWeakAcid } from '../engine/ka';
-import { revealIfBelowFold, revealTopIfAbove } from '../utils/reveal';
 
 /**
  * Playing on a phone, beyond layout.
@@ -27,6 +27,8 @@ afterEach(() => {
   vi.restoreAllMocks();
   document.body.innerHTML = '';
 });
+
+clockPastNextGuard();
 
 const E_KEY = 'Bæta e við svarið';
 const MINUS_KEY = 'Bæta mínus við svarið';
@@ -136,75 +138,5 @@ describe('Beita on a phone', () => {
 
     expect(APPLY_PROBLEMS[3].kind).toBe('klofnun');
     expect(screen.queryByRole('button', { name: E_KEY })).toBeNull();
-  });
-});
-
-describe('revealIfBelowFold', () => {
-  const rect = (top: number, height: number) =>
-    ({ top, bottom: top + height, height, left: 0, right: 360, width: 360 }) as DOMRect;
-
-  function setup(verdictTop: number, blockTop: number, blockHeight: number, viewport: number) {
-    vi.spyOn(window, 'innerHeight', 'get').mockReturnValue(viewport);
-    const scrollBy = vi.fn();
-    window.scrollBy = scrollBy as unknown as typeof window.scrollBy;
-    const verdict = document.createElement('div');
-    const block = document.createElement('div');
-    verdict.getBoundingClientRect = () => rect(verdictTop, 24);
-    block.getBoundingClientRect = () => rect(blockTop, blockHeight);
-    return { verdict, block, scrollBy };
-  }
-
-  it('leaves the page alone when the verdict is already readable', () => {
-    const { verdict, block, scrollBy } = setup(450, 380, 300, 740);
-    revealIfBelowFold(verdict, block);
-    expect(scrollBy).not.toHaveBeenCalled();
-  });
-
-  it('brings a block that fits on screen in whole, bottom first', () => {
-    // Landscape phone: 360 tall, no sticky header.
-    const { verdict, block, scrollBy } = setup(370, 300, 250, 360);
-    revealIfBelowFold(verdict, block);
-    expect(scrollBy).toHaveBeenCalledTimes(1);
-    expect(scrollBy.mock.calls[0][0].top).toBe(300 + 250 + 16 - 360);
-  });
-
-  it('brings a taller block in from its top, below a sticky header', () => {
-    const header = document.createElement('header');
-    header.style.position = 'sticky';
-    header.getBoundingClientRect = () => rect(0, 56);
-    document.body.appendChild(header);
-
-    const { verdict, block, scrollBy } = setup(600, 540, 700, 568);
-    revealIfBelowFold(verdict, block);
-    expect(scrollBy.mock.calls[0][0].top).toBe(540 - 56 - 8);
-  });
-});
-
-describe('revealTopIfAbove', () => {
-  const rect = (top: number, height: number) =>
-    ({ top, bottom: top + height, height, left: 0, right: 360, width: 360 }) as DOMRect;
-
-  function setup(blockTop: number) {
-    const header = document.createElement('header');
-    header.style.position = 'sticky';
-    header.getBoundingClientRect = () => rect(0, 56);
-    document.body.appendChild(header);
-    const scrollBy = vi.fn();
-    window.scrollBy = scrollBy as unknown as typeof window.scrollBy;
-    const block = document.createElement('div');
-    block.getBoundingClientRect = () => rect(blockTop, 400);
-    return { block, scrollBy };
-  }
-
-  it('leaves the page alone when the top of the step is visible below the header', () => {
-    const { block, scrollBy } = setup(120);
-    revealTopIfAbove(block);
-    expect(scrollBy).not.toHaveBeenCalled();
-  });
-
-  it('scrolls a step whose heading is under the header back into view', () => {
-    const { block, scrollBy } = setup(-150);
-    revealTopIfAbove(block);
-    expect(scrollBy.mock.calls[0][0].top).toBe(-150 - 56 - 8);
   });
 });

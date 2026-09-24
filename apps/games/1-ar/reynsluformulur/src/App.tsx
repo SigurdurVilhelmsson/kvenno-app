@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { ErrorBoundary, Header } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
+import { useScreenTop } from '@shared/utils';
 
 import { AefaScreen } from './components/AefaScreen';
 import { BeitaScreen } from './components/BeitaScreen';
 import { KannaScreen } from './components/KannaScreen';
 import { SkiljaScreen } from './components/SkiljaScreen';
-import { scrollPageToTop } from './utils/reveal';
 import './styles.css';
 
 type Screen = 'menu' | 'kanna' | 'skilja' | 'aefa' | 'beita';
@@ -69,10 +69,18 @@ function App() {
 
   // Every screen change replaces the whole page. On a phone the button that
   // caused it sits a screen or more down, so the new screen would otherwise
-  // open part-way through; start it at the top instead.
-  useEffect(() => {
-    scrollPageToTop();
-  }, [screen]);
+  // open part-way through; it starts at the top instead, at any width, as the
+  // game's own helper did. Focus moves to the new screen's heading, since the
+  // button that caused the swap has gone. Back on the menu, the next phase not
+  // yet done is focused, and on a phone brought into view.
+  const nextPhase = PHASES.find((phase) => !completed.includes(phase.id))?.id;
+  useScreenTop(screen, {
+    anyWidth: true,
+    target: () =>
+      screen === 'menu' && nextPhase
+        ? document.querySelector(`[data-phase-card="${nextPhase}"]`)
+        : null,
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
@@ -82,43 +90,56 @@ function App() {
         Fara beint í efni
       </a>
 
-      <main id="main-content" className="container mx-auto px-4 py-4 sm:py-8">
+      <main id="main-content" className="container mx-auto px-4 py-4 sm:py-8 phone:py-4">
         {screen === 'menu' && (
           <div className="mx-auto max-w-4xl">
-            <p className="mb-8 text-center text-lg text-warm-600">
+            <p className="mb-8 text-center text-lg text-warm-600 phone:mb-3 phone:text-base">
               Efnagreining gefur þér prósentur. Formúlan er ekki í þeim — hún fæst með því að deila
               massanum burt
             </p>
 
-            <div className="rounded-lg bg-white p-5 shadow-md sm:p-8">
-              <h2 className="mb-2 text-2xl font-bold text-warm-800">Fjórir áfangar</h2>
-              <p className="mb-6 text-warm-600">
+            {/* On a phone the card is a flex column, so the overview paragraph can
+                follow the four phases: every phase shows on the first screen.
+                The paragraph says where the phases go rather than teaching
+                anything, and holds nothing focusable (design §3 Menu). Only
+                blocks without a control move: the paragraph and the reading
+                under the phases take order 1, so the phase buttons keep their
+                place and the tab order is what is seen. */}
+            <div className="rounded-lg bg-white p-5 shadow-md sm:p-8 phone:flex phone:flex-col phone:p-3">
+              <h2 className="mb-2 text-2xl font-bold text-warm-800 phone:mb-3 phone:text-xl">
+                Fjórir áfangar
+              </h2>
+              <p className="mb-6 text-warm-600 phone:order-1 phone:mb-0 phone:mt-4">
                 Þú kannt að reikna mólmassa út frá formúlu. Hér ferðu í hina áttina: út frá því sem
                 mælitækið gefur — hversu stór hluti massans er kolefni, hversu stór hluti er vetni —
                 og að formúlunni sjálfri.
               </p>
 
-              <div className="grid gap-4">
+              <div className="grid gap-4 phone:gap-3 phone-land:grid-cols-2">
                 {PHASES.map((phase) => (
                   <button
                     key={phase.id}
                     type="button"
+                    data-phase-card={phase.id}
                     onClick={() => setScreen(phase.id)}
-                    className={`game-card rounded-lg p-5 text-left text-white transition-colors sm:p-6 ${phase.tone}`}
+                    className={`game-card rounded-lg p-5 text-left text-white transition-colors sm:p-6 phone:relative phone:p-3 ${phase.tone}`}
                   >
-                    <div className="mb-2 flex items-center gap-2">
-                      <span className="text-2xl">{phase.number}</span>
-                      <h3 className="text-xl font-semibold">{phase.name}</h3>
+                    <div className="mb-2 flex items-center gap-2 phone:mb-1">
+                      <span className="text-2xl phone:text-xl">{phase.number}</span>
+                      <h3 className="text-xl font-semibold phone:text-lg">{phase.name}</h3>
                     </div>
-                    <p className="text-white/85">{phase.description}</p>
+                    <p className="text-white/85 phone:text-sm">{phase.description}</p>
+                    {/* On a phone, a badge in the corner of the title row. */}
                     {completed.includes(phase.id) && (
-                      <p className="mt-2 text-sm text-white/80">Lokið</p>
+                      <p className="mt-2 text-sm text-white/80 phone:absolute phone:right-3 phone:top-3 phone:mt-0 phone:rounded-full phone:bg-white/20 phone:px-2 phone:py-0.5 phone:text-xs phone:font-semibold phone:text-white">
+                        Lokið
+                      </p>
                     )}
                   </button>
                 ))}
               </div>
 
-              <div className="mt-6 rounded-lg border border-warm-200 bg-warm-50 p-4">
+              <div className="mt-6 rounded-lg border border-warm-200 bg-warm-50 p-4 phone:order-1">
                 <h3 className="mb-2 font-semibold text-warm-800">Þú lærir</h3>
                 <ul className="space-y-1.5 text-sm text-warm-700">
                   <li className="flex items-start gap-2">
@@ -146,7 +167,7 @@ function App() {
                 </ul>
               </div>
 
-              <div className="mt-6 rounded-lg bg-warm-50 p-4">
+              <div className="mt-6 rounded-lg bg-warm-50 p-4 phone:order-1">
                 <h3 className="mb-2 font-semibold text-warm-700">Lykilskref</h3>
                 <div className="space-y-2 font-mono text-sm text-warm-600">
                   <p>
@@ -164,7 +185,7 @@ function App() {
                 </div>
               </div>
 
-              <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4">
+              <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4 phone:order-1">
                 <h3 className="mb-2 font-semibold text-amber-800">Af hverju reynsluformúlur?</h3>
                 <p className="text-sm text-amber-700">
                   Þegar nýtt efni finnst — í plöntu, í þvagsýni, í fornri leirkrukku — veit enginn
@@ -174,12 +195,12 @@ function App() {
                 </p>
               </div>
 
-              <div className="mt-3 text-center text-xs text-warm-500">
+              <div className="mt-3 text-center text-xs text-warm-500 phone:order-1">
                 <strong>Námsleiðin:</strong> Einingagreining → Lotukerfið → Nafnakerfið → Mólmassi →{' '}
                 <u>Reynsluformúlur</u> → Stilla efnajöfnur → Útfellingarhvörf → Takmarkandi →
                 Lausnir → Einingakeðjan
               </div>
-              <div className="mt-2 text-center text-xs text-warm-400">
+              <div className="mt-2 text-center text-xs text-warm-400 phone:order-1">
                 Kafli 3 — Chemistry: The Central Science (Brown et al.)
               </div>
             </div>

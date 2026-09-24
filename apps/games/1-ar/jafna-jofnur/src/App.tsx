@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
 import { useGameI18n, useGameProgress } from '@shared/hooks';
+import { useScreenTop } from '@shared/utils';
 
 import { Level } from './components/Level';
 import { LEVEL1_CONFIG, LEVEL2_CONFIG, LEVEL3_CONFIG } from './components/levelConfigs';
@@ -36,12 +37,17 @@ function App() {
 
   const { t, language, setLanguage } = useGameI18n({ gameTranslations });
 
-  // Coming back from a level, open the menu at its top rather than at the
-  // scroll offset the level screen was left at (on a phone, mid-menu).
-  const menuRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (mode === 'menu') menuRef.current?.scrollIntoView?.({ block: 'start' });
-  }, [mode]);
+  // Each screen swap starts the new screen at the top of the page, as it always
+  // has at every width (`anyWidth`), and focuses its heading: the button that
+  // caused the swap has unmounted, and focus would otherwise fall to <body>.
+  // Back on the menu, a phone reveals the first level not yet done (Stig 1 once
+  // all are done), and focus goes to it at every width.
+  const nextLevel = ([1, 2, 3] as const).find((level) => !progress[LEVEL_KEYS[level]]) ?? 1;
+  useScreenTop(mode, {
+    anyWidth: true,
+    target: () =>
+      mode === 'menu' ? document.querySelector(`[data-level-card="${nextLevel}"]`) : null,
+  });
 
   const completeLevel = (level: 1 | 2 | 3) => {
     updateProgress({ [LEVEL_KEYS[level]]: true } as Partial<Progress>);
@@ -81,7 +87,7 @@ function App() {
 
   // Main Menu
   return (
-    <div ref={menuRef} className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
       <Header
         variant="game"
         backHref="/efnafraedi/1-ar/"
@@ -93,25 +99,30 @@ function App() {
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="max-w-lg w-full">
           {/* Title */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 phone:mb-4">
             <p className="text-warm-600">{t('game.subtitle')}</p>
           </div>
 
-          {/* Level Cards */}
-          <div className="space-y-4">
+          {/* Level Cards. On a phone the tiles are tighter, the icons smaller
+              and the tag chips, which restate each description, are hidden, so
+              all three levels show on first load. */}
+          <div className="space-y-4 phone:space-y-3">
             {/* Level 1: Simple Equations */}
             <button
+              data-level-card={1}
               onClick={() => setMode('level1')}
-              className="game-card w-full bg-white rounded-2xl shadow-lg p-6 text-left hover:shadow-xl transition-all transform hover:scale-[1.02]"
+              className="game-card w-full bg-white rounded-2xl shadow-lg p-6 phone:p-4 text-left hover:shadow-xl transition-all transform hover:scale-[1.02]"
             >
               <div className="flex items-start justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 shrink-0 rounded-xl bg-green-100 flex items-center justify-center text-2xl">
+                <div className="flex items-center gap-4 phone:gap-3">
+                  <div className="w-14 h-14 phone:w-11 phone:h-11 shrink-0 rounded-xl bg-green-100 flex items-center justify-center text-2xl phone:text-xl">
                     ⚖️
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h2 className="text-xl font-bold text-warm-800">{t('menu.level1.title')}</h2>
+                      <h2 className="text-xl phone:text-lg font-bold text-warm-800">
+                        {t('menu.level1.title')}
+                      </h2>
                       {progress.level1Completed && (
                         <span className="text-green-500 text-lg">✓</span>
                       )}
@@ -121,7 +132,7 @@ function App() {
                 </div>
                 <span className="text-warm-400 text-2xl">→</span>
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2 phone:hidden">
                 <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
                   {t('menu.level1.tags.simple')}
                 </span>
@@ -136,17 +147,20 @@ function App() {
 
             {/* Level 2: Medium Equations */}
             <button
+              data-level-card={2}
               onClick={() => setMode('level2')}
-              className="game-card w-full bg-white rounded-2xl shadow-lg p-6 text-left hover:shadow-xl transition-all transform hover:scale-[1.02]"
+              className="game-card w-full bg-white rounded-2xl shadow-lg p-6 phone:p-4 text-left hover:shadow-xl transition-all transform hover:scale-[1.02]"
             >
               <div className="flex items-start justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 shrink-0 rounded-xl bg-blue-100 flex items-center justify-center text-2xl">
+                <div className="flex items-center gap-4 phone:gap-3">
+                  <div className="w-14 h-14 phone:w-11 phone:h-11 shrink-0 rounded-xl bg-blue-100 flex items-center justify-center text-2xl phone:text-xl">
                     🔬
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h2 className="text-xl font-bold text-warm-800">{t('menu.level2.title')}</h2>
+                      <h2 className="text-xl phone:text-lg font-bold text-warm-800">
+                        {t('menu.level2.title')}
+                      </h2>
                       {progress.level2Completed && (
                         <span className="text-green-500 text-lg">✓</span>
                       )}
@@ -156,7 +170,7 @@ function App() {
                 </div>
                 <span className="text-warm-400 text-2xl">→</span>
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2 phone:hidden">
                 <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
                   {t('menu.level2.tags.medium')}
                 </span>
@@ -171,17 +185,20 @@ function App() {
 
             {/* Level 3: Hard Equations */}
             <button
+              data-level-card={3}
               onClick={() => setMode('level3')}
-              className="game-card w-full bg-white rounded-2xl shadow-lg p-6 text-left hover:shadow-xl transition-all transform hover:scale-[1.02]"
+              className="game-card w-full bg-white rounded-2xl shadow-lg p-6 phone:p-4 text-left hover:shadow-xl transition-all transform hover:scale-[1.02]"
             >
               <div className="flex items-start justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 shrink-0 rounded-xl bg-purple-100 flex items-center justify-center text-2xl">
+                <div className="flex items-center gap-4 phone:gap-3">
+                  <div className="w-14 h-14 phone:w-11 phone:h-11 shrink-0 rounded-xl bg-purple-100 flex items-center justify-center text-2xl phone:text-xl">
                     🧪
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h2 className="text-xl font-bold text-warm-800">{t('menu.level3.title')}</h2>
+                      <h2 className="text-xl phone:text-lg font-bold text-warm-800">
+                        {t('menu.level3.title')}
+                      </h2>
                       {progress.level3Completed && (
                         <span className="text-green-500 text-lg">✓</span>
                       )}
@@ -191,7 +208,7 @@ function App() {
                 </div>
                 <span className="text-warm-400 text-2xl">→</span>
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2 phone:hidden">
                 <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-medium">
                   {t('menu.level3.tags.combustion')}
                 </span>

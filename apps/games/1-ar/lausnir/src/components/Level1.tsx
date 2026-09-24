@@ -2,10 +2,17 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import type { TieredHints } from '@shared/types';
-import { formatDecimal } from '@shared/utils';
+import {
+  focusTarget,
+  formatDecimal,
+  revealSpan,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+  useScreenTop,
+} from '@shared/utils';
 
 import { Beaker } from './Beaker';
-import { revealTop } from '../utils/reveal';
 
 // Challenge types for categorizing feedback
 type ChallengeType = 'dilution' | 'mixing' | 'buildSolution' | 'concentrationMatch';
@@ -242,10 +249,13 @@ function ConcentrationIndicator({
   }
 
   return (
-    <div className={`p-4 rounded-xl border-2 ${bgColor} transition-all duration-300`}>
+    <div
+      data-concentration-indicator
+      className={`p-4 phone:p-3 rounded-xl border-2 ${bgColor} transition-all duration-300`}
+    >
       <div className="text-center">
-        <div className="text-sm text-warm-600 mb-1">Núverandi styrkur</div>
-        <div className={`text-3xl font-bold ${textColor}`}>
+        <div className="text-sm text-warm-600 mb-1 phone:mb-0">Núverandi styrkur</div>
+        <div className={`text-3xl phone:text-2xl font-bold ${textColor}`}>
           {formatDecimal(current, 2)} M {indicator}
         </div>
         <div className="text-sm text-warm-500 mt-1">
@@ -254,7 +264,7 @@ function ConcentrationIndicator({
       </div>
 
       {/* Visual bar comparison */}
-      <div className="mt-3 relative h-4 bg-warm-200 rounded-full overflow-hidden">
+      <div className="mt-3 phone:mt-2 relative h-4 phone:h-3 bg-warm-200 rounded-full overflow-hidden">
         <div
           className="absolute h-full bg-warm-400 opacity-50"
           style={{
@@ -333,8 +343,16 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const challenge = CHALLENGES[currentChallenge];
   const predictionQuestion = getPredictionQuestion(challenge);
 
-  const predictionRef = useRef<HTMLDivElement>(null);
-  const challengeRef = useRef<HTMLDivElement>(null);
+  const questionRef = useRef<HTMLParagraphElement>(null);
+  const optionsRef = useRef<HTMLDivElement>(null);
+  const predictionFeedbackRef = useRef<HTMLDivElement>(null);
+  const predictionActionRef = useRef<HTMLButtonElement>(null);
+  const hintRef = useRef<HTMLDivElement>(null);
+  const conceptRef = useRef<HTMLDivElement>(null);
+  const checkRef = useRef<HTMLButtonElement>(null);
+  // Bumped on every "Athuga spá", right or wrong: each check moves focus to
+  // the feedback, and a second wrong guess replaces the first's text.
+  const [predictionChecks, setPredictionChecks] = useState(0);
 
   // Calculate current concentration (molecules per liter)
   // Using a scale where 10 molecules = 0.1 mol for simplicity
@@ -365,16 +383,64 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
   // A new challenge, or the step from prediction to challenge, replaces a card
   // the student had scrolled to the bottom of. On a phone that leaves the new
-  // card's title and description above the screen.
+  // card's title and description above the screen. The card's top comes back
+  // into view, as it always has at every width (`anyWidth`, with no gap: the
+  // old helper used scrollIntoView), and focus moves to the new task
+  // (`data-item-start`), because the button that was pressed has unmounted.
+  const cardRef = useItemTop<HTMLDivElement>(`${currentChallenge}:${showPrediction}`, {
+    anyWidth: true,
+    gap: 0,
+  });
+  // The results screen replaces the whole level: it opens at its heading.
+  useScreenTop(gameComplete);
+
+  // After "Athuga spá", focus moves to the feedback, not to the button below
+  // it (a second Enter then does nothing), and a phone shows the button
+  // together with as much as fits above it: the question, else the options,
+  // else the feedback.
   useEffect(() => {
-    revealTop(showPrediction ? predictionRef.current : challengeRef.current);
-  }, [showPrediction, currentChallenge]);
+    if (predictionChecks === 0) return;
+    const id = requestAnimationFrame(() => {
+      revealSpan(predictionActionRef.current, [
+        questionRef.current,
+        optionsRef.current,
+        predictionFeedbackRef.current,
+      ]);
+      focusTarget(predictionFeedbackRef.current);
+    });
+    return () => cancelAnimationFrame(id);
+  }, [predictionChecks]);
+
+  // A correct "Athuga lausn" opens the concept panel above the action row.
+  // Focus moves to it, and a phone shows it with the concentration readout
+  // above it where both fit.
+  useRevealAfterCommit(showConcept, () => ({
+    bottom: checkRef.current,
+    tops: [
+      cardRef.current?.querySelector('[data-concentration-indicator]') ?? null,
+      conceptRef.current,
+    ],
+    focus: conceptRef.current,
+  }));
+
+  // Opening the hint removes the button that opened it, so focus moves to the
+  // hint itself, and a phone keeps "Athuga lausn" on screen with it.
+  useRevealAfterCommit(showHint, () => ({
+    bottom: checkRef.current,
+    tops: [hintRef.current],
+    focus: hintRef.current,
+  }));
+
+  // A press within 400 ms of "Áfram í verkefni" appearing is dropped, so the
+  // second tap of a double tap on "Athuga spá" cannot skip the feedback.
+  const armed = useArmedAfter(400, `${currentChallenge}:${predictionComplete}`);
 
   // Handle prediction submission
   const handlePredictionSubmit = () => {
     if (!predictionAnswer) return;
 
     const isCorrect = predictionAnswer === predictionQuestion.correctAnswer;
+    setPredictionChecks((n) => n + 1);
     if (isCorrect) {
       setPredictionFeedback(predictionQuestion.explanation);
       setPredictionComplete(true);
@@ -445,20 +511,20 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   if (gameComplete) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-4 md:p-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-center mb-6 text-blue-600">
+        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 phone:p-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-center mb-6 text-blue-600 phone:mb-3 phone:text-2xl">
             Til hamingju!
           </h1>
 
-          <div className="text-center mb-8">
-            <div className="text-6xl mb-4">🎉</div>
+          <div className="text-center mb-8 phone:mb-4">
+            <div className="text-6xl mb-4 phone:text-4xl phone:mb-2">🎉</div>
             <div className="text-2xl font-bold text-warm-800 mb-2">Þú hefur lokið Stigi 1!</div>
             <div className="text-lg text-warm-600">
               Stig: {score} / {CHALLENGES.length * 100}
             </div>
           </div>
 
-          <div className="bg-blue-50 p-6 rounded-xl mb-6">
+          <div className="bg-blue-50 p-6 rounded-xl mb-6 phone:p-4 phone:mb-4">
             <h2 className="font-bold text-blue-800 mb-3">Hvað lærðir þú?</h2>
             <ul className="space-y-2 text-blue-900">
               <li>✓ Styrkur = sameindir deilt með rúmmáli</li>
@@ -495,15 +561,22 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-2xl shadow-lg p-4 mb-6">
-          <div className="flex justify-between items-center flex-wrap gap-4">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-blue-600">Lausnir - Stig 1</h1>
-              <p className="text-sm text-warm-600">Skildu hugtökin - ENGIR útreikningar!</p>
+        {/* Header. On a phone it folds to one row (design P4): the title
+            takes the room the controls leave, the tagline is for screen
+            readers only, and the counters are smaller. It wraps rather than
+            overflowing on the narrowest phones. */}
+        <div className="bg-white rounded-2xl shadow-lg p-4 mb-6 phone:px-3 phone:py-2 phone:mb-3">
+          <div className="flex justify-between items-center flex-wrap gap-4 phone:gap-x-3 phone:gap-y-1">
+            <div className="phone:flex-1 phone:min-w-0">
+              <h1 className="text-2xl md:text-3xl font-bold text-blue-600 phone:text-base">
+                Lausnir - Stig 1
+              </h1>
+              <p className="text-sm text-warm-600 phone:sr-only">
+                Skildu hugtökin - ENGIR útreikningar!
+              </p>
             </div>
 
-            <div className="flex gap-4 items-center">
+            <div className="flex gap-4 items-center phone:gap-3">
               <button
                 onClick={onBack}
                 className="whitespace-nowrap text-warm-600 hover:text-warm-800 text-sm pointer-coarse:py-3 pointer-coarse:-my-3 pointer-coarse:px-2 pointer-coarse:-mx-2"
@@ -511,11 +584,11 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 ← Til baka
               </button>
               <div className="text-center">
-                <div className="text-xl font-bold text-blue-600">{score}</div>
+                <div className="text-xl font-bold text-blue-600 phone:text-base">{score}</div>
                 <div className="text-xs text-warm-600">Stig</div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold text-green-600">
+                <div className="text-xl font-bold text-green-600 phone:text-base">
                   {completed.length}/{CHALLENGES.length}
                 </div>
                 <div className="text-xs text-warm-600">Lokið</div>
@@ -524,9 +597,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           </div>
 
           {/* Progress bar */}
-          <div className="mt-4 bg-warm-200 rounded-full h-2">
+          <div className="mt-4 bg-warm-200 rounded-full h-2 phone:mt-2 phone:h-1.5">
             <div
-              className="bg-blue-500 h-2 rounded-full transition-all duration-500"
+              className="bg-blue-500 h-2 rounded-full transition-all duration-500 phone:h-1.5"
               style={{ width: `${(completed.length / CHALLENGES.length) * 100}%` }}
             />
           </div>
@@ -535,18 +608,22 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         {/* Prediction Phase */}
         {showPrediction && (
           <div
-            ref={predictionRef}
-            className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 mb-6"
+            ref={cardRef}
+            className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 mb-6 phone:p-3 phone:mb-3"
           >
-            <div className="text-center mb-6">
-              <div className="text-4xl mb-2">🤔</div>
-              <h2 className="text-2xl font-bold text-blue-800">Hugsaðu fyrst!</h2>
-              <p className="text-warm-600 mt-2">Áður en þú byrjar, spáðu fyrir um útkomuna</p>
+            {/* On a phone the decorative emoji goes and the tagline, the same
+                on every challenge, is for screen readers only. */}
+            <div className="text-center mb-6 phone:mb-3">
+              <div className="text-4xl mb-2 phone:hidden">🤔</div>
+              <h2 className="text-2xl font-bold text-blue-800 phone:text-xl">Hugsaðu fyrst!</h2>
+              <p className="text-warm-600 mt-2 phone:sr-only">
+                Áður en þú byrjar, spáðu fyrir um útkomuna
+              </p>
             </div>
 
             {/* Bridging note: connect abstract units to real chemistry (shown on first challenge) */}
             {currentChallenge === 0 && (
-              <div className="bg-indigo-50 border border-indigo-200 p-4 rounded-xl mb-6">
+              <div className="bg-indigo-50 border border-indigo-200 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
                 <h3 className="font-semibold text-indigo-800 mb-2">Um einingar í þessu verkefni</h3>
                 <ul className="text-sm text-indigo-700 space-y-1">
                   <li>
@@ -562,57 +639,71 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               </div>
             )}
 
-            <div className="bg-blue-50 p-4 rounded-xl mb-6">
-              <div className="text-sm text-warm-600 mb-2">
+            <div data-item-start className="bg-blue-50 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
+              <div className="text-sm text-warm-600 mb-2 phone:mb-1">
                 Verkefni {currentChallenge + 1}: {challenge.title}
               </div>
               <p className="font-semibold text-warm-800">{challenge.description}</p>
             </div>
 
-            <div className="mb-6">
-              <p className="font-semibold text-warm-700 mb-4 text-center text-lg">
+            <div className="mb-6 phone:mb-3">
+              <p
+                ref={questionRef}
+                className="font-semibold text-warm-700 mb-4 text-center text-lg phone:mb-2 phone:text-base"
+              >
                 {predictionQuestion.question}
               </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {/* Three short choices: one row on a phone too. */}
+              <div
+                ref={optionsRef}
+                className="grid grid-cols-1 md:grid-cols-3 gap-3 phone:grid-cols-3 phone:gap-2"
+              >
                 <button
                   onClick={() => setPredictionAnswer('increase')}
-                  className={`p-4 rounded-xl border-2 transition-all ${
+                  className={`p-4 phone:px-1 phone:py-2 rounded-xl border-2 transition-all ${
                     predictionAnswer === 'increase'
                       ? 'border-blue-500 bg-blue-50 text-blue-800'
                       : 'border-warm-200 hover:border-warm-300 text-warm-700'
                   }`}
                 >
-                  <div className="text-2xl mb-1">📈</div>
-                  <div className="font-semibold">Eykst</div>
+                  <div className="text-2xl mb-1 phone:text-xl phone:mb-0">📈</div>
+                  <div className="font-semibold phone:text-sm">Eykst</div>
                 </button>
                 <button
                   onClick={() => setPredictionAnswer('decrease')}
-                  className={`p-4 rounded-xl border-2 transition-all ${
+                  className={`p-4 phone:px-1 phone:py-2 rounded-xl border-2 transition-all ${
                     predictionAnswer === 'decrease'
                       ? 'border-blue-500 bg-blue-50 text-blue-800'
                       : 'border-warm-200 hover:border-warm-300 text-warm-700'
                   }`}
                 >
-                  <div className="text-2xl mb-1">📉</div>
-                  <div className="font-semibold">Minnkar</div>
+                  <div className="text-2xl mb-1 phone:text-xl phone:mb-0">📉</div>
+                  <div className="font-semibold phone:text-sm">Minnkar</div>
                 </button>
                 <button
                   onClick={() => setPredictionAnswer('unchanged')}
-                  className={`p-4 rounded-xl border-2 transition-all ${
+                  className={`p-4 phone:px-1 phone:py-2 rounded-xl border-2 transition-all ${
                     predictionAnswer === 'unchanged'
                       ? 'border-blue-500 bg-blue-50 text-blue-800'
                       : 'border-warm-200 hover:border-warm-300 text-warm-700'
                   }`}
                 >
-                  <div className="text-2xl mb-1">➡️</div>
-                  <div className="font-semibold">Óbreytt</div>
+                  <div className="text-2xl mb-1 phone:text-xl phone:mb-0">➡️</div>
+                  <div className="font-semibold phone:text-sm">Óbreytt</div>
                 </button>
               </div>
             </div>
 
             {predictionFeedback && (
-              <div className="mb-4">
+              // The region focus moves to after "Athuga spá". FeedbackPanel
+              // keeps its own role="alert" and exposes no id to label it with.
+              <div
+                ref={predictionFeedbackRef}
+                role="group"
+                tabIndex={-1}
+                className="mb-4 phone:mb-3"
+              >
                 <FeedbackPanel
                   feedback={{
                     isCorrect: predictionComplete,
@@ -635,9 +726,15 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               </div>
             )}
 
+            {/* "Athuga spá" and "Áfram í verkefni" are two elements (keyed),
+                never one relabelled button, and "Áfram" ignores a press within
+                400 ms of appearing: a double tap or Enter cannot skip the
+                feedback. */}
             <div className="flex gap-3">
               {!predictionComplete ? (
                 <button
+                  key="check"
+                  ref={predictionActionRef}
                   onClick={handlePredictionSubmit}
                   disabled={!predictionAnswer}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-warm-300 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl transition-colors"
@@ -646,7 +743,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 </button>
               ) : (
                 <button
-                  onClick={handleContinueToChallenge}
+                  key="continue"
+                  ref={predictionActionRef}
+                  onClick={armed(handleContinueToChallenge)}
                   className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-colors"
                 >
                   Áfram í verkefni →
@@ -658,13 +757,19 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
         {/* Challenge area */}
         {!showPrediction && (
-          <div ref={challengeRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+          <div
+            ref={cardRef}
+            className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3"
+          >
             {/* Challenge header */}
-            <div className="mb-6">
-              <div className="inline-block bg-blue-100 px-4 py-2 rounded-full text-sm font-semibold text-blue-800 mb-2">
+            <div className="mb-6 phone:mb-3">
+              <div
+                data-item-start
+                className="inline-block bg-blue-100 px-4 py-2 rounded-full text-sm font-semibold text-blue-800 mb-2 phone:px-3 phone:py-1 phone:mb-1"
+              >
                 Verkefni {currentChallenge + 1}: {challenge.title}
               </div>
-              <p className="text-lg text-warm-700">{challenge.description}</p>
+              <p className="text-lg text-warm-700 phone:text-base">{challenge.description}</p>
             </div>
 
             {/* Main interaction area. On a phone the two columns dissolve
@@ -673,7 +778,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 slider then sit together on one screen while the student
                 drags. From `sm` the two columns are restored, which also
                 puts the beaker beside the controls on a landscape phone. */}
-            <div className="grid gap-4 sm:grid-cols-2 sm:gap-8 mb-6">
+            <div className="grid gap-4 sm:grid-cols-2 sm:gap-8 mb-6 phone:gap-3 phone:mb-3">
               {/* Static labeled beaker */}
               <div className="contents sm:flex sm:flex-col sm:items-center">
                 <Beaker
@@ -684,7 +789,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   label={`${molecules} sameindir\n${volumeML} mL\n${formatDecimal(currentConcentration, 2)} M`}
                 />
 
-                <div className="order-last sm:order-none sm:mt-4 bg-warm-50 rounded-lg p-3 text-center w-full">
+                <div className="order-last sm:order-none sm:mt-4 bg-warm-50 rounded-lg p-3 text-center w-full phone:p-2">
                   <div className="text-xs text-warm-500 mb-1">Styrkur = sameindir ÷ rúmmál</div>
                   <div className="font-mono text-sm text-warm-700">
                     {molecules} × 0,01 mól ÷ {formatDecimal(volumeML / 1000, 3)} L ={' '}
@@ -705,8 +810,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
                 {/* Molecule controls */}
                 {challenge.constraints.canChangeMolecules && (
-                  <div className="bg-orange-50 p-4 rounded-xl">
-                    <div className="text-sm font-semibold text-warm-700 mb-2">Sameindir</div>
+                  <div className="bg-orange-50 p-4 rounded-xl phone:p-3">
+                    <div className="text-sm font-semibold text-warm-700 mb-2 phone:mb-1">
+                      Sameindir
+                    </div>
                     {/* Below lg the count sits on its own line above the four
                         buttons: the one-row stepper is 304 px wide and fits
                         neither a phone nor a half-width column. */}
@@ -748,8 +855,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
                 {/* Volume controls */}
                 {challenge.constraints.canChangeVolume && (
-                  <div className="bg-blue-50 p-4 rounded-xl">
-                    <div className="text-sm font-semibold text-warm-700 mb-2">Rúmmál (mL)</div>
+                  <div className="bg-blue-50 p-4 rounded-xl phone:p-3">
+                    <div className="text-sm font-semibold text-warm-700 mb-2 phone:mb-0">
+                      Rúmmál (mL)
+                    </div>
                     {/* On touch the track itself is 44 px tall, with the thin
                         bar painted as a background stripe. Padding would not
                         do: a drag that starts in a range input's padding does
@@ -775,12 +884,12 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
                 {/* Fixed parameter notice */}
                 {!challenge.constraints.canChangeMolecules && (
-                  <div className="bg-warm-100 p-3 rounded-lg text-center text-sm text-warm-600">
+                  <div className="bg-warm-100 p-3 rounded-lg text-center text-sm text-warm-600 phone:p-2">
                     Sameindir eru fastar við {molecules} (þetta er útþynning!)
                   </div>
                 )}
                 {!challenge.constraints.canChangeVolume && (
-                  <div className="bg-warm-100 p-3 rounded-lg text-center text-sm text-warm-600">
+                  <div className="bg-warm-100 p-3 rounded-lg text-center text-sm text-warm-600 phone:p-2">
                     Rúmmál er fast við {volumeML} mL
                   </div>
                 )}
@@ -789,15 +898,20 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
             {/* Hint section */}
             {showHint && (
-              <div className="mb-6 bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl">
-                <h4 className="font-semibold text-yellow-800 mb-2">💡 Vísbending:</h4>
+              <div
+                ref={hintRef}
+                className="mb-6 bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl phone:p-3 phone:mb-3"
+              >
+                <h4 className="font-semibold text-yellow-800 mb-2 phone:mb-1">💡 Vísbending:</h4>
                 <p className="text-yellow-900">{challenge.hints.method}</p>
               </div>
             )}
 
             {/* Concept reveal after correct answer */}
             {showConcept && isCorrect && (
-              <div className="mb-6">
+              // The region focus moves to after a correct "Athuga lausn".
+              // FeedbackPanel keeps its own role="alert".
+              <div ref={conceptRef} role="group" tabIndex={-1} className="mb-6 phone:mb-3">
                 <FeedbackPanel
                   feedback={{
                     isCorrect: true,
@@ -821,21 +935,22 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               </div>
             )}
 
-            {/* Action buttons */}
-            <div className="flex flex-col md:flex-row gap-4">
+            {/* Action buttons: one row on a phone. */}
+            <div className="flex flex-col md:flex-row gap-4 phone:flex-row phone:gap-2">
               {!showHint && !showConcept && (
                 <button
                   onClick={() => setShowHint(true)}
-                  className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
+                  className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-6 rounded-xl transition-colors phone:min-w-0 phone:px-2"
                 >
                   Sýna vísbendingu
                 </button>
               )}
 
               <button
+                ref={checkRef}
                 onClick={checkAnswer}
                 disabled={showConcept}
-                className={`flex-1 font-bold py-3 px-6 rounded-xl transition-colors ${
+                className={`flex-1 font-bold py-3 px-6 rounded-xl transition-colors phone:min-w-0 phone:px-2 ${
                   isCorrect && !showConcept
                     ? 'bg-green-500 hover:bg-green-600 text-white'
                     : showConcept
@@ -850,7 +965,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         )}
 
         {/* Challenge navigation */}
-        <div className="mt-6 flex justify-center gap-2 pointer-coarse:gap-1">
+        <div className="mt-6 flex justify-center gap-2 pointer-coarse:gap-1 phone:mt-3">
           {CHALLENGES.map((c, i) => (
             <button
               key={c.id}

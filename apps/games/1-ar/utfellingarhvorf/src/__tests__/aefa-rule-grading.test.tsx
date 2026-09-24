@@ -1,10 +1,13 @@
 import { fireEvent, render, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { AefaScreen } from '../components/AefaScreen';
 import { SOLUBILITY_RULES, type SolubilityRule } from '../data/ions';
 import { DRILL_ITEMS } from '../data/problems';
 import { decidingRules, type Salt } from '../engine/precipitation';
+
+clockPastNextGuard();
 
 /**
  * Æfa asks "Hvaða regla ræður því?" and graded exactly one rule right — the one

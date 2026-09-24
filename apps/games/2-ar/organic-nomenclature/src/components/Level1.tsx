@@ -1,11 +1,19 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import type { TieredHints } from '@shared/types';
-import { shuffleArray } from '@shared/utils';
+import {
+  isPhone,
+  revealTop,
+  shuffleArray,
+  usableArea,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+  useScreenTop,
+} from '@shared/utils';
 
 import { MoleculeBuilder } from './MoleculeBuilder';
-import { useReturnToPrompt, useRevealWhenShown } from '../hooks/useRevealWhenShown';
 
 // Misconceptions for organic nomenclature
 const MISCONCEPTIONS: Record<string, string> = {
@@ -221,11 +229,46 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when question index changes
   }, [currentQuestion, question]);
 
+  // Each teaching card (Næsta, Fyrri) and each quiz question: on a phone its top
+  // comes back under the screen's top edge, and focus moves to it at every
+  // width, because the button pressed may have unmounted. Declared before
+  // useScreenTop, so on a phase change the screen top and its heading win.
+  const itemRef = useItemTop<HTMLDivElement>(
+    phase === 'quiz' ? `quiz:${currentQuestion}` : `${phase}:${currentItem}`
+  );
+  // A phase change (prefixes → suffixes → builder → quiz, and back) starts the
+  // new screen at its top with its heading focused.
+  useScreenTop(phase);
+
+  const feedbackBoxRef = useRef<HTMLDivElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
-  const questionRef = useRef<HTMLDivElement>(null);
-  useRevealWhenShown(feedbackRef, showFeedback);
-  // "Byrja próf" and "Næsta spurning" bring the question back into view on a phone
-  useReturnToPrompt(questionRef, !showFeedback, `${phase}:${currentQuestion}`);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  // After an answer, a phone shows the question through Næsta when it fits, or
+  // else the verdict at the top, and focus moves to the feedback, not to Næsta,
+  // so a second Enter lands on nothing (design P3).
+  useRevealAfterCommit(showFeedback, () => ({
+    bottom: nextRef.current,
+    tops: [itemRef.current, feedbackRef.current],
+    focus: feedbackRef.current,
+  }));
+  // A double tap on an answer must not land on Næsta.
+  const armed = useArmedAfter(400, `${currentQuestion}:${showFeedback}`);
+
+  // A desktop window keeps what the game's own helper did there, at any width:
+  // the feedback is brought to the top when it opened above the screen or near
+  // its foot, and "Byrja próf" and "Næsta spurning" bring back a question left
+  // above the screen. A phone does both through the shared hooks above.
+  useEffect(() => {
+    const el = feedbackBoxRef.current;
+    if (!showFeedback || !el || isPhone()) return;
+    const { top } = el.getBoundingClientRect();
+    if (top < 0 || top > usableArea().bottom - 120) revealTop(el, { anyWidth: true, always: true });
+  }, [showFeedback]);
+  useEffect(() => {
+    const el = itemRef.current;
+    if (phase !== 'quiz' || showFeedback || !el || isPhone()) return;
+    if (el.getBoundingClientRect().top < 0) revealTop(el, { anyWidth: true, always: true });
+  }, [itemRef, phase, currentQuestion, showFeedback]);
 
   if (phase === 'prefixes') {
     const prefix = prefixes[currentItem];
@@ -233,7 +276,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-          <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+          <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6 phone:mb-3">
             <button
               onClick={onBack}
               className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
@@ -245,14 +288,14 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             </div>
           </div>
 
-          <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-warm-700">
+          <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-warm-700 phone:text-xl">
             📚 Forskeyti (kolefnisfjöldi)
           </h1>
-          <p className="text-center text-warm-600 mb-8">
+          <p className="text-center text-warm-600 mb-8 phone:mb-4">
             Forskeytið segir hversu mörg kolefni eru í keðjunni
           </p>
 
-          <div className="flex justify-center gap-1 mb-6">
+          <div className="flex justify-center gap-1 mb-6 phone:mb-4">
             {prefixes.map((_, idx) => (
               <div
                 key={idx}
@@ -267,7 +310,11 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             ))}
           </div>
 
-          <div className="bg-gradient-to-br from-warm-100 to-warm-100 p-4 sm:p-8 rounded-2xl border-2 border-warm-200 animate-slide-in">
+          <div
+            ref={itemRef}
+            data-item-start
+            className="bg-gradient-to-br from-warm-100 to-warm-100 p-4 sm:p-8 rounded-2xl border-2 border-warm-200 animate-slide-in"
+          >
             <div className="flex justify-center items-center gap-4 sm:gap-8 mb-6">
               <div className="text-center">
                 <div className="text-6xl font-bold text-warm-800 mb-2">{prefix.carbons}</div>
@@ -303,11 +350,11 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             </div>
           </div>
 
-          <div className="flex gap-4 mt-8">
+          <div className="flex gap-4 mt-8 phone:mt-4 phone:gap-3">
             <button
               onClick={handlePrev}
               disabled={currentItem === 0}
-              className={`flex-1 py-3 px-4 sm:px-6 rounded-xl font-bold ${
+              className={`flex-1 py-3 px-4 sm:px-6 rounded-xl font-bold phone:px-2 phone:whitespace-nowrap ${
                 currentItem === 0
                   ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
                   : 'bg-warm-500 hover:bg-warm-600 text-white'
@@ -317,7 +364,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             </button>
             <button
               onClick={handleNext}
-              className="flex-1 bg-warm-700 hover:bg-warm-800 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
+              className="flex-1 bg-warm-700 hover:bg-warm-800 text-white font-bold py-3 px-4 sm:px-6 rounded-xl phone:px-2 phone:whitespace-nowrap"
             >
               {currentItem === prefixes.length - 1 ? 'Viðskeyti →' : 'Næsta →'}
             </button>
@@ -333,7 +380,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-          <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+          <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6 phone:mb-3">
             <button
               onClick={onBack}
               className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
@@ -345,14 +392,14 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             </div>
           </div>
 
-          <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-green-700">
+          <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-green-700 phone:text-xl">
             🔗 Viðskeyti (tengjategund)
           </h1>
-          <p className="text-center text-warm-600 mb-8">
+          <p className="text-center text-warm-600 mb-8 phone:mb-4">
             Viðskeytið segir hvaða tegund af tengingu er milli kolefna
           </p>
 
-          <div className="flex justify-center gap-2 mb-6">
+          <div className="flex justify-center gap-2 mb-6 phone:mb-4">
             {suffixes.map((_, idx) => (
               <div
                 key={idx}
@@ -367,7 +414,11 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             ))}
           </div>
 
-          <div className="bg-gradient-to-br from-green-100 to-emerald-100 p-4 sm:p-8 rounded-2xl border-2 border-green-200 animate-slide-in">
+          <div
+            ref={itemRef}
+            data-item-start
+            className="bg-gradient-to-br from-green-100 to-emerald-100 p-4 sm:p-8 rounded-2xl border-2 border-green-200 animate-slide-in"
+          >
             <div className="text-center mb-6">
               <div className="text-4xl font-bold text-green-700 mb-2">{suffix.suffix}</div>
               <div className="text-2xl text-warm-700">{suffix.bondType}</div>
@@ -402,16 +453,16 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             </div>
           </div>
 
-          <div className="flex gap-4 mt-8">
+          <div className="flex gap-4 mt-8 phone:mt-4 phone:gap-3">
             <button
               onClick={handlePrev}
-              className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
+              className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl phone:px-2 phone:whitespace-nowrap"
             >
               ← Fyrri
             </button>
             <button
               onClick={handleNext}
-              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
+              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 sm:px-6 rounded-xl phone:px-2 phone:whitespace-nowrap"
             >
               {currentItem === suffixes.length - 1 ? 'Sameindasmiður →' : 'Næsta →'}
             </button>
@@ -426,7 +477,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-          <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+          <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6 phone:mb-3">
             <button
               onClick={onBack}
               className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
@@ -436,10 +487,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <div className="ml-auto text-sm text-warm-500 whitespace-nowrap">Sameindasmiður</div>
           </div>
 
-          <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-emerald-600">
+          <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-emerald-600 phone:text-xl">
             🔬 Prófaðu sjálf/ur!
           </h1>
-          <p className="text-center text-warm-600 mb-8">
+          <p className="text-center text-warm-600 mb-8 phone:mb-4">
             Byggðu sameindir og sjáðu hvernig nafnið breytist
           </p>
 
@@ -461,19 +512,19 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             </ul>
           </div>
 
-          <div className="flex gap-4 mt-8">
+          <div className="flex gap-4 mt-8 phone:mt-4 phone:gap-3">
             <button
               onClick={() => {
                 setPhase('suffixes');
                 setCurrentItem(suffixes.length - 1);
               }}
-              className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
+              className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl phone:px-2 phone:whitespace-nowrap"
             >
               ← Til baka
             </button>
             <button
               onClick={handleNext}
-              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
+              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 sm:px-6 rounded-xl phone:px-2 phone:whitespace-nowrap"
             >
               Byrja próf →
             </button>
@@ -487,70 +538,83 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-        <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+        <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6 phone:mb-3 phone:gap-x-3">
           <button
             onClick={onBack}
             className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
           >
             ← Til baka
           </button>
-          <div className="ml-auto flex items-center gap-3 sm:gap-4">
+          <div className="ml-auto flex items-center gap-3 sm:gap-4 phone:gap-2">
             <div className="text-sm text-warm-500 whitespace-nowrap">
               Spurning {currentQuestion + 1} af {quizQuestions.length}
             </div>
-            <div className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold whitespace-nowrap">
+            <div className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold whitespace-nowrap phone:px-2 phone:py-0.5 phone:text-sm">
               Stig: {score}
             </div>
           </div>
         </div>
 
-        <h1 className="text-2xl md:text-3xl font-bold text-center mb-8 text-emerald-600">
+        <h1 className="text-2xl md:text-3xl font-bold text-center mb-8 text-emerald-600 phone:text-xl phone:mb-3">
           ✏️ Próf: Forskeyti og viðskeyti
         </h1>
 
         <div
-          ref={questionRef}
-          className="bg-emerald-50 p-4 sm:p-6 rounded-xl mb-6 text-center border-2 border-emerald-200 scroll-mt-4"
+          ref={itemRef}
+          data-item-start
+          className="bg-emerald-50 p-4 sm:p-6 rounded-xl mb-6 text-center border-2 border-emerald-200 scroll-mt-4 phone:p-3 phone:mb-3"
         >
           <div className="text-xl md:text-2xl font-bold text-warm-800">{question.question}</div>
         </div>
 
         {!showFeedback ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div key="options" className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 phone:gap-2">
             {shuffledQuizOptions.map((option, idx) => (
               <button
                 key={idx}
                 onClick={() => handleAnswer(option)}
-                className="p-4 rounded-xl border-2 border-emerald-300 bg-white hover:bg-emerald-50 hover:border-emerald-400 text-lg font-bold text-warm-800 transition-all"
+                className="p-4 rounded-xl border-2 border-emerald-300 bg-white hover:bg-emerald-50 hover:border-emerald-400 text-lg font-bold text-warm-800 transition-all phone:p-3"
               >
                 {option}
               </button>
             ))}
           </div>
         ) : (
-          <div ref={feedbackRef} className="space-y-4 scroll-mt-4">
-            <FeedbackPanel
-              feedback={{
-                isCorrect,
-                explanation: isCorrect
-                  ? `Rétt! ${question.correctAnswer} er rétta svarið.`
-                  : `Rétt svar: ${question.correctAnswer}`,
-                misconception: isCorrect ? undefined : MISCONCEPTIONS[question.type],
-                relatedConcepts: RELATED_CONCEPTS[question.type],
-                nextSteps: isCorrect
-                  ? 'Frábært! Þú ert að ná góðum tökum á lífrænu nafnakerfinu.'
-                  : 'Skoðaðu minnisblaðið og reyndu að muna reglurnar.',
-              }}
-              config={{
-                showExplanation: true,
-                showMisconceptions: !isCorrect,
-                showRelatedConcepts: true,
-                showNextSteps: true,
-              }}
-            />
+          <div
+            key="feedback"
+            ref={feedbackBoxRef}
+            className="space-y-4 scroll-mt-4 phone:space-y-3"
+          >
+            {/* The feedback region focus moves to after an answer (P3).
+                FeedbackPanel is itself role=alert and announces the verdict. */}
+            <div ref={feedbackRef} tabIndex={-1} role="group" className="focus:outline-none">
+              <FeedbackPanel
+                feedback={{
+                  isCorrect,
+                  explanation: isCorrect
+                    ? `Rétt! ${question.correctAnswer} er rétta svarið.`
+                    : `Rétt svar: ${question.correctAnswer}`,
+                  misconception: isCorrect ? undefined : MISCONCEPTIONS[question.type],
+                  relatedConcepts: RELATED_CONCEPTS[question.type],
+                  nextSteps: isCorrect
+                    ? 'Frábært! Þú ert að ná góðum tökum á lífrænu nafnakerfinu.'
+                    : 'Skoðaðu minnisblaðið og reyndu að muna reglurnar.',
+                }}
+                config={{
+                  showExplanation: true,
+                  showMisconceptions: !isCorrect,
+                  showRelatedConcepts: true,
+                  showNextSteps: true,
+                }}
+              />
+            </div>
 
+            {/* Næsta is its own element, never an answer relabelled, and it
+                ignores a press within 400 ms of appearing. */}
             <button
-              onClick={handleNextQuestion}
+              key="next"
+              ref={nextRef}
+              onClick={armed(handleNextQuestion)}
               className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
             >
               {currentQuestion < quizQuestions.length - 1 ? 'Næsta spurning →' : 'Ljúka stigi →'}
@@ -558,7 +622,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           </div>
         )}
 
-        <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+        <div className="mt-6 bg-warm-50 p-4 rounded-xl phone:mt-4">
           <h3 className="font-semibold text-warm-700 mb-2">📋 Minnisblað:</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>

@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import { PinnedActions } from '@shared/components';
+import { isPhone, useArmedAfter, useItemTop, useRevealAfterCommit } from '@shared/utils';
+
 import { SOLUBILITY_RULES } from '../data/ions';
 import { DRILL_ITEMS } from '../data/problems';
 import { decidingRules } from '../engine/precipitation';
-import { reveal } from '../utils/reveal';
+import { revealOnDesktop } from '../utils/desktopReveal';
 
 /**
  * Æfa — the solubility drill: is this compound leysanlegt, and by which rule?
@@ -75,18 +78,39 @@ export function AefaScreen({ onComplete, onBack }: Props) {
   };
 
   // On a phone "Athuga" and "Næsta" sit at the bottom of a card taller than the
-  // screen. After "Athuga" bring the whole verdict (and its "Næsta") into view;
-  // after "Næsta" bring the new compound back, which has scrolled off the top.
+  // screen, so "Athuga" is pinned to the foot of the screen while there is a
+  // choice to make (design §4, P8: a choice screen, no text input, and the
+  // feedback it brings is short). After "Athuga" the most that fits of the
+  // compound → the chosen rule → the verdict and its "Næsta" comes into view; where
+  // it does not, the verdict at the top, read down to the button. Focus moves
+  // to the verdict, not to the button (design P3), and "Næsta" drops a press
+  // within 400 ms of appearing, so a double tap cannot skip it. After "Næsta"
+  // the card's top comes back under the header and focus moves to the new
+  // compound.
   const counterRef = useRef<HTMLParagraphElement>(null);
   const compoundRef = useRef<HTMLDivElement>(null);
+  const ruleRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const feedbackRef = useRef<HTMLDivElement>(null);
+  const cardRef = useItemTop<HTMLDivElement>(index);
+  useRevealAfterCommit(checked, () => ({
+    bottom: feedbackRef.current,
+    tops: [compoundRef.current, ruleId ? ruleRefs.current[ruleId] : null, feedbackRef.current],
+    focus: feedbackRef.current,
+  }));
+
+  // A desktop window keeps what the game's own helper did there, at any
+  // width: the verdict with its "Næsta" after "Athuga", and the counter with
+  // the new compound after "Næsta", each brought into view when it is not.
   const shown = useRef({ index, checked });
   useEffect(() => {
     const before = shown.current;
     shown.current = { index, checked };
-    if (index !== before.index) reveal(counterRef.current, compoundRef.current);
-    else if (checked && !before.checked) reveal(feedbackRef.current);
+    if (isPhone()) return;
+    if (index !== before.index) revealOnDesktop(counterRef.current, compoundRef.current);
+    else if (checked && !before.checked) revealOnDesktop(feedbackRef.current);
   }, [index, checked]);
+
+  const armed = useArmedAfter(400, `${index}:${checked}`);
 
   const next = () => {
     if (index + 1 >= items.length) {
@@ -101,9 +125,9 @@ export function AefaScreen({ onComplete, onBack }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
-        <div className="mb-6 flex items-baseline justify-between gap-3">
-          <h2 className="text-xl font-bold text-warm-800 sm:text-2xl">
+      <div ref={cardRef} className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8 phone:p-3">
+        <div className="mb-6 flex items-baseline justify-between gap-3 phone:mb-2">
+          <h2 className="text-xl font-bold text-warm-800 sm:text-2xl phone:min-w-0 phone:text-base">
             Æfa — leysanlegt eða ekki?
           </h2>
           <button
@@ -114,84 +138,108 @@ export function AefaScreen({ onComplete, onBack }: Props) {
           </button>
         </div>
 
-        <p ref={counterRef} className="mb-2 text-sm text-warm-600">
-          Efni {index + 1} af {items.length}
-        </p>
+        {/* On a phone on its side the compound and its first question sit
+            beside the rules, so the whole choice is on one screen. Plain blocks
+            elsewhere, so the spacing is what it was. */}
+        <div className="phone-land:mb-3 phone-land:grid phone-land:grid-cols-[2fr_3fr] phone-land:items-start phone-land:gap-4">
+          <div>
+            <p ref={counterRef} className="mb-2 text-sm text-warm-600 phone:mb-1">
+              Efni {index + 1} af {items.length}
+            </p>
 
-        <div
-          ref={compoundRef}
-          className="mb-6 rounded-lg border-2 border-warm-200 bg-warm-50 p-6 text-center"
-        >
-          <p className="font-mono text-3xl text-warm-900">{item.salt.formula}</p>
-          <p className="mt-2 text-sm text-warm-600">
-            {item.salt.cation.name} og {item.salt.anion.name}
-          </p>
+            {/* On a phone the first question sits inside the compound's card:
+                the card loses its lower edge and the question carries it on, so
+                the two read as one block. */}
+            <div
+              ref={compoundRef}
+              data-item-start
+              className="mb-6 rounded-lg border-2 border-warm-200 bg-warm-50 p-6 text-center phone:mb-0 phone:flex phone:flex-wrap phone:items-baseline phone:justify-center phone:gap-x-3 phone:rounded-b-none phone:border-b-0 phone:px-3 phone:pb-1 phone:pt-2"
+            >
+              <p className="font-mono text-3xl text-warm-900 phone:text-2xl">{item.salt.formula}</p>
+              <p className="mt-2 text-sm text-warm-600 phone:mt-0">
+                {item.salt.cation.name} og {item.salt.anion.name}
+              </p>
+            </div>
+
+            <fieldset
+              className="mb-4 phone:mb-2 phone:min-w-0 phone:rounded-b-lg phone:border-2 phone:border-t-0 phone:border-warm-200 phone:bg-warm-50 phone:px-3 phone:pb-1.5"
+              disabled={checked}
+            >
+              {/* Floated on a phone, so the fieldset's side borders run past it
+                  rather than breaking around it. */}
+              <legend className="mb-2 text-sm font-semibold text-warm-700 phone:float-left phone:mb-1 phone:w-full">
+                Leysist það upp í vatni?
+              </legend>
+              <div className="flex gap-2 sm:gap-3 phone:clear-both phone-land:flex-col">
+                {[
+                  { value: true, label: 'Leysanlegt' },
+                  { value: false, label: 'Óleysanlegt' },
+                ].map((option) => (
+                  <button
+                    key={String(option.value)}
+                    type="button"
+                    onClick={() => setAnswer(option.value)}
+                    className={`game-btn flex-1 rounded-lg border-2 px-2 py-3 font-semibold sm:px-4 phone:px-2 phone:py-2 pointer-coarse:min-h-11 ${
+                      answer === option.value
+                        ? 'border-orange-400 bg-orange-50 text-orange-900'
+                        : 'border-warm-200 bg-white text-warm-700 hover:bg-warm-50'
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+          </div>
+
+          <fieldset className="mb-6 phone:mb-2 phone:min-w-0 phone-land:mb-0" disabled={checked}>
+            <legend className="mb-2 text-sm font-semibold text-warm-700 phone:mb-1">
+              Hvaða regla ræður því?
+            </legend>
+            <div className="space-y-2 phone:space-y-1">
+              {SOLUBILITY_RULES.map((r) => (
+                <button
+                  key={r.id}
+                  ref={(el) => {
+                    ruleRefs.current[r.id] = el;
+                  }}
+                  type="button"
+                  onClick={() => setRuleId(r.id)}
+                  className={`game-btn block w-full rounded-lg border-2 px-3 py-2 text-left text-sm pointer-coarse:min-h-11 phone:py-1.5 ${
+                    ruleId === r.id
+                      ? 'border-orange-400 bg-orange-50 text-orange-900'
+                      : 'border-warm-200 bg-white text-warm-700 hover:bg-warm-50'
+                  }`}
+                >
+                  {r.text}
+                </button>
+              ))}
+            </div>
+          </fieldset>
         </div>
 
-        <fieldset className="mb-4" disabled={checked}>
-          <legend className="mb-2 text-sm font-semibold text-warm-700">
-            Leysist það upp í vatni?
-          </legend>
-          <div className="flex gap-2 sm:gap-3">
-            {[
-              { value: true, label: 'Leysanlegt' },
-              { value: false, label: 'Óleysanlegt' },
-            ].map((option) => (
-              <button
-                key={String(option.value)}
-                type="button"
-                onClick={() => setAnswer(option.value)}
-                className={`game-btn flex-1 rounded-lg border-2 px-2 py-3 font-semibold sm:px-4 ${
-                  answer === option.value
-                    ? 'border-orange-400 bg-orange-50 text-orange-900'
-                    : 'border-warm-200 bg-white text-warm-700 hover:bg-warm-50'
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </fieldset>
-
-        <fieldset className="mb-6" disabled={checked}>
-          <legend className="mb-2 text-sm font-semibold text-warm-700">
-            Hvaða regla ræður því?
-          </legend>
-          <div className="space-y-2">
-            {SOLUBILITY_RULES.map((r) => (
-              <button
-                key={r.id}
-                type="button"
-                onClick={() => setRuleId(r.id)}
-                className={`game-btn block w-full rounded-lg border-2 px-3 py-2 text-left text-sm pointer-coarse:min-h-11 ${
-                  ruleId === r.id
-                    ? 'border-orange-400 bg-orange-50 text-orange-900'
-                    : 'border-warm-200 bg-white text-warm-700 hover:bg-warm-50'
-                }`}
-              >
-                {r.text}
-              </button>
-            ))}
-          </div>
-        </fieldset>
-
         {!checked ? (
-          <button
-            type="button"
-            onClick={check}
-            disabled={answer === null || ruleId === null}
-            className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark disabled:cursor-not-allowed disabled:bg-warm-300"
-          >
-            Athuga
-          </button>
+          <PinnedActions pinnedClassName="pin:pt-1.5">
+            <button
+              key="athuga"
+              type="button"
+              onClick={check}
+              disabled={answer === null || ruleId === null}
+              className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark disabled:cursor-not-allowed disabled:bg-warm-300 phone:py-2.5"
+            >
+              Athuga
+            </button>
+          </PinnedActions>
         ) : (
           <div
             ref={feedbackRef}
-            className={`rounded-lg border-2 p-4 ${
+            role="group"
+            aria-labelledby="aefa-verdict"
+            className={`rounded-lg border-2 p-4 phone:p-3 ${
               bothRight ? 'border-green-300 bg-green-50' : 'border-amber-300 bg-amber-50'
             }`}
           >
-            <p className="mb-2 font-semibold text-warm-900">
+            <p id="aefa-verdict" className="mb-2 font-semibold text-warm-900">
               {bothRight
                 ? 'Rétt — bæði svarið og reglan.'
                 : verdictRight
@@ -212,8 +260,9 @@ export function AefaScreen({ onComplete, onBack }: Props) {
               </p>
             )}
             <button
+              key="naesta"
               type="button"
-              onClick={next}
+              onClick={armed(next)}
               className="game-btn mt-4 rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 pointer-coarse:min-h-11"
             >
               {index + 1 >= items.length ? 'Ljúka' : 'Næsta'}

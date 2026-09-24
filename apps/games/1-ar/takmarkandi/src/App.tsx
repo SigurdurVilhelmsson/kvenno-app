@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
 import { useGameI18n, useGameProgress } from '@shared/hooks';
+import { useScreenTop } from '@shared/utils';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
@@ -41,12 +42,22 @@ function App() {
   );
   const { t, language, setLanguage } = useGameI18n({ gameTranslations });
 
-  // Coming back from a level, open the menu at its top rather than at the
-  // scroll offset the level screen was left at (which on a phone is mid-menu).
-  const menuRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (screen === 'menu') menuRef.current?.scrollIntoView?.({ block: 'start' });
-  }, [screen]);
+  // Each screen swap opens the new screen at the top of the page, as it always
+  // has at every width (`anyWidth`), with its heading focused: the button that
+  // caused the swap has unmounted, and focus would otherwise fall to <body>.
+  // Back on the menu, the first level not yet done is focused instead (Stig 1
+  // once all are), and a phone also brings that card into view.
+  const nextLevel =
+    [
+      progress.level1Completed,
+      progress.level2Completed,
+      progress.level3Completed || progress.level3BestScore > 0,
+    ].findIndex((done) => !done) + 1 || 1;
+  useScreenTop(screen, {
+    anyWidth: true,
+    target: () =>
+      screen === 'menu' ? document.querySelector(`[data-level-card="${nextLevel}"]`) : null,
+  });
 
   const handleLevel1Complete = (score: number) => {
     updateProgress({
@@ -90,7 +101,7 @@ function App() {
 
   // Main Menu - Year 1: Orange/Amber theme
   return (
-    <div ref={menuRef} className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
       <Header
         variant="game"
         backHref="/efnafraedi/1-ar/"
@@ -101,20 +112,23 @@ function App() {
       />
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="max-w-2xl w-full">
-          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8 mb-6">
-            <p className="text-center text-warm-600 mb-4">
+          {/* On a phone the card and its tiles are tighter, so all three levels
+              show on first load. */}
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8 mb-6 phone:p-3 phone:mb-4">
+            <p className="text-center text-warm-600 mb-4 phone:mb-3">
               {t('game.description', 'Lærðu að finna takmarkandi hvarfefni og reikna heimtur')}
             </p>
 
-            <div className="space-y-4">
+            <div className="space-y-4 phone:space-y-3">
               {/* Level 1 */}
               <button
+                data-level-card={1}
                 onClick={() => setScreen('level1')}
-                className="game-card w-full bg-white border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-4 sm:p-6 text-left transition-all"
+                className="game-card w-full bg-white border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-4 sm:p-6 phone:p-3 text-left transition-all"
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2 phone:mb-1">
                       <span className="bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full whitespace-nowrap">
                         Stig 1
                       </span>
@@ -139,12 +153,13 @@ function App() {
 
               {/* Level 2 */}
               <button
+                data-level-card={2}
                 onClick={() => setScreen('level2')}
-                className="game-card w-full bg-white border-2 border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50 rounded-xl p-4 sm:p-6 text-left transition-all"
+                className="game-card w-full bg-white border-2 border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50 rounded-xl p-4 sm:p-6 phone:p-3 text-left transition-all"
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2 phone:mb-1">
                       <span className="bg-yellow-500 text-white text-sm font-bold px-3 py-1 rounded-full whitespace-nowrap">
                         Stig 2
                       </span>
@@ -171,12 +186,13 @@ function App() {
 
               {/* Level 3 */}
               <button
+                data-level-card={3}
                 onClick={() => setScreen('level3')}
-                className="game-card w-full bg-white border-2 border-red-200 hover:border-red-400 hover:bg-red-50 rounded-xl p-4 sm:p-6 text-left transition-all"
+                className="game-card w-full bg-white border-2 border-red-200 hover:border-red-400 hover:bg-red-50 rounded-xl p-4 sm:p-6 phone:p-3 text-left transition-all"
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2 phone:mb-1">
                       <span className="bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full whitespace-nowrap">
                         Stig 3
                       </span>

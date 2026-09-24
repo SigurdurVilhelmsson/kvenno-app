@@ -120,5 +120,13 @@ export type {
   UseScorePopupsReturn,
 } from './AnimatedCounter';
 
+// PhoneDisclosure - reference content that starts closed on a phone, always open elsewhere
+export { PhoneDisclosure } from './PhoneDisclosure';
+export type { PhoneDisclosureProps } from './PhoneDisclosure';
+
+// PinnedTask - a target strip and an action bar pinned on a portrait phone, in the flow elsewhere
+export { TaskStrip, PinnedActions, PIN_BUDGET } from './PinnedTask';
+export type { TaskStripProps, PinnedActionsProps } from './PinnedTask';
+
 // Transition - lightweight AnimatePresence replacement
 export { Presence, FadePresence } from './Transition';

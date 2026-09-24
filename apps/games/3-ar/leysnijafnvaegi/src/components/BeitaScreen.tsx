@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState, type Ref } from 'react';
+import { useEffect, useId, useRef, useState, type Ref } from 'react';
 
-import { formatDecimal } from '@shared/utils';
+import { formatDecimal, useArmedAfter, useRevealAfterCommit } from '@shared/utils';
 
 import { BackButton } from './BackButton';
 import { Sci } from './Sci';
 import { FRACTIONAL_PROBLEMS, MIXING_PROBLEMS } from '../data/problems';
 import { saltBy } from '../data/salts';
 import { kspExpression } from '../engine/ksp';
-import { revealBottom, useRevealTopOnChange } from '../utils/reveal';
+import { revealBelowFoldOnDesktop, useItemStart } from '../utils/desktopReveal';
 
 /**
  * Beita — will it precipitate, and which one first?
@@ -39,16 +39,28 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
   const [wrong, setWrong] = useState(false);
   const [solved, setSolved] = useState(0);
   const [ranking, setRanking] = useState<string[]>([]);
-  const cardRef = useRef<HTMLDivElement>(null);
+  const problemRef = useRef<HTMLDivElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
 
-  // The next problem starts at the top of the card, not where "Næsta dæmi" was.
-  useRevealTopOnChange(cardRef, index);
-  // The revealed working runs past the bottom edge on a phone, taking
-  // "Næsta dæmi" with it.
+  // The next problem starts at the top of the card, not where "Næsta dæmi" was,
+  // and focus moves to the new question (utils/desktopReveal.ts).
+  const cardRef = useItemStart<HTMLDivElement>(index);
+  // After the prediction, on a phone: from the problem through "Næsta dæmi" if
+  // it fits, else the working from its verdict. The Já/Nei buttons and "Athuga
+  // röðina" are gone by then, so focus moves to the working (design P3).
+  useRevealAfterCommit(stage === 'reveal', () => ({
+    bottom: nextRef.current,
+    tops: [problemRef.current, feedbackRef.current],
+    focus: feedbackRef.current,
+  }));
+  // A desktop window keeps what the game's own helper did there: working that
+  // ran past the bottom edge is brought up to show it.
   useEffect(() => {
-    if (stage === 'reveal') revealBottom(feedbackRef.current);
+    if (stage === 'reveal') revealBelowFoldOnDesktop(feedbackRef.current);
   }, [stage]);
+  // A double tap on Já/Nei or "Athuga röðina" must not press "Næsta dæmi".
+  const armed = useArmedAfter(400, `${index}:${stage}`);
 
   const mixingCount = MIXING_PROBLEMS.length;
   const isMixing = index < mixingCount;
@@ -69,6 +81,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
   };
 
   const answerMixing = (guess: boolean) => {
+    if (stage !== 'predict') return;
     const right = guess === mixing.precipitates;
     setWrong(!right);
     if (right) setSolved(solved + 1);
@@ -76,6 +89,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
   };
 
   const submitRanking = () => {
+    if (stage !== 'predict') return;
     const right =
       ranking.length === fractional.order.length &&
       ranking.every((f, i) => f === fractional.order[i].formula);
@@ -92,22 +106,26 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div ref={cardRef} className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
-        <div className="mb-6 flex items-baseline justify-between gap-3">
-          <h2 className="min-w-0 text-xl font-bold text-warm-800 sm:text-2xl">
+      <div ref={cardRef} className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8 phone:p-3">
+        <div className="mb-6 flex items-baseline justify-between gap-3 phone:mb-2">
+          <h2 className="min-w-0 text-xl font-bold text-warm-800 sm:text-2xl phone:text-base">
             {isMixing ? 'Beita — myndast botnfall?' : 'Beita — hvað fellur út fyrst?'}
           </h2>
           <BackButton onClick={onBack} />
         </div>
 
-        <p className="mb-4 text-sm text-warm-600">
+        <p className="mb-4 text-sm text-warm-600 phone:mb-2">
           Dæmi {index + 1} af {total} · {solved} rétt
         </p>
 
+        {/* On a phone held sideways the problem sits beside the answer. */}
         {isMixing ? (
-          <>
-            <div className="mb-6 rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
-              <p className="mb-3 text-warm-800">
+          <div className="phone-land:grid phone-land:grid-cols-2 phone-land:items-start phone-land:gap-4">
+            <div
+              ref={problemRef}
+              className="mb-6 rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5 phone:mb-3 phone:p-3"
+            >
+              <p data-item-start className="mb-3 text-warm-800 phone:mb-2">
                 Er <span className="font-mono">{salt(mixing.formula)}</span> látið falla út?
               </p>
               <ul className="space-y-1 font-mono text-sm text-warm-700">
@@ -120,11 +138,11 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                   <Sci value={mixing.anion.concentration} unit="M" /> {mixing.anion.source}
                 </li>
               </ul>
-              <p className="mt-3 font-mono text-sm text-warm-600">
+              <p className="mt-3 font-mono text-sm text-warm-600 phone:mt-2">
                 {kspExpression(saltBy(mixing.formula))} = <Sci value={mixing.ksp} />
               </p>
               {stage === 'predict' && (
-                <p className="mt-3 rounded bg-white/70 p-2 text-xs text-warm-600">
+                <p className="mt-3 rounded bg-white/70 p-2 text-xs text-warm-600 phone:mt-2">
                   Mundu að þynna fyrst. Heildarrúmmálið er{' '}
                   {((mixing.cation.volume + mixing.anion.volume) * 1000).toFixed(0)} mL.
                 </p>
@@ -134,7 +152,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
             {stage === 'predict' ? (
               // Each relation is held whole, so a narrow button breaks after
               // "Já," or "Nei," and never between Q and Ksp.
-              <div className="flex gap-3">
+              <div key="predict" className="flex gap-3">
                 <button
                   type="button"
                   onClick={() => answerMixing(true)}
@@ -151,7 +169,14 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                 </button>
               </div>
             ) : (
-              <Feedback ref={feedbackRef} wrong={wrong} onNext={advance} last={last}>
+              <Feedback
+                key="reveal"
+                ref={feedbackRef}
+                nextRef={nextRef}
+                wrong={wrong}
+                onNext={armed(advance)}
+                last={last}
+              >
                 <p className="mb-2 font-semibold text-warm-900">
                   {mixing.precipitates ? 'Botnfall myndast.' : 'Ekkert botnfall myndast.'}
                 </p>
@@ -187,11 +212,14 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                 <p className="text-sm text-warm-700">{mixing.context}</p>
               </Feedback>
             )}
-          </>
+          </div>
         ) : (
-          <>
-            <div className="mb-6 rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
-              <p className="mb-3 text-warm-800">
+          <div className="phone-land:grid phone-land:grid-cols-2 phone-land:items-start phone-land:gap-4">
+            <div
+              ref={problemRef}
+              className="mb-6 rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5 phone:mb-3 phone:p-3"
+            >
+              <p data-item-start className="mb-3 text-warm-800 phone:mb-2">
                 {fractional.sharedIonName} er bætt hægt út í. Raðaðu efnunum eftir því hvað fellur
                 út fyrst — smelltu í réttri röð.
               </p>
@@ -205,8 +233,8 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
             </div>
 
             {stage === 'predict' ? (
-              <>
-                <div className="mb-4 flex flex-wrap gap-2">
+              <div key="predict">
+                <div className="mb-4 flex flex-wrap gap-2 phone:mb-3">
                   {fractional.candidates.map((c) => {
                     const position = ranking.indexOf(c.formula);
                     return (
@@ -234,9 +262,16 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                 >
                   Athuga röðina
                 </button>
-              </>
+              </div>
             ) : (
-              <Feedback ref={feedbackRef} wrong={wrong} onNext={advance} last={last}>
+              <Feedback
+                key="reveal"
+                ref={feedbackRef}
+                nextRef={nextRef}
+                wrong={wrong}
+                onNext={armed(advance)}
+                last={last}
+              >
                 <p className="mb-2 font-semibold text-warm-900">Rétt röð:</p>
                 <ol className="mb-3 space-y-1 font-mono text-sm text-warm-800">
                   {fractional.order.map((o, i) => (
@@ -259,7 +294,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                 <p className="text-sm text-warm-700">{fractional.context}</p>
               </Feedback>
             )}
-          </>
+          </div>
         )}
       </div>
     </div>
@@ -272,32 +307,42 @@ function salt(formula: string) {
 
 function Feedback({
   ref,
+  nextRef,
   wrong,
   onNext,
   last,
   children,
 }: {
   ref: Ref<HTMLDivElement>;
+  nextRef: Ref<HTMLButtonElement>;
   wrong: boolean;
   onNext: () => void;
   last: boolean;
   children: React.ReactNode;
 }) {
+  const verdictId = useId();
   return (
+    // The group focus moves to after the prediction, named by the verdict.
     <div
       ref={ref}
-      className={`rounded-lg border-2 p-4 ${
+      role="group"
+      aria-labelledby={verdictId}
+      tabIndex={-1}
+      className={`rounded-lg border-2 p-4 phone:p-3 ${
         wrong ? 'border-amber-300 bg-amber-50' : 'border-green-300 bg-green-50'
       }`}
     >
       {/* Said in words as well as by the panel's colour, which is all a
           colour-blind student or a screen reader would otherwise have. */}
-      <p className="mb-2 font-semibold text-warm-900">{wrong ? 'Ekki rétt.' : 'Rétt.'}</p>
+      <p id={verdictId} className="mb-2 font-semibold text-warm-900">
+        {wrong ? 'Ekki rétt.' : 'Rétt.'}
+      </p>
       {children}
       <button
+        ref={nextRef}
         type="button"
         onClick={onNext}
-        className="game-btn mt-4 rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 pointer-coarse:min-h-11"
+        className="game-btn mt-4 phone:mt-3 rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 pointer-coarse:min-h-11"
       >
         {last ? 'Ljúka' : 'Næsta dæmi'}
       </button>

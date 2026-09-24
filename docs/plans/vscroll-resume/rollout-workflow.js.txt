@@ -1,0 +1,232 @@
+export const meta = {
+  name: 'vscroll-rollout',
+  description: 'Vertical-scroll rollout to the remaining 24 games: per-game worktree implement → independent review → serialized integration and push; retry failures; then finalize, full verification, completeness critic and fix round',
+  phases: [
+    { title: 'Games', detail: 'two lanes of 12 games; each: implement → review+commit in its own worktree → integrate into claude/mobile-vertical-scroll' },
+    { title: 'Retry', detail: 'one more attempt for any game that failed review or integration' },
+    { title: 'Finalize', detail: 'step 6, CLAUDE.md, design status, check-all, full vitest/build/e2e, desktop-compare on 26 games' },
+    { title: 'Critic', detail: 'completeness critique against design §4 and the running build, then fixes and re-verification' },
+  ],
+}
+
+const WT = '/home/user/kvenno-vscroll'
+const WTROOT = '/home/user/vs-wt'
+const BR = 'claude/mobile-vertical-scroll'
+const DESIGN = `${WT}/docs/plans/2026-09-23-vertical-scroll-design.md`
+const SP = '/tmp/claude-0/-home-user-kvenno-app/671be487-23c0-5f0c-aac4-83ccc70ea7bc/scratchpad/mobile'
+const BASE_DIST = '/tmp/claude-0/wt-e2e/dist'
+
+const TRAILERS = `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_015W1Bpw8fPLH5H24SKueXhb`
+
+const LANES = [
+  { port: 4180, games: [
+    ['2-ar', 'intermolecular-forces'], ['2-ar', 'kinetics'], ['3-ar', 'syrufastinn'], ['1-ar', 'nafnakerfid'],
+    ['1-ar', 'reynsluformulur'], ['1-ar', 'jafna-jofnur'], ['1-ar', 'lausnir'], ['2-ar', 'rafeindabygging'],
+    ['3-ar', 'leysnijafnvaegi'], ['2-ar', 'vsepr-geometry'], ['3-ar', 'jafnvaegisfasti'], ['3-ar', 'buffer-recipe-creator'],
+    ['1-ar', 'einingakedjan'], ['3-ar', 'thermodynamics-predictor'],
+  ] },
+  { port: 4181, games: [
+    ['2-ar', 'organic-nomenclature'], ['2-ar', 'redox-reactions'], ['1-ar', 'lotukerfid'], ['1-ar', 'molmassi'],
+    ['1-ar', 'utfellingarhvorf'], ['1-ar', 'takmarkandi'], ['2-ar', 'lewis-structures'],
+    ['3-ar', 'equilibrium-shifter'], ['3-ar', 'gas-law-challenge'], ['3-ar', 'ph-titration'],
+  ] },
+]
+
+const LESSONS = `
+Lessons from the two pilots (hess-law dd69217, dimensional-analysis 1fbf19e — read both diffs with \`git -C ${WT} show <sha>\` before you start; they are the reference implementation):
+- useScreenTop on EVERY screen swap, including a level's own intro→play swap (hess Stig 1 needed it though §4 only named Stig 3); on return to a menu, target the next unfinished level/phase card. useItemTop + data-item-start on EVERY Næsta, not only where §4 names it.
+- After a commit, focus goes to a feedback wrapper (role=group, tabIndex=-1, aria-labelledby the verdict heading where the verdict has an id; FeedbackPanel exposes none, so there rely on its role=alert). Athuga and Næsta must be separate elements — a game that turns Athuga into Næsta in place fails the anti-skip check (hess did); fix it. Guard Næsta/Áfram with useArmedAfter's guard.
+- useArmedAfter drops clicks within 400 ms: unit tests that click Næsta immediately need a mocked clock (see dimensional-analysis src/__tests__/next-guard-clock.ts); e2e paths may need a ~300-500 ms wait before a Næsta click. Update them in the same commit.
+- 320 px: nowrap rows overflow sideways and squeezed fields break words mid-word. Use phone:min-w-0 / phone:flex-wrap / phone:flex-[1_1_14rem] rather than nowrap; check 320 px for sideways scroll and mid-word breaks, not just 360.
+- Migrated reveals keep their original any-width trigger via revealTop(el, {anyWidth:true}) (it respects scroll-margin-top); new phone-only behaviour uses revealSpan/useRevealAfterCommit. Desktop must not gain or lose a scroll.
+- P4 header fold: do not visually reorder a back link that comes later in the DOM (WCAG 2.4.3); one row is reachable with title flex-1/min-w-0 and a phone:contents controls wrapper. Follow packages/shared/styles/README.md.
+- PinnedActions only engages within the 28 % budget; extra phone compaction of the bar may be needed for it to pin; at the SE it stays in flow by design. Landscape loops may opt out of 'landscape' in viewports where §5 accepts a residual; §6.2.10 still runs for them.
+- Known, not yours to change: the shared revealSpan leaves a verdict already in the upper half where it is (landscape residual); DragDropBuilder tap-to-place drops focus to body after placing (pre-existing, shared).
+- desktop-compare with reducedMotion can report scrollY differences that are smooth-scroll timing races; confirm with longer settles before treating one as a regression, and never dismiss one without that check.`
+
+const CONTEXT = (game, dir, port) => `
+You are working on the vertical-scroll follow-up for the kvenno.app chemistry games (PR #66, branch ${BR}). The design is ${DESIGN}: read §0-§3, §5, §6, the §4 entry for ${game} in full, and §7. "Critic:" notes override the text around them. The shared primitives (reveal.ts, armed.ts, phone:/phone-land:/pin: variants, FeedbackPanel density, DragDropBuilder compact, PhoneDisclosure, AnimatedMolecule fit, TaskStrip, PinnedActions, packages/shared/styles/README.md) are already on the branch.
+${LESSONS}
+
+WHERE TO WORK: your own git worktree ${WTROOT}/${game.split('/')[1]} on local branch vs/${game.split('/')[1]}. Never edit ${WT} (the integration worktree) or /home/user/kvenno-app (PR #65's checkout). Run commands with absolute paths / cwd in your worktree.
+Your game directory: ${dir}. Your preview port: ${port} (serve your worktree's dist with \`PORT=${port} node e2e/preview-server.mjs\` from the worktree root, backgrounded; kill it by its PID when done — NEVER pkill -f with a pattern that can match your own shell). Build only your game: \`node scripts/build-games.mjs --game=${game.split('/')[1]}\` from the worktree root. The BEFORE build (PR #65 head, code-identical to this branch for every game not yet migrated) is served on http://localhost:4175 from ${BASE_DIST} (a watchdog keeps it up). For Playwright use a file named playwright.local.config.ts in your worktree root (it is git-excluded): copy ${WT}/playwright.local.config.ts and change 4178 to ${port}; chromium executable /opt/pw-browsers/chromium-1194/chrome-linux/chrome. Desktop comparison: \`node scripts/desktop-compare.mjs --base ${BASE_DIST} --head dist --game ${game}\`. Phone harness from earlier passes: ${SP}/mobile-lib.mjs, ${SP}/scroll-lib.mjs, ${SP}/STANDARD.md (full-page screenshots silently disable touch emulation). Scratch files go in ${SP}/vscroll/work/rollout/${game.split('/')[1]}/, never in the repo tree. Do not clone the textbook corpus (it is at ${SP}/corpus).
+
+FIXED RULES:
+- Desktop (≥640 px wide and >500 px tall) renders identically; the only accepted desktop behaviour change is focus moving to headings/feedback (no ring: focusTarget marks data-focus-target). Every visible change is phone-gated.
+- §7 decisions are not taken: use each item's "planned" option. equilibrium-shifter paging is NOT in this PR; Einingagreining hides are not ours; score/streak chips are compacted, never hidden; lausnir's auto-advance stays; lotukerfid keeps the 12 px period-7 placeholder; lewis L2 mechanic unchanged; rafeindabygging ↑↓ side by side on phones only.
+- Never collapse or hide teaching feedback, 'Af hverju?', the misconception slot, scaffolds, or explore widgets. Teaching pages stay a scroll; only their padding/decorative emoji compacts, and the screen opens at its heading.
+- No new chemistry terms; new aria-labels are plain Icelandic reusing existing words — list every new visible or accessible string you add. Any renamed label that an e2e path clicks is updated in e2e/mobile-game-screens.ts in the same change.
+- Migrate the game's own reveal/scroll helper(s) and inline scroll calls to @shared/utils, delete the local copy, and lower/delete its entries in packages/shared/i18n/__tests__/no-local-scroll.test.ts (never raise). If something the game needs is missing from the shared helper, a shared change is allowed only if it is small, backward-compatible, opt-in (a new option; defaults unchanged), and unit-tested — say so explicitly in your return value, because other games are being migrated in parallel.
+- Add a LoopCheck \`loop\` to at least one loop screen of EVERY level/phase of the game in e2e/mobile-game-screens.ts (the pilots did every level) and make e2e/mobile-vertical.spec.ts green for this game at every viewport the loop names, plus the §6.2.10 landscape check.
+- Quality gates: prettier --write on changed files; eslint on changed ts/tsx (no new errors or warnings); npx tsc --noEmit in the game and in packages/shared if touched; npx vitest run ${dir} packages/shared/i18n (and all of packages/shared if you touched it); Playwright for this game only: e2e/mobile-vertical.spec.ts and e2e/mobile-games.spec.ts with --grep '${game}'.
+- No model names anywhere. Do not push.`
+
+const IMPL_SCHEMA = { type: 'object', properties: {
+  summary: { type: 'string' }, filesChanged: { type: 'array', items: { type: 'string' } },
+  sharedChanges: { type: 'array', items: { type: 'string' } }, newStrings: { type: 'array', items: { type: 'string' } },
+  deviationsFromDesign: { type: 'array', items: { type: 'string' } }, openIssues: { type: 'array', items: { type: 'string' } },
+}, required: ['summary', 'filesChanged', 'sharedChanges', 'newStrings', 'deviationsFromDesign', 'openIssues'] }
+
+const REVIEW_SCHEMA = { type: 'object', properties: {
+  verdict: { type: 'string', enum: ['committed', 'problems-remain'] },
+  commit: { type: 'string', description: 'full sha of the single commit on vs/<game>, if committed' },
+  repairs: { type: 'array', items: { type: 'string' } },
+  measurements: { type: 'array', items: { type: 'string' }, description: 'manual scrolls per loop, before→after, at 360x640 / 390x664 / 375x548 / 740x340' },
+  desktopCheck: { type: 'string' }, sharedChanges: { type: 'array', items: { type: 'string' } },
+  newStrings: { type: 'array', items: { type: 'string' } }, remaining: { type: 'array', items: { type: 'string' } },
+}, required: ['verdict', 'repairs', 'measurements', 'desktopCheck', 'sharedChanges', 'newStrings', 'remaining'] }
+
+const INTEGRATE_SCHEMA = { type: 'object', properties: {
+  status: { type: 'string', enum: ['integrated', 'failed'] }, commit: { type: 'string' },
+  conflicts: { type: 'array', items: { type: 'string' } }, checks: { type: 'string' }, pushed: { type: 'boolean' },
+  notes: { type: 'array', items: { type: 'string' } },
+}, required: ['status', 'conflicts', 'checks', 'pushed', 'notes'] }
+
+function implPrompt(game, dir, port, retryNote) {
+  const slug = game.split('/')[1]
+  return `${CONTEXT(game, dir, port)}
+
+YOU ARE THE IMPLEMENTER for ${game}.
+${retryNote ? `THIS IS A RETRY. A previous attempt failed; its report:\n${retryNote}\nThe worktree ${WTROOT}/${slug} may already hold that attempt's work (committed on vs/${slug} or uncommitted). First bring it up to date: \`git -C ${WTROOT}/${slug} merge --no-edit ${BR}\` (or recreate it as below if it is unusable), then fix what the report names.` : `First create your worktree: \`git -C ${WT} worktree remove --force ${WTROOT}/${slug} 2>/dev/null; git -C ${WT} branch -D vs/${slug} 2>/dev/null; git -C ${WT} worktree add ${WTROOT}/${slug} -b vs/${slug} ${BR}\`, then \`pnpm install --frozen-lockfile --offline\` in it.`}
+Measure the game's loops on the BEFORE build first (manual scrolls per loop at 360x640, 390x664, 375x548, 740x340 with touch), then implement the design §4 entry for ${game} (and the §3 archetype rules for every screen §4 does not mention), then re-measure. Do NOT commit — an independent reviewer checks and commits. Run the quality gates so the reviewer starts from green. Return everything you did, every deviation from the design with its reason, any shared change, and every new string.`
+}
+
+function reviewPrompt(game, dir, port, impl) {
+  const slug = game.split('/')[1]
+  return `${CONTEXT(game, dir, port)}
+
+YOU ARE THE INDEPENDENT REVIEWER AND COMMITTER for ${game}, working in ${WTROOT}/${slug}. The implementer reported:
+${JSON.stringify(impl, null, 2)}
+
+Do not trust the report. Read the diff (\`git -C ${WTROOT}/${slug} diff ${BR}\` plus uncommitted changes) against the design §4 entry and §3 rules. Check adversarially and repair everything you find:
+1. Desktop invariance: rebuild the game and run desktop-compare against the base (menu, each level start, one answered state per level at 1280x800). Geometry and PNG identical; the only allowed differences are the focus moves. Any scrollY difference is confirmed or refuted with longer settles.
+2. Phone: measure manual scrolls per loop before (base :4175) → after (your build) at 360x640, 390x664, 375x548 and 740x340 with touch emulation; check 320 px for sideways scroll and mid-word breaks.
+3. §3 accessibility invariants: CSS order only on non-focusable blocks, display:contents only on role-less wrappers, sr-only not display:none, no twins, focus never on body after commit/swap/Næsta, the feedback not skippable by double Enter or a double tap.
+4. Teaching content, 'Af hverju?', misconceptions, scaffolds and explore widgets still fully visible; Icelandic text unchanged except the listed new strings (check them for grammar).
+5. Loops: every level/phase has one; e2e/mobile-vertical.spec.ts and e2e/mobile-games.spec.ts green for this game.
+6. The game's local scroll helper(s) gone and the no-local-scroll allow-list lowered accordingly.
+7. Any shared change is backward-compatible, opt-in and tested; run all of packages/shared's tests and \`pnpm type-check\` if one exists.
+Then run the quality gates and make exactly ONE commit on vs/${slug} (squash anything the implementer committed: \`git reset --soft ${BR}\` is safe only if vs/${slug} has no commits from others — check \`git log ${BR}..vs/${slug}\` first; if the branch was merged with ${BR} during a retry, squash only this game's changes onto the merge). Message: conventional commit \`feat(<game>): fit each play loop on a phone screen\`, body = what changed per level, the before→after scroll table, desktop result, shared changes, new strings; end with exactly:
+${TRAILERS}
+If the work cannot be made sound, leave it uncommitted and return verdict 'problems-remain' with specifics a retry can act on.`
+}
+
+function integratePrompt(game, review) {
+  const slug = game.split('/')[1]
+  return `You integrate one finished game into the vertical-scroll branch. Work ONLY in ${WT} (branch ${BR}); never edit /home/user/kvenno-app.
+Game: ${game}. Its reviewed commit on branch vs/${slug}: ${review.commit}. The reviewer's report: ${JSON.stringify({ sharedChanges: review.sharedChanges, newStrings: review.newStrings, desktopCheck: review.desktopCheck }, null, 1)}
+Other games are integrated one at a time in parallel lanes, so conflicts are expected in shared files: e2e/mobile-game-screens.ts (keep BOTH sides — each game edits its own block), packages/shared/i18n/__tests__/no-local-scroll.test.ts (apply both sides' removals/lowerings; never raise a count), and possibly packages/shared (merge both behaviours; never drop an option another game uses — grep for its users).
+Steps:
+1. \`git -C ${WT} status --short\` must be clean; if not, stop and return failed with what you saw. Record \`git -C ${WT} rev-parse HEAD\` as PRE.
+2. If ${review.commit} has more than one parent-diff commit relative to ${BR} (check \`git -C ${WT} log --oneline ${BR}..${review.commit}\`), cherry-pick only this game's commit(s), in order. Otherwise \`git -C ${WT} cherry-pick ${review.commit}\`. Resolve conflicts by hand as above, then \`git cherry-pick --continue --no-edit\`.
+3. Gates in ${WT}: npx prettier --check on the files the commit touches; npx tsc --noEmit in the game dir; npx vitest run <game dir> packages/shared/i18n. If the commit touches packages/shared: all of packages/shared's vitest, \`pnpm type-check\` (whole repo), and vitest for every game that imports the changed shared module. If e2e/ changed: npx tsc on the e2e files is not configured; instead run \`node -e\` import of e2e/mobile-game-screens.ts is not possible either — so check it parses with \`npx tsc --noEmit --allowImportingTsExtensions --moduleResolution bundler --module esnext --target es2022 --skipLibCheck e2e/mobile-game-screens.ts\`.
+4. If every gate passes: push with retries (\`git -C ${WT} push origin ${BR}\`, retry after 2, 4, 8, 16 s on network errors only). Then remove the game worktree and branch: \`git -C ${WT} worktree remove --force ${WTROOT}/${slug}\` and \`git -C ${WT} branch -D vs/${slug}\`.
+5. If a gate fails and the fix is a trivial merge artefact, fix it and amend the cherry-picked commit (it is yours, unpushed). If not, restore: \`git -C ${WT} cherry-pick --abort\` or \`git -C ${WT} reset --hard PRE\` (PRE is unpushed-safe: you only reset your own cherry-pick), keep the game worktree, and return failed with the exact failing output.
+Do not include model names anywhere.`
+}
+
+// Serialize integrations across lanes.
+let lock = Promise.resolve()
+function serial(fn) { const p = lock.then(fn); lock = p.then(() => {}, () => {}); return p }
+
+const results = {}
+const failed = []
+
+async function runGame(year, name, port, lane, retryNote) {
+  const game = `${year}/${name}`
+  const dir = `apps/games/${year}/${name}`
+  const tag = retryNote ? 'retry' : 'Games'
+  const impl = await agent(implPrompt(game, dir, port, retryNote), { label: `impl:${name}`, phase: tag, schema: IMPL_SCHEMA })
+  if (!impl) { return { game, stage: 'impl', ok: false, note: 'implementer returned nothing' } }
+  const rev = await agent(reviewPrompt(game, dir, port, impl), { label: `review:${name}`, phase: tag, schema: REVIEW_SCHEMA })
+  if (!rev || rev.verdict !== 'committed' || !rev.commit) {
+    return { game, stage: 'review', ok: false, impl, rev, note: JSON.stringify(rev ? rev.remaining : 'no review result') }
+  }
+  const integ = await serial(() => agent(integratePrompt(game, rev), { label: `integrate:${name}`, phase: tag, schema: INTEGRATE_SCHEMA, effort: 'medium' }))
+  if (!integ || integ.status !== 'integrated') {
+    return { game, stage: 'integrate', ok: false, impl, rev, integ, note: JSON.stringify(integ || 'no integration result') }
+  }
+  return { game, ok: true, impl, rev, integ }
+}
+
+// Games integrated by an earlier (interrupted) run, passed in via args.done.
+const DONE = new Set((args && args.done) || [])
+
+phase('Games')
+await parallel(LANES.map((lane, li) => async () => {
+  for (const [year, name] of lane.games) {
+    if (DONE.has(name)) { log(`${year}/${name}: already integrated in an earlier run, skipped`); continue }
+    const r = await runGame(year, name, lane.port, li, null)
+    results[r.game] = r
+    log(`${r.game}: ${r.ok ? 'integrated ' + (r.integ.commit || '') : 'FAILED at ' + r.stage}`)
+    if (!r.ok) failed.push({ year, name, port: lane.port, note: `stage ${r.stage}: ${r.note}` })
+  }
+}))
+
+if (failed.length) {
+  phase('Retry')
+  log(`Retrying ${failed.length}: ${failed.map(f => f.name).join(', ')}`)
+  const lanesRetry = [failed.filter((_, i) => i % 2 === 0), failed.filter((_, i) => i % 2 === 1)]
+  await parallel(lanesRetry.map((lf, li) => async () => {
+    for (const f of lf) {
+      const r = await runGame(f.year, f.name, LANES[li].port, li, f.note)
+      r.retried = true
+      results[r.game] = r
+      log(`${r.game} (retry): ${r.ok ? 'integrated' : 'FAILED again at ' + r.stage}`)
+    }
+  }))
+}
+
+const stillFailed = Object.values(results).filter(r => !r.ok).map(r => r.game)
+if (stillFailed.length) log(`Not integrated after retry: ${stillFailed.join(', ')} — finalize proceeds without them`)
+
+phase('Finalize')
+const FINAL_SCHEMA = { type: 'object', properties: {
+  commits: { type: 'array', items: { type: 'string' } }, checkAll: { type: 'string' }, vitest: { type: 'string' },
+  build: { type: 'string' }, e2e: { type: 'string' }, desktopCompare: { type: 'string' },
+  allowListLeft: { type: 'array', items: { type: 'string' } }, pushed: { type: 'boolean' }, remaining: { type: 'array', items: { type: 'string' } },
+}, required: ['commits', 'checkAll', 'vitest', 'build', 'e2e', 'desktopCompare', 'allowListLeft', 'pushed', 'remaining'] }
+
+const summaryForFinal = Object.values(results).map(r => ({ game: r.game, ok: r.ok, measurements: r.rev && r.rev.measurements, remaining: r.rev && r.rev.remaining, sharedChanges: r.rev && r.rev.sharedChanges, newStrings: r.rev && r.rev.newStrings }))
+const finalPrompt = (round) => `You finalize the vertical-scroll branch ${BR} in ${WT} (never edit /home/user/kvenno-app). ${round > 0 ? 'This is a re-verification after critic fixes.' : ''}
+The design is ${DESIGN}. The rollout results per game from this run: ${JSON.stringify(summaryForFinal)}. Games integrated by an earlier run of this rollout (their commit messages on the branch carry the before→after tables — read them with git log): ${JSON.stringify([...DONE])}. Games not integrated: ${JSON.stringify(stillFailed)}.
+Do, committing each item separately (conventional commits ending with exactly:\n${TRAILERS}\n):
+1. Design step 6: no game keeps a local reveal/scroll helper; packages/shared/i18n/__tests__/no-local-scroll.test.ts's allow-list is as short as possible (ideally empty); any entry left gets a one-line comment saying why the shared helper cannot serve it. Only for integrated games.
+2. CLAUDE.md: document the new shared primitives (the phone:/phone-land:/pin: variants, @shared/utils reveal helpers and useArmedAfter, TaskStrip, PinnedActions, PhoneDisclosure, DragDropBuilder compact, AnimatedMolecule fit, packages/shared/styles/README.md), extend the "Phones (2026-09)" section with the play-loop rule, e2e/mobile-vertical.spec.ts and LoopCheck (a renamed label a loop uses must be updated in the same change), the no-local-scroll guard and scripts/desktop-compare.mjs. Match the file's existing voice and density; do not rewrite unrelated sections.
+3. Update the design doc's Status line and add a short "Outcome" section: per game before→after scrolls at 360x640 (from the results above), what was deferred, and the §7 decisions still open.
+4. Full verification: \`pnpm check-all\` (type-check + lint + format:check); \`npx vitest run\` (whole repo); \`pnpm build\`; the whole Chromium e2e suite with ${WT}/playwright.local.config.ts (port 4178; start nothing else on it); \`node scripts/desktop-compare.mjs --base ${BASE_DIST} --head dist\` over all 26 games. Fix every failure at its root (in the game or shared code, keeping the design's rules); re-run until green. A desktop difference that is not a focus move is a defect to fix, not to document.
+5. Delete docs/plans/vscroll-resume/ (the pause-and-resume kit; it must not reach main) in its own commit.
+6. Push with retries.
+Return the results of each check verbatim-summarized.`
+
+let final = await agent(finalPrompt(0), { label: 'finalize', phase: 'Finalize', schema: FINAL_SCHEMA })
+
+phase('Critic')
+const CRITIC_SCHEMA = { type: 'object', properties: {
+  gaps: { type: 'array', items: { type: 'object', properties: {
+    game: { type: 'string' }, severity: { type: 'string', enum: ['must-fix', 'should-fix', 'note'] },
+    what: { type: 'string' }, evidence: { type: 'string' }, fix: { type: 'string' } }, required: ['game', 'severity', 'what', 'evidence', 'fix'] } },
+  verifiedClaims: { type: 'array', items: { type: 'string' } },
+}, required: ['gaps', 'verifiedClaims'] }
+
+const critic = await agent(`You are a completeness critic for the vertical-scroll rollout on ${BR} (worktree ${WT}; read-only for you — do not edit or commit). Design: ${DESIGN}. Per-game results from this run: ${JSON.stringify(summaryForFinal)}; games integrated earlier (see their commit messages): ${JSON.stringify([...DONE])}. Finalize report: ${JSON.stringify(final)}.
+Challenge it: for every one of the 26 games, compare what shipped (\`git -C ${WT} log --oneline 4a216bf..HEAD\` and each game's diff) with its design §4 entry and the §3 rules. Look for: screens or levels with no loop check; §4 items silently dropped; a primitive misused (a pin on a typed screen, CSS order on a focusable block, display:contents on a role-bearing element, hidden teaching content or feedback, a verdict in a pinned status); desktop changes; a remaining local scroll helper; e2e coverage that cannot catch what it claims; landscape ignored; new strings that are ungrammatical Icelandic or coin a chemistry term; claims in the design Outcome not supported by measurements. Verify at least ten claims against the running build — serve ${WT}/dist on port 4183 (\`PORT=4183 node e2e/preview-server.mjs\` from ${WT}, killed by PID afterwards) and use the phone harness in ${SP} with touch emulation. Classify each gap must-fix / should-fix / note, with evidence and a concrete fix.`, { label: 'critic', phase: 'Critic', schema: CRITIC_SCHEMA })
+
+const toFix = critic ? critic.gaps.filter(g => g.severity !== 'note') : []
+let fixReport = null
+if (toFix.length) {
+  log(`Critic: ${toFix.length} gaps to fix (${critic.gaps.length} total)`)
+  fixReport = await agent(`You fix the gaps a completeness critic found in the vertical-scroll rollout on ${BR}. Work ONLY in ${WT}; never edit /home/user/kvenno-app. Design: ${DESIGN}. Same rules as the rollout: desktop identical except focus moves, phone-gated changes, no hidden teaching content, no new chemistry terms, loops updated with renamed labels, one commit per game or shared unit (conventional commits ending with exactly:\n${TRAILERS}\n).
+Gaps: ${JSON.stringify(toFix, null, 1)}
+For each: reproduce it first; if it does not reproduce, say so with evidence and skip it. Otherwise fix it, test it (unit + the game's e2e loops + desktop-compare for that game against ${BASE_DIST}), run the quality gates, and commit. Do not push; a final verifier will.`, { label: 'fix-gaps', phase: 'Critic', schema: { type: 'object', properties: {
+    fixed: { type: 'array', items: { type: 'string' } }, notReproduced: { type: 'array', items: { type: 'string' } },
+    notFixed: { type: 'array', items: { type: 'string' } } }, required: ['fixed', 'notReproduced', 'notFixed'] } })
+  final = await agent(finalPrompt(1), { label: 'final-verify', phase: 'Critic', schema: FINAL_SCHEMA })
+}
+
+return { results: Object.fromEntries(Object.entries(results).map(([g, r]) => [g, {
+  ok: r.ok, retried: !!r.retried, stage: r.stage, commit: r.integ && r.integ.commit,
+  measurements: r.rev && r.rev.measurements, desktop: r.rev && r.rev.desktopCheck,
+  remaining: r.rev && r.rev.remaining, sharedChanges: r.rev && r.rev.sharedChanges, newStrings: r.rev && r.rev.newStrings,
+  integrateNotes: r.integ && r.integ.notes }])), stillFailed, final, critic, fixReport }

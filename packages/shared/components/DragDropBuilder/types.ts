@@ -126,6 +126,8 @@ export interface DropZoneProps {
   onItemDragEnd?: () => void;
   /** Orientation of items in the zone */
   orientation?: 'horizontal' | 'vertical';
+  /** Phone-only compact layout; see DragDropBuilderProps.compact. */
+  compact?: boolean;
   /** Additional CSS classes */
   className?: string;
   /** Render function for items (optional override) */
@@ -158,6 +160,14 @@ export interface DragDropBuilderProps {
   orientation?: 'horizontal' | 'vertical';
   /** Whether drag and drop is disabled */
   disabled?: boolean;
+  /**
+   * Denser items and zones on a phone (the `phone:` variant), unchanged from `sm` up and on
+   * screens taller than 500 px. Items get `px-2 py-1`; a zone gets `min-h-11 p-2`, its label
+   * becomes screen-reader-only (the zone's `aria-label` already names it), and its capacity
+   * count moves into the top-right corner, or is dropped when the zone holds one item.
+   * Tap-to-place, touch drag and the keyboard work exactly as without it.
+   */
+  compact?: boolean;
   /** Additional CSS classes */
   className?: string;
   /** Additional classes for the items pool */

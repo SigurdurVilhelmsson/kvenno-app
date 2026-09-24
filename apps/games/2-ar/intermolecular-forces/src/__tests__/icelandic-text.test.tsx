@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { fireEvent, render, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { ForceStrengthAnimation } from '../components/ForceStrengthAnimation';
 import { Level1 } from '../components/Level1';
 import { Level2 } from '../components/Level2';
@@ -73,6 +74,9 @@ const BANNED: [RegExp, string][] = [
   [/Hvaða olía er seigust/, 'water is one of the three, and it is not an oil'],
   [/\bLDF\b/, 'an English acronym the game never defines'],
 ];
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 describe('source text', () => {
   const files = sourceFiles(SRC);

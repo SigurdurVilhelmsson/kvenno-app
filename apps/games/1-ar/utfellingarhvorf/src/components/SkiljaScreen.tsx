@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { focusTarget, isPhone, revealSpan, useArmedAfter } from '@shared/utils';
+
 import { SOLUBILITY_RULES } from '../data/ions';
 import { SCENARIOS } from '../data/problems';
 import { renderEquation, renderSide } from '../engine/precipitation';
-import { reveal } from '../utils/reveal';
+import { revealOnDesktop } from '../utils/desktopReveal';
 
 /**
  * Skilja — the three-equation ladder, revealed one rung at a time.
@@ -57,21 +59,34 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
   const { reaction } = WORKED;
   const spectators = new Set(reaction.spectators.map((s) => s.formula));
 
-  // "Næsta skref" opens the next rung above the button. On a phone that rung
-  // can end below the screen, so bring the one just opened into view.
+  // "Næsta skref" opens the next rung above the button. On a phone the rung
+  // just opened comes into view with the button under it (design §4), and where
+  // the two do not fit together the rung's top is brought under the header and
+  // the student reads down to the button. Focus moves to the rung, which is what
+  // changed; the button stays where it was. A desktop window keeps what the
+  // game's own helper did there: the rung, brought into view if it is not.
   const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const actionRef = useRef<HTMLDivElement>(null);
   const shownStep = useRef(step);
   useEffect(() => {
     if (step === shownStep.current) return;
     shownStep.current = step;
-    reveal(stepRefs.current[step]);
+    const rung = stepRefs.current[step];
+    if (isPhone()) revealSpan(actionRef.current, [rung]);
+    else revealOnDesktop(rung);
+    focusTarget(rung);
   }, [step]);
+
+  // "Næsta skref" and "Áfram í Æfa" are separate buttons, and neither takes a
+  // press within 400 ms of appearing or of opening a rung: a double tap cannot
+  // open the next rung unread, or leave the phase from the last.
+  const armed = useArmedAfter(400, step);
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
-        <div className="mb-6 flex items-baseline justify-between gap-3">
-          <h2 className="text-xl font-bold text-warm-800 sm:text-2xl">
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8 phone:p-3">
+        <div className="mb-6 flex items-baseline justify-between gap-3 phone:mb-3">
+          <h2 className="text-xl font-bold text-warm-800 sm:text-2xl phone:min-w-0 phone:text-base">
             Skilja — þrjár jöfnur, ein saga
           </h2>
           <button
@@ -82,30 +97,34 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
           </button>
         </div>
 
-        <p className="mb-6 text-warm-700">
+        <p className="mb-6 text-warm-700 phone:mb-3">
           Sama efnahvarfið, skrifað á þrjá vegu. Hver þeirra segir satt — en þær segja ekki það
           sama, og sú síðasta segir það sem raunverulega gerðist.
         </p>
 
-        <div className="mb-6 rounded-lg border border-warm-200 bg-warm-50 p-4">
+        <div className="mb-6 rounded-lg border border-warm-200 bg-warm-50 p-4 phone:mb-3 phone:p-3">
           <p className="text-sm text-warm-700">{WORKED.context}</p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 phone:space-y-3">
           {STEPS.map((s, i) => (
             <div
               key={s.title}
               ref={(el) => {
                 stepRefs.current[i] = el;
               }}
-              className={`rounded-lg border-2 p-4 transition-opacity ${
+              role="group"
+              aria-labelledby={`skilja-step-${i}`}
+              className={`rounded-lg border-2 p-4 transition-opacity phone:p-3 ${
                 i <= step ? 'border-orange-300 bg-orange-50' : 'border-warm-200 bg-white opacity-40'
               }`}
             >
-              <h3 className="mb-2 font-semibold text-warm-800">{s.title}</h3>
+              <h3 id={`skilja-step-${i}`} className="mb-2 font-semibold text-warm-800">
+                {s.title}
+              </h3>
               {i <= step && (
                 <>
-                  <p className="mb-3 text-sm text-warm-700">{s.blurb}</p>
+                  <p className="mb-3 text-sm text-warm-700 phone:mb-2">{s.blurb}</p>
                   <p className="overflow-x-auto font-mono text-sm text-warm-900 md:text-base">
                     {i === 0 && renderEquation(reaction.molecular)}
                     {i === 1 && renderEquation(reaction.complete)}
@@ -118,7 +137,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
         </div>
 
         {step === STEPS.length - 1 && (
-          <div className="mt-6 rounded-lg border-2 border-green-300 bg-green-50 p-4">
+          <div className="mt-6 rounded-lg border-2 border-green-300 bg-green-50 p-4 phone:mt-3 phone:p-3">
             <h3 className="mb-2 font-semibold text-green-900">Nettójónajafnan</h3>
             <p className="font-mono text-base text-green-900">{renderEquation(reaction.net)}</p>
             <p className="mt-3 text-sm text-green-800">
@@ -135,19 +154,24 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
           </div>
         )}
 
-        <div className="mt-8 flex gap-3 border-t border-warm-200 pt-6">
+        <div
+          ref={actionRef}
+          className="mt-8 flex gap-3 border-t border-warm-200 pt-6 phone:mt-4 phone:pt-3"
+        >
           {step < STEPS.length - 1 ? (
             <button
+              key="naesta"
               type="button"
-              onClick={() => setStep(step + 1)}
+              onClick={armed(() => setStep(step + 1))}
               className="game-btn rounded-lg bg-kvenno-orange px-4 py-2 font-semibold text-white hover:bg-kvenno-orange-dark pointer-coarse:min-h-11"
             >
               Næsta skref
             </button>
           ) : (
             <button
+              key="afram"
               type="button"
-              onClick={onComplete}
+              onClick={armed(onComplete)}
               className="game-btn rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 pointer-coarse:min-h-11"
             >
               Áfram í Æfa
@@ -155,7 +179,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
           )}
         </div>
 
-        <details className="mt-8 rounded-lg border border-warm-200 bg-white p-4">
+        <details className="mt-8 rounded-lg border border-warm-200 bg-white p-4 phone:mt-4 phone:p-3">
           <summary className="cursor-pointer font-semibold text-warm-800 pointer-coarse:-my-2.5 pointer-coarse:py-2.5">
             Leysnireglurnar — hafðu þær opnar
           </summary>

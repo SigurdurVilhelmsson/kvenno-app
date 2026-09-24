@@ -15,16 +15,26 @@
  * itself about the same answer.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
-import { DECIMAL_INPUT_PROPS, parseStudentNumber } from '@shared/utils';
+import {
+  DECIMAL_INPUT_PROPS,
+  focusTarget,
+  isPhone,
+  parseStudentNumber,
+  revealSpan,
+  usableArea,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+} from '@shared/utils';
 
+import { useBackButton } from './BackButton';
 import { KlofnunBar } from './KlofnunBar';
 import { ScientificKeys } from './ScientificKeys';
 import { APPLY_PROBLEMS, gradeApply } from '../data/problems';
 import { percentDissociation } from '../engine/grade';
-import { revealIfBelowFold } from '../utils/reveal';
 
 const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');
 
@@ -37,20 +47,55 @@ export function ApplyScreen({ onComplete, onBack }: ApplyScreenProps) {
   const [index, setIndex] = useState(0);
   const [entry, setEntry] = useState('');
   const [verdict, setVerdict] = useState<boolean | null>(null);
+  const [retries, setRetries] = useState(0);
+  const back = useBackButton(onBack);
   const inputRef = useRef<HTMLInputElement>(null);
+  const questionRef = useRef<HTMLParagraphElement>(null);
+  const answerRowRef = useRef<HTMLDivElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
   const verdictRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
 
+  // Each "Næsta dæmi": on a phone, the card's top back under the header if it
+  // has scrolled away, and focus to the new question.
+  const cardRef = useItemTop<HTMLDivElement>(index);
+
+  // After "Svara": on a phone, from the question through "Næsta dæmi" if it
+  // fits, else from the answer, the bar or the verdict, the most that fits —
+  // the whole block, not only the verdict line. Where the explanation is long
+  // the verdict lands at the top and the student reads down to the button.
+  // Focus moves to the feedback, not to the button (design P3).
+  useRevealAfterCommit(verdict !== null, () => ({
+    bottom: nextRef.current,
+    tops: [questionRef.current, answerRowRef.current, feedbackRef.current, verdictRef.current],
+    focus: verdictRef.current,
+  }));
+  // A desktop window keeps what the game's own helper did there, at any width:
+  // a verdict that opened within 48 px of the bottom edge brings the feedback
+  // block in.
   useEffect(() => {
-    if (verdict !== null) revealIfBelowFold(verdictRef.current, feedbackRef.current);
+    const el = verdictRef.current;
+    if (verdict === null || !el || isPhone()) return;
+    if (el.getBoundingClientRect().top + 48 > usableArea().bottom) {
+      revealSpan(feedbackRef.current, [], { anyWidth: true, gap: 16 });
+    }
   }, [verdict]);
+  // "Reyna aftur" unmounts with the feedback: focus goes back to the field.
+  useLayoutEffect(() => {
+    if (retries > 0) focusTarget(inputRef.current);
+  }, [retries]);
+  // A double tap on "Svara" must not press "Næsta dæmi" or "Reyna aftur".
+  const armed = useArmedAfter(400, `${index}:${verdict !== null}`);
 
   const problem = APPLY_PROBLEMS[index];
   const last = index + 1 === APPLY_PROBLEMS.length;
   // Ka and Kb are answered in scientific notation; pH and percent are not.
   const scientific = problem.kind === 'ka' || problem.kind === 'kb';
 
-  const submit = () => setVerdict(gradeApply(problem, parseStudentNumber(entry)));
+  const submit = () => {
+    if (verdict !== null) return;
+    setVerdict(gradeApply(problem, parseStudentNumber(entry)));
+  };
 
   const next = () => {
     if (last) {
@@ -62,33 +107,40 @@ export function ApplyScreen({ onComplete, onBack }: ApplyScreenProps) {
     setVerdict(null);
   };
 
+  const retry = () => {
+    setEntry('');
+    setVerdict(null);
+    setRetries((n) => n + 1);
+  };
+
   return (
     <div className="mx-auto max-w-3xl">
-      <button
-        type="button"
-        onClick={onBack}
-        className="mb-4 text-warm-600 hover:text-warm-800 pointer-coarse:-my-2.5 pointer-coarse:py-2.5"
-      >
-        ← Til baka
-      </button>
+      {back.above}
 
-      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
-        <div className="mb-4 flex items-baseline justify-between">
-          <h2 className="text-2xl font-bold text-warm-800">Beita</h2>
-          <span className="text-sm text-warm-500">
+      <div ref={cardRef} className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8 phone:p-3">
+        <div className="mb-4 flex items-baseline justify-between phone:mb-3 phone:gap-3">
+          {back.inRow}
+          <h2 className="text-2xl font-bold text-warm-800 phone:min-w-0 phone:flex-1 phone:text-base">
+            Beita
+          </h2>
+          <span className="text-sm text-warm-500 phone:shrink-0">
             Dæmi {index + 1} af {APPLY_PROBLEMS.length}
           </span>
         </div>
 
         {!problem.approximationValid && (
-          <p className="mb-4 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
+          <p className="mb-4 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 phone:mb-3 phone:px-3 phone:py-2">
             Ekki ganga út frá því að nálgunin megi standa. Athugaðu klofnunarhlutfallið fyrst.
           </p>
         )}
 
-        <p className="mb-5 text-lg text-warm-800">{problem.question}</p>
+        <p ref={questionRef} data-item-start className="mb-5 text-lg text-warm-800 phone:mb-3">
+          {problem.question}
+        </p>
 
-        <div className="flex flex-wrap items-center gap-2">
+        {/* On a portrait phone the field, the two keys and Svara share one row,
+            and the answer hint takes the line under them. */}
+        <div ref={answerRowRef} className="flex flex-wrap items-center gap-2 max-sm:gap-1.5">
           <label htmlFor="apply-answer" className="sr-only">
             Svar
           </label>
@@ -101,18 +153,22 @@ export function ApplyScreen({ onComplete, onBack }: ApplyScreenProps) {
             onKeyDown={(e) => {
               if (e.key === 'Enter' && verdict === null) submit();
             }}
+            enterKeyHint="done"
             disabled={verdict !== null}
-            className="w-36 rounded-lg border border-warm-300 p-3 font-mono text-warm-800 disabled:bg-warm-50 sm:w-48"
+            className="w-36 rounded-lg border border-warm-300 p-3 font-mono text-warm-800 disabled:bg-warm-50 sm:w-48 max-sm:w-auto max-sm:min-w-0 max-sm:flex-[0_1_6.5rem] max-sm:px-2"
           />
           {scientific && verdict === null && (
             <ScientificKeys inputRef={inputRef} value={entry} onChange={setEntry} />
           )}
-          <span className="text-sm text-warm-600">{problem.answerHint}</span>
+          <span className="text-sm text-warm-600 max-sm:order-last max-sm:basis-full">
+            {problem.answerHint}
+          </span>
           {verdict === null && (
             <button
+              key="svara"
               type="button"
               onClick={submit}
-              className="game-btn rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-dark"
+              className="game-btn rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-dark max-sm:shrink-0 max-sm:px-4"
             >
               Svara
             </button>
@@ -120,12 +176,12 @@ export function ApplyScreen({ onComplete, onBack }: ApplyScreenProps) {
         </div>
 
         {verdict !== null && (
-          <div ref={feedbackRef} className="fade-in mt-5">
+          <div ref={feedbackRef} className="fade-in mt-5 phone:mt-3">
             {/* The bar shows the solution the question is about, so the 5 %
                 verdict is visible next to the answer. Kb is a property of the
                 conjugate base rather than of a solution, so it gets no bar. */}
             {problem.kind !== 'kb' && (
-              <div className="mb-4">
+              <div className="mb-4 phone:mb-3">
                 <KlofnunBar
                   percent={percentDissociation(problem.acid.ka, problem.concentration)}
                   valid={problem.approximationValid}
@@ -133,7 +189,9 @@ export function ApplyScreen({ onComplete, onBack }: ApplyScreenProps) {
               </div>
             )}
 
-            <div ref={verdictRef}>
+            {/* The group focus moves to after Svara; FeedbackPanel is itself
+                role=alert and announces the verdict. */}
+            <div ref={verdictRef} tabIndex={-1} role="group">
               <FeedbackPanel
                 feedback={{
                   isCorrect: verdict,
@@ -144,8 +202,10 @@ export function ApplyScreen({ onComplete, onBack }: ApplyScreenProps) {
             </div>
 
             <button
+              key="next"
+              ref={nextRef}
               type="button"
-              onClick={next}
+              onClick={armed(next)}
               className="game-btn mt-4 rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-dark"
             >
               {last ? 'Ljúka Beita' : 'Næsta dæmi'}
@@ -153,10 +213,7 @@ export function ApplyScreen({ onComplete, onBack }: ApplyScreenProps) {
             {!verdict && (
               <button
                 type="button"
-                onClick={() => {
-                  setEntry('');
-                  setVerdict(null);
-                }}
+                onClick={armed(retry)}
                 className="ml-3 rounded-lg px-4 py-2.5 text-warm-600 hover:text-warm-800"
               >
                 Reyna aftur

@@ -40,6 +40,7 @@ import {
   calculateLonePairAngles,
 } from './MoleculeLonePair';
 import { useMoleculeAnimation, MOLECULE_KEYFRAMES } from './useMoleculeAnimation';
+import { useIsPhone } from '../../utils/reveal';
 
 /**
  * Largest boost applied to label text when the drawing is shrunk to fit a narrow container.
@@ -124,6 +125,7 @@ export function AnimatedMolecule({
   reducedMotion = false,
   ariaLabel,
   onAnimationComplete,
+  fit = false,
 }: AnimatedMoleculeProps) {
   // Get size configuration
   const sizeConfig = getSizeConfig(size);
@@ -227,6 +229,20 @@ export function AnimatedMolecule({
 
     return angles;
   }, [atomsWithIds, atomPositions, molecule.bonds]);
+
+  // Where each atom's lone pairs sit (Lewis mode), shared by the drawing and by `fit`.
+  const lonePairAngles = useMemo(() => {
+    const byAtom = new Map<string, number[]>();
+    if (!showLonePairs || mode !== 'lewis') return byAtom;
+    for (const atom of atomsWithIds) {
+      if (!atom.lonePairs) continue;
+      byAtom.set(
+        atom.id,
+        calculateLonePairAngles(atomBondAngles.get(atom.id) || [], atom.lonePairs)
+      );
+    }
+    return byAtom;
+  }, [showLonePairs, mode, atomsWithIds, atomBondAngles]);
 
   // Get 3D depth info for VSEPR mode
   const depthInfo = useMemo(() => {
@@ -376,6 +392,99 @@ export function AnimatedMolecule({
     height,
   ]);
 
+  // `fit`, phone only: the vertical extent of everything drawn, from the same numbers the
+  // sub-components draw with. Null means "keep the square".
+  const phone = useIsPhone();
+  const fitted = fit && phone;
+  const verticalRange = useMemo(() => {
+    if (!fitted) return null;
+    let top = Infinity;
+    let bottom = -Infinity;
+    const span = (lo: number, hi: number) => {
+      top = Math.min(top, lo);
+      bottom = Math.max(bottom, hi);
+    };
+
+    const dotSize = Math.max(4, fontSize * 0.4);
+    const labelSize = Math.max(fontSize * 0.8, minTextSize);
+    const formalChargeSize = Math.max(fontSize * 0.7, minTextSize);
+    const partialChargeSize = Math.max(fontSize * 0.9, minTextSize);
+
+    for (const atom of atomsWithIds) {
+      const p = atomPositions.get(atom.id);
+      if (!p) continue;
+      const visualRadius = drawRadius * getElementVisual(atom.symbol).radius;
+      const r = visualRadius * (depthInfo.get(atom.id)?.scale ?? 1);
+      const highlighted = highlightedAtoms.includes(atom.id) || atom.highlight;
+      // Circle plus its stroke, or the highlight ring (r + 4, 3 px stroke); the symbol, which
+      // does not shrink with depth, may be taller than a small back atom.
+      const reach = Math.max(r + (highlighted ? 5.5 : 1), fontSize * 0.6);
+      span(p.y - reach, p.y + reach);
+
+      if (showAtomLabels && atom.label) {
+        if (labelPlacement === 'below') {
+          span(p.y, p.y + r + 8 + labelSize * 0.72 + labelSize * 0.3);
+        } else {
+          span(p.y - r - 8 - labelSize, p.y);
+        }
+      }
+
+      if (
+        showFormalCharges &&
+        mode === 'lewis' &&
+        atom.formalCharge !== undefined &&
+        atom.formalCharge !== 0
+      ) {
+        const badge = Math.max(fontSize * 0.6, formalChargeSize * 0.8);
+        span(p.y - r * 0.7 - badge, p.y);
+      }
+
+      const tag = chargeTagPositions.get(atom.id);
+      if (tag) span(tag.y - partialChargeSize * 0.6, tag.y + partialChargeSize * 0.6);
+
+      for (const angle of lonePairAngles.get(atom.id) ?? []) {
+        const rad = (angle * Math.PI) / 180;
+        const cy = p.y + Math.sin(rad) * (visualRadius + 8);
+        const half = Math.abs(Math.cos(rad)) * dotSize * 0.6 + dotSize / 2;
+        span(cy - half, cy + half);
+      }
+    }
+
+    if (showDipoleMoment && dipoleData) {
+      // Along the arrow: half its length, then the δ labels 14 px past each end (12 px text);
+      // across it: the 8 px arrowhead and the 3 px stroke.
+      const vertical = dipoleData.direction === 'up' || dipoleData.direction === 'down';
+      const reach = vertical ? dipoleData.length / 2 + 14 + 8 : 8;
+      span(dipoleData.center.y - reach, dipoleData.center.y + reach);
+    }
+
+    if (!Number.isFinite(top)) return null;
+    const PAD = 8;
+    const y0 = Math.max(0, Math.floor(top - PAD));
+    const y1 = Math.min(height, Math.ceil(bottom + PAD));
+    return y1 - y0 < height ? { y: y0, height: y1 - y0 } : null;
+  }, [
+    fitted,
+    fontSize,
+    minTextSize,
+    atomsWithIds,
+    atomPositions,
+    drawRadius,
+    depthInfo,
+    highlightedAtoms,
+    showAtomLabels,
+    labelPlacement,
+    showFormalCharges,
+    mode,
+    chargeTagPositions,
+    lonePairAngles,
+    showDipoleMoment,
+    dipoleData,
+    height,
+  ]);
+  const viewTop = verticalRange?.y ?? 0;
+  const viewHeight = verticalRange?.height ?? height;
+
   // Handle atom click
   const handleAtomClick = (atomId: string) => {
     if (!interactive || !onAtomClick) return;
@@ -467,8 +576,8 @@ export function AnimatedMolecule({
     <svg
       ref={svgRef}
       width={width}
-      height={height}
-      viewBox={`0 0 ${width} ${height}`}
+      height={viewHeight}
+      viewBox={`0 ${viewTop} ${width} ${viewHeight}`}
       // Shrinks to a narrow container instead of overflowing it; height follows the viewBox.
       style={{ maxWidth: '100%', height: 'auto' }}
       className={`animated-molecule ${className}`}
@@ -515,15 +624,14 @@ export function AnimatedMolecule({
             const position = atomPositions.get(atom.id);
             if (!position) return null;
 
-            const bondAngles = atomBondAngles.get(atom.id) || [];
-            const lonePairAngles = calculateLonePairAngles(bondAngles, atom.lonePairs);
+            const pairAngles = lonePairAngles.get(atom.id) ?? [];
             const visual = getElementVisual(atom.symbol);
             const radius = drawRadius * visual.radius;
 
             // Distance from atom center to lone pairs
             const lonePairDistance = radius + 8;
 
-            return lonePairAngles.map((angle, lpIndex) => {
+            return pairAngles.map((angle, lpIndex) => {
               const lpTiming = getLonePairTiming(atomIndex, lpIndex);
               return (
                 <MoleculeLonePair

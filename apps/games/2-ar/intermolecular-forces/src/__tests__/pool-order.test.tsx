@@ -2,6 +2,7 @@
 import { fireEvent, render, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level2, problems } from '../components/Level2';
 
 /**
@@ -42,6 +43,9 @@ function poolButtons(container: HTMLElement): HTMLElement[] {
 function formulaOf(el: HTMLElement): string {
   return (el.querySelector('.font-bold') ?? el).firstChild!.textContent!.trim();
 }
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 describe('Stig 2 pool order', () => {
   it('offers each problem in varying order and grades the ranking, not the position', () => {

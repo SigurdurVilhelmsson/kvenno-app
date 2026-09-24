@@ -1,6 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
+import {
+  isPhone,
+  revealSpan,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+  useScreenTop,
+} from '@shared/utils';
 
 import { L3_SCORING } from '../config/scoring';
 import { problems } from '../data/half-reactions';
@@ -36,15 +44,44 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
   });
   const [, setTotalHintsUsed] = useState(0);
   const feedbackRef = useRef<HTMLDivElement>(null);
+  const verdictRef = useRef<HTMLDivElement>(null);
+  const stepRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const hintRef = useRef<HTMLDivElement>(null);
+
+  // Intro → practice starts the practice screen at its top, heading focused.
+  useScreenTop(showIntro);
+  // Each step and each problem brings the problem back if it is off screen, and moves focus
+  // to the new problem (its first step) or to the new step's heading: the button that was
+  // pressed has unmounted, and focus would otherwise fall to <body>.
+  const itemRef = useItemTop<HTMLDivElement>(`${currentProblem}:${step}`);
 
   // On a phone the verdict and its "Næsta" button land below the input. After Enter on the
-  // soft keyboard (which stays open) they sit under it, so bring them into view — 'nearest'
-  // leaves the page alone wherever they are already visible, as on desktop.
+  // soft keyboard (which stays open) they sit under it, so bring them into view with the step
+  // they answer if it fits, else from the verdict down. Focus moves to the verdict, not to
+  // Næsta, so a second Enter lands on nothing (design P3).
+  useRevealAfterCommit(feedback.show, () => ({
+    bottom: nextRef.current,
+    tops: [stepRef.current, verdictRef.current],
+    focus: verdictRef.current,
+  }));
+  // A desktop window keeps what this level did before the shared helper, at any width: the
+  // verdict and its button brought into view by the least move, flush with the edge, and
+  // nothing moves when they are already in view (it was scrollIntoView({ block: 'nearest' })).
   useEffect(() => {
-    if (feedback.show) {
-      feedbackRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+    if (feedback.show && !isPhone()) {
+      revealSpan(feedbackRef.current, [], { anyWidth: true, gap: 0 });
     }
   }, [feedback.show]);
+  // The hint opens in place of its button: focus it, and on a phone bring the whole of it on
+  // screen.
+  useRevealAfterCommit(showHint, () => ({
+    bottom: hintRef.current,
+    tops: [],
+    focus: hintRef.current,
+  }));
+  // A double tap on Staðfesta must not land on the Næsta that renders below it.
+  const armed = useArmedAfter(400, `${currentProblem}:${step}:${feedback.show}`);
 
   const problem = problems[currentProblem];
 
@@ -150,7 +187,8 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
 
   const nextButton = (
     <button
-      onClick={handleNext}
+      ref={nextRef}
+      onClick={armed(handleNext)}
       className="w-full mt-4 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl"
     >
       {step === 'complete'
@@ -256,7 +294,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
         return (
           <div className="space-y-4">
             <div className="bg-blue-50 p-4 rounded-xl">
-              <h3 className="font-bold text-blue-800 mb-2">
+              <h3 data-item-start className="font-bold text-blue-800 mb-2">
                 {t('level3.step2Title', 'Skref 2: Oxunarhálfhvarf')}
               </h3>
               <div className="text-blue-600">
@@ -303,7 +341,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
         return (
           <div className="space-y-4">
             <div className="bg-red-50 p-4 rounded-xl">
-              <h3 className="font-bold text-red-800 mb-2">
+              <h3 data-item-start className="font-bold text-red-800 mb-2">
                 {t('level3.step3Title', 'Skref 3: Afoxunarhálfhvarf')}
               </h3>
               <div className="text-red-600">
@@ -350,7 +388,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
         return (
           <div className="space-y-4">
             <div className="bg-amber-50 p-4 rounded-xl">
-              <h3 className="font-bold text-amber-800 mb-2">
+              <h3 data-item-start className="font-bold text-amber-800 mb-2">
                 {t('level3.step4Title', 'Skref 4: Stilla rafeindirnar')}
               </h3>
               <p className="text-amber-600 text-sm mb-3">
@@ -443,7 +481,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           <div className="space-y-4">
             <div className="bg-green-50 p-6 rounded-xl border-2 border-green-400 text-center">
               <div className="text-4xl mb-2">✓</div>
-              <h3 className="font-bold text-green-800 text-xl mb-2">
+              <h3 data-item-start className="font-bold text-green-800 text-xl mb-2">
                 {t('level3.equationBalanced', 'Stillt efnajafna!')}
               </h3>
               <div className="text-2xl font-mono text-green-700 mb-4">{problem.finalDisplay}</div>
@@ -551,10 +589,13 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
     );
   }
 
+  // The steps keep their layout. On a phone only the chrome above them is tighter: the screen
+  // now opens at its heading rather than wherever the intro was scrolled to, and on a short
+  // screen (the SE) the first step's button would otherwise sit just below the fold.
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-3 sm:p-4 md:p-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-        <div className="flex flex-wrap justify-between items-center gap-x-3 gap-y-2 mb-6">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-3 sm:p-4 md:p-8 phone:p-3">
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-4">
+        <div className="flex flex-wrap justify-between items-center gap-x-3 gap-y-2 mb-6 phone:mb-3">
           <button
             onClick={onBack}
             className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
@@ -572,47 +613,59 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           </div>
         </div>
 
-        <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-purple-600">
+        <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-purple-600 phone:text-xl phone:mb-1">
           {t('levels.level3.name', 'Stilla redox-jöfnur')}
         </h1>
-        <p className="text-center text-warm-600 mb-4">
+        <p className="text-center text-warm-600 mb-4 phone:mb-2">
           {t('level3.subtitle', 'Hálfhvarfsaðferðin')}
         </p>
 
-        <div className="bg-warm-50 p-4 rounded-xl mb-6 text-center">
-          <div className="text-sm text-warm-500 mb-1">{problem.description}</div>
-          <div className="text-xl md:text-2xl font-mono font-bold text-warm-800">
-            {problem.overallDisplay}
+        <div ref={itemRef}>
+          <div
+            data-item-start={step === 'identify' ? '' : undefined}
+            className="bg-warm-50 p-4 rounded-xl mb-6 text-center phone:p-3 phone:mb-3"
+          >
+            <div className="text-sm text-warm-500 mb-1">{problem.description}</div>
+            <div className="text-xl md:text-2xl font-mono font-bold text-warm-800">
+              {problem.overallDisplay}
+            </div>
           </div>
-        </div>
 
-        <div className="flex justify-center gap-2 mb-6">
-          {['identify', 'write-ox', 'write-red', 'balance', 'complete'].map((s, idx) => (
-            <div
-              key={s}
-              className={`w-8 h-2 rounded-full ${
-                s === step
-                  ? 'bg-purple-500'
-                  : ['identify', 'write-ox', 'write-red', 'balance', 'complete'].indexOf(step) > idx
-                    ? 'bg-green-500'
-                    : 'bg-warm-300'
-              }`}
-            />
-          ))}
-        </div>
+          <div className="flex justify-center gap-2 mb-6 phone:mb-3">
+            {['identify', 'write-ox', 'write-red', 'balance', 'complete'].map((s, idx) => (
+              <div
+                key={s}
+                className={`w-8 h-2 rounded-full ${
+                  s === step
+                    ? 'bg-purple-500'
+                    : ['identify', 'write-ox', 'write-red', 'balance', 'complete'].indexOf(step) >
+                        idx
+                      ? 'bg-green-500'
+                      : 'bg-warm-300'
+                }`}
+              />
+            ))}
+          </div>
 
-        {renderStep()}
+          <div ref={stepRef}>{renderStep()}</div>
+        </div>
 
         {feedback.show && (
           <div ref={feedbackRef} data-testid="step-feedback">
+            {/* The feedback region focus moves to after Staðfesta (P3), named by the verdict. */}
             <div
-              className={`mt-4 p-4 rounded-xl ${
+              ref={verdictRef}
+              tabIndex={-1}
+              role="group"
+              aria-labelledby="redox-l3-verdict"
+              className={`mt-4 p-4 rounded-xl focus:outline-none ${
                 feedback.correct
                   ? 'bg-green-100 border-2 border-green-400'
                   : 'bg-amber-100 border-2 border-amber-400'
               }`}
             >
               <div
+                id="redox-l3-verdict"
                 className={`font-bold ${feedback.correct ? 'text-green-800' : 'text-amber-800'}`}
               >
                 {feedback.correct ? '✓ ' : ''}
@@ -629,7 +682,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
         {step === 'complete' && nextButton}
 
         {showHint && (
-          <div className="mt-4 bg-yellow-50 p-4 rounded-xl border border-yellow-200">
+          <div ref={hintRef} className="mt-4 bg-yellow-50 p-4 rounded-xl border border-yellow-200">
             <div className="flex items-center gap-2">
               <span className="text-xl">💡</span>
               <span className="text-yellow-800">{problem.hint}</span>

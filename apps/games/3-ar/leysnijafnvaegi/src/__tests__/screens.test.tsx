@@ -1,6 +1,7 @@
 import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { AefaScreen } from '../components/AefaScreen';
 import { BeitaScreen } from '../components/BeitaScreen';
 import { KannaScreen } from '../components/KannaScreen';
@@ -15,6 +16,8 @@ import { gradeScientific, molarSolubility } from '../engine/ksp';
  * retries and no automatic cleanup, so a failed attempt can leave its DOM
  * behind, and a document-wide query would then report something confusing.
  */
+
+clockPastNextGuard();
 
 afterEach(() => {
   cleanup();

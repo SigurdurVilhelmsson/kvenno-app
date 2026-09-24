@@ -1,13 +1,22 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
-import { parseStudentNumber, shuffleArray } from '@shared/utils';
+import {
+  parseStudentNumber,
+  revealSpan,
+  revealTop,
+  shuffleArray,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+  useScreenTop,
+} from '@shared/utils';
 
 import { PeriodicTable } from './PeriodicTable';
 import { ELEMENTS, nameInSentence, type Element } from '../data/elements';
 import { particleMisconception } from '../utils/misconceptions';
-import { revealOnPhone, scrollTopOnPhone } from '../utils/phoneScroll';
+import { tabletBelowMd } from '../utils/tableLayout';
 
 interface Level3Props {
   onBack: () => void;
@@ -136,16 +145,69 @@ export function Level3({ onBack, onComplete }: Level3Props) {
   const [given, setGiven] = useState<number | null>(null);
   const [showHint, setShowHint] = useState(false);
   const [done, setDone] = useState(false);
-  const feedbackRef = useRef<HTMLDivElement>(null);
-
-  // On a phone the feedback lands below the periodic table, out of sight, and
-  // the next question would open scrolled past its own text.
-  useEffect(() => scrollTopOnPhone(), [showIntro, index, done]);
-  useEffect(() => {
-    if (answered) revealOnPhone(feedbackRef.current);
-  }, [answered]);
-
   const question = questions[index];
+
+  // Each screen (teaching, questions, results) starts at its top on a phone,
+  // with its heading focused; each new question brings its card back under
+  // the top of the screen. The button that moved on has unmounted, and focus
+  // would otherwise fall to <body>. A typed question keeps what it always had,
+  // focus in its answer field (`data-item-start` is the field there), and a
+  // table question focuses the question.
+  const screen = showIntro ? 'intro' : done ? 'done' : 'play';
+  const inputRef = useRef<HTMLInputElement>(null);
+  useScreenTop(screen, { focus: inputRef });
+  const itemRef = useItemTop<HTMLDivElement>(index);
+
+  // After an answer the feedback lands below the periodic table, out of sight
+  // on a phone: the question through "Næsta" if it fits, else the table the
+  // student tapped, else the feedback at the top. Focus moves to the feedback,
+  // not to "Næsta", so a second tap or Enter lands on nothing (design P3).
+  const tableRef = useRef<HTMLDivElement>(null);
+  const feedbackBoxRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(answered, () => ({
+    bottom: nextRef.current,
+    tops: [
+      itemRef.current,
+      question.requiresTableClick ? tableRef.current : null,
+      feedbackRef.current,
+    ],
+    focus: feedbackRef.current,
+  }));
+  // "Næsta" ignores a press within 400 ms of appearing, so the second tap of a
+  // double tap on "Athuga" or a cell cannot skip the feedback; the results'
+  // buttons likewise, after the last "Næsta".
+  const armed = useArmedAfter(400, `${index}:${answered}`);
+  // One tap on a cell or an option is the answer, so the answers ignore a tap
+  // within 400 ms of a question appearing: the second tap of a double tap on
+  // "Byrja æfingar" or "Næsta" must not answer a question nobody has read.
+  const armedAnswer = useArmedAfter(400, `${screen}:${index}`);
+  const armedResults = useArmedAfter(400, done);
+
+  // Opening the hint replaces its button, which dropped focus to <body> and
+  // pushed the answer field or the table down: focus moves to the hint, and a
+  // phone keeps the hint and what it is about on screen together.
+  const hintRef = useRef<HTMLDivElement>(null);
+  const answerRowRef = useRef<HTMLDivElement>(null);
+  useRevealAfterCommit(showHint && !answered, () => ({
+    bottom: question.requiresTableClick ? tableRef.current : answerRowRef.current,
+    tops: [hintRef.current],
+    focus: hintRef.current,
+  }));
+
+  // Below md but wider than a phone, the game's old helper started each screen
+  // and each question at the top of the page, in one jump, and brought the feedback into
+  // view the way `scrollIntoView({ block: 'nearest' })` does; it still does.
+  useLayoutEffect(() => {
+    if (tabletBelowMd())
+      revealTop(document.documentElement, { anyWidth: true, always: true, instant: true });
+  }, [screen, index]);
+  useEffect(() => {
+    if (answered && tabletBelowMd()) {
+      revealSpan(feedbackBoxRef.current, [], { anyWidth: true, gap: 0 });
+    }
+  }, [answered]);
   // The cell the student tapped on an identify-by-particles question, marked
   // red the way Stig 1 marks a wrong tap. `given` is its sætistala.
   const wrongSymbol =
@@ -204,8 +266,8 @@ export function Level3({ onBack, onComplete }: Level3Props) {
   if (done) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white p-4 flex items-center justify-center">
-        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center space-y-6">
-          <div className="text-5xl">
+        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center space-y-6 phone:p-6 phone:space-y-4">
+          <div className="text-5xl phone:text-4xl">
             {correctCount >= 6 ? '🎉' : correctCount >= 4 ? '👍' : '📚'}
           </div>
           <h2 className="text-2xl font-bold text-warm-800">Niðurstöður</h2>
@@ -221,13 +283,13 @@ export function Level3({ onBack, onComplete }: Level3Props) {
           </div>
           <div className="flex gap-3">
             <button
-              onClick={handleRetry}
+              onClick={armedResults(handleRetry)}
               className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-800 font-bold py-3 rounded-xl transition-colors"
             >
               Reyna aftur
             </button>
             <button
-              onClick={onComplete}
+              onClick={armedResults(onComplete)}
               className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
             >
               Ljúka stigi
@@ -247,9 +309,9 @@ export function Level3({ onBack, onComplete }: Level3Props) {
   // --- Teaching intro ---
   if (showIntro) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white p-4">
+      <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white p-4 phone:py-3">
         <div className="max-w-lg mx-auto">
-          <div className="bg-white rounded-xl shadow-md p-4 mb-4">
+          <div className="bg-white rounded-xl shadow-md p-4 mb-4 phone:p-3 phone:mb-3">
             {/* On a phone the title takes a line of its own under the back
                 button, instead of being squeezed to a word per line. */}
             <div className="flex flex-wrap md:flex-nowrap justify-between items-center gap-y-1">
@@ -266,7 +328,7 @@ export function Level3({ onBack, onComplete }: Level3Props) {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 space-y-5 animate-fade-in-up">
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 space-y-5 animate-fade-in-up phone:space-y-4">
             <h2 className="text-xl font-bold text-warm-800">Róteindir, nifteindir og rafeindir</h2>
 
             <div className="bg-blue-50 p-4 rounded-lg space-y-2">
@@ -324,25 +386,25 @@ export function Level3({ onBack, onComplete }: Level3Props) {
 
   // --- Gameplay ---
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white p-2 sm:p-4">
+    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white p-2 sm:p-4 phone:p-2">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-xl shadow-md p-3 sm:p-4 mb-3">
-          <div className="flex justify-between items-center gap-2">
+        {/* Header: one short row on a phone (design P4) */}
+        <div className="bg-white rounded-xl shadow-md p-3 sm:p-4 mb-3 phone:py-2 phone:mb-2">
+          <div className="flex justify-between items-center gap-2 phone:gap-3">
             <button
               onClick={onBack}
-              className="text-warm-500 hover:text-warm-700 font-semibold text-sm whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
+              className="text-warm-500 hover:text-warm-700 font-semibold text-sm whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3 phone:shrink-0"
             >
               ← Til baka
             </button>
-            <h1 className="min-w-0 text-center text-base sm:text-lg font-bold text-warm-800">
+            <h1 className="min-w-0 text-center text-base sm:text-lg font-bold text-warm-800 phone:flex-1 phone:text-base">
               Atómbygging
             </h1>
-            <span className="text-sm font-semibold text-warm-600">
+            <span className="text-sm font-semibold text-warm-600 phone:shrink-0">
               {index + 1}/{TOTAL}
             </span>
           </div>
-          <div className="mt-2 h-2 bg-warm-200 rounded-full overflow-hidden">
+          <div className="mt-2 h-2 bg-warm-200 rounded-full overflow-hidden phone:mt-1.5 phone:h-1.5">
             <div
               className="h-full bg-kvenno-orange progress-fill"
               style={{ width: `${((index + 1) / TOTAL) * 100}%` }}
@@ -350,134 +412,181 @@ export function Level3({ onBack, onComplete }: Level3Props) {
           </div>
         </div>
 
-        {/* Question */}
-        <div
-          className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-3 text-center animate-fade-in-up"
-          key={index}
-        >
-          <p className="text-lg sm:text-xl font-bold text-warm-800">{question.text}</p>
-          {question.requiresTableClick && !answered && (
-            <p className="text-sm text-warm-500 mt-1">Smelltu á rétt frumefni í lotukerfinu</p>
-          )}
-          {!answered && !showHint && (
-            <button
-              onClick={() => setShowHint(true)}
-              className="mt-3 text-sm px-4 py-2 pointer-coarse:min-h-11 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-yellow-400 outline-none"
+        {/* A phone on its side (below md, where the table scrolls sideways): the
+            question and the answer field | the table, with the feedback across
+            both below them. Everywhere else a plain block, so nothing moves. */}
+        <div className="max-md:phone-land:grid max-md:phone-land:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] max-md:phone-land:gap-x-3 max-md:phone-land:items-start">
+          {/* The item: the question and, for a typed question, its answer field,
+            which is where focus lands on a new question. A plain block, so the
+            cards' margins pass through it and nothing moves. */}
+          <div ref={itemRef}>
+            {/* Question */}
+            <div
+              className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-3 text-center animate-fade-in-up phone:p-3 phone:mb-2"
+              key={index}
             >
-              💡 Vísbending
-            </button>
+              <p
+                data-item-start={question.requiresTableClick ? '' : undefined}
+                className="text-lg sm:text-xl font-bold text-warm-800 phone:text-lg"
+              >
+                {question.text}
+              </p>
+              {question.requiresTableClick && !answered && (
+                <p className="text-sm text-warm-500 mt-1">Smelltu á rétt frumefni í lotukerfinu</p>
+              )}
+              {!answered && !showHint && (
+                <button
+                  onClick={() => setShowHint(true)}
+                  className="mt-3 phone:mt-2 text-sm px-4 py-2 pointer-coarse:min-h-11 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-yellow-400 outline-none"
+                >
+                  💡 Vísbending
+                </button>
+              )}
+              {!answered && showHint && (
+                <div
+                  ref={hintRef}
+                  className="mt-3 phone:mt-2 bg-yellow-50 border-2 border-yellow-200 rounded-xl p-3 text-sm text-yellow-900 text-left"
+                >
+                  <span className="font-bold">Vísbending:</span> {hintFor(question)}
+                </div>
+              )}
+            </div>
+
+            {/* Numeric input (for non-table-click questions) */}
+            {/* On a phone the label, the field and Athuga share one row. */}
+            {!question.requiresTableClick && !answered && (
+              <div
+                ref={answerRowRef}
+                className="bg-white rounded-xl shadow-md p-4 mb-3 max-w-md mx-auto phone:flex phone:items-center phone:gap-2 phone:p-3 phone:mb-2"
+              >
+                <label className="block text-sm font-medium text-warm-700 mb-2 phone:mb-0 phone:shrink-0">
+                  Svar:
+                </label>
+                <div className="flex gap-3 phone:flex-1 phone:min-w-0 phone:gap-2">
+                  <input
+                    ref={inputRef}
+                    data-item-start
+                    type="number"
+                    inputMode="numeric"
+                    enterKeyHint="done"
+                    autoComplete="off"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+                    placeholder="t.d. 12"
+                    className="flex-1 px-4 py-3 border-2 border-warm-300 rounded-xl focus:border-kvenno-orange focus:outline-none text-lg font-mono phone:min-w-0 phone:px-3 phone:py-2"
+                    autoFocus
+                  />
+                  <button
+                    key="check"
+                    onClick={handleSubmit}
+                    disabled={!input.trim()}
+                    className="bg-kvenno-orange hover:bg-kvenno-orange-dark disabled:opacity-40 text-white font-bold px-6 py-3 rounded-xl transition-colors phone:shrink-0 phone:px-4 phone:py-2"
+                  >
+                    Athuga
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Periodic table */}
+          {question.requiresTableClick && (
+            <div
+              ref={tableRef}
+              className="bg-white rounded-xl shadow-lg p-2 sm:p-4 mb-3 phone:mb-2 phone:p-2 max-md:phone-land:col-start-2 max-md:phone-land:row-start-1"
+            >
+              <PeriodicTable
+                onElementClick={armedAnswer(handleElementClick)}
+                highlightedElements={answered ? new Set([question.element.symbol]) : undefined}
+                correctElement={answered && isCorrect ? question.element.symbol : null}
+                wrongElement={wrongSymbol}
+                interactive={!answered}
+              />
+            </div>
           )}
-          {!answered && showHint && (
-            <div className="mt-3 bg-yellow-50 border-2 border-yellow-200 rounded-xl p-3 text-sm text-yellow-900 text-left">
-              <span className="font-bold">Vísbending:</span> {hintFor(question)}
+
+          {/* Reference table for numeric questions */}
+          {!question.requiresTableClick && (
+            <div className="bg-white rounded-xl shadow-lg p-2 sm:p-4 mb-3 phone:mb-2 phone:p-2 max-md:phone-land:col-start-2 max-md:phone-land:row-start-1">
+              <PeriodicTable
+                highlightedElements={answered ? new Set([question.element.symbol]) : undefined}
+                correctElement={answered ? question.element.symbol : null}
+                interactive={false}
+              />
+            </div>
+          )}
+
+          {/* Feedback */}
+          {answered && (
+            <div
+              ref={feedbackBoxRef}
+              className="space-y-3 mb-3 max-w-lg mx-auto animate-fade-in-up max-md:phone-land:col-span-2 max-md:phone-land:w-full max-md:phone-land:max-w-none"
+            >
+              {/* The verdict and the particle breakdown: the region focus moves
+                to after an answer. FeedbackPanel keeps its own role="alert".
+                On a phone on its side they sit side by side, so the two and
+                "Næsta" fit one screen. */}
+              <div
+                ref={feedbackRef}
+                tabIndex={-1}
+                role="group"
+                className="space-y-3 max-md:phone-land:grid max-md:phone-land:grid-cols-2 max-md:phone-land:gap-3 max-md:phone-land:items-start max-md:phone-land:space-y-0"
+              >
+                <FeedbackPanel
+                  feedback={{
+                    isCorrect,
+                    explanation: question.explanation,
+                    // Renders outside the collapsible explanation, so it is the one
+                    // thing a student who reads nothing else still sees.
+                    misconception:
+                      isCorrect || given === null
+                        ? undefined
+                        : particleMisconception(question.type, question.element, given),
+                  }}
+                  config={{ showExplanation: true }}
+                />
+
+                {/* Particle breakdown card */}
+                <div className="bg-warm-50 rounded-xl border-2 border-warm-200 p-4 phone:p-3">
+                  <h3 className="font-bold text-warm-800 mb-2">
+                    {question.element.name} ({question.element.symbol})
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-sm phone:gap-2 max-md:phone-land:grid-cols-2">
+                    <div className="bg-white rounded-lg p-2 border border-warm-200">
+                      <div className="text-warm-500 text-xs">Róteindir</div>
+                      <div className="font-bold text-lg">{question.element.atomicNumber}</div>
+                    </div>
+                    <div className="bg-white rounded-lg p-2 border border-warm-200">
+                      <div className="text-warm-500 text-xs">Rafeindir</div>
+                      <div className="font-bold text-lg">{question.element.atomicNumber}</div>
+                    </div>
+                    <div className="bg-white rounded-lg p-2 border border-warm-200">
+                      <div className="text-warm-500 text-xs">Massatala</div>
+                      <div className="font-bold text-lg">{question.element.massNumber}</div>
+                    </div>
+                    <div className="bg-white rounded-lg p-2 border border-warm-200">
+                      <div className="text-warm-500 text-xs">Nifteindir</div>
+                      <div className="font-bold text-lg">{neutronCount(question.element)}</div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-warm-500 mt-2 text-center">
+                    Massatala = róteindir + nifteindir = {question.element.massNumber}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                key="next"
+                ref={nextRef}
+                onClick={armed(handleNext)}
+                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+              >
+                {index + 1 < TOTAL ? 'Næsta spurning →' : 'Sjá niðurstöður →'}
+              </button>
             </div>
           )}
         </div>
-
-        {/* Numeric input (for non-table-click questions) */}
-        {!question.requiresTableClick && !answered && (
-          <div className="bg-white rounded-xl shadow-md p-4 mb-3 max-w-md mx-auto">
-            <label className="block text-sm font-medium text-warm-700 mb-2">Svar:</label>
-            <div className="flex gap-3">
-              <input
-                type="number"
-                inputMode="numeric"
-                autoComplete="off"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-                placeholder="t.d. 12"
-                className="flex-1 px-4 py-3 border-2 border-warm-300 rounded-xl focus:border-kvenno-orange focus:outline-none text-lg font-mono"
-                autoFocus
-              />
-              <button
-                onClick={handleSubmit}
-                disabled={!input.trim()}
-                className="bg-kvenno-orange hover:bg-kvenno-orange-dark disabled:opacity-40 text-white font-bold px-6 py-3 rounded-xl transition-colors"
-              >
-                Athuga
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Periodic table */}
-        {question.requiresTableClick && (
-          <div className="bg-white rounded-xl shadow-lg p-2 sm:p-4 mb-3">
-            <PeriodicTable
-              onElementClick={handleElementClick}
-              highlightedElements={answered ? new Set([question.element.symbol]) : undefined}
-              correctElement={answered && isCorrect ? question.element.symbol : null}
-              wrongElement={wrongSymbol}
-              interactive={!answered}
-            />
-          </div>
-        )}
-
-        {/* Reference table for numeric questions */}
-        {!question.requiresTableClick && (
-          <div className="bg-white rounded-xl shadow-lg p-2 sm:p-4 mb-3">
-            <PeriodicTable
-              highlightedElements={answered ? new Set([question.element.symbol]) : undefined}
-              correctElement={answered ? question.element.symbol : null}
-              interactive={false}
-            />
-          </div>
-        )}
-
-        {/* Feedback */}
-        {answered && (
-          <div ref={feedbackRef} className="space-y-3 mb-3 max-w-lg mx-auto animate-fade-in-up">
-            <FeedbackPanel
-              feedback={{
-                isCorrect,
-                explanation: question.explanation,
-                // Renders outside the collapsible explanation, so it is the one
-                // thing a student who reads nothing else still sees.
-                misconception:
-                  isCorrect || given === null
-                    ? undefined
-                    : particleMisconception(question.type, question.element, given),
-              }}
-              config={{ showExplanation: true }}
-            />
-
-            {/* Particle breakdown card */}
-            <div className="bg-warm-50 rounded-xl border-2 border-warm-200 p-4">
-              <h3 className="font-bold text-warm-800 mb-2">
-                {question.element.name} ({question.element.symbol})
-              </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-sm">
-                <div className="bg-white rounded-lg p-2 border border-warm-200">
-                  <div className="text-warm-500 text-xs">Róteindir</div>
-                  <div className="font-bold text-lg">{question.element.atomicNumber}</div>
-                </div>
-                <div className="bg-white rounded-lg p-2 border border-warm-200">
-                  <div className="text-warm-500 text-xs">Rafeindir</div>
-                  <div className="font-bold text-lg">{question.element.atomicNumber}</div>
-                </div>
-                <div className="bg-white rounded-lg p-2 border border-warm-200">
-                  <div className="text-warm-500 text-xs">Massatala</div>
-                  <div className="font-bold text-lg">{question.element.massNumber}</div>
-                </div>
-                <div className="bg-white rounded-lg p-2 border border-warm-200">
-                  <div className="text-warm-500 text-xs">Nifteindir</div>
-                  <div className="font-bold text-lg">{neutronCount(question.element)}</div>
-                </div>
-              </div>
-              <p className="text-xs text-warm-500 mt-2 text-center">
-                Massatala = róteindir + nifteindir = {question.element.massNumber}
-              </p>
-            </div>
-
-            <button
-              onClick={handleNext}
-              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
-            >
-              {index + 1 < TOTAL ? 'Næsta spurning →' : 'Sjá niðurstöður →'}
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

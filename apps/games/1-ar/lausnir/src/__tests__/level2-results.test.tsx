@@ -3,7 +3,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { formatDecimal, parseStudentNumber } from '@shared/utils';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level2, SCENARIOS } from '../components/Level2';
+
+// These tests press Næsta at once; step the clock past its 400 ms guard.
+clockPastNextGuard();
 
 /**
  * What Stig 2 tells the student after an answer, and what it reports when the

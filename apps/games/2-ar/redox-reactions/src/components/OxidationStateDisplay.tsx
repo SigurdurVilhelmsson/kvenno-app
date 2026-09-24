@@ -124,9 +124,11 @@ export function OxidationStateDisplay({
   const sizeClasses = {
     small: { badge: 'w-8 h-8 text-sm', element: 'text-lg', container: 'gap-2' },
     medium: {
-      badge: 'w-10 h-10 text-base sm:w-12 sm:h-12 sm:text-lg',
+      // A phone on its side matches sm: by width but draws this in half the screen (Stig 2's
+      // landscape columns): phone: keeps the portrait sizes there, so both species share a row.
+      badge: 'w-10 h-10 text-base sm:w-12 sm:h-12 sm:text-lg phone:w-10 phone:h-10 phone:text-base',
       element: 'text-2xl',
-      container: 'gap-x-3 gap-y-4 sm:gap-4',
+      container: 'gap-x-3 gap-y-4 sm:gap-4 phone:gap-x-3 phone:gap-y-4',
     },
     large: { badge: 'w-16 h-16 text-xl', element: 'text-3xl', container: 'gap-6' },
   };
@@ -134,7 +136,7 @@ export function OxidationStateDisplay({
   const classes = sizeClasses[size];
 
   return (
-    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-3 sm:p-6 shadow-lg">
+    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-3 sm:p-6 phone:p-3 shadow-lg">
       <h3 className="text-white font-bold text-sm mb-4 flex items-center gap-2">
         <span className="text-lg">⚡</span>
         Rafeindaflutningur
@@ -147,7 +149,7 @@ export function OxidationStateDisplay({
             <div className={`font-bold ${classes.element} text-white mb-2`}>{change.element}</div>
 
             {/* Oxidation state change */}
-            <div className="flex items-center gap-1 sm:gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 phone:gap-1">
               {/* Before state */}
               <div
                 className={`${classes.badge} ${getOxidationColor(change.before)} ${getTextColor(change.before)}
