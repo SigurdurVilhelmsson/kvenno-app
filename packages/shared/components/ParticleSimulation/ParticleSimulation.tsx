@@ -9,6 +9,7 @@ import type {
   CollisionFlash,
   EnhancedRenderingConfig,
 } from './types';
+import { canvasPixelRatio } from '../ResponsiveContainer/ResponsiveContainer';
 
 const DEFAULT_PHYSICS: PhysicsConfig = {
   speedMultiplier: 1,
@@ -53,6 +54,7 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
   onFrame,
   onCollisionCount,
   showLabels = false,
+  showLegend = true,
   showVelocityVectors = false,
   enhancedRendering,
   ariaLabel = 'Particle simulation',
@@ -62,16 +64,29 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
   const particlesRef = useRef<Particle[]>([]);
   const animationRef = useRef<number>(undefined);
   const collisionFlashesRef = useRef<CollisionFlash[]>([]);
+  // Paints the current particle positions without advancing the physics. Set by the
+  // animation effect; used to show a paused simulation instead of an empty box.
+  const drawStaticFrameRef = useRef<(() => void) | null>(null);
+  const runningRef = useRef(running);
+  useEffect(() => {
+    runningRef.current = running;
+  }, [running]);
   const [particleCounts, setParticleCounts] = useState<Record<string, number>>({});
 
   // Enhanced rendering defaults
-  const enhanced: EnhancedRenderingConfig = enhancedRendering ?? {};
+  const enhanced: EnhancedRenderingConfig = useMemo(
+    () => enhancedRendering ?? {},
+    [enhancedRendering]
+  );
   const trailLength = enhanced.trailLength ?? 4;
 
   const { width, height } = container;
+  // The physics runs in `width` × `height` CSS px; only the bitmap is scaled for sharpness.
+  const pixelRatio = canvasPixelRatio();
   const borderColor = container.borderColor || getBorderColorFromPressure(container.pressure);
   const borderWidth = container.borderWidth || getBorderWidthFromPressure(container.pressure);
   const backgroundColor = container.backgroundColor || '#1e293b';
+  const legendInk = legendTextColor(backgroundColor);
 
   // Create particle type lookup
   const typeMap = useMemo(() => {
@@ -272,16 +287,13 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
       particle.energy =
         0.5 * particle.mass * (particle.vx * particle.vx + particle.vy * particle.vy);
     },
-    [physics.gravity, physics.friction, container.elasticWalls, width, height]
+    [physics.gravity, physics.friction, container.elasticWalls, width, height, trailLength]
   );
 
   // Main animation loop
   useEffect(() => {
-    if (!running) {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-      return;
+    if (!running && animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
     }
 
     const canvas = canvasRef.current;
@@ -289,7 +301,7 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const animate = () => {
+    const step = () => {
       const particles = particlesRef.current;
 
       // Update physics
@@ -347,8 +359,11 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
           updateParticleCounts();
         }
       }
+    };
 
-      // Draw
+    const draw = () => {
+      // Resizing the backing store resets the context, so the scale is set every frame.
+      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
       ctx.clearRect(0, 0, width, height);
 
       // Background
@@ -537,6 +552,20 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
           }
         }
       });
+    };
+
+    drawStaticFrameRef.current = draw;
+
+    // A paused simulation still shows its particles. Without this frame a simulation that
+    // mounts paused (e.g. the "before" panel of a before/after pair) is an empty box.
+    if (!running) {
+      draw();
+      return;
+    }
+
+    const animate = () => {
+      step();
+      draw();
 
       // Callback
       onFrame?.(particlesRef.current);
@@ -555,6 +584,7 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
     running,
     width,
     height,
+    pixelRatio,
     backgroundColor,
     borderColor,
     borderWidth,
@@ -577,6 +607,9 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
   // Initialize on mount and when config changes
   useEffect(() => {
     initializeParticles();
+    // A running simulation picks the new particles up on its next frame; a paused one has
+    // to be repainted or it keeps showing the previous set (or nothing, on mount).
+    if (!runningRef.current) drawStaticFrameRef.current?.();
   }, [initializeParticles]);
 
   // Update speeds when temperature changes
@@ -595,25 +628,36 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
   }, [temperature, typeMap, getSpeedFromTemperature]);
 
   return (
-    <div className={`flex flex-col items-center ${className}`}>
+    // min-w-0 + max-w-full let the simulation shrink inside a narrow (phone) container: the
+    // canvas keeps its logical size for the physics and is scaled down by CSS, aspect intact.
+    <div className={`flex flex-col items-center min-w-0 max-w-full ${className}`}>
       <canvas
         ref={canvasRef}
-        width={width}
-        height={height}
+        width={Math.round(width * pixelRatio)}
+        height={Math.round(height * pixelRatio)}
+        style={{ width: `${width}px`, maxWidth: '100%', height: 'auto' }}
         className="rounded-lg shadow-md"
         role="img"
         aria-label={ariaLabel}
       />
-      {/* Legend */}
-      {particleTypes.length > 1 && (
+      {/* Legend. It sits outside the canvas, on whatever the caller's background is, so each
+          entry carries the simulation's own background and a text colour chosen against it.
+          Its text used to be a fixed near-white (text-gray-100), which vanished on a light card.
+          Horizontal padding only: callers size overlays against this block's height. */}
+      {showLegend && particleTypes.length > 1 && (
         <div className="flex flex-wrap gap-3 mt-2">
           {particleTypes.map((type) => (
-            <div key={type.id} className="flex items-center gap-1.5 text-xs">
+            <div
+              key={type.id}
+              data-testid="particle-legend-entry"
+              className="flex items-center gap-1.5 text-xs rounded px-1.5"
+              style={{ backgroundColor, color: legendInk }}
+            >
               <div
                 className="w-3 h-3 rounded-full border border-white/20"
                 style={{ backgroundColor: type.color }}
               />
-              <span className="text-gray-100 font-medium">
+              <span className="font-medium">
                 {type.label || type.id}: {particleCounts[type.id] || 0}
               </span>
             </div>
@@ -625,6 +669,31 @@ export const ParticleSimulation: React.FC<ParticleSimulationProps> = ({
 };
 
 // Helper functions
+
+/**
+ * Legend text colour for a given background: near-white on a dark one, near-black on a light
+ * one. Colours it cannot parse are treated as dark, the component's default background.
+ */
+export function legendTextColor(background: string): string {
+  const hex = background.trim().match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  const rgb = background.match(/^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/i);
+  let channels: number[] | null = null;
+  if (hex) {
+    const h = hex[1].length === 3 ? [...hex[1]].map((c) => c + c).join('') : hex[1];
+    channels = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
+  } else if (rgb) {
+    channels = [rgb[1], rgb[2], rgb[3]].map(Number);
+  }
+  if (!channels) return '#f3f4f6';
+  const [r, g, b] = channels.map((c) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  });
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  // Whichever of the two reads better: white text wins below ~0.18 luminance.
+  return luminance > 0.18 ? '#1f2937' : '#f3f4f6';
+}
+
 function getBorderColorFromPressure(pressure?: 'low' | 'normal' | 'high'): string {
   switch (pressure) {
     case 'low':

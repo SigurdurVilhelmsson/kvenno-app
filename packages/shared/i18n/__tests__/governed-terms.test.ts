@@ -114,8 +114,26 @@ const GOVERNED_TERMS: GovernedTerm[] = [
   {
     english: 'enthalpy',
     correct: 'vermi',
-    banned: [/skammtavarm/i, /enþalpí/i],
-    guidance: 'vermi is masculine, like skammtavarmi, so surrounding agreement is unaffected.',
+    // `entalpí` added 2026-09-23: 3-ar/thermodynamics-predictor said Entalpía,
+    // the t-spelling of the old enþalpía, which the þ-only ban never matched.
+    // Polish `Entalpia` (no accent on the i) in hess-law's pl block is left alone.
+    banned: [/skammtavarm/i, /enþalpí/i, /entalpí/i],
+    guidance:
+      'This row used to say vermi is masculine, like skammtavarmi. The book never treats it that way: its agreement is neuter — gufunarvermið, gufunarverminu, hátt brunavermi, staðlað mólmyndunarvermi, genitive -vermis — apart from stöðluð myndunarvermi, which it sometimes agrees as a feminine (stöðluð myndunarvermi vísar). So write it as a neuter (vermi / vermi / vermi / vermis, plural dative -vermum, genitive -verma) and check the agreement when you swap it in.',
+  },
+  {
+    english: 'enthalpy of formation',
+    correct: 'myndunarvermi',
+    banned: [/myndunarv[aö]rm/i],
+    guidance:
+      "2026-09-23, not a new ruling: ordabok.md carries enthalpy of formation;myndunarvermi and the corpus has it 48 times against 2 for the -varmi compound, both of those in one end-of-chapter exercise (ch05/m68727). 3-ar/equilibrium-shifter's NumbersPanel still said myndunarvarma and myndunarvörmum after the vermi sweep, because the enthalpy row bans only skammtavarm- and never matched a compound built on varmi. Neuter, like vermi: acc. myndunarvermi, dat. pl. myndunarvermum, gen. pl. myndunarverma.",
+  },
+  {
+    english: 'exothermic / endothermic',
+    correct: 'útvermið / innvermið',
+    banned: [/exóþerm/i, /endóþerm/i],
+    guidance:
+      "2026-09-23, not a new ruling: ordabok.md carries exothermic;útvermið and endothermic;innvermið, and 2-ar/hess-law had already swept its own copies. 1-ar/lausnir kept 'endóþerm viðbrögð' in its facts list, which is now 'innvermið ferli' (the book's own phrase, 13 hits). The English words exothermic and endothermic are NOT banned: they are correct in English strings and comments.",
   },
   {
     english: 'spontaneous / spontaneity',
@@ -176,6 +194,14 @@ const GOVERNED_TERMS: GovernedTerm[] = [
       /þú jafnaðir/i,
       /jafnað (helmingshvarf|hvarf)\b/i,
       /jafna (jöfnur|efnajöfnu|efnajöfnur|hleðslu|hleðslurnar|frumeindir|súrefni|vetni|rafeindir|rafeindirnar)/i,
+      // Added 2026-09-23. The list above names shapes, not the verb, so two
+      // inflected uses shipped straight past it in 1-ar/jafna-jofnur:
+      // 'jöfnum við efnajöfnur' and 'Jafna einfaldar efnajöfnur', where an
+      // adjective sits between the verb and its object. Letter lookarounds, not
+      // \b, because \b is ASCII-only and never fires beside ö or ð.
+      /(?<!\p{L})jöfnum við(?!\p{L})/iu,
+      /(?<!\p{L})jafna\s+(?!(?:og|eða|sem)\s)\p{L}+\s+efnajöfn/iu,
+      /(?<!\p{L})(jafnar|jafnaði|jöfnuðu|jafnið|jafnaðir)\s+(\p{L}+\s+)?(efna)?jöfn/iu,
     ],
     guidance:
       'The verb is stilla, not jafna: að stilla efnajöfnu, Stilltu jöfnuna, stillt efnajafna, óstillt efnajafna. Siggi ruled on this (authority 3) — ordabok.md had no entry, and the platform shipped both words. Note the noun jafna (an equation) and jafnvægi (equilibrium) are unrelated and correct; so is jafnast út (to cancel out) and þrýstijafnaður (pressurised).',
@@ -216,7 +242,10 @@ const GOVERNED_TERMS: GovernedTerm[] = [
     // ph-titration and buffer-recipe-creator until 2026-08-30. Same failure as
     // the accentless anoða/katoða. `stuðpúði` contains `púð`, not `púff`, so
     // the correct forms cannot trip this.
-    banned: [/púff/i, /bufferkerfi/i],
+    // `p[uú]ff`, widened 2026-09-23: the accented-only ban let the accentless
+    // `blóðpufferkerfi` through in 3-ar/equilibrium-shifter, the same miss as
+    // anoða against anóða. English `puff` appears nowhere in scanned source.
+    banned: [/p[uú]ff/i, /bufferkerfi/i],
     guidance:
       'stuðpúði is masculine; compounds take the genitive stem stuðpúða- (stuðpúðalausn, stuðpúðageta, stuðpúðasvæði), plural stuðpúðar. púffer was neuter in some strings, so adjectives change with it. EXTENDED 2026-09-20 with /bufferkerfi/i: the August sweep banned only the naturalised púffer, so 3-ar/equilibrium-shifter kept the bare English loanword in two student-facing Icelandic strings — its nameIs and its descriptionIs for the acetic-acid system — straight through it. Now Stuðpúðakerfi, the compound the book itself uses (7 corpus hits). The ban names that exact compound rather than bare buffer, because English buffer is correct English and appears legitimately in dozens of comments, in English description fields, and throughout the ph-titration test names.',
   },
@@ -232,7 +261,7 @@ const GOVERNED_TERMS: GovernedTerm[] = [
     correct: 'áhorfendajón',
     banned: [/áhorfandajón/i],
     guidance:
-      'The linking form is the genitive plural áhorfenda-, not áhorfanda-. The corpus is 6 to 0. Feminine, like jón: áhorfendajón / áhorfendajónina / áhorfendajónum / áhorfendajóna. ORPHANED_GAMES_ASSESSMENT.md:207 writes the wrong form, and Markdown is not scanned, so this row guards the code against it being copied across. EXTENDED 2026-09-20 with /bufferkerfi/i: the August sweep banned only the naturalised puffer, so 3-ar/equilibrium-shifter kept the bare English loanword in nameIs: Bufferkerfi (ediksyra) and in its descriptionIs -- two student-facing Icelandic strings -- straight through it. Now Studpudakerfi, which is the compound the book itself uses (7 corpus hits). The ban names that exact compound rather than bare buffer, because English buffer is correct English and appears legitimately in dozens of comments, in English description fields, and throughout the ph-titration test names.',
+      'The linking form is the genitive plural áhorfenda-, not áhorfanda-. The corpus is 6 to 0. Feminine, like jón: áhorfendajón / áhorfendajónina / áhorfendajónum / áhorfendajóna. ORPHANED_GAMES_ASSESSMENT.md:207 writes the wrong form, and Markdown is not scanned, so this row guards the code against it being copied across.',
   },
   {
     english: 'iodide',
@@ -270,6 +299,95 @@ const GOVERNED_TERMS: GovernedTerm[] = [
     ],
     guidance:
       "2026-09-20. ordabok.md was silent and the corpus settles it: framhvarf/bakhvarf is the pair the book uses in its own GLOSSARY DEFINITIONS (ch13/m68797 defines jafnvaegi and afturkraeft efnahvarf with it) and in the teaching prose of six chapters, 20 hits against 15. andhverft hvarf appears 4 times, all inside end-of-chapter problems in one module. The pair also reads as a pair: fram- against bak-. This was a live one-game-two-words defect rather than a precaution — 3-ar/equilibrium-shifter said bakhvarf in App.tsx and QKComparison.tsx and 'Andhverfa af X' in NumbersPanel.tsx, so one game named the same thing two ways. **Read the regex before narrowing it.** A first draft matched andhverf- only when a reaction or an 'af' followed, and it missed two of the four shipped occurrences — equilibrium-shifter's 'Andhverfa vatnsgas' and 'Andhverfa Water Gas Shift hvarfsins', where an ordinary noun follows. So the ban is the whole word with one carve-out, on the /saltpetur(?!ssyrlingur)/ pattern: a following form of hlutfall is exempt, because andhverfu hlutfalli in 3-ar/gas-law-challenge is a DIFFERENT sense — Boyle's law really is an inverse proportion — and is correct. handhverfa (enantiomer, ch19) is excluded by the leading word boundary rather than by the carve-out. **One legitimate string was reworded rather than exempted**, and that was a choice: gas-law-challenge also said 'P og V eru því andhverf' predicatively, with no noun to key a carve-out on, two lines below its own 'í andhverfu hlutfalli'. Normalising it to that phrasing keeps one carve-out instead of a growing exemption list — and an exemption wider than intended stops enforcing a ruling silently, which is the lesson the saltpetur row was written after. Neuter, like efnahvarf: bakhvarf / bakhvarf / bakhvarfi / bakhvarfs. Do not confuse it with the reciprocal: umhverfa is the reciprocal of a NUMBER, which is what the reversed reaction's K is, and the book uses that word in exactly that sentence.",
+  },
+  {
+    english: 'mole',
+    correct: 'mól',
+    // Only on a line that is written in Icelandic: English (`kJ/mol` in a
+    // comment, an `explanation` beside its `explanationIs`) and Polish blocks
+    // keep the SI spelling, and both run through the same files. A line counts
+    // as Icelandic when it carries an Icelandic letter and no Polish-only one.
+    // `ó` is shared with Polish, which is why the Polish exclusion is needed.
+    // A comment line is skipped too: an English comment that quotes an
+    // Icelandic label (`// the "með hvata" slider stops 5 kJ/mol below …`)
+    // carries an Icelandic letter and is still English.
+    banned: [
+      /^(?!\s*(?:\/\/|\/?\*|\{\/\*))(?=.*[ðþæáéíóúýöÐÞÆÁÉÍÓÚÝÖ])(?!.*[ąęłśźżćńĄĘŁŚŹŻĆŃ]).*(?:k?J|g|L|atm)\/\(?mol(?![\p{L}_])/u,
+      /^(?!\s*(?:\/\/|\/?\*|\{\/\*))(?=.*[ðþæáéíóúýöÐÞÆÁÉÍÓÚÝÖ])(?!.*[ąęłśźżćńĄĘŁŚŹŻĆŃ]).*(?<![\p{L}_.\-$])mol(?:\/L|·)/u,
+      /^(?!\s*(?:\/\/|\/?\*|\{\/\*))(?=.*[ðþæáéíóúýöÐÞÆÁÉÍÓÚÝÖ])(?!.*[ąęłśźżćńĄĘŁŚŹŻĆŃ]).*(?:\d|\})\s*mol(?![\p{L}_])/u,
+    ],
+    guidance:
+      "2026-09-23. ordabok.md gives mole;mól, and the textbook writes the unit the same way every time: kJ/mól 127 to 0, g/mól 79 to 0, mól/L 44 to 0, L/mól 9 to 0, a number followed by mól 203 to 0. (Count the *-segments.is.md files only: ch05 carries (b)/(c)/(d) variant copies of three modules, which inflate kJ/mól to 150.) 1-ar/molmassi and 3-ar/equilibrium-shifter had already moved to it in September, so two neighbouring games disagreed about the unit on the same screen of the curriculum. Swept the same day across the rest of Y1, Y2 and Y3, about 220 sites, including the unit data a game prints (einingakedjan's ratio cards, gas-law-challenge's unit labels). What stays mol: English and Polish text, and code comments. mól is neuter and does not change in the unit position. KNOWN GAP: a line with no Icelandic letter is never read, so an Icelandic field whose text happens to carry none — ph-titration's solutionStepsIs line 'n(CH₃COOH) = n(NaOH) = 0,0042 mol', hess-law's c2explanation — passes this row. The September sweep found those by reading the Is fields, not through this test.",
+  },
+  {
+    english: 'tetrahedral',
+    correct: 'ferflötungur',
+    banned: [/fjórflötung/i],
+    guidance:
+      "2026-09-23. ordabok.md gives the noun and the adjective under one headword — tetrahedral;ferflötungur and tetrahedral;ferflötungslaga — so rule 1 settles it — and the book's own end-of-module glossary agrees: its headword in ch07/m68742, the module that teaches VSEPR, is ferflötungur (and ferflötungshol in ch10/m68773), and that module's running paragraphs write fer- 19 times to 8. The corpus is split overall (84 fjór- to 57 fer-), and the same module's one inline [[term:]] marker is fjórflötunga, so the book disagrees with itself the way it does over nettójónajafna; the glossary settling it is the prósentuheimtur precedent. Siggi's to confirm, not blocking. The platform had split the same way: 2-ar/lewis-structures said ferflötungslaga while 2-ar/vsepr-geometry and 2-ar/intermolecular-forces said Fjórflötungur, so a student met both words in adjacent nodes. Both are masculine and decline alike, so the sweep was a prefix swap in every case: ferflötungur / ferflötung / ferflötungi / ferflötungs, and ferflötungs- in compounds (ferflötungslögun, ferflötungshorn).",
+  },
+  {
+    english: 'lone pair',
+    correct: 'rafeindapar / stakt rafeindapar',
+    banned: [/(?<!\p{L})einstæ[ðt]\p{L}*\s+(rafeinda)?p[aö]r/iu],
+    guidance:
+      "2026-09-23. ordabok.md gives lone pair;rafeindapar — the head noun, with no qualifier, which is also what it gives for electron pair. The qualifier comes from the corpus, and it is not close: the book DEFINES the term as [[term:stök rafeindapör]], its glossary headword is stakt rafeindapar (ch07/m68739), and it writes stak-/stök- before (rafeinda)par 109 times, einmana 23 times, and einstæð- zero. 2-ar/lewis-structures, 2-ar/vsepr-geometry and 2-ar/intermolecular-forces all said einstætt par / einstæð pör, about 130 sites, a word the book never uses for this. The adjective is stakur, so every case moves with it: stakt par, stök pör, stöku pari, stökum pörum, stakra para, staka parið, stöku paranna. The short form without rafeinda- (stakt par, stök pör) is the book's too (16 of the 109), so both lengths are fine.",
+  },
+  {
+    english: 'electron pair',
+    correct: 'rafeindapar',
+    banned: [/rafeindarap[aö]r/i],
+    guidance:
+      "ordabok.md gives electron pair;rafeindapar, and the corpus has no rafeindarapar at all. The extra -ra- is a misspelling that shipped twice — in 2-ar/lewis-structures and in 2-ar/rafeindabygging's electron-configs data — and each game fixed and guarded only its own copy. This row is the platform guard. Neuter: rafeindapar / rafeindapari / rafeindapars, plural rafeindapör / rafeindapörum / rafeindapara.",
+  },
+  {
+    english: 'conjugate acid / conjugate base',
+    correct: 'samoka sýra / samoka basi',
+    banned: [/(?<!\p{L})samok(?!a(?!\p{L}))/iu],
+    guidance:
+      "ordabok.md gives conjugate acid;samoka sýra and conjugate base;samoka basi, and samoka does not decline: samoka basinn, samoka basa, samoka sýru. The corpus has samoka 89 times against 3 declined forms (samoku twice, samoki once, never samoki basinn), and samoka basinn 3 times. 3-ar/ph-titration and 3-ar/buffer-recipe-creator both shipped 'samoki basinn' / 'samoki basi', declining it like a weak adjective, and each guarded only itself. The ban is any samok- that is not exactly the word samoka.",
+  },
+  {
+    english: 'proton',
+    correct: 'róteind',
+    banned: [/prótón/i],
+    guidance:
+      "ordabok.md gives proton;róteind and the corpus has róteind 241 times against prótón once (inside sjálfsprótónugreiningar). Two games each fixed their own copies — 1-ar/lotukerfid, and 3-ar/ph-titration's Fjölprótón-/Tvíprótón-/Þríprótónsýra — but 3-ar/buffer-recipe-creator still said Þriprótónsýra and ph-titration's Level 1 still said prótónform. The polyprotic words are ordabok's polyprotic acid;fjölvirk sýra, and the book's tvívirk sýra and þrívirk sýra. For a protonated indicator write that it has taken a proton, tekið við róteind, the book's phrasing; do not coin róteindaform.",
+  },
+  {
+    english: 'mechanism',
+    correct: 'hvarfgangur',
+    banned: [/hvarfgangshátt/i],
+    guidance:
+      'ordabok.md gives mechanism;hvarfgangur and the corpus has hvarfgang- 67 times against 0 for the -háttur compound. 2-ar/kinetics swept its own screens in the September pass, but the games-hub card for that game still said hvarfgangshátt, so a student read the wrong word on the way in. Masculine: hvarfgangur / hvarfgang / hvarfgangi / hvarfgangs, plural hvarfgangar.',
+  },
+  {
+    english: 'electron configuration',
+    correct: 'rafeindaskipan',
+    banned: [/rafeindauppsetn/i],
+    guidance:
+      'ordabok.md gives electron configuration;rafeindaskipan and the corpus has it 165 times against 2. 2-ar/rafeindabygging says rafeindaskipan throughout; its games-hub card said rafeindauppsetning. Feminine, and it does not decline in the singular: rafeindaskipan in every case, plural rafeindaskipanir.',
+  },
+  {
+    english: 'transition metal',
+    correct: 'hliðarmálmur',
+    banned: [/skiptimálm/i, /þróunarmálm/i],
+    guidance:
+      "ordabok.md gives transition metal;hliðarmálmur and the corpus has hliðarmálm- 169 times against 0. 1-ar/lotukerfid's legend and Stig 2 said Skiptimálmur, and 1-ar/nafnakerfid once said Þróunarmálmur; both were fixed and guarded inside their own games in September. This row makes it platform-wide, so the next periodic table cannot bring either back.",
+  },
+  {
+    english: 'nonmetal',
+    correct: 'málmleysingi',
+    banned: [/(?<!\p{L})ómálm/iu, /málmleysingur/i],
+    guidance:
+      "ordabok.md gives nonmetal;málmleysingi and the corpus has it 261 times against 0 for ómálmur. 1-ar/lotukerfid's legend said Ómálmar while its own Stig 2 graded málmleysingi, so an answer and the table under it named one kind of element two ways. Masculine weak: málmleysingi / málmleysingja, plural málmleysingjar — not the strong málmleysingur. The lookbehind keeps the ban off words that merely contain the letters.",
+  },
+  {
+    english: 'noble gas',
+    correct: 'eðalgas',
+    banned: [/eðallofttegund/i],
+    guidance:
+      "2026-09-23, rule 1: ordabok.md gives noble gas;eðalgas, and the book's own glossary headword for group 18 is eðalgas too (ch02/m68695). The book disagrees with itself — its running paragraphs say eðallofttegund 38 times to 19 and the same module's inline [[term:]] marker is eðallofttegundir — and the glossary settling that is the prósentuheimtur precedent. Siggi's to confirm, not blocking. docs/FEBRUARY-DECISIONS-RECOVERED.md already listed eðallofttegundir as a place the platform had diverged from the glossary. It was live in two games and split one of them: 1-ar/lotukerfid said Eðalgös in Stig 1 and eðallofttegundir in Stig 2, and 1-ar/molmassi's legend said Eðallofttegundir, while rafeindabygging, lewis-structures and nafnakerfid said eðalgas. NOT a string swap: lofttegund is feminine and gas is NEUTER, so the plural is eðalgös (def. eðalgösin), dat. eðalgösum, and the agreement moves — eðalgösin eru óvirk, not óvirkar. Compounds take eðalgas-, as 2-ar/rafeindabygging already writes them: eðalgasstytting, eðalgasgrunnur.",
   },
 ];
 
@@ -363,6 +481,104 @@ describe('the one lookahead carve-out', () => {
     expect(hits('salpeturssýru')).toBe(true); // no t, no accent
     expect(hits('saltpeturssýru')).toBe(true); // no accent
     expect(hits('saltpeturssyra')).toBe(true); // accentless prose, not an id
+  });
+});
+
+describe('the letter-lookaround bans', () => {
+  // These rows cannot use \b, which is ASCII-only in JavaScript and never fires
+  // beside æ, ö or ð, so they key on \p{L} instead. A lookaround that is wider
+  // than intended stops enforcing silently, so each is probed from both sides.
+  const row = (english: string) => GOVERNED_TERMS.find((t) => t.english === english)!;
+  const hits = (english: string, text: string) => row(english).banned.some((b) => b.test(text));
+
+  it('lone pair: catches every case of einstæður before a pair, and nothing else', () => {
+    for (const wrong of [
+      'einstæð pör',
+      'einstætt par',
+      'Einstæðu pari',
+      'einstæðum rafeindapörum',
+      'EINSTÆÐ PÖR',
+      'staka parið og einstæða parið',
+    ]) {
+      expect(hits('lone pair', wrong), wrong).toBe(true);
+    }
+    for (const right of [
+      'stakt par',
+      'stök rafeindapör',
+      'stöku pari',
+      'stakra para',
+      'einstæð móðir',
+      'einstakt tækifæri',
+    ]) {
+      expect(hits('lone pair', right), right).toBe(false);
+    }
+  });
+
+  it('conjugate: samoka does not decline, and the word itself passes', () => {
+    for (const wrong of ['samoki basinn', 'Samokur basi', 'samokinn']) {
+      expect(hits('conjugate acid / conjugate base', wrong), wrong).toBe(true);
+    }
+    for (const right of ['samoka basinn', 'Samoka par:', 'samoka sýru', 'samoka basa.']) {
+      expect(hits('conjugate acid / conjugate base', right), right).toBe(false);
+    }
+  });
+
+  it('balance: the verb in any person, but never the noun jafna or jafnast út', () => {
+    for (const wrong of [
+      'Nú jöfnum við efnajöfnur',
+      'Jafna einfaldar efnajöfnur',
+      'hann jafnar efnajöfnuna',
+      'þau jöfnuðu jöfnuna',
+    ]) {
+      expect(hits('balanced equation', wrong), wrong).toBe(true);
+    }
+    for (const right of [
+      'Stilltu jöfnuna',
+      'Athuga jöfnuna',
+      'stuðlarnir í jöfnunni',
+      'tvískautsvægin jafnast út',
+      'draga í jafnar áttir',
+      'Henderson-Hasselbalch jöfnuna',
+      // The noun, then a conjunction: an equation and the equations beside it.
+      'þessi jafna og efnajöfnurnar á undan',
+    ]) {
+      expect(hits('balanced equation', right), right).toBe(false);
+    }
+  });
+
+  it('nonmetal: ómálm- at a word start, not inside another word', () => {
+    for (const wrong of ['Ómálmar', 'ómálmur', 'málmleysingur']) {
+      expect(hits('nonmetal', wrong), wrong).toBe(true);
+    }
+    for (const right of ['málmleysingi', 'Málmleysingjar', 'hálfmálmur', 'hliðarmálmur']) {
+      expect(hits('nonmetal', right), right).toBe(false);
+    }
+  });
+
+  it('mole: Icelandic lines only, and not a comment that quotes one', () => {
+    for (const wrong of [
+      "context: 'Stuðpúðageta: getur hlutleyst ±0,02 mol HCl eða NaOH',",
+      'ΔG° við {temperature} K (kJ/mol):',
+      "'mol·L / L → mol (L styttist út)',",
+    ]) {
+      expect(hits('mole', wrong), wrong).toBe(true);
+    }
+    for (const right of [
+      "contextEn: 'Buffer capacity: can neutralize ±0.02 mol HCl or NaOH',",
+      "contextPl: 'Pojemność buforowa: może zobojętnić ±0,02 mol HCl lub NaOH',",
+      '  // The "með hvata" slider stops 5 kJ/mol below the uncatalysed Ea',
+      '   * Demant → Grafít has ΔG° = −2,9 kJ/mol at 298 K',
+      "context: 'Stuðpúðageta: getur hlutleyst ±0,02 mól HCl eða NaOH',",
+      '{reactants.map((mol, i) => (',
+    ]) {
+      expect(hits('mole', right), right).toBe(false);
+    }
+  });
+
+  it('buffer: the accentless spelling as well as the accented one', () => {
+    expect(hits('buffer', 'blóðpufferkerfi')).toBe(true);
+    expect(hits('buffer', 'Púffer')).toBe(true);
+    expect(hits('buffer', 'stuðpúði')).toBe(false);
   });
 });
 

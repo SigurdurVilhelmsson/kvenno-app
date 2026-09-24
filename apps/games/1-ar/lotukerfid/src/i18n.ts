@@ -8,7 +8,7 @@ export const gameTranslations = createGameTranslations({
   is: {
     game: {
       title: 'Lotukerfið',
-      subtitle: 'Kynntu þér lotukerfið, frumefni og sameindagerð',
+      subtitle: 'Kynntu þér lotukerfið, frumefni og atómbyggingu',
     },
     menu: {
       level1: {
@@ -21,7 +21,7 @@ export const gameTranslations = createGameTranslations({
         },
       },
       level2: {
-        title: 'Stig 2: Flokkar og lotubundnar sveiflur',
+        title: 'Stig 2: Flokkar og lotubundnir eiginleikar',
         description: 'Flokka frumefni og skilja mynstur lotukerfisins',
         tags: {
           classify: 'Flokka',
@@ -45,7 +45,7 @@ export const gameTranslations = createGameTranslations({
           description: 'Finna frumefni í lotukerfinu og þekkja tákn þeirra',
         },
         step2: {
-          title: 'Flokkar og lotubundnar sveiflur',
+          title: 'Flokkar og lotubundnir eiginleikar',
           description: 'Skilja skipulag lotukerfisins og mynstur þess',
         },
         step3: {

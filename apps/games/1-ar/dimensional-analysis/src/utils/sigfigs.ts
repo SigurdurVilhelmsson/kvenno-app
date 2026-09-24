@@ -29,6 +29,8 @@
  *  4. trailing zeros are significant **only** when a decimal point is written
  */
 
+import type { ScientificEntry } from '@shared/utils';
+
 /** The Icelandic decimal comma is what students type and what the games print. */
 const toDot = (literal: string) => literal.trim().replace(',', '.');
 
@@ -120,12 +122,13 @@ function toScientific(exponential: string): string {
  *
  *  - it writes a dot where Icelandic writes a comma, and `1.20e+3` where the
  *    course writes `1,20 × 10³`;
- *  - **some values cannot be written to the asked-for precision in plain
- *    decimal at all.** 60,221 to two significant figures is `60` — and by rule 4
- *    a written `60` claims *one* figure, because its trailing zero has no
- *    decimal point to make it count. The only honest way to write it is
- *    `6,0 × 10¹`. That is not a rendering quirk to paper over; it is why
- *    scientific notation exists, and Stig 0 says so.
+ *  - **some values cannot be written plainly to the asked-for precision
+ *    without a trailing comma.** 60,221 to two significant figures is `60` — and
+ *    by rule 4 a written `60` claims *one* figure, because its trailing zero has
+ *    no decimal comma to make it count. `60,` would claim two, by the same rule,
+ *    but a comma with nothing after it is easy to misread; the clear way to
+ *    write it is `6,0 × 10¹`, and Stig 0 says so. (Stig 0 grades `60,` correct
+ *    all the same: rule 4 is the game's own rule.)
  *
  * So the result is verified before it is returned, and falls back to scientific
  * notation whenever plain decimal would misstate the precision.
@@ -176,4 +179,57 @@ export function sigFigsAfterMultiply(inputs: (string | null)[]): number {
 export function decimalPlacesAfterAdd(inputs: string[]): number {
   if (inputs.length === 0) throw new RangeError('Nothing to add');
   return Math.min(...inputs.map(countDecimalPlaces));
+}
+
+/**
+ * The digits field of a two-field answer takes a written number and nothing
+ * else: a comma or a point, optionally already in `e` notation (`6,0e1`), but
+ * no `×`, `^` or superscript — the power of ten has its own field.
+ */
+const WRITTEN_DIGITS = /^[+-]?(\d+[.,]?\d*|[.,]\d+)(e[+-]?\d+)?$/i;
+const WRITTEN_POWER = /^([+-]?\d+)?$/;
+
+/**
+ * Read an answer typed as digits and an optional power of ten — the platform's
+ * two-field shape for scientific notation (`ScientificEntry`, as in
+ * `3-ar/leysnijafnvaegi`), because a phone's decimal keypad has no `×` and no
+ * `e`. An empty power means the number is written plainly.
+ *
+ * **Strict, and that is the point.** `parseStudentNumber` is `parseFloat`
+ * underneath and stops at the first character it cannot read, so `6,0 × 10¹`
+ * in one field reads as 6 — a tenth of the number. Stig 0 read its own printed
+ * answer that way and so marked `6,0` correct for sixty; Stig 3 read a
+ * student's `1,08 × 10⁹` as 1,08 and marked it wrong. Anything the fields
+ * cannot hold as written comes back `null`, so the caller can ask again instead
+ * of grading a fragment.
+ *
+ * Returns the digits as written — the significant figures are counted on them,
+ * never on the value — and the value of the whole number, power included.
+ */
+export function readWritten(entry: ScientificEntry): { digits: string; value: number } | null {
+  const digits = entry.mantissa.replace(/\s/g, '');
+  const power = entry.exponent.replace(/\s/g, '').replace(/\u2212/g, '-');
+  if (!WRITTEN_DIGITS.test(digits) || !WRITTEN_POWER.test(power)) return null;
+  // A power in both fields (`6,0e1` and then 1 again) is two answers, not one.
+  if (power !== '' && /e/i.test(digits)) return null;
+  // Built as a literal rather than multiplied, so `4,57` and -3 give 0.00457
+  // exactly and not a float a hair away from it.
+  const value = Number(
+    power === '' ? digits.replace(',', '.') : `${digits.replace(',', '.')}e${power}`
+  );
+  return Number.isFinite(value) ? { digits, value } : null;
+}
+
+/**
+ * Flip the sign of a typed power of ten: `5` → `-5`, `-5` → `5`, empty → `-`.
+ *
+ * An iPhone's decimal keypad has no minus key, so a negative power could not be
+ * typed at all without this. Same behaviour as `3-ar/jafnvaegisfasti`'s
+ * `ScientificInput`; games do not import from each other. An explicit `+5`
+ * flips to `-5`, not `-+5`, which `readWritten` could not read.
+ */
+export function toggleSign(value: string): string {
+  const trimmed = value.trim();
+  if (trimmed.startsWith('-') || trimmed.startsWith('\u2212')) return trimmed.slice(1);
+  return `-${trimmed.replace(/^\+/, '')}`;
 }

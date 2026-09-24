@@ -1,4 +1,8 @@
-import { useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
+
+import { shuffleArray } from '@shared/utils';
+
+import { useRevealOnChange } from '../utils/useRevealOnChange';
 
 interface Level3Props {
   onComplete: (score: number) => void;
@@ -45,8 +49,7 @@ const challenges: Challenge[] = [
     title: 'Formhleðsla - Formúlan',
     type: 'calculate_fc',
     molecule: 'Formhleðsla',
-    description:
-      'Formhleðsla (formal charge) segir til um hvernig rafeindum er dreift á atóm í Lewis-formúlu.',
+    description: 'Formhleðsla segir til um hvernig rafeindum er dreift á atóm í Lewis-formúlu.',
     question: 'Hvaða formúla er notuð til að reikna formhleðslu?',
     correctAnswer: 'fc_formula',
     options: [
@@ -71,7 +74,7 @@ const challenges: Challenge[] = [
     ],
     hint: 'Bundnar rafeindir eru sameiginlegar á milli atóma',
     explanation:
-      'FC = V - (L + ½B) þar sem V = gildisrafeindir, L = lone pair rafeindir, B = bundin rafeindir.',
+      'FC = V - (L + ½B) þar sem V = gildisrafeindir, L = óbundnar rafeindir, B = bundnar rafeindir.',
   },
   {
     id: 2,
@@ -79,7 +82,7 @@ const challenges: Challenge[] = [
     type: 'calculate_fc',
     molecule: 'H₂O',
     description:
-      'Í vatni hefur súrefni 2 einstæð pör (4 óbundnar rafeindir) og 2 tengsl (4 bundnar rafeindir).',
+      'Í vatni hefur súrefni 2 stök pör (4 óbundnar rafeindir) og 2 tengsl (4 bundnar rafeindir).',
     atoms: [
       {
         symbol: 'O',
@@ -120,7 +123,7 @@ const challenges: Challenge[] = [
     type: 'calculate_fc',
     molecule: 'NH₄⁺',
     description:
-      'Í ammóníumjóninni er nitur tengt við 4 vetni með einföldum tengslum og engin einstæð pör.',
+      'Í ammóníumjóninni er nitur tengt við 4 vetni með einföldum tengslum og engin stök pör.',
     atoms: [
       {
         symbol: 'N',
@@ -203,7 +206,7 @@ const challenges: Challenge[] = [
     ],
     hint: 'Áttureglan er mikilvægari en lágmarks formhleðsla',
     explanation:
-      'Í CO er þreföld tengsl æskilegust þó hún gefi formhleðslur C⁻ og O⁺, vegna þess að þá uppfylla bæði atóm átturegluna.',
+      'Í CO eru þreföld tengsl æskilegust þó þau gefi formhleðslur C⁻ og O⁺, vegna þess að þá uppfylla bæði atóm átturegluna.',
   },
   {
     id: 5,
@@ -239,7 +242,7 @@ const challenges: Challenge[] = [
     ],
     hint: 'Tvöfalda tengslin geta verið á sitt hvoru O-inu',
     explanation:
-      'NO₂⁻ hefur tvær samsvörunarformúlur þar sem tvöfalda tengslin "hoppa" á milli súrefnisatómanna. Raunverulega sameindina er meðaltal beggja.',
+      'NO₂⁻ hefur tvær samsvörunarformúlur þar sem tvöfalda tengslin "hoppa" á milli súrefnisatómanna. Raunverulega sameindin er meðaltal beggja.',
   },
   {
     id: 6,
@@ -276,11 +279,11 @@ const challenges: Challenge[] = [
     ],
     hint: 'Hvert súrefni getur haft tvöfalda tengið',
     explanation:
-      'CO₃²⁻ hefur þrjár samsvörunarformúlur. Raunveruleg tengsla-lengd er eins fyrir öll þrjú C-O tengslin (á milli einfalds og tvöfalds).',
+      'CO₃²⁻ hefur þrjár samsvörunarformúlur. Raunveruleg tengilengd er eins fyrir öll þrjú C-O tengslin (á milli einfalds og tvöfalds).',
   },
   {
     id: 7,
-    title: 'Raunveruleg sameindin',
+    title: 'Raunverulega sameindin',
     type: 'resonance',
     molecule: 'O₃',
     description: 'Ósón hefur tvær samsvörunarformúlur.',
@@ -291,11 +294,11 @@ const challenges: Challenge[] = [
         id: 'flips',
         text: 'Sameindin "flippar" milli formúla',
         correct: false,
-        explanation: 'Nei, sameindin er alltaf hybrid - hún breytist ekki.',
+        explanation: 'Nei, sameindin er alltaf vokblendingur - hún breytist ekki.',
       },
       {
         id: 'hybrid',
-        text: 'Sameindin er hybrid af öllum formúlum',
+        text: 'Sameindin er vokblendingur allra formúlanna',
         correct: true,
         explanation: 'Rétt! Raunverulega sameindin er stöðugt meðaltal allra samsvörunarformúla.',
       },
@@ -303,12 +306,12 @@ const challenges: Challenge[] = [
         id: 'one',
         text: 'Aðeins ein formúla er rétt',
         correct: false,
-        explanation: 'Báðar formúlur eru jafngildar og sameindin er hybrid.',
+        explanation: 'Báðar formúlur eru jafngildar og sameindin er vokblendingur þeirra.',
       },
     ],
     hint: 'Samsvörunarformúlur sýna takmarkanir Lewis-formúla',
     explanation:
-      'Samsvörunarformúlur eru ekki mismunandi form sameindarinnar. Raunverulega sameindin er einn "hybrid" sem er meðaltal allra samsvörunarformúla.',
+      'Samsvörunarformúlur eru ekki mismunandi form sameindarinnar. Raunverulega sameindin er einn vokblendingur sem er meðaltal allra samsvörunarformúla.',
   },
   {
     id: 8,
@@ -335,12 +338,12 @@ const challenges: Challenge[] = [
         id: 'negative',
         text: 'Setja neikvæða hleðslu á C',
         correct: false,
-        explanation: 'Neikvæð hleðsla ætti að vera á rafeinadrægnasta atóminu.',
+        explanation: 'Neikvæð hleðsla ætti að vera á rafneikvæðasta atóminu.',
       },
     ],
     hint: 'Stöðugri formúlur hafa lægri formhleðslur',
     explanation:
-      'Bestu Lewis-formúlur hafa: (1) Lágmarks formhleðslur, (2) Neikvæð hleðsla á rafeinadrægnasta atómi, (3) Uppfyllt átta.',
+      'Bestu Lewis-formúlur hafa: (1) Lágmarks formhleðslur, (2) Neikvæð hleðsla á rafneikvæðasta atómi, (3) Uppfyllt átta.',
   },
 ];
 
@@ -355,6 +358,17 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const [, setTotalHintsUsed] = useState(0);
 
   const challenge = challenges[currentChallenge];
+  const cardRef = useRef<HTMLDivElement>(null);
+  useRevealOnChange(cardRef, currentChallenge);
+
+  // The data holds the correct option second on 6 of the 8 challenges and first
+  // on the other two, so "the middle one" beat reading the question. Shuffled
+  // once per challenge, so the list holds still while the student answers.
+  // Grading reads each option's own `correct` flag, which travels with it.
+  const shuffledOptions = useMemo(
+    () => shuffleArray(challenges[currentChallenge].options ?? []),
+    [currentChallenge]
+  );
 
   const checkAnswer = () => {
     const correct = challenge.options?.find((opt) => opt.id === selectedAnswer)?.correct ?? false;
@@ -447,13 +461,13 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     return (
       <div className="flex items-center justify-center gap-2 py-4">
         {/* Bonding electrons on left */}
-        <div className="flex items-center">
+        <div className="flex items-center shrink-0">
           <div className="text-xs text-warm-500 mr-2">tengsl</div>
           {renderBonds(atom.bondingElectrons)}
         </div>
 
         {/* Atom with lone pairs */}
-        <div className="relative mx-4">
+        <div className="relative mx-2 sm:mx-4 shrink-0">
           <div className="w-16 h-16 rounded-full border-4 border-purple-500 bg-purple-100 flex items-center justify-center font-bold text-xl text-purple-800">
             {atom.symbol}
           </div>
@@ -465,7 +479,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         </div>
 
         {/* Electron count summary */}
-        <div className="text-xs text-warm-600 ml-4 text-left">
+        <div className="text-xs text-warm-600 ml-2 sm:ml-4 text-left whitespace-nowrap">
           <div>V = {atom.valenceElectrons}</div>
           <div>L = {atom.lonePairElectrons}</div>
           <div>B = {atom.bondingElectrons}</div>
@@ -579,7 +593,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
           >
             <span>&larr;</span> Til baka
           </button>
@@ -600,8 +614,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <h2 className="text-2xl font-bold text-purple-800 mb-2">{challenge.title}</h2>
+        <div ref={cardRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-purple-800 mb-2">{challenge.title}</h2>
 
           {challenge.molecule && (
             <div className="inline-block bg-purple-50 px-4 py-2 rounded-lg mb-4">
@@ -673,7 +687,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
           {/* Options */}
           <div className="space-y-3 mb-6">
-            {challenge.options?.map((option) => (
+            {shuffledOptions.map((option) => (
               <button
                 key={option.id}
                 onClick={() => !showResult && setSelectedAnswer(option.id)}
@@ -709,7 +723,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 setShowHint(true);
                 setTotalHintsUsed((prev) => prev + 1);
               }}
-              className="text-purple-600 hover:text-purple-800 text-sm underline mb-4"
+              className="text-purple-600 hover:text-purple-800 text-sm underline mb-4 pointer-coarse:min-h-11"
             >
               Sýna vísbendingu
             </button>
@@ -769,7 +783,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               <strong>V</strong> = Gildisrafeindir (frá lotukerfinu)
             </li>
             <li>
-              <strong>L</strong> = Óbundnar rafeindir (lone pairs)
+              <strong>L</strong> = Óbundnar rafeindir (í stökum pörum)
             </li>
             <li>
               <strong>B</strong> = Bundnar rafeindir (í tengslum)

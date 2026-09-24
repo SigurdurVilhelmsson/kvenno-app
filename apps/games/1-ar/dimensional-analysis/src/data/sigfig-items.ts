@@ -50,9 +50,9 @@ export const RULES: Rule[] = [
   {
     n: 3,
     title: 'Núll fremst telja aldrei',
-    body: 'Þau segja bara hvar kommann stendur — þau mæla ekkert.',
+    body: 'Þau segja bara hvar komman stendur — þau mæla ekkert.',
     examples: [
-      { written: '0,5', count: 1, why: 'núllið fremst staðsetur bara kommann' },
+      { written: '0,5', count: 1, why: 'núllið fremst staðsetur bara kommuna' },
       { written: '0,00450', count: 3, why: 'aðeins 4, 5 og aftasta 0 eru markverð' },
     ],
   },
@@ -62,7 +62,7 @@ export const RULES: Rule[] = [
     body: 'Þetta er reglan sem mestu skiptir — og sú eina sem breytir merkingu tölunnar eftir því hvernig hún er skrifuð.',
     examples: [
       { written: '1200', count: 2, why: 'engin komma, svo núllin aftast telja ekki' },
-      { written: '1200,', count: 4, why: 'kommann gerir bæði núllin markverð' },
+      { written: '1200,', count: 4, why: 'komman gerir bæði núllin markverð' },
       { written: '2,50', count: 3, why: 'núllið aftast er á eftir kommu, svo það telur' },
     ],
   },
@@ -93,7 +93,7 @@ export const COUNT_ITEMS: CountItem[] = [
     'c3',
     '0,0032',
     3,
-    'Núllin fremst staðsetja aðeins kommann og telja aldrei (regla 3). Aðeins 3 og 2 eru markverð.'
+    'Núllin fremst staðsetja aðeins kommuna og telja aldrei (regla 3). Aðeins 3 og 2 eru markverð.'
   ),
   count(
     'c4',
@@ -130,7 +130,8 @@ const round = (id: string, value: number, figures: number, context: string): Rou
 /**
  * Writing to a precision. `r3` is the one that teaches the hardest point: the
  * trailing zero is not decoration, and leaving it off understates the answer.
- * `r5` cannot be written in plain decimal at all.
+ * `r5` cannot be written plainly to two figures without a trailing comma
+ * (rule 4), which is why its printed answer is `6,0 × 10¹`.
  */
 export const ROUND_ITEMS: RoundItem[] = [
   round('r1', 1234, 2, 'Vogin sýnir 1234 g en hún er aðeins nákvæm upp á tvo markverða stafi.'),

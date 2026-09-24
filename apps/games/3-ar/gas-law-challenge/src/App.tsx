@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 
 import { ErrorBoundary, FadePresence } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
@@ -66,6 +66,7 @@ function App() {
     setShowHint(0);
     setShowSolution(false);
     setFeedback(null);
+    setValidationError(null);
     setTimeRemaining(mode === 'challenge' ? 90 : null);
     const needsLawSelection = mode === 'practice' && level !== 1;
     setGameStep(needsLawSelection ? 'select-law' : 'solve');
@@ -100,58 +101,52 @@ function App() {
     setGameStep('solve');
   };
 
+  // The clock runs only while the question is on screen, and running out ends the question
+  // once. It used to act on `timeRemaining === 0` whatever the screen, so leaving the
+  // feedback screen re-ran it: the answer was graded again and "Valmynd" bounced back.
   useEffect(() => {
-    if (
-      screen === 'game' &&
-      gameMode === 'challenge' &&
-      timeRemaining !== null &&
-      timeRemaining > 0
-    ) {
+    if (screen !== 'game' || gameMode !== 'challenge' || timeRemaining === null) return;
+    if (timeRemaining > 0) {
       const timer = setTimeout(() => {
         setTimeRemaining(timeRemaining - 1);
       }, 1000);
       return () => clearTimeout(timer);
-    } else if (timeRemaining === 0) {
-      checkUserAnswer();
     }
+    timeUp();
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only trigger on screen/mode/timer state changes
   }, [screen, gameMode, timeRemaining]);
 
-  const checkUserAnswer = () => {
+  /** Why a parsed answer cannot be graded, or null when it can. */
+  const answerProblem = (userNum: number): string | null => {
+    if (isNaN(userNum)) return 'Vinsamlegast sláðu inn gilt númer';
+    if (userNum < 0) return 'Gildi má ekki vera neikvætt';
+    if (userNum === 0) return 'Gildi má ekki vera núll';
+    if (userNum > 1_000_000) return 'Gildi er of hátt — athugaðu einingarnar';
+    return null;
+  };
+
+  /** End the question. `null` means the time ran out before a readable answer was given. */
+  const finishQuestion = (userNum: number | null) => {
     if (!currentQuestion) return;
 
-    const userNum = parseStudentNumber(userAnswer);
-    if (isNaN(userNum)) {
-      setValidationError('Vinsamlegast sláðu inn gilt númer');
-      return;
-    }
-    if (userNum < 0) {
-      setValidationError('Gildi má ekki vera neikvætt');
-      return;
-    }
-    if (userNum === 0) {
-      setValidationError('Gildi má ekki vera núll');
-      return;
-    }
-    if (userNum > 1_000_000) {
-      setValidationError('Gildi er of hátt — athugaðu einingarnar');
-      return;
-    }
-    setValidationError(null);
-
-    const isCorrect = checkAnswer(userNum, currentQuestion.answer, currentQuestion.tolerance);
-    const error = calculateError(userNum, currentQuestion.answer);
-
+    let isCorrect = false;
     let points = 0;
     let message: string;
 
-    if (isCorrect) {
-      points = 100;
-      if (error < 1) points = 150;
-      if (gameMode === 'challenge' && timeRemaining && timeRemaining > 60) points += 50;
-      message = error < 1 ? 'Fullkomið! Mjög nákvæmt svar! ⭐' : 'Rétt! Innan vikmarka ✓';
+    if (userNum === null) {
+      message = 'Tíminn rann út!';
     } else {
-      message = error < 5 ? 'Næstum rétt! Reyndu aftur.' : 'Ekki rétt. Athugaðu útreikninga þína.';
+      isCorrect = checkAnswer(userNum, currentQuestion.answer, currentQuestion.tolerance);
+      const error = calculateError(userNum, currentQuestion.answer);
+      if (isCorrect) {
+        points = 100;
+        if (error < 1) points = 150;
+        if (gameMode === 'challenge' && timeRemaining && timeRemaining > 60) points += 50;
+        message = error < 1 ? 'Fullkomið! Mjög nákvæmt svar! ⭐' : 'Rétt! Innan vikmarka ✓';
+      } else {
+        message =
+          error < 5 ? 'Næstum rétt! Reyndu aftur.' : 'Ekki rétt. Athugaðu útreikninga þína.';
+      }
     }
 
     const newQuestionsAnswered = sessionQuestionsAnswered + 1;
@@ -175,11 +170,38 @@ function App() {
       points,
       userAnswer: userNum,
       correctAnswer: currentQuestion.answer,
-      difference: Math.abs(userNum - currentQuestion.answer),
+      difference: userNum === null ? null : Math.abs(userNum - currentQuestion.answer),
       explanation: currentQuestion.solution.steps.join(' → '),
     });
+    setValidationError(null);
     setScreen('feedback');
   };
+
+  const checkUserAnswer = () => {
+    if (!currentQuestion) return;
+
+    const userNum = parseStudentNumber(userAnswer);
+    const problem = answerProblem(userNum);
+    if (problem) {
+      setValidationError(problem);
+      return;
+    }
+    finishQuestion(userNum);
+  };
+
+  // Time is up: grade what is in the field if it can be read, otherwise record the question
+  // as unanswered. Only showing the validation message left the question open at 0 s forever.
+  const timeUp = () => {
+    const userNum = parseStudentNumber(userAnswer);
+    finishQuestion(answerProblem(userNum) ? null : userNum);
+  };
+
+  // Each screen opens at its top. On a phone "Athuga Svar" and "Næsta spurning" sit far down
+  // a long page, and the next screen used to open at that same scroll offset: past the
+  // verdict banner, or past the new question's scenario.
+  useEffect(() => {
+    if (window.scrollY > 0) window.scrollTo({ top: 0 });
+  }, [screen, currentQuestion]);
 
   const getHint = () => {
     if (!currentQuestion || showHint >= currentQuestion.hints.length) return;
@@ -187,26 +209,44 @@ function App() {
     setSessionHintsUsed(sessionHintsUsed + 1);
   };
 
+  // The window listener reads the handlers through a ref, so it always sees this render's
+  // state. It used to be a closure refreshed only when the typed answer changed, and it
+  // graded with the clock as it stood at the last keystroke (a stale time bonus).
+  const keyHandlers = useRef({ checkUserAnswer, getHint, screen, gameStep, showSolution });
+  useLayoutEffect(() => {
+    keyHandlers.current = { checkUserAnswer, getHint, screen, gameStep, showSolution };
+  });
+
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
-      if (screen !== 'game') return;
+      const current = keyHandlers.current;
+      if (current.screen !== 'game' || e.ctrlKey || e.metaKey || e.altKey) return;
+
+      const target = e.target instanceof Element ? e.target : null;
+      // A key typed into the answer field belongs to the field: H and S are letters there,
+      // not shortcuts (S used to be swallowed and to open the worked solution), and Enter
+      // submits through the field's own handler, so it must not be checked a second time.
+      if (target?.closest('input, textarea, select')) return;
 
       if (e.key === 'Enter') {
+        // Enter on a focused button or link is that control's own action.
+        if (target?.closest('button, a')) return;
+        // While the law is still being chosen the answer field is disabled.
+        if (current.gameStep !== 'solve') return;
         e.preventDefault();
-        checkUserAnswer();
+        current.checkUserAnswer();
       } else if (e.key === 'h' || e.key === 'H') {
         e.preventDefault();
-        getHint();
+        current.getHint();
       } else if (e.key === 's' || e.key === 'S') {
         e.preventDefault();
-        setShowSolution(!showSolution);
+        setShowSolution(!current.showSolution);
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: keyboard handler uses current closure values
-  }, [screen, userAnswer, showSolution]);
+  }, []);
 
   return (
     <>

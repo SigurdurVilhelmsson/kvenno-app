@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
 import { useGameI18n, useGameProgress } from '@shared/hooks';
@@ -44,6 +44,19 @@ function App() {
 
   const { t, language, setLanguage } = useGameI18n({ gameTranslations });
 
+  // Each screen replaces the one before it in place, so the scroll position
+  // carried over: a student who scrolled down the menu to a level card started
+  // that level a screen or more below its top (on a phone, Stig 2 opened 584 px
+  // down, in the middle of its answer options). Start every screen at the top.
+  const firstScreen = useRef(true);
+  useEffect(() => {
+    if (firstScreen.current) {
+      firstScreen.current = false;
+      return;
+    }
+    window.scrollTo(0, 0);
+  }, [activeLevel]);
+
   const handleLevel0Complete = (score: number) => {
     updateProgress({
       level0Score: Math.max(progress.level0Score || 0, score),
@@ -53,13 +66,15 @@ function App() {
     setActiveLevel('menu');
   };
 
+  // Stig 1's last screen says "Áfram í Stig 2 →", so it goes there. It used to
+  // drop the student back on the menu instead.
   const handleLevel1Complete = (score: number) => {
     updateProgress({
       level1Score: Math.max(progress.level1Score || 0, score),
       level1Completed: true,
       totalGamesPlayed: progress.totalGamesPlayed + 1,
     });
-    setActiveLevel('menu');
+    setActiveLevel('level2');
   };
 
   const handleLevel2Complete = (score: number) => {
@@ -164,7 +179,7 @@ function App() {
             </ul>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
             <button
               onClick={() => setActiveLevel('menu')}
               className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
@@ -195,11 +210,11 @@ function App() {
         }
       />
       <div className="min-h-screen p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <p className="text-center text-warm-600 mb-4">{t('game.subtitle')}</p>
 
           {/* Pedagogical explanation */}
-          <div className="bg-orange-50 p-6 rounded-xl mb-8">
+          <div className="bg-orange-50 p-4 sm:p-6 rounded-xl mb-8">
             <h2 className="font-bold text-orange-800 mb-3">{t('menu.howItWorks')}</h2>
             <p className="text-orange-900 text-sm mb-4">{t('menu.howItWorksDesc')}</p>
             <div className="text-xs text-orange-700">{t('menu.inspiredBy')}</div>
@@ -215,12 +230,12 @@ function App() {
                 one is. */}
             <button
               onClick={() => setActiveLevel('level0')}
-              className="game-card w-full p-6 rounded-xl border-4 border-warm-400 bg-warm-50 hover:bg-warm-100 transition-all text-left"
+              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-warm-400 bg-warm-50 hover:bg-warm-100 transition-all text-left"
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
                 <div className="text-4xl">💡</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="text-xl font-bold text-warm-800">Rafkleyfi</span>
                     {progress.level0Completed && (
                       <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
@@ -246,12 +261,12 @@ function App() {
             {/* Level 1 - Always available */}
             <button
               onClick={() => setActiveLevel('level1')}
-              className="game-card w-full p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
+              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
                 <div className="text-4xl">🔬</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="text-xl font-bold text-blue-800">
                       {t('levels.level1.name')}
                     </span>
@@ -275,12 +290,12 @@ function App() {
             {/* Level 2 */}
             <button
               onClick={() => setActiveLevel('level2')}
-              className="game-card w-full p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left"
+              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left"
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
                 <div className="text-4xl">🤔</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="text-xl font-bold text-green-800">
                       {t('levels.level2.name')}
                     </span>
@@ -306,12 +321,12 @@ function App() {
             {/* Level 3 */}
             <button
               onClick={() => setActiveLevel('level3')}
-              className="game-card w-full p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left"
+              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left"
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
                 <div className="text-4xl">📐</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="text-xl font-bold text-purple-800">
                       {t('levels.level3.name')}
                     </span>
@@ -342,7 +357,7 @@ function App() {
                 <h3 className="font-semibold text-warm-700">{t('menu.progress')}</h3>
                 <button
                   onClick={resetProgress}
-                  className="text-xs text-warm-500 hover:text-red-500 transition-colors"
+                  className="text-xs text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3.5 pointer-coarse:-my-3.5 pointer-coarse:px-2 pointer-coarse:-mx-2"
                 >
                   {t('menu.reset')}
                 </button>
@@ -350,14 +365,16 @@ function App() {
               <div className="grid grid-cols-3 gap-3 text-center text-sm">
                 <div className="bg-blue-50 rounded-lg p-2">
                   <div className="text-lg font-bold text-blue-600">
+                    {/* Four levels since Stig 0 landed; this counted three. */}
                     {
                       [
+                        progress.level0Completed,
                         progress.level1Completed,
                         progress.level2Completed,
                         progress.level3Completed,
                       ].filter(Boolean).length
                     }
-                    /3
+                    /4
                   </div>
                   <div className="text-xs text-warm-600">{t('menu.levelsCompleted')}</div>
                 </div>

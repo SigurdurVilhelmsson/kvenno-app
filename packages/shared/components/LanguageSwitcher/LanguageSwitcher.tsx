@@ -68,7 +68,7 @@ export function LanguageSwitcher({
         <select
           value={language}
           onChange={(e) => onLanguageChange(e.target.value as Language)}
-          className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 bg-white hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
+          className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 bg-white hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer pointer-coarse:min-h-11"
           aria-label="Select language"
         >
           {availableLanguages.map((lang) => (
@@ -92,7 +92,7 @@ export function LanguageSwitcher({
           <button
             key={lang}
             onClick={() => onLanguageChange(lang)}
-            className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
+            className={`px-3 py-1.5 text-sm rounded-lg transition-colors pointer-coarse:min-h-11 ${
               language === lang
                 ? 'bg-blue-500 text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -107,10 +107,13 @@ export function LanguageSwitcher({
     );
   }
 
-  // Compact variant - flags only
+  // Compact variant - flags only. On a touch screen each flag is a full 44 px
+  // target, and they sit flush so three still fit beside a phone header's
+  // title; the active flag is not enlarged there, since a scaled 44 px box
+  // would crowd its neighbours and the header's edges.
   return (
     <div
-      className={`flex items-center gap-0.5 ${className}`}
+      className={`flex items-center gap-0.5 pointer-coarse:gap-0 ${className}`}
       role="group"
       aria-label="Language selection"
     >
@@ -118,9 +121,9 @@ export function LanguageSwitcher({
         <button
           key={lang}
           onClick={() => onLanguageChange(lang)}
-          className={`p-1.5 text-lg rounded transition-all ${
+          className={`p-1.5 text-lg rounded transition-all pointer-coarse:min-w-11 pointer-coarse:min-h-11 ${
             language === lang
-              ? 'bg-blue-100 scale-110'
+              ? 'bg-blue-100 scale-110 pointer-coarse:scale-100'
               : 'hover:bg-gray-100 opacity-60 hover:opacity-100'
           }`}
           aria-pressed={language === lang}

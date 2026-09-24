@@ -41,7 +41,10 @@ const SPECIES = ['CO', 'H₂O', 'CO₂', 'H₂'] as const;
 
 export function KannaScreen({ onComplete, onBack }: Props) {
   const [amounts, setAmounts] = useState<Record<string, number>>(PRESETS[0].amounts);
-  const [seen, setSeen] = useState<number[]>([]);
+  // The first mixture is on screen from the start, highlighted as the one
+  // chosen, so it counts as tried: otherwise the counter reads 0/4 beside its
+  // result, and a student who taps the other three is left at 3/4.
+  const [seen, setSeen] = useState<number[]>([0]);
 
   const q = reactionQuotient(reaction, amounts);
   const direction = directionFromQ(q, K);
@@ -66,28 +69,34 @@ export function KannaScreen({ onComplete, onBack }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-6 shadow-md md:p-8">
-        <div className="mb-6 flex items-baseline justify-between">
-          <h2 className="text-2xl font-bold text-warm-800">Kanna — hvert endar blandan?</h2>
-          <button onClick={onBack} className="text-sm text-warm-500 underline">
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
+        <div className="mb-4 flex items-baseline justify-between gap-3 sm:mb-6">
+          <h2 className="min-w-0 text-xl font-bold text-warm-800 sm:text-2xl">
+            Kanna — hvert endar blandan?
+          </h2>
+          <button
+            onClick={onBack}
+            className="shrink-0 whitespace-nowrap text-sm text-warm-500 underline pointer-coarse:-my-3 pointer-coarse:-mr-3 pointer-coarse:px-3 pointer-coarse:py-3"
+          >
             Til baka
           </button>
         </div>
 
-        <div className="mb-6 rounded-xl border-2 border-warm-200 bg-warm-50 p-5">
+        <div className="mb-4 rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:mb-6 sm:p-5">
           <p className="mb-2 font-mono text-lg text-warm-800">{equationOf(reaction)}</p>
           <p className="text-sm text-warm-600">
             Vatnsgashvarfið við 800 °C. Veldu upphafsblöndu og sjáðu hvar hún endar.
           </p>
         </div>
 
-        <div className="mb-6 grid grid-cols-2 gap-3">
+        <div className="mb-4 grid grid-cols-2 gap-2 sm:mb-6 sm:gap-3">
           {PRESETS.map((preset, index) => (
             <button
               key={preset.label}
               type="button"
+              aria-pressed={amounts === preset.amounts}
               onClick={() => choose(index)}
-              className={`game-btn rounded-lg border-2 px-4 py-3 text-sm font-semibold transition-colors ${
+              className={`game-btn rounded-lg border-2 px-2 py-3 text-sm font-semibold transition-colors sm:px-4 ${
                 amounts === preset.amounts
                   ? 'border-kvenno-orange bg-orange-50 text-kvenno-orange-dark'
                   : 'border-warm-300 bg-white text-warm-700 hover:border-warm-400'
@@ -99,35 +108,43 @@ export function KannaScreen({ onComplete, onBack }: Props) {
           ))}
         </div>
 
-        <div className="mb-6 grid gap-4 md:grid-cols-2">
-          <div className="rounded-lg border-2 border-warm-200 p-4">
+        {/* Start and end side by side even on a phone: the comparison is the
+            point of the phase, and stacked, the settled mixture a preset
+            produces lands below the fold of the button that chose it. */}
+        <div className="mb-4 grid grid-cols-2 gap-2 sm:mb-6 sm:gap-4">
+          <div className="min-w-0 rounded-lg border-2 border-warm-200 p-2.5 sm:p-4">
             <h3 className="mb-3 font-semibold text-warm-800">Í upphafi</h3>
-            <dl className="space-y-1 font-mono text-sm text-warm-700">
+            <dl className="space-y-1 font-mono text-xs text-warm-700 min-[360px]:text-sm">
               {SPECIES.map((s) => (
-                <div key={s} className="flex justify-between">
+                <div key={s} className="flex justify-between gap-1">
                   <dt>[{s}]</dt>
-                  <dd>{amounts[s].toFixed(4).replace('.', ',')} M</dd>
+                  <dd className="whitespace-nowrap">{amounts[s].toFixed(4).replace('.', ',')} M</dd>
                 </div>
               ))}
             </dl>
-            <p className="mt-3 border-t border-warm-200 pt-3 font-mono text-sm text-warm-800">
-              Q = {Number.isFinite(q) ? formatScientific(q, 3) : '∞'}
+            <p className="mt-3 border-t border-warm-200 pt-3 font-mono text-xs text-warm-800 min-[360px]:text-sm">
+              Q ={' '}
+              <span className="whitespace-nowrap">
+                {Number.isFinite(q) ? formatScientific(q, 3) : '∞'}
+              </span>
             </p>
           </div>
 
-          <div className="rounded-lg border-2 border-green-200 bg-green-50 p-4">
+          <div className="min-w-0 rounded-lg border-2 border-green-200 bg-green-50 p-2.5 sm:p-4">
             <h3 className="mb-3 font-semibold text-green-900">Í jafnvægi</h3>
             {settled ? (
               <>
-                <dl className="space-y-1 font-mono text-sm text-green-900">
+                <dl className="space-y-1 font-mono text-xs text-green-900 min-[360px]:text-sm">
                   {SPECIES.map((s) => (
-                    <div key={s} className="flex justify-between">
+                    <div key={s} className="flex justify-between gap-1">
                       <dt>[{s}]</dt>
-                      <dd>{settled[s].toFixed(4).replace('.', ',')} M</dd>
+                      <dd className="whitespace-nowrap">
+                        {settled[s].toFixed(4).replace('.', ',')} M
+                      </dd>
                     </div>
                   ))}
                 </dl>
-                <p className="mt-3 border-t border-green-200 pt-3 font-mono text-sm font-semibold text-green-900">
+                <p className="mt-3 border-t border-green-200 pt-3 font-mono text-xs font-semibold text-green-900 min-[360px]:text-sm">
                   Q = {settledQ!.toFixed(2).replace('.', ',')}
                 </p>
               </>
@@ -140,7 +157,7 @@ export function KannaScreen({ onComplete, onBack }: Props) {
         </div>
 
         <div
-          className={`mb-6 rounded-lg border-2 p-4 ${
+          className={`mb-4 rounded-lg border-2 p-4 sm:mb-6 ${
             direction === 'afram'
               ? 'border-blue-300 bg-blue-50'
               : direction === 'afturabak'
@@ -166,7 +183,7 @@ export function KannaScreen({ onComplete, onBack }: Props) {
         </div>
 
         {allSeen && (
-          <div className="mb-6 rounded-lg border-2 border-purple-300 bg-purple-50 p-4">
+          <div className="mb-4 rounded-lg border-2 border-purple-300 bg-purple-50 p-4 sm:mb-6">
             <h3 className="mb-2 font-semibold text-purple-900">Tókstu eftir þessu?</h3>
             <p className="text-sm text-purple-900">
               Upphafsblöndurnar fjórar eru gjörólíkar — ein hafði ekkert myndefni, önnur ekkert

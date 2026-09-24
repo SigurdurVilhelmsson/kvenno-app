@@ -1,11 +1,23 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 
 import { ParticleSimulation, PARTICLE_TYPES, PHYSICS_PRESETS } from '@shared/components';
+import { useContainerWidth } from '@shared/components/ResponsiveContainer';
 import { formatDecimal } from '@shared/utils';
 
 import type { GasLawQuestion, Variable } from '../types';
 import { R } from '../types';
 import { unitFor } from '../utils/gas-calculations';
+import {
+  GAUGE_CX,
+  GAUGE_CY,
+  GAUGE_HEIGHT,
+  GAUGE_LABEL_RADIUS,
+  GAUGE_RADIUS,
+  GAUGE_WIDTH,
+  gaugePoint,
+  pressureToAngle,
+  simulatorLayout,
+} from '../utils/simulator-layout';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -31,7 +43,6 @@ const LABELS: Record<Variable, string> = {
 
 /** Max ranges for scaling the visual elements */
 const V_MAX = 100; // L — clamped for visual scaling
-const P_MAX = 10; // atm
 
 /** Map volume to container width (200..400 px) */
 function volumeToWidth(v: number): number {
@@ -44,53 +55,91 @@ function molesToParticles(n: number): number {
   return Math.min(Math.max(Math.floor(n * 30), 10), 80);
 }
 
-/** Map pressure to gauge needle angle (0 atm = -90deg left, P_MAX = +90deg right) */
-function pressureToAngle(p: number): number {
-  const clamped = Math.min(Math.max(p, 0), P_MAX);
-  return -90 + (clamped / P_MAX) * 180;
+/**
+ * What the simulator may say about one variable.
+ *
+ * - `known`: the question gives it (or, once answered, it is the answer): drawn and printed.
+ * - `sought`: the question asks for it: printed `?`, drawn at a neutral value.
+ * - `unstated`: the question never gives it (a quantity held constant in the two-state
+ *   laws): printed `—`, drawn at a neutral value.
+ *
+ * The unknown used to be drawn and printed from the answer key before the student had
+ * answered, and unstated variables were invented as P = 0, n = 0 and T = 300 K.
+ */
+type Readout = { kind: 'known'; value: number } | { kind: 'sought' } | { kind: 'unstated' };
+
+const VARIABLES: Variable[] = ['P', 'V', 'T', 'n'];
+
+/** Drawn for a variable with no value to show: mid-scale, so the picture suggests nothing. */
+const NEUTRAL: Record<Variable, number> = { P: 0, V: 50, T: 300, n: 1 };
+
+function getReadouts(
+  question: GasLawQuestion,
+  showAnswer: boolean,
+  correctAnswer: number
+): Record<Variable, Readout> {
+  const readouts = {} as Record<Variable, Readout>;
+  for (const variable of VARIABLES) {
+    const given = question.given[variable];
+    if (variable === question.find) {
+      // Only an ideal-gas question describes a single state. In the two-state laws the
+      // answer belongs to the second state while the givens describe the first, so the
+      // picture never mixes them.
+      readouts[variable] =
+        showAnswer && question.gasLaw === 'ideal'
+          ? { kind: 'known', value: correctAnswer }
+          : { kind: 'sought' };
+    } else {
+      readouts[variable] = given ? { kind: 'known', value: given.value } : { kind: 'unstated' };
+    }
+  }
+  return readouts;
 }
 
-/** Get effective values for all four variables, filling in the unknown with the answer */
-function getEffectiveValues(question: GasLawQuestion, useAnswer: boolean, correctAnswer?: number) {
-  const g = question.given;
+/** The value to draw a variable at. */
+function drawn(readouts: Record<Variable, Readout>, variable: Variable): number {
+  const readout = readouts[variable];
+  return readout.kind === 'known' ? readout.value : NEUTRAL[variable];
+}
 
-  let P = g.P?.value ?? 0;
-  let V = g.V?.value ?? 0;
-  let T = g.T?.value ?? 300;
-  let n = g.n?.value ?? 0;
-
-  // Fill in the unknown variable
-  const answerValue = useAnswer && correctAnswer != null ? correctAnswer : question.answer;
-
-  if (question.find === 'P') P = answerValue;
-  if (question.find === 'V') V = answerValue;
-  if (question.find === 'T') T = answerValue;
-  if (question.find === 'n') n = answerValue;
-
-  return { P, V, T, n };
+/** The text to print for a variable: its value, `?` if sought, `—` if unstated. */
+function shown(readout: Readout, format: (value: number) => string): string {
+  if (readout.kind === 'known') return format(readout.value);
+  return readout.kind === 'sought' ? '?' : '—';
 }
 
 // ── Pressure Gauge (SVG) ───────────────────────────────────────────────────
 
 function PressureGauge({
-  pressure,
+  readout,
   animateTransition,
+  scale,
 }: {
-  pressure: number;
+  readout: Readout;
   animateTransition: boolean;
+  /** Drawing scale; above 1 the scale labels are also set larger so they stay readable. */
+  scale: number;
 }) {
-  const angle = pressureToAngle(pressure);
+  // No needle unless the pressure is known: a needle parked anywhere reads as a value.
+  const pressure = readout.kind === 'known' ? readout.value : null;
+  const angle = pressure === null ? 0 : pressureToAngle(pressure);
   const transitionStyle = animateTransition
     ? 'transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)'
     : 'none';
+  const labelFontSize = scale > 1 ? 8.5 : 6;
 
   // Tick marks at 0, 2, 4, 6, 8, 10 atm
   const ticks = [0, 2, 4, 6, 8, 10];
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center shrink-0">
       <span className="text-xs text-warm-300 font-semibold mb-1">{LABELS.P}</span>
-      <svg width="100" height="65" viewBox="0 0 100 65" aria-label="Þrýstingsmælir">
+      <svg
+        width={GAUGE_WIDTH * scale}
+        height={GAUGE_HEIGHT * scale}
+        viewBox={`0 0 ${GAUGE_WIDTH} ${GAUGE_HEIGHT}`}
+        aria-label="Þrýstingsmælir"
+      >
         {/* Background arc */}
         <path
           d="M 10 55 A 40 40 0 0 1 90 55"
@@ -115,31 +164,28 @@ function PressureGauge({
           strokeLinecap="round"
         />
 
-        {/* Tick marks and labels */}
+        {/* Tick marks and labels, on the needle's own sweep (0 atm left, P_MAX right) */}
         {ticks.map((val) => {
-          const tickAngle = -90 + (val / P_MAX) * 180;
-          const rad = (tickAngle * Math.PI) / 180;
-          const cx = 50;
-          const cy = 55;
-          const r = 40;
-          const innerR = r - 6;
-          const labelR = r + 8;
-          const x1 = cx + innerR * Math.cos(rad);
-          const y1 = cy + innerR * Math.sin(rad);
-          const x2 = cx + r * Math.cos(rad);
-          const y2 = cy + r * Math.sin(rad);
-          const lx = cx + labelR * Math.cos(rad);
-          const ly = cy + labelR * Math.sin(rad);
+          const inner = gaugePoint(val, GAUGE_RADIUS - 6);
+          const outer = gaugePoint(val, GAUGE_RADIUS);
+          const label = gaugePoint(val, GAUGE_LABEL_RADIUS);
           return (
             <g key={val}>
-              <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#94a3b8" strokeWidth="1" />
+              <line
+                x1={inner.x}
+                y1={inner.y}
+                x2={outer.x}
+                y2={outer.y}
+                stroke="#94a3b8"
+                strokeWidth="1"
+              />
               <text
-                x={lx}
-                y={ly}
+                x={label.x}
+                y={label.y}
                 textAnchor="middle"
                 dominantBaseline="middle"
                 fill="#94a3b8"
-                fontSize="6"
+                fontSize={labelFontSize}
               >
                 {val}
               </text>
@@ -148,29 +194,32 @@ function PressureGauge({
         })}
 
         {/* Needle */}
-        <g
-          style={{
-            transform: `rotate(${angle}deg)`,
-            transformOrigin: '50px 55px',
-            transition: transitionStyle,
-          }}
-        >
-          <line
-            x1={50}
-            y1={55}
-            x2={50}
-            y2={20}
-            stroke="#f36b22"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-        </g>
+        {pressure !== null && (
+          <g
+            data-needle
+            style={{
+              transform: `rotate(${angle}deg)`,
+              transformOrigin: `${GAUGE_CX}px ${GAUGE_CY}px`,
+              transition: transitionStyle,
+            }}
+          >
+            <line
+              x1={GAUGE_CX}
+              y1={GAUGE_CY}
+              x2={GAUGE_CX}
+              y2={20}
+              stroke="#f36b22"
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+          </g>
+        )}
 
         {/* Center dot */}
-        <circle cx={50} cy={55} r={3} fill="#f36b22" />
+        <circle cx={GAUGE_CX} cy={GAUGE_CY} r={3} fill="#f36b22" />
       </svg>
       <span className="text-xs text-warm-300 font-mono mt-0.5">
-        {formatDecimal(pressure, 1)} atm
+        {readout.kind === 'unstated' ? '—' : `${shown(readout, (p) => formatDecimal(p, 1))} atm`}
       </span>
     </div>
   );
@@ -179,18 +228,12 @@ function PressureGauge({
 // ── Equation Display ───────────────────────────────────────────────────────
 
 function EquationDisplay({
-  P,
-  V,
-  T,
-  n,
+  readouts,
   findVar,
   showAnswer,
   units,
 }: {
-  P: number;
-  V: number;
-  T: number;
-  n: number;
+  readouts: Record<Variable, Readout>;
   findVar: Variable;
   showAnswer: boolean;
   units: Record<Variable, string>;
@@ -199,14 +242,14 @@ function EquationDisplay({
   const normalClass = 'text-warm-300';
   const answerClass = showAnswer ? 'text-green-400 font-bold' : 'text-warm-500 font-bold';
 
-  function varSpan(label: string, value: number, unit: string, variable: Variable) {
+  function varSpan(label: string, unit: string, variable: Variable) {
     const isTarget = variable === findVar;
     return (
       <span className={isTarget ? answerClass : normalClass}>
         <span className={isTarget ? highlightClass : 'font-semibold'}>{label}</span>
         {' = '}
-        {isTarget && !showAnswer ? '?' : formatDecimal(value, 2)}{' '}
-        <span className="text-[10px]">{unit}</span>
+        {shown(readouts[variable], (value) => formatDecimal(value, 2))}{' '}
+        <span className="text-[10px] pointer-coarse:text-xs">{unit}</span>
       </span>
     );
   }
@@ -215,13 +258,13 @@ function EquationDisplay({
     <div className="bg-slate-800/60 rounded-lg px-3 py-2 text-xs font-mono">
       <div className="text-warm-400 font-bold text-center mb-1">PV = nRT</div>
       <div className="flex flex-wrap justify-center gap-x-3 gap-y-0.5">
-        {varSpan('P', P, units.P, 'P')}
-        {varSpan('V', V, units.V, 'V')}
-        {varSpan('n', n, units.n, 'n')}
-        {varSpan('T', T, units.T, 'T')}
+        {varSpan('P', units.P, 'P')}
+        {varSpan('V', units.V, 'V')}
+        {varSpan('n', units.n, 'n')}
+        {varSpan('T', units.T, 'T')}
       </div>
-      <div className="text-center text-warm-500 mt-1 text-[10px]">
-        R = {formatDecimal(R)} L·atm/(mol·K)
+      <div className="text-center text-warm-500 mt-1 text-[10px] pointer-coarse:text-xs">
+        R = {formatDecimal(R)} L·atm/(mól·K)
       </div>
     </div>
   );
@@ -235,11 +278,10 @@ export function GasLawSimulator({
   showAnswer = false,
   correctAnswer,
 }: GasLawSimulatorProps) {
-  // When showing the answer, use the correct answer for visualisation;
-  // otherwise show the "given" state (unknown variable uses the question answer
-  // so the simulation shows a realistic state from the start).
-  const values = useMemo(
-    () => getEffectiveValues(question, showAnswer, correctAnswer),
+  // Only what the question gives is drawn and printed; the unknown stays unknown until it
+  // has been answered correctly.
+  const readouts = useMemo(
+    () => getReadouts(question, showAnswer, correctAnswer ?? question.answer),
     [question, showAnswer, correctAnswer]
   );
 
@@ -253,35 +295,49 @@ export function GasLawSimulator({
     }),
     [question]
   );
-  const containerWidth = useMemo(() => volumeToWidth(values.V), [values.V]);
-  const containerHeight = 240;
+  const volume = drawn(readouts, 'V');
+  const containerWidth = useMemo(() => volumeToWidth(volume), [volume]);
+
+  // The row is measured so the container never grows past the space it has: on a phone it
+  // is capped to the row and the gauge moves underneath; on desktop nothing changes until
+  // the volume asks for more width than the column holds (it used to overflow there).
+  const rowRef = useRef<HTMLDivElement>(null);
+  const rowWidth = useContainerWidth(rowRef);
+  const layout = simulatorLayout(rowWidth, containerWidth);
+  // The physics runs in the box's content area (inside its 2px border), 1:1 with the canvas.
+  const worldWidth = Math.max(layout.width - 4, 1);
+  const worldHeight = layout.height - 4;
 
   // Particle count keyed to moles
-  const numParticles = useMemo(() => molesToParticles(values.n), [values.n]);
+  const moles = drawn(readouts, 'n');
+  const numParticles = useMemo(() => molesToParticles(moles), [moles]);
 
   // Temperature for particle speed
-  const temperature = values.T;
+  const temperature = drawn(readouts, 'T');
 
   // Transition duration for animated changes
   const animateTransition = showAnswer;
 
   return (
-    <div className="bg-warm-900 rounded-lg p-4">
-      {/* Simulator layout: container + gauge side by side */}
-      <div className="flex items-center gap-3 justify-center">
+    <div className="bg-warm-900 rounded-lg p-3 sm:p-4">
+      {/* Simulator layout: container + gauge side by side, gauge underneath on a narrow row */}
+      <div
+        ref={rowRef}
+        className={`flex items-center gap-3 justify-center ${layout.stacked ? 'flex-col' : ''}`}
+      >
         {/* Gas container with resizable width */}
         <div
-          className="relative rounded border-2 border-slate-600 overflow-hidden"
+          className="relative rounded border-2 border-slate-600 overflow-hidden shrink-0"
           style={{
-            width: containerWidth,
-            height: containerHeight,
+            width: layout.width,
+            height: layout.height,
             transition: animateTransition ? 'width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)' : 'none',
           }}
         >
           <ParticleSimulation
             container={{
-              width: containerWidth,
-              height: containerHeight,
+              width: worldWidth,
+              height: worldHeight,
               backgroundColor: '#0f172a',
             }}
             particleTypes={[PARTICLE_TYPES.reactantA]}
@@ -293,32 +349,39 @@ export function GasLawSimulator({
           />
 
           {/* Volume label overlay */}
-          <div className="absolute bottom-1 left-1/2 -translate-x-1/2 bg-slate-900/70 px-2 py-0.5 rounded text-[10px] text-warm-300 font-mono pointer-events-none">
-            V = {formatDecimal(values.V, 1)} {units.V}
-          </div>
+          {readouts.V.kind !== 'unstated' && (
+            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 whitespace-nowrap bg-slate-900/70 px-2 py-0.5 rounded text-[10px] pointer-coarse:text-xs text-warm-300 font-mono pointer-events-none">
+              V = {shown(readouts.V, (v) => formatDecimal(v, 1))} {units.V}
+            </div>
+          )}
 
           {/* Temperature label overlay */}
-          <div className="absolute top-1 right-1 bg-slate-900/70 px-1.5 py-0.5 rounded text-[10px] text-warm-300 font-mono pointer-events-none">
-            T = {Math.round(temperature)} K
-          </div>
+          {readouts.T.kind !== 'unstated' && (
+            <div className="absolute top-1 right-1 bg-slate-900/70 px-1.5 py-0.5 rounded text-[10px] pointer-coarse:text-xs text-warm-300 font-mono pointer-events-none">
+              T = {shown(readouts.T, (t) => String(Math.round(t)))} K
+            </div>
+          )}
 
           {/* Particle count overlay */}
-          <div className="absolute top-1 left-1 bg-slate-900/70 px-1.5 py-0.5 rounded text-[10px] text-warm-300 font-mono pointer-events-none">
-            {numParticles} agnir
-          </div>
+          {readouts.n.kind !== 'unstated' && (
+            <div className="absolute top-1 left-1 bg-slate-900/70 px-1.5 py-0.5 rounded text-[10px] pointer-coarse:text-xs text-warm-300 font-mono pointer-events-none">
+              {readouts.n.kind === 'known' ? numParticles : '?'} agnir
+            </div>
+          )}
         </div>
 
         {/* Pressure gauge */}
-        <PressureGauge pressure={values.P} animateTransition={animateTransition} />
+        <PressureGauge
+          readout={readouts.P}
+          animateTransition={animateTransition}
+          scale={layout.gaugeScale}
+        />
       </div>
 
       {/* Equation display */}
       <div className="mt-3">
         <EquationDisplay
-          P={values.P}
-          V={values.V}
-          T={values.T}
-          n={values.n}
+          readouts={readouts}
           findVar={question.find}
           showAnswer={showAnswer}
           units={units}

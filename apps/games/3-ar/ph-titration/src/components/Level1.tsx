@@ -7,16 +7,16 @@ import { shuffleArray } from '@shared/utils';
 import { LEVEL1_CHALLENGES } from '../data/level1-challenges';
 import { titrations } from '../data/titrations';
 import type { MonoproticTitration } from '../types';
-import { generateTitrationCurve } from '../utils/ph-calculations';
+import { calculatePH, generateTitrationCurve } from '../utils/ph-calculations';
+import { revealTop } from '../utils/reveal';
 
 // Misconceptions for titration concepts
 const TITRATION_MISCONCEPTIONS: Record<string, string> = {
-  equivalence:
-    'Jafngildi (equivalence point) er þar sem mól sýru = mól basa. pH fer ekki alltaf í 7!',
+  equivalence: 'Jafngildispunktur er þar sem mól sýru = mól basa. pH fer ekki alltaf í 7!',
   strong_strong:
     'Sterk sýra + sterkur basi gefur pH = 7 við jafngildi vegna þess að salt og vatn myndast.',
   weak_strong:
-    'Veik sýra + sterkur basi gefur pH > 7 við jafngildi vegna þess að samoki basinn er eftir.',
+    'Veik sýra + sterkur basi gefur pH > 7 við jafngildi vegna þess að samoka basinn er eftir.',
   indicator: 'Veljið vísi sem breytir lit nálægt pH við jafngildi, ekki endilega pH = 7.',
   buffer_region: 'Á milli upphafs og jafngildis er stuðpúðasvæðið þar sem pH breytist hægt.',
 };
@@ -48,6 +48,12 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const [hintResetKey, setHintResetKey] = useState(0);
   const [completed, setCompleted] = useState(0);
   const levelCompleteReported = useRef(false);
+  const levelRef = useRef<HTMLDivElement>(null);
+  const [revealKey, setRevealKey] = useState(0);
+
+  useEffect(() => {
+    if (revealKey > 0) revealTop(levelRef.current);
+  }, [revealKey]);
 
   const challenge = LEVEL1_CHALLENGES[currentIndex];
 
@@ -100,6 +106,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       setShowResult(false);
       setHintResetKey((prev) => prev + 1);
       setHintUsedThisChallenge(false);
+      setRevealKey((prev) => prev + 1);
     }
   };
 
@@ -114,23 +121,25 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   if (showIntro) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 space-y-4">
-          <button onClick={onBack} className="text-warm-600 hover:text-warm-800 text-sm">
+        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 space-y-4">
+          <button
+            onClick={onBack}
+            className="text-warm-600 hover:text-warm-800 text-sm pointer-coarse:min-h-11"
+          >
             ← Til baka
           </button>
           <h2 className="text-2xl font-bold text-purple-700">Títrun — um hvað snýst þetta?</h2>
           <p className="text-warm-700">
             Í títrun bætum við hægt og rólega basa (eða sýru) úr búrettu við óþekkt magn af sýru
             (eða basa) í kolbu. Við fylgjumst með pH-gildi á meðan — og teiknum{' '}
-            <strong>títrunarferil</strong>
-            (pH sem fall af rúmmáli sem bætt er við).
+            <strong>títrunarferil</strong> (pH sem fall af rúmmáli sem bætt er við).
           </p>
           <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
             <div className="font-bold text-blue-800 mb-1">Mikilvægustu atriði á ferlinum:</div>
             <ul className="text-sm text-blue-900 space-y-1 list-disc list-inside">
               <li>
                 <strong>Jafngildispunktur</strong> = þar sem mólfjöldi sýru = mólfjöldi basa.
-                Ferillinn er brattastur þar — pH breytist mest á litlu rúmmálsviðbót.
+                Ferillinn er brattastur þar — pH breytist mest á lítilli rúmmálsviðbót.
               </li>
               <li>
                 <strong>Endapunktur</strong> = þar sem vísirinn skiptir um lit. Þetta er nálgun á
@@ -143,14 +152,17 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <p className="text-sm text-purple-900">
               <strong>Sterk sýra + sterkur basi</strong> → jafngildispunktur við pH 7 (hlutlaust).
               <br />
-              <strong>Veik sýra + sterkur basi</strong> → jafngildispunktur við pH &gt; 7 (samokki
+              <strong>Veik sýra + sterkur basi</strong> → jafngildispunktur við pH &gt; 7 (samoka
               basinn er eftir).
               <br />
               <strong>Sterk sýra + veikur basi</strong> → jafngildispunktur við pH &lt; 7.
             </p>
           </div>
           <button
-            onClick={() => setShowIntro(false)}
+            onClick={() => {
+              setShowIntro(false);
+              setRevealKey((prev) => prev + 1);
+            }}
             className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 rounded-xl"
           >
             Byrja æfingu →
@@ -162,18 +174,21 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+      <div
+        ref={levelRef}
+        className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 scroll-mt-4"
+      >
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:py-3 pointer-coarse:-my-3"
           >
             ← Til baka
           </button>
           <div className="flex items-center gap-4">
             <div className="text-sm text-warm-500">
-              {completed + 1} / {LEVEL1_CHALLENGES.length}
+              {currentIndex + 1} / {LEVEL1_CHALLENGES.length}
             </div>
             <div className="text-lg font-bold text-blue-600">Stig: {score}</div>
           </div>
@@ -181,10 +196,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
         {/* Title */}
         <h1 className="text-2xl md:text-3xl font-bold text-blue-600 mb-2">
-          📈 Stig 1: Skilningur á títrunarkúrfum
+          📈 Stig 1: Skilningur á títrunarferlum
         </h1>
         <p className="text-warm-600 mb-6">
-          Lærðu að þekkja mismunandi títrunarkúrfur og skilja hvernig pH breytist.
+          Lærðu að þekkja mismunandi títrunarferla og skilja hvernig pH breytist.
         </p>
 
         {/* Progress bar */}
@@ -196,17 +211,17 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         </div>
 
         {/* Challenge card */}
-        <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 mb-6">
+        <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-3 sm:p-6 mb-6">
           <div className="flex items-start gap-3 mb-4">
             <span className="bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full">
               {challenge.id}
             </span>
             <div>
               <h2 className="text-lg font-bold text-blue-800">
-                {challenge.type === 'match-curve' && 'Þekktu kúrfuna'}
+                {challenge.type === 'match-curve' && 'Þekktu ferilinn'}
                 {challenge.type === 'predict-color' && 'Spáðu um litinn'}
                 {challenge.type === 'find-equivalence' && 'Finndu jafngildispunkt'}
-                {challenge.type === 'curve-feature' && 'Einkenni kúrfunnar'}
+                {challenge.type === 'curve-feature' && 'Einkenni ferilsins'}
               </h2>
             </div>
           </div>
@@ -288,8 +303,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 misconception: isCorrect ? undefined : TITRATION_MISCONCEPTIONS.equivalence,
                 relatedConcepts: TITRATION_RELATED,
                 nextSteps: isCorrect
-                  ? 'Frábært! Þú skilur títrunarkúrfur vel.'
-                  : 'Skoðaðu kúrfuna og athugaðu hvar pH breytist mest.',
+                  ? 'Frábært! Þú skilur títrunarferla vel.'
+                  : 'Skoðaðu ferilinn og athugaðu hvar pH breytist mest.',
               }}
               config={{
                 showExplanation: true,
@@ -302,11 +317,11 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         </Presence>
 
         {/* Action buttons */}
-        <div className="flex justify-between">
-          <div className="text-sm text-warm-500">
+        <div className="flex justify-between gap-3">
+          <div className="min-w-0 text-sm text-warm-500">
             {hintUsedThisChallenge && '💡 Vísbending notuð'}
           </div>
-          <div className="flex gap-3">
+          <div className="flex shrink-0 gap-3">
             {!showResult ? (
               <button
                 onClick={handleCheck}
@@ -344,14 +359,14 @@ function TitrationCurvePreview({ curveType }: { curveType?: string }) {
     if (curveType === 'strong-strong' && strongStrongTitration) {
       curveData = generateTitrationCurve(strongStrongTitration, 50);
       equivVolume = strongStrongTitration.equivalenceVolume;
-      equivPH = strongStrongTitration.equivalencePH;
+      equivPH = calculatePH(strongStrongTitration, equivVolume);
     } else if (
       (curveType === 'weak-strong' || curveType === 'strong-weak') &&
       weakStrongTitration
     ) {
       curveData = generateTitrationCurve(weakStrongTitration, 50);
       equivVolume = weakStrongTitration.equivalenceVolume;
-      equivPH = weakStrongTitration.equivalencePH;
+      equivPH = calculatePH(weakStrongTitration, equivVolume);
     } else {
       // Default strong-strong curve
       curveData = Array.from({ length: 51 }, (_, i) => ({
@@ -381,7 +396,7 @@ function TitrationCurvePreview({ curveType }: { curveType?: string }) {
   }, [curveType]);
 
   return (
-    <div className="bg-white rounded-lg p-2 border border-warm-200">
+    <div className="bg-white rounded-lg p-1 sm:p-2 border border-warm-200">
       <InteractiveGraph
         width={500}
         height={300}
@@ -398,7 +413,7 @@ function TitrationCurvePreview({ curveType }: { curveType?: string }) {
             labelPosition: 'right',
           },
         ]}
-        ariaLabel="Títrunarkúrfa"
+        ariaLabel="Títrunarferill"
       />
     </div>
   );

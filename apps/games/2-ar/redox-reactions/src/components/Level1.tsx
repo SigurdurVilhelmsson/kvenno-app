@@ -3,18 +3,19 @@ import { useState } from 'react';
 import { FeedbackPanel } from '@shared/components';
 
 import { L1_SCORING } from '../config/scoring';
+import { parseWholeNumber } from '../utils/answers';
 
 // Misconceptions for oxidation states
 const OXIDATION_MISCONCEPTIONS: Record<string, string> = {
   element: 'Hreint frumefni (ekki bundið við annað) hefur alltaf oxunartölu 0.',
   hydrogen: 'Vetni er yfirleitt +1, NEMA í málmhýdríðum (t.d. NaH) þar sem það er -1.',
   oxygen: 'Súrefni er yfirleitt -2, NEMA í peroxíðum (-1) og OF₂ (+2).',
-  halogen: 'Halógenar (F, Cl, Br, I) eru -1 þegar bundnar við málma eða vetni.',
+  halogen: 'Halógenar (F, Cl, Br, I) eru -1 þegar bundnir við málma eða vetni.',
   sum: 'Summa oxunartalna í sameind = 0 (hlutlaust) eða = heildarhleðsla (jón).',
 };
 
 // Related concepts for redox
-const OXIDATION_RELATED: string[] = ['Oxunartölur', 'Redox hvörf', 'Rafeindasameignir'];
+const OXIDATION_RELATED: string[] = ['Oxunartölur', 'Redox-hvörf', 'Rafeindasameignir'];
 
 interface Level1Props {
   t: (key: string, fallback?: string) => string;
@@ -148,7 +149,7 @@ const problems: OxidationProblem[] = [
     compoundDisplay: 'CuSO₄',
     targetElement: 'Cu',
     correctAnswer: 2,
-    hint: 'SO₄ er -2 (sulfat jón)',
+    hint: 'SO₄ er -2 (súlfatjón)',
   },
   {
     id: 10,
@@ -187,7 +188,7 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
   };
 
   const handleSubmit = () => {
-    const answer = parseInt(userAnswer, 10);
+    const answer = parseWholeNumber(userAnswer);
     const correct = answer === problems[currentProblem].correctAnswer;
     setIsCorrect(correct);
     setShowFeedback(true);
@@ -226,13 +227,16 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
     const rule = oxidationRules[currentRule];
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <div className="flex justify-between items-center mb-6">
-            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-3 sm:p-4 md:p-8">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+          <div className="flex flex-wrap justify-between items-center gap-x-3 gap-y-2 mb-6">
+            <button
+              onClick={onBack}
+              className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
+            >
               &larr; {t('common.back', 'Til baka')}
             </button>
-            <div className="text-sm text-warm-500">
+            <div className="text-sm text-warm-500 whitespace-nowrap">
               {t('level1.ruleProgress', 'Regla')} {currentRule + 1} {t('level1.of', 'af')}{' '}
               {oxidationRules.length}
             </div>
@@ -261,7 +265,7 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
               ))}
             </div>
 
-            <div className="bg-blue-50 p-8 rounded-2xl border-2 border-blue-200 animate-slide-in">
+            <div className="bg-blue-50 p-4 sm:p-8 rounded-2xl border-2 border-blue-200 animate-slide-in">
               <div className="text-center mb-6">
                 <div className="text-5xl mb-4">📖</div>
                 <div className="text-2xl font-bold text-blue-800 mb-2">{rule.rule}</div>
@@ -312,18 +316,21 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
   const problem = problems[currentProblem];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 md:p-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-        <div className="flex justify-between items-center mb-6">
-          <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-3 sm:p-4 md:p-8">
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+        <div className="flex flex-wrap justify-between items-center gap-x-3 gap-y-2 mb-6">
+          <button
+            onClick={onBack}
+            className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
+          >
             &larr; {t('common.back', 'Til baka')}
           </button>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-warm-500">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="text-sm text-warm-500 whitespace-nowrap">
               {t('level1.questionProgress', 'Spurning')} {currentProblem + 1} {t('level1.of', 'af')}{' '}
               {problems.length}
             </div>
-            <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-bold">
+            <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-bold whitespace-nowrap">
               {t('level1.score', 'Stig')}: {score}
             </div>
           </div>
@@ -371,7 +378,7 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
                 onChange={(e) => setUserAnswer(e.target.value)}
                 placeholder={t('level1.enterNumber', 'Sláðu inn tölu...')}
                 aria-label={t('concepts.oxidationNumber', 'Oxunartala')}
-                className="text-center text-2xl font-bold w-32 p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-none"
+                className="text-center text-2xl font-bold w-48 sm:w-32 max-sm:placeholder:text-base max-sm:placeholder:font-normal p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-none"
               />
             </div>
             <p className="text-center text-sm text-warm-500">
@@ -380,14 +387,14 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
                 'Notaðu neikvæðar tölur fyrir neikvæðar oxunartölur (t.d. -2)'
               )}
             </p>
-            <div className="flex gap-4">
+            <div className="flex gap-3 sm:gap-4">
               {!showHint && (
                 <button
                   onClick={() => {
                     setShowHint(true);
                     setTotalHintsUsed((prev) => prev + 1);
                   }}
-                  className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-3 px-6 rounded-xl"
+                  className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-3 px-3 sm:px-6 rounded-xl"
                 >
                   {t('common.hint', 'Vísbending')}
                 </button>
@@ -395,7 +402,7 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
               <button
                 onClick={handleSubmit}
                 disabled={userAnswer === ''}
-                className={`flex-1 font-bold py-3 px-6 rounded-xl ${
+                className={`flex-1 font-bold py-3 px-3 sm:px-6 rounded-xl ${
                   userAnswer === ''
                     ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
                     : 'bg-blue-500 hover:bg-blue-600 text-white'
@@ -455,7 +462,7 @@ export function Level1({ t, onComplete, onBack }: Level1Props) {
           </div>
         )}
 
-        <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+        <div className="mt-6 bg-warm-50 p-3 sm:p-4 rounded-xl">
           <h3 className="font-semibold text-warm-700 mb-2">
             {t('level1.rememberRules', 'Muna reglurnar:')}
           </h3>

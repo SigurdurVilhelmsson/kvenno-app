@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { shuffleArray } from '@shared/utils';
@@ -43,13 +43,27 @@ function buildQuestions(): Question[] {
 }
 
 export function Level2({ onComplete, onBack }: Level2Props) {
-  const [questions] = useState(buildQuestions);
+  const [questions, setQuestions] = useState(buildQuestions);
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [input, setInput] = useState('');
   const [answered, setAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [done, setDone] = useState(false);
+
+  // Phones keep the old scroll offset across screens, which would open the
+  // next question below its own equation; start every new screen at the top.
+  const topRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    topRef.current?.scrollIntoView?.({ block: 'start' });
+  }, [index, done]);
+
+  // The verdict replaces the "Athuga" button at the foot of a long screen, so on
+  // a phone it lands at the fold; bring it and the worked solution into view.
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (answered) feedbackRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+  }, [answered]);
 
   const q = questions[index];
   const answer = calculateCorrectAnswer(q.reaction, q.r1Count, q.r2Count);
@@ -84,8 +98,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   // --- Summary ---
   if (done) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-4 flex items-center justify-center">
-        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center space-y-6">
+      <div
+        ref={topRef}
+        className="min-h-screen bg-gradient-to-b from-green-50 to-white p-4 flex items-center justify-center"
+      >
+        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-6 sm:p-8 text-center space-y-6">
           <div className="text-5xl">{score >= 60 ? '🎉' : score >= 40 ? '👍' : '📚'}</div>
           <h2 className="text-2xl font-bold text-warm-800">Niðurstöður</h2>
           <p className="text-lg text-warm-700">
@@ -101,6 +118,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           <div className="flex gap-3">
             <button
               onClick={() => {
+                // A new set: the worked solution to every question in the old
+                // one has just been shown, so replaying it would test memory.
+                setQuestions(buildQuestions());
                 setIndex(0);
                 setScore(0);
                 setInput('');
@@ -119,7 +139,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               Ljúka stigi
             </button>
           </div>
-          <button onClick={onBack} className="text-warm-500 hover:text-warm-700 text-sm">
+          <button
+            onClick={onBack}
+            className="text-warm-500 hover:text-warm-700 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
+          >
             Til baka í valmynd
           </button>
         </div>
@@ -149,8 +172,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   // --- Question text ---
   const questionTitle =
     q.type === 'times'
-      ? 'Hversu oft getur hvarfid att ser stad?'
-      : `Hversu mikid myndast af ${q.reaction.products[0].formula}?`;
+      ? 'Hversu oft getur hvarfið átt sér stað?'
+      : `Hversu mikið myndast af ${q.reaction.products[0].formula}?`;
 
   const questionHint =
     q.type === 'times'
@@ -159,18 +182,21 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   // --- Main gameplay ---
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white p-4">
+    <div ref={topRef} className="min-h-screen bg-gradient-to-b from-orange-50 to-white p-4">
       <div className="max-w-lg mx-auto">
         {/* Header */}
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-          <div className="flex justify-between items-center">
+          {/* Phones: back link and counter share the top row, the title gets its own. */}
+          <div className="flex flex-wrap sm:flex-nowrap justify-between items-center gap-x-2 gap-y-1">
             <button
               onClick={onBack}
-              className="text-warm-500 hover:text-warm-700 font-semibold text-sm"
+              className="text-warm-500 hover:text-warm-700 font-semibold text-sm whitespace-nowrap pointer-coarse:min-h-11"
             >
               ← Til baka
             </button>
-            <h1 className="text-lg font-bold text-warm-800">Reikna myndefni – Stig 2</h1>
+            <h1 className="order-last basis-full sm:order-none sm:basis-auto text-lg font-bold text-warm-800">
+              Reikna myndefni – <span className="whitespace-nowrap">Stig 2</span>
+            </h1>
             <span className="text-sm font-semibold text-warm-600">
               {index + 1}/{TOTAL}
             </span>
@@ -206,7 +232,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               {q.r1Count > 8 && <span className="text-warm-500 text-sm">+{q.r1Count - 8}</span>}
             </div>
             <div className="text-sm text-warm-600">
-              {q.r1Count} sameindur (stuðull: {q.reaction.reactant1.coeff})
+              {q.r1Count} sameindir (stuðull: {q.reaction.reactant1.coeff})
             </div>
           </div>
           <div className="bg-white rounded-xl shadow-md p-4 text-center">
@@ -223,7 +249,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               {q.r2Count > 8 && <span className="text-warm-500 text-sm">+{q.r2Count - 8}</span>}
             </div>
             <div className="text-sm text-warm-600">
-              {q.r2Count} sameindur (stuðull: {q.reaction.reactant2.coeff})
+              {q.r2Count} sameindir (stuðull: {q.reaction.reactant2.coeff})
             </div>
           </div>
         </div>
@@ -251,7 +277,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             />
           </div>
 
-          {/* Athuga button above Visbending */}
+          {/* Athuga button above Vísbending */}
           {!answered && (
             <button
               onClick={handleCheck}
@@ -265,7 +291,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
         {/* Feedback */}
         {answered && (
-          <div className="space-y-4 mb-4">
+          <div ref={feedbackRef} className="space-y-4 mb-4">
             <FeedbackPanel
               feedback={{
                 isCorrect,
@@ -295,7 +321,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 </div>
                 <div>
                   Takmarkandi:{' '}
-                  <strong className="text-kvenno-orange">{answer.limitingReactant}</strong> (faerri
+                  <strong className="text-kvenno-orange">{answer.limitingReactant}</strong> (færri
                   skipti)
                 </div>
                 <div>

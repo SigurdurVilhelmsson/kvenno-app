@@ -43,6 +43,13 @@ Both were visible on the menu, and both are settled by the file's own English an
 | `Flokkar og lóðir` | `Flokkar og lotubundnar sveiflur` | `Groups and Trends` / `Grupy i trendy`. A `lóð` is a weight or a plot of land; a period is a `lota`                 |
 | `Sameindagerð`     | `Atómbygging`                     | `Atomic Structure` / `Budowa atomu`. The level counts protons, neutrons and electrons; there are no molecules in it |
 
+**Corrected 2026-09-23.** `lotubundnar sveiflur` was chosen without checking the glossary, which
+already carried `periodic trends;lotubundnir eiginleikar`. The corpus agrees: 9 hits against 0. The
+Stig 2 title is now `Flokkar og lotubundnir eiginleikar`. The noun moved from feminine to
+masculine, so `allar` became `allir` where it agrees with it. The same pass found the menu subtitle
+still said `sameindagerð`, the mistake the second row fixed in the title. It now says
+`atómbyggingu`. `src/__tests__/icelandic-text.test.ts` guards both.
+
 ## A term this harvest deferred, and the ruling that closed it
 
 The old data said `rafeindaskel` for an electron shell. So did the shipped platform, in 43 places

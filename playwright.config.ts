@@ -22,6 +22,9 @@ export default defineConfig({
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
+      // mobile-games.spec.ts tags most of its per-screen paths chromium-only
+      // to keep CI time down; Firefox replays a spread-out sample.
+      grepInvert: /@chromium-only/,
     },
   ],
   webServer: {

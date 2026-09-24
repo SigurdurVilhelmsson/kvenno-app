@@ -1,4 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useId, useState, useMemo, useRef } from 'react';
+
+import { useContainerWidth } from '@shared/components/ResponsiveContainer';
+import { formatDecimal } from '@shared/utils';
 
 interface ConcentrationTimeGraphProps {
   /** Initial concentration [A]₀ in M */
@@ -56,28 +59,28 @@ function calculateHalfLife(A0: number, k: number, order: 0 | 1 | 2): number {
 
 const ORDER_INFO = {
   0: {
-    name: '0. stig (Zero Order)',
+    name: '0. stig',
     equation: '[A] = [A]₀ - kt',
-    linearPlot: '[A] vs t',
+    linearPlot: '[A] á móti t',
     halfLifeEq: 't₁/₂ = [A]₀/(2k)',
     color: '#ef4444', // red
     description: 'Styrkur minnkar línulega með tíma. Hraðinn er stöðugur.',
   },
   1: {
-    name: '1. stig (First Order)',
+    name: '1. stig',
     equation: '[A] = [A]₀·e^(-kt)',
-    linearPlot: 'ln[A] vs t',
+    linearPlot: 'ln[A] á móti t',
     halfLifeEq: 't₁/₂ = ln(2)/k',
     color: '#22c55e', // green
     description: 'Styrkur minnkar veldisfallslega. Hraðinn fer lækkandi.',
   },
   2: {
-    name: '2. stig (Second Order)',
+    name: '2. stig',
     equation: '[A] = [A]₀/(1+kt[A]₀)',
-    linearPlot: '1/[A] vs t',
+    linearPlot: '1/[A] á móti t',
     halfLifeEq: 't₁/₂ = 1/(k[A]₀)',
     color: '#3b82f6', // blue
-    description: 'Styrkur minnkar hægar en 1. stig. Langt "hali" á graf.',
+    description: 'Styrkur minnkar hægar en í 1. stigi. Langur „hali“ á grafinu.',
   },
 };
 
@@ -99,13 +102,38 @@ export function ConcentrationTimeGraph({
   const [k, setK] = useState(rateConstant);
   const [selectedOrder, setSelectedOrder] = useState<0 | 1 | 2>(order);
   const [showHalfLife, setShowHalfLife] = useState(true);
+  const a0Id = useId();
+  const kId = useId();
+
+  // On a phone the 400-wide graph was drawn at about 0.6x inside a box still 240 px tall, so
+  // its tick labels came out at 6 px with a band of empty space above and below. Below 400 px
+  // it switches to a narrow drawing: a viewBox sized for a phone, 15-unit labels (11 px or
+  // more at 320 px wide) and three y ticks instead of five. A wider container gets the
+  // original drawing unchanged.
+  const svgBoxRef = useRef<HTMLDivElement>(null);
+  const boxWidth = useContainerWidth(svgBoxRef);
+  const narrow = !compact && boxWidth !== null && boxWidth < 400;
+  const labelSize = (desktopSize: string) => (narrow ? '15px' : desktopSize);
+  const yTicks = narrow ? [0, 0.5, 1] : [0, 0.25, 0.5, 0.75, 1];
+  // Text halo in the narrow drawing, where the half-life labels sit on the curves
+  const halo = narrow
+    ? {
+        stroke: '#0c0a09',
+        strokeWidth: 4,
+        paintOrder: 'stroke' as const,
+        strokeLinejoin: 'round' as const,
+      }
+    : {};
 
   // SVG dimensions
-  const width = compact ? 300 : 400;
-  const height = compact ? 180 : 240;
-  const margin = { top: 30, right: 30, bottom: 40, left: 55 };
+  const width = narrow ? 300 : compact ? 300 : 400;
+  const height = narrow ? 250 : compact ? 180 : 240;
+  const margin = narrow
+    ? { top: 28, right: 16, bottom: 46, left: 62 }
+    : { top: 30, right: 30, bottom: 40, left: 55 };
   const plotWidth = width - margin.left - margin.right;
   const plotHeight = height - margin.top - margin.bottom;
+  const yTitleY = narrow ? margin.top + plotHeight / 2 : height / 2;
 
   // Calculate time range based on rate constant (show ~5 half-lives)
   const maxTime = useMemo(() => {
@@ -146,15 +174,17 @@ export function ConcentrationTimeGraph({
   // Calculate half-life for current settings
   const halfLife = calculateHalfLife(A0, k, selectedOrder);
   const halfLifeConc = A0 / 2;
+  // Narrow: a label that would run off the right edge goes on the left of the marker instead
+  const halfLifeLabelLeft = narrow && scaleX(halfLife) > margin.left + plotWidth / 2;
 
   const info = ORDER_INFO[selectedOrder];
 
   return (
-    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-4 shadow-lg">
-      <div className="flex justify-between items-center mb-3">
+    <div className="bg-gradient-to-br from-warm-800 to-warm-900 rounded-xl p-3 sm:p-4 shadow-lg">
+      <div className="flex flex-wrap justify-between items-center gap-2 mb-3">
         <h3 className="text-white font-bold text-sm flex items-center gap-2">
           <span className="text-lg">📈</span>
-          Styrkur vs Tími
+          Styrkur á móti tíma
         </h3>
         {interactive && (
           <div className="flex gap-2">
@@ -162,7 +192,7 @@ export function ConcentrationTimeGraph({
               <button
                 key={ord}
                 onClick={() => setSelectedOrder(ord)}
-                className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                className={`px-2 py-1 rounded text-xs font-medium transition-colors whitespace-nowrap pointer-coarse:min-h-11 pointer-coarse:px-3 ${
                   selectedOrder === ord
                     ? `text-white`
                     : 'bg-warm-600 text-warm-300 hover:bg-warm-500'
@@ -180,248 +210,275 @@ export function ConcentrationTimeGraph({
 
       {/* Interactive controls */}
       {interactive && !compact && (
-        <div className="grid grid-cols-2 gap-3 mb-4 p-3 bg-warm-700/50 rounded-lg">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 p-3 bg-warm-700/50 rounded-lg">
           <div>
-            <label className="text-xs text-warm-400 block mb-1">[A]₀ (M)</label>
+            <label htmlFor={a0Id} className="text-xs text-warm-400 block mb-1">
+              [A]₀ (M)
+            </label>
             <div className="flex items-center gap-2">
               <input
+                id={a0Id}
                 type="range"
                 min="0.5"
                 max="2.0"
                 step="0.1"
                 value={A0}
                 onChange={(e) => setA0(Number(e.target.value))}
-                className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-purple-500 pointer-coarse:h-11 pointer-coarse:rounded-none pointer-coarse:bg-transparent pointer-coarse:bg-[linear-gradient(var(--color-warm-600),var(--color-warm-600))] pointer-coarse:bg-[length:100%_6px] pointer-coarse:bg-center pointer-coarse:bg-no-repeat"
               />
-              <span className="text-xs font-mono text-purple-400 w-10">{A0.toFixed(1)}</span>
+              <span className="text-xs font-mono text-purple-400 w-10">{formatDecimal(A0, 1)}</span>
             </div>
           </div>
           <div>
-            <label className="text-xs text-warm-400 block mb-1">k (hraðafasti)</label>
+            <label htmlFor={kId} className="text-xs text-warm-400 block mb-1">
+              k (hraðafasti)
+            </label>
             <div className="flex items-center gap-2">
               <input
+                id={kId}
                 type="range"
                 min="0.05"
                 max="0.5"
                 step="0.01"
                 value={k}
                 onChange={(e) => setK(Number(e.target.value))}
-                className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                className="flex-1 h-1.5 bg-warm-600 rounded-lg appearance-none cursor-pointer accent-orange-500 pointer-coarse:h-11 pointer-coarse:rounded-none pointer-coarse:bg-transparent pointer-coarse:bg-[linear-gradient(var(--color-warm-600),var(--color-warm-600))] pointer-coarse:bg-[length:100%_6px] pointer-coarse:bg-center pointer-coarse:bg-no-repeat"
               />
-              <span className="text-xs font-mono text-orange-400 w-12">{k.toFixed(2)}</span>
+              <span className="text-xs font-mono text-orange-400 w-12">{formatDecimal(k, 2)}</span>
             </div>
           </div>
         </div>
       )}
 
       {/* Graph */}
-      <svg
-        width="100%"
-        height={height}
-        viewBox={`0 0 ${width} ${height}`}
-        preserveAspectRatio="xMidYMid meet"
-        className="bg-warm-950 rounded-lg"
-        role="img"
-        aria-label={`Styrkur vs tími graf fyrir ${info.name}`}
-      >
-        {/* Grid */}
-        <defs>
-          <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#374151" strokeWidth="0.5" />
-          </pattern>
-        </defs>
-        <rect
-          x={margin.left}
-          y={margin.top}
-          width={plotWidth}
-          height={plotHeight}
-          fill="url(#gridPattern)"
-          opacity="0.3"
-        />
-
-        {/* Axes */}
-        <line
-          x1={margin.left}
-          y1={margin.top}
-          x2={margin.left}
-          y2={height - margin.bottom}
-          stroke="#6b7280"
-          strokeWidth="2"
-        />
-        <line
-          x1={margin.left}
-          y1={height - margin.bottom}
-          x2={width - margin.right}
-          y2={height - margin.bottom}
-          stroke="#6b7280"
-          strokeWidth="2"
-        />
-
-        {/* Axis labels */}
-        <text
-          x={15}
-          y={height / 2}
-          textAnchor="middle"
-          transform={`rotate(-90, 15, ${height / 2})`}
-          className="fill-warm-400"
-          style={{ fontSize: '11px' }}
+      {/* On a wide touch screen (a phone on its side) the box is capped so the narrow
+          drawing, with its larger labels, is used there too */}
+      <div ref={svgBoxRef} className="pointer-coarse:max-w-[360px] pointer-coarse:mx-auto">
+        <svg
+          width="100%"
+          height={narrow ? undefined : height}
+          viewBox={`0 0 ${width} ${height}`}
+          preserveAspectRatio="xMidYMid meet"
+          className={`bg-warm-950 rounded-lg${narrow ? ' block h-auto' : ''}`}
+          role="img"
+          aria-label={`Graf af styrk á móti tíma fyrir ${info.name}`}
         >
-          [A] (M)
-        </text>
-        <text
-          x={width / 2}
-          y={height - 8}
-          textAnchor="middle"
-          className="fill-warm-400"
-          style={{ fontSize: '11px' }}
-        >
-          Tími (s)
-        </text>
-
-        {/* Y-axis ticks */}
-        {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
-          const y = scaleY(ratio * A0);
-          const label = (ratio * A0).toFixed(2);
-          return (
-            <g key={ratio}>
-              <line x1={margin.left - 5} y1={y} x2={margin.left} y2={y} stroke="#6b7280" />
-              <text
-                x={margin.left - 8}
-                y={y + 4}
-                textAnchor="end"
-                className="fill-warm-500"
-                style={{ fontSize: '9px' }}
-              >
-                {label}
-              </text>
-            </g>
-          );
-        })}
-
-        {/* X-axis ticks */}
-        {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
-          const x = scaleX(ratio * maxTime);
-          const label = (ratio * maxTime).toFixed(0);
-          return (
-            <g key={ratio}>
-              <line
-                x1={x}
-                y1={height - margin.bottom}
-                x2={x}
-                y2={height - margin.bottom + 5}
-                stroke="#6b7280"
-              />
-              <text
-                x={x}
-                y={height - margin.bottom + 16}
-                textAnchor="middle"
-                className="fill-warm-500"
-                style={{ fontSize: '9px' }}
-              >
-                {label}
-              </text>
-            </g>
-          );
-        })}
-
-        {/* Half-life marker */}
-        {showHalfLife && halfLife <= maxTime && (
-          <g>
-            {/* Vertical line at t₁/₂ */}
-            <line
-              x1={scaleX(halfLife)}
-              y1={margin.top}
-              x2={scaleX(halfLife)}
-              y2={scaleY(halfLifeConc)}
-              stroke="#fbbf24"
-              strokeWidth="1.5"
-              strokeDasharray="4,2"
-            />
-            {/* Horizontal line at [A]₀/2 */}
-            <line
-              x1={margin.left}
-              y1={scaleY(halfLifeConc)}
-              x2={scaleX(halfLife)}
-              y2={scaleY(halfLifeConc)}
-              stroke="#fbbf24"
-              strokeWidth="1.5"
-              strokeDasharray="4,2"
-            />
-            {/* Label */}
-            <text
-              x={scaleX(halfLife) + 5}
-              y={margin.top + 12}
-              className="fill-yellow-400"
-              style={{ fontSize: '9px' }}
-            >
-              t₁/₂ = {halfLife.toFixed(1)}s
-            </text>
-            {/* Half concentration label */}
-            <text
-              x={margin.left + 5}
-              y={scaleY(halfLifeConc) - 5}
-              className="fill-yellow-400"
-              style={{ fontSize: '9px' }}
-            >
-              [A]₀/2
-            </text>
-            {/* Circle at intersection */}
-            <circle
-              cx={scaleX(halfLife)}
-              cy={scaleY(halfLifeConc)}
-              r="4"
-              fill="#fbbf24"
-              stroke="#1f2937"
-              strokeWidth="2"
-            />
-          </g>
-        )}
-
-        {/* Concentration curves */}
-        {(showComparison ? ([0, 1, 2] as const) : [selectedOrder]).map((ord) => (
-          <path
-            key={ord}
-            d={generatePath(curves[ord] || [])}
-            fill="none"
-            stroke={ORDER_INFO[ord].color}
-            strokeWidth={showComparison ? 2 : 3}
-            strokeLinecap="round"
-            opacity={showComparison && ord !== selectedOrder ? 0.4 : 1}
+          {/* Grid */}
+          <defs>
+            <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#374151" strokeWidth="0.5" />
+            </pattern>
+          </defs>
+          <rect
+            x={margin.left}
+            y={margin.top}
+            width={plotWidth}
+            height={plotHeight}
+            fill="url(#gridPattern)"
+            opacity="0.3"
           />
-        ))}
 
-        {/* Initial concentration marker */}
-        <circle
-          cx={scaleX(0)}
-          cy={scaleY(A0)}
-          r="5"
-          fill={info.color}
-          stroke="#1f2937"
-          strokeWidth="2"
-        />
-        <text
-          x={scaleX(0) + 8}
-          y={scaleY(A0) + 4}
-          className="fill-warm-300"
-          style={{ fontSize: '9px' }}
-        >
-          [A]₀
-        </text>
+          {/* Axes */}
+          <line
+            x1={margin.left}
+            y1={margin.top}
+            x2={margin.left}
+            y2={height - margin.bottom}
+            stroke="#6b7280"
+            strokeWidth="2"
+          />
+          <line
+            x1={margin.left}
+            y1={height - margin.bottom}
+            x2={width - margin.right}
+            y2={height - margin.bottom}
+            stroke="#6b7280"
+            strokeWidth="2"
+          />
 
-        {/* Legend for comparison mode */}
-        {showComparison && (
-          <g transform={`translate(${width - margin.right - 60}, ${margin.top + 10})`}>
-            {([0, 1, 2] as const).map((ord, i) => (
-              <g key={ord} transform={`translate(0, ${i * 15})`}>
-                <line x1="0" y1="0" x2="15" y2="0" stroke={ORDER_INFO[ord].color} strokeWidth="2" />
-                <text x="20" y="4" className="fill-warm-300" style={{ fontSize: '9px' }}>
-                  {ord}. stig
+          {/* Axis labels */}
+          <text
+            x={15}
+            y={yTitleY}
+            textAnchor="middle"
+            transform={`rotate(-90, 15, ${yTitleY})`}
+            className="fill-warm-400"
+            style={{ fontSize: labelSize('11px') }}
+          >
+            [A] (M)
+          </text>
+          <text
+            x={narrow ? margin.left + plotWidth / 2 : width / 2}
+            y={height - 8}
+            textAnchor="middle"
+            className="fill-warm-400"
+            style={{ fontSize: labelSize('11px') }}
+          >
+            Tími (s)
+          </text>
+
+          {/* Y-axis ticks */}
+          {yTicks.map((ratio) => {
+            const y = scaleY(ratio * A0);
+            const label = formatDecimal(ratio * A0, 2);
+            return (
+              <g key={ratio}>
+                <line x1={margin.left - 5} y1={y} x2={margin.left} y2={y} stroke="#6b7280" />
+                <text
+                  x={margin.left - 8}
+                  y={y + (narrow ? 5 : 4)}
+                  textAnchor="end"
+                  className="fill-warm-500"
+                  style={{ fontSize: labelSize('9px') }}
+                >
+                  {label}
                 </text>
               </g>
-            ))}
-          </g>
-        )}
-      </svg>
+            );
+          })}
+
+          {/* X-axis ticks */}
+          {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
+            const x = scaleX(ratio * maxTime);
+            const label = formatDecimal(ratio * maxTime, 0);
+            return (
+              <g key={ratio}>
+                <line
+                  x1={x}
+                  y1={height - margin.bottom}
+                  x2={x}
+                  y2={height - margin.bottom + 5}
+                  stroke="#6b7280"
+                />
+                <text
+                  x={x}
+                  y={height - margin.bottom + (narrow ? 19 : 16)}
+                  textAnchor="middle"
+                  className="fill-warm-500"
+                  style={{ fontSize: labelSize('9px') }}
+                >
+                  {label}
+                </text>
+              </g>
+            );
+          })}
+
+          {/* Half-life marker */}
+          {showHalfLife && halfLife <= maxTime && (
+            <g>
+              {/* Vertical line at t₁/₂ */}
+              <line
+                x1={scaleX(halfLife)}
+                y1={margin.top}
+                x2={scaleX(halfLife)}
+                y2={scaleY(halfLifeConc)}
+                stroke="#fbbf24"
+                strokeWidth="1.5"
+                strokeDasharray="4,2"
+              />
+              {/* Horizontal line at [A]₀/2 */}
+              <line
+                x1={margin.left}
+                y1={scaleY(halfLifeConc)}
+                x2={scaleX(halfLife)}
+                y2={scaleY(halfLifeConc)}
+                stroke="#fbbf24"
+                strokeWidth="1.5"
+                strokeDasharray="4,2"
+              />
+              {/* Label */}
+              <text
+                x={halfLifeLabelLeft ? scaleX(halfLife) - 5 : scaleX(halfLife) + 5}
+                y={margin.top + (narrow ? 14 : 12)}
+                textAnchor={halfLifeLabelLeft ? 'end' : undefined}
+                className="fill-yellow-400"
+                style={{ fontSize: labelSize('9px') }}
+                {...halo}
+              >
+                t₁/₂ = {formatDecimal(halfLife, 1)} s
+              </text>
+              {/* Half concentration label */}
+              <text
+                x={margin.left + 5}
+                y={scaleY(halfLifeConc) - 5}
+                className="fill-yellow-400"
+                style={{ fontSize: labelSize('9px') }}
+                {...halo}
+              >
+                [A]₀/2
+              </text>
+              {/* Circle at intersection */}
+              <circle
+                cx={scaleX(halfLife)}
+                cy={scaleY(halfLifeConc)}
+                r="4"
+                fill="#fbbf24"
+                stroke="#1f2937"
+                strokeWidth="2"
+              />
+            </g>
+          )}
+
+          {/* Concentration curves */}
+          {(showComparison ? ([0, 1, 2] as const) : [selectedOrder]).map((ord) => (
+            <path
+              key={ord}
+              d={generatePath(curves[ord] || [])}
+              fill="none"
+              stroke={ORDER_INFO[ord].color}
+              strokeWidth={showComparison ? 2 : 3}
+              strokeLinecap="round"
+              opacity={showComparison && ord !== selectedOrder ? 0.4 : 1}
+            />
+          ))}
+
+          {/* Initial concentration marker */}
+          <circle
+            cx={scaleX(0)}
+            cy={scaleY(A0)}
+            r="5"
+            fill={info.color}
+            stroke="#1f2937"
+            strokeWidth="2"
+          />
+          <text
+            x={scaleX(0) + 8}
+            y={scaleY(A0) + (narrow ? 5 : 4)}
+            className="fill-warm-300"
+            style={{ fontSize: labelSize('9px') }}
+          >
+            [A]₀
+          </text>
+
+          {/* Legend for comparison mode */}
+          {showComparison && (
+            <g
+              transform={`translate(${width - margin.right - (narrow ? 84 : 60)}, ${margin.top + (narrow ? 34 : 10)})`}
+            >
+              {([0, 1, 2] as const).map((ord, i) => (
+                <g key={ord} transform={`translate(0, ${i * (narrow ? 19 : 15)})`}>
+                  <line
+                    x1="0"
+                    y1="0"
+                    x2="15"
+                    y2="0"
+                    stroke={ORDER_INFO[ord].color}
+                    strokeWidth="2"
+                  />
+                  <text
+                    x="20"
+                    y={narrow ? 5 : 4}
+                    className="fill-warm-300"
+                    style={{ fontSize: labelSize('9px') }}
+                  >
+                    {ord}. stig
+                  </text>
+                </g>
+              ))}
+            </g>
+          )}
+        </svg>
+      </div>
 
       {/* Order information */}
       <div className="mt-4 p-3 rounded-lg" style={{ backgroundColor: `${info.color}20` }}>
@@ -430,7 +487,7 @@ export function ConcentrationTimeGraph({
           <span className="text-white font-bold text-sm">{info.name}</span>
         </div>
         <div className="text-warm-300 text-xs mb-2">{info.description}</div>
-        <div className="grid grid-cols-2 gap-2 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
           <div className="bg-warm-800/50 p-2 rounded">
             <div className="text-warm-400">Jafna:</div>
             <div className="font-mono text-white">{info.equation}</div>
@@ -444,10 +501,10 @@ export function ConcentrationTimeGraph({
 
       {/* Half-life toggle */}
       {interactive && (
-        <div className="mt-3 flex items-center justify-between">
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
           <button
             onClick={() => setShowHalfLife(!showHalfLife)}
-            className={`px-3 py-1 rounded text-xs transition-colors ${
+            className={`px-3 py-1 rounded text-xs transition-colors pointer-coarse:min-h-11 ${
               showHalfLife
                 ? 'bg-yellow-500/30 text-yellow-400 border border-yellow-500/50'
                 : 'bg-warm-600 text-warm-300'
@@ -457,7 +514,7 @@ export function ConcentrationTimeGraph({
           </button>
 
           <div className="text-xs text-warm-400">
-            t₁/₂ = <span className="font-mono text-yellow-400">{halfLife.toFixed(2)} s</span>
+            t₁/₂ = <span className="font-mono text-yellow-400">{formatDecimal(halfLife, 2)} s</span>
           </div>
         </div>
       )}
@@ -469,7 +526,9 @@ export function ConcentrationTimeGraph({
           <ul className="text-warm-300 text-xs space-y-1">
             <li className="flex items-start gap-2">
               <span style={{ color: ORDER_INFO[0].color }}>●</span>
-              <span>0. stig: t₁/₂ fer eftir [A]₀ - lengist þegar styrkur minnkar</span>
+              {/* t₁/₂ = [A]₀/(2k) is proportional to [A]₀, so it SHORTENS as the concentration
+                  falls. This line said "lengist" — the second-order behaviour, two lines down. */}
+              <span>0. stig: t₁/₂ fer eftir [A]₀ - styttist þegar styrkur minnkar</span>
             </li>
             <li className="flex items-start gap-2">
               <span style={{ color: ORDER_INFO[1].color }}>●</span>

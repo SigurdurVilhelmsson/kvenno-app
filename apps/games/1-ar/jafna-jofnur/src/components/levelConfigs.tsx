@@ -4,7 +4,7 @@ function Level1Intro() {
   return (
     <>
       <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
-        <h2 className="text-xl font-bold text-warm-800 mb-3">Af hverju jöfnum við efnajöfnur?</h2>
+        <h2 className="text-xl font-bold text-warm-800 mb-3">Af hverju stillum við efnajöfnur?</h2>
         <p className="text-warm-700 text-sm leading-relaxed mb-3">
           <strong>Massavarðveislulögmálið</strong> segir að atóm hverfa ekki og myndast ekki í
           efnahvörfum — þau breyta bara um tengsl. Fjöldi atóma af hverju frumefni verður að vera sá
@@ -23,13 +23,14 @@ function Level1Intro() {
           </p>
           <p className="text-xs text-warm-500">Óstillt efnajafna</p>
         </div>
-        <div className="space-y-3 text-sm text-warm-700">
+        {/* At text-sm a subscript renders at 10.5px; keep the digits legible on a phone. */}
+        <div className="space-y-3 text-sm text-warm-700 pointer-coarse:[&_sub]:text-[12px]">
           <div className="flex items-start gap-2">
             <span className="bg-blue-100 text-blue-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shrink-0">
               1
             </span>
             <p>
-              <strong>Telja atóm:</strong> Vinstri: 2 H, 2 O. Hægri: 2 H, 1 O. Súrefni er óstillð!
+              <strong>Telja atóm:</strong> Vinstri: 2 H, 2 O. Hægri: 2 H, 1 O. Súrefni er óstillt!
             </p>
           </div>
           <div className="flex items-start gap-2">

@@ -5,6 +5,7 @@ import { shuffleArray } from '@shared/utils';
 
 import { challenges } from '../data/level3-questions';
 import type { MechanismStep } from '../data/level3-questions';
+import { keepFormulasWhole } from '../utils/keep-formulas-whole';
 
 interface Level3Props {
   onComplete: (score: number) => void;
@@ -102,22 +103,26 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   if (showIntro) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 space-y-5">
-          <div className="flex items-center justify-between">
-            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+        <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 space-y-5">
+          {/* On a phone the title takes its own line below the back link and level tag */}
+          <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 sm:flex-nowrap">
+            <button
+              onClick={onBack}
+              className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:min-h-11"
+            >
               ← Til baka
             </button>
-            <h1 className="text-lg font-bold text-warm-800">
-              Gangvegir og hraðaákveðandi skref — Kennsla
+            <h1 className="text-lg font-bold text-warm-800 order-last w-full sm:order-none sm:w-auto">
+              Hvarfgangar og hraðaákvarðandi skref — Kennsla
             </h1>
-            <span className="text-sm text-warm-500">Stig 3</span>
+            <span className="text-sm text-warm-500 whitespace-nowrap">Stig 3</span>
           </div>
 
           <div className="bg-purple-50 border-l-4 border-purple-500 rounded-lg p-4">
-            <h2 className="font-bold text-purple-900 mb-2">Hvað er gangvegur?</h2>
+            <h2 className="font-bold text-purple-900 mb-2">Hvað er hvarfgangur?</h2>
             <p className="text-warm-700 text-sm leading-relaxed">
-              Flest efnahvörf gerast ekki í einu skrefi — þau hafa <strong>gangveg</strong> með
-              mörgum <strong>einþrepa skrefum</strong>. Hvert skref hefur sitt eigið hraðastig.
+              Flest efnahvörf gerast ekki í einu skrefi — þau hafa <strong>hvarfgang</strong> með
+              mörgum <strong>grunnskrefum</strong>. Hvert skref hefur sitt eigið hraðastig.
             </p>
           </div>
 
@@ -125,36 +130,39 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             <h3 className="font-bold text-warm-800">Þrjú lykilhugtök</h3>
 
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm">
-              <p className="font-bold text-amber-800 mb-1">Millistig (intermediate)</p>
+              <p className="font-bold text-amber-800 mb-1">Milliefni (intermediate)</p>
               <p className="text-warm-700">
                 Tegund sem <strong>myndast í einu skrefi og eyðist í öðru</strong>. Hún kemur ekki
                 fram í heildarjöfnunni og má <strong>ekki</strong> birtast í hraðalögmálinu.
               </p>
               <p className="font-mono text-xs text-warm-800 mt-1">
-                Skref 1: A + B → I &nbsp;&nbsp; Skref 2: I + C → D &nbsp;&nbsp; (I = millistig)
+                <span className="whitespace-nowrap">Skref 1: A + B → I</span> &nbsp;&nbsp;{' '}
+                <span className="whitespace-nowrap">Skref 2: I + C → D</span> &nbsp;&nbsp;{' '}
+                <span className="whitespace-nowrap">(I = milliefni)</span>
               </p>
             </div>
 
             <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm">
-              <p className="font-bold text-red-800 mb-1">Hraðaákveðandi skref (RDS)</p>
+              <p className="font-bold text-red-800 mb-1">Hraðaákvarðandi skref</p>
               <p className="text-warm-700">
                 <strong>Hægasta skrefið</strong> ákvarðar hraða alls hvarfsins — eins og hægasti
                 hlaupari stýrir hraða boðhlaupsteyma. Hraðalögmálið kemur beint úr hvarfefnum
-                hraðaákveðandi skrefsins.
+                hraðaákvarðandi skrefsins.
               </p>
             </div>
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
-              <p className="font-bold text-blue-800 mb-1">Hverfa um jafnvægi (fast equilibrium)</p>
+              <p className="font-bold text-blue-800 mb-1">Hratt jafnvægi (fast equilibrium)</p>
               <p className="text-warm-700">
-                Ef hraðaákveðandi skrefið inniheldur millistig, notum við jafnvægisstuðulinn úr
-                hröðu skrefinu á undan til að losna við millistigið í lokajöfnunni.
+                Ef hraðaákvarðandi skrefið inniheldur milliefni, notum við jafnvægisfastann úr hröðu
+                skrefinu á undan til að losna við milliefnið í lokajöfnunni.
               </p>
               <p className="font-mono text-xs text-warm-800 mt-1">
-                NO + Br₂ ⇌ NOBr₂ (hratt) &nbsp;&nbsp; NOBr₂ + NO → 2NOBr (hægt)
+                <span className="whitespace-nowrap">NO + Br₂ ⇌ NOBr₂ (hratt)</span> &nbsp;&nbsp;{' '}
+                <span className="whitespace-nowrap">NOBr₂ + NO → 2NOBr (hægt)</span>
               </p>
               <p className="text-xs text-warm-700 mt-1">
-                [NOBr₂] = K[NO][Br₂] → Rate = k[NO]²[Br₂]
+                {keepFormulasWhole('[NOBr₂] = K[NO][Br₂] → hraði = k[NO]²[Br₂]')}
               </p>
             </div>
           </div>
@@ -177,7 +185,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
           >
             <span>&larr;</span> Til baka
           </button>
@@ -198,26 +206,30 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <h2 className="text-2xl font-bold text-purple-800 mb-2">{challenge.title}</h2>
           <p className="text-warm-600 mb-4">{challenge.description}</p>
 
           {/* Overall reaction */}
           <div className="bg-purple-50 p-4 rounded-xl mb-6">
             <div className="text-sm text-purple-600 mb-1">Heildarhvarf:</div>
-            <div className="text-center font-mono text-xl font-bold">
+            <div className="text-center font-mono text-lg sm:text-xl font-bold">
               {challenge.overallReaction}
             </div>
           </div>
 
           {/* Mechanism steps */}
           <div className="mb-6">
-            <h3 className="font-bold text-warm-700 mb-3">Hvarfgangsháttur:</h3>
+            <h3 className="font-bold text-warm-700 mb-3">Hvarfgangur:</h3>
             <div className="space-y-3">
               {challenge.mechanism.map((step, idx) => (
-                <div key={idx} className={`p-4 rounded-xl border-2 ${getStepStyle(step.type)}`}>
-                  <div className="flex items-center justify-between">
-                    <div className="font-mono text-lg">{step.equation}</div>
+                <div
+                  key={idx}
+                  className={`p-3 sm:p-4 rounded-xl border-2 ${getStepStyle(step.type)}`}
+                >
+                  {/* On a phone the step label sits under its equation instead of squeezing it */}
+                  <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="font-mono text-base sm:text-lg">{step.equation}</div>
                     {step.label && (
                       <span
                         className={`text-sm font-semibold px-2 py-1 rounded ${
@@ -253,7 +265,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               >
                 <div className="flex items-start gap-3">
                   <span className="font-bold text-warm-500 uppercase">{option.id}.</span>
-                  <span className="flex-1">{option.text}</span>
+                  <span className="flex-1">{keepFormulasWhole(option.text)}</span>
                   {showResult && option.correct && (
                     <span className="text-green-600 font-bold">✓</span>
                   )}
@@ -265,7 +277,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                   <div
                     className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}
                   >
-                    {option.explanation}
+                    {keepFormulasWhole(option.explanation)}
                   </div>
                 )}
               </button>
@@ -279,7 +291,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 setShowHint(true);
                 setTotalHintsUsed((prev) => prev + 1);
               }}
-              className="text-purple-600 hover:text-purple-800 text-sm underline mb-4"
+              className="text-purple-600 hover:text-purple-800 text-sm underline mb-4 pointer-coarse:min-h-11"
             >
               Sýna vísbendingu
             </button>
@@ -328,7 +340,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
             <div className="flex items-center gap-2">
               <span className="w-4 h-4 rounded bg-red-400"></span>
-              <span>Hægt skref (RDS)</span>
+              <span>Hægt skref (hraðaákvarðandi)</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-4 h-4 rounded bg-green-400"></span>
@@ -340,7 +352,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             </div>
             <div className="flex items-center gap-2">
               <span className="w-4 h-4 rounded bg-purple-400"></span>
-              <span>Millistig</span>
+              <span>Milliefni</span>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ErrorBoundary, Header } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
@@ -7,6 +7,7 @@ import { ChainBuilder } from './components/ChainBuilder';
 import { ExploreScreen } from './components/ExploreScreen';
 import { UnderstandScreen } from './components/UnderstandScreen';
 import { problemsForPhase } from './data/problems';
+import { scrollPageToTop } from './utils/reveal';
 
 type Screen = 'menu' | 'kanna' | 'skilja' | 'aefa' | 'beita';
 
@@ -67,6 +68,17 @@ function App() {
 
   const backToMenu = useCallback(() => setScreen('menu'), []);
 
+  // Each phase replaces the whole screen, but the page kept the scroll position
+  // of the menu card that opened it. On a phone that is a screen or two down, so
+  // a phase opened with its problem statement already scrolled past. Start every
+  // screen at its top. The first render is left to the browser.
+  const shownScreen = useRef(screen);
+  useEffect(() => {
+    if (shownScreen.current === screen) return;
+    shownScreen.current = screen;
+    scrollPageToTop();
+  }, [screen]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
       <Header variant="game" backHref="/efnafraedi/1-ar/" gameTitle="Einingakeðjan" />
@@ -83,7 +95,7 @@ function App() {
               upp
             </p>
 
-            <div className="rounded-lg bg-white p-8 shadow-md">
+            <div className="rounded-lg bg-white p-5 shadow-md sm:p-8">
               <h2 className="mb-2 text-2xl font-bold text-warm-800">Fjórir áfangar</h2>
               <p className="mb-6 text-warm-600">
                 Þú færð mælingu sem þú getur séð fyrir þér, mark sem þú átt að komast á, og safn af
@@ -97,7 +109,7 @@ function App() {
                     key={phase.id}
                     type="button"
                     onClick={() => setScreen(phase.id)}
-                    className={`game-card rounded-lg p-6 text-left text-white transition-colors ${phase.tone}`}
+                    className={`game-card rounded-lg p-5 text-left text-white transition-colors sm:p-6 ${phase.tone}`}
                   >
                     <div className="mb-2 flex items-center gap-2">
                       <span className="text-2xl">{phase.number}</span>

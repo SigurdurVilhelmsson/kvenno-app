@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
 
 import { L3_SCORING } from '../config/scoring';
 import { problems } from '../data/half-reactions';
+import { matchesSpecies, parseWholeNumber } from '../utils/answers';
 
 interface Level3Props {
   t: (key: string, fallback?: string) => string;
@@ -34,16 +35,22 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
     message: '',
   });
   const [, setTotalHintsUsed] = useState(0);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+
+  // On a phone the verdict and its "Næsta" button land below the input. After Enter on the
+  // soft keyboard (which stays open) they sit under it, so bring them into view — 'nearest'
+  // leaves the page alone wherever they are already visible, as on desktop.
+  useEffect(() => {
+    if (feedback.show) {
+      feedbackRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+    }
+  }, [feedback.show]);
 
   const problem = problems[currentProblem];
 
   const checkIdentify = () => {
-    const oxCorrect =
-      answers.oxidized.toLowerCase() ===
-      problem.oxidationHalf.species.toLowerCase().replace(/[⁺⁻²³⁴₂]/g, '');
-    const redCorrect =
-      answers.reduced.toLowerCase() ===
-      problem.reductionHalf.species.toLowerCase().replace(/[⁺⁻²³⁴₂]/g, '');
+    const oxCorrect = matchesSpecies(answers.oxidized, problem.oxidationHalf.species);
+    const redCorrect = matchesSpecies(answers.reduced, problem.reductionHalf.species);
 
     if (oxCorrect && redCorrect) {
       setScore((prev) => prev + L3_SCORING.IDENTIFY);
@@ -62,8 +69,8 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
   };
 
   const checkMultipliers = () => {
-    const oxM = parseInt(answers.oxMultiplier, 10);
-    const redM = parseInt(answers.redMultiplier, 10);
+    const oxM = parseWholeNumber(answers.oxMultiplier);
+    const redM = parseWholeNumber(answers.redMultiplier);
 
     if (oxM === problem.multiplierOx && redM === problem.multiplierRed) {
       setScore((prev) => prev + L3_SCORING.BALANCE);
@@ -83,7 +90,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
 
   const checkOxElectrons = () => {
     if (feedback.show || !answers.oxElectrons) return;
-    const correct = parseInt(answers.oxElectrons, 10) === problem.oxidationHalf.electrons;
+    const correct = parseWholeNumber(answers.oxElectrons) === problem.oxidationHalf.electrons;
     if (correct) {
       setScore((prev) => prev + L3_SCORING.OXIDATION_HALF);
       setFeedback({ show: true, correct: true, message: t('common.correct', 'Rétt!') });
@@ -98,7 +105,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
 
   const checkRedElectrons = () => {
     if (feedback.show || !answers.redElectrons) return;
-    const correct = parseInt(answers.redElectrons, 10) === problem.reductionHalf.electrons;
+    const correct = parseWholeNumber(answers.redElectrons) === problem.reductionHalf.electrons;
     if (correct) {
       setScore((prev) => prev + L3_SCORING.REDUCTION_HALF);
       setFeedback({ show: true, correct: true, message: t('common.correct', 'Rétt!') });
@@ -141,6 +148,19 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
     }
   };
 
+  const nextButton = (
+    <button
+      onClick={handleNext}
+      className="w-full mt-4 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl"
+    >
+      {step === 'complete'
+        ? currentProblem < problems.length - 1
+          ? t('level3.nextProblem', 'Næsta dæmi') + ' →'
+          : t('level3.completeLevel', 'Ljúka stigi') + ' →'
+        : t('common.next', 'Halda áfram') + ' →'}
+    </button>
+  );
+
   const renderStep = () => {
     switch (step) {
       case 'identify':
@@ -178,7 +198,10 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                       checkIdentify();
                     }
                   }}
-                  placeholder={t('level3.examplePlaceholder', 't.d. Zn')}
+                  placeholder={t('level3.examplePlaceholder', 't.d. Na')}
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck={false}
                   className="w-full p-3 border-2 border-blue-300 rounded-xl focus:border-blue-500 focus:outline-none"
                 />
               </div>
@@ -204,7 +227,10 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                       checkIdentify();
                     }
                   }}
-                  placeholder={t('level3.examplePlaceholder', 't.d. Zn')}
+                  placeholder={t('level3.examplePlaceholder', 't.d. Na')}
+                  autoComplete="off"
+                  autoCorrect="off"
+                  spellCheck={false}
                   className="w-full p-3 border-2 border-red-300 rounded-xl focus:border-red-500 focus:outline-none"
                 />
               </div>
@@ -231,7 +257,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           <div className="space-y-4">
             <div className="bg-blue-50 p-4 rounded-xl">
               <h3 className="font-bold text-blue-800 mb-2">
-                {t('level3.step2Title', 'Skref 2: Oxunar hálf-hvarf')}
+                {t('level3.step2Title', 'Skref 2: Oxunarhálfhvarf')}
               </h3>
               <div className="text-blue-600">
                 {problem.oxidationHalf.speciesDisplay} → {problem.oxidationHalf.productDisplay} +
@@ -246,6 +272,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               </label>
               <input
                 type="number"
+                inputMode="numeric"
                 value={answers.oxElectrons}
                 onChange={(e) => setAnswers((prev) => ({ ...prev, oxElectrons: e.target.value }))}
                 onKeyDown={(e) => {
@@ -277,7 +304,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           <div className="space-y-4">
             <div className="bg-red-50 p-4 rounded-xl">
               <h3 className="font-bold text-red-800 mb-2">
-                {t('level3.step3Title', 'Skref 3: Afoxunar hálf-hvarf')}
+                {t('level3.step3Title', 'Skref 3: Afoxunarhálfhvarf')}
               </h3>
               <div className="text-red-600">
                 {problem.reductionHalf.speciesDisplay} + ?e⁻ →{' '}
@@ -292,6 +319,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               </label>
               <input
                 type="number"
+                inputMode="numeric"
                 value={answers.redElectrons}
                 onChange={(e) => setAnswers((prev) => ({ ...prev, redElectrons: e.target.value }))}
                 onKeyDown={(e) => {
@@ -328,7 +356,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               <p className="text-amber-600 text-sm mb-3">
                 {t(
                   'level3.step4Hint',
-                  'Margfaldaðu hálf-hvörfin svo rafeindir sem tapast = rafeindir sem öðlast'
+                  'Margfaldaðu hálfhvörfin svo rafeindir sem ein tegund tapar = rafeindir sem önnur öðlast'
                 )}
               </p>
               <div className="grid grid-cols-2 gap-4 text-sm">
@@ -348,6 +376,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                 </label>
                 <input
                   type="number"
+                  inputMode="numeric"
                   value={answers.oxMultiplier}
                   onChange={(e) =>
                     setAnswers((prev) => ({ ...prev, oxMultiplier: e.target.value }))
@@ -372,6 +401,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                 </label>
                 <input
                   type="number"
+                  inputMode="numeric"
                   value={answers.redMultiplier}
                   onChange={(e) =>
                     setAnswers((prev) => ({ ...prev, redMultiplier: e.target.value }))
@@ -450,14 +480,19 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
 
   if (showIntro) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 space-y-5">
-          <div className="flex justify-between items-center">
-            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+      <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-3 sm:p-4 md:p-8">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 space-y-5">
+          <div className="flex flex-wrap justify-between items-center gap-x-3 gap-y-1">
+            <button
+              onClick={onBack}
+              className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
+            >
               ← {t('common.back', 'Til baka')}
             </button>
-            <h1 className="text-lg font-bold text-warm-800">Hálfhvarfaaðferðin — Kennsla</h1>
-            <span className="text-sm text-warm-500">Stig 3</span>
+            <h1 className="text-lg font-bold text-warm-800 order-last w-full sm:order-none sm:w-auto">
+              Hálfhvarfsaðferðin — Kennsla
+            </h1>
+            <span className="text-sm text-warm-500 whitespace-nowrap">Stig 3</span>
           </div>
 
           <div className="bg-teal-50 border-l-4 border-teal-500 rounded-lg p-4">
@@ -487,9 +522,8 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm">
               <p className="font-bold text-amber-800 mb-1">Skref 3 — Stilla rafeindir</p>
               <p className="text-warm-700">
-                Oxun gefur <strong>3 rafeindir</strong>, afoxun þarfnast{' '}
-                <strong>2 rafeindir</strong>. Minnsta samþakning er 6. Margföldum oxun með 2 og
-                afoxun með 3.
+                Oxun gefur <strong>3 rafeindir</strong>, afoxun þarfnast <strong>2 rafeinda</strong>
+                . Minnsta samþakning er 6. Margföldum oxun með 2 og afoxun með 3.
               </p>
               <p className="font-mono text-warm-800 mt-1">
                 2 × (Al → Al³⁺ + 3e⁻) = 2Al → 2Al³⁺ + 6e⁻
@@ -518,18 +552,21 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-        <div className="flex justify-between items-center mb-6">
-          <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-3 sm:p-4 md:p-8">
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+        <div className="flex flex-wrap justify-between items-center gap-x-3 gap-y-2 mb-6">
+          <button
+            onClick={onBack}
+            className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
+          >
             <span>&larr;</span> {t('common.back', 'Til baka')}
           </button>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-warm-500">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="text-sm text-warm-500 whitespace-nowrap">
               {t('level3.problem', 'Dæmi')} {currentProblem + 1} {t('level3.of', 'af')}{' '}
               {problems.length}
             </div>
-            <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold">
+            <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold whitespace-nowrap">
               {t('level3.score', 'Stig')}: {score}
             </div>
           </div>
@@ -539,7 +576,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           {t('levels.level3.name', 'Stilla redox-jöfnur')}
         </h1>
         <p className="text-center text-warm-600 mb-4">
-          {t('level3.subtitle', 'Hálfhvarfaaðferðin')}
+          {t('level3.subtitle', 'Hálfhvarfsaðferðin')}
         </p>
 
         <div className="bg-warm-50 p-4 rounded-xl mb-6 text-center">
@@ -567,32 +604,29 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
         {renderStep()}
 
         {feedback.show && (
-          <div
-            className={`mt-4 p-4 rounded-xl ${
-              feedback.correct
-                ? 'bg-green-100 border-2 border-green-400'
-                : 'bg-amber-100 border-2 border-amber-400'
-            }`}
-          >
-            <div className={`font-bold ${feedback.correct ? 'text-green-800' : 'text-amber-800'}`}>
-              {feedback.correct ? '✓ ' : ''}
-              {feedback.message}
+          <div ref={feedbackRef} data-testid="step-feedback">
+            <div
+              className={`mt-4 p-4 rounded-xl ${
+                feedback.correct
+                  ? 'bg-green-100 border-2 border-green-400'
+                  : 'bg-amber-100 border-2 border-amber-400'
+              }`}
+            >
+              <div
+                className={`font-bold ${feedback.correct ? 'text-green-800' : 'text-amber-800'}`}
+              >
+                {feedback.correct ? '✓ ' : ''}
+                {feedback.message}
+              </div>
             </div>
+
+            {nextButton}
           </div>
         )}
 
-        {feedback.show && (
-          <button
-            onClick={handleNext}
-            className="w-full mt-4 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl"
-          >
-            {step === 'complete'
-              ? currentProblem < problems.length - 1
-                ? t('level3.nextProblem', 'Næsta dæmi') + ' →'
-                : t('level3.completeLevel', 'Ljúka stigi') + ' →'
-              : t('common.next', 'Halda áfram') + ' →'}
-          </button>
-        )}
+        {/* The balanced equation has no verdict above it, so it needs its own way on:
+            without this the level stopped at the first problem. */}
+        {step === 'complete' && nextButton}
 
         {showHint && (
           <div className="mt-4 bg-yellow-50 p-4 rounded-xl border border-yellow-200">
@@ -609,9 +643,9 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               setShowHint(true);
               setTotalHintsUsed((prev) => prev + 1);
             }}
-            className="w-full mt-4 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-2 px-4 rounded-xl text-sm"
+            className="w-full mt-4 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-2 px-4 rounded-xl text-sm pointer-coarse:min-h-11"
           >
-            {t('common.hint', 'Syna visbendingu')}
+            {t('common.hint', 'Sýna vísbendingu')}
           </button>
         )}
 

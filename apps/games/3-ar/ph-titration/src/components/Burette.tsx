@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 interface BuretteProps {
   volumeAdded: number;
   maxVolume?: number;
@@ -37,9 +39,11 @@ export const Burette: React.FC<BuretteProps> = ({
       volumeText: 'text-xs',
     },
     md: {
-      height: 'h-[320px] md:h-[420px] lg:h-[500px]',
+      // Shorter below md so the burette, the flask and the curve share one
+      // phone screen: a student must watch the curve while pouring.
+      height: 'h-[200px] md:h-[420px] lg:h-[500px]',
       width: 'w-11 md:w-12',
-      scaleMarks: 'left-[-36px] md:left-[-40px] text-[10px] md:text-xs',
+      scaleMarks: 'left-[-36px] md:left-[-40px] text-xs',
       tipSize: 7,
       stopcockWidth: 'w-7 md:w-8',
       volumeText: 'text-xs md:text-sm',
@@ -67,7 +71,7 @@ export const Burette: React.FC<BuretteProps> = ({
         <div
           className={`relative ${widthClass} ${heightClass} rounded-t-lg rounded-b-sm border-4 border-indigo-700`}
           role="meter"
-          aria-label={`Büretta: ${volumeAdded.toFixed(2)} mL af ${maxVolume} mL bætt við`}
+          aria-label={`Búretta: ${formatDecimal(volumeAdded, 2)} mL af ${maxVolume} mL bætt við`}
           aria-valuenow={volumeAdded}
           aria-valuemin={0}
           aria-valuemax={maxVolume}
@@ -127,7 +131,10 @@ export const Burette: React.FC<BuretteProps> = ({
       {/* Volume display */}
       <div className="mt-6 bg-indigo-100 px-3 md:px-4 py-2 rounded-lg border-2 border-indigo-300">
         <p className={`${config.volumeText} font-bold text-indigo-900`}>
-          Rúmmál bætt við: <span className="text-base md:text-lg">{volumeAdded.toFixed(2)}</span> mL
+          Rúmmál bætt við:{' '}
+          <span className="whitespace-nowrap">
+            <span className="text-base md:text-lg">{formatDecimal(volumeAdded, 2)}</span> mL
+          </span>
         </p>
       </div>
     </div>

@@ -43,7 +43,7 @@ function ElementCell({
     <button
       onClick={onClick}
       className={`
-        w-full h-full min-h-[48px] md:min-h-[56px] p-1 rounded-md border-2 transition-all
+        w-full h-full min-h-[56px] p-0 md:p-1 rounded-md border-2 transition-all
         flex flex-col items-center justify-center text-center
         hover:scale-110 hover:z-10 hover:shadow-lg
         ${colors.bg} ${colors.text} ${colors.border}
@@ -51,9 +51,11 @@ function ElementCell({
         ${isSelected ? 'ring-4 ring-blue-500 ring-offset-2 scale-110 z-10' : ''}
       `}
     >
-      <span className="text-[8px] md:text-[10px] text-warm-500">{element.atomicNumber}</span>
-      <span className="text-sm md:text-lg font-bold leading-tight">{element.symbol}</span>
-      <span className="text-[8px] md:text-[10px] font-mono leading-tight">
+      <span className="text-[12px] md:text-[10px] leading-none md:leading-normal text-warm-500">
+        {element.atomicNumber}
+      </span>
+      <span className="text-base md:text-lg font-bold leading-tight">{element.symbol}</span>
+      <span className="text-[12px] md:text-[10px] font-mono leading-tight">
         {showApproximate ? `≈${mass}` : mass}
       </span>
     </button>
@@ -62,7 +64,7 @@ function ElementCell({
 
 // Empty cell placeholder
 function EmptyCell() {
-  return <div className="w-full h-full min-h-[48px] md:min-h-[56px]" />;
+  return <div className="w-full h-full min-h-[56px]" />;
 }
 
 export function PeriodicTable({
@@ -128,12 +130,12 @@ export function PeriodicTable({
   const categories: { key: ElementCategory; label: string }[] = [
     { key: 'alkali-metal', label: 'Alkalímálmar' },
     { key: 'alkaline-earth', label: 'Jarðalkalímálmar' },
-    { key: 'transition-metal', label: 'Skiptimálmar' },
+    { key: 'transition-metal', label: 'Hliðarmálmar' },
     { key: 'post-transition-metal', label: 'P-málmar' },
     { key: 'metalloid', label: 'Hálfmálmar' },
-    { key: 'nonmetal', label: 'Ómálmar' },
+    { key: 'nonmetal', label: 'Málmleysingjar' },
     { key: 'halogen', label: 'Halógen' },
-    { key: 'noble-gas', label: 'Eðallofttegundir' },
+    { key: 'noble-gas', label: 'Eðalgös' },
   ];
 
   return (
@@ -146,9 +148,12 @@ export function PeriodicTable({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[95vh] overflow-hidden flex flex-col">
+      {/* Below md the whole card scrolls, with the header and the element detail
+          pinned, so a phone in either orientation keeps the table in view; at md
+          the fixed header and footer around a scrolling table return. */}
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[95dvh] overflow-y-auto overscroll-contain md:overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="bg-kvenno-orange text-white p-3 md:p-4 flex justify-between items-center shrink-0">
+        <div className="sticky top-0 z-20 md:static md:z-auto bg-kvenno-orange text-white p-3 md:p-4 flex justify-between items-center shrink-0">
           <div>
             <h2 id="periodic-table-title" className="text-xl md:text-2xl font-bold">
               Lotukerfið
@@ -160,7 +165,7 @@ export function PeriodicTable({
           <button
             ref={closeButtonRef}
             onClick={onClose}
-            className="text-white hover:text-warm-200 text-2xl font-bold w-11 h-11 flex items-center justify-center rounded-lg hover:bg-white/20 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white"
+            className="shrink-0 text-white hover:text-warm-200 text-2xl font-bold w-11 h-11 flex items-center justify-center rounded-lg hover:bg-white/20 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white"
             aria-label="Loka lotukerfinu"
           >
             ×
@@ -175,14 +180,17 @@ export function PeriodicTable({
               placeholder="Leita (nafn, tákn, sætistala)..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 min-w-[150px] px-3 py-2 border-2 border-warm-300 rounded-lg focus:border-kvenno-orange focus:outline-none text-sm"
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck={false}
+              className="flex-1 min-w-[150px] px-3 py-2 pointer-coarse:min-h-11 border-2 border-warm-300 rounded-lg focus:border-kvenno-orange focus:outline-none text-sm"
             />
 
             {/* View toggle */}
             <div className="flex rounded-lg overflow-hidden border-2 border-warm-300">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`px-3 py-2 text-sm font-semibold transition-colors ${
+                className={`px-3 py-2 pointer-coarse:min-h-11 text-sm font-semibold transition-colors ${
                   viewMode === 'grid'
                     ? 'bg-kvenno-orange text-white'
                     : 'bg-white text-warm-700 hover:bg-warm-100'
@@ -192,7 +200,7 @@ export function PeriodicTable({
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`px-3 py-2 text-sm font-semibold transition-colors ${
+                className={`px-3 py-2 pointer-coarse:min-h-11 text-sm font-semibold transition-colors ${
                   viewMode === 'list'
                     ? 'bg-kvenno-orange text-white'
                     : 'bg-white text-warm-700 hover:bg-warm-100'
@@ -205,7 +213,7 @@ export function PeriodicTable({
             {/* Mass toggle */}
             <button
               onClick={() => setShowApprox(!showApprox)}
-              className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+              className={`px-3 py-2 pointer-coarse:min-h-11 rounded-lg text-sm font-semibold transition-colors ${
                 showApprox
                   ? 'bg-yellow-100 text-yellow-800 border-2 border-yellow-300'
                   : 'bg-blue-100 text-blue-800 border-2 border-blue-300'
@@ -217,42 +225,51 @@ export function PeriodicTable({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-auto p-2 md:p-4">
+        <div className="flex-none md:flex-1 md:overflow-auto p-2 md:p-4">
           {viewMode === 'grid' ? (
             <div>
-              {/* Periodic Table Grid */}
-              <div
-                className="grid gap-0.5"
-                style={{ gridTemplateColumns: 'repeat(18, minmax(0, 1fr))' }}
-              >
-                {/* Group numbers header */}
-                {Array.from({ length: 18 }, (_, i) => (
-                  <div
-                    key={`group-${i + 1}`}
-                    className="text-center text-xs text-warm-400 font-semibold py-1"
-                  >
-                    {i + 1}
-                  </div>
-                ))}
-
-                {/* Periodic table rows */}
-                {periodicGrid.map((row, periodIdx) =>
-                  row.map((element, groupIdx) => (
-                    <div key={`${periodIdx}-${groupIdx}`} className="aspect-square">
-                      {element ? (
-                        <ElementCell
-                          element={element}
-                          showApproximate={showApprox}
-                          isHighlighted={highlightSet.has(element.symbol)}
-                          isSelected={selectedElement?.symbol === element.symbol}
-                          onClick={() => handleElementClick(element)}
-                        />
-                      ) : (
-                        <EmptyCell />
-                      )}
+              {/* Periodic Table Grid. Eighteen columns cannot fit a phone at a
+                  size anyone can tap or read, so below md the grid keeps
+                  56px cells and scrolls sideways inside its own box. Its side
+                  padding keeps a selected cell's enlarged ring from being
+                  clipped by that box. */}
+              <p className="md:hidden text-xs text-warm-500 mb-1">
+                Strjúktu til hliðar til að sjá allt lotukerfið →
+              </p>
+              <div className="overflow-x-auto px-2.5 md:overflow-visible md:px-0">
+                <div
+                  className="grid gap-0.5 min-w-[66rem] md:min-w-0"
+                  style={{ gridTemplateColumns: 'repeat(18, minmax(0, 1fr))' }}
+                >
+                  {/* Group numbers header */}
+                  {Array.from({ length: 18 }, (_, i) => (
+                    <div
+                      key={`group-${i + 1}`}
+                      className="text-center text-xs text-warm-400 font-semibold py-1"
+                    >
+                      {i + 1}
                     </div>
-                  ))
-                )}
+                  ))}
+
+                  {/* Periodic table rows */}
+                  {periodicGrid.map((row, periodIdx) =>
+                    row.map((element, groupIdx) => (
+                      <div key={`${periodIdx}-${groupIdx}`} className="aspect-square">
+                        {element ? (
+                          <ElementCell
+                            element={element}
+                            showApproximate={showApprox}
+                            isHighlighted={highlightSet.has(element.symbol)}
+                            isSelected={selectedElement?.symbol === element.symbol}
+                            onClick={() => handleElementClick(element)}
+                          />
+                        ) : (
+                          <EmptyCell />
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
 
               {/* Category Legend */}
@@ -296,8 +313,8 @@ export function PeriodicTable({
                   <div className="text-sm text-warm-700">{element.name}</div>
                   <div className="text-sm font-mono text-warm-600 mt-1">
                     {showApprox
-                      ? `≈ ${APPROX_MASSES[element.symbol] || Math.round(element.atomicMass)} g/mol`
-                      : `${formatDecimal(element.atomicMass, 3)} g/mol`}
+                      ? `≈ ${APPROX_MASSES[element.symbol] || Math.round(element.atomicMass)} g/mól`
+                      : `${formatDecimal(element.atomicMass, 3)} g/mól`}
                   </div>
                 </button>
               ))}
@@ -307,42 +324,47 @@ export function PeriodicTable({
 
         {/* Selected Element Detail Panel */}
         {selectedElement && (
-          <div className="border-t bg-warm-50 p-4 shrink-0">
-            <div className="flex items-start gap-4">
+          <div className="sticky bottom-0 z-20 md:static md:z-auto border-t bg-warm-50 p-3 md:p-4 shrink-0">
+            {/* Below md the facts drop to a full-width row under the name (the
+                wrapper is display: contents there), since beside the symbol
+                they would be two 75px columns on a 320px phone. */}
+            <div className="flex flex-wrap md:flex-nowrap items-start gap-3 md:gap-4">
               <div
                 className={`
-                w-20 h-20 rounded-xl flex flex-col items-center justify-center
+                w-14 h-14 md:w-20 md:h-20 shrink-0 rounded-xl flex flex-col items-center justify-center
                 ${CATEGORY_COLORS[selectedElement.category].bg}
                 ${CATEGORY_COLORS[selectedElement.category].border}
                 border-2
               `}
               >
                 <span className="text-xs text-warm-500">{selectedElement.atomicNumber}</span>
-                <span className="text-3xl font-bold">{selectedElement.symbol}</span>
+                <span className="text-2xl md:text-3xl font-bold">{selectedElement.symbol}</span>
               </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-bold text-warm-800">{selectedElement.name}</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2 text-sm">
-                  <div className="bg-white rounded-lg p-2 border">
+              <div className="contents md:block md:flex-1 md:min-w-0">
+                <h3 className="flex-1 min-w-0 self-center text-lg md:text-xl font-bold text-warm-800">
+                  {selectedElement.name}
+                </h3>
+                <div className="order-last basis-full grid grid-cols-2 sm:grid-cols-4 gap-1.5 md:gap-2 md:mt-2 text-sm">
+                  <div className="bg-white rounded-lg p-1.5 md:p-2 border">
                     <div className="text-warm-500 text-xs">Sætistala</div>
                     <div className="font-bold">{selectedElement.atomicNumber}</div>
                   </div>
-                  <div className="bg-white rounded-lg p-2 border">
+                  <div className="bg-white rounded-lg p-1.5 md:p-2 border">
                     <div className="text-warm-500 text-xs">Atómmassi (nákvæmt)</div>
                     <div className="font-bold font-mono">
-                      {formatDecimal(selectedElement.atomicMass, 3)} g/mol
+                      {formatDecimal(selectedElement.atomicMass, 3)} g/mól
                     </div>
                   </div>
-                  <div className="bg-white rounded-lg p-2 border">
+                  <div className="bg-white rounded-lg p-1.5 md:p-2 border">
                     <div className="text-warm-500 text-xs">Atómmassi (námundað)</div>
                     <div className="font-bold font-mono">
                       ≈{' '}
                       {APPROX_MASSES[selectedElement.symbol] ||
                         Math.round(selectedElement.atomicMass)}{' '}
-                      g/mol
+                      g/mól
                     </div>
                   </div>
-                  <div className="bg-white rounded-lg p-2 border">
+                  <div className="bg-white rounded-lg p-1.5 md:p-2 border">
                     <div className="text-warm-500 text-xs">Staðsetning</div>
                     <div className="font-bold">
                       Lota {selectedElement.period}, Flokkur {selectedElement.group}
@@ -352,7 +374,8 @@ export function PeriodicTable({
               </div>
               <button
                 onClick={() => setSelectedElement(null)}
-                className="text-warm-400 hover:text-warm-600 text-xl"
+                aria-label="Loka nánari upplýsingum"
+                className="shrink-0 pointer-coarse:min-w-11 pointer-coarse:min-h-11 text-warm-400 hover:text-warm-600 text-xl"
               >
                 ×
               </button>
@@ -364,8 +387,8 @@ export function PeriodicTable({
         <div className="bg-warm-100 p-3 text-center text-sm text-warm-600 shrink-0">
           <p>
             {showApprox
-              ? 'Sýnir námundaðan atómmassa (heil tölu) fyrir einfalda útreikninga'
-              : 'Sýnir nákvæman atómmassa í g/mol (atómeiningarmassi)'}
+              ? 'Sýnir námundaðan atómmassa (heila tölu) fyrir einfalda útreikninga'
+              : 'Sýnir nákvæman atómmassa í g/mól (atómmassaeiningum)'}
           </p>
         </div>
       </div>

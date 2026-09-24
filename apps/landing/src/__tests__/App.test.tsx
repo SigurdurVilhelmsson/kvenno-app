@@ -51,7 +51,9 @@ vi.mock('@kvenno/shared/components', () => ({
       Fara beint í efni
     </a>
   ),
-  BottomNav: () => <nav data-testid="bottom-nav" />,
+  BottomNav: ({ activeTab }: { activeTab?: string }) => (
+    <nav data-testid="bottom-nav" data-active={activeTab} />
+  ),
 }));
 
 /**
@@ -311,5 +313,19 @@ describe('App routing', () => {
 
     expect(screen.getByTestId('header')).toBeDefined();
     expect(screen.getByTestId('footer')).toBeDefined();
+  });
+
+  it('highlights Heim in the phone tab bar on the home page', () => {
+    renderWithRouter(<App />, ['/']);
+
+    expect(screen.getByTestId('bottom-nav').getAttribute('data-active')).toBe('home');
+  });
+
+  it('highlights Efnafræði in the phone tab bar everywhere under /efnafraedi', () => {
+    for (const path of ['/efnafraedi', '/efnafraedi/1-ar', '/efnafraedi/3-ar/games']) {
+      const { unmount } = renderWithRouter(<App />, [path]);
+      expect(screen.getByTestId('bottom-nav').getAttribute('data-active')).toBe('efnafraedi');
+      unmount();
+    }
   });
 });

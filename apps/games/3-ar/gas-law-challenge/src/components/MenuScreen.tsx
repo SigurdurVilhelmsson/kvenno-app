@@ -23,8 +23,8 @@ export function MenuScreen({
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
         <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="Gaslögmál" />
         <div className="min-h-screen">
-          <main className="max-w-5xl mx-auto px-4 py-8">
-            <div className="bg-white rounded-xl shadow-lg p-8">
+          <main className="max-w-5xl mx-auto px-4 py-6 sm:py-8">
+            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8">
               <div className="text-center mb-8">
                 <p className="text-lg text-warm-600 mb-2">
                   Lærðu að leysa verkefni um kjörgaslögmálið: PV = nRT
@@ -52,7 +52,7 @@ export function MenuScreen({
                     </div>
                     <button
                       onClick={resetStats}
-                      className="mt-3 text-sm text-warm-500 hover:text-red-500 transition-colors"
+                      className="mt-3 text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:min-h-11 pointer-coarse:px-3"
                     >
                       Endurstilla framvindu
                     </button>
@@ -61,20 +61,20 @@ export function MenuScreen({
               </div>
 
               {/* Conceptual intro — WHY does PV=nRT? */}
-              <div className="bg-purple-50 p-6 rounded-xl mb-8 border border-purple-200">
+              <div className="bg-purple-50 p-4 sm:p-6 rounded-xl mb-8 border border-purple-200">
                 <h2 className="font-bold text-purple-800 mb-3">Af hverju PV = nRT?</h2>
                 <p className="text-sm text-purple-700 mb-3">
                   Gasagnir (sameindir) eru á stöðugri hreyfingu. Þegar þær rekast á veggi ílátsins
                   skapa þær <strong>þrýsting</strong>. Þetta tengir saman fjórar stærðir:
                 </p>
-                <div className="grid grid-cols-2 gap-3 text-sm mb-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm mb-3">
                   <div className="bg-white p-2 rounded">
-                    <strong className="text-blue-700">P (þrýstingur)</strong> — fleiri árekstur =
+                    <strong className="text-blue-700">P (þrýstingur)</strong> — fleiri árekstrar =
                     meiri þrýstingur
                   </div>
                   <div className="bg-white p-2 rounded">
                     <strong className="text-green-700">V (rúmmál)</strong> — minna ílát = fleiri
-                    árekstur
+                    árekstrar
                   </div>
                   <div className="bg-white p-2 rounded">
                     <strong className="text-red-700">T (hitastig)</strong> — hærra T = hraðari agnir
@@ -82,18 +82,18 @@ export function MenuScreen({
                   </div>
                   <div className="bg-white p-2 rounded">
                     <strong className="text-amber-700">n (mólfjöldi)</strong> — fleiri agnir =
-                    fleiri árekstur
+                    fleiri árekstrar
                   </div>
                 </div>
                 <div className="bg-white p-3 rounded-lg text-center">
                   <p className="font-mono text-purple-800 text-lg">PV = nRT</p>
                   <p className="text-xs text-purple-600 mt-1">
-                    R = 0,08206 L·atm/(mol·K) — tengir einingarnar saman
+                    R = 0,08206 L·atm/(mól·K) — tengir einingarnar saman
                   </p>
                 </div>
                 <p className="text-xs text-purple-600 mt-3">
                   <strong>Mikilvægt:</strong> T verður alltaf að vera í Kelvin (K = °C + 273). Þetta
-                  lögmál gildir best fyrir gas við lágan þrýsting og hátt hitastig (tilvalið gas).
+                  lögmál gildir best fyrir gas við lágan þrýsting og hátt hitastig (kjörgas).
                 </p>
               </div>
 
@@ -130,7 +130,7 @@ export function MenuScreen({
                       Boyle / Charles / Gay-Lussac
                     </div>
                     <div className="text-xs text-warm-500 mt-2">
-                      Sjáðu hvað gerist þegar ein breyta er fastlagt.
+                      Sjáðu hvað gerist þegar ein breyta er föst.
                     </div>
                   </button>
                   <button
@@ -151,7 +151,7 @@ export function MenuScreen({
 
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Practice Mode */}
-                <div className="game-card bg-blue-50 p-6 rounded-lg border-2 border-blue-200">
+                <div className="game-card bg-blue-50 p-4 sm:p-6 rounded-lg border-2 border-blue-200">
                   <h2 className="text-2xl font-bold mb-3 text-blue-900">Æfingahamur</h2>
                   <ul className="text-warm-700 mb-4 space-y-2 text-sm">
                     <li>✓ Engin tímatakmörk</li>
@@ -169,11 +169,11 @@ export function MenuScreen({
                 </div>
 
                 {/* Challenge Mode */}
-                <div className="game-card bg-orange-50 p-6 rounded-lg border-2 border-orange-200">
+                <div className="game-card bg-orange-50 p-4 sm:p-6 rounded-lg border-2 border-orange-200">
                   <h2 className="text-2xl font-bold mb-3 text-orange-900">Keppnishamur</h2>
                   <ul className="text-warm-700 mb-4 space-y-2 text-sm">
                     <li>⏱️ 90 sekúndur á spurningu</li>
-                    <li>🎯 Tíma bónus fyrir hraða</li>
+                    <li>🎯 Tímabónus fyrir hraða</li>
                     <li>💡 Vísbendingar í boði</li>
                     <li>📊 Stigatafla og röð</li>
                   </ul>
@@ -193,7 +193,7 @@ export function MenuScreen({
                   <div>
                     <p className="font-semibold">Kjörgaslögmálið:</p>
                     <p className="font-mono bg-white px-2 py-1 rounded mt-1">PV = nRT</p>
-                    <p className="text-xs mt-1">þar sem R = 0,08206 L·atm/(mol·K)</p>
+                    <p className="text-xs mt-1">þar sem R = 0,08206 L·atm/(mól·K)</p>
                   </div>
                   <div>
                     <p className="font-semibold">Lyklaborð:</p>

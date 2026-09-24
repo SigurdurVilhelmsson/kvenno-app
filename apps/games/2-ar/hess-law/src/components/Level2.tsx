@@ -1,246 +1,12 @@
 import { useState, useCallback, useMemo } from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 import { EnergyPathwayDiagram } from './EnergyPathwayDiagram';
 import type { Equation } from '../data/challenges';
+import { PUZZLES } from '../data/puzzles';
+import { reachesTarget } from '../utils/equation-math';
 import { calculateSum } from '../utils/hess-calculations';
-
-interface Puzzle {
-  id: number;
-  title: string;
-  description: string;
-  targetEquation: {
-    reactants: string;
-    products: string;
-  };
-  targetDeltaH: number;
-  availableEquations: Equation[];
-  solution: { equationId: string; reverse: boolean; multiply: number }[];
-  hint: string;
-  explanation: string;
-}
-
-const PUZZLES: Puzzle[] = [
-  {
-    id: 1,
-    title: 'Kolmonoxíð - iðnaðargas',
-    description:
-      '🏭 CO er mikilvægt iðnaðargas notað í stálframleiðslu og efnasmíði. Finndu myndunarvarmans.',
-    targetEquation: {
-      reactants: 'C(s) + ½O₂(g)',
-      products: 'CO(g)',
-    },
-    targetDeltaH: -110.5,
-    availableEquations: [
-      {
-        id: 'eq1',
-        reactants: 'C(s) + O₂(g)',
-        products: 'CO₂(g)',
-        deltaH: -393.5,
-        isReversed: false,
-        multiplier: 1,
-      },
-      {
-        id: 'eq2',
-        reactants: 'CO(g) + ½O₂(g)',
-        products: 'CO₂(g)',
-        deltaH: -283.0,
-        isReversed: false,
-        multiplier: 1,
-      },
-    ],
-    solution: [
-      { equationId: 'eq1', reverse: false, multiply: 1 },
-      { equationId: 'eq2', reverse: true, multiply: 1 },
-    ],
-    hint: 'Þú vilt CO sem myndefni, en í jöfnu 2 er CO hvarfefni. Hvað þarftu að gera?',
-    explanation:
-      'Nota jöfnu 1 (C → CO₂) og snúa við jöfnu 2 (CO₂ → CO). CO₂ styttist út: -393.5 + 283.0 = -110.5 kJ',
-  },
-  {
-    id: 2,
-    title: 'Vatn - vetnisorkugjafi',
-    description:
-      '🚀 Myndun vatns er grunnur að vetnisbrennslugögnum (fuel cells) og eldsneytisknippi eldflaugar. Finndu hvörfvarmann.',
-    targetEquation: {
-      reactants: 'H₂(g) + ½O₂(g)',
-      products: 'H₂O(g)',
-    },
-    targetDeltaH: -241.8,
-    availableEquations: [
-      {
-        id: 'eq1',
-        reactants: 'H₂(g) + ½O₂(g)',
-        products: 'H₂O(l)',
-        deltaH: -285.8,
-        isReversed: false,
-        multiplier: 1,
-      },
-      {
-        id: 'eq2',
-        reactants: 'H₂O(l)',
-        products: 'H₂O(g)',
-        deltaH: 44.0,
-        isReversed: false,
-        multiplier: 1,
-      },
-    ],
-    solution: [
-      { equationId: 'eq1', reverse: false, multiply: 1 },
-      { equationId: 'eq2', reverse: false, multiply: 1 },
-    ],
-    hint: 'Jafna 1 gefur fljótandi vatn, en þú vilt gas. Jafna 2 umbreytir vökva í gas.',
-    explanation: 'Leggja saman báðar jöfnur: -285.8 + 44.0 = -241.8 kJ. H₂O(l) styttist út.',
-  },
-  {
-    id: 3,
-    title: 'Etanól - lífeldsneyti',
-    description:
-      '🌽 Etanól er umhverfisvænt lífeldsneyti framleitt úr korni og sykurreyr. Notað í bílum í Brasilíu og E85 blöndum.',
-    targetEquation: {
-      reactants: 'C₂H₅OH(l) + 3O₂(g)',
-      products: '2CO₂(g) + 3H₂O(l)',
-    },
-    targetDeltaH: -1367,
-    availableEquations: [
-      {
-        id: 'eq1',
-        reactants: 'C(s) + O₂(g)',
-        products: 'CO₂(g)',
-        deltaH: -393.5,
-        isReversed: false,
-        multiplier: 1,
-      },
-      {
-        id: 'eq2',
-        reactants: 'H₂(g) + ½O₂(g)',
-        products: 'H₂O(l)',
-        deltaH: -285.8,
-        isReversed: false,
-        multiplier: 1,
-      },
-      {
-        id: 'eq3',
-        reactants: '2C(s) + 3H₂(g) + ½O₂(g)',
-        products: 'C₂H₅OH(l)',
-        deltaH: -277.0,
-        isReversed: false,
-        multiplier: 1,
-      },
-    ],
-    solution: [
-      { equationId: 'eq1', reverse: false, multiply: 2 },
-      { equationId: 'eq2', reverse: false, multiply: 3 },
-      { equationId: 'eq3', reverse: true, multiply: 1 },
-    ],
-    hint: 'Etanól er hvarfefni, en í jöfnu 3 er það myndefni. Þú þarft 2 CO₂ og 3 H₂O.',
-    explanation: '2×(-393.5) + 3×(-285.8) + (+277.0) = -787 - 857.4 + 277 = -1367.4 kJ',
-  },
-  {
-    id: 4,
-    title: 'NO₂ - loftmengun',
-    description:
-      '🚗 NO₂ myndast í bifreiðum og veldur loftmengun. Skilningur á þessu hjálpar við útblásturshreinsikerfi (catalytic converters).',
-    targetEquation: {
-      reactants: '½N₂(g) + O₂(g)',
-      products: 'NO₂(g)',
-    },
-    targetDeltaH: 33.2,
-    availableEquations: [
-      {
-        id: 'eq1',
-        reactants: '½N₂(g) + ½O₂(g)',
-        products: 'NO(g)',
-        deltaH: 90.2,
-        isReversed: false,
-        multiplier: 1,
-      },
-      {
-        id: 'eq2',
-        reactants: 'NO(g) + ½O₂(g)',
-        products: 'NO₂(g)',
-        deltaH: -57.0,
-        isReversed: false,
-        multiplier: 1,
-      },
-    ],
-    solution: [
-      { equationId: 'eq1', reverse: false, multiply: 1 },
-      { equationId: 'eq2', reverse: false, multiply: 1 },
-    ],
-    hint: 'NO er millistig. Leggðu saman til að NO styttist út.',
-    explanation: 'Jöfnur 1 + 2: NO styttist út. 90.2 + (-57.0) = 33.2 kJ',
-  },
-  {
-    id: 5,
-    title: 'SO₃ - Snertiferlið (Contact Process)',
-    description:
-      '🏭 SO₃ framleiðsla er lykilskref í snertiferlinu (Contact Process) sem framleiðir brennisteinssýru - mest framleidda efnið í heiminum!',
-    targetEquation: {
-      reactants: 'SO₂(g) + ½O₂(g)',
-      products: 'SO₃(g)',
-    },
-    targetDeltaH: -99.0,
-    availableEquations: [
-      {
-        id: 'eq1',
-        reactants: 'S(s) + O₂(g)',
-        products: 'SO₂(g)',
-        deltaH: -297.0,
-        isReversed: false,
-        multiplier: 1,
-      },
-      {
-        id: 'eq2',
-        reactants: 'S(s) + 3/2O₂(g)',
-        products: 'SO₃(g)',
-        deltaH: -396.0,
-        isReversed: false,
-        multiplier: 1,
-      },
-    ],
-    solution: [
-      { equationId: 'eq1', reverse: true, multiply: 1 },
-      { equationId: 'eq2', reverse: false, multiply: 1 },
-    ],
-    hint: 'SO₂ er hvarfefni í markmiðinu, en myndefni í jöfnu 1. Hvað þarftu að gera?',
-    explanation: 'Snúa við jöfnu 1 og leggja við jöfnu 2: +297.0 + (-396.0) = -99.0 kJ',
-  },
-  {
-    id: 6,
-    title: 'Thermít - járnbrautaviðgerðir',
-    description:
-      '🔥 Thermítviðbrögð (2700°C!) eru notuð til að bræða saman járnbrautateina. Einnig notað í hernaði og eldflaugum.',
-    targetEquation: {
-      reactants: '2Al(s) + Fe₂O₃(s)',
-      products: 'Al₂O₃(s) + 2Fe(s)',
-    },
-    targetDeltaH: -852,
-    availableEquations: [
-      {
-        id: 'eq1',
-        reactants: '2Al(s) + 3/2O₂(g)',
-        products: 'Al₂O₃(s)',
-        deltaH: -1676,
-        isReversed: false,
-        multiplier: 1,
-      },
-      {
-        id: 'eq2',
-        reactants: '2Fe(s) + 3/2O₂(g)',
-        products: 'Fe₂O₃(s)',
-        deltaH: -824,
-        isReversed: false,
-        multiplier: 1,
-      },
-    ],
-    solution: [
-      { equationId: 'eq1', reverse: false, multiply: 1 },
-      { equationId: 'eq2', reverse: true, multiply: 1 },
-    ],
-    hint: 'Fe₂O₃ er hvarfefni í markmiðinu (neysla), en myndefni í jöfnu 2 (myndun).',
-    explanation: 'Jafna 1 + öfug jafna 2: -1676 + 824 = -852 kJ. Þetta er thermít-hvörfin!',
-  },
-];
 
 // Equation block component
 function EquationBlock({
@@ -264,7 +30,7 @@ function EquationBlock({
       role="button"
       tabIndex={0}
       aria-pressed={isSelected}
-      aria-label={`${equation.isReversed ? equation.products : equation.reactants} → ${equation.isReversed ? equation.reactants : equation.products}, ΔH = ${(equation.deltaH * equation.multiplier * (equation.isReversed ? -1 : 1)).toFixed(1)} kJ`}
+      aria-label={`${equation.isReversed ? equation.products : equation.reactants} → ${equation.isReversed ? equation.reactants : equation.products}, ΔH = ${formatDecimal(effectiveDeltaH, 1)} kJ`}
       onClick={onSelect}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -306,12 +72,12 @@ function EquationBlock({
       <div className="text-center mb-3">
         <span className={`font-bold ${effectiveDeltaH < 0 ? 'text-red-600' : 'text-blue-600'}`}>
           ΔH = {effectiveDeltaH > 0 ? '+' : ''}
-          {effectiveDeltaH.toFixed(1)} kJ
+          {formatDecimal(effectiveDeltaH, 1)} kJ
         </span>
       </div>
 
       {/* Controls */}
-      <div className="flex justify-center gap-3">
+      <div className="flex flex-wrap justify-center gap-3">
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -319,7 +85,7 @@ function EquationBlock({
           }}
           aria-label="Snúa við jöfnu"
           aria-pressed={equation.isReversed}
-          className={`px-3 py-1 rounded-lg text-sm font-semibold transition-colors ${
+          className={`px-3 py-1 pointer-coarse:min-h-11 whitespace-nowrap rounded-lg text-sm font-semibold transition-colors ${
             equation.isReversed ? 'bg-red-500 text-white' : 'bg-warm-200 hover:bg-red-100'
           }`}
         >
@@ -336,7 +102,7 @@ function EquationBlock({
               }}
               aria-label={`Margfalda með ${n}`}
               aria-pressed={equation.multiplier === n}
-              className={`w-8 h-8 rounded-lg text-sm font-bold transition-colors ${
+              className={`w-8 h-8 pointer-coarse:w-11 pointer-coarse:h-11 rounded-lg text-sm font-bold transition-colors ${
                 equation.multiplier === n
                   ? 'bg-blue-500 text-white'
                   : 'bg-warm-200 hover:bg-blue-100'
@@ -385,33 +151,54 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     setExplanation('');
   }, []);
 
+  // A checked verdict belongs to the combination that was checked. Changing the
+  // combination afterwards withdraws it, so the student checks again: the verdict line
+  // used to follow the cards live, and read "✓ Rétt!" beside the wrong-answer explanation,
+  // with no point awarded, once a wrong answer had been fixed after checking.
+  const clearResult = () => {
+    setShowResult(false);
+    setExplanation('');
+  };
+
   // Handle equation modifications
   const handleReverse = (id: string) => {
+    clearResult();
     setEquations((prev) =>
       prev.map((eq) => (eq.id === id ? { ...eq, isReversed: !eq.isReversed } : eq))
     );
   };
 
   const handleMultiply = (id: string, factor: number) => {
+    if (equations.find((eq) => eq.id === id)?.multiplier !== factor) clearResult();
     setEquations((prev) => prev.map((eq) => (eq.id === id ? { ...eq, multiplier: factor } : eq)));
   };
 
   const toggleSelect = (id: string) => {
+    clearResult();
     setSelectedEquations((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
   };
 
+  // Solved when the chosen equations, as reversed and scaled, add up to the target
+  // equation itself. Comparing only the summed ΔH accepted a wrong combination on puzzle 5.
+  const reachesPuzzleTarget = () =>
+    reachesTarget(
+      equations.filter((eq) => selectedEquations.includes(eq.id)),
+      puzzle.targetEquation
+    );
+
   // Check solution
   const checkSolution = () => {
-    const sum = calculateSelectedSum();
-    const correct = Math.abs(sum - puzzle.targetDeltaH) < 0.5;
+    const correct = reachesPuzzleTarget();
 
     setShowResult(true);
+    // The result line already opens with "✓ Rétt!" or "✗ Ekki rétt.", so the
+    // explanation must not repeat it.
     setExplanation(
       correct
         ? puzzle.explanation
-        : 'Ekki rétt. Athugaðu hvort þú hefur snúið við réttum jöfnum og valið rétta margfeldisstuðla.'
+        : 'Athugaðu hvort þú hefur snúið við réttum jöfnum og valið rétta margfeldisstuðla.'
     );
 
     if (correct) {
@@ -436,13 +223,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       setCurrentPuzzle(next);
       resetPuzzle(next);
     } else {
-      // Max score is 100 per puzzle × 5 puzzles = 500
+      // Max score is 100 per puzzle × 6 puzzles = 600
       onComplete(score);
     }
   };
 
   const currentSum = calculateSelectedSum();
-  const isCorrect = Math.abs(currentSum - puzzle.targetDeltaH) < 0.5;
+  const isCorrect = reachesPuzzleTarget();
 
   // Calculate energy pathway steps for the diagram
   const energySteps = useMemo(() => {
@@ -464,13 +251,16 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           <div className="flex justify-between items-center flex-wrap gap-4">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-green-600">
-                Lögmál Hess - Stig 2
+                Lögmál Hess - Stig&nbsp;2
               </h1>
               <p className="text-sm text-warm-600">Þrautir - sameinaðu jöfnur</p>
             </div>
 
             <div className="flex gap-4 items-center">
-              <button onClick={onBack} className="text-warm-600 hover:text-warm-800 text-sm">
+              <button
+                onClick={onBack}
+                className="text-warm-600 hover:text-warm-800 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
+              >
                 ← Til baka
               </button>
               <div className="text-center">
@@ -496,7 +286,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           {/* Puzzle header */}
           <div className="mb-6">
             <div className="inline-block bg-green-100 px-4 py-2 rounded-full text-sm font-semibold text-green-800 mb-2">
@@ -559,13 +349,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   : 'bg-warm-100 border-warm-300'
               }`}
             >
-              <h3 className="text-sm font-semibold text-warm-700 mb-2">📊 Heildar ΔH:</h3>
+              <h3 className="text-sm font-semibold text-warm-700 mb-2">📊 Heildar-ΔH:</h3>
               <div className="text-center">
                 <span
                   className={`text-2xl font-bold ${currentSum < 0 ? 'text-red-600' : 'text-blue-600'}`}
                 >
                   ΔH = {currentSum > 0 ? '+' : ''}
-                  {currentSum.toFixed(1)} kJ
+                  {formatDecimal(currentSum, 1)} kJ
                 </span>
               </div>
               {showResult && (
@@ -587,7 +377,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               ) : (
                 <button
                   onClick={handleShowHint}
-                  className="text-yellow-600 hover:text-yellow-700 text-sm"
+                  className="text-yellow-600 hover:text-yellow-700 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
                 >
                   💡 Sýna vísbendingu
                 </button>
@@ -596,7 +386,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           )}
 
           {/* Action buttons */}
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <button
               onClick={() => resetPuzzle(currentPuzzle)}
               className="px-6 py-3 bg-warm-200 hover:bg-warm-300 rounded-xl font-semibold transition-colors"
@@ -628,7 +418,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         </div>
 
         {/* Puzzle navigation */}
-        <div className="mt-6 flex justify-center gap-2">
+        <div className="mt-6 flex flex-wrap justify-center gap-1 min-[360px]:gap-2">
           {PUZZLES.map((p, i) => (
             <button
               key={p.id}
@@ -636,7 +426,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 setCurrentPuzzle(i);
                 resetPuzzle(i);
               }}
-              className={`w-10 h-10 rounded-full font-bold transition-colors ${
+              className={`w-10 h-10 pointer-coarse:w-11 pointer-coarse:h-11 rounded-full font-bold transition-colors ${
                 completed.includes(p.id)
                   ? 'bg-green-500 text-white'
                   : i === currentPuzzle

@@ -1,17 +1,16 @@
-import { useState, useCallback, useMemo, type ReactNode } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef, Fragment, type ReactNode } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 
 import { type Compound } from '../data/compounds';
 import { type MorphemeKind } from '../data/naming';
 import { generateParts, selectCompounds, type NamePart } from '../utils/nameParts';
+import { revealTop } from '../utils/reveal';
 
-/** Levenshtein edit distance — used to classify typo vs. conceptual error. */
-function editDistance(a: string, b: string): number {
+/** Levenshtein table for `a` against `b`: cell [i][j] is the distance of their prefixes. */
+function distanceTable(a: string, b: string): number[][] {
   const m = a.length;
   const n = b.length;
-  if (m === 0) return n;
-  if (n === 0) return m;
   const dp = Array.from({ length: m + 1 }, () => new Array<number>(n + 1).fill(0));
   for (let i = 0; i <= m; i++) dp[i][0] = i;
   for (let j = 0; j <= n; j++) dp[0][j] = j;
@@ -21,28 +20,60 @@ function editDistance(a: string, b: string): number {
       dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
     }
   }
-  return dp[m][n];
+  return dp;
+}
+
+/** Levenshtein edit distance — used to classify typo vs. conceptual error. */
+function editDistance(a: string, b: string): number {
+  return distanceTable(a, b)[a.length][b.length];
+}
+
+/**
+ * The student's name aligned against the right one, one entry per character.
+ *
+ * `ok: false` marks a character that is wrong or extra, and a `·` stands where
+ * one is missing. This walks back through the edit-distance table rather than
+ * comparing position by position: one missing letter used to shift everything
+ * after it, so `Járn(II)nítrat` against `Járn(III)nítrat` marked `)nítrat` red
+ * — letters the student had right — under a note saying red shows what differs.
+ */
+export function alignNames(userName: string, correctName: string): { ch: string; ok: boolean }[] {
+  const a = userName.toLowerCase();
+  const b = correctName.toLowerCase();
+  const dp = distanceTable(a, b);
+  const out: { ch: string; ok: boolean }[] = [];
+  let i = a.length;
+  let j = b.length;
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && a[i - 1] === b[j - 1] && dp[i][j] === dp[i - 1][j - 1]) {
+      out.push({ ch: userName[i - 1], ok: true });
+      i--;
+      j--;
+    } else if (i > 0 && j > 0 && dp[i][j] === dp[i - 1][j - 1] + 1) {
+      out.push({ ch: userName[i - 1], ok: false });
+      i--;
+      j--;
+    } else if (i > 0 && dp[i][j] === dp[i - 1][j] + 1) {
+      out.push({ ch: userName[i - 1], ok: false });
+      i--;
+    } else {
+      out.push({ ch: '·', ok: false });
+      j--;
+    }
+  }
+  return out.reverse();
 }
 
 /** Render the student's attempt with mismatched characters highlighted. */
 function renderDiff(userName: string, correctName: string): ReactNode {
-  const correctLower = correctName.toLowerCase();
-  const userLower = userName.toLowerCase();
-  const output: ReactNode[] = [];
-  const len = Math.max(userLower.length, correctLower.length);
-  for (let i = 0; i < len; i++) {
-    const ch = userName[i] ?? '';
-    const match = userLower[i] === correctLower[i];
-    output.push(
-      <span
-        key={i}
-        className={match ? 'text-warm-700' : 'bg-red-100 text-red-700 font-bold rounded px-0.5'}
-      >
-        {ch || '·'}
-      </span>
-    );
-  }
-  return output;
+  return alignNames(userName, correctName).map(({ ch, ok }, i) => (
+    <span
+      key={i}
+      className={ok ? 'text-warm-700' : 'bg-red-100 text-red-700 font-bold rounded px-0.5'}
+    >
+      {ch}
+    </span>
+  ));
 }
 
 interface Level3Props {
@@ -65,13 +96,22 @@ const KIND_STYLES: Record<MorphemeKind, string> = {
   charge: 'bg-amber-100 text-amber-800 hover:bg-amber-200 focus-visible:ring-amber-400',
 };
 
-/** Naming rule explanation for a compound */
-function ruleFor(c: Compound): string {
+/**
+ * The polyatomic-ion caveat, which both ionic rules need: a variable-charge
+ * metal is as likely to sit beside súlfat or nítrat as beside an -íð anion
+ * (Kopar(II)súlfat, Járn(III)nítrat), and the rule shown after the answer has
+ * to describe the name just built.
+ */
+const POLYATOMIC_CAVEAT =
+  'Ef fjölatóma jón er til staðar (t.d. SO₄²⁻ = súlfat) heldur hún föstu nafni.';
+
+/** Naming rule explanation for a compound, shown after it is answered. */
+export function ruleFor(c: Compound): string {
   if (c.category === 'málmar-breytilega-hleðsla')
-    return 'Breytileg hleðsla: Málmur(rómversk tala) + málmleysingi-íð. Rómverska talan segir hvaða hleðslu málmurinn hefur — þetta þarf þegar málmur getur haft fleiri en eina hleðslu (t.d. járn: +2 eða +3).';
+    return `Breytileg hleðsla: Málmur(rómversk tala) + málmleysingi-íð. Rómverska talan segir hvaða hleðslu málmurinn hefur — þetta þarf þegar málmur getur haft fleiri en eina hleðslu (t.d. járn: +2 eða +3). ${POLYATOMIC_CAVEAT}`;
   if (c.type === 'molecular')
-    return 'Sameindaefni: Grísk forskeyti + frumefni-íð. Forskeytin segja hversu mörg atóm eru af hverri tegund (dí=2, trí=3, tetra=4...). Mono- er sleppt fyrir fyrra frumefnið.';
-  return 'Jónefni: Málmur + málmleysingi-íð. Málmurinn heldur nafni sínu, málmleysinginn fær endinguna -íð (t.d. klór → klóríð). Ef fjölatóma jón er til staðar (t.d. SO₄²⁻ = súlfat) heldur hún föstu nafni.';
+    return 'Sameindaefni: Grísk forskeyti + frumefni-íð. Forskeytin segja hversu mörg atóm eru af hverri tegund (dí=2, trí=3, tetra=4...). Mónó- er sleppt fyrir fyrra frumefnið.';
+  return `Jónefni: Málmur + málmleysingi-íð. Málmurinn heldur nafni sínu, málmleysinginn fær endinguna -íð (t.d. klór → klóríð). ${POLYATOMIC_CAVEAT}`;
 }
 
 export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level3Props) {
@@ -91,6 +131,11 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
   const builtName = selected.map((p) => p.text).join('');
   const displayName = builtName.charAt(0).toUpperCase() + builtName.slice(1);
+
+  // "Næsta efni" sits below the tray; on a phone the next formula would start
+  // above the viewport.
+  const formulaRef = useRef<HTMLDivElement>(null);
+  useEffect(() => revealTop(formulaRef.current), [idx]);
 
   const selectPart = useCallback(
     (part: NamePart) => {
@@ -143,30 +188,34 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   }, [idx, total, compounds, score, maxScore, onComplete]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white p-4">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white p-3 sm:p-4">
       <div className="max-w-lg mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-          <div className="flex justify-between items-center">
+        <div className="bg-white rounded-xl shadow-md p-3 sm:p-4 mb-4">
+          <div className="flex flex-wrap justify-between items-center gap-x-2 gap-y-1">
             <button
               onClick={onBack}
-              className="text-warm-500 hover:text-warm-700 font-semibold text-sm"
+              className="whitespace-nowrap text-warm-500 hover:text-warm-700 font-semibold text-sm pointer-coarse:py-3 pointer-coarse:-my-3 pointer-coarse:px-2 pointer-coarse:-mx-2"
             >
               {t('common.back', 'Til baka')}
             </button>
-            <h1 className="text-lg font-bold text-warm-800">
+            <h1 className="whitespace-nowrap text-base sm:text-lg font-bold text-warm-800">
               {t('level3.ui.title', 'Byggja nöfn')}
             </h1>
             <div className="flex gap-3 text-center">
               <div>
                 <div className="text-lg font-bold text-kvenno-orange">{score}</div>
-                <div className="text-[10px] text-warm-500">{t('common.score', 'Stig')}</div>
+                <div className="text-[10px] pointer-coarse:text-xs text-warm-500">
+                  {t('common.score', 'Stig')}
+                </div>
               </div>
               <div>
                 <div className="text-lg font-bold text-warm-700">
                   {idx + 1}/{total}
                 </div>
-                <div className="text-[10px] text-warm-500">{t('level3.ui.compounds', 'Efni')}</div>
+                <div className="text-[10px] pointer-coarse:text-xs text-warm-500">
+                  {t('level3.ui.compounds', 'Efni')}
+                </div>
               </div>
             </div>
           </div>
@@ -208,7 +257,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
         </button>
 
         {/* Formula display */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
+        <div ref={formulaRef} className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4">
           <div className="text-center mb-4">
             <div className="text-xs text-warm-500 mb-1">
               {t('level3.ui.formulaLabel', 'Efnaformúla:')}
@@ -249,8 +298,17 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                 ))
               )}
             </div>
-            <div className="text-center mt-2 text-xl font-bold text-warm-800">
-              {displayName || '???'}
+            {/* A line break, if the built name needs one, goes between two
+                parts rather than at an arbitrary letter. */}
+            <div className="text-center mt-2 text-lg sm:text-xl font-bold text-warm-800">
+              {selected.length === 0
+                ? '???'
+                : selected.map((part, i) => (
+                    <Fragment key={part.id}>
+                      {i > 0 && <wbr />}
+                      {i === 0 ? part.text.charAt(0).toUpperCase() + part.text.slice(1) : part.text}
+                    </Fragment>
+                  ))}
             </div>
           </div>
 
@@ -261,7 +319,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                 feedback={{
                   isCorrect,
                   explanation: isCorrect
-                    ? `${compound.name} -- ${ruleFor(compound)}`
+                    ? `${compound.name} — ${ruleFor(compound)}`
                     : `Rétt nafn: ${compound.name}. ${ruleFor(compound)}`,
                 }}
                 config={{ showExplanation: true }}
@@ -278,7 +336,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                       Rétt: <span className="text-green-700">{compound.name}</span>
                     </p>
                     <p className="text-amber-700 text-xs mt-2">
-                      Rautt sýnir stafina sem munu milli nafnanna.
+                      Rautt sýnir stafina sem eru ólíkir í nöfnunum tveimur.
                     </p>
                   </div>
                 )}
@@ -290,7 +348,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             <div className="text-xs text-warm-600 mb-1">
               {t('level3.ui.availableParts', 'Tiltækir partar:')}
             </div>
-            <div className="mb-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-warm-500">
+            <div className="mb-2 flex flex-wrap gap-x-3 gap-y-1 text-[11px] pointer-coarse:text-xs text-warm-500">
               <span className="flex items-center gap-1">
                 <span className="inline-block h-2.5 w-2.5 rounded-sm bg-blue-200" /> forskeyti
               </span>
@@ -361,7 +419,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
         <button
           onClick={onBack}
-          className="mt-4 w-full text-warm-500 hover:text-warm-700 font-semibold py-2 text-sm"
+          className="mt-4 w-full text-warm-500 hover:text-warm-700 font-semibold py-2 text-sm pointer-coarse:py-3"
         >
           {t('level3.ui.backToMenu', 'Til baka í valmynd')}
         </button>

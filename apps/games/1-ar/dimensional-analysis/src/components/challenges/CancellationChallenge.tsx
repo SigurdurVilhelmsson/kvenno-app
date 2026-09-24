@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
-import { shuffleArray } from '@shared/utils';
+import { formatDecimal, shuffleArray } from '@shared/utils';
 
 import { UnitBlock, ConversionFactorBlock } from '../UnitBlock';
 
@@ -54,7 +54,7 @@ export function CancellationChallenge({
         onAttempt={onAttempt}
         steps={mgToKgSteps}
         startBlock={{ value: 5000, unit: 'mg' }}
-        finalResult="5000 mg → 5 g → 0.005 kg"
+        finalResult="5000 mg → 5 g → 0,005 kg"
       />
     );
   }
@@ -189,7 +189,7 @@ function SingleStepCancellation({
                 isCorrect ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
               }`}
             >
-              {isCorrect ? `${startValue / 1000} L` : 'Villa!'}
+              {isCorrect ? `${formatDecimal(startValue / 1000)} L` : 'Villa!'}
             </div>
           )}
           {showAnimation && animationPhase === 'cancelling' && (
@@ -203,7 +203,7 @@ function SingleStepCancellation({
       {/* Cancellation explanation */}
       {animationPhase === 'done' && isCorrect && (
         <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-          <div className="flex items-center justify-center gap-2 mb-3">
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
             <span className="text-red-400 line-through">mL</span>
             <span className="text-warm-600">og</span>
             <span className="text-red-400 line-through">mL</span>
@@ -214,7 +214,8 @@ function SingleStepCancellation({
           <p className="text-green-700 text-center text-sm">
             {startValue} <span className="line-through text-red-400">mL</span> × (1{' '}
             <span className="text-green-600 font-bold">L</span> / 1000{' '}
-            <span className="line-through text-red-400">mL</span>) = {startValue / 1000} L
+            <span className="line-through text-red-400">mL</span>) ={' '}
+            {formatDecimal(startValue / 1000)} L
           </p>
         </div>
       )}
@@ -281,7 +282,7 @@ const mgToKgSteps: ChainStep[] = [
       { num: 1000, numUnit: 'g', den: 1, denUnit: 'kg', correct: false },
     ],
     errorMessage: 'g þarf að vera í nefnara til að strikast út!',
-    resultLabel: '0.005 kg',
+    resultLabel: '0,005 kg',
   },
 ];
 
@@ -322,11 +323,15 @@ function ChainCancellation({
   const [currentStep, setCurrentStep] = useState(0);
   const [stepsDone, setStepsDone] = useState<boolean[]>(steps.map(() => false));
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+  // Each step's factors in a random order, drawn once per mount. The data lists
+  // the correct factor first in every step, so rendering it as written put the
+  // answer in the same place every time. `selectedIdx` indexes this order.
+  const stepFactors = useMemo(() => steps.map((step) => shuffleArray(step.factors)), [steps]);
 
   const handleSelect = (idx: number) => {
     onAttempt();
     setSelectedIdx(idx);
-    const factor = steps[currentStep].factors[idx];
+    const factor = stepFactors[currentStep][idx];
     if (factor.correct) {
       setTimeout(() => {
         const newDone = [...stepsDone];
@@ -375,7 +380,7 @@ function ChainCancellation({
             {steps[currentStep].label}
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
-            {steps[currentStep].factors.map((factor, idx) => (
+            {stepFactors[currentStep].map((factor, idx) => (
               <ConversionFactorBlock
                 key={idx}
                 numeratorValue={factor.num}
@@ -387,7 +392,7 @@ function ChainCancellation({
               />
             ))}
           </div>
-          {selectedIdx !== null && !steps[currentStep].factors[selectedIdx].correct && (
+          {selectedIdx !== null && !stepFactors[currentStep][selectedIdx].correct && (
             <p className="text-red-600 text-sm mt-3 text-center">
               {steps[currentStep].errorMessage}
             </p>
@@ -399,7 +404,8 @@ function ChainCancellation({
       {stepsDone[0] && !stepsDone[1] && (
         <div className="p-3 bg-green-100 rounded-lg text-center">
           <p className="text-green-800 text-sm">
-            ✓ {steps[0].factors[0].denUnit} strikast út! Nú eru eftir {steps[0].resultLabel}.
+            ✓ {steps[0].factors.find((f) => f.correct)?.denUnit} strikast út! Nú eru eftir{' '}
+            {steps[0].resultLabel}.
           </p>
         </div>
       )}

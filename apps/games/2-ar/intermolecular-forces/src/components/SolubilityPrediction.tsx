@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface Solvent {
   id: string;
@@ -27,7 +27,7 @@ const solvents: Solvent[] = [
     name: 'Vatn',
     formula: 'H₂O',
     polarity: 'polar',
-    description: 'Skautað leysi með vetnistengjum',
+    description: 'Skautaður leysir með vetnistengjum',
     color: '#3b82f6',
   },
   {
@@ -35,7 +35,7 @@ const solvents: Solvent[] = [
     name: 'Hexan',
     formula: 'C₆H₁₄',
     polarity: 'nonpolar',
-    description: 'Óskautað leysi með London kraftum',
+    description: 'Óskautaður leysir með London kraftum',
     color: '#f59e0b',
   },
 ];
@@ -48,7 +48,7 @@ const solutes: Solute[] = [
     polarity: 'ionic',
     dissolves: { water: true, hexane: false },
     explanation:
-      'Jónabindingarefni leysast í skautuðum leysum. Vatnssameindir umkringja jónirnar og rjúfa kristalbygginguna.',
+      'Jónaefni leysast í skautuðum leysum. Vatnssameindir umkringja jónirnar og rjúfa kristalbygginguna.',
   },
   {
     id: 'ethanol',
@@ -57,7 +57,7 @@ const solutes: Solute[] = [
     polarity: 'polar',
     dissolves: { water: true, hexane: true },
     explanation:
-      'Etanól er „amfífíll" — skautaður O-H hópur leysist í vatni, en kolvetnis keðjan leysist í hexani. Blandast báðum!',
+      'Etanól er „amfífíll" — skautaður O-H hópur leysist í vatni, en kolvetniskeðjan leysist í hexani. Blandast báðum!',
   },
   {
     id: 'oil',
@@ -66,7 +66,7 @@ const solutes: Solute[] = [
     polarity: 'nonpolar',
     dissolves: { water: false, hexane: true },
     explanation:
-      'Olía er óskautuð og hefur aðeins London krafta. Leysist í hexani en ekki vatni — þess vegna flýtur olía á vatni.',
+      'Olía er óskautuð og hefur aðeins London krafta. Leysist í hexani en ekki í vatni — þess vegna blandast olía og vatn ekki.',
   },
   {
     id: 'sugar',
@@ -135,6 +135,14 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
     }
   }, [animationPhase, userPrediction, actualResult, onPrediction]);
 
+  // The verdict renders below the prediction buttons, which a phone has usually scrolled to
+  // the bottom of the screen: without this the student taps and sees only the top of a
+  // beaker. 'nearest' does nothing when the result is already in view.
+  const resultRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (showResult) resultRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+  }, [showResult]);
+
   const reset = () => {
     setSelectedSolute(null);
     setSelectedSolvent(null);
@@ -153,9 +161,9 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
 
   return (
     <div
-      className={`bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl border border-cyan-200 ${compact ? 'p-4' : 'p-6'}`}
+      className={`bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl border border-cyan-200 ${compact ? 'p-4' : 'p-4 sm:p-6'}`}
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between gap-2 mb-4">
         <div>
           <h3
             className={`font-bold text-cyan-800 flex items-center gap-2 ${compact ? 'text-base' : 'text-lg'}`}
@@ -167,7 +175,7 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
           </span>
         </div>
         {stats.total > 0 && (
-          <div className="text-sm text-cyan-700 bg-cyan-100 px-3 py-1 rounded-full">
+          <div className="text-sm text-cyan-700 bg-cyan-100 px-3 py-1 rounded-full shrink-0 whitespace-nowrap">
             {stats.correct}/{stats.total} rétt
           </div>
         )}
@@ -209,7 +217,7 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
                 {solute.polarity === 'polar'
                   ? 'Skautað'
                   : solute.polarity === 'ionic'
-                    ? 'Jónatengi'
+                    ? 'Jónaefni'
                     : 'Óskautað'}
               </div>
             </button>
@@ -322,7 +330,7 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
 
       {/* Result */}
       {showResult && selectedSolute && selectedSolvent && (
-        <div className="space-y-4">
+        <div ref={resultRef} className="space-y-4">
           {/* Result visualization */}
           <div className="flex justify-center">
             <div className="relative w-40 h-48">
@@ -414,7 +422,7 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
                 {selectedSolute.polarity === 'polar'
                   ? 'Skautað'
                   : selectedSolute.polarity === 'ionic'
-                    ? 'Jónatengi'
+                    ? 'Jónaefni'
                     : 'Óskautað'}
               </span>
               <span className="text-warm-500">+</span>
@@ -462,7 +470,7 @@ export function SolubilityPrediction({ compact = false, onPrediction }: Solubili
               <span className="text-amber-600 font-medium">óskautuðu</span> (olíur, fita, hexan)
             </li>
             <li>
-              • <span className="text-purple-600 font-medium">Jónatengi</span> leysist í{' '}
+              • <span className="text-purple-600 font-medium">Jónaefni</span> leysist í{' '}
               <span className="text-blue-600 font-medium">skautuðu</span> (salt í vatni)
             </li>
           </ul>

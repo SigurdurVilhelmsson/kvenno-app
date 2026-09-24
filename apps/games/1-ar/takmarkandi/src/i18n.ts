@@ -6,9 +6,9 @@ import { createGameTranslations } from '@shared/hooks/useGameI18n';
 export const gameTranslations = createGameTranslations({
   is: {
     game: {
-      title: 'Takmarkandi Hvarfefni',
+      title: 'Takmarkandi hvarfefni',
       subtitle: 'Kvennaskólinn - Efnafræði 1. ár',
-      description: 'Lærðu að finna takmarkandi hvarfefni og reikna heimtir',
+      description: 'Lærðu að finna takmarkandi hvarfefni og reikna heimtur',
     },
     menu: {
       selectLevel: 'Veldu stig',
@@ -28,13 +28,14 @@ export const gameTranslations = createGameTranslations({
       level3: {
         name: 'Stig 3',
         title: 'Meistarapróf',
-        description: 'Veldu erfiðleikastig og kepptu við tímann!',
+        description:
+          'Samþætt verkefni í grömmum: finndu takmarkandi hvarfefni, fræðilegar heimtur og prósentuheimtur',
       },
     },
     progress: {
       title: 'Framvinda',
       levelsCompleted: 'Stig lokið',
-      totalScore: 'Heildar stig',
+      totalScore: 'Heildarstig',
       gamesPlayed: 'Leikir spilaðir',
       accuracy: 'nákvæmni',
       points: 'stig',
@@ -73,7 +74,8 @@ export const gameTranslations = createGameTranslations({
       level3: {
         name: 'Level 3',
         title: 'Master Test',
-        description: 'Choose difficulty and race against time!',
+        description:
+          'Integrated problems in grams: find the limiting reactant, the theoretical yield and the percent yield',
       },
     },
     progress: {
@@ -96,47 +98,47 @@ export const gameTranslations = createGameTranslations({
   },
   pl: {
     game: {
-      title: 'Substrat ograniczajacy',
+      title: 'Substrat ograniczający',
       subtitle: 'Kvennaskólinn - Chemia rok 1',
-      description: 'Naucz sie znajdowac substrat ograniczajacy i obliczac wydajnosc',
+      description: 'Naucz się znajdować substrat ograniczający i obliczać wydajność',
     },
     menu: {
       selectLevel: 'Wybierz poziom',
-      backToGames: 'Powrot do przegladu gier',
+      backToGames: 'Powrót do przeglądu gier',
     },
     levels: {
       level1: {
         name: 'Poziom 1',
-        title: 'Podstawowe pojecia',
-        description: 'Zrozum pojecia wizualnie - co skonczy sie pierwsze?',
+        title: 'Podstawowe pojęcia',
+        description: 'Zrozum pojęcia wizualnie - co skończy się pierwsze?',
       },
       level2: {
         name: 'Poziom 2',
-        title: 'Cwiczenia z prowadzeniem',
-        description: 'Rozwiazuj zadania krok po kroku z pomoca',
+        title: 'Ćwiczenia z prowadzeniem',
+        description: 'Rozwiązuj zadania krok po kroku z pomocą',
       },
       level3: {
         name: 'Poziom 3',
         title: 'Test mistrzowski',
-        description: 'Wybierz trudnosc i scigaj sie z czasem!',
+        description: 'Zadania w gramach: znajdź substrat ograniczający i oblicz wydajność',
       },
     },
     progress: {
-      title: 'Postep',
-      levelsCompleted: 'Ukonczone poziomy',
-      totalScore: 'Calkowity wynik',
+      title: 'Postęp',
+      levelsCompleted: 'Ukończone poziomy',
+      totalScore: 'Całkowity wynik',
       gamesPlayed: 'Rozegrane gry',
-      accuracy: 'dokladnosc',
+      accuracy: 'dokładność',
       points: 'punkty',
-      completed: 'Ukonczone',
+      completed: 'Ukończone',
       reset: 'Resetuj',
     },
     learn: {
-      title: 'Czego sie nauczysz?',
-      point1: 'Czym jest substrat ograniczajacy i dlaczego jest wazny',
-      point2: 'Jak znalezc substrat ograniczajacy ze wspolczynnikow',
-      point3: 'Obliczac ilosci produktow i nadmiaru po reakcji',
-      point4: 'Uzywac stechiometrii do rozwiazywania rzeczywistych problemow',
+      title: 'Czego się nauczysz?',
+      point1: 'Czym jest substrat ograniczający i dlaczego jest ważny',
+      point2: 'Jak znaleźć substrat ograniczający ze współczynników',
+      point3: 'Obliczać ilości produktów i nadmiaru po reakcji',
+      point4: 'Używać stechiometrii do rozwiązywania rzeczywistych problemów',
     },
   },
 });

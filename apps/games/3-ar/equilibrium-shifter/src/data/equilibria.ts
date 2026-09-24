@@ -93,7 +93,7 @@ export const equilibria: Equilibrium[] = [
       products: 2,
     },
     description: 'Decomposition of PCl₅ upon heating.',
-    descriptionIs: 'Umbreyting PCl₅ við upphitun.',
+    descriptionIs: 'Niðurbrot PCl₅ við upphitun.',
     possibleStresses: [
       { type: 'add-reactant', target: 'PCl₅' },
       { type: 'add-product', target: 'Cl₂' },
@@ -143,7 +143,7 @@ export const equilibria: Equilibrium[] = [
     id: 5,
     equation: 'CaCO₃(s) ⇌ CaO(s) + CO₂(g)',
     name: 'Calcium Carbonate Decomposition',
-    nameIs: 'Sundrun kalsíumkarbónats',
+    nameIs: 'Niðurbrot kalsíumkarbónats',
     difficulty: 'beginner',
     reactants: [{ formula: 'CaCO₃', coefficient: 1, phase: 's', display: '🪨' }],
     products: [
@@ -190,7 +190,7 @@ export const equilibria: Equilibrium[] = [
       products: 0,
     },
     description: 'Blood-red complex ion, used in chemistry demonstrations.',
-    descriptionIs: 'Blóðrauður þynningarefnakomplexinn, notaður í efnafræðisýningum.',
+    descriptionIs: 'Blóðrauð flókajón, notuð í efnafræðisýningum.',
     possibleStresses: [
       { type: 'add-reactant', target: 'Fe³⁺' },
       { type: 'add-reactant', target: 'SCN⁻' },
@@ -204,7 +204,7 @@ export const equilibria: Equilibrium[] = [
     id: 7,
     equation: 'H₂O(l) ⇌ H⁺(aq) + OH⁻(aq)',
     name: 'Water Autoionization',
-    nameIs: 'Sjálfjafnvægi vatns',
+    nameIs: 'Sjálfjónun vatns',
     difficulty: 'beginner',
     reactants: [{ formula: 'H₂O', coefficient: 1, phase: 'l', display: '💧' }],
     products: [
@@ -220,7 +220,7 @@ export const equilibria: Equilibrium[] = [
       products: 0,
     },
     description: 'Self-ionization of water, basis of pH system.',
-    descriptionIs: 'Sjálfjafnvægi vatns, grunnur pH kerfis.',
+    descriptionIs: 'Sjálfjónun vatns, grunnur pH-kerfisins.',
     possibleStresses: [
       { type: 'add-product', target: 'H⁺' },
       { type: 'add-product', target: 'OH⁻' },
@@ -234,7 +234,7 @@ export const equilibria: Equilibrium[] = [
     id: 8,
     equation: 'CH₃COOH(aq) ⇌ CH₃COO⁻(aq) + H⁺(aq)',
     name: 'Acetic Acid Dissociation',
-    nameIs: 'Ediksýrusundrun',
+    nameIs: 'Klofnun ediksýru',
     difficulty: 'beginner',
     reactants: [{ formula: 'CH₃COOH', coefficient: 1, phase: 'aq', display: '🧪' }],
     products: [
@@ -296,7 +296,7 @@ export const equilibria: Equilibrium[] = [
     id: 10,
     equation: 'AgCl(s) ⇌ Ag⁺(aq) + Cl⁻(aq)',
     name: 'Silver Chloride Precipitation',
-    nameIs: 'Silfurklóríð úrfellingajafnvægi',
+    nameIs: 'Útfelling silfurklóríðs',
     difficulty: 'beginner',
     reactants: [{ formula: 'AgCl', coefficient: 1, phase: 's', display: '🔘' }],
     products: [
@@ -312,7 +312,7 @@ export const equilibria: Equilibrium[] = [
       products: 0,
     },
     description: 'Solubility equilibrium of silver chloride, white precipitate.',
-    descriptionIs: 'Leysnijafnvægi silfurklóríðs, hvítur fellur út.',
+    descriptionIs: 'Leysnijafnvægi silfurklóríðs, hvítt botnfall.',
     possibleStresses: [
       { type: 'add-product', target: 'Ag⁺' },
       { type: 'add-product', target: 'Cl⁻' },
@@ -446,7 +446,7 @@ export const equilibria: Equilibrium[] = [
       products: 2,
     },
     description: 'Important in hydrogen production and industry.',
-    descriptionIs: 'Mikilvægt í vetniframleiðslu og iðnaði.',
+    descriptionIs: 'Mikilvægt í vetnisframleiðslu og iðnaði.',
     possibleStresses: [
       { type: 'add-reactant', target: 'CO' },
       { type: 'remove-product', target: 'H₂' },
@@ -492,7 +492,7 @@ export const equilibria: Equilibrium[] = [
     id: 16,
     equation: 'C(s) + CO₂(g) ⇌ 2CO(g)',
     name: 'Boudouard Reaction',
-    nameIs: 'Boudouard hvarf',
+    nameIs: 'Boudouard-hvarf',
     difficulty: 'intermediate',
     reactants: [
       { formula: 'C', coefficient: 1, phase: 's', display: '⚫' },
@@ -508,7 +508,7 @@ export const equilibria: Equilibrium[] = [
       products: 2,
     },
     description: 'Carbon reaction in high-temperature furnaces and metallurgy.',
-    descriptionIs: 'Kolefnishvarf í há hitasmíði og málmvinnslu.',
+    descriptionIs: 'Kolefnishvarf í háhitaofnum og málmvinnslu.',
     possibleStresses: [
       { type: 'increase-temp', target: null },
       { type: 'decrease-temp', target: null },
@@ -542,7 +542,7 @@ export const equilibria: Equilibrium[] = [
       products: 4,
     },
     description: 'Primary method for hydrogen production from natural gas.',
-    descriptionIs: 'Helsta aðferð við vetniframleiðslu úr náttúrugasi.',
+    descriptionIs: 'Helsta aðferð við vetnisframleiðslu úr náttúrugasi.',
     possibleStresses: [
       { type: 'add-reactant', target: 'CH₄' },
       { type: 'increase-temp', target: null },
@@ -622,7 +622,7 @@ export const equilibria: Equilibrium[] = [
     id: 20,
     equation: '2H₂S(g) + 3O₂(g) ⇌ 2H₂O(g) + 2SO₂(g)',
     name: 'Hydrogen Sulfide Oxidation',
-    nameIs: 'Oxun vetisbrennsiteins',
+    nameIs: 'Oxun brennisteinsvetnis',
     difficulty: 'intermediate',
     reactants: [
       { formula: 'H₂S', coefficient: 2, phase: 'g', display: '💛⚪' },
@@ -641,7 +641,7 @@ export const equilibria: Equilibrium[] = [
       products: 4,
     },
     description: 'Combustion of hydrogen sulfide, rotten egg smell.',
-    descriptionIs: 'Brennsla vetisbrennsisteinss, lykt af rotnum eggjum.',
+    descriptionIs: 'Brennsla brennisteinsvetnis, lykt af rotnum eggjum.',
     possibleStresses: [
       { type: 'add-reactant', target: 'H₂S' },
       { type: 'increase-temp', target: null },
@@ -672,7 +672,7 @@ export const equilibria: Equilibrium[] = [
       products: 0,
     },
     description: 'Carbonic acid in water, important in blood buffer system.',
-    descriptionIs: 'Kolsýra í vatni, mikilvægt í blóðpufferkerfi.',
+    descriptionIs: 'Kolsýra í vatni, mikilvæg í stuðpúðakerfi blóðsins.',
     possibleStresses: [
       { type: 'add-reactant', target: 'H₂CO₃' },
       { type: 'add-product', target: 'H⁺' },
@@ -777,7 +777,7 @@ export const equilibria: Equilibrium[] = [
     id: 25,
     equation: 'N₂(g) + 3H₂(g) ⇌ 2NH₃(g)',
     name: 'Temperature-Dependent K',
-    nameIs: 'Hitastig háð K',
+    nameIs: 'K háð hitastigi',
     difficulty: 'advanced',
     reactants: [
       { formula: 'N₂', coefficient: 1, phase: 'g', display: '🔵' },
@@ -807,7 +807,7 @@ export const equilibria: Equilibrium[] = [
     id: 26,
     equation: 'N₂(g) + 3H₂(g) ⇌ 2NH₃(g)',
     name: 'Pressure-Dependent Industrial Process',
-    nameIs: 'Þrýstings háð iðnaðarferli',
+    nameIs: 'Þrýstingsháð iðnaðarferli',
     difficulty: 'advanced',
     reactants: [
       { formula: 'N₂', coefficient: 1, phase: 'g', display: '🔵' },
@@ -823,7 +823,7 @@ export const equilibria: Equilibrium[] = [
       products: 2,
     },
     description: 'Real industrial optimization with trade-offs.',
-    descriptionIs: 'Raunveruleg iðnaðarbestun með mótsögnum.',
+    descriptionIs: 'Raunveruleg iðnaðarbestun með málamiðlunum.',
     possibleStresses: [
       { type: 'increase-pressure', target: null },
       { type: 'decrease-pressure', target: null },
@@ -853,7 +853,7 @@ export const equilibria: Equilibrium[] = [
       products: 0,
     },
     description: 'Stepwise deprotonation of phosphoric acid.',
-    descriptionIs: 'Þrepin deprotonun fosfórsýru.',
+    descriptionIs: 'Þrepaskipt klofnun fosfórsýru.',
     possibleStresses: [
       { type: 'add-product', target: 'H⁺' },
       { type: 'increase-temp', target: null },
@@ -865,7 +865,7 @@ export const equilibria: Equilibrium[] = [
     id: 28,
     equation: 'N₂(g) + 3H₂(g) ⇌ 2NH₃(g)',
     name: 'Heterogeneous Catalysis',
-    nameIs: 'Fjölyfirborðshvöt',
+    nameIs: 'Misleit hvötun',
     difficulty: 'advanced',
     reactants: [
       { formula: 'N₂', coefficient: 1, phase: 'g', display: '🔵' },
@@ -910,7 +910,7 @@ export const equilibria: Equilibrium[] = [
       products: 0,
     },
     description: 'Hemoglobin binding oxygen in blood.',
-    descriptionIs: 'Hemóglóbín binding súrefnis í blóði.',
+    descriptionIs: 'Binding súrefnis við blóðrauða í blóði.',
     possibleStresses: [
       { type: 'add-reactant', target: 'O₂' },
       { type: 'remove-reactant', target: 'O₂' },

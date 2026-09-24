@@ -10,6 +10,7 @@ import {
 } from '@shared/components';
 import { useProgress, useAccessibility, useGameI18n } from '@shared/hooks';
 import type { TieredHints } from '@shared/types';
+import { formatDecimal } from '@shared/utils';
 
 import { NumbersPanel } from './components/NumbersPanel';
 import { ParticleEquilibrium } from './components/ParticleEquilibrium';
@@ -28,10 +29,33 @@ import {
   DifficultyLevel,
 } from './types';
 import { calculateShift, getStressDescriptionIs } from './utils/le-chatelier';
+import { prefersSmoothScroll, revealTop } from './utils/reveal';
 import './styles.css';
 
 /** Time limit per question in challenge mode */
 const CHALLENGE_SECONDS = 20;
+
+/** How long the outgoing screen fades before it unmounts. */
+const SCREEN_FADE_MS = 200;
+
+/**
+ * How long Keppnishamur waits before it moves on by itself: after an answer
+ * (long enough to read the explanation) and after the clock runs out.
+ */
+const ADVANCE_AFTER_ANSWER_MS = 6000;
+const ADVANCE_AFTER_TIMEOUT_MS = 3000;
+
+/**
+ * ΔH as the student reads it: decimal comma, `kJ/mól`, and útvermið or
+ * innvermið only where ΔH has a sign. A ΔH of zero is neither, and one system
+ * (the acetic-acid buffer) is stored at exactly zero.
+ */
+function heatLabel(deltaH: number): string {
+  const value = `ΔH = ${formatDecimal(deltaH)} kJ/mól`;
+  if (deltaH < 0) return `${value} (Útvermið)`;
+  if (deltaH > 0) return `${value} (Innvermið)`;
+  return value;
+}
 
 function App() {
   const { progress, updateProgress } = useProgress({
@@ -83,8 +107,68 @@ function App() {
   const [totalQuestions] = useState(10);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
+  const [lastPoints, setLastPoints] = useState(0);
+
   // Ref to track if timeout has been handled for current question
   const timeoutHandledRef = useRef(false);
+
+  // Keppnishamur's automatic advance. It is held here so that anything else
+  // that moves on — «Næsta strax →», «← Til baka», a new round — cancels it.
+  // Left running, it fired on whatever question was showing six seconds later,
+  // so tapping «Næsta strax →» skipped the next question unanswered and a
+  // round ended with fewer than ten answered.
+  const advanceTimerRef = useRef<number | null>(null);
+  const [advanceSeconds, setAdvanceSeconds] = useState(ADVANCE_AFTER_ANSWER_MS / 1000);
+  // The timer calls the latest handleNextQuestion, not the one from the render
+  // that scheduled it: that one still held the score from before the answer.
+  const nextQuestionRef = useRef<() => void>(() => {});
+
+  const cancelAdvance = () => {
+    if (advanceTimerRef.current !== null) {
+      window.clearTimeout(advanceTimerRef.current);
+      advanceTimerRef.current = null;
+    }
+  };
+
+  const scheduleAdvance = (ms: number) => {
+    cancelAdvance();
+    setAdvanceSeconds(ms / 1000);
+    advanceTimerRef.current = window.setTimeout(() => {
+      advanceTimerRef.current = null;
+      nextQuestionRef.current();
+    }, ms);
+  };
+
+  useEffect(() => cancelAdvance, []);
+
+  // The top of each screen, so a new screen or a new question can be brought
+  // back into view (see utils/reveal.ts for why).
+  const menuTopRef = useRef<HTMLDivElement>(null);
+  const gameTopRef = useRef<HTMLDivElement>(null);
+  const resultsTopRef = useRef<HTMLDivElement>(null);
+  const shownRef = useRef({ screen, question: hintResetKey });
+
+  useEffect(() => {
+    const prev = shownRef.current;
+    shownRef.current = { screen, question: hintResetKey };
+    if (prev.screen === screen && prev.question === hintResetKey) return;
+    // A screen change waits for the old screen to fade out: until it unmounts
+    // it still sits above the new one. A new question inside the game screen
+    // has nothing to wait for.
+    const delay = prev.screen === screen ? 0 : SCREEN_FADE_MS + 20;
+    const id = window.setTimeout(() => {
+      const smooth = prefersSmoothScroll(settings.reducedMotion);
+      if (screen === 'menu') {
+        // The menu opens at the very top, header included.
+        const top = menuTopRef.current?.getBoundingClientRect().top ?? 0;
+        if (top < 0) window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
+      } else {
+        revealTop(screen === 'game' ? gameTopRef.current : resultsTopRef.current, smooth);
+      }
+    }, delay);
+    return () => window.clearTimeout(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only a new screen or a new question moves the page
+  }, [screen, hintResetKey]);
 
   // Timer for challenge mode
   useEffect(() => {
@@ -110,15 +194,14 @@ function App() {
         streak: 0,
       }));
 
-      setTimeout(() => {
-        handleNextQuestion();
-      }, 3000);
+      scheduleAdvance(ADVANCE_AFTER_TIMEOUT_MS);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: only trigger on screen/mode/timer/explanation state changes
   }, [screen, gameMode, timeRemaining, showExplanation]);
 
   // Start game flow
   const startGame = (mode: GameMode) => {
+    cancelAdvance();
     setGameMode(mode);
     setScreen('game');
     setStats({
@@ -188,8 +271,7 @@ function App() {
     // Topic hint - general concept area
     let topic: string;
     if (stress.type.includes('temp')) {
-      topic =
-        'Þetta snýst um áhrif hitastigsbreytinga á jafnvægi og varmalosandi/varmabindandi hvörf.';
+      topic = 'Þetta snýst um áhrif hitastigsbreytinga á jafnvægi og útvermin eða innvermin hvörf.';
     } else if (stress.type.includes('pressure')) {
       topic = 'Þetta snýst um áhrif þrýstingsbreytinga á gasjafnvægi og fjölda móla.';
     } else if (stress.type.includes('catalyst')) {
@@ -200,18 +282,23 @@ function App() {
 
     // Strategy hint - approach to solve
     let strategy = 'Hugsaðu um hvernig kerfið reynir að minnka áhrif álagsins.';
-    if (stress.type.includes('temp')) {
+    if (stress.type === 'increase-temp') {
       strategy = isExothermic
-        ? 'Hvarf sem losar varma (varmalosandi) mun hliðrast í áttina sem „eyðir" viðbættu varmanum.'
-        : 'Hvarf sem bindur varma (varmabindandi) mun hliðrast í áttina sem „nýtir" viðbættu varmanum.';
+        ? 'Hvarf sem losar varma (útvermið) mun hliðrast í áttina sem „eyðir" viðbætta varmanum.'
+        : 'Hvarf sem bindur varma (innvermið) mun hliðrast í áttina sem „nýtir" viðbætta varmann.';
+    } else if (stress.type === 'decrease-temp') {
+      // Cooling adds no heat, so the heating sentence above does not apply.
+      strategy = isExothermic
+        ? 'Hvarf sem losar varma (útvermið) mun hliðrast í áttina sem „myndar" varma í stað þess sem var tekinn burt.'
+        : 'Hvarf sem bindur varma (innvermið) mun hliðrast í áttina sem „myndar" varma í stað þess sem var tekinn burt.';
     } else if (stress.type === 'increase-pressure') {
-      strategy = 'Hærri þrýstingur mun hliðra jafnvæginu í áttina með FÆRRI móla af gasi.';
+      strategy = 'Hærri þrýstingur mun hliðra jafnvæginu í áttina með FÆRRI mólum af gasi.';
     } else if (stress.type === 'decrease-pressure') {
-      strategy = 'Lægri þrýstingur mun hliðra jafnvæginu í áttina með FLEIRI móla af gasi.';
+      strategy = 'Lægri þrýstingur mun hliðra jafnvæginu í áttina með FLEIRI mólum af gasi.';
     } else if (stress.type === 'add-catalyst') {
       strategy = 'Hvatar flýta fyrir bæði fram- og bakhvarfi jafnt mikið.';
     } else if (stress.type.includes('add')) {
-      strategy = 'Að bæta við efni veldur hliðrun BURTfrá þeirri hlið.';
+      strategy = 'Að bæta við efni veldur hliðrun BURT frá þeirri hlið.';
     } else if (stress.type.includes('remove')) {
       strategy = 'Að fjarlægja efni veldur hliðrun Í ÁTTINA að þeirri hlið.';
     }
@@ -220,12 +307,12 @@ function App() {
     let method = '';
     if (stress.type === 'increase-temp') {
       method = isExothermic
-        ? 'Varmalosandi hvarf: Varmi er „myndefni". Meira varma → hliðrun til vinstri.'
-        : 'Varmabindandi hvarf: Varmi er „hvarfefni". Meira varma → hliðrun til hægri.';
+        ? 'Útvermið hvarf: Varmi er „myndefni". Meiri varmi → hliðrun til vinstri.'
+        : 'Innvermið hvarf: Varmi er „hvarfefni". Meiri varmi → hliðrun til hægri.';
     } else if (stress.type === 'decrease-temp') {
       method = isExothermic
-        ? 'Varmalosandi hvarf: Minna varma → hliðrun til hægri til að framleiða varma.'
-        : 'Varmabindandi hvarf: Minna varma → hliðrun til vinstri.';
+        ? 'Útvermið hvarf: Minni varmi → hliðrun til hægri til að framleiða varma.'
+        : 'Innvermið hvarf: Minni varmi → hliðrun til vinstri.';
     } else if (stress.type === 'increase-pressure') {
       if (moreGasOnRight) {
         method = `Hvarfefni: ${eq.gasMoles?.reactants} mól gas. Myndefni: ${eq.gasMoles?.products} mól gas. Hliðrun til vinstri (færri mól).`;
@@ -293,6 +380,10 @@ function App() {
 
     // No hint penalty — hints are free for learning
     const points = calculatePoints(correct, currentEquilibrium.difficulty);
+    // What the feedback shows is what was added. Recomputing it after the
+    // answer counted the streak bonus of the streak this answer had just
+    // extended, five points more than the score received.
+    setLastPoints(points);
 
     setStats((prev) => ({
       ...prev,
@@ -310,11 +401,9 @@ function App() {
     }));
 
     // In challenge mode, auto-advance after 6 seconds (was 3 — too fast to read explanation).
-    // Manual "Næsta →" button is rendered alongside so users can advance immediately if they want.
+    // «Næsta strax →» is rendered alongside so users can advance immediately if they want.
     if (gameMode === 'challenge') {
-      setTimeout(() => {
-        handleNextQuestion();
-      }, 6000);
+      scheduleAdvance(ADVANCE_AFTER_ANSWER_MS);
     }
   };
 
@@ -329,6 +418,7 @@ function App() {
   };
 
   const handleNextQuestion = () => {
+    cancelAdvance();
     if (gameMode === 'challenge') {
       if (questionNumber >= totalQuestions) {
         // Game over - show results
@@ -348,6 +438,15 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    nextQuestionRef.current = handleNextQuestion;
+  });
+
+  const goToMenu = () => {
+    cancelAdvance();
+    setScreen('menu');
+  };
+
   // Handle hint usage from HintSystem
   const handleHintUsed = (tier: 1 | 2 | 3 | 4) => {
     setHintsUsedTier(tier);
@@ -359,18 +458,18 @@ function App() {
 
   // Render functions
   const renderMenu = () => (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-white rounded-lg shadow-md p-8">
+    <div ref={menuTopRef} className="max-w-4xl mx-auto">
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-8">
         <p className="text-lg text-warm-600 mb-6 text-center">
           Lærðu Le Chatelier meginregluna í gegnum gagnvirkar æfingar
         </p>
 
         {/* Conceptual intro — WHY does Le Chatelier work? */}
-        <div className="bg-indigo-50 p-6 rounded-xl mb-8 border border-indigo-200">
+        <div className="bg-indigo-50 p-4 sm:p-6 rounded-xl mb-8 border border-indigo-200">
           <h2 className="font-bold text-indigo-800 mb-3">Af hverju hliðrast jafnvægi?</h2>
           <p className="text-sm text-indigo-700 mb-3">
             Þegar efnahvörf ná <strong>jafnvægi</strong> er hraði framhvarfsins jafn hraða
-            bakhvarfsins. Ef við trufum kerfið (bætum við efni, breytum hitastigi eða þrýstingi) er
+            bakhvarfsins. Ef við truflum kerfið (bætum við efni, breytum hitastigi eða þrýstingi) er
             jafnvægið rofið.
           </p>
 
@@ -403,7 +502,7 @@ function App() {
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           <button
             onClick={() => startGame('learning')}
-            className="game-card mode-card bg-white border-2 border-blue-200 hover:border-blue-400 rounded-lg p-6 text-left transition-all"
+            className="game-card mode-card bg-white border-2 border-blue-200 hover:border-blue-400 rounded-lg p-4 sm:p-6 text-left transition-all"
           >
             <div className="text-3xl mb-3">📚</div>
             <h3 className="text-xl font-bold text-warm-800 mb-2">Lærdómshamur</h3>
@@ -411,7 +510,7 @@ function App() {
               Taktu þér tíma, notaðu vísbendingar og lærðu á þínum hraða
             </p>
             <ul className="text-sm text-warm-500 space-y-1">
-              <li>✓ Enginn tímatakmörkun</li>
+              <li>✓ Engin tímatakmörkun</li>
               <li>✓ Ítarlegar útskýringar</li>
               <li>✓ Vísbendingakerfi</li>
               <li>✓ Veltudæmi</li>
@@ -427,7 +526,7 @@ function App() {
                 onClick={() => challengeUnlocked && startGame('challenge')}
                 disabled={!challengeUnlocked}
                 aria-disabled={!challengeUnlocked}
-                className={`game-card mode-card bg-white border-2 rounded-lg p-6 text-left transition-all ${
+                className={`game-card mode-card bg-white border-2 rounded-lg p-4 sm:p-6 text-left transition-all ${
                   challengeUnlocked
                     ? 'border-orange-200 hover:border-orange-400 cursor-pointer'
                     : 'border-warm-200 opacity-60 cursor-not-allowed'
@@ -477,21 +576,21 @@ function App() {
     if (!currentEquilibrium) return null;
 
     return (
-      <div className="max-w-6xl mx-auto">
+      <div ref={gameTopRef} className="max-w-6xl mx-auto scroll-mt-4">
         {/* Header with stats */}
         <div className="bg-white rounded-lg shadow-md p-4 mb-4">
           <div className="flex justify-between items-center flex-wrap gap-4">
             <button
-              onClick={() => setScreen('menu')}
-              className="bg-warm-500 hover:bg-warm-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warm-700 text-white rounded-lg px-4 py-2 transition-colors"
+              onClick={goToMenu}
+              className="pointer-coarse:min-h-11 bg-warm-500 hover:bg-warm-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warm-700 text-white rounded-lg px-4 py-2 transition-colors"
             >
               ← Til baka
             </button>
 
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4">
               {gameMode === 'challenge' && (
                 <>
-                  <div className="text-sm text-warm-600">
+                  <div className="text-sm text-warm-600 whitespace-nowrap">
                     Spurning {questionNumber} / {totalQuestions}
                   </div>
                   <div
@@ -501,45 +600,63 @@ function App() {
                   </div>
                 </>
               )}
-              <div className="score-display">Stig: {stats.score}</div>
-              {stats.streak > 0 && <div className="streak-indicator">🔥 {stats.streak} röð</div>}
+              {/* Points and streaks belong to Keppnishamur: no scoring during learning. */}
+              {gameMode === 'challenge' && (
+                <>
+                  <div className="score-display">Stig: {stats.score}</div>
+                  {stats.streak > 0 && (
+                    <div className="streak-indicator">🔥 {stats.streak} röð</div>
+                  )}
+                </>
+              )}
             </div>
           </div>
         </div>
 
         {/* Main game area */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-4">
+        <div className="bg-white rounded-lg shadow-md p-3 sm:p-6 mb-4">
           {/* Chemical Equation */}
           <div className="text-center mb-6">
-            <div className="text-3xl md:text-4xl font-bold text-warm-800 mb-3">
+            <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-warm-800 mb-3">
               {currentEquilibrium.equation}
             </div>
             <div className="text-lg text-warm-600 mb-2">
               {language === 'is' ? currentEquilibrium.nameIs : currentEquilibrium.name}
             </div>
-            <div className={`thermo-indicator ${currentEquilibrium.thermodynamics.type}`}>
-              {currentEquilibrium.thermodynamics.type === 'exothermic' ? '🔥' : '❄️'}
-              ΔH = {currentEquilibrium.thermodynamics.deltaH} kJ/mol (
-              {currentEquilibrium.thermodynamics.type === 'exothermic'
-                ? 'Varmalosandi'
-                : 'Varmabindandi'}
-              )
-            </div>
+            {(() => {
+              const { deltaH, type } = currentEquilibrium.thermodynamics;
+              // A ΔH of zero is neither útvermið nor innvermið, so it gets
+              // neither colour nor icon.
+              const kind = deltaH === 0 ? 'neutral' : type;
+              return (
+                <div className={`thermo-indicator ${kind}`}>
+                  {kind === 'exothermic' ? '🔥' : kind === 'endothermic' ? '❄️' : null}
+                  {heatLabel(deltaH)}
+                </div>
+              );
+            })()}
           </div>
 
           {/* Visual Equilibrium Display */}
-          <div className="grid md:grid-cols-3 gap-4 items-center mb-6">
+          {/* Side by side at every width: the game is about "left" and "right",
+              so the reactants must stay on the left and the products on the right.
+              Below md each molecule is an inline-block, so a long side (Ostwald's
+              four NH₃ and five O₂) wraps between molecules instead of running out
+              of its half-width box. */}
+          <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:grid-cols-3 gap-2 md:gap-4 items-center mb-6">
             {/* Reactants */}
             <div
               className={`molecule-container reactants-side ${isCorrect !== null && correctShift?.direction === 'left' ? 'glowing' : ''}`}
             >
-              <div className="text-center">
+              <div className="text-center min-w-0 md:min-w-auto">
                 <div className="text-sm text-warm-600 mb-2 font-semibold">Hvarfefni</div>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {currentEquilibrium.reactants.map((r, idx) => (
                     <div key={idx} className="molecule">
                       {Array.from({ length: r.coefficient }, (_, i) => (
-                        <span key={i}>{r.display}</span>
+                        <span key={i} className="inline-block md:inline">
+                          {r.display}
+                        </span>
                       ))}
                     </div>
                   ))}
@@ -560,13 +677,15 @@ function App() {
             <div
               className={`molecule-container products-side ${isCorrect !== null && correctShift?.direction === 'right' ? 'glowing' : ''}`}
             >
-              <div className="text-center">
+              <div className="text-center min-w-0 md:min-w-auto">
                 <div className="text-sm text-warm-600 mb-2 font-semibold">Myndefni</div>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {currentEquilibrium.products.map((p, idx) => (
                     <div key={idx} className="molecule">
                       {Array.from({ length: p.coefficient }, (_, i) => (
-                        <span key={i}>{p.display}</span>
+                        <span key={i} className="inline-block md:inline">
+                          {p.display}
+                        </span>
                       ))}
                     </div>
                   ))}
@@ -581,13 +700,17 @@ function App() {
               reactantCount={20}
               productCount={20}
               shiftDirection={showExplanation ? correctShift?.direction : null}
-              isExothermic={currentEquilibrium.thermodynamics.type === 'exothermic'}
+              isExothermic={
+                currentEquilibrium.thermodynamics.deltaH === 0
+                  ? null
+                  : currentEquilibrium.thermodynamics.type === 'exothermic'
+              }
               running={screen === 'game'}
             />
           </div>
 
           {/* Context/Description */}
-          <div className="bg-warm-50 rounded-lg p-4 mb-6">
+          <div className="bg-warm-50 rounded-lg px-2 py-4 sm:p-4 mb-6">
             <p className="text-sm text-warm-700 text-center">
               {language === 'is'
                 ? currentEquilibrium.descriptionIs
@@ -601,7 +724,7 @@ function App() {
               <h3 className="text-lg font-semibold text-warm-800 mb-3">
                 Veldu álag sem þú vilt beita:
               </h3>
-              <div className="grid md:grid-cols-3 gap-3">
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {currentEquilibrium.possibleStresses.map((stress, idx) => (
                   <button
                     key={idx}
@@ -632,7 +755,7 @@ function App() {
                 <h3 className="text-lg font-semibold text-warm-800 mb-3">
                   Hvert mun jafnvægið hliðrast?
                 </h3>
-                <div className="grid grid-cols-3 gap-4 mb-4">
+                <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-4">
                   <button
                     onClick={() => handlePrediction('left')}
                     className="predict-btn left"
@@ -749,7 +872,10 @@ function App() {
                     <div className="mb-4">
                       <div className="font-semibold mb-2">Rökstuðningur:</div>
                       <ul className="list-disc list-inside space-y-1 text-sm text-warm-700">
-                        {correctShift.reasoning.map((r, idx) => (
+                        {(language === 'is'
+                          ? correctShift.reasoningIs
+                          : correctShift.reasoning
+                        ).map((r, idx) => (
                           <li key={idx}>{r}</li>
                         ))}
                       </ul>
@@ -757,22 +883,24 @@ function App() {
                   )}
 
                   <div className="mb-4">
-                    <div className="font-semibold mb-2">Sameinda sjónarhorn:</div>
-                    <p className="text-sm text-warm-700 italic">{correctShift.molecularView}</p>
+                    <div className="font-semibold mb-2">Sameindasjónarhorn:</div>
+                    <p className="text-sm text-warm-700 italic">
+                      {language === 'is'
+                        ? correctShift.molecularViewIs
+                        : correctShift.molecularView}
+                    </p>
                   </div>
 
-                  {/* Points Earned */}
-                  {isCorrect && (
+                  {/* Points Earned (Keppnishamur only: no scoring during learning) */}
+                  {gameMode === 'challenge' && isCorrect && (
                     <div className="bg-green-100 rounded-lg p-3 mt-4">
-                      <div className="font-semibold text-green-800">
-                        +{calculatePoints(true, currentEquilibrium.difficulty)} stig!
-                      </div>
+                      <div className="font-semibold text-green-800">+{lastPoints} stig!</div>
                     </div>
                   )}
 
                   {/* Next Button (Learning Mode) */}
                   {gameMode === 'learning' && (
-                    <div className="mt-6 flex gap-3">
+                    <div className="mt-6 flex flex-col sm:flex-row gap-3">
                       <button
                         onClick={() => {
                           setAppliedStress(null);
@@ -794,11 +922,13 @@ function App() {
 
                   {/* Challenge Mode - Auto advance message + manual continue */}
                   {gameMode === 'challenge' && (
-                    <div className="mt-4 flex items-center justify-center gap-3 text-sm text-warm-600">
-                      <span>Næsta spurning birtist sjálfkrafa (6 sek)...</span>
+                    <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3 text-sm text-warm-600">
+                      <span className="text-center">
+                        Næsta spurning birtist sjálfkrafa ({advanceSeconds} sek)...
+                      </span>
                       <button
                         onClick={handleNextQuestion}
-                        className="bg-orange-500 hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700 text-white rounded-lg px-4 py-2 transition-colors text-sm font-semibold"
+                        className="shrink-0 whitespace-nowrap pointer-coarse:min-h-11 bg-orange-500 hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700 text-white rounded-lg px-4 py-2 transition-colors text-sm font-semibold"
                       >
                         Næsta strax →
                       </button>
@@ -814,21 +944,21 @@ function App() {
   };
 
   const renderResults = () => (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-white rounded-lg shadow-md p-8">
+    <div ref={resultsTopRef} className="max-w-4xl mx-auto scroll-mt-4">
+      <div className="bg-white rounded-lg shadow-md p-4 sm:p-8">
         <h2 className="text-3xl font-bold text-warm-800 mb-6 text-center">🏆 Niðurstöður</h2>
 
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6">
             <div className="text-3xl font-bold text-purple-800 mb-2">{stats.score}</div>
-            <div className="text-sm text-purple-600">Heildar stig</div>
+            <div className="text-sm text-purple-600">Heildarstig</div>
           </div>
 
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6">
             <div className="text-3xl font-bold text-blue-800 mb-2">
               {stats.correctAnswers} / {stats.questionsAnswered}
             </div>
-            <div className="text-sm text-blue-600">Réttar svör</div>
+            <div className="text-sm text-blue-600">Rétt svör</div>
           </div>
 
           <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-6">
@@ -869,7 +999,7 @@ function App() {
           </div>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <button
             onClick={() => startGame(gameMode)}
             className="flex-1 bg-primary-orange hover:bg-dark-orange focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700 text-white rounded-lg px-6 py-3 transition-colors"
@@ -877,7 +1007,7 @@ function App() {
             🔄 Spila aftur
           </button>
           <button
-            onClick={() => setScreen('menu')}
+            onClick={goToMenu}
             className="flex-1 bg-warm-500 hover:bg-warm-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-warm-700 text-white rounded-lg px-6 py-3 transition-colors"
           >
             📋 Aðalvalmynd
@@ -918,13 +1048,15 @@ function App() {
             <h2 className="text-sm font-semibold text-warm-700 mb-3">
               {t('accessibility.menuTitle', 'Aðgengisval')}
             </h2>
-            <div className="flex flex-wrap gap-4">
-              <label className="flex items-center gap-2">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 sm:gap-4">
+              {/* On touch the whole label is a 44 px row and the box is 24 px;
+                  the pointer-coarse variants leave the desktop panel as it was. */}
+              <label className="flex items-center gap-2 pointer-coarse:min-h-11">
                 <input
                   type="checkbox"
                   checked={settings.highContrast}
                   onChange={toggleHighContrast}
-                  className="rounded"
+                  className="rounded shrink-0 pointer-coarse:h-6 pointer-coarse:w-6"
                 />
                 <span className="text-sm">{t('accessibility.highContrast', 'Há birtuskil')}</span>
               </label>
@@ -934,7 +1066,7 @@ function App() {
                 <select
                   value={settings.textSize}
                   onChange={(e) => setTextSize(e.target.value as 'small' | 'medium' | 'large')}
-                  className="text-sm border rounded px-2 py-1"
+                  className="text-sm border rounded px-2 py-1 pointer-coarse:min-h-11"
                 >
                   <option value="small">{t('accessibility.textSizeSmall', 'Lítil')}</option>
                   <option value="medium">{t('accessibility.textSizeMedium', 'Miðlungs')}</option>
@@ -947,7 +1079,7 @@ function App() {
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value as 'is' | 'en' | 'pl')}
-                  className="text-sm border rounded px-2 py-1"
+                  className="text-sm border rounded px-2 py-1 pointer-coarse:min-h-11"
                 >
                   <option value="is">Íslenska</option>
                   <option value="en">English</option>
@@ -958,13 +1090,13 @@ function App() {
           </div>
 
           {/* Screen Routing */}
-          <FadePresence show={screen === 'menu'} exitDuration={200}>
+          <FadePresence show={screen === 'menu'} exitDuration={SCREEN_FADE_MS}>
             {renderMenu()}
           </FadePresence>
-          <FadePresence show={screen === 'game'} exitDuration={200}>
+          <FadePresence show={screen === 'game'} exitDuration={SCREEN_FADE_MS}>
             {renderGame()}
           </FadePresence>
-          <FadePresence show={screen === 'results'} exitDuration={200}>
+          <FadePresence show={screen === 'results'} exitDuration={SCREEN_FADE_MS}>
             {renderResults()}
           </FadePresence>
         </main>

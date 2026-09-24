@@ -250,3 +250,59 @@ describe('geometryToMolecule', () => {
     expect(molecule.id).toBe('ch');
   });
 });
+
+describe('the central atom of a formula that starts with hydrogen', () => {
+  // Both converters took the formula's first symbol as the central atom, so
+  // H₂O became an H bonded to one O in Stig 1 and, with the central atom
+  // supplied, an O bonded to another O in Stig 2. Hydrogen forms one bond and
+  // is never central.
+  const symbolsBondedTo = (m: ReturnType<typeof vseprToMolecule>, id: string) =>
+    m.bonds
+      .filter((b) => b.from === id)
+      .map((b) => m.atoms.find((a) => a.id === b.to)?.symbol)
+      .sort();
+
+  it('Stig 2 draws water as O bonded to two H', () => {
+    const molecule = vseprToMolecule({
+      formula: 'H₂O',
+      centralAtom: 'O',
+      bondingPairs: 2,
+      lonePairs: 2,
+      electronDomains: 4,
+      correctGeometryId: 'bent',
+    });
+    expect(molecule.atoms.map((a) => a.symbol).sort()).toEqual(['H', 'H', 'O']);
+    expect(symbolsBondedTo(molecule, 'o-central')).toEqual(['H', 'H']);
+  });
+
+  it('Stig 1 draws water as O bonded to two H', () => {
+    const molecule = geometryToMolecule({
+      id: 'bent-4',
+      example: 'H₂O',
+      bondingPairs: 2,
+      lonePairs: 2,
+    });
+    expect(molecule.atoms[0]).toMatchObject({ id: 'o-central', symbol: 'O', lonePairs: 2 });
+    expect(molecule.atoms.map((a) => a.symbol).sort()).toEqual(['H', 'H', 'O']);
+    expect(symbolsBondedTo(molecule, 'o-central')).toEqual(['H', 'H']);
+  });
+
+  it('still takes the first atom when it is not hydrogen', () => {
+    for (const [formula, central, count] of [
+      ['CH₄', 'C', 4],
+      ['NH₃', 'N', 3],
+      ['PCl₅', 'P', 5],
+      ['XeF₄', 'Xe', 4],
+      ['ClF₃', 'Cl', 3],
+    ] as const) {
+      const molecule = geometryToMolecule({
+        id: 'tetrahedral',
+        example: formula,
+        bondingPairs: count,
+        lonePairs: 0,
+      });
+      expect(molecule.atoms[0].symbol, formula).toBe(central);
+      expect(molecule.bonds, formula).toHaveLength(count);
+    }
+  });
+});

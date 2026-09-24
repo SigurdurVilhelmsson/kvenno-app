@@ -164,6 +164,25 @@ describe('the problem set', () => {
     expect(lighterLimits).toContain(false);
   });
 
+  it('never tells a student the mole count alone decides, on a problem where it does not', () => {
+    // `vatn` said the mole count decides, two clauses after printing 2 mol of
+    // hydrogen against 1,5 mol of oxygen — where the smaller mole count is the
+    // one in excess. Where comparing moles alone would pick the wrong reactant,
+    // a context that explains the choice must name the coefficient.
+    const molesMislead = (p: (typeof YIELD_PROBLEMS)[number]) => {
+      const r1Limits = p.result.limitingFormula === p.reaction.reactant1.formula;
+      const limiting = r1Limits ? p.result.molesR1 : p.result.molesR2;
+      const excess = r1Limits ? p.result.molesR2 : p.result.molesR1;
+      return limiting >= excess;
+    };
+    const explainsTheChoice = (text: string) => /takmarkandi|klárast/.test(text);
+    const checked = YIELD_PROBLEMS.filter((p) => molesMislead(p) && explainsTheChoice(p.context));
+    expect(checked.map((p) => p.id)).toContain('vatn');
+    for (const p of checked) {
+      expect(p.context, p.id).toMatch(/deilt með stuðli/);
+    }
+  });
+
   it('reads every formula it ships', () => {
     for (const p of YIELD_PROBLEMS) {
       for (const f of [

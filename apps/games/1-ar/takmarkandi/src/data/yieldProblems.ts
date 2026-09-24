@@ -57,7 +57,7 @@ const ORDER: Given[] = [
     gramsR2: 48.0, // O₂
     actualGrams: 30.0,
     context:
-      'Vetnið klárast fyrst þótt það sé miklu léttara — 4 g af vetni eru tvö mól, en 48 g af súrefni eru bara eitt og hálft. Massinn segir ekki hvað er takmarkandi; mólfjöldinn gerir það.',
+      'Vetnið klárast fyrst þótt það sé miklu léttara — 4 g af vetni eru tvö mól, en 48 g af súrefni eru bara eitt og hálft. Massinn segir ekki hvað er takmarkandi, og mólfjöldinn einn og sér ekki heldur. Það gerir mólfjöldi deilt með stuðli: 2 ÷ 2 ≈ 1 skipti fyrir vetnið, 1,5 ÷ 1 = 1,5 skipti fyrir súrefnið.',
   },
   {
     id: 'magnesiumoxid',

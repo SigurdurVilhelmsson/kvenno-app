@@ -49,63 +49,15 @@ export const calculateAverage = (scores: number[]): number => {
   return sum / scores.length;
 };
 
-/**
- * Count significant figures in a numeric string.
- *
- * Trailing zeros in integers without a decimal point (e.g. 1200) are treated
- * as **not** significant, following the standard convention where ambiguity is
- * resolved by assuming they are place-holders. To indicate that trailing zeros
- * are significant, the input should include a decimal point (e.g. "1200.").
- *
- * Handles negative numbers, leading zeros, decimal numbers, and scientific
- * notation. For purely-zero values like "0", "0.0", or "0.00" the function
- * returns 1 significant figure.
+/*
+ * There is deliberately no significant-figure counter here. This file carried
+ * one until 2026-09-23, with a validator built on it, and neither had a caller:
+ * it read only the full stop, so an Icelandic `0,125` counted the comma as a
+ * digit and came out as four figures. The counter that is right lives in
+ * `apps/games/1-ar/dimensional-analysis/src/utils/sigfigs.ts`, where Stig 0
+ * teaches the rules from it and works on the written string, never a number.
+ * Move that one here if a second game needs it; do not write a third.
  */
-export const countSignificantFigures = (numStr: string): number => {
-  numStr = numStr.trim();
-
-  // Handle scientific notation
-  if (numStr.toLowerCase().includes('e')) {
-    const [base] = numStr.toLowerCase().split('e');
-    numStr = base;
-  }
-
-  const hasDecimal = numStr.includes('.');
-  const cleaned = numStr.replace(/^-/, ''); // Remove negative sign
-
-  if (!hasDecimal) {
-    // No decimal point - trailing zeros may not be significant
-    const trimmed = cleaned.replace(/^0+/, '') || '0'; // Remove leading zeros, keep at least '0'
-    if (trimmed === '0') return 1; // Zero has 1 significant figure
-    const withoutTrailingZeros = trimmed.replace(/0+$/, '');
-
-    // If number ends in zeros, we assume they're not significant unless specified
-    return trimmed === withoutTrailingZeros ? trimmed.length : withoutTrailingZeros.length;
-  } else {
-    // Has decimal point - leading zeros (both in whole and decimal) are not significant
-    const [whole, decimal] = cleaned.split('.');
-    const wholeTrimmed = whole.replace(/^0+/, '') || '0';
-    if (wholeTrimmed === '0') {
-      // For numbers like 0.00123, strip leading zeros from decimal part
-      const decimalSignificant = decimal?.replace(/^0+/, '') || '';
-      // "0.0" and "0.00" have at least 1 significant figure
-      return decimalSignificant.length || 1;
-    }
-    return wholeTrimmed.length + (decimal?.length || 0);
-  }
-};
-
-/**
- * Validate significant figures match expected count
- */
-export const validateSignificantFigures = (
-  answer: string,
-  expected: number,
-  tolerance: number = 0
-): boolean => {
-  const actual = countSignificantFigures(answer);
-  return Math.abs(actual - expected) <= tolerance;
-};
 
 /**
  * Calculate efficiency score based on steps taken vs optimal

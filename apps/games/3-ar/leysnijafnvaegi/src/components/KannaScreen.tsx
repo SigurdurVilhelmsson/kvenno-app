@@ -1,5 +1,9 @@
 import { useState } from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
+import { BackButton } from './BackButton';
+import { Sci } from './Sci';
 import { SALTS, SALT_NOTES } from '../data/salts';
 import { formatScientific, molarSolubility, solubilityWithCommonIon } from '../engine/ksp';
 
@@ -26,6 +30,17 @@ interface Props {
 
 const STEPS = [0, 0.0001, 0.001, 0.01, 0.05, 0.1];
 
+// The bar's log scale, taken from every solubility the screen can draw: each
+// salt in pure water and at each slider step. A fixed floor used to sit at
+// 10⁻⁹ M, and the slider takes AgI, AgBr, FeCO₃ and Mn(OH)₂ below it — so the
+// most suppressed cases, the ones the phase exists to show, drew an empty
+// bar, which reads as a solubility of zero.
+const LOG_SOLUBILITIES = SALTS.flatMap((s) =>
+  STEPS.map((c) => Math.log10(solubilityWithCommonIon(s, 'anion', c).exact))
+);
+const LOG_LO = Math.floor(Math.min(...LOG_SOLUBILITIES));
+const LOG_HI = Math.ceil(Math.max(...LOG_SOLUBILITIES));
+
 export function KannaScreen({ onComplete, onBack }: Props) {
   const [formula, setFormula] = useState('AgCl');
   const [stepIndex, setStepIndex] = useState(0);
@@ -38,23 +53,21 @@ export function KannaScreen({ onComplete, onBack }: Props) {
   const { exact } = solubilityWithCommonIon(salt, 'anion', concentration);
   const suppression = pure / exact;
 
-  // A log bar: solubilities here span 10⁻⁵ to 10⁻², so a linear bar would show
-  // one filled cell and eleven empty ones.
+  // A log bar: solubilities here span more than twelve powers of ten, so a
+  // linear bar would show one filled cell and the rest empty.
   const barWidth = (value: number) => {
-    const lo = -9;
-    const hi = -1;
-    const clamped = Math.min(Math.max(Math.log10(value), lo), hi);
-    return `${((clamped - lo) / (hi - lo)) * 100}%`;
+    const clamped = Math.min(Math.max(Math.log10(value), LOG_LO), LOG_HI);
+    return `${((clamped - LOG_LO) / (LOG_HI - LOG_LO)) * 100}%`;
   };
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-6 shadow-md md:p-8">
-        <div className="mb-6 flex items-baseline justify-between">
-          <h2 className="text-2xl font-bold text-warm-800">Kanna — hvað þýðir „óleysanlegt“?</h2>
-          <button onClick={onBack} className="text-sm text-warm-500 underline">
-            Til baka
-          </button>
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
+        <div className="mb-6 flex items-baseline justify-between gap-3">
+          <h2 className="min-w-0 text-xl font-bold text-warm-800 sm:text-2xl">
+            Kanna — hvað þýðir „óleysanlegt“?
+          </h2>
+          <BackButton onClick={onBack} />
         </div>
 
         <p className="mb-6 text-warm-700">
@@ -69,7 +82,7 @@ export function KannaScreen({ onComplete, onBack }: Props) {
               key={s.formula}
               type="button"
               onClick={() => setFormula(s.formula)}
-              className={`game-btn rounded-lg border-2 px-3 py-2 font-mono text-sm ${
+              className={`game-btn rounded-lg border-2 px-3 py-2 font-mono text-sm pointer-coarse:min-h-11 ${
                 s.formula === formula
                   ? 'border-orange-400 bg-orange-50 font-semibold text-orange-900'
                   : 'border-warm-200 bg-white text-warm-700 hover:bg-warm-50'
@@ -80,25 +93,31 @@ export function KannaScreen({ onComplete, onBack }: Props) {
           ))}
         </div>
 
-        <div className="mb-6 rounded-xl border-2 border-warm-200 bg-warm-50 p-5">
-          <div className="mb-3 flex items-baseline justify-between">
+        <div className="mb-6 rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-3">
             <span className="font-mono text-2xl text-warm-900">{salt.formula}</span>
             <span className="text-sm text-warm-600">{salt.name}</span>
           </div>
-          <dl className="grid grid-cols-2 gap-4 text-sm">
+          {/* Two columns only where there is room: on a phone each column is
+              narrower than the word Leysnimargfeldi. */}
+          <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2 sm:gap-4">
             <div>
               <dt className="text-warm-600">Leysnimargfeldi</dt>
-              <dd className="font-mono text-lg text-warm-900">{formatScientific(salt.ksp)}</dd>
+              <dd className="font-mono text-lg text-warm-900">
+                <Sci value={salt.ksp} />
+              </dd>
             </div>
             <div>
               <dt className="text-warm-600">Mólarleysni í hreinu vatni</dt>
-              <dd className="font-mono text-lg text-warm-900">{formatScientific(pure, 3)} M</dd>
+              <dd className="font-mono text-lg text-warm-900">
+                <Sci value={pure} figures={3} unit="M" />
+              </dd>
             </div>
           </dl>
           {note?.context && <p className="mt-3 text-sm text-warm-700">{note.context}</p>}
         </div>
 
-        <div className="mb-6 rounded-xl border-2 border-sky-200 bg-sky-50 p-5">
+        <div className="mb-6 rounded-xl border-2 border-sky-200 bg-sky-50 p-4 sm:p-5">
           <h3 className="mb-1 font-semibold text-sky-900">
             Bættu {salt.anion} út í — jóninni sem efnið á sjálft
           </h3>
@@ -106,6 +125,8 @@ export function KannaScreen({ onComplete, onBack }: Props) {
             Ekkert er tekið úr glasinu. Samt fellur leysnin.
           </p>
 
+          {/* The track is 16 px tall; on a touch screen the whole 44 px strip
+              around it takes the finger. */}
           <input
             type="range"
             min={0}
@@ -113,15 +134,16 @@ export function KannaScreen({ onComplete, onBack }: Props) {
             step={1}
             value={stepIndex}
             aria-label={`Styrkur af ${salt.anion}`}
+            aria-valuetext={`${formatDecimal(concentration)} M`}
             onChange={(e) => {
               setStepIndex(Number(e.target.value));
               setMoved(true);
             }}
-            className="w-full"
+            className="w-full pointer-coarse:h-11"
           />
           <div className="mb-4 flex justify-between font-mono text-xs text-sky-700">
             {STEPS.map((s) => (
-              <span key={s}>{s === 0 ? '0' : s}</span>
+              <span key={s}>{formatDecimal(s)}</span>
             ))}
           </div>
 
@@ -133,7 +155,11 @@ export function KannaScreen({ onComplete, onBack }: Props) {
               tone="bg-sky-400"
             />
             <Bar
-              label={concentration === 0 ? 'Sami mælikvarði' : `Í ${concentration} M ${salt.anion}`}
+              label={
+                concentration === 0
+                  ? 'Sami mælikvarði'
+                  : `Í ${formatDecimal(concentration)} M ${salt.anion}`
+              }
               width={barWidth(exact)}
               value={formatScientific(exact, 3)}
               tone="bg-orange-400"
@@ -143,7 +169,7 @@ export function KannaScreen({ onComplete, onBack }: Props) {
           {concentration > 0 && (
             <p className="mt-4 rounded-lg bg-white/70 p-3 text-sm text-sky-900">
               <strong>
-                {suppression < 10 ? suppression.toFixed(1) : Math.round(suppression)}-falt
+                {suppression < 10 ? formatDecimal(suppression, 1) : Math.round(suppression)}-falt
               </strong>{' '}
               minni leysni en í hreinu vatni. Þetta heita <strong>samjónahrif</strong>, og skýringin
               kemur í næsta áfanga.
@@ -161,7 +187,7 @@ export function KannaScreen({ onComplete, onBack }: Props) {
             type="button"
             onClick={onComplete}
             disabled={!moved}
-            className="game-btn rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-warm-300"
+            className="game-btn rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-warm-300 pointer-coarse:min-h-11"
           >
             Áfram í Skilja
           </button>
@@ -184,9 +210,9 @@ function Bar({
 }) {
   return (
     <div>
-      <div className="mb-1 flex justify-between text-xs text-sky-800">
+      <div className="mb-1 flex justify-between gap-2 text-xs text-sky-800">
         <span>{label}</span>
-        <span className="font-mono">{value} M</span>
+        <span className="whitespace-nowrap font-mono">{value} M</span>
       </div>
       <div className="h-5 overflow-hidden rounded bg-white">
         <div className={`h-full ${tone} transition-all duration-300`} style={{ width }} />

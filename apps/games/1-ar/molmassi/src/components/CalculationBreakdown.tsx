@@ -27,7 +27,9 @@ export function CalculationBreakdown({ compound }: CalculationBreakdownProps) {
             {step.type === 'section' ? (
               <h4 className="font-semibold text-warm-700 mt-3 mb-1">{step.label}</h4>
             ) : (
-              <div className="flex items-center justify-between bg-white rounded px-3 py-2">
+              // On a phone the product drops to its own line, right-aligned, rather
+              // than splitting every number from its unit.
+              <div className="flex flex-wrap items-center justify-between gap-x-2 bg-white rounded px-3 py-2">
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-lg font-bold text-kvenno-orange">
                     {step.symbol}
@@ -35,22 +37,22 @@ export function CalculationBreakdown({ compound }: CalculationBreakdownProps) {
                   <span className="text-warm-600">×</span>
                   <span className="font-semibold">{step.count}</span>
                   <span className="text-warm-600">×</span>
-                  <span className="text-sm text-warm-600">
-                    {formatDecimal(step.atomicMass ?? 0, 3)} g/mol
+                  <span className="text-sm text-warm-600 whitespace-nowrap">
+                    {formatDecimal(step.atomicMass ?? 0, 3)} g/mól
                   </span>
                 </div>
-                <span className="font-semibold text-green-600">
-                  = {formatDecimal(step.total ?? 0, 3)} g/mol
+                <span className="ml-auto font-semibold text-green-600 whitespace-nowrap">
+                  = {formatDecimal(step.total ?? 0, 3)} g/mól
                 </span>
               </div>
             )}
           </div>
         ))}
         <div className="border-t-2 border-warm-300 pt-2 mt-3">
-          <div className="flex items-center justify-between bg-green-100 rounded px-3 py-2">
-            <span className="font-bold text-warm-700">Heild mólmassi:</span>
-            <span className="text-xl font-bold text-green-600">
-              {formatDecimal(compound.molarMass, 3)} g/mol
+          <div className="flex flex-wrap items-center justify-between gap-x-2 bg-green-100 rounded px-3 py-2">
+            <span className="font-bold text-warm-700">Heildarmólmassi:</span>
+            <span className="ml-auto text-xl font-bold text-green-600 whitespace-nowrap">
+              {formatDecimal(compound.molarMass, 3)} g/mól
             </span>
           </div>
         </div>

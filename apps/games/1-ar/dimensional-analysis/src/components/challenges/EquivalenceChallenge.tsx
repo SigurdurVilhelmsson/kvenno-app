@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+
+import { formatDecimal } from '@shared/utils';
 
 import { EquivalenceDisplay } from '../UnitBlock';
 
@@ -15,25 +17,21 @@ interface EquivalenceChallengeProps {
  */
 export function EquivalenceChallenge({ onComplete, onAttempt }: EquivalenceChallengeProps) {
   const [rightValue, setRightValue] = useState(0);
-  const [isCorrect, setIsCorrect] = useState(false);
   const [hasAttempted, setHasAttempted] = useState(false);
 
   const leftVolumeInML = 1000;
   const rightVolumeInML = rightValue * 1000;
+  const isCorrect = rightValue === 1;
 
-  useEffect(() => {
-    const correct = rightValue === 1;
-    setIsCorrect(correct);
-    if (correct && hasAttempted) {
-      onComplete();
-    }
-  }, [rightValue, hasAttempted, onComplete]);
-
+  // Success is reported from the click that reaches 1 L, not from an effect.
+  // An effect listing `onComplete` re-ran every time the level re-rendered,
+  // and reporting success re-renders the level: a loop.
   const adjustValue = (delta: number) => {
     onAttempt();
     setHasAttempted(true);
-    const newValue = Math.max(0, rightValue + delta);
-    setRightValue(Number(newValue.toFixed(1)));
+    const newValue = Number(Math.max(0, rightValue + delta).toFixed(1));
+    setRightValue(newValue);
+    if (newValue === 1) onComplete();
   };
 
   const comparison = rightVolumeInML - leftVolumeInML;
@@ -50,11 +48,11 @@ export function EquivalenceChallenge({ onComplete, onAttempt }: EquivalenceChall
       />
 
       {!isCorrect && (
-        <div className="flex flex-col items-center gap-4 p-6 bg-warm-50 rounded-xl">
+        <div className="flex flex-col items-center gap-4 p-4 sm:p-6 bg-warm-50 rounded-xl">
           <p className="text-warm-700 font-semibold">Hversu margir lítrar jafngilda 1000 mL?</p>
 
           <div className="flex items-center gap-3">
-            <span className="text-4xl font-bold text-green-700">{rightValue}</span>
+            <span className="text-4xl font-bold text-green-700">{formatDecimal(rightValue)}</span>
             <span className="text-2xl font-bold text-green-600">L</span>
           </div>
 
@@ -64,7 +62,7 @@ export function EquivalenceChallenge({ onComplete, onAttempt }: EquivalenceChall
             </p>
           )}
 
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+          <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:justify-center sm:gap-3">
             {[-1, -0.5, -0.1, 0.1, 0.5, 1].map((delta) => {
               const isNegative = delta < 0;
               const sizeClass = Math.abs(delta) === 1 ? 'text-lg' : '';
@@ -75,10 +73,10 @@ export function EquivalenceChallenge({ onComplete, onAttempt }: EquivalenceChall
                 <button
                   key={delta}
                   onClick={() => adjustValue(delta)}
-                  aria-label={`${delta > 0 ? 'Bæta við' : 'Draga frá'} ${Math.abs(delta)} lítra`}
-                  className={`min-h-[44px] min-w-[44px] px-4 py-3 rounded-lg font-bold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${colorClass} ${sizeClass}`}
+                  aria-label={`${delta > 0 ? 'Bæta við' : 'Draga frá'} ${formatDecimal(Math.abs(delta))} lítra`}
+                  className={`min-h-[44px] min-w-[44px] px-2 sm:px-4 py-3 rounded-lg font-bold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${colorClass} ${sizeClass}`}
                 >
-                  {delta > 0 ? `+${delta}` : delta}
+                  {delta > 0 ? `+${formatDecimal(delta)}` : formatDecimal(delta)}
                 </button>
               );
             })}

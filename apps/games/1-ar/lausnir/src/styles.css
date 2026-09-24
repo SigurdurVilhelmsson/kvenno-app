@@ -102,12 +102,17 @@
   max-width: 300px;
 }
 
-@media (max-width: 768px) {
+/* Fixed to the side only where the side has room for it. The card's left edge
+   is at 100vw - 320px and Stig 3's column ends at 50vw + 256px, so below
+   1184px the fixed card covered the question and the answer field (it did at
+   1024). Below that it sits in the flow, filling the wrapper Level3 gives it. */
+@media (max-width: 1183px) {
   .formula-card {
     position: relative;
     top: 0;
     right: 0;
-    margin: 1rem auto;
+    margin: 0;
+    max-width: none;
   }
 }
 

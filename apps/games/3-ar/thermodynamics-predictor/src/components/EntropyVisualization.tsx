@@ -184,8 +184,9 @@ export function EntropyVisualization({ deltaS }: EntropyVisualizationProps) {
       {/* Formula */}
       <div className="text-center text-xs text-gray-500 mb-2 font-mono">S = k·ln(W)</div>
 
-      {/* Side-by-side Before / After */}
-      <div className="flex items-center gap-3 justify-center">
+      {/* Before / After: side by side from sm up; stacked below it, where two panels beside an
+          arrow would shrink each canvas to about two thirds of its size. */}
+      <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-3 justify-center">
         {/* BEFORE */}
         <div className="flex flex-col items-center">
           <div className="text-xs font-semibold text-gray-600 mb-1">Fyrir</div>
@@ -206,7 +207,10 @@ export function EntropyVisualization({ deltaS }: EntropyVisualizationProps) {
         </div>
 
         {/* Arrow */}
-        <div className="text-xl text-gray-400 font-bold mt-4">→</div>
+        <div className="text-xl text-gray-400 font-bold sm:mt-4" aria-hidden="true">
+          <span className="sm:hidden">↓</span>
+          <span className="hidden sm:inline">→</span>
+        </div>
 
         {/* AFTER */}
         <div className="flex flex-col items-center">
@@ -221,8 +225,8 @@ export function EntropyVisualization({ deltaS }: EntropyVisualizationProps) {
             regions={afterRegions}
             ariaLabel={
               isIncreasing
-                ? 'Eftir: agnir dreifðar um allt ílátið — fleiri örstaður'
-                : 'Eftir: agnir skipulagðar í miðju — færri örstaður'
+                ? 'Eftir: agnir dreifðar um allt ílátið — fleiri örástönd'
+                : 'Eftir: agnir skipulagðar í miðju — færri örástönd'
             }
           />
         </div>
@@ -234,7 +238,7 @@ export function EntropyVisualization({ deltaS }: EntropyVisualizationProps) {
           isIncreasing ? 'text-green-600' : 'text-amber-600'
         }`}
       >
-        {isIncreasing ? '↑ Fleiri örstaður (ΔS > 0)' : '↓ Færri örstaður (ΔS < 0)'}
+        {isIncreasing ? '↑ Fleiri örástönd (ΔS > 0)' : '↓ Færri örástönd (ΔS < 0)'}
       </div>
     </div>
   );

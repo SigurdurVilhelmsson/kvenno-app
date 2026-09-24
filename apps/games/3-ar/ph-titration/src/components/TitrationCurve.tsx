@@ -8,8 +8,10 @@ import type {
   RegionConfig,
   HorizontalLineConfig,
 } from '@shared/components';
+import { formatDecimal } from '@shared/utils';
 
 import { Titration } from '../types';
+import { calculatePH } from '../utils/ph-calculations';
 
 interface TitrationCurveProps {
   curveData: Array<{ volume: number; pH: number }>;
@@ -87,7 +89,7 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
           y: pKa,
           color: '#f59e0b',
           lineDash: [5, 5],
-          label: `pKa = ${pKa.toFixed(2)}`,
+          label: `pKa = ${formatDecimal(pKa, 2)}`,
           labelPosition: 'right',
         });
       } else if (titration.type === 'polyprotic-diprotic') {
@@ -105,7 +107,7 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
             y: pKa,
             color: lineColors[idx],
             lineDash: [5, 5],
-            label: `pKa${idx + 1} = ${pKa.toFixed(2)}`,
+            label: `pKa${idx + 1} = ${formatDecimal(pKa, 2)}`,
             labelPosition: 'right',
           });
         });
@@ -128,7 +130,7 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
             y: pKa,
             color: lineColors[idx],
             lineDash: [5, 5],
-            label: `pKa${idx + 1} = ${pKa.toFixed(2)}`,
+            label: `pKa${idx + 1} = ${formatDecimal(pKa, 2)}`,
             labelPosition: 'right',
           });
         });
@@ -141,9 +143,11 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
     // Equivalence point markers
     if (showEquivalencePoints && titration) {
       if ('equivalenceVolume' in titration && titration.equivalenceVolume) {
+        // Derived, not the stored equivalencePH: the star has to sit on the
+        // curve drawn beside it (HF's stored 8.08 was 0.11 above it).
         markers.push({
           x: titration.equivalenceVolume,
-          y: titration.equivalencePH,
+          y: calculatePH(titration, titration.equivalenceVolume),
           color: '#22c55e',
           icon: '⭐',
           radius: 8,
@@ -200,7 +204,7 @@ export const TitrationCurve: React.FC<TitrationCurveProps> = ({
         horizontalLines={graphData.horizontalLines}
         markers={graphData.markers}
         currentPoint={graphData.currentPoint}
-        ariaLabel="Títrunarkúrfa - pH vs rúmmál"
+        ariaLabel="Títrunarferill – pH sem fall af rúmmáli"
       />
     </div>
   );

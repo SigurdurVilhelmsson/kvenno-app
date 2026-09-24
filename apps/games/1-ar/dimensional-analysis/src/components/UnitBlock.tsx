@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 interface UnitBlockProps {
   value: number;
   unit: string;
@@ -26,7 +28,7 @@ const colorClasses = {
 const sizeClasses = {
   small: 'px-2 py-1 text-sm',
   medium: 'px-4 py-2 text-base',
-  large: 'px-6 py-3 text-xl',
+  large: 'px-3 py-2 text-lg sm:px-6 sm:py-3 sm:text-xl',
 };
 
 /**
@@ -122,7 +124,7 @@ export function UnitBlock({
             }
           }}
         >
-          {showValue && <span className="mr-1">{value}</span>}
+          {showValue && <span className="mr-1">{formatDecimal(value)}</span>}
           <span>{unit}</span>
         </div>
         {/* Strikethrough line */}
@@ -146,7 +148,7 @@ export function UnitBlock({
         }
       }}
     >
-      {showValue && <span className="mr-1">{value}</span>}
+      {showValue && <span className="mr-1">{formatDecimal(value)}</span>}
       <span>{unit}</span>
     </div>
   );
@@ -161,6 +163,8 @@ interface ConversionFactorBlockProps {
   isCorrect?: boolean | null;
   onClick?: () => void;
   size?: 'small' | 'medium' | 'large';
+  /** Set when the block is an on/off toggle, to announce its state (`aria-pressed`). */
+  pressed?: boolean;
 }
 
 /**
@@ -175,6 +179,7 @@ export function ConversionFactorBlock({
   isCorrect = null,
   onClick,
   size = 'medium',
+  pressed,
 }: ConversionFactorBlockProps) {
   const borderColor =
     isCorrect === true
@@ -203,13 +208,14 @@ export function ConversionFactorBlock({
         ${isSelected ? 'ring-4 ring-yellow-400' : ''}
       `}
       disabled={!onClick}
+      aria-pressed={pressed}
     >
       <div className={`font-bold text-blue-600 ${sizeStyles[size].text}`}>
-        {numeratorValue} {numeratorUnit}
+        {formatDecimal(numeratorValue)} {numeratorUnit}
       </div>
       <div className="w-full h-0.5 bg-warm-800 my-1" />
       <div className={`font-bold text-green-600 ${sizeStyles[size].text}`}>
-        {denominatorValue} {denominatorUnit}
+        {formatDecimal(denominatorValue)} {denominatorUnit}
       </div>
     </button>
   );
@@ -263,7 +269,7 @@ export function EquivalenceDisplay({
   };
 
   return (
-    <div className="flex flex-col items-center p-6 bg-gradient-to-b from-warm-50 to-warm-100 rounded-xl">
+    <div className="flex flex-col items-center p-4 sm:p-6 bg-gradient-to-b from-warm-50 to-warm-100 rounded-xl">
       {/* Scale beam */}
       <div
         className={`
@@ -279,7 +285,7 @@ export function EquivalenceDisplay({
       </div>
 
       {/* Scale pans */}
-      <div className="flex justify-between w-full max-w-md mt-6 px-4">
+      <div className="flex justify-between gap-2 w-full max-w-md mt-6 sm:px-4">
         <div
           className={`
           transition-all duration-500
@@ -311,7 +317,7 @@ export function EquivalenceDisplay({
       {/* Status message */}
       <div
         className={`
-        mt-6 px-6 py-2 rounded-full font-bold text-lg
+        mt-6 px-4 sm:px-6 py-2 rounded-full font-bold text-base sm:text-lg
         transition-all duration-300
         ${isEqual ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}
       `}

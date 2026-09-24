@@ -53,7 +53,10 @@ const GEOMETRY_MAP: Record<string, MolecularGeometry | undefined> = {
 /**
  * Extract atom symbols from a chemical formula
  */
-function parseFormula(formula: string): {
+function parseFormula(
+  formula: string,
+  centralHint?: string
+): {
   central: string;
   surrounding: { symbol: string; count: number }[];
 } {
@@ -85,9 +88,18 @@ function parseFormula(formula: string): {
     }
   }
 
-  // First atom is central, rest are surrounding
-  const central = atoms[0]?.symbol || 'C';
-  const surrounding = atoms.slice(1);
+  // The central atom is the one named, or else the first atom that is not
+  // hydrogen: hydrogen forms one bond and is never central. Taking the first
+  // symbol blindly made H₂O an H bonded to a single O.
+  let centralIndex = centralHint ? atoms.findIndex((a) => a.symbol === centralHint) : -1;
+  if (centralIndex < 0) centralIndex = atoms.findIndex((a) => a.symbol !== 'H');
+  if (centralIndex < 0) centralIndex = 0;
+  const central = atoms[centralIndex]?.symbol || centralHint || 'C';
+
+  // Every other atom surrounds it, including the other hydrogens of H₂O.
+  const surrounding = atoms
+    .map((a, i) => (i === centralIndex ? { ...a, count: a.count - 1 } : a))
+    .filter((a) => a.count > 0);
 
   return { central, surrounding };
 }
@@ -100,8 +112,8 @@ export function vseprToMolecule(vsepr: VSEPRMolecule, bondType: BondType = 'sing
   const bonds: MoleculeBond[] = [];
 
   // Parse formula to get atom types
-  const parsed = parseFormula(vsepr.formula);
-  const centralSymbol = vsepr.centralAtom || parsed.central;
+  const parsed = parseFormula(vsepr.formula, vsepr.centralAtom);
+  const centralSymbol = parsed.central;
 
   // Create central atom with lone pairs
   const centralId = `${centralSymbol.toLowerCase()}-central`;

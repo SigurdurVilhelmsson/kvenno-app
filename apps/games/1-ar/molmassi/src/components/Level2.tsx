@@ -4,8 +4,8 @@ import { FeedbackPanel } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
 import { formatDecimal, formatScientific, shuffleArray } from '@shared/utils';
 
+import { atomWord } from '../data/atomWords';
 import { COMPOUNDS, STANDARD_MOLAR_VOLUME, STP_LABEL, type Compound } from '../data/compounds';
-import { getElementBySymbol } from '../data/elements';
 import { parseScientificAnswer } from '../utils/parseAnswer';
 
 const AVOGADRO = 6.022e23;
@@ -82,6 +82,15 @@ export function isGas(c: Compound): boolean {
   return c.state === 'gas';
 }
 
+/**
+ * What one mole of this compound is a mole of: molecules, or — for an ionic
+ * compound, which has none — formula units. Stig 3 already said
+ * `formúlueiningar` for NaCl; this level asked for the `sameindir` in it.
+ */
+export function particlesOf(c: Compound): string {
+  return c.ionic ? 'formúlueiningar' : 'sameindir';
+}
+
 /** Does the formula have an element appearing more than once? */
 export function hasRepeatedElement(c: Compound): boolean {
   return c.elements.some((e) => e.count > 1);
@@ -129,7 +138,8 @@ export function generateAllProblems(): Problem[] {
 
 export function generateProblem(c: Compound, type: ConvType): Problem {
   const M = c.molarMass;
-  const label = `${c.name} (${c.formula})`;
+  // Every template puts this after `af`, which takes the dative.
+  const label = `${c.nameDative} (${c.formula})`;
 
   if (type === 'mass_to_moles') {
     const m = randRange(5, 500, 5);
@@ -156,12 +166,13 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
   if (type === 'moles_to_particles') {
     const n = randRange(0.1, 5.0, 0.1);
     const ans = n * AVOGADRO;
+    const particles = particlesOf(c);
     return {
       compound: c,
       correctAnswer: ans,
-      questionText: `Hversu margar sameindir eru í ${formatDecimal(n)} mól af ${label}?`,
-      solutionFormula: 'Einingagreining: mól × (sameindir / 1 mól) → sameindir',
-      solutionSteps: `${formatDecimal(n)} mól × (6,022 × 10²³ sameindir / 1 mól) = ${fmt(ans)} sameindir\nEiningin mól strikast út.`,
+      questionText: `Hversu margar ${particles} eru í ${formatDecimal(n)} mól af ${label}?`,
+      solutionFormula: `Einingagreining: mól × (${particles} / 1 mól) → ${particles}`,
+      solutionSteps: `${formatDecimal(n)} mól × (6,022 × 10²³ ${particles} / 1 mól) = ${fmt(ans)} ${particles}\nEiningin mól strikast út.`,
     };
   }
   if (type === 'moles_to_element_atoms') {
@@ -174,15 +185,17 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
     // The element with the largest subscript, so the multiplication is the
     // point of the question.
     const element = [...c.elements].sort((a, b) => b.count - a.count)[0];
-    const elementName = getElementBySymbol(element.symbol)?.name ?? element.symbol;
     const n = randRange(0.1, 5.0, 0.1);
     const ans = n * element.count * AVOGADRO;
     return {
       compound: c,
       correctAnswer: ans,
-      questionText: `Hversu mörg ${elementName}-atóm (${element.symbol}) eru í ${formatDecimal(n)} mól af ${label}?`,
-      solutionFormula: 'Einingagreining: mól × (atóm af frumefninu / 1 mól) × (atóm / 1 mól)',
-      solutionSteps: `Í hverri sameind af ${c.formula} eru ${element.count} ${element.symbol}-atóm.\n${formatDecimal(n)} mól × (${element.count} mól ${element.symbol} / 1 mól ${c.formula}) × (6,022 × 10²³ atóm / 1 mól) = ${fmt(ans)} atóm\nEiningin mól strikast út tvisvar.`,
+      questionText: `Hversu mörg ${atomWord(element.symbol)} (${element.symbol}) eru í ${formatDecimal(n)} mól af ${label}?`,
+      // The first factor turns moles of compound into moles of the element, as
+      // the worked line below does. It used to put atoms over moles there too,
+      // which leaves atoms squared over moles once the second factor is applied.
+      solutionFormula: 'Einingagreining: mól × (mól af frumefninu / 1 mól) × (atóm / 1 mól) → atóm',
+      solutionSteps: `Í hverri ${c.ionic ? 'formúlueiningu' : 'sameind'} af ${c.formula} eru ${element.count} ${element.symbol}-atóm.\n${formatDecimal(n)} mól × (${element.count} mól ${element.symbol} / 1 mól ${c.formula}) × (6,022 × 10²³ atóm / 1 mól) = ${fmt(ans)} atóm\nEiningin mól strikast út tvisvar.`,
     };
   }
 
@@ -227,6 +240,30 @@ export function generateProblem(c: Compound, type: ConvType): Problem {
   };
 }
 
+/**
+ * The keyboard a phone should open for an answer. Molecule and atom counts are
+ * Avogadro-scale, and a decimal keypad has no `e`, `×` or `^` to write them with,
+ * so those questions get the full keyboard; everything else keeps the keypad.
+ * `parseScientificAnswer` reads `2,5e20` and `2,5 x 10^20` alike.
+ */
+export function answerInputMode(correctAnswer: number): 'decimal' | 'text' {
+  return Math.abs(correctAnswer) >= 1e6 ? 'text' : 'decimal';
+}
+
+/**
+ * What to say when an answer cannot be read. The keyboard decides which: on the
+ * full keyboard the likely slip is a half-written power of ten.
+ *
+ * The notation example is deliberately far below any count this level asks
+ * for (the smallest is 0,1 mól, 6,0 × 10²²): an example that is an answer is
+ * an answer leak, which is what Stig 3's `1,2e24` was.
+ */
+export function unreadableAnswerMessage(mode: 'decimal' | 'text'): string {
+  return mode === 'text'
+    ? 'Ógilt gildi. Notaðu t.d. 2,5e20 eða 2,5 × 10^20'
+    : 'Ógilt gildi. Skrifaðu tölu, t.d. 2,5';
+}
+
 function withinTolerance(user: number, correct: number): boolean {
   if (correct === 0) return Math.abs(user) < 0.001;
   return Math.abs(user - correct) / Math.abs(correct) <= 0.05;
@@ -248,13 +285,21 @@ export function Level2({
   const [feedback, setFeedback] = useState(false);
   const [correct, setCorrect] = useState(false);
   const [done, setDone] = useState(false);
+  const [error, setError] = useState('');
 
   const problem = problems[idx];
+  const inputMode = answerInputMode(problem.correctAnswer);
 
   const submit = () => {
     if (feedback) return;
     const v = parseScientificAnswer(input);
-    if (v === null) return;
+    if (v === null) {
+      // Say so, as Stig 3 does. Returning silently left a student who typed
+      // `3,5 × 10` tapping Svara with nothing happening at all.
+      setError(unreadableAnswerMessage(inputMode));
+      return;
+    }
+    setError('');
     const ok = withinTolerance(v, problem.correctAnswer);
     setCorrect(ok);
     setFeedback(true);
@@ -273,6 +318,7 @@ export function Level2({
     }
     setIdx((i) => i + 1);
     setInput('');
+    setError('');
     setFeedback(false);
   };
 
@@ -280,6 +326,7 @@ export function Level2({
     setProblems(generateAllProblems());
     setIdx(0);
     setInput('');
+    setError('');
     setScore(0);
     setFeedback(false);
     setDone(false);
@@ -291,15 +338,17 @@ export function Level2({
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
         <div className="max-w-lg mx-auto">
           <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-wrap sm:flex-nowrap justify-between items-center">
               <button
                 onClick={onBack}
-                className="text-warm-500 hover:text-warm-700 font-semibold text-sm"
+                className="text-warm-500 hover:text-warm-700 font-semibold text-sm whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
               >
                 ← Til baka
               </button>
-              <h1 className="text-lg font-bold text-warm-800">Mól-umbreytingar — Kennsla</h1>
-              <span className="text-sm text-warm-500">Stig 2</span>
+              <h1 className="order-last basis-full mt-1 sm:order-none sm:basis-auto sm:mt-0 text-lg font-bold text-warm-800">
+                Mól-umbreytingar — Kennsla
+              </h1>
+              <span className="text-sm text-warm-500 whitespace-nowrap">Stig 2</span>
             </div>
           </div>
 
@@ -308,7 +357,7 @@ export function Level2({
             <div>
               <h2 className="text-xl font-bold text-warm-800 mb-2">Hvað er mól?</h2>
               <p className="text-warm-700">
-                Ein mól er 6,022 × 10²³ eindir — jafn margar og atóm í 12 g af kolefni-12. Þetta er{' '}
+                Eitt mól er 6,022 × 10²³ eindir — jafn margar og atóm í 12 g af kolefni-12. Þetta er{' '}
                 <strong>Avogadro-talan</strong>.
               </p>
             </div>
@@ -414,7 +463,7 @@ export function Level2({
                 style={{ width: `${(score / (TOTAL * 10)) * 100}%` }}
               />
             </div>
-            <div className="flex gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={retry}
                 className="bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 px-6 rounded-xl transition-colors"
@@ -432,7 +481,7 @@ export function Level2({
             </div>
             <button
               onClick={onBack}
-              className="mt-4 text-warm-500 hover:text-warm-700 font-semibold py-2"
+              className="mt-4 text-warm-500 hover:text-warm-700 font-semibold py-2 pointer-coarse:min-h-11"
             >
               ← Til baka í valmynd
             </button>
@@ -449,7 +498,9 @@ export function Level2({
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-xl font-bold text-warm-800">Mól-umbreytingar - Stig 2</h1>
+              <h1 className="text-lg sm:text-xl font-bold text-warm-800">
+                Mól-umbreytingar - Stig 2
+              </h1>
               <p className="text-sm text-warm-600">Massi, mól og sameindir</p>
             </div>
             <div className="text-center">
@@ -482,36 +533,46 @@ export function Level2({
           </div>
           <div className="text-sm font-mono text-warm-700 space-y-1 text-center">
             <div>
-              g → mól: margfaldaðu með <span className="font-bold">(1 mól / M g)</span>
+              g → mól: margfaldaðu með{' '}
+              <span className="font-bold whitespace-nowrap">(1 mól / M g)</span>
             </div>
             <div>
-              mól → g: margfaldaðu með <span className="font-bold">(M g / 1 mól)</span>
+              mól → g: margfaldaðu með{' '}
+              <span className="font-bold whitespace-nowrap">(M g / 1 mól)</span>
             </div>
             <div>
               mól → sameindir: margfaldaðu með{' '}
-              <span className="font-bold">(6,022×10²³ / 1 mól)</span>
+              <span className="font-bold whitespace-nowrap">(6,022×10²³ / 1 mól)</span>
             </div>
           </div>
           <div className="text-center text-xs text-warm-400 mt-2">
-            M = mólmassi (g/mol) — einingin sem á að hverfa fer í nefnara
+            M = mólmassi (g/mól) — einingin sem á að hverfa fer í nefnara
           </div>
         </div>
 
         {/* Question card */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-4" key={idx}>
+        <div className="bg-white rounded-xl shadow-lg p-3 min-[360px]:p-4 sm:p-6 mb-4" key={idx}>
           <p className="text-lg text-warm-800 font-medium mb-6">{problem.questionText}</p>
 
           {!feedback && (
             <div className="flex gap-3">
               <input
                 type="text"
-                inputMode="decimal"
+                inputMode={inputMode}
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e) => {
+                  setInput(e.target.value);
+                  setError('');
+                }}
                 onKeyDown={(e) => e.key === 'Enter' && submit()}
                 placeholder="Svar..."
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="none"
+                spellCheck={false}
                 autoFocus
-                className="flex-1 border-2 border-warm-200 focus:border-kvenno-orange rounded-xl px-4 py-3 text-lg outline-none transition-colors"
+                aria-invalid={error ? true : undefined}
+                className={`flex-1 border-2 ${error ? 'border-red-400' : 'border-warm-200 focus:border-kvenno-orange'} rounded-xl px-4 py-3 text-lg outline-none transition-colors`}
               />
               <button
                 onClick={submit}
@@ -521,6 +582,12 @@ export function Level2({
                 Svara
               </button>
             </div>
+          )}
+          {!feedback && error && <p className="text-red-600 text-sm mt-1">{error}</p>}
+          {!feedback && inputMode === 'text' && (
+            <p className="text-xs text-warm-500 mt-2">
+              Hægt að nota vísisrithátt: 2,5e20, 2,5 × 10^20, eða venjulega tölu
+            </p>
           )}
 
           {feedback && (
@@ -538,12 +605,16 @@ export function Level2({
                   showMisconceptions: true,
                   showRelatedConcepts: false,
                   showNextSteps: false,
+                  // The same worked solution is printed in full just below, so
+                  // "Af hverju?" starts closed rather than showing it twice.
+                  defaultExpanded: false,
                 }}
               />
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
                 <p className="font-semibold mb-1">Útreikningur:</p>
                 <p className="font-mono">{problem.solutionFormula}</p>
-                <p className="font-mono">{problem.solutionSteps}</p>
+                {/* The steps end on a line of their own saying which unit cancels. */}
+                <p className="font-mono whitespace-pre-line">{problem.solutionSteps}</p>
               </div>
               <button
                 onClick={next}
@@ -557,7 +628,7 @@ export function Level2({
 
         <button
           onClick={onBack}
-          className="w-full text-warm-500 hover:text-warm-700 font-semibold py-2"
+          className="w-full text-warm-500 hover:text-warm-700 font-semibold py-2 pointer-coarse:min-h-11"
         >
           ← Til baka í valmynd
         </button>

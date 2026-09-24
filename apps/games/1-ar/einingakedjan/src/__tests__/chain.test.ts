@@ -41,7 +41,7 @@ describe('solveChain', () => {
     expect(result.failedSlot).toBe(0);
     // The failing step is still executed so the student can see the nonsense it makes.
     expect(result.steps).toHaveLength(1);
-    expect(formatSignature(result.final)).toBe('g Mg·g Mg / mol Mg');
+    expect(formatSignature(result.final)).toBe('g Mg·g Mg / mól Mg');
   });
 
   it('flags a ratio that cannot help in either orientation', () => {
@@ -54,7 +54,7 @@ describe('solveChain', () => {
     const result = solveChain(gramsOfMg, correctChain.slice(0, 2), allRatios, gramsOfOxide);
     expect(result.status).toBe('wrong-unit');
     expect(result.failedSlot).toBeUndefined();
-    expect(formatSignature(result.final)).toBe('mol MgO');
+    expect(formatSignature(result.final)).toBe('mól MgO');
   });
 
   it('accepts either order for two genuinely commutative ratios', () => {
@@ -100,7 +100,7 @@ describe('solveChain', () => {
       quantity(250, 'mL', 'NaOH(aq)'),
       [slot('molstyrkur-NaOH-0100', 'forward')],
       allRatios,
-      signature('mol', 'NaOH')
+      signature('mól', 'NaOH')
     );
     expect(result.status).toBe('irrelevant');
   });
@@ -110,7 +110,7 @@ describe('solveChain', () => {
       quantity(250, 'mL', 'NaOH(aq)'),
       [slot('metric-mL-L', 'flipped'), slot('molstyrkur-HCl-0100', 'forward')],
       allRatios,
-      signature('mol', 'NaOH')
+      signature('mól', 'NaOH')
     );
     expect(result.status).toBe('irrelevant');
     expect(result.failedSlot).toBe(1);
@@ -120,14 +120,15 @@ describe('solveChain', () => {
 describe('correctionPrompt', () => {
   it('returns nothing for a solved chain', () => {
     const result = solveChain(gramsOfMg, correctChain, allRatios, gramsOfOxide);
-    expect(correctionPrompt(result, gramsOfOxide)).toBeNull();
+    expect(correctionPrompt(result, gramsOfOxide, allRatios)).toBeNull();
   });
 
   it('offers flipping as the correct fix for an inverted ratio', () => {
     const chain = [slot('mm-Mg', 'forward')];
     const prompt = correctionPrompt(
       solveChain(gramsOfMg, chain, allRatios, gramsOfOxide),
-      gramsOfOxide
+      gramsOfOxide,
+      allRatios
     );
     const correct = prompt?.options.filter((o) => o.correct) ?? [];
     expect(correct).toHaveLength(1);
@@ -139,7 +140,8 @@ describe('correctionPrompt', () => {
   it('offers removal as the correct fix for an irrelevant ratio', () => {
     const prompt = correctionPrompt(
       solveChain(gramsOfMg, [slot('mm-O2', 'flipped')], allRatios, gramsOfOxide),
-      gramsOfOxide
+      gramsOfOxide,
+      allRatios
     );
     expect(prompt?.options.find((o) => o.correct)?.id).toBe('remove');
   });
@@ -147,10 +149,11 @@ describe('correctionPrompt', () => {
   it('offers adding a step as the correct fix for a chain that stops short', () => {
     const prompt = correctionPrompt(
       solveChain(gramsOfMg, correctChain.slice(0, 2), allRatios, gramsOfOxide),
-      gramsOfOxide
+      gramsOfOxide,
+      allRatios
     );
     expect(prompt?.options.find((o) => o.correct)?.id).toBe('addStep');
-    expect(prompt?.problem).toContain('mol MgO');
+    expect(prompt?.problem).toContain('mól MgO');
   });
 
   it('always offers exactly one correct option', () => {
@@ -162,7 +165,8 @@ describe('correctionPrompt', () => {
     for (const chain of chains) {
       const prompt = correctionPrompt(
         solveChain(gramsOfMg, chain, allRatios, gramsOfOxide),
-        gramsOfOxide
+        gramsOfOxide,
+        allRatios
       );
       expect(prompt?.options.filter((o) => o.correct)).toHaveLength(1);
       expect(prompt?.options.length).toBeGreaterThanOrEqual(3);
@@ -179,7 +183,7 @@ describe('predictionOptions', () => {
   it('credits predicting the outcome of a broken chain', () => {
     // The skill is predicting your own chain, not guessing the target.
     const options = predictionOptions(gramsOfMg, correctChain.slice(0, 2), allRatios, gramsOfOxide);
-    expect(options.find((o) => o.correct)?.label).toBe('mol MgO');
+    expect(options.find((o) => o.correct)?.label).toBe('mól MgO');
     expect(options.some((o) => o.label === 'g MgO' && !o.correct)).toBe(true);
   });
 

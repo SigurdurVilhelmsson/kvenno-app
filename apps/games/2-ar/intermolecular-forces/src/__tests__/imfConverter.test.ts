@@ -1,13 +1,13 @@
 import { describe, it, expect } from 'vitest';
 
-import { imfToMolecule, type IMFMolecule } from '../utils/imfConverter';
+import { imfToMolecule, POSITION_COORDS, type IMFMolecule } from '../utils/imfConverter';
 
 describe('imfToMolecule', () => {
   describe('with visualization data', () => {
     it('creates atoms from visualization with partial charges', () => {
       const hcl: IMFMolecule = {
         formula: 'HCl',
-        name: 'vetnissklorið',
+        name: 'vetnisklóríð',
         isPolar: true,
         hasHBond: false,
         visualization: {
@@ -17,7 +17,6 @@ describe('imfToMolecule', () => {
           ],
           bonds: [{ from: 'left', to: 'right', type: 'single', polar: true }],
           shape: 'diatomic',
-          dipoleMoment: 'right',
         },
       };
 
@@ -50,7 +49,9 @@ describe('imfToMolecule', () => {
       expect(molecule.bonds[0].polar).toBe(true);
     });
 
-    it('maps dipole moment direction', () => {
+    it('draws each atom where the data places it', () => {
+      // The positions used to be dropped, and AnimatedMolecule's geometry layout then put
+      // the first-listed atom in the middle: H in the middle of HF, with F on the left.
       const hf: IMFMolecule = {
         formula: 'HF',
         isPolar: true,
@@ -62,17 +63,18 @@ describe('imfToMolecule', () => {
           ],
           bonds: [{ from: 'left', to: 'right', type: 'single', polar: true }],
           shape: 'diatomic',
-          dipoleMoment: 'right',
         },
       };
 
       const molecule = imfToMolecule(hf);
 
-      expect(molecule.dipoleMoment).toBeDefined();
-      expect(molecule.dipoleMoment?.direction).toBe('right');
+      expect(molecule.atoms[0].position).toEqual(POSITION_COORDS.left);
+      expect(molecule.atoms[1].position).toEqual(POSITION_COORDS.right);
+      expect(POSITION_COORDS.left.x).toBeLessThan(0);
+      expect(POSITION_COORDS.right.x).toBeGreaterThan(0);
     });
 
-    it('does not set dipole moment when direction is none', () => {
+    it('leaves the dipole to be derived from the drawing, never stored', () => {
       const co2: IMFMolecule = {
         formula: 'CO₂',
         isPolar: false,
@@ -88,7 +90,6 @@ describe('imfToMolecule', () => {
             { from: 'center', to: 'right', type: 'double', polar: true },
           ],
           shape: 'linear',
-          dipoleMoment: 'none',
         },
       };
 
@@ -113,7 +114,6 @@ describe('imfToMolecule', () => {
             { from: 'center', to: 'right', type: 'single', polar: true },
           ],
           shape: 'bent',
-          dipoleMoment: 'down',
         },
       };
 
@@ -278,6 +278,31 @@ describe('imfToMolecule', () => {
       const molecule = imfToMolecule(mol);
 
       expect(molecule.geometry).toBe('trigonal-planar');
+    });
+
+    it('maps trigonal-pyramidal shape to trigonal-pyramidal geometry', () => {
+      // NH₃ was declared 'trigonal' and so shown flat in the 3D viewer, a planar ammonia.
+      const mol: IMFMolecule = {
+        formula: 'NH₃',
+        isPolar: true,
+        hasHBond: true,
+        visualization: {
+          atoms: [
+            { symbol: 'N', position: 'center', partialCharge: 'negative' },
+            { symbol: 'H', position: 'bottom-left', partialCharge: 'positive' },
+            { symbol: 'H', position: 'bottom', partialCharge: 'positive' },
+            { symbol: 'H', position: 'bottom-right', partialCharge: 'positive' },
+          ],
+          bonds: [
+            { from: 'center', to: 'bottom-left', type: 'single', polar: true },
+            { from: 'center', to: 'bottom', type: 'single', polar: true },
+            { from: 'center', to: 'bottom-right', type: 'single', polar: true },
+          ],
+          shape: 'trigonal-pyramidal',
+        },
+      };
+
+      expect(imfToMolecule(mol).geometry).toBe('trigonal-pyramidal');
     });
 
     it('maps tetrahedral shape to tetrahedral geometry', () => {

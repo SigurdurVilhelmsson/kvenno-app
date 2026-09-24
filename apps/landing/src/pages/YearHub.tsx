@@ -186,14 +186,16 @@ function ToolCardComponent({ tool }: { tool: ToolCard }) {
     return (
       <Card
         variant="outlined"
-        padding="lg"
-        className="opacity-60 border-dashed cursor-not-allowed flex flex-col"
+        padding="none"
+        className="p-5 md:p-8 opacity-60 border-dashed cursor-not-allowed flex flex-col"
         role="article"
         aria-disabled="true"
       >
-        <h2 className="text-kvenno-orange text-2xl font-bold mb-4">{tool.title}</h2>
+        <h2 className="text-kvenno-orange text-xl md:text-2xl font-bold mb-2 md:mb-4 wrap-break-word md:wrap-normal">
+          {tool.title}
+        </h2>
         <p className="text-warm-500 flex-grow">{tool.description}</p>
-        <span className="mt-4 text-sm text-warm-400 italic">{tool.status}</span>
+        <span className="mt-3 md:mt-4 text-sm text-warm-400 italic">{tool.status}</span>
       </Card>
     );
   }
@@ -201,16 +203,18 @@ function ToolCardComponent({ tool }: { tool: ToolCard }) {
   return (
     <a
       href={tool.href}
-      className="bg-surface-raised border-2 border-kvenno-orange rounded-card p-8 no-underline text-warm-800 shadow-md flex flex-col transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-orange"
+      className="bg-surface-raised border-2 border-kvenno-orange rounded-card p-5 md:p-8 no-underline text-warm-800 shadow-md flex flex-col transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-orange"
     >
-      <h2 className="font-heading text-kvenno-orange text-2xl font-bold mb-4">{tool.title}</h2>
+      <h2 className="font-heading text-kvenno-orange text-xl md:text-2xl font-bold mb-2 md:mb-4 wrap-break-word md:wrap-normal">
+        {tool.title}
+      </h2>
       <p className="text-warm-500 flex-grow">{tool.description}</p>
       {tool.active ? (
-        <Badge variant="success" className="mt-4 self-start">
+        <Badge variant="success" className="mt-3 md:mt-4 self-start">
           {tool.status}
         </Badge>
       ) : (
-        <span className="mt-4 text-sm text-warm-400 italic">{tool.status}</span>
+        <span className="mt-3 md:mt-4 text-sm text-warm-400 italic">{tool.status}</span>
       )}
     </a>
   );
@@ -228,37 +232,40 @@ export function YearHub({ year }: YearHubProps) {
   return (
     <>
       {/* Breadcrumbs */}
-      <div className="py-4">
+      <div className="py-3 md:py-4">
         <Breadcrumbs items={breadcrumbItems} />
       </div>
 
       {/* Back Button */}
       <Link
         to="/efnafraedi"
-        className="inline-flex items-center gap-2 mb-8 px-4 py-2 min-h-[44px] border-2 border-kvenno-orange text-kvenno-orange no-underline rounded-btn font-medium transition-all duration-200 ease-out hover:bg-kvenno-orange hover:text-white"
+        className="inline-flex items-center gap-2 mb-6 md:mb-8 px-4 py-2 min-h-[44px] border-2 border-kvenno-orange text-kvenno-orange no-underline rounded-btn font-medium transition-all duration-200 ease-out hover:bg-kvenno-orange hover:text-white"
         aria-label="Fara til baka í efnafræði"
       >
         &larr; Til baka
       </Link>
 
-      {/* Page Title */}
-      <Card variant="elevated" padding="lg" className="text-center mb-12">
-        <h1 className="font-heading text-kvenno-orange text-4xl md:text-[2.5rem] font-bold mb-2">
+      {/* Page Title. Tighter on phones, as on the games hub; wrap-break-word keeps
+          "hugvísindabraut" in the F-bekkir title inside a 320px screen. */}
+      <Card variant="elevated" padding="none" className="text-center p-6 md:p-8 mb-8 md:mb-12">
+        <h1 className="font-heading text-kvenno-orange text-3xl md:text-[2.5rem] md:leading-[calc(2.5/2.25)] font-bold mb-2 wrap-break-word md:wrap-normal">
           {config.pageTitle}
         </h1>
-        <p className="text-lg text-warm-500">{config.pageDescription}</p>
+        <p className="text-base md:text-lg text-warm-500">{config.pageDescription}</p>
       </Card>
 
       {/* Tools Grid or Empty State */}
       {config.isEmpty ? (
-        <Card variant="elevated" padding="lg" className="text-center">
+        <Card variant="elevated" padding="none" className="text-center p-6 md:p-8">
           <h2 className="font-heading text-kvenno-orange text-3xl font-bold mb-4">
             {config.emptyTitle}
           </h2>
-          <p className="text-warm-500 text-lg max-w-[600px] mx-auto">{config.emptyDescription}</p>
+          <p className="text-warm-500 text-base md:text-lg max-w-[600px] mx-auto">
+            {config.emptyDescription}
+          </p>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4 md:gap-8 mb-12">
           {config.tools.map((tool) => (
             <ToolCardComponent key={tool.title} tool={tool} />
           ))}

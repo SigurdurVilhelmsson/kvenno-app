@@ -17,7 +17,9 @@
 
 /* Heading font utility */
 .font-heading,
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
 }
 
@@ -38,27 +40,117 @@ h1, h2, h3 {
   color: var(--color-kvenno-orange, #f36b22);
 }
 
-.hover-orange:hover {
-  background-color: var(--color-kvenno-orange, #f36b22);
-}
-
 /* Text contrast-safe orange (for body text on white) */
 .text-orange-accessible {
   color: var(--color-kvenno-orange-700, #b04510);
 }
 
 /* ===================================================================
+ * Touch and phone defaults
+ *
+ * These live in Tailwind's `base` and `utilities` cascade layers on
+ * purpose. Layers are compared before specificity, so an unlayered rule
+ * here would beat every utility class a game writes — `touch-none` on a
+ * drag handle, `break-normal`, `min-w-[120px]`, `text-2xl` on an answer
+ * field — no matter how specific that class is.
+ * =================================================================== */
+@layer base {
+  /* A long Icelandic compound wraps instead of pushing the page sideways.
+     `break-word` only breaks a word that cannot fit on a line of its own
+     and leaves min-content sizing alone, so no layout that fits today moves. */
+  body {
+    overflow-wrap: break-word;
+  }
+
+  /* Rapid taps (a coefficient stepper, a next button) must not trigger
+     double-tap zoom. Scrolling and pinch zoom are unaffected. */
+  a[href],
+  button,
+  input,
+  select,
+  textarea,
+  label,
+  summary,
+  [role='button'],
+  [role='tab'],
+  [role='radio'],
+  [role='checkbox'],
+  [role='option'],
+  [role='switch'] {
+    touch-action: manipulation;
+  }
+
+  /* A form control's default minimum width is its intrinsic ~20ch, so a
+     `flex-1` answer field beside its "Athuga" button pushed the button off
+     a 360 px screen. Let it shrink like any other flex or grid item.
+     Checkboxes and radios are left out: beside a label that wraps, a
+     shrinkable one is squeezed from 13 px to about 7 px. */
+  input:not([type='checkbox'], [type='radio']),
+  select,
+  textarea {
+    min-width: 0;
+  }
+
+  /* iOS Safari zooms the page when a field under 16 px is focused. A field
+     that inherits a small size from its parent is brought up to 16 px;
+     `1em` is the parent's size here, so an inherited 20 px stays 20 px. */
+  @media (pointer: coarse) {
+    input:not(
+      [type='checkbox'],
+      [type='radio'],
+      [type='range'],
+      [type='button'],
+      [type='submit'],
+      [type='reset'],
+      [type='color'],
+      [type='file'],
+      [type='image']
+    ),
+    select,
+    textarea {
+      font-size: max(16px, 1em);
+    }
+  }
+}
+
+@layer utilities {
+  /* The same, for a field that asks for a small size by class. Element plus
+     class outranks the bare `.text-sm` utility, and every larger size
+     (`text-lg`, `text-2xl`, …) is left alone. */
+  @media (pointer: coarse) {
+    :is(input, select, textarea):is(.text-xs, .text-sm) {
+      font-size: 16px;
+    }
+  }
+}
+
+/* ===================================================================
  * Game Microinteraction Utilities
  * =================================================================== */
 
+/* Hover effects apply only where there is a real hover. On a touch screen
+   `:hover` sticks to whatever was tapped last, leaving a card lifted, or a
+   button highlighted, until the student taps somewhere else. The `:active`
+   press feedback below still runs on touch. */
+@media (hover: hover) and (pointer: fine) {
+  .hover-orange:hover {
+    background-color: var(--color-kvenno-orange, #f36b22);
+  }
+  .game-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-depth-md);
+  }
+  .game-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-depth-lg);
+  }
+}
+
 /* --- Button press feedback (squish → spring back) --- */
 .game-btn {
-  transition: transform 0.15s var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)),
-              box-shadow 0.15s ease-out;
-}
-.game-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-depth-md);
+  transition:
+    transform 0.15s var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1)),
+    box-shadow 0.15s ease-out;
 }
 .game-btn:active {
   transform: scale(0.95) translateY(0);
@@ -68,12 +160,9 @@ h1, h2, h3 {
 
 /* --- Card hover lift with shadow growth --- */
 .game-card {
-  transition: transform 0.2s var(--ease-spring-gentle, cubic-bezier(0.22, 1.2, 0.36, 1)),
-              box-shadow 0.2s ease-out;
-}
-.game-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-depth-lg);
+  transition:
+    transform 0.2s var(--ease-spring-gentle, cubic-bezier(0.22, 1.2, 0.36, 1)),
+    box-shadow 0.2s ease-out;
 }
 .game-card:active {
   transform: translateY(-1px) scale(0.99);
@@ -83,10 +172,10 @@ h1, h2, h3 {
 
 /* --- Interactive card with perspective tilt (set via CSS vars from JS) --- */
 .game-card-tilt {
-  transition: transform 0.2s var(--ease-spring-gentle), box-shadow 0.2s ease-out;
-  transform: perspective(600px)
-    rotateX(var(--tilt-x, 0deg))
-    rotateY(var(--tilt-y, 0deg))
+  transition:
+    transform 0.2s var(--ease-spring-gentle),
+    box-shadow 0.2s ease-out;
+  transform: perspective(600px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
     translateY(var(--tilt-lift, 0));
 }
 
@@ -157,7 +246,7 @@ h1, h2, h3 {
   background: var(--glass-bg-dark);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: var(--shadow-depth-sm);
 }
 
@@ -177,11 +266,27 @@ h1, h2, h3 {
 .game-stagger > * {
   animation: slide-up 0.3s var(--ease-spring-gentle) backwards;
 }
-.game-stagger > *:nth-child(1) { animation-delay: 0.05s; }
-.game-stagger > *:nth-child(2) { animation-delay: 0.10s; }
-.game-stagger > *:nth-child(3) { animation-delay: 0.15s; }
-.game-stagger > *:nth-child(4) { animation-delay: 0.20s; }
-.game-stagger > *:nth-child(5) { animation-delay: 0.25s; }
-.game-stagger > *:nth-child(6) { animation-delay: 0.30s; }
-.game-stagger > *:nth-child(7) { animation-delay: 0.35s; }
-.game-stagger > *:nth-child(8) { animation-delay: 0.40s; }
+.game-stagger > *:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.game-stagger > *:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.game-stagger > *:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.game-stagger > *:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.game-stagger > *:nth-child(5) {
+  animation-delay: 0.25s;
+}
+.game-stagger > *:nth-child(6) {
+  animation-delay: 0.3s;
+}
+.game-stagger > *:nth-child(7) {
+  animation-delay: 0.35s;
+}
+.game-stagger > *:nth-child(8) {
+  animation-delay: 0.4s;
+}

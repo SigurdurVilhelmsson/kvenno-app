@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 
 import { Presence } from '@shared/components';
+import { formatDecimal, parseStudentNumber } from '@shared/utils';
 
 import { LEVEL3_CHALLENGES } from '../data/level3-challenges';
+import { revealTop } from '../utils/reveal';
 
 interface Level3Props {
   onComplete: (score: number) => void;
@@ -15,6 +17,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const [, setHintsUsed] = useState(0);
   const [completed, setCompleted] = useState(0);
   const levelCompleteReported = useRef(false);
+  const levelRef = useRef<HTMLDivElement>(null);
+  const [revealKey, setRevealKey] = useState(0);
 
   // Answer state
   const [userAnswer, setUserAnswer] = useState('');
@@ -34,6 +38,10 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     setIsCorrect(false);
   }, [currentIndex]);
 
+  useEffect(() => {
+    if (revealKey > 0) revealTop(levelRef.current);
+  }, [revealKey]);
+
   // Check completion
   useEffect(() => {
     if (completed >= LEVEL3_CHALLENGES.length && !levelCompleteReported.current) {
@@ -45,7 +53,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const handleSubmit = () => {
     if (!userAnswer.trim()) return;
 
-    const numericAnswer = parseFloat(userAnswer.replace(',', '.'));
+    const numericAnswer = parseStudentNumber(userAnswer);
     if (isNaN(numericAnswer)) return;
 
     const relativeError =
@@ -73,6 +81,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
     if (currentIndex < LEVEL3_CHALLENGES.length - 1) {
       setCurrentIndex((prev) => prev + 1);
+      setRevealKey((prev) => prev + 1);
     }
   };
 
@@ -88,7 +97,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const challengeTypeLabels: Record<string, string> = {
     'find-concentration': 'Styrkur',
     'find-volume': 'Rúmmál',
-    polyprotic: 'Fjölprótón',
+    polyprotic: 'Fjölvirk sýra',
     'henderson-hasselbalch': 'H-H jafna',
     combined: 'Samansett',
   };
@@ -116,17 +125,17 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-xl p-4 mb-4">
+        <div ref={levelRef} className="bg-white rounded-2xl shadow-xl p-4 mb-4 scroll-mt-4">
           <div className="flex justify-between items-center">
             <button
               onClick={onBack}
-              className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+              className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:py-3 pointer-coarse:-my-3"
             >
               ← Til baka
             </button>
             <div className="flex items-center gap-4">
               <div className="text-sm text-warm-500">
-                {completed + 1} / {LEVEL3_CHALLENGES.length}
+                {currentIndex + 1} / {LEVEL3_CHALLENGES.length}
               </div>
               <div className="text-lg font-bold text-purple-600">Stig: {score}</div>
             </div>
@@ -146,8 +155,10 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         </div>
 
         {/* Challenge card */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 mb-4">
-          <div className="flex items-start gap-3 mb-4">
+        <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 mb-4">
+          {/* Wraps on a phone: titles like "Finndu jafngildisrúmmál" hold a
+              word too long to sit beside the badge at 320 px. */}
+          <div className="flex flex-wrap items-start gap-x-3 gap-y-2 mb-4">
             <span
               className={`${getChallengeTypeColor(challenge.type)} text-white text-xs font-bold px-3 py-1 rounded-full`}
             >
@@ -163,51 +174,52 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           {/* Given data */}
           <div className="bg-warm-50 rounded-xl p-4 mb-4">
             <h3 className="font-bold text-warm-700 mb-2">Gefið:</h3>
-            <div className="grid grid-cols-2 gap-2 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
               {challenge.givenData.analyteVolume && (
                 <div>
                   <span className="font-semibold">Rúmmál sýnis:</span>{' '}
-                  {challenge.givenData.analyteVolume} mL
+                  {formatDecimal(challenge.givenData.analyteVolume)} mL
                 </div>
               )}
               {challenge.givenData.analyteMolarity && (
                 <div>
                   <span className="font-semibold">Styrkur sýnis:</span>{' '}
-                  {challenge.givenData.analyteMolarity} M
+                  {formatDecimal(challenge.givenData.analyteMolarity)} M
                 </div>
               )}
               {challenge.givenData.titrantMolarity && (
                 <div>
                   <span className="font-semibold">Styrkur títrants:</span>{' '}
-                  {challenge.givenData.titrantMolarity} M
+                  {formatDecimal(challenge.givenData.titrantMolarity)} M
                 </div>
               )}
               {challenge.givenData.equivalenceVolume && (
                 <div>
                   <span className="font-semibold">Jafngildisrúmmál:</span>{' '}
-                  {challenge.givenData.equivalenceVolume} mL
+                  {formatDecimal(challenge.givenData.equivalenceVolume)} mL
                 </div>
               )}
               {challenge.givenData.pKa && (
                 <div>
-                  <span className="font-semibold">pKₐ:</span> {challenge.givenData.pKa}
+                  <span className="font-semibold">pKₐ:</span>{' '}
+                  {formatDecimal(challenge.givenData.pKa)}
                 </div>
               )}
               {challenge.givenData.pH && (
                 <div>
-                  <span className="font-semibold">pH:</span> {challenge.givenData.pH}
+                  <span className="font-semibold">pH:</span> {formatDecimal(challenge.givenData.pH)}
                 </div>
               )}
               {challenge.givenData.acidConcentration && (
                 <div>
                   <span className="font-semibold">[Sýra]:</span>{' '}
-                  {challenge.givenData.acidConcentration} M
+                  {formatDecimal(challenge.givenData.acidConcentration)} M
                 </div>
               )}
               {challenge.givenData.baseConcentration && (
                 <div>
                   <span className="font-semibold">[Basi]:</span>{' '}
-                  {challenge.givenData.baseConcentration} M
+                  {formatDecimal(challenge.givenData.baseConcentration)} M
                 </div>
               )}
             </div>
@@ -231,6 +243,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               <input
                 id="ph-titration-l3-answer"
                 type="text"
+                inputMode="decimal"
+                autoComplete="off"
                 value={userAnswer}
                 onChange={(e) => setUserAnswer(e.target.value)}
                 onKeyDown={handleKeyDown}
@@ -251,7 +265,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               )}
             </div>
             <p className="text-xs text-warm-500 mt-1">
-              Skekkjumörk: ±{(challenge.tolerance * 100).toFixed(0)}%
+              Skekkjumörk: ±{formatDecimal(challenge.tolerance * 100, 0)}%
             </p>
           </div>
 
@@ -266,7 +280,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               ) : (
                 <button
                   onClick={handleShowHint}
-                  className="text-yellow-600 hover:text-yellow-800 text-sm flex items-center gap-2"
+                  className="text-yellow-600 hover:text-yellow-800 text-sm flex items-center gap-2 pointer-coarse:min-h-11"
                 >
                   💡 Sýna vísbendingu
                 </button>
@@ -302,8 +316,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               <div className="text-sm mb-2">
                 <span className="font-semibold">Þitt svar:</span> {userAnswer} {challenge.unit}
                 <br />
-                <span className="font-semibold">Rétt svar:</span> {challenge.correctAnswer}{' '}
-                {challenge.unit}
+                <span className="font-semibold">Rétt svar:</span>{' '}
+                {formatDecimal(challenge.correctAnswer)} {challenge.unit}
               </div>
 
               <p className={`text-sm ${isCorrect ? 'text-green-900' : 'text-red-900'}`}>
@@ -314,7 +328,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               {!showSolution && (
                 <button
                   onClick={() => setShowSolution(true)}
-                  className="mt-3 text-purple-600 hover:text-purple-800 text-sm font-semibold"
+                  className="mt-3 text-purple-600 hover:text-purple-800 text-sm font-semibold pointer-coarse:min-h-11"
                 >
                   📝 Sýna útreikningsgang
                 </button>
@@ -359,27 +373,27 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 <tbody className="text-blue-900">
                   <tr>
                     <td>HF</td>
-                    <td>3.17</td>
+                    <td>3,17</td>
                   </tr>
                   <tr>
                     <td>HCOOH</td>
-                    <td>3.74</td>
+                    <td>3,74</td>
                   </tr>
                   <tr>
                     <td>CH₃COOH</td>
-                    <td>4.74</td>
+                    <td>4,74</td>
                   </tr>
                   <tr>
                     <td>H₂CO₃</td>
-                    <td>6.37, 10.25</td>
+                    <td>6,37; 10,25</td>
                   </tr>
                   <tr>
                     <td>H₃PO₄</td>
-                    <td>2.12, 7.21, 12.38</td>
+                    <td>2,12; 7,21; 12,38</td>
                   </tr>
                   <tr>
                     <td>NH₄⁺</td>
-                    <td>9.26</td>
+                    <td>9,26</td>
                   </tr>
                 </tbody>
               </table>

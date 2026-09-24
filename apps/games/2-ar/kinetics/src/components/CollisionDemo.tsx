@@ -122,12 +122,13 @@ export function CollisionDemo({
   }, [activationEnergy]);
 
   return (
-    <div ref={containerRef} className={`bg-warm-900 rounded-xl p-4 ${className}`}>
-      <div className="mb-3 flex justify-between items-center">
+    <div ref={containerRef} className={`bg-warm-900 rounded-xl p-3 sm:p-4 ${className}`}>
+      {/* The counters wrap under the title on a phone instead of splitting mid-label */}
+      <div className="mb-3 flex flex-wrap justify-between items-center gap-x-4 gap-y-1">
         <h3 className="text-white font-semibold text-sm">Árekstrarhermun</h3>
         <div className="flex gap-4 text-xs">
-          <span className="text-yellow-400">Árekstrar/sek: {collisionRate}</span>
-          <span className="text-green-400">Hvörf: {reactionCount}</span>
+          <span className="text-yellow-400 whitespace-nowrap">Árekstrar/sek: {collisionRate}</span>
+          <span className="text-green-400 whitespace-nowrap">Hvörf: {reactionCount}</span>
         </div>
       </div>
 
@@ -139,7 +140,7 @@ export function CollisionDemo({
         >
           {showLabels && (
             <div className="absolute bottom-1 right-2 text-xs text-red-400/70">
-              Ea = {activationEnergy} kJ/mol
+              Ea = {activationEnergy} kJ/mól
             </div>
           )}
         </div>
@@ -168,7 +169,7 @@ export function CollisionDemo({
           running={true}
           showLabels={showLabels}
           onCollisionCount={handleCollisionCount}
-          ariaLabel="Collision theory simulation showing particles reacting when they have sufficient energy"
+          ariaLabel="Árekstrarhermun: agnir A og B hvarfast í myndefni AB þegar árekstur hefur næga orku (E ≥ Ea)"
         />
       </div>
 

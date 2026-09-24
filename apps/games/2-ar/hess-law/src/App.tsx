@@ -39,7 +39,7 @@ function App() {
     DEFAULT_PROGRESS
   );
 
-  const handleLevel1Complete = (score: number, _maxScore: number = 600, _hintsUsed: number = 0) => {
+  const handleLevel1Complete = (score: number) => {
     updateProgress({
       level1Completed: true,
       level1Score: Math.max(progress.level1Score, score),
@@ -48,7 +48,7 @@ function App() {
     setActiveLevel('menu');
   };
 
-  const handleLevel2Complete = (score: number, _maxScore: number = 500, _hintsUsed: number = 0) => {
+  const handleLevel2Complete = (score: number) => {
     updateProgress({
       level2Completed: true,
       level2Score: Math.max(progress.level2Score, score),
@@ -57,7 +57,7 @@ function App() {
     setActiveLevel('menu');
   };
 
-  const handleLevel3Complete = (score: number, _maxScore: number = 500, _hintsUsed: number = 0) => {
+  const handleLevel3Complete = (score: number) => {
     updateProgress({
       level3Completed: true,
       level3Score: Math.max(progress.level3Score, score),
@@ -85,7 +85,7 @@ function App() {
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <h1 className="text-3xl md:text-4xl font-bold text-center mb-6 text-teal-600">
             Til hamingju!
           </h1>
@@ -98,7 +98,7 @@ function App() {
           </div>
 
           <div className="space-y-4 mb-8">
-            <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center">
+            <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-blue-800">Stig 1: Skilningur</div>
                 <div className="text-sm text-blue-600">Orkubrautir og ΔH</div>
@@ -106,7 +106,7 @@ function App() {
               <div className="text-2xl font-bold text-blue-600">{progress.level1Score}</div>
             </div>
 
-            <div className="bg-green-50 p-4 rounded-xl flex justify-between items-center">
+            <div className="bg-green-50 p-4 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-green-800">Stig 2: Þrautir</div>
                 <div className="text-sm text-green-600">Sameina jöfnur</div>
@@ -114,15 +114,15 @@ function App() {
               <div className="text-2xl font-bold text-green-600">{progress.level2Score}</div>
             </div>
 
-            <div className="bg-purple-50 p-4 rounded-xl flex justify-between items-center">
+            <div className="bg-purple-50 p-4 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-purple-800">Stig 3: Útreikningar</div>
-                <div className="text-sm text-purple-600">Myndunarvarminn</div>
+                <div className="text-sm text-purple-600">Myndunarvermi</div>
               </div>
               <div className="text-2xl font-bold text-purple-600">{progress.level3Score}</div>
             </div>
 
-            <div className="bg-orange-100 p-4 rounded-xl flex justify-between items-center border-2 border-orange-400">
+            <div className="bg-orange-100 p-4 rounded-xl flex justify-between items-center gap-3 border-2 border-orange-400">
               <div className="font-bold text-orange-800 text-lg">Heildarstig</div>
               <div className="text-3xl font-bold text-orange-600">{totalScore}</div>
             </div>
@@ -132,7 +132,7 @@ function App() {
             <h2 className="font-bold text-teal-800 mb-3">Hvað lærðir þú?</h2>
             <ul className="space-y-2 text-teal-900 text-sm">
               <li>
-                ✓ <strong>Lögmál Hess:</strong> ΔH fer sama leiðina óháð hvörfunarferlinu
+                ✓ <strong>Lögmál Hess:</strong> ΔH er það sama óháð leiðinni
               </li>
               <li>
                 ✓ <strong>Snúa við:</strong> Ef þú snýrð við hvörfum, snýrðu einnig formerki ΔH
@@ -141,8 +141,8 @@ function App() {
                 ✓ <strong>Margfalda:</strong> Ef þú margfaldar jöfnu, margfaldar þú einnig ΔH
               </li>
               <li>
-                ✓ <strong>Myndunarvarminn:</strong> ΔH°<sub>rxn</sub> = Σ ΔH°<sub>f</sub>(myndefni)
-                - Σ ΔH°<sub>f</sub>(hvarfefni)
+                ✓ <strong>Myndunarvermi:</strong> ΔH°<sub>rxn</sub> = Σ&nbsp;ΔH°<sub>f</sub>
+                (myndefni) - Σ&nbsp;ΔH°<sub>f</sub>(hvarfefni)
               </li>
             </ul>
           </div>
@@ -178,13 +178,13 @@ function App() {
         }
       />
       <div className="min-h-screen flex items-center justify-center p-4 md:p-8">
-        <div className="max-w-3xl w-full mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="max-w-3xl w-full mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <p className="text-warm-600 mb-4">
             Lærðu um orkubreytingar í efnahvörfum og hvernig á að reikna ΔH
           </p>
 
           {/* Pedagogical explanation */}
-          <div className="bg-teal-50 p-6 rounded-xl mb-8">
+          <div className="bg-teal-50 p-4 sm:p-6 rounded-xl mb-8">
             <h2 className="font-bold text-teal-800 mb-3">Hvað er lögmál Hess?</h2>
             <p className="text-teal-900 text-sm mb-4">
               <strong>Vermi (ΔH)</strong> er ástandsfall — það skiptir ekki máli hvaða leið
@@ -204,12 +204,12 @@ function App() {
             {/* Level 1 */}
             <button
               onClick={() => setActiveLevel('level1')}
-              className="game-card w-full p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
+              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
             >
-              <div className="flex items-center gap-4">
-                <div className="text-4xl">🔬</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="text-3xl sm:text-4xl">🔬</div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="text-xl font-bold text-blue-800">Stig 1: Skilningur</span>
                     {progress.level1Completed && (
                       <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
@@ -229,12 +229,12 @@ function App() {
             {/* Level 2 */}
             <button
               onClick={() => setActiveLevel('level2')}
-              className="game-card w-full p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
+              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
             >
-              <div className="flex items-center gap-4">
-                <div className="text-4xl">🧩</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="text-3xl sm:text-4xl">🧩</div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="text-xl font-bold text-green-800">Stig 2: Þrautir</span>
                     {progress.level2Completed && (
                       <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
@@ -255,12 +255,12 @@ function App() {
             {/* Level 3 */}
             <button
               onClick={() => setActiveLevel('level3')}
-              className="game-card w-full p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
+              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
             >
-              <div className="flex items-center gap-4">
-                <div className="text-4xl">📐</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="text-3xl sm:text-4xl">📐</div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="text-xl font-bold text-purple-800">Stig 3: Útreikningar</span>
                     {progress.level3Completed && (
                       <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
@@ -268,9 +268,7 @@ function App() {
                       </span>
                     )}
                   </div>
-                  <div className="text-sm text-purple-600 mt-1">
-                    Myndunarvarminn og flókin hvörf
-                  </div>
+                  <div className="text-sm text-purple-600 mt-1">Myndunarvermi og flókin hvörf</div>
                   <div className="text-xs text-warm-600 mt-2">
                     Notaðu ΔH°<sub>f</sub> töflur til að reikna ΔH°<sub>rxn</sub>. Leystu öfug
                     verkefni.
@@ -287,22 +285,29 @@ function App() {
                 <h3 className="font-semibold text-warm-700">Framvinda</h3>
                 <button
                   onClick={resetProgress}
-                  className="text-sm text-warm-500 hover:text-red-500 transition-colors"
+                  className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3"
                 >
                   Endurstilla
                 </button>
               </div>
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="bg-blue-50 rounded-lg p-3">
-                  <div className="text-2xl font-bold text-blue-600">{levelsCompleted}/3</div>
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
+                <div className="bg-blue-50 rounded-lg px-1 py-2 sm:p-3">
+                  <div className="text-xl sm:text-2xl font-bold text-blue-600">
+                    {levelsCompleted}/3
+                  </div>
                   <div className="text-xs text-warm-600">Stig lokið</div>
                 </div>
-                <div className="bg-green-50 rounded-lg p-3">
-                  <div className="text-2xl font-bold text-green-600">{totalScore}</div>
-                  <div className="text-xs text-warm-600">Heildar stig</div>
+                <div className="bg-green-50 rounded-lg px-1 py-2 sm:p-3">
+                  <div className="text-xl sm:text-2xl font-bold text-green-600">{totalScore}</div>
+                  {/* One word, but the tile is ~70 px wide at 320 px: let it break at the seam. */}
+                  <div className="text-xs text-warm-600">
+                    Heildar
+                    <wbr />
+                    stig
+                  </div>
                 </div>
-                <div className="bg-purple-50 rounded-lg p-3">
-                  <div className="text-2xl font-bold text-purple-600">
+                <div className="bg-purple-50 rounded-lg px-1 py-2 sm:p-3">
+                  <div className="text-xl sm:text-2xl font-bold text-purple-600">
                     {progress.totalGamesPlayed}
                   </div>
                   <div className="text-xs text-warm-600">Leikir spilaðir</div>
@@ -316,7 +321,7 @@ function App() {
             <h3 className="font-semibold text-warm-700 mb-2">📐 Lykilformúlur</h3>
             <div className="font-mono text-sm space-y-2 text-warm-600">
               <p>
-                <strong>Lögmál Hess:</strong> ΔH<sub>heild</sub> = Σ ΔH<sub>skref</sub>
+                <strong>Lögmál Hess:</strong> ΔH<sub>heild</sub> = Σ&nbsp;ΔH<sub>skref</sub>
               </p>
               <p>
                 <strong>Snúa við hvörfum:</strong> ΔH → -ΔH
@@ -325,8 +330,8 @@ function App() {
                 <strong>Margfalda jöfnu:</strong> n × jafna → n × ΔH
               </p>
               <p>
-                <strong>Myndunarvarminn:</strong> ΔH°<sub>rxn</sub> = Σ ΔH°<sub>f</sub>(myndefni) -
-                Σ ΔH°<sub>f</sub>(hvarfefni)
+                <strong>Myndunarvermi:</strong> ΔH°<sub>rxn</sub> = Σ&nbsp;ΔH°<sub>f</sub>
+                (myndefni) - Σ&nbsp;ΔH°<sub>f</sub>(hvarfefni)
               </p>
             </div>
           </div>
@@ -336,7 +341,7 @@ function App() {
             <h3 className="font-semibold text-amber-800 mb-2">Af hverju lögmál Hess?</h3>
             <p className="text-sm text-amber-700">
               Sum hvörf er ómögulegt að mæla beint í tilraunastofu. Lögmál Hess leyfir okkur að
-              reikna ΔH með því að sameina jöfnur sem VER GETUM mælt — undirstaða varmafræðinnar.
+              reikna ΔH með því að sameina jöfnur sem VIÐ GETUM mælt — undirstaða varmafræðinnar.
             </p>
           </div>
           <div className="mt-3 text-center text-xs text-warm-500">

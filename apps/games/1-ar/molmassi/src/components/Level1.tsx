@@ -6,6 +6,7 @@ import { formatDecimal, shuffleArray, parseStudentNumber } from '@shared/utils';
 
 import { CalculationBreakdown } from './CalculationBreakdown';
 import { PeriodicTable } from './PeriodicTable';
+import { atomWord } from '../data/atomWords';
 import { COMPOUNDS, type Compound } from '../data/compounds';
 import { ELEMENTS } from '../data/elements';
 
@@ -14,10 +15,10 @@ import { ELEMENTS } from '../data/elements';
  * trying off-by-one perturbations on each element and reporting the closest
  * match. Returns null if no perturbation is clearly closer than the guess.
  */
-function diagnoseMistake(userValue: number, compound: Compound): string | null {
+export function diagnoseMistake(userValue: number, compound: Compound): string | null {
   const correct = compound.molarMass;
   const guessError = Math.abs(userValue - correct);
-  let best: { elementName: string; direction: 'extra' | 'missing'; residual: number } | null = null;
+  let best: { atom: string; direction: 'extra' | 'missing'; residual: number } | null = null;
 
   for (const el of compound.elements) {
     const element = ELEMENTS.find((e) => e.symbol === el.symbol);
@@ -26,7 +27,7 @@ function diagnoseMistake(userValue: number, compound: Compound): string | null {
     const extra = correct + element.atomicMass;
     // Student may have missed one of this element
     const missing = correct - element.atomicMass;
-    const elementName = element.name.toLowerCase();
+    const atom = atomWord(el.symbol);
     const candidates = [
       { value: extra, direction: 'extra' as const },
       { value: missing, direction: 'missing' as const },
@@ -34,16 +35,16 @@ function diagnoseMistake(userValue: number, compound: Compound): string | null {
     for (const c of candidates) {
       const residual = Math.abs(userValue - c.value);
       if (residual < guessError * 0.4 && (best === null || residual < best.residual)) {
-        best = { elementName, direction: c.direction, residual };
+        best = { atom, direction: c.direction, residual };
       }
     }
   }
 
   if (!best) return null;
   if (best.direction === 'extra') {
-    return `Þú virðist hafa talið einu ${best.elementName}-atómi of mikið.`;
+    return `Þú virðist hafa talið einu ${best.atom}i of mikið.`;
   }
-  return `Þú virðist hafa gleymt einu ${best.elementName}-atómi.`;
+  return `Þú virðist hafa gleymt einu ${best.atom}i.`;
 }
 
 function pickRandom<T>(arr: T[], n: number): T[] {
@@ -82,6 +83,21 @@ function getTolerance(difficulty: Compound['difficulty']): number {
 
 const TOTAL = 10;
 
+/** Shown when an answer cannot be read as a number; the example is the placeholder's. */
+export const UNREADABLE_ANSWER = 'Ógilt gildi. Skrifaðu tölu, t.d. 18,02';
+
+/**
+ * Font size for the formula headline. At text-5xl the hydrates are wider than a
+ * phone (Na₂CO₃·10H₂O is ~380px) and split mid-formula, so longer formulas start
+ * smaller and grow back to text-5xl by sm. Exported for its test.
+ */
+export function formulaSizeClass(formula: string): string {
+  const length = [...formula].length;
+  if (length >= 10) return 'text-3xl min-[360px]:text-4xl sm:text-5xl';
+  if (length >= 7) return 'text-4xl min-[360px]:text-5xl';
+  return 'text-5xl';
+}
+
 export function Level1({ onBack, onComplete }: Level1Props) {
   // Teaching phase state
   const [phase, setPhase] = useState<'teach' | 'practice'>('teach');
@@ -100,12 +116,19 @@ export function Level1({ onBack, onComplete }: Level1Props) {
   const [showHint, setShowHint] = useState(false);
   const [showPeriodicTable, setShowPeriodicTable] = useState(false);
   const [done, setDone] = useState(false);
+  const [error, setError] = useState('');
 
   const compound = problems[index];
 
   const handleSubmit = () => {
     const value = parseStudentNumber(input);
-    if (isNaN(value)) return;
+    if (isNaN(value)) {
+      // Say so, as Stig 2 and 3 do. Returning silently left a student who
+      // typed `≈ 18` tapping Athuga with nothing happening at all.
+      setError(UNREADABLE_ANSWER);
+      return;
+    }
+    setError('');
     const tolerance = getTolerance(compound.difficulty);
     const correct = Math.abs(value - compound.molarMass) <= tolerance;
     setIsCorrect(correct);
@@ -121,6 +144,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
     }
     setIndex((prev) => prev + 1);
     setInput('');
+    setError('');
     setAnswered(false);
     setIsCorrect(false);
     setDiagnostic(null);
@@ -131,6 +155,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
     setProblems(selectProblems());
     setIndex(0);
     setInput('');
+    setError('');
     setCorrectCount(0);
     setHintsUsed(0);
     setAnswered(false);
@@ -145,14 +170,16 @@ export function Level1({ onBack, onComplete }: Level1Props) {
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
         <div className="max-w-lg mx-auto">
           <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-wrap sm:flex-nowrap justify-between items-center">
               <button
                 onClick={onBack}
-                className="text-warm-500 hover:text-warm-700 font-semibold text-sm"
+                className="text-warm-500 hover:text-warm-700 font-semibold text-sm whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
               >
                 ← Til baka
               </button>
-              <h1 className="text-lg font-bold text-warm-800">Mólmassi — Hvernig reikna?</h1>
+              <h1 className="order-last basis-full mt-1 sm:order-none sm:basis-auto sm:mt-0 text-lg font-bold text-warm-800">
+                Mólmassi — Hvernig reikna?
+              </h1>
               <span className="text-sm text-warm-500">Kennsla</span>
             </div>
           </div>
@@ -162,8 +189,8 @@ export function Level1({ onBack, onComplete }: Level1Props) {
             <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 animate-fade-in-up">
               <h2 className="text-xl font-bold text-warm-800">Hvað er mólmassi?</h2>
               <p className="text-warm-700">
-                <strong>Mólmassi (M)</strong> er massi eins móls af efni, mældur í g/mol. Hann segir
-                okkur hversu þungt 6,022 × 10²³ eindir (atóm eða sameindir) eru.
+                <strong>Mólmassi (M)</strong> er massi eins móls af efni, mældur í g/mól. Hann segir
+                okkur hversu þungar 6,022 × 10²³ eindir (atóm eða sameindir) eru.
               </p>
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <p className="text-blue-800 font-mono text-center text-lg">
@@ -201,23 +228,33 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                 </div>
                 <div>
                   <p className="font-semibold text-warm-800">Skref 2: Flettu upp atómmassa</p>
-                  <p className="text-warm-600 ml-4">H ≈ 1,008 g/mol &bull; O ≈ 16,00 g/mol</p>
+                  <p className="text-warm-600 ml-4">
+                    <span className="whitespace-nowrap">H ≈ 1,008 g/mól</span> &bull;{' '}
+                    <span className="whitespace-nowrap">O ≈ 16,00 g/mól</span>
+                  </p>
                 </div>
                 <div>
                   <p className="font-semibold text-warm-800">
                     Skref 3: Margfaldaðu og leggðu saman
                   </p>
                   <div className="ml-4 font-mono text-warm-700 space-y-1">
-                    <p>H: 2 × 1,008 = 2,016 g/mol</p>
-                    <p>O: 1 × 16,00 = 16,00 g/mol</p>
+                    <p>
+                      H: 2 × 1,008 <span className="whitespace-nowrap">= 2,016 g/mól</span>
+                    </p>
+                    <p>
+                      O: 1 × 16,00 <span className="whitespace-nowrap">= 16,00 g/mól</span>
+                    </p>
                   </div>
                 </div>
               </div>
 
               <div className="bg-green-50 border-2 border-green-300 p-4 rounded-lg text-center">
-                <p className="text-sm text-green-700 font-semibold">Heild mólmassi:</p>
+                <p className="text-sm text-green-700 font-semibold">Heildarmólmassi:</p>
+                {/* The sum of the two terms shown, to the fewest decimals among
+                    them, as the CO₂ example below does. It said 18,015 — the
+                    total with O at 15,999, not the 16,00 this screen uses. */}
                 <p className="text-2xl font-bold text-green-800">
-                  2,016 + 16,00 = <span className="text-3xl">18,015 g/mol</span>
+                  2,016 + 16,00 = <span className="text-3xl">18,02 g/mól</span>
                 </p>
               </div>
 
@@ -247,21 +284,28 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                 </div>
                 <div>
                   <p className="font-semibold text-warm-800">Skref 2: Atómmassi</p>
-                  <p className="text-warm-600 ml-4">C ≈ 12,01 g/mol &bull; O ≈ 16,00 g/mol</p>
+                  <p className="text-warm-600 ml-4">
+                    <span className="whitespace-nowrap">C ≈ 12,01 g/mól</span> &bull;{' '}
+                    <span className="whitespace-nowrap">O ≈ 16,00 g/mól</span>
+                  </p>
                 </div>
                 <div>
                   <p className="font-semibold text-warm-800">Skref 3: Reiknaðu</p>
                   <div className="ml-4 font-mono text-warm-700 space-y-1">
-                    <p>C: 1 × 12,01 = 12,01 g/mol</p>
-                    <p>O: 2 × 16,00 = 32,00 g/mol</p>
+                    <p>
+                      C: 1 × 12,01 <span className="whitespace-nowrap">= 12,01 g/mól</span>
+                    </p>
+                    <p>
+                      O: 2 × 16,00 <span className="whitespace-nowrap">= 32,00 g/mól</span>
+                    </p>
                   </div>
                 </div>
               </div>
 
               <div className="bg-green-50 border-2 border-green-300 p-4 rounded-lg text-center">
-                <p className="text-sm text-green-700 font-semibold">Heild mólmassi:</p>
+                <p className="text-sm text-green-700 font-semibold">Heildarmólmassi:</p>
                 <p className="text-2xl font-bold text-green-800">
-                  12,01 + 32,00 = <span className="text-3xl">44,01 g/mol</span>
+                  12,01 + 32,00 = <span className="text-3xl">44,01 g/mól</span>
                 </p>
               </div>
 
@@ -272,7 +316,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
 
               <button
                 onClick={() => setPhase('practice')}
-                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold px-4 py-3 rounded-xl transition-colors"
               >
                 Ég er tilbúin/n — byrja æfingar →
               </button>
@@ -299,7 +343,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
               style={{ width: `${(correctCount / TOTAL) * 100}%` }}
             />
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-col min-[360px]:flex-row gap-3">
             <button
               onClick={handleRetry}
               className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-800 font-bold py-3 rounded-xl transition-colors"
@@ -313,7 +357,10 @@ export function Level1({ onBack, onComplete }: Level1Props) {
               Ljúka stigi
             </button>
           </div>
-          <button onClick={onBack} className="text-warm-500 hover:text-warm-700 text-sm">
+          <button
+            onClick={onBack}
+            className="text-warm-500 hover:text-warm-700 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
+          >
             Til baka í valmynd
           </button>
         </div>
@@ -327,14 +374,16 @@ export function Level1({ onBack, onComplete }: Level1Props) {
       <div className="max-w-lg mx-auto">
         {/* Header */}
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-wrap sm:flex-nowrap justify-between items-center">
             <button
               onClick={onBack}
-              className="text-warm-500 hover:text-warm-700 font-semibold text-sm"
+              className="text-warm-500 hover:text-warm-700 font-semibold text-sm whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
             >
               ← Til baka
             </button>
-            <h1 className="text-lg font-bold text-warm-800">Mólmassi – Stig 1</h1>
+            <h1 className="order-last basis-full mt-1 sm:order-none sm:basis-auto sm:mt-0 text-lg font-bold text-warm-800">
+              Mólmassi – Stig 1
+            </h1>
             <span className="text-sm font-semibold text-warm-600">
               {index + 1}/{TOTAL}
             </span>
@@ -353,9 +402,11 @@ export function Level1({ onBack, onComplete }: Level1Props) {
         </div>
 
         {/* Compound card */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-4 text-center" key={index}>
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4 text-center" key={index}>
           <p className="text-sm text-warm-500 mb-1">Reiknaðu mólmassa:</p>
-          <div className="text-5xl font-bold text-warm-800 mb-2">{compound.formula}</div>
+          <div className={`${formulaSizeClass(compound.formula)} font-bold text-warm-800 mb-2`}>
+            {compound.formula}
+          </div>
           <p className="text-warm-600">{compound.name}</p>
           <span
             className={`inline-block mt-2 px-2 py-0.5 rounded-full text-xs font-medium ${
@@ -371,23 +422,28 @@ export function Level1({ onBack, onComplete }: Level1Props) {
               : compound.difficulty === 'medium'
                 ? 'Miðlungs'
                 : 'Erfitt'}{' '}
-            (±{formatDecimal(getTolerance(compound.difficulty))} g/mol)
+            (±{formatDecimal(getTolerance(compound.difficulty))} g/mól)
           </span>
         </div>
 
         {/* Input area */}
         {!answered && (
           <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-            <label className="block text-sm font-medium text-warm-700 mb-2">Svar (g/mol):</label>
+            <label className="block text-sm font-medium text-warm-700 mb-2">Svar (g/mól):</label>
             <div className="flex gap-3">
               <input
                 type="text"
                 inputMode="decimal"
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e) => {
+                  setInput(e.target.value);
+                  setError('');
+                }}
                 onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
                 placeholder="t.d. 18,02"
-                className="flex-1 px-4 py-3 border-2 border-warm-300 rounded-xl focus:border-kvenno-orange focus:outline-none text-lg font-mono"
+                autoComplete="off"
+                aria-invalid={error ? true : undefined}
+                className={`flex-1 px-4 py-3 border-2 ${error ? 'border-red-400' : 'border-warm-300 focus:border-kvenno-orange'} rounded-xl focus:outline-none text-lg font-mono`}
                 autoFocus
               />
               <button
@@ -398,6 +454,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                 Athuga
               </button>
             </div>
+            {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
           </div>
         )}
 
@@ -406,7 +463,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
           <div className="flex gap-3 mb-4">
             <button
               onClick={() => setShowPeriodicTable(true)}
-              className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors"
+              className="flex-1 px-4 py-2.5 pointer-coarse:min-h-11 rounded-xl text-sm font-semibold bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors"
             >
               Lotukerfið
             </button>
@@ -416,7 +473,7 @@ export function Level1({ onBack, onComplete }: Level1Props) {
                   setShowHint(true);
                   setHintsUsed((prev) => prev + 1);
                 }}
-                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold bg-yellow-100 text-yellow-800 hover:bg-yellow-200 transition-colors"
+                className="flex-1 px-4 py-2.5 pointer-coarse:min-h-11 rounded-xl text-sm font-semibold bg-yellow-100 text-yellow-800 hover:bg-yellow-200 transition-colors"
               >
                 Vísbending
               </button>
@@ -427,8 +484,8 @@ export function Level1({ onBack, onComplete }: Level1Props) {
         {/* Hint */}
         {showHint && !answered && (
           <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4 mb-4 text-sm text-yellow-800">
-            <span className="font-bold">Vísbending:</span> Algeng atómmassi – H≈1, C≈12, N≈14, O≈16,
-            Na≈23, S≈32, Cl≈35,5, K≈39, Ca≈40
+            <span className="font-bold">Vísbending:</span> Algengir atómmassar – H≈1, C≈12, N≈14,
+            O≈16, Na≈23, S≈32, Cl≈35,5, K≈39, Ca≈40
           </div>
         )}
 
@@ -439,15 +496,15 @@ export function Level1({ onBack, onComplete }: Level1Props) {
               feedback={{
                 isCorrect,
                 explanation: isCorrect
-                  ? `Rétt! Mólmassi ${compound.name} er ${formatDecimal(compound.molarMass, 3)} g/mol.`
-                  : `Rangt. Rétt svar er ${formatDecimal(compound.molarMass, 3)} g/mol. Sjáðu útreikninginn hér að neðan.`,
+                  ? `Rétt! Mólmassi ${compound.nameGenitive} er ${formatDecimal(compound.molarMass, 3)} g/mól.`
+                  : `Rangt. Rétt svar er ${formatDecimal(compound.molarMass, 3)} g/mól. Sjáðu útreikninginn hér að neðan.`,
               }}
               config={{ showExplanation: true }}
             />
 
             {diagnostic && !isCorrect && (
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800">
-                <span className="font-bold">Líklegast var mistökin: </span>
+                <span className="font-bold">Líklegast voru mistökin: </span>
                 {diagnostic}
               </div>
             )}

@@ -7,7 +7,8 @@ interface ParticleEquilibriumProps {
   reactantCount: number;
   productCount: number;
   shiftDirection?: 'left' | 'right' | 'none' | null;
-  isExothermic?: boolean;
+  /** null where ΔH is zero: the reaction is neither útvermið nor innvermið. */
+  isExothermic?: boolean | null;
   running?: boolean;
   className?: string;
 }
@@ -70,9 +71,12 @@ export function ParticleEquilibrium({
   }, [shiftDirection]);
 
   return (
-    <div className={`relative ${className}`}>
+    // min-w-0 lets the canvas shrink to a phone-width card (it is a flex item).
+    // Below sm the direction arrows sit just inside the canvas edges instead of
+    // 32 px outside them, where they pushed the page sideways.
+    <div className={`relative min-w-0 max-w-full ${className}`}>
       {/* Direction indicators */}
-      <div className="absolute -left-8 top-1/2 -translate-y-1/2 z-10">
+      <div className="absolute left-2 sm:-left-8 top-1/2 -translate-y-1/2 z-10">
         <div
           className={`text-2xl transition-all duration-300 ${
             shiftDirection === 'left' ? 'text-red-500 scale-150' : 'text-warm-400'
@@ -82,7 +86,7 @@ export function ParticleEquilibrium({
         </div>
       </div>
 
-      <div className="absolute -right-8 top-1/2 -translate-y-1/2 z-10">
+      <div className="absolute right-2 sm:-right-8 top-1/2 -translate-y-1/2 z-10">
         <div
           className={`text-2xl transition-all duration-300 ${
             shiftDirection === 'right' ? 'text-green-500 scale-150' : 'text-warm-400'
@@ -115,15 +119,20 @@ export function ParticleEquilibrium({
           temperature={300}
           running={running}
           showLabels={false}
-          ariaLabel={`Dynamic equilibrium simulation with ${adjustedReactants} reactant and ${adjustedProducts} product particles`}
+          // The game draws its own Icelandic legend (Hvarfefni / Myndefni)
+          // below; the component's built-in one would repeat it as 'R:'/'P:'.
+          showLegend={false}
+          ariaLabel={`Kvikt jafnvægi: ${adjustedReactants} eindir hvarfefna og ${adjustedProducts} eindir myndefna`}
         />
 
         {/* Thermodynamics indicator */}
-        <div className="absolute top-2 right-2 text-xs">
-          <span className={isExothermic ? 'text-red-400' : 'text-blue-400'}>
-            {isExothermic ? '🔥 Varmalosandi' : '❄️ Varmabindandi'}
-          </span>
-        </div>
+        {isExothermic !== null && (
+          <div className="absolute top-2 right-2 text-xs">
+            <span className={isExothermic ? 'text-red-400' : 'text-blue-400'}>
+              {isExothermic ? '🔥 Útvermið' : '❄️ Innvermið'}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Legend */}

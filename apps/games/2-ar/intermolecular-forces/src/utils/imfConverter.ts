@@ -9,22 +9,24 @@ import type {
   BondType,
   MolecularGeometry,
   PartialCharge,
-  DipoleMoment,
+  Position2D,
 } from '@shared/types';
+
+export type AtomPosition =
+  | 'center'
+  | 'left'
+  | 'right'
+  | 'top'
+  | 'bottom'
+  | 'top-left'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-right';
 
 export interface AtomVisualization {
   symbol: string;
   partialCharge?: 'positive' | 'negative' | 'none';
-  position:
-    | 'center'
-    | 'left'
-    | 'right'
-    | 'top'
-    | 'bottom'
-    | 'top-left'
-    | 'top-right'
-    | 'bottom-left'
-    | 'bottom-right';
+  position: AtomPosition;
   size?: 'small' | 'medium' | 'large';
 }
 
@@ -35,11 +37,15 @@ export interface BondVisualization {
   polar?: boolean;
 }
 
+/**
+ * There is deliberately no dipole field here. The arrow is derived from where the partial
+ * charges are drawn (see `imfToMolecule`), because a stored direction pointed at the δ+ end
+ * on water, chloroform and methanol and nothing checked it against the drawing.
+ */
 export interface MoleculeVisualization {
   atoms: AtomVisualization[];
   bonds: BondVisualization[];
-  shape?: 'linear' | 'bent' | 'trigonal' | 'tetrahedral' | 'diatomic';
-  dipoleMoment?: 'left' | 'right' | 'up' | 'down' | 'none';
+  shape?: 'linear' | 'bent' | 'trigonal' | 'trigonal-pyramidal' | 'tetrahedral' | 'diatomic';
 }
 
 export interface IMFMolecule {
@@ -58,7 +64,39 @@ const SHAPE_TO_GEOMETRY: Record<string, MolecularGeometry | undefined> = {
   diatomic: 'linear',
   bent: 'bent',
   trigonal: 'trigonal-planar',
+  'trigonal-pyramidal': 'trigonal-pyramidal',
   tetrahedral: 'tetrahedral',
+};
+
+/**
+ * Where each authored position is drawn, in AnimatedMolecule's explicit-position space: −1…1
+ * from the centre to the edge of the drawing, y pointing down.
+ *
+ * The converter used to drop these positions and pass only a geometry, and AnimatedMolecule's
+ * geometry layout puts the FIRST atom in the middle. Several molecules do not list their
+ * central atom first, so CO₂ was drawn C=O=O, methanol with carbon in the middle, and HCl and
+ * HF with the hydrogen in the middle and the halogen on the wrong side. What the data
+ * describes is now what is drawn. (The 3D viewer finds its central atom by bond count and
+ * never read these, so it is unaffected.)
+ *
+ * One bond is two thirds of the half-width, the length the geometry layout used, so the
+ * drawing keeps its size. The upper pair sits at water's 104,5° H–O–H angle; the lower three
+ * fan out 60° either side of straight down.
+ */
+const BOND = 2 / 3;
+const HALF_HOH = ((104.5 / 2) * Math.PI) / 180;
+const FAN = Math.PI / 3;
+
+export const POSITION_COORDS: Record<AtomPosition, Position2D> = {
+  center: { x: 0, y: 0 },
+  left: { x: -BOND, y: 0 },
+  right: { x: BOND, y: 0 },
+  top: { x: 0, y: -BOND },
+  bottom: { x: 0, y: BOND },
+  'top-left': { x: -BOND * Math.sin(HALF_HOH), y: -BOND * Math.cos(HALF_HOH) },
+  'top-right': { x: BOND * Math.sin(HALF_HOH), y: -BOND * Math.cos(HALF_HOH) },
+  'bottom-left': { x: -BOND * Math.sin(FAN), y: BOND * Math.cos(FAN) },
+  'bottom-right': { x: BOND * Math.sin(FAN), y: BOND * Math.cos(FAN) },
 };
 
 /**
@@ -106,6 +144,7 @@ export function imfToMolecule(imf: IMFMolecule): Molecule {
       id: atomId,
       symbol: atom.symbol,
       partialCharge,
+      position: POSITION_COORDS[atom.position],
     });
   });
 
@@ -127,14 +166,6 @@ export function imfToMolecule(imf: IMFMolecule): Molecule {
   // Map geometry
   const geometry = viz.shape ? SHAPE_TO_GEOMETRY[viz.shape] : undefined;
 
-  // Map dipole moment
-  let dipoleMoment: DipoleMoment | undefined;
-  if (viz.dipoleMoment && viz.dipoleMoment !== 'none') {
-    dipoleMoment = {
-      direction: viz.dipoleMoment,
-    };
-  }
-
   return {
     id: imf.formula.toLowerCase().replace(/[₀₁₂₃₄₅₆₇₈₉]/g, ''),
     formula: imf.formula,
@@ -142,7 +173,8 @@ export function imfToMolecule(imf: IMFMolecule): Molecule {
     atoms,
     bonds,
     geometry,
+    // No dipoleMoment: AnimatedMolecule derives the arrow from the δ+ and δ− atoms as they
+    // are drawn, pointing at the δ− end, so it cannot disagree with the picture.
     isPolar: imf.isPolar,
-    dipoleMoment,
   };
 }

@@ -1,4 +1,6 @@
-import { useMemo, useRef, useState, useCallback, type KeyboardEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, useCallback, type KeyboardEvent } from 'react';
+
+import { formatDecimal } from '@shared/utils';
 
 import {
   CATEGORY_COLORS,
@@ -7,6 +9,7 @@ import {
   type Element,
   type ElementCategory,
 } from '../data/elements';
+import { revealScrollLeft, type Span } from '../utils/phoneScroll';
 
 interface PeriodicTableProps {
   /** Callback when student clicks an element cell */
@@ -42,10 +45,10 @@ interface PeriodicTableProps {
 const CATEGORY_ABBR: Record<ElementCategory, string> = {
   'alkali-metal': 'Al',
   'alkaline-earth': 'Jm',
-  'transition-metal': 'Sk',
+  'transition-metal': 'Hl',
   'post-transition-metal': 'Pm',
   metalloid: 'Hm',
-  nonmetal: 'Óm',
+  nonmetal: 'Ml',
   halogen: 'Ha',
   'noble-gas': 'Eð',
   lanthanide: 'La',
@@ -105,7 +108,7 @@ function ElementCell({
           : `${element.name} (${element.symbol}), sætistala ${element.atomicNumber}`
       }
       className={`
-        element-cell relative w-full h-full min-h-[44px] sm:min-h-[48px] md:min-h-[56px] p-0.5 rounded-md border-2
+        element-cell relative w-full h-full min-h-[52px] md:min-h-[56px] px-0 py-0.5 md:p-0.5 rounded-md border-2
         flex flex-col items-center justify-center text-center
         outline-none focus-visible:ring-3 focus-visible:ring-kvenno-orange focus-visible:ring-offset-1 focus-visible:z-20
         ${interactive ? 'hover:scale-110 hover:z-10 hover:shadow-lg cursor-pointer' : 'cursor-default'}
@@ -113,25 +116,28 @@ function ElementCell({
         ${stateClasses}
       `}
     >
-      {showCategory && (
-        <span
-          aria-hidden="true"
-          className="absolute top-0 right-0.5 text-[6px] sm:text-[7px] md:text-[8px] font-semibold opacity-70 leading-none"
-        >
-          {CATEGORY_ABBR[element.category]}
+      {/* Below md the cell is wide enough for readable text only if the
+          number and the category badge share the top row; from md the badge
+          returns to its corner and the number to the centre. */}
+      <span className="flex w-full items-start justify-between gap-0.5 px-px md:contents">
+        <span className="text-xs md:text-[10px] text-warm-500 leading-none">
+          {element.atomicNumber}
         </span>
-      )}
-      <span className="text-[7px] sm:text-[8px] md:text-[10px] text-warm-500 leading-none">
-        {element.atomicNumber}
+        {showCategory && (
+          <span
+            aria-hidden="true"
+            className="md:absolute md:top-0 md:right-0.5 text-xs md:text-[8px] font-semibold opacity-70 leading-none"
+          >
+            {CATEGORY_ABBR[element.category]}
+          </span>
+        )}
       </span>
-      <span className="text-xs sm:text-sm md:text-lg font-bold leading-tight">
-        {element.symbol}
-      </span>
+      <span className="text-base md:text-lg font-bold leading-tight">{element.symbol}</span>
       <span
-        className="text-[6px] sm:text-[7px] md:text-[9px] font-mono leading-none"
+        className="text-xs md:text-[9px] font-mono leading-none"
         aria-hidden={showMass ? undefined : true}
       >
-        {showMass ? element.atomicMass.toFixed(1) : '\u00A0'}
+        {showMass ? formatDecimal(element.atomicMass, 1) : '\u00A0'}
       </span>
     </button>
   );
@@ -145,7 +151,7 @@ const MASKED_COLORS = {
 };
 
 function EmptyCell() {
-  return <div className="w-full h-full min-h-[44px] sm:min-h-[48px] md:min-h-[56px]" />;
+  return <div className="w-full h-full min-h-[52px] md:min-h-[56px]" />;
 }
 
 export function PeriodicTable({
@@ -224,6 +230,70 @@ export function PeriodicTable({
     [moveFocus]
   );
 
+  // Below md the grid is wider than the screen and scrolls sideways inside
+  // this box. From md up nothing overflows and none of the below scrolls.
+  const scrollerRef = useRef<HTMLDivElement>(null);
+
+  // Which sides of the box have more table beyond them, for the fades that
+  // show the grid is cut by the box and not simply over.
+  const [moreBeyond, setMoreBeyond] = useState({ start: false, end: false });
+  const updateMoreBeyond = useCallback(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const max = scroller.scrollWidth - scroller.clientWidth;
+    const start = scroller.scrollLeft > 1;
+    const end = scroller.scrollLeft < max - 1;
+    setMoreBeyond((prev) => (prev.start === start && prev.end === end ? prev : { start, end }));
+  }, []);
+  useEffect(() => {
+    updateMoreBeyond();
+    const scroller = scrollerRef.current;
+    if (!scroller || typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(updateMoreBeyond);
+    observer.observe(scroller);
+    return () => observer.disconnect();
+  }, [updateMoreBeyond]);
+
+  // Whatever the table is pointing at — the highlighted elements, the correct
+  // cell, the one just tapped — is brought into the box's view, because a
+  // desktop student sees all of it at once.
+  const primarySymbol = correctElement ?? [...highlightSet][0] ?? wrongElement ?? null;
+  const revealKey = [primarySymbol, wrongElement, ...highlightSet].filter(Boolean).join(',');
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth;
+    if (maxScrollLeft <= 0) return;
+    // Nothing to point at — a new question that has not been answered yet —
+    // so every question starts from the same place, the table's left edge.
+    if (!revealKey) {
+      scroller.scrollLeft = 0;
+      return;
+    }
+    const origin =
+      scroller.getBoundingClientRect().left + scroller.clientLeft - scroller.scrollLeft;
+    const spanOf = (symbol: string | null): Span | null => {
+      const cell = symbol ? cellRefs.current.get(symbol) : undefined;
+      if (!cell) return null;
+      const r = cell.getBoundingClientRect();
+      return { left: r.left - origin, right: r.right - origin };
+    };
+    const spans = revealKey
+      .split(',')
+      .map(spanOf)
+      .filter((s): s is Span => s !== null);
+    const left = revealScrollLeft(
+      spans,
+      spanOf(primarySymbol),
+      scroller.clientWidth,
+      scroller.scrollLeft,
+      maxScrollLeft
+    );
+    if (left === null) return;
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    scroller.scrollTo({ left, behavior: reduceMotion ? 'auto' : 'smooth' });
+  }, [revealKey, primarySymbol]);
+
   // Category legend.
   //
   // The plurals are declared rather than built by appending to the singular:
@@ -232,60 +302,86 @@ export function PeriodicTable({
   const categories: { key: ElementCategory; label: string }[] = [
     { key: 'alkali-metal', label: 'Al — Alkalímálmar' },
     { key: 'alkaline-earth', label: 'Jm — Jarðalkalímálmar' },
-    { key: 'transition-metal', label: 'Sk — Skiptimálmar' },
+    { key: 'transition-metal', label: 'Hl — Hliðarmálmar' },
     { key: 'post-transition-metal', label: 'Pm — P-málmar' },
     { key: 'metalloid', label: 'Hm — Hálfmálmar' },
-    { key: 'nonmetal', label: 'Óm — Ómálmar' },
+    { key: 'nonmetal', label: 'Ml — Málmleysingjar' },
     { key: 'halogen', label: 'Ha — Halógen' },
-    { key: 'noble-gas', label: 'Eð — Eðallofttegundir' },
+    { key: 'noble-gas', label: 'Eð — Eðalgös' },
   ];
 
   return (
     <div className="w-full">
-      {/* Periodic Table Grid */}
-      <div
-        role="grid"
-        aria-label="Lotukerfið"
-        className="grid gap-0.5"
-        style={{ gridTemplateColumns: 'repeat(18, minmax(0, 1fr))' }}
-      >
-        {/* Group numbers header */}
-        {Array.from({ length: 18 }, (_, i) => (
+      {/* Periodic Table Grid. Eighteen columns cannot fit a phone at a size a
+          finger can hit or an eye can read, so below md every column keeps at
+          least 46px and the grid scrolls sideways inside its own box; the
+          padding keeps a ringed or enlarged cell from being clipped by it.
+          From md the columns share the width, as they always have. */}
+      <p className="md:hidden text-center text-xs text-warm-500 mb-1">
+        Strjúktu til hliðar til að sjá allt lotukerfið →
+      </p>
+      <div className="relative">
+        <div
+          ref={scrollerRef}
+          onScroll={updateMoreBeyond}
+          className="overflow-x-auto overscroll-x-contain px-1.5 py-1 md:overflow-visible md:p-0"
+        >
           <div
-            key={`group-${i + 1}`}
-            className="text-center text-[8px] sm:text-[10px] md:text-xs text-warm-400 font-semibold py-0.5"
+            role="grid"
+            aria-label="Lotukerfið"
+            className="grid gap-0.5 grid-cols-[repeat(18,minmax(46px,1fr))] md:grid-cols-[repeat(18,minmax(0,1fr))]"
           >
-            {i + 1}
-          </div>
-        ))}
+            {/* Group numbers header */}
+            {Array.from({ length: 18 }, (_, i) => (
+              <div
+                key={`group-${i + 1}`}
+                className="text-center text-xs text-warm-400 font-semibold py-0.5"
+              >
+                {i + 1}
+              </div>
+            ))}
 
-        {/* Periodic table rows */}
-        {periodicGrid.map((row, periodIdx) =>
-          row.map((element, groupIdx) => (
-            <div key={`${periodIdx}-${groupIdx}`} className="aspect-square">
-              {element ? (
-                <ElementCell
-                  element={element}
-                  isHighlighted={highlightSet.has(element.symbol)}
-                  isCorrect={correctElement === element.symbol}
-                  isWrong={wrongElement === element.symbol}
-                  interactive={interactive}
-                  showCategory={showCategories}
-                  showMass={showMasses}
-                  tabIndex={(focusedSymbol ?? firstSymbol) === element.symbol ? 0 : -1}
-                  buttonRef={(el) => {
-                    if (el) cellRefs.current.set(element.symbol, el);
-                    else cellRefs.current.delete(element.symbol);
-                  }}
-                  onClick={() => onElementClick?.(element)}
-                  onKeyDown={handleCellKeyDown(element)}
-                  onFocus={() => setFocusedSymbol(element.symbol)}
-                />
-              ) : (
-                <EmptyCell />
-              )}
-            </div>
-          ))
+            {/* Periodic table rows */}
+            {periodicGrid.map((row, periodIdx) =>
+              row.map((element, groupIdx) => (
+                <div key={`${periodIdx}-${groupIdx}`} className="aspect-square">
+                  {element ? (
+                    <ElementCell
+                      element={element}
+                      isHighlighted={highlightSet.has(element.symbol)}
+                      isCorrect={correctElement === element.symbol}
+                      isWrong={wrongElement === element.symbol}
+                      interactive={interactive}
+                      showCategory={showCategories}
+                      showMass={showMasses}
+                      tabIndex={(focusedSymbol ?? firstSymbol) === element.symbol ? 0 : -1}
+                      buttonRef={(el) => {
+                        if (el) cellRefs.current.set(element.symbol, el);
+                        else cellRefs.current.delete(element.symbol);
+                      }}
+                      onClick={() => onElementClick?.(element)}
+                      onKeyDown={handleCellKeyDown(element)}
+                      onFocus={() => setFocusedSymbol(element.symbol)}
+                    />
+                  ) : (
+                    <EmptyCell />
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+        {moreBeyond.start && (
+          <div
+            aria-hidden="true"
+            className="md:hidden pointer-events-none absolute inset-y-0 left-0 w-5 bg-gradient-to-r from-white to-transparent"
+          />
+        )}
+        {moreBeyond.end && (
+          <div
+            aria-hidden="true"
+            className="md:hidden pointer-events-none absolute inset-y-0 right-0 w-5 bg-gradient-to-l from-white to-transparent"
+          />
         )}
       </div>
 
@@ -298,7 +394,7 @@ export function PeriodicTable({
               return (
                 <div
                   key={cat.key}
-                  className={`px-2 py-0.5 rounded text-[10px] sm:text-xs font-medium ${colors.bg} ${colors.text} ${colors.border} border`}
+                  className={`px-2 py-0.5 rounded text-xs font-medium ${colors.bg} ${colors.text} ${colors.border} border`}
                 >
                   {cat.label}
                 </div>

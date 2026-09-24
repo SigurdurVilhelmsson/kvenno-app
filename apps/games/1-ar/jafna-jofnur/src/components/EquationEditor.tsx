@@ -142,12 +142,15 @@ export function EquationEditor({
   disabled,
 }: EquationEditorProps) {
   return (
-    <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
-      <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+    // Tight spacing below sm lets a three-species equation stay on one row of
+    // steppers on a 360px phone. touch-manipulation: a student tapping + quickly
+    // must not trigger double-tap zoom when a tap lands between two buttons.
+    <div className="bg-white rounded-xl shadow-lg px-2 py-3 sm:p-6 touch-manipulation">
+      <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-2 sm:gap-3">
         {/* Reactants */}
         {reactants.map((mol, i) => (
           <div key={`r-${i}`} className="flex items-center gap-1 sm:gap-2">
-            {i > 0 && <span className="text-warm-400 text-xl font-bold mx-1">+</span>}
+            {i > 0 && <span className="text-warm-400 text-xl font-bold mx-0.5 sm:mx-1">+</span>}
             <CoefficientControl
               value={reactantCoeffs[i]}
               onChange={(v) => onReactantCoeffChange(i, v)}
@@ -159,14 +162,14 @@ export function EquationEditor({
         ))}
 
         {/* Arrow */}
-        <span className="text-2xl sm:text-3xl text-warm-400 font-bold mx-2 sm:mx-4 select-none">
+        <span className="text-2xl sm:text-3xl text-warm-400 font-bold mx-1 sm:mx-4 select-none">
           →
         </span>
 
         {/* Products */}
         {products.map((mol, i) => (
           <div key={`p-${i}`} className="flex items-center gap-1 sm:gap-2">
-            {i > 0 && <span className="text-warm-400 text-xl font-bold mx-1">+</span>}
+            {i > 0 && <span className="text-warm-400 text-xl font-bold mx-0.5 sm:mx-1">+</span>}
             <CoefficientControl
               value={productCoeffs[i]}
               onChange={(v) => onProductCoeffChange(i, v)}

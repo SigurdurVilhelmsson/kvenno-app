@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Header, LanguageSwitcher, ErrorBoundary } from '@shared/components';
 import { useGameI18n, useGameProgress } from '@shared/hooks';
@@ -7,18 +7,9 @@ import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
 import { gameTranslations } from './i18n';
+import { screenAfterLevel, type Progress } from './utils/progress';
 
 type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'complete';
-
-interface Progress {
-  level1Completed: boolean;
-  level1Score: number;
-  level2Completed: boolean;
-  level2Score: number;
-  level3Completed: boolean;
-  level3Score: number;
-  totalGamesPlayed: number;
-}
 
 const DEFAULT_PROGRESS: Progress = {
   level1Completed: false,
@@ -38,32 +29,32 @@ function App() {
     DEFAULT_PROGRESS
   );
 
-  const handleLevel1Complete = (score: number) => {
-    updateProgress({
-      level1Completed: true,
-      level1Score: Math.max(progress.level1Score, score),
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
-    });
-    setActiveLevel('menu');
+  // The browser keeps the scroll offset when React swaps screens, so a student
+  // who finishes a level at the foot of a phone screen would land halfway down
+  // the menu. Each level scrolls itself to the top; the menu and the completion
+  // screen do it here. window.scrollTo, not scrollIntoView: Chrome moves the
+  // Tab starting point to whatever scrollIntoView scrolls to, which would send
+  // a keyboard user back to the header on every new screen.
+  useEffect(() => {
+    if (activeLevel === 'menu' || activeLevel === 'complete') {
+      window.scrollTo(0, 0);
+    }
+  }, [activeLevel]);
+
+  const finishLevel = (level: 1 | 2 | 3, update: Partial<Progress>) => {
+    const next = { ...progress, ...update, totalGamesPlayed: progress.totalGamesPlayed + 1 };
+    updateProgress(next);
+    setActiveLevel(screenAfterLevel(level, progress, next));
   };
 
-  const handleLevel2Complete = (score: number) => {
-    updateProgress({
-      level2Completed: true,
-      level2Score: Math.max(progress.level2Score, score),
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
-    });
-    setActiveLevel('menu');
-  };
+  const handleLevel1Complete = (score: number) =>
+    finishLevel(1, { level1Completed: true, level1Score: Math.max(progress.level1Score, score) });
 
-  const handleLevel3Complete = (score: number) => {
-    updateProgress({
-      level3Completed: true,
-      level3Score: Math.max(progress.level3Score, score),
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
-    });
-    setActiveLevel('complete');
-  };
+  const handleLevel2Complete = (score: number) =>
+    finishLevel(2, { level2Completed: true, level2Score: Math.max(progress.level2Score, score) });
+
+  const handleLevel3Complete = (score: number) =>
+    finishLevel(3, { level3Completed: true, level3Score: Math.max(progress.level3Score, score) });
 
   if (activeLevel === 'level1') {
     return <Level1 onComplete={handleLevel1Complete} onBack={() => setActiveLevel('menu')} />;
@@ -83,7 +74,7 @@ function App() {
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <h1 className="text-3xl md:text-4xl font-bold text-center mb-6 text-teal-600">
             Til hamingju!
           </h1>
@@ -96,50 +87,52 @@ function App() {
           </div>
 
           <div className="space-y-4 mb-8">
-            <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center">
-              <div>
+            <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center gap-3">
+              <div className="min-w-0">
                 <div className="font-bold text-blue-800">Stig 1: Skammtatölur</div>
                 <div className="text-sm text-blue-600">n, l, mₗ, mₛ</div>
               </div>
               <div className="text-2xl font-bold text-blue-600">{progress.level1Score}</div>
             </div>
 
-            <div className="bg-green-50 p-4 rounded-xl flex justify-between items-center">
-              <div>
+            <div className="bg-green-50 p-4 rounded-xl flex justify-between items-center gap-3">
+              <div className="min-w-0">
                 <div className="font-bold text-green-800">Stig 2: Rafeindasmíð</div>
                 <div className="text-sm text-green-600">Aufbau og Hund</div>
               </div>
               <div className="text-2xl font-bold text-green-600">{progress.level2Score}</div>
             </div>
 
-            <div className="bg-purple-50 p-4 rounded-xl flex justify-between items-center">
-              <div>
-                <div className="font-bold text-purple-800">Stig 3: Eðalgasstytting</div>
-                <div className="text-sm text-purple-600">Lotukerfi og rafeindir</div>
+            <div className="bg-purple-50 p-4 rounded-xl flex justify-between items-center gap-3">
+              <div className="min-w-0">
+                <div className="font-bold text-purple-800">Stig 3: Lotukerfi og rafeindir</div>
+                <div className="text-sm text-purple-600">Eðalgasstytting</div>
               </div>
               <div className="text-2xl font-bold text-purple-600">{progress.level3Score}</div>
             </div>
 
-            <div className="bg-orange-100 p-4 rounded-xl flex justify-between items-center border-2 border-orange-400">
+            <div className="bg-orange-100 p-4 rounded-xl flex justify-between items-center gap-3 border-2 border-orange-400">
               <div className="font-bold text-orange-800 text-lg">Heildarstig</div>
               <div className="text-3xl font-bold text-orange-600">{totalScore}</div>
             </div>
           </div>
 
-          <div className="bg-teal-50 p-6 rounded-xl mb-6">
+          <div className="bg-teal-50 p-4 sm:p-6 rounded-xl mb-6">
             <h2 className="font-bold text-teal-800 mb-3">Hvað lærðir þú?</h2>
             <ul className="space-y-2 text-teal-900 text-sm">
               <li>
                 ✓ <strong>Skammtatölur:</strong> n, l, mₗ og mₛ lýsa hverri rafeind
               </li>
               <li>
-                ✓ <strong>Aufbau reglan:</strong> Rafeindir fylla svigrúm í orkuröð
+                ✓ <strong>Aufbau-reglan:</strong> Rafeindir fylla svigrúm í orkuröð
               </li>
               <li>
-                ✓ <strong>Regla Hunds:</strong> Rafeindir dreifastar fyrst einar í svigrúm
+                ✓ <strong>Regla Hunds:</strong> Rafeindir dreifast fyrst einar í svigrúm
               </li>
               <li>
-                ✓ <strong>Undantekningar:</strong> Cr ([Ar] 4s¹3d⁵) og Cu ([Ar] 4s¹3d¹⁰)
+                ✓ <strong>Undantekningar:</strong> Cr{' '}
+                <span className="whitespace-nowrap">([Ar] 4s¹ 3d⁵)</span> og Cu{' '}
+                <span className="whitespace-nowrap">([Ar] 4s¹ 3d¹⁰)</span>
               </li>
             </ul>
           </div>
@@ -174,13 +167,13 @@ function App() {
         }
       />
       <div className="min-h-screen flex items-center justify-center p-4 md:p-8">
-        <div className="max-w-3xl w-full mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="max-w-3xl w-full mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <p className="text-warm-600 mb-4">
-            Lærðu um rafeindabyggingu atóma — skammtatölur, svigrúm og rafeindauppsetningu
+            Lærðu um rafeindabyggingu atóma — skammtatölur, svigrúm og rafeindaskipan
           </p>
 
           {/* Pedagogical explanation */}
-          <div className="bg-teal-50 p-6 rounded-xl mb-8">
+          <div className="bg-teal-50 p-4 sm:p-6 rounded-xl mb-8">
             <h2 className="font-bold text-teal-800 mb-3">Hvað er rafeindabygging?</h2>
             <p className="text-teal-900 text-sm mb-4">
               <strong>Rafeindabygging</strong> lýsir því hvernig rafeindir dreifast í svigrúmum
@@ -199,12 +192,12 @@ function App() {
             {/* Level 1 */}
             <button
               onClick={() => setActiveLevel('level1')}
-              className="game-card w-full p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
+              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
                 <div className="text-4xl">🔢</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="text-xl font-bold text-blue-800">Stig 1: Skammtatölur</span>
                     {progress.level1Completed && (
                       <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
@@ -225,12 +218,12 @@ function App() {
             {/* Level 2 */}
             <button
               onClick={() => setActiveLevel('level2')}
-              className="game-card w-full p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
+              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
                 <div className="text-4xl">⚛️</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="text-xl font-bold text-green-800">Stig 2: Rafeindasmíð</span>
                     {progress.level2Completed && (
                       <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
@@ -242,7 +235,7 @@ function App() {
                     Fylltu í svigrúm samkvæmt Aufbau og Hund
                   </div>
                   <div className="text-xs text-warm-600 mt-2">
-                    Skrifaðu rafeindauppsetningu frumefna (t.d. 1s² 2s² 2p⁴ fyrir súrefni).
+                    Skrifaðu rafeindaskipan frumefna (t.d. 1s² 2s² 2p⁴ fyrir súrefni).
                   </div>
                 </div>
               </div>
@@ -251,12 +244,12 @@ function App() {
             {/* Level 3 */}
             <button
               onClick={() => setActiveLevel('level3')}
-              className="game-card w-full p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
+              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
             >
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
                 <div className="text-4xl">📋</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                     <span className="text-xl font-bold text-purple-800">
                       Stig 3: Lotukerfi og rafeindir
                     </span>
@@ -267,7 +260,7 @@ function App() {
                     )}
                   </div>
                   <div className="text-sm text-purple-600 mt-1">
-                    Tengdu sæti í lotukerfinu við rafeindauppsetningu
+                    Tengdu sæti í lotukerfinu við rafeindaskipan
                   </div>
                   <div className="text-xs text-warm-600 mt-2">
                     Þekktu eðalgasstyttinguna og undantekningar Cr og Cu.
@@ -284,21 +277,21 @@ function App() {
                 <h3 className="font-semibold text-warm-700">Framvinda</h3>
                 <button
                   onClick={resetProgress}
-                  className="text-sm text-warm-500 hover:text-red-500 transition-colors"
+                  className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:px-2 pointer-coarse:-mx-2 pointer-coarse:py-3 pointer-coarse:-my-3"
                 >
                   Endurstilla
                 </button>
               </div>
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="bg-blue-50 rounded-lg p-3">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
+                <div className="bg-blue-50 rounded-lg px-1 py-3 sm:p-3">
                   <div className="text-2xl font-bold text-blue-600">{levelsCompleted}/3</div>
                   <div className="text-xs text-warm-600">Stig lokið</div>
                 </div>
-                <div className="bg-green-50 rounded-lg p-3">
+                <div className="bg-green-50 rounded-lg px-1 py-3 sm:p-3">
                   <div className="text-2xl font-bold text-green-600">{totalScore}</div>
-                  <div className="text-xs text-warm-600">Heildar stig</div>
+                  <div className="text-xs text-warm-600">Heildarstig</div>
                 </div>
-                <div className="bg-purple-50 rounded-lg p-3">
+                <div className="bg-purple-50 rounded-lg px-1 py-3 sm:p-3">
                   <div className="text-2xl font-bold text-purple-600">
                     {progress.totalGamesPlayed}
                   </div>
@@ -322,7 +315,7 @@ function App() {
                 <strong>mₗ</strong> (segulskammtatala): -l til +l — stefna svigrúmsins
               </p>
               <p>
-                <strong>mₛ</strong> (spunaskammtatala): +½ eða -½ — snúningur rafeindarinnar
+                <strong>mₛ</strong> (spunaskammtatala): +½ eða -½ — spuni rafeindarinnar
               </p>
             </div>
           </div>
@@ -331,8 +324,8 @@ function App() {
           <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
             <h3 className="font-semibold text-amber-800 mb-2">Af hverju rafeindabygging?</h3>
             <p className="text-sm text-amber-700">
-              Rafeindauppsetning ákvarðar hvernig frumefni tengjast — hún útskýrir af hverju natríum
-              er hvarfgjarnt en argon er stöðugt. Undirstaða efnatengsla og lotukerfisins.
+              Rafeindaskipan ákvarðar hvernig frumefni tengjast — hún útskýrir af hverju natríum er
+              hvarfgjarnt en argon er stöðugt. Undirstaða efnatengsla og lotukerfisins.
             </p>
           </div>
           <div className="mt-3 text-center text-xs text-warm-500">

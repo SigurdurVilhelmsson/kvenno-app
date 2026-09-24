@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
 
@@ -7,6 +7,7 @@ import { challenges, cancellationVariants, successMessages } from './challenges/
 import { EquivalenceChallenge } from './challenges/EquivalenceChallenge';
 import { FactorBuildingChallenge } from './challenges/FactorBuildingChallenge';
 import { OrientationChallenge } from './challenges/OrientationChallenge';
+import { useRevealTopOnChange } from '../utils/reveal';
 
 interface Level1Progress {
   questionsAnswered: number;
@@ -31,6 +32,11 @@ const INITIAL_PROGRESS: Level1Progress = {
   explanationScores: [],
   mastered: false,
 };
+
+/** 100 per challenge. */
+const MAX_SCORE = challenges.length * 100;
+/** Mastered with at most one challenge missed. */
+const MASTERY_THRESHOLD = challenges.length - 1;
 
 /**
  * Level 1 Conceptual - Visual learning with NO calculations
@@ -58,6 +64,12 @@ export function Level1Conceptual({
 
   const challenge = challenges[currentChallengeIndex];
 
+  // "Byrja!" and "Næsta áskorun" sit at the foot of a screen taller than a
+  // phone, so each new challenge opens at its top rather than mid-way down.
+  const topRef = useRevealTopOnChange<HTMLDivElement>(
+    showIntro ? 'intro' : showSummary ? 'summary' : currentChallengeIndex
+  );
+
   useEffect(() => {
     setShowSuccess(false);
     setHintTier(0);
@@ -65,7 +77,16 @@ export function Level1Conceptual({
     setAttempts(0);
   }, [currentChallengeIndex]);
 
+  // Challenges already counted, so each one counts once. C4 and the chains
+  // report success from timers, and C4 leaves its factors clickable once
+  // solved, so a double tap reported twice — and a timer still pending from a
+  // finished challenge would otherwise mark the next one solved before it is
+  // played. The count is held here rather than trusted to every caller.
+  const counted = useRef(new Set<number>());
+
   const handleSuccess = () => {
+    if (counted.current.has(currentChallengeIndex)) return;
+    counted.current.add(currentChallengeIndex);
     setShowSuccess(true);
     onCorrectAnswer?.();
     setProgress((prev) => ({
@@ -78,8 +99,8 @@ export function Level1Conceptual({
   const handleContinue = () => {
     setProgress((prev) => {
       const updated = { ...prev };
-      if (updated.questionsAnswered >= 6) {
-        updated.mastered = updated.questionsCorrect >= 5;
+      if (updated.questionsAnswered >= challenges.length) {
+        updated.mastered = updated.questionsCorrect >= MASTERY_THRESHOLD;
       }
       return updated;
     });
@@ -104,12 +125,15 @@ export function Level1Conceptual({
 
   if (showIntro) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-4">
+      <div
+        ref={topRef}
+        className="min-h-screen bg-gradient-to-b from-green-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+      >
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-lg p-8 mt-8">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 mt-2 sm:mt-8">
             <div className="text-center mb-8">
               <div className="text-6xl mb-4">🔬</div>
-              <h1 className="text-3xl font-bold text-warm-800 mb-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-warm-800 mb-2">
                 Velkomin í Einingagreiningu!
               </h1>
               <p className="text-lg text-warm-600">Stig 1: Hugtök</p>
@@ -118,7 +142,7 @@ export function Level1Conceptual({
               <div className="flex items-start gap-4 p-4 bg-green-50 rounded-lg">
                 <span className="text-2xl">👆</span>
                 <div>
-                  <p className="font-semibold text-green-800">Engar útreikninga!</p>
+                  <p className="font-semibold text-green-800">Engir útreikningar!</p>
                   <p className="text-green-700 text-sm">
                     Þú lærir með því að prófa og sjá hvað gerist.
                   </p>
@@ -127,7 +151,7 @@ export function Level1Conceptual({
               <div className="flex items-start gap-4 p-4 bg-blue-50 rounded-lg">
                 <span className="text-2xl">🎯</span>
                 <div>
-                  <p className="font-semibold text-blue-800">6 áskoranir</p>
+                  <p className="font-semibold text-blue-800">{challenges.length} áskoranir</p>
                   <p className="text-blue-700 text-sm">
                     Hver áskorun kennir þér nýtt hugtak um umbreytingar.
                   </p>
@@ -156,14 +180,17 @@ export function Level1Conceptual({
   }
 
   if (showSummary) {
-    const mastered = progress.questionsCorrect >= 5;
+    const mastered = progress.questionsCorrect >= MASTERY_THRESHOLD;
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-4">
+      <div
+        ref={topRef}
+        className="min-h-screen bg-gradient-to-b from-green-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+      >
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-lg p-8 mt-8">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 mt-2 sm:mt-8">
             <div className="text-center mb-8">
               <div className="text-6xl mb-4">{mastered ? '🎉' : '📚'}</div>
-              <h1 className="text-3xl font-bold text-warm-800 mb-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-warm-800 mb-2">
                 {mastered ? 'Frábært!' : 'Vel gert!'}
               </h1>
               <p className="text-lg text-warm-600">
@@ -189,13 +216,13 @@ export function Level1Conceptual({
             {mastered ? (
               <div className="space-y-4">
                 <div className="p-4 bg-blue-50 rounded-lg text-center">
-                  <p className="text-blue-800 font-semibold">Stig 2 er nú opið!</p>
+                  <p className="text-blue-800 font-semibold">Næsta skref: Stig 2</p>
                   <p className="text-blue-600 text-sm">
                     Þar munt þú nota þessi hugtök til að spá fyrir um niðurstöður.
                   </p>
                 </div>
                 <button
-                  onClick={() => onComplete(progress, 600, totalHintsUsed)}
+                  onClick={() => onComplete(progress, MAX_SCORE, totalHintsUsed)}
                   className="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold text-lg transition-colors"
                 >
                   Halda áfram →
@@ -205,9 +232,6 @@ export function Level1Conceptual({
               <div className="space-y-4">
                 <div className="p-4 bg-yellow-50 rounded-lg text-center">
                   <p className="text-yellow-800 font-semibold">
-                    Þú þarft 5 af 6 til að opna Stig 2
-                  </p>
-                  <p className="text-yellow-600 text-sm">
                     Reyndu aftur til að styrkja skilninginn!
                   </p>
                 </div>
@@ -216,13 +240,14 @@ export function Level1Conceptual({
                     setCurrentChallengeIndex(0);
                     setShowSummary(false);
                     setProgress(INITIAL_PROGRESS);
+                    counted.current = new Set();
                   }}
                   className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white py-4 rounded-xl font-bold text-lg transition-colors"
                 >
                   Reyna aftur
                 </button>
                 <button
-                  onClick={() => onComplete(progress, 600, totalHintsUsed)}
+                  onClick={() => onComplete(progress, MAX_SCORE, totalHintsUsed)}
                   className="w-full bg-warm-200 hover:bg-warm-300 text-warm-700 py-3 rounded-xl font-semibold transition-colors"
                 >
                   Til baka í valmynd
@@ -236,7 +261,10 @@ export function Level1Conceptual({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white p-4">
+    <div
+      ref={topRef}
+      className="min-h-screen bg-gradient-to-b from-green-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+    >
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
@@ -265,12 +293,14 @@ export function Level1Conceptual({
         </div>
 
         {/* Main challenge card */}
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-warm-800 mb-2">{challenge.title}</h2>
-          <p className="text-lg text-warm-600 mb-6">{challenge.instruction}</p>
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-warm-800 mb-2">{challenge.title}</h2>
+          <p className="text-base sm:text-lg text-warm-600 mb-6">{challenge.instruction}</p>
 
-          {/* Challenge content */}
-          <div className="mb-6">
+          {/* Challenge content. Keyed by challenge so each one mounts fresh: C5
+              and C6 both render ChainCancellation here, and without a key C6
+              inherited C5's finished chain. */}
+          <div className="mb-6" key={challenge.id}>
             {challenge.id === 'C1' && (
               <EquivalenceChallenge onComplete={handleSuccess} onAttempt={handleAttempt} />
             )}
@@ -316,7 +346,7 @@ export function Level1Conceptual({
           {/* Success message with "Af hverju?" card */}
           {showSuccess && (
             <div className="mb-6 space-y-4">
-              <div className="p-6 bg-green-100 rounded-xl border-2 border-green-300">
+              <div className="p-4 sm:p-6 bg-green-100 rounded-xl border-2 border-green-300">
                 <h3 className="text-xl font-bold text-green-800 mb-2">Rétt!</h3>
                 <p className="text-green-700 mb-4">{successMessages[challenge.type]}</p>
               </div>
@@ -337,7 +367,7 @@ export function Level1Conceptual({
         </div>
 
         <div className="mt-6 text-center text-warm-500 text-sm">
-          Stig 1 snýst um að <strong>skilja hugtökin</strong> - engar útreikninga!
+          Stig 1 snýst um að <strong>skilja hugtökin</strong> - engir útreikningar!
         </div>
       </div>
     </div>

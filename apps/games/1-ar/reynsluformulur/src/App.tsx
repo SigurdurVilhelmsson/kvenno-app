@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ErrorBoundary, Header } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
@@ -7,6 +7,7 @@ import { AefaScreen } from './components/AefaScreen';
 import { BeitaScreen } from './components/BeitaScreen';
 import { KannaScreen } from './components/KannaScreen';
 import { SkiljaScreen } from './components/SkiljaScreen';
+import { scrollPageToTop } from './utils/reveal';
 import './styles.css';
 
 type Screen = 'menu' | 'kanna' | 'skilja' | 'aefa' | 'beita';
@@ -54,15 +55,24 @@ function App() {
 
   const completed = useMemo(() => progress.completed ?? [], [progress.completed]);
 
+  // Kanna and Skilja end on "Áfram í Skilja" / "Áfram í Æfa", so those two go
+  // on to the phase they name; they used to drop the student on the menu.
   const markCompleted = useCallback(
-    (phase: Screen) => {
+    (phase: Screen, next: Screen = 'menu') => {
       if (!completed.includes(phase)) updateProgress({ completed: [...completed, phase] });
-      setScreen('menu');
+      setScreen(next);
     },
     [completed, updateProgress]
   );
 
   const backToMenu = useCallback(() => setScreen('menu'), []);
+
+  // Every screen change replaces the whole page. On a phone the button that
+  // caused it sits a screen or more down, so the new screen would otherwise
+  // open part-way through; start it at the top instead.
+  useEffect(() => {
+    scrollPageToTop();
+  }, [screen]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
@@ -72,7 +82,7 @@ function App() {
         Fara beint í efni
       </a>
 
-      <main id="main-content" className="container mx-auto px-4 py-8">
+      <main id="main-content" className="container mx-auto px-4 py-4 sm:py-8">
         {screen === 'menu' && (
           <div className="mx-auto max-w-4xl">
             <p className="mb-8 text-center text-lg text-warm-600">
@@ -80,7 +90,7 @@ function App() {
               massanum burt
             </p>
 
-            <div className="rounded-lg bg-white p-8 shadow-md">
+            <div className="rounded-lg bg-white p-5 shadow-md sm:p-8">
               <h2 className="mb-2 text-2xl font-bold text-warm-800">Fjórir áfangar</h2>
               <p className="mb-6 text-warm-600">
                 Þú kannt að reikna mólmassa út frá formúlu. Hér ferðu í hina áttina: út frá því sem
@@ -94,7 +104,7 @@ function App() {
                     key={phase.id}
                     type="button"
                     onClick={() => setScreen(phase.id)}
-                    className={`game-card rounded-lg p-6 text-left text-white transition-colors ${phase.tone}`}
+                    className={`game-card rounded-lg p-5 text-left text-white transition-colors sm:p-6 ${phase.tone}`}
                   >
                     <div className="mb-2 flex items-center gap-2">
                       <span className="text-2xl">{phase.number}</span>
@@ -177,11 +187,11 @@ function App() {
         )}
 
         {screen === 'kanna' && (
-          <KannaScreen onComplete={() => markCompleted('kanna')} onBack={backToMenu} />
+          <KannaScreen onComplete={() => markCompleted('kanna', 'skilja')} onBack={backToMenu} />
         )}
 
         {screen === 'skilja' && (
-          <SkiljaScreen onComplete={() => markCompleted('skilja')} onBack={backToMenu} />
+          <SkiljaScreen onComplete={() => markCompleted('skilja', 'aefa')} onBack={backToMenu} />
         )}
 
         {screen === 'aefa' && (

@@ -25,8 +25,11 @@
   user-select: none;
 }
 
-.molecule:hover {
-  transform: scale(1.1);
+/* Hover-capable pointers only: on a phone a tap would leave the ball stuck enlarged. */
+@media (hover: hover) and (pointer: fine) {
+  .molecule:hover {
+    transform: scale(1.1);
+  }
 }
 
 /* Custom Scrollbar */

@@ -34,7 +34,7 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
       },
       {
         title: 'Lotukerfið',
-        description: 'Kynntu þér lotukerfið, frumefni og sameindagerð',
+        description: 'Kynntu þér lotukerfið, frumefni og atómbyggingu',
         slug: 'lotukerfid',
       },
       {
@@ -90,7 +90,7 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
       },
       {
         title: 'Hvarfhraði',
-        description: 'Lærðu um hvarfhraða, hraðalögmál og hvarfgangshátt í efnahvörfum',
+        description: 'Lærðu um hvarfhraða, hraðalögmál og hvarfgang í efnahvörfum',
         slug: 'kinetics',
       },
       {
@@ -110,17 +110,17 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
       },
       {
         title: 'Lífræn nafnagift',
-        description: 'Lærðu IUPAC nafnakerfið fyrir alkanar, alkenar og alkynar',
+        description: 'Lærðu IUPAC nafnakerfið fyrir alkana, alkena og alkýna',
         slug: 'organic-nomenclature',
       },
       {
         title: 'Oxun og afoxun',
-        description: 'Lærðu um oxunartölur, rafeindiflutning og jafnvægi redox-hvörfum',
+        description: 'Lærðu um oxunartölur, rafeindaflutning og hvernig redox-hvörf eru stillt',
         slug: 'redox-reactions',
       },
       {
         title: 'Rafeindabygging',
-        description: 'Skammtatölur, svigrúm og rafeindauppsetning (Kafli 6)',
+        description: 'Skammtatölur, svigrúm og rafeindaskipan (Kafli 6)',
         slug: 'rafeindabygging',
       },
     ],
@@ -151,7 +151,7 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
       },
       {
         title: 'Sýrufastinn',
-        description: 'Hvað Ka er, hvaðan hann kemur og hvenær nálgunin má nota',
+        description: 'Hvað Ka er, hvaðan hann kemur og hvenær nálgunina má nota',
         slug: 'syrufastinn',
       },
       {
@@ -186,40 +186,46 @@ export function GamesHub({ year }: GamesHubProps) {
   return (
     <>
       {/* Breadcrumbs */}
-      <div className="py-4">
+      <div className="py-3 md:py-4">
         <Breadcrumbs items={breadcrumbItems} />
       </div>
 
       {/* Back Button */}
       <Link
         to={`/efnafraedi/${year}`}
-        className="inline-flex items-center gap-2 mb-8 px-4 py-2 min-h-[44px] border-2 border-kvenno-orange text-kvenno-orange no-underline rounded-btn font-medium transition-all duration-200 ease-out hover:bg-kvenno-orange hover:text-white"
+        className="inline-flex items-center gap-2 mb-6 md:mb-8 px-4 py-2 min-h-[44px] border-2 border-kvenno-orange text-kvenno-orange no-underline rounded-btn font-medium transition-all duration-200 ease-out hover:bg-kvenno-orange hover:text-white"
         aria-label={`Fara til baka í ${config.yearLabel} efnafræði`}
       >
         &larr; Til baka
       </Link>
 
-      {/* Page Title */}
-      <Card variant="elevated" padding="lg" className="text-center mb-12">
-        <h1 className="font-heading text-kvenno-orange text-4xl md:text-[2.5rem] font-bold mb-2">
-          Leikir og æfingar – {config.yearLabel}
+      {/* Page Title. Phones get a tighter card and a 30px heading so the first
+          games show above the fold; md: restores the desktop sizes. The year is
+          kept on one line so the title cannot break between "1." and "árs". */}
+      <Card variant="elevated" padding="none" className="text-center p-6 md:p-8 mb-8 md:mb-12">
+        <h1 className="font-heading text-kvenno-orange text-3xl md:text-[2.5rem] md:leading-[calc(2.5/2.25)] font-bold mb-2">
+          Leikir og æfingar <span className="whitespace-nowrap">– {config.yearLabel}</span>
         </h1>
-        <p className="text-lg text-warm-500">Veldu leik til að æfa þig</p>
+        <p className="text-base md:text-lg text-warm-500">Veldu leik til að æfa þig</p>
       </Card>
 
-      {/* Games Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8 mb-12">
+      {/* Games Grid. One column on a phone held upright, two on one held
+          sideways (sm:), and the desktop grid from md: on. The card padding and
+          title size step down below md: so a long one-word title such as
+          "Millisameindakraftar" fits a 320px screen, with wrap-break-word as the
+          backstop; md:wrap-normal keeps tablet and desktop wrapping as it was. */}
+      <div className="grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4 md:gap-8 mb-12">
         {config.games.map((game) => (
           <a
             key={game.slug}
             href={`/efnafraedi/${year}/games/${game.slug}.html`}
-            className="bg-surface-raised border-2 border-kvenno-orange rounded-card p-8 no-underline text-warm-800 shadow-md flex flex-col transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-orange"
+            className="bg-surface-raised border-2 border-kvenno-orange rounded-card p-5 md:p-8 no-underline text-warm-800 shadow-md flex flex-col transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-orange"
           >
-            <h2 className="font-heading text-kvenno-orange text-2xl font-bold mb-4">
+            <h2 className="font-heading text-kvenno-orange text-xl md:text-2xl font-bold mb-2 md:mb-4 wrap-break-word md:wrap-normal">
               {game.title}
             </h2>
             <p className="text-warm-500 flex-grow">{game.description}</p>
-            <Badge variant="success" className="mt-4 self-start">
+            <Badge variant="success" className="mt-3 md:mt-4 self-start">
               ✓ Í notkun
             </Badge>
           </a>

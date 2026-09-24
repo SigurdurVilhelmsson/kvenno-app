@@ -3,39 +3,16 @@
  */
 
 /**
- * Count significant figures in a number string
+ * Count significant figures in a number string.
+ *
+ * **One counter, not two.** This used to be a second implementation that knew
+ * only the full stop, so the Icelandic decimal comma counted as a digit —
+ * `0,125` was four figures — and Level 3 marked a correct three-figure answer
+ * down for its precision while Stig 0 taught the rule correctly. It is now the
+ * engine Stig 0 teaches from, under its old name; `utils/sigfigs.ts` is where
+ * the rules live. It throws on input that is not a written number.
  */
-export function countSignificantFigures(numStr: string): number {
-  numStr = numStr.trim();
-
-  // Handle scientific notation (e.g., "1.08e12")
-  if (numStr.toLowerCase().includes('e')) {
-    const [base] = numStr.toLowerCase().split('e');
-    numStr = base;
-  }
-
-  // Remove negative sign
-  const cleaned = numStr.replace(/^-/, '');
-  const hasDecimal = cleaned.includes('.');
-
-  if (!hasDecimal) {
-    // No decimal: count from first non-zero, trailing zeros might not count
-    const trimmed = cleaned.replace(/^0+/, '') || '0';
-    if (trimmed === '0') return 1;
-    const withoutTrailingZeros = trimmed.replace(/0+$/, '');
-    return trimmed === withoutTrailingZeros ? trimmed.length : withoutTrailingZeros.length;
-  } else {
-    // Has decimal: leading zeros (both whole and decimal) are not significant
-    const [whole, decimal] = cleaned.split('.');
-    const wholeTrimmed = whole.replace(/^0+/, '') || '0';
-    if (wholeTrimmed === '0') {
-      const decimalSignificant = decimal?.replace(/^0+/, '') || '';
-      // "0.0" and "0.00" have at least 1 significant figure
-      return decimalSignificant.length || 1;
-    }
-    return wholeTrimmed.length + (decimal?.length || 0);
-  }
-}
+export { countSigFigs as countSignificantFigures } from './sigfigs';
 
 /**
  * Score an explanation text — gives full credit for genuine effort.

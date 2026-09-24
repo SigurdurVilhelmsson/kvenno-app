@@ -18,6 +18,13 @@ export interface Challenge {
   question: string;
   options: { text: string; correct: boolean; explanation: string }[];
   hints: TieredHints;
+  /**
+   * The question asks for the ΔH of the very equation the level draws, so the diagram
+   * and the equation card show `ΔH = ? kJ` until the answer is checked. Challenges 5 and
+   * 6 used to print it above their own question (`A → D, ΔH = -50 kJ`: "what is ΔH for
+   * A → D?"). The others draw a given equation the student may reverse or scale.
+   */
+  asksForShownDeltaH?: boolean;
 }
 
 export const CHALLENGES: Challenge[] = [
@@ -26,7 +33,7 @@ export const CHALLENGES: Challenge[] = [
     title: 'Hvað er ΔH?',
     description: 'Vermi (ΔH) segir okkur hvort hvörf gefi frá sér orku eða taki til sín orku.',
     concept:
-      'Neikvætt ΔH = exothermic (gefur frá sér varma). Jákvætt ΔH = endothermic (tekur til sín varma).',
+      'Neikvætt ΔH = útvermið (gefur frá sér varma). Jákvætt ΔH = innvermið (tekur til sín varma).',
     equation: {
       id: 'eq1',
       reactants: 'CH₄(g) + 2O₂(g)',
@@ -35,15 +42,15 @@ export const CHALLENGES: Challenge[] = [
       isReversed: false,
       multiplier: 1,
     },
-    question: 'Brennsla metans gefur ΔH = -890 kJ/mol. Er þetta hvarf exothermic eða endothermic?',
+    question: 'Brennsla metans gefur ΔH = -890 kJ/mól. Er þetta hvarf útvermið eða innvermið?',
     options: [
       {
-        text: 'Exothermic (gefur frá sér varma)',
+        text: 'Útvermið (gefur frá sér varma)',
         correct: true,
         explanation: 'Rétt! Neikvætt ΔH þýðir að kerfið gefur frá sér orku til umhverfisins.',
       },
       {
-        text: 'Endothermic (tekur til sín varma)',
+        text: 'Innvermið (tekur til sín varma)',
         correct: false,
         explanation: 'Rangt. Neikvætt ΔH þýðir að orka fer ÚT úr kerfinu, ekki inn.',
       },
@@ -51,8 +58,8 @@ export const CHALLENGES: Challenge[] = [
     hints: {
       topic: 'Þetta snýst um formerki ΔH og hvað það þýðir.',
       strategy: 'Hugsaðu um hvort orka fer inn í kerfið eða út úr því.',
-      method: 'Neikvætt ΔH = orka fer út (exothermic). Jákvætt ΔH = orka fer inn (endothermic).',
-      solution: 'ΔH = -890 kJ er neikvætt, svo orka fer ÚT úr kerfinu. Þetta er exothermic hvarf.',
+      method: 'Neikvætt ΔH = orka fer út (útvermið). Jákvætt ΔH = orka fer inn (innvermið).',
+      solution: 'ΔH = -890 kJ er neikvætt, svo orka fer ÚT úr kerfinu. Þetta er útvermið hvarf.',
     },
   },
   {
@@ -118,7 +125,7 @@ export const CHALLENGES: Challenge[] = [
       {
         text: '-1182 kJ',
         correct: true,
-        explanation: 'Rétt! 3 × (-394) = -1182 kJ. Þreföld efnismagn gefur þrefalda orku.',
+        explanation: 'Rétt! 3 × (-394) = -1182 kJ. Þrefalt efnismagn gefur þrefalda orku.',
       },
       {
         text: '-394 kJ',
@@ -134,7 +141,7 @@ export const CHALLENGES: Challenge[] = [
     ],
     hints: {
       topic: 'Þetta snýst um að margfalda efnahvörf og áhrif á ΔH.',
-      strategy: 'Meiri efnismagn = meiri orka. Margfaldaðu ΔH með sama stuðli.',
+      strategy: 'Meira efnismagn = meiri orka. Margfaldaðu ΔH með sama stuðli.',
       method: 'Ef jafna hefur ΔH = X, þá hefur n× jafnan ΔH = n×X. Formerkið helst.',
       solution: '3 mól af C: ΔH = 3 × (-394) = -1182 kJ. Formerkið er enn neikvætt.',
     },
@@ -142,8 +149,9 @@ export const CHALLENGES: Challenge[] = [
   {
     id: 4,
     title: 'Sameina bæði',
-    description: 'Þú getur snúið við OG margfaldað jöfnu. Gættu að röð aðgerða!',
-    concept: 'Snúðu fyrst við (breytir formerki), margfaldaðu síðan.',
+    description: 'Þú getur snúið við OG margfaldað jöfnu. Gættu þess að gera hvort tveggja!',
+    concept:
+      'Að snúa við breytir formerkinu og að margfalda breytir stærðinni. Röðin skiptir ekki máli.',
     equation: {
       id: 'eq4',
       reactants: 'N₂(g) + 3H₂(g)',
@@ -164,12 +172,12 @@ export const CHALLENGES: Challenge[] = [
         text: '-184 kJ',
         correct: false,
         explanation:
-          'Rangt. Þú margfaldaðir rétt, en gleymdist að snúa formerkinu (sundrun vs myndun).',
+          'Rangt. Þú margfaldaðir rétt, en gleymdir að snúa formerkinu (sundrun vs myndun).',
       },
       {
         text: '+92 kJ',
         correct: false,
-        explanation: 'Rangt. Þú snúðir við, en gleymdist að margfalda með 2.',
+        explanation: 'Rangt. Þú snerir við, en gleymdir að margfalda með 2.',
       },
       {
         text: '-92 kJ',
@@ -179,7 +187,7 @@ export const CHALLENGES: Challenge[] = [
     ],
     hints: {
       topic: 'Þetta snýst um að sameina snúa við og margfalda.',
-      strategy: 'Hugsaðu um aðgerðirnar í réttri röð: sundrun (snúa) og magn (margfalda).',
+      strategy: 'Hugsaðu um báðar aðgerðirnar: sundrun (snúa) og magn (margfalda).',
       method: 'Sundrun er öfug við myndun, svo snúðu formerki. 4 mól NH₃ = 2× jafnan.',
       solution: 'Snúa við: +92 kJ. Margfalda með 2: +184 kJ.',
     },
@@ -193,10 +201,12 @@ export const CHALLENGES: Challenge[] = [
       id: 'eq5',
       reactants: 'C(s) + ½O₂(g)',
       products: 'CO(g)',
-      deltaH: -110,
+      // -394 + 283, from the two equations the question gives: the correct option.
+      deltaH: -111,
       isReversed: false,
       multiplier: 1,
     },
+    asksForShownDeltaH: true,
     question:
       'Gefið: (1) C + O₂ → CO₂, ΔH = -394 kJ og (2) CO + ½O₂ → CO₂, ΔH = -283 kJ. Hvað er ΔH fyrir C + ½O₂ → CO?',
     options: [
@@ -214,7 +224,7 @@ export const CHALLENGES: Challenge[] = [
       {
         text: '+111 kJ',
         correct: false,
-        explanation: 'Rangt. Réttur tölugildið, en rangt formerki.',
+        explanation: 'Rangt. Rétt tölugildi, en rangt formerki.',
       },
       {
         text: '-394 kJ',
@@ -243,6 +253,7 @@ export const CHALLENGES: Challenge[] = [
       isReversed: false,
       multiplier: 1,
     },
+    asksForShownDeltaH: true,
     question:
       'A → B (ΔH = -30 kJ), B → C (ΔH = +10 kJ), C → D (ΔH = -30 kJ). Hvað er ΔH fyrir A → D?',
     options: [

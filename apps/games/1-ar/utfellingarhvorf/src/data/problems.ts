@@ -166,7 +166,7 @@ const SOURCES: {
     b: ['Na⁺', 'SO₄²⁻'],
     difficulty: 'thung',
     context:
-      'Strontíum er í sömu lotu og baríum og hegðar sér eins: strontíumsúlfat er líka undantekning frá súlfatreglunni.',
+      'Strontíum er í sama flokki og baríum og hegðar sér eins: strontíumsúlfat er líka undantekning frá súlfatreglunni.',
   },
 ];
 
@@ -229,9 +229,10 @@ export const DRILL_ITEMS: DrillItem[] = DRILL_PAIRS.map(([c, a]) => {
  * The pairs that exist to break a rule-of-thumb, kept together so a test can
  * assert the drill still contains them.
  *
- * Each one is a case where the general rule and the answer disagree: three
- * exceptions that make a normally-soluble ion precipitate, and three
- * exceptions that make a normally-insoluble one dissolve. A drill of only
- * general cases teaches "look at the anion" and nothing else.
+ * Each one is a case where the general rule and the answer disagree: six
+ * exceptions that make a normally-soluble ion precipitate (AgCl, PbI₂, BaSO₄,
+ * CaSO₄, SrSO₄, MgF₂) and one that makes a normally-insoluble ion dissolve,
+ * Ba(OH)₂. A drill of only general cases teaches "look at the anion" and
+ * nothing else.
  */
 export const EXCEPTION_ITEMS = DRILL_ITEMS.filter((d) => d.verdict.byException);

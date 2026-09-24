@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 import { getIndicatorColor } from '../data/indicators';
 import { getPHColor } from '../utils/ph-calculations';
 
@@ -31,10 +33,10 @@ export const Flask: React.FC<FlaskProps> = ({
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative w-48 md:w-60 h-70">
+      <div className="relative w-32 h-46 md:w-60 md:h-70">
         {/* Flask neck */}
         <div
-          className="mx-auto w-12 h-18 rounded-t-lg border-4 border-indigo-500 border-b-0 relative"
+          className="mx-auto w-8 h-10 md:w-12 md:h-18 rounded-t-lg border-4 border-indigo-500 border-b-0 relative"
           style={{
             background: 'linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.7))',
             boxShadow:
@@ -45,8 +47,8 @@ export const Flask: React.FC<FlaskProps> = ({
         {/* Flask body */}
         <div
           role="img"
-          aria-label={`Erlenmeyerkolbi: pH ${pH.toFixed(2)}, ${(volumeAnalyte + volumeTitrant).toFixed(1)} mL lausn — ${pH < 7 ? 'súr' : pH > 7 ? 'basísk' : 'hlutlaus'}`}
-          className={`relative w-48 md:w-60 h-52 border-4 border-indigo-500 overflow-hidden ${isSwirling ? 'animate-pulse' : ''}`}
+          aria-label={`Erlenmeyerkolbi: pH ${formatDecimal(pH, 2)}, ${formatDecimal(volumeAnalyte + volumeTitrant, 1)} mL lausn — ${pH < 7 ? 'súr' : pH > 7 ? 'basísk' : 'hlutlaus'}`}
+          className={`relative w-32 h-36 md:w-60 md:h-52 border-4 border-indigo-500 overflow-hidden ${isSwirling ? 'animate-pulse' : ''}`}
           style={{
             background:
               'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0.75) 100%)',
@@ -87,21 +89,21 @@ export const Flask: React.FC<FlaskProps> = ({
 
       {/* Volume and pH display */}
       <div className="mt-4 flex gap-2 flex-wrap justify-center">
-        <div className="bg-blue-100 px-3 py-1.5 rounded-lg border-2 border-blue-300 text-center">
+        <div className="bg-blue-100 px-2 md:px-3 py-1.5 rounded-lg border-2 border-blue-300 text-center">
           <p className="text-xs text-blue-700 font-semibold">Rúmmál</p>
-          <p className="text-sm font-bold text-blue-900">{totalVolume.toFixed(1)} mL</p>
+          <p className="text-sm font-bold text-blue-900">{formatDecimal(totalVolume, 1)} mL</p>
         </div>
         <div
-          className="px-3 py-1.5 rounded-lg border-2 text-center"
+          className="px-2 md:px-3 py-1.5 rounded-lg border-2 text-center"
           style={{
             backgroundColor: `${solutionColor}20`,
             borderColor: solutionColor !== 'transparent' ? solutionColor : '#cbd5e1',
           }}
         >
           <p className="text-xs text-warm-700 font-semibold">pH</p>
-          <p className="text-sm font-bold text-warm-900">{pH.toFixed(2)}</p>
+          <p className="text-sm font-bold text-warm-900">{formatDecimal(pH, 2)}</p>
         </div>
-        <div className="bg-warm-100 px-3 py-1.5 rounded-lg border-2 border-warm-300 text-center">
+        <div className="bg-warm-100 px-2 md:px-3 py-1.5 rounded-lg border-2 border-warm-300 text-center">
           <p className="text-xs text-warm-700 font-semibold">Eðli</p>
           <p className="text-sm font-bold text-warm-900">
             {pH < 6.5 ? 'Súr' : pH > 7.5 ? 'Basísk' : 'Hlutlaus'}

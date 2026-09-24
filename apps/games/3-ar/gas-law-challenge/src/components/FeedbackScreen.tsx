@@ -1,7 +1,8 @@
 import { formatDecimal } from '@shared/utils';
 
 import { GasLawQuestion, GameMode, GameStats, QuestionFeedback, GAS_LAW_INFO } from '../types';
-import { answerUnit } from '../utils/gas-calculations';
+import { FormulaText } from './FormulaText';
+import { answerText, answerUnit, formatDifference } from '../utils/gas-calculations';
 
 interface FeedbackScreenProps {
   feedback: QuestionFeedback;
@@ -27,10 +28,10 @@ export function FeedbackScreen({
   return (
     <div>
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
-        <main className="max-w-4xl mx-auto px-4 py-8">
-          <div className="bg-white rounded-xl shadow-lg p-8">
+        <main className="max-w-4xl mx-auto px-3 py-4 sm:px-4 sm:py-8">
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8">
             <div
-              className={`text-center mb-6 p-6 rounded-xl ${
+              className={`text-center mb-6 p-4 sm:p-6 rounded-xl ${
                 feedback.isCorrect
                   ? 'bg-green-50 border-2 border-green-300'
                   : 'bg-red-50 border-2 border-red-300'
@@ -38,7 +39,7 @@ export function FeedbackScreen({
             >
               <div className="text-6xl mb-2">{feedback.isCorrect ? '✅' : '❌'}</div>
               <h2
-                className={`text-3xl font-bold mb-2 ${
+                className={`text-2xl sm:text-3xl font-bold mb-2 ${
                   feedback.isCorrect ? 'text-green-800' : 'text-red-800'
                 }`}
               >
@@ -54,7 +55,7 @@ export function FeedbackScreen({
                 <div className="text-3xl mb-1">🎉⭐</div>
                 <p className="font-bold text-yellow-800 text-lg">Þú hefur lokið Gaslögmálum!</p>
                 <p className="text-yellow-700 text-sm">
-                  15 spurningar svaraðar — þú getur haldið áfram til að bæta stigin þín.
+                  15 spurningum svarað — þú getur haldið áfram til að bæta stigin þín.
                 </p>
               </div>
             )}
@@ -63,23 +64,25 @@ export function FeedbackScreen({
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <h3 className="font-bold text-blue-900 mb-2">Þitt svar:</h3>
                 <p className="text-2xl font-bold text-blue-800">
-                  {formatDecimal(feedback.userAnswer, 2)} {answerUnit(currentQuestion)}
+                  {feedback.userAnswer === null
+                    ? '—'
+                    : `${formatDecimal(feedback.userAnswer)} ${answerUnit(currentQuestion)}`}
                 </p>
               </div>
               <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                 <h3 className="font-bold text-green-900 mb-2">Rétt svar:</h3>
                 <p className="text-2xl font-bold text-green-800">
-                  {formatDecimal(feedback.correctAnswer, 2)} {answerUnit(currentQuestion)}
+                  {answerText(currentQuestion)} {answerUnit(currentQuestion)}
                 </p>
               </div>
             </div>
 
-            {!feedback.isCorrect && (
+            {!feedback.isCorrect && feedback.userAnswer !== null && (
               <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200 mb-6">
                 <h3 className="font-bold text-yellow-900 mb-1">Mismunur:</h3>
                 <p className="text-lg text-yellow-800">
-                  {formatDecimal(feedback.difference, 2)} {answerUnit(currentQuestion)} frá réttum
-                  svari
+                  {formatDifference(feedback.userAnswer, currentQuestion.answer)}{' '}
+                  {answerUnit(currentQuestion)} frá réttu svari
                 </p>
               </div>
             )}
@@ -90,21 +93,24 @@ export function FeedbackScreen({
                 {currentQuestion.solution.steps.map((step, idx) => (
                   <div key={idx} className="flex gap-2">
                     <span className="font-bold text-warm-600">{idx + 1}.</span>
-                    <span className="text-warm-700">{step}</span>
+                    <span className="text-warm-700 min-w-0">
+                      <FormulaText text={step} />
+                    </span>
                   </div>
                 ))}
               </div>
               <div className="mt-4 bg-white p-3 rounded border border-warm-300">
                 <p className="text-sm">
-                  <span className="font-bold">Formúla:</span> {currentQuestion.solution.formula}
+                  <span className="font-bold">Formúla:</span>{' '}
+                  <FormulaText text={currentQuestion.solution.formula} />
                 </p>
                 <p className="text-sm">
                   <span className="font-bold">Innsetning:</span>{' '}
-                  {currentQuestion.solution.substitution}
+                  <FormulaText text={currentQuestion.solution.substitution} />
                 </p>
                 <p className="text-sm">
                   <span className="font-bold">Útreikningur:</span>{' '}
-                  {currentQuestion.solution.calculation}
+                  <FormulaText text={currentQuestion.solution.calculation} />
                 </p>
               </div>
             </div>
@@ -143,7 +149,7 @@ export function FeedbackScreen({
               </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => onNext(gameMode)}
                 className="flex-1 py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90"
@@ -153,7 +159,7 @@ export function FeedbackScreen({
               </button>
               <button
                 onClick={onBackToMenu}
-                className="px-6 py-3 bg-warm-600 text-white rounded-lg hover:bg-warm-700 transition font-bold"
+                className="px-6 py-3 bg-warm-600 text-white rounded-lg hover:bg-warm-700 transition font-bold whitespace-nowrap"
               >
                 📊 Valmynd
               </button>

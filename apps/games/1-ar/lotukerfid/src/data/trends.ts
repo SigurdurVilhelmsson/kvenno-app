@@ -1,5 +1,5 @@
 /**
- * Lotubundnar sveiflur — periodic trends.
+ * Lotubundnir eiginleikar — periodic trends.
  *
  * Harvested from `namsbokasafn-leikir` (frozen at `379266e`),
  * `games/1-ar/lotukerfid/src/data/trends.ts`, per Phase 3 of

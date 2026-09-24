@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 
 import { AnimatedMolecule } from '@shared/components';
 import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
@@ -6,6 +6,7 @@ import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
 import { LewisDrawingCanvas } from './LewisDrawingCanvas';
 import { LewisGuidedMode } from './LewisGuidedMode';
 import { lewisToMolecule } from '../utils/lewisConverter';
+import { useRevealOnChange } from '../utils/useRevealOnChange';
 
 interface Level2Props {
   onComplete: (score: number) => void;
@@ -54,10 +55,10 @@ const challenges: Challenge[] = [
     hints: [
       'H getur aðeins myndað 1 tengi, þannig að O verður að vera miðatómið.',
       'Súrefni myndar 2 einföld tengsl við vetni.',
-      'O hefur 2 einstæð rafeindarapör (8 - 4 í tengslum = 4 óbundnar = 2 pör).',
+      'O hefur 2 stök rafeindapör (8 - 4 í tengslum = 4 óbundnar = 2 pör).',
     ],
     finalExplanation:
-      'H₂O: O í miðju með 2 H tengd og 2 einstæð rafeindarapör. Þetta gefur 4 rafeindarapör í kringum O.',
+      'H₂O: O í miðju með 2 H tengd og 2 stök rafeindapör. Þetta gefur 4 rafeindapör í kringum O.',
   },
   {
     id: 2,
@@ -76,10 +77,10 @@ const challenges: Challenge[] = [
     hints: [
       'N hefur 5 gildisrafeindir og getur myndað 3 tengsl.',
       'Þrjú einföld N-H tengsl nota 6 rafeindir.',
-      'N hefur 1 einstætt par (8 - 6 = 2 óbundnar = 1 par).',
+      'N hefur 1 stakt par (8 - 6 = 2 óbundnar = 1 par).',
     ],
     finalExplanation:
-      'NH₃: N í miðju með 3 H tengd og 1 einstætt rafeindarapar. Þetta gerir N tetrahedral en sameindina pýramídalaga.',
+      'NH₃: N í miðju með 3 H tengd og 1 stakt rafeindapar. Þetta gerir N ferflötungslaga en sameindina pýramídalaga.',
   },
   {
     id: 3,
@@ -97,10 +98,10 @@ const challenges: Challenge[] = [
     hints: [
       'C þarf 4 tengsl og hvert O þarf 2 tengsl (fyrir áttu).',
       'Prófaðu tvöföld tengsl milli C og beggja O.',
-      'Hvert O hefur 2 einstæð rafeindarapör. C hefur engin.',
+      'Hvert O hefur 2 stök rafeindapör. C hefur engin.',
     ],
     finalExplanation:
-      'CO₂: O=C=O með tvöföldum tengslum. Hvert O hefur 2 einstæð pör. Þetta er línuleg sameind.',
+      'CO₂: O=C=O með tvöföldum tengslum. Hvert O hefur 2 stök pör. Þetta er línuleg sameind.',
   },
   {
     id: 4,
@@ -120,10 +121,10 @@ const challenges: Challenge[] = [
     hints: [
       'C myndar 4 tengsl og H myndar 1.',
       '4 einföld C-H tengsl nota allar 8 rafeindirnar.',
-      'Engin einstæð pör á neinu atómi.',
+      'Engin stök pör á neinu atómi.',
     ],
     finalExplanation:
-      'CH₄: C í miðju með 4 H tengd. Engin einstæð rafeindarapör. Þetta er tetrahedral sameind.',
+      'CH₄: C í miðju með 4 H tengd. Engin stök rafeindapör. Þetta er ferflötungslaga sameind.',
   },
   {
     id: 5,
@@ -137,16 +138,16 @@ const challenges: Challenge[] = [
       centralUnpairedElectron: true,
     },
     hints: [
-      'Sameindir með oddatölu rafeinda eru róttæki (radicals).',
-      'N=O tvöfalt tengi. O hefur 2 einstæð pör.',
-      'N hefur 1 einstætt par + 1 óparaða rafeind (alls 11 rafeindir).',
+      'Sameindir með oddatölu rafeinda eru stakeindir.',
+      'N=O tvöfalt tengi. O hefur 2 stök pör.',
+      'N hefur 1 stakt par + 1 óparaða rafeind (alls 11 rafeindir).',
     ],
     finalExplanation:
-      'NO: Tvöföld tengsl N=O með óparaðri rafeind á N. Þetta er róttæki og mjög hvarfgjarnt.',
+      'NO: Tvöföld tengsl N=O með óparaðri rafeind á N. Þetta er stakeind og hún er mjög hvarfgjörn.',
   },
   {
     id: 6,
-    title: 'Vetni klóríð (HCl)',
+    title: 'Vetnisklóríð (HCl)',
     molecule: 'HCl',
     totalElectrons: 8,
     correctStructure: {
@@ -157,10 +158,10 @@ const challenges: Challenge[] = [
     hints: [
       'Cl þarf aðeins 1 rafeind til að ná áttureglunni.',
       'Eitt einfalt H-Cl tengi.',
-      'Cl hefur 3 einstæð pör (7 gildisrafeindir - 1 í tengi = 6 = 3 pör).',
+      'Cl hefur 3 stök pör (7 gildisrafeindir - 1 í tengi = 6 = 3 pör).',
     ],
     finalExplanation:
-      'HCl: Einfalt H-Cl tengi. Cl hefur 3 einstæð rafeindarapör. Bæði H og Cl hafa fullt ysta hvolf.',
+      'HCl: Einfalt H-Cl tengi. Cl hefur 3 stök rafeindapör. Bæði H og Cl hafa fullt ysta hvolf.',
   },
   // === OCTET RULE EXCEPTIONS ===
   {
@@ -181,7 +182,7 @@ const challenges: Challenge[] = [
     },
     hints: [
       'B er í hópi 13 og myndar venjulega 3 tengsl.',
-      '3 einföld B-F tengsl. Hvert F hefur 3 einstæð pör.',
+      '3 einföld B-F tengsl. Hvert F hefur 3 stök pör.',
       'B hefur aðeins 6 rafeindir — undantekning frá áttureglunni!',
     ],
     finalExplanation:
@@ -207,8 +208,8 @@ const challenges: Challenge[] = [
     },
     hints: [
       'P er á 3. lotu og getur haft fleiri en 8 rafeindir.',
-      '5 einföld P-Cl tengsl. Hvert Cl hefur 3 einstæð pör.',
-      'P hefur 10 rafeindir — stækkuð átta (expanded octet).',
+      '5 einföld P-Cl tengsl. Hvert Cl hefur 3 stök pör.',
+      'P hefur 10 rafeindir — stækkuð átta.',
     ],
     finalExplanation:
       'PCl₅ er dæmi um stækkaða áttu: Fosfór hefur 10 rafeindir í kringum sig. Þetta er mögulegt vegna þess að P er á 3. lotu og getur notað d-undirhvolf.',
@@ -234,7 +235,7 @@ const challenges: Challenge[] = [
     },
     hints: [
       'S er á 3. lotu og getur haft meira en 8 rafeindir.',
-      '6 einföld S-F tengsl. Hvert F hefur 3 einstæð pör.',
+      '6 einföld S-F tengsl. Hvert F hefur 3 stök pör.',
       'S hefur 12 rafeindir — tvöfalt meira en áttureglan!',
     ],
     finalExplanation:
@@ -257,6 +258,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   const challenge = challenges[currentChallenge];
   const isLastChallenge = currentChallenge === challenges.length - 1;
+  // Also when the tutorial closes: its last button sits far below the board.
+  const cardRef = useRef<HTMLDivElement>(null);
+  useRevealOnChange(cardRef, `${currentChallenge}-${showTutorial}`);
+  // A correct drawing swaps the tall board for a shorter result, so on a small
+  // or landscape screen the "Rétt!" landed above the top of the page.
+  const successRef = useRef<HTMLDivElement>(null);
+  useRevealOnChange(successRef, drawingCorrect);
 
   const molecule = useMemo(() => {
     return lewisToMolecule(challenge.correctStructure, challenge.molecule, challenge.title);
@@ -295,7 +303,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
           >
             <span>&larr;</span> Til baka
           </button>
@@ -320,7 +328,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         {/* Tutorial toggle */}
         {!showTutorial && currentChallenge === 0 && !drawingCorrect && (
           <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl p-4 mb-6 border border-blue-200">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-0">
               <div className="flex items-center gap-3">
                 <span className="text-2xl">📝</span>
                 <div>
@@ -332,7 +340,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               </div>
               <button
                 onClick={() => setShowTutorial(true)}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-all"
+                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-all pointer-coarse:min-h-11"
               >
                 Opna leiðsögn
               </button>
@@ -358,7 +366,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             />
             <button
               onClick={() => setShowTutorial(false)}
-              className="mt-4 w-full bg-warm-200 hover:bg-warm-300 text-warm-700 font-medium py-2 px-4 rounded-lg transition-all"
+              className="mt-4 w-full bg-warm-200 hover:bg-warm-300 text-warm-700 font-medium py-2 px-4 rounded-lg transition-all pointer-coarse:min-h-11"
             >
               Sleppa leiðsögn
             </button>
@@ -367,9 +375,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
         {/* Main content */}
         {!showTutorial && (
-          <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-            <h2 className="text-2xl font-bold text-green-800 mb-2">{challenge.title}</h2>
-            <div className="flex items-center gap-4 mb-6">
+          <div ref={cardRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+            <h2 className="text-lg min-[360px]:text-xl sm:text-2xl font-bold text-green-800 mb-2">
+              {challenge.title}
+            </h2>
+            <div className="flex flex-wrap items-center gap-x-4 mb-6">
               <span className="font-mono text-3xl font-bold text-indigo-600">
                 {challenge.molecule}
               </span>
@@ -386,7 +396,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   <div className="flex justify-center gap-2 mb-3">
                     <button
                       onClick={() => setViewMode('2d')}
-                      className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                      className={`px-4 py-1.5 pointer-coarse:min-h-11 rounded-lg text-sm font-medium transition-colors ${
                         viewMode === '2d'
                           ? 'bg-green-600 text-white'
                           : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
@@ -396,7 +406,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     </button>
                     <button
                       onClick={() => setViewMode('3d')}
-                      className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                      className={`px-4 py-1.5 pointer-coarse:min-h-11 rounded-lg text-sm font-medium transition-colors ${
                         viewMode === '3d'
                           ? 'bg-green-600 text-white'
                           : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
@@ -430,7 +440,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                           backgroundColor="#f9fafb"
                         />
                         <div className="text-xs text-warm-500 text-center mt-2">
-                          Dragðu til að snúa, skrollaðu til að stækka
+                          {/* A wheel does not exist on a phone: zoom there is a pinch. */}
+                          <span className="pointer-coarse:hidden">
+                            Dragðu til að snúa, skrollaðu til að stækka
+                          </span>
+                          <span className="hidden pointer-coarse:inline">
+                            Dragðu til að snúa, notaðu tvo fingur til að stækka
+                          </span>
                         </div>
                       </div>
                     )}
@@ -453,7 +469,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                           <div className="w-1.5 h-1.5 rounded-full bg-blue-600" />
                           <div className="w-1.5 h-1.5 rounded-full bg-blue-600" />
                         </div>
-                        <span>Einstætt par</span>
+                        <span>Stakt par</span>
                       </div>
                     </div>
 
@@ -471,7 +487,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                             <span className="text-lg">⚠️</span>
                             {challenge.correctStructure.octetException === 'electron-deficient' && (
                               <span>
-                                Rafeindaskort: {challenge.correctStructure.centralAtom} hefur{' '}
+                                Rafeindaskortur: {challenge.correctStructure.centralAtom} hefur{' '}
                                 {challenge.correctStructure.centralElectrons} rafeindir
                               </span>
                             )}
@@ -488,7 +504,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 </div>
 
                 {/* Success + explanation */}
-                <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-4">
+                <div
+                  ref={successRef}
+                  className="bg-green-50 border border-green-200 rounded-xl p-4 mb-4"
+                >
                   <div className="font-bold text-green-800 mb-1">Rétt!</div>
                   <p className="text-sm text-green-900">+15 stig</p>
                 </div>
@@ -534,7 +553,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   {hintsRevealed < challenge.hints.length && (
                     <button
                       onClick={revealHint}
-                      className="text-green-600 hover:text-green-800 text-sm underline"
+                      className="text-green-600 hover:text-green-800 text-sm underline pointer-coarse:min-h-11"
                     >
                       {hintsRevealed === 0 ? 'Sýna vísbendingu' : 'Sýna fleiri vísbendingar'}
                     </button>
@@ -551,7 +570,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           <ol className="text-sm text-warm-600 space-y-1 list-decimal list-inside">
             <li>Finndu miðatóm (oftast það sem hefur flest tengsl, aldrei H)</li>
             <li>Teiknaðu tengsl til allra ytri atóma (smelltu á strikin)</li>
-            <li>Dreifðu eftirstandandi rafeindum sem einstæð pör</li>
+            <li>Dreifðu eftirstandandi rafeindum sem stök pör</li>
             <li>Breyttu í tvöföld/þreföld tengsl ef þarf til að uppfylla átturegluna</li>
           </ol>
         </div>
@@ -568,9 +587,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 <div
                   className={`p-3 rounded-lg ${challenge.correctStructure.octetException === 'electron-deficient' ? 'bg-orange-100 border-2 border-orange-300' : 'bg-white'}`}
                 >
-                  <div className="font-bold text-orange-700">
-                    Rafeindaskort (Electron Deficient)
-                  </div>
+                  <div className="font-bold text-orange-700">Rafeindaskortur</div>
                   <div className="text-warm-600">
                     Atóm eins og B og Al hafa færri en 8 rafeindir
                   </div>
@@ -581,7 +598,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 <div
                   className={`p-3 rounded-lg ${challenge.correctStructure.octetException === 'expanded-octet' ? 'bg-purple-100 border-2 border-purple-300' : 'bg-white'}`}
                 >
-                  <div className="font-bold text-purple-700">Stækkuð átta (Expanded Octet)</div>
+                  <div className="font-bold text-purple-700">Stækkuð átta</div>
                   <div className="text-warm-600">
                     Atóm á 3. lotu+ geta haft fleiri en 8 rafeindir (nota d-undirhvolf)
                   </div>
@@ -590,7 +607,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   </div>
                 </div>
                 <div className="p-3 rounded-lg bg-white">
-                  <div className="font-bold text-red-700">Oddatala rafeinda (Radicals)</div>
+                  <div className="font-bold text-red-700">Oddatala rafeinda (stakeindir)</div>
                   <div className="text-warm-600">
                     Sameindir með oddatölu rafeinda hafa óparaða rafeind
                   </div>

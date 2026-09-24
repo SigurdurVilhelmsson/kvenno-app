@@ -72,14 +72,14 @@ export function QKComparison({
       if (isExothermic) {
         return {
           qEffect: 'Q er óbreytt',
-          kEffect: 'K minnkar við hærra hita',
-          reason: 'Fyrir varmalosandi hvörf lækkar K við hækkun hitastigs',
+          kEffect: 'K minnkar við hærra hitastig',
+          reason: 'Fyrir útvermin hvörf lækkar K við hækkun hitastigs',
         };
       } else {
         return {
           qEffect: 'Q er óbreytt',
-          kEffect: 'K eykst við hærra hita',
-          reason: 'Fyrir varmabindandi hvörf hækkar K við hækkun hitastigs',
+          kEffect: 'K eykst við hærra hitastig',
+          reason: 'Fyrir innvermin hvörf hækkar K við hækkun hitastigs',
         };
       }
     }
@@ -88,14 +88,14 @@ export function QKComparison({
       if (isExothermic) {
         return {
           qEffect: 'Q er óbreytt',
-          kEffect: 'K eykst við lægra hita',
-          reason: 'Fyrir varmalosandi hvörf hækkar K við lækkun hitastigs',
+          kEffect: 'K eykst við lægra hitastig',
+          reason: 'Fyrir útvermin hvörf hækkar K við lækkun hitastigs',
         };
       } else {
         return {
           qEffect: 'Q er óbreytt',
-          kEffect: 'K minnkar við lægra hita',
-          reason: 'Fyrir varmabindandi hvörf lækkar K við lækkun hitastigs',
+          kEffect: 'K minnkar við lægra hitastig',
+          reason: 'Fyrir innvermin hvörf lækkar K við lækkun hitastigs',
         };
       }
     }
@@ -154,7 +154,7 @@ export function QKComparison({
     return {
       qEffect: 'Q breytist',
       kEffect: 'K er óbreytt',
-      reason: 'Kerfið leitast við að jafnvægi',
+      reason: 'Kerfið leitast við að ná jafnvægi',
     };
   }, [stress, isExothermic, gasMoles]);
 
@@ -178,20 +178,20 @@ export function QKComparison({
   };
 
   return (
-    <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 rounded-xl border border-indigo-200">
+    <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-3 sm:p-4 rounded-xl border border-indigo-200">
       <div className="font-bold text-indigo-800 mb-3 flex items-center gap-2">
         <span className="text-lg">⚖️</span> Q vs K samanburður
       </div>
 
       {/* Visual Bar Comparison */}
-      <div className="bg-white rounded-lg p-4 mb-4">
+      <div className="bg-white rounded-lg p-3 sm:p-4 mb-4">
         <div className="space-y-3">
           {/* Q bar */}
           <div className="flex items-center gap-3">
             <div className="w-8 text-right font-mono font-bold text-blue-600">Q</div>
             <div className="flex-1 bg-warm-200 rounded-full h-6 overflow-hidden">
               <div
-                className={`h-full ${getBarColor('q')} rounded-full transition-all duration-700 flex items-center justify-end pr-2`}
+                className={`h-full min-w-fit ${getBarColor('q')} rounded-full transition-all duration-700 flex items-center justify-end pr-2 pl-2`}
                 style={{ width: `${qWidth}%` }}
               >
                 <span className="text-xs text-white font-semibold">
@@ -206,7 +206,7 @@ export function QKComparison({
             <div className="w-8 text-right font-mono font-bold text-purple-600">K</div>
             <div className="flex-1 bg-warm-200 rounded-full h-6 overflow-hidden">
               <div
-                className={`h-full ${getBarColor('k')} rounded-full transition-all duration-700 flex items-center justify-end pr-2`}
+                className={`h-full min-w-fit ${getBarColor('k')} rounded-full transition-all duration-700 flex items-center justify-end pr-2 pl-2`}
                 style={{ width: `${kWidth}%` }}
               >
                 <span className="text-xs text-white font-semibold">
@@ -234,7 +234,8 @@ export function QKComparison({
       {/* Educational explanation */}
       <div className="space-y-3 text-sm">
         {/* What happened to Q and K */}
-        <div className="grid grid-cols-2 gap-3">
+        {/* One column on a phone: "K (jafnvægisfasti)" does not fit half of it. */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="bg-blue-50 rounded-lg p-2 border border-blue-200">
             <div className="font-semibold text-blue-800 text-xs mb-1">Q (hvarfstuðull)</div>
             <div className="text-blue-700">{explanation.qEffect}</div>

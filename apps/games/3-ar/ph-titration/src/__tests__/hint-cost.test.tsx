@@ -24,8 +24,8 @@ function startLevel() {
 }
 
 // Options are shuffled at render, so the correct one is found by its text.
-// Challenge 1's answer is curve A: strong acid, equivalence at pH 7.
-const CORRECT_OPTION = /Kúrfa A: pH byrjar lágt/;
+// Challenge 1's answer is the curve that starts near pH 1: strong acid, equivalence at pH 7.
+const CORRECT_OPTION = /pH byrjar lágt \(~1\)/;
 
 function revealEveryHint() {
   // The tier button is labelled "Vísbending n/4: ...". Four tiers exist, and

@@ -5,8 +5,8 @@ Year 3, chain position 4 of 8: **Gaslögmál → Jafnvægisfastinn → Hliðrun 
 Phase 5 of `docs/plans/2026-08-16-games-roadmap.md`, the Ka/Kb gap. Started 2026-08-29,
 finished 2026-09-03 once the four blocking rulings came in.
 
-**Status: complete and registered.** Four phases, 76 tests, in `build-games.mjs`, on the
-GamesHub card, and in the `Námsleiðin` chain of all five sibling Y3 games.
+**Status: complete and registered.** Four phases, in `build-games.mjs`, on the GamesHub card,
+and in the `Námsleiðin` chain of all seven sibling Y3 games.
 
 ## What it fills, measured
 
@@ -23,9 +23,10 @@ So the platform went from "equilibrium shifts left or right" straight to "here i
 substitute it". Nothing in between said what Ka **is**. `sýrufasti` — the glossary's own
 word for it — had zero occurrences platform-wide.
 
-**Still open, and deliberately not fixed here:** `equilibrium-shifter` remains entirely
-qualitative. The scope ruling was the weak-acid case only, so general Kc/Kp and ICE for
-arbitrary equilibria are untouched. That gap is real and is the obvious next Phase 5 item.
+**Deliberately not done here, and since closed elsewhere:** the scope ruling was the weak-acid
+case only, so general Kc/Kp and ICE for arbitrary equilibria were left out. Both landed on
+2026-09-20 — `3-ar/jafnvaegisfasti` (Kc, Kp and ICE) and a quantitative pass on
+`equilibrium-shifter` — so the table above describes the platform as measured on 2026-08-29.
 
 ## The four rulings this was blocked on
 
@@ -41,7 +42,7 @@ Siggi, 2026-09-03:
 4. **Grade on the approximation, by the 5 % rule.** See below.
 
 Scope and placement were ruled earlier (2026-08-29): the **weak-acid case only**, placed
-immediately after Jafnvægi — following the concept it extends rather than sitting next to
+immediately after Jafnvægi (the node now labelled Hliðrun jafnvægis) — following the concept it extends rather than sitting next to
 the game that consumes it.
 
 ## The grading ruling, and why it was the right call
@@ -188,17 +189,54 @@ src/engine/ka.ts              equilibrium maths; no React, no Icelandic
 src/engine/grade.ts           the grading ruling, and the tolerances it implies
 src/data/acids.ts             acids, with protons / nameEstablished / answerability guards
 src/data/problems.ts          the Æfa and Beita sets, generated from the engine
-src/components/               ExploreScreen, UnderstandScreen, PracticeScreen, ApplyScreen, KlofnunBar
-src/__tests__/                76 tests across ka, grade, problems, chain-string
+src/components/               ExploreScreen, UnderstandScreen, PracticeScreen, ApplyScreen, KlofnunBar,
+                              ScientificKeys
+src/utils/reveal.ts           brings a verdict, a first measurement or a new Skilja step on screen, only when off it
+src/__tests__/                ka, grade, problems, chain-string, phone-input, wording
 ```
+
+## Playing on a phone
+
+**The answer fields keep the decimal keypad, and two keys make up what it lacks.** Æfa's first
+step and Beita's Ka and Kb are answered in scientific notation — the placeholder and the hints
+show `1,3e-3` and `1,8e-5`, which is what `parseStudentNumber` reads — but a phone's decimal
+keypad has no `e`, and an iPhone's has no minus either. Without them the only route to Beita's Kb
+(5,6 × 10⁻¹⁰) was typing nine zeros. `ScientificKeys` puts an `e` key and a `−` key beside those
+fields on touch screens only (`pointer-coarse:`), inserting at the caret without taking focus from
+the field, so the keypad stays up. Desktop is unchanged. `phone-input.test.tsx` plays Æfa's x and
+Beita's Ka and Kb through the keys, and asserts that every scientific answer in the game can be
+keyed with keypad characters plus those two.
+
+`revealIfBelowFold` exists because Beita's verdict renders under the klofnun bar: on a phone held
+sideways and at 320 × 568 it landed below the bottom edge, so tapping "Svara" appeared to do
+nothing. It scrolls only when the verdict is off screen and allows for the sticky header. Kanna
+uses it for the first measurement, whose table row opens under the concentration buttons.
+`revealTopIfAbove` is the same guard for Skilja: its step buttons sit under the step, so on a phone
+the next step opened with its heading already scrolled past. It scrolls back to the heading only
+when the heading is above the visible area.
 
 ## Tests
 
-61. They check the engine against literature values rather than against itself: the exact
-    root satisfies `x² + Ka·x − Ka·C = 0`; the approximation always overestimates `[H⁺]`;
-    `approximationValid` flips exactly at 5 %; `Ka·Kb = Kw` for every acid; `kaFromMeasuredPH`
-    round-trips; non-physical inputs throw rather than returning `NaN`; the quoted pH reproduces
-    pH Títrun's stored 2,87 and 11,13; every Apply problem accepts its own answer and rejects
-    zero, double, half and `NaN`; every number in student-facing text uses the Icelandic decimal
-    comma; and `chain-string.test.ts` asserts all six Y3 games print the same `Námsleiðin` and
-    that every game the build script emits has an entry — which nothing enforced before.
+They check the engine against literature values rather than against itself: the exact root
+satisfies `x² + Ka·x − Ka·C = 0`; the approximation always overestimates `[H⁺]`;
+`approximationValid` flips exactly at 5 %; `Ka·Kb = Kw` for every acid; `kaFromMeasuredPH`
+round-trips; non-physical inputs throw rather than returning `NaN`; the quoted pH reproduces
+pH Títrun's stored 2,87 and 11,13; every Apply problem accepts its own answer and rejects zero,
+double, half and `NaN`; every number in student-facing text uses the Icelandic decimal comma; and
+`chain-string.test.ts` asserts all eight Y3 games print the same `Námsleiðin` and that every game
+the build script emits has an entry — which nothing enforced before.
+
+`wording.test.tsx` holds the on-screen sentences to the numbers beside them. Each case was wrong
+on screen until 2026-09-23: Æfa's pH misconception described the opposite mistake (a forgotten
+minus gives a _negative_ number, and the slot now names it only when the answer is negative); Æfa's
+x misconception told every wrong answer, a merely rounded one included, that it had forgotten the
+square root (it now names that only for Ka · C, and "C itself" only for C); Æfa's check printed fenól's 0,0011 % as `0,00 %` above a bar saying 0,0011 %; Skilja called 2,87 and 2,88
+"sama svar"; Beita wrote `10⁻²·⁸⁷` with the multiplication dot as its decimal separator; four
+strings put `nálgunin` in the nominative before `má nota`; Kanna called the most dilute solution
+the weakest; the menu said vinegar is "örfá prósent" dissociated, where the engine gives under
+one percent; Beita's klofnun misconception said 1,3 × 10⁻³ meant a forgotten ×100, which was true
+only while that problem was fenól at 1,0 M (at 0,100 M, x · 100 is 0,13, not 1,33); and apply-ka's
+explanation, shown to right and wrong answers alike, told every student what "your calculation"
+gave.
+
+The suite carries no count here: the two this file used to state had both gone stale.

@@ -12,12 +12,13 @@
  * to a guess before reading it.
  */
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { KlofnunBar } from './KlofnunBar';
 import { EXPLORABLE_ACIDS, exploreSeries } from '../data/problems';
 import { percentDissociation } from '../engine/grade';
 import { kaFromMeasuredPH, solveWeakAcid } from '../engine/ka';
+import { revealIfBelowFold } from '../utils/reveal';
 
 const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');
 
@@ -67,13 +68,26 @@ export function ExploreScreen({ onComplete, onBack }: ExploreScreenProps) {
 
   const enough = rows.length >= 3;
 
+  // On a phone the table opens under the concentration buttons, below the
+  // bottom edge, so the first measurement looked as if nothing had happened.
+  const tableRef = useRef<HTMLTableElement>(null);
+  useEffect(() => {
+    if (rows.length === 0) return;
+    const table = tableRef.current;
+    revealIfBelowFold(table?.querySelector<HTMLElement>('tbody tr') ?? null, table);
+  }, [rows.length]);
+
   return (
     <div className="mx-auto max-w-3xl">
-      <button type="button" onClick={onBack} className="mb-4 text-warm-600 hover:text-warm-800">
+      <button
+        type="button"
+        onClick={onBack}
+        className="mb-4 text-warm-600 hover:text-warm-800 pointer-coarse:-my-2.5 pointer-coarse:py-2.5"
+      >
         ← Til baka
       </button>
 
-      <div className="rounded-lg bg-white p-6 shadow-md md:p-8">
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
         <h2 className="mb-2 text-2xl font-bold text-warm-800">Kanna: hvaðan kemur Ka?</h2>
         <p className="mb-6 text-warm-600">
           Þú ert með sýru og pH-mæli. Mældu nokkrar lausnir af sömu sýru, hverja með sínum styrk, og
@@ -108,7 +122,7 @@ export function ExploreScreen({ onComplete, onBack }: ExploreScreenProps) {
                 type="button"
                 onClick={() => measure(concentration)}
                 disabled={measured.includes(concentration)}
-                className={`game-btn rounded-lg px-4 py-2 text-sm transition-colors ${
+                className={`game-btn rounded-lg px-4 py-2 text-sm transition-colors pointer-coarse:min-h-11 ${
                   measured.includes(concentration)
                     ? 'cursor-default bg-warm-100 text-warm-400'
                     : 'bg-kvenno-orange text-white hover:bg-kvenno-orange-dark'
@@ -122,33 +136,43 @@ export function ExploreScreen({ onComplete, onBack }: ExploreScreenProps) {
 
         {rows.length > 0 && (
           <div className="fade-in mb-6 overflow-x-auto">
-            <table className="w-full text-sm">
+            {/* On the narrowest phones the four columns fit only at 12 px, and
+                the column that would otherwise scroll out of sight is Ka's. */}
+            <table ref={tableRef} className="w-full text-sm max-[359px]:text-xs">
               <caption className="sr-only">
                 Mældar lausnir: styrkur, pH, styrkur vetnisjóna og reiknaður sýrufasti
               </caption>
               <thead>
                 <tr className="border-b border-warm-200 text-left text-warm-600">
-                  <th scope="col" className="py-2 pr-3">
+                  <th scope="col" className="py-2 pr-1.5 sm:pr-3">
                     C (mól/L)
                   </th>
-                  <th scope="col" className="py-2 pr-3">
+                  <th scope="col" className="py-2 pr-1.5 sm:pr-3">
                     Mælt pH
                   </th>
-                  <th scope="col" className="py-2 pr-3">
+                  <th scope="col" className="py-2 pr-1.5 sm:pr-3">
                     [H⁺]
                   </th>
                   <th scope="col" className="py-2">
-                    Ka = x² / (C − x)
+                    Ka = x² / <span className="whitespace-nowrap">(C − x)</span>
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {rows.map((r) => (
                   <tr key={r.c} className="border-b border-warm-100">
-                    <td className="py-2 pr-3">{fmt(r.c, 3)}</td>
-                    <td className="py-2 pr-3 font-semibold text-kvenno-orange">{fmt(r.pH, 2)}</td>
-                    <td className="py-2 pr-3 text-warm-600">{sci(r.h)}</td>
-                    <td className="py-2 font-semibold text-green-700">{sci(r.ka)}</td>
+                    <td className="py-2 pr-1.5 sm:pr-3">{fmt(r.c, 3)}</td>
+                    <td className="py-2 pr-1.5 font-semibold text-kvenno-orange sm:pr-3">
+                      {fmt(r.pH, 2)}
+                    </td>
+                    {/* A number in scientific notation is one token: it must not
+                        break at the spaces around × on a phone. */}
+                    <td className="whitespace-nowrap py-2 pr-1.5 text-warm-600 sm:pr-3">
+                      {sci(r.h)}
+                    </td>
+                    <td className="whitespace-nowrap py-2 font-semibold text-green-700">
+                      {sci(r.ka)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -156,7 +180,7 @@ export function ExploreScreen({ onComplete, onBack }: ExploreScreenProps) {
 
             <div className="mt-4">
               <p className="mb-2 text-sm font-semibold text-warm-700">
-                Hversu mikið af sýrunni klofnaði í veikustu lausninni?
+                Hversu mikið af sýrunni klofnaði í þynnstu lausninni?
               </p>
               <KlofnunBar
                 percent={rows[rows.length - 1].pct}

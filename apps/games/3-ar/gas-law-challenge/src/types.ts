@@ -34,7 +34,7 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
     nameIs: 'Kjörgaslögmálið',
     formula: 'PV = nRT',
     description: 'Tengir þrýsting, rúmmál, mól og hitastig',
-    constants: 'R = 0,08206 L·atm/(mol·K)',
+    constants: 'R = 0,08206 L·atm/(mól·K)',
     principleIs:
       'Gasagnir hreyfast stöðugt og rekast á veggi ílátsins. PV = nRT tengir saman fjölda árekstra (P), plássið sem agnirnar hafa (V), fjölda agna (n) og hraðann þeirra (T). R er fastinn sem gerir einingarnar samstæðar.',
   },
@@ -45,7 +45,7 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
     description: 'Þrýstingur og rúmmál eru í andhverfu hlutfalli',
     constants: 'T og n eru fastar',
     principleIs:
-      'Ef þú minnkar rúmmálið (V↓) án þess að breyta hitastigi eða fjölda agna, þá þurfa sömu agnir að rekast við minni veggi á styttri tíma → fleiri árekstur á fermetra → hærri þrýstingur. P og V eru því í andhverfu hlutfalli: þegar annað tvöfaldast, helmingast hitt.',
+      'Ef þú minnkar rúmmálið (V↓) án þess að breyta hitastigi eða fjölda agna, þá þurfa sömu agnir að rekast við minni veggi á styttri tíma → fleiri árekstrar á fermetra → hærri þrýstingur. P og V eru því í andhverfu hlutfalli: þegar annað tvöfaldast, helmingast hitt.',
   },
   charles: {
     id: 'charles',
@@ -63,11 +63,11 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
     description: 'Þrýstingur og hitastig eru í beinu hlutfalli',
     constants: 'V og n eru fastar',
     principleIs:
-      'Í lokuðu íláti (V fast) gera hraðari agnir harðari árekstur við veggina. Hærra T → harðari árekstur → hærri P. Þess vegna sprenga loftkútar þegar þeir ofhitna.',
+      'Í lokuðu íláti (V fast) gera hraðari agnir harðari árekstur við veggina. Hærra T → harðari árekstur → hærri P. Þess vegna springa loftkútar þegar þeir ofhitna.',
   },
   combined: {
     id: 'combined',
-    nameIs: 'Sameinuð gaslögmál',
+    nameIs: 'Sameinaða gaslögmálið',
     formula: 'P₁V₁/T₁ = P₂V₂/T₂',
     description: 'Sameinar Boyles, Charles og Gay-Lussac',
     constants: 'n er fast',
@@ -81,7 +81,7 @@ export const GAS_LAW_INFO: Record<GasLaw, GasLawInfo> = {
     description: 'Rúmmál og mólfjöldi eru í beinu hlutfalli',
     constants: 'P og T eru fastar',
     principleIs:
-      'Við sama þrýsting og hitastig þurfa fleiri agnir (n↑) meira pláss til að halda sama árekstri á fermetra. Þess vegna hefur 1 mól af hvaða gasi sem er sama rúmmál við staðalskilyrði (22,4 L við STP).',
+      'Við sama þrýsting og hitastig þurfa fleiri agnir (n↑) meira pláss til að halda sama árekstri á fermetra. Þess vegna hefur 1 mól af hvaða gasi sem er sama rúmmál við staðalaðstæður (22,4 L við STP).',
   },
 };
 
@@ -141,9 +141,10 @@ export interface QuestionFeedback {
   isCorrect: boolean;
   message: string;
   points: number;
-  userAnswer: number;
+  /** `null` when the challenge time ran out before a readable answer was given. */
+  userAnswer: number | null;
   correctAnswer: number;
-  difference: number;
+  difference: number | null;
   explanation: string;
 }
 

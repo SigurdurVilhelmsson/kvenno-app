@@ -144,7 +144,7 @@ const SOURCES: SaltSource[] = [
     cation: 'Sr²⁺',
     anion: 'CO₃²⁻',
     colour: 'hvítt',
-    context: 'Notað í flugelda til að gefa rauðan lit. Nánast sama Ksp og silfurkarbónat en 1:1.',
+    context: 'Notað í flugelda til að gefa rauðan lit.',
   },
   {
     formula: 'FeCO₃',

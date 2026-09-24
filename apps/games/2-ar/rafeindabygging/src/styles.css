@@ -25,8 +25,12 @@
   @apply bg-white border-2 border-gray-200 rounded-xl p-4 cursor-pointer transition-all duration-200;
 }
 
-.quantum-card:hover {
-  @apply shadow-lg border-teal-400;
+/* Hover only where a real pointer hovers: on a phone :hover sticks after a tap,
+   so a card tapped off again would keep a teal border and still look chosen. */
+@media (hover: hover) and (pointer: fine) {
+  .quantum-card:hover {
+    @apply shadow-lg border-teal-400;
+  }
 }
 
 .quantum-card.selected {
@@ -51,8 +55,10 @@
   @apply w-full p-4 rounded-xl border-2 border-gray-200 bg-white text-left font-mono transition-all duration-200 cursor-pointer;
 }
 
-.mc-option:hover:not(:disabled) {
-  @apply border-teal-400 shadow-md;
+@media (hover: hover) and (pointer: fine) {
+  .mc-option:hover:not(:disabled) {
+    @apply border-teal-400 shadow-md;
+  }
 }
 
 .mc-option.correct {

@@ -1,4 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
+
+import { useContainerWidth } from '@shared/components/ResponsiveContainer';
+import { formatDecimal } from '@shared/utils';
 
 interface PathStep {
   label: string;
@@ -50,7 +53,7 @@ const EXAMPLES: PathExample[] = [
       },
     ],
     explanation:
-      'Hvort sem kolefni brennur beint í CO₂ eða fyrst í CO og síðan í CO₂, er heildarorkubreytingin sú sama: -393.5 kJ',
+      'Hvort sem kolefni brennur beint í CO₂ eða fyrst í CO og síðan í CO₂, er heildarorkubreytingin sú sama: -393,5 kJ',
   },
   {
     id: 'water-formation',
@@ -78,7 +81,7 @@ const EXAMPLES: PathExample[] = [
       },
     ],
     explanation:
-      'Vatn getur myndast beint sem vökvi eða fyrst sem gufa sem síðan þéttist. Heildarorkan er alltaf -285.8 kJ',
+      'Vatn getur myndast beint sem vökvi eða fyrst sem gufa sem síðan þéttist. Heildarorkan er alltaf -285,8 kJ',
   },
   {
     id: 'ammonia',
@@ -126,8 +129,29 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
   const [animating, setAnimating] = useState(false);
   const [showOverlay, setShowOverlay] = useState(true);
 
-  const height = compact ? 200 : 280;
-  const width = 450;
+  // The drawing is laid out 450 units wide. Where its box is narrower (a phone, about 260 px),
+  // it is laid out at the box's own width instead of being scaled down, so its labels keep a
+  // readable size rather than shrinking to 5 px; the desktop drawing is unchanged.
+  const svgWrapRef = useRef<HTMLDivElement>(null);
+  const containerWidth = useContainerWidth(svgWrapRef);
+  const preferredWidth = 450;
+  const narrow = containerWidth !== null && containerWidth < preferredWidth;
+  const width = narrow ? Math.max(220, Math.floor(containerWidth)) : preferredWidth;
+  const height = narrow ? (compact ? 240 : 280) : compact ? 200 : 280;
+  // Narrow layout: tighter side margins, larger type, and the second path's step values
+  // below its points so they cannot collide with the first path's, which sit above.
+  const startX = narrow ? 44 : 60;
+  const endX = narrow ? width - 28 : width - 60;
+  const lineStartX = narrow ? 34 : 40;
+  const lineEndX = narrow ? width - 8 : width - 20;
+  const stepFont = narrow ? 12 : 9;
+  const smallFont = narrow ? 12 : 10;
+  const labelFont = narrow ? 13 : 11;
+  // At phone size the labels sit closer to the other path's line; a dark outline in the
+  // box's own colour keeps them readable where a line runs through them.
+  const halo = narrow
+    ? { stroke: '#1c1813', strokeWidth: 4, strokeLinejoin: 'round' as const, paintOrder: 'stroke' }
+    : {};
 
   // Calculate energy scale
   const allEnergies = useMemo(() => {
@@ -155,8 +179,6 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
   const pathsData = useMemo(() => {
     return selectedExample.paths.map((path, pathIndex) => {
       const totalSteps = path.steps.length;
-      const startX = 60;
-      const endX = width - 60;
       const stepWidth = (endX - startX) / (totalSteps + 0.5);
 
       let cumulative = 0;
@@ -202,7 +224,28 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
       return { path, points, d };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: energyToY is derived from existing deps
-  }, [selectedExample, width, height, showOverlay]);
+  }, [selectedExample, width, height, showOverlay, startX, endX]);
+
+  // A step's ΔH value. Wide: above its point. Narrow: the second path's go below its points,
+  // so the two paths' values cannot land on each other.
+  const stepLabel = (
+    path: ReactionPath,
+    pathIndex: number,
+    point: { x: number; y: number; deltaH: number }
+  ) => (
+    <text
+      x={point.x}
+      y={narrow && pathIndex > 0 ? point.y + 22 : point.y - 12}
+      fill={path.color}
+      fontSize={stepFont}
+      textAnchor="middle"
+      fontWeight="bold"
+      {...halo}
+    >
+      {point.deltaH > 0 ? '+' : ''}
+      {point.deltaH.toFixed(0)}
+    </text>
+  );
 
   const handleExampleChange = (example: PathExample) => {
     setSelectedExample(example);
@@ -221,23 +264,30 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
     <div
       className={`bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-200 ${compact ? 'p-4' : 'p-6'}`}
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
         <h3
           className={`font-bold text-indigo-800 flex items-center gap-2 ${compact ? 'text-base' : 'text-lg'}`}
         >
           <span>🔀</span> Ástandsfall: Mismunandi leiðir
         </h3>
-        <div className="flex items-center gap-2">
-          <label className="text-xs text-warm-600">Sýna saman:</label>
-          <button
-            onClick={() => setShowOverlay(!showOverlay)}
-            className={`w-10 h-5 rounded-full transition-colors ${showOverlay ? 'bg-indigo-500' : 'bg-warm-300'}`}
+        {/* One switch, label included, so the whole row is the touch target and the switch
+            has an accessible name. */}
+        <button
+          type="button"
+          role="switch"
+          aria-checked={showOverlay}
+          onClick={() => setShowOverlay(!showOverlay)}
+          className="flex shrink-0 items-center gap-2 pointer-coarse:min-h-11"
+        >
+          <span className="text-xs text-warm-600">Sýna saman:</span>
+          <span
+            className={`flex w-10 h-5 shrink-0 items-center rounded-full transition-colors ${showOverlay ? 'bg-indigo-500' : 'bg-warm-300'}`}
           >
-            <div
+            <span
               className={`w-4 h-4 rounded-full bg-white transform transition-transform ${showOverlay ? 'translate-x-5' : 'translate-x-0.5'}`}
             />
-          </button>
-        </div>
+          </span>
+        </button>
       </div>
 
       {/* Example selector */}
@@ -246,7 +296,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
           <button
             key={example.id}
             onClick={() => handleExampleChange(example)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+            className={`px-3 py-1.5 pointer-coarse:min-h-11 rounded-lg text-sm font-medium transition-all ${
               selectedExample.id === example.id
                 ? 'bg-indigo-600 text-white'
                 : 'bg-white text-warm-700 hover:bg-indigo-100 border border-warm-200'
@@ -265,7 +315,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
           <span className="text-green-700">{selectedExample.products}</span>
         </div>
         <div className="text-lg font-bold text-indigo-600 mt-1">
-          ΔH = {selectedExample.totalDeltaH} kJ
+          ΔH = {formatDecimal(selectedExample.totalDeltaH)} kJ
         </div>
       </div>
 
@@ -275,7 +325,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
           <button
             key={path.id}
             onClick={() => togglePath(path.id)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all border-2 ${
+            className={`flex items-center gap-2 px-3 py-2 pointer-coarse:min-h-11 rounded-lg text-sm font-medium transition-all border-2 ${
               visiblePaths.includes(path.id) ? 'bg-white shadow-xs' : 'bg-warm-100 opacity-50'
             }`}
             style={{
@@ -290,156 +340,169 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
       </div>
 
       {/* SVG Diagram */}
-      <div className="bg-warm-900 rounded-xl p-4 mb-4">
-        <svg
-          width="100%"
-          viewBox={`0 0 ${width} ${height}`}
-          className="overflow-visible"
-          role="img"
-          aria-label="Samanburður á orkuleiðum: bein leið og óbein leið gefa sömu orkubreytingu"
-        >
-          <title>Orkuleið samanburður (Lögmál Hess)</title>
-          {/* Grid */}
-          <defs>
-            <pattern id="state-grid" width="30" height="30" patternUnits="userSpaceOnUse">
-              <path
-                d="M 30 0 L 0 0 0 30"
-                fill="none"
-                stroke="#374151"
-                strokeWidth="0.5"
-                opacity="0.2"
-              />
-            </pattern>
-          </defs>
-          <rect width={width} height={height} fill="url(#state-grid)" />
-
-          {/* Zero line */}
-          <line
-            x1="40"
-            y1={energyToY(0)}
-            x2={width - 20}
-            y2={energyToY(0)}
-            stroke="#6b7280"
-            strokeWidth="1"
-            strokeDasharray="4,4"
-          />
-          <text x="20" y={energyToY(0) + 4} fill="#9ca3af" fontSize="10" textAnchor="middle">
-            0
-          </text>
-
-          {/* Target line (final energy) */}
-          <line
-            x1="40"
-            y1={energyToY(selectedExample.totalDeltaH)}
-            x2={width - 20}
-            y2={energyToY(selectedExample.totalDeltaH)}
-            stroke="#a855f7"
-            strokeWidth="2"
-            strokeDasharray="8,4"
-          />
-          <text
-            x={width - 15}
-            y={energyToY(selectedExample.totalDeltaH) + 4}
-            fill="#a855f7"
-            fontSize="10"
-            fontWeight="bold"
+      <div className="bg-warm-900 rounded-xl p-3 sm:p-4 mb-4">
+        <div ref={svgWrapRef}>
+          <svg
+            width="100%"
+            viewBox={`0 0 ${width} ${height}`}
+            className="overflow-visible"
+            role="img"
+            aria-label="Samanburður á orkuleiðum: bein leið og óbein leið gefa sömu orkubreytingu"
           >
-            {selectedExample.totalDeltaH}
-          </text>
-
-          {/* Draw each path */}
-          {pathsData.map(({ path, points, d }) => {
-            if (!visiblePaths.includes(path.id)) return null;
-
-            return (
-              <g key={path.id}>
-                {/* Path line */}
+            <title>Samanburður orkuleiða (lögmál Hess)</title>
+            {/* Grid */}
+            <defs>
+              <pattern id="state-grid" width="30" height="30" patternUnits="userSpaceOnUse">
                 <path
-                  d={d}
+                  d="M 30 0 L 0 0 0 30"
                   fill="none"
-                  stroke={path.color}
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  opacity={animating ? 0 : 0.9}
-                  className={animating ? '' : 'transition-opacity duration-500'}
-                  style={
-                    animating
-                      ? {
-                          strokeDasharray: '1000',
-                          strokeDashoffset: '1000',
-                          animation: 'drawStatePath 1s ease-out forwards',
-                        }
-                      : {}
-                  }
+                  stroke="#374151"
+                  strokeWidth="0.5"
+                  opacity="0.2"
                 />
+              </pattern>
+            </defs>
+            <rect width={width} height={height} fill="url(#state-grid)" />
 
-                {/* Step markers */}
-                {points.map((point, i) => (
-                  <g key={i}>
-                    <circle
-                      cx={point.x}
-                      cy={point.y}
-                      r={i === 0 ? 8 : i === points.length - 1 ? 10 : 6}
-                      fill={path.color}
-                      stroke="#fff"
-                      strokeWidth="2"
-                    />
-                    {i > 0 && i < points.length && (
-                      <text
-                        x={point.x}
-                        y={point.y - 12}
+            {/* Zero line */}
+            <line
+              x1={lineStartX}
+              y1={energyToY(0)}
+              x2={lineEndX}
+              y2={energyToY(0)}
+              stroke="#6b7280"
+              strokeWidth="1"
+              strokeDasharray="4,4"
+            />
+            <text
+              x={narrow ? lineStartX - 4 : 20}
+              y={energyToY(0) + 4}
+              fill="#9ca3af"
+              fontSize={smallFont}
+              textAnchor={narrow ? 'end' : 'middle'}
+            >
+              0
+            </text>
+
+            {/* Target line (final energy) */}
+            <line
+              x1={lineStartX}
+              y1={energyToY(selectedExample.totalDeltaH)}
+              x2={lineEndX}
+              y2={energyToY(selectedExample.totalDeltaH)}
+              stroke="#a855f7"
+              strokeWidth="2"
+              strokeDasharray="8,4"
+            />
+            <text
+              x={narrow ? lineEndX : width - 15}
+              y={energyToY(selectedExample.totalDeltaH) + (narrow ? -6 : 4)}
+              fill="#a855f7"
+              fontSize={smallFont}
+              fontWeight="bold"
+              textAnchor={narrow ? 'end' : 'start'}
+              {...halo}
+            >
+              {formatDecimal(selectedExample.totalDeltaH)}
+            </text>
+
+            {/* Draw each path */}
+            {pathsData.map(({ path, points, d }, pathIndex) => {
+              if (!visiblePaths.includes(path.id)) return null;
+
+              return (
+                <g key={path.id}>
+                  {/* Path line */}
+                  <path
+                    d={d}
+                    fill="none"
+                    stroke={path.color}
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    opacity={animating ? 0 : 0.9}
+                    className={animating ? '' : 'transition-opacity duration-500'}
+                    style={
+                      animating
+                        ? {
+                            strokeDasharray: '1000',
+                            strokeDashoffset: '1000',
+                            animation: 'drawStatePath 1s ease-out forwards',
+                          }
+                        : {}
+                    }
+                  />
+
+                  {/* Step markers */}
+                  {points.map((point, i) => (
+                    <g key={i}>
+                      <circle
+                        cx={point.x}
+                        cy={point.y}
+                        r={i === 0 ? 8 : i === points.length - 1 ? 10 : 6}
                         fill={path.color}
-                        fontSize="9"
-                        textAnchor="middle"
-                        fontWeight="bold"
-                      >
-                        {point.deltaH > 0 ? '+' : ''}
-                        {point.deltaH.toFixed(0)}
-                      </text>
-                    )}
-                  </g>
-                ))}
-              </g>
-            );
-          })}
+                        stroke="#fff"
+                        strokeWidth="2"
+                      />
+                      {!narrow && i > 0 && i < points.length && stepLabel(path, pathIndex, point)}
+                    </g>
+                  ))}
+                </g>
+              );
+            })}
 
-          {/* Start label */}
-          <text
-            x="60"
-            y={energyToY(0) - 20}
-            fill="#22c55e"
-            fontSize="11"
-            textAnchor="middle"
-            fontWeight="bold"
-          >
-            Byrjun
-          </text>
+            {/* Narrow layout: step values drawn after every path, so no line covers them */}
+            {narrow &&
+              pathsData.map(
+                ({ path, points }, pathIndex) =>
+                  visiblePaths.includes(path.id) && (
+                    <g key={path.id}>
+                      {points.map(
+                        (point, i) => i > 0 && <g key={i}>{stepLabel(path, pathIndex, point)}</g>
+                      )}
+                    </g>
+                  )
+              )}
 
-          {/* End label */}
-          <text
-            x={width - 60}
-            y={energyToY(selectedExample.totalDeltaH) + 25}
-            fill="#a855f7"
-            fontSize="11"
-            textAnchor="middle"
-            fontWeight="bold"
-          >
-            Endir: sama orka!
-          </text>
+            {/* Start label */}
+            <text
+              x={startX}
+              y={energyToY(0) - 20}
+              fill="#22c55e"
+              fontSize={labelFont}
+              textAnchor="middle"
+              fontWeight="bold"
+              {...halo}
+            >
+              Byrjun
+            </text>
 
-          {/* Y-axis label */}
-          <text
-            x="12"
-            y={height / 2}
-            fill="#9ca3af"
-            fontSize="10"
-            textAnchor="middle"
-            transform={`rotate(-90, 12, ${height / 2})`}
-          >
-            Entalpí (kJ)
-          </text>
-        </svg>
+            {/* End label */}
+            <text
+              x={narrow ? width - 70 : width - 60}
+              y={energyToY(selectedExample.totalDeltaH) + (narrow ? 40 : 25)}
+              fill="#a855f7"
+              fontSize={labelFont}
+              textAnchor="middle"
+              fontWeight="bold"
+              {...halo}
+            >
+              Endir: sama orka!
+            </text>
+
+            {/* Y-axis label */}
+            <text
+              x={narrow ? 10 : 12}
+              y={height / 2}
+              fill="#9ca3af"
+              fontSize={smallFont}
+              textAnchor="middle"
+              transform={`rotate(-90, ${narrow ? 10 : 12}, ${height / 2})`}
+            >
+              Vermi (kJ)
+            </text>
+          </svg>
+        </div>
 
         <style>{`
           @keyframes drawStatePath {
@@ -483,7 +546,7 @@ export function StatePathComparison({ exampleId, compact = false }: StatePathCom
 
       {/* State function reminder */}
       <div className="mt-4 text-center text-xs text-warm-500">
-        Entalpí (H) er <strong>ástandsfall</strong> — gildi þess fer aðeins eftir upphafs- og
+        Vermi (H) er <strong>ástandsfall</strong> — gildi þess fer aðeins eftir upphafs- og
         lokaástandi, ekki leiðinni þar á milli.
       </div>
     </div>

@@ -1,7 +1,7 @@
-@import "tailwindcss";
-@import "../../../../../packages/shared/styles/theme.css";
+@import 'tailwindcss';
+@import '../../../../../packages/shared/styles/theme.css';
 @source "../../../../../packages/shared";
-@import "../../../../../packages/shared/styles/game-base.css";
+@import '../../../../../packages/shared/styles/game-base.css';
 
 /* Atom styles for Lewis structures */
 .atom {
@@ -26,15 +26,31 @@
   @apply absolute w-2 h-2 rounded-full bg-current;
 }
 
-.electron-dot.top { @apply -top-1 left-1/2 -translate-x-1/2; }
-.electron-dot.bottom { @apply -bottom-1 left-1/2 -translate-x-1/2; }
-.electron-dot.left { @apply top-1/2 -left-1 -translate-y-1/2; }
-.electron-dot.right { @apply top-1/2 -right-1 -translate-y-1/2; }
+.electron-dot.top {
+  @apply -top-1 left-1/2 -translate-x-1/2;
+}
+.electron-dot.bottom {
+  @apply -bottom-1 left-1/2 -translate-x-1/2;
+}
+.electron-dot.left {
+  @apply top-1/2 -left-1 -translate-y-1/2;
+}
+.electron-dot.right {
+  @apply top-1/2 -right-1 -translate-y-1/2;
+}
 
-.electron-dot.top-left { @apply -top-0.5 -left-0.5; }
-.electron-dot.top-right { @apply -top-0.5 -right-0.5; }
-.electron-dot.bottom-left { @apply -bottom-0.5 -left-0.5; }
-.electron-dot.bottom-right { @apply -bottom-0.5 -right-0.5; }
+.electron-dot.top-left {
+  @apply -top-0.5 -left-0.5;
+}
+.electron-dot.top-right {
+  @apply -top-0.5 -right-0.5;
+}
+.electron-dot.bottom-left {
+  @apply -bottom-0.5 -left-0.5;
+}
+.electron-dot.bottom-right {
+  @apply -bottom-0.5 -right-0.5;
+}
 
 /* Electron pair (lone pair) */
 .lone-pair {
@@ -60,20 +76,32 @@
 
 .bond-line.double {
   height: 8px;
-  background: linear-gradient(to bottom,
-    #1f2937 0%, #1f2937 30%,
-    transparent 30%, transparent 70%,
-    #1f2937 70%, #1f2937 100%);
+  background: linear-gradient(
+    to bottom,
+    #1f2937 0%,
+    #1f2937 30%,
+    transparent 30%,
+    transparent 70%,
+    #1f2937 70%,
+    #1f2937 100%
+  );
 }
 
 .bond-line.triple {
   height: 12px;
-  background: linear-gradient(to bottom,
-    #1f2937 0%, #1f2937 20%,
-    transparent 20%, transparent 40%,
-    #1f2937 40%, #1f2937 60%,
-    transparent 60%, transparent 80%,
-    #1f2937 80%, #1f2937 100%);
+  background: linear-gradient(
+    to bottom,
+    #1f2937 0%,
+    #1f2937 20%,
+    transparent 20%,
+    transparent 40%,
+    #1f2937 40%,
+    #1f2937 60%,
+    transparent 60%,
+    transparent 80%,
+    #1f2937 80%,
+    #1f2937 100%
+  );
 }
 
 /* Lewis structure container */
@@ -105,22 +133,41 @@
   @apply p-1 text-center rounded border cursor-pointer transition-all;
 }
 
-.element-cell:hover {
-  @apply border-orange-400 bg-orange-50;
+/* Hover only where there is a real hover: on a phone a tap would leave it stuck. */
+@media (hover: hover) and (pointer: fine) {
+  .element-cell:hover {
+    @apply border-orange-400 bg-orange-50;
+  }
 }
 
 .element-cell.selected {
   @apply border-orange-500 bg-orange-100 ring-2 ring-orange-200;
 }
 
-.element-cell.group-1 { @apply bg-red-50 border-red-200; }
-.element-cell.group-2 { @apply bg-orange-50 border-orange-200; }
-.element-cell.group-13 { @apply bg-yellow-50 border-yellow-200; }
-.element-cell.group-14 { @apply bg-green-50 border-green-200; }
-.element-cell.group-15 { @apply bg-teal-50 border-teal-200; }
-.element-cell.group-16 { @apply bg-blue-50 border-blue-200; }
-.element-cell.group-17 { @apply bg-purple-50 border-purple-200; }
-.element-cell.group-18 { @apply bg-gray-50 border-gray-200; }
+.element-cell.group-1 {
+  @apply bg-red-50 border-red-200;
+}
+.element-cell.group-2 {
+  @apply bg-orange-50 border-orange-200;
+}
+.element-cell.group-13 {
+  @apply bg-yellow-50 border-yellow-200;
+}
+.element-cell.group-14 {
+  @apply bg-green-50 border-green-200;
+}
+.element-cell.group-15 {
+  @apply bg-teal-50 border-teal-200;
+}
+.element-cell.group-16 {
+  @apply bg-blue-50 border-blue-200;
+}
+.element-cell.group-17 {
+  @apply bg-purple-50 border-purple-200;
+}
+.element-cell.group-18 {
+  @apply bg-gray-50 border-gray-200;
+}
 
 /* Formal charge badge */
 .formal-charge {
@@ -150,13 +197,24 @@
 
 /* Animations */
 @keyframes pulse-dot {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.3); opacity: 0.7; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.7;
+  }
 }
 
 @keyframes draw-bond {
-  from { width: 0; }
-  to { width: 100%; }
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
 }
 
 .animate-pulse-dot {

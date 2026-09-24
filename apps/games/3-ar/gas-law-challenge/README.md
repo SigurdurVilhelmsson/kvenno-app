@@ -35,7 +35,7 @@ Feedback shows the student's and the correct answer, the step-by-step solution, 
 ## Before touching it
 
 - **Hints cost nothing.** Points come from accuracy only — 100 within tolerance, 150 within 1 %, plus
-  the challenge time bonus (`src/App.tsx:148-152`); `getHint()` only counts hints for the stats. A
+  the challenge time bonus (`finishQuestion` in `src/App.tsx`); `getHint()` only counts hints for the stats. A
   phantom "hints cost points" string lived in the old `i18n.ts` and went with it (see
   `docs/README.md`).
 - **The language switcher was stripped on 2026-09-19** — the game had zero `t()` calls, and the
@@ -85,6 +85,11 @@ src/components/GasLawSimulator.tsx   particle view of the question's P, V, T, n
 src/__tests__/gas-calculations.test.ts
 src/__tests__/icelandic-text.test.ts
 src/__tests__/answer-unit.test.ts
+src/__tests__/answers-derive.test.ts          every stored answer re-derived from its question
+src/__tests__/answer-display.test.tsx         a printed answer is one the grader accepts
+src/__tests__/simulator-readouts.test.tsx     the simulator shows only what the question gives
+src/__tests__/challenge-timer-and-keys.test.tsx
+src/__tests__/icelandic-grammar.test.tsx
 ```
 
 ## Open
@@ -94,6 +99,20 @@ src/__tests__/answer-unit.test.ts
   whether practice should keep them is a ruling, not a code fix.
 - **No Explore phase.** The first thing after the menu is a graded question; the review cycle
   deferred a manipulable pre-game simulator.
-- **No test checks that each stored `answer` follows from its givens.** The tests cover the
-  calculation helpers, the Icelandic text, the answer units and the decimal comma, but not the
-  answers themselves, as `1-ar/reynsluformulur` and `3-ar/buffer-recipe-creator` now do by deriving.
+- **"Næstum rétt! Reyndu aftur."** tells a near-miss student to try again, but the feedback
+  screen offers only the next question. Whether practice should allow a retry is a ruling.
+- **In Keppnishamur the last hint is the answer.** Every question's fourth hint ends on the
+  number the grader accepts (`Reiknaðu: V = 3,82 L`), hints cost nothing, and four presses of H
+  take 150 points plus the 50-point time bonus. Whether challenge hints should stop short of the
+  final line is a ruling about the scored mode, not a code fix.
+
+**Closed 2026-09-23.** Stored answers are now re-derived from their questions
+(`answers-derive.test.ts`), which found questions 2 and 11 worked with R = 0,0821: 0,211 → 0,212
+and 0,946 → 0,945. The simulator no longer prints the answer before it is given, or invents
+P = 0, n = 0 and T = 300 K for what a Stig 2/3 question leaves unstated. The printed answer is the
+worked solution's own number (question 9 showed `0,08`, which the grader rejected). The challenge
+clock ends the question once when it runs out, answer or not; Enter no longer overrides a focused
+button, H and S typed into the answer field are no longer taken as shortcuts, and the time bonus
+reads the clock at submission. The answer label names temperature `hitastig`, as `ordabok.md`
+does, and question 11 no longer asks a qualitative question ("Hvað gerist við loftþrýsting …?")
+above a field that grades one pressure.

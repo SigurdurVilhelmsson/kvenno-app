@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 interface Domain {
   id: string;
@@ -30,7 +30,7 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.2, y: 0.5 },
       { x: 0.8, y: 0.5 },
     ],
-    description: '2 rafeinasvið hrinda hvort öðru 180° í sundur',
+    description: '2 rafeindasvið hrinda hvort öðru 180° í sundur',
   },
   {
     id: 'trigonal-planar',
@@ -42,11 +42,11 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.2, y: 0.75 },
       { x: 0.8, y: 0.75 },
     ],
-    description: '3 rafeinasvið raðast í 120° hornin',
+    description: '3 rafeindasvið raðast í 120° hornin',
   },
   {
     id: 'tetrahedral',
-    name: 'Fjórflötungur',
+    name: 'Ferflötungur',
     domains: 4,
     lonePairs: 0,
     positions: [
@@ -55,7 +55,7 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.8, y: 0.55 },
       { x: 0.5, y: 0.85 },
     ],
-    description: '4 rafeinasvið raðast í 109.5° hornin',
+    description: '4 rafeindasvið raðast í 109,5° hornin',
   },
   {
     id: 'trigonal-pyramidal',
@@ -68,7 +68,7 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.8, y: 0.55 },
       { x: 0.5, y: 0.85 },
     ],
-    description: 'Einstætt par hrindur bindandi pörum niður á við',
+    description: 'Stakt par hrindur bindandi pörum niður á við',
   },
   {
     id: 'bent',
@@ -81,7 +81,7 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.2, y: 0.7 },
       { x: 0.8, y: 0.7 },
     ],
-    description: '2 einstæð pör ýta bindandi pörum nær saman',
+    description: '2 stök pör ýta bindandi pörum nær saman',
   },
   {
     id: 'octahedral',
@@ -96,9 +96,18 @@ const GEOMETRIES: GeometryConfig[] = [
       { x: 0.3, y: 0.3 },
       { x: 0.7, y: 0.7 },
     ],
-    description: '6 rafeinasvið raðast í 90° hornin',
+    description: '6 rafeindasvið raðast í 90° hornin',
   },
 ];
+
+/**
+ * The configuration for a geometry id, or undefined when this animation has
+ * none. Level 1 names the two bent shapes `bent-2` and `bent-4`; only the
+ * second (four domains, two lone pairs) is drawn here, as `bent`.
+ */
+function configFor(id: string): GeometryConfig | undefined {
+  return GEOMETRIES.find((g) => g.id === (id === 'bent-4' ? 'bent' : id));
+}
 
 interface ElectronRepulsionAnimationProps {
   geometryId?: string;
@@ -113,9 +122,7 @@ export function ElectronRepulsionAnimation({
   showForces = true,
   compact = false,
 }: ElectronRepulsionAnimationProps) {
-  const [selectedGeometry, setSelectedGeometry] = useState(
-    GEOMETRIES.find((g) => g.id === geometryId) || GEOMETRIES[2]
-  );
+  const [selectedGeometry, setSelectedGeometry] = useState(configFor(geometryId) || GEOMETRIES[2]);
   const [domains, setDomains] = useState<Domain[]>([]);
   const [isAnimating, setIsAnimating] = useState(false);
   const [phase, setPhase] = useState<'initial' | 'repelling' | 'settled'>('initial');
@@ -254,18 +261,32 @@ export function ElectronRepulsionAnimation({
     setPhase('initial');
   };
 
+  // Follow the parent's selection when it changes. Copying the prop into state
+  // only once left Stig 1's animation on its first shape whatever the student
+  // chose below it. A shape this animation cannot draw leaves it where it is.
+  const lastGeometryId = useRef(geometryId);
+  useEffect(() => {
+    if (lastGeometryId.current === geometryId) return;
+    lastGeometryId.current = geometryId;
+    const geo = configFor(geometryId);
+    if (!geo) return;
+    setSelectedGeometry(geo);
+    setIsAnimating(false);
+    setPhase('initial');
+  }, [geometryId]);
+
   const width = compact ? 200 : 300;
   const height = compact ? 200 : 300;
 
   return (
     <div
-      className={`bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border border-purple-200 ${compact ? 'p-4' : 'p-6'}`}
+      className={`bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl border border-purple-200 ${compact ? 'p-3 sm:p-4' : 'p-4 sm:p-6'}`}
     >
       <div className="flex items-center justify-between mb-4">
         <h3
           className={`font-bold text-purple-800 flex items-center gap-2 ${compact ? 'text-base' : 'text-lg'}`}
         >
-          <span>⚡</span> Rafeindahrun
+          <span>⚡</span> Fráhrinding
         </h3>
         <div
           className={`text-xs px-2 py-1 rounded-full ${
@@ -276,7 +297,7 @@ export function ElectronRepulsionAnimation({
                 : 'bg-green-100 text-green-700'
           }`}
         >
-          {phase === 'initial' ? 'Tilbúið' : phase === 'repelling' ? 'Hrundur...' : 'Stöðugt'}
+          {phase === 'initial' ? 'Tilbúið' : phase === 'repelling' ? 'Hrindast...' : 'Stöðugt'}
         </div>
       </div>
 
@@ -286,7 +307,7 @@ export function ElectronRepulsionAnimation({
           <button
             key={geo.id}
             onClick={() => handleGeometryChange(geo)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all pointer-coarse:min-h-11 ${
               selectedGeometry.id === geo.id
                 ? 'bg-purple-600 text-white'
                 : 'bg-white text-warm-700 hover:bg-purple-100 border border-warm-200'
@@ -299,12 +320,12 @@ export function ElectronRepulsionAnimation({
       </div>
 
       {/* Animation canvas */}
-      <div className="bg-white rounded-xl p-4 mb-4 shadow-inner">
+      <div className="bg-white rounded-xl p-2 sm:p-4 mb-4 shadow-inner">
         <svg
           width={width}
           height={height}
           viewBox="0 0 1 1"
-          className="mx-auto"
+          className="mx-auto max-w-full h-auto"
           style={{ overflow: 'visible' }}
           role="img"
           aria-label="Hreyfimynd sem sýnir fráhrindingu rafeindapara og VSEPR lögun sameindar"
@@ -419,6 +440,7 @@ export function ElectronRepulsionAnimation({
                   fill="white"
                   fontSize="0.04"
                   fontWeight="bold"
+                  className="max-sm:text-[0.06px]"
                 >
                   {i - selectedGeometry.lonePairs + 1}
                 </text>
@@ -459,14 +481,14 @@ export function ElectronRepulsionAnimation({
       <div className="flex gap-3">
         <button
           onClick={initializeDomains}
-          className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-700 font-medium py-2 px-4 rounded-lg transition-all"
+          className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-700 font-medium py-2 px-4 rounded-lg transition-all pointer-coarse:min-h-11"
         >
           Endurstilla
         </button>
         <button
           onClick={startAnimation}
           disabled={isAnimating}
-          className="flex-1 bg-purple-500 hover:bg-purple-600 disabled:bg-purple-300 text-white font-bold py-2 px-4 rounded-lg transition-all"
+          className="flex-1 bg-purple-500 hover:bg-purple-600 disabled:bg-purple-300 text-white font-bold py-2 px-4 rounded-lg transition-all pointer-coarse:min-h-11"
         >
           {isAnimating ? 'Hrinda...' : 'Hrinda rafeindum'}
         </button>
@@ -480,12 +502,12 @@ export function ElectronRepulsionAnimation({
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-4 h-4 rounded-full bg-yellow-400 border-2 border-yellow-500" />
-          <span>Einstætt par</span>
+          <span>Stakt par</span>
         </div>
         {showForces && (
           <div className="flex items-center gap-1.5">
             <div className="w-4 h-0.5 bg-red-500" />
-            <span>Frávísunarkraftur</span>
+            <span>Fráhrindikraftur</span>
           </div>
         )}
       </div>

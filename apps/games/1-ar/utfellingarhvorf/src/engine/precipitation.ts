@@ -99,10 +99,12 @@ export interface Verdict {
 /**
  * Is this compound soluble in water?
  *
- * The cation row is checked first because it is the one row with no exceptions;
- * every other row lists group 1 and ammonium among *its* exceptions, so this
+ * The cation row is checked first because it has no exceptions; the two
+ * insoluble rows list group 1 and ammonium among *their* exceptions, so this
  * ordering makes them agree rather than compete. After that, the row keyed on
- * the anion decides, flipped when the cation is one of its exceptions.
+ * the anion decides, flipped when the cation is one of its exceptions. The one
+ * row returned here is the one cited; `decidingRules()` below returns every row
+ * that settles the compound.
  *
  * Throws when no row covers the anion. That is deliberate: the old game's
  * Ag₂CrO₄ question was unanswerable precisely because its rule table was silent
@@ -130,6 +132,35 @@ export function solubility(salt: Salt): Verdict {
 
   const byException = rule.exceptions.includes(salt.cation.formula);
   return { soluble: byException ? !rule.soluble : rule.soluble, rule, byException };
+}
+
+/**
+ * Every row of the table that answers "which rule decides it?" correctly for
+ * this compound — the row `solubility()` cites first, then any other row whose
+ * own statement settles the compound outright: it covers one of the two ions
+ * and the other ion is not among its exceptions.
+ *
+ * `solubility()` has to pick one row, and for a group-1 salt it picks the
+ * cation row. That is a precedence, not the only right answer: NaNO₃ is settled
+ * just as completely by "Öll nítröt eru leysanleg", with no exception involved,
+ * and a student who read the anion and chose it is right.
+ *
+ * An anion row that reaches the verdict only through its exception clause —
+ * the carbonate row for Na₂CO₃ — is not added when a row settles the compound
+ * directly. Whether that counts is a teaching call, not a table lookup.
+ */
+export function decidingRules(salt: Salt): SolubilityRule[] {
+  const cited = solubility(salt);
+  const covers = (r: SolubilityRule, formula: string) =>
+    r.ion === formula || r.alsoCovers.includes(formula);
+  const direct = SOLUBILITY_RULES.filter(
+    (r) =>
+      r !== cited.rule &&
+      r.soluble === cited.soluble &&
+      ((covers(r, salt.cation.formula) && !r.exceptions.includes(salt.anion.formula)) ||
+        (covers(r, salt.anion.formula) && !r.exceptions.includes(salt.cation.formula)))
+  );
+  return [cited.rule, ...direct];
 }
 
 /** One side of an equation: a species, how many of it, and its state. */

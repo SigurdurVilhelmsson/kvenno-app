@@ -10,7 +10,7 @@ export function App() {
     <div className="min-h-screen bg-surface-page text-warm-900 antialiased">
       <Header title="Námsvefur Kvennó" activeTrack="islenskubraut" />
 
-      <main className="pb-[72px] md:pb-0">
+      <main>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/spjald/:flokkur" element={<SpjaldPage />} />

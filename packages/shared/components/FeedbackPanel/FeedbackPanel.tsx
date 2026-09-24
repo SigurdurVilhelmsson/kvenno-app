@@ -137,12 +137,21 @@ export function FeedbackPanel({
     return null;
   }
 
+  // Below `sm` the panel spends less on indentation. From `sm` up it is the
+  // desktop layout, unchanged: the icon in its own column, `p-4` outside and
+  // `p-3` inside. At 320 px that nesting left a text column of about 170 px,
+  // too narrow for a long Icelandic compound. So on a phone both paddings
+  // shrink, and everything below the verdict runs under the icon: the icon is
+  // pinned to `w-6` with `gap-2`, and `-ml-8` (24 + 8 px) takes exactly that
+  // column back. The icon stays one element, so the panel's text is unchanged.
+  const underIcon = '-ml-8 sm:ml-0';
+
   return (
     <div
       className={`
         feedback-panel
         ${classes.container}
-        border rounded-xl p-4
+        border rounded-xl p-3 sm:p-4
         transition-all duration-300 ease-in-out
         ${className}
       `}
@@ -150,12 +159,13 @@ export function FeedbackPanel({
       aria-live="polite"
     >
       {/* Header with icon and main message */}
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-2 sm:gap-3">
         <span
           className={`
             ${classes.icon}
             text-2xl font-bold
             flex-shrink-0
+            w-6 text-center sm:w-auto
           `}
           aria-hidden="true"
         >
@@ -168,13 +178,17 @@ export function FeedbackPanel({
 
           {/* Expandable explanation */}
           {config.showExplanation && feedback.explanation && (
-            <div className="mt-2">
+            <div className={`mt-2 ${underIcon}`}>
+              {/* On touch the padding grows the target to 44 px and the equal
+                  negative margin gives the space back, so the panel does not
+                  move. */}
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 className={`
                   text-sm ${classes.text} opacity-75
                   hover:opacity-100 transition-opacity
                   flex items-center gap-1
+                  pointer-coarse:py-3 pointer-coarse:-my-3
                 `}
                 type="button"
                 aria-expanded={isExpanded}
@@ -183,12 +197,16 @@ export function FeedbackPanel({
                 <span>Af hverju?</span>
               </button>
 
+              {/* `whitespace-pre-line` keeps the line breaks a call site writes
+                  into a worked solution (molmassi Stig 2, ph-titration Stig 1)
+                  and still collapses runs of spaces exactly as before. */}
               {isExpanded && (
                 <div
                   className={`
-                    mt-2 p-3 rounded-lg
+                    mt-2 p-2.5 sm:p-3 rounded-lg
                     bg-white/50
                     ${classes.text} text-sm
+                    whitespace-pre-line
                     animate-fadeIn
                   `}
                 >
@@ -201,11 +219,11 @@ export function FeedbackPanel({
           {/* Misconception warning */}
           {config.showMisconceptions && feedback.misconception && !feedback.isCorrect && (
             <div
-              className="
-                mt-3 p-3 rounded-lg
+              className={`
+                mt-3 ${underIcon} p-2.5 sm:p-3 rounded-lg
                 bg-amber-100 border border-amber-300
                 text-amber-800 text-sm
-              "
+              `}
             >
               <span className="font-medium">Algeng villa: </span>
               {feedback.misconception}
@@ -216,24 +234,39 @@ export function FeedbackPanel({
           {config.showRelatedConcepts &&
             feedback.relatedConcepts &&
             feedback.relatedConcepts.length > 0 && (
-              <div className="mt-3">
+              <div className={`mt-3 ${underIcon}`}>
                 <span className={`text-xs ${classes.text} opacity-75`}>Tengd efni:</span>
                 <div className="flex flex-wrap gap-2 mt-1">
-                  {feedback.relatedConcepts.map((concept) => (
-                    <button
-                      key={concept}
-                      onClick={() => handleConceptClick(concept)}
-                      className={`
-                        px-2 py-1 rounded-full
-                        text-xs font-medium
-                        bg-white/70 ${classes.text}
-                        hover:bg-white transition-colors
-                      `}
-                      type="button"
-                    >
-                      {concept}
-                    </button>
-                  ))}
+                  {feedback.relatedConcepts.map((concept) =>
+                    // A chip is a button only when tapping it does something.
+                    onConceptClick ? (
+                      <button
+                        key={concept}
+                        onClick={() => handleConceptClick(concept)}
+                        className={`
+                          px-2 py-1 rounded-full
+                          text-xs font-medium
+                          bg-white/70 ${classes.text}
+                          hover:bg-white transition-colors
+                          pointer-coarse:min-h-11
+                        `}
+                        type="button"
+                      >
+                        {concept}
+                      </button>
+                    ) : (
+                      <span
+                        key={concept}
+                        className={`
+                          px-2 py-1 rounded-full
+                          text-xs font-medium text-center
+                          bg-white/70 ${classes.text}
+                        `}
+                      >
+                        {concept}
+                      </span>
+                    )
+                  )}
                 </div>
               </div>
             )}
@@ -242,7 +275,7 @@ export function FeedbackPanel({
           {config.showNextSteps && feedback.nextSteps && (
             <div
               className={`
-                mt-3 text-sm ${classes.text} opacity-90
+                mt-3 ${underIcon} text-sm ${classes.text} opacity-90
                 flex items-center gap-2
               `}
             >
@@ -260,6 +293,7 @@ export function FeedbackPanel({
               ${classes.text} opacity-50
               hover:opacity-100 transition-opacity
               flex-shrink-0 p-1
+              pointer-coarse:min-w-11 pointer-coarse:min-h-11 pointer-coarse:-mt-2 pointer-coarse:-mr-2
             `}
             type="button"
             aria-label="Loka"

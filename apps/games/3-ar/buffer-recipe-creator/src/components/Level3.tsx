@@ -6,6 +6,8 @@ import { parseStudentNumber, formatDecimal } from '@shared/utils';
 import { BufferCapacityVisualization } from './BufferCapacityVisualization';
 import { LEVEL3_PUZZLES } from '../data/level3-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
+import { solveStockRecipe } from '../engine/buffer';
+import { revealTop } from '../utils/reveal';
 
 interface Level3Props {
   onComplete: (score: number) => void;
@@ -37,6 +39,8 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
   const [hintResetKey, setHintResetKey] = useState(0);
   const [completed, setCompleted] = useState(0);
   const levelCompleteReported = useRef(false);
+  const levelTopRef = useRef<HTMLDivElement>(null);
+  const stepCardRef = useRef<HTMLDivElement>(null);
 
   // Step 1: Ratio
   const [ratioInput, setRatioInput] = useState('');
@@ -69,6 +73,16 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
     }
   }, [completed, score, onComplete]);
 
+  // Finishing a puzzle hides the hint tiers above this card and, 250 ms later, the step just
+  // answered. A student who opened the hints therefore landed in the middle of the worked
+  // solution on a phone, with "Rétt svar!" scrolled past. Bring the card's top back once both
+  // have gone; revealTop leaves a screen that still shows it alone.
+  useEffect(() => {
+    if (step !== 'complete') return;
+    const timer = window.setTimeout(() => revealTop(stepCardRef.current), 300);
+    return () => window.clearTimeout(timer);
+  }, [step]);
+
   // Safety check
   if (!problem) {
     return (
@@ -83,11 +97,12 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
     );
   }
 
-  // Calculate correct values
-  const targetMoles = puzzle.targetConcentration * (puzzle.targetVolume / 1000);
-  const correctRatio = Math.pow(10, problem.targetPH - problem.pKa);
-  const correctBaseMoles = (targetMoles * correctRatio) / (1 + correctRatio);
-  const correctAcidMoles = targetMoles - correctBaseMoles;
+  // Every correct answer on this screen is derived, never stored — see engine/buffer.ts.
+  const recipe = solveStockRecipe(problem, puzzle);
+  const targetMoles = recipe.totalMoles;
+  const correctRatio = recipe.ratio;
+  const correctBaseMoles = recipe.baseMoles;
+  const correctAcidMoles = recipe.acidMoles;
 
   // Handle hint usage
   const handleHintUsed = () => {
@@ -95,7 +110,10 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
   };
 
   // Step 1: Check ratio answer
+  // A step fades out for 250 ms after it is answered and its button stays live
+  // meanwhile, so each check ignores a tap that arrives after its step is over.
   const checkRatio = () => {
+    if (step !== 'ratio') return;
     const userRatio = parseStudentNumber(ratioInput);
     if (isNaN(userRatio) || userRatio <= 0) {
       setRatioFeedback('Vinsamlegast sláðu inn jákvæða tölu.');
@@ -118,6 +136,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
 
   // Step 2: Check moles answer
   const checkMoles = () => {
+    if (step !== 'moles') return;
     const userAcidMoles = parseStudentNumber(acidMolesInput);
     const userBaseMoles = parseStudentNumber(baseMolesInput);
 
@@ -136,7 +155,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
       setStep('volumes');
     } else {
       let feedback = 'Ekki rétt. ';
-      feedback += `Heildar mól = ${formatDecimal(puzzle.targetConcentration)} M × ${formatDecimal(puzzle.targetVolume / 1000)} L = ${formatDecimal(targetMoles, 4)} mol. `;
+      feedback += `Heildarmól = ${formatDecimal(puzzle.targetConcentration)} M × ${formatDecimal(puzzle.targetVolume / 1000)} L = ${formatDecimal(targetMoles, 4)} mól. `;
       feedback += `Skiptu samkvæmt hlutfalli ${formatDecimal(correctRatio, 2)}.`;
       setMolesFeedback(feedback);
     }
@@ -144,6 +163,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
 
   // Step 3: Check volumes answer
   const checkVolumes = () => {
+    if (step !== 'volumes') return;
     const userAcidVolume = parseStudentNumber(acidVolumeInput);
     const userBaseVolume = parseStudentNumber(baseVolumeInput);
 
@@ -158,10 +178,8 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
     }
 
     const tolerance = puzzle.volumeTolerance;
-    const acidError =
-      Math.abs(userAcidVolume - puzzle.correctAcidVolume) / puzzle.correctAcidVolume;
-    const baseError =
-      Math.abs(userBaseVolume - puzzle.correctBaseVolume) / puzzle.correctBaseVolume;
+    const acidError = Math.abs(userAcidVolume - recipe.acidVolume) / recipe.acidVolume;
+    const baseError = Math.abs(userBaseVolume - recipe.baseVolume) / recipe.baseVolume;
 
     if (acidError <= tolerance && baseError <= tolerance) {
       setVolumeCorrect(true);
@@ -174,10 +192,10 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
       let feedback = 'Ekki rétt. ';
       feedback += `Muna: V = n / C (rúmmál = mól / styrkur birgðalausnar).`;
       if (acidError > tolerance) {
-        feedback += ` Sýrurúmmál er ${userAcidVolume > puzzle.correctAcidVolume ? 'of hátt' : 'of lágt'}.`;
+        feedback += ` Sýrurúmmál er ${userAcidVolume > recipe.acidVolume ? 'of hátt' : 'of lágt'}.`;
       }
       if (baseError > tolerance) {
-        feedback += ` Basarúmmál er ${userBaseVolume > puzzle.correctBaseVolume ? 'of hátt' : 'of lágt'}.`;
+        feedback += ` Basarúmmál er ${userBaseVolume > recipe.baseVolume ? 'of hátt' : 'of lágt'}.`;
       }
       setVolumeFeedback(feedback);
     }
@@ -185,11 +203,13 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
 
   // Next puzzle
   const nextPuzzle = () => {
+    if (step !== 'complete') return;
     setCompleted((prev) => prev + 1);
 
     if (currentIndex < LEVEL3_PUZZLES.length - 1) {
       setCurrentIndex((prev) => prev + 1);
       resetPuzzleState();
+      revealTop(levelTopRef.current);
     }
   };
 
@@ -216,7 +236,10 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-teal-100 p-4 md:p-8">
         <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 space-y-4">
-          <button onClick={onBack} className="text-warm-600 hover:text-warm-800 text-sm">
+          <button
+            onClick={onBack}
+            className="text-warm-600 hover:text-warm-800 text-sm pointer-coarse:py-3 pointer-coarse:-mt-3"
+          >
             ← Til baka
           </button>
           <h2 className="text-2xl font-bold text-green-700">Stig 3 — frá massa til rúmmála</h2>
@@ -248,7 +271,12 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
             </ol>
           </div>
           <button
-            onClick={() => setShowIntro(false)}
+            onClick={() => {
+              setShowIntro(false);
+              // "Byrja" ends the intro, so on a phone it is tapped part-way down the page;
+              // open the first task from its top rather than at that offset.
+              window.scrollTo({ top: 0, left: 0 });
+            }}
             className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl"
           >
             Byrja →
@@ -262,17 +290,17 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-teal-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-xl p-4 mb-4">
+        <div ref={levelTopRef} className="bg-white rounded-2xl shadow-xl p-4 mb-4">
           <div className="flex justify-between items-center">
             <button
               onClick={onBack}
-              className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+              className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
             >
               ← Til baka
             </button>
             <div className="flex items-center gap-4">
               <div className="text-sm text-warm-500">
-                {completed + 1} / {LEVEL3_PUZZLES.length}
+                {Math.min(completed + 1, LEVEL3_PUZZLES.length)} / {LEVEL3_PUZZLES.length}
               </div>
               <div className="text-lg font-bold text-green-600">Stig: {score}</div>
             </div>
@@ -293,7 +321,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
         </div>
 
         {/* Task Card */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-4 border-t-4 border-green-500">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4 border-t-4 border-green-500">
           <div className="flex items-start gap-3 mb-4">
             <span className="text-white text-sm font-bold px-3 py-1 rounded-full bg-green-600">
               #{puzzle.id}
@@ -311,7 +339,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
               <div className="text-lg font-bold text-warm-800">{formatDecimal(problem.pKa)}</div>
             </div>
             <div className="bg-warm-50 p-3 rounded-lg text-center">
-              <div className="text-xs text-warm-500">Markmið pH</div>
+              <div className="text-xs text-warm-500">Markmiðs-pH</div>
               <div className="text-lg font-bold text-green-600">
                 {formatDecimal(problem.targetPH)}
               </div>
@@ -330,9 +358,9 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
             </div>
           </div>
 
-          {/* Stock Solution Info */}
+          {/* Stock Solution Info (p-2 below sm, or CH₃COONa splits mid-formula at 320 px) */}
           <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="bg-red-50 p-3 rounded-lg border-2 border-red-200">
+            <div className="bg-red-50 p-2 sm:p-3 rounded-lg border-2 border-red-200">
               <div className="text-xs text-red-600 font-semibold flex items-center gap-1">
                 <span className="text-lg">🧪</span> Sýrubirgð
               </div>
@@ -341,7 +369,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                 {formatDecimal(puzzle.stockAcidConc)} M birgðalausn
               </div>
             </div>
-            <div className="bg-blue-50 p-3 rounded-lg border-2 border-blue-200">
+            <div className="bg-blue-50 p-2 sm:p-3 rounded-lg border-2 border-blue-200">
               <div className="text-xs text-blue-600 font-semibold flex items-center gap-1">
                 <span className="text-lg">🧪</span> Basabirgð
               </div>
@@ -425,7 +453,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
         </div>
 
         {/* Step Content */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
+        <div ref={stepCardRef} className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
           {/* Step 1: Ratio */}
           <Presence show={step === 'ratio'} exitDuration={250}>
             <div>
@@ -450,7 +478,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                   inputMode="decimal"
                   value={ratioInput}
                   onChange={(e) => setRatioInput(e.target.value)}
-                  placeholder="t.d. 1.58"
+                  placeholder="0,00"
                   className="w-full p-3 border-2 border-warm-300 rounded-lg focus:border-green-500 focus:outline-none"
                 />
               </div>
@@ -485,10 +513,10 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
               </h3>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
                 <p className="text-sm text-blue-800">
-                  <strong>Heildar mól:</strong> n = C × V ={' '}
+                  <strong>Heildarmól:</strong> n = C × V ={' '}
                   {formatDecimal(puzzle.targetConcentration)} M ×{' '}
                   {formatDecimal(puzzle.targetVolume / 1000)} L = {formatDecimal(targetMoles, 4)}{' '}
-                  mol
+                  mól
                 </p>
                 <p className="text-sm text-blue-800 mt-1">
                   <strong>Skipting:</strong> Notaðu hlutfallið {formatDecimal(correctRatio, 2)} til
@@ -504,7 +532,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                     inputMode="decimal"
                     value={acidMolesInput}
                     onChange={(e) => setAcidMolesInput(e.target.value)}
-                    placeholder="t.d. 0.0039"
+                    placeholder="0,0000"
                     className="w-full p-3 border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-none"
                   />
                 </div>
@@ -515,7 +543,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                     inputMode="decimal"
                     value={baseMolesInput}
                     onChange={(e) => setBaseMolesInput(e.target.value)}
-                    placeholder="t.d. 0.0061"
+                    placeholder="0,0000"
                     className="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none"
                   />
                 </div>
@@ -569,7 +597,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                     inputMode="decimal"
                     value={acidVolumeInput}
                     onChange={(e) => setAcidVolumeInput(e.target.value)}
-                    placeholder="t.d. 7.76"
+                    placeholder="0,00"
                     className="w-full p-3 border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-none"
                   />
                 </div>
@@ -582,7 +610,7 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                     inputMode="decimal"
                     value={baseVolumeInput}
                     onChange={(e) => setBaseVolumeInput(e.target.value)}
-                    placeholder="t.d. 12.24"
+                    placeholder="0,00"
                     className="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none"
                   />
                 </div>
@@ -625,25 +653,26 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                       {formatDecimal(problem.pKa)}) = {formatDecimal(correctRatio, 2)}
                     </li>
                     <li>
-                      • Heildar mól = {formatDecimal(puzzle.targetConcentration)} M ×{' '}
+                      • Heildarmól = {formatDecimal(puzzle.targetConcentration)} M ×{' '}
                       {formatDecimal(puzzle.targetVolume / 1000)} L ={' '}
-                      {formatDecimal(targetMoles, 4)} mol
+                      {formatDecimal(targetMoles, 4)} mól
                     </li>
                     <li>
-                      • Sýra: {formatDecimal(correctAcidMoles, 4)} mol /{' '}
+                      • Sýra: {formatDecimal(correctAcidMoles, 5)} mól /{' '}
                       {formatDecimal(puzzle.stockAcidConc)} M ={' '}
-                      {formatDecimal(puzzle.correctAcidVolume)} mL
+                      {formatDecimal(recipe.acidVolume / 1000, 5)} L ={' '}
+                      {formatDecimal(recipe.acidVolume, 2)} mL
                     </li>
                     <li>
-                      • Basi: {formatDecimal(correctBaseMoles, 4)} mol /{' '}
+                      • Basi: {formatDecimal(correctBaseMoles, 5)} mól /{' '}
                       {formatDecimal(puzzle.stockBaseConc)} M ={' '}
-                      {formatDecimal(puzzle.correctBaseVolume)} mL
+                      {formatDecimal(recipe.baseVolume / 1000, 5)} L ={' '}
+                      {formatDecimal(recipe.baseVolume, 2)} mL
                     </li>
                     <li>
                       • Vatn: {formatDecimal(puzzle.targetVolume)} -{' '}
-                      {formatDecimal(puzzle.correctAcidVolume)} -{' '}
-                      {formatDecimal(puzzle.correctBaseVolume)} ≈{' '}
-                      {formatDecimal(puzzle.correctWaterVolume)} mL
+                      {formatDecimal(recipe.acidVolume, 2)} - {formatDecimal(recipe.baseVolume, 2)}{' '}
+                      ≈ {formatDecimal(recipe.waterVolume, 1)} mL
                     </li>
                   </ul>
                 </div>
@@ -655,25 +684,25 @@ export default function Level3({ onComplete, onBack }: Level3Props) {
                   </h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs">
+                      <span className="w-6 h-6 shrink-0 rounded-full bg-red-500 text-white flex items-center justify-center text-xs">
                         1
                       </span>
                       <span>
-                        Bættu <strong>{formatDecimal(puzzle.correctAcidVolume)} mL</strong> af{' '}
+                        Bættu <strong>{formatDecimal(recipe.acidVolume, 2)} mL</strong> af{' '}
                         {formatDecimal(puzzle.stockAcidConc)} M {problem.acidName}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs">
+                      <span className="w-6 h-6 shrink-0 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs">
                         2
                       </span>
                       <span>
-                        Bættu <strong>{formatDecimal(puzzle.correctBaseVolume)} mL</strong> af{' '}
+                        Bættu <strong>{formatDecimal(recipe.baseVolume, 2)} mL</strong> af{' '}
                         {formatDecimal(puzzle.stockBaseConc)} M {problem.baseName}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-warm-500 text-white flex items-center justify-center text-xs">
+                      <span className="w-6 h-6 shrink-0 rounded-full bg-warm-500 text-white flex items-center justify-center text-xs">
                         3
                       </span>
                       <span>

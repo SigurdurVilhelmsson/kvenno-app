@@ -163,7 +163,7 @@ export const titrations: Titration[] = [
     id: 11,
     type: 'polyprotic-diprotic',
     name: 'H₂SO₃ + NaOH',
-    analyte: { formula: 'H₂SO₃', volume: 25.0, molarity: 0.1, name: 'Brennisteinssýrling' },
+    analyte: { formula: 'H₂SO₃', volume: 25.0, molarity: 0.1, name: 'Brennisteinssýrlingur' },
     titrant: { formula: 'NaOH', molarity: 0.1, name: 'Natríumhýdroxíð' },
     equivalenceVolumes: [25.0, 50.0],
     equivalencePHs: [4.5, 9.0],

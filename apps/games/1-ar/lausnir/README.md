@@ -23,6 +23,15 @@ Stig 0 was added on 2026-09-20.
 Stig 3 grades at a 2 % relative tolerance (`utils/validation.ts`), and its input is `type="text"`
 read through `parseStudentNumber`, so the Icelandic decimal comma works.
 
+**The answer it grades against is the exact value of the numbers the question prints (2026-09-23).**
+The generators used to store a rounded answer — two significant figures for a mass, up to 5 % off —
+so about one `massFromMolarity` problem in eight marked the exact answer wrong. Every answer the game
+shows (last hint, worked solution, "Rétt svar") is printed by `formatAnswer` at three significant
+figures, which is always inside the tolerance. `__tests__/stig3-grading.test.tsx` recomputes each
+answer from the question text and fails against the old generators. The moles a hint or worked
+solution prints on the way are three significant figures too: at three decimals, a student who
+carried `0,014 mol` forward from the page landed 3,6 % off the answer the next line stated.
+
 **Every number a student reads is written with the decimal comma (2026-09-22).** Until then the
 field read a comma while the game printed a full stop everywhere else — Stig 3's generated
 questions (`Þú leysir 0.00079 mól …`), hints, worked solutions and "Rétt svar" line, the Stig 1 and
@@ -118,7 +127,9 @@ src/utils/scoring.ts                         imported only by utils.test.ts; no 
 src/types.ts
 src/__tests__/                               electrolytes, weighable-substances, problem-generator,
                                              solubility-data, cooling-scenarios,
-                                             level2-no-answer-leak, utils
+                                             level2-no-answer-leak, level2-results,
+                                             stig3-grading, app-progress,
+                                             icelandic-text, decimal-comma, reveal-top, utils
 HARVEST.md                                   the 2026-08-27 saturation harvest
 LEVEL1_README.md                             April prototype notes; stale, see below
 ```
@@ -131,6 +142,16 @@ test needs the root config's DOM environment.
 - **i18n.** Stig 1–3 use `t()` with `en` and `pl` blocks while Stig 0 is hardcoded Icelandic. That
   split sits inside the platform-wide undecided `useGameI18n` question (see `CLAUDE.md`) rather than
   answering it.
+- **Scoring, Siggi's call (found 2026-09-23).** The levels report on three scales — Stig 0 10 per
+  item, Stig 1–2 100 per item, Stig 3 1 per item (`Level3.tsx` `onComplete(correctCount)`) — and the
+  menu's and completion screen's `Heildarstig` add Stig 1–3 and leave Stig 0 out. Stig 3 offers
+  "Ljúka stigi" only at 5 of 8, and finishing it always opens a screen that says every level is done.
+  Either put every level on one scale (100 per item) or drop points for `x af N rétt`.
+- **Stig 2 scenario 6's explanation says cold soda is `fríðara`** (prettier). The intended word needs
+  choosing — e.g. `Þess vegna helst kalt gos lengur kolsýrt!` — so it was left.
+- **Stig 1's "Athuga lausn ✓" does nothing on a wrong attempt.** The live arrows on the
+  concentration indicator are the only feedback; whether to add a line or disable the button is a
+  feedback-design choice.
 
 ## Leftovers
 

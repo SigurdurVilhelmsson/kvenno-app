@@ -25,20 +25,20 @@ const challenges: Challenge[] = [
     type: 'comparison',
     title: 'Etanól vs Dímetýleter',
     scenario:
-      'Etanól (CH₃CH₂OH) og dímetýleter (CH₃OCH₃) hafa báðar sömu sameindaformúlu: C₂H₆O og sama mólmassa (46 g/mol).',
+      'Etanól (CH₃CH₂OH) og dímetýleter (CH₃OCH₃) hafa bæði sömu sameindaformúlu: C₂H₆O og sama mólmassa (46 g/mól).',
     question: 'Af hverju hefur etanól MIKLU hærra suðumark (78°C) en dímetýleter (-24°C)?',
     compounds: [
       { formula: 'CH₃CH₂OH', name: 'Etanól', info: 'Suðumark: 78°C' },
       { formula: 'CH₃OCH₃', name: 'Dímetýleter', info: 'Suðumark: -24°C' },
     ],
     options: [
-      { id: 'a', text: 'Etanól er þyngri', correct: false, explanation: 'Þau hafa sama mólmassa.' },
+      { id: 'a', text: 'Etanól er þyngra', correct: false, explanation: 'Þau hafa sama mólmassa.' },
       {
         id: 'b',
         text: 'Etanól hefur O-H hóp sem myndar vetnistengi',
         correct: true,
         explanation:
-          'Rétt! O-H í etanóli getur gefið OG tekið við vetnistengslum. Dímetýleter (C-O-C) getur aðeins tekið við H-tengi, ekki gefið.',
+          'Rétt! O-H í etanóli getur gefið OG tekið við vetnistengjum. Dímetýleter (C-O-C) getur aðeins tekið við H-tengi, ekki gefið.',
       },
       {
         id: 'c',
@@ -55,14 +55,14 @@ const challenges: Challenge[] = [
     ],
     hint: 'Hvaða sameind getur myndað vetnistengi SEM GJAFI? (gefur H)',
     conceptNote:
-      'Vetnistengi krefst bæði GJAFA (H bundið við F/O/N) og ÞEGA (F/O/N með einstæð pör). Etanól getur verið hvort tveggja, dímetýleter er aðeins þegi.',
+      'Vetnistengi krefst bæði GJAFA (H bundið við F/O/N) og ÞEGA (F/O/N með stök pör). Etanól getur verið hvort tveggja, dímetýleter er aðeins þegi.',
   },
   {
     id: 2,
     type: 'anomaly',
-    title: 'Óeðlilegar eiginleikar vatns',
+    title: 'Óeðlilegir eiginleikar vatns',
     scenario:
-      'Vatn (H₂O, M=18 g/mol) hefur suðumark 100°C. Vetnissúlfíð (H₂S, M=34 g/mol) hefur suðumark -60°C.',
+      'Vatn (H₂O, M=18 g/mól) hefur suðumark 100°C. Vetnissúlfíð (H₂S, M=34 g/mól) hefur suðumark -60°C.',
     question:
       'Þrátt fyrir að H₂S sé nær tvöfalt þyngri, hefur vatn MIKLU hærra suðumark. Af hverju?',
     options: [
@@ -77,7 +77,7 @@ const challenges: Challenge[] = [
         text: 'Súrefni er rafneikvæðara en brennisteinn → sterkari H-tengi',
         correct: true,
         explanation:
-          'Rétt! O er mun rafneikvæðara en S. O-H myndast sterk vetnistengi, S-H mjög veik.',
+          'Rétt! O er mun rafneikvæðara en S. O-H myndar sterk vetnistengi, S-H mjög veik.',
       },
       {
         id: 'c',
@@ -94,20 +94,20 @@ const challenges: Challenge[] = [
     ],
     hint: 'Vetnistengi eru sterkust þegar H er bundið við MJÖG rafneikvætt atóm.',
     conceptNote:
-      'Vetnistengi myndast helst með F, O, N vegna mikillar rafneikvæmni. S, Cl, P eru ekki rafneikvæð nóg til að mynda sterk H-tengi.',
+      'Vetnistengi myndast helst með F, O, N vegna mikillar rafneikvæðni. S, Cl, P eru ekki rafneikvæð nóg til að mynda sterk H-tengi.',
   },
   {
     id: 3,
     type: 'real_world',
     title: 'Af hverju er vatn seigt?',
-    scenario: 'Við herðum á vatn á pönnu og það rennur hægar en t.d. aseton eða bensín.',
+    scenario: 'Við hellum vatni á pönnu og það rennur hægar en t.d. aseton eða bensín.',
     question: 'Af hverju er seigja vatns meiri en flestra lífrænna leysa?',
     options: [
       {
         id: 'a',
-        text: 'Vatn er tungara',
+        text: 'Vatn er þyngra',
         correct: false,
-        explanation: 'Vatn er í raun léttara en mörg lífræn leysi.',
+        explanation: 'Vatn er í raun léttara en margir lífrænir leysar.',
       },
       {
         id: 'b',
@@ -124,25 +124,25 @@ const challenges: Challenge[] = [
       },
       {
         id: 'd',
-        text: 'Vatn inniheldur upplausin efni',
+        text: 'Vatn inniheldur uppleyst efni',
         correct: false,
-        explanation: 'Hreint vatn er einnig seigra en mörg lífræn leysi.',
+        explanation: 'Hreint vatn er einnig seigra en margir lífrænir leysar.',
       },
     ],
     hint: 'Hver vatnssameind getur myndað allt að 4 vetnistengi samtímis.',
     conceptNote:
-      'Vatnsameindir mynda þrívítt net af vetnistengjum. Þetta net þarf að „brjóta" til að sameindir geti runnið framhjá hvor annarri, sem eykur seigju.',
+      'Vatnssameindir mynda þrívítt net af vetnistengjum. Þetta net þarf að „brjóta" til að sameindir geti runnið framhjá hvor annarri, sem eykur seigju.',
   },
   {
     id: 4,
     type: 'multi_factor',
     title: 'n-Oktan vs. 2,2,3,3-Tetrametýlbútan',
     scenario:
-      'Báðar sameindir hafa formúlu C₈H₁₈ og mólmassa 114 g/mol. n-Oktan er löng keðja, 2,2,3,3-tetrametýlbútan er „kúlulaga".',
+      'Báðar sameindir hafa formúlu C₈H₁₈ og mólmassa 114 g/mól. n-Oktan er löng keðja, 2,2,3,3-tetrametýlbútan er „kúlulaga".',
     question: 'Hvor hefur hærra suðumark?',
     compounds: [
       { formula: 'n-Oktan', name: 'Löng keðja', info: 'Suðumark: 126°C' },
-      { formula: '2,2,3,3-TMB', name: 'Kúlulag', info: 'Suðumark: 106°C' },
+      { formula: '2,2,3,3-TMB', name: 'Kúlulaga', info: 'Suðumark: 106°C' },
     ],
     options: [
       {
@@ -154,7 +154,7 @@ const challenges: Challenge[] = [
       },
       {
         id: 'b',
-        text: '2,2,3,3-TMB (kúlulag) — þéttari sameind',
+        text: '2,2,3,3-TMB (kúlulaga) — þéttari sameind',
         correct: false,
         explanation: 'Þéttari lögun þýðir minna yfirborð → veikari London kraftar.',
       },
@@ -178,15 +178,15 @@ const challenges: Challenge[] = [
   {
     id: 5,
     type: 'real_world',
-    title: 'Af hverju loðir gekki á veggi?',
+    title: 'Af hverju loðir gekkó við veggi?',
     scenario: 'Gekkóar geta gengið upp glugga og hangið á lofti án límefna eða sogbolla.',
-    question: 'Hvaða millisameindakraftar gera þeim kleift að loða við fléttar?',
+    question: 'Hvaða millisameindakraftar gera þeim kleift að loða við fleti?',
     options: [
       {
         id: 'a',
         text: 'Vetnistengi við glerið',
         correct: false,
-        explanation: 'Gekki myndar ekki efnasambönd við undirlag.',
+        explanation: 'Gekkó myndar ekki efnasambönd við undirlag.',
       },
       {
         id: 'b',
@@ -210,7 +210,7 @@ const challenges: Challenge[] = [
     ],
     hint: 'Gekkófætur hafa milljónir smárra hára. Hvað gerist þegar yfirborðsflatarmál eykst?',
     conceptNote:
-      'Þetta er dæmigert um hvernig margir veikir kraftar geta orðið sterkir saman. Hver setae gefur smá London kraft, en milljónir þeirra gefa nægan kraft til að halda gekkónanum.',
+      'Þetta er dæmigert um hvernig margir veikir kraftar geta orðið sterkir saman. Hver setae gefur smá London kraft, en milljónir þeirra gefa nægan kraft til að halda gekkóinum.',
   },
   {
     id: 6,
@@ -243,18 +243,18 @@ const challenges: Challenge[] = [
     ],
     hint: 'Skoðaðu formúlurnar: -COOH vs. -CHO. Hvor hefur H bundið við O?',
     conceptNote:
-      'Karboxýlsýrur (-COOH) mynda vetnistengi vegna O-H hópsins. Aldehýð (-CHO) er skautuð en getur aðeins tekið við H-tengi, ekki gefið.',
+      'Karboxýlsýrur (-COOH) mynda vetnistengi vegna O-H hópsins. Aldehýð (-CHO) er skautað en getur aðeins tekið við H-tengi, ekki gefið.',
   },
   {
     id: 7,
     type: 'anomaly',
     title: 'Ís flýtur á vatni',
     scenario: 'Flest föst efni sökkva í vökvaforminu, en ís flýtur á vatni.',
-    question: 'Af hverju er ís léttari (minni þéttleiki) en fljótandi vatn?',
+    question: 'Af hverju er ís léttari (minni eðlismassi) en fljótandi vatn?',
     options: [
       {
         id: 'a',
-        text: 'Vatnsameindir þenjast út við frystingu',
+        text: 'Vatnssameindir þenjast út við frystingu',
         correct: false,
         explanation: 'Þetta lýsir fyrirbærinu en útskýrir ekki ástæðuna.',
       },
@@ -263,7 +263,7 @@ const challenges: Challenge[] = [
         text: 'Vetnistengjanetið í ís er opnara og minna þétt',
         correct: true,
         explanation:
-          'Rétt! Í ís myndar hver sameind 4 H-tengi í föstu sexhyrningamynstri. Þetta skapar „eyður" og minnkar þéttleika.',
+          'Rétt! Í ís myndar hver sameind 4 H-tengi í föstu sexhyrningamynstri. Þetta skapar „eyður" og minnkar eðlismassa.',
       },
       {
         id: 'c',
@@ -275,19 +275,19 @@ const challenges: Challenge[] = [
         id: 'd',
         text: 'Vatn er óvenjulega þungt',
         correct: false,
-        explanation: 'Það sem skiptir máli er munurinn á þéttleika vökva og fasts efnis.',
+        explanation: 'Það sem skiptir máli er munurinn á eðlismassa vökva og fasts efnis.',
       },
     ],
-    hint: 'Hugsaðu um hvernig H-tengi raðast í kristallinu vs. í vökvanum.',
+    hint: 'Hugsaðu um hvernig H-tengi raðast í kristallinum vs. í vökvanum.',
     conceptNote:
-      'Í ískristallnum er hvert vatnssameindin í föstu mynstri með 4 H-tengi, sem skapar opinn „kagala" formgerð. Í vökva er formgerðin breytilegri og þéttari.',
+      'Í ískristallnum er hver vatnssameind í föstu mynstri með 4 H-tengi, sem skapar opna „kagala" formgerð. Í vökva er formgerðin breytilegri og þéttari.',
   },
   {
     id: 8,
     type: 'multi_factor',
-    title: 'Hvaða olía er seigust?',
+    title: 'Hvaða vökvi er seigastur?',
     scenario:
-      'Við höfum þrjár vökvar: vatn (H₂O), jurtaolíu (langkeðju þríglýseríð), og bensín (blanda af C₅-C₁₂ alkanum).',
+      'Við höfum þrjá vökva: vatn (H₂O), jurtaolíu (langkeðju þríglýseríð), og bensín (blanda af C₅-C₁₂ alkönum).',
     question: 'Hver er seigastur?',
     options: [
       {
@@ -301,11 +301,11 @@ const challenges: Challenge[] = [
         text: 'Jurtaolía — mjög langar keðjur með miklu yfirborði',
         correct: true,
         explanation:
-          'Rétt! Jurtaolíur hafa risastórar sameindir (600-900 g/mol) með langar feitukeðjur → gríðarlega sterkir London kraftar.',
+          'Rétt! Jurtaolíur hafa risastórar sameindir (600-900 g/mól) með langar feitukeðjur → gríðarlega sterkir London kraftar.',
       },
       {
         id: 'c',
-        text: 'Bensín — mörg mismunandi sameindir',
+        text: 'Bensín — margar mismunandi sameindir',
         correct: false,
         explanation: 'Bensín hefur litlar sameindir og er í raun mjög þunnt.',
       },
@@ -316,20 +316,20 @@ const challenges: Challenge[] = [
         explanation: 'Seigja er mjög mismunandi milli þessara vökva.',
       },
     ],
-    hint: 'Hugsaðu um stærð sameindanna. Jurtaolíur hafa mólmassa 600-900 g/mol.',
+    hint: 'Hugsaðu um stærð sameindanna. Jurtaolíur hafa mólmassa 600-900 g/mól.',
     conceptNote:
       'Þó vetnistengi séu sterk, geta risastórar sameindir með mikið yfirborð haft svo sterka London krafta að þeir vinna yfir H-tengi lítilla sameinda.',
   },
   {
     id: 9,
     type: 'real_world',
-    title: 'Af hverju er sápubóla kúlulag?',
+    title: 'Af hverju er sápubóla kúlulaga?',
     scenario: 'Sápubólur eru alltaf kúlulaga, og vatn hefur háa yfirborðsspennu.',
     question: 'Hvað veldur yfirborðsspennu vatns?',
     options: [
       {
         id: 'a',
-        text: 'Vatnsameindir á yfirborðinu eru dregnar inn á við af H-tengjum',
+        text: 'Vatnssameindir á yfirborðinu eru dregnar inn á við af H-tengjum',
         correct: true,
         explanation:
           'Rétt! Sameindir á yfirborðinu hafa færri nágranna til að mynda H-tengi við → þær eru dregnar inn á við. Þetta skapar „húð" sem vill lágmarka flatarmál = kúla.',
@@ -369,13 +369,13 @@ const challenges: Challenge[] = [
         text: 'HF getur aðeins myndað 2 H-tengi, vatn getur myndað 4',
         correct: true,
         explanation:
-          'Rétt! HF hefur aðeins eitt H og eitt F → hámark 2 H-tengi. H₂O hefur 2 H og 2 einstæð pör → allt að 4 H-tengi.',
+          'Rétt! HF hefur aðeins eitt H og eitt F → hámark 2 H-tengi. H₂O hefur 2 H og 2 stök pör → allt að 4 H-tengi.',
       },
       {
         id: 'b',
         text: 'Vatn er þyngra',
         correct: false,
-        explanation: 'Vatn er í raun léttara (18 vs 20 g/mol).',
+        explanation: 'Vatn er í raun léttara (18 vs 20 g/mól).',
       },
       {
         id: 'c',
@@ -392,7 +392,7 @@ const challenges: Challenge[] = [
     ],
     hint: 'Teldu: Hversu mörg H-tengi getur hver sameind myndað?',
     conceptNote:
-      'Styrk H-tengja skiptir máli, en FJÖLDI þeirra skiptir líka máli. Vatn getur myndað tvöfalt fleiri H-tengi en HF (4 vs 2) og þetta vinnur yfir að hvert HF-tengi sé sterkara.',
+      'Styrkur H-tengja skiptir máli, en FJÖLDI þeirra skiptir líka máli. Vatn getur myndað tvöfalt fleiri H-tengi en HF (4 vs 2) og þetta vinnur yfir að hvert HF-tengi sé sterkara.',
   },
 ];
 
@@ -423,13 +423,8 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const checkAnswer = () => {
     const selected = shuffledOptions.find((opt) => opt.id === selectedOption);
     const correct = selected?.correct ?? false;
-    if (correct) {
-      if (!showHint) {
-        setScore((prev) => prev + 12);
-      } else {
-        setScore((prev) => prev + 6);
-      }
-    }
+    // A hint never costs points: the same 12 with or without it.
+    if (correct) setScore((prev) => prev + 12);
     setShowResult(true);
   };
 
@@ -473,7 +468,10 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <button onClick={onBack} className="text-warm-600 hover:text-warm-800">
+          <button
+            onClick={onBack}
+            className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+          >
             ← Til baka
           </button>
           <div className="text-right">
@@ -491,7 +489,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           {/* Type badge and title */}
           <div className="mb-4">
             <span
@@ -510,10 +508,14 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
           {/* Compounds comparison if available */}
           {challenge.compounds && (
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
               {challenge.compounds.map((compound) => (
-                <div key={compound.formula} className="bg-warm-900 p-4 rounded-xl text-center">
-                  <div className="text-xl font-bold text-white">{compound.formula}</div>
+                <div
+                  key={compound.formula}
+                  className="bg-warm-900 px-2 py-3 sm:p-4 rounded-xl text-center min-w-0"
+                >
+                  {/* Sized to fit a phone column whole: CH₃CH₂OH must not break mid-formula. */}
+                  <div className="text-lg sm:text-xl font-bold text-white">{compound.formula}</div>
                   <div className="text-warm-400 text-sm">{compound.name}</div>
                   <div className="text-indigo-400 text-sm mt-1">{compound.info}</div>
                 </div>
@@ -562,7 +564,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           {!showResult && !showHint && (
             <button
               onClick={handleShowHint}
-              className="text-indigo-600 hover:text-indigo-800 text-sm underline mb-4"
+              className="text-indigo-600 hover:text-indigo-800 text-sm underline mb-4 pointer-coarse:py-3 pointer-coarse:-mt-3 pointer-coarse:mb-1"
             >
               Sýna vísbendingu
             </button>

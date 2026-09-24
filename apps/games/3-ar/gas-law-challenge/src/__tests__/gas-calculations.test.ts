@@ -186,8 +186,8 @@ describe('getUnit', () => {
     expect(getUnit('T')).toBe('K');
   });
 
-  it('returns mol for n', () => {
-    expect(getUnit('n')).toBe('mol');
+  it('returns mól for n', () => {
+    expect(getUnit('n')).toBe('mól');
   });
 });
 
@@ -201,7 +201,7 @@ describe('getVariableName', () => {
   });
 
   it('returns Icelandic name for T', () => {
-    expect(getVariableName('T')).toBe('Hiti');
+    expect(getVariableName('T')).toBe('Hitastig');
   });
 
   it('returns Icelandic name for n', () => {

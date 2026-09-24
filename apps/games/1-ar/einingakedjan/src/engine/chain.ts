@@ -114,18 +114,73 @@ export interface CorrectionPrompt {
 }
 
 /**
+ * The fewest cards from `pool` that take `from` to `target`, or `null` if no
+ * route exists.
+ *
+ * A breadth-first search over the units a chain can reach, where a step counts
+ * only if something cancels — the same rule `solveChain` grades by. Every card
+ * can be turned either way, so from anywhere a clean chain can reach, the way
+ * back to the start and on to the target is always open; `null` is defensive.
+ */
+export function stepsToTarget(
+  from: Quantity,
+  pool: Equivalence[],
+  target: UnitSignature
+): number | null {
+  if (signatureMatches(from, target)) return 0;
+  const seen = new Set([formatSignature(from)]);
+  let frontier = [from];
+  for (let depth = 1; frontier.length > 0; depth++) {
+    const next: Quantity[] = [];
+    for (const quantity of frontier) {
+      for (const equivalence of pool) {
+        for (const orientation of ['forward', 'flipped'] as const) {
+          const step = applyRatio(quantity, orient(equivalence, orientation));
+          if (step.cancelCount === 0) continue;
+          if (signatureMatches(step.after, target)) return depth;
+          const key = formatSignature(step.after);
+          if (seen.has(key)) continue;
+          seen.add(key);
+          next.push(step.after);
+        }
+      }
+    }
+    frontier = next;
+  }
+  return null;
+}
+
+/** "eitt hlutfall", "tvö hlutföll", …: the object of `þarft … í viðbót`. */
+const RATIO_COUNTS = [
+  '',
+  'eitt hlutfall',
+  'tvö hlutföll',
+  'þrjú hlutföll',
+  'fjögur hlutföll',
+  'fimm hlutföll',
+  'sex hlutföll',
+];
+
+const ratioCount = (n: number | null): string =>
+  n !== null && n > 0 && n < RATIO_COUNTS.length ? RATIO_COUNTS[n] : 'fleiri hlutföll';
+
+/**
  * Build the "how do we fix this?" question from what the chain actually did.
  *
  * Everything here is interpolated from the failing step, so the wording can never
- * describe a different error than the one on screen.
+ * describe a different error than the one on screen. The pool is the one the
+ * chain was built from: how many cards are still missing is counted in it, not
+ * assumed.
  */
 export function correctionPrompt(
   result: SolveResult,
-  target: UnitSignature
+  target: UnitSignature,
+  pool: Equivalence[]
 ): CorrectionPrompt | null {
   if (result.status === 'solved') return null;
 
   if (result.status === 'wrong-unit') {
+    const missing = ratioCount(stepsToTarget(result.final, pool, target));
     return {
       problem: `Keðjan gengur upp — allar einingar styttust út — en hún endar í ${formatSignature(
         result.final
@@ -138,7 +193,7 @@ export function correctionPrompt(
           correct: true,
           explanation: `Rétt. Þú ert kominn í ${formatSignature(
             result.final
-          )} og þarft eitt hlutfall í viðbót til að komast í ${formatSignature(target)}.`,
+          )} og þarft ${missing} í viðbót til að komast í ${formatSignature(target)}.`,
         },
         {
           id: 'flip',

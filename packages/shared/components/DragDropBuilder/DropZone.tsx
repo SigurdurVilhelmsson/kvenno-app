@@ -8,6 +8,9 @@ import type { DropZoneProps } from './types';
  *
  * A target zone where draggable items can be dropped.
  * Supports reordering of items within the zone.
+ *
+ * While an item is picked up by tap/click/keyboard (`selectedId`), a zone that can take it
+ * (`isTarget`) is highlighted and placing is one tap, click or Enter on the zone.
  */
 export function DropZone({
   zone,
@@ -17,6 +20,13 @@ export function DropZone({
   onDrop,
   onReorder,
   onTouchDrop,
+  onTouchOver,
+  selectedId = null,
+  isTarget = false,
+  onActivate,
+  onActivateItem,
+  onItemDragStart,
+  onItemDragEnd,
   orientation = 'horizontal',
   className = '',
   renderItem,
@@ -103,36 +113,41 @@ export function DropZone({
     [items, dragOverIndex, canDrop, onDrop, onReorder]
   );
 
-  const handleItemDragStart = useCallback((itemId: string) => {
-    setLocalDraggingId(itemId);
-  }, []);
+  const handleItemDragStart = useCallback(
+    (itemId: string) => {
+      setLocalDraggingId(itemId);
+      onItemDragStart?.(itemId);
+    },
+    [onItemDragStart]
+  );
 
   const handleItemDragEnd = useCallback(() => {
     setLocalDraggingId(null);
-  }, []);
+    onItemDragEnd?.();
+  }, [onItemDragEnd]);
 
-  // Touch event handlers for mobile support
-  const handleTouchMove = useCallback(
-    (e: React.TouchEvent<HTMLDivElement>) => {
-      if (!zoneRef.current || items.length === 0) return;
+  // Clicks on an item stop propagation, so this only sees the zone itself.
+  const handleClick = useCallback(() => {
+    if (isTarget) onActivate?.();
+  }, [isTarget, onActivate]);
 
-      const touch = e.touches[0];
-      const rect = zoneRef.current.getBoundingClientRect();
-
-      if (
-        touch.clientX >= rect.left &&
-        touch.clientX <= rect.right &&
-        touch.clientY >= rect.top &&
-        touch.clientY <= rect.bottom
-      ) {
-        // Touch is over zone - could calculate index here for mobile reordering
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (!isTarget || e.target !== e.currentTarget) return;
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onActivate?.();
       }
     },
-    [items.length]
+    [isTarget, onActivate]
   );
 
   const isFull = zone.maxItems !== undefined && items.length >= zone.maxItems;
-  const showDropIndicator = isOver && canDrop && !isFull;
+  // A full single-item zone still takes a drop (the new item swaps in), so it lights up too.
+  const showDropIndicator = isOver && canDrop && (!isFull || zone.maxItems === 1);
+  // Dim the zones a picked-up item cannot go to — but not the one it is sitting in, or the
+  // item the student just selected would itself look disabled.
+  const picking = selectedId !== null && !items.some((item) => item.id === selectedId);
 
   return (
     <div
@@ -140,19 +155,23 @@ export function DropZone({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
-      onTouchMove={handleTouchMove}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
       className={`
         drop-zone
         min-h-[60px] p-3 rounded-xl
         border-2 border-dashed
         transition-all duration-200
-        ${showDropIndicator ? 'border-blue-400 bg-blue-50' : 'border-gray-300 bg-gray-50'}
+        ${showDropIndicator || isTarget ? 'border-blue-400 bg-blue-50' : 'border-gray-300 bg-gray-50'}
         ${!canDrop && isOver ? 'border-red-300 bg-red-50' : ''}
-        ${isFull ? 'border-amber-300 bg-amber-50' : ''}
+        ${isFull && !isTarget && !showDropIndicator ? 'border-amber-300 bg-amber-50' : ''}
+        ${isTarget ? 'cursor-pointer' : ''}
+        ${picking && !isTarget ? 'opacity-60' : ''}
         ${className}
       `}
       data-zone-id={zone.id}
-      role="listbox"
+      role="group"
+      tabIndex={isTarget ? 0 : undefined}
       aria-label={zone.label || `Drop zone ${zone.id}`}
     >
       {/* Zone label */}
@@ -191,9 +210,12 @@ export function DropZone({
               <DraggableItem
                 item={item}
                 isDragging={localDraggingId === item.id}
+                isSelected={selectedId === item.id}
                 onDragStart={handleItemDragStart}
                 onDragEnd={handleItemDragEnd}
                 onTouchDrop={onTouchDrop}
+                onTouchOver={onTouchOver}
+                onActivate={onActivateItem}
               />
             )}
           </div>

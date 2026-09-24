@@ -75,8 +75,51 @@ function tsxFiles(dir: string): string[] {
 
 interface Game {
   slug: string;
+  dir: string;
   tab: string | null;
+  /** Header titles, literal or resolved from a `t()` call. */
   headers: string[];
+  /** `gameTitle={t('key')}` calls still to be resolved against the game's i18n. */
+  tCalls: { key: string; fallback?: string }[];
+  /** `gameTitle={…}` expressions this test cannot read: a variable, a ternary. */
+  opaque: string[];
+}
+
+/**
+ * `gameTitle={t('game.title')}` — ten games pass their header title through the
+ * translation hook instead of writing it literally. Until 2026-09-23 this test
+ * read only `gameTitle="…"`, so those ten were never checked at all, which is
+ * how `1-ar/takmarkandi` shipped `Takmarkandi Hvarfefni` in its header while its
+ * hub card said `Takmarkandi hvarfefni`. The optional second argument is the
+ * fallback `t()` returns when the key is missing.
+ */
+const T_CALL = /gameTitle=\{t\(\s*'([^']+)'\s*(?:,\s*'([^']*)'\s*)?\)\}/g;
+/** Any other `gameTitle={…}`, so an unreadable one fails instead of being skipped. */
+const OPAQUE = /gameTitle=\{(?!t\(\s*'[^']+'\s*(?:,\s*'[^']*'\s*)?\)\})([^}]*)\}/g;
+
+type Dictionary = { [key: string]: string | Dictionary };
+
+/** What `useGameI18n`'s `t()` shows an Icelandic student: the `is` value, else the fallback. */
+function lookup(dictionary: Dictionary, key: string): string | undefined {
+  let value: string | Dictionary | undefined = dictionary;
+  for (const part of key.split('.')) {
+    if (value === undefined || typeof value === 'string') return undefined;
+    value = value[part];
+  }
+  return typeof value === 'string' ? value : undefined;
+}
+
+async function resolveTitles(game: Game): Promise<void> {
+  if (game.tCalls.length === 0) return;
+  const i18n = (await import(join(game.dir, 'src', 'i18n.ts'))) as {
+    gameTranslations: { is: Dictionary };
+  };
+  for (const { key, fallback } of game.tCalls) {
+    const title = lookup(i18n.gameTranslations.is, key) ?? fallback;
+    // `t()` returns the key itself when both are missing, which is what the
+    // student would then see in the header — so that is what gets compared.
+    game.headers.push(title ?? key);
+  }
 }
 
 /** A directory with no index.html is not a game, so it drops out rather than failing. */
@@ -100,11 +143,15 @@ function games(): Game[] {
           const dir = join(gamesRoot, y.name, g.name);
           const tab = readTabTitle(dir);
           const headers = new Set<string>();
+          const tCalls: Game['tCalls'] = [];
+          const opaque: string[] = [];
           for (const f of tsxFiles(join(dir, 'src'))) {
-            for (const m of readFileSync(f, 'utf8').matchAll(/gameTitle="([^"]+)"/g))
-              headers.add(m[1]);
+            const text = readFileSync(f, 'utf8');
+            for (const m of text.matchAll(/gameTitle="([^"]+)"/g)) headers.add(m[1]);
+            for (const m of text.matchAll(T_CALL)) tCalls.push({ key: m[1], fallback: m[2] });
+            for (const m of text.matchAll(OPAQUE)) opaque.push(m[1].trim());
           }
-          return { slug: g.name, tab, headers: [...headers] };
+          return { slug: g.name, dir, tab, headers: [...headers], tCalls, opaque };
         })
         .filter((g) => g.tab !== null)
     );
@@ -112,6 +159,9 @@ function games(): Game[] {
 
 const CARDS = hubCards();
 const GAMES = games();
+// Resolved before the `it.each` tables below are built, which is why this is a
+// top-level await rather than a beforeAll.
+await Promise.all(GAMES.map(resolveTitles));
 
 describe('every game has one name', () => {
   it('finds every game and a hub card for each', () => {
@@ -144,6 +194,18 @@ describe('every game has one name', () => {
       [...new Set(game.headers)],
       `${slug}'s Header gameTitle disagrees with its hub card`
     ).toEqual([CARDS.get(slug)]);
+  });
+
+  it('reads every header title, including the ones passed through t()', () => {
+    // The guard on the guard: if the t() reader stopped matching, the header
+    // check above would quietly shrink back to the literal-only games.
+    const viaT = GAMES.filter((g) => g.tCalls.length > 0).map((g) => g.slug);
+    expect(viaT.length, `games whose header title comes from t(): ${viaT.join(', ')}`).toBe(10);
+    for (const g of GAMES.filter((x) => !HEADER_EXEMPT.has(x.slug))) {
+      expect(g.opaque, `${g.slug} passes gameTitle an expression this test cannot read`).toEqual(
+        []
+      );
+    }
   });
 
   it('the header exemption is real, and is only used where it is earned', () => {

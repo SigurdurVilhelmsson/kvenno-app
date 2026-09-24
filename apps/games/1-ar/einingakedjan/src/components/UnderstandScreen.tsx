@@ -38,7 +38,7 @@ function Lesson({ heading, statement, equivalence, forwardUse, flippedUse }: Les
         <button
           type="button"
           onClick={() => setOrientation(flip(orientation))}
-          className="game-btn rounded-lg border border-warm-300 bg-white px-4 py-2 text-sm font-medium text-warm-700 hover:bg-warm-100"
+          className="game-btn rounded-lg border border-warm-300 bg-white px-4 py-2 text-sm font-medium text-warm-700 hover:bg-warm-100 pointer-coarse:min-h-11"
         >
           ⇅ Snúa hlutfallinu við
         </button>
@@ -70,7 +70,7 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
       <button
         type="button"
         onClick={onBack}
-        className="game-btn mb-4 rounded-lg border border-warm-300 px-3 py-1.5 text-sm text-warm-700 hover:bg-warm-50"
+        className="game-btn mb-4 rounded-lg border border-warm-300 px-3 py-1.5 text-sm text-warm-700 hover:bg-warm-50 pointer-coarse:min-h-11"
       >
         ← Aftur í valmynd
       </button>

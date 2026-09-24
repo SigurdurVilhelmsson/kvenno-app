@@ -104,6 +104,11 @@
   color: #1e3a8a;
 }
 
+.thermo-indicator.neutral {
+  background: #e7e5e4;
+  color: #44403c;
+}
+
 /* Stress Buttons */
 .stress-btn {
   background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
@@ -121,9 +126,13 @@
   font-size: 0.875rem;
 }
 
-.stress-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+/* Hover lifts only on devices that really hover: on a phone a tap leaves
+   :hover stuck, so the lift would stay on until the next tap elsewhere. */
+@media (hover: hover) and (pointer: fine) {
+  .stress-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+  }
 }
 
 .stress-btn:focus-visible {
@@ -155,8 +164,10 @@
   border: 3px solid transparent;
 }
 
-.predict-btn:hover:not(:disabled) {
-  transform: scale(1.05);
+@media (hover: hover) and (pointer: fine) {
+  .predict-btn:hover:not(:disabled) {
+    transform: scale(1.05);
+  }
 }
 
 .predict-btn:focus-visible {
@@ -377,9 +388,11 @@
   transition: all 0.3s ease;
 }
 
-.mode-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+@media (hover: hover) and (pointer: fine) {
+  .mode-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
 }
 
 .mode-card:focus-visible {
@@ -398,8 +411,10 @@
   transition: left 0.5s;
 }
 
-.mode-card:hover::before {
-  left: 100%;
+@media (hover: hover) and (pointer: fine) {
+  .mode-card:hover::before {
+    left: 100%;
+  }
 }
 
 /* Timer display */
@@ -485,4 +500,138 @@
     font-size: 1.25rem;
     padding: 6px 12px;
   }
+}
+
+/* Phones (below Tailwind's sm). Everything here only narrows what the 768 px
+   tier above already set, so tablets and desktop are unchanged. */
+@media (max-width: 639px) {
+  /* Reactants and products sit side by side on a phone, so "left" and
+     "right" still mean the boxes a student sees on the left and right. */
+  .molecule-container {
+    min-height: 72px;
+    padding: 10px 6px;
+  }
+
+  /* Three direction buttons in one row at 320 px: less padding and a
+     slightly smaller label keep "hliðrun" whole inside its button. */
+  .predict-btn {
+    padding: 12px 6px;
+    font-size: 0.9375rem;
+  }
+
+  .explanation-box {
+    padding: 14px 10px;
+  }
+
+  /* The numbers table scrolls sideways when a row of scientific notation is
+     wider than the phone. The white strip is attached to the content and the
+     shadow to the box, so the shadow shows only while the table's right end
+     is out of view. */
+  .table-scroll-cue {
+    background:
+      linear-gradient(to left, #fff 40%, rgb(255 255 255 / 0)) right center / 2rem 100% no-repeat
+        local,
+      radial-gradient(farthest-side at 100% 50%, rgb(0 0 0 / 0.2), rgb(0 0 0 / 0)) right center /
+        0.75rem 100% no-repeat scroll,
+      #fff;
+  }
+
+  /* The species column stays put while the numbers scroll under it. It needs
+     a background of its own to hide them, and the gutter that separates it
+     from the first number lives here rather than on that number, so the
+     values do not butt against the formula as they pass beneath it. */
+  .table-pin {
+    position: sticky;
+    left: 0;
+    padding-right: 0.5rem;
+    background: #fff;
+  }
+
+  .timer-display {
+    font-size: 1.25rem;
+    padding: 6px 12px;
+  }
+
+  .score-display {
+    font-size: 1.125rem;
+    padding: 4px 10px;
+  }
+}
+
+/* Phones narrower than 360 px. With the large text setting at 320 px the three
+   direction buttons are about 80 px wide, and "hliðrun" no longer fits
+   inside one at the size above. */
+@media (max-width: 359px) {
+  .predict-btn {
+    padding: 12px 4px;
+    font-size: 0.875rem;
+  }
+}
+
+/* ==================== HÁ BIRTUSKIL (HIGH CONTRAST) ====================
+   This game is the only one with a high-contrast switch, and the shared
+   theme's `.high-contrast` block did half a job on it: it turns `bg-white` and
+   `bg-warm-50/100` dark and warm text light, and leaves every other surface as
+   it was. Most of this game's text sits on surfaces that block does not know —
+   the page gradient, the tinted panels, the molecule containers — so the stress
+   box, the Hvarfefni/Myndefni labels and the footer came out light on light,
+   and the white Q-vs-K card inside the indigo intro came out dark indigo on
+   near-black.
+
+   Here high contrast goes one way only: every surface keeps its normal light
+   colour and the text and borders get darker. With one direction there is no
+   nesting of panels that can invert it. The `!important`s match the theme's,
+   and these rules come after it in the cascade, so they win. */
+.high-contrast {
+  --border-color: var(--color-warm-900);
+  --focus-color: var(--color-warm-900);
+}
+
+.high-contrast body {
+  background-color: #fff;
+  color: var(--color-warm-900);
+}
+
+.high-contrast .bg-white,
+.high-contrast .bg-surface-raised {
+  background-color: #fff !important;
+  color: inherit !important;
+}
+
+.high-contrast .bg-warm-50,
+.high-contrast .bg-surface-page {
+  background-color: var(--color-warm-50) !important;
+  color: inherit !important;
+}
+
+.high-contrast .bg-warm-100,
+.high-contrast .bg-surface-sunken {
+  background-color: var(--color-warm-100) !important;
+  color: inherit !important;
+}
+
+.high-contrast .bg-gray-50,
+.high-contrast .bg-slate-50 {
+  background-color: var(--color-gray-50) !important;
+  color: inherit !important;
+}
+
+.high-contrast .bg-gray-100,
+.high-contrast .bg-slate-100 {
+  background-color: var(--color-gray-100) !important;
+  color: inherit !important;
+}
+
+.high-contrast .text-warm-400,
+.high-contrast .text-warm-500,
+.high-contrast .text-warm-600,
+.high-contrast .text-warm-700,
+.high-contrast .text-warm-800,
+.high-contrast .text-gray-600,
+.high-contrast .text-gray-700,
+.high-contrast .text-gray-800,
+.high-contrast .text-slate-600,
+.high-contrast .text-slate-700,
+.high-contrast .text-slate-800 {
+  color: var(--color-warm-900) !important;
 }

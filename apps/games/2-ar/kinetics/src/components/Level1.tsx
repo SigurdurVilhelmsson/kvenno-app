@@ -12,9 +12,9 @@ import { calculateScore } from '../utils/kinetics-scoring';
 // Misconceptions for kinetics concepts
 const MISCONCEPTIONS: Record<number, string> = {
   1: 'Hvarfhraði = Δ[styrk]/Δtími. Mundu að deila, ekki margfalda!',
-  2: 'Í 1. stigs hvörf (order=1) tvöfaldast hraðinn þegar styrkur tvöfaldast. Í 2. stigs (order=2) fjórfaldast hann.',
+  2: 'Í 1. stigs hvörfum tvöfaldast hraðinn þegar styrkur tvöfaldast. Í 2. stigs hvörfum fjórfaldast hann.',
   3: 'Hitastig breytir EKKI virkjunarorku (Ea). Það eykur hlutfall sameinda sem hafa E ≥ Ea.',
-  4: 'Hvatar lækka Ea með öðrum hvarfgangshátt - þeir hita EKKI hvörfin upp.',
+  4: 'Hvatar lækka Ea með öðrum hvarfgangi - þeir hita EKKI hvörfin upp.',
   5: 'Yfirborð skiptir máli vegna fjölda árekstrarstaða, ekki efnaformúlu eða massa.',
   6: 'Ekki nóg að árekstur hafi orku - stefna (orientation) skiptir líka máli!',
 };
@@ -24,9 +24,9 @@ const RELATED_CONCEPTS: Record<number, string[]> = {
   1: ['Hvarfhraði', 'Styrkbreyting', 'M/s'],
   2: ['Hvörfunarröð', 'Hraðajafna', 'k[A]^n'],
   3: ['Maxwell-Boltzmann', 'Arrhenius', 'Ea og T'],
-  4: ['Hvatar', 'Virkjunarorka', 'Hvarfgangsháttur'],
-  5: ['Yfirborð', 'Árekstur', 'Heterogens hvörf'],
-  6: ['Árekstrarkennning', 'Orka og stefna', 'Árekstrartíðni'],
+  4: ['Hvatar', 'Virkjunarorka', 'Hvarfgangur'],
+  5: ['Yfirborð', 'Árekstur', 'Misleit hvörf'],
+  6: ['Árekstrakenning', 'Orka og stefna', 'Árekstrartíðni'],
 };
 
 interface Level1Props {
@@ -70,7 +70,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
     const selectedOption = shuffledOptions.find((opt) => opt.id === selectedAnswer);
     const isCorrect = selectedOption?.correct ?? false;
-    const points = calculateScore(isCorrect, showHint);
+    const points = calculateScore(isCorrect);
     if (isCorrect) {
       setScore((prev) => prev + points);
     }
@@ -113,7 +113,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
           >
             <span>&larr;</span> Til baka
           </button>
@@ -134,8 +134,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <h2 className="text-2xl font-bold text-blue-800 mb-2">{challenge.title}</h2>
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+          <h2 className="text-xl min-[360px]:text-2xl font-bold text-blue-800 mb-2">
+            {challenge.title}
+          </h2>
           <p className="text-warm-700 text-lg mb-6">{challenge.question}</p>
 
           {/* Multiple choice options */}
@@ -177,7 +179,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 setShowHint(true);
                 setTotalHintsUsed((prev) => prev + 1);
               }}
-              className="text-blue-600 hover:text-blue-800 text-sm underline mb-4"
+              className="text-blue-600 hover:text-blue-800 text-sm underline mb-4 pointer-coarse:min-h-11"
             >
               Sýna vísbendingu
             </button>
@@ -208,7 +210,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 feedback={{
                   isCorrect:
                     shuffledOptions.find((opt) => opt.id === selectedAnswer)?.correct || false,
-                  explanation: `${shuffledOptions.find((opt) => opt.id === selectedAnswer)?.explanation || ''}\n\n**Hugtak:** ${challenge.conceptExplanation}`,
+                  // Plain text: the panel renders it as-is, so markdown here showed up as
+                  // literal asterisks. The concept gets its own box below, as in Stig 3.
+                  explanation:
+                    shuffledOptions.find((opt) => opt.id === selectedAnswer)?.explanation || '',
                   misconception: shuffledOptions.find((opt) => opt.id === selectedAnswer)?.correct
                     ? undefined
                     : MISCONCEPTIONS[challenge.id],
@@ -225,6 +230,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   showNextSteps: true,
                 }}
               />
+              <div className="bg-blue-50 p-4 rounded-xl mt-4">
+                <div className="font-bold text-blue-800 mb-2">Hugtak:</div>
+                <div className="text-blue-900 text-sm">{challenge.conceptExplanation}</div>
+              </div>
             </div>
           )}
 
@@ -240,7 +249,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         </div>
 
         {/* Interactive Visualizations */}
-        <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
+        <div className="mt-6 bg-white rounded-xl p-3 sm:p-4 shadow-sm">
           <h3 className="font-bold text-warm-700 mb-4">Gagnvirk hermun</h3>
 
           {/* Shared Controls */}
@@ -261,7 +270,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 onChange={(e) => setTemperature(Number(e.target.value))}
                 aria-label="Hitastig í Kelvin"
                 aria-valuetext={`${temperature} Kelvin (250 til 500)`}
-                className="w-full h-2 bg-warm-200 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                className="w-full h-2 bg-warm-200 rounded-lg appearance-none cursor-pointer accent-blue-500 pointer-coarse:h-11 pointer-coarse:rounded-none pointer-coarse:bg-transparent pointer-coarse:bg-[linear-gradient(var(--color-warm-200),var(--color-warm-200))] pointer-coarse:bg-[length:100%_8px] pointer-coarse:bg-center pointer-coarse:bg-no-repeat"
               />
               <div className="flex justify-between text-xs text-warm-400 mt-1">
                 <span>250 K</span>
@@ -274,7 +283,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 <span className="flex items-center gap-1">
                   <span>⚡</span> Virkjunarorka (Ea)
                 </span>
-                <span className="font-mono font-bold text-red-600">{activationEnergy} kJ/mol</span>
+                <span className="font-mono font-bold text-red-600">{activationEnergy} kJ/mól</span>
               </label>
               <input
                 type="range"
@@ -285,11 +294,11 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 onChange={(e) => setActivationEnergy(Number(e.target.value))}
                 aria-label="Virkjunarorka í kJ/mól"
                 aria-valuetext={`${activationEnergy} kJ á mól (20 til 80)`}
-                className="w-full h-2 bg-warm-200 rounded-lg appearance-none cursor-pointer accent-red-500"
+                className="w-full h-2 bg-warm-200 rounded-lg appearance-none cursor-pointer accent-red-500 pointer-coarse:h-11 pointer-coarse:rounded-none pointer-coarse:bg-transparent pointer-coarse:bg-[linear-gradient(var(--color-warm-200),var(--color-warm-200))] pointer-coarse:bg-[length:100%_8px] pointer-coarse:bg-center pointer-coarse:bg-no-repeat"
               />
               <div className="flex justify-between text-xs text-warm-400 mt-1">
-                <span>20 kJ/mol</span>
-                <span>80 kJ/mol</span>
+                <span>20 kJ/mól</span>
+                <span>80 kJ/mól</span>
               </div>
             </div>
           </div>

@@ -1,3 +1,5 @@
+import { formatDecimal, parseStudentNumber } from '@shared/utils';
+
 import { Variable, GasValue, GasLawQuestion, R } from '../types';
 
 /**
@@ -65,7 +67,7 @@ export function getUnit(variable: Variable): string {
     P: 'atm',
     V: 'L',
     T: 'K',
-    n: 'mol',
+    n: 'mól',
   };
   return units[variable];
 }
@@ -89,14 +91,65 @@ export function answerUnit(question: GasLawQuestion): string {
 }
 
 /**
- * Get variable name in Icelandic
+ * The answer as the worked solution writes it: the number `solution.calculation` ends on,
+ * with its own significant figures (`4,0` mL, not `4`).
+ *
+ * The screens used to print `formatDecimal(answer, 2)`, which showed question 9's
+ * 0,083 mol as `0,08` — a number the grader then rejected. The calculation's number is
+ * checked against the stored answer here, and `answer-display.test.tsx` asserts the
+ * fallback is never needed.
+ */
+export function answerText(question: GasLawQuestion): string {
+  const numbers = question.solution.calculation.match(/\d+(?:,\d+)?/g);
+  const last = numbers?.[numbers.length - 1];
+  return last !== undefined && parseStudentNumber(last) === question.answer
+    ? last
+    : formatDecimal(question.answer);
+}
+
+/** Decimal places in a number as JavaScript writes it (`0.0805` → 4). */
+function decimalPlaces(value: number): number {
+  const text = String(value);
+  if (text.includes('e')) return 6;
+  return text.split('.')[1]?.length ?? 0;
+}
+
+/**
+ * The gap between the student's answer and the correct one, written exactly: to as many
+ * decimals as the more precise of the two, so float noise never shows and a near miss
+ * never rounds to `0,00`.
+ */
+export function formatDifference(userAnswer: number, correctAnswer: number): string {
+  const decimals = Math.max(decimalPlaces(userAnswer), decimalPlaces(correctAnswer));
+  return formatDecimal(Math.abs(userAnswer - correctAnswer), decimals);
+}
+
+/**
+ * Get variable name in Icelandic. Temperature is `hitastig`, as `ordabok.md` has it
+ * (`temperature;hitastig`), not the everyday `hiti`.
  */
 export function getVariableName(variable: Variable): string {
   const names = {
     P: 'Þrýstingur',
     V: 'Rúmmál',
-    T: 'Hiti',
+    T: 'Hitastig',
     n: 'Mólfjöldi',
+  };
+  return names[variable];
+}
+
+/**
+ * The variable's name in the accusative, for the middle of a sentence: `Finndu {name}`
+ * and `Svar fyrir {name}` both govern the accusative. The label used to put the
+ * nominative there (`Finndu Þrýstingur (P)`), and named temperature with the everyday
+ * `hiti` where `ordabok.md` has `hitastig` — the word the game's own hints use.
+ */
+export function getVariableNameAccusative(variable: Variable): string {
+  const names = {
+    P: 'þrýsting',
+    V: 'rúmmál',
+    T: 'hitastig',
+    n: 'mólfjölda',
   };
   return names[variable];
 }

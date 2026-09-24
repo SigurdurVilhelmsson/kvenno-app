@@ -1,7 +1,10 @@
 import { useState } from 'react';
 
+import { formatDecimal } from '@shared/utils';
+
 import { ConcentrationTimeGraph } from './ConcentrationTimeGraph';
-import { challenges } from '../data/level2-questions';
+import { challenges, rateConstantOf } from '../data/level2-questions';
+import { formatSignificant } from '../utils/format';
 
 interface Level2Props {
   onComplete: (score: number) => void;
@@ -55,14 +58,17 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-lg mx-auto">
-          <button onClick={onBack} className="text-warm-600 hover:text-warm-800 mb-4">
+          <button
+            onClick={onBack}
+            className="text-warm-600 hover:text-warm-800 mb-4 pointer-coarse:min-h-11"
+          >
             ← Til baka
           </button>
           <div className="bg-white rounded-2xl shadow-lg p-6 space-y-4 animate-slide-in">
             <h2 className="text-xl font-bold text-warm-800">Hvernig finna röð hvörfunar?</h2>
 
             <p className="text-warm-700">
-              Hraðalögmálið er: <strong className="font-mono">Rate = k[A]ᵐ[B]ⁿ</strong>.
+              Hraðalögmálið er: <strong className="font-mono">hraði = k[A]ᵐ[B]ⁿ</strong>.
               Veldisvísarnir m og n (röð hvörfunar) segja hversu mikil áhrif styrkur hefur á
               hraðann.
             </p>
@@ -75,7 +81,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   breytist (hitt er fast).
                 </p>
                 <p>
-                  <strong>2.</strong> Reiknaðu hlutfall: Rate₂/Rate₁ og [A]₂/[A]₁
+                  <strong>2.</strong> Reiknaðu hlutfall: hraði₂/hraði₁ og [A]₂/[A]₁
                 </p>
                 <p>
                   <strong>3.</strong> Ef styrkur tvöfaldaðist og hraðinn tvöfaldaðist → m = 1.
@@ -90,8 +96,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             <div className="bg-green-50 p-4 rounded-lg">
               <h3 className="font-bold text-green-800 mb-2">Dæmi</h3>
               <div className="text-sm text-green-700 space-y-1">
-                <p>Tilraun 1: [A]=0.1, Rate=2.0</p>
-                <p>Tilraun 2: [A]=0.2, Rate=8.0 (styrkur × 2, hraði × 4)</p>
+                <p>Tilraun 1: [A] = 0,1; hraði = 2,0</p>
+                <p>Tilraun 2: [A] = 0,2; hraði = 8,0 (styrkur × 2, hraði × 4)</p>
                 <p className="font-mono mt-2">2ᵐ = 4 → m = 2 (annars stigs)</p>
               </div>
             </div>
@@ -115,7 +121,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
           >
             <span>&larr;</span> Til baka
           </button>
@@ -136,7 +142,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <h2 className="text-2xl font-bold text-green-800 mb-2">{challenge.title}</h2>
           <p className="text-warm-600 mb-4">{challenge.description}</p>
 
@@ -149,22 +155,28 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           <div className="overflow-x-auto mb-6">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-warm-100">
-                  <th className="p-3 text-left">Tilraun</th>
-                  <th className="p-3 text-center">[A] (M)</th>
-                  {hasSecondReactant && <th className="p-3 text-center">[B] (M)</th>}
-                  <th className="p-3 text-center">Upphafshraði (M/s)</th>
+                <tr className="bg-warm-100 text-xs sm:text-sm">
+                  <th className="px-1.5 py-2 sm:p-3 text-left">Tilraun</th>
+                  <th className="px-1.5 py-2 sm:p-3 text-center">[A] (M)</th>
+                  {hasSecondReactant && <th className="px-1.5 py-2 sm:p-3 text-center">[B] (M)</th>}
+                  <th className="px-1.5 py-2 sm:p-3 text-center">Upphafshraði (M/s)</th>
                 </tr>
               </thead>
               <tbody>
                 {challenge.data.map((row, idx) => (
                   <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-warm-50'}>
-                    <td className="p-3 font-bold">{row.experiment}</td>
-                    <td className="p-3 text-center font-mono">{row.concentrationA.toFixed(2)}</td>
+                    <td className="px-1.5 py-2 sm:p-3 font-bold">{row.experiment}</td>
+                    <td className="px-1.5 py-2 sm:p-3 text-center font-mono">
+                      {formatDecimal(row.concentrationA, 2)}
+                    </td>
                     {hasSecondReactant && (
-                      <td className="p-3 text-center font-mono">{row.concentrationB.toFixed(2)}</td>
+                      <td className="px-1.5 py-2 sm:p-3 text-center font-mono">
+                        {formatDecimal(row.concentrationB, 2)}
+                      </td>
                     )}
-                    <td className="p-3 text-center font-mono">{row.initialRate.toFixed(4)}</td>
+                    <td className="px-1.5 py-2 sm:p-3 text-center font-mono">
+                      {formatDecimal(row.initialRate, 4)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -172,13 +184,15 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           </div>
 
           {/* Order selection */}
-          <div className="bg-warm-50 p-4 rounded-xl mb-6">
+          <div className="bg-warm-50 p-3 sm:p-4 rounded-xl mb-6">
             <h3 className="font-bold text-warm-700 mb-4">Veldu röð hvörfunar:</h3>
 
             <div className="space-y-4">
               {/* Order for A */}
-              <div className="flex items-center gap-4">
-                <span className="font-mono font-bold w-32">Röð í [A]:</span>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 sm:flex-nowrap sm:gap-4">
+                <span className="font-mono font-bold whitespace-nowrap min-w-24 sm:w-32">
+                  Röð í [A]:
+                </span>
                 <div className="flex gap-2">
                   {[0, 1, 2].map((order) => (
                     <button
@@ -197,9 +211,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 </div>
                 {showResult && (
                   <span
-                    className={
+                    className={`whitespace-nowrap ${
                       orderA === challenge.correctOrderA ? 'text-green-600' : 'text-red-600'
-                    }
+                    }`}
                   >
                     {orderA === challenge.correctOrderA
                       ? '✓'
@@ -210,8 +224,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
               {/* Order for B (if applicable) */}
               {hasSecondReactant && (
-                <div className="flex items-center gap-4">
-                  <span className="font-mono font-bold w-32">Röð í [B]:</span>
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-2 sm:flex-nowrap sm:gap-4">
+                  <span className="font-mono font-bold whitespace-nowrap min-w-24 sm:w-32">
+                    Röð í [B]:
+                  </span>
                   <div className="flex gap-2">
                     {[0, 1, 2].map((order) => (
                       <button
@@ -230,9 +246,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   </div>
                   {showResult && (
                     <span
-                      className={
+                      className={`whitespace-nowrap ${
                         orderB === challenge.correctOrderB ? 'text-green-600' : 'text-red-600'
-                      }
+                      }`}
                     >
                       {orderB === challenge.correctOrderB
                         ? '✓'
@@ -247,7 +263,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             {(orderA !== null || orderB !== null) && (
               <div className="mt-4 p-3 bg-white rounded-lg border border-green-200">
                 <div className="font-mono text-center text-lg">
-                  Rate = k[A]<sup>{orderA ?? '?'}</sup>
+                  hraði = k[A]<sup>{orderA ?? '?'}</sup>
                   {hasSecondReactant && (
                     <>
                       [B]<sup>{orderB ?? '?'}</sup>
@@ -265,7 +281,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 setShowHint(true);
                 setTotalHintsUsed((prev) => prev + 1);
               }}
-              className="text-green-600 hover:text-green-800 text-sm underline mb-4"
+              className="text-green-600 hover:text-green-800 text-sm underline mb-4 pointer-coarse:min-h-11"
             >
               Sýna vísbendingu
             </button>
@@ -301,14 +317,14 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               </div>
               <div className="text-sm text-warm-700 mb-2">{challenge.explanation}</div>
               <div className="font-mono text-sm bg-white p-2 rounded border">
-                <strong>Hraðalögmál:</strong> Rate = k[A]<sup>{challenge.correctOrderA}</sup>
+                <strong>Hraðalögmál:</strong> hraði = k[A]<sup>{challenge.correctOrderA}</sup>
                 {hasSecondReactant && (
                   <>
                     [B]<sup>{challenge.correctOrderB}</sup>
                   </>
                 )}
                 <br />
-                <strong>Hraðafasti:</strong> k = {challenge.correctRateConstant}{' '}
+                <strong>Hraðafasti:</strong> k = {formatSignificant(rateConstantOf(challenge))}{' '}
                 {challenge.rateConstantUnit}
               </div>
             </div>
@@ -331,11 +347,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           <ol className="text-sm text-warm-600 space-y-1 list-decimal list-inside">
             <li>Finndu tvær tilraunir þar sem aðeins EINN styrkur breytist</li>
             <li>
-              Reiknaðu hlutfallið: (Rate₂/Rate₁) = ([A]₂/[A]₁)<sup>m</sup>
+              Reiknaðu hlutfallið: (hraði₂/hraði₁) = ([A]₂/[A]₁)<sup>m</sup>
             </li>
-            <li>Ef styrkur tvöfaldast og Rate tvöfaldast → m = 1</li>
-            <li>Ef styrkur tvöfaldast og Rate fjórfaldast → m = 2</li>
-            <li>Ef styrkur breytist en Rate helst sama → m = 0</li>
+            <li>Ef styrkur tvöfaldast og hraðinn tvöfaldast → m = 1</li>
+            <li>Ef styrkur tvöfaldast og hraðinn fjórfaldast → m = 2</li>
+            <li>Ef styrkur breytist en hraðinn helst sá sami → m = 0</li>
           </ol>
         </div>
 

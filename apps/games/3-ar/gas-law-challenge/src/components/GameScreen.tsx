@@ -3,8 +3,9 @@ import { formatDecimal } from '@shared/utils';
 
 import type { Level } from '../data';
 import { GasLawQuestion, GameMode, GameStats, GasLaw, GAS_LAW_INFO } from '../types';
+import { FormulaText } from './FormulaText';
 import { GasLawSimulator } from './GasLawSimulator';
-import { answerUnit, getVariableName } from '../utils/gas-calculations';
+import { answerText, answerUnit, getVariableNameAccusative } from '../utils/gas-calculations';
 
 interface GameScreenProps {
   currentQuestion: GasLawQuestion;
@@ -58,11 +59,11 @@ export function GameScreen({
   return (
     <div>
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
-        <main className="max-w-5xl mx-auto px-4 py-8">
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h1 className="text-2xl font-bold" style={{ color: '#f36b22' }}>
+        <main className="max-w-5xl mx-auto px-3 py-4 sm:px-4 sm:py-8">
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8">
+            <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
+              <div className="min-w-0 flex-1 basis-32">
+                <h1 className="text-xl sm:text-2xl font-bold" style={{ color: '#f36b22' }}>
                   Gaslögmál
                 </h1>
                 <p className="text-sm text-warm-600">
@@ -70,13 +71,13 @@ export function GameScreen({
                   • Spurning {currentQuestion.id}
                 </p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 shrink-0">
                 {gameMode === 'challenge' && timeRemaining !== null && (
                   <div
                     role="timer"
                     aria-live={timeRemaining < 10 ? 'assertive' : 'off'}
                     aria-label={`${timeRemaining} sekúndur eftir${timeRemaining < 30 ? ' — stutt eftir' : ''}`}
-                    className={`px-4 py-2 rounded-lg font-bold ${timeRemaining < 30 ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}`}
+                    className={`px-4 py-2 rounded-lg font-bold whitespace-nowrap ${timeRemaining < 30 ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}`}
                   >
                     ⏱️ {timeRemaining < 30 ? '⚠️ ' : ''}
                     {timeRemaining}s
@@ -84,14 +85,14 @@ export function GameScreen({
                 )}
                 <button
                   onClick={onBackToMenu}
-                  className="px-4 py-2 bg-warm-200 rounded-lg hover:bg-warm-300 transition"
+                  className="px-3 sm:px-4 py-2 bg-warm-200 rounded-lg hover:bg-warm-300 transition whitespace-nowrap pointer-coarse:min-h-11"
                 >
                   ← Valmynd
                 </button>
               </div>
             </div>
 
-            <div className="flex gap-4 mb-6 text-sm">
+            <div className="flex flex-wrap gap-2 sm:gap-4 mb-6 text-sm">
               <div className="bg-yellow-50 px-3 py-2 rounded-lg border border-yellow-200">
                 <span className="font-bold text-yellow-800">🏆 {stats.score}</span>
               </div>
@@ -119,7 +120,7 @@ export function GameScreen({
             {/* Law Selection Step (Practice Mode Only) */}
             {gameStep === 'select-law' && gameMode === 'practice' && (
               <div className="mb-6">
-                <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-xl border-2 border-indigo-200">
+                <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-4 sm:p-6 rounded-xl border-2 border-indigo-200">
                   <h3 className="text-lg font-bold text-indigo-900 mb-4 flex items-center gap-2">
                     <span className="text-2xl">📚</span> Skref 1: Hvaða lögmál á við?
                   </h3>
@@ -166,7 +167,7 @@ export function GameScreen({
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 mb-4">
                     {Object.entries(GAS_LAW_INFO).map(([law, info]) => {
                       return (
                         <button
@@ -179,7 +180,9 @@ export function GameScreen({
                           }`}
                         >
                           <div className="font-semibold text-sm text-warm-800">{info.nameIs}</div>
-                          <div className="font-mono text-xs text-indigo-600">{info.formula}</div>
+                          <div className="font-mono text-xs text-indigo-600 whitespace-nowrap">
+                            {info.formula}
+                          </div>
                           <div className="text-xs text-warm-500 mt-1">{info.constants}</div>
                         </button>
                       );
@@ -205,13 +208,13 @@ export function GameScreen({
                     <button
                       onClick={onCheckLaw}
                       disabled={!selectedLaw}
-                      className="flex-1 py-2 px-4 rounded-lg font-bold text-white transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed bg-indigo-600 hover:bg-indigo-700"
+                      className="flex-1 py-2 px-4 rounded-lg font-bold text-white transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed bg-indigo-600 hover:bg-indigo-700 pointer-coarse:min-h-11"
                     >
                       Athuga lögmál
                     </button>
                     <button
                       onClick={onSkipLaw}
-                      className="px-4 py-2 bg-warm-200 text-warm-700 rounded-lg hover:bg-warm-300 transition text-sm"
+                      className="px-4 py-2 bg-warm-200 text-warm-700 rounded-lg hover:bg-warm-300 transition text-sm whitespace-nowrap pointer-coarse:min-h-11"
                     >
                       Sleppa →
                     </button>
@@ -222,7 +225,7 @@ export function GameScreen({
 
             <div className="grid md:grid-cols-2 gap-6">
               {/* Left: Visualization */}
-              <div>
+              <div className="min-w-0">
                 <div className="bg-warm-50 p-4 rounded-lg border border-warm-200 mb-4">
                   <h3 className="font-bold text-warm-800 mb-2">
                     {currentQuestion.emoji} {currentQuestion.scenario_is}
@@ -269,18 +272,18 @@ export function GameScreen({
                     )}
                   </div>
                   <div className="mt-2 text-xs text-blue-800 font-mono bg-white px-2 py-1 rounded">
-                    PV = nRT þar sem R = 0,08206 L·atm/(mol·K)
+                    PV = nRT þar sem R = 0,08206 L·atm/(mól·K)
                   </div>
                 </div>
               </div>
 
               {/* Right: Input and Hints */}
-              <div>
+              <div className="min-w-0">
                 {gameMode === 'practice' && gameStep === 'solve' && currentQuestion.gasLaw && (
                   <div className="bg-indigo-50 p-3 rounded-lg border border-indigo-200 mb-4">
-                    <div className="flex items-center gap-2 text-sm">
+                    <div className="flex flex-wrap items-center gap-2 text-sm">
                       <span className="text-indigo-600 font-semibold">📚 Lögmál:</span>
-                      <span className="font-mono bg-white px-2 py-1 rounded text-indigo-800">
+                      <span className="font-mono bg-white px-2 py-1 rounded text-indigo-800 whitespace-nowrap">
                         {GAS_LAW_INFO[currentQuestion.gasLaw].formula}
                       </span>
                       <span className="text-warm-600">
@@ -295,11 +298,24 @@ export function GameScreen({
                     gameMode === 'practice' && gameStep === 'select-law' ? 'opacity-50' : ''
                   }`}
                 >
-                  <h3 className="font-bold text-orange-900 mb-2">
+                  <h3 className="font-bold text-orange-900 mb-2 flex flex-wrap items-baseline justify-between gap-x-3 md:block">
                     <label htmlFor="gas-law-answer">
                       {gameMode === 'practice' && gameStep === 'select-law' && '(Skref 2) '}
-                      Finndu {getVariableName(currentQuestion.find)} ({currentQuestion.find}):
+                      Finndu {getVariableNameAccusative(currentQuestion.find)} (
+                      {currentQuestion.find}):
                     </label>
+                    {/* In the one-column layout the timer at the top of the page is scrolled out
+                        of sight by the time the student reaches this field, so it is repeated
+                        here. The role="timer" chip above stays the one screen readers announce. */}
+                    {gameMode === 'challenge' && timeRemaining !== null && (
+                      <span
+                        aria-hidden="true"
+                        className={`md:hidden whitespace-nowrap ${timeRemaining < 30 ? 'text-red-800' : 'text-blue-800'}`}
+                      >
+                        ⏱️ {timeRemaining < 30 ? '⚠️ ' : ''}
+                        {timeRemaining}s
+                      </span>
+                    )}
                   </h3>
                   <div className="flex gap-2">
                     <input
@@ -318,9 +334,9 @@ export function GameScreen({
                         e.key === 'Enter' && gameStep === 'solve' && onCheckAnswer()
                       }
                       disabled={gameMode === 'practice' && gameStep === 'select-law'}
-                      aria-label={`Svar fyrir ${getVariableName(currentQuestion.find)} í einingunni ${answerUnit(currentQuestion)}`}
+                      aria-label={`Svar fyrir ${getVariableNameAccusative(currentQuestion.find)} í einingunni ${answerUnit(currentQuestion)}`}
                     />
-                    <div className="bg-white px-4 py-3 rounded-lg border-2 border-warm-300 font-bold text-warm-700">
+                    <div className="bg-white px-4 py-3 rounded-lg border-2 border-warm-300 font-bold text-warm-700 shrink-0">
                       {answerUnit(currentQuestion)}
                     </div>
                   </div>
@@ -345,12 +361,12 @@ export function GameScreen({
                 </div>
 
                 <div className="bg-warm-50 p-4 rounded-lg border border-warm-200 mb-4">
-                  <div className="flex justify-between items-center mb-2">
+                  <div className="flex flex-wrap justify-between items-center gap-2 mb-2">
                     <h3 className="font-bold text-warm-800">Vísbendingar:</h3>
                     <button
                       onClick={onGetHint}
                       disabled={showHint >= currentQuestion.hints.length}
-                      className={`px-3 py-1 rounded-lg text-sm font-bold transition ${
+                      className={`px-3 py-1 rounded-lg text-sm font-bold transition pointer-coarse:min-h-11 pointer-coarse:px-4 ${
                         showHint >= currentQuestion.hints.length
                           ? 'bg-warm-300 text-warm-500 cursor-not-allowed'
                           : 'bg-blue-500 text-white hover:bg-blue-600'
@@ -366,7 +382,8 @@ export function GameScreen({
                           key={idx}
                           className="bg-blue-50 px-3 py-2 rounded border border-blue-200 text-sm"
                         >
-                          <span className="font-bold text-blue-800">💡 {idx + 1}:</span> {hint}
+                          <span className="font-bold text-blue-800">💡 {idx + 1}:</span>{' '}
+                          <FormulaText text={hint} />
                         </div>
                       ))}
                     </div>
@@ -379,7 +396,7 @@ export function GameScreen({
                   <div className="bg-warm-50 p-4 rounded-lg border border-warm-200">
                     <button
                       onClick={() => setShowSolution(!showSolution)}
-                      className="w-full px-3 py-2 bg-warm-700 text-white rounded-lg hover:bg-warm-800 transition font-bold text-sm"
+                      className="w-full px-3 py-2 bg-warm-700 text-white rounded-lg hover:bg-warm-800 transition font-bold text-sm pointer-coarse:min-h-11"
                     >
                       {showSolution ? '🔒 Fela lausn' : '🔓 Sýna lausn (S)'}
                     </button>
@@ -387,19 +404,18 @@ export function GameScreen({
                       <div className="mt-3 space-y-2 text-sm">
                         <div className="bg-white px-3 py-2 rounded border border-warm-300">
                           <span className="font-bold">Formúla:</span>{' '}
-                          {currentQuestion.solution.formula}
+                          <FormulaText text={currentQuestion.solution.formula} />
                         </div>
                         <div className="bg-white px-3 py-2 rounded border border-warm-300">
                           <span className="font-bold">Innsetning:</span>{' '}
-                          {currentQuestion.solution.substitution}
+                          <FormulaText text={currentQuestion.solution.substitution} />
                         </div>
                         <div className="bg-white px-3 py-2 rounded border border-warm-300">
                           <span className="font-bold">Útreikningur:</span>{' '}
-                          {currentQuestion.solution.calculation}
+                          <FormulaText text={currentQuestion.solution.calculation} />
                         </div>
                         <div className="bg-green-50 px-3 py-2 rounded border border-green-300 font-bold text-green-800">
-                          Svar: {formatDecimal(currentQuestion.answer, 2)}{' '}
-                          {answerUnit(currentQuestion)}
+                          Svar: {answerText(currentQuestion)} {answerUnit(currentQuestion)}
                         </div>
                       </div>
                     </Presence>

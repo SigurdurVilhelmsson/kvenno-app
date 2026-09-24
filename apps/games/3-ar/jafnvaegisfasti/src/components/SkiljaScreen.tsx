@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import {
   deltaNGas,
@@ -11,9 +11,10 @@ import {
   R_GAS,
   scaleReaction,
 } from '@shared/engine/equilibrium';
-import { formatScientific } from '@shared/utils';
+import { formatDecimal, formatScientific } from '@shared/utils';
 
 import { reactionBy } from '../data/reactions';
+import { useRevealTopOnChange } from '../utils/reveal';
 
 /**
  * Skilja — the four things that make K more than a formula.
@@ -54,20 +55,34 @@ const STEPS = [
 
 export function SkiljaScreen({ onComplete, onBack }: Props) {
   const [step, setStep] = useState(0);
+  const stepsRef = useRef<HTMLOListElement>(null);
+
+  // "Næsta" sits at the foot of a step taller than a phone screen, so the next
+  // step would otherwise open with its first paragraphs scrolled away.
+  useRevealTopOnChange(stepsRef, step);
 
   const next = () => (step + 1 >= STEPS.length ? onComplete() : setStep(step + 1));
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-6 shadow-md md:p-8">
-        <div className="mb-6 flex items-baseline justify-between">
-          <h2 className="text-2xl font-bold text-warm-800">Skilja — hvað K er</h2>
-          <button onClick={onBack} className="text-sm text-warm-500 underline">
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
+        <div className="mb-4 flex items-baseline justify-between gap-3 sm:mb-6">
+          <h2 className="min-w-0 text-xl font-bold text-warm-800 sm:text-2xl">
+            Skilja — hvað K er
+          </h2>
+          <button
+            onClick={onBack}
+            className="shrink-0 whitespace-nowrap text-sm text-warm-500 underline pointer-coarse:-my-3 pointer-coarse:-mr-3 pointer-coarse:px-3 pointer-coarse:py-3"
+          >
             Til baka
           </button>
         </div>
 
-        <ol className="mb-6 flex flex-wrap gap-2 text-xs">
+        {/* Below `md` only the current step is named and the rest are numbers:
+            five full labels wrap to five rows on a phone and push every
+            step's content a third of the way down the screen, and to three
+            rows on a phone held sideways, where the screen is 360 px tall. */}
+        <ol ref={stepsRef} className="mb-6 flex flex-wrap gap-2 text-xs">
           {STEPS.map((label, i) => (
             <li
               key={label}
@@ -79,7 +94,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
                     : 'bg-warm-100 text-warm-500'
               }`}
             >
-              {i + 1}. {label}
+              {i + 1}.<span className={i === step ? undefined : 'hidden md:inline'}> {label}</span>
             </li>
           ))}
         </ol>
@@ -91,15 +106,15 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               <strong>stuðullinn úr stilltu jöfnunni verður veldisvísir</strong>. Ekki margfaldari,
               ekki summa — veldisvísir.
             </p>
-            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-5">
+            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
               <p className="mb-3 font-mono text-lg text-warm-800">{equationOf(ammoniak)}</p>
               <p className="font-mono text-lg font-semibold text-kvenno-orange-dark">
                 {kcExpression(ammoniak)}
               </p>
             </div>
             <p className="text-sm text-warm-600">
-              Stuðullinn 3 á vetninu gerir það að verkum að tvöföldun á [H₂] áttfaldar Q. Þetta er
-              ástæðan fyrir því að lítil breyting á vetnisstyrk hefur svona mikil áhrif í
+              Stuðullinn 3 á vetninu gerir það að verkum að tvöföldun á [H₂] deilir Q með átta.
+              Þetta er ástæðan fyrir því að lítil breyting á vetnisstyrk hefur svona mikil áhrif í
               Haber-ferlinu.
             </p>
           </section>
@@ -112,7 +127,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               eiginleiki efnisins sjálfs — kalksteinsmoli er jafn þéttur hvort sem molinn er stór
               eða lítill — svo hann breytist ekki þegar hvarfið gengur.
             </p>
-            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-5">
+            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
               <p className="mb-2 font-mono text-warm-800">{equationOf(kalksteinn)}</p>
               <p className="mb-3 font-mono font-semibold text-kvenno-orange-dark">
                 {kcExpression(kalksteinn)}
@@ -125,7 +140,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
                 eru föst efni og detta út. Eftir stendur einn liður.
               </p>
             </div>
-            <div className="rounded-xl border-2 border-purple-200 bg-purple-50 p-5">
+            <div className="rounded-xl border-2 border-purple-200 bg-purple-50 p-4 sm:p-5">
               <p className="mb-2 font-mono text-purple-900">{equationOf(blyklorid)}</p>
               <p className="mb-3 font-mono font-semibold text-purple-900">
                 {kcExpression(blyklorid)}
@@ -147,16 +162,17 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               <strong>Þetta er sami fastinn, ekki tveir.</strong> Sambandið kemur beint úr
               kjörgasjöfnunni.
             </p>
-            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-5">
+            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
               <p className="mb-3 font-mono text-lg text-warm-800">
                 Kp = Kc · (R·T)<sup>Δn</sup>
               </p>
               <p className="text-sm text-warm-600">
                 Δn er <strong>mól af gasi</strong> í myndefnum mínus mól af gasi í hvarfefnum.
-                Aðeins gas telur — uppleyst efni er í K en ekki í Δn. R = {R_GAS} L·atm/(mól·K).
+                Aðeins gas telur — uppleyst efni er í K en ekki í Δn. R = {formatDecimal(R_GAS)}{' '}
+                L·atm/(mól·K).
               </p>
             </div>
-            <div className="rounded-xl border-2 border-warm-200 p-5">
+            <div className="rounded-xl border-2 border-warm-200 p-4 sm:p-5">
               <p className="mb-2 font-mono text-warm-800">{equationOf(ammoniak)}</p>
               <p className="mb-1 font-mono text-sm text-warm-700">{kpExpression(ammoniak)}</p>
               <p className="font-mono text-sm text-warm-700">
@@ -164,7 +180,9 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               </p>
               <p className="mt-2 font-mono text-sm font-semibold text-kvenno-orange-dark">
                 Kc = 0,50 við 400 °C → Kp ={' '}
-                {formatScientific(kcToKp(0.5, deltaNGas(ammoniak), 400), 2)}
+                <span className="whitespace-nowrap">
+                  {formatScientific(kcToKp(0.5, deltaNGas(ammoniak), 400), 2)}
+                </span>
               </p>
             </div>
             <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
@@ -182,7 +200,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               Munurinn er bara hvenær þú reiknar hana: K á við blöndu í jafnvægi, Q á við hvaða
               blöndu sem er.
             </p>
-            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-5">
+            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
               <p className="mb-2 font-mono text-warm-800">{equationOf(vatnsgas)}</p>
               <p className="font-mono text-warm-700">{kcExpression(vatnsgas).replace('Kc', 'Q')}</p>
               <p className="mt-2 font-mono text-warm-700">{kcExpression(vatnsgas)}</p>
@@ -224,7 +242,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               fylgir með. Aðgerðirnar eru þrjár.
             </p>
 
-            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-5">
+            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
               <p className="mb-2 text-sm font-semibold text-warm-800">
                 1. Snúa jöfnunni við → K verður umhverfa sín
               </p>
@@ -235,11 +253,13 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               <p className="font-mono text-sm text-warm-800">{equationOf(ammoniakBakhvarf)}</p>
               <p className="font-mono text-sm font-semibold text-kvenno-orange-dark">
                 Kc = 1 / {ammoniak.constant!.value.toString().replace('.', ',')} ={' '}
-                {formatScientific(ammoniakBakhvarf.constant!.value, 2)}
+                <span className="whitespace-nowrap">
+                  {formatScientific(ammoniakBakhvarf.constant!.value, 2)}
+                </span>
               </p>
             </div>
 
-            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-5">
+            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
               <p className="mb-2 text-sm font-semibold text-warm-800">
                 2. Margfalda stuðlana með n → K fer í n-ta veldi
               </p>
@@ -250,11 +270,13 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               <p className="font-mono text-sm text-warm-800">{equationOf(vetnisjodidTvofalt)}</p>
               <p className="font-mono text-sm font-semibold text-kvenno-orange-dark">
                 Kc = {vetnisjodid.constant!.value}² ={' '}
-                {formatScientific(vetnisjodidTvofalt.constant!.value, 2)}
+                <span className="whitespace-nowrap">
+                  {formatScientific(vetnisjodidTvofalt.constant!.value, 2)}
+                </span>
               </p>
             </div>
 
-            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-5">
+            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
               <p className="mb-2 text-sm font-semibold text-warm-800">
                 3. Leggja tvær jöfnur saman → fastarnir margfaldast
               </p>

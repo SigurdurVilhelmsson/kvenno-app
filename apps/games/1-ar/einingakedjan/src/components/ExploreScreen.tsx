@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
 
@@ -13,6 +13,7 @@ import {
   type Orientation,
   type StepResult,
 } from '../engine/units';
+import { reveal } from '../utils/reveal';
 
 const START = quantity(5.0, 'g', 'Mg');
 /** As written in the prose above the board: the trailing zeros are the precision. */
@@ -55,6 +56,19 @@ export function ExploreScreen({ onComplete, onBack }: ExploreScreenProps) {
     return out;
   }, [slots]);
 
+  // A pool card lands in the chain, which on a phone is a screen above the pool:
+  // bring the new card and what it did to the units into view together.
+  const chainRef = useRef<HTMLDivElement>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
+  const shownSlotCount = useRef(slots.length);
+  useEffect(() => {
+    const added = slots.length > shownSlotCount.current;
+    shownSlotCount.current = slots.length;
+    if (!added) return;
+    const placed = chainRef.current?.querySelectorAll('[data-slot]');
+    reveal(placed?.[placed.length - 1], resultRef.current);
+  }, [slots.length]);
+
   const current = steps.length ? steps[steps.length - 1].after : START;
   const lastStep = steps.length ? steps[steps.length - 1] : null;
 
@@ -63,7 +77,7 @@ export function ExploreScreen({ onComplete, onBack }: ExploreScreenProps) {
       <button
         type="button"
         onClick={onBack}
-        className="game-btn mb-4 rounded-lg border border-warm-300 px-3 py-1.5 text-sm text-warm-700 hover:bg-warm-50"
+        className="game-btn mb-4 rounded-lg border border-warm-300 px-3 py-1.5 text-sm text-warm-700 hover:bg-warm-50 pointer-coarse:min-h-11"
       >
         ← Aftur í valmynd
       </button>
@@ -79,12 +93,16 @@ export function ExploreScreen({ onComplete, onBack }: ExploreScreenProps) {
 
       <div className="mb-5 rounded-xl bg-white p-5 shadow-sm">
         <h3 className="mb-3 font-semibold text-warm-800">Keðjan</h3>
-        <div className="flex flex-wrap items-stretch gap-3">
+        <div ref={chainRef} className="flex flex-wrap items-stretch gap-3">
           <div className="flex items-center rounded-lg bg-warm-100 px-3 py-2">
             <UnitsDisplay quantity={START} valueLabel={START_LABEL} />
           </div>
           {slots.map((slot, position) => (
-            <div key={`${slot.id}-${position}`} className="flex items-center gap-3">
+            <div
+              key={`${slot.id}-${position}`}
+              data-slot
+              className="flex min-w-0 items-center gap-3"
+            >
               <span aria-hidden="true" className="text-warm-400">
                 ×
               </span>
@@ -104,11 +122,15 @@ export function ExploreScreen({ onComplete, onBack }: ExploreScreenProps) {
           ))}
         </div>
 
-        <div className="mt-4 rounded-lg bg-warm-50 p-4">
+        <div ref={resultRef} className="mt-4 rounded-lg bg-warm-50 p-4">
           <span className="block text-xs font-semibold uppercase tracking-wide text-warm-500">
             Þú ert núna með
           </span>
-          <UnitsDisplay quantity={current} className="mt-1 text-xl" />
+          <UnitsDisplay
+            quantity={current}
+            valueLabel={lastStep ? undefined : START_LABEL}
+            className="mt-1 text-xl"
+          />
           {lastStep && (
             <p className="mt-2 text-sm text-warm-600">
               {lastStep.cancelCount > 0
@@ -122,7 +144,7 @@ export function ExploreScreen({ onComplete, onBack }: ExploreScreenProps) {
           <button
             type="button"
             onClick={() => setSlots([])}
-            className="game-btn mt-3 rounded-lg border border-warm-300 px-4 py-2 text-sm text-warm-700 hover:bg-warm-50"
+            className="game-btn mt-3 rounded-lg border border-warm-300 px-4 py-2 text-sm text-warm-700 hover:bg-warm-50 pointer-coarse:min-h-11"
           >
             Hreinsa keðjuna
           </button>

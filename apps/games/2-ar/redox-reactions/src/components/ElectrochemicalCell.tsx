@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 
+import { useContainerWidth } from '@shared/components/ResponsiveContainer';
+import { formatDecimal } from '@shared/utils';
+
 /**
  * ElectrochemicalCell
  *
@@ -33,7 +36,7 @@ interface CellPair {
 const CELL_PAIRS: CellPair[] = [
   {
     id: 'zn-cu',
-    name: 'Daniell Cell (Zn-Cu)',
+    name: 'Zn–Cu galvaníhlað (Daniell)',
     anode: {
       metal: 'Sink',
       metalSymbol: 'Zn',
@@ -56,7 +59,7 @@ const CELL_PAIRS: CellPair[] = [
   },
   {
     id: 'mg-cu',
-    name: 'Mg-Cu Cell',
+    name: 'Mg–Cu galvaníhlað',
     anode: {
       metal: 'Magnesíum',
       metalSymbol: 'Mg',
@@ -79,7 +82,7 @@ const CELL_PAIRS: CellPair[] = [
   },
   {
     id: 'fe-cu',
-    name: 'Fe-Cu Cell',
+    name: 'Fe–Cu galvaníhlað',
     anode: {
       metal: 'Járn',
       metalSymbol: 'Fe',
@@ -102,7 +105,7 @@ const CELL_PAIRS: CellPair[] = [
   },
   {
     id: 'zn-ag',
-    name: 'Zn-Ag Cell',
+    name: 'Zn–Ag galvaníhlað',
     anode: {
       metal: 'Sink',
       metalSymbol: 'Zn',
@@ -135,6 +138,38 @@ interface Particle {
   side: 'anode' | 'cathode' | 'bridge';
 }
 
+/** Electrons one ion of this half-cell gains or loses: '2+' → 2, '+' → 1. */
+export function electronsPerIon(half: Pick<HalfCell, 'ionCharge'>): number {
+  const digits = half.ionCharge.replace(/[+-]/g, '');
+  return digits === '' ? 1 : Number(digits);
+}
+
+/** "2e⁻", or "e⁻" for one electron — the way the game writes a half-equation elsewhere. */
+function electronTerm(half: Pick<HalfCell, 'ionCharge'>): string {
+  const n = electronsPerIon(half);
+  return n === 1 ? 'e⁻' : `${n}e⁻`;
+}
+
+/** An electrode potential in volts, to two decimals with the Icelandic decimal comma. */
+export function formatVolts(value: number): string {
+  return formatDecimal(value, 2);
+}
+
+/** Smallest on-screen size, in CSS px, a diagram label may shrink to on a narrow screen. */
+const MIN_LABEL_PX = 12;
+
+/**
+ * Font size, in viewBox units, for a label whose desktop size is `base` when the diagram is
+ * drawn at `scale` (rendered width / viewBox width). At full size with a mouse nothing
+ * changes; once the SVG shrinks to fit a phone, or on any touch screen, labels grow in
+ * viewBox units so they still render at MIN_LABEL_PX instead of shrinking with the drawing.
+ */
+export function cellLabelSize(base: number, scale: number, touch = false): number {
+  if (!(scale > 0)) return base;
+  if (scale >= 1 && !touch) return base;
+  return Math.max(base, MIN_LABEL_PX / Math.min(scale, 1));
+}
+
 interface ElectrochemicalCellProps {
   compact?: boolean;
   interactive?: boolean;
@@ -152,6 +187,8 @@ export function ElectrochemicalCell({
   const [showLabels, setShowLabels] = useState(true);
   const animationRef = useRef<number | null>(null);
   const particleIdRef = useRef(0);
+  const diagramRef = useRef<HTMLDivElement>(null);
+  const diagramWidth = useContainerWidth(diagramRef);
 
   const pair = CELL_PAIRS.find((p) => p.id === selectedPair) || CELL_PAIRS[0];
   const cellPotential = pair.cathode.standardPotential - pair.anode.standardPotential;
@@ -321,22 +358,32 @@ export function ElectrochemicalCell({
 
   const width = compact ? 320 : 400;
   const height = compact ? 200 : 250;
+  // The SVG shrinks to its container on a phone; its labels must not shrink with it.
+  const scale = diagramWidth !== null && diagramWidth < width ? diagramWidth / width : 1;
+  const touch =
+    typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches === true;
+  const fs = (base: number) => cellLabelSize(base, scale, touch);
+  const voltSize = fs(12);
+  const electrodeSize = fs(14);
+  // A white symbol wider than its electrode needs a dark edge where it spills onto the solution.
+  const electrodeHalo =
+    electrodeSize > 14 ? { stroke: '#424242', strokeWidth: 3, paintOrder: 'stroke' as const } : {};
 
   return (
     <div
-      className={`${compact ? 'p-3' : 'p-4'} bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-200`}
+      className={`${compact ? 'p-3' : 'p-3 sm:p-4'} bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-200`}
     >
       <div className="flex items-center justify-between mb-3">
         <h3 className={`font-bold text-amber-800 ${compact ? 'text-sm' : 'text-base'}`}>
           Galvaníhlað
         </h3>
         <div className="flex items-center gap-2">
-          <label className="flex items-center gap-1.5 text-xs text-warm-600 cursor-pointer">
+          <label className="flex items-center gap-1.5 text-xs text-warm-600 cursor-pointer pointer-coarse:min-h-11 pointer-coarse:text-sm">
             <input
               type="checkbox"
               checked={showLabels}
               onChange={(e) => setShowLabels(e.target.checked)}
-              className="rounded border-warm-300"
+              className="rounded border-warm-300 shrink-0 pointer-coarse:size-6"
             />
             Merki
           </label>
@@ -353,7 +400,7 @@ export function ElectrochemicalCell({
                 setSelectedPair(p.id);
                 setIsRunning(false);
               }}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all pointer-coarse:min-h-11 ${
                 selectedPair === p.id
                   ? 'bg-amber-500 text-white'
                   : 'bg-white text-warm-600 hover:bg-amber-100'
@@ -366,12 +413,15 @@ export function ElectrochemicalCell({
       )}
 
       {/* SVG Cell Diagram */}
-      <div className="flex justify-center mb-4">
+      <div ref={diagramRef} className="flex justify-center mb-4">
         <svg
           width={width}
           height={height}
           viewBox={`0 0 ${width} ${height}`}
-          className="bg-warm-100 rounded-xl border border-warm-200"
+          className="w-full h-auto bg-warm-100 rounded-xl border border-warm-200"
+          // aspect-ratio sizes the border box, as the width/height attributes did: height
+          // 'auto' alone would size the content box and grow the desktop diagram by a pixel.
+          style={{ maxWidth: width, aspectRatio: `${width} / ${height}` }}
           role="img"
           aria-label={`Galvaníhlað: ${pair.anode.metal} anóða og ${pair.cathode.metal} katóða með rafeinda- og jónaflæði`}
         >
@@ -399,9 +449,23 @@ export function ElectrochemicalCell({
           />
 
           {/* Voltmeter */}
-          <circle cx="200" cy="40" r="20" fill="white" stroke="#424242" strokeWidth="2" />
-          <text x="200" y="45" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#424242">
-            {cellPotential.toFixed(2)}V
+          <circle
+            cx="200"
+            cy="40"
+            r={voltSize > 12 ? voltSize * 1.75 : 20}
+            fill="white"
+            stroke="#424242"
+            strokeWidth="2"
+          />
+          <text
+            x="200"
+            y={45 + (voltSize - 12) * 0.375}
+            textAnchor="middle"
+            fontSize={voltSize}
+            fontWeight="bold"
+            fill="#424242"
+          >
+            {formatVolts(cellPotential)}V
           </text>
 
           {/* Anode beaker */}
@@ -479,14 +543,16 @@ export function ElectrochemicalCell({
                 x="90"
                 y="245"
                 textAnchor="middle"
-                fontSize="12"
+                fontSize={fs(12)}
                 fontWeight="bold"
                 fill="#d32f2f"
               >
                 Anóða (-)
               </text>
+              {/* This line and its cathode twin sit below the viewBox and have never shown.
+                  They keep their desktop size: enlarged, their tops would peek in, clipped. */}
               <text x="90" y={compact ? 258 : 260} textAnchor="middle" fontSize="10" fill="#616161">
-                {pair.anode.metalSymbol} → {pair.anode.ion} + e⁻
+                {pair.anode.metalSymbol} → {pair.anode.ion} + {electronTerm(pair.anode)}
               </text>
 
               {/* Cathode label */}
@@ -494,7 +560,7 @@ export function ElectrochemicalCell({
                 x="310"
                 y="245"
                 textAnchor="middle"
-                fontSize="12"
+                fontSize={fs(12)}
                 fontWeight="bold"
                 fill="#1976d2"
               >
@@ -507,25 +573,34 @@ export function ElectrochemicalCell({
                 fontSize="10"
                 fill="#616161"
               >
-                {pair.cathode.ion} + e⁻ → {pair.cathode.metalSymbol}
+                {pair.cathode.ion} + {electronTerm(pair.cathode)} → {pair.cathode.metalSymbol}
               </text>
 
               {/* Salt bridge label */}
-              <text x="200" y="95" textAnchor="middle" fontSize="10" fill="#546e7a">
+              <text x="200" y="95" textAnchor="middle" fontSize={fs(10)} fill="#546e7a">
                 Saltbrú
               </text>
 
               {/* Electrode symbols */}
-              <text x="90" y="135" textAnchor="middle" fontSize="14" fontWeight="bold" fill="white">
+              <text
+                x="90"
+                y="135"
+                textAnchor="middle"
+                fontSize={electrodeSize}
+                fontWeight="bold"
+                fill="white"
+                {...electrodeHalo}
+              >
                 {pair.anode.metalSymbol}
               </text>
               <text
                 x="310"
                 y="135"
                 textAnchor="middle"
-                fontSize="14"
+                fontSize={electrodeSize}
                 fontWeight="bold"
                 fill="white"
+                {...electrodeHalo}
               >
                 {pair.cathode.metalSymbol}
               </text>
@@ -550,7 +625,7 @@ export function ElectrochemicalCell({
                   <polygon points="0 0, 10 3.5, 0 7" fill="#ffc107" />
                 </marker>
               </defs>
-              <text x="150" y="32" textAnchor="middle" fontSize="9" fill="#ffc107">
+              <text x="150" y="32" textAnchor="middle" fontSize={fs(9)} fill="#ffc107">
                 e⁻
               </text>
             </>
@@ -562,7 +637,7 @@ export function ElectrochemicalCell({
       <div className="flex justify-center gap-4 mb-4">
         <button
           onClick={() => setIsRunning(!isRunning)}
-          className={`px-6 py-2 rounded-lg font-medium transition-all ${
+          className={`px-6 py-2 rounded-lg font-medium transition-all pointer-coarse:min-h-11 ${
             isRunning
               ? 'bg-red-500 hover:bg-red-600 text-white'
               : 'bg-green-500 hover:bg-green-600 text-white'
@@ -578,23 +653,23 @@ export function ElectrochemicalCell({
           <span className="font-bold text-amber-700">{pair.name}</span>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 text-sm mb-3">
+        <div className="grid grid-cols-2 gap-2 sm:gap-3 text-sm mb-3">
           <div className="bg-red-50 p-2 rounded border border-red-200">
             <div className="font-medium text-red-700">Anóða (oxun)</div>
             <div className="text-xs text-red-600">
-              {pair.anode.metalSymbol} → {pair.anode.ion} + 2e⁻
+              {pair.anode.metalSymbol} → {pair.anode.ion} + {electronTerm(pair.anode)}
             </div>
             <div className="text-xs text-warm-500">
-              E° = {pair.anode.standardPotential.toFixed(2)} V
+              E° = {formatVolts(pair.anode.standardPotential)} V
             </div>
           </div>
           <div className="bg-blue-50 p-2 rounded border border-blue-200">
             <div className="font-medium text-blue-700">Katóða (afoxun)</div>
             <div className="text-xs text-blue-600">
-              {pair.cathode.ion} + 2e⁻ → {pair.cathode.metalSymbol}
+              {pair.cathode.ion} + {electronTerm(pair.cathode)} → {pair.cathode.metalSymbol}
             </div>
             <div className="text-xs text-warm-500">
-              E° = {pair.cathode.standardPotential.toFixed(2)} V
+              E° = {formatVolts(pair.cathode.standardPotential)} V
             </div>
           </div>
         </div>
@@ -602,11 +677,13 @@ export function ElectrochemicalCell({
         <div className="text-center p-2 bg-amber-100 rounded-lg">
           <div className="text-sm text-amber-700">
             <strong>
-              E°<sub>cell</sub>
+              E°<sub className="max-sm:text-[12px] pointer-coarse:text-[12px]">ker</sub>
             </strong>{' '}
-            = E°<sub>katóða</sub> - E°<sub>anóða</sub> = {pair.cathode.standardPotential.toFixed(2)}{' '}
-            - ({pair.anode.standardPotential.toFixed(2)}) ={' '}
-            <strong>{cellPotential.toFixed(2)} V</strong>
+            = E°<sub className="max-sm:text-[12px] pointer-coarse:text-[12px]">katóða</sub> - E°
+            <sub className="max-sm:text-[12px] pointer-coarse:text-[12px]">anóða</sub> ={' '}
+            {formatVolts(pair.cathode.standardPotential)} - (
+            {formatVolts(pair.anode.standardPotential)}) ={' '}
+            <strong>{formatVolts(cellPotential)} V</strong>
           </div>
         </div>
 

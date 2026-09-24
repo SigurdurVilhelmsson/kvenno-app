@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo, useState } from 'react';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
@@ -56,6 +56,22 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
   const reaction = problems[index];
   const total = problems.length;
 
+  // Phones keep the old scroll offset when React swaps the screen, so a student
+  // who taps "Næsta efnajafna" at the foot of the page would land below the next
+  // equation's coefficient buttons. Start every new screen at its top.
+  const topRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    topRef.current?.scrollIntoView?.({ block: 'start' });
+  }, [index, showIntro, done]);
+
+  // On a phone the editor and atom table fill the screen, so the verdict opens
+  // at the fold with "Næsta efnajafna" below it; bring both into view.
+  // `nearest` leaves it alone where it is already visible.
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (answered) feedbackRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+  }, [answered]);
+
   const [reactantCoeffs, setReactantCoeffs] = useState<number[]>(() =>
     reaction.reactants.map(() => 1)
   );
@@ -109,6 +125,11 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
   const hintText = (): string => {
     if (config.hintSource === 'reaction-hint') return reaction.hint ?? '';
     const unbalanced = balanceResult.elements.filter((e) => !e.balanced);
+    // Balanced is not yet correct: handleCheck also requires the lowest whole
+    // numbers, so a doubled set must not be waved through to a one-shot Athuga.
+    if (unbalanced.length === 0 && !balanceResult.isReduced) {
+      return 'Atómin standast á, en stuðlarnir eru ekki í lægstu heilu tölum — þú getur deilt þeim öllum með sömu tölu.';
+    }
     if (unbalanced.length === 0) {
       return 'Efnajafnan lítur út fyrir að vera stillt — smelltu á Athuga!';
     }
@@ -121,11 +142,11 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
   // --- Teaching intro ---
   if (showIntro && config.intro) {
     return (
-      <div className={`min-h-screen bg-gradient-to-b ${config.bgFrom} to-white p-4`}>
+      <div ref={topRef} className={`min-h-screen bg-gradient-to-b ${config.bgFrom} to-white p-4`}>
         <div className="max-w-lg mx-auto">
           <button
             onClick={onBack}
-            className="text-warm-500 hover:text-warm-700 font-semibold text-sm mb-4"
+            className="text-warm-500 hover:text-warm-700 font-semibold text-sm mb-4 pointer-coarse:py-3 pointer-coarse:-mt-3 pointer-coarse:mb-1"
           >
             ← Til baka
           </button>
@@ -145,9 +166,10 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
   if (done) {
     return (
       <div
+        ref={topRef}
         className={`min-h-screen bg-gradient-to-b ${config.bgFrom} to-white p-4 flex items-center justify-center`}
       >
-        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center space-y-6">
+        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-6 sm:p-8 text-center space-y-6">
           <div className="text-5xl">
             {correctCount >= 5 ? '🎉' : correctCount >= 3 ? '👍' : '📚'}
           </div>
@@ -165,18 +187,21 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
           <div className="flex gap-3">
             <button
               onClick={handleRetry}
-              className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-800 font-bold py-3 rounded-xl transition-colors"
+              className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-800 font-bold px-2 py-3 rounded-xl transition-colors"
             >
               Reyna aftur
             </button>
             <button
               onClick={onComplete}
-              className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+              className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold px-2 py-3 rounded-xl transition-colors"
             >
               Ljúka stigi
             </button>
           </div>
-          <button onClick={onBack} className="text-warm-500 hover:text-warm-700 text-sm">
+          <button
+            onClick={onBack}
+            className="text-warm-500 hover:text-warm-700 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
+          >
             Til baka í valmynd
           </button>
         </div>
@@ -186,19 +211,26 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
 
   // --- Main gameplay ---
   return (
-    <div className={`min-h-screen bg-gradient-to-b ${config.bgFrom} to-white p-4`}>
-      <div className="max-w-lg mx-auto">
+    <div
+      ref={topRef}
+      className={`min-h-screen bg-gradient-to-b ${config.bgFrom} to-white px-3 py-4 sm:p-4`}
+    >
+      {/* A landscape phone is too short for the equation to wrap onto a second
+          row of steppers, so give it the width to stay on one. */}
+      <div className="max-w-lg mx-auto [@media(max-height:500px)]:max-w-2xl">
         {/* Header */}
         <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center gap-2">
             <button
               onClick={onBack}
-              className="text-warm-500 hover:text-warm-700 font-semibold text-sm"
+              className="shrink-0 whitespace-nowrap text-warm-500 hover:text-warm-700 font-semibold text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
             >
               ← Til baka
             </button>
-            <h1 className="text-lg font-bold text-warm-800">{config.title}</h1>
-            <span className="text-sm font-semibold text-warm-600">
+            <h1 className="min-w-0 text-center text-pretty text-base leading-tight sm:text-lg sm:leading-7 font-bold text-warm-800">
+              {config.title}
+            </h1>
+            <span className="shrink-0 whitespace-nowrap text-sm font-semibold text-warm-600">
               {index + 1}/{total}
             </span>
           </div>
@@ -259,7 +291,7 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
         {!answered && !showHint && hintAvailable && (
           <button
             onClick={() => setShowHint(true)}
-            className="w-full mb-4 px-4 py-2.5 rounded-xl text-sm font-semibold bg-yellow-100 text-yellow-800 hover:bg-yellow-200 transition-colors"
+            className="w-full mb-4 px-4 py-2.5 pointer-coarse:py-3 rounded-xl text-sm font-semibold bg-yellow-100 text-yellow-800 hover:bg-yellow-200 transition-colors"
           >
             Vísbending
           </button>
@@ -272,7 +304,7 @@ export function Level({ config, onBack, onComplete }: LevelProps) {
         )}
 
         {answered && (
-          <div className="space-y-4">
+          <div ref={feedbackRef} className="space-y-4">
             <FeedbackPanel
               feedback={{
                 isCorrect,

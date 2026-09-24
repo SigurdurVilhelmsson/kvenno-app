@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 
 import { AnimatedMolecule, FeedbackPanel } from '@shared/components';
 import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
@@ -8,21 +8,32 @@ import { shuffleArray } from '@shared/utils';
 import { BondAngleMeasurement } from './BondAngleMeasurement';
 import { ElectronRepulsionAnimation } from './ElectronRepulsionAnimation';
 import { ShapeTransitionAnimation } from './ShapeTransitionAnimation';
+import { useScrollTopOnChange } from '../utils/phoneScroll';
 import { geometryToMolecule } from '../utils/vseprConverter';
 
 // Misconceptions for VSEPR geometry
 const VSEPR_MISCONCEPTIONS: Record<string, string> = {
   electron_domains:
-    'Rafeinasvið = bindandi pör + einstæð pör. Tvítengi og þrítengi telja sem EITT svið.',
-  lone_pairs: 'Einstæð pör taka meira pláss en bindandi pör og ýta horninu niður.',
+    'Rafeindasvið = bindandi pör + stök pör. Tvítengi og þrítengi telja sem EITT svið.',
+  lone_pairs: 'Stök pör taka meira pláss en bindandi pör og ýta horninu niður.',
   geometry:
-    'Rafeindaröðun (electron geometry) vs sameindaröðun (molecular geometry) - einstæð pör sjást ekki í sameindaröðun.',
-  bond_angle:
-    'Einstæð pör minnka hornið: fjórflötungur (109.5°) → pýramída (107°) → beygð (104.5°).',
+    'Rafeindaröðun (electron geometry) vs sameindaröðun (molecular geometry) - stök pör sjást ekki í sameindaröðun.',
+  bond_angle: 'Stök pör minnka hornið: ferflötungur (109,5°) → pýramída (107°) → beygð (104,5°).',
+};
+
+// The misconception each kind of question tests. Every wrong answer used to
+// get the electron-versus-molecular-geometry note, including a wrong bond
+// angle and a wrong domain count, which have notes of their own above.
+const MISCONCEPTION_FOR: Record<Challenge['type'], string> = {
+  identify: VSEPR_MISCONCEPTIONS.geometry,
+  molecular_vs_electron: VSEPR_MISCONCEPTIONS.geometry,
+  electron_domains: VSEPR_MISCONCEPTIONS.electron_domains,
+  angle: VSEPR_MISCONCEPTIONS.bond_angle,
+  lone_pair_effect: VSEPR_MISCONCEPTIONS.lone_pairs,
 };
 
 // Related concepts for VSEPR
-const VSEPR_RELATED: string[] = ['VSEPR kenningin', 'Rafeinasvið', 'Sameindaröðun', 'Tengjahorn'];
+const VSEPR_RELATED: string[] = ['VSEPR kenningin', 'Rafeindasvið', 'Sameindaröðun', 'Tengihorn'];
 
 interface Level1Props {
   onComplete: (score: number) => void;
@@ -58,7 +69,7 @@ const GEOMETRIES: Geometry[] = [
     bondAngle: '180°',
     example: 'CO₂',
     exampleName: 'Koldíoxíð',
-    description: 'Tvö rafeinasvið staðsetjast á sitthvora hlið miðatómsins.',
+    description: 'Tvö rafeindasvið staðsetjast á sitthvora hlið miðatómsins.',
     visual: '○—●—○',
   },
   {
@@ -73,7 +84,7 @@ const GEOMETRIES: Geometry[] = [
     bondAngle: '120°',
     example: 'BF₃',
     exampleName: 'Bórþríflúoríð',
-    description: 'Þrjú rafeinasvið dreifist jafnt í sléttu þríhyrningsformi.',
+    description: 'Þrjú rafeindasvið dreifast jafnt í sléttu þríhyrningsformi.',
     visual: '○╲\n  ●\n○╱ ╲○',
   },
   {
@@ -87,23 +98,23 @@ const GEOMETRIES: Geometry[] = [
     molecularGeometry: 'Beygð',
     bondAngle: '<120°',
     example: 'SO₂',
-    exampleName: 'Brennisteinstvísýringur',
-    description: 'Einstætt par ýtir bindandi pörum saman — lægra horn.',
+    exampleName: 'Brennisteinsdíoxíð',
+    description: 'Stakt par ýtir bindandi pörum saman — lægra horn.',
     visual: '○╲  ::\n  ●\n○╱',
   },
   {
     id: 'tetrahedral',
-    name: 'Fjórflötungur',
+    name: 'Ferflötungur',
     nameEn: 'Tetrahedral',
     electronDomains: 4,
     bondingPairs: 4,
     lonePairs: 0,
-    electronGeometry: 'Fjórflötungur',
-    molecularGeometry: 'Fjórflötungur',
-    bondAngle: '109.5°',
+    electronGeometry: 'Ferflötungur',
+    molecularGeometry: 'Ferflötungur',
+    bondAngle: '109,5°',
     example: 'CH₄',
     exampleName: 'Metan',
-    description: 'Fjögur rafeinasvið í þrívíð fjórflötungsröðun.',
+    description: 'Fjögur rafeindasvið í þrívíðri ferflötungsröðun.',
     visual: '    ○\n    |\n○—●—○\n    |\n    ○',
   },
   {
@@ -113,12 +124,12 @@ const GEOMETRIES: Geometry[] = [
     electronDomains: 4,
     bondingPairs: 3,
     lonePairs: 1,
-    electronGeometry: 'Fjórflötungur',
+    electronGeometry: 'Ferflötungur',
     molecularGeometry: 'Þríhyrnd pýramída',
     bondAngle: '107°',
     example: 'NH₃',
     exampleName: 'Ammóníak',
-    description: 'Einstætt par ofan á þremur bindandi — pýramídalögun.',
+    description: 'Stakt par ofan á þremur bindandi — pýramídalögun.',
     visual: '    ::\n    |\n○—●—○\n    |\n    ○',
   },
   {
@@ -128,12 +139,12 @@ const GEOMETRIES: Geometry[] = [
     electronDomains: 4,
     bondingPairs: 2,
     lonePairs: 2,
-    electronGeometry: 'Fjórflötungur',
+    electronGeometry: 'Ferflötungur',
     molecularGeometry: 'Beygð',
-    bondAngle: '104.5°',
+    bondAngle: '104,5°',
     example: 'H₂O',
     exampleName: 'Vatn',
-    description: 'Tvö einstæð pör þrýsta bindandi pörum saman.',
+    description: 'Tvö stök pör þrýsta bindandi pörum saman.',
     visual: '  ::  ::\n    \\ /\n○—●—○',
   },
   {
@@ -148,7 +159,7 @@ const GEOMETRIES: Geometry[] = [
     bondAngle: '90° og 120°',
     example: 'PCl₅',
     exampleName: 'Fosfórpentaklóríð',
-    description: 'Fimm rafeinasvið — þrjú í miðsléttunni (120°), tvö lóðrétt (90°).',
+    description: 'Fimm rafeindasvið — þrjú í miðsléttunni (120°), tvö lóðrétt (90°).',
     visual: '    ○\n    |\n○-●-○\n   /|\\\n  ○ ○',
   },
   {
@@ -163,7 +174,7 @@ const GEOMETRIES: Geometry[] = [
     bondAngle: '90°',
     example: 'SF₆',
     exampleName: 'Brennisteinshexaflúoríð',
-    description: 'Sex rafeinasvið í samhverfri áttflötungsröðun.',
+    description: 'Sex rafeindasvið í samhverfri áttflötungsröðun.',
     visual: '    ○\n    |\n○-●-○\n   /|\n  ○ ○\n    |\n    ○',
   },
 ];
@@ -186,91 +197,91 @@ const challenges: Challenge[] = [
     options: [
       {
         id: 'a',
-        text: 'Línuleg (Linear)',
+        text: 'Línuleg',
         correct: true,
-        explanation: 'CO₂ hefur 2 rafeinasvið sem staðsetjast 180° í sundur.',
+        explanation: 'CO₂ hefur 2 rafeindasvið sem staðsetjast 180° í sundur.',
       },
       {
         id: 'b',
-        text: 'Beygð (Bent)',
+        text: 'Beygð',
         correct: false,
-        explanation: 'Beygð lögun krefst einstæðra para á miðatómi.',
+        explanation: 'Beygð lögun krefst stakra para á miðatómi.',
       },
       {
         id: 'c',
         text: 'Þríhyrnd slétt',
         correct: false,
-        explanation: 'Þríhyrnd slétt hefur 3 rafeinasvið, ekki 2.',
+        explanation: 'Þríhyrnd slétt hefur 3 rafeindasvið, ekki 2.',
       },
       {
         id: 'd',
-        text: 'Fjórflötungur',
+        text: 'Ferflötungur',
         correct: false,
-        explanation: 'Fjórflötungur hefur 4 rafeinasvið.',
+        explanation: 'Ferflötungur hefur 4 rafeindasvið.',
       },
     ],
     hints: {
-      topic: 'Þetta snýst um VSEPR lögun miðað við fjölda rafeinasviða.',
-      strategy: 'Teldu rafeinasvið á miðatóminu (C). Tvöföldar tengingar telja sem eitt svið.',
-      method: 'CO₂ hefur tvöföld tenging við hvort súrefnisatóm = 2 rafeinasvið.',
-      solution: '2 rafeinasvið staðsetjast 180° í sundur = línuleg lögun.',
+      topic: 'Þetta snýst um VSEPR lögun miðað við fjölda rafeindasviða.',
+      strategy: 'Teldu rafeindasvið á miðatóminu (C). Tvöföldar tengingar telja sem eitt svið.',
+      method: 'CO₂ hefur tvöfalda tengingu við hvort súrefnisatóm = 2 rafeindasvið.',
+      solution: '2 rafeindasvið staðsetjast 180° í sundur = línuleg lögun.',
     },
   },
   {
     id: 2,
     type: 'electron_domains',
-    question: 'Hversu mörg rafeinasvið (electron domains) hefur vatn (H₂O)?',
+    question: 'Hversu mörg rafeindasvið (electron domains) hefur vatn (H₂O)?',
     geometryId: 'bent-4',
     options: [
       {
         id: 'a',
-        text: '2 rafeinasvið',
+        text: '2 rafeindasvið',
         correct: false,
         explanation: 'Þú telur aðeins bindandi pörin.',
       },
       {
         id: 'b',
-        text: '3 rafeinasvið',
+        text: '3 rafeindasvið',
         correct: false,
-        explanation: 'Þú vantar eitt einstætt par.',
+        explanation: 'Þig vantar eitt stakt par.',
       },
       {
         id: 'c',
-        text: '4 rafeinasvið',
+        text: '4 rafeindasvið',
         correct: true,
-        explanation: 'Rétt! 2 bindandi pör + 2 einstæð pör = 4 rafeinasvið.',
+        explanation: 'Rétt! 2 bindandi pör + 2 stök pör = 4 rafeindasvið.',
       },
       {
         id: 'd',
-        text: '6 rafeinasvið',
+        text: '6 rafeindasvið',
         correct: false,
-        explanation: 'Það eru aðeins 4 rafeinapör í ysta hvolfi súrefnis.',
+        explanation: 'Það eru aðeins 4 rafeindapör í ysta hvolfi súrefnis.',
       },
     ],
     hints: {
-      topic: 'Mundu að telja bæði bindandi og einstæð pör.',
-      strategy: 'Rafeinasvið = bindandi pör + einstæð pör á miðatóminu.',
-      method: 'Súrefni hefur 6 gildisrafeindir. 2 fara í O-H tengingar, 4 mynda 2 einstæð pör.',
-      solution: '2 bindandi pör + 2 einstæð pör = 4 rafeinasvið.',
+      topic: 'Mundu að telja bæði bindandi og stök pör.',
+      strategy: 'Rafeindasvið = bindandi pör + stök pör á miðatóminu.',
+      method: 'Súrefni hefur 6 gildisrafeindir. 2 fara í O-H tengingar, 4 mynda 2 stök pör.',
+      solution: '2 bindandi pör + 2 stök pör = 4 rafeindasvið.',
     },
   },
   {
     id: 3,
     type: 'molecular_vs_electron',
-    question: 'NH₃ (ammóníak) hefur fjórflötungs RAFEINALÖGUN en hvaða SAMEINDARLÖGUN?',
+    question: 'NH₃ (ammóníak) hefur ferflötungs RAFEINDALÖGUN en hvaða SAMEINDARLÖGUN?',
     geometryId: 'trigonal-pyramidal',
     options: [
       {
         id: 'a',
-        text: 'Fjórflötungur',
+        text: 'Ferflötungur',
         correct: false,
-        explanation: 'Sameindarlögun tekur ekki tillit til einstæðu paranna.',
+        explanation: 'Sameindarlögun tekur ekki tillit til stöku paranna.',
       },
       {
         id: 'b',
         text: 'Þríhyrnd pýramída',
         correct: true,
-        explanation: 'Rétt! Einstætt par á toppnum er ekki sýnilegt í sameindarlögun.',
+        explanation: 'Rétt! Stakt par á toppnum er ekki sýnilegt í sameindarlögun.',
       },
       {
         id: 'c',
@@ -282,20 +293,20 @@ const challenges: Challenge[] = [
         id: 'd',
         text: 'Línuleg',
         correct: false,
-        explanation: 'Línuleg hefur aðeins 2 rafeinasvið.',
+        explanation: 'Línuleg hefur aðeins 2 rafeindasvið.',
       },
     ],
     hints: {
-      topic: 'Munurinn á rafeinalögun og sameindarlögun.',
-      strategy: 'Sameindarlögun lýsir aðeins stöðu atóma, ekki einstæðra para.',
-      method: 'NH₃: 4 rafeinasvið (3 bp + 1 lp). Sameindarlögun sýnir aðeins 3 bindandi pörin.',
-      solution: 'Þríhyrnd pýramída - 3 H atóm í botninum, N á toppnum, einstætt par ósýnilegt.',
+      topic: 'Munurinn á rafeindalögun og sameindarlögun.',
+      strategy: 'Sameindarlögun lýsir aðeins stöðu atóma, ekki stakra para.',
+      method: 'NH₃: 4 rafeindasvið (3 bp + 1 lp). Sameindarlögun sýnir aðeins 3 bindandi pörin.',
+      solution: 'Þríhyrnd pýramída - 3 H atóm í botninum, N á toppnum, stakt par ósýnilegt.',
     },
   },
   {
     id: 4,
     type: 'angle',
-    question: 'Hvert er tengihorn í fjórflötungssameindum (eins og CH₄)?',
+    question: 'Hvert er tengihorn í ferflötungssameindum (eins og CH₄)?',
     geometryId: 'tetrahedral',
     options: [
       {
@@ -306,29 +317,29 @@ const challenges: Challenge[] = [
       },
       {
         id: 'b',
-        text: '109.5°',
+        text: '109,5°',
         correct: true,
-        explanation: 'Rétt! Þetta er hornið sem hámarkar fjarlægð milli 4 rafeinasviða.',
+        explanation: 'Rétt! Þetta er hornið sem hámarkar fjarlægð milli 4 rafeindasviða.',
       },
       {
         id: 'c',
         text: '120°',
         correct: false,
-        explanation: '120° er fyrir þríhyrnd slétta lögun.',
+        explanation: '120° er fyrir þríhyrnda slétta lögun.',
       },
       { id: 'd', text: '180°', correct: false, explanation: '180° er fyrir línulega lögun.' },
     ],
     hints: {
-      topic: 'Tengihorn ákvarðast af fjölda rafeinasviða.',
-      strategy: 'Hornið hámarkar fjarlægð milli rafeinasviða í þrívíðri röðun.',
-      method: '4 rafeinasvið í þrívídd = fjórflötungur. Hornið er milli 90° og 120°.',
-      solution: '109.5° - þetta er nákvæmt fjórflötungshorn.',
+      topic: 'Tengihorn ákvarðast af fjölda rafeindasviða.',
+      strategy: 'Hornið hámarkar fjarlægð milli rafeindasviða í þrívíðri röðun.',
+      method: '4 rafeindasvið í þrívídd = ferflötungur. Hornið er milli 90° og 120°.',
+      solution: '109,5° - þetta er nákvæmt ferflötungshorn.',
     },
   },
   {
     id: 5,
     type: 'lone_pair_effect',
-    question: 'Af hverju er tengihorn í H₂O (104.5°) minna en í CH₄ (109.5°)?',
+    question: 'Af hverju er tengihorn í H₂O (104,5°) minna en í CH₄ (109,5°)?',
     options: [
       {
         id: 'a',
@@ -338,9 +349,9 @@ const challenges: Challenge[] = [
       },
       {
         id: 'b',
-        text: 'Einstæð pör hrinda meira en bindandi pör',
+        text: 'Stök pör hrinda meira en bindandi pör',
         correct: true,
-        explanation: 'Rétt! Einstæð pör taka meira pláss og ýta bindandi pörum saman.',
+        explanation: 'Rétt! Stök pör taka meira pláss og ýta bindandi pörum saman.',
       },
       {
         id: 'c',
@@ -356,10 +367,10 @@ const challenges: Challenge[] = [
       },
     ],
     hints: {
-      topic: 'Áhrif einstæðra para á tengihorn.',
+      topic: 'Áhrif stakra para á tengihorn.',
       strategy: 'Hugsaðu um það sem „tekur meira pláss" í kringum miðatómið.',
-      method: 'Einstæð pör eru nær kjarna og dreifa sér meira en bindandi pör.',
-      solution: 'Einstæð pör hrinda meira og ýta bindandi pörum saman = minna horn.',
+      method: 'Stök pör eru nær kjarna og dreifa sér meira en bindandi pör.',
+      solution: 'Stök pör hrinda meira og ýta bindandi pörum saman = minna horn.',
     },
   },
   {
@@ -372,33 +383,33 @@ const challenges: Challenge[] = [
         id: 'a',
         text: 'Þríhyrnd pýramída',
         correct: false,
-        explanation: 'Pýramída hefur einstætt par á miðatóminu.',
+        explanation: 'Pýramída hefur stakt par á miðatóminu.',
       },
       {
         id: 'b',
         text: 'Þríhyrnd slétt',
         correct: true,
-        explanation: 'Rétt! 3 bindandi pör, engin einstæð pör — slétt 120° lögun.',
+        explanation: 'Rétt! 3 bindandi pör, engin stök pör — slétt 120° lögun.',
       },
-      { id: 'c', text: 'Beygð', correct: false, explanation: 'Beygð lögun hefur einstæð pör.' },
+      { id: 'c', text: 'Beygð', correct: false, explanation: 'Beygð lögun hefur stök pör.' },
       {
         id: 'd',
-        text: 'Fjórflötungur',
+        text: 'Ferflötungur',
         correct: false,
-        explanation: 'Fjórflötungur hefur 4 rafeinasvið, ekki 3.',
+        explanation: 'Ferflötungur hefur 4 rafeindasvið, ekki 3.',
       },
     ],
     hints: {
-      topic: 'VSEPR lögun með 3 rafeinasvið.',
-      strategy: 'Athugaðu hvort miðatómið hefur einstæð pör.',
-      method: 'Bór hefur aðeins 3 gildisrafeindir og myndar ekki einstæð pör.',
-      solution: '3 bindandi pör, 0 einstæð = þríhyrnd slétt lögun (120°).',
+      topic: 'VSEPR lögun með 3 rafeindasvið.',
+      strategy: 'Athugaðu hvort miðatómið hefur stök pör.',
+      method: 'Bór hefur aðeins 3 gildisrafeindir og myndar ekki stök pör.',
+      solution: '3 bindandi pör, 0 stök = þríhyrnd slétt lögun (120°).',
     },
   },
   {
     id: 7,
     type: 'molecular_vs_electron',
-    question: 'SF₆ hefur 6 rafeinasvið. Hvað heitir þessi lögun?',
+    question: 'SF₆ hefur 6 rafeindasvið. Hvað heitir þessi lögun?',
     geometryId: 'octahedral',
     options: [
       {
@@ -409,29 +420,29 @@ const challenges: Challenge[] = [
       },
       {
         id: 'b',
-        text: 'Áttflötungur (Octahedral)',
+        text: 'Áttflötungur',
         correct: true,
-        explanation: 'Rétt! 6 rafeinasvið í 90° sundur — áttflötungur.',
+        explanation: 'Rétt! 6 rafeindasvið í 90° sundur — áttflötungur.',
       },
       {
         id: 'c',
         text: 'Þríhyrnd tvípýramída',
         correct: false,
-        explanation: 'Þríhyrnd tvípýramída hefur 5 rafeinasvið.',
+        explanation: 'Þríhyrnd tvípýramída hefur 5 rafeindasvið.',
       },
       { id: 'd', text: 'Kúla', correct: false, explanation: 'Kúla er ekki VSEPR lögun.' },
     ],
     hints: {
-      topic: 'VSEPR lögun með 6 rafeinasvið.',
+      topic: 'VSEPR lögun með 6 rafeindasvið.',
       strategy: 'Nafnið kemur frá fjölda flata á fasta efninu sem lýsir þessari röðun.',
-      method: '6 rafeinasvið í samhverfri röðun, öll 90° frá hvoru öðru.',
-      solution: 'Áttflötungur (octahedral) - fasti efnið hefur 8 fleti.',
+      method: '6 rafeindasvið í samhverfri röðun, öll 90° frá hvoru öðru.',
+      solution: 'Áttflötungur (octahedral) - fasta efnið hefur 8 fleti.',
     },
   },
   {
     id: 8,
     type: 'electron_domains',
-    question: 'PCl₅ hefur 5 rafeinasvið. Hvað heitir þessi rafeinalögun?',
+    question: 'PCl₅ hefur 5 rafeindasvið. Hvað heitir þessi rafeindalögun?',
     geometryId: 'trigonal-bipyramidal',
     options: [
       {
@@ -444,7 +455,7 @@ const challenges: Challenge[] = [
         id: 'b',
         text: 'Áttflötungur',
         correct: false,
-        explanation: 'Áttflötungur hefur 6 rafeinasvið.',
+        explanation: 'Áttflötungur hefur 6 rafeindasvið.',
       },
       {
         id: 'c',
@@ -454,13 +465,13 @@ const challenges: Challenge[] = [
       },
       {
         id: 'd',
-        text: 'Fjórflötungur',
+        text: 'Ferflötungur',
         correct: false,
-        explanation: 'Fjórflötungur hefur 4 rafeinasvið.',
+        explanation: 'Ferflötungur hefur 4 rafeindasvið.',
       },
     ],
     hints: {
-      topic: 'VSEPR lögun með 5 rafeinasvið.',
+      topic: 'VSEPR lögun með 5 rafeindasvið.',
       strategy: 'Hugsaðu um tvær mismunandi stöður - miðslétta og ás.',
       method: '3 stöður á miðsléttu (120°) + 2 stöður lóðrétt á ásnum (90°).',
       solution: 'Þríhyrnd tvípýramída - trigonal bipyramidal.',
@@ -483,6 +494,21 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const [, setTotalHintsUsed] = useState(0);
 
   const challenge = challenges[currentChallenge];
+
+  // Starting the questions, going back, and each new question replace the
+  // screen; on a phone start it at the top rather than part-way down.
+  useScrollTopOnChange(phase);
+  useScrollTopOnChange(currentChallenge);
+
+  // The details panel opens below the shape grid. On a phone that is below the
+  // fold, so a tap on a shape would only change the card's border; bring the
+  // panel into view. From md up it opens in view, so the page is left alone.
+  const detailsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!selectedGeometry) return;
+    if (window.matchMedia?.('(min-width: 48rem)').matches) return;
+    detailsRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+  }, [selectedGeometry]);
 
   // Shuffle options for current challenge - memoize to keep stable during challenge
   const shuffledOptions = useMemo(() => {
@@ -535,14 +561,14 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           <div className="flex items-center justify-between mb-6">
             <button
               onClick={onBack}
-              className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+              className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
             >
               <span>&larr;</span> Til baka
             </button>
             <div className="text-sm text-warm-600">Stig 1: Könnun</div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 mb-6">
+          <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 mb-6">
             <h2 className="text-2xl font-bold text-teal-800 mb-4">
               Kannaðu mismunandi sameindarlögun
             </h2>
@@ -568,18 +594,18 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               />
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-1 min-[360px]:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-8">
               {GEOMETRIES.map((geo) => (
                 <button
                   key={geo.id}
                   onClick={() => setSelectedGeometry(geo)}
-                  className={`p-4 rounded-xl border-2 transition-all text-center ${
+                  className={`p-2 sm:p-4 rounded-xl border-2 transition-all text-center ${
                     selectedGeometry?.id === geo.id
                       ? 'border-teal-500 bg-teal-50 shadow-lg'
                       : 'border-warm-200 hover:border-teal-300 hover:bg-teal-50/50'
                   }`}
                 >
-                  <div className="text-lg font-bold text-warm-800">{geo.name}</div>
+                  <div className="text-base sm:text-lg font-bold text-warm-800">{geo.name}</div>
                   <div className="text-xs text-warm-500">{geo.nameEn}</div>
                   <div className="text-sm text-teal-600 mt-1">{geo.example}</div>
                 </button>
@@ -587,7 +613,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             </div>
 
             {selectedGeometry && (
-              <div className="bg-teal-50 rounded-xl p-6 animate-slide-in">
+              <div ref={detailsRef} className="bg-teal-50 rounded-xl p-3 sm:p-6 animate-slide-in">
                 <div className="flex flex-col md:flex-row gap-6">
                   {/* Visual representation */}
                   <div className="flex-1">
@@ -595,7 +621,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                     <div className="flex justify-center gap-2 mb-3">
                       <button
                         onClick={() => setViewMode('2d')}
-                        className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                        className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors pointer-coarse:min-h-11 ${
                           viewMode === '2d'
                             ? 'bg-teal-600 text-white'
                             : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
@@ -605,7 +631,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                       </button>
                       <button
                         onClick={() => setViewMode('3d')}
-                        className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                        className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors pointer-coarse:min-h-11 ${
                           viewMode === '3d'
                             ? 'bg-teal-600 text-white'
                             : 'bg-warm-200 text-warm-600 hover:bg-warm-300'
@@ -615,7 +641,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                       </button>
                     </div>
 
-                    <div className="bg-warm-900 rounded-xl p-6 flex items-center justify-center min-h-48">
+                    <div className="bg-warm-900 rounded-xl p-3 sm:p-6 flex items-center justify-center min-h-48">
                       <div className="text-center w-full">
                         {viewMode === '2d' ? (
                           <AnimatedMolecule
@@ -655,7 +681,13 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                         <div className="text-warm-400">{selectedGeometry.exampleName}</div>
                         {viewMode === '3d' && (
                           <div className="text-xs text-warm-500 mt-2">
-                            Dragðu til að snúa, skrollaðu til að stækka
+                            {/* A wheel does not exist on a phone: zoom there is a pinch. */}
+                            <span className="pointer-coarse:hidden">
+                              Dragðu til að snúa, skrollaðu til að stækka
+                            </span>
+                            <span className="hidden pointer-coarse:inline">
+                              Dragðu til að snúa, notaðu tvo fingur til að stækka
+                            </span>
                           </div>
                         )}
                       </div>
@@ -669,7 +701,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div className="bg-white p-3 rounded-lg">
-                        <div className="text-warm-500">Rafeinasvið</div>
+                        <div className="text-warm-500">Rafeindasvið</div>
                         <div className="font-bold text-warm-800">
                           {selectedGeometry.electronDomains}
                         </div>
@@ -681,7 +713,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                         </div>
                       </div>
                       <div className="bg-white p-3 rounded-lg">
-                        <div className="text-warm-500">Einstæð pör</div>
+                        <div className="text-warm-500">Stök pör</div>
                         <div className="font-bold text-yellow-600">
                           {selectedGeometry.lonePairs}
                         </div>
@@ -693,7 +725,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                     </div>
 
                     <div className="bg-white p-3 rounded-lg">
-                      <div className="text-warm-500 text-sm">Rafeinalögun</div>
+                      <div className="text-warm-500 text-sm">Rafeindalögun</div>
                       <div className="font-bold text-purple-600">
                         {selectedGeometry.electronGeometry}
                       </div>
@@ -733,7 +765,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => setPhase('explore')}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
           >
             <span>&larr;</span> Til baka
           </button>
@@ -752,7 +784,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <p className="text-warm-700 text-lg mb-6">{challenge.question}</p>
 
           {/* Show relevant geometry visual if available */}
@@ -761,7 +793,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               const geo = GEOMETRIES.find((g) => g.id === challenge.geometryId);
               if (!geo) return null;
               return (
-                <div className="bg-warm-900 p-4 rounded-xl mb-6 flex flex-col items-center">
+                <div className="bg-warm-900 p-3 sm:p-4 rounded-xl mb-6 flex flex-col items-center">
                   <AnimatedMolecule
                     molecule={geometryToMolecule({
                       id: geo.id,
@@ -774,7 +806,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                     size="md"
                     animation="fade-in"
                     showLonePairs={true}
-                    ariaLabel={`${geo.name} lögun`}
+                    // Not the shape's name: several questions ask for it.
+                    ariaLabel={`Sameindin ${geo.example}`}
                   />
                   <div className="text-warm-300 text-sm mt-2 font-medium">{geo.example}</div>
                 </div>
@@ -820,9 +853,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 setShowHint(true);
                 setTotalHintsUsed((prev) => prev + 1);
               }}
-              className="text-teal-600 hover:text-teal-800 text-sm underline mb-4"
+              className="text-teal-600 hover:text-teal-800 text-sm underline mb-4 pointer-coarse:min-h-11"
             >
-              Syna visbendingu
+              Sýna vísbendingu
             </button>
           )}
 
@@ -846,20 +879,21 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           {showResult &&
             (() => {
               const correctOption = shuffledOptions.find((opt) => opt.correct);
+              // The panel heads itself Rétt!/Rangt, and several explanations open
+              // with their own "Rétt!", which a wrong answer must not be shown.
+              const why = (correctOption?.explanation ?? '').replace(/^Rétt!\s*/, '');
               return (
                 <>
                   <div className="mb-4">
                     <FeedbackPanel
                       feedback={{
                         isCorrect,
-                        explanation: isCorrect
-                          ? `Rétt! ${correctOption?.explanation || ''}`
-                          : `${correctOption?.explanation || ''}`,
-                        misconception: isCorrect ? undefined : VSEPR_MISCONCEPTIONS.geometry,
+                        explanation: why,
+                        misconception: isCorrect ? undefined : MISCONCEPTION_FOR[challenge.type],
                         relatedConcepts: VSEPR_RELATED,
                         nextSteps: isCorrect
                           ? 'Frábært! Þú skilur VSEPR vel. Haltu áfram.'
-                          : 'Mundu: Teldu rafeinasvið fyrst, síðan athugaðu einstæð pör.',
+                          : 'Mundu: Teldu rafeindasvið fyrst, síðan athugaðu stök pör.',
                       }}
                       config={{
                         showExplanation: true,

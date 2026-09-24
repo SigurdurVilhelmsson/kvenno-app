@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Header, ErrorBoundary, FadePresence } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
@@ -39,6 +39,15 @@ const DEFAULT_PROGRESS: Progress = {
  */
 function App() {
   const [activeLevel, setActiveLevel] = useState<ActiveLevel>('menu');
+  // A level card is tapped from wherever the menu was scrolled to. Without this the level
+  // opens at that same offset, which on a phone lands deep inside it (Stig 1 opened on its
+  // footer), so start every screen switch at the top. The first render is skipped.
+  const previousLevel = useRef(activeLevel);
+  useEffect(() => {
+    if (previousLevel.current === activeLevel) return;
+    previousLevel.current = activeLevel;
+    window.scrollTo({ top: 0, left: 0 });
+  }, [activeLevel]);
   const { progress, updateProgress, resetProgress } = useGameProgress<Progress>(
     'buffer-recipe-creator-progress',
     DEFAULT_PROGRESS
@@ -77,10 +86,11 @@ function App() {
       <FadePresence show={activeLevel === 'level1'} exitDuration={200}>
         <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
           {/* Back button */}
-          <div className="fixed top-4 left-4 z-40">
+          {/* In flow on phones, where a fixed button covered the level as it scrolled. */}
+          <div className="px-4 pt-4 md:p-0 md:fixed md:top-4 md:left-4 z-40">
             <button
               onClick={() => setActiveLevel('menu')}
-              className="bg-white px-4 py-2 rounded-lg shadow-md text-warm-600 hover:text-warm-800 flex items-center gap-2"
+              className="bg-white px-4 py-2 min-h-11 md:min-h-0 rounded-lg shadow-md text-warm-600 hover:text-warm-800 flex items-center gap-2"
             >
               ← Til baka
             </button>
@@ -102,13 +112,13 @@ function App() {
         <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
           <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="Stuðpúðasmíði" />
           <div className="min-h-screen p-4 md:p-8">
-            <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+            <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
               <p className="text-warm-600 mb-4">
                 Lærðu að búa til stuðpúða með Henderson-Hasselbalch jöfnunni
               </p>
 
               {/* Pedagogical explanation */}
-              <div className="p-6 rounded-xl mb-8 bg-kvenno-orange/10">
+              <div className="p-4 sm:p-6 rounded-xl mb-8 bg-kvenno-orange/10">
                 <h2 className="font-bold mb-3 text-kvenno-orange">Hvað er stuðpúði?</h2>
                 <p className="text-warm-800 text-sm mb-4">
                   <strong>Stuðpúði</strong> er lausn sem getur viðhaldið stöðugu pH þegar litlu
@@ -130,13 +140,13 @@ function App() {
                 {/* Level 1 */}
                 <button
                   onClick={() => setActiveLevel('level1')}
-                  className="game-card w-full p-6 rounded-xl border-4 transition-all text-left hover:shadow-lg border-kvenno-orange bg-kvenno-orange/5"
+                  className="game-card w-full p-4 sm:p-6 rounded-xl border-4 transition-all text-left hover:shadow-lg border-kvenno-orange bg-kvenno-orange/5"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="text-4xl">🔬</div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl font-bold text-kvenno-orange">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="text-3xl sm:text-4xl">🔬</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-lg sm:text-xl font-bold text-kvenno-orange">
                           Stig 1: Hugmyndafræði
                         </span>
                         {progress.level1Completed && (
@@ -159,17 +169,17 @@ function App() {
                 {/* Level 2 */}
                 <button
                   onClick={() => setActiveLevel('level2')}
-                  className="game-card w-full p-6 rounded-xl border-4 transition-all text-left hover:shadow-lg cursor-pointer"
+                  className="game-card w-full p-4 sm:p-6 rounded-xl border-4 transition-all text-left hover:shadow-lg cursor-pointer"
                   style={{
                     borderColor: '#22c55e',
                     backgroundColor: 'rgba(34, 197, 94, 0.05)',
                   }}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="text-4xl">📐</div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl font-bold text-green-700">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="text-3xl sm:text-4xl">📐</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-lg sm:text-xl font-bold text-green-700">
                           Stig 2: Útreikningar
                         </span>
                         {progress.level2Completed && (
@@ -192,17 +202,19 @@ function App() {
                 {/* Level 3 */}
                 <button
                   onClick={() => setActiveLevel('level3')}
-                  className="game-card w-full p-6 rounded-xl border-4 transition-all text-left hover:shadow-lg cursor-pointer"
+                  className="game-card w-full p-4 sm:p-6 rounded-xl border-4 transition-all text-left hover:shadow-lg cursor-pointer"
                   style={{
                     borderColor: '#10b981',
                     backgroundColor: 'rgba(16, 185, 129, 0.05)',
                   }}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="text-4xl">🏭</div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl font-bold text-emerald-700">Stig 3: Hönnun</span>
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="text-3xl sm:text-4xl">🏭</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-lg sm:text-xl font-bold text-emerald-700">
+                          Stig 3: Hönnun
+                        </span>
                         {progress.level3Completed && (
                           <span className="bg-emerald-500 text-white text-xs px-2 py-1 rounded-full">
                             ✓ {progress.level3Score} stig
@@ -223,29 +235,31 @@ function App() {
 
               {/* Progress Summary */}
               {progress.totalGamesPlayed > 0 && (
-                <div className="mt-8 bg-warm-50 p-4 rounded-xl">
+                <div className="mt-8 bg-warm-50 p-3 sm:p-4 rounded-xl">
                   <div className="flex justify-between items-center mb-3">
                     <h3 className="font-semibold text-warm-700">Framvinda</h3>
                     <button
                       onClick={handleResetProgress}
-                      className="text-sm text-warm-500 hover:text-red-500 transition-colors"
+                      className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3 pointer-coarse:px-2 pointer-coarse:-mx-2"
                     >
                       Endurstilla
                     </button>
                   </div>
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div className="rounded-lg p-3 bg-kvenno-orange/10">
-                      <div className="text-2xl font-bold text-kvenno-orange">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
+                    <div className="rounded-lg px-1 py-2 sm:p-3 bg-kvenno-orange/10">
+                      <div className="text-xl sm:text-2xl font-bold text-kvenno-orange">
                         {levelsCompleted}/3
                       </div>
                       <div className="text-xs text-warm-600">Stig lokið</div>
                     </div>
-                    <div className="bg-green-50 rounded-lg p-3">
-                      <div className="text-2xl font-bold text-green-600">{totalScore}</div>
-                      <div className="text-xs text-warm-600">Heildar stig</div>
+                    <div className="bg-green-50 rounded-lg px-1 py-2 sm:p-3">
+                      <div className="text-xl sm:text-2xl font-bold text-green-600">
+                        {totalScore}
+                      </div>
+                      <div className="text-xs text-warm-600">Heildarstig</div>
                     </div>
-                    <div className="bg-purple-50 rounded-lg p-3">
-                      <div className="text-2xl font-bold text-purple-600">
+                    <div className="bg-purple-50 rounded-lg px-1 py-2 sm:p-3">
+                      <div className="text-xl sm:text-2xl font-bold text-purple-600">
                         {progress.totalGamesPlayed}
                       </div>
                       <div className="text-xs text-warm-600">Leikir spilaðir</div>

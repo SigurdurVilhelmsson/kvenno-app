@@ -8,6 +8,7 @@ import FlaskComparison from './FlaskComparison';
 import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
 import { solveBuffer } from '../engine/buffer';
+import { revealTop } from '../utils/reveal';
 
 interface Level2Props {
   onComplete: (score: number) => void;
@@ -39,6 +40,8 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
   const [hintResetKey, setHintResetKey] = useState(0);
   const [completed, setCompleted] = useState(0);
   const levelCompleteReported = useRef(false);
+  const levelTopRef = useRef<HTMLDivElement>(null);
+  const stepCardRef = useRef<HTMLDivElement>(null);
 
   // Step 1: Direction
   const [selectedDirection, setSelectedDirection] = useState<Direction>(null);
@@ -72,6 +75,16 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
     }
   }, [completed, score, onComplete]);
 
+  // Finishing a puzzle hides the hint tiers above this card and, 250 ms later, the step just
+  // answered. A student who opened the hints therefore landed in the middle of the worked
+  // solution on a phone, with "Rétt svar!" scrolled past. Bring the card's top back once both
+  // have gone; revealTop leaves a screen that still shows it alone.
+  useEffect(() => {
+    if (step !== 'complete') return;
+    const timer = window.setTimeout(() => revealTop(stepCardRef.current), 300);
+    return () => window.clearTimeout(timer);
+  }, [step]);
+
   // Safety check - should never happen with valid data
   if (!problem || !solution) {
     return (
@@ -98,8 +111,11 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
     setHintsUsedTotal((prev) => prev + 1);
   };
 
+  // A step fades out for 250 ms after it is answered and its button stays live
+  // meanwhile, so each check ignores a tap that arrives after its step is over.
   // Step 1: Check direction answer
   const checkDirection = () => {
+    if (step !== 'direction') return;
     const correct = getCorrectDirection();
     if (selectedDirection === correct) {
       setDirectionCorrect(true);
@@ -109,9 +125,9 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
       const correctDir = getCorrectDirection();
       setDirectionFeedback(
         selectedDirection === 'higher'
-          ? `Ekki rétt. Markmiðs-pH (${formatDecimal(problem.targetPH, 2)}) er ${correctDir === 'lower' ? 'minna' : 'jafnt'} pKa (${formatDecimal(problem.pKa, 2)}), þannig að svarið er ekki "hærra".`
+          ? `Ekki rétt. Markmiðs-pH (${formatDecimal(problem.targetPH, 2)}) er ${correctDir === 'lower' ? 'minna en' : 'jafnt'} pKa (${formatDecimal(problem.pKa, 2)}), þannig að svarið er ekki "hærra".`
           : selectedDirection === 'lower'
-            ? `Ekki rétt. Markmiðs-pH (${formatDecimal(problem.targetPH, 2)}) er ${correctDir === 'higher' ? 'stærra' : 'jafnt'} pKa (${formatDecimal(problem.pKa, 2)}), þannig að svarið er ekki "lægra".`
+            ? `Ekki rétt. Markmiðs-pH (${formatDecimal(problem.targetPH, 2)}) er ${correctDir === 'higher' ? 'stærra en' : 'jafnt'} pKa (${formatDecimal(problem.pKa, 2)}), þannig að svarið er ekki "lægra".`
             : `Ekki rétt. Markmiðs-pH (${formatDecimal(problem.targetPH, 2)}) er ${correctDir === 'higher' ? 'stærra en' : correctDir === 'lower' ? 'minna en' : 'jafnt'} pKa (${formatDecimal(problem.pKa, 2)}).`
       );
     }
@@ -119,6 +135,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
 
   // Step 2: Check ratio answer
   const checkRatio = () => {
+    if (step !== 'ratio') return;
     const userRatio = parseStudentNumber(ratioInput);
     if (isNaN(userRatio) || userRatio <= 0) {
       setRatioFeedback('Vinsamlegast sláðu inn jákvæða tölu.');
@@ -144,6 +161,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
 
   // Step 3: Check mass answers
   const checkMass = () => {
+    if (step !== 'mass') return;
     const userAcidMass = parseStudentNumber(acidMassInput);
     const userBaseMass = parseStudentNumber(baseMassInput);
 
@@ -181,11 +199,13 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
 
   // Next puzzle
   const nextPuzzle = () => {
+    if (step !== 'complete') return;
     setCompleted((prev) => prev + 1);
 
     if (currentIndex < LEVEL2_PUZZLES.length - 1) {
       setCurrentIndex((prev) => prev + 1);
       resetPuzzleState();
+      revealTop(levelTopRef.current);
     }
   };
 
@@ -211,17 +231,17 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-xl p-4 mb-4">
+        <div ref={levelTopRef} className="bg-white rounded-2xl shadow-xl p-4 mb-4">
           <div className="flex justify-between items-center">
             <button
               onClick={onBack}
-              className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+              className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
             >
               ← Til baka
             </button>
             <div className="flex items-center gap-4">
               <div className="text-sm text-warm-500">
-                {completed + 1} / {LEVEL2_PUZZLES.length}
+                {Math.min(completed + 1, LEVEL2_PUZZLES.length)} / {LEVEL2_PUZZLES.length}
               </div>
               <div className="text-lg font-bold text-kvenno-orange">Stig: {score}</div>
             </div>
@@ -242,7 +262,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
         </div>
 
         {/* Task Card */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-4 border-t-4 border-kvenno-orange">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4 border-t-4 border-kvenno-orange">
           <div className="flex items-start gap-3 mb-4">
             <span className="text-white text-sm font-bold px-3 py-1 rounded-full bg-kvenno-orange">
               #{puzzle.id}
@@ -260,7 +280,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
               <div className="text-lg font-bold text-warm-800">{formatDecimal(problem.pKa)}</div>
             </div>
             <div className="bg-warm-50 p-3 rounded-lg text-center">
-              <div className="text-xs text-warm-500">Markmið pH</div>
+              <div className="text-xs text-warm-500">Markmiðs-pH</div>
               <div className="text-lg font-bold text-kvenno-orange">
                 {formatDecimal(problem.targetPH)}
               </div>
@@ -285,14 +305,14 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
               <div className="text-xs text-red-600 font-semibold">Sýra</div>
               <div className="font-bold text-red-800">{problem.acidName}</div>
               <div className="text-xs text-red-600">
-                M = {formatDecimal(problem.acidMolarMass)} g/mol
+                M = {formatDecimal(problem.acidMolarMass)} g/mól
               </div>
             </div>
             <div className="bg-blue-50 p-3 rounded-lg">
               <div className="text-xs text-blue-600 font-semibold">Basi</div>
               <div className="font-bold text-blue-800">{problem.baseName}</div>
               <div className="text-xs text-blue-600">
-                M = {formatDecimal(problem.baseMolarMass)} g/mol
+                M = {formatDecimal(problem.baseMolarMass)} g/mól
               </div>
             </div>
           </div>
@@ -381,7 +401,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
         </div>
 
         {/* Step Content */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
+        <div ref={stepCardRef} className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
           {/* Step 1: Direction */}
           <Presence show={step === 'direction'} exitDuration={250}>
             <div>
@@ -395,10 +415,10 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                 </p>
               </div>
 
-              <div className="grid grid-cols-3 gap-3 mb-4">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4">
                 <button
                   onClick={() => setSelectedDirection('higher')}
-                  className={`p-4 rounded-lg border-2 transition-all ${
+                  className={`px-1 py-4 sm:p-4 rounded-lg border-2 transition-all ${
                     selectedDirection === 'higher'
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-warm-200 hover:border-warm-300'
@@ -406,11 +426,11 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                 >
                   <div className="text-2xl mb-1">📈</div>
                   <div className="font-semibold">Hærra</div>
-                  <div className="text-xs text-warm-500">pH {'>'} pKa</div>
+                  <div className="text-xs text-warm-500 whitespace-nowrap">pH {'>'} pKa</div>
                 </button>
                 <button
                   onClick={() => setSelectedDirection('equal')}
-                  className={`p-4 rounded-lg border-2 transition-all ${
+                  className={`px-1 py-4 sm:p-4 rounded-lg border-2 transition-all ${
                     selectedDirection === 'equal'
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-warm-200 hover:border-warm-300'
@@ -418,11 +438,11 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                 >
                   <div className="text-2xl mb-1">⚖️</div>
                   <div className="font-semibold">Jafnt</div>
-                  <div className="text-xs text-warm-500">pH = pKa</div>
+                  <div className="text-xs text-warm-500 whitespace-nowrap">pH = pKa</div>
                 </button>
                 <button
                   onClick={() => setSelectedDirection('lower')}
-                  className={`p-4 rounded-lg border-2 transition-all ${
+                  className={`px-1 py-4 sm:p-4 rounded-lg border-2 transition-all ${
                     selectedDirection === 'lower'
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-warm-200 hover:border-warm-300'
@@ -430,7 +450,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                 >
                   <div className="text-2xl mb-1">📉</div>
                   <div className="font-semibold">Lægra</div>
-                  <div className="text-xs text-warm-500">pH {'<'} pKa</div>
+                  <div className="text-xs text-warm-500 whitespace-nowrap">pH {'<'} pKa</div>
                 </button>
               </div>
 
@@ -482,7 +502,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                   inputMode="decimal"
                   value={ratioInput}
                   onChange={(e) => setRatioInput(e.target.value)}
-                  placeholder="t.d. 1.58"
+                  placeholder="0,00"
                   className="w-full p-3 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-none"
                 />
               </div>
@@ -519,7 +539,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                 <p className="text-sm text-green-800">
                   <strong>Útreikningur:</strong> Notaðu heildarstyrkinn (
                   {formatDecimal(problem.totalConcentration)} M) og rúmmálið (
-                  {formatDecimal(problem.volume)} L) til að finna heildar mól. Skiptu síðan á milli
+                  {formatDecimal(problem.volume)} L) til að finna heildarmól. Skiptu síðan á milli
                   sýru og basa samkvæmt hlutfallinu.
                 </p>
                 <p className="text-sm text-green-800 mt-1">massi = mól × mólmassi</p>
@@ -595,18 +615,18 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                       {formatDecimal(solution.ratio, 2)}
                     </li>
                     <li>
-                      • Heildar mól = {formatDecimal(problem.totalConcentration)} M ×{' '}
+                      • Heildarmól = {formatDecimal(problem.totalConcentration)} M ×{' '}
                       {formatDecimal(problem.volume)} L ={' '}
-                      {formatDecimal(problem.totalConcentration * problem.volume, 4)} mol
+                      {formatDecimal(problem.totalConcentration * problem.volume, 4)} mól
                     </li>
                     <li>
-                      • Sýra: {formatDecimal(solution.acidMoles, 4)} mol ×{' '}
-                      {formatDecimal(problem.acidMolarMass)} g/mol ={' '}
+                      • Sýra: {formatDecimal(solution.acidMoles, 4)} mól ×{' '}
+                      {formatDecimal(problem.acidMolarMass)} g/mól ={' '}
                       {formatDecimal(solution.acidMass, 2)} g
                     </li>
                     <li>
-                      • Basi: {formatDecimal(solution.baseMoles, 4)} mol ×{' '}
-                      {formatDecimal(problem.baseMolarMass)} g/mol ={' '}
+                      • Basi: {formatDecimal(solution.baseMoles, 4)} mól ×{' '}
+                      {formatDecimal(problem.baseMolarMass)} g/mól ={' '}
                       {formatDecimal(solution.baseMass, 2)} g
                     </li>
                   </ul>

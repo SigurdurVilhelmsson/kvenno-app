@@ -5,7 +5,7 @@ export const gameTranslations = createGameTranslations({
     game: {
       title: 'Rafeindabygging',
       subtitle: 'Kvennaskólinn - Efnafræði 2. ár',
-      description: 'Skammtatölur, svigrúm og rafeindauppsetning',
+      description: 'Skammtatölur, svigrúm og rafeindaskipan',
     },
     levels: {
       level1: {
@@ -18,7 +18,7 @@ export const gameTranslations = createGameTranslations({
       },
       level3: {
         name: 'Stig 3: Lotukerfi og rafeindir',
-        description: 'Tengdu sæti í lotukerfinu við rafeindauppsetningu',
+        description: 'Tengdu sæti í lotukerfinu við rafeindaskipan',
       },
     },
   },

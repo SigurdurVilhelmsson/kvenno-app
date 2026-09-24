@@ -65,7 +65,10 @@ vi.mock('@shared/components', () => ({
   ErrorBoundary: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
-vi.mock('../components/Level1', () => ({
+// The level components are stubbed, but their exported maximum scores are the
+// real ones: the menu divides by them, so a stub value would test nothing.
+vi.mock('../components/Level1', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../components/Level1')>()),
   Level1: ({ onBack }: { onBack: () => void }) => (
     <div data-testid="level1-screen">
       <button onClick={onBack}>back-from-level1</button>
@@ -73,7 +76,8 @@ vi.mock('../components/Level1', () => ({
   ),
 }));
 
-vi.mock('../components/Level2', () => ({
+vi.mock('../components/Level2', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../components/Level2')>()),
   Level2: ({ onBack }: { onBack: () => void }) => (
     <div data-testid="level2-screen">
       <button onClick={onBack}>back-from-level2</button>
@@ -208,17 +212,20 @@ describe('Nafnakerfid App', () => {
     expect(screen.getByText('game.title')).toBeDefined();
   });
 
-  it('shows completion score for level 1 when completed', () => {
-    setMockProgress({ level1Completed: true, level1Score: 9 });
+  // The stored score is points — 10 per Level 1 question, 5 + 10 per Level 2
+  // item — so it has to be shown over the points available. It used to be
+  // shown over the question count, which put a perfect Level 1 at "100/10".
+  it('shows the level 1 score over the points available', () => {
+    setMockProgress({ level1Completed: true, level1Score: 90 });
     render(<App />);
-    expect(screen.getByText('9/10')).toBeDefined();
+    expect(screen.getByText('90/100')).toBeDefined();
     expect(screen.getByText('menu.completed')).toBeDefined();
   });
 
-  it('shows completion score for level 2 when completed', () => {
-    setMockProgress({ level1Completed: true, level2Completed: true, level2Score: 11 });
+  it('shows the level 2 score over the points available', () => {
+    setMockProgress({ level1Completed: true, level2Completed: true, level2Score: 150 });
     render(<App />);
-    expect(screen.getByText('11/12')).toBeDefined();
+    expect(screen.getByText('150/180')).toBeDefined();
   });
 
   it('shows score for level 3 when completed', () => {

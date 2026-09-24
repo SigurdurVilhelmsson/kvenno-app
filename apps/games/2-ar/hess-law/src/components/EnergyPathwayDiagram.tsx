@@ -1,4 +1,6 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
+
+import { useContainerWidth } from '@shared/components/ResponsiveContainer';
 
 interface EnergyStep {
   label: string;
@@ -28,8 +30,19 @@ export function EnergyPathwayDiagram({
   steps,
   targetDeltaH,
   isCorrect,
-  height = 280,
+  height: preferredHeight = 280,
 }: EnergyPathwayDiagramProps) {
+  // The staircase is laid out 400 units wide. Where its box is narrower (a phone, about 270 px)
+  // it is laid out at the box's own width instead of being scaled down, which would shrink its
+  // labels to 5 px. There is then no room beside each step for its ΔH and running Σ, so the
+  // steps are numbered on the drawing and their values listed underneath, in the same order.
+  const svgWrapRef = useRef<HTMLDivElement>(null);
+  const containerWidth = useContainerWidth(svgWrapRef);
+  const narrow = containerWidth !== null && containerWidth < 400;
+  const width = narrow ? Math.max(220, Math.floor(containerWidth)) : 400;
+  const height = narrow ? Math.min(preferredHeight, 240) : preferredHeight;
+  const startX = narrow ? 40 : 50;
+
   // Calculate cumulative energy at each step
   const energySteps: EnergyStep[] = useMemo(() => {
     let cumulative = 0;
@@ -56,15 +69,16 @@ export function EnergyPathwayDiagram({
     return 40 + normalized * (height - 80); // padding top and bottom
   };
 
-  const width = 400;
-  const stepWidth = steps.length > 0 ? (width - 100) / (steps.length + 1) : width - 100;
+  // Narrow: keep the last point clear of the right-aligned "Markmið" label on the target line.
+  const stepSpan = narrow ? width - startX - 40 : width - 100;
+  const stepWidth = steps.length > 0 ? stepSpan / (steps.length + 1) : stepSpan;
 
   // Generate path points for the staircase
   const pathPoints = useMemo(() => {
     if (steps.length === 0) return '';
 
     const points: string[] = [];
-    let x = 50;
+    let x = startX;
     let y = energyToY(0);
 
     // Start point
@@ -88,7 +102,7 @@ export function EnergyPathwayDiagram({
 
     return points.join(' ');
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: energyToY and steps.length are derived from existing deps
-  }, [energySteps, stepWidth, height]);
+  }, [energySteps, stepWidth, height, startX]);
 
   // Target line position
   const targetY = energyToY(targetDeltaH);
@@ -98,198 +112,260 @@ export function EnergyPathwayDiagram({
       : energyToY(0);
 
   return (
-    <div className="bg-gradient-to-b from-warm-800 to-warm-900 rounded-xl p-4 shadow-lg">
+    <div className="bg-gradient-to-b from-warm-800 to-warm-900 rounded-xl p-3 sm:p-4 shadow-lg">
       <h3 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
         <span className="text-lg">📊</span>
         Orkuferillinn
       </h3>
 
-      <svg
-        width="100%"
-        viewBox={`0 0 ${width} ${height}`}
-        className="overflow-visible"
-        role="img"
-        aria-label="Orkuferill sem sýnir orkubreytingar í hvörfum"
-      >
-        <title>Orkuferill</title>
-        {/* Background grid */}
-        <defs>
-          <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path
-              d="M 40 0 L 0 0 0 40"
-              fill="none"
-              stroke="#374151"
-              strokeWidth="0.5"
-              opacity="0.3"
-            />
-          </pattern>
-        </defs>
-        <rect width={width} height={height} fill="url(#grid)" />
-
-        {/* Zero energy reference line */}
-        <line
-          x1="30"
-          y1={energyToY(0)}
-          x2={width - 20}
-          y2={energyToY(0)}
-          stroke="#6b7280"
-          strokeWidth="1"
-          strokeDasharray="4,4"
-        />
-        <text x="10" y={energyToY(0) + 4} fill="#9ca3af" fontSize="10">
-          0
-        </text>
-
-        {/* Target energy line */}
-        <line
-          x1="30"
-          y1={targetY}
-          x2={width - 20}
-          y2={targetY}
-          stroke="#f59e0b"
-          strokeWidth="2"
-          strokeDasharray="6,4"
-        />
-        <text x={width - 18} y={targetY + 4} fill="#f59e0b" fontSize="10" fontWeight="bold">
-          Markmið
-        </text>
-
-        {/* Energy pathway (animated staircase) */}
-        {steps.length > 0 && (
-          <>
-            {/* Shadow for depth */}
-            <path
-              d={pathPoints}
-              fill="none"
-              stroke="#000"
-              strokeWidth="6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              opacity="0.3"
-              transform="translate(2, 2)"
-            />
-
-            {/* Main path */}
-            <path
-              d={pathPoints}
-              fill="none"
-              stroke={isCorrect ? '#22c55e' : '#60a5fa'}
-              strokeWidth="4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="transition-all duration-500"
-              style={{
-                strokeDasharray: '1000',
-                strokeDashoffset: '0',
-                animation: 'drawPath 1s ease-out forwards',
-              }}
-            />
-          </>
-        )}
-
-        {/* Start point */}
-        <circle cx="50" cy={energyToY(0)} r="8" fill="#22c55e" stroke="#fff" strokeWidth="2" />
-        <text
-          x="50"
-          y={energyToY(0) - 15}
-          fill="#22c55e"
-          fontSize="11"
-          textAnchor="middle"
-          fontWeight="bold"
+      <div ref={svgWrapRef}>
+        <svg
+          width="100%"
+          viewBox={`0 0 ${width} ${height}`}
+          className="overflow-visible"
+          role="img"
+          aria-label="Orkuferill sem sýnir orkubreytingar í hvörfum"
         >
-          Byrjun
-        </text>
+          <title>Orkuferill</title>
+          {/* Background grid */}
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path
+                d="M 40 0 L 0 0 0 40"
+                fill="none"
+                stroke="#374151"
+                strokeWidth="0.5"
+                opacity="0.3"
+              />
+            </pattern>
+          </defs>
+          <rect width={width} height={height} fill="url(#grid)" />
 
-        {/* Step markers */}
-        {energySteps.map((step, index) => {
-          const x = 50 + (index + 1) * stepWidth;
-          const y = energyToY(step.cumulativeH);
+          {/* Zero energy reference line */}
+          <line
+            x1="30"
+            y1={energyToY(0)}
+            x2={narrow ? width - 4 : width - 20}
+            y2={energyToY(0)}
+            stroke="#6b7280"
+            strokeWidth="1"
+            strokeDasharray="4,4"
+          />
+          <text
+            x={narrow ? 26 : 10}
+            y={energyToY(0) + 4}
+            fill="#9ca3af"
+            fontSize={narrow ? 12 : 10}
+            textAnchor={narrow ? 'end' : 'start'}
+          >
+            0
+          </text>
 
-          return (
-            <g key={index}>
-              {/* Step circle */}
-              <circle
-                cx={x}
-                cy={y}
-                r="6"
-                fill={step.color}
-                stroke="#fff"
-                strokeWidth="2"
-                className="transition-all duration-300"
+          {/* Target energy line */}
+          <line
+            x1="30"
+            y1={targetY}
+            x2={narrow ? width - 4 : width - 20}
+            y2={targetY}
+            stroke="#f59e0b"
+            strokeWidth="2"
+            strokeDasharray="6,4"
+          />
+          <text
+            x={narrow ? width - 4 : width - 18}
+            y={narrow ? targetY - 6 : targetY + 4}
+            fill="#f59e0b"
+            fontSize={narrow ? 12 : 10}
+            fontWeight="bold"
+            textAnchor={narrow ? 'end' : 'start'}
+          >
+            Markmið
+          </text>
+
+          {/* Energy pathway (animated staircase) */}
+          {steps.length > 0 && (
+            <>
+              {/* Shadow for depth */}
+              <path
+                d={pathPoints}
+                fill="none"
+                stroke="#000"
+                strokeWidth="6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity="0.3"
+                transform="translate(2, 2)"
               />
 
-              {/* Delta H label */}
-              <text
-                x={x - stepWidth / 2}
-                y={y + (step.deltaH < 0 ? -10 : 20)}
-                fill={step.color}
-                fontSize="10"
-                textAnchor="middle"
-                fontWeight="bold"
+              {/* Main path */}
+              <path
+                d={pathPoints}
+                fill="none"
+                stroke={isCorrect ? '#22c55e' : '#60a5fa'}
+                strokeWidth="4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="transition-all duration-500"
+                style={{
+                  strokeDasharray: '1000',
+                  strokeDashoffset: '0',
+                  animation: 'drawPath 1s ease-out forwards',
+                }}
+              />
+            </>
+          )}
+
+          {/* Start point */}
+          <circle
+            cx={startX}
+            cy={energyToY(0)}
+            r="8"
+            fill="#22c55e"
+            stroke="#fff"
+            strokeWidth="2"
+          />
+          <text
+            x={startX}
+            y={energyToY(0) - 15}
+            fill="#22c55e"
+            fontSize={narrow ? 13 : 11}
+            textAnchor="middle"
+            fontWeight="bold"
+          >
+            Byrjun
+          </text>
+
+          {/* Step markers */}
+          {energySteps.map((step, index) => {
+            const x = startX + (index + 1) * stepWidth;
+            const y = energyToY(step.cumulativeH);
+
+            if (narrow) {
+              return (
+                <g key={index}>
+                  <circle cx={x} cy={y} r="9" fill={step.color} stroke="#fff" strokeWidth="2" />
+                  <text
+                    x={x}
+                    y={y + 4}
+                    fill="#fff"
+                    fontSize="11"
+                    textAnchor="middle"
+                    fontWeight="bold"
+                  >
+                    {index + 1}
+                  </text>
+                </g>
+              );
+            }
+
+            return (
+              <g key={index}>
+                {/* Step circle */}
+                <circle
+                  cx={x}
+                  cy={y}
+                  r="6"
+                  fill={step.color}
+                  stroke="#fff"
+                  strokeWidth="2"
+                  className="transition-all duration-300"
+                />
+
+                {/* Delta H label */}
+                <text
+                  x={x - stepWidth / 2}
+                  y={y + (step.deltaH < 0 ? -10 : 20)}
+                  fill={step.color}
+                  fontSize="10"
+                  textAnchor="middle"
+                  fontWeight="bold"
+                >
+                  {step.deltaH > 0 ? '+' : ''}
+                  {step.deltaH.toFixed(0)} kJ
+                </text>
+
+                {/* Cumulative label */}
+                <text x={x} y={y + 18} fill="#9ca3af" fontSize="9" textAnchor="middle">
+                  Σ = {step.cumulativeH.toFixed(0)}
+                </text>
+              </g>
+            );
+          })}
+
+          {/* Final point indicator */}
+          {steps.length > 0 && (
+            <g>
+              <circle
+                cx={startX + steps.length * stepWidth}
+                cy={finalY}
+                r="10"
+                fill={isCorrect ? '#22c55e' : '#60a5fa'}
+                stroke="#fff"
+                strokeWidth="3"
+                className={isCorrect ? 'animate-pulse' : ''}
+              />
+              {(isCorrect || narrow) && (
+                <text
+                  x={startX + steps.length * stepWidth}
+                  y={finalY + 4}
+                  fill="#fff"
+                  fontSize={narrow ? 13 : 12}
+                  textAnchor="middle"
+                  fontWeight="bold"
+                >
+                  {isCorrect ? '✓' : steps.length}
+                </text>
+              )}
+            </g>
+          )}
+
+          {/* Y-axis label */}
+          <text
+            x={narrow ? 9 : 15}
+            y={height / 2}
+            fill="#9ca3af"
+            fontSize={narrow ? 12 : 10}
+            textAnchor="middle"
+            transform={`rotate(-90, ${narrow ? 9 : 15}, ${height / 2})`}
+          >
+            Orka (kJ)
+          </text>
+        </svg>
+      </div>
+
+      {/* Narrow layout: each numbered step's ΔH and running total, as the wide drawing labels them */}
+      {narrow && energySteps.length > 0 && (
+        <ol className="mt-2 space-y-1 text-sm">
+          {energySteps.map((step, index) => (
+            <li key={index} className="flex items-center gap-2">
+              <span
+                className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                style={{ backgroundColor: step.color }}
+                aria-hidden="true"
               >
+                {index + 1}
+              </span>
+              <span className="font-bold" style={{ color: step.color }}>
                 {step.deltaH > 0 ? '+' : ''}
                 {step.deltaH.toFixed(0)} kJ
-              </text>
-
-              {/* Cumulative label */}
-              <text x={x} y={y + 18} fill="#9ca3af" fontSize="9" textAnchor="middle">
-                Σ = {step.cumulativeH.toFixed(0)}
-              </text>
-            </g>
-          );
-        })}
-
-        {/* Final point indicator */}
-        {steps.length > 0 && (
-          <g>
-            <circle
-              cx={50 + steps.length * stepWidth}
-              cy={finalY}
-              r="10"
-              fill={isCorrect ? '#22c55e' : '#60a5fa'}
-              stroke="#fff"
-              strokeWidth="3"
-              className={isCorrect ? 'animate-pulse' : ''}
-            />
-            {isCorrect && (
-              <text
-                x={50 + steps.length * stepWidth}
-                y={finalY + 4}
-                fill="#fff"
-                fontSize="12"
-                textAnchor="middle"
-                fontWeight="bold"
-              >
-                ✓
-              </text>
-            )}
-          </g>
-        )}
-
-        {/* Y-axis label */}
-        <text
-          x="15"
-          y={height / 2}
-          fill="#9ca3af"
-          fontSize="10"
-          textAnchor="middle"
-          transform={`rotate(-90, 15, ${height / 2})`}
-        >
-          Orka (kJ)
-        </text>
-      </svg>
+              </span>
+              <span className="text-warm-400">Σ = {step.cumulativeH.toFixed(0)}</span>
+            </li>
+          ))}
+        </ol>
+      )}
 
       {/* Legend */}
-      <div className="flex justify-center gap-4 mt-3 text-xs">
-        <div className="flex items-center gap-1">
+      <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-xs">
+        <div className="flex items-center gap-1 whitespace-nowrap">
           <div className="w-3 h-3 rounded-full bg-red-500" aria-hidden="true" />
-          <span className="text-warm-400">▼ Exóþermt (−ΔH)</span>
+          <span className="text-warm-400">▼ Útvermið (−ΔH)</span>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 whitespace-nowrap">
           <div className="w-3 h-3 rounded-full bg-blue-500" aria-hidden="true" />
-          <span className="text-warm-400">▲ Endóþermt (+ΔH)</span>
+          <span className="text-warm-400">▲ Innvermið (+ΔH)</span>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 whitespace-nowrap">
           <div className="w-3 h-0.5 bg-yellow-500" style={{ width: '12px' }} />
           <span className="text-warm-400">Markmið</span>
         </div>

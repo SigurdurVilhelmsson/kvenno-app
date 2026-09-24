@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useId } from 'react';
+
+import { pairCount } from '../utils/lonePairs';
 
 interface Atom {
   symbol: string;
@@ -21,6 +23,13 @@ interface LewisGuidedModeProps {
   totalElectrons: number;
   onComplete?: () => void;
   compact?: boolean;
+}
+
+/** An empty field is no answer yet; anything else, 0 included, is an answer. */
+function readCount(raw: string): number | null {
+  if (raw.trim() === '') return null;
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : null;
 }
 
 export function LewisGuidedMode({
@@ -49,6 +58,26 @@ export function LewisGuidedMode({
   const expectedBonds = surroundingAtoms.length;
   const electronsInBonds = expectedBonds * 2;
   const electronsForLonePairs = totalElectrons - electronsInBonds;
+  const bondInputId = useId();
+
+  // The distribution step 4 asks for, by the rule its own tip gives: outer atoms
+  // first, each non-H one filled to its octet (three pairs beside its single
+  // bond), H none at all, and the central atom takes what is left. Keyed by
+  // symbol, as the counters on screen are.
+  const expectedLonePairs = new Map<string, number>();
+  {
+    let pairsLeft = electronsForLonePairs / 2;
+    for (const a of surroundingAtoms) {
+      const give = a.symbol === 'H' ? 0 : Math.min(3, pairsLeft);
+      pairsLeft -= give;
+      expectedLonePairs.set(a.symbol, (expectedLonePairs.get(a.symbol) ?? 0) + give);
+    }
+    const c = centralAtom?.symbol ?? '';
+    expectedLonePairs.set(c, (expectedLonePairs.get(c) ?? 0) + pairsLeft);
+  }
+  const uniqueSurrounding = surroundingAtoms.filter(
+    (a, i, arr) => arr.findIndex((x) => x.symbol === a.symbol) === i
+  );
 
   const steps: GuidedStep[] = [
     {
@@ -77,7 +106,7 @@ export function LewisGuidedMode({
     {
       id: 4,
       title: 'Dreifa eftirstandandi rafeindum',
-      instruction: `${totalElectrons} - ${electronsInBonds} = ${electronsForLonePairs} rafeindir eftir. Dreifðu þeim sem einstæðum pörum (2 rafeindir á hvert par).`,
+      instruction: `${totalElectrons} - ${electronsInBonds} = ${electronsForLonePairs} rafeindir eftir. Dreifðu þeim sem stökum pörum (2 rafeindir á hvert par).`,
       action: 'distribute',
       targetValue: electronsForLonePairs / 2,
       completed: false,
@@ -130,6 +159,15 @@ export function LewisGuidedMode({
     }
   };
 
+  // A wrong answer used to leave the step with no way forward but skipping the
+  // whole walkthrough: the input was gone and only a correct answer showed
+  // "Næsta skref".
+  const retryStep = () => {
+    setShowFeedback(false);
+    setIsCorrect(false);
+    setUserValue(null);
+  };
+
   const handleNextStep = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep((prev) => prev + 1);
@@ -170,26 +208,34 @@ export function LewisGuidedMode({
   const getAtomLonePairs = (symbol: string) =>
     lonePairs.find((lp) => lp.atom === symbol)?.count || 0;
 
-  // Check if distribution is correct
+  // Atoms sharing a symbol share one counter, so one atom's pairs are its share.
+  const pairsPerAtom = (symbol: string) =>
+    getAtomLonePairs(symbol) /
+    Math.max(1, surroundingAtoms.filter((a) => a.symbol === symbol).length);
+
+  // The total alone was no check at all — the button only enables once every
+  // electron is placed, which fixes the total — so two pairs on H passed.
   const checkDistribution = () => {
-    const totalPairs = getTotalLonePairs();
-    const expectedPairs = electronsForLonePairs / 2;
-    const correct = totalPairs === expectedPairs && electronsRemaining === 0;
+    const symbols = new Set([...expectedLonePairs.keys(), ...lonePairs.map((lp) => lp.atom)]);
+    const correct =
+      electronsRemaining === 0 &&
+      getTotalLonePairs() === electronsForLonePairs / 2 &&
+      [...symbols].every((sym) => getAtomLonePairs(sym) === (expectedLonePairs.get(sym) ?? 0));
     setIsCorrect(correct);
     setShowFeedback(true);
   };
 
   return (
     <div
-      className={`bg-gradient-to-br from-green-50 to-teal-50 rounded-xl border border-green-200 ${compact ? 'p-4' : 'p-6'}`}
+      className={`bg-gradient-to-br from-green-50 to-teal-50 rounded-xl border border-green-200 ${compact ? 'p-4' : 'p-4 sm:p-6'}`}
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between gap-2 mb-4">
         <h3
           className={`font-bold text-green-800 flex items-center gap-2 ${compact ? 'text-base' : 'text-lg'}`}
         >
           <span>📝</span> Leiðsögn: {molecule}
         </h3>
-        <div className="text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full">
+        <div className="text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full whitespace-nowrap shrink-0">
           Skref {currentStep + 1}/{steps.length}
         </div>
       </div>
@@ -207,7 +253,7 @@ export function LewisGuidedMode({
         <div className="flex justify-between items-center">
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-600">{totalElectrons}</div>
-            <div className="text-xs text-warm-500">Heildar</div>
+            <div className="text-xs text-warm-500">Alls</div>
           </div>
           <div className="text-warm-400">−</div>
           <div className="text-center">
@@ -227,7 +273,7 @@ export function LewisGuidedMode({
       </div>
 
       {/* Step content */}
-      <div className="bg-white rounded-lg p-5 mb-4 shadow-xs">
+      <div className="bg-white rounded-lg p-4 sm:p-5 mb-4 shadow-xs">
         <div className="flex items-center gap-2 mb-3">
           <div
             className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold ${
@@ -269,7 +315,8 @@ export function LewisGuidedMode({
               <input
                 type="number"
                 value={userValue ?? ''}
-                onChange={(e) => setUserValue(parseInt(e.target.value, 10) || null)}
+                onChange={(e) => setUserValue(readCount(e.target.value))}
+                aria-label="Fjöldi gildisrafeinda"
                 className="flex-1 p-3 border-2 border-warm-300 rounded-lg focus:border-blue-500 focus:outline-none text-xl font-mono text-center"
                 placeholder="?"
               />
@@ -316,7 +363,7 @@ export function LewisGuidedMode({
           <div className="space-y-4">
             {/* Visual of bonds being drawn */}
             <div className="flex justify-center py-4">
-              <svg width="250" height="180" viewBox="0 0 250 180">
+              <svg viewBox="0 0 250 180" className="w-full max-w-[250px] h-auto">
                 {/* Central atom */}
                 <circle cx="125" cy="90" r="25" fill="#3b82f6" />
                 <text
@@ -372,15 +419,18 @@ export function LewisGuidedMode({
             </div>
 
             <div className="text-center text-sm text-warm-600 mb-4">
-              Hvert einföld tengi notar 2 rafeindir (ein frá hvoru atómi)
+              Hvert einfalt tengi notar 2 rafeindir (ein frá hvoru atómi)
             </div>
 
             <div className="flex gap-3 items-center">
-              <label className="text-warm-700">Fjöldi tengja:</label>
+              <label htmlFor={bondInputId} className="text-warm-700">
+                Fjöldi tengja:
+              </label>
               <input
+                id={bondInputId}
                 type="number"
                 value={userValue ?? ''}
-                onChange={(e) => setUserValue(parseInt(e.target.value, 10) || null)}
+                onChange={(e) => setUserValue(readCount(e.target.value))}
                 className="flex-1 p-3 border-2 border-warm-300 rounded-lg focus:border-blue-500 focus:outline-none text-xl font-mono text-center max-w-24"
                 placeholder="?"
                 min="0"
@@ -401,32 +451,34 @@ export function LewisGuidedMode({
         {step.action === 'distribute' && !showFeedback && (
           <div className="space-y-4">
             <div className="bg-yellow-50 p-3 rounded-lg text-sm text-yellow-800 mb-4">
-              Rafeindir eftir: <strong>{electronsRemaining}</strong> = {electronsRemaining / 2}{' '}
-              einstæð pör
+              Rafeindir eftir: <strong>{electronsRemaining}</strong> ={' '}
+              {electronsRemaining === 2 ? '1 stakt par' : `${electronsRemaining / 2} stök pör`}
             </div>
 
             {/* Interactive lone pair placement */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {/* Central atom */}
               <div className="p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
-                <div className="font-bold text-blue-800 mb-2 flex items-center justify-between">
+                <div className="font-bold text-blue-800 mb-2 flex items-center justify-between gap-2">
                   <span>{centralAtom?.symbol} (miðatóm)</span>
-                  <span className="text-sm bg-blue-100 px-2 py-0.5 rounded">
-                    {getAtomLonePairs(centralAtom?.symbol || '')} pör
+                  <span className="text-sm bg-blue-100 px-2 py-0.5 rounded whitespace-nowrap">
+                    {pairCount(getAtomLonePairs(centralAtom?.symbol || ''))}
                   </span>
                 </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleAddLonePair(centralAtom?.symbol || '')}
                     disabled={electronsRemaining < 2}
-                    className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white py-2 rounded"
+                    aria-label={`Bæta stöku pari við ${centralAtom?.symbol} (miðatóm)`}
+                    className="flex-1 bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white py-2 rounded pointer-coarse:min-h-11"
                   >
                     + Par
                   </button>
                   <button
                     onClick={() => handleRemoveLonePair(centralAtom?.symbol || '')}
                     disabled={getAtomLonePairs(centralAtom?.symbol || '') === 0}
-                    className="flex-1 bg-warm-300 hover:bg-warm-400 disabled:bg-warm-200 text-warm-700 py-2 rounded"
+                    aria-label={`Taka stakt par af ${centralAtom?.symbol} (miðatóm)`}
+                    className="flex-1 bg-warm-300 hover:bg-warm-400 disabled:bg-warm-200 text-warm-700 py-2 rounded pointer-coarse:min-h-11"
                   >
                     − Par
                   </button>
@@ -434,37 +486,37 @@ export function LewisGuidedMode({
               </div>
 
               {/* Surrounding atoms */}
-              {surroundingAtoms
-                .filter((a, i, arr) => arr.findIndex((x) => x.symbol === a.symbol) === i)
-                .map((atom) => (
-                  <div
-                    key={atom.symbol}
-                    className="p-4 bg-green-50 rounded-lg border-2 border-green-200"
-                  >
-                    <div className="font-bold text-green-800 mb-2 flex items-center justify-between">
-                      <span>{atom.symbol} (ytri)</span>
-                      <span className="text-sm bg-green-100 px-2 py-0.5 rounded">
-                        {getAtomLonePairs(atom.symbol)} pör
-                      </span>
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleAddLonePair(atom.symbol)}
-                        disabled={electronsRemaining < 2}
-                        className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-warm-300 text-white py-2 rounded"
-                      >
-                        + Par
-                      </button>
-                      <button
-                        onClick={() => handleRemoveLonePair(atom.symbol)}
-                        disabled={getAtomLonePairs(atom.symbol) === 0}
-                        className="flex-1 bg-warm-300 hover:bg-warm-400 disabled:bg-warm-200 text-warm-700 py-2 rounded"
-                      >
-                        − Par
-                      </button>
-                    </div>
+              {uniqueSurrounding.map((atom) => (
+                <div
+                  key={atom.symbol}
+                  className="p-4 bg-green-50 rounded-lg border-2 border-green-200"
+                >
+                  <div className="font-bold text-green-800 mb-2 flex items-center justify-between gap-2">
+                    <span>{atom.symbol} (ytri)</span>
+                    <span className="text-sm bg-green-100 px-2 py-0.5 rounded whitespace-nowrap">
+                      {pairCount(getAtomLonePairs(atom.symbol))}
+                    </span>
                   </div>
-                ))}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleAddLonePair(atom.symbol)}
+                      disabled={electronsRemaining < 2}
+                      aria-label={`Bæta stöku pari við ${atom.symbol} (ytri)`}
+                      className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-warm-300 text-white py-2 rounded pointer-coarse:min-h-11"
+                    >
+                      + Par
+                    </button>
+                    <button
+                      onClick={() => handleRemoveLonePair(atom.symbol)}
+                      disabled={getAtomLonePairs(atom.symbol) === 0}
+                      aria-label={`Taka stakt par af ${atom.symbol} (ytri)`}
+                      className="flex-1 bg-warm-300 hover:bg-warm-400 disabled:bg-warm-200 text-warm-700 py-2 rounded pointer-coarse:min-h-11"
+                    >
+                      − Par
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
 
             <button
@@ -479,14 +531,14 @@ export function LewisGuidedMode({
 
         {step.action === 'check-octet' && !showFeedback && (
           <div className="space-y-4">
-            <div className="bg-white p-4 rounded-lg border">
+            <div className="bg-white p-3 sm:p-4 rounded-lg border">
               <div className="text-sm font-medium text-warm-600 mb-3">Athugun á áttureglunni:</div>
 
               {/* Central atom */}
               <div className="mb-3 p-3 bg-blue-50 rounded">
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center gap-3">
                   <span className="font-bold text-blue-800">{centralAtom?.symbol}</span>
-                  <span className="text-sm">
+                  <span className="text-sm text-right">
                     {bondsDrawn.length * 2} (tengsl) +{' '}
                     {getAtomLonePairs(centralAtom?.symbol || '') * 2} (pör) ={' '}
                     <span
@@ -505,27 +557,27 @@ export function LewisGuidedMode({
               </div>
 
               {/* Surrounding atoms */}
-              {surroundingAtoms.map((atom, idx) => (
-                <div key={idx} className="mb-2 p-3 bg-green-50 rounded">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-green-800">{atom.symbol}</span>
-                    <span className="text-sm">
-                      2 (tengi) + {getAtomLonePairs(atom.symbol) * 2} (pör) ={' '}
-                      <span
-                        className={`font-bold ${
-                          atom.symbol === 'H'
-                            ? 'text-green-600'
-                            : 2 + getAtomLonePairs(atom.symbol) * 2 === 8
-                              ? 'text-green-600'
-                              : 'text-orange-600'
-                        }`}
-                      >
-                        {2 + getAtomLonePairs(atom.symbol) * 2} rafeindir
+              {surroundingAtoms.map((atom, idx) => {
+                // H is full at 2, not at 8 — and only at 2: it was drawn green
+                // whatever it held.
+                const electrons = 2 + pairsPerAtom(atom.symbol) * 2;
+                const full = electrons === (atom.symbol === 'H' ? 2 : 8);
+                return (
+                  <div key={idx} className="mb-2 p-3 bg-green-50 rounded">
+                    <div className="flex justify-between items-center gap-3">
+                      <span className="font-bold text-green-800">{atom.symbol}</span>
+                      <span className="text-sm text-right">
+                        2 (tengi) + {pairsPerAtom(atom.symbol) * 2} (pör) ={' '}
+                        <span
+                          className={`font-bold ${full ? 'text-green-600' : 'text-orange-600'}`}
+                        >
+                          {electrons} rafeindir
+                        </span>
                       </span>
-                    </span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <button
@@ -563,13 +615,30 @@ export function LewisGuidedMode({
             <div className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
               {isCorrect ? '✓ Rétt!' : '✗ Ekki rétt'}
             </div>
-            {!isCorrect && step.targetValue !== undefined && (
+            {!isCorrect && step.action === 'distribute' && (
+              <p className="text-sm text-warm-700 mt-1">
+                Rétt dreifing: {centralAtom?.symbol} (miðatóm){' '}
+                {pairCount(expectedLonePairs.get(centralAtom?.symbol ?? '') ?? 0)}
+                {uniqueSurrounding.map(
+                  (a) => `, ${a.symbol} ${pairCount(expectedLonePairs.get(a.symbol) ?? 0)}`
+                )}
+              </p>
+            )}
+            {!isCorrect && step.action !== 'distribute' && step.targetValue !== undefined && (
               <p className="text-sm text-warm-700 mt-1">Rétt svar: {step.targetValue}</p>
+            )}
+            {!isCorrect && (
+              <button
+                onClick={retryStep}
+                className="mt-3 w-full bg-warm-200 hover:bg-warm-300 text-warm-700 font-bold py-2 px-4 rounded-lg transition-all pointer-coarse:min-h-11"
+              >
+                Reyna aftur
+              </button>
             )}
             {isCorrect && (
               <button
                 onClick={handleNextStep}
-                className="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-all"
+                className="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-all pointer-coarse:min-h-11"
               >
                 Næsta skref →
               </button>
@@ -588,7 +657,7 @@ export function LewisGuidedMode({
             'Miðatómið er venjulega það sem getur myndað flest tengsl (ekki H).'}
           {step.action === 'draw-bonds' &&
             'Byrjaðu alltaf með einföld tengsl. Tvöföld/þreföld koma seinna ef þarf.'}
-          {step.action === 'distribute' && 'Settu einstæð pör á ytri atóm fyrst, síðan miðatómið.'}
+          {step.action === 'distribute' && 'Settu stök pör á ytri atóm fyrst, síðan miðatómið.'}
           {step.action === 'check-octet' && 'H vill 2 rafeindir, flest önnur vilja 8 rafeindir.'}
           {step.action === 'complete' && 'Til hamingju! Reyndu næstu sameind.'}
         </div>

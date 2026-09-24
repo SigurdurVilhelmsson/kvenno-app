@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
 import { useGameI18n, useGameProgress } from '@shared/hooks';
@@ -18,6 +18,8 @@ interface Progress {
   level2Completed: boolean;
   level2Score: number;
   level3BestScore: number;
+  /** Optional: progress saved before it existed lacks it. */
+  level3Completed?: boolean;
   totalGamesPlayed: number;
 }
 
@@ -27,6 +29,7 @@ const DEFAULT_PROGRESS: Progress = {
   level2Completed: false,
   level2Score: 0,
   level3BestScore: 0,
+  level3Completed: false,
   totalGamesPlayed: 0,
 };
 
@@ -37,6 +40,13 @@ function App() {
     DEFAULT_PROGRESS
   );
   const { t, language, setLanguage } = useGameI18n({ gameTranslations });
+
+  // Coming back from a level, open the menu at its top rather than at the
+  // scroll offset the level screen was left at (which on a phone is mid-menu).
+  const menuRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (screen === 'menu') menuRef.current?.scrollIntoView?.({ block: 'start' });
+  }, [screen]);
 
   const handleLevel1Complete = (score: number) => {
     updateProgress({
@@ -58,6 +68,7 @@ function App() {
 
   const handleLevel3Complete = (score: number) => {
     updateProgress({
+      level3Completed: true,
       level3BestScore: Math.max(progress.level3BestScore, score),
       totalGamesPlayed: progress.totalGamesPlayed + 1,
     });
@@ -79,35 +90,35 @@ function App() {
 
   // Main Menu - Year 1: Orange/Amber theme
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
+    <div ref={menuRef} className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
       <Header
         variant="game"
         backHref="/efnafraedi/1-ar/"
-        gameTitle={t('game.title', 'Takmarkandi Hvarfefni')}
+        gameTitle={t('game.title', 'Takmarkandi hvarfefni')}
         authSlot={
           <LanguageSwitcher language={language} onLanguageChange={setLanguage} variant="compact" />
         }
       />
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="max-w-2xl w-full">
-          <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8 mb-6">
             <p className="text-center text-warm-600 mb-4">
-              {t('game.description', 'Lærðu að finna takmarkandi hvarfefni og reikna heimtir')}
+              {t('game.description', 'Lærðu að finna takmarkandi hvarfefni og reikna heimtur')}
             </p>
 
             <div className="space-y-4">
               {/* Level 1 */}
               <button
                 onClick={() => setScreen('level1')}
-                className="game-card w-full bg-white border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-6 text-left transition-all"
+                className="game-card w-full bg-white border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-4 sm:p-6 text-left transition-all"
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
+                      <span className="bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full whitespace-nowrap">
                         Stig 1
                       </span>
-                      <h3 className="text-xl font-bold text-warm-800">Grunnhugtök</h3>
+                      <h3 className="text-lg sm:text-xl font-bold text-warm-800">Grunnhugtök</h3>
                     </div>
                     <p className="text-warm-600 text-sm">
                       Skildu hugtökin sjónrænt - hvað eyðist fyrst?
@@ -129,15 +140,17 @@ function App() {
               {/* Level 2 */}
               <button
                 onClick={() => setScreen('level2')}
-                className="game-card w-full bg-white border-2 border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50 rounded-xl p-6 text-left transition-all"
+                className="game-card w-full bg-white border-2 border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50 rounded-xl p-4 sm:p-6 text-left transition-all"
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="bg-yellow-500 text-white text-sm font-bold px-3 py-1 rounded-full">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
+                      <span className="bg-yellow-500 text-white text-sm font-bold px-3 py-1 rounded-full whitespace-nowrap">
                         Stig 2
                       </span>
-                      <h3 className="text-xl font-bold text-warm-800">Leiðbeind æfing</h3>
+                      <h3 className="text-lg sm:text-xl font-bold text-warm-800">
+                        Leiðbeind æfing
+                      </h3>
                     </div>
                     <p className="text-warm-600 text-sm">
                       Leystu verkefni skref fyrir skref með leiðsögn
@@ -159,22 +172,23 @@ function App() {
               {/* Level 3 */}
               <button
                 onClick={() => setScreen('level3')}
-                className="game-card w-full bg-white border-2 border-red-200 hover:border-red-400 hover:bg-red-50 rounded-xl p-6 text-left transition-all"
+                className="game-card w-full bg-white border-2 border-red-200 hover:border-red-400 hover:bg-red-50 rounded-xl p-4 sm:p-6 text-left transition-all"
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
+                      <span className="bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full whitespace-nowrap">
                         Stig 3
                       </span>
-                      <h3 className="text-xl font-bold text-warm-800">Meistarapróf</h3>
+                      <h3 className="text-lg sm:text-xl font-bold text-warm-800">Meistarapróf</h3>
                     </div>
                     <p className="text-warm-600 text-sm">
-                      Samþætt verkefni: finndu takmarkandi, reiknaðu myndefni og afgang
+                      Samþætt verkefni í grömmum: finndu takmarkandi hvarfefni, fræðilegar heimtur
+                      og prósentuheimtur
                     </p>
                   </div>
                   <div className="text-right">
-                    {progress.level3BestScore > 0 ? (
+                    {progress.level3Completed || progress.level3BestScore > 0 ? (
                       <div className="text-green-600">
                         <div className="text-2xl font-bold">{progress.level3BestScore}</div>
                         <div className="text-xs">stig</div>
@@ -190,38 +204,40 @@ function App() {
 
           {/* Progress Summary */}
           {progress.totalGamesPlayed > 0 && (
-            <div className="bg-white rounded-xl shadow-lg p-6">
+            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-semibold text-warm-700">Framvinda</h3>
                 <button
                   onClick={resetProgress}
-                  className="text-sm text-warm-500 hover:text-red-500 transition-colors"
+                  className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3"
                 >
                   Endurstilla
                 </button>
               </div>
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="bg-blue-50 rounded-lg p-3">
-                  <div className="text-2xl font-bold text-blue-600">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
+                <div className="bg-blue-50 rounded-lg p-2 sm:p-3">
+                  <div className="text-xl sm:text-2xl font-bold text-blue-600">
                     {
                       [
                         progress.level1Completed,
                         progress.level2Completed,
-                        progress.level3BestScore > 0,
+                        // Finishing Stig 3 counts even at 0 points; a best score
+                        // alone stands in for progress saved before the flag.
+                        progress.level3Completed || progress.level3BestScore > 0,
                       ].filter(Boolean).length
                     }
                     /3
                   </div>
                   <div className="text-xs text-warm-600">Stig lokið</div>
                 </div>
-                <div className="bg-green-50 rounded-lg p-3">
-                  <div className="text-2xl font-bold text-green-600">
+                <div className="bg-green-50 rounded-lg p-2 sm:p-3">
+                  <div className="text-xl sm:text-2xl font-bold text-green-600">
                     {progress.level1Score + progress.level2Score + progress.level3BestScore}
                   </div>
-                  <div className="text-xs text-warm-600">Heildar stig</div>
+                  <div className="text-xs text-warm-600">Heildarstig</div>
                 </div>
-                <div className="bg-purple-50 rounded-lg p-3">
-                  <div className="text-2xl font-bold text-purple-600">
+                <div className="bg-purple-50 rounded-lg p-2 sm:p-3">
+                  <div className="text-xl sm:text-2xl font-bold text-purple-600">
                     {progress.totalGamesPlayed}
                   </div>
                   <div className="text-xs text-warm-600">Leikir spilaðir</div>

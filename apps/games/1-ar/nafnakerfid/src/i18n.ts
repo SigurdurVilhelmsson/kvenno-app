@@ -14,7 +14,7 @@ export const gameTranslations = createGameTranslations({
       progress: 'Framvinda',
       reset: 'Endurstilla',
       levelsCompleted: 'Stig lokið',
-      totalPoints: 'Heildar stig',
+      totalPoints: 'Heildarstig',
       gamesPlayed: 'Leikir spilaðir',
       backToGames: 'Til baka í leikjayfirlit',
       completed: 'Lokið',

@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+
+import { formatDecimal } from '@shared/utils';
 
 interface FactorBuildingChallengeProps {
   onComplete: () => void;
@@ -12,6 +14,22 @@ const availableBlocks = [
   { value: 0.5, unit: 'L', type: 'volume' },
 ];
 
+type Block = { value: number; unit: string };
+type Verdict = 'none' | 'same_unit' | 'wrong_ratio' | 'correct';
+
+function judge(numerator: Block | null, denominator: Block | null): Verdict {
+  if (!numerator || !denominator) return 'none';
+  if (numerator.unit === denominator.unit) return 'same_unit';
+  const numInML = numerator.unit === 'L' ? numerator.value * 1000 : numerator.value;
+  const denInML = denominator.unit === 'L' ? denominator.value * 1000 : denominator.value;
+  return Math.abs(numInML - denInML) < 0.01 ? 'correct' : 'wrong_ratio';
+}
+
+/** A block as the student reads it, with the decimal comma: `0,5 L`. */
+function blockLabel(block: Block | null): string {
+  return block ? `${formatDecimal(block.value)} ${block.unit}` : '';
+}
+
 /**
  * C2: Factor Building - Create a conversion factor that equals 1
  *
@@ -20,43 +38,26 @@ const availableBlocks = [
  * represent the SAME quantity (just with different units).
  */
 export function FactorBuildingChallenge({ onComplete, onAttempt }: FactorBuildingChallengeProps) {
-  const [numerator, setNumerator] = useState<{ value: number; unit: string } | null>(null);
-  const [denominator, setDenominator] = useState<{ value: number; unit: string } | null>(null);
-  const [isCorrect, setIsCorrect] = useState(false);
-  const [errorType, setErrorType] = useState<'none' | 'same_unit' | 'wrong_ratio'>('none');
+  const [numerator, setNumerator] = useState<Block | null>(null);
+  const [denominator, setDenominator] = useState<Block | null>(null);
 
-  useEffect(() => {
-    if (numerator && denominator) {
-      const numInML = numerator.unit === 'L' ? numerator.value * 1000 : numerator.value;
-      const denInML = denominator.unit === 'L' ? denominator.value * 1000 : denominator.value;
+  const verdict = judge(numerator, denominator);
+  const isCorrect = verdict === 'correct';
+  const errorType = verdict === 'correct' ? 'none' : verdict;
 
-      if (numerator.unit === denominator.unit) {
-        setErrorType('same_unit');
-        setIsCorrect(false);
-      } else if (Math.abs(numInML - denInML) < 0.01) {
-        setIsCorrect(true);
-        setErrorType('none');
-        onComplete();
-      } else {
-        setErrorType('wrong_ratio');
-        setIsCorrect(false);
-      }
-    } else {
-      setErrorType('none');
-    }
-  }, [numerator, denominator, onComplete]);
-
-  const handleBlockClick = (block: { value: number; unit: string; type: string }) => {
+  // Success is reported from the click that completes the fraction, not from an
+  // effect. An effect listing `onComplete` re-ran every time the level
+  // re-rendered, and reporting success re-renders the level: a loop.
+  const handleBlockClick = (block: Block & { type: string }) => {
     onAttempt();
     if (!numerator) {
       setNumerator(block);
     } else if (!denominator) {
       setDenominator(block);
+      if (judge(numerator, block) === 'correct') onComplete();
     } else {
       setNumerator(block);
       setDenominator(null);
-      setIsCorrect(false);
-      setErrorType('none');
     }
   };
 
@@ -72,7 +73,7 @@ export function FactorBuildingChallenge({ onComplete, onAttempt }: FactorBuildin
           ${numerator ? 'bg-blue-100 border-blue-400 text-blue-700' : 'bg-warm-100 border-warm-300 text-warm-400'}
         `}
         >
-          {numerator ? `${numerator.value} ${numerator.unit}` : 'Teljari'}
+          {numerator ? blockLabel(numerator) : 'Teljari'}
         </div>
 
         {/* Fraction bar */}
@@ -86,7 +87,7 @@ export function FactorBuildingChallenge({ onComplete, onAttempt }: FactorBuildin
           ${denominator ? 'bg-green-100 border-green-400 text-green-700' : 'bg-warm-100 border-warm-300 text-warm-400'}
         `}
         >
-          {denominator ? `${denominator.value} ${denominator.unit}` : 'Nefnari'}
+          {denominator ? blockLabel(denominator) : 'Nefnari'}
         </div>
 
         {/* Result */}
@@ -94,7 +95,7 @@ export function FactorBuildingChallenge({ onComplete, onAttempt }: FactorBuildin
           <div
             className={`mt-4 sm:mt-6 text-xl sm:text-2xl font-bold ${isCorrect ? 'text-green-600' : 'text-red-600'}`}
           >
-            = {isCorrect ? '1 ✓' : '≠ 1'}
+            {isCorrect ? '= 1 ✓' : '≠ 1'}
           </div>
         )}
       </div>
@@ -104,8 +105,8 @@ export function FactorBuildingChallenge({ onComplete, onAttempt }: FactorBuildin
         <div className="p-4 bg-red-50 rounded-lg border border-red-200 text-center">
           <p className="text-red-800 font-semibold mb-1">Sömu einingarnar!</p>
           <p className="text-red-600 text-sm">
-            {numerator?.value} {numerator?.unit} / {denominator?.value} {denominator?.unit} ={' '}
-            {numerator && denominator ? (numerator.value / denominator.value).toFixed(1) : '?'}
+            {blockLabel(numerator)} / {blockLabel(denominator)} ={' '}
+            {numerator && denominator ? formatDecimal(numerator.value / denominator.value, 1) : '?'}
           </p>
           <p className="text-red-500 text-xs mt-2">
             Þú þarft <strong>mismunandi</strong> einingar sem tákna sama rúmmál.
@@ -117,7 +118,7 @@ export function FactorBuildingChallenge({ onComplete, onAttempt }: FactorBuildin
         <div className="p-4 bg-red-50 rounded-lg border border-red-200 text-center">
           <p className="text-red-800 font-semibold mb-1">Ekki sama rúmmálið!</p>
           <p className="text-red-600 text-sm">
-            {numerator?.value} {numerator?.unit} ≠ {denominator?.value} {denominator?.unit}
+            {blockLabel(numerator)} ≠ {blockLabel(denominator)}
           </p>
           <p className="text-red-500 text-xs mt-2">
             Mundu: 1000 mL = 1 L. Þetta brot er ekki jafnt 1.
@@ -136,14 +137,14 @@ export function FactorBuildingChallenge({ onComplete, onAttempt }: FactorBuildin
               <button
                 key={idx}
                 onClick={() => handleBlockClick(block)}
-                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-bold transition-colors border-2 text-sm sm:text-base ${
+                className={`px-4 sm:px-6 py-3 rounded-lg font-bold transition-colors border-2 text-sm sm:text-base ${
                   (numerator?.value === block.value && numerator?.unit === block.unit) ||
                   (denominator?.value === block.value && denominator?.unit === block.unit)
                     ? 'bg-orange-200 border-orange-400 text-orange-800'
                     : 'bg-orange-100 border-orange-300 text-orange-800 hover:bg-orange-200'
                 }`}
               >
-                {block.value} {block.unit}
+                {blockLabel(block)}
               </button>
             ))}
           </div>
@@ -152,8 +153,6 @@ export function FactorBuildingChallenge({ onComplete, onAttempt }: FactorBuildin
               onClick={() => {
                 setNumerator(null);
                 setDenominator(null);
-                setIsCorrect(false);
-                setErrorType('none');
               }}
               className="mt-4 w-full text-sm text-warm-500 hover:text-warm-700"
             >
@@ -167,13 +166,7 @@ export function FactorBuildingChallenge({ onComplete, onAttempt }: FactorBuildin
       {isCorrect && (
         <div className="p-4 bg-green-50 rounded-lg border border-green-200 text-center">
           <p className="text-green-800">
-            <strong>
-              {numerator?.value} {numerator?.unit}
-            </strong>{' '}
-            og{' '}
-            <strong>
-              {denominator?.value} {denominator?.unit}
-            </strong>{' '}
+            <strong>{blockLabel(numerator)}</strong> og <strong>{blockLabel(denominator)}</strong>{' '}
             er sama rúmmálið!
           </p>
           <p className="text-green-600 text-sm mt-1">Þess vegna er brotið = 1</p>

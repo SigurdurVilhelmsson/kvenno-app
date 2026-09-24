@@ -58,7 +58,14 @@ function App() {
   }
 
   if (mode === 'level3') {
-    return <Level3 onBack={() => setMode('menu')} onComplete={() => completeLevel(3)} />;
+    // Stig 3 reports completion as its summary opens, so recording it must not
+    // also leave for the menu: `completeLevel` did, and the summary never showed.
+    return (
+      <Level3
+        onBack={() => setMode('menu')}
+        onComplete={() => updateProgress({ level3Completed: true })}
+      />
+    );
   }
 
   // Main Menu
@@ -88,7 +95,7 @@ function App() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-green-100 flex items-center justify-center text-2xl">
+                  <div className="w-14 h-14 shrink-0 rounded-xl bg-green-100 flex items-center justify-center text-2xl">
                     ⚖️
                   </div>
                   <div>
@@ -123,7 +130,7 @@ function App() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-blue-100 flex items-center justify-center text-2xl">
+                  <div className="w-14 h-14 shrink-0 rounded-xl bg-blue-100 flex items-center justify-center text-2xl">
                     🔄
                   </div>
                   <div>
@@ -158,7 +165,7 @@ function App() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-purple-100 flex items-center justify-center text-2xl">
+                  <div className="w-14 h-14 shrink-0 rounded-xl bg-purple-100 flex items-center justify-center text-2xl">
                     🧪
                   </div>
                   <div>
@@ -196,7 +203,7 @@ function App() {
                 return (
                   <div key={step} className="flex items-start gap-3">
                     <div
-                      className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                      className={`w-6 h-6 shrink-0 rounded-full flex items-center justify-center text-xs font-bold ${
                         completed ? 'bg-green-500 text-white' : 'bg-warm-200 text-warm-600'
                       }`}
                     >
@@ -218,7 +225,7 @@ function App() {
           <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
             <h3 className="font-semibold text-amber-800 mb-2">Af hverju mólmassi?</h3>
             <p className="text-sm text-amber-700">
-              Lyfjafræðingar reikna skammta lyfa í mólum. Matvælafræðingar nota mólmassa til að
+              Lyfjafræðingar reikna skammta lyfja í mólum. Matvælafræðingar nota mólmassa til að
               skilja efnainnihald. Án mólmassans gætum við ekki umbreytt milli gramma og mólfjölda —
               undirstaða allrar magnefnafræði.
             </p>
@@ -238,7 +245,7 @@ function App() {
                     resetProgress();
                   }
                 }}
-                className="text-xs text-warm-400 hover:text-warm-600 underline"
+                className="text-xs text-warm-400 hover:text-warm-600 underline pointer-coarse:py-3.5 pointer-coarse:-my-3.5"
               >
                 {t('menu.resetProgress')}
               </button>

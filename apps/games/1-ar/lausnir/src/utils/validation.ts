@@ -1,4 +1,4 @@
-import { parseStudentNumber } from '@shared/utils';
+import { formatDecimal, parseStudentNumber } from '@shared/utils';
 
 export interface ValidationResult {
   valid: boolean;
@@ -37,6 +37,19 @@ export function validateInput(value: string): ValidationResult {
   return { valid: true, error: null, value: numValue };
 }
 
+/**
+ * Print an answer to three significant figures, with the decimal comma.
+ *
+ * Every place the game shows a student the answer — the last hint, the worked
+ * solution, the "Rétt svar" line — goes through this, so that what it shows is
+ * itself accepted by `checkAnswer`. Three significant figures is at most 0,5 %
+ * from the value, well inside the 2 % tolerance; three *decimals* is not, and
+ * printed 0,0154 M as 0,015 M, which grades wrong.
+ */
+export function formatAnswer(value: number): string {
+  return formatDecimal(Number.parseFloat(value.toPrecision(3)));
+}
+
 export function checkAnswer(
   userValue: number,
   correctAnswer: number,
@@ -54,7 +67,7 @@ export function getContextualFeedback(userValue: number, correctAnswer: number):
   } else if (percentError > 20) {
     return 'Ekki rétt. Athugaðu hvort þú breyttir mL í L';
   } else if (percentError > 5) {
-    return 'Nálægt! Kannski reiknivillla eða aukastafavilla';
+    return 'Nálægt! Kannski reiknivilla eða aukastafavilla';
   } else {
     return 'Mjög nálægt en utan vikmarka. Athugaðu nákvæmni';
   }

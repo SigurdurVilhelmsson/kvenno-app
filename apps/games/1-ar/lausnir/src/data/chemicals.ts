@@ -7,7 +7,7 @@ export const CHEMICALS = {
       molarMass: 58.5,
       form: 'solid',
       displayName: 'NaCl (borðsalt)',
-      molarMassDisplay: 'mólmassi: 58,5 g/mol',
+      molarMassDisplay: 'mólmassi: 58,5 g/mól',
       maxMolarity: 5.4,
     },
     {
@@ -16,7 +16,7 @@ export const CHEMICALS = {
       molarMass: 180,
       form: 'solid',
       displayName: 'glúkósa (C₆H₁₂O₆)',
-      molarMassDisplay: 'mólmassi: 180 g/mol',
+      molarMassDisplay: 'mólmassi: 180 g/mól',
       maxMolarity: 3.2,
     },
     {
@@ -24,7 +24,7 @@ export const CHEMICALS = {
       molarMass: 34,
       form: 'liquid',
       displayName: 'H₂O₂ (vetnisperoxíð)',
-      molarMassDisplay: 'mólmassi: 34 g/mol',
+      molarMassDisplay: 'mólmassi: 34 g/mól',
       maxMolarity: 42.6,
     },
     {
@@ -32,7 +32,7 @@ export const CHEMICALS = {
       molarMass: 74.6,
       form: 'solid',
       displayName: 'KCl (kalíumklóríð)',
-      molarMassDisplay: 'mólmassi: 74,6 g/mol',
+      molarMassDisplay: 'mólmassi: 74,6 g/mól',
       maxMolarity: 4.1,
     },
     {
@@ -40,7 +40,7 @@ export const CHEMICALS = {
       molarMass: 84,
       form: 'solid',
       displayName: 'NaHCO₃ (matarsódi)',
-      molarMassDisplay: 'mólmassi: 84 g/mol',
+      molarMassDisplay: 'mólmassi: 84 g/mól',
       maxMolarity: 1.2,
     },
     {
@@ -49,7 +49,7 @@ export const CHEMICALS = {
       molarMass: 342,
       form: 'solid',
       displayName: 'súkrósa (C₁₂H₂₂O₁₁)',
-      molarMassDisplay: 'mólmassi: 342 g/mol',
+      molarMassDisplay: 'mólmassi: 342 g/mól',
       maxMolarity: 2.6,
     },
     {
@@ -58,7 +58,7 @@ export const CHEMICALS = {
       molarMass: 46,
       form: 'liquid',
       displayName: 'etanól (C₂H₅OH)',
-      molarMassDisplay: 'mólmassi: 46 g/mol',
+      molarMassDisplay: 'mólmassi: 46 g/mól',
       maxMolarity: 17.1,
     },
   ],
@@ -68,7 +68,7 @@ export const CHEMICALS = {
       molarMass: 40,
       form: 'solid',
       displayName: 'NaOH (natríumhýdroxíð)',
-      molarMassDisplay: 'mólmassi: 40 g/mol',
+      molarMassDisplay: 'mólmassi: 40 g/mól',
       maxMolarity: 19.1,
     },
     {
@@ -76,7 +76,7 @@ export const CHEMICALS = {
       molarMass: 111,
       form: 'solid',
       displayName: 'CaCl₂ (kalsíumklóríð)',
-      molarMassDisplay: 'mólmassi: 111 g/mol',
+      molarMassDisplay: 'mólmassi: 111 g/mól',
       maxMolarity: 5.8,
     },
     {
@@ -84,7 +84,7 @@ export const CHEMICALS = {
       molarMass: 36.5,
       form: 'gas',
       displayName: 'HCl (saltsýra)',
-      molarMassDisplay: 'mólmassi: 36,5 g/mol',
+      molarMassDisplay: 'mólmassi: 36,5 g/mól',
       maxMolarity: 12,
     },
     {
@@ -92,7 +92,7 @@ export const CHEMICALS = {
       molarMass: 63,
       form: 'liquid',
       displayName: 'HNO₃ (saltpéturssýra)',
-      molarMassDisplay: 'mólmassi: 63 g/mol',
+      molarMassDisplay: 'mólmassi: 63 g/mól',
       maxMolarity: 15.8,
     },
     {
@@ -100,7 +100,7 @@ export const CHEMICALS = {
       molarMass: 106,
       form: 'solid',
       displayName: 'Na₂CO₃ (natríumkarbónat)',
-      molarMassDisplay: 'mólmassi: 106 g/mol',
+      molarMassDisplay: 'mólmassi: 106 g/mól',
       maxMolarity: 2.7,
     },
     {
@@ -108,7 +108,7 @@ export const CHEMICALS = {
       molarMass: 53.5,
       form: 'solid',
       displayName: 'NH₄Cl (ammóníumklóríð)',
-      molarMassDisplay: 'mólmassi: 53,5 g/mol',
+      molarMassDisplay: 'mólmassi: 53,5 g/mól',
       maxMolarity: 5.7,
     },
     {
@@ -116,7 +116,7 @@ export const CHEMICALS = {
       molarMass: 60,
       form: 'liquid',
       displayName: 'CH₃COOH (ediksýra)',
-      molarMassDisplay: 'mólmassi: 60 g/mol',
+      molarMassDisplay: 'mólmassi: 60 g/mól',
       maxMolarity: 17.4,
     },
   ],
@@ -126,7 +126,7 @@ export const CHEMICALS = {
       molarMass: 101,
       form: 'solid',
       displayName: 'KNO₃ (kalíumnítrat)',
-      molarMassDisplay: 'mólmassi: 101 g/mol',
+      molarMassDisplay: 'mólmassi: 101 g/mól',
       maxMolarity: 3.2,
     },
     {
@@ -134,7 +134,7 @@ export const CHEMICALS = {
       molarMass: 120,
       form: 'solid',
       displayName: 'MgSO₄ (magnesíumsúlfat)',
-      molarMassDisplay: 'mólmassi: 120 g/mol',
+      molarMassDisplay: 'mólmassi: 120 g/mól',
       maxMolarity: 2.8,
     },
     {
@@ -142,7 +142,7 @@ export const CHEMICALS = {
       molarMass: 98,
       form: 'liquid',
       displayName: 'H₂SO₄ (brennisteinssýra)',
-      molarMassDisplay: 'mólmassi: 98 g/mol',
+      molarMassDisplay: 'mólmassi: 98 g/mól',
       maxMolarity: 18.4,
     },
     {
@@ -150,7 +150,7 @@ export const CHEMICALS = {
       molarMass: 74,
       form: 'solid',
       displayName: 'Ca(OH)₂ (kalsíumhýdroxíð)',
-      molarMassDisplay: 'mólmassi: 74 g/mol',
+      molarMassDisplay: 'mólmassi: 74 g/mól',
       maxMolarity: 0.022,
     },
     {
@@ -158,7 +158,7 @@ export const CHEMICALS = {
       molarMass: 162.2,
       form: 'solid',
       displayName: 'FeCl₃ (járnklóríð)',
-      molarMassDisplay: 'mólmassi: 162,2 g/mol',
+      molarMassDisplay: 'mólmassi: 162,2 g/mól',
       maxMolarity: 4.5,
     },
     {
@@ -166,7 +166,7 @@ export const CHEMICALS = {
       molarMass: 98,
       form: 'liquid',
       displayName: 'H₃PO₄ (fosfórsýra)',
-      molarMassDisplay: 'mólmassi: 98 g/mol',
+      molarMassDisplay: 'mólmassi: 98 g/mól',
       maxMolarity: 14.6,
     },
   ],

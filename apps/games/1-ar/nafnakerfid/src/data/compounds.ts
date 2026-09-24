@@ -59,7 +59,7 @@ export const COMPOUNDS: Compound[] = [
     category: 'sameindaefni',
     difficulty: 'easy',
     elements: ['C', 'O'],
-    info: 'Tvíefni: tvær súrefniseiningar',
+    info: 'Tvíefnasamband: tvær súrefniseiningar',
   },
   {
     formula: 'NH₃',
@@ -87,7 +87,7 @@ export const COMPOUNDS: Compound[] = [
     category: 'jónefni',
     difficulty: 'easy',
     elements: ['Ca', 'Cl'],
-    info: 'Ca²⁺ þarf tvö Cl⁻ jónir',
+    info: 'Ca²⁺ þarf tvær Cl⁻ jónir',
   },
   {
     formula: 'KBr',
@@ -96,7 +96,7 @@ export const COMPOUNDS: Compound[] = [
     category: 'jónefni',
     difficulty: 'easy',
     elements: ['K', 'Br'],
-    info: 'Endi -íð fyrir tvíefni',
+    info: 'Endingin -íð í tvíefnasamböndum',
   },
   {
     formula: 'LiF',
@@ -218,7 +218,7 @@ export const COMPOUNDS: Compound[] = [
     category: 'jónefni',
     difficulty: 'easy',
     elements: ['Ca', 'O'],
-    info: 'Brennd kalk',
+    info: 'Brennt kalk',
   },
   {
     formula: 'Li₂O',
@@ -247,7 +247,7 @@ export const COMPOUNDS: Compound[] = [
     category: 'málmar-breytilega-hleðsla',
     difficulty: 'medium',
     elements: ['Fe', 'O'],
-    info: 'Járn með +3 hleðslu - rust',
+    info: 'Járn með +3 hleðslu - ryð',
   },
   {
     formula: 'CuSO₄',
@@ -283,7 +283,7 @@ export const COMPOUNDS: Compound[] = [
     category: 'jónefni',
     difficulty: 'medium',
     elements: ['Na', 'O', 'H'],
-    info: 'Sterkt basi, hýdroxíð (OH⁻)',
+    info: 'Sterkur basi, hýdroxíð (OH⁻)',
   },
   {
     formula: 'Ca(OH)₂',
@@ -319,7 +319,7 @@ export const COMPOUNDS: Compound[] = [
     category: 'sameind',
     difficulty: 'medium',
     elements: ['S', 'O'],
-    info: 'Mengun frá brennisteinsneitun',
+    info: 'Mengun frá bruna á brennisteinsríkum kolum',
   },
   {
     formula: 'K₂SO₄',
@@ -346,7 +346,7 @@ export const COMPOUNDS: Compound[] = [
     category: 'jónefni',
     difficulty: 'medium',
     elements: ['Na', 'S', 'O'],
-    info: 'Algengur í sápu',
+    info: 'Algengt í sápu',
   },
   {
     formula: 'CaCO₃',
@@ -364,7 +364,7 @@ export const COMPOUNDS: Compound[] = [
     category: 'jónefni',
     difficulty: 'medium',
     elements: ['Ag', 'Cl'],
-    info: 'Hvítur seti',
+    info: 'Hvítt botnfall',
   },
   {
     formula: 'Mg(NO₃)₂',
@@ -501,7 +501,7 @@ export const COMPOUNDS: Compound[] = [
     category: 'sameind',
     difficulty: 'hard',
     elements: ['S', 'F'],
-    info: 'Eitt brennisteinn, sex flúor',
+    info: 'Einn brennisteinn, sex flúor',
   },
   {
     formula: 'PCl₅',
@@ -528,7 +528,7 @@ export const COMPOUNDS: Compound[] = [
     category: 'sameind',
     difficulty: 'hard',
     elements: ['Xe', 'F'],
-    info: 'Göseðlisgas sem myndast efnasambindu',
+    info: 'Eðalgas sem myndar efnasamband',
   },
   {
     formula: 'Cl₂O₇',

@@ -17,15 +17,19 @@ import {
   generateProblem,
   generateAllProblems,
   hasRepeatedElement,
+  particlesOf,
   type ConvType,
 } from '../components/Level2';
+import { atomWord } from '../data/atomWords';
 import { COMPOUNDS, STP_LABEL } from '../data/compounds';
-import { getElementBySymbol } from '../data/elements';
 
 const AVOGADRO = 6.022e23;
 
 /** How many of each conversion a ten-problem run deals. */
 const TOTAL_PER_RUN = 2;
+
+/** How the element-atoms question names its atoms: `súrefnisatóm (O)`. */
+const ASKS_FOR_ATOMS = /atóm \([A-Z][a-z]?\)/;
 
 /** The moles the generated question actually asks about. */
 function molesIn(questionText: string): number {
@@ -53,11 +57,12 @@ describe('moles_to_element_atoms', () => {
     (formula, compound) => {
       const problem = generateProblem(compound, 'moles_to_element_atoms');
       const biggest = [...compound.elements].sort((a, b) => b.count - a.count)[0];
-      const name = getElementBySymbol(biggest.symbol)?.name;
 
-      expect(name, `${formula}: ${biggest.symbol} is not in elements.ts`).toBeTruthy();
-      expect(problem.questionText, formula).toContain(name as string);
-      expect(problem.questionText, formula).toContain(`(${biggest.symbol})`);
+      // `Hversu mörg súrefnisatóm (O)`: one compound word in lower case. It
+      // used to be the element's name glued on, `Súrefni-atóm`, capital and all.
+      expect(problem.questionText, formula).toContain(
+        `Hversu mörg ${atomWord(biggest.symbol)} (${biggest.symbol})`
+      );
     }
   );
 
@@ -73,14 +78,14 @@ describe('moles_to_element_atoms', () => {
       // as if it were the subscript question teaches that the subscript is
       // decoration.
       const problem = generateProblem(compound, 'moles_to_element_atoms');
-      expect(problem.questionText, formula).toContain('Hversu margar sameindir');
+      expect(problem.questionText, formula).toContain(`Hversu margar ${particlesOf(compound)}`);
     }
   );
 
   it('never draws a flat compound for the subscript slot in a real run', () => {
     for (let run = 0; run < 200; run++) {
       for (const problem of generateAllProblems()) {
-        if (!/-atóm/.test(problem.questionText)) continue;
+        if (!ASKS_FOR_ATOMS.test(problem.questionText)) continue;
         expect(hasRepeatedElement(problem.compound), problem.questionText).toBe(true);
       }
     }
@@ -100,10 +105,10 @@ describe('a Level 2 run', () => {
       const q = problem.questionText;
       if (q.includes(STP_LABEL)) {
         asked.add(q.startsWith('Hvaða rúmmál') ? 'moles_to_gas_volume' : 'gas_volume_to_moles');
-      } else if (/-atóm/.test(q)) asked.add('moles_to_element_atoms');
+      } else if (ASKS_FOR_ATOMS.test(q)) asked.add('moles_to_element_atoms');
       else if (/Hversu mörg mól eru í .* g af/.test(q)) asked.add('mass_to_moles');
       else if (/Hvað vega .* mól/.test(q)) asked.add('moles_to_mass');
-      else if (/Hversu margar sameindir/.test(q)) asked.add('moles_to_particles');
+      else if (/Hversu margar (sameindir|formúlueiningar)/.test(q)) asked.add('moles_to_particles');
       else if (/Hversu mörg mól eru .* sameindir/.test(q)) asked.add('particles_to_moles');
     }
 

@@ -1,15 +1,20 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useId, useMemo, useRef } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
+import {
+  DECIMAL_INPUT_PROPS,
+  formatDecimal,
+  shuffleArray,
+  type ScientificEntry,
+} from '@shared/utils';
 
+import { WRITTEN_NUMBER_HELP, WRITTEN_NUMBER_UNREADABLE, WrittenNumberRow } from './Level0SigFigs';
 import { level3Challenges } from '../data/challenges';
 import { isAnswerCorrect, parseStudentNumber } from '../utils/grading';
 import { buildLevel3Run } from '../utils/level3Run';
-import {
-  scoreExplanation,
-  calculateCompositeScore,
-  countSignificantFigures,
-} from '../utils/scoring';
+import { revealTop, useRevealTopOnChange } from '../utils/reveal';
+import { scoreExplanation, calculateCompositeScore } from '../utils/scoring';
+import { countSigFigs, readWritten } from '../utils/sigfigs';
 
 interface ScoreResult {
   answer: number;
@@ -29,6 +34,46 @@ interface Level3Progress {
   mastered: boolean;
   hintsUsed: number;
 }
+
+/**
+ * Significant figures as the answer is written, by the game's own rules.
+ *
+ * `utils/sigfigs.ts`, the engine Stig 0 teaches from. Level 3 used to count with
+ * a second counter that knew only the full stop, so the comma a student is
+ * taught to type counted as a digit: `0,125` was four figures, and a correct
+ * answer to a three-figure item was marked down for its precision. `null` when
+ * the answer is not a written number at all — nothing to count, and nothing to
+ * say about it.
+ */
+function writtenFigures(answer: string): number | null {
+  try {
+    return countSigFigs(answer);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * A given value as the prompt writes it.
+ *
+ * The data stores numbers, and a number cannot hold a trailing zero or a
+ * comma: L3-4 gives `50,0 mL` and `2,50 g/mL`, and the card beside it printed
+ * `50` and `2.5` — a full stop where the course writes a comma, and fewer
+ * significant figures than the item then asks the student to give. Where the
+ * prompt states the value, print it the way the prompt does.
+ */
+function asGiven(value: number, prompt: string): string {
+  for (const [written] of prompt.matchAll(/\d+(?:,\d+)?/g)) {
+    if (parseStudentNumber(written) === value) return written;
+  }
+  return formatDecimal(value);
+}
+
+/**
+ * A conversion factor as a student reads it. Factor strings stay in the
+ * `1 míla / 1.609 km` form the tests multiply out, so the comma goes in here.
+ */
+const withDecimalComma = (factor: string) => factor.replace(/(\d)\.(\d)/g, '$1,$2');
 
 interface Level3Props {
   onComplete: (progress: Level3Progress, maxScore?: number, hintsUsed?: number) => void;
@@ -69,6 +114,10 @@ export function Level3({
   const [totalHintsUsed, setTotalHintsUsed] = useState(initialProgress?.hintsUsed || 0);
 
   const [userAnswer, setUserAnswer] = useState('');
+  // The scientific-notation item's two fields, and whether what they hold could
+  // not be read — which sends the answer back for editing rather than grading it.
+  const [sciEntry, setSciEntry] = useState<ScientificEntry>({ mantissa: '', exponent: '' });
+  const [unreadable, setUnreadable] = useState(false);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [selectedPath, setSelectedPath] = useState<number | null>(null);
   const [explanation, setExplanation] = useState('');
@@ -77,15 +126,51 @@ export function Level3({
   const [, setHintUsed] = useState(false);
   const [showHint, setShowHint] = useState(false);
 
+  // After submitting, the answer form collapses and the page gets shorter. On a
+  // short screen (a phone on its side) that leaves the verdict scrolled off the
+  // top, so the student sees only the tail of the feedback. Bring its top back.
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (showFeedback) revealTop(feedbackRef.current);
+  }, [showFeedback]);
+
+  // The button that moves on sits at the foot of a screen taller than a phone,
+  // so the intro's "Byrja" and each "Næsta" used to open the next problem with
+  // its context already scrolled past. Open it at its top instead.
+  const topRef = useRevealTopOnChange<HTMLDivElement>(showIntro ? 'intro' : currentProblemIndex);
+
   // A run drawn from the pool, not the whole pool: see `buildLevel3Run`.
-  // Drawn once per mount, so returning to the level mid-run keeps the run.
+  // Drawn once per mount. Leaving the level unmounts it, so coming back draws
+  // a new run.
   const run = useMemo(() => buildLevel3Run(level3Challenges), []);
 
   const problem = run[currentProblemIndex];
 
+  // The choices in the order they are shown. The data lists a correct route
+  // first on both reverse items and the efficient path first on four of five
+  // efficiency items, so "pick the top one" beat reading them. Shuffled once
+  // per problem; everything that reads a selection reads it from these arrays,
+  // never from the data's order (the kinetics lesson in `docs/README.md`).
+  const options = useMemo(
+    () => (problem?.type === 'reverse' ? shuffleArray(problem.options) : []),
+    [problem]
+  );
+  const paths = useMemo(
+    () => (problem?.type === 'efficiency' ? shuffleArray(problem.possiblePaths) : []),
+    [problem]
+  );
+
+  // Only an item that asks for scientific notation takes it in two fields.
+  const wantsScientific = problem?.type === 'derivation' && problem.scientificNotation;
+
+  const answerId = useId();
+  const explanationId = useId();
+
   useEffect(() => {
     if (problem) {
       setUserAnswer('');
+      setSciEntry({ mantissa: '', exponent: '' });
+      setUnreadable(false);
       setSelectedOption(null);
       setSelectedPath(null);
       setExplanation('');
@@ -106,7 +191,8 @@ export function Level3({
       synthesis:
         'Byrjaðu á að margfalda rúmmál með eðlismassa til að fá massa, síðan umbreyttu einingum.',
       real_world: 'Umbreyttu öllum gildum í sömu einingar áður en þú reiknar fjölda skammta.',
-      derivation: 'Notaðu vísindatölustafi (t.d. 3.00e8) fyrir mjög stórar eða litlar tölur.',
+      derivation:
+        'Skrifaðu mjög stórar eða litlar tölur eins og 3,00 × 10⁸: tölustafina í fyrri reitinn og veldisvísinn í þann seinni.',
     };
     // An item may override the type hint: the derivation hint talks about
     // scientific notation, which is no help on a derivation about minutes.
@@ -116,6 +202,18 @@ export function Level3({
   };
 
   const handleSubmit = () => {
+    // What the student typed, as a number. The scientific-notation item reads
+    // its two fields strictly: `parseStudentNumber` would read `1,08 × 10⁹` as
+    // 1,08 and mark a correct answer wrong. An unreadable entry is sent back
+    // rather than graded.
+    const typed = wantsScientific
+      ? (readWritten(sciEntry)?.value ?? null)
+      : parseStudentNumber(userAnswer);
+    if (typed === null) {
+      setUnreadable(true);
+      return;
+    }
+
     let answerScore = 0;
     let methodScore = 0;
     const explanationScore = scoreExplanation(explanation, problem.type);
@@ -124,8 +222,8 @@ export function Level3({
     let userSigFigs: number | null = null;
 
     // Score based on problem type
-    if (problem.type === 'reverse' && problem.options && selectedOption !== null) {
-      const selected = problem.options[selectedOption];
+    if (problem.type === 'reverse' && selectedOption !== null) {
+      const selected = options[selectedOption];
       if (selected && selected.correct) {
         answerScore = 1;
         methodScore = 1;
@@ -134,8 +232,7 @@ export function Level3({
         else if (selected.steps === 2) efficiencyScore = 0.8;
       }
     } else if (problem.type === 'error_analysis') {
-      const userNum = parseStudentNumber(userAnswer);
-      if (isAnswerCorrect(userNum, problem.correctAnswer || 0)) {
+      if (isAnswerCorrect(typed, problem.correctAnswer || 0)) {
         answerScore = 1;
       }
       // Credit method for any substantive explanation attempt
@@ -143,12 +240,11 @@ export function Level3({
         methodScore = 1;
       }
     } else if (problem.type === 'efficiency') {
-      const userNum = parseStudentNumber(userAnswer);
-      if (isAnswerCorrect(userNum, problem.targetAnswer || 0)) {
+      if (isAnswerCorrect(typed, problem.targetAnswer || 0)) {
         answerScore = 1;
       }
-      if (selectedPath !== null && problem.possiblePaths) {
-        const path = problem.possiblePaths[selectedPath];
+      if (selectedPath !== null) {
+        const path = paths[selectedPath];
         if (path.efficient) {
           efficiencyScore = 1;
           methodScore = 1;
@@ -157,16 +253,16 @@ export function Level3({
         }
       }
     } else if (problem.type === 'synthesis' || problem.type === 'derivation') {
-      const userNum = parseStudentNumber(userAnswer);
-      if (isAnswerCorrect(userNum, problem.expectedAnswer || 0)) {
+      if (isAnswerCorrect(typed, problem.expectedAnswer || 0)) {
         answerScore = 1;
       }
 
       // Check significant figures if required (only for synthesis type)
       // Note: sig figs are tracked and displayed as feedback only — not penalized in answerScore
       if (problem.type === 'synthesis' && problem.significantFigures) {
-        userSigFigs = countSignificantFigures(userAnswer);
-        sigFigScore = userSigFigs === problem.significantFigures ? 1 : 0;
+        userSigFigs = writtenFigures(userAnswer);
+        sigFigScore =
+          userSigFigs === null ? null : userSigFigs === problem.significantFigures ? 1 : 0;
       }
 
       if (explanation.length > 20) {
@@ -177,10 +273,9 @@ export function Level3({
       // decimal comma, so an item whose answer is 24,5 was ungradeable and
       // `requireInteger` decided nothing. Read the number the way the rest of
       // the game does, then let the flag decide what counts.
-      const userNum = parseStudentNumber(userAnswer);
       const correct = problem.requireInteger
-        ? Number.isInteger(userNum) && userNum === problem.expectedAnswer
-        : isAnswerCorrect(userNum, problem.expectedAnswer);
+        ? Number.isInteger(typed) && typed === problem.expectedAnswer
+        : isAnswerCorrect(typed, problem.expectedAnswer);
       if (correct) {
         answerScore = 1;
         methodScore = 1;
@@ -220,8 +315,8 @@ export function Level3({
       compositeScores: [...progress.compositeScores, composite],
       totalSteps:
         (progress.totalSteps || 0) +
-        (selectedPath !== null && problem.type === 'efficiency' && problem.possiblePaths
-          ? problem.possiblePaths[selectedPath].stepCount
+        (selectedPath !== null && problem.type === 'efficiency'
+          ? paths[selectedPath].stepCount
           : 2),
     };
     setProgress(newProgress);
@@ -234,8 +329,10 @@ export function Level3({
       hintsUsed: totalHintsUsed,
     };
 
-    // Check mastery after 10 problems
-    if (newProgress.problemsCompleted >= 10) {
+    // Mastery is judged once the whole run is in, over every problem in it.
+    // This said `>= 10` from when the level had ten items; a run is now
+    // `run.length` long, and a shorter one could never be mastered at all.
+    if (newProgress.problemsCompleted >= run.length) {
       const avgScore =
         newProgress.compositeScores.reduce((a, b) => a + b, 0) / newProgress.compositeScores.length;
       newProgress.mastered = avgScore >= 0.75;
@@ -255,7 +352,10 @@ export function Level3({
 
   if (showIntro) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white p-4">
+      <div
+        ref={topRef}
+        className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+      >
         <div className="max-w-3xl mx-auto">
           <div className="mb-4">
             <button
@@ -266,12 +366,12 @@ export function Level3({
             </button>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
-            <h2 className="text-2xl font-bold text-warm-800 text-center">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 space-y-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-warm-800 text-center">
               Einingagreining í raunveruleikanum
             </h2>
 
-            <div className="bg-purple-50 rounded-xl p-6 border-l-4 border-purple-500">
+            <div className="bg-purple-50 rounded-xl p-4 sm:p-6 border-l-4 border-purple-500">
               <h3 className="font-bold text-purple-800 mb-3">Af hverju þetta stig?</h3>
               <p className="text-warm-700">
                 Þú hefur lært <strong>hvernig</strong> einingar styttast út og hvernig
@@ -310,7 +410,7 @@ export function Level3({
               </div>
             </div>
 
-            <div className="bg-amber-50 rounded-xl p-6 border-l-4 border-amber-500">
+            <div className="bg-amber-50 rounded-xl p-4 sm:p-6 border-l-4 border-amber-500">
               <h3 className="font-bold text-amber-800 mb-2">Vísbendingar alltaf í boði</h3>
               <p className="text-warm-700 text-sm">
                 Þú getur alltaf beðið um vísbendingu án þess að það hafi áhrif á einkunn. Skrifaðu
@@ -338,6 +438,20 @@ export function Level3({
         )
       : 0;
 
+  // What each type grades, and so what it needs before it can be sent. A reverse
+  // item is graded on the route chosen, an efficiency item on the path and the
+  // number; neither could be sent without its choice before, and a reverse item
+  // demanded a typed number it never read.
+  const answerGiven =
+    problem.type === 'reverse'
+      ? selectedOption !== null
+      : problem.type === 'efficiency'
+        ? selectedPath !== null && userAnswer.trim() !== ''
+        : wantsScientific
+          ? sciEntry.mantissa.trim() !== ''
+          : userAnswer.trim() !== '';
+  const canSubmit = answerGiven && explanation.trim() !== '';
+
   const problemTypeLabels: Record<string, string> = {
     reverse: 'Öfug greining',
     error_analysis: 'Villugreining',
@@ -348,7 +462,10 @@ export function Level3({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white p-4">
+    <div
+      ref={topRef}
+      className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+    >
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
@@ -362,7 +479,9 @@ export function Level3({
             <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-semibold">
               Stig 3: Útreikningar
             </span>
-            <span>Áskorun {progress.problemsCompleted + 1} / 10</span>
+            <span>
+              Áskorun {progress.problemsCompleted + 1} / {run.length}
+            </span>
             <span
               className={`px-2 py-1 rounded text-xs ${
                 avgScore >= 75 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
@@ -374,14 +493,14 @@ export function Level3({
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6 overflow-hidden">
           <div
             className="bg-purple-500 h-2 rounded-full transition-all duration-500"
-            style={{ width: `${(progress.problemsCompleted / 10) * 100}%` }}
+            style={{ width: `${(progress.problemsCompleted / run.length) * 100}%` }}
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
           {/* Problem type badge */}
           <div className="mb-4 flex items-center gap-3">
             <span className="px-4 py-2 bg-purple-100 text-purple-800 rounded-xl text-sm font-bold">
@@ -397,39 +516,41 @@ export function Level3({
             </span>
           </div>
 
-          <h2 className="text-2xl font-bold mb-6 text-warm-800">{problem.prompt}</h2>
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-warm-800">
+            {problem.prompt}
+          </h2>
 
           {/* Display problem-specific context */}
           {problem.type === 'synthesis' && problem.density && (
-            <div className="mb-6 p-5 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200">
+            <div className="mb-6 p-4 sm:p-5 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200">
               <p className="text-sm font-bold text-purple-800 mb-3 flex items-center gap-2">
                 <span className="text-lg">📊</span> Gefnar upplýsingar:
               </p>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
                 {problem.startValue && problem.startUnit && (
-                  <div className="bg-white p-3 rounded-lg">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
                     <p className="text-xs text-warm-500">{problem.startLabel ?? 'Rúmmál'}</p>
                     <p className="font-bold text-purple-700">
-                      {problem.startValue} {problem.startUnit}
+                      {asGiven(problem.startValue, problem.prompt)} {problem.startUnit}
                     </p>
                   </div>
                 )}
                 {problem.density && problem.densityUnit && (
-                  <div className="bg-white p-3 rounded-lg">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
                     <p className="text-xs text-warm-500">{problem.factorLabel ?? 'Eðlismassi'}</p>
                     <p className="font-bold text-purple-700">
-                      {problem.density} {problem.densityUnit}
+                      {asGiven(problem.density, problem.prompt)} {problem.densityUnit}
                     </p>
                   </div>
                 )}
                 {problem.targetUnit && (
-                  <div className="bg-white p-3 rounded-lg">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
                     <p className="text-xs text-warm-500">Markeining</p>
                     <p className="font-bold text-green-700">{problem.targetUnit}</p>
                   </div>
                 )}
                 {problem.significantFigures && (
-                  <div className="bg-white p-3 rounded-lg">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
                     <p className="text-xs text-warm-500">Markverðir stafir</p>
                     <p className="font-bold text-blue-700">{problem.significantFigures}</p>
                   </div>
@@ -439,26 +560,26 @@ export function Level3({
           )}
 
           {problem.type === 'real_world' && (problem.startValue || problem.portionSize) && (
-            <div className="mb-6 p-5 bg-gradient-to-r from-green-50 to-teal-50 rounded-xl border border-green-200">
+            <div className="mb-6 p-4 sm:p-5 bg-gradient-to-r from-green-50 to-teal-50 rounded-xl border border-green-200">
               <p className="text-sm font-bold text-green-800 mb-3 flex items-center gap-2">
                 <span className="text-lg">📊</span> Gefnar upplýsingar:
               </p>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
                 {problem.startValue && problem.startUnit && (
-                  <div className="bg-white p-3 rounded-lg">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
                     <p className="text-xs text-warm-500">{problem.startLabel ?? 'Heildarmagn'}</p>
                     <p className="font-bold text-green-700">
-                      {problem.startValue} {problem.startUnit}
+                      {asGiven(problem.startValue, problem.prompt)} {problem.startUnit}
                     </p>
                   </div>
                 )}
                 {problem.portionSize && problem.portionUnit && (
-                  <div className="bg-white p-3 rounded-lg">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
                     <p className="text-xs text-warm-500">
                       {problem.portionLabel ?? 'Skammtastærð'}
                     </p>
                     <p className="font-bold text-green-700">
-                      {problem.portionSize} {problem.portionUnit}
+                      {asGiven(problem.portionSize, problem.prompt)} {problem.portionUnit}
                     </p>
                   </div>
                 )}
@@ -467,12 +588,14 @@ export function Level3({
           )}
 
           {problem.type === 'error_analysis' && problem.incorrectWork && (
-            <div className="mb-6 p-5 bg-gradient-to-r from-red-50 to-orange-50 rounded-xl border border-red-200">
+            <div className="mb-6 p-4 sm:p-5 bg-gradient-to-r from-red-50 to-orange-50 rounded-xl border border-red-200">
               <p className="text-sm font-bold text-red-800 mb-2 flex items-center gap-2">
                 <span className="text-lg">⚠️</span> Röng vinna:
               </p>
               <div className="bg-white p-4 rounded-lg border-2 border-red-200">
-                <p className="font-mono text-red-700 text-lg">{problem.incorrectWork}</p>
+                <p className="font-mono text-red-700 text-base sm:text-lg">
+                  {problem.incorrectWork}
+                </p>
               </div>
             </div>
           )}
@@ -480,23 +603,23 @@ export function Level3({
           {!showFeedback && (
             <div className="space-y-6">
               {/* Reverse problem options */}
-              {problem.type === 'reverse' && problem.options && (
+              {problem.type === 'reverse' && (
                 <div className="space-y-3">
                   <p className="font-bold text-warm-800">Veldu rétta leið:</p>
-                  {problem.options.map((option, idx) => (
+                  {options.map((option, idx) => (
                     <button
                       key={idx}
                       onClick={() => setSelectedOption(idx)}
-                      className={`w-full p-5 rounded-xl border-2 text-left transition-all ${
+                      className={`w-full p-4 sm:p-5 rounded-xl border-2 text-left transition-all ${
                         selectedOption === idx
                           ? 'border-purple-500 bg-purple-50 shadow-md'
                           : 'border-warm-200 hover:border-purple-300 hover:bg-warm-50'
                       }`}
                     >
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium">{option.text}</span>
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="font-medium min-w-0">{option.text}</span>
                         <span
-                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                          className={`shrink-0 whitespace-nowrap px-3 py-1 rounded-full text-sm font-semibold ${
                             selectedOption === idx
                               ? 'bg-purple-200 text-purple-800'
                               : 'bg-warm-100 text-warm-600'
@@ -518,14 +641,14 @@ export function Level3({
                   task is "fæst skref", so counting them is the work. The steps
                   are all still there to be read and counted; which path was
                   efficient is settled in the feedback below. */}
-              {problem.type === 'efficiency' && problem.possiblePaths && (
+              {problem.type === 'efficiency' && (
                 <div className="space-y-3">
                   <p className="font-bold text-warm-800">Veldu leið:</p>
-                  {problem.possiblePaths.map((path, idx) => (
+                  {paths.map((path, idx) => (
                     <button
                       key={idx}
                       onClick={() => setSelectedPath(idx)}
-                      className={`w-full p-5 rounded-xl border-2 text-left transition-all ${
+                      className={`w-full p-4 sm:p-5 rounded-xl border-2 text-left transition-all ${
                         selectedPath === idx
                           ? 'border-purple-500 bg-purple-50 shadow-md'
                           : 'border-warm-200 hover:border-purple-300 hover:bg-warm-50'
@@ -538,7 +661,7 @@ export function Level3({
                             key={sidx}
                             className="font-mono text-sm bg-white px-3 py-2 rounded-lg border border-warm-100"
                           >
-                            {step}
+                            {withDecimalComma(step)}
                           </div>
                         ))}
                       </div>
@@ -548,47 +671,76 @@ export function Level3({
               )}
 
               {/* Answer input */}
-              <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl border-2 border-purple-200">
-                <label className="block font-bold mb-3 text-warm-800">
-                  {problem.type === 'error_analysis' ? 'Hvað er rétta svarið?' : 'Þitt svar:'}
-                </label>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="text"
-                    value={userAnswer}
-                    onChange={(e) => setUserAnswer(e.target.value)}
-                    placeholder={
-                      problem.type === 'derivation' && problem.scientificNotation
-                        ? 't.d. 4.2e5'
-                        : 'Sláðu inn svar'
-                    }
-                    className="flex-1 p-4 border-2 border-warm-300 rounded-xl font-mono text-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden transition-all"
-                  />
-                  {problem.type !== 'reverse' &&
-                    problem.type !== 'error_analysis' &&
-                    'targetUnit' in problem &&
-                    problem.targetUnit && (
-                      <div className="px-4 py-3 bg-green-100 text-green-800 rounded-xl font-bold text-lg">
-                        {problem.targetUnit}
-                      </div>
+              {/* A reverse item is answered by the route it chooses above, so it
+                  has no number to type. */}
+              {problem.type !== 'reverse' && (
+                <div className="p-3 sm:p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl border-2 border-purple-200">
+                  <label
+                    htmlFor={wantsScientific ? undefined : answerId}
+                    className="block font-bold mb-3 text-warm-800"
+                  >
+                    {problem.type === 'error_analysis' ? 'Hvað er rétta svarið?' : 'Þitt svar:'}
+                  </label>
+                  <div className="flex flex-wrap items-center gap-2 sm:flex-nowrap sm:gap-3">
+                    {wantsScientific ? (
+                      // Stig 0's row: the digits, × 10 and a power of ten, each
+                      // on the decimal keypad, with a sign button for a phone.
+                      <WrittenNumberRow
+                        entry={sciEntry}
+                        onChange={(patch) => {
+                          setSciEntry((current) => ({ ...current, ...patch }));
+                          setUnreadable(false);
+                        }}
+                        digitsLabel="Þitt svar"
+                        fieldClassName="rounded-xl border-2 border-warm-300 py-3 font-mono text-lg sm:text-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden"
+                      />
+                    ) : (
+                      <input
+                        {...DECIMAL_INPUT_PROPS}
+                        id={answerId}
+                        autoComplete="off"
+                        value={userAnswer}
+                        onChange={(e) => setUserAnswer(e.target.value)}
+                        placeholder="Sláðu inn svar"
+                        className="min-w-0 flex-1 p-3 sm:p-4 border-2 border-warm-300 rounded-xl font-mono text-lg sm:text-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden transition-all"
+                      />
                     )}
+                    {problem.type !== 'error_analysis' &&
+                      'targetUnit' in problem &&
+                      problem.targetUnit && (
+                        <div className="shrink-0 whitespace-nowrap px-3 sm:px-4 py-2 sm:py-3 bg-green-100 text-green-800 rounded-xl font-bold text-base sm:text-lg">
+                          {problem.targetUnit}
+                        </div>
+                      )}
+                  </div>
+                  {wantsScientific && (
+                    <p className="mt-2 text-xs text-warm-500">{WRITTEN_NUMBER_HELP}</p>
+                  )}
+                  {unreadable && (
+                    <p className="mt-2 text-sm text-amber-800">{WRITTEN_NUMBER_UNREADABLE}</p>
+                  )}
                 </div>
-              </div>
+              )}
 
               {/* Explanation */}
               <div className="p-4 bg-warm-50 rounded-xl border border-warm-200">
-                <label className="block font-bold mb-2 text-warm-800">
+                <label htmlFor={explanationId} className="block font-bold mb-2 text-warm-800">
                   Útskýring (hvernig leystir þú þetta?):
                 </label>
                 <textarea
+                  id={explanationId}
                   value={explanation}
                   onChange={(e) => setExplanation(e.target.value)}
                   placeholder="T.d. 'Fyrst breytti ég X í Y með stuðlinum Z...'"
                   className="w-full p-4 border-2 border-warm-300 rounded-xl h-28 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden transition-all resize-none"
                 />
                 <p className="text-xs text-warm-500 mt-2 flex items-center gap-1">
-                  <span className="text-base">💡</span> Notaðu orð eins og "umbreyti", "stuðull",
-                  "eining" fyrir betri einkunn
+                  {/* This said "… fyrir betri einkunn", and nothing reads the words:
+                      `scoreExplanation` deliberately does no keyword matching. A
+                      grade the level does not give is a phantom, like the hint
+                      penalty it used to advertise. */}
+                  <span className="text-base">💡</span> Notaðu orð eins og "umbreyti", "stuðull" og
+                  "eining" til að lýsa aðferðinni.
                 </p>
               </div>
 
@@ -622,7 +774,7 @@ export function Level3({
                 )}
                 <button
                   onClick={handleSubmit}
-                  disabled={!userAnswer.trim() || !explanation.trim()}
+                  disabled={!canSubmit}
                   className="w-full py-4 rounded-xl font-bold text-lg transition-all disabled:bg-warm-300 disabled:cursor-not-allowed disabled:text-warm-500 bg-purple-600 hover:bg-purple-700 text-white"
                 >
                   Senda inn →
@@ -634,7 +786,8 @@ export function Level3({
           {/* Feedback */}
           {showFeedback && scores && (
             <div
-              className={`p-6 rounded-xl border-2 ${
+              ref={feedbackRef}
+              className={`p-4 sm:p-6 rounded-xl border-2 scroll-mt-16 [@media(max-height:500px)]:scroll-mt-2 ${
                 scores.composite >= 0.75
                   ? 'bg-green-100 border-green-300'
                   : 'bg-yellow-100 border-yellow-300'
@@ -663,7 +816,7 @@ export function Level3({
               </div>
 
               {/* Simple feedback — no weighted scoring grid */}
-              <div className="bg-white p-5 rounded-xl text-center mb-6">
+              <div className="bg-white p-4 sm:p-5 rounded-xl text-center mb-6">
                 <p className="text-sm text-warm-600 mb-1">
                   {scores.answer >= 0.75 ? 'Svarið er rétt!' : 'Svarið er ekki alveg rétt'}
                 </p>
@@ -679,16 +832,16 @@ export function Level3({
 
               {/* Which path was the efficient one, and why. The buttons no
                   longer say, so this has to. */}
-              {problem.type === 'efficiency' && problem.possiblePaths && (
+              {problem.type === 'efficiency' && (
                 <div className="mb-6 p-4 bg-white rounded-xl border border-warm-200">
                   <p className="text-sm font-bold text-warm-800 mb-3 flex items-center gap-2">
                     <span>⚡</span> Leiðirnar bornar saman:
                   </p>
                   <div className="space-y-2">
-                    {problem.possiblePaths.map((path, idx) => (
+                    {paths.map((path, idx) => (
                       <div
                         key={idx}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-lg border ${
+                        className={`flex flex-wrap items-center gap-2 px-3 py-2 rounded-lg border ${
                           path.efficient
                             ? 'bg-green-50 border-green-300'
                             : 'bg-warm-50 border-warm-200'
@@ -757,7 +910,7 @@ export function Level3({
                           {idx + 1}
                         </span>
                         <span className="font-mono bg-white px-3 py-2 rounded-lg border border-blue-200 flex-1">
-                          × {step}
+                          × {withDecimalComma(step)}
                         </span>
                       </div>
                     ))}

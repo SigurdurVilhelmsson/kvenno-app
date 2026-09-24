@@ -1,17 +1,18 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 
-import { DECIMAL_INPUT_PROPS } from '@shared/utils';
-
+import { BackButton } from './BackButton';
+import { Sci } from './Sci';
+import { ScientificInput } from './ScientificInput';
 import { SOLUBILITY_PROBLEMS } from '../data/problems';
 import { saltBy } from '../data/salts';
 import {
   dissolutionEquation,
-  formatScientific,
   gradeScientific,
   kspExpression,
   molarSolubility,
   type GradeOutcome,
 } from '../engine/ksp';
+import { revealBottom, useRevealTopOnChange } from '../utils/reveal';
 
 /**
  * Æfa — compute the molar solubility from Ksp, and the reverse.
@@ -23,13 +24,19 @@ import {
  * itself advertised grade as its mantissa, the plain-decimal form grade as 0,
  * and an Icelandic comma grade as 1.
  *
- * Two fields also buy the diagnosis. "Right digits, wrong power of ten" is the
- * commonest real mistake in this topic — it is what forgetting the 4 in 4s³
- * looks like — and a merged box could only say "wrong".
+ * Two fields also let the feedback say which half is wrong: "right digits,
+ * wrong power of ten" is a different mistake from "wrong digits", and a merged
+ * box could only say "wrong". It is **not** what forgetting the 4 in 4s³ looks
+ * like, nor taking a square root for a cube root: both change the digits, so on
+ * this pool they grade as `tolustafir` or `baedi` and never as `veldisvisir`.
+ * The `veldisvisir` message used to name those two causes, which was false
+ * every time it was shown; a test now holds it to naming only what it can see.
  *
- * Both fields use `DECIMAL_INPUT_PROPS`. The exponent is an integer, but it is
- * a signed one rather than a count of things, so the numeric input type would
- * put a spinner and a mobile keypad with no minus sign in front of the student.
+ * Both fields use `DECIMAL_INPUT_PROPS` (in `ScientificInput`, which also
+ * carries the `±` key an iPhone's decimal keypad lacks). The exponent is an
+ * integer, but it is a signed one rather than a count of things, so the numeric
+ * input type would put a spinner and a mobile keypad with no minus sign in
+ * front of the student.
  *
  * That last sentence is phrased to avoid writing the numeric type literally.
  * `decimal-input.test.ts` greps source text and cannot tell a use from a
@@ -46,13 +53,22 @@ interface Props {
 const ORDER = { ledd: 0, mid: 1, thung: 2 } as const;
 const RUN = [...SOLUBILITY_PROBLEMS].sort((a, b) => ORDER[a.difficulty] - ORDER[b.difficulty]);
 
+/**
+ * The example shown in the empty fields and in the fill-in-both message.
+ *
+ * It must not be an answer. It used to be 1,34 and −5, which is AgCl's molar
+ * solubility, 1,34 × 10⁻⁵ M — and AgCl is the first problem the phase serves,
+ * so the answer to it sat in the field before the student typed anything. A
+ * test holds this example against every problem's answer.
+ */
+const EXAMPLE = { mantissa: '2,5', exponent: '-7' } as const;
+
 const MESSAGE: Record<GradeOutcome, string> = {
   rett: 'Rétt.',
-  veldisvisir:
-    'Tölustafirnir eru réttir en veldisvísirinn ekki. Skoðaðu hvort þú hafir gleymt stuðlinum — 4s³ er ekki s³ — eða tekið ranga rót.',
+  veldisvisir: 'Tölustafirnir eru réttir en veldisvísirinn ekki.',
   tolustafir: 'Rétt stærðarþrep, en tölurnar stemma ekki. Reiknaðu aftur.',
   baedi: 'Hvorki tölustafirnir né veldisvísirinn stemma.',
-  ogilt: 'Fylltu í báða reitina — tölu og veldisvísi, t.d. 1,34 og −5.',
+  ogilt: `Fylltu í báða reitina — tölu og veldisvísi, t.d. ${EXAMPLE.mantissa} og ${EXAMPLE.exponent.replace('-', '−')}.`,
 };
 
 export function AefaScreen({ onComplete, onBack }: Props) {
@@ -61,13 +77,36 @@ export function AefaScreen({ onComplete, onBack }: Props) {
   const [exponent, setExponent] = useState('');
   const [outcome, setOutcome] = useState<GradeOutcome | null>(null);
   const [solved, setSolved] = useState(0);
+  // An empty or unreadable entry is not an attempt: the fields stay open and
+  // the answer stays hidden, so the student can do what the message asks.
+  const [invalid, setInvalid] = useState(false);
+  const answerLabelId = useId();
+  const cardRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+
+  // The next problem starts at the top of the card, not where "Næsta dæmi" was.
+  useRevealTopOnChange(cardRef, index);
+  // On a phone a 2:1 salt's feedback runs past the bottom edge, taking
+  // "Næsta dæmi" with it.
+  useEffect(() => {
+    if (outcome !== null) revealBottom(feedbackRef.current);
+  }, [outcome]);
 
   const problem = RUN[index];
   const salt = useMemo(() => saltBy(problem.formula), [problem.formula]);
   const pure = molarSolubility(salt);
+  // The pool's names are capitalised because Kanna shows them as labels; here
+  // one sits mid-sentence, where an Icelandic common noun is lower case.
+  // Only the first letter moves, so a Roman numeral such as (II) keeps its case.
+  const inSentence = salt.name.charAt(0).toLocaleLowerCase('is') + salt.name.slice(1);
 
   const check = () => {
     const result = gradeScientific({ mantissa, exponent }, problem.answer);
+    if (result.outcome === 'ogilt') {
+      setInvalid(true);
+      return;
+    }
+    setInvalid(false);
     setOutcome(result.outcome);
     if (result.outcome === 'rett') setSolved(solved + 1);
   };
@@ -81,108 +120,122 @@ export function AefaScreen({ onComplete, onBack }: Props) {
     setMantissa('');
     setExponent('');
     setOutcome(null);
+    setInvalid(false);
   };
 
   const asksForSolubility = problem.direction === 'kspToS';
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-6 shadow-md md:p-8">
-        <div className="mb-6 flex items-baseline justify-between">
-          <h2 className="text-2xl font-bold text-warm-800">Æfa — reiknaðu mólarleysnina</h2>
-          <button onClick={onBack} className="text-sm text-warm-500 underline">
-            Til baka
-          </button>
+      <div ref={cardRef} className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
+        <div className="mb-6 flex items-baseline justify-between gap-3">
+          <h2 className="min-w-0 text-xl font-bold text-warm-800 sm:text-2xl">
+            Æfa — reiknaðu mólarleysnina
+          </h2>
+          <BackButton onClick={onBack} />
         </div>
 
         <p className="mb-4 text-sm text-warm-600">
           Dæmi {index + 1} af {RUN.length} · {solved} rétt
         </p>
 
-        <div className="mb-6 rounded-xl border-2 border-warm-200 bg-warm-50 p-5">
+        <div className="mb-6 rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
           <p className="mb-3 text-warm-800">
             {asksForSolubility ? (
               <>
                 Hver er mólarleysni <span className="font-mono font-semibold">{salt.formula}</span>{' '}
-                ({salt.name}) í hreinu vatni við 25 °C?
+                ({inSentence}) í hreinu vatni við <span className="whitespace-nowrap">25 °C</span>?
               </>
             ) : (
               <>
                 Mólarleysni <span className="font-mono font-semibold">{salt.formula}</span> (
-                {salt.name}) mælist {formatScientific(pure, 3)} M við 25 °C. Hvert er Ksp?
+                {inSentence}) mælist <Sci value={pure} figures={3} unit="M" /> við{' '}
+                <span className="whitespace-nowrap">25 °C</span>. Hvert er Ksp?
               </>
             )}
           </p>
           <dl className="space-y-1 font-mono text-sm text-warm-700">
             <div>{dissolutionEquation(salt)}</div>
             <div>{kspExpression(salt)}</div>
-            {asksForSolubility && <div>Ksp = {formatScientific(salt.ksp)}</div>}
+            {asksForSolubility && (
+              <div>
+                Ksp = <Sci value={salt.ksp} />
+              </div>
+            )}
           </dl>
         </div>
 
-        <div className="mb-4">
-          <label className="mb-2 block text-sm font-semibold text-warm-700">
+        {/* The two fields are named Tala and Veldisvísir; the group carries the
+            heading, unit included, so it is read out with them. */}
+        <div className="mb-4" role="group" aria-labelledby={answerLabelId}>
+          <p id={answerLabelId} className="mb-2 block text-sm font-semibold text-warm-700">
             Svar {asksForSolubility ? '(M)' : ''}
-          </label>
-          <div className="flex items-center gap-2">
-            <input
-              {...DECIMAL_INPUT_PROPS}
-              value={mantissa}
-              onChange={(e) => setMantissa(e.target.value)}
-              disabled={outcome !== null}
-              placeholder="1,34"
-              aria-label="Tala"
-              className="w-28 rounded-lg border-2 border-warm-300 px-3 py-2 text-center font-mono text-lg disabled:bg-warm-100"
-            />
-            <span className="font-mono text-lg text-warm-700">× 10</span>
-            <input
-              {...DECIMAL_INPUT_PROPS}
-              value={exponent}
-              onChange={(e) => setExponent(e.target.value)}
-              disabled={outcome !== null}
-              placeholder="-5"
-              aria-label="Veldisvísir"
-              className="w-20 rounded-lg border-2 border-warm-300 px-3 py-2 text-center font-mono text-lg disabled:bg-warm-100"
-            />
-          </div>
+          </p>
+          <ScientificInput
+            mantissa={mantissa}
+            exponent={exponent}
+            onMantissaChange={setMantissa}
+            onExponentChange={setExponent}
+            mantissaPlaceholder={EXAMPLE.mantissa}
+            exponentPlaceholder={EXAMPLE.exponent}
+            disabled={outcome !== null}
+          />
           <p className="mt-2 text-xs text-warm-500">
             Tvær tölur: fyrst talan, svo veldisvísirinn. Bæði komma og punktur virka.
           </p>
         </div>
 
         {outcome === null ? (
-          <button
-            type="button"
-            onClick={check}
-            className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark"
-          >
-            Athuga
-          </button>
+          <>
+            {invalid && (
+              <p role="alert" className="mb-3 text-sm font-semibold text-amber-800">
+                {MESSAGE.ogilt}
+              </p>
+            )}
+            <button
+              type="button"
+              onClick={check}
+              className="game-btn w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark"
+            >
+              Athuga
+            </button>
+          </>
         ) : (
           <div
+            ref={feedbackRef}
             className={`rounded-lg border-2 p-4 ${
               outcome === 'rett' ? 'border-green-300 bg-green-50' : 'border-amber-300 bg-amber-50'
             }`}
           >
             <p className="mb-2 font-semibold text-warm-900">{MESSAGE[outcome]}</p>
             <p className="text-sm text-warm-800">
-              Svarið er <span className="font-mono">{formatScientific(problem.answer, 3)}</span>
-              {asksForSolubility ? ' M' : ''}.
+              Svarið er{' '}
+              <span className="whitespace-nowrap">
+                <span className="font-mono">
+                  <Sci value={problem.answer} figures={3} />
+                </span>
+                {asksForSolubility ? ' M' : ''}
+              </span>
+              .
             </p>
             {asksForSolubility && salt.x * salt.y > 1 && (
               <p className="mt-2 rounded border border-amber-300 bg-white p-2 text-sm text-amber-900">
                 Hlutfallið er {salt.x}:{salt.y}, svo Ksp = {salt.x > 1 ? `(${salt.x}s)` : 's'}
-                {salt.x > 1 ? <sup>{salt.x}</sup> : ''}
+                {salt.x > 1 ? <sup className="pointer-coarse:text-[12px]">{salt.x}</sup> : ''}
                 {salt.y > 1 ? `(${salt.y}s)` : '(s)'}
-                {salt.y > 1 ? <sup>{salt.y}</sup> : ''} ={' '}
-                {Math.pow(salt.x, salt.x) * Math.pow(salt.y, salt.y)}s<sup>{salt.x + salt.y}</sup>.
-                Kvaðratrótin á ekki við hér.
+                {salt.y > 1 ? (
+                  <sup className="pointer-coarse:text-[12px]">{salt.y}</sup>
+                ) : (
+                  ''
+                )} = {Math.pow(salt.x, salt.x) * Math.pow(salt.y, salt.y)}s
+                <sup className="pointer-coarse:text-[12px]">{salt.x + salt.y}</sup>. Kvaðratrótin á
+                ekki við hér.
               </p>
             )}
             <button
               type="button"
               onClick={next}
-              className="game-btn mt-4 rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700"
+              className="game-btn mt-4 rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 pointer-coarse:min-h-11"
             >
               {index + 1 >= RUN.length ? 'Ljúka' : 'Næsta dæmi'}
             </button>

@@ -14,7 +14,16 @@
  * ```
  */
 
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect, useCallback, useLayoutEffect } from 'react';
+
+/**
+ * `minWidth` is a floor for comfortable rendering, but it must never push content wider than
+ * the container that holds it: on a 320 px phone that is a horizontal page scroll. A measured
+ * container width therefore wins over `minWidth`. An unmeasured (0) container leaves it alone.
+ */
+function fitWidth(width: number, containerWidth: number): number {
+  return containerWidth > 0 ? Math.min(width, containerWidth) : width;
+}
 
 export interface ResponsiveContainerProps {
   /** Render function receiving current dimensions */
@@ -55,7 +64,7 @@ export function ResponsiveContainer({
     const containerWidth = containerRef.current.clientWidth;
     const containerHeight = containerRef.current.clientHeight;
 
-    let width = Math.max(minWidth, Math.min(containerWidth, maxWidth));
+    let width = fitWidth(Math.max(minWidth, Math.min(containerWidth, maxWidth)), containerWidth);
     let height: number;
 
     if (aspectRatio) {
@@ -71,7 +80,7 @@ export function ResponsiveContainer({
 
       // Ensure minimums
       height = Math.max(minHeight, height);
-      width = Math.max(minWidth, width);
+      width = fitWidth(Math.max(minWidth, width), containerWidth);
     } else {
       // No aspect ratio - use container height
       height = Math.max(minHeight, Math.min(containerHeight || minHeight, maxHeight));
@@ -165,7 +174,7 @@ export function useResponsiveSize(
       const containerWidth = element.clientWidth;
       const containerHeight = element.clientHeight;
 
-      let width = Math.max(minWidth, Math.min(containerWidth, maxWidth));
+      let width = fitWidth(Math.max(minWidth, Math.min(containerWidth, maxWidth)), containerWidth);
       let height: number;
 
       if (aspectRatio) {
@@ -176,7 +185,7 @@ export function useResponsiveSize(
           width = height * aspectRatio;
         }
         height = Math.max(minHeight, height);
-        width = Math.max(minWidth, width);
+        width = fitWidth(Math.max(minWidth, width), containerWidth);
       } else {
         height = Math.max(minHeight, Math.min(containerHeight || minHeight, maxHeight));
       }
@@ -205,4 +214,46 @@ export function useResponsiveSize(
   }, [ref, aspectRatio, maxWidth, maxHeight, minWidth, minHeight, debounceMs]);
 
   return dimensions;
+}
+
+/**
+ * Width available to an element, tracked as its container resizes (phone rotation, a sidebar
+ * opening). Returns `null` until the first measurement, so a caller can render at its preferred
+ * size until then — which keeps the first desktop paint identical to a fixed-size component.
+ *
+ * Measured in a layout effect, so on a phone the corrected size is applied before first paint.
+ */
+export function useContainerWidth(ref: React.RefObject<HTMLElement | null>): number | null {
+  const [width, setWidth] = useState<number | null>(null);
+
+  useLayoutEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const measure = () => {
+      const next = element.clientWidth;
+      if (next > 0) setWidth((prev) => (prev === next ? prev : next));
+    };
+    measure();
+
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', measure);
+      return () => window.removeEventListener('resize', measure);
+    }
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [ref]);
+
+  return width;
+}
+
+/**
+ * Backing-store scale for a `<canvas>`: draw at devicePixelRatio so lines and labels stay crisp
+ * on a phone's 2–3× screen instead of being upscaled from a 1× bitmap. Capped at 3, beyond which
+ * the extra pixels cost memory and fill time without a visible gain.
+ */
+export function canvasPixelRatio(): number {
+  if (typeof window === 'undefined') return 1;
+  return Math.min(Math.max(window.devicePixelRatio || 1, 1), 3);
 }

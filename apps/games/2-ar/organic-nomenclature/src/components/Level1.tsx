@@ -1,22 +1,23 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import type { TieredHints } from '@shared/types';
 import { shuffleArray } from '@shared/utils';
 
 import { MoleculeBuilder } from './MoleculeBuilder';
+import { useReturnToPrompt, useRevealWhenShown } from '../hooks/useRevealWhenShown';
 
 // Misconceptions for organic nomenclature
 const MISCONCEPTIONS: Record<string, string> = {
   prefix:
     'Forskeytið segir til um fjölda kolefna í keðjunni. meth=1, eth=2, prop=3, but=4, pent=5, hex=6...',
-  suffix: 'Viðskeytið segir til um tengjategund: -an (eintengi), -en (tvítengi), -yn (þrítengi).',
+  suffix: 'Viðskeytið segir til um tengjategund: -an (eintengi), -en (tvítengi), -ýn (þrítengi).',
   name: 'Nafnið er samsett úr forskeyti (fjöldi C) + viðskeyti (tengjategund). T.d. eth + en = eten.',
 };
 
 // Related concepts for organic nomenclature
 const RELATED_CONCEPTS: Record<string, string[]> = {
-  prefix: ['Kolefniskeðjur', 'Alkön', 'IUPAC nafnakerfi'],
+  prefix: ['Kolefniskeðjur', 'Alkanar', 'IUPAC nafnakerfi'],
   suffix: ['Mettaðar sameindir', 'Ómettaðar sameindir', 'Efnatengi'],
   name: ['Lífræn efni', 'Vetniskolefni', 'Formúlur'],
 };
@@ -43,13 +44,13 @@ interface SuffixRule {
 const prefixes: PrefixRule[] = [
   { carbons: 1, prefix: 'meth-', example: 'metan', formula: 'CH₄' },
   { carbons: 2, prefix: 'eth-', example: 'etan', formula: 'C₂H₆' },
-  { carbons: 3, prefix: 'prop-', example: 'propan', formula: 'C₃H₈' },
+  { carbons: 3, prefix: 'prop-', example: 'própan', formula: 'C₃H₈' },
   { carbons: 4, prefix: 'but-', example: 'bútan', formula: 'C₄H₁₀' },
   { carbons: 5, prefix: 'pent-', example: 'pentan', formula: 'C₅H₁₂' },
   { carbons: 6, prefix: 'hex-', example: 'hexan', formula: 'C₆H₁₄' },
   { carbons: 7, prefix: 'hept-', example: 'heptan', formula: 'C₇H₁₆' },
   { carbons: 8, prefix: 'oct-', example: 'oktan', formula: 'C₈H₁₈' },
-  { carbons: 9, prefix: 'non-', example: 'nonan', formula: 'C₉H₂₀' },
+  { carbons: 9, prefix: 'non-', example: 'nónan', formula: 'C₉H₂₀' },
   { carbons: 10, prefix: 'dec-', example: 'dekan', formula: 'C₁₀H₂₂' },
 ];
 
@@ -68,7 +69,7 @@ const suffixes: SuffixRule[] = [
   },
   {
     bondType: 'Þrítengi',
-    suffix: '-yn',
+    suffix: '-ýn',
     bondSymbol: 'C≡C',
     description: 'Eitt eða fleiri þrítengi (ómettað)',
   },
@@ -87,14 +88,14 @@ const quizQuestions: QuizQuestion[] = [
   {
     id: 1,
     type: 'prefix',
-    question: "Hvað táknar forskeyti 'meth-'?",
+    question: "Hvað táknar forskeytið 'meth-'?",
     correctAnswer: '1 kolefni',
     options: ['1 kolefni', '2 kolefni', '3 kolefni', '4 kolefni'],
   },
   {
     id: 2,
     type: 'prefix',
-    question: "Hvað táknar forskeyti 'prop-'?",
+    question: "Hvað táknar forskeytið 'prop-'?",
     correctAnswer: '3 kolefni',
     options: ['2 kolefni', '3 kolefni', '4 kolefni', '5 kolefni'],
   },
@@ -103,14 +104,14 @@ const quizQuestions: QuizQuestion[] = [
     type: 'suffix',
     question: "Hvað táknar viðskeytið '-an'?",
     correctAnswer: 'Eintengi',
-    options: ['Eintengi', 'Tvítengi', 'Þrítengi', 'Hóptengi'],
+    options: ['Eintengi', 'Tvítengi', 'Þrítengi', 'Virknihópur'],
   },
   {
     id: 4,
     type: 'suffix',
     question: "Hvað táknar viðskeytið '-en'?",
     correctAnswer: 'Tvítengi',
-    options: ['Eintengi', 'Tvítengi', 'Þrítengi', 'Hóptengi'],
+    options: ['Eintengi', 'Tvítengi', 'Þrítengi', 'Virknihópur'],
   },
   {
     id: 5,
@@ -122,7 +123,7 @@ const quizQuestions: QuizQuestion[] = [
   {
     id: 6,
     type: 'suffix',
-    question: "Hvað táknar viðskeytið '-yn'?",
+    question: "Hvað táknar viðskeytið '-ýn'?",
     correctAnswer: 'Þrítengi',
     options: ['Eintengi', 'Tvítengi', 'Þrítengi', 'Hringtengi'],
   },
@@ -131,14 +132,14 @@ const quizQuestions: QuizQuestion[] = [
     type: 'name',
     question: 'Hvað heitir C₂H₆?',
     correctAnswer: 'etan',
-    options: ['metan', 'etan', 'propan', 'bútan'],
+    options: ['metan', 'etan', 'própan', 'bútan'],
   },
   {
     id: 8,
     type: 'name',
     question: 'Hvað heitir C₃H₄ með þrítengi?',
-    correctAnswer: 'propyn',
-    options: ['propen', 'propyn', 'propan', 'propanal'],
+    correctAnswer: 'própýn',
+    options: ['própen', 'própýn', 'própan', 'própanal'],
   },
   {
     id: 9,
@@ -152,7 +153,7 @@ const quizQuestions: QuizQuestion[] = [
     type: 'name',
     question: 'Hvað heitir C₂H₄ með tvítengi?',
     correctAnswer: 'eten',
-    options: ['etan', 'eten', 'etyn', 'etanal'],
+    options: ['etan', 'eten', 'etýn', 'etanal'],
   },
 ];
 
@@ -220,23 +221,32 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when question index changes
   }, [currentQuestion, question]);
 
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const questionRef = useRef<HTMLDivElement>(null);
+  useRevealWhenShown(feedbackRef, showFeedback);
+  // "Byrja próf" and "Næsta spurning" bring the question back into view on a phone
+  useReturnToPrompt(questionRef, !showFeedback, `${phase}:${currentQuestion}`);
+
   if (phase === 'prefixes') {
     const prefix = prefixes[currentItem];
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <div className="flex justify-between items-center mb-6">
-            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+          <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+            <button
+              onClick={onBack}
+              className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+            >
               ← Til baka
             </button>
-            <div className="text-sm text-warm-500">
+            <div className="ml-auto text-sm text-warm-500 whitespace-nowrap">
               Forskeyti {currentItem + 1} af {prefixes.length}
             </div>
           </div>
 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-warm-700">
-            📚 Forskeytir (kolefnisfjöldi)
+            📚 Forskeyti (kolefnisfjöldi)
           </h1>
           <p className="text-center text-warm-600 mb-8">
             Forskeytið segir hversu mörg kolefni eru í keðjunni
@@ -257,8 +267,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             ))}
           </div>
 
-          <div className="bg-gradient-to-br from-warm-100 to-warm-100 p-8 rounded-2xl border-2 border-warm-200 animate-slide-in">
-            <div className="flex justify-center items-center gap-8 mb-6">
+          <div className="bg-gradient-to-br from-warm-100 to-warm-100 p-4 sm:p-8 rounded-2xl border-2 border-warm-200 animate-slide-in">
+            <div className="flex justify-center items-center gap-4 sm:gap-8 mb-6">
               <div className="text-center">
                 <div className="text-6xl font-bold text-warm-800 mb-2">{prefix.carbons}</div>
                 <div className="text-warm-500">kolefni</div>
@@ -272,14 +282,16 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
             <div className="bg-white p-4 rounded-xl text-center">
               <div className="text-sm text-warm-500 mb-1">Dæmi (alkan):</div>
-              <div className="flex items-center justify-center gap-4">
+              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
                 <span className="text-2xl font-bold text-warm-800">{prefix.example}</span>
                 <span className="text-xl text-warm-400">|</span>
-                <span className="text-2xl font-mono text-warm-600">{prefix.formula}</span>
+                <span className="text-2xl font-mono text-warm-600 whitespace-nowrap">
+                  {prefix.formula}
+                </span>
               </div>
             </div>
 
-            <div className="mt-4 flex justify-center">
+            <div className="mt-4 flex flex-wrap justify-center gap-y-2">
               {Array.from({ length: prefix.carbons }).map((_, idx) => (
                 <div key={idx} className="flex items-center">
                   <div className="w-8 h-8 rounded-full bg-warm-800 text-white font-bold text-sm flex items-center justify-center">
@@ -295,7 +307,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <button
               onClick={handlePrev}
               disabled={currentItem === 0}
-              className={`flex-1 py-3 px-6 rounded-xl font-bold ${
+              className={`flex-1 py-3 px-4 sm:px-6 rounded-xl font-bold ${
                 currentItem === 0
                   ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
                   : 'bg-warm-500 hover:bg-warm-600 text-white'
@@ -305,9 +317,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             </button>
             <button
               onClick={handleNext}
-              className="flex-1 bg-warm-700 hover:bg-warm-800 text-white font-bold py-3 px-6 rounded-xl"
+              className="flex-1 bg-warm-700 hover:bg-warm-800 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
             >
-              {currentItem === prefixes.length - 1 ? 'Viðskeytir →' : 'Næsta →'}
+              {currentItem === prefixes.length - 1 ? 'Viðskeyti →' : 'Næsta →'}
             </button>
           </div>
         </div>
@@ -320,18 +332,21 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <div className="flex justify-between items-center mb-6">
-            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+          <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+            <button
+              onClick={onBack}
+              className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+            >
               ← Til baka
             </button>
-            <div className="text-sm text-warm-500">
+            <div className="ml-auto text-sm text-warm-500 whitespace-nowrap">
               Viðskeyti {currentItem + 1} af {suffixes.length}
             </div>
           </div>
 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-green-700">
-            🔗 Viðskeytir (tengjategund)
+            🔗 Viðskeyti (tengjategund)
           </h1>
           <p className="text-center text-warm-600 mb-8">
             Viðskeytið segir hvaða tegund af tengingu er milli kolefna
@@ -352,7 +367,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             ))}
           </div>
 
-          <div className="bg-gradient-to-br from-green-100 to-emerald-100 p-8 rounded-2xl border-2 border-green-200 animate-slide-in">
+          <div className="bg-gradient-to-br from-green-100 to-emerald-100 p-4 sm:p-8 rounded-2xl border-2 border-green-200 animate-slide-in">
             <div className="text-center mb-6">
               <div className="text-4xl font-bold text-green-700 mb-2">{suffix.suffix}</div>
               <div className="text-2xl text-warm-700">{suffix.bondType}</div>
@@ -381,7 +396,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               <div
                 className={`p-3 rounded-lg text-center ${currentItem === 2 ? 'bg-purple-200' : 'bg-white'}`}
               >
-                <div className="font-bold">-yn</div>
+                <div className="font-bold">-ýn</div>
                 <div className="text-warm-500">C≡C</div>
               </div>
             </div>
@@ -390,13 +405,13 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           <div className="flex gap-4 mt-8">
             <button
               onClick={handlePrev}
-              className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-6 rounded-xl"
+              className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
             >
               ← Fyrri
             </button>
             <button
               onClick={handleNext}
-              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl"
+              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
             >
               {currentItem === suffixes.length - 1 ? 'Sameindasmiður →' : 'Næsta →'}
             </button>
@@ -410,12 +425,15 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   if (phase === 'builder') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <div className="flex justify-between items-center mb-6">
-            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+          <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+            <button
+              onClick={onBack}
+              className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+            >
               ← Til baka
             </button>
-            <div className="text-sm text-warm-500">Sameindasmiður</div>
+            <div className="ml-auto text-sm text-warm-500 whitespace-nowrap">Sameindasmiður</div>
           </div>
 
           <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-emerald-600">
@@ -449,13 +467,13 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 setPhase('suffixes');
                 setCurrentItem(suffixes.length - 1);
               }}
-              className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-6 rounded-xl"
+              className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
             >
               ← Til baka
             </button>
             <button
               onClick={handleNext}
-              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl"
+              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
             >
               Byrja próf →
             </button>
@@ -468,31 +486,37 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   // Quiz phase
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-        <div className="flex justify-between items-center mb-6">
-          <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+        <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+          <button
+            onClick={onBack}
+            className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+          >
             ← Til baka
           </button>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-warm-500">
+          <div className="ml-auto flex items-center gap-3 sm:gap-4">
+            <div className="text-sm text-warm-500 whitespace-nowrap">
               Spurning {currentQuestion + 1} af {quizQuestions.length}
             </div>
-            <div className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold">
+            <div className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold whitespace-nowrap">
               Stig: {score}
             </div>
           </div>
         </div>
 
         <h1 className="text-2xl md:text-3xl font-bold text-center mb-8 text-emerald-600">
-          ✏️ Próf: Forskeytir og viðskeytir
+          ✏️ Próf: Forskeyti og viðskeyti
         </h1>
 
-        <div className="bg-emerald-50 p-6 rounded-xl mb-6 text-center border-2 border-emerald-200">
+        <div
+          ref={questionRef}
+          className="bg-emerald-50 p-4 sm:p-6 rounded-xl mb-6 text-center border-2 border-emerald-200 scroll-mt-4"
+        >
           <div className="text-xl md:text-2xl font-bold text-warm-800">{question.question}</div>
         </div>
 
         {!showFeedback ? (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             {shuffledQuizOptions.map((option, idx) => (
               <button
                 key={idx}
@@ -504,7 +528,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             ))}
           </div>
         ) : (
-          <div className="space-y-4">
+          <div ref={feedbackRef} className="space-y-4 scroll-mt-4">
             <FeedbackPanel
               feedback={{
                 isCorrect,
@@ -527,7 +551,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
             <button
               onClick={handleNextQuestion}
-              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-6 rounded-xl"
+              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
             >
               {currentQuestion < quizQuestions.length - 1 ? 'Næsta spurning →' : 'Ljúka stigi →'}
             </button>
@@ -536,19 +560,22 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
         <div className="mt-6 bg-warm-50 p-4 rounded-xl">
           <h3 className="font-semibold text-warm-700 mb-2">📋 Minnisblað:</h3>
-          <div className="grid grid-cols-2 gap-4 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>
-              <div className="font-bold text-warm-700 mb-1">Forskeytir:</div>
-              <div className="grid grid-cols-2 gap-1">
+              <div className="font-bold text-warm-700 mb-1">Forskeyti:</div>
+              <div className="grid grid-cols-3 sm:grid-cols-2 gap-1">
                 {prefixes.slice(0, 6).map((p, idx) => (
-                  <div key={idx} className="bg-white p-1 rounded border text-center">
+                  <div
+                    key={idx}
+                    className="bg-white p-1 rounded border text-center whitespace-nowrap"
+                  >
                     {p.carbons}: {p.prefix}
                   </div>
                 ))}
               </div>
             </div>
             <div>
-              <div className="font-bold text-warm-700 mb-1">Viðskeytir:</div>
+              <div className="font-bold text-warm-700 mb-1">Viðskeyti:</div>
               <div className="space-y-1">
                 {suffixes.map((s, idx) => (
                   <div key={idx} className="bg-white p-1 rounded border text-center">

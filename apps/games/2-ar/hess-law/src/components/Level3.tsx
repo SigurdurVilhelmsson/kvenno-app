@@ -1,12 +1,15 @@
 import { useState } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
-import { parseStudentNumber } from '@shared/utils';
+import { formatDecimal, parseStudentNumber } from '@shared/utils';
 
+import { toSubscripts } from '../utils/formula-display';
 import {
   FORMATION_ENTHALPIES,
+  answerTolerance,
   checkAnswer as checkAnswerTolerance,
 } from '../utils/hess-calculations';
+import { toggleSign } from '../utils/sign';
 
 interface Level3Props {
   t: (key: string, fallback?: string) => string;
@@ -46,7 +49,7 @@ const challenges: Challenge[] = [
       { formula: 'H2O(l)', coefficient: 2, deltaHf: -285.8 },
     ],
     correctAnswer: -890.3,
-    unit: 'kJ/mol',
+    unit: 'kJ/mól',
     hintKey: 'level3.c1hint',
     explanationKey: 'level3.c1explanation',
   },
@@ -62,7 +65,7 @@ const challenges: Challenge[] = [
     ],
     products: [{ formula: 'NH3(g)', coefficient: 2, deltaHf: -46.1 }],
     correctAnswer: -92.2,
-    unit: 'kJ/mol',
+    unit: 'kJ/mól',
     hintKey: 'level3.c2hint',
     explanationKey: 'level3.c2explanation',
   },
@@ -78,7 +81,7 @@ const challenges: Challenge[] = [
       { formula: 'CO2(g)', coefficient: 1, deltaHf: -393.5 },
     ],
     correctAnswer: 178.3,
-    unit: 'kJ/mol',
+    unit: 'kJ/mól',
     hintKey: 'level3.c3hint',
     explanationKey: 'level3.c3explanation',
   },
@@ -96,7 +99,7 @@ const challenges: Challenge[] = [
     unknownCompound: 'SO2(g)',
     givenDeltaHrxn: -296.8,
     correctAnswer: -296.8,
-    unit: 'kJ/mol',
+    unit: 'kJ/mól',
     hintKey: 'level3.c4hint',
     explanationKey: 'level3.c4explanation',
   },
@@ -115,7 +118,7 @@ const challenges: Challenge[] = [
       { formula: 'H2O(l)', coefficient: 3, deltaHf: -285.8 },
     ],
     correctAnswer: -1366.7,
-    unit: 'kJ/mol',
+    unit: 'kJ/mól',
     hintKey: 'level3.c5hint',
     explanationKey: 'level3.c5explanation',
   },
@@ -134,7 +137,7 @@ const challenges: Challenge[] = [
       { formula: 'Fe(s)', coefficient: 2, deltaHf: 0 },
     ],
     correctAnswer: -851.5,
-    unit: 'kJ/mol',
+    unit: 'kJ/mól',
     hintKey: 'level3.c6hint',
     explanationKey: 'level3.c6explanation',
   },
@@ -191,22 +194,35 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
   // Calculate reactants sum for display
   const reactantsSum = challenge.reactants.reduce((sum, r) => sum + r.coefficient * r.deltaHf, 0);
 
+  // A "reverse" challenge asks for one compound's ΔH°f, so its value is the answer: the
+  // table and the worked sums show "?" in its place until the answer is checked. They used
+  // to print it outright — challenge 4's table read SO₂(g) −296,8 under "find ΔH°f(SO₂)".
+  const isHidden = (formula: string) =>
+    isCorrect === null && challenge.type === 'reverse' && formula === challenge.unknownCompound;
+  const productsHidden = challenge.products.some((p) => isHidden(p.formula));
+  const reactantsHidden = challenge.reactants.some((r) => isHidden(r.formula));
+
   if (showIntro) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 space-y-5">
-          <div className="flex justify-between items-center">
-            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 space-y-5">
+          <div className="flex flex-wrap sm:flex-nowrap justify-between items-center gap-y-1">
+            <button
+              onClick={onBack}
+              className="text-warm-500 hover:text-warm-700 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+            >
               ← {t('common.back', 'Til baka')}
             </button>
-            <h1 className="text-lg font-bold text-warm-800">Myndunarvarmar — Kennsla</h1>
+            <h1 className="order-last w-full sm:order-none sm:w-auto text-lg font-bold text-warm-800">
+              Myndunarvermi — Kennsla
+            </h1>
             <span className="text-sm text-warm-500">Stig 3</span>
           </div>
 
           <div className="bg-teal-50 border-l-4 border-teal-500 rounded-lg p-4">
             <h2 className="font-bold text-teal-900 mb-2">Hvað er ΔH°f?</h2>
             <p className="text-warm-700 text-sm leading-relaxed">
-              <strong>Staðalmyndunarvarmi</strong> (ΔH°f) er varminn sem losnar eða þarf til að
+              <strong>Staðalmyndunarvermi</strong> (ΔH°f) er varminn sem losnar eða þarf til að
               mynda <strong>1 mól</strong> af efnasambandi úr frumefnum í staðalástandi (25 °C, 1
               atm). Ef frumefnið er í sínu stöðugasta formi (t.d. O₂, C(grafít)) er ΔH°f = 0.
             </p>
@@ -215,13 +231,13 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           <div className="bg-white border border-warm-200 rounded-lg p-4 space-y-3">
             <h3 className="font-bold text-warm-800">Af hverju er formúlan til?</h3>
             <p className="text-warm-700 text-sm">
-              Hess-lögmálið segir að ΔH er ástandsbreyta — leiðin skiptir ekki máli. Ef við veljum{' '}
+              Hess-lögmálið segir að ΔH sé ástandsfall — leiðin skiptir ekki máli. Ef við veljum{' '}
               <strong>frumefni í staðalástandi sem viðmið</strong>, þá getum við reiknað heildar-ΔH
               fyrir hvaða hvarf sem er með því einu að vita ΔH°f fyrir öll efnin:
             </p>
             <div className="bg-teal-50 border border-teal-200 rounded-lg p-3 text-center">
               <p className="font-mono text-teal-900 text-base">
-                ΔH°<sub>rxn</sub> = Σ n·ΔH°f(myndefni) − Σ n·ΔH°f(hvarfefni)
+                ΔH°<sub>rxn</sub> = Σ&nbsp;n·ΔH°f(myndefni) − Σ&nbsp;n·ΔH°f(hvarfefni)
               </p>
             </div>
             <p className="text-xs text-warm-600">
@@ -231,12 +247,15 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           </div>
 
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm">
-            <h3 className="font-bold text-amber-800 mb-2">Dæmi: CH₄ + 2 O₂ → CO₂ + 2 H₂O</h3>
+            <h3 className="font-bold text-amber-800 mb-2">
+              Dæmi: CH₄ + 2&nbsp;O₂ → CO₂ + 2&nbsp;H₂O
+            </h3>
             <p className="text-warm-700 mb-2">
               Gefið: ΔH°f CH₄ = −75, CO₂ = −394, H₂O = −286 kJ/mól.
             </p>
             <p className="font-mono text-warm-800">
-              ΔH°rxn = [(1)(−394) + (2)(−286)] − [(1)(−75) + (2)(0)]
+              ΔH°rxn = <span className="whitespace-nowrap">[(1)(−394) + (2)(−286)]</span> −{' '}
+              <span className="whitespace-nowrap">[(1)(−75) + (2)(0)]</span>
             </p>
             <p className="font-mono text-warm-800">
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = (−966) − (−75) = <strong>−891 kJ</strong>
@@ -265,7 +284,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
           >
             <span>&larr;</span> {t('common.back')}
           </button>
@@ -288,28 +307,28 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <h2 className="text-2xl font-bold text-purple-800 mb-2">{t(challenge.titleKey)}</h2>
           <p className="text-warm-600 mb-6">{t(challenge.descKey)}</p>
 
           {/* Chemical equation display */}
           <div className="bg-purple-50 p-4 rounded-xl mb-6">
-            <div className="text-center font-mono text-xl">{challenge.equation}</div>
+            <div className="text-center font-mono text-lg sm:text-xl">{challenge.equation}</div>
           </div>
 
           {/* Toggle formation enthalpy table */}
           <button
             onClick={() => setShowTable(!showTable)}
-            className="mb-4 text-purple-600 hover:text-purple-800 underline text-sm"
+            className="mb-4 text-purple-600 hover:text-purple-800 underline text-sm pointer-coarse:py-3 pointer-coarse:-mt-3 pointer-coarse:mb-1"
           >
             {showTable ? t('level3.hideTable') : t('level3.showTable')}
           </button>
 
           {/* Formation enthalpy table */}
           {showTable && (
-            <div className="bg-warm-50 p-4 rounded-xl mb-6 max-h-64 overflow-y-auto">
+            <div className="bg-warm-50 p-4 rounded-xl mb-6 md:max-h-64 md:overflow-y-auto">
               <h3 className="font-bold text-warm-700 mb-3">{t('level3.tableTitle')}</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
+              <div className="grid grid-cols-1 min-[400px]:grid-cols-2 md:grid-cols-3 gap-2 text-sm">
                 {Object.entries(FORMATION_ENTHALPIES)
                   .filter(
                     ([formula]) =>
@@ -318,13 +337,17 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                   )
                   .map(([formula, { value, name }]) => (
                     <div key={formula} className="bg-white p-2 rounded border">
-                      <div className="font-mono font-bold">{formula}</div>
+                      <div className="font-mono font-bold">{toSubscripts(formula)}</div>
                       <div className="text-warm-600 text-xs">{name}</div>
-                      <div
-                        className={`font-bold ${value < 0 ? 'text-blue-600' : value > 0 ? 'text-red-600' : 'text-warm-600'}`}
-                      >
-                        {value} kJ/mol
-                      </div>
+                      {isHidden(formula) ? (
+                        <div className="font-bold text-purple-600">? kJ/mól</div>
+                      ) : (
+                        <div
+                          className={`font-bold ${value < 0 ? 'text-blue-600' : value > 0 ? 'text-red-600' : 'text-warm-600'}`}
+                        >
+                          {formatDecimal(value)} kJ/mól
+                        </div>
+                      )}
                     </div>
                   ))}
               </div>
@@ -347,16 +370,31 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
             <div className="mb-4">
               <div className="font-semibold text-green-700 mb-2">{t('level3.products')}</div>
               <div className="space-y-1 text-sm font-mono">
-                {challenge.products.map((p, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <span>
-                      {p.coefficient} × ΔH°f({p.formula}) = {p.coefficient} × ({p.deltaHf}) ={' '}
-                    </span>
-                    <span className="font-bold">{(p.coefficient * p.deltaHf).toFixed(1)} kJ</span>
-                  </div>
-                ))}
+                {challenge.products.map((p, i) =>
+                  isHidden(p.formula) ? (
+                    <div key={i} className="flex items-center gap-2">
+                      <span className="min-w-0">
+                        {p.coefficient} × ΔH°f({toSubscripts(p.formula)}) ={' '}
+                      </span>
+                      <span className="shrink-0 whitespace-nowrap font-bold text-purple-600">
+                        ? kJ
+                      </span>
+                    </div>
+                  ) : (
+                    <div key={i} className="flex items-center gap-2">
+                      <span className="min-w-0">
+                        {p.coefficient} × ΔH°f({toSubscripts(p.formula)}) = {p.coefficient} × (
+                        {formatDecimal(p.deltaHf)}) ={' '}
+                      </span>
+                      <span className="shrink-0 whitespace-nowrap font-bold">
+                        {formatDecimal(p.coefficient * p.deltaHf, 1)} kJ
+                      </span>
+                    </div>
+                  )
+                )}
                 <div className="border-t pt-1 font-bold">
-                  {t('level3.totalProducts')} {productsSum.toFixed(1)} kJ
+                  {t('level3.totalProducts')} {productsHidden ? '?' : formatDecimal(productsSum, 1)}{' '}
+                  kJ
                 </div>
               </div>
             </div>
@@ -365,16 +403,31 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
             <div className="mb-4">
               <div className="font-semibold text-blue-700 mb-2">{t('level3.reactants')}</div>
               <div className="space-y-1 text-sm font-mono">
-                {challenge.reactants.map((r, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <span>
-                      {r.coefficient} × ΔH°f({r.formula}) = {r.coefficient} × ({r.deltaHf}) ={' '}
-                    </span>
-                    <span className="font-bold">{(r.coefficient * r.deltaHf).toFixed(1)} kJ</span>
-                  </div>
-                ))}
+                {challenge.reactants.map((r, i) =>
+                  isHidden(r.formula) ? (
+                    <div key={i} className="flex items-center gap-2">
+                      <span className="min-w-0">
+                        {r.coefficient} × ΔH°f({toSubscripts(r.formula)}) ={' '}
+                      </span>
+                      <span className="shrink-0 whitespace-nowrap font-bold text-purple-600">
+                        ? kJ
+                      </span>
+                    </div>
+                  ) : (
+                    <div key={i} className="flex items-center gap-2">
+                      <span className="min-w-0">
+                        {r.coefficient} × ΔH°f({toSubscripts(r.formula)}) = {r.coefficient} × (
+                        {formatDecimal(r.deltaHf)}) ={' '}
+                      </span>
+                      <span className="shrink-0 whitespace-nowrap font-bold">
+                        {formatDecimal(r.coefficient * r.deltaHf, 1)} kJ
+                      </span>
+                    </div>
+                  )
+                )}
                 <div className="border-t pt-1 font-bold">
-                  {t('level3.totalReactants')} {reactantsSum.toFixed(1)} kJ
+                  {t('level3.totalReactants')}{' '}
+                  {reactantsHidden ? '?' : formatDecimal(reactantsSum, 1)} kJ
                 </div>
               </div>
             </div>
@@ -383,21 +436,37 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           {/* Answer input */}
           <div className="flex flex-col md:flex-row gap-4 items-center mb-6">
             <div className="flex-1 w-full">
-              <label className="block text-sm font-medium text-warm-700 mb-2">
+              <label
+                htmlFor="hess-l3-answer"
+                className="block text-sm font-medium text-warm-700 mb-2"
+              >
                 {challenge.type === 'reverse'
-                  ? `ΔH°f(${challenge.unknownCompound}) = `
+                  ? `ΔH°f(${toSubscripts(challenge.unknownCompound ?? '')}) = `
                   : 'ΔH°rxn = '}
               </label>
               <div className="flex gap-2">
                 <input
+                  id="hess-l3-answer"
                   type="text"
                   inputMode="decimal"
+                  autoComplete="off"
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
                   className="flex-1 p-3 border-2 border-warm-300 rounded-xl focus:border-purple-500 focus:outline-none text-lg font-mono"
                   placeholder={t('level3.placeholder')}
                   disabled={isCorrect !== null}
                 />
+                {/* The decimal keypad has no minus key on an iPhone, and five of the six answers
+                    here are negative. Touch screens only; a desktop keyboard has one. */}
+                <button
+                  type="button"
+                  onClick={() => setUserAnswer(toggleSign(userAnswer))}
+                  disabled={isCorrect !== null}
+                  aria-label="Skipta um formerki"
+                  className="hidden h-11 w-11 shrink-0 self-center items-center justify-center rounded-lg border-2 border-warm-300 bg-white font-mono text-lg text-warm-700 disabled:opacity-50 pointer-coarse:inline-flex"
+                >
+                  ±
+                </button>
                 <span className="flex items-center text-warm-600 font-mono">{challenge.unit}</span>
               </div>
             </div>
@@ -406,7 +475,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
               <button
                 onClick={checkAnswer}
                 disabled={!userAnswer}
-                className="bg-purple-500 hover:bg-purple-600 disabled:bg-warm-300 text-white font-bold py-3 px-8 rounded-xl transition-colors"
+                className="w-full md:w-auto bg-purple-500 hover:bg-purple-600 disabled:bg-warm-300 text-white font-bold py-3 px-8 rounded-xl transition-colors"
               >
                 {t('level3.check')}
               </button>
@@ -417,7 +486,7 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           {isCorrect === null && !showHint && (
             <button
               onClick={handleShowHint}
-              className="text-purple-600 hover:text-purple-800 text-sm underline mb-4"
+              className="text-purple-600 hover:text-purple-800 text-sm underline mb-4 pointer-coarse:py-3 pointer-coarse:-mt-3 pointer-coarse:mb-1"
             >
               {t('level3.showHint')}
             </button>
@@ -444,7 +513,8 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                 <span>{isCorrect ? t('common.correct') : t('common.incorrect')}</span>
               </div>
               <div className={`font-mono ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
-                {t('level3.correctAnswer')} {challenge.correctAnswer} {challenge.unit}
+                {t('level3.correctAnswer')} {formatDecimal(challenge.correctAnswer)}{' '}
+                {challenge.unit}
               </div>
               {!isCorrect &&
                 (() => {
@@ -453,12 +523,14 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                   const delta = userNum - challenge.correctAnswer;
                   return (
                     <div className="text-sm text-warm-700 mt-2">
-                      Þú slóðir inn <span className="font-mono">{userAnswer}</span> — munurinn er{' '}
+                      Þú slóst inn <span className="font-mono">{userAnswer}</span> — munurinn er{' '}
                       <span className="font-mono font-bold">
                         {delta > 0 ? '+' : ''}
-                        {delta.toFixed(1)}
+                        {formatDecimal(delta, 1)}
                       </span>{' '}
-                      {challenge.unit} (leyft svigrúm: ±2 {challenge.unit}).
+                      {challenge.unit} (leyft svigrúm: ±
+                      {formatDecimal(answerTolerance(challenge.correctAnswer), 1)} {challenge.unit}
+                      ).
                     </div>
                   );
                 })()}

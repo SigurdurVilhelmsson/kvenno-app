@@ -1,5 +1,6 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 
+import { useContainerWidth } from '@shared/components/ResponsiveContainer';
 import { formatDecimal } from '@shared/utils';
 
 /**
@@ -151,10 +152,24 @@ export function TemperatureSolubilityCurve({
     return max > 0 ? max * 1.1 : 1;
   }, [selectedData]);
 
+  // On a phone the chart is drawn at about 0.8x, which took its 12-unit
+  // labels down to 9 px. The compact variant keeps the same data but draws
+  // 16-unit labels, a tick every 25 °C (on the grid lines) instead of every
+  // 20 °C so they do not collide, and the axis title level above the axis
+  // instead of rotated beside it, where a gas value such as 0,0076 ran into
+  // it. A wider container gets the original drawing unchanged.
+  const containerRef = useRef<HTMLDivElement>(null);
+  const containerWidth = useContainerWidth(containerRef);
+  const compact = containerWidth !== null && containerWidth < 400;
+
   // SVG dimensions
   const width = 320;
-  const height = 200;
-  const padding = { top: 20, right: 40, bottom: 40, left: 60 };
+  const height = compact ? 220 : 200;
+  const padding = compact
+    ? { top: 34, right: 26, bottom: 44, left: 66 }
+    : { top: 20, right: 40, bottom: 40, left: 60 };
+  const labelClass = compact ? 'text-[16px] fill-warm-600' : 'text-xs fill-warm-600';
+  const xTicks = compact ? [0, 25, 50, 75, 100] : [0, 20, 40, 60, 80, 100];
   const graphWidth = width - padding.left - padding.right;
   const graphHeight = height - padding.top - padding.bottom;
 
@@ -173,7 +188,7 @@ export function TemperatureSolubilityCurve({
   };
 
   return (
-    <div className="bg-white rounded-xl p-4 border border-warm-200">
+    <div ref={containerRef} className="bg-white rounded-xl p-2 sm:p-4 border border-warm-200">
       {/* SVG Chart */}
       <svg viewBox={`0 0 ${width} ${height}`} className="w-full max-w-md mx-auto">
         {/* Grid lines */}
@@ -219,37 +234,43 @@ export function TemperatureSolubilityCurve({
         />
 
         {/* X-axis labels */}
-        {[0, 20, 40, 60, 80, 100].map((temp) => (
+        {xTicks.map((temp) => (
           <text
             key={`x-${temp}`}
             x={xScale(temp)}
-            y={height - padding.bottom + 20}
+            y={height - padding.bottom + (compact ? 24 : 20)}
             textAnchor="middle"
-            className="text-xs fill-warm-600"
+            className={labelClass}
           >
             {temp}°C
           </text>
         ))}
 
         {/* Y-axis label */}
-        <text
-          x={10}
-          y={height / 2}
-          textAnchor="middle"
-          transform={`rotate(-90, 10, ${height / 2})`}
-          className="text-xs fill-warm-600"
-        >
-          g/100g H₂O
-        </text>
+        {compact ? (
+          <text x={4} y={16} textAnchor="start" className={labelClass}>
+            g/100g H₂O
+          </text>
+        ) : (
+          <text
+            x={10}
+            y={height / 2}
+            textAnchor="middle"
+            transform={`rotate(-90, 10, ${height / 2})`}
+            className={labelClass}
+          >
+            g/100g H₂O
+          </text>
+        )}
 
         {/* Y-axis values */}
         {[0, 0.5, 1].map((ratio) => (
           <text
             key={`y-${ratio}`}
             x={padding.left - 5}
-            y={yScale(ratio * maxSolubility) + 4}
+            y={yScale(ratio * maxSolubility) + (compact ? 5 : 4)}
             textAnchor="end"
-            className="text-xs fill-warm-600"
+            className={labelClass}
           >
             {formatSolubility(ratio * maxSolubility)}
           </text>
@@ -303,13 +324,16 @@ export function TemperatureSolubilityCurve({
         <div className="mt-4">
           <div className="flex items-center gap-3">
             <span className="text-blue-500 text-lg">❄️</span>
+            {/* 44 px track on touch, the bar a background stripe; see the
+                volume slider in Level1 for why this is not padding. */}
             <input
               type="range"
               min="0"
               max="100"
               value={temperature}
               onChange={(e) => onTemperatureChange(Number(e.target.value))}
-              className="flex-1 h-2 bg-gradient-to-r from-blue-400 via-yellow-400 to-red-500 rounded-lg appearance-none cursor-pointer"
+              aria-label="Hitastig í gráðum á Celsíus"
+              className="flex-1 h-2 bg-gradient-to-r from-blue-400 via-yellow-400 to-red-500 rounded-lg appearance-none cursor-pointer pointer-coarse:h-11 pointer-coarse:rounded-none pointer-coarse:bg-[length:100%_8px] pointer-coarse:bg-center pointer-coarse:bg-no-repeat"
             />
             <span className="text-red-500 text-lg">🔥</span>
           </div>
@@ -467,7 +491,7 @@ export function TemperatureComparison({
   const solAfter = interpolateSolubility(compound, tempAfter);
 
   return (
-    <div className="flex items-center justify-center gap-4 my-4">
+    <div className="flex flex-wrap items-center justify-center gap-4 my-4">
       <div className="text-center">
         <div className="text-sm font-semibold mb-2 text-warm-700">Fyrir</div>
         <TemperatureBeaker compound={compound} temperature={tempBefore} />
@@ -488,7 +512,9 @@ export function TemperatureComparison({
       </div>
 
       {showAfter && (
-        <div className="ml-4 bg-warm-50 p-3 rounded-lg text-sm">
+        // On a phone there is no room beside the two beakers, so the summary
+        // takes its own line below them.
+        <div className="w-full text-center sm:w-auto sm:text-left sm:ml-4 bg-warm-50 p-3 rounded-lg text-sm">
           <div className="font-semibold text-warm-700 mb-1">Breyting:</div>
           <div className={solAfter > solBefore ? 'text-green-600' : 'text-red-600'}>
             {formatSolubility(solBefore)} → {formatSolubility(solAfter)} g/100g

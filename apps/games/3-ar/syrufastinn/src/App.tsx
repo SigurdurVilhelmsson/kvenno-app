@@ -79,10 +79,10 @@ function App() {
           <div className="mx-auto max-w-4xl">
             <p className="mb-8 text-center text-lg text-warm-600">
               Ein tala lýsir sýrunni sjálfri — hvaðan hún kemur, hvað hún segir og hvenær styttri
-              leiðin að svarinu má nota
+              leiðina að svarinu má nota
             </p>
 
-            <div className="rounded-lg bg-white p-8 shadow-md">
+            <div className="rounded-lg bg-white p-5 shadow-md sm:p-8">
               <h2 className="mb-2 text-2xl font-bold text-warm-800">Fjórir áfangar</h2>
               <p className="mb-6 text-warm-600">
                 Þú hefur þegar séð pKa gefinn upp í dæmum — í títrunum og í Henderson-Hasselbalch.
@@ -96,7 +96,7 @@ function App() {
                     key={phase.id}
                     type="button"
                     onClick={() => setScreen(phase.id)}
-                    className={`game-card rounded-lg p-6 text-left text-white transition-colors ${phase.tone}`}
+                    className={`game-card rounded-lg p-5 text-left text-white transition-colors sm:p-6 ${phase.tone}`}
                   >
                     <div className="mb-2 flex items-center gap-2">
                       <span className="text-2xl">{phase.number}</span>
@@ -141,18 +141,26 @@ function App() {
 
               <div className="mt-6 rounded-lg bg-warm-50 p-4">
                 <h3 className="mb-2 font-semibold text-warm-700">Lykilformúlur</h3>
+                {/* A formula wraps as a whole, onto the line below its label, rather
+                    than breaking between its terms on a phone. */}
                 <div className="space-y-2 font-mono text-sm text-warm-600">
                   <p>
-                    <strong>Sýrufasti:</strong> Ka = x² / (C − x)
+                    <strong>Sýrufasti:</strong>{' '}
+                    <span className="whitespace-nowrap">Ka = x² / (C − x)</span>
                   </p>
                   <p>
-                    <strong>Nákvæm lausn:</strong> x² + Ka·x − Ka·C = 0
+                    <strong>Nákvæm lausn:</strong>{' '}
+                    <span className="whitespace-nowrap">x² + Ka·x − Ka·C = 0</span>
                   </p>
                   <p>
-                    <strong>Nálgun:</strong> x ≈ √(Ka · C), gildir ef x/C &lt; 5 %
+                    <strong>Nálgun:</strong>{' '}
+                    <span className="whitespace-nowrap">x ≈ √(Ka · C)</span>, gildir ef{' '}
+                    <span className="whitespace-nowrap">x/C &lt; 5 %</span>
                   </p>
                   <p>
-                    <strong>Samoka par:</strong> Ka · Kb = Kw = 1,0 × 10⁻¹⁴
+                    <strong>Samoka par:</strong>{' '}
+                    <span className="whitespace-nowrap">Ka · Kb = Kw</span>{' '}
+                    <span className="whitespace-nowrap">= 1,0 × 10⁻¹⁴</span>
                   </p>
                 </div>
               </div>
@@ -163,8 +171,8 @@ function App() {
                   Blóðið þitt heldur pH 7,4 af því að kolsýra og bíkarbónat sitja í jafnvægi sem
                   sýrufastinn ákveður. Sama tala ræður því hversu mikið af lyfi kemst gegnum
                   magavegginn, af hverju súrt regn leysir upp kalkstein, og hvers vegna edik
-                  bragðast súrt en er samt aðeins örfá prósent klofið. Ka er talan sem gerir „veik
-                  sýra“ að mælanlegri stærð í stað lýsingarorðs.
+                  bragðast súrt en er samt innan við eitt prósent klofið. Ka er talan sem gerir
+                  „veik sýra“ að mælanlegri stærð í stað lýsingarorðs.
                 </p>
               </div>
 

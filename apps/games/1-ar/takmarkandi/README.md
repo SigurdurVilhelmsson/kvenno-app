@@ -103,6 +103,14 @@ stripped accents in game source.**
 fallbacks, including both `'Halda afram'` and `'Halda áfram'` in one game) and `1-ar/lausnir` (its
 subtitle and a menu label). All fixed.
 
+**"All 30" was not all of them.** The 2026-09 mobile pass found eleven more in this game —
+`Sjónræn`, `Stuðull`, `klárast`, `Það`/`það`, `máli` (twice, once as the non-word `maxi`),
+`hvarfið átt sér stað`, `mikið`, `færri` — plus the misspelt plural `sameindur` (it is `sameindir`),
+`heimtir` for `heimtur`, the split compound `Heildar stig`, and a header title with an English-style
+capital, `Takmarkandi Hvarfefni`, against the hub card's `Takmarkandi hvarfefni`. The platform guard
+had not caught them because none was on its list; `src/__tests__/icelandic-text.test.tsx` holds
+this game to each.
+
 ## Terminology
 
 `ordabok.md` already governed the whole family and nothing had ever used it:
@@ -134,10 +142,49 @@ src/utils/yield.ts                  the mass maths for Stig 3
 src/data/reactions.ts               20 reactions
 src/data/yieldProblems.ts           5 mass problems; only the givens are written down
 src/components/                     Level1, Level2, Level3, Molecule
-src/__tests__/                      data-integrity, yield, level3-playable
+src/__tests__/                      data-integrity, yield, level3-playable, phone-scroll,
+                                    icelandic-text, play-integrity
 ```
 
 ## Open
+
+**Fixed 2026-09-23**, each guarded by `play-integrity.test.tsx`: Stig 1's answer alternated left,
+right, left, … on every run (`CURRICULUM_REVIEW.md:198`), so it could be scored in full without
+reading — which side is limiting is now half each way in a shuffled order. "Reyna aftur" on the Stig 1
+and 2 results replayed the identical set whose answers had just been shown; it now draws a new one,
+the `lotukerfid`/`molmassi`/`lausnir` idiom. Stig 3's "Athuga" graded an empty step as wrong and
+printed the answer; it now waits for a choice or a number, and Enter submits a typed answer. Finishing
+Stig 3 at 0 points no longer leaves the "Stig lokið" counter at 2/3.
+
+**Also fixed the same day, guarded by `yield.test.ts`:** the `vatn` review text printed 2 mol of
+hydrogen against 1,5 mol of oxygen and then said the mole count decides which runs out — where the
+reactant with more moles is the limiting one. It now says the mole count divided by the coefficient
+decides, with the two quotients. Only that clause changed; the masses and the rest of the text are
+the third of Siggi's calls below.
+
+**Siggi's calls, found in the same pass and deliberately not changed:**
+
+- **Stig 3's per-step "Reyna aftur" follows a feedback panel that prints the answer**, and a retried
+  step scores the full 10. Answering every step wrong, reading `Rétt svar`, and retrying scores
+  150 of 150 — measured by playing the real component. Options: a retried step earns nothing (or
+  less); hide the number while a retry is on offer (the review screen shows it anyway); or drop the
+  retry. Recommendation: score the first attempt only, keep the retry for practice.
+- **Stig 1 never poses the item its own misconception text is about.** The feedback says the
+  limiting reactant is not always the one there is less of, but every generated item has the
+  limiting reactant fewer or tied in molecules, so the case never appears (February's own fix,
+  "include problems where the limiting reactant switches", `FEBRUARY-DECISIONS-RECOVERED.md:358`).
+  Recommendation: for the 2:1 reactions, draw some items like 6 H₂ against 4 O₂ (H₂ limiting, and
+  more numerous).
+- **In 3 of Stig 3's 5 problems the smaller mass is the limiting reactant** (`vatn`, `magnesiumoxid`,
+  `natriumklorid`), so "pick the smaller number" scores 3 of 5 on step 1, against
+  `yieldProblems.ts`'s stated aim. The `vatn` context — "hydrogen runs out first although it is much
+  lighter" — reinforces the grams heuristic rather than breaking it. Only `ammoniak` and `thermit`
+  break it. The step-1 misconception text ("a heavier reactant can well be the one that runs out
+  last") speaks to the student who picked the heavier one, not to one who picked the lighter.
+  Recommendation: re-weigh one or two of the three so the heavier mass is limiting.
+- **B7 is still open here:** Stig 1 and 2 count Mg, Na, K, Ca, Zn and Cu as `sameindir`
+  (molecules), and the `Molecule` component labels each ball `… sameind`. Which word replaces it for
+  atoms and formula units (`eindir`?) is a terminology ruling, not a spelling fix.
 
 - **Percent composition and combustion analysis are the neighbours**, both unbuilt. The book puts
   percent composition in ch. 3 with Mólmassi and Reynsluformúlur, and combustion analysis in

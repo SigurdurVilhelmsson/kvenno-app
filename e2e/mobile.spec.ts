@@ -51,7 +51,15 @@ test.describe('Mobile viewport tests', () => {
   });
 
   test('no horizontal overflow on main pages', async ({ page }) => {
-    const pagesToCheck = ['/', '/efnafraedi', '/efnafraedi/1-ar', '/islenskubraut/'];
+    const pagesToCheck = [
+      '/',
+      '/efnafraedi',
+      '/efnafraedi/1-ar',
+      '/efnafraedi/1-ar/games/',
+      '/efnafraedi/2-ar/games/',
+      '/efnafraedi/3-ar/games/',
+      '/islenskubraut/',
+    ];
 
     for (const url of pagesToCheck) {
       await page.goto(url);
@@ -64,5 +72,55 @@ test.describe('Mobile viewport tests', () => {
 
       expect(hasHorizontalOverflow, `Horizontal overflow detected on ${url}`).toBe(false);
     }
+  });
+});
+
+/**
+ * The route a student takes to a game, at the narrowest supported phone.
+ *
+ * 320px is where the long one-word game titles bite: "Millisameindakraftar" on
+ * the 2-ar games hub pushed the whole page sideways until the cards stepped
+ * down their padding and title size below md:.
+ */
+test.describe('Hub pages at 320px', () => {
+  test.use({ viewport: { width: 320, height: 568 } });
+
+  const hubs = [
+    '/',
+    '/efnafraedi',
+    '/efnafraedi/1-ar',
+    '/efnafraedi/2-ar',
+    '/efnafraedi/3-ar',
+    '/efnafraedi/f-bekkir',
+    '/efnafraedi/1-ar/games/',
+    '/efnafraedi/2-ar/games/',
+    '/efnafraedi/3-ar/games/',
+  ];
+
+  for (const url of hubs) {
+    test(`${url} has no horizontal overflow`, async ({ page }) => {
+      await page.goto(url);
+      await page.waitForLoadState('networkidle');
+
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+      );
+      expect(overflow, `Horizontal overflow on ${url}`).toBeLessThanOrEqual(1);
+    });
+  }
+
+  test('the phone tab bar never covers the footer', async ({ page }) => {
+    await page.goto('/efnafraedi/1-ar/games/');
+    await page.waitForLoadState('networkidle');
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+
+    const navTop = await page
+      .getByRole('navigation', { name: 'Aðalfletting' })
+      .evaluate((el) => el.getBoundingClientRect().top);
+    const footerBottom = await page
+      .locator('footer p')
+      .last()
+      .evaluate((el) => el.getBoundingClientRect().bottom);
+    expect(footerBottom).toBeLessThanOrEqual(navTop);
   });
 });

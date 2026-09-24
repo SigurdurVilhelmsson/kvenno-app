@@ -1,13 +1,33 @@
 import { KIND_LABELS, KIND_STYLES } from '../data/ratios';
 import {
-  formatNumber,
+  formatStated,
   type Equivalence,
   type EquivalenceSide,
   type OrientedRatio,
 } from '../engine/units';
 
+// A card states a fact, so it prints the value exactly as the engine uses it.
 const sideLabel = (side: EquivalenceSide): string =>
-  `${formatNumber(side.value)} ${side.unit}${side.species ? ` ${side.species}` : ''}`;
+  `${formatStated(side.value)} ${side.unit}${side.species ? ` ${side.species}` : ''}`;
+
+/**
+ * One side of a ratio, as text that wraps only between the number and the unit.
+ *
+ * On a phone a side can be wider than its card (`6,022 × 10²³ formúlueiningar
+ * NaCl`), and a free wrap splits the number from its power of ten or the unit
+ * from its substance. Each half is kept whole instead.
+ */
+function SideText({ side }: { side: EquivalenceSide }) {
+  return (
+    <>
+      <span className="whitespace-nowrap">{formatStated(side.value)}</span>{' '}
+      <span className="whitespace-nowrap">
+        {side.unit}
+        {side.species ? ` ${side.species}` : ''}
+      </span>
+    </>
+  );
+}
 
 interface PoolCardProps {
   equivalence: Equivalence;
@@ -32,12 +52,12 @@ export function PoolCard({ equivalence, onAdd, disabled }: PoolCardProps) {
       className={`game-btn w-full rounded-lg border-2 p-3 text-left transition hover:shadow-md disabled:opacity-40 ${KIND_STYLES[equivalence.kind]}`}
       aria-label={`Bæta við hlutfalli: ${sideLabel(equivalence.left)} jafngildir ${sideLabel(equivalence.right)}`}
     >
-      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide opacity-70">
+      <span className="mb-1 block text-[12px] font-semibold uppercase tracking-wide opacity-70 md:text-[11px]">
         {KIND_LABELS[equivalence.kind]}
       </span>
       <span className="block text-sm font-medium">
-        {sideLabel(equivalence.left)} <span className="opacity-60">=</span>{' '}
-        {sideLabel(equivalence.right)}
+        <SideText side={equivalence.left} /> <span className="opacity-60">=</span>{' '}
+        <SideText side={equivalence.right} />
       </span>
       {equivalence.source && (
         <span className="mt-1 block text-xs opacity-70">{equivalence.source}</span>
@@ -53,13 +73,23 @@ interface RatioFractionProps {
   className?: string;
 }
 
-/** An oriented ratio drawn as a real fraction, with a rule between the halves. */
+/**
+ * An oriented ratio drawn as a real fraction, with a rule between the halves.
+ *
+ * Which way up it is *is* the skill, and the rule alone says nothing to a
+ * screen reader, so the bar is also spoken.
+ */
 export function RatioFraction({ ratio, marks, className }: RatioFractionProps) {
   return (
     <span className={`inline-flex flex-col items-center leading-tight ${className ?? ''}`}>
-      <span className={`px-2 ${marks?.num ? 'unit-cancelled' : ''}`}>{sideLabel(ratio.num)}</span>
+      <span className={`px-2 text-center ${marks?.num ? 'unit-cancelled' : ''}`}>
+        <SideText side={ratio.num} />
+      </span>
+      <span className="sr-only"> deilt með </span>
       <span className="w-full border-t-2 border-current" aria-hidden="true" />
-      <span className={`px-2 ${marks?.den ? 'unit-cancelled' : ''}`}>{sideLabel(ratio.den)}</span>
+      <span className={`px-2 text-center ${marks?.den ? 'unit-cancelled' : ''}`}>
+        <SideText side={ratio.den} />
+      </span>
     </span>
   );
 }
@@ -67,8 +97,12 @@ export function RatioFraction({ ratio, marks, className }: RatioFractionProps) {
 interface ChainCardProps {
   ratio: OrientedRatio;
   position: number;
-  onFlip: () => void;
-  onRemove: () => void;
+  /**
+   * Turn the card over and take it back out. Without them the card is shown
+   * read-only, as the chain is while the student predicts its outcome.
+   */
+  onFlip?: () => void;
+  onRemove?: () => void;
   /** Highlight the card the solver stopped on. */
   failed?: boolean;
 }
@@ -86,24 +120,26 @@ export function ChainCard({ ratio, position, onFlip, onRemove, failed }: ChainCa
       <div className="flex items-center justify-center px-1 py-1">
         <RatioFraction ratio={ratio} />
       </div>
-      <div className="mt-1 flex gap-1">
-        <button
-          type="button"
-          onClick={onFlip}
-          className="game-btn flex-1 rounded border border-current/30 px-2 py-1 text-xs font-medium hover:bg-white/60"
-          aria-label={`Snúa við hlutfalli númer ${position}`}
-        >
-          ⇅ Snúa við
-        </button>
-        <button
-          type="button"
-          onClick={onRemove}
-          className="game-btn rounded border border-current/30 px-2 py-1 text-xs font-medium hover:bg-white/60"
-          aria-label={`Fjarlægja hlutfall númer ${position}`}
-        >
-          ✕
-        </button>
-      </div>
+      {onFlip && onRemove && (
+        <div className="mt-1 flex gap-1">
+          <button
+            type="button"
+            onClick={onFlip}
+            className="game-btn flex-1 rounded border border-current/30 px-2 py-1 text-xs font-medium hover:bg-white/60 pointer-coarse:min-h-11"
+            aria-label={`Snúa við hlutfalli númer ${position}`}
+          >
+            ⇅ Snúa við
+          </button>
+          <button
+            type="button"
+            onClick={onRemove}
+            className="game-btn rounded border border-current/30 px-2 py-1 text-xs font-medium hover:bg-white/60 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
+            aria-label={`Fjarlægja hlutfall númer ${position}`}
+          >
+            ✕
+          </button>
+        </div>
+      )}
     </div>
   );
 }

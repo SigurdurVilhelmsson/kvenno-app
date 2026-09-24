@@ -166,11 +166,11 @@ export function ConcentrationComparison({
   const maxParticles = 20;
 
   return (
-    <div className="flex items-center justify-center gap-6">
+    <div className="flex items-center justify-center gap-2 sm:gap-6">
       {/* Before state */}
-      <div className="text-center">
+      <div className="text-center min-w-0 flex-1 sm:flex-initial">
         <div className="text-sm font-semibold text-warm-600 mb-2">Fyrir</div>
-        <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 min-w-[120px]">
+        <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-2 sm:p-4 sm:min-w-[120px]">
           {showParticles && (
             <div className="mb-2">
               <QuantityDots
@@ -193,10 +193,10 @@ export function ConcentrationComparison({
       <div className={`text-3xl text-warm-400 ${animate ? 'animate-pulse' : ''}`}>→</div>
 
       {/* After state */}
-      <div className="text-center">
+      <div className="text-center min-w-0 flex-1 sm:flex-initial">
         <div className="text-sm font-semibold text-warm-600 mb-2">Eftir</div>
         <div
-          className={`bg-green-50 border-2 border-green-200 rounded-xl p-4 min-w-[120px] ${
+          className={`bg-green-50 border-2 border-green-200 rounded-xl p-2 sm:p-4 sm:min-w-[120px] ${
             animate ? 'animate-fade-in' : ''
           }`}
         >

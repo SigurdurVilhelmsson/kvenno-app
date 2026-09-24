@@ -1,19 +1,21 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 
 import { AnimatedMolecule, DragDropBuilder, FeedbackPanel } from '@shared/components';
 import type { DraggableItemData, DropZoneData, DropResult, ZoneState } from '@shared/components';
 
 import { StructureFromNameChallenge } from './StructureFromNameChallenge';
+import { useReturnToPrompt, useRevealWhenShown } from '../hooks/useRevealWhenShown';
+import { CHAIN_STEMS } from '../utils/naming';
 import { organicToMolecule, hasBranches, type OrganicBranch } from '../utils/organicConverter';
 
 // Misconceptions for organic nomenclature
 const NOMENCLATURE_MISCONCEPTIONS: Record<string, string> = {
   prefix: 'Forskeytið ákvarðast af fjölda kolefna: meth=1, eth=2, prop=3, but=4, pent=5, hex=6.',
-  suffix: 'Viðskeytið ákvarðast af tengjategund: -an (eintengi), -en (tvítengi), -yn (þrítengi).',
+  suffix: 'Viðskeytið ákvarðast af tengjategund: -an (eintengi), -en (tvítengi), -ýn (þrítengi).',
   position: 'Staðsetningartala þarf fyrir 4+ kolefni til að sýna hvar tvítengi/þrítengi er.',
 };
 
-const NOMENCLATURE_RELATED = ['IUPAC nafnakerfi', 'Kolefniskeðjur', 'Vetniskolefni', 'Hóptengi'];
+const NOMENCLATURE_RELATED = ['IUPAC nafnakerfi', 'Kolefniskeðjur', 'Vetniskolefni', 'Virknihópar'];
 
 interface Level2Props {
   onComplete: (score: number) => void;
@@ -80,7 +82,7 @@ const molecules: Molecule[] = [
     carbons: 3,
     structure: 'C=C-C',
     formula: 'C₃H₆',
-    correctName: 'propen',
+    correctName: 'própen',
     doublePosition: 1,
     hint: '3 kolefni + tvítengi = prop + en',
   },
@@ -112,9 +114,9 @@ const molecules: Molecule[] = [
     carbons: 2,
     structure: 'C≡C',
     formula: 'C₂H₂',
-    correctName: 'etyn',
+    correctName: 'etýn',
     triplePosition: 1,
-    hint: '2 kolefni + þrítengi = eth + yn',
+    hint: '2 kolefni + þrítengi = eth + ýn',
   },
   {
     id: 9,
@@ -122,9 +124,9 @@ const molecules: Molecule[] = [
     carbons: 3,
     structure: 'C≡C-C',
     formula: 'C₃H₄',
-    correctName: 'propyn',
+    correctName: 'própýn',
     triplePosition: 1,
-    hint: '3 kolefni + þrítengi = prop + yn',
+    hint: '3 kolefni + þrítengi = prop + ýn',
   },
   {
     id: 10,
@@ -132,7 +134,7 @@ const molecules: Molecule[] = [
     carbons: 4,
     structure: 'C≡C-C-C',
     formula: 'C₄H₆',
-    correctName: '1-bútyn',
+    correctName: '1-bútýn',
     triplePosition: 1,
     hint: '4+ kolefni þarf staðsetningartölu',
   },
@@ -142,7 +144,7 @@ const molecules: Molecule[] = [
     carbons: 5,
     structure: 'C-C≡C-C-C',
     formula: 'C₅H₈',
-    correctName: '2-pentyn',
+    correctName: '2-pentýn',
     triplePosition: 2,
     hint: 'Þrítengi byrjar á kolefni 2',
   },
@@ -202,6 +204,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [, setTotalHintsUsed] = useState(0);
   const [useDragDrop, setUseDragDrop] = useState(true);
   const [zoneState, setZoneState] = useState<ZoneState>({});
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const moleculeRef = useRef<HTMLDivElement>(null);
 
   const molecule = molecules[currentMolecule];
   const isBranched = hasBranches(molecule);
@@ -212,9 +216,18 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     if (isBranched && useDragDrop) setUseDragDrop(false);
   }, [isBranched, useDragDrop]);
 
+  useRevealWhenShown(feedbackRef, showFeedback);
+
+  // "Næsta sameind", "Halda áfram" and "Reyna aftur" bring the molecule back into view on a phone.
+  // The box is tall and the drawing sits in its middle, so only when half of it is off screen.
+  useReturnToPrompt(moleculeRef, !showFeedback, currentMolecule, 0.5);
+
   // Generate draggable items for building names
   const { nameItems, nameZones } = useMemo(() => {
-    // Prefixes for carbon counts
+    // Prefixes for carbon counts. The chip shows the prefix Stig 1 teaches; the built name
+    // uses the stem the answer is spelled with (eth- + -an builds `etan`, as the answer key and
+    // the textbook write it). Concatenating the chip label built `ethan`, which the grader
+    // then marked wrong, so etan, eten and etýn could not be answered in this mode at all.
     const prefixes = [
       { id: 'prefix-meth', label: 'meth-', carbons: 1 },
       { id: 'prefix-eth', label: 'eth-', carbons: 2 },
@@ -222,7 +235,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       { id: 'prefix-but', label: 'but-', carbons: 4 },
       { id: 'prefix-pent', label: 'pent-', carbons: 5 },
       { id: 'prefix-hex', label: 'hex-', carbons: 6 },
-    ];
+    ].map((p) => ({ ...p, stem: CHAIN_STEMS[p.carbons] }));
 
     // Position numbers (for molecules with 4+ carbons)
     const positions = [
@@ -235,9 +248,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     const suffixes = [
       { id: 'suffix-an', label: '-an', type: 'alkane' },
       { id: 'suffix-en', label: '-en', type: 'alkene' },
-      { id: 'suffix-yn', label: '-yn', type: 'alkyne' },
+      { id: 'suffix-yn', label: '-ýn', type: 'alkyne' },
     ];
 
+    // The builder wraps each part in its own padded card, so on a phone the chips inside drop
+    // most of their padding: the pool holds more parts per row and the whole builder fits a
+    // phone screen with less scrolling between a part and its zone. sm and up are unchanged.
+    const chip = 'px-2 py-0.5 sm:px-3 sm:py-2 rounded-lg border-2 font-bold';
     const items: DraggableItemData[] = [];
 
     // Add prefix items
@@ -245,12 +262,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       items.push({
         id: p.id,
         content: (
-          <div className="px-3 py-2 bg-blue-100 rounded-lg border-2 border-blue-300 font-bold text-blue-700">
-            {p.label}
-          </div>
+          <div className={`${chip} bg-blue-100 border-blue-300 text-blue-700`}>{p.label}</div>
         ),
         category: 'prefix',
-        data: { label: p.label, carbons: p.carbons },
+        data: { label: p.label, stem: p.stem, carbons: p.carbons },
       });
     });
 
@@ -261,9 +276,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         items.push({
           id: p.id,
           content: (
-            <div className="px-3 py-2 bg-red-100 rounded-lg border-2 border-red-300 font-bold text-red-700">
-              {p.label}
-            </div>
+            <div className={`${chip} bg-red-100 border-red-300 text-red-700`}>{p.label}</div>
           ),
           category: 'position',
           data: { label: p.label },
@@ -277,7 +290,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         id: s.id,
         content: (
           <div
-            className={`px-3 py-2 rounded-lg border-2 font-bold ${
+            className={`${chip} ${
               s.type === 'alkane'
                 ? 'bg-warm-100 border-warm-300 text-warm-700'
                 : s.type === 'alkene'
@@ -346,6 +359,16 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     });
   };
 
+  // An item taken back out of a zone — dragged or tapped back to the pool, or displaced by a
+  // swap into a full zone. Without this the mirrored zoneState keeps it, and the built name
+  // (and the graded answer) still shows a part the student has already removed.
+  const handleRemove = (itemId: string, fromZoneId: string) => {
+    setZoneState((prev) => ({
+      ...prev,
+      [fromZoneId]: (prev[fromZoneId] || []).filter((id) => id !== itemId),
+    }));
+  };
+
   // Build name from zone state
   const getBuiltName = (): string => {
     let name = '';
@@ -363,9 +386,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     const prefixItem = zoneState['zone-prefix']?.[0];
     if (prefixItem) {
       const item = nameItems.find((i) => i.id === prefixItem);
-      if (item?.data?.label) {
-        const label = item.data.label as string;
-        name += label.replace('-', '');
+      if (item?.data?.stem) {
+        name += item.data.stem as string;
       }
     }
 
@@ -411,16 +433,21 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       };
     }
 
-    // Determine what went wrong
-    let misconception = NOMENCLATURE_MISCONCEPTIONS.prefix;
-    const prefixItem = zoneState['zone-prefix']?.[0];
-    const suffixItem = zoneState['zone-suffix']?.[0];
+    // Name the part that is actually wrong. This used to go by which zones were filled, so
+    // eth- + -en for etan was told about prefixes, and any wrong build of 1-búten or 2-pentýn
+    // was told about the position number even when the prefix or the ending was the mistake.
+    const placed = (zoneId: string) =>
+      nameItems.find((i) => i.id === zoneState[zoneId]?.[0])?.data as
+        { carbons?: number; type?: string } | undefined;
+    const prefixPart = placed('zone-prefix');
+    const suffixPart = placed('zone-suffix');
 
-    if (!prefixItem) {
+    let misconception: string;
+    if (prefixPart?.carbons !== molecule.carbons) {
       misconception = NOMENCLATURE_MISCONCEPTIONS.prefix;
-    } else if (!suffixItem) {
+    } else if (suffixPart?.type !== molecule.type) {
       misconception = NOMENCLATURE_MISCONCEPTIONS.suffix;
-    } else if (molecule.carbons >= 4 && molecule.type !== 'alkane') {
+    } else {
       misconception = NOMENCLATURE_MISCONCEPTIONS.position;
     }
 
@@ -498,7 +525,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       case 'alkene':
         return 'Alken (tvítengi)';
       case 'alkyne':
-        return 'Alkyn (þrítengi)';
+        return 'Alkýn (þrítengi)';
     }
   };
 
@@ -506,9 +533,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   if (mode === 'select') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <div className="flex justify-between items-center mb-6">
-            <button onClick={onBack} className="text-warm-500 hover:text-warm-700">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+          <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+            <button
+              onClick={onBack}
+              className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+            >
               ← Til baka
             </button>
           </div>
@@ -521,7 +551,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           <div className="space-y-4">
             <button
               onClick={() => setMode('name')}
-              className="w-full p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left"
+              className="w-full p-4 sm:p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left"
             >
               <div className="flex items-center gap-4">
                 <div className="text-4xl">🏷️</div>
@@ -534,7 +564,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
             <button
               onClick={() => setMode('build')}
-              className="w-full p-6 rounded-xl border-4 border-emerald-400 bg-emerald-50 hover:bg-emerald-100 transition-all text-left"
+              className="w-full p-4 sm:p-6 rounded-xl border-4 border-emerald-400 bg-emerald-50 hover:bg-emerald-100 transition-all text-left"
             >
               <div className="flex items-center gap-4">
                 <div className="text-4xl">🔬</div>
@@ -570,16 +600,19 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   // Name mode - existing functionality
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-        <div className="flex justify-between items-center mb-6">
-          <button onClick={() => setMode('select')} className="text-warm-500 hover:text-warm-700">
+      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
+        <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+          <button
+            onClick={() => setMode('select')}
+            className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+          >
             ← Til baka
           </button>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-warm-500">
+          <div className="ml-auto flex items-center gap-3 sm:gap-4">
+            <div className="text-sm text-warm-500 whitespace-nowrap">
               Sameind {currentMolecule + 1} af {molecules.length}
             </div>
-            <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-bold">
+            <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-bold whitespace-nowrap">
               Stig: {score}
             </div>
           </div>
@@ -592,7 +625,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           Notaðu IUPAC reglurnar til að nefna þessa sameind
         </p>
 
-        <div className={`bg-gradient-to-br ${getTypeColor()} p-6 rounded-xl border-2 mb-6`}>
+        <div
+          ref={moleculeRef}
+          className={`bg-gradient-to-br ${getTypeColor()} p-4 sm:p-6 rounded-xl border-2 mb-6 scroll-mt-4`}
+        >
           <div className="text-center mb-4">
             <span className="inline-block px-3 py-1 rounded-full text-sm font-bold bg-white">
               {getTypeName()}
@@ -623,7 +659,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   : 'bg-purple-50 border-purple-300'
               }`}
             >
-              <div className="flex items-center justify-center gap-2">
+              <div className="flex flex-wrap items-center justify-center gap-x-2">
                 <span
                   className={`text-lg font-bold ${
                     molecule.type === 'alkene' ? 'text-green-600' : 'text-purple-600'
@@ -638,7 +674,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               <p className="text-xs text-center mt-1 text-warm-500">
                 {molecule.type === 'alkene'
                   ? 'Viðskeytið -en gefur til kynna tvítengi (ómettað)'
-                  : 'Viðskeytið -yn gefur til kynna þrítengi (ómettað)'}
+                  : 'Viðskeytið -ýn gefur til kynna þrítengi (ómettað)'}
               </p>
             </div>
           )}
@@ -656,11 +692,17 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         {!showFeedback ? (
           <div className="space-y-4">
             {/* Mode toggle — drag-drop builder has no substituent prefixes, so branched molecules require text entry. */}
-            <div className="flex justify-end">
+            <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1">
+              {/* The disabled toggle's title tooltip never shows on a touchscreen */}
+              {isBranched && (
+                <span className="hidden pointer-coarse:inline text-xs text-warm-500">
+                  Greinótt sameind — aðeins skrifa-hamur
+                </span>
+              )}
               <button
                 onClick={() => setUseDragDrop(!useDragDrop)}
                 disabled={isBranched}
-                className="text-xs px-3 py-1 rounded-full bg-warm-100 hover:bg-warm-200 text-warm-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="text-xs px-3 py-1 rounded-full bg-warm-100 hover:bg-warm-200 text-warm-600 disabled:opacity-50 disabled:cursor-not-allowed pointer-coarse:min-h-11 pointer-coarse:px-4 pointer-coarse:text-sm"
                 title={isBranched ? 'Greinótt sameind — aðeins skrifa-hamur' : undefined}
               >
                 {useDragDrop ? '⌨️ Skipta í skrifa-ham' : '✋ Skipta í draga-ham'}
@@ -679,7 +721,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   zones={nameZones}
                   initialState={zoneState}
                   onDrop={handleDrop}
+                  onRemove={handleRemove}
                   orientation="horizontal"
+                  zonesClassName="sm:flex-row"
                 />
 
                 {/* Preview of built name */}
@@ -699,6 +743,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
                   placeholder="Sláðu inn nafnið..."
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  autoComplete="off"
+                  spellCheck={false}
                   className="w-full text-center text-xl font-bold p-4 border-2 border-green-300 rounded-xl focus:border-green-500 focus:outline-none"
                   onKeyPress={(e) => e.key === 'Enter' && userAnswer && handleSubmit()}
                 />
@@ -712,7 +760,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     setShowHint(true);
                     setTotalHintsUsed((prev) => prev + 1);
                   }}
-                  className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-3 px-6 rounded-xl"
+                  className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-3 px-4 sm:px-6 rounded-xl"
                 >
                   💡 Vísbending
                 </button>
@@ -720,7 +768,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               <button
                 onClick={useDragDrop ? handleDragDropSubmit : handleSubmit}
                 disabled={useDragDrop ? !getBuiltName() : !userAnswer.trim()}
-                className={`flex-1 font-bold py-3 px-6 rounded-xl ${
+                className={`flex-1 font-bold py-3 px-4 sm:px-6 rounded-xl ${
                   (useDragDrop ? !getBuiltName() : !userAnswer.trim())
                     ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
                     : 'bg-green-500 hover:bg-green-600 text-white'
@@ -731,7 +779,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div ref={feedbackRef} className="space-y-4 scroll-mt-4">
             {useDragDrop ? (
               <FeedbackPanel
                 feedback={getDragDropFeedback()}
@@ -792,7 +840,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 </span>
                 <span className="text-warm-500"> ({molecule.carbons} kolefni) + </span>
                 <span className="text-green-600 font-bold">
-                  {molecule.type === 'alkane' ? 'an' : molecule.type === 'alkene' ? 'en' : 'yn'}
+                  {molecule.type === 'alkane' ? 'an' : molecule.type === 'alkene' ? 'en' : 'ýn'}
                 </span>
                 <span className="text-warm-500">
                   {' '}
@@ -819,7 +867,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             {isCorrect ? (
               <button
                 onClick={handleNext}
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl"
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
               >
                 {currentMolecule < molecules.length - 1 ? 'Næsta sameind →' : 'Ljúka stigi →'}
               </button>
@@ -827,13 +875,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               <div className="flex gap-4">
                 <button
                   onClick={handleTryAgain}
-                  className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-6 rounded-xl"
+                  className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
                 >
                   Reyna aftur
                 </button>
                 <button
                   onClick={handleNext}
-                  className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-6 rounded-xl"
+                  className="flex-1 bg-warm-500 hover:bg-warm-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
                 >
                   Halda áfram →
                 </button>

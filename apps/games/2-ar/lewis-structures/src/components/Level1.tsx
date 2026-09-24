@@ -1,8 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 
 import { FeedbackPanel, HintSystem } from '@shared/components';
 import type { TieredHints } from '@shared/types';
 import { shuffleArray } from '@shared/utils';
+
+import { useRevealOnChange } from '../utils/useRevealOnChange';
 
 // Misconceptions for Lewis structure concepts
 const MISCONCEPTIONS: Record<string, string> = {
@@ -78,7 +80,7 @@ const challenges: Challenge[] = [
       topic: 'Gildisrafeindir tengjast hópnúmeri frumefnisins í lotukerfinu.',
       strategy: 'Finndu kolefni (C) í lotukerfinu og athugaðu hvaða hóp það er í.',
       method:
-        'Kolefni er í hópi 14 (IV A). Fyrir aðalflokksfrumefni: gildisrafeindir = hópnúmer - 10.',
+        'Kolefni er í hópi 14 (IV A). Fyrir frumefni í hópum 13–18 (nema He): gildisrafeindir = hópnúmer - 10.',
       solution: 'C er í hópi 14: 14 - 10 = 4 gildisrafeindir.',
     },
     explanation:
@@ -153,10 +155,10 @@ const challenges: Challenge[] = [
       topic: 'Kolefni (C) hefur 4 gildisrafeindir, súrefni (O) hefur 6.',
       strategy: 'Leggðu saman: fjöldi hvers atóms × gildisrafeindir þess.',
       method: 'CO₂: 1×C + 2×O = 1×(4) + 2×(6)',
-      solution: '1(4) + 2(6) = 4 + 12 = 16 gildisrafeindir (8 rafeindarapör).',
+      solution: '1(4) + 2(6) = 4 + 12 = 16 gildisrafeindir (8 rafeindapör).',
     },
     explanation:
-      'CO₂: 1(4) + 2(6) = 4 + 12 = 16 gildisrafeindir. Þetta eru 8 rafeindarapör til að skipta á milli atóma.',
+      'CO₂: 1(4) + 2(6) = 4 + 12 = 16 gildisrafeindir. Þetta eru 8 rafeindapör til að skipta á milli atóma.',
   },
   {
     id: 6,
@@ -181,7 +183,7 @@ const challenges: Challenge[] = [
   },
   {
     id: 7,
-    title: 'Áttureglann',
+    title: 'Áttureglan',
     type: 'octet_rule',
     question: 'Hversu margar rafeindir vill súrefni hafa í ysta hvolfi sínu?',
     correctAnswer: 8,
@@ -208,11 +210,12 @@ const challenges: Challenge[] = [
         id: 'd',
         text: '18 rafeindir',
         correct: false,
-        explanation: '18 er fyrir d-undirhvolf, ekki s og p.',
+        explanation:
+          '18 rafeindir fylla s-, p- og d-undirhvolf saman (2 + 6 + 10); áttureglan telur aðeins s og p.',
       },
     ],
     hints: {
-      topic: 'Áttureglan (octet rule) er grundvallarregla í efnafræði.',
+      topic: 'Áttureglan er grundvallarregla í efnafræði.',
       strategy: 'Hugsaðu um eðalgastegundir - þær eru stöðugar vegna fulls ysta hvolfs.',
       method: 'Flest atóm vilja líkja eftir eðalgastegundum með 8 rafeindir í ysta hvolfi.',
       solution: 'Súrefni vill hafa 8 rafeindir í ysta hvolfi (áttureglan).',
@@ -251,6 +254,12 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const [score, setScore] = useState(0);
 
   const challenge = challenges[currentChallenge];
+  const cardRef = useRef<HTMLDivElement>(null);
+  useRevealOnChange(cardRef, currentChallenge);
+  // The hints above the answer vanish once it is checked, so with several open
+  // the feedback opened with its verdict above the top of a phone screen.
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  useRevealOnChange(feedbackRef, showResult);
   const basePoints = 15;
 
   // Shuffle options for current challenge - memoize to keep stable during challenge
@@ -272,8 +281,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       const selected = shuffledOptions.find((opt) => opt.id === selectedOption);
       correct = selected?.correct ?? false;
     } else {
-      const numAnswer = parseInt(userAnswer, 10);
-      correct = numAnswer === challenge.correctAnswer;
+      // A count: the whole number itself, not its integer part — parseInt read
+      // "8.5" as 8 and marked it right.
+      const numAnswer = Number(userAnswer);
+      correct = Number.isInteger(numAnswer) && numAnswer === challenge.correctAnswer;
     }
 
     setIsCorrect(correct);
@@ -305,7 +316,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
           >
             <span>&larr;</span> Til baka
           </button>
@@ -326,7 +337,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div ref={cardRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <h2 className="text-2xl font-bold text-blue-800 mb-4">{challenge.title}</h2>
 
           {/* Molecule display if applicable */}
@@ -349,13 +360,16 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                       </div>
                     </div>
                   ))}
-                  {challenge.charge && (
+                  {/* What the charge adds, written as the menu's formula takes it
+                      (Σ gildisrafeindir − hleðsla). It used to print the +1 alone
+                      under "Hleðsla", telling the student OH⁻ carries charge +1. */}
+                  {challenge.charge !== undefined && challenge.charge !== 0 && (
                     <div className="text-center">
                       <div className="font-bold text-red-600">Hleðsla</div>
                       <div className="text-sm text-warm-600">
                         {challenge.charge > 0
-                          ? `-${challenge.charge}`
-                          : `+${Math.abs(challenge.charge)}`}
+                          ? `−(+${challenge.charge}) = −${challenge.charge}`
+                          : `−(−${Math.abs(challenge.charge)}) = +${Math.abs(challenge.charge)}`}
                       </div>
                     </div>
                   )}
@@ -409,6 +423,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   value={userAnswer}
                   onChange={(e) => setUserAnswer(e.target.value)}
                   disabled={showResult}
+                  aria-label="Fjöldi rafeinda"
                   className="flex-1 p-4 border-2 border-warm-300 rounded-xl focus:border-blue-500 focus:outline-none text-2xl font-mono text-center"
                   placeholder="?"
                 />
@@ -442,7 +457,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
           {/* Result feedback */}
           {showResult && (
-            <div className="mb-4">
+            <div ref={feedbackRef} className="mb-4">
               <FeedbackPanel
                 feedback={{
                   isCorrect,

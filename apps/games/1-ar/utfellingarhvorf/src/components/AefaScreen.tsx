@@ -1,7 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { SOLUBILITY_RULES } from '../data/ions';
 import { DRILL_ITEMS } from '../data/problems';
+import { decidingRules } from '../engine/precipitation';
+import { reveal } from '../utils/reveal';
 
 /**
  * Æfa — the solubility drill: is this compound leysanlegt, and by which rule?
@@ -10,6 +12,10 @@ import { DRILL_ITEMS } from '../data/problems';
  * alone is a coin flip a student can win half the time; naming the rule is what
  * shows they read the anion and checked the exception list. The feedback
  * therefore names the rule whether they got the verdict right or wrong.
+ *
+ * Some compounds are settled by two rows at once — NaNO₃ by the group-1 row
+ * and by the nitrate row — and either is a right answer; `decidingRules` says
+ * which, and the feedback prints every one of them.
  *
  * The order is shuffled once per session rather than fixed. Four games on the
  * platform ship option arrays that look constant but shuffle at render, and two
@@ -58,14 +64,29 @@ export function AefaScreen({ onComplete, onBack }: Props) {
   const [correct, setCorrect] = useState(0);
 
   const item = items[index];
+  const rules = useMemo(() => decidingRules(item.salt), [item]);
   const verdictRight = answer === item.verdict.soluble;
-  const ruleRight = ruleId === item.verdict.rule.id;
+  const ruleRight = rules.some((r) => r.id === ruleId);
   const bothRight = verdictRight && ruleRight;
 
   const check = () => {
     setChecked(true);
     if (verdictRight && ruleRight) setCorrect(correct + 1);
   };
+
+  // On a phone "Athuga" and "Næsta" sit at the bottom of a card taller than the
+  // screen. After "Athuga" bring the whole verdict (and its "Næsta") into view;
+  // after "Næsta" bring the new compound back, which has scrolled off the top.
+  const counterRef = useRef<HTMLParagraphElement>(null);
+  const compoundRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const shown = useRef({ index, checked });
+  useEffect(() => {
+    const before = shown.current;
+    shown.current = { index, checked };
+    if (index !== before.index) reveal(counterRef.current, compoundRef.current);
+    else if (checked && !before.checked) reveal(feedbackRef.current);
+  }, [index, checked]);
 
   const next = () => {
     if (index + 1 >= items.length) {
@@ -80,19 +101,27 @@ export function AefaScreen({ onComplete, onBack }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-6 shadow-md md:p-8">
-        <div className="mb-6 flex items-baseline justify-between">
-          <h2 className="text-2xl font-bold text-warm-800">Æfa — leysanlegt eða ekki?</h2>
-          <button onClick={onBack} className="text-sm text-warm-500 underline">
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
+        <div className="mb-6 flex items-baseline justify-between gap-3">
+          <h2 className="text-xl font-bold text-warm-800 sm:text-2xl">
+            Æfa — leysanlegt eða ekki?
+          </h2>
+          <button
+            onClick={onBack}
+            className="shrink-0 whitespace-nowrap text-sm text-warm-500 underline pointer-coarse:-my-3 pointer-coarse:py-3"
+          >
             Til baka
           </button>
         </div>
 
-        <p className="mb-2 text-sm text-warm-600">
+        <p ref={counterRef} className="mb-2 text-sm text-warm-600">
           Efni {index + 1} af {items.length}
         </p>
 
-        <div className="mb-6 rounded-lg border-2 border-warm-200 bg-warm-50 p-6 text-center">
+        <div
+          ref={compoundRef}
+          className="mb-6 rounded-lg border-2 border-warm-200 bg-warm-50 p-6 text-center"
+        >
           <p className="font-mono text-3xl text-warm-900">{item.salt.formula}</p>
           <p className="mt-2 text-sm text-warm-600">
             {item.salt.cation.name} og {item.salt.anion.name}
@@ -103,7 +132,7 @@ export function AefaScreen({ onComplete, onBack }: Props) {
           <legend className="mb-2 text-sm font-semibold text-warm-700">
             Leysist það upp í vatni?
           </legend>
-          <div className="flex gap-3">
+          <div className="flex gap-2 sm:gap-3">
             {[
               { value: true, label: 'Leysanlegt' },
               { value: false, label: 'Óleysanlegt' },
@@ -112,7 +141,7 @@ export function AefaScreen({ onComplete, onBack }: Props) {
                 key={String(option.value)}
                 type="button"
                 onClick={() => setAnswer(option.value)}
-                className={`game-btn flex-1 rounded-lg border-2 px-4 py-3 font-semibold ${
+                className={`game-btn flex-1 rounded-lg border-2 px-2 py-3 font-semibold sm:px-4 ${
                   answer === option.value
                     ? 'border-orange-400 bg-orange-50 text-orange-900'
                     : 'border-warm-200 bg-white text-warm-700 hover:bg-warm-50'
@@ -134,7 +163,7 @@ export function AefaScreen({ onComplete, onBack }: Props) {
                 key={r.id}
                 type="button"
                 onClick={() => setRuleId(r.id)}
-                className={`game-btn block w-full rounded-lg border-2 px-3 py-2 text-left text-sm ${
+                className={`game-btn block w-full rounded-lg border-2 px-3 py-2 text-left text-sm pointer-coarse:min-h-11 ${
                   ruleId === r.id
                     ? 'border-orange-400 bg-orange-50 text-orange-900'
                     : 'border-warm-200 bg-white text-warm-700 hover:bg-warm-50'
@@ -157,6 +186,7 @@ export function AefaScreen({ onComplete, onBack }: Props) {
           </button>
         ) : (
           <div
+            ref={feedbackRef}
             className={`rounded-lg border-2 p-4 ${
               bothRight ? 'border-green-300 bg-green-50' : 'border-amber-300 bg-amber-50'
             }`}
@@ -170,8 +200,8 @@ export function AefaScreen({ onComplete, onBack }: Props) {
             </p>
             <p className="text-sm text-warm-800">
               {item.salt.formula} er{' '}
-              <strong>{item.verdict.soluble ? 'leysanlegt' : 'óleysanlegt'}</strong>.{' '}
-              {item.verdict.rule.text} {item.verdict.rule.exceptionText}
+              <strong>{item.verdict.soluble ? 'leysanlegt' : 'óleysanlegt'}</strong>.
+              {rules.map((r) => ` ${r.text} ${r.exceptionText}`).join('')}
             </p>
             {item.verdict.byException && (
               <p className="mt-2 rounded border border-amber-300 bg-white p-2 text-sm text-amber-900">
@@ -184,7 +214,7 @@ export function AefaScreen({ onComplete, onBack }: Props) {
             <button
               type="button"
               onClick={next}
-              className="game-btn mt-4 rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700"
+              className="game-btn mt-4 rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 pointer-coarse:min-h-11"
             >
               {index + 1 >= items.length ? 'Ljúka' : 'Næsta'}
             </button>

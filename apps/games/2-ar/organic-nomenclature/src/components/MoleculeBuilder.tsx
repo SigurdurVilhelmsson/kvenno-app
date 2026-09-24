@@ -1,4 +1,12 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
+
+import {
+  canAddBranch,
+  molecularFormula,
+  nameChain,
+  nextBondType,
+  type BondType,
+} from '../utils/naming';
 
 /**
  * MoleculeBuilder
@@ -10,38 +18,10 @@ import { useState, useCallback } from 'react';
  * 4. Auto-generating IUPAC names based on structure
  */
 
-type BondType = 'single' | 'double' | 'triple';
-
 interface Bond {
   position: number; // Position in chain (1-indexed, bond between C(position) and C(position+1))
   type: BondType;
 }
-
-// Prefix map for carbon count
-const PREFIXES: Record<number, string> = {
-  1: 'meth',
-  2: 'eth',
-  3: 'prop',
-  4: 'but',
-  5: 'pent',
-  6: 'hex',
-  7: 'hept',
-  8: 'oct',
-  9: 'non',
-  10: 'dec',
-};
-
-// Multiplier prefixes for branch count
-const BRANCH_MULTIPLIERS: Record<number, string> = {
-  1: '',
-  2: 'dí',
-  3: 'trí',
-  4: 'tetra',
-  5: 'penta',
-  6: 'hexa',
-  7: 'hepta',
-  8: 'okta',
-};
 
 interface MoleculeBuilderProps {
   onNameGenerated?: (name: string, formula: string) => void;
@@ -67,14 +47,15 @@ export function MoleculeBuilder({
   const [branches, setBranches] = useState<number[]>([]);
   const [showFormula, setShowFormula] = useState(true);
 
-  // Check if a carbon position is eligible for a branch (interior carbons only)
-  const canHaveBranch = (position: number): boolean => {
-    return position >= 2 && position <= carbonCount - 1;
-  };
+  const chain = { carbons: carbonCount, bonds, branches };
+
+  // A branch goes on an interior carbon that still has a bond to spare: a carbon already in a
+  // triple bond, or between two double bonds, cannot take a fifth.
+  const canHaveBranch = (position: number): boolean => canAddBranch(chain, position);
 
   // Toggle a methyl branch at a given carbon position
   const toggleBranch = (position: number) => {
-    if (!canHaveBranch(position)) return;
+    if (!branches.includes(position) && !canHaveBranch(position)) return;
 
     setBranches((prev) => {
       if (prev.includes(position)) {
@@ -106,122 +87,14 @@ export function MoleculeBuilder({
     setBranches((prev) => prev.filter((p) => p >= 2 && p <= newCount - 1));
   };
 
-  // Cycle bond type: single → double → triple → single
+  // Cycle bond type: single → double → triple → single, skipping a type that would give
+  // either carbon a fifth bond (the builder used to draw C≡C≡C and print a negative H count)
   const cycleBond = (position: number) => {
+    const nextType = nextBondType(chain, position);
     setBonds((prev) =>
-      prev.map((bond) => {
-        if (bond.position !== position) return bond;
-
-        const nextType: BondType =
-          bond.type === 'single' ? 'double' : bond.type === 'double' ? 'triple' : 'single';
-
-        return { ...bond, type: nextType };
-      })
+      prev.map((bond) => (bond.position === position ? { ...bond, type: nextType } : bond))
     );
   };
-
-  // Helper for subscript numbers
-  const subscript = (n: number): string => {
-    const subscripts: Record<string, string> = {
-      '0': '₀',
-      '1': '₁',
-      '2': '₂',
-      '3': '₃',
-      '4': '₄',
-      '5': '₅',
-      '6': '₆',
-      '7': '₇',
-      '8': '₈',
-      '9': '₉',
-    };
-    return String(n)
-      .split('')
-      .map((d) => subscripts[d] || d)
-      .join('');
-  };
-
-  // Helper to get bond order value
-  const bondValue = (bondType: BondType): number => {
-    return bondType === 'single' ? 1 : bondType === 'double' ? 2 : 3;
-  };
-
-  // Calculate molecular formula
-  const calculateFormula = useCallback(() => {
-    // Total carbons = main chain + branches
-    const totalCarbons = carbonCount + branches.length;
-
-    // Count hydrogen atoms on the main chain
-    let hydrogenCount = 0;
-
-    // First carbon
-    const firstBond = bonds.find((b) => b.position === 1);
-    const firstBondVal = firstBond ? bondValue(firstBond.type) : 0;
-    const firstHasBranch = branches.includes(1); // Should never happen, but guard
-    hydrogenCount += 4 - firstBondVal - (firstHasBranch ? 1 : 0);
-
-    // Middle carbons
-    for (let i = 2; i < carbonCount; i++) {
-      const leftBond = bonds.find((b) => b.position === i - 1);
-      const rightBond = bonds.find((b) => b.position === i);
-
-      const leftVal = leftBond ? bondValue(leftBond.type) : 0;
-      const rightVal = rightBond ? bondValue(rightBond.type) : 0;
-      const hasBranch = branches.includes(i);
-
-      // A branch takes one bond slot (single bond to CH₃)
-      hydrogenCount += 4 - leftVal - rightVal - (hasBranch ? 1 : 0);
-    }
-
-    // Last carbon
-    const lastBond = bonds.find((b) => b.position === carbonCount - 1);
-    const lastBondVal = lastBond ? bondValue(lastBond.type) : 0;
-    const lastHasBranch = branches.includes(carbonCount); // Should never happen
-    hydrogenCount += 4 - lastBondVal - (lastHasBranch ? 1 : 0);
-
-    // Each branch CH₃ contributes 3 hydrogens
-    hydrogenCount += branches.length * 3;
-
-    return `C${totalCarbons > 1 ? '₋' + subscript(totalCarbons) : ''}H${subscript(hydrogenCount)}`;
-  }, [carbonCount, bonds, branches]);
-
-  // Generate IUPAC name
-  const generateName = useCallback(() => {
-    const prefix = PREFIXES[carbonCount] || `C${carbonCount}`;
-
-    // Find unsaturated bonds
-    const doubleBonds = bonds.filter((b) => b.type === 'double');
-    const tripleBonds = bonds.filter((b) => b.type === 'triple');
-
-    // Build base name (suffix)
-    let baseName: string;
-    if (tripleBonds.length > 0) {
-      const position = tripleBonds[0].position;
-      if (carbonCount >= 4) {
-        baseName = `${position}-${prefix}yn`;
-      } else {
-        baseName = `${prefix}yn`;
-      }
-    } else if (doubleBonds.length > 0) {
-      const position = doubleBonds[0].position;
-      if (carbonCount >= 4) {
-        baseName = `${position}-${prefix}en`;
-      } else {
-        baseName = `${prefix}en`;
-      }
-    } else {
-      baseName = `${prefix}an`;
-    }
-
-    // Add branch prefix if branches exist
-    if (branches.length > 0) {
-      const sortedPositions = [...branches].sort((a, b) => a - b);
-      const positionStr = sortedPositions.join(',');
-      const multiplier = BRANCH_MULTIPLIERS[branches.length] || '';
-      return `${positionStr}-${multiplier}metýl${baseName}`;
-    }
-
-    return baseName;
-  }, [carbonCount, bonds, branches]);
 
   // Get compound type
   const getCompoundType = () => {
@@ -232,12 +105,13 @@ export function MoleculeBuilder({
     if (hasTriple)
       return { type: 'alkyne', label: hasBranches ? 'Greinótt alkýn' : 'Alkýn', color: 'purple' };
     if (hasDouble)
-      return { type: 'alkene', label: hasBranches ? 'Greinótt alkén' : 'Alkén', color: 'green' };
+      return { type: 'alkene', label: hasBranches ? 'Greinótt alken' : 'Alken', color: 'green' };
     return { type: 'alkane', label: hasBranches ? 'Greinótt alkan' : 'Alkan', color: 'gray' };
   };
 
-  const name = generateName();
-  const formula = calculateFormula();
+  const chainName = nameChain(chain);
+  const name = chainName.name;
+  const formula = molecularFormula(chain);
   const compound = getCompoundType();
 
   // Notify parent of name changes
@@ -245,36 +119,41 @@ export function MoleculeBuilder({
     onNameGenerated(name, formula);
   }
 
-  const atomSize = compact ? 32 : 44;
-  const bondLength = compact ? 40 : 56;
-  const bondHeight = compact ? 4 : 6;
-  const branchBondHeight = compact ? 24 : 36;
-  const branchAtomSize = compact ? 26 : 34;
+  // Chain dimensions live in CSS custom properties so the breakpoints can change them. Below
+  // md the atoms shrink and the chain wraps onto rows (a phone cannot show eight 44 px atoms
+  // side by side); from md up the sizes are the original desktop ones. `--hit` grows each bond
+  // button to a 44 px touch target on coarse pointers, centred on the bond so nothing moves.
+  const chainVars = compact
+    ? '[--atom:32px] [--atom-font:12.8px] [--bond:40px] [--bar:4px] [--branch-bond:24px] [--branch-atom:26px] [--branch-font:8.32px] [--chain-pt:58px]'
+    : '[--atom:30px] [--atom-font:12px] [--bond:44px] [--bar:5px] [--branch-bond:20px] [--branch-atom:34px] [--branch-font:12px] [--chain-pt:0px] md:[--atom:44px] md:[--atom-font:17.6px] md:[--bond:56px] md:[--bar:6px] md:[--branch-bond:36px] md:[--branch-font:10.88px] md:[--chain-pt:78px]';
+  const bondBoxHeight = 'max(var(--hit), var(--atom))';
 
   return (
     <div
-      className={`${compact ? 'p-3' : 'p-4'} bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl border border-emerald-200`}
+      className={`${compact ? 'p-3' : 'p-3 md:p-4'} bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl border border-emerald-200`}
     >
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 mb-3">
         <h3 className={`font-bold text-emerald-800 ${compact ? 'text-sm' : 'text-base'}`}>
           Sameindasmiður
         </h3>
-        <label className="flex items-center gap-1.5 text-xs text-warm-600 cursor-pointer">
+        <label className="flex items-center gap-1.5 text-xs text-warm-600 cursor-pointer whitespace-nowrap pointer-coarse:min-h-11 pointer-coarse:gap-2">
           <input
             type="checkbox"
             checked={showFormula}
             onChange={(e) => setShowFormula(e.target.checked)}
-            className="rounded border-warm-300"
+            className="rounded border-warm-300 shrink-0 pointer-coarse:size-6"
           />
           Sýna formúlu
         </label>
       </div>
 
       {/* Carbon chain visualization */}
-      <div className="bg-warm-900 rounded-xl p-4 mb-4 overflow-x-auto">
+      <div
+        className={`bg-warm-900 rounded-xl px-2 py-3 md:p-4 mb-4 overflow-x-auto [--hit:0px] pointer-coarse:[--hit:44px] ${chainVars}`}
+      >
         <div
-          className="flex items-end justify-center min-w-fit"
-          style={{ gap: 0, paddingTop: branchBondHeight + branchAtomSize + 8 }}
+          className="flex flex-wrap md:flex-nowrap items-end justify-center gap-y-3 min-w-fit"
+          style={{ paddingTop: 'var(--chain-pt)' }}
         >
           {Array.from({ length: carbonCount }).map((_, i) => {
             const carbonPosition = i + 1;
@@ -289,7 +168,7 @@ export function MoleculeBuilder({
                   <div
                     className="flex flex-col items-center"
                     style={{
-                      height: branchBondHeight + branchAtomSize + 8,
+                      height: 'calc(var(--branch-bond) + var(--branch-atom) + 8px)',
                       justifyContent: 'flex-end',
                     }}
                   >
@@ -300,9 +179,9 @@ export function MoleculeBuilder({
                           <div
                             className="flex items-center justify-center rounded-full bg-teal-700 border-2 border-teal-400 text-teal-100 font-bold select-none"
                             style={{
-                              width: branchAtomSize,
-                              height: branchAtomSize,
-                              fontSize: branchAtomSize * 0.32,
+                              width: 'var(--branch-atom)',
+                              height: 'var(--branch-atom)',
+                              fontSize: 'var(--branch-font)',
                             }}
                           >
                             CH₃
@@ -310,7 +189,7 @@ export function MoleculeBuilder({
                           {/* Remove branch button */}
                           <button
                             onClick={() => toggleBranch(carbonPosition)}
-                            className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 hover:bg-red-600 text-white text-[10px] flex items-center justify-center leading-none transition-colors"
+                            className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 hover:bg-red-600 text-white text-[10px] flex items-center justify-center leading-none transition-colors pointer-coarse:-top-2 pointer-coarse:-right-2 pointer-coarse:size-6 pointer-coarse:text-sm pointer-coarse:after:absolute pointer-coarse:after:-inset-2.5 pointer-coarse:after:content-['']"
                             aria-label="Fjarlægja grein"
                           >
                             ×
@@ -321,20 +200,24 @@ export function MoleculeBuilder({
                           className="bg-teal-400 rounded-full"
                           style={{
                             width: 3,
-                            height: branchBondHeight,
+                            height: 'var(--branch-bond)',
                           }}
                         />
                       </>
                     ) : isEligible ? (
-                      /* Add branch button */
+                      /* Add branch button: the visible circle stays 24 px; on touch the button
+                         around it is a 44 px target, with negative margins so the layout and the
+                         circle's position do not change. */
                       <button
                         onClick={() => toggleBranch(carbonPosition)}
-                        className="w-6 h-6 rounded-full bg-teal-600/40 hover:bg-teal-500/60 text-teal-300 text-sm font-bold flex items-center justify-center transition-colors mb-1"
+                        className="group/branch flex items-center justify-center rounded-full mb-1 pointer-coarse:size-11 pointer-coarse:-mx-2 pointer-coarse:-mb-1.5"
                         style={{ marginTop: 'auto' }}
                         aria-label={`Bæta við grein á C${carbonPosition}`}
                         title="Grein"
                       >
-                        +
+                        <span className="w-6 h-6 rounded-full bg-teal-600/40 group-hover/branch:bg-teal-500/60 text-teal-300 text-sm font-bold flex items-center justify-center transition-colors">
+                          +
+                        </span>
                       </button>
                     ) : null}
                   </div>
@@ -344,7 +227,11 @@ export function MoleculeBuilder({
                     className={`flex items-center justify-center rounded-full border-2 text-white font-bold select-none ${
                       hasBranch ? 'bg-warm-700 border-teal-400' : 'bg-warm-700 border-warm-500'
                     }`}
-                    style={{ width: atomSize, height: atomSize, fontSize: atomSize * 0.4 }}
+                    style={{
+                      width: 'var(--atom)',
+                      height: 'var(--atom)',
+                      fontSize: 'var(--atom-font)',
+                    }}
                   >
                     C{carbonPosition}
                   </div>
@@ -355,7 +242,11 @@ export function MoleculeBuilder({
                   <button
                     onClick={() => cycleBond(i + 1)}
                     className="relative flex flex-col justify-center items-center hover:scale-110 focus-visible:scale-110 focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:outline-none rounded transition-transform cursor-pointer group"
-                    style={{ width: bondLength, height: atomSize }}
+                    style={{
+                      width: 'var(--bond)',
+                      height: bondBoxHeight,
+                      marginBlock: `calc((var(--atom) - ${bondBoxHeight}) / 2)`,
+                    }}
                     aria-label={`Tenging ${i + 1}–${i + 2}: ${bonds.find((b) => b.position === i + 1)?.type === 'single' ? 'einföld' : bonds.find((b) => b.position === i + 1)?.type === 'double' ? 'tvöföld' : 'þreföld'}. Smelltu til að breyta.`}
                   >
                     {/* Bond lines */}
@@ -367,7 +258,7 @@ export function MoleculeBuilder({
                         return (
                           <div
                             className="bg-warm-400 group-hover:bg-warm-300 rounded-full"
-                            style={{ width: '100%', height: bondHeight }}
+                            style={{ width: '100%', height: 'var(--bar)' }}
                           />
                         );
                       }
@@ -377,11 +268,11 @@ export function MoleculeBuilder({
                           <>
                             <div
                               className="bg-green-400 group-hover:bg-green-300 rounded-full"
-                              style={{ width: '100%', height: bondHeight, marginBottom: 4 }}
+                              style={{ width: '100%', height: 'var(--bar)', marginBottom: 4 }}
                             />
                             <div
                               className="bg-green-400 group-hover:bg-green-300 rounded-full"
-                              style={{ width: '100%', height: bondHeight }}
+                              style={{ width: '100%', height: 'var(--bar)' }}
                             />
                           </>
                         );
@@ -392,15 +283,23 @@ export function MoleculeBuilder({
                         <>
                           <div
                             className="bg-purple-400 group-hover:bg-purple-300 rounded-full"
-                            style={{ width: '100%', height: bondHeight - 1, marginBottom: 2 }}
+                            style={{
+                              width: '100%',
+                              height: 'calc(var(--bar) - 1px)',
+                              marginBottom: 2,
+                            }}
                           />
                           <div
                             className="bg-purple-400 group-hover:bg-purple-300 rounded-full"
-                            style={{ width: '100%', height: bondHeight - 1, marginBottom: 2 }}
+                            style={{
+                              width: '100%',
+                              height: 'calc(var(--bar) - 1px)',
+                              marginBottom: 2,
+                            }}
                           />
                           <div
                             className="bg-purple-400 group-hover:bg-purple-300 rounded-full"
-                            style={{ width: '100%', height: bondHeight - 1 }}
+                            style={{ width: '100%', height: 'calc(var(--bar) - 1px)' }}
                           />
                         </>
                       );
@@ -422,7 +321,7 @@ export function MoleculeBuilder({
         </div>
 
         {/* Legend */}
-        <div className="mt-4 flex justify-center gap-4 text-xs text-warm-400">
+        <div className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-warm-400">
           <span className="flex items-center gap-1">
             <span className="w-4 h-1 bg-warm-400 rounded" /> ein
           </span>
@@ -452,6 +351,7 @@ export function MoleculeBuilder({
       <div className="flex justify-center items-center gap-4 mb-4">
         <button
           onClick={() => updateCarbonCount(carbonCount - 1)}
+          aria-label="Fjarlægja kolefni"
           disabled={carbonCount <= 2}
           className={`w-12 h-12 rounded-full font-bold text-xl transition-all ${
             carbonCount > 2
@@ -469,6 +369,7 @@ export function MoleculeBuilder({
 
         <button
           onClick={() => updateCarbonCount(carbonCount + 1)}
+          aria-label="Bæta við kolefni"
           disabled={carbonCount >= maxCarbons}
           className={`w-12 h-12 rounded-full font-bold text-xl transition-all ${
             carbonCount < maxCarbons
@@ -490,7 +391,7 @@ export function MoleculeBuilder({
               : 'border-warm-300'
         }`}
       >
-        <div className="flex justify-between items-center mb-2">
+        <div className="flex flex-wrap justify-between items-center gap-x-2 gap-y-1 mb-2">
           <span
             className={`text-sm font-medium px-2 py-0.5 rounded ${
               compound.color === 'green'
@@ -524,11 +425,11 @@ export function MoleculeBuilder({
               {' • '}
             </span>
           )}
-          {bonds.some((b) => b.type === 'double')
-            ? `Tvítengi á stað ${bonds.find((b) => b.type === 'double')?.position}`
-            : bonds.some((b) => b.type === 'triple')
-              ? `Þrítengi á stað ${bonds.find((b) => b.type === 'triple')?.position}`
-              : 'Öll tengi eru einföld'}
+          {chainName.principal
+            ? `${chainName.principal.type === 'double' ? 'Tvítengi' : 'Þrítengi'} á stað ${chainName.principal.locant}${
+                chainName.reversed ? ` (talið frá C${carbonCount})` : ''
+              }`
+            : 'Öll tengi eru einföld'}
         </div>
       </div>
 

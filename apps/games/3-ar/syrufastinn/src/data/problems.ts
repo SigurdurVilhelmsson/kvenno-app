@@ -178,7 +178,7 @@ export const APPLY_PROBLEMS: ApplyProblem[] = (() => {
     explanation:
       `x = √(Ka · C) = √(${sci(propansyra.ka)} · 0,25) og pH = −log x. ` +
       `Klofnunarhlutfallið er ${fmt(percentDissociation(propansyra.ka, 0.25), 2)} %, ` +
-      'vel innan 5 %, svo nálgunin má nota.',
+      'vel innan 5 %, svo nálgunina má nota.',
     approximationValid: true,
   });
 
@@ -196,9 +196,11 @@ export const APPLY_PROBLEMS: ApplyProblem[] = (() => {
     grading: { mode: 'relative', tolerance: KA_FROM_PH_TOLERANCE },
     answerHint: 'Ka, t.d. 1,8e-5',
     explanation:
-      '[H⁺] = 10⁻²·⁸⁷ = 1,3 × 10⁻³ M. Ka = x² / (C − x) = 1,8 × 10⁻⁵ — þetta er ediksýra. ' +
+      '[H⁺] = 10 í veldinu −2,87 = 1,3 × 10⁻³ M. Ka = x² / (C − x) = 1,8 × 10⁻⁵ — þetta er ediksýra. ' +
       'Þetta er áttin sem sýrufastinn er raunverulega ákvarðaður í: mælt pH, reiknaður Ka. ' +
-      'Taflan gefur 1,8 × 10⁻⁵; útreikningurinn þinn gefur 1,84 × 10⁻⁵ og bæði teljast rétt, ' +
+      // Shown whether the answer was right or wrong, so it says what a
+      // calculation from the measured pH gives — not what the student's gave.
+      'Taflan gefur 1,8 × 10⁻⁵; útreikningur út frá mældu pH gefur 1,84 × 10⁻⁵ og bæði teljast rétt, ' +
       'því pH upp á tvo aukastafi ræður ekki við fleiri markverða stafi en það.',
     misconception:
       'Ef svarið þitt var 1,3 × 10⁻³ þá skilaðirðu [H⁺], ekki Ka. Ka er hlutfallið x²/(C − x), ekki styrkurinn sjálfur.',
@@ -222,6 +224,7 @@ export const APPLY_PROBLEMS: ApplyProblem[] = (() => {
     approximationValid: true,
   });
 
+  const klofnunX = solveWeakAcid(ediksyra.ka, 0.1).hApprox;
   out.push({
     id: 'apply-klofnun',
     kind: 'klofnun',
@@ -235,8 +238,13 @@ export const APPLY_PROBLEMS: ApplyProblem[] = (() => {
       `x = √(Ka · C) = 1,3 × 10⁻³ M og klofnunarhlutfallið er x/C = ${fmt(percentDissociation(ediksyra.ka, 0.1), 2)} %. ` +
       `Til samanburðar klofnar ${fenol.name.toLowerCase()} aðeins ` +
       `${fmt(percentDissociation(fenol.ka, 1.0), 4)} % í 1,0 M lausn — þúsundfalt minna, og samt er sú lausn súr.`,
+    // Each number named is the one that mistake produces at 0,100 M. The old text
+    // was written when this problem was fenól at 1,0 M, where x/C is x itself, so
+    // "1,3 × 10⁻³ means you forgot the 100" stopped being true when C changed.
     misconception:
-      'Ef svarið þitt var 1,3 × 10⁻³ gleymdirðu að margfalda með 100. Klofnunarhlutfallið er x/C sem prósenta, ekki x sjálft.',
+      `Ef svarið þitt var ${fmt(percentDissociation(ediksyra.ka, 0.1) / 100, 4)} gleymdirðu að margfalda með 100. ` +
+      `Ef það var ${sci(klofnunX)} skilaðirðu styrknum x. ` +
+      'Klofnunarhlutfallið er x/C sem prósenta, ekki x sjálft.',
     approximationValid: true,
   });
 
@@ -252,7 +260,7 @@ export const APPLY_PROBLEMS: ApplyProblem[] = (() => {
       grading: { mode: 'absolute', tolerance: PH_TOLERANCE },
       answerHint: 'pH, tveir aukastafir',
       explanation:
-        `Klofnunarhlutfallið er ${fmt(p.percentDissociated, 2)} % — yfir 5 %, svo nálgunin má ekki nota hér. ` +
+        `Klofnunarhlutfallið er ${fmt(p.percentDissociated, 2)} % — yfir 5 %, svo nálgunina má ekki nota hér. ` +
         `√(Ka · C) gefur pH = ${fmt(s.pHApprox, 2)}, en rétta svarið úr annars stigs jöfnunni er ${fmt(s.pH, 2)}.`,
       misconception: `Ef þú svaraðir ${fmt(s.pHApprox, 2)} notaðirðu √(Ka · C). Það er nálgunin, og hún byggir á að x sé hverfandi miðað við C — en hér er x ${fmt(p.percentDissociated, 1)} % af C. Leystu x² + Ka·x − Ka·C = 0.`,
       approximationValid: false,

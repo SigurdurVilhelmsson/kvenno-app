@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 
 import { Presence } from '@shared/components';
+import { formatDecimal } from '@shared/utils';
 
 import { Burette } from './Burette';
 import { Flask } from './Flask';
@@ -11,11 +12,19 @@ import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { getTitrationById } from '../data/titrations';
 import type { MonoproticTitration, IndicatorType } from '../types';
 import { calculatePH, generateTitrationCurve } from '../utils/ph-calculations';
+import { revealTop } from '../utils/reveal';
 
 interface Level2Props {
   onComplete: (score: number) => void;
   onBack: () => void;
 }
+
+/** Exit duration of the marking panel's Presence. */
+const MARKING_EXIT_MS = 250;
+
+/** Below lg the indicator list is stacked under the apparatus. */
+const isBelowLg = () =>
+  typeof window.matchMedia === 'function' && !window.matchMedia('(min-width: 1024px)').matches;
 
 export function Level2({ onComplete, onBack }: Level2Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -23,6 +32,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [, setHintsUsed] = useState(0);
   const [completed, setCompleted] = useState(0);
   const levelCompleteReported = useRef(false);
+  const levelRef = useRef<HTMLDivElement>(null);
+  const [revealKey, setRevealKey] = useState(0);
 
   // Titration state
   const [volumeAdded, setVolumeAdded] = useState(0);
@@ -67,6 +78,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     setIsCorrect(false);
     setIndicatorCorrect(false);
   }, [currentIndex]);
+
+  useEffect(() => {
+    if (revealKey > 0) revealTop(levelRef.current);
+  }, [revealKey]);
 
   // Check completion
   useEffect(() => {
@@ -131,6 +146,14 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     setPhase('marking');
   };
 
+  // Touch cannot place a range thumb to 0.1 mL, so the marking step also
+  // takes ±0.1 mL nudges (the arrow keys already do this on a keyboard).
+  const nudgeMarkedVolume = (delta: number) => {
+    setMarkedVolume((prev) =>
+      Math.min(volumeAdded, Math.max(0, Math.round((prev + delta) * 10) / 10))
+    );
+  };
+
   const handleSubmitMarkedVolume = () => {
     if (!titration) return;
     setSubmittedVolume(markedVolume);
@@ -173,8 +196,33 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
     if (currentIndex < LEVEL2_PUZZLES.length - 1) {
       setCurrentIndex((prev) => prev + 1);
+      setRevealKey((prev) => prev + 1);
     }
   };
+
+  // Below lg the indicator list sits under the apparatus, off screen on a
+  // phone, so confirming the marked volume looked like it did nothing. The
+  // scroll waits out the marking panel's exit: that panel sits above the list,
+  // and scrolling while it was still in the page left the top of the list
+  // 200-300 px above the screen once it unmounted (at 320 px and in landscape).
+  const indicatorRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (phase !== 'select-indicator' || !isBelowLg()) return;
+    const timer = window.setTimeout(() => {
+      indicatorRef.current?.scrollIntoView?.({ block: 'start', behavior: 'smooth' });
+    }, MARKING_EXIT_MS + 50);
+    return () => window.clearTimeout(timer);
+  }, [phase]);
+
+  // The confirm button appears under the list once an indicator is picked. At
+  // 320 px and in landscape the list is taller than the screen, so bring the
+  // button up instead of leaving it below the fold.
+  const revealConfirmIndicator = useCallback((el: HTMLButtonElement | null) => {
+    if (!el || !isBelowLg()) return;
+    if (el.getBoundingClientRect().bottom > window.innerHeight) {
+      el.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+    }
+  }, []);
 
   const handleReset = () => {
     setVolumeAdded(0);
@@ -184,6 +232,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     setMarkedVolume(0);
     setIsCorrect(false);
     setIndicatorCorrect(false);
+    setRevealKey((prev) => prev + 1);
   };
 
   if (!titration) {
@@ -194,17 +243,17 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-xl p-4 mb-4">
+        <div ref={levelRef} className="bg-white rounded-2xl shadow-xl p-4 mb-4 scroll-mt-4">
           <div className="flex justify-between items-center">
             <button
               onClick={onBack}
-              className="text-warm-600 hover:text-warm-800 flex items-center gap-2"
+              className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:py-3 pointer-coarse:-my-3"
             >
               ← Til baka
             </button>
             <div className="flex items-center gap-4">
               <div className="text-sm text-warm-500">
-                {completed + 1} / {LEVEL2_PUZZLES.length}
+                {currentIndex + 1} / {LEVEL2_PUZZLES.length}
               </div>
               <div className="text-lg font-bold text-green-600">Stig: {score}</div>
             </div>
@@ -232,12 +281,24 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             <div className="flex-1">
               <h2 className="text-lg font-bold text-green-800 mb-1">{titration.name}</h2>
               <p className="text-green-900">{puzzle.taskIs}</p>
+              {/* The names are nominative, so they stand after the colon rather
+                  than after "af", which would need them in the dative. */}
               <p className="text-sm text-green-700 mt-2">
-                <span className="font-semibold">Sýni:</span> {titration.analyte.volume} mL af{' '}
-                {titration.analyte.molarity} M {titration.analyte.name}
+                <span className="font-semibold">Sýni:</span> {titration.analyte.name} (
+                {titration.analyte.formula}),{' '}
+                <span className="whitespace-nowrap">
+                  {formatDecimal(titration.analyte.volume, 1)} mL
+                </span>
+                ,{' '}
+                <span className="whitespace-nowrap">
+                  {formatDecimal(titration.analyte.molarity, 3)} M
+                </span>
                 <br />
-                <span className="font-semibold">Títrant:</span> {titration.titrant.molarity} M{' '}
-                {titration.titrant.name}
+                <span className="font-semibold">Títrantur:</span> {titration.titrant.name} (
+                {titration.titrant.formula}),{' '}
+                <span className="whitespace-nowrap">
+                  {formatDecimal(titration.titrant.molarity, 3)} M
+                </span>
               </p>
             </div>
           </div>
@@ -246,67 +307,78 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         {/* Main content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Left: Apparatus */}
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-lg p-4">
-            <div className="flex flex-col md:flex-row items-start justify-center gap-8">
+          <div className="lg:col-span-2 bg-white rounded-xl shadow-lg p-3 md:p-4">
+            {/* Below md the burette and flask stand side by side with the
+                controls under both, so the curve is on screen while pouring.
+                `contents` lets the burette column's two children join that
+                grid; from md it is the original column again. */}
+            <div className="grid grid-cols-2 items-end gap-x-2 gap-y-4 md:flex md:flex-row md:items-start md:justify-center md:gap-8">
               {/* Burette */}
-              <div className="flex flex-col items-center">
-                <Burette volumeAdded={volumeAdded} maxVolume={60} isAnimating={isPouring} />
+              <div className="contents md:flex md:flex-col md:items-center">
+                <div className="col-start-1 row-start-1 flex justify-center">
+                  <Burette volumeAdded={volumeAdded} maxVolume={60} isAnimating={isPouring} />
+                </div>
 
                 {/* Controls */}
-                <Presence show={phase === 'titrating'} exitDuration={250}>
-                  <div className="mt-4 space-y-2">
-                    <div className="flex gap-2">
+                <div className="col-span-2 row-start-2 empty:hidden">
+                  <Presence show={phase === 'titrating'} exitDuration={250}>
+                    <div className="md:mt-4 space-y-2">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleAddDrop}
+                          aria-label="Bæta við 0,05 mL títrants"
+                          className="flex-1 md:flex-none whitespace-nowrap px-3 py-2 pointer-coarse:py-3 bg-blue-100 hover:bg-blue-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
+                        >
+                          +0,05 mL
+                        </button>
+                        <button
+                          onClick={handleAdd1mL}
+                          aria-label="Bæta við 1 mL títrants"
+                          className="flex-1 md:flex-none whitespace-nowrap px-3 py-2 pointer-coarse:py-3 bg-blue-200 hover:bg-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
+                        >
+                          +1 mL
+                        </button>
+                        <button
+                          onClick={handleAdd5mL}
+                          aria-label="Bæta við 5 mL títrants"
+                          className="flex-1 md:flex-none whitespace-nowrap px-3 py-2 pointer-coarse:py-3 bg-blue-300 hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
+                        >
+                          +5 mL
+                        </button>
+                      </div>
+                      {/* Pointer events cover mouse, touch and pen in one path. The
+                        touch handlers this replaced had no touchcancel, so a hold
+                        the browser cancelled kept pouring to 60 mL. */}
                       <button
-                        onClick={handleAddDrop}
-                        aria-label="Bæta við 0,05 mL títrant"
-                        className="px-3 py-2 bg-blue-100 hover:bg-blue-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
+                        onPointerDown={() => setIsPouring(true)}
+                        onPointerUp={() => setIsPouring(false)}
+                        onPointerLeave={() => setIsPouring(false)}
+                        onPointerCancel={() => setIsPouring(false)}
+                        onContextMenu={(e) => e.preventDefault()}
+                        onKeyDown={(e) => {
+                          if (e.code === 'Space' || e.code === 'Enter') {
+                            e.preventDefault();
+                            setIsPouring(true);
+                          }
+                        }}
+                        onKeyUp={(e) => {
+                          if (e.code === 'Space' || e.code === 'Enter') {
+                            setIsPouring(false);
+                          }
+                        }}
+                        onBlur={() => setIsPouring(false)}
+                        aria-label="Halda inni til að hella títranti samfellt"
+                        className="w-full px-4 py-3 bg-indigo-500 hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-700 text-white rounded-lg font-bold touch-none select-none"
                       >
-                        +0.05 mL
-                      </button>
-                      <button
-                        onClick={handleAdd1mL}
-                        aria-label="Bæta við 1 mL títrant"
-                        className="px-3 py-2 bg-blue-200 hover:bg-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
-                      >
-                        +1 mL
-                      </button>
-                      <button
-                        onClick={handleAdd5mL}
-                        aria-label="Bæta við 5 mL títrant"
-                        className="px-3 py-2 bg-blue-300 hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 text-blue-800 rounded-lg text-sm font-semibold"
-                      >
-                        +5 mL
+                        Halda inni til að hella
                       </button>
                     </div>
-                    <button
-                      onMouseDown={() => setIsPouring(true)}
-                      onMouseUp={() => setIsPouring(false)}
-                      onMouseLeave={() => setIsPouring(false)}
-                      onTouchStart={() => setIsPouring(true)}
-                      onTouchEnd={() => setIsPouring(false)}
-                      onKeyDown={(e) => {
-                        if (e.code === 'Space' || e.code === 'Enter') {
-                          e.preventDefault();
-                          setIsPouring(true);
-                        }
-                      }}
-                      onKeyUp={(e) => {
-                        if (e.code === 'Space' || e.code === 'Enter') {
-                          setIsPouring(false);
-                        }
-                      }}
-                      onBlur={() => setIsPouring(false)}
-                      aria-label="Halda inni til að hella títrant samfellt"
-                      className="w-full px-4 py-3 bg-indigo-500 hover:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-700 text-white rounded-lg font-bold"
-                    >
-                      Halda inni til að hella
-                    </button>
-                  </div>
-                </Presence>
+                  </Presence>
+                </div>
               </div>
 
               {/* Flask */}
-              <div className="flex flex-col items-center">
+              <div className="col-start-2 row-start-1 flex flex-col items-center">
                 <Flask
                   pH={currentPH}
                   selectedIndicator={selectedIndicator}
@@ -340,7 +412,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               <div className="mt-4">
                 <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-3 mb-3">
                   <p className="text-sm text-indigo-800">
-                    <strong>Leiðbeiningar:</strong> Bættu við títrant þar til þú sérð{' '}
+                    <strong>Leiðbeiningar:</strong> Bættu við títranti þar til þú sérð{' '}
                     <strong>snögga pH-breytingu</strong> á ferilnum (brattur halli). Smelltu síðan á
                     hnappinn til að merkja jafngildispunktinn.
                   </p>
@@ -357,7 +429,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             </Presence>
 
             {/* Marking phase: slider to identify equivalence point */}
-            <Presence show={phase === 'marking'} exitDuration={250}>
+            <Presence show={phase === 'marking'} exitDuration={MARKING_EXIT_MS}>
               <div className="mt-4 bg-orange-50 border border-orange-200 rounded-xl p-4">
                 <div className="font-bold text-orange-800 mb-2">
                   📍 Merktu jafngildispunktinn á ferilnum
@@ -367,7 +439,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   Þetta er jafngildispunkturinn — þar sem mólfjöldi sýru = mólfjöldi basa.
                 </p>
                 <p className="text-xs text-orange-600 mb-4">
-                  Leyfilegt svigrúm: ±{puzzle.volumeTolerance.toFixed(1)} mL.
+                  Leyfilegt svigrúm: ±{formatDecimal(puzzle.volumeTolerance, 1)} mL.
                 </p>
                 <div className="space-y-3">
                   <input
@@ -377,20 +449,40 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     step={0.1}
                     value={markedVolume}
                     onChange={(e) => setMarkedVolume(parseFloat(e.target.value))}
-                    className="w-full accent-orange-500"
+                    aria-label="Jafngildisrúmmál"
+                    className="w-full accent-orange-500 pointer-coarse:h-11"
                   />
-                  <div className="text-center">
-                    <span className="font-mono text-xl font-bold text-orange-800">
-                      {markedVolume.toFixed(1)} mL
-                    </span>
-                    <span className="text-sm text-orange-600 ml-2">
-                      (pH ≈ {titration ? calculatePH(titration, markedVolume).toFixed(1) : '?'})
-                    </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => nudgeMarkedVolume(-0.1)}
+                      aria-label="Minnka um 0,1 mL"
+                      className="hidden pointer-coarse:flex shrink-0 items-center justify-center min-w-11 min-h-11 px-2 bg-orange-100 hover:bg-orange-200 text-orange-800 rounded-lg font-bold"
+                    >
+                      −0,1
+                    </button>
+                    <div className="flex-1 min-w-0 text-center">
+                      <span className="font-mono text-xl font-bold text-orange-800 whitespace-nowrap">
+                        {formatDecimal(markedVolume, 1)} mL
+                      </span>
+                      <span className="text-sm text-orange-600 ml-2 whitespace-nowrap">
+                        (pH ≈{' '}
+                        {titration ? formatDecimal(calculatePH(titration, markedVolume), 1) : '?'})
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => nudgeMarkedVolume(0.1)}
+                      aria-label="Auka um 0,1 mL"
+                      className="hidden pointer-coarse:flex shrink-0 items-center justify-center min-w-11 min-h-11 px-2 bg-orange-100 hover:bg-orange-200 text-orange-800 rounded-lg font-bold"
+                    >
+                      +0,1
+                    </button>
                   </div>
-                  <div className="flex gap-3">
+                  {/* Wraps below ~340 px: "Staðfesta:" alone is wider than
+                      what the back button leaves at 320 px. */}
+                  <div className="flex flex-wrap gap-3">
                     <button
                       onClick={() => setPhase('titrating')}
-                      className="px-4 py-2 bg-warm-200 hover:bg-warm-300 text-warm-700 rounded-lg font-medium"
+                      className="shrink-0 whitespace-nowrap px-4 py-2 pointer-coarse:py-3 bg-warm-200 hover:bg-warm-300 text-warm-700 rounded-lg font-medium"
                     >
                       ← Til baka
                     </button>
@@ -398,7 +490,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       onClick={handleSubmitMarkedVolume}
                       className="flex-1 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold"
                     >
-                      Staðfesta: {markedVolume.toFixed(1)} mL →
+                      Staðfesta: {formatDecimal(markedVolume, 1)} mL →
                     </button>
                   </div>
                 </div>
@@ -409,7 +501,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           {/* Right: Indicator selector and info */}
           <div className="space-y-4">
             {/* Indicator selector */}
-            <div className={phase === 'select-indicator' ? '' : 'opacity-50'}>
+            <div
+              ref={indicatorRef}
+              className={`scroll-mt-4 ${phase === 'select-indicator' ? '' : 'opacity-50'}`}
+            >
               <IndicatorSelector
                 selectedIndicator={selectedIndicator}
                 onSelect={handleIndicatorSelect}
@@ -420,6 +515,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             {/* Submit indicator button */}
             <Presence show={phase === 'select-indicator' && !!selectedIndicator} exitDuration={250}>
               <button
+                ref={revealConfirmIndicator}
                 onClick={handleSubmitIndicator}
                 className="w-full px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold"
               >
@@ -437,7 +533,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               ) : (
                 <button
                   onClick={handleShowHint}
-                  className="text-yellow-600 hover:text-yellow-800 text-sm flex items-center gap-2"
+                  className="text-yellow-600 hover:text-yellow-800 text-sm flex items-center gap-2 pointer-coarse:min-h-11"
                 >
                   💡 Sýna vísbendingu
                 </button>
@@ -457,10 +553,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 <div className="text-sm space-y-2">
                   <div>
                     <span className="font-semibold">Þitt rúmmál:</span>{' '}
-                    {submittedVolume?.toFixed(2)} mL
+                    {submittedVolume !== null ? formatDecimal(submittedVolume, 2) : '?'} mL
                     <br />
                     <span className="font-semibold">Jafngildisrúmmál:</span>{' '}
-                    {titration.equivalenceVolume.toFixed(2)} mL
+                    {formatDecimal(titration.equivalenceVolume, 2)} mL
                     <br />
                     <span
                       className={
@@ -473,7 +569,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     >
                       Skekkja: ±
                       {submittedVolume !== null
-                        ? Math.abs(submittedVolume - titration.equivalenceVolume).toFixed(2)
+                        ? formatDecimal(Math.abs(submittedVolume - titration.equivalenceVolume), 2)
                         : '?'}{' '}
                       mL
                       {submittedVolume !== null &&
@@ -501,13 +597,20 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       Jafngildispunktur ≠ Endapunktur
                     </div>
                     <div className="text-purple-700">
-                      <strong>Jafngildispunktur:</strong> {titration.equivalenceVolume.toFixed(1)}{' '}
-                      mL (pH {titration.equivalencePH.toFixed(1)}) — þar sem mólfjöldi sýru =
-                      mólfjöldi basa.
+                      {/* The pH is derived, as the flask's and the marking readout's
+                          are, so all three agree at the same volume. */}
+                      <strong>Jafngildispunktur:</strong>{' '}
+                      {formatDecimal(titration.equivalenceVolume, 1)} mL (pH{' '}
+                      {formatDecimal(calculatePH(titration, titration.equivalenceVolume), 1)}) — þar
+                      sem mólfjöldi sýru = mólfjöldi basa.
                       <br />
                       <strong>Endapunktur:</strong> þar sem vísirinn breytir um lit (
                       {indicators.find((i) => i.id === selectedIndicator)?.name} breytist við pH{' '}
-                      {indicators.find((i) => i.id === selectedIndicator)?.pHRange.join('–')}).
+                      {indicators
+                        .find((i) => i.id === selectedIndicator)
+                        ?.pHRange.map((pH) => formatDecimal(pH, 1))
+                        .join('–')}
+                      ).
                       <br />
                       Góður vísir hefur endapunkt nálægt jafngildispunktinum.
                     </div>
@@ -521,13 +624,13 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 <div className="mt-4 flex gap-2">
                   <button
                     onClick={handleReset}
-                    className="flex-1 px-4 py-2 bg-warm-200 hover:bg-warm-300 text-warm-800 rounded-lg font-semibold"
+                    className="flex-1 px-4 py-2 pointer-coarse:py-3 bg-warm-200 hover:bg-warm-300 text-warm-800 rounded-lg font-semibold"
                   >
                     Reyna aftur
                   </button>
                   <button
                     onClick={handleNext}
-                    className="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-bold"
+                    className="flex-1 px-4 py-2 pointer-coarse:py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-bold"
                   >
                     {currentIndex < LEVEL2_PUZZLES.length - 1 ? 'Næsta →' : 'Ljúka →'}
                   </button>

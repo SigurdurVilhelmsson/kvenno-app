@@ -42,6 +42,15 @@ export interface MoleculeAtomProps {
   depthOpacity?: number;
   /** Depth-based scale (for VSEPR 3D effect) */
   depthScale?: number;
+  /**
+   * Smallest size, in drawing units, for the secondary text (numbering, charges). The parent
+   * sets it so that text still renders at a legible pixel size when the drawing is scaled down.
+   */
+  minTextSize?: number;
+  /** Which side of the atom its numbering label goes (organic chains with a branch above: below). */
+  labelPlacement?: 'above' | 'below';
+  /** Centre of the δ+/δ− tag, placed by the parent clear of bonds and atoms. */
+  partialChargePosition?: Position2D;
 }
 
 export function MoleculeAtom({
@@ -60,10 +69,21 @@ export function MoleculeAtom({
   reducedMotion = false,
   depthOpacity = 1,
   depthScale = 1,
+  minTextSize = 0,
+  labelPlacement = 'above',
+  partialChargePosition,
 }: MoleculeAtomProps) {
   const visual = getElementVisual(atom.symbol);
   const radius = baseRadius * visual.radius * depthScale;
   const textColor = getContrastTextColor(visual.color);
+  // Secondary text never drops below the parent's legibility floor.
+  const labelSize = Math.max(fontSize * 0.8, minTextSize);
+  const formalChargeSize = Math.max(fontSize * 0.7, minTextSize);
+  const partialChargeSize = Math.max(fontSize * 0.9, minTextSize);
+  const chargeTag = partialChargePosition ?? {
+    x: position.x + radius * 0.8,
+    y: position.y - radius * 0.8,
+  };
 
   // Animation styles
   const animationStyle = reducedMotion
@@ -115,13 +135,14 @@ export function MoleculeAtom({
         />
       )}
 
-      {/* Element symbol */}
+      {/* Element symbol. The circle shrinks with depth to suggest distance; the letter does not,
+          which took a back atom's symbol below a legible size (8.8 px on a phone). */}
       <text
         x={position.x}
         y={position.y}
         textAnchor="middle"
         dominantBaseline="central"
-        fontSize={fontSize * depthScale}
+        fontSize={fontSize}
         fontWeight="bold"
         fill={textColor}
         style={animationStyle}
@@ -133,9 +154,13 @@ export function MoleculeAtom({
       {showLabel && atom.label && (
         <text
           x={position.x}
-          y={position.y - radius - 8}
+          y={
+            labelPlacement === 'below'
+              ? position.y + radius + 8 + labelSize * 0.72
+              : position.y - radius - 8
+          }
           textAnchor="middle"
-          fontSize={fontSize * 0.8}
+          fontSize={labelSize}
           fill="#6B7280"
           style={animationStyle}
         >
@@ -149,7 +174,7 @@ export function MoleculeAtom({
           <circle
             cx={position.x + radius * 0.7}
             cy={position.y - radius * 0.7}
-            r={fontSize * 0.6}
+            r={Math.max(fontSize * 0.6, formalChargeSize * 0.8)}
             fill={
               atom.formalCharge > 0
                 ? MOLECULE_COLORS.formalChargePositive
@@ -161,7 +186,7 @@ export function MoleculeAtom({
             y={position.y - radius * 0.7}
             textAnchor="middle"
             dominantBaseline="central"
-            fontSize={fontSize * 0.7}
+            fontSize={formalChargeSize}
             fontWeight="bold"
             fill="white"
           >
@@ -173,11 +198,11 @@ export function MoleculeAtom({
       {/* Partial charge indicator (delta+/delta-) */}
       {showPartialCharge && atom.partialCharge && atom.partialCharge !== 'none' && (
         <text
-          x={position.x + radius * 0.8}
-          y={position.y - radius * 0.8}
+          x={chargeTag.x}
+          y={chargeTag.y}
           textAnchor="middle"
           dominantBaseline="central"
-          fontSize={fontSize * 0.9}
+          fontSize={partialChargeSize}
           fontWeight="bold"
           fill={
             atom.partialCharge === 'positive'

@@ -144,7 +144,9 @@ export default function FlaskComparison({
   const hasAddition = addedAcidMoles > 0 || addedBaseMoles > 0;
 
   return (
-    <div className="bg-warm-800/60 rounded-xl p-4">
+    // Opaque: at 60 % over the light page the panel came out mid-grey, and the warm-400 scale,
+    // legend and insight text on it fell to about 1,6 : 1 contrast.
+    <div className="bg-warm-800 rounded-xl p-4">
       <h4 className="text-sm font-bold text-warm-200 mb-3 text-center">
         Stuðpúðaður vs Óstuðpúðaður
       </h4>
@@ -162,7 +164,7 @@ export default function FlaskComparison({
             <div key={i} className="flex-1" style={{ backgroundColor: c }} />
           ))}
         </div>
-        <div className="flex justify-between text-[9px] text-warm-400 mt-0.5 px-0.5">
+        <div className="flex justify-between text-xs md:text-[9px] md:leading-normal text-warm-400 mt-0.5 px-0.5">
           <span>0</span>
           <span>7</span>
           <span>14</span>
@@ -186,7 +188,7 @@ export default function FlaskComparison({
       </div>
 
       {/* Legend */}
-      <div className="flex justify-center gap-4 mt-2 text-[10px] text-warm-400">
+      <div className="flex justify-center gap-4 mt-2 text-xs md:text-[10px] md:leading-normal text-warm-400">
         <span className="flex items-center gap-1">
           <span className="w-2 h-2 rounded-full bg-green-400 inline-block" /> Stuðpúðaður
         </span>
@@ -197,7 +199,7 @@ export default function FlaskComparison({
 
       {/* Insight text */}
       {hasAddition && (
-        <p className="text-[10px] text-warm-400 text-center mt-2">
+        <p className="text-xs md:text-[10px] md:leading-normal text-warm-400 text-center mt-2">
           Stuðpúðinn heldur pH stöðugu - munur aðeins{' '}
           {formatDecimal(Math.abs(bufferedPH - targetPH), 2)} einingar!
         </p>

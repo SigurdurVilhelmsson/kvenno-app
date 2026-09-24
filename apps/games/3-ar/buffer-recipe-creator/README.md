@@ -22,7 +22,7 @@ Stig 1 has no numbers to type: it grades whether [base]/[acid] falls inside the 
 pKa. Stig 2 and 3 are the calculation. Levels are not gated (the 2026-08-29 ruling); progress is kept
 under the `buffer-recipe-creator-progress` key.
 
-## Nothing in Stig 2 is stored
+## Nothing in Stig 2 or Stig 3 is stored
 
 `engine/buffer.ts` derives the ratio, the moles and the masses from each problem's pKa, target pH,
 volume, total concentration and molar masses; `Level2.tsx:65` calls `solveBuffer` and grades against
@@ -38,6 +38,16 @@ Stig 2 puzzles, and the explanation printed the false arithmetic back. The comme
 NaOH to make the conjugate base, so its acid mass is the total, not the acid fraction.
 `buffer-engine.test.ts` pins both branches against hand-worked values. Note that no Stig 2 or Stig 3
 puzzle currently points at #25; the branch is guarded for the day one does.
+
+**Stig 3 followed on 2026-09-23.** It derived its ratio and moles but graded the volumes against
+`correctAcidVolume` / `correctBaseVolume` typed into `data/level3-puzzles.ts`, and every hint was typed
+by hand. The ammonium puzzle had been worked from pKa 9,25 and only its quoted pKa was moved to 9,26,
+so its hints taught `10^(0,25) = 1,78` for a pH − pKa of 0,24, the worked solution printed
+`0,0146 mol / 2 M = 7,1 mL` (the division gives 7,3), and 7,6 mL — 4 % from the true volume — was
+marked wrong. `solveStockRecipe` in `engine/buffer.ts` now derives the volumes and water, the three
+stored fields are gone, and `level3-puzzles.ts` builds its hints and explanations from the same
+numbers the way `level2-puzzles.ts` does. The worked solution shows the `mol / M = L` step before
+converting to mL. `level3-recipe.test.tsx` plays every puzzle through the real component.
 
 ## Every pKa comes from Brown Appendix D
 
@@ -55,7 +65,7 @@ list. Problem #30 (a hypothetical `Veikt sýra`, pKa 5.2) is the one value it sk
 ## Hints cost points here
 
 All three levels pass `onPointsChange` to the shared `HintSystem` and multiply the award by it
-(`Level1.tsx:127`, `Level2.tsx:165`, `Level3.tsx:168`), so the tier cost the component displays is
+(`Level1.tsx:159`, `Level2.tsx:185`, `Level3.tsx:186`), so the tier cost the component displays is
 genuinely charged. `docs/README.md` records this as deliberately left alone when ph-titration's
 penalty was removed, and `consumers-honest.test.ts` only requires that a displayed cost be real. It
 does sit against the platform's "hint usage is never penalised" rule — see Open.
@@ -75,15 +85,15 @@ component.
 
 ```
 src/App.tsx                               menu, progress, chain chip
-src/engine/buffer.ts                      solveBuffer, bufferRange
+src/engine/buffer.ts                      solveBuffer, solveStockRecipe, bufferRange
 src/types.ts                              BufferProblem (no stored answers)
 src/data/problems.ts                      28 problems: the pool Stig 2 and 3 draw from
 src/data/level1-challenges.ts             6 ratio-band challenges
 src/data/level2-puzzles.ts                5 puzzles; hint and explanation numbers derived from solveBuffer
-src/data/level3-puzzles.ts                5 puzzles, with stock concentrations and stored volumes
+src/data/level3-puzzles.ts                5 puzzles; stock concentrations authored, everything else derived
 src/components/                           Level1, Level2, Level3, FlaskComparison,
                                           BufferCapacityVisualization
-src/__tests__/                            buffer-engine, data-integrity, appendix-d-conformance
+src/__tests__/                            engine, data, text and played-through tests
 LEVEL1_README.md, PROTOTYPE_SUMMARY.md,   historical notes from the Level 1 prototype;
 TEST_LEVEL1.md, VISUAL_COMPARISON.md      they describe files and plans that no longer match
 ```
@@ -115,11 +125,50 @@ and the Icelandic and Polish data strings use the comma; English fields keep the
 `toFixed` in a component other than the SVG path geometry in `BufferCapacityVisualization`,
 where a comma would break the path.
 
+## Fixed 2026-09-23, beside the mobile pass
+
+Each has a test that fails against the version before it.
+
+- **Stig 1 counted a challenge every time it was checked.** Six taps on "Athuga stuðpúða" finished the
+  level from challenge 1 with 600 stig. A solved challenge is now counted once
+  (`level1-flow.test.tsx`).
+- **Stig 1's last challenge was never seen.** Completion swapped to the menu on the last correct check;
+  the level now ends on "Ljúka stigi", like Stig 2 and 3.
+- **Stig 1's live readouts disagreed with its check.** The pH bar said "Fullkomið!" inside ±0,1 pH
+  while the check graded the ratio band (5 : 6 on challenge 1 read "Fullkomið!", then "Næstum rétt");
+  with one component removed the pH fell back to pKa; and the "Algeng villa" box compared the ratio
+  with 1 rather than the challenge's band, so on challenge 2 it told a student with too little base
+  that there was too much.
+- **Stig 2 and 3 awarded a puzzle twice on a quick double tap**, because an answered step stays live
+  while it fades out. Each check now ignores a tap after its step is over (`level2-flow.test.tsx`).
+- **The addition simulator's chemistry.** Water given 0,01 M strong acid read pH 5 (it divided an
+  M amount by 1000); the comparison measured the buffer's ΔpH from 7, so an acetate buffer that moved
+  0,18 read 2,44 — more than the water — under "Stuðpúðinn verndar pH"; adding base also took the
+  amount off the acid total, so neutralisation was counted twice; and the comparison stayed empty until
+  something was added (`buffer-capacity-sim.test.tsx`). Its "Stuðpúðinn verndar pH" tip now appears
+  only when the water's change really is the larger one, so additions that cancel make no claim.
+- **Answer placeholders were answers.** `t.d. 1.58` was Stig 2 puzzle 1's ratio, and Stig 3's
+  `t.d. 1.58`, `0.0039`, `0.0061`, `7.76` and `12.24` were its puzzle 1's ratio, moles and volumes —
+  with a full stop. They are format-only now (`0,00`), and `rendered-text.test.tsx` checks every
+  placeholder against every answer and every printed string for a decimal point.
+- **Text:** the raw pKa `4.74`, the `+0.01 M` buttons, the English gloss in "Stuðpúðageta", the
+  missing `en` in Stig 2's direction feedback, `Stuðpúðargeta`, `mólarmassa`, `samoki basinn`,
+  "í jafnvægi (1:1)" for equal amounts, `meira sýra en basi`, and split compounds
+  (`icelandic-text.test.ts`). The problem contexts Stig 2 and 3 print above a task spelt the
+  phosphate and acetate buffers with an accent the rest of the game (and the textbook) does not use,
+  and two of them were not Icelandic sentences: a non-word for "acidic" and a non-word "side acid"
+  region. All eight contexts in `problems.ts` that carried one of these are corrected, including the
+  four no puzzle currently shows. The contrast of the flask comparison panel, whose grey text sat at about
+  1,6 : 1 on a see-through background, is fixed by making the panel opaque.
+
 ## Open
 
-- **Stig 3 is only half derived.** Its ratio and mole steps are computed at runtime
-  (`Level3.tsx:86-89`), but the volume step grades against stored `correctAcidVolume` /
-  `correctBaseVolume` (`Level3.tsx:160-166`) and prints them in the explanation. They currently
-  agree with derivation within tolerance — the ammonium puzzle is off by about 3 % (7.1 mL stored,
-  7.31 mL derived) — but nothing tests them.
 - **Hint cost** — whether this game should follow the platform's free-hints policy is Siggi's call.
+- **`Ammóníustuðpúði`** (8 sites, this game only). The corpus has no `ammóníu-` stem at all — every
+  one of its 57 hits is `ammóníum…` — and neither compound appears in it. `ammóníumstuðpúði` looks
+  right, but it is a coinage question and has not been ruled.
+- **The simulator beyond buffer capacity.** Once added acid or base exceeds a component, the pH is
+  clamped at pKa ± log(C / 0,001) and stops moving, so a buffer appears to hold forever. Showing the
+  excess strong acid or base takes a model choice.
+- **Stig 2's flask comparison does not say what was added** (0,01 mól of strong acid to 1 L), so the
+  unbuffered flask's pH 2,0 comes from nowhere a student can see.

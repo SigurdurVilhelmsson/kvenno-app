@@ -2,7 +2,7 @@
   "name": "@kvenno/takmarkandi",
   "version": "1.0.0",
   "private": true,
-  "description": "Takmarkandi hvarfefni og afurðir",
+  "description": "Takmarkandi hvarfefni og heimtur",
   "type": "module",
   "scripts": {
     "dev": "vite",

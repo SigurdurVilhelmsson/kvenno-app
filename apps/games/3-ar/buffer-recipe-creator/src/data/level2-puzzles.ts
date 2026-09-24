@@ -93,10 +93,10 @@ function build(source: Level2PuzzleSource): Level2Puzzle {
       `Skref 2: Hlutfall [Basi]/[Sýra] = 10^(${signed(diff)}) ≈ ${ratio}.`,
     solution:
       `Hlutfall = ${ratio}. Heildarmagn = ${fmt(problem.totalConcentration, 3)} M × ` +
-      `${fmt(problem.volume, 1)} L = ${fmt(totalMoles, 4)} mol. ` +
-      `Sýra: ${fmt(r.acidMoles, 4)} mol × ${fmt(problem.acidMolarMass, 2)} g/mol = ` +
+      `${fmt(problem.volume, 1)} L = ${fmt(totalMoles, 4)} mól. ` +
+      `Sýra: ${fmt(r.acidMoles, 4)} mól × ${fmt(problem.acidMolarMass, 2)} g/mól = ` +
       `${fmt(r.acidMass, 2)} g. ` +
-      `Basi: ${fmt(r.baseMoles, 4)} mol × ${fmt(problem.baseMolarMass, 2)} g/mol = ` +
+      `Basi: ${fmt(r.baseMoles, 4)} mól × ${fmt(problem.baseMolarMass, 2)} g/mól = ` +
       `${fmt(r.baseMass, 2)} g.`,
   };
 
@@ -147,7 +147,7 @@ const SOURCES: Level2PuzzleSource[] = [
     massTolerance: 0.05,
     topicIs: (p) => `Ammóníustuðpúði virkar við hátt pH með pKa = ${fmt(p.pKa, 2)}.`,
     noteIs:
-      'Athugaðu að ammóníak (NH₃) hefur mjög lágan mólarmassa (17 g/mol) svo massinn er lítill.',
+      'Athugaðu að ammóníak (NH₃) hefur mjög lágan mólmassa (17 g/mól) svo massinn er lítill.',
   },
   {
     id: 5,

@@ -7,6 +7,7 @@ import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
 import { gameTranslations } from './i18n';
+import { useScrollTopOnChange } from './utils/phoneScroll';
 
 type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'complete';
 
@@ -37,20 +38,27 @@ function App() {
     'vsepr-geometry-progress',
     DEFAULT_PROGRESS
   );
+  useScrollTopOnChange(activeLevel);
 
-  const applyLevelResult = (level: 1 | 2 | 3, score: number, next: ActiveLevel) => {
+  const applyLevelResult = (level: 1 | 2 | 3) => (score: number) => {
     const key = `level${level}` as const;
     updateProgress({
       [`${key}Completed`]: true,
       [`${key}Score`]: Math.max(progress[`${key}Score`], score),
       totalGamesPlayed: progress.totalGamesPlayed + 1,
     } as Partial<Progress>);
-    setActiveLevel(next);
+    // The completion screen says every level is done, so it follows the level
+    // that finishes the set, in whatever order they were played. It used to
+    // follow Stig 3 alone, and congratulated a student who had played only it.
+    const allDone = ([1, 2, 3] as const).every(
+      (l) => l === level || progress[`level${l}Completed`]
+    );
+    setActiveLevel(allDone ? 'complete' : 'menu');
   };
 
-  const handleLevel1Complete = (score: number) => applyLevelResult(1, score, 'menu');
-  const handleLevel2Complete = (score: number) => applyLevelResult(2, score, 'menu');
-  const handleLevel3Complete = (score: number) => applyLevelResult(3, score, 'complete');
+  const handleLevel1Complete = applyLevelResult(1);
+  const handleLevel2Complete = applyLevelResult(2);
+  const handleLevel3Complete = applyLevelResult(3);
 
   // Render active level
   if (activeLevel === 'level1') {
@@ -71,7 +79,7 @@ function App() {
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <h1 className="text-3xl md:text-4xl font-bold text-center mb-6 text-teal-600">
             Til hamingju!
           </h1>
@@ -84,15 +92,15 @@ function App() {
           </div>
 
           <div className="space-y-4 mb-8">
-            <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center">
+            <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-blue-800">Stig 1: VSEPR Kenning</div>
-                <div className="text-sm text-blue-600">Lögun og rafeinasvið</div>
+                <div className="text-sm text-blue-600">Lögun og rafeindasvið</div>
               </div>
               <div className="text-2xl font-bold text-blue-600">{progress.level1Score}</div>
             </div>
 
-            <div className="bg-green-50 p-4 rounded-xl flex justify-between items-center">
+            <div className="bg-green-50 p-4 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-green-800">Stig 2: Spá fyrir um lögun</div>
                 <div className="text-sm text-green-600">Frá Lewis til rúmfræði</div>
@@ -100,34 +108,34 @@ function App() {
               <div className="text-2xl font-bold text-green-600">{progress.level2Score}</div>
             </div>
 
-            <div className="bg-purple-50 p-4 rounded-xl flex justify-between items-center">
+            <div className="bg-purple-50 p-4 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-purple-800">Stig 3: Blendni og skautun</div>
-                <div className="text-sm text-purple-600">Flókin sameindir</div>
+                <div className="text-sm text-purple-600">Flóknar sameindir</div>
               </div>
               <div className="text-2xl font-bold text-purple-600">{progress.level3Score}</div>
             </div>
 
-            <div className="bg-teal-100 p-4 rounded-xl flex justify-between items-center border-2 border-teal-400">
+            <div className="bg-teal-100 p-4 rounded-xl flex justify-between items-center gap-3 border-2 border-teal-400">
               <div className="font-bold text-teal-800 text-lg">Heildarstig</div>
               <div className="text-3xl font-bold text-teal-600">{totalScore}</div>
             </div>
           </div>
 
-          <div className="bg-teal-50 p-6 rounded-xl mb-6">
+          <div className="bg-teal-50 p-4 sm:p-6 rounded-xl mb-6">
             <h2 className="font-bold text-teal-800 mb-3">Hvað lærðir þú?</h2>
             <ul className="space-y-2 text-teal-900 text-sm">
               <li>
                 ✓ <strong>VSEPR:</strong> Rafeindasvið hrinda hvert öðru frá — ákvarðar lögun
               </li>
               <li>
-                ✓ <strong>Rafeinasvið:</strong> Bindandi pör + einstæð pör = rafeinasvið
+                ✓ <strong>Rafeindasvið:</strong> Bindandi pör + stök pör = rafeindasvið
               </li>
               <li>
-                ✓ <strong>Sameindarlögun:</strong> Einstæð pör „fela sig" en hafa áhrif á horn
+                ✓ <strong>Sameindarlögun:</strong> Stök pör „fela sig" en hafa áhrif á horn
               </li>
               <li>
-                ✓ <strong>Blendni:</strong> sp (línuleg), sp² (þríhyrnd), sp³ (fjórflötungur)...
+                ✓ <strong>Blendni:</strong> sp (línuleg), sp² (þríhyrnd), sp³ (ferflötungur)...
               </li>
               <li>
                 ✓ <strong>Skautun:</strong> Ósamhverf lögun = sameind skautuð
@@ -165,11 +173,11 @@ function App() {
         }
       />
       <div className="min-h-screen p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
           <p className="text-center text-warm-600 mb-8">{t('game.description')}</p>
 
           {/* Pedagogical explanation */}
-          <div className="bg-teal-50 p-6 rounded-xl mb-8">
+          <div className="bg-teal-50 p-4 sm:p-6 rounded-xl mb-8">
             <h2 className="font-bold text-teal-800 mb-3">Hvað er VSEPR?</h2>
             <p className="text-teal-900 text-sm mb-4">
               <strong>VSEPR</strong> (Valence Shell Electron Pair Repulsion) segir að rafeindasvið í
@@ -178,7 +186,7 @@ function App() {
             </p>
             <div className="bg-white p-3 rounded-lg border border-teal-200">
               <p className="text-sm text-teal-800 font-mono text-center">
-                Rafeinasvið = Bindandi pör + Einstæð pör
+                Rafeindasvið = Bindandi pör + Stök pör
               </p>
             </div>
           </div>
@@ -188,12 +196,12 @@ function App() {
             {/* Level 1 */}
             <button
               onClick={() => setActiveLevel('level1')}
-              className="game-card w-full p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
+              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
             >
-              <div className="flex items-center gap-4">
-                <div className="text-4xl">🔮</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="text-3xl sm:text-4xl">🔮</div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="text-xl font-bold text-blue-800">Stig 1: VSEPR Kenning</span>
                     {progress.level1Completed && (
                       <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
@@ -205,7 +213,7 @@ function App() {
                     Kynntu þér mismunandi sameindarlögun
                   </div>
                   <div className="text-xs text-warm-600 mt-2">
-                    Sjáðu hvernig rafeinasvið hrinda hvert öðru og mynda mismunandi rúmfræði.
+                    Sjáðu hvernig rafeindasvið hrinda hvert öðru og mynda mismunandi rúmfræði.
                   </div>
                 </div>
               </div>
@@ -214,12 +222,12 @@ function App() {
             {/* Level 2 */}
             <button
               onClick={() => setActiveLevel('level2')}
-              className="game-card w-full p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
+              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
             >
-              <div className="flex items-center gap-4">
-                <div className="text-4xl">🧩</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="text-3xl sm:text-4xl">🧩</div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="text-xl font-bold text-green-800">
                       Stig 2: Spá fyrir um lögun
                     </span>
@@ -233,7 +241,7 @@ function App() {
                     Ákvarðaðu lögun út frá Lewis-formúlu
                   </div>
                   <div className="text-xs text-warm-600 mt-2">
-                    Teldu rafeinasvið og spáðu fyrir um sameindarlögun og tengihorn.
+                    Teldu rafeindasvið og spáðu fyrir um sameindarlögun og tengihorn.
                   </div>
                 </div>
               </div>
@@ -242,12 +250,12 @@ function App() {
             {/* Level 3 */}
             <button
               onClick={() => setActiveLevel('level3')}
-              className="game-card w-full p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
+              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
             >
-              <div className="flex items-center gap-4">
-                <div className="text-4xl">⚗️</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="text-3xl sm:text-4xl">⚗️</div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="text-xl font-bold text-purple-800">
                       Stig 3: Blendni og skautun
                     </span>
@@ -275,22 +283,24 @@ function App() {
                 <h3 className="font-semibold text-warm-700">Framvinda</h3>
                 <button
                   onClick={resetProgress}
-                  className="text-sm text-warm-500 hover:text-red-500 transition-colors"
+                  className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:min-h-11"
                 >
                   Endurstilla
                 </button>
               </div>
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="bg-teal-50 rounded-lg p-3">
-                  <div className="text-2xl font-bold text-teal-600">{levelsCompleted}/3</div>
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 text-center">
+                <div className="bg-teal-50 rounded-lg p-2 sm:p-3">
+                  <div className="text-xl sm:text-2xl font-bold text-teal-600">
+                    {levelsCompleted}/3
+                  </div>
                   <div className="text-xs text-warm-600">Stig lokið</div>
                 </div>
-                <div className="bg-green-50 rounded-lg p-3">
-                  <div className="text-2xl font-bold text-green-600">{totalScore}</div>
+                <div className="bg-green-50 rounded-lg p-2 sm:p-3">
+                  <div className="text-xl sm:text-2xl font-bold text-green-600">{totalScore}</div>
                   <div className="text-xs text-warm-600">Heildar stig</div>
                 </div>
-                <div className="bg-blue-50 rounded-lg p-3">
-                  <div className="text-2xl font-bold text-blue-600">
+                <div className="bg-blue-50 rounded-lg p-2 sm:p-3">
+                  <div className="text-xl sm:text-2xl font-bold text-blue-600">
                     {progress.totalGamesPlayed}
                   </div>
                   <div className="text-xs text-warm-600">Leikir spilaðir</div>
@@ -301,8 +311,8 @@ function App() {
 
           {/* Geometry reference */}
           <div className="mt-6 bg-warm-50 p-4 rounded-xl">
-            <h3 className="font-semibold text-warm-700 mb-3">📐 Algengar sameindarlögun</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+            <h3 className="font-semibold text-warm-700 mb-3">📐 Algeng sameindarlögun</h3>
+            <div className="grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-4 gap-2 text-sm">
               <div className="bg-white p-2 rounded border text-center">
                 <div className="text-lg mb-1">—</div>
                 <div className="font-bold text-warm-800">Línuleg</div>
@@ -315,13 +325,13 @@ function App() {
               </div>
               <div className="bg-white p-2 rounded border text-center">
                 <div className="text-lg mb-1">◇</div>
-                <div className="font-bold text-warm-800">Fjórflötungur</div>
-                <div className="text-xs text-warm-500">109.5°</div>
+                <div className="font-bold text-warm-800">Ferflötungur</div>
+                <div className="text-xs text-warm-500">109,5°</div>
               </div>
               <div className="bg-white p-2 rounded border text-center">
                 <div className="text-lg mb-1">∠</div>
                 <div className="font-bold text-warm-800">Beygð</div>
-                <div className="text-xs text-warm-500">&lt;109.5°</div>
+                <div className="text-xs text-warm-500">&lt;109,5°</div>
               </div>
             </div>
           </div>
@@ -330,7 +340,7 @@ function App() {
           <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
             <h3 className="font-semibold text-amber-800 mb-2">Af hverju VSEPR?</h3>
             <p className="text-sm text-amber-700">
-              Lögun sameinda ákvarðar virkni þeirra — af hverju vatn er beygt (og leysi), af hverju
+              Lögun sameinda ákvarðar virkni þeirra — af hverju vatn er beygt (og leysir), af hverju
               DNA er tvíþráður, af hverju lyf passa í ensím. Lögunin skýrir eiginleikana.
             </p>
           </div>
