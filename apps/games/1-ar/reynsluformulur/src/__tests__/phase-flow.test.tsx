@@ -1,6 +1,7 @@
 import { fireEvent, render, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import App from '../App';
 
 /**
@@ -9,6 +10,8 @@ import App from '../App';
  * not go. `1-ar/utfellingarhvorf` had the same defect and the same fix. Each
  * now records the phase as done and opens the one it names.
  */
+
+clockPastNextGuard();
 
 beforeEach(() => {
   localStorage.clear();

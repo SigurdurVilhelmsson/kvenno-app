@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { AefaScreen } from '../components/AefaScreen';
 import { BeitaScreen } from '../components/BeitaScreen';
 import { KannaScreen } from '../components/KannaScreen';
@@ -34,6 +35,8 @@ function massOf(formula: string): number {
   }
   return total;
 }
+
+clockPastNextGuard();
 
 beforeEach(() => {
   window.scrollBy = vi.fn() as unknown as typeof window.scrollBy;

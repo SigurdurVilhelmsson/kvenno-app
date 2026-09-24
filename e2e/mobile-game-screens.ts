@@ -1269,6 +1269,17 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Kanna'],
         },
       ],
+      loop: {
+        prompt: { css: 'main h2' },
+        // The last compound in the list; the table and its sentence open under it.
+        action: { role: 'button', name: 'Magnesíumfosfat' },
+        answer: [],
+        verdict: { text: 'Hér fer það saman' },
+        // The list stays on screen with the table and the sentence, for the next
+        // compound. On the SE only the table and the sentence fit (design §5).
+        next: { role: 'button', name: 'Vetnisperoxíð' },
+        viewports: ['android', 'iphone', 'landscape'],
+      },
     },
     {
       name: 'Kanna — Magnesíumfosfat valið',
@@ -1293,18 +1304,58 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Skilja — fyrsta súla',
+      steps: [
+        {
+          clickRole: ['button', 'Skilja'],
+        },
+        // "Næsta súla" ignores a press within 400 ms of appearing or of opening a
+        // column, as every Næsta does; a student reads the column first.
+        {
+          wait: 300,
+        },
+      ],
+      loop: {
+        prompt: { css: 'main h2' },
+        action: { role: 'button', name: 'Næsta súla' },
+        answer: [],
+        // The caption of the column just added, which focus moves to.
+        verdict: { text: 'Deildu massanum með mólmassa' },
+        next: { role: 'button', name: 'Næsta súla' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
       name: 'Skilja — þriðja súla (1,5-gildran)',
       steps: [
         {
           clickRole: ['button', 'Skilja'],
         },
         {
-          clickRole: ['button', 'Næsta súla'],
+          wait: 300,
         },
         {
           clickRole: ['button', 'Næsta súla'],
         },
+        {
+          wait: 300,
+        },
+        {
+          clickRole: ['button', 'Næsta súla'],
+        },
+        {
+          wait: 300,
+        },
       ],
+      // The last column: "Áfram í Æfa" takes the place of "Næsta súla", so a
+      // double tap here is the one that could skip the answer column.
+      loop: {
+        prompt: { css: 'main h2' },
+        action: { role: 'button', name: 'Næsta súla' },
+        answer: [],
+        verdict: { text: 'Margfaldaðu upp þangað til' },
+        next: { role: 'button', name: 'Áfram í Æfa' },
+      },
     },
     {
       name: 'Skilja — fjórar súlur (tafla skrunar)',
@@ -1313,15 +1364,68 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Skilja'],
         },
         {
-          clickRole: ['button', 'Næsta súla'],
+          wait: 300,
         },
         {
           clickRole: ['button', 'Næsta súla'],
+        },
+        {
+          wait: 300,
+        },
+        {
+          clickRole: ['button', 'Næsta súla'],
+        },
+        {
+          wait: 300,
         },
         {
           clickRole: ['button', 'Næsta súla'],
         },
       ],
+    },
+    {
+      name: 'Æfa — Mól',
+      steps: [
+        {
+          clickRole: ['button', 'Æfa'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [
+          { fill: ['input[aria-label="Mól fyrir H"]', '0'] },
+          { fill: ['input[aria-label="Mól fyrir O"]', '0'] },
+        ],
+        verdict: { css: '#aefa-verdict' },
+        next: { role: 'button', name: 'Reyna aftur' },
+        together: [[{ css: '[data-item-start]' }, { css: 'input[aria-label="Mól fyrir O"]' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+      },
+    },
+    {
+      name: 'Æfa — Mól rétt',
+      steps: [
+        {
+          clickRole: ['button', 'Æfa'],
+        },
+      ],
+      // A right column opens no verdict box: the ticks beside the fields are the
+      // verdict, and "Næsta súla" takes the place of "Athuga".
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [
+          { fill: ['input[aria-label="Mól fyrir H"]', '5,883'] },
+          { fill: ['input[aria-label="Mól fyrir O"]', '5,880'] },
+        ],
+        verdict: { css: '[role="group"][aria-labelledby="aefa-prompt"]' },
+        next: { role: 'button', name: 'Næsta súla' },
+        together: [[{ css: '[data-item-start]' }, { css: 'input[aria-label="Mól fyrir O"]' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+      },
     },
     {
       name: 'Æfa — Mól, röng svör',
@@ -1356,6 +1460,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Athuga'],
         },
         {
+          wait: 300,
+        },
+        {
           clickRole: ['button', 'Næsta súla'],
         },
         {
@@ -1385,6 +1492,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Athuga'],
         },
         {
+          wait: 300,
+        },
+        {
           clickRole: ['button', 'Næsta súla'],
         },
         {
@@ -1395,6 +1505,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
         {
           clickRole: ['button', 'Athuga'],
+        },
+        {
+          wait: 300,
         },
         {
           clickRole: ['button', 'Næsta súla'],
@@ -1417,6 +1530,16 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Beita'],
         },
       ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Svara' },
+        answer: [{ fill: ['#n-input', '3'] }],
+        verdict: { css: '#beita-verdict' },
+        next: { role: 'button', name: 'Næsta dæmi' },
+        together: [[{ css: '[data-item-start]' }, { css: '#n-input' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+      },
     },
     {
       name: 'Beita — rangt svar',
@@ -1445,6 +1568,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Svara'],
         },
         {
+          wait: 300,
+        },
+        {
           clickRole: ['button', 'Næsta dæmi'],
         },
         {
@@ -1452,6 +1578,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
         {
           clickRole: ['button', 'Svara'],
+        },
+        {
+          wait: 300,
         },
         {
           clickRole: ['button', 'Næsta dæmi'],
