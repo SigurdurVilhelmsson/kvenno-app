@@ -1,7 +1,11 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { playLevel1 } from './playthrough';
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 /**
  * CLAUDE.md: "Hint usage is never penalized", and the 2026-08-26 sweep recorded that no game

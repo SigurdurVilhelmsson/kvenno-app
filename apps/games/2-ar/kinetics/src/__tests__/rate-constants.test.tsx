@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { playLevel2 } from './playthrough';
 import { challenges } from '../data/level2-questions';
 
@@ -18,6 +19,9 @@ function shownRateConstant(container: HTMLElement): number {
   if (!match) throw new Error('no rate constant on the result screen');
   return Number(match[1].replace(',', '.'));
 }
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 describe('the rate constant shown after each Level 2 challenge', () => {
   it('reproduces every experiment in that challenge’s own table', () => {

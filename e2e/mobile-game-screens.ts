@@ -2603,6 +2603,74 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    {
+      name: 'Stig 1 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 1: Hraðahugtök'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [{ css: 'button.text-left.border-2:nth-child(2)' }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta þraut' },
+        // In landscape the feedback (FeedbackPanel and Hugtak, across both columns) is taller
+        // than the screen, so Næsta is one scroll below the verdict: an accepted residual
+        // (design §5). The §6.2.10 landscape check still runs.
+        viewports: ['android', 'iphone', 'se'],
+      },
+    },
+    {
+      name: 'Stig 2 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 2: Hraðalögmál'],
+        },
+        {
+          clickRole: ['button', 'Byrja æfingar'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [
+          { css: 'button.w-12.h-12' },
+          { css: 'div.space-y-4 > div:nth-child(2) button.w-12' },
+        ],
+        verdict: { css: '#kinetics-l2-verdict' },
+        next: { role: 'button', name: 'Næsta þraut' },
+        // The data and the order buttons worked from it, on one screen.
+        together: [[{ css: 'table' }, { text: 'Röð í [B]:' }]],
+        // On the SE Athuga is about 90 px below the screen: the SE is the stretch target (§5).
+        viewports: ['android', 'iphone', 'landscape'],
+      },
+    },
+    {
+      name: 'Stig 3 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 3: Hvarfgangur'],
+        },
+        {
+          clickRole: ['button', 'Byrja æfingar'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [{ css: 'button.text-left.border-2:nth-child(2)' }],
+        verdict: { css: '[aria-labelledby="kinetics-l3-verdict"]' },
+        next: { role: 'button', name: 'Næsta þraut' },
+        // The mechanism, the question, the options and Athuga, after one reading scroll past
+        // the title and overall reaction (§3, multiple choice with a stimulus).
+        together: [[{ text: 'Hvarfgangur:' }, { role: 'button', name: 'Athuga svar' }]],
+        scrollsToAction: 1,
+        // On the SE a second scroll is needed: the stretch target (§5).
+        viewports: ['android', 'iphone', 'landscape'],
+      },
+    },
   ],
   '2-ar/lewis-structures': [
     {

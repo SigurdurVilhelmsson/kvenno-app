@@ -2,6 +2,7 @@
 import { fireEvent, render, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level3 } from '../components/Level3';
 import { challenges } from '../data/level3-questions';
 
@@ -61,6 +62,9 @@ function optionTextOf(button: HTMLElement): string {
 function buttonFor(container: HTMLElement, text: string): HTMLElement | undefined {
   return optionButtons(container).find((b) => optionTextOf(b) === text);
 }
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 describe('the data this level draws from', () => {
   it('still puts the correct option first every time', () => {
