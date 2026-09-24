@@ -1027,6 +1027,36 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Stig 1 — leikur',
+      steps: [
+        {
+          click: 'Stig 1: Mólmassi',
+        },
+        {
+          click: 'Sjáum dæmi',
+        },
+        {
+          click: 'Eitt dæmi til',
+        },
+        {
+          click: 'byrja æfingar',
+        },
+      ],
+      loop: {
+        prompt: { css: '#molmassi-compound' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ fill: ['input[placeholder="t.d. 18,02"]', '1'] }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta dæmi' },
+        together: [[{ css: '#molmassi-compound' }, { css: 'input[placeholder="t.d. 18,02"]' }]],
+        // On its side the phone shows the verdict at the top of the answer
+        // column and the student reads down the breakdown to Næsta (a §5
+        // landscape residual); the "stays usable" check still runs there.
+        viewports: ['android', 'iphone', 'se'],
+        typed: true,
+      },
+    },
+    {
       name: 'Stig 1 — dæmi með vísbendingu',
       steps: [
         {
@@ -1133,6 +1163,20 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           click: 'Byrja æfingar',
         },
       ],
+      loop: {
+        prompt: { css: '#molmassi-l2-question' },
+        action: { role: 'button', name: 'Svara' },
+        answer: [{ fill: ['input[placeholder="Svar..."]', '99999'] }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta dæmi' },
+        together: [[{ css: '#molmassi-l2-question' }, { css: 'input[placeholder="Svar..."]' }]],
+        // On its side the phone shows the verdict at the top of the question
+        // column and Næsta one short scroll below the worked solution (a §5
+        // landscape residual); the "stays usable" check still runs there.
+        viewports: ['android', 'iphone', 'se'],
+        typed: true,
+        collapsedWhy: true,
+      },
     },
     {
       name: 'Stig 2 — endurgjöf',
@@ -1150,6 +1194,24 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Svara'],
         },
       ],
+    },
+    {
+      name: 'Stig 3 — leikur',
+      steps: [
+        {
+          click: 'Stig 3: Samþætt æfing',
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Svara' },
+        answer: [{ fill: ['input[placeholder^="t.d. 2,5e20"]', '99999'] }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta' },
+        together: [[{ css: '[data-item-start]' }, { css: 'input[placeholder^="t.d. 2,5e20"]' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+      },
     },
     {
       name: 'Stig 3 — dæmi, ógilt svar',
