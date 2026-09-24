@@ -14,17 +14,27 @@
  * No scoring, no timer, and hints cost nothing — the April restructure's rule.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
-import { DECIMAL_INPUT_PROPS, parseStudentNumber } from '@shared/utils';
+import {
+  DECIMAL_INPUT_PROPS,
+  focusTarget,
+  isPhone,
+  parseStudentNumber,
+  revealSpan,
+  usableArea,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+} from '@shared/utils';
 
+import { useBackButton } from './BackButton';
 import { KlofnunBar, formatPercent } from './KlofnunBar';
 import { ScientificKeys } from './ScientificKeys';
 import { PRACTICE_PROBLEMS } from '../data/problems';
 import { PH_TOLERANCE, isRelativelyClose, isAbsolutelyClose } from '../engine/grade';
 import { solveWeakAcid } from '../engine/ka';
-import { revealIfBelowFold } from '../utils/reveal';
 
 const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');
 const sciText = (n: number) => n.toExponential(2).replace('.', ',');
@@ -42,12 +52,46 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
   const [entry, setEntry] = useState('');
   const [verdict, setVerdict] = useState<boolean | null>(null);
   const [hintsOpen, setHintsOpen] = useState(0);
+  const [retries, setRetries] = useState(0);
+  const back = useBackButton(onBack);
   const inputRef = useRef<HTMLInputElement>(null);
+  const problemRef = useRef<HTMLDivElement>(null);
+  const answerRowRef = useRef<HTMLDivElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
+  const verdictRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const hintListRef = useRef<HTMLUListElement>(null);
+  const hintButtonRef = useRef<HTMLButtonElement>(null);
 
+  // Each new step or problem: on a phone, the card's top back under the header
+  // if it has scrolled away (the button that moved on sits at its foot), and
+  // focus to the new step's heading — or, for a new problem, to its statement.
+  const cardRef = useItemTop<HTMLDivElement>(`${index}:${step}`);
+
+  // After "Athuga": on a phone, from the problem through "Áfram" if it fits,
+  // else from the answer, else the verdict at the top. Focus moves to the
+  // feedback, not to "Áfram", so a second Enter lands on nothing (design P3).
+  useRevealAfterCommit(verdict !== null, () => ({
+    bottom: nextRef.current,
+    tops: [problemRef.current, answerRowRef.current, verdictRef.current],
+    focus: verdictRef.current,
+  }));
+  // A desktop window keeps what the game's own helper did there, at any width:
+  // feedback that opened within 48 px of the bottom edge is brought in.
   useEffect(() => {
-    if (verdict !== null) revealIfBelowFold(feedbackRef.current);
+    const el = feedbackRef.current;
+    if (verdict === null || !el || isPhone()) return;
+    if (el.getBoundingClientRect().top + 48 > usableArea().bottom) {
+      revealSpan(el, [], { anyWidth: true, gap: 16 });
+    }
   }, [verdict]);
+  // "Reyna aftur" unmounts with the feedback: focus goes back to the field.
+  useLayoutEffect(() => {
+    if (retries > 0) focusTarget(inputRef.current);
+  }, [retries]);
+  // A double tap on "Athuga" must not press "Áfram" or "Reyna aftur" in its
+  // place, nor a double tap on the check step's "Áfram" skip the next step.
+  const armed = useArmedAfter(400, `${index}:${step}:${verdict !== null}`);
 
   const problem = PRACTICE_PROBLEMS[index];
   const s = solveWeakAcid(problem.acid.ka, problem.concentration);
@@ -57,6 +101,22 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
     setVerdict(null);
     setHintsOpen(0);
   };
+
+  const retry = () => {
+    reset();
+    setRetries((n) => n + 1);
+  };
+
+  // Opening a hint: on a phone, the answer row through the new hint, so Athuga
+  // stays in view with it. The button that opened the last hint unmounts, so
+  // focus moves to that hint rather than falling to <body>.
+  const openHint = () => setHintsOpen((v) => v + 1);
+  useEffect(() => {
+    if (hintsOpen === 0) return;
+    const hint = hintListRef.current?.lastElementChild ?? null;
+    revealSpan(hint, [answerRowRef.current, hint]);
+    if (!hintButtonRef.current) focusTarget(hint as HTMLElement | null);
+  }, [hintsOpen]);
 
   const advance = () => {
     if (step === 'x') {
@@ -74,6 +134,7 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
   };
 
   const submit = () => {
+    if (verdict !== null) return;
     const value = parseStudentNumber(entry);
     if (step === 'x') {
       setVerdict(isRelativelyClose(value, s.hApprox, 0.02));
@@ -131,23 +192,24 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <button
-        type="button"
-        onClick={onBack}
-        className="mb-4 text-warm-600 hover:text-warm-800 pointer-coarse:-my-2.5 pointer-coarse:py-2.5"
-      >
-        ← Til baka
-      </button>
+      {back.above}
 
-      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
-        <div className="mb-4 flex items-baseline justify-between">
-          <h2 className="text-2xl font-bold text-warm-800">Æfa</h2>
-          <span className="text-sm text-warm-500">
+      <div ref={cardRef} className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8 phone:p-3">
+        <div className="mb-4 flex items-baseline justify-between phone:mb-3 phone:gap-3">
+          {back.inRow}
+          <h2 className="text-2xl font-bold text-warm-800 phone:min-w-0 phone:flex-1 phone:text-base">
+            Æfa
+          </h2>
+          <span className="text-sm text-warm-500 phone:shrink-0">
             Dæmi {index + 1} af {PRACTICE_PROBLEMS.length}
           </span>
         </div>
 
-        <div className="mb-6 rounded-lg bg-warm-50 p-4">
+        <div
+          ref={problemRef}
+          data-item-start={step === 'x' ? '' : undefined}
+          className="mb-6 rounded-lg bg-warm-50 p-4 phone:mb-3 phone:p-3"
+        >
           <p className="text-warm-800">
             <strong>{fmt(problem.concentration, 3)} M</strong> lausn af{' '}
             <strong>{problem.acid.nameDative}</strong> ({problem.acid.formula}), Ka ={' '}
@@ -156,7 +218,12 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
           <p className="mt-1 text-sm text-warm-600">{problem.acid.context}</p>
         </div>
 
-        <p className="mb-3 font-semibold text-warm-700">{prompt[step]}</p>
+        <p
+          data-item-start={step === 'x' ? undefined : ''}
+          className="mb-3 font-semibold text-warm-700"
+        >
+          {prompt[step]}
+        </p>
 
         {step === 'check' ? (
           <div>
@@ -175,7 +242,7 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
             </p>
             <button
               type="button"
-              onClick={advance}
+              onClick={armed(advance)}
               className="game-btn mt-4 rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-dark"
             >
               Áfram
@@ -183,7 +250,10 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
           </div>
         ) : (
           <div>
-            <div className="flex flex-wrap items-center gap-2">
+            {/* On a portrait phone the field, the two keys and Athuga share one
+                row, and the unit takes the line under them; below ~340 px
+                Athuga wraps rather than squeezing the field. */}
+            <div ref={answerRowRef} className="flex flex-wrap items-center gap-2 max-sm:gap-1.5">
               <label htmlFor="answer" className="sr-only">
                 Svar
               </label>
@@ -196,21 +266,23 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && verdict === null) submit();
                 }}
+                enterKeyHint="done"
                 disabled={verdict !== null}
                 placeholder={step === 'x' ? 't.d. 1,3e-3' : 't.d. 2,87'}
-                className="w-36 rounded-lg border border-warm-300 p-3 font-mono text-warm-800 disabled:bg-warm-50 sm:w-44"
+                className="w-36 rounded-lg border border-warm-300 p-3 font-mono text-warm-800 disabled:bg-warm-50 sm:w-44 max-sm:w-auto max-sm:min-w-0 max-sm:flex-[0_1_6.5rem] max-sm:px-2"
               />
               {step === 'x' && verdict === null && (
                 <ScientificKeys inputRef={inputRef} value={entry} onChange={setEntry} />
               )}
-              <span className="text-sm text-warm-600">
+              <span className="text-sm text-warm-600 max-sm:order-last max-sm:basis-full">
                 {step === 'x' ? 'mól/L' : 'pH, tveir aukastafir'}
               </span>
               {verdict === null && (
                 <button
+                  key="athuga"
                   type="button"
                   onClick={submit}
-                  className="game-btn rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-dark"
+                  className="game-btn rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-dark max-sm:shrink-0 max-sm:px-4"
                 >
                   Athuga
                 </button>
@@ -221,14 +293,15 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
               <div className="mt-4">
                 {hintsOpen < HINTS[step].length && (
                   <button
+                    ref={hintButtonRef}
                     type="button"
-                    onClick={() => setHintsOpen((v) => v + 1)}
+                    onClick={openHint}
                     className="text-sm text-kvenno-orange hover:underline pointer-coarse:-my-3 pointer-coarse:py-3"
                   >
                     Vísbending {hintsOpen + 1} af {HINTS[step].length}
                   </button>
                 )}
-                <ul className="mt-2 space-y-1">
+                <ul ref={hintListRef} className="mt-2 space-y-1">
                   {HINTS[step].slice(0, hintsOpen).map((h) => (
                     <li
                       key={h}
@@ -243,22 +316,28 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
 
             {verdict !== null && (
               <div ref={feedbackRef} className="fade-in mt-4">
-                <FeedbackPanel
-                  feedback={{
-                    isCorrect: verdict,
-                    explanation:
-                      step === 'x'
-                        ? `x = √(Ka · C) = √(${sciText(problem.acid.ka)} · ${fmt(
-                            problem.concentration,
-                            3
-                          )}) = ${sciText(s.hApprox)} M.`
-                        : `pH = −log₁₀(${sciText(s.hApprox)}) = ${fmt(problem.answer, 2)}.`,
-                    misconception: misconception(),
-                  }}
-                />
+                {/* The group focus moves to after Athuga; FeedbackPanel is
+                    itself role=alert and announces the verdict. */}
+                <div ref={verdictRef} tabIndex={-1} role="group">
+                  <FeedbackPanel
+                    feedback={{
+                      isCorrect: verdict,
+                      explanation:
+                        step === 'x'
+                          ? `x = √(Ka · C) = √(${sciText(problem.acid.ka)} · ${fmt(
+                              problem.concentration,
+                              3
+                            )}) = ${sciText(s.hApprox)} M.`
+                          : `pH = −log₁₀(${sciText(s.hApprox)}) = ${fmt(problem.answer, 2)}.`,
+                      misconception: misconception(),
+                    }}
+                  />
+                </div>
                 <button
+                  key="afram"
+                  ref={nextRef}
                   type="button"
-                  onClick={advance}
+                  onClick={armed(advance)}
                   className="game-btn mt-4 rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-dark"
                 >
                   {step === 'ph' && index + 1 === PRACTICE_PROBLEMS.length ? 'Ljúka Æfa' : 'Áfram'}
@@ -266,7 +345,7 @@ export function PracticeScreen({ onComplete, onBack }: PracticeScreenProps) {
                 {!verdict && (
                   <button
                     type="button"
-                    onClick={reset}
+                    onClick={armed(retry)}
                     className="ml-3 rounded-lg px-4 py-2.5 text-warm-600 hover:text-warm-800"
                   >
                     Reyna aftur

@@ -16,11 +16,20 @@
 
 import { useEffect, useRef, useState } from 'react';
 
+import {
+  isPhone,
+  revealTop,
+  usableArea,
+  useArmedAfter,
+  useIsPhone,
+  useItemTop,
+} from '@shared/utils';
+
+import { useBackButton } from './BackButton';
 import { KlofnunBar } from './KlofnunBar';
 import { MONOPROTIC_ACIDS } from '../data/acids';
 import { percentDissociation } from '../engine/grade';
 import { solveWeakAcid } from '../engine/ka';
-import { revealTopIfAbove } from '../utils/reveal';
 
 const fmt = (n: number, dp: number) => n.toFixed(dp).replace('.', ',');
 
@@ -33,16 +42,27 @@ interface UnderstandScreenProps {
 
 export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) {
   const [step, setStep] = useState(0);
-  const stepRef = useRef<HTMLDivElement>(null);
-  const shownStep = useRef(step);
+  const back = useBackButton(onBack);
+  const phone = useIsPhone();
 
   // A step change from the buttons under the step would otherwise open the
-  // next one already scrolled past its heading on a phone.
+  // next one already scrolled past its heading on a phone: its top comes back
+  // under the header. Focus moves to the new step, which is named by its
+  // heading, so a screen reader starts reading it rather than staying on the
+  // button that was pressed.
+  const stepRef = useItemTop<HTMLDivElement>(step);
+  // A desktop window keeps what the game's own helper did there, at any width:
+  // only a step whose top went up under the header moves the page.
+  const shownStep = useRef(step);
   useEffect(() => {
     if (shownStep.current === step) return;
     shownStep.current = step;
-    revealTopIfAbove(stepRef.current);
-  }, [step]);
+    const el = stepRef.current;
+    if (!el || isPhone()) return;
+    if (el.getBoundingClientRect().top < usableArea().top) revealTop(el, { anyWidth: true });
+  }, [step, stepRef]);
+  // A double tap on "Næsta skref" must not skip the step it has just opened.
+  const armed = useArmedAfter(400, step);
 
   // The worked example throughout: the one the whole platform already uses.
   const acid = MONOPROTIC_ACIDS.find((a) => a.id === 'ediksyra')!;
@@ -58,28 +78,32 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
 
   return (
     <div className="mx-auto max-w-3xl">
-      <button
-        type="button"
-        onClick={onBack}
-        className="mb-4 text-warm-600 hover:text-warm-800 pointer-coarse:-my-2.5 pointer-coarse:py-2.5"
-      >
-        ← Til baka
-      </button>
+      {back.above}
 
-      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
-        <h2 className="mb-2 text-2xl font-bold text-warm-800">Skilja: hvaðan jafnan kemur</h2>
-        <p className="mb-6 text-warm-600">
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8 phone:p-3">
+        <div className="phone:mb-1 phone:flex phone:items-baseline phone:gap-3">
+          {back.inRow}
+          <h2 className="mb-2 text-2xl font-bold text-warm-800 phone:mb-0 phone:min-w-0 phone:flex-1 phone:text-base">
+            Skilja: hvaðan jafnan kemur
+          </h2>
+        </div>
+        <p className="mb-6 text-warm-600 phone:mb-3">
           Dæmið í gegn er 0,100 M ediksýra — sama lausn og pH Títrun byrjar á.
         </p>
 
-        <ol className="mb-6 flex flex-wrap gap-2" aria-label="Skref">
+        {/* On a phone the five steps are one row: the current step is named and
+            the others show their number, with the name kept for a screen reader.
+            Five full labels were three rows of 44 px pills on a touch screen.
+            The split is made in script, not CSS: an extra inline box around the
+            name shifts its glyphs by a subpixel, and a desktop must not change. */}
+        <ol className="mb-6 flex flex-wrap gap-2 phone:mb-3 phone:gap-1" aria-label="Skref">
           {STEPS.map((label, i) => (
             <li key={label}>
               <button
                 type="button"
                 onClick={() => setStep(i)}
                 aria-current={i === step ? 'step' : undefined}
-                className={`rounded-full px-3 py-1 text-xs transition-colors pointer-coarse:min-h-11 pointer-coarse:px-4 pointer-coarse:text-sm ${
+                className={`rounded-full px-3 py-1 text-xs transition-colors pointer-coarse:min-h-11 pointer-coarse:px-4 pointer-coarse:text-sm phone:min-w-11 phone:px-2.5 phone:text-xs ${
                   i === step
                     ? 'bg-kvenno-orange text-white'
                     : i < step
@@ -87,16 +111,31 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
                       : 'bg-warm-100 text-warm-600'
                 }`}
               >
-                {i + 1}. {label}
+                {phone && i !== step ? (
+                  <>
+                    {i + 1}. <span className="sr-only">{label}</span>
+                  </>
+                ) : (
+                  <>
+                    {i + 1}. {label}
+                  </>
+                )}
               </button>
             </li>
           ))}
         </ol>
 
-        <div ref={stepRef} className="fade-in min-h-[18rem]">
+        <div
+          ref={stepRef}
+          role="group"
+          aria-labelledby="skilja-step"
+          className="fade-in min-h-[18rem]"
+        >
           {step === 0 && (
             <div>
-              <h3 className="mb-3 text-lg font-semibold text-warm-800">Sýran klofnar — að hluta</h3>
+              <h3 id="skilja-step" className="mb-3 text-lg font-semibold text-warm-800">
+                Sýran klofnar — að hluta
+              </h3>
               <div className="mb-4 rounded-lg bg-warm-50 p-4 text-center font-mono text-base text-warm-800 sm:text-lg">
                 CH₃COOH ⇌ H⁺ + CH₃COO⁻
               </div>
@@ -114,7 +153,7 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
 
           {step === 1 && (
             <div>
-              <h3 className="mb-3 text-lg font-semibold text-warm-800">
+              <h3 id="skilja-step" className="mb-3 text-lg font-semibold text-warm-800">
                 ICE: byrjun, breyting, jafnvægi
               </h3>
               <div className="overflow-x-auto">
@@ -171,7 +210,7 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
 
           {step === 2 && (
             <div>
-              <h3 className="mb-3 text-lg font-semibold text-warm-800">
+              <h3 id="skilja-step" className="mb-3 text-lg font-semibold text-warm-800">
                 Sýrufastinn er neðsta línan, sett í jöfnu
               </h3>
               {/* Each side of an = stays whole, so a phone breaks the chain at an
@@ -202,7 +241,7 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
 
           {step === 3 && (
             <div>
-              <h3 className="mb-3 text-lg font-semibold text-warm-800">
+              <h3 id="skilja-step" className="mb-3 text-lg font-semibold text-warm-800">
                 Nálgunin — og forsendan sem hún byggir á
               </h3>
               <p className="mb-3 text-warm-700">
@@ -231,7 +270,7 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
 
           {step === 4 && (
             <div>
-              <h3 className="mb-3 text-lg font-semibold text-warm-800">
+              <h3 id="skilja-step" className="mb-3 text-lg font-semibold text-warm-800">
                 5 % reglan: hvenær forsendan heldur
               </h3>
               <p className="mb-4 text-warm-700">
@@ -274,7 +313,7 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
 
               <button
                 type="button"
-                onClick={onComplete}
+                onClick={armed(onComplete)}
                 className="game-btn mt-5 rounded-lg bg-kvenno-orange px-5 py-2.5 text-white hover:bg-kvenno-orange-dark"
               >
                 Áfram í Æfa
@@ -283,7 +322,7 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
           )}
         </div>
 
-        <div className="mt-6 flex justify-between gap-2 border-t border-warm-200 pt-4">
+        <div className="mt-6 flex justify-between gap-2 border-t border-warm-200 pt-4 phone:mt-4 phone:pt-3">
           <button
             type="button"
             onClick={() => setStep((v) => Math.max(0, v - 1))}
@@ -294,7 +333,7 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
           </button>
           <button
             type="button"
-            onClick={() => setStep((v) => Math.min(STEPS.length - 1, v + 1))}
+            onClick={armed(() => setStep((v) => Math.min(STEPS.length - 1, v + 1)))}
             disabled={step === STEPS.length - 1}
             className="whitespace-nowrap rounded-lg px-2 py-2 text-sm text-warm-600 hover:text-warm-800 disabled:opacity-40 pointer-coarse:min-h-11 sm:px-4 sm:text-base"
           >

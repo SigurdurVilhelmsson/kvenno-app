@@ -5228,6 +5228,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           css: 'main button.game-btn:not([disabled])',
         },
+        // The answers ignore a press within 400 ms of the question appearing.
+        {
+          wait: 300,
+        },
         {
           click: 'Hann helst sá sami',
         },
@@ -5313,6 +5317,11 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           click: 'Athuga',
         },
+        // Áfram / Næsta ignores a press within 400 ms of appearing (P3's
+        // double-tap guard); a student never reaches it that fast.
+        {
+          wait: 300,
+        },
         {
           clickRole: ['button', 'Áfram'],
         },
@@ -5333,8 +5342,16 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           click: 'Athuga',
         },
+        // Áfram / Næsta ignores a press within 400 ms of appearing (P3's
+        // double-tap guard); a student never reaches it that fast.
+        {
+          wait: 300,
+        },
         {
           clickRole: ['button', 'Áfram'],
+        },
+        {
+          wait: 300,
         },
         {
           clickRole: ['button', 'Áfram'],
@@ -5379,6 +5396,11 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           click: 'Svara',
         },
+        // Áfram / Næsta ignores a press within 400 ms of appearing (P3's
+        // double-tap guard); a student never reaches it that fast.
+        {
+          wait: 300,
+        },
         {
           click: 'Næsta dæmi',
         },
@@ -5392,6 +5414,83 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 300,
         },
       ],
+    },
+    {
+      name: 'Kanna — mæling',
+      steps: [
+        {
+          clickRole: ['button', 'Kanna'],
+        },
+      ],
+      loop: {
+        prompt: { css: 'main h2' },
+        action: { role: 'button', name: '1,000 M' },
+        answer: [],
+        verdict: { css: 'tbody tr' },
+        // The concentrations stay on screen with the new row, for the next one.
+        next: { role: 'button', name: '0,500 M' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Skilja — næsta skref',
+      steps: [
+        {
+          clickRole: ['button', 'Skilja'],
+        },
+        // "Næsta skref" ignores a press within 400 ms of appearing, as every
+        // Næsta does; a student reads the step first.
+        {
+          wait: 300,
+        },
+      ],
+      loop: {
+        prompt: { css: 'main h2' },
+        action: { role: 'button', name: 'Næsta skref →' },
+        answer: [],
+        verdict: { text: 'ICE: byrjun, breyting, jafnvægi' },
+        next: { role: 'button', name: 'Næsta skref →' },
+        // A teaching step: "Næsta skref" sits at its foot, one reading scroll down.
+        scrollsToAction: 1,
+        teachingFeedback: true,
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Æfa — skref 1',
+      steps: [
+        {
+          clickRole: ['button', 'Æfa'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ fill: ['#answer', '5'] }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Áfram' },
+        together: [[{ css: '[data-item-start]' }, { css: '#answer' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+      },
+    },
+    {
+      name: 'Beita — dæmi 1',
+      steps: [
+        {
+          clickRole: ['button', 'Beita'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Svara' },
+        answer: [{ fill: ['#apply-answer', '0'] }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta dæmi' },
+        together: [[{ css: '[data-item-start]' }, { css: '#apply-answer' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+      },
     },
   ],
   '3-ar/thermodynamics-predictor': [
