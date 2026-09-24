@@ -3858,6 +3858,19 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Byrja æfingar'],
         },
       ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [{ fill: ['input[type="number"]', '99'] }],
+        verdict: { css: '.feedback-panel p' },
+        next: { role: 'button', name: 'Halda áfram' },
+        together: [[{ css: '[data-item-start]' }, { css: 'input[type="number"]' }]],
+        // In landscape the feedback is taller than the half-screen column, so Halda áfram
+        // is one scroll below the verdict (accepted residual, design §5); the §6.2.10
+        // landscape check still runs.
+        viewports: ['android', 'iphone', 'se'],
+        typed: true,
+      },
     },
     {
       name: 'Stig 1 — endurgjöf (rangt svar)',
@@ -3898,6 +3911,26 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Stig 2: Greina hvörf'],
         },
       ],
+    },
+    {
+      name: 'Stig 2 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 2: Greina hvörf'],
+        },
+        {
+          clickRole: ['button', 'Byrja æfingar'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        // An answer is its own commit: tapping an option grades it.
+        action: { css: 'button.border-green-300' },
+        answer: [],
+        verdict: { css: '#redox-l2-verdict' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
     },
     {
       name: 'Stig 2 — endurgjöf',
@@ -3971,6 +4004,31 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Stig 3 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 3: Stilla hvörf'],
+        },
+        {
+          clickRole: ['button', 'Byrja æfingar'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Staðfesta' },
+        answer: [{ fill: ['#oxidized-input', 'Xx'] }, { fill: ['#reduced-input', 'Yy'] }],
+        verdict: { css: '#redox-l3-verdict' },
+        next: { role: 'button', name: 'Næsta' },
+        // The line typed from is the reaction itself, the equation in the problem box.
+        together: [[{ css: '[data-item-start] .font-mono' }, { css: '#reduced-input' }]],
+        // Stig 3 keeps its layout (design §4); only its chrome is tighter on a phone. In
+        // landscape Staðfesta is two short scrolls below the opening heading (the §6.2.10
+        // check still runs).
+        viewports: ['android', 'iphone', 'se'],
+        typed: true,
+      },
+    },
+    {
       name: 'Stig 3 — endurgjöf (rangt svar)',
       steps: [
         {
@@ -4008,14 +4066,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           clickRole: ['button', 'Staðfesta'],
         },
+        // Næsta ignores a press within 400 ms of appearing (P3's double-tap guard); a
+        // student never reaches it that fast.
         {
-          clickRole: ['button', 'Næsta'],
-        },
-        {
-          fill: ['input[type="number"]', '9'],
-        },
-        {
-          clickRole: ['button', 'Staðfesta'],
+          wait: 300,
         },
         {
           clickRole: ['button', 'Næsta'],
@@ -4025,6 +4079,25 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
         {
           clickRole: ['button', 'Staðfesta'],
+        },
+        // Næsta ignores a press within 400 ms of appearing (P3's double-tap guard); a
+        // student never reaches it that fast.
+        {
+          wait: 300,
+        },
+        {
+          clickRole: ['button', 'Næsta'],
+        },
+        {
+          fill: ['input[type="number"]', '9'],
+        },
+        {
+          clickRole: ['button', 'Staðfesta'],
+        },
+        // Næsta ignores a press within 400 ms of appearing (P3's double-tap guard); a
+        // student never reaches it that fast.
+        {
+          wait: 300,
         },
         {
           clickRole: ['button', 'Næsta'],

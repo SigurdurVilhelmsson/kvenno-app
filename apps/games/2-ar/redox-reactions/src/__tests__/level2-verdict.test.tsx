@@ -2,6 +2,7 @@
 import { act, cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level2 } from '../components/Level2';
 import { OxidationStateDisplay } from '../components/OxidationStateDisplay';
 
@@ -21,6 +22,8 @@ afterEach(() => {
   cleanup();
   vi.useRealTimers();
 });
+
+clockPastNextGuard();
 
 function start() {
   const onComplete = vi.fn();

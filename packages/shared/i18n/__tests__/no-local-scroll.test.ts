@@ -52,7 +52,6 @@ const ALLOWED: Record<string, number> = {
   '2-ar/rafeindabygging/src/components/Level1.tsx': 2,
   '2-ar/rafeindabygging/src/components/Level2.tsx': 2,
   '2-ar/rafeindabygging/src/components/Level3.tsx': 1,
-  '2-ar/redox-reactions/src/components/Level3.tsx': 1,
   '2-ar/vsepr-geometry/src/components/Level1.tsx': 1,
   '2-ar/vsepr-geometry/src/components/Level2.tsx': 1,
   '2-ar/vsepr-geometry/src/utils/phoneScroll.ts': 1,
