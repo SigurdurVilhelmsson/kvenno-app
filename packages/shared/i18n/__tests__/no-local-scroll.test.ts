@@ -45,7 +45,6 @@ const ALLOWED: Record<string, number> = {
   '3-ar/equilibrium-shifter/src/utils/reveal.ts': 1,
   '3-ar/gas-law-challenge/src/App.tsx': 1,
   '3-ar/jafnvaegisfasti/src/utils/reveal.ts': 3,
-  '3-ar/leysnijafnvaegi/src/utils/reveal.ts': 3,
   '3-ar/ph-titration/src/App.tsx': 1,
   '3-ar/ph-titration/src/components/Level2.tsx': 3,
   '3-ar/ph-titration/src/utils/reveal.ts': 1,

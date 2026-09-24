@@ -2,12 +2,13 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { ErrorBoundary, Header } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
+import { useScreenTop } from '@shared/utils';
 
 import { AefaScreen } from './components/AefaScreen';
 import { BeitaScreen } from './components/BeitaScreen';
 import { KannaScreen } from './components/KannaScreen';
 import { SkiljaScreen } from './components/SkiljaScreen';
-import { useRevealTopOnChange } from './utils/reveal';
+import { useRevealTopOnDesktop } from './utils/desktopReveal';
 import './styles.css';
 
 type Screen = 'menu' | 'kanna' | 'skilja' | 'aefa' | 'beita';
@@ -50,11 +51,6 @@ const PHASES: { id: Screen; number: string; name: string; description: string; t
 function App() {
   const [screen, setScreen] = useState<Screen>('menu');
   const mainRef = useRef<HTMLElement>(null);
-
-  // A phase opened from low down the menu, or the menu returned to from the
-  // foot of a phase, would otherwise open at the old scroll position — on a
-  // phone, hundreds of pixels into the new screen.
-  useRevealTopOnChange(mainRef, screen);
   const { progress, updateProgress } = useGameProgress<Progress>('leysnijafnvaegi-progress', {
     completed: [],
   });
@@ -71,6 +67,22 @@ function App() {
 
   const backToMenu = useCallback(() => setScreen('menu'), []);
 
+  // Each screen swap starts the new screen at its top with its heading focused:
+  // on a phone the page would otherwise stay at the old offset, and focus would
+  // fall to <body> with the button that caused the swap. Back on the menu, the
+  // next phase not yet done is brought into view on a phone and focused.
+  const nextPhase = PHASES.find((phase) => !completed.includes(phase.id))?.id;
+  useScreenTop(screen, {
+    target: () =>
+      screen === 'menu' && nextPhase
+        ? document.querySelector(`[data-phase-card="${nextPhase}"]`)
+        : null,
+  });
+  // A desktop window keeps what the game's own helper did there, at any width:
+  // a phase opened from low down the menu, or the menu returned to from the
+  // foot of a phase, brings the top of <main> back under the header.
+  useRevealTopOnDesktop(mainRef, screen);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
       <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="Leysnijafnvægi" />
@@ -79,44 +91,62 @@ function App() {
         Fara beint í efni
       </a>
 
-      <main ref={mainRef} id="main-content" className="container mx-auto px-4 py-4 sm:py-8">
+      <main
+        ref={mainRef}
+        id="main-content"
+        className="container mx-auto px-4 py-4 sm:py-8 phone:py-4"
+      >
         {screen === 'menu' && (
           <div className="mx-auto max-w-4xl">
-            <p className="mb-6 text-center text-lg text-warm-600 sm:mb-8">
+            <p className="mb-6 text-center text-lg text-warm-600 sm:mb-8 phone:mb-3 phone:text-base">
               Í fyrsta bekk var svarið „óleysanlegt“. Hér er talan á bak við orðið — og hvenær hún
               ræður úrslitum
             </p>
 
-            <div className="rounded-lg bg-white p-5 shadow-md sm:p-8">
-              <h2 className="mb-2 text-2xl font-bold text-warm-800">Fjórir áfangar</h2>
-              <p className="mb-6 text-warm-600">
+            {/* On a phone the card is a flex column, so the overview paragraph can
+                follow the four phases: every phase shows on the first screen.
+                The paragraph says what the phases will do — the rule against the
+                number — rather than teaching it, and holds nothing focusable
+                (design §3 Menu). Only blocks without a control move: the
+                paragraph and the reading under the phases take order 1, so the
+                phase buttons keep their place and the tab order is what is
+                seen. */}
+            <div className="rounded-lg bg-white p-5 shadow-md sm:p-8 phone:flex phone:flex-col phone:p-3">
+              <h2 className="mb-2 text-2xl font-bold text-warm-800 phone:mb-3 phone:text-xl">
+                Fjórir áfangar
+              </h2>
+              <p className="mb-6 text-warm-600 phone:order-1 phone:mb-0 phone:mt-4">
                 Útfellingarhvörf svöruðu spurningunni eftir reglu: flettu jónunum upp í
                 leysnitöflunni og segðu já eða nei. Hér er sama spurning svöruð með tölu, og svarið
                 er ekki alltaf það sama — hvort botnfall myndast fer eftir því hversu sterkar
                 lausnirnar voru sem þú blandaðir.
               </p>
 
-              <div className="grid gap-4">
+              <div className="grid gap-4 phone:gap-3 phone-land:grid-cols-2">
                 {PHASES.map((phase) => (
                   <button
                     key={phase.id}
                     type="button"
+                    data-phase-card={phase.id}
                     onClick={() => setScreen(phase.id)}
-                    className={`game-card rounded-lg p-5 text-left text-white transition-colors sm:p-6 ${phase.tone}`}
+                    className={`game-card rounded-lg p-5 text-left text-white transition-colors sm:p-6 phone:relative phone:p-3 ${phase.tone}`}
                   >
-                    <div className="mb-2 flex items-center gap-2">
-                      <span className="text-2xl">{phase.number}</span>
-                      <h3 className="text-xl font-semibold">{phase.name}</h3>
+                    <div className="mb-2 flex items-center gap-2 phone:mb-1">
+                      <span className="text-2xl phone:text-xl">{phase.number}</span>
+                      <h3 className="text-xl font-semibold phone:text-lg">{phase.name}</h3>
                     </div>
-                    <p className="text-white/85">{phase.description}</p>
+                    <p className="text-white/85 phone:text-sm">{phase.description}</p>
+                    {/* On a phone, a badge in the corner of the title row. */}
                     {completed.includes(phase.id) && (
-                      <p className="mt-2 text-sm text-white/80">Lokið</p>
+                      <p className="mt-2 text-sm text-white/80 phone:absolute phone:right-3 phone:top-3 phone:mt-0 phone:rounded-full phone:bg-white/20 phone:px-2 phone:py-0.5 phone:text-xs phone:font-semibold phone:text-white">
+                        Lokið
+                      </p>
                     )}
                   </button>
                 ))}
               </div>
 
-              <div className="mt-6 rounded-lg border border-warm-200 bg-warm-50 p-4">
+              <div className="mt-6 rounded-lg border border-warm-200 bg-warm-50 p-4 phone:order-1">
                 <h3 className="mb-2 font-semibold text-warm-800">Þú lærir</h3>
                 <ul className="space-y-1.5 text-sm text-warm-700">
                   <li className="flex items-start gap-2">
@@ -146,7 +176,7 @@ function App() {
                 </ul>
               </div>
 
-              <div className="mt-6 rounded-lg bg-warm-50 p-4">
+              <div className="mt-6 rounded-lg bg-warm-50 p-4 phone:order-1">
                 <h3 className="mb-2 font-semibold text-warm-700">Lykiljöfnur</h3>
                 {/* Each formula wraps as a whole, onto the line below its label,
                     rather than breaking between its terms on a phone. */}
@@ -172,7 +202,7 @@ function App() {
                 </div>
               </div>
 
-              <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4">
+              <div className="mt-6 rounded-lg border border-amber-200 bg-amber-50 p-4 phone:order-1">
                 <h3 className="mb-2 font-semibold text-amber-800">Af hverju leysnijafnvægi?</h3>
                 <p className="text-sm text-amber-700">
                   Sjúklingur drekkur baríumsúlfat viljandi fyrir röntgenmyndatöku þótt baríumjónir
@@ -182,11 +212,11 @@ function App() {
                 </p>
               </div>
 
-              <div className="mt-3 text-center text-xs text-warm-500">
+              <div className="mt-3 text-center text-xs text-warm-500 phone:order-1">
                 <strong>Námsleiðin:</strong> Gaslögmál → Jafnvægisfastinn → Hliðrun jafnvægis →
                 Sýrufastinn → Varmafræði → pH Títrun → Stuðpúðar → <u>Leysnijafnvægi</u>
               </div>
-              <div className="mt-2 text-center text-xs text-warm-400">
+              <div className="mt-2 text-center text-xs text-warm-400 phone:order-1">
                 Kafli 17 — Chemistry: The Central Science (Brown et al.)
               </div>
             </div>

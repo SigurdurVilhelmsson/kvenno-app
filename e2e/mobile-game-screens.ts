@@ -6819,11 +6819,22 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           clickRole: ['button', 'Skilja'],
         },
+        // "Næsta skref" ignores a press within 400 ms of appearing, as every
+        // Næsta does; a student reads the step first.
+        {
+          wait: 300,
+        },
         {
           clickRole: ['button', 'Næsta skref'],
         },
         {
+          wait: 300,
+        },
+        {
           clickRole: ['button', 'Næsta skref'],
+        },
+        {
+          wait: 300,
         },
         {
           clickRole: ['button', 'Næsta skref'],
@@ -6882,17 +6893,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           clickRole: ['button', 'Athuga'],
         },
+        // Næsta ignores a press within 400 ms of appearing (the double-tap
+        // guard); a student reads the feedback first.
         {
-          clickRole: ['button', 'Næsta dæmi'],
-        },
-        {
-          fill: ['input[aria-label="Tala"]', '9'],
-        },
-        {
-          fill: ['input[aria-label="Veldisvísir"]', '-1'],
-        },
-        {
-          clickRole: ['button', 'Athuga'],
+          wait: 300,
         },
         {
           clickRole: ['button', 'Næsta dæmi'],
@@ -6905,6 +6909,28 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
         {
           clickRole: ['button', 'Athuga'],
+        },
+        // Næsta ignores a press within 400 ms of appearing (the double-tap
+        // guard); a student reads the feedback first.
+        {
+          wait: 300,
+        },
+        {
+          clickRole: ['button', 'Næsta dæmi'],
+        },
+        {
+          fill: ['input[aria-label="Tala"]', '9'],
+        },
+        {
+          fill: ['input[aria-label="Veldisvísir"]', '-1'],
+        },
+        {
+          clickRole: ['button', 'Athuga'],
+        },
+        // Næsta ignores a press within 400 ms of appearing (the double-tap
+        // guard); a student reads the feedback first.
+        {
+          wait: 300,
         },
         {
           clickRole: ['button', 'Næsta dæmi'],
@@ -6957,17 +6983,32 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           clickRole: ['button', 'Nei, Q'],
         },
+        // Næsta ignores a press within 400 ms of appearing (the double-tap
+        // guard); a student reads the feedback first.
+        {
+          wait: 300,
+        },
         {
           clickRole: ['button', 'Næsta dæmi'],
         },
         {
           clickRole: ['button', 'Nei, Q'],
         },
+        // Næsta ignores a press within 400 ms of appearing (the double-tap
+        // guard); a student reads the feedback first.
+        {
+          wait: 300,
+        },
         {
           clickRole: ['button', 'Næsta dæmi'],
         },
         {
           clickRole: ['button', 'Nei, Q'],
+        },
+        // Næsta ignores a press within 400 ms of appearing (the double-tap
+        // guard); a student reads the feedback first.
+        {
+          wait: 300,
         },
         {
           clickRole: ['button', 'Næsta dæmi'],
@@ -6979,6 +7020,88 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 300,
         },
       ],
+    },
+    {
+      name: 'Kanna — salt valið',
+      steps: [
+        {
+          clickRole: ['button', 'Kanna'],
+        },
+      ],
+      loop: {
+        prompt: { css: 'main h2' },
+        // Picking a salt brings its card on screen with the list, and focus to
+        // the card; the list stays in view for the next pick. The verdict is
+        // the card's Ksp and molar solubility, whichever salt is picked: the
+        // pick moves the list, so a second tap of a double tap can land on a
+        // neighbouring salt, which is a second pick, not a skipped answer.
+        action: { role: 'button', name: 'AgBr' },
+        answer: [],
+        verdict: { css: 'main dl' },
+        next: { role: 'button', name: 'AgI' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Skilja — næsta skref',
+      steps: [
+        {
+          clickRole: ['button', 'Skilja'],
+        },
+        // "Næsta skref" ignores a press within 400 ms of appearing.
+        {
+          wait: 300,
+        },
+      ],
+      loop: {
+        prompt: { css: 'main h2' },
+        action: { role: 'button', name: 'Næsta skref' },
+        answer: [],
+        verdict: { text: 'Hver jón fer í veldi' },
+        next: { role: 'button', name: 'Næsta skref' },
+        // A teaching step: "Næsta skref" sits at the foot of the four rungs,
+        // one reading scroll down.
+        scrollsToAction: 1,
+        teachingFeedback: true,
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Æfa — dæmi 1',
+      steps: [
+        {
+          clickRole: ['button', 'Æfa'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [
+          { fill: ['input[aria-label="Tala"]', '9'] },
+          { fill: ['input[aria-label="Veldisvísir"]', '-1'] },
+        ],
+        verdict: { text: 'Hvorki tölustafirnir né veldisvísirinn stemma.' },
+        next: { role: 'button', name: 'Næsta dæmi' },
+        together: [[{ css: '[data-item-start]' }, { css: 'input[aria-label="Tala"]' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+      },
+    },
+    {
+      name: 'Beita — dæmi 1',
+      steps: [
+        {
+          clickRole: ['button', 'Beita'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Nei, Q' },
+        answer: [],
+        verdict: { text: 'Eftir þynningu' },
+        next: { role: 'button', name: 'Næsta dæmi' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
     },
   ],
 };

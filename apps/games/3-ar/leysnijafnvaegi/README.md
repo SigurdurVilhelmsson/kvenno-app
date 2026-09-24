@@ -134,9 +134,9 @@ src/data/problems.ts           10 solubility · 6 common-ion · 6 mixing · 2 fr
 src/components/                KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen,
                                ScientificInput (the answer row, with the `±` key),
                                Sci (a number held on one line) and BackButton
-src/utils/reveal.ts            keeps a new screen, problem or feedback on a phone's screen
-src/__tests__/                 69 tests — ksp.test.ts, phone-play.test.tsx, decimal-comma.test.tsx,
-                               stated-claims.test.ts and screens.test.tsx
+src/utils/desktopReveal.ts     keeps a desktop window scrolling exactly as the old helper did
+src/__tests__/                 78 tests — ksp.test.ts, phone-play.test.tsx, phone-scroll.test.tsx,
+                               decimal-comma.test.tsx, stated-claims.test.ts and screens.test.tsx
 ```
 
 ## On a phone
@@ -148,6 +148,26 @@ Both fields raise the decimal keypad, and on an iPhone that keypad has no minus 
 `3-ar/jafnvaegisfasti`'s; `phone-play.test.tsx` plays an answer through it. The rest of the phone
 pass was layout: scientific numbers are held on one line (`Sci`), so `1,8 × 10⁻¹⁰` never breaks
 at its `×`, and panels that set two numbers side by side stack below `sm`.
+
+**Each play loop fits a phone screen (vertical-scroll pass, 2026-09).** Scrolling and focus go
+through the shared helpers in `@shared/utils` (`useScreenTop`, `revealSpan`,
+`useRevealAfterCommit`, `useArmedAfter`); the game's own `src/utils/reveal.ts` is gone.
+
+- Every screen opens at its heading, and back on the menu the next phase not yet done is on screen
+  and focused. On a phone the menu shows all four phases first, with the overview paragraph after
+  them; in landscape they are 2 × 2.
+- Kanna: the salts are a grid of four on a phone (three below 360 px, seven on its side). Picking
+  one brings its card on screen with the list and moves focus to the card. Letting go of the
+  slider — its `change`, never while the finger is still dragging — brings in the bars through
+  "Áfram í Skilja". On its side, the salt card and the slider sit side by side.
+- Skilja: each "Næsta skref" focuses the new rung and, on a phone, brings it in down to the button.
+- Æfa and Beita: after the commit, focus goes to the feedback (a group named by the verdict), and
+  on a phone as much as fits of problem → answer → feedback → "Næsta dæmi" is brought in. Every
+  next button ignores a press within 400 ms of appearing, so a double tap cannot skip the feedback.
+  Enter in the number moves to the power of ten; Enter there checks. On its side, the problem sits
+  beside the answer.
+- A desktop window scrolls exactly as before (`desktopReveal.ts`); the one change there is focus
+  moving to headings, the feedback, the salt card and the new question.
 
 ## Open
 

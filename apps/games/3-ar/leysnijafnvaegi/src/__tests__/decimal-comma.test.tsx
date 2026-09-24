@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { BeitaScreen } from '../components/BeitaScreen';
 import { KannaScreen } from '../components/KannaScreen';
 import { MIXING_PROBLEMS } from '../data/problems';
@@ -17,6 +18,8 @@ import { MIXING_PROBLEMS } from '../data/problems';
  * scientific numbers that already used the comma. These render the real
  * screens and read what is on them.
  */
+
+clockPastNextGuard();
 
 afterEach(() => {
   cleanup();
