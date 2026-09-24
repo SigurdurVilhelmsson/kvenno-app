@@ -48,6 +48,18 @@ const PIN_USES: { file: string; component: 'TaskStrip' | 'PinnedActions'; measur
       'screen. No text input, and the verdict is one short line. Carries Heildar-ΔH as status.',
   },
   {
+    file: 'apps/games/1-ar/jafna-jofnur/src/components/Level.tsx',
+    component: 'PinnedActions',
+    measured:
+      'All three levels, after compaction and anchoring, 375x548 touch (the SE), all 20 ' +
+      'equations: unpinned, Athuga ends at page y 582-688 on 13 of them (every Stig 3 ' +
+      'equation, six of seven in Stig 2 and Li + H2O in Stig 1), 34-140 px below the ' +
+      'screen, while at 360x640 and 390x664 it fits on 19 of 20. Named for the SE in ' +
+      'design §4, so it pins only on a portrait phone at most 600 px tall. No text ' +
+      'input; the bar holds Athuga | Vísbending only and leaves with them on commit, so ' +
+      'it never sits over feedback.',
+  },
+  {
     file: 'apps/games/2-ar/organic-nomenclature/src/components/Level2.tsx',
     component: 'PinnedActions',
     measured:

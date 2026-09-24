@@ -94,7 +94,7 @@ function CoefficientControl({
     'coeff-btn w-11 h-11 rounded-lg bg-blue-100 hover:bg-blue-200 disabled:opacity-30 disabled:cursor-not-allowed text-blue-700 font-bold text-lg flex items-center justify-center outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-1';
 
   return (
-    <div className="flex flex-col items-center gap-1">
+    <div className="flex flex-col items-center gap-1 phone:gap-0.5">
       <button
         onClick={increment}
         disabled={disabled || value >= 9}
@@ -145,7 +145,7 @@ export function EquationEditor({
     // Tight spacing below sm lets a three-species equation stay on one row of
     // steppers on a 360px phone. touch-manipulation: a student tapping + quickly
     // must not trigger double-tap zoom when a tap lands between two buttons.
-    <div className="bg-white rounded-xl shadow-lg px-2 py-3 sm:p-6 touch-manipulation">
+    <div className="bg-white rounded-xl shadow-lg px-2 py-3 sm:p-6 touch-manipulation phone:py-2">
       <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-2 sm:gap-3">
         {/* Reactants */}
         {reactants.map((mol, i) => (

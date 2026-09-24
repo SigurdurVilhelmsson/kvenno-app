@@ -1808,6 +1808,18 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 300,
         },
       ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ css: 'button[aria-label^="Hækka"]' }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta efnajafna' },
+        together: [[{ css: '[data-item-start]' }, { css: 'table' }]],
+        // On the SE the action row is pinned (design §4). On a phone on its
+        // side Athuga is one short scroll below the atom table (a §5 landscape
+        // residual); the "stays usable" check still runs there.
+        viewports: ['android', 'iphone', 'se'],
+      },
     },
     {
       name: 'Stig 1 — vísbending',
@@ -1853,6 +1865,18 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 300,
         },
       ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ css: 'button[aria-label^="Hækka"]' }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta efnajafna' },
+        together: [[{ css: '[data-item-start]' }, { css: 'table' }]],
+        // On the SE the action row is pinned (design §4). On a phone on its
+        // side Athuga is one short scroll below the atom table (a §5 landscape
+        // residual); the "stays usable" check still runs there.
+        viewports: ['android', 'iphone', 'se'],
+      },
     },
     {
       name: 'Stig 2 — vísbending',
@@ -1881,6 +1905,29 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 600,
         },
       ],
+    },
+    {
+      name: 'Stig 3 — æfing',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 3'],
+        },
+        {
+          wait: 300,
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ css: 'button[aria-label^="Hækka"]' }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta efnajafna' },
+        together: [[{ css: '[data-item-start]' }, { css: 'table' }]],
+        // On the SE the action row is pinned (design §4). On a phone on its
+        // side Athuga is one short scroll below the atom table (a §5 landscape
+        // residual); the "stays usable" check still runs there.
+        viewports: ['android', 'iphone', 'se'],
+      },
     },
     {
       name: 'Stig 3 — vísbending',
@@ -1921,6 +1968,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
         {
           clickRole: ['button', 'Athuga'],
+        },
+        {
+          // Næsta ignores a press within 400 ms of appearing (the double-tap guard).
+          wait: 500,
         },
         {
           clickRole: ['button', 'Næsta efnajafna'],
