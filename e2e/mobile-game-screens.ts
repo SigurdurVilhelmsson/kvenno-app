@@ -905,6 +905,103 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    {
+      name: 'Stig 1 — upphitun, leikur',
+      steps: [
+        { clickRole: ['button', 'Grunnreglur'] },
+        { clickRole: ['button', 'Regla 4'] },
+        { clickRole: ['button', 'Hefja próf'] },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        // The choice is the commit. The first element is a metal: a wrong answer.
+        action: { role: 'button', name: 'Málmleysingi' },
+        answer: [],
+        verdict: { css: '#nk-wu-verdict' },
+        next: { role: 'button', name: 'Næsta frumefni' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Stig 1 — próf, leikur',
+      steps: [
+        { clickRole: ['button', 'Grunnreglur'] },
+        { clickRole: ['button', 'Regla 4'] },
+        { clickRole: ['button', 'Hefja próf'] },
+        // Eight warm-up elements, each answered and moved on from. "Næsta"
+        // ignores a press within 400 ms of appearing (P3's double-tap guard).
+        { clickRole: ['button', 'Málmur'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Næsta frumefni'] },
+        { clickRole: ['button', 'Málmur'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Næsta frumefni'] },
+        { clickRole: ['button', 'Málmur'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Næsta frumefni'] },
+        { clickRole: ['button', 'Málmur'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Næsta frumefni'] },
+        { clickRole: ['button', 'Málmur'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Næsta frumefni'] },
+        { clickRole: ['button', 'Málmur'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Næsta frumefni'] },
+        { clickRole: ['button', 'Málmur'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Næsta frumefni'] },
+        { clickRole: ['button', 'Málmur'] },
+        { wait: 300 },
+        { clickRole: ['button', 'Hefja próf'] },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        // The choice is the commit, as in the warm-up.
+        action: { role: 'button', name: 'B.' },
+        answer: [],
+        verdict: { css: '.feedback-panel p' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        // On its side the feedback fills the screen and Næsta is one short
+        // scroll below it (design §5); the landscape check still runs.
+        viewports: ['android', 'iphone', 'se'],
+      },
+    },
+    {
+      name: 'Stig 2 — skref 3, leikur',
+      steps: [
+        { clickRole: ['button', 'Æfing með leiðsögn'] },
+        { clickRole: ['button', 'Sameind'] },
+        { wait: 1900 },
+        { clickRole: ['button', 'Ég skil'] },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [{ fill: ['input[type=text]', 'Brennisteinsheksaflúoríð'] }],
+        verdict: { css: '#nk-l2-verdict' },
+        next: { role: 'button', name: 'Næsta efnasamband' },
+        together: [[{ css: '[data-item-start]' }, { css: 'input[type=text]' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+      },
+    },
+    {
+      name: 'Stig 3 — leikur',
+      steps: [{ clickRole: ['button', 'Byggja nöfn'] }],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [
+          { css: 'div.flex.flex-wrap.gap-2:not(.border-dashed) > button' },
+          { css: 'div.flex.flex-wrap.gap-2:not(.border-dashed) > button' },
+          { css: 'div.flex.flex-wrap.gap-2:not(.border-dashed) > button' },
+        ],
+        verdict: { css: '.feedback-panel p' },
+        next: { role: 'button', name: 'Næsta efni' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
   ],
   '1-ar/molmassi': [
     {

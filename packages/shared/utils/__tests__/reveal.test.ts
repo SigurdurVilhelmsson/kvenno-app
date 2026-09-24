@@ -341,6 +341,26 @@ describe('revealTop', () => {
     expect(scrollBy).toHaveBeenCalledWith({ top: -356, behavior: 'smooth' });
   });
 
+  it('with gap 0, lands the top exactly at the top of the usable area', () => {
+    const el = add();
+    rect(el, -200, 300);
+    revealTop(el, { gap: 0 });
+    // No header: exactly where scrollIntoView({ block: 'start' }) put it.
+    expect(scrollBy).toHaveBeenCalledWith({ top: -200, behavior: 'smooth' });
+    scrollBy.mockClear();
+    stickyHeader();
+    revealTop(el, { gap: 0 });
+    expect(scrollBy).toHaveBeenCalledWith({ top: -256, behavior: 'smooth' });
+  });
+
+  it('lets a declared scroll margin win over gap', () => {
+    const el = add();
+    el.style.scrollMarginTop = '40px';
+    rect(el, -200, 300);
+    revealTop(el, { gap: 0 });
+    expect(scrollBy).toHaveBeenCalledWith({ top: -240, behavior: 'smooth' });
+  });
+
   it('leaves a visible top alone unless always is set', () => {
     const el = add();
     rect(el, 200, 300);
@@ -567,6 +587,47 @@ describe('useScreenTop', () => {
     expect(scrollTo).not.toHaveBeenCalled();
     expect(scrollBy).not.toHaveBeenCalled();
     expect(document.activeElement).toBe(getByText('Stig 1'));
+  });
+
+  it('with anyWidth, starts the new screen at the top on desktop too', () => {
+    phone = false;
+    function Wide() {
+      const [screen, setScreen] = useState('menu');
+      useScreenTop(screen, { anyWidth: true });
+      return createElement(
+        'div',
+        null,
+        createElement('h2', null, screen === 'menu' ? 'Veldu stig' : 'Stig 1'),
+        createElement('button', { onClick: () => setScreen('level') }, 'Áfram')
+      );
+    }
+    const { getByText } = render(createElement(Wide));
+    expect(scrollTo).not.toHaveBeenCalled();
+    act(() => getByText('Áfram').click());
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'auto' });
+    expect(document.activeElement).toBe(getByText('Stig 1'));
+  });
+
+  it('with anyWidth on desktop, goes to the top and focuses a target without revealing it', () => {
+    phone = false;
+    function WideTarget() {
+      const [screen, setScreen] = useState('level');
+      useScreenTop(screen, {
+        anyWidth: true,
+        target: () => document.getElementById('next-card'),
+      });
+      return createElement(
+        'div',
+        null,
+        createElement('button', { onClick: () => setScreen('menu') }, 'Til baka'),
+        screen === 'menu' ? createElement('div', { key: 'c', id: 'next-card' }, 'Stig 2') : null
+      );
+    }
+    const { getByText } = render(createElement(WideTarget));
+    act(() => getByText('Til baka').click());
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'auto' });
+    expect(scrollBy).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(getByText('Stig 2'));
   });
 
   it('with a target, reveals and focuses it instead', () => {

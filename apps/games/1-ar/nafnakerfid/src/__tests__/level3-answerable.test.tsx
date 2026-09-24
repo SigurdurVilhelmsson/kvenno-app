@@ -2,9 +2,12 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level3 } from '../components/Level3';
 import { COMPOUNDS } from '../data/compounds';
 import { segmentName } from '../data/naming';
+
+clockPastNextGuard();
 
 /**
  * Play Level 3 the way a student does, and require every question to be

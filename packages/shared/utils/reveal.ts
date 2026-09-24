@@ -239,6 +239,14 @@ export interface RevealTopOptions extends RevealOptions {
    * (`window.scrollTo({ top: 0 })`), so a desktop page moves exactly as it did.
    */
   instant?: boolean;
+  /**
+   * Gap left between the element's top and the top of the usable area, in px;
+   * 8 by default. A call site replacing `scrollIntoView({ block: 'start' })` with
+   * `anyWidth`, on a screen with no sticky header and no scroll margin, passes 0,
+   * so a desktop page lands exactly where it did. A declared `scroll-margin-top`
+   * still wins.
+   */
+  gap?: number;
 }
 
 /**
@@ -262,7 +270,10 @@ export function revealTop(el: Target, opts?: RevealTopOptions): void {
     const top = el.getBoundingClientRect().top;
     if (!opts?.always && top >= lo && top <= hi - MIN_VISIBLE) return;
     const declared = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
-    scrollByY(top - (declared > 0 ? Math.max(lo, declared) : lo + MARGIN), opts?.instant);
+    scrollByY(
+      top - (declared > 0 ? Math.max(lo, declared) : lo + (opts?.gap ?? MARGIN)),
+      opts?.instant
+    );
   }, opts?.afterExit);
 }
 
@@ -374,15 +385,23 @@ export interface ScreenTopOptions {
    * back to the top.
    */
   target?: () => Element | null;
+  /**
+   * Start the new screen at the top of the page at any width, not only on a
+   * phone. Only for a game whose own helper already did that on every screen
+   * swap (nafnakerfid's `scrollPageToTop`), so a desktop user keeps it. The
+   * reveal of `target` stays phone-only: on desktop the page goes to the top,
+   * as it did, and only focus moves to the target.
+   */
+  anyWidth?: boolean;
 }
 
 /**
  * For an app that swaps whole screens by state (menu ↔ level, intro → play, a
  * phase or mode change). Each time `key` changes — not on mount — a phone starts
- * the new screen at the top of the page, or at `target()` when it returns an
- * element, and focus moves to the screen heading (or to the target) at every
- * width. Runs in a layout effect, so the new screen never paints at the old
- * offset.
+ * the new screen at the top of the page (any width with `anyWidth`), or at
+ * `target()` when it returns an element, and focus moves to the screen heading
+ * (or to the target) at every width. Runs in a layout effect, so the new screen
+ * never paints at the old offset.
  */
 export function useScreenTop(key: unknown, opts: ScreenTopOptions = {}): void {
   const shown = useRef(key);
@@ -391,9 +410,9 @@ export function useScreenTop(key: unknown, opts: ScreenTopOptions = {}): void {
   useLayoutEffect(() => {
     if (Object.is(shown.current, key)) return;
     shown.current = key;
-    const { focus, target } = latest.current;
+    const { focus, target, anyWidth } = latest.current;
     // Instant, not smooth: the new screen must not paint at the old offset.
-    if (isPhone()) window.scrollTo({ top: 0, behavior: 'auto' });
+    if (anyWidth || isPhone()) window.scrollTo({ top: 0, behavior: 'auto' });
     const el = target?.() ?? null;
     if (el) {
       // From the top of the page, the least move that shows the card whole.

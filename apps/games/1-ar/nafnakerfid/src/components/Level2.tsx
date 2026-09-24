@@ -1,6 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
-import { revealNearest, revealTop } from '../utils/reveal';
+import {
+  focusTarget,
+  isPhone,
+  revealSpan,
+  revealTop,
+  useArmedAfter,
+  useIsPhone,
+} from '@shared/utils';
 
 interface Level2Props {
   t: (key: string, fallback?: string) => string;
@@ -310,25 +317,78 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   const support = SUPPORT[currentChallenge];
 
   // Each step replaces the panel under the step dots, and the buttons that move
-  // on sit at its bottom — on a phone, screens below where the next panel
-  // starts. Bring the new panel (and, per item, the new formula) into view, and
-  // the Step 1 verdict too, which lands below the four type cards.
+  // on sit at its bottom — on a phone, below where the next panel starts. Bring
+  // the new panel (and, per item, the new formula) into view, and the Step 1
+  // verdict too, which lands below the four type cards; and move focus to what
+  // replaced the button just pressed, which has unmounted (design P2, P3).
+  //
+  // A desktop keeps exactly what the old local helper did, at any width: a
+  // panel or formula whose top had gone above the viewport is scrolled back to
+  // it (`gap: 0`: these screens have no sticky header), and the Step 1 verdict
+  // is scrolled the least that shows it. A phone instead shows as much as fits
+  // from the formula down to the step's own button.
   const formulaRef = useRef<HTMLDivElement>(null);
   const stepRef = useRef<HTMLDivElement>(null);
+  const typeGridRef = useRef<HTMLDivElement>(null);
   const typeFeedbackRef = useRef<HTMLDivElement>(null);
+  const stepHeadingRef = useRef<HTMLHeadingElement>(null);
+  const understoodRef = useRef<HTMLButtonElement>(null);
+  const answerActionsRef = useRef<HTMLDivElement>(null);
+  const verdictRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const hintRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   // A new compound changes both the item and the step at once. Its formula
   // must win: Step 1 asks about it, and a second scroll to the step panel
   // would carry it back above the viewport.
   const revealedChallenge = useRef(currentChallenge);
-  useEffect(() => {
+  const revealedStep = useRef(step);
+  useLayoutEffect(() => {
     if (revealedChallenge.current !== currentChallenge) {
       revealedChallenge.current = currentChallenge;
-      revealTop(formulaRef.current);
-    } else {
-      revealTop(stepRef.current);
+      revealedStep.current = step;
+      revealTop(formulaRef.current, { anyWidth: true, gap: 0 });
+      focusTarget(formulaRef.current);
+      return;
     }
+    if (revealedStep.current === step) return;
+    revealedStep.current = step;
+    const panel = stepRef.current;
+    if (!isPhone()) {
+      revealTop(panel, { anyWidth: true, gap: 0 });
+    } else if (step === 'build') {
+      revealSpan(understoodRef.current, [formulaRef.current, panel]);
+    } else if (step === 'answer') {
+      revealSpan(answerActionsRef.current, [formulaRef.current, panel]);
+    } else if (step === 'feedback') {
+      revealSpan(nextRef.current, [formulaRef.current, verdictRef.current]);
+    }
+    // Step 3's field takes focus by itself (autoFocus); the others focus the
+    // step's heading, or after the check the verdict.
+    if (step === 'build') focusTarget(stepHeadingRef.current);
+    else if (step === 'feedback') focusTarget(verdictRef.current);
   }, [currentChallenge, step]);
-  useEffect(() => revealNearest(typeFeedbackRef.current), [typeCorrect]);
+  useEffect(() => {
+    if (typeCorrect === null) return;
+    const verdict = typeFeedbackRef.current;
+    if (isPhone()) revealSpan(verdict, [typeGridRef.current, verdict]);
+    else revealSpan(verdict, [], { anyWidth: true, gap: 0 });
+    focusTarget(verdict);
+  }, [typeCorrect]);
+  // The hint replaces its own button, so focus moves to the hint itself; on a
+  // phone the hint sits below the buttons and is brought into view with them.
+  useEffect(() => {
+    if (!showHint) return;
+    revealSpan(hintRef.current, [inputRef.current, answerActionsRef.current, hintRef.current]);
+    focusTarget(hintRef.current);
+  }, [showHint]);
+  // On a phone the hint goes after the buttons, so opening it never moves
+  // "Athuga svar" from under the finger (design §3, hints). The DOM moves with
+  // it, so the reading order is what is seen; desktop keeps it above them.
+  const phone = useIsPhone();
+  // "Næsta efnasamband" ignores a press within 400 ms of appearing, so a second
+  // tap on "Athuga svar" cannot skip the feedback.
+  const armed = useArmedAfter(400, `${currentChallenge}:${step}`);
 
   const normalizeAnswer = (answer: string): string => {
     return (
@@ -427,39 +487,57 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     return colors[color] || colors.blue;
   };
 
+  const hint = (
+    <div
+      ref={hintRef}
+      tabIndex={-1}
+      className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 phone:p-3"
+    >
+      <div className="flex items-center gap-2">
+        <span className="text-xl">💡</span>
+        <span className="text-yellow-800">{challenge.hint}</span>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-2 sm:p-4 md:p-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-        <div className="flex flex-wrap justify-between items-center gap-2 mb-6">
+      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3">
+        {/* One row on a phone (P4): the counter may wrap onto two short lines
+            rather than push the score onto a row of its own. */}
+        <div className="flex flex-wrap justify-between items-center gap-2 mb-6 phone:flex-nowrap phone:mb-2">
           <button
             onClick={onBack}
             className="whitespace-nowrap text-warm-500 hover:text-warm-700 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
           >
             ← {t('common.back', 'Til baka')}
           </button>
-          <div className="ml-auto flex items-center gap-2 sm:gap-4">
-            <div className="whitespace-nowrap text-sm text-warm-500">
+          <div className="ml-auto flex items-center gap-2 sm:gap-4 phone:min-w-0">
+            <div className="whitespace-nowrap text-sm text-warm-500 phone:whitespace-normal phone:text-right">
               {t('level2.ui.compoundNOfM', 'Efnasamband {n} af {m}')
                 .replace('{n}', String(currentChallenge + 1))
                 .replace('{m}', String(challenges.length))}
             </div>
-            <div className="whitespace-nowrap bg-teal-100 text-teal-800 px-3 py-1 rounded-full font-bold">
+            <div className="whitespace-nowrap bg-teal-100 text-teal-800 px-3 py-1 rounded-full font-bold phone:px-2 phone:text-sm">
               {t('common.score', 'Stig')}: {score}
             </div>
           </div>
         </div>
 
-        <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-teal-600">
+        {/* The subtitle is the same on all twelve compounds: screen readers
+            keep it, a phone does not spend a line on it. */}
+        <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-teal-600 phone:text-xl phone:mb-2">
           {t('level2.ui.nameCompound', 'Nefndu efnasambandið')}
         </h1>
-        <p className="text-center text-warm-600 mb-6">
+        <p className="text-center text-warm-600 mb-6 phone:sr-only">
           {t('level2.ui.followSteps', 'Fylgdu skrefunum til að nefna efnasambandið rétt')}
         </p>
 
         {/* Formula display */}
         <div
           ref={formulaRef}
-          className="bg-warm-100 rounded-2xl p-4 sm:p-6 md:p-8 mb-6 text-center"
+          data-item-start
+          className="bg-warm-100 rounded-2xl p-4 sm:p-6 md:p-8 mb-6 text-center phone:p-2 phone:mb-3"
         >
           <div className="text-4xl md:text-6xl font-mono font-bold text-warm-800">
             {challenge.formula}
@@ -467,7 +545,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
         </div>
 
         {/* Step indicator */}
-        <div className="flex justify-center gap-2 mb-6">
+        <div className="flex justify-center gap-2 mb-6 phone:mb-3">
           {['identify', 'build', 'answer', 'feedback'].map((s, idx) => (
             <div key={s} className={`flex items-center ${idx < 3 ? 'gap-2' : ''}`}>
               <div
@@ -488,11 +566,17 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
         {/* Step 1: Identify type */}
         {step === 'identify' && (
-          <div ref={stepRef} className="space-y-4">
-            <h2 className="text-lg font-bold text-warm-700 text-center mb-4">
+          <div ref={stepRef} className="space-y-4 phone:space-y-2">
+            <h2 className="text-lg font-bold text-warm-700 text-center mb-4 phone:text-base phone:mb-2">
               {t('level2.ui.step1Title', 'Skref 1: Hvaða tegund efnasambands er þetta?')}
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {/* Two by two on a phone, so all four types and the verdict are on
+                the first screen. The side padding is small enough that
+                "málmleysingjar," fits half of a 320 px screen unbroken. */}
+            <div
+              ref={typeGridRef}
+              className="grid grid-cols-1 md:grid-cols-2 gap-3 phone:grid-cols-2 phone:gap-2"
+            >
               {(Object.keys(typeNames) as CompoundType[]).map((type) => {
                 const info = typeNames[type];
                 const colors = getColorClasses(info.color);
@@ -501,7 +585,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                     key={type}
                     onClick={() => handleTypeSelect(type)}
                     disabled={selectedType !== null}
-                    className={`p-4 rounded-xl border-2 text-left transition-all ${
+                    className={`p-4 rounded-xl border-2 text-left transition-all phone:px-2 phone:py-3 ${
                       selectedType === type
                         ? type === challenge.type
                           ? 'border-green-500 bg-green-50'
@@ -518,10 +602,16 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               })}
             </div>
 
+            {/* The verdict is where focus moves after a choice (P3), named by its
+                own text. */}
             {typeCorrect !== null && (
               <div
                 ref={typeFeedbackRef}
-                className={`p-4 rounded-xl text-center ${
+                id="nk-l2-type-verdict"
+                role="group"
+                aria-labelledby="nk-l2-type-verdict"
+                tabIndex={-1}
+                className={`p-4 rounded-xl text-center phone:p-3 ${
                   typeCorrect ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'
                 }`}
               >
@@ -535,20 +625,23 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
         {/* Step 2: Build the name */}
         {step === 'build' && (
-          <div ref={stepRef} className="space-y-4">
-            <h2 className="text-lg font-bold text-warm-700 text-center mb-4">
+          <div ref={stepRef} className="space-y-4 phone:space-y-3">
+            <h2
+              ref={stepHeadingRef}
+              className="text-lg font-bold text-warm-700 text-center mb-4 phone:text-base phone:mb-2"
+            >
               {t('level2.ui.step2Title', 'Skref 2: Hvernig er nafnið byggt upp?')}
             </h2>
 
             <div
-              className={`${getColorClasses(typeInfo.color).light} border-2 ${getColorClasses(typeInfo.color).border} rounded-xl p-4`}
+              className={`${getColorClasses(typeInfo.color).light} border-2 ${getColorClasses(typeInfo.color).border} rounded-xl p-4 phone:p-3`}
             >
               <div className={`font-bold ${getColorClasses(typeInfo.color).text} mb-2`}>
                 {typeInfo.name}
               </div>
-              <div className="text-warm-700 mb-4">{challenge.steps.identifyType}</div>
+              <div className="text-warm-700 mb-4 phone:mb-3">{challenge.steps.identifyType}</div>
 
-              <div className="bg-white rounded-lg p-4 space-y-2">
+              <div className="bg-white rounded-lg p-4 space-y-2 phone:p-3">
                 {support === 'none' ? (
                   <div className="text-warm-700">
                     <div className="font-bold mb-1">
@@ -576,7 +669,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
             {/* Greek prefixes reference for molecular compounds */}
             {challenge.type === 'molecular' && (
-              <div className="bg-orange-50 rounded-xl p-4">
+              <div className="bg-orange-50 rounded-xl p-4 phone:p-3">
                 <div className="font-bold text-orange-800 mb-2">
                   {t('level2.ui.greekPrefixes', 'Grísk forskeyti:')}
                 </div>
@@ -591,6 +684,7 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             )}
 
             <button
+              ref={understoodRef}
               onClick={() => setStep('answer')}
               className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-xl"
             >
@@ -601,84 +695,101 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
         {/* Step 3: Enter answer */}
         {step === 'answer' && (
-          <div ref={stepRef} className="space-y-4">
-            <h2 className="text-lg font-bold text-warm-700 text-center mb-4">
+          <div ref={stepRef} className="space-y-4 phone:space-y-3">
+            <h2 className="text-lg font-bold text-warm-700 text-center mb-4 phone:text-base phone:mb-2">
               {t('level2.ui.step3Title', 'Skref 3: Skrifaðu nafnið')}
             </h2>
 
-            <div className="bg-warm-50 rounded-xl p-4 mb-4">
-              <div className="text-sm text-warm-600 mb-2">
+            <div className="bg-warm-50 rounded-xl p-4 mb-4 phone:p-3 phone:mb-3">
+              <div className="text-sm text-warm-600 mb-2 phone:mb-1">
                 {t('level2.ui.compoundType', 'Tegund:')}
               </div>
               <div className="text-warm-700">{challenge.steps.identifyType}</div>
             </div>
 
-            <input
-              type="text"
-              value={userAnswer}
-              onChange={(e) => setUserAnswer(e.target.value)}
-              placeholder={t('level2.ui.typeHere', 'Skrifaðu nafnið hér...')}
-              className="w-full text-center text-lg sm:text-2xl font-bold p-3 sm:p-4 border-2 border-teal-300 rounded-xl focus:border-teal-500 focus:outline-none"
-              // Same rule as the button: a blank field is not an answer.
-              onKeyPress={(e) => e.key === 'Enter' && userAnswer.trim() && handleSubmitAnswer()}
-              autoFocus
-              // A phone keyboard would otherwise "correct" a compound name it
-              // does not know into some other word.
-              autoCapitalize="none"
-              autoCorrect="off"
-              autoComplete="off"
-              spellCheck={false}
-            />
+            {/* A phone on its side has the width and not the height: the field
+                and its buttons share one row there, so the formula stays on
+                screen above the field while the name is typed (design P12).
+                The wrapper is a plain block elsewhere, spaced as the step is. */}
+            <div className="space-y-4 phone:space-y-3 phone-land:flex phone-land:items-center phone-land:gap-3 phone-land:space-y-0">
+              <input
+                ref={inputRef}
+                type="text"
+                value={userAnswer}
+                onChange={(e) => setUserAnswer(e.target.value)}
+                placeholder={t('level2.ui.typeHere', 'Skrifaðu nafnið hér...')}
+                className="w-full text-center text-lg sm:text-2xl font-bold p-3 sm:p-4 border-2 border-teal-300 rounded-xl focus:border-teal-500 focus:outline-none phone:p-3 phone:text-lg phone-land:min-w-0 phone-land:flex-1"
+                // Same rule as the button: a blank field is not an answer.
+                onKeyDown={(e) => {
+                  // Not while an input method is still composing a word.
+                  if (e.key === 'Enter' && !e.nativeEvent.isComposing && userAnswer.trim()) {
+                    handleSubmitAnswer();
+                  }
+                }}
+                enterKeyHint="done"
+                autoFocus
+                // A phone keyboard would otherwise "correct" a compound name it
+                // does not know into some other word.
+                autoCapitalize="none"
+                autoCorrect="off"
+                autoComplete="off"
+                spellCheck={false}
+              />
 
-            {showHint && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">💡</span>
-                  <span className="text-yellow-800">{challenge.hint}</span>
-                </div>
-              </div>
-            )}
+              {showHint && !phone && hint}
 
-            <div className="flex gap-3 sm:gap-4">
-              {!showHint && (
+              <div ref={answerActionsRef} className="flex gap-3 sm:gap-4 phone-land:shrink-0">
+                {!showHint && (
+                  <button
+                    onClick={() => {
+                      setShowHint(true);
+                      setTotalHintsUsed((prev) => prev + 1);
+                    }}
+                    className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-3 px-3 sm:px-6 rounded-xl"
+                  >
+                    💡 {t('common.hint', 'Vísbending')}
+                  </button>
+                )}
                 <button
-                  onClick={() => {
-                    setShowHint(true);
-                    setTotalHintsUsed((prev) => prev + 1);
-                  }}
-                  className="flex-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-3 px-3 sm:px-6 rounded-xl"
+                  onClick={handleSubmitAnswer}
+                  disabled={!userAnswer.trim()}
+                  className={`flex-1 font-bold py-3 px-3 sm:px-6 rounded-xl ${
+                    !userAnswer.trim()
+                      ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
+                      : 'bg-teal-500 hover:bg-teal-600 text-white'
+                  }`}
                 >
-                  💡 {t('common.hint', 'Vísbending')}
+                  {t('level2.ui.checkAnswer', 'Athuga svar')}
                 </button>
-              )}
-              <button
-                onClick={handleSubmitAnswer}
-                disabled={!userAnswer.trim()}
-                className={`flex-1 font-bold py-3 px-3 sm:px-6 rounded-xl ${
-                  !userAnswer.trim()
-                    ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
-                    : 'bg-teal-500 hover:bg-teal-600 text-white'
-                }`}
-              >
-                {t('level2.ui.checkAnswer', 'Athuga svar')}
-              </button>
+              </div>
             </div>
+
+            {showHint && phone && hint}
           </div>
         )}
 
         {/* Step 4: Feedback */}
         {step === 'feedback' && (
-          <div ref={stepRef} className="space-y-4">
+          <div ref={stepRef} className="space-y-4 phone:space-y-3">
+            {/* The verdict is where focus moves after the check (P3), named by
+                its verdict line. On a phone the mark sits on that line. */}
             <div
+              ref={verdictRef}
+              role="group"
+              aria-labelledby="nk-l2-verdict"
+              tabIndex={-1}
               className={`p-3 sm:p-6 rounded-xl text-center ${
                 isAnswerCorrect
                   ? 'bg-green-100 border-2 border-green-400'
                   : 'bg-red-100 border-2 border-red-400'
               }`}
             >
-              <div className="text-4xl mb-2">{isAnswerCorrect ? '✓' : '✗'}</div>
+              <div className="text-4xl mb-2 phone:inline-block phone:text-2xl phone:mb-0 phone:mr-2">
+                {isAnswerCorrect ? '✓' : '✗'}
+              </div>
               <div
-                className={`text-xl font-bold ${isAnswerCorrect ? 'text-green-800' : 'text-red-800'}`}
+                id="nk-l2-verdict"
+                className={`text-xl font-bold phone:inline-block ${isAnswerCorrect ? 'text-green-800' : 'text-red-800'}`}
               >
                 {isAnswerCorrect
                   ? t('common.correct', 'Rétt!')
@@ -713,7 +824,8 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             </div>
 
             <button
-              onClick={handleNext}
+              ref={nextRef}
+              onClick={armed(handleNext)}
               className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-xl"
             >
               {currentChallenge < challenges.length - 1
@@ -724,15 +836,15 @@ export function Level2({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
         )}
 
         {/* Progress bar */}
-        <div className="mt-6 w-full bg-warm-200 rounded-full h-2">
+        <div className="mt-6 w-full bg-warm-200 rounded-full h-2 phone:mt-3 phone:h-1.5">
           <div
-            className="bg-teal-500 h-2 rounded-full transition-all duration-300"
+            className="bg-teal-500 h-2 rounded-full transition-all duration-300 phone:h-1.5"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
           />
         </div>
 
         {/* Quick reference */}
-        <div className="mt-6 bg-warm-50 rounded-xl p-4">
+        <div className="mt-6 bg-warm-50 rounded-xl p-4 phone:mt-3 phone:p-3">
           <h3 className="font-semibold text-warm-700 mb-2 text-sm">
             {t('level2.ui.quickRef', 'Flýtileiðbeiningar:')}
           </h3>

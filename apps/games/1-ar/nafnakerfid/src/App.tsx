@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
 import { useGameI18n } from '@shared/hooks/useGameI18n';
 import { useGameProgress } from '@shared/hooks/useGameProgress';
+import { useScreenTop } from '@shared/utils';
 
 import { LEVEL1_MAX_SCORE, Level1 } from './components/Level1';
 import { LEVEL2_MAX_SCORE, Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
 import { gameTranslations } from './i18n';
-import { scrollPageToTop } from './utils/reveal';
 
 type Screen = 'menu' | 'level1' | 'level2' | 'level3';
 
@@ -42,10 +42,24 @@ function App() {
 
   // Each screen replaces the whole page. Without this a level opened from a
   // scrolled phone menu starts part-way down, and finishing a level lands
-  // mid-menu.
-  useEffect(() => {
-    scrollPageToTop();
-  }, [screen]);
+  // mid-menu. The page goes to the top at every width, as it always did here,
+  // and focus moves to the new screen's heading (the button that caused the
+  // swap has unmounted, and focus would otherwise fall to <body>). Back on the
+  // menu, the first level not yet done is focused — and on a phone revealed.
+  // With all three done it is the first level: the menu has no heading of its
+  // own outside the site header, so there is nothing else for focus to land on.
+  const nextLevel = !progress.level1Completed
+    ? 'level1'
+    : !progress.level2Completed
+      ? 'level2'
+      : !progress.level3Completed
+        ? 'level3'
+        : 'level1';
+  useScreenTop(screen, {
+    anyWidth: true,
+    target: () =>
+      screen === 'menu' ? document.querySelector(`[data-level-card="${nextLevel}"]`) : null,
+  });
 
   const handleLevel1Complete = (score: number, _maxScore: number, _hintsUsed: number) => {
     updateProgress({
@@ -100,16 +114,24 @@ function App() {
       />
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="max-w-2xl w-full">
-          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8 mb-6">
-            <p className="text-center text-warm-600 mb-4">{t('game.subtitle')}</p>
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8 mb-6 phone:p-4">
+            {/* The tagline restates the game's title: a phone leaves it to screen
+                readers, so all three levels show on the first screen, on its
+                side too. */}
+            <p className="text-center text-warm-600 mb-4 phone:sr-only">{t('game.subtitle')}</p>
 
-            <div className="space-y-4">
+            {/* A phone on its side: the three levels side by side, so every
+                choice is on the first screen. Each tile then stacks its score
+                under its text, and drops the decorative arrow, so no title
+                breaks mid-word in a third of the width. */}
+            <div className="space-y-4 phone-land:grid phone-land:grid-cols-3 phone-land:gap-3 phone-land:space-y-0">
               {/* Level 1 */}
               <button
+                data-level-card="level1"
                 onClick={() => setScreen('level1')}
-                className="game-card w-full bg-white border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-4 sm:p-6 text-left transition-all"
+                className="game-card w-full bg-white border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 rounded-xl p-4 sm:p-6 phone:p-3 text-left transition-all"
               >
-                <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center justify-between gap-3 phone-land:flex-col phone-land:items-start phone-land:gap-1">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
                       <span className="shrink-0 whitespace-nowrap bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full">
@@ -121,7 +143,7 @@ function App() {
                     </div>
                     <p className="text-warm-600 text-sm">{t('levels.level1.description')}</p>
                   </div>
-                  <div className="shrink-0 text-right">
+                  <div className="shrink-0 text-right phone-land:text-left">
                     {progress.level1Completed ? (
                       <div className="text-green-600">
                         <div className="text-lg min-[360px]:text-xl sm:text-2xl font-bold">
@@ -130,7 +152,7 @@ function App() {
                         <div className="text-xs">{t('menu.completed')}</div>
                       </div>
                     ) : (
-                      <div className="text-warm-400 text-3xl">&rarr;</div>
+                      <div className="text-warm-400 text-3xl phone-land:hidden">&rarr;</div>
                     )}
                   </div>
                 </div>
@@ -138,10 +160,11 @@ function App() {
 
               {/* Level 2 */}
               <button
+                data-level-card="level2"
                 onClick={() => setScreen('level2')}
-                className="game-card w-full bg-white border-2 border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50 rounded-xl p-4 sm:p-6 text-left transition-all"
+                className="game-card w-full bg-white border-2 border-yellow-200 hover:border-yellow-400 hover:bg-yellow-50 rounded-xl p-4 sm:p-6 phone:p-3 text-left transition-all"
               >
-                <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center justify-between gap-3 phone-land:flex-col phone-land:items-start phone-land:gap-1">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
                       <span className="shrink-0 whitespace-nowrap bg-yellow-500 text-white text-sm font-bold px-3 py-1 rounded-full">
@@ -153,7 +176,7 @@ function App() {
                     </div>
                     <p className="text-warm-600 text-sm">{t('levels.level2.description')}</p>
                   </div>
-                  <div className="shrink-0 text-right">
+                  <div className="shrink-0 text-right phone-land:text-left">
                     {progress.level2Completed ? (
                       <div className="text-green-600">
                         <div className="text-lg min-[360px]:text-xl sm:text-2xl font-bold">
@@ -162,7 +185,7 @@ function App() {
                         <div className="text-xs">{t('menu.completed')}</div>
                       </div>
                     ) : (
-                      <div className="text-warm-400 text-3xl">&rarr;</div>
+                      <div className="text-warm-400 text-3xl phone-land:hidden">&rarr;</div>
                     )}
                   </div>
                 </div>
@@ -170,10 +193,11 @@ function App() {
 
               {/* Level 3 */}
               <button
+                data-level-card="level3"
                 onClick={() => setScreen('level3')}
-                className="game-card w-full bg-white border-2 border-red-200 hover:border-red-400 hover:bg-red-50 rounded-xl p-4 sm:p-6 text-left transition-all"
+                className="game-card w-full bg-white border-2 border-red-200 hover:border-red-400 hover:bg-red-50 rounded-xl p-4 sm:p-6 phone:p-3 text-left transition-all"
               >
-                <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center justify-between gap-3 phone-land:flex-col phone-land:items-start phone-land:gap-1">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-2">
                       <span className="shrink-0 whitespace-nowrap bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full">
@@ -185,7 +209,7 @@ function App() {
                     </div>
                     <p className="text-warm-600 text-sm">{t('levels.level3.description')}</p>
                   </div>
-                  <div className="shrink-0 text-right">
+                  <div className="shrink-0 text-right phone-land:text-left">
                     {progress.level3Completed ? (
                       <div className="text-green-600">
                         <div className="text-lg min-[360px]:text-xl sm:text-2xl font-bold">
@@ -194,7 +218,7 @@ function App() {
                         <div className="text-xs">{t('menu.completed')}</div>
                       </div>
                     ) : (
-                      <div className="text-warm-400 text-3xl">&rarr;</div>
+                      <div className="text-warm-400 text-3xl phone-land:hidden">&rarr;</div>
                     )}
                   </div>
                 </div>

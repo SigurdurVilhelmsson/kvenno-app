@@ -1,8 +1,11 @@
 import { act, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { LEVEL1_MAX_SCORE, Level1, quizQuestions } from '../components/Level1';
 import { LEVEL2_MAX_SCORE, Level2, challenges } from '../components/Level2';
+
+clockPastNextGuard();
 
 /**
  * The menu shows each level's best score as `score/max`, so `max` has to be
@@ -81,6 +84,10 @@ describe('Level 2 maximum score', () => {
         target: { value: challenge.correctName },
       });
       clickButton(container, /^Athuga svar$/);
+      // Fake timers own the clock here: step past the Næsta guard.
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
       clickButton(container, i < challenges.length - 1 ? /Næsta efnasamband/ : /Ljúka stigi/);
     });
 
