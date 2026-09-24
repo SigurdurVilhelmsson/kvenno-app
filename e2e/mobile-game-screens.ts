@@ -2138,6 +2138,16 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           click: 'Byrja æfingar',
         },
       ],
+      loop: {
+        prompt: { css: '#takmarkandi-l1-equation' },
+        // Tapping a reactant is the answer: there is no separate Athuga.
+        action: { css: 'button:has-text("sameindir")' },
+        answer: [],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        together: [[{ css: '#takmarkandi-l1-equation' }, { css: 'button:has-text("sameindir")' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
     },
     {
       name: 'Stig 1 — endurgjöf',
@@ -2163,6 +2173,19 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Stig 2'],
         },
       ],
+      loop: {
+        prompt: { css: '#takmarkandi-l2-equation' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ fill: ['input', '9999'] }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        together: [[{ css: 'h2' }, { css: 'input' }]],
+        // On the SE, Athuga sits about 30 px below the screen, and on a phone
+        // on its side the student reads the worked solution down to Næsta:
+        // both are design §5 residuals. The "stays usable" check still runs.
+        viewports: ['android', 'iphone'],
+        typed: true,
+      },
     },
     {
       name: 'Stig 2 — endurgjöf',
@@ -2188,6 +2211,48 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Stig 3'],
         },
       ],
+      loop: {
+        prompt: { css: '#takmarkandi-l3-question' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ css: 'button.font-mono' }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Áfram' },
+        together: [[{ css: '#takmarkandi-l3-equation' }, { role: 'button', name: 'Athuga' }]],
+        // On a phone on its side the verdict opens at the top of the task
+        // column and "Áfram" is one short scroll below it (a §5 landscape
+        // residual); the "stays usable" check still runs there.
+        viewports: ['android', 'iphone', 'se'],
+      },
+    },
+    {
+      name: 'Stig 3 — fræðilegar heimtur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 3'],
+        },
+        {
+          css: 'button.font-mono',
+        },
+        {
+          clickRole: ['button', 'Athuga'],
+        },
+        {
+          wait: 300,
+        },
+        {
+          clickRole: ['button', 'Áfram'],
+        },
+      ],
+      loop: {
+        prompt: { css: '#takmarkandi-l3-question' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ fill: ['input', '1'] }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Áfram' },
+        together: [[{ css: '#takmarkandi-l3-equation' }, { css: 'input' }]],
+        viewports: ['android', 'iphone', 'se'],
+        typed: true,
+      },
     },
     {
       name: 'Stig 3 — endurgjöf',
@@ -2219,6 +2284,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Athuga'],
         },
         {
+          wait: 300,
+        },
+        {
           clickRole: ['button', 'Áfram'],
         },
         {
@@ -2245,6 +2313,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Athuga'],
         },
         {
+          wait: 300,
+        },
+        {
           clickRole: ['button', 'Áfram'],
         },
         {
@@ -2252,6 +2323,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
         {
           clickRole: ['button', 'Athuga'],
+        },
+        {
+          wait: 300,
         },
         {
           clickRole: ['button', 'Áfram'],
@@ -2280,13 +2354,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Athuga'],
         },
         {
-          clickRole: ['button', 'Áfram'],
-        },
-        {
-          fill: ['input', '1'],
-        },
-        {
-          clickRole: ['button', 'Athuga'],
+          wait: 300,
         },
         {
           clickRole: ['button', 'Áfram'],
@@ -2296,6 +2364,21 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
         {
           clickRole: ['button', 'Athuga'],
+        },
+        {
+          wait: 300,
+        },
+        {
+          clickRole: ['button', 'Áfram'],
+        },
+        {
+          fill: ['input', '1'],
+        },
+        {
+          clickRole: ['button', 'Athuga'],
+        },
+        {
+          wait: 300,
         },
         {
           clickRole: ['button', 'Áfram'],
