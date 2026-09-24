@@ -4747,6 +4747,11 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           clickRole: ['button', 'Athuga svar'],
         },
+        // Næsta ignores a press within 400 ms of appearing (P3's double-tap guard); a
+        // student never reaches it that fast.
+        {
+          wait: 500,
+        },
         {
           clickRole: ['button', 'Næsta spurning'],
         },
@@ -4754,6 +4759,34 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 300,
         },
       ],
+    },
+    {
+      name: 'Stig 1 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 1: Skammtatölur'],
+        },
+        {
+          clickRole: ['button', 'Sjáum dæmi'],
+        },
+        {
+          clickRole: ['button', 'Eitt dæmi til'],
+        },
+        {
+          clickRole: ['button', 'byrja æfingar'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        // The first card of the first question, n = 1: one of four.
+        answer: [{ css: 'button.quantum-card' }],
+        verdict: { css: '#rafeind-l1-verdict' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        // On the SE, and on a phone on its side before the static header scrolls
+        // away, Athuga is one short scroll below the cards (design §5: the
+        // 5-option questions); §6.2.10 still holds landscape usable.
+      },
     },
     {
       name: 'Stig 2 — kennsla',
@@ -4784,6 +4817,27 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Stig 2 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 2: Rafeindasmíð'],
+        },
+        {
+          clickRole: ['button', 'Byrja æfingar'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        // Wrong for hydrogen: the longest feedback, with the electron count.
+        answer: [{ fill: ['input.config-input', '1s2'] }],
+        verdict: { css: '#rafeind-l2-verdict' },
+        next: { role: 'button', name: 'Næsta frumefni' },
+        typed: true,
+        viewports: ['android', 'iphone', 'se'],
+      },
+    },
+    {
       name: 'Stig 3 — kennsla',
       steps: [
         {
@@ -4812,6 +4866,25 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Stig 3 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 3: Lotukerfi og rafeindir'],
+        },
+        {
+          clickRole: ['button', 'Byrja æfingar'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [{ css: 'button.mc-option' }],
+        verdict: { css: '#rafeind-l3-verdict' },
+        next: { role: 'button', name: 'Næsta frumefni' },
+        viewports: ['android', 'iphone', 'se'],
+      },
+    },
+    {
       name: 'Stig 3 — undantekning (Cr) endurgjöf',
       steps: [
         {
@@ -4827,6 +4900,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Athuga svar'],
         },
         {
+          wait: 500,
+        },
+        {
           clickRole: ['button', 'Næsta frumefni'],
         },
         {
@@ -4834,6 +4910,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
         {
           clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          wait: 500,
         },
         {
           clickRole: ['button', 'Næsta frumefni'],

@@ -2,10 +2,19 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Header, LanguageSwitcher } from '@shared/components';
 import { useGameI18n } from '@shared/hooks';
+import {
+  isPhone,
+  revealSpan,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+  useScreenTop,
+} from '@shared/utils';
 
 import { configPuzzles, normalizeConfig } from '../data/electron-configs';
 import { gameTranslations } from '../i18n';
 import { countElectrons, hundFilling, rafeindir } from '../utils/electrons';
+import { ITEM_START } from '../utils/itemStart';
 
 interface Level2Props {
   onComplete: (score: number) => void;
@@ -26,21 +35,41 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [diagnostic, setDiagnostic] = useState<string | null>(null);
 
   const feedbackRef = useRef<HTMLDivElement>(null);
+  const verdictRef = useRef<HTMLDivElement>(null);
+  const inputRowRef = useRef<HTMLDivElement>(null);
+  const diagramRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
 
-  // A new screen (the exercises, or the next element) starts at its top: the
-  // browser keeps the old scroll offset, which on a phone hides the new element.
-  // window.scrollTo rather than scrollIntoView, which would also send the
-  // keyboard's Tab back to the header.
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [showIntro, currentIndex]);
+  // The exercises start at the top of the page at every width, as they always
+  // have, with the heading focused.
+  useScreenTop(showIntro, { anyWidth: true, focus: ITEM_START });
+  // So does each next element: the browser keeps the old scroll offset, which
+  // on a phone hides the new element. `always` + `gap: 0` on the page's own
+  // wrapper, directly under the sticky header, is exactly the old scroll to
+  // the top at every width; focus moves to the new element.
+  const pageRef = useItemTop<HTMLDivElement>(currentIndex, {
+    anyWidth: true,
+    always: true,
+    instant: true,
+    gap: 0,
+  });
 
   // The orbital diagram is drawn above the verdict, so from sodium on the
-  // verdict lands entirely below the fold on a phone. `nearest` leaves the page
-  // alone where it is already in view.
+  // verdict lands below the fold. On a desktop the verdict block is brought
+  // into view only where it is below the fold, exactly as before
+  // (`scrollIntoView({ block: 'nearest' })` with its 16 px bottom margin). On a
+  // phone the shared reveal shows as much as fits from the answer down to
+  // Næsta, and at every width focus moves to the verdict (design P3).
   useEffect(() => {
-    if (submitted) feedbackRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+    if (submitted && !isPhone()) revealSpan(feedbackRef.current, [], { anyWidth: true, gap: 16 });
   }, [submitted]);
+  useRevealAfterCommit(submitted, () => ({
+    bottom: nextRef.current,
+    tops: [inputRowRef.current, diagramRef.current, verdictRef.current],
+    focus: verdictRef.current,
+  }));
+  // A double tap or a second Enter must not land on Næsta a moment later.
+  const armed = useArmedAfter(400, `${currentIndex}:${submitted}`);
 
   const handleSubmit = () => {
     if (submitted || !userInput.trim()) return;
@@ -91,7 +120,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   // Orbital box diagram
   const renderOrbitalDiagram = () => {
     return (
-      <div className="flex flex-wrap gap-4 justify-center items-end">
+      <div className="flex flex-wrap gap-4 justify-center items-end phone:gap-x-3 phone:gap-y-2">
         {puzzle.orbitalOrder.map((orbital, idx) => {
           const count = puzzle.electronCounts[idx];
           const maxE = puzzle.maxElectrons[idx];
@@ -144,14 +173,14 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             />
           }
         />
-        <div className="max-w-lg mx-auto p-4 md:p-8">
+        <div className="max-w-lg mx-auto p-4 md:p-8 phone:px-3 phone:py-2">
           <button
             onClick={onBack}
             className="text-warm-600 hover:text-warm-800 mb-4 pointer-coarse:py-2.5 pointer-coarse:-mt-2.5 pointer-coarse:mb-1.5"
           >
             ← Til baka
           </button>
-          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 space-y-4 animate-slide-in">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 space-y-4 phone:p-3 phone:space-y-3 animate-slide-in">
             <h2 className="text-xl font-bold text-warm-800">Hvernig fylla á í svigrúm?</h2>
             <p className="text-warm-700">
               Rafeindir fylla svigrúm í ákveðinni röð — frá lægstu orku til hæstu. Þetta kallast{' '}
@@ -246,25 +275,27 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         }
       />
 
-      <div className="max-w-3xl mx-auto p-4 md:p-8">
-        <div className="flex justify-between items-center mb-4">
+      <div ref={pageRef} className="max-w-3xl mx-auto p-4 md:p-8 phone:px-3 phone:py-2">
+        <div className="flex justify-between items-center gap-3 mb-4 phone:mb-2">
           <button
             onClick={onBack}
             className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
           >
             ← Til baka
           </button>
-          <div className="text-sm text-warm-600">
+          <div className="text-sm text-warm-600 text-right">
             Frumefni {currentIndex + 1} / {configPuzzles.length} &bull; Stig: {score}
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 animate-slide-in">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 phone:p-3 animate-slide-in">
           {/* Element display */}
-          <div className="text-center mb-6">
+          <div data-item-start className="text-center mb-6 phone:mb-3">
             <div className="inline-flex items-center gap-4">
-              <div className="bg-teal-100 px-6 py-4 rounded-xl">
-                <div className="text-4xl font-bold text-teal-800">{puzzle.element}</div>
+              <div className="bg-teal-100 px-6 py-4 rounded-xl phone:px-4 phone:py-1.5">
+                <div className="text-4xl font-bold text-teal-800 phone:text-3xl">
+                  {puzzle.element}
+                </div>
                 <div className="text-sm text-teal-600">Z = {puzzle.atomicNumber}</div>
               </div>
               <div className="text-left">
@@ -279,13 +310,16 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           </div>
 
           {/* Aufbau reminder */}
-          <div className="bg-blue-50 p-3 rounded-lg mb-6 text-sm text-blue-800">
+          <div className="bg-blue-50 p-3 rounded-lg mb-6 text-sm text-blue-800 phone:p-2 phone:mb-3">
             <strong>Aufbau-röð:</strong> 1s → 2s → 2p → 3s → 3p → 4s → 3d → 4p → 5s → 4d → 5p
           </div>
 
           {/* Input */}
-          <div className="mb-6">
-            <label htmlFor="config-input" className="block text-sm font-medium text-warm-700 mb-2">
+          <div ref={inputRowRef} className="mb-6 phone:mb-3">
+            <label
+              htmlFor="config-input"
+              className="block text-sm font-medium text-warm-700 mb-2 phone:mb-1"
+            >
               Sláðu inn rafeindaskipan (t.d. 1s2 2s2 2p4):
             </label>
             <input
@@ -298,6 +332,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               autoCorrect="off"
               autoComplete="off"
               spellCheck={false}
+              enterKeyHint="done"
               className="config-input"
               disabled={submitted}
               onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
@@ -307,9 +342,11 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             </p>
           </div>
 
-          {/* Submit */}
+          {/* Submit. Athuga and Næsta are separate elements (keyed), and Næsta
+              ignores a press within 400 ms of appearing. */}
           {!submitted ? (
             <button
+              key="check"
               onClick={handleSubmit}
               disabled={!userInput.trim()}
               className="game-btn w-full py-3 rounded-xl font-bold text-white bg-teal-500 hover:bg-teal-600 disabled:bg-warm-300 disabled:cursor-not-allowed transition-colors"
@@ -319,18 +356,24 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           ) : (
             <>
               {/* Orbital diagram */}
-              <div className="bg-warm-50 p-4 rounded-xl mb-4">
-                <h3 className="text-sm font-semibold text-warm-700 mb-3 text-center">
+              <div ref={diagramRef} className="bg-warm-50 p-4 rounded-xl mb-4 phone:p-3 phone:mb-3">
+                <h3 className="text-sm font-semibold text-warm-700 mb-3 text-center phone:mb-2">
                   Svigrúmamynd:
                 </h3>
                 {renderOrbitalDiagram()}
               </div>
 
               <div ref={feedbackRef} className="scroll-mb-4">
+                {/* The feedback region focus moves to after Athuga (P3), named by
+                    its verdict. */}
                 <div
-                  className={`p-4 rounded-xl mb-2 ${isCorrect ? 'bg-green-50 border-2 border-green-300' : 'bg-red-50 border-2 border-red-300'}`}
+                  ref={verdictRef}
+                  role="group"
+                  tabIndex={-1}
+                  aria-labelledby="rafeind-l2-verdict"
+                  className={`p-4 rounded-xl mb-2 phone:p-3 focus:outline-none ${isCorrect ? 'bg-green-50 border-2 border-green-300' : 'bg-red-50 border-2 border-red-300'}`}
                 >
-                  <div className="text-lg font-bold mb-2">
+                  <div id="rafeind-l2-verdict" className="text-lg font-bold mb-2 phone:mb-1">
                     {isCorrect ? '✅ Rétt!' : '❌ Ekki rétt'}
                   </div>
                   {!isCorrect && (
@@ -352,8 +395,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 </div>
 
                 <button
-                  onClick={handleNext}
-                  className="game-btn w-full mt-4 py-3 rounded-xl font-bold text-white bg-teal-500 hover:bg-teal-600 transition-colors"
+                  key="next"
+                  ref={nextRef}
+                  onClick={armed(handleNext)}
+                  className="game-btn w-full mt-4 py-3 rounded-xl font-bold text-white bg-teal-500 hover:bg-teal-600 transition-colors phone:mt-2"
                 >
                   {isLast ? 'Ljúka stigi' : 'Næsta frumefni →'}
                 </button>
