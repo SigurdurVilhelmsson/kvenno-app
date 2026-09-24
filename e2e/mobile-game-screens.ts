@@ -2223,6 +2223,50 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Stig 0 — flokkun',
+      steps: [
+        {
+          clickRole: ['button', 'Rafkleyfi'],
+        },
+        {
+          clickRole: ['button', 'Byrja að flokka'],
+        },
+        {
+          wait: 300,
+        },
+      ],
+      loop: {
+        prompt: { css: 'p[data-item-start]' },
+        action: { role: 'button', name: 'Veikur rafkleyfi' },
+        answer: [],
+        verdict: { css: '#lausnir-l0-verdict' },
+        next: { role: 'button', name: 'Næsta' },
+        viewports: ['android', 'iphone', 'se'],
+      },
+    },
+    {
+      name: 'Stig 1 — spá',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 1: Hugtök'],
+        },
+        {
+          wait: 300,
+        },
+      ],
+      loop: {
+        prompt: { text: 'Ef þú bætir við vatni' },
+        action: { role: 'button', name: 'Athuga spá' },
+        answer: [{ clickRole: ['button', 'Minnkar'] }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Áfram í verkefni' },
+        viewports: ['android', 'iphone', 'se'],
+        // Verkefni 1 carries the note on the units the level uses, above the
+        // question: one scroll to "Athuga spá". Later challenges need none.
+        scrollsToAction: 1,
+      },
+    },
+    {
       name: 'Stig 1 — röng spá',
       steps: [
         {
@@ -2252,6 +2296,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Athuga spá'],
         },
         {
+          // "Áfram í verkefni" ignores a press within 400 ms of appearing.
+          wait: 500,
+        },
+        {
           clickRole: ['button', 'Áfram í verkefni'],
         },
         {
@@ -2275,12 +2323,57 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Athuga spá'],
         },
         {
+          // "Áfram í verkefni" ignores a press within 400 ms of appearing.
+          wait: 500,
+        },
+        {
           clickRole: ['button', 'Áfram í verkefni'],
         },
         {
           wait: 500,
         },
       ],
+      loop: {
+        prompt: { text: 'Verkefni 2:' },
+        action: { role: 'button', name: 'Athuga lausn' },
+        // +10 makes 30 sameindir in 200 mL, the 1,5 M asked for: "Athuga
+        // lausn" answers only a solution that is right.
+        answer: [{ clickRole: ['button', '+10'] }],
+        verdict: { css: '.feedback-panel' },
+        // No Næsta: after a right answer the next challenge follows by itself
+        // (design §7.7, kept), and this disabled button says so meanwhile.
+        next: { role: 'button', name: 'Sæki næsta verkefni' },
+        together: [
+          [
+            { css: 'svg[aria-label^="Bikarglas"]' },
+            { css: '[data-concentration-indicator]' },
+            { role: 'button', name: '+10' },
+          ],
+        ],
+        viewports: ['android', 'iphone', 'se'],
+        scrollsToAction: 1,
+      },
+    },
+    {
+      name: 'Stig 2 — atburðarás',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 2: Rökstuðningur'],
+        },
+        {
+          wait: 300,
+        },
+      ],
+      loop: {
+        prompt: { text: 'Hvað gerist við styrkinn' },
+        action: { role: 'button', name: 'Staðfesta svar' },
+        answer: [{ css: 'button.rounded-xl.border-2' }],
+        verdict: { css: '#lausnir-l2-verdict' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        viewports: ['android', 'iphone', 'se'],
+        // The before/after picture sits between the setup and the question.
+        scrollsToAction: 1,
+      },
     },
     {
       name: 'Stig 2 — atburðarás og vísbending',
@@ -2326,13 +2419,8 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Staðfesta svar'],
         },
         {
-          clickRole: ['button', 'Næsta spurning'],
-        },
-        {
-          css: 'button.rounded-xl.border-2',
-        },
-        {
-          clickRole: ['button', 'Staðfesta svar'],
+          // Næsta ignores a press within 400 ms of appearing.
+          wait: 500,
         },
         {
           clickRole: ['button', 'Næsta spurning'],
@@ -2342,6 +2430,23 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
         {
           clickRole: ['button', 'Staðfesta svar'],
+        },
+        {
+          // Næsta ignores a press within 400 ms of appearing.
+          wait: 500,
+        },
+        {
+          clickRole: ['button', 'Næsta spurning'],
+        },
+        {
+          css: 'button.rounded-xl.border-2',
+        },
+        {
+          clickRole: ['button', 'Staðfesta svar'],
+        },
+        {
+          // Næsta ignores a press within 400 ms of appearing.
+          wait: 500,
         },
         {
           clickRole: ['button', 'Næsta spurning'],
@@ -2387,6 +2492,29 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 300,
         },
       ],
+    },
+    {
+      name: 'Stig 3 — dæmi',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 3: Útreikningar'],
+        },
+        {
+          wait: 300,
+        },
+      ],
+      loop: {
+        prompt: { css: 'p.text-lg.font-medium' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ fill: ['input[inputmode=decimal]', '1'] }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta dæmi' },
+        together: [[{ css: 'p.text-lg.font-medium' }, { css: 'input[inputmode=decimal]' }]],
+        viewports: ['android', 'iphone', 'se'],
+        typed: true,
+        // The worked solution follows the verdict and is read in full (§5).
+        teachingFeedback: true,
+      },
     },
     {
       name: 'Stig 3 — endurgjöf',

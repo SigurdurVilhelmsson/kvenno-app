@@ -1,6 +1,13 @@
-import { useState, useCallback, useEffect, useMemo, useRef } from 'react';
+import { useState, useCallback, useMemo, useRef } from 'react';
 
-import { formatDecimal, shuffleArray } from '@shared/utils';
+import {
+  formatDecimal,
+  shuffleArray,
+  useArmedAfter,
+  useIsPhone,
+  useItemTop,
+  useRevealAfterCommit,
+} from '@shared/utils';
 
 import { ConcentrationComparison } from './StoichiometryVisualization';
 import {
@@ -9,7 +16,6 @@ import {
   SOLUBILITY_DATA,
   SolubilityData,
 } from './TemperatureSolubility';
-import { revealTop } from '../utils/reveal';
 
 // Level 2: Application/Reasoning - "What happens when..." questions
 // Students predict outcomes without calculating
@@ -596,8 +602,13 @@ function BeforeAfterVisual({
     if (!revealed) {
       return (
         <div className="text-center">
-          <div className="text-sm font-semibold mb-2 text-warm-700">{label}</div>
-          <svg viewBox="0 0 80 120" className="w-24 h-32 mx-auto" role="img" aria-label="Óþekkt">
+          <div className="text-sm font-semibold mb-2 text-warm-700 phone:mb-1">{label}</div>
+          <svg
+            viewBox="0 0 80 120"
+            className="w-24 h-32 mx-auto phone:w-18 phone:h-24"
+            role="img"
+            aria-label="Óþekkt"
+          >
             <path
               d="M10 10 L10 100 Q10 110 20 110 L60 110 Q70 110 70 100 L70 10"
               fill="none"
@@ -648,8 +659,8 @@ function BeforeAfterVisual({
 
     return (
       <div className="text-center">
-        <div className="text-sm font-semibold mb-2 text-warm-700">{label}</div>
-        <svg viewBox="0 0 80 120" className="w-24 h-32 mx-auto">
+        <div className="text-sm font-semibold mb-2 text-warm-700 phone:mb-1">{label}</div>
+        <svg viewBox="0 0 80 120" className="w-24 h-32 mx-auto phone:w-18 phone:h-24">
           {/* Beaker */}
           <path
             d="M10 10 L10 100 Q10 110 20 110 L60 110 Q70 110 70 100 L70 10"
@@ -710,7 +721,7 @@ function BeforeAfterVisual({
   };
 
   return (
-    <div className="flex items-center justify-center gap-4 my-4">
+    <div className="flex items-center justify-center gap-4 my-4 phone:my-2">
       {renderBeaker(before, 'Fyrir')}
       <div className="text-2xl text-warm-400">→</div>
       {renderBeaker(after, 'Eftir', { revealed: showAfter })}
@@ -735,14 +746,47 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const [selectedCompounds, setSelectedCompounds] = useState<string[]>(['KNO₃', 'NaCl', 'CO₂']);
 
   const scenario = SCENARIOS[currentScenario];
-  const scenarioRef = useRef<HTMLDivElement>(null);
 
   // "Næsta spurning" is at the bottom of a card that, with every option's
   // explanation open, is two phone screens tall. The next scenario's setup
-  // and picture would otherwise start above the screen.
-  useEffect(() => {
-    revealTop(scenarioRef.current);
-  }, [currentScenario]);
+  // and picture would otherwise start above the screen. The card's top comes
+  // back into view, as it always has at every width (`anyWidth`; no gap, as
+  // with the scrollIntoView this replaces), and focus moves to the new
+  // scenario (`data-item-start`), because the Næsta that was pressed has
+  // unmounted.
+  const scenarioRef = useItemTop<HTMLDivElement>(currentScenario, { anyWidth: true, gap: 0 });
+  const questionRef = useRef<HTMLDivElement>(null);
+  const optionsRef = useRef<HTMLDivElement>(null);
+  const hintRef = useRef<HTMLDivElement>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
+  const submitRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const phoneLayout = useIsPhone();
+
+  // After "Staðfesta svar", focus moves to the result, not to Næsta (a second
+  // Enter then does nothing), and a phone shows Næsta with as much as fits
+  // above it: the question, else the student's own choice, else the verdict.
+  useRevealAfterCommit(showResult, () => ({
+    bottom: nextRef.current,
+    tops: [
+      questionRef.current,
+      optionsRef.current?.querySelector('[data-chosen]') ?? null,
+      resultRef.current,
+    ],
+    focus: resultRef.current,
+  }));
+
+  // Opening the hint removes the button that opened it, so focus moves to the
+  // hint itself, and a phone keeps "Staðfesta svar" on screen with it.
+  useRevealAfterCommit(showHint && !showResult, () => ({
+    bottom: submitRef.current,
+    tops: [hintRef.current],
+    focus: hintRef.current,
+  }));
+
+  // A press within 400 ms of Næsta appearing is dropped, so the second tap of a
+  // double tap on "Staðfesta svar" cannot skip the feedback.
+  const armed = useArmedAfter(400, `${currentScenario}:${showResult}`);
 
   // Shuffle options for current scenario - memoize to keep stable during scenario
   const shuffledOptions = useMemo(() => {
@@ -784,20 +828,58 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   const allComplete = currentScenario === SCENARIOS.length - 1 && showResult;
 
+  // The Kanna modal's compound choice.
+  const compoundPicker = (
+    <div className="mb-4 phone:mb-0">
+      <div className="text-sm font-semibold text-warm-700 mb-2">Veldu efni til að skoða:</div>
+      <div className="flex flex-wrap gap-2">
+        {SOLUBILITY_DATA.map((compound) => (
+          <button
+            key={compound.formula}
+            onClick={() => {
+              setSelectedCompounds((prev) =>
+                prev.includes(compound.formula)
+                  ? prev.filter((f) => f !== compound.formula)
+                  : [...prev, compound.formula]
+              );
+            }}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors pointer-coarse:min-h-11 ${
+              selectedCompounds.includes(compound.formula)
+                ? 'text-white'
+                : 'bg-warm-100 text-warm-700 hover:bg-warm-200'
+            }`}
+            style={{
+              backgroundColor: selectedCompounds.includes(compound.formula)
+                ? compound.color
+                : undefined,
+            }}
+          >
+            {compound.emoji} {compound.formula}
+            {compound.type === 'gas' && ' (gas)'}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-2xl shadow-lg p-4 mb-6">
-          <div className="flex justify-between items-center flex-wrap gap-4">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-green-600">Lausnir - Stig 2</h1>
-              <p className="text-sm text-warm-600">
+        {/* Header. On a phone it is tighter (design P4): the title on its own
+            line, the tagline for screen readers only, and the controls and
+            smaller counters on one row below it. */}
+        <div className="bg-white rounded-2xl shadow-lg p-4 mb-6 phone:px-3 phone:py-2 phone:mb-3">
+          <div className="flex justify-between items-center flex-wrap gap-4 phone:gap-x-3 phone:gap-y-1">
+            <div className="phone:min-w-0">
+              <h1 className="text-2xl md:text-3xl font-bold text-green-600 phone:text-base">
+                Lausnir - Stig 2
+              </h1>
+              <p className="text-sm text-warm-600 phone:sr-only">
                 Spáðu fyrir um breytingar - ENGIR útreikningar!
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-x-3 gap-y-2 sm:gap-4 items-center">
+            <div className="flex flex-wrap gap-x-3 gap-y-2 sm:gap-4 items-center phone:gap-x-3">
               <button
                 onClick={onBack}
                 className="whitespace-nowrap text-warm-600 hover:text-warm-800 text-sm pointer-coarse:py-3 pointer-coarse:-my-3 pointer-coarse:px-2 pointer-coarse:-mx-2"
@@ -806,17 +888,17 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               </button>
               <button
                 onClick={() => setShowExplorer(true)}
-                className="whitespace-nowrap bg-purple-100 hover:bg-purple-200 text-purple-700 px-3 py-1 rounded-lg text-sm font-medium transition-colors pointer-coarse:min-h-11"
+                className="whitespace-nowrap bg-purple-100 hover:bg-purple-200 text-purple-700 px-3 py-1 rounded-lg text-sm font-medium transition-colors pointer-coarse:min-h-11 phone:px-2"
                 title="Kanna leysni"
               >
                 🔬 Kanna
               </button>
               <div className="text-center">
-                <div className="text-xl font-bold text-green-600">{score}</div>
+                <div className="text-xl font-bold text-green-600 phone:text-base">{score}</div>
                 <div className="text-xs text-warm-600">Stig</div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold text-blue-600">
+                <div className="text-xl font-bold text-blue-600 phone:text-base">
                   {completed.length}/{SCENARIOS.length}
                 </div>
                 <div className="text-xs text-warm-600">Rétt</div>
@@ -825,9 +907,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           </div>
 
           {/* Progress bar */}
-          <div className="mt-4 bg-warm-200 rounded-full h-2">
+          <div className="mt-4 bg-warm-200 rounded-full h-2 phone:mt-2 phone:h-1.5">
             <div
-              className="bg-green-500 h-2 rounded-full transition-all duration-500"
+              className="bg-green-500 h-2 rounded-full transition-all duration-500 phone:h-1.5"
               style={{
                 width: `${((currentScenario + (showResult ? 1 : 0)) / SCENARIOS.length) * 100}%`,
               }}
@@ -836,15 +918,21 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         </div>
 
         {/* Scenario card */}
-        <div ref={scenarioRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-          <div className="mb-6">
-            <div className="inline-block bg-green-100 px-4 py-2 rounded-full text-sm font-semibold text-green-800 mb-2">
+        <div
+          ref={scenarioRef}
+          className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3"
+        >
+          <div className="mb-6 phone:mb-3">
+            <div
+              data-item-start
+              className="inline-block bg-green-100 px-4 py-2 rounded-full text-sm font-semibold text-green-800 mb-2 phone:px-3 phone:py-1"
+            >
               Atburðarás {currentScenario + 1}: {scenario.title}
             </div>
 
             {/* Setup */}
-            <div className="bg-warm-50 p-4 rounded-xl mb-4">
-              <p className="text-lg text-warm-800">{scenario.setup}</p>
+            <div className="bg-warm-50 p-4 rounded-xl mb-4 phone:px-3 phone:py-2 phone:mb-2">
+              <p className="text-lg text-warm-800 phone:text-base">{scenario.setup}</p>
             </div>
 
             {/* Visual representation - depends on scenario type */}
@@ -864,11 +952,19 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             )}
 
             {/* Question */}
-            <div className="text-xl font-semibold text-warm-800 mb-4">{scenario.question}</div>
+            <div
+              ref={questionRef}
+              className="text-xl font-semibold text-warm-800 mb-4 phone:text-lg phone:mb-2"
+            >
+              {scenario.question}
+            </div>
 
             {/* Hint display */}
             {showHint && (
-              <div className="mb-4 bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl">
+              <div
+                ref={hintRef}
+                className="mb-4 bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl phone:p-3 phone:mb-0"
+              >
                 <h4 className="font-semibold text-yellow-800 mb-1">💡 Vísbending:</h4>
                 <p className="text-yellow-900">{scenario.hint}</p>
               </div>
@@ -876,7 +972,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           </div>
 
           {/* Options */}
-          <div className="space-y-3 mb-6">
+          <div ref={optionsRef} className="space-y-3 mb-6 phone:space-y-2 phone:mb-3">
             {shuffledOptions.map((option) => {
               let bgColor = 'bg-white hover:bg-warm-50';
               let borderColor = 'border-warm-200';
@@ -902,9 +998,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               return (
                 <button
                   key={option.id}
+                  data-chosen={selectedAnswer === option.id ? '' : undefined}
                   onClick={() => !showResult && setSelectedAnswer(option.id)}
                   disabled={showResult}
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${bgColor} ${borderColor} ${textColor} ${showResult ? 'cursor-default' : 'cursor-pointer'}`}
+                  className={`w-full p-4 phone:px-3 phone:py-2.5 rounded-xl border-2 text-left transition-all ${bgColor} ${borderColor} ${textColor} ${showResult ? 'cursor-default' : 'cursor-pointer'}`}
                 >
                   <div className="flex items-start gap-3">
                     <span className="font-bold text-lg">{option.id.toUpperCase()}.</span>
@@ -924,18 +1021,24 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
           {/* Result and concept */}
           {showResult && (
+            // The region focus moves to after "Staðfesta svar", named by its
+            // verdict.
             <div
-              className={`p-3 sm:p-4 rounded-xl mb-6 ${isCorrect ? 'bg-green-50 border-2 border-green-400' : 'bg-yellow-50 border-2 border-yellow-400'}`}
+              ref={resultRef}
+              role="group"
+              tabIndex={-1}
+              aria-labelledby="lausnir-l2-verdict"
+              className={`p-3 sm:p-4 rounded-xl mb-6 phone:mb-3 ${isCorrect ? 'bg-green-50 border-2 border-green-400' : 'bg-yellow-50 border-2 border-yellow-400'}`}
             >
-              <div className="text-xl font-bold mb-2">
+              <div id="lausnir-l2-verdict" className="text-xl font-bold mb-2 phone:mb-1">
                 {isCorrect ? '✓ Rétt!' : '✗ Ekki alveg rétt'}
               </div>
-              <div className="text-warm-700 mb-4">
+              <div className="text-warm-700 mb-4 phone:mb-2">
                 <strong>Lykilhugtak:</strong> {scenario.concept}
               </div>
 
               {/* Visual comparison - depends on scenario type */}
-              <div className="mt-4 p-3 sm:p-4 bg-white rounded-xl">
+              <div className="mt-4 p-3 sm:p-4 bg-white rounded-xl phone:mt-2">
                 <div className="text-sm font-semibold text-warm-600 text-center mb-3">
                   Samantekt á breytingum:
                 </div>
@@ -984,19 +1087,25 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             </div>
           )}
 
-          {/* Action button */}
-          <div className="flex flex-col items-center">
+          {/* Action button. On a phone the hint and "Staðfesta svar" share a
+              row. "Staðfesta svar" and Næsta are two elements (keyed), never
+              one relabelled button, and Næsta ignores a press within 400 ms of
+              appearing. */}
+          <div className="flex flex-col items-center phone:flex-row phone:flex-wrap phone:justify-center phone:gap-2">
             {!showResult ? (
               <>
                 {!showHint && (
                   <button
+                    key="hint"
                     onClick={() => setShowHint(true)}
-                    className="mb-3 text-sm px-4 py-2 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-700 font-medium transition-colors pointer-coarse:min-h-11"
+                    className="mb-3 text-sm px-4 py-2 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-700 font-medium transition-colors pointer-coarse:min-h-11 phone:mb-0"
                   >
                     💡 Vísbending
                   </button>
                 )}
                 <button
+                  key="submit"
+                  ref={submitRef}
                   onClick={handleSubmit}
                   disabled={!selectedAnswer}
                   className={`px-8 py-3 rounded-xl font-bold transition-colors ${
@@ -1010,7 +1119,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               </>
             ) : (
               <button
-                onClick={handleNext}
+                key="next"
+                ref={nextRef}
+                onClick={armed(handleNext)}
                 className="px-8 py-3 rounded-xl font-bold bg-green-500 hover:bg-green-600 text-white transition-colors"
               >
                 {allComplete ? 'Ljúka Stigi 2 →' : 'Næsta spurning →'}
@@ -1022,7 +1133,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
         {/* Scenario navigation */}
         {/* Twelve 32 px dots need 472 px; on a phone they wrap into two rows
             of six instead of being squeezed. */}
-        <div className="mt-6 mx-auto max-w-60 sm:max-w-none flex flex-wrap justify-center gap-2">
+        <div className="mt-6 mx-auto max-w-60 sm:max-w-none flex flex-wrap justify-center gap-2 phone:mt-3">
           {SCENARIOS.map((s, i) => (
             <div
               key={s.id}
@@ -1044,11 +1155,14 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
       {/* Temperature Explorer Modal */}
       {showExplorer && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 sm:p-4 z-50">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90dvh] overflow-y-auto">
-            <div className="p-4 sm:p-6">
-              <div className="flex justify-between items-center gap-2 mb-4">
-                <h2 className="text-2xl font-bold text-purple-700">🔬 Könnun á leysni</h2>
+        // Full screen on a phone (design §3, Modal).
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 sm:p-4 z-50 phone:p-0">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90dvh] overflow-y-auto phone:max-h-[100dvh] phone:h-[100dvh] phone:rounded-none phone:max-w-none">
+            <div className="p-4 sm:p-6 phone:p-3">
+              <div className="flex justify-between items-center gap-2 mb-4 phone:mb-2">
+                <h2 className="text-2xl font-bold text-purple-700 phone:text-xl">
+                  🔬 Könnun á leysni
+                </h2>
                 <button
                   onClick={() => setShowExplorer(false)}
                   aria-label="Loka"
@@ -1058,44 +1172,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 </button>
               </div>
 
-              <p className="text-warm-600 mb-4">
+              <p className="text-warm-600 mb-4 phone:mb-2 phone:text-sm">
                 Dragðu sleðann til að sjá hvernig hitastig hefur áhrif á leysni mismunandi efna.
                 Taktu eftir muninum á föstum efnum og lofttegundum!
               </p>
 
-              {/* Compound selection */}
-              <div className="mb-4">
-                <div className="text-sm font-semibold text-warm-700 mb-2">
-                  Veldu efni til að skoða:
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {SOLUBILITY_DATA.map((compound) => (
-                    <button
-                      key={compound.formula}
-                      onClick={() => {
-                        setSelectedCompounds((prev) =>
-                          prev.includes(compound.formula)
-                            ? prev.filter((f) => f !== compound.formula)
-                            : [...prev, compound.formula]
-                        );
-                      }}
-                      className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors pointer-coarse:min-h-11 ${
-                        selectedCompounds.includes(compound.formula)
-                          ? 'text-white'
-                          : 'bg-warm-100 text-warm-700 hover:bg-warm-200'
-                      }`}
-                      style={{
-                        backgroundColor: selectedCompounds.includes(compound.formula)
-                          ? compound.color
-                          : undefined,
-                      }}
-                    >
-                      {compound.emoji} {compound.formula}
-                      {compound.type === 'gas' && ' (gas)'}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              {!phoneLayout && compoundPicker}
 
               {/* Solubility curve */}
               <TemperatureSolubilityCurve
@@ -1106,8 +1188,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 showCurve={true}
               />
 
+              {/* On a phone the chart, its slider and the readouts come first,
+                  and the compound choice follows them. */}
+              {phoneLayout && <div className="mt-3">{compoundPicker}</div>}
+
               {/* Key insight */}
-              <div className="mt-4 bg-purple-50 p-4 rounded-xl">
+              <div className="mt-4 bg-purple-50 p-4 rounded-xl phone:mt-3 phone:p-3">
                 <h3 className="font-bold text-purple-800 mb-2">Lykilatriði</h3>
                 <ul className="text-sm text-purple-900 space-y-1">
                   <li>

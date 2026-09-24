@@ -20,8 +20,8 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
 
   if (problem.type === 'dilution') {
     return (
-      <div className="mt-4 space-y-2">
-        <h3 className="text-lg font-bold text-warm-800">Lausn með skrefum:</h3>
+      <div className="mt-4 space-y-2 phone:mt-0 phone:space-y-1">
+        <h3 className="text-lg font-bold text-warm-800 phone:text-base">Lausn með skrefum:</h3>
         <div className="solution-step">
           <h4>Gefið:</h4>
           <p>M₁ = {formatDecimal(problem.given.M1)} M</p>
@@ -56,8 +56,8 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
     );
   } else if (problem.type === 'molarity') {
     return (
-      <div className="mt-4 space-y-2">
-        <h3 className="text-lg font-bold text-warm-800">Lausn með skrefum:</h3>
+      <div className="mt-4 space-y-2 phone:mt-0 phone:space-y-1">
+        <h3 className="text-lg font-bold text-warm-800 phone:text-base">Lausn með skrefum:</h3>
         <div className="solution-step">
           <h4>Gefið:</h4>
           <p>mól = {formatDecimal(problem.given.moles)} mól</p>
@@ -85,8 +85,8 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
     // read 0,014 ÷ 0,053 = 0,255 M when 0,014 ÷ 0,053 is 0,264.
     const moles = formatAnswer(problem.given.massInGrams / problem.given.molarMass);
     return (
-      <div className="mt-4 space-y-2">
-        <h3 className="text-lg font-bold text-warm-800">Lausn með skrefum:</h3>
+      <div className="mt-4 space-y-2 phone:mt-0 phone:space-y-1">
+        <h3 className="text-lg font-bold text-warm-800 phone:text-base">Lausn með skrefum:</h3>
         <div className="solution-step">
           <h4>Gefið:</h4>
           <p>
@@ -133,8 +133,8 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
     const totalVolume = formatDecimal((problem.given.V1 + problem.given.V2) / 1000, 3);
 
     return (
-      <div className="mt-4 space-y-2">
-        <h3 className="text-lg font-bold text-warm-800">Lausn með skrefum:</h3>
+      <div className="mt-4 space-y-2 phone:mt-0 phone:space-y-1">
+        <h3 className="text-lg font-bold text-warm-800 phone:text-base">Lausn með skrefum:</h3>
         <div className="solution-step">
           <h4>Gefið:</h4>
           <p>
@@ -181,8 +181,8 @@ export function StepBySolution({ problem }: StepBySolutionProps) {
   } else if (problem.type === 'massFromMolarity') {
     const moles = formatDecimal((problem.given.molarity * problem.given.volumeInML) / 1000, 3);
     return (
-      <div className="mt-4 space-y-2">
-        <h3 className="text-lg font-bold text-warm-800">Lausn með skrefum:</h3>
+      <div className="mt-4 space-y-2 phone:mt-0 phone:space-y-1">
+        <h3 className="text-lg font-bold text-warm-800 phone:text-base">Lausn með skrefum:</h3>
         <div className="solution-step">
           <h4>Gefið:</h4>
           <p>M = {formatDecimal(problem.given.molarity)} M</p>

@@ -80,12 +80,23 @@
   margin: 0.5rem 0;
   border-left: 4px solid #f36b22;
   border-radius: 0.5rem;
+
+  /* On a phone the worked solution is read in full after every answer, so
+     its steps are tighter (padding only; every line stays). */
+  @variant phone {
+    padding: 0.5rem 0.75rem;
+    margin: 0.25rem 0;
+  }
 }
 
 .solution-step h4 {
   color: #f36b22;
   font-weight: 600;
   margin-bottom: 0.5rem;
+
+  @variant phone {
+    margin-bottom: 0.25rem;
+  }
 }
 
 /* Formula reference card */

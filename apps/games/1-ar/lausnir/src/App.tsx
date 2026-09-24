@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
 import { useGameI18n, useGameProgress } from '@shared/hooks';
+import { useScreenTop } from '@shared/utils';
 
 import { Level0Electrolytes } from './components/Level0Electrolytes';
 import { Level1 } from './components/Level1';
@@ -47,15 +48,24 @@ function App() {
   // Each screen replaces the one before it in place, so the scroll position
   // carried over: a student who scrolled down the menu to a level card started
   // that level a screen or more below its top (on a phone, Stig 2 opened 584 px
-  // down, in the middle of its answer options). Start every screen at the top.
-  const firstScreen = useRef(true);
-  useEffect(() => {
-    if (firstScreen.current) {
-      firstScreen.current = false;
-      return;
-    }
-    window.scrollTo(0, 0);
-  }, [activeLevel]);
+  // down, in the middle of its answer options). Every screen starts at the top,
+  // as it always has at every width (`anyWidth`), and its heading takes focus:
+  // the button that caused the swap has unmounted, and focus would otherwise
+  // fall to <body>. Stig 3 opens on its answer field, which it autofocuses, so
+  // that field keeps focus. Back on the menu, a phone reveals the first level
+  // not yet done (Stig 0 once all are done), and focus goes to it at every width.
+  const nextLevel =
+    ([0, 1, 2, 3] as const).find((level) => !progress[`level${level}Completed`]) ?? 0;
+  useScreenTop(activeLevel, {
+    anyWidth: true,
+    target: () =>
+      activeLevel === 'menu' ? document.querySelector(`[data-level-card="${nextLevel}"]`) : null,
+    focus: {
+      get current() {
+        return document.querySelector<HTMLElement>('input[data-item-start]');
+      },
+    },
+  });
 
   const handleLevel0Complete = (score: number) => {
     updateProgress({
@@ -121,19 +131,19 @@ function App() {
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100 p-4 md:p-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-center mb-6 text-orange-600">
+        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8 phone:p-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-center mb-6 text-orange-600 phone:text-2xl phone:mb-3">
             {t('completion.title')}
           </h1>
 
-          <div className="text-center mb-8">
-            <div className="text-6xl mb-4">🎉</div>
+          <div className="text-center mb-8 phone:mb-4">
+            <div className="text-6xl mb-4 phone:text-4xl phone:mb-2">🎉</div>
             <div className="text-2xl font-bold text-warm-800 mb-2">
               {t('completion.completedAll')}
             </div>
           </div>
 
-          <div className="space-y-4 mb-8">
+          <div className="space-y-4 mb-8 phone:space-y-2 phone:mb-4">
             <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center">
               <div>
                 <div className="font-bold text-blue-800">{t('levels.level1.name')}</div>
@@ -164,7 +174,7 @@ function App() {
             </div>
           </div>
 
-          <div className="bg-yellow-50 p-6 rounded-xl mb-6">
+          <div className="bg-yellow-50 p-6 rounded-xl mb-6 phone:p-4 phone:mb-4">
             <h2 className="font-bold text-yellow-800 mb-3">{t('completion.whatYouLearned')}</h2>
             <ul className="space-y-2 text-yellow-900 text-sm">
               <li>
@@ -210,18 +220,22 @@ function App() {
         }
       />
       <div className="min-h-screen p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-          <p className="text-center text-warm-600 mb-4">{t('game.subtitle')}</p>
+        {/* On a phone the card is a column, so the note on how the game works
+            (it teaches nothing, and holds nothing focusable) can move to the
+            end of the card, and every level shows on first load. It is the
+            only block moved: nothing that takes focus changes place. */}
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:flex phone:flex-col phone:p-3">
+          <p className="text-center text-warm-600 mb-4 phone:mb-3">{t('game.subtitle')}</p>
 
           {/* Pedagogical explanation */}
-          <div className="bg-orange-50 p-4 sm:p-6 rounded-xl mb-8">
+          <div className="bg-orange-50 p-4 sm:p-6 rounded-xl mb-8 phone:order-last phone:mb-0 phone:mt-6">
             <h2 className="font-bold text-orange-800 mb-3">{t('menu.howItWorks')}</h2>
             <p className="text-orange-900 text-sm mb-4">{t('menu.howItWorksDesc')}</p>
             <div className="text-xs text-orange-700">{t('menu.inspiredBy')}</div>
           </div>
 
           {/* Level selection */}
-          <div className="space-y-4">
+          <div className="space-y-4 phone:space-y-3">
             {/* Stig 0 - Rafkleyfi. Brown ch. 11, and the half of February's
                 "both" answer that belongs in Lausnir rather than in
                 Útfellingarhvörf. Stig 0 and not Stig 4 because Siggi ruled on
@@ -229,14 +243,15 @@ function App() {
                 is dimensional-analysis's Stig 0. Hardcoded Icelandic, as that
                 one is. */}
             <button
+              data-level-card={0}
               onClick={() => setActiveLevel('level0')}
-              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-warm-400 bg-warm-50 hover:bg-warm-100 transition-all text-left"
+              className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-warm-400 bg-warm-50 hover:bg-warm-100 transition-all text-left"
             >
-              <div className="flex items-center gap-3 sm:gap-4">
-                <div className="text-4xl">💡</div>
+              <div className="flex items-center gap-3 sm:gap-4 phone:gap-2">
+                <div className="text-4xl phone:text-2xl">💡</div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xl font-bold text-warm-800">Rafkleyfi</span>
+                    <span className="text-xl font-bold text-warm-800 phone:text-lg">Rafkleyfi</span>
                     {progress.level0Completed && (
                       <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
                         ✓ {t('levels.completed')}
@@ -251,7 +266,7 @@ function App() {
                   <div className="text-sm text-warm-600 mt-1">
                     Hvað verður um efnið þegar það leysist — og leiðir lausnin straum?
                   </div>
-                  <div className="text-xs text-warm-600 mt-2">
+                  <div className="text-xs text-warm-600 mt-2 phone:mt-1">
                     Sterkur rafkleyfi, veikur rafkleyfi, órafkleyft efni
                   </div>
                 </div>
@@ -260,14 +275,15 @@ function App() {
 
             {/* Level 1 - Always available */}
             <button
+              data-level-card={1}
               onClick={() => setActiveLevel('level1')}
-              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
+              className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
             >
-              <div className="flex items-center gap-3 sm:gap-4">
-                <div className="text-4xl">🔬</div>
+              <div className="flex items-center gap-3 sm:gap-4 phone:gap-2">
+                <div className="text-4xl phone:text-2xl">🔬</div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xl font-bold text-blue-800">
+                    <span className="text-xl font-bold text-blue-800 phone:text-lg">
                       {t('levels.level1.name')}
                     </span>
                     {progress.level1Completed && (
@@ -282,21 +298,24 @@ function App() {
                     )}
                   </div>
                   <div className="text-sm text-blue-600 mt-1">{t('levels.level1.description')}</div>
-                  <div className="text-xs text-warm-600 mt-2">{t('levels.level1.details')}</div>
+                  <div className="text-xs text-warm-600 mt-2 phone:mt-1">
+                    {t('levels.level1.details')}
+                  </div>
                 </div>
               </div>
             </button>
 
             {/* Level 2 */}
             <button
+              data-level-card={2}
               onClick={() => setActiveLevel('level2')}
-              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left"
+              className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left"
             >
-              <div className="flex items-center gap-3 sm:gap-4">
-                <div className="text-4xl">🤔</div>
+              <div className="flex items-center gap-3 sm:gap-4 phone:gap-2">
+                <div className="text-4xl phone:text-2xl">🤔</div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xl font-bold text-green-800">
+                    <span className="text-xl font-bold text-green-800 phone:text-lg">
                       {t('levels.level2.name')}
                     </span>
                     {progress.level2Completed && (
@@ -313,21 +332,24 @@ function App() {
                   <div className="text-sm mt-1 text-green-600">
                     {t('levels.level2.description')}
                   </div>
-                  <div className="text-xs text-warm-600 mt-2">{t('levels.level2.details')}</div>
+                  <div className="text-xs text-warm-600 mt-2 phone:mt-1">
+                    {t('levels.level2.details')}
+                  </div>
                 </div>
               </div>
             </button>
 
             {/* Level 3 */}
             <button
+              data-level-card={3}
               onClick={() => setActiveLevel('level3')}
-              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left"
+              className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left"
             >
-              <div className="flex items-center gap-3 sm:gap-4">
-                <div className="text-4xl">📐</div>
+              <div className="flex items-center gap-3 sm:gap-4 phone:gap-2">
+                <div className="text-4xl phone:text-2xl">📐</div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xl font-bold text-purple-800">
+                    <span className="text-xl font-bold text-purple-800 phone:text-lg">
                       {t('levels.level3.name')}
                     </span>
                     {progress.level3Completed && (
@@ -344,7 +366,9 @@ function App() {
                   <div className="text-sm mt-1 text-purple-600">
                     {t('levels.level3.description')}
                   </div>
-                  <div className="text-xs text-warm-600 mt-2">{t('levels.level3.details')}</div>
+                  <div className="text-xs text-warm-600 mt-2 phone:mt-1">
+                    {t('levels.level3.details')}
+                  </div>
                 </div>
               </div>
             </button>
@@ -352,7 +376,7 @@ function App() {
 
           {/* Progress summary */}
           {progress.totalGamesPlayed > 0 && (
-            <div className="mt-8 bg-warm-50 p-4 rounded-xl">
+            <div className="mt-8 bg-warm-50 p-4 rounded-xl phone:mt-6 phone:p-3">
               <div className="flex justify-between items-center mb-3">
                 <h3 className="font-semibold text-warm-700">{t('menu.progress')}</h3>
                 <button
@@ -362,8 +386,8 @@ function App() {
                   {t('menu.reset')}
                 </button>
               </div>
-              <div className="grid grid-cols-3 gap-3 text-center text-sm">
-                <div className="bg-blue-50 rounded-lg p-2">
+              <div className="grid grid-cols-3 gap-3 text-center text-sm phone:gap-1.5">
+                <div className="bg-blue-50 rounded-lg p-2 phone:px-1">
                   <div className="text-lg font-bold text-blue-600">
                     {/* Four levels since Stig 0 landed; this counted three. */}
                     {
@@ -378,7 +402,7 @@ function App() {
                   </div>
                   <div className="text-xs text-warm-600">{t('menu.levelsCompleted')}</div>
                 </div>
-                <div className="bg-green-50 rounded-lg p-2">
+                <div className="bg-green-50 rounded-lg p-2 phone:px-1">
                   <div className="text-lg font-bold text-green-600">
                     {(progress.level1Score || 0) +
                       (progress.level2Score || 0) +
@@ -386,7 +410,7 @@ function App() {
                   </div>
                   <div className="text-xs text-warm-600">{t('menu.totalPoints')}</div>
                 </div>
-                <div className="bg-purple-50 rounded-lg p-2">
+                <div className="bg-purple-50 rounded-lg p-2 phone:px-1">
                   <div className="text-lg font-bold text-purple-600">
                     {progress.totalGamesPlayed}
                   </div>
