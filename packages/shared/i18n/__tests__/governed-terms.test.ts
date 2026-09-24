@@ -195,7 +195,7 @@ const GOVERNED_TERMS: GovernedTerm[] = [
       /jafnað (helmingshvarf|hvarf)\b/i,
       /jafna (jöfnur|efnajöfnu|efnajöfnur|hleðslu|hleðslurnar|frumeindir|súrefni|vetni|rafeindir|rafeindirnar)/i,
       // Added 2026-09-23. The list above names shapes, not the verb, so two
-      // inflected uses shipped straight past it in 1-ar/jafna-jofnur:
+      // inflected uses shipped straight past it in 1-ar/stilla-efnajofnur:
       // 'jöfnum við efnajöfnur' and 'Jafna einfaldar efnajöfnur', where an
       // adjective sits between the verb and its object. Letter lookarounds, not
       // \b, because \b is ASCII-only and never fires beside ö or ð.

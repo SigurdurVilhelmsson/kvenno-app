@@ -84,7 +84,7 @@ these are the three games whose "initial" is a sum over three files rather than 
 | takmarkandi              | 1-ar | 300 KB  | —        |
 | jafnvaegisfasti          | 3-ar | 297 KB  | —        |
 | einingakedjan            | 1-ar | 293 KB  | —        |
-| jafna-jofnur             | 1-ar | 292 KB  | —        |
+| stilla-efnajofnur             | 1-ar | 292 KB  | —        |
 | syrufastinn              | 3-ar | 289 KB  | —        |
 | leysnijafnvaegi          | 3-ar | 286 KB  | —        |
 | utfellingarhvorf         | 1-ar | 284 KB  | —        |

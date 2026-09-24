@@ -1153,7 +1153,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
   ],
-  '1-ar/jafna-jofnur': [
+  '1-ar/stilla-efnajofnur': [
     {
       name: 'Valmynd',
       steps: [

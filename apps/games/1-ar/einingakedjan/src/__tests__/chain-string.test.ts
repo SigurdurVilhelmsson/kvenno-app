@@ -32,7 +32,7 @@ const CHAIN_FILES = [
   'apps/games/1-ar/nafnakerfid/src/App.tsx',
   'apps/games/1-ar/molmassi/src/App.tsx',
   'apps/games/1-ar/reynsluformulur/src/App.tsx',
-  'apps/games/1-ar/jafna-jofnur/src/App.tsx',
+  'apps/games/1-ar/stilla-efnajofnur/src/App.tsx',
   'apps/games/1-ar/utfellingarhvorf/src/App.tsx',
   'apps/games/1-ar/takmarkandi/src/App.tsx',
   'apps/games/1-ar/lausnir/src/App.tsx',

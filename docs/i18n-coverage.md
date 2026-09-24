@@ -44,7 +44,7 @@ Counting every `t()` call site per game, as measured before the strip:
 | hess-law                 | 2-ar | 32          | yes                     |
 | molmassi                 | 1-ar | 22          | yes                     |
 | lotukerfid               | 1-ar | 22          | yes                     |
-| jafna-jofnur             | 1-ar | 22          | yes                     |
+| stilla-efnajofnur             | 1-ar | 22          | yes                     |
 | dimensional-analysis     | 1-ar | 10          | partial                 |
 | equilibrium-shifter      | 3-ar | 7           | partial                 |
 | takmarkandi              | 1-ar | 2           | partial                 |

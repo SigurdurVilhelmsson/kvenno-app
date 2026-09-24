@@ -12,7 +12,7 @@
 | Lotukerfid      | FAIL     | FAIL    | PASS           | PARTIAL    | FAIL     | PARTIAL      | FAIL          |
 | Nafnakerfid     | PARTIAL  | PARTIAL | PASS           | FAIL       | PASS     | PARTIAL      | PARTIAL       |
 | Molmassi        | FAIL     | FAIL    | PASS           | PARTIAL    | PARTIAL  | PARTIAL      | FAIL          |
-| Jafna Jofnur    | PARTIAL  | FAIL    | PASS           | PARTIAL    | PARTIAL  | FAIL         | PARTIAL       |
+| Stilla efnajöfnur    | PARTIAL  | FAIL    | PASS           | PARTIAL    | PARTIAL  | FAIL         | PARTIAL       |
 | Takmarkandi     | FAIL     | FAIL    | PASS           | PARTIAL    | PARTIAL  | PARTIAL      | PARTIAL       |
 | Lausnir         | PARTIAL  | PARTIAL | PARTIAL        | PARTIAL    | PASS     | PARTIAL      | PARTIAL       |
 
@@ -36,7 +36,7 @@
 
 4. **Molmassi**: L2 introduces dimensional analysis and Avogadro's number with NO teaching phase. L3 hard-codes 15 problems inline. Hydrate formula parsing is fragile string manipulation. Unused CSS animations (confetti, wiggle, etc.).
 
-5. **Jafna Jofnur**: Atom counter is excellent. But 3 level components are 95% identical code (massive DRY violation). ~100 lines of unused CSS animations. No strategy instruction (balance metals first, then nonmetals, then O/H). Feedback is binary ("Rétt"/"Rangt") with no diagnostic detail.
+5. **Stilla efnajöfnur**: Atom counter is excellent. But 3 level components are 95% identical code (massive DRY violation). ~100 lines of unused CSS animations. No strategy instruction (balance metals first, then nonmetals, then O/H). Feedback is binary ("Rétt"/"Rangt") with no diagnostic detail.
 
 6. **Takmarkandi**: Never explains WHY limiting reagent matters. Entire molar-masses.ts defined but never imported. Menu promises "choose difficulty & race against time" but neither exists. Optional reaction animation is 250+ lines for low pedagogical value.
 
@@ -60,10 +60,10 @@
 | 12  | Molmassi        | L3 problems hard-coded inline                              | FIX         | M      |
 | 13  | Molmassi        | Unused CSS animations                                      | REMOVE      | S      |
 | 14  | Molmassi        | Hydrate parsing fragile                                    | DEFER       | M      |
-| 15  | Jafna Jofnur    | 3 level components are 95% identical                       | REBUILD     | M      |
-| 16  | Jafna Jofnur    | ~100 lines unused CSS                                      | REMOVE      | S      |
-| 17  | Jafna Jofnur    | No strategy instruction for balancing method               | REBUILD     | M      |
-| 18  | Jafna Jofnur    | Binary feedback, no diagnostics                            | FIX         | M      |
+| 15  | Stilla efnajöfnur    | 3 level components are 95% identical                       | REBUILD     | M      |
+| 16  | Stilla efnajöfnur    | ~100 lines unused CSS                                      | REMOVE      | S      |
+| 17  | Stilla efnajöfnur    | No strategy instruction for balancing method               | REBUILD     | M      |
+| 18  | Stilla efnajöfnur    | Binary feedback, no diagnostics                            | FIX         | M      |
 | 19  | Takmarkandi     | Never explains WHY limiting reagent matters                | REBUILD     | M      |
 | 20  | Takmarkandi     | molar-masses.ts defined but never used                     | REMOVE      | S      |
 | 21  | Takmarkandi     | Menu promises features that don't exist                    | FIX         | S      |
@@ -82,7 +82,7 @@
 - Lotukerfid: 2 REBUILD (L1 intro, hint system) — under cap
 - Nafnakerfid: 1 REBUILD (prerequisites teaching) — under cap
 - Molmassi: 1 REBUILD (L2 teaching phase) — under cap
-- Jafna Jofnur: 3 REBUILD (consolidate levels, strategy instruction, P2-why) — at cap
+- Stilla efnajöfnur: 3 REBUILD (consolidate levels, strategy instruction, P2-why) — at cap
 - Takmarkandi: 1 REBUILD (explain why) — under cap
 - Lausnir: 1 REBUILD (unit bridge L1→L3) — under cap, 1 DEFERRED
 
@@ -112,10 +112,10 @@
 | 12  | Molmassi        | L3 problems hard-coded inline        | FIX         | Deferred to Iteration 2                                                                                |
 | 13  | Molmassi        | Unused CSS animations                | REMOVE      | Yes — removed 9 unused keyframes and 8 unused classes                                                  |
 | 14  | Molmassi        | Hydrate parsing fragile              | DEFER       | Deferred to Iteration 2                                                                                |
-| 15  | Jafna Jofnur    | 3 identical level components         | REBUILD     | Deferred to Iteration 2 (code dedup)                                                                   |
-| 16  | Jafna Jofnur    | ~100 lines unused CSS                | REMOVE      | Yes — removed ~120 lines dead CSS                                                                      |
-| 17  | Jafna Jofnur    | No strategy instruction              | REBUILD     | Yes — added L1 teaching intro with conservation of mass, worked example, balancing strategy            |
-| 18  | Jafna Jofnur    | Binary feedback                      | FIX         | Yes — added per-element diagnostic feedback using buildUnbalancedDiagnostic()                          |
+| 15  | Stilla efnajöfnur    | 3 identical level components         | REBUILD     | Deferred to Iteration 2 (code dedup)                                                                   |
+| 16  | Stilla efnajöfnur    | ~100 lines unused CSS                | REMOVE      | Yes — removed ~120 lines dead CSS                                                                      |
+| 17  | Stilla efnajöfnur    | No strategy instruction              | REBUILD     | Yes — added L1 teaching intro with conservation of mass, worked example, balancing strategy            |
+| 18  | Stilla efnajöfnur    | Binary feedback                      | FIX         | Yes — added per-element diagnostic feedback using buildUnbalancedDiagnostic()                          |
 | 19  | Takmarkandi     | Never explains WHY                   | REBUILD     | Yes — added L1 teaching intro with principle, cooking analogy, math method                             |
 | 20  | Takmarkandi     | molar-masses.ts unused               | REMOVE      | Yes — deleted file and removed re-export                                                               |
 | 21  | Takmarkandi     | False menu promises                  | FIX         | Yes — updated L3 description to match actual content                                                   |
@@ -145,7 +145,7 @@
 | Lotukerfid      | PASS     | PASS    | PASS           | PASS       | PASS     | PARTIAL      | PARTIAL       |
 | Nafnakerfid     | PASS     | PARTIAL | PASS           | PARTIAL    | PASS     | FAIL         | PASS          |
 | Molmassi        | PASS     | PASS    | PARTIAL        | PASS       | PASS     | FAIL         | PASS          |
-| Jafna Jofnur    | PASS     | PASS    | PASS           | PASS       | PARTIAL  | FAIL         | PASS          |
+| Stilla efnajöfnur    | PASS     | PASS    | PASS           | PASS       | PARTIAL  | FAIL         | PASS          |
 | Takmarkandi     | PASS     | PASS    | PASS           | PASS       | PARTIAL  | PARTIAL      | PASS          |
 | Lausnir         | PASS     | PASS    | PASS           | PASS       | PASS     | PARTIAL      | PASS          |
 
@@ -166,7 +166,7 @@
 2. **Lotukerfid**: 3× Fisher-Yates shuffle, manual localStorage, `as keyof Progress` cast.
 3. **Nafnakerfid**: `NameBuilder.tsx` (394 lines) never imported. Empty `data/index.ts`. Legacy `types.ts` (Card/GameState from removed card game). Shuffle re-implemented in Level3 + compounds.ts.
 4. **Molmassi**: 6 unreferenced modules (`challengeGenerator`, `feedbackGenerator`, `validation`, `moleculeConverter`, `GameComplete`, `AtomVisuals`) totaling ~500+ LOC. Missing `animate-slide-in` CSS class referenced 3×. 5 unused CSS classes. 3× shuffle.
-5. **Jafna Jofnur**: Level1/2/3 files had ~630 lines of near-identical code (state shape, handlers, render tree) — biggest single duplication in the codebase.
+5. **Stilla efnajöfnur**: Level1/2/3 files had ~630 lines of near-identical code (state shape, handlers, render tree) — biggest single duplication in the codebase.
 6. **Takmarkandi**: `utils/sounds.ts` (70 LOC), `utils/validation.ts`, `calculatePoints()` all unreferenced. Unused callback props.
 7. **Lausnir**: `BeakerVisualization.tsx`, `ParticleBeaker.tsx` never imported. Shuffle in Level3. Manual localStorage.
 
@@ -187,8 +187,8 @@
 | 11  | Molmassi        | 6 unreferenced modules (~500 LOC) + orphan tests                       | REMOVE      | M      |
 | 12  | Molmassi        | Missing animate-slide-in CSS + 5 unused CSS classes                    | FIX         | S      |
 | 13  | Molmassi        | 3× shuffle + manual localStorage                                       | FIX         | S      |
-| 14  | Jafna Jofnur    | Level1/2/3 consolidation into single `<Level config={...}/>`           | REBUILD     | L      |
-| 15  | Jafna Jofnur    | Manual localStorage + `as keyof Progress`                              | FIX         | S      |
+| 14  | Stilla efnajöfnur    | Level1/2/3 consolidation into single `<Level config={...}/>`           | REBUILD     | L      |
+| 15  | Stilla efnajöfnur    | Manual localStorage + `as keyof Progress`                              | FIX         | S      |
 | 16  | Takmarkandi     | Unused utils (sounds, validation, calculatePoints) + storage.ts        | REMOVE      | S      |
 | 17  | Takmarkandi     | Manual localStorage + unused callback props + 3-arg onComplete         | FIX         | S      |
 | 18  | Lausnir         | BeakerVisualization.tsx + ParticleBeaker.tsx unused                    | REMOVE      | S      |
@@ -213,8 +213,8 @@
 | 11  | Molmassi        | 6 unreferenced modules + 2 test files                      | REMOVE      | Yes — deleted challengeGenerator, feedbackGenerator, validation, moleculeConverter, GameComplete, AtomVisuals + their tests; trimmed calculations.ts |
 | 12  | Molmassi        | Missing animate-slide-in + 5 unused CSS                    | FIX         | Yes — replaced with animate-fade-in-up; removed unused keyframes/classes                                                                             |
 | 13  | Molmassi        | 3× shuffle + manual localStorage                           | FIX         | Yes — all 3 levels use `shuffleArray`; App migrated to `useGameProgress`                                                                             |
-| 14  | Jafna Jofnur    | Level1/2/3 consolidation                                   | REBUILD     | Yes — new `Level.tsx` (295 lines) + `levelConfigs.tsx` (110 lines) replaces 849 lines across 3 files (52% reduction)                                 |
-| 15  | Jafna Jofnur    | Manual localStorage + unsafe casts                         | FIX         | Yes — `useGameProgress` + typed `LEVEL_KEYS`                                                                                                         |
+| 14  | Stilla efnajöfnur    | Level1/2/3 consolidation                                   | REBUILD     | Yes — new `Level.tsx` (295 lines) + `levelConfigs.tsx` (110 lines) replaces 849 lines across 3 files (52% reduction)                                 |
+| 15  | Stilla efnajöfnur    | Manual localStorage + unsafe casts                         | FIX         | Yes — `useGameProgress` + typed `LEVEL_KEYS`                                                                                                         |
 | 16  | Takmarkandi     | sounds.ts, validation.ts, calculatePoints, storage.ts      | REMOVE      | Yes                                                                                                                                                  |
 | 17  | Takmarkandi     | Manual localStorage + unused callbacks + 3-arg onComplete  | FIX         | Yes — migrated to `useGameProgress`; simplified onComplete to `(score) => void`; removed onCorrectAnswer/onIncorrectAnswer props                     |
 | 18  | Lausnir         | BeakerVisualization.tsx + ParticleBeaker.tsx               | REMOVE      | Yes                                                                                                                                                  |
@@ -237,7 +237,7 @@
 - [x] No remaining local Fisher-Yates shuffle implementations in Y1 games
 - [x] No remaining manual `loadProgress`/`saveProgress` pairs in Y1 App.tsx files
 - [x] No remaining unsafe `as keyof Progress` template-literal casts in Y1 games
-- [x] Jafna Jofnur reduced from 849 lines (3 Level files) to ~400 lines (Level.tsx + levelConfigs.tsx)
+- [x] Stilla efnajöfnur reduced from 849 lines (3 Level files) to ~400 lines (Level.tsx + levelConfigs.tsx)
 
 ---
 
@@ -251,7 +251,7 @@
 | Lotukerfid      | PASS     | PASS    | PASS           | PARTIAL    | FAIL     | PASS         | FAIL → PASS    |
 | Nafnakerfid     | PASS     | PARTIAL | PASS           | PARTIAL    | PASS     | PASS         | PARTIAL        |
 | Molmassi        | PASS     | PASS    | PARTIAL        | PASS       | PASS     | PASS         | PARTIAL → PASS |
-| Jafna Jofnur    | PASS     | PASS    | PASS           | PASS       | PARTIAL  | PASS         | PARTIAL → PASS |
+| Stilla efnajöfnur    | PASS     | PASS    | PASS           | PASS       | PARTIAL  | PASS         | PARTIAL → PASS |
 | Takmarkandi     | PASS     | PASS    | PASS           | PASS       | PARTIAL  | PASS         | PARTIAL → PASS |
 | Lausnir         | PASS     | PASS    | PASS           | PASS       | PASS     | PASS         | PARTIAL → PASS |
 
@@ -261,8 +261,8 @@
 
 - Lotukerfid's periodic table had NO keyboard navigation (126 buttons, no arrow keys). Critical blocker for keyboard-only users.
 - Molmassi's periodic-table modal lacked Escape handling and focus trap (WCAG 2.1 AA fail).
-- Several games had touch targets below the 44px WCAG recommendation (Jafna Jofnur coefficient controls at 36px, Einingagreining small buttons).
-- AtomCounter (Jafna Jofnur) status was conveyed by color + monochrome ✓/✗ — inaccessible to red-green colorblind users.
+- Several games had touch targets below the 44px WCAG recommendation (Stilla efnajöfnur coefficient controls at 36px, Einingagreining small buttons).
+- AtomCounter (Stilla efnajöfnur) status was conveyed by color + monochrome ✓/✗ — inaccessible to red-green colorblind users.
 - Lausnir's beaker concentration was encoded only in color intensity.
 - Takmarkandi Level 3 locked students forward after any wrong answer — no retry per step.
 
@@ -272,7 +272,7 @@
 2. **Lotukerfid**: Periodic table elements differentiated only by color; no category abbreviation visible; no keyboard arrow navigation; cells at 40px (< 44px).
 3. **Nafnakerfid**: Level 3 name-part buttons at px-3 py-1.5 (~24-30px); no character-level feedback on typos; no role-grouping for name pools. (deferred)
 4. **Molmassi**: Periodic-table modal traps keyboard focus with no Escape key or focus trap; close button could be auto-focused. Error feedback lacks per-element diagnostic (deferred).
-5. **Jafna Jofnur**: Coefficient +/- buttons 36px; no arrow-key support; AtomCounter status only in color + ✓/✗ glyph.
+5. **Stilla efnajöfnur**: Coefficient +/- buttons 36px; no arrow-key support; AtomCounter status only in color + ✓/✗ glyph.
 6. **Takmarkandi**: Level 3 no step retry — wrong answer forces advance; feedback uses FeedbackPanel (has ✓/✗ icons).
 7. **Lausnir**: Volume slider missing `aria-label`/`aria-valuetext`; beaker concentration encoded only in fill color.
 
@@ -285,8 +285,8 @@
 | 3   | Lotukerfid      | Legend lacks category abbreviation so user can map cell→category                 | FIX         | S      |
 | 4   | Molmassi        | PeriodicTable modal: no Escape, no focus trap, no `role="dialog"`                | FIX         | S      |
 | 5   | Molmassi        | Close button initial focus                                                       | FIX         | S      |
-| 6   | Jafna Jofnur    | CoefficientControl buttons 36px; no arrow-key support; no per-formula aria-label | FIX         | S      |
-| 7   | Jafna Jofnur    | AtomCounter: color-only status; no aria-label describing balanced/unbalanced     | FIX         | S      |
+| 6   | Stilla efnajöfnur    | CoefficientControl buttons 36px; no arrow-key support; no per-formula aria-label | FIX         | S      |
+| 7   | Stilla efnajöfnur    | AtomCounter: color-only status; no aria-label describing balanced/unbalanced     | FIX         | S      |
 | 8   | Takmarkandi     | Level 3 no step retry on wrong answer                                            | FIX         | S      |
 | 9   | Lausnir         | Volume slider missing aria-label/aria-valuetext                                  | FIX         | S      |
 | 10  | Lausnir         | Beaker concentration color-only (no numeric overlay)                             | FIX         | S      |
@@ -306,8 +306,8 @@
 | 3   | Lotukerfid      | Category legend shows abbreviation        | FIX         | Yes — legend labels now include `Al — Alkalímálmar`, etc.                                                                                                     |
 | 4   | Molmassi        | PeriodicTable modal dialog semantics      | FIX         | Yes — `role="dialog"` + `aria-modal` + `aria-labelledby` + backdrop click + Escape handler                                                                    |
 | 5   | Molmassi        | Close button auto-focus                   | FIX         | Yes — `closeButtonRef` auto-focuses on open; widened button to 44px                                                                                           |
-| 6   | Jafna Jofnur    | CoefficientControl 44px + arrow keys      | FIX         | Yes — buttons `w-11 h-11`, display has `role="spinbutton"` with ArrowUp/Down/+/- handlers + `aria-valuenow/min/max`; per-formula `aria-label`                 |
-| 7   | Jafna Jofnur    | AtomCounter a11y                          | FIX         | Yes — row `aria-label` describes balanced/unbalanced with counts; visible "jafnað/ójafnað" text alongside ✓/✗ glyph                                           |
+| 6   | Stilla efnajöfnur    | CoefficientControl 44px + arrow keys      | FIX         | Yes — buttons `w-11 h-11`, display has `role="spinbutton"` with ArrowUp/Down/+/- handlers + `aria-valuenow/min/max`; per-formula `aria-label`                 |
+| 7   | Stilla efnajöfnur    | AtomCounter a11y                          | FIX         | Yes — row `aria-label` describes balanced/unbalanced with counts; visible "jafnað/ójafnað" text alongside ✓/✗ glyph                                           |
 | 8   | Takmarkandi     | Level 3 step retry                        | FIX         | Yes — new `retryStep` handler + "Reyna aftur" button shown alongside "Næsta skref" on wrong answers                                                           |
 | 9   | Lausnir         | Slider aria-label/aria-valuetext          | FIX         | Yes — Level 1 volume slider has descriptive Icelandic labels                                                                                                  |
 | 10  | Lausnir         | Beaker numeric concentration overlay      | FIX         | Yes — SVG `<text>` shows `{conc} M` with white stroke halo when fill is sufficient                                                                            |
