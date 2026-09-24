@@ -360,6 +360,20 @@ describe('revealTop', () => {
     expect(scrollBy).toHaveBeenCalled();
   });
 
+  it('jumps rather than glides when asked to keep a helper that jumped', () => {
+    phone = false;
+    const el = add();
+    rect(el, -200, 300);
+    revealTop(el, { anyWidth: true });
+    expect(scrollBy).toHaveBeenLastCalledWith({ top: -208, behavior: 'smooth' });
+    revealTop(el, { anyWidth: true, instant: true });
+    expect(scrollBy).toHaveBeenLastCalledWith({ top: -208, behavior: 'auto' });
+    // It never makes a phone scroll that would not have scrolled anyway.
+    rect(el, 200, 300);
+    revealTop(el, { anyWidth: true, instant: true });
+    expect(scrollBy).toHaveBeenCalledTimes(2);
+  });
+
   it('honours afterExit', () => {
     vi.useFakeTimers();
     const el = add();
@@ -412,6 +426,72 @@ describe('revealInline', () => {
     const { card: other, boxScroll } = row(350);
     revealInline(other, { inline: 'end' });
     expect(boxScroll).not.toHaveBeenCalled();
+  });
+
+  describe("inline: 'center' (the periodic table's highlighted cells)", () => {
+    /** A cell in the same box as `row`'s card; the box shows x 0..300 at scrollLeft 100. */
+    function cell(box: HTMLElement, left: number, width = 46) {
+      const c = add('div', box);
+      rect(c, 0, 46, left, width);
+      return c;
+    }
+
+    it('leaves the box alone when every cell is already in view', () => {
+      const { box, card, boxScroll } = row(20, 46);
+      revealInline(card, { inline: 'center', together: [cell(box, 200)] });
+      expect(boxScroll).not.toHaveBeenCalled();
+    });
+
+    it('centres one off-screen cell', () => {
+      const { card, boxScroll } = row(400, 46);
+      revealInline(card, { inline: 'center' });
+      // centre 423 - box centre 150 = 273 → scrollLeft 373
+      expect(boxScroll).toHaveBeenCalledWith({ left: 373, behavior: 'smooth' });
+    });
+
+    it('centres the joint extent of several cells when it fits', () => {
+      const { box, card, boxScroll } = row(250, 46);
+      revealInline(card, { inline: 'center', together: [cell(box, 350), cell(box, 450)] });
+      // span 250..496, centre 373 - 150 = 223 → scrollLeft 323; the whole span shows
+      expect(boxScroll).toHaveBeenCalledWith({ left: 323, behavior: 'smooth' });
+    });
+
+    it('keeps the primary cell in view when the cells cannot all fit', () => {
+      const { box, card, boxScroll } = row(600, 46);
+      revealInline(card, { inline: 'center', together: [cell(box, -100)] });
+      // span -100..646 is wider than the box: centre the primary, 623 - 150 → 573
+      expect(boxScroll).toHaveBeenCalledWith({ left: 573, behavior: 'smooth' });
+    });
+
+    it('does not move for the others alone when they cannot fit with a primary in view', () => {
+      const { box, card, boxScroll } = row(100, 46);
+      revealInline(card, { inline: 'center', together: [cell(box, 900)] });
+      expect(boxScroll).not.toHaveBeenCalled();
+    });
+
+    it('clamps to the box, ignores detached cells and jumps under reduced motion', () => {
+      reduced = true;
+      const { box, card, boxScroll } = row(-80, 46);
+      const gone = cell(box, 900);
+      gone.remove();
+      revealInline(card, { inline: 'center', together: [gone] });
+      expect(boxScroll).toHaveBeenCalledWith({ left: 0, behavior: 'auto' });
+    });
+
+    it('scrolls at a desktop width only with anyWidth', () => {
+      phone = false;
+      const { card, boxScroll } = row(400, 46);
+      revealInline(card, { inline: 'center' });
+      expect(boxScroll).not.toHaveBeenCalled();
+      revealInline(card, { inline: 'center', anyWidth: true });
+      expect(boxScroll).toHaveBeenCalledWith({ left: 373, behavior: 'smooth' });
+    });
+
+    it('ignores `together` in the other modes', () => {
+      const { box, card, boxScroll } = row(100, 46);
+      revealInline(card, { inline: 'nearest', together: [cell(box, 900)] });
+      expect(boxScroll).not.toHaveBeenCalled();
+    });
   });
 });
 

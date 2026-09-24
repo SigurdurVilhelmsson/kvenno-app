@@ -1,8 +1,12 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level3, generateQuestions } from '../components/Level3';
 import { ELEMENTS } from '../data/elements';
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 /**
  * Stig 3 grades the number the student typed, and writes its questions in

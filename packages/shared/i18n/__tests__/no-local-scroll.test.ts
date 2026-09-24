@@ -37,8 +37,6 @@ const ALLOWED: Record<string, number> = {
   '1-ar/jafna-jofnur/src/components/Level.tsx': 2,
   '1-ar/lausnir/src/App.tsx': 1,
   '1-ar/lausnir/src/utils/reveal.ts': 1,
-  '1-ar/lotukerfid/src/components/PeriodicTable.tsx': 1,
-  '1-ar/lotukerfid/src/utils/phoneScroll.ts': 2,
   '1-ar/nafnakerfid/src/utils/reveal.ts': 4,
   '1-ar/reynsluformulur/src/utils/reveal.ts': 4,
   '1-ar/takmarkandi/src/App.tsx': 1,

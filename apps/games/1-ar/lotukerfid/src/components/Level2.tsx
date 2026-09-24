@@ -1,8 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
-import { formatDecimal, shuffleArray } from '@shared/utils';
+import {
+  formatDecimal,
+  revealSpan,
+  revealTop,
+  shuffleArray,
+  useArmedAfter,
+  useIsPhone,
+  useItemTop,
+  useRevealAfterCommit,
+  useScreenTop,
+} from '@shared/utils';
 
 import { PeriodicTable } from './PeriodicTable';
 import {
@@ -15,7 +25,7 @@ import {
 } from '../data/elements';
 import { TREND_INFO, TREND_QUESTIONS, type TrendQuestion } from '../data/trends';
 import { level2Misconception } from '../utils/misconceptions';
-import { revealOnPhone, scrollTopOnPhone } from '../utils/phoneScroll';
+import { tabletBelowMd } from '../utils/tableLayout';
 
 interface Level2Props {
   onBack: () => void;
@@ -267,6 +277,17 @@ export function generateQuestions(): Question[] {
 
 const TOTAL = 10;
 
+/**
+ * Whether a question's options are short enough to sit two to a row on a phone
+ * without a word breaking: the orderings (`N < S < Ge`), the three kinds of
+ * element and the trend pairs (`Köfnunarefni (N)`), but not the group
+ * sentences. Twelve letters is the longest word a half-width option holds at
+ * 320 px.
+ */
+export function optionsTwoUp(options: string[]): boolean {
+  return options.every((o) => o.length <= 16 && o.split(' ').every((w) => w.length <= 12));
+}
+
 function hintFor(question: Question): string {
   if (question.type === 'trend') {
     return 'Finndu bæði frumefnin í lotukerfinu fyrir neðan. Eru þau í sömu lotu (láréttri röð) eða sama flokki (lóðréttum dálki)? Reglan fyrir hvora átt er í kennslunni.';
@@ -291,16 +312,72 @@ export function Level2({ onBack, onComplete }: Level2Props) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showHint, setShowHint] = useState(false);
   const [done, setDone] = useState(false);
-  const feedbackRef = useRef<HTMLDivElement>(null);
+  const question = questions[index];
 
-  // On a phone the feedback lands below the periodic table, out of sight, and
-  // the next question would open scrolled past its own text.
-  useEffect(() => scrollTopOnPhone(), [showIntro, index, done]);
+  // Each screen (teaching, questions, results) starts at its top on a phone,
+  // with its heading focused; each new question brings its card back under
+  // the top of the screen, with focus on the question. The button that moved
+  // on has unmounted, and focus would otherwise fall to <body>.
+  const screen = showIntro ? 'intro' : done ? 'done' : 'play';
+  useScreenTop(screen);
+  const itemRef = useItemTop<HTMLDivElement>(index);
+
+  // After an answer: the question through "Næsta" if it fits, else the
+  // student's own choice, else the feedback at the top. Focus moves to the
+  // feedback, not to "Næsta", so a second tap or Enter lands on nothing
+  // (design P3).
+  const optionsRef = useRef<HTMLDivElement>(null);
+  const feedbackBoxRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(answered, () => ({
+    bottom: nextRef.current,
+    tops: [
+      itemRef.current,
+      optionsRef.current?.children[question.options.indexOf(selectedOption ?? '')] ?? null,
+      feedbackRef.current,
+    ],
+    focus: feedbackRef.current,
+  }));
+  // "Næsta" ignores a press within 400 ms of appearing, so the second tap of a
+  // double tap on an option cannot skip the feedback; the results' buttons
+  // likewise, after the last "Næsta".
+  const armed = useArmedAfter(400, `${index}:${answered}`);
+  // One tap on a cell or an option is the answer, so the answers ignore a tap
+  // within 400 ms of a question appearing: the second tap of a double tap on
+  // "Byrja æfingar" or "Næsta" must not answer a question nobody has read.
+  const armedAnswer = useArmedAfter(400, `${screen}:${index}`);
+  const armedResults = useArmedAfter(400, done);
+
+  // Opening the hint replaces its button, which dropped focus to <body> and
+  // pushed the options down: focus moves to the hint, and a phone keeps the
+  // hint and the options on screen together where they fit.
+  const hintRef = useRef<HTMLDivElement>(null);
+  useRevealAfterCommit(showHint && !answered, () => ({
+    bottom: optionsRef.current,
+    tops: [hintRef.current],
+    focus: hintRef.current,
+  }));
+
+  // Below md but wider than a phone, the game's old helper started each screen
+  // and each question at the top of the page, in one jump, and brought the feedback into
+  // view the way `scrollIntoView({ block: 'nearest' })` does; it still does.
+  useLayoutEffect(() => {
+    if (tabletBelowMd())
+      revealTop(document.documentElement, { anyWidth: true, always: true, instant: true });
+  }, [screen, index]);
   useEffect(() => {
-    if (answered) revealOnPhone(feedbackRef.current);
+    if (answered && tabletBelowMd()) {
+      revealSpan(feedbackBoxRef.current, [], { anyWidth: true, gap: 0 });
+    }
   }, [answered]);
 
-  const question = questions[index];
+  // On a phone the table goes between the question and the options, where it
+  // is read: below the options it took a scroll down to read it and another
+  // back up to answer. It is moved in the DOM, not by CSS order, because its
+  // sideways-scrolling box can take keyboard focus. Everywhere else it stays
+  // where it was.
+  const phone = useIsPhone();
 
   const handleOptionClick = (option: string) => {
     if (answered) return;
@@ -338,8 +415,8 @@ export function Level2({ onBack, onComplete }: Level2Props) {
   if (done) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4 flex items-center justify-center">
-        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center space-y-6">
-          <div className="text-5xl">
+        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center space-y-6 phone:p-6 phone:space-y-4">
+          <div className="text-5xl phone:text-4xl">
             {correctCount >= 6 ? '🎉' : correctCount >= 4 ? '👍' : '📚'}
           </div>
           <h2 className="text-2xl font-bold text-warm-800">Niðurstöður</h2>
@@ -355,13 +432,13 @@ export function Level2({ onBack, onComplete }: Level2Props) {
           </div>
           <div className="flex gap-3">
             <button
-              onClick={handleRetry}
+              onClick={armedResults(handleRetry)}
               className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-800 font-bold py-3 rounded-xl transition-colors"
             >
               Reyna aftur
             </button>
             <button
-              onClick={onComplete}
+              onClick={armedResults(onComplete)}
               className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
             >
               Ljúka stigi
@@ -381,9 +458,9 @@ export function Level2({ onBack, onComplete }: Level2Props) {
   // --- Teaching intro ---
   if (showIntro) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4 phone:py-3">
         <div className="max-w-lg mx-auto">
-          <div className="bg-white rounded-xl shadow-md p-4 mb-4">
+          <div className="bg-white rounded-xl shadow-md p-4 mb-4 phone:p-3 phone:mb-3">
             {/* On a phone the title takes a line of its own under the back
                 button, instead of being squeezed to a word per line. */}
             <div className="flex flex-wrap md:flex-nowrap justify-between items-center gap-y-1">
@@ -400,7 +477,7 @@ export function Level2({ onBack, onComplete }: Level2Props) {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 space-y-5 animate-fade-in-up">
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 space-y-5 animate-fade-in-up phone:space-y-4">
             <h2 className="text-xl font-bold text-warm-800">Lotukerfið — mynstur og flokkar</h2>
 
             <div className="bg-blue-50 p-4 rounded-lg">
@@ -489,26 +566,45 @@ export function Level2({ onBack, onComplete }: Level2Props) {
     answered || (question.type !== 'classify' && question.type !== 'group-property');
   const showMasses = answered || question.type !== 'order-by-mass';
 
+  // Periodic table (reference, non-interactive)
+  const table = (
+    <div className="bg-white rounded-xl shadow-lg p-2 sm:p-4 mb-3 phone:mb-2 phone:p-2 max-md:phone-land:col-start-2 max-md:phone-land:row-start-1 max-md:phone-land:row-span-2">
+      <p className="text-xs text-warm-500 mb-2 text-center phone:mb-1">
+        {showCategories && showMasses
+          ? 'Lotukerfið til hliðsjónar — staðsetningin segir þér mest.'
+          : showCategories
+            ? 'Meðalatómmassinn er falinn þangað til þú hefur svarað — notaðu regluna um sætistöluna.'
+            : 'Flokkalitirnir eru faldir þangað til þú hefur svarað — notaðu staðsetninguna.'}
+      </p>
+      <PeriodicTable
+        highlightedElements={highlightSet}
+        interactive={false}
+        showCategories={showCategories}
+        showMasses={showMasses}
+      />
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-2 sm:p-4">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-2 sm:p-4 phone:p-2">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-xl shadow-md p-3 sm:p-4 mb-3">
-          <div className="flex justify-between items-center gap-2">
+        {/* Header: one short row on a phone (design P4) */}
+        <div className="bg-white rounded-xl shadow-md p-3 sm:p-4 mb-3 phone:py-2 phone:mb-2">
+          <div className="flex justify-between items-center gap-2 phone:gap-3">
             <button
               onClick={onBack}
-              className="text-warm-500 hover:text-warm-700 font-semibold text-sm whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
+              className="text-warm-500 hover:text-warm-700 font-semibold text-sm whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3 phone:shrink-0"
             >
               ← Til baka
             </button>
-            <h1 className="min-w-0 text-center text-base sm:text-lg font-bold text-warm-800">
+            <h1 className="min-w-0 text-center text-base sm:text-lg font-bold text-warm-800 phone:flex-1 phone:text-sm">
               Flokkar og lotubundnir eiginleikar
             </h1>
-            <span className="text-sm font-semibold text-warm-600">
+            <span className="text-sm font-semibold text-warm-600 phone:shrink-0">
               {index + 1}/{TOTAL}
             </span>
           </div>
-          <div className="mt-2 h-2 bg-warm-200 rounded-full overflow-hidden">
+          <div className="mt-2 h-2 bg-warm-200 rounded-full overflow-hidden phone:mt-1.5 phone:h-1.5">
             <div
               className="h-full bg-kvenno-orange progress-fill"
               style={{ width: `${((index + 1) / TOTAL) * 100}%` }}
@@ -516,94 +612,106 @@ export function Level2({ onBack, onComplete }: Level2Props) {
           </div>
         </div>
 
-        {/* Question */}
-        <div
-          className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-3 text-center animate-fade-in-up"
-          key={index}
-        >
-          <p className="text-lg sm:text-xl font-bold text-warm-800">{question.text}</p>
-          {!answered && !showHint && (
-            <button
-              onClick={() => setShowHint(true)}
-              className="mt-3 text-sm px-4 py-2 pointer-coarse:min-h-11 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-yellow-400 outline-none"
+        {/* A phone on its side (below md, where the table scrolls sideways): the
+            question and the options | the table, with the feedback across both
+            below them. The second row takes the table's extra height, so the
+            options sit right under the question. Everywhere else a plain block,
+            so nothing moves. */}
+        <div className="max-md:phone-land:grid max-md:phone-land:grid-cols-2 max-md:phone-land:grid-rows-[auto_1fr] max-md:phone-land:gap-x-3 max-md:phone-land:items-start">
+          {/* Question */}
+          <div
+            ref={itemRef}
+            className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-3 text-center animate-fade-in-up phone:p-3 phone:mb-2"
+            key={index}
+          >
+            <p data-item-start className="text-lg sm:text-xl font-bold text-warm-800 phone:text-lg">
+              {question.text}
+            </p>
+            {!answered && !showHint && (
+              <button
+                onClick={() => setShowHint(true)}
+                className="mt-3 phone:mt-2 text-sm px-4 py-2 pointer-coarse:min-h-11 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-yellow-400 outline-none"
+              >
+                💡 Vísbending
+              </button>
+            )}
+            {!answered && showHint && (
+              <div
+                ref={hintRef}
+                className="mt-3 phone:mt-2 bg-yellow-50 border-2 border-yellow-200 rounded-xl p-3 text-sm text-yellow-900 text-left"
+              >
+                <span className="font-bold">Vísbending:</span> {hintFor(question)}
+              </div>
+            )}
+          </div>
+
+          {phone && table}
+
+          {/* Options */}
+          <div
+            ref={optionsRef}
+            className={`grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3 max-w-2xl mx-auto phone:gap-2 phone:mb-2 max-md:phone-land:col-start-1 max-md:phone-land:w-full ${optionsTwoUp(question.options) ? 'phone:grid-cols-2' : 'phone:grid-cols-1'}`}
+          >
+            {question.options.map((option) => {
+              const isSelected = selectedOption === option;
+              const isCorrectOption = option === question.correctOption;
+              let optionClass =
+                'bg-white border-warm-300 text-warm-700 hover:border-kvenno-orange hover:bg-orange-50';
+              if (answered) {
+                if (isCorrectOption) {
+                  optionClass = 'bg-green-100 border-green-500 text-green-800';
+                } else if (isSelected && !isCorrectOption) {
+                  optionClass = 'bg-red-100 border-red-400 text-red-700';
+                } else {
+                  optionClass = 'bg-warm-50 border-warm-200 text-warm-400';
+                }
+              }
+              return (
+                <button
+                  key={option}
+                  onClick={armedAnswer(() => handleOptionClick(option))}
+                  disabled={answered}
+                  className={`p-3 sm:p-4 phone:p-3 rounded-xl border-2 font-medium text-sm sm:text-base transition-all text-left ${optionClass}`}
+                >
+                  {option}
+                </button>
+              );
+            })}
+          </div>
+
+          {!phone && table}
+
+          {/* Feedback */}
+          {answered && (
+            <div
+              ref={feedbackBoxRef}
+              className="space-y-3 mb-3 max-w-2xl mx-auto animate-fade-in-up max-md:phone-land:col-span-2 max-md:phone-land:w-full"
             >
-              💡 Vísbending
-            </button>
-          )}
-          {!answered && showHint && (
-            <div className="mt-3 bg-yellow-50 border-2 border-yellow-200 rounded-xl p-3 text-sm text-yellow-900 text-left">
-              <span className="font-bold">Vísbending:</span> {hintFor(question)}
+              {/* The region focus moves to after an answer. FeedbackPanel keeps
+                its own role="alert". */}
+              <div ref={feedbackRef} tabIndex={-1} role="group">
+                <FeedbackPanel
+                  feedback={{
+                    isCorrect,
+                    explanation: question.explanation,
+                    // Renders outside the collapsible explanation, so it is the one
+                    // thing a student who reads nothing else still sees.
+                    misconception: isCorrect ? undefined : level2Misconception(question.type),
+                  }}
+                  config={{ showExplanation: true }}
+                />
+              </div>
+              <button
+                key="next"
+                ref={nextRef}
+                onClick={armed(handleNext)}
+                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+              >
+                {index + 1 < TOTAL ? 'Næsta spurning →' : 'Sjá niðurstöður →'}
+              </button>
             </div>
           )}
         </div>
-
-        {/* Options */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3 max-w-2xl mx-auto">
-          {question.options.map((option) => {
-            const isSelected = selectedOption === option;
-            const isCorrectOption = option === question.correctOption;
-            let optionClass =
-              'bg-white border-warm-300 text-warm-700 hover:border-kvenno-orange hover:bg-orange-50';
-            if (answered) {
-              if (isCorrectOption) {
-                optionClass = 'bg-green-100 border-green-500 text-green-800';
-              } else if (isSelected && !isCorrectOption) {
-                optionClass = 'bg-red-100 border-red-400 text-red-700';
-              } else {
-                optionClass = 'bg-warm-50 border-warm-200 text-warm-400';
-              }
-            }
-            return (
-              <button
-                key={option}
-                onClick={() => handleOptionClick(option)}
-                disabled={answered}
-                className={`p-3 sm:p-4 rounded-xl border-2 font-medium text-sm sm:text-base transition-all text-left ${optionClass}`}
-              >
-                {option}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Periodic table (reference, non-interactive) */}
-        <div className="bg-white rounded-xl shadow-lg p-2 sm:p-4 mb-3">
-          <p className="text-xs text-warm-500 mb-2 text-center">
-            {showCategories && showMasses
-              ? 'Lotukerfið til hliðsjónar — staðsetningin segir þér mest.'
-              : showCategories
-                ? 'Meðalatómmassinn er falinn þangað til þú hefur svarað — notaðu regluna um sætistöluna.'
-                : 'Flokkalitirnir eru faldir þangað til þú hefur svarað — notaðu staðsetninguna.'}
-          </p>
-          <PeriodicTable
-            highlightedElements={highlightSet}
-            interactive={false}
-            showCategories={showCategories}
-            showMasses={showMasses}
-          />
-        </div>
-
-        {/* Feedback */}
-        {answered && (
-          <div ref={feedbackRef} className="space-y-3 mb-3 max-w-2xl mx-auto animate-fade-in-up">
-            <FeedbackPanel
-              feedback={{
-                isCorrect,
-                explanation: question.explanation,
-                // Renders outside the collapsible explanation, so it is the one
-                // thing a student who reads nothing else still sees.
-                misconception: isCorrect ? undefined : level2Misconception(question.type),
-              }}
-              config={{ showExplanation: true }}
-            />
-            <button
-              onClick={handleNext}
-              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
-            >
-              {index + 1 < TOTAL ? 'Næsta spurning →' : 'Sjá niðurstöður →'}
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

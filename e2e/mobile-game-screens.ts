@@ -495,6 +495,11 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           clickRole: ['button', 'Byrja æfingar →'],
         },
+        // A question ignores an answer within 400 ms of appearing (the guard against a
+        // double tap on "Byrja æfingar" or "Næsta" answering it unread).
+        {
+          wait: 300,
+        },
         {
           css: 'button.element-cell:not([disabled]), div.grid.grid-cols-2.max-w-lg > button',
         },
@@ -511,6 +516,11 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
         {
           clickRole: ['button', 'Byrja æfingar →'],
+        },
+        // A question ignores an answer within 400 ms of appearing (the guard against a
+        // double tap on "Byrja æfingar" or "Næsta" answering it unread).
+        {
+          wait: 300,
         },
         {
           css: 'button.element-cell:not([disabled]), div.grid.grid-cols-2.max-w-lg > button',
@@ -562,6 +572,11 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
         {
           clickRole: ['button', 'Byrja æfingar →'],
+        },
+        // A question ignores an answer within 400 ms of appearing (the guard against a
+        // double tap on "Byrja æfingar" or "Næsta" answering it unread).
+        {
+          wait: 300,
         },
         {
           css: 'button.rounded-xl.border-2',
@@ -622,6 +637,11 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           clickRole: ['button', 'Byrja æfingar →'],
         },
+        // A question ignores an answer within 400 ms of appearing (the guard against a
+        // double tap on "Byrja æfingar" or "Næsta" answering it unread).
+        {
+          wait: 300,
+        },
         {
           css: 'input[type=number], button.element-cell:not([disabled])',
         },
@@ -635,6 +655,83 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 800,
         },
       ],
+    },
+    // The play loops (design §6.1). Math.random is seeded in mobile-vertical.spec.ts, so each
+    // level opens on the same question every run: Stig 1 asks where kolefni (C) is, and the
+    // loop taps vetni (H), a wrong cell; Stig 2 asks for an order by mass, and the loop picks
+    // the first option, a wrong order; Stig 3 asks for the neutrons in helíum-4 and the loop
+    // types 9.
+    {
+      name: 'Stig 1 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 1: Þekkja frumefni'],
+        },
+        {
+          clickRole: ['button', 'Byrja æfingar →'],
+        },
+        // The answer is a tap, which the question ignores for 400 ms after it appears.
+        {
+          wait: 300,
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { css: 'button[aria-label^="Vetni (H)"]' },
+        answer: [],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        // The question and every period of the table on one screen.
+        together: [[{ css: '[data-item-start]' }, { role: 'grid', name: 'Lotukerfið' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Stig 2 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 2: Flokkar og lotubundnir eiginleikar'],
+        },
+        {
+          clickRole: ['button', 'Byrja æfingar →'],
+        },
+        // The answer is a tap, which the question ignores for 400 ms after it appears.
+        {
+          wait: 300,
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { css: 'div.max-w-2xl.grid > button' },
+        answer: [],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        // On a phone the table sits between the question and the options, where it is read:
+        // one downward scroll past it to the options.
+        scrollsToAction: 1,
+      },
+    },
+    {
+      name: 'Stig 3 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 3: Atómbygging'],
+        },
+        {
+          clickRole: ['button', 'Byrja æfingar →'],
+        },
+      ],
+      loop: {
+        prompt: { css: '.animate-fade-in-up > p.font-bold' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ fill: ['input[type=number]', '9'] }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        together: [[{ css: '.animate-fade-in-up > p.font-bold' }, { css: 'input[type=number]' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+      },
     },
   ],
   '1-ar/nafnakerfid': [

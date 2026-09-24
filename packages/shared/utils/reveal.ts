@@ -173,9 +173,9 @@ function later(fn: () => void, afterExit: number | undefined): void {
   else fn();
 }
 
-function scrollByY(dy: number): void {
+function scrollByY(dy: number, instant = false): void {
   if (Math.abs(dy) < 1) return;
-  window.scrollBy({ top: dy, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+  window.scrollBy({ top: dy, behavior: instant || prefersReducedMotion() ? 'auto' : 'smooth' });
 }
 
 export interface RevealSpanOptions extends RevealOptions {
@@ -233,6 +233,12 @@ export function revealSpan(bottom: Target, tops: Target[] = [], opts?: RevealSpa
 export interface RevealTopOptions extends RevealOptions {
   /** Align the top under the header even when it is already on screen. */
   always?: boolean;
+  /**
+   * Jump rather than scroll smoothly, as under `prefers-reduced-motion`. Only
+   * for an `anyWidth` call site replacing a helper that jumped
+   * (`window.scrollTo({ top: 0 })`), so a desktop page moves exactly as it did.
+   */
+  instant?: boolean;
 }
 
 /**
@@ -256,13 +262,24 @@ export function revealTop(el: Target, opts?: RevealTopOptions): void {
     const top = el.getBoundingClientRect().top;
     if (!opts?.always && top >= lo && top <= hi - MIN_VISIBLE) return;
     const declared = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
-    scrollByY(top - (declared > 0 ? Math.max(lo, declared) : lo + MARGIN));
+    scrollByY(top - (declared > 0 ? Math.max(lo, declared) : lo + MARGIN), opts?.instant);
   }, opts?.afterExit);
 }
 
 export interface RevealInlineOptions extends RevealOptions {
-  /** `'end'` aligns `el`'s right edge with the box's; `'nearest'` moves the least. */
-  inline?: 'end' | 'nearest';
+  /**
+   * `'end'` aligns `el`'s right edge with the box's; `'nearest'` moves the least;
+   * `'center'` centres `el`, or `el` and `together` as one span when that fits,
+   * and leaves the box alone when all of them are already in view.
+   */
+  inline?: 'end' | 'nearest' | 'center';
+  /**
+   * With `inline: 'center'` only: other elements in the same box to show
+   * together with `el` — the periodic table's other highlighted cells. Their
+   * joint extent is centred when it fits the box; when it does not, `el` alone
+   * is kept in view, centred if it was not.
+   */
+  together?: Element[];
 }
 
 function scrollParentX(el: Element): HTMLElement | null {
@@ -277,7 +294,8 @@ function scrollParentX(el: Element): HTMLElement | null {
 
 /**
  * Scroll `el`'s nearest sideways-scrolling box so `el` is visible. The page's
- * vertical position is not touched. For the periodic table (lotukerfid) and a
+ * vertical position is not touched. For the periodic table (lotukerfid), where
+ * the cells a question points at can sit beyond either edge of the box, and a
  * growing chain of cards (einingakedjan), where the newest item is off the right
  * edge of its row.
  */
@@ -292,7 +310,22 @@ export function revealInline(el: Target, opts?: RevealInlineOptions): void {
     const left = boxRect.left + box.clientLeft;
     const right = left + box.clientWidth;
     let dx = 0;
-    if (opts?.inline === 'end') {
+    if (opts?.inline === 'center') {
+      const all = [
+        r,
+        ...(opts.together ?? []).filter((o) => o.isConnected).map((o) => o.getBoundingClientRect()),
+      ];
+      // Half a pixel of slack, so a subpixel layout never counts as hidden.
+      const shown = (x: DOMRect) =>
+        x.left >= left + MARGIN - 0.5 && x.right <= right - MARGIN + 0.5;
+      if (all.every(shown)) return;
+      const from = Math.min(...all.map((x) => x.left));
+      const to = Math.max(...all.map((x) => x.right));
+      const mid = (left + right) / 2;
+      if (to - from + 2 * MARGIN <= box.clientWidth) dx = (from + to) / 2 - mid;
+      else if (shown(r)) return;
+      else dx = (r.left + r.right) / 2 - mid;
+    } else if (opts?.inline === 'end') {
       dx = r.right + MARGIN - right;
     } else if (r.left < left + MARGIN) {
       dx = r.left - left - MARGIN;
