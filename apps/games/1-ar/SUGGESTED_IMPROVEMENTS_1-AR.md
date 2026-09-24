@@ -1,6 +1,6 @@
 # Suggested Improvements (1-ar)
 
-> **Superseded — historical.** Written before the April 2026 restructure, so it analyses features that no longer exist and covers only 5 of the 7 Year-1 games (no `lotukerfid`, no `jafna-jofnur` — both created 2026-04-14). Current reviews: `apps/games/1-ar/CURRICULUM_REVIEW.md`, `apps/games/ORPHANED_GAMES_ASSESSMENT.md`. See `docs/README.md`.
+> **Superseded — historical.** Written before the April 2026 restructure, so it analyses features that no longer exist and covers only 5 of the 7 Year-1 games (no `lotukerfid`, no `stilla-efnajofnur` — both created 2026-04-14). Current reviews: `apps/games/1-ar/CURRICULUM_REVIEW.md`, `apps/games/ORPHANED_GAMES_ASSESSMENT.md`. See `docs/README.md`.
 
 This document tracks incremental, game-by-game improvement ideas for Year 1 (1-ar) titles.
 
@@ -143,4 +143,4 @@ Limiting reactant game with 3 levels:
 
 ---
 
-_Last updated: Based on code analysis of 5 of the 7 Year-1 games — `lotukerfid` and `jafna-jofnur` are not covered_
+_Last updated: Based on code analysis of 5 of the 7 Year-1 games — `lotukerfid` and `stilla-efnajofnur` are not covered_

@@ -27,11 +27,16 @@ const LEVEL_KEYS: Record<1 | 2 | 3, keyof Progress> = {
   3: 'level3Completed',
 };
 
+const LEGACY_PROGRESS_KEYS = ['jafnaJofnurProgress'] as const;
+
 function App() {
   const [mode, setMode] = useState<AppMode>('menu');
+  // The game was renamed from jafna-jofnur on 2026-09-24; progress saved under
+  // the old key is carried over once.
   const { progress, updateProgress, resetProgress } = useGameProgress<Progress>(
-    'jafnaJofnurProgress',
-    DEFAULT_PROGRESS
+    'stillaEfnajofnurProgress',
+    DEFAULT_PROGRESS,
+    LEGACY_PROGRESS_KEYS
   );
 
   const { t, language, setLanguage } = useGameI18n({ gameTranslations });

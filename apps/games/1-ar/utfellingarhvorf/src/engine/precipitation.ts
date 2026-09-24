@@ -203,7 +203,7 @@ export interface Reaction {
  * which fix `b`, `c` and `d` as rationals in terms of `a`. Scaling by the
  * common denominator and dividing through by the gcd gives the smallest
  * whole-number set — the same "reduced coefficients" convention B12 added to
- * `1-ar/jafna-jofnur`, where an unreduced equation is balanced and still wrong.
+ * `1-ar/stilla-efnajofnur`, where an unreduced equation is balanced and still wrong.
  *
  * The fourth equation is redundant with the other three given charge balance,
  * so it is used as a check rather than as an input: if it fails, the formulas
