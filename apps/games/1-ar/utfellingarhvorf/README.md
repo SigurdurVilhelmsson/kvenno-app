@@ -1,6 +1,6 @@
 # Útfellingarhvörf
 
-**Status: complete and registered.** Four phases, 87 tests of its own, in `build-games.mjs`, on the
+**Status: complete and registered.** Four phases, 103 tests of its own, in `build-games.mjs`, on the
 hub, and in the Y1 `Námsleiðin` chain between Stilla efnajöfnur and Takmarkandi.
 
 Phase 5 of the games roadmap. The third of the four confirmed curriculum gaps to close, after
@@ -135,6 +135,7 @@ src/data/ions.ts               ions, charges, and the school's solubility table
 src/engine/precipitation.ts    formulas, verdicts, balancing, the three equations
 src/data/problems.ts           17 scenarios as ion pairs; 24 drill compounds
 src/components/                KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen
+src/utils/desktopReveal.ts     a desktop window's reveals, kept as they were before the phone pass
 src/__tests__/                 the engine, the data, the graders, and the screens played through
 ```
 
@@ -142,6 +143,42 @@ The engine is exercised over **every** soluble pairing in the pool, not just the
 several hundred reactions, each checked for atom balance, charge balance, reduced coefficients, and
 a net ionic equation containing no spectator. A new ion is therefore tested the moment it is
 declared.
+
+## On a phone
+
+Built for 360 × 740 first; from `sm` up every screen keeps its desktop layout. The vertical-scroll
+pass (`docs/plans/2026-09-23-vertical-scroll-design.md` §4) then fitted each play loop to one screen
+at 360 × 640 and 390 × 664, with every visible change behind `phone:`, `phone-land:` or `pin:`:
+
+- **The menu shows all four phases on the first screen.** The cards are compacted, `Lokið` is a
+  corner badge, and on a phone the overview paragraph follows the phases. It previews the game
+  rather than teaching it — its one statement of chemistry is Skilja's second rung, where the ladder
+  teaches it — and holds nothing focusable. On a phone on its side the phases are 2 × 2. Back from a
+  phase, the next one not yet done is focused, and on a phone brought into view.
+- **Kanna: after a pick or a pour, the pairs, the beakers and the result share the screen**, so
+  the next pair is a tap away with no scroll. The pairs go three to a row with their formulas
+  stacked (that markup exists only on a phone), and the beakers are smaller. On the SE only the
+  beakers and the result fit. On a phone on its side the pairs sit beside the beakers and the
+  result. After a pour, focus moves to the result.
+- **Skilja keeps its ladder.** On a phone "Næsta skref" shows the rung it opened down to the button,
+  and focus moves to the rung. The net ionic equation's box under the last rung is teaching, read in
+  full, so "Áfram í Æfa" may be a scroll below it.
+- **Æfa: the first question sits inside the compound's card, and "Athuga" is pinned to the foot of
+  a portrait phone** (design P8: after compaction the compound to "Athuga" was still 602–622 px
+  against 584 px of screen; a choice screen, no text input). The bar leaves with "Athuga" on the
+  check, so it never covers the feedback. The rules keep their text; all but the last two show
+  above the bar at 360 × 640. On a phone on its side the compound and its question sit beside the
+  rules.
+- **Beita: the four ions go two to a row**, so the build step fits under the scenario. Each new
+  question takes focus.
+- **After a check, focus goes to the feedback, never to the button that follows it**, and that
+  button is a new element, not the one pressed. "Næsta", "Næsta dæmi", "Næsta skref", "Áfram í
+  Æfa" and Beita's answer buttons ignore a press within 400 ms of appearing, so a double tap cannot
+  skip what the check just said, or answer the next question unread.
+- **Scrolling goes through `@shared/utils`.** The game's own `src/utils/reveal.ts` is gone. A
+  desktop window keeps exactly what it did — the same trigger and the same landing, at any width —
+  through `src/utils/desktopReveal.ts`, which only decides and leaves the scrolling to the shared
+  helpers. `phone-reveal.test.tsx` holds both.
 
 ## Its Year-3 sibling
 

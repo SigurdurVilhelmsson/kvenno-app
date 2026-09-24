@@ -1610,6 +1610,19 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Kanna'],
         },
       ],
+      // The first look at the screen reads the list of pairs down to the pour
+      // button; after a pour the list, the beakers and the result share the
+      // screen, so the next pair is one tap away. On the SE only the beakers and
+      // the result fit (design §5).
+      loop: {
+        prompt: { css: 'main h2' },
+        action: { role: 'button', name: 'Helltu saman' },
+        answer: [],
+        verdict: { css: '#kanna-outcome' },
+        next: { role: 'button', name: 'NaCl + KNO₃' },
+        scrollsToAction: 1,
+        viewports: ['android', 'iphone', 'landscape'],
+      },
     },
     {
       name: 'Kanna — botnfall myndast',
@@ -1660,13 +1673,59 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Skilja — fyrsta skref',
+      steps: [
+        {
+          clickRole: ['button', 'Skilja'],
+        },
+        // "Næsta skref" ignores a press within 400 ms of appearing or of opening
+        // a rung, as every Næsta does; a student reads the rung first.
+        {
+          wait: 500,
+        },
+      ],
+      // The first look reads the ladder's first rung down to the button.
+      loop: {
+        prompt: { css: 'main h2' },
+        action: { role: 'button', name: 'Næsta skref' },
+        answer: [],
+        verdict: { text: 'Uppleyst jónaefni er ekki heilt í vatninu' },
+        next: { role: 'button', name: 'Næsta skref' },
+        scrollsToAction: 1,
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Skilja — síðasta skref',
+      steps: [
+        {
+          clickRole: ['button', 'Skilja'],
+        },
+        {
+          wait: 500,
+        },
+        {
+          clickRole: ['button', 'Næsta skref'],
+        },
+        {
+          wait: 500,
+        },
+      ],
+    },
+    {
       name: 'Skilja — þrjú skref og leysnireglurnar opnar',
       steps: [
         {
           clickRole: ['button', 'Skilja'],
         },
         {
+          wait: 500,
+        },
+        {
           clickRole: ['button', 'Næsta skref'],
+        },
+        {
+          wait: 500,
         },
         {
           clickRole: ['button', 'Næsta skref'],
@@ -1683,6 +1742,19 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Æfa'],
         },
       ],
+      // "Athuga" is pinned to the foot of a portrait phone (design §4, P8).
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [
+          { css: 'fieldset button' },
+          { clickRole: ['button', 'Öll nítröt (NO₃⁻) eru leysanleg.'] },
+        ],
+        verdict: { css: '#aefa-verdict' },
+        next: { role: 'button', name: 'Næsta' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        landscapeScrollsToAction: 2,
+      },
     },
     {
       name: 'Æfa — endurgjöf',
@@ -1693,8 +1765,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           css: 'fieldset button',
         },
+        // The rules sit beside the compound in landscape, so they are no longer
+        // the second fieldset among siblings; name the rule instead.
         {
-          css: 'fieldset:nth-of-type(2) button',
+          clickRole: ['button', 'Öll nítröt (NO₃⁻) eru leysanleg.'],
         },
         {
           clickRole: ['button', 'Athuga'],
@@ -1707,13 +1781,29 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           clickRole: ['button', 'Beita'],
         },
+        // A question's buttons ignore a press within 400 ms of appearing, so a
+        // double tap cannot answer the next one unread.
+        {
+          wait: 500,
+        },
       ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Nei, ekkert gerist' },
+        answer: [],
+        verdict: { css: '#beita-verdict' },
+        next: { role: 'button', name: 'Næsta dæmi' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
     },
     {
       name: 'Beita — hvort efnið fellur út?',
       steps: [
         {
           clickRole: ['button', 'Beita'],
+        },
+        {
+          wait: 500,
         },
         {
           clickRole: ['button', 'Já, botnfall myndast'],
@@ -1727,10 +1817,19 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Beita'],
         },
         {
+          wait: 500,
+        },
+        {
           clickRole: ['button', 'Já, botnfall myndast'],
         },
         {
+          wait: 500,
+        },
+        {
           clickRole: ['button', 'AgCl'],
+        },
+        {
+          wait: 500,
         },
         {
           clickRole: ['button', 'Fjölga Ag⁺'],
@@ -1739,6 +1838,16 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Fjölga Cl⁻'],
         },
       ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga jöfnuna' },
+        answer: [{ clickRole: ['button', 'Fjölga Ag⁺'] }],
+        verdict: { css: '#beita-verdict' },
+        next: { role: 'button', name: 'Næsta dæmi' },
+        // In landscape the scenario card is above the screen by the third
+        // question; the §6.2.10 check still runs (design §5).
+        viewports: ['android', 'iphone', 'se'],
+      },
     },
     {
       name: 'Beita — rétt jafna',
@@ -1747,10 +1856,19 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Beita'],
         },
         {
+          wait: 500,
+        },
+        {
           clickRole: ['button', 'Já, botnfall myndast'],
         },
         {
+          wait: 500,
+        },
+        {
           clickRole: ['button', 'AgCl'],
+        },
+        {
+          wait: 500,
         },
         {
           clickRole: ['button', 'Fjölga Ag⁺'],
@@ -1768,6 +1886,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       steps: [
         {
           clickRole: ['button', 'Beita'],
+        },
+        {
+          wait: 500,
         },
         {
           clickRole: ['button', 'Nei, ekkert gerist'],

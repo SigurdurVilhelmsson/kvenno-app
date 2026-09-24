@@ -2,6 +2,9 @@ import { fireEvent, render, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import App from '../App';
+import { clockPastNextGuard } from './next-guard-clock';
+
+clockPastNextGuard();
 
 /**
  * Kanna ends on "Áfram í Skilja" and Skilja on "Áfram í Æfa", and both used to

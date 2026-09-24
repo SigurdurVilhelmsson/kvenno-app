@@ -33,6 +33,17 @@ describeVerticalLoops(GAME_SCREENS);
  */
 const PIN_USES: { file: string; component: 'TaskStrip' | 'PinnedActions'; measured: string }[] = [
   {
+    file: 'apps/games/1-ar/utfellingarhvorf/src/components/AefaScreen.tsx',
+    component: 'PinnedActions',
+    measured:
+      'Æfa, after compaction (the verdict pair inside the compound card, rules py-1.5) and ' +
+      'anchoring, 360x640 touch, all ten compounds of a run: the compound to Athuga, unpinned, ' +
+      'is 602-622 px against 584 px of screen under the header (Athuga at y 766-786 on ' +
+      'arrival), and 582 against 492 on the SE; base, two scrolls. A choice screen, no text ' +
+      'input. The bar holds Athuga only and leaves with it on commit, so it never sits over ' +
+      'the feedback.',
+  },
+  {
     file: 'apps/games/2-ar/hess-law/src/components/Level2.tsx',
     component: 'TaskStrip',
     measured:
