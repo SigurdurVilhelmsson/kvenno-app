@@ -1,0 +1,42 @@
+// Helper for the mobile pass: list words the browser broke mid-word.
+// With the shared `overflow-wrap: break-word` default (game-base.css), a word too
+// long for its box is split at an arbitrary letter instead of overflowing. Each
+// hit is a layout that does not fit; fix the layout, not the word.
+//
+//   import { midWordBreaks } from '<this file>';
+//   const hits = await midWordBreaks(page);  // ['Heildarmag|n (in <p.text-sm>)', ...]
+export async function midWordBreaks(page) {
+  return page.evaluate(() => {
+    const out = [];
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let n;
+    while ((n = walker.nextNode())) {
+      const text = n.textContent;
+      if (!text.trim()) continue;
+      const el = n.parentElement;
+      if (!el || !el.offsetParent) continue;
+      const re = /[^\s\-–—\/→←=+·×]+/g;
+      let m;
+      while ((m = re.exec(text))) {
+        if (m[0].length < 3) continue;
+        const r = document.createRange();
+        r.setStart(n, m.index);
+        r.setEnd(n, m.index + m[0].length);
+        const rects = [...r.getClientRects()].filter((q) => q.width > 0);
+        const tops = new Set(rects.map((q) => Math.round(q.top)));
+        if (tops.size > 1) {
+          // find the split point
+          let split = '';
+          for (let i = 1; i < m[0].length; i++) {
+            const a = document.createRange(); a.setStart(n, m.index + i - 1); a.setEnd(n, m.index + i);
+            const b = document.createRange(); b.setStart(n, m.index + i); b.setEnd(n, m.index + i + 1);
+            if (Math.round(a.getBoundingClientRect().top) !== Math.round(b.getBoundingClientRect().top)) { split = m[0].slice(0, i) + '|' + m[0].slice(i); break; }
+          }
+          const cls = (el.className?.baseVal ?? el.className ?? '').toString().split(/\s+/).slice(0, 4).join('.');
+          out.push(`${split || m[0]} (in <${el.tagName.toLowerCase()}${cls ? '.' + cls : ''}>)`);
+        }
+      }
+    }
+    return out;
+  });
+}

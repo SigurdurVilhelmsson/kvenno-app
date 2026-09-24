@@ -1,0 +1,118 @@
+// Vertical-scroll measurement for the "fit on one screen" follow-up.
+//
+//   import { VISIBLE, verticalBudget, loopSpan, fmtBudget } from '<scratchpad>/mobile/scroll-lib.mjs';
+//   import { openPage } from '<scratchpad>/mobile/mobile-lib.mjs';
+//   const page = await openPage(url, VISIBLE.android);   // plain size object → no touch; pass a
+//                                                         // named vp from mobile-lib for touch
+//
+// VISIBLE sizes are what a student actually sees with the browser's own bars
+// showing, not the device's screen size. Fitting in VISIBLE.android and
+// VISIBLE.iphone is the target; VISIBLE.se is the stretch goal.
+
+export const VISIBLE = {
+  android: { width: 360, height: 640 }, // 360x800-class Android, Chrome bars shown
+  iphone: { width: 390, height: 664 }, // iPhone 12–15, Safari bars shown
+  se: { width: 375, height: 548 }, // iPhone SE, Safari bars shown (stretch)
+  landscape: { width: 740, height: 340 }, // phone on its side, bars shown
+};
+
+/**
+ * Where the vertical space goes on the current screen.
+ * Returns the viewport height, the sticky header's height, the document height,
+ * how many screenfuls that is, and the top-level content blocks (the first level
+ * under the game's content root that has more than one child) with their y and
+ * height, so you can see what pushes the task below the fold.
+ */
+export async function verticalBudget(page) {
+  return page.evaluate(() => {
+    const vh = window.innerHeight;
+    const header = document.querySelector('header');
+    const hb = header?.getBoundingClientRect();
+    const headerH = header && /sticky|fixed/.test(getComputedStyle(header).position) ? Math.round(hb.height) : 0;
+    const docH = document.documentElement.scrollHeight;
+    const label = (el) => {
+      const cls = (el.className?.baseVal ?? el.className ?? '').toString().trim().split(/\s+/).slice(0, 4).join('.');
+      const txt = (el.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 50);
+      return `<${el.tagName.toLowerCase()}${cls ? '.' + cls : ''}> "${txt}"`;
+    };
+    // Descend from <main> (or #root) through single-child wrappers.
+    let root = document.querySelector('main') || document.getElementById('root');
+    while (root && root.children.length === 1) root = root.children[0];
+    const sy = window.scrollY;
+    const blocks = root
+      ? [...root.children]
+          .filter((c) => c.getBoundingClientRect().height > 0)
+          .map((c) => {
+            const b = c.getBoundingClientRect();
+            const cs = getComputedStyle(c);
+            return {
+              top: Math.round(b.top + sy),
+              height: Math.round(b.height),
+              marginY: Math.round(parseFloat(cs.marginTop) + parseFloat(cs.marginBottom)),
+              label: label(c),
+            };
+          })
+      : [];
+    return { vh, headerH, docH, screens: +(docH / vh).toFixed(2), blocks };
+  });
+}
+
+/**
+ * The play loop's vertical span on the current screen.
+ * sels: { prompt, action, feedback? } — each a Playwright selector string
+ * (CSS, `text=…`, `:has-text()` all work) or a Locator; the first VISIBLE match
+ * is used. Returns the top of the prompt, the bottom of the primary action (and
+ * of the feedback, if present), the span prompt→action and prompt→feedback,
+ * whether each fits in the space below a sticky header, and how many screenfuls
+ * it takes.
+ */
+export async function loopSpan(page, sels) {
+  const env = await page.evaluate(() => {
+    const header = document.querySelector('header');
+    const headerH =
+      header && /sticky|fixed/.test(getComputedStyle(header).position)
+        ? header.getBoundingClientRect().height
+        : 0;
+    return { vh: window.innerHeight, headerH, sy: window.scrollY };
+  });
+  const box = async (sel) => {
+    if (!sel) return null;
+    const loc = typeof sel === 'string' ? page.locator(sel) : sel;
+    const n = await loc.count();
+    for (let i = 0; i < n; i++) {
+      const b = await loc.nth(i).boundingBox();
+      if (b && b.width && b.height && (await loc.nth(i).isVisible())) {
+        return { top: b.y + env.sy, bottom: b.y + b.height + env.sy };
+      }
+    }
+    return null;
+  };
+  const p = await box(sels.prompt);
+  const a = await box(sels.action);
+  const f = await box(sels.feedback);
+  const usable = env.vh - env.headerH;
+  const out = {
+    vh: env.vh,
+    headerH: Math.round(env.headerH),
+    usable: Math.round(usable),
+    found: { prompt: !!p, action: !!a, feedback: !!f },
+  };
+  if (p && a) {
+    out.promptToAction = Math.round(a.bottom - p.top);
+    out.promptToActionFits = out.promptToAction <= usable;
+    out.promptToActionScreens = +(out.promptToAction / usable).toFixed(2);
+    out.actionBottomFromPageTop = Math.round(a.bottom); // > vh: must scroll to reach it from the top
+  }
+  if (p && f) {
+    out.promptToFeedback = Math.round(Math.max(f.bottom, a?.bottom ?? 0) - p.top);
+    out.promptToFeedbackFits = out.promptToFeedback <= usable;
+  }
+  if (a && f) out.feedbackBelowAction = Math.round(f.top - a.bottom); // negative: feedback above the button
+  return out;
+}
+
+export function fmtBudget(b) {
+  const lines = [`vh=${b.vh} header=${b.headerH} doc=${b.docH} (${b.screens} screens)`];
+  for (const x of b.blocks) lines.push(`  y=${x.top} h=${x.height}${x.marginY ? ' m=' + x.marginY : ''} ${x.label}`);
+  return lines.join('\n');
+}

@@ -1,0 +1,228 @@
+// Shared phone-measurement harness for the kvenno-app mobile pass.
+//
+// Import from any script by absolute path:
+//   import { openPage, audit, runSteps, VIEWPORTS } from '/tmp/claude-0/-home-user-kvenno-app/671be487-23c0-5f0c-aac4-83ccc70ea7bc/scratchpad/mobile/mobile-lib.mjs';
+//
+// Or use the CLI (mobile-probe.mjs next to this file).
+
+import { chromium } from '/home/user/kvenno-app/node_modules/@playwright/test/index.mjs';
+
+export const VIEWPORTS = {
+  phone: { width: 360, height: 740 }, // common Android
+  se: { width: 375, height: 667 }, // iPhone SE
+  small: { width: 320, height: 568 }, // smallest supported
+  landscape: { width: 740, height: 360 }, // phone on its side
+  tablet: { width: 768, height: 1024 },
+  desktop: { width: 1280, height: 800 }, // regression baseline
+};
+
+let _browser = null;
+export async function browser() {
+  if (!_browser) {
+    _browser = await chromium.launch({
+      executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome',
+    });
+  }
+  return _browser;
+}
+export async function closeBrowser() {
+  if (_browser) await _browser.close();
+  _browser = null;
+}
+
+/**
+ * Open url at a viewport. A NAMED phone viewport ('phone', 'se', 'small',
+ * 'landscape') emulates touch + isMobile. 'desktop'/'tablet' and a plain
+ * {width,height} object open WITHOUT touch (mouse only) — use the object form to
+ * reproduce how the e2e regression test runs (Firefox cannot emulate isMobile).
+ */
+export async function openPage(url, vp = 'phone') {
+  const b = await browser();
+  const size = VIEWPORTS[vp] ?? vp;
+  const touch = typeof vp === 'string' && vp !== 'desktop' && vp !== 'tablet';
+  const ctx = await b.newContext({
+    viewport: size,
+    isMobile: touch,
+    hasTouch: touch,
+    deviceScaleFactor: 2,
+    locale: 'is-IS',
+  });
+  const page = await ctx.newPage();
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(String(e)));
+  page.on('console', (m) => {
+    if (m.type() === 'error') errors.push('console: ' + m.text());
+  });
+  page._errors = errors;
+  await page.goto(url, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(300);
+  return page;
+}
+
+/**
+ * Measure the current screen. Returns a plain object; nothing here clicks.
+ *  - overflow: page scrolls horizontally (the one hard failure)
+ *  - offenders: outermost elements poking past the viewport edge and NOT inside
+ *    an overflow-x clipping/scrolling ancestor
+ *  - under24 / under44: visible interactive controls smaller than 24px / 44px
+ *    in either dimension (24 = WCAG 2.5.8 AA floor, 44 = touch-comfort target)
+ *  - tinyText: visible text rendered below 12px
+ *  - zoomInputs: text inputs/selects/textareas with font-size < 16px (iOS
+ *    Safari zooms the whole page on focus)
+ *  - draggables: elements using HTML5 draggable (does not work by touch on most
+ *    mobile browsers unless a tap alternative exists)
+ *  - titled: elements whose only extra info is a title="" tooltip (hover-only)
+ *  - scrollers: elements that scroll horizontally on their own (informational)
+ */
+export async function audit(page, label = '') {
+  const r = await page.evaluate(() => {
+    const vw = document.documentElement.clientWidth;
+    const sw = document.documentElement.scrollWidth;
+    const visible = (el) => {
+      const b = el.getBoundingClientRect();
+      if (b.width === 0 || b.height === 0) return false;
+      const cs = getComputedStyle(el);
+      if (cs.visibility === 'hidden' || cs.display === 'none' || Number(cs.opacity) === 0) return false;
+      return true;
+    };
+    const clipped = (el) => {
+      let p = el.parentElement;
+      while (p && p !== document.body && p !== document.documentElement) {
+        const cs = getComputedStyle(p);
+        if (/(auto|scroll|hidden|clip)/.test(cs.overflowX)) return true;
+        p = p.parentElement;
+      }
+      return false;
+    };
+    const desc = (el) => {
+      const cls = (el.className?.baseVal ?? el.className ?? '').toString().trim().split(/\s+/).slice(0, 6).join('.');
+      const txt = (el.getAttribute('aria-label') || el.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 40);
+      return `<${el.tagName.toLowerCase()}${cls ? '.' + cls : ''}>${txt ? ' "' + txt + '"' : ''}`;
+    };
+    const offending = new Set();
+    const offenders = [];
+    for (const el of document.querySelectorAll('body *')) {
+      if (!visible(el)) continue;
+      const b = el.getBoundingClientRect();
+      if ((b.right > vw + 1 || b.left < -1) && !clipped(el)) {
+        offending.add(el);
+        if (!offending.has(el.parentElement)) {
+          offenders.push(`${desc(el)} left=${Math.round(b.left)} right=${Math.round(b.right)} w=${Math.round(b.width)}`);
+        }
+      }
+    }
+    const under24 = [];
+    const under44 = [];
+    const sel = 'button, a[href], input:not([type=hidden]), select, textarea, [role=button], [role=radio], [role=checkbox], [role=tab], [role=option], [role=slider], [draggable=true]';
+    for (const el of document.querySelectorAll(sel)) {
+      if (!visible(el)) continue;
+      if (el.classList.contains('skip-link') || el.closest('.sr-only')) continue;
+      const b = el.getBoundingClientRect();
+      // Off-screen (e.g. skip links parked above the viewport)
+      if (b.bottom < 0 || b.right < 0) continue;
+      const s = `${desc(el)} ${Math.round(b.width)}x${Math.round(b.height)}`;
+      if (b.width < 24 || b.height < 24) under24.push(s);
+      else if (b.width < 44 || b.height < 44) under44.push(s);
+    }
+    const tinyText = [];
+    const seen = new Set();
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let n;
+    while ((n = walker.nextNode())) {
+      if (!n.textContent.trim()) continue;
+      const el = n.parentElement;
+      if (!el || seen.has(el) || !visible(el)) continue;
+      if (el.closest('.sr-only, [aria-hidden=true] svg')) continue;
+      const fs = parseFloat(getComputedStyle(el).fontSize);
+      // SVG text: use rendered height relative to the viewBox scale
+      let px = fs;
+      if (el instanceof SVGElement) {
+        const b = el.getBoundingClientRect();
+        px = b.height * 0.8;
+      }
+      if (px < 12) {
+        seen.add(el);
+        tinyText.push(`${desc(el)} ${px.toFixed(1)}px`);
+      }
+    }
+    const zoomInputs = [];
+    for (const el of document.querySelectorAll('input:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=range]):not([type=button]):not([type=submit]), select, textarea')) {
+      if (!visible(el)) continue;
+      const fs = parseFloat(getComputedStyle(el).fontSize);
+      if (fs < 16) zoomInputs.push(`${desc(el)} ${fs}px`);
+    }
+    const draggables = [...document.querySelectorAll('[draggable=true]')].filter(visible).map(desc);
+    const titled = [...document.querySelectorAll('[title]')].filter(visible).map((el) => `${desc(el)} title="${el.getAttribute('title').slice(0, 40)}"`);
+    const scrollers = [];
+    for (const el of document.querySelectorAll('body *')) {
+      if (el.scrollWidth > el.clientWidth + 1 && /(auto|scroll)/.test(getComputedStyle(el).overflowX) && visible(el)) {
+        scrollers.push(`${desc(el)} ${el.clientWidth}/${el.scrollWidth}`);
+      }
+    }
+    return {
+      vw,
+      sw,
+      overflow: sw > vw + 1,
+      pageHeight: document.documentElement.scrollHeight,
+      offenders: offenders.slice(0, 25),
+      under24: under24.slice(0, 30),
+      under44: under44.slice(0, 30),
+      tinyText: tinyText.slice(0, 25),
+      zoomInputs,
+      draggables: draggables.slice(0, 15),
+      titled: titled.slice(0, 15),
+      scrollers: scrollers.slice(0, 10),
+    };
+  });
+  r.label = label;
+  r.errors = [...(page._errors ?? [])];
+  return r;
+}
+
+/** One-line summary of an audit result. */
+export function summarize(r) {
+  return `[${r.label}] overflow=${r.overflow} (sw=${r.sw}/${r.vw}) offenders=${r.offenders.length} under24=${r.under24.length} under44=${r.under44.length} tinyText=${r.tinyText.length} zoomInputs=${r.zoomInputs.length} draggables=${r.draggables.length} titled=${r.titled.length} errors=${r.errors.length}`;
+}
+
+/**
+ * Run a list of steps against a page. Each step is one of:
+ *   { click: 'visible text' }            — first visible element with that exact-ish text (button/link/role preferred)
+ *   { clickRole: ['button', 'name'] }    — getByRole
+ *   { css: 'selector' }                  — click the first match
+ *   { tap: 'selector' }                  — touch tap (needs hasTouch; phone viewports have it)
+ *   { fill: ['selector', 'value'] }
+ *   { press: 'Enter' }
+ *   { wait: 500 }
+ *   { scroll: 'bottom' | 'top' | number }
+ *   { audit: 'label' }                   — push audit(page,label) onto the returned list
+ *   { shot: '/abs/path.png', full?: true }
+ */
+export async function runSteps(page, steps) {
+  const out = [];
+  for (const s of steps) {
+    if (s.click !== undefined) {
+      const loc = page.getByRole('button', { name: s.click }).or(page.getByRole('link', { name: s.click })).or(page.getByText(s.click, { exact: false }));
+      await loc.first().click();
+    } else if (s.clickRole) {
+      await page.getByRole(s.clickRole[0], { name: s.clickRole[1] }).first().click();
+    } else if (s.css) {
+      await page.locator(s.css).first().click();
+    } else if (s.tap) {
+      await page.locator(s.tap).first().tap();
+    } else if (s.fill) {
+      await page.locator(s.fill[0]).first().fill(s.fill[1]);
+    } else if (s.press) {
+      await page.keyboard.press(s.press);
+    } else if (s.wait) {
+      await page.waitForTimeout(s.wait);
+    } else if (s.scroll !== undefined) {
+      await page.evaluate((y) => window.scrollTo(0, y === 'bottom' ? document.body.scrollHeight : y === 'top' ? 0 : y), s.scroll);
+    } else if (s.audit !== undefined) {
+      out.push(await audit(page, s.audit));
+    } else if (s.shot) {
+      await page.screenshot({ path: s.shot, fullPage: !!s.full });
+    }
+    await page.waitForTimeout(s.settle ?? 200);
+  }
+  return out;
+}

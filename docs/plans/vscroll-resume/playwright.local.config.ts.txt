@@ -1,0 +1,11 @@
+import { defineConfig, devices } from '@playwright/test';
+export default defineConfig({
+  testDir: './e2e',
+  timeout: 30000,
+  retries: 0,
+  workers: 2,
+  reporter: [['list'], ['json', { outputFile: '/tmp/claude-0/-home-user-kvenno-app/671be487-23c0-5f0c-aac4-83ccc70ea7bc/scratchpad/mobile/vscroll/e2e-final.json' }]],
+  use: { baseURL: 'http://localhost:4178', launchOptions: { executablePath: '/opt/pw-browsers/chromium-1194/chrome-linux/chrome' } },
+  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  webServer: { command: 'node e2e/preview-server.mjs', port: 4178, env: { PORT: '4178' }, reuseExistingServer: true },
+});

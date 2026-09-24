@@ -1,0 +1,9 @@
+#!/bin/bash
+# Keep a preview server on :4175 (serving the clean worktree's dist/) for the study agents.
+cd /tmp/claude-0/wt-e2e
+while true; do
+  if ! curl -s -o /dev/null --max-time 3 http://localhost:4175/; then
+    PORT=4175 nohup node e2e/preview-server.mjs >> /tmp/claude-0/preview-4175.log 2>&1 &
+  fi
+  sleep 10
+done

@@ -1,0 +1,50 @@
+#!/usr/bin/env node
+// CLI over mobile-lib.mjs.
+//
+//   node mobile-probe.mjs <url> [--vp phone|se|small|landscape|tablet|desktop]
+//        [--steps steps.json] [--shot out.png] [--full] [--json]
+//
+// Without --steps it audits the first screen. With --steps, every {audit}
+// step is reported. Prints one summary line per audit, then details
+// (or the raw JSON with --json).
+import { readFileSync } from 'fs';
+
+import { openPage, audit, runSteps, summarize, closeBrowser } from './mobile-lib.mjs';
+
+const args = process.argv.slice(2);
+const url = args[0];
+const opt = (k) => {
+  const i = args.indexOf(k);
+  return i >= 0 ? args[i + 1] : undefined;
+};
+const vp = opt('--vp') ?? 'phone';
+const stepsFile = opt('--steps');
+const shot = opt('--shot');
+const full = args.includes('--full');
+const json = args.includes('--json');
+
+const page = await openPage(url, vp);
+let results;
+try {
+  if (stepsFile) {
+    results = await runSteps(page, JSON.parse(readFileSync(stepsFile, 'utf8')));
+  } else {
+    results = [await audit(page, 'first-screen')];
+  }
+  if (shot) await page.screenshot({ path: shot, fullPage: full });
+} catch (e) {
+  console.error('STEP FAILED:', e.message);
+  if (shot) await page.screenshot({ path: shot, fullPage: full }).catch(() => {});
+  process.exitCode = 1;
+}
+for (const r of results ?? []) {
+  if (json) {
+    console.log(JSON.stringify(r, null, 2));
+    continue;
+  }
+  console.log(summarize(r));
+  for (const k of ['offenders', 'under24', 'under44', 'tinyText', 'zoomInputs', 'draggables', 'titled', 'scrollers', 'errors']) {
+    if (r[k]?.length) console.log(`  ${k}:\n    ` + r[k].join('\n    '));
+  }
+}
+await closeBrowser();
