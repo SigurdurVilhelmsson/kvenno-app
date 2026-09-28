@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { formatScientific } from '@shared/utils';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { AefaScreen } from '../components/AefaScreen';
 import { COUPLED_PROBLEMS } from '../data/coupled';
 
@@ -20,6 +21,9 @@ import { COUPLED_PROBLEMS } from '../data/coupled';
  * So this plays each problem to a correct answer through the real buttons and
  * the real inputs, and asserts it reaches the end.
  */
+
+// "Næsta" ignores a press within 400 ms of appearing; these tests press at once.
+clockPastNextGuard();
 
 afterEach(cleanup);
 

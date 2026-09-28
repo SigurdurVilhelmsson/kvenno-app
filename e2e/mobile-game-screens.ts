@@ -5827,6 +5827,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           clickRole: ['button', 'Bara hvarfefni'],
         },
+        // "Áfram" ignores a press within 400 ms of the fourth mixture.
+        {
+          wait: 300,
+        },
         {
           clickRole: ['button', 'Áfram'],
         },
@@ -5841,6 +5845,8 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           clickRole: ['button', 'Skilja'],
         },
+        // "Næsta" ignores a press within 400 ms of appearing (the double-tap
+        // guard); a student reads the step first.
         {
           wait: 300,
         },
@@ -5848,10 +5854,19 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Næsta'],
         },
         {
-          clickRole: ['button', 'Næsta'],
+          wait: 300,
         },
         {
           clickRole: ['button', 'Næsta'],
+        },
+        {
+          wait: 300,
+        },
+        {
+          clickRole: ['button', 'Næsta'],
+        },
+        {
+          wait: 300,
         },
         {
           clickRole: ['button', 'Næsta'],
@@ -6034,6 +6049,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           clickRole: ['button', 'Athuga'],
         },
+        // "Sýna svarið" ignores a press within 400 ms of the check.
+        {
+          wait: 300,
+        },
         {
           clickRole: ['button', 'Sýna svarið og halda áfram'],
         },
@@ -6044,6 +6063,190 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 400,
         },
       ],
+    },
+    {
+      name: 'Kanna — blanda valin',
+      steps: [
+        {
+          clickRole: ['button', 'Kanna'],
+        },
+      ],
+      loop: {
+        prompt: { css: 'main h2' },
+        // Picking a mixture brings its result on screen with the mixtures, and
+        // focus to the settled mixture; the mixtures stay in view for the next.
+        action: { role: 'button', name: 'Bara myndefni' },
+        answer: [],
+        verdict: { role: 'heading', name: 'Í jafnvægi' },
+        next: { role: 'button', name: 'Mikið af myndefnum' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Skilja — næsta skref',
+      steps: [
+        {
+          clickRole: ['button', 'Skilja'],
+        },
+        {
+          wait: 300,
+        },
+      ],
+      loop: {
+        prompt: { css: 'main h2' },
+        action: { role: 'button', name: 'Næsta' },
+        answer: [],
+        verdict: { text: 'Fast efni og hreinn vökvi fara' },
+        next: { role: 'button', name: 'Næsta' },
+        // A teaching step: "Næsta" sits at its foot, a reading scroll down.
+        scrollsToAction: 1,
+        teachingFeedback: true,
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Æfa — Skrifa stæðuna, dæmi 1',
+      steps: [
+        {
+          clickRole: ['button', 'Æfa'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ css: 'main button[aria-pressed]' }],
+        verdict: { text: 'Ekki alveg.' },
+        next: { role: 'button', name: 'Næsta dæmi' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Æfa — Spá fyrir um stefnu, dæmi 1',
+      steps: [
+        {
+          clickRole: ['button', 'Æfa'],
+        },
+        {
+          clickRole: ['button', 'Spá fyrir um stefnu'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Þegar í jafnvægi' },
+        answer: [],
+        verdict: { text: 'Rangt.' },
+        next: { role: 'button', name: 'Næsta dæmi' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Æfa — Kc yfir í Kp, dæmi 1',
+      steps: [
+        {
+          clickRole: ['button', 'Æfa'],
+        },
+        {
+          clickRole: ['button', 'Kc yfir í Kp'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [
+          { fill: ['input[aria-label="Tala"]', '9,9'] },
+          { fill: ['input[aria-label="Veldisvísir"]', '9'] },
+        ],
+        verdict: { text: 'Hvorugt stemmir' },
+        next: { role: 'button', name: 'Næsta dæmi' },
+        together: [[{ css: '[data-item-start]' }, { css: 'input[aria-label="Tala"]' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+      },
+    },
+    {
+      name: 'Æfa — Tengd jafnvægi, dæmi 1',
+      steps: [
+        {
+          clickRole: ['button', 'Æfa'],
+        },
+        {
+          clickRole: ['button', 'Tengd jafnvægi'],
+        },
+        {
+          clickRole: ['button', 'Snúa við'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        // The target and the equation being built are on screen together
+        // (pinned together on a portrait phone). A match opens the constant:
+        // focus goes to its number field, and its Athuga is the next action.
+        action: { role: 'button', name: 'Athuga jöfnuna' },
+        answer: [],
+        verdict: { text: 'Jafnan stemmir' },
+        next: { role: 'button', name: 'Athuga' },
+        together: [[{ css: '[data-item-start]' }, { text: 'Jafnan eins og þú stilltir hana' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Beita — x',
+      steps: [
+        {
+          clickRole: ['button', 'Beita'],
+        },
+        {
+          clickRole: ['button', 'Áfram — myndefnin aukast'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [
+          { fill: ['input[aria-label="Tala"]', '9,9'] },
+          { fill: ['input[aria-label="Veldisvísir"]', '9'] },
+        ],
+        verdict: { text: 'Hvorugt stemmir enn' },
+        next: { role: 'button', name: 'Sýna svarið og halda áfram' },
+        together: [[{ css: 'main table' }, { css: 'input[aria-label="Tala"]' }]],
+        // On the SE (375x548) the step opens from the table down to its
+        // button, and the problem above it is one short scroll up (design §5:
+        // the SE is the stretch target).
+        viewports: ['android', 'iphone', 'landscape'],
+        typed: true,
+      },
+    },
+    {
+      name: 'Beita — 5 % reglan',
+      steps: [
+        {
+          clickRole: ['button', 'Beita'],
+        },
+        {
+          clickRole: ['button', 'Áfram — myndefnin aukast'],
+        },
+        {
+          clickRole: ['button', 'Athuga'],
+        },
+        // "Sýna svarið" ignores a press within 400 ms of the check.
+        {
+          wait: 300,
+        },
+        {
+          clickRole: ['button', 'Sýna svarið og halda áfram'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Nei — það verður að leysa' },
+        answer: [],
+        verdict: { text: 'Stærsta breytingin er' },
+        next: { role: 'button', name: 'Næsta dæmi' },
+        // On the SE (375x548) the step opens from the table down to its
+        // button, and the problem above it is one short scroll up (design §5:
+        // the SE is the stretch target).
+        viewports: ['android', 'iphone', 'landscape'],
+      },
     },
   ],
   '3-ar/equilibrium-shifter': [

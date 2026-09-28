@@ -242,8 +242,9 @@ src/data/problems.ts        7 expression · 6 direction · 8 Kc→Kp · 6 ICE (M
 src/data/coupled.ts         5 coupled: 3 single-rule, then the book's 2 combinations
 src/components/             KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen,
                             ScientificInput (the `× 10` answer row, with a ± sign button on touch)
-src/utils/reveal.ts         keeps the next step's start and a checked answer's feedback on screen
-src/__tests__/              144 tests
+src/utils/desktopReveal.ts  when a desktop window scrolls (the old helper's triggers, kept);
+                            the scrolling itself is the shared helpers in `@shared/utils`
+src/__tests__/              159 tests
 ```
 
 ## Phones
@@ -261,9 +262,38 @@ The rest is layout, each piece restoring the desktop look at `sm`: phase cards a
 padding below `sm`; Kanna keeps its start and equilibrium panels side by side so a preset's result
 lands in view; Skilja names only the current step in its progress chips (below `md`, so a phone
 held sideways gets one row of chips rather than three); the ICE table's cells do not wrap (so
-`0,5 − 2x` never splits) and drop to 13 px below 360 px; and `revealTop` / `revealBottom` scroll
-the next problem's start and a checked answer's feedback into view when they are off screen, doing
-nothing when they are not.
+`0,5 − 2x` never splits) and drop to 13 px below 360 px; and, until the vertical-scroll pass
+below replaced it, the game's own `revealTop` / `revealBottom` scrolled the next problem's start and
+a checked answer's feedback into view when they were off screen.
+
+**The vertical-scroll pass (2026-09)** put each play loop on one phone screen, with the shared
+helpers in `@shared/utils` (`useScreenTop`, `revealSpan`, `focusTarget`, `useArmedAfter`); the
+game's own `src/utils/reveal.ts` is gone. What it changed, all phone-only unless it says otherwise:
+
+- **Every screen swap opens at its heading**, and back on the menu the next phase not yet done is
+  brought in and focused. The menu shows all four phases at 360 × 640.
+- **After every commit focus moves to the feedback, never to the next button, at every width**, and
+  each next button — "Næsta", "Næsta dæmi", "Ljúka", "Áfram", "Sýna svarið og halda áfram" —
+  ignores a press within 400 ms of appearing, so a double tap cannot skip what was just shown. The
+  targets are marked `data-focus-target` and paint no ring. Skilja's "Næsta" and "Ljúka" are two
+  keyed buttons now, and Beita's Já/Nei block and its feedback are two keyed elements.
+- **Æfa's four tabs are a number strip on a phone**, as Skilja's steps are; each tab keeps its label
+  as its name. Tengd jafnvægi pins the target and the equation being built together under the
+  header (`TaskStrip`, design P7) on a portrait phone, with the built equation moved up under the
+  target there; a desktop window keeps it under the givens. The strip leaves once the equation
+  matches — the constant is typed, and nothing is pinned over a keyboard — and then each given's
+  buttons fold into one line naming what was chosen, and the number field is focused.
+- **Beita opens each step with what it needs**: the table and Q-against-K with the field for x
+  (focused), the value of x with the five per cent question, the verdict with "Næsta dæmi". On the
+  SE (375 × 548) the problem above the table is one short scroll up. The table's headings are
+  13 px on any phone and may wrap before their unit: held to one line they made the table wider
+  than a 320–375 px screen, so it scrolled sideways inside its wrapper.
+- Enter in the number field moves to the power of ten, and Enter there checks (`enterKeyHint`).
+- On a phone held sideways, the reaction and the mixtures sit beside Kanna's result, each Æfa
+  problem beside its answer, and Beita's problem and table beside the step.
+
+`phone-scroll.test.tsx` holds the game to this. A desktop window keeps exactly the scrolling it had
+(`src/utils/desktopReveal.ts`); what it gains is focus.
 
 ## Open
 

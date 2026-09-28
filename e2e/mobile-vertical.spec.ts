@@ -44,6 +44,18 @@ const PIN_USES: { file: string; component: 'TaskStrip' | 'PinnedActions'; measur
       'the feedback.',
   },
   {
+    file: 'apps/games/3-ar/jafnvaegisfasti/src/components/AefaScreen.tsx',
+    component: 'TaskStrip',
+    measured:
+      'Æfa, Tengd jafnvægi (named in design §4), 360x640 touch, the two-given problem ' +
+      '(ammoniak-jod): on the base build the Markjafnan box sat at page y 340-508 and the ' +
+      'equation being built at 900-1004, under the givens, so the two were never on screen ' +
+      'together. After compaction the built equation sits under the target on a phone and ' +
+      'the strip holding both is 170 px, inside the 28 % budget at 360x640 and 390x664 (it ' +
+      'stays in the flow on the SE, 375x548). Pinned only in the operations stage: the ' +
+      'constant stage has a text input, and the strip leaves before it opens.',
+  },
+  {
     file: 'apps/games/2-ar/hess-law/src/components/Level2.tsx',
     component: 'TaskStrip',
     measured:
