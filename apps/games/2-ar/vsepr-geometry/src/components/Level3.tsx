@@ -1,8 +1,15 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
-import { shuffleArray } from '@shared/utils';
+import { PhoneDisclosure } from '@shared/components';
+import {
+  shuffleArray,
+  useArmedAfter,
+  useIsPhone,
+  useItemTop,
+  useRevealAfterCommit,
+} from '@shared/utils';
 
-import { useScrollTopOnChange } from '../utils/phoneScroll';
+import { useTabletTopOnChange } from '../utils/tabletBand';
 
 interface Level3Props {
   onComplete: (score: number) => void;
@@ -696,8 +703,36 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
   const challenge = challenges[currentChallenge];
 
-  // A new question replaces the screen; on a phone start it at the top.
-  useScrollTopOnChange(currentChallenge);
+  const phone = useIsPhone();
+
+  // A new question brings the card's top back on a phone and focuses the question. Between a
+  // phone and md the old jump to the top of the page stays.
+  const cardRef = useItemTop<HTMLDivElement>(currentChallenge);
+  useTabletTopOnChange(currentChallenge);
+
+  // After Athuga: the question through Næsta if it fits (else the student's choice, else the
+  // verdict at the top), and focus on the verdict, not on Næsta, so a second Enter lands on
+  // nothing (design P3).
+  const questionRef = useRef<HTMLParagraphElement>(null);
+  const chosenRef = useRef<HTMLButtonElement>(null);
+  const verdictRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(showResult, () => ({
+    bottom: nextRef.current,
+    tops: [questionRef.current, chosenRef.current, verdictRef.current],
+    focus: verdictRef.current,
+  }));
+  // A double tap on Athuga must not land on Næsta.
+  const armed = useArmedAfter(400, `${currentChallenge}:${showResult}`);
+  // Opening the hint keeps it in view with Athuga on a phone, and focus moves to it (design
+  // §3, hints).
+  const hintRef = useRef<HTMLDivElement>(null);
+  const checkRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(showHint, () => ({
+    bottom: checkRef.current,
+    tops: [hintRef.current],
+    focus: hintRef.current,
+  }));
 
   // The data lists the answer at b in half the questions and never at d, so
   // shuffle per question. The ids double as the visible letters and are
@@ -764,189 +799,234 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     }
   };
 
+  const badge = (
+    <span
+      className={`inline-block px-3 py-1 rounded-full text-sm font-medium phone:px-2 phone:py-0.5 phone:text-xs ${getTypeColor(challenge.type)}`}
+    >
+      {getTypeLabel(challenge.type)}
+    </span>
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        {/* Header. On a phone the counters share one line (P4), so the row is one line tall. */}
+        <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11 phone:shrink-0"
           >
             <span>&larr;</span> Til baka
           </button>
-          <div className="text-right">
+          <div className="text-right phone:flex phone:flex-wrap phone:items-baseline phone:justify-end phone:gap-x-2 phone:min-w-0">
             <div className="text-sm text-warm-600">
               Spurning {currentChallenge + 1} af {challenges.length}
             </div>
-            <div className="text-lg font-bold text-teal-600">{score} stig</div>
+            <div className="text-lg font-bold text-teal-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6 phone:h-1.5 phone:mb-3">
           <div
-            className="bg-teal-500 h-2 rounded-full transition-all duration-300"
+            className="bg-teal-500 h-2 phone:h-1.5 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-          {/* Type badge */}
-          <div className="mb-4">
-            <span
-              className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getTypeColor(challenge.type)}`}
-            >
-              {getTypeLabel(challenge.type)}
-            </span>
-          </div>
+        <div ref={cardRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3">
+          {/* A phone on its side: the molecule | the question, choices and feedback. The two
+              groups are plain blocks, so desktop margins are unchanged. */}
+          <div className="phone-land:grid phone-land:grid-cols-2 phone-land:gap-4 phone-land:items-start">
+            <div>
+              {/* Type badge. On a phone it runs inline, on the molecule's first line. */}
+              {!phone && <div className="mb-4">{badge}</div>}
 
-          {/* Molecule info */}
-          <div className="bg-warm-900 rounded-xl p-3 sm:p-4 mb-6 text-center">
-            <div className="text-3xl font-bold text-white">{challenge.formula}</div>
-            <div className="text-warm-400">{challenge.name}</div>
-            {challenge.lewisStructure && (
-              <div className="font-mono text-teal-400 mt-2 whitespace-pre">
-                {challenge.lewisStructure}
-              </div>
-            )}
-          </div>
-
-          {/* Question */}
-          <p className="text-warm-700 text-lg mb-6">{challenge.question}</p>
-
-          {/* Options */}
-          <div className="space-y-3 mb-6">
-            {shuffledOptions.map((option) => (
-              <button
-                key={option.id}
-                onClick={() => !showResult && setSelectedOption(option.id)}
-                disabled={showResult}
-                className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                  showResult
-                    ? option.correct
-                      ? 'border-green-500 bg-green-50'
-                      : selectedOption === option.id
-                        ? 'border-red-500 bg-red-50'
-                        : 'border-warm-200 bg-warm-50 opacity-50'
-                    : selectedOption === option.id
-                      ? 'border-teal-500 bg-teal-50 ring-2 ring-teal-200'
-                      : 'border-warm-300 hover:border-teal-400 hover:bg-teal-50'
-                }`}
-              >
-                <div className="flex items-start gap-3">
-                  <span className="font-bold text-warm-500 uppercase">{option.id}.</span>
-                  <span className="flex-1">{option.text}</span>
-                </div>
-                {showResult && selectedOption === option.id && (
-                  <div
-                    className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}
-                  >
-                    {option.explanation}
+              {/* Molecule info */}
+              <div className="bg-warm-900 rounded-xl p-3 sm:p-4 mb-6 text-center phone:p-2 phone:mb-3">
+                {phone ? (
+                  <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+                    {badge}
+                    <span className="text-2xl font-bold text-white">{challenge.formula}</span>
+                    <span className="text-warm-400">{challenge.name}</span>
+                  </div>
+                ) : (
+                  <>
+                    <div className="text-3xl font-bold text-white">{challenge.formula}</div>
+                    <div className="text-warm-400">{challenge.name}</div>
+                  </>
+                )}
+                {challenge.lewisStructure && (
+                  <div className="font-mono text-teal-400 mt-2 whitespace-pre phone:mt-1">
+                    {challenge.lewisStructure}
                   </div>
                 )}
-              </button>
-            ))}
-          </div>
-
-          {/* Hint */}
-          {!showResult && !showHint && (
-            <button
-              onClick={() => {
-                setShowHint(true);
-                setTotalHintsUsed((prev) => prev + 1);
-              }}
-              className="text-teal-600 hover:text-teal-800 text-sm underline mb-4 pointer-coarse:min-h-11"
-            >
-              Sýna vísbendingu
-            </button>
-          )}
-
-          {showHint && !showResult && (
-            <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4">
-              <span className="font-bold text-yellow-800">Vísbending: </span>
-              <span className="text-yellow-900">{challenge.hint}</span>
-            </div>
-          )}
-
-          {/* Check answer button */}
-          {!showResult && (
-            <button
-              onClick={checkAnswer}
-              disabled={!selectedOption}
-              className="w-full bg-teal-500 hover:bg-teal-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
-            >
-              Athuga svar
-            </button>
-          )}
-
-          {/* Result and concept explanation */}
-          {showResult && (
-            <>
-              <div
-                className={`p-4 rounded-xl mb-4 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
-              >
-                <div
-                  className={`font-bold text-lg ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
-                >
-                  {isCorrect ? 'Rétt!' : 'Rangt'}
-                </div>
               </div>
 
-              {/* Hybridization diagram — shown after hybridization questions */}
-              {challenge.type === 'hybridization' && (
-                <div className="mb-4">
-                  <HybridizationDiagram
-                    domains={
-                      challenge.formula === 'CH₄'
-                        ? 4
-                        : challenge.formula === 'CO₂'
-                          ? 2
-                          : challenge.formula === 'NH₃'
+              {/* Question */}
+              <p
+                ref={questionRef}
+                data-item-start
+                className="text-warm-700 text-lg mb-6 phone:text-base phone:mb-3"
+              >
+                {challenge.question}
+              </p>
+            </div>
+
+            <div>
+              {/* Options */}
+              <div className="space-y-3 mb-6 phone:space-y-2 phone:mb-3">
+                {shuffledOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    ref={selectedOption === option.id ? chosenRef : undefined}
+                    onClick={() => !showResult && setSelectedOption(option.id)}
+                    disabled={showResult}
+                    className={`w-full p-4 phone:p-3 rounded-xl border-2 text-left transition-all ${
+                      showResult
+                        ? option.correct
+                          ? 'border-green-500 bg-green-50'
+                          : selectedOption === option.id
+                            ? 'border-red-500 bg-red-50'
+                            : 'border-warm-200 bg-warm-50 opacity-50'
+                        : selectedOption === option.id
+                          ? 'border-teal-500 bg-teal-50 ring-2 ring-teal-200'
+                          : 'border-warm-300 hover:border-teal-400 hover:bg-teal-50'
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className="font-bold text-warm-500 uppercase">{option.id}.</span>
+                      <span className="flex-1">{option.text}</span>
+                    </div>
+                    {showResult && selectedOption === option.id && (
+                      <div
+                        className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}
+                      >
+                        {option.explanation}
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+
+              {/* Hint */}
+              {!showResult && !showHint && (
+                <button
+                  onClick={() => {
+                    setShowHint(true);
+                    setTotalHintsUsed((prev) => prev + 1);
+                  }}
+                  className="text-teal-600 hover:text-teal-800 text-sm underline mb-4 pointer-coarse:min-h-11 phone:mb-2"
+                >
+                  Sýna vísbendingu
+                </button>
+              )}
+
+              {showHint && !showResult && (
+                <div
+                  ref={hintRef}
+                  className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4 phone:p-3 phone:mb-3"
+                >
+                  <span className="font-bold text-yellow-800">Vísbending: </span>
+                  <span className="text-yellow-900">{challenge.hint}</span>
+                </div>
+              )}
+
+              {/* Check answer button. Athuga and Næsta are separate elements (keyed), never one
+              button relabelled, and Næsta ignores a press within 400 ms of appearing. */}
+              {!showResult && (
+                <button
+                  key="check"
+                  ref={checkRef}
+                  onClick={checkAnswer}
+                  disabled={!selectedOption}
+                  className="w-full bg-teal-500 hover:bg-teal-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+                >
+                  Athuga svar
+                </button>
+              )}
+
+              {/* Result and concept explanation */}
+              {showResult && (
+                <>
+                  {/* The feedback region focus moves to after Athuga (P3), named by its verdict. */}
+                  <div
+                    ref={verdictRef}
+                    tabIndex={-1}
+                    role="group"
+                    aria-labelledby="vsepr-l3-verdict"
+                    className={`p-4 rounded-xl mb-4 phone:p-3 phone:mb-3 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
+                  >
+                    <div
+                      id="vsepr-l3-verdict"
+                      className={`font-bold text-lg ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
+                    >
+                      {isCorrect ? 'Rétt!' : 'Rangt'}
+                    </div>
+                  </div>
+
+                  {/* Hybridization diagram — shown after hybridization questions */}
+                  {challenge.type === 'hybridization' && (
+                    <div className="mb-4 phone:mb-3">
+                      <HybridizationDiagram
+                        domains={
+                          challenge.formula === 'CH₄'
                             ? 4
-                            : challenge.formula === 'SF₆'
-                              ? 6
-                              : challenge.formula === 'C₂H₄'
-                                ? 3
-                                : challenge.formula === 'C₂H₂'
-                                  ? 2
-                                  : 4
-                    }
-                  />
-                </div>
+                            : challenge.formula === 'CO₂'
+                              ? 2
+                              : challenge.formula === 'NH₃'
+                                ? 4
+                                : challenge.formula === 'SF₆'
+                                  ? 6
+                                  : challenge.formula === 'C₂H₄'
+                                    ? 3
+                                    : challenge.formula === 'C₂H₂'
+                                      ? 2
+                                      : 4
+                        }
+                      />
+                    </div>
+                  )}
+
+                  {/* Concept explanation toggle */}
+                  <button
+                    onClick={() => setShowConcept(!showConcept)}
+                    className="w-full text-left p-4 bg-purple-50 rounded-xl mb-4 hover:bg-purple-100 transition-colors phone:p-3 phone:mb-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-purple-800">💡 Skoða hugtakaútskýringu</span>
+                      <span className="text-purple-600">{showConcept ? '▲' : '▼'}</span>
+                    </div>
+                  </button>
+
+                  {showConcept && (
+                    <div className="bg-purple-50 p-4 rounded-xl mb-4 border border-purple-200 phone:p-3 phone:mb-3">
+                      <p className="text-purple-900 text-sm">{challenge.conceptExplanation}</p>
+                    </div>
+                  )}
+
+                  <button
+                    key="next"
+                    ref={nextRef}
+                    onClick={armed(nextChallenge)}
+                    className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+                  >
+                    {currentChallenge < challenges.length - 1 ? 'Næsta spurning' : 'Ljúka stigi 3'}
+                  </button>
+                </>
               )}
-
-              {/* Concept explanation toggle */}
-              <button
-                onClick={() => setShowConcept(!showConcept)}
-                className="w-full text-left p-4 bg-purple-50 rounded-xl mb-4 hover:bg-purple-100 transition-colors"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-purple-800">💡 Skoða hugtakaútskýringu</span>
-                  <span className="text-purple-600">{showConcept ? '▲' : '▼'}</span>
-                </div>
-              </button>
-
-              {showConcept && (
-                <div className="bg-purple-50 p-4 rounded-xl mb-4 border border-purple-200">
-                  <p className="text-purple-900 text-sm">{challenge.conceptExplanation}</p>
-                </div>
-              )}
-
-              <button
-                onClick={nextChallenge}
-                className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
-              >
-                {currentChallenge < challenges.length - 1 ? 'Næsta spurning' : 'Ljúka stigi 3'}
-              </button>
-            </>
-          )}
+            </div>
+          </div>
         </div>
 
-        {/* Reference tables */}
-        <div className="mt-6 grid md:grid-cols-2 gap-4">
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <h3 className="font-bold text-warm-700 mb-3">🧬 Blendnitafla</h3>
+        {/* Reference tables: on a phone each starts closed behind its own heading (design P9). */}
+        <div className="mt-6 grid md:grid-cols-2 gap-4 phone:mt-3 phone:gap-3">
+          <PhoneDisclosure
+            summary="🧬 Blendnitafla"
+            className="bg-white rounded-xl p-4 shadow-sm phone:p-3"
+            buttonClassName="text-warm-700"
+          >
+            <h3 className="font-bold text-warm-700 mb-3 phone:sr-only">🧬 Blendnitafla</h3>
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-warm-50">
@@ -983,10 +1063,14 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 </tr>
               </tbody>
             </table>
-          </div>
+          </PhoneDisclosure>
 
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <h3 className="font-bold text-warm-700 mb-3">⚡ Skautun</h3>
+          <PhoneDisclosure
+            summary="⚡ Skautun"
+            className="bg-white rounded-xl p-4 shadow-sm phone:p-3"
+            buttonClassName="text-warm-700"
+          >
+            <h3 className="font-bold text-warm-700 mb-3 phone:sr-only">⚡ Skautun</h3>
             <div className="space-y-2 text-sm">
               <div className="bg-green-50 p-2 rounded">
                 <strong>Óskautuð:</strong> Samhverf lögun → tvískautsvægi jafnast út
@@ -1003,7 +1087,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 ))}
               </div>
             </div>
-          </div>
+          </PhoneDisclosure>
         </div>
       </div>
     </div>

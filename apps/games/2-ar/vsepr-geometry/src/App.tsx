@@ -2,12 +2,13 @@ import { useState } from 'react';
 
 import { Header, LanguageSwitcher, ErrorBoundary } from '@shared/components';
 import { useGameI18n, useGameProgress } from '@shared/hooks';
+import { useScreenTop } from '@shared/utils';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
 import { gameTranslations } from './i18n';
-import { useScrollTopOnChange } from './utils/phoneScroll';
+import { useTabletTopOnChange } from './utils/tabletBand';
 
 type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'complete';
 
@@ -38,7 +39,27 @@ function App() {
     'vsepr-geometry-progress',
     DEFAULT_PROGRESS
   );
-  useScrollTopOnChange(activeLevel);
+  // Stig 2 and 3 have no heading of their own, so there focus goes to where the level
+  // starts — the molecule's formula or the question — as it does on each Næsta.
+  const screenStart = {
+    get current(): HTMLElement | null {
+      const heading = Array.from(document.querySelectorAll<HTMLElement>('h1, h2')).find(
+        (h) => !h.closest('header')
+      );
+      return heading ?? document.querySelector<HTMLElement>('[data-item-start]');
+    },
+  };
+  // Each screen swap starts the new screen at its top on a phone, with its heading focused
+  // (the button that caused the swap has unmounted, and focus would otherwise fall to
+  // <body>). Back on the menu, the first level not yet done is revealed and focused instead,
+  // or Stig 1 once all three are done. Between a phone and md the old jump to the top stays.
+  const nextLevel = ([1, 2, 3] as const).find((n) => !progress[`level${n}Completed`]) ?? 1;
+  useScreenTop(activeLevel, {
+    focus: screenStart,
+    target: () =>
+      activeLevel === 'menu' ? document.querySelector(`[data-level-card="${nextLevel}"]`) : null,
+  });
+  useTabletTopOnChange(activeLevel);
 
   const applyLevelResult = (level: 1 | 2 | 3) => (score: number) => {
     const key = `level${level}` as const;
@@ -80,19 +101,19 @@ function App() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-center mb-6 text-teal-600">
+          <h1 className="text-3xl md:text-4xl font-bold text-center mb-6 phone:mb-3 text-teal-600">
             Til hamingju!
           </h1>
 
-          <div className="text-center mb-8">
-            <div className="text-6xl mb-4">🏆</div>
+          <div className="text-center mb-8 phone:mb-4">
+            <div className="text-6xl mb-4 phone:text-4xl phone:mb-2">🏆</div>
             <div className="text-2xl font-bold text-warm-800 mb-2">
               Þú hefur lokið öllum stigum!
             </div>
           </div>
 
-          <div className="space-y-4 mb-8">
-            <div className="bg-blue-50 p-4 rounded-xl flex justify-between items-center gap-3">
+          <div className="space-y-4 mb-8 phone:space-y-2 phone:mb-4">
+            <div className="bg-blue-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-blue-800">Stig 1: VSEPR Kenning</div>
                 <div className="text-sm text-blue-600">Lögun og rafeindasvið</div>
@@ -100,7 +121,7 @@ function App() {
               <div className="text-2xl font-bold text-blue-600">{progress.level1Score}</div>
             </div>
 
-            <div className="bg-green-50 p-4 rounded-xl flex justify-between items-center gap-3">
+            <div className="bg-green-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-green-800">Stig 2: Spá fyrir um lögun</div>
                 <div className="text-sm text-green-600">Frá Lewis til rúmfræði</div>
@@ -108,7 +129,7 @@ function App() {
               <div className="text-2xl font-bold text-green-600">{progress.level2Score}</div>
             </div>
 
-            <div className="bg-purple-50 p-4 rounded-xl flex justify-between items-center gap-3">
+            <div className="bg-purple-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-purple-800">Stig 3: Blendni og skautun</div>
                 <div className="text-sm text-purple-600">Flóknar sameindir</div>
@@ -116,13 +137,13 @@ function App() {
               <div className="text-2xl font-bold text-purple-600">{progress.level3Score}</div>
             </div>
 
-            <div className="bg-teal-100 p-4 rounded-xl flex justify-between items-center gap-3 border-2 border-teal-400">
+            <div className="bg-teal-100 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3 border-2 border-teal-400">
               <div className="font-bold text-teal-800 text-lg">Heildarstig</div>
               <div className="text-3xl font-bold text-teal-600">{totalScore}</div>
             </div>
           </div>
 
-          <div className="bg-teal-50 p-4 sm:p-6 rounded-xl mb-6">
+          <div className="bg-teal-50 p-4 sm:p-6 rounded-xl mb-6 phone:mb-4">
             <h2 className="font-bold text-teal-800 mb-3">Hvað lærðir þú?</h2>
             <ul className="space-y-2 text-teal-900 text-sm">
               <li>
@@ -173,13 +194,14 @@ function App() {
         }
       />
       <div className="min-h-screen p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-          <p className="text-center text-warm-600 mb-8">{t('game.description')}</p>
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3">
+          <p className="text-center text-warm-600 mb-8 phone:mb-3">{t('game.description')}</p>
 
-          {/* Pedagogical explanation */}
-          <div className="bg-teal-50 p-4 sm:p-6 rounded-xl mb-8">
+          {/* Pedagogical explanation. Teaching that comes before the level choice stays first
+              on a phone: it is read first on purpose, and costs one scroll (design §5). */}
+          <div className="bg-teal-50 p-4 sm:p-6 rounded-xl mb-8 phone:p-3 phone:mb-4">
             <h2 className="font-bold text-teal-800 mb-3">Hvað er VSEPR?</h2>
-            <p className="text-teal-900 text-sm mb-4">
+            <p className="text-teal-900 text-sm mb-4 phone:mb-3">
               <strong>VSEPR</strong> (Valence Shell Electron Pair Repulsion) segir að rafeindasvið í
               ysta hvolfi miðatóms <em>hrindi hvert öðru frá</em> og staðsetji sig eins langt í
               sundur og hægt er. Þetta ákvarðar lögun sameindarinnar.
@@ -192,17 +214,20 @@ function App() {
           </div>
 
           {/* Level selection */}
-          <div className="space-y-4">
+          <div className="space-y-4 phone:space-y-3">
             {/* Level 1 */}
             <button
+              data-level-card="1"
               onClick={() => setActiveLevel('level1')}
-              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
+              className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
             >
               <div className="flex items-center gap-3 sm:gap-4">
-                <div className="text-3xl sm:text-4xl">🔮</div>
+                <div className="text-3xl sm:text-4xl phone:text-2xl phone:shrink-0">🔮</div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xl font-bold text-blue-800">Stig 1: VSEPR Kenning</span>
+                    <span className="text-xl phone:text-lg font-bold text-blue-800">
+                      Stig 1: VSEPR Kenning
+                    </span>
                     {progress.level1Completed && (
                       <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
                         ✓ {progress.level1Score} stig
@@ -212,7 +237,7 @@ function App() {
                   <div className="text-sm text-blue-600 mt-1">
                     Kynntu þér mismunandi sameindarlögun
                   </div>
-                  <div className="text-xs text-warm-600 mt-2">
+                  <div className="text-xs text-warm-600 mt-2 phone:mt-1">
                     Sjáðu hvernig rafeindasvið hrinda hvert öðru og mynda mismunandi rúmfræði.
                   </div>
                 </div>
@@ -221,14 +246,15 @@ function App() {
 
             {/* Level 2 */}
             <button
+              data-level-card="2"
               onClick={() => setActiveLevel('level2')}
-              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
+              className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
             >
               <div className="flex items-center gap-3 sm:gap-4">
-                <div className="text-3xl sm:text-4xl">🧩</div>
+                <div className="text-3xl sm:text-4xl phone:text-2xl phone:shrink-0">🧩</div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xl font-bold text-green-800">
+                    <span className="text-xl phone:text-lg font-bold text-green-800">
                       Stig 2: Spá fyrir um lögun
                     </span>
                     {progress.level2Completed && (
@@ -240,7 +266,7 @@ function App() {
                   <div className="text-sm text-green-600 mt-1">
                     Ákvarðaðu lögun út frá Lewis-formúlu
                   </div>
-                  <div className="text-xs text-warm-600 mt-2">
+                  <div className="text-xs text-warm-600 mt-2 phone:mt-1">
                     Teldu rafeindasvið og spáðu fyrir um sameindarlögun og tengihorn.
                   </div>
                 </div>
@@ -249,14 +275,15 @@ function App() {
 
             {/* Level 3 */}
             <button
+              data-level-card="3"
               onClick={() => setActiveLevel('level3')}
-              className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
+              className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
             >
               <div className="flex items-center gap-3 sm:gap-4">
-                <div className="text-3xl sm:text-4xl">⚗️</div>
+                <div className="text-3xl sm:text-4xl phone:text-2xl phone:shrink-0">⚗️</div>
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xl font-bold text-purple-800">
+                    <span className="text-xl phone:text-lg font-bold text-purple-800">
                       Stig 3: Blendni og skautun
                     </span>
                     {progress.level3Completed && (
@@ -268,7 +295,7 @@ function App() {
                   <div className="text-sm text-purple-600 mt-1">
                     Ákvarðaðu blendni og hvort sameind sé skautuð
                   </div>
-                  <div className="text-xs text-warm-600 mt-2">
+                  <div className="text-xs text-warm-600 mt-2 phone:mt-1">
                     Flóknari sameindir með mörgum miðatómum og tvískautsvægi.
                   </div>
                 </div>

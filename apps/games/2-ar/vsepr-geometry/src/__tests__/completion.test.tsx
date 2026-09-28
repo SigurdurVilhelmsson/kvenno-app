@@ -3,6 +3,7 @@ import { fireEvent, render, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import App from '../App';
+import { clockPastNextGuard } from './next-guard-clock';
 
 /**
  * The completion screen says "Þú hefur lokið öllum stigum!". It used to follow
@@ -60,6 +61,9 @@ function playLevel1(ui: ReturnType<typeof within>, container: HTMLElement) {
     fireEvent.click(ui.getByRole('button', { name: /Næsta spurning|Ljúka stigi 1/ }));
   }
 }
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 beforeEach(() => {
   localStorage.clear();

@@ -3749,7 +3749,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Stig 1: VSEPR Kenning'],
         },
         {
-          clickRole: ['button', 'Áttflötungur Octahedral'],
+          // The shape picker is a radio group on a phone and a grid of buttons elsewhere
+          // (desktop-compare replays this path at 1280 px), so the chip is found by its label.
+          css: 'button:has-text("Octahedral")',
         },
         {
           wait: 500,
@@ -3794,6 +3796,29 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Stig 1 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 1: VSEPR Kenning'],
+        },
+        {
+          clickRole: ['button', 'Hefja spurningar'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [{ css: 'button:has(span.uppercase)' }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        // In landscape the feedback, with its misconception note, is taller than the screen,
+        // so Næsta is one scroll below the verdict there (design §5); §6.2.10 still holds the
+        // loop usable.
+        viewports: ['android', 'iphone', 'se'],
+        scrollsToAction: 1,
+      },
+    },
+    {
       name: 'Stig 2 — telja rafeindasvið',
       steps: [
         {
@@ -3803,6 +3828,28 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 300,
         },
       ],
+    },
+    {
+      name: 'Stig 2 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 2: Spá fyrir um lögun'],
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        // H₂O has two lone pairs: one is wrong, and shows the right count as well.
+        answer: [
+          { fill: ['div:nth-child(1) > input[type=number]', '2'] },
+          { fill: ['div:nth-child(2) > input[type=number]', '1'] },
+        ],
+        verdict: { css: '#vsepr-l2-verdict' },
+        next: { role: 'button', name: 'Næsta skref' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        scrollsToAction: 1,
+        typed: true,
+      },
     },
     {
       name: 'Stig 2 — röng talning',
@@ -3840,6 +3887,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Athuga svar'],
         },
         {
+          // Næsta ignores a press within 400 ms of appearing.
+          wait: 500,
+        },
+        {
           clickRole: ['button', 'Næsta skref'],
         },
         {
@@ -3869,6 +3920,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Athuga svar'],
         },
         {
+          // Næsta ignores a press within 400 ms of appearing.
+          wait: 500,
+        },
+        {
           clickRole: ['button', 'Næsta skref'],
         },
         {
@@ -3876,6 +3931,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
         {
           clickRole: ['button', 'Athuga svar'],
+        },
+        {
+          // Næsta ignores a press within 400 ms of appearing.
+          wait: 500,
         },
         {
           clickRole: ['button', 'Næsta skref'],
@@ -3901,6 +3960,18 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 300,
         },
       ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [{ css: 'button:has(span.uppercase)' }],
+        verdict: { css: '#vsepr-l3-verdict' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        scrollsToAction: 1,
+        // A hybridization question's verdict is followed by the orbital diagram that explains
+        // it; on the SE and in landscape Næsta is one scroll below it (design §5).
+        teachingFeedback: true,
+      },
     },
     {
       name: 'Stig 3 — endurgjöf og blendnirit',

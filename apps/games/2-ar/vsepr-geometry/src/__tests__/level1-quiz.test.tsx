@@ -2,6 +2,7 @@
 import { fireEvent, render, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level1 } from '../components/Level1';
 
 /**
@@ -32,6 +33,9 @@ const SHAPE_NAMES = [
 ];
 
 let unmount: (() => void) | null = null;
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 beforeEach(() => {
   window.scrollTo = vi.fn() as unknown as typeof window.scrollTo;
