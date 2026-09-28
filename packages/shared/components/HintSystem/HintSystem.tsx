@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 
 import { HintTier } from './HintTier';
 import {
@@ -38,6 +38,15 @@ interface HintSystemProps {
    * free — otherwise the indicator announces a penalty nothing deducts.
    */
   showPointCost?: boolean;
+  /**
+   * How many tiers are already open when the component mounts, and after each
+   * `resetKey` change; 0 by default. For a game that renders its HintSystem in
+   * one of two places (one on a phone, another on desktop) and so remounts it
+   * when the layout changes: the game keeps the count (from `onHintUsed`) and
+   * passes it back, so the student's open tiers survive the move. Neither
+   * callback fires for tiers opened this way — they were paid for already.
+   */
+  startRevealed?: number;
 }
 
 /**
@@ -68,15 +77,22 @@ export function HintSystem({
   showPointCost = true,
   className = '',
   resetKey = 0,
+  startRevealed = 0,
 }: HintSystemProps) {
-  const [revealedTiers, setRevealedTiers] = useState<HintTierKey[]>([]);
-  const [currentTierIndex, setCurrentTierIndex] = useState(0);
+  const start = Math.max(0, Math.min(HINT_TIER_ORDER.length, Math.floor(startRevealed)));
+  const [revealedTiers, setRevealedTiers] = useState<HintTierKey[]>(() =>
+    HINT_TIER_ORDER.slice(0, start)
+  );
+  const [currentTierIndex, setCurrentTierIndex] = useState(start);
   const leaving = usePresenceExiting();
+  // Read by the reset below, which must run only when resetKey changes.
+  const startRef = useRef(start);
+  startRef.current = start;
 
-  // Reset state when resetKey changes
+  // Reset state when resetKey changes (to `startRevealed` tiers, 0 by default)
   useEffect(() => {
-    setRevealedTiers([]);
-    setCurrentTierIndex(0);
+    setRevealedTiers(HINT_TIER_ORDER.slice(0, startRef.current));
+    setCurrentTierIndex(startRef.current);
   }, [resetKey]);
 
   const allRevealed = currentTierIndex >= HINT_TIER_ORDER.length;

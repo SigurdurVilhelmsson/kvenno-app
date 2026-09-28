@@ -7313,6 +7313,165 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
       ],
     },
+    {
+      name: 'Stig 1 — leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 1: Hugmyndafræði'],
+        },
+        {
+          wait: 400,
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga stuðpúða' },
+        // Challenge 1 starts at 5 : 5, inside its band: the check is correct.
+        answer: [],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta verkefni' },
+        // On a phone the pH, the ratio and its target sit right above the buttons that
+        // change them (design §4: 680 px apart before).
+        together: [
+          [
+            { text: 'Núverandi pH:' },
+            { text: 'Markmið:' },
+            { role: 'button', name: 'Bæta við basasameind' },
+            { role: 'button', name: 'Athuga stuðpúða' },
+          ],
+        ],
+        // On a phone on its side the flask card's own column, pH through Athuga, is
+        // taller than the screen (a design §5 landscape residual); "stays usable" still runs.
+        viewports: ['android', 'iphone', 'se'],
+        scrollsToAction: 1,
+      },
+    },
+    {
+      name: 'Stig 2 — stefna, leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 2: Útreikningar'],
+        },
+        {
+          wait: 400,
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [{ clickRole: ['button', 'Lægra'] }],
+        verdict: { text: 'Ekki rétt' },
+        // A wrong step is answered again: the choices and "Athuga svar" stay with the
+        // feedback, which follows them on a phone.
+        next: { role: 'button', name: 'Athuga svar' },
+        together: [
+          [{ text: 'pKa' }, { text: 'Markmiðs-pH' }, { role: 'button', name: 'Athuga svar' }],
+        ],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        scrollsToAction: 1,
+      },
+    },
+    {
+      name: 'Stig 2 — heilt verkefni',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 2: Útreikningar'],
+        },
+        {
+          wait: 400,
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        // The whole puzzle, from its arrival: the direction, the ratio, then both masses.
+        answer: [
+          { clickRole: ['button', 'Hærra'] },
+          { clickRole: ['button', 'Athuga svar'] },
+          { wait: 400 },
+          { fill: ['input[inputmode=decimal]', '1,585'] },
+          { clickRole: ['button', 'Athuga svar'] },
+          { wait: 400 },
+          { fill: ['div:has(> label:has-text("Sýrumassi")) > input', '4,64'] },
+          { fill: ['div:has(> label:has-text("Basamassi")) > input', '8,70'] },
+        ],
+        verdict: { role: 'heading', name: 'Rétt svar!' },
+        next: { role: 'button', name: 'Næsta verkefni' },
+        scrollsToAction: 1,
+        // On a phone on its side the worked solution is read down to Næsta (a design §5
+        // landscape residual); "stays usable" still runs.
+        viewports: ['android', 'iphone', 'se'],
+        typed: true,
+      },
+    },
+    {
+      name: 'Stig 3 — hlutfall, leikur',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 3: Hönnun'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Byrja'],
+        },
+        {
+          wait: 300,
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [{ fill: ['input[inputmode=decimal]', '99'] }],
+        verdict: { text: 'Ekki rétt' },
+        next: { role: 'button', name: 'Athuga svar' },
+        together: [[{ text: 'Formúla:' }, { css: 'input[inputmode=decimal]' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        scrollsToAction: 1,
+        typed: true,
+      },
+    },
+    {
+      name: 'Stig 3 — heilt verkefni',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 3: Hönnun'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Byrja'],
+        },
+        {
+          wait: 300,
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        // The whole puzzle, from its arrival: the ratio, the moles, then both volumes.
+        answer: [
+          { fill: ['input[inputmode=decimal]', '1,585'] },
+          { clickRole: ['button', 'Athuga svar'] },
+          { wait: 400 },
+          { fill: ['div:has(> label:has-text("Mól sýru")) > input', '0,00387'] },
+          { fill: ['div:has(> label:has-text("Mól basa")) > input', '0,00613'] },
+          { clickRole: ['button', 'Athuga svar'] },
+          { wait: 400 },
+          { fill: ['div:has(> label:has-text("Rúmmál sýru")) > input', '7,76'] },
+          { fill: ['div:has(> label:has-text("Rúmmál basa")) > input', '12,24'] },
+        ],
+        verdict: { role: 'heading', name: 'Rétt svar!' },
+        next: { role: 'button', name: 'Næsta verkefni' },
+        scrollsToAction: 1,
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+        // The recipe is a worked solution, read in full: Næsta may be a scroll below it.
+        teachingFeedback: true,
+      },
+    },
   ],
   '3-ar/leysnijafnvaegi': [
     {

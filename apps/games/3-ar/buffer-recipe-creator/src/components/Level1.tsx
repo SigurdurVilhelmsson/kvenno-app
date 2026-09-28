@@ -1,11 +1,21 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 
 import { HintSystem, FeedbackPanel, Presence } from '@shared/components';
-import { formatDecimal } from '@shared/utils';
+import {
+  focusTarget,
+  formatDecimal,
+  isPhone,
+  revealSpan,
+  useArmedAfter,
+  useIsPhone,
+  useItemTop,
+} from '@shared/utils';
 
 import { LEVEL1_CHALLENGES, type Level1Challenge } from '../data';
 import { BufferCapacityVisualization } from './BufferCapacityVisualization';
-import { revealNearest, revealTop } from '../utils/reveal';
+
+/** Presence mounts the feedback a frame after it is set; wait this long before measuring it. */
+const FEEDBACK_MOUNT_MS = 60;
 
 /** Maximum molecules per species in the interactive mixer */
 const MAX_MOLECULES = 30;
@@ -59,20 +69,57 @@ export default function Level1({ onLevelComplete }: Level1Props) {
   const [hintMultiplier, setHintMultiplier] = useState(1.0);
   const [, setHintsUsedTier] = useState(0);
   const [hintResetKey, setHintResetKey] = useState(0);
+  // Each tap on "Athuga stuðpúða", so a repeated check with the same answer still moves focus.
+  const [checks, setChecks] = useState(0);
   const levelCompleteReported = useRef(false);
-  const challengeCardRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
+  const phRowRef = useRef<HTMLDivElement>(null);
+  const controlsRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  // On a phone the flask card is re-ordered so the pH, the ratio and its target sit right
+  // above the buttons that change them, the molecules come after the loop, and "Lykilhugmynd"
+  // follows the flask card. Rendered in one place or the other, never twice.
+  const phone = useIsPhone();
+
+  // The level opens with its heading focused: the menu card that opened it has gone.
+  useLayoutEffect(() => {
+    focusTarget(headingRef.current);
+  }, []);
+
+  // "Næsta verkefni" sits below the flask, so on a phone the new challenge's card is far
+  // above the viewport: bring its top back (at any width, as the game always did, and only
+  // when it is off screen) and focus the new challenge's name.
+  const challengeCardRef = useItemTop<HTMLDivElement>(currentChallenge.id, { anyWidth: true });
 
   // The feedback opens below "Athuga stuðpúða", which on a phone is usually tapped at the
   // bottom edge of the screen, so the answer landed wholly below the fold and the tap looked
   // like it did nothing. Presence mounts the panel a frame after `feedback` is set, hence the
   // short delay. The last challenge now stays on screen until "Ljúka stigi", so its feedback
-  // is revealed like any other.
+  // is revealed like any other. Off a phone this is the shortest scroll that shows the
+  // panel, as it always was.
   useEffect(() => {
-    if (!feedback) return;
-    const timer = window.setTimeout(() => revealNearest(feedbackRef.current), 60);
+    if (!feedback || isPhone()) return;
+    const timer = window.setTimeout(
+      () => revealSpan(feedbackRef.current, [], { anyWidth: true, gap: 0 }),
+      FEEDBACK_MOUNT_MS
+    );
     return () => window.clearTimeout(timer);
   }, [feedback]);
+  // On a phone: the pH and the buttons through "Næsta verkefni" if that fits, else the
+  // verdict at the top. At every width focus moves to the feedback, not to Næsta (P3).
+  useEffect(() => {
+    if (!checks) return;
+    const timer = window.setTimeout(() => {
+      const fb = feedbackRef.current;
+      if (!fb) return;
+      revealSpan(nextRef.current ?? fb, [phRowRef.current, controlsRef.current, fb]);
+      focusTarget(fb);
+    }, FEEDBACK_MOUNT_MS);
+    return () => window.clearTimeout(timer);
+  }, [checks]);
+  // A double tap on "Athuga stuðpúða" must not land on "Næsta verkefni" as it appears.
+  const armed = useArmedAfter(400, `${currentChallenge.id}:${checks}`);
 
   const currentIndex = LEVEL1_CHALLENGES.findIndex((c) => c.id === currentChallenge.id);
   const isLastChallenge = currentIndex === LEVEL1_CHALLENGES.length - 1;
@@ -146,6 +193,7 @@ export default function Level1({ onLevelComplete }: Level1Props) {
 
   // Check answer
   const checkBuffer = () => {
+    setChecks((n) => n + 1);
     if (missingComponent) {
       setFeedback('Stuðpúði þarf BÆÐI sýru og basa!');
       return;
@@ -197,73 +245,175 @@ export default function Level1({ onLevelComplete }: Level1Props) {
     setHintMultiplier(1.0);
     setHintsUsedTier(0);
     setHintResetKey((prev) => prev + 1);
-    // "Næsta verkefni" sits below the flask, so on a phone the new challenge's card is far
-    // above the viewport.
-    revealTop(challengeCardRef.current);
   };
 
-  return (
-    <div className="max-w-6xl mx-auto px-4 pt-4 pb-8 md:py-8">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-kvenno-orange">
-          Stuðpúðasmíði - Stig 1
-        </h1>
-        <p className="text-lg text-warm-600">Skildu hvernig hlutfall sýru/basa hefur áhrif á pH</p>
+  // The ratio and its target. Inside the molecule box on desktop; on a phone directly above
+  // the buttons, where the student compares it with the target while tapping.
+  const ratioDisplay = (
+    <div
+      className={
+        phone
+          ? 'bg-warm-100 rounded-lg p-2 text-center mb-3'
+          : 'mt-4 bg-warm-100 rounded-lg p-3 text-center'
+      }
+    >
+      <div className="text-sm text-warm-600 mb-1 phone:mb-0">Hlutfall [Basi]/[Sýra]</div>
+      <div
+        className={`text-3xl font-bold transition-colors duration-300 phone:text-2xl ${isCorrect ? 'text-green-500' : 'text-kvenno-orange'}`}
+      >
+        {acidCount > 0 ? formatDecimal(currentRatio, 2) : '-'}
+      </div>
+      <div className="text-xs text-warm-500 mt-1 phone:mt-0">
+        Markmið: {formatDecimal(currentChallenge.targetRatioMin, 1)} -{' '}
+        {formatDecimal(currentChallenge.targetRatioMax, 1)}
+      </div>
+    </div>
+  );
+
+  // The molecules themselves. Inside the flask card either way; on a phone after the loop
+  // (the pH, the ratio and the buttons), since the picture restates what they show.
+  const moleculeDisplay = (
+    <div
+      className={`border-4 rounded-lg p-3 sm:p-6 mb-6 transition-colors duration-300 bg-slate-50 min-h-[280px] phone:min-h-0 phone:mb-0 phone:mt-3 ${isCorrect ? 'border-green-500' : 'border-warm-300'}`}
+    >
+      {/* Acid Molecules */}
+      <div className="mb-6 phone:mb-3">
+        <div className="flex justify-between items-center mb-2 phone:mb-1">
+          <span className="font-bold text-red-600">{currentChallenge.acidName}</span>
+          <span className="text-sm font-mono bg-red-100 px-2 py-1 rounded">
+            Fjöldi: {acidCount}
+          </span>
+        </div>
+        <div className="flex flex-wrap gap-2 min-h-[60px] bg-red-50 rounded-lg p-3 phone:min-h-11 phone:gap-1.5 phone:p-2">
+          {Array.from({ length: acidCount }).map((_, i) => (
+            <div
+              key={`acid-${i}`}
+              className="w-10 h-10 phone:w-8 phone:h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md transition-all duration-200 hover:scale-110"
+              style={{
+                animation: `fadeIn 0.2s ease-out ${i * 0.02}s both`,
+              }}
+            >
+              HA
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
-        <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 text-center">
-          <div className="text-2xl font-bold text-orange-600">{score}</div>
-          <div className="text-sm text-warm-600">Stig</div>
+      {/* Base Molecules */}
+      <div>
+        <div className="flex justify-between items-center mb-2 phone:mb-1">
+          <span className="font-bold text-blue-600">{currentChallenge.baseName}</span>
+          <span className="text-sm font-mono bg-blue-100 px-2 py-1 rounded">
+            Fjöldi: {baseCount}
+          </span>
         </div>
-        <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 text-center">
-          <div className="text-2xl font-bold text-green-600">{challengesCompleted}</div>
-          <div className="text-sm text-warm-600">Kláruð</div>
+        <div className="flex flex-wrap gap-2 min-h-[60px] bg-blue-50 rounded-lg p-3 phone:min-h-11 phone:gap-1.5 phone:p-2">
+          {Array.from({ length: baseCount }).map((_, i) => (
+            <div
+              key={`base-${i}`}
+              className="w-10 h-10 phone:w-8 phone:h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md transition-all duration-200 hover:scale-110"
+              style={{
+                animation: `fadeIn 0.2s ease-out ${i * 0.02}s both`,
+              }}
+            >
+              A⁻
+            </div>
+          ))}
         </div>
-        <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 text-center">
-          <div className="text-2xl font-bold text-blue-600">{LEVEL1_CHALLENGES.length}</div>
-          <div className="text-sm text-warm-600">Samtals</div>
+      </div>
+
+      {/* Ratio Display */}
+      {!phone && ratioDisplay}
+    </div>
+  );
+
+  // Key Concept. In the challenge card on desktop; after the flask card on a phone.
+  const keyConcept = (
+    <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4 phone:p-3">
+      <h3 className="font-bold text-yellow-900 mb-2 phone:mb-1">Lykilhugmynd:</h3>
+      <ul className="text-sm text-yellow-800 space-y-1">
+        <li>• pH = pKa þegar [Basi] = [Sýra]</li>
+        <li>• Meira af basa → Hærra pH</li>
+        <li>• Meira af sýru → Lægra pH</li>
+      </ul>
+    </div>
+  );
+
+  return (
+    <div className="max-w-6xl mx-auto px-4 pt-4 pb-8 md:py-8 phone:pt-2">
+      {/* Header */}
+      <div className="text-center mb-8 phone:mb-2">
+        <h1
+          ref={headingRef}
+          className="text-3xl sm:text-4xl font-bold mb-2 text-kvenno-orange phone:text-xl phone:mb-0"
+        >
+          Stuðpúðasmíði - Stig 1
+        </h1>
+        <p className="text-lg text-warm-600 phone:sr-only">
+          Skildu hvernig hlutfall sýru/basa hefur áhrif á pH
+        </p>
+      </div>
+
+      {/* Stats: on a phone one short row, number beside its label */}
+      <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6 phone:mb-3">
+        <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 text-center phone:py-1 phone:px-1 phone:flex phone:flex-wrap phone:items-baseline phone:justify-center phone:gap-x-1">
+          <div className="text-2xl font-bold text-orange-600 phone:text-base">{score}</div>
+          <div className="text-sm text-warm-600 phone:text-xs">Stig</div>
+        </div>
+        <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 text-center phone:py-1 phone:px-1 phone:flex phone:flex-wrap phone:items-baseline phone:justify-center phone:gap-x-1">
+          <div className="text-2xl font-bold text-green-600 phone:text-base">
+            {challengesCompleted}
+          </div>
+          <div className="text-sm text-warm-600 phone:text-xs">Kláruð</div>
+        </div>
+        <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 text-center phone:py-1 phone:px-1 phone:flex phone:flex-wrap phone:items-baseline phone:justify-center phone:gap-x-1">
+          <div className="text-2xl font-bold text-blue-600 phone:text-base">
+            {LEVEL1_CHALLENGES.length}
+          </div>
+          <div className="text-sm text-warm-600 phone:text-xs">Samtals</div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 phone:gap-3 phone-land:grid-cols-2">
         {/* Left: Challenge & Instructions */}
         <div className="space-y-6">
           {/* Challenge Card */}
           <div
             ref={challengeCardRef}
-            className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:scroll-mt-16"
+            className="bg-white rounded-lg shadow-lg p-4 sm:p-6 md:scroll-mt-16 phone:p-3"
           >
-            <div className="mb-4">
-              <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+            <div className="mb-4 phone:mb-1">
+              <span className="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium phone:py-0.5">
                 Verkefni #{currentChallenge.id}
               </span>
             </div>
 
-            <h2 className="text-2xl font-bold mb-3">{currentChallenge.system}</h2>
+            <h2 data-item-start className="text-2xl font-bold mb-3 phone:text-lg phone:mb-2">
+              {currentChallenge.system}
+            </h2>
 
-            <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
-              <p className="text-warm-700">{currentChallenge.context}</p>
+            <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4 phone:p-2 phone:mb-2">
+              <p className="text-warm-700 phone:text-sm">{currentChallenge.context}</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <div className="bg-warm-50 p-3 rounded-lg">
-                <div className="text-sm text-warm-600">pKa</div>
-                <div className="text-xl font-bold">{formatDecimal(currentChallenge.pKa)}</div>
+            <div className="grid grid-cols-2 gap-4 mb-4 phone:gap-2 phone:mb-2">
+              <div className="bg-warm-50 p-3 rounded-lg phone:px-2 phone:py-1 phone:flex phone:flex-wrap phone:items-baseline phone:justify-between phone:gap-x-2">
+                <div className="text-sm text-warm-600 phone:text-xs">pKa</div>
+                <div className="text-xl font-bold phone:text-base">
+                  {formatDecimal(currentChallenge.pKa)}
+                </div>
               </div>
-              <div className="bg-warm-50 p-3 rounded-lg">
-                <div className="text-sm text-warm-600">Markmiðs-pH</div>
-                <div className="text-xl font-bold text-kvenno-orange">
+              <div className="bg-warm-50 p-3 rounded-lg phone:px-2 phone:py-1 phone:flex phone:flex-wrap phone:items-baseline phone:justify-between phone:gap-x-2">
+                <div className="text-sm text-warm-600 phone:text-xs">Markmiðs-pH</div>
+                <div className="text-xl font-bold text-kvenno-orange phone:text-base">
                   {formatDecimal(currentChallenge.targetPH)}
                 </div>
               </div>
             </div>
 
             {/* Tiered Hint System */}
-            <div className="mb-4">
+            <div className="mb-4 phone:mb-0">
               <HintSystem
                 hints={currentChallenge.hints}
                 basePoints={100}
@@ -275,26 +425,21 @@ export default function Level1({ onLevelComplete }: Level1Props) {
             </div>
 
             {/* Key Concept */}
-            <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg p-4">
-              <h3 className="font-bold text-yellow-900 mb-2">Lykilhugmynd:</h3>
-              <ul className="text-sm text-yellow-800 space-y-1">
-                <li>• pH = pKa þegar [Basi] = [Sýra]</li>
-                <li>• Meira af basa → Hærra pH</li>
-                <li>• Meira af sýru → Lægra pH</li>
-              </ul>
-            </div>
+            {!phone && keyConcept}
           </div>
         </div>
 
         {/* Right: Visual Flask & Controls */}
-        <div className="space-y-6">
+        <div className="space-y-6 phone:space-y-3">
           {/* Flask Visualization */}
-          <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
-            <h3 className="text-xl font-bold mb-4 text-center">Þinn stuðpúði</h3>
+          <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 phone:p-3">
+            <h3 className="text-xl font-bold mb-4 text-center phone:text-base phone:mb-2">
+              Þinn stuðpúði
+            </h3>
 
             {/* pH Indicator */}
-            <div className="mb-6">
-              <div className="flex justify-between items-center mb-2">
+            <div ref={phRowRef} className="mb-6 phone:mb-3">
+              <div className="flex justify-between items-center mb-2 phone:mb-1">
                 <span className="text-sm text-warm-600">Núverandi pH:</span>
                 <span className="text-2xl font-bold" style={{ color: phColor }}>
                   {missingComponent ? '–' : formatDecimal(estimatedPH, 2)}
@@ -318,9 +463,11 @@ export default function Level1({ onLevelComplete }: Level1Props) {
             </div>
 
             {/* Visual Ratio Bar */}
-            <div className="mb-6">
-              <div className="text-sm text-warm-600 mb-2 text-center">Hlutfall sýru/basa</div>
-              <div className="flex h-8 rounded-lg overflow-hidden border-2 border-warm-300">
+            <div className="mb-6 phone:mb-3">
+              <div className="text-sm text-warm-600 mb-2 text-center phone:mb-1">
+                Hlutfall sýru/basa
+              </div>
+              <div className="flex h-8 rounded-lg overflow-hidden border-2 border-warm-300 phone:h-6">
                 <div
                   className="bg-red-500 flex items-center justify-center text-white text-xs font-bold transition-all duration-300"
                   style={{ width: `${acidPercent}%` }}
@@ -340,81 +487,19 @@ export default function Level1({ onLevelComplete }: Level1Props) {
               </div>
             </div>
 
-            {/* Molecule Display */}
-            <div
-              className={`border-4 rounded-lg p-3 sm:p-6 mb-6 transition-colors duration-300 bg-slate-50 min-h-[280px] ${isCorrect ? 'border-green-500' : 'border-warm-300'}`}
-            >
-              {/* Acid Molecules */}
-              <div className="mb-6">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-bold text-red-600">{currentChallenge.acidName}</span>
-                  <span className="text-sm font-mono bg-red-100 px-2 py-1 rounded">
-                    Fjöldi: {acidCount}
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-2 min-h-[60px] bg-red-50 rounded-lg p-3">
-                  {Array.from({ length: acidCount }).map((_, i) => (
-                    <div
-                      key={`acid-${i}`}
-                      className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md transition-all duration-200 hover:scale-110"
-                      style={{
-                        animation: `fadeIn 0.2s ease-out ${i * 0.02}s both`,
-                      }}
-                    >
-                      HA
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Base Molecules */}
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-bold text-blue-600">{currentChallenge.baseName}</span>
-                  <span className="text-sm font-mono bg-blue-100 px-2 py-1 rounded">
-                    Fjöldi: {baseCount}
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-2 min-h-[60px] bg-blue-50 rounded-lg p-3">
-                  {Array.from({ length: baseCount }).map((_, i) => (
-                    <div
-                      key={`base-${i}`}
-                      className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-md transition-all duration-200 hover:scale-110"
-                      style={{
-                        animation: `fadeIn 0.2s ease-out ${i * 0.02}s both`,
-                      }}
-                    >
-                      A⁻
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Ratio Display */}
-              <div className="mt-4 bg-warm-100 rounded-lg p-3 text-center">
-                <div className="text-sm text-warm-600 mb-1">Hlutfall [Basi]/[Sýra]</div>
-                <div
-                  className={`text-3xl font-bold transition-colors duration-300 ${isCorrect ? 'text-green-500' : 'text-kvenno-orange'}`}
-                >
-                  {acidCount > 0 ? formatDecimal(currentRatio, 2) : '-'}
-                </div>
-                <div className="text-xs text-warm-500 mt-1">
-                  Markmið: {formatDecimal(currentChallenge.targetRatioMin, 1)} -{' '}
-                  {formatDecimal(currentChallenge.targetRatioMax, 1)}
-                </div>
-              </div>
-            </div>
+            {/* Molecule Display (on a phone the ratio shows here, and the molecules last) */}
+            {phone ? ratioDisplay : moleculeDisplay}
 
             {/* Control Buttons */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
+            <div ref={controlsRef} className="grid grid-cols-2 gap-3 sm:gap-4 mb-4 phone:mb-3">
               <div>
-                <div className="text-center font-bold text-red-600 mb-2">Sýra</div>
+                <div className="text-center font-bold text-red-600 mb-2 phone:mb-1">Sýra</div>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <button
                     onClick={removeAcid}
                     disabled={acidCount === 0}
                     aria-label="Fjarlægja sýrusameind"
-                    className="flex-1 py-3 bg-red-100 hover:bg-red-200 disabled:bg-warm-100 disabled:text-warm-400 rounded-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
+                    className="flex-1 py-3 phone:py-2 pointer-coarse:min-h-11 bg-red-100 hover:bg-red-200 disabled:bg-warm-100 disabled:text-warm-400 rounded-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
                   >
                     − Fjarlægja
                   </button>
@@ -422,7 +507,7 @@ export default function Level1({ onLevelComplete }: Level1Props) {
                     onClick={addAcid}
                     disabled={acidCount >= MAX_MOLECULES}
                     aria-label="Bæta við sýrusameind"
-                    className="flex-1 py-3 bg-red-500 hover:bg-red-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
+                    className="flex-1 py-3 phone:py-2 pointer-coarse:min-h-11 bg-red-500 hover:bg-red-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
                   >
                     + Bæta við
                   </button>
@@ -430,13 +515,13 @@ export default function Level1({ onLevelComplete }: Level1Props) {
               </div>
 
               <div>
-                <div className="text-center font-bold text-blue-600 mb-2">Basi</div>
+                <div className="text-center font-bold text-blue-600 mb-2 phone:mb-1">Basi</div>
                 <div className="flex flex-col sm:flex-row gap-2">
                   <button
                     onClick={removeBase}
                     disabled={baseCount === 0}
                     aria-label="Fjarlægja basasameind"
-                    className="flex-1 py-3 bg-blue-100 hover:bg-blue-200 disabled:bg-warm-100 disabled:text-warm-400 rounded-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
+                    className="flex-1 py-3 phone:py-2 pointer-coarse:min-h-11 bg-blue-100 hover:bg-blue-200 disabled:bg-warm-100 disabled:text-warm-400 rounded-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500"
                   >
                     − Fjarlægja
                   </button>
@@ -444,7 +529,7 @@ export default function Level1({ onLevelComplete }: Level1Props) {
                     onClick={addBase}
                     disabled={baseCount >= MAX_MOLECULES}
                     aria-label="Bæta við basasameind"
-                    className="flex-1 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
+                    className="flex-1 py-3 phone:py-2 pointer-coarse:min-h-11 bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white rounded-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
                   >
                     + Bæta við
                   </button>
@@ -460,7 +545,7 @@ export default function Level1({ onLevelComplete }: Level1Props) {
               Athuga stuðpúða
             </button>
 
-            {/* Feedback */}
+            {/* Feedback — the region focus moves to after a check (P3) */}
             <Presence show={!!feedback} exitDuration={250}>
               <div ref={feedbackRef} className="mb-3">
                 <FeedbackPanel
@@ -497,13 +582,18 @@ export default function Level1({ onLevelComplete }: Level1Props) {
             {/* Next Button */}
             <Presence show={!!(isCorrect && feedback)} exitDuration={250}>
               <button
-                onClick={nextChallenge}
+                ref={nextRef}
+                onClick={armed(nextChallenge)}
                 className="w-full py-3 px-6 bg-green-500 hover:bg-green-600 text-white font-bold text-lg rounded-lg transition-colors"
               >
                 {isLastChallenge ? 'Ljúka stigi →' : 'Næsta verkefni →'}
               </button>
             </Presence>
+
+            {phone && moleculeDisplay}
           </div>
+
+          {phone && keyConcept}
         </div>
       </div>
 

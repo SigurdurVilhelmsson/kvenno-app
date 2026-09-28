@@ -2,8 +2,12 @@
 import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import Level1 from '../components/Level1';
 import { LEVEL1_CHALLENGES } from '../data/level1-challenges';
+
+// These tests press "Næsta" at once; the double-tap guard would drop that.
+clockPastNextGuard();
 
 /**
  * Stig 1 played through its real buttons.
