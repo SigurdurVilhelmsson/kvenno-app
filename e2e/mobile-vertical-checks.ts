@@ -542,9 +542,18 @@ async function checkAntiSkip(
     ).toBe(true);
     await page.waitForTimeout(50);
   }
-  expect(await itemSignature(page, loop), `Double ${how} advanced the item — ${where}`).toBe(
-    before
-  );
+  if (loop.commitLeavesScreen) {
+    // The feedback is a screen of its own: the prompt went with the question, and a skip
+    // would have brought a new one.
+    expect(
+      await locate(page, loop.prompt).count(),
+      `Double ${how} left the feedback screen for a new item — ${where}`
+    ).toBe(0);
+  } else {
+    expect(await itemSignature(page, loop), `Double ${how} advanced the item — ${where}`).toBe(
+      before
+    );
+  }
   await noSideways(page, `double ${how}`, where);
 }
 

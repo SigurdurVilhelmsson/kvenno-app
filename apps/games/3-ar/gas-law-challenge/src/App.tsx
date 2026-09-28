@@ -1,8 +1,8 @@
-import { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 
 import { ErrorBoundary, FadePresence } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
-import { parseStudentNumber } from '@shared/utils';
+import { focusTarget, parseStudentNumber, revealSpan, revealTop } from '@shared/utils';
 
 import { FeedbackScreen } from './components/FeedbackScreen';
 import { GameScreen } from './components/GameScreen';
@@ -196,12 +196,56 @@ function App() {
     finishQuestion(answerProblem(userNum) ? null : userNum);
   };
 
-  // Each screen opens at its top. On a phone "Athuga Svar" and "Næsta spurning" sit far down
-  // a long page, and the next screen used to open at that same scroll offset: past the
-  // verdict banner, or past the new question's scenario.
-  useEffect(() => {
-    if (window.scrollY > 0) window.scrollTo({ top: 0 });
+  // Each screen opens at its top, at every width, as it always has. On a phone "Athuga Svar"
+  // and "Næsta spurning" sit far down a long page, and the next screen used to open at that
+  // same scroll offset: past the verdict banner, or past the new question's scenario.
+  useLayoutEffect(() => {
+    revealTop(document.documentElement, { anyWidth: true, always: true, gap: 0, instant: true });
   }, [screen, currentQuestion]);
+
+  // Focus follows each screen swap, since the button that caused it has gone with the old
+  // screen and focus would otherwise fall to <body>: a new question focuses its question (the
+  // law step's while the law is still being chosen), the feedback screen its verdict (design
+  // P3), and back on the menu the level being played, with the level choice and that mode's
+  // start button brought on screen on a phone. Nothing on the initial load.
+  //
+  // The screens fade (FadePresence), which mounts the new one a render after `screen`
+  // changes, so this usually runs as the new screen's root attaches. A screen shown again
+  // before its fade-out ended never unmounted, so the swap itself runs it for that one.
+  type Screen = typeof screen;
+  const lastShown = useRef<Screen>(screen);
+  const shownScreen = useRef<Screen>(screen);
+  shownScreen.current = screen;
+  const roots = useRef<Partial<Record<Screen, HTMLElement>>>({});
+  const shownRef = useRef<(which: Screen, root: HTMLElement) => void>(() => {});
+  shownRef.current = (which, root) => {
+    if (lastShown.current === which) return;
+    lastShown.current = which;
+    if (which === 'menu') {
+      const chooser = root.querySelector('[data-level-chooser]');
+      revealSpan(root.querySelector(`[data-mode-start="${gameMode}"]`), [chooser]);
+      focusTarget(chooser?.querySelector<HTMLElement>('[aria-pressed="true"]'));
+    } else if (which === 'game') {
+      focusTarget(root.querySelector<HTMLElement>('[data-item-start]'));
+    } else {
+      focusTarget(root.querySelector<HTMLElement>('[data-feedback-verdict]'));
+    }
+  };
+  const attach = useCallback((which: Screen, el: HTMLDivElement | null) => {
+    if (!el) {
+      delete roots.current[which];
+      return;
+    }
+    roots.current[which] = el;
+    if (shownScreen.current === which) shownRef.current(which, el);
+  }, []);
+  const menuRoot = useCallback((el: HTMLDivElement | null) => attach('menu', el), [attach]);
+  const gameRoot = useCallback((el: HTMLDivElement | null) => attach('game', el), [attach]);
+  const feedbackRoot = useCallback((el: HTMLDivElement | null) => attach('feedback', el), [attach]);
+  useLayoutEffect(() => {
+    const root = roots.current[screen];
+    if (root) shownRef.current(screen, root);
+  }, [screen]);
 
   const getHint = () => {
     if (!currentQuestion || showHint >= currentQuestion.hints.length) return;
@@ -257,6 +301,7 @@ function App() {
           setSelectedLevel={setSelectedLevel}
           resetStats={resetStats}
           onStart={startNewQuestion}
+          rootRef={menuRoot}
         />
       </FadePresence>
       <FadePresence show={screen === 'game'} exitDuration={200}>
@@ -284,6 +329,7 @@ function App() {
             onCheckLaw={checkSelectedLaw}
             onSkipLaw={skipLawSelection}
             onBackToMenu={() => setScreen('menu')}
+            rootRef={gameRoot}
           />
         )}
       </FadePresence>
@@ -298,6 +344,7 @@ function App() {
             gameMode={gameMode}
             onNext={startNewQuestion}
             onBackToMenu={() => setScreen('menu')}
+            rootRef={feedbackRoot}
           />
         )}
       </FadePresence>

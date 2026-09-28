@@ -68,6 +68,13 @@ export interface LoopCheck {
    */
   teachingFeedbackScrolls?: number;
   /**
+   * The commit swaps the whole screen for a separate feedback screen, so the
+   * prompt leaves with it (gas-law-challenge). The anti-skip check then
+   * asserts the prompt is gone — the feedback screen is still showing, not a
+   * next item — instead of asserting it is unchanged.
+   */
+  commitLeavesScreen?: boolean;
+  /**
    * The screen deliberately passes FeedbackPanel `defaultExpanded: false`
    * (molmassi Stig 2), so 'Af hverju?' is not required to open expanded.
    */
@@ -5582,6 +5589,36 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Stig 1 — spurning',
+      steps: [
+        {
+          clickRole: ['button', 'Byrja að Æfa'],
+        },
+        {
+          wait: 400,
+        },
+      ],
+      // The play loops (design §6.1): one per level and one for Keppnishamur. Stig 2 and 3
+      // skip the law step to reach the answer; the law step itself has no Næsta.
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga Svar' },
+        answer: [{ fill: ['#gas-law-answer', '999999'] }],
+        verdict: { css: '#gas-law-verdict' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        // The data the answer is worked from sits within a keyboard's height of the field.
+        together: [[{ text: 'Gefnar upplýsingar:' }, { css: '#gas-law-answer' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+        // The feedback is its own screen, and its worked solution is read in full (design
+        // §5): Næsta spurning stays at its foot, one flick below at 360x640 and 390x664,
+        // two on the SE and on its side.
+        commitLeavesScreen: true,
+        teachingFeedback: true,
+        teachingFeedbackScrolls: 2,
+      },
+    },
+    {
       name: 'Stig 1 — vísbendingar og lausn',
       steps: [
         {
@@ -5740,6 +5777,84 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Stig 2 — lausnarskref',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 2 — Sérstök tilvik'],
+        },
+        {
+          clickRole: ['button', 'Byrja að Æfa'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Sleppa'],
+        },
+        {
+          wait: 400,
+        },
+      ],
+      // The play loops (design §6.1): one per level and one for Keppnishamur. Stig 2 and 3
+      // skip the law step to reach the answer; the law step itself has no Næsta.
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga Svar' },
+        answer: [{ fill: ['#gas-law-answer', '999999'] }],
+        verdict: { css: '#gas-law-verdict' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        // The data the answer is worked from sits within a keyboard's height of the field.
+        together: [[{ text: 'Gefnar upplýsingar:' }, { css: '#gas-law-answer' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+        // The feedback is its own screen, and its worked solution is read in full (design
+        // §5): Næsta spurning stays at its foot, one flick below at 360x640 and 390x664,
+        // two on the SE and on its side.
+        commitLeavesScreen: true,
+        teachingFeedback: true,
+        teachingFeedbackScrolls: 2,
+      },
+    },
+    {
+      name: 'Stig 3 — lausnarskref',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 3 — Samanburður'],
+        },
+        {
+          clickRole: ['button', 'Byrja að Æfa'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Sleppa'],
+        },
+        {
+          wait: 400,
+        },
+      ],
+      // The play loops (design §6.1): one per level and one for Keppnishamur. Stig 2 and 3
+      // skip the law step to reach the answer; the law step itself has no Næsta.
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga Svar' },
+        answer: [{ fill: ['#gas-law-answer', '999999'] }],
+        verdict: { css: '#gas-law-verdict' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        // The data the answer is worked from sits within a keyboard's height of the field.
+        together: [[{ text: 'Gefnar upplýsingar:' }, { css: '#gas-law-answer' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+        // The feedback is its own screen, and its worked solution is read in full (design
+        // §5): Næsta spurning stays at its foot, one flick below at 360x640 and 390x664,
+        // two on the SE and on its side.
+        commitLeavesScreen: true,
+        teachingFeedback: true,
+        teachingFeedbackScrolls: 2,
+      },
+    },
+    {
       name: 'Keppnishamur — spurning',
       steps: [
         {
@@ -5749,6 +5864,24 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 400,
         },
       ],
+      // The 90 s clock runs through the loop; the answer is typed well inside it.
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga Svar' },
+        answer: [{ fill: ['#gas-law-answer', '999999'] }],
+        verdict: { css: '#gas-law-verdict' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        // The data the answer is worked from sits within a keyboard's height of the field.
+        together: [[{ text: 'Gefnar upplýsingar:' }, { css: '#gas-law-answer' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+        // The feedback is its own screen, and its worked solution is read in full (design
+        // §5): Næsta spurning stays at its foot, one flick below at 360x640 and 390x664,
+        // two on the SE and on its side.
+        commitLeavesScreen: true,
+        teachingFeedback: true,
+        teachingFeedbackScrolls: 2,
+      },
     },
     {
       name: 'Keppnishamur — endurgjöf',
