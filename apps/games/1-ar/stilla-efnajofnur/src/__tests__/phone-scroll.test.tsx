@@ -236,7 +236,7 @@ describe('the menu', () => {
 
   it('skips a level already done', () => {
     localStorage.setItem(
-      'jafnaJofnurProgress',
+      'stillaEfnajofnurProgress',
       JSON.stringify({ level1Completed: true, level2Completed: false, level3Completed: false })
     );
     const { container } = render(<App />);

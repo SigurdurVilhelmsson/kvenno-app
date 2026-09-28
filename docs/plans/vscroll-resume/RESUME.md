@@ -8,7 +8,7 @@ here exists so a fresh container can pick it up with nothing lost.
 
 - Branch `claude/mobile-vertical-scroll` at `f498d32`, pushed, clean.
 - **Integrated (15 of 24):** intermolecular-forces, organic-nomenclature, kinetics,
-  redox-reactions, syrufastinn, lotukerfid, nafnakerfid, molmassi, reynsluformulur, jafna-jofnur,
+  redox-reactions, syrufastinn, lotukerfid, nafnakerfid, molmassi, reynsluformulur, stilla-efnajofnur,
   lausnir, rafeindabygging, utfellingarhvorf, takmarkandi, leysnijafnvaegi. Plus the two pilots,
   hess-law and dimensional-analysis.
 - **Not started or lost in flight (9):** vsepr-geometry, lewis-structures (both were mid-way and
@@ -16,10 +16,8 @@ here exists so a fresh container can pick it up with nothing lost.
   einingakedjan, equilibrium-shifter, gas-law-challenge, ph-titration.
 - **Not yet run:** the finalize step (step 6, CLAUDE.md, full verification, desktop-compare over
   26 games) and the completeness critic with its fix round.
-- **PR #67** (jafna-jofnur → stilla-efnajofnur) is separate and green. If it has merged by the
-  time you resume, merge `origin/main` into this branch first and resolve the rename: the
-  `e2e/mobile-game-screens.ts` key `1-ar/jafna-jofnur` becomes `1-ar/stilla-efnajofnur` (keep this
-  branch's loops), and `jafna-jofnur` must also leave the `done` list below.
+- **PR #67** (jafna-jofnur → stilla-efnajofnur) merged on 2026-09-28 and `main` is merged into
+  this branch, so the game is `stilla-efnajofnur` everywhere below.
 
 ## Files here
 
@@ -54,7 +52,7 @@ here exists so a fresh container can pick it up with nothing lost.
    Workflow({ scriptPath: '<path>/rollout-workflow.js',
      args: { done: ['intermolecular-forces', 'organic-nomenclature', 'kinetics',
        'redox-reactions', 'syrufastinn', 'lotukerfid', 'nafnakerfid', 'molmassi',
-       'reynsluformulur', 'jafna-jofnur', 'lausnir', 'rafeindabygging', 'utfellingarhvorf',
+       'reynsluformulur', 'stilla-efnajofnur', 'lausnir', 'rafeindabygging', 'utfellingarhvorf',
        'takmarkandi', 'leysnijafnvaegi'] } })
    ```
 

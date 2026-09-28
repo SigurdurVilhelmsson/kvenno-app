@@ -22,7 +22,7 @@ Claude-Session: https://claude.ai/code/session_015W1Bpw8fPLH5H24SKueXhb`
 const LANES = [
   { port: 4180, games: [
     ['2-ar', 'intermolecular-forces'], ['2-ar', 'kinetics'], ['3-ar', 'syrufastinn'], ['1-ar', 'nafnakerfid'],
-    ['1-ar', 'reynsluformulur'], ['1-ar', 'jafna-jofnur'], ['1-ar', 'lausnir'], ['2-ar', 'rafeindabygging'],
+    ['1-ar', 'reynsluformulur'], ['1-ar', 'stilla-efnajofnur'], ['1-ar', 'lausnir'], ['2-ar', 'rafeindabygging'],
     ['3-ar', 'leysnijafnvaegi'], ['2-ar', 'vsepr-geometry'], ['3-ar', 'jafnvaegisfasti'], ['3-ar', 'buffer-recipe-creator'],
     ['1-ar', 'einingakedjan'], ['3-ar', 'thermodynamics-predictor'],
   ] },

@@ -59,7 +59,7 @@ const PIN_USES: { file: string; component: 'TaskStrip' | 'PinnedActions'; measur
       'screen. No text input, and the verdict is one short line. Carries Heildar-ΔH as status.',
   },
   {
-    file: 'apps/games/1-ar/jafna-jofnur/src/components/Level.tsx',
+    file: 'apps/games/1-ar/stilla-efnajofnur/src/components/Level.tsx',
     component: 'PinnedActions',
     measured:
       'All three levels, after compaction and anchoring, 375x548 touch (the SE), all 20 ' +

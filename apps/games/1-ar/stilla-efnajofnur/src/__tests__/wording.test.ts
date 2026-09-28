@@ -64,7 +64,7 @@ const BANNED: { pattern: RegExp; why: string }[] = [
   },
 ];
 
-describe('jafna-jofnur wording', () => {
+describe('stilla-efnajofnur wording', () => {
   const files = sourceFiles(gameRoot);
 
   it('scans the source it means to', () => {

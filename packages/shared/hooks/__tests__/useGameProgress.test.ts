@@ -156,6 +156,42 @@ describe('useGameProgress', () => {
     expect(mockStorage.setItem).toHaveBeenCalledWith('game-b', expect.any(String));
   });
 
+  describe('legacy keys (a renamed game)', () => {
+    const LEGACY = ['old-game'] as const;
+    const saved: TestProgress = { ...DEFAULT_PROGRESS, level1Completed: true, level1Score: 90 };
+
+    it('carries progress over from a legacy key and removes it', () => {
+      mockStorage._setStore({ 'old-game': JSON.stringify(saved) });
+
+      const { result } = renderHook(() => useGameProgress('new-game', DEFAULT_PROGRESS, LEGACY));
+
+      expect(result.current.progress).toEqual(saved);
+      expect(JSON.parse(mockStorage.getItem('new-game')!)).toEqual(saved);
+      expect(mockStorage.getItem('old-game')).toBeNull();
+    });
+
+    it('prefers the current key over a legacy one', () => {
+      const current: TestProgress = { ...DEFAULT_PROGRESS, level2Completed: true };
+      mockStorage._setStore({
+        'new-game': JSON.stringify(current),
+        'old-game': JSON.stringify(saved),
+      });
+
+      const { result } = renderHook(() => useGameProgress('new-game', DEFAULT_PROGRESS, LEGACY));
+
+      expect(result.current.progress).toEqual(current);
+      expect(mockStorage.getItem('old-game')).toBeNull();
+    });
+
+    it('skips a corrupt legacy key', () => {
+      mockStorage._setStore({ 'old-game': 'not-valid-json{{{' });
+
+      const { result } = renderHook(() => useGameProgress('new-game', DEFAULT_PROGRESS, LEGACY));
+
+      expect(result.current.progress).toEqual(DEFAULT_PROGRESS);
+    });
+  });
+
   it('persists progress across re-renders', () => {
     const { result, rerender } = renderHook(() => useGameProgress('test-game', DEFAULT_PROGRESS));
 

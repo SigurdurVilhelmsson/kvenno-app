@@ -55,7 +55,7 @@ const yearGamesConfigs: Record<YearKey, YearGamesConfig> = {
       {
         title: 'Stilla efnajöfnur',
         description: 'Lærðu að stilla efnajöfnur',
-        slug: 'jafna-jofnur',
+        slug: 'stilla-efnajofnur',
       },
       {
         title: 'Útfellingarhvörf',

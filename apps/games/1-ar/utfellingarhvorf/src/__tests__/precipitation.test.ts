@@ -110,7 +110,7 @@ describe('formulas are built from charge, not typed', () => {
 
   it('every compound is in lowest terms', () => {
     // Mg₂(SO₄)₂ is neutral and wrong. The reduction is the same convention B12
-    // added to jafna-jofnur: balanced is not enough, it has to be reduced.
+    // added to stilla-efnajofnur: balanced is not enough, it has to be reduced.
     const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b));
     for (const salt of ALL_PAIRS) {
       expect(gcd(salt.cationCount, salt.anionCount), salt.formula).toBe(1);

@@ -31,7 +31,7 @@ const games = [
   ['1-ar', 'molmassi', 'molmassi'],
   ['1-ar', 'reynsluformulur', 'reynsluformulur'],
   ['1-ar', 'utfellingarhvorf', 'utfellingarhvorf'],
-  ['1-ar', 'jafna-jofnur', 'jafna-jofnur'],
+  ['1-ar', 'stilla-efnajofnur', 'stilla-efnajofnur'],
   ['1-ar', 'takmarkandi', 'takmarkandi'],
   ['1-ar', 'lausnir', 'lausnir'],
   ['1-ar', 'einingakedjan', 'einingakedjan'],
