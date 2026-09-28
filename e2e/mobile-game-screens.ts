@@ -5353,6 +5353,36 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
       ],
     },
     {
+      name: 'Stig 1 — spurning',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 1: Skilningur'],
+        },
+        {
+          wait: 400,
+        },
+        {
+          clickRole: ['button', 'Byrja æfingu'],
+        },
+        {
+          wait: 400,
+        },
+      ],
+      // The play loops (design §6.1), one per level. Stig 1: the curve is kept at its
+      // 240 px floor (design §4), so Staðfesta is one flick below the options on a phone.
+      // Not held in landscape, where the feedback is taller than the screen: design §5
+      // accepts that residual, and the §6.2.10 landscape check still runs.
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Staðfesta' },
+        answer: [{ css: 'div.space-y-3 > button' }],
+        verdict: { css: '.feedback-panel p' },
+        next: { role: 'button', name: 'Næsta' },
+        viewports: ['android', 'iphone', 'se'],
+        scrollsToAction: 1,
+      },
+    },
+    {
       name: 'Stig 1 — spurning og vísbending',
       steps: [
         {
@@ -5493,6 +5523,18 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 400,
         },
       ],
+      // Stig 2's commit is the indicator: the steps pour, mark and choose one, and the
+      // list (the stage's [data-item-start]) is what the screen opens at. Not held on the
+      // SE or in landscape: there the five indicators and Staðfesta val are taller than the
+      // screen, so the list's heading scrolls off when the chosen one and the button are
+      // brought on screen together. The §6.2.10 landscape check still runs.
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Staðfesta val' },
+        answer: [],
+        verdict: { css: '#ph-l2-verdict' },
+        next: { role: 'button', name: 'Næsta' },
+      },
     },
     {
       name: 'Stig 2 — niðurstaða',
@@ -5551,6 +5593,28 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 400,
         },
       ],
+    },
+    {
+      name: 'Stig 3 — svar',
+      steps: [
+        {
+          clickRole: ['button', 'Stig 3: Útreikningar'],
+        },
+        {
+          wait: 400,
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Staðfesta svar' },
+        answer: [{ fill: ['#ph-titration-l3-answer', '999'] }],
+        verdict: { css: '#ph-l3-verdict' },
+        next: { role: 'button', name: 'Næsta' },
+        // The data the answer is worked from sits within a keyboard's height of the field.
+        together: [[{ text: 'Gefið:' }, { css: '#ph-titration-l3-answer' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+      },
     },
     {
       name: 'Stig 3 — endurgjöf og útreikningur',

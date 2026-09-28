@@ -1,11 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Header, ErrorBoundary, FadePresence, Presence } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
+import { focusTarget, revealSpan, revealTop } from '@shared/utils';
 
 import { Level1 } from './components/Level1';
 import { Level2 } from './components/Level2';
 import { Level3 } from './components/Level3';
+
+/** Exit duration of each screen's FadePresence. */
+const SCREEN_FADE_MS = 200;
 
 type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'complete';
 
@@ -38,15 +42,48 @@ function App() {
 
   // Each screen replaces the last in place, so without this a student who
   // scrolled down the menu to a level card starts that level a screen or more
-  // below its top (on a phone, past the whole intro).
+  // below its top (on a phone, past the whole intro). The page jumps to its top
+  // at every width, as it always has.
+  const pageTopRef = useRef<HTMLDivElement>(null);
   const firstScreen = useRef(true);
+  const returningToMenu = useRef(false);
   useEffect(() => {
     if (firstScreen.current) {
       firstScreen.current = false;
       return;
     }
-    window.scrollTo(0, 0);
+    revealTop(pageTopRef.current, { anyWidth: true, always: true, gap: 0, instant: true });
+    returningToMenu.current = activeLevel === 'menu';
   }, [activeLevel]);
+
+  // Back on the menu, focus the next level not yet done (the button that was
+  // pressed has unmounted), and on a phone bring that card on screen. Run as
+  // the menu's root attaches: FadePresence mounts the entering screen a render
+  // after `activeLevel` changes, so an effect here would find no card yet. The
+  // level that was left still fades out above the menu for SCREEN_FADE_MS, so
+  // the card is measured once it has gone. The levels focus their own heading
+  // as they mount.
+  const nextLevelRef = useRef<string>('level1');
+  nextLevelRef.current = !progress.level1Completed
+    ? 'level1'
+    : !progress.level2Completed
+      ? 'level2'
+      : !progress.level3Completed
+        ? 'level3'
+        : 'level1';
+  const menuRoot = useCallback((el: HTMLDivElement | null) => {
+    // The first load is not a return: focus stays where the browser put it.
+    if (!el || !returningToMenu.current) return;
+    returningToMenu.current = false;
+    const card = el.querySelector<HTMLElement>(`[data-level-card="${nextLevelRef.current}"]`);
+    revealSpan(card, [], { afterExit: SCREEN_FADE_MS + 20 });
+    focusTarget(card);
+  }, []);
+
+  // The completion screen focuses its heading as it mounts.
+  const completeRoot = useCallback((el: HTMLHeadingElement | null) => {
+    if (el) focusTarget(el);
+  }, []);
 
   const applyLevelResult = (
     levelKey: 'level1' | 'level2' | 'level3',
@@ -75,24 +112,27 @@ function App() {
   ].filter(Boolean).length;
 
   return (
-    <>
-      <FadePresence show={activeLevel === 'level1'} exitDuration={200}>
+    <div ref={pageTopRef}>
+      <FadePresence show={activeLevel === 'level1'} exitDuration={SCREEN_FADE_MS}>
         <Level1 onComplete={handleLevel1Complete} onBack={() => setActiveLevel('menu')} />
       </FadePresence>
 
-      <FadePresence show={activeLevel === 'level2'} exitDuration={200}>
+      <FadePresence show={activeLevel === 'level2'} exitDuration={SCREEN_FADE_MS}>
         <Level2 onComplete={handleLevel2Complete} onBack={() => setActiveLevel('menu')} />
       </FadePresence>
 
-      <FadePresence show={activeLevel === 'level3'} exitDuration={200}>
+      <FadePresence show={activeLevel === 'level3'} exitDuration={SCREEN_FADE_MS}>
         <Level3 onComplete={handleLevel3Complete} onBack={() => setActiveLevel('menu')} />
       </FadePresence>
 
-      <FadePresence show={activeLevel === 'complete'} exitDuration={200}>
+      <FadePresence show={activeLevel === 'complete'} exitDuration={SCREEN_FADE_MS}>
         <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8">
           <Presence show={activeLevel === 'complete'} exitDuration={300}>
             <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
-              <h1 className="text-3xl md:text-4xl font-bold text-center mb-6 text-purple-600">
+              <h1
+                ref={completeRoot}
+                className="text-3xl md:text-4xl font-bold text-center mb-6 text-purple-600"
+              >
                 Til hamingju!
               </h1>
 
@@ -166,17 +206,17 @@ function App() {
         </div>
       </FadePresence>
 
-      <FadePresence show={activeLevel === 'menu'} exitDuration={200}>
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
+      <FadePresence show={activeLevel === 'menu'} exitDuration={SCREEN_FADE_MS}>
+        <div ref={menuRoot} className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
           <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="pH Títrun" />
           <div className="min-h-screen p-4 md:p-8">
             <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-              <p className="text-warm-600 mb-4">
+              <p className="text-warm-600 mb-4 phone:mb-3">
                 Lærðu um sýru-basa títranir, títrunarferla og vísa
               </p>
 
               {/* Pedagogical explanation */}
-              <div className="bg-purple-50 p-4 sm:p-6 rounded-xl mb-8">
+              <div className="bg-purple-50 p-4 sm:p-6 rounded-xl mb-8 phone:mb-4">
                 <h2 className="font-bold text-purple-800 mb-3">Hvað er títrun?</h2>
                 <p className="text-purple-900 text-sm mb-4">
                   <strong>Títrun</strong> er aðferð til að ákvarða styrk óþekkts efnis með því að
@@ -197,17 +237,20 @@ function App() {
               </div>
 
               {/* Level selection */}
-              <div className="space-y-4">
+              <div className="space-y-4 phone:space-y-3">
                 {/* Level 1 */}
                 <button
+                  data-level-card="level1"
                   onClick={() => setActiveLevel('level1')}
-                  className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
+                  className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-blue-400 bg-blue-50 hover:bg-blue-100 transition-all text-left"
                 >
                   <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="text-3xl sm:text-4xl">📈</div>
+                    <div className="text-3xl sm:text-4xl phone:text-2xl">📈</div>
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                        <span className="text-xl font-bold text-blue-800">Stig 1: Skilningur</span>
+                        <span className="text-xl font-bold text-blue-800 phone:text-lg">
+                          Stig 1: Skilningur
+                        </span>
                         {progress.level1Completed && (
                           <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
                             ✓ {progress.level1Score} stig
@@ -215,7 +258,7 @@ function App() {
                         )}
                       </div>
                       <div className="text-sm text-blue-600 mt-1">Títrunarferlar og vísar</div>
-                      <div className="text-xs text-warm-600 mt-2">
+                      <div className="text-xs text-warm-600 mt-2 phone:mt-1">
                         Skildu hvernig títrunarferlar líta út fyrir mismunandi sýru-basa
                         samsetningar. Lærðu um vísa og litabreytingar.
                       </div>
@@ -225,14 +268,17 @@ function App() {
 
                 {/* Level 2 */}
                 <button
+                  data-level-card="level2"
                   onClick={() => setActiveLevel('level2')}
-                  className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
+                  className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-green-400 bg-green-50 hover:bg-green-100 transition-all text-left cursor-pointer"
                 >
                   <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="text-3xl sm:text-4xl">🧪</div>
+                    <div className="text-3xl sm:text-4xl phone:text-2xl">🧪</div>
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                        <span className="text-xl font-bold text-green-800">Stig 2: Framkvæmd</span>
+                        <span className="text-xl font-bold text-green-800 phone:text-lg">
+                          Stig 2: Framkvæmd
+                        </span>
                         {progress.level2Completed && (
                           <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
                             ✓ {progress.level2Score} stig
@@ -242,7 +288,7 @@ function App() {
                       <div className="text-sm text-green-600 mt-1">
                         Gagnvirk títrun í rannsóknarstofu
                       </div>
-                      <div className="text-xs text-warm-600 mt-2">
+                      <div className="text-xs text-warm-600 mt-2 phone:mt-1">
                         Framkvæmdu títrun, veldu réttan vísi og finndu jafngildispunkt. Byggðu upp
                         færni í rannsóknarstofuvinnu.
                       </div>
@@ -252,14 +298,15 @@ function App() {
 
                 {/* Level 3 */}
                 <button
+                  data-level-card="level3"
                   onClick={() => setActiveLevel('level3')}
-                  className="game-card w-full p-4 sm:p-6 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
+                  className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 border-purple-400 bg-purple-50 hover:bg-purple-100 transition-all text-left cursor-pointer"
                 >
                   <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="text-3xl sm:text-4xl">📐</div>
+                    <div className="text-3xl sm:text-4xl phone:text-2xl">📐</div>
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                        <span className="text-xl font-bold text-purple-800">
+                        <span className="text-xl font-bold text-purple-800 phone:text-lg">
                           Stig 3: Útreikningar
                         </span>
                         {progress.level3Completed && (
@@ -271,7 +318,7 @@ function App() {
                       <div className="text-sm text-purple-600 mt-1">
                         Styrkreikningar og fjölvirkar sýrur
                       </div>
-                      <div className="text-xs text-warm-600 mt-2">
+                      <div className="text-xs text-warm-600 mt-2 phone:mt-1">
                         Reiknaðu styrk, pH og rúmmál. Leystu verkefni um fjölvirkar sýrur og notaðu
                         Henderson-Hasselbalch jöfnuna.
                       </div>
@@ -362,7 +409,7 @@ function App() {
           </div>
         </div>
       </FadePresence>
-    </>
+    </div>
   );
 }
 

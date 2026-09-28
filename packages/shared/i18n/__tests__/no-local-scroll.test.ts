@@ -33,9 +33,6 @@ const gamesRoot = join(repoRoot, 'apps', 'games');
 /** Calls per file on 2026-09-23, relative to apps/games. Lower these; never raise them. */
 const ALLOWED: Record<string, number> = {
   '1-ar/einingakedjan/src/utils/reveal.ts': 3,
-  '3-ar/ph-titration/src/App.tsx': 1,
-  '3-ar/ph-titration/src/components/Level2.tsx': 3,
-  '3-ar/ph-titration/src/utils/reveal.ts': 1,
   '3-ar/thermodynamics-predictor/src/App.tsx': 4,
 };
 
