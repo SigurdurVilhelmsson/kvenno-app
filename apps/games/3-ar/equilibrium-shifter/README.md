@@ -87,9 +87,8 @@ src/components/QKComparison.tsx   the Q vs K bars, drawn from the shift directio
 src/components/NumbersPanel.tsx   the same comparison in computed numbers
 src/components/ParticleEquilibrium.tsx  particle picture
 src/types.ts, src/i18n.ts, src/styles.css, src/main.tsx
-src/utils/reveal.ts               brings a new screen or question back into view
 src/__tests__/                    le-chatelier, numbers, numbers-panel, qk-pressure,
-                                  reveal-top, bar-labels
+                                  screen-anchoring, bar-labels
 ```
 
 **On a phone (2026-09-23).** Everything below `sm` is a phone layout and `sm:`/`md:` restore the
@@ -98,10 +97,20 @@ desktop one, which was checked pixel-identical at 1280 and 768. Four choices are
 - **Reactants and products stay side by side at every width.** Stacking them put "left" above
   "right", and the whole game is about which way the equilibrium moves. Below `md` each molecule is
   an inline-block so a long side wraps between molecules.
-- **`revealTop` (`src/utils/reveal.ts`).** Every screen is two to three phone screens tall and the
-  buttons that move on sit at the bottom, so the next equilibrium used to open with its equation,
-  ΔH and (in Keppnishamur) the running timer scrolled past. A new screen or question now scrolls
-  its top back into view, only when that top is above the viewport.
+- **Where the page goes (`@shared/utils`, vertical-scroll pass 2026-09).** The game's own
+  `utils/reveal.ts` is gone. A new question (`useItemTop`) or screen scrolls its top back into view
+  when it is above the viewport, at every width, as before. On a phone only: the task comes
+  straight after the reaction and the particle picture follows it (CSS `order`, which moves only
+  the pictures); choosing a stress or «Prófa annað álag» brings the card's top back; an answer
+  shows the verdict at the top of the screen once the prediction buttons have faded, and the
+  student reads down to Næsta, which stays at the foot of the explanation (read in full, design
+  §5); Aðgengisval starts closed; on its side the card is two columns. At every width focus moves
+  to the equation, the question, the stress list, the feedback or Lærdómshamur, and a press on a
+  feedback button within 400 ms of it appearing is dropped (`useArmedAfter`), so a double tap on
+  a prediction cannot skip the explanation. Screen swaps do not use `useScreenTop`: the screens
+  fade (`FadePresence`), which mounts the new one a render later, so the same steps run as its
+  root attaches — and without setting state, because every render of `App` re-seeds the particle
+  picture from `Math.random`.
 - **The numbers table scrolls sideways inside its own box** where a row of scientific notation is
   wider than the phone (the weak acids at 360 px, most systems at 320 px). The species column is
   pinned (`.table-pin`, which also carries its high-contrast background) and a shadow marks the

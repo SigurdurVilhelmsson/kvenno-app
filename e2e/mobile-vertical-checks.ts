@@ -437,9 +437,10 @@ async function checkAfterCommit(
   }
 
   if (loop.teachingFeedback) {
+    const allowed = loop.teachingFeedbackScrolls ?? 1;
     expect(
-      await scrollsToReach(page, next, 1),
-      `After commit ${describeSpec(loop.next)} is more than one scroll below the feedback — ${where}`
+      await scrollsToReach(page, next, allowed),
+      `After commit ${describeSpec(loop.next)} is more than ${allowed} scroll(s) below the feedback — ${where}`
     ).toBeGreaterThanOrEqual(0);
   } else {
     expect(

@@ -178,13 +178,13 @@ export function QKComparison({
   };
 
   return (
-    <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-3 sm:p-4 rounded-xl border border-indigo-200">
+    <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-3 sm:p-4 phone:p-2 rounded-xl border border-indigo-200">
       <div className="font-bold text-indigo-800 mb-3 flex items-center gap-2">
         <span className="text-lg">⚖️</span> Q vs K samanburður
       </div>
 
       {/* Visual Bar Comparison */}
-      <div className="bg-white rounded-lg p-3 sm:p-4 mb-4">
+      <div className="bg-white rounded-lg p-3 sm:p-4 mb-4 phone:mb-3">
         <div className="space-y-3">
           {/* Q bar */}
           <div className="flex items-center gap-3">
@@ -219,7 +219,7 @@ export function QKComparison({
 
         {/* Relation indicator */}
         <div
-          className={`text-center mt-4 text-2xl font-bold ${animate ? 'animate-pulse' : ''} ${
+          className={`text-center mt-4 phone:mt-2 text-2xl font-bold ${animate ? 'animate-pulse' : ''} ${
             shiftDirection === 'right'
               ? 'text-green-600'
               : shiftDirection === 'left'
@@ -232,15 +232,18 @@ export function QKComparison({
       </div>
 
       {/* Educational explanation */}
-      <div className="space-y-3 text-sm">
+      <div className="space-y-3 text-sm phone:space-y-2">
         {/* What happened to Q and K */}
-        {/* One column on a phone: "K (jafnvægisfasti)" does not fit half of it. */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="bg-blue-50 rounded-lg p-2 border border-blue-200">
+        {/* Two columns from 360 px up, where "(jafnvægisfasti)" still fits
+            half the card on a line of its own; one column below that, and on a
+            phone on its side, where the card is half the screen, since there it
+            would break mid-word. From sm up it is two columns as before. */}
+        <div className="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-2 gap-3 phone:gap-2 phone-land:grid-cols-1">
+          <div className="bg-blue-50 rounded-lg p-2 phone:px-1.5 border border-blue-200">
             <div className="font-semibold text-blue-800 text-xs mb-1">Q (hvarfstuðull)</div>
             <div className="text-blue-700">{explanation.qEffect}</div>
           </div>
-          <div className="bg-purple-50 rounded-lg p-2 border border-purple-200">
+          <div className="bg-purple-50 rounded-lg p-2 phone:px-1.5 border border-purple-200">
             <div className="font-semibold text-purple-800 text-xs mb-1">K (jafnvægisfasti)</div>
             <div className="text-purple-700">{explanation.kEffect}</div>
           </div>
@@ -278,7 +281,7 @@ export function QKComparison({
       </div>
 
       {/* Formula reminder */}
-      <div className="mt-4 text-center text-xs text-warm-500 bg-white rounded p-2">
+      <div className="mt-4 phone:mt-3 text-center text-xs text-warm-500 bg-white rounded p-2">
         <span className="font-mono">Q = [myndefni]ⁿ / [hvarfefni]ᵐ</span>
         <span className="mx-2">•</span>
         <span>Q leitar alltaf í átt að K</span>

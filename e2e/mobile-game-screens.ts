@@ -62,6 +62,12 @@ export interface LoopCheck {
    */
   teachingFeedback?: boolean;
   /**
+   * With `teachingFeedback`: how many manual scrolls `next` may be below the
+   * verdict. Default 1. Only for feedback the design keeps as a long read
+   * (§5: equilibrium-shifter's explanation), where Næsta stays at its foot.
+   */
+  teachingFeedbackScrolls?: number;
+  /**
    * The screen deliberately passes FeedbackPanel `defaultExpanded: false`
    * (molmassi Stig 2), so 'Af hverju?' is not required to open expanded.
    */
@@ -6076,6 +6082,28 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 400,
         },
       ],
+      loop: {
+        // The stress stays on screen through the answer; the question does not.
+        prompt: { text: 'Álag sem beitt er:' },
+        action: { role: 'button', name: 'Til vinstri' },
+        answer: [],
+        verdict: { css: '.explanation-box > [id]' },
+        next: { role: 'button', name: 'Næsta jafnvægi' },
+        // The reaction, its ΔH, the stress and the answer buttons together.
+        together: [
+          [
+            { css: '[data-item-start]' },
+            { text: 'Álag sem beitt er:' },
+            { role: 'button', name: 'Til vinstri' },
+          ],
+        ],
+        viewports: ['android', 'iphone', 'se'],
+        // The explanation (Q vs K, the numbers, the reasoning) is read in full
+        // (design §5): Næsta stays at its foot, about 1 000–1 300 px below
+        // the verdict, so it is more than one scroll away by design.
+        teachingFeedback: true,
+        teachingFeedbackScrolls: 3,
+      },
     },
     {
       name: 'Lærdómshamur — allar vísbendingar opnar',
@@ -6192,9 +6220,17 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
     },
     {
       name: 'Há birtuskil — endurgjöf',
+      // On a phone Aðgengisval starts closed (a PhoneDisclosure): the first
+      // step opens it and the second ticks the box. Off a phone there is no
+      // disclosure button, so the first step ticks the box and the second
+      // lands on the footer, which does nothing — desktop-compare replays
+      // these paths at 1280x800.
       steps: [
         {
-          css: 'input[type=checkbox]',
+          css: 'main button[aria-controls][aria-expanded="false"], main input[type=checkbox]:not(:checked)',
+        },
+        {
+          css: 'main input[type=checkbox]:not(:checked), footer',
         },
         {
           wait: 200,
