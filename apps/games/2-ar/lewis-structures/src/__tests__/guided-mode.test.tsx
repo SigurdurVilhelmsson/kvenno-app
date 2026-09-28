@@ -2,6 +2,7 @@
 import { act, cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { LewisGuidedMode } from '../components/LewisGuidedMode';
 
 /**
@@ -60,13 +61,30 @@ function reachDistribution(g: ReturnType<typeof renderGuide>) {
 }
 
 beforeEach(() => {
-  vi.useFakeTimers();
+  // Everything but \`performance\`, which clockPastNextGuard above steps past the
+  // Næsta guard; faking it too would freeze the guard's clock.
+  vi.useFakeTimers({
+    toFake: [
+      'setTimeout',
+      'clearTimeout',
+      'setInterval',
+      'clearInterval',
+      'setImmediate',
+      'clearImmediate',
+      'Date',
+      'requestAnimationFrame',
+      'cancelAnimationFrame',
+    ],
+  });
 });
 
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
 });
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 describe('a wrong answer can be tried again', () => {
   it('offers "Reyna aftur" on a wrong count, and the step can then be passed', () => {

@@ -1,10 +1,17 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 
-import { FeedbackPanel, HintSystem } from '@shared/components';
+import { FeedbackPanel, HintSystem, PhoneDisclosure } from '@shared/components';
 import type { TieredHints } from '@shared/types';
-import { shuffleArray } from '@shared/utils';
-
-import { useRevealOnChange } from '../utils/useRevealOnChange';
+import {
+  focusTarget,
+  isPhone,
+  revealSpan,
+  revealTop,
+  shuffleArray,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+} from '@shared/utils';
 
 // Misconceptions for Lewis structure concepts
 const MISCONCEPTIONS: Record<string, string> = {
@@ -249,17 +256,53 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [hintMultiplier, setHintMultiplier] = useState(1.0);
-  const [, setHintsUsedTier] = useState(0);
+  const [hintsUsedTier, setHintsUsedTier] = useState(0);
   const [isCorrect, setIsCorrect] = useState(false);
   const [score, setScore] = useState(0);
 
   const challenge = challenges[currentChallenge];
-  const cardRef = useRef<HTMLDivElement>(null);
-  useRevealOnChange(cardRef, currentChallenge);
-  // The hints above the answer vanish once it is checked, so with several open
-  // the feedback opened with its verdict above the top of a phone screen.
+  // "Næsta þraut" swaps the question in place, so the page kept its offset.
+  // Each new question brings the card's top back when it has scrolled off —
+  // at any width, as the game's own helper did — and focus moves to its title.
+  const cardRef = useItemTop<HTMLDivElement>(currentChallenge, { anyWidth: true, gap: 0 });
+  const questionRef = useRef<HTMLDivElement>(null);
+  const answerRef = useRef<HTMLDivElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
-  useRevealOnChange(feedbackRef, showResult);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const hintsRef = useRef<HTMLDivElement>(null);
+  const checkRef = useRef<HTMLButtonElement>(null);
+  // After "Athuga svar": on a phone, the question through Næsta if it fits,
+  // else the answer, else the verdict at the top and the student reads down.
+  // Focus moves to the feedback, never to Næsta, so a second Enter lands on
+  // nothing (design P3).
+  useRevealAfterCommit(showResult, () => ({
+    bottom: nextRef.current,
+    tops: [questionRef.current, answerRef.current, feedbackRef.current],
+    focus: feedbackRef.current,
+  }));
+  // Wider screens keep what the game's own helper did: the hints above the
+  // answer vanish once it is checked, so with several open the verdict could
+  // open above the top of the window; it is brought back.
+  useEffect(() => {
+    const el = feedbackRef.current;
+    if (showResult && el && !isPhone() && el.getBoundingClientRect().top < 0) {
+      revealTop(el, { anyWidth: true, gap: 0 });
+    }
+  }, [showResult]);
+  // Opening a hint grows the hints above "Athuga svar" and pushes it down: on a
+  // phone, bring the newest hint through the button into view. When the last
+  // tier's button goes, focus moves to that hint rather than to <body>.
+  useEffect(() => {
+    if (hintsUsedTier === 0) return;
+    const tiers = hintsRef.current?.querySelector('.hint-system > div');
+    const newest = (tiers?.lastElementChild as HTMLElement | null) ?? null;
+    revealSpan(checkRef.current, [newest]);
+    if (!document.activeElement || document.activeElement === document.body) {
+      focusTarget(newest);
+    }
+  }, [hintsUsedTier]);
+  // A double tap on "Athuga svar" must not land on Næsta.
+  const armed = useArmedAfter(400, `${currentChallenge}:${showResult}`);
   const basePoints = 15;
 
   // Shuffle options for current challenge - memoize to keep stable during challenge
@@ -312,152 +355,187 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        {/* Header. On a phone the counters share one line (P4), so the row is one line tall. */}
+        <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11 phone:shrink-0"
           >
             <span>&larr;</span> Til baka
           </button>
-          <div className="text-right">
+          <div className="text-right phone:flex phone:flex-wrap phone:items-baseline phone:justify-end phone:gap-x-2 phone:min-w-0">
             <div className="text-sm text-warm-600">
               Stig 1 / Þraut {currentChallenge + 1} af {challenges.length}
             </div>
-            <div className="text-lg font-bold text-blue-600">{score} stig</div>
+            <div className="text-lg font-bold text-blue-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6 phone:h-1.5 phone:mb-3">
           <div
-            className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+            className="bg-blue-500 h-2 phone:h-1.5 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
           />
         </div>
 
         {/* Main content */}
-        <div ref={cardRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-          <h2 className="text-2xl font-bold text-blue-800 mb-4">{challenge.title}</h2>
+        {/* A phone on its side: the question | the answer, the hints and Athuga, and after a
+            check the feedback across both columns below them. The wrappers are
+            display: contents everywhere else, so nothing else moves. */}
+        <div
+          ref={cardRef}
+          className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3 phone-land:grid phone-land:grid-cols-2 phone-land:gap-x-4 phone-land:items-start"
+        >
+          <div className="contents phone-land:block">
+            <h2
+              data-item-start
+              className="text-2xl font-bold text-blue-800 mb-4 phone:text-xl phone:mb-2"
+            >
+              {challenge.title}
+            </h2>
 
-          {/* Molecule display if applicable */}
-          {challenge.molecule && (
-            <div className="bg-indigo-50 p-4 rounded-xl mb-4">
-              <div
-                className="text-center font-mono text-3xl font-bold text-indigo-800"
-                role="img"
-                aria-label={`Sameind: ${challenge.molecule}`}
-              >
-                {challenge.molecule}
-              </div>
-              {challenge.elements && (
-                <div className="flex justify-center gap-4 mt-3">
-                  {challenge.elements.map((el, idx) => (
-                    <div key={idx} className="text-center">
-                      <div className="font-bold text-indigo-600">{el.symbol}</div>
-                      <div className="text-sm text-warm-600">
-                        {el.count} × {el.valence} = {el.count * el.valence}
-                      </div>
-                    </div>
-                  ))}
-                  {/* What the charge adds, written as the menu's formula takes it
+            <div ref={questionRef}>
+              {/* Molecule display if applicable */}
+              {challenge.molecule && (
+                <div className="bg-indigo-50 p-4 rounded-xl mb-4 phone:p-2 phone:mb-3">
+                  <div
+                    className="text-center font-mono text-3xl font-bold text-indigo-800 phone:text-2xl"
+                    role="img"
+                    aria-label={`Sameind: ${challenge.molecule}`}
+                  >
+                    {challenge.molecule}
+                  </div>
+                  {challenge.elements && (
+                    <div className="flex justify-center gap-4 mt-3 phone:mt-1">
+                      {challenge.elements.map((el, idx) => (
+                        <div key={idx} className="text-center">
+                          <div className="font-bold text-indigo-600">{el.symbol}</div>
+                          <div className="text-sm text-warm-600">
+                            {el.count} × {el.valence} = {el.count * el.valence}
+                          </div>
+                        </div>
+                      ))}
+                      {/* What the charge adds, written as the menu's formula takes it
                       (Σ gildisrafeindir − hleðsla). It used to print the +1 alone
                       under "Hleðsla", telling the student OH⁻ carries charge +1. */}
-                  {challenge.charge !== undefined && challenge.charge !== 0 && (
-                    <div className="text-center">
-                      <div className="font-bold text-red-600">Hleðsla</div>
-                      <div className="text-sm text-warm-600">
-                        {challenge.charge > 0
-                          ? `−(+${challenge.charge}) = −${challenge.charge}`
-                          : `−(−${Math.abs(challenge.charge)}) = +${Math.abs(challenge.charge)}`}
-                      </div>
+                      {challenge.charge !== undefined && challenge.charge !== 0 && (
+                        <div className="text-center">
+                          <div className="font-bold text-red-600">Hleðsla</div>
+                          <div className="text-sm text-warm-600">
+                            {challenge.charge > 0
+                              ? `−(+${challenge.charge}) = −${challenge.charge}`
+                              : `−(−${Math.abs(challenge.charge)}) = +${Math.abs(challenge.charge)}`}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
               )}
-            </div>
-          )}
 
-          <p className="text-warm-700 text-lg mb-6">{challenge.question}</p>
-
-          {/* Multiple choice options */}
-          {shuffledOptions.length > 0 ? (
-            <div className="space-y-3 mb-6">
-              {shuffledOptions.map((option) => (
-                <button
-                  key={option.id}
-                  onClick={() => !showResult && setSelectedOption(option.id)}
-                  disabled={showResult}
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                    showResult
-                      ? option.correct
-                        ? 'border-green-500 bg-green-50'
-                        : selectedOption === option.id
-                          ? 'border-red-500 bg-red-50'
-                          : 'border-warm-200 bg-warm-50 opacity-50'
-                      : selectedOption === option.id
-                        ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-                        : 'border-warm-300 hover:border-blue-400 hover:bg-blue-50'
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <span className="font-bold text-warm-500 uppercase">{option.id}.</span>
-                    <span className="flex-1">{option.text}</span>
-                  </div>
-                  {showResult && selectedOption === option.id && (
-                    <div
-                      className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}
-                    >
-                      {option.explanation}
-                    </div>
-                  )}
-                </button>
-              ))}
+              <p className="text-warm-700 text-lg mb-6 phone:text-base phone:mb-3">
+                {challenge.question}
+              </p>
             </div>
-          ) : (
-            /* Number input */
-            <div className="mb-6">
-              <div className="flex gap-4 items-center">
-                <input
-                  type="number"
-                  value={userAnswer}
-                  onChange={(e) => setUserAnswer(e.target.value)}
-                  disabled={showResult}
-                  aria-label="Fjöldi rafeinda"
-                  className="flex-1 p-4 border-2 border-warm-300 rounded-xl focus:border-blue-500 focus:outline-none text-2xl font-mono text-center"
-                  placeholder="?"
-                />
-                <span className="text-warm-600 font-medium">rafeindir</span>
-              </div>
-            </div>
-          )}
-
-          {/* Tiered Hint System */}
-          <div className="mb-4">
-            <HintSystem
-              hints={challenge.hints}
-              basePoints={basePoints}
-              onHintUsed={(tier) => setHintsUsedTier(tier)}
-              onPointsChange={setHintMultiplier}
-              disabled={showResult}
-              resetKey={currentChallenge}
-            />
           </div>
 
-          {/* Check answer button */}
-          {!showResult && (
-            <button
-              onClick={checkAnswer}
-              disabled={shuffledOptions.length > 0 ? !selectedOption : !userAnswer}
-              className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
-            >
-              Athuga svar
-            </button>
-          )}
+          <div className="contents phone-land:block">
+            {/* Multiple choice options */}
+            {shuffledOptions.length > 0 ? (
+              <div ref={answerRef} className="space-y-3 mb-6 phone:space-y-2 phone:mb-3">
+                {shuffledOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    onClick={() => !showResult && setSelectedOption(option.id)}
+                    disabled={showResult}
+                    className={`w-full p-4 phone:p-3 rounded-xl border-2 text-left transition-all ${
+                      showResult
+                        ? option.correct
+                          ? 'border-green-500 bg-green-50'
+                          : selectedOption === option.id
+                            ? 'border-red-500 bg-red-50'
+                            : 'border-warm-200 bg-warm-50 opacity-50'
+                        : selectedOption === option.id
+                          ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
+                          : 'border-warm-300 hover:border-blue-400 hover:bg-blue-50'
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className="font-bold text-warm-500 uppercase">{option.id}.</span>
+                      <span className="flex-1">{option.text}</span>
+                    </div>
+                    {showResult && selectedOption === option.id && (
+                      <div
+                        className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}
+                      >
+                        {option.explanation}
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              /* Number input. Enter checks the answer, as "Athuga svar" does. */
+              <div ref={answerRef} className="mb-6 phone:mb-3">
+                <div className="flex gap-4 items-center phone:gap-3">
+                  <input
+                    type="number"
+                    value={userAnswer}
+                    onChange={(e) => setUserAnswer(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !showResult && userAnswer) {
+                        e.preventDefault();
+                        checkAnswer();
+                      }
+                    }}
+                    enterKeyHint="done"
+                    disabled={showResult}
+                    aria-label="Fjöldi rafeinda"
+                    className="flex-1 p-4 border-2 border-warm-300 rounded-xl focus:border-blue-500 focus:outline-none text-2xl font-mono text-center phone:p-2 phone:min-w-0"
+                    placeholder="?"
+                  />
+                  <span className="text-warm-600 font-medium">rafeindir</span>
+                </div>
+              </div>
+            )}
+
+            {/* Tiered Hint System */}
+            <div ref={hintsRef} className="mb-4 phone:mb-3">
+              <HintSystem
+                hints={challenge.hints}
+                basePoints={basePoints}
+                onHintUsed={(tier) => setHintsUsedTier(tier)}
+                onPointsChange={setHintMultiplier}
+                disabled={showResult}
+                resetKey={currentChallenge}
+              />
+            </div>
+
+            {/* Check answer button */}
+            {!showResult && (
+              <button
+                key="check"
+                ref={checkRef}
+                onClick={checkAnswer}
+                disabled={shuffledOptions.length > 0 ? !selectedOption : !userAnswer}
+                className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 phone:py-3 rounded-xl transition-colors"
+              >
+                Athuga svar
+              </button>
+            )}
+          </div>
 
           {/* Result feedback */}
+          {/* The focused group after the check (P3). FeedbackPanel names no verdict
+              element, so the group is not labelled; its role=alert announces. */}
           {showResult && (
-            <div ref={feedbackRef} className="mb-4">
+            <div
+              ref={feedbackRef}
+              role="group"
+              tabIndex={-1}
+              className="mb-4 phone:mb-3 focus:outline-none phone-land:col-span-2"
+            >
               <FeedbackPanel
                 feedback={{
                   isCorrect,
@@ -483,17 +561,24 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           {/* Next button */}
           {showResult && (
             <button
-              onClick={nextChallenge}
-              className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+              key="next"
+              ref={nextRef}
+              onClick={armed(nextChallenge)}
+              className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-6 phone:py-3 rounded-xl transition-colors phone-land:col-span-2"
             >
               {currentChallenge < challenges.length - 1 ? 'Næsta þraut' : 'Ljúka stigi 1'}
             </button>
           )}
         </div>
 
-        {/* Valence electron reference */}
-        <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="font-bold text-warm-700 mb-3">Gildisrafeindatafla</h3>
+        {/* Valence electron reference: a lookup table, closed on a phone until
+            opened (P9), always open elsewhere. */}
+        <PhoneDisclosure
+          summary="Gildisrafeindatafla"
+          className="mt-6 bg-white rounded-xl p-4 shadow-sm phone:mt-3 phone:p-2"
+          buttonClassName="text-warm-700 border-transparent"
+        >
+          <h3 className="font-bold text-warm-700 mb-3 phone:sr-only">Gildisrafeindatafla</h3>
           <div className="grid grid-cols-4 md:grid-cols-8 gap-2 text-sm">
             {Object.entries(VALENCE_ELECTRONS)
               .slice(0, 16)
@@ -504,7 +589,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 </div>
               ))}
           </div>
-        </div>
+        </PhoneDisclosure>
       </div>
     </div>
   );

@@ -3623,11 +3623,21 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           click: 'Athuga',
         },
+        // Næsta ignores a press within 400 ms of appearing (P3's double-tap
+        // guard); a student never reaches it that fast.
+        {
+          wait: 300,
+        },
         {
           click: 'Næsta skref',
         },
         {
           click: 'Ég skil',
+        },
+        // Næsta ignores a press within 400 ms of appearing (P3's double-tap
+        // guard); a student never reaches it that fast.
+        {
+          wait: 300,
         },
         {
           click: 'Næsta skref',
@@ -3675,6 +3685,11 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           click: 'Athuga svar',
         },
+        // Næsta ignores a press within 400 ms of appearing (P3's double-tap
+        // guard); a student never reaches it that fast.
+        {
+          wait: 300,
+        },
         {
           click: 'Næsta þraut',
         },
@@ -3698,14 +3713,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           click: 'Athuga svar',
         },
+        // Næsta ignores a press within 400 ms of appearing (P3's double-tap
+        // guard); a student never reaches it that fast.
         {
-          click: 'Næsta þraut',
-        },
-        {
-          clickRole: ['button', '+1'],
-        },
-        {
-          click: 'Athuga svar',
+          wait: 300,
         },
         {
           click: 'Næsta þraut',
@@ -3715,11 +3726,115 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         },
         {
           click: 'Athuga svar',
+        },
+        // Næsta ignores a press within 400 ms of appearing (P3's double-tap
+        // guard); a student never reaches it that fast.
+        {
+          wait: 300,
+        },
+        {
+          click: 'Næsta þraut',
+        },
+        {
+          clickRole: ['button', '+1'],
+        },
+        {
+          click: 'Athuga svar',
+        },
+        // Næsta ignores a press within 400 ms of appearing (P3's double-tap
+        // guard); a student never reaches it that fast.
+        {
+          wait: 300,
         },
         {
           click: 'Næsta þraut',
         },
       ],
+    },
+    {
+      name: 'Stig 1 — leikur',
+      steps: [
+        {
+          click: 'Stig 1: Gildisrafeindir',
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [{ fill: ['input[type=number]', '99'] }],
+        verdict: { css: '.feedback-panel' },
+        next: { role: 'button', name: 'Næsta þraut' },
+        together: [[{ text: 'Hversu margar gildisrafeindir' }, { css: 'input[type=number]' }]],
+        // Landscape keeps the weaker "usable" check (§6.2.10): the feedback is
+        // taller than the screen there, and its top stays where it opened (§5).
+        viewports: ['android', 'iphone', 'se'],
+        landscapeScrollsToAction: 1,
+        typed: true,
+      },
+    },
+    {
+      name: 'Stig 2 — teikning',
+      steps: [
+        {
+          click: 'Stig 2: Teikna Lewis',
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        // A right drawing of H₂O: the only way to a Næsta. Both bonds single,
+        // two pairs on O.
+        answer: [
+          { css: 'svg g[role=button]:nth-of-type(1)' },
+          { css: 'svg g[role=button]:nth-of-type(2)' },
+          { clickRole: ['button', 'Bæta stöku pari við O (miðatóm)'] },
+          { clickRole: ['button', 'Bæta stöku pari við O (miðatóm)'] },
+        ],
+        verdict: { css: '#lewis-l2-verdict' },
+        next: { role: 'button', name: 'Næsta sameind' },
+        // The board and its action on screen together: Athuga pinned to the
+        // bottom of a portrait phone, beside the board on its side.
+        together: [[{ css: 'svg[aria-label^="Teikniborð"]' }, { role: 'button', name: 'Athuga' }]],
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        landscapeScrollsToAction: 1,
+      },
+    },
+    {
+      name: 'Stig 2 — leiðsögn, leikur',
+      steps: [
+        {
+          click: 'Stig 2: Teikna Lewis',
+        },
+        {
+          click: 'Opna leiðsögn',
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga' },
+        answer: [{ fill: ['input[type=number]', '5'] }],
+        verdict: { text: 'Ekki rétt' },
+        next: { role: 'button', name: 'Reyna aftur' },
+        together: [[{ text: 'Útreikningur' }, { css: 'input[type=number]' }]],
+        viewports: ['android', 'iphone', 'se'],
+        typed: true,
+      },
+    },
+    {
+      name: 'Stig 3 — leikur',
+      steps: [
+        {
+          click: 'Stig 3: Formhleðsla',
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [{ click: 'FC = Gildisraf. + óbundnar - bundnar' }],
+        verdict: { css: '#lewis-l3-verdict' },
+        next: { role: 'button', name: 'Næsta þraut' },
+        viewports: ['android', 'iphone'],
+      },
     },
   ],
   '2-ar/vsepr-geometry': [

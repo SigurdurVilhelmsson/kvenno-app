@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level3 } from '../components/Level3';
 
 /**
@@ -48,6 +49,9 @@ function renderLevel() {
 afterEach(() => {
   cleanup();
 });
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 describe('the options are shuffled', () => {
   it('does not always put the correct answer in the same place', () => {

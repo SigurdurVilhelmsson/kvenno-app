@@ -1,5 +1,8 @@
 import { useState, useMemo, useCallback, useRef, useSyncExternalStore } from 'react';
 
+import { PinnedActions } from '@shared/components';
+import { useRevealAfterCommit } from '@shared/utils';
+
 import { centralLonePairAngles, pairCount } from '../utils/lonePairs';
 
 type BondType = 'none' | 'single' | 'double' | 'triple';
@@ -97,6 +100,17 @@ export function LewisDrawingCanvas({
   const remaining = totalElectrons - electronsUsed;
   const isCorrectResult = submitted && feedback?.correct;
   const canInteract = !disabled && !isCorrectResult;
+
+  // A wrong drawing: on a phone the list of what to fix comes into view (above
+  // the pinned action bar), and focus moves to it (design P3). Editing the
+  // drawing clears it, and the next Athuga brings it back.
+  const wrongRef = useRef<HTMLDivElement>(null);
+  const wrongShown = submitted && !!feedback && !feedback.correct;
+  useRevealAfterCommit(wrongShown, () => ({
+    bottom: wrongRef.current,
+    tops: [wrongRef.current],
+    focus: wrongRef.current,
+  }));
 
   // --- Layout ---
   const W = 350,
@@ -418,17 +432,48 @@ export function LewisDrawingCanvas({
     });
   };
 
+  const remainingColor =
+    remaining === 0
+      ? 'text-green-600'
+      : remaining === 1 && correctStructure.centralUnpairedElectron
+        ? 'text-yellow-600'
+        : remaining < 0
+          ? 'text-red-600'
+          : 'text-orange-600';
+  const counterNotes = (
+    <>
+      {remaining === 1 && correctStructure.centralUnpairedElectron && (
+        <div className="text-xs text-yellow-700 bg-yellow-50 rounded px-2 py-1 mt-2 phone:mt-1 text-center">
+          1 rafeind eftir — ópöruð rafeind: {molecule} er stakeind
+        </div>
+      )}
+      {remaining < 0 && (
+        <div className="text-xs text-red-700 bg-red-50 rounded px-2 py-1 mt-2 phone:mt-1 text-center">
+          Of margar rafeindir notaðar! Fjarlægðu tengsl eða stök pör.
+        </div>
+      )}
+    </>
+  );
+
   const hasNonH = surroundingAtoms.some((a) => a.symbol !== 'H');
   const showUnpaired = !!correctStructure.centralUnpairedElectron && remaining === 1;
   const centralSlots = getCentralLPAngles(centralLP + (showUnpaired ? 1 : 0));
 
   return (
-    <div className="space-y-4">
+    // A phone on its side: the board | the counter, the lone pairs, the feedback and the
+    // actions, so the board can be large enough to tap and the controls sit beside it.
+    <div className="space-y-4 phone-land:grid phone-land:grid-cols-2 phone-land:gap-x-4 phone-land:gap-y-3 phone-land:items-start phone-land:space-y-0">
       {/* SVG Canvas */}
-      <div className="bg-warm-50 rounded-xl p-2 flex flex-col items-center">
+      <div className="bg-warm-50 rounded-xl p-2 flex flex-col items-center phone-land:row-span-4">
+        {/* The compact board is capped at 42 % of the screen height, so the
+            lone-pair controls start on the same screen (design §4). */}
         <svg
           viewBox={viewBox}
-          className={compact ? 'w-full max-w-[420px] max-h-[70dvh]' : 'w-full max-w-[420px]'}
+          className={
+            compact
+              ? 'w-full max-w-[420px] max-h-[42dvh] phone-land:max-h-[76dvh]'
+              : 'w-full max-w-[420px]'
+          }
           role="img"
           aria-label={`Teikniborð fyrir Lewis-formúlu ${molecule}`}
         >
@@ -522,56 +567,57 @@ export function LewisDrawingCanvas({
         )}
       </div>
 
-      {/* Electron counter */}
-      <div className="bg-white rounded-lg p-3 shadow-xs">
-        <div className="flex justify-between items-center text-center">
-          <div>
-            <div className="text-xl font-bold text-blue-600">{totalElectrons}</div>
-            <div className="text-xs text-warm-500">Alls</div>
-          </div>
-          <div className="text-warm-400 text-lg">−</div>
-          <div>
-            <div className="text-xl font-bold text-green-600">{electronsUsed}</div>
-            <div className="text-xs text-warm-500">Notaðar</div>
-          </div>
-          <div className="text-warm-400 text-lg">=</div>
-          <div>
-            <div
-              className={`text-xl font-bold ${
-                remaining === 0
-                  ? 'text-green-600'
-                  : remaining === 1 && correctStructure.centralUnpairedElectron
-                    ? 'text-yellow-600'
-                    : remaining < 0
-                      ? 'text-red-600'
-                      : 'text-orange-600'
-              }`}
-            >
-              {remaining}
+      {/* Electron counter: its own card where there is room; on a phone it
+          shares a line with the lone-pair heading below (design §4). */}
+      {!compact && (
+        <div className="bg-white rounded-lg p-3 shadow-xs">
+          <div className="flex justify-between items-center text-center">
+            <div>
+              <div className="text-xl font-bold text-blue-600">{totalElectrons}</div>
+              <div className="text-xs text-warm-500">Alls</div>
             </div>
-            <div className="text-xs text-warm-500">Eftir</div>
+            <div className="text-warm-400 text-lg">−</div>
+            <div>
+              <div className="text-xl font-bold text-green-600">{electronsUsed}</div>
+              <div className="text-xs text-warm-500">Notaðar</div>
+            </div>
+            <div className="text-warm-400 text-lg">=</div>
+            <div>
+              <div className={`text-xl font-bold ${remainingColor}`}>{remaining}</div>
+              <div className="text-xs text-warm-500">Eftir</div>
+            </div>
           </div>
+          {counterNotes}
         </div>
-        {remaining === 1 && correctStructure.centralUnpairedElectron && (
-          <div className="text-xs text-yellow-700 bg-yellow-50 rounded px-2 py-1 mt-2 text-center">
-            1 rafeind eftir — ópöruð rafeind: {molecule} er stakeind
-          </div>
-        )}
-        {remaining < 0 && (
-          <div className="text-xs text-red-700 bg-red-50 rounded px-2 py-1 mt-2 text-center">
-            Of margar rafeindir notaðar! Fjarlægðu tengsl eða stök pör.
-          </div>
-        )}
-      </div>
+      )}
 
       {/* Lone pair controls */}
-      <div className="bg-white rounded-lg p-3 sm:p-4 shadow-xs space-y-3">
-        <div className="text-sm font-semibold text-warm-700">Stök rafeindapör:</div>
+      <div className="bg-white rounded-lg p-3 sm:p-4 shadow-xs space-y-3 phone:space-y-1.5">
+        {compact ? (
+          <div>
+            <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
+              <div className="text-sm font-semibold text-warm-700">Stök rafeindapör:</div>
+              <div className="flex items-baseline gap-1 text-xs text-warm-500 tabular-nums">
+                <span>Alls</span>
+                <span className="text-base font-bold text-blue-600">{totalElectrons}</span>
+                <span aria-hidden="true">−</span>
+                <span>Notaðar</span>
+                <span className="text-base font-bold text-green-600">{electronsUsed}</span>
+                <span aria-hidden="true">=</span>
+                <span>Eftir</span>
+                <span className={`text-base font-bold ${remainingColor}`}>{remaining}</span>
+              </div>
+            </div>
+            {counterNotes}
+          </div>
+        ) : (
+          <div className="text-sm font-semibold text-warm-700">Stök rafeindapör:</div>
+        )}
 
         {/* Central atom. Below 360 px the round symbol badge is dropped to leave the
             label room beside 44 px steppers; the label names the atom anyway. */}
         <div
-          className={`flex items-center justify-between gap-2 p-2 rounded-lg ${
+          className={`flex items-center justify-between gap-2 p-2 phone:py-0.5 rounded-lg ${
             feedback?.centralLPError ? 'bg-red-50 border border-red-200' : 'bg-blue-50'
           }`}
         >
@@ -609,7 +655,7 @@ export function LewisDrawingCanvas({
           return (
             <div
               key={i}
-              className={`flex items-center justify-between gap-2 p-2 rounded-lg ${
+              className={`flex items-center justify-between gap-2 p-2 phone:py-0.5 rounded-lg ${
                 hasErr ? 'bg-red-50 border border-red-200' : 'bg-green-50'
               }`}
             >
@@ -649,10 +695,20 @@ export function LewisDrawingCanvas({
         )}
       </div>
 
-      {/* Feedback */}
-      {submitted && feedback && !feedback.correct && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-          <div className="font-bold text-red-800 mb-2">Ekki alveg rétt — prófaðu aftur!</div>
+      {/* Feedback, under the board and its controls: nothing the finger is using
+          moves when it opens or clears. A status region, and the group focused
+          after the check (P3). */}
+      {wrongShown && (
+        <div
+          ref={wrongRef}
+          role="status"
+          tabIndex={-1}
+          aria-labelledby="lewis-l2-wrong"
+          className="bg-red-50 border border-red-200 rounded-xl p-4 phone:p-3 focus:outline-none"
+        >
+          <div id="lewis-l2-wrong" className="font-bold text-red-800 mb-2 phone:mb-1">
+            Ekki alveg rétt — prófaðu aftur!
+          </div>
           <ul className="text-sm text-red-700 space-y-1">
             {feedback.bondErrors.map((e, i) => (
               <li key={`be-${i}`}>
@@ -676,23 +732,31 @@ export function LewisDrawingCanvas({
         </div>
       )}
 
-      {/* Action buttons */}
+      {/* Action buttons: kept in reach at the bottom of a portrait phone while
+          the board, the counter and the lone pairs scroll under them (P8), with
+          the electrons left beside them. They leave with the board once the
+          drawing is right, so they never sit over the result. */}
       {canInteract && (
-        <div className="flex gap-3">
-          <button
-            onClick={reset}
-            className="px-4 py-3 rounded-xl bg-warm-200 hover:bg-warm-300 text-warm-700 font-medium transition-colors"
-          >
-            Hreinsa
-          </button>
-          <button
-            onClick={handleSubmit}
-            disabled={bonds.every((b) => b === 'none')}
-            className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-warm-300 text-white font-bold py-3 rounded-xl transition-colors"
-          >
-            Athuga
-          </button>
-        </div>
+        <PinnedActions
+          status={<span className="whitespace-nowrap">Eftir: {remaining}</span>}
+          pinnedClassName="pin:flex pin:items-center pin:gap-3"
+        >
+          <div className="flex gap-3 flex-1 min-w-0">
+            <button
+              onClick={reset}
+              className="px-4 py-3 phone:py-2 pointer-coarse:min-h-11 rounded-xl bg-warm-200 hover:bg-warm-300 text-warm-700 font-medium transition-colors"
+            >
+              Hreinsa
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={bonds.every((b) => b === 'none')}
+              className="flex-1 bg-green-500 hover:bg-green-600 disabled:bg-warm-300 text-white font-bold py-3 phone:py-2 pointer-coarse:min-h-11 rounded-xl transition-colors"
+            >
+              Athuga
+            </button>
+          </div>
+        </PinnedActions>
       )}
     </div>
   );

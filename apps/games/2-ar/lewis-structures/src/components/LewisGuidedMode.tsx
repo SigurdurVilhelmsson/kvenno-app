@@ -1,4 +1,6 @@
-import { useState, useEffect, useId } from 'react';
+import { useState, useEffect, useId, useRef } from 'react';
+
+import { useArmedAfter, useItemTop, useRevealAfterCommit } from '@shared/utils';
 
 import { pairCount } from '../utils/lonePairs';
 
@@ -129,6 +131,23 @@ export function LewisGuidedMode({
 
   const step = steps[currentStep];
 
+  // Each new step brings its card's top back on a phone and focuses its title.
+  const stepRef = useItemTop<HTMLDivElement>(currentStep);
+  // After a check: on a phone the verdict through its button comes into view,
+  // and focus moves to the verdict, not to the button, so a second Enter lands
+  // on nothing (design P3). "Næsta skref" ignores a press within 400 ms of
+  // appearing, so a double tap cannot skip it either; nor can "Reyna aftur"
+  // clear a wrong verdict before it is read.
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const feedbackActionRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(showFeedback, () => ({
+    bottom: feedbackActionRef.current,
+    tops: [feedbackRef.current],
+    focus: feedbackRef.current,
+  }));
+  const armed = useArmedAfter(400, `${currentStep}:${showFeedback}`);
+  const verdictId = useId();
+
   useEffect(() => {
     setElectronsRemaining(totalElectrons - electronsUsed);
   }, [totalElectrons, electronsUsed]);
@@ -156,6 +175,14 @@ export function LewisGuidedMode({
           );
         }
       }, 500);
+    }
+  };
+
+  // Enter in a count field checks it, as "Athuga" beside it does.
+  const checkOnEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && userValue !== null) {
+      e.preventDefault();
+      handleCheckValue();
     }
   };
 
@@ -229,7 +256,7 @@ export function LewisGuidedMode({
     <div
       className={`bg-gradient-to-br from-green-50 to-teal-50 rounded-xl border border-green-200 ${compact ? 'p-4' : 'p-4 sm:p-6'}`}
     >
-      <div className="flex items-center justify-between gap-2 mb-4">
+      <div className="flex items-center justify-between gap-2 mb-4 phone:mb-2">
         <h3
           className={`font-bold text-green-800 flex items-center gap-2 ${compact ? 'text-base' : 'text-lg'}`}
         >
@@ -240,30 +267,30 @@ export function LewisGuidedMode({
         </div>
       </div>
 
-      {/* Progress bar */}
-      <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
+      {/* Progress bar. Dropped on a phone: "Skref n/6" beside the title says the same. */}
+      <div className="w-full bg-warm-200 rounded-full h-2 mb-6 phone:hidden">
         <div
           className="bg-green-500 h-2 rounded-full transition-all duration-300"
           style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
         />
       </div>
 
-      {/* Electron tracker */}
-      <div className="bg-white rounded-lg p-4 mb-4 shadow-xs">
+      {/* Electron tracker. One line on a phone: each count beside its label. */}
+      <div className="bg-white rounded-lg p-4 mb-4 shadow-xs phone:px-3 phone:py-1.5 phone:mb-2">
         <div className="flex justify-between items-center">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">{totalElectrons}</div>
+          <div className="text-center phone:flex phone:flex-row-reverse phone:items-baseline phone:gap-1">
+            <div className="text-2xl font-bold text-blue-600 phone:text-lg">{totalElectrons}</div>
             <div className="text-xs text-warm-500">Alls</div>
           </div>
           <div className="text-warm-400">−</div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">{electronsUsed}</div>
+          <div className="text-center phone:flex phone:flex-row-reverse phone:items-baseline phone:gap-1">
+            <div className="text-2xl font-bold text-green-600 phone:text-lg">{electronsUsed}</div>
             <div className="text-xs text-warm-500">Notaðar</div>
           </div>
           <div className="text-warm-400">=</div>
-          <div className="text-center">
+          <div className="text-center phone:flex phone:flex-row-reverse phone:items-baseline phone:gap-1">
             <div
-              className={`text-2xl font-bold ${electronsRemaining === 0 ? 'text-green-600' : 'text-orange-600'}`}
+              className={`text-2xl font-bold phone:text-lg ${electronsRemaining === 0 ? 'text-green-600' : 'text-orange-600'}`}
             >
               {electronsRemaining}
             </div>
@@ -273,19 +300,24 @@ export function LewisGuidedMode({
       </div>
 
       {/* Step content */}
-      <div className="bg-white rounded-lg p-4 sm:p-5 mb-4 shadow-xs">
-        <div className="flex items-center gap-2 mb-3">
+      <div
+        ref={stepRef}
+        className="bg-white rounded-lg p-4 sm:p-5 mb-4 shadow-xs phone:p-3 phone:mb-3"
+      >
+        <div className="flex items-center gap-2 mb-3 phone:mb-2">
           <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold ${
+            className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold phone:w-7 phone:h-7 phone:shrink-0 ${
               showFeedback && isCorrect ? 'bg-green-500' : 'bg-blue-500'
             }`}
           >
             {currentStep + 1}
           </div>
-          <h4 className="font-bold text-warm-800">{step.title}</h4>
+          <h4 data-item-start className="font-bold text-warm-800">
+            {step.title}
+          </h4>
         </div>
 
-        <p className="text-warm-700 mb-4">{step.instruction}</p>
+        <p className="text-warm-700 mb-4 phone:mb-3">{step.instruction}</p>
 
         {/* Step-specific UI */}
         {step.action === 'count' && !showFeedback && (
@@ -316,6 +348,8 @@ export function LewisGuidedMode({
                 type="number"
                 value={userValue ?? ''}
                 onChange={(e) => setUserValue(readCount(e.target.value))}
+                onKeyDown={checkOnEnter}
+                enterKeyHint="done"
                 aria-label="Fjöldi gildisrafeinda"
                 className="flex-1 p-3 border-2 border-warm-300 rounded-lg focus:border-blue-500 focus:outline-none text-xl font-mono text-center"
                 placeholder="?"
@@ -336,7 +370,7 @@ export function LewisGuidedMode({
         {step.action === 'place-central' && !showFeedback && (
           <div className="space-y-4">
             {/* Visual of central atom */}
-            <div className="flex justify-center py-6">
+            <div className="flex justify-center py-6 phone:py-4">
               <div className={`relative ${animating ? 'animate-bounce' : ''}`}>
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
                   <span className="text-2xl font-bold text-white">{centralAtom?.symbol}</span>
@@ -431,6 +465,8 @@ export function LewisGuidedMode({
                 type="number"
                 value={userValue ?? ''}
                 onChange={(e) => setUserValue(readCount(e.target.value))}
+                onKeyDown={checkOnEnter}
+                enterKeyHint="done"
                 className="flex-1 p-3 border-2 border-warm-300 rounded-lg focus:border-blue-500 focus:outline-none text-xl font-mono text-center max-w-24"
                 placeholder="?"
                 min="0"
@@ -598,8 +634,10 @@ export function LewisGuidedMode({
             <p className="text-green-700 font-medium mb-4">
               Þú hefur lokið við Lewis-formúlu fyrir {molecule}!
             </p>
+            {/* Reached by "Næsta skref": the same guard, so a double tap on it
+                cannot close the walkthrough unread. */}
             <button
-              onClick={onComplete}
+              onClick={armed(() => onComplete?.())}
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-all"
             >
               Ljúka
@@ -608,11 +646,19 @@ export function LewisGuidedMode({
         )}
 
         {/* Feedback */}
+        {/* The group focused after a check (P3), named by its verdict. */}
         {showFeedback && step.action !== 'complete' && (
           <div
-            className={`mt-4 p-4 rounded-lg ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
+            ref={feedbackRef}
+            role="group"
+            tabIndex={-1}
+            aria-labelledby={verdictId}
+            className={`mt-4 p-4 phone:mt-3 phone:p-3 rounded-lg focus:outline-none ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
           >
-            <div className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+            <div
+              id={verdictId}
+              className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
+            >
               {isCorrect ? '✓ Rétt!' : '✗ Ekki rétt'}
             </div>
             {!isCorrect && step.action === 'distribute' && (
@@ -629,7 +675,9 @@ export function LewisGuidedMode({
             )}
             {!isCorrect && (
               <button
-                onClick={retryStep}
+                key="retry"
+                ref={feedbackActionRef}
+                onClick={armed(retryStep)}
                 className="mt-3 w-full bg-warm-200 hover:bg-warm-300 text-warm-700 font-bold py-2 px-4 rounded-lg transition-all pointer-coarse:min-h-11"
               >
                 Reyna aftur
@@ -637,7 +685,9 @@ export function LewisGuidedMode({
             )}
             {isCorrect && (
               <button
-                onClick={handleNextStep}
+                key="next"
+                ref={feedbackActionRef}
+                onClick={armed(handleNextStep)}
                 className="mt-3 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition-all pointer-coarse:min-h-11"
               >
                 Næsta skref →

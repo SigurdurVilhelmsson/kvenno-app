@@ -81,6 +81,19 @@ const PIN_USES: { file: string; component: 'TaskStrip' | 'PinnedActions'; measur
       'scroll. No text input: the typed mode renders the same row unpinned. The bar holds ' +
       'Vísbending | Athuga only and leaves with them on commit, so it never sits over feedback.',
   },
+  {
+    file: 'apps/games/2-ar/lewis-structures/src/components/LewisDrawingCanvas.tsx',
+    component: 'PinnedActions',
+    measured:
+      'Stig 2 drawing board, after compaction (board capped at 42dvh, the electron count merged ' +
+      'into the lone-pair heading, tighter lone-pair rows) and anchoring, touch, all nine ' +
+      'molecules: on arrival Athuga, unpinned, ends at page y 721-1035 at 360x640 (81-395 px ' +
+      'below the screen), 687-1045 at 390x664 and 654-996 at 375x548. Title to Athuga is ' +
+      '595-937 px at 360x640 and 556-898 px at 375x548, over the screen for CO2, BF3, PCl5 and ' +
+      'SF6 at 360x640 and for every molecule on the SE. No text input. The bar holds ' +
+      'Hreinsa | Athuga with the electrons left as status, and leaves with the board once the ' +
+      "drawing is right, so it never sits over the result; a wrong drawing's list opens above it.",
+  },
 ];
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));

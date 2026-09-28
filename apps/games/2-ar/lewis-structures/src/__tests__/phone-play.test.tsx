@@ -1,40 +1,118 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, within } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { act, cleanup, fireEvent, render, within } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { PHONE_QUERY } from '@shared/utils';
 
 import App from '../App';
 import { Level1 } from '../components/Level1';
 import { Level2 } from '../components/Level2';
+import { Level3 } from '../components/Level3';
 import { COMPACT_BOARD_QUERY, LewisDrawingCanvas } from '../components/LewisDrawingCanvas';
 
 /**
- * Level 2's drawing board on a phone.
+ * The game on a phone, and where the page and focus go as the student plays.
  *
- * At 360 px the full 350-unit board drew each bond as a 19 × 21 px target and
- * the outer atoms' letters at 10 px, so on phones (narrower than `sm`, or a
- * landscape phone) the board crops to the molecule and widens each bond's
- * invisible hit strip. Desktop keeps the original board unchanged.
+ * Level 2's drawing board: at 360 px the full 350-unit board drew each bond as
+ * a 19 × 21 px target and the outer atoms' letters at 10 px, so on phones
+ * (narrower than `sm`, or a landscape phone) the board crops to the molecule
+ * and widens each bond's invisible hit strip. Desktop keeps the original board.
  *
- * "Næsta sameind" swaps the molecule in place; on a phone that left the new
- * board scrolled off the top, so the card is brought back into view. Checking
- * an answer can do the same to its result, which is brought back the same way.
- * And a level tapped from a scrolled-down menu opens at the top.
+ * Every screen swaps its content in place and the browser keeps the offset, so
+ * the game uses the shared helpers in `@shared/utils` (`reveal.ts`, `armed.ts`),
+ * which replaced its own `useRevealOnChange`:
  *
- * Queries are scoped to each rendered container and everything is unmounted
- * after each test, since the suite runs with retries.
+ * - A level opens at the top of the page — at any width, as it always did —
+ *   with its heading focused; back on the menu the first level not yet done is
+ *   focused.
+ * - "Næsta …" brings the new item's top back when it has scrolled off — at any
+ *   width, as the old helper did — and focuses its title.
+ * - After a check, focus moves to the feedback, never to Næsta, and Næsta
+ *   ignores a press within 400 ms of appearing, so neither a second Enter nor a
+ *   second tap skips the feedback. On desktop the page moves only where the old
+ *   helper moved it: a verdict that opened above the window.
+ *
+ * jsdom has no layout, so every box is stubbed. Queries are scoped to each
+ * rendered container, since the suite runs with retries.
  */
 
-function mockMatchMedia(matches: (query: string) => boolean) {
-  vi.stubGlobal(
-    'matchMedia',
-    vi.fn((query: string) => ({
-      matches: matches(query),
-      media: query,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-    }))
-  );
+/** Animation frames wait until `frame()` runs the ones already asked for. */
+let frames = new Map<number, FrameRequestCallback>();
+let lastFrame = 0;
+function frame() {
+  const due = [...frames.values()];
+  frames = new Map();
+  act(() => due.forEach((cb) => cb(0)));
 }
+
+/** A click, then the frame in which the game reveals and focuses what it opened. */
+function press(el: Element) {
+  fireEvent.click(el);
+  frame();
+}
+
+/** Which media queries match, where every element's top is, and the guard's clock. */
+let matching: (query: string) => boolean = () => false;
+let top = 16;
+let clock = 1000;
+const scrollBy = vi.fn();
+const scrollTo = vi.fn();
+
+beforeEach(() => {
+  localStorage.clear();
+  matching = () => false;
+  top = 16;
+  clock = 1000;
+  scrollBy.mockClear();
+  scrollTo.mockClear();
+  window.scrollBy = scrollBy as unknown as typeof window.scrollBy;
+  window.scrollTo = scrollTo as unknown as typeof window.scrollTo;
+  window.matchMedia = vi.fn((query: string) => ({
+    matches: matching(query),
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })) as unknown as typeof window.matchMedia;
+  Object.defineProperty(window, 'innerHeight', { value: 640, configurable: true });
+  Object.defineProperty(window, 'visualViewport', { value: undefined, configurable: true });
+  vi.spyOn(performance, 'now').mockImplementation(() => clock);
+  frames = new Map();
+  vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+    frames.set(++lastFrame, cb);
+    return lastFrame;
+  });
+  vi.spyOn(window, 'cancelAnimationFrame').mockImplementation((id) => {
+    frames.delete(id);
+  });
+  vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(
+    () =>
+      ({
+        top,
+        bottom: top + 100,
+        left: 0,
+        right: 328,
+        width: 328,
+        height: 100,
+        x: 0,
+        y: top,
+        toJSON: () => ({}),
+      }) as DOMRect
+  );
+});
+
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+});
+
+const phone = () => {
+  matching = (q) => q === PHONE_QUERY || q === COMPACT_BOARD_QUERY;
+};
+const focused = () => document.activeElement as HTMLElement | null;
 
 const WATER = {
   centralAtom: 'O',
@@ -65,15 +143,9 @@ function renderBoard() {
   return { ui: within(rendered.container), svg, hitWidths };
 }
 
-afterEach(() => {
-  cleanup();
-  vi.unstubAllGlobals();
-  vi.restoreAllMocks();
-});
-
 describe('drawing board on a phone', () => {
   it('crops to the molecule and widens the bond hit strip on phones', () => {
-    mockMatchMedia((q) => q === COMPACT_BOARD_QUERY);
+    matching = (q) => q === COMPACT_BOARD_QUERY;
     const { ui, svg, hitWidths } = renderBoard();
     // every atom and lone pair lies within 120 units of the centre (175, 140)
     expect(svg.getAttribute('viewBox')).toBe('55 20 240 240');
@@ -84,7 +156,6 @@ describe('drawing board on a phone', () => {
   });
 
   it('keeps the original board where there is room', () => {
-    mockMatchMedia(() => false);
     const { ui, svg, hitWidths } = renderBoard();
     expect(svg.getAttribute('viewBox')).toBe('0 0 350 280');
     expect(hitWidths).toEqual([24, 24]);
@@ -97,7 +168,7 @@ describe('drawing board on a phone', () => {
   });
 
   it('still cycles a bond on each tap in the compact board', () => {
-    mockMatchMedia((q) => q === COMPACT_BOARD_QUERY);
+    matching = (q) => q === COMPACT_BOARD_QUERY;
     const { ui } = renderBoard();
     const bond = () => ui.getAllByRole('button', { name: /^Tengi 1 af 2/ })[0];
     const seen = [];
@@ -111,101 +182,186 @@ describe('drawing board on a phone', () => {
     }
     expect(seen).toEqual(['Einfalt', 'Tvöfalt', 'Þrefalt', 'Ekkert']);
   });
+
+  it('shows the electron count once, beside the lone-pair heading, on a phone', () => {
+    matching = (q) => q === COMPACT_BOARD_QUERY;
+    const { ui } = renderBoard();
+    for (const label of ['Alls', 'Notaðar', 'Eftir']) {
+      expect(ui.getAllByText(label)).toHaveLength(1);
+    }
+    const heading = ui.getByText('Stök rafeindapör:');
+    expect(heading.parentElement?.textContent).toContain('Eftir');
+  });
+
+  it('keeps the counter its own card where there is room', () => {
+    const { ui } = renderBoard();
+    for (const label of ['Alls', 'Notaðar', 'Eftir']) {
+      expect(ui.getAllByText(label)).toHaveLength(1);
+    }
+    expect(ui.getByText('Stök rafeindapör:').parentElement?.textContent).not.toContain('Eftir');
+  });
+
+  it('focuses what to fix after a wrong drawing, and keeps Athuga', () => {
+    phone();
+    const { ui } = renderBoard();
+    fireEvent.click(ui.getAllByRole('button', { name: /^Tengi 1 af 2/ })[0]);
+    press(ui.getByRole('button', { name: 'Athuga' }));
+    expect(focused()?.getAttribute('role')).toBe('status');
+    expect(focused()?.textContent).toContain('Ekki alveg rétt');
+    expect(ui.getByRole('button', { name: 'Athuga' })).toBeTruthy();
+  });
 });
 
-/**
- * Pins every element's top edge at `top` and records which elements the page
- * scrolls into view (by the text they start with).
- */
-function watchReveals(top: number) {
-  mockMatchMedia((q) => q === COMPACT_BOARD_QUERY);
-  const revealed: string[] = [];
-  Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
-    configurable: true,
-    value: vi.fn(function (this: HTMLElement, options: ScrollIntoViewOptions) {
-      expect(options).toEqual({ block: 'start', behavior: 'smooth' });
-      revealed.push((this.textContent ?? '').trim());
-    }),
-  });
-  vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
-    top,
-    bottom: top + 900,
-    left: 0,
-    right: 328,
-    width: 328,
-    height: 900,
-    x: 0,
-    y: top,
-    toJSON: () => ({}),
-  } as DOMRect);
-  return revealed;
+/** Draw water correctly on Level 2's first board and check it. */
+function drawWater(ui: ReturnType<typeof within>) {
+  for (const bond of ui.getAllByRole('button', { name: /^Tengi \d af 2/ })) {
+    fireEvent.click(bond);
+  }
+  const plus = ui.getByRole('button', { name: 'Bæta stöku pari við O (miðatóm)' });
+  fireEvent.click(plus);
+  fireEvent.click(plus);
+  press(ui.getByRole('button', { name: 'Athuga' }));
 }
 
-describe('moving on shows the next molecule', () => {
-  function drawWaterAndGoOn(cardTop: number) {
-    const revealed = watchReveals(cardTop);
-    const rendered = render(<Level2 onComplete={vi.fn()} onBack={vi.fn()} />);
-    const ui = within(rendered.container);
-    for (const bond of ui.getAllByRole('button', { name: /^Tengi \d af 2/ })) {
-      fireEvent.click(bond);
-    }
-    const plus = ui.getByRole('button', { name: 'Bæta stöku pari við O (miðatóm)' });
-    fireEvent.click(plus);
-    fireEvent.click(plus);
-    fireEvent.click(ui.getByRole('button', { name: 'Athuga' }));
-    expect(ui.getByText('Rétt!')).toBeTruthy();
-    const afterCheck = [...revealed];
+describe('Stig 2: a right drawing, then the next molecule', () => {
+  it('focuses the verdict, drops a Næsta press within 400 ms, then focuses the next title', () => {
+    phone();
+    const { container } = render(<Level2 onComplete={vi.fn()} onBack={vi.fn()} />);
+    const ui = within(container);
+    drawWater(ui);
+    expect(focused()?.getAttribute('role')).toBe('group');
+    expect(focused()?.textContent).toContain('Rétt!');
 
+    const next = ui.getByRole('button', { name: /Næsta sameind/ });
+    clock += 150;
+    fireEvent.click(next);
+    expect(ui.getByText('Vatn (H₂O)')).toBeTruthy();
+
+    clock += 400;
+    top = -372;
+    scrollBy.mockClear();
     fireEvent.click(ui.getByRole('button', { name: /Næsta sameind/ }));
     expect(ui.getByText('Ammóníak (NH₃)')).toBeTruthy();
-    return { afterCheck, afterNext: revealed.slice(afterCheck.length) };
-  }
-
-  it('brings the result, then the next board, back when they opened above the screen', () => {
-    const { afterCheck, afterNext } = drawWaterAndGoOn(-372);
-    // the shorter result replaced the board: its "Rétt!" is what comes back
-    expect(afterCheck).toEqual([expect.stringMatching(/^Rétt!/)]);
-    // then the card of the next molecule, title first
-    expect(afterNext).toEqual([expect.stringMatching(/^Ammóníak \(NH₃\)/)]);
+    // The card's top was above the screen: it comes back to the top of it.
+    expect(scrollBy).toHaveBeenCalledWith({ top: -372, behavior: 'smooth' });
+    expect(focused()?.textContent).toBe('Ammóníak (NH₃)');
   });
 
-  it('leaves the page alone when they are already on screen', () => {
-    const { afterCheck, afterNext } = drawWaterAndGoOn(16);
-    expect(afterCheck).toEqual([]);
-    expect(afterNext).toEqual([]);
+  it('on desktop brings back only what opened above the window, as before', () => {
+    top = -372;
+    const { container } = render(<Level2 onComplete={vi.fn()} onBack={vi.fn()} />);
+    const ui = within(container);
+    drawWater(ui);
+    // the shorter result replaced the board, and its verdict opened above the window
+    expect(scrollBy).toHaveBeenCalledTimes(1);
+    expect(scrollBy).toHaveBeenCalledWith({ top: -372, behavior: 'smooth' });
+    expect(focused()?.textContent).toContain('Rétt!');
+  });
+
+  it('on desktop leaves the page alone when everything is on screen', () => {
+    const { container } = render(<Level2 onComplete={vi.fn()} onBack={vi.fn()} />);
+    const ui = within(container);
+    drawWater(ui);
+    clock += 500;
+    fireEvent.click(ui.getByRole('button', { name: /Næsta sameind/ }));
+    expect(scrollBy).not.toHaveBeenCalled();
+    expect(focused()?.textContent).toBe('Ammóníak (NH₃)');
   });
 });
 
 describe('Stig 1 feedback', () => {
-  // The hints vanish once the answer is checked, so with several open the
-  // feedback's verdict opened above the top of a phone screen.
-  function answerFirst(top: number) {
-    const revealed = watchReveals(top);
-    const rendered = render(<Level1 onComplete={vi.fn()} onBack={vi.fn()} />);
-    const ui = within(rendered.container);
+  function answerFirst() {
+    const { container } = render(<Level1 onComplete={vi.fn()} onBack={vi.fn()} />);
+    const ui = within(container);
     fireEvent.change(ui.getByPlaceholderText('?'), { target: { value: '4' } });
-    fireEvent.click(ui.getByRole('button', { name: 'Athuga svar' }));
-    expect(ui.getByRole('button', { name: 'Næsta þraut' })).toBeTruthy();
-    return revealed;
+    const check = ui.getByRole('button', { name: 'Athuga svar' });
+    press(check);
+    return { ui, check };
   }
 
-  it('brings the verdict back when it opened above the screen', () => {
-    expect(answerFirst(-253)).toEqual([expect.stringMatching(/^✓\s*Rétt!/)]);
+  it('focuses the feedback, not Næsta, which is a different element', () => {
+    const { ui, check } = answerFirst();
+    expect(focused()?.getAttribute('role')).toBe('group');
+    expect(focused()?.textContent).toMatch(/Rétt!/);
+    expect(check.isConnected).toBe(false);
+    expect(ui.getByRole('button', { name: 'Næsta þraut' })).not.toBe(focused());
   });
 
-  it('leaves the page alone when it is on screen', () => {
-    expect(answerFirst(300)).toEqual([]);
+  it('on desktop brings the verdict back when it opened above the window', () => {
+    top = -253;
+    answerFirst();
+    expect(scrollBy).toHaveBeenCalledWith({ top: -253, behavior: 'smooth' });
+  });
+
+  it('on desktop leaves the page alone when the verdict is on screen', () => {
+    top = 300;
+    answerFirst();
+    expect(scrollBy).not.toHaveBeenCalled();
+  });
+
+  it('Enter in the count field checks the answer', () => {
+    const { container } = render(<Level1 onComplete={vi.fn()} onBack={vi.fn()} />);
+    const ui = within(container);
+    const input = ui.getByPlaceholderText('?');
+    fireEvent.change(input, { target: { value: '4' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(ui.getByRole('button', { name: 'Næsta þraut' })).toBeTruthy();
   });
 });
 
-describe('opening a level', () => {
-  it('starts the level at the top of the page', () => {
-    mockMatchMedia(() => false);
-    const scrollTo = vi.fn();
-    vi.stubGlobal('scrollTo', scrollTo);
-    const rendered = render(<App />);
+describe('Stig 3', () => {
+  /** Answer the first challenge and move on to the formal charge of O in H₂O. */
+  function toChargeQuestion() {
+    const { container } = render(<Level3 onComplete={vi.fn()} onBack={vi.fn()} />);
+    const ui = within(container);
+    fireEvent.click(ui.getByRole('button', { name: 'FC = Gildisraf. - (óbundnar + ½ bundnar)' }));
+    press(ui.getByRole('button', { name: 'Athuga svar' }));
+    clock += 500;
+    fireEvent.click(ui.getByRole('button', { name: 'Næsta þraut' }));
+    return { container, ui };
+  }
+
+  it('sets short charge options side by side on a phone, and one per row after the check', () => {
+    phone();
+    const { ui } = toChargeQuestion();
+    const options = () => ui.getByRole('button', { name: '+1' }).parentElement as HTMLElement;
+    expect(options().className).toContain('grid-cols-3');
+    fireEvent.click(ui.getByRole('button', { name: '0' }));
+    press(ui.getByRole('button', { name: 'Athuga svar' }));
+    expect(options().className).not.toContain('grid-cols-3');
+    expect(focused()?.getAttribute('role')).toBe('group');
+    expect(focused()?.textContent).toMatch(/^Rétt!/);
+  });
+
+  it('keeps one option per row where there is room', () => {
+    const { ui } = toChargeQuestion();
+    const options = ui.getByRole('button', { name: '+1' }).parentElement as HTMLElement;
+    expect(options.className).not.toContain('grid-cols-3');
+  });
+
+  it('opening the hint focuses the hint, not <body>', () => {
+    phone();
+    const { container } = render(<Level3 onComplete={vi.fn()} onBack={vi.fn()} />);
+    press(within(container).getByRole('button', { name: 'Sýna vísbendingu' }));
+    expect(focused()).not.toBe(document.body);
+    expect(focused()?.textContent?.startsWith('Vísbending:')).toBe(true);
+  });
+});
+
+describe('opening a level and coming back', () => {
+  it('starts the level at the top of the page, with its title focused', () => {
+    const { container } = render(<App />);
     expect(scrollTo).not.toHaveBeenCalled();
-    fireEvent.click(within(rendered.container).getByRole('button', { name: /Stig 3/ }));
-    expect(scrollTo).toHaveBeenCalledWith({ top: 0, left: 0 });
+    fireEvent.click(within(container).getByRole('button', { name: /Stig 3/ }));
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'auto' });
+    expect(focused()?.textContent).toBe('Formhleðsla - Formúlan');
+  });
+
+  it('back on the menu, focuses the first level not yet done', () => {
+    const { container } = render(<App />);
+    const ui = within(container);
+    fireEvent.click(ui.getByRole('button', { name: /Stig 2/ }));
+    fireEvent.click(ui.getByRole('button', { name: /Til baka/ }));
+    expect(focused()?.getAttribute('data-level-card')).toBe('1');
   });
 });

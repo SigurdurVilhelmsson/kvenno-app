@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level1 } from '../components/Level1';
 
 /**
@@ -29,6 +30,9 @@ function renderLevel() {
 afterEach(() => {
   cleanup();
 });
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 describe('a count is graded as the number typed', () => {
   it('marks 4.5 wrong where the answer is 4', () => {
