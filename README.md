@@ -43,7 +43,7 @@ This is a real tool in active classroom use, not a demo. If you teach chemistry 
 
 Listed in curriculum order.
 
-**Year 1** (7 games): Dimensional Analysis, Periodic Table (Lotukerfið), Naming System, Molar Mass, Balancing Equations (Jafna Jöfnur), Limiting Reagent, Solutions
+**Year 1** (7 games): Dimensional Analysis, Periodic Table (Lotukerfið), Naming System, Molar Mass, Balancing Equations (Stilla efnajöfnur), Limiting Reagent, Solutions
 
 **Year 2** (8 games): Electronic Structure (Rafeindabygging), Lewis Structures, VSEPR Geometry, Intermolecular Forces, Hess's Law, Kinetics, Redox Reactions, Organic Nomenclature
 

@@ -149,7 +149,7 @@ prose and `strika út` only as the name of the on-screen strike-through.
 **13. Words for subscript and superscript.**
 `ordabok.md` has neither. Three games use three words, and the two agents that looked recommended
 different replacements. `reynsluformulur` names its whole fourth column `Vísitala` (Skilja, Æfa,
-the menu, aria-labels, README); `jafna-jofnur`'s misconception slot says `Vísitölunum (litlu
+the menu, aria-labels, README); `stilla-efnajofnur`'s misconception slot says `Vísitölunum (litlu
 tölunum) má aldrei breyta` (`utils/balanceChecker.ts`). The book uses `vísitala` only as
 `hávísitala`/`lágvísitala` in figure alt-text; its prose has `lágstafur` 240+ times, including the
 empirical-formula module ch03/m68702, and `neðanskrift` 341 times (ch04/m68709:155). For superscript
@@ -420,7 +420,7 @@ mólmassi`; (b) a new letter for the multiplier, which changes Beita too; (c) ke
 
 Also here: `Vísitala` (item 13).
 
-### jafna-jofnur — Stilla efnajöfnur
+### stilla-efnajofnur — Stilla efnajöfnur
 
 **48. The intro and the Stig 2 hint teach opposite orders for O and H.**
 `components/levelConfigs.tsx` `Aðferð til að stilla` lists O third and H last; reaction 8's hint
