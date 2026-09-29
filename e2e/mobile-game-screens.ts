@@ -79,6 +79,30 @@ export interface LoopCheck {
    * (molmassi Stig 2), so 'Af hverju?' is not required to open expanded.
    */
   collapsedWhy?: boolean;
+  /**
+   * For a loop whose `next` is not the item swap (a retry, a second check in the
+   * same item, a choice on an explore screen): the steps that lead on from
+   * pressing `next` to the real Næsta, and that Næsta. The item-swap check
+   * (§3: the new item's top on screen, focus on it, never on <body>) then runs
+   * on it. Every loop's `next` is pressed and must leave focus off <body>; this
+   * adds the swap for the loops whose `next` does not swap.
+   */
+  advance?: { steps: ScreenStep[]; next: LocatorSpec };
+  /**
+   * A typed loop must name in `together` (or `typedTogether`) the data the
+   * answer is typed from and the input, so §6.2.8 (both within the 352 px a soft keyboard leaves) is
+   * checked. Where the design keeps them further apart, this is the reason,
+   * citing the design section that accepts it; the loop then names no pair.
+   */
+  typedDataApart?: string;
+  /**
+   * The §6.2.8 pairs for a typed loop, where they differ from `together`: they
+   * are measured once the answer steps have run, so on a multi-step screen they
+   * can name a field (and the data it is typed from) that only the answer
+   * brings up, which `together`, checked on arrival, cannot. Defaults to
+   * `together`.
+   */
+  typedTogether?: LocatorSpec[][];
 }
 
 export interface GameScreen {
@@ -415,6 +439,10 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         // answer row: one scroll at 360x640 and 390x664, two on the SE.
         scrollsToAction: 2,
         typed: true,
+        typedDataApart:
+          'The factors the answer is computed from are the chain, at page y 602-652 at 360x640 once ' +
+          'built, and the answer field is at 1 086-1 142, 540 px apart, with the Einingagreining ' +
+          'panel between them. What Stig 2 shows on a phone is design §7.2, open for Siggi.',
       },
     },
     {
@@ -3089,6 +3117,15 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         ],
         verdict: { text: 'Áður en við reiknum' },
         next: { css: 'main .grid button' },
+        advance: {
+          steps: [
+            // Past the 400 ms guard on what `next` brought up.
+            { wait: 450 },
+            { clickRole: ['button', 'Sýna útreikninginn'] },
+            { clickRole: ['button', 'Sýna öll skrefin strax'] },
+          ],
+          next: { role: 'button', name: 'Næsta dæmi' },
+        },
         viewports: ['android', 'iphone', 'se', 'landscape'],
       },
     },
@@ -3124,6 +3161,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         ],
         verdict: { css: 'main ol' },
         next: { role: 'button', name: 'Sýna öll skrefin strax' },
+        advance: { steps: [], next: { role: 'button', name: 'Næsta dæmi' } },
         // On the SE the Beita statement, with its equation, runs 450 px, so the
         // pinned chain starts in the flow below the first screen and pins once
         // the student scrolls to the pool; the §6.2.2 "pinned region on screen
@@ -3971,6 +4009,15 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         answer: [{ fill: ['input[type=number]', '5'] }],
         verdict: { text: 'Ekki rétt' },
         next: { role: 'button', name: 'Reyna aftur' },
+        advance: {
+          steps: [
+            // Past the 400 ms guard on what `next` brought up.
+            { wait: 450 },
+            { fill: ['input[type=number]', '8'] },
+            { clickRole: ['button', 'Athuga'] },
+          ],
+          next: { role: 'button', name: 'Næsta skref →' },
+        },
         together: [[{ text: 'Útreikningur' }, { css: 'input[type=number]' }]],
         viewports: ['android', 'iphone', 'se'],
         typed: true,
@@ -4120,6 +4167,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         viewports: ['android', 'iphone', 'se', 'landscape'],
         scrollsToAction: 1,
         typed: true,
+        together: [
+          [{ css: '[data-item-start]' }, { css: 'div:nth-child(2) > input[type=number]' }],
+        ],
       },
     },
     {
@@ -5380,6 +5430,7 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         verdict: { css: '#rafeind-l2-verdict' },
         next: { role: 'button', name: 'Næsta frumefni' },
         typed: true,
+        together: [[{ css: '[data-item-start]' }, { css: 'input.config-input' }]],
         viewports: ['android', 'iphone', 'se'],
       },
     },
@@ -6525,6 +6576,14 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         answer: [],
         verdict: { text: 'Jafnan stemmir' },
         next: { role: 'button', name: 'Athuga' },
+        advance: {
+          steps: [
+            // Past the 400 ms guard on what `next` brought up.
+            { wait: 450 },
+            { clickRole: ['button', 'Sýna svarið og halda áfram'] },
+          ],
+          next: { role: 'button', name: 'Næsta dæmi' },
+        },
         together: [[{ css: '[data-item-start]' }, { text: 'Jafnan eins og þú stilltir hana' }]],
         viewports: ['android', 'iphone', 'se', 'landscape'],
       },
@@ -7163,6 +7222,11 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         next: { role: 'button', name: 'Næsta spurning' },
         viewports: ['android', 'iphone', 'se', 'landscape'],
         typed: true,
+        typedDataApart:
+          'Design §4 (thermodynamics-predictor) orders the problem, the temperature slider, the graph ' +
+          'and then the answer card, and the Outcome accepts Athuga two flicks down. At 360x640 ' +
+          'ΔH° and ΔS° sit at page y 220-278 and the ΔG° field at about 1 120-1 165, some 945 px ' +
+          "apart; the field's label restates the temperature only.",
         // In play order the slider's graph sits between the problem and the answer, so
         // "Athuga svar" is below the first screen: two flicks at 360x640, 390x664 and the SE.
         scrollsToAction: 2,
@@ -7264,6 +7328,11 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         next: { role: 'button', name: 'Næsta spurning' },
         viewports: ['android', 'iphone', 'landscape'],
         typed: true,
+        typedDataApart:
+          'Design §4 (thermodynamics-predictor) orders the problem, the temperature slider, the graph ' +
+          'and then the answer card, and the Outcome accepts Athuga two flicks down. At 360x640 ' +
+          'ΔH° and ΔS° sit at page y 220-278 and the ΔG° field at about 1 120-1 165, some 945 px ' +
+          "apart; the field's label restates the temperature only.",
         scrollsToAction: 2,
       },
     },
@@ -7285,6 +7354,11 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         next: { role: 'button', name: 'Næsta spurning' },
         viewports: ['android', 'iphone', 'se', 'landscape'],
         typed: true,
+        typedDataApart:
+          'Design §4 (thermodynamics-predictor) orders the problem, the temperature slider, the graph ' +
+          'and then the answer card, and the Outcome accepts Athuga two flicks down. At 360x640 ' +
+          'ΔH° and ΔS° sit at page y 220-278 and the ΔG° field at about 1 120-1 165, some 945 px ' +
+          "apart; the field's label restates the temperature only.",
         // In play order the slider's graph sits between the problem and the answer, so
         // "Athuga svar" is below the first screen: two flicks at 360x640, 390x664 and the SE.
         scrollsToAction: 2,
@@ -7608,6 +7682,22 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         // A wrong step is answered again: the choices and "Athuga svar" stay with the
         // feedback, which follows them on a phone.
         next: { role: 'button', name: 'Athuga svar' },
+        advance: {
+          steps: [
+            // Past the 400 ms guard on what `next` brought up.
+            { wait: 450 },
+            { clickRole: ['button', 'Hærra'] },
+            { clickRole: ['button', 'Athuga svar'] },
+            { wait: 400 },
+            { fill: ['input[inputmode=decimal]', '1,585'] },
+            { clickRole: ['button', 'Athuga svar'] },
+            { wait: 400 },
+            { fill: ['div:has(> label:has-text("Sýrumassi")) > input', '4,64'] },
+            { fill: ['div:has(> label:has-text("Basamassi")) > input', '8,70'] },
+            { clickRole: ['button', 'Athuga svar'] },
+          ],
+          next: { role: 'button', name: 'Næsta verkefni' },
+        },
         together: [
           [{ text: 'pKa' }, { text: 'Markmiðs-pH' }, { role: 'button', name: 'Athuga svar' }],
         ],
@@ -7646,6 +7736,13 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         // landscape residual); "stays usable" still runs.
         viewports: ['android', 'iphone', 'se'],
         typed: true,
+        typedTogether: [
+          [
+            { text: 'Notaðu heildarstyrkinn' },
+            { text: 'Mólmassi:' },
+            { css: 'div:has(> label:has-text("Basamassi")) > input' },
+          ],
+        ],
       },
     },
     {
@@ -7670,6 +7767,23 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         answer: [{ fill: ['input[inputmode=decimal]', '99'] }],
         verdict: { text: 'Ekki rétt' },
         next: { role: 'button', name: 'Athuga svar' },
+        advance: {
+          steps: [
+            // Past the 400 ms guard on what `next` brought up.
+            { wait: 450 },
+            { fill: ['input[inputmode=decimal]', '1,585'] },
+            { clickRole: ['button', 'Athuga svar'] },
+            { wait: 400 },
+            { fill: ['div:has(> label:has-text("Mól sýru")) > input', '0,00387'] },
+            { fill: ['div:has(> label:has-text("Mól basa")) > input', '0,00613'] },
+            { clickRole: ['button', 'Athuga svar'] },
+            { wait: 400 },
+            { fill: ['div:has(> label:has-text("Rúmmál sýru")) > input', '7,76'] },
+            { fill: ['div:has(> label:has-text("Rúmmál basa")) > input', '12,24'] },
+            { clickRole: ['button', 'Athuga svar'] },
+          ],
+          next: { role: 'button', name: 'Næsta verkefni' },
+        },
         together: [[{ text: 'Formúla:' }, { css: 'input[inputmode=decimal]' }]],
         viewports: ['android', 'iphone', 'se', 'landscape'],
         scrollsToAction: 1,
@@ -7712,6 +7826,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         scrollsToAction: 1,
         viewports: ['android', 'iphone', 'se', 'landscape'],
         typed: true,
+        typedTogether: [
+          [{ text: 'Sýrubirgð er' }, { css: 'div:has(> label:has-text("Rúmmál basa")) > input' }],
+        ],
         // The recipe is a worked solution, read in full: Næsta may be a scroll below it.
         teachingFeedback: true,
       },

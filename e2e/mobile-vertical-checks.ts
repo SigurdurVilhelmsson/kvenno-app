@@ -3,7 +3,13 @@ import { readFileSync } from 'node:fs';
 import { test, expect, type Locator, type Page } from '@playwright/test';
 import ts from 'typescript';
 
-import type { GameScreen, LoopCheck, LoopViewport, ScreenStep } from './mobile-game-screens';
+import type {
+  GameScreen,
+  LocatorSpec,
+  LoopCheck,
+  LoopViewport,
+  ScreenStep,
+} from './mobile-game-screens';
 import { describeSpec, locate, runStep } from './screen-steps';
 
 /**
@@ -283,9 +289,9 @@ function verticalStickies(page: Page): Promise<string[]> {
 
 // ─── the assertions, one function per §6.2 item ─────────────────────────────
 
-/** §6.2.1: the screen opens at its heading, and focus is somewhere. */
-async function checkArrival(page: Page, where: string): Promise<void> {
-  const a = await page.evaluate(() => {
+/** What `checkArrival` reads: is the screen's start on screen, and where is focus. */
+function arrivalState(page: Page) {
+  return page.evaluate(() => {
     const start = document.querySelector('[data-item-start]');
     let heading: Element | null = null;
     for (const h of Array.from(document.querySelectorAll('h1, h2'))) {
@@ -303,6 +309,20 @@ async function checkArrival(page: Page, where: string): Promise<void> {
       onBody: !active || active === document.body,
     };
   });
+}
+
+/**
+ * §6.2.1: the screen opens at its heading, and focus is somewhere. `settle`
+ * polls for up to that many ms first, for an arrival that follows a tap (the
+ * item swap scrolls and focuses in a layout effect, or after an exit fade).
+ */
+async function checkArrival(page: Page, where: string, settle = 0): Promise<void> {
+  let a = await arrivalState(page);
+  const until = Date.now() + settle;
+  while ((a.onBody || !(a.startVisible || a.headingVisible)) && Date.now() < until) {
+    await page.waitForTimeout(50);
+    a = await arrivalState(page);
+  }
   expect(
     a.startVisible || a.headingVisible,
     `On arrival the screen heading / [data-item-start] (${a.what}) is not on screen — ${where}`
@@ -450,6 +470,72 @@ async function checkAfterCommit(
   }
 }
 
+/** Polls for focus to leave <body>; fails naming where it is after `ms`. */
+async function expectFocusOffBody(page: Page, after: string, where: string, ms = 2000) {
+  const until = Date.now() + ms;
+  let onBody: boolean;
+  for (;;) {
+    onBody = await page.evaluate(
+      () => !document.activeElement || document.activeElement === document.body
+    );
+    if (!onBody || Date.now() > until) break;
+    await page.waitForTimeout(50);
+  }
+  expect(onBody, `${after} focus fell to <body> — ${where}`).toBe(false);
+}
+
+/**
+ * Taps `spec` as a student would, once its 400 ms double-tap guard has passed:
+ * 450 ms after it is on the page, since it may appear late (einingakedjan's
+ * Næsta dæmi follows the worked solution's 600 ms settle).
+ */
+async function tapWhenArmed(page: Page, spec: LocatorSpec, touch: boolean): Promise<void> {
+  await locate(page, spec).waitFor({ state: 'attached', timeout: SHORT });
+  await page.waitForTimeout(450);
+  await tapAt(page, await centreOf(page, locate(page, spec)), touch);
+  await frames(page);
+}
+
+/**
+ * §3 item swap and P3.5, after the commit: pressing `next` (with a raw tap, past
+ * its 400 ms guard) never drops focus to <body>, and where it swaps the item the
+ * new item opens at its top with focus on it (checkArrival). A loop whose `next`
+ * is not the swap names the real Næsta in `advance`, and that is pressed and
+ * held to the swap rule too.
+ */
+async function checkAfterNext(
+  page: Page,
+  loop: LoopCheck,
+  touch: boolean,
+  where: string
+): Promise<void> {
+  const before = await itemSignature(page, loop);
+  await tapWhenArmed(page, loop.next, touch);
+  const pressed = `After ${describeSpec(loop.next)}`;
+  await noSideways(page, describeSpec(loop.next), where);
+  await expectFocusOffBody(page, pressed, where);
+  if ((await itemSignature(page, loop)) !== before) {
+    await checkArrival(page, `${pressed.toLowerCase()} — ${where}`, 2000);
+  }
+  if (!loop.advance) return;
+
+  for (const step of loop.advance.steps) await stepChecked(page, step, where);
+  const item = await itemSignature(page, loop);
+  await tapWhenArmed(page, loop.advance.next, touch);
+  const swapped = `After ${describeSpec(loop.advance.next)}`;
+  await noSideways(page, describeSpec(loop.advance.next), where);
+  await expectFocusOffBody(page, swapped, where);
+  const until = Date.now() + 2000;
+  while ((await itemSignature(page, loop)) === item && Date.now() < until) {
+    await page.waitForTimeout(50);
+  }
+  expect(
+    await itemSignature(page, loop),
+    `${swapped} the item did not change (advance.next is not an item swap) — ${where}`
+  ).not.toBe(item);
+  await checkArrival(page, `${swapped.toLowerCase()} — ${where}`, 2000);
+}
+
 /** §6.2.6: tabbing never puts the focused element under a pinned region. */
 async function checkPinsNeverHideFocus(page: Page, where: string): Promise<void> {
   if ((await page.locator('[data-pinned-top],[data-pinned-bottom]').count()) === 0) return;
@@ -557,13 +643,21 @@ async function checkAntiSkip(
   await noSideways(page, `double ${how}`, where);
 }
 
-/** §6.2.8: typed screens carry no pins, the data sits close above the input, Enter commits. */
+/**
+ * §6.2.8: typed screens carry no pins, the data sits close above the input, Enter
+ * commits. The data is measured once the answer steps have run, i.e. while the
+ * student types: on a multi-step screen (buffer's whole task, dimensional
+ * analysis' chain) the field and what it is typed from only exist by then.
+ */
 async function checkTyped(page: Page, loop: LoopCheck, where: string): Promise<void> {
   expect(
     await page.locator('[data-pinned-top],[data-pinned-bottom]').count(),
     `A typed screen carries a pinned region — ${where}`
   ).toBe(0);
-  for (const group of loop.together ?? []) {
+  const fills = loop.answer.filter((s): s is { fill: [string, string] } => 'fill' in s);
+  expect(fills.length, `A typed loop's answer has no fill step — ${where}`).toBeGreaterThan(0);
+  for (const step of loop.answer) await stepChecked(page, step, where);
+  for (const group of loop.typedTogether ?? loop.together ?? []) {
     const boxes = await Promise.all(
       group.map((s) => locate(page, s).boundingBox({ timeout: SHORT }))
     );
@@ -576,9 +670,6 @@ async function checkTyped(page: Page, loop: LoopCheck, where: string): Promise<v
       `Typed: [${group.map(describeSpec).join(', ')}] span ${Math.round(span)} px, over the ${TYPED_BUDGET} px a keyboard leaves — ${where}`
     ).toBeLessThanOrEqual(TYPED_BUDGET);
   }
-  const fills = loop.answer.filter((s): s is { fill: [string, string] } => 'fill' in s);
-  expect(fills.length, `A typed loop's answer has no fill step — ${where}`).toBeGreaterThan(0);
-  for (const step of loop.answer) await stepChecked(page, step, where);
   await page
     .locator(fills[fills.length - 1].fill[0])
     .first()
@@ -613,6 +704,14 @@ export function describeVerticalLoops(screens: Record<string, GameScreen[]>): vo
     for (const screen of gameScreens) {
       const loop = screen.loop;
       if (!loop) continue;
+      // §6.2.8 has nothing to measure without a `together` pair; a typed loop
+      // that cannot meet it says why instead of passing by omission.
+      if (loop.typed && !(loop.typedTogether ?? loop.together)?.length && !loop.typedDataApart) {
+        throw new Error(
+          `${game} — ${screen.name}: a typed loop needs \`together\` or \`typedTogether\` (the ` +
+            'data the answer is typed from, and the input) or a `typedDataApart` reason (design §6.2.8)'
+        );
+      }
       const viewports = loop.viewports ?? ['android', 'iphone'];
 
       test.describe(`${game}: ${screen.name}`, () => {
@@ -645,6 +744,7 @@ export function describeVerticalLoops(screens: Record<string, GameScreen[]>): vo
                 await checkPinsNeverHideFocus(page, where);
                 await checkPinBudget(page, where);
               }
+              await checkAfterNext(page, loop, browserName === 'chromium', where);
             });
           });
         }
