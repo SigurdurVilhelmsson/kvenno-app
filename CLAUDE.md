@@ -110,6 +110,41 @@ Design primitives also exported from the barrel, undocumented above: `Card`, `Bu
 (from `./Transition`), `ResponsiveContainer`, `MoleculeViewer` (2D), `LanguageSwitcher`.
 `MoleculeViewer3D` is imported from `@shared/components/MoleculeViewer3D`, deliberately not the barrel.
 
+**Phone primitives (vertical-scroll pass, Sept 2026)** — all phone-only by construction, so a
+desktop layout cannot change through them. The recipe book is `packages/shared/styles/README.md`;
+read it before using any of these. Design: `docs/plans/2026-09-23-vertical-scroll-design.md`.
+
+- **Tailwind variants** in `styles/theme.css`: `phone:` (under 640 px wide **or** at most 500 px
+  tall), `phone-land:` (a phone on its side) and `pin:` (portrait phone, only for the pinned forms
+  below). Scripts use the same queries as `PHONE_QUERY`, `PHONE_LAND_QUERY`, `PIN_QUERY` from
+  `@shared/utils`. Keep the block form of `@custom-variant` — the comma shorthand silently drops
+  the second query, and `phone-variant.test.ts` guards it. Removed headings use `phone:sr-only`,
+  never `phone:hidden`; `phone:contents` only on a role-less `div`; CSS `order` only on
+  non-focusable blocks.
+- **Reveal and focus** in `@shared/utils` (`utils/reveal.ts`): `usableArea()` (the visual viewport
+  minus the sticky header and any stuck pin — never read `innerHeight`), `revealSpan(bottom, tops)`
+  (the most context from `tops` down to `bottom` that fits, else the verdict at the top),
+  `revealTop`, `revealInline` (sideways), `focusTarget`, and the hooks `useScreenTop` (screen
+  swap), `useItemTop` (Næsta, to `[data-item-start]`) and `useRevealAfterCommit`. Scrolling is
+  phone-only unless `{ anyWidth: true }`, which is for a call replacing an old any-width helper, so
+  a desktop user keeps the scroll they had. `utils/desktopReveal.ts` holds the five games' old
+  desktop triggers (`revealOnDesktop`, `useItemStart`, `useCommitReveal`, …), kept exactly; a new
+  game does not use them.
+- **`useArmedAfter(ms = 400, key)`** (`utils/armed.ts`) wraps every post-commit Næsta so the
+  second tap of a double tap cannot skip the feedback. It grades nothing and shows nothing, so it
+  is not a timer in the no-timers sense.
+- **`TaskStrip` / `PinnedActions`** (`components/PinnedTask/`) wrap the game's own target strip
+  and action bar and pin them on a portrait phone only while they take at most 28 % of the
+  screen; everywhere else they are `display: contents`. Pinning a screen with a text input throws
+  in tests. `PinnedActions`' `status` is values only, never a verdict. **Each use is listed with
+  its measurement in `PIN_USES` in `e2e/mobile-vertical.spec.ts`** — no measurement, no pin.
+- **`PhoneDisclosure`** — a reference table or formula card that starts closed on a phone and has
+  no button at all elsewhere. True reference only, never an explore widget or a scaffold; its
+  button text is the block's existing heading.
+- **`DragDropBuilder compact`** — denser items and zones on a phone; zone labels become sr-only.
+  **`AnimatedMolecule fit`** — on a phone, crops the square to what is drawn and boosts label
+  text. **`HintSystem startRevealed`** opens tiers on mount without firing callbacks.
+
 **Removed (Aug 2026):** `ParticleCelebration`/`useParticleCelebration`, `AnimatedBackground`, and
 `SoundToggle`/`useGameSounds` were deleted from `packages/shared/`. The April 2026 restructure
 stripped them from every game, leaving zero importers. Don't reintroduce celebration, animated
@@ -340,6 +375,32 @@ Every game screen was made playable at 360 px by touch in September 2026. What t
   every fourth path). The paths click **visible labels and accessible names**, so renaming a
   button, link, tab or heading a path clicks — a terminology sweep included — means updating the
   path in the same change.
+
+**Vertical scroll (2026-09-29) — the unit is the play loop, not the page.** Only 17 of 316 recorded
+screens fit 360×640 whole, and that is fine: teaching pages stay a deliberate scroll (design §5).
+What must fit is the **loop** — the prompt, the control, the verdict and Næsta — at 360×640 and
+390×664 with no manual scroll, the SE 375×548 and landscape 740×340 being stretch targets. All 26
+games were migrated; the design's Outcome section has the before→after per game. The rules:
+
+- **Every scroll goes through `@shared/utils`.** `packages/shared/i18n/__tests__/no-local-scroll.test.ts`
+  fails on any `scrollIntoView`/`scrollTo`/`scrollBy`, `scrollTop =` or `innerHeight` in game
+  source, and on any game file named for reveal or scroll. Its allow-list is **empty**; keep it so.
+- **After a commit focus moves to the feedback group** (`role="group"`, `tabIndex=-1`,
+  `aria-labelledby` the verdict), never to Næsta and never to `<body>`. Athuga and Næsta are
+  always separate elements, and Næsta is guarded by `useArmedAfter`. This runs at every width, so
+  focus is the one deliberate desktop change.
+- **`e2e/mobile-vertical.spec.ts` holds every `loop` recorded in `e2e/mobile-game-screens.ts`**
+  (a `LoopCheck`: `prompt`, `action`, `answer`, `verdict`, `next`, optional `together`,
+  `viewports`, `typed`, `teachingFeedback`, …) to those guarantees — action on screen, verdict and
+  Næsta on screen after a raw tap, double Enter and double tap never skip, pins never hide focus,
+  no pins on typed screens, landscape usable. **A `LoopCheck` names its elements by visible label
+  and accessible name, so renaming a label a loop uses means updating the loop in the same
+  change**, exactly as for the paths above. The checks live in `e2e/mobile-vertical-checks.ts`.
+- **Desktop must not move.** `scripts/desktop-compare.mjs --base <base dist> --head dist` serves
+  both builds and replays every recorded state and loop at 1280×800: geometry and full-page PNGs
+  must be identical, `scrollY` after each commit must match, and focus changes are reported (focus
+  falling to `<body>` fails). A difference that is not a focus move is a defect, not a note — do
+  not mask it away.
 
 ### Adding a new experiment to lab reports
 
