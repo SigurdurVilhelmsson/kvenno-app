@@ -1267,35 +1267,94 @@ otherwise. Teaching reads (§5) are marked; they are meant to stay a scroll.
 | leysnijafnvaegi          | Kanna 7→1, Skilja 6→2 (reading), Æfa 1→0 and 1→0, Beita 2→0 and 2→0                           |
 
 Focus was on `<body>` after screen swaps and commits in the base build of every game measured; in
-the head it never is. No game scrolls sideways or breaks a word mid-letter at 320–390 px, 740×340
-or 844×390.
+the head it never is. A completeness pass on 2026-09-29 found eight recorded states where it still
+was. Seven followed opening a hint: hess Stig 2 and 3, ph-titration Stig 2 and 3, lewis Stig 2,
+and the shared `HintSystem` in equilibrium-shifter and buffer. The eighth followed lewis' guided
+'Reyna aftur'. All are fixed. The e2e loop now presses Næsta too, after its 400 ms guard, and fails if focus
+falls to `<body>`. Where Næsta swaps the item, the new item must open at its top with focus on it.
+Six loops whose `next` is a retry or a second check name the real Næsta in `advance`. Every typed
+loop now names the data it is typed from beside its input (`together`/`typedTogether`, §6.2.8),
+or says why it cannot (`typedDataApart`: thermodynamics-predictor ×3 by the §4 play order, and
+dimensional-analysis Stig 2, which is §7.2). No game scrolls sideways or breaks a word mid-letter
+at 320–390 px, 740×340 or 844×390. hess Stig 3's ΔH°f table did at 320 px (Koldíoxí|ð) until
+2026-09-29. `mobile-vertical.spec.ts` now holds that state to a 320 px mid-word check.
 
 ### Desktop invariance (§6.3)
 
 `scripts/desktop-compare.mjs` over all 369 recorded states of the 26 games at 1280×800: no
-geometry, `scrollY` or loop difference remains; every remaining difference is focus, as P3
-intends. Three that the migrations had recorded as accepted were fixed instead (jafnvaegisfasti's
+geometry, `scrollY` or loop difference remains, and every difference it reports is focus, as P3
+intends. The tool replays with 200 ms settles, so it cannot see the timing and keyboard changes
+listed below. Those change desktop behaviour on purpose, and Siggi should confirm them alongside
+§7.9. Three that the migrations had recorded as accepted were fixed instead (jafnvaegisfasti's
 Tengd DOM order and Beita landing, thermodynamics-predictor's wrapper spans), and the tool now
 settles scrolls between steps and repaints before capture. The PNG differences left — buffer
 Stig 2, vsepr Stig 2, the redox galvanic cell, and at times molmassi, IMF and kinetics — come from
 running animations and differ just as much when the base is compared with itself. Compare
 `stilla-efnajofnur` against a base built after its rename; an older base has no such page.
 
+**Deliberate desktop behaviour changes** (P3.6: named here, not folded into "identical"):
+
+- **Focus moves at every width** (§7.9). It goes to the feedback group after a check, to the
+  screen or item heading on a swap, to an opened hint (including each shared `HintSystem` tier),
+  and to the next level or phase card on a return to the menu. Programmatic targets carry
+  `data-focus-target` and paint no ring. Interactive controls keep theirs.
+- **Enter in an answer field now commits at every width.** This covers hess Stig 3,
+  jafnvaegisfasti and leysnijafnvaegi (Enter in Tala moves to Veldisvísir, and Enter there
+  checks), dimensional-analysis Stig 0 Námundaðu and Stig 2 (Enter in Stig 3's answer moves to
+  the explanation), buffer Stig 2/3 steps (in the first of a pair Enter moves to the second),
+  reynsluformulur Æfa and Beita (Enter moves field to field, and the last field checks), and
+  lewis-structures' guided count fields.
+- **The 400 ms guards.** A press on every post-commit Næsta (and Reyna aftur, Áfram, Ljúka)
+  within 400 ms of it appearing is dropped, at every width (`useArmedAfter`). lotukerfid also
+  drops a tap on an answer cell or option within 400 ms of a question appearing. nafnakerfid
+  drops a click inside fresh quiz or Stig 3 feedback in its first 400 ms. None of these is
+  visible, and none grades anything.
+- **dimensional-analysis' header-hidden reveal.** The shared `revealTop` treats an item top
+  under the sticky header (0–56 px) as off screen, where the old helper waited for it to leave the
+  viewport. That can add a desktop scroll of under 56 px. The shared helpers also honour
+  `prefers-reduced-motion` with an instant jump where the old ones always scrolled smoothly.
+
 ### Deferred or deviated
 
 - **No shared `PhaseHeader`** (P4): each four-phase game folds its own markup
   (`packages/shared/styles/README.md`).
-- **Pins used only where measured** (`PIN_USES` in `e2e/mobile-vertical.spec.ts`): buffer Stig 1,
-  ph-titration Stig 2 and einingakedjan Kanna got no pin, the measurement not justifying one.
+- **Pins used only where measured** (`PIN_USES` in `e2e/mobile-vertical.spec.ts`). Every pin P7,
+  P8 or §4 names that did not ship, with the measurement from its commit:
+  - buffer Stig 1 TaskStrip: pH, ratio target, +/− and Athuga already share one screen at 360×640,
+    390×664 and the SE, and the ratio turns green in band, so a pin would pin a live verdict.
+  - ph-titration Stig 2 bench controls and Staðfesta val (PinnedActions): not pinned. This
+    Outcome first said the measurement did not justify one, but the game's commit (097e0fa)
+    records no measurement. Stig 2's loop passes at 360×640 and 390×664 unpinned. The SE is an
+    opt-out, listed under accepted residuals.
+  - einingakedjan Kanna TaskStrip: the chain row plus its result is over the 28 % budget.
+  - kinetics Stig 2 and 3 PinnedActions: after compaction and anchoring Athuga is on screen (Stig 2) or one reading scroll from the question (Stig 3), so P8 condition 1 does not hold. A pinned
+    Næsta in Stig 3 would also sit over the Hugtak note (P8 condition 3).
+  - rafeindabygging Stig 1 and 3 PinnedActions: Athuga is on screen at 360×640 and 390×664 on
+    every item (P8 condition 1 does not hold). The SE's 5-option Stig 1 questions are the one
+    short scroll §5 accepts.
+  - lausnir Stig 2 PinnedActions (conditional in §4): after compaction the question to Staðfesta
+    is under one screen, so the condition was not met.
+  - leysnijafnvaegi Kanna TaskStrip (P7): judged unnecessary, though its commit did not say so.
+    The residual it records is one scroll from the salt card down to the slider. Measured
+    2026-09-29 at 360×640: the card at page y 520–708 and the slider with its readouts at
+    848–987 span 467 px, inside the 584 px under the header. After that one scroll the card's
+    Mólarleysni and the live readout are on screen together, and that comparison is what P7
+    would pin.
 - **Accepted residuals** (§5): SF₆ in lewis Stig 2 (one ~280 px scroll); thermo's Athuga two
   flicks down because the design orders slider → graph → answer; landscape Næsta below the verdict
   in equilibrium-shifter, ph Stig 1 and vsepr Stig 1; SE opt-outs from some loops (jafnvaegisfasti
   and einingakedjan Beita, ph Stig 2).
 - **gas-law**: menu tiles stay stacked (a three-up row breaks `Kjörgaslögmálið`) and P12 (input
   and Athuga on one row) is not done.
-- **Not checked**: Firefox Playwright on the new loops, VoiceOver/TalkBack for the P3.4 double
-  announcement, and real iPhone/Android devices (sticky pins under the iOS toolbar, soft keyboard
-  on programmatic focus).
+- **Not checked**: Firefox Playwright, VoiceOver/TalkBack for the P3.4 double announcement, and
+  real iPhone/Android devices (sticky pins under the iOS toolbar, soft keyboard on programmatic
+  focus). CI runs Firefox and it has **never run on this branch**: `ci.yml` installs `chromium
+firefox`, and the firefox project runs every untagged test. That is one `loop fits` per game in
+  `mobile-vertical.spec.ts` (26 tests, mouse and no touch, which now also press Næsta) and the
+  `mobile-games.spec.ts` sample with its new waits. The one attempt to install it (2026-09-29)
+  was refused by the session's network policy (`cdn.playwright.dev`). Run
+  `playwright test --project=firefox e2e/mobile-vertical.spec.ts e2e/mobile-games.spec.ts` in CI
+  before merge, and fix or tag what fails.
 - **Keppnishamur** in equilibrium-shifter has no `LoopCheck`: it cannot be unlocked (the gate
   defect CLAUDE.md records), so only unit tests cover it.
 
