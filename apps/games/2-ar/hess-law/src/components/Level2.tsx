@@ -143,6 +143,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const resultRef = useRef<HTMLDivElement>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
+  const hintRef = useRef<HTMLDivElement>(null);
 
   // Calculate current sum of selected equations
   const calculateSelectedSum = useCallback(() => {
@@ -248,6 +249,18 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       bottom: pinned ? resultRef.current : nextRef.current,
       tops: [resultRef.current],
       focus: resultRef.current,
+    };
+  });
+  // Opening the hint replaces its button with the hint, which dropped focus to
+  // <body> (P3.5): bring the hint through the action row into view on a phone
+  // (the hint alone while that row is pinned) and move focus to the hint — the
+  // pattern kinetics uses.
+  useRevealAfterCommit(showHint, () => {
+    const pinned = !!actionsRef.current?.closest('[data-pinned-bottom]');
+    return {
+      bottom: pinned ? hintRef.current : actionsRef.current,
+      tops: [hintRef.current],
+      focus: hintRef.current,
     };
   });
   // A double tap on Athuga lausn must not land on Næsta, which renders in its place.
@@ -425,7 +438,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               {!showResult && (
                 <div className="mb-6 phone:mb-3">
                   {showHint ? (
-                    <div className="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl">
+                    <div
+                      ref={hintRef}
+                      className="bg-yellow-50 border-2 border-yellow-300 p-4 rounded-xl"
+                    >
                       <h4 className="font-semibold text-yellow-800 mb-2">💡 Vísbending:</h4>
                       <p className="text-yellow-900">{puzzle.hint}</p>
                     </div>

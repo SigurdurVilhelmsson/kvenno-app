@@ -6,6 +6,7 @@ import { test, expect } from '@playwright/test';
 
 import { GAME_SCREENS } from './mobile-game-screens';
 import { describeVerticalLoops } from './mobile-vertical-checks';
+import { runStep } from './screen-steps';
 
 /**
  * Vertical scrolling on phones: every play loop recorded in
@@ -178,3 +179,68 @@ test(
     );
   }
 );
+
+/**
+ * No word breaks mid-letter at 320 px (the Outcome's claim for 320–390 px). The
+ * sideways-scroll checks cannot see this: `overflow-wrap: break-word` keeps the
+ * page inside the screen by splitting the word. Each entry is a recorded screen
+ * where a phone-only one-line row once did exactly that; add one whenever a
+ * compacted row is found splitting a word.
+ */
+const MID_WORD_SCREENS: { game: string; screen: string; why: string }[] = [
+  {
+    game: '2-ar/hess-law',
+    screen: 'Stig 3 — tafla og vísbending',
+    why:
+      'The ΔH°f table folds each compound onto one line on a phone; at 320x640 ' +
+      "'Koldíoxíð (fljótandi)' broke as Koldíoxí|ð until the row wrapped below 340 px.",
+  },
+];
+
+/** Every place where a text node wraps between two letters, as `before|after in <tag.class>`. */
+function midWordBreaks(): string[] {
+  const out: string[] = [];
+  const letter = /\p{L}/u;
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+    const text = n.textContent ?? '';
+    const el = n.parentElement;
+    if (text.trim().length < 2 || !el || !el.checkVisibility()) continue;
+    const range = document.createRange();
+    let prevTop: number | null = null;
+    for (let i = 0; i < text.length; i++) {
+      range.setStart(n, i);
+      range.setEnd(n, i + 1);
+      const rects = range.getClientRects();
+      if (!rects.length) continue;
+      const top = rects[0].top;
+      if (
+        prevTop !== null &&
+        top > prevTop + 2 &&
+        letter.test(text[i]) &&
+        letter.test(text[i - 1])
+      ) {
+        out.push(
+          `${text.slice(Math.max(0, i - 12), i)}|${text.slice(i, i + 6)} in <${el.tagName.toLowerCase()}.${[...el.classList].join('.')}>`
+        );
+      }
+      prevTop = top;
+    }
+  }
+  return out;
+}
+
+test.describe('no mid-word breaks at 320 px', () => {
+  test.use({ viewport: { width: 320, height: 640 }, isMobile: true, hasTouch: true });
+  for (const { game, screen: name } of MID_WORD_SCREENS) {
+    test(`${game}: ${name}`, { tag: '@chromium-only' }, async ({ page }) => {
+      const screen = GAME_SCREENS[game]?.find((s) => s.name === name);
+      expect(screen, `No recorded screen ${game} — ${name}`).toBeTruthy();
+      const [year, slug] = game.split('/');
+      await page.goto(`/efnafraedi/${year}/games/${slug}.html`);
+      await page.waitForLoadState('networkidle');
+      for (const step of screen!.steps) await runStep(page, step);
+      expect(await page.evaluate(midWordBreaks), `Mid-word breaks — ${game}: ${name}`).toEqual([]);
+    });
+  }
+});

@@ -179,6 +179,15 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
     focus: resultRef.current,
   }));
   const armed = useArmedAfter(400, `${currentChallenge}:${isCorrect !== null}`);
+  // Opening the hint replaces its button with the hint, which dropped focus to
+  // <body> (P3.5): bring the answer row through the hint into view on a phone
+  // and move focus to the hint — the pattern kinetics uses.
+  const hintRef = useRef<HTMLDivElement>(null);
+  useRevealAfterCommit(showHint, () => ({
+    bottom: hintRef.current,
+    tops: [answerRowRef.current, hintRef.current],
+    focus: hintRef.current,
+  }));
 
   const checkAnswer = () => {
     if (!userAnswer || isCorrect !== null) return;
@@ -357,7 +366,12 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           {showTable && (
             <div className="bg-warm-50 p-4 rounded-xl mb-6 md:max-h-64 md:overflow-y-auto phone:p-3 phone:mb-3">
               <h3 className="font-bold text-warm-700 mb-3 phone:mb-2">{t('level3.tableTitle')}</h3>
-              {/* On a phone each compound is one line: formula, name, value. */}
+              {/* On a phone each compound is one line: formula, name, value.
+                  Below 340 px that line is too narrow for the longer names
+                  (Koldíoxíð (fljótandi)) and the name broke mid-word, so there
+                  the row wraps instead: the name never shrinks below its
+                  longest word and the value drops to its own line. The `!` is
+                  needed because `phone:min-w-0` comes later in the stylesheet. */}
               <div className="grid grid-cols-1 min-[400px]:grid-cols-2 md:grid-cols-3 gap-2 text-sm phone:grid-cols-1 phone:gap-1 phone-land:grid-cols-2">
                 {Object.entries(FORMATION_ENTHALPIES)
                   .filter(
@@ -368,12 +382,14 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
                   .map(([formula, { value, name }]) => (
                     <div
                       key={formula}
-                      className="bg-white p-2 rounded border phone:flex phone:items-baseline phone:gap-2 phone:px-2 phone:py-1"
+                      className="bg-white p-2 rounded border phone:flex phone:items-baseline phone:gap-2 phone:px-2 phone:py-1 max-[339.98px]:flex-wrap max-[339.98px]:gap-y-0"
                     >
                       <div className="font-mono font-bold phone:shrink-0">
                         {toSubscripts(formula)}
                       </div>
-                      <div className="text-warm-600 text-xs phone:flex-1 phone:min-w-0">{name}</div>
+                      <div className="text-warm-600 text-xs phone:flex-1 phone:min-w-0 max-[339.98px]:min-w-min!">
+                        {name}
+                      </div>
                       {isHidden(formula) ? (
                         <div className="font-bold text-purple-600 phone:shrink-0 phone:whitespace-nowrap">
                           ? kJ/mól
@@ -547,7 +563,10 @@ export function Level3({ t, onComplete, onBack }: Level3Props) {
           )}
 
           {showHint && !showExplanation && (
-            <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4">
+            <div
+              ref={hintRef}
+              className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4"
+            >
               <span className="font-bold text-yellow-800">{t('level3.hintLabel')} </span>
               <span className="text-yellow-900">{t(challenge.hintKey)}</span>
             </div>
