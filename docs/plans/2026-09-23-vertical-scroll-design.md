@@ -1,7 +1,10 @@
 # Vertical scrolling on phones: design for the follow-up PR
 
-**Status:** final synthesis, 2026-09-23. It goes in a separate PR after the mobile pass on
-`claude/ultracode-effort-lk5drl`.
+**Status:** implemented, 2026-09-29, on `claude/mobile-vertical-scroll` — all 26 games migrated,
+the per-game reveal copies deleted (§4 step 6) and the §6 guards in place. See **Outcome** at the
+end for the measured result, what was deferred and the §7 decisions still open. The synthesis
+below (2026-09-23) is kept as written; where the Outcome disagrees with it, the Outcome records
+what shipped.
 **Base design:** _compact_ (compaction + anchoring + adjacency). All three judges ranked it first.
 **Grafts:** from _steps_, the focus model, stage hiding and (as a Siggi-gated pilot) paged feedback.
 From _dock_, a pinned task strip with a live status for build loops, and a reference drawer for true
@@ -55,7 +58,7 @@ included.
 | 1-ar/molmassi                 | 13  | 1.39     | 1.28    | 1.58    | 2.19     | 5                                | 2.25  |
 | 1-ar/reynsluformulur          | 13  | 1.18     | 1.14    | 1.38    | 2.05     | 4                                | 3.30  |
 | 1-ar/utfellingarhvorf         | 14  | 1.90     | 1.71    | 2.21    | 2.90     | 2                                | 3.53  |
-| 1-ar/stilla-efnajofnur             | 12  | 1.43     | 1.33    | 1.80    | 2.20     | 0                                | 2.14  |
+| 1-ar/stilla-efnajofnur        | 12  | 1.43     | 1.33    | 1.80    | 2.20     | 0                                | 2.14  |
 | 1-ar/takmarkandi              | 13  | 1.55     | 1.43    | 1.76    | 2.49     | 2                                | 2.22  |
 | 1-ar/lausnir                  | 13  | 2.56     | 2.36    | 2.89    | 3.28     | 0                                | 2.98  |
 | 1-ar/einingakedjan            | 11  | 2.55     | 2.41    | 2.92    | 3.59     | 0                                | 3.61  |
@@ -1000,18 +1003,18 @@ exception because 'Útreikningur' prints the identical text).
 
 ## 5. What stays a scroll, deliberately
 
-| What                                                                                                                                                                                                                                                                                                                                                               | Why                                                                                                                                                                                                           |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| What                                                                                                                                                                                                                                                                                                                                                                    | Why                                                                                                                                                                                                           |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Teaching intros and worked examples (DA Reglurnar and L2/L3 intros, lotukerfid kennsla ×3, nafnakerfid rule pages, molmassi teach steps and Stig 2 page, stilla-efnajofnur Stig 1 kynning, takmarkandi kynning, lausnir Stig 0 kennsla, einingakedjan Skilja, hess/kinetics/redox intros, rafeindabygging Stig 2/3 teaching, IMF kynning, ph L1 intro, buffer L3 intro) | The length is the teaching; teach-before-test. Splitting only to fit trades reading for taps and breaks continuity. Only padding and decorative emoji are compacted, and the screen **opens at its heading**. |
-| Reading below a chooser (Þú lærir, Lykilformúlur, Af hverju, Námsleiðin, reference grids)                                                                                                                                                                                                                                                                          | Reference, not the loop.                                                                                                                                                                                      |
-| A teaching blurb **before** a chooser (hess, kinetics, redox, organic, gas-law, thermo, eq-shifter menus)                                                                                                                                                                                                                                                          | Teach-before-test: it is read first on purpose and costs one scroll.                                                                                                                                          |
-| Long teaching feedback (eq-shifter explanation, syrufastinn Beita 2, gas-law FeedbackScreen solution, thermo Lausn, lausnir StepBySolution, molmassi hydrate breakdown, jafnvaegisfasti Skilja step 5, utfellingarhvorf Skilja ladder)                                                                                                                             | 'Af hverju?' stays expanded (CLAUDE.md), and the reading is the point. No pinned Næsta over it, which would invite skipping. Paging eq-shifter is Siggi's separate call.                                      |
-| Optional explore widgets after a loop (hess StatePathComparison, kinetics simulations, redox balancer and cell, IMF Leysni and ForceStrength, buffer capacity viz)                                                                                                                                                                                                 | Explore phase; each widget's control→response span already fits once reached; they add nothing to the loop's scroll count. Not hidden behind drawers.                                                         |
-| Opened hints                                                                                                                                                                                                                                                                                                                                                       | The student asked for them.                                                                                                                                                                                   |
-| Opened reference (nafnakerfid Nafnareglur, the lotukerfid table's sideways scroll, molmassi PeriodicTable modal)                                                                                                                                                                                                                                                   | Deliberate reference; the table's sideways scroll and the pinned element column are intentional.                                                                                                              |
+| Reading below a chooser (Þú lærir, Lykilformúlur, Af hverju, Námsleiðin, reference grids)                                                                                                                                                                                                                                                                               | Reference, not the loop.                                                                                                                                                                                      |
+| A teaching blurb **before** a chooser (hess, kinetics, redox, organic, gas-law, thermo, eq-shifter menus)                                                                                                                                                                                                                                                               | Teach-before-test: it is read first on purpose and costs one scroll.                                                                                                                                          |
+| Long teaching feedback (eq-shifter explanation, syrufastinn Beita 2, gas-law FeedbackScreen solution, thermo Lausn, lausnir StepBySolution, molmassi hydrate breakdown, jafnvaegisfasti Skilja step 5, utfellingarhvorf Skilja ladder)                                                                                                                                  | 'Af hverju?' stays expanded (CLAUDE.md), and the reading is the point. No pinned Næsta over it, which would invite skipping. Paging eq-shifter is Siggi's separate call.                                      |
+| Optional explore widgets after a loop (hess StatePathComparison, kinetics simulations, redox balancer and cell, IMF Leysni and ForceStrength, buffer capacity viz)                                                                                                                                                                                                      | Explore phase; each widget's control→response span already fits once reached; they add nothing to the loop's scroll count. Not hidden behind drawers.                                                         |
+| Opened hints                                                                                                                                                                                                                                                                                                                                                            | The student asked for them.                                                                                                                                                                                   |
+| Opened reference (nafnakerfid Nafnareglur, the lotukerfid table's sideways scroll, molmassi PeriodicTable modal)                                                                                                                                                                                                                                                        | Deliberate reference; the table's sideways scroll and the pinned element column are intentional.                                                                                                              |
 | SE 375×548 residuals (hess 1 extra scroll, DA +1, takmarkandi L2 32 px, stilla-efnajofnur 40–67 px)                                                                                                                                                                                                                                                                     | The SE is the stretch target. Pins are used only where P8's conditions hold.                                                                                                                                  |
-| Landscape residuals (hess C2 4, DA 5, ph L1 1 due to the graph floor)                                                                                                                                                                                                                                                                                              | Two columns do most of the work; the remaining short scrolls are usable with the header static.                                                                                                               |
-| Efficiency/reverse types in DA Stig 3, 5-option questions in rafeindabygging L1, SF₆ in lewis L2                                                                                                                                                                                                                                                                   | About one short extra scroll; fixing it needs a mechanic change (§7) or a layout that squeezes targets below 44 px.                                                                                           |
+| Landscape residuals (hess C2 4, DA 5, ph L1 1 due to the graph floor)                                                                                                                                                                                                                                                                                                   | Two columns do most of the work; the remaining short scrolls are usable with the header static.                                                                                                               |
+| Efficiency/reverse types in DA Stig 3, 5-option questions in rafeindabygging L1, SF₆ in lewis L2                                                                                                                                                                                                                                                                        | About one short extra scroll; fixing it needs a mechanic change (§7) or a layout that squeezes targets below 44 px.                                                                                           |
 
 ---
 
@@ -1218,3 +1221,89 @@ function as `reveal.ts`, so it is header- and pin-aware.
 - **New Icelandic strings.** None are planned: tab labels, disclosure summaries and statuses reuse
   existing headings and words ('Lokaeining', 'Heildar-ΔH', 'Keðjan þín'). Any new aria-label is
   ordinary Icelandic, never a chemistry coinage, and is flagged in the PR description.
+
+---
+
+## Outcome (2026-09-29)
+
+All 26 games are migrated, one commit per game on `claude/mobile-vertical-scroll`; each commit
+message carries that game's full before→after table at all four viewports and its residuals.
+`no-local-scroll.test.ts`'s allow-list is **empty**, and the last five game-local helpers (the
+desktop-preserving `desktopReveal.ts` copies) now live once in `packages/shared/utils/desktopReveal.ts`.
+
+### Manual scrolls per loop at 360×640, base → head
+
+Scripted student, touch emulation, reduced motion, base build against head build. A loop is
+arrive → answer → commit → read the verdict → Næsta → next item unless the game's commit says
+otherwise. Teaching reads (§5) are marked; they are meant to stay a scroll.
+
+| Game                     | Loops, 360×640                                                                                |
+| ------------------------ | --------------------------------------------------------------------------------------------- |
+| hess-law (pilot A)       | Stig 1 4→3, Stig 2 5→0, Stig 3 5→1                                                            |
+| dimensional-analysis     | Stig 0 1→0 and 0→0, Stig 1 3→0 and 4→0, Stig 2 drag 7→4, click 6→3, Stig 3 4→3                |
+| lotukerfid               | Stig 1 7→0, Stig 2 14→9, Stig 3 8→0                                                           |
+| nafnakerfid              | Upphitun 2→0, Próf 2→0, Stig 2 1→0, Stig 3 2→0 (per item)                                     |
+| molmassi                 | Stig 1 10→2, Stig 2 13→0, Stig 3 2→0                                                          |
+| reynsluformulur          | menu 1→0, Kanna 2→1, Skilja 2→0, Æfa 1→0, Beita 1→0                                           |
+| stilla-efnajofnur        | Stig 1 1→1, Stig 2 7→0, Stig 3 6→0                                                            |
+| utfellingarhvorf         | menu 2→0, Kanna 5→3, Skilja 5→3 (reading), Æfa 6→2, Beita 2→0                                 |
+| takmarkandi              | Stig 1 1→0, Stig 2 8→0, Stig 3 4→0                                                            |
+| lausnir                  | Stig 0 4→0, Stig 1 prediction 5→2, task 3→1, Stig 2 14→4, Stig 3 6→5                          |
+| einingakedjan            | menu 1→0, Kanna 7→4, Skilja 15→9 (reading), Æfa 5→1, Beita 4→2                                |
+| rafeindabygging          | Stig 1 1→0, Stig 2 0→0, Stig 3 2→0                                                            |
+| lewis-structures         | Stig 1 2→0 (q1, q3, q7), Stig 2 H₂O 3→1, CO₂ 4→1, SF₆ 7→6, guided 1→0, Stig 3 3→0 / 3→0 / 4→0 |
+| vsepr-geometry           | Stig 1 explore 7→2, quiz 3→0, Stig 2 6→3, Stig 3 3→0                                          |
+| intermolecular-forces    | Stig 1 4→1, Stig 2 5→1, Stig 3 5→1                                                            |
+| kinetics                 | Stig 1 4→0, Stig 2 4→0, Stig 3 6→1                                                            |
+| redox-reactions          | Stig 1 wrong 1→0, right 0→0, Stig 2 all 32 questions 5→0, Stig 3 step 4 1→0                   |
+| organic-nomenclature     | Stig 1 0→0, Stig 2 drag 4→1, typed 3→0, build 2→0, Stig 3 0→0, steppers 0→0 and 1→0           |
+| syrufastinn              | menu 4→0, Kanna 5→2, Skilja 8→7 (reading), Æfa 4→0, Beita 7→0                                 |
+| jafnvaegisfasti          | Kanna 4→0, Skilja 7→5 (reading), Æfa 1→0 / 2→0 / 5→0 / 3→0, Beita 8→0                         |
+| equilibrium-shifter      | Lærdómshamur 10→3 (2442→752 px; the explanation is a §5 read), 'Prófa annað álag' 9→4         |
+| gas-law-challenge        | Stig 1 7→3, Stig 2 12→4, Stig 3 13→4, Keppnishamur 8→3                                        |
+| thermodynamics-predictor | Könnun 5→3, Æfingarhamur 8→6, Keppnishamur 9→6                                                |
+| buffer-recipe-creator    | Stig 1 7→3, Stig 2 14→4, Stig 3 12→5                                                          |
+| ph-titration             | Stig 1 4→2, Stig 2 8→4, Stig 3 4→1                                                            |
+| leysnijafnvaegi          | Kanna 7→1, Skilja 6→2 (reading), Æfa 1→0 and 1→0, Beita 2→0 and 2→0                           |
+
+Focus was on `<body>` after screen swaps and commits in the base build of every game measured; in
+the head it never is. No game scrolls sideways or breaks a word mid-letter at 320–390 px, 740×340
+or 844×390.
+
+### Deferred or deviated
+
+- **No shared `PhaseHeader`** (P4): each four-phase game folds its own markup
+  (`packages/shared/styles/README.md`).
+- **Pins used only where measured** (`PIN_USES` in `e2e/mobile-vertical.spec.ts`): buffer Stig 1,
+  ph-titration Stig 2 and einingakedjan Kanna got no pin, the measurement not justifying one.
+- **Accepted residuals** (§5): SF₆ in lewis Stig 2 (one ~280 px scroll); thermo's Athuga two
+  flicks down because the design orders slider → graph → answer; landscape Næsta below the verdict
+  in equilibrium-shifter, ph Stig 1 and vsepr Stig 1; SE opt-outs from some loops (jafnvaegisfasti
+  and einingakedjan Beita, ph Stig 2).
+- **gas-law**: menu tiles stay stacked (a three-up row breaks `Kjörgaslögmálið`) and P12 (input
+  and Athuga on one row) is not done.
+- **Not checked**: Firefox Playwright on the new loops, VoiceOver/TalkBack for the P3.4 double
+  announcement, and real iPhone/Android devices (sticky pins under the iOS toolbar, soft keyboard
+  on programmatic focus).
+- **Keppnishamur** in equilibrium-shifter has no `LoopCheck`: it cannot be unlocked (the gate
+  defect CLAUDE.md records), so only unit tests cover it.
+
+### §7 decisions still open for Siggi
+
+1. equilibrium-shifter feedback: paging pilot, or the scroll that shipped.
+2. dimensional-analysis Stig 2 on phones: (a) hide 'Stuðlar notaðir' in drag mode, (b) hide
+   'Strika út', (c) click mode as the touch default — none done.
+3. The lotukerfid empty period-7 row.
+4. The SE target: accept the residual scrolls, or pin there too.
+5. lewis Stig 2 SF₆/PCl₅/BF₃: accept the scroll, or change the mechanic.
+6. rafeindabygging Stig 2: should desktop follow the phone box notation?
+7. lausnir Stig 1's 2.5 s auto-advance.
+8. Score, streak and Árangur chips in gas-law and buffer: compacted only, not removed.
+9. The focus ring on programmatic targets at 1280×800: implemented as (a) — `data-focus-target`
+   paints no outline — which Siggi should confirm.
+
+The **defects found in passing** in §7 remain for their own PRs: the live hint penalties in lewis
+Stig 1 and 3 and buffer's tier multiplier (phone students no longer see the 'Stig: x / y' line, but
+still lose the points), thermo's live ΔG° verdict before the answer, buffer Stig 1's 'Fullkomið!'
+pill, organic's AnimatedMolecule overlap, lausnir's silent out-of-tolerance check, and
+equilibrium-shifter's 'Stig: 0' in Lærdómshamur.
