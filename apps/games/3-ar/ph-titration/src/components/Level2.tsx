@@ -133,6 +133,15 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     () => ({ bottom: nextRef.current, tops: [resultRef.current], focus: resultRef.current }),
     { afterExit: PANEL_EXIT_MS + 50 }
   );
+  // Opening the hint replaces its button with the hint, which dropped focus to
+  // <body> (P3.5): bring the hint into view on a phone and move focus to it.
+  // The hint renders in one place or the other, never both, so one ref serves.
+  const hintRef = useRef<HTMLDivElement>(null);
+  useRevealAfterCommit(showHint, () => ({
+    bottom: hintRef.current,
+    tops: [hintRef.current],
+    focus: hintRef.current,
+  }));
   // A double tap on "Staðfesta val" must not press what the result puts there.
   const armed = useArmedAfter(400, `${currentIndex}:${attempt}:${phase}`);
 
@@ -331,7 +340,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   const hint = (
     <Presence show={phase !== 'result'} exitDuration={250}>
       {showHint ? (
-        <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4 phone:p-3">
+        <div
+          ref={hintRef}
+          className="bg-yellow-50 border border-yellow-300 rounded-xl p-4 phone:p-3"
+        >
           <div className="font-bold text-yellow-800 mb-1">💡 Vísbending:</div>
           <p className="text-yellow-900 text-sm">{puzzle.hintIs}</p>
         </div>

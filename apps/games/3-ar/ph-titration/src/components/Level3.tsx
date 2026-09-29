@@ -75,6 +75,15 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     }),
     { afterExit: ANSWER_EXIT_MS + 50 }
   );
+  // Opening the hint replaces its button with the hint, which dropped focus to
+  // <body> (P3.5): bring the answer row through the hint into view on a phone
+  // and move focus to the hint.
+  const hintRef = useRef<HTMLDivElement>(null);
+  useRevealAfterCommit(showHint, () => ({
+    bottom: hintRef.current,
+    tops: [answerRowRef.current, hintRef.current],
+    focus: hintRef.current,
+  }));
   // A double tap or Enter on the answer must not press "Næsta".
   const armed = useArmedAfter(400, `${currentIndex}:${showResult}`);
 
@@ -353,7 +362,10 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           <Presence show={!showResult} exitDuration={250}>
             <div className={`mb-4 ${phone && !showHint ? 'hidden' : 'phone:mb-3'}`}>
               {showHint ? (
-                <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4 phone:p-3">
+                <div
+                  ref={hintRef}
+                  className="bg-yellow-50 border border-yellow-300 rounded-xl p-4 phone:p-3"
+                >
                   <div className="font-bold text-yellow-800 mb-1">💡 Vísbending:</div>
                   <p className="text-yellow-900">{challenge.hintIs}</p>
                 </div>
