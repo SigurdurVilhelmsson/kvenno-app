@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { PHONE_QUERY } from '@shared/utils';
+import { PHONE_QUERY, revealOnDesktop } from '@shared/utils';
 
 import App from '../App';
 import { AefaScreen } from '../components/AefaScreen';
@@ -10,7 +10,6 @@ import { KannaScreen } from '../components/KannaScreen';
 import { SkiljaScreen } from '../components/SkiljaScreen';
 import { PROBLEMS } from '../data/problems';
 import { deriveEmpirical } from '../engine/empirical';
-import { revealOnDesktop } from '../utils/desktopReveal';
 
 /**
  * Where the page lands, and where focus goes, after the student acts.

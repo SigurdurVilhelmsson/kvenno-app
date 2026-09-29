@@ -135,7 +135,6 @@ src/data/ions.ts               ions, charges, and the school's solubility table
 src/engine/precipitation.ts    formulas, verdicts, balancing, the three equations
 src/data/problems.ts           17 scenarios as ion pairs; 24 drill compounds
 src/components/                KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen
-src/utils/desktopReveal.ts     a desktop window's reveals, kept as they were before the phone pass
 src/__tests__/                 the engine, the data, the graders, and the screens played through
 ```
 
@@ -177,7 +176,7 @@ at 360 × 640 and 390 × 664, with every visible change behind `phone:`, `phone-
   skip what the check just said, or answer the next question unread.
 - **Scrolling goes through `@shared/utils`.** The game's own `src/utils/reveal.ts` is gone. A
   desktop window keeps exactly what it did — the same trigger and the same landing, at any width —
-  through `src/utils/desktopReveal.ts`, which only decides and leaves the scrolling to the shared
+  through `revealOnDesktop` in `@shared/utils`, which only decides and leaves the scrolling to the shared
   helpers. `phone-reveal.test.tsx` holds both.
 
 ## Its Year-3 sibling

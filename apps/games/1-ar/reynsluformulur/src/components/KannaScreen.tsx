@@ -1,10 +1,9 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
 
-import { focusTarget, isPhone, revealSpan } from '@shared/utils';
+import { focusTarget, isPhone, revealOnDesktop, revealSpan } from '@shared/utils';
 
 import { COMPOUNDS } from '../data/problems';
 import { percentComposition } from '../engine/empirical';
-import { revealOnDesktop } from '../utils/desktopReveal';
 
 /**
  * Kanna — the discovery phase. No right or wrong.

@@ -1,12 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { PinnedActions } from '@shared/components';
-import { isPhone, useArmedAfter, useItemTop, useRevealAfterCommit } from '@shared/utils';
+import {
+  isPhone,
+  revealOnDesktop,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+} from '@shared/utils';
 
 import { SOLUBILITY_RULES } from '../data/ions';
 import { DRILL_ITEMS } from '../data/problems';
 import { decidingRules } from '../engine/precipitation';
-import { revealOnDesktop } from '../utils/desktopReveal';
 
 /**
  * Æfa — the solubility drill: is this compound leysanlegt, and by which rule?

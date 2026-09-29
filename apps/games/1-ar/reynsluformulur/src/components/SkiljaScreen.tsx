@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { focusTarget, isPhone, revealInline, revealSpan, useArmedAfter } from '@shared/utils';
+import {
+  focusTarget,
+  isPhone,
+  revealInline,
+  revealOnDesktop,
+  revealSpan,
+  useArmedAfter,
+} from '@shared/utils';
 
 import { PROBLEMS } from '../data/problems';
 import { deriveEmpirical } from '../engine/empirical';
-import { revealOnDesktop } from '../utils/desktopReveal';
 
 /**
  * Skilja — the method, worked one column at a time on a real compound.

@@ -80,7 +80,6 @@ src/
 ├── engine/chain.ts    # solveChain, correctionPrompt, predictionOptions
 ├── data/ratios.ts     # the equivalence pool, grouped by kind
 ├── data/problems.ts   # 5 practice (2-step) + 5 apply (3-4 step)
-├── utils/desktopReveal.ts  # a desktop window's old reveal trigger and landing, kept exactly
 └── components/        # MenuScreen lives in App.tsx; ExploreScreen, UnderstandScreen and
                        # ChainBuilder are the screens; UnitText holds a unit and its substance
                        # on one line inside prose; ChainRow is the chain as built, one

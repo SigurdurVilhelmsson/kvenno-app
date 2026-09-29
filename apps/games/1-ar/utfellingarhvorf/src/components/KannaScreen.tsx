@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { focusTarget, isPhone, revealSpan, useIsPhone } from '@shared/utils';
+import { focusTarget, isPhone, revealOnDesktop, revealSpan, useIsPhone } from '@shared/utils';
 
 import { SCENARIOS } from '../data/problems';
-import { revealOnDesktop } from '../utils/desktopReveal';
 
 /**
  * Kanna — the discovery phase. No right or wrong, no score.

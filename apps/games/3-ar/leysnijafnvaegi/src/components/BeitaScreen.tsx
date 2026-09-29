@@ -1,13 +1,18 @@
 import { useEffect, useId, useRef, useState, type Ref } from 'react';
 
-import { formatDecimal, useArmedAfter, useRevealAfterCommit } from '@shared/utils';
+import {
+  formatDecimal,
+  revealBelowFoldOnDesktop,
+  useArmedAfter,
+  useItemStart,
+  useRevealAfterCommit,
+} from '@shared/utils';
 
 import { BackButton } from './BackButton';
 import { Sci } from './Sci';
 import { FRACTIONAL_PROBLEMS, MIXING_PROBLEMS } from '../data/problems';
 import { saltBy } from '../data/salts';
 import { kspExpression } from '../engine/ksp';
-import { revealBelowFoldOnDesktop, useItemStart } from '../utils/desktopReveal';
 
 /**
  * Beita — will it precipitate, and which one first?

@@ -97,7 +97,6 @@ src/engine/empirical.ts       the four columns; no React, no Icelandic
 src/data/elements.ts          atomic masses, re-exported from @shared/data/elements
 src/data/problems.ts          compounds as formulas; percentages and keys derived
 src/components/               KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen
-src/utils/desktopReveal.ts    a desktop window's reveals, kept as they were before the phone pass
 src/__tests__/                86 tests across empirical, problems, feedback-text, phase-flow and phone-reveal
 ```
 
@@ -162,5 +161,5 @@ at 360 × 640 and 390 × 664, with every change behind `phone:` or `phone-land:`
   next). The phone keyboard's key reads "next" or "done" to match.
 - **Scrolling goes through `@shared/utils`.** The game's own `src/utils/reveal.ts` is gone. A
   desktop window keeps exactly what it did — the same trigger and the same landing, at any width —
-  through `src/utils/desktopReveal.ts`, which only decides and leaves the scrolling to the shared
+  through `revealOnDesktop` in `@shared/utils`, which only decides and leaves the scrolling to the shared
   helpers. `phone-reveal.test.tsx` holds both.

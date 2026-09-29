@@ -1,14 +1,13 @@
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { PHONE_QUERY, PIN_QUERY } from '@shared/utils';
+import { PHONE_QUERY, PIN_QUERY, revealOnDesktop } from '@shared/utils';
 
 import App from '../App';
 import { ChainBuilder } from '../components/ChainBuilder';
 import { ExploreScreen } from '../components/ExploreScreen';
 import { UnderstandScreen } from '../components/UnderstandScreen';
 import { problemsForPhase } from '../data/problems';
-import { revealOnDesktop } from '../utils/desktopReveal';
 
 /**
  * Where the page lands, and where focus goes, after the student acts.

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   focusTarget,
   isPhone,
+  revealOnDesktop,
   revealSpan,
   shuffleArray,
   useArmedAfter,
@@ -11,7 +12,6 @@ import {
 
 import { SCENARIOS } from '../data/problems';
 import { renderEquation, type Term } from '../engine/precipitation';
-import { revealOnDesktop } from '../utils/desktopReveal';
 
 /**
  * Beita — the whole prediction, start to finish, on a scenario the student has

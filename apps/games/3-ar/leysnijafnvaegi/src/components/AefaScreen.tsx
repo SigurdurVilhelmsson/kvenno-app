@@ -1,6 +1,11 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 
-import { useArmedAfter, useRevealAfterCommit } from '@shared/utils';
+import {
+  revealBelowFoldOnDesktop,
+  useArmedAfter,
+  useItemStart,
+  useRevealAfterCommit,
+} from '@shared/utils';
 
 import { BackButton } from './BackButton';
 import { Sci } from './Sci';
@@ -14,7 +19,6 @@ import {
   molarSolubility,
   type GradeOutcome,
 } from '../engine/ksp';
-import { revealBelowFoldOnDesktop, useItemStart } from '../utils/desktopReveal';
 
 /**
  * Æfa — compute the molar solubility from Ksp, and the reverse.

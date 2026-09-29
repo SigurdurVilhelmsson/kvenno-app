@@ -4,6 +4,7 @@ import {
   DECIMAL_INPUT_PROPS,
   isPhone,
   parseStudentNumber,
+  revealOnDesktop,
   useArmedAfter,
   useItemTop,
   useRevealAfterCommit,
@@ -11,7 +12,6 @@ import {
 
 import { MOLECULAR_PROBLEMS } from '../data/problems';
 import { formatFormula } from '../engine/empirical';
-import { revealOnDesktop } from '../utils/desktopReveal';
 
 /**
  * Beita — empirical formula plus a measured molar mass gives the molecular one.

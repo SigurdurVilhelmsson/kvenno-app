@@ -5,6 +5,7 @@ import {
   focusTarget,
   isPhone,
   parseStudentNumber,
+  revealOnDesktop,
   revealSpan,
   useArmedAfter,
   useItemTop,
@@ -12,7 +13,6 @@ import {
 
 import { PROBLEMS } from '../data/problems';
 import { deriveEmpirical, type Derivation } from '../engine/empirical';
-import { revealOnDesktop } from '../utils/desktopReveal';
 
 /**
  * Æfa — the student fills the table, one column at a time.

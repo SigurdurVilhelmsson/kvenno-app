@@ -17,10 +17,10 @@ import {
   formatScientific,
   revealSpan,
   useArmedAfter,
+  useRevealTopOnDesktop,
 } from '@shared/utils';
 
 import { reactionBy } from '../data/reactions';
-import { useRevealTopOnDesktop } from '../utils/desktopReveal';
 
 /**
  * Skilja — the four things that make K more than a formula.

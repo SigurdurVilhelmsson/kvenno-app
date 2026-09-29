@@ -119,6 +119,24 @@ describe('games scroll only through @shared/utils', () => {
     expect(stale).toEqual([]);
   });
 
+  // The call guard cannot see a helper that scrolls only through @shared/utils, and five
+  // games kept one (`src/utils/desktopReveal.ts`) until they moved into
+  // packages/shared/utils/desktopReveal.ts. Design §4 step 6: no game keeps its own.
+  it('no game keeps a local reveal or scroll helper file', () => {
+    const local: string[] = [];
+    for (const year of readdirSync(gamesRoot).filter((y) => /^\d-ar$/.test(y))) {
+      for (const game of readdirSync(join(gamesRoot, year))) {
+        const src = join(gamesRoot, year, game, 'src');
+        if (!existsSync(src)) continue;
+        for (const file of sources(src)) {
+          const name = file.split(/[\\/]/).pop() ?? '';
+          if (/reveal|scroll/i.test(name)) local.push(relative(gamesRoot, file));
+        }
+      }
+    }
+    expect(local, 'Put the helper in packages/shared/utils').toEqual([]);
+  });
+
   it('the patterns catch the forms games write and ignore mentions', () => {
     expect(countScrollCalls('el.scrollIntoView?.({ block: "start" });')).toBe(1);
     expect(countScrollCalls('window.scrollTo({ top: 0 });')).toBe(1);

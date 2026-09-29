@@ -29,13 +29,15 @@ import {
   isPhone,
   revealTop,
   useArmedAfter,
+  useCommitReveal,
   useIsPhone,
+  useItemStart,
+  useRevealTopOnDesktop,
 } from '@shared/utils';
 
 import { ScientificInput } from './ScientificInput';
 import { COUPLED_PROBLEMS } from '../data/coupled';
 import { DIRECTION_PROBLEMS, EXPRESSION_PROBLEMS, KP_PROBLEMS } from '../data/problems';
-import { useCommitReveal, useItemStart, useRevealTopOnDesktop } from '../utils/desktopReveal';
 
 /**
  * Æfa — three skills, in the order the book teaches them.

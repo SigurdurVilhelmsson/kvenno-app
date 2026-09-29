@@ -1,11 +1,17 @@
 import { useId, useRef, useState } from 'react';
 
 import { APPROXIMATION_THRESHOLD, equationOf } from '@shared/engine/equilibrium';
-import { formatScientific, gradeScientific, isPhone, useArmedAfter } from '@shared/utils';
+import {
+  formatScientific,
+  gradeScientific,
+  isPhone,
+  useArmedAfter,
+  useCommitReveal,
+  useItemStart,
+} from '@shared/utils';
 
 import { ScientificInput } from './ScientificInput';
 import { BEITA_PROBLEMS } from '../data/problems';
-import { useCommitReveal, useItemStart } from '../utils/desktopReveal';
 
 /**
  * Beita — the ICE table, filled in one column at a time.

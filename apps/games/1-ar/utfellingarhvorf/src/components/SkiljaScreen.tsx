@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { focusTarget, isPhone, revealSpan, useArmedAfter } from '@shared/utils';
+import { focusTarget, isPhone, revealOnDesktop, revealSpan, useArmedAfter } from '@shared/utils';
 
 import { SOLUBILITY_RULES } from '../data/ions';
 import { SCENARIOS } from '../data/problems';
 import { renderEquation, renderSide } from '../engine/precipitation';
-import { revealOnDesktop } from '../utils/desktopReveal';
 
 /**
  * Skilja — the three-equation ladder, revealed one rung at a time.

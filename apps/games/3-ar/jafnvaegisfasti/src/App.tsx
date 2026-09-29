@@ -2,13 +2,12 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { ErrorBoundary, Header } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
-import { useScreenTop } from '@shared/utils';
+import { useRevealTopOnDesktop, useScreenTop } from '@shared/utils';
 
 import { AefaScreen } from './components/AefaScreen';
 import { BeitaScreen } from './components/BeitaScreen';
 import { KannaScreen } from './components/KannaScreen';
 import { SkiljaScreen } from './components/SkiljaScreen';
-import { useRevealTopOnDesktop } from './utils/desktopReveal';
 import './styles.css';
 
 type Screen = 'menu' | 'kanna' | 'skilja' | 'aefa' | 'beita';

@@ -1,7 +1,7 @@
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
-import { focusTarget, isPhone, revealSpan, useIsPhone } from '@shared/utils';
+import { focusTarget, isPhone, revealOnDesktop, revealSpan, useIsPhone } from '@shared/utils';
 
 import { useBackButton } from './BackButton';
 import { ChainRow } from './ChainRow';
@@ -16,7 +16,6 @@ import {
   type Orientation,
   type StepResult,
 } from '../engine/units';
-import { revealOnDesktop } from '../utils/desktopReveal';
 
 const START = quantity(5.0, 'g', 'Mg');
 /** As written in the prose above the board: the trailing zeros are the precision. */

@@ -242,8 +242,6 @@ src/data/problems.ts        7 expression · 6 direction · 8 Kc→Kp · 6 ICE (M
 src/data/coupled.ts         5 coupled: 3 single-rule, then the book's 2 combinations
 src/components/             KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen,
                             ScientificInput (the `× 10` answer row, with a ± sign button on touch)
-src/utils/desktopReveal.ts  when a desktop window scrolls (the old helper's triggers, kept);
-                            the scrolling itself is the shared helpers in `@shared/utils`
 src/__tests__/              159 tests
 ```
 
@@ -293,7 +291,7 @@ game's own `src/utils/reveal.ts` is gone. What it changed, all phone-only unless
   problem beside its answer, and Beita's problem and table beside the step.
 
 `phone-scroll.test.tsx` holds the game to this. A desktop window keeps exactly the scrolling it had
-(`src/utils/desktopReveal.ts`); what it gains is focus.
+(`useCommitReveal`, `useItemStart` and `useRevealTopOnDesktop` in `@shared/utils`); what it gains is focus.
 
 ## Open
 

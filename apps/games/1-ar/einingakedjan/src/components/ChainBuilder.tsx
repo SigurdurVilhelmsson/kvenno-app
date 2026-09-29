@@ -15,6 +15,7 @@ import {
   PIN_QUERY,
   focusTarget,
   isPhone,
+  revealOnDesktop,
   revealSpan,
   shuffleArray,
   useArmedAfter,
@@ -36,7 +37,6 @@ import {
   type FixAction,
 } from '../engine/chain';
 import { flip, formatSignature, orient, type Orientation } from '../engine/units';
-import { revealOnDesktop } from '../utils/desktopReveal';
 
 /** How long each step of the worked solution stays on screen before the next appears. */
 const STEP_REVEAL_MS = 1200;

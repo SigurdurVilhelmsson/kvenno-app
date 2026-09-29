@@ -134,7 +134,6 @@ src/data/problems.ts           10 solubility · 6 common-ion · 6 mixing · 2 fr
 src/components/                KannaScreen, SkiljaScreen, AefaScreen, BeitaScreen,
                                ScientificInput (the answer row, with the `±` key),
                                Sci (a number held on one line) and BackButton
-src/utils/desktopReveal.ts     keeps a desktop window scrolling exactly as the old helper did
 src/__tests__/                 78 tests — ksp.test.ts, phone-play.test.tsx, phone-scroll.test.tsx,
                                decimal-comma.test.tsx, stated-claims.test.ts and screens.test.tsx
 ```
@@ -166,7 +165,8 @@ through the shared helpers in `@shared/utils` (`useScreenTop`, `revealSpan`,
   next button ignores a press within 400 ms of appearing, so a double tap cannot skip the feedback.
   Enter in the number moves to the power of ten; Enter there checks. On its side, the problem sits
   beside the answer.
-- A desktop window scrolls exactly as before (`desktopReveal.ts`); the one change there is focus
+- A desktop window scrolls exactly as before (`revealBelowFoldOnDesktop`, `useItemStart` and `useRevealTopOnDesktop` in
+  `@shared/utils`); the one change there is focus
   moving to headings, the feedback, the salt card and the new question.
 
 ## Open
