@@ -505,7 +505,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         }
       }, 2500);
     }
-  }, [isCorrect, showHint, challenge.id, currentChallenge]);
+  }, [isCorrect, challenge.id, currentChallenge]);
 
   // Game complete screen
   if (gameComplete) {
