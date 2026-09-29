@@ -1,6 +1,7 @@
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { answer, openProblem, setTemperature, VERDICT } from './play-helpers';
 import App from '../App';
 import { calculateDeltaG } from '../utils/thermo-calculations';
@@ -21,6 +22,8 @@ import { calculateDeltaG } from '../utils/thermo-calculations';
  * - Könnun called ΔG = 0 "Ekki sjálfgengt — ΔG > 0".
  */
 
+clockPastNextGuard();
+
 beforeEach(() => {
   localStorage.clear();
   vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
@@ -35,7 +38,8 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-const box = () => screen.getByRole('alert');
+/** The feedback box: the group focus moves to, around the alert that carries the message. */
+const box = () => screen.getByRole('alert').closest<HTMLElement>('[role="group"]')!;
 const questionNumber = () =>
   screen.getByText('Spurning').parentElement!.querySelector('.text-xl')!.textContent;
 

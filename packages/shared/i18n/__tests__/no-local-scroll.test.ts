@@ -30,10 +30,11 @@ import { describe, it, expect } from 'vitest';
 const repoRoot = join(__dirname, '..', '..', '..', '..');
 const gamesRoot = join(repoRoot, 'apps', 'games');
 
-/** Calls per file on 2026-09-23, relative to apps/games. Lower these; never raise them. */
-const ALLOWED: Record<string, number> = {
-  '3-ar/thermodynamics-predictor/src/App.tsx': 4,
-};
+/**
+ * Calls per file on 2026-09-23, relative to apps/games. Lower these; never raise them.
+ * Empty since the last game migrated (thermodynamics-predictor): no game may add one.
+ */
+const ALLOWED: Record<string, number> = {};
 
 /**
  * What counts as scrolling the page yourself. The method calls allow the
@@ -69,26 +70,31 @@ function sources(dir: string): string[] {
   });
 }
 
-function gameCounts(): Record<string, number> {
+/** Every scanned source file, and the calls in each file that makes any. */
+function gameCounts(): { scanned: number; counts: Record<string, number> } {
   const out: Record<string, number> = {};
+  let scanned = 0;
   for (const year of readdirSync(gamesRoot).filter((y) => /^\d-ar$/.test(y))) {
     for (const game of readdirSync(join(gamesRoot, year), { withFileTypes: true })) {
       const src = join(gamesRoot, year, game.name, 'src');
       if (!game.isDirectory() || !existsSync(src)) continue;
       for (const file of sources(src)) {
+        scanned += 1;
         const n = countScrollCalls(readFileSync(file, 'utf8'));
         if (n > 0) out[relative(gamesRoot, file).split('\\').join('/')] = n;
       }
     }
   }
-  return out;
+  return { scanned, counts: out };
 }
 
 describe('games scroll only through @shared/utils', () => {
-  const counts = gameCounts();
+  const { scanned, counts } = gameCounts();
 
+  // Counted over every file scanned, not over the files that scroll: with the allow-list
+  // empty, a scan that found nothing would pass everything else here.
   it('finds the game sources (the scan is not silently empty)', () => {
-    expect(Object.keys(counts).length).toBeGreaterThan(0);
+    expect(scanned).toBeGreaterThan(100);
   });
 
   it('no file outside the allow-list scrolls the page itself', () => {

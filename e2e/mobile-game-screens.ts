@@ -7155,6 +7155,18 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 400,
         },
       ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [{ fill: ['#thermo-delta-g', '99999'] }, { clickRole: ['radio', 'Jafnvægi'] }],
+        verdict: { css: '#thermo-verdict' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+        // In play order the slider's graph sits between the problem and the answer, so
+        // "Athuga svar" is below the first screen: two flicks at 360x640, 390x664 and the SE.
+        scrollsToAction: 2,
+      },
     },
     {
       name: 'Æfingarhamur — svar slegið inn',
@@ -7241,6 +7253,19 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 400,
         },
       ],
+      // The hardest difficulty adds the 'Áskorun' box, the tallest prompt the game has. At the
+      // SE that costs a third flick to "Athuga svar", the SE residual §5 accepts, so the SE is
+      // left to the default-difficulty loops above.
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [{ fill: ['#thermo-delta-g', '99999'] }, { clickRole: ['radio', 'Jafnvægi'] }],
+        verdict: { css: '#thermo-verdict' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        viewports: ['android', 'iphone', 'landscape'],
+        typed: true,
+        scrollsToAction: 2,
+      },
     },
     {
       name: 'Keppnishamur — spurning',
@@ -7252,6 +7277,18 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 400,
         },
       ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Athuga svar' },
+        answer: [{ fill: ['#thermo-delta-g', '99999'] }, { clickRole: ['radio', 'Jafnvægi'] }],
+        verdict: { css: '#thermo-verdict' },
+        next: { role: 'button', name: 'Næsta spurning' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+        typed: true,
+        // In play order the slider's graph sits between the problem and the answer, so
+        // "Athuga svar" is below the first screen: two flicks at 360x640, 390x664 and the SE.
+        scrollsToAction: 2,
+      },
     },
     {
       name: 'Keppnishamur — lausn og endurgjöf',

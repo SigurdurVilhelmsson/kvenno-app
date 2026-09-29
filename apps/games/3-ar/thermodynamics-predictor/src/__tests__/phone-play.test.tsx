@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 
 import App from '../App';
 import { PROBLEMS } from '../data';
@@ -15,21 +15,23 @@ import { calculateDeltaG } from '../utils/thermo-calculations';
  *
  * **Where the screen lands.** The menu and the solution are long on a phone. A new mode and a
  * new problem open at the top, and once an answer is checked the verdict is brought into view
- * when it sits below the fold. jsdom lays nothing out, so the geometry is faked.
+ * when it sits below the fold, and takes focus. jsdom lays nothing out and has no
+ * `matchMedia`, so it takes the wide-screen path, and the geometry is faked.
  */
 
 const SIGN = 'Skipta um formerki';
 
-const scrollTo = vi.fn();
-const scrollIntoView = vi.fn();
 const innerHeight = window.innerHeight;
+let scrollBy: MockInstance;
+let now: MockInstance<() => number>;
 
 beforeEach(() => {
   localStorage.clear();
-  scrollTo.mockClear();
-  scrollIntoView.mockClear();
-  vi.spyOn(window, 'scrollTo').mockImplementation(scrollTo as unknown as typeof window.scrollTo);
-  Element.prototype.scrollIntoView = scrollIntoView;
+  scrollBy = vi.spyOn(window, 'scrollBy').mockImplementation(() => {});
+  // "Næsta spurning" drops a press within 400 ms of appearing (the double-tap guard); every
+  // read of the clock is half a second after the last unless a test sets it.
+  let t = 0;
+  now = vi.spyOn(performance, 'now').mockImplementation(() => (t += 500));
   // jsdom has no canvas; the graph and the particle panels cope with a missing context.
   vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
 });
@@ -117,47 +119,109 @@ describe('a negative ΔG° can be entered without a minus key', () => {
   });
 });
 
-describe('each screen opens at its top', () => {
-  it('leaves the page alone on load, and scrolls up on a new mode and a new problem', () => {
+describe('Enter in the ΔG° field', () => {
+  it('checks the answer once a verdict is picked, and not before', () => {
     drawBeginner(0);
-    render(<App />);
-    expect(scrollTo).not.toHaveBeenCalled();
+    startPractice();
+    const field = screen.getByLabelText(/ΔG° við/);
+    fireEvent.change(field, { target: { value: '99999' } });
+    fireEvent.keyDown(field, { key: 'Enter' });
+    expect(screen.queryByRole('alert')).toBeNull();
 
-    fireEvent.click(screen.getByRole('button', { name: /Æfingarhamur/ }));
-    expect(scrollTo).toHaveBeenCalledWith(0, 0);
-
-    answer('99999', /Jafnvægi/);
-    scrollTo.mockClear();
-    fireEvent.click(screen.getByRole('button', { name: /Næsta spurning/ }));
-    expect(scrollTo).toHaveBeenCalledWith(0, 0);
-
-    scrollTo.mockClear();
-    fireEvent.click(screen.getByRole('button', { name: '← Til baka' }));
-    expect(scrollTo).toHaveBeenCalledWith(0, 0);
+    fireEvent.click(screen.getByRole('radio', { name: /Jafnvægi/ }));
+    fireEvent.keyDown(field, { key: 'Enter' });
+    expect(screen.getByRole('alert').textContent).toMatch(/^Rangt\./);
   });
 });
 
-describe('the verdict is brought into view after "Athuga svar"', () => {
-  /** Place the feedback box `top` px down a 740 px phone screen. */
+describe('each screen opens at its top', () => {
+  /** The page's top edge sits `scrollY` above the viewport. */
+  function scrolledTo(y: number) {
+    vi.spyOn(document.documentElement, 'getBoundingClientRect').mockImplementation(
+      () => ({ top: -y, bottom: 0, left: 0, right: 0, width: 0, height: 0 }) as DOMRect
+    );
+  }
+
+  it('leaves the page alone on load, and jumps up on a new mode and a new problem', () => {
+    drawBeginner(0);
+    render(<App />);
+    expect(scrollBy).not.toHaveBeenCalled();
+
+    scrolledTo(900);
+    fireEvent.click(screen.getByRole('button', { name: /Æfingarhamur/ }));
+    expect(scrollBy).toHaveBeenLastCalledWith({ top: -900, behavior: 'auto' });
+
+    answer('99999', /Jafnvægi/);
+    scrollBy.mockClear();
+    scrolledTo(1400);
+    fireEvent.click(screen.getByRole('button', { name: /Næsta spurning/ }));
+    expect(scrollBy).toHaveBeenLastCalledWith({ top: -1400, behavior: 'auto' });
+
+    scrollBy.mockClear();
+    scrolledTo(300);
+    fireEvent.click(screen.getByRole('button', { name: '← Til baka' }));
+    expect(scrollBy).toHaveBeenLastCalledWith({ top: -300, behavior: 'auto' });
+  });
+
+  it('moves focus to the problem, the verdict, the next problem and back to the mode', async () => {
+    drawBeginner(0);
+    render(<App />);
+    expect(document.activeElement).toBe(document.body);
+
+    fireEvent.click(screen.getByRole('button', { name: /Æfingarhamur/ }));
+    await waitFor(() =>
+      expect(document.activeElement).toBe(document.querySelector('[data-item-start]'))
+    );
+    expect(document.activeElement!.textContent).toBe(PROBLEMS.beginner[0].name);
+
+    answer('99999', /Jafnvægi/);
+    const verdict = screen.getByRole('group', { name: /^Rangt\./ });
+    await waitFor(() => expect(document.activeElement).toBe(verdict));
+
+    fireEvent.click(screen.getByRole('button', { name: /Næsta spurning/ }));
+    expect(document.activeElement).toBe(document.querySelector('[data-item-start]'));
+
+    fireEvent.click(screen.getByRole('button', { name: '← Til baka' }));
+    await waitFor(() =>
+      expect(document.activeElement).toBe(screen.getByRole('button', { name: /Æfingarhamur/ }))
+    );
+  });
+
+  it('drops a press on "Næsta spurning" that comes with the tap on "Athuga svar"', () => {
+    now.mockImplementation(() => 1000);
+    drawBeginner(0);
+    startPractice();
+    answer('99999', /Jafnvægi/);
+    fireEvent.click(screen.getByRole('button', { name: /Næsta spurning/ }));
+    expect(screen.getByRole('button', { name: /Næsta spurning/ })).toBeTruthy();
+
+    now.mockImplementation(() => 1500);
+    fireEvent.click(screen.getByRole('button', { name: /Næsta spurning/ }));
+    expect(screen.getByRole('button', { name: 'Athuga svar' })).toBeTruthy();
+  });
+});
+
+describe('the verdict is brought into view after "Athuga svar", on a wide screen', () => {
+  /** Place the feedback box `top` px down a 740 px screen. */
   function feedbackAt(top: number) {
     Object.defineProperty(window, 'innerHeight', { value: 740, configurable: true });
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (
       this: HTMLElement
     ) {
-      const y = this.getAttribute('role') === 'alert' ? top : 0;
+      const y = this.getAttribute('role') === 'group' ? top : 0;
       return { top: y, bottom: y + 200, left: 0, right: 0, width: 0, height: 200, x: 0, y };
     } as () => DOMRect);
   }
 
-  it('scrolls the feedback into view when it sits below the fold', async () => {
+  it('scrolls the least that shows it when it sits below the fold', async () => {
     feedbackAt(900);
     drawBeginner(0);
     startPractice();
     answer('99999', /Jafnvægi/);
 
-    await waitFor(() => expect(scrollIntoView).toHaveBeenCalledTimes(1));
-    expect(scrollIntoView.mock.contexts[0]).toBe(screen.getByRole('alert'));
-    expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest', behavior: 'smooth' });
+    await waitFor(() => expect(scrollBy).toHaveBeenCalledTimes(1));
+    // Its bottom (1100) onto the bottom of the screen (740), as `block: 'nearest'` did.
+    expect(scrollBy).toHaveBeenCalledWith({ top: 360, behavior: 'smooth' });
   });
 
   it('scrolls back up to it when the student is further down the page', async () => {
@@ -166,8 +230,8 @@ describe('the verdict is brought into view after "Athuga svar"', () => {
     startPractice();
     answer('99999', /Jafnvægi/);
 
-    await waitFor(() => expect(scrollIntoView).toHaveBeenCalledTimes(1));
-    expect(scrollIntoView.mock.contexts[0]).toBe(screen.getByRole('alert'));
+    await waitFor(() => expect(scrollBy).toHaveBeenCalledTimes(1));
+    expect(scrollBy).toHaveBeenCalledWith({ top: -160, behavior: 'smooth' });
   });
 
   it('does not scroll when the verdict is already on screen', async () => {
@@ -177,6 +241,8 @@ describe('the verdict is brought into view after "Athuga svar"', () => {
     answer('99999', /Jafnvægi/);
 
     await new Promise((resolve) => setTimeout(resolve, 500));
-    expect(scrollIntoView).not.toHaveBeenCalled();
+    expect(scrollBy).not.toHaveBeenCalled();
+    // Focus moves all the same (design P3).
+    expect(document.activeElement).toBe(screen.getByRole('group', { name: /^Rangt\./ }));
   });
 });
