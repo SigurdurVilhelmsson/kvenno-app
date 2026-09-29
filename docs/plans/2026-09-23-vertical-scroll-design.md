@@ -1346,15 +1346,13 @@ running animations and differ just as much when the base is compared with itself
   and einingakedjan Beita, ph Stig 2).
 - **gas-law**: menu tiles stay stacked (a three-up row breaks `Kjörgaslögmálið`) and P12 (input
   and Athuga on one row) is not done.
-- **Not checked**: Firefox Playwright, VoiceOver/TalkBack for the P3.4 double announcement, and
+- **Not checked**: VoiceOver/TalkBack for the P3.4 double announcement, and
   real iPhone/Android devices (sticky pins under the iOS toolbar, soft keyboard on programmatic
-  focus). CI runs Firefox and it has **never run on this branch**: `ci.yml` installs `chromium
-firefox`, and the firefox project runs every untagged test. That is one `loop fits` per game in
-  `mobile-vertical.spec.ts` (26 tests, mouse and no touch, which now also press Næsta) and the
-  `mobile-games.spec.ts` sample with its new waits. The one attempt to install it (2026-09-29)
-  was refused by the session's network policy (`cdn.playwright.dev`). Run
-  `playwright test --project=firefox e2e/mobile-vertical.spec.ts e2e/mobile-games.spec.ts` in CI
-  before merge, and fix or tag what fails.
+  focus). Firefox was not run locally (the session's network policy refused `cdn.playwright.dev`), but CI
+  runs it: `ci.yml` installs `chromium firefox`, and the firefox project runs every untagged test,
+  one `loop fits` per game in `mobile-vertical.spec.ts` (mouse, no touch, pressing Næsta) and the
+  `mobile-games.spec.ts` sample. CI's E2E job passed on every pushed commit of this branch; on
+  `f3944ea` it ran 1 474 tests (1 460 passed, 14 skipped), the Chromium suite plus that Firefox sample.
 - **Keppnishamur** in equilibrium-shifter has no `LoopCheck`: it cannot be unlocked (the gate
   defect CLAUDE.md records), so only unit tests cover it.
 
