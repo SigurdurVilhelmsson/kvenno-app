@@ -1270,6 +1270,17 @@ Focus was on `<body>` after screen swaps and commits in the base build of every 
 the head it never is. No game scrolls sideways or breaks a word mid-letter at 320–390 px, 740×340
 or 844×390.
 
+### Desktop invariance (§6.3)
+
+`scripts/desktop-compare.mjs` over all 369 recorded states of the 26 games at 1280×800: no
+geometry, `scrollY` or loop difference remains; every remaining difference is focus, as P3
+intends. Three that the migrations had recorded as accepted were fixed instead (jafnvaegisfasti's
+Tengd DOM order and Beita landing, thermodynamics-predictor's wrapper spans), and the tool now
+settles scrolls between steps and repaints before capture. The PNG differences left — buffer
+Stig 2, vsepr Stig 2, the redox galvanic cell, and at times molmassi, IMF and kinetics — come from
+running animations and differ just as much when the base is compared with itself. Compare
+`stilla-efnajofnur` against a base built after its rename; an older base has no such page.
+
 ### Deferred or deviated
 
 - **No shared `PhaseHeader`** (P4): each four-phase game folds its own markup
