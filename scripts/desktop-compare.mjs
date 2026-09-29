@@ -211,6 +211,11 @@ async function capture(browser, baseUrl, state, png) {
     for (const [i, step] of state.steps.entries()) {
       try {
         await runStep(page, step);
+        // Let a smooth scroll finish before the next step, as a person would.
+        // Without this, a click lands mid-scroll and the two builds diverge on
+        // timing alone — a base that scrolls smoothly under reduced motion
+        // against a head that jumps (dimensional-analysis, Stig 2).
+        await settleScroll(page);
       } catch (e) {
         throw new Error(`step ${i + 1} ${JSON.stringify(step)}: ${e.message.split('\n')[0]}`);
       }
@@ -220,6 +225,13 @@ async function capture(browser, baseUrl, state, png) {
     result.behaviour = await behaviour(page);
     await page.mouse.move(1, 1); // no hover left on whatever was clicked last
     await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+    // Repaint everything before capturing: a region Chrome last painted while it
+    // held focus (an input that is disabled with the caret in it) can keep a
+    // stale anti-aliased edge until something repaints it, and whether that
+    // happens depends on where focus went next — the one deliberate difference
+    // between the builds. A one-pixel resize there and back repaints the page.
+    await page.setViewportSize({ width: DESKTOP.width + 1, height: DESKTOP.height });
+    await page.setViewportSize(DESKTOP);
     await page.waitForTimeout(200);
     result.geometry = await geometry(page);
     if (png) {
