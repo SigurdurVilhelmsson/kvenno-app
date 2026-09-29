@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 
 import { HintTier } from './HintTier';
 import {
@@ -8,6 +8,7 @@ import {
   HINT_TIER_LABELS,
   HINT_MULTIPLIERS,
 } from '../../types/hint.types';
+import { focusTarget } from '../../utils/reveal';
 import { usePresenceExiting } from '../Transition/Transition';
 
 interface HintSystemProps {
@@ -99,8 +100,24 @@ export function HintSystem({
   const nextTier = allRevealed ? null : HINT_TIER_ORDER[currentTierIndex];
   const nextTierNumber = (currentTierIndex + 1) as 1 | 2 | 3 | 4;
 
+  // Opening a tier moves focus to it, at every width (design P3.5, and the
+  // pattern kinetics' single hint uses). Without this, opening the last tier
+  // unmounted the focused button and dropped focus to <body>. Only a reveal the
+  // student asked for moves focus — not `startRevealed` or a reset. The tier is
+  // not in the tab order, so one Tab still reaches the next tier's button.
+  const tiersRef = useRef<HTMLDivElement>(null);
+  const focusNewTier = useRef(false);
+  useLayoutEffect(() => {
+    if (!focusNewTier.current) return;
+    focusNewTier.current = false;
+    const tiers = tiersRef.current?.children;
+    const last = tiers?.[tiers.length - 1];
+    focusTarget(last instanceof HTMLElement ? last : null);
+  }, [revealedTiers.length]);
+
   const handleRevealHint = useCallback(() => {
     if (allRevealed || !nextTier) return;
+    focusNewTier.current = true;
 
     const newTierIndex = currentTierIndex + 1;
     const tierKey = HINT_TIER_ORDER[currentTierIndex];
@@ -134,7 +151,7 @@ export function HintSystem({
           flips, so React keeps the tiers mounted and their fade-in does not
           replay. */}
       {revealedTiers.length > 0 && (
-        <div className={disabled ? undefined : 'mb-3'}>
+        <div ref={tiersRef} className={disabled ? undefined : 'mb-3'}>
           {revealedTiers.map((tierKey, index) => (
             <HintTier
               key={tierKey}

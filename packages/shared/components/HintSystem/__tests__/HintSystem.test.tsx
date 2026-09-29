@@ -276,3 +276,36 @@ describe('HintTier at phone width', () => {
     expect(container.textContent?.split(HINT_TIER_ICONS.strategy)).toHaveLength(2);
   });
 });
+
+// Design P3.5: focus never falls to <body>. Opening the last tier unmounts the
+// hint button the student just pressed, so without an explicit move focus went
+// with it — in five games (hess, lewis, ph-titration, equilibrium-shifter,
+// buffer-recipe-creator) the recorded all-hints states ended on <body>.
+describe('HintSystem focus', () => {
+  afterEach(cleanup);
+
+  const hintButton = () => screen.queryByText(/^Vísbending \d\/4:/)?.closest('button') ?? null;
+
+  it('moves focus to each tier as it opens, and never to <body>', () => {
+    render(<HintSystem hints={HINTS} showPointCost={false} />);
+    const texts = [HINTS.topic, HINTS.strategy, HINTS.method, HINTS.solution];
+    for (const text of texts) {
+      const button = hintButton();
+      expect(button).not.toBeNull();
+      button!.focus();
+      fireEvent.click(button!);
+      const tier = screen.getByText(text).closest('[data-focus-target]');
+      expect(tier).not.toBeNull();
+      expect(document.activeElement).toBe(tier);
+      expect(document.activeElement).not.toBe(document.body);
+    }
+    // The last reveal took the button away; focus stayed on the solution tier.
+    expect(hintButton()).toBeNull();
+    expect(screen.getByText('Allar vísbendingar notaðar')).toBeTruthy();
+  });
+
+  it('does not move focus for tiers opened by startRevealed', () => {
+    render(<HintSystem hints={HINTS} startRevealed={2} />);
+    expect(document.activeElement).toBe(document.body);
+  });
+});
