@@ -42,11 +42,12 @@ echo "🚀 Deploying kvenno.app..."
 # server package (with node_modules and a resolved lockfile) — no workspace
 # context or `pnpm install` needed on the production host.
 #
-# The bundle directory must live inside the repo. pnpm 9.15's `deploy` resolves
-# the bundle's node_modules/.bin one directory too shallow when the target sits
-# outside the workspace: a /tmp target maps onto root-owned /home and fails with
-# `EACCES: mkdir '/home/tmp'` (exit 243), and a target under $HOME silently
-# writes the bins one level up from where they belong.
+# The bundle directory lives inside the repo. pnpm 9.15's `deploy` resolved the
+# bundle's node_modules/.bin one directory too shallow when the target sat
+# outside the workspace: a /tmp target mapped onto root-owned /home and failed
+# with `EACCES: mkdir '/home/tmp'` (exit 243), and a target under $HOME silently
+# wrote the bins one level up. pnpm 12 (pinned in package.json since 2026-09-29)
+# was verified with this in-repo target; there is no reason to move it.
 BUNDLE_DIR="$ROOT_DIR/.deploy-bundle"
 rm -rf "$BUNDLE_DIR"
 trap 'rm -rf "$BUNDLE_DIR"' EXIT
