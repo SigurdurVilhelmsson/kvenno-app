@@ -3,6 +3,7 @@ import { fireEvent, render } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import App from '../App';
+import { clockPastNextGuard } from './next-guard-clock';
 
 /**
  * Finishing Stig 3 always opened the closing screen, which says "Þú hefur lokið öllum
@@ -38,6 +39,9 @@ function playLevel3(container: HTMLElement) {
 }
 
 beforeEach(() => localStorage.clear());
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 describe('the closing screen', () => {
   it('does not open after Stig 3 when Stig 1 and 2 were never played', () => {

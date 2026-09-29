@@ -126,6 +126,49 @@ describe('HintSystem once disabled', () => {
   });
 });
 
+// A game that renders its HintSystem in one of two places (buffer-recipe-creator
+// puts it under the step card on a phone) remounts it when the layout changes,
+// and passes back how many tiers the student had opened so they are not lost.
+describe('HintSystem startRevealed', () => {
+  afterEach(cleanup);
+
+  it('opens nothing by default', () => {
+    render(<HintSystem hints={HINTS} basePoints={100} />);
+    expect(screen.queryByText(HINTS.topic)).toBeNull();
+    expect(screen.getByText(/^Vísbending 1\/4:/)).toBeTruthy();
+  });
+
+  it('mounts with that many tiers open and offers the next one, without charging again', () => {
+    let used = 0;
+    let points = 0;
+    render(
+      <HintSystem
+        hints={HINTS}
+        basePoints={100}
+        startRevealed={2}
+        onHintUsed={() => (used += 1)}
+        onPointsChange={() => (points += 1)}
+      />
+    );
+    expect(screen.getByText(HINTS.topic)).toBeTruthy();
+    expect(screen.getByText(HINTS.strategy)).toBeTruthy();
+    expect(screen.queryByText(HINTS.method)).toBeNull();
+    expect(screen.getByText(/^Vísbending 3\/4:/)).toBeTruthy();
+    expect(used).toBe(0);
+    expect(points).toBe(0);
+  });
+
+  it('resets to the count it is given on a new resetKey, and clamps it', () => {
+    const { rerender } = render(
+      <HintSystem hints={HINTS} basePoints={100} resetKey={0} startRevealed={9} />
+    );
+    expect(screen.getByText('Allar vísbendingar notaðar')).toBeTruthy();
+    rerender(<HintSystem hints={HINTS} basePoints={100} resetKey={1} startRevealed={0} />);
+    expect(screen.queryByText(HINTS.topic)).toBeNull();
+    expect(screen.getByText(/^Vísbending 1\/4:/)).toBeTruthy();
+  });
+});
+
 // ph-titration Stig 1 and equilibrium-shifter do not just disable the hints on
 // answering: they also swap them out with a Presence, whose exit keeps them in
 // the page for 250 ms above the feedback fading in below. Keeping the tiers for
@@ -231,5 +274,38 @@ describe('HintTier at phone width', () => {
 
     expect(screen.getAllByRole('img')).toHaveLength(1);
     expect(container.textContent?.split(HINT_TIER_ICONS.strategy)).toHaveLength(2);
+  });
+});
+
+// Design P3.5: focus never falls to <body>. Opening the last tier unmounts the
+// hint button the student just pressed, so without an explicit move focus went
+// with it — in five games (hess, lewis, ph-titration, equilibrium-shifter,
+// buffer-recipe-creator) the recorded all-hints states ended on <body>.
+describe('HintSystem focus', () => {
+  afterEach(cleanup);
+
+  const hintButton = () => screen.queryByText(/^Vísbending \d\/4:/)?.closest('button') ?? null;
+
+  it('moves focus to each tier as it opens, and never to <body>', () => {
+    render(<HintSystem hints={HINTS} showPointCost={false} />);
+    const texts = [HINTS.topic, HINTS.strategy, HINTS.method, HINTS.solution];
+    for (const text of texts) {
+      const button = hintButton();
+      expect(button).not.toBeNull();
+      button!.focus();
+      fireEvent.click(button!);
+      const tier = screen.getByText(text).closest('[data-focus-target]');
+      expect(tier).not.toBeNull();
+      expect(document.activeElement).toBe(tier);
+      expect(document.activeElement).not.toBe(document.body);
+    }
+    // The last reveal took the button away; focus stayed on the solution tier.
+    expect(hintButton()).toBeNull();
+    expect(screen.getByText('Allar vísbendingar notaðar')).toBeTruthy();
+  });
+
+  it('does not move focus for tiers opened by startRevealed', () => {
+    render(<HintSystem hints={HINTS} startRevealed={2} />);
+    expect(document.activeElement).toBe(document.body);
   });
 });

@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { AefaScreen } from '../components/AefaScreen';
 import { BeitaScreen } from '../components/BeitaScreen';
 import { KannaScreen } from '../components/KannaScreen';
@@ -21,6 +22,9 @@ import { SkiljaScreen } from '../components/SkiljaScreen';
  * The render checks walk every screen and step a student reaches without
  * answering; the source check refuses the two shapes that print a full stop.
  */
+
+// "Næsta" ignores a press within 400 ms of appearing; these tests press at once.
+clockPastNextGuard();
 
 afterEach(cleanup);
 

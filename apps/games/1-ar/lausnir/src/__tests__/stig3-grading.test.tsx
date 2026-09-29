@@ -8,8 +8,12 @@ import { parseStudentNumber } from '@shared/utils';
 import { Level3 } from '../components/Level3';
 import { StepBySolution } from '../components/StepBySolution';
 import type { Difficulty, Problem } from '../types';
+import { clockPastNextGuard } from './next-guard-clock';
 import { generateProblem } from '../utils/problem-generator';
 import { checkAnswer, validateInput } from '../utils/validation';
+
+// These tests press Næsta at once; step the clock past its 400 ms guard.
+clockPastNextGuard();
 
 /**
  * Stig 3 grades at a 2 % relative tolerance, so the answer it grades against

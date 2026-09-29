@@ -10,3 +10,6 @@ export * from './shuffle';
 export * from './numbers';
 export * from './scientific';
 export * from './formula';
+export * from './reveal';
+export * from './desktopReveal';
+export * from './armed';

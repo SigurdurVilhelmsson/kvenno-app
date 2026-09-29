@@ -4,6 +4,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 
 import { allStrings, playLevel1, playLevel2, playLevel3, readable } from './playthrough';
 import App from '../App';
+import { clockPastNextGuard } from './next-guard-clock';
 import { CatalystEffectDemo } from '../components/CatalystEffectDemo';
 import { CollisionDemo } from '../components/CollisionDemo';
 import { ConcentrationTimeGraph } from '../components/ConcentrationTimeGraph';
@@ -63,6 +64,9 @@ function violations(text: string): string[] {
     return `${r.name}: …${text.slice(at, m.index + 40).replace(/\s+/g, ' ')}…`;
   });
 }
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 describe('what a student reads in Hvarfhraði', () => {
   beforeEach(() => localStorage.removeItem('kinetics-progress'));

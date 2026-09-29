@@ -1,9 +1,13 @@
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { describe, it, expect, afterEach } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level1 } from '../components/Level1';
 import { Level3 } from '../components/Level3';
 import { ELEMENTS } from '../data/elements';
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 /**
  * A wrong answer is marked where the student gave it.

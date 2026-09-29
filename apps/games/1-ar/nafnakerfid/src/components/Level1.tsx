@@ -2,9 +2,16 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import type { TieredHints, DetailedFeedback } from '@shared/types';
-import { shuffleArray } from '@shared/utils';
+import {
+  revealTop,
+  shuffleArray,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+  useScreenTop,
+} from '@shared/utils';
 
-import { revealTop } from '../utils/reveal';
+import { dropEarlyClicks } from '../utils/dropEarlyClicks';
 
 // Rule IDs for categorizing questions
 type RuleId = 'ionic-simple' | 'ionic-variable' | 'ionic-polyatomic' | 'molecular';
@@ -337,6 +344,24 @@ export const quizQuestions: QuizQuestion[] = [
   },
 ];
 
+/**
+ * How an item swap reveals its new top. The old local helper scrolled a new
+ * rule, element or question into view with `scrollIntoView({ block: 'start' })`
+ * at any width whenever its top had gone above the viewport; these screens have
+ * no sticky header, so `gap: 0` lands it exactly there and a desktop keeps it.
+ */
+const ITEM_REVEAL = { anyWidth: true, gap: 0 } as const;
+
+/**
+ * Whether a question's options are short enough to sit two to a row on a
+ * phone: every option at most 12 characters and no word over 9, so none breaks
+ * mid-word in half a 320 px screen (`-íð (klóríð)`, `Na₂SO₄`, `Fjögur atóm`).
+ * Longer names such as `Magnesíum(II)oxíð` keep a row each.
+ */
+export function shortOptions(options: string[]): boolean {
+  return options.every((o) => o.length <= 12 && o.split(' ').every((w) => w.length <= 9));
+}
+
 /** Points for a correct quiz answer. Hints are free, so there is no deduction. */
 const POINTS_PER_QUESTION = 10;
 
@@ -346,6 +371,10 @@ export const LEVEL1_MAX_SCORE = quizQuestions.length * POINTS_PER_QUESTION;
 export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnswer }: Level1Props) {
   const [phase, setPhase] = useState<'learn' | 'warmup' | 'quiz'>('learn');
   const [currentRule, setCurrentRule] = useState(0);
+  // Counts "Næsta regla" / "Fyrri regla" presses. A progress dot changes the
+  // rule too, but keeps focus on itself, like a tab: the rule opens right
+  // under the dots, so there is nothing to bring into view either.
+  const [rulePage, setRulePage] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
@@ -361,16 +390,43 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   const question = quizQuestions[currentQuestion];
   const warmupQ = warmupQuestions[currentWarmup];
 
-  // On a phone the "next" buttons sit screens below the content they replace,
-  // so bring the new rule / element / question back into view.
+  // A phase change (rules → warm-up → quiz, and back to the rules) is a new
+  // screen: a phone starts it at the top of the page, and focus moves to its
+  // heading. The card is also brought back whenever its top has gone above the
+  // viewport, at any width, as the old helper did — after the phone's jump to
+  // the top it is already in view there.
+  useScreenTop(phase);
   const cardRef = useRef<HTMLDivElement>(null);
-  const ruleRef = useRef<HTMLDivElement>(null);
-  const warmupRef = useRef<HTMLDivElement>(null);
-  const questionRef = useRef<HTMLDivElement>(null);
-  useEffect(() => revealTop(cardRef.current), [phase]);
-  useEffect(() => revealTop(ruleRef.current), [currentRule]);
-  useEffect(() => revealTop(warmupRef.current), [currentWarmup]);
-  useEffect(() => revealTop(questionRef.current), [currentQuestion]);
+  useEffect(() => revealTop(cardRef.current, ITEM_REVEAL), [phase]);
+  // On a phone the "next" buttons sit below the content they replace, so each
+  // one brings the new rule / element / question back into view and focuses it.
+  const ruleRef = useItemTop<HTMLDivElement>(rulePage, ITEM_REVEAL);
+  const warmupRef = useItemTop<HTMLDivElement>(currentWarmup, ITEM_REVEAL);
+  const questionRef = useItemTop<HTMLDivElement>(currentQuestion, ITEM_REVEAL);
+
+  // After an answer (design P3): a phone shows as much as fits from the
+  // question down to the next button, and focus moves to the feedback, not to
+  // the button, so a second Enter lands on nothing. The next button ignores a
+  // press within 400 ms of appearing, so a second tap cannot skip the feedback.
+  const warmupOptionsRef = useRef<HTMLDivElement>(null);
+  const warmupFeedbackRef = useRef<HTMLDivElement>(null);
+  const warmupNextRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(warmupFeedback !== null, () => ({
+    bottom: warmupNextRef.current,
+    tops: [warmupRef.current, warmupOptionsRef.current, warmupFeedbackRef.current],
+    focus: warmupFeedbackRef.current,
+  }));
+  const armedWarmup = useArmedAfter(400, `${currentWarmup}:${warmupFeedback !== null}`);
+
+  const optionsRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(showFeedback, () => ({
+    bottom: nextRef.current,
+    tops: [optionsRef.current, feedbackRef.current],
+    focus: feedbackRef.current,
+  }));
+  const armedQuiz = useArmedAfter(400, `${currentQuestion}:${showFeedback}`);
 
   // Shuffle options for current question - memoize to keep stable during question
   const shuffledOptions = useMemo(() => {
@@ -386,6 +442,7 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   const handleNextRule = () => {
     if (currentRule < namingRules.length - 1) {
       setCurrentRule((prev) => prev + 1);
+      setRulePage((prev) => prev + 1);
     } else {
       setPhase('warmup'); // Go to warmup before quiz
     }
@@ -394,6 +451,7 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   const handlePrevRule = () => {
     if (currentRule > 0) {
       setCurrentRule((prev) => prev - 1);
+      setRulePage((prev) => prev + 1);
     }
   };
 
@@ -483,11 +541,13 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-2 sm:p-4 md:p-8">
+        {/* A teaching page stays a scroll on a phone; only its padding and the
+            repeated subtitle are compacted, and it opens at its heading. */}
         <div
           ref={cardRef}
-          className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8"
+          className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3"
         >
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex justify-between items-center mb-6 phone:mb-2">
             <button
               onClick={onBack}
               className="text-warm-500 hover:text-warm-700 flex items-center gap-2 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
@@ -501,17 +561,17 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             </div>
           </div>
 
-          <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-indigo-600">
+          <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-indigo-600 phone:text-xl phone:mb-1">
             {t('level1.ui.rulesTitle', 'Reglur um nafnagift')}
           </h1>
-          <p className="text-center text-warm-600 mb-6">
+          <p className="text-center text-warm-600 mb-6 phone:sr-only">
             {t('level1.ui.rulesSubtitle', 'Lærðu hvernig efnasambönd eru nefnd')}
           </p>
 
           {/* Progress dots */}
           {/* Progress dots. The dot is drawn inside the button so that on touch
               the button can grow to a 44 px target while the dot stays 16 px. */}
-          <div className="flex justify-center gap-2 mb-8 pointer-coarse:gap-0 pointer-coarse:mb-5">
+          <div className="flex justify-center gap-2 mb-8 pointer-coarse:gap-0 pointer-coarse:mb-5 phone:mb-3">
             {namingRules.map((r, idx) => (
               <button
                 key={r.id}
@@ -535,22 +595,24 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           {/* Rule card */}
           <div
             ref={ruleRef}
-            className={`${colors.light} border-2 ${colors.border} rounded-2xl p-3 sm:p-6 mb-6`}
+            className={`${colors.light} border-2 ${colors.border} rounded-2xl p-3 sm:p-6 mb-6 phone:mb-3`}
           >
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-4 phone:mb-3">
               <div
                 className={`${colors.bg} text-white w-10 h-10 shrink-0 rounded-full flex items-center justify-center font-bold`}
               >
                 {currentRule + 1}
               </div>
               <div className="min-w-0">
-                <h2 className={`text-lg sm:text-xl font-bold ${colors.text}`}>{rule.title}</h2>
+                <h2 data-item-start className={`text-lg sm:text-xl font-bold ${colors.text}`}>
+                  {rule.title}
+                </h2>
                 <p className="text-warm-600 text-sm">{rule.description}</p>
               </div>
             </div>
 
             {/* Rules list */}
-            <div className="bg-white rounded-xl p-3 sm:p-4 mb-4">
+            <div className="bg-white rounded-xl p-3 sm:p-4 mb-4 phone:mb-3">
               <h3 className="font-semibold text-warm-700 mb-2">
                 {t('level1.ui.rulesLabel', 'Reglur:')}
               </h3>
@@ -620,7 +682,7 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           </div>
 
           {/* Quick reference */}
-          <div className="mt-6 bg-warm-50 rounded-xl p-4">
+          <div className="mt-6 bg-warm-50 rounded-xl p-4 phone:mt-3 phone:p-3">
             <h3 className="font-semibold text-warm-700 mb-2">
               {t('level1.ui.ruleOverview', 'Yfirlit yfir reglur:')}
             </h3>
@@ -648,9 +710,9 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
       <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-2 sm:p-4 md:p-8">
         <div
           ref={cardRef}
-          className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8"
+          className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3"
         >
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex justify-between items-center mb-6 phone:mb-2">
             <button
               onClick={() => setPhase('learn')}
               className="text-warm-500 hover:text-warm-700 flex items-center gap-2 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
@@ -662,20 +724,23 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             </div>
           </div>
 
-          <div className="text-center mb-6">
-            <div className="text-4xl mb-2">🔬</div>
-            <h1 className="text-2xl md:text-3xl font-bold text-indigo-600 mb-2">
+          {/* On a phone the decorative emoji goes and the subtitle, the same on
+              all eight elements, is left to screen readers, so the element, both
+              choices, the verdict and the next button fit one screen. */}
+          <div className="text-center mb-6 phone:mb-3">
+            <div className="text-4xl mb-2 phone:hidden">🔬</div>
+            <h1 className="text-2xl md:text-3xl font-bold text-indigo-600 mb-2 phone:text-xl phone:mb-0">
               {t('level1.ui.warmupTitle', 'Upphitun: Málmur eða málmleysingi?')}
             </h1>
-            <p className="text-warm-600">
+            <p className="text-warm-600 phone:sr-only">
               {t('level1.ui.warmupSubtitle', 'Þetta er mikilvægt til að velja rétta nafnareglu!')}
             </p>
           </div>
 
           {/* Progress bar */}
-          <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
+          <div className="w-full bg-warm-200 rounded-full h-2 mb-6 phone:h-1.5 phone:mb-3">
             <div
-              className="bg-indigo-500 h-2 rounded-full transition-all"
+              className="bg-indigo-500 h-2 rounded-full transition-all phone:h-1.5"
               style={{ width: `${((currentWarmup + 1) / warmupQuestions.length) * 100}%` }}
             />
           </div>
@@ -683,20 +748,27 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           {/* Question card */}
           <div
             ref={warmupRef}
-            className="bg-indigo-50 border-2 border-indigo-200 rounded-xl p-4 sm:p-6 mb-6 text-center"
+            data-item-start
+            className="bg-indigo-50 border-2 border-indigo-200 rounded-xl p-4 sm:p-6 mb-6 text-center phone:p-3 phone:mb-3"
           >
-            <div className="text-6xl font-mono font-bold text-warm-800 mb-2">{warmupQ.symbol}</div>
-            <div className="text-xl text-warm-600">{warmupQ.name}</div>
+            <div className="text-6xl font-mono font-bold text-warm-800 mb-2 phone:text-5xl phone:mb-1">
+              {warmupQ.symbol}
+            </div>
+            <div className="text-xl text-warm-600 phone:text-lg">{warmupQ.name}</div>
           </div>
 
           {/* Answer buttons */}
-          {/* Phones: one full-width row per choice, since "Málmleysingi" does not
-              fit a half-width card at 320-360 px. From sm, the two cards again. */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
+          {/* Two cards side by side, the emoji over the word, as from sm up. On
+              a phone the padding and type are smaller, so "Málmleysingi" fits
+              half of a 320 px screen without breaking. */}
+          <div
+            ref={warmupOptionsRef}
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 phone:grid-cols-2 phone:gap-2 phone:mb-3"
+          >
             <button
               onClick={() => handleWarmupAnswer(true)}
               disabled={warmupFeedback !== null}
-              className={`flex items-center gap-4 p-4 text-left sm:block sm:p-6 sm:text-center rounded-xl border-3 transition-all ${
+              className={`flex items-center gap-4 p-4 text-left sm:block sm:p-6 sm:text-center phone:block phone:px-1 phone:py-2 phone:text-center rounded-xl border-3 transition-all ${
                 warmupFeedback !== null && warmupAnswer === true
                   ? warmupQ.isMetal
                     ? 'bg-green-100 border-green-500 text-green-800'
@@ -706,11 +778,13 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                     : 'bg-blue-50 border-blue-300 hover:border-blue-500 hover:bg-blue-100'
               }`}
             >
-              <div className="text-3xl sm:mb-2" aria-hidden="true">
+              <div className="text-3xl sm:mb-2 phone:text-2xl phone:mb-0" aria-hidden="true">
                 ⚙️
               </div>
               <div>
-                <div className="font-bold text-lg">{t('level1.ui.metal', 'Málmur')}</div>
+                <div className="font-bold text-lg phone:text-base">
+                  {t('level1.ui.metal', 'Málmur')}
+                </div>
                 <div className="text-xs text-warm-500">
                   {t('level1.ui.metalHint', '(gefur rafeindir)')}
                 </div>
@@ -719,7 +793,7 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             <button
               onClick={() => handleWarmupAnswer(false)}
               disabled={warmupFeedback !== null}
-              className={`flex items-center gap-4 p-4 text-left sm:block sm:p-6 sm:text-center rounded-xl border-3 transition-all ${
+              className={`flex items-center gap-4 p-4 text-left sm:block sm:p-6 sm:text-center phone:block phone:px-1 phone:py-2 phone:text-center rounded-xl border-3 transition-all ${
                 warmupFeedback !== null && warmupAnswer === false
                   ? !warmupQ.isMetal
                     ? 'bg-green-100 border-green-500 text-green-800'
@@ -729,11 +803,13 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                     : 'bg-orange-50 border-orange-300 hover:border-orange-500 hover:bg-orange-100'
               }`}
             >
-              <div className="text-3xl sm:mb-2" aria-hidden="true">
+              <div className="text-3xl sm:mb-2 phone:text-2xl phone:mb-0" aria-hidden="true">
                 💨
               </div>
               <div>
-                <div className="font-bold text-lg">{t('level1.ui.nonmetal', 'Málmleysingi')}</div>
+                <div className="font-bold text-lg phone:text-base">
+                  {t('level1.ui.nonmetal', 'Málmleysingi')}
+                </div>
                 <div className="text-xs text-warm-500">
                   {t('level1.ui.nonmetalHint', '(tekur rafeindir)')}
                 </div>
@@ -741,10 +817,16 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             </button>
           </div>
 
-          {/* Feedback */}
+          {/* Feedback: the region focus moves to after an answer (P3), named by
+              its own text. */}
           {warmupFeedback && (
             <div
-              className={`p-4 rounded-xl mb-4 ${
+              ref={warmupFeedbackRef}
+              id="nk-wu-verdict"
+              role="group"
+              aria-labelledby="nk-wu-verdict"
+              tabIndex={-1}
+              className={`p-4 rounded-xl mb-4 phone:p-3 phone:mb-3 ${
                 warmupAnswer === warmupQ.isMetal
                   ? 'bg-green-100 border-2 border-green-400 text-green-800'
                   : 'bg-amber-100 border-2 border-amber-400 text-amber-800'
@@ -757,7 +839,8 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           {/* Next button */}
           {warmupFeedback && (
             <button
-              onClick={handleNextWarmup}
+              ref={warmupNextRef}
+              onClick={armedWarmup(handleNextWarmup)}
               className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl transition-all"
             >
               {currentWarmup < warmupQuestions.length - 1
@@ -767,13 +850,13 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           )}
 
           {/* Score summary */}
-          <div className="mt-6 text-center text-sm text-warm-500">
+          <div className="mt-6 text-center text-sm text-warm-500 phone:mt-3">
             {t('level1.ui.correctCount', 'Rétt:')} {warmupCorrect} /{' '}
             {currentWarmup + (warmupFeedback ? 1 : 0)}
           </div>
 
           {/* Key reminder */}
-          <div className="mt-4 bg-warm-50 rounded-xl p-4">
+          <div className="mt-4 bg-warm-50 rounded-xl p-4 phone:mt-3 phone:p-3">
             <h3 className="font-semibold text-warm-700 mb-2 text-sm">
               {t('level1.ui.remember', 'Mundu:')}
             </h3>
@@ -807,47 +890,59 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-100 p-2 sm:p-4 md:p-8">
       <div
         ref={cardRef}
-        className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8"
+        className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3"
       >
-        <div className="flex flex-wrap justify-between items-center gap-2 mb-6">
+        {/* One row on a phone (P4): the counter may wrap onto two short lines
+            rather than push the score onto a row of its own. */}
+        <div className="flex flex-wrap justify-between items-center gap-2 mb-6 phone:flex-nowrap phone:mb-2">
           <button
             onClick={onBack}
             className="whitespace-nowrap text-warm-500 hover:text-warm-700 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
           >
             ← {t('common.back', 'Til baka')}
           </button>
-          <div className="ml-auto flex items-center gap-2 sm:gap-4">
-            <div className="whitespace-nowrap text-sm text-warm-500">
+          <div className="ml-auto flex items-center gap-2 sm:gap-4 phone:min-w-0">
+            <div className="whitespace-nowrap text-sm text-warm-500 phone:whitespace-normal phone:text-right">
               {t('level1.ui.questionNOfM', 'Spurning {n} af {m}')
                 .replace('{n}', String(currentQuestion + 1))
                 .replace('{m}', String(quizQuestions.length))}
             </div>
-            <div className="whitespace-nowrap bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-bold">
+            <div className="whitespace-nowrap bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-bold phone:px-2 phone:text-sm">
               {t('common.score', 'Stig')}: {score}
             </div>
           </div>
         </div>
 
-        <h1 className="text-2xl md:text-3xl font-bold text-center mb-6 text-indigo-600">
+        <h1 className="text-2xl md:text-3xl font-bold text-center mb-6 text-indigo-600 phone:text-lg phone:mb-2">
           {t('level1.ui.quizTitle', 'Próf: Nafnareglur')}
         </h1>
 
         {/* Question */}
         <div
           ref={questionRef}
-          className={`${questionColors.light} border-2 ${questionColors.border} rounded-xl p-4 sm:p-6 mb-6`}
+          data-item-start
+          className={`${questionColors.light} border-2 ${questionColors.border} rounded-xl p-4 sm:p-6 mb-6 phone:p-3 phone:mb-3`}
         >
-          <div className="text-sm font-medium text-warm-500 mb-2">{ruleForQuestion?.title}</div>
-          <div className="text-xl font-bold text-warm-800 mb-4">{question.question}</div>
+          <div className="text-sm font-medium text-warm-500 mb-2 phone:mb-1">
+            {ruleForQuestion?.title}
+          </div>
+          <div className="text-xl font-bold text-warm-800 mb-4 phone:text-lg phone:mb-2">
+            {question.question}
+          </div>
           {question.formula && (
-            <div className="text-3xl font-mono font-bold text-center text-warm-800 bg-white rounded-lg py-4">
+            <div className="text-3xl font-mono font-bold text-center text-warm-800 bg-white rounded-lg py-4 phone:text-2xl phone:py-2">
               {question.formula}
             </div>
           )}
         </div>
 
-        {/* Options */}
-        <div className="grid gap-3 mb-6">
+        {/* Options. Short ones sit two to a row on a phone. */}
+        <div
+          ref={optionsRef}
+          className={`grid gap-3 mb-6 phone:gap-2 phone:mb-3 ${
+            shortOptions(question.options) ? 'phone:grid-cols-2' : ''
+          }`}
+        >
           {shuffledOptions.options.map((option, idx) => {
             let buttonClass =
               'bg-white border-2 border-warm-200 hover:border-indigo-400 hover:bg-indigo-50';
@@ -867,7 +962,7 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
                 key={idx}
                 onClick={() => handleAnswer(idx)}
                 disabled={showFeedback}
-                className={`p-4 rounded-xl font-medium text-left transition-all ${buttonClass}`}
+                className={`p-4 rounded-xl font-medium text-left transition-all phone:p-3 ${buttonClass}`}
               >
                 <span className="font-bold mr-2">{String.fromCharCode(65 + idx)}.</span>
                 {option}
@@ -876,9 +971,19 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           })}
         </div>
 
-        {/* Feedback */}
+        {/* Feedback: the region focus moves to after an answer (P3).
+            FeedbackPanel is itself role=alert and announces the verdict. On a
+            phone the page moves to show it, so a tap in its first 400 ms is the
+            second half of a double tap on the answer, and is dropped. */}
         {showFeedback && (
-          <div className="mb-6">
+          <div
+            ref={feedbackRef}
+            role="group"
+            tabIndex={-1}
+            className="mb-6 phone:mb-3"
+            // A second tap on the answer must not fold 'Af hverju?' shut unread.
+            onClickCapture={dropEarlyClicks(armedQuiz)}
+          >
             <FeedbackPanel
               feedback={(() => {
                 const correct = selectedAnswer === shuffledOptions.correctShuffledIndex;
@@ -907,7 +1012,8 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
         {/* Next button */}
         {showFeedback && (
           <button
-            onClick={handleNextQuestion}
+            ref={nextRef}
+            onClick={armedQuiz(handleNextQuestion)}
             className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl transition-all"
           >
             {currentQuestion < quizQuestions.length - 1
@@ -917,15 +1023,15 @@ export function Level1({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
         )}
 
         {/* Progress bar */}
-        <div className="mt-6 w-full bg-warm-200 rounded-full h-2">
+        <div className="mt-6 w-full bg-warm-200 rounded-full h-2 phone:mt-3 phone:h-1.5">
           <div
-            className="bg-indigo-500 h-2 rounded-full transition-all duration-300"
+            className="bg-indigo-500 h-2 rounded-full transition-all duration-300 phone:h-1.5"
             style={{ width: `${((currentQuestion + 1) / quizQuestions.length) * 100}%` }}
           />
         </div>
 
         {/* Quick reference */}
-        <div className="mt-6 bg-warm-50 rounded-xl p-4">
+        <div className="mt-6 bg-warm-50 rounded-xl p-4 phone:mt-3 phone:p-3">
           <h3 className="font-semibold text-warm-700 mb-2 text-sm">
             {t('level1.ui.cheatSheet', 'Minnisblað:')}
           </h3>

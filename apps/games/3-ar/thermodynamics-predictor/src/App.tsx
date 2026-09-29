@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useMemo, useRef, useCallback } from 'react';
 
 import {
   Header,
@@ -6,6 +6,7 @@ import {
   ErrorBoundary,
   Presence,
   FadePresence,
+  PhoneDisclosure,
 } from '@shared/components';
 import type {
   DataPoint,
@@ -15,7 +16,16 @@ import type {
   VerticalLineConfig,
 } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
-import { formatDecimal } from '@shared/utils';
+import {
+  focusTarget,
+  formatDecimal,
+  isPhone,
+  revealSpan,
+  revealTop,
+  useArmedAfter,
+  useIsPhone,
+  usableArea,
+} from '@shared/utils';
 
 import { EntropyVisualization } from './components/EntropyVisualization';
 import { PROBLEMS } from './data';
@@ -38,6 +48,15 @@ const ANSWER_CARD_EXIT_MS = 250;
  * if that much of it is not on screen, the student cannot see whether they were right.
  */
 const FEEDBACK_VERDICT_PX = 60;
+
+/** Which screen a mode shows: the two runs share one. */
+type Screen = 'menu' | 'discover' | 'game';
+const screenOf = (mode: GameMode): Screen =>
+  mode === 'menu' ? 'menu' : mode === 'discover' ? 'discover' : 'game';
+
+/** The top of the page, at once and at every width — what `window.scrollTo(0, 0)` did. */
+const toPageTop = () =>
+  revealTop(document.documentElement, { anyWidth: true, always: true, gap: 0, instant: true });
 
 interface ThermoProgress {
   score: number;
@@ -77,35 +96,114 @@ function App() {
   const [streak, setStreak] = useState(0);
   const [timeLeft, setTimeLeft] = useState(90);
   const feedbackRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
   const shownMode = useRef(mode);
+  // The mode the student last left for the menu, whose start button the menu brings back.
+  const leftMode = useRef<GameMode | null>(null);
 
-  // Each mode is its own screen: open it at the top. The menu is long on a phone, so without
-  // this a student who taps a mode at its foot lands in the middle of the next screen.
-  // Only on a change of mode, so loading the page leaves the browser's own scrolling alone.
-  useEffect(() => {
+  // Each mode is its own screen: open it at the top, at every width, as it always has. The
+  // menu is long on a phone, so without this a student who taps a mode at its foot lands in
+  // the middle of the next screen. Only on a change of mode, so loading the page leaves the
+  // browser's own scrolling alone. A layout effect, so the new screen never paints at the
+  // old offset.
+  useLayoutEffect(() => {
     if (shownMode.current === mode) return;
+    if (mode === 'menu') leftMode.current = shownMode.current;
     shownMode.current = mode;
-    window.scrollTo(0, 0);
+    toPageTop();
   }, [mode]);
 
-  // Once an answer is checked the solution takes the answer card's place and the verdict sits
-  // below it; on a phone that is below the fold, so tapping "Athuga svar" would seem to show a
-  // solution without saying whether the answer was right. When the challenge timer runs out the
-  // student may be scrolled down to the graph instead, with the verdict above the screen. Bring
-  // the verdict into view — only when it is not already — after the answer card has left and
-  // the layout has settled.
+  // Focus follows each screen swap, since the button that caused it has gone with the old
+  // screen and focus would otherwise fall to <body> (design P3): a mode focuses its heading —
+  // the problem's name in a run — and back on the menu the mode just left, brought on screen
+  // on a phone together with the difficulty choice above it. Nothing on the initial load.
+  //
+  // The screens fade (FadePresence), which mounts the new one a render after `mode` changes,
+  // so this usually runs as the new screen's root attaches. A screen shown again before its
+  // fade-out ended never unmounted, so the swap itself runs it for that one.
+  const screen: Screen = screenOf(mode);
+  const lastShown = useRef<Screen>(screen);
+  const shownScreen = useRef<Screen>(screen);
+  shownScreen.current = screen;
+  const roots = useRef<Partial<Record<Screen, HTMLElement>>>({});
+  const shownRef = useRef<(which: Screen, root: HTMLElement) => void>(() => {});
+  shownRef.current = (which, root) => {
+    if (lastShown.current === which) return;
+    lastShown.current = which;
+    if (which === 'menu') {
+      const start = leftMode.current
+        ? root.querySelector<HTMLElement>(`[data-mode-start="${leftMode.current}"]`)
+        : null;
+      revealSpan(start, [root.querySelector('[data-difficulty-chooser]'), start]);
+      focusTarget(start);
+    } else {
+      focusTarget(root.querySelector<HTMLElement>('[data-item-start]'));
+    }
+  };
+  const attach = useCallback((which: Screen, el: HTMLDivElement | null) => {
+    if (!el) {
+      delete roots.current[which];
+      return;
+    }
+    roots.current[which] = el;
+    if (shownScreen.current === which) shownRef.current(which, el);
+  }, []);
+  const menuRoot = useCallback((el: HTMLDivElement | null) => attach('menu', el), [attach]);
+  const discoverRoot = useCallback((el: HTMLDivElement | null) => attach('discover', el), [attach]);
+  const gameRoot = useCallback((el: HTMLDivElement | null) => attach('game', el), [attach]);
+  useLayoutEffect(() => {
+    const root = roots.current[screen];
+    if (root) shownRef.current(screen, root);
+  }, [screen]);
+
+  // "Næsta spurning" sits at the foot of the solution; the new problem opens at the top of
+  // the page, at every width as before, with its name focused. A new run is a screen swap,
+  // handled above.
+  const shownQuestion = useRef(questionNumber);
+  useLayoutEffect(() => {
+    if (shownQuestion.current === questionNumber) return;
+    shownQuestion.current = questionNumber;
+    const root = roots.current.game;
+    if (!root || lastShown.current !== 'game') return;
+    toPageTop();
+    focusTarget(root.querySelector<HTMLElement>('[data-item-start]'));
+  }, [questionNumber]);
+
+  // Once an answer is checked the solution takes the answer card's place; the verdict has to
+  // be seen, or tapping "Athuga svar" would seem to show a solution without saying whether
+  // the answer was right. When the challenge timer runs out the student may be scrolled away
+  // from it altogether. After the answer card has left and the layout has settled:
+  // - on a phone the verdict box comes on screen whole, "Næsta spurning" with it where it
+  //   fits (design P2); a verdict too tall for the screen is brought to the top to be read;
+  // - on a wider screen, exactly as before: only when its first line is not on screen, by
+  //   the least scroll that shows it.
+  // Either way focus moves to the verdict box (design P3), not to Næsta, so a second Enter
+  // or tap cannot skip it.
   useEffect(() => {
     if (!showSolution || !feedback) return;
     const timer = window.setTimeout(() => {
-      const el = feedbackRef.current;
-      if (!el) return;
-      const { top } = el.getBoundingClientRect();
-      if (top < 0 || top + FEEDBACK_VERDICT_PX > window.innerHeight) {
-        el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      const box = feedbackRef.current;
+      if (!box) return;
+      if (isPhone()) {
+        revealSpan(nextRef.current ?? box, [box]);
+      } else {
+        const { top } = box.getBoundingClientRect();
+        const area = usableArea();
+        if (top < area.top || top + FEEDBACK_VERDICT_PX > area.bottom) {
+          revealSpan(box, [], { anyWidth: true, gap: 0 });
+        }
       }
+      focusTarget(box);
     }, ANSWER_CARD_EXIT_MS + 50);
     return () => window.clearTimeout(timer);
   }, [showSolution, feedback]);
+
+  // "Athuga svar" opened the verdict. A press on Næsta within 400 ms of it appearing is the
+  // second half of a double tap, not a decision, and is dropped (design P3).
+  const armed = useArmedAfter(400, showSolution);
+  // The phone-only copy of the Keppnishamur clock exists only on a phone, so desktop and
+  // screen readers never meet a second clock (design §3: no twins).
+  const phone = useIsPhone();
 
   const resetProgress = () => {
     resetStoredProgress();
@@ -129,8 +227,6 @@ function App() {
     // the screen being left — so a new Keppnishamur run kept the old run's remaining seconds,
     // and a run that had timed out started at 0. The clock only runs in Keppnishamur.
     setTimeLeft(90);
-    // "Næsta spurning" sits at the foot of the solution; the new problem starts at the top.
-    window.scrollTo(0, 0);
   };
 
   /** Open Æfingarhamur or Keppnishamur at its first question. */
@@ -327,10 +423,10 @@ function App() {
   }, [mode, timeLeft, showSolution]);
 
   const renderMenu = () => (
-    <div>
+    <div ref={menuRoot}>
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
         <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="Varmafræði spámaður" />
-        <div className="min-h-screen py-8">
+        <div className="min-h-screen py-8 phone:py-3">
           <a
             href="#game-content"
             className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-orange-600 focus:font-bold"
@@ -338,15 +434,15 @@ function App() {
             Fara í efni
           </a>
           <div className="max-w-4xl mx-auto px-4">
-            <div className="bg-white rounded-lg shadow-lg p-4 sm:p-8" id="game-content">
-              <p className="text-warm-600 mb-4">
+            <div className="bg-white rounded-lg shadow-lg p-4 sm:p-8 phone:p-3" id="game-content">
+              <p className="text-warm-600 mb-4 phone:mb-3">
                 Lærðu um Gibbs frjálsa orku og sjálfgengi efnahvarfa
               </p>
 
               {/* Progress Stats */}
               {(progress.highScore > 0 || progress.problemsCompleted > 0) && (
-                <div className="mb-8 bg-warm-50 p-4 rounded-lg">
-                  <div className="flex justify-between items-center mb-3">
+                <div className="mb-8 bg-warm-50 p-4 rounded-lg phone:mb-4 phone:p-3">
+                  <div className="flex justify-between items-center mb-3 phone:mb-2">
                     <h3 className="font-semibold text-warm-700">Framvinda</h3>
                     <button
                       onClick={resetProgress}
@@ -357,19 +453,21 @@ function App() {
                   </div>
                   {/* Below sm each stat is a row (label left, number right): three columns of a
                       phone's width split "Spurningar" and a three-digit score mid-word. */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-center">
-                    <div className="bg-yellow-50 rounded-lg p-3 flex flex-row-reverse items-center justify-between sm:block">
-                      <div className="text-2xl font-bold text-yellow-600">{progress.highScore}</div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-center phone:gap-1.5">
+                    <div className="bg-yellow-50 rounded-lg p-3 flex flex-row-reverse items-center justify-between sm:block phone:px-3 phone:py-1.5">
+                      <div className="text-2xl font-bold text-yellow-600 phone:text-xl">
+                        {progress.highScore}
+                      </div>
                       <div className="text-sm sm:text-xs text-warm-600">Hæsta stig</div>
                     </div>
-                    <div className="bg-green-50 rounded-lg p-3 flex flex-row-reverse items-center justify-between sm:block">
-                      <div className="text-2xl font-bold text-green-600">
+                    <div className="bg-green-50 rounded-lg p-3 flex flex-row-reverse items-center justify-between sm:block phone:px-3 phone:py-1.5">
+                      <div className="text-2xl font-bold text-green-600 phone:text-xl">
                         {progress.problemsCompleted}
                       </div>
                       <div className="text-sm sm:text-xs text-warm-600">Spurningar</div>
                     </div>
-                    <div className="bg-orange-50 rounded-lg p-3 flex flex-row-reverse items-center justify-between sm:block">
-                      <div className="text-2xl font-bold text-orange-600">
+                    <div className="bg-orange-50 rounded-lg p-3 flex flex-row-reverse items-center justify-between sm:block phone:px-3 phone:py-1.5">
+                      <div className="text-2xl font-bold text-orange-600 phone:text-xl">
                         {progress.bestStreak}
                       </div>
                       <div className="text-sm sm:text-xs text-warm-600">Besta röð</div>
@@ -379,7 +477,7 @@ function App() {
               )}
 
               {/* Conceptual derivation of ΔG = ΔH - TΔS */}
-              <div className="mb-8 p-4 sm:p-6 bg-blue-50 rounded-lg space-y-4">
+              <div className="mb-8 p-4 sm:p-6 bg-blue-50 rounded-lg space-y-4 phone:mb-4 phone:p-3 phone:space-y-3">
                 <h2 className="text-xl font-bold text-blue-800">
                   Af hverju <span className="whitespace-nowrap">ΔG = ΔH − TΔS?</span>
                 </h2>
@@ -434,12 +532,12 @@ function App() {
                 </div>
               </div>
 
-              <div className="mb-8">
-                <h3 className="text-lg font-bold mb-4">Veldu erfiðleikastig:</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="mb-8 phone:mb-4" data-difficulty-chooser>
+                <h3 className="text-lg font-bold mb-4 phone:mb-2">Veldu erfiðleikastig:</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 phone:gap-2 phone-land:grid-cols-3">
                   <button
                     onClick={() => setDifficulty('beginner')}
-                    className={`p-4 rounded-lg border-2 transition ${
+                    className={`p-4 rounded-lg border-2 transition phone:px-3 phone:py-2 phone:flex phone:flex-wrap phone:items-baseline phone:gap-x-2 ${
                       difficulty === 'beginner'
                         ? 'border-orange-500 bg-orange-50'
                         : 'border-warm-300 hover:border-orange-300'
@@ -450,7 +548,7 @@ function App() {
                   </button>
                   <button
                     onClick={() => setDifficulty('intermediate')}
-                    className={`p-4 rounded-lg border-2 transition ${
+                    className={`p-4 rounded-lg border-2 transition phone:px-3 phone:py-2 phone:flex phone:flex-wrap phone:items-baseline phone:gap-x-2 ${
                       difficulty === 'intermediate'
                         ? 'border-orange-500 bg-orange-50'
                         : 'border-warm-300 hover:border-orange-300'
@@ -461,7 +559,7 @@ function App() {
                   </button>
                   <button
                     onClick={() => setDifficulty('advanced')}
-                    className={`p-4 rounded-lg border-2 transition ${
+                    className={`p-4 rounded-lg border-2 transition phone:px-3 phone:py-2 phone:flex phone:flex-wrap phone:items-baseline phone:gap-x-2 ${
                       difficulty === 'advanced'
                         ? 'border-orange-500 bg-orange-50'
                         : 'border-warm-300 hover:border-orange-300'
@@ -476,37 +574,42 @@ function App() {
               {/* Discover button (recommended first step) */}
               <button
                 onClick={() => setMode('discover')}
-                className="game-card w-full p-5 rounded-lg text-white font-bold text-lg transition mb-4"
+                data-mode-start="discover"
+                className="game-card w-full p-5 rounded-lg text-white font-bold text-lg transition mb-4 phone:px-4 phone:py-3 phone:mb-2"
                 style={{ background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)' }}
               >
                 🔬 Könnun — sjáðu hvernig ΔG breytist með hitastigi
-                <div className="text-sm font-normal mt-1">
+                <div className="text-sm font-normal mt-1 phone:mt-0.5">
                   Byrjaðu hér — stillanlegur hita-sleði og rauntíma-útreikningur
                 </div>
               </button>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 phone:gap-2 phone-land:grid-cols-2">
                 <button
                   onClick={() => startRun('learning')}
-                  className="game-card p-6 rounded-lg text-white font-bold text-lg transition"
+                  data-mode-start="learning"
+                  className="game-card p-6 rounded-lg text-white font-bold text-lg transition phone:px-4 phone:py-3"
                   style={{ background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' }}
                 >
                   📖 Æfingarhamur
-                  <div className="text-sm font-normal mt-1">Ótakmarkaður tími</div>
+                  <div className="text-sm font-normal mt-1 phone:mt-0.5">Ótakmarkaður tími</div>
                 </button>
                 <button
                   onClick={() => startRun('challenge')}
-                  className="game-card p-6 rounded-lg text-white font-bold text-lg transition"
+                  data-mode-start="challenge"
+                  className="game-card p-6 rounded-lg text-white font-bold text-lg transition phone:px-4 phone:py-3"
                   style={{ background: 'linear-gradient(135deg, #f36b22 0%, #d95a1a 100%)' }}
                 >
                   ⚡ Keppnishamur
-                  <div className="text-sm font-normal mt-1">90 sek tími, stigagjöf</div>
+                  <div className="text-sm font-normal mt-1 phone:mt-0.5">
+                    90 sek tími, stigagjöf
+                  </div>
                 </button>
               </div>
             </div>
 
             {/* Why this matters + curriculum */}
-            <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200">
+            <div className="mt-6 bg-amber-50 p-4 rounded-lg border border-amber-200 phone:mt-3 phone:p-3">
               <h3 className="font-semibold text-amber-800 mb-2">Af hverju varmafræði?</h3>
               <p className="text-sm text-amber-700">
                 ΔG segir okkur hvort efnahvörf GETA gerst sjálfkrafa — ekki bara hvort þau losa
@@ -542,8 +645,11 @@ function App() {
     // "Hvað sést?" list below says is equilibrium.
     const demoSpontaneity = getSpontaneity(demoDeltaG);
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100 p-4 md:p-8">
-        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 space-y-5">
+      <div
+        ref={discoverRoot}
+        className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-100 p-4 md:p-8 phone:p-3"
+      >
+        <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 space-y-5 phone:p-3 phone:space-y-3">
           <button
             onClick={() => setMode('menu')}
             className="text-warm-600 hover:text-warm-800 text-sm pointer-coarse:py-3 pointer-coarse:-mt-3 pointer-coarse:mb-2"
@@ -552,7 +658,7 @@ function App() {
                 cancel space-y-5's gap and seat the heading against this link. */}
             ← Til baka í valmynd
           </button>
-          <h2 className="text-2xl font-bold text-indigo-700">
+          <h2 data-item-start className="text-2xl font-bold text-indigo-700 phone:text-xl">
             🔬 Könnun: hvernig hitastig hefur áhrif á ΔG
           </h2>
           <p className="text-warm-700">
@@ -560,17 +666,23 @@ function App() {
             J/(mól·K)). Dragðu hitastigs-sleðann og sjáðu hvernig ΔG breytist.
           </p>
 
-          <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-6 rounded-xl border border-indigo-200">
+          {/* On a phone the ΔG° result comes before the slider (CSS order: both blocks moved are
+              plain text), so the thumb and what it changes share the screen. */}
+          <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-6 rounded-xl border border-indigo-200 phone:p-3 phone:flex phone:flex-col">
             {/* One column below sm: side by side, "(vermibreyting)" and "J/(mol·K)" split mid-word. */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 text-center">
-              <div className="bg-red-50 p-3 rounded-lg border border-red-200">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 text-center phone:-order-2 phone:gap-2 phone:mb-3 phone-land:grid-cols-2">
+              <div className="bg-red-50 p-3 rounded-lg border border-red-200 phone:p-2">
                 <div className="text-xs text-red-700 font-semibold">ΔH° (vermibreyting)</div>
-                <div className="text-2xl font-bold text-red-800">{demoDeltaH} kJ/mól</div>
+                <div className="text-2xl font-bold text-red-800 phone:text-xl">
+                  {demoDeltaH} kJ/mól
+                </div>
                 <div className="text-xs text-red-600 mt-1">Losun varma → styður sjálfgengi</div>
               </div>
-              <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
+              <div className="bg-purple-50 p-3 rounded-lg border border-purple-200 phone:p-2">
                 <div className="text-xs text-purple-700 font-semibold">ΔS° (óreiðubreyting)</div>
-                <div className="text-2xl font-bold text-purple-800">{demoDeltaS} J/(mól·K)</div>
+                <div className="text-2xl font-bold text-purple-800 phone:text-xl">
+                  {demoDeltaS} J/(mól·K)
+                </div>
                 <div className="text-xs text-purple-600 mt-1">Minni óreiða → andmælir</div>
               </div>
             </div>
@@ -594,7 +706,7 @@ function App() {
             </div>
 
             <div
-              className={`mt-4 p-4 rounded-lg border-2 ${
+              className={`mt-4 p-4 rounded-lg border-2 phone:-order-1 phone:mt-0 phone:mb-3 phone:p-3 ${
                 demoSpontaneity === 'spontaneous'
                   ? 'bg-green-50 border-green-500 text-green-900'
                   : demoSpontaneity === 'equilibrium'
@@ -603,7 +715,23 @@ function App() {
               }`}
             >
               <div className="font-bold text-sm">
-                ΔG° = ΔH° − TΔS° = {demoDeltaH} − ({demoT})({formatDecimal(demoDeltaS / 1000)}) ={' '}
+                {/* Unbroken on a phone: the line otherwise splits between ")(" at 375 px.
+                    The wrapper exists only there, so a desktop window renders the
+                    line exactly as it did. */}
+                {phone ? (
+                  <>
+                    ΔG° = ΔH° − TΔS° = {demoDeltaH}{' '}
+                    <span className="whitespace-nowrap">
+                      − ({demoT})({formatDecimal(demoDeltaS / 1000)})
+                    </span>{' '}
+                    ={' '}
+                  </>
+                ) : (
+                  <>
+                    ΔG° = ΔH° − TΔS° = {demoDeltaH} − ({demoT})({formatDecimal(demoDeltaS / 1000)})
+                    ={' '}
+                  </>
+                )}
                 <span className="text-xl whitespace-nowrap">
                   {formatRounded(demoDeltaG, 1)} kJ/mól
                 </span>
@@ -673,22 +801,29 @@ function App() {
     const currentDeltaG = calcDeltaGForProblem(temperature);
     const currentSpontaneity = getSpontaneity(currentDeltaG);
     const crossoverTemp = crossoverTemperature(currentProblem.deltaH, currentProblem.deltaS);
+    // The verdict is the message's first sentence ("Rétt!", "Rangt.", "Sjálfgengi er rétt en
+    // ΔG er rangt."); the rest explains it.
+    const feedbackLead = feedback.match(/^.+?[.!](?=\s|$)/)?.[0] ?? feedback;
+    const feedbackRest = feedback.slice(feedbackLead.length);
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-6">
+      <div
+        ref={gameRoot}
+        className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 py-6 phone:py-3"
+      >
         <a
           href="#problem-display"
           className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg focus:text-orange-600 focus:font-bold"
         >
           Fara í verkefni
         </a>
-        <div className="max-w-6xl mx-auto px-4">
-          {/* Header */}
-          <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
-            <div className="flex justify-between items-center flex-wrap gap-4">
+        <div className="max-w-6xl mx-auto px-4 phone:px-3">
+          {/* Header: one slim row on a phone (design P4), the challenge stats a second. */}
+          <div className="bg-white rounded-lg shadow-sm p-4 mb-4 phone:px-3 phone:py-2 phone:mb-3">
+            <div className="flex justify-between items-center flex-wrap gap-4 phone:gap-x-3 phone:gap-y-1.5">
               <button
                 onClick={() => setMode('menu')}
-                className="px-4 py-2 border-2 rounded-lg font-medium"
+                className="px-4 py-2 border-2 rounded-lg font-medium phone:px-3"
                 style={{ borderColor: '#f36b22', color: '#f36b22' }}
               >
                 ← Til baka
@@ -699,16 +834,18 @@ function App() {
               {mode === 'challenge' && (
                 <div className="flex gap-4 items-center order-last w-full justify-around sm:order-none sm:w-auto sm:justify-start">
                   <div className="text-center">
-                    <div className="text-sm text-warm-600">Stig</div>
-                    <div className="text-xl font-bold">{progress.score}</div>
+                    <div className="text-sm text-warm-600 phone:text-xs">Stig</div>
+                    <div className="text-xl font-bold phone:text-base">{progress.score}</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-sm text-warm-600">Runa</div>
-                    <div className="text-xl font-bold">{streak}🔥</div>
+                    <div className="text-sm text-warm-600 phone:text-xs">Runa</div>
+                    <div className="text-xl font-bold phone:text-base">{streak}🔥</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-sm text-warm-600">Tími</div>
-                    <div className={`text-xl font-bold ${timeLeft < 20 ? 'text-red-500' : ''}`}>
+                    <div className="text-sm text-warm-600 phone:text-xs">Tími</div>
+                    <div
+                      className={`text-xl font-bold phone:text-base ${timeLeft < 20 ? 'text-red-500' : ''}`}
+                    >
                       {timeLeft}s
                     </div>
                   </div>
@@ -716,20 +853,31 @@ function App() {
               )}
 
               <div className="flex gap-4 items-center">
-                <div className="text-center">
+                <div className="text-center phone:flex phone:items-baseline phone:gap-1.5">
                   <div className="text-sm text-warm-600">Spurning</div>
-                  <div className="text-xl font-bold">{questionNumber}</div>
+                  <div className="text-xl font-bold phone:text-lg">{questionNumber}</div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* On a portrait phone the two columns flatten into play order (design §3): problem,
+              slider, the graph it drives, answer, verdict, solution, then the reference cards.
+              The column wrappers are role-less and `display: contents` there. CSS order moves
+              the plain-text and canvas blocks around the controls; every block with a control in
+              it keeps its place in the sequence of controls, so focus order still matches what
+              is seen. On a phone's side the two columns come back. The left column is a flex
+              column rather than `space-y-4` so that the solution's empty wrapper takes no gap:
+              the geometry is the same. */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 phone:gap-3 phone-land:grid-cols-2">
             {/* Left Column - Problem & Controls */}
-            <div className="space-y-4">
+            <div className="flex flex-col gap-4 phone:contents phone-land:flex phone-land:gap-3">
               {/* Problem Display */}
-              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6" id="problem-display">
-                <div className="mb-4">
+              <div
+                className="bg-white rounded-lg shadow-lg p-4 sm:p-6 phone:p-3 phone:-order-1"
+                id="problem-display"
+              >
+                <div className="mb-4 phone:mb-2">
                   <span
                     className={`inline-block px-3 py-1 rounded-full text-white text-sm scenario-${currentProblem.scenario}`}
                   >
@@ -745,18 +893,21 @@ function App() {
                   <span className="ml-2 text-sm text-warm-600">{currentProblem.difficulty}</span>
                 </div>
 
-                <h2 className="text-xl font-bold mb-2">{currentProblem.name}</h2>
-                <div className="text-lg mb-4 font-mono bg-warm-50 p-3 rounded">
+                <h2 data-item-start className="text-xl font-bold mb-2 phone:text-lg phone:mb-1">
+                  {currentProblem.name}
+                </h2>
+                <div className="text-lg mb-4 font-mono bg-warm-50 p-3 rounded phone:text-base phone:p-2 phone:mb-2">
                   {currentProblem.reaction}
                 </div>
 
                 {/* One column below sm: at 320 px half a card splits "J/(mol·K)" and the
-                    endothermic tag mid-word. */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
-                  <div className="bg-red-50 p-3 rounded-lg">
-                    <div className="text-sm text-warm-600">Vermi (ΔH°)</div>
+                    endothermic tag mid-word. Two-up on a phone, where the value is smaller and
+                    wraps at the space before its unit. */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 phone:grid-cols-2 phone:gap-2 phone:mb-0">
+                  <div className="bg-red-50 p-3 rounded-lg phone:px-2.5 phone:py-2 phone:min-w-0">
+                    <div className="text-sm text-warm-600 phone:text-xs">Vermi (ΔH°)</div>
                     <div
-                      className="text-xl font-bold"
+                      className="text-xl font-bold phone:text-base"
                       style={{
                         color:
                           currentProblem.deltaH < 0
@@ -767,15 +918,15 @@ function App() {
                       {currentProblem.deltaH > 0 ? '+' : ''}
                       {formatDecimal(currentProblem.deltaH)} kJ/mól
                     </div>
-                    <div className="text-xs mt-1">
+                    <div className="text-xs mt-1 phone:mt-0.5">
                       {currentProblem.deltaH < 0 ? '🔥 Útvermið' : '❄️ Innvermið'}
                     </div>
                   </div>
 
-                  <div className="bg-purple-50 p-3 rounded-lg">
-                    <div className="text-sm text-warm-600">Óreiða (ΔS°)</div>
+                  <div className="bg-purple-50 p-3 rounded-lg phone:px-2.5 phone:py-2 phone:min-w-0">
+                    <div className="text-sm text-warm-600 phone:text-xs">Óreiða (ΔS°)</div>
                     <div
-                      className="text-xl font-bold"
+                      className="text-xl font-bold phone:text-base"
                       style={{
                         color:
                           currentProblem.deltaS > 0
@@ -786,14 +937,14 @@ function App() {
                       {currentProblem.deltaS > 0 ? '+' : ''}
                       {formatDecimal(currentProblem.deltaS)} J/(mól·K)
                     </div>
-                    <div className="text-xs mt-1">
+                    <div className="text-xs mt-1 phone:mt-0.5">
                       {currentProblem.deltaS > 0 ? '↑ Óreiða eykst' : '↓ Óreiða minnkar'}
                     </div>
                   </div>
                 </div>
 
                 {currentProblem.advancedTask && (
-                  <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 mb-4">
+                  <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 mb-4 phone:p-2 phone:mb-0 phone:mt-2">
                     <div className="text-sm font-bold">Áskorun:</div>
                     <div className="text-sm">{currentProblem.advancedTask}</div>
                   </div>
@@ -801,9 +952,9 @@ function App() {
               </div>
 
               {/* Temperature Slider */}
-              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
-                <h3 className="font-bold mb-3">🌡️ Hitastig</h3>
-                <div className="mb-4">
+              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 phone:p-3 phone:-order-1">
+                <h3 className="font-bold mb-3 phone:mb-1">🌡️ Hitastig</h3>
+                <div className="mb-4 phone:mb-2">
                   <input
                     type="range"
                     min="200"
@@ -814,9 +965,9 @@ function App() {
                     aria-label="Hitastig í Kelvinum"
                     aria-valuetext={`${temperature} Kelvin (${temperature - 273} gráður á Celsíus)`}
                   />
-                  <div className="flex justify-between text-sm text-warm-600 mt-2">
+                  <div className="flex justify-between text-sm text-warm-600 mt-2 phone:mt-1 phone:items-baseline">
                     <span>200 K</span>
-                    <span className="text-xl font-bold" style={{ color: '#f36b22' }}>
+                    <span className="text-xl font-bold phone:text-lg" style={{ color: '#f36b22' }}>
                       {temperature} K ({temperature - 273}°C)
                     </span>
                     <span>1200 K</span>
@@ -824,9 +975,11 @@ function App() {
                 </div>
 
                 {/* Real-time ΔG calculation */}
-                <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg">
-                  <div className="text-sm text-warm-600 mb-2">Við núverandi hitastig:</div>
-                  <div className="font-mono text-sm mb-2">
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg phone:p-3">
+                  <div className="text-sm text-warm-600 mb-2 phone:mb-1">
+                    Við núverandi hitastig:
+                  </div>
+                  <div className="font-mono text-sm mb-2 phone:mb-1">
                     ΔG° = ΔH° - TΔS°
                     <br />
                     ΔG° = ({formatDecimal(currentProblem.deltaH)}) - ({temperature})(
@@ -847,7 +1000,7 @@ function App() {
 
                 {crossoverTemp && crossoverTemp >= 200 && crossoverTemp <= 1200 && (
                   <div
-                    className={`mt-3 text-sm p-3 rounded border-l-4 ${
+                    className={`mt-3 text-sm p-3 rounded border-l-4 phone:mt-2 phone:p-2 ${
                       currentProblem.scenario === 3 || currentProblem.scenario === 4
                         ? 'bg-purple-50 border-purple-500'
                         : 'bg-warm-50 border-warm-300'
@@ -914,11 +1067,27 @@ function App() {
 
               {/* Answer Input / Solution */}
               <Presence show={!showSolution} exitDuration={ANSWER_CARD_EXIT_MS}>
-                <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
-                  <h3 className="font-bold mb-4">Svarið þitt:</h3>
+                <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 phone:p-3">
+                  <h3 className="font-bold mb-4 phone:mb-2 phone:flex phone:items-baseline phone:justify-between phone:gap-3">
+                    Svarið þitt:
+                    {/* Keppnishamur's clock sits in the header, which a phone has scrolled away
+                        by the time the answer is typed: a copy here, for the eye only — the
+                        header's is the one announced. */}
+                    {mode === 'challenge' && phone && (
+                      <span
+                        aria-hidden="true"
+                        className={`text-sm tabular-nums ${timeLeft < 20 ? 'text-red-500' : 'text-warm-600'}`}
+                      >
+                        ⏱ {timeLeft}s
+                      </span>
+                    )}
+                  </h3>
 
-                  <div className="mb-4">
-                    <label htmlFor="thermo-delta-g" className="block text-sm font-medium mb-2">
+                  <div className="mb-4 phone:mb-3">
+                    <label
+                      htmlFor="thermo-delta-g"
+                      className="block text-sm font-medium mb-2 phone:mb-1"
+                    >
                       ΔG° við {temperature} K (kJ/mól):
                     </label>
                     <div className="flex items-center gap-2">
@@ -927,9 +1096,14 @@ function App() {
                         type="text"
                         inputMode="decimal"
                         autoComplete="off"
+                        enterKeyHint="done"
                         value={userDeltaG}
                         onChange={(e) => setUserDeltaG(e.target.value)}
-                        className="w-full px-4 py-2 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-none"
+                        onKeyDown={(e) => {
+                          // Enter checks the answer once a verdict is picked too (design P12).
+                          if (e.key === 'Enter' && userDeltaG && userSpontaneity) checkAnswer();
+                        }}
+                        className="w-full min-w-0 px-4 py-2 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-none"
                         placeholder="t.d. -33,5"
                       />
                       {/* The decimal keypad has no minus key on an iPhone, and most ΔG° answers
@@ -945,14 +1119,15 @@ function App() {
                     </div>
                   </div>
 
-                  <div className="mb-4" role="radiogroup" aria-label="Sjálfgengi">
-                    <label className="block text-sm font-medium mb-2">Sjálfgengi:</label>
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+                  <div className="mb-4 phone:mb-3" role="radiogroup" aria-label="Sjálfgengi">
+                    <label className="block text-sm font-medium mb-2 phone:mb-1">Sjálfgengi:</label>
+                    {/* Three across on a phone, as on a wide screen. */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-2 phone:grid-cols-3 phone:gap-1.5">
                       <button
                         onClick={() => setUserSpontaneity('spontaneous')}
                         role="radio"
                         aria-checked={userSpontaneity === 'spontaneous'}
-                        className={`px-4 py-2 rounded-lg border-2 transition ${
+                        className={`px-4 py-2 rounded-lg border-2 transition phone:px-1 phone:text-sm phone:leading-tight phone:min-h-11 ${
                           userSpontaneity === 'spontaneous'
                             ? 'border-green-500 bg-green-50 font-bold'
                             : 'border-warm-300 hover:border-green-300'
@@ -964,7 +1139,7 @@ function App() {
                         onClick={() => setUserSpontaneity('equilibrium')}
                         role="radio"
                         aria-checked={userSpontaneity === 'equilibrium'}
-                        className={`px-4 py-2 rounded-lg border-2 transition ${
+                        className={`px-4 py-2 rounded-lg border-2 transition phone:px-1 phone:text-sm phone:leading-tight phone:min-h-11 ${
                           userSpontaneity === 'equilibrium'
                             ? 'border-yellow-500 bg-yellow-50 font-bold'
                             : 'border-warm-300 hover:border-yellow-300'
@@ -976,7 +1151,7 @@ function App() {
                         onClick={() => setUserSpontaneity('non-spontaneous')}
                         role="radio"
                         aria-checked={userSpontaneity === 'non-spontaneous'}
-                        className={`px-4 py-2 rounded-lg border-2 transition ${
+                        className={`px-4 py-2 rounded-lg border-2 transition phone:px-1 phone:text-sm phone:leading-tight phone:min-h-11 ${
                           userSpontaneity === 'non-spontaneous'
                             ? 'border-red-500 bg-red-50 font-bold'
                             : 'border-warm-300 hover:border-red-300'
@@ -990,7 +1165,7 @@ function App() {
                   <button
                     onClick={checkAnswer}
                     disabled={!userDeltaG || !userSpontaneity}
-                    className="w-full py-3 rounded-lg text-white font-bold text-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full py-3 rounded-lg text-white font-bold text-lg transition disabled:opacity-50 disabled:cursor-not-allowed phone:py-2.5"
                     style={{ background: 'linear-gradient(135deg, #f36b22 0%, #d95a1a 100%)' }}
                   >
                     Athuga svar
@@ -998,107 +1173,133 @@ function App() {
                 </div>
               </Presence>
 
-              {/* Solution */}
-              <Presence show={showSolution} exitDuration={250}>
-                <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
-                  <h3 className="font-bold text-lg mb-4">📝 Lausn:</h3>
-                  <div className="space-y-3 text-sm">
-                    <div>
-                      <strong>Skref 1:</strong> Umbreyta ΔS° í kJ/(mól·K)
-                      <br />
-                      ΔS° = {formatDecimal(currentProblem.deltaS)} J/(mól·K) × (1 kJ / 1000 J) ={' '}
-                      {formatDecimal(currentProblem.deltaS / 1000)} kJ/(mól·K)
-                    </div>
-                    <div>
-                      <strong>Skref 2:</strong> Beita Gibbs jöfnunni
-                      <br />
-                      ΔG° = ΔH° - TΔS°
-                      <br />
-                      ΔG° = ({formatDecimal(currentProblem.deltaH)}) - ({temperature})(
-                      {formatDecimal(currentProblem.deltaS / 1000)})<br />
-                      {/* TΔS in brackets, as on the line above: bare, a negative TΔS printed
+              {/* Solution. On a phone it follows the verdict (CSS order on this wrapper, which
+                  holds no control). Empty, and so hidden, while the answer card shows. */}
+              <div className="empty:hidden phone:order-1">
+                <Presence show={showSolution} exitDuration={250}>
+                  <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 phone:p-3">
+                    <h3 className="font-bold text-lg mb-4 phone:mb-2">📝 Lausn:</h3>
+                    <div className="space-y-3 text-sm">
+                      <div>
+                        <strong>Skref 1:</strong> Umbreyta ΔS° í kJ/(mól·K)
+                        <br />
+                        ΔS° = {formatDecimal(currentProblem.deltaS)} J/(mól·K) × (1 kJ / 1000 J) ={' '}
+                        {formatDecimal(currentProblem.deltaS / 1000)} kJ/(mól·K)
+                      </div>
+                      <div>
+                        <strong>Skref 2:</strong> Beita Gibbs jöfnunni
+                        <br />
+                        ΔG° = ΔH° - TΔS°
+                        <br />
+                        ΔG° = ({formatDecimal(currentProblem.deltaH)}) - ({temperature})(
+                        {formatDecimal(currentProblem.deltaS / 1000)})<br />
+                        {/* TΔS in brackets, as on the line above: bare, a negative TΔS printed
                           as "-283 - -25,9". */}
-                      ΔG° = ({formatDecimal(currentProblem.deltaH)}) - (
-                      {formatRounded((temperature * currentProblem.deltaS) / 1000, 1)})
-                      <br />
-                      <strong>ΔG° = {formatRounded(currentDeltaG, 1)} kJ/mól</strong>
-                    </div>
-                    <div>
-                      <strong>Skref 3:</strong> Túlka niðurstöðu
-                      <br />
-                      {/* The grader's own verdict. This tested |ΔG°| ≤ 1 where the grader tests
+                        ΔG° = ({formatDecimal(currentProblem.deltaH)}) - (
+                        {formatRounded((temperature * currentProblem.deltaS) / 1000, 1)})
+                        <br />
+                        <strong>ΔG° = {formatRounded(currentDeltaG, 1)} kJ/mól</strong>
+                      </div>
+                      <div>
+                        <strong>Skref 3:</strong> Túlka niðurstöðu
+                        <br />
+                        {/* The grader's own verdict. This tested |ΔG°| ≤ 1 where the grader tests
                           < 1, so at exactly 1 (protein unfolding at 332 K) the solution said
                           JAFNVÆGI while the grader wanted "Ekki sjálfgengt". */}
-                      {currentSpontaneity === 'spontaneous' && 'ΔG° < 0 → SJÁLFGENGT ✓'}
-                      {currentSpontaneity === 'equilibrium' && 'ΔG° ≈ 0 → JAFNVÆGI ⚖️'}
-                      {currentSpontaneity === 'non-spontaneous' && 'ΔG° > 0 → EKKI SJÁLFGENGT ✗'}
-                    </div>
-                    {/* Crossover temperature explanation for scenarios 3 & 4 */}
-                    {(currentProblem.scenario === 3 || currentProblem.scenario === 4) &&
-                      crossoverTemp && (
-                        <div className="bg-purple-50 border-l-4 border-purple-500 p-3 rounded">
-                          <strong>Skref 4:</strong> Reikna umbreytingarhitastig (T<sub>cross</sub>
-                          )
-                          <br />
-                          <div className="font-mono mt-1">
-                            Þegar ΔG° = 0: ΔH° = TΔS°
-                            <br />T<sub>cross</sub> = ΔH° / ΔS°
-                            <br />T<sub>cross</sub> = {formatDecimal(currentProblem.deltaH)} /{' '}
-                            {formatDecimal(currentProblem.deltaS / 1000)}
+                        {currentSpontaneity === 'spontaneous' && 'ΔG° < 0 → SJÁLFGENGT ✓'}
+                        {currentSpontaneity === 'equilibrium' && 'ΔG° ≈ 0 → JAFNVÆGI ⚖️'}
+                        {currentSpontaneity === 'non-spontaneous' && 'ΔG° > 0 → EKKI SJÁLFGENGT ✗'}
+                      </div>
+                      {/* Crossover temperature explanation for scenarios 3 & 4 */}
+                      {(currentProblem.scenario === 3 || currentProblem.scenario === 4) &&
+                        crossoverTemp && (
+                          <div className="bg-purple-50 border-l-4 border-purple-500 p-3 rounded">
+                            <strong>Skref 4:</strong> Reikna umbreytingarhitastig (T<sub>cross</sub>
+                            )
                             <br />
-                            <strong>
-                              T<sub>cross</sub> = {formatRounded(crossoverTemp, 0)} K (
-                              {formatRounded(crossoverTemp - 273, 0)}°C)
-                            </strong>
+                            <div className="font-mono mt-1">
+                              Þegar ΔG° = 0: ΔH° = TΔS°
+                              <br />T<sub>cross</sub> = ΔH° / ΔS°
+                              <br />T<sub>cross</sub> = {formatDecimal(currentProblem.deltaH)} /{' '}
+                              {formatDecimal(currentProblem.deltaS / 1000)}
+                              <br />
+                              <strong>
+                                T<sub>cross</sub> = {formatRounded(crossoverTemp, 0)} K (
+                                {formatRounded(crossoverTemp - 273, 0)}°C)
+                              </strong>
+                            </div>
+                            <div className="mt-2 text-sm">
+                              {currentProblem.scenario === 3 ? (
+                                <>
+                                  🔹 Við T &lt; {formatRounded(crossoverTemp, 0)} K: ΔG° &lt; 0
+                                  (sjálfgengt)
+                                  <br />
+                                  🔹 Við T &gt; {formatRounded(crossoverTemp, 0)} K: ΔG° &gt; 0
+                                  (ekki sjálfgengt)
+                                </>
+                              ) : (
+                                <>
+                                  🔹 Við T &lt; {formatRounded(crossoverTemp, 0)} K: ΔG° &gt; 0
+                                  (ekki sjálfgengt)
+                                  <br />
+                                  🔹 Við T &gt; {formatRounded(crossoverTemp, 0)} K: ΔG° &lt; 0
+                                  (sjálfgengt)
+                                </>
+                              )}
+                            </div>
                           </div>
-                          <div className="mt-2 text-sm">
-                            {currentProblem.scenario === 3 ? (
-                              <>
-                                🔹 Við T &lt; {formatRounded(crossoverTemp, 0)} K: ΔG° &lt; 0
-                                (sjálfgengt)
-                                <br />
-                                🔹 Við T &gt; {formatRounded(crossoverTemp, 0)} K: ΔG° &gt; 0 (ekki
-                                sjálfgengt)
-                              </>
-                            ) : (
-                              <>
-                                🔹 Við T &lt; {formatRounded(crossoverTemp, 0)} K: ΔG° &gt; 0 (ekki
-                                sjálfgengt)
-                                <br />
-                                🔹 Við T &gt; {formatRounded(crossoverTemp, 0)} K: ΔG° &lt; 0
-                                (sjálfgengt)
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      )}
+                        )}
 
-                    <div className="bg-blue-50 p-3 rounded">
-                      <strong>Atburðarás {currentProblem.scenario}:</strong>
-                      <br />
-                      {getScenarioDescription(currentProblem.scenario)}
+                      <div className="bg-blue-50 p-3 rounded">
+                        <strong>Atburðarás {currentProblem.scenario}:</strong>
+                        <br />
+                        {getScenarioDescription(currentProblem.scenario)}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Presence>
+                </Presence>
+              </div>
 
-              {/* Feedback */}
+              {/* Feedback. The box is the region focus moves to after a check (design P3),
+                  named by the verdict's first sentence; the message itself is the alert. On a
+                  phone it is body-size text with only that first sentence bold. */}
               <Presence show={!!feedback} exitDuration={250}>
                 <div
                   ref={feedbackRef}
-                  role="alert"
-                  aria-live="polite"
-                  className={`rounded-lg shadow-lg p-4 sm:p-6 ${
+                  role="group"
+                  aria-labelledby={phone ? 'thermo-verdict' : 'thermo-feedback'}
+                  tabIndex={-1}
+                  className={`rounded-lg shadow-lg p-4 sm:p-6 focus:outline-none phone:p-3 ${
                     answeredCorrectly
                       ? 'bg-green-50 border-2 border-green-500'
                       : 'bg-red-50 border-2 border-red-500'
                   }`}
                 >
-                  <div className="text-lg font-bold mb-2">{feedback}</div>
+                  {/* On a phone only the verdict's first sentence stays bold, and it
+                      names the group; a desktop window keeps the one bold line it had,
+                      which names the group whole. */}
+                  <div
+                    id="thermo-feedback"
+                    role="alert"
+                    aria-live="polite"
+                    className="text-lg font-bold mb-2 phone:text-base phone:font-normal phone:mb-0"
+                  >
+                    {phone ? (
+                      <>
+                        <span id="thermo-verdict" className="font-bold">
+                          {feedbackLead}
+                        </span>
+                        {feedbackRest}
+                      </>
+                    ) : (
+                      feedback
+                    )}
+                  </div>
                   {showSolution && (
                     <button
-                      onClick={startNewProblem}
-                      className="mt-4 w-full py-2 rounded-lg text-white font-bold pointer-coarse:min-h-11"
+                      ref={nextRef}
+                      onClick={armed(startNewProblem)}
+                      className="mt-4 w-full py-2 rounded-lg text-white font-bold pointer-coarse:min-h-11 phone:mt-3"
                       style={{ background: '#f36b22' }}
                     >
                       Næsta spurning →
@@ -1109,10 +1310,10 @@ function App() {
             </div>
 
             {/* Right Column - Visualizations */}
-            <div className="space-y-4">
-              {/* Graph */}
-              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
-                <h3 className="font-bold mb-3">📊 ΔG° vs Hitastig</h3>
+            <div className="space-y-4 phone:contents phone:space-y-0 phone-land:block phone-land:space-y-3">
+              {/* Graph: on a portrait phone straight under the slider that drives it. */}
+              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 phone:p-3 phone:-order-1">
+                <h3 className="font-bold mb-3 phone:mb-1">📊 ΔG° vs Hitastig</h3>
                 {graphData && (
                   <InteractiveGraph
                     width={500}
@@ -1139,7 +1340,7 @@ function App() {
                     ariaLabel="ΔG vs Hitastig graf"
                   />
                 )}
-                <div className="mt-3 text-xs text-warm-600 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="mt-3 text-xs text-warm-600 grid grid-cols-1 sm:grid-cols-2 gap-2 phone:mt-2 phone:grid-cols-2 phone:gap-x-2 phone:gap-y-1">
                   <div>🟠 Línuhalli: -ΔS°</div>
                   <div>🟢 Sjálfgengt: ΔG° &lt; 0</div>
                   <div>🔵 Y-skurður: ΔH°</div>
@@ -1152,8 +1353,8 @@ function App() {
               </div>
 
               {/* Entropy Visualization */}
-              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
-                <h3 className="font-bold mb-3">🎲 Óreiða</h3>
+              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 phone:p-3 phone:order-1">
+                <h3 className="font-bold mb-3 phone:mb-2">🎲 Óreiða</h3>
                 <EntropyVisualization deltaS={currentProblem.deltaS} />
                 <div className="mt-4 text-sm">
                   <div
@@ -1185,8 +1386,8 @@ function App() {
               </div>
 
               {/* Scenario Guide */}
-              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6">
-                <h3 className="font-bold mb-3">🎯 Fjórar atburðarásir</h3>
+              <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 phone:p-3 phone:order-1">
+                <h3 className="font-bold mb-3 phone:mb-2">🎯 Fjórar atburðarásir</h3>
                 <div className="space-y-2 text-xs">
                   <div className="p-2 rounded scenario-1 text-white">
                     <strong>1: ΔH&lt;0, ΔS&gt;0</strong> → Alltaf sjálfgengt
@@ -1203,9 +1404,14 @@ function App() {
                 </div>
               </div>
 
-              {/* Formula Reference */}
-              <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-lg shadow-lg p-4 sm:p-6">
-                <h3 className="font-bold mb-3">📐 Formúlur</h3>
+              {/* Formula Reference: reference, so closed on a phone until opened (design P9). It
+                  is the last block both in the page and among the controls. */}
+              <PhoneDisclosure
+                summary="📐 Formúlur"
+                className="bg-gradient-to-br from-orange-50 to-red-50 rounded-lg shadow-lg p-4 sm:p-6 phone:p-2 phone:order-1"
+                buttonClassName="border-transparent"
+              >
+                <h3 className="font-bold mb-3 phone:sr-only">📐 Formúlur</h3>
                 <div className="space-y-2 text-sm font-mono">
                   <div className="bg-white p-2 rounded">ΔG° = ΔH° - TΔS°</div>
                   <div className="bg-white p-2 rounded">
@@ -1218,7 +1424,7 @@ function App() {
                   <br />
                   ΔG° &lt; 0 → sjálfgengt
                 </div>
-              </div>
+              </PhoneDisclosure>
             </div>
           </div>
         </div>

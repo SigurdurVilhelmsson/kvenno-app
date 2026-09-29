@@ -1,7 +1,15 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
-import { formatDecimal, formatScientific, shuffleArray } from '@shared/utils';
+import {
+  formatDecimal,
+  formatScientific,
+  shuffleArray,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+  useScreenTop,
+} from '@shared/utils';
 
 import { PeriodicTable } from './PeriodicTable';
 import { atomWord } from '../data/atomWords';
@@ -267,6 +275,30 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
   const done = idx >= TOTAL_QUESTIONS;
   const p = done ? null : problems[idx];
 
+  // The results, and a new run from them, start at the top on a phone with
+  // the heading focused.
+  useScreenTop(done);
+  // Each new question brings its card back under the top edge on a phone, and
+  // focus goes to the question (`data-item-start`).
+  const cardRef = useItemTop<HTMLDivElement>(idx);
+  const questionRef = useRef<HTMLParagraphElement>(null);
+  const answerRowRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  // After Svara, Næsta takes its place beside the answer and the verdict opens
+  // below them: the question down to the verdict if it fits, else the answer
+  // row and the verdict; the worked solution under it is read by scrolling.
+  // Focus moves to the feedback, not to Næsta (design P3).
+  useRevealAfterCommit(submitted, () => ({
+    bottom: feedbackRef.current?.querySelector('.feedback-panel') ?? feedbackRef.current,
+    tops: [questionRef.current, answerRowRef.current],
+    focus: feedbackRef.current,
+  }));
+  // Næsta is its own element, not Svara relabelled, and a press within 400 ms
+  // of it appearing is dropped, so a double tap on Svara cannot skip the
+  // feedback; the results buttons likewise.
+  const armed = useArmedAfter(400, `${idx}:${submitted}`);
+  const armedResults = useArmedAfter(400, done);
+
   const submit = () => {
     if (!p || !input.trim()) return;
     const val = parseScientificAnswer(input);
@@ -333,13 +365,13 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
           </div>
           <div className="space-y-3">
             <button
-              onClick={retry}
+              onClick={armedResults(retry)}
               className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
             >
               Reyna aftur
             </button>
             <button
-              onClick={onBack}
+              onClick={armedResults(onBack)}
               className="w-full bg-warm-100 hover:bg-warm-200 text-warm-700 font-semibold py-3 rounded-xl transition-colors"
             >
               Til baka í valmynd
@@ -354,10 +386,13 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
   return (
     <div className="min-h-screen bg-gradient-to-b from-red-50 to-white p-4">
       <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-xl shadow-md p-4 mb-4 flex flex-wrap justify-between items-center gap-3">
+        {/* Header. On a phone it is tighter; the title and its counter still
+            take a row of their own above the controls, which need the width. */}
+        <div className="bg-white rounded-xl shadow-md p-4 mb-4 flex flex-wrap justify-between items-center gap-3 phone:px-3 phone:py-2 phone:mb-3 phone:gap-2">
           <div>
-            <h2 className="text-lg font-bold text-warm-800">Samþætt æfing — Stig 3</h2>
+            <h2 className="text-lg font-bold text-warm-800 phone:text-base">
+              Samþætt æfing — Stig 3
+            </h2>
             <p className="text-sm text-warm-500">
               Spurning {idx + 1} af {TOTAL_QUESTIONS}
             </p>
@@ -381,17 +416,20 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
         </div>
 
         {/* Progress */}
-        <div className="w-full bg-warm-200 rounded-full h-2 mb-4">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-4 phone:h-1.5 phone:mb-3">
           <div
-            className="bg-kvenno-orange h-2 rounded-full transition-all duration-300"
+            className="bg-kvenno-orange h-2 phone:h-1.5 rounded-full transition-all duration-300"
             style={{ width: `${(idx / TOTAL_QUESTIONS) * 100}%` }}
           />
         </div>
 
         {p && (
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-4 card-enter">
+          <div
+            ref={cardRef}
+            className="bg-white rounded-xl shadow-lg p-6 mb-4 card-enter phone:p-4 phone:mb-3"
+          >
             {/* Type badge */}
-            <div className="mb-4">
+            <div className="mb-4 phone:mb-2">
               <span
                 className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
                   p.type === 'mass-to-particles'
@@ -409,14 +447,20 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
               </span>
             </div>
 
-            <p className="text-lg font-semibold text-warm-800 mb-6">{p.question}</p>
+            <p
+              ref={questionRef}
+              data-item-start
+              className="text-lg font-semibold text-warm-800 mb-6 phone:mb-3"
+            >
+              {p.question}
+            </p>
 
             {/* Input */}
             <div className="max-w-md">
               <label className="block text-sm font-medium text-warm-600 mb-1">
                 Svar ({p.unit}):
               </label>
-              <div className="flex gap-2">
+              <div ref={answerRowRef} className="flex gap-2">
                 {/* No inputMode="decimal" here, deliberately: most answers in this
                     level are Avogadro-scale, and a phone's decimal keypad has no
                     `e`, `×` or `^` to write them with. type="text" keeps the comma.
@@ -433,30 +477,36 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                   }}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
-                      if (submitted) next();
+                      if (submitted) armed(next)();
                       else submit();
                     }
                   }}
+                  enterKeyHint="done"
                   disabled={submitted}
                   placeholder="t.d. 2,5e20 eða 12,5"
                   autoComplete="off"
                   autoCorrect="off"
                   autoCapitalize="none"
                   spellCheck={false}
-                  className={`flex-1 px-4 py-3 text-lg border-2 rounded-xl focus:outline-none ${error ? 'border-red-400' : 'border-warm-300 focus:border-kvenno-orange'}`}
+                  className={`flex-1 px-4 py-3 text-lg border-2 rounded-xl focus:outline-none phone:min-w-0 phone:px-3 ${error ? 'border-red-400' : 'border-warm-300 focus:border-kvenno-orange'}`}
                 />
+                {/* Two elements, keyed apart: React would otherwise reuse the
+                    Svara button as Næsta, and the second tap of a double tap
+                    would press it. */}
                 {!submitted ? (
                   <button
+                    key="check"
                     onClick={submit}
                     disabled={!input.trim()}
-                    className="bg-kvenno-orange hover:bg-kvenno-orange-dark disabled:bg-warm-300 text-white font-bold px-6 py-3 rounded-xl transition-colors"
+                    className="bg-kvenno-orange hover:bg-kvenno-orange-dark disabled:bg-warm-300 text-white font-bold px-6 py-3 rounded-xl transition-colors phone:shrink-0 phone:px-4"
                   >
                     Svara
                   </button>
                 ) : (
                   <button
-                    onClick={next}
-                    className="bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-3 rounded-xl transition-colors"
+                    key="next"
+                    onClick={armed(next)}
+                    className="bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-3 rounded-xl transition-colors phone:shrink-0 phone:px-4"
                   >
                     {idx + 1 < TOTAL_QUESTIONS ? 'Næsta \u2192' : 'Sjá niðurstöðu'}
                   </button>
@@ -469,8 +519,15 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
             </div>
 
             {/* Feedback + solution */}
+            {/* The verdict and the worked solution: the region focus moves to
+                after Svara. FeedbackPanel keeps its own role="alert". */}
             {submitted && (
-              <div className="mt-6 space-y-4 animate-fade-in-up">
+              <div
+                ref={feedbackRef}
+                tabIndex={-1}
+                role="group"
+                className="mt-6 space-y-4 animate-fade-in-up phone:mt-3 phone:space-y-3"
+              >
                 <FeedbackPanel
                   feedback={{
                     isCorrect: correct,
@@ -485,11 +542,14 @@ export function Level3({ onBack, onComplete, onCorrectAnswer, onIncorrectAnswer 
                     showNextSteps: false,
                   }}
                 />
-                <div className="bg-warm-50 border border-warm-200 rounded-xl p-4">
-                  <h3 className="font-bold text-warm-700 mb-3">Lausnarleiðin:</h3>
-                  <div className="space-y-3">
+                <div className="bg-warm-50 border border-warm-200 rounded-xl p-4 phone:p-3">
+                  <h3 className="font-bold text-warm-700 mb-3 phone:mb-2">Lausnarleiðin:</h3>
+                  <div className="space-y-3 phone:space-y-2">
                     {p.steps.map((step, i) => (
-                      <div key={i} className="bg-white rounded-lg p-3 border border-warm-100">
+                      <div
+                        key={i}
+                        className="bg-white rounded-lg p-3 border border-warm-100 phone:p-2"
+                      >
                         <pre className="text-sm text-warm-700 whitespace-pre-wrap font-sans">
                           {step}
                         </pre>

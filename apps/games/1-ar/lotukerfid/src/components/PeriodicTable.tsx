@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, useCallback, type KeyboardEvent } from 'react';
 
-import { formatDecimal } from '@shared/utils';
+import { PhoneDisclosure } from '@shared/components';
+import { formatDecimal, revealInline } from '@shared/utils';
 
 import {
   CATEGORY_COLORS,
@@ -9,7 +10,6 @@ import {
   type Element,
   type ElementCategory,
 } from '../data/elements';
-import { revealScrollLeft, type Span } from '../utils/phoneScroll';
 
 interface PeriodicTableProps {
   /** Callback when student clicks an element cell */
@@ -40,6 +40,12 @@ interface PeriodicTableProps {
    */
   showMasses?: boolean;
 }
+
+/**
+ * Whether the student has swiped a table sideways since the page loaded. Shared
+ * by every table on the page, so a level's later tables start without the hint.
+ */
+let swipedThisVisit = false;
 
 /** Two-letter Icelandic category abbreviation rendered in each cell. */
 const CATEGORY_ABBR: Record<ElementCategory, string> = {
@@ -108,7 +114,7 @@ function ElementCell({
           : `${element.name} (${element.symbol}), sætistala ${element.atomicNumber}`
       }
       className={`
-        element-cell relative w-full h-full min-h-[52px] md:min-h-[56px] px-0 py-0.5 md:p-0.5 rounded-md border-2
+        element-cell relative w-full h-full min-h-[52px] md:min-h-[56px] phone:min-h-[46px] px-0 py-0.5 md:p-0.5 phone:py-0 rounded-md border-2
         flex flex-col items-center justify-center text-center
         outline-none focus-visible:ring-3 focus-visible:ring-kvenno-orange focus-visible:ring-offset-1 focus-visible:z-20
         ${interactive ? 'hover:scale-110 hover:z-10 hover:shadow-lg cursor-pointer' : 'cursor-default'}
@@ -118,7 +124,9 @@ function ElementCell({
     >
       {/* Below md the cell is wide enough for readable text only if the
           number and the category badge share the top row; from md the badge
-          returns to its corner and the number to the centre. */}
+          returns to its corner and the number to the centre. On a phone the
+          three lines sit without padding or leading, so a cell is 46 px square
+          and the whole table stands on one screen with its question. */}
       <span className="flex w-full items-start justify-between gap-0.5 px-px md:contents">
         <span className="text-xs md:text-[10px] text-warm-500 leading-none">
           {element.atomicNumber}
@@ -132,7 +140,9 @@ function ElementCell({
           </span>
         )}
       </span>
-      <span className="text-base md:text-lg font-bold leading-tight">{element.symbol}</span>
+      <span className="text-base md:text-lg font-bold leading-tight phone:leading-none">
+        {element.symbol}
+      </span>
       <span
         className="text-xs md:text-[9px] font-mono leading-none"
         aria-hidden={showMass ? undefined : true}
@@ -151,7 +161,20 @@ const MASKED_COLORS = {
 };
 
 function EmptyCell() {
-  return <div className="w-full h-full min-h-[52px] md:min-h-[56px]" />;
+  return <div className="w-full h-full min-h-[52px] md:min-h-[56px] phone:min-h-[46px]" />;
+}
+
+/**
+ * A cell of period 7 when the game places no element there. On a phone the
+ * row shrinks to a 12 px strip of faint cells rather than a full row of blank
+ * space, so the table still reads as seven periods — the intro says
+ * `Lotukerfið hefur 7 lotur` — without spending a row's height on nothing.
+ * Everywhere else it is the blank cell it always was.
+ */
+function PlaceholderCell() {
+  return (
+    <div className="w-full h-full min-h-[52px] md:min-h-[56px] phone:min-h-0 phone:h-3 phone:rounded-sm phone:bg-warm-100" />
+  );
 }
 
 export function PeriodicTable({
@@ -254,45 +277,52 @@ export function PeriodicTable({
     return () => observer.disconnect();
   }, [updateMoreBeyond]);
 
+  // The swipe hint, and whether a finger is on the box: only a scroll made
+  // while touching counts as the student's own swipe, not the reset and the
+  // reveal below.
+  const [hideSwipeHint, setHideSwipeHint] = useState(() => swipedThisVisit);
+  const touching = useRef(false);
+  const onScroll = () => {
+    updateMoreBeyond();
+    if (touching.current) swipedThisVisit = true;
+  };
+
   // Whatever the table is pointing at — the highlighted elements, the correct
   // cell, the one just tapped — is brought into the box's view, because a
-  // desktop student sees all of it at once.
+  // desktop student sees all of it at once: their joint extent centred when it
+  // fits the box, else the primary cell. The box only overflows below md, so
+  // this scrolls there at any width (`anyWidth`), as it always has.
   const primarySymbol = correctElement ?? [...highlightSet][0] ?? wrongElement ?? null;
   const revealKey = [primarySymbol, wrongElement, ...highlightSet].filter(Boolean).join(',');
   useEffect(() => {
+    // A student who has already swiped the table sideways knows it scrolls:
+    // from the next thing it points at on, a phone drops the swipe hint. Not
+    // the moment they swipe, which would shift the table under their finger.
+    if (swipedThisVisit) setHideSwipeHint(true);
     const scroller = scrollerRef.current;
-    if (!scroller) return;
-    const maxScrollLeft = scroller.scrollWidth - scroller.clientWidth;
-    if (maxScrollLeft <= 0) return;
+    if (!scroller || scroller.scrollWidth <= scroller.clientWidth) return;
     // Nothing to point at — a new question that has not been answered yet —
     // so every question starts from the same place, the table's left edge.
     if (!revealKey) {
       scroller.scrollLeft = 0;
       return;
     }
-    const origin =
-      scroller.getBoundingClientRect().left + scroller.clientLeft - scroller.scrollLeft;
-    const spanOf = (symbol: string | null): Span | null => {
-      const cell = symbol ? cellRefs.current.get(symbol) : undefined;
-      if (!cell) return null;
-      const r = cell.getBoundingClientRect();
-      return { left: r.left - origin, right: r.right - origin };
-    };
-    const spans = revealKey
+    const cellOf = (symbol: string | null) => (symbol ? cellRefs.current.get(symbol) : undefined);
+    const cells = revealKey
       .split(',')
-      .map(spanOf)
-      .filter((s): s is Span => s !== null);
-    const left = revealScrollLeft(
-      spans,
-      spanOf(primarySymbol),
-      scroller.clientWidth,
-      scroller.scrollLeft,
-      maxScrollLeft
-    );
-    if (left === null) return;
-    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    scroller.scrollTo({ left, behavior: reduceMotion ? 'auto' : 'smooth' });
+      .map(cellOf)
+      .filter((c): c is HTMLButtonElement => !!c);
+    revealInline(cellOf(primarySymbol) ?? cells[0], {
+      inline: 'center',
+      together: cells,
+      anyWidth: true,
+    });
   }, [revealKey, primarySymbol]);
+
+  // The trailing period-7 row, when the game places no element in it. It stays
+  // in the grid; on a phone it shrinks to a placeholder strip.
+  const lastRow = periodicGrid.length - 1;
+  const lastRowEmpty = periodicGrid[lastRow].every((cell) => cell === null);
 
   // Category legend.
   //
@@ -317,13 +347,24 @@ export function PeriodicTable({
           least 46px and the grid scrolls sideways inside its own box; the
           padding keeps a ringed or enlarged cell from being clipped by it.
           From md the columns share the width, as they always have. */}
-      <p className="md:hidden text-center text-xs text-warm-500 mb-1">
+      <p
+        className={`md:hidden text-center text-xs text-warm-500 mb-1 ${hideSwipeHint ? 'phone:hidden' : ''}`}
+      >
         Strjúktu til hliðar til að sjá allt lotukerfið →
       </p>
       <div className="relative">
         <div
           ref={scrollerRef}
-          onScroll={updateMoreBeyond}
+          onScroll={onScroll}
+          onTouchStart={() => {
+            touching.current = true;
+          }}
+          onTouchEnd={() => {
+            touching.current = false;
+          }}
+          onTouchCancel={() => {
+            touching.current = false;
+          }}
           className="overflow-x-auto overscroll-x-contain px-1.5 py-1 md:overflow-visible md:p-0"
         >
           <div
@@ -335,16 +376,20 @@ export function PeriodicTable({
             {Array.from({ length: 18 }, (_, i) => (
               <div
                 key={`group-${i + 1}`}
-                className="text-center text-xs text-warm-400 font-semibold py-0.5"
+                className="text-center text-xs text-warm-400 font-semibold py-0.5 phone:py-0"
               >
                 {i + 1}
               </div>
             ))}
 
             {/* Periodic table rows */}
-            {periodicGrid.map((row, periodIdx) =>
-              row.map((element, groupIdx) => (
-                <div key={`${periodIdx}-${groupIdx}`} className="aspect-square">
+            {periodicGrid.map((row, periodIdx) => {
+              const placeholder = lastRowEmpty && periodIdx === lastRow;
+              return row.map((element, groupIdx) => (
+                <div
+                  key={`${periodIdx}-${groupIdx}`}
+                  className={placeholder ? 'aspect-square phone:aspect-auto' : 'aspect-square'}
+                >
                   {element ? (
                     <ElementCell
                       element={element}
@@ -363,12 +408,14 @@ export function PeriodicTable({
                       onKeyDown={handleCellKeyDown(element)}
                       onFocus={() => setFocusedSymbol(element.symbol)}
                     />
+                  ) : placeholder ? (
+                    <PlaceholderCell />
                   ) : (
                     <EmptyCell />
                   )}
                 </div>
-              ))
-            )}
+              ));
+            })}
           </div>
         </div>
         {moreBeyond.start && (
@@ -385,9 +432,16 @@ export function PeriodicTable({
         )}
       </div>
 
-      {/* Category Legend (includes abbreviations for color-blind users) */}
+      {/* Category Legend (includes abbreviations for color-blind users). A
+          reference the student opens when they need it, so on a phone it
+          starts closed behind a button (design P9); everywhere else it shows
+          as it always has. */}
       {showCategories && (
-        <div className="mt-3 pt-3 border-t border-warm-200">
+        <PhoneDisclosure
+          summary="Tegundir frumefna"
+          className="mt-3 pt-3 border-t border-warm-200 phone:mt-2 phone:pt-2"
+          buttonClassName="text-sm text-warm-700"
+        >
           <div className="flex flex-wrap gap-1.5">
             {categories.map((cat) => {
               const colors = CATEGORY_COLORS[cat.key];
@@ -401,7 +455,7 @@ export function PeriodicTable({
               );
             })}
           </div>
-        </div>
+        </PhoneDisclosure>
       )}
     </div>
   );

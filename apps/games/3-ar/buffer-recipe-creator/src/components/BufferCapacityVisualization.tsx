@@ -1,9 +1,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 
 import { useContainerWidth } from '@shared/components/ResponsiveContainer';
-import { formatDecimal } from '@shared/utils';
-
-import { revealNearest } from '../utils/reveal';
+import { formatDecimal, revealSpan } from '@shared/utils';
 
 /**
  * Below this rendered width the curve is drawn in a compact layout whose viewBox matches the
@@ -59,9 +57,10 @@ export function BufferCapacityVisualization({
   const comparisonRef = useRef<HTMLDivElement>(null);
 
   // The comparison opens below its toggle, which a phone user taps at the bottom edge of the
-  // screen, so it rendered wholly below the fold. Nothing moves when it already fits.
+  // screen, so it rendered wholly below the fold. Nothing moves when it already fits. At any
+  // width, by the shortest scroll, as it always was.
   useEffect(() => {
-    if (showComparison) revealNearest(comparisonRef.current);
+    if (showComparison) revealSpan(comparisonRef.current, [], { anyWidth: true, gap: 0 });
   }, [showComparison]);
 
   // Calculate current pH from Henderson-Hasselbalch

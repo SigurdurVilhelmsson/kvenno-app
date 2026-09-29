@@ -30,6 +30,7 @@ import { useState, type ComponentType } from 'react';
 import { render, screen, fireEvent, cleanup, act } from '@testing-library/react';
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { EquivalenceChallenge } from '../components/challenges/EquivalenceChallenge';
 import { FactorBuildingChallenge } from '../components/challenges/FactorBuildingChallenge';
 import { OrientationChallenge } from '../components/challenges/OrientationChallenge';
@@ -42,6 +43,8 @@ afterEach(() => {
   cleanup();
   vi.useRealTimers();
 });
+// After the fake timers are installed, which replace `performance`.
+clockPastNextGuard();
 
 /** A conversion-factor button, found by its numerator and denominator text. */
 function factor(numerator: string, denominator: string): HTMLElement | undefined {

@@ -40,8 +40,10 @@ export const Burette: React.FC<BuretteProps> = ({
     },
     md: {
       // Shorter below md so the burette, the flask and the curve share one
-      // phone screen: a student must watch the curve while pouring.
-      height: 'h-[200px] md:h-[420px] lg:h-[500px]',
+      // phone screen: a student must watch the curve while pouring. Shorter
+      // still on a phone, where the pour controls and the curve both sit
+      // under it (vertical-scroll pass).
+      height: 'h-[200px] md:h-[420px] lg:h-[500px] phone:h-[130px]',
       width: 'w-11 md:w-12',
       scaleMarks: 'left-[-36px] md:left-[-40px] text-xs',
       tipSize: 7,
@@ -129,7 +131,7 @@ export const Burette: React.FC<BuretteProps> = ({
       </div>
 
       {/* Volume display */}
-      <div className="mt-6 bg-indigo-100 px-3 md:px-4 py-2 rounded-lg border-2 border-indigo-300">
+      <div className="mt-6 bg-indigo-100 px-3 md:px-4 py-2 rounded-lg border-2 border-indigo-300 phone:mt-5 phone:px-2 phone:py-1">
         <p className={`${config.volumeText} font-bold text-indigo-900`}>
           Rúmmál bætt við:{' '}
           <span className="whitespace-nowrap">

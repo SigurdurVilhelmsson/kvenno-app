@@ -3,8 +3,12 @@ import { describe, it, expect } from 'vitest';
 
 import { formatDecimal } from '@shared/utils';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level2, generateQuestions } from '../components/Level2';
 import { ELEMENTS } from '../data/elements';
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 /**
  * B15: "every Level 2 question is answerable from the reference table rendered

@@ -19,9 +19,12 @@ vi.mock('../data/problems', async (importOriginal) => {
   return { ...real, level2Problems: real.level2Problems.slice(0, 3) };
 });
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level2 } from '../components/Level2';
 import { level2Problems } from '../data/problems';
 import { applyFactorPath } from '../utils/grading';
+
+clockPastNextGuard();
 
 const label = (factor: string) => factor.split(' / ').join('');
 

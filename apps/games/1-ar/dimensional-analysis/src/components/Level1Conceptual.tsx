@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
+import { useArmedAfter, useItemTop, useRevealAfterCommit } from '@shared/utils';
 
 import { CancellationChallenge } from './challenges/CancellationChallenge';
 import { challenges, cancellationVariants, successMessages } from './challenges/challengeData';
 import { EquivalenceChallenge } from './challenges/EquivalenceChallenge';
 import { FactorBuildingChallenge } from './challenges/FactorBuildingChallenge';
 import { OrientationChallenge } from './challenges/OrientationChallenge';
-import { useRevealTopOnChange } from '../utils/reveal';
 
 interface Level1Progress {
   questionsAnswered: number;
@@ -65,10 +65,27 @@ export function Level1Conceptual({
   const challenge = challenges[currentChallengeIndex];
 
   // "Byrja!" and "Næsta áskorun" sit at the foot of a screen taller than a
-  // phone, so each new challenge opens at its top rather than mid-way down.
-  const topRef = useRevealTopOnChange<HTMLDivElement>(
-    showIntro ? 'intro' : showSummary ? 'summary' : currentChallengeIndex
+  // phone, so each new challenge opens at its top rather than mid-way down,
+  // with focus on its title. This scrolled at any width before it moved to the
+  // shared helper, so it still does (`anyWidth`).
+  const topRef = useItemTop<HTMLDivElement>(
+    showIntro ? 'intro' : showSummary ? 'summary' : currentChallengeIndex,
+    { anyWidth: true }
   );
+
+  // Once a challenge is solved: on a phone, the challenge through "Næsta" if it
+  // fits, else the verdict at the top; focus moves to the verdict, not to
+  // "Næsta" (design P3). A second tap on the control that solved it must not
+  // press "Næsta", which can land under the same finger.
+  const challengeRef = useRef<HTMLDivElement>(null);
+  const successRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(showSuccess, () => ({
+    bottom: nextRef.current,
+    tops: [challengeRef.current, successRef.current],
+    focus: successRef.current,
+  }));
+  const armed = useArmedAfter(400, `${currentChallengeIndex}:${showSuccess}`);
 
   useEffect(() => {
     setShowSuccess(false);
@@ -127,7 +144,7 @@ export function Level1Conceptual({
     return (
       <div
         ref={topRef}
-        className="min-h-screen bg-gradient-to-b from-green-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+        className="min-h-screen bg-gradient-to-b from-green-50 to-white py-4 sm:p-4 scroll-mt-14 phone:scroll-mt-0"
       >
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 mt-2 sm:mt-8">
@@ -184,13 +201,13 @@ export function Level1Conceptual({
     return (
       <div
         ref={topRef}
-        className="min-h-screen bg-gradient-to-b from-green-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+        className="min-h-screen bg-gradient-to-b from-green-50 to-white py-4 sm:p-4 scroll-mt-14 phone:scroll-mt-0"
       >
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 mt-2 sm:mt-8">
             <div className="text-center mb-8">
               <div className="text-6xl mb-4">{mastered ? '🎉' : '📚'}</div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-warm-800 mb-2">
+              <h1 data-item-start className="text-2xl sm:text-3xl font-bold text-warm-800 mb-2">
                 {mastered ? 'Frábært!' : 'Vel gert!'}
               </h1>
               <p className="text-lg text-warm-600">
@@ -263,19 +280,19 @@ export function Level1Conceptual({
   return (
     <div
       ref={topRef}
-      className="min-h-screen bg-gradient-to-b from-green-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+      className="min-h-screen bg-gradient-to-b from-green-50 to-white py-4 sm:p-4 phone:py-2 scroll-mt-14 phone:scroll-mt-0"
     >
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
+        {/* Header: one row on a phone */}
+        <div className="mb-4 flex items-center justify-between flex-wrap gap-2 phone:mb-2 phone:flex-nowrap">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 text-lg"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 text-lg phone:text-base phone:shrink-0"
           >
             ← Til baka
           </button>
-          <div className="text-sm text-warm-600 flex items-center gap-2 sm:gap-4 flex-wrap">
-            <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-semibold">
+          <div className="text-sm text-warm-600 flex items-center gap-2 sm:gap-4 flex-wrap phone:min-w-0 phone:justify-end phone:gap-x-2 phone:gap-y-0.5 phone:whitespace-nowrap">
+            <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full font-semibold phone:px-2 phone:py-0.5">
               Stig 1: Hugtök
             </span>
             <span>
@@ -285,22 +302,29 @@ export function Level1Conceptual({
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6 phone:mb-2 phone:h-1.5">
           <div
-            className="bg-green-500 h-2 rounded-full transition-all duration-500"
+            className="bg-green-500 h-2 phone:h-1.5 rounded-full transition-all duration-500"
             style={{ width: `${(currentChallengeIndex / challenges.length) * 100}%` }}
           />
         </div>
 
         {/* Main challenge card */}
-        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8">
-          <h2 className="text-xl sm:text-2xl font-bold text-warm-800 mb-2">{challenge.title}</h2>
-          <p className="text-base sm:text-lg text-warm-600 mb-6">{challenge.instruction}</p>
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-8 phone:p-3">
+          <h2
+            data-item-start
+            className="text-xl sm:text-2xl font-bold text-warm-800 mb-2 phone:text-lg phone:mb-1"
+          >
+            {challenge.title}
+          </h2>
+          <p className="text-base sm:text-lg text-warm-600 mb-6 phone:mb-3">
+            {challenge.instruction}
+          </p>
 
           {/* Challenge content. Keyed by challenge so each one mounts fresh: C5
               and C6 both render ChainCancellation here, and without a key C6
               inherited C5's finished chain. */}
-          <div className="mb-6" key={challenge.id}>
+          <div ref={challengeRef} className="mb-6 phone:mb-3" key={challenge.id}>
             {challenge.id === 'C1' && (
               <EquivalenceChallenge onComplete={handleSuccess} onAttempt={handleAttempt} />
             )}
@@ -321,7 +345,7 @@ export function Level1Conceptual({
 
           {/* Hint */}
           {showHint && challenge.hints && !showSuccess && (
-            <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
+            <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg phone:mb-3 phone:p-3">
               <p className="text-sm font-semibold text-blue-800 mb-1">Vísbending {hintTier + 1}:</p>
               <p className="text-blue-700">
                 {hintTier === 0 && challenge.hints.topic}
@@ -345,19 +369,33 @@ export function Level1Conceptual({
 
           {/* Success message with "Af hverju?" card */}
           {showSuccess && (
-            <div className="mb-6 space-y-4">
-              <div className="p-4 sm:p-6 bg-green-100 rounded-xl border-2 border-green-300">
-                <h3 className="text-xl font-bold text-green-800 mb-2">Rétt!</h3>
-                <p className="text-green-700 mb-4">{successMessages[challenge.type]}</p>
-              </div>
+            <div className="mb-6 space-y-4 phone:mb-3 phone:space-y-3">
+              {/* The verdict region focus moves to once the challenge is solved. */}
+              <div
+                ref={successRef}
+                tabIndex={-1}
+                role="group"
+                aria-labelledby="da-l1-verdict"
+                className="space-y-4 phone:space-y-3 focus:outline-none"
+              >
+                <div className="p-4 sm:p-6 bg-green-100 rounded-xl border-2 border-green-300 phone:p-3">
+                  <h3 id="da-l1-verdict" className="text-xl font-bold text-green-800 mb-2">
+                    Rétt!
+                  </h3>
+                  <p className="text-green-700 mb-4 phone:mb-0">
+                    {successMessages[challenge.type]}
+                  </p>
+                </div>
 
-              <div className="p-4 bg-amber-50 rounded-xl border border-amber-200">
-                <p className="text-sm font-semibold text-amber-800 mb-1">Af hverju?</p>
-                <p className="text-amber-700 text-sm">{challenge.whyExplanation}</p>
+                <div className="p-4 bg-amber-50 rounded-xl border border-amber-200 phone:p-3">
+                  <p className="text-sm font-semibold text-amber-800 mb-1">Af hverju?</p>
+                  <p className="text-amber-700 text-sm">{challenge.whyExplanation}</p>
+                </div>
               </div>
 
               <button
-                onClick={handleContinue}
+                ref={nextRef}
+                onClick={armed(handleContinue)}
                 className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-bold transition-colors"
               >
                 {currentChallengeIndex < challenges.length - 1 ? 'Næsta áskorun →' : 'Ljúka stigi'}

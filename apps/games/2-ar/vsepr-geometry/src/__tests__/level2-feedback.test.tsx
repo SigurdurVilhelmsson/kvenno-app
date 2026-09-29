@@ -12,6 +12,7 @@ import {
   POOL,
   startLevel2,
 } from './level2-play';
+import { clockPastNextGuard } from './next-guard-clock';
 
 /**
  * What Stig 2 tells a student, step by step. Each of these was wrong:
@@ -32,6 +33,9 @@ import {
  */
 
 let unmount: (() => void) | null = null;
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 beforeEach(() => {
   window.scrollTo = vi.fn() as unknown as typeof window.scrollTo;

@@ -2,6 +2,7 @@
 import { fireEvent, render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level1 } from '../components/Level1';
 
 /**
@@ -40,6 +41,9 @@ function quizAt(formula: string) {
   }
   throw new Error(`${formula} never came up`);
 }
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 describe('Stig 1 misconception note', () => {
   it('names the H-bond rule when a student gives chloroform hydrogen bonds', () => {

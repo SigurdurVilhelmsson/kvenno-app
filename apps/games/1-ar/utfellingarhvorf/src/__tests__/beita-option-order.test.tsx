@@ -1,8 +1,11 @@
 import { fireEvent, render, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { BeitaScreen } from '../components/BeitaScreen';
 import { PRECIPITATING, SCENARIOS } from '../data/problems';
+
+clockPastNextGuard();
 
 /**
  * "Hvort efnið fellur út?" offered the two possible products in data order,

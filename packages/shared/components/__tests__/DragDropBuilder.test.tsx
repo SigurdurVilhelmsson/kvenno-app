@@ -195,3 +195,95 @@ describe('DropZone drag-over feedback', () => {
     expect(el.className).toContain('border-amber-300');
   });
 });
+
+describe('DragDropBuilder compact (design P6)', () => {
+  // jsdom computes no Tailwind, so the phone layout is asserted through its classes. Every
+  // class `compact` adds is a `phone:` class, which is what leaves desktop unchanged.
+  const chainZones: DropZoneData[] = [
+    { id: 'chain', label: 'Keðjan', maxItems: 3 },
+    { id: 'one', label: 'Einn reitur', maxItems: 1 },
+  ];
+  const classesOf = (el: Element | null | undefined) =>
+    (el?.getAttribute('class') ?? '').split(/\s+/).filter(Boolean);
+  const phoneClasses = (root: Element) =>
+    Array.from(root.querySelectorAll('*')).flatMap((el) =>
+      classesOf(el).filter((c) => c.startsWith('phone:'))
+    );
+
+  it('adds no phone class at all without the prop', () => {
+    const { container } = render(<DragDropBuilder items={items} zones={chainZones} />);
+    expect(phoneClasses(container)).toEqual([]);
+  });
+
+  it('makes items, zones and labels denser on a phone only, keeping every name', () => {
+    const { container } = render(
+      <DragDropBuilder items={items} zones={chainZones} initialState={{ chain: ['an'] }} compact />
+    );
+    const zone = (id: string) => container.querySelector(`[data-zone-id="${id}"]`) as HTMLElement;
+
+    // Items, in the pool and in a zone alike: desktop padding kept, phone padding added.
+    for (const name of ['meth-', 'eth-', '-an']) {
+      expect(classesOf(screen.getByRole('button', { name }))).toEqual(
+        expect.arrayContaining(['px-3', 'py-2', 'phone:px-2', 'phone:py-1'])
+      );
+    }
+
+    for (const id of ['chain', 'one']) {
+      expect(classesOf(zone(id))).toEqual(
+        expect.arrayContaining(['min-h-[60px]', 'p-3', 'phone:min-h-11', 'phone:p-2'])
+      );
+    }
+
+    // The visible label becomes screen-reader-only (never display:none) and the group
+    // keeps its accessible name.
+    const label = within(zone('chain')).getByText('Keðjan');
+    expect(classesOf(label)).toContain('phone:sr-only');
+    expect(screen.getByRole('group', { name: 'Keðjan' })).toBe(zone('chain'));
+    expect(screen.getByRole('group', { name: 'Einn reitur' })).toBe(zone('one'));
+  });
+
+  it('puts a multi-item count in the corner, with room kept for it, and drops a 1 / 1', () => {
+    const { container } = render(
+      <DragDropBuilder items={items} zones={chainZones} initialState={{ chain: ['an'] }} compact />
+    );
+    const zone = (id: string) => container.querySelector(`[data-zone-id="${id}"]`) as HTMLElement;
+
+    const count = within(zone('chain')).getByText('1 / 3');
+    expect(classesOf(count)).toEqual(
+      expect.arrayContaining(['mt-2', 'phone:absolute', 'phone:top-1', 'phone:right-2'])
+    );
+    expect(classesOf(zone('chain'))).toEqual(
+      expect.arrayContaining(['phone:relative', 'phone:pr-10'])
+    );
+
+    const single = within(zone('one')).getByText('0 / 1');
+    expect(classesOf(single)).toContain('phone:hidden');
+    // Every compact zone is the containing block for its sr-only label; only a zone with a
+    // corner count reserves room on the right for it.
+    expect(classesOf(zone('one'))).toContain('phone:relative');
+    expect(classesOf(zone('one'))).not.toContain('phone:pr-10');
+  });
+
+  it('places by tap exactly as without it', () => {
+    const onDrop = vi.fn();
+    const { container } = render(
+      <DragDropBuilder items={items} zones={zones} onDrop={onDrop} compact />
+    );
+    const zone = (id: string) => container.querySelector(`[data-zone-id="${id}"]`) as HTMLElement;
+
+    fireEvent.click(screen.getByRole('button', { name: 'eth-' }));
+    fireEvent.click(zone('prefix'));
+
+    expect(onDrop).toHaveBeenCalledWith({
+      itemId: 'eth',
+      zoneId: 'prefix',
+      fromZoneId: undefined,
+      index: 0,
+    });
+  });
+
+  it('has no axe violations', async () => {
+    const { container } = render(<DragDropBuilder items={items} zones={chainZones} compact />);
+    expect(await axe(container)).toHaveNoViolations();
+  });
+});

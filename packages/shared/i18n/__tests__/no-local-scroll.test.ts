@@ -1,0 +1,154 @@
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { join, relative } from 'node:path';
+
+import { describe, it, expect } from 'vitest';
+
+/**
+ * No game scrolls the page by itself: scrolling goes through `@shared/utils`
+ * (`revealSpan`, `revealTop`, `revealInline`, `useScreenTop`, `useItemTop`,
+ * `usableArea`) — docs/plans/2026-09-23-vertical-scroll-design.md §6.4.
+ *
+ * **Why this exists.** Before the vertical-scroll pass, sixteen games carried
+ * their own reveal/scroll helper, each with its own idea of the sticky header,
+ * and most of them moved the page at any width. A guard on helper *names* cannot
+ * catch the next copy — it already missed thirteen of the names shipping — so
+ * this guards the *calls*: no non-test file under `apps/games/<year>/<game>/src`
+ * may call `scrollIntoView`, `scrollTo` or `scrollBy`, assign `scrollTop`, or
+ * read `innerHeight` (the usable height is `usableArea()`, which subtracts the
+ * header and pins and follows the soft keyboard).
+ *
+ * **The allow-list only shrinks.** It holds today's files and how many calls
+ * each makes. A file not on it may make none; a file on it may not make more.
+ * When a migration removes calls, the test fails until the count here is
+ * lowered (or the entry deleted), so the list cannot silently go stale and
+ * leave room for a new call.
+ *
+ * Comments are stripped before scanning, so a comment explaining why a game
+ * does not call one of these is not a call.
+ */
+
+const repoRoot = join(__dirname, '..', '..', '..', '..');
+const gamesRoot = join(repoRoot, 'apps', 'games');
+
+/**
+ * Calls per file on 2026-09-23, relative to apps/games. Lower these; never raise them.
+ * Empty since the last game migrated (thermodynamics-predictor): no game may add one.
+ */
+const ALLOWED: Record<string, number> = {};
+
+/**
+ * What counts as scrolling the page yourself. The method calls allow the
+ * optional-call form (`el.scrollIntoView?.(…)`), which is how most games write
+ * them; a name that merely contains one (`revealScrollTo`) does not match.
+ */
+const SCROLL_CALLS: { what: string; re: RegExp }[] = [
+  {
+    what: 'scrollIntoView/scrollTo/scrollBy call',
+    re: /(?<![\w$])(?:scrollIntoView(?:IfNeeded)?|scrollTo|scrollBy)\s*(?:\?\.)?\s*\(/g,
+  },
+  { what: 'scrollTop assignment', re: /\.scrollTop\s*(?:[+-]?=)(?!=)/g },
+  { what: 'innerHeight read', re: /(?<![\w$])innerHeight\b/g },
+];
+
+/** Block and line comments out; a `//` inside a string such as a URL is kept. */
+function stripComments(src: string): string {
+  return src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"`\\])\/\/.*$/gm, '$1');
+}
+
+function countScrollCalls(src: string): number {
+  const code = stripComments(src);
+  return SCROLL_CALLS.reduce((n, { re }) => n + (code.match(re)?.length ?? 0), 0);
+}
+
+function sources(dir: string): string[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+    const p = join(dir, e.name);
+    if (e.isDirectory()) {
+      return e.name === '__tests__' || e.name === 'node_modules' ? [] : sources(p);
+    }
+    return /\.(m?[jt]sx?)$/.test(e.name) && !/\.(test|spec)\.[jt]sx?$/.test(e.name) ? [p] : [];
+  });
+}
+
+/** Every scanned source file, and the calls in each file that makes any. */
+function gameCounts(): { scanned: number; counts: Record<string, number> } {
+  const out: Record<string, number> = {};
+  let scanned = 0;
+  for (const year of readdirSync(gamesRoot).filter((y) => /^\d-ar$/.test(y))) {
+    for (const game of readdirSync(join(gamesRoot, year), { withFileTypes: true })) {
+      const src = join(gamesRoot, year, game.name, 'src');
+      if (!game.isDirectory() || !existsSync(src)) continue;
+      for (const file of sources(src)) {
+        scanned += 1;
+        const n = countScrollCalls(readFileSync(file, 'utf8'));
+        if (n > 0) out[relative(gamesRoot, file).split('\\').join('/')] = n;
+      }
+    }
+  }
+  return { scanned, counts: out };
+}
+
+describe('games scroll only through @shared/utils', () => {
+  const { scanned, counts } = gameCounts();
+
+  // Counted over every file scanned, not over the files that scroll: with the allow-list
+  // empty, a scan that found nothing would pass everything else here.
+  it('finds the game sources (the scan is not silently empty)', () => {
+    expect(scanned).toBeGreaterThan(100);
+  });
+
+  it('no file outside the allow-list scrolls the page itself', () => {
+    const extra = Object.keys(counts).filter((f) => !(f in ALLOWED));
+    expect(
+      extra,
+      'Scroll through @shared/utils (revealSpan, revealTop, useScreenTop, …), not a local call'
+    ).toEqual([]);
+  });
+
+  it('no allow-listed file gained a call', () => {
+    const grew = Object.entries(counts)
+      .filter(([f, n]) => f in ALLOWED && n > ALLOWED[f])
+      .map(([f, n]) => `${f}: ${n} > ${ALLOWED[f]}`);
+    expect(grew).toEqual([]);
+  });
+
+  it('the allow-list is not stale: lower a count when a migration removes calls', () => {
+    const stale = Object.entries(ALLOWED)
+      .filter(([f, n]) => (counts[f] ?? 0) < n)
+      .map(([f, n]) => `${f}: allowed ${n}, now ${counts[f] ?? 0}`);
+    expect(stale).toEqual([]);
+  });
+
+  // The call guard cannot see a helper that scrolls only through @shared/utils, and five
+  // games kept one (`src/utils/desktopReveal.ts`) until they moved into
+  // packages/shared/utils/desktopReveal.ts. Design §4 step 6: no game keeps its own.
+  it('no game keeps a local reveal or scroll helper file', () => {
+    const local: string[] = [];
+    for (const year of readdirSync(gamesRoot).filter((y) => /^\d-ar$/.test(y))) {
+      for (const game of readdirSync(join(gamesRoot, year))) {
+        const src = join(gamesRoot, year, game, 'src');
+        if (!existsSync(src)) continue;
+        for (const file of sources(src)) {
+          const name = file.split(/[\\/]/).pop() ?? '';
+          if (/reveal|scroll/i.test(name)) local.push(relative(gamesRoot, file));
+        }
+      }
+    }
+    expect(local, 'Put the helper in packages/shared/utils').toEqual([]);
+  });
+
+  it('the patterns catch the forms games write and ignore mentions', () => {
+    expect(countScrollCalls('el.scrollIntoView?.({ block: "start" });')).toBe(1);
+    expect(countScrollCalls('window.scrollTo({ top: 0 });')).toBe(1);
+    expect(countScrollCalls('window.scrollBy(0, 10);')).toBe(1);
+    expect(countScrollCalls('box.scrollTop = 0;')).toBe(1);
+    expect(countScrollCalls('box.scrollTop += 5;')).toBe(1);
+    expect(countScrollCalls('if (r.bottom > window.innerHeight) go();')).toBe(1);
+    expect(countScrollCalls('if (box.scrollTop === 0) go();')).toBe(0);
+    expect(countScrollCalls('revealScrollTo(el);')).toBe(0);
+    expect(countScrollCalls("import { scrollTopOnPhone } from './phoneScroll';")).toBe(0);
+    expect(countScrollCalls('// never call el.scrollIntoView() here')).toBe(0);
+    expect(countScrollCalls('/* window.innerHeight is wrong on iOS */')).toBe(0);
+    expect(countScrollCalls("const url = 'https://x.is'; scrollTo(0, 0);")).toBe(1);
+  });
+});

@@ -5,6 +5,71 @@
  * Design system: DESIGN_SYSTEM.md at repo root.
  */
 
+/*
+ * Phone variants (vertical-scroll pass).
+ *
+ * `phone:` — a portrait phone (narrower than `sm`) or any phone on its side
+ * (at most 500 px tall, the line at which the shared Header stops being
+ * sticky). It is the one place the platform decides what "phone" means;
+ * `PHONE_QUERY` in `@shared/utils` is the same pair of queries for scripts,
+ * and `styles/__tests__/phone-variant.test.ts` holds the two together. A
+ * desktop window (>= 640 px wide and > 500 px tall) never matches it, so a
+ * `phone:` class cannot change a desktop layout. Tailwind emits custom
+ * variants after the built-in breakpoints, so at 740x340, where `sm:` also
+ * matches, the `phone:` value wins.
+ *
+ * `phone-land:` — only a phone on its side: wide but short, where a desktop
+ * two-column layout is worth switching on early.
+ *
+ * Keep the BLOCK form below. The comma shorthand `(@media a, b)` silently
+ * drops the second query; the test fails if that happens.
+ */
+@custom-variant phone {
+  @media (max-width: 639.98px) {
+    @slot;
+  }
+  @media (max-height: 500px) {
+    @slot;
+  }
+}
+@custom-variant phone-land {
+  @media (orientation: landscape) and (max-height: 500px) {
+    @slot;
+  }
+}
+
+/*
+ * `pin:` — a portrait phone only: narrower than `sm` and taller than the
+ * 500 px line. The one layout in which the shared PinnedTask components
+ * (TaskStrip, PinnedActions) stick to an edge; a phone on its side has no
+ * height to spare, so nothing is ever pinned in landscape. `PIN_QUERY` in
+ * `@shared/utils` is the same query for scripts. Block form, like the two
+ * above. The components apply `pin:` classes only while they are actually
+ * pinned (their own JS decision), so the variant is the second lock: turning
+ * the phone un-sticks them before React re-renders.
+ */
+@custom-variant pin {
+  @media (max-width: 639.98px) and (min-height: 501px) {
+    @slot;
+  }
+}
+
+/*
+ * While something is pinned, the browser's own scrolling (Tab focus, find in
+ * page, anchor jumps) keeps the focused element out from under it
+ * (WCAG 2.4.11). The PinnedTask components publish these heights on <html>
+ * only while pinned and remove them when they unpin. No fallbacks, on
+ * purpose: with the properties unset the declarations are invalid at
+ * computed-value time and fall back to the initial `auto`, so a page with
+ * nothing pinned computes exactly what it did before this rule existed.
+ */
+html {
+  @variant pin {
+    scroll-padding-top: calc(var(--pin-header-h) + var(--pin-strip-h));
+    scroll-padding-bottom: var(--pin-bar-h);
+  }
+}
+
 @theme {
   /* ===== Brand Orange Scale ===== */
   --color-kvenno-orange-50: #fff7f0;
@@ -386,4 +451,17 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/*
+ * Programmatic focus targets (vertical-scroll pass, P3).
+ *
+ * `focusTarget()` in `@shared/utils` moves focus to a heading or a feedback
+ * group after a screen swap or a commit, so it never falls to <body>. Those
+ * targets are not operable controls (they carry tabindex="-1" and are never in
+ * the Tab order), so they get no focus ring: focus moves, nothing is painted.
+ * Interactive controls keep their rings.
+ */
+[data-focus-target]:focus {
+  outline: none;
 }

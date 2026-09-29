@@ -1,11 +1,15 @@
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level1 } from '../components/Level1';
 import { generateQuestions as level2Questions } from '../components/Level2';
 import { Level3 } from '../components/Level3';
 import { PeriodicTable } from '../components/PeriodicTable';
 import { ELEMENTS } from '../data/elements';
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 /**
  * Every number a student reads in this game is written with the Icelandic

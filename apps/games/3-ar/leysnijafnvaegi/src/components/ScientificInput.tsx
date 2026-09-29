@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+
 import { DECIMAL_INPUT_PROPS } from '@shared/utils';
 
 /**
@@ -17,6 +19,9 @@ import { DECIMAL_INPUT_PROPS } from '@shared/utils';
  *
  * Below `sm` the two fields may shrink and the labels may not, so the row fits
  * a 320 px screen without `× 10` breaking onto two lines.
+ *
+ * Enter in the number moves on to the power of ten, and Enter there submits
+ * (`onSubmit`), so a phone keyboard's own key finishes the answer.
  */
 
 interface Props {
@@ -27,6 +32,8 @@ interface Props {
   mantissaPlaceholder: string;
   exponentPlaceholder: string;
   disabled?: boolean;
+  /** Called on Enter in the power-of-ten field. */
+  onSubmit?: () => void;
 }
 
 /** Flip the sign of a typed exponent: `5` → `-5`, `-5` → `5`, empty → `-`. */
@@ -44,7 +51,9 @@ export function ScientificInput({
   mantissaPlaceholder,
   exponentPlaceholder,
   disabled = false,
+  onSubmit,
 }: Props) {
+  const exponentField = useRef<HTMLInputElement>(null);
   return (
     <div className="flex items-center gap-1.5 sm:gap-2">
       <input
@@ -52,6 +61,12 @@ export function ScientificInput({
         autoComplete="off"
         value={mantissa}
         onChange={(e) => onMantissaChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key !== 'Enter') return;
+          e.preventDefault();
+          exponentField.current?.focus();
+        }}
+        enterKeyHint="next"
         disabled={disabled}
         placeholder={mantissaPlaceholder}
         aria-label="Tala"
@@ -61,8 +76,15 @@ export function ScientificInput({
       <input
         {...DECIMAL_INPUT_PROPS}
         autoComplete="off"
+        ref={exponentField}
         value={exponent}
         onChange={(e) => onExponentChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key !== 'Enter' || !onSubmit) return;
+          e.preventDefault();
+          onSubmit();
+        }}
+        enterKeyHint="done"
         disabled={disabled}
         placeholder={exponentPlaceholder}
         aria-label="Veldisvísir"

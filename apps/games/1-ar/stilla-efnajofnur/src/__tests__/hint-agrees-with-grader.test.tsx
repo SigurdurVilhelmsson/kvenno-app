@@ -1,6 +1,7 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level } from '../components/Level';
 import { LEVEL3_CONFIG } from '../components/levelConfigs';
 import { REACTIONS, type Reaction } from '../data/reactions';
@@ -19,14 +20,17 @@ import { REACTIONS, type Reaction } from '../data/reactions';
  * grader must agree with whichever the hint said.
  */
 
+clockPastNextGuard();
+
 beforeEach(() => {
-  // jsdom does not implement it; the level calls it optionally.
-  Element.prototype.scrollIntoView = () => {};
+  // jsdom does not implement page scrolling; the level scrolls through the
+  // shared reveal helpers.
+  window.scrollTo = () => {};
+  window.scrollBy = () => {};
 });
 
 afterEach(() => {
   cleanup();
-  delete (Element.prototype as Partial<Element>).scrollIntoView;
 });
 
 const MAX_COEFFICIENT = 9; // EquationEditor's stepper ceiling

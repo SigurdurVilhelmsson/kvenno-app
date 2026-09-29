@@ -3,6 +3,7 @@ import { fireEvent, render, within } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 import App from '../App';
+import { clockPastNextGuard } from './next-guard-clock';
 import { challenges } from '../data/level3-questions';
 
 /**
@@ -33,6 +34,9 @@ function playLevel3(container: HTMLElement) {
 }
 
 const KEY = 'kinetics-progress';
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 describe('the completion screen', () => {
   beforeEach(() => localStorage.removeItem(KEY));

@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 
-import { shuffleArray } from '@shared/utils';
+import { shuffleArray, useArmedAfter, useItemTop, useRevealAfterCommit } from '@shared/utils';
 
 interface Level3Props {
   onComplete: (score: number) => void;
@@ -420,6 +420,38 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when challenge index changes
   }, [currentChallenge, challenge.options]);
 
+  // Each new question brings the card's top back on a phone and focuses its title.
+  const cardRef = useItemTop<HTMLDivElement>(currentChallenge);
+  const questionRef = useRef<HTMLParagraphElement>(null);
+  const optionsRef = useRef<HTMLDivElement>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const selectedIndex = shuffledOptions.findIndex((o) => o.id === selectedOption);
+  // After Athuga: the question through Næsta if it fits (else the chosen option with the
+  // explanation it then shows, else the verdict at the top), and focus on the verdict, not on
+  // Næsta, so a second Enter lands on nothing (design P3).
+  useRevealAfterCommit(showResult, () => ({
+    bottom: nextRef.current,
+    tops: [
+      questionRef.current,
+      selectedIndex < 0 ? null : (optionsRef.current?.children[selectedIndex] ?? null),
+      resultRef.current,
+    ],
+    focus: resultRef.current,
+  }));
+  // A double tap on Athuga must not land on Næsta, which renders in its place.
+  const armed = useArmedAfter(400, `${currentChallenge}:${showResult}`);
+  // Opening the hint replaces its link with the hint, which pushed Athuga below a phone's
+  // screen and dropped focus to <body> with the link: bring the hint through Athuga into
+  // view on a phone, and move focus to the hint (design §3, hints).
+  const hintRef = useRef<HTMLDivElement>(null);
+  const checkRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(showHint, () => ({
+    bottom: checkRef.current,
+    tops: [hintRef.current],
+    focus: hintRef.current,
+  }));
+
   const checkAnswer = () => {
     const selected = shuffledOptions.find((opt) => opt.id === selectedOption);
     const correct = selected?.correct ?? false;
@@ -467,52 +499,61 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
+        {/* On a phone the counters share one line (P4), so the row is one line tall. */}
+        <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+            className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5 phone:shrink-0"
           >
             ← Til baka
           </button>
-          <div className="text-right">
+          <div className="text-right phone:flex phone:flex-wrap phone:items-baseline phone:justify-end phone:gap-x-2 phone:min-w-0">
             <div className="text-sm text-warm-600">
               Spurning {currentChallenge + 1} af {challenges.length}
             </div>
-            <div className="text-lg font-bold text-indigo-600">{score} stig</div>
+            <div className="text-lg font-bold text-indigo-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 
-        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6 phone:h-1.5 phone:mb-3">
           <div
-            className="bg-indigo-500 h-2 rounded-full transition-all"
+            className="bg-indigo-500 h-2 phone:h-1.5 rounded-full transition-all"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-          {/* Type badge and title */}
-          <div className="mb-4">
-            <span
-              className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${badge.bg} ${badge.text}`}
+        <div ref={cardRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3">
+          {/* Type badge and title. On a phone the badge runs inline before the title, which
+              wraps after it. The wrapper is a plain block, so desktop margins are unchanged. */}
+          <div className="phone:mb-3">
+            <div className="mb-4 phone:inline phone:mr-2">
+              <span
+                className={`inline-block px-3 py-1 rounded-full text-sm font-medium phone:px-2 phone:py-0.5 ${badge.bg} ${badge.text}`}
+              >
+                {badge.label}
+              </span>
+            </div>
+
+            <h2
+              data-item-start
+              className="text-xl font-bold text-warm-800 mb-4 phone:inline phone:text-lg"
             >
-              {badge.label}
-            </span>
+              {challenge.title}
+            </h2>
           </div>
 
-          <h2 className="text-xl font-bold text-warm-800 mb-4">{challenge.title}</h2>
-
           {/* Scenario */}
-          <div className="bg-warm-50 p-4 rounded-xl mb-4">
+          <div className="bg-warm-50 p-4 rounded-xl mb-4 phone:p-3 phone:mb-3">
             <p className="text-warm-700">{challenge.scenario}</p>
           </div>
 
           {/* Compounds comparison if available */}
           {challenge.compounds && (
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4 phone:mb-3">
               {challenge.compounds.map((compound) => (
                 <div
                   key={compound.formula}
-                  className="bg-warm-900 px-2 py-3 sm:p-4 rounded-xl text-center min-w-0"
+                  className="bg-warm-900 px-2 py-3 sm:p-4 phone:py-2 rounded-xl text-center min-w-0"
                 >
                   {/* Sized to fit a phone column whole: CH₃CH₂OH must not break mid-formula. */}
                   <div className="text-lg sm:text-xl font-bold text-white">{compound.formula}</div>
@@ -524,16 +565,21 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           )}
 
           {/* Question */}
-          <p className="text-warm-800 text-lg font-medium mb-6">{challenge.question}</p>
+          <p
+            ref={questionRef}
+            className="text-warm-800 text-lg font-medium mb-6 phone:text-base phone:mb-3"
+          >
+            {challenge.question}
+          </p>
 
           {/* Options */}
-          <div className="space-y-3 mb-6">
+          <div ref={optionsRef} className="space-y-3 mb-6 phone:space-y-2 phone:mb-3">
             {shuffledOptions.map((option) => (
               <button
                 key={option.id}
                 onClick={() => !showResult && setSelectedOption(option.id)}
                 disabled={showResult}
-                className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
+                className={`w-full p-4 phone:p-3 rounded-xl border-2 text-left transition-all ${
                   showResult
                     ? option.correct
                       ? 'border-green-500 bg-green-50'
@@ -571,15 +617,21 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           )}
 
           {showHint && !showResult && (
-            <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4">
+            <div
+              ref={hintRef}
+              className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4 phone:p-3 phone:mb-3"
+            >
               <span className="font-bold text-yellow-800">Vísbending: </span>
               <span className="text-yellow-900">{challenge.hint}</span>
             </div>
           )}
 
-          {/* Check / Next buttons */}
+          {/* Check / Next buttons. Athuga and Næsta are separate elements (keyed), never one
+              button relabelled, and Næsta ignores a press within 400 ms of appearing. */}
           {!showResult ? (
             <button
+              key="check"
+              ref={checkRef}
               onClick={checkAnswer}
               disabled={!selectedOption}
               className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl"
@@ -588,10 +640,18 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             </button>
           ) : (
             <>
+              {/* The feedback region focus moves to after Athuga (P3). */}
               <div
-                className={`p-4 rounded-xl mb-4 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
+                ref={resultRef}
+                tabIndex={-1}
+                role="group"
+                aria-labelledby="imf-l3-verdict"
+                className={`p-4 rounded-xl mb-4 phone:p-3 phone:mb-3 focus:outline-none ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
               >
-                <div className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                <div
+                  id="imf-l3-verdict"
+                  className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
+                >
                   {isCorrect ? 'Rétt!' : 'Rangt'}
                 </div>
               </div>
@@ -599,7 +659,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               {/* Concept toggle */}
               <button
                 onClick={() => setShowConcept(!showConcept)}
-                className="w-full text-left p-4 bg-purple-50 rounded-xl mb-4 hover:bg-purple-100"
+                className="w-full text-left p-4 phone:p-3 bg-purple-50 rounded-xl mb-4 phone:mb-3 hover:bg-purple-100"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-bold text-purple-800">💡 Dýpri skilningur</span>
@@ -608,13 +668,15 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               </button>
 
               {showConcept && (
-                <div className="bg-purple-50 p-4 rounded-xl mb-4 border border-purple-200">
+                <div className="bg-purple-50 p-4 rounded-xl mb-4 phone:p-3 phone:mb-3 border border-purple-200">
                   <p className="text-purple-900 text-sm">{challenge.conceptNote}</p>
                 </div>
               )}
 
               <button
-                onClick={nextChallenge}
+                key="next"
+                ref={nextRef}
+                onClick={armed(nextChallenge)}
                 className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-6 rounded-xl"
               >
                 {currentChallenge < challenges.length - 1 ? 'Næsta spurning' : 'Ljúka stigi 3'}

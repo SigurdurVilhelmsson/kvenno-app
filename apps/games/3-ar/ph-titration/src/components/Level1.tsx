@@ -1,14 +1,19 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect, useMemo } from 'react';
 
 import { HintSystem, InteractiveGraph, FeedbackPanel, Presence } from '@shared/components';
 import type { DataPoint, DataSeries, MarkerConfig } from '@shared/components';
-import { shuffleArray } from '@shared/utils';
+import {
+  focusTarget,
+  shuffleArray,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+} from '@shared/utils';
 
 import { LEVEL1_CHALLENGES } from '../data/level1-challenges';
 import { titrations } from '../data/titrations';
 import type { MonoproticTitration } from '../types';
 import { calculatePH, generateTitrationCurve } from '../utils/ph-calculations';
-import { revealTop } from '../utils/reveal';
 
 // Misconceptions for titration concepts
 const TITRATION_MISCONCEPTIONS: Record<string, string> = {
@@ -20,6 +25,9 @@ const TITRATION_MISCONCEPTIONS: Record<string, string> = {
   indicator: 'Veljið vísi sem breytir lit nálægt pH við jafngildi, ekki endilega pH = 7.',
   buffer_region: 'Á milli upphafs og jafngildis er stuðpúðasvæðið þar sem pH breytist hægt.',
 };
+
+/** Exit duration of the hint panel's Presence, which leaves as the feedback enters. */
+const HINT_EXIT_MS = 250;
 
 // Related concepts for titration
 const TITRATION_RELATED: string[] = ['Títrun', 'Jafngildispunktur', 'Vísar', 'Stuðpúðasvæði'];
@@ -48,14 +56,43 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   const [hintResetKey, setHintResetKey] = useState(0);
   const [completed, setCompleted] = useState(0);
   const levelCompleteReported = useRef(false);
-  const levelRef = useRef<HTMLDivElement>(null);
-  const [revealKey, setRevealKey] = useState(0);
-
-  useEffect(() => {
-    if (revealKey > 0) revealTop(levelRef.current);
-  }, [revealKey]);
 
   const challenge = LEVEL1_CHALLENGES[currentIndex];
+
+  // The level opens on its intro, whose heading takes focus as it mounts (the
+  // menu button that opened it has gone).
+  const introHeadingRef = useRef<HTMLHeadingElement>(null);
+  useLayoutEffect(() => {
+    focusTarget(introHeadingRef.current);
+  }, []);
+
+  // "Byrja æfingu" and each "Næsta" open the next question at the card's top
+  // when that top has scrolled above the screen, and focus the question's
+  // heading (`data-item-start`). The card was revealed like this at every width
+  // before it moved to the shared helper, so it still is (`anyWidth`).
+  const levelRef = useItemTop<HTMLDivElement>(showIntro ? -1 : currentIndex, {
+    anyWidth: true,
+  });
+
+  // After "Staðfesta": on a phone, the question through "Næsta" if it fits,
+  // else from the options, else the verdict at the top; measured once the hint
+  // panel above the feedback has left. Focus goes to the feedback, not to
+  // "Næsta", so a second Enter lands on nothing (design P3).
+  const questionRef = useRef<HTMLParagraphElement>(null);
+  const optionsRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(
+    showResult,
+    () => ({
+      bottom: nextRef.current,
+      tops: [questionRef.current, optionsRef.current, feedbackRef.current],
+      focus: feedbackRef.current,
+    }),
+    { afterExit: HINT_EXIT_MS + 50 }
+  );
+  // A double tap on "Staðfesta" must not press "Næsta".
+  const armed = useArmedAfter(400, `${currentIndex}:${showResult}`);
 
   // Shuffle options for current challenge - memoize to keep stable during challenge
   const shuffledOptions = useMemo(() => {
@@ -106,7 +143,6 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       setShowResult(false);
       setHintResetKey((prev) => prev + 1);
       setHintUsedThisChallenge(false);
-      setRevealKey((prev) => prev + 1);
     }
   };
 
@@ -121,20 +157,22 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   if (showIntro) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 space-y-4">
+        <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 space-y-4 phone:p-3 phone:space-y-3">
           <button
             onClick={onBack}
             className="text-warm-600 hover:text-warm-800 text-sm pointer-coarse:min-h-11"
           >
             ← Til baka
           </button>
-          <h2 className="text-2xl font-bold text-purple-700">Títrun — um hvað snýst þetta?</h2>
+          <h2 ref={introHeadingRef} className="text-2xl font-bold text-purple-700 phone:text-xl">
+            Títrun — um hvað snýst þetta?
+          </h2>
           <p className="text-warm-700">
             Í títrun bætum við hægt og rólega basa (eða sýru) úr búrettu við óþekkt magn af sýru
             (eða basa) í kolbu. Við fylgjumst með pH-gildi á meðan — og teiknum{' '}
             <strong>títrunarferil</strong> (pH sem fall af rúmmáli sem bætt er við).
           </p>
-          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 phone:p-3">
             <div className="font-bold text-blue-800 mb-1">Mikilvægustu atriði á ferlinum:</div>
             <ul className="text-sm text-blue-900 space-y-1 list-disc list-inside">
               <li>
@@ -147,7 +185,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               </li>
             </ul>
           </div>
-          <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+          <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 phone:p-3">
             <div className="font-bold text-purple-800 mb-1">Hvað ræður lögun ferilsins?</div>
             <p className="text-sm text-purple-900">
               <strong>Sterk sýra + sterkur basi</strong> → jafngildispunktur við pH 7 (hlutlaust).
@@ -159,10 +197,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             </p>
           </div>
           <button
-            onClick={() => {
-              setShowIntro(false);
-              setRevealKey((prev) => prev + 1);
-            }}
+            onClick={() => setShowIntro(false)}
             className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 rounded-xl"
           >
             Byrja æfingu →
@@ -173,51 +208,55 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8 phone:px-3 phone:py-3">
       <div
         ref={levelRef}
-        className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 scroll-mt-4"
+        className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 scroll-mt-4 phone:p-3 phone:scroll-mt-3"
       >
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <button
-            onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:py-3 pointer-coarse:-my-3"
-          >
-            ← Til baka
-          </button>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-warm-500">
-              {currentIndex + 1} / {LEVEL1_CHALLENGES.length}
+        {/* Header. On a phone it folds to one row (design P4): Til baka, the
+            title, the counters. Til baka comes first in the DOM as well as on
+            screen, and the counters hold nothing focusable. */}
+        <div className="phone:flex phone:items-center phone:gap-2 phone:mb-2">
+          <div className="flex justify-between items-center mb-6 phone:contents">
+            <button
+              onClick={onBack}
+              className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:py-3 pointer-coarse:-my-3 phone:order-1 phone:shrink-0 phone:text-sm"
+            >
+              ← Til baka
+            </button>
+            <div className="flex items-center gap-4 phone:order-3 phone:shrink-0 phone:flex-col phone:items-end phone:gap-0">
+              <div className="text-sm text-warm-500 phone:text-xs">
+                {currentIndex + 1} / {LEVEL1_CHALLENGES.length}
+              </div>
+              <div className="text-lg font-bold text-blue-600 phone:text-sm">Stig: {score}</div>
             </div>
-            <div className="text-lg font-bold text-blue-600">Stig: {score}</div>
           </div>
+
+          {/* Title */}
+          <h1 className="text-2xl md:text-3xl font-bold text-blue-600 mb-2 phone:order-2 phone:flex-1 phone:min-w-0 phone:mb-0 phone:text-base phone:max-[339.98px]:text-sm">
+            📈 Stig 1: Skilningur á títrunarferlum
+          </h1>
+          <p className="text-warm-600 mb-6 phone:sr-only">
+            Lærðu að þekkja mismunandi títrunarferla og skilja hvernig pH breytist.
+          </p>
         </div>
 
-        {/* Title */}
-        <h1 className="text-2xl md:text-3xl font-bold text-blue-600 mb-2">
-          📈 Stig 1: Skilningur á títrunarferlum
-        </h1>
-        <p className="text-warm-600 mb-6">
-          Lærðu að þekkja mismunandi títrunarferla og skilja hvernig pH breytist.
-        </p>
-
         {/* Progress bar */}
-        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6 phone:h-1.5 phone:mb-3">
           <div
-            className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+            className="bg-blue-500 h-2 phone:h-1.5 rounded-full transition-all duration-300"
             style={{ width: `${(completed / LEVEL1_CHALLENGES.length) * 100}%` }}
           />
         </div>
 
         {/* Challenge card */}
-        <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-3 sm:p-6 mb-6">
-          <div className="flex items-start gap-3 mb-4">
+        <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-3 sm:p-6 mb-6 phone:mb-3">
+          <div className="flex items-start gap-3 mb-4 phone:mb-2 phone:items-center">
             <span className="bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full">
               {challenge.id}
             </span>
             <div>
-              <h2 className="text-lg font-bold text-blue-800">
+              <h2 data-item-start className="text-lg font-bold text-blue-800">
                 {challenge.type === 'match-curve' && 'Þekktu ferilinn'}
                 {challenge.type === 'predict-color' && 'Spáðu um litinn'}
                 {challenge.type === 'find-equivalence' && 'Finndu jafngildispunkt'}
@@ -226,63 +265,74 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             </div>
           </div>
 
-          <p className="text-blue-900 text-lg mb-6">{challenge.questionIs}</p>
+          {/* On a phone on its side: the question and its curve | the options.
+              Both groups are plain blocks, so desktop margins are unchanged. */}
+          <div className="phone-land:grid phone-land:grid-cols-2 phone-land:gap-3">
+            <div>
+              <p
+                ref={questionRef}
+                className="text-blue-900 text-lg mb-6 phone:text-base phone:mb-3"
+              >
+                {challenge.questionIs}
+              </p>
 
-          {/* Curve visualization for relevant challenges */}
-          {(challenge.type === 'match-curve' || challenge.type === 'curve-feature') && (
-            <div className="mb-6">
-              <TitrationCurvePreview curveType={challenge.curveType} />
+              {/* Curve visualization for relevant challenges */}
+              {(challenge.type === 'match-curve' || challenge.type === 'curve-feature') && (
+                <div className="mb-6 phone:mb-3 phone-land:mb-0">
+                  <TitrationCurvePreview curveType={challenge.curveType} />
+                </div>
+              )}
             </div>
-          )}
 
-          {/* Options */}
-          <div className="space-y-3">
-            {shuffledOptions.map((option) => {
-              const isSelected = selectedOption === option.id;
-              const isOptionCorrect = option.isCorrect;
+            {/* Options */}
+            <div ref={optionsRef} className="space-y-3 phone:space-y-2">
+              {shuffledOptions.map((option) => {
+                const isSelected = selectedOption === option.id;
+                const isOptionCorrect = option.isCorrect;
 
-              let bgColor = 'bg-white hover:bg-blue-50';
-              let borderColor = 'border-warm-200';
+                let bgColor = 'bg-white hover:bg-blue-50';
+                let borderColor = 'border-warm-200';
 
-              if (showResult) {
-                if (isOptionCorrect) {
-                  bgColor = 'bg-green-100';
-                  borderColor = 'border-green-500';
-                } else if (isSelected && !isOptionCorrect) {
-                  bgColor = 'bg-red-100';
-                  borderColor = 'border-red-500';
+                if (showResult) {
+                  if (isOptionCorrect) {
+                    bgColor = 'bg-green-100';
+                    borderColor = 'border-green-500';
+                  } else if (isSelected && !isOptionCorrect) {
+                    bgColor = 'bg-red-100';
+                    borderColor = 'border-red-500';
+                  }
+                } else if (isSelected) {
+                  bgColor = 'bg-blue-100';
+                  borderColor = 'border-blue-500';
                 }
-              } else if (isSelected) {
-                bgColor = 'bg-blue-100';
-                borderColor = 'border-blue-500';
-              }
 
-              return (
-                <button
-                  key={option.id}
-                  onClick={() => handleOptionSelect(option.id)}
-                  disabled={showResult}
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${bgColor} ${borderColor} ${
-                    showResult ? 'cursor-default' : 'cursor-pointer'
-                  }`}
-                >
-                  <div className="flex items-start gap-3">
-                    <span
-                      className={`font-bold ${showResult && isOptionCorrect ? 'text-green-600' : 'text-blue-600'}`}
-                    >
-                      {option.id}.
-                    </span>
-                    <span className="text-warm-800">{option.labelIs}</span>
-                  </div>
-                </button>
-              );
-            })}
+                return (
+                  <button
+                    key={option.id}
+                    onClick={() => handleOptionSelect(option.id)}
+                    disabled={showResult}
+                    className={`w-full p-4 phone:p-3 rounded-xl border-2 text-left transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${bgColor} ${borderColor} ${
+                      showResult ? 'cursor-default' : 'cursor-pointer'
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <span
+                        className={`font-bold ${showResult && isOptionCorrect ? 'text-green-600' : 'text-blue-600'}`}
+                      >
+                        {option.id}.
+                      </span>
+                      <span className="text-warm-800">{option.labelIs}</span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
         {/* Tiered Hint System / Result feedback (mutually exclusive) */}
         <Presence show={!showResult} exitDuration={250}>
-          <div className="mb-4">
+          <div className="mb-4 phone:mb-3">
             <HintSystem
               hints={challenge.hints}
               basePoints={100}
@@ -295,7 +345,14 @@ export function Level1({ onComplete, onBack }: Level1Props) {
         </Presence>
 
         <Presence show={showResult} exitDuration={250}>
-          <div className="mb-6">
+          {/* The feedback region focus moves to after "Staðfesta" (P3).
+              FeedbackPanel is itself role=alert and announces the verdict. */}
+          <div
+            ref={feedbackRef}
+            tabIndex={-1}
+            role="group"
+            className="mb-6 phone:mb-3 focus:outline-none"
+          >
             <FeedbackPanel
               feedback={{
                 isCorrect,
@@ -322,8 +379,12 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             {hintUsedThisChallenge && '💡 Vísbending notuð'}
           </div>
           <div className="flex shrink-0 gap-3">
+            {/* "Staðfesta" and "Næsta" are separate (keyed) elements, never one
+                button relabelled, and "Næsta" drops a press within 400 ms of
+                appearing. */}
             {!showResult ? (
               <button
+                key="check"
                 onClick={handleCheck}
                 disabled={!selectedOption}
                 className={`px-6 py-3 rounded-xl font-bold transition-colors ${
@@ -336,7 +397,9 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               </button>
             ) : (
               <button
-                onClick={handleNext}
+                key="next"
+                ref={nextRef}
+                onClick={armed(handleNext)}
                 className="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-xl font-bold transition-colors"
               >
                 {currentIndex < LEVEL1_CHALLENGES.length - 1 ? 'Næsta →' : 'Ljúka stigi →'}

@@ -63,7 +63,7 @@ export function ScientificKeys({ inputRef, value, onChange }: ScientificKeysProp
   };
 
   return (
-    <span className="hidden gap-2 pointer-coarse:inline-flex">
+    <span className="hidden gap-2 pointer-coarse:inline-flex max-sm:gap-1.5">
       {KEYS.map((key) => (
         <button
           key={key.insert}

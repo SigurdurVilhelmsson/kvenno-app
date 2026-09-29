@@ -1,3 +1,5 @@
+import { useIsPhone } from '@shared/utils';
+
 import { KIND_LABELS, KIND_STYLES } from '../data/ratios';
 import {
   formatStated,
@@ -33,6 +35,8 @@ interface PoolCardProps {
   equivalence: Equivalence;
   onAdd: () => void;
   disabled?: boolean;
+  /** Extra classes, for the pool's phone layout. */
+  className?: string;
 }
 
 /**
@@ -43,13 +47,13 @@ interface PoolCardProps {
  * what makes "the ratio is upside down" a move inside the game rather than a
  * different card they should have picked.
  */
-export function PoolCard({ equivalence, onAdd, disabled }: PoolCardProps) {
+export function PoolCard({ equivalence, onAdd, disabled, className = '' }: PoolCardProps) {
   return (
     <button
       type="button"
       onClick={onAdd}
       disabled={disabled}
-      className={`game-btn w-full rounded-lg border-2 p-3 text-left transition hover:shadow-md disabled:opacity-40 ${KIND_STYLES[equivalence.kind]}`}
+      className={`game-btn w-full rounded-lg border-2 p-3 text-left transition hover:shadow-md disabled:opacity-40 phone:flex phone:flex-col phone:p-2 ${KIND_STYLES[equivalence.kind]} ${className}`}
       aria-label={`Bæta við hlutfalli: ${sideLabel(equivalence.left)} jafngildir ${sideLabel(equivalence.right)}`}
     >
       <span className="mb-1 block text-[12px] font-semibold uppercase tracking-wide opacity-70 md:text-[11px]">
@@ -107,28 +111,37 @@ interface ChainCardProps {
   failed?: boolean;
 }
 
-/** A placed card: a fraction the student can turn over or take back out. */
+/**
+ * A placed card: a fraction the student can turn over or take back out.
+ *
+ * On a phone its two buttons sit beside the fraction rather than under it, so
+ * the card is one button tall: the chain is a single row there (`ChainRow`),
+ * and its height is what a pinned strip costs.
+ */
 export function ChainCard({ ratio, position, onFlip, onRemove, failed }: ChainCardProps) {
   const { equivalence } = ratio;
+  // On a phone the turn button shows its arrow only, so the card stays one
+  // row narrow; its name, from aria-label, is the same everywhere.
+  const phone = useIsPhone();
 
   return (
     <div
-      className={`rounded-lg border-2 p-2 text-sm ${
+      className={`rounded-lg border-2 p-2 text-sm phone:flex phone:items-center phone:gap-1 phone:p-1 ${
         failed ? 'border-red-500 bg-red-50 text-red-900' : KIND_STYLES[equivalence.kind]
       }`}
     >
-      <div className="flex items-center justify-center px-1 py-1">
+      <div className="flex items-center justify-center px-1 py-1 phone:py-0">
         <RatioFraction ratio={ratio} />
       </div>
       {onFlip && onRemove && (
-        <div className="mt-1 flex gap-1">
+        <div className="mt-1 flex gap-1 phone:mt-0">
           <button
             type="button"
             onClick={onFlip}
-            className="game-btn flex-1 rounded border border-current/30 px-2 py-1 text-xs font-medium hover:bg-white/60 pointer-coarse:min-h-11"
+            className="game-btn flex-1 rounded border border-current/30 px-2 py-1 text-xs font-medium hover:bg-white/60 pointer-coarse:min-h-11 phone:min-w-11 phone:text-sm"
             aria-label={`Snúa við hlutfalli númer ${position}`}
           >
-            ⇅ Snúa við
+            {phone ? '⇅' : '⇅ Snúa við'}
           </button>
           <button
             type="button"

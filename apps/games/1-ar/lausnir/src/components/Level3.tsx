@@ -1,13 +1,21 @@
 import { useEffect, useState, useRef } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
-import { parseStudentNumber, shuffleArray } from '@shared/utils';
+import {
+  focusTarget,
+  parseStudentNumber,
+  revealSpan,
+  shuffleArray,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+  useScreenTop,
+} from '@shared/utils';
 
 import { Problem, ProblemType } from '../types';
 import { FormulaCard } from './FormulaCard';
 import { StepBySolution } from './StepBySolution';
 import { generateProblem } from '../utils/problem-generator';
-import { revealTop } from '../utils/reveal';
 import {
   validateInput,
   checkAnswer,
@@ -51,16 +59,60 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const [feedback, setFeedback] = useState(false);
   const [correct, setCorrect] = useState(false);
   const [done, setDone] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
+  const questionRef = useRef<HTMLParagraphElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const hintRef = useRef<HTMLDivElement>(null);
+  const actionsRef = useRef<HTMLDivElement>(null);
 
   const problem = problems[idx];
 
   // "Næsta dæmi" is below the worked solution, so on a phone the next
-  // question would otherwise start above the screen.
+  // question would otherwise start above the screen. The card's top comes back
+  // into view, as it always has at every width (`anyWidth`; no gap, as with the
+  // scrollIntoView this replaces), and focus moves to the new answer field
+  // (`data-item-start`), as it always has.
+  const cardRef = useItemTop<HTMLDivElement>(idx, { anyWidth: true, gap: 0 });
+  // The results screen, and a new set after it, replace the screen: it opens
+  // at its heading, or at the answer field on a new set. Declared after the
+  // item hook, so that on a new set, where both fire, this one has the last
+  // word.
+  useScreenTop(done, {
+    focus: {
+      get current() {
+        return document.querySelector<HTMLElement>('input[data-item-start]');
+      },
+    },
+  });
+
+  // After Athuga, focus moves to the feedback, not to Næsta (a second Enter
+  // then does nothing), and a phone shows Næsta with as much as fits above it:
+  // the question, else the verdict. The worked solution between them is
+  // teaching, so on a phone the verdict usually comes to the top and the
+  // student reads down to Næsta.
+  useRevealAfterCommit(feedback, () => ({
+    bottom: nextRef.current,
+    tops: [questionRef.current, feedbackRef.current],
+    focus: feedbackRef.current,
+  }));
+
+  // Each hint adds a line above the answer field, and the "Ábending" button
+  // that was pressed is replaced by the next one (or goes, after the third).
+  // A phone keeps the answer field and Athuga on screen with the new hint.
+  // After the third, the button is gone, so focus moves to the hints.
   useEffect(() => {
-    revealTop(cardRef.current);
-  }, [idx]);
+    if (hintLevel === 0) return;
+    const id = requestAnimationFrame(() => {
+      revealSpan(actionsRef.current, [hintRef.current]);
+      if (hintLevel >= 3) focusTarget(hintRef.current);
+    });
+    return () => cancelAnimationFrame(id);
+  }, [hintLevel]);
+
+  // A press within 400 ms of Næsta appearing is dropped, so the second tap of a
+  // double tap on Athuga cannot skip the feedback.
+  const armed = useArmedAfter(400, `${idx}:${feedback}`);
+  const armedDone = useArmedAfter(400, done);
 
   const submit = () => {
     if (feedback) return;
@@ -88,7 +140,6 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     setInputError(null);
     setFeedback(false);
     setHintLevel(0);
-    setTimeout(() => inputRef.current?.focus(), 50);
   };
 
   const showHint = () => {
@@ -128,14 +179,14 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             </div>
             <div className="flex flex-wrap gap-3 justify-center">
               <button
-                onClick={retry}
+                onClick={armedDone(retry)}
                 className="bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 px-6 rounded-xl transition-colors"
               >
                 Reyna aftur
               </button>
               {passed && (
                 <button
-                  onClick={() => onComplete(correctCount)}
+                  onClick={armedDone(() => onComplete(correctCount))}
                   className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-colors"
                 >
                   Ljúka stigi →
@@ -143,7 +194,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               )}
             </div>
             <button
-              onClick={onBack}
+              onClick={armedDone(onBack)}
               className="mt-4 text-warm-500 hover:text-warm-700 font-semibold py-2 pointer-coarse:min-h-11"
             >
               ← Til baka í valmynd
@@ -166,24 +217,30 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           the student looking at the formulas instead of the feedback. */}
       <div className="max-w-lg mx-auto flex flex-col [overflow-anchor:none]">
         {/* Header */}
-        <div className="bg-white rounded-xl shadow-md p-4 mb-4">
+        {/* Header: already one row; on a phone it is tighter (design P4), with
+            the tagline for screen readers only. */}
+        <div className="bg-white rounded-xl shadow-md p-4 mb-4 phone:px-3 phone:py-2 phone:mb-3">
           <div className="flex justify-between items-center gap-3">
             <div className="min-w-0">
-              <h1 className="text-xl font-bold text-warm-800">Reikna styrk - Stig 3</h1>
-              <p className="text-sm text-warm-600">Notaðu formúlurnar til að reikna</p>
+              <h1 className="text-xl font-bold text-warm-800 phone:text-base">
+                Reikna styrk - Stig 3
+              </h1>
+              <p className="text-sm text-warm-600 phone:sr-only">
+                Notaðu formúlurnar til að reikna
+              </p>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-kvenno-orange">
+              <div className="text-2xl font-bold text-kvenno-orange phone:text-base">
                 {correctCount}/{TOTAL}
               </div>
               <div className="text-xs text-warm-600">Rétt</div>
             </div>
           </div>
-          <div className="mt-3">
+          <div className="mt-3 phone:mt-1">
             <div className="text-xs text-warm-500 mb-1">
               Dæmi {idx + 1}/{TOTAL}
             </div>
-            <div className="h-2 bg-warm-200 rounded-full overflow-hidden">
+            <div className="h-2 bg-warm-200 rounded-full overflow-hidden phone:h-1.5">
               <div
                 className="h-full transition-all duration-500"
                 style={{ width: `${((idx + 1) / TOTAL) * 100}%`, backgroundColor: THEME }}
@@ -198,17 +255,26 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         </div>
 
         {/* Question card */}
-        <div ref={cardRef} className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4" key={idx}>
+        <div
+          ref={cardRef}
+          className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4 phone:p-3 phone:mb-3"
+          key={idx}
+        >
           <div
-            className="inline-block bg-purple-100 px-3 py-1 rounded-full text-sm font-semibold mb-3"
+            className="inline-block bg-purple-100 px-3 py-1 rounded-full text-sm font-semibold mb-3 phone:mb-2"
             style={{ color: THEME }}
           >
             {problem.description}
           </div>
-          <p className="text-lg text-warm-800 font-medium mb-4">{problem.question}</p>
+          <p ref={questionRef} className="text-lg text-warm-800 font-medium mb-4 phone:mb-3">
+            {problem.question}
+          </p>
 
           {hintLevel > 0 && (
-            <div className="mb-4 bg-yellow-50 border border-yellow-300 p-3 rounded-lg">
+            <div
+              ref={hintRef}
+              className="mb-4 bg-yellow-50 border border-yellow-300 p-3 rounded-lg phone:mb-3 phone:p-2"
+            >
               {problem.hints.slice(0, hintLevel).map((h, i) => (
                 <p key={i} className="text-sm text-yellow-900">
                   <span className="font-semibold">Ábending {i + 1}:</span> {h}
@@ -223,7 +289,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 <div className="flex-1">
                   <label className="block text-sm font-semibold text-warm-700 mb-1">Svar:</label>
                   <input
-                    ref={inputRef}
+                    data-item-start
                     type="text"
                     inputMode="decimal"
                     value={input}
@@ -232,6 +298,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                       setInputError(null);
                     }}
                     onKeyDown={(e) => e.key === 'Enter' && submit()}
+                    enterKeyHint="done"
                     placeholder="0,000"
                     autoFocus
                     className={`w-full border-2 rounded-lg px-4 py-3 text-lg text-center font-bold outline-none transition-colors ${
@@ -242,7 +309,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 </div>
                 <div className="text-lg font-bold text-warm-600 pb-3">{problem.unit}</div>
               </div>
-              <div className="flex gap-2">
+              <div ref={actionsRef} className="flex gap-2">
                 {hintLevel < 3 && (
                   <button
                     onClick={showHint}
@@ -264,27 +331,38 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           )}
 
           {feedback && (
-            <div className="mt-2 space-y-3">
-              <FeedbackPanel
-                feedback={{
-                  isCorrect: correct,
-                  explanation: `Rétt svar: ${formatAnswer(problem.answer)} ${problem.unit}`,
-                  misconception: correct
-                    ? undefined
-                    : getContextualFeedback(parseStudentNumber(input), problem.answer),
-                }}
-                config={{
-                  showExplanation: true,
-                  showMisconceptions: !correct,
-                  showRelatedConcepts: false,
-                  showNextSteps: false,
-                }}
-              />
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <StepBySolution problem={problem} />
+            <div className="mt-2 space-y-3 phone:space-y-2">
+              {/* The region focus moves to after Athuga: the verdict and the
+                  worked solution. FeedbackPanel keeps its own role="alert" and
+                  exposes no id to label the group with. */}
+              <div
+                ref={feedbackRef}
+                role="group"
+                tabIndex={-1}
+                className="space-y-3 phone:space-y-2"
+              >
+                <FeedbackPanel
+                  feedback={{
+                    isCorrect: correct,
+                    explanation: `Rétt svar: ${formatAnswer(problem.answer)} ${problem.unit}`,
+                    misconception: correct
+                      ? undefined
+                      : getContextualFeedback(parseStudentNumber(input), problem.answer),
+                  }}
+                  config={{
+                    showExplanation: true,
+                    showMisconceptions: !correct,
+                    showRelatedConcepts: false,
+                    showNextSteps: false,
+                  }}
+                />
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 phone:p-2">
+                  <StepBySolution problem={problem} />
+                </div>
               </div>
               <button
-                onClick={next}
+                ref={nextRef}
+                onClick={armed(next)}
                 className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
               >
                 {idx + 1 < TOTAL ? 'Næsta dæmi →' : 'Sjá niðurstöður →'}

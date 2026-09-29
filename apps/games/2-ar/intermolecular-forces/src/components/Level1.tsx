@@ -1,8 +1,14 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { AnimatedMolecule, FeedbackPanel } from '@shared/components';
 import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
-import { formatDecimal } from '@shared/utils';
+import {
+  formatDecimal,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+  useScreenTop,
+} from '@shared/utils';
 
 import { ForceStrengthAnimation } from './ForceStrengthAnimation';
 import { imfToMolecule } from '../utils/imfConverter';
@@ -472,6 +478,37 @@ export function Level1({ onComplete, onBack }: Level1Props) {
 
   const molecule = molecules[currentMolecule];
 
+  // Kynning ↔ æfingar starts the new screen at its top with its heading focused. The quiz
+  // has no heading of its own, so there focus goes to the molecule's formula, which is also
+  // where each new molecule starts: Næsta brings the card's top back and focuses it.
+  const formulaRef = useRef<HTMLDivElement>(null);
+  useScreenTop(phase, { focus: phase === 'quiz' ? formulaRef : undefined });
+  const cardRef = useItemTop<HTMLDivElement>(currentMolecule);
+  const questionRef = useRef<HTMLParagraphElement>(null);
+  const optionsRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  // After Athuga: the question through Næsta if it fits (else the choices, else the verdict
+  // at the top), and focus on the feedback, not on Næsta, so a second Enter lands on nothing
+  // (design P3).
+  useRevealAfterCommit(showResult, () => ({
+    bottom: nextRef.current,
+    tops: [questionRef.current, optionsRef.current, feedbackRef.current],
+    focus: feedbackRef.current,
+  }));
+  // A double tap on Athuga must not land on Næsta, which renders in its place.
+  const armed = useArmedAfter(400, `${currentMolecule}:${showResult}`);
+  // Opening the hint replaces its link with the hint, which pushed Athuga below a phone's
+  // screen and dropped focus to <body> with the link: bring the hint through Athuga into
+  // view on a phone, and move focus to the hint (design §3, hints).
+  const hintRef = useRef<HTMLDivElement>(null);
+  const checkRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(showHint, () => ({
+    bottom: checkRef.current,
+    tops: [hintRef.current],
+    focus: hintRef.current,
+  }));
+
   const toggleIMF = (imfId: string) => {
     if (showResult) return;
     const newSet = new Set(selectedIMFs);
@@ -539,7 +576,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-6 phone:mb-3">
             <button
               onClick={onBack}
               className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
@@ -549,16 +586,18 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <div className="text-sm text-warm-600">Stig 1: Kynning</div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-indigo-800 mb-6">
+          {/* A teaching page stays one deliberate scroll on a phone; only its padding and the
+              decorative emoji compact (design §3). */}
+          <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 mb-6 phone:p-3 phone:mb-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-indigo-800 mb-6 phone:mb-3">
               Tegundir millisameindakrafta (IMF)
             </h2>
 
-            <div className="space-y-6">
+            <div className="space-y-6 phone:space-y-3">
               {IMF_TYPES.map((imf) => (
                 <div
                   key={imf.id}
-                  className={`p-4 sm:p-6 rounded-xl border-2 ${
+                  className={`p-4 sm:p-6 phone:p-3 rounded-xl border-2 ${
                     imf.id === 'london'
                       ? 'bg-purple-50 border-purple-200'
                       : imf.id === 'dipole'
@@ -568,7 +607,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                 >
                   <div className="flex items-start gap-3 sm:gap-4">
                     <div
-                      className={`w-12 h-12 sm:w-16 sm:h-16 shrink-0 rounded-full flex items-center justify-center text-xl sm:text-2xl ${
+                      className={`w-12 h-12 sm:w-16 sm:h-16 phone:w-10 phone:h-10 phone:text-lg shrink-0 rounded-full flex items-center justify-center text-xl sm:text-2xl ${
                         imf.id === 'london'
                           ? 'bg-purple-200'
                           : imf.id === 'dipole'
@@ -605,7 +644,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
               ))}
             </div>
 
-            <div className="mt-8 bg-yellow-50 p-4 rounded-xl border border-yellow-200">
+            <div className="mt-8 phone:mt-4 bg-yellow-50 p-4 phone:p-3 rounded-xl border border-yellow-200">
               <h4 className="font-bold text-yellow-800 mb-2">🔑 Lykilatriði</h4>
               <ul className="space-y-1 text-yellow-900 text-sm">
                 <li>
@@ -622,7 +661,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             </div>
 
             {/* Force Strength Animation */}
-            <div className="mt-8">
+            <div className="mt-8 phone:mt-4">
               <ForceStrengthAnimation interactive={true} animate={true} compact={false} />
             </div>
           </div>
@@ -649,282 +688,322 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
+        {/* On a phone the counters share one line (P4), so the row is one line tall. */}
+        <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
           <button
             onClick={() => setPhase('learn')}
-            className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
+            className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5 phone:shrink-0"
           >
             ← Skoða kennslu
           </button>
-          <div className="text-right">
+          <div className="text-right phone:flex phone:flex-wrap phone:items-baseline phone:justify-end phone:gap-x-2 phone:min-w-0">
             <div className="text-sm text-warm-600">
               Sameind {currentMolecule + 1} af {molecules.length}
             </div>
-            <div className="text-lg font-bold text-indigo-600">{score} stig</div>
+            <div className="text-lg font-bold text-indigo-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 
-        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6 phone:h-1.5 phone:mb-3">
           <div
-            className="bg-indigo-500 h-2 rounded-full transition-all"
+            className="bg-indigo-500 h-2 phone:h-1.5 rounded-full transition-all"
             style={{ width: `${((currentMolecule + 1) / molecules.length) * 100}%` }}
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-          {/* Molecule display with visualization */}
-          <div className="bg-warm-900 rounded-xl p-4 sm:p-6 mb-6">
-            <div className="text-center mb-4">
-              <div className="text-4xl font-bold text-white mb-1">{molecule.formula}</div>
-              <div className="text-warm-400">{molecule.name}</div>
-            </div>
+        <div ref={cardRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3">
+          {/* A phone on its side: the molecule | the question, choices and feedback. The two
+              groups are plain blocks, so desktop margins are unchanged. */}
+          <div className="phone-land:grid phone-land:grid-cols-2 phone-land:gap-4 phone-land:items-start">
+            {/* Molecule display with visualization */}
+            <div className="bg-warm-900 rounded-xl p-4 sm:p-6 mb-6 phone:p-3 phone:mb-3">
+              {/* On a phone the formula, its name and the 2D/3D toggle share one row. The name
+                  may wrap under the formula, and a name too long to sit beside the toggle
+                  (Kolefnistetraklóríð) moves the toggle to its own line rather than breaking. */}
+              <div className="phone:flex phone:flex-wrap phone:items-center phone:justify-between phone:gap-x-2 phone:gap-y-1 phone:mb-2">
+                <div className="text-center mb-4 phone:mb-0 phone:text-left phone:flex-[1_1_6rem]">
+                  <div
+                    ref={formulaRef}
+                    data-item-start
+                    className="text-4xl font-bold text-white mb-1 phone:text-2xl phone:inline phone:mr-2"
+                  >
+                    {molecule.formula}
+                  </div>
+                  <div className="text-warm-400 phone:inline">{molecule.name}</div>
+                </div>
 
-            {/* 2D/3D Toggle */}
-            <div
-              className="flex justify-center gap-2 mb-4"
-              role="radiogroup"
-              aria-label="Birtingarmáti"
-            >
-              <button
-                onClick={() => setViewMode('2d')}
-                role="radio"
-                aria-checked={viewMode === '2d'}
-                aria-label="Tvívíð birting"
-                className={`px-4 py-1.5 pointer-coarse:py-3 rounded-lg text-sm font-medium transition-colors ${
-                  viewMode === '2d'
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-warm-700 text-warm-300 hover:bg-warm-600'
-                }`}
-              >
-                2D
-              </button>
-              <button
-                onClick={() => setViewMode('3d')}
-                role="radio"
-                aria-checked={viewMode === '3d'}
-                aria-label="Þrívíð birting"
-                className={`px-4 py-1.5 pointer-coarse:py-3 rounded-lg text-sm font-medium transition-colors ${
-                  viewMode === '3d'
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-warm-700 text-warm-300 hover:bg-warm-600'
-                }`}
-              >
-                3D
-              </button>
-            </div>
+                {/* 2D/3D Toggle */}
+                <div
+                  className="flex justify-center gap-2 mb-4 phone:mb-0 phone:ml-auto phone:shrink-0"
+                  role="radiogroup"
+                  aria-label="Birtingarmáti"
+                >
+                  <button
+                    onClick={() => setViewMode('2d')}
+                    role="radio"
+                    aria-checked={viewMode === '2d'}
+                    aria-label="Tvívíð birting"
+                    className={`px-4 py-1.5 pointer-coarse:py-3 rounded-lg text-sm font-medium transition-colors ${
+                      viewMode === '2d'
+                        ? 'bg-indigo-600 text-white'
+                        : 'bg-warm-700 text-warm-300 hover:bg-warm-600'
+                    }`}
+                  >
+                    2D
+                  </button>
+                  <button
+                    onClick={() => setViewMode('3d')}
+                    role="radio"
+                    aria-checked={viewMode === '3d'}
+                    aria-label="Þrívíð birting"
+                    className={`px-4 py-1.5 pointer-coarse:py-3 rounded-lg text-sm font-medium transition-colors ${
+                      viewMode === '3d'
+                        ? 'bg-indigo-600 text-white'
+                        : 'bg-warm-700 text-warm-300 hover:bg-warm-600'
+                    }`}
+                  >
+                    3D
+                  </button>
+                </div>
+              </div>
 
-            {/* Molecular structure visualization */}
-            {molecule.visualization && (
-              <div className="bg-warm-800 rounded-lg p-3 sm:p-4 mb-4">
-                <div className="flex justify-center py-2">
-                  {viewMode === '2d' ? (
-                    <AnimatedMolecule
-                      molecule={imfToMolecule({
-                        formula: molecule.formula,
-                        name: molecule.name,
-                        isPolar: molecule.isPolar,
-                        hasHBond: molecule.hasHBond,
-                        visualization: molecule.visualization,
-                      })}
-                      mode="simple"
-                      size="md"
-                      animation="fade-in"
-                      showPartialCharges={molecule.isPolar}
-                      showDipoleMoment={molecule.isPolar}
-                      ariaLabel={`${molecule.name} sameindaformúla`}
-                    />
-                  ) : (
-                    <MoleculeViewer3DLazy
-                      molecule={imfToMolecule({
-                        formula: molecule.formula,
-                        name: molecule.name,
-                        isPolar: molecule.isPolar,
-                        hasHBond: molecule.hasHBond,
-                        visualization: molecule.visualization,
-                      })}
-                      style="ball-stick"
-                      showLabels={true}
-                      autoRotate={true}
-                      autoRotateSpeed={1.5}
-                      height={180}
-                      width="100%"
-                      backgroundColor="transparent"
-                    />
+              {/* Molecular structure visualization */}
+              {molecule.visualization && (
+                <div className="bg-warm-800 rounded-lg p-3 sm:p-4 mb-4 phone:p-2 phone:mb-2">
+                  <div className="flex justify-center py-2 phone:py-0">
+                    {viewMode === '2d' ? (
+                      <AnimatedMolecule
+                        molecule={imfToMolecule({
+                          formula: molecule.formula,
+                          name: molecule.name,
+                          isPolar: molecule.isPolar,
+                          hasHBond: molecule.hasHBond,
+                          visualization: molecule.visualization,
+                        })}
+                        mode="simple"
+                        size="md"
+                        fit
+                        animation="fade-in"
+                        showPartialCharges={molecule.isPolar}
+                        showDipoleMoment={molecule.isPolar}
+                        ariaLabel={`${molecule.name} sameindaformúla`}
+                      />
+                    ) : (
+                      <MoleculeViewer3DLazy
+                        molecule={imfToMolecule({
+                          formula: molecule.formula,
+                          name: molecule.name,
+                          isPolar: molecule.isPolar,
+                          hasHBond: molecule.hasHBond,
+                          visualization: molecule.visualization,
+                        })}
+                        style="ball-stick"
+                        showLabels={true}
+                        autoRotate={true}
+                        autoRotateSpeed={1.5}
+                        height={180}
+                        width="100%"
+                        backgroundColor="transparent"
+                      />
+                    )}
+                  </div>
+                  {/* Legend for partial charges */}
+                  {molecule.isPolar && viewMode === '2d' && (
+                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-xs phone:gap-x-3 phone:mt-1">
+                      <span className="text-red-400">δ+ = Jákvætt skautað</span>
+                      <span className="text-blue-400">δ− = Neikvætt skautað</span>
+                    </div>
+                  )}
+                  {viewMode === '3d' && (
+                    <div className="text-xs text-warm-400 text-center mt-2 phone:mt-1">
+                      Dragðu til að snúa, skrollaðu til að stækka
+                    </div>
                   )}
                 </div>
-                {/* Legend for partial charges */}
-                {molecule.isPolar && viewMode === '2d' && (
-                  <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-3 text-xs">
-                    <span className="text-red-400">δ+ = Jákvætt skautað</span>
-                    <span className="text-blue-400">δ− = Neikvætt skautað</span>
-                  </div>
-                )}
-                {viewMode === '3d' && (
-                  <div className="text-xs text-warm-400 text-center mt-2">
-                    Dragðu til að snúa, skrollaðu til að stækka
-                  </div>
+              )}
+
+              {/* Molecule properties badges */}
+              <div className="flex justify-center gap-3 flex-wrap phone:gap-1.5">
+                <span
+                  className={`px-3 py-1.5 phone:px-2 phone:py-1 rounded-full text-xs font-medium ${
+                    molecule.isPolar ? 'bg-blue-500 text-white' : 'bg-warm-600 text-warm-300'
+                  }`}
+                >
+                  {molecule.isPolar ? '⚡ Skautuð' : '○ Óskautuð'}
+                </span>
+                <span className="px-3 py-1.5 phone:px-2 phone:py-1 rounded-full text-xs font-medium bg-purple-500 text-white">
+                  M = {formatDecimal(molecule.molarMass)} g/mól
+                </span>
+                {molecule.hasHBond && (
+                  <span className="px-3 py-1.5 phone:px-2 phone:py-1 rounded-full text-xs font-medium bg-red-500 text-white">
+                    🔗 H-F/O/N tengi
+                  </span>
                 )}
               </div>
-            )}
+            </div>
 
-            {/* Molecule properties badges */}
-            <div className="flex justify-center gap-3 flex-wrap">
-              <span
-                className={`px-3 py-1.5 rounded-full text-xs font-medium ${
-                  molecule.isPolar ? 'bg-blue-500 text-white' : 'bg-warm-600 text-warm-300'
-                }`}
+            <div>
+              <p
+                ref={questionRef}
+                className="text-warm-700 text-lg mb-6 phone:text-base phone:mb-3"
               >
-                {molecule.isPolar ? '⚡ Skautuð' : '○ Óskautuð'}
-              </span>
-              <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-purple-500 text-white">
-                M = {formatDecimal(molecule.molarMass)} g/mól
-              </span>
-              {molecule.hasHBond && (
-                <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-red-500 text-white">
-                  🔗 H-F/O/N tengi
-                </span>
+                Hvaða millisameindakraftar eru til staðar í {molecule.formula}? (Veldu allt sem á
+                við)
+              </p>
+
+              {/* IMF Selection */}
+              <div ref={optionsRef} className="space-y-3 mb-6 phone:space-y-2 phone:mb-3">
+                {IMF_TYPES.map((imf) => {
+                  const isSelected = selectedIMFs.has(imf.id);
+                  const isCorrectChoice = molecule.correctIMFs.includes(imf.id);
+
+                  return (
+                    <button
+                      key={imf.id}
+                      onClick={() => toggleIMF(imf.id)}
+                      disabled={showResult}
+                      className={`w-full px-3 py-4 sm:p-4 phone:py-3 rounded-xl border-2 text-left transition-all ${
+                        showResult
+                          ? isCorrectChoice
+                            ? 'border-green-500 bg-green-50'
+                            : isSelected
+                              ? 'border-red-500 bg-red-50'
+                              : 'border-warm-200 opacity-50'
+                          : isSelected
+                            ? `border-2 ring-2 ${
+                                imf.id === 'london'
+                                  ? 'border-purple-500 ring-purple-200 bg-purple-50'
+                                  : imf.id === 'dipole'
+                                    ? 'border-blue-500 ring-blue-200 bg-blue-50'
+                                    : 'border-red-500 ring-red-200 bg-red-50'
+                              }`
+                            : 'border-warm-300 hover:border-warm-400'
+                      }`}
+                    >
+                      {/* At 320 px the name, the tick box and the strength badge only just fit side
+                      by side: tighter padding and gap below sm, and the box never shrinks. */}
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div
+                          className={`w-6 h-6 shrink-0 rounded border-2 flex items-center justify-center ${
+                            isSelected
+                              ? 'bg-indigo-500 border-indigo-500 text-white'
+                              : 'border-warm-400'
+                          }`}
+                        >
+                          {isSelected && '✓'}
+                        </div>
+                        <div className="flex-1 font-bold">{imf.name}</div>
+                        <span
+                          className={`px-2 py-1 rounded text-xs ${
+                            imf.id === 'london'
+                              ? 'bg-purple-100 text-purple-700'
+                              : imf.id === 'dipole'
+                                ? 'bg-blue-100 text-blue-700'
+                                : 'bg-red-100 text-red-700'
+                          }`}
+                        >
+                          {imf.strength}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Hint */}
+              {!showResult && !showHint && (
+                <button
+                  onClick={handleShowHint}
+                  className="text-indigo-600 hover:text-indigo-800 text-sm underline mb-4 pointer-coarse:py-3 pointer-coarse:-mt-3 pointer-coarse:mb-1"
+                >
+                  Sýna vísbendingu
+                </button>
+              )}
+
+              {showHint && !showResult && (
+                <div
+                  ref={hintRef}
+                  className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4 phone:p-3 phone:mb-3"
+                >
+                  <span className="font-bold text-yellow-800">Vísbending: </span>
+                  <span className="text-yellow-900">
+                    {molecule.isPolar
+                      ? 'Þessi sameind er skautuð — hvaða IMF eru til staðar í skautuðum sameindum?'
+                      : 'Þessi sameind er óskautuð — hvaða IMF er alltaf til staðar?'}
+                    {molecule.hasHBond &&
+                      ' Athugaðu einnig hvort H-F, H-O, eða H-N séu til staðar.'}
+                  </span>
+                </div>
+              )}
+
+              {/* Athuga and Næsta are separate elements (keyed), never one button relabelled, and
+              Næsta ignores a press within 400 ms of appearing. */}
+              {!showResult ? (
+                <button
+                  key="check"
+                  ref={checkRef}
+                  onClick={checkAnswer}
+                  disabled={selectedIMFs.size === 0}
+                  className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl"
+                >
+                  Athuga svar
+                </button>
+              ) : (
+                <>
+                  {/* The feedback region focus moves to after Athuga (P3). FeedbackPanel is itself
+                  role=alert and announces the verdict. */}
+                  <div
+                    ref={feedbackRef}
+                    tabIndex={-1}
+                    role="group"
+                    className="mb-4 phone:mb-3 focus:outline-none"
+                  >
+                    <FeedbackPanel
+                      feedback={{
+                        isCorrect,
+                        explanation: molecule.explanation,
+                        // Each branch names the mistake the student actually made. Choosing
+                        // hydrogen bonds for a molecule without them (H on C or Cl) is the
+                        // commonest one, and it used to fall through to a note about molar mass.
+                        misconception: isCorrect
+                          ? undefined
+                          : molecule.hasHBond !== selectedIMFs.has('hydrogen')
+                            ? MISCONCEPTIONS.hbond
+                            : molecule.isPolar &&
+                                (!selectedIMFs.has('dipole') || !selectedIMFs.has('london'))
+                              ? MISCONCEPTIONS.polar
+                              : !molecule.isPolar && selectedIMFs.has('dipole')
+                                ? MISCONCEPTIONS.nonpolar
+                                : undefined,
+                        relatedConcepts: [
+                          ...RELATED_CONCEPTS.london,
+                          ...(molecule.isPolar ? RELATED_CONCEPTS.dipole : []),
+                          ...(molecule.hasHBond ? RELATED_CONCEPTS.hydrogen : []),
+                        ],
+                        nextSteps: isCorrect
+                          ? 'Frábært! Þú skilur IMF vel. Haltu áfram.'
+                          : 'Mundu: London er ALLTAF til staðar. Skautuð = tvískaut. H-F/O/N = vetnistengi.',
+                      }}
+                      config={{
+                        showExplanation: true,
+                        showMisconceptions: !isCorrect,
+                        showRelatedConcepts: true,
+                        showNextSteps: true,
+                      }}
+                    />
+                  </div>
+                  <button
+                    key="next"
+                    ref={nextRef}
+                    onClick={armed(nextMolecule)}
+                    className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-6 rounded-xl"
+                  >
+                    {currentMolecule < molecules.length - 1 ? 'Næsta sameind' : 'Ljúka stigi 1'}
+                  </button>
+                </>
               )}
             </div>
           </div>
-
-          <p className="text-warm-700 text-lg mb-6">
-            Hvaða millisameindakraftar eru til staðar í {molecule.formula}? (Veldu allt sem á við)
-          </p>
-
-          {/* IMF Selection */}
-          <div className="space-y-3 mb-6">
-            {IMF_TYPES.map((imf) => {
-              const isSelected = selectedIMFs.has(imf.id);
-              const isCorrectChoice = molecule.correctIMFs.includes(imf.id);
-
-              return (
-                <button
-                  key={imf.id}
-                  onClick={() => toggleIMF(imf.id)}
-                  disabled={showResult}
-                  className={`w-full px-3 py-4 sm:p-4 rounded-xl border-2 text-left transition-all ${
-                    showResult
-                      ? isCorrectChoice
-                        ? 'border-green-500 bg-green-50'
-                        : isSelected
-                          ? 'border-red-500 bg-red-50'
-                          : 'border-warm-200 opacity-50'
-                      : isSelected
-                        ? `border-2 ring-2 ${
-                            imf.id === 'london'
-                              ? 'border-purple-500 ring-purple-200 bg-purple-50'
-                              : imf.id === 'dipole'
-                                ? 'border-blue-500 ring-blue-200 bg-blue-50'
-                                : 'border-red-500 ring-red-200 bg-red-50'
-                          }`
-                        : 'border-warm-300 hover:border-warm-400'
-                  }`}
-                >
-                  {/* At 320 px the name, the tick box and the strength badge only just fit side
-                      by side: tighter padding and gap below sm, and the box never shrinks. */}
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <div
-                      className={`w-6 h-6 shrink-0 rounded border-2 flex items-center justify-center ${
-                        isSelected
-                          ? 'bg-indigo-500 border-indigo-500 text-white'
-                          : 'border-warm-400'
-                      }`}
-                    >
-                      {isSelected && '✓'}
-                    </div>
-                    <div className="flex-1 font-bold">{imf.name}</div>
-                    <span
-                      className={`px-2 py-1 rounded text-xs ${
-                        imf.id === 'london'
-                          ? 'bg-purple-100 text-purple-700'
-                          : imf.id === 'dipole'
-                            ? 'bg-blue-100 text-blue-700'
-                            : 'bg-red-100 text-red-700'
-                      }`}
-                    >
-                      {imf.strength}
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Hint */}
-          {!showResult && !showHint && (
-            <button
-              onClick={handleShowHint}
-              className="text-indigo-600 hover:text-indigo-800 text-sm underline mb-4 pointer-coarse:py-3 pointer-coarse:-mt-3 pointer-coarse:mb-1"
-            >
-              Sýna vísbendingu
-            </button>
-          )}
-
-          {showHint && !showResult && (
-            <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4">
-              <span className="font-bold text-yellow-800">Vísbending: </span>
-              <span className="text-yellow-900">
-                {molecule.isPolar
-                  ? 'Þessi sameind er skautuð — hvaða IMF eru til staðar í skautuðum sameindum?'
-                  : 'Þessi sameind er óskautuð — hvaða IMF er alltaf til staðar?'}
-                {molecule.hasHBond && ' Athugaðu einnig hvort H-F, H-O, eða H-N séu til staðar.'}
-              </span>
-            </div>
-          )}
-
-          {!showResult ? (
-            <button
-              onClick={checkAnswer}
-              disabled={selectedIMFs.size === 0}
-              className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl"
-            >
-              Athuga svar
-            </button>
-          ) : (
-            <>
-              <div className="mb-4">
-                <FeedbackPanel
-                  feedback={{
-                    isCorrect,
-                    explanation: molecule.explanation,
-                    // Each branch names the mistake the student actually made. Choosing
-                    // hydrogen bonds for a molecule without them (H on C or Cl) is the
-                    // commonest one, and it used to fall through to a note about molar mass.
-                    misconception: isCorrect
-                      ? undefined
-                      : molecule.hasHBond !== selectedIMFs.has('hydrogen')
-                        ? MISCONCEPTIONS.hbond
-                        : molecule.isPolar &&
-                            (!selectedIMFs.has('dipole') || !selectedIMFs.has('london'))
-                          ? MISCONCEPTIONS.polar
-                          : !molecule.isPolar && selectedIMFs.has('dipole')
-                            ? MISCONCEPTIONS.nonpolar
-                            : undefined,
-                    relatedConcepts: [
-                      ...RELATED_CONCEPTS.london,
-                      ...(molecule.isPolar ? RELATED_CONCEPTS.dipole : []),
-                      ...(molecule.hasHBond ? RELATED_CONCEPTS.hydrogen : []),
-                    ],
-                    nextSteps: isCorrect
-                      ? 'Frábært! Þú skilur IMF vel. Haltu áfram.'
-                      : 'Mundu: London er ALLTAF til staðar. Skautuð = tvískaut. H-F/O/N = vetnistengi.',
-                  }}
-                  config={{
-                    showExplanation: true,
-                    showMisconceptions: !isCorrect,
-                    showRelatedConcepts: true,
-                    showNextSteps: true,
-                  }}
-                />
-              </div>
-              <button
-                onClick={nextMolecule}
-                className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-6 rounded-xl"
-              >
-                {currentMolecule < molecules.length - 1 ? 'Næsta sameind' : 'Ljúka stigi 1'}
-              </button>
-            </>
-          )}
         </div>
 
         {/* Quick reference with IMF strength scale */}

@@ -269,7 +269,7 @@ export function EquivalenceDisplay({
   };
 
   return (
-    <div className="flex flex-col items-center p-4 sm:p-6 bg-gradient-to-b from-warm-50 to-warm-100 rounded-xl">
+    <div className="flex flex-col items-center p-4 sm:p-6 bg-gradient-to-b from-warm-50 to-warm-100 rounded-xl phone:p-3">
       {/* Scale beam */}
       <div
         className={`
@@ -285,7 +285,7 @@ export function EquivalenceDisplay({
       </div>
 
       {/* Scale pans */}
-      <div className="flex justify-between gap-2 w-full max-w-md mt-6 sm:px-4">
+      <div className="flex justify-between gap-2 w-full max-w-md mt-6 sm:px-4 phone:mt-4">
         <div
           className={`
           transition-all duration-500
@@ -317,7 +317,7 @@ export function EquivalenceDisplay({
       {/* Status message */}
       <div
         className={`
-        mt-6 px-4 sm:px-6 py-2 rounded-full font-bold text-base sm:text-lg
+        mt-6 px-4 sm:px-6 py-2 rounded-full font-bold text-base sm:text-lg phone:mt-3 phone:py-1
         transition-all duration-300
         ${isEqual ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}
       `}

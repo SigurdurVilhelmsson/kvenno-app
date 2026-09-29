@@ -20,15 +20,18 @@ export const IndicatorSelector: React.FC<IndicatorSelectorProps> = ({
   disabled = false,
 }) => {
   return (
-    <div className="bg-white rounded-lg p-3 sm:p-4 shadow-md border-2 border-warm-200">
-      <h3 className="text-lg font-bold text-warm-800 mb-3">Veldu vísi</h3>
-      <div className="grid grid-cols-1 gap-2">
+    <div className="bg-white rounded-lg p-3 sm:p-4 shadow-md border-2 border-warm-200 phone:p-2">
+      <h3 className="text-lg font-bold text-warm-800 mb-3 phone:text-base phone:mb-2">
+        Veldu vísi
+      </h3>
+      {/* Two columns on a phone on its side. */}
+      <div className="grid grid-cols-1 gap-2 phone:gap-1.5 phone-land:grid-cols-2">
         {indicators.map((indicator) => (
           <button
             key={indicator.id}
             onClick={() => onSelect(indicator.id)}
             disabled={disabled}
-            className={`p-3 rounded-lg border-2 text-left transition-all ${
+            className={`p-3 phone:p-2 rounded-lg border-2 text-left transition-all ${
               selectedIndicator === indicator.id
                 ? 'border-orange-500 bg-orange-50 shadow-md'
                 : 'border-warm-300 bg-white hover:border-warm-400 hover:bg-warm-50'
@@ -66,8 +69,11 @@ export const IndicatorSelector: React.FC<IndicatorSelectorProps> = ({
         ))}
       </div>
 
+      {/* On a phone the chosen card's own highlight says the same thing, so the
+          line is kept for screen readers only: the cards carry no pressed
+          state, and this is what tells a screen reader which one is chosen. */}
       {selectedIndicator && (
-        <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded">
+        <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded phone:sr-only">
           <p className="text-xs text-green-800 font-semibold">
             ✓ Valinn: {indicators.find((i) => i.id === selectedIndicator)?.name}
           </p>

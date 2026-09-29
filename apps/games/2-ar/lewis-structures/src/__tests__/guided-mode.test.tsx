@@ -2,6 +2,7 @@
 import { act, cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { LewisGuidedMode } from '../components/LewisGuidedMode';
 
 /**
@@ -60,13 +61,30 @@ function reachDistribution(g: ReturnType<typeof renderGuide>) {
 }
 
 beforeEach(() => {
-  vi.useFakeTimers();
+  // Everything but \`performance\`, which clockPastNextGuard above steps past the
+  // Næsta guard; faking it too would freeze the guard's clock.
+  vi.useFakeTimers({
+    toFake: [
+      'setTimeout',
+      'clearTimeout',
+      'setInterval',
+      'clearInterval',
+      'setImmediate',
+      'clearImmediate',
+      'Date',
+      'requestAnimationFrame',
+      'cancelAnimationFrame',
+    ],
+  });
 });
 
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
 });
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 describe('a wrong answer can be tried again', () => {
   it('offers "Reyna aftur" on a wrong count, and the step can then be passed', () => {
@@ -83,6 +101,19 @@ describe('a wrong answer can be tried again', () => {
     g.click('Athuga');
     expect(g.ui.getByText('✓ Rétt!')).toBeTruthy();
     expect(g.ui.getByRole('button', { name: 'Næsta skref →' })).toBeTruthy();
+  });
+
+  // "Reyna aftur" unmounts with the feedback, so focus fell to <body> with it
+  // (design P3.5). It now goes back to the step's field.
+  it('"Reyna aftur" returns focus to the field, not <body>', () => {
+    const g = renderGuide();
+    g.type('7');
+    g.click('Athuga');
+    const retry = g.ui.getByRole('button', { name: 'Reyna aftur' });
+    retry.focus();
+    fireEvent.click(retry);
+    expect(document.activeElement).not.toBe(document.body);
+    expect(document.activeElement).toBe(g.input());
   });
 
   it('offers "Reyna aftur" on a wrong bond count too', () => {

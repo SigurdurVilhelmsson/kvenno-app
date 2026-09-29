@@ -1,10 +1,20 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useLayoutEffect } from 'react';
 
-import { Presence } from '@shared/components';
-import { formatDecimal, parseStudentNumber } from '@shared/utils';
+import { PhoneDisclosure, Presence } from '@shared/components';
+import {
+  focusTarget,
+  formatDecimal,
+  parseStudentNumber,
+  useArmedAfter,
+  useIsPhone,
+  useItemTop,
+  useRevealAfterCommit,
+} from '@shared/utils';
 
 import { LEVEL3_CHALLENGES } from '../data/level3-challenges';
-import { revealTop } from '../utils/reveal';
+
+/** Exit duration of the hint and submit Presences, which leave as the result enters. */
+const ANSWER_EXIT_MS = 250;
 
 interface Level3Props {
   onComplete: (score: number) => void;
@@ -17,8 +27,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const [, setHintsUsed] = useState(0);
   const [completed, setCompleted] = useState(0);
   const levelCompleteReported = useRef(false);
-  const levelRef = useRef<HTMLDivElement>(null);
-  const [revealKey, setRevealKey] = useState(0);
+  const phone = useIsPhone();
 
   // Answer state
   const [userAnswer, setUserAnswer] = useState('');
@@ -38,9 +47,45 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     setIsCorrect(false);
   }, [currentIndex]);
 
-  useEffect(() => {
-    if (revealKey > 0) revealTop(levelRef.current);
-  }, [revealKey]);
+  // The level heading takes focus as the level mounts (the menu button that
+  // opened it has gone).
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  useLayoutEffect(() => {
+    focusTarget(headingRef.current);
+  }, []);
+
+  // Each "Næsta" opens the next problem at the level's top when that top has
+  // scrolled above the screen, and focuses the problem's title
+  // (`data-item-start`). It did this at every width before it moved to the
+  // shared helper, so it still does (`anyWidth`).
+  const levelRef = useItemTop<HTMLDivElement>(currentIndex, { anyWidth: true });
+
+  // After "Staðfesta svar": on a phone, the answer row through "Næsta" if it
+  // fits, else the verdict at the top; measured once the hint and the submit
+  // button above have left. Focus goes to the result, not to "Næsta" (P3).
+  const answerRowRef = useRef<HTMLDivElement>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(
+    showResult,
+    () => ({
+      bottom: nextRef.current,
+      tops: [answerRowRef.current, resultRef.current],
+      focus: resultRef.current,
+    }),
+    { afterExit: ANSWER_EXIT_MS + 50 }
+  );
+  // Opening the hint replaces its button with the hint, which dropped focus to
+  // <body> (P3.5): bring the answer row through the hint into view on a phone
+  // and move focus to the hint.
+  const hintRef = useRef<HTMLDivElement>(null);
+  useRevealAfterCommit(showHint, () => ({
+    bottom: hintRef.current,
+    tops: [answerRowRef.current, hintRef.current],
+    focus: hintRef.current,
+  }));
+  // A double tap or Enter on the answer must not press "Næsta".
+  const armed = useArmedAfter(400, `${currentIndex}:${showResult}`);
 
   // Check completion
   useEffect(() => {
@@ -81,7 +126,6 @@ export function Level3({ onComplete, onBack }: Level3Props) {
 
     if (currentIndex < LEVEL3_CHALLENGES.length - 1) {
       setCurrentIndex((prev) => prev + 1);
-      setRevealKey((prev) => prev + 1);
     }
   };
 
@@ -90,6 +134,35 @@ export function Level3({ onComplete, onBack }: Level3Props) {
       handleSubmit();
     }
   };
+
+  // "Staðfesta svar". On a phone it sits on the answer row, after the field
+  // and its unit (design P12), and wraps under them where the row is too
+  // narrow for all three; elsewhere it is the full-width button under the hint.
+  const submit = (
+    <Presence show={!showResult} exitDuration={250}>
+      <button
+        key="check"
+        onClick={handleSubmit}
+        disabled={!userAnswer.trim()}
+        className={`w-full px-6 py-3 phone:px-4 phone:py-2 phone:min-h-11 phone:whitespace-nowrap rounded-xl font-bold transition-colors ${
+          userAnswer.trim()
+            ? 'bg-purple-500 hover:bg-purple-600 text-white'
+            : 'bg-warm-200 text-warm-400 cursor-not-allowed'
+        }`}
+      >
+        Staðfesta svar
+      </button>
+    </Presence>
+  );
+
+  const hintButton = (
+    <button
+      onClick={handleShowHint}
+      className="text-yellow-600 hover:text-yellow-800 text-sm flex items-center gap-2 pointer-coarse:min-h-11"
+    >
+      💡 Sýna vísbendingu
+    </button>
+  );
 
   // These five badge labels were this game's only `t()` call. The i18n wiring
   // was stripped 2026-09-19 (Siggi's ruling) and the Icelandic here is the same
@@ -122,59 +195,68 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div ref={levelRef} className="bg-white rounded-2xl shadow-xl p-4 mb-4 scroll-mt-4">
-          <div className="flex justify-between items-center">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8 phone:px-3 phone:py-3">
+      <div ref={levelRef} className="max-w-4xl mx-auto scroll-mt-4 phone:scroll-mt-3">
+        {/* Header. On a phone it folds to one row (design P4): Til baka, the
+            title, the counters, with the progress bar under them. Til baka
+            comes first in the DOM as well as on screen. */}
+        <div className="bg-white rounded-2xl shadow-xl p-4 mb-4 phone:flex phone:flex-wrap phone:items-center phone:gap-x-1.5 phone:px-2.5 phone:py-2 phone:mb-3">
+          <div className="flex justify-between items-center phone:contents">
             <button
               onClick={onBack}
-              className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:py-3 pointer-coarse:-my-3"
+              className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:py-3 pointer-coarse:-my-3 phone:order-1 phone:shrink-0 phone:text-sm"
             >
               ← Til baka
             </button>
-            <div className="flex items-center gap-4">
-              <div className="text-sm text-warm-500">
+            <div className="flex items-center gap-4 phone:order-3 phone:shrink-0 phone:flex-col phone:items-end phone:gap-0">
+              <div className="text-sm text-warm-500 phone:text-xs">
                 {currentIndex + 1} / {LEVEL3_CHALLENGES.length}
               </div>
-              <div className="text-lg font-bold text-purple-600">Stig: {score}</div>
+              <div className="text-lg font-bold text-purple-600 phone:text-sm">Stig: {score}</div>
             </div>
           </div>
 
-          <h1 className="text-xl md:text-2xl font-bold text-purple-600 mt-2">
+          <h1
+            ref={headingRef}
+            className="text-xl md:text-2xl font-bold text-purple-600 mt-2 phone:order-2 phone:flex-1 phone:min-w-0 phone:mt-0 phone:text-base"
+          >
             📐 Stig 3: Útreikningar
           </h1>
 
           {/* Progress bar */}
-          <div className="w-full bg-warm-200 rounded-full h-2 mt-3">
+          <div className="w-full bg-warm-200 rounded-full h-2 mt-3 phone:order-4 phone:basis-full phone:mt-1.5 phone:h-1.5">
             <div
-              className="bg-purple-500 h-2 rounded-full transition-all duration-300"
+              className="bg-purple-500 h-2 phone:h-1.5 rounded-full transition-all duration-300"
               style={{ width: `${(completed / LEVEL3_CHALLENGES.length) * 100}%` }}
             />
           </div>
         </div>
 
         {/* Challenge card */}
-        <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 mb-4">
+        <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 mb-4 phone:p-3 phone:mb-3">
           {/* Wraps on a phone: titles like "Finndu jafngildisrúmmál" hold a
               word too long to sit beside the badge at 320 px. */}
-          <div className="flex flex-wrap items-start gap-x-3 gap-y-2 mb-4">
+          <div className="flex flex-wrap items-start gap-x-3 gap-y-2 mb-4 phone:mb-2 phone:gap-y-1">
             <span
               className={`${getChallengeTypeColor(challenge.type)} text-white text-xs font-bold px-3 py-1 rounded-full`}
             >
               {getChallengeTypeLabel(challenge.type)}
             </span>
-            <h2 className="text-lg font-bold text-warm-800">{challenge.titleIs}</h2>
+            <h2 data-item-start className="text-lg font-bold text-warm-800 phone:text-base">
+              {challenge.titleIs}
+            </h2>
           </div>
 
-          <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-4 mb-4">
-            <p className="text-purple-900 text-lg">{challenge.descriptionIs}</p>
+          <div className="bg-purple-50 border-2 border-purple-200 rounded-xl p-4 mb-4 phone:px-3 phone:py-2 phone:mb-2">
+            <p className="text-purple-900 text-lg phone:text-base">{challenge.descriptionIs}</p>
           </div>
 
           {/* Given data */}
-          <div className="bg-warm-50 rounded-xl p-4 mb-4">
-            <h3 className="font-bold text-warm-700 mb-2">Gefið:</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+          <div className="bg-warm-50 rounded-xl p-4 mb-4 phone:px-3 phone:py-2 phone:mb-2">
+            <h3 className="font-bold text-warm-700 mb-2 phone:mb-1">Gefið:</h3>
+            {/* Two columns on a phone where a label fits its column whole
+                (from about 375 px); one column below that. */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm phone:grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] phone:gap-x-3 phone:gap-y-1">
               {challenge.givenData.analyteVolume && (
                 <div>
                   <span className="font-semibold">Rúmmál sýnis:</span>{' '}
@@ -224,7 +306,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               )}
             </div>
             {challenge.givenData.formula && (
-              <div className="mt-3 pt-3 border-t border-warm-200">
+              <div className="mt-3 pt-3 border-t border-warm-200 phone:mt-2 phone:pt-2">
                 <span className="font-semibold text-warm-700">Jafna:</span>
                 <div className="font-mono text-purple-700 mt-1">{challenge.givenData.formula}</div>
               </div>
@@ -232,14 +314,17 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           </div>
 
           {/* Answer input */}
-          <div className="mb-4">
-            <label
-              htmlFor="ph-titration-l3-answer"
-              className="block text-sm font-semibold text-warm-700 mb-2"
-            >
-              Svar {challenge.unit && `(${challenge.unit})`}:
-            </label>
-            <div className="flex gap-3">
+          <div className="mb-4 phone:mb-3">
+            <div className="phone:flex phone:items-center phone:justify-between phone:gap-2 phone:mb-1">
+              <label
+                htmlFor="ph-titration-l3-answer"
+                className="block text-sm font-semibold text-warm-700 mb-2 phone:mb-0"
+              >
+                Svar {challenge.unit && `(${challenge.unit})`}:
+              </label>
+              {phone && !showHint && !showResult && hintButton}
+            </div>
+            <div ref={answerRowRef} className="flex gap-3 phone:flex-wrap phone:gap-2">
               <input
                 id="ph-titration-l3-answer"
                 type="text"
@@ -248,9 +333,10 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 value={userAnswer}
                 onChange={(e) => setUserAnswer(e.target.value)}
                 onKeyDown={handleKeyDown}
+                enterKeyHint="done"
                 disabled={showResult}
                 placeholder="Sláðu inn svar..."
-                className={`flex-1 px-4 py-3 border-2 rounded-xl text-lg font-mono ${
+                className={`flex-1 min-w-0 phone:basis-20 px-4 py-3 phone:px-3 phone:py-2 border-2 rounded-xl text-lg font-mono ${
                   showResult
                     ? isCorrect
                       ? 'border-green-500 bg-green-50'
@@ -259,56 +345,54 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                 }`}
               />
               {challenge.unit && (
-                <span className="flex items-center px-4 py-3 bg-warm-100 rounded-xl font-semibold text-warm-700">
+                <span className="flex items-center px-4 py-3 phone:px-3 phone:py-2 bg-warm-100 rounded-xl font-semibold text-warm-700">
                   {challenge.unit}
                 </span>
               )}
+              {phone && <div className="grow">{submit}</div>}
             </div>
             <p className="text-xs text-warm-500 mt-1">
               Skekkjumörk: ±{formatDecimal(challenge.tolerance * 100, 0)}%
             </p>
           </div>
 
-          {/* Hint */}
+          {/* Hint. On a phone the button sits on the answer's label row
+              (rendered there instead of here, never twice); the opened hint
+              still opens here, under the field. */}
           <Presence show={!showResult} exitDuration={250}>
-            <div className="mb-4">
+            <div className={`mb-4 ${phone && !showHint ? 'hidden' : 'phone:mb-3'}`}>
               {showHint ? (
-                <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4">
+                <div
+                  ref={hintRef}
+                  className="bg-yellow-50 border border-yellow-300 rounded-xl p-4 phone:p-3"
+                >
                   <div className="font-bold text-yellow-800 mb-1">💡 Vísbending:</div>
                   <p className="text-yellow-900">{challenge.hintIs}</p>
                 </div>
               ) : (
-                <button
-                  onClick={handleShowHint}
-                  className="text-yellow-600 hover:text-yellow-800 text-sm flex items-center gap-2 pointer-coarse:min-h-11"
-                >
-                  💡 Sýna vísbendingu
-                </button>
+                !phone && hintButton
               )}
             </div>
           </Presence>
 
-          {/* Submit button */}
-          <Presence show={!showResult} exitDuration={250}>
-            <button
-              onClick={handleSubmit}
-              disabled={!userAnswer.trim()}
-              className={`w-full px-6 py-3 rounded-xl font-bold transition-colors ${
-                userAnswer.trim()
-                  ? 'bg-purple-500 hover:bg-purple-600 text-white'
-                  : 'bg-warm-200 text-warm-400 cursor-not-allowed'
-              }`}
-            >
-              Staðfesta svar
-            </button>
-          </Presence>
+          {/* Submit button (on a phone it ends the answer row instead) */}
+          {!phone && submit}
 
           {/* Result feedback */}
           <Presence show={showResult} exitDuration={250}>
+            {/* The feedback region focus moves to after the check (P3), named
+                by its verdict. */}
             <div
-              className={`p-4 rounded-xl ${isCorrect ? 'bg-green-50 border border-green-300' : 'bg-red-50 border border-red-300'}`}
+              ref={resultRef}
+              tabIndex={-1}
+              role="group"
+              aria-labelledby="ph-l3-verdict"
+              className={`p-4 phone:p-3 rounded-xl focus:outline-none ${isCorrect ? 'bg-green-50 border border-green-300' : 'bg-red-50 border border-red-300'}`}
             >
-              <div className={`font-bold mb-2 ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
+              <div
+                id="ph-l3-verdict"
+                className={`font-bold mb-2 ${isCorrect ? 'text-green-800' : 'text-red-800'}`}
+              >
                 {isCorrect ? '✓ Rétt!' : '✗ Rangt'}
                 {isCorrect && ' (+20 stig)'}
               </div>
@@ -347,8 +431,10 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               )}
 
               <button
-                onClick={handleNext}
-                className="mt-4 w-full px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-bold"
+                key="next"
+                ref={nextRef}
+                onClick={armed(handleNext)}
+                className="mt-4 phone:mt-3 w-full px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-bold"
               >
                 {currentIndex < LEVEL3_CHALLENGES.length - 1 ? 'Næsta →' : 'Ljúka stigi →'}
               </button>
@@ -356,9 +442,15 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           </Presence>
         </div>
 
-        {/* Reference tables */}
-        <div className="bg-white rounded-2xl shadow-xl p-4">
-          <h3 className="font-bold text-warm-700 mb-3">📋 Uppflettitöflur</h3>
+        {/* Reference tables: a disclosure on a phone, closed at first (design
+            P9), always open from sm up. The button carries the heading, so the
+            heading itself is kept for screen readers only there. */}
+        <PhoneDisclosure
+          summary="📋 Uppflettitöflur"
+          className="bg-white rounded-2xl shadow-xl p-4 phone:p-3"
+          buttonClassName="text-warm-700"
+        >
+          <h3 className="font-bold text-warm-700 mb-3 phone:sr-only">📋 Uppflettitöflur</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Common pKa values */}
             <div className="bg-blue-50 rounded-xl p-3">
@@ -418,7 +510,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               </div>
             </div>
           </div>
-        </div>
+        </PhoneDisclosure>
       </div>
     </div>
   );

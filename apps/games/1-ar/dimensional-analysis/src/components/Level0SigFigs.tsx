@@ -1,6 +1,14 @@
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 
-import { DECIMAL_INPUT_PROPS, formatDecimal, type ScientificEntry } from '@shared/utils';
+import {
+  DECIMAL_INPUT_PROPS,
+  formatDecimal,
+  revealInline,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+  type ScientificEntry,
+} from '@shared/utils';
 
 import {
   ARITHMETIC_ITEMS,
@@ -103,6 +111,8 @@ export function WrittenNumberRow({
   disabled = false,
   digitsLabel,
   fieldClassName = 'rounded-lg border-2 border-warm-300 py-2 text-lg',
+  onEnter,
+  enterKeyHint,
 }: {
   entry: ScientificEntry;
   onChange: (patch: Partial<ScientificEntry>) => void;
@@ -111,13 +121,26 @@ export function WrittenNumberRow({
   digitsLabel: string;
   /** Border, padding and type size, so each level keeps its own look. */
   fieldClassName?: string;
+  /** Enter in either field: send the answer (Stig 0) or move on to the next field (Stig 3). */
+  onEnter?: () => void;
+  /** The label on the phone keyboard's Enter key. */
+  enterKeyHint?: 'done' | 'next';
 }) {
+  const onKeyDown = onEnter
+    ? (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        onEnter();
+      }
+    : undefined;
   return (
     <div className="flex w-full min-w-0 items-center gap-1.5 sm:w-auto sm:gap-2">
       <input
         {...DECIMAL_INPUT_PROPS}
         value={entry.mantissa}
         onChange={(e) => onChange({ mantissa: e.target.value })}
+        onKeyDown={onKeyDown}
+        enterKeyHint={enterKeyHint}
         disabled={disabled}
         autoComplete="off"
         aria-label={digitsLabel}
@@ -128,6 +151,8 @@ export function WrittenNumberRow({
         {...DECIMAL_INPUT_PROPS}
         value={entry.exponent}
         onChange={(e) => onChange({ exponent: e.target.value })}
+        onKeyDown={onKeyDown}
+        enterKeyHint={enterKeyHint}
         disabled={disabled}
         autoComplete="off"
         aria-label="Veldisvísir"
@@ -193,16 +218,34 @@ function ChoiceRow({
   );
 }
 
-function Verdict({ ok, children }: { ok: boolean; children: React.ReactNode }) {
+/**
+ * The verdict, and the region focus moves to after an answer (design P3): a
+ * group named by its own first line, so a second Enter lands on nothing.
+ */
+function Verdict({
+  ok,
+  children,
+  groupRef,
+}: {
+  ok: boolean;
+  children: React.ReactNode;
+  groupRef: React.Ref<HTMLDivElement>;
+}) {
   return (
     <div
-      className={`mt-4 rounded-lg border p-4 text-sm ${
+      ref={groupRef}
+      tabIndex={-1}
+      role="group"
+      aria-labelledby="da-l0-verdict"
+      className={`mt-4 rounded-lg border p-4 text-sm focus:outline-none phone:mt-3 phone:p-3 ${
         ok
           ? 'border-green-200 bg-green-50 text-green-900'
           : 'border-amber-300 bg-amber-50 text-amber-900'
       }`}
     >
-      <p className="mb-1 font-semibold">{ok ? 'Rétt' : 'Ekki alveg'}</p>
+      <p id="da-l0-verdict" className="mb-1 font-semibold">
+        {ok ? 'Rétt' : 'Ekki alveg'}
+      </p>
       {children}
     </div>
   );
@@ -238,11 +281,42 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
   const roundItem: RoundItem = ROUND_ITEMS[index];
   const arithItem: ArithmeticItem = ARITHMETIC_ITEMS[index];
 
+  // Each new step and each new question: on a phone the card's top comes back
+  // under the header, and focus moves to the question's first line.
+  const itemKey = `${step}:${index}`;
+  const cardRef = useItemTop<HTMLDivElement>(itemKey);
+
+  // The step pills are one sideways-scrolling row on a phone: keep the
+  // current one in view.
+  const currentPillRef = useRef<HTMLLIElement>(null);
+  useLayoutEffect(() => {
+    revealInline(currentPillRef.current, { inline: 'nearest' });
+  }, [step]);
+
+  // After an answer: on a phone, the question through "Næsta" if it fits, else
+  // the verdict at the top; focus moves to the verdict, not to "Næsta".
+  const committed = step === 'namunda' ? answered : chosen !== null;
+  const promptRef = useRef<HTMLDivElement>(null);
+  const verdictRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(committed, () => ({
+    bottom: nextRef.current,
+    tops: [promptRef.current, verdictRef.current],
+    focus: verdictRef.current,
+  }));
+  // "Næsta" renders where a finger just tapped an answer: ignore it for 400 ms.
+  const armed = useArmedAfter(400, `${itemKey}:${committed}`);
+
+  const answerRound = () => {
+    if (answered || entry.mantissa.trim() === '') return;
+    setVerdict(checkWritten(entry, roundItem));
+  };
+
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
-        <div className="mb-6 flex items-baseline justify-between gap-3">
-          <h2 className="text-xl font-bold text-warm-800 sm:text-2xl">
+      <div ref={cardRef} className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8 phone:p-3">
+        <div className="mb-6 flex items-baseline justify-between gap-3 phone:mb-3">
+          <h2 className="text-xl font-bold text-warm-800 sm:text-2xl phone:text-lg">
             Stig 0 — Markverðir stafir
           </h2>
           <button
@@ -253,11 +327,15 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
           </button>
         </div>
 
-        <ol className="mb-6 flex flex-wrap gap-2 text-xs">
+        {/* On a phone the pills stay on one row, scrolling sideways, with the
+            current one kept in view. */}
+        <ol className="mb-6 flex flex-wrap gap-2 text-xs phone:mb-3 phone:flex-nowrap phone:gap-1.5 phone:overflow-x-auto">
           {STEPS.map((s) => (
             <li
               key={s.id}
-              className={`rounded-full px-3 py-1 ${
+              ref={s.id === step ? currentPillRef : undefined}
+              aria-current={s.id === step ? 'step' : undefined}
+              className={`rounded-full px-3 py-1 phone:shrink-0 phone:px-2.5 ${
                 s.id === step
                   ? 'bg-orange-100 font-semibold text-orange-800'
                   : 'bg-warm-100 text-warm-500'
@@ -311,13 +389,17 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
 
         {step === 'telja' && (
           <div>
-            <p className="mb-2 text-sm text-warm-500">
-              Spurning {index + 1} af {COUNT_ITEMS.length}
-            </p>
-            <p className="mb-4 text-warm-700">Hversu marga markverða stafi hefur þessi tala?</p>
-            <p className="mb-6 rounded-lg bg-warm-50 px-4 py-6 text-center font-mono text-4xl text-warm-900">
-              {countItem.written}
-            </p>
+            <div ref={promptRef}>
+              <p data-item-start className="mb-2 text-sm text-warm-500 phone:mb-1">
+                Spurning {index + 1} af {COUNT_ITEMS.length}
+              </p>
+              <p className="mb-4 text-warm-700 phone:mb-2">
+                Hversu marga markverða stafi hefur þessi tala?
+              </p>
+              <p className="mb-6 rounded-lg bg-warm-50 px-4 py-6 text-center font-mono text-4xl text-warm-900 phone:mb-3 phone:py-4">
+                {countItem.written}
+              </p>
+            </div>
             <ChoiceRow
               options={[1, 2, 3, 4, 5]}
               chosen={chosen}
@@ -325,7 +407,7 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
               onChoose={setChosen}
             />
             {chosen !== null && (
-              <Verdict ok={chosen === countItem.answer}>
+              <Verdict ok={chosen === countItem.answer} groupRef={verdictRef}>
                 <p>
                   {countItem.written} hefur <strong>{countItem.answer}</strong> markverða stafi —
                   regla {countItem.rule}.
@@ -337,8 +419,9 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
             )}
             {chosen !== null && (
               <button
-                onClick={() => advance(COUNT_ITEMS, 'namunda')}
-                className="game-btn mt-4 rounded-lg bg-warm-800 px-5 py-2 font-semibold text-white"
+                ref={nextRef}
+                onClick={armed(() => advance(COUNT_ITEMS, 'namunda'))}
+                className="game-btn mt-4 rounded-lg bg-warm-800 px-5 py-2 font-semibold text-white phone:mt-3"
               >
                 {index + 1 < COUNT_ITEMS.length ? 'Næsta' : 'Áfram'}
               </button>
@@ -348,25 +431,30 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
 
         {step === 'namunda' && (
           <div>
-            <p className="mb-2 text-sm text-warm-500">
-              Spurning {index + 1} af {ROUND_ITEMS.length}
-            </p>
-            <p className="mb-4 text-warm-700">{roundItem.context}</p>
-            <p className="mb-4 text-warm-700">
-              Skrifaðu töluna með <strong>{roundItem.figures}</strong> markverðum stöfum.
-            </p>
+            <div ref={promptRef}>
+              <p data-item-start className="mb-2 text-sm text-warm-500 phone:mb-1">
+                Spurning {index + 1} af {ROUND_ITEMS.length}
+              </p>
+              <p className="mb-4 text-warm-700 phone:mb-2">{roundItem.context}</p>
+              <p className="mb-4 text-warm-700 phone:mb-2">
+                Skrifaðu töluna með <strong>{roundItem.figures}</strong> markverðum stöfum.
+              </p>
+            </div>
             {/* The same row on every item, so its shape says nothing about which
-                one wants a power of ten. */}
+                one wants a power of ten. Enter in either field sends it. */}
             <div className="flex flex-wrap items-center gap-x-3 gap-y-3">
               <WrittenNumberRow
                 entry={entry}
                 onChange={edit}
                 disabled={answered}
                 digitsLabel="Svarið þitt"
+                onEnter={answerRound}
+                enterKeyHint="done"
               />
               {!answered && (
                 <button
-                  onClick={() => setVerdict(checkWritten(entry, roundItem))}
+                  key="check"
+                  onClick={answerRound}
                   disabled={entry.mantissa.trim() === ''}
                   className="game-btn rounded-lg px-5 py-2 font-semibold text-white disabled:opacity-40"
                   style={{ backgroundColor: '#f36b22' }}
@@ -380,7 +468,7 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
               <p className="mt-2 text-sm text-amber-800">{WRITTEN_NUMBER_UNREADABLE}</p>
             )}
             {answered && (
-              <Verdict ok={verdict === 'rett'}>
+              <Verdict ok={verdict === 'rett'} groupRef={verdictRef}>
                 <p>
                   Svarið er <strong>{roundItem.answer}</strong>.
                 </p>
@@ -418,8 +506,10 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
             {answered && (
               <div>
                 <button
-                  onClick={() => advance(ROUND_ITEMS, 'reikna')}
-                  className="game-btn mt-4 rounded-lg bg-warm-800 px-5 py-2 font-semibold text-white"
+                  key="next"
+                  ref={nextRef}
+                  onClick={armed(() => advance(ROUND_ITEMS, 'reikna'))}
+                  className="game-btn mt-4 rounded-lg bg-warm-800 px-5 py-2 font-semibold text-white phone:mt-3"
                 >
                   {index + 1 < ROUND_ITEMS.length ? 'Næsta' : 'Áfram'}
                 </button>
@@ -430,17 +520,19 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
 
         {step === 'reikna' && (
           <div>
-            <p className="mb-2 text-sm text-warm-500">
-              Spurning {index + 1} af {ARITHMETIC_ITEMS.length}
-            </p>
-            <p className="mb-4 text-warm-700">
-              {arithItem.kind === 'margfeldi'
-                ? 'Hversu marga markverða stafi má svarið hafa?'
-                : 'Hversu marga AUKASTAFI má svarið hafa?'}
-            </p>
-            <p className="mb-6 rounded-lg bg-warm-50 px-4 py-6 text-center font-mono text-2xl text-warm-900">
-              {arithItem.expression}
-            </p>
+            <div ref={promptRef}>
+              <p data-item-start className="mb-2 text-sm text-warm-500 phone:mb-1">
+                Spurning {index + 1} af {ARITHMETIC_ITEMS.length}
+              </p>
+              <p className="mb-4 text-warm-700 phone:mb-2">
+                {arithItem.kind === 'margfeldi'
+                  ? 'Hversu marga markverða stafi má svarið hafa?'
+                  : 'Hversu marga AUKASTAFI má svarið hafa?'}
+              </p>
+              <p className="mb-6 rounded-lg bg-warm-50 px-4 py-6 text-center font-mono text-2xl text-warm-900 phone:mb-3 phone:py-4">
+                {arithItem.expression}
+              </p>
+            </div>
             <ChoiceRow
               options={[0, 1, 2, 3, 4]}
               chosen={chosen}
@@ -448,14 +540,15 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
               onChoose={setChosen}
             />
             {chosen !== null && (
-              <Verdict ok={chosen === arithItem.answer}>
+              <Verdict ok={chosen === arithItem.answer} groupRef={verdictRef}>
                 <p>{arithItem.explanation}</p>
               </Verdict>
             )}
             {chosen !== null && (
               <button
-                onClick={() => advance(ARITHMETIC_ITEMS, 'lokid')}
-                className="game-btn mt-4 rounded-lg bg-warm-800 px-5 py-2 font-semibold text-white"
+                ref={nextRef}
+                onClick={armed(() => advance(ARITHMETIC_ITEMS, 'lokid'))}
+                className="game-btn mt-4 rounded-lg bg-warm-800 px-5 py-2 font-semibold text-white phone:mt-3"
               >
                 {index + 1 < ARITHMETIC_ITEMS.length ? 'Næsta' : 'Klára'}
               </button>
@@ -465,7 +558,9 @@ export function Level0SigFigs({ onComplete, onBack }: Props) {
 
         {step === 'lokid' && (
           <div>
-            <h3 className="mb-3 text-xl font-semibold text-warm-800">Stigi 0 lokið</h3>
+            <h3 data-item-start className="mb-3 text-xl font-semibold text-warm-800">
+              Stigi 0 lokið
+            </h3>
             <p className="mb-4 text-warm-700">
               Þú kannt nú regluna sem Stig 3 dæmir þig á. Munaðu tvennt: í margföldun og deilingu
               ræður fæsti fjöldi <strong>markverðra stafa</strong>, í samlagningu og frádrætti fæsti

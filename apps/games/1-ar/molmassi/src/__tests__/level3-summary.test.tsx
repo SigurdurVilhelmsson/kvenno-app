@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, it, expect } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import App from '../App';
 
 /**
@@ -20,6 +21,7 @@ const PROGRESS_KEY = 'molhugtakidProgress';
 
 beforeEach(() => localStorage.clear());
 afterEach(cleanup);
+clockPastNextGuard();
 
 describe('Stig 3 ends on its summary', () => {
   it('shows the summary after the last question and records the level', () => {

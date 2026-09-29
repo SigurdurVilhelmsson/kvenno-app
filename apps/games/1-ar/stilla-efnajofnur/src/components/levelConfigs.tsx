@@ -3,7 +3,7 @@ import type { LevelConfig } from './Level';
 function Level1Intro() {
   return (
     <>
-      <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-4 phone:p-4 phone:mb-3">
         <h2 className="text-xl font-bold text-warm-800 mb-3">Af hverju stillum við efnajöfnur?</h2>
         <p className="text-warm-700 text-sm leading-relaxed mb-3">
           <strong>Massavarðveislulögmálið</strong> segir að atóm hverfa ekki og myndast ekki í
@@ -15,7 +15,7 @@ function Level1Intro() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg p-6 mb-4">
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-4 phone:p-4 phone:mb-3">
         <h3 className="text-lg font-bold text-warm-800 mb-3">Dæmi: Vatn myndast</h3>
         <div className="bg-warm-50 rounded-lg p-4 mb-4 text-center">
           <p className="font-mono text-lg text-warm-800 mb-1">
@@ -62,7 +62,7 @@ function Level1Intro() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-6 phone:p-4 phone:mb-4">
         <h3 className="text-lg font-bold text-warm-800 mb-3">Aðferð til að stilla</h3>
         <ol className="space-y-2 text-sm text-warm-700 list-decimal list-inside">
           <li>

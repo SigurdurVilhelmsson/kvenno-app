@@ -1,8 +1,11 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level3 } from '../components/Level3';
 import { YIELD_PROBLEMS } from '../data/yieldProblems';
+
+clockPastNextGuard();
 
 /**
  * Stig 3 must be answerable from what it puts on the screen.

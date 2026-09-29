@@ -1,11 +1,26 @@
-import { useState, useCallback, useMemo, useEffect, useRef, Fragment, type ReactNode } from 'react';
+import {
+  useState,
+  useCallback,
+  useMemo,
+  useLayoutEffect,
+  useRef,
+  Fragment,
+  type ReactNode,
+} from 'react';
 
 import { FeedbackPanel } from '@shared/components';
+import {
+  focusTarget,
+  revealSpan,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+} from '@shared/utils';
 
 import { type Compound } from '../data/compounds';
 import { type MorphemeKind } from '../data/naming';
+import { dropEarlyClicks } from '../utils/dropEarlyClicks';
 import { generateParts, selectCompounds, type NamePart } from '../utils/nameParts';
-import { revealTop } from '../utils/reveal';
 
 /** Levenshtein table for `a` against `b`: cell [i][j] is the distance of their prefixes. */
 function distanceTable(a: string, b: string): number[][] {
@@ -133,9 +148,38 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   const displayName = builtName.charAt(0).toUpperCase() + builtName.slice(1);
 
   // "Næsta efni" sits below the tray; on a phone the next formula would start
-  // above the viewport.
-  const formulaRef = useRef<HTMLDivElement>(null);
-  useEffect(() => revealTop(formulaRef.current), [idx]);
+  // above the viewport. The card is brought back and the formula focused. The
+  // old helper did this at any width whenever the card's top had gone above
+  // the viewport, and this screen has no sticky header, so `gap: 0` lands it
+  // exactly where that did on a desktop.
+  const formulaRef = useItemTop<HTMLDivElement>(idx, { anyWidth: true, gap: 0 });
+  const promptRef = useRef<HTMLDivElement>(null);
+  const buildRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const actionsRef = useRef<HTMLDivElement>(null);
+
+  // After Athuga (design P3): a phone shows as much as fits from the formula
+  // down to the buttons — the spent tray is hidden there, so the verdict sits
+  // right above them — and focus moves to the feedback, not to "Næsta efni".
+  useRevealAfterCommit(answered, () => ({
+    bottom: actionsRef.current,
+    tops: [promptRef.current, buildRef.current, feedbackRef.current],
+    focus: feedbackRef.current,
+  }));
+  // "Næsta efni" and "Reyna aftur" ignore a press within 400 ms of appearing,
+  // so a second tap on "Athuga" cannot skip the feedback.
+  const armed = useArmedAfter(400, `${idx}:${answered}`);
+
+  // "Reyna aftur" brings the tray back: focus moves to the (now empty) name
+  // being built, and a phone shows it with the tray and the buttons.
+  const [retries, setRetries] = useState(0);
+  const shownRetries = useRef(retries);
+  useLayoutEffect(() => {
+    if (shownRetries.current === retries) return;
+    shownRetries.current = retries;
+    revealSpan(actionsRef.current, [buildRef.current]);
+    focusTarget(buildRef.current);
+  }, [retries]);
 
   const selectPart = useCallback(
     (part: NamePart) => {
@@ -190,8 +234,8 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white p-3 sm:p-4">
       <div className="max-w-lg mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-xl shadow-md p-3 sm:p-4 mb-4">
+        {/* Header. On a phone each counter reads on one line ("0 Stig"). */}
+        <div className="bg-white rounded-xl shadow-md p-3 sm:p-4 mb-4 phone:py-2 phone:mb-3">
           <div className="flex flex-wrap justify-between items-center gap-x-2 gap-y-1">
             <button
               onClick={onBack}
@@ -203,13 +247,13 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               {t('level3.ui.title', 'Byggja nöfn')}
             </h1>
             <div className="flex gap-3 text-center">
-              <div>
+              <div className="phone:flex phone:items-baseline phone:gap-1">
                 <div className="text-lg font-bold text-kvenno-orange">{score}</div>
                 <div className="text-[10px] pointer-coarse:text-xs text-warm-500">
                   {t('common.score', 'Stig')}
                 </div>
               </div>
-              <div>
+              <div className="phone:flex phone:items-baseline phone:gap-1">
                 <div className="text-lg font-bold text-warm-700">
                   {idx + 1}/{total}
                 </div>
@@ -219,7 +263,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
               </div>
             </div>
           </div>
-          <div className="mt-3 h-2 bg-warm-200 rounded-full overflow-hidden">
+          <div className="mt-3 h-2 bg-warm-200 rounded-full overflow-hidden phone:mt-2 phone:h-1.5">
             <div
               className="h-full bg-kvenno-orange transition-all duration-500"
               style={{ width: `${((idx + (answered ? 1 : 0)) / total) * 100}%` }}
@@ -230,7 +274,7 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
         {/* Collapsible naming rules */}
         <button
           onClick={() => setRulesOpen((prev) => !prev)}
-          className="w-full bg-blue-50 border border-blue-200 rounded-xl p-3 mb-4 text-left text-sm"
+          className="w-full bg-blue-50 border border-blue-200 rounded-xl p-3 mb-4 text-left text-sm phone:mb-3"
         >
           <div className="flex justify-between items-center">
             <span className="font-bold text-blue-800">
@@ -257,8 +301,11 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
         </button>
 
         {/* Formula display */}
-        <div ref={formulaRef} className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4">
-          <div className="text-center mb-4">
+        <div
+          ref={formulaRef}
+          className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4 phone:p-3 phone:mb-3"
+        >
+          <div ref={promptRef} data-item-start className="text-center mb-4 phone:mb-2">
             <div className="text-xs text-warm-500 mb-1">
               {t('level3.ui.formulaLabel', 'Efnaformúla:')}
             </div>
@@ -267,11 +314,12 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           </div>
 
           {/* Build area */}
-          <div className="mb-4">
+          <div className="mb-4 phone:mb-3">
             <div className="text-xs text-warm-600 mb-1">
               {t('level3.ui.yourName', 'Þitt nafn:')}
             </div>
             <div
+              ref={buildRef}
               className={`min-h-14 p-3 rounded-xl border-2 border-dashed flex flex-wrap gap-2 items-center justify-center ${
                 answered
                   ? isCorrect
@@ -312,9 +360,19 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             </div>
           </div>
 
-          {/* Feedback */}
+          {/* Feedback: the region focus moves to after Athuga (P3). FeedbackPanel
+              is itself role=alert and announces the verdict. On a phone the
+              page moves to show it, so a tap in its first 400 ms is the second
+              half of a double tap on "Athuga", and is dropped. */}
           {answered && (
-            <div className="mb-4 space-y-2">
+            <div
+              ref={feedbackRef}
+              role="group"
+              tabIndex={-1}
+              className="mb-4 space-y-2 phone:mb-3"
+              // A second tap on "Athuga" must not fold 'Af hverju?' shut unread.
+              onClickCapture={dropEarlyClicks(armed)}
+            >
               <FeedbackPanel
                 feedback={{
                   isCorrect,
@@ -343,8 +401,10 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             </div>
           )}
 
-          {/* Available parts */}
-          <div>
+          {/* Available parts. Once answered they are all disabled, and on a phone
+              the tray gives its place to the feedback and the buttons below;
+              "Reyna aftur" brings it back. */}
+          <div className={answered ? 'phone:hidden' : undefined}>
             <div className="text-xs text-warm-600 mb-1">
               {t('level3.ui.availableParts', 'Tiltækir partar:')}
             </div>
@@ -377,17 +437,20 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
           </div>
         </div>
 
-        {/* Action buttons */}
-        <div className="flex gap-3">
+        {/* Action buttons. Each is its own keyed element: "Athuga" never turns
+            into "Næsta efni" in place, which a double tap would then press. */}
+        <div ref={actionsRef} className="flex gap-3">
           {!answered ? (
             <>
               <button
+                key="clear"
                 onClick={handleReset}
                 className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-700 font-bold py-3 rounded-xl transition-colors"
               >
                 {t('level3.ui.clear', 'Hreinsa')}
               </button>
               <button
+                key="check"
                 onClick={handleCheck}
                 disabled={selected.length === 0}
                 className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -399,14 +462,19 @@ export function Level3({ t, onComplete, onBack, onCorrectAnswer, onIncorrectAnsw
             <>
               {!isCorrect && (
                 <button
-                  onClick={handleReset}
+                  key="retry"
+                  onClick={armed(() => {
+                    handleReset();
+                    setRetries((n) => n + 1);
+                  })}
                   className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 rounded-xl transition-colors"
                 >
                   {t('common.retry', 'Reyna aftur')}
                 </button>
               )}
               <button
-                onClick={handleNext}
+                key="next"
+                onClick={armed(handleNext)}
                 className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
               >
                 {idx + 1 < total

@@ -1,8 +1,16 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
-import { formatDecimal, shuffleArray, parseStudentNumber } from '@shared/utils';
+import {
+  formatDecimal,
+  parseStudentNumber,
+  shuffleArray,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+  useScreenTop,
+} from '@shared/utils';
 
 import { CalculationBreakdown } from './CalculationBreakdown';
 import { PeriodicTable } from './PeriodicTable';
@@ -120,6 +128,44 @@ export function Level1({ onBack, onComplete }: Level1Props) {
 
   const compound = problems[index];
 
+  // Each screen swap — a teaching step, the practice, the results — starts at
+  // the top on a phone with its heading focused (the button that caused it has
+  // unmounted). The practice's start is the answer field, which it has always
+  // autofocused; a teaching step's is its own heading, not the level's.
+  const stepHeadingRef = useRef<HTMLHeadingElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  useScreenTop(`${phase}:${teachStep}:${done}`, {
+    focus: phase === 'teach' ? stepHeadingRef : inputRef,
+  });
+  // Each new compound brings the practice back under the top edge on a phone,
+  // and focus goes to the answer field (`data-item-start`), as its autofocus
+  // did.
+  const itemRef = useItemTop<HTMLDivElement>(index);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const answerRef = useRef<HTMLDivElement>(null);
+  const hintRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  // After Athuga: the compound through Næsta if it fits, else the verdict at
+  // the top and the student reads down the breakdown to Næsta. Focus moves to
+  // the feedback, not to Næsta (design P3).
+  useRevealAfterCommit(answered, () => ({
+    bottom: nextRef.current,
+    tops: [cardRef.current, feedbackRef.current],
+    focus: feedbackRef.current,
+  }));
+  // The hint opens below the toolbar: keep it on screen with the answer field,
+  // and focus it — the Vísbending button that opened it is gone.
+  useRevealAfterCommit(showHint && !answered, () => ({
+    bottom: hintRef.current,
+    tops: [answerRef.current, hintRef.current],
+    focus: hintRef.current,
+  }));
+  // A press on Næsta within 400 ms of it appearing is dropped, so a double tap
+  // on Athuga cannot skip the feedback; the results buttons likewise.
+  const armed = useArmedAfter(400, `${index}:${answered}`);
+  const armedResults = useArmedAfter(400, done);
+
   const handleSubmit = () => {
     const value = parseStudentNumber(input);
     if (isNaN(value)) {
@@ -169,7 +215,8 @@ export function Level1({ onBack, onComplete }: Level1Props) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
         <div className="max-w-lg mx-auto">
-          <div className="bg-white rounded-xl shadow-md p-4 mb-4">
+          {/* On a phone the padding is tighter; the layout is unchanged. */}
+          <div className="bg-white rounded-xl shadow-md p-4 mb-4 phone:px-3 phone:py-2 phone:mb-3">
             <div className="flex flex-wrap sm:flex-nowrap justify-between items-center">
               <button
                 onClick={onBack}
@@ -186,8 +233,10 @@ export function Level1({ onBack, onComplete }: Level1Props) {
 
           {/* Step 0: What is molar mass? */}
           {teachStep === 0 && (
-            <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 animate-fade-in-up">
-              <h2 className="text-xl font-bold text-warm-800">Hvað er mólmassi?</h2>
+            <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 animate-fade-in-up phone:p-4">
+              <h2 ref={stepHeadingRef} className="text-xl font-bold text-warm-800">
+                Hvað er mólmassi?
+              </h2>
               <p className="text-warm-700">
                 <strong>Mólmassi (M)</strong> er massi eins móls af efni, mældur í g/mól. Hann segir
                 okkur hversu þungar 6,022 × 10²³ eindir (atóm eða sameindir) eru.
@@ -215,8 +264,10 @@ export function Level1({ onBack, onComplete }: Level1Props) {
 
           {/* Step 1: Walkthrough with H₂O */}
           {teachStep === 1 && (
-            <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 animate-fade-in-up">
-              <h2 className="text-xl font-bold text-warm-800">Dæmi: H₂O (Vatn)</h2>
+            <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 animate-fade-in-up phone:p-4">
+              <h2 ref={stepHeadingRef} className="text-xl font-bold text-warm-800">
+                Dæmi: H₂O (Vatn)
+              </h2>
               <p className="text-warm-700">Reiknum mólmassa vatns skref fyrir skref:</p>
 
               <div className="bg-warm-50 p-4 rounded-lg space-y-3">
@@ -269,8 +320,10 @@ export function Level1({ onBack, onComplete }: Level1Props) {
 
           {/* Step 2: Second example — CO₂ */}
           {teachStep === 2 && (
-            <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 animate-fade-in-up">
-              <h2 className="text-xl font-bold text-warm-800">Dæmi: CO₂ (Koldíoxíð)</h2>
+            <div className="bg-white rounded-xl shadow-lg p-6 space-y-4 animate-fade-in-up phone:p-4">
+              <h2 ref={stepHeadingRef} className="text-xl font-bold text-warm-800">
+                Dæmi: CO₂ (Koldíoxíð)
+              </h2>
               <p className="text-warm-700">
                 Nú geturðu reynt sjálf/ur. CO₂ hefur 1 kolefnisatóm og 2 súrefnisatóm.
               </p>
@@ -345,20 +398,20 @@ export function Level1({ onBack, onComplete }: Level1Props) {
           </div>
           <div className="flex flex-col min-[360px]:flex-row gap-3">
             <button
-              onClick={handleRetry}
+              onClick={armedResults(handleRetry)}
               className="flex-1 bg-warm-200 hover:bg-warm-300 text-warm-800 font-bold py-3 rounded-xl transition-colors"
             >
               Reyna aftur
             </button>
             <button
-              onClick={() => onComplete(correctCount, TOTAL, hintsUsed)}
+              onClick={armedResults(() => onComplete(correctCount, TOTAL, hintsUsed))}
               className="flex-1 bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
             >
               Ljúka stigi
             </button>
           </div>
           <button
-            onClick={onBack}
+            onClick={armedResults(onBack)}
             className="text-warm-500 hover:text-warm-700 text-sm pointer-coarse:py-3 pointer-coarse:-my-3"
           >
             Til baka í valmynd
@@ -371,24 +424,25 @@ export function Level1({ onBack, onComplete }: Level1Props) {
   // ==================== PRACTICE PHASE ====================
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
-      <div className="max-w-lg mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-          <div className="flex flex-wrap sm:flex-nowrap justify-between items-center">
+      <div className="max-w-lg mx-auto phone-land:max-w-none">
+        {/* Header. On a phone: one row — Til baka, the title, n/10 — and a
+            thinner progress bar. */}
+        <div className="bg-white rounded-xl shadow-md p-4 mb-4 phone:px-3 phone:py-2 phone:mb-3">
+          <div className="flex flex-wrap sm:flex-nowrap justify-between items-center phone:flex-nowrap phone:gap-3">
             <button
               onClick={onBack}
-              className="text-warm-500 hover:text-warm-700 font-semibold text-sm whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3"
+              className="text-warm-500 hover:text-warm-700 font-semibold text-sm whitespace-nowrap pointer-coarse:py-3 pointer-coarse:-my-3 phone:shrink-0"
             >
               ← Til baka
             </button>
-            <h1 className="order-last basis-full mt-1 sm:order-none sm:basis-auto sm:mt-0 text-lg font-bold text-warm-800">
+            <h1 className="order-last basis-full mt-1 sm:order-none sm:basis-auto sm:mt-0 text-lg font-bold text-warm-800 phone:order-none phone:basis-auto phone:mt-0 phone:flex-1 phone:min-w-0 phone:text-base">
               Mólmassi – Stig 1
             </h1>
-            <span className="text-sm font-semibold text-warm-600">
+            <span className="text-sm font-semibold text-warm-600 phone:shrink-0">
               {index + 1}/{TOTAL}
             </span>
           </div>
-          <div className="mt-3 h-2 bg-warm-200 rounded-full overflow-hidden">
+          <div className="mt-3 h-2 bg-warm-200 rounded-full overflow-hidden phone:mt-2 phone:h-1.5">
             <div
               className="h-full bg-kvenno-orange transition-all duration-500"
               style={{ width: `${((index + 1) / TOTAL) * 100}%` }}
@@ -396,129 +450,174 @@ export function Level1({ onBack, onComplete }: Level1Props) {
           </div>
         </div>
 
-        {/* Method reminder */}
-        <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-4 text-sm text-blue-800">
-          <strong>Aðferð:</strong> Telja atóm → fletta upp atómmassa → margfalda → leggja saman
-        </div>
-
-        {/* Compound card */}
-        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4 text-center" key={index}>
-          <p className="text-sm text-warm-500 mb-1">Reiknaðu mólmassa:</p>
-          <div className={`${formulaSizeClass(compound.formula)} font-bold text-warm-800 mb-2`}>
-            {compound.formula}
-          </div>
-          <p className="text-warm-600">{compound.name}</p>
-          <span
-            className={`inline-block mt-2 px-2 py-0.5 rounded-full text-xs font-medium ${
-              compound.difficulty === 'easy'
-                ? 'bg-green-100 text-green-700'
-                : compound.difficulty === 'medium'
-                  ? 'bg-yellow-100 text-yellow-700'
-                  : 'bg-red-100 text-red-700'
-            }`}
-          >
-            {compound.difficulty === 'easy'
-              ? 'Auðvelt'
-              : compound.difficulty === 'medium'
-                ? 'Miðlungs'
-                : 'Erfitt'}{' '}
-            (±{formatDecimal(getTolerance(compound.difficulty))} g/mól)
-          </span>
-        </div>
-
-        {/* Input area */}
-        {!answered && (
-          <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-            <label className="block text-sm font-medium text-warm-700 mb-2">Svar (g/mól):</label>
-            <div className="flex gap-3">
-              <input
-                type="text"
-                inputMode="decimal"
-                value={input}
-                onChange={(e) => {
-                  setInput(e.target.value);
-                  setError('');
-                }}
-                onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-                placeholder="t.d. 18,02"
-                autoComplete="off"
-                aria-invalid={error ? true : undefined}
-                className={`flex-1 px-4 py-3 border-2 ${error ? 'border-red-400' : 'border-warm-300 focus:border-kvenno-orange'} rounded-xl focus:outline-none text-lg font-mono`}
-                autoFocus
-              />
-              <button
-                onClick={handleSubmit}
-                disabled={!input.trim()}
-                className="bg-kvenno-orange hover:bg-kvenno-orange-dark disabled:opacity-40 text-white font-bold px-6 py-3 rounded-xl transition-colors"
-              >
-                Athuga
-              </button>
+        {/* On a phone on its side: the method and the compound on the left, the
+            answer and its feedback on the right. The two groups are plain
+            blocks, so nothing moves anywhere else. */}
+        <div
+          ref={itemRef}
+          className="phone-land:grid phone-land:grid-cols-2 phone-land:gap-3 phone-land:items-start"
+        >
+          <div>
+            {/* Method reminder */}
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-4 text-sm text-blue-800 phone:py-2 phone:mb-3">
+              <strong>Aðferð:</strong> Telja atóm → fletta upp atómmassa → margfalda → leggja saman
             </div>
-            {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
-          </div>
-        )}
 
-        {/* Toolbar: periodic table + hint */}
-        {!answered && (
-          <div className="flex gap-3 mb-4">
-            <button
-              onClick={() => setShowPeriodicTable(true)}
-              className="flex-1 px-4 py-2.5 pointer-coarse:min-h-11 rounded-xl text-sm font-semibold bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors"
+            {/* Compound card */}
+            <div
+              ref={cardRef}
+              id="molmassi-compound"
+              className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4 text-center phone:p-3 phone:mb-3"
+              key={index}
             >
-              Lotukerfið
-            </button>
-            {!showHint && (
-              <button
-                onClick={() => {
-                  setShowHint(true);
-                  setHintsUsed((prev) => prev + 1);
-                }}
-                className="flex-1 px-4 py-2.5 pointer-coarse:min-h-11 rounded-xl text-sm font-semibold bg-yellow-100 text-yellow-800 hover:bg-yellow-200 transition-colors"
+              <p className="text-sm text-warm-500 mb-1">Reiknaðu mólmassa:</p>
+              {/* On a phone on its side the card has half the width, where the
+                  longest formulas at text-5xl split mid-formula, as they did on
+                  a narrow phone. */}
+              <div
+                className={`${formulaSizeClass(compound.formula)} ${[...compound.formula].length >= 10 ? 'phone-land:text-4xl' : ''} font-bold text-warm-800 mb-2 phone:mb-1`}
               >
-                Vísbending
-              </button>
-            )}
+                {compound.formula}
+              </div>
+              <p className="text-warm-600">{compound.name}</p>
+              <span
+                className={`inline-block mt-2 phone:mt-1 px-2 py-0.5 rounded-full text-xs font-medium ${
+                  compound.difficulty === 'easy'
+                    ? 'bg-green-100 text-green-700'
+                    : compound.difficulty === 'medium'
+                      ? 'bg-yellow-100 text-yellow-700'
+                      : 'bg-red-100 text-red-700'
+                }`}
+              >
+                {compound.difficulty === 'easy'
+                  ? 'Auðvelt'
+                  : compound.difficulty === 'medium'
+                    ? 'Miðlungs'
+                    : 'Erfitt'}{' '}
+                (±{formatDecimal(getTolerance(compound.difficulty))} g/mól)
+              </span>
+            </div>
           </div>
-        )}
 
-        {/* Hint */}
-        {showHint && !answered && (
-          <div className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4 mb-4 text-sm text-yellow-800">
-            <span className="font-bold">Vísbending:</span> Algengir atómmassar – H≈1, C≈12, N≈14,
-            O≈16, Na≈23, S≈32, Cl≈35,5, K≈39, Ca≈40
-          </div>
-        )}
-
-        {/* Feedback + breakdown */}
-        {answered && (
-          <div className="space-y-4 mb-4">
-            <FeedbackPanel
-              feedback={{
-                isCorrect,
-                explanation: isCorrect
-                  ? `Rétt! Mólmassi ${compound.nameGenitive} er ${formatDecimal(compound.molarMass, 3)} g/mól.`
-                  : `Rangt. Rétt svar er ${formatDecimal(compound.molarMass, 3)} g/mól. Sjáðu útreikninginn hér að neðan.`,
-              }}
-              config={{ showExplanation: true }}
-            />
-
-            {diagnostic && !isCorrect && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800">
-                <span className="font-bold">Líklegast voru mistökin: </span>
-                {diagnostic}
+          <div>
+            {/* Input area */}
+            {!answered && (
+              <div
+                ref={answerRef}
+                className="bg-white rounded-xl shadow-md p-4 mb-4 phone:p-3 phone:mb-3"
+              >
+                <label className="block text-sm font-medium text-warm-700 mb-2 phone:mb-1">
+                  Svar (g/mól):
+                </label>
+                <div className="flex gap-3">
+                  <input
+                    ref={inputRef}
+                    data-item-start
+                    type="text"
+                    inputMode="decimal"
+                    enterKeyHint="done"
+                    value={input}
+                    onChange={(e) => {
+                      setInput(e.target.value);
+                      setError('');
+                    }}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+                    placeholder="t.d. 18,02"
+                    autoComplete="off"
+                    aria-invalid={error ? true : undefined}
+                    className={`flex-1 px-4 py-3 border-2 ${error ? 'border-red-400' : 'border-warm-300 focus:border-kvenno-orange'} rounded-xl focus:outline-none text-lg font-mono phone:min-w-0 phone:px-3`}
+                    autoFocus
+                  />
+                  <button
+                    key="check"
+                    onClick={handleSubmit}
+                    disabled={!input.trim()}
+                    className="bg-kvenno-orange hover:bg-kvenno-orange-dark disabled:opacity-40 text-white font-bold px-6 py-3 rounded-xl transition-colors phone:shrink-0 phone:px-4"
+                  >
+                    Athuga
+                  </button>
+                </div>
+                {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
               </div>
             )}
 
-            <CalculationBreakdown compound={compound} />
+            {/* Toolbar: periodic table + hint */}
+            {!answered && (
+              <div className="flex gap-3 mb-4 phone:mb-3">
+                <button
+                  onClick={() => setShowPeriodicTable(true)}
+                  className="flex-1 px-4 py-2.5 pointer-coarse:min-h-11 rounded-xl text-sm font-semibold bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors"
+                >
+                  Lotukerfið
+                </button>
+                {!showHint && (
+                  <button
+                    onClick={() => {
+                      setShowHint(true);
+                      setHintsUsed((prev) => prev + 1);
+                    }}
+                    className="flex-1 px-4 py-2.5 pointer-coarse:min-h-11 rounded-xl text-sm font-semibold bg-yellow-100 text-yellow-800 hover:bg-yellow-200 transition-colors"
+                  >
+                    Vísbending
+                  </button>
+                )}
+              </div>
+            )}
 
-            <button
-              onClick={handleNext}
-              className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
-            >
-              {index + 1 < TOTAL ? 'Næsta dæmi →' : 'Sjá niðurstöður →'}
-            </button>
+            {/* Hint */}
+            {showHint && !answered && (
+              <div
+                ref={hintRef}
+                className="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4 mb-4 text-sm text-yellow-800 phone:p-3 phone:mb-3"
+              >
+                <span className="font-bold">Vísbending:</span> Algengir atómmassar – H≈1, C≈12,
+                N≈14, O≈16, Na≈23, S≈32, Cl≈35,5, K≈39, Ca≈40
+              </div>
+            )}
+
+            {/* Feedback + breakdown */}
+            {answered && (
+              <div className="space-y-4 mb-4 phone:space-y-2 phone:mb-3">
+                {/* The verdict and the breakdown: the region focus moves to after
+                    Athuga. FeedbackPanel keeps its own role="alert". */}
+                <div
+                  ref={feedbackRef}
+                  tabIndex={-1}
+                  role="group"
+                  className="space-y-4 phone:space-y-2"
+                >
+                  <FeedbackPanel
+                    feedback={{
+                      isCorrect,
+                      explanation: isCorrect
+                        ? `Rétt! Mólmassi ${compound.nameGenitive} er ${formatDecimal(compound.molarMass, 3)} g/mól.`
+                        : `Rangt. Rétt svar er ${formatDecimal(compound.molarMass, 3)} g/mól. Sjáðu útreikninginn hér að neðan.`,
+                    }}
+                    config={{ showExplanation: true }}
+                  />
+
+                  {diagnostic && !isCorrect && (
+                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800">
+                      <span className="font-bold">Líklegast voru mistökin: </span>
+                      {diagnostic}
+                    </div>
+                  )}
+
+                  <CalculationBreakdown compound={compound} />
+                </div>
+
+                <button
+                  key="next"
+                  ref={nextRef}
+                  onClick={armed(handleNext)}
+                  className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+                >
+                  {index + 1 < TOTAL ? 'Næsta dæmi →' : 'Sjá niðurstöður →'}
+                </button>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       {/* Periodic table modal */}

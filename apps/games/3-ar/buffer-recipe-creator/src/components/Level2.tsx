@@ -1,14 +1,30 @@
-import { useState, useEffect, useRef } from 'react';
+import {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  type KeyboardEvent,
+  type RefObject,
+} from 'react';
 
 import { HintSystem, Presence } from '@shared/components';
-import { parseStudentNumber, formatDecimal } from '@shared/utils';
+import {
+  focusTarget,
+  formatDecimal,
+  isPhone,
+  parseStudentNumber,
+  revealSpan,
+  revealTop,
+  useArmedAfter,
+  useIsPhone,
+  useItemTop,
+} from '@shared/utils';
 
 import { BufferCapacityVisualization } from './BufferCapacityVisualization';
 import FlaskComparison from './FlaskComparison';
 import { LEVEL2_PUZZLES } from '../data/level2-puzzles';
 import { BUFFER_PROBLEMS } from '../data/problems';
 import { solveBuffer } from '../engine/buffer';
-import { revealTop } from '../utils/reveal';
 
 interface Level2Props {
   onComplete: (score: number) => void;
@@ -16,6 +32,15 @@ interface Level2Props {
 }
 
 type Step = 'direction' | 'ratio' | 'mass' | 'complete';
+
+/** How long an answered step takes to fade out (its Presence exitDuration). */
+const STEP_EXIT_MS = 250;
+/** A given value: on a phone its name and value share one line. */
+const DATA_TILE =
+  'bg-warm-50 p-3 rounded-lg text-center phone:px-2 phone:py-1 phone:text-left phone:flex ' +
+  'phone:flex-wrap phone:items-baseline phone:justify-between phone:gap-x-2';
+/** Presence mounts the feedback a frame after it is set; wait this long before measuring it. */
+const FEEDBACK_MOUNT_MS = 60;
 type Direction = 'higher' | 'equal' | 'lower' | null;
 
 /**
@@ -39,9 +64,31 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
   const [hintMultiplier, setHintMultiplier] = useState(1.0);
   const [hintResetKey, setHintResetKey] = useState(0);
   const [completed, setCompleted] = useState(0);
+  // How many hint tiers are open, so the hints keep them when a phone layout moves them.
+  const [hintTiers, setHintTiers] = useState(0);
+  // Each wrong or unreadable answer, so a repeated one still brings its feedback into view.
+  const [wrongChecks, setWrongChecks] = useState(0);
   const levelCompleteReported = useRef(false);
-  const levelTopRef = useRef<HTMLDivElement>(null);
   const stepCardRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const directionFeedbackRef = useRef<HTMLDivElement>(null);
+  const ratioFeedbackRef = useRef<HTMLDivElement>(null);
+  const massFeedbackRef = useRef<HTMLDivElement>(null);
+  const directionAnswerRef = useRef<HTMLDivElement>(null);
+  const ratioAnswerRef = useRef<HTMLDivElement>(null);
+  const massAnswerRef = useRef<HTMLDivElement>(null);
+  const ratioHeadingRef = useRef<HTMLHeadingElement>(null);
+  const massHeadingRef = useRef<HTMLHeadingElement>(null);
+  const ratioCheckRef = useRef<HTMLButtonElement>(null);
+  const massCheckRef = useRef<HTMLButtonElement>(null);
+  const verdictRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const acidMassRef = useRef<HTMLInputElement>(null);
+  const baseMassRef = useRef<HTMLInputElement>(null);
+  // On a phone the hints sit under the step card, and the context and the flask comparison
+  // after it, so the given data, the step and its answer share one screen. Rendered in one
+  // place or the other, never twice.
+  const phone = useIsPhone();
 
   // Step 1: Direction
   const [selectedDirection, setSelectedDirection] = useState<Direction>(null);
@@ -75,15 +122,68 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
     }
   }, [completed, score, onComplete]);
 
-  // Finishing a puzzle hides the hint tiers above this card and, 250 ms later, the step just
-  // answered. A student who opened the hints therefore landed in the middle of the worked
-  // solution on a phone, with "Rétt svar!" scrolled past. Bring the card's top back once both
-  // have gone; revealTop leaves a screen that still shows it alone.
+  // The level opens with its heading focused: the menu card that opened it has gone.
+  useLayoutEffect(() => {
+    focusTarget(headingRef.current);
+  }, []);
+
+  // "Næsta verkefni" ends a long worked solution, so the next puzzle's top is above the
+  // screen: bring it back (at any width, as the game always did, only when it is off screen)
+  // and focus the new puzzle's name.
+  const levelTopRef = useItemTop<HTMLDivElement>(currentIndex, { anyWidth: true, gap: 0 });
+
+  // A correct step fades out and the next one takes its place. Once it has, focus its
+  // heading (the button pressed has gone) and, on a phone, show it through its Athuga.
   useEffect(() => {
-    if (step !== 'complete') return;
-    const timer = window.setTimeout(() => revealTop(stepCardRef.current), 300);
+    if (step !== 'ratio' && step !== 'mass') return;
+    const timer = window.setTimeout(() => {
+      const heading = step === 'ratio' ? ratioHeadingRef.current : massHeadingRef.current;
+      const check = step === 'ratio' ? ratioCheckRef.current : massCheckRef.current;
+      revealSpan(check, [heading]);
+      focusTarget(heading);
+    }, STEP_EXIT_MS + 10);
     return () => window.clearTimeout(timer);
   }, [step]);
+
+  // A wrong answer: on a phone, the answer through its feedback if that fits, else the
+  // feedback at the top; at every width focus moves to the feedback (P3).
+  useEffect(() => {
+    if (!wrongChecks) return;
+    const timer = window.setTimeout(() => {
+      const [answer, fb] =
+        step === 'direction'
+          ? [directionAnswerRef.current, directionFeedbackRef.current]
+          : step === 'ratio'
+            ? [ratioAnswerRef.current, ratioFeedbackRef.current]
+            : [massAnswerRef.current, massFeedbackRef.current];
+      if (!fb) return;
+      revealSpan(fb, [answer, fb]);
+      focusTarget(fb);
+    }, FEEDBACK_MOUNT_MS);
+    return () => window.clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only a new check moves the page
+  }, [wrongChecks]);
+
+  // Finishing a puzzle hides the hint tiers above this card and, 250 ms later, the step just
+  // answered. A student who opened the hints therefore landed in the middle of the worked
+  // solution on a phone, with "Rétt svar!" scrolled past. Once both have gone: on a phone,
+  // "Rétt svar!" through "Næsta verkefni" (or "Rétt svar!" at the top); off a phone the
+  // card's top, only when it has gone above the screen, as it always was. At every width
+  // focus moves to "Rétt svar!", not to Næsta (P3).
+  useEffect(() => {
+    if (step !== 'complete') return;
+    const timer = window.setTimeout(() => {
+      if (isPhone()) {
+        revealSpan(nextRef.current, [verdictRef.current]);
+      } else if ((stepCardRef.current?.getBoundingClientRect().top ?? 0) < 0) {
+        revealTop(stepCardRef.current, { anyWidth: true, always: true, gap: 0 });
+      }
+      focusTarget(verdictRef.current);
+    }, STEP_EXIT_MS + 50);
+    return () => window.clearTimeout(timer);
+  }, [step]);
+  // A double tap on the last Athuga must not land on "Næsta verkefni" as it appears.
+  const armed = useArmedAfter(400, `${currentIndex}:${step}`);
 
   // Safety check - should never happen with valid data
   if (!problem || !solution) {
@@ -107,9 +207,21 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
   };
 
   // Handle hint usage
-  const handleHintUsed = () => {
+  const handleHintUsed = (tier: number) => {
     setHintsUsedTotal((prev) => prev + 1);
+    setHintTiers(tier);
   };
+
+  // Enter answers the step; in the first of two fields it moves on to the second while that
+  // one is still empty.
+  const onEnter =
+    (check: () => void, next?: { ref: RefObject<HTMLInputElement | null>; empty: boolean }) =>
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      if (next?.empty) next.ref.current?.focus();
+      else check();
+    };
 
   // A step fades out for 250 ms after it is answered and its button stays live
   // meanwhile, so each check ignores a tap that arrives after its step is over.
@@ -122,6 +234,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
       setDirectionFeedback('Rétt! Nú skaltu reikna hlutfallið.');
       setStep('ratio');
     } else {
+      setWrongChecks((n) => n + 1);
       const correctDir = getCorrectDirection();
       setDirectionFeedback(
         selectedDirection === 'higher'
@@ -138,6 +251,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
     if (step !== 'ratio') return;
     const userRatio = parseStudentNumber(ratioInput);
     if (isNaN(userRatio) || userRatio <= 0) {
+      setWrongChecks((n) => n + 1);
       setRatioFeedback('Vinsamlegast sláðu inn jákvæða tölu.');
       return;
     }
@@ -153,6 +267,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
       );
       setStep('mass');
     } else {
+      setWrongChecks((n) => n + 1);
       setRatioFeedback(
         `Ekki rétt. Mundu: hlutfall = 10^(pH - pKa) = 10^(${formatDecimal(problem.targetPH, 2)} - ${formatDecimal(problem.pKa, 2)})`
       );
@@ -166,6 +281,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
     const userBaseMass = parseStudentNumber(baseMassInput);
 
     if (isNaN(userAcidMass) || isNaN(userBaseMass) || userAcidMass <= 0 || userBaseMass <= 0) {
+      setWrongChecks((n) => n + 1);
       setMassFeedback('Vinsamlegast sláðu inn jákvæðar tölur fyrir báða massa.');
       return;
     }
@@ -188,6 +304,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
       setShowExplanation(true);
       setStep('complete');
     } else {
+      setWrongChecks((n) => n + 1);
       let feedback = 'Ekki rétt. ';
       if (!acidOk)
         feedback += `Sýrumassi er ${userAcidMass > correctAcidMass ? 'of hár' : 'of lágur'}. `;
@@ -205,7 +322,6 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
     if (currentIndex < LEVEL2_PUZZLES.length - 1) {
       setCurrentIndex((prev) => prev + 1);
       resetPuzzleState();
-      revealTop(levelTopRef.current);
     }
   };
 
@@ -224,14 +340,63 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
     setMassCorrect(false);
     setShowExplanation(false);
     setHintMultiplier(1.0);
+    setHintTiers(0);
     setHintResetKey((prev) => prev + 1);
   };
 
+  // Rendered once, in the task card on desktop and under the step card on a phone. The
+  // "Stig: x / y" line stays where it always was and is not carried to the new place (design
+  // §4, §7). `startRevealed` keeps the student's open tiers when the move remounts it.
+  const hintSystem = (
+    <HintSystem
+      hints={puzzle.hints}
+      basePoints={100}
+      onHintUsed={handleHintUsed}
+      onPointsChange={setHintMultiplier}
+      disabled={step === 'complete'}
+      resetKey={hintResetKey}
+      startRevealed={hintTiers}
+      showPointCost={!phone}
+    />
+  );
+
+  const contextBox = problem.context && (
+    <div className="bg-purple-50 border-l-4 border-purple-400 p-3 mb-4 phone:mb-0">
+      <p className="text-sm text-purple-800">{problem.context}</p>
+    </div>
+  );
+
+  const flaskComparison = (
+    <div className="mb-4 phone:mb-0">
+      <FlaskComparison
+        targetPH={problem.targetPH}
+        pKa={problem.pKa}
+        addedAcidMoles={0.01}
+        addedBaseMoles={0}
+        bufferConcentration={problem.totalConcentration}
+      />
+    </div>
+  );
+
+  const nextButton = (
+    <button
+      ref={nextRef}
+      onClick={armed(nextPuzzle)}
+      className="w-full py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition-colors"
+    >
+      {currentIndex < LEVEL2_PUZZLES.length - 1 ? 'Næsta verkefni →' : 'Ljúka stigi →'}
+    </button>
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div ref={levelTopRef} className="bg-white rounded-2xl shadow-xl p-4 mb-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100 p-4 md:p-8 phone:p-3">
+      {/* A phone on its side: the task card on the left, the steps on the right. */}
+      <div
+        ref={levelTopRef}
+        className="max-w-4xl mx-auto phone-land:grid phone-land:grid-cols-2 phone-land:gap-x-3 phone-land:items-start"
+      >
+        {/* Header (on a phone: Til baka and the counters, then the title and the bar) */}
+        <div className="bg-white rounded-2xl shadow-xl p-4 mb-4 phone:px-3 phone:py-2 phone:mb-3 phone-land:col-span-2">
           <div className="flex justify-between items-center">
             <button
               onClick={onBack}
@@ -239,76 +404,85 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
             >
               ← Til baka
             </button>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 phone:gap-3">
               <div className="text-sm text-warm-500">
                 {Math.min(completed + 1, LEVEL2_PUZZLES.length)} / {LEVEL2_PUZZLES.length}
               </div>
-              <div className="text-lg font-bold text-kvenno-orange">Stig: {score}</div>
+              <div className="text-lg font-bold text-kvenno-orange phone:text-base">
+                Stig: {score}
+              </div>
             </div>
           </div>
 
-          <h1 className="text-xl md:text-2xl font-bold mt-2 text-kvenno-orange">
+          <h1
+            ref={headingRef}
+            className="text-xl md:text-2xl font-bold mt-2 text-kvenno-orange phone:text-base phone:mt-1"
+          >
             Stuðpúðasmíði - Stig 2
           </h1>
-          <p className="text-warm-600 text-sm">Henderson-Hasselbalch útreikningar</p>
+          <p className="text-warm-600 text-sm phone:sr-only">Henderson-Hasselbalch útreikningar</p>
 
           {/* Progress bar */}
-          <div className="w-full bg-warm-200 rounded-full h-2 mt-3">
+          <div className="w-full bg-warm-200 rounded-full h-2 mt-3 phone:h-1.5 phone:mt-2">
             <div
-              className="h-2 rounded-full transition-all duration-300 bg-kvenno-orange"
+              className="h-2 phone:h-1.5 rounded-full transition-all duration-300 bg-kvenno-orange"
               style={{ width: `${(completed / LEVEL2_PUZZLES.length) * 100}%` }}
             />
           </div>
         </div>
 
         {/* Task Card */}
-        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4 border-t-4 border-kvenno-orange">
-          <div className="flex items-start gap-3 mb-4">
-            <span className="text-white text-sm font-bold px-3 py-1 rounded-full bg-kvenno-orange">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4 border-t-4 border-kvenno-orange phone:p-3 phone:mb-3 phone-land:col-start-1 phone-land:row-start-2 phone-land:row-span-2">
+          <div className="flex items-start gap-3 mb-4 phone:gap-2 phone:mb-2">
+            <span className="text-white text-sm font-bold px-3 py-1 rounded-full bg-kvenno-orange phone:px-2 phone:py-0.5">
               #{puzzle.id}
             </span>
-            <div className="flex-1">
-              <h2 className="text-lg font-bold text-warm-800">{problem.system}</h2>
-              <p className="text-warm-700 mt-1">{puzzle.taskIs}</p>
+            <div className="flex-1 phone:min-w-0">
+              <h2 data-item-start className="text-lg font-bold text-warm-800 phone:text-base">
+                {problem.system}
+              </h2>
+              <p className="text-warm-700 mt-1 phone:mt-0 phone:text-sm">{puzzle.taskIs}</p>
             </div>
           </div>
 
-          {/* Problem Details */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-            <div className="bg-warm-50 p-3 rounded-lg text-center">
+          {/* Problem Details (on a phone each on one line: the name, then the value) */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 phone:gap-2 phone:mb-2">
+            <div className={DATA_TILE}>
               <div className="text-xs text-warm-500">pKa</div>
-              <div className="text-lg font-bold text-warm-800">{formatDecimal(problem.pKa)}</div>
+              <div className="text-lg font-bold text-warm-800 phone:text-sm">
+                {formatDecimal(problem.pKa)}
+              </div>
             </div>
-            <div className="bg-warm-50 p-3 rounded-lg text-center">
+            <div className={DATA_TILE}>
               <div className="text-xs text-warm-500">Markmiðs-pH</div>
-              <div className="text-lg font-bold text-kvenno-orange">
+              <div className="text-lg font-bold text-kvenno-orange phone:text-sm">
                 {formatDecimal(problem.targetPH)}
               </div>
             </div>
-            <div className="bg-warm-50 p-3 rounded-lg text-center">
+            <div className={DATA_TILE}>
               <div className="text-xs text-warm-500">Rúmmál</div>
-              <div className="text-lg font-bold text-warm-800">
+              <div className="text-lg font-bold text-warm-800 phone:text-sm">
                 {formatDecimal(problem.volume)} L
               </div>
             </div>
-            <div className="bg-warm-50 p-3 rounded-lg text-center">
+            <div className={DATA_TILE}>
               <div className="text-xs text-warm-500">Heildarstyrkur</div>
-              <div className="text-lg font-bold text-warm-800">
+              <div className="text-lg font-bold text-warm-800 phone:text-sm">
                 {formatDecimal(problem.totalConcentration)} M
               </div>
             </div>
           </div>
 
           {/* Component Info */}
-          <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="bg-red-50 p-3 rounded-lg">
+          <div className="grid grid-cols-2 gap-3 mb-4 phone:gap-2 phone:mb-0">
+            <div className="bg-red-50 p-3 rounded-lg phone:p-2">
               <div className="text-xs text-red-600 font-semibold">Sýra</div>
               <div className="font-bold text-red-800">{problem.acidName}</div>
               <div className="text-xs text-red-600">
                 M = {formatDecimal(problem.acidMolarMass)} g/mól
               </div>
             </div>
-            <div className="bg-blue-50 p-3 rounded-lg">
+            <div className="bg-blue-50 p-3 rounded-lg phone:p-2">
               <div className="text-xs text-blue-600 font-semibold">Basi</div>
               <div className="font-bold text-blue-800">{problem.baseName}</div>
               <div className="text-xs text-blue-600">
@@ -318,42 +492,21 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
           </div>
 
           {/* Context */}
-          {problem.context && (
-            <div className="bg-purple-50 border-l-4 border-purple-400 p-3 mb-4">
-              <p className="text-sm text-purple-800">{problem.context}</p>
-            </div>
-          )}
+          {!phone && contextBox}
 
           {/* Hint System */}
-          <div className="mb-4">
-            <HintSystem
-              hints={puzzle.hints}
-              basePoints={100}
-              onHintUsed={handleHintUsed}
-              onPointsChange={setHintMultiplier}
-              disabled={step === 'complete'}
-              resetKey={hintResetKey}
-            />
-          </div>
+          {!phone && <div className="mb-4">{hintSystem}</div>}
         </div>
 
         {/* Flask Comparison - static demo with 0.01 mol HCl added */}
-        <div className="mb-4">
-          <FlaskComparison
-            targetPH={problem.targetPH}
-            pKa={problem.pKa}
-            addedAcidMoles={0.01}
-            addedBaseMoles={0}
-            bufferConcentration={problem.totalConcentration}
-          />
-        </div>
+        {!phone && flaskComparison}
 
         {/* Step Progress Indicator */}
-        <div className="bg-white rounded-xl shadow-lg p-4 mb-4">
+        <div className="bg-white rounded-xl shadow-lg p-4 mb-4 phone:px-3 phone:py-2 phone:mb-3 phone-land:col-start-2 phone-land:row-start-2">
           <div className="flex items-center justify-between">
             <div className={`flex-1 text-center ${step === 'direction' ? 'font-bold' : ''}`}>
               <div
-                className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-1 ${
+                className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-1 phone:w-7 phone:h-7 phone:mb-0.5 ${
                   directionCorrect
                     ? 'bg-green-500 text-white'
                     : step === 'direction'
@@ -368,7 +521,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
             <div className="flex-shrink-0 w-12 h-0.5 bg-warm-200" />
             <div className={`flex-1 text-center ${step === 'ratio' ? 'font-bold' : ''}`}>
               <div
-                className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-1 ${
+                className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-1 phone:w-7 phone:h-7 phone:mb-0.5 ${
                   ratioCorrect
                     ? 'bg-green-500 text-white'
                     : step === 'ratio'
@@ -385,7 +538,7 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
               className={`flex-1 text-center ${step === 'mass' || step === 'complete' ? 'font-bold' : ''}`}
             >
               <div
-                className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-1 ${
+                className={`w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-1 phone:w-7 phone:h-7 phone:mb-0.5 ${
                   massCorrect
                     ? 'bg-green-500 text-white'
                     : step === 'mass'
@@ -401,70 +554,85 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
         </div>
 
         {/* Step Content */}
-        <div ref={stepCardRef} className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+        <div
+          ref={stepCardRef}
+          className={`bg-white rounded-xl shadow-lg p-4 sm:p-6 phone:p-3 ${
+            // Solved: the worked solution is read across the whole width, under the task.
+            step === 'complete'
+              ? 'phone-land:col-span-2 phone-land:row-start-4'
+              : 'phone-land:col-start-2 phone-land:row-start-3'
+          }`}
+        >
           {/* Step 1: Direction */}
-          <Presence show={step === 'direction'} exitDuration={250}>
-            <div>
-              <h3 className="text-lg font-bold text-warm-800 mb-4">
+          <Presence show={step === 'direction'} exitDuration={STEP_EXIT_MS}>
+            {/* On a phone the feedback follows "Athuga svar" rather than pushing it down. */}
+            <div className="phone:flex phone:flex-col">
+              <h3 className="text-lg font-bold text-warm-800 mb-4 phone:text-base phone:mb-2">
                 Skref 1: Er markmiðs-pH hærra, jafnt eða lægra en pKa?
               </h3>
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4 phone:p-2 phone:mb-2">
                 <p className="text-sm text-yellow-800">
                   <strong>Munið:</strong> pH = pKa + log([Basi]/[Sýra]). Ef pH {'>'} pKa, þá er
                   [Basi] {'>'} [Sýra].
                 </p>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4">
+              <div
+                ref={directionAnswerRef}
+                className="grid grid-cols-3 gap-2 sm:gap-3 mb-4 phone:mb-3"
+              >
                 <button
                   onClick={() => setSelectedDirection('higher')}
-                  className={`px-1 py-4 sm:p-4 rounded-lg border-2 transition-all ${
+                  className={`px-1 py-4 sm:p-4 phone:py-2 rounded-lg border-2 transition-all ${
                     selectedDirection === 'higher'
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-warm-200 hover:border-warm-300'
                   }`}
                 >
-                  <div className="text-2xl mb-1">📈</div>
+                  <div className="text-2xl mb-1 phone:text-xl phone:mb-0">📈</div>
                   <div className="font-semibold">Hærra</div>
                   <div className="text-xs text-warm-500 whitespace-nowrap">pH {'>'} pKa</div>
                 </button>
                 <button
                   onClick={() => setSelectedDirection('equal')}
-                  className={`px-1 py-4 sm:p-4 rounded-lg border-2 transition-all ${
+                  className={`px-1 py-4 sm:p-4 phone:py-2 rounded-lg border-2 transition-all ${
                     selectedDirection === 'equal'
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-warm-200 hover:border-warm-300'
                   }`}
                 >
-                  <div className="text-2xl mb-1">⚖️</div>
+                  <div className="text-2xl mb-1 phone:text-xl phone:mb-0">⚖️</div>
                   <div className="font-semibold">Jafnt</div>
                   <div className="text-xs text-warm-500 whitespace-nowrap">pH = pKa</div>
                 </button>
                 <button
                   onClick={() => setSelectedDirection('lower')}
-                  className={`px-1 py-4 sm:p-4 rounded-lg border-2 transition-all ${
+                  className={`px-1 py-4 sm:p-4 phone:py-2 rounded-lg border-2 transition-all ${
                     selectedDirection === 'lower'
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-warm-200 hover:border-warm-300'
                   }`}
                 >
-                  <div className="text-2xl mb-1">📉</div>
+                  <div className="text-2xl mb-1 phone:text-xl phone:mb-0">📉</div>
                   <div className="font-semibold">Lægra</div>
                   <div className="text-xs text-warm-500 whitespace-nowrap">pH {'<'} pKa</div>
                 </button>
               </div>
 
-              <Presence show={!!directionFeedback} exitDuration={250}>
-                <div
-                  className={`p-3 rounded-lg mb-4 ${
-                    directionFeedback?.includes('Rétt')
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-red-100 text-red-800'
-                  }`}
-                >
-                  {directionFeedback}
-                </div>
-              </Presence>
+              <div className="phone:order-last">
+                <Presence show={!!directionFeedback} exitDuration={250}>
+                  <div
+                    ref={directionFeedbackRef}
+                    className={`p-3 rounded-lg mb-4 phone:mb-0 phone:mt-3 ${
+                      directionFeedback?.includes('Rétt')
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {directionFeedback}
+                  </div>
+                </Presence>
+              </div>
 
               <button
                 onClick={checkDirection}
@@ -477,12 +645,16 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
           </Presence>
 
           {/* Step 2: Ratio */}
-          <Presence show={step === 'ratio'} exitDuration={250}>
-            <div>
-              <h3 className="text-lg font-bold text-warm-800 mb-4">
+          <Presence show={step === 'ratio'} exitDuration={STEP_EXIT_MS}>
+            {/* On a phone the field and "Athuga svar" share a row, and the feedback follows. */}
+            <div className="phone:flex phone:flex-wrap phone:items-end phone:gap-x-2">
+              <h3
+                ref={ratioHeadingRef}
+                className="text-lg font-bold text-warm-800 mb-4 phone:basis-full phone:text-base phone:mb-2"
+              >
                 Skref 2: Reiknaðu [Basi]/[Sýra] hlutfallið
               </h3>
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 phone:basis-full phone:p-2 phone:mb-2">
                 <p className="text-sm text-blue-800">
                   <strong>Formúla:</strong> pH = pKa + log(hlutfall) → hlutfall = 10^(pH - pKa)
                 </p>
@@ -493,36 +665,46 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                 </p>
               </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-warm-700 mb-1">
+              <div ref={ratioAnswerRef} className="mb-4 phone:mb-0 phone:flex-1 phone:min-w-0">
+                <label
+                  htmlFor="buffer-l2-ratio"
+                  className="block text-sm font-medium text-warm-700 mb-1"
+                >
                   Hlutfall [Basi]/[Sýra]:
                 </label>
                 <input
+                  id="buffer-l2-ratio"
                   type="text"
                   inputMode="decimal"
+                  enterKeyHint="done"
                   value={ratioInput}
                   onChange={(e) => setRatioInput(e.target.value)}
+                  onKeyDown={onEnter(() => ratioInput && checkRatio())}
                   placeholder="0,00"
                   className="w-full p-3 border-2 border-warm-300 rounded-lg focus:border-orange-500 focus:outline-none"
                 />
               </div>
 
-              <Presence show={!!ratioFeedback} exitDuration={250}>
-                <div
-                  className={`p-3 rounded-lg mb-4 ${
-                    ratioFeedback?.includes('Rétt')
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-red-100 text-red-800'
-                  }`}
-                >
-                  {ratioFeedback}
-                </div>
-              </Presence>
+              <div className="phone:order-last phone:basis-full">
+                <Presence show={!!ratioFeedback} exitDuration={250}>
+                  <div
+                    ref={ratioFeedbackRef}
+                    className={`p-3 rounded-lg mb-4 phone:mb-0 phone:mt-3 ${
+                      ratioFeedback?.includes('Rétt')
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {ratioFeedback}
+                  </div>
+                </Presence>
+              </div>
 
               <button
+                ref={ratioCheckRef}
                 onClick={checkRatio}
                 disabled={!ratioInput}
-                className={`w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed ${ratioInput ? 'bg-kvenno-orange' : ''}`}
+                className={`w-full phone:w-auto phone:shrink-0 phone:px-4 py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed ${ratioInput ? 'bg-kvenno-orange' : ''}`}
               >
                 Athuga svar
               </button>
@@ -530,12 +712,16 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
           </Presence>
 
           {/* Step 3: Mass */}
-          <Presence show={step === 'mass'} exitDuration={250}>
-            <div>
-              <h3 className="text-lg font-bold text-warm-800 mb-4">
+          <Presence show={step === 'mass'} exitDuration={STEP_EXIT_MS}>
+            {/* On a phone the feedback follows "Athuga svar" rather than pushing it down. */}
+            <div className="phone:flex phone:flex-col">
+              <h3
+                ref={massHeadingRef}
+                className="text-lg font-bold text-warm-800 mb-4 phone:text-base phone:mb-2"
+              >
                 Skref 3: Reiknaðu massa sýru og basa (í grömmum)
               </h3>
-              <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4 phone:p-2 phone:mb-2">
                 <p className="text-sm text-green-800">
                   <strong>Útreikningur:</strong> Notaðu heildarstyrkinn (
                   {formatDecimal(problem.totalConcentration)} M) og rúmmálið (
@@ -543,50 +729,87 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                   sýru og basa samkvæmt hlutfallinu.
                 </p>
                 <p className="text-sm text-green-800 mt-1">massi = mól × mólmassi</p>
+                {/* On a phone the molar masses are restated here, as Stig 3
+                    restates the stock concentrations: the cards that give them
+                    sit about 400 px above these fields, further than a soft
+                    keyboard leaves on screen (design §6.2.8). */}
+                {phone && (
+                  <p className="text-sm text-green-800 mt-1">
+                    Mólmassi: {problem.acidName} {formatDecimal(problem.acidMolarMass)} g/mól,{' '}
+                    {problem.baseName} {formatDecimal(problem.baseMolarMass)} g/mól
+                  </p>
+                )}
               </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="block text-sm font-medium text-red-700 mb-1">
+              <div
+                ref={massAnswerRef}
+                className="grid grid-cols-2 gap-4 mb-4 phone:gap-2 phone:mb-3"
+              >
+                <div className="phone:min-w-0">
+                  <label
+                    htmlFor="buffer-l2-acid-mass"
+                    className="block text-sm font-medium text-red-700 mb-1"
+                  >
                     Sýrumassi (g):
                   </label>
                   <input
+                    ref={acidMassRef}
+                    id="buffer-l2-acid-mass"
                     type="text"
                     inputMode="decimal"
+                    enterKeyHint="next"
                     value={acidMassInput}
                     onChange={(e) => setAcidMassInput(e.target.value)}
+                    onKeyDown={onEnter(() => acidMassInput && baseMassInput && checkMass(), {
+                      ref: baseMassRef,
+                      empty: !baseMassInput,
+                    })}
                     placeholder={`${problem.acidName}`}
                     className="w-full p-3 border-2 border-red-300 rounded-lg focus:border-red-500 focus:outline-none"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-blue-700 mb-1">
+                <div className="phone:min-w-0">
+                  <label
+                    htmlFor="buffer-l2-base-mass"
+                    className="block text-sm font-medium text-blue-700 mb-1"
+                  >
                     Basamassi (g):
                   </label>
                   <input
+                    ref={baseMassRef}
+                    id="buffer-l2-base-mass"
                     type="text"
                     inputMode="decimal"
+                    enterKeyHint="done"
                     value={baseMassInput}
                     onChange={(e) => setBaseMassInput(e.target.value)}
+                    onKeyDown={onEnter(() => acidMassInput && baseMassInput && checkMass(), {
+                      ref: acidMassRef,
+                      empty: !acidMassInput,
+                    })}
                     placeholder={`${problem.baseName}`}
                     className="w-full p-3 border-2 border-blue-300 rounded-lg focus:border-blue-500 focus:outline-none"
                   />
                 </div>
               </div>
 
-              <Presence show={!!massFeedback} exitDuration={250}>
-                <div
-                  className={`p-3 rounded-lg mb-4 ${
-                    massFeedback?.includes('Frábært')
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-red-100 text-red-800'
-                  }`}
-                >
-                  {massFeedback}
-                </div>
-              </Presence>
+              <div className="phone:order-last">
+                <Presence show={!!massFeedback} exitDuration={250}>
+                  <div
+                    ref={massFeedbackRef}
+                    className={`p-3 rounded-lg mb-4 phone:mb-0 phone:mt-3 ${
+                      massFeedback?.includes('Frábært')
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
+                  >
+                    {massFeedback}
+                  </div>
+                </Presence>
+              </div>
 
               <button
+                ref={massCheckRef}
                 onClick={checkMass}
                 disabled={!acidMassInput || !baseMassInput}
                 className={`w-full py-3 text-white font-bold rounded-lg transition-colors disabled:bg-warm-300 disabled:cursor-not-allowed ${acidMassInput && baseMassInput ? 'bg-kvenno-orange' : ''}`}
@@ -599,9 +822,17 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
           {/* Completion & Explanation */}
           <Presence show={step === 'complete' && showExplanation} exitDuration={250}>
             <div>
-              <div className="bg-green-50 border-2 border-green-300 rounded-lg p-4 mb-4">
-                <h3 className="font-bold text-green-800 mb-2">Rétt svar!</h3>
-                <p className="text-green-700 mb-3">{puzzle.explanationIs}</p>
+              {/* The region focus moves to once the puzzle is solved (P3). */}
+              <div
+                ref={verdictRef}
+                role="group"
+                aria-labelledby="buffer-l2-verdict"
+                className="bg-green-50 border-2 border-green-300 rounded-lg p-4 mb-4 phone:p-3 phone:mb-3"
+              >
+                <h3 id="buffer-l2-verdict" className="font-bold text-green-800 mb-2">
+                  Rétt svar!
+                </h3>
+                <p className="text-green-700 mb-3 phone:mb-2">{puzzle.explanationIs}</p>
 
                 <div className="bg-white rounded-lg p-3 border border-green-200">
                   <h4 className="font-semibold text-warm-700 mb-2">Útreikningur:</h4>
@@ -633,9 +864,13 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                 </div>
               </div>
 
+              {/* On a phone "Næsta verkefni" comes straight after the worked solution, and the
+                  buffer-capacity explorer stays in the flow after it. */}
+              {phone && nextButton}
+
               {/* Interactive buffer capacity viz — lets students see that the buffer they
                   designed actually holds pH steady against added acid/base. */}
-              <div className="mb-4">
+              <div className="mb-4 phone:mb-0 phone:mt-3">
                 <BufferCapacityVisualization
                   pKa={problem.pKa}
                   acidConc={solution.acidConc}
@@ -646,18 +881,22 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                 />
               </div>
 
-              <button
-                onClick={nextPuzzle}
-                className="w-full py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition-colors"
-              >
-                {currentIndex < LEVEL2_PUZZLES.length - 1 ? 'Næsta verkefni →' : 'Ljúka stigi →'}
-              </button>
+              {!phone && nextButton}
             </div>
           </Presence>
         </div>
 
+        {/* On a phone: the hints under the step card, then the context and the comparison */}
+        {phone && (
+          <>
+            <div className="mt-3 phone-land:col-span-2">{hintSystem}</div>
+            {problem.context && <div className="mt-3 phone-land:col-span-2">{contextBox}</div>}
+            <div className="mt-3 phone-land:col-span-2">{flaskComparison}</div>
+          </>
+        )}
+
         {/* Formula Reference */}
-        <div className="mt-6 bg-white rounded-xl shadow-lg p-4">
+        <div className="mt-6 phone:mt-3 bg-white rounded-xl shadow-lg p-4 phone-land:col-span-2">
           <h3 className="font-semibold text-warm-700 mb-2">📐 Henderson-Hasselbalch</h3>
           <div className="bg-warm-50 rounded-lg p-3 text-center">
             <p className="text-lg font-mono">

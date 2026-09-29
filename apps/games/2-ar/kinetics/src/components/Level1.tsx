@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
-import { shuffleArray } from '@shared/utils';
+import { shuffleArray, useArmedAfter, useItemTop, useRevealAfterCommit } from '@shared/utils';
 
 import { CatalystEffectDemo } from './CatalystEffectDemo';
 import { CollisionDemo } from './CollisionDemo';
@@ -60,6 +60,38 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: re-shuffle when challenge index changes
   }, [currentChallenge, challenge.options]);
 
+  // Each new question brings the card's top back on a phone and focuses its title.
+  const cardRef = useItemTop<HTMLDivElement>(currentChallenge);
+  const questionRef = useRef<HTMLParagraphElement>(null);
+  const optionsRef = useRef<HTMLDivElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const selectedIndex = shuffledOptions.findIndex((opt) => opt.id === selectedAnswer);
+  // After Athuga: the question through Næsta if it fits (else the chosen option, else the
+  // feedback at the top, which is the usual case on a phone: the student reads down to Næsta),
+  // and focus on the feedback, not on Næsta, so a second Enter lands on nothing (design P3).
+  useRevealAfterCommit(showResult, () => ({
+    bottom: nextRef.current,
+    tops: [
+      questionRef.current,
+      selectedIndex < 0 ? null : (optionsRef.current?.children[selectedIndex] ?? null),
+      feedbackRef.current,
+    ],
+    focus: feedbackRef.current,
+  }));
+  // A double tap on Athuga must not land on Næsta.
+  const armed = useArmedAfter(400, `${currentChallenge}:${showResult}`);
+  // Opening the hint replaces its link with the hint, which pushed Athuga down and dropped
+  // focus to <body> with the link: bring the hint through Athuga into view on a phone, and
+  // move focus to the hint (design §3, hints).
+  const hintRef = useRef<HTMLDivElement>(null);
+  const checkRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(showHint, () => ({
+    bottom: checkRef.current,
+    tops: [hintRef.current],
+    focus: hintRef.current,
+  }));
+
   const handleAnswerSelect = (optionId: string) => {
     if (showResult) return;
     setSelectedAnswer(optionId);
@@ -109,143 +141,175 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        {/* Header. On a phone the counters share one line (P4), so the row is one line tall. */}
+        <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11 phone:shrink-0"
           >
             <span>&larr;</span> Til baka
           </button>
-          <div className="text-right">
+          <div className="text-right phone:flex phone:flex-wrap phone:items-baseline phone:justify-end phone:gap-x-2 phone:min-w-0">
             <div className="text-sm text-warm-600">
               Stig 1 / Þraut {currentChallenge + 1} af {challenges.length}
             </div>
-            <div className="text-lg font-bold text-blue-600">{score} stig</div>
+            <div className="text-lg font-bold text-blue-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6 phone:h-1.5 phone:mb-3">
           <div
-            className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+            className="bg-blue-500 h-2 phone:h-1.5 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
           />
         </div>
 
         {/* Main content */}
-        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-          <h2 className="text-xl min-[360px]:text-2xl font-bold text-blue-800 mb-2">
-            {challenge.title}
-          </h2>
-          <p className="text-warm-700 text-lg mb-6">{challenge.question}</p>
+        {/* A phone on its side: the question | the options and Athuga, and after a check the
+            feedback across both columns below them, where it reads in half the height. The
+            wrappers are display: contents everywhere else, so nothing else moves. */}
+        <div
+          ref={cardRef}
+          className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3 phone-land:grid phone-land:grid-cols-2 phone-land:gap-4 phone-land:items-start"
+        >
+          <div className="contents phone-land:block">
+            <h2
+              data-item-start
+              className="text-xl min-[360px]:text-2xl font-bold text-blue-800 mb-2 phone:text-xl phone:mb-1"
+            >
+              {challenge.title}
+            </h2>
+            <p ref={questionRef} className="text-warm-700 text-lg mb-6 phone:text-base phone:mb-3">
+              {challenge.question}
+            </p>
+          </div>
 
-          {/* Multiple choice options */}
-          {challenge.type === 'multiple_choice' && shuffledOptions.length > 0 && (
-            <div className="space-y-3 mb-6">
-              {shuffledOptions.map((option) => (
-                <button
-                  key={option.id}
-                  onClick={() => handleAnswerSelect(option.id)}
-                  disabled={showResult}
-                  className={`w-full p-4 rounded-xl border-2 text-left transition-all ${getOptionStyle(option)}`}
-                >
-                  <div className="flex items-start gap-3">
-                    <span className="font-bold text-warm-500 uppercase">{option.id}.</span>
-                    <span className="flex-1">{option.text}</span>
-                    {showResult && option.correct && (
-                      <span className="text-green-600 font-bold">✓</span>
-                    )}
-                    {showResult && selectedAnswer === option.id && !option.correct && (
-                      <span className="text-red-600 font-bold">✗</span>
-                    )}
-                  </div>
-                  {showResult && selectedAnswer === option.id && (
-                    <div
-                      className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}
-                    >
-                      {option.explanation}
+          <div className="contents phone-land:block">
+            {/* Multiple choice options */}
+            {challenge.type === 'multiple_choice' && shuffledOptions.length > 0 && (
+              <div ref={optionsRef} className="space-y-3 mb-6 phone:space-y-2 phone:mb-3">
+                {shuffledOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    onClick={() => handleAnswerSelect(option.id)}
+                    disabled={showResult}
+                    className={`w-full p-4 phone:p-3 rounded-xl border-2 text-left transition-all ${getOptionStyle(option)}`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <span className="font-bold text-warm-500 uppercase">{option.id}.</span>
+                      <span className="flex-1">{option.text}</span>
+                      {showResult && option.correct && (
+                        <span className="text-green-600 font-bold">✓</span>
+                      )}
+                      {showResult && selectedAnswer === option.id && !option.correct && (
+                        <span className="text-red-600 font-bold">✗</span>
+                      )}
                     </div>
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Hint button */}
-          {!showResult && !showHint && (
-            <button
-              onClick={() => {
-                setShowHint(true);
-                setTotalHintsUsed((prev) => prev + 1);
-              }}
-              className="text-blue-600 hover:text-blue-800 text-sm underline mb-4 pointer-coarse:min-h-11"
-            >
-              Sýna vísbendingu
-            </button>
-          )}
-
-          {showHint && !showResult && (
-            <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4">
-              <span className="font-bold text-yellow-800">Vísbending: </span>
-              <span className="text-yellow-900">{challenge.hints.method}</span>
-            </div>
-          )}
-
-          {/* Check answer button */}
-          {!showResult && (
-            <button
-              onClick={checkAnswer}
-              disabled={!selectedAnswer}
-              className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
-            >
-              Athuga svar
-            </button>
-          )}
-
-          {/* Detailed Feedback Panel */}
-          {showResult && (
-            <div className="mb-4">
-              <FeedbackPanel
-                feedback={{
-                  isCorrect:
-                    shuffledOptions.find((opt) => opt.id === selectedAnswer)?.correct || false,
-                  // Plain text: the panel renders it as-is, so markdown here showed up as
-                  // literal asterisks. The concept gets its own box below, as in Stig 3.
-                  explanation:
-                    shuffledOptions.find((opt) => opt.id === selectedAnswer)?.explanation || '',
-                  misconception: shuffledOptions.find((opt) => opt.id === selectedAnswer)?.correct
-                    ? undefined
-                    : MISCONCEPTIONS[challenge.id],
-                  relatedConcepts: RELATED_CONCEPTS[challenge.id],
-                  nextSteps: shuffledOptions.find((opt) => opt.id === selectedAnswer)?.correct
-                    ? 'Frábært! Þú skilur þetta hugtak vel. Haltu áfram.'
-                    : 'Skoðaðu útskýringuna og hugsaðu um samband milli þáttanna.',
-                }}
-                config={{
-                  showExplanation: true,
-                  showMisconceptions: !shuffledOptions.find((opt) => opt.id === selectedAnswer)
-                    ?.correct,
-                  showRelatedConcepts: true,
-                  showNextSteps: true,
-                }}
-              />
-              <div className="bg-blue-50 p-4 rounded-xl mt-4">
-                <div className="font-bold text-blue-800 mb-2">Hugtak:</div>
-                <div className="text-blue-900 text-sm">{challenge.conceptExplanation}</div>
+                    {/* The chosen option's explanation is the very string the FeedbackPanel below
+                      shows, so a phone draws it once, there. */}
+                    {showResult && selectedAnswer === option.id && (
+                      <div
+                        className={`mt-2 text-sm phone:hidden ${option.correct ? 'text-green-700' : 'text-red-700'}`}
+                      >
+                        {option.explanation}
+                      </div>
+                    )}
+                  </button>
+                ))}
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Next button */}
-          {showResult && (
-            <button
-              onClick={nextChallenge}
-              className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
-            >
-              {currentChallenge < challenges.length - 1 ? 'Næsta þraut' : 'Ljúka stigi 1'}
-            </button>
-          )}
+            {showHint && !showResult && (
+              <div
+                ref={hintRef}
+                className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4 phone:p-3 phone:mb-3"
+              >
+                <span className="font-bold text-yellow-800">Vísbending: </span>
+                <span className="text-yellow-900">{challenge.hints.method}</span>
+              </div>
+            )}
+
+            {/* The hint link and Athuga, which share a row on a phone. Where both do not fit on one
+                line (320 px) Athuga wraps under the link rather than squeezing. Athuga and Næsta
+                are separate elements (keyed), never one button relabelled, and Næsta ignores a
+                press within 400 ms of appearing. */}
+            {!showResult && (
+              <div className="contents phone:flex phone:flex-wrap phone:items-center phone:gap-x-4 phone:gap-y-2">
+                {!showHint && (
+                  <button
+                    onClick={() => {
+                      setShowHint(true);
+                      setTotalHintsUsed((prev) => prev + 1);
+                    }}
+                    className="text-blue-600 hover:text-blue-800 text-sm underline mb-4 phone:mb-0 phone:shrink-0 pointer-coarse:min-h-11"
+                  >
+                    Sýna vísbendingu
+                  </button>
+                )}
+                <button
+                  key="check"
+                  ref={checkRef}
+                  onClick={checkAnswer}
+                  disabled={!selectedAnswer}
+                  className="w-full phone:w-auto phone:flex-[1_1_9rem] bg-blue-500 hover:bg-blue-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 phone:py-3 phone:px-3 rounded-xl transition-colors"
+                >
+                  Athuga svar
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div
+            className={showResult ? 'contents phone-land:block phone-land:col-span-2' : 'contents'}
+          >
+            {/* Detailed Feedback Panel. The feedback region focus moves to after Athuga (P3);
+              FeedbackPanel is itself role=alert and announces the verdict. */}
+            {showResult && (
+              <div ref={feedbackRef} tabIndex={-1} role="group" className="mb-4 phone:mb-3">
+                <FeedbackPanel
+                  feedback={{
+                    isCorrect:
+                      shuffledOptions.find((opt) => opt.id === selectedAnswer)?.correct || false,
+                    // Plain text: the panel renders it as-is, so markdown here showed up as
+                    // literal asterisks. The concept gets its own box below, as in Stig 3.
+                    explanation:
+                      shuffledOptions.find((opt) => opt.id === selectedAnswer)?.explanation || '',
+                    misconception: shuffledOptions.find((opt) => opt.id === selectedAnswer)?.correct
+                      ? undefined
+                      : MISCONCEPTIONS[challenge.id],
+                    relatedConcepts: RELATED_CONCEPTS[challenge.id],
+                    nextSteps: shuffledOptions.find((opt) => opt.id === selectedAnswer)?.correct
+                      ? 'Frábært! Þú skilur þetta hugtak vel. Haltu áfram.'
+                      : 'Skoðaðu útskýringuna og hugsaðu um samband milli þáttanna.',
+                  }}
+                  config={{
+                    showExplanation: true,
+                    showMisconceptions: !shuffledOptions.find((opt) => opt.id === selectedAnswer)
+                      ?.correct,
+                    showRelatedConcepts: true,
+                    showNextSteps: true,
+                  }}
+                />
+                <div className="bg-blue-50 p-4 rounded-xl mt-4 phone:p-3 phone:mt-3">
+                  <div className="font-bold text-blue-800 mb-2">Hugtak:</div>
+                  <div className="text-blue-900 text-sm">{challenge.conceptExplanation}</div>
+                </div>
+              </div>
+            )}
+
+            {/* Next button */}
+            {showResult && (
+              <button
+                key="next"
+                ref={nextRef}
+                onClick={armed(nextChallenge)}
+                className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 phone:py-3 rounded-xl transition-colors"
+              >
+                {currentChallenge < challenges.length - 1 ? 'Næsta þraut' : 'Ljúka stigi 1'}
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Interactive Visualizations */}

@@ -1,12 +1,19 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 import { Header, LanguageSwitcher } from '@shared/components';
 import { useGameI18n } from '@shared/hooks';
-import { shuffleArray } from '@shared/utils';
+import {
+  shuffleArray,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+  useScreenTop,
+} from '@shared/utils';
 
 import { periodicPuzzles } from '../data/periodic-configs';
 import { gameTranslations } from '../i18n';
 import { valenceOf } from '../utils/electrons';
+import { ITEM_START } from '../utils/itemStart';
 
 interface Level3Props {
   onComplete: (score: number) => void;
@@ -34,14 +41,44 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   // string against fullShorthand, never an index, so reordering is safe.
   const displayedOptions = useMemo(() => shuffleArray(puzzle.options), [puzzle]);
 
-  // A new screen (the exercises, or the next element) starts at its top: the
-  // browser keeps the old scroll offset, which on a phone hides the new element.
-  // The verdict needs no help here -- it replaces "Athuga svar" in place, so it
-  // is already in view when it appears. window.scrollTo rather than
-  // scrollIntoView, which would also send the keyboard's Tab back to the header.
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [showIntro, currentIndex]);
+  // The exercises start at the top of the page at every width, as they always
+  // have, with the heading focused.
+  useScreenTop(showIntro, { anyWidth: true, focus: ITEM_START });
+  // So does each next element: the browser keeps the old scroll offset, which
+  // on a phone hides the new element. `always` + `gap: 0` on the page's own
+  // wrapper, directly under the sticky header, is exactly the old scroll to
+  // the top at every width; focus moves to the new element.
+  const pageRef = useItemTop<HTMLDivElement>(currentIndex, {
+    anyWidth: true,
+    always: true,
+    instant: true,
+    gap: 0,
+  });
+
+  // The verdict replaces "Athuga svar" in place, so a desktop needs no scroll
+  // for it and gets none. On a phone Næsta sits below the verdict, off the
+  // bottom of the screen for the longer answers, so the shared reveal shows as
+  // much as fits from the question down to Næsta. At every width focus moves to
+  // the verdict, not to Næsta, so a second Enter lands on nothing (design P3).
+  const questionRef = useRef<HTMLHeadingElement>(null);
+  const optionsRef = useRef<HTMLDivElement>(null);
+  const verdictRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(submitted, () => ({
+    bottom: nextRef.current,
+    tops: [
+      questionRef.current,
+      selectedOption === null
+        ? null
+        : (Array.from(optionsRef.current?.children ?? []).find(
+            (b) => b.textContent === selectedOption
+          ) ?? null),
+      verdictRef.current,
+    ],
+    focus: verdictRef.current,
+  }));
+  // A double tap on Athuga must not land on Næsta a moment later.
+  const armed = useArmedAfter(400, `${currentIndex}:${submitted}`);
 
   const handleSubmit = () => {
     if (submitted || !selectedOption) return;
@@ -75,14 +112,14 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             />
           }
         />
-        <div className="max-w-lg mx-auto p-4 md:p-8">
+        <div className="max-w-lg mx-auto p-4 md:p-8 phone:px-3 phone:py-2">
           <button
             onClick={onBack}
             className="text-warm-600 hover:text-warm-800 mb-4 pointer-coarse:py-2.5 pointer-coarse:-mt-2.5 pointer-coarse:mb-1.5"
           >
             ← Til baka
           </button>
-          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 space-y-4 animate-slide-in">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 space-y-4 phone:p-3 phone:space-y-3 animate-slide-in">
             <h2 className="text-xl font-bold text-warm-800">Eðalgasstytting</h2>
             <p className="text-warm-700">
               Í stað þess að skrifa alla rafeindaskipanina frá 1s² getum við notað
@@ -140,28 +177,28 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         }
       />
 
-      <div className="max-w-3xl mx-auto p-4 md:p-8">
-        <div className="flex justify-between items-center mb-4">
+      <div ref={pageRef} className="max-w-3xl mx-auto p-4 md:p-8 phone:px-3 phone:py-2">
+        <div className="flex justify-between items-center gap-3 mb-4 phone:mb-2">
           <button
             onClick={onBack}
             className="text-warm-600 hover:text-warm-800 pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
           >
             ← Til baka
           </button>
-          <div className="text-sm text-warm-600">
+          <div className="text-sm text-warm-600 text-right">
             Frumefni {currentIndex + 1} / {periodicPuzzles.length} &bull; Stig: {score}
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 animate-slide-in">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 md:p-8 phone:p-3 animate-slide-in">
           {/* Element display */}
-          <div className="text-center mb-6">
+          <div data-item-start className="text-center mb-6 phone:mb-2">
             <div className="inline-flex items-center gap-4">
               <div
-                className={`px-6 py-4 rounded-xl ${puzzle.isException ? 'bg-amber-100' : 'bg-teal-100'}`}
+                className={`px-6 py-4 rounded-xl phone:px-4 phone:py-1.5 ${puzzle.isException ? 'bg-amber-100' : 'bg-teal-100'}`}
               >
                 <div
-                  className={`text-4xl font-bold ${puzzle.isException ? 'text-amber-800' : 'text-teal-800'}`}
+                  className={`text-4xl font-bold phone:text-3xl ${puzzle.isException ? 'text-amber-800' : 'text-teal-800'}`}
                 >
                   {puzzle.element}
                 </div>
@@ -182,12 +219,20 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             </div>
           </div>
 
-          <h2 className="text-lg font-semibold text-warm-800 mb-4 text-center">
+          <h2
+            ref={questionRef}
+            className="text-lg font-semibold text-warm-800 mb-4 text-center phone:text-base phone:mb-2"
+          >
             Hvaða eðalgasstytting er rétt?
           </h2>
 
           {/* Options */}
-          <div className="space-y-3 mb-6">
+          {/* A phone on its side sets the options two to a row: the longest,
+              '[Ar] 4s² 3d¹⁰ 4p⁶ 5s²', fits half the width on one line. */}
+          <div
+            ref={optionsRef}
+            className="space-y-3 mb-6 phone:space-y-2 phone:mb-3 phone-land:grid phone-land:grid-cols-2 phone-land:gap-2 phone-land:space-y-0"
+          >
             {displayedOptions.map((option) => {
               let className = 'mc-option';
               if (submitted) {
@@ -211,9 +256,11 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             })}
           </div>
 
-          {/* Submit */}
+          {/* Submit. Athuga and Næsta are separate elements (keyed), and Næsta
+              ignores a press within 400 ms of appearing. */}
           {!submitted ? (
             <button
+              key="check"
               onClick={handleSubmit}
               disabled={!selectedOption}
               className="game-btn w-full py-3 rounded-xl font-bold text-white bg-teal-500 hover:bg-teal-600 disabled:bg-warm-300 disabled:cursor-not-allowed transition-colors"
@@ -222,14 +269,20 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             </button>
           ) : (
             <>
+              {/* The feedback region focus moves to after Athuga (P3), named by its
+                  verdict. */}
               <div
-                className={`p-4 rounded-xl mb-2 ${isCorrect ? 'bg-green-50 border-2 border-green-300' : 'bg-red-50 border-2 border-red-300'}`}
+                ref={verdictRef}
+                role="group"
+                tabIndex={-1}
+                aria-labelledby="rafeind-l3-verdict"
+                className={`p-4 rounded-xl mb-2 phone:p-3 focus:outline-none ${isCorrect ? 'bg-green-50 border-2 border-green-300' : 'bg-red-50 border-2 border-red-300'}`}
               >
-                <div className="text-lg font-bold mb-2">
+                <div id="rafeind-l3-verdict" className="text-lg font-bold mb-2 phone:mb-1">
                   {isCorrect ? '✅ Rétt!' : '❌ Ekki rétt'}
                 </div>
                 {puzzle.isException && (
-                  <div className="bg-amber-50 p-3 rounded-lg mb-2 text-sm text-amber-800">
+                  <div className="bg-amber-50 p-3 rounded-lg mb-2 text-sm text-amber-800 phone:p-2">
                     ⚠️{' '}
                     {language === 'is'
                       ? puzzle.exceptionExplanation_is
@@ -252,8 +305,10 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               </div>
 
               <button
-                onClick={handleNext}
-                className="game-btn w-full mt-4 py-3 rounded-xl font-bold text-white bg-teal-500 hover:bg-teal-600 transition-colors"
+                key="next"
+                ref={nextRef}
+                onClick={armed(handleNext)}
+                className="game-btn w-full mt-4 py-3 rounded-xl font-bold text-white bg-teal-500 hover:bg-teal-600 transition-colors phone:mt-2"
               >
                 {isLast ? 'Ljúka stigi' : 'Næsta frumefni →'}
               </button>

@@ -3,6 +3,7 @@ import { fireEvent, render, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import App from '../App';
+import { clockPastNextGuard } from './next-guard-clock';
 import { periodicPuzzles } from '../data/periodic-configs';
 import { screenAfterLevel, type Progress } from '../utils/progress';
 
@@ -29,6 +30,8 @@ const NONE: Progress = {
   level3Score: 0,
   totalGamesPlayed: 0,
 };
+
+clockPastNextGuard();
 
 beforeEach(() => {
   localStorage.clear();

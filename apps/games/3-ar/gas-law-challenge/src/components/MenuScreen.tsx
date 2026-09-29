@@ -1,3 +1,5 @@
+import type { Ref } from 'react';
+
 import { Header } from '@shared/components';
 
 import { questions, type Level } from '../data';
@@ -9,6 +11,8 @@ interface MenuScreenProps {
   setSelectedLevel: (level: Level) => void;
   resetStats: () => void;
   onStart: (mode: GameMode) => void;
+  /** The screen's root, for App's screen-swap anchoring. */
+  rootRef?: Ref<HTMLDivElement>;
 }
 
 export function MenuScreen({
@@ -17,16 +21,17 @@ export function MenuScreen({
   setSelectedLevel,
   resetStats,
   onStart,
+  rootRef,
 }: MenuScreenProps) {
   return (
-    <div>
+    <div ref={rootRef}>
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
         <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="Gaslögmál" />
         <div className="min-h-screen">
-          <main className="max-w-5xl mx-auto px-4 py-6 sm:py-8">
-            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8">
-              <div className="text-center mb-8">
-                <p className="text-lg text-warm-600 mb-2">
+          <main className="max-w-5xl mx-auto px-4 py-6 sm:py-8 phone:py-3">
+            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8 phone:p-3">
+              <div className="text-center mb-8 phone:mb-3">
+                <p className="text-lg text-warm-600 mb-2 phone:text-base phone:mb-1">
                   Lærðu að leysa verkefni um kjörgaslögmálið: PV = nRT
                 </p>
                 <p className="text-sm text-warm-500">
@@ -34,17 +39,17 @@ export function MenuScreen({
                 </p>
 
                 {stats.questionsAnswered > 0 && (
-                  <div className="mt-4">
-                    <div className="flex justify-center gap-4 text-sm flex-wrap">
-                      <div className="bg-yellow-50 px-3 py-2 rounded-lg border border-yellow-200">
+                  <div className="mt-4 phone:mt-2">
+                    <div className="flex justify-center gap-4 text-sm flex-wrap phone:gap-1.5 phone:text-xs">
+                      <div className="bg-yellow-50 px-3 py-2 phone:px-2 phone:py-1 rounded-lg border border-yellow-200">
                         <span className="font-bold text-yellow-800">🏆 Stig: {stats.score}</span>
                       </div>
-                      <div className="bg-green-50 px-3 py-2 rounded-lg border border-green-200">
+                      <div className="bg-green-50 px-3 py-2 phone:px-2 phone:py-1 rounded-lg border border-green-200">
                         <span className="font-bold text-green-800">
                           ✓ Rétt: {stats.correctAnswers}/{stats.questionsAnswered}
                         </span>
                       </div>
-                      <div className="bg-blue-50 px-3 py-2 rounded-lg border border-blue-200">
+                      <div className="bg-blue-50 px-3 py-2 phone:px-2 phone:py-1 rounded-lg border border-blue-200">
                         <span className="font-bold text-blue-800">
                           🔥 Besta röð: {stats.bestStreak}
                         </span>
@@ -52,7 +57,7 @@ export function MenuScreen({
                     </div>
                     <button
                       onClick={resetStats}
-                      className="mt-3 text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:min-h-11 pointer-coarse:px-3"
+                      className="mt-3 phone:mt-1 text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:min-h-11 pointer-coarse:px-3"
                     >
                       Endurstilla framvindu
                     </button>
@@ -60,8 +65,9 @@ export function MenuScreen({
                 )}
               </div>
 
-              {/* Conceptual intro — WHY does PV=nRT? */}
-              <div className="bg-purple-50 p-4 sm:p-6 rounded-xl mb-8 border border-purple-200">
+              {/* Conceptual intro — WHY does PV=nRT? It is teaching, so it stays first on a
+                  phone too and costs a scroll (design §5); only its padding compacts. */}
+              <div className="bg-purple-50 p-4 sm:p-6 rounded-xl mb-8 border border-purple-200 phone:p-3 phone:mb-4">
                 <h2 className="font-bold text-purple-800 mb-3">Af hverju PV = nRT?</h2>
                 <p className="text-sm text-purple-700 mb-3">
                   Gasagnir (sameindir) eru á stöðugri hreyfingu. Þegar þær rekast á veggi ílátsins
@@ -98,68 +104,77 @@ export function MenuScreen({
               </div>
 
               {/* Level selector — iter 5 P3 restructure (was: random across 6 laws). */}
-              <div className="mb-6">
-                <h2 className="font-bold text-warm-800 mb-3">Veldu stig:</h2>
-                <div className="grid md:grid-cols-3 gap-3">
+              <div data-level-chooser className="mb-6 phone:mb-3">
+                <h2 className="font-bold text-warm-800 mb-3 phone:mb-2">Veldu stig:</h2>
+                <div className="grid md:grid-cols-3 gap-3 phone:gap-2 phone-land:grid-cols-3">
                   <button
                     onClick={() => setSelectedLevel(1)}
                     aria-pressed={selectedLevel === 1}
-                    className={`p-4 rounded-lg border-2 text-left transition ${
+                    className={`p-4 phone:px-3 phone:py-2.5 rounded-lg border-2 text-left transition ${
                       selectedLevel === 1
                         ? 'border-blue-500 bg-blue-50 shadow-md'
                         : 'border-warm-300 bg-white hover:border-blue-300'
                     }`}
                   >
                     <div className="font-bold text-blue-800">Stig 1 — Kjörgaslögmálið</div>
-                    <div className="text-xs text-warm-600 mt-1 font-mono">PV = nRT</div>
-                    <div className="text-xs text-warm-500 mt-2">
+                    <div className="text-xs text-warm-600 mt-1 font-mono phone:mt-0.5">
+                      PV = nRT
+                    </div>
+                    <div className="text-xs text-warm-500 mt-2 phone:mt-0.5">
                       Lærðu miðlögmálið og allar fjórar breyturnar.
                     </div>
                   </button>
                   <button
                     onClick={() => setSelectedLevel(2)}
                     aria-pressed={selectedLevel === 2}
-                    className={`p-4 rounded-lg border-2 text-left transition ${
+                    className={`p-4 phone:px-3 phone:py-2.5 rounded-lg border-2 text-left transition ${
                       selectedLevel === 2
                         ? 'border-green-500 bg-green-50 shadow-md'
                         : 'border-warm-300 bg-white hover:border-green-300'
                     }`}
                   >
                     <div className="font-bold text-green-800">Stig 2 — Sérstök tilvik</div>
-                    <div className="text-xs text-warm-600 mt-1 font-mono">
+                    <div className="text-xs text-warm-600 mt-1 font-mono phone:mt-0.5">
                       Boyle / Charles / Gay-Lussac
                     </div>
-                    <div className="text-xs text-warm-500 mt-2">
+                    <div className="text-xs text-warm-500 mt-2 phone:mt-0.5">
                       Sjáðu hvað gerist þegar ein breyta er föst.
                     </div>
                   </button>
                   <button
                     onClick={() => setSelectedLevel(3)}
                     aria-pressed={selectedLevel === 3}
-                    className={`p-4 rounded-lg border-2 text-left transition ${
+                    className={`p-4 phone:px-3 phone:py-2.5 rounded-lg border-2 text-left transition ${
                       selectedLevel === 3
                         ? 'border-purple-500 bg-purple-50 shadow-md'
                         : 'border-warm-300 bg-white hover:border-purple-300'
                     }`}
                   >
                     <div className="font-bold text-purple-800">Stig 3 — Samanburður</div>
-                    <div className="text-xs text-warm-600 mt-1 font-mono">Sameinað + Avogadro</div>
-                    <div className="text-xs text-warm-500 mt-2">Beittu mörgum lögmálum saman.</div>
+                    <div className="text-xs text-warm-600 mt-1 font-mono phone:mt-0.5">
+                      Sameinað + Avogadro
+                    </div>
+                    <div className="text-xs text-warm-500 mt-2 phone:mt-0.5">
+                      Beittu mörgum lögmálum saman.
+                    </div>
                   </button>
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-2 gap-6 phone:gap-3 phone-land:grid-cols-2">
                 {/* Practice Mode */}
-                <div className="game-card bg-blue-50 p-4 sm:p-6 rounded-lg border-2 border-blue-200">
-                  <h2 className="text-2xl font-bold mb-3 text-blue-900">Æfingahamur</h2>
-                  <ul className="text-warm-700 mb-4 space-y-2 text-sm">
+                <div className="game-card bg-blue-50 p-4 sm:p-6 rounded-lg border-2 border-blue-200 phone:p-3">
+                  <h2 className="text-2xl font-bold mb-3 text-blue-900 phone:text-lg phone:mb-1.5">
+                    Æfingahamur
+                  </h2>
+                  <ul className="text-warm-700 mb-4 space-y-2 text-sm phone:space-y-0.5 phone:mb-3">
                     <li>✓ Engin tímatakmörk</li>
                     <li>✓ Ótakmarkaðar vísbendingar</li>
                     <li>✓ Sjá lausnir skref fyrir skref</li>
                     <li>✓ Leggja áherslu á nám</li>
                   </ul>
                   <button
+                    data-mode-start="practice"
                     onClick={() => onStart('practice')}
                     className="w-full py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90"
                     style={{ backgroundColor: '#3b82f6' }}
@@ -169,15 +184,18 @@ export function MenuScreen({
                 </div>
 
                 {/* Challenge Mode */}
-                <div className="game-card bg-orange-50 p-4 sm:p-6 rounded-lg border-2 border-orange-200">
-                  <h2 className="text-2xl font-bold mb-3 text-orange-900">Keppnishamur</h2>
-                  <ul className="text-warm-700 mb-4 space-y-2 text-sm">
+                <div className="game-card bg-orange-50 p-4 sm:p-6 rounded-lg border-2 border-orange-200 phone:p-3">
+                  <h2 className="text-2xl font-bold mb-3 text-orange-900 phone:text-lg phone:mb-1.5">
+                    Keppnishamur
+                  </h2>
+                  <ul className="text-warm-700 mb-4 space-y-2 text-sm phone:space-y-0.5 phone:mb-3">
                     <li>⏱️ 90 sekúndur á spurningu</li>
                     <li>🎯 Tímabónus fyrir hraða</li>
                     <li>💡 Vísbendingar í boði</li>
                     <li>📊 Stigatafla og röð</li>
                   </ul>
                   <button
+                    data-mode-start="challenge"
                     onClick={() => onStart('challenge')}
                     className="w-full py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90"
                     style={{ backgroundColor: '#f36b22' }}
@@ -187,7 +205,7 @@ export function MenuScreen({
                 </div>
               </div>
 
-              <div className="mt-6 bg-warm-50 p-4 rounded-lg border border-warm-200">
+              <div className="mt-6 bg-warm-50 p-4 rounded-lg border border-warm-200 phone:mt-4 phone:p-3">
                 <h3 className="font-bold text-warm-800 mb-2">Leiðbeiningar:</h3>
                 <div className="grid md:grid-cols-2 gap-4 text-sm text-warm-700">
                   <div>
@@ -195,7 +213,8 @@ export function MenuScreen({
                     <p className="font-mono bg-white px-2 py-1 rounded mt-1">PV = nRT</p>
                     <p className="text-xs mt-1">þar sem R = 0,08206 L·atm/(mól·K)</p>
                   </div>
-                  <div>
+                  {/* The keyboard legend means nothing on a touch screen (design §4). */}
+                  <div className="pointer-coarse:hidden">
                     <p className="font-semibold">Lyklaborð:</p>
                     <p className="text-xs">
                       • <kbd className="px-1 bg-warm-200 rounded">Enter</kbd> Athuga svar

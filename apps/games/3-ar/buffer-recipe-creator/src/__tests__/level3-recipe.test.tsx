@@ -216,6 +216,9 @@ describe('Level 3 grades volumes against the derived recipe', () => {
     fireEvent.click(check);
     expect(within(container).getByText('Stig: 100')).toBeTruthy();
 
+    // "Næsta verkefni" ignores a press within 400 ms of appearing (the double-tap guard);
+    // a student reads the solution first.
+    settle();
     const next = lastButton(container, /Næsta verkefni/);
     fireEvent.click(next);
     fireEvent.click(next);

@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 import { Header, ErrorBoundary, FadePresence } from '@shared/components';
 import { useGameProgress } from '@shared/hooks';
+import { focusTarget, revealSpan, revealTop } from '@shared/utils';
 
 import Level1 from './components/Level1';
 import Level2 from './components/Level2';
@@ -19,6 +20,9 @@ interface Progress {
   level3Score: number;
   totalGamesPlayed: number;
 }
+
+/** How long a screen takes to fade out (each FadePresence's exitDuration below). */
+const SCREEN_FADE_MS = 200;
 
 const DEFAULT_PROGRESS: Progress = {
   level1Completed: false,
@@ -39,19 +43,46 @@ const DEFAULT_PROGRESS: Progress = {
  */
 function App() {
   const [activeLevel, setActiveLevel] = useState<ActiveLevel>('menu');
-  // A level card is tapped from wherever the menu was scrolled to. Without this the level
-  // opens at that same offset, which on a phone lands deep inside it (Stig 1 opened on its
-  // footer), so start every screen switch at the top. The first render is skipped.
-  const previousLevel = useRef(activeLevel);
-  useEffect(() => {
-    if (previousLevel.current === activeLevel) return;
-    previousLevel.current = activeLevel;
-    window.scrollTo({ top: 0, left: 0 });
-  }, [activeLevel]);
   const { progress, updateProgress, resetProgress } = useGameProgress<Progress>(
     'buffer-recipe-creator-progress',
     DEFAULT_PROGRESS
   );
+
+  // A level card is tapped from wherever the menu was scrolled to. Without this the level
+  // opens at that same offset, which on a phone lands deep inside it (Stig 1 opened on its
+  // footer), so start every screen switch at the top, at every width, as the game always
+  // has. The first render is skipped. Each level focuses its own heading as it mounts (the
+  // screens fade, so a level mounts a render after this runs).
+  const pageTopRef = useRef<HTMLDivElement>(null);
+  const previousLevel = useRef(activeLevel);
+  const returningToMenu = useRef(false);
+  useLayoutEffect(() => {
+    if (previousLevel.current === activeLevel) return;
+    previousLevel.current = activeLevel;
+    returningToMenu.current = activeLevel === 'menu';
+    revealTop(pageTopRef.current, { anyWidth: true, always: true, gap: 0, instant: true });
+  }, [activeLevel]);
+
+  // Back on the menu, the next level not yet done is focused and, on a phone, revealed once
+  // the level has faded out; with every level done, the menu's heading is focused.
+  const nextLevel = !progress.level1Completed
+    ? 'level1'
+    : !progress.level2Completed
+      ? 'level2'
+      : !progress.level3Completed
+        ? 'level3'
+        : null;
+  const nextLevelRef = useRef(nextLevel);
+  nextLevelRef.current = nextLevel;
+  const menuRoot = useCallback((el: HTMLDivElement | null) => {
+    if (!el || !returningToMenu.current) return;
+    returningToMenu.current = false;
+    const card = nextLevelRef.current
+      ? el.querySelector<HTMLElement>(`[data-level-card="${nextLevelRef.current}"]`)
+      : null;
+    focusTarget(card ?? el.querySelector<HTMLElement>('h2'));
+    if (card) window.setTimeout(() => revealSpan(card), SCREEN_FADE_MS + 20);
+  }, []);
 
   const applyLevelResult = (levelKey: 'level1' | 'level2' | 'level3', score: number) => {
     const completedKey = `${levelKey}Completed` as const;
@@ -82,8 +113,8 @@ function App() {
   ].filter(Boolean).length;
 
   return (
-    <>
-      <FadePresence show={activeLevel === 'level1'} exitDuration={200}>
+    <div ref={pageTopRef}>
+      <FadePresence show={activeLevel === 'level1'} exitDuration={SCREEN_FADE_MS}>
         <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
           {/* Back button */}
           {/* In flow on phones, where a fixed button covered the level as it scrolled. */}
@@ -100,32 +131,32 @@ function App() {
         </div>
       </FadePresence>
 
-      <FadePresence show={activeLevel === 'level2'} exitDuration={200}>
+      <FadePresence show={activeLevel === 'level2'} exitDuration={SCREEN_FADE_MS}>
         <Level2 onComplete={handleLevel2Complete} onBack={() => setActiveLevel('menu')} />
       </FadePresence>
 
-      <FadePresence show={activeLevel === 'level3'} exitDuration={200}>
+      <FadePresence show={activeLevel === 'level3'} exitDuration={SCREEN_FADE_MS}>
         <Level3 onComplete={handleLevel3Complete} onBack={() => setActiveLevel('menu')} />
       </FadePresence>
 
-      <FadePresence show={activeLevel === 'menu'} exitDuration={200}>
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
+      <FadePresence show={activeLevel === 'menu'} exitDuration={SCREEN_FADE_MS}>
+        <div ref={menuRoot} className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
           <Header variant="game" backHref="/efnafraedi/3-ar/" gameTitle="Stuðpúðasmíði" />
-          <div className="min-h-screen p-4 md:p-8">
-            <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-              <p className="text-warm-600 mb-4">
+          <div className="min-h-screen p-4 md:p-8 phone:p-3">
+            <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3">
+              <p className="text-warm-600 mb-4 phone:mb-2">
                 Lærðu að búa til stuðpúða með Henderson-Hasselbalch jöfnunni
               </p>
 
               {/* Pedagogical explanation */}
-              <div className="p-4 sm:p-6 rounded-xl mb-8 bg-kvenno-orange/10">
-                <h2 className="font-bold mb-3 text-kvenno-orange">Hvað er stuðpúði?</h2>
-                <p className="text-warm-800 text-sm mb-4">
+              <div className="p-4 sm:p-6 rounded-xl mb-8 bg-kvenno-orange/10 phone:p-3 phone:mb-3">
+                <h2 className="font-bold mb-3 text-kvenno-orange phone:mb-1">Hvað er stuðpúði?</h2>
+                <p className="text-warm-800 text-sm mb-4 phone:mb-2">
                   <strong>Stuðpúði</strong> er lausn sem getur viðhaldið stöðugu pH þegar litlu
                   magni af sýru eða basa er bætt við. Hann samanstendur af veikri sýru og samoka
                   basa hennar (eða veikum basa og samoka sýru hans).
                 </p>
-                <div className="bg-white p-3 rounded-lg border border-kvenno-orange">
+                <div className="bg-white p-3 rounded-lg border border-kvenno-orange phone:p-2">
                   <p className="text-sm font-mono text-center text-kvenno-orange">
                     pH = pK<sub>a</sub> + log([A⁻]/[HA])
                   </p>
@@ -136,14 +167,15 @@ function App() {
               </div>
 
               {/* Level selection */}
-              <div className="space-y-4">
+              <div className="space-y-4 phone:space-y-2">
                 {/* Level 1 */}
                 <button
+                  data-level-card="level1"
                   onClick={() => setActiveLevel('level1')}
-                  className="game-card w-full p-4 sm:p-6 rounded-xl border-4 transition-all text-left hover:shadow-lg border-kvenno-orange bg-kvenno-orange/5"
+                  className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 transition-all text-left hover:shadow-lg border-kvenno-orange bg-kvenno-orange/5"
                 >
                   <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="text-3xl sm:text-4xl">🔬</div>
+                    <div className="text-3xl sm:text-4xl phone:text-2xl">🔬</div>
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="text-lg sm:text-xl font-bold text-kvenno-orange">
@@ -155,10 +187,10 @@ function App() {
                           </span>
                         )}
                       </div>
-                      <div className="text-sm mt-1 text-kvenno-orange-600">
+                      <div className="text-sm mt-1 phone:mt-0 text-kvenno-orange-600">
                         Sjónræn sameindameðferð - engar tölur!
                       </div>
-                      <div className="text-xs text-warm-600 mt-2">
+                      <div className="text-xs text-warm-600 mt-2 phone:mt-1">
                         Skildu hvernig hlutfall sýru/basa hefur áhrif á pH. Lærðu að pH = pKa þegar
                         jafnt er af hvoru tveggja.
                       </div>
@@ -168,15 +200,16 @@ function App() {
 
                 {/* Level 2 */}
                 <button
+                  data-level-card="level2"
                   onClick={() => setActiveLevel('level2')}
-                  className="game-card w-full p-4 sm:p-6 rounded-xl border-4 transition-all text-left hover:shadow-lg cursor-pointer"
+                  className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 transition-all text-left hover:shadow-lg cursor-pointer"
                   style={{
                     borderColor: '#22c55e',
                     backgroundColor: 'rgba(34, 197, 94, 0.05)',
                   }}
                 >
                   <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="text-3xl sm:text-4xl">📐</div>
+                    <div className="text-3xl sm:text-4xl phone:text-2xl">📐</div>
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="text-lg sm:text-xl font-bold text-green-700">
@@ -188,10 +221,10 @@ function App() {
                           </span>
                         )}
                       </div>
-                      <div className="text-sm mt-1 text-green-600">
+                      <div className="text-sm mt-1 phone:mt-0 text-green-600">
                         Henderson-Hasselbalch útreikningar
                       </div>
-                      <div className="text-xs text-warm-600 mt-2">
+                      <div className="text-xs text-warm-600 mt-2 phone:mt-1">
                         Reiknaðu hlutfall [Basi]/[Sýra] og massa hvers efnis. 3-skrefa ferli: stefna
                         → hlutfall → massi.
                       </div>
@@ -201,15 +234,16 @@ function App() {
 
                 {/* Level 3 */}
                 <button
+                  data-level-card="level3"
                   onClick={() => setActiveLevel('level3')}
-                  className="game-card w-full p-4 sm:p-6 rounded-xl border-4 transition-all text-left hover:shadow-lg cursor-pointer"
+                  className="game-card w-full p-4 sm:p-6 phone:p-3 rounded-xl border-4 transition-all text-left hover:shadow-lg cursor-pointer"
                   style={{
                     borderColor: '#10b981',
                     backgroundColor: 'rgba(16, 185, 129, 0.05)',
                   }}
                 >
                   <div className="flex items-center gap-3 sm:gap-4">
-                    <div className="text-3xl sm:text-4xl">🏭</div>
+                    <div className="text-3xl sm:text-4xl phone:text-2xl">🏭</div>
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="text-lg sm:text-xl font-bold text-emerald-700">
@@ -221,10 +255,10 @@ function App() {
                           </span>
                         )}
                       </div>
-                      <div className="text-sm mt-1 text-emerald-600">
+                      <div className="text-sm mt-1 phone:mt-0 text-emerald-600">
                         Birgðalausnir og rúmmálsútreikningar
                       </div>
-                      <div className="text-xs text-warm-600 mt-2">
+                      <div className="text-xs text-warm-600 mt-2 phone:mt-1">
                         Notaðu tilbúnar birgðalausnir til að búa til stuðpúða. Reiknaðu rúmmál til
                         að taka úr hverri birgðalausn.
                       </div>
@@ -309,7 +343,7 @@ function App() {
           </div>
         </div>
       </FadePresence>
-    </>
+    </div>
   );
 }
 

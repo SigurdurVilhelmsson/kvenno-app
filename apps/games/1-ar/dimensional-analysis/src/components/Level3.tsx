@@ -4,7 +4,12 @@ import { useEscapeKey } from '@shared/hooks';
 import {
   DECIMAL_INPUT_PROPS,
   formatDecimal,
+  isPhone,
+  revealTop,
   shuffleArray,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
   type ScientificEntry,
 } from '@shared/utils';
 
@@ -12,7 +17,6 @@ import { WRITTEN_NUMBER_HELP, WRITTEN_NUMBER_UNREADABLE, WrittenNumberRow } from
 import { level3Challenges } from '../data/challenges';
 import { isAnswerCorrect, parseStudentNumber } from '../utils/grading';
 import { buildLevel3Run } from '../utils/level3Run';
-import { revealTop, useRevealTopOnChange } from '../utils/reveal';
 import { scoreExplanation, calculateCompositeScore } from '../utils/scoring';
 import { countSigFigs, readWritten } from '../utils/sigfigs';
 
@@ -127,17 +131,38 @@ export function Level3({
   const [showHint, setShowHint] = useState(false);
 
   // After submitting, the answer form collapses and the page gets shorter. On a
-  // short screen (a phone on its side) that leaves the verdict scrolled off the
-  // top, so the student sees only the tail of the feedback. Bring its top back.
+  // phone the verdict comes to the top of the screen — the feedback is long and
+  // read in full — and focus moves to it, not to "Næsta" (design P3). A desktop
+  // window keeps what the old helper did there: a verdict left above the screen
+  // is brought back.
   const feedbackRef = useRef<HTMLDivElement>(null);
+  const verdictRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(showFeedback, () => ({
+    bottom: nextRef.current,
+    tops: [verdictRef.current],
+    focus: verdictRef.current,
+  }));
   useEffect(() => {
-    if (showFeedback) revealTop(feedbackRef.current);
+    const el = feedbackRef.current;
+    if (showFeedback && el && !isPhone() && el.getBoundingClientRect().top < 0) {
+      revealTop(el, { anyWidth: true });
+    }
   }, [showFeedback]);
+  // A double tap on "Senda inn" must not press "Næsta".
+  const armed = useArmedAfter(400, `${currentProblemIndex}:${showFeedback}`);
 
   // The button that moves on sits at the foot of a screen taller than a phone,
   // so the intro's "Byrja" and each "Næsta" used to open the next problem with
-  // its context already scrolled past. Open it at its top instead.
-  const topRef = useRevealTopOnChange<HTMLDivElement>(showIntro ? 'intro' : currentProblemIndex);
+  // its context already scrolled past. Open it at its top, with focus on the
+  // problem. This scrolled at any width before it moved to the shared helper,
+  // so it still does (`anyWidth`).
+  const topRef = useItemTop<HTMLDivElement>(showIntro ? 'intro' : currentProblemIndex, {
+    anyWidth: true,
+  });
+  const explanationRef = useRef<HTMLTextAreaElement>(null);
+  // Enter in the answer moves on to the explanation, which is also required.
+  const toExplanation = () => explanationRef.current?.focus();
 
   // A run drawn from the pool, not the whole pool: see `buildLevel3Run`.
   // Drawn once per mount. Leaving the level unmounts it, so coming back draws
@@ -202,6 +227,7 @@ export function Level3({
   };
 
   const handleSubmit = () => {
+    if (showFeedback) return;
     // What the student typed, as a number. The scientific-notation item reads
     // its two fields strictly: `parseStudentNumber` would read `1,08 × 10⁹` as
     // 1,08 and mark a correct answer wrong. An unreadable entry is sent back
@@ -354,7 +380,7 @@ export function Level3({
     return (
       <div
         ref={topRef}
-        className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+        className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-4 sm:p-4 scroll-mt-14 phone:scroll-mt-0"
       >
         <div className="max-w-3xl mx-auto">
           <div className="mb-4">
@@ -464,19 +490,19 @@ export function Level3({
   return (
     <div
       ref={topRef}
-      className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-4 sm:p-4 scroll-mt-14 [@media(max-height:500px)]:scroll-mt-0"
+      className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-4 sm:p-4 phone:py-2 scroll-mt-14 phone:scroll-mt-0"
     >
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
+        {/* Header: one row on a phone */}
+        <div className="mb-4 flex items-center justify-between flex-wrap gap-2 phone:mb-2 phone:flex-nowrap">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 text-lg"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 text-lg phone:text-base phone:shrink-0"
           >
             ← Til baka
           </button>
-          <div className="text-sm text-warm-600 flex items-center gap-2 sm:gap-4 flex-wrap">
-            <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-semibold">
+          <div className="text-sm text-warm-600 flex items-center gap-2 sm:gap-4 flex-wrap phone:min-w-0 phone:justify-end phone:gap-x-2 phone:gap-y-0.5 phone:whitespace-nowrap">
+            <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-semibold phone:px-2 phone:py-0.5">
               Stig 3: Útreikningar
             </span>
             <span>
@@ -493,20 +519,20 @@ export function Level3({
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-warm-200 rounded-full h-2 mb-6 overflow-hidden">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6 overflow-hidden phone:mb-2 phone:h-1.5">
           <div
-            className="bg-purple-500 h-2 rounded-full transition-all duration-500"
+            className="bg-purple-500 h-2 phone:h-1.5 rounded-full transition-all duration-500"
             style={{ width: `${(progress.problemsCompleted / run.length) * 100}%` }}
           />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+        <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 phone:p-3">
           {/* Problem type badge */}
-          <div className="mb-4 flex items-center gap-3">
-            <span className="px-4 py-2 bg-purple-100 text-purple-800 rounded-xl text-sm font-bold">
+          <div className="mb-4 flex items-center gap-3 phone:mb-2 phone:gap-2">
+            <span className="px-4 py-2 bg-purple-100 text-purple-800 rounded-xl text-sm font-bold phone:px-2 phone:py-0.5 phone:text-xs phone:rounded-lg">
               {problemTypeLabels[problem.type] || problem.type}
             </span>
-            <span className="text-2xl">
+            <span className="text-2xl phone:text-base">
               {problem.type === 'reverse' && '🔄'}
               {problem.type === 'error_analysis' && '🔍'}
               {problem.type === 'efficiency' && '⚡'}
@@ -516,19 +542,22 @@ export function Level3({
             </span>
           </div>
 
-          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-warm-800">
+          <h2
+            data-item-start
+            className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-warm-800 phone:text-lg phone:mb-3"
+          >
             {problem.prompt}
           </h2>
 
           {/* Display problem-specific context */}
           {problem.type === 'synthesis' && problem.density && (
-            <div className="mb-6 p-4 sm:p-5 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200">
-              <p className="text-sm font-bold text-purple-800 mb-3 flex items-center gap-2">
+            <div className="mb-6 p-4 sm:p-5 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border border-purple-200 phone:mb-3 phone:p-3">
+              <p className="text-sm font-bold text-purple-800 mb-3 flex items-center gap-2 phone:mb-2">
                 <span className="text-lg">📊</span> Gefnar upplýsingar:
               </p>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 phone:grid-cols-2">
                 {problem.startValue && problem.startUnit && (
-                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block phone:block phone:px-2 phone:py-1.5">
                     <p className="text-xs text-warm-500">{problem.startLabel ?? 'Rúmmál'}</p>
                     <p className="font-bold text-purple-700">
                       {asGiven(problem.startValue, problem.prompt)} {problem.startUnit}
@@ -536,7 +565,7 @@ export function Level3({
                   </div>
                 )}
                 {problem.density && problem.densityUnit && (
-                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block phone:block phone:px-2 phone:py-1.5">
                     <p className="text-xs text-warm-500">{problem.factorLabel ?? 'Eðlismassi'}</p>
                     <p className="font-bold text-purple-700">
                       {asGiven(problem.density, problem.prompt)} {problem.densityUnit}
@@ -544,13 +573,13 @@ export function Level3({
                   </div>
                 )}
                 {problem.targetUnit && (
-                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block phone:block phone:px-2 phone:py-1.5">
                     <p className="text-xs text-warm-500">Markeining</p>
                     <p className="font-bold text-green-700">{problem.targetUnit}</p>
                   </div>
                 )}
                 {problem.significantFigures && (
-                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block phone:block phone:px-2 phone:py-1.5">
                     <p className="text-xs text-warm-500">Markverðir stafir</p>
                     <p className="font-bold text-blue-700">{problem.significantFigures}</p>
                   </div>
@@ -560,13 +589,13 @@ export function Level3({
           )}
 
           {problem.type === 'real_world' && (problem.startValue || problem.portionSize) && (
-            <div className="mb-6 p-4 sm:p-5 bg-gradient-to-r from-green-50 to-teal-50 rounded-xl border border-green-200">
-              <p className="text-sm font-bold text-green-800 mb-3 flex items-center gap-2">
+            <div className="mb-6 p-4 sm:p-5 bg-gradient-to-r from-green-50 to-teal-50 rounded-xl border border-green-200 phone:mb-3 phone:p-3">
+              <p className="text-sm font-bold text-green-800 mb-3 flex items-center gap-2 phone:mb-2">
                 <span className="text-lg">📊</span> Gefnar upplýsingar:
               </p>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3 phone:grid-cols-2">
                 {problem.startValue && problem.startUnit && (
-                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block phone:block phone:px-2 phone:py-1.5">
                     <p className="text-xs text-warm-500">{problem.startLabel ?? 'Heildarmagn'}</p>
                     <p className="font-bold text-green-700">
                       {asGiven(problem.startValue, problem.prompt)} {problem.startUnit}
@@ -574,7 +603,7 @@ export function Level3({
                   </div>
                 )}
                 {problem.portionSize && problem.portionUnit && (
-                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block">
+                  <div className="bg-white p-3 rounded-lg flex flex-wrap items-baseline justify-between gap-x-3 sm:block phone:block phone:px-2 phone:py-1.5">
                     <p className="text-xs text-warm-500">
                       {problem.portionLabel ?? 'Skammtastærð'}
                     </p>
@@ -588,7 +617,7 @@ export function Level3({
           )}
 
           {problem.type === 'error_analysis' && problem.incorrectWork && (
-            <div className="mb-6 p-4 sm:p-5 bg-gradient-to-r from-red-50 to-orange-50 rounded-xl border border-red-200">
+            <div className="mb-6 p-4 sm:p-5 bg-gradient-to-r from-red-50 to-orange-50 rounded-xl border border-red-200 phone:mb-3 phone:p-3">
               <p className="text-sm font-bold text-red-800 mb-2 flex items-center gap-2">
                 <span className="text-lg">⚠️</span> Röng vinna:
               </p>
@@ -601,7 +630,7 @@ export function Level3({
           )}
 
           {!showFeedback && (
-            <div className="space-y-6">
+            <div className="space-y-6 phone:space-y-3">
               {/* Reverse problem options */}
               {problem.type === 'reverse' && (
                 <div className="space-y-3">
@@ -686,6 +715,8 @@ export function Level3({
                       // Stig 0's row: the digits, × 10 and a power of ten, each
                       // on the decimal keypad, with a sign button for a phone.
                       <WrittenNumberRow
+                        onEnter={toExplanation}
+                        enterKeyHint="next"
                         entry={sciEntry}
                         onChange={(patch) => {
                           setSciEntry((current) => ({ ...current, ...patch }));
@@ -701,6 +732,12 @@ export function Level3({
                         autoComplete="off"
                         value={userAnswer}
                         onChange={(e) => setUserAnswer(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key !== 'Enter') return;
+                          e.preventDefault();
+                          toExplanation();
+                        }}
+                        enterKeyHint="next"
                         placeholder="Sláðu inn svar"
                         className="min-w-0 flex-1 p-3 sm:p-4 border-2 border-warm-300 rounded-xl font-mono text-lg sm:text-xl focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden transition-all"
                       />
@@ -728,11 +765,12 @@ export function Level3({
                   Útskýring (hvernig leystir þú þetta?):
                 </label>
                 <textarea
+                  ref={explanationRef}
                   id={explanationId}
                   value={explanation}
                   onChange={(e) => setExplanation(e.target.value)}
                   placeholder="T.d. 'Fyrst breytti ég X í Y með stuðlinum Z...'"
-                  className="w-full p-4 border-2 border-warm-300 rounded-xl h-28 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden transition-all resize-none"
+                  className="w-full p-4 border-2 border-warm-300 rounded-xl h-28 phone:h-20 focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-hidden transition-all resize-none"
                 />
                 <p className="text-xs text-warm-500 mt-2 flex items-center gap-1">
                   {/* This said "… fyrir betri einkunn", and nothing reads the words:
@@ -754,8 +792,10 @@ export function Level3({
                 </div>
               )}
 
-              {/* Action buttons */}
-              <div className="space-y-3">
+              {/* Action buttons: side by side on a phone, the hint a size smaller.
+                  Where both labels do not fit on one line (320 px), "Senda inn"
+                  wraps under the hint rather than squeezing onto two lines. */}
+              <div className="space-y-3 phone:flex phone:flex-wrap phone:gap-2 phone:space-y-0">
                 {!showHint && (
                   <button
                     onClick={() => {
@@ -767,15 +807,16 @@ export function Level3({
                         hintsUsed: prev.hintsUsed + 1,
                       }));
                     }}
-                    className="w-full border-2 border-blue-400 text-blue-600 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-colors"
+                    className="w-full border-2 border-blue-400 text-blue-600 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-colors phone:w-auto phone:grow phone:px-2 phone:text-sm"
                   >
                     💡 Sýna vísbendingu
                   </button>
                 )}
                 <button
+                  key="check"
                   onClick={handleSubmit}
                   disabled={!canSubmit}
-                  className="w-full py-4 rounded-xl font-bold text-lg transition-all disabled:bg-warm-300 disabled:cursor-not-allowed disabled:text-warm-500 bg-purple-600 hover:bg-purple-700 text-white"
+                  className="w-full py-4 rounded-xl font-bold text-lg transition-all disabled:bg-warm-300 disabled:cursor-not-allowed disabled:text-warm-500 bg-purple-600 hover:bg-purple-700 text-white phone:w-auto phone:grow phone:px-3 phone:py-3 phone:text-base"
                 >
                   Senda inn →
                 </button>
@@ -787,193 +828,209 @@ export function Level3({
           {showFeedback && scores && (
             <div
               ref={feedbackRef}
-              className={`p-4 sm:p-6 rounded-xl border-2 scroll-mt-16 [@media(max-height:500px)]:scroll-mt-2 ${
+              className={`p-4 sm:p-6 rounded-xl border-2 phone:p-3 ${
                 scores.composite >= 0.75
                   ? 'bg-green-100 border-green-300'
                   : 'bg-yellow-100 border-yellow-300'
               }`}
             >
-              {/* Header with emoji */}
-              <div className="text-center mb-6">
-                <div className="text-5xl mb-2">
-                  {scores.composite >= 0.9
-                    ? '🏆'
-                    : scores.composite >= 0.75
-                      ? '🎉'
-                      : scores.composite >= 0.5
-                        ? '💪'
-                        : '📚'}
-                </div>
-                <h3 className="text-2xl font-bold">
-                  {scores.composite >= 0.9
-                    ? 'Frábært!'
-                    : scores.composite >= 0.75
-                      ? 'Vel gert!'
-                      : scores.composite >= 0.5
-                        ? 'Gott!'
-                        : 'Þú getur gert betur'}
-                </h3>
-              </div>
-
-              {/* Simple feedback — no weighted scoring grid */}
-              <div className="bg-white p-4 sm:p-5 rounded-xl text-center mb-6">
-                <p className="text-sm text-warm-600 mb-1">
-                  {scores.answer >= 0.75 ? 'Svarið er rétt!' : 'Svarið er ekki alveg rétt'}
-                </p>
-                {scores.method >= 0.75 && (
-                  <p className="text-sm text-green-600">✓ Rétt aðferð valin</p>
-                )}
-                {scores.method < 0.75 && (
-                  <p className="text-sm text-amber-600">
-                    Athugaðu aðferðina — sjáðu lausnina hér að neðan
-                  </p>
-                )}
-              </div>
-
-              {/* Which path was the efficient one, and why. The buttons no
-                  longer say, so this has to. */}
-              {problem.type === 'efficiency' && (
-                <div className="mb-6 p-4 bg-white rounded-xl border border-warm-200">
-                  <p className="text-sm font-bold text-warm-800 mb-3 flex items-center gap-2">
-                    <span>⚡</span> Leiðirnar bornar saman:
-                  </p>
-                  <div className="space-y-2">
-                    {paths.map((path, idx) => (
-                      <div
-                        key={idx}
-                        className={`flex flex-wrap items-center gap-2 px-3 py-2 rounded-lg border ${
-                          path.efficient
-                            ? 'bg-green-50 border-green-300'
-                            : 'bg-warm-50 border-warm-200'
-                        }`}
-                      >
-                        <span className="text-sm font-semibold text-warm-700">Leið {idx + 1}</span>
-                        <span
-                          className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                            path.efficient
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-warm-100 text-warm-600'
-                          }`}
-                        >
-                          {path.stepCount} skref
-                        </span>
-                        {path.efficient && (
-                          <span className="text-green-600 text-sm">⚡ Skilvirkt</span>
-                        )}
-                        {selectedPath === idx && (
-                          <span className="ml-auto text-sm text-purple-700 font-semibold">
-                            þitt val
-                          </span>
-                        )}
-                      </div>
-                    ))}
+              {/* The feedback region focus moves to after "Senda inn" (P3):
+                  everything the student reads, then "Næsta" outside it. */}
+              <div
+                ref={verdictRef}
+                tabIndex={-1}
+                role="group"
+                aria-labelledby="da-l3-verdict"
+                className="focus:outline-none"
+              >
+                {/* Header with emoji */}
+                <div className="text-center mb-6 phone:mb-3">
+                  <div className="text-5xl mb-2 phone:text-3xl phone:mb-1">
+                    {scores.composite >= 0.9
+                      ? '🏆'
+                      : scores.composite >= 0.75
+                        ? '🎉'
+                        : scores.composite >= 0.5
+                          ? '💪'
+                          : '📚'}
                   </div>
-                  <p className="text-sm text-warm-600 mt-3">
-                    Skilvirkasta leiðin notar fæst skref. Allar leiðirnar hér gefa sama svarið —
-                    munurinn er hversu mörg umreikningshlutföll þarf til.
-                  </p>
+                  <h3 id="da-l3-verdict" className="text-2xl font-bold phone:text-xl">
+                    {scores.composite >= 0.9
+                      ? 'Frábært!'
+                      : scores.composite >= 0.75
+                        ? 'Vel gert!'
+                        : scores.composite >= 0.5
+                          ? 'Gott!'
+                          : 'Þú getur gert betur'}
+                  </h3>
                 </div>
-              )}
 
-              {/* Error explanation */}
-              {problem.type === 'error_analysis' && problem.errorExplanation && (
-                <div className="mb-6 p-4 bg-white rounded-xl border border-warm-200">
-                  <p className="text-sm font-bold text-warm-800 mb-2 flex items-center gap-2">
-                    <span>🔍</span> Útskýring á villunni:
+                {/* Simple feedback — no weighted scoring grid */}
+                <div className="bg-white p-4 sm:p-5 rounded-xl text-center mb-6">
+                  <p className="text-sm text-warm-600 mb-1">
+                    {scores.answer >= 0.75 ? 'Svarið er rétt!' : 'Svarið er ekki alveg rétt'}
                   </p>
-                  <p className="text-warm-700">{problem.errorExplanation}</p>
-                </div>
-              )}
-
-              {/* The worked solution for a real-world item. Authored on every one
-                  of them since the level shipped, and rendered nowhere until now —
-                  so a student who got one wrong was shown no way to get it right. */}
-              {problem.type === 'real_world' && problem.explanation && (
-                <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
-                  <p className="text-sm font-bold text-green-800 mb-2 flex items-center gap-2">
-                    <span>📋</span> Svona er þetta reiknað:
-                  </p>
-                  <p className="text-warm-700">{problem.explanation}</p>
-                </div>
-              )}
-
-              {/* Step-by-step solution display */}
-              {'correctMethod' in problem && problem.correctMethod && (
-                <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
-                  <p className="text-sm font-bold text-blue-800 mb-3 flex items-center gap-2">
-                    <span>📝</span> Rétt aðferð (stuðlaleiðin):
-                  </p>
-                  <div className="space-y-2">
-                    {problem.correctMethod.map((step, idx) => (
-                      <div key={idx} className="flex items-center gap-3">
-                        <span className="w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-bold flex items-center justify-center">
-                          {idx + 1}
-                        </span>
-                        <span className="font-mono bg-white px-3 py-2 rounded-lg border border-blue-200 flex-1">
-                          × {withDecimalComma(step)}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="mt-3 p-3 bg-white rounded-lg border border-blue-100">
-                    <p className="text-xs text-warm-600">
-                      <span className="font-bold text-blue-700">Mundu:</span> Einingin sem á að
-                      hverfa fer í nefnara, einingin sem á að koma út fer í teljara. Margfaldaðu
-                      gildið með öllum stuðlum.
+                  {scores.method >= 0.75 && (
+                    <p className="text-sm text-green-600">✓ Rétt aðferð valin</p>
+                  )}
+                  {scores.method < 0.75 && (
+                    <p className="text-sm text-amber-600">
+                      Athugaðu aðferðina — sjáðu lausnina hér að neðan
                     </p>
-                  </div>
+                  )}
                 </div>
-              )}
 
-              {'requiredSteps' in problem &&
-                problem.requiredSteps &&
-                !('correctMethod' in problem) && (
-                  <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
-                    <p className="text-sm font-bold text-green-800 mb-3 flex items-center gap-2">
-                      <span>📋</span> Nauðsynleg skref:
+                {/* Which path was the efficient one, and why. The buttons no
+                  longer say, so this has to. */}
+                {problem.type === 'efficiency' && (
+                  <div className="mb-6 p-4 bg-white rounded-xl border border-warm-200">
+                    <p className="text-sm font-bold text-warm-800 mb-3 flex items-center gap-2">
+                      <span>⚡</span> Leiðirnar bornar saman:
                     </p>
                     <div className="space-y-2">
-                      {problem.requiredSteps.map((step, idx) => (
+                      {paths.map((path, idx) => (
+                        <div
+                          key={idx}
+                          className={`flex flex-wrap items-center gap-2 px-3 py-2 rounded-lg border ${
+                            path.efficient
+                              ? 'bg-green-50 border-green-300'
+                              : 'bg-warm-50 border-warm-200'
+                          }`}
+                        >
+                          <span className="text-sm font-semibold text-warm-700">
+                            Leið {idx + 1}
+                          </span>
+                          <span
+                            className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                              path.efficient
+                                ? 'bg-green-100 text-green-700'
+                                : 'bg-warm-100 text-warm-600'
+                            }`}
+                          >
+                            {path.stepCount} skref
+                          </span>
+                          {path.efficient && (
+                            <span className="text-green-600 text-sm">⚡ Skilvirkt</span>
+                          )}
+                          {selectedPath === idx && (
+                            <span className="ml-auto text-sm text-purple-700 font-semibold">
+                              þitt val
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-sm text-warm-600 mt-3">
+                      Skilvirkasta leiðin notar fæst skref. Allar leiðirnar hér gefa sama svarið —
+                      munurinn er hversu mörg umreikningshlutföll þarf til.
+                    </p>
+                  </div>
+                )}
+
+                {/* Error explanation */}
+                {problem.type === 'error_analysis' && problem.errorExplanation && (
+                  <div className="mb-6 p-4 bg-white rounded-xl border border-warm-200">
+                    <p className="text-sm font-bold text-warm-800 mb-2 flex items-center gap-2">
+                      <span>🔍</span> Útskýring á villunni:
+                    </p>
+                    <p className="text-warm-700">{problem.errorExplanation}</p>
+                  </div>
+                )}
+
+                {/* The worked solution for a real-world item. Authored on every one
+                  of them since the level shipped, and rendered nowhere until now —
+                  so a student who got one wrong was shown no way to get it right. */}
+                {problem.type === 'real_world' && problem.explanation && (
+                  <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                    <p className="text-sm font-bold text-green-800 mb-2 flex items-center gap-2">
+                      <span>📋</span> Svona er þetta reiknað:
+                    </p>
+                    <p className="text-warm-700">{problem.explanation}</p>
+                  </div>
+                )}
+
+                {/* Step-by-step solution display */}
+                {'correctMethod' in problem && problem.correctMethod && (
+                  <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                    <p className="text-sm font-bold text-blue-800 mb-3 flex items-center gap-2">
+                      <span>📝</span> Rétt aðferð (stuðlaleiðin):
+                    </p>
+                    <div className="space-y-2">
+                      {problem.correctMethod.map((step, idx) => (
                         <div key={idx} className="flex items-center gap-3">
-                          <span className="w-6 h-6 rounded-full bg-green-500 text-white text-xs font-bold flex items-center justify-center">
+                          <span className="w-6 h-6 rounded-full bg-blue-500 text-white text-xs font-bold flex items-center justify-center">
                             {idx + 1}
                           </span>
-                          <span className="bg-white px-3 py-2 rounded-lg border border-green-200 flex-1 text-sm">
-                            {step}
+                          <span className="font-mono bg-white px-3 py-2 rounded-lg border border-blue-200 flex-1">
+                            × {withDecimalComma(step)}
                           </span>
                         </div>
                       ))}
                     </div>
+                    <div className="mt-3 p-3 bg-white rounded-lg border border-blue-100">
+                      <p className="text-xs text-warm-600">
+                        <span className="font-bold text-blue-700">Mundu:</span> Einingin sem á að
+                        hverfa fer í nefnara, einingin sem á að koma út fer í teljara. Margfaldaðu
+                        gildið með öllum stuðlum.
+                      </p>
+                    </div>
                   </div>
                 )}
 
-              {/* Significant figures feedback */}
-              {problem.type === 'synthesis' &&
-                problem.significantFigures &&
-                scores.sigFig !== null && (
-                  <div
-                    className={`mb-6 p-4 rounded-xl ${scores.sigFig === 1 ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
-                  >
-                    <p className="font-bold mb-1 flex items-center gap-2">
-                      {scores.sigFig === 1 ? (
-                        <>
-                          <span>✓</span> Markverðir stafir réttir
-                        </>
-                      ) : (
-                        <>
-                          <span>✗</span> Markverðir stafir rangir
-                        </>
-                      )}
-                    </p>
-                    <p className="text-sm">
-                      Þitt svar: {scores.userSigFigs} stafir · Ætti: {problem.significantFigures}{' '}
-                      stafir
-                    </p>
-                  </div>
-                )}
+                {'requiredSteps' in problem &&
+                  problem.requiredSteps &&
+                  !('correctMethod' in problem) && (
+                    <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200">
+                      <p className="text-sm font-bold text-green-800 mb-3 flex items-center gap-2">
+                        <span>📋</span> Nauðsynleg skref:
+                      </p>
+                      <div className="space-y-2">
+                        {problem.requiredSteps.map((step, idx) => (
+                          <div key={idx} className="flex items-center gap-3">
+                            <span className="w-6 h-6 rounded-full bg-green-500 text-white text-xs font-bold flex items-center justify-center">
+                              {idx + 1}
+                            </span>
+                            <span className="bg-white px-3 py-2 rounded-lg border border-green-200 flex-1 text-sm">
+                              {step}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
+                {/* Significant figures feedback */}
+                {problem.type === 'synthesis' &&
+                  problem.significantFigures &&
+                  scores.sigFig !== null && (
+                    <div
+                      className={`mb-6 p-4 rounded-xl ${scores.sigFig === 1 ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
+                    >
+                      <p className="font-bold mb-1 flex items-center gap-2">
+                        {scores.sigFig === 1 ? (
+                          <>
+                            <span>✓</span> Markverðir stafir réttir
+                          </>
+                        ) : (
+                          <>
+                            <span>✗</span> Markverðir stafir rangir
+                          </>
+                        )}
+                      </p>
+                      <p className="text-sm">
+                        Þitt svar: {scores.userSigFigs} stafir · Ætti: {problem.significantFigures}{' '}
+                        stafir
+                      </p>
+                    </div>
+                  )}
+              </div>
+
+              {/* A separate element from "Senda inn", and it ignores a press
+                  within 400 ms of appearing. */}
               <button
-                onClick={handleContinue}
+                key="next"
+                ref={nextRef}
+                onClick={armed(handleContinue)}
                 className={`w-full py-4 rounded-xl font-bold text-lg transition-colors ${
                   scores.composite >= 0.75
                     ? 'bg-green-600 hover:bg-green-700 text-white'

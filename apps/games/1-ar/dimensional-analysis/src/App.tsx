@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 
 import { LanguageSwitcher, ErrorBoundary, Header } from '@shared/components';
 import { useGameI18n, useGameProgress } from '@shared/hooks';
+import { useScreenTop } from '@shared/utils';
 
 // Import Level components
 import { Level0SigFigs } from './components/Level0SigFigs';
@@ -33,6 +34,18 @@ function App() {
     [completedLevels, updateProgress]
   );
 
+  // Each screen swap starts the new screen at its top on a phone with its
+  // heading focused (the button that caused the swap has unmounted, and focus
+  // would otherwise fall to <body>). Back on the menu, the first level not yet
+  // done is revealed and focused instead.
+  const nextLevel = [0, 1, 2, 3].find((level) => !completedLevels.includes(level));
+  useScreenTop(screen, {
+    target: () =>
+      screen === 'menu' && nextLevel !== undefined
+        ? document.querySelector(`[data-level-card="${nextLevel}"]`)
+        : null,
+  });
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
       <Header
@@ -51,27 +64,30 @@ function App() {
 
         {/* Main Content */}
         <main id="main-content" className="container mx-auto px-4 py-4 sm:py-8">
-          <p className="text-lg text-warm-600 text-center mb-4 sm:mb-8">{t('game.subtitle')}</p>
+          <p className="text-lg text-warm-600 text-center mb-4 sm:mb-8 phone:sr-only">
+            {t('game.subtitle')}
+          </p>
 
           {/* Main Menu */}
           {screen === 'menu' && (
             <div className="max-w-4xl mx-auto">
-              <div className="bg-white rounded-lg shadow-md p-5 sm:p-8">
-                <h2 className="text-2xl font-bold text-warm-800 mb-6">
+              <div className="bg-white rounded-lg shadow-md p-5 sm:p-8 phone:p-4">
+                <h2 className="text-2xl font-bold text-warm-800 mb-6 phone:mb-3">
                   {t('mainMenu.selectLevel', 'Veldu stig')}
                 </h2>
 
                 {/* Level Cards - Conceptual First Progression */}
-                <div className="grid gap-4">
+                <div className="grid gap-4 phone:gap-3">
                   {/* Level 0 - Significant figures. Siggi's ruling 2026-09-19:
                       this lives inside Einingagreining, not in its own game.
                       It comes first because Level 3 already marks students on
                       it. */}
                   <button
+                    data-level-card={0}
                     onClick={() => setScreen('level0')}
-                    className="game-card bg-warm-600 hover:bg-warm-700 text-white rounded-lg p-5 sm:p-6 text-left transition-colors"
+                    className="game-card bg-warm-600 hover:bg-warm-700 text-white rounded-lg p-5 sm:p-6 phone:p-4 text-left transition-colors"
                   >
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2 mb-2 phone:mb-1">
                       <span className="text-2xl">0</span>
                       <h3 className="text-xl font-semibold">Markverðir stafir</h3>
                     </div>
@@ -85,10 +101,11 @@ function App() {
 
                   {/* Level 1 - Conceptual (Visual Learning) */}
                   <button
+                    data-level-card={1}
                     onClick={() => setScreen('level1')}
-                    className="game-card bg-green-500 hover:bg-green-600 text-white rounded-lg p-5 sm:p-6 text-left transition-colors"
+                    className="game-card bg-green-500 hover:bg-green-600 text-white rounded-lg p-5 sm:p-6 phone:p-4 text-left transition-colors"
                   >
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2 mb-2 phone:mb-1">
                       <span className="text-2xl">1</span>
                       <h3 className="text-xl font-semibold">{t('levels.level1.name', 'Hugtök')}</h3>
                     </div>
@@ -102,10 +119,11 @@ function App() {
 
                   {/* Level 2 - Application (Predict & Reason) */}
                   <button
+                    data-level-card={2}
                     onClick={() => setScreen('level2')}
-                    className="game-card bg-blue-500 hover:bg-blue-600 text-white rounded-lg p-5 sm:p-6 text-left transition-colors"
+                    className="game-card bg-blue-500 hover:bg-blue-600 text-white rounded-lg p-5 sm:p-6 phone:p-4 text-left transition-colors"
                   >
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2 mb-2 phone:mb-1">
                       <span className="text-2xl">2</span>
                       <h3 className="text-xl font-semibold">
                         {t('levels.level2.name', 'Beiting')}
@@ -121,11 +139,12 @@ function App() {
 
                   {/* Level 3 - Calculation (Full Problems) */}
                   <button
+                    data-level-card={3}
                     onClick={() => setScreen('level3')}
-                    className="game-card bg-orange-500 hover:bg-orange-600 text-white rounded-lg p-5 sm:p-6 text-left transition-colors"
+                    className="game-card bg-orange-500 hover:bg-orange-600 text-white rounded-lg p-5 sm:p-6 phone:p-4 text-left transition-colors"
                     style={{ backgroundColor: '#f36b22' }}
                   >
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2 mb-2 phone:mb-1">
                       <span className="text-2xl">3</span>
                       <h3 className="text-xl font-semibold">
                         {t('levels.level3.name', 'Útreikningar')}

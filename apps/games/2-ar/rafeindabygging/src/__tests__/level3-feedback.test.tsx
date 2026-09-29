@@ -2,6 +2,7 @@
 import { fireEvent, render, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level3 } from '../components/Level3';
 import { periodicPuzzles } from '../data/periodic-configs';
 
@@ -21,6 +22,8 @@ import { periodicPuzzles } from '../data/periodic-configs';
  * Queries are scoped to this render's container: vitest runs with `retry: 2`
  * and no RTL auto-cleanup, so a failed attempt leaves its DOM behind.
  */
+
+clockPastNextGuard();
 
 beforeEach(() => {
   Element.prototype.scrollIntoView = vi.fn();

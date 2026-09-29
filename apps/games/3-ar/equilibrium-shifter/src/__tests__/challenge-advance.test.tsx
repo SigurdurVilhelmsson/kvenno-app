@@ -2,6 +2,7 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import App from '../App';
+import { clockPastNextGuard } from './next-guard-clock';
 import { equilibria } from '../data/equilibria';
 import { calculateShift } from '../utils/le-chatelier';
 
@@ -76,6 +77,8 @@ describe('Keppnishamur moves on once per question', () => {
     vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
     vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
   });
+  // After vi.useFakeTimers() above, which would otherwise replace the clock it spies on.
+  clockPastNextGuard();
 
   afterEach(() => {
     cleanup();

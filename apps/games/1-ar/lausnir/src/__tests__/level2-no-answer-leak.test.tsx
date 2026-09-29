@@ -3,7 +3,11 @@ import { describe, it, expect } from 'vitest';
 
 import { formatDecimal } from '@shared/utils';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level2, SCENARIOS } from '../components/Level2';
+
+// These tests press Næsta at once; step the clock past its 400 ms guard.
+clockPastNextGuard();
 
 /**
  * B16: "half of Level 2's items display the answer before the student

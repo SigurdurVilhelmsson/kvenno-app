@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { elementSymbol, playLevel3 } from './play-level3';
 import { Level3 } from '../components/Level3';
 import { problems } from '../data/half-reactions';
@@ -14,6 +15,7 @@ import { problems } from '../data/half-reactions';
 const t = (key: string, fallback?: string) => fallback ?? key;
 
 afterEach(cleanup);
+clockPastNextGuard();
 
 function start() {
   const onComplete = vi.fn();

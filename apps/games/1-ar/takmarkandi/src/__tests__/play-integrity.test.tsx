@@ -2,10 +2,13 @@ import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import App from '../App';
+import { clockPastNextGuard } from './next-guard-clock';
 import { Level1 } from '../components/Level1';
 import { Level2 } from '../components/Level2';
 import { Level3 } from '../components/Level3';
 import { YIELD_PROBLEMS } from '../data/yieldProblems';
+
+clockPastNextGuard();
 
 /**
  * A score has to come from reading the question.

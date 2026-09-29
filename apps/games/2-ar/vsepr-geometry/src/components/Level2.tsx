@@ -1,11 +1,18 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect, useRef, type KeyboardEvent } from 'react';
 
-import { AnimatedMolecule } from '@shared/components';
+import { AnimatedMolecule, PhoneDisclosure } from '@shared/components';
 import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
+import {
+  revealSpan,
+  useArmedAfter,
+  useIsPhone,
+  useItemTop,
+  useRevealAfterCommit,
+} from '@shared/utils';
 
 import { ElectronRepulsionAnimation } from './ElectronRepulsionAnimation';
 import { gradeBondAngle } from '../utils/bondAngles';
-import { useScrollTopOnChange } from '../utils/phoneScroll';
+import { tabletBelowMd, useTabletTopOnChange } from '../utils/tabletBand';
 import { vseprToMolecule } from '../utils/vseprConverter';
 
 interface Level2Props {
@@ -329,22 +336,50 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   const molecule = molecules[currentMolecule];
   const step = STEPS[currentStep];
+  const phone = useIsPhone();
 
-  // A new molecule replaces the screen; on a phone start it at the top, where
-  // the molecule is, rather than on the empty count inputs part-way down.
-  useScrollTopOnChange(currentMolecule);
+  // A new molecule, and each new step, is an item swap. On a phone a new molecule brings
+  // the card's top back and focuses the formula; a new step brings the step panel's top
+  // back and focuses its question. Between a phone and md a new molecule still starts at
+  // the top of the page in one jump, as it always has.
+  const itemRef = useItemTop<HTMLDivElement>(`${currentMolecule}:${currentStep}`);
+  useTabletTopOnChange(currentMolecule);
 
-  // Below md the two panels stack, so a correct geometry prediction inserts the
-  // molecule and the repulsion animation above the step panel and pushes the
-  // feedback and the next button off-screen. Bring the button back into view.
-  // From md up the panels sit side by side and the feedback stays where the
-  // student is looking, so the page is left alone there.
+  // After Athuga, focus moves to the verdict, not to Næsta, so a second Enter lands on
+  // nothing (design P3), and on a phone the step's question through Næsta is brought into
+  // view (else the verdict at the top). A correct shape instead reveals the molecule above
+  // the step panel: on a phone the page shows it from its top, down to Næsta if that fits,
+  // and never scrolls past it (design §4).
+  const promptRef = useRef<HTMLParagraphElement>(null);
+  const revealedRef = useRef<HTMLDivElement>(null);
+  const verdictRef = useRef<HTMLDivElement>(null);
   const nextButtonRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(stepResult !== null, () => ({
+    bottom: nextButtonRef.current,
+    tops:
+      step.id === 'geometry' && geometryRevealed
+        ? [revealedRef.current]
+        : [promptRef.current, verdictRef.current],
+    focus: verdictRef.current,
+  }));
+  // Between a phone and md the panels stack as they do on a phone, and a correct shape
+  // brings Næsta into view the way `scrollIntoView({ block: 'nearest' })` did. From md up
+  // the panels sit side by side and the page is left alone.
   useEffect(() => {
     if (!geometryRevealed || step.id !== 'geometry') return;
-    if (window.matchMedia?.('(min-width: 48rem)').matches) return;
-    nextButtonRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
+    if (tabletBelowMd()) revealSpan(nextButtonRef.current, [], { anyWidth: true, gap: 0 });
   }, [geometryRevealed, step.id]);
+  // A double tap on Athuga must not land on Næsta.
+  const armed = useArmedAfter(400, `${currentMolecule}:${currentStep}:${stepResult}`);
+  // Opening the hint keeps it in view with Athuga on a phone, and focus moves to it (design
+  // §3, hints).
+  const hintRef = useRef<HTMLDivElement>(null);
+  const checkRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(showHint, () => ({
+    bottom: checkRef.current,
+    tops: [hintRef.current],
+    focus: hintRef.current,
+  }));
 
   // Get constrained geometry options for the current molecule's domain count
   const geometryOptions = useMemo(
@@ -407,6 +442,30 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     setGeometryRevealed(false);
   };
 
+  const checkDisabled =
+    (step.id === 'count' && (!bondingPairsAnswer || !lonePairsAnswer)) ||
+    (step.id === 'geometry' && !selectedGeometry) ||
+    (step.id === 'angle' && !selectedAngle) ||
+    (step.id === 'explanation' && explanation.length < 10);
+  // Enter in an answer field checks it, as the button would.
+  const checkOnEnter = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter' || stepResult !== null || checkDisabled) return;
+    e.preventDefault();
+    checkStep();
+  };
+
+  // Why the shape forms, once it has been predicted. From md up it sits under the molecule.
+  // On a phone it follows the step's Næsta, so nothing is inserted between the step and the
+  // student's finger; from the angle step on it is behind a button, already seen.
+  const why = geometryRevealed && ANIMATED_GEOMETRIES.has(molecule.correctGeometryId) && (
+    <ElectronRepulsionAnimation
+      geometryId={molecule.correctGeometryId}
+      autoPlay={true}
+      showForces={true}
+      compact={true}
+    />
+  );
+
   const getHint = () => {
     if (step.id === 'count') {
       return `${molecule.centralAtom} hefur ${VALENCE_ELECTRONS[molecule.centralAtom]} gildisrafeindir. Hversu margar fara í tengsl?`;
@@ -421,38 +480,41 @@ export function Level2({ onComplete, onBack }: Level2Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        {/* Header. On a phone the counters share one line (P4), so the row is one line tall. */}
+        <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11 phone:shrink-0"
           >
             <span>&larr;</span> Til baka
           </button>
-          <div className="text-right">
+          <div className="text-right phone:flex phone:flex-wrap phone:items-baseline phone:justify-end phone:gap-x-2 phone:min-w-0">
             <div className="text-sm text-warm-600">
               Sameind {currentMolecule + 1} af {molecules.length}
             </div>
-            <div className="text-lg font-bold text-teal-600">{score} stig</div>
+            <div className="text-lg font-bold text-teal-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6 phone:h-1.5 phone:mb-2">
           <div
-            className="bg-teal-500 h-2 rounded-full transition-all duration-300"
+            className="bg-teal-500 h-2 phone:h-1.5 rounded-full transition-all duration-300"
             style={{
               width: `${((currentMolecule * STEPS.length + currentStep + 1) / (molecules.length * STEPS.length)) * 100}%`,
             }}
           />
         </div>
 
-        {/* Steps indicator */}
-        <div className="grid grid-cols-2 gap-2 sm:flex mb-6">
+        {/* Steps indicator. On a phone it is one row: the current step is named, the others
+            show their number and keep their name for a screen reader. */}
+        <div className="grid grid-cols-2 gap-2 sm:flex mb-6 phone:flex phone:gap-1 phone:mb-2">
           {STEPS.map((s, idx) => (
             <div
               key={s.id}
-              className={`flex-1 text-center py-2 rounded-lg text-sm font-medium ${
+              className={`flex-1 text-center py-2 rounded-lg text-sm font-medium phone:py-1 ${
+                idx === currentStep ? '' : 'phone:flex-none phone:px-3'
+              } ${
                 idx === currentStep
                   ? 'bg-teal-500 text-white'
                   : idx < currentStep
@@ -460,19 +522,30 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     : 'bg-warm-100 text-warm-500'
               }`}
             >
-              {s.label}
+              {phone && idx !== currentStep ? (
+                <>
+                  <span aria-hidden="true">{idx + 1}</span>
+                  <span className="sr-only">{s.label}</span>
+                </>
+              ) : (
+                s.label
+              )}
             </div>
           ))}
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-          {/* Molecule display */}
-          <div className="flex flex-col md:flex-row gap-6 mb-8">
-            <div className="flex-1">
+        <div
+          ref={currentStep === 0 ? itemRef : undefined}
+          className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3"
+        >
+          {/* Molecule display. A phone on its side puts the molecule beside the step. */}
+          <div className="flex flex-col md:flex-row gap-6 mb-8 phone:gap-3 phone:mb-3 phone-land:flex-row">
+            <div className="flex-1 phone-land:min-w-0">
               {geometryRevealed ? (
-                <>
+                // data-revealed marks the molecule the phone reveal lands on, for the tests.
+                <div ref={revealedRef} data-revealed>
                   {/* 2D/3D Toggle — only after geometry predicted */}
-                  <div className="flex justify-center gap-2 mb-3">
+                  <div className="flex justify-center gap-2 mb-3 phone:mb-2">
                     <button
                       onClick={() => setViewMode('2d')}
                       className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors pointer-coarse:min-h-11 ${
@@ -495,11 +568,16 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     </button>
                   </div>
 
-                  <div className="bg-warm-900 rounded-xl p-4 sm:p-6">
+                  <div className="bg-warm-900 rounded-xl p-4 sm:p-6 phone:p-3">
                     <div className="text-center">
-                      <div className="text-3xl font-bold text-white mb-2">{molecule.formula}</div>
-                      <div className="text-warm-400 mb-4">{molecule.name}</div>
-                      <div className="flex justify-center py-4">
+                      {/* On a phone the formula and its name share one line. */}
+                      <div className="text-3xl font-bold text-white mb-2 phone:text-2xl phone:mb-0 phone:inline phone:mr-2">
+                        {molecule.formula}
+                      </div>
+                      <div className="text-warm-400 mb-4 phone:mb-1 phone:inline">
+                        {molecule.name}
+                      </div>
+                      <div className="flex justify-center py-4 phone:py-1">
                         {viewMode === '2d' ? (
                           <AnimatedMolecule
                             molecule={vseprToMolecule({
@@ -514,6 +592,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                             })}
                             mode="vsepr"
                             size="lg"
+                            fit
                             animation="scale-in"
                             showLonePairs={true}
                             ariaLabel={`${molecule.name} VSEPR lögun`}
@@ -555,27 +634,29 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   </div>
 
                   {/* Repulsion animation — show why the geometry forms */}
-                  {ANIMATED_GEOMETRIES.has(molecule.correctGeometryId) && (
+                  {why && !phone && (
                     <div className="mt-4 bg-indigo-50 rounded-xl p-3 sm:p-4 border border-indigo-200">
                       <div className="text-sm font-bold text-indigo-800 mb-2">
                         Hvers vegna þessi lögun?
                       </div>
-                      <ElectronRepulsionAnimation
-                        geometryId={molecule.correctGeometryId}
-                        autoPlay={true}
-                        showForces={true}
-                        compact={true}
-                      />
+                      {why}
                     </div>
                   )}
-                </>
+                </div>
               ) : (
                 /* Before geometry predicted — show Lewis structure + domain info */
-                <div className="bg-warm-900 rounded-xl p-4 sm:p-6">
+                <div className="bg-warm-900 rounded-xl p-4 sm:p-6 phone:p-3">
                   <div className="text-center">
-                    <div className="text-3xl font-bold text-white mb-2">{molecule.formula}</div>
-                    <div className="text-warm-400 mb-2">{molecule.name}</div>
-                    <div className="font-mono text-teal-400 my-4 whitespace-pre text-sm">
+                    <div
+                      data-item-start
+                      className="text-3xl font-bold text-white mb-2 phone:text-2xl phone:mb-0 phone:inline phone:mr-2"
+                    >
+                      {molecule.formula}
+                    </div>
+                    <div className="text-warm-400 mb-2 phone:mb-0 phone:inline">
+                      {molecule.name}
+                    </div>
+                    <div className="font-mono text-teal-400 my-4 whitespace-pre text-sm phone:my-2">
                       {molecule.lewisStructure}
                     </div>
                     <div className="text-warm-500 text-sm">Spáðu fyrir um lögun sameindarinnar</div>
@@ -584,14 +665,21 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               )}
             </div>
 
-            <div className="flex-1 bg-warm-50 rounded-xl p-4 sm:p-6">
-              <h3 className="font-bold text-warm-700 mb-4">Miðatóm: {molecule.centralAtom}</h3>
+            <div
+              ref={currentStep === 0 ? undefined : itemRef}
+              className="flex-1 bg-warm-50 rounded-xl p-4 sm:p-6 phone:p-3 phone-land:min-w-0"
+            >
+              <h3 className="font-bold text-warm-700 mb-4 phone:mb-2">
+                Miðatóm: {molecule.centralAtom}
+              </h3>
 
               {/* Step content */}
               {step.id === 'count' && (
-                <div className="space-y-4">
-                  <p className="text-warm-600">Teldu rafeindasvið í kringum miðatómið:</p>
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-4 phone:space-y-0 phone:flex phone:flex-col phone:gap-3">
+                  <p ref={promptRef} data-item-start className="text-warm-600">
+                    Teldu rafeindasvið í kringum miðatómið:
+                  </p>
+                  <div className="grid grid-cols-2 gap-4 phone:gap-3">
                     <div>
                       <label className="block text-sm font-medium text-warm-600 mb-1">
                         Bindandi pör
@@ -601,7 +689,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                         value={bondingPairsAnswer}
                         onChange={(e) => setBondingPairsAnswer(e.target.value)}
                         disabled={stepResult !== null}
-                        className="w-full p-3 border-2 border-warm-300 rounded-xl text-center text-xl"
+                        onKeyDown={checkOnEnter}
+                        enterKeyHint="done"
+                        className="w-full p-3 border-2 border-warm-300 rounded-xl text-center text-xl phone:p-2"
                         min="0"
                         max="6"
                       />
@@ -615,7 +705,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                         value={lonePairsAnswer}
                         onChange={(e) => setLonePairsAnswer(e.target.value)}
                         disabled={stepResult !== null}
-                        className="w-full p-3 border-2 border-warm-300 rounded-xl text-center text-xl"
+                        onKeyDown={checkOnEnter}
+                        enterKeyHint="done"
+                        className="w-full p-3 border-2 border-warm-300 rounded-xl text-center text-xl phone:p-2"
                         min="0"
                         max="3"
                       />
@@ -637,8 +729,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               )}
 
               {step.id === 'geometry' && (
-                <div className="space-y-4">
-                  <div className="bg-teal-50 p-3 rounded-lg mb-2">
+                <div className="space-y-4 phone:space-y-0 phone:flex phone:flex-col phone:gap-2">
+                  <div className="bg-teal-50 p-3 rounded-lg mb-2 phone:p-2 phone:mb-0">
                     <div className="text-sm text-teal-800">
                       <strong>{molecule.electronDomains} rafeindasvið</strong> → rafeindalögun:{' '}
                       <strong>{ELECTRON_GEOMETRY_NAME[molecule.electronDomains]}</strong>
@@ -647,7 +739,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                       {molecule.bondingPairs} bindandi + {lonePairsPhrase(molecule.lonePairs)}
                     </div>
                   </div>
-                  <p className="text-warm-600">
+                  <p ref={promptRef} data-item-start className="text-warm-600">
                     Með {lonePairsDative(molecule.lonePairs)}, hvaða <strong>sameindarlögun</strong>{' '}
                     myndast?
                   </p>
@@ -661,7 +753,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                           key={geo.id}
                           onClick={() => !stepResult && setSelectedGeometry(geo.id)}
                           disabled={stepResult !== null}
-                          className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
+                          className={`w-full p-4 phone:p-3 rounded-xl border-2 text-left transition-all ${
                             stepResult
                               ? isCorrectGeo
                                 ? 'border-green-500 bg-green-50'
@@ -700,8 +792,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               )}
 
               {step.id === 'angle' && (
-                <div className="space-y-4">
-                  <p className="text-warm-600">
+                <div className="space-y-4 phone:space-y-0 phone:flex phone:flex-col phone:gap-3">
+                  <p ref={promptRef} data-item-start className="text-warm-600">
                     Hvert er (eru) tengihornið/-in í {molecule.formula}?
                   </p>
                   <input
@@ -710,6 +802,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     onChange={(e) => setSelectedAngle(e.target.value)}
                     disabled={stepResult !== null}
                     placeholder="Horn í gráðum"
+                    onKeyDown={checkOnEnter}
+                    enterKeyHint="done"
                     autoComplete="off"
                     autoCapitalize="none"
                     autoCorrect="off"
@@ -729,12 +823,12 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
                   {/* Bond angle visual indicator */}
                   {stepResult !== null && (
-                    <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-200">
-                      <div className="font-bold text-indigo-800 mb-3 flex items-center gap-2">
+                    <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-200 phone:p-3">
+                      <div className="font-bold text-indigo-800 mb-3 flex items-center gap-2 phone:mb-1">
                         <span className="text-lg">📐</span> Tengihorn í {molecule.formula} (
                         {inSentence(molecule.molecularGeometry)})
                       </div>
-                      <div className="flex items-center justify-center py-4">
+                      <div className="flex items-center justify-center py-4 phone:py-1">
                         <svg
                           width="180"
                           height="120"
@@ -1124,8 +1218,8 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               )}
 
               {step.id === 'explanation' && (
-                <div className="space-y-4">
-                  <p className="text-warm-600">
+                <div className="space-y-4 phone:space-y-0 phone:flex phone:flex-col phone:gap-3">
+                  <p ref={promptRef} data-item-start className="text-warm-600">
                     Útskýrðu af hverju sameindarlögun {molecule.formula} er{' '}
                     {inSentence(molecule.molecularGeometry)}:
                   </p>
@@ -1138,7 +1232,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                     className="w-full p-3 border-2 border-warm-300 rounded-xl resize-none"
                   />
                   {stepResult !== null && (
-                    <div className="bg-teal-50 p-4 rounded-lg">
+                    <div className="bg-teal-50 p-4 rounded-lg phone:p-3">
                       <div className="font-bold text-teal-800 mb-2">Dæmi um útskýringu:</div>
                       <p className="text-teal-700 text-sm">{molecule.explanation}</p>
                     </div>
@@ -1155,28 +1249,37 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 setShowHint(true);
                 setTotalHintsUsed((prev) => prev + 1);
               }}
-              className="text-teal-600 hover:text-teal-800 text-sm underline mb-4 pointer-coarse:min-h-11"
+              className="text-teal-600 hover:text-teal-800 text-sm underline mb-4 pointer-coarse:min-h-11 phone:mb-2"
             >
               Sýna vísbendingu
             </button>
           )}
 
           {showHint && !stepResult && (
-            <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4">
+            <div
+              ref={hintRef}
+              className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4 phone:p-3 phone:mb-3"
+            >
               <span className="font-bold text-yellow-800">Vísbending: </span>
               <span className="text-yellow-900">{getHint()}</span>
             </div>
           )}
 
+          {/* The feedback region focus moves to after Athuga (P3), named by its verdict. */}
           {stepResult && (
             <div
-              className={`p-4 rounded-xl mb-4 ${
+              ref={verdictRef}
+              tabIndex={-1}
+              role="group"
+              aria-labelledby="vsepr-l2-verdict"
+              className={`p-4 rounded-xl mb-4 phone:p-3 phone:mb-3 ${
                 stepResult === 'correct'
                   ? 'bg-green-50 border border-green-200'
                   : 'bg-red-50 border border-red-200'
               }`}
             >
               <div
+                id="vsepr-l2-verdict"
                 className={`font-bold ${stepResult === 'correct' ? 'text-green-700' : 'text-red-700'}`}
               >
                 {stepResult === 'correct' ? 'Rétt!' : 'Rangt — Sjáðu rétt svar hér að ofan'}
@@ -1184,23 +1287,23 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             </div>
           )}
 
+          {/* Athuga and Næsta are separate elements (keyed), never one button relabelled, and
+              Næsta ignores a press within 400 ms of appearing. */}
           {!stepResult ? (
             <button
+              key="check"
+              ref={checkRef}
               onClick={checkStep}
-              disabled={
-                (step.id === 'count' && (!bondingPairsAnswer || !lonePairsAnswer)) ||
-                (step.id === 'geometry' && !selectedGeometry) ||
-                (step.id === 'angle' && !selectedAngle) ||
-                (step.id === 'explanation' && explanation.length < 10)
-              }
+              disabled={checkDisabled}
               className="w-full bg-teal-500 hover:bg-teal-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
             >
               Athuga svar
             </button>
           ) : (
             <button
+              key="next"
               ref={nextButtonRef}
-              onClick={nextStep}
+              onClick={armed(nextStep)}
               className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
             >
               {currentStep < STEPS.length - 1
@@ -1210,11 +1313,35 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   : 'Ljúka stigi 2'}
             </button>
           )}
+
+          {why &&
+            phone &&
+            (step.id === 'geometry' ? (
+              <div className="mt-3 bg-indigo-50 rounded-xl p-3 border border-indigo-200">
+                <div className="text-sm font-bold text-indigo-800 mb-2">
+                  Hvers vegna þessi lögun?
+                </div>
+                {why}
+              </div>
+            ) : (
+              <PhoneDisclosure
+                summary="Hvers vegna þessi lögun?"
+                className="mt-3"
+                buttonClassName="text-sm text-indigo-800 bg-indigo-50"
+                contentClassName="bg-indigo-50 rounded-xl p-3 border border-indigo-200"
+              >
+                {why}
+              </PhoneDisclosure>
+            ))}
         </div>
 
-        {/* Reference table */}
-        <div className="mt-6 bg-white rounded-xl p-3 sm:p-4 shadow-sm">
-          <h3 className="font-bold text-warm-700 mb-3">Lögunartafla</h3>
+        {/* Reference table: on a phone it starts closed behind its own heading (design P9). */}
+        <PhoneDisclosure
+          summary="Lögunartafla"
+          className="mt-6 bg-white rounded-xl p-3 sm:p-4 shadow-sm phone:mt-3"
+          buttonClassName="text-warm-700"
+        >
+          <h3 className="font-bold text-warm-700 mb-3 phone:sr-only">Lögunartafla</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-xs sm:text-sm">
               <thead>
@@ -1307,7 +1434,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
               </tbody>
             </table>
           </div>
-        </div>
+        </PhoneDisclosure>
       </div>
     </div>
   );

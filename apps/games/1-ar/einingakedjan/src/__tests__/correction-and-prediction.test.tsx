@@ -1,6 +1,7 @@
 import { act, cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { ChainBuilder } from '../components/ChainBuilder';
 import { problems, problemsForPhase, type Problem } from '../data/problems';
 import { ratioById } from '../data/ratios';
@@ -14,6 +15,8 @@ import { correctionPrompt, solveChain, type ChainSlot } from '../engine/chain';
  * Queries are scoped to the rendered container, and every test cleans up after
  * itself: the repo runs vitest with retries.
  */
+
+clockPastNextGuard();
 
 type View = ReturnType<typeof render>;
 
@@ -38,9 +41,22 @@ function renderPhase(phase: 'aefa' | 'beita'): View {
 /** Run the chain on the board to the end of the worked solution (Beita, no prediction). */
 function solveOnBeita(view: View) {
   press(view, 'Leysa');
+  pastGuard();
   press(view, 'Sýna öll skrefin strax');
   act(() => {
     vi.advanceTimersByTime(700);
+  });
+  pastGuard();
+}
+
+/**
+ * The fixes, and the button each one brings up, ignore a press within 400 ms of
+ * appearing (the double-tap guard). Under fake timers `performance.now` is fake
+ * too, so move it past the guard before the next press, as a student would.
+ */
+function pastGuard() {
+  act(() => {
+    vi.advanceTimersByTime(400);
   });
 }
 
@@ -126,6 +142,7 @@ describe('the correction prompt does not give its answer away by position', () =
     const before = fixOptions(view);
     const wrong = before.find((o) => o !== BRANCHES[0].correct)!;
     press(view, wrong);
+    pastGuard();
     press(view, 'Velja aftur');
 
     expect(fixOptions(view)).toEqual(before);

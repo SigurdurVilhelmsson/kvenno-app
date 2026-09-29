@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useId, useLayoutEffect, useRef, useState } from 'react';
 
 import {
   deltaNGas,
@@ -11,10 +11,16 @@ import {
   R_GAS,
   scaleReaction,
 } from '@shared/engine/equilibrium';
-import { formatDecimal, formatScientific } from '@shared/utils';
+import {
+  focusTarget,
+  formatDecimal,
+  formatScientific,
+  revealSpan,
+  useArmedAfter,
+  useRevealTopOnDesktop,
+} from '@shared/utils';
 
 import { reactionBy } from '../data/reactions';
-import { useRevealTopOnChange } from '../utils/reveal';
 
 /**
  * Skilja — the four things that make K more than a formula.
@@ -56,18 +62,36 @@ const STEPS = [
 export function SkiljaScreen({ onComplete, onBack }: Props) {
   const [step, setStep] = useState(0);
   const stepsRef = useRef<HTMLOListElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const onwardRef = useRef<HTMLButtonElement>(null);
+  const shownStep = useRef(step);
+  const labelId = useId();
 
   // "Næsta" sits at the foot of a step taller than a phone screen, so the next
-  // step would otherwise open with its first paragraphs scrolled away.
-  useRevealTopOnChange(stepsRef, step);
+  // step would otherwise open with its first paragraphs scrolled away. Focus
+  // moves to the new step, a group named by its label in the strip, since the
+  // button just pressed may be gone. On a phone the step is brought in down to
+  // its button where both fit, or from its first line where they do not
+  // (design §3 Reading).
+  useLayoutEffect(() => {
+    if (shownStep.current === step) return;
+    shownStep.current = step;
+    focusTarget(sectionRef.current);
+    revealSpan(onwardRef.current, [stepsRef.current, sectionRef.current]);
+  }, [step]);
+  // A desktop window keeps what the game's own helper did there: the strip
+  // back under the header if it had scrolled above it.
+  useRevealTopOnDesktop(stepsRef, step);
+  // A double tap on "Næsta" must not press the next one, or "Ljúka".
+  const armed = useArmedAfter(400, step);
 
-  const next = () => (step + 1 >= STEPS.length ? onComplete() : setStep(step + 1));
+  const last = step + 1 >= STEPS.length;
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
-        <div className="mb-4 flex items-baseline justify-between gap-3 sm:mb-6">
-          <h2 className="min-w-0 text-xl font-bold text-warm-800 sm:text-2xl">
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8 phone:p-3">
+        <div className="mb-4 flex items-baseline justify-between gap-3 sm:mb-6 phone:mb-2">
+          <h2 className="min-w-0 text-xl font-bold text-warm-800 sm:text-2xl phone:text-base">
             Skilja — hvað K er
           </h2>
           <button
@@ -82,10 +106,11 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
             five full labels wrap to five rows on a phone and push every
             step's content a third of the way down the screen, and to three
             rows on a phone held sideways, where the screen is 360 px tall. */}
-        <ol ref={stepsRef} className="mb-6 flex flex-wrap gap-2 text-xs">
+        <ol ref={stepsRef} className="mb-6 flex flex-wrap gap-2 text-xs phone:mb-3">
           {STEPS.map((label, i) => (
             <li
               key={label}
+              id={i === step ? labelId : undefined}
               className={`rounded-full px-3 py-1 ${
                 i === step
                   ? 'bg-kvenno-orange font-semibold text-white'
@@ -100,13 +125,18 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
         </ol>
 
         {step === 0 && (
-          <section className="space-y-4">
+          <section
+            ref={sectionRef}
+            role="group"
+            aria-labelledby={labelId}
+            className="space-y-4 phone:space-y-3"
+          >
             <p className="text-warm-700">
               Jafnvægisfastinn er eitt brot: myndefnin uppi, hvarfefnin niðri, og{' '}
               <strong>stuðullinn úr stilltu jöfnunni verður veldisvísir</strong>. Ekki margfaldari,
               ekki summa — veldisvísir.
             </p>
-            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
+            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5 phone:p-3">
               <p className="mb-3 font-mono text-lg text-warm-800">{equationOf(ammoniak)}</p>
               <p className="font-mono text-lg font-semibold text-kvenno-orange-dark">
                 {kcExpression(ammoniak)}
@@ -121,13 +151,18 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
         )}
 
         {step === 1 && (
-          <section className="space-y-4">
+          <section
+            ref={sectionRef}
+            role="group"
+            aria-labelledby={labelId}
+            className="space-y-4 phone:space-y-3"
+          >
             <p className="text-warm-700">
               Fast efni og hreinn vökvi fara <strong>ekki</strong> í stæðuna. Styrkur þeirra er
               eiginleiki efnisins sjálfs — kalksteinsmoli er jafn þéttur hvort sem molinn er stór
               eða lítill — svo hann breytist ekki þegar hvarfið gengur.
             </p>
-            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
+            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5 phone:p-3">
               <p className="mb-2 font-mono text-warm-800">{equationOf(kalksteinn)}</p>
               <p className="mb-3 font-mono font-semibold text-kvenno-orange-dark">
                 {kcExpression(kalksteinn)}
@@ -140,7 +175,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
                 eru föst efni og detta út. Eftir stendur einn liður.
               </p>
             </div>
-            <div className="rounded-xl border-2 border-purple-200 bg-purple-50 p-4 sm:p-5">
+            <div className="rounded-xl border-2 border-purple-200 bg-purple-50 p-4 sm:p-5 phone:p-3">
               <p className="mb-2 font-mono text-purple-900">{equationOf(blyklorid)}</p>
               <p className="mb-3 font-mono font-semibold text-purple-900">
                 {kcExpression(blyklorid)}
@@ -156,13 +191,18 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
         )}
 
         {step === 2 && (
-          <section className="space-y-4">
+          <section
+            ref={sectionRef}
+            role="group"
+            aria-labelledby={labelId}
+            className="space-y-4 phone:space-y-3"
+          >
             <p className="text-warm-700">
               Fyrir gashvörf má skrifa fastann með styrkjum (Kc) eða með hlutþrýstingi (Kp).{' '}
               <strong>Þetta er sami fastinn, ekki tveir.</strong> Sambandið kemur beint úr
               kjörgasjöfnunni.
             </p>
-            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
+            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5 phone:p-3">
               <p className="mb-3 font-mono text-lg text-warm-800">
                 Kp = Kc · (R·T)<sup>Δn</sup>
               </p>
@@ -172,7 +212,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
                 L·atm/(mól·K).
               </p>
             </div>
-            <div className="rounded-xl border-2 border-warm-200 p-4 sm:p-5">
+            <div className="rounded-xl border-2 border-warm-200 p-4 sm:p-5 phone:p-3">
               <p className="mb-2 font-mono text-warm-800">{equationOf(ammoniak)}</p>
               <p className="mb-1 font-mono text-sm text-warm-700">{kpExpression(ammoniak)}</p>
               <p className="font-mono text-sm text-warm-700">
@@ -185,7 +225,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
                 </span>
               </p>
             </div>
-            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 phone:p-3">
               Þegar Δn er núll fellur (R·T) út og <strong>Kp er nákvæmlega sama talan og Kc</strong>
               . Það gerist í hverju hvarfi þar sem jafn mörg gasmól eru beggja vegna, til dæmis
               vatnsgashvarfinu.
@@ -194,32 +234,37 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
         )}
 
         {step === 3 && (
-          <section className="space-y-4">
+          <section
+            ref={sectionRef}
+            role="group"
+            aria-labelledby={labelId}
+            className="space-y-4 phone:space-y-3"
+          >
             <p className="text-warm-700">
               <strong>Hvarfstuðullinn</strong> Q er sama stæðan og K — sömu efni, sömu veldisvísar.
               Munurinn er bara hvenær þú reiknar hana: K á við blöndu í jafnvægi, Q á við hvaða
               blöndu sem er.
             </p>
-            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
+            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5 phone:p-3">
               <p className="mb-2 font-mono text-warm-800">{equationOf(vatnsgas)}</p>
               <p className="font-mono text-warm-700">{kcExpression(vatnsgas).replace('Kc', 'Q')}</p>
               <p className="mt-2 font-mono text-warm-700">{kcExpression(vatnsgas)}</p>
               <p className="mt-2 text-sm text-warm-600">Sama brot. Annað augnablik.</p>
             </div>
             <div className="grid gap-3 md:grid-cols-3">
-              <div className="rounded-lg border-2 border-blue-300 bg-blue-50 p-4 text-sm">
+              <div className="rounded-lg border-2 border-blue-300 bg-blue-50 p-4 text-sm phone:p-3">
                 <p className="mb-1 font-mono font-bold text-blue-900">Q &lt; K</p>
                 <p className="text-blue-900">
                   Of lítið af myndefnum. Hvarfið gengur áfram þar til Q hefur hækkað upp í K.
                 </p>
               </div>
-              <div className="rounded-lg border-2 border-amber-300 bg-amber-50 p-4 text-sm">
+              <div className="rounded-lg border-2 border-amber-300 bg-amber-50 p-4 text-sm phone:p-3">
                 <p className="mb-1 font-mono font-bold text-amber-900">Q &gt; K</p>
                 <p className="text-amber-900">
                   Of mikið af myndefnum. Hvarfið gengur afturábak þar til Q hefur lækkað niður í K.
                 </p>
               </div>
-              <div className="rounded-lg border-2 border-green-300 bg-green-50 p-4 text-sm">
+              <div className="rounded-lg border-2 border-green-300 bg-green-50 p-4 text-sm phone:p-3">
                 <p className="mb-1 font-mono font-bold text-green-900">Q = K</p>
                 <p className="text-green-900">
                   Jafnvægi. Bæði hvörfin ganga enn, jafn hratt, svo ekkert breytist á yfirborðinu.
@@ -234,7 +279,12 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
         )}
 
         {step === 4 && (
-          <section className="space-y-4">
+          <section
+            ref={sectionRef}
+            role="group"
+            aria-labelledby={labelId}
+            className="space-y-4 phone:space-y-3"
+          >
             <p className="text-warm-700">
               Oft er fastinn sem þú þarft ekki í töflunni, en fastar fyrir{' '}
               <strong>tengd jafnvægi</strong> eru það — efnahvörf sem eiga hvarfefni eða myndefni
@@ -242,7 +292,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               fylgir með. Aðgerðirnar eru þrjár.
             </p>
 
-            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
+            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5 phone:p-3">
               <p className="mb-2 text-sm font-semibold text-warm-800">
                 1. Snúa jöfnunni við → K verður umhverfa sín
               </p>
@@ -259,7 +309,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               </p>
             </div>
 
-            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
+            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5 phone:p-3">
               <p className="mb-2 text-sm font-semibold text-warm-800">
                 2. Margfalda stuðlana með n → K fer í n-ta veldi
               </p>
@@ -276,7 +326,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               </p>
             </div>
 
-            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5">
+            <div className="rounded-xl border-2 border-warm-200 bg-warm-50 p-4 sm:p-5 phone:p-3">
               <p className="mb-2 text-sm font-semibold text-warm-800">
                 3. Leggja tvær jöfnur saman → fastarnir margfaldast
               </p>
@@ -290,14 +340,14 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
               </p>
             </div>
 
-            <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900">
+            <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900 phone:p-3">
               <strong>Engin af þessum þremur er ný regla.</strong> K er brot með myndefnum uppi og
               hvarfefnum niðri, svo það að víxla hliðunum snýr brotinu við, það að margfalda
               stuðlana hefur hvern lið upp í það veldi, og það að leggja saman margfaldar brotin tvö
               og styttir út það sem stendur beggja vegna. Ein staðreynd, þrjár afleiðingar.
             </div>
 
-            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 phone:p-3">
               <strong>Eitt skilyrði:</strong> fastarnir verða að eiga við sama hitastig. K er háður
               hitastigi, svo margfeldi tveggja fasta sem mældir voru við sitt hvort hitastigið lýsir
               engu kerfi.
@@ -305,13 +355,29 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
           </section>
         )}
 
-        <button
-          type="button"
-          onClick={next}
-          className="game-btn mt-6 w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark"
-        >
-          {step + 1 >= STEPS.length ? 'Ljúka' : 'Næsta'}
-        </button>
+        {/* Separate keyed buttons, so the one that replaces "Næsta" on the last
+            step is a new element, not the same one relabelled. */}
+        {last ? (
+          <button
+            key="finish"
+            ref={onwardRef}
+            type="button"
+            onClick={armed(onComplete)}
+            className="game-btn mt-6 w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark phone:mt-4"
+          >
+            Ljúka
+          </button>
+        ) : (
+          <button
+            key="next"
+            ref={onwardRef}
+            type="button"
+            onClick={armed(() => setStep(step + 1))}
+            className="game-btn mt-6 w-full rounded-lg bg-kvenno-orange px-4 py-3 font-semibold text-white hover:bg-kvenno-orange-dark phone:mt-4"
+          >
+            Næsta
+          </button>
+        )}
       </div>
     </div>
   );

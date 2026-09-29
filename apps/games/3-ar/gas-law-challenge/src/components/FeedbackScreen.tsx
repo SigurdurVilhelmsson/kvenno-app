@@ -1,4 +1,6 @@
-import { formatDecimal } from '@shared/utils';
+import type { Ref } from 'react';
+
+import { formatDecimal, useArmedAfter } from '@shared/utils';
 
 import { GasLawQuestion, GameMode, GameStats, QuestionFeedback, GAS_LAW_INFO } from '../types';
 import { FormulaText } from './FormulaText';
@@ -13,6 +15,8 @@ interface FeedbackScreenProps {
   gameMode: GameMode;
   onNext: (mode: GameMode) => void;
   onBackToMenu: () => void;
+  /** The screen's root, for App's screen-swap anchoring. */
+  rootRef?: Ref<HTMLDivElement>;
 }
 
 export function FeedbackScreen({
@@ -24,35 +28,51 @@ export function FeedbackScreen({
   gameMode,
   onNext,
   onBackToMenu,
+  rootRef,
 }: FeedbackScreenProps) {
+  // "Athuga Svar" opened this screen. A press on Næsta within 400 ms of it appearing is the
+  // second half of a double tap, not a decision, and is dropped (design P3).
+  const armed = useArmedAfter(400);
+
   return (
-    <div>
+    <div ref={rootRef}>
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
-        <main className="max-w-4xl mx-auto px-3 py-4 sm:px-4 sm:py-8">
-          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8">
+        <main className="max-w-4xl mx-auto px-3 py-4 sm:px-4 sm:py-8 phone:py-3">
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8 phone:p-3">
+            {/* The feedback region focus moves to when this screen opens (design P3). On a
+                phone the emoji sits inline with the verdict. */}
             <div
-              className={`text-center mb-6 p-4 sm:p-6 rounded-xl ${
+              data-feedback-verdict
+              tabIndex={-1}
+              role="group"
+              aria-labelledby="gas-law-verdict"
+              className={`text-center mb-6 p-4 sm:p-6 rounded-xl focus:outline-none phone:p-3 phone:mb-3 phone:flex phone:flex-wrap phone:items-center phone:gap-x-2.5 phone:text-left ${
                 feedback.isCorrect
                   ? 'bg-green-50 border-2 border-green-300'
                   : 'bg-red-50 border-2 border-red-300'
               }`}
             >
-              <div className="text-6xl mb-2">{feedback.isCorrect ? '✅' : '❌'}</div>
+              <div className="text-6xl mb-2 phone:text-3xl phone:mb-0 phone:shrink-0">
+                {feedback.isCorrect ? '✅' : '❌'}
+              </div>
               <h2
-                className={`text-2xl sm:text-3xl font-bold mb-2 ${
+                id="gas-law-verdict"
+                className={`text-2xl sm:text-3xl font-bold mb-2 phone:text-lg phone:leading-snug phone:mb-0 phone:flex-1 phone:min-w-0 ${
                   feedback.isCorrect ? 'text-green-800' : 'text-red-800'
                 }`}
               >
                 {feedback.message}
               </h2>
               {feedback.isCorrect && (
-                <div className="text-2xl font-bold text-yellow-600">+{feedback.points} stig</div>
+                <div className="text-2xl font-bold text-yellow-600 phone:text-base phone:w-full phone:mt-0.5">
+                  +{feedback.points} stig
+                </div>
               )}
             </div>
 
             {sessionCompleted && sessionQuestionsAnswered === 15 && (
-              <div className="bg-gradient-to-r from-yellow-100 to-amber-100 border-2 border-yellow-400 rounded-xl p-4 mb-6 text-center">
-                <div className="text-3xl mb-1">🎉⭐</div>
+              <div className="bg-gradient-to-r from-yellow-100 to-amber-100 border-2 border-yellow-400 rounded-xl p-4 mb-6 text-center phone:p-3 phone:mb-3">
+                <div className="text-3xl mb-1 phone:text-xl">🎉⭐</div>
                 <p className="font-bold text-yellow-800 text-lg">Þú hefur lokið Gaslögmálum!</p>
                 <p className="text-yellow-700 text-sm">
                   15 spurningum svarað — þú getur haldið áfram til að bæta stigin þín.
@@ -60,35 +80,42 @@ export function FeedbackScreen({
               </div>
             )}
 
-            <div className="grid md:grid-cols-2 gap-4 mb-6">
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <h3 className="font-bold text-blue-900 mb-2">Þitt svar:</h3>
-                <p className="text-2xl font-bold text-blue-800">
+            {/* The two answers side by side on a phone, as one comparison row. */}
+            <div className="grid md:grid-cols-2 gap-4 mb-6 phone:grid-cols-2 phone:gap-2 phone:mb-3">
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 phone:p-2.5 phone:min-w-0">
+                <h3 className="font-bold text-blue-900 mb-2 phone:mb-0.5 phone:text-sm">
+                  Þitt svar:
+                </h3>
+                <p className="text-2xl font-bold text-blue-800 phone:text-lg">
                   {feedback.userAnswer === null
                     ? '—'
                     : `${formatDecimal(feedback.userAnswer)} ${answerUnit(currentQuestion)}`}
                 </p>
               </div>
-              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-                <h3 className="font-bold text-green-900 mb-2">Rétt svar:</h3>
-                <p className="text-2xl font-bold text-green-800">
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200 phone:p-2.5 phone:min-w-0">
+                <h3 className="font-bold text-green-900 mb-2 phone:mb-0.5 phone:text-sm">
+                  Rétt svar:
+                </h3>
+                <p className="text-2xl font-bold text-green-800 phone:text-lg">
                   {answerText(currentQuestion)} {answerUnit(currentQuestion)}
                 </p>
               </div>
             </div>
 
             {!feedback.isCorrect && feedback.userAnswer !== null && (
-              <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200 mb-6">
-                <h3 className="font-bold text-yellow-900 mb-1">Mismunur:</h3>
-                <p className="text-lg text-yellow-800">
+              <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200 mb-6 phone:p-2.5 phone:mb-3">
+                <h3 className="font-bold text-yellow-900 mb-1 phone:mb-0 phone:text-sm">
+                  Mismunur:
+                </h3>
+                <p className="text-lg text-yellow-800 phone:text-base">
                   {formatDifference(feedback.userAnswer, currentQuestion.answer)}{' '}
                   {answerUnit(currentQuestion)} frá réttu svari
                 </p>
               </div>
             )}
 
-            <div className="bg-warm-50 p-4 rounded-lg border border-warm-200 mb-6">
-              <h3 className="font-bold text-warm-800 mb-3">Skref fyrir skref lausn:</h3>
+            <div className="bg-warm-50 p-4 rounded-lg border border-warm-200 mb-6 phone:p-3 phone:mb-3">
+              <h3 className="font-bold text-warm-800 mb-3 phone:mb-2">Skref fyrir skref lausn:</h3>
               <div className="space-y-2 text-sm">
                 {currentQuestion.solution.steps.map((step, idx) => (
                   <div key={idx} className="flex gap-2">
@@ -99,7 +126,7 @@ export function FeedbackScreen({
                   </div>
                 ))}
               </div>
-              <div className="mt-4 bg-white p-3 rounded border border-warm-300">
+              <div className="mt-4 bg-white p-3 rounded border border-warm-300 phone:mt-3 phone:p-2">
                 <p className="text-sm">
                   <span className="font-bold">Formúla:</span>{' '}
                   <FormulaText text={currentQuestion.solution.formula} />
@@ -116,7 +143,7 @@ export function FeedbackScreen({
             </div>
 
             {/* Why this law works — principle card (iter 1 P2 fix) */}
-            <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 mb-6">
+            <div className="bg-purple-50 p-4 rounded-lg border border-purple-200 mb-6 phone:p-3 phone:mb-3">
               <h3 className="font-bold text-purple-900 mb-2">
                 Af hverju virkar {GAS_LAW_INFO[currentQuestion.gasLaw].nameIs}?
               </h3>
@@ -125,25 +152,32 @@ export function FeedbackScreen({
               </p>
             </div>
 
-            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6">
-              <h3 className="font-bold text-blue-900 mb-2">Árangur:</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center text-sm">
+            {/* Árangur is compacted on a phone (one row from 360 px), never hidden (design §4, §7.8). */}
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-6 phone:p-2.5 phone:mb-3">
+              <h3 className="font-bold text-blue-900 mb-2 phone:mb-1 phone:text-sm">Árangur:</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-center text-sm phone:min-[360px]:grid-cols-4 phone:gap-1 phone:text-xs">
                 <div>
-                  <div className="text-2xl font-bold text-yellow-600">{stats.score}</div>
+                  <div className="text-2xl font-bold text-yellow-600 phone:text-lg">
+                    {stats.score}
+                  </div>
                   <div className="text-warm-600">Stig</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-green-600">
+                  <div className="text-2xl font-bold text-green-600 phone:text-lg">
                     {stats.correctAnswers}/{stats.questionsAnswered}
                   </div>
                   <div className="text-warm-600">Rétt</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-blue-600">{stats.streak}</div>
+                  <div className="text-2xl font-bold text-blue-600 phone:text-lg">
+                    {stats.streak}
+                  </div>
                   <div className="text-warm-600">Núverandi röð</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-purple-600">{stats.bestStreak}</div>
+                  <div className="text-2xl font-bold text-purple-600 phone:text-lg">
+                    {stats.bestStreak}
+                  </div>
                   <div className="text-warm-600">Besta röð</div>
                 </div>
               </div>
@@ -151,7 +185,7 @@ export function FeedbackScreen({
 
             <div className="flex flex-col sm:flex-row gap-3">
               <button
-                onClick={() => onNext(gameMode)}
+                onClick={armed(() => onNext(gameMode))}
                 className="flex-1 py-3 px-6 rounded-lg font-bold text-white transition hover:opacity-90"
                 style={{ backgroundColor: '#f36b22' }}
               >

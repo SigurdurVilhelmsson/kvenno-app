@@ -203,4 +203,11 @@ export interface AnimatedMoleculeProps {
   ariaLabel?: string;
   /** Callback when all animations complete */
   onAnimationComplete?: () => void;
+  /**
+   * On a phone only (`useIsPhone`), crop the empty rows above and below the drawing: the
+   * viewBox's vertical range becomes the drawing's own extent (atoms, labels, charges, lone
+   * pairs, dipole arrow) plus a little padding. The width and the scale are unchanged, so the
+   * molecule is drawn at exactly the same size and only gets shorter. Desktop keeps the square.
+   */
+  fit?: boolean;
 }

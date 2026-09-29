@@ -1,8 +1,15 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { shuffleArray } from '@shared/utils';
-
-import { useReturnToPrompt, useRevealWhenShown } from '../hooks/useRevealWhenShown';
+import {
+  isPhone,
+  revealTop,
+  shuffleArray,
+  usableArea,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+  useScreenTop,
+} from '@shared/utils';
 
 interface Level3Props {
   onComplete: (score: number) => void;
@@ -200,11 +207,44 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     [currentChallenge]
   );
 
-  const feedbackRef = useRef<HTMLDivElement>(null);
-  const questionRef = useRef<HTMLDivElement>(null);
-  useRevealWhenShown(feedbackRef, showFeedback);
-  // "Byrja áskoranir" and "Næsta áskorun" bring the question back into view on a phone
-  useReturnToPrompt(questionRef, !showFeedback, `${phase}:${currentChallenge}`);
+  // Each functional-group card (Næsta, Fyrri) and each challenge: on a phone its
+  // top comes back under the screen's top edge, and focus moves to it at every
+  // width. Declared before useScreenTop, so on the learn → challenge swap the
+  // screen top and its heading win.
+  const itemRef = useItemTop<HTMLDivElement>(
+    phase === 'learn' ? `learn:${currentGroup}` : `challenge:${currentChallenge}`
+  );
+  useScreenTop(phase);
+
+  const feedbackBoxRef = useRef<HTMLDivElement>(null);
+  const verdictRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  // After an answer, a phone shows the question through Næsta when it fits, or
+  // else the verdict at the top, and focus moves to the verdict, not to Næsta,
+  // so a second Enter lands on nothing (design P3).
+  useRevealAfterCommit(showFeedback, () => ({
+    bottom: nextRef.current,
+    tops: [itemRef.current, verdictRef.current],
+    focus: verdictRef.current,
+  }));
+  // A double tap on an answer must not land on Næsta.
+  const armed = useArmedAfter(400, `${currentChallenge}:${showFeedback}`);
+
+  // A desktop window keeps what the game's own helper did there, at any width:
+  // the feedback is brought to the top when it opened above the screen or near
+  // its foot, and "Byrja áskoranir" and "Næsta áskorun" bring back a question
+  // left above the screen. A phone does both through the shared hooks above.
+  useEffect(() => {
+    const el = feedbackBoxRef.current;
+    if (!showFeedback || !el || isPhone()) return;
+    const { top } = el.getBoundingClientRect();
+    if (top < 0 || top > usableArea().bottom - 120) revealTop(el, { anyWidth: true, always: true });
+  }, [showFeedback]);
+  useEffect(() => {
+    const el = itemRef.current;
+    if (phase !== 'challenge' || showFeedback || !el || isPhone()) return;
+    if (el.getBoundingClientRect().top < 0) revealTop(el, { anyWidth: true, always: true });
+  }, [itemRef, phase, currentChallenge, showFeedback]);
 
   const handleAnswer = (answer: string) => {
     const correct = answer === challenges[currentChallenge].correctAnswer;
@@ -231,7 +271,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-          <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+          <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6 phone:mb-3">
             <button
               onClick={onBack}
               className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
@@ -243,14 +283,14 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             </div>
           </div>
 
-          <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-purple-600">
+          <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-purple-600 phone:text-xl">
             🔬 Virknihópar
           </h1>
-          <p className="text-center text-warm-600 mb-8">
+          <p className="text-center text-warm-600 mb-8 phone:mb-4">
             Virknihópar ákvarða eiginleika og nafn sameindar
           </p>
 
-          <div className="flex justify-center gap-2 mb-6">
+          <div className="flex justify-center gap-2 mb-6 phone:mb-4">
             {functionalGroups.map((_, idx) => (
               <div
                 key={idx}
@@ -265,12 +305,16 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             ))}
           </div>
 
-          <div className={`${group.color} p-4 sm:p-8 rounded-2xl border-2 animate-slide-in`}>
-            <div className="text-center mb-6">
+          <div
+            ref={itemRef}
+            data-item-start
+            className={`${group.color} p-4 sm:p-8 rounded-2xl border-2 animate-slide-in`}
+          >
+            <div className="text-center mb-6 phone:mb-4">
               <div className="text-2xl sm:text-4xl font-bold mb-2">{group.nameIcelandic}</div>
             </div>
 
-            <div className="bg-white p-4 sm:p-6 rounded-xl mb-6">
+            <div className="bg-white p-4 sm:p-6 rounded-xl mb-6 phone:mb-4">
               <div className="grid grid-cols-2 gap-3 sm:gap-6 text-center">
                 <div>
                   <div className="text-sm text-warm-500 mb-1">Virknihópur</div>
@@ -304,11 +348,11 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             <div className="text-center text-sm">{group.description}</div>
           </div>
 
-          <div className="flex gap-4 mt-8">
+          <div className="flex gap-4 mt-8 phone:mt-4 phone:gap-3">
             <button
               onClick={handlePrevGroup}
               disabled={currentGroup === 0}
-              className={`flex-1 py-3 px-4 sm:px-6 rounded-xl font-bold ${
+              className={`flex-1 py-3 px-4 sm:px-6 rounded-xl font-bold phone:px-2 phone:whitespace-nowrap ${
                 currentGroup === 0
                   ? 'bg-warm-200 text-warm-400 cursor-not-allowed'
                   : 'bg-warm-500 hover:bg-warm-600 text-white'
@@ -318,13 +362,13 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             </button>
             <button
               onClick={handleNextGroup}
-              className="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
+              className="flex-1 bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl phone:px-2 phone:whitespace-nowrap"
             >
               {currentGroup === functionalGroups.length - 1 ? 'Byrja áskoranir →' : 'Næsta →'}
             </button>
           </div>
 
-          <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+          <div className="mt-6 bg-warm-50 p-4 rounded-xl phone:mt-4">
             <h3 className="font-semibold text-warm-700 mb-2">📋 Allir virknihópar:</h3>
             <div className="grid grid-cols-2 gap-2 text-sm">
               {functionalGroups.map((fg, idx) => (
@@ -361,30 +405,31 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-        <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+        <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6 phone:mb-3 phone:gap-x-3">
           <button
             onClick={onBack}
             className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
           >
             ← Til baka
           </button>
-          <div className="ml-auto flex items-center gap-3 sm:gap-4">
+          <div className="ml-auto flex items-center gap-3 sm:gap-4 phone:gap-2">
             <div className="text-sm text-warm-500 whitespace-nowrap">
               Áskorun {currentChallenge + 1} af {challenges.length}
             </div>
-            <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold whitespace-nowrap">
+            <div className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold whitespace-nowrap phone:px-2 phone:py-0.5 phone:text-sm">
               Stig: {score}
             </div>
           </div>
         </div>
 
-        <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-purple-600">
+        <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-purple-600 phone:text-xl">
           {getTypeLabel()}
         </h1>
 
         <div
-          ref={questionRef}
-          className="bg-purple-50 p-4 sm:p-6 rounded-xl mb-6 text-center border-2 border-purple-200 scroll-mt-4"
+          ref={itemRef}
+          data-item-start
+          className="bg-purple-50 p-4 sm:p-6 rounded-xl mb-6 text-center border-2 border-purple-200 scroll-mt-4 phone:p-3 phone:mb-3"
         >
           <div className="text-xl md:text-2xl font-bold text-warm-800 mb-2">
             {challenge.question}
@@ -395,44 +440,65 @@ export function Level3({ onComplete, onBack }: Level3Props) {
         </div>
 
         {!showFeedback ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div key="options" className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 phone:gap-2">
             {shuffledOptions.map((option) => (
               <button
                 key={option}
                 onClick={() => handleAnswer(option)}
-                className="p-4 rounded-xl border-2 border-purple-300 bg-white hover:bg-purple-50 hover:border-purple-400 text-lg font-bold text-warm-800 transition-all"
+                className="p-4 rounded-xl border-2 border-purple-300 bg-white hover:bg-purple-50 hover:border-purple-400 text-lg font-bold text-warm-800 transition-all phone:p-3"
               >
                 {option}
               </button>
             ))}
           </div>
         ) : (
-          <div ref={feedbackRef} className="space-y-4 scroll-mt-4">
+          <div
+            key="feedback"
+            ref={feedbackBoxRef}
+            className="space-y-4 scroll-mt-4 phone:space-y-3"
+          >
+            {/* The feedback region focus moves to after an answer (P3), named by
+                its verdict. On a phone the ✓/✗ sits inline with the verdict. */}
             <div
-              className={`p-6 rounded-xl text-center ${
+              ref={verdictRef}
+              tabIndex={-1}
+              role="group"
+              aria-labelledby="organic-l3-verdict"
+              className={`p-6 rounded-xl text-center focus:outline-none phone:p-4 ${
                 isCorrect
                   ? 'bg-green-100 border-2 border-green-400'
                   : 'bg-red-100 border-2 border-red-400'
               }`}
             >
-              <div className="text-4xl mb-2">{isCorrect ? '✓' : '✗'}</div>
-              <div className={`text-xl font-bold ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
-                {isCorrect ? 'Rétt!' : 'Rangt'}
+              <div className="phone:flex phone:items-center phone:justify-center phone:gap-2">
+                <div className="text-4xl mb-2 phone:text-2xl phone:mb-0">
+                  {isCorrect ? '✓' : '✗'}
+                </div>
+                <div
+                  id="organic-l3-verdict"
+                  className={`text-xl font-bold ${isCorrect ? 'text-green-800' : 'text-red-800'}`}
+                >
+                  {isCorrect ? 'Rétt!' : 'Rangt'}
+                </div>
               </div>
               {!isCorrect && (
-                <div className="text-red-700 mt-2">
+                <div className="text-red-700 mt-2 phone:mt-1">
                   Rétt svar: <strong>{challenge.correctAnswer}</strong>
                 </div>
               )}
             </div>
 
-            <div className="bg-blue-50 p-4 rounded-xl border border-blue-200">
+            <div className="bg-blue-50 p-4 rounded-xl border border-blue-200 phone:p-3">
               <div className="font-bold text-blue-800 mb-1">Útskýring:</div>
               <div className="text-blue-700">{challenge.explanation}</div>
             </div>
 
+            {/* Næsta is its own element, never an answer relabelled, and it
+                ignores a press within 400 ms of appearing. */}
             <button
-              onClick={handleNextChallenge}
+              key="next"
+              ref={nextRef}
+              onClick={armed(handleNextChallenge)}
               className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 sm:px-6 rounded-xl"
             >
               {currentChallenge < challenges.length - 1 ? 'Næsta áskorun →' : 'Ljúka stigi →'}
@@ -440,7 +506,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           </div>
         )}
 
-        <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+        <div className="mt-6 bg-warm-50 p-4 rounded-xl phone:mt-4">
           <h3 className="font-semibold text-warm-700 mb-2">📋 Virknihópar og viðskeyti:</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-center">
             <div className="bg-blue-50 p-2 rounded border border-blue-200">

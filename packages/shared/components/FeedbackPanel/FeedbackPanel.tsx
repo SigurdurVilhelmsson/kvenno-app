@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { Fragment, useState, useEffect, useCallback } from 'react';
 
 import type {
   FeedbackSeverity,
@@ -145,6 +145,9 @@ export function FeedbackPanel({
   // pinned to `w-6` with `gap-2`, and `-ml-8` (24 + 8 px) takes exactly that
   // column back. The icon stays one element, so the panel's text is unchanged.
   const underIcon = '-ml-8 sm:ml-0';
+  // On a phone (the `phone:` variant: below `sm`, or at most 500 px tall) the
+  // icon is drawn on the verdict's own 24 px line rather than a 32 px one of its
+  // own, so the verdict row is no taller than the verdict.
 
   return (
     <div
@@ -166,6 +169,7 @@ export function FeedbackPanel({
             text-2xl font-bold
             flex-shrink-0
             w-6 text-center sm:w-auto
+            phone:text-xl phone:leading-6
           `}
           aria-hidden="true"
         >
@@ -235,9 +239,22 @@ export function FeedbackPanel({
             feedback.relatedConcepts &&
             feedback.relatedConcepts.length > 0 && (
               <div className={`mt-3 ${underIcon}`}>
-                <span className={`text-xs ${classes.text} opacity-75`}>Tengd efni:</span>
-                <div className="flex flex-wrap gap-2 mt-1">
-                  {feedback.relatedConcepts.map((concept) =>
+                <span className={`text-xs ${classes.text} opacity-75`}>Tengd efni:</span>{' '}
+                {/* On a phone, labels nobody can tap are not drawn as pills: they
+                    run on as one wrapped line of words after "Tengd efni:",
+                    separated by middle dots, which saves a row of pills (40-90 px)
+                    and hides no word. The dots are aria-hidden and display:none
+                    from `sm` up, where the flex row with its gap is unchanged. The
+                    space after the label separates it from the first word on a
+                    phone, for the eye and for a screen reader; before the desktop
+                    block row it collapses to nothing.
+                    Tappable chips keep their pills and 44 px targets everywhere. */}
+                <div
+                  className={`flex flex-wrap gap-2 mt-1 ${
+                    onConceptClick ? '' : 'phone:inline phone:mt-0'
+                  }`}
+                >
+                  {feedback.relatedConcepts.map((concept, index, all) =>
                     // A chip is a button only when tapping it does something.
                     onConceptClick ? (
                       <button
@@ -255,16 +272,34 @@ export function FeedbackPanel({
                         {concept}
                       </button>
                     ) : (
-                      <span
-                        key={concept}
-                        className={`
-                          px-2 py-1 rounded-full
-                          text-xs font-medium text-center
-                          bg-white/70 ${classes.text}
-                        `}
-                      >
-                        {concept}
-                      </span>
+                      <Fragment key={concept}>
+                        <span
+                          className={`
+                            px-2 py-1 rounded-full
+                            text-xs font-medium text-center
+                            bg-white/70 ${classes.text}
+                            phone:inline phone:p-0 phone:rounded-none phone:bg-transparent
+                          `}
+                        >
+                          {concept}
+                        </span>
+                        {/* The dot follows its word with no space between them, so a
+                            wrapped line never starts with a dot; the break comes after.
+                            The space is plain text outside the aria-hidden dot, so a
+                            screen reader hears the words apart rather than run together.
+                            In the desktop flex row a whitespace-only text node is not
+                            rendered at all, so it adds nothing there. */}
+                        {index < all.length - 1 && (
+                          <>
+                            <span
+                              aria-hidden="true"
+                              className={`hidden phone:inline ml-1 text-xs ${classes.text} opacity-75`}
+                            >
+                              ·
+                            </span>{' '}
+                          </>
+                        )}
+                      </Fragment>
                     )
                   )}
                 </div>

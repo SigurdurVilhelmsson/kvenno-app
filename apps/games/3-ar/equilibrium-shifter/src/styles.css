@@ -558,6 +558,16 @@
   }
 }
 
+/* A phone on its side (the `phone:` variant's height query). The game card is
+   two columns there, so the three direction buttons share half the screen:
+   the portrait padding keeps "hliðrun" whole inside its button. */
+@media (max-height: 500px) {
+  .predict-btn {
+    padding: 12px 6px;
+    font-size: 0.9375rem;
+  }
+}
+
 /* Phones narrower than 360 px. With the large text setting at 320 px the three
    direction buttons are about 80 px wide, and "hliðrun" no longer fits
    inside one at the size above. */

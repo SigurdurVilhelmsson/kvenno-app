@@ -85,6 +85,10 @@ describe('Nafnakerfið Level 2 does not print the name it asks for', () => {
       fireEvent.click(screen.getByRole('button', { name: /Athuga svar/ }));
       expect(screenText()).toContain(name);
 
+      // "Næsta" ignores a press within 400 ms of appearing (the double-tap guard).
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
       fireEvent.click(screen.getByRole('button', { name: /Næsta efnasamband|Ljúka stigi/ }));
     }
   });
@@ -118,6 +122,10 @@ describe('Nafnakerfið Level 2 does not print the name it asks for', () => {
 
       fireEvent.change(screen.getByRole('textbox'), { target: { value: 'x' } });
       fireEvent.click(screen.getByRole('button', { name: /Athuga svar/ }));
+      // "Næsta" ignores a press within 400 ms of appearing (the double-tap guard).
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
       fireEvent.click(screen.getByRole('button', { name: /Næsta efnasamband|Ljúka stigi/ }));
     }
 

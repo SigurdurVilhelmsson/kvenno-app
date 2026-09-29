@@ -1,8 +1,16 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
 import { useEscapeKey } from '@shared/hooks';
-import { formatDecimal, formatScientific, shuffleArray } from '@shared/utils';
+import {
+  formatDecimal,
+  formatScientific,
+  shuffleArray,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+  useScreenTop,
+} from '@shared/utils';
 
 import { atomWord } from '../data/atomWords';
 import { COMPOUNDS, STANDARD_MOLAR_VOLUME, STP_LABEL, type Compound } from '../data/compounds';
@@ -290,6 +298,29 @@ export function Level2({
   const problem = problems[idx];
   const inputMode = answerInputMode(problem.correctAnswer);
 
+  // Intro → practice → results each start at the top on a phone, with the
+  // screen's start focused: the answer field in the practice (it has always
+  // autofocused), the heading otherwise.
+  const inputRef = useRef<HTMLInputElement>(null);
+  useScreenTop(`${showIntro}:${done}`, { focus: inputRef });
+  // Each new question brings its card back under the top edge on a phone, and
+  // focus goes to the answer field (`data-item-start`), as its autofocus did.
+  const cardRef = useItemTop<HTMLDivElement>(idx);
+  const questionRef = useRef<HTMLParagraphElement>(null);
+  const feedbackRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  // After Svara: the question through Næsta if it fits, else the verdict at
+  // the top. Focus moves to the feedback, not to Næsta (design P3).
+  useRevealAfterCommit(feedback, () => ({
+    bottom: nextRef.current,
+    tops: [questionRef.current, feedbackRef.current],
+    focus: feedbackRef.current,
+  }));
+  // A press on Næsta within 400 ms of it appearing is dropped, so a double tap
+  // on Svara cannot skip the feedback; the results buttons likewise.
+  const armed = useArmedAfter(400, `${idx}:${feedback}`);
+  const armedResults = useArmedAfter(400, done);
+
   const submit = () => {
     if (feedback) return;
     const v = parseScientificAnswer(input);
@@ -337,7 +368,8 @@ export function Level2({
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
         <div className="max-w-lg mx-auto">
-          <div className="bg-white rounded-xl shadow-md p-4 mb-4">
+          {/* On a phone the padding is tighter; the layout is unchanged. */}
+          <div className="bg-white rounded-xl shadow-md p-4 mb-4 phone:px-3 phone:py-2 phone:mb-3">
             <div className="flex flex-wrap sm:flex-nowrap justify-between items-center">
               <button
                 onClick={onBack}
@@ -352,7 +384,7 @@ export function Level2({
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-lg p-6 space-y-5">
+          <div className="bg-white rounded-xl shadow-lg p-6 space-y-5 phone:p-4 phone:space-y-4">
             {/* What is a mole? */}
             <div>
               <h2 className="text-xl font-bold text-warm-800 mb-2">Hvað er mól?</h2>
@@ -465,14 +497,14 @@ export function Level2({
             </div>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
-                onClick={retry}
+                onClick={armedResults(retry)}
                 className="bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 px-6 rounded-xl transition-colors"
               >
                 Reyna aftur
               </button>
               {passed && (
                 <button
-                  onClick={() => onComplete(score, TOTAL * 10, 0)}
+                  onClick={armedResults(() => onComplete(score, TOTAL * 10, 0))}
                   className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-colors"
                 >
                   Ljúka stigi →
@@ -480,7 +512,7 @@ export function Level2({
               )}
             </div>
             <button
-              onClick={onBack}
+              onClick={armedResults(onBack)}
               className="mt-4 text-warm-500 hover:text-warm-700 font-semibold py-2 pointer-coarse:min-h-11"
             >
               ← Til baka í valmynd
@@ -493,22 +525,23 @@ export function Level2({
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
-      <div className="max-w-lg mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-xl shadow-md p-4 mb-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-lg sm:text-xl font-bold text-warm-800">
+      <div className="max-w-lg mx-auto phone-land:max-w-none">
+        {/* Header. On a phone: the title and the score on one row (the
+            subtitle kept for screen readers), and a thinner progress bar. */}
+        <div className="bg-white rounded-xl shadow-md p-4 mb-4 phone:px-3 phone:py-2 phone:mb-3">
+          <div className="flex justify-between items-center phone:gap-3">
+            <div className="phone:min-w-0">
+              <h1 className="text-lg sm:text-xl font-bold text-warm-800 phone:text-base">
                 Mól-umbreytingar - Stig 2
               </h1>
-              <p className="text-sm text-warm-600">Massi, mól og sameindir</p>
+              <p className="text-sm text-warm-600 phone:sr-only">Massi, mól og sameindir</p>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-kvenno-orange">{score}</div>
+            <div className="text-center phone:shrink-0 phone:flex phone:items-baseline phone:gap-1">
+              <div className="text-2xl font-bold text-kvenno-orange phone:text-lg">{score}</div>
               <div className="text-xs text-warm-600">Stig</div>
             </div>
           </div>
-          <div className="mt-3">
+          <div className="mt-3 phone:mt-2">
             <div className="flex justify-between text-xs text-warm-500 mb-1">
               <span>
                 Dæmi {idx + 1}/{TOTAL}
@@ -517,7 +550,7 @@ export function Level2({
                 {score}/{TOTAL * 10}
               </span>
             </div>
-            <div className="h-2 bg-warm-200 rounded-full overflow-hidden">
+            <div className="h-2 bg-warm-200 rounded-full overflow-hidden phone:h-1.5">
               <div
                 className="h-full bg-kvenno-orange transition-all duration-500"
                 style={{ width: `${((idx + 1) / TOTAL) * 100}%` }}
@@ -526,104 +559,129 @@ export function Level2({
           </div>
         </div>
 
-        {/* Dimensional analysis reference */}
-        <div className="bg-white/80 border border-warm-200 rounded-xl p-3 mb-4">
-          <div className="text-center text-xs text-warm-500 mb-2">
-            Einingagreining — umbreytingarstuðlar
-          </div>
-          <div className="text-sm font-mono text-warm-700 space-y-1 text-center">
-            <div>
-              g → mól: margfaldaðu með{' '}
-              <span className="font-bold whitespace-nowrap">(1 mól / M g)</span>
+        {/* On a phone on its side: the conversion factors on the left, the
+            question and its feedback on the right. The two groups are plain
+            blocks, so nothing moves anywhere else. */}
+        <div className="phone-land:grid phone-land:grid-cols-2 phone-land:gap-3 phone-land:items-start">
+          {/* Dimensional analysis reference — a scaffold, so it stays in view. */}
+          <div className="bg-white/80 border border-warm-200 rounded-xl p-3 mb-4 phone:py-2 phone:mb-3">
+            <div className="text-center text-xs text-warm-500 mb-2 phone:mb-1">
+              Einingagreining — umbreytingarstuðlar
             </div>
-            <div>
-              mól → g: margfaldaðu með{' '}
-              <span className="font-bold whitespace-nowrap">(M g / 1 mól)</span>
-            </div>
-            <div>
-              mól → sameindir: margfaldaðu með{' '}
-              <span className="font-bold whitespace-nowrap">(6,022×10²³ / 1 mól)</span>
-            </div>
-          </div>
-          <div className="text-center text-xs text-warm-400 mt-2">
-            M = mólmassi (g/mól) — einingin sem á að hverfa fer í nefnara
-          </div>
-        </div>
-
-        {/* Question card */}
-        <div className="bg-white rounded-xl shadow-lg p-3 min-[360px]:p-4 sm:p-6 mb-4" key={idx}>
-          <p className="text-lg text-warm-800 font-medium mb-6">{problem.questionText}</p>
-
-          {!feedback && (
-            <div className="flex gap-3">
-              <input
-                type="text"
-                inputMode={inputMode}
-                value={input}
-                onChange={(e) => {
-                  setInput(e.target.value);
-                  setError('');
-                }}
-                onKeyDown={(e) => e.key === 'Enter' && submit()}
-                placeholder="Svar..."
-                autoComplete="off"
-                autoCorrect="off"
-                autoCapitalize="none"
-                spellCheck={false}
-                autoFocus
-                aria-invalid={error ? true : undefined}
-                className={`flex-1 border-2 ${error ? 'border-red-400' : 'border-warm-200 focus:border-kvenno-orange'} rounded-xl px-4 py-3 text-lg outline-none transition-colors`}
-              />
-              <button
-                onClick={submit}
-                disabled={!input.trim()}
-                className="bg-kvenno-orange hover:bg-kvenno-orange-dark disabled:opacity-40 text-white font-bold px-6 py-3 rounded-xl transition-colors"
-              >
-                Svara
-              </button>
-            </div>
-          )}
-          {!feedback && error && <p className="text-red-600 text-sm mt-1">{error}</p>}
-          {!feedback && inputMode === 'text' && (
-            <p className="text-xs text-warm-500 mt-2">
-              Hægt að nota vísisrithátt: 2,5e20, 2,5 × 10^20, eða venjulega tölu
-            </p>
-          )}
-
-          {feedback && (
-            <div className="mt-2 space-y-3">
-              <FeedbackPanel
-                feedback={{
-                  isCorrect: correct,
-                  explanation: `${problem.solutionFormula}\n${problem.solutionSteps}`,
-                  misconception: correct
-                    ? undefined
-                    : 'Notaðu einingagreiningu: settu eininguna sem á að hverfa í nefnara umbreytingarstuðulsins.',
-                }}
-                config={{
-                  showExplanation: true,
-                  showMisconceptions: true,
-                  showRelatedConcepts: false,
-                  showNextSteps: false,
-                  // The same worked solution is printed in full just below, so
-                  // "Af hverju?" starts closed rather than showing it twice.
-                  defaultExpanded: false,
-                }}
-              />
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
-                <p className="font-semibold mb-1">Útreikningur:</p>
-                <p className="font-mono">{problem.solutionFormula}</p>
-                {/* The steps end on a line of their own saying which unit cancels. */}
-                <p className="font-mono whitespace-pre-line">{problem.solutionSteps}</p>
+            <div className="text-sm font-mono text-warm-700 space-y-1 text-center">
+              <div>
+                g → mól: margfaldaðu með{' '}
+                <span className="font-bold whitespace-nowrap">(1 mól / M g)</span>
               </div>
-              <button
-                onClick={next}
-                className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
-              >
-                {idx + 1 < TOTAL ? 'Næsta dæmi →' : 'Sjá niðurstöður →'}
-              </button>
+              <div>
+                mól → g: margfaldaðu með{' '}
+                <span className="font-bold whitespace-nowrap">(M g / 1 mól)</span>
+              </div>
+              <div>
+                mól → sameindir: margfaldaðu með{' '}
+                <span className="font-bold whitespace-nowrap">(6,022×10²³ / 1 mól)</span>
+              </div>
             </div>
-          )}
+            <div className="text-center text-xs text-warm-400 mt-2 phone:mt-1">
+              M = mólmassi (g/mól) — einingin sem á að hverfa fer í nefnara
+            </div>
+          </div>
+
+          {/* Question card */}
+          <div
+            ref={cardRef}
+            className="bg-white rounded-xl shadow-lg p-3 min-[360px]:p-4 sm:p-6 mb-4 phone:mb-3"
+            key={idx}
+          >
+            <p
+              ref={questionRef}
+              id="molmassi-l2-question"
+              className="text-lg text-warm-800 font-medium mb-6 phone:mb-3"
+            >
+              {problem.questionText}
+            </p>
+
+            {!feedback && (
+              <div className="flex gap-3">
+                <input
+                  ref={inputRef}
+                  data-item-start
+                  type="text"
+                  inputMode={inputMode}
+                  enterKeyHint="done"
+                  value={input}
+                  onChange={(e) => {
+                    setInput(e.target.value);
+                    setError('');
+                  }}
+                  onKeyDown={(e) => e.key === 'Enter' && submit()}
+                  placeholder="Svar..."
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  autoFocus
+                  aria-invalid={error ? true : undefined}
+                  className={`flex-1 border-2 ${error ? 'border-red-400' : 'border-warm-200 focus:border-kvenno-orange'} rounded-xl px-4 py-3 text-lg outline-none transition-colors phone:min-w-0 phone:px-3`}
+                />
+                <button
+                  key="check"
+                  onClick={submit}
+                  disabled={!input.trim()}
+                  className="bg-kvenno-orange hover:bg-kvenno-orange-dark disabled:opacity-40 text-white font-bold px-6 py-3 rounded-xl transition-colors phone:shrink-0 phone:px-4"
+                >
+                  Svara
+                </button>
+              </div>
+            )}
+            {!feedback && error && <p className="text-red-600 text-sm mt-1">{error}</p>}
+            {!feedback && inputMode === 'text' && (
+              <p className="text-xs text-warm-500 mt-2">
+                Hægt að nota vísisrithátt: 2,5e20, 2,5 × 10^20, eða venjulega tölu
+              </p>
+            )}
+
+            {feedback && (
+              <div className="mt-2 space-y-3">
+                {/* The verdict and the worked solution: the region focus moves
+                    to after Svara. FeedbackPanel keeps its own role="alert". */}
+                <div ref={feedbackRef} tabIndex={-1} role="group" className="space-y-3">
+                  <FeedbackPanel
+                    feedback={{
+                      isCorrect: correct,
+                      explanation: `${problem.solutionFormula}\n${problem.solutionSteps}`,
+                      misconception: correct
+                        ? undefined
+                        : 'Notaðu einingagreiningu: settu eininguna sem á að hverfa í nefnara umbreytingarstuðulsins.',
+                    }}
+                    config={{
+                      showExplanation: true,
+                      showMisconceptions: true,
+                      showRelatedConcepts: false,
+                      showNextSteps: false,
+                      // The same worked solution is printed in full just below, so
+                      // "Af hverju?" starts closed rather than showing it twice.
+                      defaultExpanded: false,
+                    }}
+                  />
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
+                    <p className="font-semibold mb-1">Útreikningur:</p>
+                    <p className="font-mono">{problem.solutionFormula}</p>
+                    {/* The steps end on a line of their own saying which unit cancels. */}
+                    <p className="font-mono whitespace-pre-line">{problem.solutionSteps}</p>
+                  </div>
+                </div>
+                <button
+                  key="next"
+                  ref={nextRef}
+                  onClick={armed(next)}
+                  className="w-full bg-kvenno-orange hover:bg-kvenno-orange-dark text-white font-bold py-3 rounded-xl transition-colors"
+                >
+                  {idx + 1 < TOTAL ? 'Næsta dæmi →' : 'Sjá niðurstöður →'}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         <button

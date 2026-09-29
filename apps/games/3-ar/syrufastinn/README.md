@@ -190,9 +190,8 @@ src/engine/grade.ts           the grading ruling, and the tolerances it implies
 src/data/acids.ts             acids, with protons / nameEstablished / answerability guards
 src/data/problems.ts          the Æfa and Beita sets, generated from the engine
 src/components/               ExploreScreen, UnderstandScreen, PracticeScreen, ApplyScreen, KlofnunBar,
-                              ScientificKeys
-src/utils/reveal.ts           brings a verdict, a first measurement or a new Skilja step on screen, only when off it
-src/__tests__/                ka, grade, problems, chain-string, phone-input, wording
+                              ScientificKeys, BackButton
+src/__tests__/                ka, grade, problems, chain-string, phone-input, phone-scroll, wording
 ```
 
 ## Playing on a phone
@@ -207,13 +206,26 @@ the field, so the keypad stays up. Desktop is unchanged. `phone-input.test.tsx` 
 Beita's Ka and Kb through the keys, and asserts that every scientific answer in the game can be
 keyed with keypad characters plus those two.
 
-`revealIfBelowFold` exists because Beita's verdict renders under the klofnun bar: on a phone held
-sideways and at 320 × 568 it landed below the bottom edge, so tapping "Svara" appeared to do
-nothing. It scrolls only when the verdict is off screen and allows for the sticky header. Kanna
-uses it for the first measurement, whose table row opens under the concentration buttons.
-`revealTopIfAbove` is the same guard for Skilja: its step buttons sit under the step, so on a phone
-the next step opened with its heading already scrolled past. It scrolls back to the heading only
-when the heading is above the visible area.
+**Each play loop fits a phone screen (vertical-scroll pass, 2026-09).** Scrolling and focus go
+through the shared helpers in `@shared/utils` (`useScreenTop`, `useItemTop`, `revealSpan`,
+`useRevealAfterCommit`, `useArmedAfter`); the game's own `src/utils/reveal.ts` is gone.
+
+- Every screen opens at its heading, and back on the menu the next phase not yet done is on screen
+  and focused. On a phone the menu shows all four phases first, with the overview paragraph after
+  them, and `Til baka` shares the heading row (`BackButton.tsx`).
+- Kanna: after each measurement the concentration buttons stay on screen with the table and the
+  bar, and focus moves to the table (the button just pressed turns disabled). The question is
+  brought in with its answers when it appears, and the explanation after the guess.
+- Skilja: a new step opens at its top with focus on it. On a phone the five step buttons are one
+  row from 360 px up (two at 320 px), the current one named and the others numbered, each keeping
+  its full name for a screen reader.
+- Æfa and Beita: the field, the `e`/`−` keys and Athuga/Svara share a row on a portrait phone.
+  After a check, as much as fits from the problem through `Áfram`/`Næsta dæmi` is brought in, and
+  focus moves to the feedback, never to the button. That button ignores a press within 400 ms of
+  appearing, so a double tap on Athuga cannot skip the feedback.
+- A desktop window keeps what the old helper did there, at any width: feedback or a first table
+  row that opened within 48 px of the bottom edge is brought in, and a Skilja step whose top went
+  under the header comes back. `phone-scroll.test.tsx` holds both.
 
 ## Tests
 

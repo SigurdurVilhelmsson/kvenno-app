@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { advanceTo, answerAngle, answerCount, check, next, POOL, startLevel2 } from './level2-play';
+import { clockPastNextGuard } from './next-guard-clock';
 
 /**
  * Stig 2's angle step read numbers with `/[\d.]+/` after stripping spaces, so
@@ -18,6 +19,9 @@ import { advanceTo, answerAngle, answerCount, check, next, POOL, startLevel2 } f
  */
 
 let unmount: (() => void) | null = null;
+
+// Næsta ignores a press within 400 ms of appearing; these tests press it at once.
+clockPastNextGuard();
 
 beforeEach(() => {
   window.scrollTo = vi.fn() as unknown as typeof window.scrollTo;

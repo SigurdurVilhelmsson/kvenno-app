@@ -1,4 +1,4 @@
-import { formatDecimal } from '@shared/utils';
+import { formatDecimal, useIsPhone } from '@shared/utils';
 
 interface BeakerProps {
   volume: number;
@@ -19,6 +19,7 @@ export function Beaker({
   animate = false,
   animationType = 'fill',
 }: BeakerProps) {
+  const phone = useIsPhone();
   const height = 200;
   const width = 120;
   const fillHeight = (volume / maxVolume) * 150;
@@ -45,7 +46,7 @@ export function Beaker({
         height={height}
         viewBox={`0 0 ${width} ${height}`}
         overflow="visible"
-        className="mx-auto"
+        className="mx-auto phone:h-32 phone:w-auto"
         role="img"
         aria-label={`Bikarglas: ${volume} mL${concentration ? `, ${formatDecimal(concentration, 2)} M` : ''}${label ? `, ${label}` : ''}`}
       >
@@ -72,7 +73,7 @@ export function Beaker({
                   fontSize="8"
                   fill="#6b7280"
                   textAnchor="end"
-                  className="text-[8px] max-sm:text-[13px] pointer-coarse:text-[13px]"
+                  className="text-[8px] max-sm:text-[13px] pointer-coarse:text-[13px] phone:text-[18px]"
                 >
                   {vol}
                 </text>
@@ -106,7 +107,7 @@ export function Beaker({
             y={180 - fillHeight / 2}
             fontSize="11"
             fontWeight="700"
-            className="text-[11px] max-sm:text-[13px] pointer-coarse:text-[13px]"
+            className="text-[11px] max-sm:text-[13px] pointer-coarse:text-[13px] phone:text-[18px]"
             fill="#1f2937"
             textAnchor="middle"
             style={{ paintOrder: 'stroke', stroke: 'white', strokeWidth: 3 }}
@@ -115,8 +116,14 @@ export function Beaker({
           </text>
         )}
       </svg>
+      {/* On a phone the label's lines run on one line, separated by dots,
+          and the beaker is drawn 128 px tall instead of 200 (its text is set
+          larger in the drawing's own units, so it still reads at 11-12 px).
+          Beaker, readout and slider then fit on one screen together. */}
       {label && (
-        <div className="text-sm mt-2 font-semibold text-warm-700 whitespace-pre-line">{label}</div>
+        <div className="text-sm mt-2 font-semibold text-warm-700 whitespace-pre-line phone:mt-1">
+          {phone ? label.split('\n').join(' · ') : label}
+        </div>
       )}
     </div>
   );

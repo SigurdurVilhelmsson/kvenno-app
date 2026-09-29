@@ -3,9 +3,13 @@
 @source "../../../../../packages/shared";
 @import '../../../../../packages/shared/styles/game-base.css';
 
-/* Orbital box diagram styles */
+/* Orbital box diagram styles. On a phone the pair sits side by side, ↑↓, which
+   halves each box's height (design §4, and §7.6: phones only). */
 .orbital-box {
   @apply inline-flex flex-col items-center border-2 border-gray-400 rounded px-2 py-1 mx-0.5 min-w-8 min-h-10;
+  @variant phone {
+    @apply flex-row justify-center gap-0.5 px-1.5 py-0.5 min-h-8;
+  }
 }
 
 .orbital-box.filled {
@@ -21,8 +25,13 @@
 }
 
 /* Quantum number card styles */
+/* A phone draws the cards tighter (design §4). This file's rules sit outside
+   Tailwind's layers, so a `phone:` utility in the markup would lose to them. */
 .quantum-card {
   @apply bg-white border-2 border-gray-200 rounded-xl p-4 cursor-pointer transition-all duration-200;
+  @variant phone {
+    @apply p-3;
+  }
 }
 
 /* Hover only where a real pointer hovers: on a phone :hover sticks after a tap,
@@ -53,6 +62,9 @@
 /* Multiple choice */
 .mc-option {
   @apply w-full p-4 rounded-xl border-2 border-gray-200 bg-white text-left font-mono transition-all duration-200 cursor-pointer;
+  @variant phone {
+    @apply p-3;
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {

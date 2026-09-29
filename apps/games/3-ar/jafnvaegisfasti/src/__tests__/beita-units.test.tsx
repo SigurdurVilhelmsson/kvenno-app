@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { deltaNGas } from '@shared/engine/equilibrium';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { BeitaScreen } from '../components/BeitaScreen';
 import { BEITA_PROBLEMS } from '../data/problems';
 
@@ -19,6 +20,9 @@ import { BEITA_PROBLEMS } from '../data/problems';
  * of partial pressures is worse than one that says nothing: it asserts a unit
  * the numbers do not carry.
  */
+
+// "Næsta" ignores a press within 400 ms of appearing; these tests press at once.
+clockPastNextGuard();
 
 afterEach(cleanup);
 

@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
+import { clockPastNextGuard } from './next-guard-clock';
 import { playLevel3 } from './play-level3';
 import App from '../App';
 
@@ -14,6 +15,7 @@ import App from '../App';
 const KEY = 'redox-reactions-progress';
 
 beforeEach(() => localStorage.clear());
+clockPastNextGuard();
 afterEach(() => {
   cleanup();
   localStorage.clear();

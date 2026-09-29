@@ -1,8 +1,17 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 
 import { FeedbackPanel } from '@shared/components';
+import {
+  focusTarget,
+  isPhone,
+  revealSpan,
+  revealTop,
+  usableArea,
+  useArmedAfter,
+  useItemTop,
+  useRevealAfterCommit,
+} from '@shared/utils';
 
-import { useReturnToPrompt, useRevealWhenShown } from '../hooks/useRevealWhenShown';
 import {
   isSameUnbranchedChain,
   nextBondType,
@@ -150,11 +159,58 @@ export function StructureFromNameChallenge({
   const [, setHintsUsed] = useState(0);
 
   const challenge = CHALLENGES[currentChallenge];
+  // Each new name to build: on a phone the card's top comes back under the
+  // screen's top edge, and focus moves to it at every width, because "Næsta
+  // áskorun" has unmounted.
+  const challengeRef = useItemTop<HTMLDivElement>(currentChallenge);
+  const feedbackBoxRef = useRef<HTMLDivElement>(null);
   const feedbackRef = useRef<HTMLDivElement>(null);
-  const challengeRef = useRef<HTMLDivElement>(null);
-  useRevealWhenShown(feedbackRef, showFeedback);
-  // "Næsta áskorun" brings the next name to build back into view on a phone
-  useReturnToPrompt(challengeRef, !showFeedback, currentChallenge);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  // After Athuga, a phone shows the name through Næsta when it fits, or else
+  // the verdict at the top, and focus moves to the feedback, not to Næsta, so a
+  // second Enter lands on nothing (design P3).
+  useRevealAfterCommit(showFeedback, () => ({
+    bottom: nextRef.current,
+    tops: [challengeRef.current, feedbackRef.current],
+    focus: feedbackRef.current,
+  }));
+  // A double tap on Athuga must not land on Næsta.
+  const armed = useArmedAfter(400, `${currentChallenge}:${showFeedback}`);
+
+  // A desktop window keeps what the game's own helper did there, at any width:
+  // the feedback is brought to the top when it opened above the screen or near
+  // its foot, and "Næsta áskorun" brings back a name left above the screen. A
+  // phone does both through the shared hooks above.
+  useEffect(() => {
+    const el = feedbackBoxRef.current;
+    if (!showFeedback || !el || isPhone()) return;
+    const { top } = el.getBoundingClientRect();
+    if (top < 0 || top > usableArea().bottom - 120) revealTop(el, { anyWidth: true, always: true });
+  }, [showFeedback]);
+  useEffect(() => {
+    const el = challengeRef.current;
+    if (showFeedback || !el || isPhone()) return;
+    if (el.getBoundingClientRect().top < 0) revealTop(el, { anyWidth: true, always: true });
+  }, [challengeRef, currentChallenge, showFeedback]);
+
+  // The hint replaces the button that opened it, so focus moves to the hint
+  // rather than falling to <body>. It is taller than the button, so on a phone
+  // the hint and Athuga are brought into view together: on a short screen the
+  // hint would otherwise push Athuga below the bottom edge.
+  const hintRef = useRef<HTMLDivElement>(null);
+  const checkRef = useRef<HTMLButtonElement>(null);
+  const hintAsked = useRef(false);
+  const openHint = () => {
+    hintAsked.current = true;
+    setShowHint(true);
+    setHintsUsed((prev) => prev + 1);
+  };
+  useEffect(() => {
+    if (!showHint || !hintAsked.current) return;
+    hintAsked.current = false;
+    revealSpan(checkRef.current, [hintRef.current]);
+    focusTarget(hintRef.current);
+  }, [showHint]);
 
   // Initialize bonds when carbon count changes
   const updateCarbonCount = (newCount: number) => {
@@ -284,259 +340,288 @@ export function StructureFromNameChallenge({
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
         {/* Header */}
-        <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6">
+        <div className="flex flex-wrap justify-between items-center gap-x-4 gap-y-2 mb-6 phone:mb-3 phone:gap-x-3">
           <button
             onClick={onBack}
             className="text-warm-500 hover:text-warm-700 whitespace-nowrap pointer-coarse:py-2.5 pointer-coarse:-my-2.5"
           >
             ← Til baka
           </button>
-          <div className="ml-auto flex items-center gap-3 sm:gap-4">
+          <div className="ml-auto flex items-center gap-3 sm:gap-4 phone:gap-2">
             <div className="text-sm text-warm-500 whitespace-nowrap">
               Áskorun {currentChallenge + 1} af {CHALLENGES.length}
             </div>
-            <div className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold whitespace-nowrap">
+            <div className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold whitespace-nowrap phone:px-2 phone:py-0.5 phone:text-sm">
               Stig: {score}
             </div>
           </div>
         </div>
 
-        <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-emerald-600">
+        <h1 className="text-2xl md:text-3xl font-bold text-center mb-2 text-emerald-600 phone:text-xl phone:mb-1">
           🔬 Byggðu sameindina
         </h1>
-        <p className="text-center text-warm-600 mb-6">Lestu nafnið og byggðu rétta byggingu</p>
+        <p className="text-center text-warm-600 mb-6 phone:mb-3 phone:text-sm">
+          Lestu nafnið og byggðu rétta byggingu
+        </p>
 
-        {/* Challenge card */}
-        <div
-          ref={challengeRef}
-          className="bg-gradient-to-br from-emerald-50 to-teal-50 p-4 sm:p-6 rounded-xl border-2 border-emerald-200 mb-6 scroll-mt-4"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <span
-              className={`px-3 py-1 rounded-full text-sm font-medium border ${getDifficultyColor()}`}
+        {/* A phone on its side: the name to build | building it (design §3).
+            Plain blocks elsewhere, so desktop margins are unchanged. */}
+        <div className="phone-land:grid phone-land:grid-cols-2 phone-land:gap-4 phone-land:items-start">
+          <div>
+            {/* Challenge card */}
+            <div
+              ref={challengeRef}
+              data-item-start
+              className="bg-gradient-to-br from-emerald-50 to-teal-50 p-4 sm:p-6 rounded-xl border-2 border-emerald-200 mb-6 scroll-mt-4 phone:p-3 phone:mb-3"
             >
-              {challenge.difficulty === 'easy'
-                ? 'Auðvelt'
-                : challenge.difficulty === 'medium'
-                  ? 'Miðlungs'
-                  : 'Erfitt'}
-            </span>
-            <span className="text-warm-500 font-mono">{challenge.formula}</span>
+              <div className="flex items-center justify-between mb-4 phone:mb-1">
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium border ${getDifficultyColor()}`}
+                >
+                  {challenge.difficulty === 'easy'
+                    ? 'Auðvelt'
+                    : challenge.difficulty === 'medium'
+                      ? 'Miðlungs'
+                      : 'Erfitt'}
+                </span>
+                <span className="text-warm-500 font-mono">{challenge.formula}</span>
+              </div>
+
+              <div className="text-center">
+                <div className="text-sm text-warm-500 mb-1">Byggðu þessa sameind:</div>
+                <div className="text-4xl font-bold text-emerald-700">{challenge.name}</div>
+              </div>
+            </div>
           </div>
+          <div>
+            {/* Molecule builder */}
+            {!showFeedback && (
+              <div className="mb-6 phone:mb-4">
+                {/* Carbon chain visualization */}
+                <div
+                  className={`bg-warm-900 rounded-xl p-4 mb-4 overflow-x-auto phone:p-3 phone:mb-3 ${chainVars}`}
+                >
+                  <div className="flex flex-wrap md:flex-nowrap items-center justify-center gap-y-3 min-w-fit">
+                    {Array.from({ length: carbonCount }).map((_, i) => (
+                      <div key={i} className="flex items-center">
+                        {/* Carbon atom */}
+                        <div
+                          className="flex items-center justify-center rounded-full bg-warm-700 border-2 border-warm-500 text-white font-bold select-none"
+                          style={{
+                            width: 'var(--atom)',
+                            height: 'var(--atom)',
+                            fontSize: 'var(--atom-font)',
+                          }}
+                        >
+                          C{i + 1}
+                        </div>
 
-          <div className="text-center">
-            <div className="text-sm text-warm-500 mb-1">Byggðu þessa sameind:</div>
-            <div className="text-4xl font-bold text-emerald-700">{challenge.name}</div>
-          </div>
-        </div>
+                        {/* Bond */}
+                        {i < carbonCount - 1 && (
+                          <button
+                            onClick={() => cycleBond(i + 1)}
+                            className="relative flex flex-col justify-center items-center hover:scale-110 transition-transform cursor-pointer group"
+                            style={{
+                              width: 'var(--bond)',
+                              height: bondBoxHeight,
+                              marginBlock: `calc((var(--atom) - ${bondBoxHeight}) / 2)`,
+                            }}
+                            title="Smelltu til að breyta tengingu"
+                            aria-label={`Tenging ${i + 1}–${i + 2}: ${
+                              { single: 'einföld', double: 'tvöföld', triple: 'þreföld' }[
+                                bonds.find((b) => b.position === i + 1)?.type ?? 'single'
+                              ]
+                            }. Smelltu til að breyta.`}
+                          >
+                            {(() => {
+                              const bond = bonds.find((b) => b.position === i + 1);
+                              const bondType = bond?.type || 'single';
 
-        {/* Molecule builder */}
-        {!showFeedback && (
-          <div className="mb-6">
-            {/* Carbon chain visualization */}
-            <div className={`bg-warm-900 rounded-xl p-4 mb-4 overflow-x-auto ${chainVars}`}>
-              <div className="flex flex-wrap md:flex-nowrap items-center justify-center gap-y-3 min-w-fit">
-                {Array.from({ length: carbonCount }).map((_, i) => (
-                  <div key={i} className="flex items-center">
-                    {/* Carbon atom */}
-                    <div
-                      className="flex items-center justify-center rounded-full bg-warm-700 border-2 border-warm-500 text-white font-bold select-none"
-                      style={{
-                        width: 'var(--atom)',
-                        height: 'var(--atom)',
-                        fontSize: 'var(--atom-font)',
-                      }}
-                    >
-                      C{i + 1}
-                    </div>
+                              if (bondType === 'single' || !bond) {
+                                return (
+                                  <div
+                                    className="bg-warm-400 group-hover:bg-warm-300 rounded-full"
+                                    style={{ width: '100%', height: bondHeight }}
+                                  />
+                                );
+                              }
 
-                    {/* Bond */}
-                    {i < carbonCount - 1 && (
-                      <button
-                        onClick={() => cycleBond(i + 1)}
-                        className="relative flex flex-col justify-center items-center hover:scale-110 transition-transform cursor-pointer group"
-                        style={{
-                          width: 'var(--bond)',
-                          height: bondBoxHeight,
-                          marginBlock: `calc((var(--atom) - ${bondBoxHeight}) / 2)`,
-                        }}
-                        title="Smelltu til að breyta tengingu"
-                        aria-label={`Tenging ${i + 1}–${i + 2}: ${
-                          { single: 'einföld', double: 'tvöföld', triple: 'þreföld' }[
-                            bonds.find((b) => b.position === i + 1)?.type ?? 'single'
-                          ]
-                        }. Smelltu til að breyta.`}
-                      >
-                        {(() => {
-                          const bond = bonds.find((b) => b.position === i + 1);
-                          const bondType = bond?.type || 'single';
+                              if (bondType === 'double') {
+                                return (
+                                  <>
+                                    <div
+                                      className="bg-green-400 group-hover:bg-green-300 rounded-full"
+                                      style={{ width: '100%', height: bondHeight, marginBottom: 3 }}
+                                    />
+                                    <div
+                                      className="bg-green-400 group-hover:bg-green-300 rounded-full"
+                                      style={{ width: '100%', height: bondHeight }}
+                                    />
+                                  </>
+                                );
+                              }
 
-                          if (bondType === 'single' || !bond) {
-                            return (
-                              <div
-                                className="bg-warm-400 group-hover:bg-warm-300 rounded-full"
-                                style={{ width: '100%', height: bondHeight }}
-                              />
-                            );
-                          }
-
-                          if (bondType === 'double') {
-                            return (
-                              <>
-                                <div
-                                  className="bg-green-400 group-hover:bg-green-300 rounded-full"
-                                  style={{ width: '100%', height: bondHeight, marginBottom: 3 }}
-                                />
-                                <div
-                                  className="bg-green-400 group-hover:bg-green-300 rounded-full"
-                                  style={{ width: '100%', height: bondHeight }}
-                                />
-                              </>
-                            );
-                          }
-
-                          return (
-                            <>
-                              <div
-                                className="bg-purple-400 group-hover:bg-purple-300 rounded-full"
-                                style={{ width: '100%', height: bondHeight - 1, marginBottom: 2 }}
-                              />
-                              <div
-                                className="bg-purple-400 group-hover:bg-purple-300 rounded-full"
-                                style={{ width: '100%', height: bondHeight - 1, marginBottom: 2 }}
-                              />
-                              <div
-                                className="bg-purple-400 group-hover:bg-purple-300 rounded-full"
-                                style={{ width: '100%', height: bondHeight - 1 }}
-                              />
-                            </>
-                          );
-                        })()}
-                      </button>
-                    )}
+                              return (
+                                <>
+                                  <div
+                                    className="bg-purple-400 group-hover:bg-purple-300 rounded-full"
+                                    style={{
+                                      width: '100%',
+                                      height: bondHeight - 1,
+                                      marginBottom: 2,
+                                    }}
+                                  />
+                                  <div
+                                    className="bg-purple-400 group-hover:bg-purple-300 rounded-full"
+                                    style={{
+                                      width: '100%',
+                                      height: bondHeight - 1,
+                                      marginBottom: 2,
+                                    }}
+                                  />
+                                  <div
+                                    className="bg-purple-400 group-hover:bg-purple-300 rounded-full"
+                                    style={{ width: '100%', height: bondHeight - 1 }}
+                                  />
+                                </>
+                              );
+                            })()}
+                          </button>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
 
-              {/* Legend */}
-              <div className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-warm-400">
-                <span className="flex items-center gap-1">
-                  <span className="w-4 h-1 bg-warm-400 rounded" /> ein
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="flex flex-col gap-0.5">
-                    <span className="w-4 h-0.5 bg-green-400 rounded" />
-                    <span className="w-4 h-0.5 bg-green-400 rounded" />
-                  </span>
-                  tví
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="flex flex-col gap-0.5">
-                    <span className="w-4 h-0.5 bg-purple-400 rounded" />
-                    <span className="w-4 h-0.5 bg-purple-400 rounded" />
-                    <span className="w-4 h-0.5 bg-purple-400 rounded" />
-                  </span>
-                  þrí
-                </span>
-              </div>
-              {/* The bonds' title tooltip never shows on a touchscreen, so say it there */}
-              <p className="hidden pointer-coarse:block mt-2 text-center text-xs text-warm-300">
-                Smelltu á tengingu til að breyta
-              </p>
-            </div>
+                  {/* Legend */}
+                  <div className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs text-warm-400">
+                    <span className="flex items-center gap-1">
+                      <span className="w-4 h-1 bg-warm-400 rounded" /> ein
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="flex flex-col gap-0.5">
+                        <span className="w-4 h-0.5 bg-green-400 rounded" />
+                        <span className="w-4 h-0.5 bg-green-400 rounded" />
+                      </span>
+                      tví
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <span className="flex flex-col gap-0.5">
+                        <span className="w-4 h-0.5 bg-purple-400 rounded" />
+                        <span className="w-4 h-0.5 bg-purple-400 rounded" />
+                        <span className="w-4 h-0.5 bg-purple-400 rounded" />
+                      </span>
+                      þrí
+                    </span>
+                  </div>
+                  {/* The bonds' title tooltip never shows on a touchscreen, so say it there */}
+                  <p className="hidden pointer-coarse:block mt-2 text-center text-xs text-warm-300">
+                    Smelltu á tengingu til að breyta
+                  </p>
+                </div>
 
-            {/* Carbon controls */}
-            <div className="flex flex-wrap justify-center items-center gap-4 mb-4">
-              <button
-                onClick={() => updateCarbonCount(carbonCount - 1)}
-                aria-label="Fjarlægja kolefni"
-                disabled={carbonCount <= 2}
-                className={`w-12 h-12 shrink-0 rounded-full font-bold text-xl transition-all ${
-                  carbonCount > 2
-                    ? 'bg-red-500 hover:bg-red-600 text-white'
-                    : 'bg-warm-200 text-warm-400 cursor-not-allowed'
-                }`}
-              >
-                -
-              </button>
+                {/* Carbon controls, with Endurstilla on the same row on a phone */}
+                <div className="flex flex-wrap justify-center items-center gap-4 mb-4 phone:gap-2 phone:mb-3">
+                  <button
+                    onClick={() => updateCarbonCount(carbonCount - 1)}
+                    aria-label="Fjarlægja kolefni"
+                    disabled={carbonCount <= 2}
+                    className={`w-12 h-12 shrink-0 rounded-full font-bold text-xl transition-all ${
+                      carbonCount > 2
+                        ? 'bg-red-500 hover:bg-red-600 text-white'
+                        : 'bg-warm-200 text-warm-400 cursor-not-allowed'
+                    }`}
+                  >
+                    -
+                  </button>
 
-              <div className="text-center px-4">
-                <div className="text-xl font-bold text-warm-800">{carbonCount}</div>
-                <div className="text-xs text-warm-500">kolefni</div>
-              </div>
+                  <div className="text-center px-4 phone:px-2">
+                    <div className="text-xl font-bold text-warm-800">{carbonCount}</div>
+                    <div className="text-xs text-warm-500">kolefni</div>
+                  </div>
 
-              <button
-                onClick={() => updateCarbonCount(carbonCount + 1)}
-                aria-label="Bæta við kolefni"
-                disabled={carbonCount >= 8}
-                className={`w-12 h-12 shrink-0 rounded-full font-bold text-xl transition-all ${
-                  carbonCount < 8
-                    ? 'bg-green-500 hover:bg-green-600 text-white'
-                    : 'bg-warm-200 text-warm-400 cursor-not-allowed'
-                }`}
-              >
-                +
-              </button>
+                  <button
+                    onClick={() => updateCarbonCount(carbonCount + 1)}
+                    aria-label="Bæta við kolefni"
+                    disabled={carbonCount >= 8}
+                    className={`w-12 h-12 shrink-0 rounded-full font-bold text-xl transition-all ${
+                      carbonCount < 8
+                        ? 'bg-green-500 hover:bg-green-600 text-white'
+                        : 'bg-warm-200 text-warm-400 cursor-not-allowed'
+                    }`}
+                  >
+                    +
+                  </button>
 
-              <button
-                onClick={handleReset}
-                className="sm:ml-4 px-3 py-1.5 text-sm bg-warm-200 hover:bg-warm-300 text-warm-700 rounded-lg pointer-coarse:min-h-11 pointer-coarse:px-4"
-              >
-                Endurstilla
-              </button>
-            </div>
+                  <button
+                    onClick={handleReset}
+                    className="sm:ml-4 px-3 py-1.5 text-sm bg-warm-200 hover:bg-warm-300 text-warm-700 rounded-lg pointer-coarse:min-h-11 pointer-coarse:px-4 phone:ml-2 phone:whitespace-nowrap"
+                  >
+                    Endurstilla
+                  </button>
+                </div>
 
-            {/* Hint */}
-            {!showHint ? (
-              <button
-                onClick={() => {
-                  setShowHint(true);
-                  setHintsUsed((prev) => prev + 1);
-                }}
-                className="w-full text-yellow-600 hover:text-yellow-700 text-sm mb-4 pointer-coarse:min-h-11"
-              >
-                💡 Sýna vísbendingu
-              </button>
-            ) : (
-              <div className="bg-yellow-50 border border-yellow-200 p-3 rounded-lg mb-4">
-                <span className="text-yellow-800">{challenge.hint}</span>
+                {/* Hint */}
+                {!showHint ? (
+                  <button
+                    onClick={openHint}
+                    className="w-full text-yellow-600 hover:text-yellow-700 text-sm mb-4 pointer-coarse:min-h-11 phone:mb-2"
+                  >
+                    💡 Sýna vísbendingu
+                  </button>
+                ) : (
+                  <div
+                    ref={hintRef}
+                    className="bg-yellow-50 border border-yellow-200 p-3 rounded-lg mb-4 phone:mb-3"
+                  >
+                    <span className="text-yellow-800">{challenge.hint}</span>
+                  </div>
+                )}
+
+                {/* Submit button: its own element, never relabelled as Næsta */}
+                <button
+                  key="check"
+                  ref={checkRef}
+                  onClick={checkAnswer}
+                  className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-6 rounded-xl"
+                >
+                  Athuga svar
+                </button>
               </div>
             )}
 
-            {/* Submit button */}
-            <button
-              onClick={checkAnswer}
-              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-6 rounded-xl"
-            >
-              Athuga svar
-            </button>
-          </div>
-        )}
+            {/* Feedback */}
+            {showFeedback && (
+              <div ref={feedbackBoxRef} className="space-y-4 scroll-mt-4 phone:space-y-3">
+                {/* The feedback region focus moves to after Athuga (P3).
+                FeedbackPanel is itself role=alert and announces the verdict. */}
+                <div ref={feedbackRef} tabIndex={-1} role="group" className="focus:outline-none">
+                  <FeedbackPanel
+                    feedback={getFeedback()}
+                    config={{
+                      showExplanation: true,
+                      showMisconceptions: !isCorrect,
+                      showRelatedConcepts: true,
+                      showNextSteps: true,
+                    }}
+                  />
+                </div>
 
-        {/* Feedback */}
-        {showFeedback && (
-          <div ref={feedbackRef} className="space-y-4 scroll-mt-4">
-            <FeedbackPanel
-              feedback={getFeedback()}
-              config={{
-                showExplanation: true,
-                showMisconceptions: !isCorrect,
-                showRelatedConcepts: true,
-                showNextSteps: true,
-              }}
-            />
-
-            <button
-              onClick={handleNext}
-              className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-6 rounded-xl"
-            >
-              {currentChallenge < CHALLENGES.length - 1 ? 'Næsta áskorun →' : 'Ljúka →'}
-            </button>
+                {/* Næsta ignores a press within 400 ms of appearing. */}
+                <button
+                  key="next"
+                  ref={nextRef}
+                  onClick={armed(handleNext)}
+                  className="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-6 rounded-xl"
+                >
+                  {currentChallenge < CHALLENGES.length - 1 ? 'Næsta áskorun →' : 'Ljúka →'}
+                </button>
+              </div>
+            )}
           </div>
-        )}
+        </div>
 
         {/* Reference */}
-        <div className="mt-6 bg-warm-50 p-4 rounded-xl">
+        <div className="mt-6 bg-warm-50 p-4 rounded-xl phone:mt-4">
           <h3 className="font-semibold text-warm-700 mb-2">📋 Minnisblað:</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>

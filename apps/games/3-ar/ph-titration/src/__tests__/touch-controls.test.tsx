@@ -4,7 +4,6 @@ import { describe, it, expect, afterEach, beforeAll, beforeEach, vi } from 'vite
 
 import { Level2 } from '../components/Level2';
 import { Level3 } from '../components/Level3';
-import { revealTop } from '../utils/reveal';
 
 // The mobile pass changed how Level 2 is driven by touch: the hold-to-pour
 // button moved from mouse + touch handlers (with no touchcancel, so a hold the
@@ -106,14 +105,18 @@ describe('ph-titration level 2 marking nudges', () => {
   });
 });
 
-describe('ph-titration level 2 indicator step on a phone', () => {
+describe('ph-titration level 2 indicator step below lg', () => {
   // Below lg the indicator list is stacked under the apparatus. The marking
   // panel above it takes 250 ms to leave, and scrolling before it had gone
-  // left the top of the list 200-300 px above the screen.
+  // left the top of the list 200-300 px above the screen. The scroll goes
+  // through the shared helper (`@shared/utils`), which moves the page with
+  // window.scrollBy.
   const realRect = HTMLElement.prototype.getBoundingClientRect;
+  const realScrollBy = window.scrollBy;
   let scrolled: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
+    // Nothing matches: not lg, not a phone, no reduced motion.
     window.matchMedia = ((media: string) => ({
       matches: false,
       media,
@@ -121,13 +124,13 @@ describe('ph-titration level 2 indicator step on a phone', () => {
       removeEventListener() {},
     })) as never;
     scrolled = vi.fn();
-    Element.prototype.scrollIntoView = scrolled as never;
+    window.scrollBy = scrolled as never;
   });
 
   afterEach(() => {
     delete (window as { matchMedia?: unknown }).matchMedia;
-    delete (Element.prototype as { scrollIntoView?: unknown }).scrollIntoView;
     HTMLElement.prototype.getBoundingClientRect = realRect;
+    window.scrollBy = realScrollBy;
   });
 
   function confirmMarkedVolume() {
@@ -139,7 +142,7 @@ describe('ph-titration level 2 indicator step on a phone', () => {
     fireEvent.click(screen.getByRole('button', { name: /^Staðfesta: / }));
   }
 
-  it('scrolls the list to its top only once the marking panel has gone', () => {
+  it('scrolls the list to its top only once the marking panel has gone, and focuses it', () => {
     vi.useFakeTimers();
     confirmMarkedVolume();
 
@@ -148,8 +151,8 @@ describe('ph-titration level 2 indicator step on a phone', () => {
 
     act(() => vi.advanceTimersByTime(100));
     expect(scrolled).toHaveBeenCalledTimes(1);
-    expect(scrolled).toHaveBeenCalledWith({ block: 'start', behavior: 'smooth' });
-    expect((scrolled.mock.contexts[0] as HTMLElement).textContent).toContain('Veldu vísi');
+    expect(scrolled.mock.calls[0][0]).toMatchObject({ behavior: 'smooth' });
+    expect(document.activeElement?.textContent).toBe('Veldu vísi');
   });
 
   it('brings the confirm button up when it appears below the screen', () => {
@@ -162,9 +165,9 @@ describe('ph-titration level 2 indicator step on a phone', () => {
     fireEvent.click(screen.getByRole('button', { name: /Fenólftaleín/ }));
     act(() => vi.advanceTimersByTime(50));
 
+    // The least move that shows the button's foot: 2000 − the window's height.
     expect(scrolled).toHaveBeenCalledTimes(1);
-    expect(scrolled).toHaveBeenCalledWith({ block: 'nearest', behavior: 'smooth' });
-    expect((scrolled.mock.contexts[0] as HTMLElement).textContent).toContain('Staðfesta val');
+    expect(scrolled).toHaveBeenCalledWith({ top: 2000 - window.innerHeight, behavior: 'smooth' });
   });
 });
 
@@ -179,26 +182,5 @@ describe('ph-titration level 3 answer field', () => {
     fireEvent.change(field, { target: { value: '0,13' } });
     fireEvent.click(screen.getByRole('button', { name: 'Staðfesta svar' }));
     expect(screen.getByText(/✓ Rétt!/)).toBeTruthy();
-  });
-});
-
-describe('revealTop', () => {
-  function elementAt(top: number) {
-    const el = document.createElement('div');
-    el.getBoundingClientRect = () => ({ top }) as DOMRect;
-    el.scrollIntoView = vi.fn();
-    return el;
-  }
-
-  it('scrolls an element whose top has gone above the viewport back into view', () => {
-    const el = elementAt(-400);
-    revealTop(el);
-    expect(el.scrollIntoView).toHaveBeenCalledWith({ block: 'start', behavior: 'smooth' });
-  });
-
-  it('leaves the page alone when the top is already on screen', () => {
-    const el = elementAt(12);
-    revealTop(el);
-    expect(el.scrollIntoView).not.toHaveBeenCalled();
   });
 });

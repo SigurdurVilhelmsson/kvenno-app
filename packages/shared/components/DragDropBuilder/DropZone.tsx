@@ -3,6 +3,9 @@ import { useState, useCallback, useRef } from 'react';
 import { DraggableItem } from './DraggableItem';
 import type { DropZoneProps } from './types';
 
+/** The phone-only item padding `compact` adds, in the pool and in every zone alike. */
+export const COMPACT_ITEM = 'phone:px-2 phone:py-1';
+
 /**
  * DropZone Component
  *
@@ -28,6 +31,7 @@ export function DropZone({
   onItemDragStart,
   onItemDragEnd,
   orientation = 'horizontal',
+  compact = false,
   className = '',
   renderItem,
 }: DropZoneProps) {
@@ -149,6 +153,24 @@ export function DropZone({
   // item the student just selected would itself look disabled.
   const picking = selectedId !== null && !items.some((item) => item.id === selectedId);
 
+  // `compact` (see DragDropBuilderProps) changes nothing but `phone:` classes, so a
+  // desktop window, and any screen taller than 500 px from `sm` up, renders as before.
+  // The label stays in the accessibility tree (sr-only, never display:none), though the
+  // group's aria-label already names the zone. The capacity count goes into the corner,
+  // with room kept for it on the right so it never sits on an item; a one-item zone
+  // shows no count at all, since the zone being filled already says 1 / 1.
+  const showCapacity = zone.maxItems !== undefined;
+  const cornerCount = compact && showCapacity && zone.maxItems !== 1;
+  const compactZone = compact
+    ? `phone:relative phone:min-h-11 phone:p-2 ${cornerCount ? 'phone:pr-10' : ''}`
+    : '';
+  const compactCapacity = compact
+    ? zone.maxItems === 1
+      ? 'phone:hidden'
+      : 'phone:absolute phone:top-1 phone:right-2 phone:mt-0'
+    : '';
+  const compactItem = compact ? COMPACT_ITEM : '';
+
   return (
     <div
       ref={zoneRef}
@@ -167,6 +189,7 @@ export function DropZone({
         ${isFull && !isTarget && !showDropIndicator ? 'border-amber-300 bg-amber-50' : ''}
         ${isTarget ? 'cursor-pointer' : ''}
         ${picking && !isTarget ? 'opacity-60' : ''}
+        ${compactZone}
         ${className}
       `}
       data-zone-id={zone.id}
@@ -175,7 +198,11 @@ export function DropZone({
       aria-label={zone.label || `Drop zone ${zone.id}`}
     >
       {/* Zone label */}
-      {zone.label && <div className="text-xs font-medium text-gray-500 mb-2">{zone.label}</div>}
+      {zone.label && (
+        <div className={`text-xs font-medium text-gray-500 mb-2 ${compact ? 'phone:sr-only' : ''}`}>
+          {zone.label}
+        </div>
+      )}
 
       {/* Items container */}
       <div
@@ -185,7 +212,9 @@ export function DropZone({
         `}
       >
         {items.length === 0 && zone.placeholder && (
-          <div className="text-gray-400 text-sm italic py-2">{zone.placeholder}</div>
+          <div className={`text-gray-400 text-sm italic py-2 ${compact ? 'phone:py-0.5' : ''}`}>
+            {zone.placeholder}
+          </div>
         )}
 
         {items.map((item, index) => (
@@ -216,6 +245,7 @@ export function DropZone({
                 onTouchDrop={onTouchDrop}
                 onTouchOver={onTouchOver}
                 onActivate={onActivateItem}
+                className={compactItem}
               />
             )}
           </div>
@@ -233,8 +263,8 @@ export function DropZone({
       </div>
 
       {/* Capacity indicator */}
-      {zone.maxItems !== undefined && (
-        <div className="text-xs text-gray-400 mt-2 text-right">
+      {showCapacity && (
+        <div className={`text-xs text-gray-400 mt-2 text-right ${compactCapacity}`}>
           {items.length} / {zone.maxItems}
         </div>
       )}

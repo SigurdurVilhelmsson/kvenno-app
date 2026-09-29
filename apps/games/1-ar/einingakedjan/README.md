@@ -80,11 +80,36 @@ src/
 ├── engine/chain.ts    # solveChain, correctionPrompt, predictionOptions
 ├── data/ratios.ts     # the equivalence pool, grouped by kind
 ├── data/problems.ts   # 5 practice (2-step) + 5 apply (3-4 step)
-├── utils/reveal.ts    # keeps each change on a phone screen in view
 └── components/        # MenuScreen lives in App.tsx; ExploreScreen, UnderstandScreen and
                        # ChainBuilder are the screens; UnitText holds a unit and its substance
-                       # on one line inside prose
+                       # on one line inside prose; ChainRow is the chain as built, one
+                       # sideways-scrolling row on a phone
 ```
+
+## On a phone
+
+The vertical-scroll pass (`docs/plans/2026-09-23-vertical-scroll-design.md`, §4). Every change is
+behind `phone:`, `phone-land:` or `pin:`, or a script check of the same queries, so a desktop window
+renders as before.
+
+- **The chain is one row** (`ChainRow`) that scrolls sideways, with faded edges where it has more,
+  and scrolls to each new card. Its height no longer grows with the chain.
+- **Æfa and Beita, on a portrait phone:** the chain is pinned under the header (`TaskStrip`) and the
+  actions — Vísbending, Byrja upp á nýtt, Leysa — follow the pool and pin to the foot of the screen
+  (`PinnedActions`). They move in the DOM, not by CSS `order`, so the tab order is what is seen.
+  A new card no longer jumps the page up to the chain. On a phone on its side nothing pins; the chain
+  and the pool sit side by side.
+- **Kanna** has no pinned strip: with the result under it, the strip would pass the 28 % budget and
+  never pin. The chain, its result and _Hreinsa keðjuna_ are brought in after each card, and on a
+  phone the three suggestions follow the intro.
+- **After each tap focus moves** to what changed (the prediction, its feedback, the worked
+  solution, the correction, the explanation of a fix, the verdict, the new problem), never to the
+  button that follows. That button ignores a press within 400 ms of appearing (`useArmedAfter`), so a
+  double tap cannot skip what the first tap brought up. The correction shows the step that broke the
+  chain together with the fixes.
+- **The board is guarded too, once the student comes back to it** (after _Laga og reyna aftur_,
+  _Prófa aðra leið_ or _Næsta dæmi_): the pinned bar sits where those buttons were, and without it
+  the second tap of a double tap pressed _Byrja upp á nýtt_ and emptied the chain just fixed.
 
 ## Tests
 

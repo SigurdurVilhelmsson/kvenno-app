@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 
-import { GAME_SCREENS, type ScreenStep } from './mobile-game-screens';
+import { GAME_SCREENS } from './mobile-game-screens';
+import { runStep } from './screen-steps';
 
 /**
  * Every game, screen by screen, at phone width.
@@ -11,9 +12,9 @@ import { GAME_SCREENS, type ScreenStep } from './mobile-game-screens';
  * This spec replays them and asserts the one thing a phone student cannot work
  * around — the page scrolling sideways, which hides the edge of every row.
  *
- * The step semantics must stay identical to the harness the paths were verified
- * with: `click` is a button, then a link, then any text containing the label,
- * and every step settles for 200 ms.
+ * The step semantics (screen-steps.ts) must stay identical to the harness the
+ * paths were verified with: `click` is a button, then a link, then any text
+ * containing the label, and every step settles for 200 ms.
  *
  * No touch emulation: Firefox cannot emulate `isMobile`, and overflow is a
  * layout property, so a 360 px mouse viewport measures the same thing.
@@ -30,29 +31,6 @@ const PHONE = { width: 360, height: 740 };
  */
 const FIREFOX_EVERY = 4;
 const CHROMIUM_ONLY = '@chromium-only';
-
-async function runStep(page: Page, step: ScreenStep): Promise<void> {
-  if ('click' in step) {
-    await page
-      .getByRole('button', { name: step.click })
-      .or(page.getByRole('link', { name: step.click }))
-      .or(page.getByText(step.click, { exact: false }))
-      .first()
-      .click();
-  } else if ('clickRole' in step) {
-    const [role, name] = step.clickRole;
-    await page.getByRole(role, { name }).first().click();
-  } else if ('css' in step) {
-    await page.locator(step.css).first().click();
-  } else if ('fill' in step) {
-    await page.locator(step.fill[0]).first().fill(step.fill[1]);
-  } else if ('press' in step) {
-    await page.keyboard.press(step.press);
-  } else {
-    await page.waitForTimeout(step.wait);
-  }
-  await page.waitForTimeout(200);
-}
 
 function horizontalOverflow(page: Page): Promise<number> {
   return page.evaluate(

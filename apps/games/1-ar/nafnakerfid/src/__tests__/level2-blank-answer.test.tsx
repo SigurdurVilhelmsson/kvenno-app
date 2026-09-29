@@ -38,7 +38,7 @@ describe('Level 2 with a blank answer', () => {
     const { container, onIncorrectAnswer } = reachAnswerStep();
     const input = within(container).getByRole('textbox');
     fireEvent.change(input, { target: { value: '   ' } });
-    fireEvent.keyPress(input, { key: 'Enter', code: 'Enter', charCode: 13 });
+    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter', charCode: 13 });
 
     expect(onIncorrectAnswer).not.toHaveBeenCalled();
     expect(within(container).queryByText(/Ekki alveg/)).toBeNull();
@@ -49,7 +49,7 @@ describe('Level 2 with a blank answer', () => {
     const { container } = reachAnswerStep();
     const input = within(container).getByRole('textbox');
     fireEvent.change(input, { target: { value: 'Kalíumbrómíð' } });
-    fireEvent.keyPress(input, { key: 'Enter', code: 'Enter', charCode: 13 });
+    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter', charCode: 13 });
 
     expect(within(container).queryByRole('textbox')).toBeNull();
     expect(within(container).getAllByText('Kalíumbrómíð').length).toBeGreaterThan(0);

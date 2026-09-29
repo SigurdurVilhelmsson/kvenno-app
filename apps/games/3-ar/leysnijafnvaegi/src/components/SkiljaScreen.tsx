@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
+
+import { focusTarget, revealSpan, useArmedAfter } from '@shared/utils';
 
 import { BackButton } from './BackButton';
 import { Sci } from './Sci';
@@ -31,7 +33,24 @@ const SALT = saltBy('Ag₂CrO₄');
 
 export function SkiljaScreen({ onComplete, onBack }: Props) {
   const [step, setStep] = useState(0);
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const onwardRef = useRef<HTMLButtonElement>(null);
+  const shownStep = useRef(step);
   const s = molarSolubility(SALT);
+
+  // Each "Næsta skref" opens the next rung above the button. Focus moves to the
+  // new rung (a group named by its heading), since the button just pressed may
+  // be gone; on a phone the rung is brought in down to the button where both
+  // fit, or from its heading where they do not (design §3 Reading).
+  useLayoutEffect(() => {
+    if (shownStep.current === step) return;
+    shownStep.current = step;
+    const rung = stepRefs.current[step];
+    focusTarget(rung);
+    revealSpan(onwardRef.current, [rung]);
+  }, [step]);
+  // A double tap on "Næsta skref" must not press the next one, or "Áfram í Æfa".
+  const armed = useArmedAfter(400, step);
   const naive = Math.sqrt(SALT.ksp);
 
   const steps = [
@@ -67,29 +86,36 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8">
-        <div className="mb-6 flex items-baseline justify-between gap-3">
-          <h2 className="min-w-0 text-xl font-bold text-warm-800 sm:text-2xl">
+      <div className="rounded-lg bg-white p-4 shadow-md sm:p-6 md:p-8 phone:p-3">
+        <div className="mb-6 flex items-baseline justify-between gap-3 phone:mb-3">
+          <h2 className="min-w-0 text-xl font-bold text-warm-800 sm:text-2xl phone:text-base">
             Skilja — frá Ksp að mólarleysni
           </h2>
           <BackButton onClick={onBack} />
         </div>
 
-        <p className="mb-6 text-warm-700">
+        <p className="mb-6 text-warm-700 phone:mb-3">
           Silfurkrómat, <span className="font-mono">Ag₂CrO₄</span>. Það er valið hér af ástæðu:
           hlutfallið er 2:1, svo aðferðin sem virkar fyrir silfurklóríð gefur rangt svar. Ef þú
           kannt þetta dæmi kanntu þau öll.
         </p>
 
-        <div className="space-y-4">
+        <div className="space-y-4 phone:space-y-3">
           {steps.map((s2, i) => (
             <div
               key={s2.title}
-              className={`rounded-lg border-2 p-4 transition-opacity ${
+              ref={(el) => {
+                stepRefs.current[i] = el;
+              }}
+              role="group"
+              aria-labelledby={`skilja-step-${i}`}
+              className={`rounded-lg border-2 p-4 transition-opacity phone:p-3 ${
                 i <= step ? 'border-orange-300 bg-orange-50' : 'border-warm-200 bg-white opacity-40'
               }`}
             >
-              <h3 className="mb-2 font-semibold text-warm-800">{s2.title}</h3>
+              <h3 id={`skilja-step-${i}`} className="mb-2 font-semibold text-warm-800">
+                {s2.title}
+              </h3>
               {i <= step && (
                 <>
                   <p className="mb-3 text-sm text-warm-700">{s2.body}</p>
@@ -103,7 +129,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
         </div>
 
         {step === steps.length - 1 && (
-          <div className="mt-6 rounded-lg border-2 border-amber-300 bg-amber-50 p-3 sm:p-4">
+          <div className="mt-6 rounded-lg border-2 border-amber-300 bg-amber-50 p-3 sm:p-4 phone:mt-3">
             <h3 className="mb-2 font-semibold text-amber-900">Af hverju ekki bara kvaðratrótin?</h3>
             {/* Side by side only where a whole number fits in each half; on a
                 phone the two stack, one above the other, rather than each
@@ -134,19 +160,25 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
           </div>
         )}
 
-        <div className="mt-8 flex gap-3 border-t border-warm-200 pt-6">
+        {/* Separate keyed buttons, so the one that replaces "Næsta skref" on
+            the last rung is a new element, not the same one relabelled. */}
+        <div className="mt-8 flex gap-3 border-t border-warm-200 pt-6 phone:mt-4 phone:pt-3">
           {step < steps.length - 1 ? (
             <button
+              key="next-step"
+              ref={onwardRef}
               type="button"
-              onClick={() => setStep(step + 1)}
+              onClick={armed(() => setStep(step + 1))}
               className="game-btn rounded-lg bg-kvenno-orange px-4 py-2 font-semibold text-white hover:bg-kvenno-orange-dark pointer-coarse:min-h-11"
             >
               Næsta skref
             </button>
           ) : (
             <button
+              key="onward"
+              ref={onwardRef}
               type="button"
-              onClick={onComplete}
+              onClick={armed(onComplete)}
               className="game-btn rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 pointer-coarse:min-h-11"
             >
               Áfram í Æfa
@@ -154,7 +186,7 @@ export function SkiljaScreen({ onComplete, onBack }: Props) {
           )}
         </div>
 
-        <details className="mt-8 rounded-lg border border-warm-200 bg-white p-4">
+        <details className="mt-8 rounded-lg phone:mt-4 border border-warm-200 bg-white p-4">
           <summary className="cursor-pointer font-semibold text-warm-800 pointer-coarse:-my-3 pointer-coarse:py-3">
             Samjónahrif — af hverju leysnin fellur
           </summary>

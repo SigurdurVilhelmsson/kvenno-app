@@ -33,10 +33,10 @@ export const Flask: React.FC<FlaskProps> = ({
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative w-32 h-46 md:w-60 md:h-70">
+      <div className="relative w-32 h-46 md:w-60 md:h-70 phone:w-24 phone:h-32">
         {/* Flask neck */}
         <div
-          className="mx-auto w-8 h-10 md:w-12 md:h-18 rounded-t-lg border-4 border-indigo-500 border-b-0 relative"
+          className="mx-auto w-8 h-10 md:w-12 md:h-18 phone:w-6 phone:h-8 rounded-t-lg border-4 border-indigo-500 border-b-0 relative"
           style={{
             background: 'linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.7))',
             boxShadow:
@@ -48,7 +48,7 @@ export const Flask: React.FC<FlaskProps> = ({
         <div
           role="img"
           aria-label={`Erlenmeyerkolbi: pH ${formatDecimal(pH, 2)}, ${formatDecimal(volumeAnalyte + volumeTitrant, 1)} mL lausn — ${pH < 7 ? 'súr' : pH > 7 ? 'basísk' : 'hlutlaus'}`}
-          className={`relative w-32 h-36 md:w-60 md:h-52 border-4 border-indigo-500 overflow-hidden ${isSwirling ? 'animate-pulse' : ''}`}
+          className={`relative w-32 h-36 md:w-60 md:h-52 phone:w-24 phone:h-24 border-4 border-indigo-500 overflow-hidden ${isSwirling ? 'animate-pulse' : ''}`}
           style={{
             background:
               'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0.75) 100%)',
@@ -87,14 +87,17 @@ export const Flask: React.FC<FlaskProps> = ({
         </div>
       </div>
 
-      {/* Volume and pH display */}
-      <div className="mt-4 flex gap-2 flex-wrap justify-center">
-        <div className="bg-blue-100 px-2 md:px-3 py-1.5 rounded-lg border-2 border-blue-300 text-center">
+      {/* Volume and pH display. On a phone each chip is one line, label
+          beside value, so the three take two short rows. */}
+      <div className="mt-4 flex gap-2 flex-wrap justify-center phone:mt-2 phone:gap-1">
+        <div className="bg-blue-100 px-2 md:px-3 py-1.5 rounded-lg border-2 border-blue-300 text-center phone:flex phone:items-baseline phone:gap-1 phone:py-0.5">
           <p className="text-xs text-blue-700 font-semibold">Rúmmál</p>
-          <p className="text-sm font-bold text-blue-900">{formatDecimal(totalVolume, 1)} mL</p>
+          <p className="text-sm font-bold text-blue-900 phone:whitespace-nowrap">
+            {formatDecimal(totalVolume, 1)} mL
+          </p>
         </div>
         <div
-          className="px-2 md:px-3 py-1.5 rounded-lg border-2 text-center"
+          className="px-2 md:px-3 py-1.5 rounded-lg border-2 text-center phone:flex phone:items-baseline phone:gap-1 phone:py-0.5"
           style={{
             backgroundColor: `${solutionColor}20`,
             borderColor: solutionColor !== 'transparent' ? solutionColor : '#cbd5e1',
@@ -103,7 +106,7 @@ export const Flask: React.FC<FlaskProps> = ({
           <p className="text-xs text-warm-700 font-semibold">pH</p>
           <p className="text-sm font-bold text-warm-900">{formatDecimal(pH, 2)}</p>
         </div>
-        <div className="bg-warm-100 px-2 md:px-3 py-1.5 rounded-lg border-2 border-warm-300 text-center">
+        <div className="bg-warm-100 px-2 md:px-3 py-1.5 rounded-lg border-2 border-warm-300 text-center phone:flex phone:items-baseline phone:gap-1 phone:py-0.5">
           <p className="text-xs text-warm-700 font-semibold">Eðli</p>
           <p className="text-sm font-bold text-warm-900">
             {pH < 6.5 ? 'Súr' : pH > 7.5 ? 'Basísk' : 'Hlutlaus'}

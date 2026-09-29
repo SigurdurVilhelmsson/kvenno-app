@@ -245,7 +245,7 @@ function SingleStepCancellation({
 
       {/* Factor options */}
       {animationPhase === 'selecting' && (
-        <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
+        <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 phone:grid phone:grid-cols-2 phone:gap-3 phone:*:min-w-0">
           {factors.map((factor, idx) => (
             <ConversionFactorBlock
               key={idx}
@@ -379,7 +379,7 @@ function ChainCancellation({
           >
             {steps[currentStep].label}
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 phone:grid phone:grid-cols-2 phone:*:min-w-0">
             {stepFactors[currentStep].map((factor, idx) => (
               <ConversionFactorBlock
                 key={idx}

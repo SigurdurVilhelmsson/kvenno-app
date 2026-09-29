@@ -1,8 +1,13 @@
 import { useMemo, useRef, useState } from 'react';
 
-import { shuffleArray } from '@shared/utils';
-
-import { useRevealOnChange } from '../utils/useRevealOnChange';
+import { PhoneDisclosure } from '@shared/components';
+import {
+  shuffleArray,
+  useArmedAfter,
+  useIsPhone,
+  useItemTop,
+  useRevealAfterCommit,
+} from '@shared/utils';
 
 interface Level3Props {
   onComplete: (score: number) => void;
@@ -358,8 +363,10 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const [, setTotalHintsUsed] = useState(0);
 
   const challenge = challenges[currentChallenge];
-  const cardRef = useRef<HTMLDivElement>(null);
-  useRevealOnChange(cardRef, currentChallenge);
+  // "Næsta þraut" swaps the question in place, so the page kept its offset.
+  // Each new question brings the card's top back when it has scrolled off — at
+  // any width, as the game's own helper did — and focus moves to its title.
+  const cardRef = useItemTop<HTMLDivElement>(currentChallenge, { anyWidth: true, gap: 0 });
 
   // The data holds the correct option second on 6 of the 8 challenges and first
   // on the other two, so "the middle one" beat reading the question. Shuffled
@@ -396,6 +403,42 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   };
 
   const isCorrect = challenge.options?.find((opt) => opt.id === selectedAnswer)?.correct ?? false;
+
+  const questionRef = useRef<HTMLParagraphElement>(null);
+  const optionsRef = useRef<HTMLDivElement>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+  const selectedIndex = shuffledOptions.findIndex((opt) => opt.id === selectedAnswer);
+  // After "Athuga svar": on a phone, the question through Næsta if it fits,
+  // else the chosen option, else the verdict at the top. Focus moves to the
+  // verdict, never to Næsta, so a second Enter lands on nothing (design P3).
+  useRevealAfterCommit(showResult, () => ({
+    bottom: nextRef.current,
+    tops: [
+      questionRef.current,
+      selectedIndex < 0 ? null : (optionsRef.current?.children[selectedIndex] ?? null),
+      resultRef.current,
+    ],
+    focus: resultRef.current,
+  }));
+  // Opening the hint replaces its link with the hint, which pushes Athuga down and
+  // dropped focus to <body> with the link: on a phone the hint through Athuga
+  // comes into view, and focus moves to the hint (design §3, hints).
+  const hintRef = useRef<HTMLDivElement>(null);
+  const checkRef = useRef<HTMLButtonElement>(null);
+  useRevealAfterCommit(showHint && !showResult, () => ({
+    bottom: checkRef.current,
+    tops: [hintRef.current],
+    focus: hintRef.current,
+  }));
+  // A double tap on "Athuga svar" must not land on Næsta.
+  const armed = useArmedAfter(400, `${currentChallenge}:${showResult}`);
+  // On a phone, options that are only a signed number (the formal charges −1,
+  // 0, +1) sit side by side while the student chooses. After the check the list
+  // is one column again, so the chosen option's explanation reads on a full row.
+  const phone = useIsPhone();
+  const shortOptions = shuffledOptions.every((opt) => opt.text.length <= 3);
+  const optionRow = phone && shortOptions && !showResult;
 
   // Render formal charge badge
   const renderFormalCharge = (charge: number) => {
@@ -459,7 +502,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
     const lonePairs = atom.lonePairElectrons / 2;
 
     return (
-      <div className="flex items-center justify-center gap-2 py-4">
+      <div className="flex items-center justify-center gap-2 py-4 phone:py-3">
         {/* Bonding electrons on left */}
         <div className="flex items-center shrink-0">
           <div className="text-xs text-warm-500 mr-2">tengsl</div>
@@ -491,22 +534,22 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   // Render structure comparison for best_structure challenges
   const renderStructureComparison = (structures: NonNullable<Challenge['structures']>) => {
     return (
-      <div className="flex flex-wrap justify-center gap-6 py-4">
+      <div className="flex flex-wrap justify-center gap-6 py-4 phone:grid phone:grid-cols-2 phone:gap-2 phone:py-1">
         {structures.map((struct) => (
           <div
             key={struct.id}
-            className={`p-4 rounded-xl border-2 ${
+            className={`p-4 phone:px-1 phone:py-2 phone:min-w-0 rounded-xl border-2 ${
               showResult && struct.isPreferred
                 ? 'border-green-500 bg-green-50'
                 : 'border-warm-200 bg-white'
             }`}
           >
             {/* Structure visualization */}
-            <div className="flex items-center justify-center gap-1 mb-3">
+            <div className="flex items-center justify-center gap-1 mb-3 phone:mb-1">
               {struct.formalCharges.map((fc, idx) => (
                 <div key={idx} className="relative mx-1">
                   <div
-                    className={`w-12 h-12 rounded-full border-3 flex items-center justify-center font-bold ${
+                    className={`w-12 h-12 phone:w-10 phone:h-10 rounded-full border-3 flex items-center justify-center font-bold ${
                       idx === 0
                         ? 'border-blue-400 bg-blue-50 text-blue-700'
                         : 'border-green-400 bg-green-50 text-green-700'
@@ -568,7 +611,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   // Render resonance structures visualization
   const renderResonanceStructures = (forms: NonNullable<Challenge['resonanceForms']>) => {
     return (
-      <div className="flex flex-wrap justify-center items-center gap-4 py-4">
+      <div className="flex flex-wrap justify-center items-center gap-4 py-4 phone:gap-2 phone:py-1">
         {forms.map((form, idx) => (
           <div key={form.id} className="flex items-center gap-2">
             <div
@@ -589,171 +632,219 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        {/* Header. On a phone the counters share one line (P4), so the row is one line tall. */}
+        <div className="flex items-center justify-between mb-6 phone:mb-2 phone:gap-3">
           <button
             onClick={onBack}
-            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11"
+            className="text-warm-600 hover:text-warm-800 flex items-center gap-2 pointer-coarse:min-h-11 phone:shrink-0"
           >
             <span>&larr;</span> Til baka
           </button>
-          <div className="text-right">
+          <div className="text-right phone:flex phone:flex-wrap phone:items-baseline phone:justify-end phone:gap-x-2 phone:min-w-0">
             <div className="text-sm text-warm-600">
               Stig 3 / Þraut {currentChallenge + 1} af {challenges.length}
             </div>
-            <div className="text-lg font-bold text-purple-600">{score} stig</div>
+            <div className="text-lg font-bold text-purple-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-warm-200 rounded-full h-2 mb-6">
+        <div className="w-full bg-warm-200 rounded-full h-2 mb-6 phone:h-1.5 phone:mb-3">
           <div
-            className="bg-purple-500 h-2 rounded-full transition-all duration-300"
+            className="bg-purple-500 h-2 phone:h-1.5 rounded-full transition-all duration-300"
             style={{ width: `${((currentChallenge + 1) / challenges.length) * 100}%` }}
           />
         </div>
 
         {/* Main content */}
-        <div ref={cardRef} className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8">
-          <h2 className="text-xl sm:text-2xl font-bold text-purple-800 mb-2">{challenge.title}</h2>
-
-          {challenge.molecule && (
-            <div className="inline-block bg-purple-50 px-4 py-2 rounded-lg mb-4">
-              <span
-                className="font-mono text-2xl font-bold text-purple-700"
-                role="img"
-                aria-label={`Sameind: ${challenge.molecule}`}
+        {/* A phone on its side: the molecule and its picture | the question, the options and
+            Athuga, and after a check the verdict across both columns below them. The wrappers
+            are display: contents everywhere else, so nothing else moves. */}
+        <div
+          ref={cardRef}
+          className="bg-white rounded-2xl shadow-2xl p-4 sm:p-6 md:p-8 phone:p-3 phone-land:grid phone-land:grid-cols-2 phone-land:gap-x-4 phone-land:items-start"
+        >
+          <div className="contents phone-land:block">
+            {/* On a phone the molecule chip sits beside the title where both fit. */}
+            <div className="phone:flex phone:flex-wrap phone:items-center phone:gap-x-3 phone:gap-y-1 phone:mb-2">
+              <h2
+                data-item-start
+                className="text-xl sm:text-2xl font-bold text-purple-800 mb-2 phone:mb-0 phone:min-w-0"
               >
-                {challenge.molecule}
-              </span>
-            </div>
-          )}
+                {challenge.title}
+              </h2>
 
-          <p className="text-warm-600 mb-6">{challenge.description}</p>
-
-          {/* Atom info for FC calculations - with visual diagram */}
-          {challenge.atoms && (
-            <div className="bg-warm-50 p-4 rounded-xl mb-6">
-              <h3 className="font-bold text-warm-700 mb-3">Rafeindasamsetning:</h3>
-              {/* Visual atom diagram */}
-              {challenge.atoms.map((atom, idx) => (
-                <div key={idx}>{renderAtomVisualization(atom, showResult)}</div>
-              ))}
-              {/* FC calculation shown after answer */}
-              {showResult &&
-                challenge.atoms.map((atom, idx) => (
-                  <div
-                    key={`calc-${idx}`}
-                    className="mt-4 p-3 bg-white rounded-lg border border-purple-200"
+              {challenge.molecule && (
+                <div className="inline-block bg-purple-50 px-4 py-2 rounded-lg mb-4 phone:mb-0 phone:px-3 phone:py-1">
+                  <span
+                    className="font-mono text-2xl font-bold text-purple-700 phone:text-xl"
+                    role="img"
+                    aria-label={`Sameind: ${challenge.molecule}`}
                   >
-                    <div className="text-sm font-mono text-center">
-                      <span className="text-warm-600">FC = </span>
-                      <span className="text-purple-600">{atom.valenceElectrons}</span>
-                      <span className="text-warm-600"> - (</span>
-                      <span className="text-blue-600">{atom.lonePairElectrons}</span>
-                      <span className="text-warm-600"> + ½×</span>
-                      <span className="text-green-600">{atom.bondingElectrons}</span>
-                      <span className="text-warm-600">) = </span>
-                      <span
-                        className={`font-bold ${atom.formalCharge === 0 ? 'text-green-600' : atom.formalCharge > 0 ? 'text-red-600' : 'text-blue-600'}`}
-                      >
-                        {atom.formalCharge >= 0 ? '+' : ''}
-                        {atom.formalCharge}
-                      </span>
-                    </div>
-                  </div>
+                    {challenge.molecule}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <p className="text-warm-600 mb-6 phone:mb-3">{challenge.description}</p>
+
+            {/* Atom info for FC calculations - with visual diagram */}
+            {challenge.atoms && (
+              <div className="bg-warm-50 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
+                <h3 className="font-bold text-warm-700 mb-3 phone:mb-0">Rafeindasamsetning:</h3>
+                {/* Visual atom diagram */}
+                {challenge.atoms.map((atom, idx) => (
+                  <div key={idx}>{renderAtomVisualization(atom, showResult)}</div>
                 ))}
-            </div>
-          )}
+                {/* FC calculation shown after answer */}
+                {showResult &&
+                  challenge.atoms.map((atom, idx) => (
+                    <div
+                      key={`calc-${idx}`}
+                      className="mt-4 p-3 phone:mt-2 phone:p-2 bg-white rounded-lg border border-purple-200"
+                    >
+                      <div className="text-sm font-mono text-center">
+                        <span className="text-warm-600">FC = </span>
+                        <span className="text-purple-600">{atom.valenceElectrons}</span>
+                        <span className="text-warm-600"> - (</span>
+                        <span className="text-blue-600">{atom.lonePairElectrons}</span>
+                        <span className="text-warm-600"> + ½×</span>
+                        <span className="text-green-600">{atom.bondingElectrons}</span>
+                        <span className="text-warm-600">) = </span>
+                        <span
+                          className={`font-bold ${atom.formalCharge === 0 ? 'text-green-600' : atom.formalCharge > 0 ? 'text-red-600' : 'text-blue-600'}`}
+                        >
+                          {atom.formalCharge >= 0 ? '+' : ''}
+                          {atom.formalCharge}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            )}
 
-          {/* Structure options for best structure challenges - with visual diagram */}
-          {challenge.structures && (
-            <div className="bg-warm-50 p-4 rounded-xl mb-6">
-              <h3 className="font-bold text-warm-700 mb-3">Möguleg form:</h3>
-              {renderStructureComparison(challenge.structures)}
-            </div>
-          )}
+            {/* Structure options for best structure challenges - with visual diagram */}
+            {challenge.structures && (
+              <div className="bg-warm-50 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
+                <h3 className="font-bold text-warm-700 mb-3 phone:mb-2">Möguleg form:</h3>
+                {renderStructureComparison(challenge.structures)}
+              </div>
+            )}
 
-          {/* Resonance structures visualization */}
-          {challenge.resonanceForms && (
-            <div className="bg-warm-50 p-4 rounded-xl mb-6">
-              <h3 className="font-bold text-warm-700 mb-3">Samsvörunarformúlur:</h3>
-              {renderResonanceStructures(challenge.resonanceForms)}
-            </div>
-          )}
-
-          {/* Question */}
-          <p className="text-lg font-medium text-warm-800 mb-4">{challenge.question}</p>
-
-          {/* Options */}
-          <div className="space-y-3 mb-6">
-            {shuffledOptions.map((option) => (
-              <button
-                key={option.id}
-                onClick={() => !showResult && setSelectedAnswer(option.id)}
-                disabled={showResult}
-                className={`w-full p-4 rounded-xl border-2 text-left transition-all ${
-                  showResult
-                    ? option.correct
-                      ? 'border-green-500 bg-green-50'
-                      : selectedAnswer === option.id
-                        ? 'border-red-500 bg-red-50'
-                        : 'border-warm-200 bg-warm-50 opacity-50'
-                    : selectedAnswer === option.id
-                      ? 'border-purple-500 bg-purple-50 ring-2 ring-purple-200'
-                      : 'border-warm-300 hover:border-purple-400 hover:bg-purple-50'
-                }`}
-              >
-                <span>{option.text}</span>
-                {showResult && selectedAnswer === option.id && (
-                  <div
-                    className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}
-                  >
-                    {option.explanation}
-                  </div>
-                )}
-              </button>
-            ))}
+            {/* Resonance structures visualization */}
+            {challenge.resonanceForms && (
+              <div className="bg-warm-50 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
+                <h3 className="font-bold text-warm-700 mb-3 phone:mb-1">Samsvörunarformúlur:</h3>
+                {renderResonanceStructures(challenge.resonanceForms)}
+              </div>
+            )}
           </div>
 
-          {/* Hint button */}
-          {!showResult && !showHint && (
-            <button
-              onClick={() => {
-                setShowHint(true);
-                setTotalHintsUsed((prev) => prev + 1);
-              }}
-              className="text-purple-600 hover:text-purple-800 text-sm underline mb-4 pointer-coarse:min-h-11"
+          <div className="contents phone-land:block">
+            {/* Question */}
+            <p
+              ref={questionRef}
+              className="text-lg font-medium text-warm-800 mb-4 phone:text-base phone:mb-2"
             >
-              Sýna vísbendingu
-            </button>
-          )}
+              {challenge.question}
+            </p>
 
-          {showHint && !showResult && (
-            <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4">
-              <span className="font-bold text-yellow-800">Vísbending: </span>
-              <span className="text-yellow-900">{challenge.hint}</span>
+            {/* Options */}
+            <div
+              ref={optionsRef}
+              className={
+                optionRow
+                  ? 'grid grid-cols-3 gap-2 mb-3'
+                  : 'space-y-3 mb-6 phone:space-y-2 phone:mb-3'
+              }
+            >
+              {shuffledOptions.map((option) => (
+                <button
+                  key={option.id}
+                  onClick={() => !showResult && setSelectedAnswer(option.id)}
+                  disabled={showResult}
+                  className={`w-full p-4 phone:p-3 rounded-xl border-2 transition-all ${
+                    optionRow ? 'text-center font-mono text-lg' : 'text-left'
+                  } ${
+                    showResult
+                      ? option.correct
+                        ? 'border-green-500 bg-green-50'
+                        : selectedAnswer === option.id
+                          ? 'border-red-500 bg-red-50'
+                          : 'border-warm-200 bg-warm-50 opacity-50'
+                      : selectedAnswer === option.id
+                        ? 'border-purple-500 bg-purple-50 ring-2 ring-purple-200'
+                        : 'border-warm-300 hover:border-purple-400 hover:bg-purple-50'
+                  }`}
+                >
+                  <span>{option.text}</span>
+                  {showResult && selectedAnswer === option.id && (
+                    <div
+                      className={`mt-2 text-sm ${option.correct ? 'text-green-700' : 'text-red-700'}`}
+                    >
+                      {option.explanation}
+                    </div>
+                  )}
+                </button>
+              ))}
             </div>
-          )}
 
-          {/* Check answer button */}
-          {!showResult && (
-            <button
-              onClick={checkAnswer}
-              disabled={!selectedAnswer}
-              className="w-full bg-purple-500 hover:bg-purple-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 rounded-xl transition-colors"
-            >
-              Athuga svar
-            </button>
-          )}
+            {/* On a phone "Sýna vísbendingu" and Athuga share a row; Athuga wraps
+                under the link where both do not fit, and the opened hint takes a
+                row of its own above it. A plain block everywhere else. */}
+            <div className="phone:flex phone:flex-wrap phone:items-center phone:gap-x-3">
+              {/* Hint button */}
+              {!showResult && !showHint && (
+                <button
+                  onClick={() => {
+                    setShowHint(true);
+                    setTotalHintsUsed((prev) => prev + 1);
+                  }}
+                  className="text-purple-600 hover:text-purple-800 text-sm underline mb-4 phone:mb-2 phone:shrink-0 pointer-coarse:min-h-11"
+                >
+                  Sýna vísbendingu
+                </button>
+              )}
+
+              {showHint && !showResult && (
+                <div
+                  ref={hintRef}
+                  className="bg-yellow-50 border border-yellow-200 p-4 rounded-xl mb-4 phone:p-3 phone:mb-3 phone:basis-full"
+                >
+                  <span className="font-bold text-yellow-800">Vísbending: </span>
+                  <span className="text-yellow-900">{challenge.hint}</span>
+                </div>
+              )}
+
+              {/* Check answer button */}
+              {!showResult && (
+                <button
+                  key="check"
+                  ref={checkRef}
+                  onClick={checkAnswer}
+                  disabled={!selectedAnswer}
+                  className="w-full bg-purple-500 hover:bg-purple-600 disabled:bg-warm-300 text-white font-bold py-4 px-6 phone:py-3 phone:mb-2 phone:w-auto phone:flex-1 phone:basis-40 rounded-xl transition-colors"
+                >
+                  Athuga svar
+                </button>
+              )}
+            </div>
+          </div>
 
           {/* Result feedback */}
+          {/* The group focused after the check (P3), named by its verdict. */}
           {showResult && (
             <div
-              className={`p-4 rounded-xl mb-4 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
+              ref={resultRef}
+              role="group"
+              tabIndex={-1}
+              aria-labelledby="lewis-l3-verdict"
+              className={`p-4 rounded-xl mb-4 phone:p-3 phone:mb-3 focus:outline-none phone-land:col-span-2 ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}
             >
               <div
-                className={`font-bold text-lg mb-2 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
+                id="lewis-l3-verdict"
+                className={`font-bold text-lg mb-2 phone:mb-1 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
               >
                 {isCorrect ? 'Rétt!' : 'Rangt'}
               </div>
@@ -764,17 +855,23 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           {/* Next button */}
           {showResult && (
             <button
-              onClick={nextChallenge}
-              className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+              key="next"
+              ref={nextRef}
+              onClick={armed(nextChallenge)}
+              className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-6 phone:py-3 rounded-xl transition-colors phone-land:col-span-2"
             >
               {currentChallenge < challenges.length - 1 ? 'Næsta þraut' : 'Ljúka stigi 3'}
             </button>
           )}
         </div>
 
-        {/* Reference card */}
-        <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="font-bold text-warm-700 mb-3">Formhleðsluformúlan</h3>
+        {/* Reference card: closed on a phone until opened (P9), always open elsewhere. */}
+        <PhoneDisclosure
+          summary="Formhleðsluformúlan"
+          className="mt-6 bg-white rounded-xl p-4 shadow-sm phone:mt-3 phone:p-2"
+          buttonClassName="text-warm-700 border-transparent"
+        >
+          <h3 className="font-bold text-warm-700 mb-3 phone:sr-only">Formhleðsluformúlan</h3>
           <div className="bg-purple-50 p-3 rounded-lg text-center font-mono mb-3">
             <strong>FC = V - (L + ½B)</strong>
           </div>
@@ -789,7 +886,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               <strong>B</strong> = Bundnar rafeindir (í tengslum)
             </li>
           </ul>
-        </div>
+        </PhoneDisclosure>
       </div>
     </div>
   );
