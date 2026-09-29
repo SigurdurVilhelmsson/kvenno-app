@@ -729,6 +729,16 @@ export default function Level2({ onComplete, onBack }: Level2Props) {
                   sýru og basa samkvæmt hlutfallinu.
                 </p>
                 <p className="text-sm text-green-800 mt-1">massi = mól × mólmassi</p>
+                {/* On a phone the molar masses are restated here, as Stig 3
+                    restates the stock concentrations: the cards that give them
+                    sit about 400 px above these fields, further than a soft
+                    keyboard leaves on screen (design §6.2.8). */}
+                {phone && (
+                  <p className="text-sm text-green-800 mt-1">
+                    Mólmassi: {problem.acidName} {formatDecimal(problem.acidMolarMass)} g/mól,{' '}
+                    {problem.baseName} {formatDecimal(problem.baseMolarMass)} g/mól
+                  </p>
+                )}
               </div>
 
               <div
