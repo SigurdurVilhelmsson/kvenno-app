@@ -5,6 +5,7 @@ import {
   formatScientific,
   gradeScientific,
   isPhone,
+  useIsPhone,
   useArmedAfter,
   useCommitReveal,
   useItemStart,
@@ -80,6 +81,7 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
   const committed = (kind: Commit) => setCommit(({ n }) => ({ n: n + 1, kind }));
 
   // "Næsta dæmi": the new problem from its "Dæmi n af N" line, focused.
+  const phone = useIsPhone();
   const itemRef = useItemStart<HTMLDivElement>(index);
   useCommitReveal(commit.n, () => {
     // A desktop window scrolls only where the game's own helper did: after a
@@ -401,8 +403,15 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                   </div>
                 )}
 
+                {/* On a desktop window the verdict reuses the question's element, as
+                    it did before the phone pass: unkeyed, the two are one element, and
+                    under reduced motion the global 0,01 ms transition then holds its new
+                    padding back for a frame, which is where the desktop reveal has
+                    always measured it and so where the page has always landed. On a
+                    phone they are two elements, so the reveal there measures the
+                    feedback as drawn. */}
                 {stage === 'approximation' ? (
-                  <div key="rule">
+                  <div key={phone ? 'rule' : undefined}>
                     <p className="mb-3 text-warm-700 phone:mb-2">
                       Síðasta skrefið: mátti sleppa x í nefnaranum? Reglan er að breytingin verði að
                       vera minni en{' '}
@@ -438,10 +447,9 @@ export function BeitaScreen({ onComplete, onBack }: Props) {
                     </div>
                   </div>
                 ) : (
-                  // A new element, keyed, not the Já/Nei block restyled: the group focus
-                  // moves to after the answer, named by the verdict.
+                  // The group focus moves to after the answer, named by the verdict.
                   <div
-                    key="feedback"
+                    key={phone ? 'feedback' : undefined}
                     ref={feedbackRef}
                     role="group"
                     aria-labelledby={verdictId}

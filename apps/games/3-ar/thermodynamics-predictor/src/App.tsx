@@ -715,12 +715,23 @@ function App() {
               }`}
             >
               <div className="font-bold text-sm">
-                ΔG° = ΔH° − TΔS° = {demoDeltaH}{' '}
-                {/* Unbroken on a phone: the line otherwise splits between ")(" at 375 px. */}
-                <span className="phone:whitespace-nowrap">
-                  − ({demoT})({formatDecimal(demoDeltaS / 1000)})
-                </span>{' '}
-                ={' '}
+                {/* Unbroken on a phone: the line otherwise splits between ")(" at 375 px.
+                    The wrapper exists only there, so a desktop window renders the
+                    line exactly as it did. */}
+                {phone ? (
+                  <>
+                    ΔG° = ΔH° − TΔS° = {demoDeltaH}{' '}
+                    <span className="whitespace-nowrap">
+                      − ({demoT})({formatDecimal(demoDeltaS / 1000)})
+                    </span>{' '}
+                    ={' '}
+                  </>
+                ) : (
+                  <>
+                    ΔG° = ΔH° − TΔS° = {demoDeltaH} − ({demoT})({formatDecimal(demoDeltaS / 1000)})
+                    ={' '}
+                  </>
+                )}
                 <span className="text-xl whitespace-nowrap">
                   {formatRounded(demoDeltaG, 1)} kJ/mól
                 </span>
@@ -1256,7 +1267,7 @@ function App() {
                 <div
                   ref={feedbackRef}
                   role="group"
-                  aria-labelledby="thermo-verdict"
+                  aria-labelledby={phone ? 'thermo-verdict' : 'thermo-feedback'}
                   tabIndex={-1}
                   className={`rounded-lg shadow-lg p-4 sm:p-6 focus:outline-none phone:p-3 ${
                     answeredCorrectly
@@ -1264,15 +1275,25 @@ function App() {
                       : 'bg-red-50 border-2 border-red-500'
                   }`}
                 >
+                  {/* On a phone only the verdict's first sentence stays bold, and it
+                      names the group; a desktop window keeps the one bold line it had,
+                      which names the group whole. */}
                   <div
+                    id="thermo-feedback"
                     role="alert"
                     aria-live="polite"
                     className="text-lg font-bold mb-2 phone:text-base phone:font-normal phone:mb-0"
                   >
-                    <span id="thermo-verdict" className="phone:font-bold">
-                      {feedbackLead}
-                    </span>
-                    {feedbackRest}
+                    {phone ? (
+                      <>
+                        <span id="thermo-verdict" className="font-bold">
+                          {feedbackLead}
+                        </span>
+                        {feedbackRest}
+                      </>
+                    ) : (
+                      feedback
+                    )}
                   </div>
                   {showSolution && (
                     <button

@@ -821,6 +821,19 @@ function CoupledTask({ onDone }: { onDone: () => void }) {
 
   const folded = phone && stage !== 'operations';
 
+  // The equation being built. On a phone it sits under the target, pinned with
+  // it; on a desktop window it keeps its place under the givens, in the DOM as
+  // well as on screen, so the reading order there is what it was. It holds
+  // nothing focusable, so neither place changes the tab order.
+  const composedBox: ReactNode = (
+    <div className="mb-4 rounded-xl border-2 border-dashed border-warm-300 p-4 phone:mb-2 phone:px-3 phone:py-1.5">
+      <p className="mb-1 text-xs uppercase tracking-wide text-warm-500 phone:mb-0">
+        {problem.givens.length > 1 ? 'Summa jafnanna' : 'Jafnan eins og þú stilltir hana'}
+      </p>
+      <p className="font-mono text-warm-800">{equationOf(composed)}</p>
+    </div>
+  );
+
   const strip: ReactNode = (
     <>
       {/* On a phone the heading and the temperature share a line above the
@@ -841,15 +854,7 @@ function CoupledTask({ onDone }: { onDone: () => void }) {
           við {problem.result.constant!.temperatureC} °C
         </p>
       </div>
-      {/* Under the givens on a desktop window (order 1 in the column it sits
-          in); under the target on a phone, where it is pinned with it. It
-          holds nothing focusable, so moving it changes no tab order. */}
-      <div className="order-1 mb-4 rounded-xl border-2 border-dashed border-warm-300 p-4 phone:order-none phone:mb-2 phone:px-3 phone:py-1.5">
-        <p className="mb-1 text-xs uppercase tracking-wide text-warm-500 phone:mb-0">
-          {problem.givens.length > 1 ? 'Summa jafnanna' : 'Jafnan eins og þú stilltir hana'}
-        </p>
-        <p className="font-mono text-warm-800">{equationOf(composed)}</p>
-      </div>
+      {phone && composedBox}
     </>
   );
 
@@ -857,11 +862,9 @@ function CoupledTask({ onDone }: { onDone: () => void }) {
     <div ref={rootRef}>
       <Counter index={index} count={COUPLED_PROBLEMS.length} />
 
-      {/* A column, so the built equation can sit under the givens on a desktop
-          window and under the target on a phone, and so the pinned strip stays
-          stuck until the student reaches the check below the givens. Its
-          children carry only bottom margins, so it lays them out exactly as
-          the page flow did. */}
+      {/* A column, so the pinned strip stays stuck until the student reaches
+          the check below the givens. Its children carry only bottom margins,
+          so it lays them out exactly as the page flow did. */}
       <div className="flex flex-col">
         {stage === 'operations' ? <TaskStrip>{strip}</TaskStrip> : strip}
 
@@ -930,8 +933,10 @@ function CoupledTask({ onDone }: { onDone: () => void }) {
           })}
         </div>
 
+        {!phone && composedBox}
+
         {stage === 'operations' && (
-          <div ref={feedbackRef} className="order-2 phone:order-none">
+          <div ref={feedbackRef}>
             <button
               key="check-equation"
               type="button"
@@ -959,12 +964,7 @@ function CoupledTask({ onDone }: { onDone: () => void }) {
         {(stage === 'constant' || stage === 'done') && (
           // Named by the verdict on the equation; focus moves into it once the
           // equation matches.
-          <div
-            ref={feedbackRef}
-            role="group"
-            aria-labelledby={matchId}
-            className="order-2 phone:order-none"
-          >
+          <div ref={feedbackRef} role="group" aria-labelledby={matchId}>
             <div
               ref={matchRef}
               id={matchId}
