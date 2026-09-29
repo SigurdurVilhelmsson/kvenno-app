@@ -517,6 +517,17 @@ pnpm build                 # Build everything
 ./scripts/deploy.sh        # rsync to server + restart backend
 ```
 
+`deploy.sh` runs on a dev machine and pushes over SSH. It does **not** install
+`server/nginx-site.conf`: copy that to the server and run `sudo nginx -t && sudo systemctl reload nginx`
+yourself whenever it changes.
+
+## Open checks and decisions live in `docs/REVIEW-QUEUE.md`
+
+Every hand check (device, screen reader, post-deploy) and every ruling waiting on Siggi is listed
+there, each pointing to where its detail lives. When you finish one, tick it with the date and the
+PR. When you find a new one, add it there as well as wherever else you write it up. A ruling that
+exists only in a PR description or a session transcript gets lost.
+
 ## Before changing a game, read `docs/README.md`
 
 Three August-2026 review documents supersede the older per-game reviews and the year `REVIEW_TRACKER.md` files. They carry `file:line` citations and were adversarially verified:
