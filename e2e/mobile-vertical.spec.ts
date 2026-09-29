@@ -33,6 +33,32 @@ describeVerticalLoops(GAME_SCREENS);
  */
 const PIN_USES: { file: string; component: 'TaskStrip' | 'PinnedActions'; measured: string }[] = [
   {
+    file: 'apps/games/1-ar/einingakedjan/src/components/ChainBuilder.tsx',
+    component: 'TaskStrip',
+    measured:
+      "Æfa and Beita, 'Keðjan þín' (named in design §4, the one accepted exception to the " +
+      '120 px budget), 360x640 touch, the base build: Beita B1 with its three cards placed ' +
+      'wrapped the chain onto three rows, heading at page y 564 and chain to y 1015, with ' +
+      'the pool at 1191-1831, so the chain and the card being picked were never on screen ' +
+      'together and every tap jumped the page up to the chain. After compaction the chain is ' +
+      'one sideways-scrolling row, 72 px pinned; with the bar 137 px together at 360x640 and ' +
+      '375x548, 132 at 390x664 and 155 at 320x640, inside the 28 % budget at each. No text ' +
+      'input on the screen. It holds the chain only: no verdict, and in Æfa the unit it ends ' +
+      'on is not shown, since the prediction asks for it.',
+  },
+  {
+    file: 'apps/games/1-ar/einingakedjan/src/components/ChainBuilder.tsx',
+    component: 'PinnedActions',
+    measured:
+      'Æfa and Beita, same measurement: on the base build Leysa sat at page y 1031 under the ' +
+      'three-row chain, 160 px above the pool it follows and 800 px above the last pool card, ' +
+      'so a student picking from the pool scrolled a screen back up to press it. On a ' +
+      'portrait phone the actions now follow the pool (moved in the DOM, so the tab order is ' +
+      'what is seen) and pin at the foot of the chain card, 60-83 px. A choice screen, no text ' +
+      'input; the bar leaves with the board when Leysa is pressed, so it never sits over the ' +
+      'worked solution or its feedback.',
+  },
+  {
     file: 'apps/games/1-ar/utfellingarhvorf/src/components/AefaScreen.tsx',
     component: 'PinnedActions',
     measured:

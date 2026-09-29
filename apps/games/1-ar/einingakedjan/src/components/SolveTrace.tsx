@@ -22,8 +22,8 @@ interface SolveTraceProps {
  */
 export function SolveTrace({ start, steps, revealed, failedStep, startLabel }: SolveTraceProps) {
   return (
-    <ol className="space-y-3" aria-live="polite">
-      <li className="rounded-lg bg-white p-3 shadow-sm">
+    <ol className="space-y-3 phone:space-y-2" aria-live="polite">
+      <li className="rounded-lg bg-white p-3 shadow-sm phone:p-2.5">
         <span className="mb-1 block text-xs font-semibold uppercase tracking-wide text-warm-500">
           Byrjun
         </span>
@@ -35,11 +35,11 @@ export function SolveTrace({ start, steps, revealed, failedStep, startLabel }: S
         return (
           <li
             key={`${step.ratio.equivalence.id}-${index}`}
-            className={`fade-in rounded-lg p-3 shadow-sm ${
+            className={`fade-in rounded-lg p-3 shadow-sm phone:p-2.5 ${
               broke ? 'border-2 border-red-400 bg-red-50' : 'bg-white'
             }`}
           >
-            <span className="mb-2 block text-xs font-semibold uppercase tracking-wide text-warm-500">
+            <span className="mb-2 block text-xs font-semibold uppercase tracking-wide text-warm-500 phone:mb-1">
               Skref {index + 1}
             </span>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-base">
@@ -62,7 +62,7 @@ export function SolveTrace({ start, steps, revealed, failedStep, startLabel }: S
                 className={broke ? 'text-red-700' : 'text-warm-900'}
               />
             </div>
-            <p className="mt-2 text-sm text-warm-600">
+            <p className="mt-2 text-sm text-warm-600 phone:mt-1">
               {step.cancelCount > 0
                 ? `${step.cancelCount === 1 ? 'Ein eining styttist' : `${step.cancelCount} einingar styttast`} út.`
                 : 'Ekkert styttist út — engin eining á sér samsvörun hinum megin við strikið.'}

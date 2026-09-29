@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 import { useEscapeKey } from '@shared/hooks';
+import { revealSpan } from '@shared/utils';
 
+import { useBackButton } from './BackButton';
 import { RatioFraction } from './RatioCard';
 import { ratioById } from '../data/ratios';
 import { flip, orient, type Equivalence, type Orientation } from '../engine/units';
@@ -27,13 +29,37 @@ interface LessonProps {
 function Lesson({ heading, statement, equivalence, forwardUse, flippedUse }: LessonProps) {
   const [orientation, setOrientation] = useState<Orientation>('forward');
   const oriented = orient(equivalence, orientation);
+  const headingId = useId();
 
+  // On a phone the sentence the turn changes sits under the button, often
+  // below the fold when the button is tapped: bring the ratio and the sentence
+  // in together (design §3, explore). Nothing moves on a desktop window.
+  const turnRef = useRef<HTMLDivElement>(null);
+  const sentenceRef = useRef<HTMLParagraphElement>(null);
+  const shownOrientation = useRef(orientation);
+  useEffect(() => {
+    if (shownOrientation.current === orientation) return;
+    shownOrientation.current = orientation;
+    revealSpan(sentenceRef.current, [turnRef.current]);
+  }, [orientation]);
+
+  // A group named by its heading, so turning the ratio over keeps focus inside
+  // the lesson whose sentence below it changes.
   return (
-    <div className="rounded-xl bg-white p-5 shadow-sm">
-      <h3 className="text-lg font-semibold text-warm-800">{heading}</h3>
+    <div
+      role="group"
+      aria-labelledby={headingId}
+      className="rounded-xl bg-white p-5 shadow-sm phone:p-3"
+    >
+      <h3 id={headingId} className="text-lg font-semibold text-warm-800">
+        {heading}
+      </h3>
       <p className="mt-2 text-warm-700">{statement}</p>
 
-      <div className="mt-4 flex flex-col items-center gap-3 rounded-lg bg-warm-50 p-4 sm:flex-row sm:justify-center sm:gap-6">
+      <div
+        ref={turnRef}
+        className="mt-4 flex flex-col items-center gap-3 rounded-lg bg-warm-50 p-4 sm:flex-row sm:justify-center sm:gap-6 phone:mt-3 phone:gap-2 phone:p-3"
+      >
         <RatioFraction ratio={oriented} className="text-lg" />
         <button
           type="button"
@@ -44,7 +70,7 @@ function Lesson({ heading, statement, equivalence, forwardUse, flippedUse }: Les
         </button>
       </div>
 
-      <p className="mt-3 rounded-lg bg-sky-50 p-3 text-sm text-sky-900">
+      <p ref={sentenceRef} className="mt-3 rounded-lg bg-sky-50 p-3 text-sm text-sky-900">
         Svona snúið stendur{' '}
         <strong>
           {oriented.den.unit}
@@ -64,19 +90,20 @@ interface UnderstandScreenProps {
 
 export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) {
   useEscapeKey(onBack);
+  const back = useBackButton(onBack);
 
   return (
     <div className="mx-auto max-w-3xl">
-      <button
-        type="button"
-        onClick={onBack}
-        className="game-btn mb-4 rounded-lg border border-warm-300 px-3 py-1.5 text-sm text-warm-700 hover:bg-warm-50 pointer-coarse:min-h-11"
-      >
-        ← Aftur í valmynd
-      </button>
+      {back.above}
 
-      <div className="mb-5 rounded-xl bg-white p-5 shadow-sm">
-        <h2 className="text-xl font-bold text-warm-800">Hvert hlutfall er í raun tvö</h2>
+      <div className="mb-5 rounded-xl bg-white p-5 shadow-sm phone:mb-3 phone:p-3">
+        {/* On a phone the back button shares this row (design P4). */}
+        <div className="phone:flex phone:items-center phone:gap-3">
+          {back.inRow}
+          <h2 className="text-xl font-bold text-warm-800 phone:min-w-0 phone:text-base">
+            Hvert hlutfall er í raun tvö
+          </h2>
+        </div>
         <p className="mt-2 text-warm-700">
           Sérhver staðreynd sem tengir tvær einingar má skrifa sem brot — og brotið má snúa við án
           þess að staðreyndin breytist. Bæði brotin eru jöfn einum, svo það breytir aldrei stærðinni
@@ -89,7 +116,7 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
         </p>
       </div>
 
-      <div className="space-y-5">
+      <div className="space-y-5 phone:space-y-3">
         <Lesson
           heading="Mólmassi"
           statement="Mólmassi segir hvað eitt mól af efninu vegur. Fyrir magnesíum: 24,31 g í hverju móli."
@@ -113,7 +140,7 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
         />
       </div>
 
-      <div className="mt-5 rounded-xl border-2 border-amber-300 bg-amber-50 p-5">
+      <div className="mt-5 rounded-xl border-2 border-amber-300 bg-amber-50 p-5 phone:mt-3 phone:p-3">
         <h3 className="font-semibold text-amber-900">Og eitt hlutfall í viðbót: efnajafnan</h3>
         <p className="mt-2 text-sm text-amber-900">
           Stuðlarnir í stilltri efnajöfnu eru líka hlutfall — en aðeins á milli{' '}
@@ -126,7 +153,7 @@ export function UnderstandScreen({ onComplete, onBack }: UnderstandScreenProps) 
       <button
         type="button"
         onClick={onComplete}
-        className="game-btn mt-6 w-full rounded-lg bg-kvenno-orange px-5 py-3 font-semibold text-white hover:bg-kvenno-orange-dark"
+        className="game-btn mt-6 w-full rounded-lg bg-kvenno-orange px-5 py-3 font-semibold text-white hover:bg-kvenno-orange-dark phone:mt-4"
       >
         Áfram að æfingum
       </button>

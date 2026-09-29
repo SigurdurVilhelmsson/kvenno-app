@@ -2849,6 +2849,11 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           clickRole: ['button', 'Leysa'],
         },
+        // The prediction's options ignore a press within 400 ms of appearing,
+        // so the second tap of a double tap on "Leysa" cannot answer unread.
+        {
+          wait: 300,
+        },
         {
           css: 'main .grid button',
         },
@@ -2869,8 +2874,16 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           clickRole: ['button', 'Leysa'],
         },
+        // The prediction's options ignore a press within 400 ms of appearing,
+        // so the second tap of a double tap on "Leysa" cannot answer unread.
+        {
+          wait: 300,
+        },
         {
           css: 'main .grid button',
+        },
+        {
+          wait: 300,
         },
         {
           clickRole: ['button', 'Sýna útreikninginn'],
@@ -2904,11 +2917,22 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
         {
           clickRole: ['button', 'Leysa'],
         },
+        // The prediction's options ignore a press within 400 ms of appearing,
+        // so the second tap of a double tap on "Leysa" cannot answer unread.
+        {
+          wait: 300,
+        },
         {
           css: 'main .grid button',
         },
         {
+          wait: 300,
+        },
+        {
           clickRole: ['button', 'Sýna útreikninginn'],
+        },
+        {
+          wait: 300,
         },
         {
           clickRole: ['button', 'Sýna öll skrefin strax'],
@@ -2943,6 +2967,9 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Leysa'],
         },
         {
+          wait: 300,
+        },
+        {
           clickRole: ['button', 'Sýna öll skrefin strax'],
         },
         {
@@ -2975,10 +3002,16 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           clickRole: ['button', 'Leysa'],
         },
         {
+          wait: 300,
+        },
+        {
           clickRole: ['button', 'Sýna öll skrefin strax'],
         },
         {
           wait: 1000,
+        },
+        {
+          wait: 300,
         },
         {
           clickRole: ['button', 'Næsta dæmi'],
@@ -2987,6 +3020,116 @@ export const GAME_SCREENS: Record<string, GameScreen[]> = {
           wait: 400,
         },
       ],
+    },
+    // Play loops (design §6.1): one per phase.
+    {
+      name: 'Kanna — spjald sett í keðjuna',
+      steps: [
+        {
+          clickRole: ['button', 'Kanna'],
+        },
+      ],
+      // The pool sits under the intro, the three suggestions and the chain:
+      // read first, one or two scrolls down (design §5, explore).
+      loop: {
+        prompt: { css: 'main h2' },
+        action: {
+          css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 24,31 g Mg"]',
+        },
+        answer: [],
+        verdict: { text: 'Þú ert núna með' },
+        next: { role: 'button', name: 'Hreinsa keðjuna' },
+        scrollsToAction: 2,
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Skilja — mólmassa snúið',
+      steps: [
+        {
+          clickRole: ['button', 'Skilja'],
+        },
+      ],
+      // A teaching page (design §5): the first lesson's ratio is one short
+      // scroll down, and the next lesson one more below its sentence.
+      loop: {
+        prompt: { css: 'main h2' },
+        action: { role: 'button', name: 'Snúa hlutfallinu við' },
+        answer: [],
+        verdict: { text: 'Svona snúið stendur' },
+        next: { css: 'main .space-y-5 > [role=group]:nth-child(2) button' },
+        scrollsToAction: 1,
+        teachingFeedback: true,
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Æfa — Leysa og spáin',
+      steps: [
+        {
+          clickRole: ['button', 'Æfa'],
+        },
+        {
+          wait: 300,
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Leysa' },
+        answer: [
+          {
+            css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 24,31 g Mg"]',
+          },
+          {
+            css: 'button[aria-label="Snúa við hlutfalli númer 1"]',
+          },
+          {
+            css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*="atóm Mg jafngildir"]',
+          },
+        ],
+        verdict: { text: 'Áður en við reiknum' },
+        next: { css: 'main .grid button' },
+        viewports: ['android', 'iphone', 'se', 'landscape'],
+      },
+    },
+    {
+      name: 'Beita — Leysa og útreikningurinn',
+      steps: [
+        {
+          clickRole: ['button', 'Beita'],
+        },
+        {
+          wait: 300,
+        },
+      ],
+      loop: {
+        prompt: { css: '[data-item-start]' },
+        action: { role: 'button', name: 'Leysa' },
+        answer: [
+          {
+            css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 24,31 g Mg"]',
+          },
+          {
+            css: 'button[aria-label="Snúa við hlutfalli númer 1"]',
+          },
+          {
+            css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*="2 mól Mg jafngildir 2 mól MgO"]',
+          },
+          {
+            css: 'button[aria-label="Snúa við hlutfalli númer 2"]',
+          },
+          {
+            css: 'button[aria-label^="Bæta við hlutfalli"][aria-label*=": 40,3 g MgO"]',
+          },
+        ],
+        verdict: { css: 'main ol' },
+        next: { role: 'button', name: 'Sýna öll skrefin strax' },
+        // On the SE the Beita statement, with its equation, runs 450 px, so the
+        // pinned chain starts in the flow below the first screen and pins once
+        // the student scrolls to the pool; the §6.2.2 "pinned region on screen
+        // at scrollY 0" check does not hold there (design §5, SE residual).
+        viewports: ['android', 'iphone', 'landscape'],
+      },
     },
   ],
   '2-ar/hess-law': [

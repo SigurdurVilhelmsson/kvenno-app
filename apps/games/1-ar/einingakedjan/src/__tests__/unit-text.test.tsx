@@ -127,6 +127,11 @@ describe('the screen holds units whole where it builds sentences around them', (
     );
     tapCard(view, ': 24,31 g Mg');
     fireEvent.click(view.getByRole('button', { name: 'Leysa' }));
+    // "Sýna öll skrefin strax" ignores a press within 400 ms of appearing (the
+    // double-tap guard); fake timers move performance.now with them.
+    act(() => {
+      vi.advanceTimersByTime(400);
+    });
     fireEvent.click(view.getByRole('button', { name: 'Sýna öll skrefin strax' }));
     act(() => {
       vi.advanceTimersByTime(700);
