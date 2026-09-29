@@ -1,8 +1,9 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef, useEffect, useLayoutEffect } from 'react';
 
 import { AnimatedMolecule } from '@shared/components';
 import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
 import {
+  focusTarget,
   isPhone,
   revealTop,
   useArmedAfter,
@@ -324,8 +325,23 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     }
   };
 
+  // Each hint the student opens takes focus, at every width (the shared
+  // HintSystem does the same). Opening the last one unmounted the button just
+  // pressed and dropped focus to <body> (P3.5). A new molecule resets the count
+  // without moving focus here — useItemTop focuses its title.
+  const hintsRef = useRef<HTMLDivElement>(null);
+  const focusNewHint = useRef(false);
+  useLayoutEffect(() => {
+    if (!focusNewHint.current) return;
+    focusNewHint.current = false;
+    const hints = hintsRef.current?.children;
+    const last = hints?.[hints.length - 1];
+    focusTarget(last instanceof HTMLElement ? last : null);
+  }, [hintsRevealed]);
+
   const revealHint = () => {
     if (hintsRevealed < challenge.hints.length) {
+      focusNewHint.current = true;
       setHintsRevealed((prev) => prev + 1);
       setTotalHintsUsed((prev) => prev + 1);
     }
@@ -625,7 +641,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 {/* Hints, under the board and its actions */}
                 <div className="mt-4 phone:mt-3">
                   {hintsRevealed > 0 && (
-                    <div className="space-y-2 mb-3 phone:mb-1">
+                    <div ref={hintsRef} className="space-y-2 mb-3 phone:mb-1">
                       {challenge.hints.slice(0, hintsRevealed).map((hint, i) => (
                         <div
                           key={i}

@@ -1,6 +1,6 @@
-import { useState, useEffect, useId, useRef } from 'react';
+import { useState, useEffect, useId, useLayoutEffect, useRef } from 'react';
 
-import { useArmedAfter, useItemTop, useRevealAfterCommit } from '@shared/utils';
+import { focusTarget, useArmedAfter, useItemTop, useRevealAfterCommit } from '@shared/utils';
 
 import { pairCount } from '../utils/lonePairs';
 
@@ -189,11 +189,25 @@ export function LewisGuidedMode({
   // A wrong answer used to leave the step with no way forward but skipping the
   // whole walkthrough: the input was gone and only a correct answer showed
   // "Næsta skref".
+  const [retries, setRetries] = useState(0);
   const retryStep = () => {
     setShowFeedback(false);
     setIsCorrect(false);
     setUserValue(null);
+    setRetries((n) => n + 1);
   };
+  // "Reyna aftur" unmounts with the feedback, which dropped focus to <body>
+  // (P3.5). Focus goes back to the step's field — or, on the lone-pair step,
+  // which has none, to the step's title — as the syrufastinn retry does.
+  useLayoutEffect(() => {
+    if (retries === 0) return;
+    const card = stepRef.current;
+    focusTarget(
+      card?.querySelector<HTMLElement>('input') ??
+        card?.querySelector<HTMLElement>('[data-item-start]') ??
+        card
+    );
+  }, [retries, stepRef]);
 
   const handleNextStep = () => {
     if (currentStep < steps.length - 1) {

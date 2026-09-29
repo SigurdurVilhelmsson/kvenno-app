@@ -103,6 +103,19 @@ describe('a wrong answer can be tried again', () => {
     expect(g.ui.getByRole('button', { name: 'Næsta skref →' })).toBeTruthy();
   });
 
+  // "Reyna aftur" unmounts with the feedback, so focus fell to <body> with it
+  // (design P3.5). It now goes back to the step's field.
+  it('"Reyna aftur" returns focus to the field, not <body>', () => {
+    const g = renderGuide();
+    g.type('7');
+    g.click('Athuga');
+    const retry = g.ui.getByRole('button', { name: 'Reyna aftur' });
+    retry.focus();
+    fireEvent.click(retry);
+    expect(document.activeElement).not.toBe(document.body);
+    expect(document.activeElement).toBe(g.input());
+  });
+
   it('offers "Reyna aftur" on a wrong bond count too', () => {
     const g = renderGuide();
     g.type('8');
