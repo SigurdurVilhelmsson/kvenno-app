@@ -3,9 +3,8 @@ import { useState, useMemo, useCallback, useRef, useSyncExternalStore } from 're
 import { PinnedActions } from '@shared/components';
 import { useRevealAfterCommit } from '@shared/utils';
 
+import { BOND_E, diagnoseDrawing, type BondType } from '../utils/lewisDiagnosis';
 import { centralLonePairAngles, pairCount } from '../utils/lonePairs';
-
-type BondType = 'none' | 'single' | 'double' | 'triple';
 
 interface CorrectAtom {
   symbol: string;
@@ -22,6 +21,8 @@ interface CorrectStructure {
 
 interface DrawingFeedback {
   correct: boolean;
+  /** What the drawing breaks, said by the rules (`diagnoseDrawing`). */
+  messages: string[];
   bondErrors: { index: number; atom: string; expected: BondType; got: BondType }[];
   centralLPError: { expected: number; got: number } | null;
   surroundingLPErrors: { index: number; atom: string; expected: number; got: number }[];
@@ -32,10 +33,13 @@ interface LewisDrawingCanvasProps {
   totalElectrons: number;
   correctStructure: CorrectStructure;
   onComplete: (correct: boolean) => void;
+  /** The student opened the solution: the molecule is not counted as solved unaided. */
+  onSolutionShown?: () => void;
   disabled?: boolean;
 }
 
-const BOND_E: Record<BondType, number> = { none: 0, single: 2, double: 4, triple: 6 };
+/** Wrong checks before "Sýna lausn" is offered. */
+const MISSES_BEFORE_SOLUTION = 2;
 const NEXT_BOND: Record<BondType, BondType> = {
   none: 'single',
   single: 'double',
@@ -77,6 +81,7 @@ export function LewisDrawingCanvas({
   totalElectrons,
   correctStructure,
   onComplete,
+  onSolutionShown,
   disabled = false,
 }: LewisDrawingCanvasProps) {
   const { centralAtom, surroundingAtoms } = correctStructure;
@@ -87,6 +92,8 @@ export function LewisDrawingCanvas({
   const [surroundingLP, setSurroundingLP] = useState<number[]>(() => Array(n).fill(0));
   const [submitted, setSubmitted] = useState(false);
   const [feedback, setFeedback] = useState<DrawingFeedback | null>(null);
+  const [misses, setMisses] = useState(0);
+  const [solutionShown, setSolutionShown] = useState(false);
   const [focusedBondIdx, setFocusedBondIdx] = useState<number | null>(null);
   const bondRefs = useRef<(SVGGElement | null)[]>([]);
 
@@ -264,6 +271,13 @@ export function LewisDrawingCanvas({
 
     return {
       correct: bondErrors.length === 0 && !centralLPError && surroundingLPErrors.length === 0,
+      messages: diagnoseDrawing(
+        molecule,
+        totalElectrons,
+        correctStructure,
+        { bonds, centralLP, surroundingLP },
+        atomLabel
+      ),
       bondErrors,
       centralLPError,
       surroundingLPErrors,
@@ -274,8 +288,23 @@ export function LewisDrawingCanvas({
     const result = validate();
     setFeedback(result);
     setSubmitted(true);
+    if (!result.correct) setMisses((m) => m + 1);
     onComplete(result.correct);
   };
+
+  // The key, only on request and only after two misses. It is worked out from
+  // the drawing as it stands, so it shrinks as the student applies it.
+  const solutionRef = useRef<HTMLDivElement>(null);
+  const showSolution = () => {
+    setSolutionShown(true);
+    onSolutionShown?.();
+  };
+  const solution = solutionShown ? validate() : null;
+  useRevealAfterCommit(solutionShown, () => ({
+    bottom: solutionRef.current,
+    tops: [solutionRef.current],
+    focus: solutionRef.current,
+  }));
 
   const reset = () => {
     setBonds(Array(n).fill('none'));
@@ -297,7 +326,7 @@ export function LewisDrawingCanvas({
     const perpY = Math.cos(angle);
     const off = 4;
     const bt = bonds[i];
-    const hasErr = feedback?.bondErrors.some((e) => e.index === i);
+    const hasErr = solution?.bondErrors.some((e) => e.index === i);
     const color = hasErr ? '#ef4444' : '#374151';
 
     const isFocused = focusedBondIdx === i;
@@ -483,7 +512,7 @@ export function LewisDrawingCanvas({
           {/* Central lone pair dots, plus the odd electron of a radical such as NO:
               once the count leaves exactly that one electron, it is drawn on the
               central atom beside the pairs rather than left out of the picture. */}
-          {renderLPDots(cx, cy, centralSlots.slice(0, centralLP), !!feedback?.centralLPError, 36)}
+          {renderLPDots(cx, cy, centralSlots.slice(0, centralLP), !!solution?.centralLPError, 36)}
           {showUnpaired && (
             <circle
               data-unpaired-electron=""
@@ -498,7 +527,7 @@ export function LewisDrawingCanvas({
           {/* Surrounding lone pair dots */}
           {positions.map((p, i) => {
             const bondAngle = Math.atan2(cy - p.y, cx - p.x);
-            const hasErr = feedback?.surroundingLPErrors.some((e) => e.index === i) ?? false;
+            const hasErr = solution?.surroundingLPErrors.some((e) => e.index === i) ?? false;
             return renderLPDots(
               p.x,
               p.y,
@@ -618,7 +647,7 @@ export function LewisDrawingCanvas({
             label room beside 44 px steppers; the label names the atom anyway. */}
         <div
           className={`flex items-center justify-between gap-2 p-2 phone:py-0.5 rounded-lg ${
-            feedback?.centralLPError ? 'bg-red-50 border border-red-200' : 'bg-blue-50'
+            solution?.centralLPError ? 'bg-red-50 border border-red-200' : 'bg-blue-50'
           }`}
         >
           <div className="flex items-center gap-2 min-w-0">
@@ -651,7 +680,7 @@ export function LewisDrawingCanvas({
         {/* Surrounding atoms (skip H) */}
         {surroundingAtoms.map((atom, i) => {
           if (atom.symbol === 'H') return null;
-          const hasErr = feedback?.surroundingLPErrors.some((e) => e.index === i);
+          const hasErr = solution?.surroundingLPErrors.some((e) => e.index === i);
           return (
             <div
               key={i}
@@ -709,26 +738,58 @@ export function LewisDrawingCanvas({
           <div id="lewis-l2-wrong" className="font-bold text-red-800 mb-2 phone:mb-1">
             Ekki alveg rétt — prófaðu aftur!
           </div>
-          <ul className="text-sm text-red-700 space-y-1">
-            {feedback.bondErrors.map((e, i) => (
-              <li key={`be-${i}`}>
-                • {centralAtom}–{atomLabel(e.index)}: {BOND_LABEL[e.got]} → ætti að vera{' '}
-                <strong>{BOND_LABEL[e.expected]}</strong>
-              </li>
-            ))}
-            {feedback.centralLPError && (
-              <li>
-                • {centralAtom}: {pairCount(feedback.centralLPError.got)} → ætti að vera{' '}
-                <strong>{feedback.centralLPError.expected}</strong>
-              </li>
-            )}
-            {feedback.surroundingLPErrors.map((e, i) => (
-              <li key={`le-${i}`}>
-                • {atomLabel(e.index)}: {pairCount(e.got)} → ætti að vera{' '}
-                <strong>{e.expected}</strong>
-              </li>
+          <ul className="text-sm text-red-800 space-y-1 list-disc pl-5">
+            {feedback.messages.map((m, i) => (
+              <li key={i}>{m}</li>
             ))}
           </ul>
+          {misses >= MISSES_BEFORE_SOLUTION && !solutionShown && (
+            <button
+              onClick={showSolution}
+              className="mt-3 phone:mt-2 text-sm font-medium text-red-800 underline pointer-coarse:min-h-11"
+            >
+              Sýna lausn
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* The key, once asked for: what still differs from the correct structure. */}
+      {solution && !isCorrectResult && (
+        <div
+          ref={solutionRef}
+          role="group"
+          tabIndex={-1}
+          aria-labelledby="lewis-l2-solution"
+          className="bg-amber-50 border border-amber-300 rounded-xl p-4 phone:p-3 focus:outline-none"
+        >
+          <div id="lewis-l2-solution" className="font-bold text-amber-900 mb-2 phone:mb-1">
+            Lausn
+          </div>
+          {solution.correct ? (
+            <p className="text-sm text-amber-900">Formúlan er eins og lausnin. Ýttu á Athuga.</p>
+          ) : (
+            <ul className="text-sm text-amber-900 space-y-1">
+              {solution.bondErrors.map((e, i) => (
+                <li key={`be-${i}`}>
+                  • {centralAtom}–{atomLabel(e.index)}: {BOND_LABEL[e.got]} → ætti að vera{' '}
+                  <strong>{BOND_LABEL[e.expected]}</strong>
+                </li>
+              ))}
+              {solution.centralLPError && (
+                <li>
+                  • {centralAtom}: {pairCount(solution.centralLPError.got)} → ætti að vera{' '}
+                  <strong>{solution.centralLPError.expected}</strong>
+                </li>
+              )}
+              {solution.surroundingLPErrors.map((e, i) => (
+                <li key={`le-${i}`}>
+                  • {atomLabel(e.index)}: {pairCount(e.got)} → ætti að vera{' '}
+                  <strong>{e.expected}</strong>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       )}
 

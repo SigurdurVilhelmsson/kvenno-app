@@ -1,6 +1,6 @@
 # Decisions left open by the September mobile pass
 
-**Date:** 2026-09-23 · **For:** Siggi · **Status:** nothing in items 1–122 has been changed
+**Date:** 2026-09-23 · **For:** Siggi · **Status:** nothing in items 1–122 has been changed, except where an item is marked **Ruled**
 
 The 2026-09 mobile pass, and the bug-fix passes that followed it (one per game, then four over the
 shared code), fixed every defect that had one right answer. Whatever needed a teaching, content or
@@ -36,6 +36,9 @@ try); score and streak in the practice modes of `gas-law-challenge` and `thermod
 Options: (a) keep; (b) no running score inside a level, `N af M rétt` at its end, points only in the
 timed Keppnishamur modes; (c) no points anywhere. **Recommendation:** (b), ruled once and swept.
 Items 23, 42, 54, 58 and 66 are this question in one game each.
+**Ruled 2026-09-30 for `lewis-structures` only: (b).** No running score in any level; each level
+reports `N af M rétt`, and the menu and the end screen show that. Every other game above is still
+open.
 
 **2. Two games still charge for hints.**
 `CLAUDE.md` says no game charges for a hint any more; two do. `lewis-structures` Level 1 scales its
@@ -46,6 +49,8 @@ Items 23, 42, 54, 58 and 66 are this question in one game each.
 stragglers got, with a `hint-cost` test in each game; (c) keep, but make Lewis Level 3 show its
 cost. **Recommendation:** (b). A silent penalty is the worst of the three. `docs/README.md:44,52`
 records Lewis Level 1 as deliberately left, so it changes with the ruling.
+**Ruled 2026-09-30 for `lewis-structures`: (b), applied** — flat counts in Levels 1 and 3, guarded
+by `lewis-structures/src/__tests__/hint-cost.test.tsx`. Still open for `buffer-recipe-creator`.
 
 **3. The Year-2 Námsleiðin chain is half English.**
 `Rafeindabygging → Lewis → VSEPR → IMF → Hess → Kinetics → Redox → Organic`, in all eight Y2
@@ -98,6 +103,8 @@ d-hvolfa`, which is also not the glossary's word (`undirhvolf`).
 Brown treats the d-orbital account as unsupported and puts it down to the central atom's size.
 Options: (a) keep; (b) reword to size, e.g. `P og S eru á 3. lotu og nógu stór til að rúma fleiri
 en fjögur rafeindapör`; (c) drop the why. **Recommendation:** (b), your wording, in both games.
+**Ruled 2026-09-30 for `lewis-structures`: (b), applied** in the PCl₅ and SF₆ explanations and the
+`Stækkuð átta` card. Still open for `vsepr-geometry`.
 
 **8. The 3D viewer tells phone users to scroll-wheel.**
 `Dragðu til að snúa, skrollaðu til að stækka` in `intermolecular-forces` (`Level1.tsx:778`),
@@ -558,11 +565,15 @@ score (item 1).
 `slice(0,16)` cuts off Cl, question 2's element (`Level1.tsx:488-499`). Options: (a) keep as a
 look-up; (b) replace it with the menu's group table (`App.tsx:310-346`), which keeps the route
 without the answer; (c) hide it during the two counting questions. **Recommendation:** (b).
+**Done 2026-09-30, a variant of (b):** the group table with element names would still have
+printed C under `4`, so Level 1 now shows the rule itself (hópar 1–2: hópnúmer; hópar 13–18:
+hópnúmer − 10; He hefur 2). The menu keeps its table.
 
 **66. The Level 2 walkthrough's +5 bonus can be earned without limit.**
 `Opna leiðsögn` reappears after each run, so replays push the level past its 135 maximum and
 progress stores it (`Level2.tsx:364`). **Recommendation:** drop the +5, or award it once per run,
 per item 1.
+**Done 2026-09-30:** the +5 is gone with the rest of the level's points (item 1).
 
 Also here: hint penalties (item 2), d-orbitals (item 7), the bonding
 vocabulary (item 20), and the chip `Rafeindasameignir` (item 87).
