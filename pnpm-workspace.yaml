@@ -5,3 +5,11 @@ packages:
   - 'apps/islenskubraut'
   - 'apps/games/**'
   - 'server'
+
+# pnpm 10+ runs no dependency build script unless it is approved here, and
+# pnpm 12 fails the install on an unapproved one (ERR_PNPM_IGNORED_BUILDS).
+# esbuild fetches its platform binary (Vite, Vitest); unrs-resolver is the
+# native module resolver behind eslint-import-resolver-typescript.
+allowBuilds:
+  esbuild: true
+  unrs-resolver: true

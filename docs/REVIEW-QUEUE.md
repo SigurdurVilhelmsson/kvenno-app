@@ -192,8 +192,8 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
   `docs/DEPLOYMENT.md` says `kvenno.app`. Fix them to match whatever the server actually uses.
 - [ ] **The three 3D games' unhashed `{game}.js`/`{game}.css` are cached for a year.** Hash them,
   or give them a short cache header.
-- [ ] **pnpm 9.15 → current:** a separate PR that bumps `packageManager`, regenerates the
-  lockfile, and checks that `pnpm deploy` still bundles the backend.
+- [x] **pnpm 9.15 → current:** 12.8.1, 2026-09-29, PR #69. It needed `allowBuilds` for esbuild
+  and unrs-resolver. `pnpm deploy` still bundles the backend.
 - [ ] **`scripts/desktop-compare.mjs` is not in CI.** It needs a base build in the same job, and a
   mask for the animated states: buffer Stig 2, vsepr Stig 2, the redox galvanic cell.
 - [ ] **`e2e/` has no `tsconfig`**, so `pnpm type-check` does not cover the specs.

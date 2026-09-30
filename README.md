@@ -21,7 +21,7 @@ This is a real tool in active classroom use, not a demo. If you teach chemistry 
 - **Runtime:** Node.js >= 22
 - **Frontend:** React 19, TypeScript 5, Vite 8
 - **Styling:** Tailwind CSS 4 with shared design preset (`#f36b22` kvenno-orange)
-- **Monorepo:** pnpm 9 workspaces
+- **Monorepo:** pnpm 12 workspaces
 - **Backend:** Express (TypeScript) — Claude API proxy, DOCX-to-PDF conversion, PDF generation
 - **AI:** Claude API (Anthropic) for lab report analysis
 - **Games:** Most games build to a self-contained single-file HTML via `vite-plugin-singlefile`; the 3 Three.js ones (VSEPR, Lewis, Intermolecular Forces) opt out and emit HTML + CSS + JS
