@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect, useLayoutEffect } from 'react';
 
-import { AnimatedMolecule } from '@shared/components';
+import { AnimatedMolecule, PhoneDisclosure } from '@shared/components';
 import { MoleculeViewer3DLazy } from '@shared/components/MoleculeViewer3D';
 import {
   focusTarget,
@@ -17,7 +17,8 @@ import { LewisGuidedMode } from './LewisGuidedMode';
 import { lewisToMolecule } from '../utils/lewisConverter';
 
 interface Level2Props {
-  onComplete: (score: number) => void;
+  /** How many of the molecules were drawn right without opening the solution. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -174,7 +175,7 @@ const challenges: Challenge[] = [
   // === OCTET RULE EXCEPTIONS ===
   {
     id: 7,
-    title: 'Bórþríflúoríð (BF₃) — Undantekning',
+    title: 'Bórþríflúoríð (BF₃)',
     molecule: 'BF₃',
     totalElectrons: 24,
     correctStructure: {
@@ -198,7 +199,7 @@ const challenges: Challenge[] = [
   },
   {
     id: 8,
-    title: 'Fosfórpentaklóríð (PCl₅) — Undantekning',
+    title: 'Fosfórpentaklóríð (PCl₅)',
     molecule: 'PCl₅',
     totalElectrons: 40,
     correctStructure: {
@@ -220,11 +221,11 @@ const challenges: Challenge[] = [
       'P hefur 10 rafeindir — stækkuð átta.',
     ],
     finalExplanation:
-      'PCl₅ er dæmi um stækkaða áttu: Fosfór hefur 10 rafeindir í kringum sig. Þetta er mögulegt vegna þess að P er á 3. lotu og getur notað d-undirhvolf.',
+      'PCl₅ er dæmi um stækkaða áttu: Fosfór hefur 10 rafeindir í kringum sig. P er á 3. lotu og nógu stórt til að rúma fleiri en fjögur rafeindapör.',
   },
   {
     id: 9,
-    title: 'Brennisteinshexaflúoríð (SF₆) — Undantekning',
+    title: 'Brennisteinshexaflúoríð (SF₆)',
     molecule: 'SF₆',
     totalElectrons: 48,
     correctStructure: {
@@ -247,16 +248,16 @@ const challenges: Challenge[] = [
       'S hefur 12 rafeindir — tvöfalt meira en áttureglan!',
     ],
     finalExplanation:
-      'SF₆ er dæmi um stækkaða áttu: S hefur 12 rafeindir í kringum sig (6 tengsl). Þetta er mögulegt vegna d-undirhvolfa.',
+      'SF₆ er dæmi um stækkaða áttu: S hefur 12 rafeindir í kringum sig (6 tengsl). S er á 3. lotu og nógu stórt til að rúma fleiri en fjögur rafeindapör.',
   },
 ];
 
-// 9 challenges × 15 points each = 135
-
 export function Level2({ onComplete, onBack }: Level2Props) {
   const [currentChallenge, setCurrentChallenge] = useState(0);
-  const [score, setScore] = useState(0);
-  const [, setTotalHintsUsed] = useState(0);
+  // Molecules drawn right without the solution. There is no running score: the
+  // count is reported at the end of the level (mobile-pass decision 1 (b)).
+  const [solvedUnaided, setSolvedUnaided] = useState(0);
+  const [solutionShown, setSolutionShown] = useState(false);
   const [drawingCorrect, setDrawingCorrect] = useState(false);
   const [viewMode, setViewMode] = useState<'2d' | '3d'>('2d');
   const [showTutorial, setShowTutorial] = useState(false);
@@ -308,7 +309,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
 
   const handleDrawingComplete = (correct: boolean) => {
     if (correct) {
-      setScore((prev) => prev + 15);
+      if (!solutionShown) setSolvedUnaided((prev) => prev + 1);
       setDrawingCorrect(true);
     }
   };
@@ -319,9 +320,10 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       setDrawingCorrect(false);
       setViewMode('2d');
       setHintsRevealed(0);
+      setSolutionShown(false);
       setCanvasKey((prev) => prev + 1);
     } else {
-      onComplete(score);
+      onComplete(solvedUnaided, challenges.length);
     }
   };
 
@@ -343,7 +345,6 @@ export function Level2({ onComplete, onBack }: Level2Props) {
     if (hintsRevealed < challenge.hints.length) {
       focusNewHint.current = true;
       setHintsRevealed((prev) => prev + 1);
-      setTotalHintsUsed((prev) => prev + 1);
     }
   };
 
@@ -478,10 +479,9 @@ export function Level2({ onComplete, onBack }: Level2Props) {
       aria-labelledby="lewis-l2-verdict"
       className="bg-green-50 border border-green-200 rounded-xl p-4 mb-4 focus:outline-none phone:px-3 phone:py-2 phone:mb-3 phone:flex phone:items-baseline phone:gap-2"
     >
-      <div id="lewis-l2-verdict" className="font-bold text-green-800 mb-1 phone:mb-0">
+      <div id="lewis-l2-verdict" className="font-bold text-green-800">
         Rétt!
       </div>
-      <p className="text-sm text-green-900">+15 stig</p>
     </div>
   );
   const completionExplanation = (
@@ -515,7 +515,6 @@ export function Level2({ onComplete, onBack }: Level2Props) {
             <div className="text-sm text-warm-600">
               Stig 2 / Sameind {currentChallenge + 1} af {challenges.length}
             </div>
-            <div className="text-lg font-bold text-green-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 
@@ -564,10 +563,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                 { symbol: 'H', valenceElectrons: 1, position: 'surrounding' },
               ]}
               totalElectrons={8}
-              onComplete={() => {
-                setShowTutorial(false);
-                setScore((prev) => prev + 5);
-              }}
+              onComplete={() => setShowTutorial(false)}
             />
             <button
               onClick={() => setShowTutorial(false)}
@@ -636,6 +632,7 @@ export function Level2({ onComplete, onBack }: Level2Props) {
                   totalElectrons={challenge.totalElectrons}
                   correctStructure={challenge.correctStructure}
                   onComplete={handleDrawingComplete}
+                  onSolutionShown={() => setSolutionShown(true)}
                 />
 
                 {/* Hints, under the board and its actions */}
@@ -678,49 +675,42 @@ export function Level2({ onComplete, onBack }: Level2Props) {
           </ol>
         </div>
 
-        {/* Octet exceptions reference */}
-        {challenge.correctStructure.octetException &&
-          challenge.correctStructure.octetException !== 'none' && (
-            <div className="mt-4 bg-gradient-to-r from-orange-50 to-purple-50 rounded-xl p-4 shadow-sm border border-orange-200">
-              <h3 className="font-bold text-warm-700 mb-3 flex items-center gap-2">
-                <span className="text-xl">⚠️</span>
-                Undantekningar frá áttureglunni
-              </h3>
-              <div className="grid gap-3 text-sm">
-                <div
-                  className={`p-3 rounded-lg ${challenge.correctStructure.octetException === 'electron-deficient' ? 'bg-orange-100 border-2 border-orange-300' : 'bg-white'}`}
-                >
-                  <div className="font-bold text-orange-700">Rafeindaskortur</div>
-                  <div className="text-warm-600">
-                    Atóm eins og B og Al hafa færri en 8 rafeindir
-                  </div>
-                  <div className="text-xs text-warm-500 mt-1">
-                    Dæmi: BF₃ (6 rafeindir), AlCl₃ (6 rafeindir)
-                  </div>
-                </div>
-                <div
-                  className={`p-3 rounded-lg ${challenge.correctStructure.octetException === 'expanded-octet' ? 'bg-purple-100 border-2 border-purple-300' : 'bg-white'}`}
-                >
-                  <div className="font-bold text-purple-700">Stækkuð átta</div>
-                  <div className="text-warm-600">
-                    Atóm á 3. lotu+ geta haft fleiri en 8 rafeindir (nota d-undirhvolf)
-                  </div>
-                  <div className="text-xs text-warm-500 mt-1">
-                    Dæmi: PCl₅ (10 rafeindir), SF₆ (12 rafeindir)
-                  </div>
-                </div>
-                <div className="p-3 rounded-lg bg-white">
-                  <div className="font-bold text-red-700">Oddatala rafeinda (stakeindir)</div>
-                  <div className="text-warm-600">
-                    Sameindir með oddatölu rafeinda hafa óparaða rafeind
-                  </div>
-                  <div className="text-xs text-warm-500 mt-1">
-                    Dæmi: NO (11 rafeindir), NO₂ (17 rafeindir)
-                  </div>
-                </div>
+        {/* Octet exceptions reference. Shown with every molecule and highlighting none, so it
+            is a reference and not a clue: it used to appear only on BF₃, PCl₅ and SF₆, light up
+            the case being drawn and list that molecule with its electron count. Its examples are
+            molecules this level does not ask for. Closed on a phone until opened (P9). */}
+        <PhoneDisclosure
+          summary="Undantekningar frá áttureglunni"
+          className="mt-4 bg-white rounded-xl p-4 shadow-sm phone:mt-3 phone:p-2"
+          buttonClassName="text-warm-700 border-transparent"
+        >
+          <h3 className="font-bold text-warm-700 mb-3 phone:sr-only">
+            Undantekningar frá áttureglunni
+          </h3>
+          <div className="grid gap-3 text-sm">
+            <div className="p-3 rounded-lg bg-warm-50">
+              <div className="font-bold text-warm-800">Rafeindaskortur</div>
+              <div className="text-warm-600">
+                Atóm eins og B og Al geta haft færri en 8 rafeindir í kringum sig
               </div>
+              <div className="text-xs text-warm-500 mt-1">Dæmi: BCl₃, AlCl₃</div>
             </div>
-          )}
+            <div className="p-3 rounded-lg bg-warm-50">
+              <div className="font-bold text-warm-800">Stækkuð átta</div>
+              <div className="text-warm-600">
+                Atóm á 3. lotu og neðar eru nógu stór til að rúma fleiri en fjögur rafeindapör
+              </div>
+              <div className="text-xs text-warm-500 mt-1">Dæmi: ClF₃, SF₄, XeF₄</div>
+            </div>
+            <div className="p-3 rounded-lg bg-warm-50">
+              <div className="font-bold text-warm-800">Oddatala rafeinda (stakeindir)</div>
+              <div className="text-warm-600">
+                Sameindir með oddatölu rafeinda hafa óparaða rafeind
+              </div>
+              <div className="text-xs text-warm-500 mt-1">Dæmi: NO₂, ClO₂</div>
+            </div>
+          </div>
+        </PhoneDisclosure>
       </div>
     </div>
   );

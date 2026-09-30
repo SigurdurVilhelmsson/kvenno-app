@@ -10,24 +10,31 @@ import { Level3 } from './components/Level3';
 
 type ActiveLevel = 'menu' | 'level1' | 'level2' | 'level3' | 'complete';
 
+/**
+ * What the game remembers: which levels are done, and the best count of right
+ * answers in each. There is no score — points were dropped from every level
+ * (mobile-pass decision 1 (b)), and a hint never changes a count (decision 2 (b)).
+ *
+ * Progress saved before that change carries `levelNScore` in points and no
+ * `levelNCorrect`; those levels show as done with no count, rather than
+ * reading old points as a number of right answers.
+ */
 interface Progress {
   level1Completed: boolean;
-  level1Score: number;
+  level1Correct?: number;
+  level1Total?: number;
   level2Completed: boolean;
-  level2Score: number;
+  level2Correct?: number;
+  level2Total?: number;
   level3Completed: boolean;
-  level3Score: number;
-  totalGamesPlayed: number;
+  level3Correct?: number;
+  level3Total?: number;
 }
 
 const DEFAULT_PROGRESS: Progress = {
   level1Completed: false,
-  level1Score: 0,
   level2Completed: false,
-  level2Score: 0,
   level3Completed: false,
-  level3Score: 0,
-  totalGamesPlayed: 0,
 };
 
 function App() {
@@ -53,19 +60,34 @@ function App() {
         : null,
   });
 
-  const applyLevelResult = (level: 1 | 2 | 3, score: number, next: ActiveLevel) => {
+  const applyLevelResult = (
+    level: 1 | 2 | 3,
+    correct: number,
+    total: number,
+    next: ActiveLevel
+  ) => {
     const key = `level${level}` as const;
     updateProgress({
       [`${key}Completed`]: true,
-      [`${key}Score`]: Math.max(progress[`${key}Score`], score),
-      totalGamesPlayed: progress.totalGamesPlayed + 1,
+      [`${key}Correct`]: Math.max(progress[`${key}Correct`] ?? 0, correct),
+      [`${key}Total`]: total,
     } as Partial<Progress>);
     setActiveLevel(next);
   };
 
-  const handleLevel1Complete = (score: number) => applyLevelResult(1, score, 'menu');
-  const handleLevel2Complete = (score: number) => applyLevelResult(2, score, 'menu');
-  const handleLevel3Complete = (score: number) => applyLevelResult(3, score, 'complete');
+  const handleLevel1Complete = (correct: number, total: number) =>
+    applyLevelResult(1, correct, total, 'menu');
+  const handleLevel2Complete = (correct: number, total: number) =>
+    applyLevelResult(2, correct, total, 'menu');
+  const handleLevel3Complete = (correct: number, total: number) =>
+    applyLevelResult(3, correct, total, 'complete');
+
+  /** "6 af 8 rétt", or "Lokið" for a level finished before counts were kept. */
+  const resultLabel = (level: 1 | 2 | 3): string => {
+    const correct = progress[`level${level}Correct`];
+    const total = progress[`level${level}Total`];
+    return correct === undefined || total === undefined ? 'Lokið' : `${correct} af ${total} rétt`;
+  };
 
   // Render active level
   if (activeLevel === 'level1') {
@@ -82,8 +104,6 @@ function App() {
 
   // Complete screen
   if (activeLevel === 'complete') {
-    const totalScore = progress.level1Score + progress.level2Score + progress.level3Score;
-
     return (
       <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-100 p-4 md:p-8">
         <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-8">
@@ -99,33 +119,28 @@ function App() {
           </div>
 
           <div className="space-y-4 mb-8 phone:space-y-2 phone:mb-4">
-            <div className="bg-blue-50 p-4 phone:p-3 rounded-xl flex justify-between items-center">
+            <div className="bg-blue-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-blue-800">Stig 1: Gildisrafeindir</div>
                 <div className="text-sm text-blue-600">Telja og skilja</div>
               </div>
-              <div className="text-2xl font-bold text-blue-600">{progress.level1Score}</div>
+              <div className="font-bold text-blue-700 whitespace-nowrap">{resultLabel(1)}</div>
             </div>
 
-            <div className="bg-green-50 p-4 phone:p-3 rounded-xl flex justify-between items-center">
+            <div className="bg-green-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-green-800">Stig 2: Teikna Lewis</div>
                 <div className="text-sm text-green-600">Byggja formúlur</div>
               </div>
-              <div className="text-2xl font-bold text-green-600">{progress.level2Score}</div>
+              <div className="font-bold text-green-700 whitespace-nowrap">{resultLabel(2)}</div>
             </div>
 
-            <div className="bg-purple-50 p-4 phone:p-3 rounded-xl flex justify-between items-center">
+            <div className="bg-purple-50 p-4 phone:p-3 rounded-xl flex justify-between items-center gap-3">
               <div>
                 <div className="font-bold text-purple-800">Stig 3: Formhleðsla</div>
                 <div className="text-sm text-purple-600">Samsvörunarformúlur</div>
               </div>
-              <div className="text-2xl font-bold text-purple-600">{progress.level3Score}</div>
-            </div>
-
-            <div className="bg-orange-100 p-4 phone:p-3 rounded-xl flex justify-between items-center border-2 border-orange-400">
-              <div className="font-bold text-orange-800 text-lg">Heildarstig</div>
-              <div className="text-3xl font-bold text-orange-600">{totalScore}</div>
+              <div className="font-bold text-purple-700 whitespace-nowrap">{resultLabel(3)}</div>
             </div>
           </div>
 
@@ -162,7 +177,6 @@ function App() {
   }
 
   // Main menu
-  const totalScore = progress.level1Score + progress.level2Score + progress.level3Score;
   const levelsCompleted = [
     progress.level1Completed,
     progress.level2Completed,
@@ -211,8 +225,8 @@ function App() {
                       Stig 1: Gildisrafeindir
                     </span>
                     {progress.level1Completed && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
-                        ✓ {progress.level1Score} stig
+                      <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                        ✓ {resultLabel(1)}
                       </span>
                     )}
                   </div>
@@ -240,8 +254,8 @@ function App() {
                       Stig 2: Teikna Lewis-formúlur
                     </span>
                     {progress.level2Completed && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
-                        ✓ {progress.level2Score} stig
+                      <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                        ✓ {resultLabel(2)}
                       </span>
                     )}
                   </div>
@@ -269,8 +283,8 @@ function App() {
                       Stig 3: Formhleðsla og samsvörun
                     </span>
                     {progress.level3Completed && (
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
-                        ✓ {progress.level3Score} stig
+                      <span className="bg-green-700 text-white text-xs px-2 py-1 rounded-full whitespace-nowrap">
+                        ✓ {resultLabel(3)}
                       </span>
                     )}
                   </div>
@@ -285,43 +299,25 @@ function App() {
             </button>
           </div>
 
-          {/* Progress Summary */}
-          {progress.totalGamesPlayed > 0 && (
-            <div className="mt-8 bg-warm-50 p-3 sm:p-4 rounded-xl phone:mt-4">
-              <div className="flex justify-between items-center mb-3">
-                <h3 className="font-semibold text-warm-700">Framvinda</h3>
-                <button
-                  onClick={resetProgress}
-                  className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3"
-                >
-                  Endurstilla
-                </button>
+          {/* Progress: which levels are done, and the way to start over. */}
+          {levelsCompleted > 0 && (
+            <div className="mt-8 bg-warm-50 p-3 sm:p-4 rounded-xl phone:mt-4 flex justify-between items-center">
+              <div className="text-warm-700">
+                <span className="font-semibold">Framvinda:</span> {levelsCompleted} af 3 stigum
+                lokið
               </div>
-              {/* Narrower gaps on a phone, so 'Heildarstig' fits its third at 320 px. */}
-              <div className="grid grid-cols-3 gap-2 sm:gap-4 phone:gap-1 text-center">
-                <div className="bg-blue-50 rounded-lg p-2 sm:p-3 phone:px-1">
-                  <div className="text-2xl font-bold text-blue-600 whitespace-nowrap">
-                    {levelsCompleted}/3
-                  </div>
-                  <div className="text-xs text-warm-600">Stig lokið</div>
-                </div>
-                <div className="bg-green-50 rounded-lg p-2 sm:p-3 phone:px-1">
-                  <div className="text-2xl font-bold text-green-600">{totalScore}</div>
-                  <div className="text-xs text-warm-600">Heildarstig</div>
-                </div>
-                <div className="bg-purple-50 rounded-lg p-2 sm:p-3 phone:px-1">
-                  <div className="text-2xl font-bold text-purple-600">
-                    {progress.totalGamesPlayed}
-                  </div>
-                  <div className="text-xs text-warm-600">Leikir spilaðir</div>
-                </div>
-              </div>
+              <button
+                onClick={resetProgress}
+                className="text-sm text-warm-500 hover:text-red-500 transition-colors pointer-coarse:py-3 pointer-coarse:-my-3"
+              >
+                Endurstilla
+              </button>
             </div>
           )}
 
           {/* Valence electron reference */}
           <div className="mt-6 bg-warm-50 p-4 rounded-xl">
-            <h3 className="font-semibold text-warm-700 mb-2">🔢 Gildisrafeindir eftir hópi</h3>
+            <h3 className="font-semibold text-warm-700 mb-2">🔢 Fjöldi gildisrafeinda</h3>
             <div className="grid grid-cols-4 md:grid-cols-8 gap-2 text-sm">
               <div className="bg-red-50 p-2 rounded text-center">
                 <div className="font-bold text-red-700">1</div>

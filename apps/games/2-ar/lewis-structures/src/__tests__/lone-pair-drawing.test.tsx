@@ -179,7 +179,7 @@ describe('controls and feedback name the atom they are about', () => {
     }
   });
 
-  it('names F₁, F₂, F₃ in the feedback as the controls do, and counts one pair as "par"', () => {
+  it('names F₁, F₂, F₃ in the solution as the controls do, and counts one pair as "par"', () => {
     const board = renderBoard('BF₃', 24, BF3);
     for (const bond of board.ui.getAllByRole('button', { name: /^Tengi \d af 3/ })) {
       fireEvent.click(bond);
@@ -188,10 +188,13 @@ describe('controls and feedback name the atom they are about', () => {
     fireEvent.click(f1Plus);
     fireEvent.click(f2Plus);
     fireEvent.click(f2Plus);
+    // The key is offered only after a second wrong check (see stig2-feedback.test.tsx).
     fireEvent.click(board.ui.getByRole('button', { name: 'Athuga' }));
+    fireEvent.click(board.ui.getByRole('button', { name: 'Athuga' }));
+    fireEvent.click(board.ui.getByRole('button', { name: 'Sýna lausn' }));
 
-    const list = board.container.querySelector('ul') as HTMLUListElement;
-    const items = [...list.querySelectorAll('li')].map((li) => li.textContent);
+    const solution = board.ui.getByRole('group', { name: 'Lausn' });
+    const items = [...solution.querySelectorAll('li')].map((li) => li.textContent);
     // Before the fix: "• F: 1 pör → …", "• F: 2 pör → …", "• F: 0 pör → …".
     expect(items).toEqual([
       '• F₁: 1 par → ætti að vera 3',

@@ -16,7 +16,7 @@ import {
 // Misconceptions for Lewis structure concepts
 const MISCONCEPTIONS: Record<string, string> = {
   count_valence:
-    'Gildisrafeindir eru rafeindir í ysta hvolfi. Hópnúmer (1-8 fyrir aðalflokka) segir beint til um fjöldann.',
+    'Gildisrafeindir eru rafeindir í ysta hvolfi. Í hópum 1 og 2 eru þær jafnmargar hópnúmerinu; í hópum 13–18 eru þær hópnúmerið mínus 10.',
   total_electrons:
     'Heildarfjöldi = summa gildisrafeinda allra atóma. Mundu að margfalda með fjölda atóma af hverri tegund.',
   octet_rule: 'Áttureglan segir að atóm vilja hafa 8 rafeindir í ysta hvolfi (nema H sem vill 2).',
@@ -32,7 +32,8 @@ const RELATED_CONCEPTS: Record<string, string[]> = {
 };
 
 interface Level1Props {
-  onComplete: (score: number) => void;
+  /** How many of the questions were answered right. Hints never change it. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -50,32 +51,6 @@ interface Challenge {
   explanation: string;
 }
 
-// Valence electron data
-const VALENCE_ELECTRONS: Record<string, number> = {
-  H: 1,
-  Li: 1,
-  Na: 1,
-  K: 1,
-  Be: 2,
-  Mg: 2,
-  Ca: 2,
-  B: 3,
-  Al: 3,
-  C: 4,
-  Si: 4,
-  N: 5,
-  P: 5,
-  O: 6,
-  S: 6,
-  F: 7,
-  Cl: 7,
-  Br: 7,
-  I: 7,
-  He: 2,
-  Ne: 8,
-  Ar: 8,
-};
-
 const challenges: Challenge[] = [
   {
     id: 1,
@@ -91,11 +66,11 @@ const challenges: Challenge[] = [
       solution: 'C er í hópi 14: 14 - 10 = 4 gildisrafeindir.',
     },
     explanation:
-      'C er í hópi 14, sem þýðir 4 gildisrafeindir. Hópnúmerið (1-8 fyrir aðalflokka) segir beint til um gildisrafeindafjöldann.',
+      'C er í hópi 14, svo gildisrafeindirnar eru 14 − 10 = 4. Í hópum 13–18 eru gildisrafeindirnar hópnúmerið mínus 10.',
   },
   {
     id: 2,
-    title: 'Súrefni og halógenar',
+    title: 'Halógenar',
     type: 'count_valence',
     question: 'Hversu margar gildisrafeindir hefur klór (Cl)?',
     correctAnswer: 7,
@@ -248,17 +223,17 @@ const challenges: Challenge[] = [
   },
 ];
 
-// Calculate max score: 8 challenges * 15 points each = 120
-
 export function Level1({ onComplete, onBack }: Level1Props) {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
-  const [hintMultiplier, setHintMultiplier] = useState(1.0);
   const [hintsUsedTier, setHintsUsedTier] = useState(0);
   const [isCorrect, setIsCorrect] = useState(false);
-  const [score, setScore] = useState(0);
+  // Right answers, counted flat: a hint never lowers it, and there is no running
+  // score on screen (mobile-pass decisions 1 (b) and 2 (b)). It used to be 15 × the
+  // HintSystem tier multiplier, shown as "N stig" in the header.
+  const [correctCount, setCorrectCount] = useState(0);
 
   const challenge = challenges[currentChallenge];
   // "Næsta þraut" swaps the question in place, so the page kept its offset.
@@ -303,7 +278,6 @@ export function Level1({ onComplete, onBack }: Level1Props) {
   }, [hintsUsedTier]);
   // A double tap on "Athuga svar" must not land on Næsta.
   const armed = useArmedAfter(400, `${currentChallenge}:${showResult}`);
-  const basePoints = 15;
 
   // Shuffle options for current challenge - memoize to keep stable during challenge
   const shuffledOptions = useMemo(() => {
@@ -331,10 +305,7 @@ export function Level1({ onComplete, onBack }: Level1Props) {
     }
 
     setIsCorrect(correct);
-    if (correct) {
-      const earnedPoints = Math.round(basePoints * hintMultiplier);
-      setScore((prev) => prev + earnedPoints);
-    }
+    if (correct) setCorrectCount((prev) => prev + 1);
     setShowResult(true);
   };
 
@@ -344,11 +315,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
       setUserAnswer('');
       setSelectedOption(null);
       setShowResult(false);
-      setHintMultiplier(1.0);
       setHintsUsedTier(0);
       setIsCorrect(false);
     } else {
-      onComplete(score);
+      onComplete(correctCount, challenges.length);
     }
   };
 
@@ -367,7 +337,6 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <div className="text-sm text-warm-600">
               Stig 1 / Þraut {currentChallenge + 1} af {challenges.length}
             </div>
-            <div className="text-lg font-bold text-blue-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 
@@ -406,7 +375,10 @@ export function Level1({ onComplete, onBack }: Level1Props) {
                   >
                     {challenge.molecule}
                   </div>
-                  {challenge.elements && (
+                  {/* The per-atom breakdown is the working, so it appears with the
+                      feedback: printed under the question it reduced "how many in
+                      total?" to adding three numbers already on screen. */}
+                  {showResult && challenge.elements && (
                     <div className="flex justify-center gap-4 mt-3 phone:mt-1">
                       {challenge.elements.map((el, idx) => (
                         <div key={idx} className="text-center">
@@ -504,9 +476,8 @@ export function Level1({ onComplete, onBack }: Level1Props) {
             <div ref={hintsRef} className="mb-4 phone:mb-3">
               <HintSystem
                 hints={challenge.hints}
-                basePoints={basePoints}
+                showPointCost={false}
                 onHintUsed={(tier) => setHintsUsedTier(tier)}
-                onPointsChange={setHintMultiplier}
                 disabled={showResult}
                 resetKey={currentChallenge}
               />
@@ -571,24 +542,32 @@ export function Level1({ onComplete, onBack }: Level1Props) {
           )}
         </div>
 
-        {/* Valence electron reference: a lookup table, closed on a phone until
-            opened (P9), always open elsewhere. */}
+        {/* Valence electrons from the group number: the rule, closed on a phone until opened
+            (P9), always open elsewhere. It used to be a table of elements with their counts,
+            which printed the answer to questions 1 and 2 under them — and was cut at F, so it
+            left out Cl, question 2's element (mobile-pass decision 65). */}
         <PhoneDisclosure
-          summary="Gildisrafeindatafla"
+          summary="Gildisrafeindir og hópnúmer"
           className="mt-6 bg-white rounded-xl p-4 shadow-sm phone:mt-3 phone:p-2"
           buttonClassName="text-warm-700 border-transparent"
         >
-          <h3 className="font-bold text-warm-700 mb-3 phone:sr-only">Gildisrafeindatafla</h3>
-          <div className="grid grid-cols-4 md:grid-cols-8 gap-2 text-sm">
-            {Object.entries(VALENCE_ELECTRONS)
-              .slice(0, 16)
-              .map(([symbol, valence]) => (
-                <div key={symbol} className="bg-warm-50 p-2 rounded text-center border">
-                  <div className="font-bold text-warm-800">{symbol}</div>
-                  <div className="text-blue-600">{valence}</div>
-                </div>
-              ))}
-          </div>
+          <h3 className="font-bold text-warm-700 mb-3 phone:sr-only">
+            Gildisrafeindir og hópnúmer
+          </h3>
+          <ul className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm">
+            <li className="bg-warm-50 p-3 rounded-lg border">
+              <div className="font-bold text-warm-800">Hópar 1 og 2</div>
+              <div className="text-warm-600">gildisrafeindir = hópnúmer</div>
+            </li>
+            <li className="bg-warm-50 p-3 rounded-lg border">
+              <div className="font-bold text-warm-800">Hópar 13–18</div>
+              <div className="text-warm-600">gildisrafeindir = hópnúmer − 10</div>
+            </li>
+            <li className="bg-warm-50 p-3 rounded-lg border">
+              <div className="font-bold text-warm-800">Undantekning</div>
+              <div className="text-warm-600">He hefur 2, þótt það sé í hópi 18</div>
+            </li>
+          </ul>
         </PhoneDisclosure>
       </div>
     </div>

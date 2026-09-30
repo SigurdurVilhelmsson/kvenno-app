@@ -10,7 +10,8 @@ import {
 } from '@shared/utils';
 
 interface Level3Props {
-  onComplete: (score: number) => void;
+  /** How many of the questions were answered right. The hint never changes it. */
+  onComplete: (correct: number, total: number) => void;
   onBack: () => void;
 }
 
@@ -218,7 +219,7 @@ const challenges: Challenge[] = [
     title: 'Samsvörunarformúlur I',
     type: 'resonance',
     molecule: 'NO₂⁻',
-    description: 'Nítrítjónin hefur tvær jafngildar samsvörunarformúlur.',
+    description: 'Í nítrítjóninni er N miðatóm, tengt tveimur O-atómum.',
     resonanceForms: [
       { id: 'a', structure: 'O=N-O⁻', isValid: true },
       { id: 'b', structure: '⁻O-N=O', isValid: true },
@@ -352,15 +353,14 @@ const challenges: Challenge[] = [
   },
 ];
 
-// Calculate max score: 8 challenges * 15 points each = 120
-
 export function Level3({ onComplete, onBack }: Level3Props) {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showResult, setShowResult] = useState(false);
   const [showHint, setShowHint] = useState(false);
-  const [score, setScore] = useState(0);
-  const [, setTotalHintsUsed] = useState(0);
+  // Right answers, counted flat (mobile-pass decisions 1 (b) and 2 (b)). Opening
+  // the hint used to cut a right answer from 15 points to 8, silently.
+  const [correctCount, setCorrectCount] = useState(0);
 
   const challenge = challenges[currentChallenge];
   // "Næsta þraut" swaps the question in place, so the page kept its offset.
@@ -380,13 +380,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
   const checkAnswer = () => {
     const correct = challenge.options?.find((opt) => opt.id === selectedAnswer)?.correct ?? false;
 
-    if (correct) {
-      if (!showHint) {
-        setScore((prev) => prev + 15);
-      } else {
-        setScore((prev) => prev + 8);
-      }
-    }
+    if (correct) setCorrectCount((prev) => prev + 1);
 
     setShowResult(true);
   };
@@ -398,10 +392,11 @@ export function Level3({ onComplete, onBack }: Level3Props) {
       setShowResult(false);
       setShowHint(false);
     } else {
-      onComplete(score);
+      onComplete(correctCount, challenges.length);
     }
   };
 
+  const asksForFormula = challenge.correctAnswer === 'fc_formula';
   const isCorrect = challenge.options?.find((opt) => opt.id === selectedAnswer)?.correct ?? false;
 
   const questionRef = useRef<HTMLParagraphElement>(null);
@@ -591,7 +586,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             {/* Formal charges text */}
             <div className="text-center text-xs text-warm-500 mt-1">
               {struct.formalCharges
-                .map((fc) => `${fc.atom}: ${fc.charge >= 0 ? '+' : ''}${fc.charge}`)
+                .map((fc) => `${fc.atom}: ${fc.charge > 0 ? '+' : ''}${fc.charge}`)
                 .join(', ')}
             </div>
             {/* Preferred badge */}
@@ -644,7 +639,6 @@ export function Level3({ onComplete, onBack }: Level3Props) {
             <div className="text-sm text-warm-600">
               Stig 3 / Þraut {currentChallenge + 1} af {challenges.length}
             </div>
-            <div className="text-lg font-bold text-purple-600 phone:text-base">{score} stig</div>
           </div>
         </div>
 
@@ -715,7 +709,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
                         <span
                           className={`font-bold ${atom.formalCharge === 0 ? 'text-green-600' : atom.formalCharge > 0 ? 'text-red-600' : 'text-blue-600'}`}
                         >
-                          {atom.formalCharge >= 0 ? '+' : ''}
+                          {atom.formalCharge > 0 ? '+' : ''}
                           {atom.formalCharge}
                         </span>
                       </div>
@@ -732,8 +726,9 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               </div>
             )}
 
-            {/* Resonance structures visualization */}
-            {challenge.resonanceForms && (
+            {/* Resonance structures, after the answer: the question asks how many there are,
+                and drawing them all above it answered it. */}
+            {showResult && challenge.resonanceForms && (
               <div className="bg-warm-50 p-4 rounded-xl mb-6 phone:p-3 phone:mb-3">
                 <h3 className="font-bold text-warm-700 mb-3 phone:mb-1">Samsvörunarformúlur:</h3>
                 {renderResonanceStructures(challenge.resonanceForms)}
@@ -797,10 +792,7 @@ export function Level3({ onComplete, onBack }: Level3Props) {
               {/* Hint button */}
               {!showResult && !showHint && (
                 <button
-                  onClick={() => {
-                    setShowHint(true);
-                    setTotalHintsUsed((prev) => prev + 1);
-                  }}
+                  onClick={() => setShowHint(true)}
                   className="text-purple-600 hover:text-purple-800 text-sm underline mb-4 phone:mb-2 phone:shrink-0 pointer-coarse:min-h-11"
                 >
                   Sýna vísbendingu
@@ -865,28 +857,31 @@ export function Level3({ onComplete, onBack }: Level3Props) {
           )}
         </div>
 
-        {/* Reference card: closed on a phone until opened (P9), always open elsewhere. */}
-        <PhoneDisclosure
-          summary="Formhleðsluformúlan"
-          className="mt-6 bg-white rounded-xl p-4 shadow-sm phone:mt-3 phone:p-2"
-          buttonClassName="text-warm-700 border-transparent"
-        >
-          <h3 className="font-bold text-warm-700 mb-3 phone:sr-only">Formhleðsluformúlan</h3>
-          <div className="bg-purple-50 p-3 rounded-lg text-center font-mono mb-3">
-            <strong>FC = V - (L + ½B)</strong>
-          </div>
-          <ul className="text-sm text-warm-600 space-y-1">
-            <li>
-              <strong>V</strong> = Gildisrafeindir (frá lotukerfinu)
-            </li>
-            <li>
-              <strong>L</strong> = Óbundnar rafeindir (í stökum pörum)
-            </li>
-            <li>
-              <strong>B</strong> = Bundnar rafeindir (í tengslum)
-            </li>
-          </ul>
-        </PhoneDisclosure>
+        {/* Reference card: closed on a phone until opened (P9), always open elsewhere. Held
+            back while question 1 is open, since question 1 asks for this formula. */}
+        {!(asksForFormula && !showResult) && (
+          <PhoneDisclosure
+            summary="Formhleðsluformúlan"
+            className="mt-6 bg-white rounded-xl p-4 shadow-sm phone:mt-3 phone:p-2"
+            buttonClassName="text-warm-700 border-transparent"
+          >
+            <h3 className="font-bold text-warm-700 mb-3 phone:sr-only">Formhleðsluformúlan</h3>
+            <div className="bg-purple-50 p-3 rounded-lg text-center font-mono mb-3">
+              <strong>FC = V - (L + ½B)</strong>
+            </div>
+            <ul className="text-sm text-warm-600 space-y-1">
+              <li>
+                <strong>V</strong> = Gildisrafeindir (frá lotukerfinu)
+              </li>
+              <li>
+                <strong>L</strong> = Óbundnar rafeindir (í stökum pörum)
+              </li>
+              <li>
+                <strong>B</strong> = Bundnar rafeindir (í tengslum)
+              </li>
+            </ul>
+          </PhoneDisclosure>
+        )}
       </div>
     </div>
   );

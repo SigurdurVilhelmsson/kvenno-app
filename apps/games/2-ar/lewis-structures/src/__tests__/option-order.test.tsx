@@ -93,11 +93,11 @@ describe('grading follows the answer, not the position', () => {
     return level.onComplete;
   };
 
-  it('scores every correct answer', () => {
-    expect(playAll('correct')).toHaveBeenCalledWith(8 * 15);
+  it('counts every correct answer', () => {
+    expect(playAll('correct')).toHaveBeenCalledWith(8, 8);
   });
 
-  it('scores no wrong answer', () => {
-    expect(playAll('wrong')).toHaveBeenCalledWith(0);
+  it('counts no wrong answer', () => {
+    expect(playAll('wrong')).toHaveBeenCalledWith(0, 8);
   });
 });

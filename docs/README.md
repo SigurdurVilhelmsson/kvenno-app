@@ -51,6 +51,8 @@ Guarded by `src/__tests__/hint-cost.test.tsx`, which drives the component: it re
 
 Note what that guard does and does not do: it enforces **honesty** — no game may quote a price it does not charge — not the restructure's "hints are free" policy. A game that displays and genuinely applies a penalty passes it. The policy is held per game by the four `hint-cost` tests. `packages/shared/components/HintSystem/__tests__/HintSystem.test.tsx` covers the prop itself, including that the default stays `true` so `2-ar/lewis-structures` and `3-ar/buffer-recipe-creator` keep telling their students what a hint costs.
 
+**`2-ar/lewis-structures` stopped charging 2026-09-30** (mobile-pass decision 2, ruled (b) for this game). Level 1 had paid `15 × hintMultiplier` and Level 3 had paid 15 without its hint and 8 with it, silently. Both now count right answers flat, Level 1 passes `showPointCost={false}`, and the game shows no running score at all (decision 1 (b)). Guarded by the game's `hint-cost.test.tsx`, which plays Levels 1 and 3 through with and without every hint and fails against the old code. **`3-ar/buffer-recipe-creator` is now the only `HintSystem` consumer that applies the multiplier**, and decision 2 stays open for it.
+
 **Fixed 2026-08-26 — Nafnakerfið's Level 3 name builder.** The level asks a student to assemble a
 compound name from clickable parts, and **33 of the 51 compounds it drew from could not be built
 from the parts it offered** — about six unanswerable questions in a run of ten. The parts were

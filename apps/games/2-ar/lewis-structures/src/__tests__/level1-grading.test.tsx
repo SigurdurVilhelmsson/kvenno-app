@@ -60,6 +60,9 @@ describe('the charge column states the charge', () => {
       fireEvent.click(ui.getByRole('button', { name: 'Næsta þraut' }));
     }
     expect(ui.getByText('OH⁻')).toBeTruthy();
+    // The breakdown is the working, so it waits for the answer.
+    expect(ui.queryByText('Hleðsla')).toBeNull();
+    answer('8');
     const label = ui.getByText('Hleðsla');
     // Before the fix: "+1".
     expect(label.nextElementSibling?.textContent).toBe('−(−1) = +1');
