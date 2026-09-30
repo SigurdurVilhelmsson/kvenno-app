@@ -111,7 +111,7 @@ leave".
 - [ ] 58–60 lausnir
 - [ ] 61–62 einingakedjan
 - [ ] 63–64 rafeindabygging
-- [x] 65–66 lewis-structures — done 2026-09-30 (design-review PR)
+- [x] 65–66 lewis-structures — done 2026-09-30 (PR #70)
 - [ ] 67–71 vsepr-geometry
 - [ ] 72–74 intermolecular-forces
 - [ ] 75–79 hess-law
@@ -159,7 +159,7 @@ jónajafna`, and `prósentuheimtur` against `heimtur í prósentum`. Solid forms
 ### C6. Lewis-formúlur design review (2026-09-30)
 
 A design review of `2-ar/lewis-structures` found nine problems. Five were fixed the same day in
-the design-review PR, whose description lists them. These four need a ruling, since each
+PR #70, whose description lists them. These four need a ruling, since each
 changes how the game teaches or looks rather than correcting a defect.
 
 - [ ] **Teach before test.** All three levels open on a question.
@@ -214,7 +214,7 @@ From the vertical-scroll design's §7 and the mobile-pass decisions' last sectio
 - [ ] **lotukerfid `PeriodicTable.tsx`:** `role="grid"` with no rows or cells.
 - [ ] **hess-law Stig 2 `EquationBlock`:** a `role="button"` card containing its own buttons.
 - [ ] **vsepr `BondAngleMeasurement.tsx`:** tick labels show the half-angle.
-- [x] **lewis Stig 3:** a formal charge of 0 prints as `+0`. Fixed 2026-09-30 (design-review PR).
+- [x] **lewis Stig 3:** a formal charge of 0 prints as `+0`. Fixed 2026-09-30 (PR #70).
 - [ ] **Lewis +1 formal-charge badge** is red on a red O atom, so it is hard to see.
 - [ ] **`gradeScientific`:**
   - it diagnoses a 10× slip as wrong digits;
